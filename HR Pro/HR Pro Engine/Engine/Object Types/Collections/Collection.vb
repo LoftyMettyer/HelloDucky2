@@ -31,11 +31,9 @@ Namespace Things.Collections
 
     Public Function Table(ByRef ID As HCMGuid) As Things.Table Implements iCollection_Objects.Table
 
-      Dim objChild As Things.Base
-
-      For Each objChild In MyBase.Items
+      For Each objChild As Things.Base In MyBase.Items
         If objChild.ID = ID And objChild.Type = Type.Table Then
-          Return objChild
+          Return CType(objChild, Things.Table)
         End If
       Next
 

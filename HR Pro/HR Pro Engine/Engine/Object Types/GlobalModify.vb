@@ -6,6 +6,8 @@ Namespace Things
   Public Class GlobalModify
     Inherits Things.Base
 
+    Public Property GlobalModifyItems As New List(Of GlobalModifyItem)
+
     Public Overrides ReadOnly Property Type As Enums.Type
       Get
         Return Enums.Type.GlobalModify

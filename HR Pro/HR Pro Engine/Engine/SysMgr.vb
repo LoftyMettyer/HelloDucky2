@@ -50,14 +50,7 @@ Public Class SysMgr
 
       Things.PopulateSystemThings()
       Things.PopulateSystemSettings()
-
-      'TODO:
-      If True Then
-        Things.PopulateThings()
-      Else
-        Things.PopulateThings2()
-      End If
-
+      Things.PopulateThings2()
       Things.PopulateModuleSettings()
 
     Catch ex As Exception
@@ -123,7 +116,9 @@ Public Class SysMgr
 
   Public ReadOnly Property ReturnThings As Things.Collections.Generic Implements COMInterfaces.iSystemManager.Things
     Get
-      Return Globals.Things
+      'TODO: Global things is tables but global modify things are also being added????
+      Return New Things.Collections.Generic
+      'Return Globals.Things
     End Get
   End Property
 

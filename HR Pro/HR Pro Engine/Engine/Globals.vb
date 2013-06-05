@@ -7,7 +7,8 @@ Public Module Globals
   'Public Shared Connection As Connectivity.SQL
   Public MetadataProvider As Connectivity.MetadataProvider = Connectivity.MetadataProvider.PhoenixStoredProcs
   '    Public User As Connectivity.User
-    Public Things As Things.Collections.Generic
+
+  Public Tables As New List(Of Things.Table)
   Public Workflows As Things.Collections.Generic
   Public Operators As Things.Collections.Generic
   Public Functions As Things.Collections.Generic
@@ -32,7 +33,7 @@ Public Module Globals
   Public Sub Initialise()
 
     ' Metadata objects
-    Things = New Things.Collections.Generic
+    Tables = New List(Of Things.Table)
     Workflows = New Things.Collections.Generic
     Operators = New Things.Collections.Generic
     Functions = New Things.Collections.Generic

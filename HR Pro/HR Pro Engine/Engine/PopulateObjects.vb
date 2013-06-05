@@ -1,4 +1,6 @@
-﻿Namespace Things
+﻿Option Strict Off
+
+Namespace Things
 
   <HideModuleName()> _
   Public Module PopulateObjects
@@ -59,7 +61,7 @@
           If Not objRow.Item("value").ToString = "" Then
             Select Case objSetting.SubType
               Case Type.Table
-                objSetting.Table = Globals.Things.GetObject(Type.Table, objRow.Item("value").ToString)
+                objSetting.Table = Globals.Tables.GetById(objRow.Item("value").ToString)
               Case Type.Column
                 objSetting.Value = objRow.Item("value").ToString
                 'If objRow.Item("tableid").ToString > 0 Then
@@ -83,35 +85,27 @@
 
     End Sub
 
-    Public Function PopulateCodeLibraryDependancies(ByRef objFunction As Things.CodeLibrary) As Things.Collections.Generic
+    Public Function PopulateCodeLibraryDependancies(ByVal objFunction As Things.CodeLibrary) As List(Of Setting)
 
-      Dim objDependancies As New Things.Collections.Generic
-      Dim objSetting As Things.Setting
-      Dim objParameters As New Connectivity.Parameters
-      Dim objDataset As DataSet
-      Dim objRow As DataRow
+      Dim params As New Connectivity.Parameters
+      params.Add("@componentid", CInt(objFunction.ID))
+      Dim ds As DataSet = Globals.CommitDB.ExecStoredProcedure("spadmin_getcomponentcodedependancies", params)
 
-      Try
-        objDependancies.Clear()
-        objParameters.Clear()
-        objParameters.Add("@componentid", CInt(objFunction.ID))
-        objDataset = Globals.CommitDB.ExecStoredProcedure("spadmin_getcomponentcodedependancies", objParameters)
-        For Each objRow In objDataset.Tables(0).Rows
-          objSetting = New Things.Setting
-          objSetting.SettingType = objRow.Item("type").ToString
-          objSetting.Module = objRow.Item("parameterkey").ToString
-          objSetting.Parameter = objRow.Item("modulekey").ToString
-          objSetting.Value = objRow.Item("value").ToString
-          objSetting.Code = objRow.Item("code").ToString
-          objDependancies.Add(objSetting)
-        Next
+      Dim dependancies As New List(Of Setting)
 
-      Catch ex As Exception
-        Globals.ErrorLog.Add(SystemFramework.ErrorHandler.Section.LoadingData, String.Empty, SystemFramework.ErrorHandler.Severity.Error, ex.Message, vbNullString)
+      For Each row As DataRow In ds.Tables(0).Rows
 
-      End Try
+        Dim setting As New Things.Setting
+        setting.SettingType = row.Item("type").ToString
+        setting.Module = row.Item("parameterkey").ToString
+        setting.Parameter = row.Item("modulekey").ToString
+        setting.Value = row.Item("value").ToString
+        setting.Code = row.Item("code").ToString
 
-      Return objDependancies
+        dependancies.Add(setting)
+      Next
+
+      Return dependancies
 
     End Function
 
@@ -171,54 +165,54 @@
 
     End Sub
 
-    Public Sub PopulateThings()
+    'Public Sub PopulateThings()
 
-      Dim objDataset As DataSet
-      Dim objRow As DataRow
+    '  Dim objDataset As DataSet
+    '  Dim objRow As DataRow
 
-      Dim objTable As Things.Table
+    '  Dim objTable As Things.Table
 
-      Dim objParameters As New Connectivity.Parameters
+    '  Dim objParameters As New Connectivity.Parameters
 
-      ' Clear existing objects
-      Globals.Things.Clear()
-      Globals.Workflows.Clear()
-      'CommitDB.Open()
+    '  ' Clear existing objects
+    '  Globals.Tables.Clear()
+    '  Globals.Workflows.Clear()
+    '  'CommitDB.Open()
 
-      'objParameters.Add("@type", CInt(iType))
-      objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_gettables", objParameters)
+    '  'objParameters.Add("@type", CInt(iType))
+    '  objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_gettables", objParameters)
 
-      '   ProgressInfo.TotalSteps2 = objDataset.Tables(0).Rows.Count
-      For Each objRow In objDataset.Tables(0).Rows
+    '  '   ProgressInfo.TotalSteps2 = objDataset.Tables(0).Rows.Count
+    '  For Each objRow In objDataset.Tables(0).Rows
 
-        objTable = New Things.Table
-        objTable.ID = objRow.Item("id").ToString
-        objTable.TableType = objRow.Item("tabletype").ToString
-        objTable.Name = objRow.Item("name").ToString
-        objTable.SchemaName = "dbo"
-        objTable.IsRemoteView = objRow.Item("isremoteview")
-        objTable.AuditInsert = objRow.Item("auditinsert").ToString
-        objTable.AuditDelete = objRow.Item("auditdelete").ToString
-        objTable.DefaultEmailID = objRow.Item("defaultemailid").ToString
-        objTable.DefaultOrderID = objRow.Item("defaultorderid").ToString
-        objTable.State = objRow.Item("state")
+    '    objTable = New Things.Table
+    '    objTable.ID = objRow.Item("id").ToString
+    '    objTable.TableType = objRow.Item("tabletype").ToString
+    '    objTable.Name = objRow.Item("name").ToString
+    '    objTable.SchemaName = "dbo"
+    '    objTable.IsRemoteView = objRow.Item("isremoteview")
+    '    objTable.AuditInsert = objRow.Item("auditinsert").ToString
+    '    objTable.AuditDelete = objRow.Item("auditdelete").ToString
+    '    objTable.DefaultEmailID = objRow.Item("defaultemailid").ToString
+    '    objTable.DefaultOrderID = objRow.Item("defaultorderid").ToString
+    '    objTable.State = objRow.Item("state")
 
-        ' needs putting back in when I figure out how to put an IF statement in the Access storedprocs (queries). Otherwise will need to split the code
+    '    ' needs putting back in when I figure out how to put an IF statement in the Access storedprocs (queries). Otherwise will need to split the code
 
-        ' Get all child objects for this table
-        Things.PopulateTable(objTable)
-        objTable.Root = objTable
+    '    ' Get all child objects for this table
+    '    Things.PopulateTable(objTable)
+    '    objTable.Root = objTable
 
-        Globals.Things.Add(objTable)
+    '    Globals.Tables.Add(objTable)
 
-      Next
+    '  Next
 
-      objDataset = Nothing
-      objRow = Nothing
+    '  objDataset = Nothing
+    '  objRow = Nothing
 
-      '     ProgressInfo.NextStep1()
+    '  '     ProgressInfo.NextStep1()
 
-    End Sub
+    'End Sub
 
     'Public Function LoadWorkflowElementDetails(ByRef objWorkflowElement As Things.WorkflowElement) As Things.Collection
 
@@ -366,307 +360,306 @@
 
     'End Function
 
-    Public Function LoadComponents(ByRef objExpression As Things.Component, ByVal Type As ScriptDB.ComponentTypes) As Things.Collections.Generic
+    'Public Function LoadComponents(ByRef objExpression As Things.Component, ByVal Type As ScriptDB.ComponentTypes) As Things.Collections.Generic
 
-      Dim objObjects As New Things.Collections.Generic
-      Dim objComponent As Things.Component
-      Dim objDataset As DataSet
-      Dim objRow As DataRow
-      Dim objParameters As New Connectivity.Parameters
+    '  Dim objObjects As New Things.Collections.Generic
+    '  Dim objComponent As Things.Component
+    '  Dim objDataset As DataSet
+    '  Dim objRow As DataRow
+    '  Dim objParameters As New Connectivity.Parameters
 
-      objObjects.Parent = objExpression
+    '  objObjects.Parent = objExpression
 
-      '      objObjects.root = objExpression.Root
-
-
-      'Debug.Assert(CInt(objExpression.ID) <> 45953)
-
-      Try
-
-        ' Populate components
-
-        '        objParameters.Add("@componenttype", CInt([Type]))
-
-        '   Debug.Assert(Not objExpression.ID = 41839)
-        '    Debug.Assert(Not objExpression.ID = 41814, False)
-
-        '   Debug.Assert(objExpression.Name <> "srp")
+    '  '      objObjects.root = objExpression.Root
 
 
-        Select Case Type
-          Case ScriptDB.ComponentTypes.Function
-            objParameters.Add("@expressionid", objExpression.ID)
-            objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_getcomponent_function", objParameters)
+    '  'Debug.Assert(CInt(objExpression.ID) <> 45953)
 
-          Case ScriptDB.ComponentTypes.Calculation
-            objParameters.Add("@expressionid", objExpression.CalculationID)
-            'objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_getcomponent_calculation", objParameters)
-            objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_getcomponent_base", objParameters)
+    '  Try
 
-            '   Case ScriptDB.ComponentTypes.Expression
-            '    objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_getcomponent_base", objParameters)
+    '    ' Populate components
 
-          Case Else
-            objParameters.Add("@expressionid", objExpression.ID)
-            objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_getcomponent_base", objParameters)
-        End Select
+    '    '        objParameters.Add("@componenttype", CInt([Type]))
 
-        For Each objRow In objDataset.Tables(0).Rows
-          objComponent = New Things.Component
-          objComponent.ID = objRow.Item("componentid").ToString
-          objComponent.SubType = objRow.Item("subtype")
-          objComponent.Name = objRow.Item("name")
-          objComponent.ReturnType = objRow.Item("returntype")
-          objComponent.FunctionID = objRow.Item("functionid").ToString
-          objComponent.OperatorID = objRow.Item("operatorid").ToString
-          objComponent.TableID = objRow.Item("tableid").ToString
-          objComponent.ColumnID = objRow.Item("columnid").ToString
-          objComponent.ChildRowDetails.RowSelection = objRow.Item("columnaggregiatetype").ToString
-          objComponent.ChildRowDetails.RowNumber = objRow.Item("specificline").ToString
-          objComponent.ChildRowDetails.FilterID = objRow.Item("columnfilterid").ToString
-          objComponent.ChildRowDetails.OrderID = objRow.Item("columnorderid").ToString
-          objComponent.IsColumnByReference = objRow.Item("iscolumnbyreference").ToString
-          objComponent.CalculationID = objRow.Item("calculationid").ToString
-          objComponent.ValueType = objRow.Item("valuetype").ToString
+    '    '   Debug.Assert(Not objExpression.ID = 41839)
+    '    '    Debug.Assert(Not objExpression.ID = 41814, False)
 
-          Select Case objComponent.ValueType
-            Case ScriptDB.ComponentValueTypes.Date
-              objComponent.ValueDate = objRow.Item("valuedate")
-            Case ScriptDB.ComponentValueTypes.Logic
-              objComponent.ValueLogic = objRow.Item("valuelogic").ToString
-            Case ScriptDB.ComponentValueTypes.Numeric
-              objComponent.ValueNumeric = objRow.Item("valuenumeric").ToString
-            Case ScriptDB.ComponentValueTypes.String
-              objComponent.ValueString = objRow.Item("valuestring").ToString
-          End Select
-
-          objComponent.LookupTableID = objRow.Item("lookuptableid").ToString
-          objComponent.LookupColumnID = objRow.Item("lookupcolumnid").ToString
-
-          objComponent.Root = objExpression.Root
-          objComponent.BaseExpression = objExpression.BaseExpression
-
-          Select Case objComponent.SubType
-
-            Case ScriptDB.ComponentTypes.Function
-              objComponent.Objects = Things.LoadComponents(objComponent, ScriptDB.ComponentTypes.Function)
-            Case ScriptDB.ComponentTypes.Expression, ScriptDB.ComponentTypes.Calculation
-              objComponent.Objects = Things.LoadComponents(objComponent, objComponent.SubType)
-
-          End Select
-
-          objObjects.Add(objComponent)
-        Next
+    '    '   Debug.Assert(objExpression.Name <> "srp")
 
 
-      Catch ex As Exception
-        Globals.ErrorLog.Add(SystemFramework.ErrorHandler.Section.LoadingData, String.Empty, SystemFramework.ErrorHandler.Severity.Error, ex.Message, String.Empty)
+    '    Select Case Type
+    '      Case ScriptDB.ComponentTypes.Function
+    '        objParameters.Add("@expressionid", objExpression.ID)
+    '        objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_getcomponent_function", objParameters)
 
-      Finally
-        objDataset = Nothing
-        objRow = Nothing
+    '      Case ScriptDB.ComponentTypes.Calculation
+    '        objParameters.Add("@expressionid", objExpression.CalculationID)
+    '        'objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_getcomponent_calculation", objParameters)
+    '        objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_getcomponent_base", objParameters)
 
-      End Try
+    '        '   Case ScriptDB.ComponentTypes.Expression
+    '        '    objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_getcomponent_base", objParameters)
 
-      LoadComponents = objObjects
+    '      Case Else
+    '        objParameters.Add("@expressionid", objExpression.ID)
+    '        objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_getcomponent_base", objParameters)
+    '    End Select
 
+    '    For Each objRow In objDataset.Tables(0).Rows
+    '      objComponent = New Things.Component
+    '      objComponent.ID = objRow.Item("componentid").ToString
+    '      objComponent.SubType = objRow.Item("subtype")
+    '      objComponent.Name = objRow.Item("name")
+    '      objComponent.ReturnType = objRow.Item("returntype")
+    '      objComponent.FunctionID = objRow.Item("functionid").ToString
+    '      objComponent.OperatorID = objRow.Item("operatorid").ToString
+    '      objComponent.TableID = objRow.Item("tableid").ToString
+    '      objComponent.ColumnID = objRow.Item("columnid").ToString
+    '      objComponent.ChildRowDetails.RowSelection = objRow.Item("columnaggregiatetype").ToString
+    '      objComponent.ChildRowDetails.RowNumber = objRow.Item("specificline").ToString
+    '      objComponent.ChildRowDetails.FilterID = objRow.Item("columnfilterid").ToString
+    '      objComponent.ChildRowDetails.OrderID = objRow.Item("columnorderid").ToString
+    '      objComponent.IsColumnByReference = objRow.Item("iscolumnbyreference").ToString
+    '      objComponent.CalculationID = objRow.Item("calculationid").ToString
+    '      objComponent.ValueType = objRow.Item("valuetype").ToString
 
-    End Function
+    '      Select Case objComponent.ValueType
+    '        Case ScriptDB.ComponentValueTypes.Date
+    '          objComponent.ValueDate = objRow.Item("valuedate")
+    '        Case ScriptDB.ComponentValueTypes.Logic
+    '          objComponent.ValueLogic = objRow.Item("valuelogic").ToString
+    '        Case ScriptDB.ComponentValueTypes.Numeric
+    '          objComponent.ValueNumeric = objRow.Item("valuenumeric").ToString
+    '        Case ScriptDB.ComponentValueTypes.String
+    '          objComponent.ValueString = objRow.Item("valuestring").ToString
+    '      End Select
 
-    Public Sub PopulateTable(ByRef Table As Things.Table)
+    '      objComponent.LookupTableID = objRow.Item("lookuptableid").ToString
+    '      objComponent.LookupColumnID = objRow.Item("lookupcolumnid").ToString
 
-      Dim objDataset As DataSet
-      Dim objRow As DataRow
-      Dim objParameters As New Connectivity.Parameters
+    '      objComponent.Root = objExpression.Root
+    '      objComponent.BaseExpression = objExpression.BaseExpression
 
-      Dim objColumn As Things.Column
-      Dim objRelation As Things.Relation
-      Dim objExpression As Things.Expression
-      Dim objView As Things.View
-      Dim objValidation As Things.Validation
-      Dim objTableOrder As Things.TableOrder
-      Dim objDescription As Things.RecordDescription
-      Dim objMask As Things.Mask
+    '      Select Case objComponent.SubType
 
-      Table.Objects.Parent = Table
-      Table.Objects.Root = Table.Root
+    '        Case ScriptDB.ComponentTypes.Function
+    '          objComponent.Objects = Things.LoadComponents(objComponent, ScriptDB.ComponentTypes.Function)
+    '        Case ScriptDB.ComponentTypes.Expression, ScriptDB.ComponentTypes.Calculation
+    '          objComponent.Objects = Things.LoadComponents(objComponent, objComponent.SubType)
 
-      Try
+    '      End Select
 
-        ' Populate relations
-        objParameters.Add("@tableid", Table.ID)
-        objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_getrelations", objParameters)
-        For Each objRow In objDataset.Tables(0).Rows
-          objRelation = New Things.Relation
-          objRelation.RelationshipType = objRow.Item("relationship").ToString
-
-          'Select Case objRelation.RelationshipType
-          '  Case ScriptDB.RelationshipType.Parent
-          '    objRelation.Parent = Table.Objects.Parent
-
-          '  Case ScriptDB.RelationshipType.Child
-          '    objRelation.Parent = Table
-
-          'End Select
-
-          objRelation.Parent = Table
-          objRelation.ParentID = objRow.Item("parentid").ToString
-          objRelation.ChildID = objRow.Item("childid").ToString
-          objRelation.Name = objRow.Item("name").ToString
-          Table.Objects.Add(objRelation)
-        Next
-
-        ' Populate columns
-        objParameters.Clear()
-        objParameters.Add("@parentid", Table.ID)
-        objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_getcolumns", objParameters)
-        For Each objRow In objDataset.Tables(0).Rows
-
-          objColumn = New Things.Column
-          objColumn.ID = objRow.Item("id").ToString
-          objColumn.Parent = Table
-          objColumn.Name = objRow.Item("name").ToString
-          objColumn.SchemaName = "dbo"
-          objColumn.Description = objRow.Item("description").ToString
-          objColumn.Table = Table
-          objColumn.State = objRow.Item("state")
-
-          objColumn.DefaultCalcID = NullSafe(objRow, "defaultcalcid", 0).ToString
-          objColumn.DefaultValue = objRow.Item("defaultvalue").ToString
-          objColumn.CalcID = objRow.Item("calcid").ToString
-          objColumn.DataType = objRow.Item("datatype")
-          objColumn.Size = objRow.Item("size")
-          objColumn.Decimals = objRow.Item("decimals")
-          objColumn.Audit = objRow.Item("audit")
-          objColumn.Mandatory = objRow.Item("mandatory")
-          objColumn.Multiline = objRow.Item("multiline")
-          objColumn.IsReadOnly = objRow.Item("isreadonly")
-          objColumn.CaseType = objRow.Item("case").ToString
-          objColumn.CalculateIfEmpty = objRow.Item("calculateifempty")
-          objColumn.TrimType = NullSafe(objRow, "trimming", 0).ToString
-          objColumn.Alignment = objRow.Item("alignment").ToString
-          objColumn.UniqueType = objRow.Item("uniquechecktype").ToString
-
-          Table.Objects.Add(objColumn)
-        Next
-
-        ' Orders
-        objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_getorders", objParameters)
-        For Each objRow In objDataset.Tables(0).Rows
-          objTableOrder = New Things.TableOrder
-          objTableOrder.ID = objRow.Item("orderid").ToString
-          objTableOrder.Parent = Table
-          objTableOrder.Name = objRow.Item("name").ToString
-          objTableOrder.SubType = objRow.Item("type").ToString
-          Things.PopulateOrderItems(objTableOrder)
-          Table.Objects.Add(objTableOrder)
-        Next
-        objDataset.Dispose()
-        objDataset = Nothing
-
-        ' Populate expressions
-        objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_getexpressions", objParameters)
-        For Each objRow In objDataset.Tables(0).Rows
-
-          objExpression = New Things.Expression
-          objExpression.ID = objRow.Item("id").ToString
-          objExpression.Parent = Table
-          objExpression.Name = objRow.Item("name").ToString
-          objExpression.ExpressionType = objRow.Item("type").ToString
-          objExpression.SchemaName = "dbo"
-          objExpression.Description = objRow.Item("description").ToString
-          objExpression.State = objRow.Item("state")
-          objExpression.ReturnType = objRow.Item("returntype")
-          objExpression.Size = objRow.Item("size")
-          objExpression.Decimals = objRow.Item("decimals")
-          objExpression.BaseTable = Table
-          objExpression.BaseExpression = objExpression
-
-          'Get all child objects for this expression
-          objExpression.Objects = Things.LoadComponents(objExpression, ScriptDB.ComponentTypes.Expression)
-          Table.Objects.Add(objExpression)
-        Next
-
-        ' Views
-        objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_getviews", objParameters)
-        For Each objRow In objDataset.Tables(0).Rows
-          objView = New Things.View
-          objView.ID = objRow.Item("id").ToString
-          objView.Parent = Table
-          objView.Name = objRow.Item("name").ToString
-          objView.Description = objRow.Item("description").ToString
-          objView.Filter = Table.GetObject(Things.Type.Expression, objRow.Item("filterid").ToString)
-          Things.PopulateViewItems(objView)
-          Table.Objects.Add(objView)
-        Next
-
-        ' Validations
-        objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_getvalidations", objParameters)
-        For Each objRow In objDataset.Tables(0).Rows
-          objValidation = New Things.Validation
-          objValidation.ValidationType = objRow.Item("validationtype").ToString
-          objValidation.Column = CType(Table, Things.Table).Column(objRow.Item("columnid").ToString)
-          Table.Objects.Add(objValidation)
-        Next
-
-        Debug.Assert(Table.Name <> "Absence")
-
-        ' Record Description
-        objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_getdescriptions", objParameters)
-        For Each objRow In objDataset.Tables(0).Rows
-
-          objDescription = New Things.RecordDescription
-          objDescription.ID = objRow.Item("id").ToString
-          objDescription.Parent = Table
-          objDescription.Name = objRow.Item("name").ToString
-          objDescription.SchemaName = "dbo"
-          objDescription.Description = objRow.Item("description").ToString
-          objDescription.State = objRow.Item("state")
-          objDescription.ReturnType = objRow.Item("returntype")
-          objDescription.Size = objRow.Item("size")
-          objDescription.Decimals = objRow.Item("decimals")
-          objDescription.BaseTable = Table
-          objDescription.BaseExpression = objDescription
-
-          'Get all child objects for this expression
-          objDescription.Objects = Things.LoadComponents(objDescription, ScriptDB.ComponentTypes.Expression)
-
-          Table.Objects.Add(objDescription)
-        Next
-
-        ' Masks
-        objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_getmasks", objParameters)
-        For Each objRow In objDataset.Tables(0).Rows
-          objMask = New Things.Mask
-          objMask.ID = objRow.Item("id").ToString
-          objMask.Parent = Table
-          objMask.Name = objRow.Item("name").ToString
-          objMask.AssociatedColumn = Table.Column(objRow.Item("columnid").ToString)
-          objMask.SchemaName = "dbo"
-          objMask.Description = objRow.Item("description").ToString
-          objMask.State = objRow.Item("state")
-          objMask.ReturnType = objRow.Item("returntype")
-          objMask.Size = objRow.Item("size")
-          objMask.Decimals = objRow.Item("decimals")
-          objMask.BaseTable = Table
-          objMask.BaseExpression = objMask
-
-          'Get all child objects for this expression
-          objMask.Objects = Things.LoadComponents(objMask, ScriptDB.ComponentTypes.Expression)
-          Table.Objects.Add(objMask)
-        Next
+    '      objObjects.Add(objComponent)
+    '    Next
 
 
+    '  Catch ex As Exception
+    '    Globals.ErrorLog.Add(SystemFramework.ErrorHandler.Section.LoadingData, String.Empty, SystemFramework.ErrorHandler.Severity.Error, ex.Message, String.Empty)
 
-      Catch ex As Exception
+    '  Finally
+    '    objDataset = Nothing
+    '    objRow = Nothing
 
-      Finally
-        objDataset = Nothing
-        objRow = Nothing
+    '  End Try
 
-      End Try
+    '  LoadComponents = objObjects
 
-    End Sub
+
+    'End Function
+
+    'Public Sub PopulateTable(ByVal table As Things.Table)
+
+    '  Dim objDataset As DataSet
+    '  Dim objRow As DataRow
+    '  Dim objParameters As New Connectivity.Parameters
+
+    '  Dim objColumn As Things.Column
+    '  Dim objRelation As Things.Relation
+    '  Dim objExpression As Things.Expression
+    '  Dim objView As Things.View
+    '  Dim objValidation As Things.Validation
+    '  Dim objTableOrder As Things.TableOrder
+    '  Dim objDescription As Things.RecordDescription
+    '  Dim objMask As Things.Mask
+
+    '  'table.Objects.Parent = table
+    '  'table.Objects.Root = table.Root
+
+    '  Try
+
+    '    ' Populate relations
+    '    objParameters.Add("@tableid", table.ID)
+    '    objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_getrelations", objParameters)
+    '    For Each objRow In objDataset.Tables(0).Rows
+    '      objRelation = New Things.Relation
+    '      objRelation.RelationshipType = objRow.Item("relationship").ToString
+
+    '      'Select Case objRelation.RelationshipType
+    '      '  Case ScriptDB.RelationshipType.Parent
+    '      '    objRelation.Parent = Table.Objects.Parent
+
+    '      '  Case ScriptDB.RelationshipType.Child
+    '      '    objRelation.Parent = Table
+
+    '      'End Select
+
+    '      objRelation.Parent = table
+    '      objRelation.ParentID = objRow.Item("parentid").ToString
+    '      objRelation.ChildID = objRow.Item("childid").ToString
+    '      objRelation.Name = objRow.Item("name").ToString
+    '      table.Relations.Add(objRelation)
+    '    Next
+
+    '    ' Populate columns
+    '    objParameters.Clear()
+    '    objParameters.Add("@parentid", table.ID)
+    '    objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_getcolumns", objParameters)
+    '    For Each objRow In objDataset.Tables(0).Rows
+
+    '      objColumn = New Things.Column
+    '      objColumn.ID = objRow.Item("id").ToString
+    '      objColumn.Parent = table
+    '      objColumn.Name = objRow.Item("name").ToString
+    '      objColumn.SchemaName = "dbo"
+    '      objColumn.Description = objRow.Item("description").ToString
+    '      objColumn.Table = table
+    '      objColumn.State = objRow.Item("state")
+
+    '      objColumn.DefaultCalcID = NullSafe(objRow, "defaultcalcid", 0).ToString
+    '      objColumn.DefaultValue = objRow.Item("defaultvalue").ToString
+    '      objColumn.CalcID = objRow.Item("calcid").ToString
+    '      objColumn.DataType = objRow.Item("datatype")
+    '      objColumn.Size = objRow.Item("size")
+    '      objColumn.Decimals = objRow.Item("decimals")
+    '      objColumn.Audit = objRow.Item("audit")
+    '      objColumn.Mandatory = objRow.Item("mandatory")
+    '      objColumn.Multiline = objRow.Item("multiline")
+    '      objColumn.IsReadOnly = objRow.Item("isreadonly")
+    '      objColumn.CaseType = objRow.Item("case").ToString
+    '      objColumn.CalculateIfEmpty = objRow.Item("calculateifempty")
+    '      objColumn.TrimType = NullSafe(objRow, "trimming", 0).ToString
+    '      objColumn.Alignment = objRow.Item("alignment").ToString
+    '      objColumn.UniqueType = objRow.Item("uniquechecktype").ToString
+
+    '      table.Columns.Add(objColumn)
+    '    Next
+
+    '    ' Orders
+    '    objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_getorders", objParameters)
+    '    For Each objRow In objDataset.Tables(0).Rows
+    '      objTableOrder = New Things.TableOrder
+    '      objTableOrder.ID = objRow.Item("orderid").ToString
+    '      objTableOrder.Parent = table
+    '      objTableOrder.Name = objRow.Item("name").ToString
+    '      objTableOrder.SubType = objRow.Item("type").ToString
+    '      Things.PopulateOrderItems(objTableOrder)
+    '      table.TableOrders.Add(objTableOrder)
+    '    Next
+    '    objDataset.Dispose()
+    '    objDataset = Nothing
+
+    '    ' Populate expressions
+    '    objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_getexpressions", objParameters)
+    '    For Each objRow In objDataset.Tables(0).Rows
+
+    '      objExpression = New Things.Expression
+    '      objExpression.ID = objRow.Item("id").ToString
+    '      objExpression.Parent = table
+    '      objExpression.Name = objRow.Item("name").ToString
+    '      objExpression.ExpressionType = objRow.Item("type").ToString
+    '      objExpression.SchemaName = "dbo"
+    '      objExpression.Description = objRow.Item("description").ToString
+    '      objExpression.State = objRow.Item("state")
+    '      objExpression.ReturnType = objRow.Item("returntype")
+    '      objExpression.Size = objRow.Item("size")
+    '      objExpression.Decimals = objRow.Item("decimals")
+    '      objExpression.BaseTable = table
+    '      objExpression.BaseExpression = objExpression
+
+    '      'Get all child objects for this expression
+    '      objExpression.Objects = Things.LoadComponents(objExpression, ScriptDB.ComponentTypes.Expression)
+    '      table.Expressions.Add(objExpression)
+    '    Next
+
+    '    ' Views
+    '    objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_getviews", objParameters)
+    '    For Each objRow In objDataset.Tables(0).Rows
+    '      objView = New Things.View
+    '      objView.ID = objRow.Item("id").ToString
+    '      objView.Parent = table
+    '      objView.Name = objRow.Item("name").ToString
+    '      objView.Description = objRow.Item("description").ToString
+    '      objView.Filter = table.Expressions.GetById(objRow.Item("filterid").ToString)
+    '      Things.PopulateViewItems(objView)
+    '      table.Views.Add(objView)
+    '    Next
+
+    '    ' Validations
+    '    objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_getvalidations", objParameters)
+    '    For Each objRow In objDataset.Tables(0).Rows
+    '      objValidation = New Things.Validation
+    '      objValidation.ValidationType = objRow.Item("validationtype").ToString
+    '      objValidation.Column = table.Columns.GetById(objRow.Item("columnid").ToString)
+    '      table.Validations.Add(objValidation)
+    '    Next
+
+    '    ' Record Description
+    '    objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_getdescriptions", objParameters)
+    '    For Each objRow In objDataset.Tables(0).Rows
+
+    '      objDescription = New Things.RecordDescription
+    '      objDescription.ID = objRow.Item("id").ToString
+    '      objDescription.Parent = table
+    '      objDescription.Name = objRow.Item("name").ToString
+    '      objDescription.SchemaName = "dbo"
+    '      objDescription.Description = objRow.Item("description").ToString
+    '      objDescription.State = objRow.Item("state")
+    '      objDescription.ReturnType = objRow.Item("returntype")
+    '      objDescription.Size = objRow.Item("size")
+    '      objDescription.Decimals = objRow.Item("decimals")
+    '      objDescription.BaseTable = table
+    '      objDescription.BaseExpression = objDescription
+
+    '      'Get all child objects for this expression
+    '      objDescription.Objects = Things.LoadComponents(objDescription, ScriptDB.ComponentTypes.Expression)
+
+    '      table.RecordDescription = objDescription
+    '    Next
+
+    '    ' Masks
+    '    objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_getmasks", objParameters)
+    '    For Each objRow In objDataset.Tables(0).Rows
+    '      objMask = New Things.Mask
+    '      objMask.ID = objRow.Item("id").ToString
+    '      objMask.Parent = table
+    '      objMask.Name = objRow.Item("name").ToString
+    '      objMask.AssociatedColumn = table.Columns.GetById(objRow.Item("columnid").ToString)
+    '      objMask.SchemaName = "dbo"
+    '      objMask.Description = objRow.Item("description").ToString
+    '      objMask.State = objRow.Item("state")
+    '      objMask.ReturnType = objRow.Item("returntype")
+    '      objMask.Size = objRow.Item("size")
+    '      objMask.Decimals = objRow.Item("decimals")
+    '      objMask.BaseTable = table
+    '      objMask.BaseExpression = objMask
+
+    '      'Get all child objects for this expression
+    '      objMask.Objects = Things.LoadComponents(objMask, ScriptDB.ComponentTypes.Expression)
+
+    '      table.Masks.Add(objMask)
+    '    Next
+
+
+
+    '  Catch ex As Exception
+
+    '  Finally
+    '    objDataset = Nothing
+    '    objRow = Nothing
+
+    '  End Try
+
+    'End Sub
 
     Public Sub PopulateViewItems(ByRef objView As Things.View)
 
@@ -681,9 +674,9 @@
         objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_getviewitems", objParameters)
 
         For Each objRow In objDataset.Tables(0).Rows
-          objColumn = objView.Parent.GetObject(Things.Type.Column, objRow.Item("columnid").ToString)
+          objColumn = CType(objView.Parent, Table).Columns.GetById(objRow.Item("columnid").ToString)
           If Not objColumn Is Nothing Then
-            objView.Objects.Add(objColumn)
+            objView.Columns.Add(objColumn)
           End If
         Next
 
@@ -718,9 +711,9 @@
           objOrderItem.ColumnType = objRow.Item("type")
           objOrderItem.Sequence = objRow.Item("sequence")
           objOrderItem.Ascending = objRow.Item("ascending")
-          objOrderItem.Column = objOrder.Parent.GetObject(Things.Type.Column, objRow.Item("columnid").ToString)
+          objOrderItem.Column = CType(objOrder.Parent, Table).Columns.GetById(objRow.Item("columnid").ToString)
 
-          objOrder.Objects.Add(objOrderItem)
+          objOrder.TableOrderItems.Add(objOrderItem)
         Next
 
 
@@ -735,29 +728,22 @@
 
     End Sub
 
-    Public Function PopulateUtilities(ByRef Type As Things.Type) As Boolean
+    Public Function PopulateUtilities(ByVal Type As Things.Type) As Boolean
 
-      Dim objDataset As DataSet
-      Dim objRow As DataRow
-      Dim objParameters As New Connectivity.Parameters
       Dim bOK As Boolean = True
 
-      Dim objGlobalModify As Things.GlobalModify
-
       Try
+        Dim ds As DataSet = Globals.MetadataDB.ExecStoredProcedure("spweb_getglobals", New Connectivity.Parameters)
 
-        ' Populate relations
-        ' objParameters.Add("@type", CInt(Type))
-        objDataset = Globals.MetadataDB.ExecStoredProcedure("spweb_getglobals", objParameters)
-        For Each objRow In objDataset.Tables(0).Rows
-          objGlobalModify = New Things.GlobalModify
-          objGlobalModify.Name = objRow("name").ToString
-          objGlobalModify.Description = objRow("description").ToString
-          '          objGlobalModify.u = objRow("subtype")
-          PopulateDataModifyItems(objGlobalModify)
+        For Each row As DataRow In ds.Tables(0).Rows
 
+          Dim modify As New Things.GlobalModify
+          modify.Name = row("name").ToString
+          modify.Description = row("description").ToString
+          PopulateDataModifyItems(modify)
 
-          Globals.Things.Add(objGlobalModify)
+          'TODO: ADD BACK IN
+          ' Globals.Things.Add(objGlobalModify)
         Next
 
       Catch ex As Exception
@@ -770,32 +756,22 @@
 
     Public Sub PopulateDataModifyItems(ByRef objDataModify As Things.GlobalModify)
 
-      Dim objObjects As New Things.Collections.Generic
-      Dim objItem As Things.GlobalModifyItem
-      Dim objDataset As DataSet
-      Dim objRow As DataRow
-      Dim objParameters As New Connectivity.Parameters
+      Dim params As New Connectivity.Parameters
+      params.Add("@id", objDataModify.ID)
+      Dim ds As DataSet = Globals.MetadataDB.ExecStoredProcedure("spweb_getglobal", params)
 
-      objObjects.Parent = objDataModify
+      For Each row As DataRow In ds.Tables(1).Rows
 
-      Try
+        Dim objItem As New Things.GlobalModifyItem
+        objItem.CalculationID = row.Item("calcid").ToString
+        objItem.Value = row.Item("value").ToString
 
-        objParameters.Add("@id", objDataModify.ID)
-        objDataset = Globals.MetadataDB.ExecStoredProcedure("spweb_getglobal", objParameters)
-        For Each objRow In objDataset.Tables(1).Rows
-          objItem = New Things.GlobalModifyItem
-          objItem.CalculationID = objRow.Item("calcid").ToString
-          objItem.Value = objRow.Item("value").ToString
-          objDataModify.Objects.Add(objItem)
-        Next
-
-      Catch ex As Exception
-
-      End Try
+        objDataModify.GlobalModifyItems.Add(objItem)
+      Next
 
     End Sub
 
-    Private Function NullSafe(ByRef ObjectData As System.Data.DataRow, ByRef ColumnName As String, ByRef DefaultValue As Object)
+    Private Function NullSafe(ByRef ObjectData As System.Data.DataRow, ByVal ColumnName As String, ByVal DefaultValue As Object) As Object
 
       If ObjectData.IsNull(ColumnName) Then
         Return DefaultValue
@@ -804,9 +780,6 @@
       End If
 
     End Function
-
-
-
 
   End Module
 

@@ -16,8 +16,8 @@
     Public RecordInsert As Boolean
     Public RecordUpdate As Boolean
     Public RecordDelete As Boolean
-    Public SubjectContentID
-    Public BodyContentID
+    Public SubjectContentID As Object
+    Public BodyContentID As Object
     Public DateAmendment As Date
 
     Public Overrides ReadOnly Property Type As Enums.Type

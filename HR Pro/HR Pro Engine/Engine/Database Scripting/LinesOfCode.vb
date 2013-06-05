@@ -58,16 +58,13 @@ Namespace ScriptDB
 
     Public Function ToArray() As String()
 
-      Dim returnArrayList As ArrayList
-      Dim objCodeElement As ScriptDB.CodeElement
+      Dim returnArrayList As New List(Of String)
 
-      returnArrayList = New ArrayList
-
-      For Each objCodeElement In Me.Items
+      For Each objCodeElement As ScriptDB.CodeElement In Me.Items
         returnArrayList.Add(objCodeElement.Code)
       Next
 
-            ToArray = returnArrayList.ToArray(GetType(String))
+      Return returnArrayList.ToArray()
 
     End Function
 

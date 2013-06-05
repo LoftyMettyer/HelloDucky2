@@ -66,6 +66,138 @@ Namespace Things.Collections
 
     End Sub
 
+    Public ReadOnly Property Objects(ByVal Type As Things.Type) As Things.Collections.Generic Implements iCollection_Base.Objects
+      Get
+
+        Dim objCollection As Things.Collections.Generic
+        Dim objObject As Things.Base
+
+        objCollection = New Things.Collections.Generic
+        For Each objObject In Me.Items
+          If objObject.Type = [Type] Then
+            objCollection.Add(objObject)
+          End If
+        Next
+
+        Return objCollection
+      End Get
+
+    End Property
+
+    Public Function GetObject(ByVal [Type] As Things.Type, ByVal [ID] As HCMGuid) As Things.Base
+
+      Dim objChild As Things.Base
+
+      For Each objChild In MyBase.Items
+        If objChild.ID = ID And objChild.Type = [Type] Then
+          Return objChild
+        End If
+      Next
+
+      Return Nothing
+
+    End Function
+
+    Public Sub Add1(ByRef [Object] As Things.Base) Implements COMInterfaces.iCollection_Base.Add
+      [Object].Parent = Me.Parent
+      Me.Items.Add([Object])
+    End Sub
+
+#Region "System.Xml.Serialization.IXmlSerializable"
+
+    'Public ReadOnly Property ToXML As String
+    '  Get
+
+    '    Dim xmlDoc As System.Xml.XmlDocument = New System.Xml.XmlDocument()
+    '    Dim xmlSerializer As System.Xml.Serialization.XmlSerializer
+
+    '    Try
+
+    '      xmlSerializer = New System.Xml.Serialization.XmlSerializer(Me.GetType)
+
+    '      'Using xmlStream As System.IO.MemoryStream = New System.IO.MemoryStream()
+    '      '  xmlSerializer.Serialize(xmlStream, Me)
+    '      '  xmlStream.Position = 0
+
+    '      '  xmlDoc.Load(xmlStream)
+    '      '  Return xmlDoc.InnerXml
+    '      'End Using
+
+    '      Using objStringWriter As System.IO.StringWriter = New System.IO.StringWriter
+    '        xmlSerializer.Serialize(objStringWriter, Me)
+    '        'Debug.Print(objStringWriter.ToString)
+    '        Return objStringWriter.ToString
+    '      End Using
+
+
+    '    Catch ex As Exception
+    '      Debug.Print(ex.Message)
+
+    '    End Try
+
+    '  End Get
+    'End Property
+
+    Public Function GetSchema() As System.Xml.Schema.XmlSchema Implements System.Xml.Serialization.IXmlSerializable.GetSchema
+      Return Nothing
+    End Function
+
+    Public Sub ReadXml(ByVal reader As System.Xml.XmlReader) Implements System.Xml.Serialization.IXmlSerializable.ReadXml
+    End Sub
+
+    Public Sub WriteXml(ByVal writer As System.Xml.XmlWriter) Implements System.Xml.Serialization.IXmlSerializable.WriteXml
+
+      Dim s As System.Xml.Serialization.XmlSerializer
+
+      If Not Me.Items Is Nothing Then
+        For Each objObject As Things.Base In Me.Items
+          s = New System.Xml.Serialization.XmlSerializer(objObject.GetType)
+          s.Serialize(writer, objObject)
+        Next
+      End If
+
+    End Sub
+
+    Public Sub ToXML(ByVal fileName As String)
+      Dim serializer As New XmlSerializer(Me.GetType())
+      Dim namespaces As New XmlSerializerNamespaces()
+      namespaces.Add("", "")
+      Using stream As New FileStream(fileName, FileMode.Create)
+        serializer.Serialize(stream, Me, namespaces)
+      End Using
+    End Sub
+
+#End Region
+
+    'TODO: REMOVE
+    '#Region "iClonable interface"
+
+    '    Public Function Clone() As Object Implements System.ICloneable.Clone
+
+    '      Dim NewList As Object = Activator.CreateInstance(Me.GetType)
+
+    '      If Me.Items.Count > 0 Then
+    '        Dim ICloneType As System.Type = Me(0).GetType.GetInterface("ICloneable", True)
+    '        If Not (ICloneType Is Nothing) Then
+    '          For Each Value As Things.Base In Me
+    '            NewList.Add(CType(Value, ICloneable).Clone)
+    '          Next
+    '        Else
+    '          Dim MethodsList() As System.Reflection.MethodInfo = Me(0).GetType.GetMethods
+    '          For Each Value As Things.Base In Me
+    '            NewList.Add(Value)
+    '          Next
+    '        End If
+    '        Return NewList
+    '      Else
+    '        Return NewList
+    '      End If
+
+    '    End Function
+
+    '#End Region
+
+    'TODO: REMOVE
     'Public Root As iSystemObject
 
     'Public Sub New()
@@ -167,138 +299,6 @@ Namespace Things.Collections
 
     '  End Get
     'End Property
-
-    Public ReadOnly Property Objects(ByVal Type As Things.Type) As Things.Collections.Generic Implements iCollection_Base.Objects
-      Get
-
-        Dim objCollection As Things.Collections.Generic
-        Dim objObject As Things.Base
-
-        objCollection = New Things.Collections.Generic
-        For Each objObject In Me.Items
-          If objObject.Type = [Type] Then
-            objCollection.Add(objObject)
-          End If
-        Next
-
-        Return objCollection
-      End Get
-
-    End Property
-
-    Public Function GetObject(ByVal [Type] As Things.Type, ByVal [ID] As HCMGuid) As Things.Base
-
-      Dim objChild As Things.Base
-
-      For Each objChild In MyBase.Items
-        If objChild.ID = ID And objChild.Type = [Type] Then
-          Return objChild
-        End If
-      Next
-
-      Return Nothing
-
-    End Function
-
-#Region "System.Xml.Serialization.IXmlSerializable"
-
-    'Public ReadOnly Property ToXML As String
-    '  Get
-
-    '    Dim xmlDoc As System.Xml.XmlDocument = New System.Xml.XmlDocument()
-    '    Dim xmlSerializer As System.Xml.Serialization.XmlSerializer
-
-    '    Try
-
-    '      xmlSerializer = New System.Xml.Serialization.XmlSerializer(Me.GetType)
-
-    '      'Using xmlStream As System.IO.MemoryStream = New System.IO.MemoryStream()
-    '      '  xmlSerializer.Serialize(xmlStream, Me)
-    '      '  xmlStream.Position = 0
-
-    '      '  xmlDoc.Load(xmlStream)
-    '      '  Return xmlDoc.InnerXml
-    '      'End Using
-
-    '      Using objStringWriter As System.IO.StringWriter = New System.IO.StringWriter
-    '        xmlSerializer.Serialize(objStringWriter, Me)
-    '        'Debug.Print(objStringWriter.ToString)
-    '        Return objStringWriter.ToString
-    '      End Using
-
-
-    '    Catch ex As Exception
-    '      Debug.Print(ex.Message)
-
-    '    End Try
-
-    '  End Get
-    'End Property
-
-    Public Function GetSchema() As System.Xml.Schema.XmlSchema Implements System.Xml.Serialization.IXmlSerializable.GetSchema
-      Return Nothing
-    End Function
-
-    Public Sub ReadXml(ByVal reader As System.Xml.XmlReader) Implements System.Xml.Serialization.IXmlSerializable.ReadXml
-    End Sub
-
-    Public Sub WriteXml(ByVal writer As System.Xml.XmlWriter) Implements System.Xml.Serialization.IXmlSerializable.WriteXml
-
-      Dim s As System.Xml.Serialization.XmlSerializer
-
-      If Not Me.Items Is Nothing Then
-        For Each objObject As Things.Base In Me.Items
-          s = New System.Xml.Serialization.XmlSerializer(objObject.GetType)
-          s.Serialize(writer, objObject)
-        Next
-      End If
-
-    End Sub
-
-    Public Sub ToXML(ByVal fileName As String)
-      Dim serializer As New XmlSerializer(Me.GetType())
-      Dim namespaces As New XmlSerializerNamespaces()
-      namespaces.Add("", "")
-      Using stream As New FileStream(fileName, FileMode.Create)
-        serializer.Serialize(stream, Me, namespaces)
-      End Using
-    End Sub
-
-#End Region
-
-    '#Region "iClonable interface"
-
-    '    Public Function Clone() As Object Implements System.ICloneable.Clone
-
-    '      Dim NewList As Object = Activator.CreateInstance(Me.GetType)
-
-    '      If Me.Items.Count > 0 Then
-    '        Dim ICloneType As System.Type = Me(0).GetType.GetInterface("ICloneable", True)
-    '        If Not (ICloneType Is Nothing) Then
-    '          For Each Value As Things.Base In Me
-    '            NewList.Add(CType(Value, ICloneable).Clone)
-    '          Next
-    '        Else
-    '          Dim MethodsList() As System.Reflection.MethodInfo = Me(0).GetType.GetMethods
-    '          For Each Value As Things.Base In Me
-    '            NewList.Add(Value)
-    '          Next
-    '        End If
-    '        Return NewList
-    '      Else
-    '        Return NewList
-    '      End If
-
-    '    End Function
-
-    '#End Region
-
-
-    Public Sub Add1(ByRef [Object] As Things.Base) Implements COMInterfaces.iCollection_Base.Add
-      [Object].Parent = Me.Parent
-      Me.Items.Add([Object])
-    End Sub
   End Class
-
 
 End Namespace

@@ -129,7 +129,9 @@ Public Class HCM
 
   Public ReadOnly Property ReturnThings As Things.Collections.Generic Implements COMInterfaces.iSystemManager.Things
     Get
-      Return Globals.Things
+      'TODO: Global things is tables but global modify things are also being added????
+      Return New Things.Collections.Generic
+      'Return Globals.Things
     End Get
   End Property
 

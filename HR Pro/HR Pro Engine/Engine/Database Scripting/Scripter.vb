@@ -35,14 +35,12 @@ Namespace ScriptDB
 
     Public Function DropViews() As Boolean Implements COMInterfaces.iCommitDB.DropViews
 
-      Dim objTable As Things.Table
-      Dim objView As Things.View
       Dim bOK As Boolean = True
 
       Try
-        For Each objTable In Globals.Things
+        For Each objTable As Things.Table In Globals.Tables
 
-          For Each objView In objTable.Objects(Things.Type.View)
+          For Each objView As Things.View In objTable.Views
             DropView(objTable.SchemaName, objView.Name)
           Next
         Next
@@ -63,7 +61,7 @@ Namespace ScriptDB
       Dim bOK As Boolean = True
 
       Try
-        For Each objTable In Globals.Things
+        For Each objTable In Globals.Tables
           DropView("dbo", objTable.Name)
         Next
 
@@ -86,7 +84,7 @@ Namespace ScriptDB
 
       Try
 
-        For Each objTable In Globals.Things
+        For Each objTable In Globals.Tables
 
           Select Case objTable.State
 
@@ -122,7 +120,7 @@ Namespace ScriptDB
 
 
           ' Add any relations
-          For Each objRelation In objTable.Objects(Things.Type.Relation)
+          For Each objRelation In objTable.Relations
 
             If objRelation.RelationshipType = ScriptDB.RelationshipType.Parent Then
               sSQL = String.Format("IF NOT EXISTS ( SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE [TABLE_NAME]='{0}' AND [COLUMN_NAME] ='ID_{1}')" & vbNewLine & _
@@ -140,7 +138,7 @@ Namespace ScriptDB
 
 
           ' Now add the columns
-          For Each objColumn In objTable.Objects(Things.Type.Column)
+          For Each objColumn In objTable.Columns
 
             If objColumn.State = DataRowState.Deleted Then
               sSQL = String.Format("IF EXISTS ( SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE [TABLE_NAME]='{0}' AND [COLUMN_NAME] ='{1}')" & vbNewLine & _
@@ -182,7 +180,7 @@ Namespace ScriptDB
 
       Try
 
-        For Each objTable In Globals.Things
+        For Each objTable In Globals.Tables
 
           sViewName = objTable.Name
           sActualTableName = String.Format("{0}{1}", Consts.UserTable, objTable.Name)
@@ -190,7 +188,7 @@ Namespace ScriptDB
           sDefinitionSQL = "AS SELECT [id], [timestamp]" & vbNewLine
 
           ' Add relations
-          For Each objRelation In objTable.Objects(Things.Type.Relation)
+          For Each objRelation In objTable.Relations
             If objRelation.RelationshipType = RelationshipType.Parent Then
               sDefinitionSQL = sDefinitionSQL & String.Format(", [ID_{0}]", CInt(objRelation.ParentID)) & vbNewLine
             End If
@@ -198,7 +196,7 @@ Namespace ScriptDB
 
 
           ' Add columns
-          For Each objColumn In objTable.Objects(Things.Type.Column)
+          For Each objColumn In objTable.Columns
 
             If objColumn.IsCalculated And objColumn.IsReadOnly And objTable.TableType = Things.TableType.Parent Then
               '              If Not objColumn.Calculation.RequiresRowNumber Then
@@ -245,15 +243,15 @@ Namespace ScriptDB
 
       Try
 
-        For Each objTable In Globals.Things
-          For Each objView In objTable.Objects(Things.Type.View)
+        For Each objTable In Globals.Tables
+          For Each objView In objTable.Views
 
             sDefinition = New StringBuilder
             sDefinition.AppendLine(String.Format("CREATE VIEW [{0}].[{1}]", objTable.SchemaName, objView.Name))
             sDefinition.AppendLine("--WITH SCHEMABINDING")
             sDefinition.AppendLine("AS SELECT [id], [timestamp]")
 
-            For Each objColumn In objView.Objects(Things.Type.Column)
+            For Each objColumn In objView.Columns
               If objColumn.IsCalculated And objColumn.IsReadOnly Then
                 sDefinition.AppendLine(String.Format(", {0} AS [{1}]", objColumn.Calculation.UDF.CallingCode.Replace("@prm_", "base."), objColumn.Name))
               Else
@@ -357,7 +355,7 @@ Namespace ScriptDB
 
       Try
 
-        For Each objTable In Globals.Things
+        For Each objTable In Globals.Tables
 
           aryColumnsWithDefaultValues = New ArrayList
           aryAllWriteableColumns = New ArrayList
@@ -406,7 +404,7 @@ Namespace ScriptDB
 
 
           ' Add any relationship columns
-          For Each objRelation In objTable.Objects(Things.Type.Relation)
+          For Each objRelation In objTable.Relations
 
             aryColumns = New ArrayList
             If objRelation.RelationshipType = RelationshipType.Parent Then
@@ -414,7 +412,7 @@ Namespace ScriptDB
               aryAllWriteableColumns.Add(String.Format("[ID_{0}]", CInt(objRelation.ParentID)))
               aryAllWriteableFormatted.Add(String.Format("[ID_{0}]", CInt(objRelation.ParentID)))
 
-              objRelatedTable = Globals.Things.GetObject(Things.Type.Table, objRelation.ParentID)
+              objRelatedTable = Globals.Tables.GetById(objRelation.ParentID)
               For Each objColumn In objTable.DependsOnParentColumns
                 If objColumn.Table Is objRelatedTable Then
                   aryColumns.Add(String.Format("base.{0} = {0}", objColumn.Name))
@@ -434,7 +432,7 @@ Namespace ScriptDB
 
             Else
 
-              objRelatedTable = Globals.Things.GetObject(Things.Type.Table, objRelation.ChildID)
+              objRelatedTable = Globals.Tables.GetById(objRelation.ChildID)
               objIndex = New Things.Index
               objIndex.Name = String.Format("IDX_relation_{0}", objRelatedTable.Name)
               objIndex.IsTableIndex = True
@@ -953,7 +951,7 @@ Namespace ScriptDB
       Try
 
         ' Drop objects first (for schemabinding purposes)
-        For Each objTable In Globals.Things
+        For Each objTable In Globals.Tables
           For Each objColumn In objTable.Columns
             sObjectName = String.Format("{0}{1}.{2}", Consts.CalculationUDF, objTable.Name, objColumn.Name)
             ScriptDB.DropUDF("dbo", sObjectName)
@@ -962,7 +960,7 @@ Namespace ScriptDB
 
 
         ' Now create the objects
-        For Each objTable In Globals.Things
+        For Each objTable In Globals.Tables
 
           ' Record Descriptions
           If Not objTable.RecordDescription Is Nothing Then
@@ -976,7 +974,7 @@ Namespace ScriptDB
           End If
 
           '  Validation Masks
-          For Each objExpression In objTable.Objects(Things.Type.Mask)
+          For Each objExpression In objTable.Masks
             sObjectName = String.Format("{0}{1}", Consts.MaskUDF, CInt(objExpression.ID))
             objExpression.GenerateCode()
             ScriptDB.DropUDF("dbo", sObjectName)
@@ -987,11 +985,11 @@ Namespace ScriptDB
           objIndex.Name = String.Format("IDX_Views_{0}", objTable.Name)
           objIndex.IncludePrimaryKey = True
           objIndex.IsTableIndex = True
-          For Each objView In objTable.Objects(Things.Type.View)
+          For Each objView In objTable.Views
 
             If Not objView.Filter Is Nothing Then
               objView.Filter.ExpressionType = ExpressionType.Mask
-              objView.Filter.AssociatedColumn = objTable.Objects(Things.Type.Column)(0)
+              objView.Filter.AssociatedColumn = objTable.Columns(0)
               objView.Filter.GenerateCode()
 
               For Each objColumn In objView.Filter.Dependencies.Objects(Things.Type.Column)
@@ -1010,7 +1008,7 @@ Namespace ScriptDB
 
             If objColumn.IsCalculated Then
 
-              objColumn.Calculation = objTable.Objects.GetObject(Things.Type.Expression, objColumn.CalcID)
+              objColumn.Calculation = objTable.Expressions.GetById(objColumn.CalcID)
 
               If Not objColumn.Calculation Is Nothing Then
                 objColumn.Calculation.ExpressionType = ScriptDB.ExpressionType.ColumnCalculation
@@ -1022,7 +1020,7 @@ Namespace ScriptDB
 
             ' Build default value code
             If CInt(objColumn.DefaultCalcID) > 0 Then
-              objColumn.DefaultCalculation = objTable.Objects.GetObject(Things.Type.Expression, objColumn.DefaultCalcID)
+              objColumn.DefaultCalculation = objTable.Expressions.GetById(objColumn.DefaultCalcID)
 
               If objColumn.DefaultCalculation Is Nothing Then
                 Globals.ErrorLog.Add(ErrorHandler.Section.LoadingData, objColumn.Name, ErrorHandler.Severity.Error, "Default calculation not found", CInt(objColumn.DefaultCalcID))
@@ -1035,7 +1033,7 @@ Namespace ScriptDB
           Next
 
           '  Validation Masks
-          For Each objExpression In objTable.Objects(Things.Type.Mask)
+          For Each objExpression In objTable.Masks
             sObjectName = String.Format("{0}{1}", Consts.MaskUDF, CInt(objExpression.ID))
             objExpression.GenerateCode()
             ScriptDB.DropUDF("dbo", sObjectName)
@@ -1048,8 +1046,8 @@ Namespace ScriptDB
         Next
 
         ' Generate any table UDFs
-        For Each objTable In Globals.Things
-          For Each objTableOrderFilter In objTable.Objects(Things.Type.TableOrderFilter)
+        For Each objTable In Globals.Tables
+          For Each objTableOrderFilter In objTable.TableOrderFilters
             objTableOrderFilter.GenerateCode()
             ScriptDB.DropUDF("dbo", objTableOrderFilter.Name)
             Globals.CommitDB.ScriptStatement(objTableOrderFilter.UDF.Code)
@@ -1057,7 +1055,7 @@ Namespace ScriptDB
         Next
 
         ' Script the column calculations
-        For Each objTable In Globals.Things
+        For Each objTable In Globals.Tables
           For Each objColumn In objTable.Columns
 
             '   Debug.Print(objColumn.Name)
@@ -1151,7 +1149,7 @@ Namespace ScriptDB
 
       Try
 
-        For Each objTable In Globals.Things
+        For Each objTable In Globals.Tables
           For Each objIndex In objTable.Indexes
 
             bCreateIndex = False
@@ -1236,7 +1234,7 @@ Namespace ScriptDB
         aryTriggerCode = New ArrayList
 
         lngColumnID = Globals.ModuleSetup.Setting("MODULE_ABSENCE", "Param_FieldBHolDate").Value
-        objColumn = Table.Column(lngColumnID)
+        objColumn = Table.Columns.GetById(lngColumnID)
 
         For Each objTriggeredUpdate In Globals.OnBankHolidayUpdate
           aryTriggerCode.Add(String.Format("    WITH base AS (" & vbNewLine &
@@ -1304,16 +1302,16 @@ Namespace ScriptDB
         objPersonnelTable = Globals.ModuleSetup.Setting("MODULE_PERSONNEL", "Param_TablePersonnel").Table
 
         lngColumnID = Globals.ModuleSetup.Setting("MODULE_ABSENCE", "Param_FieldSSPApplies").Value
-        objColumn1 = Table.Column(lngColumnID)
+        objColumn1 = Table.Columns.GetById(lngColumnID)
 
         lngColumnID = Globals.ModuleSetup.Setting("MODULE_ABSENCE", "Param_FieldQualifyingDays").Value
-        objColumn2 = Table.Column(lngColumnID)
+        objColumn2 = Table.Columns.GetById(lngColumnID)
 
         lngColumnID = Globals.ModuleSetup.Setting("MODULE_ABSENCE", "Param_FieldWaitingDays").Value
-        objColumn3 = Table.Column(lngColumnID)
+        objColumn3 = Table.Columns.GetById(lngColumnID)
 
         lngColumnID = Globals.ModuleSetup.Setting("MODULE_ABSENCE", "Param_FieldPaidDays").Value
-        objColumn4 = Table.Column(lngColumnID)
+        objColumn4 = Table.Columns.GetById(lngColumnID)
 
         If Not (objColumn1 Is Nothing Or objColumn2 Is Nothing Or objColumn3 Is Nothing Or objColumn4 Is Nothing Or objPersonnelTable Is Nothing) Then
 
@@ -1356,7 +1354,7 @@ Namespace ScriptDB
 
         bRefreshAll = Globals.SystemSettings.Setting("overnight", "refreshalltables").Value
 
-        For Each objTable In Globals.Things
+        For Each objTable In Globals.Tables
           aryColumns = New ArrayList
           For Each objColumn In objTable.Columns
 

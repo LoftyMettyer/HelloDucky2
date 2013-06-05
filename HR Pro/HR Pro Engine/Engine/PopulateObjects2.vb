@@ -1,10 +1,12 @@
-﻿Namespace Things
+﻿Option Strict Off
+
+Namespace Things
 
   <HideModuleName()> _
   Public Module PopulateObjects2
 
     Public Sub PopulateThings2()
-      Globals.Things.Clear()
+      Globals.Tables.Clear()
       Globals.Workflows.Clear()
       PopulateTables()
       PopulateTableRelations()
@@ -38,10 +40,11 @@
         table.State = row.Item("state")
         table.Root = table
 
-        table.Objects.Parent = table
-        table.Objects.Root = table.Root
+        'TODO: table.Objects.Parent & Root
+        'table.Objects.Parent = table
+        'table.Objects.Root = table.Root
 
-        Globals.Things.Add(table)
+        Globals.Tables.Add(table)
       Next
 
     End Sub
@@ -52,7 +55,7 @@
 
       For Each row As DataRow In ds.Tables(0).Rows
 
-        Dim table As Table = Globals.Things.GetObject(Type.Table, row.Item("tableid").ToString)
+        Dim table As Table = Globals.Tables.GetById(row.Item("tableid").ToString)
 
         Dim column As New Column
         column.ID = row.Item("id").ToString
@@ -78,7 +81,7 @@
         column.Table = table
         column.Parent = table
 
-        table.Objects.Add(column)
+        table.Columns.Add(column)
       Next
 
     End Sub
@@ -89,7 +92,7 @@
 
       For Each row As DataRow In ds.Tables(0).Rows
 
-        Dim table As Things.Table = Globals.Things.GetObject(Type.Table, row.Item("tableid").ToString)
+        Dim table As Things.Table = Globals.Tables.GetById(row.Item("tableid").ToString)
 
         Dim tableOrder = New TableOrder
         tableOrder.ID = row.Item("orderid").ToString
@@ -97,7 +100,7 @@
         tableOrder.SubType = row.Item("type").ToString
         tableOrder.Parent = table
 
-        table.Objects.Add(tableOrder)
+        table.TableOrders.Add(tableOrder)
       Next
 
     End Sub
@@ -109,16 +112,16 @@
       For Each row As DataRow In ds.Tables(0).Rows
 
         Dim orderId As String = row.Item("orderid").ToString
-        Dim tableOrder As TableOrder = Globals.Things.OfType(Of Table).SelectMany(Function(t) t.Objects.OfType(Of TableOrder)()).FirstOrDefault(Function(o) o.ID = orderId)
+        Dim tableOrder As TableOrder = Globals.Tables.SelectMany(Function(t) t.TableOrders).Where(Function(o) o.ID = orderId).FirstOrDefault
 
         Dim orderItem As New TableOrderItem
         orderItem.ID = row.Item("orderid").ToString
         orderItem.ColumnType = row.Item("type")
         orderItem.Sequence = row.Item("sequence")
         orderItem.Ascending = row.Item("ascending")
-        orderItem.Column = tableOrder.Parent.GetObject(Type.Column, row.Item("columnid").ToString)
+        orderItem.Column = CType(tableOrder.Parent, Table).Columns.GetById(row.Item("columnid").ToString)
 
-        tableOrder.Objects.Add(orderItem)
+        tableOrder.TableOrderItems.Add(orderItem)
       Next
 
     End Sub
@@ -129,13 +132,13 @@
 
       For Each row As DataRow In ds.Tables(0).Rows
 
-        Dim table As Things.Table = Globals.Things.GetObject(Type.Table, row.Item("tableid").ToString)
+        Dim table As Things.Table = Globals.Tables.GetById(row.Item("tableid").ToString)
 
         Dim validation As New Validation
         validation.ValidationType = row.Item("validationtype").ToString
-        validation.Column = CType(table, Table).Column(row.Item("columnid").ToString)
+        validation.Column = table.Columns.GetById(row.Item("columnid").ToString)
 
-        table.Objects.Add(validation)
+        table.Validations.Add(validation)
       Next
 
     End Sub
@@ -150,7 +153,7 @@
       For Each row As DataRow In ds.Tables(0).Rows
 
         'add the relationshop from the parents perspective
-        table = Globals.Things.GetObject(Type.Table, row.Item("parentid").ToString)
+        table = Globals.Tables.GetById(row.Item("parentid").ToString)
 
         relation = New Relation
         relation.RelationshipType = ScriptDB.RelationshipType.Child
@@ -159,10 +162,10 @@
         relation.ChildID = row.Item("childid").ToString
         relation.Name = row.Item("childname").ToString
 
-        table.Objects.Add(relation)
+        table.Relations.Add(relation)
 
         'add the relationshop from the childs perspective
-        table = Globals.Things.GetObject(Type.Table, row.Item("childid").ToString)
+        table = Globals.Tables.GetById(row.Item("childid").ToString)
 
         relation = New Relation
         relation.RelationshipType = ScriptDB.RelationshipType.Parent
@@ -171,18 +174,18 @@
         relation.ChildID = row.Item("childid").ToString
         relation.Name = row.Item("parentname").ToString
 
-        table.Objects.Add(relation)
+        table.Relations.Add(relation)
       Next
 
     End Sub
 
     Public Sub PopulateTableExpressions()
 
-      Dim objDataset As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_getexpressions2", New Connectivity.Parameters)
+      Dim ds As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_getexpressions2", New Connectivity.Parameters)
 
-      For Each row As DataRow In objDataset.Tables(0).Rows
+      For Each row As DataRow In ds.Tables(0).Rows
 
-        Dim table As Things.Table = Globals.Things.GetObject(Type.Table, row.Item("tableid").ToString)
+        Dim table As Things.Table = Globals.Tables.GetById(row.Item("tableid").ToString)
 
         Dim expression As New Expression
         expression.ID = row.Item("id").ToString
@@ -198,9 +201,9 @@
         expression.BaseTable = table
         expression.BaseExpression = expression
 
-        expression.Objects = Things.LoadComponents2(expression, ScriptDB.ComponentTypes.Expression)
+        expression.Components = Things.LoadComponents2(expression, ScriptDB.ComponentTypes.Expression)
 
-        table.Objects.Add(expression)
+        table.Expressions.Add(expression)
       Next
 
     End Sub
@@ -211,16 +214,16 @@
 
       For Each row As DataRow In ds.Tables(0).Rows
 
-        Dim table As Things.Table = Globals.Things.GetObject(Type.Table, row.Item("tableid").ToString)
+        Dim table As Things.Table = Globals.Tables.GetById(row.Item("tableid").ToString)
 
         Dim view As New View
         view.ID = row.Item("id").ToString
         view.Name = row.Item("name").ToString
         view.Description = row.Item("description").ToString
         view.Parent = table
-        view.Filter = table.GetObject(Type.Expression, row.Item("filterid").ToString)
+        view.Filter = table.Expressions.GetById(row.Item("filterid").ToString)
 
-        table.Objects.Add(view)
+        table.Views.Add(view)
       Next
 
     End Sub
@@ -232,11 +235,11 @@
       For Each row As DataRow In objDataset.Tables(0).Rows
 
         Dim viewId As String = row.Item("viewid").ToString
-        Dim view As View = Globals.Things.OfType(Of Table).SelectMany(Function(t) t.Objects.OfType(Of View)()).FirstOrDefault(Function(o) o.ID = viewId)
+        Dim view As View = Globals.Tables.SelectMany(Function(t) t.Views).Where(Function(o) o.ID = viewId).FirstOrDefault
 
-        Dim column As Column = view.Parent.GetObject(Type.Column, row.Item("columnid").ToString)
+        Dim column As Column = CType(view.Parent, Table).Columns.GetById(row.Item("columnid").ToString)
         If column IsNot Nothing Then
-          view.Objects.Add(column)
+          view.Columns.Add(column)
         End If
       Next
 
@@ -248,7 +251,7 @@
 
       For Each row As DataRow In ds.Tables(0).Rows
 
-        Dim table As Table = Globals.Things.GetObject(Type.Table, row.Item("tableid").ToString)
+        Dim table As Table = Globals.Tables.GetById(row.Item("tableid").ToString)
 
         Dim description As New RecordDescription
         description.ID = row.Item("id").ToString
@@ -263,9 +266,9 @@
         description.BaseTable = table
         description.BaseExpression = description
 
-        description.Objects = LoadComponents2(description, ScriptDB.ComponentTypes.Expression)
+        description.Components = LoadComponents2(description, ScriptDB.ComponentTypes.Expression)
 
-        table.Objects.Add(description)
+        table.RecordDescription = description
       Next
 
     End Sub
@@ -273,7 +276,7 @@
     Private componentfunction As DataSet
     Private componentbase As DataSet
 
-    Public Function LoadComponents2(ByVal expression As Component, ByVal Type As ScriptDB.ComponentTypes) As Things.Collections.Generic
+    Public Function LoadComponents2(ByVal expression As Component, ByVal Type As ScriptDB.ComponentTypes) As List(Of Component)
 
       If componentfunction Is Nothing Then
         componentfunction = Globals.MetadataDB.ExecStoredProcedure("spadmin_getcomponent_function2", New Connectivity.Parameters)
@@ -294,8 +297,9 @@
           rows = componentbase.Tables(0).Select("ExpressionID = " & expression.ID)
       End Select
 
-      Dim collection As New Things.Collections.Generic
-      collection.Parent = expression
+      Dim collection As New List(Of Component)
+      'TODO: PARENT
+      'collection.Parent = expression
 
       For Each row As DataRow In rows
 
@@ -335,9 +339,9 @@
 
         Select Case component.SubType
           Case ScriptDB.ComponentTypes.Function
-            component.Objects = Things.LoadComponents2(component, ScriptDB.ComponentTypes.Function)
+            component.Components = Things.LoadComponents2(component, ScriptDB.ComponentTypes.Function)
           Case ScriptDB.ComponentTypes.Expression, ScriptDB.ComponentTypes.Calculation
-            component.Objects = Things.LoadComponents2(component, component.SubType)
+            component.Components = Things.LoadComponents2(component, component.SubType)
         End Select
 
         collection.Add(component)
@@ -353,13 +357,13 @@
 
       For Each row As DataRow In ds.Tables(0).Rows
 
-        Dim table As Table = Globals.Things.GetObject(Type.Table, row.Item("tableid").ToString)
+        Dim table As Table = Globals.Tables.GetById(row.Item("tableid").ToString)
 
         Dim mask As New Things.Mask
         mask.ID = row.Item("id").ToString
         mask.Parent = table
         mask.Name = row.Item("name").ToString
-        mask.AssociatedColumn = table.Column(row.Item("columnid").ToString)
+        mask.AssociatedColumn = table.Columns.GetById(row.Item("columnid").ToString)
         mask.SchemaName = "dbo"
         mask.Description = row.Item("description").ToString
         mask.State = row.Item("state")
@@ -369,9 +373,9 @@
         mask.BaseTable = table
         mask.BaseExpression = mask
 
-        mask.Objects = Things.LoadComponents2(mask, ScriptDB.ComponentTypes.Expression)
+        mask.Components = Things.LoadComponents2(mask, ScriptDB.ComponentTypes.Expression)
 
-        table.Objects.Add(mask)
+        table.Masks.Add(mask)
       Next
 
     End Sub
@@ -403,11 +407,11 @@
         objExpression.Decimals = objRow.Item("decimals")
         objExpression.BaseExpression = objExpression
 
-        objTable = Globals.Things.GetObject(Type.Table, objRow.Item("tableid").ToString)
+        objTable = Globals.Tables.GetById(objRow.Item("tableid").ToString)
         objExpression.BaseTable = objTable
         objExpression.Parent = objTable
 
-        objTable.Objects.Add(objExpression)
+        objTable.Expressions.Add(objExpression)
       Next
 
     End Sub
@@ -418,7 +422,7 @@
 
       For Each row In objDataset.Tables(0).Rows
 
-        Dim table As Table = Globals.Things.GetObject(Type.Table, row.Item("tableid").ToString)
+        Dim table As Table = Globals.Tables.GetById(row.Item("tableid").ToString)
 
         Dim screen As Screen = New Things.Screen
         screen.ID = row.Item("id").ToString
@@ -429,7 +433,7 @@
         screen.Table = table
         screen.Parent = table
 
-        table.Objects.Add(screen)
+        table.Screens.Add(screen)
       Next
 
     End Sub
@@ -440,7 +444,7 @@
 
       For Each row As DataRow In ds.Tables(0).Rows
 
-        Dim table As Table = Globals.Things.GetObject(Type.Table, row.Item("tableid").ToString)
+        Dim table As Table = Globals.Tables.GetById(row.Item("tableid").ToString)
 
         Dim workflow As New Things.Workflow
         workflow.ID = row.Item("id").ToString
@@ -452,12 +456,12 @@
         workflow.State = row.Item("state")
         workflow.Table = table
 
-        table.Objects.Add(workflow)
+        table.Workflows.Add(workflow)
       Next
 
     End Sub
 
-    Private Function NullSafe(ByVal ObjectData As System.Data.DataRow, ByVal ColumnName As String, ByRef DefaultValue As Object)
+    Private Function NullSafe(ByVal ObjectData As System.Data.DataRow, ByVal ColumnName As String, ByVal DefaultValue As Object) As Object
 
       If ObjectData.IsNull(ColumnName) Then
         Return DefaultValue

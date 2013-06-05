@@ -18,17 +18,23 @@ Namespace Things
     Public DefaultEmailID As HCMGuid
     Public IsRemoteView As Boolean
 
-    Public DependsOnChildColumns As New Things.Collections.BaseCollection
-    Public DependsOnParentColumns As New Things.Collections.BaseCollection
-    Public objCustomTriggers As New Things.Collections.BaseCollection
+    Public Property RecordDescription() As RecordDescription
+    Public Property Indexes As New List(Of Index)
+    Public Property Columns As New List(Of Column)
+    Public Property Validations As New List(Of Validation)
+    Public Property Views As New List(Of View)
+    Public Property TableOrders As New List(Of TableOrder)
+    Public Property TableOrderFilters As New List(Of TableOrderFilter)
+    Public Property Relations As New List(Of Relation)
+    Public Property Expressions As New List(Of Expression)
+    Public Property Masks As New List(Of Mask)
+    Public Property Workflows As New List(Of Workflow)
+    Public Property Screens As New List(Of Screen)
+    Public Property DependsOnChildColumns As New List(Of Column)
+    Public Property DependsOnParentColumns As New List(Of Column)
 
+    Public Property objCustomTriggers As New Things.Collections.BaseCollection
     Public UpdateStatements As New ArrayList
-
-    Public ReadOnly Property Indexes As Things.Collections.Generic
-      Get
-        Return Me.Objects(Things.Enums.Type.Index)
-      End Get
-    End Property
 
     Public Overrides ReadOnly Property PhysicalName As String
       Get
@@ -51,135 +57,57 @@ Namespace Things
       End Get
     End Property
 
-    ' Returns all objects
-    <System.ComponentModel.Browsable(False), System.Xml.Serialization.XmlIgnore()> _
-    Public ReadOnly Property GetRelation(ByVal ID As HCMGuid) As Things.Relation
-      Get
+    Public Function GetRelation(ByVal ID As HCMGuid) As Things.Relation
 
-        Dim objRelation As New Things.Relation
-        Dim bFound As Boolean
+      Dim relation As New Things.Relation
 
-        For Each objRelation In Objects(Things.Type.Relation)
-          If objRelation.RelationshipType = ScriptDB.RelationshipType.Child Then
-            If objRelation.ChildID = ID Then
-              bFound = True
-              Exit For
-            End If
-          Else
-            If objRelation.ParentID = ID Then
-              bFound = True
-              Exit For
-            End If
+      For Each relation In Me.Relations
+        If relation.RelationshipType = ScriptDB.RelationshipType.Child Then
+          If relation.ChildID = ID Then
+            Return relation
           End If
-        Next
+        Else
+          If relation.ParentID = ID Then
+            Return relation
+          End If
+        End If
+      Next
 
-        Return objRelation
+      'TODO: supposed to be returning blank one if not found?
+      Return relation
 
-      End Get
-
-    End Property
-
-#Region "Child Objects"
-
-    <System.Xml.Serialization.XmlIgnore(), System.ComponentModel.Browsable(False)> _
-    Public ReadOnly Property Columns As Things.Collections.Generic
-      Get
-        Return Me.Objects(Things.Type.Column)
-      End Get
-    End Property
-
-    <System.Xml.Serialization.XmlIgnore(), System.ComponentModel.Browsable(False)> _
-    Public ReadOnly Property Validations() As Things.Collections.Generic
-      Get
-        Return Me.Objects(Things.Type.Validation)
-      End Get
-    End Property
-
-    <System.Xml.Serialization.XmlIgnore(), System.ComponentModel.Browsable(False)> _
-    Public ReadOnly Property Views() As Things.Collections.Generic
-      Get
-        Return Me.Objects(Things.Type.View)
-      End Get
-    End Property
-
-#End Region
+    End Function
 
 #Region "Individual objects"
-
-    Public Function Column(ByRef [ColumnID] As HCMGuid) As Things.Column
-
-      Dim objChild As Things.Base
-
-      For Each objChild In Objects(Things.Type.Column)
-        If objChild.Type = Type.Column And objChild.ID = ColumnID Then
-          Return CType(objChild, Things.Column)
-        End If
-      Next
-
-      Return Nothing
-
-    End Function
-
-    Public Function Expression(ByRef [ExpressionID] As HCMGuid) As Things.Expression
-
-      Dim objChild As Things.Base
-
-      For Each objChild In Objects(Things.Type.Expression)
-        If objChild.Type = Type.Column And objChild.ID = [ExpressionID] Then
-          Return CType(objChild, Things.Expression)
-        End If
-      Next
-
-      Return Nothing
-
-    End Function
-
-    Public Function RecordDescription() As Things.Expression
-
-      Dim objChild As Things.Base
-
-      For Each objChild In Objects(Things.Type.RecordDescription)
-        If objChild.Type = Type.RecordDescription Then
-          Return CType(objChild, Things.RecordDescription)
-        End If
-      Next
-
-      Return Nothing
-
-    End Function
 
     Public Function TableOrderFilter(ByRef RowDetails As Things.ChildRowDetails) As Things.TableOrderFilter
 
       'ByRef Order As Things.TableOrder, ByRef Filter As Things.Expression _
       '            , ByRef Relation As Things.Relation) As Things.TableOrderFilter
 
-      Dim objChild As Things.Base
-      Dim objOFilter As Things.TableOrderFilter
+      For Each filer As TableOrderFilter In Me.TableOrderFilters
 
-      For Each objChild In Objects(Things.Type.TableOrderFilter)
-        objOFilter = CType(objChild, Things.TableOrderFilter)
-
-        If objOFilter.RowDetails.Order Is RowDetails.Order _
-            And objOFilter.RowDetails.Filter Is RowDetails.Filter _
-            And objOFilter.RowDetails.Relation Is RowDetails.Relation _
-            And objOFilter.RowDetails.RowNumber = RowDetails.RowNumber _
-            And objOFilter.RowDetails.RowSelection = RowDetails.RowSelection Then
-          Return objOFilter
+        If filer.RowDetails.Order Is RowDetails.Order _
+            And filer.RowDetails.Filter Is RowDetails.Filter _
+            And filer.RowDetails.Relation Is RowDetails.Relation _
+            And filer.RowDetails.RowNumber = RowDetails.RowNumber _
+            And filer.RowDetails.RowSelection = RowDetails.RowSelection Then
+          Return filer
         End If
       Next
 
       ' New table filter. Add to the stack and return
-      objOFilter = New Things.TableOrderFilter
-      objOFilter.RowDetails.Order = RowDetails.Order
-      objOFilter.RowDetails.Filter = RowDetails.Filter()
-      objOFilter.RowDetails.Relation = RowDetails.Relation
-      objOFilter.RowDetails.RowNumber = RowDetails.RowNumber
-      objOFilter.RowDetails.RowSelection = RowDetails.RowSelection
-      objOFilter.ComponentNumber = Objects(Things.Type.TableOrderFilter).Count + 1
-      objOFilter.Parent = Me
-      Me.Objects.Add(objOFilter)
+      Dim filter As New Things.TableOrderFilter
+      filter.RowDetails.Order = RowDetails.Order
+      filter.RowDetails.Filter = RowDetails.Filter()
+      filter.RowDetails.Relation = RowDetails.Relation
+      filter.RowDetails.RowNumber = RowDetails.RowNumber
+      filter.RowDetails.RowSelection = RowDetails.RowSelection
+      filter.ComponentNumber = Me.TableOrderFilters.Count + 1
+      filter.Parent = Me
+      Me.TableOrderFilters.Add(filter)
 
-      Return objOFilter
+      Return filter
 
     End Function
 

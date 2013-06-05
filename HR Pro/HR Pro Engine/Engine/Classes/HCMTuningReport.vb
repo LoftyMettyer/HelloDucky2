@@ -23,8 +23,8 @@ Namespace Tuning
 
       objWriter.Write(String.Format("{0}{0}{1}{0}EXPRESSION USAGE{0}{1}{0}{0}", vbNewLine, "-------------------"))
 
-      For Each objTable In Globals.Things
-        For Each objColumn In objTable.Objects(Things.Type.Column)
+      For Each objTable In Globals.Tables
+        For Each objColumn In objTable.Columns
           If objColumn.IsCalculated Then
             sMessage = String.Format("({0}) {1}.{2}     | Expression = {3} - ({4})", objColumn.Tuning.Usage.ToString.PadLeft(3) _
                   , objColumn.Table.Name, objColumn.Name, objColumn.Calculation.Name _

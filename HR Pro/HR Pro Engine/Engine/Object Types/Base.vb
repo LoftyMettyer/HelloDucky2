@@ -128,47 +128,54 @@ Namespace Things
       End Set
     End Property
 
-    <System.Xml.Serialization.XmlElement()> _
-    Public Property Objects() As Things.Collections.Generic
-      Get
-        Return mobjChildObjects
-      End Get
-      Set(ByVal value As Things.Collections.Generic)
-        mobjChildObjects = value
-      End Set
-    End Property
+    'TODO: CHANGED
+    '<System.Xml.Serialization.XmlElement()> _
+    'Public Property Objects() As Things.Collections.Generic
+    '  Get
+    '    Return mobjChildObjects
+    '  End Get
+    '  Set(ByVal value As Things.Collections.Generic)
+    '    mobjChildObjects = value
+    '  End Set
+    'End Property
 
-    Public ReadOnly Property Objects(ByVal Index As Integer) As Things.Base
-      Get
-        Return mobjChildObjects.Item(Index)
-      End Get
-    End Property
+    'Public ReadOnly Property Objects(ByVal Index As Integer) As Things.Base
+    '  Get
+    '    Return mobjChildObjects.Item(Index)
+    '  End Get
+    'End Property
 
-    <System.Xml.Serialization.XmlIgnore()> _
-    Public Property Objects(ByVal Type As Things.Type) As Things.Collections.Generic
-      Get
+    '<System.Xml.Serialization.XmlIgnore()> _
+    'Public Property Objects(ByVal Type As Things.Type) As Things.Collections.Generic
+    '  Get
 
-        Dim objCollection As Things.Collections.Generic
-        Dim objObject As Object
+    '    Dim objCollection As Things.Collections.Generic
+    '    Dim objObject As Object
 
-        objCollection = New Things.Collections.Generic
-        For Each objObject In mobjChildObjects
-          If objObject.Type = [Type] Then
-            objCollection.Add(objObject)
-          End If
-        Next
+    '    objCollection = New Things.Collections.Generic
+    '    For Each objObject In mobjChildObjects
+    '      If objObject.Type = [Type] Then
+    '        objCollection.Add(objObject)
+    '      End If
+    '    Next
 
-        Return objCollection
-      End Get
-      Set(ByVal value As Things.Collections.Generic)
-        mobjChildObjects = value
-      End Set
-    End Property
+    '    Return objCollection
+    '  End Get
+    '  Set(ByVal value As Things.Collections.Generic)
+    '    mobjChildObjects = value
+    '  End Set
+    'End Property
+
+    ' Returns an object from its children
+    'Public Overridable Function GetObject(ByRef [Type] As Things.Type, ByRef [ID] As HCMGuid) As Things.Base
+    '  GetObject = Me.Objects.GetObject(Type, ID)
+    'End Function
 
     Public Sub New()
       Tuning = New ScriptDB.Tuning
-      Objects = New Things.Collections.Generic
-      Objects.Parent = Me
+      'TODO: CHANGED
+      'Objects = New Things.Collections.Generic
+      'Objects.Parent = Me
     End Sub
 
     <System.Xml.Serialization.XmlIgnore(), System.ComponentModel.Browsable(False)> _
@@ -248,12 +255,6 @@ Namespace Things
       'End If
 
     End Sub
-
-    ' Returns an object from its children
-    Public Overridable Function GetObject(ByRef [Type] As Things.Type, ByRef [ID] As HCMGuid) As Things.Base
-      GetObject = Me.Objects.GetObject(Type, ID)
-    End Function
-
 
     '#Region "System.Xml.Serialization.IXmlSerializable"
 

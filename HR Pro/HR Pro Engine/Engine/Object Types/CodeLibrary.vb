@@ -1,7 +1,7 @@
 ﻿Namespace Things
 
   <Serializable()> _
-  Public Class [CodeLibrary]
+  Public Class CodeLibrary
     Inherits Things.Base
 
     Public Code As String
@@ -20,24 +20,11 @@
     Public DependsOnBankHoliday As Boolean = False
     Public IsTimeDependant As Boolean = False
 
+    Public Property Dependancies As New List(Of Setting)
+
     Public Overrides ReadOnly Property Type As Enums.Type
       Get
         Return Enums.Type.CodeLibrary
-      End Get
-    End Property
-
-    Public Property Dependancies As Things.Collections.Generic
-      Get
-        Return Me.Objects
-      End Get
-      Set(ByVal value As Things.Collections.Generic)
-        Me.Objects = value
-      End Set
-    End Property
-
-    Public ReadOnly Property HasDependancies As Boolean
-      Get
-        Return Me.Objects.Count > 0
       End Get
     End Property
 

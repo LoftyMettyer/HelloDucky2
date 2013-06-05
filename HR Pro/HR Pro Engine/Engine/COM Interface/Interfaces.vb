@@ -89,9 +89,7 @@
     Property SysMgrInsertTrigger As String
     Property SysMgrUpdateTrigger As String
     Property SysMgrDeleteTrigger As String
-
   End Interface
-
 
   Public Interface iWorkflowElement
     Property WorkflowID As HCMGuid
@@ -231,10 +229,7 @@
     Property ScreenChanged As Boolean
     Property WorkflowChanged As Boolean
     Property ModuleSetupChanged As Boolean
-
     Property PlatformChanged As Boolean
-
-
   End Interface
 
 

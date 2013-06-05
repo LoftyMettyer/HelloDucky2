@@ -114,7 +114,7 @@ Namespace Connectivity
         NativeObject.Execute(Statement)
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(ErrorHandler.Section.General, "ADOClassic.ScriptStatement", 1, ex.Message, Statement)
+        Globals.ErrorLog.Add(ErrorHandler.Section.General, "ADOClassic.ScriptStatement", ErrorHandler.Severity.Warning, ex.Message, Statement)
         bOK = False
       End Try
 

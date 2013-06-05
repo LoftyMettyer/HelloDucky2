@@ -19,7 +19,7 @@ Public Structure HCMGuid
 
   Public ReadOnly Property PadLeft() As String
     Get
-      Return mintValue.ToString.PadLeft(8, "0")
+      Return mintValue.ToString.PadLeft(8, "0"c)
     End Get
   End Property
 

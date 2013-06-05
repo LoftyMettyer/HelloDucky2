@@ -21,7 +21,7 @@ Namespace Forms
       txtDetails.Text = Globals.ErrorLog.QuickReport()
       txtDetails.Text = txtDetails.Text & Globals.ErrorLog.DetailedReport
 
-      Me.Height = mlngInitialHeight
+      Me.Height = CInt(mlngInitialHeight)
 
     End Sub
 
@@ -30,16 +30,16 @@ Namespace Forms
 
       If txtDetails.Visible Then
         butDetails.Text = "Details <<<"
-        Me.Height = mlngInitialHeight + txtDetails.Height + 10 + cmdCopy.Height
+        Me.Height = CInt(mlngInitialHeight) + txtDetails.Height + 10 + cmdCopy.Height
       Else
         butDetails.Text = "Details >>>"
-        Me.Height = mlngInitialHeight
+        Me.Height = CInt(mlngInitialHeight)
       End If
 
     End Sub
 
     Private Sub butContinue_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles butContinue.Click
-      If MsgBox("System integrity is compromised. Are you sure you want to continue?", MsgBoxStyle.YesNo + MsgBoxStyle.Question, "System Framework") = MsgBoxResult.Yes Then
+      If MsgBox("System integrity is compromised. Are you sure you want to continue?", MsgBoxStyle.YesNo Or MsgBoxStyle.Question, "System Framework") = MsgBoxResult.Yes Then
         Me.Close()
       End If
     End Sub

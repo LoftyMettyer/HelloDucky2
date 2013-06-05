@@ -12,6 +12,5 @@
       End Get
     End Property
 
-
   End Class
 End Namespace

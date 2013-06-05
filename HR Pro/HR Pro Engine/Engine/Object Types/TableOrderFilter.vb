@@ -4,28 +4,20 @@
   Public Class TableOrderFilter
     Inherits Things.Base
 
-    Public Overrides ReadOnly Property Type As Enums.Type
-      Get
-        Return Enums.Type.TableOrderFilter
-      End Get
-    End Property
-
-    '    Public Relation As Things.Relation
-    '   Public Order As Things.TableOrder
-    '  Public Filter As Things.Expression
     Public ComponentNumber As Long
     Public UDF As ScriptDB.GeneratedUDF
     Public RowDetails As Things.ChildRowDetails
+    Public Property IncludedColumns As New List(Of Column)
 
     Public ReadOnly Property Table As Things.Table
       Get
-        Return Parent
+        Return CType(Parent, Table)
       End Get
     End Property
 
-    Public ReadOnly Property IncludedColumns As Things.Collections.Generic
+    Public Overrides ReadOnly Property Type As Enums.Type
       Get
-        Return Me.Objects
+        Return Enums.Type.TableOrderFilter
       End Get
     End Property
 
@@ -97,7 +89,7 @@
 
       ' Build the where clause
       If Not RowDetails.Filter Is Nothing Then
-        RowDetails.Filter.AssociatedColumn = Me.Parent.Objects(Enums.Type.Column)(0)
+        RowDetails.Filter.AssociatedColumn = CType(Me.Parent, Table).Columns(0)
         RowDetails.Filter.ExpressionType = ScriptDB.ExpressionType.ColumnFilter
         RowDetails.Filter.GenerateCode()
 
@@ -113,7 +105,7 @@
       ' Build the order by clause
       If Not RowDetails.Order Is Nothing And _
           Not (RowDetails.RowSelection = ScriptDB.ColumnRowSelection.Total Or RowDetails.RowSelection = ScriptDB.ColumnRowSelection.Count) Then
-        For Each objOrderItem In RowDetails.Order.Objects
+        For Each objOrderItem In RowDetails.Order.TableOrderItems
           If objOrderItem.ColumnType = "O" And Not objOrderItem.Column Is Nothing Then
 
             If Not objOrderItem.Column Is Nothing And objOrderItem.Column.Table Is Me.Parent Then
@@ -162,8 +154,8 @@
       objIndex.IsClustered = False
 
       With UDF
-        .WhereCode = IIf(aryWheres.Count > 0, "WHERE ", "") & String.Join(" AND ", aryWheres.ToArray())
-        .OrderCode = IIf(aryOrderBy.Count > 0, "ORDER BY ", "") & String.Join(", ", aryOrderBy.ToArray())
+        .WhereCode = If(aryWheres.Count > 0, "WHERE ", "") & String.Join(" AND ", aryWheres.ToArray())
+        .OrderCode = If(aryOrderBy.Count > 0, "ORDER BY ", "") & String.Join(", ", aryOrderBy.ToArray())
 
         If RowDetails.RowSelection = ScriptDB.ColumnRowSelection.Specific Then
 

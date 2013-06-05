@@ -25,13 +25,13 @@ Namespace ScriptDB
 
         If Not objConversionTable Is Nothing Then
           iKeyID = Globals.ModuleSetup.Setting("MODULE_CURRENCY", "Param_CurrencyNameColumn").Value
-          objNameColumn = objConversionTable.Column(iKeyID)
+          objNameColumn = objConversionTable.Columns.GetById(iKeyID)
 
           iKeyID = Globals.ModuleSetup.Setting("MODULE_CURRENCY", "Param_ConversionValueColumn").Value
-          objValueColumn = objConversionTable.Column(iKeyID)
+          objValueColumn = objConversionTable.Columns.GetById(iKeyID)
 
           iKeyID = Globals.ModuleSetup.Setting("MODULE_CURRENCY", "Param_DecimalColumn").Value
-          objDecimalsColumn = objConversionTable.Column(iKeyID)
+          objDecimalsColumn = objConversionTable.Columns.GetById(iKeyID)
 
           sObjectName = "udfsys_convertcurrency"
           If Not objValueColumn Is Nothing And Not objDecimalsColumn Is Nothing Then
@@ -111,12 +111,12 @@ Namespace ScriptDB
         For Each objComponent In Globals.GetFieldsFromDB
 
           ' The parameters as down a couple of component levels 
-          objPart1 = CType(objComponent.Objects(0).Objects(0), Things.Component)
-          objPart3 = CType(objComponent.Objects(2).Objects(0), Things.Component)
-          objTable1 = Globals.Things.Table(objPart1.TableID)
-          objTable2 = Globals.Things.Table(objPart3.TableID)
+          objPart1 = objComponent.Components(0).Components(0)
+          objPart3 = objComponent.Components(2).Components(0)
+          objTable1 = Globals.Tables.GetById(objPart1.TableID)
+          objTable2 = Globals.Tables.GetById(objPart3.TableID)
 
-          objColumn = objTable1.Column(objPart3.ColumnID)
+          objColumn = objTable1.Columns.GetById(objPart3.ColumnID)
           If Not objColumn Is Nothing Then
             Select Case objColumn.DataType
               Case ColumnTypes.Date
@@ -132,7 +132,7 @@ Namespace ScriptDB
             End Select
 
             ' Make integers typesafe
-            Select Case objTable1.Column(objPart1.ColumnID).DataType
+            Select Case objTable1.Columns.GetById(objPart1.ColumnID).DataType
               Case ColumnTypes.Integer
                 sSearchExpression = "convert(numeric(38,8), @searchexpression)"
               Case Else
@@ -149,8 +149,8 @@ Namespace ScriptDB
                 "        END" & vbNewLine _
               , objPart1.TableID.PadLeft, objPart1.ColumnID.PadLeft _
               , objPart3.TableID.PadLeft, objPart3.ColumnID.PadLeft _
-              , objTable1.PhysicalName, objTable1.Column(objPart3.ColumnID).Name _
-              , objTable2.Column(objPart1.ColumnID).Name, sVariableName, sSearchExpression)
+              , objTable1.PhysicalName, objTable1.Columns.GetById(objPart3.ColumnID).Name _
+              , objTable2.Columns.GetById(objPart1.ColumnID).Name, sVariableName, sSearchExpression)
 
               ' Only add if not already done so
               If Not aryStatements.Contains(sStatement) Then
@@ -161,7 +161,7 @@ Namespace ScriptDB
                 bFound = False
                 For Each objIndex In objTable1.Indexes
                   If objIndex.Columns.Count > 0 Then
-                    If objIndex.Columns(0) Is objTable1.Column(objPart1.ColumnID) Then
+                    If objIndex.Columns(0) Is objTable1.Columns.GetById(objPart1.ColumnID) Then
                       bFound = True
                       Exit For
                     End If
@@ -170,15 +170,15 @@ Namespace ScriptDB
 
                 If Not bFound Then
                   objIndex = New Things.Index
-                  objIndex.Name = String.Format("IDX_getfromdb_{0}", objTable1.Column(objPart1.ColumnID).Name)
-                  objIndex.Columns.Add(objTable1.Column(objPart1.ColumnID))
+                  objIndex.Name = String.Format("IDX_getfromdb_{0}", objTable1.Columns.GetById(objPart1.ColumnID).Name)
+                  objIndex.Columns.Add(objTable1.Columns.GetById(objPart1.ColumnID))
                   objIndex.IncludePrimaryKey = False
                   objIndex.IsTableIndex = True
                 End If
 
-                objIndex.IncludedColumns.Add(objTable2.Column(objPart3.ColumnID))
+                objIndex.IncludedColumns.Add(objTable2.Columns.GetById(objPart3.ColumnID))
 
-                If Not bFound And Not CType(objIndex.Columns(0), Things.Column).Multiline Then
+                If Not bFound And Not objIndex.Columns(0).Multiline Then
                   objTable1.Indexes.Add(objIndex)
                 End If
 

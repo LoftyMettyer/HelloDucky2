@@ -37,6 +37,8 @@ Namespace Things
     Public IsSchemaBound As Boolean = True
     Public IsTimeDependant As Boolean = False
 
+    Public Property Components As New List(Of Component)
+
     Public Overrides ReadOnly Property Type As Enums.Type
       Get
         Return Enums.Type.Component

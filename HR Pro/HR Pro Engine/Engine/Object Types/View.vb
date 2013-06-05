@@ -1,9 +1,10 @@
 ﻿Namespace Things
 
   Public Class View
-    Inherits Things.Base
+    Inherits Base
 
-    Public Filter As Things.Expression
+    Public Property Filter As Expression
+    Public Property Columns As New List(Of Column)
 
     Public Overrides ReadOnly Property Type As Things.Enums.Type
       Get

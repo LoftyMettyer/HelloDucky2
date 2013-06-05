@@ -27,7 +27,7 @@ Namespace Things
 
     Public ReadOnly Property DisplayColumn As String
       Get
-        Return CInt(ColumnID)
+        Return CStr(CInt(ColumnID))
       End Get
     End Property
 
