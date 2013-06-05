@@ -1,8 +1,8 @@
 VERSION 5.00
 Object = "{49CBFCC0-1337-11D2-9BBF-00A024695830}#1.0#0"; "tinumb6.ocx"
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Object = "{1C203F10-95AD-11D0-A84B-00A0247B735B}#1.0#0"; "SSTree.ocx"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmComponent 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Expression Component"
@@ -131,10 +131,9 @@ Begin VB.Form frmComponent
          Top             =   3300
          Width           =   4425
          Begin VB.CommandButton cmdWorkflowFldSelFilter 
+            Caption         =   "..."
             Height          =   315
             Left            =   2270
-            Picture         =   "frmComponent.frx":001C
-            Style           =   1  'Graphical
             TabIndex        =   104
             Top             =   1000
             UseMaskColor    =   -1  'True
@@ -159,10 +158,9 @@ Begin VB.Form frmComponent
             Width           =   735
          End
          Begin VB.CommandButton cmdWorkflowFldSelOrder 
+            Caption         =   "..."
             Height          =   315
             Left            =   2270
-            Picture         =   "frmComponent.frx":016A
-            Style           =   1  'Graphical
             TabIndex        =   101
             Top             =   600
             UseMaskColor    =   -1  'True
@@ -327,9 +325,9 @@ Begin VB.Form frmComponent
       Width           =   2250
       Begin VB.ComboBox cboWFValueItem 
          Height          =   315
-         ItemData        =   "frmComponent.frx":02B8
+         ItemData        =   "frmComponent.frx":001C
          Left            =   1000
-         List            =   "frmComponent.frx":02BA
+         List            =   "frmComponent.frx":001E
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
          TabIndex        =   74
@@ -338,9 +336,9 @@ Begin VB.Form frmComponent
       End
       Begin VB.ComboBox cboWFValueElement 
          Height          =   315
-         ItemData        =   "frmComponent.frx":02BC
+         ItemData        =   "frmComponent.frx":0020
          Left            =   1000
-         List            =   "frmComponent.frx":02BE
+         List            =   "frmComponent.frx":0022
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
          TabIndex        =   72
@@ -551,8 +549,8 @@ Begin VB.Form frmComponent
             _Version        =   65536
             _ExtentX        =   1773
             _ExtentY        =   556
-            Calculator      =   "frmComponent.frx":02C0
-            Caption         =   "frmComponent.frx":02E0
+            Calculator      =   "frmComponent.frx":0024
+            Caption         =   "frmComponent.frx":0044
             BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
                Size            =   8.25
@@ -562,9 +560,9 @@ Begin VB.Form frmComponent
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            DropDown        =   "frmComponent.frx":0345
-            Keys            =   "frmComponent.frx":0363
-            Spin            =   "frmComponent.frx":03AD
+            DropDown        =   "frmComponent.frx":00A9
+            Keys            =   "frmComponent.frx":00C7
+            Spin            =   "frmComponent.frx":0111
             AlignHorizontal =   1
             AlignVertical   =   0
             Appearance      =   1
@@ -706,9 +704,9 @@ Begin VB.Form frmComponent
          Width           =   4980
          Begin VB.ComboBox cboPValReturnType 
             Height          =   315
-            ItemData        =   "frmComponent.frx":03D5
+            ItemData        =   "frmComponent.frx":0139
             Left            =   120
-            List            =   "frmComponent.frx":03E8
+            List            =   "frmComponent.frx":014C
             Style           =   2  'Dropdown List
             TabIndex        =   43
             Top             =   240
@@ -853,9 +851,9 @@ Begin VB.Form frmComponent
          Width           =   1750
          Begin VB.ComboBox cboCustField 
             Height          =   315
-            ItemData        =   "frmComponent.frx":041A
+            ItemData        =   "frmComponent.frx":017E
             Left            =   650
-            List            =   "frmComponent.frx":042A
+            List            =   "frmComponent.frx":018E
             Style           =   2  'Dropdown List
             TabIndex        =   58
             Top             =   1600
@@ -863,9 +861,9 @@ Begin VB.Form frmComponent
          End
          Begin VB.ComboBox cboCustTable 
             Height          =   315
-            ItemData        =   "frmComponent.frx":0451
+            ItemData        =   "frmComponent.frx":01B5
             Left            =   650
-            List            =   "frmComponent.frx":0461
+            List            =   "frmComponent.frx":01C5
             Style           =   2  'Dropdown List
             TabIndex        =   57
             Top             =   1200
@@ -901,9 +899,9 @@ Begin VB.Form frmComponent
       End
       Begin VB.ComboBox cboCustCalculation 
          Height          =   315
-         ItemData        =   "frmComponent.frx":0488
+         ItemData        =   "frmComponent.frx":01EC
          Left            =   1100
-         List            =   "frmComponent.frx":0498
+         List            =   "frmComponent.frx":01FC
          Style           =   2  'Dropdown List
          TabIndex        =   55
          Top             =   250
@@ -931,9 +929,9 @@ Begin VB.Form frmComponent
       Width           =   2445
       Begin VB.ComboBox cboTabValValue 
          Height          =   315
-         ItemData        =   "frmComponent.frx":04BF
+         ItemData        =   "frmComponent.frx":0223
          Left            =   975
-         List            =   "frmComponent.frx":04C1
+         List            =   "frmComponent.frx":0225
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
          TabIndex        =   41
@@ -942,9 +940,9 @@ Begin VB.Form frmComponent
       End
       Begin VB.ComboBox cboTabValColumn 
          Height          =   315
-         ItemData        =   "frmComponent.frx":04C3
+         ItemData        =   "frmComponent.frx":0227
          Left            =   975
-         List            =   "frmComponent.frx":04C5
+         List            =   "frmComponent.frx":0229
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
          TabIndex        =   40
@@ -953,9 +951,9 @@ Begin VB.Form frmComponent
       End
       Begin VB.ComboBox cboTabValTable 
          Height          =   315
-         ItemData        =   "frmComponent.frx":04C7
+         ItemData        =   "frmComponent.frx":022B
          Left            =   975
-         List            =   "frmComponent.frx":04C9
+         List            =   "frmComponent.frx":022D
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
          TabIndex        =   39
@@ -1037,9 +1035,9 @@ Begin VB.Form frmComponent
          Width           =   2835
          Begin VB.ComboBox cboWorkflowFunctionRecordSelector 
             Height          =   315
-            ItemData        =   "frmComponent.frx":04CB
+            ItemData        =   "frmComponent.frx":022F
             Left            =   1680
-            List            =   "frmComponent.frx":04CD
+            List            =   "frmComponent.frx":0231
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
             TabIndex        =   67
@@ -1048,9 +1046,9 @@ Begin VB.Form frmComponent
          End
          Begin VB.ComboBox cboWorkflowFunctionElement 
             Height          =   315
-            ItemData        =   "frmComponent.frx":04CF
+            ItemData        =   "frmComponent.frx":0233
             Left            =   1680
-            List            =   "frmComponent.frx":04D1
+            List            =   "frmComponent.frx":0235
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
             TabIndex        =   65
@@ -1059,9 +1057,9 @@ Begin VB.Form frmComponent
          End
          Begin VB.ComboBox cboWorkflowFunctionRecord 
             Height          =   315
-            ItemData        =   "frmComponent.frx":04D3
+            ItemData        =   "frmComponent.frx":0237
             Left            =   1680
-            List            =   "frmComponent.frx":04D5
+            List            =   "frmComponent.frx":0239
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
             TabIndex        =   63
@@ -1070,9 +1068,9 @@ Begin VB.Form frmComponent
          End
          Begin VB.ComboBox cboWorkflowFunctionRecordTable 
             Height          =   315
-            ItemData        =   "frmComponent.frx":04D7
+            ItemData        =   "frmComponent.frx":023B
             Left            =   1680
-            List            =   "frmComponent.frx":04D9
+            List            =   "frmComponent.frx":023D
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
             TabIndex        =   69
@@ -1207,9 +1205,9 @@ Begin VB.Form frmComponent
       End
       Begin VB.ComboBox cboFldTable 
          Height          =   315
-         ItemData        =   "frmComponent.frx":04DB
+         ItemData        =   "frmComponent.frx":023F
          Left            =   1000
-         List            =   "frmComponent.frx":04DD
+         List            =   "frmComponent.frx":0241
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
          TabIndex        =   16
@@ -1281,11 +1279,10 @@ Begin VB.Form frmComponent
             End
          End
          Begin VB.CommandButton cmdFldSelOrder 
+            Caption         =   "..."
             Enabled         =   0   'False
             Height          =   315
             Left            =   2270
-            Picture         =   "frmComponent.frx":04DF
-            Style           =   1  'Graphical
             TabIndex        =   28
             Top             =   1035
             UseMaskColor    =   -1  'True
@@ -1310,11 +1307,10 @@ Begin VB.Form frmComponent
             Width           =   735
          End
          Begin VB.CommandButton cmdFldSelFilter 
+            Caption         =   "..."
             Enabled         =   0   'False
             Height          =   315
             Left            =   2270
-            Picture         =   "frmComponent.frx":062D
-            Style           =   1  'Graphical
             TabIndex        =   31
             Top             =   1395
             UseMaskColor    =   -1  'True
@@ -1378,8 +1374,8 @@ Begin VB.Form frmComponent
          _Version        =   65536
          _ExtentX        =   1764
          _ExtentY        =   556
-         Calculator      =   "frmComponent.frx":077B
-         Caption         =   "frmComponent.frx":079B
+         Calculator      =   "frmComponent.frx":0243
+         Caption         =   "frmComponent.frx":0263
          BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
             Name            =   "Verdana"
             Size            =   8.25
@@ -1389,9 +1385,9 @@ Begin VB.Form frmComponent
             Italic          =   0   'False
             Strikethrough   =   0   'False
          EndProperty
-         DropDown        =   "frmComponent.frx":0800
-         Keys            =   "frmComponent.frx":081E
-         Spin            =   "frmComponent.frx":0868
+         DropDown        =   "frmComponent.frx":02C8
+         Keys            =   "frmComponent.frx":02E6
+         Spin            =   "frmComponent.frx":0330
          AlignHorizontal =   1
          AlignVertical   =   0
          Appearance      =   1
@@ -1429,9 +1425,9 @@ Begin VB.Form frmComponent
       End
       Begin VB.ComboBox cboValType 
          Height          =   315
-         ItemData        =   "frmComponent.frx":0890
+         ItemData        =   "frmComponent.frx":0358
          Left            =   780
-         List            =   "frmComponent.frx":08A0
+         List            =   "frmComponent.frx":0368
          Style           =   2  'Dropdown List
          TabIndex        =   33
          Top             =   250
@@ -8189,4 +8185,5 @@ ErrorTrap:
   Resume TidyUpAndExit
 
 End Function
+
 

@@ -32,10 +32,9 @@ Begin VB.Form frmWorkflowWFValidation
       Top             =   100
       Width           =   6400
       Begin VB.CommandButton cmdValidationExpression 
+Caption = "..."
          Height          =   315
          Left            =   5885
-         Picture         =   "frmWorkflowWFValidation.frx":000C
-         Style           =   1  'Graphical
          TabIndex        =   3
          Top             =   300
          UseMaskColor    =   -1  'True
@@ -452,3 +451,4 @@ Public Property Let Message(ByVal psNewValue As String)
   txtMessage.Text = psNewValue
   
 End Property
+
