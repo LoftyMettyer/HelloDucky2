@@ -1513,25 +1513,7 @@ LocalErr:
 
 End Sub
 
-Private Sub GTMaskDate1_AfterUpdate(Index As Integer)
-  Debug.Print "GTMaskDate1_AfterUpdate"
-End Sub
-
-Private Sub GTMaskDate1_BeforeLostFocus(Index As Integer, Cancel As Boolean)
-  Debug.Print "GTMaskDate1_BeforeLostFocus"
-End Sub
-
-Private Sub GTMaskDate1_BeforeUpdate(Index As Integer, NewValue As Variant, Cancel As Boolean)
-  Debug.Print "GTMaskDate1_BeforeUpdate"
-End Sub
-
-Private Sub GTMaskDate1_CalClick(Index As Integer)
-  Debug.Print "GTMaskDate1_CalClick"
-End Sub
-
 Private Sub GTMaskDate1_Change(Index As Integer)
-  
-Debug.Print "GTMaskDate1_Change"
   
   On Error GoTo Err_Trap
 
@@ -1615,54 +1597,8 @@ Err_Trap:
 
 End Sub
 
-Private Sub GTMaskDate1_Click(Index As Integer)
-  Debug.Print "GTMaskDate1_Click"
-End Sub
-
-Private Sub GTMaskDate1_CloseUp(Index As Integer)
-  Debug.Print "GTMaskDate1_CloseUp"
-End Sub
-
-Private Sub GTMaskDate1_DataError(Index As Integer, ByVal ErrorType As Integer, ByVal ErrorText As String)
-  Debug.Print "GTMaskDate1_DataError"
-End Sub
-
-Private Sub GTMaskDate1_DataRead(Index As Integer, NewValue As Variant, DataChanged As Boolean)
-  Debug.Print "GTMaskDate1_DataRead"
-End Sub
-
-Private Sub GTMaskDate1_DblClick(Index As Integer)
-  Debug.Print "GTMaskDate1_DblClick"
-End Sub
-
-Private Sub GTMaskDate1_DragDrop(Index As Integer, Source As Control, x As Single, y As Single)
-  Debug.Print "GTMaskDate1_DragDrop"
-End Sub
-
-Private Sub GTMaskDate1_DragOver(Index As Integer, Source As Control, x As Single, y As Single, State As Integer)
-  Debug.Print "GTMaskDate1_DragOver"
-End Sub
-
-Private Sub GTMaskDate1_DropDown(Index As Integer)
-  Debug.Print "GTMaskDate1_DropDown"
-End Sub
-
-Private Sub GTMaskDate1_EllipsesClick(Index As Integer)
-  Debug.Print "GTMaskDate1_EllipsesClick"
-End Sub
-
-Private Sub GTMaskDate1_Error(Index As Integer, Number As Integer, Description As String, Scode As Long, Source As String, HelpFile As String, HelpContext As Long, CancelDisplay As Boolean)
-  Debug.Print "GTMaskDate1_Error"
-End Sub
-
-Private Sub GTMaskDate1_FormatCalCaption(Index As Integer, ByVal DateValue As Date, Text As String)
-  Debug.Print "GTMaskDate1_FormatCalCaption"
-End Sub
-
 Private Sub GTMaskDate1_GotFocus(Index As Integer)
   
-  Debug.Print "GTMaskDate1_GotFocus"
-
   ' Run the column's 'GotFocus' Expression.
   GotFocusCheck GTMaskDate1(Index)
   
@@ -1684,31 +1620,13 @@ Private Sub GTMaskDate1_GotFocus(Index As Integer)
 
 End Sub
 
-Private Sub GTMaskDate1_InvalidChar(Index As Integer, ByVal Char As String, ByVal Position As Integer)
-  Debug.Print "GTMaskDate1_InvalidChar"
-End Sub
-
-Private Sub GTMaskDate1_KeyDown(Index As Integer, KeyCode As Integer, Shift As Integer)
-  Debug.Print "GTMaskDate1_KeyDown"
-End Sub
-
-Private Sub GTMaskDate1_KeyPress(Index As Integer, KeyAscii As Integer)
-  Debug.Print "GTMaskDate1_KeyPress"
-End Sub
-
 Private Sub GTMaskDate1_KeyUp(Index As Integer, KeyCode As Integer, Shift As Integer)
-
-  Debug.Print "GTMaskDate1_KeyUp"
-  
   If KeyCode = vbKeyF2 Then
     GTMaskDate1(Index).DateValue = Date
   End If
-
 End Sub
 
 Private Sub GTMaskDate1_LostFocus(Index As Integer)
-  
-  Debug.Print "GTMaskDate1_LostFocus"
   
   ' RH 05/03/01 - To try and keep consistency with the date control.
   '               Bit of a pain in recedit as have to ignore lostfocuscheck
@@ -1756,40 +1674,7 @@ Private Sub GTMaskDate1_LostFocus(Index As Integer)
 
 End Sub
 
-Private Sub GTMaskDate1_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
-  Debug.Print "GTMaskDate1_MouseDown"
-End Sub
-
-Private Sub GTMaskDate1_MouseMove(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
-  Debug.Print "GTMaskDate1_MouseMove"
-End Sub
-
-Private Sub GTMaskDate1_MouseUp(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
-  Debug.Print "GTMaskDate1_MouseUp"
-End Sub
-
-Private Sub GTMaskDate1_OnValidate(Index As Integer, ByVal Text As String, Valid As Integer)
-  Debug.Print "GTMaskDate1_OnValidate"
-End Sub
-
-Private Sub GTMaskDate1_SpinClick(Index As Integer, ByVal Direction As Integer)
-  Debug.Print "GTMaskDate1_SpinClick"
-End Sub
-
-Private Sub GTMaskDate1_StatusBarUpdate(Index As Integer, ByVal Restore As Boolean, DisplayText As String, Cancel As Boolean)
-  Debug.Print "GTMaskDate1_StatusBarUpdate"
-End Sub
-
-Private Sub GTMaskDate1_ToolTipBegin(Index As Integer, Cancel As Boolean)
-  Debug.Print "GTMaskDate1_ToolTipBegin"
-End Sub
-
-Private Sub GTMaskDate1_ToolTipEnd(Index As Integer)
-  Debug.Print "GTMaskDate1_ToolTipEnd"
-End Sub
-
 Private Sub GTMaskDate1_Validate(Index As Integer, Cancel As Boolean)
-  Debug.Print "GTMaskDate1_Validate"
   
   ' Run the column's 'LostFocus' Expression.
   Cancel = Not LostFocusCheck(GTMaskDate1(Index))
