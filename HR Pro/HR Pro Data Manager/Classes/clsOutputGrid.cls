@@ -86,9 +86,7 @@ Public Sub DataGrid(objNewValue As SSDBGrid)
     Exit Sub
   End If
 
-  
-  
-  If mlngPageCount = 0 Then
+  If mlngPageCount = 0 Or mlngPageCount = 1 Then
     Set mobjPrintGrid = New clsPrintGrid
     mobjParent.SetPrinter
   End If
