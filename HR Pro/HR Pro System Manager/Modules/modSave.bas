@@ -415,8 +415,8 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
       OutputCurrentProcess "Generating Column Triggers"
       gobjProgress.UpdateProgress False
       DoEvents
-      fOK = gobjHRProEngine.Script.ScriptTriggers
       fOK = fOK And SetTriggers(alngExpressions, pfRefreshDatabase)
+      fOK = fOK And gobjHRProEngine.Script.ScriptTriggers
       fOK = fOK And Not gobjProgress.Cancelled
     End If
   
