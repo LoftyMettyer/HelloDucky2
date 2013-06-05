@@ -73,6 +73,37 @@ PRINT 'Step 1 - Create table rename function'
 	EXECUTE (@NVarCommand);
 
 
+	IF EXISTS (SELECT *
+		FROM dbo.sysobjects
+		WHERE id = object_id(N'[dbo].[spASRUpdateTableStructures]')
+			AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+		DROP PROCEDURE [dbo].[spASRUpdateTableStructures];
+
+	SET @NVarCommand = 'CREATE PROCEDURE dbo.spASRUpdateTableStructures(@name nvarchar(255))
+		AS
+		BEGIN
+
+			DECLARE @sqlCommand nvarchar(MAX);
+
+			IF NOT EXISTS(SELECT o.name FROM sys.sysobjects o INNER JOIN sys.syscolumns c ON c.id = o.id WHERE o.name = ''tbuser_'' + @name AND o.xtype = ''U'' AND c.name = ''guid'')
+			BEGIN
+
+				-- Add additional columns
+				SET @sqlCommand = ''ALTER TABLE dbo.[tbuser_'' + @name + ''] ADD [guid] uniqueidentifier, updflag integer, deleteddate datetime, recorddescription nvarchar(255), lastsavedby varbinary(85), lastsavedatetime datetime''
+				EXECUTE sp_executesql @sqlCommand;
+				
+				-- Add constraints
+				SET @sqlCommand = ''ALTER TABLE dbo.[tbuser_'' + @name + ''] ADD  CONSTRAINT [DF_'' + @name + ''_guid] DEFAULT (newsequentialid()) FOR [guid]''
+				EXECUTE sp_executesql @sqlCommand;
+			END
+
+		END'
+	EXECUTE sp_executesql @NVarCommand;
+
+
+
+
+
 /* ------------------------------------------------------------- */
 PRINT 'Step 2 - Rename base user tables'
 
@@ -80,6 +111,12 @@ PRINT 'Step 2 - Rename base user tables'
 	SELECT @NVarCommand = @NVarCommand + 'EXECUTE dbo.spASRTableToView ''' + TableName + ''', ''tbuser_' + LOWER(TableName) + ''';'
 		FROM ASRSysTables;
 	EXECUTE sp_executesql @NVarCommand;
+
+	SET @NVarCommand = '';
+	SELECT @NVarCommand = @NVarCommand + 'EXECUTE dbo.spASRUpdateTableStructures ''' + TableName + ''';'
+		FROM ASRSysTables;
+	EXECUTE sp_executesql @NVarCommand;
+
 
 /* ------------------------------------------------------------- */
 PRINT 'Step 3 - Rename base system tables'
@@ -817,8 +854,8 @@ PRINT 'Step 7 - Populate code generation tables'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''5feedcc3-e731-46b0-b7fe-2027e1e9ded4'', N''[dbo].[udfsys_initialsfromforenames]({0},0)'', 1, 0, 0, N''Initials from Forenames'', NULL, 0, 0, 20, 0)'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''7d539e37-6d9f-44b3-a694-7db9638a2502'', N''CASE WHEN {0} < {1} THEN 0 ELSE CASE WHEN {0} > {2} THEN 0 ELSE 1 END END'', 0, 0, 0, N''Is Between'', NULL, 0, 0, 38, 0)'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''9171430a-6a23-48cb-bd11-4b025eaaceaf'', N''CASE WHEN {0} < {1} THEN 0 ELSE CASE WHEN {0} > {2} THEN 0 ELSE 1 END END'', 3, 0, 0, N''Is Date In Range'', NULL, 0, 0, NULL, 0)'
-	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''a9997816-add0-467f-999d-79ef30c2b713'', N''CASE WHEN [dbo].[udfsys_isfieldpopulated]({0})=1 THEN 0 ELSE 1 END'', 3, 0, 0, N''Is Field Empty'', NULL, 0, 0, 16, 0)'
-	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''8caf9f74-dee4-4618-8d59-e292847f202a'', N''[dbo].[udfsys_isfieldpopulated]({0})'', 3, 0, 0, N''Is Field Populated'', NULL, 0, 0, 61, 0)'
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''a9997816-add0-467f-999d-79ef30c2b713'', N''CASE [dbo].[udfsys_isfieldpopulated]({0}) WHEN 0 THEN 1 ELSE 0 END'', 3, 0, 0, N''Is Field Empty'', NULL, 0, 0, 16, 0)'
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''8caf9f74-dee4-4618-8d59-e292847f202a'', N''CASE [dbo].[udfsys_isfieldpopulated]({0}) WHEN 1 THEN 1 ELSE 0 END'', 3, 0, 0, N''Is Field Populated'', NULL, 0, 0, 61, 0)'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''63d90dd1-1fb0-42a7-8135-83cb25293d7b'', N''dbo.[udfsys_isovernightprocess]() '', 3, 0, 0, N''Is Overnight Process'', NULL, 0, 0, 50, 0)'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''94127e4f-8046-4516-83a0-2062dd0ea2e6'', N'''', 3, 0, 0, N''Is Personnel That Current User Reports To'', NULL, 0, 0, 72, 0)'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''17d67659-4e60-40ee-bb72-763f4f85a645'', N'''', 3, 0, 0, N''Is Personnel That Reports To Current User'', NULL, 0, 0, 68, 0)'
