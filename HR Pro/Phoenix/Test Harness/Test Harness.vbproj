@@ -1,0 +1,227 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{1D876F09-E9F9-41F2-ADF3-62666FC221D2}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <StartupObject>Test_Harness.My.MyApplication</StartupObject>
+    <RootNamespace>Test_Harness</RootNamespace>
+    <AssemblyName>Test Harness</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <MyType>WindowsForms</MyType>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DocumentationFile>Test Harness.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>Test Harness.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionExplicit>On</OptionExplicit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionCompare>Binary</OptionCompare>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionStrict>Off</OptionStrict>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionInfer>On</OptionInfer>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Infragistics2.Shared.v9.1, Version=9.1.20091.1000, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb" />
+    <Reference Include="Infragistics2.Win.UltraWinEditors.v9.1, Version=9.1.20091.1000, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL" />
+    <Reference Include="Infragistics2.Win.UltraWinGrid.v9.1, Version=9.1.20091.1000, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL" />
+    <Reference Include="Infragistics2.Win.v9.1, Version=9.1.20091.1000, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization.Formatters.Soap" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Drawing" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Windows.Forms" />
+    <Import Include="System.Linq" />
+    <Import Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Form1.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.Designer.vb">
+      <DependentUpon>Form1.vb</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Import &amp; Export Definitions\ImportObjects.Designer.vb">
+      <DependentUpon>ImportObjects.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Import &amp; Export Definitions\ImportObjects.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MapObjects.Designer.vb">
+      <DependentUpon>MapObjects.vb</DependentUpon>
+    </Compile>
+    <Compile Include="MapObjects.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="modGeneral.vb" />
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Objects\HCMObjectMapping.Designer.vb">
+      <DependentUpon>HCMObjectMapping.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Objects\HCMObjectMapping.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Objects\HCMObjectPane.Designer.vb">
+      <DependentUpon>HCMObjectPane.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Objects\HCMObjectPane.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ProgressBar.Designer.vb">
+      <DependentUpon>ProgressBar.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ProgressBar.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Import &amp; Export Definitions\ImportObjects.resx">
+      <DependentUpon>ImportObjects.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MapObjects.resx">
+      <DependentUpon>MapObjects.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="My Project\licenses.licx" />
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Objects\HCMObjectMapping.resx">
+      <DependentUpon>HCMObjectMapping.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Objects\HCMObjectPane.resx">
+      <DependentUpon>HCMObjectPane.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProgressBar.resx">
+      <DependentUpon>ProgressBar.vb</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DBScripter\Phoenix.vbproj">
+      <Project>{C475177F-6A94-43B0-BAEE-427642923108}</Project>
+      <Name>Phoenix</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="ADODB">
+      <Guid>{B691E011-1797-432E-907A-4D8C69339129}</Guid>
+      <VersionMajor>6</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="DAO">
+      <Guid>{00025E01-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>5</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="Microsoft.Office.Interop.Access.Dao">
+      <Guid>{4AC9E1DA-5BAD-4AC7-86E3-24F4CDCECA28}</Guid>
+      <VersionMajor>12</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
