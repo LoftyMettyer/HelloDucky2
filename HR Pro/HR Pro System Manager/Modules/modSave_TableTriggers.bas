@@ -895,19 +895,6 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
         "        --END" & vbNewLine
 
     End If
-    
-    sInsertTriggerSQL.Append vbNewLine & _
-      "        /* ----------------------- */" & vbNewLine & _
-      "        /* Diary Triggers.   */" & vbNewLine & _
-      "        /* ----------------------- */" & vbNewLine & _
-      "        IF @fValidRecord = 1" & vbNewLine & _
-      "        BEGIN" & vbNewLine & _
-      "            IF EXISTS (SELECT Name FROM sysobjects WHERE id = object_id('" & strDiaryProcName & "') AND sysstat & 0xf = 4)" & vbNewLine & _
-      "            BEGIN" & vbNewLine & _
-      "                EXEC " & strDiaryProcName & " @recordID" & vbNewLine & _
-      "            END" & vbNewLine & _
-      "        END" & vbNewLine
-        
         
     If LenB(gstrInsertEmailCode) = 0 Then
       sInsertTriggerSQL.Append _
@@ -1127,10 +1114,6 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
     
     'Auto Update for Destination Tables for Lookup Column Type Values
     Dim sAULookupCode As String
-    
-'    '-------------------------------------------------------------------------------------------------------
-'    sUpdateTriggerSQL.Append vbNewLine & _
-'      sGetRecordDesc
 
     'A date is required to pass to the diary subroutine.  This is used for the rebuild function.
     'This date indicates not to create diary entries prior to 1980
@@ -1139,12 +1122,9 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
       "        /* ----------------------- */" & vbNewLine & _
       "        /* Diary Triggers. */" & vbNewLine & _
       "        /* ----------------------- */" & vbNewLine & _
-      "        IF (@fValidRecord = 1) AND (@fUpdatingDateDependentColumns = 0)" & vbNewLine & _
+      "        IF EXISTS(SELECT Name FROM sysobjects WHERE id = object_id('" & strDiaryProcName & "') AND sysstat & 0xf = 4)" & vbNewLine & _
       "        BEGIN" & vbNewLine & _
-      "            IF EXISTS(SELECT Name FROM sysobjects WHERE id = object_id('" & strDiaryProcName & "') AND sysstat & 0xf = 4)" & vbNewLine & _
-      "            BEGIN" & vbNewLine & _
-      "                EXEC " & strDiaryProcName & " @recordID" & vbNewLine & _
-      "            END" & vbNewLine & _
+      "            EXEC " & strDiaryProcName & " @recordID;" & vbNewLine & _
       "        END" & vbNewLine
    
     
@@ -1213,8 +1193,6 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
       "    END" & vbNewLine & _
       "    IF @fValidRecord = 1 CLOSE @cursInsertedRecords;" & vbNewLine & _
       "    DEALLOCATE @cursInsertedRecords;" & vbNewLine
-'      "    --PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' End ([" & psTableName & "].[UPD_" & psTableName & "]';" & vbNewLine & vbNewLine & _
-'      "END" & vbNewLine
 
     ' Add special functions
     sUpdateTriggerSQL.Append sUpdateSpecialFunctionsCode2
