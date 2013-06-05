@@ -7,6 +7,13 @@ Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "OpenHR Framework Setup", "S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobileDesigner", "..\HR Pro Mobile Designer\MobileDesigner\MobileDesigner.csproj", "{6D7DBE8A-D215-4F00-9438-DD412B50E48B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{87D18D28-F34A-417E-B32E-1DD673B21C4D}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SourceCodeControl) = preSolution
 		SccNumberOfProjects = 4
