@@ -19,9 +19,10 @@ Namespace Things
     Public UDF As ScriptDB.GeneratedUDF
     Public ExpressionType As ScriptDB.ExpressionType
 
-    Public DependsOnColumns As New Things.Collection
+    '   Public DependsOnColumns As New Things.Collection
     Public Dependencies As New Things.Collection
-    Private mcolOrders As Things.Collection
+    Public ColumnRecursion As New Things.Collection
+    'Private mcolOrders As Things.Collection
 
     Public StatementObjects As New Things.Collection
 
@@ -30,7 +31,7 @@ Namespace Things
     Private Wheres As ArrayList
     Public Declarations As New ArrayList
     Public PreStatements As New ArrayList
-    Public ChildColumns As Things.Collection
+    '    Public ChildColumns As Things.Collection
 
     Private mcolLinesOfCode As ScriptDB.LinesOfCode
 
@@ -48,8 +49,8 @@ Namespace Things
     Public IsValid As Boolean = True
 
     Private mbCalculatePostAudit As Boolean = False
-    Private mbNeedsOriginalValue As Boolean = False
-    Private mbCheckTriggerStack As Boolean = False
+    '   Private mbNeedsOriginalValue As Boolean = False
+    '    Private mbCheckTriggerStack As Boolean = False
 
     Public Overrides ReadOnly Property Type As Enums.Type
       Get
@@ -509,6 +510,7 @@ Namespace Things
               ' There has to be a cleaner way, but once again I'm in  a hurry and this DOES work. Amazingly!
               ' I'm still in a hurry!!! :-(
               objCalculation = CType(objComponent.BaseExpression.BaseTable.Objects.GetObject(Enums.Type.Expression, objComponent.CalculationID), Things.Expression).Clone
+
               'objCalculation.StartOfPartNumbers = 0
               objCalculation.BaseExpression = objComponent.BaseExpression
               objComponent.Objects = objCalculation.Objects
@@ -600,6 +602,9 @@ Namespace Things
           Or Me.ExpressionType = ScriptDB.ExpressionType.RecordDescription) Then
         LineOfCode.Code = String.Format("ISNULL(@prm_{0},{1})", objThisColumn.Name, objThisColumn.SafeReturnType)
 
+        'ElseIf ColumnRecursion.Contains(objThisColumn) Then
+        '  LineOfCode.Code = String.Format("@part_{0}", StatementObjects.IndexOf(objThisColumn))
+
       ElseIf objThisColumn Is Me.AssociatedColumn _
         And Me.ExpressionType = ScriptDB.ExpressionType.ReferencedColumn Then
         LineOfCode.Code = String.Format("@prm_{0}", objThisColumn.Name)
@@ -608,31 +613,44 @@ Namespace Things
       ElseIf (Not objThisColumn.DefaultCalculation Is Nothing And Me.ExpressionType = ScriptDB.ExpressionType.ColumnDefault) Then
         LineOfCode.Code = String.Format("[dbo].[{0}](@prm_ID)", objThisColumn.Name)
 
+        '  ElseIf ColumnRecursion.Contains(objThisColumn) Then
+        '   LineOfCode.Code = String.Format("@part_{0}", StatementObjects.IndexOf(objThisColumn))
+
       ElseIf objThisColumn.IsCalculated And objThisColumn.Table Is Me.AssociatedColumn.Table _
           And Not Me.ExpressionType = ScriptDB.ExpressionType.ColumnFilter And Not Me.ExpressionType = ScriptDB.ExpressionType.Mask _
           And Not Me Is objThisColumn.Calculation Then
 
-        'If Dependencies.Contains(objThisColumn) Then
-        '  LineOfCode.Code = String.Format("@prm_{0}", objThisColumn.Name)
-        'Else
+        ' And Not ColumnRecursion.Contains(objThisColumn)
 
         If objThisColumn.Calculation Is Nothing Then
           objThisColumn.Calculation = objThisColumn.Table.GetObject(Type.Expression, objThisColumn.CalcID)
         End If
+
+        ' Protect against recursion
+        '    If ColumnRecursion.Contains(objThisColumn) Then
+
+        Debug.Print("jj")
+
+        '      Else
+        'Debug.Print("hhehh")
+
+        ColumnRecursion.AddIfNew(objThisColumn)
 
         iBackupType = objThisColumn.Calculation.ExpressionType
         objThisColumn.Calculation.ExpressionType = ScriptDB.ExpressionType.ReferencedColumn
         objThisColumn.Calculation.AssociatedColumn = objThisColumn
 
         objThisColumn.Calculation.StartOfPartNumbers = Me.StartOfPartNumbers + Declarations.Count
+        '          objThisColumn.Calculation.StatementObjects = Me.StatementObjects
+
+        objThisColumn.Calculation.ColumnRecursion = ColumnRecursion
         objThisColumn.Calculation.GenerateCode()
-
-
         objThisColumn.Calculation.ExpressionType = iBackupType
+
+        '    End If
+
         LineOfCode = AddCalculatedColumn(objThisColumn)
         objThisColumn.Tuning.IncrementSelectAsCalculation()
-
-        '   End If
 
       Else
 
@@ -1092,7 +1110,9 @@ Namespace Things
       If StatementObjects.Contains(ReferencedColumn) Then
         sCallingCode.Code = String.Format("@part_{0}", StatementObjects.IndexOf(ReferencedColumn))
 
-        '   Debug.Assert(sCallingCode.Code <> "@part_3")
+        '  '   Debug.Assert(sCallingCode.Code <> "@part_3")
+        'ElseIf ColumnRecursion.Contains(ReferencedColumn) Then
+        '  sCallingCode.Code = String.Format("@part_{0}", StatementObjects.IndexOf(ReferencedColumn))
 
       Else
 

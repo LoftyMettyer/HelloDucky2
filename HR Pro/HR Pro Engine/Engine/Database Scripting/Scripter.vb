@@ -1006,6 +1006,7 @@ Namespace ScriptDB
               '              If Not objColumn.Calculation.State = System.Data.DataRowState.Unchanged Or Globals.Options.RefreshObjects Then
 
               '              sObjectName = String.Format("{0}{1}.{2}", Consts.CalculationUDF, objTable.Name, objColumn.Name)
+              Debug.Assert(objColumn.Name <> "recur1")
 
               If Not objColumn.Calculation Is Nothing Then
                 objColumn.Calculation.ExpressionType = ScriptDB.ExpressionType.ColumnCalculation

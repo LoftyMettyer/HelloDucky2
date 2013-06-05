@@ -33,6 +33,25 @@ Namespace Things
 
     End Sub
 
+
+    ' Adds a unqiue object - scrolls through rather than uses contains because the type sent in could be a inherited type (there may be a better way to do this!)
+    Public Function Exists(ByRef [Thing] As Things.Base) As Boolean
+
+      Dim objThing As Things.Base
+      Dim bFound As Boolean = False
+
+      For Each objThing In Me.Items
+        If objThing.ID = Thing.ID And objThing.Type = Thing.Type Then
+          bFound = True
+          Exit For
+        End If
+      Next
+
+      Return bFound
+
+    End Function
+
+
     'TO DO - This can probably be done using some inbuilt property on the collection, but its late and I'm hungry, so this will have to do.
     Public Function MergeUnique(ByRef Items As Things.Collection)
 
