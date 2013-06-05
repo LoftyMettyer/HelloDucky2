@@ -229,7 +229,7 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:DB Scripter Setup"
+        "ProductName" = "8:HR Pro System Framework Setup"
         "ProductCode" = "8:{9CC98852-438E-48B8-9362-F9BD414891F5}"
         "PackageCode" = "8:{2477A4FD-9EF0-4105-BDAD-A5BBB358DB16}"
         "UpgradeCode" = "8:{416839EF-23B1-4660-A4AD-E908AB32842E}"
@@ -242,7 +242,7 @@
         "Manufacturer" = "8:Advanced Business and Software Solutions Limited"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
-        "Title" = "8:DB Scripter Setup"
+        "Title" = "8:HR Pro System Framework Setup"
         "Subject" = "8:"
         "ARPCONTACT" = "8:Advanced Business and Software Solutions Limited"
         "Keywords" = "8:"

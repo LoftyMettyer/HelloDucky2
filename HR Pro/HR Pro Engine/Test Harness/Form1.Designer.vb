@@ -181,7 +181,7 @@ Partial Class Form1
     Me.txtDatabase.Name = "txtDatabase"
     Me.txtDatabase.Size = New System.Drawing.Size(100, 20)
     Me.txtDatabase.TabIndex = 15
-    Me.txtDatabase.Text = "getchild3"
+    Me.txtDatabase.Text = "getchild4"
     '
     'Button8
     '
