@@ -4515,6 +4515,7 @@ Public Sub GetObjectOwners(ByRef theCombo As ComboBox, UtilityType As String)
 
   Dim rsTemp As ADODB.Recordset
   Dim iListIndex As Integer
+  Dim lngCount As Long
        
   theCombo.Clear
        
@@ -4527,6 +4528,7 @@ Public Sub GetObjectOwners(ByRef theCombo As ComboBox, UtilityType As String)
   theCombo.ItemData(theCombo.NewIndex) = 1
   
   iListIndex = theCombo.NewIndex
+  lngCount = 2
        
   Set rsTemp = gobjDataAccess.OpenRecordset("SELECT DISTINCT username FROM ASRSysAllObjectNames WHERE NOT NULLIF(username,'') = '' AND username <> '" & gsUserName & "' ORDER BY username" _
       , adOpenForwardOnly, adLockReadOnly)
@@ -4535,9 +4537,10 @@ Public Sub GetObjectOwners(ByRef theCombo As ComboBox, UtilityType As String)
     rsTemp.MoveFirst
     Do While Not rsTemp.EOF
       theCombo.AddItem rsTemp.Fields("username").Value
-      theCombo.ItemData(theCombo.NewIndex) = 2
+      theCombo.ItemData(theCombo.NewIndex) = lngCount
       
       rsTemp.MoveNext
+      lngCount = lngCount + 1
     Loop
   End If
   
