@@ -15,6 +15,12 @@
     End Get
   End Property
 
+    'Public ReadOnly Property OrderFilters() As Things.Collection
+    '  Get
+    '    Return Me.Objects(Things.Type.Expression)
+    '  End Get
+    'End Property
+
   End Class
 
 End Namespace

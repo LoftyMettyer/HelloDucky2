@@ -147,7 +147,7 @@ Namespace ScriptDB
             "    @searchexpression AS nvarchar(MAX)," & vbNewLine & _
             "    @returncolumnid AS varchar(17))" & vbNewLine & _
             "RETURNS nvarchar(MAX)" & vbNewLine & _
-            "WITH SCHEMABINDING" & vbNewLine & _
+            "--WITH SCHEMABINDING" & vbNewLine & _
             "AS" & vbNewLine & "BEGIN" & vbNewLine & _
             "    DECLARE @result nvarchar(MAX);" & vbNewLine & _
             "    SET @result = '';" & vbNewLine & vbNewLine & _

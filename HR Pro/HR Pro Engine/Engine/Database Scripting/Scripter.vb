@@ -468,8 +468,10 @@ Namespace ScriptDB
             If Not objColumn.State = System.Data.DataRowState.Deleted Then
 
               If objColumn.IsCalculated Then
-                objColumn.Calculation.ExpressionType = ScriptDB.ExpressionType.ColumnCalculation
-                objColumn.Calculation.AssociatedColumn = objColumn
+                '                objColumn.Calculation.ExpressionType = ScriptDB.ExpressionType.ColumnCalculation
+                '               objColumn.Calculation.AssociatedColumn = objColumn
+                '              objColumn.Calculation.GenerateCode()
+                objColumn.Calculation.ExpressionType = ExpressionType.ColumnCalculation
                 objColumn.Calculation.GenerateCode()
 
                 If objColumn.CalculateIfEmpty Then
@@ -871,12 +873,12 @@ Namespace ScriptDB
 
       Dim bOK As Boolean = True
       Dim sObjectName As String = String.Empty
+      Dim objTableOrderFilter As Things.TableOrderFilter
 
       Try
 
         ' Drop objects first (for schemabinding purposes)
         For Each objTable In Globals.Things
-
           For Each objColumn In objTable.Columns
             sObjectName = String.Format("{0}{1}.{2}", Consts.CalculationUDF, objTable.Name, objColumn.Name)
             ScriptDB.DropUDF("dbo", sObjectName)
@@ -921,18 +923,12 @@ Namespace ScriptDB
 
                 sObjectName = String.Format("{0}{1}.{2}", Consts.CalculationUDF, objTable.Name, objColumn.Name)
 
-                Debug.Assert(sObjectName <> "udfcalc_Table1.divby0_triggerval")
+                '  Debug.Assert(sObjectName <> "udfcalc_Table1.divby0_triggerval")
 
                 If Not objColumn.Calculation Is Nothing Then
                   objColumn.Calculation.ExpressionType = ScriptDB.ExpressionType.ColumnCalculation
                   objColumn.Calculation.AssociatedColumn = objColumn
                   objColumn.Calculation.GenerateCode()
-
-                  ' Script the expression (generate a code stub if error)
-                  If Not Globals.CommitDB.ScriptStatement(objColumn.Calculation.UDF.Code) Then
-                    Globals.CommitDB.ScriptStatement(objColumn.Calculation.UDF.CodeStub)
-                  End If
-
                 End If
 
               End If
@@ -940,6 +936,29 @@ Namespace ScriptDB
           Next
 
         Next
+
+        ' Generate any table UDFs
+        For Each objTable In Globals.Things
+          For Each objTableOrderFilter In objTable.Objects(Things.Type.TableOrderFilter)
+            objTableOrderFilter.GenerateCode()
+            ScriptDB.DropUDF("dbo", objTableOrderFilter.Name)
+            Globals.CommitDB.ScriptStatement(objTableOrderFilter.UDF.Code)
+          Next
+        Next
+
+        ' Script the column calculations
+        For Each objTable In Globals.Things
+          For Each objColumn In objTable.Columns
+            'objColumn.Calculation.GenerateCode()
+            If objColumn.IsCalculated Then
+              If Not Globals.CommitDB.ScriptStatement(objColumn.Calculation.UDF.Code) Then
+                Globals.CommitDB.ScriptStatement(objColumn.Calculation.UDF.CodeStub)
+              End If
+            End If
+          Next
+        Next
+
+
 
       Catch ex As Exception
         Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.UDFs, sObjectName, HRProEngine.ErrorHandler.Severity.Error, ex.Message, vbNullString)

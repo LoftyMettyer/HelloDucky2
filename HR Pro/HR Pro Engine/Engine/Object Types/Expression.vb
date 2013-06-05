@@ -31,6 +31,7 @@ Namespace Things
 
     Private mcolLinesOfCode As ScriptDB.LinesOfCode
 
+    Private mbRequiresRecordID As Boolean = False
     Private mbRequiresRowNumber As Boolean = False
     Private mbCalculatePostAudit As Boolean = False
     Private mbNeedsOriginalValue As Boolean = False
@@ -122,13 +123,17 @@ Namespace Things
       aryParameters2.Clear()
       aryParameters3.Clear()
 
-      ' Build the executeion code
+      Debug.Assert(Me.Name <> "col1_plus_hello")
+
+      ' Build the execution code
       SQLCode_AddCodeLevel(Me.Objects, mcolLinesOfCode)
 
       ' Always add the ID for the record
-      aryParameters1.Add("@prm_ID integer")
-      aryParameters2.Add("base.ID")
-      aryParameters3.Add("@prm_ID")
+      If mbRequiresRecordID Then
+        aryParameters1.Add("@prm_ID integer")
+        aryParameters2.Add("base.ID")
+        aryParameters3.Add("@prm_ID")
+      End If
 
       ' Some function require the row number of the record as a parameter
       If mbRequiresRowNumber Then
@@ -143,6 +148,7 @@ Namespace Things
       'aryParameters2.Add(String.Format("base.[{0}]", Me.AssociatedColumn.Name))
       'aryParameters3.Add("@originalvalue")
       ' End If
+
 
       ' Add other dependancies
       For Each objDependency In mcolDependencies
@@ -197,6 +203,9 @@ Namespace Things
             , String.Join(", ", aryDependsOn.ToArray()), Me.AssociatedColumn.Name, Me.AssociatedColumn.Table.PhysicalName)
       End If
 
+      ' Bypass the bypass as I'm not convined it works.
+      sBypassUDFCode = ""
+
       ' Calling statement
       With UDF
         .BoilerPlate = String.Format("---------------------------------------------------------------" & vbNewLine & _
@@ -210,13 +219,11 @@ Namespace Things
               , String.Join(", ", aryDependsOn.ToArray()), Now().ToString)
         .Comments = ""
 
-        .Declarations = String.Join(vbNewLine, Declarations.ToArray())
-        .Prerequisites = String.Join(vbNewLine, PreStatements.ToArray())
-        .JoinCode = String.Format("{0}", String.Join(vbNewLine, Joins.ToArray))
-        .FromCode = String.Format("{0}", String.Join(",", FromTables.ToArray))
-
-        .WhereCode = String.Join(" AND ", Wheres.ToArray())
-        .WhereCode = IIf(Len(.WhereCode) > 0, "WHERE " + .WhereCode, "")
+        .Declarations = IIf(Declarations.Count > 0, String.Join(vbNewLine, Declarations.ToArray()) & vbNewLine, "")
+        .Prerequisites = IIf(PreStatements.Count > 0, String.Join(vbNewLine, PreStatements.ToArray()) & vbNewLine, "")
+        .JoinCode = IIf(Joins.Count > 0, String.Format("{0}", String.Join(vbNewLine, Joins.ToArray)) & vbNewLine, "")
+        .FromCode = IIf(FromTables.Count > 0, String.Format("{0}", String.Join(",", FromTables.ToArray)) & vbNewLine, "")
+        .WhereCode = IIf(Wheres.Count > 0, String.Format("WHERE {0}", String.Join(" AND ", Wheres.ToArray)) & vbNewLine, "")
 
         Select Case Me.ExpressionType
 
@@ -228,24 +235,18 @@ Namespace Things
 
             .Code = String.Format("{11}CREATE FUNCTION {0}({1})" & vbNewLine & _
                            "RETURNS {2}" & vbNewLine & _
-                           "--WITH SCHEMABINDING" & vbNewLine & _
                            "{3}" & vbNewLine & _
                            "AS" & vbNewLine & "BEGIN" & vbNewLine & _
-                           "{12}" & vbNewLine & _
                            "    DECLARE @Result as {2};" & vbNewLine & vbNewLine & _
-                           "{13}" & vbNewLine & vbNewLine & _
-                           "{4}" & vbNewLine & vbNewLine & _
-                           "{5}" & vbNewLine & vbNewLine & _
+                           "{4}{5}" & _
                            "    -- Execute calculation code" & vbNewLine & _
-                           "SELECT @Result = {6}" & vbNewLine & _
-                           "                 {7}" & vbNewLine & _
-                           "                 {8}" & vbNewLine & _
-                           "                 {9}" & vbNewLine & _
+                           "    SELECT @Result = {6}" & vbNewLine & _
+                           "                 {7}{8}{9}" & vbNewLine & _
                            "    RETURN ISNULL(@Result, {10});" & vbNewLine & _
                            "END" _
                           , .Name, String.Join(", ", aryParameters1.ToArray()) _
-                          , Me.AssociatedColumn.DataTypeSyntax, "", .Declarations, .Prerequisites, .SelectCode, .FromCode, .JoinCode, .WhereCode _
-                          , Me.AssociatedColumn.SafeReturnType, .BoilerPlate, .Comments, sBypassUDFCode)
+                          , Me.AssociatedColumn.DataTypeSyntax, sOptions, .Declarations, .Prerequisites, .SelectCode, .FromCode, .JoinCode, .WhereCode _
+                          , Me.AssociatedColumn.SafeReturnType, .BoilerPlate, .Comments)
 
             .CodeStub = String.Format("CREATE FUNCTION {0}({1})" & vbNewLine & _
                            "RETURNS {2}" & vbNewLine & _
@@ -492,6 +493,8 @@ Namespace Things
       Dim ChildCodeCluster As ScriptDB.LinesOfCode
 
       Dim objRelation As Things.Relation
+      Dim objOrder As Things.TableOrder
+      Dim objOrderFilter As Things.TableOrderFilter
       Dim sRelationCode As String
       Dim sFromCode As String
       Dim sWhereCode As String
@@ -505,7 +508,6 @@ Namespace Things
       Dim iPartNumber As Integer
       Dim bIsSummaryColumn As Boolean
       Dim sColumnName As String
-      Dim bAddRelation As Boolean
       Dim bReverseOrder As Boolean
 
       Dim LineOfCode As ScriptDB.CodeElement
@@ -513,11 +515,7 @@ Namespace Things
       LineOfCode.CodeType = ScriptDB.ComponentTypes.Column
 
       ' there has to be a cleaner way, but for the moment put a dummy objbasecolumn in there so the function does not fail with a blah blah is not set to object error on the .TableID property.
-      If Not Component.BaseExpression Is Nothing Then
-        objBaseColumn = Component.BaseExpression.AssociatedColumn
-      Else
-        Debug.Print("no no no")
-      End If
+      objBaseColumn = Component.BaseExpression.AssociatedColumn
 
       If objBaseColumn Is Nothing Then
         objBaseColumn = New Things.Column
@@ -529,8 +527,6 @@ Namespace Things
 
       mcolDependencies.AddIfNew(objThisColumn.Table)
       mcolDependencies.AddIfNew(objThisColumn)
-
-      Me.BaseExpression.IsSchemaBound = False
 
       ' Is this column referencing the column that this udf is attaching itself to? (i.e. recursion)
       If Component.IsColumnByReference Then
@@ -574,11 +570,14 @@ Namespace Things
         objThisColumn.Calculation.ExpressionType = iBackupType
 
         Me.BaseExpression.IsComplex = True
+        Me.BaseExpression.IsSchemaBound = False
+        mbRequiresRecordID = True
 
         objThisColumn.Tuning.IncrementSelectAsCalculation()
 
-
       Else
+
+        Me.BaseExpression.IsSchemaBound = False
 
         'If is this column on the base table then add directly to the main execute statement,
         ' otherwise add it into child/parent statements array
@@ -614,6 +613,7 @@ Namespace Things
 
           sColumnFilter = String.Empty
           sColumnOrder = String.Empty
+          mbRequiresRecordID = True
           bIsSummaryColumn = False
           Me.BaseExpression.IsComplex = True
 
@@ -653,27 +653,35 @@ Namespace Things
 
           Else
 
+            objOrder = objThisColumn.Table.GetObject(Enums.Type.TableOrder, [Component].ColumnOrderID)
+            objExpression = objThisColumn.Table.Objects.GetObject(Things.Type.Expression, [Component].ColumnFilterID)
+
+            objOrderFilter = objThisColumn.Table.TableOrderFilter(objOrder, objExpression, objRelation)
+            'objOrderFilter.Relations.AddIfNew(objRelation)
+            objOrderFilter.IncludedColumns.AddIfNew(objThisColumn)
+            'iPartNumber = objOrderFilter.ComponentNumber
+
             'Me.AssociatedColumn.Table.DependsOnColumns.AddIfNew(objThisColumn)
 
-            ' Derive code for any filter on this column in a child table
-            If CInt([Component].ColumnFilterID) > 0 Then
+            '' Derive code for any filter on this column in a child table
+            'If CInt([Component].ColumnFilterID) > 0 Then
 
-              objExpression = New Things.Expression
-              ChildCodeCluster = New ScriptDB.LinesOfCode
+            '  objExpression = New Things.Expression
+            '  ChildCodeCluster = New ScriptDB.LinesOfCode
 
-              objExpression = objThisColumn.Table.Objects.GetObject(Things.Type.Expression, [Component].ColumnFilterID)
-              objExpression.ExpressionType = ScriptDB.ExpressionType.ColumnFilter
-              objExpression.AssociatedColumn = objThisColumn
-              objExpression.GenerateCode()
-              sColumnFilter = vbNewLine & "                AND (" & objExpression.UDF.SelectCode & " = 1)"
-              Declarations.AddRange(objExpression.PreStatements)
+            '  objExpression = objThisColumn.Table.Objects.GetObject(Things.Type.Expression, [Component].ColumnFilterID)
+            '  objExpression.ExpressionType = ScriptDB.ExpressionType.ColumnFilter
+            '  objExpression.AssociatedColumn = objThisColumn
+            '  objExpression.GenerateCode()
+            '  sColumnFilter = vbNewLine & "                AND (" & objExpression.UDF.SelectCode & " = 1)"
+            '  Declarations.AddRange(objExpression.PreStatements)
 
-              ' Add any join statements
-              If objExpression.Joins.Count > 0 Then
-                sColumnJoinCode = String.Join(vbNewLine, objExpression.Joins.ToArray())
-              End If
+            '  ' Add any join statements
+            '  If objExpression.Joins.Count > 0 Then
+            '    sColumnJoinCode = String.Join(vbNewLine, objExpression.Joins.ToArray())
+            '  End If
 
-            End If
+            'End If
 
             ' Add calculation for this foreign column to the pre-requisits array
             iPartNumber = Declarations.Count
@@ -711,11 +719,10 @@ Namespace Things
 
             End Select
 
-            ' Code for the order on this column in a child table
-            If CInt([Component].ColumnOrderID) > 0 Then
-              sColumnOrder = SQLCode_AddOrder(objThisColumn.Table, [Component].ColumnOrderID, bReverseOrder)
-              Globals.PerformanceIndexes.AddIfNew(objThisColumn)
-            End If
+
+            '   sColumnOrder = SQLCode_AddOrder(objThisColumn.Table, [Component].ColumnOrderID, bReverseOrder)
+            Globals.PerformanceIndexes.AddIfNew(objThisColumn)
+            '          End If
 
             ' Add to prereqistits arrays
             If bIsSummaryColumn Then
@@ -727,31 +734,34 @@ Namespace Things
                   , [CodeCluster].Indentation, iPartNumber, objThisColumn.DataTypeSyntax))
             End If
 
-            sPartCode = sPartCode & String.Format("{0}FROM [dbo].[{1}] base" & vbNewLine _
-                & "{5}" & vbNewLine _
-                & "{0}WHERE [id_{2}] = @prm_ID_{2} " & vbNewLine _
-                & "{0}{3}" & vbNewLine _
-                & "{0}{4}" & vbNewLine _
-                , [CodeCluster].Indentation _
-                , objThisColumn.Table.Name _
-                , CInt(Me.BaseTable.ID), sColumnFilter, sColumnOrder, sColumnJoinCode)
+            'sPartCode = sPartCode & String.Format("{0}FROM [dbo].[{1}] base" & vbNewLine _
+            '    & "{5}" & vbNewLine _
+            '    & "{0}WHERE [id_{2}] = @prm_ID_{2} " & vbNewLine _
+            '    & "{0}{3}" & vbNewLine _
+            '    & "{0}{4}" & vbNewLine _
+            '    , [CodeCluster].Indentation _
+            '    , objThisColumn.Table.Name _
+            '    , CInt(Me.BaseTable.ID), sColumnFilter, sColumnOrder, sColumnJoinCode)
+
+            sPartCode = sPartCode & String.Format("{0} FROM [dbo].[{1}](@prm_ID) base" _
+                , [CodeCluster].Indentation, objOrderFilter.Name)
 
             ' Add relation to the dependency stack
-            bAddRelation = True
-            For Each objDepends As Things.Base In mcolDependencies
-              If objDepends.Type = Enums.Type.Relation Then
-                If CType(objDepends, Things.Relation).ParentID = objRelation.ParentID Then
-                  bAddRelation = False
-                  Exit For
-                End If
-              End If
-            Next
+            'bAddRelation = True
+            'For Each objDepends As Things.Base In mcolDependencies
+            '  If objDepends.Type = Enums.Type.Relation Then
+            '    If CType(objDepends, Things.Relation).ParentID = objRelation.ParentID Then
+            '      bAddRelation = False
+            '      Exit For
+            '    End If
+            '  End If
+            'Next
 
-            If bAddRelation Then
-              If Not mcolDependencies.Contains(objRelation) Then
-                mcolDependencies.Add(objRelation)
-              End If
-            End If
+            'If bAddRelation Then
+            '  If Not mcolDependencies.Contains(objRelation) Then
+            '    mcolDependencies.Add(objRelation)
+            '  End If
+            'End If
 
             PreStatements.Add(sPartCode)
             LineOfCode.Code = String.Format("ISNULL(@part_{0},{1})", iPartNumber, objThisColumn.SafeReturnType)
@@ -940,33 +950,33 @@ Namespace Things
 
     End Sub
 
-    Public Function SQLCode_AddOrder(ByRef objTable As Things.Table, ByVal [OrderID] As HCMGuid, ByVal ReverseOrder As Boolean) As String
+    'Public Function SQLCode_AddOrder(ByRef objTable As Things.Table, ByVal [OrderID] As HCMGuid, ByVal ReverseOrder As Boolean) As String
 
-      Dim objOrderItems As Things.Collection
-      Dim objOrderItem As Things.TableOrderItem
-      Dim sReturn As String = String.Empty
-      Dim aryOrderBy As New ArrayList
+    '  Dim objOrderItems As Things.Collection
+    '  Dim objOrderItem As Things.TableOrderItem
+    '  Dim sReturn As String = String.Empty
+    '  Dim aryOrderBy As New ArrayList
 
-      objOrderItems = objTable.GetObject(Enums.Type.TableOrder, OrderID).Objects
+    '  objOrderItems = objTable.GetObject(Enums.Type.TableOrder, OrderID).Objects
 
-      For Each objOrderItem In objOrderItems
-        If objOrderItem.ColumnType = "O" Then
-          Select Case objOrderItem.Ascending
-            Case Enums.Order.Ascending
-              aryOrderBy.Add(String.Format("[{0}]{1}", objOrderItem.Column.Name, IIf(ReverseOrder, " DESC", " ASC")))
-            Case Else
-              aryOrderBy.Add(String.Format("[{0}]{1}", objOrderItem.Column.Name, IIf(ReverseOrder, " ASC", " DESC")))
-          End Select
-        End If
-      Next
+    '  For Each objOrderItem In objOrderItems
+    '    If objOrderItem.ColumnType = "O" Then
+    '      Select Case objOrderItem.Ascending
+    '        Case Enums.Order.Ascending
+    '          aryOrderBy.Add(String.Format("[{0}]{1}", objOrderItem.Column.Name, IIf(ReverseOrder, " DESC", " ASC")))
+    '        Case Else
+    '          aryOrderBy.Add(String.Format("[{0}]{1}", objOrderItem.Column.Name, IIf(ReverseOrder, " ASC", " DESC")))
+    '      End Select
+    '    End If
+    '  Next
 
-      If aryOrderBy.Count > 0 Then
-        sReturn = "ORDER BY " & String.Join(", ", aryOrderBy.ToArray())
-      End If
+    '  If aryOrderBy.Count > 0 Then
+    '    sReturn = "ORDER BY " & String.Join(", ", aryOrderBy.ToArray())
+    '  End If
 
-      Return sReturn
+    '  Return sReturn
 
-    End Function
+    'End Function
 
 #End Region
 

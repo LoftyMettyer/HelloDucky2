@@ -41,7 +41,7 @@
 
         sSQL = String.Format("IF EXISTS(SELECT o.[name] FROM sys.sysobjects o " & _
           "INNER JOIN sys.sysusers u ON o.[uid] = u.[uid] " & _
-          "WHERE o.[name] = '{1}' AND [type] = 'FN' AND u.[name] = '{0}')" & vbNewLine & _
+          "WHERE o.[name] = '{1}' AND [type] IN ('FN', 'TF') AND u.[name] = '{0}')" & vbNewLine & _
           " DROP FUNCTION [{0}].[{1}]", [Role], [ObjectName])
 
         ' Commit

@@ -142,7 +142,30 @@ Namespace Things
 
     End Function
 
+    Public Function TableOrderFilter(ByRef Order As Things.TableOrder, ByRef Filter As Things.Expression, ByRef Relation As Things.Relation) As Things.TableOrderFilter
 
+      Dim objChild As Things.Base
+      Dim objOFilter As Things.TableOrderFilter
+
+      For Each objChild In Objects(Things.Type.TableOrderFilter)
+        objOFilter = CType(objChild, Things.TableOrderFilter)
+        If objOFilter.Order Is Order And objOFilter.Filter Is Filter And objOFilter.Relation Is Relation Then
+          Return objOFilter
+        End If
+      Next
+
+      ' Not found - add to stack
+      objOFilter = New Things.TableOrderFilter
+      objOFilter.Order = Order
+      objOFilter.Filter = Filter
+      objOFilter.Relation = Relation
+      objOFilter.Parent = Me
+      objOFilter.ComponentNumber = Objects(Things.Type.TableOrderFilter).Count + 1
+      Me.Objects.Add(objOFilter)
+
+      Return objOFilter
+
+    End Function
 
 #End Region
 
