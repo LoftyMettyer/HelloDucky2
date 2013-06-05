@@ -142,6 +142,7 @@ Begin VB.Form frmScrEdit
             Width           =   4550
             Begin VB.CommandButton cmdIconClear 
                Caption         =   "O"
+               Enabled         =   0   'False
                BeginProperty Font 
                   Name            =   "Wingdings 2"
                   Size            =   20.25
@@ -973,7 +974,7 @@ Private Sub RefreshDefinitionTab()
   'NPG20080124 Fault 12870
   ' cmdOrder.Enabled = (chkSSIntranet.Value = vbUnchecked)
   cmdIcon.Enabled = (chkSSIntranet.value = vbUnchecked)
-  cmdIconClear.Enabled = (chkSSIntranet.value = vbUnchecked)
+  cmdIconClear.Enabled = (chkSSIntranet.value = vbUnchecked And Trim(txtIcon.Text) <> vbNullString)
   
   'JPD 20050111 Fault 9697
   chkSSIntranet.Enabled = (chkQuickEntry.value = vbUnchecked) _
@@ -1013,6 +1014,10 @@ Private Sub RefreshHistoryScreensTab()
     Next iLoop
   End If
   
+End Sub
+
+Private Sub txtIcon_Change()
+  cmdIconClear.Enabled = (chkSSIntranet.value = vbUnchecked And Trim(txtIcon.Text) <> vbNullString)
 End Sub
 
 Private Sub txtIcon_GotFocus()
