@@ -1961,7 +1961,7 @@ Private Sub RefreshControls()
 
   End Select
 
-  cmdOk.Enabled = mfChanged
+  cmdOK.Enabled = mfChanged
   cmdPreview.Enabled = (cboSecurityGroup.Text <> "(All Groups)")
 
 End Sub
@@ -2502,10 +2502,10 @@ Private Sub cmdAddButtonLink_Click()
         & vbTab & .chkFormatting.value & vbTab & .spnDBValueDecimals.value & vbTab & .chkDBVaUseThousandSeparator.value _
         & vbTab & .txtDBValuePrefix.Text & vbTab & .txtDBValueSuffix.Text _
         & vbTab & .chkConditionalFormatting.value _
-        & vbTab & .cboDBValCFOperator(0).Text & vbTab & .txtDBValCFValue(0).Text & vbTab & .cboDBValCFStyle(0).Text & vbTab & .txtDBValCFColour(0).Text _
-        & vbTab & .cboDBValCFOperator(0).Text & vbTab & .txtDBValCFValue(0).Text & vbTab & .cboDBValCFStyle(0).Text & vbTab & .txtDBValCFColour(0).Text _
-        & vbTab & .cboDBValCFOperator(0).Text & vbTab & .txtDBValCFValue(0).Text & vbTab & .cboDBValCFStyle(0).Text & vbTab & .txtDBValCFColour(0).Text _
-        & vbTab & .txtSeparatorColour.Text & vbTab & .InitialDisplayMode & vbTab & .Chart_TableID_2 & vbTab & .Chart_ColumnID_2 & vbTab & .Chart_TableID_3 _
+        & vbTab & .ConditionalFormatting_Operator_1 & vbTab & .ConditionalFormatting_Value_1 & vbTab & .ConditionalFormatting_Style_1 & vbTab & .ConditionalFormatting_Colour_1 _
+        & vbTab & .ConditionalFormatting_Operator_2 & vbTab & .ConditionalFormatting_Value_2 & vbTab & .ConditionalFormatting_Style_2 & vbTab & .ConditionalFormatting_Colour_2 _
+        & vbTab & .ConditionalFormatting_Operator_3 & vbTab & .ConditionalFormatting_Value_3 & vbTab & .ConditionalFormatting_Style_3 & vbTab & .ConditionalFormatting_Colour_3 _
+        & vbTab & .SeparatorBorderColour & vbTab & .InitialDisplayMode & vbTab & .Chart_TableID_2 & vbTab & .Chart_ColumnID_2 & vbTab & .Chart_TableID_3 _
         & vbTab & .Chart_ColumnID_3 & vbTab & .Chart_SortOrderID & vbTab & .Chart_SortDirection & vbTab & .Chart_ColourID
 
       For iLoop = 0 To cboButtonLinkView.ListCount - 1

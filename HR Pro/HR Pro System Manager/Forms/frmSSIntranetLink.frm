@@ -4366,7 +4366,7 @@ End Property
 Public Property Let ConditionalFormatting_Operator_1(ByVal psNewValue As String)
   Dim iLoop As Integer
 
-  If (optLink(SSINTLINKDB_VALUE).value And psNewValue <> vbNullString) Then
+  If (optLink(SSINTLINKDB_VALUE).value And psNewValue <> vbNullString And chkConditionalFormatting) Then
     For iLoop = 0 To cboDBValCFOperator(0).ListCount - 1
       If cboDBValCFOperator(0).List(iLoop) = psNewValue Then
         cboDBValCFOperator(0).ListIndex = iLoop
@@ -4383,7 +4383,7 @@ Public Property Get ConditionalFormatting_Value_1() As String
 End Property
 
 Public Property Let ConditionalFormatting_Value_1(ByVal psNewValue As String)
-  txtDBValCFValue(0).Text = IIf(miLinkType = SSINTLINK_BUTTON, psNewValue, "")
+  If chkConditionalFormatting Then txtDBValCFValue(0).Text = IIf(miLinkType = SSINTLINK_BUTTON, psNewValue, "")
 End Property
 
 Public Property Get ConditionalFormatting_Style_1() As String
@@ -4393,7 +4393,7 @@ End Property
 Public Property Let ConditionalFormatting_Style_1(ByVal psNewValue As String)
   Dim iLoop As Integer
 
-  If (optLink(SSINTLINKDB_VALUE).value And psNewValue <> vbNullString) Then
+  If (optLink(SSINTLINKDB_VALUE).value And psNewValue <> vbNullString And chkConditionalFormatting) Then
     For iLoop = 0 To cboDBValCFStyle(0).ListCount - 1
       If cboDBValCFStyle(0).List(iLoop) = psNewValue Then
         cboDBValCFStyle(0).ListIndex = iLoop
@@ -4410,8 +4410,10 @@ Public Property Get ConditionalFormatting_Colour_1() As String
 End Property
 
 Public Property Let ConditionalFormatting_Colour_1(ByVal psNewValue As String)
-  txtDBValCFColour(0).BackColor = IIf(psNewValue <> vbNullString, UI.HexToSysColor(psNewValue), vbWindowBackground)
-  txtDBValCFColour(0).ForeColor = UI.GetInverseColor(IIf(psNewValue <> vbNullString, UI.HexToSysColor(psNewValue), vbWindowBackground))
+  If chkConditionalFormatting Then
+    txtDBValCFColour(0).BackColor = IIf(psNewValue <> vbNullString, UI.HexToSysColor(psNewValue), vbWindowBackground)
+    txtDBValCFColour(0).ForeColor = UI.GetInverseColor(IIf(psNewValue <> vbNullString, UI.HexToSysColor(psNewValue), vbWindowBackground))
+  End If
 End Property
 
 Public Property Get ConditionalFormatting_Operator_2() As String
@@ -4421,7 +4423,7 @@ End Property
 Public Property Let ConditionalFormatting_Operator_2(ByVal psNewValue As String)
   Dim iLoop As Integer
 
-  If (optLink(SSINTLINKDB_VALUE).value And psNewValue <> vbNullString) Then
+  If (optLink(SSINTLINKDB_VALUE).value And psNewValue <> vbNullString And chkConditionalFormatting) Then
     For iLoop = 0 To cboDBValCFOperator(1).ListCount - 1
       If cboDBValCFOperator(1).List(iLoop) = psNewValue Then
         cboDBValCFOperator(1).ListIndex = iLoop
@@ -4438,7 +4440,7 @@ Public Property Get ConditionalFormatting_Value_2() As String
 End Property
 
 Public Property Let ConditionalFormatting_Value_2(ByVal psNewValue As String)
-  txtDBValCFValue(1).Text = IIf(miLinkType = SSINTLINK_BUTTON, psNewValue, "")
+  If chkConditionalFormatting Then txtDBValCFValue(1).Text = IIf(miLinkType = SSINTLINK_BUTTON, psNewValue, "")
 End Property
 
 Public Property Get ConditionalFormatting_Style_2() As String
@@ -4448,7 +4450,7 @@ End Property
 Public Property Let ConditionalFormatting_Style_2(ByVal psNewValue As String)
   Dim iLoop As Integer
 
-  If (optLink(SSINTLINKDB_VALUE).value And psNewValue <> vbNullString) Then
+  If (optLink(SSINTLINKDB_VALUE).value And psNewValue <> vbNullString And chkConditionalFormatting) Then
     For iLoop = 0 To cboDBValCFStyle(1).ListCount - 1
       If cboDBValCFStyle(1).List(iLoop) = psNewValue Then
         cboDBValCFStyle(1).ListIndex = iLoop
@@ -4465,8 +4467,10 @@ Public Property Get ConditionalFormatting_Colour_2() As String
 End Property
 
 Public Property Let ConditionalFormatting_Colour_2(ByVal psNewValue As String)
+If chkConditionalFormatting Then
   txtDBValCFColour(1).BackColor = IIf(psNewValue <> vbNullString, UI.HexToSysColor(psNewValue), vbWindowBackground)
   txtDBValCFColour(1).ForeColor = UI.GetInverseColor(IIf(psNewValue <> vbNullString, UI.HexToSysColor(psNewValue), vbWindowBackground))
+End If
 End Property
 
 Public Property Get ConditionalFormatting_Operator_3() As String
@@ -4476,7 +4480,7 @@ End Property
 Public Property Let ConditionalFormatting_Operator_3(ByVal psNewValue As String)
   Dim iLoop As Integer
 
-  If (optLink(SSINTLINKDB_VALUE).value And psNewValue <> vbNullString) Then
+  If (optLink(SSINTLINKDB_VALUE).value And psNewValue <> vbNullString And chkConditionalFormatting) Then
     For iLoop = 0 To cboDBValCFOperator(2).ListCount - 1
       If cboDBValCFOperator(2).List(iLoop) = psNewValue Then
         cboDBValCFOperator(2).ListIndex = iLoop
@@ -4493,7 +4497,7 @@ Public Property Get ConditionalFormatting_Value_3() As String
 End Property
 
 Public Property Let ConditionalFormatting_Value_3(ByVal psNewValue As String)
-  txtDBValCFValue(2).Text = IIf(miLinkType = SSINTLINK_BUTTON, psNewValue, "")
+  If chkConditionalFormatting Then txtDBValCFValue(2).Text = IIf(miLinkType = SSINTLINK_BUTTON, psNewValue, "")
 End Property
 
 Public Property Get ConditionalFormatting_Style_3() As String
@@ -4503,7 +4507,7 @@ End Property
 Public Property Let ConditionalFormatting_Style_3(ByVal psNewValue As String)
   Dim iLoop As Integer
 
-  If (optLink(SSINTLINKDB_VALUE).value And psNewValue <> vbNullString) Then
+  If (optLink(SSINTLINKDB_VALUE).value And psNewValue <> vbNullString And chkConditionalFormatting) Then
     For iLoop = 0 To cboDBValCFStyle(2).ListCount - 1
       If cboDBValCFStyle(2).List(iLoop) = psNewValue Then
         cboDBValCFStyle(2).ListIndex = iLoop
@@ -4518,8 +4522,10 @@ Public Property Get ConditionalFormatting_Colour_3() As String
 End Property
 
 Public Property Let ConditionalFormatting_Colour_3(ByVal psNewValue As String)
+If chkConditionalFormatting Then
   txtDBValCFColour(2).BackColor = IIf(psNewValue <> vbNullString, UI.HexToSysColor(psNewValue), vbWindowBackground)
   txtDBValCFColour(2).ForeColor = UI.GetInverseColor(IIf(psNewValue <> vbNullString, UI.HexToSysColor(psNewValue), vbWindowBackground))
+End If
 End Property
 
 Public Property Get SeparatorBorderColour() As String
