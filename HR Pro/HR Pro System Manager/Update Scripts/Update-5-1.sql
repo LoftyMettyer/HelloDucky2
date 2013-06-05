@@ -764,6 +764,12 @@ PRINT 'Step - Menu & Category enhancements'
 		GRANT INSERT, UPDATE, SELECT, DELETE ON dbo.[tbsys_userusage] TO [ASRSysGroup];
 	END
 
+	IF NOT EXISTS(SELECT ID FROM syscolumns	WHERE ID = (SELECT ID FROM sysobjects where [name] = 'tbsys_userusage') AND [name] = 'lastaction')
+	BEGIN
+		EXEC sp_executesql N'ALTER TABLE dbo.[tbsys_userusage] ADD [lastaction] integer NULL;';
+		EXEC sp_executesql N'UPDATE dbo.[tbsys_userusage] SET [lastaction] = 16384;';
+	END
+
 	IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = object_ID(N'tbsys_userfavourites') AND type in (N'U'))
 	BEGIN
 		EXEC sp_executesql N'CREATE TABLE [tbsys_userfavourites](
@@ -776,7 +782,7 @@ PRINT 'Step - Menu & Category enhancements'
 
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spstat_updateobjectusage]') AND xtype = 'P')
 		DROP PROCEDURE [dbo].[spstat_updateobjectusage];
-	EXEC sp_executesql N'CREATE PROCEDURE dbo.[spstat_updateobjectusage](@objecttype integer, @objectid integer)
+	EXEC sp_executesql N'CREATE PROCEDURE [dbo].[spstat_updateobjectusage](@objecttype integer, @objectid integer, @lastaction integer)
 	AS	
 	BEGIN	
 		SET NOCOUNT ON;
@@ -787,13 +793,13 @@ PRINT 'Step - Menu & Category enhancements'
 
 		IF NOT EXISTS(SELECT [objectid] FROM dbo.[tbsys_userusage] WHERE [objecttype] = @objecttype AND [objectid] = @objectID AND [username] = @sUsername)
 		BEGIN
-			INSERT tbsys_userusage (objecttype, objectid, username, lastrun, runcount)
-				VALUES (@objecttype, @objectID, @sUsername , GETDATE(), 1)
+			INSERT tbsys_userusage (objecttype, objectid, username, lastrun, runcount, [lastaction])
+				VALUES (@objecttype, @objectID, @sUsername , GETDATE(), 1, @lastaction)
 		END
 		ELSE
 		BEGIN
 			UPDATE dbo.[tbsys_userusage] SET [lastrun] = GETDATE(), [runcount] = [runcount] + 1
-				WHERE [objecttype] = @objecttype AND [objectid] = @objectID AND [username] = @sUsername
+				WHERE [objecttype] = @objecttype AND [objectid] = @objectID AND [username] = @sUsername AND [lastaction] = @lastaction
 		END
 
 	END';
