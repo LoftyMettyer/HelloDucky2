@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{604A59D5-2409-101D-97D5-46626B63EF2D}#1.0#0"; "TDBNumbr.ocx"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
@@ -74,11 +74,10 @@ Begin VB.Form frmWorkflowTimeout
       _ExtentY        =   17277
       _Version        =   393216
       Style           =   1
-      Tab             =   2
       TabHeight       =   520
       TabCaption(0)   =   "&General"
       TabPicture(0)   =   "frmWorkflowTimeout.frx":000C
-      Tab(0).ControlEnabled=   0   'False
+      Tab(0).ControlEnabled=   -1  'True
       Tab(0).Control(0)=   "picTabContainer(0)"
       Tab(0).Control(0).Enabled=   0   'False
       Tab(0).ControlCount=   1
@@ -90,7 +89,7 @@ Begin VB.Form frmWorkflowTimeout
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "&Data"
       TabPicture(2)   =   "frmWorkflowTimeout.frx":0044
-      Tab(2).ControlEnabled=   -1  'True
+      Tab(2).ControlEnabled=   0   'False
       Tab(2).Control(0)=   "picTabContainer(2)"
       Tab(2).Control(0).Enabled=   0   'False
       Tab(2).ControlCount=   1
@@ -99,7 +98,7 @@ Begin VB.Form frmWorkflowTimeout
          BorderStyle     =   0  'None
          Height          =   9210
          Index           =   2
-         Left            =   150
+         Left            =   -74850
          ScaleHeight     =   9210
          ScaleWidth      =   8400
          TabIndex        =   117
@@ -928,13 +927,42 @@ Begin VB.Form frmWorkflowTimeout
          BorderStyle     =   0  'None
          Height          =   9300
          Index           =   0
-         Left            =   -74850
+         Left            =   150
          ScaleHeight     =   9300
          ScaleWidth      =   8400
          TabIndex        =   0
          TabStop         =   0   'False
          Top             =   400
          Width           =   8400
+         Begin VB.Frame fraHotSpot 
+            Caption         =   "HotSpot :"
+            Height          =   1095
+            Left            =   1200
+            TabIndex        =   184
+            Top             =   3360
+            Width           =   6615
+            Begin VB.ComboBox cboHotSpotIdentifier 
+               Height          =   315
+               ItemData        =   "frmWorkflowTimeout.frx":0088
+               Left            =   3360
+               List            =   "frmWorkflowTimeout.frx":0092
+               Style           =   2  'Dropdown List
+               TabIndex        =   185
+               Top             =   360
+               Visible         =   0   'False
+               Width           =   2895
+            End
+            Begin VB.Label lblHotSpotIdentifier 
+               AutoSize        =   -1  'True
+               Caption         =   "HotSpot Identifier : "
+               Height          =   195
+               Left            =   360
+               TabIndex        =   186
+               Top             =   480
+               Visible         =   0   'False
+               Width           =   1710
+            End
+         End
          Begin VB.Frame fraIdentification 
             Caption         =   "Identification :"
             Height          =   3700
@@ -1083,9 +1111,9 @@ Begin VB.Form frmWorkflowTimeout
             Width           =   7400
             Begin VB.ComboBox cboWidthBehaviour 
                Height          =   315
-               ItemData        =   "frmWorkflowTimeout.frx":0088
+               ItemData        =   "frmWorkflowTimeout.frx":00A3
                Left            =   1800
-               List            =   "frmWorkflowTimeout.frx":0092
+               List            =   "frmWorkflowTimeout.frx":00AD
                Style           =   2  'Dropdown List
                TabIndex        =   38
                Top             =   2670
@@ -1094,9 +1122,9 @@ Begin VB.Form frmWorkflowTimeout
             End
             Begin VB.ComboBox cboHeightBehaviour 
                Height          =   315
-               ItemData        =   "frmWorkflowTimeout.frx":00A3
+               ItemData        =   "frmWorkflowTimeout.frx":00BE
                Left            =   1800
-               List            =   "frmWorkflowTimeout.frx":00AD
+               List            =   "frmWorkflowTimeout.frx":00C8
                Style           =   2  'Dropdown List
                TabIndex        =   34
                Top             =   2280
@@ -1105,9 +1133,9 @@ Begin VB.Form frmWorkflowTimeout
             End
             Begin VB.ComboBox cboHOffsetBehaviour 
                Height          =   315
-               ItemData        =   "frmWorkflowTimeout.frx":00BE
+               ItemData        =   "frmWorkflowTimeout.frx":00D9
                Left            =   5295
-               List            =   "frmWorkflowTimeout.frx":00C8
+               List            =   "frmWorkflowTimeout.frx":00E3
                Style           =   2  'Dropdown List
                TabIndex        =   32
                Top             =   1110
@@ -1116,9 +1144,9 @@ Begin VB.Form frmWorkflowTimeout
             End
             Begin VB.ComboBox cboVOffsetBehaviour 
                Height          =   315
-               ItemData        =   "frmWorkflowTimeout.frx":00D9
+               ItemData        =   "frmWorkflowTimeout.frx":00F4
                Left            =   5295
-               List            =   "frmWorkflowTimeout.frx":00E3
+               List            =   "frmWorkflowTimeout.frx":00FE
                Style           =   2  'Dropdown List
                TabIndex        =   28
                Top             =   720
@@ -1390,9 +1418,9 @@ Begin VB.Form frmWorkflowTimeout
             Width           =   8000
             Begin VB.ComboBox cboFollowOnFormsMessageType 
                Height          =   315
-               ItemData        =   "frmWorkflowTimeout.frx":00F4
+               ItemData        =   "frmWorkflowTimeout.frx":010F
                Left            =   2700
-               List            =   "frmWorkflowTimeout.frx":00F6
+               List            =   "frmWorkflowTimeout.frx":0111
                Style           =   2  'Dropdown List
                TabIndex        =   57
                Top             =   1840
@@ -1401,9 +1429,9 @@ Begin VB.Form frmWorkflowTimeout
             End
             Begin VB.ComboBox cboSavedForLaterMessageType 
                Height          =   315
-               ItemData        =   "frmWorkflowTimeout.frx":00F8
+               ItemData        =   "frmWorkflowTimeout.frx":0113
                Left            =   2700
-               List            =   "frmWorkflowTimeout.frx":00FA
+               List            =   "frmWorkflowTimeout.frx":0115
                Style           =   2  'Dropdown List
                TabIndex        =   54
                Top             =   1450
@@ -1412,9 +1440,9 @@ Begin VB.Form frmWorkflowTimeout
             End
             Begin VB.ComboBox cboCompletionMessageType 
                Height          =   315
-               ItemData        =   "frmWorkflowTimeout.frx":00FC
+               ItemData        =   "frmWorkflowTimeout.frx":0117
                Left            =   2700
-               List            =   "frmWorkflowTimeout.frx":00FE
+               List            =   "frmWorkflowTimeout.frx":0119
                Style           =   2  'Dropdown List
                TabIndex        =   51
                Top             =   1060
@@ -1486,9 +1514,9 @@ Begin VB.Form frmWorkflowTimeout
             End
             Begin VB.ComboBox cboTimeoutPeriod 
                Height          =   315
-               ItemData        =   "frmWorkflowTimeout.frx":0100
+               ItemData        =   "frmWorkflowTimeout.frx":011B
                Left            =   2715
-               List            =   "frmWorkflowTimeout.frx":0110
+               List            =   "frmWorkflowTimeout.frx":012B
                Style           =   2  'Dropdown List
                TabIndex        =   44
                Top             =   300
@@ -1744,9 +1772,9 @@ Begin VB.Form frmWorkflowTimeout
             End
             Begin VB.ComboBox cboAlignment 
                Height          =   315
-               ItemData        =   "frmWorkflowTimeout.frx":0138
+               ItemData        =   "frmWorkflowTimeout.frx":0153
                Left            =   5300
-               List            =   "frmWorkflowTimeout.frx":0148
+               List            =   "frmWorkflowTimeout.frx":0163
                Style           =   2  'Dropdown List
                TabIndex        =   67
                Top             =   300
@@ -1932,9 +1960,9 @@ Begin VB.Form frmWorkflowTimeout
             End
             Begin VB.ComboBox cboBackgroundStyle 
                Height          =   315
-               ItemData        =   "frmWorkflowTimeout.frx":0170
+               ItemData        =   "frmWorkflowTimeout.frx":018B
                Left            =   1935
-               List            =   "frmWorkflowTimeout.frx":0180
+               List            =   "frmWorkflowTimeout.frx":019B
                Style           =   2  'Dropdown List
                TabIndex        =   97
                Top             =   300
@@ -4158,6 +4186,86 @@ Private Sub cboBackgroundStyle_refresh(ByVal piCurrentValue As ASRBackStyleConst
 End Sub
 
 
+Private Sub cboHotSpotIdentifier_refresh(ByVal psCurrentValue As String)
+  
+  ' Populate the combo and select the current or default value.
+  Dim iLoop As Integer
+  Dim iIndex As Integer
+  Dim iDefaultIndex As Integer
+  Dim asItems() As String
+  ' Dim lngLookupFilterColumnType As DataTypes
+  Dim fItemOK As Boolean
+  Dim sItemDescription As String
+  
+  iIndex = -1
+  iDefaultIndex = 0
+
+  With cboHotSpotIdentifier
+    .Clear
+
+    .AddItem "<None>"
+    .ItemData(.NewIndex) = "0"
+    .ListIndex = 0
+      
+      asItems = mfrmCallingForm.CurrentElementDefinition.Items
+      
+      For iLoop = 1 To UBound(asItems, 2)
+        
+        Select Case asItems(2, iLoop)
+          Case giWFFORMITEM_FRAME
+            fItemOK = False
+
+          Case giWFFORMITEM_IMAGE
+            fItemOK = False
+          
+          Case giWFFORMITEM_PAGETAB
+            fItemOK = False
+
+          Case giWFFORMITEM_INPUTVALUE_GRID
+            fItemOK = False
+
+          Case giWFFORMITEM_LABEL
+            fItemOK = False
+
+          Case giWFFORMITEM_LINE
+            fItemOK = False
+
+          Case Else
+            fItemOK = True
+        
+        End Select
+
+        If fItemOK _
+          And (mctlSelectedControl.WFIdentifier <> asItems(9, iLoop)) Then
+          .AddItem asItems(9, iLoop)
+        End If
+      Next iLoop
+
+      ' Get the indexes of the required/default values
+      For iLoop = 0 To .ListCount - 1
+        If .List(iLoop) = psCurrentValue Then
+          iIndex = iLoop
+          Exit For
+        End If
+      Next iLoop
+
+      If iIndex < 0 Then
+        iIndex = iDefaultIndex
+      End If
+
+      .Enabled = (.ListCount > 0) And (Not mfReadOnly)
+      If .ListCount > 0 Then
+        .ListIndex = iIndex
+      End If
+
+    .BackColor = IIf(.Enabled, vbWindowBackground, vbButtonFace)
+    lblHotSpotIdentifier.Enabled = .Enabled
+  End With
+  
+  
+End Sub
+
+
 Private Sub cboTimeoutPeriod_refresh(ByVal piCurrentValue As TimeoutPeriod)
   ' Populate the combo and select the current or default value.
   Dim iLoop As Integer
@@ -5092,6 +5200,21 @@ Private Sub SaveProperties()
     varControl.WFFollowOnFormsMessage = IIf(fMessageOK, msFollowOnFormsMessage, "")
   End If
   
+  '--------------------------------------------------
+  ' HotSpot frame
+  '--------------------------------------------------
+  If WebFormItemHasProperty(miItemType, WFITEMPROP_HOTSPOT) Then
+    
+    If cboHotSpotIdentifier.ListCount > 0 Then
+      varControl.HotSpotIdentifier = cboHotSpotIdentifier.List(cboHotSpotIdentifier.ListIndex)
+    Else
+      varControl.HotSpotIdentifier = ""
+    End If
+    
+  End If
+  
+  
+  
   '++++++++++++++++++++++++++++++++++++++++++++++++++
   ' APPEARANCE TAB
   '++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -5810,6 +5933,11 @@ Private Sub cboHeightBehaviour_Click()
     miHeightBehaviour = cboHeightBehaviour.ItemData(cboHeightBehaviour.ListIndex)
     Changed = True
   End If
+End Sub
+
+Private Sub cboHotSpotIdentifier_Click()
+  Changed = True
+    
 End Sub
 
 Private Sub cboLookupColumn_Click()
@@ -8010,7 +8138,78 @@ ErrorTrap:
 End Function
 
 
+Private Function FormatScreen_Frame_HotSpot() As Boolean
+  ' Format the HOTSPOT frame on the GENERAL tab.
+  ' Return TRUE if the frame needs to be displayed
+  On Error GoTo ErrorTrap
+  
+  Dim fFrameNeeded As Boolean
+  Dim sngCurrentControlTop As Single
+  
+  fFrameNeeded = False
+  sngCurrentControlTop = YGAP_FRAME_CONTROL
+  
+  ' Format the HotsSpot controls if required.
+  If WebFormItemHasProperty(miItemType, WFITEMPROP_HOTSPOT) Then
+    fFrameNeeded = True
 
+    With lblHotSpotIdentifier
+      .Top = sngCurrentControlTop + YGAP_CONTROL_LABEL
+      .Left = X_COLUMN1
+      .Visible = True
+    End With
+
+    With cboHotSpotIdentifier
+      .Top = sngCurrentControlTop
+      .Left = X_COLUMN2
+      .Width = msngFrameWidth _
+        - .Left _
+        - X_COLUMN1
+      .Visible = True
+    
+      If miItemType <> giWFFORMITEM_FORM Then
+      'TODO
+        cboHotSpotIdentifier_refresh mctlSelectedControl.HotSpotIdentifier
+      End If
+    End With
+
+    sngCurrentControlTop = sngCurrentControlTop _
+      + YGAP_CONTROL_CONTROL
+  Else
+    lblHotSpotIdentifier.Visible = False
+    cboHotSpotIdentifier.Visible = False
+  End If
+
+
+  ' Format the frame
+  With fraHotSpot
+    If fFrameNeeded Then
+      .Height = sngCurrentControlTop + YGAP_CONTROL_FRAME
+      .Top = msngCurrentFrameTop
+      .Left = 0
+      .Width = msngFrameWidth
+
+      msngCurrentFrameTop = msngCurrentFrameTop _
+        + .Height _
+        + YGAP_FRAME_FRAME
+
+      If msngMaxFrameBottom < (.Top + .Height) Then
+        msngMaxFrameBottom = (.Top + .Height)
+      End If
+    End If
+
+    .Visible = fFrameNeeded
+  End With
+  
+TidyUpAndExit:
+  FormatScreen_Frame_HotSpot = fFrameNeeded
+  
+  Exit Function
+  
+ErrorTrap:
+  Resume TidyUpAndExit
+  
+End Function
 
 
 
@@ -10520,7 +10719,8 @@ Private Function FormatScreen_Tab(piTab As Integer) As Boolean
     Case miPAGE_GENERAL
       fTabNeeded = FormatScreen_Frame_Identification _
         Or FormatScreen_Frame_Display _
-        Or FormatScreen_Frame_Behaviour
+        Or FormatScreen_Frame_Behaviour _
+        Or FormatScreen_Frame_HotSpot
         
     Case miPAGE_APPEARANCE
       fTabNeeded = FormatScreen_Frame_Options _

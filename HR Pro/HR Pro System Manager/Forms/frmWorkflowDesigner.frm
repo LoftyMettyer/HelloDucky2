@@ -11446,7 +11446,7 @@ Private Sub Form_Load()
     End If
   End If
   
-  cmdOK.Enabled = IsNew
+  cmdOk.Enabled = IsNew
   
   scrollVertical.SmallChange = SMALLSCROLL
   scrollHorizontal.SmallChange = SMALLSCROLL
@@ -12294,6 +12294,7 @@ Private Function SaveElementsAndLinks() As Boolean
               .Fields("LookupFilterOperator") = asItems(68, iLoop)
               .Fields("LookupFilterValue") = asItems(69, iLoop)
               .Fields("LookupOrderID") = asItems(80, iLoop)
+              .Fields("HotSpotIdentifier") = asItems(81, iLoop)
             End If
             
             .Fields("CalcID") = val(asItems(56, iLoop))
@@ -13393,6 +13394,7 @@ Public Function LoadElementsAndLinks() As Boolean
                   asItems(68, lngArraySize) = IIf(IsNull(recWorkflowElementItemEdit.Fields("LookupFilterOperator").value), 0, recWorkflowElementItemEdit.Fields("LookupFilterOperator").value)
                   asItems(69, lngArraySize) = IIf(IsNull(recWorkflowElementItemEdit.Fields("LookupFilterValue").value), "", recWorkflowElementItemEdit.Fields("LookupFilterValue").value)
                   asItems(80, lngArraySize) = IIf(IsNull(recWorkflowElementItemEdit.Fields("LookupOrderID").value), 0, recWorkflowElementItemEdit.Fields("LookupOrderID").value)
+                  asItems(81, lngArraySize) = recWorkflowElementItemEdit.Fields("HotSpotIdentifier").value
 
                   If (recWorkflowElementItemEdit.Fields("itemType") = giWFFORMITEM_INPUTVALUE_FILEUPLOAD) Then
 
@@ -13720,13 +13722,13 @@ End Property
 Public Property Let IsChanged(pfNewValue As Boolean)
   mfChanged = pfNewValue
   mfPerge = pfNewValue
-  cmdOK.Enabled = mfChanged
+  cmdOk.Enabled = mfChanged
 End Property
 
 Public Sub SetChanged(pfPerge As Boolean)
   mfChanged = True
   mfPerge = (mfPerge Or pfPerge)
-  cmdOK.Enabled = mfChanged
+  cmdOk.Enabled = mfChanged
 End Sub
 
 Public Function IsUniqueIdentifier(psIdentifier As String, plngIgnoreElementIndex As Long) As Boolean

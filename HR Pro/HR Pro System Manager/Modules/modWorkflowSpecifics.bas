@@ -2202,6 +2202,9 @@ Public Function WebFormItemHasProperty(piItemType As WorkflowWebFormItemTypes, _
     Case WFITEMPROP_LOOKUPORDER ' 77
       fHasProperty = (piItemType = giWFFORMITEM_INPUTVALUE_LOOKUP)
       
+    Case WFITEMPROP_HOTSPOT ' 78
+      fHasProperty = (piItemType = giWFFORMITEM_FRAME)
+      
   End Select
   
   WebFormItemHasProperty = fHasProperty

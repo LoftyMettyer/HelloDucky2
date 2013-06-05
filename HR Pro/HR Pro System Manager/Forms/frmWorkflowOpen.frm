@@ -737,6 +737,7 @@ Private Sub cmdCopy_Click()
         recWorkflowElementItemEdit!LookupFilterOperator = .Fields("LookupFilterOperator")
         recWorkflowElementItemEdit!LookupFilterValue = .Fields("LookupFilterValue")
         recWorkflowElementItemEdit!LookupOrderID = .Fields("LookupOrderID")
+        recWorkflowElementItemEdit!HotSpotIdentifier = .Fields("HotSpotIdentifier")
         
         recWorkflowElementItemEdit!PageNo = .Fields("PageNo")
         recWorkflowElementItemEdit!ButtonStyle = .Fields("ButtonStyle")
