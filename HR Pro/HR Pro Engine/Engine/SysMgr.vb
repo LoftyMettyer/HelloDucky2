@@ -42,12 +42,12 @@ Public Class SysMgr
 
     Try
 
-      ' Clear any existing errors
-      Globals.ErrorLog.Clear()
-
       If Options Is Nothing Then
         Globals.Initialise()
       End If
+
+      ' Clear any existing errors
+      Globals.ErrorLog.Clear()
 
       Globals.MetadataDB = objMetadataDB
       Globals.CommitDB = mobjCommitDB
