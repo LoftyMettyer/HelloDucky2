@@ -552,7 +552,11 @@ Namespace Things
       '   If [Component].TableID = Me.AssociatedColumn.Table.ID Then
       'LineOfCode.Code = "@prm_ID"
       '   Else
-      LineOfCode.Code = String.Format("@prm_ID_{0}", CInt([Component].TableID))
+      If Me.ExpressionType = ScriptDB.ExpressionType.Mask Then
+        LineOfCode.Code = "@prm_ID"
+      Else
+        LineOfCode.Code = String.Format("@prm_ID_{0}", CInt([Component].TableID))
+      End If
       '  End If
 
       [CodeCluster].Add(LineOfCode)
@@ -628,8 +632,6 @@ Namespace Things
 
         ' Protect against recursion
         '    If ColumnRecursion.Contains(objThisColumn) Then
-
-        Debug.Print("jj")
 
         '      Else
         'Debug.Print("hhehh")
