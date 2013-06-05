@@ -104,7 +104,6 @@ End Property
 
 Public Property Let Read_Only(blnValue As Boolean)
   mblnReadOnly = blnValue
-  cmdSelect.Enabled = Not mblnReadOnly
 End Property
 
 Public Property Get ControlLevel() As Integer
@@ -300,6 +299,7 @@ Attribute Enabled.VB_Description = "Returns/sets a value that determines whether
   'imgImage.Enabled = New_Enabled
   'picPicture.Enabled = New_Enabled
   UserControl.Enabled = value
+  cmdSelect.Enabled = Not mblnReadOnly
   
   PropertyChanged "Enabled"
   
