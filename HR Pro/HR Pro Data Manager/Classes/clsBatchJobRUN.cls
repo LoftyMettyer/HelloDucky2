@@ -1030,144 +1030,154 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
     rsBatchDetails.MoveNext
   Loop
   
-  If gblnReportPackMode And fOK Then
+  If fOK And gblnReportPackMode Then
+  
     strNotes = ""
-  End If
-    
-  If gblnReportPackMode And fOK And Not blnRecords Then
-    strNotes = "No records meet selection criteria."
-  '4
-  'Insert TOC code here as all Report Pack Jobs Or Batch Jobs would be done by now
-  ElseIf gblnReportPackMode And fOK And blnOutputSave And blnOutputTOC Then
-    
-    Select Case lngOutputFormat
-      Case fmtHTML
-          FileNum = FreeFile()
-          LineCount = 1
-          'Read the contents of the HTML file
-          Open strOutputFilename For Input As #FileNum
+      
+    If Not blnRecords Then
+      strNotes = "No records meet selection criteria."
+      
+    ElseIf blnOutputSave And blnOutputTOC Then
+      'Insert TOC code here as all Report Pack Jobs Or Batch Jobs would be done by now
+      Select Case lngOutputFormat
+        Case fmtHTML
+            FileNum = FreeFile()
+            LineCount = 1
+            'Read the contents of the HTML file
+            Open strOutputFilename For Input As #FileNum
+                Do While Not EOF(FileNum)
+                  Line Input #FileNum, NextLine
+                  strReadInFileContents = strReadInFileContents & NextLine
+                  LineCount = LineCount + 1
+                Loop
+            Close #FileNum
+            'Write back the contents with our added TOC HTML
+            Open strOutputFilename For Output As #FileNum
+                strReadInFileContents = gstrHTMLOutputTOC & strReadInFileContents
+                Print #FileNum, strReadInFileContents
+            Close #FileNum
+          
+        Case fmtWordDoc
+          'Open word file
+          If GetTOCFile(strOutputFilename, fmtWordDoc) Then
+            InitialiseStyles
+            'mwrdApp.Visible = True
+            With mwrdApp.Selection
+              .HomeKey unit:=wdStory
+              'Insert TOC
+              With mwrdDoc
+                .TablesOfContents.Add Range:=mwrdApp.Selection.Range, RightAlignPageNumbers:=True, UseHeadingStyles:=True, UpperHeadingLevel:=1, LowerHeadingLevel:=3, IncludePageNumbers:=True, AddedStyles:="", UseHyperlinks:=True
+                .TablesOfContents(1).TabLeader = wdTabLeaderDots
+                .TablesOfContents.Format = wdIndexIndent
+              End With
+              .InsertBreak Type:=wdPageBreak
+              .MoveLeft unit:=wdCharacter
+              .HomeKey unit:=wdStory, Extend:=wdExtend
+              ApplyStylesToRange mwrdApp.Selection.Range, mcolStyles("Data"), True
+              .HomeKey unit:=wdStory
+              
+              'Insert TOC header text
+              .TypeParagraph: .TypeParagraph
+              .HomeKey unit:=wdStory
+              .TypeText Text:="Table of Contents"
+              .HomeKey unit:=wdLine, Extend:=wdExtend
+              ApplyStylesToRange mwrdApp.Selection.Range, mcolStyles("Heading"), True
+              .Font.Size = 14
+              
+              'Insert Report Title or Report Pack name if blank
+              .HomeKey unit:=wdStory
+              .InsertBreak Type:=wdPageBreak
+              .HomeKey unit:=wdStory
+              .TypeParagraph: .TypeParagraph: .TypeParagraph: .TypeParagraph
+              If strOutputReportPackTitle = vbNullString Then
+                .TypeText Text:=sBatchJobName
+              Else
+                .TypeText Text:=strOutputReportPackTitle
+              End If
+              .HomeKey unit:=wdLine, Extend:=wdExtend
+              ApplyStylesToRange mwrdApp.Selection.Range, mcolStyles("Heading"), True
+              .Font.Size = 20
+              .MoveLeft unit:=wdCharacter
+              
+              'Update TOC page numbers
+              mwrdDoc.TablesOfContents(1).UpdatePageNumbers
+            End With
+            mwrdDoc.Save
+            mwrdDoc.Close
+            mwrdApp.Quit
+          Else
+            MsgBox mstrErrorMessage, vbExclamation, "Report Pack"
+          End If
+      End Select
+      
+    ElseIf Not blnOutputTOC Then
+        Select Case lngOutputFormat
+          Case fmtHTML
+            
+            If strOutputReportPackTitle = vbNullString Then strOutputReportPackTitle = sBatchJobName
+            gstrHTMLOutputTOC = "<HTML><BODY><CENTER><FONT face=Verdana size=2><a id=" & "'" & "top" & "'" & "><h2>" & strOutputReportPackTitle & "</h2></a>"
+          
+            FileNum = FreeFile()
+            LineCount = 1
+            
+            'Read the contents of the HTML file
+            Open strOutputFilename For Input As #FileNum
               Do While Not EOF(FileNum)
                 Line Input #FileNum, NextLine
                 strReadInFileContents = strReadInFileContents & NextLine
                 LineCount = LineCount + 1
               Loop
-          Close #FileNum
-          'Write back the contents with our added TOC HTML
-          Open strOutputFilename For Output As #FileNum
-              strReadInFileContents = gstrHTMLOutputTOC & strReadInFileContents
-              Print #FileNum, strReadInFileContents
-          Close #FileNum
-        
-      Case fmtWordDoc
-        'Open word file
-        If GetTOCFile(strOutputFilename, lngOutputFormat, lngOutputSaveExisting) Then
-          InitialiseStyles
-          'mwrdApp.Visible = True
-          With mwrdApp.Selection
-            .HomeKey unit:=wdStory
-            'Insert TOC
-            With mwrdDoc
-              .TablesOfContents.Add Range:=mwrdApp.Selection.Range, RightAlignPageNumbers:=True, UseHeadingStyles:=True, UpperHeadingLevel:=1, LowerHeadingLevel:=3, IncludePageNumbers:=True, AddedStyles:="", UseHyperlinks:=True
-              .TablesOfContents(1).TabLeader = wdTabLeaderDots
-              .TablesOfContents.Format = wdIndexIndent
-            End With
-            .InsertBreak Type:=wdPageBreak
-            .MoveLeft unit:=wdCharacter
-            .HomeKey unit:=wdStory, Extend:=wdExtend
-            ApplyStylesToRange mwrdApp.Selection.Range, mcolStyles("Data"), True
-            .HomeKey unit:=wdStory
+            Close #FileNum
             
-            'Insert TOC header text
-            .TypeParagraph: .TypeParagraph
-            .HomeKey unit:=wdStory
-            .TypeText Text:="Table of Contents"
-            .HomeKey unit:=wdLine, Extend:=wdExtend
-            ApplyStylesToRange mwrdApp.Selection.Range, mcolStyles("Heading"), True
-            .Font.Size = 14
-            
-            'Insert Report Title or Report Pack name if blank
-            .HomeKey unit:=wdStory
-            .InsertBreak Type:=wdPageBreak
-            .HomeKey unit:=wdStory
-            .TypeParagraph: .TypeParagraph: .TypeParagraph: .TypeParagraph
-            If strOutputReportPackTitle = vbNullString Then
-              .TypeText Text:=sBatchJobName
-            Else
-              .TypeText Text:=strOutputReportPackTitle
-            End If
-            .HomeKey unit:=wdLine, Extend:=wdExtend
-            ApplyStylesToRange mwrdApp.Selection.Range, mcolStyles("Heading"), True
-            .Font.Size = 20
-            .MoveLeft unit:=wdCharacter
-            
-            'Update TOC page numbers
-            mwrdDoc.TablesOfContents(1).UpdatePageNumbers
-          End With
-          mwrdDoc.Save
-          mwrdDoc.Close
-          mwrdApp.Quit
-        Else
-          MsgBox mstrErrorMessage, vbExclamation, "Report Pack"
-        End If
-    End Select
-  Else
-    If gblnReportPackMode And fOK And Not blnOutputTOC Then
-      Select Case lngOutputFormat
-        Case fmtHTML
-          
-          If strOutputReportPackTitle = vbNullString Then strOutputReportPackTitle = sBatchJobName
-          gstrHTMLOutputTOC = "<HTML><BODY><CENTER><FONT face=Verdana size=2><a id=" & "'" & "top" & "'" & "><h2>" & strOutputReportPackTitle & "</h2></a>"
-        
-          FileNum = FreeFile()
-          LineCount = 1
-          
-          'Read the contents of the HTML file
-          Open strOutputFilename For Input As #FileNum
-            Do While Not EOF(FileNum)
-              Line Input #FileNum, NextLine
-              strReadInFileContents = strReadInFileContents & NextLine
-              LineCount = LineCount + 1
-            Loop
-          Close #FileNum
-          
-          'Write back the contents with our added TOC HTML
-          Open strOutputFilename For Output As #FileNum
-              strReadInFileContents = gstrHTMLOutputTOC & strReadInFileContents
-              Print #FileNum, strReadInFileContents
-          Close #FileNum
-        
-        Case fmtWordDoc
-        Case fmtExcelchart, fmtExcelPivotTable, fmtExcelWorksheet
-      End Select
+            'Write back the contents with our added TOC HTML
+            Open strOutputFilename For Output As #FileNum
+                strReadInFileContents = gstrHTMLOutputTOC & strReadInFileContents
+                Print #FileNum, strReadInFileContents
+            Close #FileNum
+        End Select
     End If
-  End If
-  
-  'EMAIL
-  If gblnReportPackMode And fOK And blnOutputEmail Then
-    'Check if file already exists...
-    Set mobjParent = New clsOutputRun
-    If Dir(strOutputFilename) <> vbNullString And strOutputFilename <> vbNullString Then
-      mstrErrorMessage = "Error sending email attachment : " & strOutputFilename
-      If mobjParent.SetOptions _
-        (False, lngOutputFormat, _
-        blnOutputScreen, _
-        blnOutputPrinter, _
-        strOutputPrinterName, _
-        blnOutputSave, _
-        lngOutputSaveExisting, _
-        blnOutputEmail, _
-        lngOutputEmailAddr, _
-        strOutputEmailSubject, _
-        strOutputEmailAttachAs, _
-        strOutputFilename, _
-        blnPreviewOnScreen) Then
-        mobjParent.SendEmail strOutputFilename
-      Else
-        COAMsgBox mstrErrorMessage, vbExclamation
+    
+    'A word pdf output would have been generated as a doc, now we can convert to a pdf
+    If lngOutputFormat = fmtWordDoc And strOutputFilename Like "*.pdf" Then
+      'Need to copy to a different file first as saveas using the same file name fails with pdf
+      Dim tempFileName As String
+      tempFileName = GetTmpFName
+      FileCopy strOutputFilename, tempFileName
+      GetTOCFile tempFileName, fmtWordDoc
+      mwrdDoc.SaveAs strOutputFilename, FileFormat:=Val(wdFormatPDF)
+      mwrdDoc.Close
+      mwrdApp.Quit
+      Kill tempFileName
+    End If
+    
+    'EMAIL
+    If blnOutputEmail Then
+      'Check if file already exists...
+      Set mobjParent = New clsOutputRun
+      If Dir(strOutputFilename) <> vbNullString And strOutputFilename <> vbNullString Then
+        mstrErrorMessage = "Error sending email attachment : " & strOutputFilename
+        If mobjParent.SetOptions _
+          (False, lngOutputFormat, _
+          blnOutputScreen, _
+          blnOutputPrinter, _
+          strOutputPrinterName, _
+          blnOutputSave, _
+          lngOutputSaveExisting, _
+          blnOutputEmail, _
+          lngOutputEmailAddr, _
+          strOutputEmailSubject, _
+          strOutputEmailAttachAs, _
+          strOutputFilename, _
+          blnPreviewOnScreen) Then
+          mobjParent.SendEmail strOutputFilename
+        Else
+          COAMsgBox mstrErrorMessage, vbExclamation
+        End If
       End If
     End If
-  End If
   
+  End If
+    
   gblnReportPackMode = False
     
   CheckNotifications lBatchJobID
@@ -1596,7 +1606,7 @@ Public Sub CheckNotifications(lngBatchJobID As Long)
   End If
 
 End Sub
-Public Function GetTOCFile(strExcelFile As String, intFormat As OutputFormats, lngSaveExisting As Long) As Boolean
+Public Function GetTOCFile(strFile As String, intFormat As OutputFormats) As Boolean
   Dim strTempFileName As String
   Dim lngFound As Long
   Dim lngCount As Long
@@ -1604,29 +1614,14 @@ Public Function GetTOCFile(strExcelFile As String, intFormat As OutputFormats, l
   On Local Error GoTo LocalErr
 
   Select Case intFormat
-    Case fmtExcelWorksheet, fmtExcelchart, fmtExcelPivotTable
-      If Not CreateExcelApplication Then
-        GetTOCFile = False
-        Exit Function
-      Else
-        'Check if file already exists...
-        If Dir(strExcelFile) <> vbNullString And strExcelFile <> vbNullString Then
-          Set mxlWorkBook = mxlApp.Workbooks.Open(strExcelFile)
-          mxlApp.Visible = True
-        Else
-          CreateExcelApplication
-          mstrErrorMessage = "Cannot find the Report"
-        End If
-      End If
-    
     Case fmtWordDoc
       If Not CreateWordApplication Then
         GetTOCFile = False
         Exit Function
       Else
         'Check if file already exists...
-        If Dir(strExcelFile) <> vbNullString And strExcelFile <> vbNullString Then
-          Set mwrdDoc = mwrdApp.Documents.Open(strExcelFile)
+        If Dir(strFile) <> vbNullString And strFile <> vbNullString Then
+          Set mwrdDoc = mwrdApp.Documents.Open(strFile)
         Else
           mstrErrorMessage = "Cannot find the Report"
         End If
