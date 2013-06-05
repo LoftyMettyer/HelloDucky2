@@ -560,7 +560,7 @@ Namespace Things
 
       LineOfCode.CodeType = ScriptDB.ComponentTypes.Column
 
-      objThisColumn = CType(Dependencies.OfType(Of Column).SingleOrDefault(Function(o) o.ID = Component.ColumnID), Column)
+      objThisColumn = CType(Dependencies.OfType(Of Column).FirstOrDefault(Function(o) o.ID = Component.ColumnID), Column)
       objThisColumn.Tuning.Usage += 1
 
       'Dependencies.AddIfNew(objThisColumn.Table)

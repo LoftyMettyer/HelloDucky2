@@ -15,7 +15,7 @@ Public Module Extensions
   <Extension()>
   Public Function GetById(Of T As Base)(ByVal items As ICollection(Of T), ByVal id As Integer) As T
 
-    Return items.SingleOrDefault(Function(item) item.ID = id)
+    Return items.FirstOrDefault(Function(item) item.ID = id)
 
   End Function
 
