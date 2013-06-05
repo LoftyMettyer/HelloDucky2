@@ -2818,7 +2818,7 @@ Private Function ValidateLink() As Boolean
         For iLoop = 1 To (.Rows - 1)  ' exclude item 0 as it's the '(All Groups)' item.
           .Bookmark = .AddItemBookmark(iLoop)
           If .Columns("Access").value Then
-            If mcolGroups(.Columns("GroupName").Text).Allow = False Then
+            If mcolGroups(.Columns("GroupName").Text & "3").Allow = False Then
               fValid = False
               psDuplicateGroups = psDuplicateGroups & vbCrLf & .Columns("GroupName").Text
             End If
@@ -2836,6 +2836,35 @@ Private Function ValidateLink() As Boolean
     End If
   End If
 
+  ' Only one Today's Events per security group...
+  If fValid Then
+    If optLink(SSINTLINKTODAYS_EVENTS).value Then
+      ' loop through the chosen security groups and check they're in the combined string
+      
+      psDuplicateGroups = ""
+      
+      With grdAccess
+        For iLoop = 1 To (.Rows - 1)  ' exclude item 0 as it's the '(All Groups)' item.
+          .Bookmark = .AddItemBookmark(iLoop)
+          If .Columns("Access").value Then
+            If mcolGroups(.Columns("GroupName").Text & "5").Allow = False Then
+              fValid = False
+              psDuplicateGroups = psDuplicateGroups & vbCrLf & .Columns("GroupName").Text
+            End If
+          End If
+        Next iLoop
+      .MoveFirst
+      End With
+      
+      If Not fValid Then
+        MsgBox "'Today's Events' can only be defined once per user group." & vbCrLf & _
+                "It has already been defined for the following groups:" & vbCrLf & _
+                psDuplicateGroups, vbOKOnly + vbExclamation, Application.Name
+        grdAccess.SetFocus
+      End If
+    End If
+  End If
+  
   ' DBValues - fault HRPRO-1256
   If fValid Then
     If optLink(SSINTLINKDB_VALUE).value Then
