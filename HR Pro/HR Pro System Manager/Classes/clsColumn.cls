@@ -55,7 +55,7 @@ Public Property Get TableID() As Long
   If Properties("tableID") Is Nothing Then
     TableID = 0
   Else
-    TableID = Properties("tableID")
+    TableID = Properties("tableID").value
   End If
 
 End Property
@@ -96,7 +96,7 @@ Public Property Get IsNew() As Boolean
   If Properties("New") Is Nothing Then
     IsNew = False
   Else
-    IsNew = Properties("New")
+    IsNew = Properties("New").value
   End If
   
 End Property
@@ -118,7 +118,7 @@ Public Property Get IsChanged() As Boolean
   If Properties("Changed") Is Nothing Then
     IsChanged = False
   Else
-    IsChanged = Properties("Changed")
+    IsChanged = Properties("Changed").value
   End If
 
 End Property
@@ -140,7 +140,7 @@ Public Property Get IsDeleted() As Boolean
   If Properties("deleted") Is Nothing Then
     IsDeleted = False
   Else
-    IsDeleted = Properties("deleted")
+    IsDeleted = Properties("deleted").value
   End If
 
 End Property
@@ -357,7 +357,7 @@ Public Function ColumnIsUsed(pfrmUsage As frmUsage) As Boolean
   
   ' Get the column's name.
   If ReadColumn Then
-    sName = Me.Properties("ColumnName")
+    sName = Me.Properties("ColumnName").value
   Else
     sName = "<unknown>"
   End If
@@ -373,8 +373,8 @@ Public Function ColumnIsUsed(pfrmUsage As frmUsage) As Boolean
          "FROM   tmpComponents " & _
          "WHERE  FieldColumnID = " & CStr(gLngColumnID) & _
          "   OR  LookupColumnID = " & CStr(gLngColumnID)
-  Set rsExpressions = daoDb.OpenRecordset(sSQL, _
-    dbOpenForwardOnly, dbReadOnly)
+  Set rsExpressions = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
+  
   If Not (rsExpressions.BOF And rsExpressions.EOF) Then
     'fUsed = True   'MH20061110 Fault 11670
     Do Until rsExpressions.EOF
@@ -1570,47 +1570,47 @@ Public Function InitColumnProps() As Boolean
     Me.Properties.Add ThisField.Name, Null
   Next
   
-  Me.Properties("tableID") = gLngTableID
-  Me.Properties("columnID") = ColumnID
-  Me.Properties("new") = False
-  Me.Properties("changed") = False
-  Me.Properties("deleted") = False
+  Me.Properties("tableID").value = gLngTableID
+  Me.Properties("columnID").value = ColumnID
+  Me.Properties("new").value = False
+  Me.Properties("changed").value = False
+  Me.Properties("deleted").value = False
   
-  Me.Properties("columnType") = giCOLUMNTYPE_DATA
-  Me.Properties("dataType") = dtVARCHAR
-  Me.Properties("size") = 1
-  Me.Properties("controlType") = giCTRL_TEXTBOX
+  Me.Properties("columnType").value = giCOLUMNTYPE_DATA
+  Me.Properties("dataType").value = dtVARCHAR
+  Me.Properties("size").value = 1
+  Me.Properties("controlType").value = giCTRL_TEXTBOX
   
-  Me.Properties("defaultValue") = ""
+  Me.Properties("defaultValue").value = ""
   
-  Me.Properties("lookupTableID") = 0
-  Me.Properties("lookupColumnID") = 0
-  Me.Properties("lookupFilterValueID") = 0
-  Me.Properties("lookupFilterOperator") = 0
-  Me.Properties("lookupFilterColumnID") = 0
+  Me.Properties("lookupTableID").value = 0
+  Me.Properties("lookupColumnID").value = 0
+  Me.Properties("lookupFilterValueID").value = 0
+  Me.Properties("lookupFilterOperator").value = 0
+  Me.Properties("lookupFilterColumnID").value = 0
   
   'Me.Properties("diaryPeriod") = iTimePeriodDays
   'Me.Properties("diaryOffset") = 0
   'Me.Properties("diaryRemind") = False
   'Me.Properties("diaryComment") = ""
   
-  Me.Properties("spinnerMinimum") = 0
-  Me.Properties("spinnerMaximum") = 10
-  Me.Properties("spinnerIncrement") = 1
+  Me.Properties("spinnerMinimum").value = 0
+  Me.Properties("spinnerMaximum").value = 10
+  Me.Properties("spinnerIncrement").value = 1
   
   'TM20020204 Fault 3404 - set the default to 'No Conversion' not 'Proper Case'.
   'Me.Properties("convertCase") = 3
-  Me.Properties("convertCase") = 0
-  Me.Properties("Use1000Separator") = 0
-  Me.Properties("Trimming") = 1
+  Me.Properties("convertCase").value = 0
+  Me.Properties("Use1000Separator").value = 0
+  Me.Properties("Trimming").value = 1
   
-  Me.Properties("mask") = ""
-  Me.Properties("alignment") = vbLeftJustify
+  Me.Properties("mask").value = ""
+  Me.Properties("alignment").value = vbLeftJustify
   
-  Me.Properties("calcExprID") = 0
-  Me.Properties("gotFocusExprID") = 0
-  Me.Properties("lostFocusExprID") = 0
-  Me.Properties("locked") = 0
+  Me.Properties("calcExprID").value = 0
+  Me.Properties("gotFocusExprID").value = 0
+  Me.Properties("lostFocusExprID").value = 0
+  Me.Properties("locked").value = 0
   
   gsControlValues = vbNullString
   
@@ -2111,7 +2111,7 @@ End Sub
 
 Public Property Get ColumnDataType() As ExpressionValueTypes
 
-  Select Case Me.Properties("dataType")
+  Select Case Me.Properties("dataType").value
     Case dtVARCHAR
       ColumnDataType = giEXPRVALUE_CHARACTER
   
@@ -2402,7 +2402,7 @@ Public Function CloneColumn(pbAddCopyOfText As Boolean) As Column
 
       ' Add "copy of" text in description
       If pbAddCopyOfText Then
-            .Properties("ColumnName") = "Copy_of_" + .Properties("ColumnName")
+        .Properties("ColumnName").value = "Copy_of_" + .Properties("ColumnName").value
       End If
 
     End With
@@ -2530,7 +2530,7 @@ Public Property Get Locked() As Boolean
   If Properties("Locked") Is Nothing Then
     Locked = False
   Else
-    Locked = Properties("Locked")
+    Locked = Properties("Locked").value
   End If
 End Property
 
