@@ -352,6 +352,8 @@ End Sub
 
 Private Sub Form_Resize()
   
+  On Error GoTo ErrorTrap
+  
   Const XGAP = 150
   Const XGAP_RIGHT = 250
   
@@ -363,10 +365,6 @@ Private Sub Form_Resize()
   Dim lngColumnWidth As Long
   
   frmSysMgr.RefreshMenu
-
-  If Me.WindowState = vbMinimized Then Exit Sub
-  If Me.WindowState = vbMaximized And frmSysMgr.WindowState = 0 Then Exit Sub
-  If frmSysMgr.WindowState = vbMinimized Then Exit Sub
   
   With fraTable
     .Width = Me.Width - XGAP_RIGHT - cmdAction(0).Width - XGAP - .Left
@@ -399,6 +397,12 @@ Private Sub Form_Resize()
   
   ' Get rid of the icon off the form
   RemoveIcon Me
+  
+TidyUpAndExit:
+  Exit Sub
+
+ErrorTrap:
+  Exit Sub
   
 End Sub
 
