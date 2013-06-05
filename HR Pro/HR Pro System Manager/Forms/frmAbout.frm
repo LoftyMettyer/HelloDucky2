@@ -385,11 +385,6 @@ Private Sub Form_Resize()
 
 End Sub
 
-
-Private Sub lblVersion_Click()
-End Sub
-
-
 Private Sub lblURL_Click()
   On Error GoTo ErrTrap
 
