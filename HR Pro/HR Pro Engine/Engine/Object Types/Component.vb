@@ -12,7 +12,7 @@ Namespace Things
     Public OperatorID As HCMGuid
     Public CalculationID As HCMGuid
     Public ValueType As ScriptDB.ComponentValueTypes
-    Public ValueNumeric As Integer
+    Public ValueNumeric As Double
     Public ValueString As String
     Public ValueDate As Date
     Public ValueLogic As Boolean
