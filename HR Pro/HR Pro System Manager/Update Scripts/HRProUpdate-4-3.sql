@@ -1224,7 +1224,7 @@ PRINT 'Step - Add new calculation procedures'
 			ELSE
 				SET @pfReturn = @pfNumberToRound + @pfNearestNumber - @pfRemainder;
 
-		RETURN @pfReturn;
+		RETURN ISNULL(@pfReturn,0);
 
 	END';
 	EXECUTE sp_executeSQL @sSPCode;
@@ -1691,7 +1691,7 @@ PRINT 'Step - Populate code generation tables'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''302dbbe5-d900-4547-8090-5de3dd3a4970'', N''SYSTEM_USER'', 1, N''Current User'', NULL, 0, 0, 17)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''8a4abce8-984e-4d4f-b1ca-aaef09e1c08d'', N''DATEPART(day, {0})'', 2, N''Day of Date'', NULL, 0, 0, 34)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''b41669c9-59d7-449f-be4f-6d4c6b809db9'', N''DATEPART(weekday, {0})'', 2, N''Day of the Week'', NULL, 0, 0, 28)';
-	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''24884a1c-fc85-4bba-8752-cb594c4607f2'', N''(DATEDIFF(dd,{0}, {1})+1)'', 2, N''Days between Two Dates'', NULL, 0, 0, 45)';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''24884a1c-fc85-4bba-8752-cb594c4607f2'', N''ISNULL(DATEDIFF(dd, ISNULL({0},''''01/01/1900''''), {1})+1,0)'', 2, N''Days between Two Dates'', NULL, 0, 0, 45)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''25033092-aa37-406d-ba0e-7b59b81c9b69'', N'''', 3, N''Does Record Exist'', NULL, 0, 0, 74)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''a774b4f7-5792-41c5-99fb-301af38f0e68'', N''LEFT({0}, {1})'', 1, N''Extract Characters from the Left'', NULL, 0, 0, 6)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''0d948a6a-e6db-440f-b5fc-25ac323425ae'', N''RIGHT({0}, {1})'', 1, N''Extract Characters from the Right'', NULL, 0, 0, 13)';
