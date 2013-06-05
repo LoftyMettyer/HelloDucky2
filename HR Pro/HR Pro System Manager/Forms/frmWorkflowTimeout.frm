@@ -934,8 +934,8 @@ Begin VB.Form frmWorkflowTimeout
          TabStop         =   0   'False
          Top             =   400
          Width           =   8400
-         Begin VB.Frame fraHotSpot 
-            Caption         =   "HotSpot :"
+         Begin VB.Frame fraHotspot 
+            Caption         =   "Hotspot :"
             Height          =   1095
             Left            =   1200
             TabIndex        =   184
@@ -954,13 +954,13 @@ Begin VB.Form frmWorkflowTimeout
             End
             Begin VB.Label lblHotSpotIdentifier 
                AutoSize        =   -1  'True
-               Caption         =   "HotSpot Identifier : "
+               Caption         =   "Hotspot Identifier : "
                Height          =   195
                Left            =   360
                TabIndex        =   186
                Top             =   480
                Visible         =   0   'False
-               Width           =   1710
+               Width           =   1680
             End
          End
          Begin VB.Frame fraIdentification 
@@ -4228,6 +4228,9 @@ Private Sub cboHotSpotIdentifier_refresh(ByVal psCurrentValue As String)
             fItemOK = False
 
           Case giWFFORMITEM_LINE
+            fItemOK = False
+          
+          Case giWFFORMITEM_INPUTVALUE_OPTIONGROUP
             fItemOK = False
 
           Case Else
