@@ -91,6 +91,7 @@ Private mBackcolour As OLE_COLOR
 
 Private mlngLookupTableID As Long
 Private mlngLookupColumnID As Long
+Private mlngLookupOrderID As Long
 Private mlngLookupFilterColumn As Long
 Private miLookupFilterOperator As Integer
 Private msLookupFilterValue As String
@@ -133,6 +134,12 @@ Public Property Let LookupColumnID(New_Value As Long)
 End Property
 Public Property Get LookupColumnID() As Long
   LookupColumnID = mlngLookupColumnID
+End Property
+Public Property Let LookupOrderID(New_Value As Long)
+  mlngLookupOrderID = New_Value
+End Property
+Public Property Get LookupOrderID() As Long
+  LookupOrderID = mlngLookupOrderID
 End Property
 
 
