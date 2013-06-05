@@ -4,7 +4,7 @@ Imports SystemFramework.Things
 
 Namespace ScriptDB
 
-  <ClassInterface(ClassInterfaceType.None)> _
+  <ClassInterface(ClassInterfaceType.None)>
   Public Class Script
     Implements COMInterfaces.ICommitDB
 
@@ -980,7 +980,7 @@ Namespace ScriptDB
               objView.Filter.GenerateCode()
 
               For Each objColumn In objView.Filter.Dependencies.OfType(Of Column)()
-                  objIndex.Columns.AddIfNew(objColumn)
+                objIndex.Columns.AddIfNew(objColumn)
               Next
             End If
 

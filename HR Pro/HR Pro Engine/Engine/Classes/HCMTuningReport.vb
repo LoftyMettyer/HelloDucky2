@@ -3,7 +3,7 @@ Imports SystemFramework.Things
 
 Namespace Tuning
 
-  <ClassInterface(ClassInterfaceType.None)> _
+  <ClassInterface(ClassInterfaceType.None)>
   Public Class Report
     Implements COMInterfaces.IErrors
 

@@ -1,0 +1,20 @@
+﻿Namespace Things
+
+  Public Class SettingCollection
+    Inherits ObjectModel.Collection(Of Setting)
+
+    Public Function Setting(ByVal [module] As String, ByVal parameter As String) As Setting
+
+      Dim item = Items.SingleOrDefault(Function(s) s.Module.ToLower = [module].ToLower AndAlso parameter.ToLower = parameter)
+
+      If item IsNot Nothing Then
+        Return item
+      Else
+        Return New Setting
+      End If
+
+    End Function
+
+  End Class
+
+End Namespace

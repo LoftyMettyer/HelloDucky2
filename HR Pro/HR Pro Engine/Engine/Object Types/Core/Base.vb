@@ -4,7 +4,7 @@ Imports System.Runtime.InteropServices
 
 Namespace Things
 
-  <Serializable(), ClassInterface(ClassInterfaceType.None)> _
+  <Serializable(), ClassInterface(ClassInterfaceType.None)>
   Public MustInherit Class Base
     Implements COMInterfaces.IObject
 

@@ -1,6 +1,6 @@
 ﻿Imports System.Runtime.InteropServices
 
-<ClassInterface(ClassInterfaceType.None)> _
+<ClassInterface(ClassInterfaceType.None)>
 Public Class HCMOptions
   Implements COMInterfaces.IOptions
 

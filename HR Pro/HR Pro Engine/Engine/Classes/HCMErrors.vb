@@ -2,16 +2,16 @@
 
 Namespace ErrorHandler
 
-  <ClassInterface(ClassInterfaceType.None)> _
+  <ClassInterface(ClassInterfaceType.None)>
   Public Class Errors
-    Inherits System.ComponentModel.BindingList(Of ErrorHandler.Error)
+    Inherits Collection(Of [Error])
     Implements COMInterfaces.IErrors
 
     Private _isCatastrophic As Boolean
 
-    Public Overloads Sub Add(ByVal Section As ErrorHandler.Section, ByVal ObjectName As String, ByVal Severity As SystemFramework.ErrorHandler.Severity, ByVal Message As String, ByVal Detail As String)
+    Public Overloads Sub Add(ByVal Section As Section, ByVal ObjectName As String, ByVal Severity As Severity, ByVal Message As String, ByVal Detail As String)
 
-      Dim item As ErrorHandler.Error
+      Dim item As [Error]
 
       item.Section = Section
       item.ObjectName = ObjectName
@@ -29,7 +29,7 @@ Namespace ErrorHandler
 
       Dim message As String = vbNullString
 
-      For Each item As ErrorHandler.Error In Me.Items
+      For Each item As [Error] In Me.Items
         message += String.Format("{1}{0}{1}{2}{1}", item.Message, vbNewLine, item.Detail)
       Next
 
@@ -41,11 +41,11 @@ Namespace ErrorHandler
 
       Dim message As String = vbNullString
 
-      For Each item As ErrorHandler.Error In Me.Items
+      For Each item As [Error] In Me.Items
 
         Select Case item.Severity
           Case Severity.Error
-            message = message & String.Format("{0} - {1}", item.ObjectName, item.Message)
+            message += String.Format("{0} - {1}", item.ObjectName, item.Message)
 
           Case Severity.Warning
             'sMessage = sMessage & String.Format("{1}{1}{1}{1}{0}{1}{2}{1}", objError.Message, vbNewLine, objError.Detail)

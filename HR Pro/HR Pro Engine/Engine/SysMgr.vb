@@ -1,7 +1,7 @@
 ﻿Imports System.Runtime.InteropServices
 Imports SystemFramework.Things
 
-<ClassInterface(ClassInterfaceType.None)> _
+<ClassInterface(ClassInterfaceType.None)>
 Public Class SysMgr
   Implements COMInterfaces.ISystemManager
 
