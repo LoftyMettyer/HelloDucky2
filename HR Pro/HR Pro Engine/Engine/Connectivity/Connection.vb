@@ -17,7 +17,7 @@
 '      End Set
 '    End Property
 
-'    Public Function ExecStoredProcedure(ByVal ProcedureName As String, ByRef Parms As Parameters) As System.Data.DataSet Implements Interfaces.iConnection.ExecStoredProcedure
+'    Public Function ExecStoredProcedure(ByVal ProcedureName As String, ByVal Parms As Parameters) As System.Data.DataSet Implements Interfaces.iConnection.ExecStoredProcedure
 
 '    End Function
 
