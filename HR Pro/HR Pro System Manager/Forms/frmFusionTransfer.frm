@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Begin VB.Form frmFusionTransfer 
    BorderStyle     =   3  'Fixed Dialog
@@ -66,6 +66,7 @@ Begin VB.Form frmFusionTransfer
       _ExtentY        =   9155
       _Version        =   393216
       Style           =   1
+      Tab             =   1
       TabsPerRow      =   8
       TabHeight       =   520
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -79,14 +80,14 @@ Begin VB.Form frmFusionTransfer
       EndProperty
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmFusionTransfer.frx":000C
-      Tab(0).ControlEnabled=   -1  'True
+      Tab(0).ControlEnabled=   0   'False
       Tab(0).Control(0)=   "fraFusionDefinition"
-      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).ControlCount=   1
       TabCaption(1)   =   "&Settings"
       TabPicture(1)   =   "frmFusionTransfer.frx":0028
-      Tab(1).ControlEnabled=   0   'False
+      Tab(1).ControlEnabled=   -1  'True
       Tab(1).Control(0)=   "fraDefaults"
+      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "&Login Parameters"
       TabPicture(2)   =   "frmFusionTransfer.frx":0044
@@ -95,7 +96,7 @@ Begin VB.Form frmFusionTransfer
       Begin VB.Frame fraFusionDefinition 
          Caption         =   "Definition : "
          Height          =   4605
-         Left            =   135
+         Left            =   -74865
          TabIndex        =   10
          Top             =   405
          Width           =   8340
@@ -167,6 +168,7 @@ Begin VB.Form frmFusionTransfer
             DataMode        =   2
             RecordSelectors =   0   'False
             GroupHeaders    =   0   'False
+            Col.Count       =   22
             stylesets.count =   2
             stylesets(0).Name=   "KeyField"
             stylesets(0).BackColor=   14024703
@@ -420,7 +422,7 @@ Begin VB.Form frmFusionTransfer
       Begin VB.Frame fraDefaults 
          Caption         =   "Options : "
          Height          =   840
-         Left            =   -74865
+         Left            =   135
          TabIndex        =   13
          Top             =   495
          Width           =   8340
@@ -468,12 +470,12 @@ Public Property Get Changed() As Boolean
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
   mfChanged = pblnChanged
-  cmdOK.Enabled = True
+  cmdOk.Enabled = True
 End Property
 Private Sub RefreshButtons()
   
   If Not mbLoading Then
-    cmdOK.Enabled = mfChanged And Not mbReadOnly
+    cmdOk.Enabled = mfChanged And Not mbReadOnly
     cmdEdit.Enabled = (cboFusionTables <> "<None>")
     cmdDelete.Enabled = (cboFusionTables <> "<None>") And (Not mbReadOnly)
     cmdNone.Enabled = (SelectedComboItem(cboFusionTables) > 0) And Not mbReadOnly
@@ -961,7 +963,7 @@ Private Sub Form_Load()
 
   ' Don't need this stuff for phase I
   tabOptions.TabVisible(0) = True
-  tabOptions.TabVisible(1) = True
+  tabOptions.TabVisible(1) = False
   tabOptions.TabVisible(2) = False
 
   PopulateBaseTables
@@ -981,7 +983,7 @@ Private Sub Form_Load()
   
   mfChanged = False
   cmdDelete.Enabled = Not mbReadOnly
-  cmdOK.Enabled = False
+  cmdOk.Enabled = False
 
   Screen.MousePointer = vbDefault
 
@@ -1254,7 +1256,7 @@ End Function
 
 Private Sub EnableDisableTabControls()
 
-  cmdOK.Enabled = Not mbReadOnly And mfChanged
+  cmdOk.Enabled = Not mbReadOnly And mfChanged
   cmdNone.Enabled = (tabOptions.Tab = 0) And Not mbReadOnly
   cmdEdit.Caption = IIf(mbReadOnly, "&View...", "&Edit...")
   cmdFilter.Enabled = (tabOptions.Tab = 0) And Not mbReadOnly
