@@ -44,7 +44,6 @@ Begin VB.Form frmScrObjProps
       BeginProperty Panels {0713E89E-850A-101B-AFC0-4210102A8DA7} 
          NumPanels       =   1
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -58,7 +57,6 @@ Begin VB.Form frmScrObjProps
       _Version        =   196617
       DataMode        =   2
       RecordSelectors =   0   'False
-      Col.Count       =   3
       stylesets.count =   4
       stylesets(0).Name=   "ssetBackColorValue"
       stylesets(0).HasFont=   -1  'True
@@ -148,7 +146,7 @@ Begin VB.Form frmScrObjProps
       Columns(1).Name =   "colValues"
       Columns(1).DataField=   "Column 1"
       Columns(1).DataType=   8
-      Columns(1).FieldLen=   256
+      Columns(1).FieldLen=   32767
       Columns(1).Locked=   -1  'True
       Columns(1).Style=   3
       Columns(1).Row.Count=   2
