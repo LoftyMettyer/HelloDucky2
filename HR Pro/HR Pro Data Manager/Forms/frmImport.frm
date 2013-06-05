@@ -1,8 +1,8 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmImport 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Import Definition"
@@ -39,6 +39,7 @@ Begin VB.Form frmImport
       _ExtentY        =   8387
       _Version        =   393216
       Style           =   1
+      Tab             =   2
       TabHeight       =   520
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Verdana"
@@ -51,21 +52,18 @@ Begin VB.Form frmImport
       EndProperty
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmImport.frx":000C
-      Tab(0).ControlEnabled=   -1  'True
-      Tab(0).Control(0)=   "fraData"
-      Tab(0).Control(0).Enabled=   0   'False
-      Tab(0).Control(1)=   "fraDefinition(0)"
-      Tab(0).Control(1).Enabled=   0   'False
+      Tab(0).ControlEnabled=   0   'False
+      Tab(0).Control(0)=   "fraDefinition(0)"
+      Tab(0).Control(1)=   "fraData"
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Colu&mns"
       TabPicture(1)   =   "frmImport.frx":0028
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraColumns"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "O&ptions"
       TabPicture(2)   =   "frmImport.frx":0044
-      Tab(2).ControlEnabled=   0   'False
+      Tab(2).ControlEnabled=   -1  'True
       Tab(2).Control(0)=   "fraOptions"
       Tab(2).Control(0).Enabled=   0   'False
       Tab(2).Control(1)=   "fraFileDetails"
@@ -276,7 +274,7 @@ Begin VB.Form frmImport
       Begin VB.Frame fraFileDetails 
          Caption         =   "File :"
          Height          =   2775
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   19
          Top             =   405
          Width           =   9400
@@ -329,7 +327,7 @@ Begin VB.Form frmImport
             Width           =   800
          End
          Begin VB.CommandButton cmdFilter 
-Caption = "..."
+            Caption         =   "..."
             Enabled         =   0   'False
             Height          =   315
             Left            =   4650
@@ -340,9 +338,9 @@ Caption = "..."
          End
          Begin VB.ComboBox cboDelimiter 
             Height          =   315
-            ItemData        =   "frmImport.frx":0783
+            ItemData        =   "frmImport.frx":00C1
             Left            =   6795
-            List            =   "frmImport.frx":0790
+            List            =   "frmImport.frx":00CE
             Style           =   2  'Dropdown List
             TabIndex        =   33
             Top             =   300
@@ -360,7 +358,7 @@ Caption = "..."
             Width           =   2250
          End
          Begin VB.CommandButton cmdFilename 
-Caption = "..."
+            Caption         =   "..."
             Height          =   315
             Left            =   4650
             TabIndex        =   23
@@ -390,9 +388,9 @@ Caption = "..."
          End
          Begin VB.ComboBox cboDateFormat 
             Height          =   315
-            ItemData        =   "frmImport.frx":0E69
+            ItemData        =   "frmImport.frx":00E5
             Left            =   6795
-            List            =   "frmImport.frx":0E79
+            List            =   "frmImport.frx":00F5
             Style           =   2  'Dropdown List
             TabIndex        =   39
             Top             =   1100
@@ -518,7 +516,7 @@ Caption = "..."
             Left            =   5175
             TabIndex        =   32
             Top             =   360
-            Width           =   855
+            Width           =   915
          End
          Begin VB.Label lblEncapsulator 
             AutoSize        =   -1  'True
@@ -564,7 +562,7 @@ Caption = "..."
       Begin VB.Frame fraOptions 
          Caption         =   "Records :"
          Height          =   1350
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   43
          Top             =   3220
          Width           =   9400
@@ -636,7 +634,7 @@ Caption = "..."
       Begin VB.Frame fraDefinition 
          Height          =   1950
          Index           =   0
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   0
          Top             =   405
          Width           =   9400
@@ -694,7 +692,7 @@ Caption = "..."
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(0).Picture=   "frmImport.frx":0E91
+            stylesets(0).Picture=   "frmImport.frx":010D
             stylesets(1).Name=   "ReadOnly"
             stylesets(1).ForeColor=   -2147483631
             stylesets(1).BackColor=   -2147483633
@@ -708,7 +706,7 @@ Caption = "..."
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(1).Picture=   "frmImport.frx":0EAD
+            stylesets(1).Picture=   "frmImport.frx":0129
             MultiLine       =   0   'False
             AllowRowSizing  =   0   'False
             AllowGroupSizing=   0   'False
@@ -829,7 +827,7 @@ Caption = "..."
       Begin VB.Frame fraData 
          Caption         =   "Data :"
          Height          =   2130
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   8
          Top             =   2445
          Width           =   9400
@@ -949,7 +947,7 @@ Public Property Get SelectedID() As Long
 End Property
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
 End Property
 Private Sub ForceAccess(Optional pvAccess As Variant)
   Dim iLoop As Integer
@@ -983,7 +981,7 @@ End Sub
 
 
 Public Property Let Changed(ByVal pblnChanged As Boolean)
-  cmdOk.Enabled = pblnChanged
+  cmdOK.Enabled = pblnChanged
 End Property
 
 Private Sub cboBaseTable_Click()
@@ -1125,7 +1123,7 @@ Private Sub cboFileFormat_Click()
   mintCurrentFileFormat = cboFileFormat.ItemData(cboFileFormat.ListIndex)
   
   'AE20071105 Fault #12553
-  txtFilename.Text = vbNullString
+  txtFileName.Text = vbNullString
   
   'DisableLengthColumn (mintCurrentFileFormat)
 
@@ -1342,10 +1340,10 @@ Private Sub cmdFileName_Click()
   
     ' If there is a filename already select it, try and set the cdialog directory and
     ' filename property to match it.
-    If Len(Trim(txtFilename.Text)) = 0 Then
+    If Len(Trim(txtFileName.Text)) = 0 Then
       .InitDir = gsDocumentsPath
     Else
-      .FileName = txtFilename.Text
+      .FileName = txtFileName.Text
     End If
     
     ' Set flags
@@ -1390,7 +1388,7 @@ Private Sub cmdFileName_Click()
     'AE20071105 Fault #12553
     ' If something was selected, then update the text box with the selected filename
     If .FileName <> "" Then
-      txtFilename.Text = .FileName
+      txtFileName.Text = .FileName
     End If
 
   End With
@@ -2119,13 +2117,13 @@ Private Sub txtDesc_GotFocus()
     .SelLength = Len(.Text)
   End With
 
-  cmdOk.Default = False
+  cmdOK.Default = False
   
 End Sub
 
 Private Sub txtDesc_LostFocus()
 
-  cmdOk.Default = True
+  cmdOK.Default = True
 
 End Sub
 
@@ -2304,10 +2302,10 @@ Private Function ValidateDefinition() As Boolean
   End If
   
   ' Check a filename has been selected
-  If Len(Trim(txtFilename.Text)) = 0 Then
+  If Len(Trim(txtFileName.Text)) = 0 Then
     tabImport.Tab = 2
     MsgBox "You must select the file you wish to use with this import definition.", vbExclamation + vbOKOnly, "Import"
-    cmdFilename.SetFocus
+    cmdFileName.SetFocus
     ValidateDefinition = False
     Exit Function
   End If
@@ -2331,7 +2329,7 @@ Private Function ValidateDefinition() As Boolean
 '        Exit Function
 '      End If
     Case 2:
-      If (LCase(Right(txtFilename.Text, 4)) <> ".xls") Then
+      If (LCase(Right(txtFileName.Text, 4)) <> ".xls") Then
         tabImport.Tab = 2
         MsgBox "Excel worksheet files must have a '.xls' extension.", vbExclamation + vbOKOnly, "Import"
         ValidateDefinition = False
@@ -2622,7 +2620,7 @@ Private Function SaveDefinition() As Boolean
              "Description = '" & Replace(Me.txtDesc.Text, "'", "''") & "'," & _
              "BaseTable = " & Me.cboBaseTable.ItemData(Me.cboBaseTable.ListIndex) & "," & _
              "FileType = " & Me.cboFileFormat.ItemData(cboFileFormat.ListIndex) & "," & _
-             "FileName = '" & Replace(Me.txtFilename.Text, "'", "''") & "'," & _
+             "FileName = '" & Replace(Me.txtFileName.Text, "'", "''") & "'," & _
              "Delimiter = '" & cboDelimiter.Text & "'," & _
              "OtherDelimiter = '" & Replace(Me.txtDelimiter.Text, "'", "''") & "'," & _
              "DateFormat = '" & cboDateFormat.Text & "'," & _
@@ -2682,7 +2680,7 @@ Private Function SaveDefinition() As Boolean
 
 
     sSQL = sSQL & ", " & Me.cboFileFormat.ItemData(cboFileFormat.ListIndex)
-    sSQL = sSQL & ", '" & Replace(Me.txtFilename.Text, "'", "''") & "'"
+    sSQL = sSQL & ", '" & Replace(Me.txtFileName.Text, "'", "''") & "'"
     sSQL = sSQL & ", '" & cboDelimiter.Text & "'"
     sSQL = sSQL & ", '" & Replace(Me.txtDelimiter.Text, "'", "''") & "'"
     sSQL = sSQL & ", '" & Me.cboDateFormat.Text & "'"
@@ -2988,7 +2986,7 @@ Private Sub ClearForNew(Optional bPartialClear As Boolean)
     .txtName = vbNullString
     .txtDesc = vbNullString
     .txtUserName = gsUserName
-    .txtFilename.Text = ""
+    .txtFileName.Text = ""
     .optUpdateAll.Value = True
     'AE20071004
 '    .chkIgnoreFirstLine.Value = 0
@@ -3053,7 +3051,7 @@ Private Function RetrieveImportDetails(plngImportID As Long) As Boolean
   ''TM20011219 Fault 3039 - disable the length column if required.
   'DisableLengthColumn (rsTemp!filetype)
 
-  txtFilename.Text = rsTemp!FileName
+  txtFileName.Text = rsTemp!FileName
   
   'AE20071004 Fault 12488
   'SetComboText cboDelimiter, rsTemp!delimiter
