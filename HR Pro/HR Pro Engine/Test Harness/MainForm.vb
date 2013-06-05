@@ -54,36 +54,31 @@ Public Class MainForm
       Dim sw As New Stopwatch
       sw.Start()
       objPhoenix.PopulateObjects()
-      Console.WriteLine(String.Format("Original Populate: {0} secs", sw.Elapsed.TotalSeconds))
-      'approx 60 seconds
+    Console.WriteLine(String.Format("Populate: {0} secs", sw.Elapsed.TotalSeconds))
+    'approx 60 seconds now 5 seconds
+
+    objPhoenix.Options.DevelopmentMode = chkDebugMode.Checked
+    objPhoenix.Options.RefreshObjects = True
+
+    bOK = objPhoenix.Script.CreateObjects()
+    bOK = objPhoenix.Script.CreateTriggers()
+    bOK = objPhoenix.Script.CreateFunctions
+    bOK = objPhoenix.Script.ScriptIndexes
 
 
-        objPhoenix.Options.DevelopmentMode = chkDebugMode.Checked
-        objPhoenix.Options.RefreshObjects = True
-      'bOK = objPhoenix.Script.CreateObjects()
+    'bOK = objPhoenix.Script.CreateTableViews
+    'bOK = objPhoenix.Script.CreateViews
+    'objPhoenix.Script.DropViews()
+    'objPhoenix.Script.DropTableViews()
+    'objPhoenix.Script.CreateTables()
+    'objPhoenix.Script.CreateTableViews()
+    'objPhoenix.Script.CreateViews()
+    'objPhoenix.Script.ApplySecurity()
 
 
-        ' bOK = objPhoenix.Script.CreateTableViews
-        '    bOK = objPhoenix.Script.CreateViews
-      '
-      ' bOK = objPhoenix.Script.CreateTriggers()
+    bOK = objPhoenix.Script.ScriptOvernightStep2
 
-
-        'objPhoenix.Script.DropViews()
-        'objPhoenix.Script.DropTableViews()
-        'objPhoenix.Script.CreateTables()
-
-        'objPhoenix.Script.CreateTableViews()
-        'objPhoenix.Script.CreateViews()
-        'objPhoenix.Script.ApplySecurity()
-
-      'bOK = objPhoenix.Script.CreateFunctions
-
-      'bOK = objPhoenix.Script.ScriptIndexes
-
-      'bOK = objPhoenix.Script.ScriptOvernightStep2
-
-        objPhoenix.CloseSafely()
+    objPhoenix.CloseSafely()
 
 
 

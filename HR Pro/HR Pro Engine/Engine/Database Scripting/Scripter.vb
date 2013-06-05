@@ -1031,9 +1031,7 @@ Namespace ScriptDB
                 objColumn.DefaultCalculation.AssociatedColumn = objColumn
                 objColumn.DefaultCalculation.GenerateCode()
               End If
-
             End If
-
           Next
 
           '  Validation Masks
@@ -1047,27 +1045,16 @@ Namespace ScriptDB
             End If
 
           Next
-
         Next
-
-
-
 
         ' Generate any table UDFs
         For Each objTable In Globals.Things
           For Each objTableOrderFilter In objTable.Objects(Things.Type.TableOrderFilter)
-
-            '     Debug.Assert(objTableOrderFilter.Name <> "udftab_Post_Allocations_Post_Start_Date_Primary_Post_1_First")
-
             objTableOrderFilter.GenerateCode()
             ScriptDB.DropUDF("dbo", objTableOrderFilter.Name)
             Globals.CommitDB.ScriptStatement(objTableOrderFilter.UDF.Code)
           Next
         Next
-
-
-
-
 
         ' Script the column calculations
         For Each objTable In Globals.Things

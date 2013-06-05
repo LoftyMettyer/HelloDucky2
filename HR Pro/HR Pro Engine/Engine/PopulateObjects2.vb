@@ -4,15 +4,17 @@
   Public Module PopulateObjects2
 
     Public Sub PopulateThings2()
+      Globals.Things.Clear()
+      Globals.Workflows.Clear()
       PopulateTables()
+      PopulateTableRelations()
       PopulateColumns()
       PopulateTableOrders()
       PopulateTableOrderItems()
-      PopulateTableValidations()
-      PopulateTableRelations()
       PopulateTableExpressions()
       PopulateTableViews()
       PopulateTableViewItems()
+      PopulateTableValidations()
       PopulateTableRecordDescriptions()
       PopulateTableMasks()
     End Sub
@@ -42,11 +44,12 @@
         Globals.Things.Add(table)
       Next
 
+      'TODO: Removed not in old code and tries to script trigger for table
       ' Objects with no table attached
-      Dim emptyTable = New Table With {.ID = 0, .Name = "System Objects"}
-      emptyTable.Objects.Parent = emptyTable
-      emptyTable.Objects.Root = emptyTable.Root
-      Globals.Things.Add(emptyTable)
+      'Dim emptyTable = New Table With {.ID = 0, .Name = "System Objects"}
+      'emptyTable.Objects.Parent = emptyTable
+      'emptyTable.Objects.Root = emptyTable.Root
+      'Globals.Things.Add(emptyTable)
 
     End Sub
 
@@ -148,30 +151,34 @@
 
       Dim ds As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_getrelations2", New Connectivity.Parameters)
 
+      Dim table As Table
+      Dim relation As Relation
+
       For Each row As DataRow In ds.Tables(0).Rows
 
-        'TODO previous sp returns where parent or where child
-        Dim table As Table = Nothing
+        'add the relationshop from the parents perspective
+        table = Globals.Things.GetObject(Type.Table, row.Item("parentid").ToString)
 
-        Dim relation As New Relation
-        relation.RelationshipType = row.Item("relationship").ToString
-
-
-        'Select Case objRelation.RelationshipType
-        '  Case ScriptDB.RelationshipType.Parent
-        '    objRelation.Parent = Table.Objects.Parent
-
-        '  Case ScriptDB.RelationshipType.Child
-        '    objRelation.Parent = Table
-
-        'End Select
-
+        relation = New Relation
+        relation.RelationshipType = ScriptDB.RelationshipType.Child
         relation.Parent = table
         relation.ParentID = row.Item("parentid").ToString
         relation.ChildID = row.Item("childid").ToString
-        relation.Name = row.Item("name").ToString
+        relation.Name = row.Item("childname").ToString
 
-        'table.Objects.Add(relation)
+        table.Objects.Add(relation)
+
+        'add the relationshop from the childs perspective
+        table = Globals.Things.GetObject(Type.Table, row.Item("childid").ToString)
+
+        relation = New Relation
+        relation.RelationshipType = ScriptDB.RelationshipType.Parent
+        relation.Parent = table
+        relation.ParentID = row.Item("parentid").ToString
+        relation.ChildID = row.Item("childid").ToString
+        relation.Name = row.Item("parentname").ToString
+
+        table.Objects.Add(relation)
       Next
 
     End Sub
@@ -270,34 +277,35 @@
 
     End Sub
 
+    Private componentfunction As DataSet
+    Private componentbase As DataSet
+
     Public Function LoadComponents2(ByVal expression As Component, ByVal Type As ScriptDB.ComponentTypes) As Things.Collections.Generic
 
-      Dim collection As New Things.Collections.Generic
+      If componentfunction Is Nothing Then
+        componentfunction = Globals.MetadataDB.ExecStoredProcedure("spadmin_getcomponent_function2", New Connectivity.Parameters)
+      End If
 
-      collection.Parent = expression
+      If componentbase Is Nothing Then
+        componentbase = Globals.MetadataDB.ExecStoredProcedure("spadmin_getcomponent_base2", New Connectivity.Parameters)
+      End If
 
-      Dim objDataset As DataSet
-      Dim objParameters As New Connectivity.Parameters
+      Dim rows As DataRow()
 
       Select Case Type
         Case ScriptDB.ComponentTypes.Function
-          objParameters.Add("@expressionid", expression.ID)
-          objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_getcomponent_function", objParameters)
-
+          rows = componentfunction.Tables(0).Select("ExpressionID = " & expression.ID)
         Case ScriptDB.ComponentTypes.Calculation
-          objParameters.Add("@expressionid", expression.CalculationID)
-          'objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_getcomponent_calculation", objParameters)
-          objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_getcomponent_base", objParameters)
-
-          '   Case ScriptDB.ComponentTypes.Expression
-          '    objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_getcomponent_base", objParameters)
-
+          rows = componentbase.Tables(0).Select("ExpressionID = " & expression.CalculationID)
         Case Else
-          objParameters.Add("@expressionid", expression.ID)
-          objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_getcomponent_base", objParameters)
+          rows = componentbase.Tables(0).Select("ExpressionID = " & expression.ID)
       End Select
 
-      For Each row As DataRow In objDataset.Tables(0).Rows
+      Dim collection As New Things.Collections.Generic
+      collection.Parent = expression
+
+      For Each row As DataRow In rows
+
         Dim component As New Things.Component
         component.ID = row.Item("componentid").ToString
         component.SubType = row.Item("subtype")
@@ -407,7 +415,6 @@
         objExpression.Parent = objTable
 
         objTable.Objects.Add(objExpression)
-
       Next
 
     End Sub

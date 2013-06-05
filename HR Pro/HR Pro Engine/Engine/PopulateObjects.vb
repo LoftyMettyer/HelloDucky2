@@ -609,6 +609,8 @@
           Table.Objects.Add(objValidation)
         Next
 
+        Debug.Assert(Table.Name <> "Absence")
+
         ' Record Description
         objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_getdescriptions", objParameters)
         For Each objRow In objDataset.Tables(0).Rows
@@ -701,6 +703,7 @@
       Dim objRow As DataRow
       Dim objParameters As New Connectivity.Parameters
 
+      'TODO check
       objObjects.Parent = objOrder
 
       Try
