@@ -27,24 +27,28 @@ namespace Fusion.Pages
 				_session = session;
 
 				using (new WaitCursor()) {
+					//set the category datasource
 					fusionCategoryBindingSource.DataSource = _session.Query<FusionCategory>().ToList();
 
+					//grids highlight the first row from datasource not the first row in the grid, fix it
+					bool fix = false;
+					fusionElementBindingSource.ListChanged += (s, e) => { if (e.ListChangedType == ListChangedType.Reset) fix = true; };
+					elementGrid.AfterRowActivate += (s, e) => { if (fix) { elementGrid.Rows[0].Activate(); fix = false; } };
+
+					//set the element datasource
 					fusionElementBindingSource.DataSource = fusionCategoryBindingSource;
 					fusionElementBindingSource.DataMember = "Elements";
 					InitElementGrid();
 
+					//set the table dropdown
 					drpTables.DropDownStyle = DropDownStyle.DropDownList;
 					drpTables.Items.Add(new ValueListItem(null, ""));
 					drpTables.Items.AddRange(_session.Query<Table>().OrderBy(x => x.Name).Select(x => new ValueListItem(x, x.Name)).ToArray());
 					drpTables.Enabled = (fusionCategoryBindingSource.Count > 0);
 
-					//grids highlight the first row from datasource not the first row in the grid, fix it, for both grid
+					//grids highlight the first row from datasource not the first row in the grid, fix it
 					if (categoryGrid.Rows.Count > 0) categoryGrid.Rows[0].Activate();
-
-					bool fix = false;
-					fusionElementBindingSource.ListChanged += (s, e) => { if (e.ListChangedType == ListChangedType.Reset) fix = true; };
-					elementGrid.AfterRowActivate += (s, e) => { if (fix) { elementGrid.Rows[0].Activate(); fix = false; }};
-
+		
 					//if the app is closing make sure changes are pushing into the databinding sources
 					MainForm.AppClosing += (s, e) => elementGrid.UpdateData();
 				}
@@ -71,7 +75,7 @@ namespace Fusion.Pages
 		{
 			elementGrid.ApplyDefaults();
 
-			if (fusionCategoryBindingSource.Count == 0)
+			if (elementGrid.DisplayLayout.Bands[0].Columns.Count == 0)
 				return;
 
 			var e = elementGrid.DisplayLayout;
@@ -97,7 +101,8 @@ namespace Fusion.Pages
 			var columns = _session.Query<Column>().Where(x => x.Table == element.Category.Table && x.DataType == element.DataType);
 
 			if (element.DataType == DataType.Character)
-				columns = columns.Where(x => x.Size >= element.MinSize && x.Size <= element.MaxSize);
+				columns = columns.Where(x => (!element.MinSize.HasValue || x.Size >= element.MinSize) 
+					&& (!element.MaxSize.HasValue || x.Size <= element.MaxSize));
 			if (element.Lookup)
 				columns = columns.Where(x => x.LookupTableId > 0);
 

@@ -15,6 +15,7 @@ namespace Fusion
 			layout.Override.CellClickAction = CellClickAction.RowSelect;
 			layout.Override.BorderStyleCell = UIElementBorderStyle.None;
 			layout.Override.BorderStyleRow = UIElementBorderStyle.None;
+			layout.Override.AllowDelete = DefaultableBoolean.False;
 		}
 	}
 }
