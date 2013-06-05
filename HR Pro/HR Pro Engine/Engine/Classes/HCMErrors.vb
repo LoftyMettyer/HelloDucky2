@@ -21,9 +21,16 @@ Namespace ErrorHandler
       item.User = Globals.Login.UserName
       item.DateTime = Now
 
-      MyBase.Add(item)
+			If Not MyBase.Items.Any(Function(e) e.Section = item.Section AndAlso
+						e.ObjectName = item.ObjectName AndAlso
+						e.Section = item.Section AndAlso
+						e.Message = item.Message AndAlso
+						e.Detail = item.Detail AndAlso
+						e.User = item.User) Then
+				Add(item)
+			End If
 
-    End Sub
+		End Sub
 
     Public Function DetailedReport() As String
 
@@ -96,16 +103,18 @@ Namespace ErrorHandler
   End Class
 
   Public Structure [Error]
-    Public ID As Guid
-    Public Section As ErrorHandler.Section
-    Public ObjectName As String
-    Public Severity As ErrorHandler.Severity
-    Public Message As String
-    Public Detail As String
-    Public DateTime As Date
-    Public User As String
-    Public ErrorNumber As Long
-    Public ErrorArticleID As Long
+		Public ID As Guid
+		Public Section As ErrorHandler.Section
+		Public ObjectName As String
+		Public Severity As ErrorHandler.Severity
+		Public Message As String
+		Public Detail As String
+		Public DateTime As Date
+		Public User As String
+		Public ErrorNumber As Long
+		Public ErrorArticleID As Long
+
+
   End Structure
 
   Public Enum Severity

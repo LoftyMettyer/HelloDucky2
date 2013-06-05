@@ -22,7 +22,7 @@ Namespace Forms
       '      txtDetails.Text = txtDetails.Text & Globals.ErrorLog.DetailedReport
 
       For Each objError As ErrorHandler.Error In Globals.ErrorLog
-        objListViewItem = lvwErrors.Items.Add(objError.ID.ToString)
+				objListViewItem = lvwErrors.Items.Add("")
         objListViewItem.ImageIndex = objError.Severity
         objListViewItem.SubItems.Add(objError.Message)
         objListViewItem.SubItems.Add(objError.Detail)
