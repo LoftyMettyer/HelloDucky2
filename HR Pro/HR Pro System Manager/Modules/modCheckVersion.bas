@@ -670,7 +670,8 @@ Private Function UpdateDatabase( _
     End If
        
     If bOK Then
-      strFileName = "HRProAssembly.sql"
+      'NHRD21112011 renamed from HRProAssembly.sql
+      strFileName = "Assembly.sql"
       RunScript strScriptPath & strFileName, sConnect
       gobjProgress.UpdateProgress False
     Else
