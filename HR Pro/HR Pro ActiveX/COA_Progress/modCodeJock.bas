@@ -58,6 +58,7 @@ Public Sub LoadSkin( _
     ' Remove some controls that don't skin very well
     .RemoveWindowClass "TabStripWndClass"
     .RemoveWindowClass "Afx:27800000:8"
+    .RemoveWindowClass "SSDataWidgetsEdit"
   
     'Applies the currently loaded skin to the specified window
     .ApplyWindow frm.hWnd
