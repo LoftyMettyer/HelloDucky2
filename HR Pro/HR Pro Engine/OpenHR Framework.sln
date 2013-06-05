@@ -14,9 +14,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{87D18D
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobileDesigner.Test", "MobileDesigner.Test\MobileDesigner.Test.csproj", "{DC0A927D-9ADA-423D-880B-304F4C4D7529}"
+EndProject
 Global
 	GlobalSection(SourceCodeControl) = preSolution
-		SccNumberOfProjects = 4
+		SccNumberOfProjects = 5
 		SccLocalPath0 = .
 		SccProjectUniqueName1 = Setup\\HR\u0020Pro\u0020Engine\u0020Setup.vdproj
 		SccProjectName1 = \u0022$/HR\u0020Pro/HR\u0020Pro\u0020Engine/Setup\u0022,\u0020LVGDAAAA
@@ -27,6 +29,9 @@ Global
 		SccProjectUniqueName3 = MobileDesigner\\MobileDesigner.csproj
 		SccProjectName3 = \u0022$/HR\u0020Pro/HR\u0020Pro\u0020Engine/MobileDesigner\u0022,\u0020JLTDAAAA
 		SccLocalPath3 = MobileDesigner
+		SccProjectUniqueName4 = MobileDesigner.Test\\MobileDesigner.Test.csproj
+		SccLocalPath4 = .
+		SccProjectFilePathRelativizedFromConnection4 = MobileDesigner.Test\\
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -68,6 +73,16 @@ Global
 		{6D7DBE8A-D215-4F00-9438-DD412B50E48B}.Release|Mixed Platforms.Build.0 = Release|x86
 		{6D7DBE8A-D215-4F00-9438-DD412B50E48B}.Release|x86.ActiveCfg = Release|x86
 		{6D7DBE8A-D215-4F00-9438-DD412B50E48B}.Release|x86.Build.0 = Release|x86
+		{DC0A927D-9ADA-423D-880B-304F4C4D7529}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{DC0A927D-9ADA-423D-880B-304F4C4D7529}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{DC0A927D-9ADA-423D-880B-304F4C4D7529}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{DC0A927D-9ADA-423D-880B-304F4C4D7529}.Debug|x86.ActiveCfg = Debug|x86
+		{DC0A927D-9ADA-423D-880B-304F4C4D7529}.Debug|x86.Build.0 = Debug|x86
+		{DC0A927D-9ADA-423D-880B-304F4C4D7529}.Release|Any CPU.ActiveCfg = Release|x86
+		{DC0A927D-9ADA-423D-880B-304F4C4D7529}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{DC0A927D-9ADA-423D-880B-304F4C4D7529}.Release|Mixed Platforms.Build.0 = Release|x86
+		{DC0A927D-9ADA-423D-880B-304F4C4D7529}.Release|x86.ActiveCfg = Release|x86
+		{DC0A927D-9ADA-423D-880B-304F4C4D7529}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
