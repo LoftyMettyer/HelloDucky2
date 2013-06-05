@@ -748,10 +748,8 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
     
 
   fOK = True
-  
-  Dim iTableID As SystemFramework.HCMGuid
-  iTableID.mintValue = pLngCurrentTableID
-  Set objTable = gobjHRProEngine.Things.Table(iTableID)
+    
+  Set objTable = gobjHRProEngine.GetTable(pLngCurrentTableID)
 
   ' We've created the code for auditing, relationships, calculations and the diary.
   ' Now put them all together to make the trigger creation string.
