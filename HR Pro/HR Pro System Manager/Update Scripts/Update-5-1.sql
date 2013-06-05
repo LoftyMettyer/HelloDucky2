@@ -399,7 +399,7 @@ PRINT 'Step - Object scripting'
 
 				-- Find window items
 				INSERT dbo.[ASRSysOrderItems] (OrderID, ColumnID, [Type], Sequence, Ascending)
-					SELECT TOP 1 @orderID, [columnID], ''F'', 1,0
+					SELECT TOP 1 @orderID, [columnID], ''F'', 1,1
 					FROM dbo.tbsys_columns WHERE [tableID] = @tableID AND columnname NOT LIKE ''ID%'' ORDER BY [columnID];
 
 				-- Set this as the primary order
