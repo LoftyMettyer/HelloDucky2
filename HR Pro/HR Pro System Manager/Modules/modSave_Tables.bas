@@ -808,6 +808,10 @@ Private Function TableSave(mfrmUse As frmUsage) As Boolean
                     gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
                     asValueList(iColumnList) = "CONVERT(numeric(" & Trim(Str(!Size)) & "," & Trim(Str(!Decimals)) & "), " & sName & ")"
 
+                  ' JIRA-2133 - Doesn't like nulls in logic fields.
+                  Case dtBIT
+                    asValueList(iColumnList) = "ISNULL([" & sName & "],0)"
+
                   Case Else
                     asValueList(iColumnList) = sName
 
