@@ -1761,19 +1761,27 @@ PRINT 'Step - Menu & Category enhancements'
 /* ------------------------------------------------------------- */
 /* Step - Reset Password Parameters */
 /* ------------------------------------------------------------- */
---Get the existing Mobile Setup parameter
-DECLARE @parametervalue NVARCHAR(255);
-SELECT @parametervalue = [dbo].[udfsys_getmodulesetting]('MODULE_MOBILE', 'Param_UniqueEmailColumn')
 
---Update Personnel Module Setup
-IF ISNULL(@parametervalue, '0') > 0 
-BEGIN
-EXEC spstat_setmodulesetting
-			'MODULE_PERSONNEL',
-			'Param_FieldsWorkEmail',
-			@parametervalue,
-			'PType_ColumnID';
-END
+	--Get the existing Mobile Setup parameter
+	DECLARE @parametervalue NVARCHAR(255);
+	SELECT @parametervalue = [dbo].[udfsys_getmodulesetting]('MODULE_MOBILE', 'Param_UniqueEmailColumn')
+
+	--Update Personnel Module Setup
+	IF ISNULL(@parametervalue, '0') > 0 
+	BEGIN
+	EXEC spstat_setmodulesetting
+				'MODULE_PERSONNEL',
+				'Param_FieldsWorkEmail',
+				@parametervalue,
+				'PType_ColumnID';
+	END
+
+	-- Create the physical reset stuff
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spadmin_createsystemlogin]') AND xtype = 'PC')
+	BEGIN
+		EXECUTE sp_executeSQL N'spadmin_createsystemlogin';
+		GRANT EXECUTE ON dbo.spadmin_commitresetpassword TO [OpenHR2IIS];
+	END
 
 
 
