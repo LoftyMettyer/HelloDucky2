@@ -6756,26 +6756,6 @@ Private Function BottomAlignSelectedControls()
 
 End Function
 
-' Textwidth function causes overflow on larger pieces of data. This wrapper should handle it.
-Public Function BigTextWidth(ByRef sInString As Variant, ByVal MaximumSize As Long) As Long
-  
-  Dim lngTextWidth As Long
-  
-  If Len(sInString) > 400 Then
-    lngTextWidth = Printer.TextWidth(Left(sInString, 400)) + _
-          BigTextWidth(Right(sInString, Len(sInString) - 400), 0)
-  Else
-    lngTextWidth = Printer.TextWidth(sInString)
-  End If
-  
-  If MaximumSize > 0 Then
-    BigTextWidth = Minimum(lngTextWidth, MaximumSize)
-  Else
-    BigTextWidth = lngTextWidth
-  End If
-  
-End Function
-
 ' Default column width following font change to Verdana (Textbox)
 Public Function Default_ColumnWidth_Textbox(ByRef plngColumnWidth As Long) As Long
   Default_ColumnWidth_Textbox = CLng(((plngColumnWidth + 1) * 95 + 105) / 10) * 10
