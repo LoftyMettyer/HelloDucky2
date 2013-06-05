@@ -474,8 +474,7 @@ Private Sub PopulateParentsCombo()
     
     Do While Not .EOF
       If !TableType <> iTabLookup And Not !Deleted Then
-        cboParents.AddItem !TableName
-        cboParents.ItemData(cboParents.NewIndex) = !TableID
+        AddItemToComboBox cboParents, !TableName, !TableID
       End If
       
       .MoveNext
@@ -489,6 +488,7 @@ Private Sub PopulateListBoxes()
   Dim fRelExists As Boolean
   Dim iLoop As Integer
   Dim objTable As Table
+  Dim lngNewIndex As Long
   
   ' For each table in the parentcombo ...
   For iLoop = 1 To cboParents.ListCount
