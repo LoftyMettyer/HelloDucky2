@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
 Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "COA_ColourPicker.ocx"
 Begin VB.Form frmScrEditOpts 
    BorderStyle     =   3  'Fixed Dialog
@@ -45,6 +45,7 @@ Begin VB.Form frmScrEditOpts
       _Version        =   393216
       Style           =   1
       Tabs            =   2
+      Tab             =   1
       TabHeight       =   520
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Verdana"
@@ -57,20 +58,20 @@ Begin VB.Form frmScrEditOpts
       EndProperty
       TabCaption(0)   =   "Default &Font"
       TabPicture(0)   =   "frmScrEditOpts.frx":000C
-      Tab(0).ControlEnabled=   -1  'True
+      Tab(0).ControlEnabled=   0   'False
       Tab(0).Control(0)=   "fraDefaultFontPage"
-      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).ControlCount=   1
       TabCaption(1)   =   "Screen &Grid"
       TabPicture(1)   =   "frmScrEditOpts.frx":0028
-      Tab(1).ControlEnabled=   0   'False
+      Tab(1).ControlEnabled=   -1  'True
       Tab(1).Control(0)=   "fraScreenGridPage"
+      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       Begin VB.Frame fraDefaultFontPage 
          BackColor       =   &H8000000C&
          BorderStyle     =   0  'None
          Height          =   2600
-         Left            =   50
+         Left            =   -74950
          TabIndex        =   11
          Top             =   325
          Width           =   3300
@@ -166,7 +167,7 @@ Begin VB.Form frmScrEditOpts
          BorderStyle     =   0  'None
          Enabled         =   0   'False
          Height          =   2600
-         Left            =   -74950
+         Left            =   50
          TabIndex        =   10
          Top             =   325
          Width           =   3300
@@ -245,6 +246,7 @@ Option Explicit
 Private gFrmScreen As frmScrDesigner2
 Private gObjFont As Object
 Private gForeColour As ColorConstants
+Private mblnOK
 
 Private Sub chkBold_Click()
   ' Update the default font object.
@@ -259,10 +261,6 @@ Private Sub chkItalic_Click()
   RefreshFontPage
   
 End Sub
-
-
-
-
 
 Private Sub cmdCancel_Click()
   ' Unload the form without saving the changes.
@@ -346,10 +344,13 @@ ErrorTrap:
 End Sub
 
 
-Private Sub cmdOK_Click()
+Private Sub cmdOk_Click()
   ' Save changes and unload the form.
+  mblnOK = True
+  
   SaveChanges
-  UnLoad Me
+  
+  If mblnOK Then UnLoad Me
   
 End Sub
 
@@ -400,12 +401,14 @@ Private Sub initialiseControls()
   
   gForeColour = gFrmScreen.DefaultForeColour
   
+  ssTabScreenEditOptions.Tab = 0
   RefreshFontPage
-  
+   
   ' Initialise the screen grid controls.
   txtWidth.Text = gFrmScreen.GridX
   txtHeight.Text = gFrmScreen.GridY
   chkAlignToGrid.value = IIf(gFrmScreen.AlignToGrid, vbChecked, vbUnchecked)
+  
 
 End Sub
 
@@ -423,11 +426,19 @@ End Property
 
 
 Private Function SaveChanges()
+Dim ErrorString As String
   ' Update the screen designer with the edit option changes.
-  
+  'On Error GoTo ErrorTrap
   ' Update the screen manager's grid size properties.
-  gFrmScreen.GridX = val(txtWidth.Text)
-  gFrmScreen.GridY = val(txtHeight.Text)
+  If (val(txtWidth.Text) > 5000) Or (val(txtHeight.Text) > 50000) Then
+    ErrorString = "The Width or Height you have specified is too large." & vbCrLf & "A figure lower than 5000 is more practical for the screen designer."
+    MsgBox ErrorString, vbExclamation + vbOKOnly, "HR Pro"
+    mblnOK = False
+    Exit Function
+  Else
+    gFrmScreen.GridX = val(txtWidth.Text)
+    gFrmScreen.GridY = val(txtHeight.Text)
+  End If
   
   ' Update the screen manager's align to grid property.
   gFrmScreen.AlignToGrid = IIf(chkAlignToGrid.value = vbChecked, True, False)
@@ -444,7 +455,7 @@ Private Function SaveChanges()
   ' Mark the screen as being changed so that the
   ' new edit options are saved.
   gFrmScreen.IsChanged = True
-
+  
 End Function
 
 Private Sub fraDefaulFontPage_DragDrop(Source As Control, X As Single, Y As Single)
