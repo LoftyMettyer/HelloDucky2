@@ -36,10 +36,10 @@ Namespace Things
     Public DefaultCalculation As Things.Expression
     Public DefaultValue As String
 
-    Public ReferencedBy As Things.Collection
+    Public ReferencedBy As Things.Collections.Generic
 
     Public Sub New()
-      ReferencedBy = New Things.Collection
+      ReferencedBy = New Things.Collections.Generic
     End Sub
 
     Public Overrides ReadOnly Property Type As Enums.Type

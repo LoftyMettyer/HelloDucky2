@@ -8,7 +8,7 @@ Namespace Tuning
   Public Class Report
     Implements COMInterfaces.iErrors
 
-    Public Expressions As New Things.Collection
+    Public Expressions As New Things.Collections.Generic
 
     Public Sub OutputToFile(ByRef FileName As String) Implements COMInterfaces.iErrors.OutputToFile
 

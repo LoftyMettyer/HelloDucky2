@@ -114,7 +114,7 @@ Public Class SysMgr
     End Get
   End Property
 
-  Public ReadOnly Property ReturnThings As Things.Collection Implements COMInterfaces.iSystemManager.Things
+  Public ReadOnly Property ReturnThings As Things.Collections.Generic Implements COMInterfaces.iSystemManager.Things
     Get
       Return Globals.Things
     End Get

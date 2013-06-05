@@ -83,9 +83,9 @@
 
     End Sub
 
-    Public Function PopulateCodeLibraryDependancies(ByRef objFunction As Things.CodeLibrary) As Things.Collection
+    Public Function PopulateCodeLibraryDependancies(ByRef objFunction As Things.CodeLibrary) As Things.Collections.Generic
 
-      Dim objDependancies As New Things.Collection
+      Dim objDependancies As New Things.Collections.Generic
       Dim objSetting As Things.Setting
       Dim objParameters As New Connectivity.Parameters
       Dim objDataset As DataSet
@@ -366,9 +366,9 @@
 
     'End Function
 
-    Public Function LoadComponents(ByRef objExpression As Things.Component, ByVal Type As ScriptDB.ComponentTypes) As Things.Collection
+    Public Function LoadComponents(ByRef objExpression As Things.Component, ByVal Type As ScriptDB.ComponentTypes) As Things.Collections.Generic
 
-      Dim objObjects As New Things.Collection
+      Dim objObjects As New Things.Collections.Generic
       Dim objComponent As Things.Component
       Dim objDataset As DataSet
       Dim objRow As DataRow
@@ -695,7 +695,7 @@
 
     Public Sub PopulateOrderItems(ByRef objOrder As Things.TableOrder)
 
-      Dim objObjects As New Things.Collection
+      Dim objObjects As New Things.Collections.Generic
       Dim objOrderItem As Things.TableOrderItem
       Dim objDataset As DataSet
       Dim objRow As DataRow
@@ -766,7 +766,7 @@
 
     Public Sub PopulateDataModifyItems(ByRef objDataModify As Things.GlobalModify)
 
-      Dim objObjects As New Things.Collection
+      Dim objObjects As New Things.Collections.Generic
       Dim objItem As Things.GlobalModifyItem
       Dim objDataset As DataSet
       Dim objRow As DataRow

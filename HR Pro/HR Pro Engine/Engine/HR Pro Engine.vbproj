@@ -148,7 +148,8 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Object Types\Base.vb" />
-    <Compile Include="Object Types\BaseCollection.vb" />
+    <Compile Include="Object Types\Collections\BaseCollection.vb" />
+    <Compile Include="Object Types\Collections\WorkflowElementItems.vb" />
     <Compile Include="Object Types\Datasource.vb" />
     <Compile Include="Object Types\GlobalModify.vb" />
     <Compile Include="Object Types\GlobalModifyItem.vb" />
@@ -161,7 +162,7 @@
     <Compile Include="Object Types\View.vb" />
     <Compile Include="PopulateObjects.vb" />
     <Compile Include="Object Types\CodeLibrary.vb" />
-    <Compile Include="Object Types\Collection.vb" />
+    <Compile Include="Object Types\Collections\Collection.vb" />
     <Compile Include="Object Types\Column.vb" />
     <Compile Include="Object Types\Component.vb" />
     <Compile Include="Object Types\DiaryLink.vb" />
@@ -240,9 +241,7 @@
     <None Include="Resources\mobsync.15.ico" />
     <None Include="Resources\Error48.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Object Types\Old Scripting\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

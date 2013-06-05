@@ -7,20 +7,20 @@ Public Module Globals
   'Public Shared Connection As Connectivity.SQL
   Public MetadataProvider As Connectivity.MetadataProvider = Connectivity.MetadataProvider.PhoenixStoredProcs
   '    Public User As Connectivity.User
-  Public Things As Things.Collection
-  Public Workflows As Things.Collection
-  Public Operators As Things.Collection
-  Public Functions As Things.Collection
-  Public SelectedThings As Things.Collection
+  Public Things As Things.Collections.Generic
+  Public Workflows As Things.Collections.Generic
+  Public Operators As Things.Collections.Generic
+  Public Functions As Things.Collections.Generic
+  Public SelectedThings As Things.Collections.Generic
   Public ErrorLog As SystemFramework.ErrorHandler.Errors
   Public TuningLog As Tuning.Report
-  Public ModuleSetup As Things.Collection
-  Public SystemSettings As Things.Collection
+  Public ModuleSetup As Things.Collections.Generic
+  Public SystemSettings As Things.Collections.Generic
   Public Options As HCMOptions
   '  Public UniqueCodes As Things.Collection
-  Public GetFieldsFromDB As Things.Collection
-  Public PerformanceIndexes As Things.Collection
-  Public OnBankHolidayUpdate As Things.Collection
+  Public GetFieldsFromDB As Things.Collections.Generic
+  Public PerformanceIndexes As Things.Collections.Generic
+  Public OnBankHolidayUpdate As Things.Collections.Generic
 
   Public ScriptDB As ScriptDB.Script
 
@@ -31,21 +31,21 @@ Public Module Globals
   Public Sub Initialise()
 
     ' Metadata objects
-    Things = New Things.Collection
-    Workflows = New Things.Collection
-    Operators = New Things.Collection
-    Functions = New Things.Collection
+    Things = New Things.Collections.Generic
+    Workflows = New Things.Collections.Generic
+    Operators = New Things.Collections.Generic
+    Functions = New Things.Collections.Generic
     ErrorLog = New SystemFramework.ErrorHandler.Errors
     TuningLog = New Tuning.Report
-    ModuleSetup = New Things.Collection
+    ModuleSetup = New Things.Collections.Generic
     ScriptDB = New ScriptDB.Script
     Options = New HCMOptions
-    SystemSettings = New Things.Collection
+    SystemSettings = New Things.Collections.Generic
 
     ' Dependency stack for special objects that will have procedures written for
-    GetFieldsFromDB = New Things.Collection
-    OnBankHolidayUpdate = New Things.Collection
-    PerformanceIndexes = New Things.Collection
+    GetFieldsFromDB = New Things.Collections.Generic
+    OnBankHolidayUpdate = New Things.Collections.Generic
+    PerformanceIndexes = New Things.Collections.Generic
 
   End Sub
 

@@ -4,12 +4,14 @@ Imports System.Xml.Serialization
 Imports System.IO
 Imports System.Runtime.InteropServices
 
-Namespace Things
+Namespace Things.Collections
 
   <DataObject(True), ClassInterface(ClassInterfaceType.None), Serializable()> _
   Public Class BaseCollection
     Inherits System.ComponentModel.BindingList(Of Things.Base)
     Implements System.Xml.Serialization.IXmlSerializable
+    Implements iCollection_Base
+
     '    Implements ICloneable
 
     Public Parent As Things.Base ' iSystemObject
@@ -34,7 +36,6 @@ Namespace Things
 
     End Sub
 
-
     ' Adds a unqiue object - scrolls through rather than uses contains because the type sent in could be a inherited type (there may be a better way to do this!)
     Public Function Exists(ByRef [Thing] As Things.Base) As Boolean
 
@@ -52,9 +53,8 @@ Namespace Things
 
     End Function
 
-
     'TO DO - This can probably be done using some inbuilt property on the collection, but its late and I'm hungry, so this will have to do.
-    Public Sub MergeUnique(ByRef Items As Things.Collection)
+    Public Sub MergeUnique(ByRef Items As Things.Collections.Generic)
 
       Dim objThing As Things.Base
 
@@ -168,13 +168,13 @@ Namespace Things
     '  End Get
     'End Property
 
-    Public ReadOnly Property Objects(ByVal Type As Things.Type) As Things.Collection
+    Public ReadOnly Property Objects(ByVal Type As Things.Type) As Things.Collections.Generic Implements iCollection_Base.Objects
       Get
 
-        Dim objCollection As Things.Collection
+        Dim objCollection As Things.Collections.Generic
         Dim objObject As Things.Base
 
-        objCollection = New Things.Collection
+        objCollection = New Things.Collections.Generic
         For Each objObject In Me.Items
           If objObject.Type = [Type] Then
             objCollection.Add(objObject)
@@ -266,7 +266,6 @@ Namespace Things
 
 #End Region
 
-
     '#Region "iClonable interface"
 
     '    Public Function Clone() As Object Implements System.ICloneable.Clone
@@ -295,6 +294,9 @@ Namespace Things
     '#End Region
 
 
+    Public Sub Add1(ByRef [Object] As Things.Base) Implements COMInterfaces.iCollection_Base.Add
+      Me.Items.Add([Object])
+    End Sub
   End Class
 
 

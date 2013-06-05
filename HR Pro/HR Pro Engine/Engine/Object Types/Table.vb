@@ -18,11 +18,11 @@ Namespace Things
     Public DefaultEmailID As HCMGuid
     Public IsRemoteView As Boolean
 
-    Public DependsOnChildColumns As New Things.BaseCollection
-    Public DependsOnParentColumns As New Things.BaseCollection
-    Public objCustomTriggers As New Things.BaseCollection
+    Public DependsOnChildColumns As New Things.Collections.BaseCollection
+    Public DependsOnParentColumns As New Things.Collections.BaseCollection
+    Public objCustomTriggers As New Things.Collections.BaseCollection
 
-    Public ReadOnly Property Indexes As Things.Collection
+    Public ReadOnly Property Indexes As Things.Collections.Generic
       Get
         Return Me.Objects(Things.Enums.Type.Index)
       End Get
@@ -82,21 +82,21 @@ Namespace Things
 #Region "Child Objects"
 
     <System.Xml.Serialization.XmlIgnore(), System.ComponentModel.Browsable(False)> _
-    Public ReadOnly Property Columns As Things.Collection
+    Public ReadOnly Property Columns As Things.Collections.Generic
       Get
         Return Me.Objects(Things.Type.Column)
       End Get
     End Property
 
     <System.Xml.Serialization.XmlIgnore(), System.ComponentModel.Browsable(False)> _
-    Public ReadOnly Property Validations() As Things.Collection
+    Public ReadOnly Property Validations() As Things.Collections.Generic
       Get
         Return Me.Objects(Things.Type.Validation)
       End Get
     End Property
 
     <System.Xml.Serialization.XmlIgnore(), System.ComponentModel.Browsable(False)> _
-    Public ReadOnly Property Views() As Things.Collection
+    Public ReadOnly Property Views() As Things.Collections.Generic
       Get
         Return Me.Objects(Things.Type.View)
       End Get
@@ -185,11 +185,11 @@ Namespace Things
 
 #End Region
 
-    Public Property CustomTriggers As BaseCollection Implements COMInterfaces.iTable.CustomTriggers
+    Public Property CustomTriggers As Collections.BaseCollection Implements COMInterfaces.iTable.CustomTriggers
       Get
         Return objCustomTriggers
       End Get
-      Set(ByVal value As BaseCollection)
+      Set(ByVal value As Collections.BaseCollection)
         objCustomTriggers = value
       End Set
     End Property

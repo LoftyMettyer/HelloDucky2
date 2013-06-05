@@ -23,7 +23,7 @@
       End Get
     End Property
 
-    Public ReadOnly Property IncludedColumns As Things.Collection
+    Public ReadOnly Property IncludedColumns As Things.Collections.Generic
       Get
         Return Me.Objects
       End Get

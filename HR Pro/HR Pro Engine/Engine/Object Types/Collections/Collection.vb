@@ -4,14 +4,14 @@ Imports System.Xml.Serialization
 Imports System.IO
 Imports System.Runtime.InteropServices
 
-Namespace Things
+Namespace Things.Collections
 
   <Serializable()> _
-  Public Class Collection
-    Inherits Things.BaseCollection
-    Implements iObjectCollection
+  Public Class Generic
+    Inherits Things.Collections.BaseCollection
+    Implements iCollection_Objects
 
-    Public Function Setting(ByVal [Module] As String, ByVal [Parameter] As String) As Things.Setting Implements iObjectCollection.Setting
+    Public Function Setting(ByVal [Module] As String, ByVal [Parameter] As String) As Things.Setting Implements iCollection_Objects.Setting
 
       Dim objChild As Things.Base
       Dim objSetting As New Things.Setting
@@ -29,7 +29,7 @@ Namespace Things
 
     End Function
 
-    Public Function Table(ByRef ID As HCMGuid) As Things.Table Implements iObjectCollection.Table
+    Public Function Table(ByRef ID As HCMGuid) As Things.Table Implements iCollection_Objects.Table
 
       Dim objChild As Things.Base
 

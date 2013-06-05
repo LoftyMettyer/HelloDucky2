@@ -26,11 +26,11 @@
       End Get
     End Property
 
-    Public Property Dependancies As Things.Collection
+    Public Property Dependancies As Things.Collections.Generic
       Get
         Return Me.Objects
       End Get
-      Set(ByVal value As Things.Collection)
+      Set(ByVal value As Things.Collections.Generic)
         Me.Objects = value
       End Set
     End Property

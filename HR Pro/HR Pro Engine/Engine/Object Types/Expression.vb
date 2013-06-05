@@ -21,10 +21,10 @@ Namespace Things
     Public UDF As ScriptDB.GeneratedUDF
     Public ExpressionType As ScriptDB.ExpressionType
 
-    Public Dependencies As New Things.Collection
-    Public ColumnRecursion As New Things.Collection
+    Public Dependencies As New Things.Collections.Generic
+    Public ColumnRecursion As New Things.Collections.Generic
 
-    Public StatementObjects As New Things.Collection
+    Public StatementObjects As New Things.Collections.Generic
 
     Public Joins As ArrayList
     Public FromTables As ArrayList
@@ -454,7 +454,7 @@ Namespace Things
 
     End Sub
 
-    Private Sub SQLCode_AddCodeLevel(ByRef [Components] As Things.Collection, ByRef [CodeCluster] As ScriptDB.LinesOfCode)
+    Private Sub SQLCode_AddCodeLevel(ByRef [Components] As Things.Collections.Generic, ByRef [CodeCluster] As ScriptDB.LinesOfCode)
 
       Dim objComponent As Things.Component
 

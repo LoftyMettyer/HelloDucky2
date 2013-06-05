@@ -1,4 +1,6 @@
-﻿<Serializable()> _
+﻿Imports System.Runtime.InteropServices
+
+<Serializable(), ComVisible(True)> _
 Public Structure HCMGuid
   Implements IConvertible
 
@@ -20,7 +22,6 @@ Public Structure HCMGuid
       Return mintValue.ToString.PadLeft(8, "0")
     End Get
   End Property
-
 
 #Region "IConvertible Interface"
 

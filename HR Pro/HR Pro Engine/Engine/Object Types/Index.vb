@@ -11,18 +11,18 @@ Public Class Index
     End Property
 
     Public IsClustered As Boolean = False
-    Public Columns As Things.Collection
-    Public IncludedColumns As Things.Collection
-    Public Relations As Things.Collection
+    Public Columns As Things.Collections.Generic
+    Public IncludedColumns As Things.Collections.Generic
+    Public Relations As Things.Collections.Generic
     Public IsTableIndex As Boolean = False
     Public IncludePrimaryKey As Boolean = True
     Public Enabled As Boolean = True
     Public IsUnique As Boolean = False
 
     Public Sub New()
-      Columns = New Things.Collection
-      IncludedColumns = New Things.Collection
-      Relations = New Things.Collection
+      Columns = New Things.Collections.Generic
+      IncludedColumns = New Things.Collections.Generic
+      Relations = New Things.Collections.Generic
     End Sub
 
   End Class

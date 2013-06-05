@@ -44,7 +44,7 @@ Namespace Things
     <System.Xml.Serialization.XmlIgnore()> _
     Public State As System.Data.DataRowState
 
-    Private mobjChildObjects As Things.Collection
+    Private mobjChildObjects As Things.Collections.Generic
     Private mobjParent As Things.Base
     Private mobjRoot As Things.Base
     Private mbIsSelected As Boolean
@@ -129,11 +129,11 @@ Namespace Things
     End Property
 
     <System.Xml.Serialization.XmlElement()> _
-    Public Property Objects() As Things.Collection
+    Public Property Objects() As Things.Collections.Generic
       Get
         Return mobjChildObjects
       End Get
-      Set(ByVal value As Things.Collection)
+      Set(ByVal value As Things.Collections.Generic)
         mobjChildObjects = value
       End Set
     End Property
@@ -145,13 +145,13 @@ Namespace Things
     End Property
 
     <System.Xml.Serialization.XmlIgnore()> _
-    Public Property Objects(ByVal Type As Things.Type) As Things.Collection
+    Public Property Objects(ByVal Type As Things.Type) As Things.Collections.Generic
       Get
 
-        Dim objCollection As Things.Collection
+        Dim objCollection As Things.Collections.Generic
         Dim objObject As Object
 
-        objCollection = New Things.Collection
+        objCollection = New Things.Collections.Generic
         For Each objObject In mobjChildObjects
           If objObject.Type = [Type] Then
             objCollection.Add(objObject)
@@ -160,14 +160,14 @@ Namespace Things
 
         Return objCollection
       End Get
-      Set(ByVal value As Things.Collection)
+      Set(ByVal value As Things.Collections.Generic)
         mobjChildObjects = value
       End Set
     End Property
 
     Public Sub New()
       Tuning = New ScriptDB.Tuning
-      Objects = New Things.Collection
+      Objects = New Things.Collections.Generic
       Objects.Parent = Me
     End Sub
 
@@ -380,9 +380,9 @@ Namespace Things
 
 
     ' Returns a collection of errors if necessary
-    Public Overridable Function Validate() As Things.Collection
+    Public Overridable Function Validate() As Things.Collections.Generic
 
-      Return New Things.Collection
+      Return New Things.Collections.Generic
 
     End Function
 
