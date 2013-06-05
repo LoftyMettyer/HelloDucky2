@@ -959,7 +959,7 @@ Private Function SaveModuleDefinitions() As Boolean
       "Formatting_Prefix, Formatting_Suffix, UseConditionalFormatting, ConditionalFormatting_Operator_1, ConditionalFormatting_Value_1, " & _
       "ConditionalFormatting_Style_1, ConditionalFormatting_Colour_1, ConditionalFormatting_Operator_2, ConditionalFormatting_Value_2, " & _
       "ConditionalFormatting_Style_2, ConditionalFormatting_Colour_2, ConditionalFormatting_Operator_3, ConditionalFormatting_Value_3, " & _
-      "ConditionalFormatting_Style_3, ConditionalFormatting_Colour_3)" & _
+      "ConditionalFormatting_Style_3, ConditionalFormatting_Colour_3, SeparatorColour)" & _
       " VALUES(" & _
       CStr(rsLinks!LinkType) & "," & _
       CStr(rsLinks!linkOrder) & "," & _
@@ -1014,7 +1014,8 @@ Private Function SaveModuleDefinitions() As Boolean
       "'" & Replace(IIf(IsNull(rsLinks!ConditionalFormatting_Operator_3), "", rsLinks!ConditionalFormatting_Operator_3), "'", "''") & "'," & _
       "'" & Replace(IIf(IsNull(rsLinks!ConditionalFormatting_Value_3), "", rsLinks!ConditionalFormatting_Value_3), "'", "''") & "'," & _
       "'" & Replace(IIf(IsNull(rsLinks!ConditionalFormatting_Style_3), "", rsLinks!ConditionalFormatting_Style_3), "'", "''") & "'," & _
-      "'" & Replace(IIf(IsNull(rsLinks!ConditionalFormatting_Colour_3), "", rsLinks!ConditionalFormatting_Colour_3), "'", "''") & "'" & _
+      "'" & Replace(IIf(IsNull(rsLinks!ConditionalFormatting_Colour_3), "", rsLinks!ConditionalFormatting_Colour_3), "'", "''") & "'," & _
+      "'" & Replace(IIf(IsNull(rsLinks!SeparatorColour), "", rsLinks!SeparatorColour), "'", "''") & "'" & _
       ")"
 
     gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
