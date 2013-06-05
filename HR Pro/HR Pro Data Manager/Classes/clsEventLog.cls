@@ -110,7 +110,7 @@ Public Function AddHeader(udtType As EventLog_Type, _
   Set prstRowAdded = gADOCon.Execute("SELECT MAX(ID) FROM AsrSysEventLog")
 
   ' Set function return to the id just added
-  mlngEventLogID = prstRowAdded.Fields(0)
+  mlngEventLogID = prstRowAdded.Fields(0).Value
 
   ' Commit the transaction
   gADOCon.CommitTrans
@@ -186,7 +186,7 @@ Public Function AddDetailEntry(pstrNotes As String) As Boolean
 
   If mlngEventLogID > 0 Then
     
-    If InStrB(1, pstrNotes, "'") Then
+    If InStr(1, pstrNotes, "'") Then
       strNotes = Replace(pstrNotes, "'", "''")
     Else
       strNotes = pstrNotes
@@ -226,7 +226,7 @@ Public Function GetBatchRunID() As Long
   Set prstRowAdded = gADOCon.Execute("SELECT MAX(BatchRunID) FROM AsrSysEventLog")
 
   ' Set function return to the id just added
-  mlngBatchRunID = IIf(IsNull(prstRowAdded.Fields(0)), 0, prstRowAdded.Fields(0)) + 1
+  mlngBatchRunID = IIf(IsNull(prstRowAdded.Fields(0).Value), 0, prstRowAdded.Fields(0).Value) + 1
 
   ' Commit the transaction
   gADOCon.CommitTrans
