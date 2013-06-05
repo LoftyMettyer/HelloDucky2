@@ -429,27 +429,27 @@ Namespace ScriptDB
 
 
           ' Build fusion messages
-          sSQLFusionCode = vbNullString
-          If objTable.FusionMessages.Count > 0 Then
-            sSQLFusionCode = "    -- Send fusion message(s) to service broker" & vbNewLine & _
-              "    DECLARE MessageCursor CURSOR LOCAL FAST_FORWARD FOR SELECT [ID] FROM inserted;" & vbNewLine & _
-              "    OPEN MessageCursor;" & vbNewLine & vbNewLine & _
-              "    FETCH NEXT FROM MessageCursor INTO @LocalId;" & vbNewLine & _
-              "    WHILE @@FETCH_STATUS = 0" & vbNewLine & _
-              "    BEGIN" & vbNewLine
+          sSQLFusionCode = SpecialTrigger_Fusion(objTable)
+          'If objTable.FusionMessages.Count > 0 Then
+          '  sSQLFusionCode = "    -- Send fusion message(s) to service broker" & vbNewLine & _
+          '    "    DECLARE MessageCursor CURSOR LOCAL FAST_FORWARD FOR SELECT [ID] FROM inserted;" & vbNewLine & _
+          '    "    OPEN MessageCursor;" & vbNewLine & vbNewLine & _
+          '    "    FETCH NEXT FROM MessageCursor INTO @LocalId;" & vbNewLine & _
+          '    "    WHILE @@FETCH_STATUS = 0" & vbNewLine & _
+          '    "    BEGIN" & vbNewLine
 
-            For Each objMessage In objTable.FusionMessages
-              sSQLFusionCode = sSQLFusionCode & _
-                String.Format("        EXEC fusion.[spSendMessageCheckContext] @MessageType='{0}', @LocalId=@LocalId", objMessage.Name) & vbNewLine
-              bBypassValidation = bBypassValidation Or objMessage.ByPassValidation
-            Next
+          '  For Each objMessage In objTable.FusionMessages
+          '    sSQLFusionCode = sSQLFusionCode & _
+          '      String.Format("        EXEC fusion.[spSendMessageCheckContext] @MessageType='{0}', @LocalId=@LocalId", objMessage.Name) & vbNewLine
+          '    bBypassValidation = bBypassValidation Or objMessage.ByPassValidation
+          '  Next
 
-            sSQLFusionCode = sSQLFusionCode & _
-              "        FETCH NEXT FROM MessageCursor INTO @LocalId;" & vbNewLine & _
-              "    END" & vbNewLine & _
-              "    CLOSE MessageCursor;" & vbNewLine & _
-              "    DEALLOCATE MessageCursor;"
-          End If
+          '  sSQLFusionCode = sSQLFusionCode & _
+          '    "        FETCH NEXT FROM MessageCursor INTO @LocalId;" & vbNewLine & _
+          '    "    END" & vbNewLine & _
+          '    "    CLOSE MessageCursor;" & vbNewLine & _
+          '    "    DEALLOCATE MessageCursor;"
+          'End If
 
           ' Add any relationship columns
           For Each objRelation In objTable.Relations
@@ -1398,6 +1398,48 @@ Namespace ScriptDB
 
     End Function
 
+    Private Function SpecialTrigger_Fusion(ByVal Table As Table) As String
+
+      Dim sCode As String = vbNullString
+      Dim objRelation As Relation
+      Dim bRelationFound As Boolean = False
+      Dim aryRelations As ArrayList
+      Dim sCursorDec As String = vbNullString
+      Dim sFetchNext As String = vbNullString
+      Dim sExecFusion As String = vbNullString
+
+      'aryRelations.Clear()
+      'For Each objRelation In Table.Relations
+      '  aryRelations.Add(String.Format("ID_{0}", objRelation.ParentID))
+      '  bRelationFound = True
+      'Next
+
+      'If bRelationFound Then
+      '  sCursorDec = ", " + aryRelations1.ToArray.Join(",")
+      '  sExecFusion = ''
+
+      'End If
+
+
+      sCode = String.Format("    -- Message Bus Integration" & vbNewLine & _
+          vbTab & "DECLARE MessageCursor CURSOR LOCAL FAST_FORWARD FOR SELECT [ID] {1} FROM inserted;	" & vbNewLine & _
+          vbTab & "OPEN MessageCursor;" & vbNewLine & _
+          vbTab & "FETCH NEXT FROM MessageCursor INTO @recordID {2};" & vbNewLine & _
+          vbTab & "WHILE @@FETCH_STATUS = 0 " & vbNewLine & _
+          vbTab & "BEGIN " & vbNewLine & _
+          vbTab & "    IF ISNULL(@recordID,0) > 0" & vbNewLine & _
+          vbTab & "    BEGIN" & vbNewLine & _
+          vbTab & "        EXEC fusion.[spSendFusionMessage] @TableID={0}, @RecordID=@recordID {3}" & vbNewLine & _
+          vbTab & "    END" & vbNewLine & _
+          vbTab & "    FETCH NEXT FROM MessageCursor INTO @recordID {2};" & vbNewLine & _
+          vbTab & "END" & vbNewLine & _
+          vbTab & "CLOSE MessageCursor;" & vbNewLine & _
+          vbTab & "DEALLOCATE MessageCursor;" _
+            , Table.ID, sCursorDec, sFetchNext, sExecFusion)
+
+      Return sCode
+
+    End Function
 
     Private Function SpecialTrigger_BankHolidays(ByVal Table As Table) As String
 
