@@ -7,33 +7,26 @@ Public Enum DatePeriod
 End Enum
 
 Public Class AuditLogModel
-    Inherits ModelBase
 
-    Friend Context As DBContext
-
-#Region "    Public Property Period As DatePeriod"
-
-    'cant use auto property for period cos havent implemented auto inotifypropertychanged code
-    Private _period As DatePeriod = DatePeriod.ThisMonth
-    Public Property Period() As DatePeriod
-        Get
-            Return _period
-        End Get
-        Set(ByVal value As DatePeriod)
-            _period = value
-            OnPropertyChanged("Period")
-        End Set
-    End Property
-#End Region
+    Private db As DBContext
+    Public Property Period As DatePeriod = DatePeriod.ThisMonth
     Public Property DateFrom As Date?
     Public Property DateTo As Date?
+    Public Property User As String
+    Public Property Users As IList(Of String)
     Public Property AuditLogs As IList
+    Public Event AuditLogsChanged()
 
-    Public Sub Show()
+    Public Sub New(ByVal db As DBContext)
+        Me.db = db
+        Users = db.ASRSysAuditTrails.Select(Function(a) a.UserName).Distinct().ToList
+    End Sub
+
+    Public Sub Find()
+
+        Dim query = From a In db.ASRSysAuditTrails
 
         Dim monthStart As Date = New Date(Today.Year, Today.Month, 1)
-
-        Dim query = From a In Context.ASRSysAuditTrails
 
         Select Case Period
             Case DatePeriod.ThisMonth
@@ -50,6 +43,10 @@ Public Class AuditLogModel
                 End If
         End Select
 
+        If Not String.IsNullOrWhiteSpace(User) Then
+            query = query.Where(Function(a) a.UserName = User)
+        End If
+
         Dim data = From a In query
                    Select New With {
                     .User = a.UserName,
@@ -58,26 +55,11 @@ Public Class AuditLogModel
                     .Column = a.Columnname,
                     .OldValue = a.OldValue,
                     .NewValue = a.NewValue,
-                    .RecordDescription = a.RecordDesc,
-                    .Id = a.id
+                    .RecordDescription = a.RecordDesc
                    }
 
         AuditLogs = data.ToList
-        OnPropertyChanged("AuditLogs")
+        RaiseEvent AuditLogsChanged()
     End Sub
 
 End Class
-
-#Region "Framework"
-
-Public Class ModelBase
-    Implements INotifyPropertyChanged
-
-    Public Event PropertyChanged(ByVal sender As Object, ByVal e As System.ComponentModel.PropertyChangedEventArgs) Implements System.ComponentModel.INotifyPropertyChanged.PropertyChanged
-
-    Protected Sub OnPropertyChanged(ByVal propertyName As String)
-        RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(propertyName))
-    End Sub
-End Class
-
-#End Region

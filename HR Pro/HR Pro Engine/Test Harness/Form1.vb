@@ -331,7 +331,7 @@ Public Class Form1
         Dim con = String.Format("Initial Catalog={0}; Server={1};User ID={2}; Password={3}; APP={4};",
                              txtDatabase2.Text, txtServer2.Text, txtUser2.Text, txtPassword2.Text, "ScriptDB")
 
-        Dim f As New AuditLogForm With {.Connection = con}
+        Dim f As New AuditLogForm With {.ConString = con}
         f.ShowDialog()
 
   End Sub

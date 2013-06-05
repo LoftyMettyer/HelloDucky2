@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class AuditLogForm2
+Partial Class AuditLogForm
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
@@ -25,6 +25,7 @@ Partial Class AuditLogForm2
         Me.components = New System.ComponentModel.Container()
         Dim DateButton1 As Infragistics.Win.UltraWinSchedule.CalendarCombo.DateButton = New Infragistics.Win.UltraWinSchedule.CalendarCombo.DateButton()
         Dim DateButton2 As Infragistics.Win.UltraWinSchedule.CalendarCombo.DateButton = New Infragistics.Win.UltraWinSchedule.CalendarCombo.DateButton()
+        Dim Appearance14 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
         Dim Appearance3 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance("Highlight", 74988782)
         Me.datePanel = New System.Windows.Forms.Panel()
         Me.dateLabel = New Infragistics.Win.Misc.UltraLabel()
@@ -37,6 +38,8 @@ Partial Class AuditLogForm2
         Me.butOutput = New System.Windows.Forms.Button()
         Me.auditLogsGrid = New Infragistics.Win.UltraWinGrid.UltraGrid()
         Me.gridExporter = New Infragistics.Win.UltraWinGrid.ExcelExport.UltraGridExcelExporter(Me.components)
+        Me.UltraLabel1 = New Infragistics.Win.Misc.UltraLabel()
+        Me.UltraLabel2 = New Infragistics.Win.Misc.UltraLabel()
         Me.datePanel.SuspendLayout()
         CType(Me.dateFromEditor, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.dateToEditor, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -50,10 +53,10 @@ Partial Class AuditLogForm2
         Me.datePanel.Controls.Add(Me.dateLabel)
         Me.datePanel.Controls.Add(Me.dateFromEditor)
         Me.datePanel.Controls.Add(Me.dateToEditor)
-        Me.datePanel.Location = New System.Drawing.Point(152, 10)
+        Me.datePanel.Location = New System.Drawing.Point(188, 10)
         Me.datePanel.Name = "datePanel"
-        Me.datePanel.Size = New System.Drawing.Size(356, 23)
-        Me.datePanel.TabIndex = 23
+        Me.datePanel.Size = New System.Drawing.Size(261, 23)
+        Me.datePanel.TabIndex = 1
         Me.datePanel.Visible = False
         '
         'dateLabel
@@ -91,17 +94,17 @@ Partial Class AuditLogForm2
         '
         'findButton
         '
-        Me.findButton.Location = New System.Drawing.Point(514, 9)
+        Me.findButton.Location = New System.Drawing.Point(188, 37)
         Me.findButton.Name = "findButton"
         Me.findButton.Size = New System.Drawing.Size(58, 23)
-        Me.findButton.TabIndex = 2
+        Me.findButton.TabIndex = 3
         Me.findButton.Text = "Show"
         '
         'periodEditor
         '
         Me.periodEditor.DropDownStyle = Infragistics.Win.DropDownStyle.DropDownList
         Me.periodEditor.LimitToList = True
-        Me.periodEditor.Location = New System.Drawing.Point(13, 10)
+        Me.periodEditor.Location = New System.Drawing.Point(49, 10)
         Me.periodEditor.Name = "periodEditor"
         Me.periodEditor.Size = New System.Drawing.Size(123, 21)
         Me.periodEditor.TabIndex = 0
@@ -111,29 +114,29 @@ Partial Class AuditLogForm2
         '
         Me.userEditor.DropDownStyle = Infragistics.Win.DropDownStyle.DropDownList
         Me.userEditor.LimitToList = True
-        Me.userEditor.Location = New System.Drawing.Point(13, 37)
+        Me.userEditor.Location = New System.Drawing.Point(49, 37)
         Me.userEditor.Name = "userEditor"
         Me.userEditor.Size = New System.Drawing.Size(123, 21)
-        Me.userEditor.TabIndex = 1
+        Me.userEditor.TabIndex = 2
         Me.userEditor.ValueMember = ""
         '
         'txtFilePath
         '
         Me.txtFilePath.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.txtFilePath.Location = New System.Drawing.Point(14, 377)
+        Me.txtFilePath.Location = New System.Drawing.Point(13, 380)
         Me.txtFilePath.Name = "txtFilePath"
         Me.txtFilePath.Size = New System.Drawing.Size(273, 20)
-        Me.txtFilePath.TabIndex = 4
+        Me.txtFilePath.TabIndex = 5
         '
         'butOutput
         '
         Me.butOutput.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.butOutput.Font = New System.Drawing.Font("Verdana", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.butOutput.Location = New System.Drawing.Point(292, 377)
+        Me.butOutput.Location = New System.Drawing.Point(291, 378)
         Me.butOutput.Name = "butOutput"
         Me.butOutput.Size = New System.Drawing.Size(66, 23)
-        Me.butOutput.TabIndex = 5
-        Me.butOutput.Text = "Output..."
+        Me.butOutput.TabIndex = 6
+        Me.butOutput.Text = "Export"
         Me.butOutput.UseVisualStyleBackColor = True
         '
         'auditLogsGrid
@@ -141,6 +144,8 @@ Partial Class AuditLogForm2
         Me.auditLogsGrid.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
                     Or System.Windows.Forms.AnchorStyles.Left) _
                     Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Appearance14.BackColor = System.Drawing.SystemColors.Window
+        Me.auditLogsGrid.DisplayLayout.Appearance = Appearance14
         Appearance3.BackColor = System.Drawing.SystemColors.Highlight
         Appearance3.ForeColor = System.Drawing.SystemColors.HighlightText
         Me.auditLogsGrid.DisplayLayout.Appearances.Add(Appearance3)
@@ -162,16 +167,34 @@ Partial Class AuditLogForm2
         Me.auditLogsGrid.Location = New System.Drawing.Point(1, 66)
         Me.auditLogsGrid.Margin = New System.Windows.Forms.Padding(6, 5, 6, 5)
         Me.auditLogsGrid.Name = "auditLogsGrid"
-        Me.auditLogsGrid.Size = New System.Drawing.Size(809, 303)
-        Me.auditLogsGrid.TabIndex = 3
-        Me.auditLogsGrid.TextRenderingMode = Infragistics.Win.TextRenderingMode.GDI
-        Me.auditLogsGrid.UseOsThemes = Infragistics.Win.DefaultableBoolean.[True]
+        Me.auditLogsGrid.Size = New System.Drawing.Size(809, 306)
+        Me.auditLogsGrid.TabIndex = 4
         '
-        'AuditLogForm2
+        'UltraLabel1
+        '
+        Me.UltraLabel1.AutoSize = True
+        Me.UltraLabel1.Location = New System.Drawing.Point(13, 41)
+        Me.UltraLabel1.Name = "UltraLabel1"
+        Me.UltraLabel1.Size = New System.Drawing.Size(31, 14)
+        Me.UltraLabel1.TabIndex = 7
+        Me.UltraLabel1.Text = "User:"
+        '
+        'UltraLabel2
+        '
+        Me.UltraLabel2.AutoSize = True
+        Me.UltraLabel2.Location = New System.Drawing.Point(12, 14)
+        Me.UltraLabel2.Name = "UltraLabel2"
+        Me.UltraLabel2.Size = New System.Drawing.Size(31, 14)
+        Me.UltraLabel2.TabIndex = 8
+        Me.UltraLabel2.Text = "Date:"
+        '
+        'AuditLogForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(809, 408)
+        Me.ClientSize = New System.Drawing.Size(809, 411)
+        Me.Controls.Add(Me.UltraLabel2)
+        Me.Controls.Add(Me.UltraLabel1)
         Me.Controls.Add(Me.txtFilePath)
         Me.Controls.Add(Me.butOutput)
         Me.Controls.Add(Me.auditLogsGrid)
@@ -179,7 +202,7 @@ Partial Class AuditLogForm2
         Me.Controls.Add(Me.periodEditor)
         Me.Controls.Add(Me.findButton)
         Me.Controls.Add(Me.datePanel)
-        Me.Name = "AuditLogForm2"
+        Me.Name = "AuditLogForm"
         Me.Text = "Audit Log"
         Me.datePanel.ResumeLayout(False)
         Me.datePanel.PerformLayout()
@@ -203,4 +226,6 @@ Partial Class AuditLogForm2
     Friend WithEvents butOutput As System.Windows.Forms.Button
     Friend WithEvents auditLogsGrid As Infragistics.Win.UltraWinGrid.UltraGrid
     Friend WithEvents gridExporter As Infragistics.Win.UltraWinGrid.ExcelExport.UltraGridExcelExporter
+    Friend WithEvents UltraLabel1 As Infragistics.Win.Misc.UltraLabel
+    Friend WithEvents UltraLabel2 As Infragistics.Win.Misc.UltraLabel
 End Class

@@ -97,15 +97,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuditLogModel.vb" />
-    <Compile Include="AuditLogForm.Designer.vb">
-      <DependentUpon>AuditLogForm.vb</DependentUpon>
-    </Compile>
-    <Compile Include="AuditLogForm.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="DBContext.designer.vb">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+      <DependentUpon>DBContext.dbml</DependentUpon>
+    </Compile>
+    <Compile Include="DBContext.vb">
       <DependentUpon>DBContext.dbml</DependentUpon>
     </Compile>
     <Compile Include="Form1.vb">
@@ -115,10 +112,10 @@
       <DependentUpon>Form1.vb</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AuditLogForm2.Designer.vb">
-      <DependentUpon>AuditLogForm2.vb</DependentUpon>
+    <Compile Include="AuditLogForm.Designer.vb">
+      <DependentUpon>AuditLogForm.vb</DependentUpon>
     </Compile>
-    <Compile Include="AuditLogForm2.vb">
+    <Compile Include="AuditLogForm.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Import &amp; Export Definitions\ViewObjects.Designer.vb">
@@ -153,9 +150,6 @@
   <ItemGroup>
     <EmbeddedResource Include="AuditLogForm.resx">
       <DependentUpon>AuditLogForm.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="AuditLogForm2.resx">
-      <DependentUpon>AuditLogForm2.vb</DependentUpon>
     </EmbeddedResource>
     <None Include="DBContext.dbml.layout">
       <DependentUpon>DBContext.dbml</DependentUpon>
