@@ -72,8 +72,8 @@ Partial Class MainForm
     Me.txtPassword.Location = New System.Drawing.Point(192, 49)
     Me.txtPassword.Name = "txtPassword"
     Me.txtPassword.Size = New System.Drawing.Size(100, 20)
-    Me.txtPassword.TabIndex = 27
-    Me.txtPassword.Text = "Password1"
+    Me.txtPassword.TabIndex = 3
+    Me.txtPassword.Text = "asr"
     '
     'Label3
     '
@@ -110,23 +110,23 @@ Partial Class MainForm
     Me.txtServer.Location = New System.Drawing.Point(75, 23)
     Me.txtServer.Name = "txtServer"
     Me.txtServer.Size = New System.Drawing.Size(100, 20)
-    Me.txtServer.TabIndex = 23
-    Me.txtServer.Text = "ABS16091"
+    Me.txtServer.TabIndex = 1
+    Me.txtServer.Text = "COA14204"
     '
     'txtDatabase
     '
     Me.txtDatabase.Location = New System.Drawing.Point(75, 49)
     Me.txtDatabase.Name = "txtDatabase"
     Me.txtDatabase.Size = New System.Drawing.Size(100, 20)
-    Me.txtDatabase.TabIndex = 22
-    Me.txtDatabase.Text = "PHSO"
+    Me.txtDatabase.TabIndex = 2
+    Me.txtDatabase.Text = "blank"
     '
     'butScriptDB
     '
     Me.butScriptDB.Location = New System.Drawing.Point(71, 84)
     Me.butScriptDB.Name = "butScriptDB"
     Me.butScriptDB.Size = New System.Drawing.Size(104, 45)
-    Me.butScriptDB.TabIndex = 21
+    Me.butScriptDB.TabIndex = 4
     Me.butScriptDB.Text = "Go Script."
     Me.butScriptDB.UseVisualStyleBackColor = True
     '
