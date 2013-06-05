@@ -91,13 +91,13 @@ END
 	IF NOT EXISTS(SELECT * FROM ASRSysUserSettings where section = 'Output')
 	BEGIN
 		INSERT ASRSysUserSettings ([UserName],[Section],[SettingKey],[SettingValue])
-			VALUES ('HRPro','Output','RowSpacer','1');
+			VALUES ('HRPro','Output','RowSpacer','0');
 		INSERT ASRSysUserSettings ([UserName],[Section],[SettingKey],[SettingValue])
-			VALUES ('Admin','Output','RowSpacer','1');	
+			VALUES ('Admin','Output','RowSpacer','0');	
 		INSERT ASRSysUserSettings ([UserName],[Section],[SettingKey],[SettingValue])
-			VALUES ('HRPro','Output','ColSpacer','1');
+			VALUES ('HRPro','Output','ColSpacer','0');
 		INSERT ASRSysUserSettings ([UserName],[Section],[SettingKey],[SettingValue])
-			VALUES ('Admin','Output','ColSpacer','1');				
+			VALUES ('Admin','Output','ColSpacer','0');				
 	END		
 	----------------------------------------------------------------------
 	-- spASRSubmitWorkflowStep
