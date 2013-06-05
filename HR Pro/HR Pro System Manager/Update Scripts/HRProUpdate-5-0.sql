@@ -64,6 +64,12 @@ PRINT 'Step 1 - System procedures'
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRAuditTable]') AND xtype = 'P')
 		DROP PROCEDURE [dbo].[sp_ASRAuditTable];
 
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRGetCurrentUsersCountOnServer]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].[spASRGetCurrentUsersCountOnServer];
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRGetDomainPolicy]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].[spASRGetDomainPolicy];
+
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRSubmitWorkflowStep]') AND xtype = 'P')
 		DROP PROCEDURE [dbo].[spASRSubmitWorkflowStep];
 
@@ -84,6 +90,84 @@ PRINT 'Step 1 - System procedures'
 			IF NOT EXISTS(SELECT [SettingValue] FROM [asrsyssystemsettings] WHERE [Section] = @section AND [SettingKey] = @settingkey)
 				INSERT ASRSysSystemSettings([Section], [SettingKey], [SettingValue]) VALUES (@section, @settingkey, @settingvalue);	
 		END';
+
+	EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[spASRGetCurrentUsersCountOnServer]
+	(
+		@iLoginCount	integer OUTPUT,
+		@psLoginName	varchar(MAX)
+	)
+	AS
+	BEGIN
+
+		DECLARE @sSQLVersion	integer,
+				@Mode			smallint;
+
+		IF EXISTS (SELECT Name FROM sysobjects WHERE id = object_id(''sp_ASRIntCheckPolls'') AND sysstat & 0xf = 4)
+		BEGIN
+			EXEC sp_ASRIntCheckPolls;
+		END
+
+		SELECT @sSQLVersion = dbo.udfASRSQLVersion();
+		SELECT @Mode = [SettingValue] FROM ASRSysSystemSettings WHERE [Section] = ''ProcessAccount'' AND [SettingKey] = ''Mode'';
+		IF @@ROWCOUNT = 0 SET @Mode = 0
+	
+		IF ((@Mode = 1 OR @Mode = 2) AND @sSQLVersion > 8) AND (NOT IS_SRVROLEMEMBER(''sysadmin'') = 1)		
+		BEGIN
+			SELECT @iLoginCount = dbo.[udfASRNetCountCurrentLogins](@psLoginName);
+		END
+		ELSE
+		BEGIN
+
+			SELECT @iLoginCount = COUNT(*)
+			FROM master..sysprocesses p
+			WHERE p.program_name LIKE ''OpenHR%''
+				AND	p.program_name NOT LIKE ''OpenHR Workflow%''
+				AND	p.program_name NOT LIKE ''OpenHR Outlook%''
+				AND	p.program_name NOT LIKE ''OpenHR Server.Net%''
+				AND	p.program_name NOT LIKE ''OpenHR Intranet Embedding%''
+				AND p.loginame = @psLoginName;
+		END
+	END';
+
+	EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[spASRGetDomainPolicy]
+		(@LockoutDuration int OUTPUT,
+		 @lockoutThreshold int OUTPUT,
+		 @lockoutObservationWindow int OUTPUT,
+		 @maxPwdAge int OUTPUT, 
+		 @minPwdAge int OUTPUT,
+		 @minPwdLength int OUTPUT, 
+		 @pwdHistoryLength int OUTPUT, 
+		 @pwdProperties int OUTPUT)
+	AS
+	BEGIN
+
+		SET NOCOUNT ON;
+
+		-- Initialise the variables
+		SET @LockoutDuration = 0;
+		SET @lockoutThreshold  = 0;
+		SET @lockoutObservationWindow  = 0;
+		SET @maxPwdAge  = 0;
+		SET @minPwdAge  = 0;
+		SET @minPwdLength  = 0;
+		SET @pwdHistoryLength  = 0;
+		SET @pwdProperties  = 0;
+
+		EXEC sp_executesql N''EXEC spASRGetDomainPolicyFromAssembly
+				@lockoutDuration OUTPUT, @lockoutThreshold OUTPUT,
+				@lockoutObservationWindow OUTPUT, @maxPwdAge OUTPUT,
+				@minPwdAge OUTPUT, @minPwdLength OUTPUT,
+				@pwdHistoryLength OUTPUT, @pwdProperties OUTPUT''
+			, N''@lockoutDuration int OUT, @lockoutThreshold int OUT,
+				@lockoutObservationWindow int OUT, @maxPwdAge int OUT,
+				@minPwdAge int OUT,	@minPwdLength int OUT,
+				@pwdHistoryLength int OUT, @pwdProperties int OUT''
+			, @LockoutDuration OUT, @lockoutThreshold OUT
+			, @lockoutObservationWindow OUT, @maxPwdAge OUT
+			, @minPwdAge OUT, @minPwdLength OUT
+			, @pwdHistoryLength OUT, @pwdProperties OUT;
+
+	END';
 
 
 	EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[spASRSubmitWorkflowStep]
