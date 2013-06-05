@@ -3369,6 +3369,14 @@ Private Function CopyControlProperties(pCtlSource As VB.Control, pCtlDestination
       ' JDM - 14/08/01 - Fault 1949 - Changed to read control values
       .SetOptions ReadColumnControlValues(pCtlSource.ColumnID)
     End If
+        
+    If ScreenControl_HasNavigation(iControlType) Then
+      .DisplayType = pCtlSource.DisplayType
+      .ColumnName = pCtlSource.ColumnName
+      .NavigateTo = pCtlSource.NavigateTo
+      .NavigateIn = pCtlSource.NavigateIn
+      .NavigateOnSave = pCtlSource.NavigateOnSave
+    End If
     
     If ScreenControl_HasPicture(iControlType) Then
       .PictureID = pCtlSource.PictureID
