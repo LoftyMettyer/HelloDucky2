@@ -662,6 +662,7 @@ Public Function CreateTempTables() As Boolean
       Set idxTemp = .CreateIndex("idxHistoryScreenID")
       With idxTemp
         .Fields.Append .CreateField("historyScreenID")
+        .Fields.Append .CreateField("order")
         .Unique = False
       End With
       .Indexes.Append idxTemp

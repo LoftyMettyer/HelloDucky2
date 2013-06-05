@@ -5910,7 +5910,48 @@ Public Function FormatTableName(ByVal Owner As String, TableName As String) As S
 End Function
 
 
+Public Sub GetObjectCategories(ByRef theCombo As ComboBox, UtilityType As UtilityType, UtilityID As Long, Optional TableID As Long)
 
+  On Error GoTo ErrorTrap
+
+  Dim rsTemp As New ADODB.Recordset
+  Dim iListIndex As Integer
+  
+  ' Add <none>
+  theCombo.AddItem "<None>"
+  theCombo.ItemData(theCombo.NewIndex) = 0
+  iListIndex = theCombo.NewIndex
+          
+  rsTemp.Open "EXEC dbo.spsys_getobjectcategories " & CStr(utlScreen) & ", " & CStr(UtilityID) & ", " & CStr(TableID) _
+      , gADOCon, adOpenForwardOnly, adLockReadOnly
+  
+  If Not rsTemp.BOF And Not rsTemp.EOF Then
+    rsTemp.MoveFirst
+    Do While Not rsTemp.EOF
+      theCombo.AddItem rsTemp.Fields("category_name").value
+      theCombo.ItemData(theCombo.NewIndex) = rsTemp.Fields("ID").value
+      
+      If rsTemp.Fields("Selected").value = 1 Then
+        iListIndex = theCombo.NewIndex
+      End If
+      rsTemp.MoveNext
+    Loop
+  End If
+  
+  theCombo.Enabled = (theCombo.ListCount > 0)
+    
+  If iListIndex > -1 And UtilityID > 0 Then
+    theCombo.ListIndex = iListIndex
+  End If
+  
+TidyUpAndExit:
+  Set rsTemp = Nothing
+  Exit Sub
+  
+ErrorTrap:
+  GoTo TidyUpAndExit
+
+End Sub
 
 
 

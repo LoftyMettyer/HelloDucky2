@@ -388,7 +388,6 @@ Private Sub cmdIcon_Click()
   
   If frmPictSel.SelectedPicture > 0 Then
     glngPictureID = frmPictSel.SelectedPicture
-    imgIcon_Refresh
   End If
   
   Set frmPictSel = Nothing
@@ -397,7 +396,6 @@ End Sub
 
 Private Sub cmdIconClear_Click()
   glngPictureID = frmPictSel.SelectedPicture
-  imgIcon_Refresh
 End Sub
 
 Private Sub cmdMoveDown_Click()
@@ -477,9 +475,6 @@ Private Sub cmdOk_Click()
   fOK = (TableID > 0)
   If Not fOK Then
     MsgBox "No primary table has been specified!", vbOKOnly + vbExclamation, Application.Name
-'    If cboTables.Enabled Then
-'      cboTables.SetFocus
-'    End If
   End If
 
   ' Check that a screen name has been entered.
@@ -599,38 +594,10 @@ Private Sub cmdOk_Click()
       Next frmForm
       Set frmForm = Nothing
       
-'      If fOK And (Not fFound) Then
-'        ' Screen Designer not there. We must be just editing the properties of an existing screen.
-'        ' Check for tab strip.
-'        sSQL = "SELECT COUNT(*) AS result" & _
-'          " FROM tmpPageCaptions" & _
-'          " WHERE screenID = " & CStr(lngScreenID)
-'
-'        Set rsTemp = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
-'        If rsTemp!result > 0 Then
-'          MsgBox "The screen cannot be made a Self-service Intranet screen because it contains Image controls.", _
-'            vbOKOnly + vbExclamation, Application.Name
-'          If chkSSIntranet.Enabled Then
-'            chkSSIntranet.SetFocus
-'          End If
-'
-'          fOK = False
-'        End If
-'
-'        rsTemp.Close
-'        Set rsTemp = Nothing
-'      End If
     
       If fOK And (Not fFound) Then
         ' Screen Designer not there. We must be just editing the properties of an existing screen.
         ' Check for OLE, photo, link, and image controls.
-'        sSQL = "SELECT COUNT(*) AS result" & _
-          " FROM tmpControls" & _
-          " WHERE screenID = " & CStr(lngScreenID) & _
-          " AND ((controlType = " & CStr(giCTRL_IMAGE) & ")" & _
-          "   OR (controlType = " & CStr(giCTRL_OLE) & ")" & _
-          "   OR (controlType = " & CStr(giCTRL_PHOTO) & "))"
-        
         sSQL = "SELECT COUNT(*) AS result" & _
           " FROM tmpControls" & _
           " WHERE screenID = " & CStr(lngScreenID) & _
@@ -756,6 +723,7 @@ Private Sub Form_Activate()
 
   Dim fQuickEntry As Boolean
   Dim fSSIntranet As Boolean
+  Dim bGrouped As Boolean
   
   If Loading Then
  
@@ -772,6 +740,11 @@ Private Sub Form_Activate()
           OrderID = .Fields("orderID")
           glngPictureID = IIf(IsNull(.Fields("pictureID")), 0, .Fields("pictureID"))
           txtName.Text = Trim(.Fields("name"))
+          txtDescription.Text = IIf(IsNull(.Fields("description").value), "", .Fields("description").value)
+          
+          GetObjectCategories cboCategory, utlScreen, ScreenID
+          SetComboItem cboCategory, IIf(IsNull(.Fields("category").value), 0, .Fields("category").value)
+          
           Me.Caption = "Properties - " & Trim(.Fields("name"))
           
           fQuickEntry = IIf(IsNull(.Fields("quickEntry")), False, .Fields("quickEntry"))
@@ -779,6 +752,10 @@ Private Sub Form_Activate()
           
           fSSIntranet = IIf(IsNull(.Fields("SSIntranet")), False, .Fields("SSIntranet"))
           chkSSIntranet.value = IIf(fSSIntranet, vbChecked, vbUnchecked)
+          
+          bGrouped = IIf(IsNull(.Fields("groupscreens").value), False, .Fields("groupscreens").value)
+          chkGroupByCategory.value = IIf(bGrouped, vbChecked, vbUnchecked)
+          
         End If
       
       End With
@@ -792,7 +769,6 @@ Private Sub Form_Activate()
         
     ' Populate the combos, textboxes and listboxes.
     txtOrder_Refresh
-    imgIcon_Refresh
     listHistoryScreens_Refresh
     
     'Refresh current tab page
@@ -852,22 +828,6 @@ Private Function txtOrder_Refresh() As Boolean
   End If
 End Function
 
-Private Function imgIcon_Refresh() As Boolean
-  Dim strFileName As String
-  
-  If PictureID > 0 Then
-    With recPictEdit
-      .Index = "idxID"
-      .Seek "=", PictureID
-      If Not .NoMatch Then
-        txtIcon.Text = .Fields("Name").value
-      End If
-    End With
-  Else
-    txtIcon.Text = vbNullString
-  End If
-End Function
-
 Private Sub Form_Resize()
   'JPD 20030908 Fault 5756
   DisplayApplication
@@ -922,7 +882,6 @@ Private Sub RefreshDefinitionTab()
     End If
     
     glngPictureID = 0
-    imgIcon_Refresh
   End If
 
   cmdIcon.Enabled = (chkSSIntranet.value = vbUnchecked)
@@ -985,6 +944,7 @@ End Sub
 
 Private Sub listHistoryScreens_Refresh()
   Dim sSQL As String
+  Dim objRecords As DAO.Recordset
   
   ' Trap errors.
   On Error GoTo ErrorTrap
@@ -1022,8 +982,7 @@ Private Sub listHistoryScreens_Refresh()
           ' TM110701 - Fault 540. Do not populate the list with Quick Entry screens.
           If Not recScrEdit!Deleted And Not recScrEdit!QuickEntry Then
             listHistoryScreens.AddItem recScrEdit!Name
-            listHistoryScreens.ItemData(listHistoryScreens.NewIndex) = recScrEdit!ScreenID & _
-              "-" & IIf(IsNull(recScrEdit.Fields("indent").value), 0, recScrEdit.Fields("indent").value)
+            listHistoryScreens.ItemData(listHistoryScreens.NewIndex) = recScrEdit!ScreenID
           
             ' Select the new item if is already a history screen of the current screen.
             recHistScrEdit.Seek "=", ScreenID, recScrEdit!ScreenID
@@ -1043,6 +1002,16 @@ Private Sub listHistoryScreens_Refresh()
     recRelEdit.MoveNext
       
   Loop
+    
+'  ' Now sort the list
+'  Set objRecords = daoDb.OpenRecordset("SELECT * FROM tmpHistoryScreens WHERE parentScreenID=" & ScreenID & " ORDER BY [order]", dbFailOnError)
+'  Do While Not objRecords.EOF
+'
+'    objRecords.MoveNext
+'  Loop
+'
+    
+    
     
 Exit_listHistoryScreens_Refresh:
   
@@ -1082,10 +1051,14 @@ Private Function SaveChanges() As Boolean
       If Not .NoMatch Then
         .Edit
         !Name = Trim(txtName.Text)
+        .Fields("description").value = txtDescription.Text
         !OrderID = OrderID
         !PictureID = PictureID
         !QuickEntry = (chkQuickEntry.value = vbChecked)
         !SSIntranet = (chkSSIntranet.value = vbChecked)
+        .Fields("groupscreens").value = (chkGroupByCategory.value = vbChecked)
+        .Fields("category").value = GetComboItem(cboCategory)
+        
         !Changed = True
         .Update
       End If
@@ -1097,6 +1070,8 @@ Private Function SaveChanges() As Boolean
       !TableID = TableID
       !OrderID = OrderID
       !Name = Trim(txtName.Text)
+      .Fields("description").value = txtDescription.Text
+      .Fields("category").value = GetComboItem(cboCategory)
       !PictureID = PictureID
       !QuickEntry = (chkQuickEntry.value = vbChecked)
       !SSIntranet = (chkSSIntranet.value = vbChecked)
@@ -1130,7 +1105,7 @@ Private Function SaveChanges() As Boolean
         !ID = UniqueColumnValue("tmpHistoryScreens", "ID")
         !parentScreenID = ScreenID
         !historyScreenID = listHistoryScreens.ItemData(iIndex)
-'        !orderno =
+        .Fields("order").value = iIndex
         
         .Update
       End With
