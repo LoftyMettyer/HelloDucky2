@@ -60,9 +60,11 @@ Begin VB.Form frmEmailSel
       TabIndex        =   0
       Top             =   90
       Width           =   4140
+      ScrollBars      =   2
       _Version        =   196617
       DataMode        =   2
       RecordSelectors =   0   'False
+      Col.Count       =   6
       MultiLine       =   0   'False
       AllowRowSizing  =   0   'False
       AllowGroupSizing=   0   'False
@@ -78,7 +80,6 @@ Begin VB.Form frmEmailSel
       ForeColorEven   =   0
       BackColorOdd    =   16777215
       RowHeight       =   423
-      ExtraHeight     =   79
       Columns.Count   =   6
       Columns(0).Width=   661
       Columns(0).Caption=   "To"
