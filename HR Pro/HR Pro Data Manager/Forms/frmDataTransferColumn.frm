@@ -190,7 +190,6 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-
 Option Explicit
 Private mbCancelled As Boolean
 Private datData As HRProDataMgr.clsDataAccess
@@ -199,18 +198,18 @@ Private mlngSize As Long
 Private mintDecimals As Integer
 Private miOLEType As HRProDataMgr.OLEType
 Private mstrColumnsAlreadySelected As String
-Private mfrmParent As Form
+Private mfrmParent As frmDataTransfer
 Private mlngFromTableID As Long
 Private mstrFromTable As String
 Private mlngToTableID As Long
 Private mstrToTable As String
 
 
-Public Property Get ParentForm() As Form
+Public Property Get ParentForm() As frmDataTransfer
   Set ParentForm = mfrmParent
 End Property
 
-Public Property Let ParentForm(ByVal frmNewValue As Form)
+Public Property Let ParentForm(ByVal frmNewValue As frmDataTransfer)
   Set mfrmParent = frmNewValue
 End Property
 

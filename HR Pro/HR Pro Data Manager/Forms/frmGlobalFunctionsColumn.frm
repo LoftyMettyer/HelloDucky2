@@ -380,7 +380,7 @@ Private mlValueID As Long
 Private blnMandatory As Boolean
 
 Private mlParentTableID As Long
-Private mfrmParent As Form
+Private mfrmParent As frmGlobalFunctions
 Private mbCancelled As Boolean
 
 Private Const sDATA_TYPE = "Invalid data type."
@@ -399,11 +399,11 @@ Public Property Get LookupColumnID() As Long
   LookupColumnID = mlLookupColumnID
 End Property
 
-Public Property Get ParentForm() As Form
+Public Property Get ParentForm() As frmGlobalFunctions
   Set ParentForm = mfrmParent
 End Property
 
-Public Property Let ParentForm(ByVal frmNewValue As Form)
+Public Property Let ParentForm(ByVal frmNewValue As frmGlobalFunctions)
   Set mfrmParent = frmNewValue
   Me.HelpContextID = frmNewValue.HelpContextID
 End Property

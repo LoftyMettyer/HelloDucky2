@@ -439,7 +439,7 @@ Public Function DataArrayToGrid(strArray() As String, pgrdNew As SSDBGrid)
 
 End Function
 
-Public Function RecordProfilePage(pfrmRecProfile As Form, _
+Public Function RecordProfilePage(pfrmRecProfile As frmRecordProfilePreview, _
   piPageNumber As Integer) As Boolean
   'Not all classes support all properties so catch any errors...
   On Local Error Resume Next

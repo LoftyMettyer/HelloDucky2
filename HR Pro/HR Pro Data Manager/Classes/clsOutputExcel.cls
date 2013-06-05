@@ -89,7 +89,7 @@ Public Sub ClearUp()
 
 End Sub
 
-Public Function RecordProfilePage(pfrmRecProfile As Form, _
+Public Function RecordProfilePage(pfrmRecProfile As frmRecordProfilePreview, _
   piPageNumber As Integer, _
   pcolStyles As Collection)
   ' Output the record profile page to Excel.

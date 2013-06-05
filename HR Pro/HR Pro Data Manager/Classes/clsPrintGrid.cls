@@ -1393,7 +1393,7 @@ ErrorTrap:
 End Sub
 
 Public Function PrintRecordProfilePage( _
-  pfrmRecProfile As Form, _
+  pfrmRecProfile As frmRecordProfilePreview, _
   piPageNumber As Integer) As Boolean
   ' Print the record profile page.
   ' NOTE - all positioning is made using TWIPS.
