@@ -113,7 +113,7 @@ PRINT 'Step 1 of X - Create New IsValidNINumber function'
 				''/TA/TB/TE/TH/TK/TL/TM/TP/TR/TS/TT/TW/TX/TY/TZ'' +
 				''/WA/WB/WE/WK/WL/WM/WP'' +
 				''/YA/YB/YE/YH/YK/YL/YM/YP/YR/YS/YT/YW/YX/YY/YZ'' +
-				''/ZA/ZB/ZE/ZH/ZK/ZL/ZM/ZP/ZR/ZS/ZT/ZW/ZX/ZY'';
+				''/ZA/ZB/ZE/ZH/ZK/ZL/ZM/ZP/ZR/ZS/ZT/ZW/ZX/ZY/'';
 
 			SET @ValidSuffixes = ''/ /A/B/C/D/'';
 
