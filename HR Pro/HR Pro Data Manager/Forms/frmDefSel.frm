@@ -2400,7 +2400,9 @@ Public Sub GetSQL(lngUtilType As UtilityType, Optional msRecordSourceWhere As St
         "SELECT Name, " & _
         IIf(mblnHideDesc, vbNullString, "Description, ") & _
         IIf(mblnApplyDefAccess, "Username, Access, ", vbNullString) & msIDField & _
-      " FROM " & msTableName & IIf(strExtraWhereClause <> vbNullString, " WHERE " & strExtraWhereClause, "")
+      " FROM " & msTableName & _
+      sCategoryFilter & _
+      IIf(strExtraWhereClause <> vbNullString, " WHERE " & strExtraWhereClause, "")
 
   ElseIf msAccessTableName <> vbNullString Then
     

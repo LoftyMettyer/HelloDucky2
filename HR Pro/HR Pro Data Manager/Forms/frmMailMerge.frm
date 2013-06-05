@@ -4,7 +4,7 @@ Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "coa_spinner.ocx"
 Begin VB.Form frmMailMerge 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Mail Merge Definition"
@@ -48,7 +48,7 @@ Begin VB.Form frmMailMerge
       Picture         =   "frmMailMerge.frx":000C
       ScaleHeight     =   450
       ScaleWidth      =   465
-      TabIndex        =   89
+      TabIndex        =   86
       Top             =   5055
       Visible         =   0   'False
       Width           =   525
@@ -56,7 +56,7 @@ Begin VB.Form frmMailMerge
    Begin TabDlg.SSTab SSTab1 
       Height          =   4935
       Left            =   75
-      TabIndex        =   87
+      TabIndex        =   84
       Top             =   90
       Width           =   9900
       _ExtentX        =   17463
@@ -64,7 +64,6 @@ Begin VB.Form frmMailMerge
       _Version        =   393216
       Style           =   1
       Tabs            =   4
-      Tab             =   3
       TabsPerRow      =   6
       TabHeight       =   520
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -78,9 +77,11 @@ Begin VB.Form frmMailMerge
       EndProperty
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmMailMerge.frx":08D6
-      Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "fraDefinition(0)"
-      Tab(0).Control(1)=   "fraDefinition(1)"
+      Tab(0).ControlEnabled=   -1  'True
+      Tab(0).Control(0)=   "fraDefinition(1)"
+      Tab(0).Control(0).Enabled=   0   'False
+      Tab(0).Control(1)=   "fraDefinition(0)"
+      Tab(0).Control(1).Enabled=   0   'False
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Colu&mns"
       TabPicture(1)   =   "frmMailMerge.frx":08F2
@@ -96,23 +97,222 @@ Begin VB.Form frmMailMerge
       Tab(2).ControlCount=   1
       TabCaption(3)   =   "Ou&tput"
       TabPicture(3)   =   "frmMailMerge.frx":092A
-      Tab(3).ControlEnabled=   -1  'True
-      Tab(3).Control(0)=   "fraOutput(1)"
-      Tab(3).Control(0).Enabled=   0   'False
-      Tab(3).Control(1)=   "fraOutput(0)"
-      Tab(3).Control(1).Enabled=   0   'False
+      Tab(3).ControlEnabled=   0   'False
+      Tab(3).Control(0)=   "fraOutputFormat"
+      Tab(3).Control(1)=   "fraOutputOptions"
       Tab(3).Control(2)=   "fraOutput(2)"
-      Tab(3).Control(2).Enabled=   0   'False
-      Tab(3).Control(3)=   "fraOutputOptions"
-      Tab(3).Control(3).Enabled=   0   'False
-      Tab(3).Control(4)=   "fraOutputFormat"
-      Tab(3).Control(4).Enabled=   0   'False
+      Tab(3).Control(3)=   "fraOutput(0)"
+      Tab(3).Control(4)=   "fraOutput(1)"
       Tab(3).ControlCount=   5
+      Begin VB.Frame fraDefinition 
+         Height          =   2355
+         Index           =   0
+         Left            =   135
+         TabIndex        =   91
+         Top             =   405
+         Width           =   9600
+         Begin VB.TextBox txtUserName 
+            BackColor       =   &H8000000F&
+            Enabled         =   0   'False
+            Height          =   315
+            Left            =   6030
+            MaxLength       =   30
+            TabIndex        =   4
+            Top             =   300
+            Width           =   3405
+         End
+         Begin VB.TextBox txtName 
+            Height          =   315
+            Left            =   1620
+            MaxLength       =   50
+            TabIndex        =   1
+            Top             =   300
+            Width           =   3090
+         End
+         Begin VB.TextBox txtDesc 
+            Height          =   1080
+            Left            =   1620
+            MaxLength       =   255
+            MultiLine       =   -1  'True
+            ScrollBars      =   2  'Vertical
+            TabIndex        =   3
+            Top             =   1110
+            Width           =   3090
+         End
+         Begin VB.ComboBox cboCategory 
+            Height          =   315
+            Left            =   1620
+            Style           =   2  'Dropdown List
+            TabIndex        =   2
+            Top             =   720
+            Width           =   3090
+         End
+         Begin SSDataWidgets_B.SSDBGrid grdAccess 
+            Height          =   1485
+            Left            =   6030
+            TabIndex        =   5
+            Top             =   705
+            Width           =   3405
+            ScrollBars      =   2
+            _Version        =   196617
+            DataMode        =   2
+            RecordSelectors =   0   'False
+            Col.Count       =   3
+            stylesets.count =   2
+            stylesets(0).Name=   "SysSecMgr"
+            stylesets(0).ForeColor=   -2147483631
+            stylesets(0).BackColor=   -2147483633
+            stylesets(0).HasFont=   -1  'True
+            BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+            stylesets(0).Picture=   "frmMailMerge.frx":0946
+            stylesets(1).Name=   "ReadOnly"
+            stylesets(1).ForeColor=   -2147483631
+            stylesets(1).BackColor=   -2147483633
+            stylesets(1).HasFont=   -1  'True
+            BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+            stylesets(1).Picture=   "frmMailMerge.frx":0962
+            MultiLine       =   0   'False
+            AllowRowSizing  =   0   'False
+            AllowGroupSizing=   0   'False
+            AllowColumnSizing=   0   'False
+            AllowGroupMoving=   0   'False
+            AllowColumnMoving=   0
+            AllowGroupSwapping=   0   'False
+            AllowColumnSwapping=   0
+            AllowGroupShrinking=   0   'False
+            AllowColumnShrinking=   0   'False
+            AllowDragDrop   =   0   'False
+            SelectTypeCol   =   0
+            SelectTypeRow   =   0
+            BalloonHelp     =   0   'False
+            MaxSelectedRows =   0
+            ForeColorEven   =   0
+            BackColorEven   =   -2147483643
+            BackColorOdd    =   -2147483643
+            RowHeight       =   423
+            Columns.Count   =   3
+            Columns(0).Width=   2963
+            Columns(0).Caption=   "User Group"
+            Columns(0).Name =   "GroupName"
+            Columns(0).AllowSizing=   0   'False
+            Columns(0).DataField=   "Column 0"
+            Columns(0).DataType=   8
+            Columns(0).FieldLen=   256
+            Columns(0).Locked=   -1  'True
+            Columns(1).Width=   2566
+            Columns(1).Caption=   "Access"
+            Columns(1).Name =   "Access"
+            Columns(1).AllowSizing=   0   'False
+            Columns(1).DataField=   "Column 1"
+            Columns(1).DataType=   8
+            Columns(1).FieldLen=   256
+            Columns(1).Locked=   -1  'True
+            Columns(1).Style=   3
+            Columns(1).Row.Count=   3
+            Columns(1).Col.Count=   2
+            Columns(1).Row(0).Col(0)=   "Read / Write"
+            Columns(1).Row(1).Col(0)=   "Read Only"
+            Columns(1).Row(2).Col(0)=   "Hidden"
+            Columns(2).Width=   3200
+            Columns(2).Visible=   0   'False
+            Columns(2).Caption=   "SysSecMgr"
+            Columns(2).Name =   "SysSecMgr"
+            Columns(2).DataField=   "Column 2"
+            Columns(2).DataType=   8
+            Columns(2).FieldLen=   256
+            TabNavigation   =   1
+            _ExtentX        =   6006
+            _ExtentY        =   2619
+            _StockProps     =   79
+            BeginProperty PageFooterFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+            BeginProperty PageHeaderFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+         End
+         Begin VB.Label lblOwner 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Owner :"
+            Height          =   195
+            Left            =   5175
+            TabIndex        =   96
+            Top             =   360
+            Width           =   810
+         End
+         Begin VB.Label lblName 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Name :"
+            Height          =   195
+            Left            =   195
+            TabIndex        =   95
+            Top             =   360
+            Width           =   690
+         End
+         Begin VB.Label lblDescription 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Description :"
+            Height          =   195
+            Left            =   195
+            TabIndex        =   94
+            Top             =   1155
+            Width           =   1080
+         End
+         Begin VB.Label lblAccess 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Access :"
+            Height          =   195
+            Left            =   5175
+            TabIndex        =   93
+            Top             =   765
+            Width           =   825
+         End
+         Begin VB.Label lblCategory 
+            Caption         =   "Category :"
+            Height          =   240
+            Left            =   195
+            TabIndex        =   92
+            Top             =   765
+            Width           =   1005
+         End
+      End
       Begin VB.Frame fraOutputFormat 
          Caption         =   "Output Format :"
          Height          =   3330
-         Left            =   120
-         TabIndex        =   53
+         Left            =   -74880
+         TabIndex        =   50
          Top             =   1440
          Width           =   2745
          Begin VB.OptionButton optOutputFormat 
@@ -120,7 +320,7 @@ Begin VB.Form frmMailMerge
             Height          =   195
             Index           =   0
             Left            =   200
-            TabIndex        =   54
+            TabIndex        =   51
             Top             =   400
             Width           =   2400
          End
@@ -129,7 +329,7 @@ Begin VB.Form frmMailMerge
             Height          =   195
             Index           =   1
             Left            =   200
-            TabIndex        =   55
+            TabIndex        =   52
             Top             =   800
             Width           =   2400
          End
@@ -138,7 +338,7 @@ Begin VB.Form frmMailMerge
             Height          =   195
             Index           =   2
             Left            =   200
-            TabIndex        =   56
+            TabIndex        =   53
             Top             =   1200
             Width           =   2400
          End
@@ -146,15 +346,15 @@ Begin VB.Form frmMailMerge
       Begin VB.Frame fraOutputOptions 
          Caption         =   "Options :"
          Height          =   1005
-         Left            =   120
-         TabIndex        =   47
+         Left            =   -74880
+         TabIndex        =   44
          Top             =   360
          Width           =   9600
          Begin VB.CheckBox chkSuppressBlank 
             Caption         =   "S&uppress blank lines"
             Height          =   195
             Left            =   7080
-            TabIndex        =   52
+            TabIndex        =   49
             Top             =   600
             Value           =   1  'Checked
             Width           =   2175
@@ -163,7 +363,7 @@ Begin VB.Form frmMailMerge
             Caption         =   "Pause &before merge"
             Height          =   195
             Left            =   7080
-            TabIndex        =   51
+            TabIndex        =   48
             Top             =   300
             Value           =   1  'Checked
             Width           =   2175
@@ -175,7 +375,7 @@ Begin VB.Form frmMailMerge
             Index           =   1
             Left            =   1320
             Locked          =   -1  'True
-            TabIndex        =   49
+            TabIndex        =   46
             Text            =   "<None>"
             Top             =   315
             Width           =   5245
@@ -185,18 +385,18 @@ Begin VB.Form frmMailMerge
             Height          =   315
             Index           =   1
             Left            =   6555
-            Picture         =   "frmMailMerge.frx":0946
-            TabIndex        =   50
+            Picture         =   "frmMailMerge.frx":097E
+            TabIndex        =   47
             Top             =   315
             UseMaskColor    =   -1  'True
             Width           =   315
          End
          Begin VB.CommandButton cmdLabelType 
             Caption         =   "..."
-            DisabledPicture =   "frmMailMerge.frx":09BE
+            DisabledPicture =   "frmMailMerge.frx":09F6
             Height          =   315
             Left            =   6555
-            TabIndex        =   88
+            TabIndex        =   85
             Top             =   315
             UseMaskColor    =   -1  'True
             Width           =   315
@@ -207,7 +407,7 @@ Begin VB.Form frmMailMerge
             Caption         =   "Template :"
             Height          =   195
             Left            =   225
-            TabIndex        =   48
+            TabIndex        =   45
             Top             =   360
             Width           =   1080
          End
@@ -217,7 +417,7 @@ Begin VB.Form frmMailMerge
          Height          =   4365
          Index           =   0
          Left            =   -74865
-         TabIndex        =   39
+         TabIndex        =   36
          Top             =   405
          Width           =   9600
          Begin VB.CommandButton cmdClearOrder 
@@ -225,7 +425,7 @@ Begin VB.Form frmMailMerge
             Enabled         =   0   'False
             Height          =   400
             Left            =   8000
-            TabIndex        =   44
+            TabIndex        =   41
             Top             =   1935
             Width           =   1200
          End
@@ -234,7 +434,7 @@ Begin VB.Form frmMailMerge
             Enabled         =   0   'False
             Height          =   400
             Left            =   8000
-            TabIndex        =   43
+            TabIndex        =   40
             Top             =   1395
             Width           =   1200
          End
@@ -243,7 +443,7 @@ Begin VB.Form frmMailMerge
             Enabled         =   0   'False
             Height          =   400
             Left            =   8000
-            TabIndex        =   42
+            TabIndex        =   39
             Top             =   840
             Width           =   1200
          End
@@ -251,7 +451,7 @@ Begin VB.Form frmMailMerge
             Caption         =   "&Add..."
             Height          =   400
             Left            =   8000
-            TabIndex        =   41
+            TabIndex        =   38
             Top             =   315
             Width           =   1200
          End
@@ -260,7 +460,7 @@ Begin VB.Form frmMailMerge
             Enabled         =   0   'False
             Height          =   400
             Left            =   8000
-            TabIndex        =   45
+            TabIndex        =   42
             Top             =   3285
             Width           =   1200
          End
@@ -269,14 +469,14 @@ Begin VB.Form frmMailMerge
             Enabled         =   0   'False
             Height          =   400
             Left            =   8000
-            TabIndex        =   46
+            TabIndex        =   43
             Top             =   3810
             Width           =   1200
          End
          Begin SSDataWidgets_B.SSDBGrid grdReportOrder 
             Height          =   3885
             Left            =   180
-            TabIndex        =   40
+            TabIndex        =   37
             Top             =   315
             Width           =   7410
             ScrollBars      =   0
@@ -288,23 +488,23 @@ Begin VB.Form frmMailMerge
             stylesets(0).Name=   "ssetHeaderDisabled"
             stylesets(0).ForeColor=   -2147483631
             stylesets(0).BackColor=   -2147483633
-            stylesets(0).Picture=   "frmMailMerge.frx":0D1F
+            stylesets(0).Picture=   "frmMailMerge.frx":0D57
             stylesets(1).Name=   "ssetSelected"
             stylesets(1).ForeColor=   -2147483634
             stylesets(1).BackColor=   -2147483635
-            stylesets(1).Picture=   "frmMailMerge.frx":0D3B
+            stylesets(1).Picture=   "frmMailMerge.frx":0D73
             stylesets(2).Name=   "ssetEnabled"
             stylesets(2).ForeColor=   -2147483640
             stylesets(2).BackColor=   -2147483643
-            stylesets(2).Picture=   "frmMailMerge.frx":0D57
+            stylesets(2).Picture=   "frmMailMerge.frx":0D8F
             stylesets(3).Name=   "ssetHeaderEnabled"
             stylesets(3).ForeColor=   -2147483630
             stylesets(3).BackColor=   -2147483633
-            stylesets(3).Picture=   "frmMailMerge.frx":0D73
+            stylesets(3).Picture=   "frmMailMerge.frx":0DAB
             stylesets(4).Name=   "ssetDisabled"
             stylesets(4).ForeColor=   -2147483631
             stylesets(4).BackColor=   -2147483633
-            stylesets(4).Picture=   "frmMailMerge.frx":0D8F
+            stylesets(4).Picture=   "frmMailMerge.frx":0DC7
             AllowUpdate     =   0   'False
             AllowRowSizing  =   0   'False
             AllowGroupSizing=   0   'False
@@ -371,207 +571,6 @@ Begin VB.Form frmMailMerge
             EndProperty
          End
       End
-      Begin VB.Frame fraDefinition 
-         BeginProperty Font 
-            Name            =   "Verdana"
-            Size            =   6
-            Charset         =   0
-            Weight          =   700
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   1950
-         Index           =   0
-         Left            =   -74865
-         TabIndex        =   0
-         Top             =   405
-         Width           =   9600
-         Begin VB.TextBox txtDesc 
-            Height          =   1080
-            Left            =   1620
-            MaxLength       =   255
-            MultiLine       =   -1  'True
-            ScrollBars      =   2  'Vertical
-            TabIndex        =   4
-            Top             =   705
-            Width           =   3000
-         End
-         Begin VB.TextBox txtName 
-            Height          =   315
-            Left            =   1620
-            MaxLength       =   50
-            TabIndex        =   2
-            Top             =   315
-            Width           =   3000
-         End
-         Begin VB.TextBox txtUserName 
-            BackColor       =   &H8000000F&
-            Enabled         =   0   'False
-            Height          =   315
-            Left            =   6075
-            MaxLength       =   30
-            TabIndex        =   6
-            Top             =   315
-            Width           =   3390
-         End
-         Begin SSDataWidgets_B.SSDBGrid grdAccess 
-            Height          =   1080
-            Left            =   6075
-            TabIndex        =   94
-            Top             =   720
-            Width           =   3405
-            ScrollBars      =   2
-            _Version        =   196617
-            DataMode        =   2
-            RecordSelectors =   0   'False
-            Col.Count       =   3
-            stylesets.count =   2
-            stylesets(0).Name=   "SysSecMgr"
-            stylesets(0).ForeColor=   -2147483631
-            stylesets(0).BackColor=   -2147483633
-            stylesets(0).HasFont=   -1  'True
-            BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-               Name            =   "Verdana"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
-            stylesets(0).Picture=   "frmMailMerge.frx":0DAB
-            stylesets(1).Name=   "ReadOnly"
-            stylesets(1).ForeColor=   -2147483631
-            stylesets(1).BackColor=   -2147483633
-            stylesets(1).HasFont=   -1  'True
-            BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-               Name            =   "Verdana"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
-            stylesets(1).Picture=   "frmMailMerge.frx":0DC7
-            MultiLine       =   0   'False
-            AllowRowSizing  =   0   'False
-            AllowGroupSizing=   0   'False
-            AllowColumnSizing=   0   'False
-            AllowGroupMoving=   0   'False
-            AllowColumnMoving=   0
-            AllowGroupSwapping=   0   'False
-            AllowColumnSwapping=   0
-            AllowGroupShrinking=   0   'False
-            AllowColumnShrinking=   0   'False
-            AllowDragDrop   =   0   'False
-            SelectTypeCol   =   0
-            SelectTypeRow   =   0
-            BalloonHelp     =   0   'False
-            MaxSelectedRows =   0
-            ForeColorEven   =   0
-            BackColorEven   =   -2147483643
-            BackColorOdd    =   -2147483643
-            RowHeight       =   423
-            Columns.Count   =   3
-            Columns(0).Width=   2963
-            Columns(0).Caption=   "User Group"
-            Columns(0).Name =   "GroupName"
-            Columns(0).AllowSizing=   0   'False
-            Columns(0).DataField=   "Column 0"
-            Columns(0).DataType=   8
-            Columns(0).FieldLen=   256
-            Columns(0).Locked=   -1  'True
-            Columns(1).Width=   2566
-            Columns(1).Caption=   "Access"
-            Columns(1).Name =   "Access"
-            Columns(1).AllowSizing=   0   'False
-            Columns(1).DataField=   "Column 1"
-            Columns(1).DataType=   8
-            Columns(1).FieldLen=   256
-            Columns(1).Locked=   -1  'True
-            Columns(1).Style=   3
-            Columns(1).Row.Count=   3
-            Columns(1).Col.Count=   2
-            Columns(1).Row(0).Col(0)=   "Read / Write"
-            Columns(1).Row(1).Col(0)=   "Read Only"
-            Columns(1).Row(2).Col(0)=   "Hidden"
-            Columns(2).Width=   3200
-            Columns(2).Visible=   0   'False
-            Columns(2).Caption=   "SysSecMgr"
-            Columns(2).Name =   "SysSecMgr"
-            Columns(2).DataField=   "Column 2"
-            Columns(2).DataType=   8
-            Columns(2).FieldLen=   256
-            TabNavigation   =   1
-            _ExtentX        =   6006
-            _ExtentY        =   1905
-            _StockProps     =   79
-            BeginProperty PageFooterFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-               Name            =   "Verdana"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
-            BeginProperty PageHeaderFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-               Name            =   "Verdana"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
-         End
-         Begin VB.Label Label1 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Access :"
-            Height          =   195
-            Index           =   3
-            Left            =   5160
-            TabIndex        =   7
-            Top             =   810
-            Width           =   735
-         End
-         Begin VB.Label Label1 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Description :"
-            Height          =   195
-            Index           =   1
-            Left            =   225
-            TabIndex        =   3
-            Top             =   750
-            Width           =   1125
-         End
-         Begin VB.Label Label1 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Name :"
-            Height          =   195
-            Index           =   0
-            Left            =   225
-            TabIndex        =   1
-            Top             =   360
-            Width           =   690
-         End
-         Begin VB.Label Label1 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Owner :"
-            Height          =   195
-            Index           =   2
-            Left            =   5160
-            TabIndex        =   5
-            Top             =   360
-            Width           =   720
-         End
-      End
       Begin VB.Frame fraColumns 
          BorderStyle     =   0  'None
          Caption         =   "Frame1"
@@ -587,14 +586,14 @@ Begin VB.Form frmMailMerge
          Height          =   4365
          Index           =   2
          Left            =   -71400
-         TabIndex        =   84
+         TabIndex        =   81
          Top             =   405
          Width           =   2265
          Begin VB.CommandButton cmdAddHeading 
             Caption         =   "Add &Heading"
             Height          =   405
             Left            =   540
-            TabIndex        =   26
+            TabIndex        =   23
             Top             =   1080
             Width           =   1395
          End
@@ -602,7 +601,7 @@ Begin VB.Form frmMailMerge
             Caption         =   "Add Se&parator"
             Height          =   405
             Left            =   540
-            TabIndex        =   27
+            TabIndex        =   24
             Top             =   1560
             Width           =   1395
          End
@@ -610,7 +609,7 @@ Begin VB.Form frmMailMerge
             Caption         =   "&Up"
             Height          =   405
             Left            =   540
-            TabIndex        =   30
+            TabIndex        =   27
             Top             =   3465
             Width           =   1395
          End
@@ -618,7 +617,7 @@ Begin VB.Form frmMailMerge
             Caption         =   "Do&wn"
             Height          =   405
             Left            =   540
-            TabIndex        =   31
+            TabIndex        =   28
             Top             =   3930
             Width           =   1395
          End
@@ -626,7 +625,7 @@ Begin VB.Form frmMailMerge
             Caption         =   "&Add"
             Height          =   405
             Left            =   540
-            TabIndex        =   24
+            TabIndex        =   21
             Top             =   90
             Width           =   1395
          End
@@ -634,7 +633,7 @@ Begin VB.Form frmMailMerge
             Caption         =   "R&emove"
             Height          =   405
             Left            =   540
-            TabIndex        =   28
+            TabIndex        =   25
             Top             =   2310
             Width           =   1395
          End
@@ -642,7 +641,7 @@ Begin VB.Form frmMailMerge
             Caption         =   "Add A&ll"
             Height          =   405
             Left            =   540
-            TabIndex        =   25
+            TabIndex        =   22
             Top             =   570
             Width           =   1395
          End
@@ -650,7 +649,7 @@ Begin VB.Form frmMailMerge
             Caption         =   "Remo&ve All"
             Height          =   405
             Left            =   540
-            TabIndex        =   29
+            TabIndex        =   26
             Top             =   2775
             Width           =   1395
          End
@@ -660,7 +659,7 @@ Begin VB.Form frmMailMerge
          Height          =   4350
          Index           =   1
          Left            =   -68850
-         TabIndex        =   38
+         TabIndex        =   35
          Top             =   405
          Width           =   3570
          Begin VB.Frame fraSizeDecimals 
@@ -669,13 +668,13 @@ Begin VB.Form frmMailMerge
             Caption         =   "Frame1"
             Height          =   735
             Left            =   240
-            TabIndex        =   91
+            TabIndex        =   88
             Top             =   3140
             Width           =   2055
             Begin COASpinner.COA_Spinner spnSize 
                Height          =   300
                Left            =   945
-               TabIndex        =   34
+               TabIndex        =   31
                Top             =   0
                Width           =   1000
                _ExtentX        =   1773
@@ -697,7 +696,7 @@ Begin VB.Form frmMailMerge
             Begin COASpinner.COA_Spinner spnDec 
                Height          =   300
                Left            =   945
-               TabIndex        =   35
+               TabIndex        =   32
                Top             =   405
                Width           =   1000
                _ExtentX        =   1773
@@ -722,7 +721,7 @@ Begin VB.Form frmMailMerge
                Caption         =   "Size :"
                Height          =   195
                Left            =   0
-               TabIndex        =   93
+               TabIndex        =   90
                Top             =   60
                Width           =   615
             End
@@ -732,7 +731,7 @@ Begin VB.Form frmMailMerge
                Caption         =   "Decimals :"
                Height          =   195
                Left            =   0
-               TabIndex        =   92
+               TabIndex        =   89
                Top             =   465
                Width           =   945
             End
@@ -743,7 +742,7 @@ Begin VB.Form frmMailMerge
             Height          =   315
             Left            =   1185
             MaxLength       =   50
-            TabIndex        =   33
+            TabIndex        =   30
             Top             =   2740
             Visible         =   0   'False
             Width           =   2220
@@ -752,14 +751,14 @@ Begin VB.Form frmMailMerge
             Caption         =   "Sta&rt column on new line"
             Height          =   195
             Left            =   240
-            TabIndex        =   36
+            TabIndex        =   33
             Top             =   3960
             Width           =   2940
          End
          Begin ComctlLib.ListView ListView2 
             Height          =   2355
             Left            =   180
-            TabIndex        =   32
+            TabIndex        =   29
             Top             =   300
             Width           =   3225
             _ExtentX        =   5689
@@ -844,7 +843,7 @@ Begin VB.Form frmMailMerge
             Enabled         =   0   'False
             Height          =   195
             Left            =   240
-            TabIndex        =   90
+            TabIndex        =   87
             Top             =   2805
             Visible         =   0   'False
             Width           =   870
@@ -855,13 +854,13 @@ Begin VB.Form frmMailMerge
          Height          =   4350
          Index           =   0
          Left            =   -74865
-         TabIndex        =   37
+         TabIndex        =   34
          Top             =   405
          Width           =   3360
          Begin ComctlLib.ListView ListView1 
             Height          =   2745
             Left            =   180
-            TabIndex        =   22
+            TabIndex        =   19
             Top             =   1050
             Width           =   3000
             _ExtentX        =   5292
@@ -935,7 +934,7 @@ Begin VB.Form frmMailMerge
             Caption         =   "Calculat&ions"
             Height          =   255
             Left            =   1750
-            TabIndex        =   21
+            TabIndex        =   18
             Top             =   720
             Width           =   1335
          End
@@ -943,7 +942,7 @@ Begin VB.Form frmMailMerge
             Caption         =   "Colum&ns"
             Height          =   255
             Left            =   390
-            TabIndex        =   20
+            TabIndex        =   17
             Top             =   720
             Value           =   -1  'True
             Width           =   1110
@@ -952,7 +951,7 @@ Begin VB.Form frmMailMerge
             Caption         =   "Calculation De&finitions..."
             Height          =   390
             Left            =   180
-            TabIndex        =   23
+            TabIndex        =   20
             Top             =   3780
             Visible         =   0   'False
             Width           =   3000
@@ -961,18 +960,18 @@ Begin VB.Form frmMailMerge
             Height          =   315
             Left            =   180
             Style           =   2  'Dropdown List
-            TabIndex        =   19
+            TabIndex        =   16
             Top             =   300
             Width           =   3000
          End
       End
       Begin VB.Frame fraDefinition 
          Caption         =   "Data :"
-         Height          =   2385
+         Height          =   1935
          Index           =   1
-         Left            =   -74865
-         TabIndex        =   8
-         Top             =   2385
+         Left            =   135
+         TabIndex        =   0
+         Top             =   2835
          Width           =   9600
          Begin VB.TextBox txtFilter 
             BackColor       =   &H8000000F&
@@ -980,7 +979,7 @@ Begin VB.Form frmMailMerge
             Height          =   315
             Left            =   7170
             Locked          =   -1  'True
-            TabIndex        =   17
+            TabIndex        =   14
             Top             =   1080
             Width           =   1965
          End
@@ -990,7 +989,7 @@ Begin VB.Form frmMailMerge
             Height          =   315
             Left            =   7170
             Locked          =   -1  'True
-            TabIndex        =   14
+            TabIndex        =   11
             Top             =   705
             Width           =   1965
          End
@@ -998,7 +997,7 @@ Begin VB.Form frmMailMerge
             Caption         =   "&Filter"
             Height          =   195
             Left            =   6135
-            TabIndex        =   16
+            TabIndex        =   13
             Top             =   1120
             Width           =   840
          End
@@ -1006,7 +1005,7 @@ Begin VB.Form frmMailMerge
             Caption         =   "&Picklist"
             Height          =   195
             Left            =   6135
-            TabIndex        =   13
+            TabIndex        =   10
             Top             =   750
             Width           =   975
          End
@@ -1014,7 +1013,7 @@ Begin VB.Form frmMailMerge
             Caption         =   "&All"
             Height          =   195
             Left            =   6135
-            TabIndex        =   12
+            TabIndex        =   9
             Top             =   365
             Value           =   -1  'True
             Width           =   540
@@ -1024,16 +1023,16 @@ Begin VB.Form frmMailMerge
             Left            =   1620
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
-            TabIndex        =   10
+            TabIndex        =   7
             Top             =   315
-            Width           =   3000
+            Width           =   3090
          End
          Begin VB.CommandButton cmdPicklist 
             Caption         =   "..."
             Enabled         =   0   'False
             Height          =   315
             Left            =   9135
-            TabIndex        =   15
+            TabIndex        =   12
             Top             =   705
             UseMaskColor    =   -1  'True
             Width           =   330
@@ -1043,7 +1042,7 @@ Begin VB.Form frmMailMerge
             Enabled         =   0   'False
             Height          =   315
             Left            =   9135
-            TabIndex        =   18
+            TabIndex        =   15
             Top             =   1080
             UseMaskColor    =   -1  'True
             Width           =   330
@@ -1055,7 +1054,7 @@ Begin VB.Form frmMailMerge
             Height          =   195
             Index           =   0
             Left            =   225
-            TabIndex        =   9
+            TabIndex        =   6
             Top             =   360
             Width           =   1200
          End
@@ -1066,7 +1065,7 @@ Begin VB.Form frmMailMerge
             Height          =   195
             Index           =   3
             Left            =   5190
-            TabIndex        =   11
+            TabIndex        =   8
             Top             =   360
             Width           =   915
          End
@@ -1075,15 +1074,15 @@ Begin VB.Form frmMailMerge
          Caption         =   "Document Management :"
          Height          =   3330
          Index           =   2
-         Left            =   2985
-         TabIndex        =   74
+         Left            =   -72015
+         TabIndex        =   71
          Top             =   1440
          Width           =   6735
          Begin VB.CheckBox chkDocManManualHeader 
             Caption         =   "Manual document &header"
             Height          =   195
             Left            =   225
-            TabIndex        =   80
+            TabIndex        =   77
             Top             =   1585
             Visible         =   0   'False
             Width           =   3255
@@ -1092,7 +1091,7 @@ Begin VB.Form frmMailMerge
             Caption         =   "Displa&y output on screen"
             Height          =   195
             Left            =   225
-            TabIndex        =   81
+            TabIndex        =   78
             Top             =   405
             Width           =   2685
          End
@@ -1102,7 +1101,7 @@ Begin VB.Form frmMailMerge
             Height          =   315
             Left            =   1890
             Locked          =   -1  'True
-            TabIndex        =   78
+            TabIndex        =   75
             Text            =   "<None>"
             Top             =   1135
             Visible         =   0   'False
@@ -1113,7 +1112,7 @@ Begin VB.Form frmMailMerge
             DisabledPicture =   "frmMailMerge.frx":0DE3
             Height          =   315
             Left            =   6240
-            TabIndex        =   79
+            TabIndex        =   76
             Top             =   1135
             UseMaskColor    =   -1  'True
             Visible         =   0   'False
@@ -1123,7 +1122,7 @@ Begin VB.Form frmMailMerge
             Height          =   315
             Left            =   1885
             Style           =   2  'Dropdown List
-            TabIndex        =   76
+            TabIndex        =   73
             Top             =   755
             Width           =   4690
          End
@@ -1131,7 +1130,7 @@ Begin VB.Form frmMailMerge
             Caption         =   "Document Type : "
             Height          =   285
             Left            =   225
-            TabIndex        =   77
+            TabIndex        =   74
             Top             =   1180
             Visible         =   0   'False
             Width           =   1545
@@ -1141,7 +1140,7 @@ Begin VB.Form frmMailMerge
             Caption         =   "Engine :"
             Height          =   195
             Left            =   225
-            TabIndex        =   75
+            TabIndex        =   72
             Top             =   800
             Width           =   840
          End
@@ -1150,8 +1149,8 @@ Begin VB.Form frmMailMerge
          Caption         =   "Word Document :"
          Height          =   3330
          Index           =   0
-         Left            =   2985
-         TabIndex        =   57
+         Left            =   -72015
+         TabIndex        =   54
          Top             =   1440
          Width           =   6735
          Begin VB.CheckBox chkDestination 
@@ -1159,7 +1158,7 @@ Begin VB.Form frmMailMerge
             Height          =   195
             Index           =   2
             Left            =   240
-            TabIndex        =   62
+            TabIndex        =   59
             Top             =   1335
             Width           =   1455
          End
@@ -1168,7 +1167,7 @@ Begin VB.Form frmMailMerge
             Height          =   195
             Index           =   1
             Left            =   240
-            TabIndex        =   59
+            TabIndex        =   56
             Top             =   825
             Width           =   1605
          End
@@ -1177,7 +1176,7 @@ Begin VB.Form frmMailMerge
             Height          =   195
             Index           =   0
             Left            =   240
-            TabIndex        =   58
+            TabIndex        =   55
             Top             =   375
             Value           =   1  'Checked
             Width           =   3105
@@ -1188,7 +1187,7 @@ Begin VB.Form frmMailMerge
             Height          =   315
             Index           =   0
             Left            =   6245
-            TabIndex        =   65
+            TabIndex        =   62
             Top             =   1275
             UseMaskColor    =   -1  'True
             Width           =   330
@@ -1199,7 +1198,7 @@ Begin VB.Form frmMailMerge
             Height          =   315
             Left            =   3495
             Style           =   2  'Dropdown List
-            TabIndex        =   61
+            TabIndex        =   58
             Top             =   765
             Width           =   3090
          End
@@ -1211,7 +1210,7 @@ Begin VB.Form frmMailMerge
             Index           =   0
             Left            =   3495
             Locked          =   -1  'True
-            TabIndex        =   64
+            TabIndex        =   61
             TabStop         =   0   'False
             Tag             =   "0"
             Top             =   1275
@@ -1223,7 +1222,7 @@ Begin VB.Form frmMailMerge
             Enabled         =   0   'False
             Height          =   195
             Left            =   2025
-            TabIndex        =   60
+            TabIndex        =   57
             Top             =   825
             Width           =   1590
          End
@@ -1233,7 +1232,7 @@ Begin VB.Form frmMailMerge
             Enabled         =   0   'False
             Height          =   195
             Left            =   2025
-            TabIndex        =   63
+            TabIndex        =   60
             Top             =   1335
             Width           =   1185
          End
@@ -1242,8 +1241,8 @@ Begin VB.Form frmMailMerge
          Caption         =   "Individual Emails :"
          Height          =   3330
          Index           =   1
-         Left            =   2985
-         TabIndex        =   66
+         Left            =   -72015
+         TabIndex        =   63
          Top             =   1440
          Width           =   6735
          Begin VB.TextBox txtEmailAttachmentName 
@@ -1252,7 +1251,7 @@ Begin VB.Form frmMailMerge
             Height          =   315
             Left            =   1875
             MaxLength       =   255
-            TabIndex        =   73
+            TabIndex        =   70
             Top             =   1515
             Width           =   4710
          End
@@ -1260,7 +1259,7 @@ Begin VB.Form frmMailMerge
             Height          =   315
             Left            =   1875
             MaxLength       =   255
-            TabIndex        =   70
+            TabIndex        =   67
             Top             =   715
             Width           =   4710
          End
@@ -1271,7 +1270,7 @@ Begin VB.Form frmMailMerge
             List            =   "frmMailMerge.frx":1146
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
-            TabIndex        =   68
+            TabIndex        =   65
             Top             =   315
             Width           =   4710
          End
@@ -1279,7 +1278,7 @@ Begin VB.Form frmMailMerge
             Caption         =   "Se&nd as attachment"
             Height          =   195
             Left            =   240
-            TabIndex        =   71
+            TabIndex        =   68
             Top             =   1165
             Width           =   2115
          End
@@ -1290,7 +1289,7 @@ Begin VB.Form frmMailMerge
             Enabled         =   0   'False
             Height          =   195
             Left            =   525
-            TabIndex        =   72
+            TabIndex        =   69
             Top             =   1560
             Width           =   975
          End
@@ -1300,7 +1299,7 @@ Begin VB.Form frmMailMerge
             Caption         =   "Subject :"
             Height          =   195
             Left            =   225
-            TabIndex        =   69
+            TabIndex        =   66
             Top             =   765
             Width           =   915
          End
@@ -1310,7 +1309,7 @@ Begin VB.Form frmMailMerge
             Caption         =   "Email Address :"
             Height          =   195
             Left            =   240
-            TabIndex        =   67
+            TabIndex        =   64
             Top             =   375
             Width           =   1410
          End
@@ -1332,7 +1331,7 @@ Begin VB.Form frmMailMerge
       Picture         =   "frmMailMerge.frx":1148
       ScaleHeight     =   450
       ScaleWidth      =   465
-      TabIndex        =   86
+      TabIndex        =   83
       Top             =   5055
       Visible         =   0   'False
       Width           =   525
@@ -1352,7 +1351,7 @@ Begin VB.Form frmMailMerge
       Picture         =   "frmMailMerge.frx":16D2
       ScaleHeight     =   435
       ScaleWidth      =   465
-      TabIndex        =   85
+      TabIndex        =   82
       Top             =   5070
       Visible         =   0   'False
       Width           =   525
@@ -1370,7 +1369,7 @@ Begin VB.Form frmMailMerge
       Enabled         =   0   'False
       Height          =   400
       Left            =   7440
-      TabIndex        =   82
+      TabIndex        =   79
       Top             =   5100
       Width           =   1200
    End
@@ -1379,7 +1378,7 @@ Begin VB.Form frmMailMerge
       Caption         =   "&Cancel"
       Height          =   400
       Left            =   8775
-      TabIndex        =   83
+      TabIndex        =   80
       Top             =   5100
       Width           =   1200
    End
@@ -1401,7 +1400,7 @@ Begin VB.Form frmMailMerge
             Key             =   "IMG_TABLE"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmMailMerge.frx":2536
+            Picture         =   "frmMailMerge.frx":2176
             Key             =   "IMG_CALC"
          EndProperty
       EndProperty
@@ -1420,7 +1419,7 @@ Begin VB.Form frmMailMerge
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      Bands           =   "frmMailMerge.frx":2A88
+      Bands           =   "frmMailMerge.frx":26C8
    End
 End
 Attribute VB_Name = "frmMailMerge"
@@ -2718,38 +2717,10 @@ LocalErr:
 End Sub
 
 
-'Private Sub LoadPrimaryCombo()
-'
-'  Dim sSQL As String
-'  Dim rsTables As New Recordset
-'
-'  On Error GoTo LocalErr
-'
-'  sSQL = "Select TableName, TableID From ASRSysTables WHERE TableType='1' OR TableType='2'"
-'  Set rsTables = datData.OpenRecordset(sSQL, adOpenForwardOnly, adLockReadOnly)
-'
-'  With cboBaseTable
-'    .Clear
-'    Do While Not rsTables.EOF
-'      .AddItem rsTables!TableName
-'      .ItemData(.NewIndex) = rsTables!TableID
-'      rsTables.MoveNext
-'    Loop
-'    .ListIndex = 0
-'  End With
-'
-'  rsTables.Close
-'  Set rsTables = Nothing
-'
-'Exit Sub
-'
-'LocalErr:
-'  ErrorCOAMsgBox "Error populating table combo box"
-'
-'End Sub
-
 
 Public Function Initialise(bNew As Boolean, bCopy As Boolean, Optional lMailMergeID As Long, Optional bPrint As Boolean) As Boolean
+
+  Dim iUtilityType As UtilityType
 
   On Error GoTo LocalErr
 
@@ -2759,21 +2730,15 @@ Public Function Initialise(bNew As Boolean, bCopy As Boolean, Optional lMailMerg
 
   mblnLoading = True
   
-  'LoadPrimaryCombo
   LoadTableCombo cboBaseTable
-  'LoadOtherCombos
-  
+    
+  iUtilityType = IIf(mbIsLabel, utlLabel, utlMailMerge)
   fOK = True
   
   ' Display/Hide the relevant controls for mail merge/labels
   DisplayLabelSpecifics
   
-'  chkCloseAfterDocManInsert.Visible = (pOutputType = Version1)
-'  chkManualDocManHeader.Visible = (pOutputType = Version1)
-  
-  'optOutputFormat(1).Visible = (Not mbIsLabel)
   optOutputFormat(2).Visible = (IsModuleEnabled(modVersionOne) And Not mbIsLabel)
-
 
   ' Populate print combos
   PopulatePrintCombo cboPrinterName
@@ -2789,9 +2754,6 @@ Public Function Initialise(bNew As Boolean, bCopy As Boolean, Optional lMailMerg
     mblnDefinitionCreator = True
     
     optAllRecords_Click  'Default to all records
-    'optDocument_Click    'Default output to document
-    'SetComboItem cboOutput, 0
-    'OutputClick Document
 
     'Set ID to 0 to indicate new record
     mlngMailMergeID = 0
@@ -2799,6 +2761,9 @@ Public Function Initialise(bNew As Boolean, bCopy As Boolean, Optional lMailMerg
     mblnDefinitionCreator = True
 
     PopulateAccessGrid
+
+    GetObjectCategories cboCategory, iUtilityType, 0, cboBaseTable.ItemData(cboBaseTable.ListIndex)
+    SetComboItem cboCategory, IIf(glngCurrentCategoryID = -1, 0, glngCurrentCategoryID)
 
     'Defaults
     chkPauseBeforeMerge.Value = IIf(mbIsLabel, vbUnchecked, vbChecked)
@@ -2819,12 +2784,6 @@ Public Function Initialise(bNew As Boolean, bCopy As Boolean, Optional lMailMerg
 
     If fOK And Not Me.Cancelled Then
       
-      'MH20000906
-'      If mblnDeletedCalc Then
-'        WarningCOAMsgBox "This definition contains one or more calculation(s) which have been hidden or deleted by another user." & vbCrLf & _
-'                     "They will be automatically removed from this definition"
-'      End If
-      
       If mblnFromCopy Then
         mlngMailMergeID = 0
         Me.Changed = True
@@ -2832,11 +2791,6 @@ Public Function Initialise(bNew As Boolean, bCopy As Boolean, Optional lMailMerg
         Me.Changed = ((mblnRecordSelectionInvalid Or mblnDeletedCalc) And Not mblnReadOnly)
       End If
       
-'      If mbNeedsSave And Not bCopy Then
-'        SaveDefinition
-'        SaveColumns
-'        Me.Changed = False
-'      End If
     End If
 
   End If
@@ -3076,9 +3030,9 @@ Private Sub optOutputFormat_Click(Index As Integer)
   chkDocManManualHeader.Value = vbUnchecked
   chkDocManScreen.Value = vbUnchecked
   
-  fraOutput(0).Visible = (Index = 0)
-  fraOutput(1).Visible = (Index = 1)
-  fraOutput(2).Visible = (Index = 2)
+  FraOutput(0).Visible = (Index = 0)
+  FraOutput(1).Visible = (Index = 1)
+  FraOutput(2).Visible = (Index = 2)
   
   Me.Changed = True
 
@@ -4361,6 +4315,7 @@ Private Function SaveDefinition() As Boolean
   
   Dim strDocManMapID As String
   Dim strDocManManualHeader As String
+  Dim iUtilityType As UtilityType
   
   On Error GoTo LocalErr
 
@@ -4379,7 +4334,7 @@ Private Function SaveDefinition() As Boolean
     strFilter = txtFilter.Tag
   End If
 
-
+  iUtilityType = IIf(mbIsLabel, utlLabel, utlMailMerge)
 
   If optOutputFormat(2).Value = True Then        'Document Management
     strOutput = "2"
@@ -4425,28 +4380,6 @@ Private Function SaveDefinition() As Boolean
   
   End If
   
-  
-'  Select Case cboOutput.ItemData(cboOutput.ListIndex)
-'
-'    Case OutputType.Document
-'      strCloseDoc = IIf(chkDestination(0).Value = vbChecked, "0", "1")
-'      strDocPrint = IIf(chkDestination(1).Value = vbChecked, "1", "0")
-'
-'      strDocSave = IIf(chkDestination(2).Value = True, "1", "0")
-'      strDocFilename = "'" & Replace(txtFilename(0), "'", "''") & "'"
-'
-'    Case OutputType.Email
-'      strEmailAttachment = CStr(Abs(chkEMailAttachment <> 0))
-'      strEmailAttachmentName = "'" & Replace(txtEmailAttachmentName.Text, "'", "''") & "'"
-'      strEmailAddrID = CStr(cboEMailField.ItemData(cboEMailField.ListIndex))
-'      strEmailSubject = "'" & Replace(txtEmailSubject, "'", "''") & "'"
-'
-'    Case OutputType.Version1, OutputType.HRProDocumentManagement
-'      strDocumentMapID = txtDocumentMap.Tag
-'      strCloseDoc = CStr(Abs(chkCloseAfterDocManInsert <> 0))
-'
-'  End Select
-
   strName = "'" & Replace(Trim(txtName.Text), "'", "''") & "'"
   strDesc = "'" & Replace(txtDesc.Text, "'", "''") & "'"
   strTableID = CStr(cboBaseTable.ItemData(cboBaseTable.ListIndex))
@@ -4458,31 +4391,6 @@ Private Function SaveDefinition() As Boolean
   strIsLabel = CStr(Abs(mbIsLabel <> 0))
 
   If mlngMailMergeID > 0 Then
-    'strSQL = "UPDATE " & mstrSQLTableDef & " SET " & _
-             "Name = " & strName & ", " & _
-             "Description = " & strDesc & ", " & _
-             "TableID = " & strTableID & ", " & _
-             "Selection = " & strSelection & ", " & _
-             "PickListID = " & strPicklist & ", " & _
-             "FilterID = " & strFilter & ", " & _
-             "Output = " & strOutput & ", " & _
-             "OutputPrinterName = '" & strPrinterName & "', " & _
-             "DocumentMapID = " & strDocumentMapID & ", " & _
-             "DocSave = " & strDocSave & ", " & _
-             "DocFileName = " & strDocFilename & ", " & _
-             "EmailAddrID = " & strEmailAddrID & ", " & _
-             "EMailSubject = " & strEmailSubject & ", " & _
-             "TemplateFileName = " & strTemplate & ", " & _
-             "CloseDoc = " & strCloseDoc & ", " & _
-             "EMailAsAttachment = " & strEmailAttachment & ", " & _
-             "EmailAttachmentName = " & strEmailAttachmentName & ", " & _
-             "SuppressBlanks = " & strSuppressBlanks & ", " & _
-             "PauseBeforeMerge = " & strPauseBeforeMerge & ", " & _
-             "IsLabel = " & strIsLabel & ", " & _
-             "LabelTypeID = " & Str(mlngLabelTypeID) & ", " & _
-             "ManualDocManHeader = " & strManualDocManHeader & " " & _
-             "WHERE MailMergeID = " & CStr(mlngMailMergeID)
-
     strSQL = "UPDATE " & mstrSQLTableDef & " SET " & _
              "Name = " & strName & ", " & _
              "Description = " & strDesc & ", " & _
@@ -4510,11 +4418,8 @@ Private Function SaveDefinition() As Boolean
              "WHERE MailMergeID = " & CStr(mlngMailMergeID)
     gADOCon.Execute strSQL, , adCmdText
 
-    If mbIsLabel Then
-      Call UtilUpdateLastSaved(utlLabel, mlngMailMergeID)
-    Else
-      Call UtilUpdateLastSaved(utlMailMerge, mlngMailMergeID)
-    End If
+
+    Call UtilUpdateLastSaved(iUtilityType, mlngMailMergeID)
 
   Else
     strSQL = "INSERT " & mstrSQLTableDef & " (" & _
@@ -4543,23 +4448,14 @@ Private Function SaveDefinition() As Boolean
     ' RH 04/09/00 - Use the new stored procedure for inserting util defs
     mlngMailMergeID = InsertMailMerge(strSQL)
 
-'    gADOCon.Execute strSQL, , adCmdText
-
-'    strSQL = "SELECT MAX(MailMergeID) FROM " & mstrSQLTableDef
-'    Set rsTemp = datData.OpenRecordset(strSQL, adOpenForwardOnly, adLockReadOnly)
-'    mlngMailMergeID = Val(rsTemp(0))
-
-'    gADOCon.Execute strSQL, , adCmdText
-
-    If mbIsLabel Then
-      Call UtilCreated(utlLabel, mlngMailMergeID)
-    Else
-      Call UtilCreated(utlMailMerge, mlngMailMergeID)
-    End If
+    Call UtilCreated(iUtilityType, mlngMailMergeID)
 
   End If
 
   SaveAccess
+  
+  SaveObjectCategories cboCategory, iUtilityType, mlngMailMergeID
+  
   
 Exit Function
 
@@ -4790,21 +4686,10 @@ Private Sub RetreiveDefinition()
   Dim sMessage As String
   Dim fAlreadyNotified As Boolean
   Dim strPrinterName As String
+  Dim iUtilityType As UtilityType
 
   On Error GoTo LocalErr
 
-  'strSQL = "SELECT " & _
-  '         mstrSQLTableDef & ".*, " & _
-  '         "CONVERT(integer," & mstrSQLTableDef & ".TimeStamp) AS intTimeStamp, " & _
-  '         "ASRSysPickListName.Name AS PickListName, " & _
-  '         "ASRSysPickListName.Access AS PickListAccess, " & _
-  '         "ASRSysExpressions.Name AS FilterName, " & _
-  '         "ASRSysExpressions.Access AS FilterAccess " & _
-  '         "FROM " & mstrSQLTableDef & " " & _
-  '         "LEFT OUTER JOIN ASRSysExpressions ON " & mstrSQLTableDef & ".FilterID = ASRSysExpressions.ExprID " & _
-  '         "LEFT OUTER JOIN ASRSysPickListName ON " & mstrSQLTableDef & ".PickListID = ASRSysPickListName.PickListID " & _
-  '         "WHERE " & mstrSQLTableDef & ".MailMergeID = " & CStr(mlngMailMergeID)
-  'Set rsTemp = datData.OpenRecordset(strSQL, adOpenForwardOnly, adLockReadOnly)
   Set rsTemp = GetDefinition
   If rsTemp.BOF And rsTemp.EOF Then
     COAMsgBox "This definition has been deleted by another user.", vbExclamation + vbOKOnly, Me.Caption
@@ -4821,11 +4706,13 @@ Private Sub RetreiveDefinition()
   If mbIsLabel Then
     miNumberOfRowsInLabel = datGeneral.HowManyRowsInALabel(rsTemp!LabelTypeID)
     UpdateButtonStatus
+    iUtilityType = utlLabel
   Else
     miNumberOfRowsInLabel = 0
+    iUtilityType = utlMailMerge
   End If
 
-  'SetComboItem cboOutput, rsTemp!Output
+  GetObjectCategories cboCategory, iUtilityType, mlngMailMergeID
 
   optOutputFormat(Val(rsTemp!OutputFormat)).Value = True
   
@@ -6856,3 +6743,8 @@ Private Sub PopulatePrintCombo(cboTemp As ComboBox)
   End With
 
 End Sub
+
+Private Sub cboCategory_Click()
+  Changed = True
+End Sub
+
