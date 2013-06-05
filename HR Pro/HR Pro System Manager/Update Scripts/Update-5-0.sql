@@ -3745,8 +3745,14 @@ PRINT 'Step 10 - Message Bus Integration'
 	END'
 
 
+/* ------------------------------------------------------------- */
+/* Update various system calculation. */
+/* ------------------------------------------------------------- */
+PRINT 'Step 11 - System Calculations'
 
-
+	DELETE FROM tbstat_componentcode WHERE ID = 4 AND isoperator = 1
+	INSERT [dbo].[tbstat_componentcode] ([id], [objectid], [code], [datatype], [name], [isoperator], [operatortype], [aftercode]) 
+		VALUES (4, 'a34f7387-91a1-40d6-b42f-f8032609cfd6', '/ NULLIF(', NULL, 'Divided by', 1, 0, ',0)');
 
 
 
