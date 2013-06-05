@@ -4,7 +4,7 @@ Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "coa_spinner.ocx"
 Begin VB.Form frmRecordProfile 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Record Profile Definition"
@@ -38,7 +38,7 @@ Begin VB.Form frmRecordProfile
       Picture         =   "frmRecordProfile.frx":000C
       ScaleHeight     =   450
       ScaleWidth      =   465
-      TabIndex        =   97
+      TabIndex        =   94
       TabStop         =   0   'False
       Top             =   5880
       Visible         =   0   'False
@@ -49,7 +49,7 @@ Begin VB.Form frmRecordProfile
       Caption         =   "&Cancel"
       Height          =   400
       Left            =   8700
-      TabIndex        =   92
+      TabIndex        =   89
       Top             =   5900
       Width           =   1200
    End
@@ -58,7 +58,7 @@ Begin VB.Form frmRecordProfile
       Default         =   -1  'True
       Height          =   400
       Left            =   7395
-      TabIndex        =   91
+      TabIndex        =   88
       Top             =   5900
       Width           =   1200
    End
@@ -68,7 +68,7 @@ Begin VB.Form frmRecordProfile
       Picture         =   "frmRecordProfile.frx":0596
       ScaleHeight     =   435
       ScaleWidth      =   465
-      TabIndex        =   94
+      TabIndex        =   91
       TabStop         =   0   'False
       Top             =   5865
       Visible         =   0   'False
@@ -84,7 +84,7 @@ Begin VB.Form frmRecordProfile
    Begin TabDlg.SSTab SSTab1 
       Height          =   5775
       Left            =   50
-      TabIndex        =   93
+      TabIndex        =   90
       Top             =   50
       Width           =   9850
       _ExtentX        =   17383
@@ -115,6 +115,7 @@ Begin VB.Form frmRecordProfile
       TabPicture(1)   =   "frmRecordProfile.frx":0E7C
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraRelatedTables"
+      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "Colu&mns"
       TabPicture(2)   =   "frmRecordProfile.frx":0E98
@@ -139,44 +140,52 @@ Begin VB.Form frmRecordProfile
       Tab(3).Control(2)=   "fraOutputDestination"
       Tab(3).ControlCount=   3
       Begin VB.Frame fraInformation 
-         Height          =   1950
+         Height          =   2355
          Left            =   150
-         TabIndex        =   0
-         Top             =   400
-         Width           =   9550
+         TabIndex        =   95
+         Top             =   450
+         Width           =   9555
+         Begin VB.ComboBox cboCategory 
+            Height          =   315
+            Left            =   1395
+            Style           =   2  'Dropdown List
+            TabIndex        =   2
+            Top             =   720
+            Width           =   3090
+         End
+         Begin VB.TextBox txtDesc 
+            Height          =   1080
+            Left            =   1395
+            MaxLength       =   255
+            MultiLine       =   -1  'True
+            ScrollBars      =   2  'Vertical
+            TabIndex        =   3
+            Top             =   1110
+            Width           =   3090
+         End
+         Begin VB.TextBox txtName 
+            Height          =   315
+            Left            =   1395
+            MaxLength       =   50
+            TabIndex        =   1
+            Top             =   300
+            Width           =   3090
+         End
          Begin VB.TextBox txtUserName 
             BackColor       =   &H8000000F&
             Enabled         =   0   'False
             Height          =   315
-            Left            =   5950
+            Left            =   5940
             MaxLength       =   30
-            TabIndex        =   6
-            Top             =   300
-            Width           =   3465
-         End
-         Begin VB.TextBox txtName 
-            Height          =   315
-            Left            =   1350
-            MaxLength       =   50
-            TabIndex        =   2
-            Top             =   300
-            Width           =   3150
-         End
-         Begin VB.TextBox txtDesc 
-            Height          =   1080
-            Left            =   1350
-            MaxLength       =   255
-            MultiLine       =   -1  'True
-            ScrollBars      =   2  'Vertical
             TabIndex        =   4
-            Top             =   700
-            Width           =   3150
+            Top             =   300
+            Width           =   3405
          End
          Begin SSDataWidgets_B.SSDBGrid grdAccess 
-            Height          =   1080
-            Left            =   5985
-            TabIndex        =   98
-            Top             =   720
+            Height          =   1485
+            Left            =   5940
+            TabIndex        =   5
+            Top             =   705
             Width           =   3405
             ScrollBars      =   2
             _Version        =   196617
@@ -263,7 +272,7 @@ Begin VB.Form frmRecordProfile
             Columns(2).FieldLen=   256
             TabNavigation   =   1
             _ExtentX        =   6006
-            _ExtentY        =   1905
+            _ExtentY        =   2619
             _StockProps     =   79
             BeginProperty PageFooterFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -284,25 +293,23 @@ Begin VB.Form frmRecordProfile
                Strikethrough   =   0   'False
             EndProperty
          End
-         Begin VB.Label lblOwner 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Owner :"
-            Height          =   195
-            Left            =   5115
-            TabIndex        =   5
-            Top             =   360
-            Width           =   675
-         End
-         Begin VB.Label lblName 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Name :"
-            Height          =   195
+         Begin VB.Label lblCategory 
+            Caption         =   "Category :"
+            Height          =   240
             Left            =   195
-            TabIndex        =   1
-            Top             =   360
-            Width           =   645
+            TabIndex        =   100
+            Top             =   765
+            Width           =   1005
+         End
+         Begin VB.Label lblAccess 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Access :"
+            Height          =   195
+            Left            =   5085
+            TabIndex        =   99
+            Top             =   765
+            Width           =   825
          End
          Begin VB.Label lblDescription 
             AutoSize        =   -1  'True
@@ -310,26 +317,36 @@ Begin VB.Form frmRecordProfile
             Caption         =   "Description :"
             Height          =   195
             Left            =   195
-            TabIndex        =   3
-            Top             =   750
+            TabIndex        =   98
+            Top             =   1155
             Width           =   1080
          End
-         Begin VB.Label lblAccess 
+         Begin VB.Label lblName 
             AutoSize        =   -1  'True
             BackStyle       =   0  'Transparent
-            Caption         =   "Access :"
+            Caption         =   "Name :"
             Height          =   195
-            Left            =   5115
-            TabIndex        =   7
-            Top             =   750
+            Left            =   195
+            TabIndex        =   97
+            Top             =   360
             Width           =   690
+         End
+         Begin VB.Label lblOwner 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Owner :"
+            Height          =   195
+            Left            =   5085
+            TabIndex        =   96
+            Top             =   360
+            Width           =   810
          End
       End
       Begin VB.Frame fraOutputDestination 
          Caption         =   "Output Destination(s) :"
          Height          =   3975
          Left            =   -72500
-         TabIndex        =   96
+         TabIndex        =   93
          Top             =   1680
          Width           =   7200
          Begin VB.TextBox txtEmailAttachAs 
@@ -338,7 +355,7 @@ Begin VB.Form frmRecordProfile
             ForeColor       =   &H00000000&
             Height          =   315
             Left            =   3315
-            TabIndex        =   90
+            TabIndex        =   87
             Tag             =   "0"
             Top             =   3460
             Width           =   3705
@@ -350,7 +367,7 @@ Begin VB.Form frmRecordProfile
             Height          =   315
             Left            =   3315
             Locked          =   -1  'True
-            TabIndex        =   79
+            TabIndex        =   76
             TabStop         =   0   'False
             Tag             =   "0"
             Top             =   1760
@@ -362,7 +379,7 @@ Begin VB.Form frmRecordProfile
             Height          =   315
             Left            =   3315
             Style           =   2  'Dropdown List
-            TabIndex        =   76
+            TabIndex        =   73
             Top             =   1240
             Width           =   3705
          End
@@ -372,7 +389,7 @@ Begin VB.Form frmRecordProfile
             Height          =   315
             Left            =   3315
             Style           =   2  'Dropdown List
-            TabIndex        =   82
+            TabIndex        =   79
             Top             =   2160
             Width           =   3705
          End
@@ -381,7 +398,7 @@ Begin VB.Form frmRecordProfile
             Enabled         =   0   'False
             Height          =   315
             Left            =   3315
-            TabIndex        =   88
+            TabIndex        =   85
             Top             =   3060
             Width           =   3705
          End
@@ -392,7 +409,7 @@ Begin VB.Form frmRecordProfile
             Height          =   315
             Left            =   3315
             Locked          =   -1  'True
-            TabIndex        =   85
+            TabIndex        =   82
             TabStop         =   0   'False
             Tag             =   "0"
             Top             =   2660
@@ -403,7 +420,7 @@ Begin VB.Form frmRecordProfile
             Enabled         =   0   'False
             Height          =   315
             Left            =   6700
-            TabIndex        =   80
+            TabIndex        =   77
             Top             =   1760
             UseMaskColor    =   -1  'True
             Width           =   330
@@ -413,7 +430,7 @@ Begin VB.Form frmRecordProfile
             Enabled         =   0   'False
             Height          =   315
             Left            =   6700
-            TabIndex        =   86
+            TabIndex        =   83
             Top             =   2660
             UseMaskColor    =   -1  'True
             Width           =   330
@@ -423,7 +440,7 @@ Begin VB.Form frmRecordProfile
             Height          =   195
             Index           =   0
             Left            =   195
-            TabIndex        =   73
+            TabIndex        =   70
             Top             =   850
             Value           =   1  'Checked
             Width           =   3105
@@ -433,7 +450,7 @@ Begin VB.Form frmRecordProfile
             Height          =   195
             Index           =   1
             Left            =   195
-            TabIndex        =   74
+            TabIndex        =   71
             Top             =   1300
             Width           =   1650
          End
@@ -443,7 +460,7 @@ Begin VB.Form frmRecordProfile
             Height          =   195
             Index           =   2
             Left            =   195
-            TabIndex        =   77
+            TabIndex        =   74
             Top             =   1820
             Width           =   1455
          End
@@ -453,7 +470,7 @@ Begin VB.Form frmRecordProfile
             Height          =   195
             Index           =   3
             Left            =   195
-            TabIndex        =   83
+            TabIndex        =   80
             Top             =   2720
             Width           =   1560
          End
@@ -462,7 +479,7 @@ Begin VB.Form frmRecordProfile
             Enabled         =   0   'False
             Height          =   195
             Left            =   195
-            TabIndex        =   72
+            TabIndex        =   69
             Top             =   400
             Width           =   3495
          End
@@ -473,7 +490,7 @@ Begin VB.Form frmRecordProfile
             Height          =   195
             Index           =   2
             Left            =   1845
-            TabIndex        =   89
+            TabIndex        =   86
             Top             =   3525
             Width           =   1155
          End
@@ -483,7 +500,7 @@ Begin VB.Form frmRecordProfile
             Enabled         =   0   'False
             Height          =   195
             Left            =   1845
-            TabIndex        =   78
+            TabIndex        =   75
             Top             =   1815
             Width           =   1140
          End
@@ -494,7 +511,7 @@ Begin VB.Form frmRecordProfile
             Height          =   195
             Index           =   1
             Left            =   1845
-            TabIndex        =   87
+            TabIndex        =   84
             Top             =   3120
             Width           =   1395
          End
@@ -505,7 +522,7 @@ Begin VB.Form frmRecordProfile
             Height          =   195
             Index           =   0
             Left            =   1845
-            TabIndex        =   84
+            TabIndex        =   81
             Top             =   2715
             Width           =   1290
          End
@@ -515,7 +532,7 @@ Begin VB.Form frmRecordProfile
             Enabled         =   0   'False
             Height          =   195
             Left            =   1845
-            TabIndex        =   81
+            TabIndex        =   78
             Top             =   2220
             Width           =   1440
          End
@@ -525,7 +542,7 @@ Begin VB.Form frmRecordProfile
             Enabled         =   0   'False
             Height          =   195
             Left            =   1845
-            TabIndex        =   75
+            TabIndex        =   72
             Top             =   1305
             Width           =   1545
          End
@@ -535,14 +552,14 @@ Begin VB.Form frmRecordProfile
          Enabled         =   0   'False
          Height          =   1250
          Left            =   -74850
-         TabIndex        =   60
+         TabIndex        =   57
          Top             =   400
          Width           =   9550
          Begin VB.CheckBox chkShowTableRelationshipTitle 
             Caption         =   "&Show Table Relationship Titles"
             Height          =   240
             Left            =   200
-            TabIndex        =   63
+            TabIndex        =   60
             Top             =   880
             Width           =   4000
          End
@@ -550,7 +567,7 @@ Begin VB.Form frmRecordProfile
             Caption         =   "I&ndent Related Tables"
             Height          =   240
             Left            =   195
-            TabIndex        =   61
+            TabIndex        =   58
             Top             =   280
             Width           =   2310
          End
@@ -558,7 +575,7 @@ Begin VB.Form frmRecordProfile
             Caption         =   "Suppress Empty Related Table Tit&les"
             Height          =   240
             Left            =   200
-            TabIndex        =   62
+            TabIndex        =   59
             Top             =   580
             Width           =   4000
          End
@@ -567,7 +584,7 @@ Begin VB.Form frmRecordProfile
          Caption         =   "Output Format :"
          Height          =   3975
          Left            =   -74850
-         TabIndex        =   64
+         TabIndex        =   61
          Top             =   1680
          Width           =   2200
          Begin VB.OptionButton optOutputFormat 
@@ -575,7 +592,7 @@ Begin VB.Form frmRecordProfile
             Height          =   195
             Index           =   0
             Left            =   200
-            TabIndex        =   65
+            TabIndex        =   62
             Top             =   400
             Value           =   -1  'True
             Width           =   1900
@@ -585,7 +602,7 @@ Begin VB.Form frmRecordProfile
             Height          =   195
             Index           =   1
             Left            =   200
-            TabIndex        =   71
+            TabIndex        =   68
             Top             =   3200
             Visible         =   0   'False
             Width           =   1900
@@ -595,7 +612,7 @@ Begin VB.Form frmRecordProfile
             Height          =   195
             Index           =   2
             Left            =   200
-            TabIndex        =   66
+            TabIndex        =   63
             Top             =   800
             Width           =   1900
          End
@@ -604,7 +621,7 @@ Begin VB.Form frmRecordProfile
             Height          =   195
             Index           =   3
             Left            =   200
-            TabIndex        =   67
+            TabIndex        =   64
             Top             =   1200
             Width           =   1900
          End
@@ -613,7 +630,7 @@ Begin VB.Form frmRecordProfile
             Height          =   195
             Index           =   4
             Left            =   200
-            TabIndex        =   68
+            TabIndex        =   65
             Top             =   1600
             Width           =   1900
          End
@@ -623,7 +640,7 @@ Begin VB.Form frmRecordProfile
             Height          =   195
             Index           =   5
             Left            =   200
-            TabIndex        =   69
+            TabIndex        =   66
             Top             =   2400
             Visible         =   0   'False
             Width           =   1900
@@ -634,7 +651,7 @@ Begin VB.Form frmRecordProfile
             Height          =   195
             Index           =   6
             Left            =   200
-            TabIndex        =   70
+            TabIndex        =   67
             Top             =   2800
             Visible         =   0   'False
             Width           =   1900
@@ -644,14 +661,14 @@ Begin VB.Form frmRecordProfile
          Caption         =   "Table :"
          Height          =   700
          Left            =   -74850
-         TabIndex        =   39
+         TabIndex        =   36
          Top             =   400
          Width           =   9550
          Begin VB.ComboBox cboTblAvailable 
             Height          =   315
             Left            =   200
             Style           =   2  'Dropdown List
-            TabIndex        =   41
+            TabIndex        =   38
             Top             =   240
             Width           =   3400
          End
@@ -659,7 +676,7 @@ Begin VB.Form frmRecordProfile
             Caption         =   "Table :"
             Height          =   255
             Left            =   200
-            TabIndex        =   40
+            TabIndex        =   37
             Top             =   300
             Visible         =   0   'False
             Width           =   500
@@ -669,13 +686,13 @@ Begin VB.Form frmRecordProfile
          Caption         =   "Columns Available :"
          Height          =   4425
          Left            =   -74850
-         TabIndex        =   42
+         TabIndex        =   39
          Top             =   1200
          Width           =   3800
          Begin ComctlLib.ListView ListView1 
             Height          =   3900
             Left            =   200
-            TabIndex        =   43
+            TabIndex        =   40
             Top             =   300
             Width           =   3400
             _ExtentX        =   6006
@@ -704,7 +721,7 @@ Begin VB.Form frmRecordProfile
          Caption         =   "Columns Selected :"
          Height          =   4425
          Left            =   -69100
-         TabIndex        =   52
+         TabIndex        =   49
          Top             =   1200
          Width           =   3800
          Begin VB.TextBox txtProp_ColumnHeading 
@@ -713,14 +730,14 @@ Begin VB.Form frmRecordProfile
             Height          =   315
             Left            =   1200
             MaxLength       =   50
-            TabIndex        =   55
+            TabIndex        =   52
             Top             =   3150
             Width           =   2400
          End
          Begin COASpinner.COA_Spinner spnSize 
             Height          =   315
             Left            =   1200
-            TabIndex        =   57
+            TabIndex        =   54
             Top             =   3555
             Width           =   1005
             _ExtentX        =   1773
@@ -742,7 +759,7 @@ Begin VB.Form frmRecordProfile
          Begin ComctlLib.ListView ListView2 
             Height          =   2745
             Left            =   195
-            TabIndex        =   53
+            TabIndex        =   50
             Top             =   300
             Width           =   3400
             _ExtentX        =   6006
@@ -769,7 +786,7 @@ Begin VB.Form frmRecordProfile
          Begin COASpinner.COA_Spinner spnDec 
             Height          =   315
             Left            =   1200
-            TabIndex        =   59
+            TabIndex        =   56
             Top             =   3945
             Width           =   1005
             _ExtentX        =   1773
@@ -793,7 +810,7 @@ Begin VB.Form frmRecordProfile
             Caption         =   "Heading :"
             Height          =   195
             Left            =   195
-            TabIndex        =   54
+            TabIndex        =   51
             Top             =   3210
             Width           =   1260
          End
@@ -802,7 +819,7 @@ Begin VB.Form frmRecordProfile
             Caption         =   "Size :"
             Height          =   195
             Left            =   195
-            TabIndex        =   56
+            TabIndex        =   53
             Top             =   3615
             Width           =   615
          End
@@ -811,17 +828,17 @@ Begin VB.Form frmRecordProfile
             Caption         =   "Decimals :"
             Height          =   195
             Left            =   195
-            TabIndex        =   58
+            TabIndex        =   55
             Top             =   4010
             Width           =   1140
          End
       End
       Begin VB.Frame fraBase 
          Caption         =   "Data :"
-         Height          =   3175
+         Height          =   2730
          Left            =   150
-         TabIndex        =   8
-         Top             =   2450
+         TabIndex        =   0
+         Top             =   2895
          Width           =   9555
          Begin VB.CheckBox chkPrintFilterHeader 
             Caption         =   "Display &title in the report header"
@@ -834,25 +851,25 @@ Begin VB.Form frmRecordProfile
          Begin VB.CheckBox chkBasePageBreak 
             Caption         =   "Pag&e Break"
             Height          =   195
-            Left            =   5150
-            TabIndex        =   23
-            Top             =   1960
+            Left            =   240
+            TabIndex        =   11
+            Top             =   1560
             Width           =   1380
          End
          Begin VB.Frame fraBaseOrientation 
             BorderStyle     =   0  'None
-            Height          =   200
-            Left            =   6900
-            TabIndex        =   25
-            Top             =   2600
-            Width           =   2600
+            Height          =   330
+            Left            =   1950
+            TabIndex        =   24
+            Top             =   2100
+            Width           =   3045
             Begin VB.OptionButton optBaseOrientation 
                Caption         =   "&Vertical"
                Height          =   195
                Index           =   1
-               Left            =   1450
-               TabIndex        =   27
-               Top             =   0
+               Left            =   1590
+               TabIndex        =   13
+               Top             =   90
                Value           =   -1  'True
                Width           =   1100
             End
@@ -860,18 +877,18 @@ Begin VB.Form frmRecordProfile
                Caption         =   "Hori&zontal"
                Height          =   195
                Index           =   0
-               Left            =   0
-               TabIndex        =   26
-               Top             =   0
+               Left            =   30
+               TabIndex        =   12
+               Top             =   90
                Width           =   1230
             End
          End
          Begin VB.CommandButton cmdBaseOrder 
             Caption         =   "..."
             Height          =   315
-            Left            =   4050
+            Left            =   4095
             Picture         =   "frmRecordProfile.frx":0F08
-            TabIndex        =   13
+            TabIndex        =   10
             Top             =   700
             UseMaskColor    =   -1  'True
             Width           =   330
@@ -880,9 +897,9 @@ Begin VB.Form frmRecordProfile
             BackColor       =   &H8000000F&
             Enabled         =   0   'False
             Height          =   315
-            Left            =   1350
+            Left            =   1395
             Locked          =   -1  'True
-            TabIndex        =   12
+            TabIndex        =   9
             Tag             =   "0"
             Top             =   700
             Width           =   2700
@@ -936,9 +953,9 @@ Begin VB.Form frmRecordProfile
          End
          Begin VB.ComboBox cboBaseTable 
             Height          =   315
-            Left            =   1350
+            Left            =   1395
             Style           =   2  'Dropdown List
-            TabIndex        =   10
+            TabIndex        =   7
             Top             =   300
             Width           =   3030
          End
@@ -965,9 +982,9 @@ Begin VB.Form frmRecordProfile
          Begin VB.Label lblPageBreak 
             Caption         =   " (applies only for output to Word    and printing Data Only output)"
             Height          =   405
-            Left            =   6500
-            TabIndex        =   95
-            Top             =   1965
+            Left            =   1590
+            TabIndex        =   92
+            Top             =   1560
             Width           =   2850
             WordWrap        =   -1  'True
          End
@@ -976,9 +993,9 @@ Begin VB.Form frmRecordProfile
             BackStyle       =   0  'Transparent
             Caption         =   "Data Orientation :"
             Height          =   195
-            Left            =   5145
-            TabIndex        =   24
-            Top             =   2595
+            Left            =   240
+            TabIndex        =   23
+            Top             =   2190
             Width           =   1545
          End
          Begin VB.Label lblBaseOrder 
@@ -987,7 +1004,7 @@ Begin VB.Form frmRecordProfile
             Caption         =   "Order :"
             Height          =   195
             Left            =   200
-            TabIndex        =   11
+            TabIndex        =   8
             Top             =   760
             Width           =   525
          End
@@ -997,7 +1014,7 @@ Begin VB.Form frmRecordProfile
             Caption         =   "Base Table :"
             Height          =   195
             Left            =   200
-            TabIndex        =   9
+            TabIndex        =   6
             Top             =   360
             Width           =   885
          End
@@ -1015,14 +1032,14 @@ Begin VB.Form frmRecordProfile
       Begin VB.Frame fraRelatedTables 
          Height          =   5210
          Left            =   -74850
-         TabIndex        =   28
+         TabIndex        =   25
          Top             =   400
          Width           =   9550
          Begin VB.CommandButton cmdAddAllTableColumns 
             Caption         =   "Add All Column&s"
             Height          =   400
             Left            =   7750
-            TabIndex        =   37
+            TabIndex        =   34
             Top             =   3900
             Width           =   1600
          End
@@ -1030,7 +1047,7 @@ Begin VB.Form frmRecordProfile
             Caption         =   "Add A&ll..."
             Height          =   400
             Left            =   7750
-            TabIndex        =   31
+            TabIndex        =   28
             Top             =   750
             Width           =   1600
          End
@@ -1038,7 +1055,7 @@ Begin VB.Form frmRecordProfile
             Caption         =   "Au&to Arrange"
             Height          =   400
             Left            =   7750
-            TabIndex        =   38
+            TabIndex        =   35
             Top             =   4500
             Width           =   1600
          End
@@ -1046,7 +1063,7 @@ Begin VB.Form frmRecordProfile
             Caption         =   "&Remove"
             Height          =   400
             Left            =   7750
-            TabIndex        =   33
+            TabIndex        =   30
             Top             =   1800
             Width           =   1600
          End
@@ -1054,7 +1071,7 @@ Begin VB.Form frmRecordProfile
             Caption         =   "&Add..."
             Height          =   400
             Left            =   7750
-            TabIndex        =   30
+            TabIndex        =   27
             Top             =   300
             Width           =   1600
          End
@@ -1062,7 +1079,7 @@ Begin VB.Form frmRecordProfile
             Caption         =   "Remo&ve All "
             Height          =   400
             Left            =   7750
-            TabIndex        =   34
+            TabIndex        =   31
             Top             =   2250
             Width           =   1600
          End
@@ -1070,14 +1087,14 @@ Begin VB.Form frmRecordProfile
             Caption         =   "&Edit..."
             Height          =   400
             Left            =   7750
-            TabIndex        =   32
+            TabIndex        =   29
             Top             =   1200
             Width           =   1600
          End
          Begin SSDataWidgets_B.SSDBGrid grdRelatedTables 
             Height          =   4600
             Left            =   195
-            TabIndex        =   29
+            TabIndex        =   26
             Top             =   300
             Width           =   7410
             ScrollBars      =   3
@@ -1202,7 +1219,7 @@ Begin VB.Form frmRecordProfile
             Caption         =   "&Up"
             Height          =   400
             Left            =   7750
-            TabIndex        =   35
+            TabIndex        =   32
             Top             =   2865
             Width           =   1600
          End
@@ -1210,7 +1227,7 @@ Begin VB.Form frmRecordProfile
             Caption         =   "Do&wn"
             Height          =   400
             Left            =   7750
-            TabIndex        =   36
+            TabIndex        =   33
             Top             =   3300
             Width           =   1600
          End
@@ -1219,7 +1236,7 @@ Begin VB.Form frmRecordProfile
          Caption         =   "Add &Separator"
          Height          =   400
          Left            =   -70800
-         TabIndex        =   47
+         TabIndex        =   44
          Top             =   2800
          Width           =   1450
       End
@@ -1227,7 +1244,7 @@ Begin VB.Form frmRecordProfile
          Caption         =   "Add &Heading"
          Height          =   400
          Left            =   -70800
-         TabIndex        =   46
+         TabIndex        =   43
          Top             =   2300
          Width           =   1450
       End
@@ -1235,7 +1252,7 @@ Begin VB.Form frmRecordProfile
          Caption         =   "&Add"
          Height          =   400
          Left            =   -70800
-         TabIndex        =   44
+         TabIndex        =   41
          Top             =   1300
          Width           =   1450
       End
@@ -1244,7 +1261,7 @@ Begin VB.Form frmRecordProfile
          Enabled         =   0   'False
          Height          =   400
          Left            =   -70800
-         TabIndex        =   48
+         TabIndex        =   45
          Top             =   3500
          Width           =   1450
       End
@@ -1253,7 +1270,7 @@ Begin VB.Form frmRecordProfile
          Enabled         =   0   'False
          Height          =   400
          Left            =   -70800
-         TabIndex        =   50
+         TabIndex        =   47
          Top             =   4675
          Width           =   1450
       End
@@ -1262,7 +1279,7 @@ Begin VB.Form frmRecordProfile
          Enabled         =   0   'False
          Height          =   400
          Left            =   -70800
-         TabIndex        =   51
+         TabIndex        =   48
          Top             =   5175
          Width           =   1450
       End
@@ -1270,7 +1287,7 @@ Begin VB.Form frmRecordProfile
          Caption         =   "Add A&ll"
          Height          =   400
          Left            =   -70800
-         TabIndex        =   45
+         TabIndex        =   42
          Top             =   1800
          Width           =   1450
       End
@@ -1279,7 +1296,7 @@ Begin VB.Form frmRecordProfile
          Enabled         =   0   'False
          Height          =   400
          Left            =   -70800
-         TabIndex        =   49
+         TabIndex        =   46
          Top             =   4000
          Width           =   1450
       End
@@ -1472,6 +1489,9 @@ Public Function Initialise(bNew As Boolean, _
     UpdateButtonStatus (SSTab1.Tab)
     
     PopulateAccessGrid
+    
+    GetObjectCategories cboCategory, utlRecordProfile, 0, cboBaseTable.ItemData(cboBaseTable.ListIndex)
+    SetComboItem cboCategory, IIf(glngCurrentCategoryID = -1, 0, glngCurrentCategoryID)
     
     Changed = False
   Else
@@ -1782,6 +1802,8 @@ Private Function RetrieveRecordProfileDetails(plngRecordProfileID As Long) As Bo
   LoadBaseCombo
 
   SetComboText cboBaseTable, datGeneral.GetTableName(rsTemp!BaseTable)
+  GetObjectCategories cboCategory, utlRecordProfile, mlngRecordProfileID
+  
   mstrBaseTable = cboBaseTable.Text
   UpdateDependantFields
 
@@ -5338,7 +5360,6 @@ Private Function SaveDefinition() As Boolean
       "OutputPrinterName, OutputSave, OutputSaveExisting, OutputEmail, " & _
       "OutputEmailAddr, OutputEmailSubject, OutputEmailAttachAs, OutputFileName, " & _
       "IndentRelatedTables, SuppressEmptyRelatedTableTitles, SuppressTableRelationshipTitles)"
-'      "Access, UserName," & _
 
     sSQL = sSQL & _
       " VALUES ('" & _
@@ -5404,9 +5425,8 @@ Private Function SaveDefinition() As Boolean
     Call UtilCreated(utlRecordProfile, mlngRecordProfileID)
   End If
 
-'########################### 2 Of 3 - SAVE THE RELATED TABLE DETAILS
-' First, remove any records from the relate table detail tables.
-SaveAccess
+  SaveAccess
+  SaveObjectCategories cboCategory, utlRecordProfile, mlngRecordProfileID
 
   '########################### 2 Of 3 - SAVE THE RELATED TABLE DETAILS
   ' First, remove any records from the relate table detail tables.
@@ -6505,3 +6525,6 @@ Private Sub PopulateAccessGrid()
 
 End Sub
 
+Private Sub cboCategory_Click()
+  Changed = True
+End Sub
