@@ -113,9 +113,11 @@ Namespace ScriptDB
 
           Select Case objTable1.Column(objPart3.ColumnID).DataType
             Case ColumnTypes.Date
-              sVariableName = "@dateresult"
+              sVariableName = "@result_date"
+            Case ColumnTypes.Numeric, ColumnTypes.Integer
+              sVariableName = "@result_numeric"
             Case Else
-              sVariableName = "@result"
+              sVariableName = "@result_string"
           End Select
 
           ' Even though the user can select different table for parameters 1 and 3 this
@@ -152,14 +154,15 @@ Namespace ScriptDB
         ' Build the stored procedure
         sSQL = String.Format("CREATE FUNCTION [dbo].[{0}](" & vbNewLine &
             "    @searchcolumnid AS varchar(17)," & vbNewLine & _
-            "    @searchexpression AS varchar(255)," & vbNewLine & _
+            "    @searchexpression AS sql_variant," & vbNewLine & _
             "    @returncolumnid AS varchar(17))" & vbNewLine & _
-            "RETURNS varchar(255)" & vbNewLine & _
-            "--WITH SCHEMABINDING" & vbNewLine & _
+            "RETURNS sql_variant" & vbNewLine & _
             "AS" & vbNewLine & "BEGIN" & vbNewLine & _
-            "    DECLARE @result     varchar(255)," & vbNewLine & _
-            "            @dateresult datetime;" & vbNewLine & _
-            "    SET @result = '';" & vbNewLine & vbNewLine & _
+            "    DECLARE @result_string     varchar(255)," & vbNewLine & _
+            "            @result_numeric    numeric(38,8)," & vbNewLine & _
+            "            @result_date       datetime;" & vbNewLine & vbNewLine & _
+            "    SET @result_string = '';" & vbNewLine & _
+            "    SET @result_numeric = 0;" & vbNewLine & vbNewLine & _
             "{1}" & vbNewLine & _
             "    RETURN NULL;" & vbNewLine & _
             "END" _

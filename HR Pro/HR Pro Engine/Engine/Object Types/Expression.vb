@@ -829,7 +829,7 @@ Namespace Things
       objCodeLibrary.Tuning.Usage += 1
 
       ' For functions that return mixed type, make it type safe
-      If objCodeLibrary.ReturnType = ScriptDB.ComponentValueTypes.Unknown Then
+      If objCodeLibrary.ReturnType = ScriptDB.ComponentValueTypes.Unknown And objCodeLibrary.MakeTypeSafe Then
 
         Select Case Component.ReturnType
           Case ScriptDB.ComponentValueTypes.Numeric
@@ -849,6 +849,7 @@ Namespace Things
 
           Case ScriptDB.ComponentValueTypes.String
             LineOfCode.Code = String.Format("convert(nvarchar(MAX), ({0}))", LineOfCode.Code)
+            'LineOfCode.Code = 
 
             'Case ScriptDB.ColumnTypes.Integer
             '  LineOfCode.Code = String.Format("convert(integer, ({0}))", LineOfCode.Code)
