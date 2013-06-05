@@ -840,7 +840,9 @@ Public Function SetOptions( _
     Optional blnOutputTOC As Boolean, _
     Optional blnOutputCoverSheet As Boolean, _
     Optional lngOverrideFilterID As Long, _
-    Optional blnOutputRetainPivotOrChart As Boolean)
+    Optional blnOutputRetainPivotOrChart As Boolean, _
+    Optional blnOutputRetainCharts As Boolean, _
+    Optional lngOriginalOutputFormat As Long)
 
   Dim objColumn As clsColumn
   Dim blnCancelled As Boolean
@@ -881,9 +883,9 @@ Public Function SetOptions( _
         .txtEmailGroup.Text = datGeneral.GetEmailGroupName(lngEmailAddr)
         .txtEmailGroup.Tag = lngEmailAddr
         .txtEmailSubject.Text = strEmailSubject
-        .txtEmailAttachAs.Text = strEmailAttachAs
+        .txtEMailAttachAs.Text = strEmailAttachAs
       End If
-      .txtFilename.Text = strFileName
+      .txtFileName.Text = strFileName
       .ShowFormats mblnData, mblnCSV, mblnHTML, mblnWord, mblnExcel, mblnChart, mblnPivot
       .PageRange = mblnPageRange
       .Show vbModal
@@ -902,12 +904,12 @@ Public Function SetOptions( _
       blnEmail = (.chkDestination(desEmail).Value = vbChecked)
       lngEmailAddr = Val(.txtEmailGroup.Tag)
       strEmailSubject = .txtEmailSubject.Text
-      strEmailAttachAs = .txtEmailAttachAs.Text
-      strFileName = .txtFilename.Text
+      strEmailAttachAs = .txtEMailAttachAs.Text
+      strFileName = .txtFileName.Text
 
       mlngEmailGroupID = .txtEmailGroup.Tag
       mstrEmailSubject = .txtEmailSubject.Text
-      mstrEmailAttachAs = .txtEmailAttachAs.Text
+      mstrEmailAttachAs = .txtEMailAttachAs.Text
 
       If .cboSaveExisting.ListIndex <> -1 Then
         lngSaveExisting = .cboSaveExisting.ItemData(.cboSaveExisting.ListIndex)
@@ -940,7 +942,15 @@ Public Function SetOptions( _
   
   If gblnReportPackMode Then
     'Default should be excel if not set
-    mlngFormat = IIf(mlngFormat = 4, IIf(blnOutputRetainPivotOrChart, fmtExcelchart, fmtExcelWorksheet), mlngFormat)
+    Select Case lngOriginalOutputFormat
+      Case fmtExcelPivotTable
+        mlngFormat = fmtExcelPivotTable
+      Case fmtExcelWorksheet
+        mlngFormat = fmtExcelWorksheet
+      Case fmtExcelchart
+        mlngFormat = fmtExcelchart
+    End Select
+    'mlngFormat = IIf(mlngFormat = 4, IIf(blnOutputRetainPivotOrChart, fmtExcelchart, fmtExcelWorksheet), mlngFormat)
   Else
     mlngFormat = lngFormat
   End If
