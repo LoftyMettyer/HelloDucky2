@@ -43,9 +43,7 @@ Begin VB.Form frmModuleDocument
       TabPicture(0)   =   "frmModuleDocument.frx":000C
       Tab(0).ControlEnabled=   0   'False
       Tab(0).Control(0)=   "fraComponent(1)"
-      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).Control(1)=   "fraTypes"
-      Tab(0).Control(1).Enabled=   0   'False
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Mail Merge"
       TabPicture(1)   =   "frmModuleDocument.frx":0028
@@ -214,6 +212,7 @@ Begin VB.Form frmModuleDocument
          DataMode        =   2
          RecordSelectors =   0   'False
          GroupHeaders    =   0   'False
+         Col.Count       =   4
          stylesets.count =   2
          stylesets(0).Name=   "KeyField"
          stylesets(0).BackColor=   14024703
@@ -500,44 +499,44 @@ Private Function SaveChanges() As Boolean
 
 
   ' Mail Merge Stuff
-  daoDb.Execute "DELETE FROM tmpDocumentManagementCategories", dbFailOnError
-
-  For iLoop = LBound(mavarCategoryTableIDs, 2) To UBound(mavarCategoryTableIDs, 2) - 1
-    sSQL = "INSERT INTO tmpDocumentManagementCategories" & _
-      " (CategoryID, Category, [TableID])" & _
-      " VALUES (" & _
-      CStr(mavarCategoryTableIDs(0, iLoop)) & "," & _
-      "'" & CStr(mavarCategoryTableIDs(1, iLoop)) & "', " & _
-      mavarCategoryTableIDs(2, iLoop) & ")"
-
-    daoDb.Execute sSQL, dbFailOnError
-  Next iLoop
+'  daoDb.Execute "DELETE FROM tmpDocumentManagementCategories", dbFailOnError
+'
+'  For iLoop = LBound(mavarCategoryTableIDs, 2) To UBound(mavarCategoryTableIDs, 2) - 1
+'    sSQL = "INSERT INTO tmpDocumentManagementCategories" & _
+'      " (CategoryID, Category, [TableID])" & _
+'      " VALUES (" & _
+'      CStr(mavarCategoryTableIDs(0, iLoop)) & "," & _
+'      "'" & CStr(mavarCategoryTableIDs(1, iLoop)) & "', " & _
+'      mavarCategoryTableIDs(2, iLoop) & ")"
+'
+'    daoDb.Execute sSQL, dbFailOnError
+'  Next iLoop
 
 
   ' Store the transfer details
-  daoDb.Execute "DELETE FROM tmpDocumentManagementHeaderInfo WHERE Type = 1", dbFailOnError
-  For iLoopTypes = 0 To cboCategory.ListCount - 1
-    With grdTransferDetails(iLoopTypes)
-      .Redraw = False
-      .MoveFirst
-      
-      iCategory = cboCategory.ItemData(iLoopTypes)
-      
-      For iLoop = 0 To (.Rows - 1)
-  
-        sSQL = "INSERT INTO tmpDocumentManagementHeaderInfo" & _
-          " (CategoryID, Heading, ColumnID, Type)" & _
-          " VALUES (" & _
-          iCategory & "," & _
-          "'" & .Columns("Heading").value & "'," & _
-          .Columns("ColumnID").value & "," & _
-          "1)"
-        
-        daoDb.Execute sSQL, dbFailOnError
-        .MoveNext
-      Next iLoop
-    End With
-  Next iLoopTypes
+'  daoDb.Execute "DELETE FROM tmpDocumentManagementHeaderInfo WHERE Type = 1", dbFailOnError
+'  For iLoopTypes = 0 To cboCategory.ListCount - 1
+'    With grdTransferDetails(iLoopTypes)
+'      .Redraw = False
+'      .MoveFirst
+'
+'      iCategory = cboCategory.ItemData(iLoopTypes)
+'
+'      For iLoop = 0 To (.Rows - 1)
+'
+'        sSQL = "INSERT INTO tmpDocumentManagementHeaderInfo" & _
+'          " (CategoryID, Heading, ColumnID, Type)" & _
+'          " VALUES (" & _
+'          iCategory & "," & _
+'          "'" & .Columns("Heading").value & "'," & _
+'          .Columns("ColumnID").value & "," & _
+'          "1)"
+'
+'        daoDb.Execute sSQL, dbFailOnError
+'        .MoveNext
+'      Next iLoop
+'    End With
+'  Next iLoopTypes
 
 
 
@@ -655,7 +654,7 @@ Private Sub Form_Load()
   
   InitialiseCombos
   PopulateParentsCombo cboTables
-  PopulateCategories
+  'PopulateCategories
 
   ' Load the transfer types
   For iLoop = 0 To cboCategory.ListCount - 1

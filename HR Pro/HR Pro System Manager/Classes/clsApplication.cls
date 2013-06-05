@@ -494,8 +494,8 @@ Public Function CreateTempTables() As Boolean
   
   Dim sSQL As String
   Dim sSource As String
-  Dim tbdTemp As dao.TableDef
-  Dim idxTemp As dao.Index
+  Dim tbdTemp As DAO.TableDef
+  Dim idxTemp As DAO.Index
 
 
   Application.ChangedTableName = False
@@ -602,6 +602,17 @@ Public Function CreateTempTables() As Boolean
     sSQL = "SELECT ASRSysOrderItems.*" & _
       " INTO tmpOrderItems FROM ASRSysOrderItems IN " & sSource
     daoDb.Execute sSQL
+       
+'    ' Create the local OrderItems table.
+'    sSQL = "SELECT ASRSysDocumentManagementCategories.*" & _
+'      " INTO tmpDocumentManagementCategories FROM ASRSysDocumentManagementCategories IN " & sSource
+'    daoDb.Execute sSQL
+'
+'    ' Create the local OrderItems table.
+'    sSQL = "SELECT ASRSysDocumentManagementHeaderInfo.*" & _
+'      " INTO tmpDocumentManagementHeaderInfo FROM ASRSysDocumentManagementHeaderInfo IN " & sSource
+'    daoDb.Execute sSQL
+
     
     'MH20000727 Added Email Tables
     ' Create the local Email Address table.
@@ -1758,6 +1769,9 @@ Public Function DropTempTables() As Boolean
   recOrdItemEdit.Close
   daoDb.Execute "DROP TABLE tmpOrderItems"
   
+  ' Document Management
+'  daoDb.Execute "DROP TABLE tmpDocumentManagementCategories"
+'  daoDb.Execute "DROP TABLE tmpDocumentManagementHeaderInfo"
   
   'MH20000727 Added Email Tables
   recEmailAddrEdit.Close
@@ -1973,7 +1987,7 @@ End Sub
 Private Sub ActivateModules()
   ' Only show licenced modules in the menus.
   Dim sSQL As String
-  Dim rsWorkflows As dao.Recordset
+  Dim rsWorkflows As DAO.Recordset
   Dim sURL As String
   Dim sNewQueryString As String
   Dim sNewString As String
