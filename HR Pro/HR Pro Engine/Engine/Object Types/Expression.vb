@@ -678,6 +678,9 @@ Namespace Things
       '      objThisColumn = Globals.Things.GetObject(Enums.Type.Table, [Component].TableID).Objects.GetObject(Enums.Type.Column, Component.ColumnID)
       objThisColumn = mcolDependencies.GetObject(Enums.Type.Column, Component.ColumnID)
 
+      '  Debug.Assert(objThisColumn.Name <> "Start_Date")
+
+
       ' Cannot find 
       If objThisColumn Is Nothing Then
         LineOfCode.Code = ""
@@ -704,13 +707,20 @@ Namespace Things
         ElseIf (Not objThisColumn.DefaultCalcID = 0 And Me.ExpressionType = ScriptDB.ExpressionType.ColumnDefault) Then
           LineOfCode.Code = String.Format("[dbo].[{0}](@pID)", objThisColumn.Name)
 
-        ElseIf objThisColumn.IsCalculated And objThisColumn.Table Is Me.AssociatedColumn.Table Then
+        ElseIf objThisColumn.IsCalculated And objThisColumn.Table Is Me.AssociatedColumn.Table And Not Me.ExpressionType = ScriptDB.ExpressionType.ColumnFilter Then
 
           If objThisColumn.Calculation Is Nothing Then
             objThisColumn.Calculation = objThisColumn.Table.GetObject(Type.Expression, objThisColumn.CalcID)
           End If
 
           iBackupType = objThisColumn.Calculation.ExpressionType
+
+          'If objThisColumn.Calculation.ExpressionType = ScriptDB.ExpressionType.ColumnCalculation Then
+          '  objThisColumn.Calculation.ExpressionType = ScriptDB.ExpressionType.ReferencedColumn
+          'Else
+          '  objThisColumn.Calculation.ExpressionType = Component.BaseExpression.ExpressionType
+          'End If
+
           objThisColumn.Calculation.ExpressionType = ScriptDB.ExpressionType.ReferencedColumn
           objThisColumn.Calculation.AssociatedColumn = objThisColumn
           objThisColumn.Calculation.GenerateCode()
@@ -831,6 +841,7 @@ Namespace Things
                 ' sColumnFilter = vbNewLine & "                AND " & ChildCodeCluster.Statement
 
                 'sSQL = sSQL & vbNewLine & String.Join(vbNewLine, Joins.ToArray(GetType(String)))
+                'objExpression.BaseExpression = Me.BaseExpression
                 objExpression.GenerateCode()
                 sColumnFilter = vbNewLine & "                AND (" & objExpression.UDF.SelectCode & " = 1)"
 
@@ -975,7 +986,7 @@ Namespace Things
 
           End If
 
-        End If
+          End If
       End If
 
         ' Add this column (or reference to it) to the main execute statement
