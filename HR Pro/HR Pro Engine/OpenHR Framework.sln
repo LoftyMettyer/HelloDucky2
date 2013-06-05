@@ -1,28 +1,45 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "HR Pro Engine", "Engine\HR Pro Engine.vbproj", "{C475177F-6A94-43B0-BAEE-427642923108}"
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "System Framework", "Engine\System Framework.vbproj", "{C475177F-6A94-43B0-BAEE-427642923108}"
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "HR Pro Engine Setup", "Setup\HR Pro Engine Setup.vdproj", "{783E6446-B800-4FD0-8A15-295D047936A1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobileDesigner", "..\HR Pro Mobile Designer\MobileDesigner\MobileDesigner.csproj", "{6D7DBE8A-D215-4F00-9438-DD412B50E48B}"
 EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Test Harness", "Test Harness\Test Harness.vbproj", "{1D876F09-E9F9-41F2-ADF3-62666FC221D2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fusion.Configuration", "Fusion Configuration\Fusion.Configuration.csproj", "{A55797B6-EC39-43FF-9AF4-E014AE8BEB14}"
+EndProject
 Global
 	GlobalSection(SourceCodeControl) = preSolution
-		SccNumberOfProjects = 3
-		SccProjectUniqueName0 = Engine\\HR\u0020Pro\u0020Engine.vbproj
-		SccProjectName0 = \u0022$/HR\u0020Pro/HR\u0020Pro\u0020Engine/Engine\u0022,\u0020TKGDAAAA
-		SccLocalPath0 = Engine
+		SccNumberOfProjects = 5
+		SccProjectUniqueName0 = Setup\\HR\u0020Pro\u0020Engine\u0020Setup.vdproj
+		SccProjectName0 = \u0022$/HR\u0020Pro/HR\u0020Pro\u0020Engine/Setup\u0022,\u0020LVGDAAAA
+		SccLocalPath0 = Setup
 		SccProvider0 = MSSCCI:Microsoft\u0020Visual\u0020SourceSafe
-		SccProjectUniqueName1 = Setup\\HR\u0020Pro\u0020Engine\u0020Setup.vdproj
-		SccProjectName1 = \u0022$/HR\u0020Pro/HR\u0020Pro\u0020Engine/Setup\u0022,\u0020LVGDAAAA
-		SccLocalPath1 = Setup
+		CanCheckoutShared = false
+		SccProjectUniqueName1 = ..\\HR\u0020Pro\u0020Mobile\u0020Designer\\MobileDesigner\\MobileDesigner.csproj
+		SccProjectName1 = \u0022$/HR\u0020Pro/HR\u0020Pro\u0020Mobile\u0020Designer\u0022,\u0020MDLDAAAA
+		SccLocalPath1 = ..\\HR\u0020Pro\u0020Mobile\u0020Designer
 		SccProvider1 = MSSCCI:Microsoft\u0020Visual\u0020SourceSafe
-		SccProjectUniqueName2 = ..\\HR\u0020Pro\u0020Mobile\u0020Designer\\MobileDesigner\\MobileDesigner.csproj
-		SccProjectName2 = \u0022$/HR\u0020Pro/HR\u0020Pro\u0020Mobile\u0020Designer\u0022,\u0020MDLDAAAA
-		SccLocalPath2 = ..\\HR\u0020Pro\u0020Mobile\u0020Designer
+		CanCheckoutShared = false
+		SccProjectFilePathRelativizedFromConnection1 = MobileDesigner\\
+		SccProjectUniqueName2 = Test\u0020Harness\\Test\u0020Harness.vbproj
+		SccProjectName2 = \u0022$/HR\u0020Pro/HR\u0020Pro\u0020Engine/Test\u0020Harness\u0022,\u0020VKGDAAAA
+		SccLocalPath2 = Test\u0020Harness
 		SccProvider2 = MSSCCI:Microsoft\u0020Visual\u0020SourceSafe
-		SccProjectFilePathRelativizedFromConnection2 = MobileDesigner\\
+		CanCheckoutShared = false
+		SccProjectUniqueName3 = Engine\\System\u0020Framework.vbproj
+		SccProjectName3 = \u0022$/HR\u0020Pro/HR\u0020Pro\u0020Engine/Engine\u0022,\u0020TKGDAAAA
+		SccLocalPath3 = Engine
+		SccProvider3 = MSSCCI:Microsoft\u0020Visual\u0020SourceSafe
+		CanCheckoutShared = false
+		SccProjectUniqueName4 = Fusion\u0020Configuration\\Fusion.Configuration.csproj
+		SccProjectName4 = \u0022$/HR\u0020Pro/HR\u0020Pro\u0020Engine/Fusion\u0020Configuration\u0022,\u0020OORDAAAA
+		SccLocalPath4 = Fusion\u0020Configuration
+		SccProvider4 = MSSCCI:Microsoft\u0020Visual\u0020SourceSafe
+		CanCheckoutShared = false
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -64,6 +81,26 @@ Global
 		{6D7DBE8A-D215-4F00-9438-DD412B50E48B}.Release|Mixed Platforms.Build.0 = Release|x86
 		{6D7DBE8A-D215-4F00-9438-DD412B50E48B}.Release|x86.ActiveCfg = Release|x86
 		{6D7DBE8A-D215-4F00-9438-DD412B50E48B}.Release|x86.Build.0 = Release|x86
+		{1D876F09-E9F9-41F2-ADF3-62666FC221D2}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{1D876F09-E9F9-41F2-ADF3-62666FC221D2}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{1D876F09-E9F9-41F2-ADF3-62666FC221D2}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{1D876F09-E9F9-41F2-ADF3-62666FC221D2}.Debug|x86.ActiveCfg = Debug|x86
+		{1D876F09-E9F9-41F2-ADF3-62666FC221D2}.Debug|x86.Build.0 = Debug|x86
+		{1D876F09-E9F9-41F2-ADF3-62666FC221D2}.Release|Any CPU.ActiveCfg = Release|x86
+		{1D876F09-E9F9-41F2-ADF3-62666FC221D2}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{1D876F09-E9F9-41F2-ADF3-62666FC221D2}.Release|Mixed Platforms.Build.0 = Release|x86
+		{1D876F09-E9F9-41F2-ADF3-62666FC221D2}.Release|x86.ActiveCfg = Release|x86
+		{1D876F09-E9F9-41F2-ADF3-62666FC221D2}.Release|x86.Build.0 = Release|x86
+		{A55797B6-EC39-43FF-9AF4-E014AE8BEB14}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{A55797B6-EC39-43FF-9AF4-E014AE8BEB14}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{A55797B6-EC39-43FF-9AF4-E014AE8BEB14}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{A55797B6-EC39-43FF-9AF4-E014AE8BEB14}.Debug|x86.ActiveCfg = Debug|x86
+		{A55797B6-EC39-43FF-9AF4-E014AE8BEB14}.Debug|x86.Build.0 = Debug|x86
+		{A55797B6-EC39-43FF-9AF4-E014AE8BEB14}.Release|Any CPU.ActiveCfg = Release|x86
+		{A55797B6-EC39-43FF-9AF4-E014AE8BEB14}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{A55797B6-EC39-43FF-9AF4-E014AE8BEB14}.Release|Mixed Platforms.Build.0 = Release|x86
+		{A55797B6-EC39-43FF-9AF4-E014AE8BEB14}.Release|x86.ActiveCfg = Release|x86
+		{A55797B6-EC39-43FF-9AF4-E014AE8BEB14}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
