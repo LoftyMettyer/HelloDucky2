@@ -1,17 +1,10 @@
 Attribute VB_Name = "modPictMgr"
 Option Explicit
 
-'Constants
-Public Const ChunkSize = 2 ^ 14
-
 'Common dialog fileopen constants
 Const cdlOFNPathMustExist = 2048
 Const cdlOFNFileMustExist = 4096
 Const cdlOFNExplorer = 524288
-
-'Windows API functions
-Declare Function GetTempFileName Lib "kernel32" Alias "GetTempFileNameA" (ByVal lpszPath As String, ByVal lpPrefixString As String, ByVal wUnique As Long, ByVal lpTempFileName As String) As Long
-Declare Function GetTempPath Lib "kernel32" Alias "GetTempPathA" (ByVal nBufferLength As Long, ByVal lpBuffer As String) As Long
 
 Public Function GetPictureType(ThisPicture As Object) As String
   Dim strType As String
