@@ -214,6 +214,7 @@ Public Const gsPARAMETERKEY_PERSONNELTABLE = "Param_TablePersonnel"
 Public Const gsPARAMETERKEY_EMPLOYEENUMBER = "Param_FieldsEmployeeNumber"
 Public Const gsPARAMETERKEY_FORENAME = "Param_FieldsForename"
 Public Const gsPARAMETERKEY_SURNAME = "Param_FieldsSurname"
+Public Const gsPARAMETERKEY_SSIWELCOME = "Param_FieldsSSIWelcome"
 Public Const gsPARAMETERKEY_STARTDATE = "Param_FieldsStartDate"
 Public Const gsPARAMETERKEY_LEAVINGDATE = "Param_FieldsLeavingDate"
 Public Const gsPARAMETERKEY_FULLPARTTIME = "Param_FieldsFullPartTime"
@@ -620,7 +621,7 @@ Private Function GrantTableViewPrivileges(psTableViewName As String) As Boolean
       Do While Not .EOF
         iNextIndex = UBound(asFixedRoles) + 1
         ReDim Preserve asFixedRoles(iNextIndex)
-        asFixedRoles(iNextIndex) = UCase(Trim(.Fields(0).Value))
+        asFixedRoles(iNextIndex) = UCase(Trim(.Fields(0).value))
         .MoveNext
       Loop
       
@@ -634,7 +635,7 @@ Private Function GrantTableViewPrivileges(psTableViewName As String) As Boolean
   With rsGroups
     If Not .EOF And Not .BOF Then
       While Not .EOF
-        sCurrentGroupName = UCase(Trim(.Fields(0).Value))
+        sCurrentGroupName = UCase(Trim(.Fields(0).value))
       
         ' Check that the group is valid (ie. not a system user Group (Role).
         fGoodGroup = True
@@ -667,7 +668,7 @@ Private Function GrantTableViewPrivileges(psTableViewName As String) As Boolean
 
               With rsUserInfo
                 If Not (.EOF And .BOF) Then
-                  sUserGroupName = UCase(Trim(IIf(.Fields("groupName").Value = "public", vbNullString, !GroupName!)))
+                  sUserGroupName = UCase(Trim(IIf(.Fields("groupName").value = "public", vbNullString, !GroupName!)))
                 End If
                 .Close
               End With
@@ -677,7 +678,7 @@ Private Function GrantTableViewPrivileges(psTableViewName As String) As Boolean
               
               With rsUserInfo
                 If Not (.EOF And .BOF) Then
-                  sUserGroupName = IIf(IsNull(.Fields("groupName").Value), "public", !GroupName)
+                  sUserGroupName = IIf(IsNull(.Fields("groupName").value), "public", !GroupName)
                 End If
                 .Close
               End With
