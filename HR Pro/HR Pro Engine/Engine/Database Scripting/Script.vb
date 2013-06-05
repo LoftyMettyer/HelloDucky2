@@ -1208,6 +1208,7 @@ Namespace ScriptDB
                 .AssociatedColumn = column
                 .GenerateCode()
 
+
                 Globals.TuningLog.Expressions.Add(column)
 
                 If .IsValid Then
