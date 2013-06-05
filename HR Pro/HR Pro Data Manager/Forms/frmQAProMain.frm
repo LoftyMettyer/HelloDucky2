@@ -279,6 +279,15 @@ Public Function InitialiseQA(PostCode As String, fIndiv As Boolean, frmCallingFo
   InitialiseQA = True
 End Function
 
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+  Select Case KeyCode
+    Case vbKeyF1
+      If ShowAirHelp(Me.HelpContextID) Then
+        KeyCode = 0
+      End If
+  End Select
+End Sub
+
 '*******************************************************
 ' Purpose:  Called when the Form loads. Initialises the
 '           Primary API and populates the Database list.

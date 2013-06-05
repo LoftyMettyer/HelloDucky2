@@ -1739,10 +1739,14 @@ End Sub
 
 
 Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
-  If KeyCode = vbKeyEscape Then
-    Unload Me
-  End If
-
+  Select Case KeyCode
+    Case vbKeyF1
+      If ShowAirHelp(Me.HelpContextID) Then
+        KeyCode = 0
+      End If
+    Case KeyCode = vbKeyEscape
+      Unload Me
+  End Select
 End Sub
 
 

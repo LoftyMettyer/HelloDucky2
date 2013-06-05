@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Begin VB.Form frmSelectPhoto 
    Caption         =   "Select Photo"
    ClientHeight    =   2955
@@ -17,6 +17,7 @@ Begin VB.Form frmSelectPhoto
    EndProperty
    HelpContextID   =   1059
    Icon            =   "frmSelectPhoto.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -563,6 +564,15 @@ Public Property Let Photo(ByVal sPhoto As String)
     msPhoto = sPhoto
 
 End Property
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+  Select Case KeyCode
+    Case vbKeyF1
+      If ShowAirHelp(Me.HelpContextID) Then
+        KeyCode = 0
+      End If
+  End Select
+End Sub
 
 Private Sub Form_Load()
   RemoveIcon Me

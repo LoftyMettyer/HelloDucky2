@@ -17,6 +17,7 @@ Begin VB.Form frmTransferBooking
    EndProperty
    HelpContextID   =   1060
    Icon            =   "frmTransferBooking.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    ScaleHeight     =   4440
@@ -960,6 +961,15 @@ Private Sub cmdSelect_Click()
 
 End Sub
 
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
 
 Private Sub Form_Load()
   RemoveIcon Me

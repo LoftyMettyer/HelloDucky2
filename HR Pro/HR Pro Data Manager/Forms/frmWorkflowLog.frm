@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Begin VB.Form frmWorkflowLog 
    Caption         =   "Workflow Log"
@@ -787,15 +787,20 @@ Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
   On Error GoTo ErrorTrap
   gobjErrorStack.PushStack "frmWorkflowLog.Form_KeyDown(KeyCode,Shift)", Array(KeyCode, Shift)
 
-  If KeyCode = vbKeyEscape Then
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+  Case KeyCode = vbKeyEscape
     Unload Me
-  ElseIf KeyCode = vbKeyF5 Then
+  Case KeyCode = vbKeyF5
     RefreshGrid
-  ElseIf KeyCode = vbKeyDelete Then
+  Case KeyCode = vbKeyDelete
     If cmdDelete.Enabled Then
       cmdDelete_Click
     End If
-  End If
+End Select
 
 TidyUpAndExit:
   gobjErrorStack.PopStack
@@ -1186,11 +1191,11 @@ ErrorTrap:
 End Sub
 
 
-Private Sub grdWorkflowLog_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub grdWorkflowLog_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
   On Error GoTo ErrorTrap
-  gobjErrorStack.PushStack "frmWorkflowLog.grdWorkflowLog_MouseUp(Button,Shift,X,Y)", Array(Button, Shift, x, y)
+  gobjErrorStack.PushStack "frmWorkflowLog.grdWorkflowLog_MouseUp(Button,Shift,X,Y)", Array(Button, Shift, X, Y)
 
- If (Button = vbRightButton) And (y > Me.grdWorkflowLog.RowHeight) Then
+ If (Button = vbRightButton) And (Y > Me.grdWorkflowLog.RowHeight) Then
     ' Enable/disable the required tools.
     With Me.abWorkflowLog.Bands("bndWorkflowLog")
       .Tools("View").Enabled = Me.cmdView.Enabled

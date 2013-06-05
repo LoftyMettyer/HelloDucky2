@@ -465,7 +465,7 @@ Private Sub cmdPrint_Click()
   mblnPortrait = (optPortrait.Value = True)
   mlngCopies = ASRSpinner1.Value
   mblnCollateCopies = (chkCollate = vbChecked)
-  mblnGridlines = (chkGridlines = vbChecked)
+  mblnGridlines = (chkGridLines = vbChecked)
   mblnShading = (chkShading = vbChecked)
   mblnHeadingsOnEveryPage = (chkHeadingsEveryPage = vbChecked)
   
@@ -561,6 +561,15 @@ Private Sub ShowOrientationPreview(pfPortrait As Boolean)
   
 End Sub
 
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+  Select Case KeyCode
+    Case vbKeyF1
+      If ShowAirHelp(Me.HelpContextID) Then
+        KeyCode = 0
+      End If
+  End Select
+End Sub
 
 Private Sub Form_Load()
 
@@ -740,8 +749,8 @@ Public Sub PrintDefinition()
   DenyCollate = True
   
   ' Grid lines only apply to reports
-  chkGridlines.Value = vbUnchecked
-  chkGridlines.Enabled = False
+  chkGridLines.Value = vbUnchecked
+  chkGridLines.Enabled = False
   
   ' Shading only apply to reports
   chkShading.Value = vbUnchecked

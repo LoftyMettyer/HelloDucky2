@@ -100,7 +100,7 @@ Begin VB.Form frmOutputOptions
          Width           =   2565
       End
       Begin VB.CommandButton cmdFilename 
-Caption = "..."
+         Caption         =   "..."
          Enabled         =   0   'False
          Height          =   315
          Left            =   6060
@@ -110,7 +110,7 @@ Caption = "..."
          Width           =   330
       End
       Begin VB.CommandButton cmdEmailGroup 
-Caption = "..."
+         Caption         =   "..."
          Enabled         =   0   'False
          Height          =   315
          Left            =   6060
@@ -302,9 +302,9 @@ Caption = "..."
       Width           =   2500
       Begin VB.ComboBox cboPageBreak 
          Height          =   315
-         ItemData        =   "frmOutputOptions.frx":0D90
+         ItemData        =   "frmOutputOptions.frx":000C
          Left            =   200
-         List            =   "frmOutputOptions.frx":0D92
+         List            =   "frmOutputOptions.frx":000E
          Style           =   2  'Dropdown List
          TabIndex        =   3
          Top             =   300
@@ -347,6 +347,15 @@ Option Explicit
 Private objOutputDef As clsOutputDef
 Private mlngFormat As Long
 Private mblnCancelled As Boolean
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+  Select Case KeyCode
+    Case vbKeyF1
+      If ShowAirHelp(Me.HelpContextID) Then
+        KeyCode = 0
+      End If
+  End Select
+End Sub
 
 Private Sub Form_Load()
   

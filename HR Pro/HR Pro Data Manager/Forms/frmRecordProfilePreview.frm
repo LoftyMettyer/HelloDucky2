@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomct2.ocx"
+Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCT2.OCX"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmRecordProfilePreview 
    Caption         =   "Record Profile"
@@ -19,6 +19,7 @@ Begin VB.Form frmRecordProfilePreview
    EndProperty
    HelpContextID   =   1065
    Icon            =   "frmRecordProfilePreview.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -100,7 +101,7 @@ Begin VB.Form frmRecordProfilePreview
       _ExtentY        =   2566
       _Version        =   393216
       Appearance      =   0
-      Orientation     =   1245184
+      Orientation     =   1179648
    End
    Begin MSComCtl2.FlatScrollBar scrollHorizontal 
       Height          =   255
@@ -113,7 +114,7 @@ Begin VB.Form frmRecordProfilePreview
       _Version        =   393216
       Appearance      =   0
       Arrows          =   65536
-      Orientation     =   1245185
+      Orientation     =   1179649
    End
    Begin VB.PictureBox picContainer 
       Height          =   1455
@@ -2256,6 +2257,15 @@ Private Sub cmdOutput_Click()
   OutputReport True
 End Sub
 
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+  Select Case KeyCode
+    Case vbKeyF1
+      If ShowAirHelp(Me.HelpContextID) Then
+        KeyCode = 0
+      End If
+  End Select
+End Sub
 
 Private Sub Form_Load()
   mblnLoading = True

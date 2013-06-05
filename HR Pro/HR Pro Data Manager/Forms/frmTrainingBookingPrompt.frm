@@ -17,6 +17,7 @@ Begin VB.Form frmTrainingBookingPrompt
    EndProperty
    HelpContextID   =   1010
    Icon            =   "frmTrainingBookingPrompt.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -101,6 +102,15 @@ Public Property Get Booked() As Boolean
   Booked = (optStatus(0).Value = True)
   
 End Property
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
 
 Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
   If UnloadMode = vbFormControlMenu Then
