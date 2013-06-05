@@ -234,6 +234,7 @@ Public Class MainForm
             .Server = txtServer2.Text
         End With
 
+
         objHRPro.Connect(objLogin)
 
         objHRPro.Initialise()
