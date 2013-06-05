@@ -500,6 +500,7 @@ Public Function SelectExpression(pfLockTable As Boolean, Optional plngOptions As
   Dim strSQL As String
   Dim sSearchText As String
   Dim lngSearchUserID As Long
+  Dim lngUtilityType As UtilityType
 
   'fOK = (mlngBaseTableID > 0) Or (Not pfLockTable)
   fOK = (mlngBaseTableID > 0) Or (Not pfLockTable) Or (miExpressionType = giEXPR_RECORDINDEPENDANTCALC)
@@ -512,24 +513,14 @@ Public Function SelectExpression(pfLockTable As Boolean, Optional plngOptions As
 
     With frmSelectExpr
        
-        ' Set the selection form properties.
-        '.LockTable = pfLockTable
-
-        'Set .Expression = Me
-
-        ' Set the caption if necessary - only really needed because by default the
-        ' caption is SELECT XXXXX, but when the user chooses CALCULATIONS from the
-        ' utility menu, they arent really selecting one, so using this, we can change
-        ' the form caption to Maintain Calculations or something like that !
-        'If psCaption <> "" Then .Caption = psCaption
-
-
-        strSQL = " type = " & CStr(ExpressionType) & _
-                 " AND (returnType = " & CStr(ReturnType) & _
-                      " OR type = " & CStr(giEXPR_RUNTIMECALCULATION) & ")" & _
-                 " AND parentComponentID = 0"
-
-        .SelectedID = mlngExpressionID
+      strSQL = " type = " & CStr(ExpressionType) & _
+      " AND (returnType = " & CStr(ReturnType) & _
+           " OR type = " & CStr(giEXPR_RUNTIMECALCULATION) & ")" & _
+      " AND parentComponentID = 0"
+      
+      .SelectedID = mlngExpressionID
+      lngUtilityType = IIf(ExpressionType = giEXPR_RUNTIMEFILTER, utlFilter, utlCalculation)
+      .SelectedUtilityType = lngUtilityType
       
       ' Loop until an expression is selected, deselected, or the selection
       ' form is cancelled.
@@ -548,16 +539,8 @@ Public Function SelectExpression(pfLockTable As Boolean, Optional plngOptions As
         .EnableRun = False
         .SearchText = sSearchText
         .SearchUserID = lngSearchUserID
-        
-        Select Case ExpressionType
-        Case giEXPR_RUNTIMEFILTER
-          .ShowList utlFilter, strSQL
 
-        Case giEXPR_RUNTIMECALCULATION, giEXPR_RECORDINDEPENDANTCALC
-          .ShowList utlCalculation, strSQL
-
-        End Select
-
+        .ShowList lngUtilityType, strSQL
 
         ' Display the selection form.
         .Show vbModal

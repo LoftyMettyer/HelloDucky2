@@ -101,10 +101,12 @@ Public Function SelectOrder() As Boolean
                " WHERE tableID = " & CStr(TableID) & _
                " AND type = " & CStr(OrderType)
       
-      .ShowOrders sSQL, OrderID
-    'NHRD dont know how this line got in here but it was stopping the order defsel from loading.
-    'Commented out for bug JIRA OpenHR 714
-    'gcolSystemPermissions.Item (59)
+      .TableComboVisible = True
+      .TableComboEnabled = False
+      .TableID = TableID
+      .SelectedID = mlngOrderID
+      .SelectedUtilityType = utlOrder
+      .ShowList (utlOrder)
 
       ' Display the selection form.
       .Show vbModal

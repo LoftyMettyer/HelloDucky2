@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.ocx"
 Begin VB.Form frmDefSel 
    Caption         =   "Select"
    ClientHeight    =   7800
@@ -1065,7 +1065,7 @@ Public Sub Refresh_Controls()
   Dim iCount As Integer
   Dim lngTempIndex As Long
   Dim sType As String
-  Dim lngType As UtilityType
+  Dim lngTYPE As UtilityType
   Dim bSystemMgrDefined As Boolean
   
   If mblnLoading Then
@@ -1597,36 +1597,37 @@ ErrorTrap:
 End Function
 
 
-Public Function ShowOrders(strSQL As String, lngOrderID As Long) As Boolean
-  
-  mblnApplyDefAccess = False
-  mlngSelectedID = lngOrderID
-  
-  msRecordSource = strSQL
-  msType = "Order"
-  msFieldName = "Name"
-  msTableIDColumnName = "TableID"
-  msTableName = "ASRSysOrders"
-  'msIDField = "ASRSysOrders.OrderID"
-  msIDField = "OrderID"
-  msTypeCode = "ORDER"
-  mutlUtilityType = utlOrder
-  
-  'NHRD04092003 Fault 6273, 5911
-  msTypeCode = "ORDERS"
-  mblnApplySystemPermissions = Not gfCurrentUserIsSysSecMgr
-  
-  msGeneralCaption = "Orders"
-  msSingularCaption = "Order"
-  
-  Me.Caption = msGeneralCaption
-  
-  'Call DrawControls
-  ShowControls
-  'SizeControls
-  ShowOrders = Populate_List
-
-End Function
+'Public Function ShowOrders(strSQL As String, lngOrderID As Long) As Boolean
+'
+'  mblnApplyDefAccess = False
+'  mlngSelectedID = lngOrderID
+'  mblnApplyDefAccess = False
+'
+'  msRecordSource = strSQL
+'  msType = "Order"
+'  msFieldName = "Name"
+'  msTableIDColumnName = "TableID"
+'  msTableName = "ASRSysOrders"
+'  'msIDField = "ASRSysOrders.OrderID"
+'  msIDField = "OrderID"
+'  msTypeCode = "ORDER"
+'  mutlUtilityType = utlOrder
+'
+'  'NHRD04092003 Fault 6273, 5911
+'  msTypeCode = "ORDERS"
+'  mblnApplySystemPermissions = Not gfCurrentUserIsSysSecMgr
+'
+'  msGeneralCaption = "Orders"
+'  msSingularCaption = "Order"
+'
+'  Me.Caption = msGeneralCaption
+'
+'  'Call DrawControls
+'  ShowControls
+'  'SizeControls
+'  ShowOrders = Populate_List
+'
+'End Function
 
 Private Sub PopulateTables()
 
@@ -2096,6 +2097,16 @@ Public Sub GetSQL(lngUtilType As UtilityType, Optional psRecordSourceWhere As St
     sUtilityType = msTableName & ".objectType"
     strExtraWhereClause = "ASRSysAllObjectAccess.objecttype = ASRSysAllObjectNames.objecttype"
   
+  Case utlOrder
+    msTypeCode = "ORDER"
+    msType = "Order"
+    msGeneralCaption = "Orders"
+    msSingularCaption = "Order"
+    msTableName = "ASRSysOrders"
+    msIDField = "OrderID"
+    mblnApplyDefAccess = False
+    mblnHideDesc = True
+  
   Case utlBatchJob
     msTypeCode = "BATCHJOBS"
     
@@ -2447,6 +2458,7 @@ Public Sub GetSQL(lngUtilType As UtilityType, Optional psRecordSourceWhere As St
     End If
   End If
   
+ 
   If msRecordSource = vbNullString And OldAccessUtility(mutlUtilityType) Then
     msRecordSource = _
         "SELECT Name, " & _
