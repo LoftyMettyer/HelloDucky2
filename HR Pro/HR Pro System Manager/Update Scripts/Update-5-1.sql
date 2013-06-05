@@ -63,6 +63,42 @@ END
 	EXECUTE sp_executeSQL N'UPDATE ASRSysColumns SET lostFocusExprID = 0 WHERE (lostFocusExprID = - 1);';	
 	EXECUTE sp_executeSQL N'UPDATE ASRSysColumns SET dfltValueExprID = 0 WHERE (dfltValueExprID = - 1);';
 
+
+
+/* ------------------------------------------------------------- */
+/* Update ASRSysBatchJob Table with columns       */
+/* for new management report pack functionality      */           
+/* ------------------------------------------------------------- */
+PRINT 'Step - Adding new columns to Batch Jobs'
+
+	SELECT @iRecCount = count(id) FROM syscolumns WHERE id = (select id from sysobjects where name = 'ASRSysBatchJobName') and name = 'OutputFormat'
+	IF @iRecCount = 0
+	  BEGIN
+	    SELECT @NVarCommand = 'ALTER TABLE [dbo].[ASRSysBatchJobName] ADD
+			[IsBatch] [bit] NULL,
+			[OutputPreview] [bit] NULL,
+			[OutputFormat] [int] NULL,
+			[OutputScreen] [bit] NULL,
+			[OutputPrinter] [bit] NULL,
+			[OutputPrinterName] [varchar](255) NULL,
+			[OutputSave] [bit] NULL,
+			[OutputSaveExisting] [int] NULL,
+			[OutputEmail] [bit] NULL,
+			[OutputEmailAddr] [int] NULL,
+			[OutputEmailSubject] [varchar](255) NULL,
+			[OutputFilename] [varchar](255) NULL,
+			[OutputEmailAttachAs] [varchar](255) NULL,
+			[OutputTitlePage] [varchar](255) NULL,
+			[OutputReportPackTitle] [varchar](255) NULL,
+			[OutputOverrideFilter] [varchar](255) NULL,
+			[OutputTOC] [bit] NULL,
+			[OutputCoverSheet] [bit] NULL';
+		EXEC sp_executesql @NVarCommand;
+
+		EXECUTE sp_executeSQL N'UPDATE AsrSysBatchJobName SET IsBatch = 1;';	
+	  END 
+  
+
 /* ------------------------------------------------------------- */
 /* Step - Menu Enhancements */
 /* ------------------------------------------------------------- */
@@ -1221,41 +1257,6 @@ END
 		EXEC spsys_setsystemsetting 'desktopsetting', 'bitmaplocation', 2;	
 	END
 
-/* ------------------------------------------------------------- */
-/* Update ASRSysBatchJob Table with columns       */
-/* for new management report pack functionality      */           
-/* ------------------------------------------------------------- */
-PRINT 'Step - Adding new columns to Batch Jobs'
-
-SELECT @iRecCount = count(id) FROM syscolumns
-where id = (select id from sysobjects where name = 'ASRSysBatchJobName')
-and name = 'OutputFormat'
-  if @iRecCount = 0
-  BEGIN
-   SELECT @NVarCommand = 'ALTER TABLE [dbo].[ASRSysBatchJobName] ADD
-    [IsBatch] [bit] NULL,
-    [OutputPreview] [bit] NULL,
-    [OutputFormat] [int] NULL,
-    [OutputScreen] [bit] NULL,
-    [OutputPrinter] [bit] NULL,
-    [OutputPrinterName] [varchar](255) NULL,
-    [OutputSave] [bit] NULL,
-    [OutputSaveExisting] [int] NULL,
-    [OutputEmail] [bit] NULL,
-    [OutputEmailAddr] [int] NULL,
-    [OutputEmailSubject] [varchar](255) NULL,
-    [OutputFilename] [varchar](255) NULL,
-    [OutputEmailAttachAs] [varchar](255) NULL,
-    [OutputTitlePage] [varchar](255) NULL,
-    [OutputReportPackTitle] [varchar](255) NULL,
-    [OutputOverrideFilter] [varchar](255) NULL,
-    [OutputTOC] [bit] NULL,
-    [OutputCoverSheet] [bit] NULL'
-    EXEC sp_executesql @NVarCommand
-
-    EXECUTE sp_executeSQL N'UPDATE AsrSysBatchJobName SET IsBatch = 1;';	
-  END 
-  
 /* ------------------------------------------------------------- */
 /* Step - Reset Password Parameters */
 /* ------------------------------------------------------------- */
