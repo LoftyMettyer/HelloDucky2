@@ -202,8 +202,8 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
         If Dir(strOutputFilename) <> vbNullString Then
           Dim tmpOutput As New clsOutputRun
           strOutputFilename = tmpOutput.GetSequentialNumberedFile(strOutputFilename)
-          lngOutputSaveExisting = 0
         End If
+        lngOutputSaveExisting = 0
       End If
     End With
   End If
