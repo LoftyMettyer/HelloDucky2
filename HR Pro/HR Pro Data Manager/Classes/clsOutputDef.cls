@@ -564,9 +564,10 @@ Private Sub SetSaveAsType()
         Exit For
       End If
     Next iCount
-
+    
+  Else
+    frmMain.CommonDialog1.FilterIndex = 1
   End If
-
 End Sub
 
 
