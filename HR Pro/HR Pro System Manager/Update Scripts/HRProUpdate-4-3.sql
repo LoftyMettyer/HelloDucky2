@@ -1060,6 +1060,41 @@ PRINT 'Step 9 - Add new calculation procedures'
 		END';
 	EXECUTE sp_executeSQL @sSPCode;
 
+
+	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_roundtostartofnearestmonth]
+		(@pdtDate 	datetime)
+	RETURNS datetime
+	WITH SCHEMABINDING
+	AS
+	BEGIN
+
+		DECLARE @dtDateNextMonth	datetime,
+				@dtDateThisMonth 	datetime,
+				@dtResult			datetime;
+
+		SET @pdtDate = convert(datetime, convert(varchar(20), @pdtDate, 101));
+
+		-- Create a date with one month added to the date and move it to the first day of that month
+		SET @dtDateNextMonth = DATEADD(mm, 1, @pdtDate);
+		SET @dtDateNextMonth = DATEADD(dd, -1 * (DAY(@dtDateNextMonth) - 1), @dtDateNextMonth);
+
+		-- Create a date which is the first of the month passed in
+		SET @dtDateThisMonth = DATEADD(dd, -1 * (DAY(@pdtDate) - 1), @pdtDate);
+	    
+		-- See which is the greatest gap between the two start month dates and the passed in date
+		IF (@pdtDate - (@dtDateThisMonth) + 1) < ((@dtDateNextMonth) - (@pdtDate))
+			SET @dtResult = @dtDateThisMonth
+		ELSE
+			SET @dtResult = @dtDateNextMonth;
+
+		RETURN @dtResult;
+
+	END';
+	EXECUTE sp_executeSQL @sSPCode;
+
+
+
+
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_servicelength] (
 		     @startdate  datetime,
 		     @leavingdate  datetime,
@@ -1306,7 +1341,7 @@ PRINT 'Step 10 - Populate code generation tables'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''ed3be9d9-28f1-4345-a8c8-ca9f0c18a3a2'', N''({0})'', 0, 0, 0, N''Parentheses'', NULL, 0, 0, 27, 1)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''06e67c1b-c376-4fc9-a260-e9a12022791f'', N'''', 2, 0, 0, N''Remaining Months since Whole Years'', NULL, 0, 0, 19, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''b86c77e6-e393-499e-9114-95a201a316d4'', N''LTRIM(RTRIM({0}))'', 1, 0, 0, N''Remove Leading and Trailing Spaces'', NULL, 0, 0, 5, 0)';
-	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''5c2244b5-ee8b-4f80-bc9e-defb9ba10b36'', N'''', 4, 0, 0, N''Round Date to Start of Nearest Month'', NULL, 0, 0, 37, 0)';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''5c2244b5-ee8b-4f80-bc9e-defb9ba10b36'', N''[dbo].[udfsys_roundtostartofnearestmonth]({0})'', 4, 0, 0, N''Round Date to Start of Nearest Month'', NULL, 0, 0, 37, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''07e1acb6-6943-4a92-956f-5df24aa2f3d2'', N''FLOOR({0})'', 2, 0, 0, N''Round Down to Nearest Whole Number'', NULL, 0, 0, 31, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''6c8c5ca0-ae52-46fc-9289-06e989c32d6d'', N''ROUND({0} / {1}, 0) * {1}'', 2, 0, 0, N''Round to Nearest Number'', NULL, 0, 0, 49, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''49161588-d050-4f0b-a0cd-3d9d6393f5f3'', N''CEILING({0})'', 2, 0, 0, N''Round Up to Nearest Whole Number'', NULL, 0, 0, 48, 0)';
