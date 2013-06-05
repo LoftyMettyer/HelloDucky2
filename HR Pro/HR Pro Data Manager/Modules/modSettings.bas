@@ -595,6 +595,10 @@ LocalErr:
 
 End Function
 
+Public Function GetUserOrSystemSetting(strSection As String, strKey As String, varDefault As Variant) As String
+  GetUserOrSystemSetting = GetUserSetting(strSection, strKey, GetSystemSetting(strSection, strKey, varDefault))
+End Function
+
 Public Function SaveBatchLogon(strUserName As String, strPassword As String, strDatabase As String, strServer As String) As Boolean
 
   Dim strOutput As String
@@ -740,7 +744,7 @@ Public Sub OrganiseToolbarControls(pabActiveBar As ActiveBarLibraryCtl.ActiveBar
 
 End Sub
 
-Public Function GetUserSetting(strSection As String, strKey As String, varDefault As Variant) As Variant
+Public Function GetUserSetting(strSection As String, strKey As String, varDefault As Variant) As String
    
   On Error GoTo ErrorTrap
    
@@ -919,4 +923,5 @@ Dim hIconSmall As Long
    SendMessageLong hWnd, WM_SETICON, ICON_SMALL, hIconSmall
    
 End Sub
+
 
