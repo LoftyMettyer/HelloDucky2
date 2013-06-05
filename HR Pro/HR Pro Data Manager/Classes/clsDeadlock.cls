@@ -13,9 +13,14 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
+Private mlngRecordsAffected As Long
 Private mblnFatalError As Boolean
 Private mstrErrorString As String
 Private Const iRETRIES = 5
+
+Public Property Get RecordsAffected() As Long
+  RecordsAffected = mlngRecordsAffected
+End Property
 
 Public Property Get ErrorString() As String
   ErrorString = mstrErrorString
@@ -725,6 +730,7 @@ UpdateDeadlockRecoveryPoint:
         'gADOCon.Execute psUpdateSQL, , adExecuteNoRecords
         gADOCon.Execute psUpdateSQL, lngRecordsAffected, adExecuteNoRecords
        
+       mlngRecordsAffected = lngRecordsAffected
        lngRecordsAffected = 1
        
         On Error GoTo ErrorTrap
