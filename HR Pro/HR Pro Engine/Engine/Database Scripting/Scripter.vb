@@ -1149,7 +1149,6 @@ Namespace ScriptDB
       Dim sObjectName As String
       Dim sIncludeColumns As String
       Dim bCreateIndex As Boolean
-      Dim lngIndexCount As Long
 
       Try
 
@@ -1167,13 +1166,12 @@ Namespace ScriptDB
 
             ' Generate index contents
             aryColumns = New ArrayList
-            lngIndexCount = 0
+            aryColumns.Clear()
             If objIndex.IncludePrimaryKey Then aryColumns.Add("[ID] ASC")
             For Each objColumn In objIndex.Columns
-              If objColumn.Table Is objTable And lngIndexCount < 16 Then
+              If objColumn.Table Is objTable And Not objColumn.Multiline Then
                 aryColumns.Add(objColumn.Name & " ASC")
                 bCreateIndex = True
-                lngIndexCount += 1
               End If
             Next
 
@@ -1187,6 +1185,12 @@ Namespace ScriptDB
               End If
             Next
 
+            ' If there's too many column in this index don't create because it'll be less efficient
+            If aryColumns.ToArray.Length > 10 Then
+              aryColumns.Clear()
+              bCreateIndex = False
+            End If
+
             For Each objRelation In objIndex.Relations
               Select Case objRelation.RelationshipType
                 Case RelationshipType.Child
@@ -1198,13 +1202,11 @@ Namespace ScriptDB
             Next
 
             ' Create index
-            If aryColumns.ToArray.Length < 17 Then
-              sIncludeColumns = IIf(aryIncludeColumns.Count > 0, " INCLUDE (" & String.Join(", ", aryIncludeColumns.ToArray) & ")", "")
-              sSQL = String.Format("CREATE NONCLUSTERED INDEX [{0}] ON [dbo].[{1}] " & _
-                    "({2})" & _
-                    "{3}" _
-                    , objIndex.Name, sObjectName, String.Join(", ", aryColumns.ToArray), sIncludeColumns)
-            End If
+            sIncludeColumns = IIf(aryIncludeColumns.Count > 0, " INCLUDE (" & String.Join(", ", aryIncludeColumns.ToArray) & ")", "")
+            sSQL = String.Format("CREATE NONCLUSTERED INDEX [{0}] ON [dbo].[{1}] " & _
+                  "({2})" & _
+                  "{3}" _
+                  , objIndex.Name, sObjectName, String.Join(", ", aryColumns.ToArray), sIncludeColumns)
 
             If objIndex.Enabled And bCreateIndex Then
               Globals.CommitDB.ScriptStatement(sSQL)
