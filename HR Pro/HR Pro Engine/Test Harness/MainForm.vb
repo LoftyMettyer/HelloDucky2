@@ -344,8 +344,59 @@ Public Class MainForm
 
     End Sub
 
-End Class
+  Private Sub Button2_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button2.Click
 
-Public Class abc
 
+    Dim sPath As String = "C:\dev\HR Pro\HR Pro Engine\Test Harness\"
+    Dim objData As New MobileDesigner.DataManager
+    Dim objADO As New ADODB.Connection
+    Dim sADOConnect As String = String.Format("Driver=SQL Server;Server={0};UID=sa;PWD=asr;Database={1};" _
+                          , txtServer.Text, txtDatabase.Text)
+
+    Dim objDAOEngine As New DAO.DBEngine
+    Dim objDAODB As DAO.Database
+
+    Dim conStr As String = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" & sPath & "AsrTemp_" & txtDatabase.Text & ".mdb"
+
+    objDAODB = objDAOEngine.OpenDatabase(sPath & "asrtemp_" & txtDatabase.Text & ".mdb", , False, conStr)
+
+    With objADO
+      .ConnectionString = sADOConnect
+      .Provider = "SQLOLEDB"
+      .CommandTimeout = 0
+      .ConnectionTimeout = 5
+      .CursorLocation = ADODB.CursorLocationEnum.adUseServer
+      .Mode = ADODB.ConnectModeEnum.adModeReadWrite
+      '.Properties("Packet Size") = 32767
+      .Open()
+    End With
+
+
+    '   Dim objMobileDesigner As New MobileDesigner.DesignerForm
+
+    '  objMobileDesigner.MetadataDB = objDAODB
+
+
+    '   objPhoenix.MetadataDB = objDAODB
+    '  objPhoenix.CommitDB = objADO
+
+
+    '    Dim objInterface As New MobileDesigner.DataManager
+    '    objInterface.SysMgrInterface.CommitDB = objADO
+
+    ' objInterface()
+
+    '    objData.SQLConnection = "Data Source=HARPDEV02;Initial Catalog=OpenHRMobile;Persist Security Info=True;User ID=sa;Password=asr"
+    '  objData.SQLConnection = sADOConnect ' objADO.ConnectionString ' "Data Source=HARPDEV02;Initial Catalog=OpenHRMobile;Persist Security Info=True;User ID=sa;Password=asr"
+    '  objData.BuildSessionFactory()
+
+    '    Dim obj1 As New MobileDesigner.MobileDesignerSerivce("C:\dev\HR Pro\HR Pro Engine\Test Harness\asrtemp_openhrmobile.mdb")
+
+    '    obj1()
+
+    '    obj1.Initialise("C:\dev\HR Pro\HR Pro Engine\Test Harness\asrtemp_openhrmobile.mdb")
+    ' obj1.Show()
+
+
+  End Sub
 End Class
