@@ -949,6 +949,13 @@ Private Sub txtIcon_GotFocus()
   cmdIcon.SetFocus
 End Sub
 
+Private Sub txtName_GotFocus()
+  With txtName
+    .SelStart = 0
+    .SelLength = Len(.Text)
+  End With
+End Sub
+
 Private Sub txtOrder_GotFocus()
   cmdOrder.SetFocus
 End Sub
