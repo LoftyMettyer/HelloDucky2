@@ -627,7 +627,7 @@ Private Function TableSave(mfrmUse As frmUsage) As Boolean
     sSQL = "SELECT triggerobjects.name" & _
       " FROM sysobjects tableobjects" & _
       " LEFT OUTER JOIN sysobjects triggerobjects ON tableobjects.id = triggerobjects.parent_obj" & _
-      " WHERE tableobjects.name = '" & sTableName & "'" & _
+      " WHERE tableobjects.name = '" & sPhysicalTableName & "'" & _
       " AND triggerobjects.xtype = 'TR'" & _
       " AND triggerobjects.name <> 'INS_" & sTableName & "'" & _
       " AND triggerobjects.name <> 'UPD_" & sTableName & "'" & _
