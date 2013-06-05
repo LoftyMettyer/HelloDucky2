@@ -1,9 +1,9 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "coa_spinner.ocx"
 Begin VB.Form frmEmailLink 
    Caption         =   "Email Link"
    ClientHeight    =   7500
@@ -23,6 +23,7 @@ Begin VB.Form frmEmailLink
    Icon            =   "frmEmailLink.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form2"
+   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   7500
@@ -116,7 +117,6 @@ Begin VB.Form frmEmailLink
       _Version        =   393216
       Style           =   1
       Tabs            =   2
-      Tab             =   1
       TabHeight       =   520
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Verdana"
@@ -129,22 +129,26 @@ Begin VB.Form frmEmailLink
       EndProperty
       TabCaption(0)   =   "De&finition"
       TabPicture(0)   =   "frmEmailLink.frx":1A34
-      Tab(0).ControlEnabled=   0   'False
+      Tab(0).ControlEnabled=   -1  'True
       Tab(0).Control(0)=   "fraLinkTypeDetails(1)"
+      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).Control(1)=   "fraLinkTypeDetails(2)"
+      Tab(0).Control(1).Enabled=   0   'False
       Tab(0).Control(2)=   "fraLinkTypeDetails(0)"
+      Tab(0).Control(2).Enabled=   0   'False
       Tab(0).Control(3)=   "frmDefinition(0)"
+      Tab(0).Control(3).Enabled=   0   'False
       Tab(0).Control(4)=   "frmDefinition(1)"
+      Tab(0).Control(4).Enabled=   0   'False
       Tab(0).ControlCount=   5
       TabCaption(1)   =   "Co&ntent"
       TabPicture(1)   =   "frmEmailLink.frx":1A50
-      Tab(1).ControlEnabled=   -1  'True
+      Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "frmContent"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       Begin VB.Frame frmContent 
          Height          =   6240
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   14
          Top             =   360
          Visible         =   0   'False
@@ -302,7 +306,7 @@ Begin VB.Form frmEmailLink
          Caption         =   "Link Type :"
          Height          =   4105
          Index           =   1
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   8
          Top             =   2495
          Width           =   1480
@@ -340,7 +344,7 @@ Begin VB.Form frmEmailLink
       Begin VB.Frame frmDefinition 
          Height          =   2075
          Index           =   0
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   0
          Top             =   360
          Width           =   8800
@@ -366,7 +370,7 @@ Begin VB.Form frmEmailLink
          Begin VB.TextBox txtTitle 
             Height          =   315
             Left            =   1800
-            MaxLength       =   50
+            MaxLength       =   255
             TabIndex        =   2
             Top             =   300
             Width           =   6855
@@ -468,7 +472,7 @@ Begin VB.Form frmEmailLink
          Caption         =   "Column Related Link :"
          Height          =   4105
          Index           =   0
-         Left            =   -73280
+         Left            =   1720
          TabIndex        =   12
          Top             =   2495
          Width           =   7200
@@ -485,7 +489,7 @@ Begin VB.Form frmEmailLink
          Caption         =   "Date Related Link :"
          Height          =   4105
          Index           =   2
-         Left            =   -73280
+         Left            =   1720
          TabIndex        =   35
          Top             =   2495
          Visible         =   0   'False
@@ -577,7 +581,7 @@ Begin VB.Form frmEmailLink
          Caption         =   "Record Related Link :"
          Height          =   4105
          Index           =   1
-         Left            =   -73280
+         Left            =   1720
          TabIndex        =   31
          Top             =   2495
          Visible         =   0   'False
