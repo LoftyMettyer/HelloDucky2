@@ -1081,6 +1081,7 @@ Public Sub Complete()
   Dim strFormat As String
   Dim strTempFile As String
   Dim strExtension As String
+  Dim aryFileBits() As String
   
   On Local Error GoTo LocalErr
   
@@ -1122,20 +1123,24 @@ Public Sub Complete()
       mstrErrorMessage = "This definition is set to save in a file format which is not compatible with your version of Microsoft Office."
       GoTo TidyAndExit
     End If
-    
+       
     ' calculate the appropriate output type
-    strExtension = LCase(Mid(mstrFileName, InStr(1, mstrFileName, ".", vbTextCompare) + 1, 3))
-    Select Case strExtension
-    Case "pdf"
-      mwrdDoc.SaveAs mstrFileName, FileFormat:=Val(wdFormatPDF)
-    Case "doc"
-      mwrdDoc.SaveAs mstrFileName, FileFormat:=Val(wdFormatDocument97)
-    Case "docx"
-      mwrdDoc.SaveAs mstrFileName, FileFormat:=Val(wdFormatXMLDocument)
-    Case "txt"
-      mwrdDoc.SaveAs mstrFileName, FileFormat:=Val(wdFormatText)
-    Case "rtf"
-      mwrdDoc.SaveAs mstrFileName, FileFormat:=Val(wdFormatRTF)
+    aryFileBits = Split(mstrFileName, ".")
+    strExtension = aryFileBits(UBound(aryFileBits))
+   
+    Select Case UCase(strExtension)
+      Case "PDF"
+        mwrdDoc.SaveAs mstrFileName, FileFormat:=Val(wdFormatPDF)
+      Case "DOCX"
+        mwrdDoc.SaveAs mstrFileName, FileFormat:=Val(wdFormatXMLDocument)
+      Case "DOC"
+        mwrdDoc.SaveAs mstrFileName, FileFormat:=Val(wdFormatDocument97)
+      Case "TXT"
+        mwrdDoc.SaveAs mstrFileName, FileFormat:=Val(wdFormatText)
+      Case "RTF"
+        mwrdDoc.SaveAs mstrFileName, FileFormat:=Val(wdFormatRTF)
+      Case "HTML"
+        mwrdDoc.SaveAs mstrFileName, FileFormat:=Val(wdFormatHTML)
     End Select
 
   End If

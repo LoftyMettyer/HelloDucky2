@@ -1620,6 +1620,8 @@ Public Sub Complete()
   Dim strFormat As String
   Dim blnOffice2007 As Boolean
   Dim strTempFile As String
+  Dim strExtension As String
+  Dim aryFileBits() As String
 
   On Local Error GoTo LocalErr
   
@@ -1663,7 +1665,19 @@ Public Sub Complete()
       mstrErrorMessage = "This definition is set to save in a file format which is not compatible with your version of Microsoft Office."
       GoTo TidyAndExit
     End If
-    mxlWorkBook.SaveAs mstrFileName, Val(strFormat)
+    
+    ' calculate the appropriate output type
+    aryFileBits = Split(mstrFileName, ".")
+    strExtension = aryFileBits(UBound(aryFileBits))
+   
+    Select Case UCase(strExtension)
+      Case "XLSX"
+        mxlWorkBook.SaveAs mstrFileName, FileFormat:=Val(strFormat)
+      Case "XLS"
+        mxlWorkBook.SaveAs mstrFileName, FileFormat:=Val(strFormat)
+      Case "HTML"
+        mxlWorkBook.SaveAs mstrFileName, FileFormat:=Val(xlHtml)
+    End Select
 
   End If
 

@@ -40,6 +40,7 @@ Begin VB.Form frmImport
       _ExtentY        =   8387
       _Version        =   393216
       Style           =   1
+      Tab             =   2
       TabHeight       =   520
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Verdana"
@@ -52,11 +53,9 @@ Begin VB.Form frmImport
       EndProperty
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmImport.frx":000C
-      Tab(0).ControlEnabled=   -1  'True
+      Tab(0).ControlEnabled=   0   'False
       Tab(0).Control(0)=   "fraData"
-      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).Control(1)=   "fraInformation"
-      Tab(0).Control(1).Enabled=   0   'False
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Colu&mns"
       TabPicture(1)   =   "frmImport.frx":0028
@@ -65,13 +64,15 @@ Begin VB.Form frmImport
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "O&ptions"
       TabPicture(2)   =   "frmImport.frx":0044
-      Tab(2).ControlEnabled=   0   'False
+      Tab(2).ControlEnabled=   -1  'True
       Tab(2).Control(0)=   "fraOptions"
+      Tab(2).Control(0).Enabled=   0   'False
       Tab(2).Control(1)=   "fraFileDetails"
+      Tab(2).Control(1).Enabled=   0   'False
       Tab(2).ControlCount=   2
       Begin VB.Frame fraInformation 
          Height          =   2355
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   54
          Top             =   400
          Width           =   9180
@@ -477,7 +478,7 @@ Begin VB.Form frmImport
       Begin VB.Frame fraFileDetails 
          Caption         =   "File :"
          Height          =   2775
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   16
          Top             =   405
          Width           =   9400
@@ -765,7 +766,7 @@ Begin VB.Form frmImport
       Begin VB.Frame fraOptions 
          Caption         =   "Records :"
          Height          =   1350
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   40
          Top             =   3220
          Width           =   9400
@@ -837,7 +838,7 @@ Begin VB.Form frmImport
       Begin VB.Frame fraData 
          Caption         =   "Data :"
          Height          =   1680
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   0
          Top             =   2895
          Width           =   9400
@@ -957,7 +958,7 @@ Public Property Get SelectedID() As Long
 End Property
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
 End Property
 Private Sub ForceAccess(Optional pvAccess As Variant)
   Dim iLoop As Integer
@@ -991,7 +992,7 @@ End Sub
 
 
 Public Property Let Changed(ByVal pblnChanged As Boolean)
-  cmdOk.Enabled = pblnChanged
+  cmdOK.Enabled = pblnChanged
 End Property
 
 Private Sub cboBaseTable_Click()
@@ -1377,7 +1378,7 @@ Private Sub cmdFileName_Click()
       .Filter = "Text (*.txt)|*.txt|All Files|*.*"
     Case 2
       '.Filter = "Excel Worksheet (*.xls)|*.xls"
-      InitialiseCommonDialogFormats CDialog, "Excel", GetOfficeExcelVersion
+      InitialiseCommonDialogFormats CDialog, "Excel", GetOfficeExcelVersion, DirectionInput
     End Select
     
     
@@ -2142,13 +2143,13 @@ Private Sub txtDesc_GotFocus()
     .SelLength = Len(.Text)
   End With
 
-  cmdOk.Default = False
+  cmdOK.Default = False
   
 End Sub
 
 Private Sub txtDesc_LostFocus()
 
-  cmdOk.Default = True
+  cmdOK.Default = True
 
 End Sub
 

@@ -414,3 +414,12 @@ Public Enum NavigationDisplayType
   Browser = 2
   Hidden = 3
 End Enum
+
+' Direction of file formats (used to initialise common dialog)
+Public Enum FileFormatDirection
+  DirectionInput = 0
+  DirectionOutput = 1
+  DirectionBoth = 2
+End Enum
+
+

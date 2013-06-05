@@ -86,9 +86,9 @@ Begin VB.Form frmMailMerge
       TabCaption(1)   =   "Colu&mns"
       TabPicture(1)   =   "frmMailMerge.frx":08F2
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraColumns(0)"
+      Tab(1).Control(0)=   "fraColumns(2)"
       Tab(1).Control(1)=   "fraColumns(1)"
-      Tab(1).Control(2)=   "fraColumns(2)"
+      Tab(1).Control(2)=   "fraColumns(0)"
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "&Sort Order"
       TabPicture(2)   =   "frmMailMerge.frx":090E
@@ -98,11 +98,11 @@ Begin VB.Form frmMailMerge
       TabCaption(3)   =   "Ou&tput"
       TabPicture(3)   =   "frmMailMerge.frx":092A
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "fraOutput(1)"
-      Tab(3).Control(1)=   "fraOutput(0)"
+      Tab(3).Control(0)=   "fraOutputFormat"
+      Tab(3).Control(1)=   "fraOutputOptions"
       Tab(3).Control(2)=   "fraOutput(2)"
-      Tab(3).Control(3)=   "fraOutputOptions"
-      Tab(3).Control(4)=   "fraOutputFormat"
+      Tab(3).Control(3)=   "fraOutput(0)"
+      Tab(3).Control(4)=   "fraOutput(1)"
       Tab(3).ControlCount=   5
       Begin VB.Frame fraDefinition 
          Height          =   2355
@@ -485,13 +485,13 @@ Begin VB.Form frmMailMerge
             RecordSelectors =   0   'False
             Col.Count       =   3
             stylesets.count =   5
-            stylesets(0).Name=   "ssetSelected"
-            stylesets(0).ForeColor=   -2147483634
-            stylesets(0).BackColor=   -2147483635
+            stylesets(0).Name=   "ssetHeaderDisabled"
+            stylesets(0).ForeColor=   -2147483631
+            stylesets(0).BackColor=   -2147483633
             stylesets(0).Picture=   "frmMailMerge.frx":0D57
-            stylesets(1).Name=   "ssetHeaderDisabled"
-            stylesets(1).ForeColor=   -2147483631
-            stylesets(1).BackColor=   -2147483633
+            stylesets(1).Name=   "ssetSelected"
+            stylesets(1).ForeColor=   -2147483634
+            stylesets(1).BackColor=   -2147483635
             stylesets(1).Picture=   "frmMailMerge.frx":0D73
             stylesets(2).Name=   "ssetEnabled"
             stylesets(2).ForeColor=   -2147483640
@@ -2088,18 +2088,14 @@ Private Sub cmdFileName_Click(Index As Integer)
     .CancelError = True
     Select Case Index
     Case 0
-      'Document Save as
       .DialogTitle = Me.Caption & " Output Document"
-      '.Filter = gsOfficeFileFilter_Word
       .Flags = cdlOFNExplorer + cdlOFNHideReadOnly + cdlOFNLongNames + cdlOFNOverwritePrompt
-      InitialiseCommonDialogFormats frmMain.CommonDialog1, "Word", GetOfficeWordVersion
+      InitialiseCommonDialogFormats frmMain.CommonDialog1, "Word", GetOfficeWordVersion, DirectionOutput
       .ShowSave
     Case 1
       'Word template
       .DialogTitle = Me.Caption & " Template"
-      '.Filter = gsOfficeTemplateFilter_Word
       .Flags = cdlOFNExplorer + cdlOFNHideReadOnly + cdlOFNLongNames '+ cdlOFNCreatePrompt
-      'InitialiseCommonDialogFormats frmMain.CommonDialog1, "WordTemplate", GetOfficeWordVersion
       .Filter = "Word Template (*.dot;*.dotx;*.doc;*.docx)|*.dot;*.dotx;*.doc;*.docx"
       .ShowOpen
     End Select
@@ -2110,20 +2106,16 @@ Private Sub cmdFileName_Click(Index As Integer)
     End If
 
     If .FileName <> "" Then
-      'If Dir(CDialog.FileName) = vbNullString And Index = 1 Then  'Only show for templates
       If Dir(frmMain.CommonDialog1.FileName) = vbNullString And Index = 1 Then  'Only show for templates
         If COAMsgBox("Template file does not exist.  Create it now?", vbYesNo + vbQuestion, Me.Caption) = vbYes Then
 
           On Error GoTo WordErr
 
-          'txtFilename(Index) = CDialog.FileName
-          'strFormat = GetOfficeSaveAsFormat(CDialog.FileName, GetOfficeWordVersion)
           txtFilename(Index).Text = frmMain.CommonDialog1.FileName
           strFormat = GetOfficeSaveAsFormat(frmMain.CommonDialog1.FileName, GetOfficeWordVersion)
           
           Screen.MousePointer = vbHourglass
           gobjProgress.Caption = "Creating Word Document"
-          'gobjProgress.AviFile = App.Path & "\videos\word.avi"
           gobjProgress.MainCaption = Me.Caption
           gobjProgress.AVI = dbWord
           gobjProgress.NumberOfBars = 0
@@ -2132,7 +2124,6 @@ Private Sub cmdFileName_Click(Index As Integer)
 
           Set wrdApp = CreateObject("Word.Application")
           Set wrdDoc = wrdApp.Documents.Add
-          'wrdDoc.SaveAs CDialog.FileName, Val(strFormat)
           wrdDoc.SaveAs frmMain.CommonDialog1.FileName, Val(strFormat)
           wrdDoc.Close False
           wrdApp.Quit False
@@ -2145,7 +2136,6 @@ Private Sub cmdFileName_Click(Index As Integer)
         
         End If
       Else
-        'txtFilename(Index) = CDialog.FileName
         txtFilename(Index).Text = frmMain.CommonDialog1.FileName
 
       End If
@@ -3030,9 +3020,9 @@ Private Sub optOutputFormat_Click(Index As Integer)
   chkDocManManualHeader.Value = vbUnchecked
   chkDocManScreen.Value = vbUnchecked
   
-  fraOutput(0).Visible = (Index = 0)
-  fraOutput(1).Visible = (Index = 1)
-  fraOutput(2).Visible = (Index = 2)
+  FraOutput(0).Visible = (Index = 0)
+  FraOutput(1).Visible = (Index = 1)
+  FraOutput(2).Visible = (Index = 2)
   
   Me.Changed = True
 
