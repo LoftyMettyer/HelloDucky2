@@ -1,13 +1,12 @@
 VERSION 5.00
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "COA_Line.ocx"
 Begin VB.Form frmCalendarReportDates 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Calendar Report Event"
-   ClientHeight    =   6135
+   ClientHeight    =   5685
    ClientLeft      =   45
    ClientTop       =   330
-   ClientWidth     =   9525
+   ClientWidth     =   9480
    BeginProperty Font 
       Name            =   "Verdana"
       Size            =   8.25
@@ -20,192 +19,184 @@ Begin VB.Form frmCalendarReportDates
    HelpContextID   =   1067
    Icon            =   "frmCalendarReportDates.frx":0000
    LinkTopic       =   "Form1"
+   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   6135
-   ScaleWidth      =   9525
+   ScaleHeight     =   5685
+   ScaleWidth      =   9480
    ShowInTaskbar   =   0   'False
    StartUpPosition =   1  'CenterOwner
-   Begin VB.PictureBox picColour 
-      Height          =   255
-      Left            =   840
-      ScaleHeight     =   195
-      ScaleWidth      =   195
-      TabIndex        =   42
-      Top             =   5745
-      Visible         =   0   'False
-      Width           =   255
+   Begin VB.Frame fraEventDesc 
+      Caption         =   "Event Description : "
+      Height          =   1260
+      Left            =   4635
+      TabIndex        =   36
+      Top             =   3360
+      Width           =   4755
+      Begin VB.ComboBox cboEventDesc2 
+         Height          =   315
+         ItemData        =   "frmCalendarReportDates.frx":000C
+         Left            =   1680
+         List            =   "frmCalendarReportDates.frx":0013
+         Style           =   2  'Dropdown List
+         TabIndex        =   19
+         Top             =   705
+         Width           =   2955
+      End
+      Begin VB.ComboBox cboEventDesc1 
+         Height          =   315
+         ItemData        =   "frmCalendarReportDates.frx":001F
+         Left            =   1680
+         List            =   "frmCalendarReportDates.frx":0026
+         Style           =   2  'Dropdown List
+         TabIndex        =   18
+         Top             =   300
+         Width           =   2955
+      End
+      Begin VB.Label lblEventDesc2 
+         Caption         =   "Description 2 : "
+         Height          =   255
+         Left            =   195
+         TabIndex        =   38
+         Top             =   720
+         Width           =   1350
+      End
+      Begin VB.Label lblEventDesc1 
+         Caption         =   "Description 1 : "
+         Height          =   255
+         Left            =   195
+         TabIndex        =   37
+         Top             =   360
+         Width           =   1350
+      End
    End
    Begin VB.Frame fraLegend 
       Caption         =   "Key :"
-      Height          =   3690
-      Left            =   4665
-      TabIndex        =   26
-      Top             =   1800
+      Height          =   3135
+      Left            =   4635
+      TabIndex        =   31
+      Top             =   120
       Width           =   4755
       Begin VB.OptionButton optCharacter 
          Caption         =   "Charac&ter"
-         Height          =   195
+         Height          =   255
          Left            =   200
-         TabIndex        =   27
-         Top             =   360
+         TabIndex        =   11
+         Top             =   300
+         Value           =   -1  'True
          Width           =   1230
       End
       Begin VB.OptionButton optLegendLookup 
          Caption         =   "&Lookup Table"
          Height          =   375
          Left            =   200
-         TabIndex        =   31
-         Top             =   1265
+         TabIndex        =   13
+         Top             =   645
          Width           =   1455
       End
       Begin VB.ComboBox cboLegendTable 
          Height          =   315
-         ItemData        =   "frmCalendarReportDates.frx":000C
+         ItemData        =   "frmCalendarReportDates.frx":0030
          Left            =   1680
-         List            =   "frmCalendarReportDates.frx":0013
+         List            =   "frmCalendarReportDates.frx":0037
          Style           =   2  'Dropdown List
-         TabIndex        =   35
-         Top             =   2440
+         TabIndex        =   15
+         Top             =   1800
          Width           =   2955
       End
       Begin VB.TextBox txtCharacter 
          Enabled         =   0   'False
-         Height          =   315
-         Left            =   1680
+         Height          =   285
+         Left            =   1500
          MaxLength       =   2
-         TabIndex        =   28
+         TabIndex        =   12
          Top             =   300
          Width           =   510
       End
       Begin VB.ComboBox cboLegendColumn 
          Height          =   315
-         ItemData        =   "frmCalendarReportDates.frx":0025
+         ItemData        =   "frmCalendarReportDates.frx":0049
          Left            =   1680
-         List            =   "frmCalendarReportDates.frx":002C
+         List            =   "frmCalendarReportDates.frx":0050
          Style           =   2  'Dropdown List
-         TabIndex        =   37
-         Top             =   2840
+         TabIndex        =   16
+         Top             =   2205
          Width           =   2955
       End
       Begin VB.ComboBox cboLegendCode 
          Height          =   315
-         ItemData        =   "frmCalendarReportDates.frx":0036
+         ItemData        =   "frmCalendarReportDates.frx":005A
          Left            =   1680
-         List            =   "frmCalendarReportDates.frx":003D
+         List            =   "frmCalendarReportDates.frx":0061
          Style           =   2  'Dropdown List
-         TabIndex        =   39
-         Top             =   3240
+         TabIndex        =   17
+         Top             =   2610
          Width           =   2955
       End
       Begin VB.ComboBox cboEventType 
          Height          =   315
-         ItemData        =   "frmCalendarReportDates.frx":004E
+         ItemData        =   "frmCalendarReportDates.frx":0072
          Left            =   1680
-         List            =   "frmCalendarReportDates.frx":0055
+         List            =   "frmCalendarReportDates.frx":0079
          Style           =   2  'Dropdown List
-         TabIndex        =   33
-         Top             =   1720
+         TabIndex        =   14
+         Top             =   1080
          Width           =   2955
       End
       Begin COALine.COA_Line ASRLine1 
          Height          =   30
          Left            =   480
-         Top             =   2200
+         Top             =   1560
          Width           =   4125
          _ExtentX        =   7276
          _ExtentY        =   53
       End
-      Begin MSComctlLib.ImageCombo cboColour 
-         Height          =   330
-         Left            =   1680
-         TabIndex        =   30
-         Top             =   700
-         Visible         =   0   'False
-         Width           =   2955
-         _ExtentX        =   5212
-         _ExtentY        =   582
-         _Version        =   393216
-         ForeColor       =   -2147483640
-         BackColor       =   -2147483643
-         Locked          =   -1  'True
-         Text            =   "ImageCombo1"
-      End
       Begin VB.Label lblLookupColumn 
          Caption         =   "Column : "
-         Height          =   195
+         Height          =   255
          Left            =   495
-         TabIndex        =   36
-         Top             =   2900
+         TabIndex        =   35
+         Top             =   2220
          Width           =   1200
       End
       Begin VB.Label lblCalendarCode 
          Caption         =   "Code : "
-         Height          =   195
+         Height          =   255
          Left            =   495
-         TabIndex        =   38
-         Top             =   3300
+         TabIndex        =   34
+         Top             =   2625
          Width           =   1200
       End
       Begin VB.Label lblLegendTable 
          Caption         =   "Table : "
-         Height          =   195
+         Height          =   255
          Left            =   495
-         TabIndex        =   34
-         Top             =   2500
+         TabIndex        =   33
+         Top             =   1845
          Width           =   1200
       End
       Begin VB.Label lblType 
          Caption         =   "Event Type : "
-         Height          =   195
+         Height          =   255
          Left            =   495
          TabIndex        =   32
-         Top             =   1780
+         Top             =   1125
          Width           =   1140
-      End
-      Begin VB.Label Label1 
-         Caption         =   "Colour : "
-         Height          =   195
-         Left            =   495
-         TabIndex        =   29
-         Top             =   760
-         Visible         =   0   'False
-         Width           =   1200
       End
    End
    Begin VB.Frame fraEvent 
       Caption         =   "Event : "
       Height          =   1575
       Left            =   120
-      TabIndex        =   0
+      TabIndex        =   28
       Top             =   120
-      Width           =   9300
-      Begin VB.ComboBox cboEventDesc1 
-         Height          =   315
-         ItemData        =   "frmCalendarReportDates.frx":005F
-         Left            =   6180
-         List            =   "frmCalendarReportDates.frx":0066
-         Style           =   2  'Dropdown List
-         TabIndex        =   9
-         Top             =   300
-         Width           =   2955
-      End
-      Begin VB.ComboBox cboEventDesc2 
-         Height          =   315
-         ItemData        =   "frmCalendarReportDates.frx":0070
-         Left            =   6180
-         List            =   "frmCalendarReportDates.frx":0077
-         Style           =   2  'Dropdown List
-         TabIndex        =   11
-         Top             =   700
-         Width           =   2955
-      End
+      Width           =   4395
       Begin VB.CommandButton cmdEventFilter 
          Caption         =   "..."
          Height          =   315
-         Left            =   3915
+         Left            =   3930
          Picture         =   "frmCalendarReportDates.frx":0083
-         TabIndex        =   7
+         TabIndex        =   2
          Top             =   1110
          UseMaskColor    =   -1  'True
          Width           =   300
@@ -214,9 +205,9 @@ Begin VB.Form frmCalendarReportDates
          BackColor       =   &H8000000F&
          Enabled         =   0   'False
          Height          =   315
-         Left            =   1530
+         Left            =   1545
          Locked          =   -1  'True
-         TabIndex        =   6
+         TabIndex        =   39
          TabStop         =   0   'False
          Tag             =   "0"
          Top             =   1110
@@ -226,7 +217,7 @@ Begin VB.Form frmCalendarReportDates
          Height          =   315
          Left            =   1530
          MaxLength       =   50
-         TabIndex        =   2
+         TabIndex        =   0
          Top             =   300
          Width           =   2685
       End
@@ -237,40 +228,24 @@ Begin VB.Form frmCalendarReportDates
          List            =   "frmCalendarReportDates.frx":0105
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
-         TabIndex        =   4
+         TabIndex        =   1
          Top             =   705
          Width           =   2685
-      End
-      Begin VB.Label lblEventDesc1 
-         Caption         =   "Description 1 : "
-         Height          =   255
-         Left            =   4745
-         TabIndex        =   8
-         Top             =   360
-         Width           =   1350
-      End
-      Begin VB.Label lblEventDesc2 
-         Caption         =   "Description 2 : "
-         Height          =   255
-         Left            =   4745
-         TabIndex        =   10
-         Top             =   760
-         Width           =   1350
       End
       Begin VB.Label lblEventFilter 
          BackStyle       =   0  'Transparent
          Caption         =   "Filter :"
          Height          =   195
          Left            =   195
-         TabIndex        =   5
-         Top             =   1160
+         TabIndex        =   40
+         Top             =   1170
          Width           =   975
       End
       Begin VB.Label lblEventName 
          Caption         =   "Name :"
          Height          =   255
          Left            =   195
-         TabIndex        =   1
+         TabIndex        =   30
          Top             =   360
          Width           =   795
       End
@@ -279,23 +254,23 @@ Begin VB.Form frmCalendarReportDates
          Caption         =   "Event Table :"
          Height          =   195
          Left            =   195
-         TabIndex        =   3
-         Top             =   760
+         TabIndex        =   29
+         Top             =   765
          Width           =   1155
       End
    End
    Begin VB.Frame fraEventEnd 
       Caption         =   "Event End :"
-      Height          =   2370
+      Height          =   2475
       Left            =   120
-      TabIndex        =   17
+      TabIndex        =   25
       Top             =   3120
       Width           =   4395
       Begin VB.OptionButton optNoEnd 
          Caption         =   "&None"
-         Height          =   195
+         Height          =   375
          Left            =   200
-         TabIndex        =   18
+         TabIndex        =   5
          Top             =   300
          Value           =   -1  'True
          Width           =   1215
@@ -304,7 +279,7 @@ Begin VB.Form frmCalendarReportDates
          Caption         =   "&Duration "
          Height          =   375
          Left            =   200
-         TabIndex        =   24
+         TabIndex        =   9
          Top             =   1875
          Width           =   1110
       End
@@ -312,7 +287,7 @@ Begin VB.Form frmCalendarReportDates
          Caption         =   "&End Date"
          Height          =   375
          Left            =   200
-         TabIndex        =   19
+         TabIndex        =   6
          Top             =   645
          Width           =   1215
       End
@@ -323,7 +298,7 @@ Begin VB.Form frmCalendarReportDates
          Left            =   1530
          List            =   "frmCalendarReportDates.frx":0124
          Style           =   2  'Dropdown List
-         TabIndex        =   25
+         TabIndex        =   10
          Top             =   1920
          Width           =   2685
       End
@@ -333,7 +308,7 @@ Begin VB.Form frmCalendarReportDates
          Left            =   1530
          List            =   "frmCalendarReportDates.frx":0139
          Style           =   2  'Dropdown List
-         TabIndex        =   23
+         TabIndex        =   8
          Top             =   1485
          Width           =   2685
       End
@@ -343,7 +318,7 @@ Begin VB.Form frmCalendarReportDates
          Left            =   1530
          List            =   "frmCalendarReportDates.frx":014F
          Style           =   2  'Dropdown List
-         TabIndex        =   21
+         TabIndex        =   7
          Top             =   1080
          Width           =   2685
       End
@@ -351,7 +326,7 @@ Begin VB.Form frmCalendarReportDates
          Caption         =   "Session :"
          Height          =   255
          Left            =   495
-         TabIndex        =   22
+         TabIndex        =   27
          Top             =   1545
          Width           =   855
       End
@@ -359,7 +334,7 @@ Begin VB.Form frmCalendarReportDates
          Caption         =   "Date :"
          Height          =   255
          Left            =   495
-         TabIndex        =   20
+         TabIndex        =   26
          Top             =   1140
          Width           =   720
       End
@@ -368,7 +343,7 @@ Begin VB.Form frmCalendarReportDates
       Caption         =   "Event Start :"
       Height          =   1215
       Left            =   120
-      TabIndex        =   12
+      TabIndex        =   22
       Top             =   1800
       Width           =   4395
       Begin VB.ComboBox cboStartSession 
@@ -377,7 +352,7 @@ Begin VB.Form frmCalendarReportDates
          Left            =   1530
          List            =   "frmCalendarReportDates.frx":0163
          Style           =   2  'Dropdown List
-         TabIndex        =   16
+         TabIndex        =   4
          Top             =   705
          Width           =   2685
       End
@@ -387,7 +362,7 @@ Begin VB.Form frmCalendarReportDates
          Left            =   1530
          List            =   "frmCalendarReportDates.frx":017B
          Style           =   2  'Dropdown List
-         TabIndex        =   14
+         TabIndex        =   3
          Top             =   300
          Width           =   2685
       End
@@ -395,8 +370,8 @@ Begin VB.Form frmCalendarReportDates
          Caption         =   "Start Session :"
          Height          =   255
          Left            =   195
-         TabIndex        =   15
-         Top             =   760
+         TabIndex        =   24
+         Top             =   720
          Width           =   1455
       End
       Begin VB.Label lblStartDate 
@@ -404,8 +379,8 @@ Begin VB.Form frmCalendarReportDates
          Caption         =   "Start Date :"
          Height          =   195
          Left            =   195
-         TabIndex        =   13
-         Top             =   360
+         TabIndex        =   23
+         Top             =   320
          Width           =   855
       End
    End
@@ -414,28 +389,18 @@ Begin VB.Form frmCalendarReportDates
       Default         =   -1  'True
       Height          =   400
       Left            =   6900
-      TabIndex        =   40
-      Top             =   5610
+      TabIndex        =   20
+      Top             =   5200
       Width           =   1200
    End
    Begin VB.CommandButton cmdCancel 
       Cancel          =   -1  'True
       Caption         =   "&Cancel"
       Height          =   400
-      Left            =   8205
-      TabIndex        =   41
-      Top             =   5595
+      Left            =   8175
+      TabIndex        =   21
+      Top             =   5200
       Width           =   1200
-   End
-   Begin MSComctlLib.ImageList ImageList1 
-      Left            =   150
-      Top             =   5490
-      _ExtentX        =   1005
-      _ExtentY        =   1005
-      BackColor       =   -2147483643
-      MaskColor       =   12632256
-      UseMaskColor    =   0   'False
-      _Version        =   393216
    End
 End
 Attribute VB_Name = "frmCalendarReportDates"
@@ -517,14 +482,11 @@ Public Function Initialize(pbNew As Boolean, pfrmParentForm As frmCalendarReport
                            plngStartDateID As Long, plngStartSessionID As Long, _
                            plngEndDateID As Long, plngEndSessionID As Long, _
                            plngDurationID As Long, psCharacterCode As String, _
-                           plCharacterColour As Long, _
                            plngLegendTableID As Long, plngLegendColumnID As Long, _
                            plngLegendCodeID As Long, plngEventTypeID As Long, _
                            plngEventDesc1ID As Long, plngEventDesc2ID As Long, _
                            pstrEventKey As String) As Boolean
 
-  Dim lngCount As Long
-  
   On Error GoTo Error_Trap
   
   mblnLoading = True
@@ -550,23 +512,13 @@ Public Function Initialize(pbNew As Boolean, pfrmParentForm As frmCalendarReport
   mlngEventEndDateID = plngEndDateID
   mlngEventEndSessionID = plngEndSessionID
   mlngEventDurationID = plngDurationID
-  txtCharacter.Text = psCharacterCode
+  Me.txtCharacter.Text = psCharacterCode
   mlngLegendTableID = plngLegendTableID
   mlngLegendColumnID = plngLegendColumnID
   mlngLegendCodeID = plngLegendCodeID
   mlngLegendEventTypeID = plngEventTypeID
   mlngEventDesc1ID = plngEventDesc1ID
   mlngEventDesc2ID = plngEventDesc2ID
-  
-  
-  PopulateColourCombo
-  For lngCount = 1 To cboColour.ComboItems.Count
-    If cboColour.ComboItems.Item(lngCount).Tag = plCharacterColour Then
-      cboColour.SelectedItem = cboColour.ComboItems.Item(lngCount)
-      Exit For
-    End If
-  Next
-  
   
   If mlngEventEndDateID > 0 Then
     optEndDate.Value = True
@@ -672,18 +624,6 @@ Public Property Get EventLegendRef() As String
 End Property
 Public Property Get EventCharacter() As String
   EventCharacter = txtCharacter.Text
-End Property
-
-Public Property Get EventColour() As Long
-  If Not cboColour.SelectedItem Is Nothing Then
-    EventColour = cboColour.SelectedItem.Tag
-  End If
-End Property
-
-Public Property Get EventColourName() As String
-  If Not cboColour.SelectedItem Is Nothing Then
-    EventColourName = cboColour.SelectedItem.Text
-  End If
 End Property
 
 Public Property Get EventLegendTableID() As Long
@@ -805,10 +745,10 @@ Public Property Get EventDesc2ID() As Long
   EventDesc2ID = cboEventDesc2.ItemData(cboEventDesc2.ListIndex)
 End Property
 Public Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
-  cmdOk.Enabled = pblnChanged
+  cmdOK.Enabled = pblnChanged
 End Property
 Private Sub RefreshLegendFrame()
   
@@ -817,8 +757,6 @@ Private Sub RefreshLegendFrame()
   
   If Me.optCharacter Then
     Me.txtCharacter.Enabled = mblnHasStartDate
-    'Me.lblColour.BackColor = IIf(mblnHasStartDate, lblColour.Tag, vbButtonFace)
-    'Me.cmdColourPicker.Enabled = mblnHasStartDate
     Me.txtCharacter.BackColor = IIf(Me.txtCharacter.Enabled, vbWindowBackground, vbButtonFace)
     
     With cboEventType
@@ -845,9 +783,7 @@ Private Sub RefreshLegendFrame()
     Me.txtCharacter.Text = ""
     Me.txtCharacter.Enabled = False
     Me.txtCharacter.BackColor = vbButtonFace
-    'Me.lblColour.BackColor = vbButtonFace
-    'Me.cmdColourPicker.Enabled = False
-
+    
     With cboLegendTable
       .Enabled = (mblnHasStartDate And mblnHasLookupColumn)
       If (.ListIndex < 0) And (.ListCount > 0) Then
@@ -1202,7 +1138,7 @@ Private Sub UpdateEventDependantFields()
   lblCalendarCode.Enabled = (mblnHasStartDate And mblnHasLookupColumn)
   lblType.Enabled = (mblnHasStartDate And mblnHasLookupColumn)
   optLegendLookup.Enabled = (mblnHasStartDate And mblnHasLookupColumn)
-  'fraEventDesc.Enabled = mblnHasStartDate
+  fraEventDesc.Enabled = mblnHasStartDate
   lblEventDesc1.Enabled = mblnHasStartDate
   lblEventDesc2.Enabled = mblnHasStartDate
 
@@ -1777,6 +1713,10 @@ Private Sub optNoEnd_Click()
 End Sub
 
 
+
+
+
+
 Private Sub txtCharacter_Change()
   If Not mblnLoading Then
     Changed = True
@@ -1802,73 +1742,5 @@ Private Sub txtEventName_Change()
   If Not mblnLoading Then
     Changed = True
   End If
-End Sub
-
-
-Private Sub PopulateColourCombo()
-  
-  Dim rsTemp As Recordset
-  Dim strSQL As String
-  Dim strColour As String
-  Dim lngColour As Long
-  
-  On Local Error GoTo LocalErr
-
-  strSQL = "SELECT ColValue, ColDesc " & _
-           "FROM ASRSysColours " & _
-           "ORDER BY ColOrder"
-           
-  
-  Set rsTemp = datGeneral.GetReadOnlyRecords(strSQL)
-
-  Do While Not rsTemp.EOF
- 
-    With picColour
-      .AutoRedraw = True
-      .Width = picColour.ScaleX(12, vbPixels, vbTwips)
-      .Height = picColour.ScaleY(12, vbPixels, vbTwips)
-      .BorderStyle = 0
-      .Appearance = 0
-      .BackColor = rsTemp!ColValue
-      .ForeColor = vbBlack
-      picColour.Line (0, 0)-(picColour.Width - picColour.ScaleX(1, vbPixels, vbTwips) _
-                 , picColour.Height - picColour.ScaleY(1, vbPixels, vbTwips)), , B
-      .Picture = picColour.Image
-      ImageList1.ListImages.Add , rsTemp!ColDesc, .Picture
-      .Cls
-      .Picture = Nothing
-    End With
-
-    rsTemp.MoveNext
-  Loop
-
-  If Not rsTemp.BOF Or Not rsTemp.EOF Then
-    rsTemp.MoveFirst
-
-    cboColour.ComboItems.Clear
-    cboColour.ImageList = ImageList1
-
-    Do While Not rsTemp.EOF
-
-      strColour = rsTemp!ColDesc
-      lngColour = rsTemp!ColValue
-
-      cboColour.Refresh
-      cboColour.ComboItems.Add , "C" & CStr(lngColour), strColour, strColour
-      cboColour.ComboItems.Item(cboColour.ComboItems.Count).Tag = lngColour
-
-      rsTemp.MoveNext
-    Loop
-  End If
-
-  rsTemp.Close
-
-  Set rsTemp = Nothing
-
-Exit Sub
-
-LocalErr:
-  MsgBox Err.Description, vbExclamation, Me.Caption
-
 End Sub
 

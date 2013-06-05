@@ -42,7 +42,6 @@ Begin VB.Form frmCalendarReport
       _Version        =   393216
       Style           =   1
       Tabs            =   5
-      Tab             =   1
       TabsPerRow      =   5
       TabHeight       =   520
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -56,22 +55,26 @@ Begin VB.Form frmCalendarReport
       EndProperty
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmCalendarReport.frx":000C
-      Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "fraBase"
-      Tab(0).Control(1)=   "fraInformation"
+      Tab(0).ControlEnabled=   -1  'True
+      Tab(0).Control(0)=   "fraInformation"
+      Tab(0).Control(0).Enabled=   0   'False
+      Tab(0).Control(1)=   "fraBase"
+      Tab(0).Control(1).Enabled=   0   'False
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Eve&nt Details"
       TabPicture(1)   =   "frmCalendarReport.frx":0028
-      Tab(1).ControlEnabled=   -1  'True
+      Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraEvents"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "Report Detai&ls"
       TabPicture(2)   =   "frmCalendarReport.frx":0044
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraDisplayOptions"
+      Tab(2).Control(0)=   "fraReportStart"
+      Tab(2).Control(0).Enabled=   0   'False
       Tab(2).Control(1)=   "fraReportEnd"
-      Tab(2).Control(2)=   "fraReportStart"
+      Tab(2).Control(1).Enabled=   0   'False
+      Tab(2).Control(2)=   "fraDisplayOptions"
+      Tab(2).Control(2).Enabled=   0   'False
       Tab(2).ControlCount=   3
       TabCaption(3)   =   "&Sort Order"
       TabPicture(3)   =   "frmCalendarReport.frx":0060
@@ -432,7 +435,7 @@ Begin VB.Form frmCalendarReport
       Begin VB.Frame fraEvents 
          Caption         =   "Events :"
          Height          =   5760
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   91
          Top             =   400
          Width           =   9180
@@ -477,7 +480,7 @@ Begin VB.Form frmCalendarReport
             _Version        =   196617
             DataMode        =   2
             RecordSelectors =   0   'False
-            Col.Count       =   28
+            Col.Count       =   26
             AllowUpdate     =   0   'False
             MultiLine       =   0   'False
             AllowRowSizing  =   0   'False
@@ -499,7 +502,8 @@ Begin VB.Form frmCalendarReport
             BackColorEven   =   -2147483643
             BackColorOdd    =   -2147483643
             RowHeight       =   423
-            Columns.Count   =   28
+            ExtraHeight     =   79
+            Columns.Count   =   26
             Columns(0).Width=   1217
             Columns(0).Caption=   "Name"
             Columns(0).Name =   "Name"
@@ -671,19 +675,6 @@ Begin VB.Form frmCalendarReport
             Columns(25).DataField=   "Column 25"
             Columns(25).DataType=   8
             Columns(25).FieldLen=   256
-            Columns(26).Width=   3200
-            Columns(26).Caption=   "ColourName"
-            Columns(26).Name=   "ColourName"
-            Columns(26).DataField=   "Column 26"
-            Columns(26).DataType=   8
-            Columns(26).FieldLen=   256
-            Columns(27).Width=   3200
-            Columns(27).Visible=   0   'False
-            Columns(27).Caption=   "ColourValue"
-            Columns(27).Name=   "ColourValue"
-            Columns(27).DataField=   "Column 27"
-            Columns(27).DataType=   8
-            Columns(27).FieldLen=   256
             TabNavigation   =   1
             _ExtentX        =   13123
             _ExtentY        =   9234
@@ -1180,7 +1171,7 @@ Begin VB.Form frmCalendarReport
       Begin VB.Frame fraBase 
          Caption         =   "Data :"
          Height          =   3780
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   85
          Top             =   2400
          Width           =   9180
@@ -1414,7 +1405,7 @@ Begin VB.Form frmCalendarReport
       End
       Begin VB.Frame fraInformation 
          Height          =   1950
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   80
          Top             =   400
          Width           =   9180
@@ -2475,34 +2466,33 @@ Private Function RetrieveCalendarReportDetails(plngCalendarReportID As Long) As 
   'Output Options.
   optOutputFormat(rsTemp!OutputFormat).Value = True
   chkPreview.Value = IIf(rsTemp!OutputPreview, vbChecked, vbUnchecked)
-'  chkDestination(desScreen).Value = IIf(rsTemp!OutputScreen, vbChecked, vbUnchecked)
-'
-'  chkDestination(desPrinter).Value = IIf(rsTemp!OutputPrinter, vbChecked, vbUnchecked)
-'  SetComboText cboPrinterName, rsTemp!OutputPrinterName
-'  If rsTemp!OutputPrinterName <> vbNullString Then
-'    If cboPrinterName.Text <> rsTemp!OutputPrinterName Then
-'      cboPrinterName.AddItem rsTemp!OutputPrinterName
-'      cboPrinterName.ListIndex = cboPrinterName.NewIndex
-'      MsgBox "This definition is set to output to printer " & rsTemp!OutputPrinterName & _
-'             " which is not set up on your PC.", vbInformation, Me.Caption
-'    End If
-'  End If
-'
-'  chkDestination(desSave).Value = IIf(rsTemp!OutputSave, vbChecked, vbUnchecked)
-'  If chkDestination(desSave).Value Then
-'    SetComboItem cboSaveExisting, rsTemp!OutputSaveExisting
-'    txtFilename.Text = rsTemp!OutputFilename
-'  End If
-'
-'  chkDestination(desEmail).Value = IIf(rsTemp!OutputEmail, vbChecked, vbUnchecked)
-'
-'  If rsTemp!OutputEmail Then
-'    txtEmailGroup.Text = datGeneral.GetEmailGroupName(rsTemp!OutputEmailAddr)
-'    txtEmailGroup.Tag = rsTemp!OutputEmailAddr
-'    txtEmailSubject.Text = rsTemp!OutputEmailSubject
-'    txtEmailAttachAs.Text = IIf(IsNull(rsTemp!OutputEmailAttachAs), vbNullString, rsTemp!OutputEmailAttachAs)
-'  End If
-  objOutputDef.PopulateOutputControls rsTemp
+  chkDestination(desScreen).Value = IIf(rsTemp!OutputScreen, vbChecked, vbUnchecked)
+  
+  chkDestination(desPrinter).Value = IIf(rsTemp!OutputPrinter, vbChecked, vbUnchecked)
+  SetComboText cboPrinterName, rsTemp!OutputPrinterName
+  If rsTemp!OutputPrinterName <> vbNullString Then
+    If cboPrinterName.Text <> rsTemp!OutputPrinterName Then
+      cboPrinterName.AddItem rsTemp!OutputPrinterName
+      cboPrinterName.ListIndex = cboPrinterName.NewIndex
+      MsgBox "This definition is set to output to printer " & rsTemp!OutputPrinterName & _
+             " which is not set up on your PC.", vbInformation, Me.Caption
+    End If
+  End If
+
+  chkDestination(desSave).Value = IIf(rsTemp!OutputSave, vbChecked, vbUnchecked)
+  If chkDestination(desSave).Value Then
+    SetComboItem cboSaveExisting, rsTemp!OutputSaveExisting
+    txtFilename.Text = rsTemp!OutputFilename
+  End If
+
+  chkDestination(desEmail).Value = IIf(rsTemp!OutputEmail, vbChecked, vbUnchecked)
+
+  If rsTemp!OutputEmail Then
+    txtEmailGroup.Text = datGeneral.GetEmailGroupName(rsTemp!OutputEmailAddr)
+    txtEmailGroup.Tag = rsTemp!OutputEmailAddr
+    txtEmailSubject.Text = rsTemp!OutputEmailSubject
+    txtEmailAttachAs.Text = IIf(IsNull(rsTemp!OutputEmailAttachAs), vbNullString, rsTemp!OutputEmailAttachAs)
+  End If
 
   If mblnReadOnly Then
     ControlsDisableAll Me
@@ -2522,15 +2512,7 @@ Private Function RetrieveCalendarReportDetails(plngCalendarReportID As Long) As 
   sMessage = vbNullString
   
   ' Now load the events guff
-  'Set rsTemp = datGeneral.GetRecords("SELECT * FROM ASRSysCalendarReportEvents WHERE CalendarReportID = " & plngCalendarReportID & " ORDER BY ID")
-
-
-  Set rsTemp = datGeneral.GetRecords("SELECT ASRSysCalendarReportEvents.*, ASRSysColours.ColDesc FROM ASRSysCalendarReportEvents " & _
-                                     "JOIN ASRSysColours ON ASRSysColours.ColValue = ASRSysCalendarReportEvents.Colour " & _
-                                     "WHERE CalendarReportID = " & plngCalendarReportID & " ORDER BY ID")
-
-
-
+  Set rsTemp = datGeneral.GetRecords("SELECT * FROM ASRSysCalendarReportEvents WHERE CalendarReportID = " & plngCalendarReportID & " ORDER BY ID")
 
   If rsTemp.BOF And rsTemp.EOF Then
     MsgBox "Cannot load the event information for this Calendar Report", vbExclamation + vbOKOnly, "Calendar Reports"
@@ -2691,9 +2673,7 @@ Private Function RetrieveCalendarReportDetails(plngCalendarReportID As Long) As 
       sAddLine = sAddLine & vbNullString & vbTab
     End If
     
-    sAddLine = sAddLine & Trim(rsTemp!EventKey) & vbTab
-    sAddLine = sAddLine & Trim(rsTemp!ColDesc) & vbTab
-    sAddLine = sAddLine & Trim(rsTemp!Colour)
+    sAddLine = sAddLine & Trim(rsTemp!EventKey)
     
     grdEvents.AddItem sAddLine
     
@@ -2705,7 +2685,7 @@ Private Function RetrieveCalendarReportDetails(plngCalendarReportID As Long) As 
                 rsTemp!EventEndDateID, sTempEndDateName, _
                 rsTemp!EventEndSessionID, sTempEndSessionName, _
                 rsTemp!EventDurationID, sTempDurationName, _
-                rsTemp!LegendType, rsTemp!LegendCharacter, rsTemp!Colour, _
+                rsTemp!LegendType, rsTemp!LegendCharacter, _
                 rsTemp!LegendLookupTableID, sTempLegendTableName, _
                 rsTemp!LegendLookupColumnID, sTempLegendColumnName, _
                 rsTemp!LegendLookupCodeID, sTempLegendCodeName, _
@@ -3567,41 +3547,28 @@ Private Function SaveDefinition() As Boolean
         " OutputPrinter = " & IIf(chkDestination(desPrinter).Value = vbChecked, "1", "0") & ", " & _
         " OutputPrinterName = '" & Replace(cboPrinterName.Text, " '", "''") & "', "
       
-'    If chkDestination(desSave).Value = vbChecked Then
-'      sSQL = sSQL & _
-'        "OutputSave = 1, " & _
-'        "OutputSaveExisting = " & cboSaveExisting.ItemData(cboSaveExisting.ListIndex) & ", "
-'    Else
-'      sSQL = sSQL & _
-'        "OutputSave = 0, " & _
-'        "OutputSaveExisting = 0, "
-'    End If
     If chkDestination(desSave).Value = vbChecked Then
       sSQL = sSQL & _
         "OutputSave = 1, " & _
-        "OutputSaveFormat = " & Val(txtFilename.Tag) & ", " & _
         "OutputSaveExisting = " & cboSaveExisting.ItemData(cboSaveExisting.ListIndex) & ", "
     Else
       sSQL = sSQL & _
         "OutputSave = 0, " & _
-        "OutputSaveFormat = 0, " & _
         "OutputSaveExisting = 0, "
     End If
-    
+        
     If chkDestination(desEmail).Value = vbChecked Then
       sSQL = sSQL & _
           "OutputEmail = 1, " & _
           "OutputEmailAddr = " & txtEmailGroup.Tag & ", " & _
           "OutputEmailSubject = '" & Replace(txtEmailSubject.Text, "'", "''") & "', " & _
-          "OutputEmailAttachAs = '" & Replace(txtEmailAttachAs.Text, "'", "''") & "', " & _
-          "OutputEmailFileFormat = " & CStr(Val(txtEmailAttachAs.Tag)) & ", "
+          "OutputEmailAttachAs = '" & Replace(txtEmailAttachAs.Text, "'", "''") & "', "
     Else
       sSQL = sSQL & _
           "OutputEmail = 0, " & _
           "OutputEmailAddr = 0, " & _
           "OutputEmailSubject = '', " & _
-          "OutputEmailAttachAs = '', " & _
-          "OutputEmailFileFormat = 0, "
+          "OutputEmailAttachAs = '', "
     End If
     
     sSQL = sSQL & _
@@ -3626,8 +3593,8 @@ Private Function SaveDefinition() As Boolean
            "StartPeriod, StartDateExpr, EndType, FixedEnd, EndFrequency, " & _
            "EndPeriod, EndDateExpr, ShowBankHolidays, ShowCaptions, " & _
            "ShowWeekends, IncludeWorkingDaysOnly, IncludeBankHolidays, StartOnCurrentMonth, PrintFilterHeader, OutputPreview, OutputFormat, OutputScreen, OutputPrinter, " & _
-           "OutputPrinterName, OutputSave, OutputSaveFormat, OutputSaveExisting, OutputEmail, " & _
-           "OutputEmailAddr, OutputEmailSubject, OutputEmailAttachAs, OutputEmailFileFormat, OutputFileName " & _
+           "OutputPrinterName, OutputSave, OutputSaveExisting, OutputEmail, " & _
+           "OutputEmailAddr, OutputEmailSubject, OutputEmailAttachAs, OutputFileName " & _
            ") "
     
     sSQL = sSQL & "VALUES("
@@ -3674,20 +3641,19 @@ Private Function SaveDefinition() As Boolean
     sSQL = sSQL & "'" & Replace(cboPrinterName.Text, "'", "''") & "',"              'OutputPrinterName
 
     If chkDestination(desSave).Value = vbChecked Then
-      sSQL = sSQL & "1, " & CStr(Val(txtFilename.Tag)) & ", " & _
-        cboSaveExisting.ItemData(cboSaveExisting.ListIndex) & ", "    'OutputSave, OutputSaveFormat, OutputSaveExisting
+      sSQL = sSQL & "1, " & _
+        cboSaveExisting.ItemData(cboSaveExisting.ListIndex) & ", "    'OutputSave, OutputSaveExisting
     Else
-      sSQL = sSQL & "0, 0, 0, "    'OutputSave, OutputSaveFormat, OutputSaveExisting
+      sSQL = sSQL & "0, 0, "    'OutputSave, OutputSaveExisting
     End If
 
     If chkDestination(desEmail).Value = vbChecked Then
       sSQL = sSQL & "1, " & _
           txtEmailGroup.Tag & ", " & _
           "'" & Replace(txtEmailSubject.Text, "'", "''") & "', " & _
-          "'" & Replace(txtEmailAttachAs.Text, "'", "''") & ", " & _
-          CStr(Val(txtEmailAttachAs.Tag)) & ", "      'OutputEmail, OutputEmailAddr, OutputEmailAttachAs, OutputEmailFileFormat, OutputEmailSubject
+          "'" & Replace(txtEmailAttachAs.Text, "'", "''") & "', "      'OutputEmail, OutputEmailAddr, OutputEmailSubject
     Else
-      sSQL = sSQL & "0, 0, '', '', 0, "               'OutputEmail, OutputEmailAddr, OutputEmailAttachAs, OutputEmailFileFormat, OutputEmailSubject
+      sSQL = sSQL & "0, 0, '', '', "   'OutputEmail, OutputEmailAddr, OutputEmailSubject
     End If
 
     sSQL = sSQL & _
@@ -3715,7 +3681,7 @@ Private Function SaveDefinition() As Boolean
              "CalendarReportID, Name, TableID, FilterID, " & _
              "EventStartDateID, EventStartSessionID, EventEndDateID, EventEndSessionID, " & _
              "EventDurationID, LegendType, LegendCharacter, LegendLookupTableID, LegendLookupColumnID, " & _
-             "LegendLookupCodeID, LegendEventColumnID, Colour, " & _
+             "LegendLookupCodeID, LegendEventColumnID, " & _
              "EventDesc1ColumnID, EventDesc2ColumnID) "
   
   
@@ -3737,14 +3703,12 @@ Private Function SaveDefinition() As Boolean
           sSQL = sSQL & CStr(.LegendColumnID) & ","
           sSQL = sSQL & CStr(.LegendCodeID) & ","
           sSQL = sSQL & CStr(.LegendEventTypeID) & ","
-          sSQL = sSQL & "0,"
         Else
           sSQL = sSQL & "'" & Replace(.LegendCharacter, "'", "''") & "',"
           sSQL = sSQL & "0,"
           sSQL = sSQL & "0,"
           sSQL = sSQL & "0,"
           sSQL = sSQL & "0,"
-          sSQL = sSQL & "'" & CStr(.ColourValue) & "',"
   
         End If
         
@@ -4394,7 +4358,6 @@ Private Sub cmdAddEvent_Click()
                 , 0 _
                 , 0 _
                 , 0 _
-                , 0 _
                 , strEventKey
         
     If Not .Cancelled Then
@@ -4428,9 +4391,7 @@ Private Sub cmdAddEvent_Click()
                 .EventDesc2ID & vbTab & _
                 .EventDesc2Column & vbTab
       
-      pstrRow = pstrRow & .Key & vbTab & _
-                .EventColourName & vbTab & _
-                .EventColour
+      pstrRow = pstrRow & .Key
       
       With Me.grdEvents
         .AddItem pstrRow
@@ -4447,7 +4408,7 @@ Private Sub cmdAddEvent_Click()
                   .EventEndDateID, .EventEndDateColumn, _
                   .EventEndSessionID, .EventEndSessionColumn, _
                   .EventDurationID, .EventDurationColumn, _
-                  .EventLegendType, .EventCharacter, .EventColour, _
+                  .EventLegendType, .EventCharacter, _
                   .EventLegendTableID, .EventLegendTable, _
                   .EventLegendColumnID, .EventLegendColumn, _
                   .EventLegendCodeID, .EventLegendCode, _
@@ -4732,17 +4693,14 @@ Private Sub cmdEditEvent_Click()
   Dim pfrmEvents As New frmCalendarReportDates
   Dim iLegendType As Interior
   Dim sLegendChar As String
-  Dim lColour As Long
   Dim strEventKey As String
   
   With Me.grdEvents
     plngRow = .AddItemRowIndex(.Bookmark)
     If .Columns("LegendType").Value = 0 Then
       sLegendChar = .Columns("Legend").Value
-      lColour = .Columns("ColourValue").Value
     Else
       sLegendChar = ""
-      lColour = 0   'NEEDS TO DEFAULT TO SOMETHING GOOD!
     End If
     
     strEventKey = Trim(.Columns("EventKey").Value)
@@ -4760,7 +4718,6 @@ Private Sub cmdEditEvent_Click()
                 , CLng(.Columns("EndSessionID").Value) _
                 , CLng(.Columns("DurationID").Value) _
                 , sLegendChar _
-                , lColour _
                 , CLng(.Columns("LegendTableID").Value) _
                 , CLng(.Columns("LegendColumnID").Value) _
                 , CLng(.Columns("LegendCodeID").Value) _
@@ -4802,9 +4759,7 @@ Private Sub cmdEditEvent_Click()
                 .EventDesc2ID & vbTab & _
                 .EventDesc2Column & vbTab
                 
-      pstrRow = pstrRow & .Key & vbTab & _
-                .EventColourName & vbTab & _
-                .EventColour
+      pstrRow = pstrRow & .Key
       
       With Me.grdEvents
         .RemoveItem plngRow
@@ -4823,7 +4778,7 @@ Private Sub cmdEditEvent_Click()
                   .EventEndDateID, .EventEndDateColumn, _
                   .EventEndSessionID, .EventEndSessionColumn, _
                   .EventDurationID, .EventDurationColumn, _
-                  .EventLegendType, .EventCharacter, .EventColour, _
+                  .EventLegendType, .EventCharacter, _
                   .EventLegendTableID, .EventLegendTable, _
                   .EventLegendColumnID, .EventLegendColumn, _
                   .EventLegendCodeID, .EventLegendCode, _
@@ -5660,8 +5615,6 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
             sRow = sRow & .Columns("Desc2ID").CellValue(varBookmark) & vbTab
             sRow = sRow & .Columns("Description 2").CellValue(varBookmark) & vbTab
             sRow = sRow & .Columns("EventKey").CellValue(varBookmark) & vbTab
-            sRow = sRow & .Columns("ColourName").CellValue(varBookmark) & vbTab
-            sRow = sRow & .Columns("ColourValue").CellValue(varBookmark) & vbTab
             
             If .Rows > 1 Then
               .RemoveItem iLoop
