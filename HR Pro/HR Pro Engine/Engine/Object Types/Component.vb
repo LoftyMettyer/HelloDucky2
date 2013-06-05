@@ -121,12 +121,11 @@ Namespace Things
           Me.SubType = ScriptDB.ComponentTypes.Expression
 
           If Me.TableID <> Me.BaseExpression.TableID Then
-            Globals.ErrorLog.Add(ErrorHandler.Section.UDFs, "", ErrorHandler.Severity.Error _
+            Globals.ErrorLog.Add(ErrorHandler.Section.UDFs, "", ErrorHandler.Severity.Warning _
             , String.Format("Error creating calculation for {0}.{1} ", Me.BaseExpression.BaseTable.Name, Me.BaseExpression.AssociatedColumn.Name) _
               , "This is likely caused by copying a table and a calculation reference is still attached to the original column. In the associated calculation try re-selecting any calculations")
             Me.BaseExpression.IsValid = False
           End If
-
 
         ElseIf Me.SubType = ScriptDB.ComponentTypes.Expression Then
 

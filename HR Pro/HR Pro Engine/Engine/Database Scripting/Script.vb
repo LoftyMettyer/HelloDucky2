@@ -1166,7 +1166,9 @@ Namespace ScriptDB
                 column.DefaultCalculation = table.Expressions.GetById(column.DefaultCalcID)
 
                 If column.DefaultCalculation Is Nothing Then
-                  Globals.ErrorLog.Add(ErrorHandler.Section.LoadingData, column.Name, ErrorHandler.Severity.Error, "Default calculation not found", CStr(column.DefaultCalcID))
+                  Globals.ErrorLog.Add(ErrorHandler.Section.UDFs, "", ErrorHandler.Severity.Warning _
+                  , String.Format("Default calculation for {0}.{1} not found.", column.Table.Name, column.Name) _
+                    , "This is likely caused by copying a table and a calculation reference is still attached to the original column. In the associated calculation try re-selecting any calculations")
                 Else
                   column.DefaultCalculation.ExpressionType = ScriptDB.ExpressionType.ColumnDefault
                   column.DefaultCalculation.AssociatedColumn = column
