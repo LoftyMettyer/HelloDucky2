@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "coa_line.ocx"
+Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "COA_Line.ocx"
 Begin VB.Form frmEventLogDetails 
    Caption         =   "Event Log Details"
    ClientHeight    =   4695
@@ -549,6 +549,8 @@ Private Function PopulateDetailsGrid() As Boolean
   ' Populate the details grid with these records
   With grdDetails
     .RemoveAll
+    .FieldSeparator = "|"
+    
     Do Until mrstDetailRecords.EOF
       .AddItem mrstDetailRecords.Fields("Notes")
       mrstDetailRecords.MoveNext
@@ -944,10 +946,10 @@ Private Sub Form_Resize()
   
   lngLineWidth = lngInnerFrameWidth - 135
 
-  cmdOK.Left = Me.ScaleWidth - (BUTTON_WIDTH + (BUTTON_GAP / 2))
-  cmdOK.Top = Me.ScaleHeight - (BUTTON_HEIGHT + (BUTTON_GAP / 2))
+  cmdOk.Left = Me.ScaleWidth - (BUTTON_WIDTH + (BUTTON_GAP / 2))
+  cmdOk.Top = Me.ScaleHeight - (BUTTON_HEIGHT + (BUTTON_GAP / 2))
 
-  cmdPrint.Left = cmdOK.Left - (BUTTON_WIDTH + (BUTTON_GAP / 2))
+  cmdPrint.Left = cmdOk.Left - (BUTTON_WIDTH + (BUTTON_GAP / 2))
   cmdPrint.Top = Me.ScaleHeight - (BUTTON_HEIGHT + (BUTTON_GAP / 2))
 
   cmdEmail.Left = cmdPrint.Left - (BUTTON_WIDTH + (BUTTON_GAP / 2))
