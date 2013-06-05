@@ -43,8 +43,8 @@ BEGIN
 
 	IF @TableID = 1	-- Personnel
 	BEGIN
-	--	EXEC fusion.[pSendMessageCheckContext] @MessageType='StaffChange', @LocalId=@RecordID
-		EXEC fusion.[pSendMessageCheckContext] @MessageType='personMaritalStatusChange', @LocalId=@RecordID	
+		EXEC fusion.[pSendMessageCheckContext] @MessageType='StaffChange', @LocalId=@RecordID
+--		EXEC fusion.[pSendMessageCheckContext] @MessageType='personMaritalStatusChange', @LocalId=@RecordID	
 	END
 
 	IF @TableID = 2	-- Absence
@@ -267,11 +267,11 @@ BEGIN
 
 	-- Get relationship keys
 	SET @foreignKeys = '';
-	SELECT c.TranslationName, mr.IsPrimaryKey,	NodeKey
-		FROM fusion.MessageRelations mr
-		INNER JOIN fusion.Category c ON c.ID = mr.CategoryID
-		INNER JOIN ASRSysTables t ON t.TableID = c.TableID
-		WHERE messageID = @messageID
+	--SELECT c.TranslationName, mr.IsPrimaryKey,	NodeKey
+	--	FROM fusion.MessageRelations mr
+	--	INNER JOIN fusion.Category c ON c.ID = mr.CategoryID
+	--	INNER JOIN ASRSysTables t ON t.TableID = c.TableID
+	--	WHERE messageID = @messageID
 
 	--SELECT @ssql2
 
@@ -350,7 +350,7 @@ BEGIN
 			, '' AS [Column_14], '' AS [Column_15], '' AS [Column_16], '' AS [Column_17], '' AS [Column_18]
 			, '' AS [Column_19], '' AS [Column_20], '' AS [Column_21], '' AS [Column_22], '' AS [Column_23]
 			, '' AS [Column_24], '' AS [Column_25], '' AS [Column_26], '' AS [Column_27], '' AS [Column_28], '' AS [Column_29]	
-			, '' AS headerline					
+--			, '' AS headerline					
 
 	END
 	ELSE
