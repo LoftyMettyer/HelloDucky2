@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmTabOrd 
    BorderStyle     =   3  'Fixed Dialog
@@ -440,7 +440,7 @@ ErrorTrap:
   
 End Sub
 
-Private Sub cmdOK_Click()
+Private Sub cmdOk_Click()
   ' Save the changes to the screen controls.
   On Error GoTo ErrorTrap
   
