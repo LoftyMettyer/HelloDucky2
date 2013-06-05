@@ -847,7 +847,7 @@ Public Function SendEmail(strTo As String, strSubject As String, strMsgText As S
   Set objOutputEmail = Nothing
   
   If strError <> "" And blnErrorMessage Then
-    MsgBox "Error sending email (" & strError & ")", vbExclamation + vbOKOnly, "Send Mail Message"
+    MsgBox strError, vbExclamation + vbOKOnly, "Send Mail Message"
   End If
 
 End Function

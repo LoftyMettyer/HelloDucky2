@@ -703,7 +703,7 @@ Public Function SendEmail(strAttachment As String) As Boolean
       '.Send blnShowMessage
 
       Set objOutputEmail = New clsOutputEMail
-      objOutputEmail.SendEmailFromClient strTo, "", "", mstrEmailSubject, "", strAttachment, False
+      mstrErrorMessage = objOutputEmail.SendEmailFromClient(strTo, "", "", mstrEmailSubject, "", strAttachment, False)
       Set objOutputEmail = Nothing
 
       gobjProgress.Visible = blnProgressVisible

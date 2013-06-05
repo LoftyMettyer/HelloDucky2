@@ -19,13 +19,13 @@ Public Function SendEmailFromClient(strTo As String, strCC As String, strBCC As 
   'HKEY_CURRENT_USER\Software\Microsoft\Windows NT\CurrentVersion\Windows Messaging Subsystem\Profiles
 
   If blnPause Then
-    SendEmailFromClientUsingShell strTo, strCC, strBCC, strSubject, strMsgText, strAttachment
+    SendEmailFromClient = SendEmailFromClientUsingShell(strTo, strCC, strBCC, strSubject, strMsgText, strAttachment)
   
   ElseIf GetUserOrSystemSetting("Email CDO", "Enabled", "0") = 1 Then
-    SendEmailFromClientUsingCDO strTo, strCC, strBCC, strSubject, strMsgText, strAttachment
+    SendEmailFromClient = SendEmailFromClientUsingCDO(strTo, strCC, strBCC, strSubject, strMsgText, strAttachment)
   
   Else
-    SendEmailFromClientUsingMAPI strTo, strCC, strBCC, strSubject, strMsgText, strAttachment
+    SendEmailFromClient = SendEmailFromClientUsingMAPI(strTo, strCC, strBCC, strSubject, strMsgText, strAttachment)
   
   End If
 
@@ -35,6 +35,11 @@ End Function
 Private Function SendEmailFromClientUsingShell(strTo As String, strCC As String, strBCC As String, strSubject As String, strMsgText As String, strAttachment As String) As String
 
   Dim strCommand As String
+  Dim strError As String
+  
+  On Local Error GoTo LocalErr
+  
+  strError = vbNullString
   
   strCommand = "mailto:" & Replace(strTo, ";", ",") & " " & _
                "?cc=" & Replace(strCC, ";", ",") & " " & _
@@ -44,6 +49,15 @@ Private Function SendEmailFromClientUsingShell(strTo As String, strCC As String,
   
   ShellExecute 0&, vbNullString, strCommand, vbNullString, vbNullString, vbMaximizedFocus
 
+TidyAndExit:
+  SendEmailFromClientUsingShell = strError
+
+Exit Function
+
+LocalErr:
+  strError = "Error creating email" & vbCrLf & Err.Description
+  GoTo TidyAndExit
+  
 End Function
 
 
@@ -55,7 +69,10 @@ Private Function SendEmailFromClientUsingCDO(strTo As String, strCC As String, s
   Dim strFrom As String
   Dim strArray() As String
   Dim lngIndex As Long
-
+  
+  On Local Error GoTo LocalErr
+  
+  strError = vbNullString
   strFrom = GetUserOrSystemSetting("Email CDO", "From", "")
 
   Set Flds = iConf.Fields
@@ -90,10 +107,19 @@ Private Function SendEmailFromClientUsingCDO(strTo As String, strCC As String, s
     .Send
   End With
 
+TidyAndExit:
   Set iMsg = Nothing
   Set iConf = Nothing
   Set Flds = Nothing
 
+  SendEmailFromClientUsingCDO = strError
+
+Exit Function
+
+LocalErr:
+  strError = "Error sending email" & vbCrLf & Err.Description & " (CDO)"
+  GoTo TidyAndExit
+  
 End Function
 
 
@@ -108,6 +134,7 @@ Private Function SendEmailFromClientUsingMAPI(strTo As String, strCC As String, 
   
   Dim strArray() As String
   Dim lngIndex As Long
+  Dim blnShowMessage As Boolean
   
   On Error GoTo LocalErr
 
@@ -116,6 +143,7 @@ Private Function SendEmailFromClientUsingMAPI(strTo As String, strCC As String, 
 
 
   strError = vbNullString
+  blnShowMessage = False
   
   If strTo & strCC & strBCC = vbNullString Then
     strError = "Please select recipient(s) to email"
@@ -178,7 +206,7 @@ Private Function SendEmailFromClientUsingMAPI(strTo As String, strCC As String, 
       Next
     End If
 
-    .Send False
+    .Send blnShowMessage
 
   End With
 
@@ -195,10 +223,17 @@ Exit Function
 LocalErr:
   If Err.Number = 32001 Or Err = 32003 Then
     Resume Next
+  
+  ElseIf Err.Number = 48389 Then
+    'Simple MAPI is no longer supported in Microsoft Outlook 2007. It is still supported by Exchange Server 2003.
+    'http://msdn.microsoft.com/en-us/library/cc815424.aspx
+    blnShowMessage = True
+    Resume Next
+  
   Else
-    strError = "Error sending email" & vbCrLf & _
-           IIf(Err.Description <> vbNullString, "(" & Trim(Err.Description) & ")", "")
+    strError = "Error sending email" & vbCrLf & Err.Description & " (MAPI)"
     GoTo TidyAndExit
+  
   End If
 
 End Function
@@ -227,6 +262,8 @@ Public Function SendEmailFromServer(strTo As String, strCC As String, strBCC As 
   adoCmd.Execute
   
 TidyAndExit:
+  Set adoCmd = Nothing
+
   SendEmailFromServer = strError
 
 Exit Function
