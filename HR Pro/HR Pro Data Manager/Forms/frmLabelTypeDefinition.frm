@@ -57,11 +57,11 @@ Begin VB.Form frmLabelTypeDefinition
       TabCaption(1)   =   "&Format"
       TabPicture(1)   =   "frmLabelTypeDefinition.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "ImageList1"
-      Tab(1).Control(1)=   "picColour"
+      Tab(1).Control(0)=   "fraPreview"
+      Tab(1).Control(1)=   "fraFont(1)"
       Tab(1).Control(2)=   "fraFont(0)"
-      Tab(1).Control(3)=   "fraFont(1)"
-      Tab(1).Control(4)=   "fraPreview"
+      Tab(1).Control(3)=   "picColour"
+      Tab(1).Control(4)=   "ImageList1"
       Tab(1).ControlCount=   5
       Begin VB.Frame fraPreview 
          Caption         =   "Preview :"
@@ -2144,7 +2144,7 @@ Public Function Initialise(bNew As Boolean, bCopy As Boolean, Optional lLabelDef
   strLoadingWarning = ""
 
   ' Only allow import button if Word is XP or greater
-  cmdImportFromWord.Enabled = IIf(GetWordVersion >= 10, True, False)
+  cmdImportFromWord.Enabled = IIf(GetOfficeWordVersion >= 10, True, False)
 
   Set datData = New HRProDataMgr.clsDataAccess
 
@@ -2461,7 +2461,7 @@ End Sub
 Private Sub optLabelEnvelope_Click(Index As Integer)
 
   mbIsEnvelope = (optLabelEnvelope(1).Value = True)
-  cmdImportFromWord.Enabled = Not mbIsEnvelope And (GetWordVersion >= 10)
+  cmdImportFromWord.Enabled = Not mbIsEnvelope And (GetOfficeWordVersion >= 10)
 
   fraLabel.Visible = (optLabelEnvelope(0).Value = True)
   fraEnvelope.Visible = Not fraLabel.Visible
@@ -3205,23 +3205,23 @@ LocalErr:
 End Sub
 
 
-Private Function GetWordVersion() As Integer
-  
-  Dim wrdApp As Object
-  
-  On Error GoTo LocalErr
-
-  Set wrdApp = CreateObject("Word.Application")
-
-  GetWordVersion = Val(wrdApp.Version)
-  wrdApp.Quit
-  Set wrdApp = Nothing
-Exit Function
-
-LocalErr:
-  GetWordVersion = 0
-
-End Function
+'Private Function GetWordVersion() As Integer
+'
+'  Dim wrdApp As Object
+'
+'  On Error GoTo LocalErr
+'
+'  Set wrdApp = CreateObject("Word.Application")
+'
+'  GetWordVersion = Val(wrdApp.Version)
+'  wrdApp.Quit
+'  Set wrdApp = Nothing
+'Exit Function
+'
+'LocalErr:
+'  GetWordVersion = 0
+'
+'End Function
 
 Private Sub SetCombo(objControl As ComboBox, lItemData As Long)
 
