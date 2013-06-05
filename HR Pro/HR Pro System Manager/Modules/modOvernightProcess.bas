@@ -85,13 +85,14 @@ Private Function OvernightJob1() As Boolean
     "/* ------------------------------------------------------------------------------- */" & vbNewLine & _
     "CREATE PROCEDURE dbo." & strOvernightSP & " AS" & vbNewLine & _
     "BEGIN" & vbNewLine & _
-    "    DECLARE @sDBName nvarchar(MAX);" & vbNewLine & vbNewLine & _
-    "    SELECT @sDBName = db_name()" & vbNewLine & vbNewLine & _
+    "    DECLARE @sDBName     nvarchar(100)," & vbNewLine & _
+    "            @NVarCommand nvarchar(MAX);" & vbNewLine & vbNewLine & _
+    "    SELECT @sDBName = DB_NAME()" & vbNewLine & vbNewLine & _
     "    /* This sets all of the flags prior to updating date dependant columns */" & vbNewLine & _
     "    DELETE FROM ASRSYSSystemSettings WHERE [Section] = 'database' and [SettingKey] = 'updatingdatedependantcolumns'" & vbNewLine & vbNewLine & _
     "    INSERT ASRSYSSystemSettings([Section],[SettingKey],[SettingValue])" & vbNewLine & _
     "    VALUES('database','updatingdatedependantcolumns',1)" & vbNewLine & vbNewLine & _
-    "    SELECT @NVarCommand = 'ALTER DATABASE ['+ DB_NAME() + '] SET RECURSIVE_TRIGGERS OFF';" & vbNewLine & _
+    "    SELECT @NVarCommand = 'ALTER DATABASE ['+ @sDBName + '] SET RECURSIVE_TRIGGERS OFF';" & vbNewLine & _
     "    EXEC sp_executesql @NVarCommand;" & _
     "END"
     
