@@ -63,7 +63,6 @@ Begin VB.Form frmSSIntranetSetup
       TabPicture(0)   =   "frmSSIntranetSetup.frx":000C
       Tab(0).ControlEnabled=   0   'False
       Tab(0).Control(0)=   "fraViews"
-      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).ControlCount=   1
       TabCaption(1)   =   "&Hypertext Links"
       TabPicture(1)   =   "frmSSIntranetSetup.frx":0028
@@ -1968,7 +1967,7 @@ Private Sub RefreshControls()
 
   End Select
 
-  cmdOK.Enabled = mfChanged
+  cmdOk.Enabled = mfChanged
   cmdPreview.Enabled = (cboSecurityGroup.Text <> "(All Groups)")
 
 End Sub
@@ -5951,20 +5950,33 @@ Private Function GeneratePreviewHTML() As String
   Open strFileName For Output As intFileNo
   
   ' Start document
-  strHTML = "<html><head><title>HR Pro Self-service Intranet</title></head>" & vbCrLf & _
-      "<body style='margin: 0px; padding: 0px; background-color: white;'>" & vbCrLf & _
-      "<table width='100%' height='100%' border='0' cellspacing='0' cellpadding='0'>" & vbCrLf & _
-      "  <tr bgcolor='#b0b2f5'><td colspan='3' height='6' style='text-align:right'></td></tr>" & vbCrLf & _
-      "  <tr style='height: 39px;'><td width='40' valign='top' style='height: 39px;'>" & vbCrLf & _
-      "<img src=data:image/png;base64,R0lGODlhJwAnAMQAAP///7Cy9ezt/bGz9e/v/ff3/ufo/Le49svM+La49uXm/Le59r2+9/39/+Pk+8/Q+d7f+83O+bW39tbX+sDC9/Ly/fT0/rK09eDh+8jJ+L/A97i69r6/99ra+snL+AAAACH5BAAAAAAALAAAAAAnACcAAAWgYCCOZGmeZEJFkOM0aCwHR6YAeI7PvCg9BZ1w14sxBMMkoHjSVJRKJumAhEalg4nVKt0Et1BmBLwtQsjl2cCATscuhLb7NIjLuTH2HX/C7OckCH+AIguDhAMWh3wjWothJIaPkCNVk0kkFJeUAXabQyMMn1cBlqM6PqeYAQ+qoAFfrjk0skIBHrWoN7k7vDkJvjgcwQCCwR3Eer5PwQ3EIQA7' alt='Corner Top' />" & vbCrLf & _
-      "</td></tr>"
+  strHTML = "<html><head><title>HR Pro Self-service Intranet</title>" & _
+            "<STYLE TYPE='text/css'>" & _
+            "<!--" & _
+            ".dashelement_width {width:100%;min-width:300px;}" & _
+            ".dashelement_minwidth {border-left:300px solid #fff;}" & _
+            ".dashelement_content {border:1px;padding:1px;}" & _
+            ".dashelement_container {margin-left:-300px;}" & _
+            "-->" & _
+            "</STYLE>" & _
+            "</head>" & vbCrLf & _
+            "<body style='margin: 0px; padding: 0px; background-color: white;'>" & vbCrLf & _
+            "<table width='100%' height='100%' border='0' cellspacing='0' cellpadding='0'>" & vbCrLf & _
+            "  <tr bgcolor='#b0b2f5'><td colspan='3' height='6' style='text-align:right'></td></tr>" & vbCrLf & _
+            "  <tr style='height: 39px;'><td width='40' valign='top' style='height: 39px;'>" & vbCrLf & _
+            "<img src=data:image/png;base64,R0lGODlhJwAnAMQAAP///7Cy9ezt/bGz9e/v/ff3/ufo/Le49svM+La49uXm/Le59r2+9/39/+Pk+8/Q+d7f+83O+bW39tbX+sDC9/Ly/fT0/rK09eDh+8jJ+L/A97i69r6/99ra+snL+AAAACH5BAAAAAAALAAAAAAnACcAAAWgYCCOZGmeZEJFkOM0aCwHR6YAeI7PvCg9BZ1w14sxBMMkoHjSVJRKJumAhEalg4nVKt0Et1BmBLwtQsjl2cCATscuhLb7NIjLuTH2HX/C7OckCH+AIguDhAMWh3wjWothJIaPkCNVk0kkFJeUAXabQyMMn1cBlqM6PqeYAQ+qoAFfrjk0skIBHrWoN7k7vDkJvjgcwQCCwR3Eer5PwQ3EIQA7' alt='Corner Top' />" & vbCrLf & _
+            "</td></tr>"
   Print #intFileNo, strHTML
   
   ' create the holding table
   strHTML = "  <tr height='100%'><td>" & vbCrLf & _
         "<table cellspacing='10' cellpadding='0' align='center' border='0' style='padding-bottom:20px!ie7'>" & vbCrLf & _
         "<td valign='top'>" & vbCrLf & _
-        "<table cellspacing='0' cellpadding='5' align='center' rules='none' frame='box' style='width:220px;vertical-align:top;border:3px solid #E9EEF7'>"
+        "<div class='dashelement_width'>" & _
+        "<div class='dashelement_minwidth'>" & _
+        "<div class='dashelement_content'>" & _
+        "<div class='dashelement_container'>" & _
+        "<table cellspacing='0' cellpadding='5' align='center' rules='none' frame='box' style='width:100%;vertical-align:top;border:3px solid #E9EEF7'>"
 
   Print #intFileNo, strHTML
   
@@ -5984,7 +5996,7 @@ Private Function GeneratePreviewHTML() As String
           Case "0"  ' Button
             Print #intFileNo, "<tr height='24'>"
             Print #intFileNo, "  <td nowrap='nowrap'>"
-            Print #intFileNo, "    <font face='Verdana' color='#333366' style='font-size: 10pt; font-weight:bold;'>"
+            Print #intFileNo, "    <font face='Verdana' color='#333366' style='font-size: 10pt'>"
             Print #intFileNo, Trim(.Columns("Prompt").CellText(varBookMark))
             Print #intFileNo, "    </font>"
             Print #intFileNo, "  </td>"
@@ -5996,7 +6008,7 @@ Private Function GeneratePreviewHTML() As String
           End If
             Print #intFileNo, "background='data:image/gif;base64,R0lGODlhyAAYALMAACkpOSkxOTMzRj0/WkpKZ2Fkh4qMw6it7LW197W9972998HG98rO/9jb/+Ln/////ywAAAAAyAAYAAAE/vDJSZ+7LevNu/9gKI5kaZ5oqlVsO12YKs90bd8qoy+uCzsbnXBILBqPyKRyyWw6n9DocLFQ9CowjZDK7Xq/4LB4TC6bz+i0ev1VJBBXS4xRVbgT+Lx+z+/7/4CBgoOEhYaHhnaKbghwPUFVb42TlJWWl5iZmpucnZ6foKGil5IHB48ZdAqjrK2ur7CxspMHBgYtWlWzu7y9vr+Wpr"
             Print #intFileNo, "YtW6vAx8jJypi1tgUsOwuSy9TV1rDNBc8VXMbX3+DhmdkELN3i6Ongtdrl3HXq8fLI7AQDLIvz+vuxwgUDAvDZmcavoEFO/ggIAMDioMOHmvwNAHCvgqmLpiBqLCgRAMMWkLYMYNxIUt1FAwUIePzIImTIiyVjWjuJcqLHK9q0uRSJsafPn0CDCh1KtKjRo0iTKsXoUptNlj1ySp1KtarVq1izat3KtavXr2C32lsJIEAcCQTSql3Ltq3bt3Djyp1Lt67du3jzth0AkCzUsw8ACljot7Dhw4gTK17MuLHjx5AjPwbcQrLly5gza96c+WwEAAA7'>"
-            Print #intFileNo, " <font face='Verdana' color='#333366' style='font-size: 10pt; font-weight:bold;'>"
+            Print #intFileNo, " <font face='Verdana' color='#333366' style='font-size: 10pt'>"
             Print #intFileNo, Trim(.Columns("ButtonText").CellText(varBookMark))
             Print #intFileNo, "    </font>"
             Print #intFileNo, "  </td>"
@@ -6005,32 +6017,42 @@ Private Function GeneratePreviewHTML() As String
           Case "1"  ' Separator
             sHexColour = IIf(.Columns("SeparatorColour").CellText(varBookMark) = "", "#E9EEF7", .Columns("SeparatorColour").CellText(varBookMark))
             
-            If .Columns("SeparatorOrientation").CellText(varBookMark) = "1" Then
+            If .Columns("SeparatorOrientation").CellText(varBookMark) = "1" And Not fFirstRow Then
               ' Column break
-              
               strHTML = "<td height='5px' colspan='3' align='center'" & vbCrLf & _
               "</td>" & vbCrLf & _
+              "</div></div></div></div>" & _
               "</table>" & vbCrLf & _
               "</td>" & vbCrLf & _
               "<td style='width:10'></td>" & vbCrLf & _
               "<td valign='top'>" & vbCrLf & _
+              "<div class='dashelement_width'>" & _
+              "<div class='dashelement_minwidth'>" & _
+              "<div class='dashelement_content'>" & _
+              "<div class='dashelement_container'>" & _
               "<table cellspacing='0' cellpadding='5' align='center' rules='none' frame='box' style='width:100%;vertical-align:top;border:3px solid " & sHexColour & "'>" & vbCrLf
               Print #intFileNo, strHTML
               Print #intFileNo, "<tr height='24'><td colspan='3' bgcolor='" & sHexColour & "' align='center'>"
               Print #intFileNo, "<font face='Verdana' Color = '#333366' style='font-size: 10pt; font-weight:bold;'>"
               Print #intFileNo, Trim(.Columns("ButtonText").CellText(varBookMark))
               Print #intFileNo, "</font></td></tr><tr height='5'><td colspan='3'></td></tr>"
+            ElseIf .Columns("SeparatorOrientation").CellText(varBookMark) = "1" And fFirstRow Then
+              ' Column break, first row
+              Print #intFileNo, "<tr height='24'><td colspan='3' bgcolor='" & sHexColour & "' align='center'>"
+              Print #intFileNo, "<font face='Verdana' Color = '#333366' style='font-size: 10pt; font-weight:bold;'>"
+              Print #intFileNo, Trim(.Columns("ButtonText").CellText(varBookMark))
+              Print #intFileNo, "</font></td></tr><tr height='5'><td colspan='3'></td></tr>"
             Else
               ' no column break
-        If Not fFirstRow Then
-          ' First row is not a separator so create the holding table...
-              strHTML = "<tr><td height='5px' colspan='3' align='center'>" & vbCrLf & _
-              "</td></tr>" & vbCrLf & _
-              "</table>" & vbCrLf & _
-              "&nbsp;&nbsp;" & vbCrLf & _
-              "<table cellspacing='0' cellpadding='5' align='center' rules='none' frame='box' style='width:100%;vertical-align:top;border:3px solid " & sHexColour & "'>" & vbCrLf
-              Print #intFileNo, strHTML
-        End If
+              If Not fFirstRow Then
+                ' First row is not a separator so create the holding table...
+                strHTML = "<tr><td height='5px' colspan='3' align='center'>" & vbCrLf & _
+                "</td></tr>" & vbCrLf & _
+                "</table>" & vbCrLf & _
+                "&nbsp;&nbsp;" & _
+                "<table cellspacing='0' cellpadding='5' align='center' rules='none' frame='box' style='width:100%;vertical-align:top;border:3px solid " & sHexColour & "'>" & vbCrLf
+                Print #intFileNo, strHTML
+              End If
               Print #intFileNo, "<tr height='24'><td colspan='3' bgcolor='" & sHexColour & "' align='center'>"
               Print #intFileNo, "<font face='Verdana' Color = '#333366' style='font-size: 10pt; font-weight:bold;'>"
               Print #intFileNo, Trim(.Columns("ButtonText").CellText(varBookMark))
@@ -6114,15 +6136,16 @@ Private Function GeneratePreviewHTML() As String
   
   ' close table
   strHTML = "</td></table>" & vbCrLf & _
+          "</div></div></div></div>" & _
           "</td></table></tr>" & vbCrLf & _
           "" & vbCrLf
   Print #intFileNo, strHTML
   
   ' Bottom of the document
-  strHTML = "  <tr style='height:39px;'><td width='40' valign='bottom'>" & vbCrLf & _
-      "<img src=data:image/png;base64,R0lGODlhJwAnAMQAAP///7Cy9ezt/bGz9e/v/ff3/ufo/Le49svM+La49uXm/Le59r2+9/39/+Pk+8/Q+d7f+83O+bW39tbX+sDC9/Ly/fT0/rK09eDh+8jJ+L/A97i69r6/99ra+snL+AAAACH5BAAAAAAALAAAAAAnACcAAAWlYAOMZGmeaDo6auum7Cu/0Gyr0a2b1O4Did8uINQFFEVbIJOcBQ5NWSBQiLqmD2trKtGqpgGBFwVmjE/gQOVcSmvYpHQYDpBD4fLABC8fVM95ARtsgQE5Y4UBNV6JAQaMiQMEWo0BF5NRlQEDj02aUxienwEISaNTCxZCp1MDez6sYAtiRrFgFJhOtmkMtC+7eRIPf1/AgQceSGTGjQkcCB0GFQ0hADs=' alt='Corner Bottom' />" & vbCrLf & _
-      "  </td></tr>" & vbCrLf & _
-      "  <tr bgcolor='#b0b2f5'><td colspan='3' height='6'></td></tr>" & vbCrLf
+  strHTML = "<tr ><td valign='bottom'>" & vbCrLf & _
+      "<img src=data:image/png;base64,R0lGODlhJwAnAMQAAP///7Cy9ezt/bGz9e/v/ff3/ufo/Le49svM+La49uXm/Le59r2+9/39/+Pk+8/Q+d7f+83O+bW39tbX+sDC9/Ly/fT0/rK09eDh+8jJ+L/A97i69r6/99ra+snL+AAAACH5BAAAAAAALAAAAAAnACcAAAWlYAOMZGmeaDo6auum7Cu/0Gyr0a2b1O4Did8uINQFFEVbIJOcBQ5NWSBQiLqmD2trKtGqpgGBFwVmjE/gQOVcSmvYpHQYDpBD4fLABC8fVM95ARtsgQE5Y4UBNV6JAQaMiQMEWo0BF5NRlQEDj02aUxienwEISaNTCxZCp1MDez6sYAtiRrFgFJhOtmkMtC+7eRIPf1/AgQceSGTGjQkcCB0GFQ0hADs='/>" & _
+      "</td></tr>" & _
+      "<tr bgcolor='#b0b2f5'><td colspan='3' height='6'></td></tr>" & vbCrLf
   Print #intFileNo, strHTML
   
   strHTML = "    </table></body></html>"
@@ -6177,7 +6200,7 @@ Private Function DisplayInBrowser() As Boolean
   'MH20070301 Fault 12001
   If strFileName <> vbNullString Then
     If Dir(strFileName) <> vbNullString Then
-      Kill strFileName
+      'Kill strFileName
     End If
   End If
 
