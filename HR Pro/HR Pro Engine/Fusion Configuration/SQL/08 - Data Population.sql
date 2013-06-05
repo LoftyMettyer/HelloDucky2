@@ -71,11 +71,11 @@ DBCC CHECKIDENT ('fusion.[MessageElements]', RESEED, 0)
 	-- Staff elements
 	SELECT @columnid = ASRColumnID FROM asrsysAccordtransferfielddefinitions WHERE [transfertypeid] = 0 AND [transferfieldid] = 0
 	INSERT [fusion].[Element] ([ID], [CategoryID], [Name], [Description], [DataType], [MinSize], [MaxSize], [Lookup], [ColumnID]) VALUES (1, 0, N'Company Code', '', 12, NULL, NULL, 1, @columnID)
-	SELECT @columnID = parameterValue FROM asrsysModuleSetup WHERE ModuleKey = 'MODULE_PERSONNEL' AND ParameterKey = 'Param_FieldsEmployeeNumber' AND parametertype = 'PType_ColumnID';
+	SELECT @columnID = NULLIF(parametervalue,'') FROM asrsysModuleSetup WHERE ModuleKey = 'MODULE_PERSONNEL' AND ParameterKey = 'Param_FieldsEmployeeNumber' AND parametertype = 'PType_ColumnID';
 	INSERT [fusion].[Element] ([ID], [CategoryID], [Name], [Description], [DataType], [MinSize], [MaxSize], [Lookup], [ColumnID]) VALUES (2, 0, N'Staff Number', '', 12, NULL, NULL, 0, @columnID)
-	SELECT @columnID = parameterValue FROM asrsysModuleSetup WHERE ModuleKey = 'MODULE_PERSONNEL' AND ParameterKey = 'Param_FieldsSurname' AND parametertype = 'PType_ColumnID';
+	SELECT @columnID = NULLIF(parametervalue,'') FROM asrsysModuleSetup WHERE ModuleKey = 'MODULE_PERSONNEL' AND ParameterKey = 'Param_FieldsSurname' AND parametertype = 'PType_ColumnID';
 	INSERT [fusion].[Element] ([ID], [CategoryID], [Name], [Description], [DataType], [MinSize], [MaxSize], [Lookup], [ColumnID]) VALUES (3, 0, N'Surname', '', 12, NULL, NULL, 0, @columnID)
-	SELECT @columnID = parameterValue FROM asrsysModuleSetup WHERE ModuleKey = 'MODULE_PERSONNEL' AND ParameterKey = 'Param_FieldsForename' AND parametertype = 'PType_ColumnID';
+	SELECT @columnID = NULLIF(parametervalue,'') FROM asrsysModuleSetup WHERE ModuleKey = 'MODULE_PERSONNEL' AND ParameterKey = 'Param_FieldsForename' AND parametertype = 'PType_ColumnID';
 	INSERT [fusion].[Element] ([ID], [CategoryID], [Name], [Description], [DataType], [MinSize], [MaxSize], [Lookup], [ColumnID]) VALUES (4, 0, N'Forenames', '', 12, NULL, NULL, 0, @columnID)
 	SELECT @columnid = ASRColumnID FROM asrsysAccordtransferfielddefinitions WHERE [transfertypeid] = 0 AND [transferfieldid] = 4
 	INSERT [fusion].[Element] ([ID], [CategoryID], [Name], [Description], [DataType], [MinSize], [MaxSize], [Lookup], [ColumnID]) VALUES (5, 0, N'Title', '', 12, NULL, NULL, 1, @columnID)
@@ -109,9 +109,9 @@ DBCC CHECKIDENT ('fusion.[MessageElements]', RESEED, 0)
 	INSERT [fusion].[Element] ([ID], [CategoryID], [Name], [Description], [DataType], [MinSize], [MaxSize], [Lookup], [ColumnID]) VALUES (19, 0, N'Email (Work)', '', 12, NULL, NULL, 0, @columnID)
 	SELECT @columnid = ASRColumnID FROM asrsysAccordtransferfielddefinitions WHERE [transfertypeid] = 0 AND [transferfieldid] = 19
 	INSERT [fusion].[Element] ([ID], [CategoryID], [Name], [Description], [DataType], [MinSize], [MaxSize], [Lookup], [ColumnID]) VALUES (20, 0, N'Email Payslip', '', 12, NULL, NULL, 0, @columnID)
-	SELECT @columnID = parameterValue FROM asrsysModuleSetup WHERE ModuleKey = 'MODULE_PERSONNEL' AND ParameterKey = 'Param_FieldsStartDate' AND parametertype = 'PType_ColumnID';
+	SELECT @columnID = NULLIF(parametervalue,'') FROM asrsysModuleSetup WHERE ModuleKey = 'MODULE_PERSONNEL' AND ParameterKey = 'Param_FieldsStartDate' AND parametertype = 'PType_ColumnID';
 	INSERT [fusion].[Element] ([ID], [CategoryID], [Name], [Description], [DataType], [MinSize], [MaxSize], [Lookup], [ColumnID]) VALUES (21, 0, N'Start Date', '', 11, NULL, NULL, 0, @columnID)
-	SELECT @columnID = parameterValue FROM asrsysModuleSetup WHERE ModuleKey = 'MODULE_PERSONNEL' AND ParameterKey = 'Param_FieldsLeavingDate' AND parametertype = 'PType_ColumnID';
+	SELECT @columnID = NULLIF(parametervalue,'') FROM asrsysModuleSetup WHERE ModuleKey = 'MODULE_PERSONNEL' AND ParameterKey = 'Param_FieldsLeavingDate' AND parametertype = 'PType_ColumnID';
 	INSERT [fusion].[Element] ([ID], [CategoryID], [Name], [Description], [DataType], [MinSize], [MaxSize], [Lookup], [ColumnID]) VALUES (22, 0, N'Leaving Date', '', 11, NULL, NULL, 0, @columnID)
 	SELECT @columnID = NULL;
 	INSERT [fusion].[Element] ([ID], [CategoryID], [Name], [Description], [DataType], [MinSize], [MaxSize], [Lookup], [ColumnID]) VALUES (23, 0, N'Leaving Reason', '', 12, NULL, NULL, 1, @columnID)
@@ -121,13 +121,13 @@ DBCC CHECKIDENT ('fusion.[MessageElements]', RESEED, 0)
 	INSERT [fusion].[Element] ([ID], [CategoryID], [Name], [Description], [DataType], [MinSize], [MaxSize], [Lookup], [ColumnID]) VALUES (25, 0, N'Telephone (Work)', '', 12, NULL, NULL, 0, @columnID)
 	SELECT @columnid = ASRColumnID FROM asrsysAccordtransferfielddefinitions WHERE [transfertypeid] = 0 AND [transferfieldid] = 16
 	INSERT [fusion].[Element] ([ID], [CategoryID], [Name], [Description], [DataType], [MinSize], [MaxSize], [Lookup], [ColumnID]) VALUES (26, 0, N'Mobile (Work)', '', 12, NULL, NULL, 0, @columnID)
-	SELECT @columnID = parameterValue FROM asrsysModuleSetup WHERE ModuleKey = 'MODULE_PERSONNEL' AND ParameterKey = 'Param_FieldsJobTitle' AND parametertype = 'PType_ColumnID';
+	SELECT @columnID = NULLIF(parametervalue,'') FROM asrsysModuleSetup WHERE ModuleKey = 'MODULE_PERSONNEL' AND ParameterKey = 'Param_FieldsJobTitle' AND parametertype = 'PType_ColumnID';
 	INSERT [fusion].[Element] ([ID], [CategoryID], [Name], [Description], [DataType], [MinSize], [MaxSize], [Lookup], [ColumnID]) VALUES (27, 0, N'Job Title', '', 12, NULL, NULL, 0, @columnID)
 	SELECT @columnid = ASRColumnID FROM asrsysAccordtransferfielddefinitions WHERE [transfertypeid] = 0 AND [transferfieldid] = 57
 	INSERT [fusion].[Element] ([ID], [CategoryID], [Name], [Description], [DataType], [MinSize], [MaxSize], [Lookup], [ColumnID]) VALUES (28, 0, N'Known As', '', 12, NULL, NULL, 0, @columnID)
 	SELECT @columnid = ASRColumnID FROM asrsysAccordtransferfielddefinitions WHERE [transfertypeid] = 0 AND [transferfieldid] = 81
 	INSERT [fusion].[Element] ([ID], [CategoryID], [Name], [Description], [DataType], [MinSize], [MaxSize], [Lookup], [ColumnID]) VALUES (29, 0, N'Employment Type', '', 12, 1, NULL, 1, @columnID)
-	SELECT @columnID = parameterValue FROM asrsysModuleSetup WHERE ModuleKey = 'MODULE_PERSONNEL' AND ParameterKey = 'Param_FieldsHRegion' AND parametertype = 'PType_ColumnID';
+	SELECT @columnID = NULLIF(parametervalue,'') FROM asrsysModuleSetup WHERE ModuleKey = 'MODULE_PERSONNEL' AND ParameterKey = 'Param_FieldsHRegion' AND parametertype = 'PType_ColumnID';
 	INSERT [fusion].[Element] ([ID], [CategoryID], [Name], [Description], [DataType], [MinSize], [MaxSize], [Lookup], [ColumnID]) VALUES (30, 0, N'Region', '', 12, 1, NULL, 1, @columnID)
 	SELECT @columnID = NULL;
 	INSERT [fusion].[Element] ([ID], [CategoryID], [Name], [Description], [DataType], [MinSize], [MaxSize], [Lookup], [ColumnID]) VALUES (97, 0, N'Outreach Area Name', '', 12, 1, NULL, 1, @columnID)
@@ -160,21 +160,6 @@ DBCC CHECKIDENT ('fusion.[MessageElements]', RESEED, 0)
 	INSERT [fusion].[Element] ([ID], [CategoryID], [Name], [Description], [DataType], [MinSize], [MaxSize], [Lookup], [ColumnID]) VALUES (118, 0, N'Director', '', -7, 1, NULL, 0, @columnID)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	-- Appointment/Working Pattern/Contract elements
 	SELECT @columnID = NULL;
 	INSERT [fusion].[Element] ([ID], [CategoryID], [Name], [Description], [DataType], [MinSize], [MaxSize], [Lookup], [ColumnID]) VALUES (32, 2, N'Contract Name', '', 12, 1, NULL, 1, @columnID)
@@ -191,14 +176,13 @@ DBCC CHECKIDENT ('fusion.[MessageElements]', RESEED, 0)
 	INSERT [fusion].[Element] ([ID], [CategoryID], [Name], [Description], [DataType], [MinSize], [MaxSize], [Lookup], [ColumnID]) VALUES (38, 2, N'Maximum Hours (Week)', '', 2, 1, NULL, 0, @columnID)
 
 
+
 	-- Training Booking elements
-	SELECT @columnID = parameterValue FROM asrsysModuleSetup WHERE ModuleKey = 'MODULE_TRAININGBOOKING' AND ParameterKey = 'Param_CourseTitle' AND parametertype = 'PType_ColumnID';
+	SELECT @columnID =  NULLIF(parametervalue,'') FROM asrsysModuleSetup WHERE ModuleKey = 'MODULE_TRAININGBOOKING' AND ParameterKey = 'Param_TrainBookCourseTitle' AND parametertype = 'PType_ColumnID';
 	INSERT [fusion].[Element] ([ID], [CategoryID], [Name], [Description], [DataType], [MinSize], [MaxSize], [Lookup], [ColumnID]) VALUES (45, 4, N'Course Name', '', 12, 1, NULL, 1, @columnID)
-	SELECT @columnID = parameterValue FROM asrsysModuleSetup WHERE ModuleKey = 'MODULE_TRAININGBOOKING' AND ParameterKey = 'Param_CourseStartDate' AND parametertype = 'PType_ColumnID';
-	INSERT [fusion].[Element] ([ID], [CategoryID], [Name], [Description], [DataType], [MinSize], [MaxSize], [Lookup], [ColumnID]) VALUES (46, 4, N'Start Date', '', 11, 1, NULL, 0, @columnID)
-	SELECT @columnID = parameterValue FROM asrsysModuleSetup WHERE ModuleKey = 'MODULE_TRAININGBOOKING' AND ParameterKey = 'Param_CourseEndDate' AND parametertype = 'PType_ColumnID';
-	INSERT [fusion].[Element] ([ID], [CategoryID], [Name], [Description], [DataType], [MinSize], [MaxSize], [Lookup], [ColumnID]) VALUES (47, 4, N'End Date', '', 11, 1, NULL, 0, @columnID)
 	SELECT @columnID = NULL;
+	INSERT [fusion].[Element] ([ID], [CategoryID], [Name], [Description], [DataType], [MinSize], [MaxSize], [Lookup], [ColumnID]) VALUES (46, 4, N'Start Date', '', 11, 1, NULL, 0, @columnID)
+	INSERT [fusion].[Element] ([ID], [CategoryID], [Name], [Description], [DataType], [MinSize], [MaxSize], [Lookup], [ColumnID]) VALUES (47, 4, N'End Date', '', 11, 1, NULL, 0, @columnID)
 	INSERT [fusion].[Element] ([ID], [CategoryID], [Name], [Description], [DataType], [MinSize], [MaxSize], [Lookup], [ColumnID]) VALUES (48, 4, N'Valid From', 'Date from which this training becomes valid', 11, 1, NULL, 0, @columnID)
 	INSERT [fusion].[Element] ([ID], [CategoryID], [Name], [Description], [DataType], [MinSize], [MaxSize], [Lookup], [ColumnID]) VALUES (64, 4, N'Valid To', 'Date to which this training remains valid', 11, 1, NULL, 0, @columnID)
 	INSERT [fusion].[Element] ([ID], [CategoryID], [Name], [Description], [DataType], [MinSize], [MaxSize], [Lookup], [ColumnID]) VALUES (49, 4, N'Reference', '', 12, 1, NULL, 0, @columnID)
@@ -207,7 +191,7 @@ DBCC CHECKIDENT ('fusion.[MessageElements]', RESEED, 0)
 	INSERT [fusion].[Element] ([ID], [CategoryID], [Name], [Description], [DataType], [MinSize], [MaxSize], [Lookup], [ColumnID]) VALUES (52, 4, N'Requested Date', '', 11, 1, NULL, 0, @columnID)
 	INSERT [fusion].[Element] ([ID], [CategoryID], [Name], [Description], [DataType], [MinSize], [MaxSize], [Lookup], [ColumnID]) VALUES (53, 4, N'Accepted By', '', 12, 1, NULL, 0, @columnID)
 	INSERT [fusion].[Element] ([ID], [CategoryID], [Name], [Description], [DataType], [MinSize], [MaxSize], [Lookup], [ColumnID]) VALUES (54, 4, N'Accepted Date', '', 11, 1, NULL, 0, @columnID)
-	SELECT @columnID = parameterValue FROM asrsysModuleSetup WHERE ModuleKey = 'MODULE_TRAININGBOOKING' AND ParameterKey = 'Param_TrainBookStatus' AND parametertype = 'PType_ColumnID';
+	SELECT @columnID = NULLIF(parametervalue,'') FROM asrsysModuleSetup WHERE ModuleKey = 'MODULE_TRAININGBOOKING' AND ParameterKey = 'Param_TrainBookStatus' AND parametertype = 'PType_ColumnID';
 	INSERT [fusion].[Element] ([ID], [CategoryID], [Name], [Description], [DataType], [MinSize], [MaxSize], [Lookup], [ColumnID]) VALUES (55, 4, N'Booking Status', 'Status of this delegate booking', 12, 1, NULL, 1, @columnID)
 	SELECT @columnID = NULL;
 	INSERT [fusion].[Element] ([ID], [CategoryID], [Name], [Description], [DataType], [MinSize], [MaxSize], [Lookup], [ColumnID]) VALUES (63, 4, N'Attended', 'Did the delegate attend this course?', -7, 1, NULL, 0, @columnID)
@@ -216,19 +200,19 @@ DBCC CHECKIDENT ('fusion.[MessageElements]', RESEED, 0)
 
 
 	-- Courses
-	SELECT @columnID = parameterValue FROM asrsysModuleSetup WHERE ModuleKey = 'MODULE_TRAININGBOOKING' AND ParameterKey = 'Param_CourseCancelDate' AND parametertype = 'PType_ColumnID';
+	SELECT @columnID = NULLIF(parametervalue,'') FROM asrsysModuleSetup WHERE ModuleKey = 'MODULE_TRAININGBOOKING' AND ParameterKey = 'Param_CourseCancelDate' AND parametertype = 'PType_ColumnID';
 	INSERT [fusion].[Element] ([ID], [CategoryID], [Name], [Description], [DataType], [MinSize], [MaxSize], [Lookup], [ColumnID]) VALUES (56, 5, N'Cancelation Date', '', 11, 1, NULL, 0, @columnID)
-	SELECT @columnID = parameterValue FROM asrsysModuleSetup WHERE ModuleKey = 'MODULE_TRAININGBOOKING' AND ParameterKey = 'Param_CourseCancelledBy' AND parametertype = 'PType_ColumnID';
+	SELECT @columnID = NULLIF(parametervalue,'') FROM asrsysModuleSetup WHERE ModuleKey = 'MODULE_TRAININGBOOKING' AND ParameterKey = 'Param_CourseCancelledBy' AND parametertype = 'PType_ColumnID';
 	INSERT [fusion].[Element] ([ID], [CategoryID], [Name], [Description], [DataType], [MinSize], [MaxSize], [Lookup], [ColumnID]) VALUES (57, 5, N'Cancelled By', '', 12, 1, NULL, 0, @columnID)
-	SELECT @columnID = parameterValue FROM asrsysModuleSetup WHERE ModuleKey = 'MODULE_TRAININGBOOKING' AND ParameterKey = 'Param_CourseEndDate' AND parametertype = 'PType_ColumnID';
+	SELECT @columnID = NULLIF(parametervalue,'') FROM asrsysModuleSetup WHERE ModuleKey = 'MODULE_TRAININGBOOKING' AND ParameterKey = 'Param_CourseEndDate' AND parametertype = 'PType_ColumnID';
 	INSERT [fusion].[Element] ([ID], [CategoryID], [Name], [Description], [DataType], [MinSize], [MaxSize], [Lookup], [ColumnID]) VALUES (58, 5, N'End Date', '', 11, 1, NULL, 0, @columnID)
-	SELECT @columnID = parameterValue FROM asrsysModuleSetup WHERE ModuleKey = 'MODULE_TRAININGBOOKING' AND ParameterKey = 'Param_CourseMaxNumber' AND parametertype = 'PType_ColumnID';
+	SELECT @columnID = NULLIF(parametervalue,'') FROM asrsysModuleSetup WHERE ModuleKey = 'MODULE_TRAININGBOOKING' AND ParameterKey = 'Param_CourseMaxNumber' AND parametertype = 'PType_ColumnID';
 	INSERT [fusion].[Element] ([ID], [CategoryID], [Name], [Description], [DataType], [MinSize], [MaxSize], [Lookup], [ColumnID]) VALUES (59, 5, N'Maximum Delegates', '', 2, 1, NULL, 0, @columnID)
-	SELECT @columnID = parameterValue FROM asrsysModuleSetup WHERE ModuleKey = 'MODULE_TRAININGBOOKING' AND ParameterKey = 'Param_CourseNumberBooked' AND parametertype = 'PType_ColumnID';
+	SELECT @columnID = NULLIF(parametervalue,'') FROM asrsysModuleSetup WHERE ModuleKey = 'MODULE_TRAININGBOOKING' AND ParameterKey = 'Param_CourseNumberBooked' AND parametertype = 'PType_ColumnID';
 	INSERT [fusion].[Element] ([ID], [CategoryID], [Name], [Description], [DataType], [MinSize], [MaxSize], [Lookup], [ColumnID]) VALUES (60, 5, N'Delegates Booked', '', 2, 1, NULL, 0, @columnID)
-	SELECT @columnID = parameterValue FROM asrsysModuleSetup WHERE ModuleKey = 'MODULE_TRAININGBOOKING' AND ParameterKey = 'Param_CourseStartDate' AND parametertype = 'PType_ColumnID';
+	SELECT @columnID = NULLIF(parametervalue,'') FROM asrsysModuleSetup WHERE ModuleKey = 'MODULE_TRAININGBOOKING' AND ParameterKey = 'Param_CourseStartDate' AND parametertype = 'PType_ColumnID';
 	INSERT [fusion].[Element] ([ID], [CategoryID], [Name], [Description], [DataType], [MinSize], [MaxSize], [Lookup], [ColumnID]) VALUES (61, 5, N'Start Date', '', 11, 1, NULL, 0, @columnID)
-	SELECT @columnID = parameterValue FROM asrsysModuleSetup WHERE ModuleKey = 'MODULE_TRAININGBOOKING' AND ParameterKey = 'Param_CourseTitle' AND parametertype = 'PType_ColumnID';
+	SELECT @columnID = NULLIF(parametervalue,'') FROM asrsysModuleSetup WHERE ModuleKey = 'MODULE_TRAININGBOOKING' AND ParameterKey = 'Param_CourseTitle' AND parametertype = 'PType_ColumnID';
 	INSERT [fusion].[Element] ([ID], [CategoryID], [Name], [Description], [DataType], [MinSize], [MaxSize], [Lookup], [ColumnID]) VALUES (62, 5, N'Course Title', '', 12, 1, NULL, 1, @columnID)
 
 
@@ -336,7 +320,7 @@ DBCC CHECKIDENT ('fusion.[MessageElements]', RESEED, 0)
 
 	INSERT fusion.[Message] (ID, Name, Description, [DataNodeKey], [Schema], Version, AllowPublish, AllowSubscribe, Publish, Subscribe
 			, StopDeletion, BypassValidation, xmlns, xmlschemaLocation, xmlxsi)
-		VALUES (2, 'staffContractChange', 'Staff contract details', 'staffContract'
+		VALUES (2, 'StaffContractChange', 'Staff contract details', 'staffContract'
 			, 0x
 			, 1, 1, 1, 1, 1, 1, 1
 			, 'http://advancedcomputersoftware.com/xml/fusion/socialCare'
@@ -344,98 +328,98 @@ DBCC CHECKIDENT ('fusion.[MessageElements]', RESEED, 0)
 			, 'http://www.w3.org/2001/XMLSchema-instance')
  
 	INSERT fusion.[Message] (ID, Name, Description, [DataNodeKey], [Schema], Version, AllowPublish, AllowSubscribe, Publish, Subscribe, StopDeletion, BypassValidation, xmlns, xmlschemaLocation, xmlxsi)
-		VALUES (3, 'staffPictureChange', 'Staff picture details', 'staffPicture'
+		VALUES (3, 'StaffPictureChange', 'Staff picture details', 'staffPicture'
 			,0x
 			, 1, 1, 1, 1, 1, 1, 1, 'http://advancedcomputersoftware.com/xml/fusion/socialCare'
 			, 'http://advancedcomputersoftware.com/xml/fusion/socialCare https://rlo.advanced365.com/FUSION/Message%20Specifications/Data%20Examples/'
 			, 'http://www.w3.org/2001/XMLSchema-instance')		
 
 	INSERT fusion.[Message] (ID, Name, Description, [DataNodeKey], [Schema], Version, AllowPublish, AllowSubscribe, Publish, Subscribe, StopDeletion, BypassValidation, xmlns, xmlschemaLocation, xmlxsi)
-		VALUES (4, 'staffSkillChange', 'Staff Skills', 'staffSkill'
+		VALUES (4, 'StaffSkillChange', 'Staff Skills', 'staffSkill'
 			,0x
 			, 1, 1, 1, 1, 1, 1, 1, 'http://advancedcomputersoftware.com/xml/fusion/socialCare'
 			, 'http://advancedcomputersoftware.com/xml/fusion/socialCare https://rlo.advanced365.com/FUSION/Message%20Specifications/Data%20Examples/'
 			, 'http://www.w3.org/2001/XMLSchema-instance')		
 
 	INSERT fusion.[Message] (ID, Name, Description, [DataNodeKey], [Schema], Version, AllowPublish, AllowSubscribe, Publish, Subscribe, StopDeletion, BypassValidation, xmlns, xmlschemaLocation, xmlxsi)
-		VALUES (5, 'staffLegalDocumentChange', 'Staff documents', 'staffLegalDocument'
+		VALUES (5, 'StaffLegalDocumentChange', 'Staff documents', 'staffLegalDocument'
 			,0x
 			, 1, 1, 1, 1, 1, 1, 1, 'http://advancedcomputersoftware.com/xml/fusion/socialCare'
 			, 'http://advancedcomputersoftware.com/xml/fusion/socialCare https://rlo.advanced365.com/FUSION/Message%20Specifications/Data%20Examples/'
 			, 'http://www.w3.org/2001/XMLSchema-instance')		
 
 	INSERT fusion.[Message] (ID, Name, Description, [DataNodeKey], [Schema], Version, AllowPublish, AllowSubscribe, Publish, Subscribe, StopDeletion, BypassValidation, xmlns, xmlschemaLocation, xmlxsi)
-		VALUES (6, 'staffTimesheetPerContractChange', 'Staff timesheet details', 'staffTimesheetPerContract'
+		VALUES (6, 'StaffTimesheetPerContractChange', 'Staff timesheet details', 'staffTimesheetPerContract'
 			,0x
 			, 1, 0, 1, 0, 1, 1, 1, 'http://advancedcomputersoftware.com/xml/fusion/socialCare'
 			, 'http://advancedcomputersoftware.com/xml/fusion/socialCare https://rlo.advanced365.com/FUSION/Message%20Specifications/Data%20Examples/'
 			, 'http://www.w3.org/2001/XMLSchema-instance')		
 
 	INSERT fusion.[Message] (ID, Name, Description, [DataNodeKey], [Schema], Version, AllowPublish, AllowSubscribe, Publish, Subscribe, StopDeletion, BypassValidation, xmlns, xmlschemaLocation, xmlxsi)
-		VALUES (7, 'staffHolidayBalanceRemainingChange', 'Staff holiday balance', 'staffHolidayBalanceRemaining'
+		VALUES (7, 'StaffHolidayBalanceRemainingChange', 'Staff holiday balance', 'staffHolidayBalanceRemaining'
 			,0x
 			, 1, 1, 0, 1, 0, 1, 1, 'http://advancedcomputersoftware.com/xml/fusion/socialCare'
 			, 'http://advancedcomputersoftware.com/xml/fusion/socialCare https://rlo.advanced365.com/FUSION/Message%20Specifications/Data%20Examples/'
 			, 'http://www.w3.org/2001/XMLSchema-instance')		
 
 	INSERT fusion.[Message] (ID, Name, Description, [DataNodeKey], [Schema], Version, AllowPublish, AllowSubscribe, Publish, Subscribe, StopDeletion, BypassValidation, xmlns, xmlschemaLocation, xmlxsi)
-		VALUES (8, 'staffContactChange', 'Staff contacts', 'staffContact'
+		VALUES (8, 'StaffContactChange', 'Staff contacts', 'staffContact'
 			,0x
 			, 1, 1, 1, 1, 1, 1, 1, 'http://advancedcomputersoftware.com/xml/fusion/socialCare'
 			, 'http://advancedcomputersoftware.com/xml/fusion/socialCare https://rlo.advanced365.com/FUSION/Message%20Specifications/Data%20Examples/'
 			, 'http://www.w3.org/2001/XMLSchema-instance')		
 
 	INSERT fusion.[Message] (ID, Name, Description, [DataNodeKey], [Schema], Version, AllowPublish, AllowSubscribe, Publish, Subscribe, StopDeletion, BypassValidation, xmlns, xmlschemaLocation, xmlxsi)
-		VALUES (9, 'outreachAreaChange', 'Outreach areas', 'outreachArea'
+		VALUES (9, 'OutreachAreaChange', 'Outreach areas', 'outreachArea'
 			,0x
 			, 1, 1, 1, 1, 1, 1, 1, 'http://advancedcomputersoftware.com/xml/fusion/socialCare'
 			, 'http://advancedcomputersoftware.com/xml/fusion/socialCare https://rlo.advanced365.com/FUSION/Message%20Specifications/Data%20Examples/'
 			, 'http://www.w3.org/2001/XMLSchema-instance')		
 
 	INSERT fusion.[Message] (ID, Name, Description, [DataNodeKey], [Schema], Version, AllowPublish, AllowSubscribe, Publish, Subscribe, StopDeletion, BypassValidation, xmlns, xmlschemaLocation, xmlxsi)
-		VALUES (10, 'personTitleChange', 'Person Title', 'personTitle'
+		VALUES (10, 'PersonTitleChange', 'Person Title', 'personTitle'
 			,0x
 			, 1, 1, 1, 1, 1, 1, 1, 'http://advancedcomputersoftware.com/xml/fusion/socialCare'
 			, 'http://advancedcomputersoftware.com/xml/fusion/socialCare https://rlo.advanced365.com/FUSION/Message%20Specifications/Data%20Examples/'
 			, 'http://www.w3.org/2001/XMLSchema-instance')		
 
 	INSERT fusion.[Message] (ID, Name, Description, [DataNodeKey], [Schema], Version, AllowPublish, AllowSubscribe, Publish, Subscribe, StopDeletion, BypassValidation, xmlns, xmlschemaLocation, xmlxsi)
-		VALUES (11, 'personMaritalStatusChange', 'Person marital status', 'personMaritalStatus'
+		VALUES (11, 'PersonMaritalStatusChange', 'Person marital status', 'personMaritalStatus'
 			,0x
 			, 1, 1, 1, 1, 1, 1, 1, 'http://advancedcomputersoftware.com/xml/fusion/socialCare'
 			, 'http://advancedcomputersoftware.com/xml/fusion/socialCare https://rlo.advanced365.com/FUSION/Message%20Specifications/Data%20Examples/'
 			, 'http://www.w3.org/2001/XMLSchema-instance')
 
 	INSERT fusion.[Message] (ID, Name, Description, [DataNodeKey], [Schema], Version, AllowPublish, AllowSubscribe, Publish, Subscribe, StopDeletion, BypassValidation, xmlns, xmlschemaLocation, xmlxsi)
-		VALUES (12, 'personEthnicityChange', 'Person ethnicity status', 'personEthnicity'
+		VALUES (12, 'PersonEthnicityChange', 'Person ethnicity status', 'personEthnicity'
 			,0x
 			, 1, 1, 1, 1, 1, 1, 1, 'http://advancedcomputersoftware.com/xml/fusion/socialCare'
 			, 'http://advancedcomputersoftware.com/xml/fusion/socialCare https://rlo.advanced365.com/FUSION/Message%20Specifications/Data%20Examples/'
 			, 'http://www.w3.org/2001/XMLSchema-instance')		
 
 	INSERT fusion.[Message] (ID, Name, Description, [DataNodeKey], [Schema], Version, AllowPublish, AllowSubscribe, Publish, Subscribe, StopDeletion, BypassValidation, xmlns, xmlschemaLocation, xmlxsi)
-		VALUES (13, 'personContactTypeChange', 'Person contact type', 'personContactType'
+		VALUES (13, 'PersonContactTypeChange', 'Person contact type', 'personContactType'
 			,0x
 			, 1, 1, 1, 1, 1, 1, 1, 'http://advancedcomputersoftware.com/xml/fusion/socialCare'
 			, 'http://advancedcomputersoftware.com/xml/fusion/socialCare https://rlo.advanced365.com/FUSION/Message%20Specifications/Data%20Examples/'
 			, 'http://www.w3.org/2001/XMLSchema-instance')
 
 	INSERT fusion.[Message] (ID, Name, Description, [DataNodeKey], [Schema], Version, AllowPublish, AllowSubscribe, Publish, Subscribe, StopDeletion, BypassValidation, xmlns, xmlschemaLocation, xmlxsi)
-		VALUES (14, 'staffLeavingReasonChange', 'Leaving Reason', 'staffLeavingReason'
+		VALUES (14, 'StaffLeavingReasonChange', 'Leaving Reason', 'staffLeavingReason'
 			,0x
 			, 1, 1, 1, 1, 1, 1, 1, 'http://advancedcomputersoftware.com/xml/fusion/socialCare'
 			, 'http://advancedcomputersoftware.com/xml/fusion/socialCare https://rlo.advanced365.com/FUSION/Message%20Specifications/Data%20Examples/'
 			, 'http://www.w3.org/2001/XMLSchema-instance')		
 
 	INSERT fusion.[Message] (ID, Name, Description, [DataNodeKey], [Schema], Version, AllowPublish, AllowSubscribe, Publish, Subscribe, StopDeletion, BypassValidation, xmlns, xmlschemaLocation, xmlxsi)
-		VALUES (15, 'staffDepartmentChange', 'Staff Department', 'staffDepartment'
+		VALUES (15, 'StaffDepartmentChange', 'Staff Department', 'staffDepartment'
 			,0x
 			, 1, 1, 1, 1, 1, 1, 1, 'http://advancedcomputersoftware.com/xml/fusion/socialCare'
 			, 'http://advancedcomputersoftware.com/xml/fusion/socialCare https://rlo.advanced365.com/FUSION/Message%20Specifications/Data%20Examples/'
 			, 'http://www.w3.org/2001/XMLSchema-instance')		
 
 	INSERT fusion.[Message] (ID, Name, Description, [DataNodeKey], [Schema], Version, AllowPublish, AllowSubscribe, Publish, Subscribe, StopDeletion, BypassValidation, xmlns, xmlschemaLocation, xmlxsi)
-		VALUES (16, 'staffTrainingOutcomeChange', 'Staff Training', 'staffTrainingOutcome'
+		VALUES (16, 'StaffTrainingOutcomeChange', 'Staff Training', 'staffTrainingOutcome'
 			,0x
 			, 1, 1, 1, 1, 1, 1, 1, 'http://advancedcomputersoftware.com/xml/fusion/socialCare'
 			, 'http://advancedcomputersoftware.com/xml/fusion/socialCare https://rlo.advanced365.com/FUSION/Message%20Specifications/Data%20Examples/'
@@ -521,6 +505,7 @@ DBCC CHECKIDENT ('fusion.[MessageElements]', RESEED, 0)
 	INSERT fusion.[MessageElements] (MessageID, ElementID, NodeKey, Nillable, MinOccurs, MaxOccurs)
 		VALUES (3, 39, 'picture', 1, 0, 1)
 
+
 	-- staffSkillChange
 	INSERT fusion.[MessageRelations] (MessageID, NodeKey, CategoryID, IsPrimaryKey)
 		VALUES (4, 'staffSkillRef', 4, 1)
@@ -541,7 +526,7 @@ DBCC CHECKIDENT ('fusion.[MessageElements]', RESEED, 0)
 	INSERT fusion.[MessageElements] (MessageID, ElementID, NodeKey, Nillable, MinOccurs, MaxOccurs)
 		VALUES (4, 50, 'outcome', 1, 0, 1)
 	INSERT fusion.[MessageElements] (MessageID, ElementID, NodeKey, Nillable, MinOccurs, MaxOccurs)
-		VALUES (4, 56, 'didNotAttend', 1, 0, 1)
+		VALUES (4, 55, 'didNotAttend', 1, 0, 1)
 	INSERT fusion.[MessageElements] (MessageID, ElementID, NodeKey, Nillable, MinOccurs, MaxOccurs)
 		VALUES (4, 51, 'requestedBy', 1, 0, 1)
 	INSERT fusion.[MessageElements] (MessageID, ElementID, NodeKey, Nillable, MinOccurs, MaxOccurs)
