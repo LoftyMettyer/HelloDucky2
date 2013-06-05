@@ -496,9 +496,9 @@ Public Property Get Text() As String
   
   If Index >= 0 Then
     If MaxLength > 0 Then
-      Text = Left(Option1(Index).Caption, MaxLength)
+      Text = Left(Replace(Option1(Index).Caption, "&&", "&"), MaxLength)
     Else
-      Text = Option1(Index).Caption
+      Text = Replace(Option1(Index).Caption, "&&", "&")
     End If
   Else
     Text = vbNullString
@@ -514,7 +514,7 @@ Public Property Let Text(ByVal NewValue As String)
   For Index = Option1.LBound To Option1.UBound
     'JPD 20050810 Fault 10178
     'If UCase(Left(Option1(Index).Caption, Len(NewValue))) = NewValue Then
-    If UCase(Trim(Option1(Index).Caption)) = Trim(NewValue) Then
+    If Replace(UCase(Trim(Option1(Index).Caption)), "&&", "&") = Trim(NewValue) Then
       Option1(Index).Value = True
       Exit For
     Else
