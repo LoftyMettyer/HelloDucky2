@@ -5,12 +5,10 @@ Namespace Things
   <HideModuleName()>
   Public Module PopulateObjects
 
-    Public Sub PopulateThings()
-      componentfunction = Nothing
-      componentbase = Nothing
-      Globals.Tables.Clear()
-      Globals.Workflows.Clear()
+    Private componentbase As DataSet
+    Private componentfunction As DataSet
 
+    Public Sub PopulateThings()
       PopulateTables()
       PopulateTableRelations()
       PopulateTableColumns()
@@ -22,6 +20,9 @@ Namespace Things
       PopulateTableValidations()
       PopulateTableRecordDescriptions()
       PopulateTableMasks()
+
+      componentbase = Nothing
+      componentfunction = Nothing
     End Sub
 
     Public Sub PopulateSystemSettings()
@@ -130,6 +131,8 @@ Namespace Things
     End Function
 
     Public Sub PopulateTables()
+
+      Globals.Tables.Clear()
 
       Dim ds As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_gettables", Nothing)
 
@@ -371,9 +374,6 @@ Namespace Things
       Next
 
     End Sub
-
-    Private componentfunction As DataSet
-    Private componentbase As DataSet
 
     Public Function LoadComponents(ByVal expression As Component, ByVal type As ScriptDB.ComponentTypes) As ICollection(Of Component)
 

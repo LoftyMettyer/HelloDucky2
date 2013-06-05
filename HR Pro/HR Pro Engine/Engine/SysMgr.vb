@@ -5,6 +5,7 @@ Imports SystemFramework.Things
 Public Class SysMgr
   Implements COMInterfaces.ISystemManager
 
+
 #Region "iSystemManager Interface"
 
   Private objMetadataDB As New Connectivity.AccessDB
@@ -116,11 +117,9 @@ Public Class SysMgr
     End Get
   End Property
 
-  Public ReadOnly Property ReturnThings As ICollection(Of Table) Implements COMInterfaces.ISystemManager.Tables
-    Get
-      Return Globals.Tables
-    End Get
-  End Property
+  Public Function GetTable(ByVal id As Integer) As Things.Table Implements COMInterfaces.ISystemManager.GetTable
+    Return Globals.Tables.GetById(id)
+  End Function
 
   Public ReadOnly Property Script As ScriptDB.Script Implements COMInterfaces.ISystemManager.Script
     Get

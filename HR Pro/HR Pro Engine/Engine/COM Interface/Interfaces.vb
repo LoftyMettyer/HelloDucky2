@@ -21,7 +21,7 @@ Public Module COMInterfaces
     Property CommitDB As Object
     ReadOnly Property ErrorLog As ErrorHandler.Errors
     ReadOnly Property TuningLog As Tuning.Report
-    ReadOnly Property Tables As ICollection(Of Table)
+    Function GetTable(ByVal id As Integer) As Table
     ReadOnly Property Script As ScriptDB.Script
     ReadOnly Property Options As HCMOptions
     Function Initialise() As Boolean
@@ -65,7 +65,6 @@ Public Module COMInterfaces
 
   Public Interface ITable
     Inherits IObject
-    Property CustomTriggers As ICollection(Of String)
     ' These eventually will be gotten rid of when we port the rest of sysmgr into this framework.
     Property SysMgrInsertTrigger As String
     Property SysMgrUpdateTrigger As String

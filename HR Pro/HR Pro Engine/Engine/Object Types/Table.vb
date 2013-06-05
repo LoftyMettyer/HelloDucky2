@@ -33,10 +33,6 @@ Namespace Things
     Public Property DependsOnChildColumns As ICollection(Of Column)
     Public Property DependsOnParentColumns As ICollection(Of Column)
 
-    'TODO: really strings???
-    Public Property CustomTriggers As ICollection(Of String) Implements ITable.CustomTriggers
-    Public Property UpdateStatements As New ArrayList
-
     Public Sub New()
       Indexes = New Collection(Of Index)
       Columns = New Collection(Of Column)
@@ -51,7 +47,6 @@ Namespace Things
       Screens = New Collection(Of Screen)
       DependsOnChildColumns = New Collection(Of Column)
       DependsOnParentColumns = New Collection(Of Column)
-      CustomTriggers = New Collection(Of String)
     End Sub
 
     Public Overrides ReadOnly Property PhysicalName As String
