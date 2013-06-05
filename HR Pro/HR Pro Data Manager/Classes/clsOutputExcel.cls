@@ -954,6 +954,7 @@ Public Sub DataArray(strArray() As String, colColumns As Collection, colStyles A
   Dim lngXLRow As Long
   Dim strCell As String
   Dim sDateFormat As String
+  
 
   On Local Error GoTo LocalErr
 
@@ -1046,6 +1047,13 @@ Exit Sub
 
 LocalErr:
   mstrErrorMessage = Err.Description
+  
+  Select Case Err.Number
+  Case 7  'Out of Memory
+    If Val(mxlApp.Version) < 12 And Len(strArray(lngGridCol, lngGridRow)) > 65535 Then
+      mstrErrorMessage = "Multi-line data is too large for this version of Excel."
+    Else
+  End Select
 
 End Sub
 
