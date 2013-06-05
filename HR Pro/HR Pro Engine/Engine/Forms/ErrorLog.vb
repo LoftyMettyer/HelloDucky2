@@ -1,4 +1,7 @@
-﻿Public Class ErrorLog
+﻿Namespace Forms
 
+  Public Class ErrorLog
 
-End Class
+  End Class
+
+End Namespace
