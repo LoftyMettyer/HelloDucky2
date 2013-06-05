@@ -8,11 +8,12 @@
       End Get
     End Property
 
-    Public Relation As Things.Relation
-    Public Order As Things.TableOrder
-    Public Filter As Things.Expression
+    '    Public Relation As Things.Relation
+    '   Public Order As Things.TableOrder
+    '  Public Filter As Things.Expression
     Public ComponentNumber As Long
     Public UDF As ScriptDB.GeneratedUDF
+    Public RowDetails As Things.ChildRowDetails
 
     Public ReadOnly Property IncludedColumns As Things.Collection
       Get
@@ -26,17 +27,29 @@
 
         sName = String.Format("udftab_{0}", Parent.Name)
 
-        If Not Order Is Nothing Then
-          sName = sName + "_" + Order.Name
+        If Not RowDetails.Order Is Nothing Then
+          sName = sName + "_" + RowDetails.Order.Name
         End If
 
-        If Not Filter Is Nothing Then
-          sName = sName + "_" + Filter.Name
+        If Not RowDetails.Filter Is Nothing Then
+          sName = sName + "_" + RowDetails.Filter.Name
         End If
 
-        If Not Relation Is Nothing Then
-          sName = String.Format("{0}_{1}", sName, CInt(Relation.ParentID))
+        If Not RowDetails.Relation Is Nothing Then
+          sName = String.Format("{0}_{1}", sName, CInt(RowDetails.Relation.ParentID))
         End If
+
+        Select Case RowDetails.RowSelection
+          Case ScriptDB.ColumnRowSelection.First, ScriptDB.ColumnRowSelection.Last
+            sName = String.Format("{0}_{1}", sName, RowDetails.RowSelection)
+
+          Case ScriptDB.ColumnRowSelection.Specific
+            sName = String.Format("{0}_line_{1}", sName, RowDetails.RowNumber)
+
+          Case Else
+            sName = String.Format("{0}_{1}", sName, RowDetails.RowSelection)
+
+        End Select
 
         Return sName
       End Get
@@ -55,34 +68,48 @@
       Dim aryParameters As New ArrayList
       Dim aryWheres As New ArrayList
       Dim aryJoins As New ArrayList
+      Dim sRowSelection As String = vbNullString
+      Dim bReverseOrder As Boolean = False
+      Dim sOptions As String = ""
+
+      ' What type of rows to retrieve
+      Select Case RowDetails.RowSelection
+        Case ScriptDB.ColumnRowSelection.First
+          sRowSelection = " TOP 1"
+        Case ScriptDB.ColumnRowSelection.Last
+          sRowSelection = " TOP 1"
+          bReverseOrder = True
+      End Select
+
+      sOptions = "--WITH SCHEMABINDING"
 
       ' Build the where clause
-      If Not Filter Is Nothing Then
-        Filter.AssociatedColumn = Me.Parent.Objects(Enums.Type.Column)(0)
-        Filter.ExpressionType = ScriptDB.ExpressionType.ColumnFilter
-        Filter.GenerateCode()
-        aryWheres.Add(String.Format("({0} = 1)", Filter.UDF.SelectCode))
-        aryJoins.Add(Filter.UDF.JoinCode)
+      If Not RowDetails.Filter Is Nothing Then
+        RowDetails.Filter.AssociatedColumn = Me.Parent.Objects(Enums.Type.Column)(0)
+        RowDetails.Filter.ExpressionType = ScriptDB.ExpressionType.ColumnFilter
+        RowDetails.Filter.GenerateCode()
+        aryWheres.Add(String.Format("({0} = 1)", RowDetails.Filter.UDF.SelectCode))
+        aryJoins.Add(RowDetails.Filter.UDF.JoinCode)
       End If
 
       ' Build the order by clause
-      If Not Order Is Nothing Then
-        For Each objOrderItem In Order.Objects
+      If Not RowDetails.Order Is Nothing Then
+        For Each objOrderItem In RowDetails.Order.Objects
           If objOrderItem.ColumnType = "O" Then
             Select Case objOrderItem.Ascending
               Case Enums.Order.Ascending
-                aryOrderBy.Add(String.Format("[{0}]{1}", objOrderItem.Column.Name, " ASC"))
+                aryOrderBy.Add(String.Format("[{0}]{1}", objOrderItem.Column.Name, IIf(bReverseOrder, " DESC", " ASC")))
               Case Else
-                aryOrderBy.Add(String.Format("[{0}]{1}", objOrderItem.Column.Name, " DESC"))
+                aryOrderBy.Add(String.Format("[{0}]{1}", objOrderItem.Column.Name, IIf(bReverseOrder, " ASC", " DESC")))
             End Select
           End If
         Next
       End If
 
       ' Add foreign key
-      If Not Relation Is Nothing Then
-        aryParameters.Add(String.Format("@prmID_{0} integer", CInt(Relation.ParentID)))
-        aryWheres.Add(String.Format("[ID_{0}] = @prmID_{0}", CInt(Relation.ParentID)))
+      If Not RowDetails.Relation Is Nothing Then
+        aryParameters.Add(String.Format("@prmID_{0} integer", CInt(RowDetails.Relation.ParentID)))
+        aryWheres.Add(String.Format("[ID_{0}] = @prmID_{0}", CInt(RowDetails.Relation.ParentID)))
       End If
 
       ' Add the included columns
@@ -91,30 +118,90 @@
         aryReturnDefintion.Add(String.Format("[{0}] {1}", objColumn.Name, objColumn.DataTypeSyntax))
       Next
 
+
       With UDF
         .WhereCode = IIf(aryWheres.Count > 0, "WHERE ", "") & String.Join(" AND ", aryWheres.ToArray())
         .OrderCode = IIf(aryOrderBy.Count > 0, "ORDER BY ", "") & String.Join(", ", aryOrderBy.ToArray())
-        .Code = String.Format("CREATE FUNCTION dbo.[{0}]({1})" & vbNewLine & _
-                       "RETURNS @results TABLE({2})" & vbNewLine & _
-                       "--WITH SCHEMABINDING" & vbNewLine & _
-                       "AS" & vbNewLine & "BEGIN" & vbNewLine & _
-                       "INSERT @Results SELECT {3}" & vbNewLine & _
-                       "        FROM dbo.[{4}] base" & vbNewLine & _
-                       "        {5}" & vbNewLine & _
-                       "        {6}" & vbNewLine & _
-                       "        {7}" & vbNewLine & _
-                       "    RETURN;" & vbNewLine & _
-                       "END" _
-                      , Me.Name, String.Join(", ", aryParameters.ToArray()) _
-                      , String.Join(", ", aryReturnDefintion.ToArray()), String.Join(", ", aryColumnList.ToArray()) _
-                      , Me.Parent.Name, String.Join(vbNewLine, aryJoins.ToArray()), .WhereCode, .OrderCode)
+
+        If RowDetails.RowSelection = ScriptDB.ColumnRowSelection.Specific Then
+
+          .Code = String.Format("CREATE FUNCTION dbo.[{0}]({1})" & vbNewLine & _
+             "RETURNS @results TABLE({2})" & vbNewLine & _
+             "{9}" & vbNewLine & _
+             "AS" & vbNewLine & "BEGIN" & vbNewLine & _
+             "WITH base AS (" & vbNewLine & _
+             "    SELECT *, [rownumber] = ROW_NUMBER() OVER (ORDER BY [column_date] DESC)" & vbNewLine & _
+             "    FROM {4} base" & vbNewLine & _
+             "    {6})" & vbNewLine & _
+             "INSERT @Results SELECT {3}" & vbNewLine & _
+             "        FROM base" & vbNewLine & _
+             "        WHERE [rownumber] = {10}" & vbNewLine & _
+             "        {7}" & vbNewLine & _
+             "    RETURN;" & vbNewLine & _
+             "END" _
+            , Me.Name, String.Join(", ", aryParameters.ToArray()) _
+            , String.Join(", ", aryReturnDefintion.ToArray()), String.Join(", ", aryColumnList.ToArray()) _
+            , Me.Parent.Name, String.Join(vbNewLine, aryJoins.ToArray()), .WhereCode, .OrderCode, sRowSelection _
+            , sOptions, RowDetails.RowNumber)
+
+        Else
+          .Code = String.Format("CREATE FUNCTION dbo.[{0}]({1})" & vbNewLine & _
+                         "RETURNS @results TABLE({2})" & vbNewLine & _
+                         "{9}" & vbNewLine & _
+                         "AS" & vbNewLine & "BEGIN" & vbNewLine & _
+                         "INSERT @Results SELECT{8} {3}" & vbNewLine & _
+                         "        FROM dbo.[{4}] base" & vbNewLine & _
+                         "        {5}" & vbNewLine & _
+                         "        {6}" & vbNewLine & _
+                         "        {7}" & vbNewLine & _
+                         "    RETURN;" & vbNewLine & _
+                         "END" _
+                        , Me.Name, String.Join(", ", aryParameters.ToArray()) _
+                        , String.Join(", ", aryReturnDefintion.ToArray()), String.Join(", ", aryColumnList.ToArray()) _
+                        , Me.Parent.Name, String.Join(vbNewLine, aryJoins.ToArray()), .WhereCode, .OrderCode, sRowSelection _
+                        , sOptions)
+        End If
 
       End With
 
-
-
-
     End Sub
+
+
+    '         bReverseOrder = False
+
+    '' What type/line number are we dealing with?
+    '        Select Case [Component].ChildRowDetails.RowSelection
+
+    '          Case ScriptDB.ColumnRowSelection.First
+    '            sPartCode = String.Format("{0}SELECT TOP 1 @part_{1} = base.[{2}]" & vbNewLine _
+    '                , [CodeCluster].Indentation, iPartNumber, objThisColumn.Name)
+
+    '          Case ScriptDB.ColumnRowSelection.Last
+    '            sPartCode = String.Format("{0}SELECT TOP 1 @part_{1} = base.[{2}]" & vbNewLine _
+    '                , [CodeCluster].Indentation, iPartNumber, objThisColumn.Name)
+    '            bReverseOrder = True
+
+    '          Case ScriptDB.ColumnRowSelection.Specific
+    '            sPartCode = String.Format("{0}SELECT TOP {3} @part_{1} = base.[{2}]" & vbNewLine _
+    '                , [CodeCluster].Indentation, iPartNumber, objThisColumn.Name, Component.ChildRowDetails.RowNumber)
+
+    '          Case ScriptDB.ColumnRowSelection.Total
+    '            sPartCode = String.Format("{0}SELECT @part_{1} = SUM(base.[{2}])" & vbNewLine _
+    '                , [CodeCluster].Indentation, iPartNumber, objThisColumn.Name)
+    '            bIsSummaryColumn = True
+
+    '          Case ScriptDB.ColumnRowSelection.Count
+    '            sPartCode = String.Format("{0}SELECT @part_{1} = COUNT(base.[{2}])" & vbNewLine _
+    '                , [CodeCluster].Indentation, iPartNumber, objThisColumn.Name)
+    '            bIsSummaryColumn = True
+
+    '          Case Else
+    '            sPartCode = String.Format("{0}SELECT TOP 1 @part_{1} = base.[{2}]" & vbNewLine _
+    '                        , [CodeCluster].Indentation, iPartNumber, objThisColumn.Name)
+
+    '        End Select
+
+
 
   End Class
 End Namespace

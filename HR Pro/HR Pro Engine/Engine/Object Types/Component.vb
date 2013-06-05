@@ -19,10 +19,13 @@ Namespace Things
 
     Public TableID As HCMGuid
     Public ColumnID As HCMGuid
-    Public ColumnFilterID As HCMGuid
-    Public ColumnOrderID As HCMGuid
-    Public ColumnAggregiateType As ScriptDB.AggregiateNumeric
-    Public SpecificLine As Integer
+    Public ChildRowDetails As ChildRowDetails
+
+    'Public ColumnRowSelection As ScriptDB.ColumnRowSelection
+    'Public SpecificLine As Integer
+    'Public ColumnFilterID As HCMGuid
+    'Public ColumnOrderID As HCMGuid
+
     Public IsColumnByReference As Boolean
     Public LookupTableID As HCMGuid
     Public LookupColumnID As HCMGuid

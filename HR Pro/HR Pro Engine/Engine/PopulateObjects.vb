@@ -107,6 +107,7 @@
           objCodeLibrary.ReturnType = objRow.Item("returntype").ToString
           objCodeLibrary.OperatorType = objRow.Item("operatortype").ToString
           objCodeLibrary.RowNumberRequired = objRow.Item("rownumberrequired").ToString
+          objCodeLibrary.RecordIDRequired = objRow.Item("recordidrequired").ToString
           objCodeLibrary.CalculatePostAudit = objRow.Item("calculatepostaudit").ToString
           objCodeLibrary.IsUniqueCode = objRow.Item("isuniquecode").ToString
           objCodeLibrary.IsGetFieldFromDB = objRow.Item("isgetfieldfromdb").ToString
@@ -380,11 +381,11 @@
           objComponent.OperatorID = objRow.Item("operatorid").ToString
           objComponent.TableID = objRow.Item("tableid").ToString
           objComponent.ColumnID = objRow.Item("columnid").ToString
-          objComponent.ColumnAggregiateType = objRow.Item("columnaggregiatetype").ToString
-          objComponent.SpecificLine = objRow.Item("specificline").ToString
+          objComponent.ChildRowDetails.RowSelection = objRow.Item("columnaggregiatetype").ToString
+          objComponent.ChildRowDetails.RowNumber = objRow.Item("specificline").ToString
+          objComponent.ChildRowDetails.FilterID = objRow.Item("columnfilterid").ToString
+          objComponent.ChildRowDetails.OrderID = objRow.Item("columnorderid").ToString
           objComponent.IsColumnByReference = objRow.Item("iscolumnbyreference").ToString
-          objComponent.ColumnFilterID = objRow.Item("columnfilterid").ToString
-          objComponent.ColumnOrderID = objRow.Item("columnorderid").ToString
           objComponent.CalculationID = objRow.Item("calculationid").ToString
           objComponent.ValueType = objRow.Item("valuetype").ToString
 

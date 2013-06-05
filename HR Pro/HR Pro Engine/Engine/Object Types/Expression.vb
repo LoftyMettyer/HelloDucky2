@@ -123,7 +123,7 @@ Namespace Things
       aryParameters2.Clear()
       aryParameters3.Clear()
 
-      Debug.Assert(Me.Name <> "col1_plus_hello")
+      ' Debug.Assert(Me.Name <> "col1_plus_hello")
 
       ' Build the execution code
       SQLCode_AddCodeLevel(Me.Objects, mcolLinesOfCode)
@@ -238,7 +238,7 @@ Namespace Things
                            "{3}" & vbNewLine & _
                            "AS" & vbNewLine & "BEGIN" & vbNewLine & _
                            "    DECLARE @Result as {2};" & vbNewLine & vbNewLine & _
-                           "{4}{5}" & _
+                           "{4}{5}" & vbNewLine & _
                            "    -- Execute calculation code" & vbNewLine & _
                            "    SELECT @Result = {6}" & vbNewLine & _
                            "                 {7}{8}{9}" & vbNewLine & _
@@ -508,7 +508,7 @@ Namespace Things
       Dim iPartNumber As Integer
       Dim bIsSummaryColumn As Boolean
       Dim sColumnName As String
-      Dim bReverseOrder As Boolean
+      '      Dim bReverseOrder As Boolean
 
       Dim LineOfCode As ScriptDB.CodeElement
 
@@ -577,7 +577,7 @@ Namespace Things
 
       Else
 
-        Me.BaseExpression.IsSchemaBound = False
+        '  Me.BaseExpression.IsSchemaBound = False
 
         'If is this column on the base table then add directly to the main execute statement,
         ' otherwise add it into child/parent statements array
@@ -586,9 +586,11 @@ Namespace Things
           Select Case Component.BaseExpression.ExpressionType
             Case ScriptDB.ExpressionType.ColumnFilter
               sColumnName = String.Format("base.[{0}]", objThisColumn.Name)
+              Me.BaseExpression.IsSchemaBound = False
 
             Case ScriptDB.ExpressionType.Mask
               sColumnName = String.Format("base.[{0}]", objThisColumn.Name)
+              Me.BaseExpression.IsSchemaBound = False
 
               ' Needs base table added
               sFromCode = String.Format("FROM [dbo].[{0}] base", objThisColumn.Table.Name)
@@ -653,69 +655,40 @@ Namespace Things
 
           Else
 
-            objOrder = objThisColumn.Table.GetObject(Enums.Type.TableOrder, [Component].ColumnOrderID)
-            objExpression = objThisColumn.Table.Objects.GetObject(Things.Type.Expression, [Component].ColumnFilterID)
+            ' In a later release this can be tidied up to populate at load time
+            [Component].ChildRowDetails.Order = objThisColumn.Table.GetObject(Enums.Type.TableOrder, [Component].ChildRowDetails.OrderID)
+            [Component].ChildRowDetails.Filter = objThisColumn.Table.Objects.GetObject(Things.Type.Expression, [Component].ChildRowDetails.FilterID)
+            [Component].ChildRowDetails.Relation = objRelation
 
-            objOrderFilter = objThisColumn.Table.TableOrderFilter(objOrder, objExpression, objRelation)
-            'objOrderFilter.Relations.AddIfNew(objRelation)
+            objOrderFilter = objThisColumn.Table.TableOrderFilter([Component].ChildRowDetails)
             objOrderFilter.IncludedColumns.AddIfNew(objThisColumn)
-            'iPartNumber = objOrderFilter.ComponentNumber
 
-            'Me.AssociatedColumn.Table.DependsOnColumns.AddIfNew(objThisColumn)
-
-            '' Derive code for any filter on this column in a child table
-            'If CInt([Component].ColumnFilterID) > 0 Then
-
-            '  objExpression = New Things.Expression
-            '  ChildCodeCluster = New ScriptDB.LinesOfCode
-
-            '  objExpression = objThisColumn.Table.Objects.GetObject(Things.Type.Expression, [Component].ColumnFilterID)
-            '  objExpression.ExpressionType = ScriptDB.ExpressionType.ColumnFilter
-            '  objExpression.AssociatedColumn = objThisColumn
-            '  objExpression.GenerateCode()
-            '  sColumnFilter = vbNewLine & "                AND (" & objExpression.UDF.SelectCode & " = 1)"
-            '  Declarations.AddRange(objExpression.PreStatements)
-
-            '  ' Add any join statements
-            '  If objExpression.Joins.Count > 0 Then
-            '    sColumnJoinCode = String.Join(vbNewLine, objExpression.Joins.ToArray())
-            '  End If
-
-            'End If
 
             ' Add calculation for this foreign column to the pre-requisits array
             iPartNumber = Declarations.Count
-            bReverseOrder = False
+            '  bReverseOrder = False
 
             ' What type/line number are we dealing with?
-            Select Case [Component].ColumnAggregiateType
+            Select Case [Component].ChildRowDetails.RowSelection
 
-              Case ScriptDB.AggregiateNumeric.First
-                sPartCode = String.Format("{0}SELECT TOP 1 @part_{1} = base.[{2}]" & vbNewLine _
+              Case ScriptDB.ColumnRowSelection.First, ScriptDB.ColumnRowSelection.Last, ScriptDB.ColumnRowSelection.Specific
+                sPartCode = String.Format("{0}SELECT @part_{1} = base.[{2}]" & vbNewLine _
                     , [CodeCluster].Indentation, iPartNumber, objThisColumn.Name)
 
-              Case ScriptDB.AggregiateNumeric.Last
-                sPartCode = String.Format("{0}SELECT TOP 1 @part_{1} = base.[{2}]" & vbNewLine _
-                    , [CodeCluster].Indentation, iPartNumber, objThisColumn.Name)
-                bReverseOrder = True
-
-              Case ScriptDB.AggregiateNumeric.Specific
-                sPartCode = String.Format("{0}SELECT TOP {3} @part_{1} = base.[{2}]" & vbNewLine _
-                    , [CodeCluster].Indentation, iPartNumber, objThisColumn.Name, Component.SpecificLine)
-
-              Case ScriptDB.AggregiateNumeric.Total
+              Case ScriptDB.ColumnRowSelection.Total
                 sPartCode = String.Format("{0}SELECT @part_{1} = SUM(base.[{2}])" & vbNewLine _
                     , [CodeCluster].Indentation, iPartNumber, objThisColumn.Name)
                 bIsSummaryColumn = True
 
-              Case ScriptDB.AggregiateNumeric.Count
+              Case ScriptDB.ColumnRowSelection.Count
                 sPartCode = String.Format("{0}SELECT @part_{1} = COUNT(base.[{2}])" & vbNewLine _
                     , [CodeCluster].Indentation, iPartNumber, objThisColumn.Name)
                 bIsSummaryColumn = True
 
               Case Else
-                sPartCode = String.Format("{0}SELECT TOP 1 @part_{1} = base.[{2}]" & vbNewLine _
-                            , [CodeCluster].Indentation, iPartNumber, objThisColumn.Name)
+                '  sPartCode = String.Format("{0}SELECT TOP 1 @part_{1} = base.[{2}]" & vbNewLine _
+                '              , [CodeCluster].Indentation, iPartNumber, objThisColumn.Name)
+                Debug.Assert(1 = 2)
 
             End Select
 
@@ -832,6 +805,7 @@ Namespace Things
       LineOfCode.Code = String.Format(LineOfCode.Code, ChildCodeCluster.ToArray)
       mbRequiresRowNumber = mbRequiresRowNumber Or objCodeLibrary.RowNumberRequired
       mbCalculatePostAudit = mbCalculatePostAudit Or objCodeLibrary.CalculatePostAudit
+      mbRequiresRecordID = mbRequiresRecordID Or objCodeLibrary.RecordIDRequired
 
       ' For functions that return mixed type, make it type safe
       If objCodeLibrary.ReturnType = ScriptDB.ComponentValueTypes.Unknown Then

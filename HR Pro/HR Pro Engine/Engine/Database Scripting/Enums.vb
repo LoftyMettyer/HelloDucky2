@@ -76,16 +76,22 @@
       [Modifier] = 180
     End Enum
 
-    Enum AggregiateNumeric
-      [None] = 0
+    'Public Enum ColumnSummaryType
+    '  [Row] = 0
+    '  [Count] = 1
+    '  [Total] = 2
+    'End Enum
+
+    Public Enum ColumnRowSelection
+      '[None] = 0
       [First] = 1
       [Last] = 2
       [Specific] = 3
       [Total] = 4
       [Count] = 5
-      [Maximum] = 6
-      [Minimum] = 7
-      [Average] = 8
+      ' [Maximum] = 6
+      ' [Minimum] = 7
+      ' [Average] = 8
     End Enum
 
     Public Enum ComponentTypes

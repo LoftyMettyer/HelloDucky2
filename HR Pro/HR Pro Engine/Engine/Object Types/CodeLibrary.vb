@@ -4,13 +4,11 @@
 
     Public Code As String
     Public OperatorType As ScriptDB.OperatorSubType
-    '   Public SplitIntoCase As Boolean
-    '    Public AppendWildcard As Boolean
     Public PreCode As String
     Public AfterCode As String
     Public ReturnType As ScriptDB.ComponentValueTypes
-    'Public BypassValidation As Boolean
     Public RowNumberRequired As Boolean
+    Public RecordIDRequired As Boolean
     Public CalculatePostAudit As Boolean
     Public IsGetFieldFromDB As Boolean = False
     Public IsUniqueCode As Boolean = False

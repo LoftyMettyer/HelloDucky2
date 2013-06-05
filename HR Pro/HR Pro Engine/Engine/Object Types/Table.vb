@@ -142,25 +142,35 @@ Namespace Things
 
     End Function
 
-    Public Function TableOrderFilter(ByRef Order As Things.TableOrder, ByRef Filter As Things.Expression, ByRef Relation As Things.Relation) As Things.TableOrderFilter
+    Public Function TableOrderFilter(ByRef RowDetails As Things.ChildRowDetails) As Things.TableOrderFilter
+
+      'ByRef Order As Things.TableOrder, ByRef Filter As Things.Expression _
+      '            , ByRef Relation As Things.Relation) As Things.TableOrderFilter
 
       Dim objChild As Things.Base
       Dim objOFilter As Things.TableOrderFilter
 
       For Each objChild In Objects(Things.Type.TableOrderFilter)
         objOFilter = CType(objChild, Things.TableOrderFilter)
-        If objOFilter.Order Is Order And objOFilter.Filter Is Filter And objOFilter.Relation Is Relation Then
+
+        If objOFilter.RowDetails.Order Is RowDetails.Order _
+            And objOFilter.RowDetails.Filter Is RowDetails.Filter() _
+            And objOFilter.RowDetails.Relation Is RowDetails.Relation _
+            And objOFilter.RowDetails.RowNumber = RowDetails.RowNumber _
+            And objOFilter.RowDetails.RowSelection = RowDetails.RowSelection Then
           Return objOFilter
         End If
       Next
 
-      ' Not found - add to stack
+      ' New table filter. Add to the stack and return
       objOFilter = New Things.TableOrderFilter
-      objOFilter.Order = Order
-      objOFilter.Filter = Filter
-      objOFilter.Relation = Relation
-      objOFilter.Parent = Me
+      objOFilter.RowDetails.Order = RowDetails.Order
+      objOFilter.RowDetails.Filter = RowDetails.Filter()
+      objOFilter.RowDetails.Relation = RowDetails.Relation
+      objOFilter.RowDetails.RowNumber = RowDetails.RowNumber
+      objOFilter.RowDetails.RowSelection = RowDetails.RowSelection
       objOFilter.ComponentNumber = Objects(Things.Type.TableOrderFilter).Count + 1
+      objOFilter.Parent = Me
       Me.Objects.Add(objOFilter)
 
       Return objOFilter

@@ -923,7 +923,7 @@ Namespace ScriptDB
 
                 sObjectName = String.Format("{0}{1}.{2}", Consts.CalculationUDF, objTable.Name, objColumn.Name)
 
-                '  Debug.Assert(sObjectName <> "udfcalc_Table1.divby0_triggerval")
+                ' Debug.Assert(sObjectName <> "udfcalc_Personnel_Records.Trigger_to_Payroll")
 
                 If Not objColumn.Calculation Is Nothing Then
                   objColumn.Calculation.ExpressionType = ScriptDB.ExpressionType.ColumnCalculation
@@ -940,6 +940,9 @@ Namespace ScriptDB
         ' Generate any table UDFs
         For Each objTable In Globals.Things
           For Each objTableOrderFilter In objTable.Objects(Things.Type.TableOrderFilter)
+
+            Debug.Assert(objTableOrderFilter.Name <> "udftab_Training_Booking_122_all")
+
             objTableOrderFilter.GenerateCode()
             ScriptDB.DropUDF("dbo", objTableOrderFilter.Name)
             Globals.CommitDB.ScriptStatement(objTableOrderFilter.UDF.Code)
@@ -949,8 +952,18 @@ Namespace ScriptDB
         ' Script the column calculations
         For Each objTable In Globals.Things
           For Each objColumn In objTable.Columns
-            'objColumn.Calculation.GenerateCode()
+
+            '   Debug.Print(objColumn.Name)
             If objColumn.IsCalculated Then
+
+              objColumn.Calculation.GenerateCode()
+
+              sObjectName = String.Format("{0}{1}.{2}", Consts.CalculationUDF, objTable.Name, objColumn.Name)
+              'Debug.Assert(sObjectName <> "udfcalc_Personnel_Records.Trigger_to_Payroll")
+
+              '  Debug.Assert(objColumn.Calculation.UDF.Name <> "[dbo].[udfcalc__Personnel_Records.Trigger_to_Payroll")
+
+              ScriptDB.DropUDF("dbo", sObjectName)
               If Not Globals.CommitDB.ScriptStatement(objColumn.Calculation.UDF.Code) Then
                 Globals.CommitDB.ScriptStatement(objColumn.Calculation.UDF.CodeStub)
               End If
