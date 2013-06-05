@@ -1333,6 +1333,7 @@ Private mlngChart_ColumnID_2 As Long
 Private mlngChart_TableID_3 As Long
 Private mlngChart_ColumnID_3 As Long
 Private mlngChart_SortOrderID As Long
+Private miChart_SortDirection As Integer
 
 Private mcolSSITableViews As clsSSITableViews
 Private mcolGroups As Collection
@@ -1516,7 +1517,7 @@ Private Sub GetHRProTables()
 
   ' Populate the tables combo.
   Dim sSQL As String
-  Dim rsTables As dao.Recordset
+  Dim rsTables As DAO.Recordset
   Dim iDefaultItem As Integer
   
   iDefaultItem = 0
@@ -1567,7 +1568,7 @@ Private Sub GetHRProUtilities(pUtilityType As UtilityType)
   Dim sSQL As String
   Dim sWhereSQL As String
   Dim rsUtilities As New ADODB.Recordset
-  Dim rsLocalUtilities As dao.Recordset
+  Dim rsLocalUtilities As DAO.Recordset
   Dim sTableName As String
   Dim sIDColumnName As String
   Dim fLocalTable As Boolean
@@ -1691,7 +1692,7 @@ Private Sub GetHRProScreens()
 
   ' Populate the screens combo.
   Dim sSQL As String
-  Dim rsScreens As dao.Recordset
+  Dim rsScreens As DAO.Recordset
 
   If miLinkType <> SSINTLINK_HYPERTEXT Then
     cboHRProScreen.Clear
@@ -2731,7 +2732,7 @@ Private Function PopulateColumnsCombo(plngTableID As Long) As Boolean
       If recColEdit!Deleted <> True And recColEdit!columntype <> giCOLUMNTYPE_SYSTEM Then
         ' Add the column to the combo
         ' Making sure it isn't ole, photo, wp or link...
-        If recColEdit!DataType <> dtlongvarchar And _
+        If recColEdit!DataType <> dtLONGVARCHAR And _
           recColEdit!DataType <> dtBINARY And _
           recColEdit!DataType <> dtVARBINARY And _
           recColEdit!DataType <> dtLONGVARBINARY Then
@@ -2786,7 +2787,7 @@ Private Sub cboColumns_Click()
   piColumnDataType = GetColumnDataType(lngColumnID)
   
   ' Disable 'total' option if not numeric or integer
-  If piColumnDataType <> dtinteger And piColumnDataType <> dtNUMERIC Then
+  If piColumnDataType <> dtINTEGER And piColumnDataType <> dtNUMERIC Then
     optAggregateType(0).value = True
     optAggregateType(1).Enabled = False
     optAggregateType(1).ForeColor = vbButtonFace
@@ -3027,7 +3028,7 @@ Private Sub cmdChartData_Click()
   Dim frmSSIChart As New frmSSIntranetChart
 
   With frmSSIChart
-    .Initialize 1, ChartTableID, ChartColumnID, ChartFilterID, ChartAggregateType, Chart_TableID_2, Chart_ColumnID_2, Chart_TableID_3, Chart_ColumnID_3, Chart_SortOrderID
+    .Initialize 1, ChartTableID, ChartColumnID, ChartFilterID, ChartAggregateType, Chart_TableID_2, Chart_ColumnID_2, Chart_TableID_3, Chart_ColumnID_3, Chart_SortOrderID, Chart_SortDirection
     
     .Show vbModal
     
@@ -3043,6 +3044,7 @@ Private Sub cmdChartData_Click()
       Chart_TableID_3 = .Chart_TableID_3
       Chart_ColumnID_3 = .Chart_ColumnID_3
       Chart_SortOrderID = .Chart_SortOrderID
+      Chart_SortDirection = .Chart_SortDirection
       
       mfChanged = True
       
@@ -3379,7 +3381,7 @@ Private Sub grdAccess_Change()
   Dim fNewValue As Boolean
   Dim fAllVisible As Boolean
   
-  UI.LockWindow grdAccess.hWnd
+  UI.LockWindow grdAccess.hwnd
   
   If (grdAccess.AddItemRowIndex(grdAccess.Bookmark) = 0) Then
     ' The 'All Groups' access has changed. Apply the selection to all other groups.
@@ -3822,7 +3824,7 @@ Public Property Let HRProScreenID(ByVal psNewValue As String)
   Dim iLoop As Integer
   Dim iLoop2 As Integer
   Dim sSQL As String
-  Dim rsScreens As dao.Recordset
+  Dim rsScreens As DAO.Recordset
   
   If (miLinkType <> SSINTLINK_HYPERTEXT) And _
     (optLink(SSINTLINKSCREEN_HRPRO).value) And _
@@ -4309,6 +4311,14 @@ End Property
 
 Public Property Let Chart_SortOrderID(ByVal plngNewValue As Long)
   mlngChart_SortOrderID = plngNewValue
+End Property
+      
+Public Property Get Chart_SortDirection() As Integer
+  Chart_SortDirection = miChart_SortDirection
+End Property
+
+Public Property Let Chart_SortDirection(ByVal piNewValue As Integer)
+  miChart_SortDirection = piNewValue
 End Property
       
 Public Property Get InitialDisplayMode() As Integer
