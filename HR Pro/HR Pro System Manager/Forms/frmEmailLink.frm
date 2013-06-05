@@ -858,14 +858,12 @@ End Sub
 
 Private Sub PopulateCombos()
 
-  With cboDateLinkOffsetPeriod
-    .Clear
-    .AddItem "Day(s)": .ItemData(.NewIndex) = iTimePeriodDays
-    .AddItem "Week(s)": .ItemData(.NewIndex) = iTimePeriodWeeks
-    .AddItem "Month(s)": .ItemData(.NewIndex) = iTimePeriodMonths
-    .AddItem "Year(s)": .ItemData(.NewIndex) = iTimePeriodYears
-    .ListIndex = -1
-  End With
+  cboDateLinkOffsetPeriod.Clear
+  AddItemToComboBox cboDateLinkOffsetPeriod, "Day(s)", iTimePeriodDays
+  AddItemToComboBox cboDateLinkOffsetPeriod, "Week(s)", iTimePeriodWeeks
+  AddItemToComboBox cboDateLinkOffsetPeriod, "Month(s)", iTimePeriodMonths
+  AddItemToComboBox cboDateLinkOffsetPeriod, "Year(s)", iTimePeriodYears
+  cboDateLinkOffsetPeriod.ListIndex = -1
 
   With cboDateLinkDirection
     .Clear

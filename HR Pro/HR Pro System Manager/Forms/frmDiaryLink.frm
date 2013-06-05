@@ -400,7 +400,7 @@ ErrorTrap:
 
 End Sub
 
-Private Sub cmdOK_Click()
+Private Sub cmdOk_Click()
 
   'MH20020424 Fault 3760
   '(Avoid changing 01/13/2002 to 13/01/2002)
@@ -521,25 +521,14 @@ End Sub
 
 Private Sub cboDateLinkOffsetPeriod_Initialize()
   ' Populate the diary period combo.
-  With cboDateLinkOffsetPeriod
-    
-    ' Clear the combo.
-    .Clear
-    
-    ' Add an item for each period.
-    .AddItem "Day(s)"
-    .ItemData(.NewIndex) = iTimePeriodDays
-    
-    .AddItem "Week(s)"
-    .ItemData(.NewIndex) = iTimePeriodWeeks
-    
-    .AddItem "Month(s)"
-    .ItemData(.NewIndex) = iTimePeriodMonths
-    
-    .AddItem "Year(s)"
-    .ItemData(.NewIndex) = iTimePeriodYears
-            
-  End With
+     
+  ' Add an item for each period.
+  cboDateLinkOffsetPeriod.Clear
+  AddItemToComboBox cboDateLinkOffsetPeriod, "Day(s)", iTimePeriodDays
+  AddItemToComboBox cboDateLinkOffsetPeriod, "Week(s)", iTimePeriodWeeks
+  AddItemToComboBox cboDateLinkOffsetPeriod, "Month(s)", iTimePeriodMonths
+  AddItemToComboBox cboDateLinkOffsetPeriod, "Year(s)", iTimePeriodYears
+  
 
 End Sub
 
@@ -558,7 +547,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
       pintAnswer = MsgBox("You have made changes...do you wish to save these changes ?", vbQuestion + vbYesNoCancel, App.Title)
         
       If pintAnswer = vbYes Then
-        cmdOK_Click
+        cmdOk_Click
       ElseIf pintAnswer = vbCancel Then
         Cancel = True
         Exit Sub
