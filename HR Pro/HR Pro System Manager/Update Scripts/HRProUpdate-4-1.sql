@@ -992,11 +992,10 @@ PRINT 'Step 1 - Modifying Workflow procedures'
 /* ------------------------------------------------------------- */
 PRINT 'Step 2 - Version 1 Integration Modifications'
 
-
 	-- Create document management map table
-	IF OBJECT_ID('ASRSysDocumentMapping', N'U') IS NULL	
+	IF OBJECT_ID('ASRSysDocumentManagementTypes', N'U') IS NULL	
 	BEGIN
-		EXEC sp_executesql N'CREATE TABLE [dbo].[ASRSysDocumentMapping]
+		EXEC sp_executesql N'CREATE TABLE [dbo].[ASRSysDocumentManagementTypes]
                     ( [DocumentMapID]			integer			NOT NULL IDENTITY(1,1)
                     , [Name]					nvarchar(255)
                     , [Description]				nvarchar(MAX)
@@ -1007,12 +1006,17 @@ PRINT 'Step 2 - Version 1 Integration Modifications'
                     , [TargetTableID]			integer
                     , [TargetKeyFieldColumnID]	integer
                     , [TargetColumnID]			integer
-                    , [ParentTableID]			integer
-                    , [ParentKeyFieldColumnID]	integer
+                    , [TargetCategoryColumnID]	integer
+                    , [TargetTypeColumnID]		integer
+                    , [Parent1TableID]			integer
+                    , [Parent1KeyFieldColumnID]	integer
+                    , [Parent2TableID]			integer
+                    , [Parent2KeyFieldColumnID]	integer
                     , [ManualHeader]			bit
                     , [HeaderText]				nvarchar(MAX))
                ON [PRIMARY]'
 	END	
+
 
 	-- Add columns to ASRSysMailMergeName
 	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysMailMergeName', 'U') AND name = 'OutputPrinterName')
