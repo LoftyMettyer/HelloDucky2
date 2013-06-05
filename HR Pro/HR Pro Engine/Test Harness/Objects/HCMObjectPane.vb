@@ -1,9 +1,9 @@
 ﻿Imports Infragistics.Win.UltraWinGrid
 Public Class HCMObjectPane
 
-  Public SelectedObjects As Phoenix.Things.Collection
+  Public SelectedObjects As HRProEngine.Things.Collection
 
-  Public Sub Attach(ByRef Things As Phoenix.Things.Collection)
+  Public Sub Attach(ByRef Things As HRProEngine.Things.Collection)
 
     ' Some default formatting.
     UltraGrid1.DisplayLayout.MaxBandDepth = 3
@@ -69,8 +69,8 @@ Public Class HCMObjectPane
         '  RaiseEvent ItemClick(objSelectedRow.ParentRow.ListObject, CType(objSelectedRow.GetChild(ChildRow.First).ListObject, Things.iSystemObject).Type)
         'End If
       Else
-        bToggleSelected = CType(objSelectedRow.ListObject, Phoenix.Things.Base).IsSelected
-        CType(objSelectedRow.ListObject, Phoenix.Things.Base).IsSelected = True 'Not bToggleSelected
+        bToggleSelected = CType(objSelectedRow.ListObject, HRProEngine.Things.Base).IsSelected
+        CType(objSelectedRow.ListObject, HRProEngine.Things.Base).IsSelected = True 'Not bToggleSelected
 
         'Me.SelectedThings.Add(objSelectedRow.ListObject)
         'RaiseEvent ItemClick(objSelectedRow.ListObject, CType(objSelectedRow.ListObject, Things.iSystemObject).Type)

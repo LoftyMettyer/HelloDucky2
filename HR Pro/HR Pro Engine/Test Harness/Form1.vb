@@ -120,8 +120,8 @@ Public Class Form1
   Private Sub Button3_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button3.Click
 
 
-    Dim frmMapObjects As New MapObjects
-    frmMapObjects.Show()
+    ''  Dim frmMapObjects As New MapObjects
+    'frmMapObjects.Show()
     '    Me.Dispose(False)
 
 

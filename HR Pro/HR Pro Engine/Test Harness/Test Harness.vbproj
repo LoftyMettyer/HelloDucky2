@@ -98,12 +98,6 @@
     <Compile Include="Import &amp; Export Definitions\ImportObjects.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MapObjects.Designer.vb">
-      <DependentUpon>MapObjects.vb</DependentUpon>
-    </Compile>
-    <Compile Include="MapObjects.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="modGeneral.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
@@ -145,9 +139,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Import &amp; Export Definitions\ImportObjects.resx">
       <DependentUpon>ImportObjects.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="MapObjects.resx">
-      <DependentUpon>MapObjects.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\licenses.licx" />
     <EmbeddedResource Include="My Project\Resources.resx">
