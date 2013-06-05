@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
 Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~2.OCX"
 Begin VB.MDIForm frmMain 
@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "10:17"
+            TextSave        =   "10:30"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -2107,7 +2107,8 @@ ErrorTrap:
     
     ' JDM - 01/05/01 - Fault 2220 - Messes up when history record is deleted by current user.
     '                               Ignoring the fault seems to fix it.
-    If (Err.Number = 3021) Then
+    'If (Err.Number = 3021) Then
+    If (Err.Number = 91) Or (Err.Number = 3021) Then
       GoTo TidyUpAndExit
     Else
       gobjErrorStack.HandleError "(fNewRecordEnabled, fCopyRecordEnabled, fEditRecordEnabled" _
@@ -3048,24 +3049,29 @@ Public Sub RefreshHistoryMenu(pfrmCallingForm As Form, Optional ByVal pfUnLoad A
     TryUnload pfrmCallingForm
   Else
   
-    If pfrmCallingForm.Recordset.State = adStateClosed Then
-      TryUnload pfrmCallingForm
-    Else
-      ' Histories not available for empty recordsets.
-      If fHistoryEnabled Then
-        fHistoryEnabled = Not (pfrmCallingForm.Recordset.BOF And pfrmCallingForm.Recordset.EOF)
-      End If
-    
-      ' Histories not available when adding new records.
-      If fHistoryEnabled Then
-        fHistoryEnabled = (pfrmCallingForm.Recordset.EditMode <> adEditAdd)
-      End If
-  
-      ' Histories only enabled if there are history screens for the current record edit screen.
-      If fHistoryEnabled Then
-        Set objHistoryScreens = GetHistoryScreens(pfrmCallingForm.ScreenID)
-        fHistoryEnabled = (objHistoryScreens.Count > 0)
-        Set objHistoryScreens = Nothing
+    If Not pfrmCallingForm Is Nothing Then
+      If Not pfrmCallingForm.Recordset Is Nothing Then
+        If pfrmCallingForm.Recordset.State = adStateClosed Then
+          TryUnload pfrmCallingForm
+        Else
+          ' Histories not available for empty recordsets.
+          If fHistoryEnabled Then
+            fHistoryEnabled = Not (pfrmCallingForm.Recordset.BOF And pfrmCallingForm.Recordset.EOF)
+          End If
+        
+          ' Histories not available when adding new records.
+          If fHistoryEnabled Then
+            fHistoryEnabled = (pfrmCallingForm.Recordset.EditMode <> adEditAdd)
+          End If
+      
+          ' Histories only enabled if there are history screens for the current record edit screen.
+          If fHistoryEnabled Then
+            Set objHistoryScreens = GetHistoryScreens(pfrmCallingForm.ScreenID)
+            fHistoryEnabled = (objHistoryScreens.Count > 0)
+            Set objHistoryScreens = Nothing
+          End If
+        End If
+      
       End If
     End If
   End If
@@ -3295,6 +3301,10 @@ Private Sub MDIForm_Resize()
 End Sub
 
 
+Private Sub MDIForm_Unload(Cancel As Integer)
+  'Stops Data hanging around after the MDI form is gone
+  End
+End Sub
 
 Private Sub Timer1_Timer()
   ' Poll the server for any messages.
