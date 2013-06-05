@@ -1,11 +1,11 @@
 
-DROP TABLE [fusion].[temptable]
-GO
+--DROP TABLE [fusion].[temptable]
+--GO
 
 
-CREATE TABLE [fusion].[temptable](
-	[Message] [varchar](max) NULL,
-	[CreatedDateTime] [datetime] NULL)
+--CREATE TABLE [fusion].[temptable](
+--	[Message] [varchar](max) NULL,
+--	[CreatedDateTime] [datetime] NULL)
 	
  
 
@@ -63,7 +63,7 @@ BEGIN
 
 	SET NOCOUNT ON;
 
-	INSERT [fusion].[temptable] (message) VALUES (@xml)
+	--INSERT [fusion].[temptable] (message) VALUES (@xml)
 
 DECLARE @xmlCode xml;
 
