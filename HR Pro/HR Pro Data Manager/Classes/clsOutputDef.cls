@@ -198,8 +198,6 @@ Private Sub EnableDestinations(blnScreen As Boolean, blnPrinter As Boolean, blnS
   Dim blnSelected As Boolean
   
   On Local Error Resume Next
-  
-  blnEmail = (blnEmail And mfrmParent.cboEmailAddr.ListCount > 0)
    
   With mfrmParent.chkDestination
     'SCREEN
