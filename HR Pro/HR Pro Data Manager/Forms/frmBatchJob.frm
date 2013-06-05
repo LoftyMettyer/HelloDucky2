@@ -1,15 +1,16 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "coa_spinner.ocx"
 Begin VB.Form frmBatchJob 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Batch Job Definition"
-   ClientHeight    =   6135
+   ClientHeight    =   6345
    ClientLeft      =   45
    ClientTop       =   330
-   ClientWidth     =   10005
+   ClientWidth     =   9945
    BeginProperty Font 
       Name            =   "Verdana"
       Size            =   8.25
@@ -23,33 +24,29 @@ Begin VB.Form frmBatchJob
    Icon            =   "frmBatchJob.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
-   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   6135
-   ScaleWidth      =   10005
+   ScaleHeight     =   6345
+   ScaleWidth      =   9945
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin TabDlg.SSTab SSTab1 
-      Height          =   5385
-      Left            =   90
-      TabIndex        =   39
-      Top             =   120
-      Width           =   9810
-      _ExtentX        =   17304
-      _ExtentY        =   9499
+      Height          =   5610
+      Left            =   45
+      TabIndex        =   61
+      Top             =   45
+      Width           =   9800
+      _ExtentX        =   17277
+      _ExtentY        =   9895
       _Version        =   393216
       Style           =   1
-      Tabs            =   2
-      TabsPerRow      =   2
+      Tab             =   2
       TabHeight       =   520
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmBatchJob.frx":000C
-      Tab(0).ControlEnabled=   -1  'True
+      Tab(0).ControlEnabled=   0   'False
       Tab(0).Control(0)=   "fraScheduling"
-      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).Control(1)=   "fraInfo"
-      Tab(0).Control(1).Enabled=   0   'False
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "&Jobs"
       TabPicture(1)   =   "frmBatchJob.frx":0028
@@ -57,23 +54,253 @@ Begin VB.Form frmBatchJob
       Tab(1).Control(0)=   "fraJobs"
       Tab(1).Control(1)=   "Frame1"
       Tab(1).ControlCount=   2
-      Begin VB.Frame Frame1 
-         Caption         =   "Email Notifications :"
-         Height          =   1305
-         Left            =   -74850
-         TabIndex        =   30
-         Top             =   3900
-         Width           =   9495
-         Begin VB.CheckBox chkEmail 
-            Caption         =   "Send an email if the batch job &fails"
-            Height          =   255
+      TabCaption(2)   =   "&Output"
+      TabPicture(2)   =   "frmBatchJob.frx":0044
+      Tab(2).ControlEnabled=   -1  'True
+      Tab(2).Control(0)=   "Frame4"
+      Tab(2).Control(0).Enabled=   0   'False
+      Tab(2).Control(1)=   "Frame2"
+      Tab(2).Control(1).Enabled=   0   'False
+      Tab(2).Control(2)=   "Frame3"
+      Tab(2).Control(2).Enabled=   0   'False
+      Tab(2).ControlCount=   3
+      Begin VB.Frame Frame3 
+         Caption         =   "Output Format :"
+         Height          =   3200
+         Left            =   150
+         TabIndex        =   70
+         Top             =   2280
+         Width           =   2265
+         Begin VB.OptionButton optOutputFormat 
+            Caption         =   "&Word Document"
+            Height          =   195
+            Index           =   3
+            Left            =   200
+            TabIndex        =   44
+            Top             =   405
+            Width           =   1900
+         End
+         Begin VB.OptionButton optOutputFormat 
+            Caption         =   "E&xcel Worksheet"
+            Height          =   195
+            Index           =   4
+            Left            =   200
+            TabIndex        =   45
+            Top             =   720
+            Width           =   1900
+         End
+      End
+      Begin VB.Frame Frame2 
+         Caption         =   "Output Destination(s) :"
+         Height          =   3200
+         Left            =   2520
+         TabIndex        =   63
+         Top             =   2280
+         Width           =   7110
+         Begin VB.CheckBox chkPreview 
+            Caption         =   "Preview"
+            Height          =   195
+            Left            =   3660
+            TabIndex        =   46
+            TabStop         =   0   'False
+            Top             =   405
+            Visible         =   0   'False
+            Width           =   1185
+         End
+         Begin VB.CheckBox chkDestination 
+            Caption         =   "Displa&y output on screen"
+            Height          =   195
             Index           =   0
             Left            =   240
-            TabIndex        =   31
-            Top             =   360
-            Width           =   3390
+            TabIndex        =   47
+            Top             =   380
+            Width           =   2625
+         End
+         Begin VB.CheckBox chkDestination 
+            Caption         =   "Send as &email"
+            Height          =   195
+            Index           =   3
+            Left            =   240
+            TabIndex        =   54
+            Top             =   1995
+            Width           =   1515
+         End
+         Begin VB.CheckBox chkDestination 
+            Caption         =   "Save to &file"
+            Height          =   195
+            Index           =   2
+            Left            =   240
+            TabIndex        =   50
+            Top             =   1215
+            Width           =   1455
+         End
+         Begin VB.CheckBox chkDestination 
+            Caption         =   "Send to &printer"
+            Height          =   195
+            Index           =   1
+            Left            =   240
+            TabIndex        =   48
+            Top             =   750
+            Width           =   1620
+         End
+         Begin VB.CommandButton cmdEmailGroup 
+            Caption         =   "..."
+            Enabled         =   0   'False
+            Height          =   315
+            Left            =   6550
+            TabIndex        =   56
+            Top             =   1935
+            UseMaskColor    =   -1  'True
+            Width           =   330
+         End
+         Begin VB.CommandButton cmdFileName 
+            Caption         =   "..."
+            Enabled         =   0   'False
+            Height          =   315
+            Left            =   6550
+            TabIndex        =   52
+            Top             =   1155
+            UseMaskColor    =   -1  'True
+            Width           =   330
          End
          Begin VB.TextBox txtEmailGroup 
+            BackColor       =   &H8000000F&
+            Enabled         =   0   'False
+            ForeColor       =   &H00000000&
+            Height          =   315
+            Left            =   3660
+            Locked          =   -1  'True
+            TabIndex        =   55
+            TabStop         =   0   'False
+            Tag             =   "0"
+            Top             =   1950
+            Width           =   2900
+         End
+         Begin VB.TextBox txtEmailSubject 
+            BackColor       =   &H8000000F&
+            Enabled         =   0   'False
+            Height          =   315
+            Left            =   3660
+            TabIndex        =   57
+            Top             =   2355
+            Width           =   3240
+         End
+         Begin VB.ComboBox cboSaveExisting 
+            BackColor       =   &H8000000F&
+            Enabled         =   0   'False
+            Height          =   315
+            Left            =   3660
+            Style           =   2  'Dropdown List
+            TabIndex        =   53
+            Top             =   1560
+            Width           =   3240
+         End
+         Begin VB.ComboBox cboPrinterName 
+            BackColor       =   &H8000000F&
+            Enabled         =   0   'False
+            Height          =   315
+            Left            =   3660
+            Style           =   2  'Dropdown List
+            TabIndex        =   49
+            Top             =   750
+            Width           =   3240
+         End
+         Begin VB.TextBox txtFileName 
+            BackColor       =   &H8000000F&
+            Enabled         =   0   'False
+            ForeColor       =   &H00000000&
+            Height          =   315
+            Left            =   3660
+            Locked          =   -1  'True
+            TabIndex        =   51
+            TabStop         =   0   'False
+            Tag             =   "0"
+            Top             =   1155
+            Width           =   2900
+         End
+         Begin VB.TextBox txtEMailAttachAs 
+            BackColor       =   &H8000000F&
+            Enabled         =   0   'False
+            ForeColor       =   &H00000000&
+            Height          =   315
+            Left            =   3660
+            TabIndex        =   58
+            Tag             =   "0"
+            Top             =   2760
+            Width           =   3240
+         End
+         Begin VB.Label Label4 
+            AutoSize        =   -1  'True
+            Caption         =   "Printer location :"
+            Enabled         =   0   'False
+            Height          =   195
+            Left            =   2190
+            TabIndex        =   69
+            Top             =   750
+            Width           =   1410
+         End
+         Begin VB.Label Label3 
+            AutoSize        =   -1  'True
+            Caption         =   "If existing file :"
+            Enabled         =   0   'False
+            Height          =   195
+            Left            =   2190
+            TabIndex        =   68
+            Top             =   1620
+            Width           =   1350
+         End
+         Begin VB.Label lblEmail 
+            AutoSize        =   -1  'True
+            Caption         =   "Email group :"
+            Enabled         =   0   'False
+            Height          =   195
+            Index           =   5
+            Left            =   2190
+            TabIndex        =   67
+            Top             =   1995
+            Width           =   1200
+         End
+         Begin VB.Label lblEmail 
+            AutoSize        =   -1  'True
+            Caption         =   "Email subject :"
+            Enabled         =   0   'False
+            Height          =   195
+            Index           =   4
+            Left            =   2190
+            TabIndex        =   66
+            Top             =   2400
+            Width           =   1305
+         End
+         Begin VB.Label Label2 
+            AutoSize        =   -1  'True
+            Caption         =   "File name :"
+            Enabled         =   0   'False
+            Height          =   195
+            Left            =   2190
+            TabIndex        =   65
+            Top             =   1215
+            Width           =   1095
+         End
+         Begin VB.Label lblEmail 
+            AutoSize        =   -1  'True
+            Caption         =   "Attach as :"
+            Enabled         =   0   'False
+            Height          =   195
+            Index           =   3
+            Left            =   2190
+            TabIndex        =   64
+            Top             =   2805
+            Width           =   1065
+         End
+      End
+      Begin VB.Frame Frame1 
+         Caption         =   "Email Notifications :"
+         Height          =   1400
+         Left            =   -74850
+         TabIndex        =   30
+         Top             =   4080
+         Width           =   9495
+         Begin VB.TextBox txtEmailNotifyGroup 
             BackColor       =   &H8000000F&
             Enabled         =   0   'False
             ForeColor       =   &H00000000&
@@ -85,14 +312,23 @@ Begin VB.Form frmBatchJob
             TabStop         =   0   'False
             Tag             =   "0"
             Top             =   300
-            Width           =   2700
+            Width           =   3900
          End
-         Begin VB.CommandButton cmdEmailGroup 
+         Begin VB.CheckBox chkEmail 
+            Caption         =   "Send an email if the batch job &fails"
+            Height          =   255
+            Index           =   0
+            Left            =   240
+            TabIndex        =   31
+            Top             =   360
+            Width           =   3390
+         End
+         Begin VB.CommandButton cmdEmailNotifyGroup 
             Caption         =   "..."
             Enabled         =   0   'False
             Height          =   315
             Index           =   0
-            Left            =   7035
+            Left            =   8250
             TabIndex        =   33
             Top             =   300
             UseMaskColor    =   -1  'True
@@ -107,7 +343,7 @@ Begin VB.Form frmBatchJob
             Top             =   760
             Width           =   4035
          End
-         Begin VB.TextBox txtEmailGroup 
+         Begin VB.TextBox txtEmailNotifyGroup 
             BackColor       =   &H8000000F&
             Enabled         =   0   'False
             ForeColor       =   &H00000000&
@@ -119,14 +355,14 @@ Begin VB.Form frmBatchJob
             TabStop         =   0   'False
             Tag             =   "0"
             Top             =   700
-            Width           =   2700
+            Width           =   3900
          End
-         Begin VB.CommandButton cmdEmailGroup 
+         Begin VB.CommandButton cmdEmailNotifyGroup 
             Caption         =   "..."
             Enabled         =   0   'False
             Height          =   315
             Index           =   1
-            Left            =   7035
+            Left            =   8250
             TabIndex        =   36
             Top             =   700
             UseMaskColor    =   -1  'True
@@ -134,10 +370,10 @@ Begin VB.Form frmBatchJob
          End
       End
       Begin VB.Frame fraJobs 
-         Height          =   3510
+         Height          =   3600
          Left            =   -74850
          TabIndex        =   22
-         Top             =   360
+         Top             =   420
          Width           =   9495
          Begin VB.CommandButton cmdClearAll 
             Caption         =   "Re&move All"
@@ -218,23 +454,23 @@ Begin VB.Form frmBatchJob
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(0).Picture=   "frmBatchJob.frx":0044
+            stylesets(0).Picture=   "frmBatchJob.frx":0060
             stylesets(1).Name=   "ssetHeaderDisabled"
             stylesets(1).ForeColor=   -2147483631
             stylesets(1).BackColor=   -2147483633
-            stylesets(1).Picture=   "frmBatchJob.frx":0060
+            stylesets(1).Picture=   "frmBatchJob.frx":007C
             stylesets(2).Name=   "ssetEnabled"
             stylesets(2).ForeColor=   -2147483640
             stylesets(2).BackColor=   -2147483643
-            stylesets(2).Picture=   "frmBatchJob.frx":007C
+            stylesets(2).Picture=   "frmBatchJob.frx":0098
             stylesets(3).Name=   "ssetHeaderEnabled"
             stylesets(3).ForeColor=   -2147483630
             stylesets(3).BackColor=   -2147483633
-            stylesets(3).Picture=   "frmBatchJob.frx":0098
+            stylesets(3).Picture=   "frmBatchJob.frx":00B4
             stylesets(4).Name=   "ssetDisabled"
             stylesets(4).ForeColor=   -2147483631
             stylesets(4).BackColor=   -2147483633
-            stylesets(4).Picture=   "frmBatchJob.frx":00B4
+            stylesets(4).Picture=   "frmBatchJob.frx":00D0
             AllowUpdate     =   0   'False
             MultiLine       =   0   'False
             AllowRowSizing  =   0   'False
@@ -329,9 +565,9 @@ Begin VB.Form frmBatchJob
       End
       Begin VB.Frame fraInfo 
          Height          =   1950
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   0
-         Top             =   360
+         Top             =   420
          Width           =   9525
          Begin VB.TextBox txtDesc 
             Height          =   1080
@@ -365,7 +601,7 @@ Begin VB.Form frmBatchJob
          Begin SSDataWidgets_B.SSDBGrid grdAccess 
             Height          =   1080
             Left            =   5940
-            TabIndex        =   40
+            TabIndex        =   62
             Top             =   765
             Width           =   3405
             ScrollBars      =   2
@@ -387,7 +623,7 @@ Begin VB.Form frmBatchJob
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(0).Picture=   "frmBatchJob.frx":00D0
+            stylesets(0).Picture=   "frmBatchJob.frx":00EC
             stylesets(1).Name=   "ReadOnly"
             stylesets(1).ForeColor=   -2147483631
             stylesets(1).BackColor=   -2147483633
@@ -401,7 +637,7 @@ Begin VB.Form frmBatchJob
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(1).Picture=   "frmBatchJob.frx":00EC
+            stylesets(1).Picture=   "frmBatchJob.frx":0108
             MultiLine       =   0   'False
             AllowRowSizing  =   0   'False
             AllowGroupSizing=   0   'False
@@ -527,10 +763,10 @@ Begin VB.Form frmBatchJob
       End
       Begin VB.Frame fraScheduling 
          Caption         =   "Scheduling :"
-         Height          =   2790
-         Left            =   150
+         Height          =   3050
+         Left            =   -74850
          TabIndex        =   8
-         Top             =   2385
+         Top             =   2445
          Width           =   9525
          Begin GTMaskDate.GTMaskDate cboStartDate 
             Height          =   315
@@ -599,9 +835,9 @@ Begin VB.Form frmBatchJob
             BackColor       =   &H8000000F&
             Enabled         =   0   'False
             Height          =   315
-            ItemData        =   "frmBatchJob.frx":0108
+            ItemData        =   "frmBatchJob.frx":0124
             Left            =   1815
-            List            =   "frmBatchJob.frx":010A
+            List            =   "frmBatchJob.frx":0126
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
             TabIndex        =   18
@@ -612,9 +848,9 @@ Begin VB.Form frmBatchJob
             BackColor       =   &H8000000F&
             Enabled         =   0   'False
             Height          =   315
-            ItemData        =   "frmBatchJob.frx":010C
+            ItemData        =   "frmBatchJob.frx":0128
             Left            =   2595
-            List            =   "frmBatchJob.frx":011C
+            List            =   "frmBatchJob.frx":0138
             Style           =   2  'Dropdown List
             TabIndex        =   12
             Top             =   640
@@ -786,23 +1022,146 @@ Begin VB.Form frmBatchJob
             Width           =   1020
          End
       End
+      Begin VB.Frame Frame4 
+         Caption         =   "Report Options :"
+         Height          =   1800
+         Left            =   150
+         TabIndex        =   71
+         Top             =   420
+         Width           =   9470
+         Begin VB.CommandButton cmdTitlePageTemplate 
+            Caption         =   "..."
+            Height          =   315
+            Left            =   8500
+            TabIndex        =   38
+            Top             =   360
+            UseMaskColor    =   -1  'True
+            Width           =   330
+         End
+         Begin VB.CheckBox chkForceCoverSheet 
+            Caption         =   "Force cover sheet on individual reports"
+            Height          =   255
+            Left            =   5280
+            TabIndex        =   43
+            Top             =   1440
+            Width           =   3975
+         End
+         Begin VB.CheckBox chkTOC 
+            Caption         =   "Print Table Of Contents"
+            Height          =   255
+            Left            =   2750
+            TabIndex        =   42
+            Top             =   1440
+            Width           =   2295
+         End
+         Begin VB.TextBox txtTitlePage 
+            BackColor       =   &H8000000F&
+            ForeColor       =   &H00000000&
+            Height          =   315
+            Left            =   2760
+            TabIndex        =   37
+            TabStop         =   0   'False
+            Tag             =   "0"
+            Top             =   360
+            Width           =   5750
+         End
+         Begin VB.TextBox txtReportPackTitle 
+            BackColor       =   &H8000000F&
+            ForeColor       =   &H00000000&
+            Height          =   315
+            Left            =   2760
+            TabIndex        =   39
+            TabStop         =   0   'False
+            Tag             =   "0"
+            Top             =   720
+            Width           =   5750
+         End
+         Begin VB.CommandButton cmdOverrideFilter 
+            Caption         =   "..."
+            Height          =   315
+            Left            =   8500
+            TabIndex        =   41
+            Top             =   1080
+            UseMaskColor    =   -1  'True
+            Width           =   330
+         End
+         Begin VB.TextBox txtOverrideFilter 
+            BackColor       =   &H8000000F&
+            ForeColor       =   &H00000000&
+            Height          =   315
+            Left            =   2750
+            TabIndex        =   40
+            TabStop         =   0   'False
+            Tag             =   "0"
+            Text            =   "<None>"
+            Top             =   1080
+            Width           =   5750
+         End
+         Begin VB.TextBox txtFilterSource 
+            BackColor       =   &H8000000F&
+            ForeColor       =   &H00000000&
+            Height          =   315
+            Left            =   2750
+            TabIndex        =   75
+            TabStop         =   0   'False
+            Tag             =   "1"
+            Text            =   "Personnel_Records"
+            Top             =   1080
+            Visible         =   0   'False
+            Width           =   945
+         End
+         Begin VB.Label lblTitlePage 
+            AutoSize        =   -1  'True
+            Caption         =   "Title Page Template :"
+            Height          =   195
+            Left            =   195
+            TabIndex        =   74
+            Top             =   420
+            Width           =   1830
+         End
+         Begin VB.Label lblReportPackTitle 
+            AutoSize        =   -1  'True
+            Caption         =   "Report Pack Title :"
+            Height          =   195
+            Left            =   195
+            TabIndex        =   73
+            Top             =   780
+            Width           =   1590
+         End
+         Begin VB.Label lblOverrideFilter 
+            AutoSize        =   -1  'True
+            Caption         =   "Personnel Override Filter :"
+            Height          =   195
+            Left            =   195
+            TabIndex        =   72
+            Top             =   1140
+            Width           =   2265
+         End
+      End
    End
    Begin VB.CommandButton cmdOk 
       Caption         =   "&OK"
       Height          =   400
-      Left            =   7440
-      TabIndex        =   37
-      Top             =   5610
+      Left            =   7320
+      TabIndex        =   59
+      Top             =   5800
       Width           =   1200
    End
    Begin VB.CommandButton cmdCancel 
       Cancel          =   -1  'True
       Caption         =   "&Cancel"
       Height          =   400
-      Left            =   8700
-      TabIndex        =   38
-      Top             =   5610
+      Left            =   8645
+      TabIndex        =   60
+      Top             =   5800
       Width           =   1200
+   End
+   Begin MSComDlg.CommonDialog CommonDialog1 
+      Left            =   120
+      Top             =   5760
+      _ExtentX        =   847
+      _ExtentY        =   847
+      _Version        =   393216
    End
 End
 Attribute VB_Name = "frmBatchJob"
@@ -812,20 +1171,20 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
 
-Private mclsData As DataMgr.clsDataAccess          'Data Access Class
+Private mclsData As DataMgr.clsDataAccess               'Data Access Class
 Private mlngBatchJobID As Long                          'ID of current BatchJob
 Private mblnFromCopy As Boolean                         'Is this definition a copy ?
 Private mblnCancelled As Boolean                        'Has operation been cancelled ?
 Private mblnReadOnly As Boolean                         'Is the definition read only ?
 Private mlngTimeStamp As Long                           'Timestamp for def locking
-'Private asFixedRoles() As String                        'Hold list of fixed roles
 Private mblnDefinitionCreator As Boolean
 Private mblnGridFlag As Boolean
 Private mblnForceChanged As Boolean
 Private mblnLoading As Boolean
-
-'Private mblnDontDoActivateCheck As Boolean
 Private mblnAlreadyActivated As Boolean
+Private mblnIsBatch As Boolean                          'Flag for whether this Batch Job or Report Pack
+'Output Options
+Private mobjOutputDef As clsOutputDef
 
 Private Function BatchJobHiddenGroups() As String
   Dim sBatchJobHiddenGroups As String
@@ -1071,7 +1430,15 @@ Private Sub cboPeriod_Click()
   Changed = True
 End Sub
 
+Private Sub cboPrinterName_Change()
+  Changed = True
+End Sub
+
 Private Sub cboRoleToPrompt_Click()
+  Changed = True
+End Sub
+
+Private Sub cboSaveExisitng_Change()
   Changed = True
 End Sub
 
@@ -1105,10 +1472,19 @@ Private Sub cboStartDate_LostFocus()
 
 End Sub
 
+Private Sub Check1_Click()
+  Changed = True
+End Sub
+
+Private Sub chkDestination_Click(Index As Integer)
+  mobjOutputDef.DestinationClick Index
+  Changed = True
+End Sub
+
 Private Sub chkEmail_Click(Index As Integer)
-  cmdEmailGroup(Index).Enabled = (chkEmail(Index).Value = vbChecked)
-  txtEmailGroup(Index).Text = IIf(chkEmail(Index).Value = vbChecked, "<None>", vbNullString)
-  txtEmailGroup(Index).Tag = 0
+  cmdEmailNotifyGroup(Index).Enabled = (chkEmail(Index).Value = vbChecked)
+  txtEmailNotifyGroup(Index).Text = IIf(chkEmail(Index).Value = vbChecked, "<None>", vbNullString)
+  txtEmailNotifyGroup(Index).Tag = 0
   Changed = True
 End Sub
 
@@ -1120,8 +1496,7 @@ Private Sub chkWeekEnds_Click()
   Changed = True
 End Sub
 
-
-Private Sub cmdEmailGroup_Click(Index As Integer)
+Private Sub cmdEmailNotifyGroup_Click(Index As Integer)
 
   Dim frmDefinition As frmEmailDefGroup
   Dim frmSelection As frmDefSel
@@ -1139,7 +1514,7 @@ Private Sub cmdEmailGroup_Click(Index As Integer)
     .Options = edtAdd + edtDelete + edtEdit + edtCopy + edtPrint + edtProperties + edtSelect + edtDeselect
     .EnableRun = False
     .TableComboVisible = False
-    .SelectedID = Val(txtEmailGroup(Index).Tag)
+    .SelectedID = Val(txtEmailNotifyGroup(Index).Tag)
 
     Do While Not blnExit
       
@@ -1178,14 +1553,14 @@ Private Sub cmdEmailGroup_Click(Index As Integer)
           Set frmDefinition = Nothing
 
         Case edtSelect
-          txtEmailGroup(Index).Text = .SelectedText
-          txtEmailGroup(Index).Tag = .SelectedID
+          txtEmailNotifyGroup(Index).Text = .SelectedText
+          txtEmailNotifyGroup(Index).Tag = .SelectedID
           Changed = True
           blnExit = True
 
         Case edtDeselect
-          txtEmailGroup(Index).Text = "<None>"
-          txtEmailGroup(Index).Tag = 0
+          txtEmailNotifyGroup(Index).Text = "<None>"
+          txtEmailNotifyGroup(Index).Tag = 0
           Changed = True
           blnExit = True
 
@@ -1204,6 +1579,48 @@ Private Sub cmdEmailGroup_Click(Index As Integer)
 
 End Sub
 
+
+
+
+
+Private Sub cmdOverrideFilter_Click()
+  GetFilter txtFilterSource, txtOverrideFilter
+End Sub
+Private Sub GetFilter(ctlSource As Control, ctlTarget As Control)
+  ' Allow the user to select/create/modify a filter for the Data Transfer.
+  Dim fOK As Boolean
+  Dim objExpression As clsExprExpression
+  
+  ' Instantiate a new expression object.
+  Set objExpression = New clsExprExpression
+  
+  With objExpression
+    ' Initialise the expression object.
+    If TypeOf ctlSource Is TextBox Then
+      fOK = .Initialise(ctlSource.Tag, Val(ctlTarget.Tag), giEXPR_RUNTIMEFILTER, giEXPRVALUE_LOGIC)
+    ElseIf TypeOf ctlSource Is ComboBox Then
+      fOK = .Initialise(ctlSource.ItemData(ctlSource.ListIndex), Val(ctlTarget.Tag), giEXPR_RUNTIMEFILTER, giEXPRVALUE_LOGIC)
+    End If
+      
+    If fOK Then
+      ' Instruct the expression object to display the expression selection/creation/modification form.
+      If .SelectExpression(True) = True Then
+        ' Read the selected expression info.
+        ctlTarget.Text = IIf(Len(.Name) = 0, "<None>", .Name)
+        ctlTarget.Tag = .ExpressionID
+        
+        Changed = True
+      End If
+    End If
+    
+    End With
+  
+  
+  Set objExpression = Nothing
+
+  ForceDefinitionToBeHiddenIfNeeded
+
+End Sub
 Private Sub Form_Activate()
   'JPD 20031120 Fault 7512
   'If Not mblnDontDoActivateCheck Then
@@ -1235,10 +1652,16 @@ Private Sub Form_Load()
   grdAccess.RowHeight = 239
   grdColumns.RowHeight = 239
   
+  Set mobjOutputDef = New clsOutputDef
+  mobjOutputDef.ParentForm = Me
+  mobjOutputDef.PopulateCombos True, True, True
+  
   'JPD 20041117 Fault 8231
   UI.FormatGTDateControl cboEndDate
   UI.FormatGTDateControl cboStartDate
   
+  txtFilterSource = gsPersonnelTableName 'Val(GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_PERSONNELTABLE))
+  txtFilterSource.Tag = Val(GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_PERSONNELTABLE))
 End Sub
 
 Public Function Initialise(pblnNew As Boolean, pblnCopy As Boolean, Optional plngBatchJobID As Long) As Boolean
@@ -1246,7 +1669,7 @@ Public Function Initialise(pblnNew As Boolean, pblnCopy As Boolean, Optional pln
   Set mclsData = New DataMgr.clsDataAccess           'Instantiate class
   
   Screen.MousePointer = vbHourglass
-  
+  If gblnReportPackMode Then Me.Caption = "Report Pack Defintion"
   mblnLoading = True
   
   If pblnNew Then                                  'If this is a new definition
@@ -1522,7 +1945,6 @@ Private Sub ClearForNew()
 End Sub
 
 Private Function RetrieveBatchJobDetails() As Boolean
-  
   Dim pstrAddString As String
   Dim prstTemp As Recordset
   Dim pblnDefinitionCreator As Boolean
@@ -1532,9 +1954,6 @@ Private Function RetrieveBatchJobDetails() As Boolean
   
   On Error GoTo Load_ERROR
   
-  'Set prstTemp = datGeneral.GetRecords("SELECT ASRSysBatchJobName.*, " & _
-                                        "CONVERT(integer, ASRSysBatchJobName.TimeStamp) AS intTimeStamp " & _
-                                        "FROM ASRSysBatchJobName WHERE ID = " & mlngBatchJobID)
   Set prstTemp = datGeneral.GetRecords( _
       "SELECT ASRSysBatchJobName.*, " & _
       "isnull(fail.name,'') as 'EmailFailedName', isnull(success.name,'') as 'EmailSuccessName', " & _
@@ -1544,6 +1963,9 @@ Private Function RetrieveBatchJobDetails() As Boolean
       "LEFT OUTER JOIN ASRSysEmailGroupName success ON success.EmailGroupID = EmailSuccess " & _
       "WHERE ID = " & mlngBatchJobID)
 
+      Dim bob As String
+      bob = ("SELECT ASRSysBatchJobName.*, isnull(fail.name,'') as 'EmailFailedName', isnull(success.name,'') as 'EmailSuccessName', CONVERT(integer, ASRSysBatchJobName.TimeStamp) AS intTimeStamp FROM ASRSysBatchJobName LEFT OUTER JOIN ASRSysEmailGroupName fail ON fail.EmailGroupID = EmailFailed LEFT OUTER JOIN ASRSysEmailGroupName success ON success.EmailGroupID = EmailSuccess WHERE ID = " & mlngBatchJobID)
+      
   If prstTemp.BOF And prstTemp.EOF Then
     COAMsgBox "Cannot load the definition for this batch job." & vbCrLf & "(" & Err.Description & ")", vbCritical + vbOKOnly, "Batch Job"
     Set prstTemp = Nothing
@@ -1558,7 +1980,6 @@ Private Function RetrieveBatchJobDetails() As Boolean
   If FromCopy Then
     txtName.Text = "Copy of " & prstTemp!Name
     txtUserName.Text = gsUserName
-    'pblnDefinitionCreator = True
     mblnDefinitionCreator = True
   Else
     txtName.Text = prstTemp!Name
@@ -1571,8 +1992,7 @@ Private Function RetrieveBatchJobDetails() As Boolean
     mblnReadOnly = (CurrentUserAccess(utlBatchJob, mlngBatchJobID) = ACCESS_READONLY)
   End If
   
-  chkScheduled.Value = IIf(prstTemp!scheduled = True, vbChecked, vbUnchecked)
-  
+  chkScheduled.Value = IIf(prstTemp!Scheduled = True, vbChecked, vbUnchecked)
   spnFrequency.Value = prstTemp!Frequency
   
   Select Case prstTemp!Period
@@ -1582,32 +2002,34 @@ Private Function RetrieveBatchJobDetails() As Boolean
     Case Else: SetComboText cboPeriod, "Day(s)"
   End Select
   
-  
   cboStartDate.Text = IIf(IsDate(prstTemp!StartDate) And Not IsNull(prstTemp!StartDate), Format(prstTemp!StartDate, DateFormat), "")
-  
   cboEndDate.Text = IIf(IsDate(prstTemp!EndDate) And Not IsNull(prstTemp!EndDate), Format(prstTemp!EndDate, DateFormat), "")
-  
   chkIndefinitely.Value = IIf(prstTemp!Indefinitely = True, vbChecked, vbUnchecked)
-  
   chkWeekEnds.Value = IIf(prstTemp!Weekends = True, vbChecked, vbUnchecked)
-  
   chkRunOnce.Value = IIf(prstTemp!RunOnce = True, vbChecked, vbUnchecked)
-  
   sRoleToPrompt = IIf(IsNull(prstTemp!RoleToPrompt), "", prstTemp!RoleToPrompt)
   
   chkEmail(0).Value = IIf(Val(prstTemp!EmailFailed) > 0, vbChecked, vbUnchecked)
-  txtEmailGroup(0).Tag = Val(prstTemp!EmailFailed)
-  txtEmailGroup(0).Text = prstTemp!EmailFailedName
+  txtEmailNotifyGroup(0).Tag = Val(prstTemp!EmailFailed)
+  txtEmailNotifyGroup(0).Text = prstTemp!EmailFailedName
   
   chkEmail(1).Value = IIf(Val(prstTemp!EmailSuccess) > 0, vbChecked, vbUnchecked)
-  txtEmailGroup(1).Tag = Val(prstTemp!EmailSuccess)
-  txtEmailGroup(1).Text = prstTemp!EmailSuccessName
+  txtEmailNotifyGroup(1).Tag = Val(prstTemp!EmailSuccess)
+  txtEmailNotifyGroup(1).Text = prstTemp!EmailSuccessName
 
   If (chkScheduled.Value = vbChecked) And (sRoleToPrompt = "") Then
     COAMsgBox "The user group selected in this batch job has been deleted.", vbInformation + vbOKOnly, "Batch Jobs"
     mblnForceChanged = True
   End If
 
+  txtTitlePage.Text = prstTemp!outputTitlePage
+  txtReportPackTitle.Text = prstTemp!OutputReportPackTitle
+  txtOverrideFilter.Text = prstTemp!OutputOverrideFilter
+  chkForceCoverSheet.Value = IIf(prstTemp!OutputCoverSheet, vbChecked, vbUnchecked)
+  chkTOC.Value = IIf(prstTemp!OutputTOC, vbChecked, vbUnchecked)
+    
+  mobjOutputDef.PopulateOutputControls prstTemp
+    
   If mblnReadOnly Then
     ControlsDisableAll Me
     txtDesc.Enabled = True
@@ -1620,8 +2042,7 @@ Private Function RetrieveBatchJobDetails() As Boolean
   
   mlngTimeStamp = prstTemp!intTimestamp
   
-' Now get the details...
-  
+  ' Now get the details...
   Set prstTemp = datGeneral.GetRecords("SELECT * " & _
                                       "FROM ASRSysBatchJobDetails WHERE BatchJobNameID = " & mlngBatchJobID & _
                                       "ORDER BY JobOrder")
@@ -1717,7 +2138,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
     If pintAnswer = vbYes Then
       Cancel = True
       If ValidateDefinition Then
-        If SaveDefinition Then
+        If SaveDefinition2 Then
           Cancel = False
         End If
       End If
@@ -1834,6 +2255,7 @@ Private Sub cmdNew_Click()
   Set frmItem = New frmBatchJobJobSelection
     
   With frmItem
+    If gblnReportPackMode Then .Caption = "Report Pack Item Selection"
     .DefinitionCreator = mblnDefinitionCreator
     .BatchJobHiddenGroups = BatchJobHiddenGroups
     
@@ -2065,6 +2487,7 @@ Private Sub cmdEdit_Click()
   frmItem.DefinitionCreator = mblnDefinitionCreator
   frmItem.BatchJobHiddenGroups = BatchJobHiddenGroups
   
+  If frmBatchJob.SSTab1.TabVisible(2) Then frmItem.Caption = "Report Pack Item Selection"
   frmItem.Show vbModal
   
   If Not frmItem.Cancelled Then
@@ -2143,14 +2566,17 @@ End Sub
 Private Sub cmdOK_Click()
 
   If Not ValidateDefinition Then Exit Sub
-  If Not SaveDefinition Then Exit Sub
-  
+  If gblnReportPackMode Then
+    If Not SaveDefinition2 Then Exit Sub
+  Else
+    If Not SaveDefinition Then Exit Sub
+  End If
   Unload Me
   
 End Sub
 
 Private Sub cmdCancel_Click()
-
+If Not SaveDefinition2 Then Exit Sub
   Unload Me
 
 End Sub
@@ -2204,8 +2630,8 @@ Private Function SaveDefinition() As Boolean
 
 
     'MH20040415
-    sSQL = sSQL & "EmailFailed = " & CStr(Val(txtEmailGroup(0).Tag)) & "," & _
-                  "EmailSuccess = " & CStr(Val(txtEmailGroup(1).Tag)) & ","
+    sSQL = sSQL & "EmailFailed = " & CStr(Val(txtEmailNotifyGroup(0).Tag)) & "," & _
+                  "EmailSuccess = " & CStr(Val(txtEmailNotifyGroup(1).Tag)) & ","
 
 'TM20010821 Fault 2513
 'Removed code that set the 'Last Completed' date to Null.
@@ -2266,8 +2692,8 @@ Private Function SaveDefinition() As Boolean
            cboRoleToPrompt.Text & "'," '"')"
 
     'MH20040415
-    sSQL = sSQL & CStr(Val(txtEmailGroup(0).Tag)) & "," & _
-                  CStr(Val(txtEmailGroup(1).Tag)) & ")"
+    sSQL = sSQL & CStr(Val(txtEmailNotifyGroup(0).Tag)) & "," & _
+                  CStr(Val(txtEmailNotifyGroup(1).Tag)) & ")"
 
 
     If ForceDefinitionToBeHiddenIfNeeded(True) = False Then
@@ -2336,6 +2762,263 @@ Err_Trap:
   SaveDefinition = False
 
 End Function
+
+
+Private Function SaveDefinition2() As Boolean
+  
+  Dim sSQL As String
+  Dim lCount As Long
+  Dim lBatchJobID As Long
+  Dim rsBatch As New Recordset
+  Dim pstrPeriod As String
+  Dim pintLoop As Integer
+  Dim pvarbookmark As Variant
+
+  On Error GoTo Err_Trap
+  
+  Screen.MousePointer = vbHourglass
+  
+  'Period is used in existing and NEW so need to set it up here somewhere
+  Select Case cboPeriod.Text
+      Case "Day(s)": pstrPeriod = pstrPeriod & "'D'"
+      Case "Week(s)": pstrPeriod = pstrPeriod & "'W'"
+      Case "Month(s)": pstrPeriod = pstrPeriod & "'M'"
+      Case "Year(s)": pstrPeriod = pstrPeriod & "'Y'"
+  End Select
+  'sSQL = sSQL & IIf("", (T), (F))    - useful ~IIF template I've been using to build SQL can be deleted if too cluttered
+  
+  'Editing an existing batch job
+  If mlngBatchJobID > 0 Then
+  
+    sSQL = "UPDATE ASRSysBatchJobName SET "
+    
+    'DEFINITION TAB
+    sSQL = sSQL & "Name = '" & Trim(Replace(Me.txtName.Text, "'", "''")) & "',"
+    sSQL = sSQL & "Description = '" & Replace(Me.txtDesc.Text, "'", "''") & "',"
+    'SCHEDULING
+    sSQL = sSQL & "Scheduled = " & IIf(chkScheduled.Value = 1, 1, 0) & ","
+    sSQL = sSQL & "Frequency = " & Me.spnFrequency.Value & ","
+    sSQL = sSQL & "Period = " & pstrPeriod & ","
+    
+    If Not IsDate(cboStartDate.Text) Then
+       sSQL = sSQL & "StartDate = Null,"
+    Else
+       sSQL = sSQL & "StartDate = '" & Replace(Format(CDate(cboStartDate.Text), "mm/dd/yyyy"), UI.GetSystemDateSeparator, "/") & "'" & ","
+    End If
+    
+    If Not IsDate(cboEndDate.Text) Then
+      sSQL = sSQL & "EndDate = Null,"
+    Else
+      sSQL = sSQL & "EndDate = '" & Replace(Format(CDate(cboEndDate.Text), "mm/dd/yyyy"), UI.GetSystemDateSeparator, "/") & "',"
+    End If
+    
+    sSQL = sSQL & "RoleToPrompt = '" & cboRoleToPrompt.Text & "', "
+    sSQL = sSQL & "Indefinitely = " & IIf(chkIndefinitely.Value = 1, 1, 0) & ","
+    sSQL = sSQL & "Weekends = " & IIf(chkWeekEnds.Value = 1, 1, 0) & ","
+    sSQL = sSQL & "RunOnce = " & IIf(chkRunOnce.Value = 1, 1, 0) & ","
+    
+    'JOBS TAB
+    'sSQL = sSQL & IIf(chkDestination(desSave), ("OutputSaveFormat = " & Val(txtFilename.Tag) & ", "), ("OutputSaveFormat = 0, "))
+    'EMAIL NOTIFICATION FRAME
+    sSQL = sSQL & "EmailFailed = " & CStr(Val(txtEmailNotifyGroup(0).Tag)) & ","
+    sSQL = sSQL & "EmailSuccess = " & CStr(Val(txtEmailNotifyGroup(1).Tag)) & ","
+    
+    'REPORT OPTIONS FRAME
+    sSQL = sSQL & "OutputTitlePage = '" & Replace(txtTitlePage.Text, "'", "''") & "', "             'Title Pge Template
+    sSQL = sSQL & "OutputReportPackTitle = '" & Replace(txtReportPackTitle.Text, "'", "''") & "',"  'Report Pack Title
+    sSQL = sSQL & "OutputOverrideFilter = '" & Replace(txtOverrideFilter.Text, "'", "''") & "',"    'Override Filter
+    sSQL = sSQL & "OutputTOC = " & IIf(chkTOC.Value = 1, 1, 0) & ","                                'Table of Contents
+    sSQL = sSQL & "OutputCoverSheet = " & IIf(chkForceCoverSheet.Value = 1, 1, 0) & ","             'Force Cover sheet
+    
+    'OUTPUT FORMAT FRAME
+    sSQL = sSQL & "OutputFormat = " & CStr(mobjOutputDef.GetSelectedFormatIndex) & ", "
+    
+    'OUTPUT DESTINATION FRAME
+    sSQL = sSQL & "OutputPreview = 0" & ", " ' " & IIf(chkPreview.Value = vbChecked, "1", "0") & ", "
+    sSQL = sSQL & "OutputScreen = " & IIf(chkDestination(desScreen).Value = vbChecked, "1", "0") & ", "
+    'Printer Options
+    sSQL = sSQL & IIf(chkDestination(desPrinter), (" OutputPrinterName = '" & Replace(cboPrinterName.Text, " '", "''") & "',"), (" OutputPrinterName = '', "))
+    sSQL = sSQL & "OutputFilename = '" & Replace(txtFileName.Text, "'", "''") & "',"
+    'outputSaveExisting
+    If chkDestination(desSave).Value = vbChecked Then
+      sSQL = sSQL & "OutputSaveExisting = " & cboSaveExisting.ItemData(cboSaveExisting.ListIndex) & ", "
+    Else
+      sSQL = sSQL & "OutputSaveExisting = 0, "
+    End If
+    'Save Format
+    sSQL = sSQL & IIf(chkDestination(desSave), (" OutputSave = 1, "), (" OutputSave = 0, "))
+    sSQL = sSQL & IIf(chkDestination(desPrinter), (" OutputPrinter = 1, "), (" OutputPrinter = 0, "))
+    'Email Options
+    sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmail = 1, "), ("OutputEmail = 0, "))
+    sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmailAddr = " & txtEmailGroup.Tag & ", "), ("OutputEmailAddr = 0, "))
+    sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmailSubject = '" & Replace(txtEmailSubject.Text, "'", "''") & "', "), ("OutputEmailSubject = '', "))
+    sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmailAttachAs = '" & Replace(txtEMailAttachAs.Text, "'", "''") & "'"), ("OutputEmailAttachAs = ''"))
+    
+    'FINAL WHERE CLAUSE
+    sSQL = sSQL & " WHERE ID = " & mlngBatchJobID
+    
+    If ForceDefinitionToBeHiddenIfNeeded(True) = False Then
+      SaveDefinition2 = False
+      Screen.MousePointer = vbDefault
+      Exit Function
+    End If
+          
+     mclsData.ExecuteSql (sSQL)
+  
+    Call UtilUpdateLastSaved(utlReportPack, mlngBatchJobID)
+  Else
+    'A NEW Batch Job Definition
+    sSQL = "Insert ASRSysBatchJobName (" & _
+          "Scheduled, Name, Description, Frequency, " & _
+          "Period, StartDate, Indefinitely, " & _
+          "EndDate, Weekends, " & _
+          "UserName, " & _
+          "RunOnce, RoleToPrompt, EmailFailed, EmailSuccess," & _
+          "IsBatch, OutputPreview, OutputFormat, OutputScreen," & _
+          "OutputPrinter, OutputPrinterName, OutputSave, " & _
+          "OutputSaveExisting, OutputEmail, OutputEmailAddr, " & _
+          "OutputEmailSubject, OutputFilename, OutputEmailAttachAs, " & _
+          "OutputTitlePage, OutputReportPackTitle, OutputOverrideFilter, " & _
+          "OutputTOC, OutputCoverSheet)"
+          
+    sSQL = sSQL & _
+           "Values(" & _
+           IIf(chkScheduled.Value = 1, 1, 0) & ",'" & _
+           Trim(Replace(txtName.Text, "'", "''")) & "','" & _
+           Replace(txtDesc.Text, "'", "''") & "'," & _
+           Me.spnFrequency.Value & "," & _
+           pstrPeriod & ","
+           
+          If Not IsDate(cboStartDate.Text) Then
+             sSQL = sSQL & "Null,"
+          Else
+             sSQL = sSQL & "'" & Replace(Format(CDate(cboStartDate.Text), "mm/dd/yyyy"), UI.GetSystemDateSeparator, "/") & "'" & ","
+          End If
+                 
+          sSQL = sSQL & IIf(chkIndefinitely.Value = 1, 1, 0) & ","
+          
+          If Not IsDate(cboEndDate.Text) Then
+             sSQL = sSQL & "Null,"
+          Else
+             sSQL = sSQL & "'" & Replace(Format(CDate(cboEndDate.Text), "mm/dd/yyyy"), UI.GetSystemDateSeparator, "/") & "'" & ","
+          End If
+    
+    sSQL = sSQL & IIf(chkWeekEnds.Value = 1, 1, 0) & ",'" & _
+           datGeneral.UserNameForSQL & "'," & _
+           IIf(chkRunOnce.Value = 1, 1, 0) & ",'" & _
+           cboRoleToPrompt.Text & "',"
+          
+    sSQL = sSQL & CStr(Val(txtEmailNotifyGroup(0).Tag)) & "," & _
+                  CStr(Val(txtEmailNotifyGroup(1).Tag)) & ","
+          'IsBatch
+          sSQL = sSQL & "0,"
+          'outputPreview
+          sSQL = sSQL & "0,"
+          'outputformat
+          sSQL = sSQL & CStr(mobjOutputDef.GetSelectedFormatIndex) & ", "
+          'outputScreen
+          sSQL = sSQL & IIf(chkDestination(desScreen).Value = vbChecked, "1", "0") & ", "
+          'outputPrinter
+          sSQL = sSQL & IIf(chkDestination(desPrinter), (" 1, "), (" 0, "))
+          'outputPrinterName
+          sSQL = sSQL & IIf(chkDestination(desPrinter), ("'" & Replace(cboPrinterName.Text, " '", "''") & "',"), ("'', "))
+          'outputSave
+          sSQL = sSQL & IIf(chkDestination(desSave), (" 1, "), (" 0, "))
+          'outputSaveExisting
+          If chkDestination(desSave).Value = vbChecked Then
+            sSQL = sSQL & cboSaveExisting.ItemData(cboSaveExisting.ListIndex) & ", "
+          Else
+            sSQL = sSQL & "0, "
+          End If
+          'sSQL = sSQL & IIf(chkDestination(desSave).Value = vbChecked, (cboSaveExisting.ItemData(cboSaveExisting.ListIndex) & ","), ("0,"))
+          'outputEmail
+          sSQL = sSQL & IIf(chkDestination(desEmail), ("1, "), ("0, "))
+          'outputEmailAddr
+          sSQL = sSQL & IIf(chkDestination(desEmail), (txtEmailGroup.Tag & ", "), ("0, "))
+          'outputEmailSubject
+          sSQL = sSQL & IIf(chkDestination(desEmail), ("'" & Replace(txtEmailSubject.Text, "'", "''") & "', "), ("'', "))
+          'outputFilename
+          sSQL = sSQL & "'" & Replace(txtFileName.Text, "'", "''") & "',"
+          'outputEmailAttachAs
+          sSQL = sSQL & IIf(chkDestination(desEmail), ("'" & Replace(txtEMailAttachAs.Text, "'", "''") & "',"), ("'',"))
+          'outputTitlePage
+          sSQL = sSQL & "'" & Replace(txtTitlePage.Text, "'", "''") & "', "
+          'outputReportPackTitle
+          sSQL = sSQL & "'" & Replace(txtReportPackTitle.Text, "'", "''") & "',"
+          'outputOverrideFilter
+          sSQL = sSQL & "'" & Replace(txtOverrideFilter.Text, "'", "''") & "',"
+          'outputTOC
+          sSQL = sSQL & IIf(chkTOC.Value = 1, 1, 0) & ","
+          'outputCoverSheet
+          sSQL = sSQL & IIf(chkForceCoverSheet.Value = 1, 1, 0) & ")"
+
+    If ForceDefinitionToBeHiddenIfNeeded(True) = False Then
+      SaveDefinition2 = False
+      Screen.MousePointer = vbDefault
+      Exit Function
+    End If
+
+    mlngBatchJobID = InsertBatchJob(sSQL)
+
+    If mlngBatchJobID = 0 Then
+      SaveDefinition2 = False
+      Exit Function
+    End If
+
+    Call UtilCreated(utlBatchJob, mlngBatchJobID)
+    
+  End If
+
+  SaveAccess
+
+  ' Now save the column details
+
+  ' First, remove any records from the detail table with the specified BatchJobID
+  ClearBatchJobDetails
+
+  ' Loop through the details grid
+  With grdColumns
+
+    .MoveFirst
+
+    Do Until pintLoop = .Rows
+
+      pvarbookmark = .GetBookmark(pintLoop)
+
+      sSQL = "INSERT ASRSysBatchJobDetails (" & _
+             "BatchJobNameID, " & _
+             "JobType, " & _
+             "JobID, " & _
+             "Parameter, " & _
+             "JobOrder)"
+
+      sSQL = sSQL & " VALUES(" & mlngBatchJobID & ", "
+
+      sSQL = sSQL & "'" & .Columns("Job Type").CellText(pvarbookmark) & "', "
+      sSQL = sSQL & .Columns("IndividualJobID").CellText(pvarbookmark) & ", "
+      sSQL = sSQL & "'" & Replace(.Columns("Parameter").CellText(pvarbookmark), "'", "''") & "', "
+      sSQL = sSQL & .AddItemRowIndex(pvarbookmark) & ")"
+
+      mclsData.ExecuteSql (sSQL)
+      
+      pintLoop = pintLoop + 1
+
+    Loop
+
+  End With
+
+  SaveDefinition2 = True
+  Changed = False
+
+  Exit Function
+
+Err_Trap:
+
+  COAMsgBox "Error whilst saving batch job definition." & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Batch Job"
+  SaveDefinition2 = False
+
+End Function
+
 
 Private Function InsertBatchJob(pstrSQL As String) As Long
   
@@ -2578,14 +3261,14 @@ Private Function ValidateDefinition() As Boolean
   End If
   
   
-  If chkEmail(0).Value = vbChecked And Val(txtEmailGroup(0).Tag) = 0 Then
+  If chkEmail(0).Value = vbChecked And Val(txtEmailNotifyGroup(0).Tag) = 0 Then
     SSTab1.Tab = 1
     COAMsgBox "You must select an email group for failed job notification.", vbExclamation, "Batch Jobs"
     ValidateDefinition = False
     Exit Function
   End If
   
-  If chkEmail(1).Value = vbChecked And Val(txtEmailGroup(1).Tag) = 0 Then
+  If chkEmail(1).Value = vbChecked And Val(txtEmailNotifyGroup(1).Tag) = 0 Then
     SSTab1.Tab = 1
     COAMsgBox "You must select an email group for successful job notification.", vbExclamation, "Batch Jobs"
     ValidateDefinition = False
@@ -3129,10 +3812,10 @@ End Function
 
 
 
-Private Sub Label2_Click()
-
+Private Sub optOutputFormat_Click(Index As Integer)
+  mobjOutputDef.FormatClick Index
+  Changed = True
 End Sub
-
 Private Sub spnFrequency_Change()
   Changed = True
 End Sub
@@ -3161,6 +3844,22 @@ Private Sub SSTab1_Click(PreviousTab As Integer)
   
 End Sub
 
+Private Sub Text1_Change()
+
+End Sub
+
+Private Sub txtEmailAttachAs_Change()
+  Changed = True
+End Sub
+
+Private Sub txtEmailSubject_Change()
+  Changed = True
+End Sub
+
+Private Sub txtFilename_Change()
+  Changed = True
+End Sub
+
 Private Sub txtDesc_Change()
   Changed = True
 End Sub
@@ -3172,7 +3871,7 @@ Private Sub txtDesc_GotFocus()
   End With
 End Sub
 
-Private Sub txtEmailGroup_Change(Index As Integer)
+Private Sub txtEmailNotifyGroup_Change(Index As Integer)
   Changed = True
 End Sub
 
@@ -3395,9 +4094,9 @@ Public Sub PrintDef(lBatchJobID As Long)
         'End Select
         .PrintNormal
         
-        .PrintNormal "Scheduled : " & IIf(rsTemp!scheduled = True, "Yes", "No")
+        .PrintNormal "Scheduled : " & IIf(rsTemp!Scheduled = True, "Yes", "No")
         
-        If rsTemp!scheduled = True Then
+        If rsTemp!Scheduled = True Then
         
           sTemp = "Run Every : " & rsTemp!Frequency
           
@@ -3510,3 +4209,14 @@ Private Function JobTypeRequiresDef(strJobType As String) As Boolean
 End Function
 
 
+Private Sub txtOverrideFilter_Change()
+ Changed = True
+End Sub
+
+Private Sub txtReportPackTitle_Change()
+ Changed = True
+End Sub
+
+Private Sub txtTitlePage_Change()
+ Changed = True
+End Sub

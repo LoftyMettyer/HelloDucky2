@@ -2066,7 +2066,7 @@ Public Function ShowList(lngUtilType As UtilityType, Optional msRecordSourceWher
       strExtraWhereClause = "(Scheduled = 1) AND (GETDATE() >= StartDate) " & _
                             "AND (GETDATE() <= dateadd(d,1,EndDate) or EndDate is null) " & _
                             "AND (RoleToPrompt = '" & gsUserGroup & "')" & _
-                                            "AND (IsBatch = 1)"
+                                            " AND (IsBatch = 1)"
       msGeneralCaption = "Scheduled Batch Jobs"
       msSingularCaption = "Scheduled Batch Job"
       'Dynamically set HelpContextID
@@ -2091,7 +2091,7 @@ Public Function ShowList(lngUtilType As UtilityType, Optional msRecordSourceWher
       strExtraWhereClause = "(Scheduled = 1) AND (GETDATE() >= StartDate) " & _
                                             "AND (GETDATE() <= dateadd(d,1,EndDate) or EndDate is null) " & _
                                             "AND (RoleToPrompt = '" & gsUserGroup & "')" & _
-                                            "AND (IsBatch = 0)"
+                                            " AND (IsBatch = 0)"
       msGeneralCaption = "Scheduled Reports"
       msSingularCaption = "Scheduled Report"
       'Dynamically set HelpContextID
