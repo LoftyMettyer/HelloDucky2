@@ -18,7 +18,7 @@ Begin VB.Form frmTrainingBookingSetup
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   5036
+   HelpContextID   =   5089
    Icon            =   "frmTrainingBookingSetup.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
@@ -75,17 +75,17 @@ Begin VB.Form frmTrainingBookingSetup
       TabCaption(2)   =   "De&legates"
       TabPicture(2)   =   "frmTrainingBookingSetup.frx":0044
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraDelegates"
+      Tab(2).Control(0)=   "fraUnavailability"
       Tab(2).Control(0).Enabled=   0   'False
-      Tab(2).Control(1)=   "fraUnavailability"
+      Tab(2).Control(1)=   "fraDelegates"
       Tab(2).Control(1).Enabled=   0   'False
       Tab(2).ControlCount=   2
       TabCaption(3)   =   "Waiting List / &Bookings"
       TabPicture(3)   =   "frmTrainingBookingSetup.frx":0060
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "fraWaitingList"
+      Tab(3).Control(0)=   "fraTrainingBookings"
       Tab(3).Control(0).Enabled=   0   'False
-      Tab(3).Control(1)=   "fraTrainingBookings"
+      Tab(3).Control(1)=   "fraWaitingList"
       Tab(3).Control(1).Enabled=   0   'False
       Tab(3).ControlCount=   2
       TabCaption(4)   =   "&Related Columns"
