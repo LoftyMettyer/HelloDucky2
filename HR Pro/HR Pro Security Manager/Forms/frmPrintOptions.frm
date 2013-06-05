@@ -313,7 +313,7 @@ Begin VB.Form frmPrintOptions
          Style           =   2  'Dropdown List
          TabIndex        =   2
          Top             =   315
-         Width           =   4305
+         Width           =   4215
       End
       Begin VB.CommandButton cmdSetDefault 
          Caption         =   "Set As &Default"
