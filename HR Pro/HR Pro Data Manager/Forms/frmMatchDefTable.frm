@@ -97,14 +97,14 @@ Begin VB.Form frmMatchDefTable
       TabCaption(1)   =   "Breakdown Colu&mns"
       TabPicture(1)   =   "frmMatchDefTable.frx":11BC
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraFieldsSelected"
-      Tab(1).Control(1)=   "fraFieldsAvailable"
-      Tab(1).Control(2)=   "cmdRemoveAll"
-      Tab(1).Control(3)=   "cmdAddAll"
-      Tab(1).Control(4)=   "cmdMoveDown"
-      Tab(1).Control(5)=   "cmdMoveUp"
-      Tab(1).Control(6)=   "cmdRemove"
-      Tab(1).Control(7)=   "cmdAdd"
+      Tab(1).Control(0)=   "cmdAdd"
+      Tab(1).Control(1)=   "cmdRemove"
+      Tab(1).Control(2)=   "cmdMoveUp"
+      Tab(1).Control(3)=   "cmdMoveDown"
+      Tab(1).Control(4)=   "cmdAddAll"
+      Tab(1).Control(5)=   "cmdRemoveAll"
+      Tab(1).Control(6)=   "fraFieldsAvailable"
+      Tab(1).Control(7)=   "fraFieldsSelected"
       Tab(1).ControlCount=   8
       Begin VB.Frame fraExpressions 
          Height          =   2055

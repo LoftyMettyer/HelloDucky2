@@ -2,7 +2,7 @@ VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
 Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmMatchDef 
@@ -113,11 +113,11 @@ Begin VB.Form frmMatchDef
       TabCaption(2)   =   "Colu&mns"
       TabPicture(2)   =   "frmMatchDef.frx":11D8
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraFieldsSelected"
+      Tab(2).Control(0)=   "fraFieldButtons"
       Tab(2).Control(0).Enabled=   0   'False
       Tab(2).Control(1)=   "fraFieldsAvailable"
       Tab(2).Control(1).Enabled=   0   'False
-      Tab(2).Control(2)=   "fraFieldButtons"
+      Tab(2).Control(2)=   "fraFieldsSelected"
       Tab(2).Control(2).Enabled=   0   'False
       Tab(2).ControlCount=   3
       TabCaption(3)   =   "&Sort Order"
@@ -129,11 +129,11 @@ Begin VB.Form frmMatchDef
       TabCaption(4)   =   "O&utput"
       TabPicture(4)   =   "frmMatchDef.frx":1210
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "fraReportOptions"
+      Tab(4).Control(0)=   "fraOutputDestination"
       Tab(4).Control(0).Enabled=   0   'False
       Tab(4).Control(1)=   "fraOutputFormat"
       Tab(4).Control(1).Enabled=   0   'False
-      Tab(4).Control(2)=   "fraOutputDestination"
+      Tab(4).Control(2)=   "fraReportOptions"
       Tab(4).Control(2).Enabled=   0   'False
       Tab(4).ControlCount=   3
       Begin VB.Frame fraOutputDestination 
@@ -3085,6 +3085,10 @@ Private Sub optPicklist_Click(Index As Integer)
   
   ForceDefinitionToBeHiddenIfNeeded
   
+End Sub
+
+Private Sub picDocument_Click()
+
 End Sub
 
 Private Sub spnLimit_Change()
