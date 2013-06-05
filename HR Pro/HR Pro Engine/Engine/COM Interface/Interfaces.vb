@@ -20,8 +20,9 @@
     ReadOnly Property TuningLog As Tuning.Report
     ReadOnly Property Things As Things.Collection
     ReadOnly Property Script As ScriptDB.Script
-    Function Initialise() As Boolean
     ReadOnly Property Options As HCMOptions
+    Function Initialise() As Boolean
+    Function InitialiseLite() As Boolean
     Function CloseSafely() As Boolean
   End Interface
 

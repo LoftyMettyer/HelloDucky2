@@ -9,6 +9,8 @@ Public Class SysMgr
   Private objMetadataDB As New Connectivity.AccessDB
   Private mobjCommitDB As New Connectivity.ADOClassic
   Private mobjScript As New ScriptDB.Script
+  Private mbSysFrameworkMajor As String
+  Private Version As System.Version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version
 
   Public Property CommitDB As Object Implements COMInterfaces.iSystemManager.CommitDB
     Get
@@ -55,7 +57,29 @@ Public Class SysMgr
 
     Return bOK
 
-  End Function
+    End Function
+
+    Public Function InitialiseLite() As Boolean Implements COMInterfaces.iSystemManager.InitialiseLite
+
+        Dim bOK As Boolean = True
+
+        Try
+            Globals.Initialise()
+            'Globals.MetadataDB = objMetadataDB
+            'Globals.CommitDB = mobjCommitDB
+            'Globals.Options.DevelopmentMode = False
+
+            'Things.PopulateSystemThings()
+            'Things.PopulateThings()
+            'Things.PopulateModuleSettings()
+
+        Catch ex As Exception
+            bOK = False
+        End Try
+
+        Return bOK
+
+    End Function
 
   Public Function CloseSafely() As Boolean Implements COMInterfaces.iSystemManager.CloseSafely
 
@@ -80,6 +104,15 @@ Public Class SysMgr
     Get
       Return Globals.TuningLog
     End Get
+  End Property
+
+  Public Property SysFrameworkMajorVersion As String
+    Get
+      Return mbSysFrameworkMajor
+    End Get
+    Set(ByVal value As String)
+      mbSysFrameworkMajor = Version.Major & "." & Version.Minor & "." & Version.Revision
+    End Set
   End Property
 
   Public ReadOnly Property ReturnErrorLog As ErrorHandler.Errors Implements COMInterfaces.iSystemManager.ErrorLog
