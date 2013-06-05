@@ -496,14 +496,14 @@ Sub Main()
 '  giOfficeVersion_Word = IIf(gbAllowOutput_Word, Office_WordVersion, 0)
 '  giOfficeVersion_Excel = IIf(gbAllowOutput_Excel, Office_ExcelVersion, 0)
   
-  gblnStartupMSOffice = (InStr(LCase(Command$), "/msoffice=false") > 0)
-  If Not gblnStartupMSOffice Then
-    ' Versions of Office
-    giOfficeVersion_Word = Office_WordVersion
-    giOfficeVersion_Excel = Office_ExcelVersion
-  End If
-  gbAllowOutput_Word = IIf(giOfficeVersion_Word > 0, True, False)
-  gbAllowOutput_Excel = IIf(giOfficeVersion_Excel > 0, True, False)
+'  gblnStartupMSOffice = (InStr(LCase(Command$), "/msoffice=false") > 0)
+'  If Not gblnStartupMSOffice Then
+'    ' Versions of Office
+'    giOfficeVersion_Word = Office_WordVersion
+'    giOfficeVersion_Excel = Office_ExcelVersion
+'  End If
+'  gbAllowOutput_Word = IIf(giOfficeVersion_Word > 0, True, False)
+'  gbAllowOutput_Excel = IIf(giOfficeVersion_Excel > 0, True, False)
 
   ' If we get problems, just in case...
   gbDisableCodeJock = (InStr(LCase(Command$), "/skin=false") > 0)
@@ -3957,53 +3957,6 @@ Public Function GetJobName(pstrJobType As String, plngJobID As Long) As String
 
 End Function
 
-Private Function Office_WordVersion() As Integer
-
-  On Error GoTo NotInstalled
-
-  If giOfficeVersion_Word = 0 Then
-    Dim App As New Word.Application
-    Set App = CreateObject("Word.Application")
-    giOfficeVersion_Word = Val(App.Version)
-    App.Quit
-  End If
-
-  Office_WordVersion = giOfficeVersion_Word
-
-TidyUpAndExit:
-  Set App = Nothing
-  Exit Function
-
-NotInstalled:
-  Office_WordVersion = 0
-  Resume TidyUpAndExit
-
-End Function
-
-Private Function Office_ExcelVersion() As Integer
-
-  On Error GoTo NotInstalled
-
-  If giOfficeVersion_Excel = 0 Then
-    Dim App As New Excel.Application
-    Set App = CreateObject("Excel.Application")
-    giOfficeVersion_Excel = Val(App.Version)
-    App.Quit
-  End If
-
-  Office_ExcelVersion = giOfficeVersion_Excel
-
-TidyUpAndExit:
-  Set App = Nothing
-
-Exit Function
-
-NotInstalled:
-  Office_ExcelVersion = 0
-  Resume TidyUpAndExit
-
-End Function
-
 ' Returns the maximum of two values
 Public Function Maximum(psngValue1 As Single, psngValue2 As Single) As Long
   Maximum = IIf(psngValue1 > psngValue2, psngValue1, psngValue2)
@@ -4322,4 +4275,86 @@ Public Function COAMsgBox(sPrompt As String, iButtons As VbMsgBoxStyle, Optional
 
 End Function
 
+
+Public Function IsFileCompatibleWithOfficeVersion(strFileName As String, intOfficeVersion As Integer) As Boolean
+  IsFileCompatibleWithOfficeVersion = (GetOfficeSaveAsFormat(strFileName, intOfficeVersion) <> "")
+End Function
+
+
+Public Function GetOfficeSaveAsFormat(strFileName As String, intOfficeVersion As Integer) As String
+  
+  Dim rsTemp As ADODB.Recordset
+  Dim sSQL As String
+  Dim strExtension As String
+  
+  On Local Error GoTo LocalErr
+  
+  GetOfficeSaveAsFormat = ""
+
+  If intOfficeVersion > 0 And InStr(strFileName, ".") Then
+    strExtension = Mid(strFileName, InStrRev(strFileName, ".") + 1)
+  
+    sSQL = "SELECT " & IIf(intOfficeVersion < 12, "Office2003", "Office2007") & _
+           " FROM ASRSysFileFormats WHERE Extension = '" & strExtension & "'" & _
+           " ORDER BY ID"
+    Set rsTemp = datGeneral.GetReadOnlyRecords(sSQL)
+    GetOfficeSaveAsFormat = IIf(IsNull(rsTemp(0).Value), "", rsTemp(0).Value)
+    rsTemp.Close
+    Set rsTemp = Nothing
+  End If
+
+Exit Function
+
+LocalErr:
+  GetOfficeSaveAsFormat = ""
+
+End Function
+
+
+Public Function GetOfficeWordVersion() As Integer
+
+  On Error GoTo NotInstalled
+
+  If giOfficeVersion_Word = 0 Then
+    Dim App As New Word.Application
+    Set App = CreateObject("Word.Application")
+    giOfficeVersion_Word = Val(App.Version)
+    App.Quit
+  End If
+
+TidyUpAndExit:
+  GetOfficeWordVersion = giOfficeVersion_Word
+  Set App = Nothing
+  
+Exit Function
+
+NotInstalled:
+  giOfficeVersion_Word = -1
+  Resume TidyUpAndExit
+
+End Function
+
+
+Public Function GetOfficeExcelVersion() As Integer
+
+  On Error GoTo NotInstalled
+
+  If giOfficeVersion_Excel = 0 Then
+    Dim App As New Excel.Application
+    Set App = CreateObject("Excel.Application")
+    giOfficeVersion_Excel = Val(App.Version)
+    App.Quit
+  End If
+
+TidyUpAndExit:
+  GetOfficeExcelVersion = giOfficeVersion_Excel
+  Set App = Nothing
+
+Exit Function
+
+NotInstalled:
+  giOfficeVersion_Excel = -1
+  Resume TidyUpAndExit
+
+End Function
 

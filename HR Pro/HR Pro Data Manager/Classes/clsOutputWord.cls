@@ -612,7 +612,7 @@ Public Function GetFile(objParent As clsOutputRun, colStyles As Collection) As B
     Case 3  'Append to existing file
       'Start at the bottom of the document
 
-      If mobjParent.GetOfficeFormat(mstrFileName, giOfficeVersion_Word) = "" Then
+      If IsFileCompatibleWithOfficeVersion(mstrFileName, GetOfficeWordVersion) Then
         mstrErrorMessage = "This definition is set to append to a file which is not compatible with your version of Microsoft Office."
         GetFile = False
         Exit Sub
@@ -654,6 +654,11 @@ Private Sub GetNewDocument()
   
   If mstrWrdTemplate <> "" And Dir(mstrWrdTemplate) <> "" Then
     'Set mwrdDoc = mwrdApp.Documents.Open(mstrWrdTemplate, ReadOnly:=True)
+
+    If IsFileCompatibleWithOfficeVersion(mstrWrdTemplate, GetOfficeWordVersion) Then
+      mstrErrorMessage = "Your User Configuration Output Options are set to use a template file which is not compatible with your version of Microsoft Office."
+      Exit Sub
+    End If
 
     'MH20030905 Fault 6911
     'If Word 2000 then make a copy of the template
@@ -1088,7 +1093,7 @@ Public Sub Complete()
     ''mwrdDoc.SaveAs mstrFileName, giOfficeSaveVersion_Word
     'mwrdDoc.SaveAs mstrFileName, mlngSaveFileFormat
     
-    strFormat = mobjParent.GetOfficeFormat(mstrFileName, giOfficeVersion_Word)
+    strFormat = GetOfficeSaveAsFormat(mstrFileName, GetOfficeWordVersion)
     If strFormat = "" Then
       mstrErrorMessage = "This definition is set to save in a file format which is not compatible with your version of Microsoft Office."
       GoTo TidyAndExit
@@ -1105,7 +1110,7 @@ Public Sub Complete()
     'If Not mblnSave Then
       mstrFileName = mobjParent.GetTempFileName(mstrFileName)
         
-      strFormat = mobjParent.GetOfficeFormat(mstrFileName, giOfficeVersion_Word)
+      strFormat = GetOfficeSaveAsFormat(mstrFileName, GetOfficeWordVersion)
       If strFormat = "" Then
         mstrErrorMessage = "This definition is set to email an attachment in a file format which is not compatible with your version of Microsoft Office."
         GoTo TidyAndExit

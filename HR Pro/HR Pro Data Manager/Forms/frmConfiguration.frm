@@ -1766,11 +1766,11 @@ Private Sub cboColours_Click()
 End Sub
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
   If Not mbLoading Then
-    cmdOk.Enabled = pblnChanged
+    cmdOK.Enabled = pblnChanged
   End If
 End Property
 
@@ -3304,8 +3304,8 @@ Private Sub PopulateControlsUserSettings()
     .ListIndex = 0
   End With
 
-  GetOutputFormats "Word", cboWordFormat
-  GetOutputFormats "Excel", cboExcelFormat
+  mlngWordFormat = GetOutputFormats("Word", cboWordFormat)
+  mlngExcelFormat = GetOutputFormats("Excel", cboExcelFormat)
 
 End Sub
 
@@ -3466,9 +3466,15 @@ Private Sub ReadUserSettings()
 
   mlngWordFormat = Val(GetUserSetting("Output", "WordFormat", mlngWordFormat))     'WdSaveFormat.wdFormatDocument97
   SetComboItem cboWordFormat, mlngWordFormat
+  If cboWordFormat.ListIndex < 0 And cboWordFormat.ListCount > 0 Then
+    cboWordFormat.ListIndex = 0
+  End If
 
   mlngExcelFormat = Val(GetUserSetting("Output", "ExcelFormat", mlngExcelFormat))  'XlFileFormat.xlExcel8
   SetComboItem cboExcelFormat, mlngExcelFormat
+  If cboExcelFormat.ListIndex < 0 And cboExcelFormat.ListCount > 0 Then
+    cboExcelFormat.ListIndex = 0
+  End If
 
   cboTextType.ListIndex = 0
 
@@ -4293,11 +4299,12 @@ Private Function CurrentToolBarIndex() As Integer
 End Function
 
 
-Private Function GetOutputFormats(strDestin As String, cboTemp As ComboBox)
+Private Function GetOutputFormats(strDestin As String, cboTemp As ComboBox) As Long
 
   Dim rsTemp As Recordset
   Dim strSQL As String
   Dim strOutput As String
+  Dim lngDefault As Long
   
   On Local Error GoTo LocalErr
   
@@ -4306,7 +4313,7 @@ Private Function GetOutputFormats(strDestin As String, cboTemp As ComboBox)
            "ORDER BY ID"
   Set rsTemp = datGeneral.GetRecords(strSQL)
     
-    
+  lngDefault = 0
   With cboTemp
     .Clear
   
@@ -4315,11 +4322,7 @@ Private Function GetOutputFormats(strDestin As String, cboTemp As ComboBox)
       .ItemData(.NewIndex) = rsTemp.Fields("Value").Value
       
       If rsTemp.Fields("Default").Value = True Then
-        If strDestin = "Word" Then
-          mlngWordFormat = rsTemp.Fields("Value").Value
-        Else
-          mlngExcelFormat = rsTemp.Fields("Value").Value
-        End If
+        lngDefault = rsTemp.Fields("Value").Value
       End If
       
       rsTemp.MoveNext
@@ -4331,6 +4334,7 @@ Private Function GetOutputFormats(strDestin As String, cboTemp As ComboBox)
 
   End With
   
+  GetOutputFormats = lngDefault
    
 LocalErr:
   If Not rsTemp Is Nothing Then
@@ -4341,7 +4345,4 @@ LocalErr:
   End If
     
 End Function
-
-
-
 

@@ -459,10 +459,23 @@ Private Sub SQLGetMergeDefinition()
     mlngEmailAddrCalc = 0
     mstrEmailAddr = vbNullString
         
+    If IsFileCompatibleWithOfficeVersion(mstrDefTemplateFile, GetOfficeWordVersion) Then
+      mstrStatusMessage = "This definition is set to use a template file which is not compatible with your version of Microsoft Office."
+      fOK = False
+      GoTo TidyAndExit
+    End If
+
     Select Case mintDefOutput
       Case wdSendToNewDocument
         mblnDefDocSave = !DocSave
         mstrDefDocFile = !DocFileName
+      
+        If IsFileCompatibleWithOfficeVersion(mstrDefDocFile, GetOfficeWordVersion) Then
+          mstrStatusMessage = "This definition is set to save in a file format which is not compatible with your version of Microsoft Office."
+          fOK = False
+          GoTo TidyAndExit
+        End If
+      
       Case wdSendToEmail
         'MH20040122 Fault 5665
         If datGeneral.SystemPermission("EMAILADDRESSES", "VIEW") = False Then
@@ -486,6 +499,12 @@ Private Sub SQLGetMergeDefinition()
         mstrDefEMailSubject = !EmailSubject
         mlngEmailAddrCalc = !EmailAddrID
     
+        If IsFileCompatibleWithOfficeVersion(mstrDefAttachmentName, GetOfficeWordVersion) Then
+          mstrStatusMessage = "This definition is set to email an attachment in a file format which is not compatible with your version of Microsoft Office."
+          fOK = False
+          GoTo TidyAndExit
+        End If
+      
       Case wdSendToPrinter, 3 ' We use this as Version 1
         mstrOutputPrinterName = !OutputPrinterName
         mlngDocumentMapID = IIf(IsNull(!DocumentMapID), 0, !DocumentMapID)
@@ -644,6 +663,9 @@ Private Sub WrdOpenTemplate(blnSuppressPrompt As Boolean)
   'with the data source document (in which case, HR Pro
   'would appear to hang!)
   'wrdApp.Visible = True
+  
+
+  
   
   'As the data source is no longer referenced by the template
   'I don't think that we need to see the app when opening
@@ -2608,7 +2630,7 @@ Private Sub WrdCreateLabelTemplate(blnSuppressPrompt As Boolean)
               Case sTYPECODE_HEADING
                 objRange.Font.Name = mobjFormatDetails(0).FontName
                 objRange.Font.Size = mobjFormatDetails(0).FontSize
-                If giOfficeVersion_Word >= 9 Then
+                If GetOfficeWordVersion >= 9 Then
                   objRange.Font.Color = mobjFormatDetails(0).ForeCol
                 Else
                   objRange.Font.ColorIndex = GetWordColourIndex(mobjFormatDetails(0).ForeCol)
@@ -2624,7 +2646,7 @@ Private Sub WrdCreateLabelTemplate(blnSuppressPrompt As Boolean)
               Case sTYPECODE_SEPARATOR
                 objRange.Font.Name = mobjFormatDetails(1).FontName
                 objRange.Font.Size = mobjFormatDetails(1).FontSize
-                If giOfficeVersion_Word >= 9 Then
+                If GetOfficeWordVersion >= 9 Then
                   objRange.Font.Color = mobjFormatDetails(1).ForeCol
                 Else
                   objRange.Font.ColorIndex = GetWordColourIndex(mobjFormatDetails(1).ForeCol)
@@ -2638,7 +2660,7 @@ Private Sub WrdCreateLabelTemplate(blnSuppressPrompt As Boolean)
               Case sTYPECODE_COLUMN
                 objRange.Font.Name = mobjFormatDetails(1).FontName
                 objRange.Font.Size = mobjFormatDetails(1).FontSize
-                If giOfficeVersion_Word >= 9 Then
+                If GetOfficeWordVersion >= 9 Then
                   objRange.Font.Color = mobjFormatDetails(1).ForeCol
                 Else
                   objRange.Font.ColorIndex = GetWordColourIndex(mobjFormatDetails(1).ForeCol)
@@ -2652,7 +2674,7 @@ Private Sub WrdCreateLabelTemplate(blnSuppressPrompt As Boolean)
               Case sTYPECODE_EXPRESSION
                 objRange.Font.Name = mobjFormatDetails(1).FontName
                 objRange.Font.Size = mobjFormatDetails(1).FontSize
-                If giOfficeVersion_Word >= 9 Then
+                If GetOfficeWordVersion >= 9 Then
                   objRange.Font.Color = mobjFormatDetails(1).ForeCol
                 Else
                   objRange.Font.ColorIndex = GetWordColourIndex(mobjFormatDetails(1).ForeCol)
@@ -2861,7 +2883,7 @@ Private Sub WrdCreateEnvelopeTemplate(blnSuppressPrompt As Boolean)
 '        End If
         objRange.Font.Name = mobjFormatDetails(0).FontName
         objRange.Font.Size = mobjFormatDetails(0).FontSize
-        If giOfficeVersion_Word >= 9 Then
+        If GetOfficeWordVersion >= 9 Then
           objRange.Font.Color = mobjFormatDetails(0).ForeCol
         Else
           objRange.Font.ColorIndex = GetWordColourIndex(mobjFormatDetails(0).ForeCol)
@@ -2876,7 +2898,7 @@ Private Sub WrdCreateEnvelopeTemplate(blnSuppressPrompt As Boolean)
       Case sTYPECODE_SEPARATOR
         objRange.Font.Name = mobjFormatDetails(1).FontName
         objRange.Font.Size = mobjFormatDetails(1).FontSize
-        If giOfficeVersion_Word >= 9 Then
+        If GetOfficeWordVersion >= 9 Then
           objRange.Font.Color = mobjFormatDetails(1).ForeCol
         Else
           objRange.Font.ColorIndex = GetWordColourIndex(mobjFormatDetails(1).ForeCol)
@@ -2890,7 +2912,7 @@ Private Sub WrdCreateEnvelopeTemplate(blnSuppressPrompt As Boolean)
       Case sTYPECODE_COLUMN
         objRange.Font.Name = mobjFormatDetails(1).FontName
         objRange.Font.Size = mobjFormatDetails(1).FontSize
-        If giOfficeVersion_Word >= 9 Then
+        If GetOfficeWordVersion >= 9 Then
           objRange.Font.Color = mobjFormatDetails(1).ForeCol
         Else
           objRange.Font.ColorIndex = GetWordColourIndex(mobjFormatDetails(1).ForeCol)
@@ -2904,7 +2926,7 @@ Private Sub WrdCreateEnvelopeTemplate(blnSuppressPrompt As Boolean)
       Case sTYPECODE_EXPRESSION
         objRange.Font.Name = mobjFormatDetails(1).FontName
         objRange.Font.Size = mobjFormatDetails(1).FontSize
-        If giOfficeVersion_Word >= 9 Then
+        If GetOfficeWordVersion >= 9 Then
           objRange.Font.Color = mobjFormatDetails(1).ForeCol
         Else
           objRange.Font.ColorIndex = GetWordColourIndex(mobjFormatDetails(1).ForeCol)
