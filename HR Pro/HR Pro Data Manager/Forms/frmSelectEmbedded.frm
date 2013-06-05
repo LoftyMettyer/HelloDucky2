@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCT2.OCX"
+Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomct2.ocx"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
 Begin VB.Form frmSelectEmbedded 
    BorderStyle     =   3  'Fixed Dialog
@@ -355,8 +355,11 @@ Public Function CreateDocumentStream(piOLEType As DataMgr.OLEType, pstrFileName 
   strPath = IIf(pbResetPath, GetPathOnly(pstrFileName, True), mstrPath)
   strFileName = mobjFileSystem.GetFileName(pstrFileName)
   strFileSize = Trim(Str(mobjFileInfo.Size))
+  
+  On Error Resume Next
   strFileCreateDate = mobjFileInfo.DateCreated
   strFileModifyDate = mobjFileInfo.DateLastModified
+  On Error GoTo 0
    
   Set objPropertiesStream = mobjFileSystem.OpenTextFile(strTempFileName, ForAppending, True, TristateUseDefault)
   
@@ -945,7 +948,7 @@ Function OpenDocument(pstrFileName As String, pbReadOnly As Boolean) As Long
     
   Else
     COAMsgBox "No application is associated with this file.", _
-      vbExclamation + vbOKOnly, App.ProductName
+      vbExclamation + vbOKOnly, app.ProductName
   End If
   
   Exit Function
