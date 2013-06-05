@@ -1,8 +1,8 @@
 VERSION 5.00
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
-Begin VB.Form frmFusionFusion 
+Begin VB.Form frmFusionTransfer 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Fusion Integration"
    ClientHeight    =   5880
@@ -19,7 +19,7 @@ Begin VB.Form frmFusionFusion
       Strikethrough   =   0   'False
    EndProperty
    HelpContextID   =   5060
-   Icon            =   "frmFusionFusion.frx":0000
+   Icon            =   "frmFusionTransfer.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
@@ -67,7 +67,6 @@ Begin VB.Form frmFusionFusion
       _ExtentY        =   9155
       _Version        =   393216
       Style           =   1
-      Tab             =   1
       TabsPerRow      =   8
       TabHeight       =   520
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -80,23 +79,348 @@ Begin VB.Form frmFusionFusion
          Strikethrough   =   0   'False
       EndProperty
       TabCaption(0)   =   "&Definition"
-      TabPicture(0)   =   "frmFusionFusion.frx":000C
-      Tab(0).ControlEnabled=   0   'False
+      TabPicture(0)   =   "frmFusionTransfer.frx":000C
+      Tab(0).ControlEnabled=   -1  'True
       Tab(0).Control(0)=   "fraFusionDefinition"
+      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).ControlCount=   1
       TabCaption(1)   =   "&Settings"
-      TabPicture(1)   =   "frmFusionFusion.frx":0028
-      Tab(1).ControlEnabled=   -1  'True
+      TabPicture(1)   =   "frmFusionTransfer.frx":0028
+      Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraDefaults"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).Control(1)=   "fraArchive"
-      Tab(1).Control(1).Enabled=   0   'False
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "&Login Parameters"
-      TabPicture(2)   =   "frmFusionFusion.frx":0044
+      TabPicture(2)   =   "frmFusionTransfer.frx":0044
       Tab(2).ControlEnabled=   0   'False
       Tab(2).Control(0)=   "fraLogonDetails"
       Tab(2).ControlCount=   1
+      Begin VB.Frame fraFusionDefinition 
+         Caption         =   "Definition : "
+         Height          =   4605
+         Left            =   135
+         TabIndex        =   17
+         Top             =   405
+         Width           =   8340
+         Begin VB.CheckBox chkSendAsUpdate 
+            Caption         =   "Force transaction to be sent as &update"
+            Height          =   285
+            Left            =   4410
+            TabIndex        =   4
+            Top             =   675
+            Width           =   3615
+         End
+         Begin VB.CommandButton cmdDelete 
+            Caption         =   "Cle&ar"
+            Enabled         =   0   'False
+            Height          =   400
+            Left            =   6930
+            TabIndex        =   7
+            Top             =   1665
+            Width           =   1200
+         End
+         Begin VB.CommandButton cmdFilter 
+            Caption         =   "..."
+            Height          =   315
+            Left            =   7770
+            TabIndex        =   3
+            Top             =   270
+            UseMaskColor    =   -1  'True
+            Width           =   315
+         End
+         Begin VB.TextBox txtFilter 
+            BackColor       =   &H8000000F&
+            Enabled         =   0   'False
+            Height          =   315
+            Left            =   5085
+            Locked          =   -1  'True
+            TabIndex        =   34
+            TabStop         =   0   'False
+            Top             =   270
+            Width           =   2685
+         End
+         Begin VB.ComboBox cboFusionType 
+            Height          =   315
+            ItemData        =   "frmFusionTransfer.frx":0060
+            Left            =   945
+            List            =   "frmFusionTransfer.frx":0062
+            Style           =   2  'Dropdown List
+            TabIndex        =   1
+            Top             =   270
+            Width           =   3255
+         End
+         Begin VB.ComboBox cboFusionTables 
+            Height          =   315
+            Left            =   945
+            Style           =   2  'Dropdown List
+            TabIndex        =   2
+            Top             =   675
+            Width           =   3255
+         End
+         Begin VB.CommandButton cmdEdit 
+            Caption         =   "&Edit..."
+            Enabled         =   0   'False
+            Height          =   400
+            Left            =   6930
+            TabIndex        =   6
+            Top             =   1170
+            Width           =   1200
+         End
+         Begin SSDataWidgets_B.SSDBGrid grdFusionDetails 
+            Height          =   3255
+            Index           =   0
+            Left            =   180
+            TabIndex        =   5
+            Top             =   1170
+            Width           =   6510
+            _Version        =   196617
+            DataMode        =   2
+            RecordSelectors =   0   'False
+            GroupHeaders    =   0   'False
+            Col.Count       =   21
+            stylesets.count =   2
+            stylesets(0).Name=   "KeyField"
+            stylesets(0).BackColor=   14024703
+            stylesets(0).HasFont=   -1  'True
+            BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+            stylesets(0).Picture=   "frmFusionTransfer.frx":0064
+            stylesets(1).Name=   "Mandatory"
+            stylesets(1).BackColor=   15400959
+            stylesets(1).HasFont=   -1  'True
+            BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+            stylesets(1).Picture=   "frmFusionTransfer.frx":0080
+            AllowDelete     =   -1  'True
+            AllowUpdate     =   0   'False
+            AllowRowSizing  =   0   'False
+            AllowGroupSizing=   0   'False
+            AllowColumnSizing=   0   'False
+            AllowGroupMoving=   0   'False
+            AllowColumnMoving=   0
+            AllowGroupSwapping=   0   'False
+            AllowColumnSwapping=   0
+            AllowGroupShrinking=   0   'False
+            AllowColumnShrinking=   0   'False
+            AllowDragDrop   =   0   'False
+            SelectTypeCol   =   0
+            SelectTypeRow   =   3
+            SelectByCell    =   -1  'True
+            BalloonHelp     =   0   'False
+            MaxSelectedRows =   0
+            ForeColorEven   =   -2147483640
+            ForeColorOdd    =   -2147483640
+            BackColorEven   =   -2147483643
+            BackColorOdd    =   -2147483643
+            RowHeight       =   423
+            Columns.Count   =   21
+            Columns(0).Width=   5292
+            Columns(0).Caption=   "Fusion Field"
+            Columns(0).Name =   "Description"
+            Columns(0).DataField=   "Column 0"
+            Columns(0).DataType=   8
+            Columns(0).FieldLen=   256
+            Columns(1).Width=   5741
+            Columns(1).Caption=   "OpenHR Value"
+            Columns(1).Name =   "Display_ToMapType"
+            Columns(1).DataField=   "Column 1"
+            Columns(1).DataType=   8
+            Columns(1).FieldLen=   256
+            Columns(2).Width=   3200
+            Columns(2).Visible=   0   'False
+            Columns(2).Caption=   "ASRMapType"
+            Columns(2).Name =   "ASRMapType"
+            Columns(2).DataField=   "Column 2"
+            Columns(2).DataType=   8
+            Columns(2).FieldLen=   256
+            Columns(3).Width=   3200
+            Columns(3).Visible=   0   'False
+            Columns(3).Caption=   "ASRTableID"
+            Columns(3).Name =   "ASRTableID"
+            Columns(3).DataField=   "Column 3"
+            Columns(3).DataType=   8
+            Columns(3).FieldLen=   256
+            Columns(4).Width=   3200
+            Columns(4).Visible=   0   'False
+            Columns(4).Caption=   "ASRColumnID"
+            Columns(4).Name =   "ASRColumnID"
+            Columns(4).DataField=   "Column 4"
+            Columns(4).DataType=   8
+            Columns(4).FieldLen=   256
+            Columns(5).Width=   3200
+            Columns(5).Visible=   0   'False
+            Columns(5).Caption=   "ASRExprID"
+            Columns(5).Name =   "ASRExprID"
+            Columns(5).DataField=   "Column 5"
+            Columns(5).DataType=   8
+            Columns(5).FieldLen=   256
+            Columns(6).Width=   3200
+            Columns(6).Visible=   0   'False
+            Columns(6).Caption=   "ASRValue"
+            Columns(6).Name =   "ASRValue"
+            Columns(6).DataField=   "Column 6"
+            Columns(6).DataType=   8
+            Columns(6).FieldLen=   256
+            Columns(7).Width=   3200
+            Columns(7).Visible=   0   'False
+            Columns(7).Caption=   "Mandatory"
+            Columns(7).Name =   "Mandatory"
+            Columns(7).DataField=   "Column 7"
+            Columns(7).DataType=   8
+            Columns(7).FieldLen=   256
+            Columns(8).Width=   3200
+            Columns(8).Visible=   0   'False
+            Columns(8).Caption=   "TransferFieldID"
+            Columns(8).Name =   "FusionFieldID"
+            Columns(8).DataField=   "Column 8"
+            Columns(8).DataType=   8
+            Columns(8).FieldLen=   256
+            Columns(9).Width=   3200
+            Columns(9).Visible=   0   'False
+            Columns(9).Caption=   "IsCompanyCode"
+            Columns(9).Name =   "IsCompanyCode"
+            Columns(9).DataField=   "Column 9"
+            Columns(9).DataType=   8
+            Columns(9).FieldLen=   256
+            Columns(10).Width=   3200
+            Columns(10).Visible=   0   'False
+            Columns(10).Caption=   "IsEmployeeCode"
+            Columns(10).Name=   "IsEmployeeCode"
+            Columns(10).DataField=   "Column 10"
+            Columns(10).DataType=   8
+            Columns(10).FieldLen=   256
+            Columns(11).Width=   3200
+            Columns(11).Visible=   0   'False
+            Columns(11).Caption=   "Direction"
+            Columns(11).Name=   "Direction"
+            Columns(11).DataField=   "Column 11"
+            Columns(11).DataType=   8
+            Columns(11).FieldLen=   256
+            Columns(12).Width=   3200
+            Columns(12).Visible=   0   'False
+            Columns(12).Caption=   "IsKeyField"
+            Columns(12).Name=   "IsKeyField"
+            Columns(12).DataField=   "Column 12"
+            Columns(12).DataType=   8
+            Columns(12).FieldLen=   256
+            Columns(13).Width=   3200
+            Columns(13).Visible=   0   'False
+            Columns(13).Caption=   "AlwaysTransfer"
+            Columns(13).Name=   "AlwaysTransfer"
+            Columns(13).DataField=   "Column 13"
+            Columns(13).DataType=   8
+            Columns(13).FieldLen=   256
+            Columns(14).Width=   3200
+            Columns(14).Visible=   0   'False
+            Columns(14).Caption=   "ConvertData"
+            Columns(14).Name=   "ConvertData"
+            Columns(14).DataField=   "Column 14"
+            Columns(14).DataType=   8
+            Columns(14).FieldLen=   256
+            Columns(15).Width=   3200
+            Columns(15).Visible=   0   'False
+            Columns(15).Caption=   "IsEmployeeName"
+            Columns(15).Name=   "IsEmployeeName"
+            Columns(15).DataField=   "Column 15"
+            Columns(15).DataType=   8
+            Columns(15).FieldLen=   256
+            Columns(16).Width=   3200
+            Columns(16).Visible=   0   'False
+            Columns(16).Caption=   "IsDepartmentCode"
+            Columns(16).Name=   "IsDepartmentCode"
+            Columns(16).DataField=   "Column 16"
+            Columns(16).DataType=   8
+            Columns(16).FieldLen=   256
+            Columns(17).Width=   3200
+            Columns(17).Visible=   0   'False
+            Columns(17).Caption=   "IsDepartmentName"
+            Columns(17).Name=   "IsDepartmentName"
+            Columns(17).DataField=   "Column 17"
+            Columns(17).DataType=   8
+            Columns(17).FieldLen=   256
+            Columns(18).Width=   3200
+            Columns(18).Visible=   0   'False
+            Columns(18).Caption=   "IsPayrollCode"
+            Columns(18).Name=   "IsFusionCode"
+            Columns(18).DataField=   "Column 18"
+            Columns(18).DataType=   8
+            Columns(18).FieldLen=   256
+            Columns(19).Width=   3200
+            Columns(19).Visible=   0   'False
+            Columns(19).Caption=   "Group"
+            Columns(19).Name=   "Group"
+            Columns(19).DataField=   "Column 19"
+            Columns(19).DataType=   8
+            Columns(19).FieldLen=   256
+            Columns(20).Width=   3200
+            Columns(20).Visible=   0   'False
+            Columns(20).Caption=   "PreventModify"
+            Columns(20).Name=   "PreventModify"
+            Columns(20).DataField=   "Column 20"
+            Columns(20).DataType=   8
+            Columns(20).FieldLen=   256
+            TabNavigation   =   1
+            _ExtentX        =   11483
+            _ExtentY        =   5741
+            _StockProps     =   79
+            BeginProperty PageFooterFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+            BeginProperty PageHeaderFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+         End
+         Begin VB.Label lblFilter 
+            Caption         =   "Filter : "
+            Height          =   240
+            Left            =   4410
+            TabIndex        =   35
+            Top             =   315
+            Width           =   555
+         End
+         Begin VB.Label lblTransferType 
+            Caption         =   "Type :"
+            Height          =   285
+            Left            =   225
+            TabIndex        =   19
+            Top             =   315
+            Width           =   555
+         End
+         Begin VB.Label lblTransferTable 
+            Caption         =   "Table : "
+            Height          =   285
+            Left            =   225
+            TabIndex        =   18
+            Top             =   720
+            Width           =   600
+         End
+      End
       Begin VB.Frame fraLogonDetails 
          BeginProperty Font 
             Name            =   "MS Sans Serif"
@@ -149,7 +473,7 @@ Begin VB.Form frmFusionFusion
             Left            =   1845
             PasswordChar    =   "*"
             TabIndex        =   25
-            Text            =   "fusionlogin"
+            Text            =   "accordlogin"
             Top             =   810
             Width           =   2625
          End
@@ -157,7 +481,7 @@ Begin VB.Form frmFusionFusion
             Height          =   285
             Left            =   1845
             TabIndex        =   24
-            Text            =   "fusionlogin"
+            Text            =   "accordlogin"
             Top             =   360
             Width           =   2625
          End
@@ -215,7 +539,7 @@ Begin VB.Form frmFusionFusion
       Begin VB.Frame fraArchive 
          Caption         =   "Archive Period : "
          Height          =   1230
-         Left            =   135
+         Left            =   -74865
          TabIndex        =   22
          Top             =   405
          Width           =   8340
@@ -241,9 +565,9 @@ Begin VB.Form frmFusionFusion
          Begin VB.ComboBox cboArchivePeriod 
             Enabled         =   0   'False
             Height          =   315
-            ItemData        =   "frmFusionFusion.frx":0060
+            ItemData        =   "frmFusionTransfer.frx":009C
             Left            =   4005
-            List            =   "frmFusionFusion.frx":0070
+            List            =   "frmFusionTransfer.frx":00A3
             Style           =   2  'Dropdown List
             TabIndex        =   11
             Top             =   675
@@ -275,7 +599,7 @@ Begin VB.Form frmFusionFusion
       Begin VB.Frame fraDefaults 
          Caption         =   "Options : "
          Height          =   1740
-         Left            =   135
+         Left            =   -74865
          TabIndex        =   20
          Top             =   1800
          Width           =   8340
@@ -288,7 +612,7 @@ Begin VB.Form frmFusionFusion
             Width           =   3165
          End
          Begin VB.CheckBox chkAllowDelete 
-            Caption         =   "Allo&w deletion of fusionred records"
+            Caption         =   "Allo&w deletion of Fusion records"
             Height          =   285
             Left            =   255
             TabIndex        =   13
@@ -312,332 +636,9 @@ Begin VB.Form frmFusionFusion
             Width           =   1365
          End
       End
-      Begin VB.Frame fraFusionDefinition 
-         Caption         =   "Definition : "
-         Height          =   4605
-         Left            =   -74865
-         TabIndex        =   17
-         Top             =   405
-         Width           =   8340
-         Begin VB.CheckBox chkSendAsUpdate 
-            Caption         =   "Force transaction to be sent as &update"
-            Height          =   285
-            Left            =   4410
-            TabIndex        =   4
-            Top             =   675
-            Width           =   3615
-         End
-         Begin VB.CommandButton cmdDelete 
-            Caption         =   "Cle&ar"
-            Enabled         =   0   'False
-            Height          =   400
-            Left            =   6930
-            TabIndex        =   7
-            Top             =   1665
-            Width           =   1200
-         End
-         Begin VB.CommandButton cmdFilter 
-            Caption         =   "..."
-            Height          =   315
-            Left            =   7770
-            TabIndex        =   3
-            Top             =   270
-            UseMaskColor    =   -1  'True
-            Width           =   315
-         End
-         Begin VB.TextBox txtFilter 
-            BackColor       =   &H8000000F&
-            Enabled         =   0   'False
-            Height          =   315
-            Left            =   5085
-            Locked          =   -1  'True
-            TabIndex        =   34
-            TabStop         =   0   'False
-            Top             =   270
-            Width           =   2685
-         End
-         Begin VB.ComboBox cboFusionType 
-            Height          =   315
-            Left            =   945
-            Style           =   2  'Dropdown List
-            TabIndex        =   1
-            Top             =   270
-            Width           =   3255
-         End
-         Begin VB.ComboBox cboFusionTables 
-            Height          =   315
-            Left            =   945
-            Style           =   2  'Dropdown List
-            TabIndex        =   2
-            Top             =   675
-            Width           =   3255
-         End
-         Begin VB.CommandButton cmdEdit 
-            Caption         =   "&Edit..."
-            Enabled         =   0   'False
-            Height          =   400
-            Left            =   6930
-            TabIndex        =   6
-            Top             =   1170
-            Width           =   1200
-         End
-         Begin SSDataWidgets_B.SSDBGrid grdFusionDetails 
-            Height          =   3255
-            Index           =   0
-            Left            =   180
-            TabIndex        =   5
-            Top             =   1170
-            Width           =   6510
-            _Version        =   196617
-            DataMode        =   2
-            RecordSelectors =   0   'False
-            GroupHeaders    =   0   'False
-            Col.Count       =   21
-            stylesets.count =   2
-            stylesets(0).Name=   "KeyField"
-            stylesets(0).BackColor=   14024703
-            stylesets(0).HasFont=   -1  'True
-            BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-               Name            =   "Verdana"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
-            stylesets(0).Picture=   "frmFusionFusion.frx":0090
-            stylesets(1).Name=   "Mandatory"
-            stylesets(1).BackColor=   15400959
-            stylesets(1).HasFont=   -1  'True
-            BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-               Name            =   "Verdana"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
-            stylesets(1).Picture=   "frmFusionFusion.frx":00AC
-            AllowUpdate     =   0   'False
-            AllowRowSizing  =   0   'False
-            AllowGroupSizing=   0   'False
-            AllowColumnSizing=   0   'False
-            AllowGroupMoving=   0   'False
-            AllowColumnMoving=   0
-            AllowGroupSwapping=   0   'False
-            AllowColumnSwapping=   0
-            AllowGroupShrinking=   0   'False
-            AllowColumnShrinking=   0   'False
-            AllowDragDrop   =   0   'False
-            SelectTypeCol   =   0
-            SelectTypeRow   =   3
-            SelectByCell    =   -1  'True
-            BalloonHelp     =   0   'False
-            MaxSelectedRows =   0
-            ForeColorEven   =   -2147483640
-            ForeColorOdd    =   -2147483640
-            BackColorEven   =   -2147483643
-            BackColorOdd    =   -2147483643
-            RowHeight       =   423
-            Columns.Count   =   21
-            Columns(0).Width=   5292
-            Columns(0).Caption=   "Fusion Field"
-            Columns(0).Name =   "Description"
-            Columns(0).DataField=   "Column 0"
-            Columns(0).DataType=   8
-            Columns(0).FieldLen=   256
-            Columns(1).Width=   5741
-            Columns(1).Caption=   "OpenHR Value"
-            Columns(1).Name =   "Display_MapToValue"
-            Columns(1).DataField=   "Column 1"
-            Columns(1).DataType=   8
-            Columns(1).FieldLen=   256
-            Columns(2).Width=   3200
-            Columns(2).Visible=   0   'False
-            Columns(2).Caption=   "ASRMapType"
-            Columns(2).Name =   "ASRMapType"
-            Columns(2).DataField=   "Column 2"
-            Columns(2).DataType=   8
-            Columns(2).FieldLen=   256
-            Columns(3).Width=   3200
-            Columns(3).Visible=   0   'False
-            Columns(3).Caption=   "ASRTableID"
-            Columns(3).Name =   "ASRTableID"
-            Columns(3).DataField=   "Column 3"
-            Columns(3).DataType=   8
-            Columns(3).FieldLen=   256
-            Columns(4).Width=   3200
-            Columns(4).Visible=   0   'False
-            Columns(4).Caption=   "ASRColumnID"
-            Columns(4).Name =   "ASRColumnID"
-            Columns(4).DataField=   "Column 4"
-            Columns(4).DataType=   8
-            Columns(4).FieldLen=   256
-            Columns(5).Width=   3200
-            Columns(5).Visible=   0   'False
-            Columns(5).Caption=   "ASRExprID"
-            Columns(5).Name =   "ASRExprID"
-            Columns(5).DataField=   "Column 5"
-            Columns(5).DataType=   8
-            Columns(5).FieldLen=   256
-            Columns(6).Width=   3200
-            Columns(6).Visible=   0   'False
-            Columns(6).Caption=   "ASRValue"
-            Columns(6).Name =   "ASRValue"
-            Columns(6).DataField=   "Column 6"
-            Columns(6).DataType=   8
-            Columns(6).FieldLen=   256
-            Columns(7).Width=   3200
-            Columns(7).Visible=   0   'False
-            Columns(7).Caption=   "Mandatory"
-            Columns(7).Name =   "Mandatory"
-            Columns(7).DataField=   "Column 7"
-            Columns(7).DataType=   8
-            Columns(7).FieldLen=   256
-            Columns(8).Width=   3200
-            Columns(8).Visible=   0   'False
-            Columns(8).Caption=   "FusionFieldID"
-            Columns(8).Name =   "FusionFieldID"
-            Columns(8).DataField=   "Column 8"
-            Columns(8).DataType=   8
-            Columns(8).FieldLen=   256
-            Columns(9).Width=   3200
-            Columns(9).Visible=   0   'False
-            Columns(9).Caption=   "IsCompanyCode"
-            Columns(9).Name =   "IsCompanyCode"
-            Columns(9).DataField=   "Column 9"
-            Columns(9).DataType=   8
-            Columns(9).FieldLen=   256
-            Columns(10).Width=   3200
-            Columns(10).Visible=   0   'False
-            Columns(10).Caption=   "IsEmployeeCode"
-            Columns(10).Name=   "IsEmployeeCode"
-            Columns(10).DataField=   "Column 10"
-            Columns(10).DataType=   8
-            Columns(10).FieldLen=   256
-            Columns(11).Width=   3200
-            Columns(11).Visible=   0   'False
-            Columns(11).Caption=   "Direction"
-            Columns(11).Name=   "Direction"
-            Columns(11).DataField=   "Column 11"
-            Columns(11).DataType=   8
-            Columns(11).FieldLen=   256
-            Columns(12).Width=   3200
-            Columns(12).Visible=   0   'False
-            Columns(12).Caption=   "IsKeyField"
-            Columns(12).Name=   "IsKeyField"
-            Columns(12).DataField=   "Column 12"
-            Columns(12).DataType=   17
-            Columns(12).FieldLen=   256
-            Columns(13).Width=   3200
-            Columns(13).Visible=   0   'False
-            Columns(13).Caption=   "AlwaysFusion"
-            Columns(13).Name=   "AlwaysFusion"
-            Columns(13).DataField=   "Column 13"
-            Columns(13).DataType=   17
-            Columns(13).FieldLen=   256
-            Columns(14).Width=   3200
-            Columns(14).Visible=   0   'False
-            Columns(14).Caption=   "ConvertData"
-            Columns(14).Name=   "ConvertData"
-            Columns(14).DataField=   "Column 14"
-            Columns(14).DataType=   17
-            Columns(14).FieldLen=   256
-            Columns(15).Width=   3200
-            Columns(15).Visible=   0   'False
-            Columns(15).Caption=   "IsEmployeeName"
-            Columns(15).Name=   "IsEmployeeName"
-            Columns(15).DataField=   "Column 15"
-            Columns(15).DataType=   8
-            Columns(15).FieldLen=   256
-            Columns(16).Width=   3200
-            Columns(16).Visible=   0   'False
-            Columns(16).Caption=   "IsDepartmentCode"
-            Columns(16).Name=   "IsDepartmentCode"
-            Columns(16).DataField=   "Column 16"
-            Columns(16).DataType=   8
-            Columns(16).FieldLen=   256
-            Columns(17).Width=   3200
-            Columns(17).Visible=   0   'False
-            Columns(17).Caption=   "IsDepartmentName"
-            Columns(17).Name=   "IsDepartmentName"
-            Columns(17).DataField=   "Column 17"
-            Columns(17).DataType=   8
-            Columns(17).FieldLen=   256
-            Columns(18).Width=   3200
-            Columns(18).Visible=   0   'False
-            Columns(18).Caption=   "IsfusionCode"
-            Columns(18).Name=   "IsfusionCode"
-            Columns(18).DataField=   "Column 18"
-            Columns(18).DataType=   8
-            Columns(18).FieldLen=   256
-            Columns(19).Width=   3200
-            Columns(19).Visible=   0   'False
-            Columns(19).Caption=   "Group"
-            Columns(19).Name=   "Group"
-            Columns(19).DataField=   "Column 19"
-            Columns(19).DataType=   8
-            Columns(19).FieldLen=   256
-            Columns(20).Width=   3200
-            Columns(20).Visible=   0   'False
-            Columns(20).Caption=   "PreventModify"
-            Columns(20).Name=   "PreventModify"
-            Columns(20).DataField=   "Column 20"
-            Columns(20).DataType=   8
-            Columns(20).FieldLen=   256
-            TabNavigation   =   1
-            _ExtentX        =   11483
-            _ExtentY        =   5741
-            _StockProps     =   79
-            BeginProperty PageFooterFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-               Name            =   "Verdana"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
-            BeginProperty PageHeaderFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-               Name            =   "Verdana"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
-         End
-         Begin VB.Label lblFilter 
-            Caption         =   "Filter : "
-            Height          =   240
-            Left            =   4410
-            TabIndex        =   35
-            Top             =   315
-            Width           =   555
-         End
-         Begin VB.Label lblFusionType 
-            Caption         =   "Type :"
-            Height          =   285
-            Left            =   225
-            TabIndex        =   19
-            Top             =   315
-            Width           =   555
-         End
-         Begin VB.Label lblFusionTable 
-            Caption         =   "Table : "
-            Height          =   285
-            Left            =   225
-            TabIndex        =   18
-            Top             =   720
-            Width           =   600
-         End
-      End
    End
 End
-Attribute VB_Name = "frmFusionFusion"
+Attribute VB_Name = "frmFusionTransfer"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
@@ -724,10 +725,10 @@ Private Sub cboFusionTables_Click()
     
     If mavarFusionBaseTableIDs(2, cboFusionType.ListIndex) > 0 Then
     
-      If MsgBox("Changing the base table will reset all the columns for this fusion type." & vbCrLf _
-        & "Are you sure you want to continue?", vbYesNo + vbQuestion, "fusion Setup") = vbYes Then
+      If MsgBox("Changing the base table will reset all the columns for this Fusion type." & vbCrLf _
+        & "Are you sure you want to continue?", vbYesNo + vbQuestion, "Fusion Setup") = vbYes Then
         
-        PopulateFusionDetails cboFusionType.ListIndex, True
+        PopulateFusionTransferDetails cboFusionType.ListIndex, True
         mavarFusionBaseTableIDs(2, cboFusionType.ListIndex) = SelectedComboItem(cboFusionTables)
         txtFilter.Text = ""
           
@@ -833,7 +834,7 @@ End Sub
 Private Sub cmdEdit_Click()
 
   Dim lngRow As Long
-  Dim frmComponent As New frmFusionComponent
+  Dim frmFusionComponent As New frmFusionComponent
   Dim ctlGrid As SSDBGrid
   Dim strAddString As String
   Dim strMandatory As Boolean
@@ -844,13 +845,13 @@ Private Sub cmdEdit_Click()
   Dim strIsEmployeeName As String
   Dim strIsDepartmentCode As String
   Dim strIsDepartmentName As String
-  Dim strIsfusionCode As String
+  Dim strIsFusionCode As String
  
   Set ctlGrid = grdFusionDetails(cboFusionType.ListIndex)
   ctlGrid.Bookmark = ctlGrid.SelBookmarks(0)
   lngRow = ctlGrid.AddItemRowIndex(ctlGrid.Bookmark)
   
-  With frmComponent
+  With frmFusionComponent
        
     .BaseTableID = GetComboItem(cboFusionTables)
     .Description = ctlGrid.Columns("Description").Text
@@ -863,24 +864,24 @@ Private Sub cmdEdit_Click()
     .IsCompanyCode = ctlGrid.Columns("IsCompanyCode").Text
     .IsEmployeeCode = ctlGrid.Columns("IsEmployeeCode").Text
     .IsDepartmentCode = ctlGrid.Columns("IsDepartmentCode").Text
-    .IsfusionCode = ctlGrid.Columns("IsfusionCode").Text
+    .IsFusionCode = ctlGrid.Columns("IsFusionCode").Text
     .IsEmployeeName = ctlGrid.Columns("IsEmployeeName").Text
     .IsDepartmentName = ctlGrid.Columns("IsDepartmentName").Text
     .Group = CLng(ctlGrid.Columns("Group").Text)
     .PreventModify = ctlGrid.Columns("PreventModify").Text
     
     .Direction = ctlGrid.Columns("Direction").Text
-    .AlwaysFusionField = ctlGrid.Columns("AlwaysFusion").Text
+    .AlwaysTransferFieldID = ctlGrid.Columns("AlwaysTransfer").Text
     .ConvertData = ctlGrid.Columns("ConvertData").Text
     .FusionFieldID = ctlGrid.Columns("FusionFieldID").Text
-    .FusionID = GetComboItem(cboFusionType)
+    .FusionTransferID = GetComboItem(cboFusionType)
     
     strIsCompanyCode = ctlGrid.Columns("IsCompanyCode").Text
     strIsEmployeeCode = ctlGrid.Columns("IsEmployeeCode").Text
     strIsEmployeeName = ctlGrid.Columns("IsEmployeeName").Text
     strIsDepartmentCode = ctlGrid.Columns("IsDepartmentCode").Text
     strIsDepartmentName = ctlGrid.Columns("IsDepartmentName").Text
-    strIsfusionCode = ctlGrid.Columns("IsfusionCode").Text
+    strIsFusionCode = ctlGrid.Columns("IsFusionCode").Text
     
     strMandatory = ctlGrid.Columns("Mandatory").Text
     strFusionFieldID = ctlGrid.Columns("FusionFieldID").Text
@@ -895,8 +896,8 @@ Private Sub cmdEdit_Click()
           & vbTab & CStr(.MapType) & vbTab & .TableID & vbTab & .ColumnID _
           & vbTab & .ExprID & vbTab & .value & vbTab & strMandatory & vbTab & strFusionFieldID _
           & vbTab & strIsCompanyCode & vbTab & strIsEmployeeCode _
-          & vbTab & .Direction & vbTab & .IsKeyField & vbTab & .AlwaysFusionField & vbTab & .ConvertData _
-          & vbTab & strIsEmployeeName & vbTab & strIsDepartmentCode & vbTab & strIsDepartmentName & vbTab & strIsfusionCode _
+          & vbTab & .Direction & vbTab & .IsKeyField & vbTab & .AlwaysTransferFieldID & vbTab & .ConvertData _
+          & vbTab & strIsEmployeeName & vbTab & strIsDepartmentCode & vbTab & strIsDepartmentName & vbTab & strIsFusionCode _
           & vbTab & .Group & vbTab & .PreventModify
           
       ctlGrid.RemoveItem lngRow
@@ -963,7 +964,7 @@ ErrorTrap:
   Resume TidyUpAndExit
 End Sub
 
-' Clear the current fusion field
+' Clear the current transfer field
 Private Sub cmdNone_Click()
   Dim lngRow As Long
   Dim frmComponent As New frmFusionComponent
@@ -977,7 +978,7 @@ Private Sub cmdNone_Click()
   Dim strIsEmployeeName As String
   Dim strIsDepartmentCode As String
   Dim strIsDepartmentName As String
-  Dim strIsfusionCode As String
+  Dim strIsFusionCode As String
   
   Set ctlGrid = grdFusionDetails(cboFusionType.ListIndex)
   ctlGrid.Bookmark = ctlGrid.SelBookmarks(0)
@@ -991,17 +992,17 @@ Private Sub cmdNone_Click()
     .IsCompanyCode = ctlGrid.Columns("IsCompanyCode").Text
     .IsEmployeeCode = ctlGrid.Columns("IsEmployeeCode").Text
     .Direction = ctlGrid.Columns("Direction").Text
-    .AlwaysFusionField = ctlGrid.Columns("AlwaysFusion").Text
+    .AlwaysTransferFieldID = ctlGrid.Columns("AlwaysTransfer").Text
     .ConvertData = False
     .FusionFieldID = ctlGrid.Columns("FusionFieldID").Text
-    .FusionID = GetComboItem(cboFusionType)
+    .FusionTransferID = GetComboItem(cboFusionType)
     
     strIsCompanyCode = ctlGrid.Columns("IsCompanyCode").Text
     strIsEmployeeCode = ctlGrid.Columns("IsEmployeeCode").Text
     strIsEmployeeName = ctlGrid.Columns("IsEmployeeName").Text
     strIsDepartmentCode = ctlGrid.Columns("IsDepartmentCode").Text
     strIsDepartmentName = ctlGrid.Columns("IsDepartmentName").Text
-    strIsfusionCode = ctlGrid.Columns("IsfusionCode").Text
+    strIsFusionCode = ctlGrid.Columns("IsFusionCode").Text
         
     strMandatory = ctlGrid.Columns("Mandatory").Text
     strFusionFieldID = ctlGrid.Columns("FusionFieldID").Text
@@ -1012,8 +1013,8 @@ Private Sub cmdNone_Click()
         & vbTab & "" & vbTab & "" & vbTab & "" _
         & vbTab & "" & vbTab & "" & vbTab & strMandatory & vbTab & strFusionFieldID _
         & vbTab & strIsCompanyCode & vbTab & strIsEmployeeCode _
-        & vbTab & .Direction & vbTab & .IsKeyField & vbTab & .AlwaysFusionField & vbTab & .ConvertData _
-        & vbTab & strIsEmployeeName & vbTab & strIsDepartmentCode & vbTab & strIsDepartmentName & vbTab & strIsfusionCode _
+        & vbTab & .Direction & vbTab & .IsKeyField & vbTab & .AlwaysTransferFieldID & vbTab & .ConvertData _
+        & vbTab & strIsEmployeeName & vbTab & strIsDepartmentCode & vbTab & strIsDepartmentName & vbTab & strIsFusionCode _
         & vbTab & "0" & vbTab & "0"
         
     ctlGrid.RemoveItem lngRow
@@ -1029,7 +1030,7 @@ Private Sub cmdNone_Click()
 
 End Sub
 
-Private Sub cmdOk_Click()
+Private Sub cmdOK_Click()
 
   'AE20071119 Fault #12607
   'If ValidateSetup Then
@@ -1074,7 +1075,7 @@ Private Function SaveChanges() As Boolean
     .Index = "idxModuleParameter"
       
     ' Save the Login name.
-    .Seek "=", gsMODULEKEY_Fusion, gsPARAMETERKEY_LOGINDETAILS
+    .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_LOGINDETAILS
     If .NoMatch Then
       .AddNew
       !moduleKey = gsMODULEKEY_FUSION
@@ -1091,11 +1092,11 @@ Private Function SaveChanges() As Boolean
 ' -------------
 
     ' Save the purge options.
-    .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_PURGEOPTION
+    .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_PURGEOPTION
     If .NoMatch Then
       .AddNew
       !moduleKey = gsMODULEKEY_FUSION
-      !parameterkey = gsPARAMETERKEY_PURGEOPTION
+      !parameterkey = gsPARAMETERKEY_FUSION_PURGEOPTION
     Else
       .Edit
     End If
@@ -1105,11 +1106,11 @@ Private Function SaveChanges() As Boolean
 
 
     ' Save the purge period.
-    .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_PURGEOPTIONPERIOD
+    .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_PURGEOPTIONPERIOD
     If .NoMatch Then
       .AddNew
       !moduleKey = gsMODULEKEY_FUSION
-      !parameterkey = gsPARAMETERKEY_PURGEOPTIONPERIOD
+      !parameterkey = gsPARAMETERKEY_FUSION_PURGEOPTIONPERIOD
     Else
       .Edit
     End If
@@ -1118,11 +1119,11 @@ Private Function SaveChanges() As Boolean
     .Update
 
     ' Save the purge type.
-    .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_PURGEOPTIONPERIODTYPE
+    .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_PURGEOPTIONPERIODTYPE
     If .NoMatch Then
       .AddNew
       !moduleKey = gsMODULEKEY_FUSION
-      !parameterkey = gsPARAMETERKEY_PURGEOPTIONPERIODTYPE
+      !parameterkey = gsPARAMETERKEY_FUSION_PURGEOPTIONPERIODTYPE
     Else
       .Edit
     End If
@@ -1135,11 +1136,11 @@ Private Function SaveChanges() As Boolean
 ' -------------
 
     ' Save the purge type.
-    .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_DEFAULTSTATUS
+    .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_DEFAULTSTATUS
     If .NoMatch Then
       .AddNew
       !moduleKey = gsMODULEKEY_FUSION
-      !parameterkey = gsPARAMETERKEY_DEFAULTSTATUS
+      !parameterkey = gsPARAMETERKEY_FUSION_DEFAULTSTATUS
     Else
       .Edit
     End If
@@ -1149,11 +1150,11 @@ Private Function SaveChanges() As Boolean
     
     
     ' Save delete prohibit
-    .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_ALLOWDELETE
+    .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_ALLOWDELETE
     If .NoMatch Then
       .AddNew
       !moduleKey = gsMODULEKEY_FUSION
-      !parameterkey = gsPARAMETERKEY_ALLOWDELETE
+      !parameterkey = gsPARAMETERKEY_FUSION_ALLOWDELETE
     Else
       .Edit
     End If
@@ -1162,11 +1163,11 @@ Private Function SaveChanges() As Boolean
     .Update
     
     ' Save allow status change
-    .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_ALLOWSTATUSCHANGE
+    .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_ALLOWSTATUSCHANGE
     If .NoMatch Then
       .AddNew
       !moduleKey = gsMODULEKEY_FUSION
-      !parameterkey = gsPARAMETERKEY_ALLOWSTATUSCHANGE
+      !parameterkey = gsPARAMETERKEY_FUSION_ALLOWSTATUSCHANGE
     Else
       .Edit
     End If
@@ -1177,10 +1178,10 @@ Private Function SaveChanges() As Boolean
   End With
 
 ' --------------------------
-' fusion DEFINTION OPTIONS
+' TRANSFER DEFINTION OPTIONS
 ' --------------------------
 
-  ' Store the fusion types
+  ' Store the transfer types
   daoDb.Execute "DELETE FROM tmpFusionTypes WHERE FusionTypeID IN(" & mstrFusionTypesVisible & ")", dbFailOnError
 
   For iLoop = LBound(mavarFusionBaseTableIDs, 2) To UBound(mavarFusionBaseTableIDs, 2) - 1
@@ -1196,7 +1197,7 @@ Private Function SaveChanges() As Boolean
     daoDb.Execute sSQL, dbFailOnError
   Next iLoop
 
-  ' Store the fusion details
+  ' Store the transfer details
   daoDb.Execute "DELETE FROM tmpFusionFieldDefinitions WHERE FusionTypeID IN(" & mstrFusionTypesVisible & ")", dbFailOnError
   For iLoopTypes = 0 To cboFusionType.ListCount - 1
     With grdFusionDetails(iLoopTypes)
@@ -1208,7 +1209,7 @@ Private Function SaveChanges() As Boolean
       For iLoop = 0 To (.Rows - 1)
   
       sSQL = "INSERT INTO tmpFusionFieldDefinitions" & _
-        " (FusionFieldID, FusionTypeID, Mandatory, Description, ASRMapType, ASRTableID, ASRColumnID, ASRExprID, ASRValue, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysFusion, ConvertData, IsEmployeeName, IsDepartmentCode, IsDepartmentName, IsfusionCode, GroupBy, PreventModify)" & _
+        " (FusionFieldID, FusionTypeID, Mandatory, Description, ASRMapType, ASRTableID, ASRColumnID, ASRExprID, ASRValue, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer, ConvertData, IsEmployeeName, IsDepartmentCode, IsDepartmentName, IsFusionCode, GroupBy, PreventModify)" & _
         " VALUES (" & _
         .Columns("FusionFieldID").value & "," & _
         iFusionType & "," & _
@@ -1223,12 +1224,12 @@ Private Function SaveChanges() As Boolean
         IIf(.Columns("IsEmployeeCode").Text = True, "1", "0") & ", " & _
         .Columns("Direction").Text & "," & _
         IIf(.Columns("IsKeyField").Text = True, "1", "0") & "," & _
-        IIf(.Columns("AlwaysFusion").Text = True, "1", "0") & "," & _
+        IIf(.Columns("AlwaysTransfer").Text = True, "1", "0") & "," & _
         IIf(.Columns("ConvertData").Text = True, "1", "0") & "," & _
         IIf(.Columns("IsEmployeeName").Text = True, "1", "0") & "," & _
         IIf(.Columns("IsDepartmentCode").Text = True, "1", "0") & "," & _
         IIf(.Columns("IsDepartmentName").Text = True, "1", "0") & "," & _
-        IIf(.Columns("IsfusionCode").Text = True, "1", "0") & ", " & _
+        IIf(.Columns("IsFusionCode").Text = True, "1", "0") & ", " & _
         .Columns("Group").Text & ", " & _
         IIf(.Columns("PreventModify").Text = True, "1", "0") & ")"
       
@@ -1254,17 +1255,17 @@ Private Sub cmdTestLogon_Click()
   On Error GoTo LocalErr
   
   If Trim(txtLogin.Text) = vbNullString Then
-    MsgBox "You must enter a user name", vbInformation, "fusion Login"
+    MsgBox "You must enter a user name", vbInformation, "Fusion Login"
     Exit Sub
   End If
   
   If Trim(txtDatabase.Text) = vbNullString Then
-    MsgBox "You must enter a Database name", vbInformation, "fusion Login"
+    MsgBox "You must enter a Database name", vbInformation, "Fusion Login"
     Exit Sub
   End If
   
   If Trim(txtServer.Text) = vbNullString Then
-    MsgBox "You must enter a server name", vbInformation, "fusion Login"
+    MsgBox "You must enter a server name", vbInformation, "Fusion Login"
     Exit Sub
   End If
   
@@ -1292,14 +1293,14 @@ Private Sub cmdTestLogon_Click()
   Set objTestConn = Nothing
   
   Screen.MousePointer = vbDefault
-  MsgBox "Test completed successfully", vbInformation, "fusion Login"
+  MsgBox "Test completed successfully", vbInformation, "Fusion Login"
 
 Exit Sub
 
 LocalErr:
   Screen.MousePointer = vbDefault
-  MsgBox "Error during fusion Login test" & vbCrLf & _
-         ADOConError(objTestConn), vbInformation, "fusion Login"
+  MsgBox "Error during Fusion Login test" & vbCrLf & _
+         ADOConError(objTestConn), vbInformation, "Fusion Login"
 
 End Sub
 
@@ -1347,11 +1348,11 @@ Private Sub Form_Load()
   PopulateBaseTables
   PopulateStaticCombos
   ReadParameters
-  PopulateFusionTypes
+  PopulateFusionTransferTypes
   
-  ' Load the fusion types
+  ' Load the transfer types
   For iLoop = 0 To cboFusionType.ListCount - 1
-    PopulateFusionDetails iLoop, False
+    PopulateFusionTransferDetails iLoop, False
   Next iLoop
 
   PopulateFields
@@ -1392,7 +1393,7 @@ Private Sub grdFusionDetails_Click(Index As Integer)
 End Sub
 
 Private Sub grdFusionDetails_DblClick(Index As Integer)
-  ' Display the properties form for the current fusion definition
+  ' Display the properties form for the current transfer definition
   If cmdEdit.Enabled Then
     cmdEdit_Click
   End If
@@ -1402,15 +1403,15 @@ Private Sub grdFusionDetails_RowLoaded(Index As Integer, ByVal Bookmark As Varia
 
   Dim iCount As Integer
   Dim strType As String
-  
+
   If grdFusionDetails(Index).Columns("Mandatory").Text = "True" Then
     strType = "Mandatory"
   End If
-  
+
   If grdFusionDetails(Index).Columns("IsKeyField").Text = "True" Then
     strType = "Mandatory"
   End If
-  
+
   If strType <> "" Then
     For iCount = 0 To grdFusionDetails(Index).Columns.Count - 1
       grdFusionDetails(Index).Columns(iCount).CellStyleSet strType
@@ -1491,9 +1492,9 @@ Private Sub ReadParameters()
 ' -------------
   
     ' Get the purge details
-    .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_PURGEOPTION
+    .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_PURGEOPTION
     If .NoMatch Then
-      .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_PURGEOPTION
+      .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_PURGEOPTION
       If .NoMatch Then
         miPurgeType = 0
       Else
@@ -1504,9 +1505,9 @@ Private Sub ReadParameters()
     End If
   
     ' Get the purge period.
-    .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_PURGEOPTIONPERIOD
+    .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_PURGEOPTIONPERIOD
     If .NoMatch Then
-      .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_PURGEOPTIONPERIOD
+      .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_PURGEOPTIONPERIOD
       If .NoMatch Then
         miPurgePeriod = 0
       Else
@@ -1517,9 +1518,9 @@ Private Sub ReadParameters()
     End If
 
     ' Get the purge type.
-    .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_PURGEOPTIONPERIODTYPE
+    .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_PURGEOPTIONPERIODTYPE
     If .NoMatch Then
-      .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_PURGEOPTIONPERIODTYPE
+      .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_PURGEOPTIONPERIODTYPE
       If .NoMatch Then
         mlngPurgePeriodType = 0
       Else
@@ -1534,9 +1535,9 @@ Private Sub ReadParameters()
 ' -------------
     
     ' Get the default status
-    .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_DEFAULTSTATUS
+    .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_DEFAULTSTATUS
     If .NoMatch Then
-      .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_DEFAULTSTATUS
+      .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_DEFAULTSTATUS
       If .NoMatch Then
         miDefaultStatus = 0
       Else
@@ -1548,9 +1549,9 @@ Private Sub ReadParameters()
   
   
     ' Get the default status for utilities
-    .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_STATUSFORUTILITIES
+    .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_STATUSFORUTILITIES
     If .NoMatch Then
-      .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_STATUSFORUTILITIES
+      .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_STATUSFORUTILITIES
       If .NoMatch Then
         miStatusForUtilities = 0
       Else
@@ -1562,9 +1563,9 @@ Private Sub ReadParameters()
   
   
     ' Get allow deletions
-    .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_ALLOWDELETE
+    .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_ALLOWDELETE
     If .NoMatch Then
-      .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_ALLOWDELETE
+      .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_ALLOWDELETE
       If .NoMatch Then
         mbAllowDeletions = False
       Else
@@ -1575,9 +1576,9 @@ Private Sub ReadParameters()
     End If
     
     ' Get allow change status
-    .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_ALLOWSTATUSCHANGE
+    .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_ALLOWSTATUSCHANGE
     If .NoMatch Then
-      .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_ALLOWSTATUSCHANGE
+      .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_ALLOWSTATUSCHANGE
       If .NoMatch Then
         mbAllowStatusChange = False
       Else
@@ -1620,17 +1621,17 @@ Private Function SelectedComboItem(cboTemp As ComboBox) As Long
   End With
 End Function
 
-Private Sub PopulateFusionTypes()
+Private Sub PopulateFusionTransferTypes()
 
-  Dim rsTransfterTypes As DAO.Recordset
+  Dim rsFusionTypes As DAO.Recordset
   Dim sSQL As String
 
   sSQL = "SELECT FusionType, FusionTypeID, FilterID, ASRBaseTableID, ForceAsUpdate FROM tmpFusionTypes" _
       & " WHERE IsVisible = true" _
       & " ORDER BY FusionTypeID"
-  Set rsTransfterTypes = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
+  Set rsFusionTypes = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
 
-  With rsTransfterTypes
+  With rsFusionTypes
     While Not .EOF
       
       mavarFusionBaseTableIDs(0, UBound(mavarFusionBaseTableIDs, 2)) = Trim(!FusionType)
@@ -1657,7 +1658,7 @@ Private Sub PopulateFusionTypes()
     .Close
   End With
        
-  Set rsTransfterTypes = Nothing
+  Set rsFusionTypes = Nothing
 
   ' Set to the top
   cboFusionType.ListIndex = 0
@@ -1687,18 +1688,18 @@ Private Sub PopulateBaseTables()
   
 End Sub
 
-' Value of map fusion
+' Value of map transfer
 Private Function MapToDescription(piMapType As SystemMgr.FusionMapType _
   , plngColumnID As Long, plngExprID As Long, pstrValue As String) As String
   
   Select Case piMapType
-    Case MAPTYPE_COLUMN
+    Case FUSION_MAPTYPE_COLUMN
       MapToDescription = GetColumnName(plngColumnID)
     
-    Case MAPTYPE_EXPRESSION
+    Case FUSION_MAPTYPE_EXPRESSION
       MapToDescription = GetExpressionName(plngExprID)
     
-    Case MAPTYPE_VALUE
+    Case FUSION_MAPTYPE_VALUE
       MapToDescription = "'" & Trim(pstrValue) & "'"
   
   End Select
@@ -1724,7 +1725,7 @@ Private Function ADOConError(objTestConn As ADODB.Connection) As String
 
 End Function
 
-Private Sub PopulateFusionDetails(ByVal plngFusionGrid As Long, pbReset As Boolean)
+Private Sub PopulateFusionTransferDetails(ByVal plngFusionGrid As Long, pbReset As Boolean)
 
   Dim sSQL As String
   Dim strAddString As String
@@ -1780,12 +1781,12 @@ Private Sub PopulateFusionDetails(ByVal plngFusionGrid As Long, pbReset As Boole
         & vbTab & rsDefinition!Mandatory & vbTab & rsDefinition!FusionFieldID _
         & vbTab & rsDefinition!IsCompanyCode & vbTab & rsDefinition!IsEmployeeCode _
         & vbTab & rsDefinition!Direction & vbTab & rsDefinition!IsKeyField _
-        & vbTab & rsDefinition!AlwaysFusion _
+        & vbTab & rsDefinition!AlwaysTransfer _
         & vbTab & IIf(IsNull(rsDefinition!ConvertData), False, rsDefinition!ConvertData) _
         & vbTab & IIf(IsNull(rsDefinition!IsEmployeeName), False, rsDefinition!IsEmployeeName) _
         & vbTab & IIf(IsNull(rsDefinition!IsDepartmentCode), False, rsDefinition!IsDepartmentCode) _
         & vbTab & IIf(IsNull(rsDefinition!IsDepartmentName), False, rsDefinition!IsDepartmentName) _
-        & vbTab & IIf(IsNull(rsDefinition!IsfusionCode), False, rsDefinition!IsfusionCode) _
+        & vbTab & IIf(IsNull(rsDefinition!IsFusionCode), False, rsDefinition!IsFusionCode) _
         & vbTab & IIf(IsNull(rsDefinition!GroupBy), 0, rsDefinition!GroupBy) _
         & vbTab & IIf(IsNull(rsDefinition!PreventModify), False, rsDefinition!PreventModify)
          
@@ -1892,7 +1893,7 @@ ErrorTrap:
   
 End Sub
 
-' Clear the current fusion field
+' Clear the current transfer field
 Private Sub ClearItem(lngrow2 As Long)
   Dim lngRow As Long
   Dim frmComponent As New frmFusionComponent
@@ -1906,7 +1907,7 @@ Private Sub ClearItem(lngrow2 As Long)
   Dim strIsEmployeeName As String
   Dim strIsDepartmentCode As String
   Dim strIsDepartmentName As String
-  Dim strIsfusionCode As String
+  Dim strIsFusionCode As String
   
   Set ctlGrid = grdFusionDetails(cboFusionType.ListIndex)
 '  ctlGrid.Bookmark = ctlGrid.SelBookmarks(0)
@@ -1921,17 +1922,17 @@ Private Sub ClearItem(lngrow2 As Long)
     .IsCompanyCode = ctlGrid.Columns("IsCompanyCode").Text
     .IsEmployeeCode = ctlGrid.Columns("IsEmployeeCode").Text
     .Direction = ctlGrid.Columns("Direction").Text
-    .AlwaysFusionField = ctlGrid.Columns("AlwaysFusion").Text
+    .AlwaysTransferFieldID = ctlGrid.Columns("AlwaysTransfer").Text
     .ConvertData = False
     .FusionFieldID = ctlGrid.Columns("FusionFieldID").Text
-    .FusionID = GetComboItem(cboFusionType)
+    .FusionTransferID = GetComboItem(cboFusionType)
     
     strIsCompanyCode = ctlGrid.Columns("IsCompanyCode").Text
     strIsEmployeeCode = ctlGrid.Columns("IsEmployeeCode").Text
     strIsEmployeeName = ctlGrid.Columns("IsEmployeeName").Text
     strIsDepartmentCode = ctlGrid.Columns("IsDepartmentCode").Text
     strIsDepartmentName = ctlGrid.Columns("IsDepartmentName").Text
-    strIsfusionCode = ctlGrid.Columns("IsfusionCode").Text
+    strIsFusionCode = ctlGrid.Columns("IsFusionCode").Text
         
     strMandatory = ctlGrid.Columns("Mandatory").Text
     strFusionFieldID = ctlGrid.Columns("FusionFieldID").Text
@@ -1942,8 +1943,8 @@ Private Sub ClearItem(lngrow2 As Long)
         & vbTab & "" & vbTab & "" & vbTab & "" _
         & vbTab & "" & vbTab & "" & vbTab & strMandatory & vbTab & strFusionFieldID _
         & vbTab & strIsCompanyCode & vbTab & strIsEmployeeCode _
-        & vbTab & .Direction & vbTab & .IsKeyField & vbTab & .AlwaysFusionField & vbTab & .ConvertData _
-        & vbTab & strIsEmployeeName & vbTab & strIsDepartmentCode & vbTab & strIsDepartmentName & vbTab & strIsfusionCode _
+        & vbTab & .Direction & vbTab & .IsKeyField & vbTab & .AlwaysTransferFieldID & vbTab & .ConvertData _
+        & vbTab & strIsEmployeeName & vbTab & strIsDepartmentCode & vbTab & strIsDepartmentName & vbTab & strIsFusionCode _
         & vbTab & "0" & vbTab & "0"
         
     ctlGrid.RemoveItem lngRow
