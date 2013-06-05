@@ -1,7 +1,7 @@
 VERSION 5.00
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TabCtl32.Ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "coa_line.ocx"
+Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "COA_Line.ocx"
 Begin VB.Form frmWorkflowSetup 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Workflow Configuration"
@@ -47,21 +47,45 @@ Begin VB.Form frmWorkflowSetup
       Tab(0).Control(0).Enabled=   0   'False
       Tab(0).Control(1)=   "fraWebSiteLogin"
       Tab(0).Control(1).Enabled=   0   'False
-      Tab(0).ControlCount=   2
+      Tab(0).Control(2)=   "fraMobileKey"
+      Tab(0).Control(2).Enabled=   0   'False
+      Tab(0).ControlCount=   3
       TabCaption(1)   =   "&Personnel Identification"
       TabPicture(1)   =   "frmWorkflowSetup.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraPersonnelTable"
-      Tab(1).Control(0).Enabled=   0   'False
-      Tab(1).Control(1)=   "fraDelegation"
-      Tab(1).Control(1).Enabled=   0   'False
+      Tab(1).Control(0)=   "fraDelegation"
+      Tab(1).Control(1)=   "fraPersonnelTable"
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "&Service"
       TabPicture(2)   =   "frmWorkflowSetup.frx":0044
       Tab(2).ControlEnabled=   0   'False
       Tab(2).Control(0)=   "fraService"
-      Tab(2).Control(0).Enabled=   0   'False
       Tab(2).ControlCount=   1
+      Begin VB.Frame fraMobileKey 
+         Caption         =   "Mobile Credentials :"
+         Height          =   975
+         Left            =   165
+         TabIndex        =   33
+         Top             =   3330
+         Width           =   6500
+         Begin VB.CommandButton cmdGenMobileKey 
+            Caption         =   "&Generate"
+            Height          =   400
+            Left            =   5100
+            TabIndex        =   34
+            Top             =   315
+            Width           =   1200
+         End
+         Begin VB.Label lblGetMobileKey 
+            AutoSize        =   -1  'True
+            Caption         =   "Generate Mobile Key :"
+            Height          =   195
+            Left            =   195
+            TabIndex        =   35
+            Top             =   420
+            Width           =   1920
+         End
+      End
       Begin VB.Frame fraWebSiteLogin 
          Caption         =   "Login :"
          Height          =   1700
@@ -597,16 +621,16 @@ End Sub
 Private Function SelectedEmailColumns() As String
   ' Return a string of the selected email column IDs
   Dim iLoop As Integer
-  Dim varBookmark As Variant
+  Dim varBookMark As Variant
   Dim sSelectedIDs As String
   
   sSelectedIDs = "0"
   
   With grdEmailAddressColumns
     For iLoop = 0 To (.Rows - 1)
-      varBookmark = .AddItemBookmark(iLoop)
+      varBookMark = .AddItemBookmark(iLoop)
 
-      sSelectedIDs = sSelectedIDs & "," & .Columns("ColumnID").CellText(varBookmark)
+      sSelectedIDs = sSelectedIDs & "," & .Columns("ColumnID").CellText(varBookMark)
     Next iLoop
   End With
 
@@ -686,6 +710,31 @@ Private Sub cmdEmail_Click()
   Set objEmail = Nothing
 
   RefreshControls
+
+End Sub
+
+Private Sub cmdGenMobileKey_Click()
+  Dim sNewQueryString As String
+  Dim frmChangedPlatform As frmChangedPlatform
+  Dim sURL As String
+  Dim sNewString As String
+  
+  sNewQueryString = GetWorkflowQueryString(-1, -1, txtUID.Text, txtPWD.Tag)
+
+  Set frmChangedPlatform = New frmChangedPlatform
+  frmChangedPlatform.ResetList
+                
+  sNewString = "<add key=""MobileKey"" value=""" & sNewQueryString & """/>"
+  frmChangedPlatform.AddToList sNewString
+
+  frmChangedPlatform.Width = (3 * Screen.Width / 4)
+  frmChangedPlatform.Height = (Screen.Height / 2)
+
+  frmChangedPlatform.ShowMessage 2
+    
+  UnLoad frmChangedPlatform
+  Set frmChangedPlatform = Nothing
+     
 
 End Sub
 
@@ -803,7 +852,7 @@ End Sub
 Private Sub SaveChanges()
   ' Save the parameter values to the local database.
   Dim iLoop As Integer
-  Dim varBookmark As Variant
+  Dim varBookMark As Variant
   Dim sColumnID As String
   Dim sSQL As String
   
@@ -824,9 +873,9 @@ Private Sub SaveChanges()
 
   With grdEmailAddressColumns
     For iLoop = 0 To (.Rows - 1)
-      varBookmark = .AddItemBookmark(iLoop)
+      varBookMark = .AddItemBookmark(iLoop)
 
-      sColumnID = .Columns("ColumnID").CellText(varBookmark)
+      sColumnID = .Columns("ColumnID").CellText(varBookMark)
     
       sSQL = "INSERT INTO tmpModuleSetup" & _
         " (moduleKey, parameterkey, parameterType, parametervalue)" & _
@@ -971,6 +1020,8 @@ Private Function ADOConError(objTestConn As ADODB.Connection) As String
   ADOConError = strErrorDesc
 
 End Function
+
+
 
 
 
