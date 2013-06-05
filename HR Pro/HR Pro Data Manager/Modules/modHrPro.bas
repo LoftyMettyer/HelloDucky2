@@ -33,50 +33,6 @@ Public oPostCode As HRProDataMgr.PostCode
 Public gobjProgress As COA_Progress
 'Public gobjProgress As New clsProgress
 
-Public Enum LockType
-  giLOCKTYPE_PHOTO = 1
-  giLOCKTYPE_OLE = 2
-  giLOCKTYPE_CRYSTAL = 4
-End Enum
-
-Public Enum DefaultDisplay
-  disRecEdit_New = 1
-  disRecEdit_First = 2
-  disFindWindow = 3
-End Enum
-
-Public Enum OutputFormats
-  fmtDataOnly = 0
-  fmtCSV = 1
-  fmtHTML = 2
-  fmtWordDoc = 3
-  fmtExcelWorksheet = 4
-  fmtExcelChart = 5
-  fmtExcelPivotTable = 6
-  fmtFixedLengthFile = 7
-  fmtCMGFile = 8
-  fmtSQLTable = 99
-End Enum
-
-Public Enum OutputDestinations
-  desScreen = 0
-  desPrinter = 1
-  desSave = 2
-  desEmail = 3
-End Enum
-
-Public Enum OLEType
-  OLE_LOCAL = 0
-  OLE_SERVER = 1
-  OLE_EMBEDDED = 2
-  OLE_UNC = 3
-End Enum
-
-'NPG20090305 Fault 13531
-Public Enum mceIDLPaths
-  CSIDL_INTERNET_CACHE = &H20 ' * CSIDL_INTERNET_CACHE - File system directory for temporary Internet files.
-End Enum
-
 ' Utility Run Log - Global class used by utilities and batch jobs
 Public gobjEventLog As New clsEventLog
 

@@ -1,4 +1,8 @@
 Attribute VB_Name = "modEnums"
+' ------------
+' clsApplication
+' ------------
+
 ' Screen Types
 Public Enum ScreenType
   screenParentTable = 1
@@ -145,3 +149,108 @@ Public Enum NavigateIn
   Db = 2
 End Enum
 
+
+' ------------
+' clsEventLog
+' ------------
+Public Enum EventLog_Type
+  eltCrossTab = 1
+  eltCustomReport = 2
+  eltDataTransfer = 3
+  eltExport = 4
+  eltGlobalAdd = 5
+  eltGlobalDelete = 6
+  eltGlobalUpdate = 7
+  eltImport = 8
+  eltMailMerge = 9
+  eltDiaryDelete = 10
+  eltDiaryRebuild = 11
+  eltEmailRebuild = 12
+  eltStandardReport = 13  'MH20010305
+  eltRecordEditing = 14
+  eltSystemError = 15
+  eltMatchReport = 16
+  eltCalandarReport = 17
+  eltLabel = 18
+  eltLabelType = 19
+  eltRecordProfile = 20
+  eltSuccessionPlanning = 21
+  eltCareerProgression = 22
+  eltAccordImport = 23
+  eltAccordExport = 24
+  eltWorkflowRebuild = 25
+End Enum
+
+Public Enum EventLog_Status
+  elsPending = 0
+  elsCancelled = 1
+  elsFailed = 2
+  elsSuccessful = 3
+  elsSkipped = 4
+  elsError = 5
+End Enum
+
+
+' ------------
+' clsLicence
+' ------------
+Public Enum Module
+  modPersonnel = 1
+  modRecruitment = 2
+  modAbsence = 4
+  modTraining = 8
+  modIntranet = 16
+  modAFD = 32
+  modFullSysMgr = 64
+  modCMG = 128
+  modQAddress = 256
+  modAccord = 512
+  modWorkflow = 1024
+End Enum
+
+
+' ------------
+' modHRPro
+' ------------
+Public Enum LockType
+  giLOCKTYPE_PHOTO = 1
+  giLOCKTYPE_OLE = 2
+  giLOCKTYPE_CRYSTAL = 4
+End Enum
+
+Public Enum DefaultDisplay
+  disRecEdit_New = 1
+  disRecEdit_First = 2
+  disFindWindow = 3
+End Enum
+
+Public Enum OutputFormats
+  fmtDataOnly = 0
+  fmtCSV = 1
+  fmtHTML = 2
+  fmtWordDoc = 3
+  fmtExcelWorksheet = 4
+  fmtExcelChart = 5
+  fmtExcelPivotTable = 6
+  fmtFixedLengthFile = 7
+  fmtCMGFile = 8
+  fmtSQLTable = 99
+End Enum
+
+Public Enum OutputDestinations
+  desScreen = 0
+  desPrinter = 1
+  desSave = 2
+  desEmail = 3
+End Enum
+
+Public Enum OLEType
+  OLE_LOCAL = 0
+  OLE_SERVER = 1
+  OLE_EMBEDDED = 2
+  OLE_UNC = 3
+End Enum
+
+Public Enum mceIDLPaths
+  CSIDL_INTERNET_CACHE = &H20 ' * CSIDL_INTERNET_CACHE - File system directory for temporary Internet files.
+End Enum
