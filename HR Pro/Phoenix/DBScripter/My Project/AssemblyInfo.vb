@@ -10,7 +10,7 @@ Imports System.Runtime.InteropServices
 
 <Assembly: AssemblyTitle("DB Scripter")> 
 <Assembly: AssemblyDescription("ACS - Database Scripting Engine")> 
-<Assembly: AssemblyCompany("Advanced Computer Software")> 
+<Assembly: AssemblyCompany("Advanced Business Software and Solutions Limited")> 
 <Assembly: AssemblyProduct("DB Scripter")> 
 <Assembly: AssemblyCopyright("Copyright ©  2011")> 
 <Assembly: AssemblyTrademark("")> 

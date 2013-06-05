@@ -784,14 +784,14 @@ Namespace ScriptDB
         sSQL = String.Format("CREATE TRIGGER [{1}].[{0}] ON [{1}].[{2}]" & vbNewLine & _
           "    {3}" & vbNewLine & "AS" & vbNewLine & _
           "BEGIN" & vbNewLine & _
-          "    PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Start ([{2}].[{0}]';" & vbNewLine & _
+          "    --PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Start ([{2}].[{0}]';" & vbNewLine & _
           "    SET NOCOUNT ON;" & vbNewLine & _
           "    DECLARE @iCount integer;" & vbNewLine & vbNewLine & _
          "    -- Only top level call (in case database property activating recursion is enabled)" & vbNewLine & _
          "    --print TRIGGER_NESTLEVEL()" & vbNewLine & _
          "    --IF TRIGGER_NESTLEVEL() > 4 RETURN" & vbNewLine & vbNewLine & _
           "{4}" & vbNewLine & vbNewLine & _
-          "    PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Exit ([{2}].[{0}]'; " & vbNewLine & _
+          "    --PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Exit ([{2}].[{0}]'; " & vbNewLine & _
           "END" _
           , sTriggerName, [Role], Table.PhysicalName, sTriggerType, [BodyCode])
         CommitDB.ScriptStatement(sSQL)
