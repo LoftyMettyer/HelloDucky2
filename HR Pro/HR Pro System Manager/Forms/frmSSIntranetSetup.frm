@@ -848,7 +848,7 @@ Begin VB.Form frmSSIntranetSetup
             DataMode        =   2
             RecordSelectors =   0   'False
             GroupHeaders    =   0   'False
-            Col.Count       =   26
+            Col.Count       =   27
             AllowUpdate     =   0   'False
             MultiLine       =   0   'False
             AllowRowSizing  =   0   'False
@@ -871,7 +871,7 @@ Begin VB.Form frmSSIntranetSetup
             BackColorOdd    =   -2147483643
             RowHeight       =   423
             ExtraHeight     =   265
-            Columns.Count   =   26
+            Columns.Count   =   27
             Columns(0).Width=   6324
             Columns(0).Caption=   "Prompt"
             Columns(0).Name =   "Prompt"
@@ -1055,6 +1055,13 @@ Begin VB.Form frmSSIntranetSetup
             Columns(25).DataField=   "Column 25"
             Columns(25).DataType=   8
             Columns(25).FieldLen=   256
+            Columns(26).Width=   3200
+            Columns(26).Visible=   0   'False
+            Columns(26).Caption=   "ChartShowValues"
+            Columns(26).Name=   "ChartShowValues"
+            Columns(26).DataField=   "Column 26"
+            Columns(26).DataType=   8
+            Columns(26).FieldLen=   256
             TabNavigation   =   1
             _ExtentX        =   11289
             _ExtentY        =   6959
@@ -1701,7 +1708,7 @@ Private Sub RefreshControls()
 
   End Select
 
-  cmdOk.Enabled = mfChanged
+  cmdOK.Enabled = mfChanged
 
 End Sub
 
@@ -1781,6 +1788,7 @@ Private Sub SaveLinkParameters(piLinkType As SSINTRANETLINKTYPES)
   Dim sChartColumnID As Integer
   Dim sChartFilterID As Integer
   Dim sChartAggregateType As Integer
+  Dim fChartShowValues As Boolean
 
   Select Case piLinkType
     Case SSINTLINK_HYPERTEXT
@@ -1843,11 +1851,12 @@ Private Sub SaveLinkParameters(piLinkType As SSINTRANETLINKTYPES)
               sChartType = .Columns("ChartType").CellText(varBookmark)
               fChartShowGrid = .Columns("ChartShowGrid").CellText(varBookmark)
               fChartStackSeries = .Columns("ChartStackSeries").CellText(varBookmark)
-              sChartViewID = .Columns("ChartViewID").CellText(varBookmark)
-              sChartTableID = .Columns("ChartTableID").CellText(varBookmark)
-              sChartColumnID = .Columns("ChartColumnID").CellText(varBookmark)
-              sChartFilterID = .Columns("ChartFilterID").CellText(varBookmark)
-              sChartAggregateType = .Columns("ChartAggregateType").CellText(varBookmark)
+              sChartViewID = Val(.Columns("ChartViewID").CellText(varBookmark))
+              sChartTableID = Val(.Columns("ChartTableID").CellText(varBookmark))
+              sChartColumnID = Val(.Columns("ChartColumnID").CellText(varBookmark))
+              sChartFilterID = Val(.Columns("ChartFilterID").CellText(varBookmark))
+              sChartAggregateType = Val(.Columns("ChartAggregateType").CellText(varBookmark))
+              fChartShowValues = .Columns("ChartShowValues").CellText(varBookmark)
               
              
             Case SSINTLINK_DROPDOWNLIST
@@ -1909,7 +1918,7 @@ Private Sub SaveLinkParameters(piLinkType As SSINTRANETLINKTYPES)
             "[utilityType], [utilityID], [viewID], [newWindow], [tableID], [EMailAddress], [EMailSubject], " & _
             "[AppFilePath], [AppParameters], [DocumentFilePath], [DisplayDocumentHyperlink], [Element_Type], " & _
             "[SeparatorOrientation], [PictureID], [Chart_ShowLegend], [Chart_Type], [Chart_ShowGrid], [Chart_StackSeries], " & _
-            "[Chart_ViewID], [Chart_TableID], [Chart_ColumnID], [Chart_FilterID], [Chart_AggregateType])" & _
+            "[Chart_ViewID], [Chart_TableID], [Chart_ColumnID], [Chart_FilterID], [Chart_AggregateType], [Chart_ShowValues])" & _
             " SELECT " & _
             CStr(piLinkType) & "," & _
             CStr(iLoop) & "," & _
@@ -1943,7 +1952,8 @@ Private Sub SaveLinkParameters(piLinkType As SSINTRANETLINKTYPES)
             sChartTableID & "," & _
             sChartColumnID & "," & _
             sChartFilterID & "," & _
-            sChartAggregateType
+            sChartAggregateType & "," & _
+            "" & IIf(fChartShowValues, "1", "0")
 
           daoDb.Execute sSQL, dbFailOnError
         
@@ -2098,7 +2108,7 @@ Private Sub cmdAddButtonLink_Click()
       "", _
       False, False, _
       0, 0, _
-      False, 1, False, False, 0, 0, 0, 0, 0, _
+      False, 1, False, False, 0, 0, 0, 0, 0, 0, _
       mcolSSITableViews
       
     .Show vbModal
@@ -2117,14 +2127,15 @@ Private Sub cmdAddButtonLink_Click()
         & vbTab & .EMailSubject _
         & vbTab & .AppFilePath _
         & vbTab & .AppParameters _
-        & vbTab & IIf(.optLink(SSINTLINKSEPARATOR).value = True, 1, 0) _
+        & vbTab & .ElementType _
         & vbTab & IIf(.chkNewColumn.value = 0, "0", "1") _
         & vbTab & IIf(Len(.txtIcon.Text) > 0, CStr(.PictureID), "") _
         & vbTab & IIf(.chkShowLegend.value = 0, "0", "1") _
         & vbTab & .cboChartType.ItemData(.cboChartType.ListIndex) _
         & vbTab & IIf(.chkDottedGridlines.value = 0, "0", "1") _
-        & vbTab & IIf(.chkStackSeries.value = 0, "0", "1")
-                        
+        & vbTab & IIf(.chkStackSeries.value = 0, "0", "1") _
+        & vbTab & IIf(.chkShowValues.value = 0, "0", "1")
+
       For iLoop = 0 To cboButtonLinkView.ListCount - 1
         If cboButtonLinkView.List(iLoop) = .TableViewName Then
           cboButtonLinkView.ListIndex = iLoop
@@ -2191,7 +2202,7 @@ Private Sub cmdAddDropdownListLink_Click()
       "", _
       False, False, _
       0, 0, _
-      False, 0, False, False, 0, 0, 0, 0, 0, _
+      False, 0, False, False, 0, 0, 0, 0, 0, 0, _
       mcolSSITableViews
       
     .Show vbModal
@@ -2276,7 +2287,7 @@ Private Sub cmdAddHyperTextLink_Click()
       "", _
       False, False, _
       0, 0, _
-      False, 0, False, False, 0, 0, 0, 0, 0, _
+      False, 0, False, False, 0, 0, 0, 0, 0, 0, _
       mcolSSITableViews
       
     .Show vbModal
@@ -2291,7 +2302,7 @@ Private Sub cmdAddHyperTextLink_Click()
         & vbTab & .EMailSubject _
         & vbTab & .AppFilePath _
         & vbTab & .AppParameters _
-        & vbTab & IIf(.optLink(SSINTLINKSEPARATOR).value = True, 1, 0) _
+        & vbTab & .ElementType _
         & vbTab & IIf(.chkNewColumn.value = 0, "0", "1") _
         & vbTab & IIf(Len(.txtIcon.Text) > 0, CStr(.PictureID), "")
         
@@ -2372,7 +2383,7 @@ Private Sub cmdAddDocument_Click()
       "", _
       False, False, _
       0, 0, _
-      False, 0, False, False, 0, 0, 0, 0, 0, _
+      False, 0, False, False, 0, 0, 0, 0, 0, 0, _
       mcolSSITableViews
       
     .Show vbModal
@@ -2666,7 +2677,8 @@ Private Sub cmdCopyButtonLink_Click()
       Val(ctlSourceGrid.Columns("ChartTableID").Text), _
       Val(ctlSourceGrid.Columns("ChartColumnID").Text), _
       Val(ctlSourceGrid.Columns("ChartFilterID").Text), _
-      Val(ctlSourceGrid.Columns("ChartAggregateType").Text), mcolSSITableViews
+      Val(ctlSourceGrid.Columns("ChartAggregateType").Text), _
+      ctlSourceGrid.Columns("ChartShowValues").value, mcolSSITableViews
     .Show vbModal
 
     If Not .Cancelled Then
@@ -2694,7 +2706,7 @@ Private Sub cmdCopyButtonLink_Click()
         & vbTab & .ChartTableID _
         & vbTab & .ChartColumnID _
         & vbTab & .ChartFilterID _
-        & vbTab & .ChartAggregateType
+        & vbTab & .ChartAggregateType & vbTab & .ChartShowValues
 
       For iLoop = 0 To cboButtonLinkView.ListCount - 1
         If cboButtonLinkView.List(iLoop) = .TableViewName Then
@@ -2795,7 +2807,7 @@ Private Sub cmdCopyDropdownListLink_Click()
       "", _
       False, False, _
       0, 0, _
-      False, 0, False, False, 0, 0, 0, 0, 0, _
+      False, 0, False, False, 0, 0, 0, 0, 0, 0, _
       mcolSSITableViews
     
     .Show vbModal
@@ -2915,7 +2927,7 @@ Private Sub cmdCopyHypertextLink_Click()
       "", False, _
       ctlSourceGrid.Columns("Element_Type").value, Val(ctlSourceGrid.Columns("SeparatorOrientation").Text), _
       Val(ctlSourceGrid.Columns("PictureID").Text), _
-      False, 0, False, False, 0, 0, 0, 0, 0, _
+      False, 0, False, False, 0, 0, 0, 0, 0, 0, _
       mcolSSITableViews
     
     .Show vbModal
@@ -3034,7 +3046,7 @@ Private Sub cmdCopyDocument_Click()
       ctlSourceGrid.Columns("DocumentFilePath").Text, _
       ctlSourceGrid.Columns("DisplayDocumentHyperlink").value, _
       False, 0, 0, _
-      False, 0, False, False, 0, 0, 0, 0, 0, _
+      False, 0, False, False, 0, 0, 0, 0, 0, 0, _
       mcolSSITableViews
       
     .Show vbModal
@@ -3156,7 +3168,7 @@ Private Sub cmdEditButtonLink_Click()
       ctlSourceGrid.Columns("ChartShowLegend").Text, Val(ctlSourceGrid.Columns("ChartType").Text), ctlSourceGrid.Columns("ChartShowGrid").Text, _
       ctlSourceGrid.Columns("ChartStackSeries").Text, Val(ctlSourceGrid.Columns("ChartviewID").Text), Val(ctlSourceGrid.Columns("ChartTableID").Text), _
       Val(ctlSourceGrid.Columns("ChartColumnID").Text), Val(ctlSourceGrid.Columns("ChartFilterID").Text), Val(ctlSourceGrid.Columns("ChartAggregateType").Text), _
-      mcolSSITableViews
+      ctlSourceGrid.Columns("ChartShowValues").Text, mcolSSITableViews
     .Show vbModal
 
     If Not .Cancelled Then
@@ -3173,7 +3185,7 @@ Private Sub cmdEditButtonLink_Click()
         & vbTab & .EMailSubject _
         & vbTab & .AppFilePath _
         & vbTab & .AppParameters _
-        & vbTab & IIf(.optLink(SSINTLINKSEPARATOR).value, 1, IIf(.optLink(SSINTLINKCHART).value, 2, 0)) _
+        & vbTab & .ElementType _
         & vbTab & IIf(.chkNewColumn.value = 0, "0", "1") _
         & vbTab & IIf(Len(.txtIcon.Text) > 0, CStr(.PictureID), "") _
         & vbTab & IIf(.chkShowLegend = 0, "0", "1") _
@@ -3184,7 +3196,8 @@ Private Sub cmdEditButtonLink_Click()
         & vbTab & .ChartTableID _
         & vbTab & .ChartColumnID _
         & vbTab & 0 _
-        & vbTab & .ChartAggregateType
+        & vbTab & .ChartAggregateType & vbTab & IIf(.chkShowValues = 0, "0", "1")
+        
         ' above is missing viewid and filterid in that order. (the 0's)
         
       ctlSourceGrid.RemoveItem lngRow
@@ -3291,7 +3304,7 @@ Private Sub cmdEditDropdownListLink_Click()
       "", _
       False, False, _
       0, 0, _
-      False, 0, False, False, 0, 0, 0, 0, 0, _
+      False, 0, False, False, 0, 0, 0, 0, 0, 0, _
       mcolSSITableViews
     
     .Show vbModal
@@ -3414,7 +3427,7 @@ Private Sub cmdEditHypertextLink_Click()
       "", False, _
       ctlSourceGrid.Columns("Element_Type").value, Val(ctlSourceGrid.Columns("SeparatorOrientation").Text), _
       Val(ctlSourceGrid.Columns("PictureID").Text), _
-      False, 0, False, False, 0, 0, 0, 0, 0, _
+      False, 0, False, False, 0, 0, 0, 0, 0, 0, _
       mcolSSITableViews
     
     .Show vbModal
@@ -3538,7 +3551,7 @@ Private Sub cmdEditDocument_Click()
       ctlSourceGrid.Columns("DocumentFilePath").Text, _
       ctlSourceGrid.Columns("DisplayDocumentHyperlink").Text, _
       False, 0, 0, _
-      False, 0, False, False, 0, 0, 0, 0, 0, _
+      False, 0, False, False, 0, 0, 0, 0, 0, 0, _
       mcolSSITableViews
           
     .Show vbModal
@@ -4520,7 +4533,7 @@ Private Sub ReadParameters()
             vbTab & CStr(rsLinks!Chart_TableID) & _
             vbTab & CStr(rsLinks!Chart_ColumnID) & _
             vbTab & CStr(rsLinks!Chart_FilterID) & _
-            vbTab & CStr(rsLinks!Chart_AggregateType)
+            vbTab & CStr(rsLinks!Chart_AggregateType) & vbTab & IIf(IsNull(rsLinks!Chart_ShowValues), "0", IIf(rsLinks!Chart_ShowValues, "1", "0"))
        End If
           
       Case SSINTLINK_DROPDOWNLIST

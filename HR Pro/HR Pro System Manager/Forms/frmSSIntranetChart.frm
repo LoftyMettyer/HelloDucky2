@@ -2,7 +2,7 @@ VERSION 5.00
 Begin VB.Form frmSSIntranetChart 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Self-service Intranet Chart"
-   ClientHeight    =   4485
+   ClientHeight    =   2985
    ClientLeft      =   45
    ClientTop       =   375
    ClientWidth     =   5880
@@ -10,97 +10,10 @@ Begin VB.Form frmSSIntranetChart
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   4485
+   ScaleHeight     =   2985
    ScaleWidth      =   5880
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
-   Begin VB.Frame fraDrillDown 
-      Caption         =   "HR Pro Report / Utility :"
-      BeginProperty Font 
-         Name            =   "Verdana"
-         Size            =   8.25
-         Charset         =   0
-         Weight          =   400
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      Height          =   1305
-      Left            =   150
-      TabIndex        =   14
-      Top             =   2310
-      Width           =   5520
-      Begin VB.ComboBox cboHRProUtilityType 
-         BeginProperty Font 
-            Name            =   "Verdana"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   315
-         ItemData        =   "frmSSIntranetChart.frx":000C
-         Left            =   1380
-         List            =   "frmSSIntranetChart.frx":000E
-         Style           =   2  'Dropdown List
-         TabIndex        =   16
-         Top             =   330
-         Width           =   3930
-      End
-      Begin VB.ComboBox cboHRProUtility 
-         BeginProperty Font 
-            Name            =   "Verdana"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   315
-         Left            =   1380
-         Style           =   2  'Dropdown List
-         TabIndex        =   15
-         Top             =   735
-         Width           =   3930
-      End
-      Begin VB.Label lblHRProUtilityType 
-         Caption         =   "Type :"
-         BeginProperty Font 
-            Name            =   "Verdana"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   195
-         Left            =   195
-         TabIndex        =   18
-         Top             =   390
-         Width           =   645
-      End
-      Begin VB.Label lblHRProUtility 
-         Caption         =   "Name :"
-         BeginProperty Font 
-            Name            =   "Verdana"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   195
-         Left            =   195
-         TabIndex        =   17
-         Top             =   795
-         Width           =   780
-      End
-   End
    Begin VB.CommandButton cmdOK 
       Caption         =   "&OK"
       BeginProperty Font 
@@ -115,7 +28,7 @@ Begin VB.Form frmSSIntranetChart
       Height          =   400
       Left            =   3165
       TabIndex        =   12
-      Top             =   3855
+      Top             =   2340
       Width           =   1200
    End
    Begin VB.Frame fraSSIChart 
@@ -346,7 +259,7 @@ Begin VB.Form frmSSIntranetChart
       Height          =   400
       Left            =   4455
       TabIndex        =   0
-      Top             =   3855
+      Top             =   2340
       Width           =   1200
    End
 End
@@ -566,13 +479,16 @@ Private Sub PopulateParentsCombo(plngDefaultID As Long)
   End With
 
   ' Set the correct item as default
-  For i = 0 To cboParents.ListCount - 1
-    If cboParents.ItemData(i) = plngDefaultID Then
-      cboParents.ListIndex = i
-      Exit For
-    End If
-  Next
-  
+  If plngDefaultID = 0 Then
+    cboParents.ListIndex = 0
+  Else
+    For i = 0 To cboParents.ListCount - 1
+      If cboParents.ItemData(i) = plngDefaultID Then
+        cboParents.ListIndex = i
+        Exit For
+      End If
+    Next
+  End If
 
 End Sub
 

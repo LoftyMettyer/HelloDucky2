@@ -950,7 +950,7 @@ Private Function SaveModuleDefinitions() As Boolean
       "viewID, newWindow, tableID, EMailAddress, EMailSubject, AppFilePath, AppParameters, " & _
       "DocumentFilePath, DisplayDocumentHyperlink, Element_Type, SeparatorOrientation, PictureID, Chart_ShowLegend, " & _
       "Chart_Type, Chart_ShowGrid, Chart_StackSeries, Chart_viewID, Chart_TableID, Chart_ColumnID, Chart_FilterID, " & _
-      "Chart_AggregateType)" & _
+      "Chart_AggregateType, Chart_ShowValues)" & _
       " VALUES(" & _
       CStr(rsLinks!LinkType) & "," & _
       CStr(rsLinks!linkOrder) & "," & _
@@ -984,7 +984,8 @@ Private Function SaveModuleDefinitions() As Boolean
       CStr(IIf(IsNull(rsLinks!Chart_TableID), 0, rsLinks!Chart_TableID)) & "," & _
       CStr(IIf(IsNull(rsLinks!Chart_ColumnID), 0, rsLinks!Chart_ColumnID)) & "," & _
       CStr(IIf(IsNull(rsLinks!Chart_FilterID), 0, rsLinks!Chart_FilterID)) & "," & _
-      CStr(IIf(IsNull(rsLinks!Chart_AggregateType), 0, rsLinks!Chart_AggregateType)) & _
+      CStr(IIf(IsNull(rsLinks!Chart_AggregateType), 0, rsLinks!Chart_AggregateType)) & "," & _
+      IIf(IsNull(rsLinks!Chart_ShowValues), "0", IIf(rsLinks!Chart_ShowValues, "1", "0")) & _
       ")"
 
     gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
