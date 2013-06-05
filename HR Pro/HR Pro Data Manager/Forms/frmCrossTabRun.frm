@@ -649,7 +649,7 @@ End Sub
 
 Private Sub Form_Activate()
   If Me.Visible And Me.Enabled Then
-    cmdOK.SetFocus
+    cmdOk.SetFocus
   End If
 End Sub
 
@@ -941,6 +941,7 @@ Private Function GetGroupNumber(strValue As String, Index As Integer)
   Dim lngCount As Long
   Dim dblLoop As Double
   Dim rsTemp As Recordset
+  Dim blnFound As Boolean
 
   GetGroupNumber = 0
   'GetGroupNumber = IIf(strValue = vbNullString, 0, -1)
@@ -963,6 +964,25 @@ Private Function GetGroupNumber(strValue As String, Index As Integer)
           Exit For
         End If
 
+      Case sqlBoolean
+        Select Case LCase(strValue)
+        Case ""
+          If mvarHeadings(Index)(lngCount) = "<Empty>" Then
+            GetGroupNumber = lngCount
+            Exit For
+          End If
+        Case "false", "0"
+          If mvarHeadings(Index)(lngCount) = "False" Then
+            GetGroupNumber = lngCount
+            Exit For
+          End If
+        Case Else
+          If mvarHeadings(Index)(lngCount) = "True" Then
+            GetGroupNumber = lngCount
+            Exit For
+          End If
+        End Select
+      
       Case Else
         'MH20021018 Fault 4532 & 4533
         If LCase(mvarHeadings(Index)(lngCount)) = LCase(FormatString(strValue)) Then
@@ -2345,10 +2365,10 @@ Private Sub Form_Resize()
 
   
   'Position the command buttons...
-  lngTop = Me.ScaleHeight - (cmdOK.Height + lngGap)
+  lngTop = Me.ScaleHeight - (cmdOk.Height + lngGap)
   
-  lngLeft = Me.ScaleWidth - (cmdOK.Width + lngGap)
-  cmdOK.Move lngLeft, lngTop
+  lngLeft = Me.ScaleWidth - (cmdOk.Width + lngGap)
+  cmdOk.Move lngLeft, lngTop
 
   lngLeft = lngLeft - (cmdOutput.Width + lngGap)
   cmdOutput.Move lngLeft, lngTop
