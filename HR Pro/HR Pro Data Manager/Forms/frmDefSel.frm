@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.ocx"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.OCX"
 Begin VB.Form frmDefSel 
    Caption         =   "Select"
    ClientHeight    =   7800
@@ -2134,6 +2134,7 @@ Public Sub GetSQL(lngUtilType As UtilityType, Optional psRecordSourceWhere As St
     
   Case utlReportPack
     msTypeCode = "REPORTPACKS"
+    gblnReportPackMode = True
     If blnScheduledJobs Then
       msType = "Scheduled Report Packs"
       strExtraWhereClause = "(Scheduled = 1) AND (GETDATE() >= StartDate) " & _
@@ -2154,6 +2155,7 @@ Public Sub GetSQL(lngUtilType As UtilityType, Optional psRecordSourceWhere As St
     msTableName = "ASRSysBatchJobName"
     msIDField = "ID"
     msAccessTableName = "ASRSysBatchJobAccess"
+    gblnReportPackMode = False
 
   Case utlCalendarReport
     msTypeCode = "CALENDARREPORTS"

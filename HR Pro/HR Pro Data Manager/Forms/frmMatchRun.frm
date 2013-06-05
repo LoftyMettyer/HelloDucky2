@@ -1710,9 +1710,10 @@ Private Function GetMatchReportDefinition() As Boolean
     mlngTable1AllRecords = !Table1AllRecords
     mlngTable1PickListID = !Table1Picklist
     mlngTable1FilterID = !Table1Filter
-    ' Override filter if in Report pack mode
+    ' Override filter and/or picklist if in Report pack mode
     If mlngTable1ID = glngPersonnelTableID And gblnReportPackMode Then
       mlngTable1FilterID = mlngOverrideFilterID
+      mlngTable1PickListID = 0
     End If
     
     If Not TablePermission(!Table1ID) Then
@@ -1741,6 +1742,7 @@ Private Function GetMatchReportDefinition() As Boolean
     
       If mlngTable2ID = glngPersonnelTableID And gblnReportPackMode Then
         mlngTable2FilterID = mlngOverrideFilterID
+        mlngTable2PickListID = 0
       End If
 
       If Not TablePermission(!Table2ID) Then

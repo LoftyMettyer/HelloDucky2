@@ -619,10 +619,10 @@ Private Sub chkPercentage_Click()
   If mblnLoading Then Exit Sub
   
   blnEnabled = (chkPercentage.Value = vbChecked And cboPageBreak.Enabled = True)
-  chkPercentageOfPage.Enabled = blnEnabled
+  chkPercentageofPage.Enabled = blnEnabled
   If Not blnEnabled Then
     mblnLoading = True
-    chkPercentageOfPage.Value = vbUnchecked
+    chkPercentageofPage.Value = vbUnchecked
     mblnLoading = False
   End If
 
@@ -635,7 +635,7 @@ End Sub
 Private Sub chkPercentageOfPage_Click()
   If mblnLoading Then Exit Sub
   PopulateGrid
-  chkPercentageOfPage.SetFocus
+  chkPercentageofPage.SetFocus
 End Sub
 
 Private Sub chkSuppressZeros_Click()
@@ -659,7 +659,7 @@ End Sub
 
 Private Sub Form_Activate()
   If Me.Visible And Me.Enabled Then
-    cmdOK.SetFocus
+    cmdOk.SetFocus
   End If
 End Sub
 
@@ -1912,7 +1912,7 @@ Private Function GetPercentageFactor(lngPage As Long, lngType As Long)
   'mdblPercentageFactor will be used in FORMATCELL, if required
   mdblPercentageFactor = 0
   If chkPercentage.Value = vbChecked Then
-    If chkPercentageOfPage = vbChecked Then
+    If chkPercentageofPage = vbChecked Then
       If mdblPageTotal(lngPage, lngType) > 0 Then
         mdblPercentageFactor = 1 / mdblPageTotal(lngPage, lngType)
       End If
@@ -2388,10 +2388,10 @@ Private Sub Form_Resize()
 
   
   'Position the command buttons...
-  lngTop = Me.ScaleHeight - (cmdOK.Height + lngGap)
+  lngTop = Me.ScaleHeight - (cmdOk.Height + lngGap)
   
-  lngLeft = Me.ScaleWidth - (cmdOK.Width + lngGap)
-  cmdOK.Move lngLeft, lngTop
+  lngLeft = Me.ScaleWidth - (cmdOk.Width + lngGap)
+  cmdOk.Move lngLeft, lngTop
 
   lngLeft = lngLeft - (cmdOutput.Width + lngGap)
   cmdOutput.Move lngLeft, lngTop
@@ -2417,7 +2417,7 @@ Private Sub Form_Resize()
     'fraIntersection.Visible = False
     Me.lblColumn.Visible = False
     Me.chkPercentage.Visible = False
-    Me.chkPercentageOfPage.Visible = False
+    Me.chkPercentageofPage.Visible = False
     Me.lblType.Top = Me.lblColumn.Top
     Me.chkSuppressZeros.Top = Me.lblColumn.Top
     Me.txtIntersectionCol.Text = mstrCrossTabName
@@ -2497,8 +2497,8 @@ Private Sub PrepareForms()
   
   
   chkPercentage.Value = IIf(mblnShowPercentage, vbChecked, vbUnchecked)
-  chkPercentageOfPage.Value = IIf(mblnPercentageofPage, vbChecked, vbUnchecked)
-  chkPercentageOfPage.Enabled = (mblnPageBreak = True And mblnShowPercentage = True)
+  chkPercentageofPage.Value = IIf(mblnPercentageofPage, vbChecked, vbUnchecked)
+  chkPercentageofPage.Enabled = (mblnPageBreak = True And mblnShowPercentage = True)
   chkSuppressZeros.Value = IIf(mblnSuppressZeros, vbChecked, vbUnchecked)
   chkThousandSeparators.Value = IIf(mbThousandSeparators, vbChecked, vbUnchecked)
 
@@ -3577,7 +3577,6 @@ Public Sub AbsenceBreakdownGetHeadingsAndSearches()
   Dim strSearch() As String
   Dim lngLoop As Long
   
-  
   On Error GoTo LocalErr
   
   For lngLoop = 0 To 2
@@ -3591,8 +3590,6 @@ Public Sub AbsenceBreakdownGetHeadingsAndSearches()
     Else
       GetHeadingsAndSearchesForColumns lngLoop, strHeading(), strSearch()
     End If
-
-    
     'Store each array in an array of variants (an array in an array!)
     mvarHeadings(lngLoop) = strHeading
     mvarSearches(lngLoop) = strSearch
@@ -3610,9 +3607,6 @@ End Sub
 Private Sub TurnoverRetreiveDefinition()
 
   Dim strReportType As String
-  'Dim lngID As Long
-  'Dim lngHorCol As Long
-  'Dim lngVerCol As Long
   Dim lngExprID As Long
 
   Select Case mlngCrossTabType
@@ -3624,14 +3618,6 @@ Private Sub TurnoverRetreiveDefinition()
     strReportType = "Stability"
   End Select
   Me.Caption = mstrCrossTabName
-
-  'If mblnCustomDates Then
-  '  mdtReportStartDate = datGeneral.GetValueForRecordIndependantCalc(mlngStartDateExprID)
-  '  mdtReportEndDate = datGeneral.GetValueForRecordIndependantCalc(mlngEndDateExprID)
-  'Else
-  '  mdtReportEndDate = DateAdd("d", Day(Date) * -1, Date)
-  '  mdtReportStartDate = DateAdd("d", 1, DateAdd("yyyy", -1, mdtReportEndDate))
-  'End If
 
   mlngBaseTableID = glngPersonnelTableID
   mstrBaseTable = gsPersonnelTableName
@@ -3654,11 +3640,6 @@ Private Sub TurnoverRetreiveDefinition()
   
   mlngColID(HOR) = glngPersonnelStartDateID
   mstrColName(HOR) = gsPersonnelStartDateColumnName
-  
-  'TM20020426 Fault 3239 - store the data type of the horizontal column.
-  'mlngColDataType(HOR) = datGeneral.GetDataType(mlngBaseTableID, glngPersonnelStartDateID)
-  'mlngColDataType(HOR) = datGeneral.GetDataType(mlngBaseTableID, lngHorColID)
-
   mstrFormat(HOR) = GetFormat(mlngColID(HOR))
 
   If mlngVerCol = 0 Then
@@ -3692,12 +3673,6 @@ Private Sub TurnoverRetreiveDefinition()
 End Sub
 
 Private Sub AbsenceBreakdownRetreiveDefinition(lngPersonnelID As Long)
-
-'(dtStartDate As Date, dtEndDate As Date _
-  , lngHorColID As Long, lngVerColID As Long, lngPicklistID As Long, lngFilterID As Long _
-  , lngPersonnelID As Long, pastrIncludedTypes() As String)
-
-  'Dim objAbsBreakdown As clsAbsenceBreakdown
   Dim rsType As Recordset
   Dim strSQL As String
   Dim strType As String
@@ -3707,57 +3682,18 @@ Private Sub AbsenceBreakdownRetreiveDefinition(lngPersonnelID As Long)
   Dim lngID As Long
   Dim lngHorColID As Long
   Dim lngVerColID As Long
-  'Dim strReportType As String
 
-  'mstrCrossTabName = "Absence Breakdown"
-   mstrCrossTabName = "Absence Breakdown Report"
+  mstrCrossTabName = "Absence Breakdown Report"
   Me.Caption = mstrCrossTabName
   
   If Not fOK Then
     Exit Sub
   End If
   
-'  strSQL = "SELECT * " & _
-'           "FROM " & gsAbsenceTypeTableName & " " & _
-'           "ORDER BY " & gsAbsenceTypeTypeColumnName
-'  Set rsType = datGeneral.GetReadOnlyRecords(strSQL)
-'
-'  Set objAbsBreakdown = New clsAbsenceBreakdown
-'  objAbsBreakdown.ReportType = "AbsenceBreakdown"
-'
-'  msAbsenceBreakdownTypes = vbNullString
-'  Do Until rsType.EOF
-'
-'    strType = rsType.Fields(gsAbsenceTypeTypeColumnName).Value
-'    If objAbsBreakdown.CheckIfAbsenceTypeSelected(strType) = True Then
-'      msAbsenceBreakdownTypes = _
-'        IIf(msAbsenceBreakdownTypes <> vbNullString, msAbsenceBreakdownTypes & ", ", "") & _
-'        "'" & Replace(strType, "'", "''") & "'"
-'    End If
-'
-'    rsType.MoveNext
-'
-'  Loop
-'  rsType.Close
-'  Set rsType = Nothing
-
   If msAbsenceBreakdownTypes <> vbNullString Then
     msAbsenceBreakdownTypes = UCase(msAbsenceBreakdownTypes)
   End If
 
-  'mdtReportStartDate = objAbsBreakdown.StartDate
-  'mdtReportEndDate = objAbsBreakdown.EndDate
-  'If mblnCustomDates Then
-  '  mdtReportStartDate = datGeneral.GetValueForRecordIndependantCalc(mlngStartDateExprID)
-  '  mdtReportEndDate = datGeneral.GetValueForRecordIndependantCalc(mlngEndDateExprID)
-  'Else
-  '  mdtReportEndDate = DateAdd("d", Day(Date) * -1, Date)
-  '  mdtReportStartDate = DateAdd("d", 1, DateAdd("yyyy", -1, mdtReportEndDate))
-  'End If
-  
-  'Set objAbsBreakdown = Nothing
-  
-  
   If glngPersonnelTableID = 0 Then
     mstrErrorMessage = "Personnel module setup has not been completed."
     fOK = False
@@ -3771,16 +3707,8 @@ Private Sub AbsenceBreakdownRetreiveDefinition(lngPersonnelID As Long)
     Exit Sub
   End If
 
-
   mstrBaseTable = datGeneral.GetTableName(mlngBaseTableID)
   mlngRecordDescExprID = datGeneral.GetRecDescExprID(mlngBaseTableID)
-  
-'If mlngCalendarReportsBaseTable = glngPersonnelTableID And gblnReportPackMode Then
-'  mlngCalendarReportsFilterID = mlngOverrideFilterID
-'Else
-'  mlngCalendarReportsFilterID = !Filter
-'End If
-  
   
   ' Load the appropraite records
   If lngPersonnelID > 0 Then
@@ -3796,9 +3724,6 @@ Private Sub AbsenceBreakdownRetreiveDefinition(lngPersonnelID As Long)
     End Select
   End If
   
-  'Ascertain whether the user has decided to include Picklist/Filter info
-  'mblnChkPicklistFilter = (GetUserSetting("AbsenceBreakdown", "PrintFilterHeader", "0") = "1")
-
   If fOK = False Then
     Exit Sub
   End If
@@ -3817,23 +3742,8 @@ Private Sub AbsenceBreakdownRetreiveDefinition(lngPersonnelID As Long)
   mstrFormat(VER) = GetFormat(mlngColID(VER))
 
   mblnIntersection = False
-  'MH20050105 Fault 9567
-  'mlngIntersectionDecimals = 1
   mlngIntersectionDecimals = 2
   mblnShowAllPagesTogether = False
-  
-  
-  'mlngOutputFormat = GetUserSetting("AbsenceBreakdown", "Format", 0)
-  'mblnOutputScreen = GetUserSetting("AbsenceBreakdown", "Screen", 1)
-  'mblnOutputPrinter = GetUserSetting("AbsenceBreakdown", "Printer", 0)
-  'mstrOutputPrinterName = GetUserSetting("AbsenceBreakdown", "PrinterName", vbNullString)
-  'mblnOutputSave = GetUserSetting("AbsenceBreakdown", "Save", 0)
-  'mlngOutputSaveExisting = GetUserSetting("AbsenceBreakdown", "SaveExisting", -1)
-  'mblnOutputEmail = GetUserSetting("AbsenceBreakdown", "Email", 0)
-  'mlngOutputEmailAddr = GetUserSetting("AbsenceBreakdown", "EmailAddr", 0)
-  'mstrOutputEmailSubject = GetUserSetting("AbsenceBreakdown", "EmailSubject", vbNullString)
-  'mstrOutputFilename = GetUserSetting("AbsenceBreakdown", "FileName", vbNullString)
-
   mblnPreviewOnScreen = (mblnPreviewOnScreen Or (mlngOutputFormat = fmtDataOnly And mblnOutputScreen))
 
 End Sub
@@ -3844,8 +3754,6 @@ Public Sub SizeBreakdownColumns()
   Dim intCount As Integer
 
   With frmBreakDown.SSDBGrid1
-
-    'If .Rows > 11 Then
     If .Rows > 10 Then
       If .ScrollBars = ssScrollBarsNone Then
         .Columns(0).Width = .Columns(0).Width - 240
@@ -3873,25 +3781,6 @@ Public Sub SizeBreakdownColumns()
   End With
 
 End Sub
-'Public Sub AbsenceBreakdownSizeColumns()
-'
-'  Dim lngWidth As Long
-'  Dim intCount As Integer
-'
-'  With frmCrossTabRun.SSDBGrid1
-'
-''    lngWidth = (.Width - .Columns(1).Width - 5) / (.Columns.Count - 1)
-''
-'    For intCount = 1 To .Columns.Count - 1
-'      .Columns(intCount).Width = 1000
-'    Next intCount
-'
-'  End With
-'
-'End Sub
-
-
-
 
 Private Sub GetSQL2(strCol() As String)
   
