@@ -1426,14 +1426,14 @@ Namespace ScriptDB
       sCode = String.Format("    -- Message Bus Integration" & vbNewLine & _
           vbTab & "DECLARE MessageCursor CURSOR LOCAL FAST_FORWARD FOR SELECT [ID] {1} FROM inserted;	" & vbNewLine & _
           vbTab & "OPEN MessageCursor;" & vbNewLine & _
-          vbTab & "FETCH NEXT FROM MessageCursor INTO @recordID {2};" & vbNewLine & _
+          vbTab & "FETCH NEXT FROM MessageCursor INTO @localID {2};" & vbNewLine & _
           vbTab & "WHILE @@FETCH_STATUS = 0 " & vbNewLine & _
           vbTab & "BEGIN " & vbNewLine & _
-          vbTab & "    IF ISNULL(@recordID,0) > 0" & vbNewLine & _
+          vbTab & "    IF ISNULL(@localID,0) > 0" & vbNewLine & _
           vbTab & "    BEGIN" & vbNewLine & _
-          vbTab & "        EXEC fusion.[spSendFusionMessage] @TableID={0}, @RecordID=@recordID {3}" & vbNewLine & _
+          vbTab & "        EXEC fusion.[spSendFusionMessage] @TableID={0}, @RecordID=@localID {3}" & vbNewLine & _
           vbTab & "    END" & vbNewLine & _
-          vbTab & "    FETCH NEXT FROM MessageCursor INTO @recordID {2};" & vbNewLine & _
+          vbTab & "    FETCH NEXT FROM MessageCursor INTO @localID {2};" & vbNewLine & _
           vbTab & "END" & vbNewLine & _
           vbTab & "CLOSE MessageCursor;" & vbNewLine & _
           vbTab & "DEALLOCATE MessageCursor;" _
