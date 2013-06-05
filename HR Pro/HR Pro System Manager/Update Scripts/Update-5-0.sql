@@ -5952,53 +5952,28 @@ PRINT 'Step 9 - System procedures'
 AS
 BEGIN
     SET NOCOUNT ON;
+    DECLARE @iTimestamp integer,
+			@sSQL		nvarchar(MAX);
 
-    /*  Delete the given record. */
-    /* Check if the given record has been deleted or changed first. */
-    /* Return 0 if the record was OK to delete. */
-    /* NOT USED HERE - Return 1 if the record has been amended AND is still in the given table/view. */
-    /* Return 2 if the record has been amended AND is no longer in the given table/view. */
-    /* Return 3 if the record has been deleted from the table. */
-    DECLARE @sSQL nvarchar(MAX),
-		@psTableName sysname,
-        @iCount integer;
-    SET @piResult = 0;
+	-- Get status of amended record
+	EXEC dbo.sp_ASRRecordAmended @piResult OUTPUT,
+	    @piTableID,
+		@psRealSource,
+		@piID,
+		@iTimestamp;
 
-	SELECT @psTableName = TableName FROM dbo.tbsys_tables WHERE TableID = @piTableID;
-
-    /* Check that the record has not been updated by another user since it was last checked. */
-    SET @sSQL = ''SELECT @piResult = COUNT(id)'' +
-            '' FROM '' + @psTableName +
-            '' WHERE id = '' + convert(varchar(MAX), @piID);
-    EXECUTE sp_executesql @sSQL, N''@piResult int OUTPUT'', @iCount OUTPUT;  
-    IF @iCount = 0
+	-- If Ok run the delete statement
+    IF @piResult <> 3
     BEGIN
-        /* Record deleted. */
-        SET @piResult = 3;
-    END
-    ELSE
-    BEGIN
-        /* Check if the record is still in the given realsource. */
-        SET @sSQL = ''SELECT @piResult = COUNT(id)'' +
+       SET @sSQL = ''DELETE '' +
             '' FROM '' + @psRealSource +
             '' WHERE id = '' + convert(varchar(MAX), @piID);
-        EXECUTE sp_executesql @sSQL, N''@piResult int OUTPUT'', @iCount OUTPUT;
-        IF @iCount > 0
-        BEGIN
-            SET @sSQL = ''DELETE '' +
-                '' FROM '' + @psRealSource +
-                '' WHERE id = '' + convert(varchar(MAX), @piID);
-            EXECUTE sp_executesql @sSQL;
-        END
-        ELSE
-        BEGIN
-            SET @piResult = 2;
-        END
+       EXECUTE sp_executesql @sSQL;
     END
 
 END'
 
-EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[sp_ASRInsertNewRecord]
+	EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[sp_ASRInsertNewRecord]
 	(
 		@piNewRecordID integer OUTPUT,   /* Output variable to hold the new record ID. */
 		@psInsertString nvarchar(MAX)    /* SQL Insert string to insert the new record. */
@@ -6023,8 +5998,7 @@ EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[sp_ASRInsertNewRecord]
 
 END'
 
-
-EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[sp_ASRRecordAmended]
+	EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[sp_ASRRecordAmended]
 (
     @piResult integer OUTPUT,	/* Output variable to hold the result. */
     @piTableID integer,			/* TableID being updated. */
@@ -6081,7 +6055,7 @@ BEGIN
     END
 END'
 
-EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[sp_ASRUpdateRecord]
+	EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[sp_ASRUpdateRecord]
 (
     @piResult integer OUTPUT,		/* Output variable to hold the result. */
     @psUpdateString nvarchar(MAX),  /* SQL Update string to update the record. */
