@@ -26,6 +26,9 @@ DECLARE @bCategoriesProcessed bit,
 		@recruitmentID integer,
 		@salaryID integer,
 		@generalID integer,
+		@disciplineID integer,
+		@healthID integer,
+		@trainingID integer,
 		@absenceID integer;
 		
 DECLARE @tableid	integer,
@@ -776,7 +779,6 @@ PRINT 'Step - Menu & Category enhancements'
 			INSERT dbo.tbuser_Object_Categories_Table ([Category_Name]) VALUES ('Absence')
 			INSERT dbo.tbuser_Object_Categories_Table ([Category_Name]) VALUES ('Applicant')
 			INSERT dbo.tbuser_Object_Categories_Table ([Category_Name]) VALUES ('Salary')
-			INSERT dbo.tbuser_Object_Categories_Table ([Category_Name]) VALUES ('Training')
 			INSERT dbo.tbuser_Object_Categories_Table ([Category_Name]) VALUES ('Documents')
 			INSERT dbo.tbuser_Object_Categories_Table ([Category_Name]) VALUES ('Discipline')
 			INSERT dbo.tbuser_Object_Categories_Table ([Category_Name]) VALUES ('Grievances')
@@ -816,11 +818,15 @@ PRINT 'Step - Menu & Category enhancements'
 	BEGIN
 		
 		-- Generic categories
-		SELECT @configID = ID FROM tbuser_Object_Categories_Table WHERE [Category_Name] = 'Configuration'
-		SELECT @recruitmentID = ID FROM tbuser_Object_Categories_Table WHERE [Category_Name] = 'Recruitment'
-		SELECT @absenceID = ID FROM tbuser_Object_Categories_Table WHERE [Category_Name] = 'Absence'
-		SELECT @salaryID = ID FROM tbuser_Object_Categories_Table WHERE [Category_Name] = 'Salary'
-		SELECT @generalID = ID FROM tbuser_Object_Categories_Table WHERE [Category_Name] = 'General'
+		SELECT @configID = ID FROM tbuser_Object_Categories_Table WHERE [Category_Name] = 'Configuration';
+		SELECT @recruitmentID = ID FROM tbuser_Object_Categories_Table WHERE [Category_Name] = 'Recruitment';
+		SELECT @absenceID = ID FROM tbuser_Object_Categories_Table WHERE [Category_Name] = 'Absence';
+		SELECT @salaryID = ID FROM tbuser_Object_Categories_Table WHERE [Category_Name] = 'Salary';
+		SELECT @generalID = ID FROM tbuser_Object_Categories_Table WHERE [Category_Name] = 'General';
+		SELECT @disciplineID = ID FROM tbuser_Object_Categories_Table WHERE [Category_Name] = 'Discipline';
+		SELECT @healthID = ID FROM tbuser_Object_Categories_Table WHERE [Category_Name] = 'Health & Safety';	
+		SELECT @trainingID = ID FROM tbuser_Object_Categories_Table WHERE [Category_Name] = 'Learning & Development';	
+
 
 		-- Build category match lookup
 		INSERT @categorymatch
@@ -849,6 +855,12 @@ PRINT 'Step - Menu & Category enhancements'
 				SELECT TableID, @salaryID AS categoryid FROM ASRSysTables WHERE (tablename LIKE '%salary%' OR tablename LIKE '%deduct%' OR tablename LIKE '%allowance%' )   AND tabletype <> 3
 			UNION
 				SELECT TableID, @recruitmentID FROM ASRSysTables WHERE tablename LIKE '%applica%' AND tabletype <> 3
+			UNION
+				SELECT TableID, @disciplineID FROM ASRSysTables WHERE tablename LIKE '%disciplin%' AND tabletype <> 3
+			UNION
+				SELECT TableID, @trainingID FROM ASRSysTables WHERE tablename LIKE '%training%' AND tabletype <> 3				
+			UNION	
+				SELECT TableID, @healthID AS categoryid FROM ASRSysTables WHERE (tablename LIKE '%incidents%' OR tablename LIKE '%health%' OR tablename LIKE '%safety%') AND tabletype <> 3
 
 		
 		-- Globals Deletes/Updates
@@ -913,10 +925,14 @@ PRINT 'Step - Menu & Category enhancements'
 
 		-- Custom Reports (recognised child tables)
 		INSERT tbsys_objectcategories ([objecttype], [objectid], [categoryid])
-			SELECT DISTINCT TOP 1 2 AS [objectType], r.ID, cat.categoryid
+			SELECT DISTINCT 2 AS [objectType], r.ID, cat.categoryid
 				FROM ASRSysCustomReportsName r
-				INNER JOIN ASRSysCustomReportsChildDetails c ON c.CustomReportID = r.ID
-				INNER JOIN @categorymatch cat ON cat.tableid = c.ChildTable
+					INNER JOIN ASRSysCustomReportsChildDetails c ON c.CustomReportID = r.ID
+					INNER JOIN @categorymatch cat ON cat.tableid = c.ChildTable
+				WHERE r.id IN (SELECT c2.CustomReportID
+									FROM ASRSysCustomReportsChildDetails c2			
+									GROUP BY c2.CustomReportID
+									HAVING COUNT(c2.CustomReportID) < 2)
 
 		-- Custom Reports (unrecognised child tables - revert to base table)
 		INSERT tbsys_objectcategories ([objecttype], [objectid], [categoryid])
