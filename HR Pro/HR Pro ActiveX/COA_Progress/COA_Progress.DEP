@@ -1,11 +1,11 @@
 [Version]
-Version=1.0.0.25
+Version=1.0.0.12
 
 [COA_Progress.exe <0009>]
 Dest=$(WinSysPath)
-Date=09/05/2011
-Time=14:36
-Version=1.0.0.25
+Date=07/10/2010
+Time=15:20
+Version=1.0.0.12
 CABFilename=COA_Progress.CAB
 CABINFFile=COA_Progress.INF
 Uses1=msvbvm60.dll
