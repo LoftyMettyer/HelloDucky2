@@ -439,9 +439,9 @@ Namespace ScriptDB
                 Select Case objColumn.DataType
 
                   Case ScriptDB.ColumnTypes.Binary
-                    ' handle later
+                    aryBaseTableColumns.Add(String.Format("[{0}] = [inserted].[{0}]", objColumn.Name))
+                    aryAllWriteableColumns.Add(String.Format("[{0}]", objColumn.Name))
 
-                    ' Make date only element
                   Case ScriptDB.ColumnTypes.Date
                     aryBaseTableColumns.Add(String.Format("[{0}] = DATEADD(dd, 0, DATEDIFF(dd, 0, [inserted].[{0}]))", objColumn.Name))
                     aryAllWriteableColumns.Add(String.Format("[{0}]", objColumn.Name))
@@ -1241,12 +1241,6 @@ Namespace ScriptDB
               If Not objColumn.Calculation.State = System.Data.DataRowState.Unchanged Or Globals.Options.RefreshObjects Then
 
                 sObjectName = String.Format("{0}{1}.{2}", Consts.CalculationUDF, objTable.Name, objColumn.Name)
-
-                Debug.Assert(sObjectName <> "udfcalc_Absence.Working_Pattern")
-
-
-
-
 
                 ScriptDropUDF("dbo", sObjectName)
 
