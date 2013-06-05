@@ -32,7 +32,7 @@ BEGIN
 			IF ISNULL(@ParentID,0) > 0
 			BEGIN		
 				EXEC fusion.[pSendMessageCheckContext] @MessageType='StaffChange', @LocalId=@ParentID
-				EXEC fusion.[pSendMessageCheckContext] @MessageType='StaffPostChange', @LocalId=@LocalId
+				--EXEC fusion.[pSendMessageCheckContext] @MessageType='StaffPostChange', @LocalId=@LocalId
 			END
 
 			FETCH NEXT FROM MessageCursor INTO @LocalId, @ParentID;
