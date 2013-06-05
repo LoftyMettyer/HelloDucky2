@@ -270,9 +270,8 @@ Const gsDISPLAYTYPE_BROWSER = "Browser"
 Const gsDISPLAYTYPE_HIDDEN = "Hidden"
 
 ' Navigate In constants
-Const gsNAVIGATE_URL = "URL"
-Const gsNAVIGATE_MENUBAR = "Menu"
-Const gsNAVIGATE_DATABASE = "Database"
+Const gsNAVIGATE_URL = "External"
+Const gsNAVIGATE_MENUBAR = "Internal"
 
 ' Picture text constants.
 Const gsPICTURENONETEXT = "(None)"
@@ -728,8 +727,6 @@ Private Sub ssGridProperties_ComboCloseUp()
           giNavigateIn = NavigateIn.URL
         Case gsNAVIGATE_MENUBAR
           giNavigateIn = NavigateIn.MenuBar
-        Case gsNAVIGATE_DATABASE
-          giNavigateIn = NavigateIn.DB
       End Select
 
     Case giPROPID_NAVIGATEONSAVE
@@ -986,7 +983,6 @@ Private Sub ssGridProperties_RowColChange(ByVal LastRow As Variant, ByVal LastCo
         .Columns(1).RemoveAll
         .Columns(1).AddItem gsNAVIGATE_URL, NavigateIn.URL
         .Columns(1).AddItem gsNAVIGATE_MENUBAR, NavigateIn.MenuBar
-        .Columns(1).AddItem gsNAVIGATE_DATABASE, NavigateIn.DB
 
       Case giPROPID_NAVIGATETO
         .Columns(1).Locked = False
@@ -1644,12 +1640,10 @@ Public Function RefreshProperties(Optional StayOnSameLine As Boolean) As Boolean
           sDescription = gsNAVIGATE_URL
         Case NavigateIn.MenuBar
           sDescription = gsNAVIGATE_MENUBAR
-        Case NavigateIn.DB
-          sDescription = gsNAVIGATE_DATABASE
       End Select
     End If
     
-    ssGridProperties.AddItem "Navigate In" & vbTab & sDescription & vbTab & Str(giPROPID_NAVIGATEIN)
+    ssGridProperties.AddItem "Destination" & vbTab & sDescription & vbTab & Str(giPROPID_NAVIGATEIN)
     avProperties(giPROPID_NAVIGATEIN, 3) = ssGridProperties.Rows - 1
   End If
   
