@@ -1,7 +1,7 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.OCX"
 Begin VB.Form frmAudit 
    Caption         =   "Audit"
    ClientHeight    =   2745
@@ -533,8 +533,10 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
 
-Private mrsRecords As Recordset
 Public miAuditType As audType
+Private mrsRecords As Recordset
+Private msFilter As String
+Private msSortOrder As String
 Private mgrdAudit As SSDBGrid
 Private mfrmOrder As frmAuditOrder
 Private mabView() As Boolean
@@ -543,10 +545,10 @@ Private mabView() As Boolean
 Private mavFilterCriteria() As Variant
 Private mblnReadOnly As Boolean
 
-Private Sub ClearFilterArray()
+Const MaxTop = 100000
 
+Private Sub ClearFilterArray()
   ReDim mavFilterCriteria(6, 0)
-            
 End Sub
 
 Private Sub Initialise()
@@ -555,49 +557,67 @@ Private Sub Initialise()
   Dim lCount As Long
   
   Screen.MousePointer = vbHourglass
-  
-  ClearFilterArray
-  
+    
   ' Purge the audit log before we show it to the user
   gADOCon.Execute "sp_AsrAuditLogPurge", , adExecuteNoRecords
   
-  ' Get the recordset of audit log entries.
-  ' Default to displaying them with the most recent first.
-  Set mrsRecords = New Recordset
-  Set mrsRecords = GetAllRecords(audRecords, "ORDER BY datetimestamp DESC")
-  
-  ' Set module level variables
   miAuditType = audRecords
-  grdPermission.Visible = False
-  grdRecords.Visible = True
-  grdGroup.Visible = False
-  Me.HelpContextID = 8045
-  Set mgrdAudit = grdRecords
-  
+      
   ' Set column visible array
+  Set mgrdAudit = grdRecords
   ReDim mabView(mgrdAudit.Columns.Count)
   For lCount = 0 To mgrdAudit.Columns.Count
     mabView(lCount) = True
   Next
   
+  ' Get the recordset of audit log entries.
+  SetDefaultFilter
+  CreateFilterCode
+  ReloadRecords
+
   ' RH 12/10/00 - This is already done above (GetAllRecords) !?
   'ReloadRecords
   RefreshFormCaption
   Screen.MousePointer = vbDefault
   
+  'PG 20120801 removed delete functionality
+  abAudit.Bands("bndAudit").Tools("ID_AuditDelete").Visible = False
+  frmMain.abSecurity.Bands("bndAudit").Tools("ID_AuditDelete").Visible = False
+  
 End Sub
 
+Private Sub SetDefaultFilter()
+  
+  ReDim mavFilterCriteria(6, 1)
+  mavFilterCriteria(1, 1) = "Date / Time"
+  mavFilterCriteria(2, 1) = "is equal to or after"
+  mavFilterCriteria(3, 1) = CStr(DateAdd("m", -3, Date))
+  mavFilterCriteria(4, 1) = "DateTimeStamp"
+  mavFilterCriteria(5, 1) = 11
+  mavFilterCriteria(6, 1) = 11
+  
+End Sub
+
+Public Property Get DefaultFilter() As Boolean
+  If UBound(mavFilterCriteria, 2) = 1 Then
+    If mavFilterCriteria(1, 1) = "Date / Time" And _
+        mavFilterCriteria(2, 1) = "is equal to or after" And _
+        mavFilterCriteria(3, 1) = CStr(DateAdd("m", -3, Date)) And _
+        mavFilterCriteria(4, 1) = "DateTimeStamp" And _
+        mavFilterCriteria(5, 1) = 11 And _
+        mavFilterCriteria(6, 1) = 11 Then
+      DefaultFilter = True
+    End If
+  End If
+End Property
 
 Private Sub abAudit_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
-
   EditMenu Tool.Name
-  
 End Sub
 
 Private Sub abAudit_PreCustomizeMenu(ByVal Cancel As ActiveBarLibraryCtl.ReturnBool)
   ' Do not let the user modify the layout.
   Cancel = True
-
 End Sub
 
 Private Sub Form_Activate()
@@ -650,15 +670,6 @@ Private Sub Form_Load()
   'mblnReadOnly = (Application.AccessMode <> accFull)
   mblnReadOnly = (Application.AccessMode <> accFull Or Not gbUserCanManageLogins)  '   LCase(gsUserName) <> "sa")
 
-'  Connect ("Driver={SQL Server};Server=" & gsSQLServerName & ";UID=" & rdoEngine.rdoDefaultUser & ";PWD=" & rdoEngine.rdoDefaultPassword & ";Database=" & Database.DatabaseName & ";")
-
-'  If gbUseWindowsAuthentication Then
-'    Connect ("Driver={SQL Server};Server=" & gsSQLServerName & ";UID=" & rdoEngine.rdoDefaultUser & ";PWD=" & gsPassword & ";Database=" & Database.DatabaseName & ";Integrated Security=SSPI;")
-'  Else
-'    Connect ("Driver={SQL Server};Server=" & gsSQLServerName & ";UID=" & rdoEngine.rdoDefaultUser & ";PWD=" & gsPassword & ";Database=" & Database.DatabaseName & ";")
-'  End If
-
-
   gADOCon.Execute "EXEC sp_AsrAuditLogPurge"
 
   Initialise
@@ -710,80 +721,6 @@ Private Sub Form_Resize()
   
 End Sub
 
-Private Sub ReloadRecords(Optional bFilter As Boolean)
-  Dim lCount As Long
-  Dim sRow As String
-
-  Screen.MousePointer = vbHourglass
-  
-  If Not bFilter Then
-
-    If mrsRecords.State <> 0 Then
-      mrsRecords.Close
-    End If
-    Set mrsRecords = Nothing
-
-    Set mrsRecords = New Recordset
-    
-    ' Open the recordset initially with the most appropriate sort order. User may change
-    ' this once the grid has been loaded.
-    Select Case miAuditType
-      Case 1: Set mrsRecords = GetAllRecords(miAuditType, "Order By DateTimeStamp DESC, TableName, ColumnName")
-      Case 2: Set mrsRecords = GetAllRecords(miAuditType, "Order By DateTimeStamp DESC, ViewTableName, ColumnName, Action, Permission")
-      Case 3: Set mrsRecords = GetAllRecords(miAuditType, "Order By DateTimeStamp DESC, GroupName, UserLogin, Action")
-      Case 4: Set mrsRecords = GetAllRecords(miAuditType, "Order By DateTimeStamp DESC, UserGroup, UserName, HRProModule, Action")
-    End Select
-    
-  End If
-
-  Select Case miAuditType
-    Case audRecords
-      grdRecords.Visible = True
-      grdPermission.Visible = False
-      grdGroup.Visible = False
-      grdAccess.Visible = False
-      Me.HelpContextID = 8045
-      Set mgrdAudit = grdRecords
-    Case audPermissions
-      grdRecords.Visible = False
-      grdPermission.Visible = True
-      grdGroup.Visible = False
-      grdAccess.Visible = False
-      Me.HelpContextID = 8046
-      Set mgrdAudit = grdPermission
-    Case audGroups
-      grdRecords.Visible = False
-      grdPermission.Visible = False
-      grdAccess.Visible = False
-      grdGroup.Visible = True
-      Set mgrdAudit = grdGroup
-      Me.HelpContextID = 8047
-    Case audAccess
-      grdRecords.Visible = False
-      grdPermission.Visible = False
-      grdGroup.Visible = False
-      grdAccess.Visible = True
-      Set mgrdAudit = grdAccess
-      Me.HelpContextID = 8048
-  End Select
-  
-  Form_Resize
-
-  With mgrdAudit
-
-    .Redraw = False
-    .ReBind
-    .Rows = IIf(mrsRecords.RecordCount = -1, 0, mrsRecords.RecordCount)
-    .Redraw = True
-  
-  End With
-
-  RefreshStatusBar
-  Screen.MousePointer = vbDefault
-
-End Sub
-
-
 Private Sub SetViewColumns()
 
     Dim lCount As Long
@@ -794,112 +731,78 @@ Private Sub SetViewColumns()
 
 End Sub
 
-Private Sub DeleteRecords()
-  Dim lCol As Long
-  Dim lCount As Long
-  Dim sSQL As String
-  Dim pintLoop As Integer
-  Dim pvarBookmark As Variant
-  Dim sTable As String
-  Dim bSetDeleteFlag As Boolean
-  
-  If mgrdAudit.Rows = 0 Then
-    Exit Sub
-  End If
-  
-  For lCol = 0 To mgrdAudit.Columns.Count
-    If UCase(mgrdAudit.Columns(lCol).Caption) = "ID" Then
-      Exit For
-    End If
-  Next
-  
-  Select Case miAuditType
-    Case audRecords
-      sTable = "ASRSysAuditTrail"
-      bSetDeleteFlag = False
-    Case audPermissions
-      sTable = "ASRSysAuditPermissions"
-      bSetDeleteFlag = False
-    Case audGroups
-      sTable = "ASRSysAuditGroup"
-      bSetDeleteFlag = False
-    Case audAccess
-      sTable = "ASRSysAuditAccess"
-      bSetDeleteFlag = False
-  End Select
-  
-  If Not Filtered Then
-    
-    If bSetDeleteFlag Then
-      sSQL = "UPDATE " & sTable & " SET Deleted = 1"
-    Else
-      sSQL = "DELETE FROM " & sTable
-    End If
-    
-    gADOCon.Execute sSQL, , adCmdText
-    ReloadRecords False
-  Else
-    
-  ' RH 14/11/00 - The latest attempt to get this to work !
-    
-    ' JDM - 07/02/02 - Fault 3456 - Whoops...
-    If Not bSetDeleteFlag Then
-      sSQL = "DELETE FROM " & sTable & " WHERE ID IN ("
-    Else
-      sSQL = "UPDATE " & sTable & " SET Deleted = 1 WHERE ID IN ("
-    End If
-  
-    mrsRecords.MoveFirst
-    Do Until mrsRecords.EOF
-    
-'    mgrdAudit.Redraw = False
-'    mgrdAudit.MoveFirst
-'    pintLoop = 0
+'Private Sub DeleteRecords()
+'  Dim lCol As Long
+'  Dim lCount As Long
+'  Dim sSQL As String
+'  Dim pintLoop As Integer
+'  Dim pvarBookmark As Variant
+'  Dim sTable As String
+'  Dim bSetDeleteFlag As Boolean
 '
-'    Do Until pintLoop = mgrdAudit.Rows
-    sSQL = sSQL & mrsRecords.Fields("ID").Value & ","
-    mrsRecords.MoveNext
-'      sSQL = sSQL & mgrdAudit.Columns(lCol).Value & ","
-'      pintLoop = pintLoop + 1
-'      mgrdAudit.MoveNext
-    Loop
+'  If mgrdAudit.Rows = 0 Then
+'    Exit Sub
+'  End If
 '
-   sSQL = Left(sSQL, Len(sSQL) - 1) & ")"
-    
-    gADOCon.Execute sSQL, , adCmdText
-    ReloadRecords False
-      
-    mgrdAudit.Redraw = True
-  End If
-  
-  ClearFilterArray
-
-End Sub
-
-Private Sub SetOrder(sOrder As String)
-  Dim sFilter As String
-  Dim bFilter As Boolean
-  
-  If Filtered Then
-    sFilter = mrsRecords.filter
-    bFilter = True
-  End If
-  
-  If mrsRecords.State <> 0 Then
-    mrsRecords.Close
-  End If
-  Set mrsRecords = Nothing
-  
-  Set mrsRecords = New Recordset
-  Set mrsRecords = GetAllRecords(miAuditType, sOrder)
-  
-  If bFilter Then
-    mrsRecords.filter = sFilter
-  End If
-
-  ReloadRecords True
-
-End Sub
+'  For lCol = 0 To mgrdAudit.Columns.Count
+'    If UCase(mgrdAudit.Columns(lCol).Caption) = "ID" Then
+'      Exit For
+'    End If
+'  Next
+'
+'  Select Case miAuditType
+'    Case audRecords
+'      sTable = "ASRSysAuditTrail"
+'      bSetDeleteFlag = False
+'    Case audPermissions
+'      sTable = "ASRSysAuditPermissions"
+'      bSetDeleteFlag = False
+'    Case audGroups
+'      sTable = "ASRSysAuditGroup"
+'      bSetDeleteFlag = False
+'    Case audAccess
+'      sTable = "ASRSysAuditAccess"
+'      bSetDeleteFlag = False
+'  End Select
+'
+'  If Not Filtered Then
+'
+'    If bSetDeleteFlag Then
+'      sSQL = "UPDATE " & sTable & " SET Deleted = 1"
+'    Else
+'      sSQL = "DELETE FROM " & sTable
+'    End If
+'
+'    gADOCon.Execute sSQL, , adCmdText
+'    ReloadRecords
+'  Else
+'
+'  ' RH 14/11/00 - The latest attempt to get this to work !
+'
+'    ' JDM - 07/02/02 - Fault 3456 - Whoops...
+'    If Not bSetDeleteFlag Then
+'      sSQL = "DELETE FROM " & sTable & " WHERE ID IN ("
+'    Else
+'      sSQL = "UPDATE " & sTable & " SET Deleted = 1 WHERE ID IN ("
+'    End If
+'
+'    mrsRecords.MoveFirst
+'    Do Until mrsRecords.EOF
+'        sSQL = sSQL & mrsRecords.Fields("ID").Value & ","
+'        mrsRecords.MoveNext
+'    Loop
+'
+'   sSQL = Left(sSQL, Len(sSQL) - 1) & ")"
+'
+'    gADOCon.Execute sSQL, , adCmdText
+'    ReloadRecords
+'
+'    mgrdAudit.Redraw = True
+'  End If
+'
+'  ClearFilterArray
+'
+'End Sub
 
 Private Sub PrintRecords(plngCopies As Long, pfPortrait As Boolean, pfGrid As Boolean)
 
@@ -976,16 +879,12 @@ Public Sub EditMenu(psMenuItem As String)
      
     Case "ID_Type1", "ID_Type2", "ID_Type3", "ID_Type4"
       
-      If Filtered Then
-        If MsgBox("Changing audit logs will remove the current filter." & vbCrLf & _
-                  "Do you wish to continue ?", vbYesNo + vbQuestion, App.Title) = vbYes Then
-          mrsRecords.filter = adFilterNone
-          ClearFilterArray
-        Else
+      If Filtered And Not DefaultFilter Then
+        If MsgBox("Changing audit logs will remove the current filter." & vbCrLf & "Do you wish to continue ?", vbYesNo + vbQuestion, App.Title) = vbNo Then
           Exit Sub
         End If
       End If
-      
+           
       ' Clear the existing field selection so that all fields are displayed.
       For iLoop = 0 To mgrdAudit.Columns.Count
         mabView(iLoop) = True
@@ -993,13 +892,16 @@ Public Sub EditMenu(psMenuItem As String)
           mgrdAudit.Columns(iLoop).Visible = mabView(iLoop) And (mgrdAudit.Columns(iLoop).Caption <> "ColumnID")
         End If
       Next
-      
+            
       miAuditType = CInt(Right(psMenuItem, 1))
-      ReloadRecords False
+      msSortOrder = ""
+      SetDefaultFilter
+      CreateFilterCode
+      ReloadRecords
       RefreshFormCaption
     
     Case "ID_AuditDelete"
-      DeleteAuditLog
+      'DeleteAuditLog
     
     Case "ID_AuditPrint"
       PrintAuditLog
@@ -1008,7 +910,7 @@ Public Sub EditMenu(psMenuItem As String)
       ShowColumns
      
     Case "ID_AuditSort"
-      SortOrder
+      sortOrder
      
     Case "ID_AuditSetFilter"
       SetFilter
@@ -1029,7 +931,7 @@ Public Sub EditMenu(psMenuItem As String)
 End Sub
 
 
-Private Sub SortOrder()
+Private Sub sortOrder()
   ' Sort the records.
   If mfrmOrder Is Nothing Then
     Set mfrmOrder = New frmAuditOrder
@@ -1040,7 +942,8 @@ Private Sub SortOrder()
     .Show vbModal
     
     If Not .Cancelled Then
-      SetOrder .SortOrder
+      msSortOrder = .sortOrder
+      ReloadRecords
     End If
   End With
     
@@ -1096,23 +999,26 @@ Private Sub OpenAuditLog()
   
   RefreshAuditMenu
   RefreshFormCaption
-
 End Sub
 
-Private Sub DeleteAuditLog()
-  ' Delete the current Audit log records.
-  Dim sMsg As String
-  
-  sMsg = IIf(Not Filtered, "Are you sure you want to delete all the currently visible audit log records ?", _
-    "Are you sure you want to delete these filtered audit log records ?")
-  If MsgBox(sMsg, vbQuestion + vbYesNo + vbDefaultButton2, Me.Caption) = vbYes Then
-    Screen.MousePointer = vbHourglass
-    DeleteRecords
-    RefreshFormCaption
-    Screen.MousePointer = vbDefault
-  End If
-
-End Sub
+'Private Sub DeleteAuditLog()
+'  ' Delete the current Audit log records.
+'  Dim sMsg As String
+'
+'  If Filtered Then
+'   sMsg = "Are you sure you want to delete these filtered audit log records ?"
+'  Else
+'   sMsg = "Are you sure you want to delete all the currently visible audit log records ?"
+'  End If
+'
+'  If MsgBox(sMsg, vbQuestion + vbYesNo + vbDefaultButton2, Me.Caption) = vbYes Then
+'    Screen.MousePointer = vbHourglass
+'    DeleteRecords
+'    RefreshFormCaption
+'    Screen.MousePointer = vbDefault
+'  End If
+'
+'End Sub
 
 Private Sub ShowColumns()
   ' Display the form that lets the user select which columns to show in the audit log.
@@ -1133,60 +1039,32 @@ End Sub
 Private Sub SetFilter()
   ' Display the form that lets the user define a filter for the audit records.
   
-'  If UI.GetHostName <> "RHUNTLEY" Then
-'
-'    Screen.MousePointer = vbHourglass
-'
-'    With frmAuditFilter
-'      .Initialise mrsRecords, 0
-'      Screen.MousePointer = vbDefault
-'      .Show vbModal
-'
-'      If Not .Cancelled Then
-'        ReloadRecords True
-'      End If
-'    End With
-'
-'    Unload frmAuditFilter
-'
-'    RefreshFormCaption
-'    RefreshAuditMenu
-'
-'  Else
-
     frmAuditFilter2.Initialise miAuditType, mavFilterCriteria
     frmAuditFilter2.Show vbModal
-    
-    ' Set local array to be the newly defined filter
-    mavFilterCriteria = frmAuditFilter2.FilterArray
-    
-    If CreateFilterCode = False Then
-      frmAuditFilter2.Show vbModal
+    If frmAuditFilter2.Cancelled Then
+      Unload frmAuditFilter2
       Exit Sub
     End If
     
-    If Not frmAuditFilter2.Cancelled Then
-      ReloadRecords True
-    End If
+    ' Set local array to be the newly defined filter
+    mavFilterCriteria = frmAuditFilter2.FilterArray
+    CreateFilterCode
+    ReloadRecords
     
     Unload frmAuditFilter2
     
     RefreshFormCaption
     RefreshAuditMenu
-    
-  'End If
   
 End Sub
 
 Private Sub ClearFilter()
   ' Clear the defined filter.
-  mrsRecords.filter = adFilterNone
   ClearFilterArray
-  ReloadRecords False
-
+  CreateFilterCode
+  ReloadRecords
   RefreshFormCaption
   RefreshAuditMenu
-  
 End Sub
 
 Private Sub ScheduleTasks()
@@ -1197,8 +1075,11 @@ Private Sub ScheduleTasks()
     .Initialise
     Screen.MousePointer = vbDefault
     .Show vbModal
+    If .Cancelled Then
+      Exit Sub
+    End If
   End With
-  ReloadRecords Filtered
+  ReloadRecords
   RefreshFormCaption
 End Sub
 
@@ -1212,15 +1093,15 @@ Private Sub RefreshAuditMenu()
     blnEnabled = (mrsRecords.RecordCount > 0)
     abAudit.Bands("bndAudit").Tools("ID_AuditPrint").Enabled = blnEnabled
     frmMain.abSecurity.Bands("bndAudit").Tools("ID_AuditPrint").Enabled = blnEnabled
-    abAudit.Bands("bndAudit").Tools("ID_AuditDelete").Enabled = blnEnabled And Not mblnReadOnly
-    frmMain.abSecurity.Bands("bndAudit").Tools("ID_AuditDelete").Enabled = blnEnabled And Not mblnReadOnly
+    'PG 20120801 removed delete functionality
+    'abAudit.Bands("bndAudit").Tools("ID_AuditDelete").Enabled = blnEnabled And Not mblnReadOnly
+    'frmMain.abSecurity.Bands("bndAudit").Tools("ID_AuditDelete").Enabled = blnEnabled And Not mblnReadOnly
   End If
   
   frmMain.RefreshMenu False
   SetFormCaption Me, Me.Caption
   
 End Sub
-
 
 Private Sub grdAccess_PrintInitialize(ByVal ssPrintInfo As SSDataWidgets_B.ssPrintInfo)
   mgrdAudit_PrintInitialize ssPrintInfo
@@ -1275,13 +1156,6 @@ Private Sub RefreshFormCaption()
 
 End Sub
 
-Public Property Get Filtered() As Boolean
-  ' Return TRUE if the Audit records are filtered.
-  Filtered = (mrsRecords.filter <> adFilterNone)
-  
-End Property
-
-
 Private Sub RefreshStatusBar()
   ' Refresh the status bar.
   With stbAudit
@@ -1290,6 +1164,11 @@ Private Sub RefreshStatusBar()
   End With
   
 End Sub
+
+Public Property Get Filtered() As Boolean
+  ' Return TRUE if the Audit records are filtered.
+  Filtered = (msFilter <> "")
+End Property
 
 Private Sub grdPermission_UnboundReadData(ByVal RowBuf As SSDataWidgets_B.ssRowBuffer, StartLocation As Variant, ByVal ReadPriorRows As Boolean)
   ' Read the required data from the recordset to the grid.
@@ -1543,7 +1422,7 @@ Private Sub grdRecords_UnboundReadData(ByVal RowBuf As SSDataWidgets_B.ssRowBuff
             Case "ID"
               RowBuf.Value(iRowIndex, iFieldIndex) = CStr(mrsRecords.Fields("ID"))
             Case "Old Value", "New Value"
-              If Database.ColumnIsNumericName(mrsRecords.Fields("Column")) Then
+              If mrsRecords.Fields("IsNumeric") Then
                 If UI.GetSystemDecimalSeparator <> "." Then
                   RowBuf.Value(iRowIndex, iFieldIndex) = UI.ConvertNumberForDisplay(mrsRecords(iFieldIndex))
                 Else
@@ -1689,17 +1568,92 @@ PrintErr:
 
 End Function
 
-Private Sub AuditRefresh()
+Private Sub ReloadRecords()
+  Dim lCount As Long
+  Dim sRow As String
 
-  ReloadRecords Filtered
-  RefreshAuditMenu
+  Screen.MousePointer = vbHourglass
+  
+  If Not mrsRecords Is Nothing Then
+    If mrsRecords.State <> 0 Then
+      mrsRecords.Close
+    End If
+    Set mrsRecords = Nothing
+  End If
+  Set mrsRecords = New Recordset
+  
+  ' Open the recordset initially with the most appropriate sort order. User may change
+  ' this once the grid has been loaded.
+  Select Case miAuditType
+    Case 1: Set mrsRecords = GetAllRecords(miAuditType, IIf(msSortOrder <> "", GetFixedSortOrder(), "Order By a.DateTimeStamp DESC, a.TableName, a.ColumnName"), msFilter, MaxTop)
+    Case 2: Set mrsRecords = GetAllRecords(miAuditType, IIf(msSortOrder <> "", GetFixedSortOrder(), "Order By a.DateTimeStamp DESC, a.ViewTableName, a.ColumnName, a.Action, a.Permission"), msFilter, MaxTop)
+    Case 3: Set mrsRecords = GetAllRecords(miAuditType, IIf(msSortOrder <> "", GetFixedSortOrder(), "Order By a.DateTimeStamp DESC, a.GroupName, a.UserLogin, a.Action"), msFilter, MaxTop)
+    Case 4: Set mrsRecords = GetAllRecords(miAuditType, IIf(msSortOrder <> "", GetFixedSortOrder(), "Order By a.DateTimeStamp DESC, a.UserGroup, a.UserName, a.HRProModule, a.Action"), msFilter, MaxTop)
+  End Select
+    
+  Select Case miAuditType
+    Case audRecords
+      grdRecords.Visible = True
+      grdPermission.Visible = False
+      grdGroup.Visible = False
+      grdAccess.Visible = False
+      Me.HelpContextID = 8045
+      Set mgrdAudit = grdRecords
+    Case audPermissions
+      grdRecords.Visible = False
+      grdPermission.Visible = True
+      grdGroup.Visible = False
+      grdAccess.Visible = False
+      Me.HelpContextID = 8046
+      Set mgrdAudit = grdPermission
+    Case audGroups
+      grdRecords.Visible = False
+      grdPermission.Visible = False
+      grdAccess.Visible = False
+      grdGroup.Visible = True
+      Set mgrdAudit = grdGroup
+      Me.HelpContextID = 8047
+    Case audAccess
+      grdRecords.Visible = False
+      grdPermission.Visible = False
+      grdGroup.Visible = False
+      grdAccess.Visible = True
+      Set mgrdAudit = grdAccess
+      Me.HelpContextID = 8048
+  End Select
+  
+  Form_Resize
 
+  With mgrdAudit
+
+    .Redraw = False
+    .ReBind
+    .Rows = IIf(mrsRecords.RecordCount = -1, 0, mrsRecords.RecordCount)
+    .Redraw = True
+  End With
+
+  RefreshStatusBar
+  Screen.MousePointer = vbDefault
+
+  If mrsRecords.RecordCount = MaxTop Then
+    MsgBox "The search results have been limited to " & Format$(MaxTop, "#,###") & " records.", vbInformation, App.Title
+  End If
+  
 End Sub
 
+Private Function GetFixedSortOrder() As String
+  GetFixedSortOrder = msSortOrder
+  GetFixedSortOrder = Replace(GetFixedSortOrder, "Order By ", "Order By a.")
+  GetFixedSortOrder = Replace(GetFixedSortOrder, ", ", ", a.")
+End Function
 
 
+Private Sub AuditRefresh()
+  ReloadRecords
+  RefreshAuditMenu
+End Sub
 
-Private Function CreateFilterCode() As Boolean
+Private Function CreateFilterCode() As String
   ' Return the filter code for the recordset's defined filter.
   Dim fOK As Boolean
   Dim iLoop As Integer
@@ -1724,23 +1678,17 @@ Private Function CreateFilterCode() As Boolean
   
   On Error GoTo ErrTrap
   
+  Const DateFormat = "yyyymmdd"
+  
   ' Construct the filter string.
   sFilter = ""
   
   For iLoop = 1 To UBound(mavFilterCriteria, 2)
     
         sSubFilter = ""
-    
-        If (miAuditType = audRecords) Then
-        
-          sFilterColName = "[" & mavFilterCriteria(1, iLoop) & "]"
-          sFilterValue = mavFilterCriteria(3, iLoop)
-          
-        Else
-          sFilterColName = "[" & mavFilterCriteria(1, iLoop) & "]" ' was 4
-          sFilterValue = mavFilterCriteria(3, iLoop)
-        End If
-      
+        sFilterColName = "a.[" & mavFilterCriteria(4, iLoop) & "]"
+        sFilterValue = mavFilterCriteria(3, iLoop)
+
         Select Case mavFilterCriteria(6, iLoop)
           
           Case sqlDate
@@ -1749,9 +1697,7 @@ Private Function CreateFilterCode() As Boolean
            
               Case giFILTEROP_ON ' Equal
                 If Len(sFilterValue) = 0 Then
-                  'TM20011211 Fault 3153
-'                  sSubFilter = sFilterColName & " IS NULL"
-                  sSubFilter = sFilterColName & " = NULL"
+                  sSubFilter = sFilterColName & " IS NULL"
                 Else
                 sSubFilter = sSubFilter & sFilterColName & " >= " & "'" & Format$(sFilterValue, DateFormat) & "'" & _
                       " AND " & sFilterColName & " < " & "'" & Format$(CDate(sFilterValue) + 1, DateFormat) & "'"
@@ -1759,9 +1705,7 @@ Private Function CreateFilterCode() As Boolean
                 
               Case giFILTEROP_NOTON ' Not equal to
                 If Len(sFilterValue) = 0 Then
-                  'TM20011211 Fault 3153
-'                  sSubFilter = sFilterColName & " IS NOT NULL"
-                  sSubFilter = sFilterColName & " <> NULL"
+                  sSubFilter = sFilterColName & " IS NOT NULL"
                 Else
                   sSubFilter = sSubFilter & sFilterColName & " < '" & Format$(sFilterValue, DateFormat) & "'" & _
                         " OR " & sFilterColName & " >= '" & Format$(CDate(sFilterValue) + 1, DateFormat) & "'"
@@ -1769,18 +1713,14 @@ Private Function CreateFilterCode() As Boolean
                 
               Case giFILTEROP_BEFORE ' Less than
                 If Len(sFilterValue) = 0 Then
-                  'TM20011211 Fault 3153
-'                  sSubFilter = sFilterColName & " IS NOT NULL"
-                  sSubFilter = sFilterColName & " <> NULL"
+                  sSubFilter = sFilterColName & " IS NOT NULL"
                 Else
                   sSubFilter = sSubFilter & sFilterColName & " <= '" & Format$(CDate(sFilterValue), DateFormat) & "'"
                 End If
                
               Case giFILTEROP_AFTER ' greater than
                 If Len(sFilterValue) = 0 Then
-                  'TM20011211 Fault 3153
-'                  sSubFilter = sFilterColName & " IS NOT NULL"
-                  sSubFilter = sFilterColName & " <> NULL"
+                  sSubFilter = sFilterColName & " IS NOT NULL"
                 Else
                   sSubFilter = sSubFilter & sFilterColName & " >= '" & Format$(CDate(sFilterValue) + 1, DateFormat) & "'"
                 End If
@@ -1788,18 +1728,14 @@ Private Function CreateFilterCode() As Boolean
               'TM20011102 Fault 2155
               Case giFILTEROP_ONORAFTER ' greater than or equal to.
                 If Len(sFilterValue) = 0 Then
-                  'TM20011211 Fault 3153
-'                  sSubFilter = sFilterColName & " IS NOT NULL"
-                  sSubFilter = sFilterColName & " <> NULL"
+                  sSubFilter = sFilterColName & " IS NOT NULL"
                 Else
                   sSubFilter = sSubFilter & sFilterColName & " >= '" & Format$(CDate(sFilterValue), DateFormat) & "'"
                 End If
            
               Case giFILTEROP_ONORBEFORE  ' less than or equal to.
                 If Len(sFilterValue) = 0 Then
-                  'TM20011211 Fault 3153
-'                  sSubFilter = sFilterColName & " IS NOT NULL"
-                  sSubFilter = sFilterColName & " <> NULL"
+                  sSubFilter = sFilterColName & " IS NOT NULL"
                 Else
                   sSubFilter = sSubFilter & sFilterColName & " <= '" & Format$(CDate(sFilterValue) + 1, DateFormat) & "'"
                 End If
@@ -1811,7 +1747,6 @@ Private Function CreateFilterCode() As Boolean
             Select Case mavFilterCriteria(5, iLoop)
               Case giFILTEROP_IS
                 If Len(sFilterValue) = 0 Then
-'                  sSubFilter = sFilterColName & " = '' OR " & sFilterColName & " = NULL"
                   sSubFilter = sFilterColName & " = ''"
                 Else
                   ' Replace the standard * and ? characters with the SQL % and _ characters.
@@ -1851,8 +1786,7 @@ Private Function CreateFilterCode() As Boolean
                         sModifiedFilterValue = sModifiedFilterValue & sCurrChar
                     End Select
                   Next iLoop2
-                  'sSubFilter = sFilterColName & " <> '" & sModifiedFilterValue & "'"
-                  sSubFilter = sFilterColName & " <> '" & sModifiedFilterValue & "'" ' NHRD16112004 Fault 4157
+                  sSubFilter = sFilterColName & " <> '" & sModifiedFilterValue & "'"
                 End If
 
               Case giFILTEROP_CONTAINS
@@ -1875,7 +1809,6 @@ Private Function CreateFilterCode() As Boolean
               Case giFILTEROP_DOESNOTCONTAIN
                 If Len(sFilterValue) = 0 Then
                   sSubFilter = sFilterColName & " <> ''"
-'                  sSubFilter = sFilterColName & " = NULL AND " & sFilterColName & " <> NULL"
                 Else
                   sModifiedFilterValue = ""
                   For iLoop2 = 1 To Len(sFilterValue)
@@ -1896,7 +1829,7 @@ Private Function CreateFilterCode() As Boolean
     sFilter = sFilter & IIf(Len(sFilter) > 0, " AND (", "(") & sSubFilter & ")"
   Next iLoop
   
-  mrsRecords.filter = sFilter
+  msFilter = sFilter
   
   CreateFilterCode = True
   Exit Function

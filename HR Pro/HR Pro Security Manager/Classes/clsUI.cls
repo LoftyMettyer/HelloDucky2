@@ -156,6 +156,8 @@ Private Declare Function VkKeyScan Lib "user32" Alias "VkKeyScanA" (ByVal cChar 
 Private Declare Function WindowFromPoint Lib "user32" (ByVal xPoint As Long, ByVal yPoint As Long) As Long
 Private Declare Function GetComputerName Lib "kernel32" Alias "GetComputerNameA" (ByVal lpBuffer As String, nSize As Long) As Long
 
+Private mDecimalSeparator As String
+
 Public Sub FormatGTDateControl(objInput As Object)
   Dim sFormat As String
   
@@ -765,12 +767,16 @@ Function UnlockWindow() As Boolean
 End Function
 
 Function GetSystemDecimalSeparator() As String
-  ' Return the system data separator.
-  Dim lngLength As Long
-  Dim sBuffer As String * 100
-  
-  lngLength = GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_SDECIMAL, sBuffer, 99)
-  GetSystemDecimalSeparator = Left(sBuffer, lngLength - 1)
+
+  If mDecimalSeparator = "" Then
+    ' Return the system data separator.
+    Dim lngLength As Long
+    Dim sBuffer As String * 100
+    
+    lngLength = GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_SDECIMAL, sBuffer, 99)
+    mDecimalSeparator = Left(sBuffer, lngLength - 1)
+  End If
+  GetSystemDecimalSeparator = mDecimalSeparator
   
 End Function
 

@@ -69,19 +69,16 @@ Begin VB.Form frmAuditCleardown
       TabPicture(1)   =   "frmAuditCleardown.frx":0028
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraTableColumn"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "&User Maintenance"
       TabPicture(2)   =   "frmAuditCleardown.frx":0044
       Tab(2).ControlEnabled=   0   'False
       Tab(2).Control(0)=   "fraUser"
-      Tab(2).Control(0).Enabled=   0   'False
       Tab(2).ControlCount=   1
       TabCaption(3)   =   "User &Access"
       TabPicture(3)   =   "frmAuditCleardown.frx":0060
       Tab(3).ControlEnabled=   0   'False
       Tab(3).Control(0)=   "fraAccess"
-      Tab(3).Control(0).Enabled=   0   'False
       Tab(3).ControlCount=   1
       Begin VB.Frame fraAccess 
          Caption         =   "Purge Criteria :"
@@ -359,11 +356,15 @@ Option Explicit
 
 Private miAuditType As Integer
 Private mblnReadOnly As Boolean
+Private mblnCancelled As Boolean
 
 Public Property Let AuditType(ByVal iNewValue As Integer)
   miAuditType = iNewValue
 End Property
 
+Public Property Get Cancelled() As Boolean
+  Cancelled = mblnCancelled
+End Property
 
 Public Sub Initialise()
 
@@ -426,6 +427,7 @@ End Sub
 
 Private Sub cmdCancel_Click()
 
+  mblnCancelled = True
   Unload Me
   
 End Sub
@@ -439,6 +441,7 @@ Private Sub cmdOK_Click()
   SaveCleardown
   
   Unload Me
+  mblnCancelled = False
   
 End Sub
 
@@ -455,6 +458,7 @@ Private Sub Form_Load()
   
   ' Select the first tab page as default.
   tabClear.Tab = 0
+  mblnCancelled = False
 
 End Sub
 
@@ -597,8 +601,14 @@ ErrorTrap:
   
 End Sub
 
+Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
 
-
+  If UnloadMode = vbFormControlMenu Then
+    cmdCancel_Click
+    Exit Sub
+  End If
+  
+End Sub
 
 Private Sub Form_Resize()
   'JPD 20030908 Fault 5756
