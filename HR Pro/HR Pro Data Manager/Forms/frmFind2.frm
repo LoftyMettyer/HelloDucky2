@@ -47,7 +47,6 @@ Begin VB.Form frmFind2
             Object.Width           =   10689
             Text            =   "x Records"
             TextSave        =   "x Records"
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -803,8 +802,11 @@ Public Function FindStartFromPrimary(ByVal pobjTableView As CTablePrivilege, _
         'AE20080103 Fault #12480
 '        SetCurrentRecord
 '        Me.Visible = True
+        UI.LockWindow Me.hWnd
         Me.Visible = True
+        ResizeFindColumns
         SetCurrentRecord
+        UI.UnlockWindow
       End If
     End If
   End If
@@ -3441,6 +3443,7 @@ Private Sub Form_Activate()
   'Highlight the current row in the grid
   If Not WindowState = vbMinimized Then
     If Not mbIsUnloading Then
+      
       ' Show the find records
       ssOleDBGridFindColumns.Visible = True
       

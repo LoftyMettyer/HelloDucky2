@@ -628,7 +628,6 @@ Begin VB.Form frmRecEdit4
          NumTabs         =   1
          BeginProperty Tab1 {0713F341-850A-101B-AFC0-4210102A8DA7} 
             Caption         =   ""
-            Key             =   ""
             Object.Tag             =   ""
             ImageVarType    =   2
          EndProperty
@@ -658,7 +657,6 @@ Begin VB.Form frmRecEdit4
       BeginProperty Panels {0713E89E-850A-101B-AFC0-4210102A8DA7} 
          NumPanels       =   1
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -3863,9 +3861,12 @@ Public Sub HistoryInitialise()
         .Left = GetPCSetting("FindWindowCoOrdinates\" & gsDatabaseName & "\" & Me.ScreenID, "Left", (Screen.Width - Me.Width) / 2)
       End If
       
+      UI.LockWindow .hWnd
       .Visible = True
       .Show
+      .ResizeFindColumns
       .SetFocus
+      UI.UnlockWindow
     End With
   Else
     Unload Me
