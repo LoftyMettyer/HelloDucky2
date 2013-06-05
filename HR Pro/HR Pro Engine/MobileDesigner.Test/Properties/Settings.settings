@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="db" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">..\..\AsrTemp_OpenHR5.mdb</Value>
+      <Value Profile="(Default)">..\..\AsrTemp_OpenHR50.mdb</Value>
     </Setting>
   </Settings>
 </SettingsFile>
