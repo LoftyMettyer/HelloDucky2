@@ -29,26 +29,6 @@ Private mstrEventLogIDs As String
 Private mblnJobCancelled As Boolean
 Private mblnBatchCancelled As Boolean
 Private fOK As Boolean
-
-'New Default Output Variables
-Private mlngOutputFormat As Long
-Private mblnOutputScreen As Boolean
-Private mblnOutputPrinter As Boolean
-Private mstrOutputPrinterName As String
-Private mblnOutputSave As Boolean
-Private mlngOutputSaveExisting As Long
-Private mblnOutputEmail As Boolean
-Private mlngOutputEmailAddr As Long
-Private mstrOutputEmailSubject As String
-Private mstrOutputEmailAttachAs As String
-
-Private mstrOutputFileName As String
-
-Private mblnPreviewOnScreen As Boolean
-Private mblnPrintFilterHeader As Boolean
-Private mlngOverrideFilterID As Long
-Private mblnOutputRetainPivotOrChart As Boolean
-' Private mblnOutputRetainCharts As Boolean
 Private mstrErrorMessage As String
 
 
@@ -216,6 +196,15 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
       lngOverrideFilterID = !OverrideFilterID
       blnOutputRetainPivotOrChart = !OutputRetainPivotOrChart
       'blnOutputRetainCharts = !OutputRetainCharts
+      
+      'If we are trying saving with the add sequential number to filename option, work the filename out now and switch file option back to overwrite
+      If blnOutputSave And lngOutputSaveExisting = 2 Then
+        If Dir(strOutputFilename) <> vbNullString Then
+          Dim tmpOutput As New clsOutputRun
+          strOutputFilename = tmpOutput.GetSequentialNumberedFile(strOutputFilename)
+          lngOutputSaveExisting = 0
+        End If
+      End If
     End With
   End If
 
