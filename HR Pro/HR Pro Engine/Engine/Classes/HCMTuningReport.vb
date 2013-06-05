@@ -6,10 +6,11 @@ Namespace Tuning
 
   <ClassInterface(ClassInterfaceType.None)> _
   Public Class Report
+    Implements COMInterfaces.iErrors
 
     Public Expressions As New Things.Collection
 
-    Public Sub OutputToFile(ByRef FileName As String) ' Implements Interfaces.iErrors.OutputToFile
+    Public Sub OutputToFile(ByRef FileName As String) Implements COMInterfaces.iErrors.OutputToFile
 
       Dim objWriter As System.IO.StreamWriter
       Dim objThing As Things.Base
@@ -57,6 +58,21 @@ Namespace Tuning
 
     End Sub
 
+    Public ReadOnly Property ErrorCount As Integer Implements COMInterfaces.iErrors.ErrorCount
+      Get
+        Return 0
+      End Get
+    End Property
+
+    Public ReadOnly Property IsCatastrophic As Boolean Implements COMInterfaces.iErrors.IsCatastrophic
+      Get
+        Return False
+      End Get
+    End Property
+
+    Public Sub Show() Implements COMInterfaces.iErrors.Show
+
+    End Sub
   End Class
 
 End Namespace
