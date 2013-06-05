@@ -184,29 +184,12 @@ Namespace Things
         aryDependsOn.Add(String.Format("{0}", table.ID))
       Next
 
-      ' Do we have caching on this UDF?
-      If Me.IsComplex And aryDependsOn.Count > 0 And Not Me.ReferencesParent Then
-
-        ' Flag to force updates through
-        If Me.ExpressionType = ScriptDB.ExpressionType.ReferencedColumn Then
-          aryParameters1.Add("@forcerefresh bit")
-          aryParameters2.Add("@forcerefresh")
-          aryParameters3.Add("1")
-        Else
-          aryParameters1.Add("@forcerefresh bit")
-          aryParameters2.Add("@forcerefresh")
-          aryParameters3.Add("@forcerefresh")
-        End If
-
-      End If
-
       ' Calling statement
       With UDF
 
         If Not Me.IsComplex Then
           .InlineCode = ResultWrapper(_linesOfCode.Statement)
           .InlineCode = .InlineCode.Replace("@prm_", "base.")
-          .InlineCode = .InlineCode.Replace("@rownumber", "[rownumber]")
           .InlineCode = ScriptDB.Beautify.MakeSingleLine(.InlineCode)
         End If
 

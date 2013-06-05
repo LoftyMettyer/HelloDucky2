@@ -150,34 +150,30 @@
 
             If RowDetails.RowSelection = ScriptDB.ColumnRowSelection.Specific Then
 
-               .Code = String.Format("CREATE FUNCTION dbo.[{0}]({1})" & vbNewLine & _
-                  "RETURNS @results TABLE({2})" & vbNewLine & _
-                  "{9}" & vbNewLine & _
-                  "AS" & vbNewLine & "BEGIN" & vbNewLine & _
-                  "DECLARE @forcerefresh bit;" & vbNewLine & _
-                  "SET @forcerefresh = 1;" & vbNewLine & vbNewLine & _
-                  "WITH base AS (" & vbNewLine & _
-                  "    SELECT {3}, [rownumber] = ROW_NUMBER() OVER ({7})" & vbNewLine & _
-                  "    FROM {4} base" & vbNewLine & _
-                  "    {5}" & vbNewLine & _
-                  "    {6})" & vbNewLine & _
-                  "INSERT @Results SELECT {3}" & vbNewLine & _
-                  "        FROM base" & vbNewLine & _
-                  "        WHERE [rownumber] = {10}" & vbNewLine & _
-                  "    RETURN;" & vbNewLine & _
-                  "END" _
-                 , Me.Name, String.Join(", ", aryParameters.ToArray()) _
-                 , String.Join(", ", aryReturnDefintion.ToArray()), String.Join(", ", aryColumnList.ToArray()) _
-                 , Me.Table.Name, String.Join(vbNewLine, aryJoins.ToArray()), .WhereCode, .OrderCode, sRowSelection _
-                 , sOptions, RowDetails.RowNumber)
+          .Code = String.Format("CREATE FUNCTION dbo.[{0}]({1})" & vbNewLine & _
+             "RETURNS @results TABLE({2})" & vbNewLine & _
+             "{9}" & vbNewLine & _
+             "AS" & vbNewLine & "BEGIN" & vbNewLine & _
+             "WITH base AS (" & vbNewLine & _
+             "    SELECT {3}, [rownumber] = ROW_NUMBER() OVER ({7})" & vbNewLine & _
+             "    FROM {4} base" & vbNewLine & _
+             "    {5}" & vbNewLine & _
+             "    {6})" & vbNewLine & _
+             "INSERT @Results SELECT {3}" & vbNewLine & _
+             "        FROM base" & vbNewLine & _
+             "        WHERE [rownumber] = {10}" & vbNewLine & _
+             "    RETURN;" & vbNewLine & _
+             "END" _
+            , Me.Name, String.Join(", ", aryParameters.ToArray()) _
+            , String.Join(", ", aryReturnDefintion.ToArray()), String.Join(", ", aryColumnList.ToArray()) _
+            , Me.Table.Name, String.Join(vbNewLine, aryJoins.ToArray()), .WhereCode, .OrderCode, sRowSelection _
+            , sOptions, RowDetails.RowNumber)
 
             Else
                .Code = String.Format("CREATE FUNCTION dbo.[{0}]({1})" & vbNewLine & _
                               "RETURNS @results TABLE({2})" & vbNewLine & _
                               "{9}" & vbNewLine & _
                               "AS" & vbNewLine & "BEGIN" & vbNewLine & _
-                              "DECLARE @forcerefresh bit;" & vbNewLine & _
-                              "SET @forcerefresh = 1;" & vbNewLine & vbNewLine & _
                               "INSERT @Results SELECT{8} {3}" & vbNewLine & _
                               "        FROM dbo.[{4}] base" & vbNewLine & _
                               "        {5}" & vbNewLine & _
@@ -197,43 +193,6 @@
          End With
 
     End Sub
-
-
-    '         bReverseOrder = False
-
-    '' What type/line number are we dealing with?
-    '        Select Case [Component].ChildRowDetails.RowSelection
-
-    '          Case ScriptDB.ColumnRowSelection.First
-    '            sPartCode = String.Format("{0}SELECT TOP 1 @part_{1} = base.[{2}]" & vbNewLine _
-    '                , [CodeCluster].Indentation, iPartNumber, objThisColumn.Name)
-
-    '          Case ScriptDB.ColumnRowSelection.Last
-    '            sPartCode = String.Format("{0}SELECT TOP 1 @part_{1} = base.[{2}]" & vbNewLine _
-    '                , [CodeCluster].Indentation, iPartNumber, objThisColumn.Name)
-    '            bReverseOrder = True
-
-    '          Case ScriptDB.ColumnRowSelection.Specific
-    '            sPartCode = String.Format("{0}SELECT TOP {3} @part_{1} = base.[{2}]" & vbNewLine _
-    '                , [CodeCluster].Indentation, iPartNumber, objThisColumn.Name, Component.ChildRowDetails.RowNumber)
-
-    '          Case ScriptDB.ColumnRowSelection.Total
-    '            sPartCode = String.Format("{0}SELECT @part_{1} = SUM(base.[{2}])" & vbNewLine _
-    '                , [CodeCluster].Indentation, iPartNumber, objThisColumn.Name)
-    '            bIsSummaryColumn = True
-
-    '          Case ScriptDB.ColumnRowSelection.Count
-    '            sPartCode = String.Format("{0}SELECT @part_{1} = COUNT(base.[{2}])" & vbNewLine _
-    '                , [CodeCluster].Indentation, iPartNumber, objThisColumn.Name)
-    '            bIsSummaryColumn = True
-
-    '          Case Else
-    '            sPartCode = String.Format("{0}SELECT TOP 1 @part_{1} = base.[{2}]" & vbNewLine _
-    '                        , [CodeCluster].Indentation, iPartNumber, objThisColumn.Name)
-
-    '        End Select
-
-
 
   End Class
 End Namespace
