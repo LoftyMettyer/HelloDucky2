@@ -1,0 +1,145 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{E14363C6-AB17-4E4F-B373-BDAE95589DB4}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Fusion.Test.SocialCare</RootNamespace>
+    <AssemblyName>Fusion.Test.SocialCare</AssemblyName>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="log4net">
+      <HintPath>..\..\lib\log4net.1.2.10\lib\2.0\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="NServiceBus, Version=3.0.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL">
+      <HintPath>..\..\lib\NServiceBus.3.0.0\lib\net40\NServiceBus.dll</HintPath>
+    </Reference>
+    <Reference Include="NServiceBus.Core, Version=3.0.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL">
+      <HintPath>..\..\lib\NServiceBus.3.0.0\lib\net40\NServiceBus.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="NServiceBus.Host, Version=3.0.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL">
+      <ExecutableExtension>.exe</ExecutableExtension>
+      <HintPath>..\..\lib\NServiceBus.Host.3.0.0\lib\net40\NServiceBus.Host.exe</HintPath>
+    </Reference>
+    <Reference Include="NServiceBus.ObjectBuilder.StructureMap, Version=3.0.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL">
+      <HintPath>..\..\lib\NServiceBus.Structuremap.3.0.0\lib\net40\NServiceBus.ObjectBuilder.StructureMap.dll</HintPath>
+    </Reference>
+    <Reference Include="StructureMap">
+      <HintPath>..\..\lib\structuremap.2.6.3\lib\StructureMap.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="EndpointConfig.cs" />
+    <Compile Include="Messages\In\CaresysInvoiceLineInsertMessageHandler.cs" />
+    <Compile Include="Messages\In\FunderChangeMessageHandler.cs" />
+    <Compile Include="Messages\In\FundingChangeMessageHandler.cs" />
+    <Compile Include="Messages\In\ServiceUserCareDeliveryAddressChangeMessageHandler.cs" />
+    <Compile Include="Messages\In\ServiceUserChangeMessageHandler.cs" />
+    <Compile Include="Messages\In\ServiceUserDailyRecordChangeMessageHandler.cs" />
+    <Compile Include="Messages\In\ServiceUserHomeAddressChangeMessageHandler.cs" />
+    <Compile Include="Messages\In\StaffChangeMessageHandler.cs" />
+    <Compile Include="Messages\In\StaffPostChangeMessageHandler.cs" />
+    <Compile Include="Messages\Out\CaresysInvoiceLineInsertMessageSender.cs" />
+    <Compile Include="Messages\Out\CaresysInvoiceLineInsertXmlMetadataExtract.cs" />
+    <Compile Include="Messages\Out\FunderChangeMessageSender.cs" />
+    <Compile Include="Messages\Out\FunderChangeMessageXmlMetadataExtract.cs" />
+    <Compile Include="Messages\Out\FundingChangeMessageSender.cs" />
+    <Compile Include="Messages\Out\FundingChangeMessageXmlMetadataExtract.cs" />
+    <Compile Include="Messages\Out\ServiceUserCareDeliveryAddressChangeRequestMessageSender.cs" />
+    <Compile Include="Messages\Out\ServiceUserCareDeliveryAddressChangeRequestXmlMetadataExtract.cs" />
+    <Compile Include="Messages\Out\ServiceUserChangeRequestMessageSender.cs" />
+    <Compile Include="Messages\Out\ServiceUserChangeRequestXmlMetadataExtract.cs" />
+    <Compile Include="Messages\Out\ServiceUserDailyRecordChangeMessageSender.cs" />
+    <Compile Include="Messages\Out\ServiceUserDailyRecordChangeXmlMetadataExtract.cs" />
+    <Compile Include="Messages\Out\ServiceUserHomeAddressChangeRequestMessageSender.cs" />
+    <Compile Include="Messages\Out\ServiceUserHomeAddressChangeRequestXmlMetadataExtract.cs" />
+    <Compile Include="Messages\Out\StaffChangeRequestXmlMetadataExtract.cs" />
+    <Compile Include="Messages\Out\StaffChangeRequestMessageSender.cs" />
+    <Compile Include="Messages\Out\StaffPostChangeRequestMessageSender.cs" />
+    <Compile Include="Messages\Out\StaffPostChangeRequestXmlMetadataExtract.cs" />
+    <Compile Include="OutboundWatchDefinition.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Registries\EntityRefExtractorRegistry.cs" />
+    <Compile Include="Registries\MessageSenderRegistry.cs" />
+    <Compile Include="Registries\OutboundMessageWatcherRegistry.cs" />
+    <Compile Include="StartOutboundWatchers.cs" />
+    <Compile Include="StructureMapBootstrap.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="NServiceBus.Host.exe.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Fusion.Core.Test\Fusion.Core.Test.csproj">
+      <Project>{021FB24E-5AF9-4546-8EDE-9EE184D925B9}</Project>
+      <Name>Fusion.Core.Test</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Fusion.Core\Fusion.Core.csproj">
+      <Project>{34714C17-E9D5-4AA6-B9BA-00965D3D4AD4}</Project>
+      <Name>Fusion.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Fusion.Messages.General\Fusion.Messages.General.csproj">
+      <Project>{07912BFE-66C7-4C5E-8FFA-96AAC0EA6D5E}</Project>
+      <Name>Fusion.Messages.General</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Fusion.Messages.SocialCare\Fusion.Messages.SocialCare.csproj">
+      <Project>{BD12AEE4-0906-478F-AAF8-D510EAE3CA06}</Project>
+      <Name>Fusion.Messages.SocialCare</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <StartAction>Program</StartAction>
+    <StartProgram>$(ProjectDir)$(OutputPath)NServiceBus.Host.exe</StartProgram>
+    <StartArguments>NServiceBus.Integration</StartArguments>
+  </PropertyGroup>
+</Project>
