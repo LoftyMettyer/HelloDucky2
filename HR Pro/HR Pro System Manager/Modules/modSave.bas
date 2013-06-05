@@ -243,7 +243,11 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
       End If
          
     Else
+      
+      ' Kill any existing triggers
+      DropAccordTransferTriggers
       gobjProgress.UpdateProgress False
+    
     End If
 
     ' Save all Relation definitons (MsgBoxErr Done)

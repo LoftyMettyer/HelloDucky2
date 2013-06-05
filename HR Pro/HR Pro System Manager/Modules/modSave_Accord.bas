@@ -78,20 +78,15 @@ ErrorTrap:
 
 End Function
 
-' Creates the triggers on the transfer table
-Public Function CreateAccordTransferTriggers(pfRefreshDatabase As Boolean) As Boolean
+Public Function DropAccordTransferTriggers() As Boolean
 
   On Error GoTo ErrorTrap
 
-  Dim rsAccordDetails As DAO.Recordset
-  Dim strUpdateTrigger As String
-  Dim strDeleteTrigger As String
   Dim strDropTrigger As String
   Dim bOK As Boolean
-  Dim sSQL As String
   
   bOK = True
-   
+  
   ' Drop existing trigger (Insert)
   strDropTrigger = "IF EXISTS" & _
     " (SELECT Name" & _
@@ -118,6 +113,31 @@ Public Function CreateAccordTransferTriggers(pfRefreshDatabase As Boolean) As Bo
     "     AND objectproperty(id, N'IsTrigger') = 1)" & _
     " DROP TRIGGER [DEL_ASRSysAccordTransactions]"
   gADOCon.Execute strDropTrigger, , adCmdText + adExecuteNoRecords
+
+TidyUpAndExit:
+  DropAccordTransferTriggers = bOK
+  Exit Function
+
+ErrorTrap:
+  OutputError "Error dropping Payroll transfer triggers"
+  bOK = False
+  Resume TidyUpAndExit
+
+End Function
+
+' Creates the triggers on the transfer table
+Public Function CreateAccordTransferTriggers(pfRefreshDatabase As Boolean) As Boolean
+
+  On Error GoTo ErrorTrap
+
+  Dim rsAccordDetails As DAO.Recordset
+  Dim strUpdateTrigger As String
+  Dim strDeleteTrigger As String
+  Dim bOK As Boolean
+  Dim sSQL As String
+  
+  ' Drop existing triggers
+  bOK = DropAccordTransferTriggers
   
   ' New triggers
   strUpdateTrigger = vbNullString
