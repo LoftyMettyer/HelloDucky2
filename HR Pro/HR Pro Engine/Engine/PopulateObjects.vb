@@ -470,7 +470,7 @@ Namespace Things
         Dim mask As New Mask
         mask.ID = row.Item("id").ToString
         mask.Name = row.Item("name").ToString
-        mask.AssociatedColumn = table.Columns.GetById(CInt(row.Item("columnid")))
+        mask.AssociatedColumn = table.Columns(0)              ' No need for masks to be aware of calling column!
         mask.SchemaName = "dbo"
         mask.Description = row.Item("description").ToString
         mask.State = row.Item("state")

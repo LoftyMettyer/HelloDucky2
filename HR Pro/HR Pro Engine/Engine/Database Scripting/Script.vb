@@ -1066,104 +1066,108 @@ Namespace ScriptDB
                Next
 
                '  Validation Masks
-               For Each expression In table.Masks
-                  With expression
-                     .GenerateCode()
-                     functions.Add(.UDF)
-                  End With
-               Next
-            Next
+          For Each expression In table.Masks
+            With expression
+              .GenerateCode()
+              functions.Add(.UDF)
+            End With
+          Next
+        Next
 
-            ' Generate any table UDFs
-            For Each table In Globals.Tables
-               For Each tableOrderFilter In table.TableOrderFilters
-                  With tableOrderFilter
-                     .GenerateCode()
-                     functions.Add(.UDF)
-                  End With
-               Next
-            Next
+        ' Generate any table UDFs
+        For Each table In Globals.Tables
+          For Each tableOrderFilter In table.TableOrderFilters
+            With tableOrderFilter
+              .GenerateCode()
+              functions.Add(.UDF)
+            End With
+          Next
+        Next
 
-            ' Script the column calculations
-            For Each table In Globals.Tables
-               For Each column In table.Columns
+        ' Script the column calculations
+        For Each table In Globals.Tables
+          For Each column In table.Columns
 
-                  If column.IsCalculated Then
+            If column.IsCalculated Then
 
-                     With column.Calculation
-                        .StartOfPartNumbers = 0
-                        .StatementObjects.Clear()
-                        .ExpressionType = ExpressionType.ColumnCalculation
-                        .AssociatedColumn = column
-                        .GenerateCode()
+              With column.Calculation
+                .StartOfPartNumbers = 0
+                .StatementObjects.Clear()
+                .ExpressionType = ExpressionType.ColumnCalculation
+                .AssociatedColumn = column
+                .GenerateCode()
 
-                        Globals.TuningLog.Expressions.Add(column)
+                Globals.TuningLog.Expressions.Add(column)
 
-                        If .IsValid Then
-                           functions.Add(.UDF)
-                        Else
-                           Dim newUdf = .UDF
-                           newUdf.Code = newUdf.CodeStub
-                           functions.Add(newUdf)
-                        End If
-                     End With
-                  End If
+                If .IsValid Then
+                  functions.Add(.UDF)
+                Else
+                  Dim newUdf = .UDF
+                  newUdf.Code = newUdf.CodeStub
+                  functions.Add(newUdf)
+                End If
+              End With
+            End If
 
-                  If column.DefaultCalcID > 0 And Not column.DefaultCalculation Is Nothing Then
+            If column.DefaultCalcID > 0 And Not column.DefaultCalculation Is Nothing Then
 
-                     With column.DefaultCalculation
-                        .StartOfPartNumbers = 0
-                        .StatementObjects.Clear()
+              With column.DefaultCalculation
+                .StartOfPartNumbers = 0
+                .StatementObjects.Clear()
 
-                        .ExpressionType = ExpressionType.ColumnDefault
-                        .AssociatedColumn = column
-                        .GenerateCode()
-                        Globals.TuningLog.Expressions.Add(column)
+                .ExpressionType = ExpressionType.ColumnDefault
+                .AssociatedColumn = column
+                .GenerateCode()
+                Globals.TuningLog.Expressions.Add(column)
 
-                        If .IsValid Then
-                           functions.Add(.UDF)
-                        Else
-                           Dim newUdf = .UDF
-                           newUdf.Code = newUdf.CodeStub
-                           functions.Add(newUdf)
-                        End If
-                     End With
-                  End If
+                If .IsValid Then
+                  functions.Add(.UDF)
+                Else
+                  Dim newUdf = .UDF
+                  newUdf.Code = newUdf.CodeStub
+                  functions.Add(newUdf)
+                End If
+              End With
+            End If
 
-               Next
-            Next
+          Next
+        Next
 
-            'Update the database for all the functions
-            For Each func In functions
+        'Update the database for all the functions
+        For Each func In functions.Distinct
 
-               If Not existingFunctions.ContainsKey(func.BaseName) Then
-                  'create the function it doesnt exist
-                  If Not Globals.CommitDB.ScriptStatement(func.SqlCreate) Then
-                     Globals.CommitDB.ScriptStatement(func.SqlCreateStub)
-                  End If
-               Else
-                  If IsSameWithoutComments(func.Code, existingFunctions(func.BaseName).Definition) Then
-                     'do nothing the function exists and hasnt changed
-                  Else
-                     'function needs to be updated
-                     If Not Globals.CommitDB.ScriptStatement(func.SqlAlter) Then
-                        Globals.CommitDB.ScriptStatement(func.SqlAlterStub)
-                     End If
-                  End If
-               End If
-               existingFunctions.Remove(func.BaseName)
-            Next
+          If existingFunctions.ContainsKey(func.BaseName) Then
 
-            'Drop from the database function no longer needed
-            For Each func In existingFunctions.Values
-               Globals.CommitDB.ScriptStatement(Script.SqlDropUDF("dbo", func.Name))
-            Next
+            If IsSameWithoutComments(func.Code, existingFunctions(func.BaseName).Definition) Then
+              'do nothing the function exists and hasnt changed
+            Else
+              'function needs to be updated
+              If Not Globals.CommitDB.ScriptStatement(func.SqlAlter) Then
+                Globals.CommitDB.ScriptStatement(func.SqlAlterStub)
+              End If
+            End If
 
-         Catch ex As Exception
-            Globals.ErrorLog.Add(SystemFramework.ErrorHandler.Section.UDFs, String.Empty, SystemFramework.ErrorHandler.Severity.Error, ex.Message, vbNullString)
-            Return False
+          Else
 
-         End Try
+            'create the function it doesnt exist
+            If Not Globals.CommitDB.ScriptStatement(func.SqlCreate) Then
+              Globals.CommitDB.ScriptStatement(func.SqlCreateStub)
+            End If
+
+          End If
+          existingFunctions.Remove(func.BaseName)
+        Next
+
+        'Drop from the database function no longer needed
+        For Each func In existingFunctions.Values
+          Globals.CommitDB.ScriptStatement(Script.SqlDropUDF("dbo", func.Name))
+        Next
+
+      Catch ex As Exception
+        Globals.ErrorLog.Add(SystemFramework.ErrorHandler.Section.UDFs, String.Empty, SystemFramework.ErrorHandler.Severity.Error, ex.Message, vbNullString)
+        Return False
+
+      End Try
 
          Return True
 
