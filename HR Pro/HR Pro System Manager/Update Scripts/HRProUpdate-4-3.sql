@@ -1089,31 +1089,31 @@ PRINT 'Step 11 - Add new calculation procedures'
 	EXECUTE sp_executeSQL @sSPCode;
 
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_propercase](
-		@text as nvarchar(max))
-	RETURNS nvarchar(max)
+		@text as varchar(MAX))
+	RETURNS varchar(MAX)
 	WITH SCHEMABINDING
 	AS
 	BEGIN
 	
-		DECLARE @reset bit;
-		DECLARE @result varchar(8000);
-		DECLARE @i integer;
-		DECLARE @c char(1);
+		DECLARE @reset bit,
+				@result varchar(MAX),
+				@i integer,
+				@c char(1);
 
 		SET @i = 1;
 		SET @result = '''';
 		SET @reset = 1;
 	      
-		WHILE (@i <= len(@text))
-			SELECT @c= substring(@text,@i,1)
+		WHILE (@i <= LEN(@text))
+			SELECT @c= SUBSTRING(@text,@i,1)
 				, @result = @result + CASE WHEN @reset=1 THEN UPPER(@c) 
 										   ELSE LOWER(@c) END
 				, @reset = CASE WHEN @c LIKE ''[a-zA-Z]'' THEN 0
 								ELSE 1
 								END
 				, @i = @i + 1;
-	
-		RETURN @result;
+
+		RETURN @result + SPACE(DATALENGTH(@text) - LEN(@result));
 		
 	END';
 	EXECUTE sp_executeSQL @sSPCode;
