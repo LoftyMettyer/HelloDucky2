@@ -4551,7 +4551,7 @@ Public Sub PrintGrid()
     .PageFooterFont.Underline = False
     
     'intResponse = vbNo
-    'If .SelBookmarks > 1 Then
+    'If .SelBookmarks.Count > 1 Then
     '  intResponse = MsgBox("Would you just like to print the selected rows?", vbQuestion + vbYesNoCancel)
     'End If
     
