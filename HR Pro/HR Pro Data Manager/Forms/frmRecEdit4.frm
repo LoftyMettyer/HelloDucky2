@@ -627,6 +627,7 @@ Begin VB.Form frmRecEdit4
          NumTabs         =   1
          BeginProperty Tab1 {0713F341-850A-101B-AFC0-4210102A8DA7} 
             Caption         =   ""
+            Key             =   ""
             Object.Tag             =   ""
             ImageVarType    =   2
          EndProperty
@@ -656,6 +657,7 @@ Begin VB.Form frmRecEdit4
       BeginProperty Panels {0713E89E-850A-101B-AFC0-4210102A8DA7} 
          NumPanels       =   1
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -7851,7 +7853,7 @@ Private Function LoadControls(pobjScreen As clsScreen) As Boolean
         ' Check that the caption isn't null and if it isn't use the
         ' SetCaption function to set it which tries to set both the
         ' caption and the text, ignoring all errors
-        If iControlType <> ctlText Then
+        If iControlType <> ctlText And iControlType <> ctlColourPicker Then
           SetCaption objNewControl, objScreenControl.Caption
         End If
 
@@ -7900,7 +7902,7 @@ Private Function LoadControls(pobjScreen As clsScreen) As Boolean
 
         ' Set the BackColor property for all controls
         ' except Images and tabs....and OLE's
-        If (iControlType And (ctlImage Or ctlTab Or ctlOle Or ctlPhoto Or ctlCommand Or ctlLine Or ctlNavigation)) = 0 Then
+        If (iControlType And (ctlImage Or ctlTab Or ctlOle Or ctlPhoto Or ctlCommand Or ctlLine Or ctlNavigation Or ctlColourPicker)) = 0 Then
           .BackColor = objScreenControl.BackColor
         End If
 
