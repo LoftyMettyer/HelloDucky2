@@ -178,9 +178,29 @@ AS
 			INNER JOIN fusion.Category c ON c.ID = e.categoryID
 
 
+-- Upgrade v5.0 procedures
+
+	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[fusion].[spGetMessageDefinitions]') AND type in (N'P', N'PC'))
+		DROP PROCEDURE [fusion].[spGetMessageDefinitions];
+
+
+	EXECUTE sp_executesql N'CREATE PROCEDURE fusion.[spGetMessageDefinitions]
+	AS
+	BEGIN
+		SELECT [ID], [name], [description],
+			[version], [allowpublish], [allowsubscribe], [bypassvalidation], [stopdeletion],
+			0 AS [tableid]
+			
+		 FROM fusion.[Message]
+	END';
 
 
 
+
+select * from fusion.[Message]
+select * from fusion.[Element]
+select * from fusion.[MessageElements]
+select * from fusion.category
 
 
 
