@@ -42,15 +42,6 @@ Begin VB.Form frmAuditFilter2
          ScrollBars      =   2
          _Version        =   196617
          DataMode        =   2
-         BeginProperty HeadFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-            Name            =   "Verdana"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
          RecordSelectors =   0   'False
          GroupHeaders    =   0   'False
          ColumnHeaders   =   0   'False
@@ -138,15 +129,6 @@ Begin VB.Form frmAuditFilter2
       Begin VB.TextBox txtNoCriteria 
          Appearance      =   0  'Flat
          Enabled         =   0   'False
-         BeginProperty Font 
-            Name            =   "Verdana"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
          Height          =   1450
          Left            =   200
          TabIndex        =   9
@@ -227,15 +209,6 @@ Begin VB.Form frmAuditFilter2
          Width           =   2000
       End
       Begin VB.ComboBox cboValues 
-         BeginProperty Font 
-            Name            =   "Verdana"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
          Height          =   315
          ItemData        =   "frmAuditFilter2.frx":000C
          Left            =   4100
@@ -262,16 +235,16 @@ Begin VB.Form frmAuditFilter2
          Left            =   2400
          TabIndex        =   14
          Top             =   300
-         Width           =   780
+         Width           =   1020
       End
       Begin VB.Label lblValue 
          BackStyle       =   0  'Transparent
          Caption         =   "Value :"
          Height          =   195
-         Left            =   4100
+         Left            =   4095
          TabIndex        =   13
          Top             =   300
-         Width           =   495
+         Width           =   735
       End
    End
 End
