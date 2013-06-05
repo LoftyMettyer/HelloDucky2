@@ -1,7 +1,7 @@
 VERSION 5.00
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "coa_line.ocx"
+Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "COA_Line.ocx"
 Begin VB.Form frmWorkflowSetup 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Workflow Configuration"
@@ -40,20 +40,23 @@ Begin VB.Form frmWorkflowSetup
       _Version        =   393216
       Style           =   1
       Tabs            =   4
-      Tab             =   3
       TabsPerRow      =   4
       TabHeight       =   520
       TabCaption(0)   =   "&Web Site"
       TabPicture(0)   =   "frmWorkflowSetup.frx":000C
-      Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "fraWebSiteLogin"
-      Tab(0).Control(1)=   "fraWebSite"
+      Tab(0).ControlEnabled=   -1  'True
+      Tab(0).Control(0)=   "fraWebSite"
+      Tab(0).Control(0).Enabled=   0   'False
+      Tab(0).Control(1)=   "fraWebSiteLogin"
+      Tab(0).Control(1).Enabled=   0   'False
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "&Personnel Identification"
       TabPicture(1)   =   "frmWorkflowSetup.frx":0028
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraPersonnelTable"
+      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).Control(1)=   "fraDelegation"
+      Tab(1).Control(1).Enabled=   0   'False
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "&Service"
       TabPicture(2)   =   "frmWorkflowSetup.frx":0044
@@ -62,7 +65,7 @@ Begin VB.Form frmWorkflowSetup
       Tab(2).ControlCount=   1
       TabCaption(3)   =   "&Mobile Specifics"
       TabPicture(3)   =   "frmWorkflowSetup.frx":0060
-      Tab(3).ControlEnabled=   -1  'True
+      Tab(3).ControlEnabled=   0   'False
       Tab(3).Control(0)=   "Frame1"
       Tab(3).Control(0).Enabled=   0   'False
       Tab(3).Control(1)=   "fraMobileKey"
@@ -71,7 +74,7 @@ Begin VB.Form frmWorkflowSetup
       Begin VB.Frame fraMobileKey 
          Caption         =   "Custom.Web.Config :"
          Height          =   975
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   43
          Top             =   3090
          Width           =   6500
@@ -97,7 +100,7 @@ Begin VB.Form frmWorkflowSetup
       Begin VB.Frame Frame1 
          Caption         =   "Personnel Table :"
          Height          =   2445
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   33
          Top             =   500
          Width           =   6500
@@ -188,7 +191,7 @@ Begin VB.Form frmWorkflowSetup
       Begin VB.Frame fraWebSiteLogin 
          Caption         =   "Login :"
          Height          =   1700
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   4
          Top             =   1500
          Width           =   6500
@@ -491,7 +494,7 @@ Begin VB.Form frmWorkflowSetup
       Begin VB.Frame fraWebSite 
          Caption         =   "Address :"
          Height          =   850
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   1
          Top             =   500
          Width           =   6500
@@ -552,7 +555,8 @@ Private mfCopyDelegateEmail As Boolean
 Private mfServiceSuspended As Boolean
 Private mlngMobPersonnelTableID As Long
 Private mlngMobLoginColumnID As Long
-Private mlngMobUniqueEmailColumnID As Long
+' Private mlngMobUniqueEmailColumnID As Long
+Private mlngWorkEmailColumnID As Long
 Private mlngMobLeavingDateColumnID As Long
 Private mlngMobActivatedColumnID As Long
 
@@ -620,7 +624,8 @@ End Sub
 
 Private Sub cboMobEMailColumn_Click()
   With cboMobEMailColumn
-    mlngMobUniqueEmailColumnID = .ItemData(.ListIndex)
+    ' mlngMobUniqueEmailColumnID = .ItemData(.ListIndex)
+    mlngWorkEmailColumnID = .ItemData(.ListIndex)
   End With
   
   If Not mbLoading Then
@@ -1024,11 +1029,11 @@ Private Sub cmdOK_Click()
   ' all mobile cdropdowns none or selected?
   If Application.MobileModule Then
     If (mlngMobLoginColumnID = 0 And _
-      mlngMobUniqueEmailColumnID = 0 And _
+      mlngWorkEmailColumnID = 0 And _
       mlngMobLeavingDateColumnID = 0 And _
       mlngMobActivatedColumnID = 0) Or _
       (mlngMobLoginColumnID > 0 And _
-      mlngMobUniqueEmailColumnID > 0 And _
+      mlngWorkEmailColumnID > 0 And _
       mlngMobLeavingDateColumnID > 0 And _
       mlngMobActivatedColumnID > 0) Then
       fSaveOK = True
@@ -1088,7 +1093,8 @@ Private Sub SaveChanges()
   
   SaveModuleSetting gsMODULEKEY_MOBILE, gsPARAMETERKEY_PERSONNELTABLE, gsPARAMETERTYPE_TABLEID, mlngMobPersonnelTableID
   SaveModuleSetting gsMODULEKEY_MOBILE, gsPARAMETERKEY_LOGINNAME, gsPARAMETERTYPE_COLUMNID, mlngMobLoginColumnID
-  SaveModuleSetting gsMODULEKEY_MOBILE, gsPARAMETERKEY_UNIQUEEMAILCOLUMN, gsPARAMETERTYPE_COLUMNID, mlngMobUniqueEmailColumnID
+  ' SaveModuleSetting gsMODULEKEY_MOBILE, gsPARAMETERKEY_UNIQUEEMAILCOLUMN, gsPARAMETERTYPE_COLUMNID, mlngMobUniqueEmailColumnID
+  SaveModuleSetting gsMODULEKEY_MOBILE, gsPARAMETERKEY_WORKEMAIL, gsPARAMETERTYPE_COLUMNID, mlngWorkEmailColumnID
   SaveModuleSetting gsMODULEKEY_MOBILE, gsPARAMETERKEY_LEAVINGDATE, gsPARAMETERTYPE_COLUMNID, mlngMobLeavingDateColumnID
   SaveModuleSetting gsMODULEKEY_MOBILE, gsPARAMETERKEY_MOBILEACTIVATED, gsPARAMETERTYPE_COLUMNID, mlngMobActivatedColumnID
   
@@ -1371,7 +1377,8 @@ Private Sub ReadParameters()
 
   mlngMobPersonnelTableID = GetModuleSetting(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_PERSONNELTABLE, 0)
   mlngMobLoginColumnID = GetModuleSetting(gsMODULEKEY_MOBILE, gsPARAMETERKEY_LOGINNAME, 0)
-  mlngMobUniqueEmailColumnID = GetModuleSetting(gsMODULEKEY_MOBILE, gsPARAMETERKEY_UNIQUEEMAILCOLUMN, 0)
+  ' mlngMobEmailColumnID = GetModuleSetting(gsMODULEKEY_MOBILE, gsPARAMETERKEY_UNIQUEEMAILCOLUMN, 0)
+  mlngWorkEmailColumnID = GetModuleSetting(gsMODULEKEY_MOBILE, gsPARAMETERKEY_WORKEMAIL, 0)
   mlngMobLeavingDateColumnID = GetModuleSetting(gsMODULEKEY_MOBILE, gsPARAMETERKEY_LEAVINGDATE, 0)
   mlngMobActivatedColumnID = GetModuleSetting(gsMODULEKEY_MOBILE, gsPARAMETERKEY_MOBILEACTIVATED, 0)
 
@@ -1648,7 +1655,9 @@ Private Sub RefreshControls()
   lblMobLoginNameColumn.Enabled = cboMobLoginName.Enabled
   
   cboMobEMailColumn.Enabled = (cboMobEMailColumn.ListCount > 1) And _
-    (Not mblnReadOnly) And Application.MobileModule
+    (Not mblnReadOnly) And _
+    (Application.MobileModule) And _
+    (Not Application.PersonnelModule)
     cboMobEMailColumn.BackColor = IIf(cboMobEMailColumn.Enabled, vbWindowBackground, vbButtonFace)
   lblMobEmailAddresses.Enabled = cboMobEMailColumn.Enabled
   
@@ -1750,7 +1759,7 @@ Private Sub RefreshPersonnelColumnControls()
 
             cboMobEMailColumn.AddItem !ColumnName
             cboMobEMailColumn.ItemData(cboMobEMailColumn.NewIndex) = !ColumnID
-            If !ColumnID = mlngMobUniqueEmailColumnID Then
+            If !ColumnID = mlngWorkEmailColumnID Then
               iMobEmailColumnListIndex = cboMobEMailColumn.NewIndex
             End If
             
