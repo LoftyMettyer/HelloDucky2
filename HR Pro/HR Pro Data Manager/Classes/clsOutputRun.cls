@@ -841,7 +841,6 @@ Public Function SetOptions( _
     Optional blnOutputCoverSheet As Boolean, _
     Optional lngOverrideFilterID As Long, _
     Optional blnOutputRetainPivotOrChart As Boolean, _
-    Optional blnOutputRetainCharts As Boolean, _
     Optional lngOriginalOutputFormat As Long)
 
   Dim objColumn As clsColumn
@@ -883,9 +882,9 @@ Public Function SetOptions( _
         .txtEmailGroup.Text = datGeneral.GetEmailGroupName(lngEmailAddr)
         .txtEmailGroup.Tag = lngEmailAddr
         .txtEmailSubject.Text = strEmailSubject
-        .txtEMailAttachAs.Text = strEmailAttachAs
+        .txtEmailAttachAs.Text = strEmailAttachAs
       End If
-      .txtFileName.Text = strFileName
+      .txtFilename.Text = strFileName
       .ShowFormats mblnData, mblnCSV, mblnHTML, mblnWord, mblnExcel, mblnChart, mblnPivot
       .PageRange = mblnPageRange
       .Show vbModal
@@ -904,12 +903,12 @@ Public Function SetOptions( _
       blnEmail = (.chkDestination(desEmail).Value = vbChecked)
       lngEmailAddr = Val(.txtEmailGroup.Tag)
       strEmailSubject = .txtEmailSubject.Text
-      strEmailAttachAs = .txtEMailAttachAs.Text
-      strFileName = .txtFileName.Text
+      strEmailAttachAs = .txtEmailAttachAs.Text
+      strFileName = .txtFilename.Text
 
       mlngEmailGroupID = .txtEmailGroup.Tag
       mstrEmailSubject = .txtEmailSubject.Text
-      mstrEmailAttachAs = .txtEMailAttachAs.Text
+      mstrEmailAttachAs = .txtEmailAttachAs.Text
 
       If .cboSaveExisting.ListIndex <> -1 Then
         lngSaveExisting = .cboSaveExisting.ItemData(.cboSaveExisting.ListIndex)

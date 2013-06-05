@@ -49,7 +49,7 @@ Private mblnPreviewOnScreen As Boolean
 Private mblnPrintFilterHeader As Boolean
 Private mlngOverrideFilterID As Long
 Private mblnOutputRetainPivotOrChart As Boolean
-Private mblnOutputRetainCharts As Boolean
+' Private mblnOutputRetainCharts As Boolean
 Private mstrErrorMessage As String
 
 
@@ -165,7 +165,7 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
   Dim blnOutputCoverSheet As Boolean
   Dim lngOverrideFilterID As Long
   Dim blnOutputRetainPivotOrChart As Boolean
-  Dim blnOutputRetainCharts As Boolean
+  'Dim blnOutputRetainCharts As Boolean
   
   'HTML IO vars
   Dim FileNum As Integer
@@ -186,7 +186,7 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
     strOutputOptions = "OutputPreview, OutputFormat, OutputScreen, OutputPrinter, OutputPrinterName, OutputSave, "
     strOutputOptions = strOutputOptions & "OutputSaveExisting, OutputEmail, OutputEmailAddr, OutputEmailSubject, "
     strOutputOptions = strOutputOptions & "OutputFilename, OutputEmailAttachAs, OutputTitlePage, OutputReportPackTitle, "
-    strOutputOptions = strOutputOptions & "OutputOverrideFilter, OutputTOC, OutputCoverSheet, OverrideFilterID, OutputRetainPivotOrChart, outputRetainCharts"
+    strOutputOptions = strOutputOptions & "OutputOverrideFilter, OutputTOC, OutputCoverSheet, OverrideFilterID, OutputRetainPivotOrChart" ', outputRetainCharts"
     
     Set rsBatchOutputOptions = mclsData.OpenPersistentRecordset("SELECT " & strOutputOptions & " FROM ASRSysBatchJobName WHERE ID = " & lBatchJobID, adOpenKeyset, adLockReadOnly)
       
@@ -216,7 +216,7 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
       blnOutputCoverSheet = !OutputCoverSheet
       lngOverrideFilterID = !OverrideFilterID
       blnOutputRetainPivotOrChart = !OutputRetainPivotOrChart
-      blnOutputRetainCharts = !OutputRetainCharts
+      'blnOutputRetainCharts = !OutputRetainCharts
     End With
   End If
 '1
@@ -370,8 +370,8 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
           blnOutputTOC, _
           blnOutputCoverSheet, _
           lngOverrideFilterID, _
-          blnOutputRetainPivotOrChart, _
-          blnOutputRetainCharts
+          blnOutputRetainPivotOrChart ' , _
+          'blnOutputRetainCharts
         End If
             
         pobjCalendarReportRUN.CalendarReportID = rsBatchDetails.Fields("JobID")
@@ -427,8 +427,8 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
             blnOutputTOC, _
             blnOutputCoverSheet, _
             lngOverrideFilterID, _
-            blnOutputRetainPivotOrChart, _
-            blnOutputRetainCharts
+            blnOutputRetainPivotOrChart ', _
+            'blnOutputRetainCharts
           End If
           
           If datGeneral.SystemPermission("CROSSTABS", "RUN") Then
@@ -482,8 +482,8 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
             blnOutputTOC, _
             blnOutputCoverSheet, _
             lngOverrideFilterID, _
-            blnOutputRetainPivotOrChart, _
-            blnOutputRetainCharts
+            blnOutputRetainPivotOrChart ' , _
+            'blnOutputRetainCharts
         End If
         
         If datGeneral.SystemPermission("CUSTOMREPORTS", "RUN") Then
@@ -533,8 +533,8 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
               blnOutputTOC, _
               blnOutputCoverSheet, _
               lngOverrideFilterID, _
-              blnOutputRetainPivotOrChart, _
-              blnOutputRetainCharts
+              blnOutputRetainPivotOrChart ', _
+              lnOutputRetainCharts
             
           'MH20011107 Check permissions...
           If datGeneral.SystemPermission("RECORDPROFILE", "RUN") Then
@@ -812,8 +812,7 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
               blnOutputTOC, _
               blnOutputCoverSheet, _
               lngOverrideFilterID, _
-              blnOutputRetainPivotOrChart, _
-              blnOutputRetainCharts
+              blnOutputRetainPivotOrChart
               
           If datGeneral.SystemPermission("MATCHREPORTS", "RUN") Then
             fOK = pfrmMatchRUN.RunMatchReport
@@ -865,8 +864,7 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
               blnOutputTOC, _
               blnOutputCoverSheet, _
               lngOverrideFilterID, _
-              blnOutputRetainPivotOrChart, _
-              blnOutputRetainCharts
+              blnOutputRetainPivotOrChart
               
           If datGeneral.SystemPermission("SUCCESSION", "RUN") Then
             fOK = pfrmMatchRUN.RunMatchReport
@@ -918,8 +916,7 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
               blnOutputTOC, _
               blnOutputCoverSheet, _
               lngOverrideFilterID, _
-              blnOutputRetainPivotOrChart, _
-              blnOutputRetainCharts
+              blnOutputRetainPivotOrChart
               
           If datGeneral.SystemPermission("CAREER", "RUN") Then
             fOK = pfrmMatchRUN.RunMatchReport
@@ -1067,7 +1064,7 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
           InitialiseStyles
           'mwrdApp.Visible = True
           With mwrdApp.Selection
-            .HomeKey unit:=wdStory
+            .HomeKey Unit:=wdStory
             'Insert TOC
             With mwrdDoc
               .TablesOfContents.Add Range:=mwrdApp.Selection.Range, RightAlignPageNumbers:=True, UseHeadingStyles:=True, UpperHeadingLevel:=1, LowerHeadingLevel:=3, IncludePageNumbers:=True, AddedStyles:="", UseHyperlinks:=True
@@ -1075,33 +1072,33 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
               .TablesOfContents.Format = wdIndexIndent
             End With
             .InsertBreak Type:=wdPageBreak
-            .MoveLeft unit:=wdCharacter
-            .HomeKey unit:=wdStory, Extend:=wdExtend
+            .MoveLeft Unit:=wdCharacter
+            .HomeKey Unit:=wdStory, Extend:=wdExtend
             ApplyStylesToRange mwrdApp.Selection.Range, mcolStyles("Data"), True
-            .HomeKey unit:=wdStory
+            .HomeKey Unit:=wdStory
             
             'Insert TOC header text
             .TypeParagraph: .TypeParagraph
-            .HomeKey unit:=wdStory
+            .HomeKey Unit:=wdStory
             .TypeText Text:="Table of Contents"
-            .HomeKey unit:=wdLine, Extend:=wdExtend
+            .HomeKey Unit:=wdLine, Extend:=wdExtend
             ApplyStylesToRange mwrdApp.Selection.Range, mcolStyles("Heading"), True
             .Font.Size = 14
             
             'Insert Report Title or Report Pack name if blank
-            .HomeKey unit:=wdStory
+            .HomeKey Unit:=wdStory
             .InsertBreak Type:=wdPageBreak
-            .HomeKey unit:=wdStory
+            .HomeKey Unit:=wdStory
             .TypeParagraph: .TypeParagraph: .TypeParagraph: .TypeParagraph
             If strOutputReportPackTitle = vbNullString Then
               .TypeText Text:=sBatchJobName
             Else
               .TypeText Text:=strOutputReportPackTitle
             End If
-            .HomeKey unit:=wdLine, Extend:=wdExtend
+            .HomeKey Unit:=wdLine, Extend:=wdExtend
             ApplyStylesToRange mwrdApp.Selection.Range, mcolStyles("Heading"), True
             .Font.Size = 20
-            .MoveLeft unit:=wdCharacter
+            .MoveLeft Unit:=wdCharacter
             
             'Update TOC page numbers
             mwrdDoc.TablesOfContents(1).UpdatePageNumbers

@@ -157,8 +157,8 @@ Private Sub EnableReportPackOutputs(blnTOC As Boolean, blnRetainPivot As Boolean
     'Retain Pivot
     .chkRetainPivot.Enabled = blnRetainPivot
     .chkRetainPivot.Value = vbUnchecked
-    .ChkRetainCharts.Enabled = blnRetainPivot
-    .ChkRetainCharts.Value = vbUnchecked
+    '.ChkRetainCharts.Enabled = blnRetainPivot
+    '.ChkRetainCharts.Value = vbUnchecked
     'Force Cover
     .chkForceCoverSheet.Enabled = blnForceCover
     .chkTOC.Value = vbUnchecked

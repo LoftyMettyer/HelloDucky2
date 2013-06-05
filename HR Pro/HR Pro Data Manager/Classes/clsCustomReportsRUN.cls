@@ -56,7 +56,7 @@ Private mblnOutputTOC As Boolean
 Private mblnOutputCoverSheet As Boolean
 Private mlngOverrideFilterID As Long
 Private mblnOutputRetainPivotOrChart As Boolean
-Private mblnOutputRetainCharts As Boolean
+'Private mblnOutputRetainCharts As Boolean
           
 Private mlngPicklistFilterID As Long
 Private mstrPicklistFilterType As String
@@ -972,10 +972,10 @@ Private Function GetCustomReportDefinition() As Boolean
     'if basetable is personnel and ReportPack Override filter exists use that swap
     If mlngCustomReportsBaseTable = glngPersonnelTableID And gblnReportPackMode Then
       mlngCustomReportsFilterID = IIf(mlngOverrideFilterID <> 0, mlngOverrideFilterID, IIf(IsNull(!Filter), 0, !Filter))
-      mlngCustomReportsPickListID = IIf(mlngOverrideFilterID <> 0, 0, IIf(IsNull(!Picklist), 0, !Picklist))
+      mlngCustomReportsPickListID = IIf(mlngOverrideFilterID <> 0, 0, IIf(IsNull(!picklist), 0, !picklist))
     Else
       mlngCustomReportsFilterID = !Filter
-      mlngCustomReportsPickListID = !Picklist
+      mlngCustomReportsPickListID = !picklist
     End If
     mlngCustomReportsParent1Table = !parent1table
     mstrCustomReportsParent1TableName = datGeneral.GetTableName(mlngCustomReportsParent1Table)
@@ -5088,8 +5088,8 @@ Public Function OutputReport(blnPrompt As Boolean) As Boolean
       mblnOutputTOC, _
       mblnOutputCoverSheet, _
       mlngOverrideFilterID, _
-      mblnOutputRetainPivotOrChart, _
-      mblnOutputRetainCharts) Then
+      mblnOutputRetainPivotOrChart) Then ', _
+      'mblnOutputRetainCharts) Then
 
     If Not gblnBatchMode Then
       If mbIsBradfordIndexReport Then
@@ -5918,8 +5918,8 @@ Public Sub SetOutputParameters( _
           Optional blnOutputTOC As Boolean, _
           Optional blnOutputCoverSheet As Boolean, _
           Optional lngOverrideFilterID As Long, _
-          Optional blnOutputRetainPivotOrChart As Boolean, _
-          Optional blnOutputRetainCharts As Boolean)
+          Optional blnOutputRetainPivotOrChart As Boolean) ', _
+          'Optional blnOutputRetainCharts As Boolean)
 
   mlngOutputFormat = lngOutputFormat
   mblnOutputScreen = blnOutputScreen
@@ -5941,7 +5941,7 @@ Public Sub SetOutputParameters( _
   mblnOutputCoverSheet = IIf(IsMissing(blnOutputCoverSheet), giEXPRVALUE_CHARACTER, blnOutputCoverSheet)
   mlngOverrideFilterID = IIf(IsMissing(lngOverrideFilterID), giEXPRVALUE_NUMERIC, lngOverrideFilterID)
   mblnOutputRetainPivotOrChart = IIf(IsMissing(blnOutputRetainPivotOrChart), giEXPRVALUE_CHARACTER, blnOutputRetainPivotOrChart)
-  mblnOutputRetainCharts = IIf(IsMissing(blnOutputRetainCharts), giEXPRVALUE_CHARACTER, blnOutputRetainCharts)
+  'mblnOutputRetainCharts = IIf(IsMissing(blnOutputRetainCharts), giEXPRVALUE_CHARACTER, blnOutputRetainCharts)
 End Sub
 
 
