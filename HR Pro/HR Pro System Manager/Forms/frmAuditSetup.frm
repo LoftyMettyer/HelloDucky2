@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.0#0"; "COA_Line.ocx"
+Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "COA_Line.ocx"
 Begin VB.Form frmAuditSetup 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Audit Setup"
@@ -16,6 +16,7 @@ Begin VB.Form frmAuditSetup
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
+   HelpContextID   =   1082
    Icon            =   "frmAuditSetup.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
@@ -141,8 +142,6 @@ Begin VB.Form frmAuditSetup
       Begin COALine.COA_Line ASRDummyLine1 
          Height          =   30
          Left            =   180
-         TabIndex        =   12
-         TabStop         =   0   'False
          Top             =   755
          Width           =   4845
          _ExtentX        =   8546
@@ -152,7 +151,7 @@ Begin VB.Form frmAuditSetup
          Caption         =   "Audit ID Column :"
          Height          =   285
          Left            =   180
-         TabIndex        =   25
+         TabIndex        =   12
          Top             =   4680
          Width           =   1680
       End
