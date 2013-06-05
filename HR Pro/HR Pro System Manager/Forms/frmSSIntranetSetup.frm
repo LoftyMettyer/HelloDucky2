@@ -2119,6 +2119,7 @@ Private Sub SaveLinkParameters(piLinkType As SSINTRANETLINKTYPES)
               sAppFilePath = .Columns("AppFilePath").CellText(varBookMark)
               sAppParameters = .Columns("AppParameters").CellText(varBookMark)
               sElement_Type = .Columns("Element_Type").CellValue(varBookMark)
+              sPictureID = .Columns("PictureID").CellText(varBookMark)
 
             Case SSINTLINK_BUTTON
               sPrompt = .Columns("Prompt").CellText(varBookMark)
