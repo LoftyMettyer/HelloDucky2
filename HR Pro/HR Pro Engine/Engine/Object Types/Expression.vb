@@ -75,52 +75,52 @@ Namespace Things
 
     End Sub
 
-      Public Overridable Sub GenerateCode()
+    Public Overridable Sub GenerateCode()
 
-         Dim sOptions As String = String.Empty
-         Dim sCode As String = String.Empty
-         Dim sBypassUDFCode As String = String.Empty
-         Dim aryDependsOn As New ArrayList
-         Dim aryComments As New ArrayList
-         Dim aryParameters1 As New ArrayList
-         Dim aryParameters2 As New ArrayList
-         Dim aryParameters3 As New ArrayList
+      Dim sOptions As String = String.Empty
+      Dim sCode As String = String.Empty
+      Dim sBypassUDFCode As String = String.Empty
+      Dim aryDependsOn As New ArrayList
+      Dim aryComments As New ArrayList
+      Dim aryParameters1 As New ArrayList
+      Dim aryParameters2 As New ArrayList
+      Dim aryParameters3 As New ArrayList
 
-         ' Initialise code object
-         Me.IsComplex = False
-         Me.CaseCount = 0
+      ' Initialise code object
+      Me.IsComplex = False
+      Me.CaseCount = 0
 
-         _linesOfCode = New ScriptDB.LinesOfCode
-         _linesOfCode.Clear()
-         _linesOfCode.ReturnType = ReturnType
-         _linesOfCode.CodeLevel = If(Me.ExpressionType = ScriptDB.ExpressionType.ColumnFilter, 2, 1)
+      _linesOfCode = New ScriptDB.LinesOfCode
+      _linesOfCode.Clear()
+      _linesOfCode.ReturnType = ReturnType
+      _linesOfCode.CodeLevel = If(Me.ExpressionType = ScriptDB.ExpressionType.ColumnFilter, 2, 1)
 
-         Joins = New ArrayList
-         FromTables = New ArrayList
-         Wheres = New ArrayList
+      Joins = New ArrayList
+      FromTables = New ArrayList
+      Wheres = New ArrayList
 
-         Declarations.Clear()
-         PreStatements.Clear()
-         Joins.Clear()
-         Wheres.Clear()
+      Declarations.Clear()
+      PreStatements.Clear()
+      Joins.Clear()
+      Wheres.Clear()
 
-         ' Build the dependencies collection
-         Dependencies.Clear()
-         BuildDependancies(Me)
+      ' Build the dependencies collection
+      Dependencies.Clear()
+      BuildDependancies(Me)
 
-         ' If calculate only when empty add itself to the dependency stack
-         If Me.AssociatedColumn.CalculateIfEmpty Then
-            Dependencies.AddIfNew(Me.AssociatedColumn)
-         End If
+      ' If calculate only when empty add itself to the dependency stack
+      If Me.AssociatedColumn.CalculateIfEmpty Then
+        Dependencies.AddIfNew(Me.AssociatedColumn)
+      End If
 
-         aryParameters1.Clear()
-         aryParameters2.Clear()
-         aryParameters3.Clear()
+      aryParameters1.Clear()
+      aryParameters2.Clear()
+      aryParameters3.Clear()
 
-         ' Build the execution code
-         SQLCode_AddCodeLevel(Me.Components, _linesOfCode)
+      ' Build the execution code
+      SQLCode_AddCodeLevel(Me.Components, _linesOfCode)
 
-         ' Always add the ID for the record
+      ' Always add the ID for the record
       If RequiresRecordID Or Me.IsComplex Or Me.ExpressionType = ScriptDB.ExpressionType.ColumnDefault Then
         aryParameters1.Add("@prm_ID integer")
         aryParameters2.Add("base.ID")
@@ -903,8 +903,7 @@ Namespace Things
 
       ' Nesting is too deep - convert to part number
 
-
-      If Me.CaseCount > 9 And [Component].Components.Count > 1 Then
+      If Me.CaseCount > 8 And [Component].Components.Count > 1 Then
 
         ' Debug.Assert(Me.Name <> "Annual_Rounded")
 
