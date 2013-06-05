@@ -3481,7 +3481,7 @@ Private Function ReadAbsenceRecordParameters() As Boolean
           
           mvar_sGeneralMsg = mvar_sGeneralMsg & vbNewLine & "  'Absence' table not found."
         Else
-          mvar_sAbsenceTableName = !TableName
+          mvar_sAbsenceTableName = "tbuser_" + !TableName
         End If
       End With
     End If
@@ -3965,7 +3965,7 @@ Private Function ReadAbsenceTypeRecordParameters() As Boolean
           
           mvar_sGeneralMsg = mvar_sGeneralMsg & vbNewLine & "  'Absence Type' table not found."
         Else
-          mvar_sAbsenceTypeTableName = !TableName
+          mvar_sAbsenceTypeTableName = "tbuser_" + !TableName
         End If
       End With
     End If
