@@ -223,15 +223,22 @@ Namespace Things
         Dim tableOrder As TableOrder = Globals.Tables.SelectMany(Function(t) t.TableOrders).Where(Function(o) o.ID = orderId).FirstOrDefault
 
         Dim orderItem As New TableOrderItem
-        orderItem.ID = row.Item("orderid").ToString
-        orderItem.ColumnType = row.Item("type")
-        orderItem.Sequence = row.Item("sequence")
-        orderItem.Ascending = row.Item("ascending")
 
-        orderItem.TableOrder = tableOrder
-        orderItem.Column = tableOrder.Table.Columns.GetById(CInt(row.Item("columnid")))
+        If Not tableOrder Is Nothing Then
 
-        tableOrder.Items.Add(orderItem)
+          orderItem.ID = row.Item("orderid").ToString
+          orderItem.ColumnType = row.Item("type")
+          orderItem.Sequence = row.Item("sequence")
+          orderItem.Ascending = row.Item("ascending")
+
+          orderItem.TableOrder = tableOrder
+          orderItem.Column = tableOrder.Table.Columns.GetById(CInt(row.Item("columnid")))
+
+          tableOrder.Items.Add(orderItem)
+        Else
+          Globals.ErrorLog.Add(SystemFramework.ErrorHandler.Section.LoadingData, "OrderItems", SystemFramework.ErrorHandler.Severity.Warning, "Order not found", "order " & CStr(orderId) & " not found")
+
+        End If
       Next
 
     End Sub
