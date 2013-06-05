@@ -65,23 +65,19 @@ END
 /* Step - Management Packs */
 /* ------------------------------------------------------------- */
 
-	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysCustomReportsName', 'U') AND name = 'OutputSubFormat')
-		BEGIN
-			EXEC sp_executesql N'ALTER TABLE ASRSysCustomReportsName ADD OutputSubFormat tinyint NULL;';
-			EXEC sp_executesql N'UPDATE ASRSysCustomReportsName SET OutputSubFormat = 12;';
-		END
-
-select * from ASRSysFileFormats
-
-
-INSERT ASRSysFileFormats (ID, Destination, [Description], Extension, Office2003, Office2007, [Default])
-	VALUES (923, 'Word', 'PDF', 'pdf', 17, 17, 0);
-INSERT ASRSysFileFormats (ID, Destination, [Description], Extension, Office2003, Office2007, [Default])
-	VALUES (924, 'Word', 'Rich Text Format', 'rtf', 6, 6, 0);
-INSERT ASRSysFileFormats (ID, Destination, [Description], Extension, Office2003, Office2007, [Default])
-	VALUES (925, 'Word', 'Plain Text', 'txt', 2, 2, 0);
-	
-
+	IF NOT EXISTS(SELECT * FROM ASRSysFileFormats where ID = 923)
+	BEGIN
+		INSERT ASRSysFileFormats (ID, Destination, [Description], Extension, Office2003, Office2007, [Default])
+			VALUES (923, 'Word', 'PDF (*.pdf)', 'pdf', NULL, 17, 0);
+		INSERT ASRSysFileFormats (ID, Destination, [Description], Extension, Office2003, Office2007, [Default])
+			VALUES (924, 'Word', 'Rich Text Format (*.rtf)', 'rtf', NULL, 6, 0);
+		INSERT ASRSysFileFormats (ID, Destination, [Description], Extension, Office2003, Office2007, [Default])
+			VALUES (925, 'Word', 'Plain Text (*.txt)', 'txt', NULL, 2, 0);
+		INSERT ASRSysFileFormats (ID, Destination, [Description], Extension, Office2003, Office2007, [Default])
+			VALUES (926, 'Word', 'Web Page (*.html)', 'html', NULL, 8, 0);		
+		INSERT ASRSysFileFormats (ID, Destination, [Description], Extension, Office2003, Office2007, [Default])
+			VALUES (927, 'Excel', 'Web Page (*.html)', 'html', NULL, 44, 0);
+	END
 
 
 /* ------------------------------------------------------------- */
