@@ -5350,6 +5350,8 @@ Public Function InsertTableRecord(psInsertSQL As String, _
   Dim pmADO As ADODB.Parameter
   Dim ADOErr As ADODB.Error
   Dim ODBC As New ODBC
+  Dim fRecDescExists As Boolean
+  Dim sFirstChar As String
   
   Const iRETRIES = 5
   Const iPAUSE = 5000
@@ -5506,7 +5508,18 @@ InsertErrorTrap:
     fInsertedOK = False
     'JPD 20030904 Fault 5479
     gobjProgress.CloseProgress
-    COAMsgBox "The new record could not be created." & vbCrLf & vbCrLf & _
+    
+    'JPD 20110705 HRPRO-1572
+    ' Now get validation failure message prefixed woth <record description> and <line of hyphens>.
+    ' Only add extra carriage return if required (ie. if there is a record description).
+    fRecDescExists = False
+    sFirstChar = Left(Err.Description, 1)
+    If Len(sFirstChar) > 0 Then
+      fRecDescExists = (Asc(sFirstChar) <> 13)
+    End If
+    
+    COAMsgBox "The new record could not be created." & _
+      IIf(fRecDescExists, vbCrLf & vbCrLf, "") & _
       ODBC.FormatError(Err.Description), vbExclamation + vbOKOnly, Application.Name
     Resume TidyUpAndExit
   End If
@@ -5529,6 +5542,7 @@ Public Function DeleteTableRecord(plngTableID As Long, _
   Dim pmADO As ADODB.Parameter
   Dim ADOErr As ADODB.Error
   Dim ODBC As New ODBC
+
   
   Const iRETRIES = 5
   Const iPAUSE = 5000
@@ -5714,6 +5728,8 @@ Public Function UpdateTableRecord(psUpdateSQL As String, _
   Dim pmADO As ADODB.Parameter
   Dim ADOErr As ADODB.Error
   Dim ODBC As New ODBC
+  Dim fRecDescExists As Boolean
+  Dim sFirstChar As String
 
   Const iRETRIES = 5
   Const iPAUSE = 5000
@@ -5895,7 +5911,18 @@ UpdateErrorTrap:
     fUpdatedOK = False
     'JPD 20030904 Fault 5479
     gobjProgress.CloseProgress
-    COAMsgBox "The record could not be updated." & vbCrLf & vbCrLf & _
+    
+    'JPD 20110705 HRPRO-1572
+    ' Now get validation failure message prefixed woth <record description> and <line of hyphens>.
+    ' Only add extra carriage return if required (ie. if there is a record description).
+    fRecDescExists = False
+    sFirstChar = Left(Err.Description, 1)
+    If Len(sFirstChar) > 0 Then
+      fRecDescExists = (Asc(sFirstChar) <> 13)
+    End If
+
+    COAMsgBox "The record could not be updated." & _
+      IIf(fRecDescExists, vbCrLf & vbCrLf, "") & _
       ODBC.FormatError(Err.Description), vbExclamation + vbOKOnly, Application.Name
     Resume TidyUpAndExit
   End If
