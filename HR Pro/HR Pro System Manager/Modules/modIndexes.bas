@@ -115,11 +115,6 @@ Public Function CreateChildTableForeignKeys() As Boolean
       Do While Not .EOF
         sTableName = GetTableName(.Fields("ChildID").value)
         bOK = CreateIndex(sTableName, "FK_" & .Fields("ParentID").value, "ID_" & .Fields("ParentID").value, False, 80)
-        
-        
-        bOK = CreateIndex(sTableName, "FK_" & .Fields("ParentID").value, "ID_" & .Fields("ParentID").value, False, 80)
-        
-        
         .MoveNext
       Loop
     End If
