@@ -1627,8 +1627,16 @@ PRINT 'Step 3 - System indexes'
 
 	IF  EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ASRSysOutlookEvents]') AND name = N'IDX_LinkRecordID')
 		DROP INDEX [IDX_LinkRecordID] ON [dbo].[ASRSysOutlookEvents] WITH ( ONLINE = OFF )
-
 	EXEC sp_executesql N'CREATE CLUSTERED INDEX [IDX_LinkRecordID] ON [dbo].[ASRSysOutlookEvents] ([RecordID] ASC, [FolderID] ASC, [TableID] ASC, [LinkID] ASC)'
+
+	IF  EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[tbsys_scriptedobjects]') AND name = N'IDX_TargetObjectID')
+		DROP INDEX [IDX_TargetObjectID] ON [dbo].[tbsys_scriptedobjects] WITH ( ONLINE = OFF )
+	EXEC sp_executesql N'CREATE NONCLUSTERED INDEX [IDX_TargetObjectID] ON [dbo].[tbsys_scriptedobjects] ([targetid] ASC, [objecttype] ASC) INCLUDE ([lastupdated],	[lastupdatedby], [effectivedate], [locked])'
+
+
+		
+
+
 
 
 /* ------------------------------------------------------------- */
