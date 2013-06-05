@@ -1,6 +1,6 @@
 VERSION 5.00
-Object = "{EAB22AC0-30C1-11CF-A7EB-0000C05BAE0B}#1.1#0"; "shdocvw.dll"
-Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "Codejock.Controls.v13.1.0.ocx"
+Object = "{EAB22AC0-30C1-11CF-A7EB-0000C05BAE0B}#1.1#0"; "ieframe.dll"
+Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "CODEJO~1.OCX"
 Begin VB.UserControl COA_Navigation 
    ClientHeight    =   2010
    ClientLeft      =   0
@@ -15,6 +15,8 @@ Begin VB.UserControl COA_Navigation
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
+   KeyPreview      =   -1  'True
+   LockControls    =   -1  'True
    ScaleHeight     =   2010
    ScaleWidth      =   2985
    Begin SHDocVwCtl.WebBrowser WebBrowser1 
