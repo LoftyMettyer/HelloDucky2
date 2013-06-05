@@ -5,6 +5,7 @@ Namespace Things
 
   <Serializable()> _
   Public MustInherit Class Base
+    Implements COMInterfaces.iObject
 
     '    Implements Things.iSystemObject
     '    Implements System.Xml.Serialization.IXmlSerializable
@@ -75,8 +76,8 @@ Namespace Things
       End Set
     End Property
 
-    <System.ComponentModel.DisplayName("Name") > _
-    Public Overridable Property Name() As String
+    <System.ComponentModel.DisplayName("Name")> _
+    Public Overridable Property Name() As String Implements COMInterfaces.iObject.Name
       Get
         Return msName
       End Get
@@ -384,7 +385,6 @@ Namespace Things
       Return New Things.Collection
 
     End Function
-
 
   End Class
 End Namespace

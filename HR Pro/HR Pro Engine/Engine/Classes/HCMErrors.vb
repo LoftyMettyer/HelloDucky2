@@ -1,14 +1,13 @@
 ﻿Option Strict On
 
 Imports System.Runtime.InteropServices
-'Imports System.IO
 
 Namespace ErrorHandler
 
   <ClassInterface(ClassInterfaceType.None)> _
   Public Class Errors
     Inherits System.ComponentModel.BindingList(Of ErrorHandler.Error)
-    Implements iErrors
+    Implements COMInterfaces.iErrors
 
     Public Shadows Sub Add(ByVal Section As HRProEngine.ErrorHandler.Section, ByVal ObjectName As String, ByVal Severity As HRProEngine.ErrorHandler.Severity, ByVal Message As String, ByVal Detail As String)
 
@@ -26,21 +25,21 @@ Namespace ErrorHandler
 
     End Sub
 
-    Public Sub OutputToFile(ByRef FileName As String) Implements Interfaces.iErrors.OutputToFile
+    Public Sub OutputToFile(ByRef FileName As String) Implements COMInterfaces.iErrors.OutputToFile
 
-            Dim objWriter As System.IO.StreamWriter
-            Dim objError As HRProEngine.ErrorHandler.Error
-            Dim sMessage As String
+      Dim objWriter As System.IO.StreamWriter
+      Dim objError As HRProEngine.ErrorHandler.Error
+      Dim sMessage As String
 
-            System.IO.File.Delete(FileName)
-            objWriter = System.IO.File.AppendText(FileName)
-            
-            For Each objError In Me.Items
+      System.IO.File.Delete(FileName)
+      objWriter = System.IO.File.AppendText(FileName)
 
-                sMessage = String.Format("{1}{1}{1}{1}{0}{1}{2}{1}", objError.Message, vbNewLine, objError.Detail)
-                objWriter.Write(sMessage)
+      For Each objError In Me.Items
 
-            Next
+        sMessage = String.Format("{1}{1}{1}{1}{0}{1}{2}{1}", objError.Message, vbNewLine, objError.Detail)
+        objWriter.Write(sMessage)
+
+      Next
 
       objWriter.Close()
 

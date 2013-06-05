@@ -21,16 +21,16 @@ Namespace ScriptDB
 
       Try
 
-        objConversionTable = Globals.ModuleSetup.GetSetting("MODULE_CURRENCY", "Param_ConversionTable").Table
+        objConversionTable = Globals.ModuleSetup.Setting("MODULE_CURRENCY", "Param_ConversionTable").Table
 
         If Not objConversionTable Is Nothing Then
-          iKeyID = Globals.ModuleSetup.GetSetting("MODULE_CURRENCY", "Param_CurrencyNameColumn").Value
+          iKeyID = Globals.ModuleSetup.Setting("MODULE_CURRENCY", "Param_CurrencyNameColumn").Value
           objNameColumn = objConversionTable.Column(iKeyID)
 
-          iKeyID = Globals.ModuleSetup.GetSetting("MODULE_CURRENCY", "Param_ConversionValueColumn").Value
+          iKeyID = Globals.ModuleSetup.Setting("MODULE_CURRENCY", "Param_ConversionValueColumn").Value
           objValueColumn = objConversionTable.Column(iKeyID)
 
-          iKeyID = Globals.ModuleSetup.GetSetting("MODULE_CURRENCY", "Param_DecimalColumn").Value
+          iKeyID = Globals.ModuleSetup.Setting("MODULE_CURRENCY", "Param_DecimalColumn").Value
           objDecimalsColumn = objConversionTable.Column(iKeyID)
 
           sObjectName = "udfsys_convertcurrency"

@@ -7,7 +7,7 @@ Namespace ScriptDB
 
   <ClassInterface(ClassInterfaceType.None)> _
   Public Class Script
-    Implements Interfaces.iCommitDB
+    Implements COMInterfaces.iCommitDB
 
 #Region "Table Scripting"
 
@@ -33,7 +33,7 @@ Namespace ScriptDB
 
     End Sub
 
-    Public Function DropViews() As Boolean Implements iCommitDB.DropViews
+    Public Function DropViews() As Boolean Implements COMInterfaces.iCommitDB.DropViews
 
       Dim objTable As Things.Table
       Dim objView As Things.View
@@ -1049,7 +1049,7 @@ Namespace ScriptDB
 
 #End Region
 
-    Public Function ScriptIndexes() As Boolean Implements Interfaces.iCommitDB.ScriptIndexes
+    Public Function ScriptIndexes() As Boolean Implements COMInterfaces.iCommitDB.ScriptIndexes
 
       Dim objTable As Things.Table
       Dim objRelation As Things.Relation

@@ -1,4 +1,4 @@
-﻿Public Module Interfaces
+﻿Public Module COMInterfaces
 
   Public Interface iCommitDB
     Function ScriptTables() As Boolean
@@ -41,6 +41,19 @@
     Function ExecStoredProcedure(ByVal ProcedureName As String, ByRef Parms As Connectivity.Parameters) As System.Data.DataSet
     Function ScriptStatement(ByVal Statement As String) As Boolean
     Property Login As Connectivity.Login
+  End Interface
+
+  Public Interface iObjectCollection
+    ReadOnly Property Table(ByVal [ID] As HCMGuid) As Things.Table
+    Function Setting(ByVal [Module] As String, ByVal [Parameter] As String) As Things.Setting
+  End Interface
+
+  Public Interface iObject
+    Property Name As String
+  End Interface
+
+  Public Interface iTable
+    Property CustomTriggers As Things.BaseCollection
   End Interface
 
 End Module

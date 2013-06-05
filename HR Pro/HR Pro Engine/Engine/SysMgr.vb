@@ -2,7 +2,7 @@
 
 <ClassInterface(ClassInterfaceType.None)> _
 Public Class SysMgr
-  Implements iSystemManager
+  Implements COMInterfaces.iSystemManager
 
 #Region "iSystemManager Interface"
 
@@ -10,7 +10,7 @@ Public Class SysMgr
   Private mobjCommitDB As New Connectivity.ADOClassic
   Private mobjScript As New ScriptDB.Script
 
-  Public Property CommitDB As Object Implements Interfaces.iSystemManager.CommitDB
+  Public Property CommitDB As Object Implements COMInterfaces.iSystemManager.CommitDB
     Get
       Return mobjCommitDB.NativeObject
     End Get
@@ -19,7 +19,7 @@ Public Class SysMgr
     End Set
   End Property
 
-  Public Property MetadataDB As Object Implements Interfaces.iSystemManager.MetadataDB
+  Public Property MetadataDB As Object Implements COMInterfaces.iSystemManager.MetadataDB
     Get
       Return objMetadataDB.NativeObject
     End Get
@@ -34,7 +34,7 @@ Public Class SysMgr
     End Set
   End Property
 
-  Public Function Initialise() As Boolean Implements Interfaces.iSystemManager.Initialise
+  Public Function Initialise() As Boolean Implements COMInterfaces.iSystemManager.Initialise
 
     Dim bOK As Boolean = True
 
@@ -57,7 +57,7 @@ Public Class SysMgr
 
   End Function
 
-  Public Function CloseSafely() As Boolean Implements iSystemManager.CloseSafely
+  Public Function CloseSafely() As Boolean Implements COMInterfaces.iSystemManager.CloseSafely
 
     Dim bOK As Boolean = True
 
@@ -76,31 +76,31 @@ Public Class SysMgr
 
   End Function
 
-  Public ReadOnly Property ReturnTuningLog As Tuning.Report Implements Interfaces.iSystemManager.TuningLog
+  Public ReadOnly Property ReturnTuningLog As Tuning.Report Implements COMInterfaces.iSystemManager.TuningLog
     Get
       Return Globals.TuningLog
     End Get
   End Property
 
-  Public ReadOnly Property ReturnErrorLog As ErrorHandler.Errors Implements Interfaces.iSystemManager.ErrorLog
+  Public ReadOnly Property ReturnErrorLog As ErrorHandler.Errors Implements COMInterfaces.iSystemManager.ErrorLog
     Get
       Return Globals.ErrorLog
     End Get
   End Property
 
-  Public ReadOnly Property ReturnThings As Things.Collection Implements Interfaces.iSystemManager.Things
+  Public ReadOnly Property ReturnThings As Things.Collection Implements COMInterfaces.iSystemManager.Things
     Get
       Return Globals.Things
     End Get
   End Property
 
-  Public ReadOnly Property Script As ScriptDB.Script Implements Interfaces.iSystemManager.Script
+  Public ReadOnly Property Script As ScriptDB.Script Implements COMInterfaces.iSystemManager.Script
     Get
       Return mobjScript
     End Get
   End Property
 
-  Public ReadOnly Property Options As HCMOptions Implements Interfaces.iSystemManager.Options
+  Public ReadOnly Property Options As HCMOptions Implements COMInterfaces.iSystemManager.Options
     Get
       Return Globals.Options
     End Get

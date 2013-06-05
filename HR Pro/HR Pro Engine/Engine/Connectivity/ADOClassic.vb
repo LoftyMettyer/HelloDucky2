@@ -2,14 +2,14 @@
 
 Namespace Connectivity
   Public Class ADOClassic
-    Implements iConnection
+    Implements COMInterfaces.iConnection
 
     Public DB As OleDb.OleDbConnection
     Public NativeObject As ADODB.Connection
 
 #Region "IConnection interface"
 
-    Public Sub Close() Implements Interfaces.iConnection.Close
+    Public Sub Close() Implements COMInterfaces.iConnection.Close
       DB.Close()
       'NativeObject.Close()
     End Sub
@@ -26,7 +26,7 @@ Namespace Connectivity
       NativeObject.CommitTrans()
     End Sub
 
-    Public Function ExecStoredProcedure(ByVal ProcedureName As String, ByRef Parms As Parameters) As System.Data.DataSet Implements Interfaces.iConnection.ExecStoredProcedure
+    Public Function ExecStoredProcedure(ByVal ProcedureName As String, ByRef Parms As Parameters) As System.Data.DataSet Implements COMInterfaces.iConnection.ExecStoredProcedure
 
       Dim objAdapter As New OleDb.OleDbDataAdapter
       '      Dim sqlParms As OleDb.OleDbParameterCollection
@@ -94,7 +94,7 @@ Namespace Connectivity
 
     End Function
 
-    Public Property Login As Login Implements Interfaces.iConnection.Login
+    Public Property Login As Login Implements COMInterfaces.iConnection.Login
       Get
 
       End Get
@@ -103,10 +103,10 @@ Namespace Connectivity
       End Set
     End Property
 
-    Public Sub Open() Implements Interfaces.iConnection.Open
+    Public Sub Open() Implements COMInterfaces.iConnection.Open
     End Sub
 
-    Public Function ScriptStatement(ByVal Statement As String) As Boolean Implements Interfaces.iConnection.ScriptStatement
+    Public Function ScriptStatement(ByVal Statement As String) As Boolean Implements COMInterfaces.iConnection.ScriptStatement
 
       Dim bOK As Boolean = True
 

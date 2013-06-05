@@ -2,13 +2,13 @@
 
 <ClassInterface(ClassInterfaceType.None)> _
 Public Class HCMOptions
-  Implements iOptions
+  Implements COMInterfaces.iOptions
 
   Private mbRefreshObjects As Boolean
   Private mbDevelopmentMode As Boolean = False
   Private mbOverflowSafety As Boolean = True
 
-  Public Property RefreshObjects As Boolean Implements Interfaces.iOptions.RefreshObjects
+  Public Property RefreshObjects As Boolean Implements COMInterfaces.iOptions.RefreshObjects
     Get
       Return mbRefreshObjects
     End Get
@@ -17,7 +17,7 @@ Public Class HCMOptions
     End Set
   End Property
 
-  Public Property DevelopmentMode As Boolean Implements Interfaces.iOptions.DevelopmentMode
+  Public Property DevelopmentMode As Boolean Implements COMInterfaces.iOptions.DevelopmentMode
     Get
       Return mbDevelopmentMode
     End Get
@@ -26,7 +26,7 @@ Public Class HCMOptions
     End Set
   End Property
 
-  Public Property OverflowSafety As Boolean Implements Interfaces.iOptions.OverflowSafety
+  Public Property OverflowSafety As Boolean Implements COMInterfaces.iOptions.OverflowSafety
     Get
       Return mbOverflowSafety
     End Get

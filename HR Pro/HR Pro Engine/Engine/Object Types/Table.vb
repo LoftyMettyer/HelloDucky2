@@ -5,6 +5,7 @@ Namespace Things
 
   Public Class Table
     Inherits Things.Base
+    Implements COMInterfaces.iTable
 
     Public TableType As TableType
     Public ManualSummaryColumnBreaks As Boolean
@@ -14,8 +15,9 @@ Namespace Things
     Public DefaultEmailID As HCMGuid
     Public IsRemoteView As Boolean
 
-    Public DependsOnChildColumns As New Things.Collection
-    Public DependsOnParentColumns As New Things.Collection
+    Public DependsOnChildColumns As New Things.BaseCollection
+    Public DependsOnParentColumns As New Things.BaseCollection
+    Public objCustomTriggers As New Things.BaseCollection
 
     Public ReadOnly Property Indexes As Things.Collection
       Get
@@ -179,6 +181,15 @@ Namespace Things
     End Function
 
 #End Region
+
+    Public Property CustomTriggers As BaseCollection Implements COMInterfaces.iTable.CustomTriggers
+      Get
+        Return objCustomTriggers
+      End Get
+      Set(ByVal value As BaseCollection)
+        objCustomTriggers = value
+      End Set
+    End Property
 
   End Class
 End Namespace
