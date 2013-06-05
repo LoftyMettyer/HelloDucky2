@@ -542,7 +542,7 @@ Private Function BaseTableColumnsUsedInDeleteTriggeredWorkflow(plngWorkflowID As
 
   lngBaseTableID = 0
   With recWorkflowEdit
-    .index = "idxWorkflowID"
+    .Index = "idxWorkflowID"
     .Seek "=", plngWorkflowID
 
     If Not .NoMatch Then
@@ -695,7 +695,7 @@ Private Function BaseTableEmailAddressesUsedInDeleteTriggeredWorkflow(plngWorkfl
   ' Column 2 = column/expr ID
   lngBaseTableID = 0
   With recWorkflowEdit
-    .index = "idxWorkflowID"
+    .Index = "idxWorkflowID"
     .Seek "=", plngWorkflowID
 
     If Not .NoMatch Then
@@ -1194,7 +1194,7 @@ Public Function GetWorkflowName(plngWorkflowID As Long) As String
   sName = "<unknown>"
   
   With recWorkflowEdit
-    .index = "idxWorkflowID"
+    .Index = "idxWorkflowID"
     .Seek "=", plngWorkflowID
 
     If Not .NoMatch Then
@@ -1221,7 +1221,7 @@ Public Function GetWorkflowEnabled(plngWorkflowID As Long) As Boolean
   fEnabled = False
   
   With recWorkflowEdit
-    .index = "idxWorkflowID"
+    .Index = "idxWorkflowID"
     .Seek "=", plngWorkflowID
 
     If Not .NoMatch Then
@@ -1286,7 +1286,7 @@ Public Function CloneWorkflow(plngWorkflowID As Long, _
     fGoodName = False
     Do While Not fGoodName
       With recWorkflowEdit
-        .index = "idxName"
+        .Index = "idxName"
         .Seek "=", sWorkflowName, False
         If Not .NoMatch Then
           iCounter = iCounter + 1
@@ -1402,7 +1402,7 @@ Public Function CloneWorkflow(plngWorkflowID As Long, _
             If pavCloneRegister(1, iIndex) = "EXPRESSION" And _
               pavCloneRegister(2, iIndex) = .Fields("fieldSelectionFilter") Then
 
-              recCompEdit.index = "idxCompID"
+              recCompEdit.Index = "idxCompID"
               recCompEdit.Seek "=", .Fields("componentID")
               If Not recCompEdit.NoMatch Then
                 recCompEdit.Edit
@@ -2438,7 +2438,7 @@ Public Sub DefaultWorkflowSetup()
   Dim lngSecondLoginColumnID As Long
   
   With recModuleSetup
-    .index = "idxModuleParameter"
+    .Index = "idxModuleParameter"
       
     ' ------------------------------------------
     ' Default the Personnel Identification parameters as they moved from
@@ -3586,7 +3586,7 @@ Private Function ReadWorkflowParameters() As Boolean
   ReDim malngEmailColumns(0)
   
   With recModuleSetup
-    .index = "idxModuleParameter"
+    .Index = "idxModuleParameter"
 
     ' Get the URL. Essential.
     mvar_sURL = GetModuleSetting(gsMODULEKEY_WORKFLOW, gsPARAMETERKEY_URL, "")
@@ -3696,7 +3696,7 @@ Public Function ReadWebLogon(strUserName As String, strPassword As String) As Bo
   Dim lngFinish As Long
 
   With recModuleSetup
-    .index = "idxModuleParameter"
+    .Index = "idxModuleParameter"
     
     ' Get the Workflow web site user and password.
     .Seek "=", gsMODULEKEY_WORKFLOW, gsPARAMETERKEY_WEBPARAM1
@@ -3774,7 +3774,7 @@ Public Function SaveWebLogon(strUserName As String, _
   
   ' Save the Web Site Login details.
   With recModuleSetup
-    .index = "idxModuleParameter"
+    .Index = "idxModuleParameter"
   
     .Seek "=", gsMODULEKEY_WORKFLOW, gsPARAMETERKEY_WEBPARAM1
     If .NoMatch Then
@@ -3892,7 +3892,7 @@ Public Function GetWorkflowURL() As String
   sURL = ""
   
   With recModuleSetup
-    .index = "idxModuleParameter"
+    .Index = "idxModuleParameter"
     
     ' ------------------------------------------
     ' Read the Web Site parameters
@@ -4192,7 +4192,7 @@ Public Function WorkflowTableTriggerCode(plngTableID As Long, _
   iIndent = 2
   
   With recWorkflowTriggeredLinks
-    .index = "idxTableID"
+    .Index = "idxTableID"
     .Seek "=", plngTableID
 
     If Not .NoMatch Then
@@ -4201,7 +4201,7 @@ Public Function WorkflowTableTriggerCode(plngTableID As Long, _
         
           fNeeded = False
           
-          recWorkflowEdit.index = "idxWorkflowID"
+          recWorkflowEdit.Index = "idxWorkflowID"
           recWorkflowEdit.Seek "=", !WorkflowID
           
           If Not recWorkflowEdit.NoMatch Then
@@ -4489,7 +4489,7 @@ Private Sub CreateWorkflowProcsForLink(lngTableID As Long, _
   Select Case iLinkType
     Case WORKFLOWTRIGGERLINKTYPE_COLUMN
       With recWorkflowTriggeredLinkColumns
-        .index = "idxLinkID"
+        .Index = "idxLinkID"
         .Seek "=", recWorkflowTriggeredLinks!LinkID
 
         If Not .NoMatch Then
@@ -4499,7 +4499,7 @@ Private Sub CreateWorkflowProcsForLink(lngTableID As Long, _
             End If
             
             With recColEdit
-              .index = "idxColumnID"
+              .Index = "idxColumnID"
               .Seek "=", IIf(IsNull(recWorkflowTriggeredLinkColumns!ColumnID), 0, recWorkflowTriggeredLinkColumns!ColumnID)
           
               If Not .NoMatch Then
@@ -4519,7 +4519,7 @@ Private Sub CreateWorkflowProcsForLink(lngTableID As Long, _
       
     Case WORKFLOWTRIGGERLINKTYPE_DATE
       With recColEdit
-        .index = "idxColumnID"
+        .Index = "idxColumnID"
         .Seek "=", IIf(IsNull(recWorkflowTriggeredLinks!DateColumn), 0, recWorkflowTriggeredLinks!DateColumn)
     
         If Not .NoMatch Then
@@ -4920,7 +4920,7 @@ Public Sub CreateWorkflowProcsForTable(pLngCurrentTableID As Long, _
   
   On Error GoTo LocalErr
 
-  recTabEdit.index = "idxTableID"
+  recTabEdit.Index = "idxTableID"
   recTabEdit.Seek "=", pLngCurrentTableID
   lngRecDescID = IIf(IsNull(recTabEdit!RecordDescExprID), 0, recTabEdit!RecordDescExprID)
 
@@ -4929,7 +4929,7 @@ Public Sub CreateWorkflowProcsForTable(pLngCurrentTableID As Long, _
   msRebuildLinkCode = vbNullString
 
   With recWorkflowTriggeredLinks
-    .index = "idxTableID"
+    .Index = "idxTableID"
     .Seek "=", pLngCurrentTableID
 
     If Not .NoMatch Then
@@ -4938,7 +4938,7 @@ Public Sub CreateWorkflowProcsForTable(pLngCurrentTableID As Long, _
           And ((!Type = WORKFLOWTRIGGERLINKTYPE_COLUMN) _
             Or (!Type = WORKFLOWTRIGGERLINKTYPE_DATE)) Then
 
-          recWorkflowEdit.index = "idxWorkflowID"
+          recWorkflowEdit.Index = "idxWorkflowID"
           recWorkflowEdit.Seek "=", !WorkflowID
           
           If Not recWorkflowEdit.NoMatch Then
@@ -5173,7 +5173,7 @@ Public Function CreateSP_WorkflowCalculation() As Boolean
 
   strSQL = vbNullString
   With recExprEdit
-    .index = "idxExprID"
+    .Index = "idxExprID"
     
     If Not (.BOF And .EOF) Then
       .MoveFirst
@@ -5308,7 +5308,7 @@ Public Function CreateSP_WorkflowWebFormValidation() As Boolean
       If !Enabled Then
 
         With recWorkflowElementEdit
-          .index = "idxWorkflowID"
+          .Index = "idxWorkflowID"
           .Seek ">=", recWorkflowEdit!id
       
           If Not .NoMatch Then
@@ -5322,7 +5322,7 @@ Public Function CreateSP_WorkflowWebFormValidation() As Boolean
                 strWebFormSQL = vbNullString
                 
                 ' Form validations
-                recWorkflowElementValidationEdit.index = "idxElementID"
+                recWorkflowElementValidationEdit.Index = "idxElementID"
                 recWorkflowElementValidationEdit.Seek ">=", recWorkflowElementEdit!id
 
                 If Not recWorkflowElementValidationEdit.NoMatch Then
@@ -5358,7 +5358,7 @@ Public Function CreateSP_WorkflowWebFormValidation() As Boolean
                 End If
                 
                 ' Mandatory checks
-                recWorkflowElementItemEdit.index = "idxElementID"
+                recWorkflowElementItemEdit.Index = "idxElementID"
                 recWorkflowElementItemEdit.Seek ">=", recWorkflowElementEdit!id
                 
                 If Not recWorkflowElementItemEdit.NoMatch Then
@@ -5486,8 +5486,7 @@ Public Function CreateSP_WorkflowWebFormValidation() As Boolean
     "(" & vbNewLine & _
     String(iIndent, vbTab) & "@piInstanceID integer," & vbNewLine & _
     String(iIndent, vbTab) & "@piElementID integer," & vbNewLine & _
-    String(iIndent, vbTab) & "@psFormInput1 varchar(MAX)," & vbNewLine & _
-    String(iIndent, vbTab) & "@psFormInput2 varchar(MAX)" & vbNewLine & _
+    String(iIndent, vbTab) & "@psFormInput1 varchar(MAX)" & vbNewLine & _
     ")" & vbNewLine & _
     "AS" & vbNewLine & _
     "BEGIN" & vbNewLine
@@ -5520,41 +5519,13 @@ Public Function CreateSP_WorkflowWebFormValidation() As Boolean
 
   strSPSQL = strSPSQL & _
     String(iIndent, vbTab) & "-- Put the submitted form values into the ASRSysWorkflowInstanceValues table." & vbNewLine & _
-    String(iIndent, vbTab) & "WHILE (charindex(CHAR(9), @psFormInput1) > 0) OR (charindex(CHAR(9), @psFormInput2) > 0)" & vbNewLine & _
+    String(iIndent, vbTab) & "WHILE (charindex(CHAR(9), @psFormInput1) > 0)" & vbNewLine & _
     String(iIndent, vbTab) & "BEGIN" & vbNewLine & _
-    String(iIndent + 1, vbTab) & "SET @iIndex1 = charindex(CHAR(9), @psFormInput1)" & vbNewLine & _
-    String(iIndent + 1, vbTab) & "IF @iIndex1 > 0" & vbNewLine & _
-    String(iIndent + 1, vbTab) & "BEGIN" & vbNewLine & _
-    String(iIndent + 2, vbTab) & "SET @sID = replace(LEFT(@psFormInput1, @iIndex1-1), '''', '''''')" & vbNewLine & vbNewLine & _
-    String(iIndent + 2, vbTab) & "SET @iIndex2 = charindex(CHAR(9), @psFormInput1, @iIndex1+1)" & vbNewLine & _
-    String(iIndent + 2, vbTab) & "IF @iIndex2 > 0" & vbNewLine & _
-    String(iIndent + 2, vbTab) & "BEGIN" & vbNewLine & _
-    String(iIndent + 3, vbTab) & "SET @sValue = SUBSTRING(@psFormInput1, @iIndex1+1, @iIndex2-@iIndex1-1)" & vbNewLine & vbNewLine & _
-    String(iIndent + 3, vbTab) & "SET @psFormInput1 = SUBSTRING(@psFormInput1, @iIndex2+1, LEN(@psFormInput1) - @iIndex2)" & vbNewLine & _
-    String(iIndent + 2, vbTab) & "END" & vbNewLine & _
-    String(iIndent + 2, vbTab) & "ELSE" & vbNewLine
-
-  strSPSQL = strSPSQL & _
-    String(iIndent + 2, vbTab) & "BEGIN" & vbNewLine & _
-    String(iIndent + 3, vbTab) & "SET @iIndex2 = charindex(CHAR(9), @psFormInput2)" & vbNewLine & _
-    String(iIndent + 3, vbTab) & "SET @sValue = SUBSTRING(@psFormInput1, @iIndex1+1, len(@psFormInput1)-@iIndex1) +" & vbNewLine & _
-    String(iIndent + 4, vbTab) & "LEFT(@psFormInput2, @iIndex2-1)" & vbNewLine & vbNewLine & _
-    String(iIndent + 3, vbTab) & "SET @psFormInput1 = ''" & vbNewLine & _
-    String(iIndent + 3, vbTab) & "SET @psFormInput2 = SUBSTRING(@psFormInput2, @iIndex2+1, LEN(@psFormInput2) - @iIndex2)" & vbNewLine & _
-    String(iIndent + 2, vbTab) & "END" & vbNewLine & _
-    String(iIndent + 1, vbTab) & "END" & vbNewLine & _
-    String(iIndent + 1, vbTab) & "ELSE" & vbNewLine & _
-    String(iIndent + 1, vbTab) & "BEGIN" & vbNewLine & _
-    String(iIndent + 2, vbTab) & "SET @iIndex1 = charindex(CHAR(9), @psFormInput2)" & vbNewLine & _
-    String(iIndent + 2, vbTab) & "SET @iIndex2 = charindex(CHAR(9), @psFormInput2, @iIndex1+1)" & vbNewLine & vbNewLine & _
-    String(iIndent + 2, vbTab) & "SET @sID = replace(@psFormInput1, '''', '''''') +" & vbNewLine & _
-    String(iIndent + 3, vbTab) & "replace(LEFT(@psFormInput2, @iIndex1-1), '''', '''''')" & vbNewLine & _
-    String(iIndent + 2, vbTab) & "SET @sValue = SUBSTRING(@psFormInput2, @iIndex1+1, @iIndex2-@iIndex1-1)" & vbNewLine & vbNewLine & _
-    String(iIndent + 2, vbTab) & "SET @psFormInput1 = ''" & vbNewLine & _
-    String(iIndent + 2, vbTab) & "SET @psFormInput2 = SUBSTRING(@psFormInput2, @iIndex2+1, LEN(@psFormInput2) - @iIndex2)" & vbNewLine & _
-    String(iIndent + 1, vbTab) & "END" & vbNewLine & vbNewLine & vbNewLine
-
-  strSPSQL = strSPSQL & _
+    String(iIndent + 1, vbTab) & "SET @iIndex1 = charindex(CHAR(9), @psFormInput1);" & vbNewLine & _
+    String(iIndent + 1, vbTab) & "SET @iIndex2 = charindex(CHAR(9), @psFormInput1, @iIndex1+1);" & vbNewLine & _
+    String(iIndent + 1, vbTab) & "SET @sID = replace(LEFT(@psFormInput1, @iIndex1-1), '''', '''''');" & vbNewLine & _
+    String(iIndent + 1, vbTab) & "SET @sValue = SUBSTRING(@psFormInput1, @iIndex1+1, @iIndex2-@iIndex1-1);" & vbNewLine & _
+    String(iIndent + 1, vbTab) & "SET @psFormInput1 = SUBSTRING(@psFormInput1, @iIndex2+1, LEN(@psFormInput1) - @iIndex2);" & vbNewLine & vbNewLine & _
     String(iIndent + 1, vbTab) & "-- Get the WebForm item type, etc." & vbNewLine & _
     String(iIndent + 1, vbTab) & "SELECT @sIdentifier = EI.identifier," & vbNewLine & _
     String(iIndent + 2, vbTab) & "@iItemType = EI.itemType," & vbNewLine & _
