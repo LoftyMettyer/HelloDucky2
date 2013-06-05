@@ -70,7 +70,7 @@ Begin VB.Form frmSSIntranetLink
       Top             =   5760
       Width           =   6300
       Begin VB.CheckBox chkDataGridUseFormatting 
-         Caption         =   "Use formatting in Data Grids"
+         Caption         =   "Use &formatting in Data Grids"
          Height          =   240
          Left            =   210
          TabIndex        =   134
