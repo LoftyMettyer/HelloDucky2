@@ -2156,12 +2156,10 @@ Private Sub ToolClick_DBMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       ' Call up the Bank Holiday Setup screen.
       frmBankHolidaySetup.Show vbModal
       Set frmBankHolidaySetup = Nothing
-'      With tbMain
-'        .Redraw = False
-'        .Enabled = False
-'        .Enabled = True
-'        .Redraw = True
-'      End With
+
+    Case "ID_CategorySetup"
+      frmCategorySetup.Show vbModal
+      Set frmCategorySetup = Nothing
 
     Case "ID_Currency"
       'Call up the Currency setup screen.
@@ -2464,13 +2462,7 @@ Private Sub ToolClick_PictMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       ' Call up the Personnel Module Setup screen.
       frmPersonnelSetup.Show vbModal
       Set frmPersonnelSetup = Nothing
-'      With tbMain
-'        .Redraw = False
-'        .Enabled = False
-'        .Enabled = True
-'        .Redraw = True
-'      End With
-        
+
     Case "ID_Absence"
       ' Call up the Absence Module Setup screen.
       frmAbsenceSetup.Show vbModal
@@ -2490,12 +2482,10 @@ Private Sub ToolClick_PictMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       ' Call up the Bank Holiday Setup screen.
       frmBankHolidaySetup.Show vbModal
       Set frmBankHolidaySetup = Nothing
-'      With tbMain
-'        .Redraw = False
-'        .Enabled = False
-'        .Enabled = True
-'        .Redraw = True
-'      End With
+ 
+    Case "ID_CategorySetup"
+      frmCategorySetup.Show vbModal
+      Set frmCategorySetup = Nothing
  
     Case "ID_Currency"
       'Call up the Currency setup screen.
@@ -2813,23 +2803,11 @@ Private Sub ToolClick_ScrMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       ' Call up the Personnel Module Setup screen.
       frmPersonnelSetup.Show vbModal
       Set frmPersonnelSetup = Nothing
-'      With tbMain
-'        .Redraw = False
-'        .Enabled = False
-'        .Enabled = True
-'        .Redraw = True
-'      End With
         
     Case "ID_Absence"
       ' Call up the Absence Module Setup screen.
       frmAbsenceSetup.Show vbModal
       Set frmAbsenceSetup = Nothing
-'      With tbMain
-'        .Redraw = False
-'        .Enabled = False
-'        .Enabled = True
-'        .Redraw = True
-'      End With
         
     Case "ID_AuditModule"
       frmAuditSetup.Show vbModal
@@ -2839,12 +2817,10 @@ Private Sub ToolClick_ScrMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       ' Call up the Bank Holiday Setup screen.
       frmBankHolidaySetup.Show vbModal
       Set frmBankHolidaySetup = Nothing
-'      With tbMain
-'        .Redraw = False
-'        .Enabled = False
-'        .Enabled = True
-'        .Redraw = True
-'      End With
+
+    Case "ID_CategorySetup"
+      frmCategorySetup.Show vbModal
+      Set frmCategorySetup = Nothing
      
     Case "ID_Currency"
       'Call up the Currency setup screen.
@@ -3136,23 +3112,11 @@ Private Sub ToolClick_WorkflowMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       ' Call up the Personnel Module Setup screen.
       frmPersonnelSetup.Show vbModal
       Set frmPersonnelSetup = Nothing
-'      With tbMain
-'        .Redraw = False
-'        .Enabled = False
-'        .Enabled = True
-'        .Redraw = True
-'      End With
 
     Case "ID_Absence"
       ' Call up the Absence Module Setup screen.
       frmAbsenceSetup.Show vbModal
       Set frmAbsenceSetup = Nothing
-'      With tbMain
-'        .Redraw = False
-'        .Enabled = False
-'        .Enabled = True
-'        .Redraw = True
-'      End With
 
     Case "ID_AuditModule"
       frmAuditSetup.Show vbModal
@@ -3162,12 +3126,10 @@ Private Sub ToolClick_WorkflowMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       ' Call up the Bank Holiday Setup screen.
       frmBankHolidaySetup.Show vbModal
       Set frmBankHolidaySetup = Nothing
-'      With tbMain
-'        .Redraw = False
-'        .Enabled = False
-'        .Enabled = True
-'        .Redraw = True
-'      End With
+
+    Case "ID_CategorySetup"
+      frmCategorySetup.Show vbModal
+      Set frmCategorySetup = Nothing
 
     Case "ID_Currency"
       'Call up the Currency setup screen.
@@ -3460,23 +3422,11 @@ Private Sub ToolClick_ViewMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       ' Call up the Personnel Module Setup screen.
       frmPersonnelSetup.Show vbModal
       Set frmPersonnelSetup = Nothing
-'      With tbMain
-'        .Redraw = False
-'        .Enabled = False
-'        .Enabled = True
-'        .Redraw = True
-'      End With
         
     Case "ID_Absence"
       ' Call up the Absence Module Setup screen.
       frmAbsenceSetup.Show vbModal
       Set frmAbsenceSetup = Nothing
-'      With tbMain
-'        .Redraw = False
-'        .Enabled = False
-'        .Enabled = True
-'        .Redraw = True
-'      End With
         
     Case "ID_AuditModule"
       frmAuditSetup.Show vbModal
@@ -3486,12 +3436,10 @@ Private Sub ToolClick_ViewMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       ' Call up the Bank Holiday Setup screen.
       frmBankHolidaySetup.Show vbModal
       Set frmBankHolidaySetup = Nothing
-'      With tbMain
-'        .Redraw = False
-'        .Enabled = False
-'        .Enabled = True
-'        .Redraw = True
-'      End With
+
+    Case "ID_CategorySetup"
+      frmCategorySetup.Show vbModal
+      Set frmCategorySetup = Nothing
 
     Case "ID_Currency"
       'Call up the Currency setup screen.
@@ -3827,23 +3775,11 @@ Private Sub ToolClick_SysMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       ' Call up the Personnel Module Setup screen.
       frmPersonnelSetup.Show vbModal
       Set frmPersonnelSetup = Nothing
-'      With tbMain
-'        .Redraw = False
-'        .Enabled = False
-'        .Enabled = True
-'        .Redraw = True
-'      End With
             
     Case "ID_Absence"
       ' Call up the Absence Module Setup screen.
       frmAbsenceSetup.Show vbModal
       Set frmAbsenceSetup = Nothing
-'      With tbMain
-'        .Redraw = False
-'        .Enabled = False
-'        .Enabled = True
-'        .Redraw = True
-'      End With
             
     Case "ID_AuditModule"
       frmAuditSetup.Show vbModal
@@ -3853,12 +3789,10 @@ Private Sub ToolClick_SysMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       ' Call up the Bank Holiday Setup screen.
       frmBankHolidaySetup.Show vbModal
       Set frmBankHolidaySetup = Nothing
-'      With tbMain
-'        .Redraw = False
-'        .Enabled = False
-'        .Enabled = True
-'        .Redraw = True
-'      End With
+      
+    Case "ID_CategorySetup"
+      frmCategorySetup.Show vbModal
+      Set frmCategorySetup = Nothing
       
     Case "ID_Currency"
       'Call up the Currency setup screen.
@@ -4121,23 +4055,11 @@ Private Sub ToolClick_ScrDesigner(ByVal pTool As ActiveBarLibraryCtl.Tool)
       ' Call up the Personnel Module Setup screen.
       frmPersonnelSetup.Show vbModal
       Set frmPersonnelSetup = Nothing
-'      With tbMain
-'        .Redraw = False
-'        .Enabled = False
-'        .Enabled = True
-'        .Redraw = True
-'      End With
         
     Case "ID_Absence"
       ' Call up the Absence Module Setup screen.
       frmAbsenceSetup.Show vbModal
       Set frmAbsenceSetup = Nothing
-'      With tbMain
-'        .Redraw = False
-'        .Enabled = False
-'        .Enabled = True
-'        .Redraw = True
-'      End With
         
     Case "ID_AuditModule"
       frmAuditSetup.Show vbModal
@@ -4147,12 +4069,10 @@ Private Sub ToolClick_ScrDesigner(ByVal pTool As ActiveBarLibraryCtl.Tool)
       ' Call up the Bank Holiday Setup screen.
       frmBankHolidaySetup.Show vbModal
       Set frmBankHolidaySetup = Nothing
-'      With tbMain
-'        .Redraw = False
-'        .Enabled = False
-'        .Enabled = True
-'        .Redraw = True
-'      End With
+
+    Case "ID_CategorySetup"
+      frmCategorySetup.Show vbModal
+      Set frmCategorySetup = Nothing
       
     Case "ID_Currency"
       'Call up the Currency setup screen.
@@ -4535,23 +4455,11 @@ Private Sub ToolClick_WebFormDesigner(ByVal pTool As ActiveBarLibraryCtl.Tool)
       ' Call up the Personnel Module Setup screen.
       frmPersonnelSetup.Show vbModal
       Set frmPersonnelSetup = Nothing
-'      With tbMain
-'        .Redraw = False
-'        .Enabled = False
-'        .Enabled = True
-'        .Redraw = True
-'      End With
         
     Case "ID_Absence"
       ' Call up the Absence Module Setup screen.
       frmAbsenceSetup.Show vbModal
       Set frmAbsenceSetup = Nothing
-'      With tbMain
-'        .Redraw = False
-'        .Enabled = False
-'        .Enabled = True
-'        .Redraw = True
-'      End With
         
     Case "ID_AuditModule"
       frmAuditSetup.Show vbModal
@@ -4561,12 +4469,10 @@ Private Sub ToolClick_WebFormDesigner(ByVal pTool As ActiveBarLibraryCtl.Tool)
       ' Call up the Bank Holiday Setup screen.
       frmBankHolidaySetup.Show vbModal
       Set frmBankHolidaySetup = Nothing
-'      With tbMain
-'        .Redraw = False
-'        .Enabled = False
-'        .Enabled = True
-'        .Redraw = True
-'      End With
+
+    Case "ID_CategorySetup"
+      frmCategorySetup.Show vbModal
+      Set frmCategorySetup = Nothing
       
     Case "ID_Currency"
       'Call up the Currency setup screen.
