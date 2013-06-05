@@ -2029,7 +2029,7 @@ Private Sub ActivateModules()
 
   gbDisableSpecialFunctionAutoUpdate = GetSystemSetting("AdvancedDatabaseSetting", "SpecialFunctionAutoUpdate", False)
   gbReorganiseIndexesInOvernightJob = GetSystemSetting("AdvancedDatabaseSetting", "UpdateIndexesOvernight", True)
-  gbReorganiseIndexesInOvernightJob = GetSystemSetting("AdvancedDatabaseSetting", "UsedotNETDatabaseScripting", False)
+  gbUsedotNetScriptEngine = GetSystemSetting("AdvancedDatabaseSetting", "UsedotNETDatabaseScripting", False)
   
   '26/07/2001 MH
   '' CMG settings
