@@ -1,11 +1,11 @@
 VERSION 5.00
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
-Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "Codejock.SkinFramework.v13.1.0.ocx"
-Object = "{FE0065C0-1B7B-11CF-9D53-00AA003C9CB6}#1.1#0"; "ComCt232.ocx"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.OCX"
+Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~2.OCX"
+Object = "{FE0065C0-1B7B-11CF-9D53-00AA003C9CB6}#1.1#0"; "COMCT232.OCX"
 Begin VB.Form frmProgress 
    BackColor       =   &H00FCF7F9&
    BorderStyle     =   1  'Fixed Single
-   ClientHeight    =   3810
+   ClientHeight    =   3735
    ClientLeft      =   45
    ClientTop       =   345
    ClientWidth     =   6015
@@ -22,7 +22,7 @@ Begin VB.Form frmProgress
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    Picture         =   "frmProgress.frx":000C
-   ScaleHeight     =   3810
+   ScaleHeight     =   3735
    ScaleWidth      =   6015
    ShowInTaskbar   =   0   'False
    Begin VB.Frame fraProgress1 
@@ -226,7 +226,7 @@ Begin VB.Form frmProgress
    End
    Begin VB.Image Image1 
       Height          =   900
-      Left            =   -2760
+      Left            =   -3000
       Picture         =   "frmProgress.frx":26F9
       Top             =   0
       Width           =   9000
