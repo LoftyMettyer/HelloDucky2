@@ -1100,7 +1100,7 @@ End Sub
 Private Sub RefreshControls()
   
   
-  cmdOk.Enabled = mfChanged
+  cmdOK.Enabled = mfChanged
   
 End Sub
 
@@ -1866,7 +1866,7 @@ Public Property Let ChartFilterID(ByVal plngNewValue As Long)
 End Property
 
 Public Property Get Chart_TableID_2() As Long
-  If cboTableZ.ListIndex >= 0 And Not optChartType(0).value Then
+  If cboTableZ.ListIndex >= 0 And optChartType(2).value Then
     Chart_TableID_2 = cboTableZ.ItemData(cboTableZ.ListIndex)
   Else
     Chart_TableID_2 = 0
@@ -1878,7 +1878,7 @@ Public Property Let Chart_TableID_2(ByVal plngNewValue As Long)
 End Property
 
 Public Property Get Chart_ColumnID_2() As Long
-  If cboColumnZ.ListIndex >= 0 And Not optChartType(0).value Then
+  If cboColumnZ.ListIndex >= 0 And optChartType(2).value Then
     Chart_ColumnID_2 = cboColumnZ.ItemData(cboColumnZ.ListIndex)
   Else
     Chart_ColumnID_2 = 0

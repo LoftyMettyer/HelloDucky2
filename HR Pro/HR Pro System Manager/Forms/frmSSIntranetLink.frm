@@ -4563,10 +4563,10 @@ Public Property Get Chart_Description() As String
     Chart_Description = ""
   ElseIf Chart_ColumnID_2 = 0 And Chart_ColumnID_3 = 0 Then
     Chart_Description = "1-D"
-  ElseIf Chart_ColumnID_3 > 0 Then
+  ElseIf Chart_ColumnID_2 > 0 Then  ' table 2 is actually the Z-Axis
     Chart_Description = "3-D"
   Else
-    Chart_Description = "3-D"
+    Chart_Description = "2-D"
   End If
     
   Chart_Description = Chart_Description & IIf(ChartTableID > 0, ", " & Replace(GetTableName(ChartTableID), "_", " "), "")
