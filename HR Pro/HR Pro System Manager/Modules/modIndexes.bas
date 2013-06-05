@@ -32,28 +32,28 @@ Private Function CreateIndex(ByVal psTableName As String, pstrIndexName As Strin
     & " WITH FILLFACTOR = " & iFillFactor
   gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
 
-
-  ' On its associated view
-  If glngSQLVersion = 9 Then
-    sSQL = "IF EXISTS" & _
-      " (SELECT Name" & _
-      " FROM sys.indexes WHERE object_id = object_id(N'" & psTableName & "')" & _
-      " AND name = N'" & pstrIndexName & "')" & _
-      " DROP INDEX [" & pstrIndexName & "] ON " & psTableName
-  Else
-    sSQL = "IF EXISTS" & _
-      " (SELECT Name" & _
-      " FROM sysindexes WHERE id = object_id(N'" & psTableName & "')" & _
-      " AND name = N'" & pstrIndexName & "')" & _
-      " DROP INDEX [" & psTableName & "].[" & pstrIndexName & "]"
-  End If
-  gADOCon.Execute sSQL, , adExecuteNoRecords
-
-  sSQL = "CREATE " & IIf(bClustered, "CLUSTERED", "NONCLUSTERED") & _
-    " INDEX [" & pstrIndexName & "] ON [" & psTableName & "]" _
-    & "(" & pstrFields & " Asc)" _
-    & " WITH FILLFACTOR = " & iFillFactor
-  gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
+'
+'  ' On its associated view
+'  If glngSQLVersion = 9 Then
+'    sSQL = "IF EXISTS" & _
+'      " (SELECT Name" & _
+'      " FROM sys.indexes WHERE object_id = object_id(N'" & psTableName & "')" & _
+'      " AND name = N'" & pstrIndexName & "')" & _
+'      " DROP INDEX [" & pstrIndexName & "] ON " & psTableName
+'  Else
+'    sSQL = "IF EXISTS" & _
+'      " (SELECT Name" & _
+'      " FROM sysindexes WHERE id = object_id(N'" & psTableName & "')" & _
+'      " AND name = N'" & pstrIndexName & "')" & _
+'      " DROP INDEX [" & psTableName & "].[" & pstrIndexName & "]"
+'  End If
+'  gADOCon.Execute sSQL, , adExecuteNoRecords
+'
+'  sSQL = "CREATE " & IIf(bClustered, "CLUSTERED", "NONCLUSTERED") & _
+'    " INDEX [" & pstrIndexName & "] ON [" & psTableName & "]" _
+'    & "(" & pstrFields & " Asc)" _
+'    & " WITH FILLFACTOR = " & iFillFactor
+'  gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
 
 
 
