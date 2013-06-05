@@ -717,6 +717,7 @@ Private Function GetSQLEmailContent(lngTableID As Long, strTableName As String, 
   Dim strType As String
   Dim strSQL As String
   'Dim blnFoundToRecipient As Boolean
+  Dim objExpr As New CExpression
 
   
   On Local Error GoTo LocalErr  'Resume Next
@@ -738,9 +739,47 @@ Private Function GetSQLEmailContent(lngTableID As Long, strTableName As String, 
         End If
   
         strType = Choose(!Mode + 1, "@To", "@Cc", "@Bcc")
-        strSQL = strSQL & _
-            "    EXEC @hResult = dbo.spASRSysEmailAddr @Recip OUTPUT, " & CStr(!RecipientID) & ", @recordID" & vbNewLine & _
-            "    SELECT " & strType & " = " & strType & " + RTrim(@Recip) + ';'" & vbNewLine & vbNewLine
+        
+        If strTableName <> "deleted" Then
+          strSQL = strSQL & _
+              "    EXEC @hResult = dbo.spASRSysEmailAddr @Recip OUTPUT, " & CStr(!RecipientID) & ", @recordID" & vbNewLine & _
+              "    SELECT " & strType & " = " & strType & " + RTrim(@Recip) + ';'" & vbNewLine & vbNewLine
+        Else
+        
+          With recEmailAddrEdit
+            .Index = "idxID"
+            .Seek ">=", recEmailRecipientsEdit!RecipientID
+        
+            If Not .NoMatch Then
+
+              Select Case !Type
+              Case 0  'Fixed
+                strSQL = strSQL & _
+                  "    SELECT " & strType & " = " & strType & _
+                  " + ltrim(rtrim(Fixed))+';' FROM ASRSysEmailAddress WHERE EmailID = " & CStr(recEmailRecipientsEdit!RecipientID) & ";" & vbNewLine & vbNewLine
+              Case 1  'Column
+                strSQL = strSQL & _
+                  "    SELECT " & strType & " = " & strType & _
+                  " + rtrim(isnull(" & GetColumnName(!ColumnID, True) & ",''))+';' FROM deleted WHERE ID = @recordID;" & vbNewLine & vbNewLine
+              Case 2  'Calc
+                Set objExpr = New CExpression
+                With objExpr
+                  .ExpressionID = recEmailAddrEdit!ExprID
+                  If .ConstructExpression Then
+                    gblnExpressionForDeleteTrigger = True
+                    strSQL = strSQL & _
+                      .StoredProcedureCode("@strTemp", "deleted") & vbNewLine & _
+                      "    SELECT " & strType & " = " & strType & " + @strTemp+';';" & vbNewLine & vbNewLine
+                    gblnExpressionForDeleteTrigger = False
+                  End If
+                  Set objExpr = Nothing
+                End With
+              End Select
+            End If
+        
+          End With
+        
+        End If
 
         'blnFoundToRecipient = blnFoundToRecipient Or (!Mode = 0)
         .MoveNext
