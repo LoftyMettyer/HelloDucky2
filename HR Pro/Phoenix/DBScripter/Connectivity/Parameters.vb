@@ -19,7 +19,12 @@ Namespace Connectivity
 
     Public Shadows Sub Add(ByRef [Name] As String, ByRef [Value] As Integer)
 
-      Add([Name], Value.ToString)
+      Dim objParameter As New Connectivity.Parameter
+
+      objParameter.Name = [Name]
+      objParameter.DBType = DBType.Integer
+      objParameter.Value = [Value]
+      Me.Items.Add(objParameter)
 
     End Sub
 

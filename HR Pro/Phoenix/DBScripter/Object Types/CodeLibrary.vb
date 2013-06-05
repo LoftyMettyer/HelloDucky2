@@ -9,14 +9,29 @@
     Public AfterCode As String
     Public ReturnType As ScriptDB.ComponentValueTypes
     Public BypassValidation As Boolean
+    '    Public Module_Dependancies As String
 
-    
     'Public Overrides Function Commit() As Boolean
     'End Function
 
     Public Overrides ReadOnly Property Type As Enums.Type
       Get
         Return Enums.Type.CodeLibrary
+      End Get
+    End Property
+
+    Public Property Dependancies As Things.Collection
+      Get
+        Return Me.Objects
+      End Get
+      Set(ByVal value As Things.Collection)
+        Me.Objects = value
+      End Set
+    End Property
+
+    Public ReadOnly Property HasDependancies As Boolean
+      Get
+        Return Me.Objects.Count > 0
       End Get
     End Property
 

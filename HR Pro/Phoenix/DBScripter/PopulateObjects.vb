@@ -42,6 +42,37 @@
 
     End Sub
 
+    Public Function PopulateCodeLibraryDependancies(ByRef objFunction As Things.CodeLibrary) As Things.Collection
+
+      Dim objDependancies As New Things.Collection
+      Dim objSetting As Things.Setting
+      Dim objParameters As New Connectivity.Parameters
+      Dim objDataset As DataSet
+      Dim objRow As DataRow
+
+      Try
+        objDependancies.Clear()
+        objParameters.Clear()
+        objParameters.Add("@componentid", CInt(objFunction.ID))
+        objDataset = Globals.CommitDB.ExecStoredProcedure("spadmin_getcomponentcodedependancies", objParameters)
+        For Each objRow In objDataset.Tables(0).Rows
+          objSetting = New Things.Setting
+          objSetting.Module = objRow.Item("parameterkey").ToString
+          objSetting.Parameter = objRow.Item("modulekey").ToString
+          objSetting.Value = objRow.Item("value").ToString
+          objSetting.SubType = objRow.Item("settingtype").ToString
+          objDependancies.Add(objSetting)
+        Next
+
+      Catch ex As Exception
+        Globals.ErrorLog.Add(Phoenix.ErrorHandler.Section.LoadingData, String.Empty, Phoenix.ErrorHandler.Severity.Error, ex.Message, vbNullString)
+
+      End Try
+
+      Return objDependancies
+
+    End Function
+
     Public Sub PopulateSystemThings()
 
       Dim objDataset As DataSet
@@ -70,6 +101,7 @@
           objCodeLibrary.ReturnType = objRow.Item("returntype").ToString
           objCodeLibrary.OperatorType = objRow.Item("operatortype").ToString
           objCodeLibrary.BypassValidation = objRow.Item("bypassvalidation").ToString
+          objCodeLibrary.Dependancies = PopulateCodeLibraryDependancies(objCodeLibrary)
 
           If objRow.Item("isoperator") Then
             Globals.Operators.Add(objCodeLibrary)

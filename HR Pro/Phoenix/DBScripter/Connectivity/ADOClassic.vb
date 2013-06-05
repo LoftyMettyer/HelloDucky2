@@ -49,21 +49,23 @@ Namespace Connectivity
 
             Select Case objParameter.DBType
               Case Connectivity.DBType.Integer
-                sqlParm = .CreateParameter(objParameter.Name, ADODB.DataTypeEnum.adInteger, ADODB.ParameterDirectionEnum.adParamInput, 0, CInt(objParameter.Value))
+                '    sqlParm = .CreateParameter(objParameter.Name, ADODB.DataTypeEnum.adInteger, ADODB.ParameterDirectionEnum.adParamInput, 0, CInt(objParameter.Value.ToString))
+                .Parameters(objParameter.Name).Value = CInt(objParameter.Value.ToString)
 
               Case Connectivity.DBType.String
-                sqlParm = .CreateParameter(objParameter.Name, ADODB.DataTypeEnum.adLongVarChar, ADODB.ParameterDirectionEnum.adParamInput, 0, objParameter.Value.ToString)
+                '                sqlParm = .CreateParameter(objParameter.Name, ADODB.DataTypeEnum.adLongVarChar, ADODB.ParameterDirectionEnum.adParamInput, 0, objParameter.Value.ToString)
+                .Parameters(objParameter.Name).Value = objParameter.Value.ToString
 
-              Case Connectivity.DBType.GUID
-                If objParameter.Value = System.Guid.Empty Then
-                  sqlParm = .CreateParameter(objParameter.Name, ADODB.DataTypeEnum.adGUID, ADODB.ParameterDirectionEnum.adParamInput, 0, DBNull.Value)
-                Else
-                  sqlParm = .CreateParameter(objParameter.Name, ADODB.DataTypeEnum.adGUID, ADODB.ParameterDirectionEnum.adParamInput, 0, objParameter.Value.ToString)
-                End If
+                'Case Connectivity.DBType.GUID
+                '  If objParameter.Value = System.Guid.Empty Then
+                '    sqlParm = .CreateParameter(objParameter.Name, ADODB.DataTypeEnum.adGUID, ADODB.ParameterDirectionEnum.adParamInput, 0, DBNull.Value)
+                '  Else
+                '    sqlParm = .CreateParameter(objParameter.Name, ADODB.DataTypeEnum.adGUID, ADODB.ParameterDirectionEnum.adParamInput, 0, objParameter.Value.ToString)
+                '  End If
 
             End Select
 
-            .Parameters.Append(sqlParm)
+            '          .Parameters.Append(sqlParm)
 
           Next
 

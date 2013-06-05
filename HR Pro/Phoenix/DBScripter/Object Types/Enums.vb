@@ -77,7 +77,6 @@
       Proper = 3
     End Enum
 
-
   End Module
 
 End Namespace

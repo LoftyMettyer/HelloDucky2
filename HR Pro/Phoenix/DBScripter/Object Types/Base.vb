@@ -109,7 +109,7 @@ Namespace Things
     Public MustOverride ReadOnly Property Type() As Things.Type 'Implements Things.iSystemObject.Type
     '    Public MustOverride Function Commit() As Boolean Implements Things.iSystemObject.Commit
 
-    Public Property SubType() As Things.Type
+    Public Overridable Property SubType() As Things.Type
       Get
         Return miSubType
       End Get

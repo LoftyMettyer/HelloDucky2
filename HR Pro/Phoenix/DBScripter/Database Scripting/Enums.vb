@@ -121,6 +121,7 @@
       Filter = 10
       WorkflowValue = 11
       WorkflowColumn = 12
+      Relation = 13
     End Enum
 
     Public Enum ComponentValueTypes

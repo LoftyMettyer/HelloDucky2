@@ -445,8 +445,8 @@ Namespace ScriptDB
 
 
                 '      objExpression = New Things.Expression
-                '   objExpression = objTable.Objects.GetObject(Things.Type.Expression, objColumn.CalcID)
-                ' If Not objExpression Is Nothing Then
+                'objExpression = objTable.Objects.GetObject(Things.Type.Expression, objColumn.CalcID)
+                'If Not objExpression Is Nothing Then
                 '    objExpression.ExpressionType = ScriptDB.ExpressionType.ViewCode
                 '    objExpression.AssociatedColumn = objColumn
                 '    sColumnCalculation = objExpression.Code
@@ -454,7 +454,7 @@ Namespace ScriptDB
                 '      sSQL = sSQL & String.Format(", {0} AS [{1}]", sColumnCalculation, objColumn.Name) & vbNewLine
                 '    Else
                 '      sSQL = sSQL & String.Format(", [{0}]", objColumn.Name) & vbNewLine
-                '    End If
+                'End If
 
                 '    '    aryJoinCode.
 
@@ -490,12 +490,12 @@ Namespace ScriptDB
               If objColumn.Audit Then
                 If objColumn.IsCalculated Then
 
-                  aryAuditInserts.Add(String.Format("        SELECT base.ID, NULL, convert(nvarchar({4}),{2}), {1}" & vbNewLine & _
-                                      "            FROM inserted base" _
+                  aryAuditInserts.Add(String.Format("        SELECT base.ID, NULL, convert(nvarchar({4}),[{0}]), {1}" & vbNewLine & _
+                                      "            FROM dbo.[{3}] base" _
                                       , objColumn.Name, CInt(objColumn.ID), objColumn.Calculation.UDF.CallingCode, objColumn.Table.Name, objColumn.DataTypeSize))
-                  aryAuditUpdates.Add(String.Format("        SELECT d.ID, convert(nvarchar({4}),d.[{0}]), convert(nvarchar({4}),{2}), {1}" & vbNewLine & _
+                  aryAuditUpdates.Add(String.Format("        SELECT d.ID, convert(nvarchar({4}),d.[{0}]), convert(nvarchar({4}), base.[{0}]), {1}" & vbNewLine & _
                                       "            FROM deleted d" & vbNewLine & _
-                                      "            INNER JOIN dbo.[{3}] base ON d.[id] = base.[id] AND NOT d.[{0}] = {2}" _
+                                      "            INNER JOIN dbo.[{3}] base ON d.[id] = base.[id] AND NOT d.[{0}] = base.[{0}]" _
                                       , objColumn.Name, CInt(objColumn.ID), objColumn.Calculation.UDF.CallingCode, objColumn.Table.Name, objColumn.DataTypeSize))
                   aryAuditDeletes.Add(String.Format("        SELECT base.ID, convert(nvarchar({4}),{2}), NULL, {1}" & vbNewLine & _
                                       "            FROM deleted base" _
@@ -788,12 +788,15 @@ Namespace ScriptDB
           "BEGIN" & vbNewLine & _
           "    PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Start ([{2}].[{0}]';" & vbNewLine & _
           "    SET NOCOUNT ON;" & vbNewLine & _
-          "    DECLARE @iCount integer;" & vbNewLine & _
+          "    DECLARE @iCount integer;" & vbNewLine & vbNewLine & _
+         "    -- Only top level call (in case database property activating recursion is enabled)" & vbNewLine & _
+         "    --print TRIGGER_NESTLEVEL()" & vbNewLine & _
+         "    --IF TRIGGER_NESTLEVEL() > 4 RETURN" & vbNewLine & vbNewLine & _
           "{4}" & vbNewLine & vbNewLine & _
           "    PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Exit ([{2}].[{0}]'; " & vbNewLine & _
           "END" _
           , sTriggerName, [Role], Table.PhysicalName, sTriggerType, [BodyCode])
-        CommitDB.ScriptStatement(sSQL)
+          CommitDB.ScriptStatement(sSQL)
 
       Catch ex As Exception
         Globals.ErrorLog.Add(Phoenix.ErrorHandler.Section.UDFs, sTriggerName, Phoenix.ErrorHandler.Severity.Error, ex.Message, sSQL)
@@ -1242,6 +1245,7 @@ Namespace ScriptDB
 
           ' Calculations
           For Each objColumn In objTable.Columns
+
             If objColumn.IsCalculated Then
 
               objColumn.Calculation = objTable.Objects.GetObject(Things.Type.Expression, objColumn.CalcID)
@@ -1257,7 +1261,7 @@ Namespace ScriptDB
                   objColumn.Calculation.AssociatedColumn = objColumn
 
                   '                  Debug.Assert(Not objColumn.Name = "Full_Name")
-                  Debug.Assert(Not objColumn.Name = "CPD_Hours_Total")
+                  '                  Debug.Assert(Not objColumn.Name = "CPD_Hours_Total")
 
                   objColumn.Calculation.GenerateCode()
                   '    objColumn.Calculation.GenerateCode()

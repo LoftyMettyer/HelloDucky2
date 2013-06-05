@@ -35,20 +35,34 @@ Namespace Things
     Private maryPrerequisitStatements As ArrayList
 
     Private mcolLinesOfCode As ScriptDB.LinesOfCode
-    Private mbAddBaseTable As Boolean
+    'Private mbAddBaseTable As Boolean
     Private mbIsValid As Boolean
 
     'tempry - must solve later
     Private miRecuriveStop As Integer
-
-
     Private OnlyReferencesThisTable As Boolean
+    Private mbRequiresRowNumber = False
 
     Public Overrides ReadOnly Property Type As Enums.Type
       Get
         Return Enums.Type.Expression
       End Get
     End Property
+
+    ' Some functions (unique value) need to know the row number of the insert/update row thats functioning because the UDF can't update the underlying data.
+    Public Property RequiresRowNumber As Boolean
+      Get
+        Return mbRequiresRowNumber
+      End Get
+      Set(ByVal value As Boolean)
+        mbRequiresRowNumber = value
+        If Not Me.BaseExpression Is Me Then
+          Me.BaseExpression.RequiresRowNumber = mbRequiresRowNumber
+        End If
+      End Set
+    End Property
+
+
 
 #Region "Generate code"
 
@@ -166,6 +180,14 @@ Namespace Things
 
     End Function
 
+    Private Sub AddDependancy(ByRef Thing As Things.Base)
+
+      If Not mcolDependencies.Contains(Thing) Then
+        mcolDependencies.Add(Thing)
+      End If
+
+    End Sub
+
 
     Private Sub BuildDependancies(ByRef objExpression As Things.Component)
 
@@ -260,11 +282,29 @@ Namespace Things
 
         If objDependency.Type = Enums.Type.Relation Then
           aryParameters1.Add(String.Format("@pid_{0} integer", CInt(CType(objDependency, Things.Relation).ParentID)))
-          aryParameters2.Add("base.[ID]")
+
+          If CType(objDependency, Things.Relation).RelationshipType = ScriptDB.RelationshipType.Parent Then
+            aryParameters2.Add(String.Format("base.[ID_{0}]", CInt(CType(objDependency, Things.Relation).ParentID)))
+          Else
+            aryParameters2.Add("base.[ID]")
+          End If
+
         End If
+
+        'If objDependency.Type = Enums.Type.Setting Then
+        '  aryParameters1.Add(String.Format("@pid_{0} integer", CInt(CType(objDependency, Things.Setting).Value)))
+        '  aryParameters2.Add(String.Format("base.[ID_{0}]", CInt(CType(objDependency, Things.Setting).Value)))
+        'End If
 
         iCount += iCount
       Next
+
+
+      ' Special parameters for functions
+      'If Me.BaseExpression.RequiresRowNumber Then
+      '  aryParameters1.Add(String.Format("@base_rownumber integer"))
+      '  aryParameters2.Add("ROW_NUMBER() OVER(OVER(ORDER BY base.[ID])")
+      'End If
 
 
       ' Calling statement
@@ -393,13 +433,11 @@ Namespace Things
 
         Select Case objComponent.SubType
 
-          '' A lookup table value
-          'Case ScriptDB.ComponentTypes.TableValue
-          '  '      SQLCode_AddTable(guiObjectID, [CodeCluster], drComponent)
-          '  SQLCode_AddTableValue([CodeCluster], objComponent)
-          '  mbAddBaseTable = True
+          ' A table relationship
+          Case ScriptDB.ComponentTypes.Relation
+            SQLCode_AddRelation([CodeCluster], objComponent)
 
-          ' Column component
+            ' Column component
           Case ScriptDB.ComponentTypes.Column
             SQLCode_AddColumn([CodeCluster], objComponent)
 
@@ -454,14 +492,31 @@ Namespace Things
               Globals.ErrorLog.Add(ErrorHandler.Section.General, Me.AssociatedColumn.Name, ErrorHandler.Severity.Error, "SQLCode_AddCodeLevel", "can't find expression")
 
             End If
-          Case Else
-            Debug.Print("hhelkj")
 
         End Select
 
       Next
 
     End Sub
+
+    Private Sub SQLCode_AddRelation(ByRef [CodeCluster] As ScriptDB.LinesOfCode, ByRef [Component] As Things.Component)
+
+      Dim objTable As Things.Table
+      Dim objRelation As Things.Relation
+      Dim LineOfCode As ScriptDB.CodeElement
+
+      LineOfCode.CodeType = ScriptDB.ComponentTypes.Relation
+
+      objTable = Globals.Things.GetObject(Enums.Type.Table, [Component].TableID)
+      objRelation = AssociatedColumn.Table.GetRelation(objTable.ID)
+      AddDependancy(objRelation)
+
+      LineOfCode.Code = String.Format("@pid_{0}", CInt([Component].TableID))
+
+      [CodeCluster].Add(LineOfCode)
+
+    End Sub
+
 
     Private Sub SQLCode_AddColumn(ByRef [CodeCluster] As ScriptDB.LinesOfCode, ByRef [Component] As Things.Component)
 
@@ -528,12 +583,12 @@ Namespace Things
         If objThisColumn Is objBaseColumn And Not Me.ExpressionType = ScriptDB.ExpressionType.ColumnFilter Then
           '   LineOfCode.Code = String.Format("[dbo].[{0}].[{1}]", objThisColumn.Table.PhysicalName, objThisColumn.Name)
           LineOfCode.Code = String.Format("@prm_{0}", objThisColumn.Name)
-          mbAddBaseTable = True
+          'mbAddBaseTable = True
 
           ' Does the referenced column have default value on it, then reference the UDF/value of the default rather than the column itself.
         ElseIf (Not objThisColumn.DefaultCalcID = 0 And Me.ExpressionType = ScriptDB.ExpressionType.ColumnDefault) Then
           LineOfCode.Code = String.Format("[dbo].[{0}](@pID)", objThisColumn.Name)
-          mbAddBaseTable = True
+          'mbAddBaseTable = True
 
           ' Does the referenced column have calculation on it, then reference the UDF of the calc rather than the column itself.
           'And miGenerateExpressionType = ScriptDB.GenerateExpressionType.ColumnCalculation _
@@ -579,14 +634,14 @@ Namespace Things
             Select Case Component.BaseExpression.ExpressionType
               Case ScriptDB.ExpressionType.ColumnFilter
                 sColumnName = String.Format("[{0}].[{1}]", objThisColumn.Table.Name, objThisColumn.Name)
-                mbAddBaseTable = True
+                'mbAddBaseTable = True
 
               Case ScriptDB.ExpressionType.ViewCode
                 sColumnName = String.Format("base.[{0}]", objThisColumn.Name)
 
               Case Else
                 sColumnName = String.Format("@prm_{0}", objThisColumn.Name)
-                mbAddBaseTable = True
+                'mbAddBaseTable = True
 
             End Select
 
@@ -834,9 +889,10 @@ Namespace Things
 
       Dim objCodeLibrary As Things.CodeLibrary
       Dim ChildCodeCluster As ScriptDB.LinesOfCode
-      '  Dim objExpression As Things.Expression
-      '   Dim iPartNumber As Integer
-      '    Dim sPartCode As String
+      Dim objSetting As Things.Setting
+      'Dim objTable As Things.Table
+      ' Dim objRelation As Things.Relation
+      Dim objIDComponent As Things.Component
 
       LineOfCode.CodeType = ScriptDB.ComponentTypes.Function
       objCodeLibrary = Globals.Functions.GetObject(Enums.Type.CodeLibrary, Component.FunctionID)
@@ -847,6 +903,30 @@ Namespace Things
       ChildCodeCluster.CodeLevel = [CodeCluster].CodeLevel + 1
       ChildCodeCluster.NestedLevel = CodeCluster.NestedLevel + 1
       ChildCodeCluster.ReturnType = objCodeLibrary.ReturnType
+
+      ' Add module dependancy info for this function
+      If objCodeLibrary.HasDependancies Then
+        For Each objSetting In objCodeLibrary.Dependancies
+          Select Case objSetting.SubType
+            Case Enums.Type.Table
+
+              ' Add it as a relation
+              'objTable = Globals.Things.GetObject(Enums.Type.Table, objSetting.Value)
+              'objRelation = AssociatedColumn.Table.GetRelation(objTable.ID)
+              'AddDependancy(objRelation)
+
+              objIDComponent = New Things.Component
+              objIDComponent.SubType = ScriptDB.ComponentTypes.Relation
+              objIDComponent.TableID = objSetting.Value
+              [Component].Objects.Add(objIDComponent)
+
+            Case Enums.Type.Column
+              'AddDependancy(Globals.Things.GetObject(Enums.Type.Table, objSetting.Value))
+
+          End Select
+
+        Next
+      End If
 
       SQLCode_AddCodeLevel([Component].Objects, ChildCodeCluster)
       LineOfCode.Code = String.Format(LineOfCode.Code, ChildCodeCluster.ToArray)
