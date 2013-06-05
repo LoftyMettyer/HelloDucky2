@@ -1699,36 +1699,55 @@ PRINT 'Step 14 - Server settings'
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 14 - Convert to merged audit table'
+PRINT 'Step 14 - Convert audit table to view'
 
 	-- Rename the base audit log
 	IF NOT EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[tbsys_audittrail]') AND xtype = 'U')
 	BEGIN
 		EXECUTE sp_executesql N'EXECUTE sp_rename [ASRSysAuditTrail], [tbsys_audittrail];';
-
-		-- Remove old view
-		IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[ASRSysAuditTrail]') AND xtype = 'V')
-			DROP VIEW [dbo].[ASRSysAuditTrail];
-
-		SET @NVarCommand = 'CREATE VIEW [ASRSysAuditTrail]
-			WITH SCHEMABINDING
-			AS SELECT
-				[id], [UserName], [DateTimeStamp], [RecordID], [RecordDesc], [OldValue], [NewValue],
-				[Tablename], [Columnname], [CMGExportDate],	[CMGCommitDate], [ColumnID], [Deleted]
-			FROM [dbo].[tbsys_audittrail];'
-		EXECUTE sp_executesql @NVarCommand;		
-
-		-- Remove old triggers 
-		IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[INS_ASRSysAuditTrail]') AND xtype = 'TR')
-			DROP TRIGGER [dbo].[INS_ASRSysAuditTrail];
-
-		IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[DEL_ASRSysAuditTrail]') AND xtype = 'TR')
-			DROP TRIGGER [dbo].[DEL_ASRSysAuditTrail];
-
-		-- Set as a non-integrated audit log
 		EXEC spsys_setsystemsetting 'integration', 'auditlog', 0;
-
 	END
+
+	-- Remove old audit view
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[ASRSysAuditTrail]') AND xtype = 'V')
+		DROP VIEW [dbo].[ASRSysAuditTrail];
+		
+	-- Alter structure of the base table
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('tbsys_audittrail', 'U') AND name = 'tableid')
+		EXECUTE sp_executesql N'ALTER TABLE dbo.[tbsys_audittrail] ADD [tableid] integer NULL'
+
+	IF EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('tbsys_audittrail', 'U') AND name = 'tablename')
+		EXECUTE sp_executesql N'ALTER TABLE dbo.[tbsys_audittrail] DROP COLUMN [tablename]'
+
+	IF EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('tbsys_audittrail', 'U') AND name = 'columnname')
+		EXECUTE sp_executesql N'ALTER TABLE dbo.[tbsys_audittrail] DROP COLUMN [columnname]'
+
+	-- Create audit view
+	EXECUTE sp_executesql N'CREATE VIEW [ASRSysAuditTrail]
+		WITH SCHEMABINDING
+		AS SELECT
+			a.[id], a.[UserName], a.[DateTimeStamp], a.[RecordID], a.[RecordDesc], a.[OldValue], a.[NewValue],
+			t.[Tablename], c.[Columnname], a.[CMGExportDate],	a.[CMGCommitDate], a.[ColumnID], a.[Deleted]
+		FROM [dbo].[tbsys_audittrail] a
+		INNER JOIN dbo.[tbsys_tables] t ON t.[tableid] = a.[tableid]
+		INNER JOIN dbo.[tbsys_columns] c ON c.[columnid] = a.[columnid] AND t.[tableid] = c.[tableid]'
+
+	-- Remove old triggers 
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[INS_ASRSysAuditTrail]') AND xtype = 'TR')
+		DROP TRIGGER [dbo].[INS_ASRSysAuditTrail];
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[DEL_ASRSysAuditTrail]') AND xtype = 'TR')
+		DROP TRIGGER [dbo].[DEL_ASRSysAuditTrail];
+
+	-- Generate triggers on the audit logs		
+	EXECUTE sp_executesql N'CREATE TRIGGER [dbo].[DEL_ASRSysAuditTrail] ON [dbo].[ASRSysAuditTrail]
+		INSTEAD OF DELETE
+		AS
+		BEGIN
+			SET NOCOUNT ON;
+			DELETE FROM dbo.[tbsys_audittrail] WHERE ID IN (SELECT ID FROM deleted);
+		END'
+
 
 
 /* ------------------------------------------------------------- */
