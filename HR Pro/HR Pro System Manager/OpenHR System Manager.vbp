@@ -268,7 +268,6 @@ Module=modTypes; Modules\modTypes.bas
 Module=modCheckVersion; Modules\modCheckVersion.bas
 Class=clsMobile; Classes\clsMobile.cls
 Module=modSave_Tables; Modules\modSave_Tables.bas
-RelatedDoc=Update Scripts\Update-5-1.sql
 Module=modMobileSpecifics; Modules\modMobileSpecifics.bas
 Module=modSave; Modules\modSave.bas
 Form=Forms\frmMobileSetup.frm

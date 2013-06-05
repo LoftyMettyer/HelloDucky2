@@ -2132,7 +2132,8 @@ Public Sub EditMobileDesigner()
   Set service = Nothing
   
   Dim frm As New DesignerForm
-  frm.Show
+  frm.ShowDialog
+  'frm.ShowChild (frmSysMgr.hWnd)
   
 ErrorTrap:
   bOK = False
