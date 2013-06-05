@@ -293,10 +293,25 @@ Public Property Get Cancelled() As Boolean
 End Property
 
 Private Sub cboColumns_Click()
+  Dim piColumnDataType As Integer
+  Dim lngColumnID As Long
+  
 
   mfChanged = True
 
-  mlngColumnID = cboColumns.ItemData(cboColumns.ListIndex)
+  lngColumnID = cboColumns.ItemData(cboColumns.ListIndex)
+  
+  piColumnDataType = GetColumnDataType(lngColumnID)
+  
+  ' Disable 'total' option if not numeric or integer
+  If piColumnDataType <> dtINTEGER And piColumnDataType <> dtNUMERIC Then
+    optAggregateType(0).value = True
+    optAggregateType(1).Enabled = False
+    optAggregateType(1).ForeColor = vbButtonFace
+  Else
+    optAggregateType(1).Enabled = True
+    optAggregateType(1).ForeColor = vbWindowBackground
+  End If
 End Sub
 
 Private Sub cboParents_Click()
@@ -345,7 +360,7 @@ End Sub
 Private Sub cmdFilter_Click()
 
   ' Display the 'Where Clause' expression selection form.
-  'On Error GoTo ErrorTrap
+  On Error GoTo ErrorTrap
 
   Dim fOK As Boolean
   Dim objExpr As CExpression
