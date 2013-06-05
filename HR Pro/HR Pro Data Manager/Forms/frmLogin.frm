@@ -3,10 +3,10 @@ Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~2.OCX"
 Begin VB.Form frmLogin 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "HR Pro Data Manager - Login"
-   ClientHeight    =   3375
+   ClientHeight    =   5385
    ClientLeft      =   1530
    ClientTop       =   2595
-   ClientWidth     =   5745
+   ClientWidth     =   6150
    BeginProperty Font 
       Name            =   "Verdana"
       Size            =   8.25
@@ -22,67 +22,67 @@ Begin VB.Form frmLogin
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   3375
-   ScaleWidth      =   5745
+   ScaleHeight     =   5385
+   ScaleWidth      =   6150
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin VB.TextBox txtServer 
       Height          =   315
-      Left            =   1372
+      Left            =   1395
       TabIndex        =   5
-      Top             =   2945
+      Top             =   4920
       Visible         =   0   'False
-      Width           =   3000
+      Width           =   3280
    End
    Begin VB.TextBox txtDatabase 
       Height          =   315
-      Left            =   1372
+      Left            =   1395
       TabIndex        =   4
-      Top             =   2540
+      Top             =   4515
       Visible         =   0   'False
-      Width           =   3000
+      Width           =   3280
    End
    Begin VB.TextBox txtPWD 
       Height          =   315
       IMEMode         =   3  'DISABLE
-      Left            =   1372
+      Left            =   1395
       MaxLength       =   128
       PasswordChar    =   "*"
       TabIndex        =   2
-      Top             =   1790
-      Width           =   3000
+      Top             =   3765
+      Width           =   3280
    End
    Begin VB.TextBox txtUID 
       Height          =   315
-      Left            =   1372
+      Left            =   1395
       TabIndex        =   1
-      Top             =   1385
-      Width           =   3000
+      Top             =   3360
+      Width           =   3280
    End
    Begin VB.CommandButton cmdCancel 
       Cancel          =   -1  'True
       Caption         =   "&Cancel"
       Height          =   400
-      Left            =   4475
+      Left            =   4830
       TabIndex        =   7
-      Top             =   1940
+      Top             =   3915
       Width           =   1200
    End
    Begin VB.CommandButton cmdOK 
       Caption         =   "&OK"
       Default         =   -1  'True
       Height          =   400
-      Left            =   4475
+      Left            =   4830
       TabIndex        =   6
-      Top             =   1385
+      Top             =   3360
       Width           =   1200
    End
    Begin VB.CommandButton cmdDetails 
       Caption         =   "&Details  >>"
       Height          =   400
-      Left            =   4475
+      Left            =   4830
       TabIndex        =   8
-      Top             =   2540
+      Top             =   4515
       Width           =   1200
    End
    Begin VB.CheckBox chkUseWindowsAuthentication 
@@ -90,19 +90,19 @@ Begin VB.Form frmLogin
       Height          =   210
       Left            =   120
       TabIndex        =   3
-      Top             =   2225
+      Top             =   4195
       Value           =   1  'Checked
       Width           =   3240
    End
    Begin VB.Timer Timer1 
       Enabled         =   0   'False
       Interval        =   65535
-      Left            =   4920
-      Top             =   2640
+      Left            =   4965
+      Top             =   4710
    End
    Begin XtremeSkinFramework.SkinFramework SkinFramework1 
-      Left            =   4920
-      Top             =   480
+      Left            =   5505
+      Top             =   4815
       _Version        =   851969
       _ExtentX        =   635
       _ExtentY        =   635
@@ -113,9 +113,9 @@ Begin VB.Form frmLogin
       AutoSize        =   -1  'True
       Caption         =   "(Dev mode)"
       Height          =   195
-      Left            =   4635
+      Left            =   5025
       TabIndex        =   13
-      Top             =   75
+      Top             =   2900
       Width           =   1035
    End
    Begin VB.Label lblServer 
@@ -125,7 +125,7 @@ Begin VB.Form frmLogin
       Height          =   195
       Left            =   120
       TabIndex        =   12
-      Top             =   3005
+      Top             =   4980
       Visible         =   0   'False
       Width           =   810
    End
@@ -136,7 +136,7 @@ Begin VB.Form frmLogin
       Height          =   195
       Left            =   120
       TabIndex        =   11
-      Top             =   2600
+      Top             =   4575
       Visible         =   0   'False
       Width           =   975
    End
@@ -147,50 +147,50 @@ Begin VB.Form frmLogin
       Height          =   195
       Left            =   120
       TabIndex        =   10
-      Top             =   1850
+      Top             =   3825
       Width           =   975
    End
    Begin VB.Label lblUser 
       AutoSize        =   -1  'True
       BackStyle       =   0  'Transparent
-      Caption         =   "User :"
+      Caption         =   "Username :"
       Height          =   195
       Left            =   120
       TabIndex        =   9
-      Top             =   1445
-      Width           =   750
+      Top             =   3420
+      Width           =   1005
    End
    Begin VB.Line Line4 
       BorderColor     =   &H80000005&
-      X1              =   90
-      X2              =   5665
-      Y1              =   1250
-      Y2              =   1250
+      X1              =   120
+      X2              =   6000
+      Y1              =   3200
+      Y2              =   3200
    End
    Begin VB.Image imgASR 
-      Height          =   900
-      Left            =   120
+      Height          =   2820
+      Left            =   0
       Picture         =   "frmLogin.frx":000C
-      Top             =   60
-      Width           =   2805
+      Top             =   0
+      Width           =   6150
    End
    Begin VB.Label lblVersion 
       AutoSize        =   -1  'True
       BackStyle       =   0  'Transparent
       Caption         =   "lblVersion"
-      Height          =   240
-      Left            =   90
+      Height          =   195
+      Left            =   120
       TabIndex        =   0
-      Top             =   945
-      Width           =   5535
+      Top             =   2895
+      Width           =   840
    End
    Begin VB.Line Line1 
       BorderColor     =   &H80000010&
       BorderWidth     =   2
-      X1              =   90
-      X2              =   5650
-      Y1              =   1250
-      Y2              =   1250
+      X1              =   120
+      X2              =   5980
+      Y1              =   3200
+      Y2              =   3200
    End
 End
 Attribute VB_Name = "frmLogin"
@@ -288,7 +288,8 @@ Private Sub Form_Load()
   ' Position the login screen in the centre of the screen.
   UI.frmAtCenter Me
 
-  lblVersion.Caption = "HR Pro Data Manager - Version " & App.Major & "." & App.Minor & "." & App.Revision
+  'lblVersion.Caption = "HR Pro Data Manager - Version " & App.Major & "." & App.Minor & "." & App.Revision
+  lblVersion.Caption = "Version " & App.Major & "." & App.Minor & "." & App.Revision
   
   If ASRDEVELOPMENT Then
     lblDevelopmentMode.Caption = "(Dev mode)"
