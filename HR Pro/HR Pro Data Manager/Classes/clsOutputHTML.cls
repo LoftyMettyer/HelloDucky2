@@ -772,25 +772,20 @@ Public Sub Complete()
   
   Close
 
-
   'EMAIL
-  If mblnEmail Then
+  If mblnEmail And Not gblnReportPackMode Then
     mstrErrorMessage = "Error sending email"
     
     If mblnSave Then
       mobjParent.SendEmail mstrFileName
     Else
-      'mstrFileName = GetTmpFName
-      'mstrFileName = Left$(mstrFileName, Len(mstrFileName) - 3) & "htm"
       Open mstrFileName For Output As #1
       Print #1, mstrHTMLOutput
       Close
       mobjParent.SendEmail mstrFileName
       Kill mstrFileName
     End If
-
   End If
-
 
   If mblnScreen Then
     mstrErrorMessage = "Error displaying HTML"

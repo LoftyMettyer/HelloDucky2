@@ -240,7 +240,7 @@ Public Sub Complete()
   End If
   
   'EMAIL
-  If mblnEmail Then
+  If mblnEmail And Not gblnReportPackMode Then
     mstrErrorMessage = "Error sending email"
     mobjParent.SendEmail mstrFileName
   End If
