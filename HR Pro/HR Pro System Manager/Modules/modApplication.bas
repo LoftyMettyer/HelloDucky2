@@ -23,6 +23,11 @@ Public Function Activate() As Boolean
       'Create temparary tables
       If CreateTempTables() Then
       
+        ' Load defintions into system framework (ultimately will replace the above temp tables, but this has to be done piecemeal)
+        PopulateMetaData
+     
+      
+      
         CreateQueryDefs
       
         ActivateModules
@@ -119,6 +124,26 @@ ErrorTrap:
   CreateTempDb = False
   
 End Function
+
+Public Sub PopulateMetaData()
+
+  On Error GoTo ErrorTrap
+
+'gobjMobileDefs.Connection = gADOCon
+'gobjMobileDefs.Populate
+
+  Exit Sub
+
+ErrorTrap:
+
+  gobjProgress.Visible = False
+  MsgBox ODBC.FormatError(Err.Description), _
+    vbOKOnly + vbExclamation, Name
+  Err = False
+
+
+End Sub
+
 
 Public Function CreateTempTables() As Boolean
   
@@ -2088,13 +2113,13 @@ End Sub
 Public Sub EditMobileDesigner()
 
   On Error GoTo ErrorTrap
-  
+
   Dim objMobile As clsMobile
   Dim bOK As Boolean
-  
+
   Set objMobile = New clsMobile
-  objMobile.Edit
-  
+'  objMobile.Edit
+
 TidyUpAndExit:
   Set objMobile = Nothing
   Exit Sub
