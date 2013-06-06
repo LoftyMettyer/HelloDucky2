@@ -80,14 +80,20 @@ Private Function CreatePrimaryIndex(ByVal psTableName As String, bClustered As B
   sSQL = "SELECT name FROM SysObjects WHERE xtype='PK'" & _
     " AND parent_obj = (SELECT ID FROM SysObjects WHERE xtype='U' AND Name = 'tbuser_" & psTableName & "')"
   rstExisting.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly
-    
-  If Not (rstExisting.EOF And rstExisting.BOF) Then
-    sSQL = "ALTER TABLE [tbuser_" & psTableName & "] DROP CONSTRAINT [" & rstExisting.Fields(0).value & "]"
-    gADOCon.Execute sSQL, , adExecuteNoRecords
+
+  'PG20111213: only create PK if one doesnt exist
+  If rstExisting.EOF And rstExisting.BOF Then
+    sSQL = "ALTER TABLE [tbuser_" & psTableName & "] ADD PRIMARY KEY " & IIf(bClustered, "CLUSTERED", "NONCLUSTERED") & " (ID)"
+    gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
   End If
+  
+  'If Not (rstExisting.EOF And rstExisting.BOF) Then
+  '  sSQL = "ALTER TABLE [tbuser_" & psTableName & "] DROP CONSTRAINT [" & rstExisting.Fields(0).value & "]"
+  '  gADOCon.Execute sSQL, , adExecuteNoRecords
+  'End If
     
-  sSQL = "ALTER TABLE [tbuser_" & psTableName & "] ADD PRIMARY KEY " & IIf(bClustered, "CLUSTERED", "NONCLUSTERED") & " (ID)"
-  gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
+  'sSQL = "ALTER TABLE [tbuser_" & psTableName & "] ADD PRIMARY KEY " & IIf(bClustered, "CLUSTERED", "NONCLUSTERED") & " (ID)"
+  'gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
 
 
 TidyUpAndExit:
