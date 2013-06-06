@@ -51,7 +51,7 @@ BEGIN
 END
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 1 - System Functions'
+PRINT 'Step - System Functions'
 
 	SELECT @ownerGUID = [SettingValue] FROM asrsyssystemsettings
 		WHERE [Section] = 'database' AND [SettingKey] = 'ownerid'
@@ -113,7 +113,7 @@ PRINT 'Step 1 - System Functions'
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 2 - Scripted Updates Date Effective Module'
+PRINT 'Step - Scripted Updates Date Effective Module'
 
 	-- Date effective table
 	IF OBJECT_ID('tbstat_effectivedates', N'U') IS NULL	
@@ -123,7 +123,7 @@ PRINT 'Step 2 - Scripted Updates Date Effective Module'
 	END
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 18 - System Functions'
+PRINT 'Step - System Functions'
 
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spadmin_generateuniquecodes]') AND xtype = 'P')
 		DROP PROCEDURE dbo.[spadmin_generateuniquecodes]
@@ -132,7 +132,7 @@ PRINT 'Step 18 - System Functions'
 		EXECUTE sp_executesql N'EXECUTE sp_rename [ASRSysUniqueCodes], [tbsys_uniquecodes];';
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 3 - New admin system security'
+PRINT 'Step - New admin system security'
 
 	IF NOT EXISTS (SELECT * FROM sys.database_principals WHERE name = N'ASRSysAdmins' AND type = 'R')
 	BEGIN
@@ -154,7 +154,7 @@ PRINT 'Step 3 - New admin system security'
 	END
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 4 - Audit changes'
+PRINT 'Step - Audit changes'
 
 	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysAuditTrail', 'U') AND name = 'TableID')
 		EXEC sp_executesql N'ALTER TABLE ASRSysAuditTrail ADD tableid bit NULL'
@@ -162,7 +162,7 @@ PRINT 'Step 4 - Audit changes'
 	EXEC spsys_setsystemsetting 'integration', 'auditlog', 0;
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 4 - Create object tracking system'
+PRINT 'Step - Create object tracking system'
 
 	IF OBJECT_ID('tbsys_scriptedobjects', N'U') IS NULL	
 	BEGIN
@@ -329,7 +329,7 @@ PRINT 'Step 4 - Create object tracking system'
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 5 - Upgrade image data structures to varbinary(max)'
+PRINT 'Step - Upgrade image data structures to varbinary(max)'
 
 	-- User defined tables
 	SET @NVarCommand = ''
@@ -349,7 +349,7 @@ PRINT 'Step 5 - Upgrade image data structures to varbinary(max)'
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 6 - Create views on metadata tables'
+PRINT 'Step - Create views on metadata tables'
 
 	IF EXISTS (SELECT id FROM dbo.sysobjects WHERE id = object_id(N'[dbo].[spASRConvertTableToView]') AND xtype ='P')
 		DROP PROCEDURE [dbo].[spASRConvertTableToView]
@@ -478,7 +478,7 @@ PRINT 'Step 6 - Create views on metadata tables'
 	--EXEC dbo.spASRConvertTableToView 'ASRSysScreens', 'tbsys_screens', 'screenid', 14;
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 7 - Drop existing system triggers'
+PRINT 'Step - Drop existing system triggers'
 
 	SET @NVarCommand = '';
 	SELECT @NVarCommand = @NVarCommand + 'DROP TRIGGER ' +  o.name + ';' + CHAR(13)
@@ -489,7 +489,7 @@ PRINT 'Step 7 - Drop existing system triggers'
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 8 - Add abstraction layer to user defined tables'
+PRINT 'Step - Add abstraction layer to user defined tables'
 
 	IF EXISTS (SELECT *
 		FROM dbo.sysobjects
@@ -571,43 +571,52 @@ PRINT 'Step 8 - Add abstraction layer to user defined tables'
 		FROM ASRSysTables;
 	EXECUTE sp_executesql @NVarCommand;
 
-	--SET @NVarCommand = '';
-	--SELECT @NVarCommand = @NVarCommand + 'EXECUTE dbo.spASRUpdateTableStructures ''' + TableName + ''';'
-	--	FROM tbsys_tables;
-	--EXECUTE sp_executesql @NVarCommand;
+
+/* ------------------------------------------------------------- */
+PRINT 'Step - Add new calculation procedures'
+
+
+	IF EXISTS (SELECT * FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRFn_GetUniqueCode]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].sp_ASRFn_GetUniqueCode;
+
+	EXECUTE sp_executesql N'CREATE PROCEDURE [dbo].[sp_ASRFn_GetUniqueCode]
+	(
+		@piResult		int OUTPUT,
+		@psCodePrefix	varchar(MAX) = '''',
+		@piSuffixRoot	int=1
+	)
+	AS
+	BEGIN
+		DECLARE @iOldCodeSuffix int;
+		DECLARE @iNewCodeSuffix int;
+
+		-- Get the current maximum code suffix for the given code prefix.
+		SELECT @iOldCodeSuffix = maxCodeSuffix 
+			FROM [dbo].[tbsys_uniquecodes]
+			WHERE codePrefix = @psCodePrefix;
+
+		IF @iOldCodeSuffix IS NULL 
+		BEGIN
+			-- The given code prefix DOES NOT exist in the database, so set the suffix to be the given root suffix, and insert the new code into the database.
+			SELECT @iNewCodeSuffix = @piSuffixRoot;
+			INSERT INTO [dbo].[tbsys_uniquecodes] (codePrefix, maxCodeSuffix) VALUES (@psCodePrefix, @iNewCodeSuffix);
+		END
+		ELSE
+		BEGIN
+			-- The given code prefix DOES exist in the database, so set the suffix to be the current max suffix plus 1, and update the code into the database.
+			SELECT @iNewCodeSuffix = @iOldCodeSuffix + 1;
+			UPDATE [dbo].[tbsys_uniquecodes] SET maxCodeSuffix = @iNewCodeSuffix WHERE codePrefix = @psCodePrefix;
+		END
+
+		-- Return the new code suffix.
+		SET @piResult = @iNewCodeSuffix;
+	END'
+
+
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 9 - Drop all HR Pro defined object (schema binding)'
-
--- Can't drop until we've backed up the security model!!!!!
-
-	-- Table Views
-	--SELECT @NVarCommand = @NVarCommand + 'DROP VIEW dbo.[' + o.name + '];'
-	--	FROM dbo.sysobjects o
-	--	INNER JOIN tbsys_tables t ON t.tablename = o.name
-	--	WHERE o.xtype= 'V'
-	--EXECUTE sp_executesql @NVarCommand;
-
-	-- Views
-	--SELECT @NVarCommand = @NVarCommand + 'DROP VIEW dbo.[' + o.name + '];'
-	--	FROM dbo.sysobjects o
-	--	INNER JOIN tbsys_views v ON v.viewname = o.name
-	--	WHERE o.xtype= 'V'
-
-	--PRINT @NVarCommand;
-	--EXECUTE sp_executesql @NVarCommand;
-
-	---- Calculations
-	--SELECT @NVarCommand = @NVarCommand + 'DROP FUNCTION dbo.[' + name + '];'
-	--	FROM dbo.sysobjects
-	--	WHERE name LIKE 'udfcalc_%'
-	--		AND xtype in (N'FN', N'IF', N'TF')
-	--EXECUTE sp_executesql @NVarCommand;
-
-
-/* ------------------------------------------------------------- */
-PRINT 'Step 11 - Add new calculation procedures'
+PRINT 'Step - Add new calculation procedures'
 
 	IF EXISTS (SELECT * FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsys_statutoryredundancypay]') AND xtype in (N'FN', N'IF', N'TF'))
 		DROP FUNCTION [dbo].[udfsys_statutoryredundancypay];
@@ -1562,7 +1571,7 @@ PRINT 'Step 11 - Add new calculation procedures'
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 12 - Populate code generation tables'
+PRINT 'Step - Populate code generation tables'
 
 	EXEC sp_executesql N'IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[tbstat_componentcode]'') AND type in (N''U''))
 		DROP TABLE [dbo].[tbstat_componentcode]'
@@ -1699,7 +1708,7 @@ PRINT 'Step 12 - Populate code generation tables'
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 13 - Administration module stored procedures'
+PRINT 'Step - Administration module stored procedures'
 
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spadmin_getcomponentcode]') AND xtype = 'P')
 		DROP PROCEDURE [dbo].[spadmin_getcomponentcode]
@@ -1744,7 +1753,7 @@ PRINT 'Step 13 - Administration module stored procedures'
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 15 - Remove redundant procedures'
+PRINT 'Step - Remove redundant procedures'
 
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRAudit]') AND xtype = 'P')
 		DROP PROCEDURE [dbo].[sp_ASRAudit];
@@ -1776,13 +1785,13 @@ PRINT 'Step 15 - Remove redundant procedures'
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 16 - Server settings'
+PRINT 'Step - Server settings'
 
 	EXEC sp_dboption @DBName, 'recursive triggers', 'FALSE';
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 17 - Trigger functionality'
+PRINT 'Step - Trigger functionality'
 
 	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[tbsys_intransactiontrigger]') AND type in (N'U'))
 	DROP TABLE [dbo].[tbsys_intransactiontrigger]
@@ -1796,7 +1805,7 @@ PRINT 'Step 17 - Trigger functionality'
 	EXEC spsys_setsystemsetting 'advanceddatabasesetting', 'globalupdatebatchsize', 1;
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 19 - New Shared Table Transfer Types for ASPP'
+PRINT 'Step - New Shared Table Transfer Types for ASPP'
 
 	-- ASPP Adoption
 	SELECT @iRecCount = count(TransferTypeID) FROM ASRSysAccordTransferTypes WHERE TransferTypeID = 77
@@ -1955,7 +1964,7 @@ PRINT 'Step 19 - New Shared Table Transfer Types for ASPP'
 	END
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 20 - New Reserverd words'
+PRINT 'Step - New Reserved words'
 
 	-- Keywords Additional reserved words
 	SELECT @iRecCount = count(Keyword) FROM ASRSysKeywords WHERE keyword = 'tbsys' or keyword = 'ybstat' or keyword = 'tbuser'	
