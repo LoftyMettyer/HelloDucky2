@@ -209,7 +209,7 @@ Begin VB.Form frmRecEdit4
          MarginBottom    =   1
          Enabled         =   -1
          MousePointer    =   0
-         Appearance      =   1
+         Appearance      =   0
          BorderStyle     =   1
          AlignHorizontal =   0
          AlignVertical   =   0
@@ -256,7 +256,7 @@ Begin VB.Form frmRecEdit4
             Italic          =   0   'False
             Strikethrough   =   0   'False
          EndProperty
-         UseVisualStyle  =   -1  'True
+         Appearance      =   2
       End
       Begin TDBNumber6Ctl.TDBNumber TDBNumber2 
          Height          =   315
@@ -285,7 +285,7 @@ Begin VB.Form frmRecEdit4
          Spin            =   "frmRecEdit4.frx":026D
          AlignHorizontal =   1
          AlignVertical   =   0
-         Appearance      =   1
+         Appearance      =   0
          BackColor       =   -2147483643
          BorderStyle     =   1
          BtnPositioning  =   0
@@ -371,6 +371,7 @@ Begin VB.Form frmRecEdit4
             Italic          =   0   'False
             Strikethrough   =   0   'False
          EndProperty
+         Appearance      =   0
          CaretPicture    =   "frmRecEdit4.frx":0295
          NullText        =   "__/__/____"
          BeginProperty NullFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -699,6 +700,8 @@ Option Explicit
 'MH20010108
 'Search for the comment "MH20010108" for
 'fixes for international numeric columns
+
+Private mobjBorders As clsBorders
 
 Public Event OLEClick(plngColumnID As Long, psFile As String, pfOLEOnServer As Boolean)
 
@@ -1468,7 +1471,26 @@ LocalErr:
 
 End Sub
 
+Private Sub GTMaskDate1_AfterUpdate(Index As Integer)
+  Debug.Print "GTMaskDate1_AfterUpdate"
+End Sub
+
+Private Sub GTMaskDate1_BeforeLostFocus(Index As Integer, Cancel As Boolean)
+  Debug.Print "GTMaskDate1_BeforeLostFocus"
+End Sub
+
+Private Sub GTMaskDate1_BeforeUpdate(Index As Integer, NewValue As Variant, Cancel As Boolean)
+  Debug.Print "GTMaskDate1_BeforeUpdate"
+End Sub
+
+Private Sub GTMaskDate1_CalClick(Index As Integer)
+  Debug.Print "GTMaskDate1_CalClick"
+End Sub
+
 Private Sub GTMaskDate1_Change(Index As Integer)
+  
+Debug.Print "GTMaskDate1_Change"
+  
   On Error GoTo Err_Trap
 
   Dim fGoodDate As Boolean
@@ -1551,7 +1573,54 @@ Err_Trap:
 
 End Sub
 
+Private Sub GTMaskDate1_Click(Index As Integer)
+  Debug.Print "GTMaskDate1_Click"
+End Sub
+
+Private Sub GTMaskDate1_CloseUp(Index As Integer)
+  Debug.Print "GTMaskDate1_CloseUp"
+End Sub
+
+Private Sub GTMaskDate1_DataError(Index As Integer, ByVal ErrorType As Integer, ByVal ErrorText As String)
+  Debug.Print "GTMaskDate1_DataError"
+End Sub
+
+Private Sub GTMaskDate1_DataRead(Index As Integer, NewValue As Variant, DataChanged As Boolean)
+  Debug.Print "GTMaskDate1_DataRead"
+End Sub
+
+Private Sub GTMaskDate1_DblClick(Index As Integer)
+  Debug.Print "GTMaskDate1_DblClick"
+End Sub
+
+Private Sub GTMaskDate1_DragDrop(Index As Integer, Source As Control, x As Single, y As Single)
+  Debug.Print "GTMaskDate1_DragDrop"
+End Sub
+
+Private Sub GTMaskDate1_DragOver(Index As Integer, Source As Control, x As Single, y As Single, State As Integer)
+  Debug.Print "GTMaskDate1_DragOver"
+End Sub
+
+Private Sub GTMaskDate1_DropDown(Index As Integer)
+  Debug.Print "GTMaskDate1_DropDown"
+End Sub
+
+Private Sub GTMaskDate1_EllipsesClick(Index As Integer)
+  Debug.Print "GTMaskDate1_EllipsesClick"
+End Sub
+
+Private Sub GTMaskDate1_Error(Index As Integer, Number As Integer, Description As String, Scode As Long, Source As String, HelpFile As String, HelpContext As Long, CancelDisplay As Boolean)
+  Debug.Print "GTMaskDate1_Error"
+End Sub
+
+Private Sub GTMaskDate1_FormatCalCaption(Index As Integer, ByVal DateValue As Date, Text As String)
+  Debug.Print "GTMaskDate1_FormatCalCaption"
+End Sub
+
 Private Sub GTMaskDate1_GotFocus(Index As Integer)
+  
+  Debug.Print "GTMaskDate1_GotFocus"
+
   ' Run the column's 'GotFocus' Expression.
   GotFocusCheck GTMaskDate1(Index)
   
@@ -1573,8 +1642,22 @@ Private Sub GTMaskDate1_GotFocus(Index As Integer)
 
 End Sub
 
+Private Sub GTMaskDate1_InvalidChar(Index As Integer, ByVal Char As String, ByVal Position As Integer)
+  Debug.Print "GTMaskDate1_InvalidChar"
+End Sub
+
+Private Sub GTMaskDate1_KeyDown(Index As Integer, KeyCode As Integer, Shift As Integer)
+  Debug.Print "GTMaskDate1_KeyDown"
+End Sub
+
+Private Sub GTMaskDate1_KeyPress(Index As Integer, KeyAscii As Integer)
+  Debug.Print "GTMaskDate1_KeyPress"
+End Sub
+
 Private Sub GTMaskDate1_KeyUp(Index As Integer, KeyCode As Integer, Shift As Integer)
 
+  Debug.Print "GTMaskDate1_KeyUp"
+  
   If KeyCode = vbKeyF2 Then
     GTMaskDate1(Index).DateValue = Date
   End If
@@ -1582,7 +1665,9 @@ Private Sub GTMaskDate1_KeyUp(Index As Integer, KeyCode As Integer, Shift As Int
 End Sub
 
 Private Sub GTMaskDate1_LostFocus(Index As Integer)
-
+  
+  Debug.Print "GTMaskDate1_LostFocus"
+  
   ' RH 05/03/01 - To try and keep consistency with the date control.
   '               Bit of a pain in recedit as have to ignore lostfocuscheck
   '               and switch the controls causesvalidation property to false.
@@ -1629,7 +1714,41 @@ Private Sub GTMaskDate1_LostFocus(Index As Integer)
 
 End Sub
 
+Private Sub GTMaskDate1_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
+  Debug.Print "GTMaskDate1_MouseDown"
+End Sub
+
+Private Sub GTMaskDate1_MouseMove(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
+  Debug.Print "GTMaskDate1_MouseMove"
+End Sub
+
+Private Sub GTMaskDate1_MouseUp(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
+  Debug.Print "GTMaskDate1_MouseUp"
+End Sub
+
+Private Sub GTMaskDate1_OnValidate(Index As Integer, ByVal Text As String, Valid As Integer)
+  Debug.Print "GTMaskDate1_OnValidate"
+End Sub
+
+Private Sub GTMaskDate1_SpinClick(Index As Integer, ByVal Direction As Integer)
+  Debug.Print "GTMaskDate1_SpinClick"
+End Sub
+
+Private Sub GTMaskDate1_StatusBarUpdate(Index As Integer, ByVal Restore As Boolean, DisplayText As String, Cancel As Boolean)
+  Debug.Print "GTMaskDate1_StatusBarUpdate"
+End Sub
+
+Private Sub GTMaskDate1_ToolTipBegin(Index As Integer, Cancel As Boolean)
+  Debug.Print "GTMaskDate1_ToolTipBegin"
+End Sub
+
+Private Sub GTMaskDate1_ToolTipEnd(Index As Integer)
+  Debug.Print "GTMaskDate1_ToolTipEnd"
+End Sub
+
 Private Sub GTMaskDate1_Validate(Index As Integer, Cancel As Boolean)
+  Debug.Print "GTMaskDate1_Validate"
+  
   ' Run the column's 'LostFocus' Expression.
   Cancel = Not LostFocusCheck(GTMaskDate1(Index))
 
@@ -4235,7 +4354,7 @@ Public Sub UpdateControls(Optional pfNoWarnings As Boolean)
   If mrsRecords.State = adStateClosed Then Exit Sub
 
   Screen.MousePointer = vbHourglass
-  UI.LockWindow Me.hwnd
+  'UI.LockWindow Me.hwnd
   
   mfLeaveLookup = False
   mfLoading = True
@@ -4657,10 +4776,15 @@ Public Sub UpdateControls(Optional pfNoWarnings As Boolean)
   mfLoading = False
 
   Set objFile = Nothing
-  UI.UnlockWindow
+
+'MsgBox "1"
+  'UI.UnlockWindow
+'MsgBox "2"
   Me.Refresh
+  
   Screen.MousePointer = vbDefault
   'Set objFile = Nothing
+  
   
   Exit Sub
 
@@ -6554,6 +6678,7 @@ Public Sub MovePrevious()
       Exit Sub
     End If
     
+    
     ' Move to the previous record.
     With mrsRecords
       If Not fAdding Then
@@ -6572,6 +6697,7 @@ Public Sub MovePrevious()
       End If
     End With
   
+    
     ' JPD 21/02/2001 Moved the UpdateParentWindow call before the
     ' UpdateChildren call as the summary fields that are updated in
     ' UpdateChildren may be dependent on the parent recordset being
@@ -6594,6 +6720,7 @@ Public Sub MovePrevious()
     frmMain.RefreshMainForm Me
   End If
   
+
 End Sub
 
 Public Property Get AllowInsert() As Boolean
@@ -7524,6 +7651,9 @@ Private Function LoadControls(pobjScreen As clsScreen) As Boolean
   Dim lngControlHeight As Long
   Dim lngCONTROLWIDTH As Long
   
+  
+  Set mobjBorders = New clsBorders
+  
   ' Instantiate a new collection to hold the control indices.
   Set colTabIndices = New Collection
 
@@ -7593,6 +7723,12 @@ Private Function LoadControls(pobjScreen As clsScreen) As Boolean
 
         If iControlType = ctlLine Then
           .Alignment = objScreenControl.Alignment
+        End If
+
+        If TypeOf objNewControl Is TDBText6Ctl.TDBText _
+          Or TypeOf objNewControl Is TDBNumber6Ctl.TDBNumber _
+          Or TypeOf objNewControl Is GTMaskDate.GTMaskDate Then
+              mobjBorders.SetBorder objNewControl.hwnd, ctTextBox, RGB(169, 177, 184)
         End If
 
 '        ' Position the new control on the screen

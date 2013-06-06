@@ -176,7 +176,7 @@ End Enum
 
 Private Borders As Collection
 
-Public Sub SetBorder1(ByVal hwnd As Long, _
+Public Sub SetBorder(ByVal hwnd As Long, _
                     Optional ByVal ctrlType As vbControlType = ctOther, _
                     Optional ByVal Shadow As Long = vbButtonShadow)
   
@@ -1074,11 +1074,11 @@ Private Sub zWndProc(ByVal bBefore As Boolean, ByRef bHandled As Boolean, ByRef 
         If (Settings(colIndex) And &HFF) = bsFlat1Color Then
             ' single color, 1 pixel borders (non-combos). Simply use FrameRect
             If Settings(colIndex + 1) = bsSysDefault Then
-                Color = vbRed 'GetSysColor(COLOR_WINDOWFRAME)
+                Color = GetSysColor(COLOR_WINDOWFRAME)
             ElseIf Settings(colIndex + 1) = bsAutoShade Then
-                Color = vbRed 'GetSysColor(COLOR_WINDOWFRAME)
+                Color = GetSysColor(COLOR_WINDOWFRAME)
             Else
-                Color = vbRed 'ConvertColor(Settings(colIndex + 1))
+                Color = ConvertColor(Settings(colIndex + 1))
             End If
             hBrushPen = CreateSolidBrush(Color)
             FrameRect hDC, wRect, hBrushPen
