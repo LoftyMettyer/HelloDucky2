@@ -83,17 +83,17 @@ Begin VB.Form frmCrossTabDef
       TabCaption(1)   =   "Colu&mns"
       TabPicture(1)   =   "frmCrossTabDef.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraColumns(1)"
+      Tab(1).Control(0)=   "fraColumns(0)"
       Tab(1).Control(0).Enabled=   0   'False
-      Tab(1).Control(1)=   "fraColumns(0)"
+      Tab(1).Control(1)=   "fraColumns(1)"
       Tab(1).Control(1).Enabled=   0   'False
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "O&utput"
       TabPicture(2)   =   "frmCrossTabDef.frx":0044
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraOutputFormat"
+      Tab(2).Control(0)=   "fraOutputDestination"
       Tab(2).Control(0).Enabled=   0   'False
-      Tab(2).Control(1)=   "fraOutputDestination"
+      Tab(2).Control(1)=   "fraOutputFormat"
       Tab(2).Control(1).Enabled=   0   'False
       Tab(2).ControlCount=   2
       Begin VB.Frame fraOutputDestination 
@@ -694,7 +694,7 @@ Begin VB.Form frmCrossTabDef
          Top             =   2385
          Width           =   9200
          Begin VB.CheckBox chkThousandSeparators 
-            Caption         =   "Use 1000 &separators (,)"
+            Caption         =   "Use 1000 &separators"
             Height          =   330
             Left            =   5100
             TabIndex        =   47
@@ -2024,12 +2024,12 @@ End Sub
 
 Private Sub chkPercentage_Click()
   
-  chkPercentageOfPage.Enabled = _
+  chkPercentageofPage.Enabled = _
     (chkPercentage.Value = vbChecked And _
      Val(cboPageBreakCol.Tag) > 0)
   
-  If chkPercentageOfPage.Enabled = False Then
-    chkPercentageOfPage.Value = vbUnchecked
+  If chkPercentageofPage.Enabled = False Then
+    chkPercentageofPage.Value = vbUnchecked
   End If
 
   Me.Changed = True
@@ -2668,7 +2668,7 @@ Private Sub RetreiveDefinition()
   SetComboItem cboType, rsTemp!IntersectionType
 
   chkPercentage = Abs(rsTemp!Percentage)
-  chkPercentageOfPage = Abs(rsTemp!PercentageofPage)
+  chkPercentageofPage = Abs(rsTemp!PercentageofPage)
   chkSuppressZeros = Abs(rsTemp!SuppressZeros)
   
   If Not IsNull(rsTemp!ThousandSeparators) Then
@@ -2866,7 +2866,7 @@ Private Sub SaveDefinition()
   strType = CStr(cboType.ItemData(cboType.ListIndex))
   strIntersectionColID = CStr(cboIntersectionCol.ItemData(cboIntersectionCol.ListIndex))
   strPercentage = CStr(Abs(chkPercentage <> 0))
-  strPercentageofPage = CStr(Abs(chkPercentageOfPage <> 0))
+  strPercentageofPage = CStr(Abs(chkPercentageofPage <> 0))
   strSuppressZeros = CStr(Abs(chkSuppressZeros <> 0))
   strThousandSeparators = CStr(Abs(chkThousandSeparators.Value <> vbUnchecked))
     
