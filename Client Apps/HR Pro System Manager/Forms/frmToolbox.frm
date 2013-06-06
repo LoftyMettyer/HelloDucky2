@@ -589,31 +589,31 @@ Begin VB.Form frmToolbox
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
          NumListImages   =   7
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":11FF9
+            Picture         =   "frmToolbox.frx":12171
             Key             =   "IMG_LABEL"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":1254B
+            Picture         =   "frmToolbox.frx":126C3
             Key             =   "IMG_NAVIGATION"
          EndProperty
          BeginProperty ListImage3 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":1289D
+            Picture         =   "frmToolbox.frx":12A15
             Key             =   "IMG_IMAGE"
          EndProperty
          BeginProperty ListImage4 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":12DEF
+            Picture         =   "frmToolbox.frx":12F67
             Key             =   "IMG_PAGETAB"
          EndProperty
          BeginProperty ListImage5 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":13341
+            Picture         =   "frmToolbox.frx":134B9
             Key             =   "IMG_FRAME"
          EndProperty
          BeginProperty ListImage6 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":13893
+            Picture         =   "frmToolbox.frx":13A0B
             Key             =   "IMG_TOOLS"
          EndProperty
          BeginProperty ListImage7 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":13DE5
+            Picture         =   "frmToolbox.frx":13F5D
             Key             =   "IMG_LINE"
          EndProperty
       EndProperty
