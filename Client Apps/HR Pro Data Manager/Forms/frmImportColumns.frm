@@ -358,13 +358,6 @@ Private Sub cmdOK_Click()
   
 End Sub
 
-Private Sub Form_Load()
-  
-'  spnSize.Enabled = (mfrmForm.cboFileFormat.ListIndex = 1)
-'  spnSize.BackColor = IIf(mfrmForm.cboFileFormat.ListIndex = 1, &H80000005, &H8000000F)
-
-End Sub
-
 Private Sub Form_Resize()
   'JPD 20030908 Fault 5756
   DisplayApplication

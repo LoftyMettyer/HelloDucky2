@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Begin VB.Form frmOutlookQueue 
    Caption         =   "Outlook Calendar Queue"
@@ -588,24 +588,6 @@ Private Sub grdOutlookQueue_HeadClick(ByVal ColIndex As Integer)
   mintSortColumnIndex = ColIndex
 
   RefreshGrid
-
-End Sub
-
-Private Sub grdOutlookQueue_KeyDown(KeyCode As Integer, Shift As Integer)
-
-'  If KeyCode = 46 And mblnDeleteEnabled = True Then
-'    cmdDelete_Click
-'  ElseIf KeyCode = 35 And Shift = 2 Then
-'    ' ctrl and end pressed
-'    'grdOutlookQueue.FirstRow = grdOutlookQueue.Rows - grdOutlookQueue.VisibleRows
-'    'grdOutlookQueue.MoveLast
-'  ElseIf KeyCode = 36 And Shift = 2 Then
-'    ' ctrl and home pressed
-'    'grdOutlookQueue.FirstRow = 0
-'    'grdOutlookQueue.MoveFirst
-'  Else
-'    If Shift > 0 Then KeyCode = 0
-'  End If
 
 End Sub
 

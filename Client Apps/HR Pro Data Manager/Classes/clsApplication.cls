@@ -15,9 +15,6 @@ Attribute VB_Ext_KEY = "SavedWithClassBuilder" ,"Yes"
 Attribute VB_Ext_KEY = "Top_Level" ,"Yes"
 Option Explicit
 
-'For batch job checking
-Private datData As DataMgr.clsDataAccess
-
 'Instantiate internal classes
 Private ODBC As New ODBC
 

@@ -299,13 +299,6 @@ Private miWarningErrorCount As Integer
 Private mbChanged As Boolean
 Private mbEnableChangeStatus As Boolean
 
-' Transaction Types
-Private Enum AccordTransactionTypes
-  ACCORD_TRANSACTION_NEW = 0
-  ACCORD_TRANSACTION_UPDATE = 1
-  ACCORD_TRANSACTION_DELETE = 2
-End Enum
-
 Public Property Let ConnectionType(ByVal piNewValue As DataMgr.AccordConnection)
   miConnectionType = piNewValue
 End Property
@@ -552,7 +545,7 @@ End Select
 End Sub
 
 Private Sub RefreshButtons()
-  cmdOK.Enabled = mbChanged
+  cmdOk.Enabled = mbChanged
 End Sub
 
 Private Function SaveChanges() As Boolean

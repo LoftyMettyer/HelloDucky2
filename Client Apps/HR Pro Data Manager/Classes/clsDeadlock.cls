@@ -211,7 +211,6 @@ Public Function InsertTableRecordJustDoIt(psInsertSQL As String) As Boolean
   Dim fDeadlock As Boolean
   Dim iRetryCount As Integer
   Dim iOldCursorLocation As Integer
-  Dim sSQL As String
   Dim sErrorMsg As String
   Dim ADOErr As ADODB.Error
   Dim ODBC As New ODBC
@@ -699,7 +698,6 @@ Public Function UpdateTableRecordJustDoIt(psUpdateSQL As String) As Boolean
   Dim fDeadlock As Boolean
   Dim iRetryCount As Integer
   Dim iOldCursorLocation As Integer
-  Dim sSQL As String
   Dim sErrorMsg As String
   Dim ADOErr As ADODB.Error
   Dim ODBC As New ODBC

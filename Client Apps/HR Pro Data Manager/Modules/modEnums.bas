@@ -16,15 +16,6 @@ Public Enum ScreenType
   screenPickList = 256
 End Enum
 
-'DefSel Screen Enum
-Public Enum DefSelScreen
-    screenNone = 0
-    screenDataTransfer = 1
-    screenGlobalAdd
-    screenGlobalUpdate
-    screenGlobalDelete
-End Enum
-
 Public Enum GlobalType
     glAdd = 1
     glUpdate = 2

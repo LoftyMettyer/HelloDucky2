@@ -59,8 +59,6 @@ Private mintFilterAlarmStatus As Integer
 Private mintFilterPastPresent As Integer
 Private mblnFilterOnlyMine As Boolean
 
-Private mlngIconId As Picture
-
 Private mblnViewingAlarmedEvents As Boolean
 
 Public Property Get ViewingAlarms() As Boolean
@@ -612,7 +610,6 @@ Private Sub PopulateByWeekView(dtStartDate As Date)
   Dim dtTempDate As Date
   Dim intDay As Integer
   Dim strOutput As String
-  Dim intCount As Integer
 
   With rsTables
 
@@ -1051,7 +1048,6 @@ End Function
 Public Function ShowAlarmedEvents(intFilterPastPresent As Integer, intViewMode As Integer) As Boolean
 
   Dim dtStartDate As Date
-  Dim dtEndDate As Date
 
   Dim strMBText As String
   Dim intMBButtons As Integer
@@ -1190,8 +1186,6 @@ Public Function GetPrintData(piDateRange As DataMgr.ReturnPrintDateType, pdStart
 
   Dim dtStartDate As Date
   Dim dtEndDate As Date
-  Dim vStartDate As Variant
-  Dim vEndDate As Variant
   Dim bShowWeekNumber As Boolean
   Dim strDateRange As String
   
@@ -1247,7 +1241,6 @@ Public Sub ListUnboundReadData(ByVal RowBuf As SSDataWidgets_B.ssRowBuffer, Star
 
   ' Read the required data from the recordset to the grid.
   Dim iRowIndex As Integer
-  Dim iFieldIndex As Integer
   Dim iRowsRead As Integer
   Dim sDateFormat As String
 
@@ -1549,7 +1542,6 @@ End Sub
 Public Sub DeleteCurrentEntry()
 
   Dim strSQL As String
-  Dim strEventTitle As String
   Dim dtStartDate As Date
   Dim dtEndDate As Date
   Dim strSelectedIDs As String

@@ -1,9 +1,9 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmMatchDef 
    BorderStyle     =   3  'Fixed Dialog
@@ -112,9 +112,9 @@ Begin VB.Form frmMatchDef
       TabCaption(2)   =   "Colu&mns"
       TabPicture(2)   =   "frmMatchDef.frx":0E98
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraFieldsSelected"
+      Tab(2).Control(0)=   "fraFieldButtons"
       Tab(2).Control(1)=   "fraFieldsAvailable"
-      Tab(2).Control(2)=   "fraFieldButtons"
+      Tab(2).Control(2)=   "fraFieldsSelected"
       Tab(2).ControlCount=   3
       TabCaption(3)   =   "&Sort Order"
       TabPicture(3)   =   "frmMatchDef.frx":0EB4
@@ -124,9 +124,9 @@ Begin VB.Form frmMatchDef
       TabCaption(4)   =   "O&utput"
       TabPicture(4)   =   "frmMatchDef.frx":0ED0
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "fraReportOptions"
+      Tab(4).Control(0)=   "fraOutputDestination"
       Tab(4).Control(1)=   "fraOutputFormat"
-      Tab(4).Control(2)=   "fraOutputDestination"
+      Tab(4).Control(2)=   "fraReportOptions"
       Tab(4).ControlCount=   3
       Begin VB.Frame fraOutputDestination 
          Caption         =   "Output Destination(s) :"
@@ -1677,8 +1677,6 @@ Public Function Initialise(bNew As Boolean, bCopy As Boolean, Optional plngMatch
     
     LoadTable1Combo
     LoadTable2Combo
-
-'    UpdateDependantFields
     
     PopulateTableAvailable , True
     
@@ -1870,7 +1868,6 @@ Private Sub cboTable1_Click()
   '01/08/2001 MH Fault 2615
   optAllRecords(0).Value = True
   
-  UpdateDependantFields
   PopulateTableAvailable , True
   ForceDefinitionToBeHiddenIfNeeded
   
@@ -1913,7 +1910,6 @@ Private Sub cboTable2_Click()
     
     mstrTable2Name = cboTable2.Text
     
-    UpdateDependantFields
     PopulateTableAvailable , True
     ForceDefinitionToBeHiddenIfNeeded
 
@@ -2699,7 +2695,7 @@ Private Sub Form_Activate()
   
 End Sub
 
-Private Sub Form_DragOver(Source As Control, X As Single, Y As Single, State As Integer)
+Private Sub Form_DragOver(Source As Control, x As Single, y As Single, State As Integer)
   
   ' Change pointer to the nodrop icon
   Source.DragIcon = picNoDrop.Picture
@@ -2912,19 +2908,6 @@ Private Sub grdReportOrder_Change()
   
   Changed = True
   
-End Sub
-
-Private Sub grdReportOrder_Click()
-
-'  'TM20010821 Fault 2379
-'  'Sets the original selection of the break.
-'  'Then 'sOriginalSelection' is used in the CheckGridBreaks function.
-'  If grdReportOrder.Columns("Break").Value Then
-'    sOriginalSelection = "Break"
-'  Else
-'    sOriginalSelection = "Page"
-'  End If
-
 End Sub
 
 Private Sub grdReportOrder_RowColChange(ByVal LastRow As Variant, ByVal LastCol As Integer)
@@ -3193,7 +3176,7 @@ Private Sub ListView2_DblClick()
   
 End Sub
 
-Private Sub ListView1_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub ListView1_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
   
   If mblnReadOnly Then
     Exit Sub
@@ -3236,7 +3219,7 @@ Private Sub ListView2_ItemClick(ByVal Item As ComctlLib.ListItem)
 
 End Sub
 
-Private Sub ListView2_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub ListView2_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
   
   If mblnReadOnly Then
     Exit Sub
@@ -3295,7 +3278,7 @@ Private Sub ActiveBar1_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
 
 End Sub
 
-Private Sub ListView1_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub ListView1_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
   
   If mblnReadOnly Then
     Exit Sub
@@ -3313,7 +3296,7 @@ Private Sub ListView1_MouseMove(Button As Integer, Shift As Integer, X As Single
 
 End Sub
 
-Private Sub ListView2_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub ListView2_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
   
   'Start the drag operation
   Dim objItem As ComctlLib.ListItem
@@ -3331,7 +3314,7 @@ Private Sub ListView2_MouseMove(Button As Integer, Shift As Integer, X As Single
 
 End Sub
 
-Private Sub ListView1_DragDrop(Source As Control, X As Single, Y As Single)
+Private Sub ListView1_DragDrop(Source As Control, x As Single, y As Single)
   
   ' Perform the drop operation
   If Source Is ListView2 Then
@@ -3343,43 +3326,43 @@ Private Sub ListView1_DragDrop(Source As Control, X As Single, Y As Single)
 
 End Sub
 
-Private Sub ListView2_DragDrop(Source As Control, X As Single, Y As Single)
+Private Sub ListView2_DragDrop(Source As Control, x As Single, y As Single)
   
   ' Perform the drop operation - action depends on source and destination
   
   If Source Is ListView1 Then
-    If ListView2.HitTest(X, Y) Is Nothing Then
+    If ListView2.HitTest(x, y) Is Nothing Then
       CopyToSelected False
     Else
-      CopyToSelected False, ListView2.HitTest(X, Y).Index
+      CopyToSelected False, ListView2.HitTest(x, y).Index
     End If
     ListView1.Drag vbCancel
   Else
-    If ListView2.HitTest(X, Y) Is Nothing Then
+    If ListView2.HitTest(x, y) Is Nothing Then
       ChangeSelectedOrder
     Else
-      ChangeSelectedOrder ListView2.HitTest(X, Y).Index
+      ChangeSelectedOrder ListView2.HitTest(x, y).Index
     End If
     ListView2.Drag vbCancel
   End If
 
 End Sub
 
-Private Sub Frafieldsavailable_DragOver(Source As Control, X As Single, Y As Single, State As Integer)
+Private Sub Frafieldsavailable_DragOver(Source As Control, x As Single, y As Single, State As Integer)
   
   ' Change pointer to the nodrop icon
   Source.DragIcon = picNoDrop.Picture
   
 End Sub
 
-Private Sub Frafieldsselected_DragOver(Source As Control, X As Single, Y As Single, State As Integer)
+Private Sub Frafieldsselected_DragOver(Source As Control, x As Single, y As Single, State As Integer)
   
   ' Change pointer to the nodrop icon
   Source.DragIcon = picNoDrop.Picture
   
 End Sub
 
-Private Sub ListView2_DragOver(Source As Control, X As Single, Y As Single, State As Integer)
+Private Sub ListView2_DragOver(Source As Control, x As Single, y As Single, State As Integer)
 
   ' Change pointer to drop icon
   If (Source Is ListView1) Or (Source Is ListView2) Then
@@ -3387,11 +3370,11 @@ Private Sub ListView2_DragOver(Source As Control, X As Single, Y As Single, Stat
   End If
 
   ' Set DropHighlight to the mouse's coordinates.
-  Set ListView2.DropHighlight = ListView2.HitTest(X, Y)
+  Set ListView2.DropHighlight = ListView2.HitTest(x, y)
 
 End Sub
 
-Private Sub ListView1_DragOver(Source As Control, X As Single, Y As Single, State As Integer)
+Private Sub ListView1_DragOver(Source As Control, x As Single, y As Single, State As Integer)
 
   ' Change pointer to drop icon
   If (Source Is ListView1) Or (Source Is ListView2) Then
@@ -5137,8 +5120,6 @@ Private Function RetrieveMatchReportDetails(plngMatchReportID As Long) As Boolea
   SetComboText cboTable2, datGeneral.GetTableName(rsDef!Table2ID)
   mstrTable2Name = cboTable2.Text
 
-  UpdateDependantFields
-
   'PopulateTableAvailable
 
   'JPD 20040312 Fault 8266
@@ -5409,146 +5390,6 @@ Load_ERROR:
   Set rsDef = Nothing
 
 End Function
-
-
-Private Sub UpdateDependantFields()
-'''
-'''  ' This sub populates the parent/child combos depending
-'''  ' on the base table selected
-'''
-'''  Dim rsParents As New Recordset
-'''  Dim rsTables As New Recordset
-'''  Dim rsChildren As New Recordset
-'''  Dim sSQL As String
-'''  Dim lngTableID As Long
-'''
-'''  lngTableID = 0
-'''  If cboTable1.ListIndex <> -1 Then
-'''    lngTableID = cboTable1.ItemData(cboTable1.ListIndex)
-'''  End If
-'''
-'''  'If mblnLoading Then Exit Sub
-'''
-'''  ' Get the parent(s) of the selected base table
-'''
-'''  sSQL = "SELECT asrsystables.tablename, asrsystables.tableid " & _
-'''         "FROM asrsystables " & _
-'''         "WHERE asrsystables.tableid in " & _
-'''         "(select parentid from asrsysrelations " & _
-'''         "WHERE childid = " & CStr(lngTableID) & ") " & _
-'''         "ORDER BY tablename"
-'''
-'''  Set rsParents = datData.OpenPersistentRecordset(sSQL, adOpenKeyset, adLockReadOnly)
-'''
-'''  If Not rsParents.BOF And Not rsParents.EOF Then
-'''    rsParents.MoveLast
-'''    rsParents.MoveFirst
-'''  End If
-'''
-'''  Select Case rsParents.RecordCount
-'''
-'''    Case 0
-'''      txtParent1.Text = "" '"<None>"
-'''      txtParent1.Tag = 0
-'''      optParent1AllRecords.Value = True
-'''      txtParent1Filter.Text = ""
-'''      txtParent1Filter.Tag = 0
-'''      txtParent1Picklist.Text = ""
-'''      txtParent1Picklist.Tag = 0
-'''      fraParent1.Enabled = False
-'''
-'''      txtParent2.Text = "" '"<None>"
-'''      txtParent2.Tag = 0
-'''      optParent2AllRecords.Value = True
-'''      txtParent2Filter.Text = ""
-'''      txtParent2Filter.Tag = 0
-'''      txtParent2Picklist.Text = ""
-'''      txtParent2Picklist.Tag = 0
-'''      fraParent2.Enabled = False
-'''
-'''    Case 1
-'''      txtParent1.Text = rsParents!TableName
-'''      txtParent1.Tag = rsParents!TableID
-'''      optParent1AllRecords.Value = True
-'''      txtParent1Filter.Text = ""
-'''      txtParent1Filter.Tag = 0
-'''      txtParent1Picklist.Text = ""
-'''      txtParent1Picklist.Tag = 0
-'''      fraParent1.Enabled = True
-'''
-'''      txtParent2.Text = "" '"<None>"
-'''      txtParent2.Tag = 0
-'''      optParent2AllRecords.Value = True
-'''      txtParent2Filter.Text = ""
-'''      txtParent2Filter.Tag = 0
-'''      txtParent2Picklist.Text = ""
-'''      txtParent2Picklist.Tag = 0
-'''      fraParent2.Enabled = False
-'''
-'''    Case 2
-'''      txtParent1.Text = rsParents!TableName
-'''      txtParent1.Tag = rsParents!TableID
-'''      optParent1AllRecords.Value = True
-'''      txtParent1Filter.Text = ""
-'''      txtParent1Filter.Tag = 0
-'''      txtParent1Picklist.Text = ""
-'''      txtParent1Picklist.Tag = 0
-'''      fraParent1.Enabled = True
-'''
-'''      rsParents.MoveNext
-'''
-'''      txtParent2.Text = rsParents!TableName
-'''      txtParent2.Tag = rsParents!TableID
-'''      optParent2AllRecords.Value = True
-'''      txtParent2Filter.Text = ""
-'''      txtParent2Filter.Tag = 0
-'''      txtParent2Picklist.Text = ""
-'''      txtParent2Picklist.Tag = 0
-'''      fraParent2.Enabled = True
-'''  End Select
-'''
-'''  ' Clear recordset reference
-'''  Set rsParents = Nothing
-'''
-''''  ' Clear Child Combo and add <None> entry
-''''
-''''  With cboChild
-''''    .Clear
-''''    .AddItem "<None>"
-''''    .ItemData(.NewIndex) = 0
-''''    mblnLoading = True
-''''    .ListIndex = 0
-''''    mblnLoading = False
-''''  End With
-''''
-'''  ' Get the children of the selected base table
-'''  sSQL = "SELECT asrsystables.tablename, asrsystables.tableid " & _
-'''         "FROM asrsystables " & _
-'''         "WHERE asrsystables.tableid in " & _
-'''         "(select childid from asrsysrelations " & _
-'''         "WHERE parentid = " & CStr(lngTableID) & ") " & _
-'''         "ORDER BY tablename"
-'''
-'''  Set rsChildren = datData.OpenRecordset(sSQL, adOpenForwardOnly, adLockReadOnly)
-'''
-'''  If rsChildren.BOF And rsChildren.EOF Then
-'''    fraChild.Enabled = False
-'''    cmdAddChild.Enabled = False
-'''    cmdEditChild.Enabled = False
-'''    cmdRemove.Enabled = False
-'''    cmdRemoveAllChilds.Enabled = False
-'''    grdChildren.Enabled = False
-'''  Else
-'''    fraChild.Enabled = True
-'''    grdChildren.Enabled = True
-'''  End If
-'''  Set rsChildren = Nothing
-'''
-''''  txtChildFilter.Text = ""
-''''  txtChildFilter.Tag = 0
-''''  spnMaxRecords.Value = 0
-''''
-End Sub
 
 
 Public Sub PopulateTableAvailable(Optional pstrTable As String, Optional pbSetToBase As Boolean)

@@ -270,13 +270,6 @@ Private Sub cmdOK_Click()
   Me.Hide
 End Sub
 
-Private Sub Form_Activate()
-  'MSFlexGrid1.SetFocus
-  'If SSDBGrid1.Visible Then
-  '  SSDBGrid1.SetFocus
-  'End If
-End Sub
-
 Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
 Select Case KeyCode
   Case vbKeyF1
@@ -300,32 +293,6 @@ Private Sub Form_Resize()
 
 End Sub
 
-Private Sub SSDBGrid1_ColResize(ByVal ColIndex As Integer, Cancel As Integer)
-  
-'  Dim lngWidth As Long
-'  Dim intCount As Integer
-
-'  If Not (mfrmParentForm Is Nothing) Then
-'    Call mfrmParentForm.SizeBreakdownColumns
-'  End If
-
-'  With SSDBGrid1
-'    .Columns(ColIndex).Width = .ResizeWidth
-'
-'    lngWidth = 0
-'    For intCount = 0 To .Cols - 2
-'      lngWidth = lngWidth + .Columns(intCount).Width
-'    Next
-'    .Columns(.Cols - 1).Width = (.Width - lngWidth)
-'
-'    'lngWidth = 0
-'    'For intCount = 0 To .Cols - 2
-'    '  lngWidth = lngWidth + .Columns(intCount).Width
-'    'Next
-'    '.Columns(.Cols - 1).Width = (.Width - lngWidth)
-'  End With
-
-End Sub
 ' A property to specify that this is a drilldown for a standard report
 Public Property Let ReportMode(ByVal plNewValue As CrossTabType)
 
