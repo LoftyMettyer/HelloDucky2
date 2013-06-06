@@ -50,6 +50,8 @@ Public Enum ElementType
   elem_Connector1 = 8
   elem_Connector2 = 9
 End Enum
+
+
 Public Sub CheckWorkflowOutOfOffice()
   ' Check if the user is flagged as being OutOfOffice for Workflows.
   ' If they are, ask them if they want to turn it off.
@@ -804,12 +806,12 @@ Public Function EncryptString(psText As String, _
   Dim abytArray() As Byte
   Dim abytKey() As Byte
   Dim abytOut() As Byte
-  
+
   psText = psText & " "
   abytArray() = StrConv(psText, vbFromUnicode)
   abytKey() = StrConv(psKey, vbFromUnicode)
   abytOut() = EncryptByte(abytArray(), abytKey())
-  EncryptString = StrConv(abytOut(), vbUnicode)
+  EncryptString = StrConv(abytOut(), vbUnicode, 2057) ' 2057 is the LocaleID for English-UK
 
   If pbOutputInHex = True Then EncryptString = EnHex(EncryptString)
   
