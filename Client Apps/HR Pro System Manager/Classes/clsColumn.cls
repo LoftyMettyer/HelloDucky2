@@ -309,16 +309,17 @@ Public Function ColumnIsUsed(pfrmUsage As frmUsage) As Boolean
   
   Dim fUsed As Boolean
   Dim sSQL As String
-  Dim rsOtherColumns As dao.Recordset
-  Dim rsExpressions As dao.Recordset
-  Dim rsScreens As dao.Recordset
-  Dim rsOrders As dao.Recordset
-  Dim rsViews As dao.Recordset
-  Dim rsEmail As dao.Recordset
-  Dim rsOutlook As dao.Recordset
-  Dim rsSummaryFields As dao.Recordset
-  Dim rsModules As dao.Recordset
-  Dim rsAccord As dao.Recordset
+  Dim rsOtherColumns As DAO.Recordset
+  Dim rsExpressions As DAO.Recordset
+  Dim rsScreens As DAO.Recordset
+  Dim rsOrders As DAO.Recordset
+  Dim rsViews As DAO.Recordset
+  Dim rsEmail As DAO.Recordset
+  Dim rsOutlook As DAO.Recordset
+  Dim rsSummaryFields As DAO.Recordset
+  Dim rsModules As DAO.Recordset
+  Dim rsAccord As DAO.Recordset
+  Dim rsValidations As DAO.Recordset
   Dim sColumnName As String
   Dim sTableName As String
   'Dim sExprName As String
@@ -335,7 +336,7 @@ Public Function ColumnIsUsed(pfrmUsage As frmUsage) As Boolean
   Dim strSYSOrderIDs As String
   'Dim strSYSEmailIDs As String
   Dim strSYSCheckedOrderIDs As String
-  Dim rsDAOTemp As dao.Recordset
+  Dim rsDAOTemp As DAO.Recordset
 
   Dim rsUtils1 As ADODB.Recordset
   Dim rsUtils2 As ADODB.Recordset
@@ -678,6 +679,27 @@ Public Function ColumnIsUsed(pfrmUsage As frmUsage) As Boolean
   End If
   'Close temporary recordset
   rsViews.Close
+    
+    
+  ' Table validations
+  sSQL = "SELECT Message FROM tmpTableValidations" & _
+    " WHERE tmpTableValidations.ColumnID = " & Trim(Str(gLngColumnID)) & _
+    " OR tmpTableValidations.EventStartDateColumnID =" & Trim(Str(gLngColumnID)) & _
+    " OR tmpTableValidations.EventStartSessionColumnID =" & Trim(Str(gLngColumnID)) & _
+    " OR tmpTableValidations.EventEndDateColumnID =" & Trim(Str(gLngColumnID)) & _
+    " OR tmpTableValidations.EventEndSessionColumnID =" & Trim(Str(gLngColumnID)) & _
+    " OR tmpTableValidations.EventTypeColumnID =" & Trim(Str(gLngColumnID))
+  Set rsValidations = daoDb.OpenRecordset(sSQL, _
+    dbOpenForwardOnly, dbReadOnly)
+  If Not (rsValidations.BOF And rsValidations.EOF) Then
+    fUsed = True
+    Do Until rsValidations.EOF
+      mfrmUse.AddToList ("Validation : " & rsValidations!Message)
+      rsValidations.MoveNext
+    Loop
+  End If
+  'Close temporary recordset
+  rsValidations.Close
     
     
   ' Check that the column is not used in any Summary Field definitions.
@@ -1497,7 +1519,7 @@ ErrorTrap:
 End Function
 
 Public Function InitColumnProps() As Boolean
-  Dim ThisField As dao.Field
+  Dim ThisField As DAO.Field
   Dim fOK As Boolean
   
   Set Me.Properties = Nothing
@@ -1610,7 +1632,7 @@ Public Function ReadColumn() As Boolean
   
   Dim fOK As Boolean
   Dim sIndex As String
-  Dim objField As dao.Field
+  Dim objField As DAO.Field
   
   With recColEdit
     'Store current index and bookmark
