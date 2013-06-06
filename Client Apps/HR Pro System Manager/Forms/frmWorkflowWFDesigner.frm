@@ -409,7 +409,7 @@ Private Function ControlIsUsed(pctlControl As VB.Control, _
     If IsWebFormControl(ctlControl) Then
       With ctlControl
         If CLng(.WFItemType) = giWFFORMITEM_INPUTVALUE_LOOKUP Then
-          If .LookupFilterValue = pctlControl.WFIdentifier Then
+          If .LookupFilterValue <> "" And .LookupFilterValue = pctlControl.WFIdentifier Then
 
             ReDim Preserve pavMessages(3, UBound(pavMessages, 2) + 1)
             pavMessages(1, UBound(pavMessages, 2)) = GetWebFormItemTypeName(.WFItemType) & " (" & .WFIdentifier & ")"
