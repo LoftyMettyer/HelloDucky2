@@ -1608,7 +1608,7 @@ End Sub
 
 Private Sub PopulateColumns(lngTableID As Long)
 
-  'Dim lngSelectedID As Long
+  Dim lngNewIndex As Long
 
   lstColumnLinkColumns.Clear
   cboDateLinkColumn.Clear
@@ -1631,17 +1631,14 @@ Private Sub PopulateColumns(lngTableID As Long)
           (!ControlType <> giCTRL_PHOTO) And _
           (!ControlType <> giCTRL_LINK) Then
 
-          lstColumnLinkColumns.AddItem (!ColumnName)
-          lstColumnLinkColumns.ItemData(lstColumnLinkColumns.NewIndex) = !ColumnID
-          lstColumnLinkColumns.Selected(lstColumnLinkColumns.NewIndex) = mobjTempLink.IsColumnSelected(!ColumnID)
+          lngNewIndex = AddItemToListbox(lstColumnLinkColumns, !ColumnName, !ColumnID, mobjTempLink.IsColumnSelected(!ColumnID))
 
           If mlngSelectedID = 0 And lstColumnLinkColumns.SelCount > 0 Then
-            mlngSelectedID = lstColumnLinkColumns.NewIndex + 1
+            mlngSelectedID = lngNewIndex + 1
           End If
           
           If !DataType = sqlDate Then
-            cboDateLinkColumn.AddItem !ColumnName
-            cboDateLinkColumn.ItemData(cboDateLinkColumn.NewIndex) = !ColumnID
+            AddItemToComboBox cboDateLinkColumn, !ColumnName, !ColumnID
           End If
 
         End If
@@ -1651,24 +1648,9 @@ Private Sub PopulateColumns(lngTableID As Long)
     End If
   End With
 
-'  If lngSelectedID > 0 Then
-'    lstColumnLinkColumns.Refresh
-'    If lngSelectedID = lstColumnLinkColumns.ListCount - 1 Then
-'      lstColumnLinkColumns.ListIndex = 0
-'      lstColumnLinkColumns.ListIndex = lstColumnLinkColumns.ListCount - 1
-'    Else
-'      'lstColumnLinkColumns.ListIndex = 0
-'      'lstColumnLinkColumns.AddItem lstColumnLinkColumns.List(lstColumnLinkColumns.ListCount - 1) & "z"  'Add to the bottom...
-'      lstColumnLinkColumns.ListIndex = lngSelectedID + 1
-'      'lstColumnLinkColumns.RemoveItem lstColumnLinkColumns.NewIndex
-'    End If
-'  End If
-  
-  
   With cboDateLinkColumn
     If .ListCount = 0 Then
-      cboDateLinkColumn.AddItem "<None>"
-      cboDateLinkColumn.ItemData(cboDateLinkColumn.NewIndex) = 0
+      AddItemToComboBox cboDateLinkColumn, "<None>", 0
     End If
     If .ListIndex < 0 Then
       .ListIndex = 0
