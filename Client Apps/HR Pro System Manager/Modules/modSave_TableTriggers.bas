@@ -836,23 +836,40 @@ Private Function SetTableTriggers_GetStrings(pLngCurrentTableID As Long, _
               sIndent & "        EXEC @hResult = dbo.sp_ASRExpr_" & Trim$(Str$(lngExprID)) & " @" & sExprName & " OUTPUT, @recordID" & vbNewLine & _
               sIndent & "        IF @hResult <> 0 " & sIfNullCode & vbNewLine
                            
+'            'JPD 20050318 Fault 9926
+'            If iCalcDataType = dtNUMERIC Then
+'              dblMaxValue = 10 ^ (iCalcSize - rsCalcColumns!Decimals)
+'              asCalcSelfCode(1).Append _
+'                sIndent & "        IF @" & sExprName & " >= " & CStr(dblMaxValue) & " SET @col" & CStr(lngCalcColumnID) & " = 0" & vbNewLine & _
+'                sIndent & "        IF @" & sExprName & " <= -" & CStr(dblMaxValue) & " SET @col" & CStr(lngCalcColumnID) & " = 0" & vbNewLine & _
+'                sIndent & "        IF (@" & sExprName & " < " & CStr(dblMaxValue) & ") AND (@" & sExprName & " > -" & CStr(dblMaxValue) & ") SET @col" & CStr(lngCalcColumnID) & " = " & sConvertCode & "@" & sExprName & IIf(LenB(sConvertCode) <> 0, ")", vbNullString) & vbNewLine & _
+'                sIndent & "        IF convert(float, @inscol_" & CStr(lngCalcColumnID) & ") <> @col" & CStr(lngCalcColumnID) & " SET @changesMade = 1" & vbNewLine & _
+'                sIndent & "        SET @delcol_" & CStr(lngCalcColumnID) & " = @inscol_" & CStr(lngCalcColumnID) & vbNewLine & _
+'                sIndent & "        SET @inscol_" & CStr(lngCalcColumnID) & " = @col" & CStr(lngCalcColumnID) & vbNewLine
+'            Else
+'              asCalcSelfCode(1).Append _
+'                sIndent & "        SET @col" & CStr(lngCalcColumnID) & " = " & sConvertCode & "@" & sExprName & IIf(LenB(sConvertCode) <> 0, ")", vbNullString) & vbNewLine & _
+'                sIndent & "        IF @inscol_" & CStr(lngCalcColumnID) & " <> @col" & CStr(lngCalcColumnID) & " SET @changesMade = 1" & vbNewLine & _
+'                sIndent & "        SET @delcol_" & CStr(lngCalcColumnID) & " = @inscol_" & CStr(lngCalcColumnID) & vbNewLine & _
+'                sIndent & "        SET @inscol_" & CStr(lngCalcColumnID) & " = @col" & CStr(lngCalcColumnID) & vbNewLine
+'            End If
             'JPD 20050318 Fault 9926
             If iCalcDataType = dtNUMERIC Then
               dblMaxValue = 10 ^ (iCalcSize - rsCalcColumns!Decimals)
               asCalcSelfCode(1).Append _
-                sIndent & "        IF @" & sExprName & " >= " & CStr(dblMaxValue) & " SET @col" & CStr(lngCalcColumnID) & " = 0" & vbNewLine & _
-                sIndent & "        IF @" & sExprName & " <= -" & CStr(dblMaxValue) & " SET @col" & CStr(lngCalcColumnID) & " = 0" & vbNewLine & _
-                sIndent & "        IF (@" & sExprName & " < " & CStr(dblMaxValue) & ") AND (@" & sExprName & " > -" & CStr(dblMaxValue) & ") SET @col" & CStr(lngCalcColumnID) & " = " & sConvertCode & "@" & sExprName & IIf(LenB(sConvertCode) <> 0, ")", vbNullString) & vbNewLine & _
-                sIndent & "        IF convert(float, @inscol_" & CStr(lngCalcColumnID) & ") <> @col" & CStr(lngCalcColumnID) & " SET @changesMade = 1" & vbNewLine & _
-                sIndent & "        SET @delcol_" & CStr(lngCalcColumnID) & " = @inscol_" & CStr(lngCalcColumnID) & vbNewLine & _
-                sIndent & "        SET @inscol_" & CStr(lngCalcColumnID) & " = @col" & CStr(lngCalcColumnID) & vbNewLine
+                sIndent & "        IF @" & sExprName & " >= " & Trim$(Str$(dblMaxValue)) & " SET @col" & Trim$(Str$(lngCalcColumnID)) & " = 0" & vbNewLine & _
+                sIndent & "        IF @" & sExprName & " <= -" & Trim$(Str$(dblMaxValue)) & " SET @col" & Trim$(Str$(lngCalcColumnID)) & " = 0" & vbNewLine & _
+                sIndent & "        IF (@" & sExprName & " < " & Trim$(Str$(dblMaxValue)) & ") AND (@" & sExprName & " > -" & Trim$(Str$(dblMaxValue)) & ") SET @col" & Trim$(Str$(lngCalcColumnID)) & " = " & sConvertCode & "@" & sExprName & IIf(LenB(sConvertCode) <> 0, ")", vbNullString) & vbNewLine & _
+                sIndent & "        IF convert(float, @inscol_" & Trim$(Str$(lngCalcColumnID)) & ") <> @col" & Trim$(Str$(lngCalcColumnID)) & " SET @changesMade = 1" & vbNewLine & _
+                sIndent & "        SET @inscol_" & Trim$(Str$(lngCalcColumnID)) & " = @col" & Trim$(Str$(lngCalcColumnID)) & vbNewLine
+
             Else
               asCalcSelfCode(1).Append _
-                sIndent & "        SET @col" & CStr(lngCalcColumnID) & " = " & sConvertCode & "@" & sExprName & IIf(LenB(sConvertCode) <> 0, ")", vbNullString) & vbNewLine & _
-                sIndent & "        IF @inscol_" & CStr(lngCalcColumnID) & " <> @col" & CStr(lngCalcColumnID) & " SET @changesMade = 1" & vbNewLine & _
-                sIndent & "        SET @delcol_" & CStr(lngCalcColumnID) & " = @inscol_" & CStr(lngCalcColumnID) & vbNewLine & _
-                sIndent & "        SET @inscol_" & CStr(lngCalcColumnID) & " = @col" & CStr(lngCalcColumnID) & vbNewLine
+                sIndent & "        SET @col" & Trim$(Str$(lngCalcColumnID)) & " = " & sConvertCode & "@" & sExprName & IIf(LenB(sConvertCode) <> 0, ")", vbNullString) & vbNewLine & _
+                sIndent & "        IF @inscol_" & Trim$(Str$(lngCalcColumnID)) & " <> @col" & Trim$(Str$(lngCalcColumnID)) & " SET @changesMade = 1" & vbNewLine & _
+                sIndent & "        SET @inscol_" & Trim$(Str$(lngCalcColumnID)) & " = @col" & Trim$(Str$(lngCalcColumnID)) & vbNewLine
             End If
+
             
             
             
@@ -1431,8 +1448,8 @@ Private Function SetTableTriggers_GetStrings(pLngCurrentTableID As Long, _
             (((!convertcase > 0) And (!DataType = dtVARCHAR)) Or _
               (!Trimming > 0 And !DataType = dtVARCHAR) Or _
               (!DataType = dtLONGVARCHAR) Or _
-              (!ColumnType = giCOLUMNTYPE_DATA) Or _
-              ((!ColumnType = giCOLUMNTYPE_DATA) And ((!ControlType = giCTRL_OPTIONGROUP) Or (!ControlType = giCTRL_COMBOBOX)))) Then
+              (!columntype = giCOLUMNTYPE_DATA) Or _
+              ((!columntype = giCOLUMNTYPE_DATA) And ((!ControlType = giCTRL_OPTIONGROUP) Or (!ControlType = giCTRL_COMBOBOX)))) Then
             
             ' Check if the required case conversion has already been done.
             fFound = False
@@ -1468,7 +1485,7 @@ Private Function SetTableTriggers_GetStrings(pLngCurrentTableID As Long, _
                 (((!convertcase > 0) And (!DataType = dtVARCHAR)) Or _
                   (!Trimming > 0 And !DataType = dtVARCHAR) Or _
                   (!DataType = dtLONGVARCHAR) Or _
-                  ((!ColumnType = giCOLUMNTYPE_DATA) And ((iControlType = giCTRL_OPTIONGROUP) Or (iControlType = giCTRL_COMBOBOX)))) Then
+                  ((!columntype = giCOLUMNTYPE_DATA) And ((iControlType = giCTRL_OPTIONGROUP) Or (iControlType = giCTRL_COMBOBOX)))) Then
     
                 asCalcSelfCode(1).Append vbNewLine & _
                   "        IF (@fUpdatingDateDependentColumns = 0)" & vbNewLine & _
@@ -1477,7 +1494,7 @@ Private Function SetTableTriggers_GetStrings(pLngCurrentTableID As Long, _
                   "            IF @col" & strColumnID & " IS null SET @col" & strColumnID & " = ''" & vbNewLine
               
                 'JPD 20031016 Fault 7292
-                If ((!ColumnType = giCOLUMNTYPE_DATA) And ((iControlType = giCTRL_OPTIONGROUP) Or (iControlType = giCTRL_COMBOBOX))) Then
+                If ((!columntype = giCOLUMNTYPE_DATA) And ((iControlType = giCTRL_OPTIONGROUP) Or (iControlType = giCTRL_COMBOBOX))) Then
                   recContValEdit.Index = "idxColumnID"
                   recContValEdit.Seek ">=", !ColumnID
                   
@@ -2040,7 +2057,7 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
   Dim fChildCalcs As Boolean
 
   Dim sAccordProhibitFields As String
-  Dim rsAccordDetails As dao.Recordset
+  Dim rsAccordDetails As DAO.Recordset
   Dim iTransferTypeID As Integer
   Dim mbAccordAllowDelete As Boolean
 
@@ -3749,8 +3766,8 @@ Private Function SetTableTriggers_AccordTransfer(ByRef sInsertAccordCode As HRPr
   Dim sDefinitionSQL As String
   Dim sAccordDeclaration As String
   Dim sAccordFilter As String
-  Dim rsAccordDetails As dao.Recordset
-  Dim rsAssociatedColumns As dao.Recordset
+  Dim rsAccordDetails As DAO.Recordset
+  Dim rsAssociatedColumns As DAO.Recordset
   Dim iLoop As Long
   Dim bColFound As Boolean
   Dim sConvertInsCols As String
@@ -4994,7 +5011,7 @@ Private Function SetTableTriggers_SpecialFunctions( _
   On Error GoTo ErrorTrap
 
   Dim bOK As Boolean
-  Dim rsTemp As dao.Recordset
+  Dim rsTemp As DAO.Recordset
   Dim iLoop As Long
   Dim sTableName As String
   'Dim sSubString As String
