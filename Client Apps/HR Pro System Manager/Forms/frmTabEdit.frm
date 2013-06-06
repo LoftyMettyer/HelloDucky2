@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Begin VB.Form frmTabEdit 
@@ -917,11 +917,11 @@ Private mblnEmailSortByActivation As Boolean
 Private mblnEmailSortDesc As Boolean
 
 Private Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 
 Private Property Let Changed(ByVal blnNewValue As Boolean)
-  cmdOK.Enabled = blnNewValue
+  cmdOk.Enabled = blnNewValue
 End Property
 
 
@@ -2767,12 +2767,29 @@ Public Sub PrintDefinition()
         '.PrintNormal "Deletion : " & IIf(Len(txtEmailNotification(1).Text) = 0, "<None>", txtEmailNotification(1).Text)
   
   
+        ' Email Links Tab
+        .PrintTitle "Email Links"
+        If ssGrdEmailLinks.Rows > 0 Then
+          .TabsOnPage = 2
+
+          .PrintBold "Name" & vbTab & "Email Activation"
+
+          ssGrdEmailLinks.MoveFirst
+          For iCount = 1 To ssGrdEmailLinks.Rows
+            .PrintNonBold ssGrdEmailLinks.Columns(0).value & vbTab & ssGrdEmailLinks.Columns(1).value
+            ssGrdEmailLinks.MoveNext
+          Next iCount
+        Else
+          .PrintNonBold "<None>"
+        End If
+
+
         ' Calendar Links Tab
         .PrintTitle "Outlook Calendar Links"
         If ssGrdOutlookLinks.Rows > 0 Then
           .TabsOnPage = 2
   
-          .PrintBold "Title" & vbTab & "Subject"
+          .PrintBold "Name" & vbTab & "Subject"
   
           ssGrdOutlookLinks.MoveFirst
           For iCount = 1 To ssGrdOutlookLinks.Rows
@@ -2782,6 +2799,7 @@ Public Sub PrintDefinition()
         Else
           .PrintNonBold "<None>"
         End If
+  
   
         ' Workflow Links Tab
         If Application.WorkflowModule Then
