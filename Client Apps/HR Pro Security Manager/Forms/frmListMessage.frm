@@ -14,7 +14,7 @@ Begin VB.Form frmListMessage
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1043
+   HelpContextID   =   8043
    Icon            =   "frmListMessage.frx":0000
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False

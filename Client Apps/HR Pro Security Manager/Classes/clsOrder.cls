@@ -94,7 +94,7 @@ Public Function SelectOrder() As Boolean
       .TableComboEnabled = False
       .TableComboVisible = False
       .HideDescription = True
-      .HelpContextID = 1066
+      .HelpContextID = 8066
 
       sSQL = "SELECT name, orderID" & _
                " FROM ASRSysOrders" & _
