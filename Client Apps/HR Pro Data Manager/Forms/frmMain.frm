@@ -1,8 +1,8 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.ocx"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
-Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~3.OCX"
+Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~2.OCX"
 Begin VB.MDIForm frmMain 
    AutoShowChildren=   0   'False
    BackColor       =   &H00F7EEE9&
@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "11:57"
+            TextSave        =   "13:40"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -2969,6 +2969,8 @@ Private Sub RefreshQuickLinks(ByVal MenuType As UserMenuType)
   Dim sBandName As String
   Dim sProcName As String
   Dim sCaption As String
+  Dim bEnabled As Boolean
+  Dim iToolID As Integer
   
   ' Menu specific stuff
   Select Case MenuType
@@ -2996,96 +2998,141 @@ Private Sub RefreshQuickLinks(ByVal MenuType As UserMenuType)
 
       With abMain
         Set objFileTool = .Bands(sBandName).Tools.Add(.Tools.Count + 1, "RC" & rsTemp("ObjectType").Value & ":" & rsTemp("ObjectID").Value)
+        .Tools.Add objFileTool.ToolID, objFileTool.Name
         
         Select Case rsTemp("ObjectType").Value
           Case utlCustomReport
             sIconName = "CustomReports"
             sIconBandName = "mnuReports"
             sType = "Custom Report : "
+            bEnabled = datGeneral.SystemPermission("CUSTOMREPORTS", "RUN")
+            
           Case utlCrossTab
             sIconName = "CrossTab"
             sIconBandName = "mnuReports"
             sType = "Cross Tab : "
+            bEnabled = datGeneral.SystemPermission("CROSSTABS", "RUN")
+          
           Case utlMatchReport
             sIconName = "MatchReport"
             sIconBandName = "mnuReports"
             sType = "Match Report : "
+            bEnabled = datGeneral.SystemPermission("MATCHREPORTS", "RUN")
+          
           Case utlAbsenceBreakdown
             sIconName = "AbsenceBreakdown"
             sIconBandName = "mnuReports"
             sType = "Standard Report : "
+            bEnabled = datGeneral.SystemPermission("STANDARDREPORTS", "RUN_AB")
+          
           Case utlBradfordFactor
             sIconName = "BradfordIndex"
             sIconBandName = "mnuReports"
             sType = "Standard Report : "
+            bEnabled = datGeneral.SystemPermission("STANDARDREPORTS", "RUN_BF")
+          
           Case utlStability
             sIconName = "StabilityIndex"
             sIconBandName = "mnuReports"
             sType = "Standard Report : "
+            bEnabled = datGeneral.SystemPermission("STANDARDREPORTS", "RUN_SI")
+          
           Case utlTurnover
             sIconName = "Turnover"
             sIconBandName = "mnuReports"
             sType = "Standard Report : "
+            bEnabled = datGeneral.SystemPermission("STANDARDREPORTS", "RUN_TR")
+          
           Case utlCalendarReport
             sIconName = "CalendarReport"
             sIconBandName = "mnuReports"
             sType = "Calendar Report : "
+            bEnabled = datGeneral.SystemPermission("CALENDARREPORTS", "RUN")
+          
           Case utlRecordProfile
             sIconName = "RecordProfile"
             sIconBandName = "mnuReports"
             sType = "Record Profile : "
+            bEnabled = datGeneral.SystemPermission("RECORDPROFILE", "RUN")
+          
           Case utlSuccession
             sIconName = "Succession"
             sIconBandName = "mnuReports"
             sType = "Succession Planning: "
+            bEnabled = datGeneral.SystemPermission("SUCCESSION", "RUN")
+          
           Case utlCareer
             sIconName = "Career"
             sIconBandName = "mnuReports"
             sType = "Career Progression: "
+            bEnabled = datGeneral.SystemPermission("CAREER", "RUN")
+          
           Case utlMailMerge
             sIconName = "MailMerge"
             sIconBandName = "mnuUtilities"
             sType = "Mail Merge : "
+            bEnabled = datGeneral.SystemPermission("MAILMERGE", "RUN")
+          
           Case utlLabel
             sIconName = "mnuLabels"
             sIconBandName = "mnuUtilities"
             sType = "Envelopes && Labels : "
+            bEnabled = datGeneral.SystemPermission("LABELS", "RUN")
+          
           Case utlExport
             sIconName = "Export"
             sIconBandName = "mnuUtilities"
             sType = "Export : "
+            bEnabled = datGeneral.SystemPermission("EXPORT", "RUN")
+          
           Case utlImport
             sIconName = "Import"
             sIconBandName = "mnuUtilities"
             sType = "Import : "
+            bEnabled = datGeneral.SystemPermission("IMPORT", "RUN")
+          
           Case utlDataTransfer
             sIconName = "DataTransfer"
             sIconBandName = "mnuUtilities"
             sType = "Data Transfer : "
+            bEnabled = datGeneral.SystemPermission("DATATRANSFER", "RUN")
+          
           Case UtlGlobalAdd
             sIconName = "GlobalAdd"
             sIconBandName = "mnuUtilities"
             sType = "Global Add : "
+            bEnabled = datGeneral.SystemPermission("GLOBALADD", "RUN")
+          
           Case utlGlobalUpdate
             sIconName = "GlobalUpdate"
             sIconBandName = "mnuUtilities"
             sType = "Global Update : "
+            bEnabled = datGeneral.SystemPermission("GLOBALUPDATE", "RUN")
+          
           Case utlGlobalDelete
             sIconName = "GlobalDelete"
             sIconBandName = "mnuUtilities"
             sType = "Global Delete : "
+            bEnabled = datGeneral.SystemPermission("GLOBALDELETE", "RUN")
+          
           Case utlBatchJob
             sIconName = "BatchJobs"
             sIconBandName = "mnuUtilities"
             sType = "Batch Job : "
+            bEnabled = datGeneral.SystemPermission("BATCHJOBS", "RUN")
+          
           Case utlReportPack
             sIconName = "ReportPack"
             sIconBandName = "mnuReports"
             sType = "Report Pack : "
+            bEnabled = datGeneral.SystemPermission("REPORTPACKS", "RUN")
+          
           Case utlWorkflow
             sIconName = "Workflow"
             sIconBandName = "mnuUtilities"
             sType = "Workflow : "
+            bEnabled = datGeneral.SystemPermission("WORKFLOW", "RUN")
+          
           Case Else
             sIconName = "BLANK"
         End Select
@@ -3098,6 +3145,7 @@ Private Sub RefreshQuickLinks(ByVal MenuType As UserMenuType)
         
         objFileTool.Caption = sCaption
         objFileTool.SetPicture 0, frmMain.abMain.Bands(sIconBandName).Tools(sIconName).GetPicture(0), COL_GREY
+        objFileTool.Enabled = bEnabled
       
       End With
 
