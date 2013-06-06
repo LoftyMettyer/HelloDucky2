@@ -34,7 +34,7 @@ Begin VB.Form frmBatchJob
    Begin TabDlg.SSTab SSTab1 
       Height          =   5610
       Left            =   50
-      TabIndex        =   60
+      TabIndex        =   61
       Top             =   120
       Width           =   9795
       _ExtentX        =   17277
@@ -46,14 +46,14 @@ Begin VB.Form frmBatchJob
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmBatchJob.frx":000C
       Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "fraScheduling"
-      Tab(0).Control(1)=   "fraInfo"
+      Tab(0).Control(0)=   "fraInfo"
+      Tab(0).Control(1)=   "fraScheduling"
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "&Jobs"
       TabPicture(1)   =   "frmBatchJob.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "Frame1"
-      Tab(1).Control(1)=   "fraJobs"
+      Tab(1).Control(0)=   "fraJobs"
+      Tab(1).Control(1)=   "Frame1"
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "O&utput"
       TabPicture(2)   =   "frmBatchJob.frx":0044
@@ -68,7 +68,7 @@ Begin VB.Form frmBatchJob
       Begin VB.Frame fraInfo 
          Height          =   2355
          Left            =   -74850
-         TabIndex        =   74
+         TabIndex        =   75
          Top             =   450
          Width           =   9525
          Begin VB.TextBox txtUserName 
@@ -110,7 +110,7 @@ Begin VB.Form frmBatchJob
          Begin SSDataWidgets_B.SSDBGrid grdAccess 
             Height          =   1485
             Left            =   5940
-            TabIndex        =   80
+            TabIndex        =   81
             Top             =   720
             Width           =   3405
             ScrollBars      =   2
@@ -231,7 +231,7 @@ Begin VB.Form frmBatchJob
             Caption         =   "Owner :"
             Height          =   195
             Left            =   5085
-            TabIndex        =   79
+            TabIndex        =   80
             Top             =   360
             Width           =   810
          End
@@ -241,7 +241,7 @@ Begin VB.Form frmBatchJob
             Caption         =   "Name :"
             Height          =   195
             Left            =   240
-            TabIndex        =   78
+            TabIndex        =   79
             Top             =   360
             Width           =   690
          End
@@ -251,7 +251,7 @@ Begin VB.Form frmBatchJob
             Caption         =   "Description :"
             Height          =   195
             Left            =   240
-            TabIndex        =   77
+            TabIndex        =   78
             Top             =   1155
             Width           =   1080
          End
@@ -261,7 +261,7 @@ Begin VB.Form frmBatchJob
             Caption         =   "Access :"
             Height          =   195
             Left            =   5085
-            TabIndex        =   76
+            TabIndex        =   77
             Top             =   765
             Width           =   825
          End
@@ -269,7 +269,7 @@ Begin VB.Form frmBatchJob
             Caption         =   "Category :"
             Height          =   240
             Left            =   240
-            TabIndex        =   75
+            TabIndex        =   76
             Top             =   765
             Width           =   1005
          End
@@ -278,7 +278,7 @@ Begin VB.Form frmBatchJob
          Caption         =   "Output Format :"
          Height          =   3000
          Left            =   150
-         TabIndex        =   68
+         TabIndex        =   69
          Top             =   420
          Width           =   2265
          Begin VB.OptionButton optOutputFormat 
@@ -314,7 +314,7 @@ Begin VB.Form frmBatchJob
          Caption         =   "Output Destination(s) :"
          Height          =   3000
          Left            =   2515
-         TabIndex        =   61
+         TabIndex        =   62
          Top             =   420
          Width           =   7110
          Begin VB.CheckBox chkPreview 
@@ -458,7 +458,7 @@ Begin VB.Form frmBatchJob
             Enabled         =   0   'False
             Height          =   195
             Left            =   2190
-            TabIndex        =   67
+            TabIndex        =   68
             Top             =   510
             Width           =   1410
          End
@@ -468,7 +468,7 @@ Begin VB.Form frmBatchJob
             Enabled         =   0   'False
             Height          =   195
             Left            =   2190
-            TabIndex        =   66
+            TabIndex        =   67
             Top             =   1380
             Width           =   1350
          End
@@ -479,7 +479,7 @@ Begin VB.Form frmBatchJob
             Height          =   195
             Index           =   0
             Left            =   2190
-            TabIndex        =   65
+            TabIndex        =   66
             Top             =   1755
             Width           =   1200
          End
@@ -490,7 +490,7 @@ Begin VB.Form frmBatchJob
             Height          =   195
             Index           =   1
             Left            =   2190
-            TabIndex        =   64
+            TabIndex        =   65
             Top             =   2160
             Width           =   1305
          End
@@ -500,7 +500,7 @@ Begin VB.Form frmBatchJob
             Enabled         =   0   'False
             Height          =   195
             Left            =   2190
-            TabIndex        =   63
+            TabIndex        =   64
             Top             =   975
             Width           =   1095
          End
@@ -511,7 +511,7 @@ Begin VB.Form frmBatchJob
             Height          =   195
             Index           =   2
             Left            =   2190
-            TabIndex        =   62
+            TabIndex        =   63
             Top             =   2565
             Width           =   1065
          End
@@ -664,15 +664,11 @@ Begin VB.Form frmBatchJob
             GroupHeaders    =   0   'False
             Col.Count       =   5
             stylesets.count =   5
-            stylesets(0).Name=   "ssetHeaderDisabled"
-            stylesets(0).ForeColor=   -2147483631
-            stylesets(0).BackColor=   -2147483633
-            stylesets(0).Picture=   "frmBatchJob.frx":0098
-            stylesets(1).Name=   "ssetSelected"
-            stylesets(1).ForeColor=   -2147483634
-            stylesets(1).BackColor=   -2147483635
-            stylesets(1).HasFont=   -1  'True
-            BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+            stylesets(0).Name=   "ssetSelected"
+            stylesets(0).ForeColor=   -2147483634
+            stylesets(0).BackColor=   -2147483635
+            stylesets(0).HasFont=   -1  'True
+            BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
                Size            =   8.25
                Charset         =   0
@@ -681,6 +677,10 @@ Begin VB.Form frmBatchJob
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
+            stylesets(0).Picture=   "frmBatchJob.frx":0098
+            stylesets(1).Name=   "ssetHeaderDisabled"
+            stylesets(1).ForeColor=   -2147483631
+            stylesets(1).BackColor=   -2147483633
             stylesets(1).Picture=   "frmBatchJob.frx":00B4
             stylesets(2).Name=   "ssetEnabled"
             stylesets(2).ForeColor=   -2147483640
@@ -1051,14 +1051,14 @@ Begin VB.Form frmBatchJob
          Caption         =   "Report Options :"
          Height          =   2020
          Left            =   150
-         TabIndex        =   69
+         TabIndex        =   70
          Top             =   3420
          Width           =   9470
          Begin VB.CheckBox chkRetainPivot 
             Caption         =   "Retain pi&vot/chart for Excel "
             Height          =   255
             Left            =   2760
-            TabIndex        =   81
+            TabIndex        =   58
             Top             =   1650
             Width           =   3015
          End
@@ -1178,7 +1178,7 @@ Begin VB.Form frmBatchJob
             ForeColor       =   &H00000000&
             Height          =   315
             Left            =   2750
-            TabIndex        =   73
+            TabIndex        =   74
             TabStop         =   0   'False
             Tag             =   "1"
             Text            =   "Personnel_Records"
@@ -1191,7 +1191,7 @@ Begin VB.Form frmBatchJob
             Caption         =   "Title Page Template :"
             Height          =   195
             Left            =   195
-            TabIndex        =   72
+            TabIndex        =   73
             Top             =   300
             Width           =   1830
          End
@@ -1200,7 +1200,7 @@ Begin VB.Form frmBatchJob
             Caption         =   "Report Pack Title :"
             Height          =   195
             Left            =   195
-            TabIndex        =   71
+            TabIndex        =   72
             Top             =   660
             Width           =   1590
          End
@@ -1209,7 +1209,7 @@ Begin VB.Form frmBatchJob
             Caption         =   "Personnel Override Filter :"
             Height          =   195
             Left            =   195
-            TabIndex        =   70
+            TabIndex        =   71
             Top             =   1020
             Width           =   2265
          End
@@ -1219,7 +1219,7 @@ Begin VB.Form frmBatchJob
       Caption         =   "&OK"
       Height          =   400
       Left            =   7320
-      TabIndex        =   58
+      TabIndex        =   59
       Top             =   5800
       Width           =   1200
    End
@@ -1228,7 +1228,7 @@ Begin VB.Form frmBatchJob
       Caption         =   "&Cancel"
       Height          =   400
       Left            =   8645
-      TabIndex        =   59
+      TabIndex        =   60
       Top             =   5800
       Width           =   1200
    End
@@ -3007,7 +3007,7 @@ Private Function SaveDefinition2() As Boolean
       sSQL = sSQL & "OutputScreen = " & IIf(chkDestination(desScreen).Value = vbChecked, "1", "0") & ", "
       'Printer Options
       sSQL = sSQL & IIf(chkDestination(desPrinter), (" OutputPrinterName = '" & Replace(cboPrinterName.Text, " '", "''") & "',"), (" OutputPrinterName = '', "))
-      sSQL = sSQL & "OutputFilename = '" & Replace(txtFilename.Text, "'", "''") & "',"
+      sSQL = sSQL & "OutputFilename = '" & Replace(txtFileName.Text, "'", "''") & "',"
       'outputSaveExisting
       If chkDestination(desSave).Value = vbChecked Then
         sSQL = sSQL & "OutputSaveExisting = " & cboSaveExisting.ItemData(cboSaveExisting.ListIndex) & ", "
@@ -3023,7 +3023,7 @@ Private Function SaveDefinition2() As Boolean
     sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmail = 1, "), ("OutputEmail = 0, "))
     sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmailAddr = " & txtEmailGroup.Tag & ", "), ("OutputEmailAddr = 0, "))
     sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmailSubject = '" & Replace(txtEmailSubject.Text, "'", "''") & "', "), ("OutputEmailSubject = '', "))
-    sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmailAttachAs = '" & Replace(txtEmailAttachAs.Text, "'", "''") & "'"), ("OutputEmailAttachAs = ''"))
+    sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmailAttachAs = '" & Replace(txtEMailAttachAs.Text, "'", "''") & "'"), ("OutputEmailAttachAs = ''"))
     
     'FINAL WHERE CLAUSE
     sSQL = sSQL & " WHERE ID = " & mlngBatchJobID
@@ -3109,9 +3109,9 @@ Private Function SaveDefinition2() As Boolean
           'outputEmailSubject
           sSQL = sSQL & IIf(chkDestination(desEmail), ("'" & Replace(txtEmailSubject.Text, "'", "''") & "', "), ("'', "))
           'outputFilename
-          sSQL = sSQL & "'" & Replace(txtFilename.Text, "'", "''") & "',"
+          sSQL = sSQL & "'" & Replace(txtFileName.Text, "'", "''") & "',"
           'outputEmailAttachAs
-          sSQL = sSQL & IIf(chkDestination(desEmail), ("'" & Replace(txtEmailAttachAs.Text, "'", "''") & "',"), ("'',"))
+          sSQL = sSQL & IIf(chkDestination(desEmail), ("'" & Replace(txtEMailAttachAs.Text, "'", "''") & "',"), ("'',"))
           'outputTitlePage
           sSQL = sSQL & "'" & Replace(txtTitlePage.Text, "'", "''") & "', "
           'outputReportPackTitle
@@ -3455,7 +3455,7 @@ Private Function ValidDestination() As Boolean
   ValidDestination = False
 
   If chkDestination(desSave).Value = vbChecked Then
-    If txtFilename.Text = vbNullString Then
+    If txtFileName.Text = vbNullString Then
       COAMsgBox "You must enter a file name.", vbExclamation, Caption
       Exit Function
     End If
@@ -3474,20 +3474,20 @@ Private Function ValidDestination() As Boolean
       Exit Function
     End If
 
-    If txtEmailAttachAs.Text = vbNullString Then
+    If txtEMailAttachAs.Text = vbNullString Then
       COAMsgBox "You must enter an email attachment file name.", vbExclamation, Caption
       Exit Function
     End If
     
-    If InStr(txtEmailAttachAs.Text, "/") Or _
-       InStr(txtEmailAttachAs.Text, ":") Or _
-       InStr(txtEmailAttachAs.Text, "?") Or _
-       InStr(txtEmailAttachAs.Text, Chr(34)) Or _
-       InStr(txtEmailAttachAs.Text, "<") Or _
-       InStr(txtEmailAttachAs.Text, ">") Or _
-       InStr(txtEmailAttachAs.Text, "|") Or _
-       InStr(txtEmailAttachAs.Text, "\") Or _
-       InStr(txtEmailAttachAs.Text, "*") Then
+    If InStr(txtEMailAttachAs.Text, "/") Or _
+       InStr(txtEMailAttachAs.Text, ":") Or _
+       InStr(txtEMailAttachAs.Text, "?") Or _
+       InStr(txtEMailAttachAs.Text, Chr(34)) Or _
+       InStr(txtEMailAttachAs.Text, "<") Or _
+       InStr(txtEMailAttachAs.Text, ">") Or _
+       InStr(txtEMailAttachAs.Text, "|") Or _
+       InStr(txtEMailAttachAs.Text, "\") Or _
+       InStr(txtEMailAttachAs.Text, "*") Then
           COAMsgBox "The email attachment file name cannot contain any of the following characters:" & vbCrLf & _
                  "/  :  ?  " & Chr(34) & "  <  >  |  \  *", vbExclamation, Caption
           Exit Function
