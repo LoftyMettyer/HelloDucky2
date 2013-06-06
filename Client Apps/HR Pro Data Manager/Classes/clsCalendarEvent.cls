@@ -42,6 +42,9 @@ Private mlngDesc1ID As Long
 Private mstrDesc1Name As String           'also used for Calendar Breakdown
 Private mlngDesc2ID As Long
 Private mstrDesc2Name As String           'also used for Calendar Breakdown
+Private mstrColourName As String
+Private mlngColourValue As Long
+
 
 'extra properties added for Calendar Breakdown
 Private mstrBaseDescription As String
@@ -253,3 +256,18 @@ End Property
 Public Property Get Desc2Value() As String
   Desc2Value = mstrDesc2Value
 End Property
+
+Public Property Let ColourName(Value As String)
+  mstrColourName = Value
+End Property
+Public Property Get ColourName() As String
+  ColourName = mstrColourName
+End Property
+
+Public Property Let ColourValue(Value As Long)
+  mlngColourValue = Value
+End Property
+Public Property Get ColourValue() As Long
+  ColourValue = mlngColourValue
+End Property
+
