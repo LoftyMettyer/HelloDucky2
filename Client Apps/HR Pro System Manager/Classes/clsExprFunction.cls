@@ -1122,7 +1122,7 @@ Private Sub ReadParameterDefinition()
   Dim fOK As Boolean
   Dim iIndex As Integer
   Dim sSQL As String
-  Dim rsCustomisedParameters As DAO.Recordset
+  Dim rsCustomisedParameters As dao.Recordset
   Dim objNewParameter As CExprComponent
   Dim objFunctionDefParameter As clsFunctionDefParameter
   Dim objFunctionDef As clsFunctionDef
@@ -1663,7 +1663,7 @@ Public Function StoredProcedureCode(Optional strBaseTable As String) As String
   Dim lngSrchTableID As Long
   Dim lngRtnTableID As Long
   Dim fWorkflowExpression As Boolean
-  Dim rsTemp As DAO.Recordset
+  Dim rsTemp As dao.Recordset
   Dim sSQL As String
   Dim lngElementID As Long
   Dim iElementType As ElementType
@@ -2292,6 +2292,8 @@ Public Function StoredProcedureCode(Optional strBaseTable As String) As String
         
           If mlngFunctionID = 73 Then
             sProcCode.Append ", " & "@PersonnelID)" & vbNewLine
+          Else
+            sProcCode.Append " @id)" & vbNewLine
           End If
         
         End If
@@ -2391,7 +2393,7 @@ Public Function RuntimeCode(psRuntimeCode As String, _
   Dim lngDependantsTableID As Long
   Dim lngMaternityTableID As Long
   Dim sVarName As String
-  Dim rsTemp As DAO.Recordset
+  Dim rsTemp As dao.Recordset
   Dim strTempTableName As String
   Dim strTempTableID As String
   
