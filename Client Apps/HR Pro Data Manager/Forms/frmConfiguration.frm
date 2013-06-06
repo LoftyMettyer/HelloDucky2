@@ -56,16 +56,16 @@ Begin VB.Form frmConfiguration
       TabCaption(0)   =   "&Display Defaults"
       TabPicture(0)   =   "frmConfiguration.frx":000C
       Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "fraDisplay(1)"
+      Tab(0).Control(0)=   "fraDisplay(2)"
       Tab(0).Control(1)=   "fraDisplay(0)"
-      Tab(0).Control(2)=   "fraDisplay(2)"
+      Tab(0).Control(2)=   "fraDisplay(1)"
       Tab(0).ControlCount=   3
       TabCaption(1)   =   "&Reports && Utilities"
       TabPicture(1)   =   "frmConfiguration.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraReports(0)"
+      Tab(1).Control(0)=   "fraReports(1)"
       Tab(1).Control(1)=   "frmReportsGeneral"
-      Tab(1).Control(2)=   "fraReports(1)"
+      Tab(1).Control(2)=   "fraReports(0)"
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "&Network Configuration"
       TabPicture(2)   =   "frmConfiguration.frx":0044
@@ -82,28 +82,28 @@ Begin VB.Form frmConfiguration
       TabCaption(3)   =   "&Batch Login"
       TabPicture(3)   =   "frmConfiguration.frx":0060
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "fraBatch(1)"
-      Tab(3).Control(1)=   "fraBatch(0)"
+      Tab(3).Control(0)=   "fraBatch(0)"
+      Tab(3).Control(1)=   "fraBatch(1)"
       Tab(3).ControlCount=   2
       TabCaption(4)   =   "E&vent Log"
       TabPicture(4)   =   "frmConfiguration.frx":007C
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "FraEventLog(0)"
+      Tab(4).Control(0)=   "FraEventLog(2)"
       Tab(4).Control(1)=   "FraEventLog(1)"
-      Tab(4).Control(2)=   "FraEventLog(2)"
+      Tab(4).Control(2)=   "FraEventLog(0)"
       Tab(4).ControlCount=   3
       TabCaption(5)   =   "Report Out&put"
       TabPicture(5)   =   "frmConfiguration.frx":0098
       Tab(5).ControlEnabled=   0   'False
-      Tab(5).Control(0)=   "Frame1"
+      Tab(5).Control(0)=   "FraOutput(0)"
       Tab(5).Control(1)=   "FraOutput(1)"
-      Tab(5).Control(2)=   "FraOutput(0)"
+      Tab(5).Control(2)=   "Frame1"
       Tab(5).ControlCount=   3
       TabCaption(6)   =   "Tool&bars"
       TabPicture(6)   =   "frmConfiguration.frx":00B4
       Tab(6).ControlEnabled=   0   'False
-      Tab(6).Control(0)=   "fraToolbarGeneral"
-      Tab(6).Control(1)=   "fraToolbars"
+      Tab(6).Control(0)=   "fraToolbars"
+      Tab(6).Control(1)=   "fraToolbarGeneral"
       Tab(6).ControlCount=   2
       Begin VB.Frame fraReports 
          Caption         =   "Report / Utility / Tool Selection && Access :"
@@ -1179,6 +1179,7 @@ Begin VB.Form frmConfiguration
             Width           =   6400
          End
          Begin VB.ComboBox cboPrinter 
+            Enabled         =   0   'False
             Height          =   315
             Left            =   2200
             Sorted          =   -1  'True
@@ -1191,6 +1192,7 @@ Begin VB.Form frmConfiguration
             AutoSize        =   -1  'True
             BackStyle       =   0  'Transparent
             Caption         =   "Current default :"
+            Enabled         =   0   'False
             Height          =   195
             Index           =   4
             Left            =   150
@@ -3108,37 +3110,18 @@ Private Function SavePCSettings() As Boolean
   SavePCSetting "Printer", "DeviceName", cboPrinter.Text
   gstrDefaultPrinterName = cboPrinter.Text
 
-  '******************************************************************************
-  'TM20020828 Fault 1432 - set the default printer using the APIs in the
-  '                        cSetDfltPrinter class.
-  
-'  ' Set the default printer
-'  For Each objPrinter In Printers
-'    If objPrinter.DeviceName = gstrDefaultPrinterName Then
-'      Printers
-'      Set Printer = objPrinter
-'    End If
-'  Next
-  
-'  Dim objDefPrinter As New cSetDfltPrinter
-'  Dim bDefautlPrinterSet As Boolean
-'  bDefautlPrinterSet = objDefPrinter.SetPrinterAsDefault(gstrDefaultPrinterName)
-'  Set objDefPrinter = Nothing
-  
-  
   ' NPG20110105 Fault HRPRO-1089
-  ' NHRD04052011 JIRA HR Pro-1533 If you are coming from frmMain you wa
-  gblnStartupPrinter = (InStr(LCase(Command$), "/printer=true") > 0)
-  If gblnStartupPrinter Or OpenedMe.Name = "frmMain" Then
-  
+  ' NHRD04052011 JIRA HR Pro-1533 If you are coming from frmMain
+  gblnStartupPrinter = False 'Don't run this bit of code for now (InStr(LCase(Command$), "/printer=true") > 0)
+  If gblnStartupPrinter Then 'Or OpenedMe.Name = "frmMain" Then
+  'If gblnStartupPrinter Or OpenedMe.Name = "frmMain" Then
+
     DebugOutput "MDIForm_Configuration", "SetPrinterAsDefault"
-    
+
     Set objDefPrinter = New cSetDfltPrinter
     objDefPrinter.SetPrinterAsDefault gstrDefaultPrinterName
     Set objDefPrinter = Nothing
-
   End If
-
   '******************************************************************************
    
   gbPrinterPrompt = (chkPrintingPrompt.Value = vbChecked)

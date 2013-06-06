@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "17:25"
+            TextSave        =   "11:01"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -503,38 +503,23 @@ Private Sub MDIForm_Load()
     .Font.Name = "Verdana"
     .Font.Bold = False
     .Font.Size = 8
-
     .ControlFont.Name = "Verdana"
     .ControlFont.Bold = False
     .ControlFont.Size = 8
-
     .ForeColor = 6697779
     .BackColor = 16248553
-
     .Refresh
   End With
   
   abMain.Attach
-
   Me.Caption = "HR Pro Data Manager - " & gsDatabaseName
-
   DebugOutput "MDIForm_Load", "EnableTools"
-  
   EnableTools
     
   gblnDiaryConstCheck = CBool(GetUserSetting("Diary", "ConstantCheck", True))
   Database.Validation = True
-
-  '******************************************************************************
-  ' Set Default printer settings
   
-  'TM20020828 Fault 1432
-  'TM20020911 Fault 4401
-  
-  
-  'gblnStartupPrinter = (InStr(LCase(Command$), "/printer=false") > 0)
-  'If Not gblnStartupPrinter Then
-  gblnStartupPrinter = (InStr(LCase(Command$), "/printer=true") > 0)
+  gblnStartupPrinter = False 'Don't run this bit of code for now (InStr(LCase(Command$), "/printer=true") > 0)
   If gblnStartupPrinter Then
     'JPD 20081205 - You can have Printers.Count > 0 but still no valid printers (honestly!)
     ' So need to have proper error trapping, on top of the Printers.Count check.
@@ -545,16 +530,11 @@ Private Sub MDIForm_Load()
     If Printers.Count > 0 Then
       gstrDefaultPrinterName = Printer.DeviceName
       SavePCSetting "Printer", "DeviceName", gstrDefaultPrinterName
-  
       Set objDefPrinter = New cSetDfltPrinter
       objDefPrinter.SetPrinterAsDefault gstrDefaultPrinterName
       Set objDefPrinter = Nothing
-  
     End If
-  
-  
-  
-  
+
 PrinterErrorTrap:
   End If
   '******************************************************************************
