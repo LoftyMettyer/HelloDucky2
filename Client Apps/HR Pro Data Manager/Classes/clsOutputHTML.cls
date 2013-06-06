@@ -353,11 +353,21 @@ Public Function GetFile(objParent As clsOutputRun, colSytles As Collection) As B
   
   On Local Error GoTo LocalErr
     
+  
   strHTMLOutput = ""
   ReDim mastrHTMLOutput(0)
-
   blnAppending = False
-  If mblnSave Then
+
+  'Just in case we are emailing but not saving...
+  If Not mblnSave Then
+    If mblnEmail Then
+      mstrFileName = objParent.GetTempFileName(mobjParent.EmailAttachAs)
+      If Dir(mstrFileName) <> vbNullString Then
+        objParent.KillFile mstrFileName
+      End If
+    End If
+  
+  Else
     
     'Check if file already exists...
     If Dir(mstrFileName) <> vbNullString And mstrFileName <> vbNullString Then
@@ -789,8 +799,8 @@ Public Sub Complete()
     If mblnSave Then
       mobjParent.SendEmail mstrFileName
     Else
-      mstrFileName = GetTmpFName
-      mstrFileName = Left$(mstrFileName, Len(mstrFileName) - 3) & "htm"
+      'mstrFileName = GetTmpFName
+      'mstrFileName = Left$(mstrFileName, Len(mstrFileName) - 3) & "htm"
       Open mstrFileName For Output As #1
       Print #1, mstrHTMLOutput
       Close
