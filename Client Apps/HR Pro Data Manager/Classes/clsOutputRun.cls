@@ -213,7 +213,7 @@ Private Sub InitialiseStyles()
     .Gridlines = (GetUserSetting("Output", "HeadingGridLines", "1") = "1")
     .Bold = (GetUserSetting("Output", "HeadingBold", "1") = "1")
     .Underline = (GetUserSetting("Output", "HeadingUnderline", "0") = "1")
-    .BackCol = Val(GetUserSetting("Output", "HeadingBackcolour", GetColour("Gold")))
+    .BackCol = Val(GetUserSetting("Output", "HeadingBackcolour", GetColour("Violet")))
     .ForeCol = Val(GetUserSetting("Output", "HeadingForecolour", vbWhite))
   End With
 
@@ -855,11 +855,11 @@ Public Function SetOptions( _
       If blnEmail Then
         .txtEmailGroup.Text = datGeneral.GetEmailGroupName(lngEmailAddr)
         .txtEmailGroup.Tag = lngEmailAddr
-        .txtEMailSubject.Text = strEmailSubject
+        .txtEmailSubject.Text = strEmailSubject
         .txtEmailAttachAs.Text = strEmailAttachAs
         '.txtEmailAttachAs.Tag = lngEmailFileFormat
       End If
-      .txtFileName.Text = strFileName
+      .txtFilename.Text = strFileName
       '.txtFileName.Tag = lngSaveFileFormat
 
       .ShowFormats mblnData, mblnCSV, mblnHTML, mblnWord, mblnExcel, mblnChart, mblnPivot
@@ -880,9 +880,9 @@ Public Function SetOptions( _
 
       blnEmail = (.chkDestination(desEmail).Value = vbChecked)
       lngEmailAddr = Val(.txtEmailGroup.Tag)
-      strEmailSubject = .txtEMailSubject.Text
+      strEmailSubject = .txtEmailSubject.Text
       strEmailAttachAs = .txtEmailAttachAs.Text
-      strFileName = .txtFileName.Text
+      strFileName = .txtFilename.Text
 
       'lngSaveFileFormat = Val(.txtFilename.Tag)
       'lngEmailFileFormat = Val(.txtEmailAttachAs.Tag)
@@ -892,7 +892,7 @@ Public Function SetOptions( _
 
       'If .cboEmailAddr.ListIndex <> -1 Then
         mlngEmailGroupID = .txtEmailGroup.Tag
-        mstrEmailSubject = .txtEMailSubject.Text
+        mstrEmailSubject = .txtEmailSubject.Text
         mstrEmailAttachAs = .txtEmailAttachAs.Text
       'End If
 
