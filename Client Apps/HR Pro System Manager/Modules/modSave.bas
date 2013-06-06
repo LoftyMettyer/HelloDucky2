@@ -5,9 +5,7 @@ Private mfrmUse As frmUsage
 
 Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
   On Error GoTo ErrorTrap
-  
-  Dim objHRProEngine As New HRProEngine.SysMgr
-  
+ 
   Dim fOK As Boolean
   Dim fInTransaction As Boolean
   Dim sErrMsg As String
@@ -182,10 +180,10 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
       
     ' Initialise the .NET engine
     If fOK Then
-      Set objHRProEngine.CommitDB = gADOCon
-      Set objHRProEngine.MetadataDB = daoDb
-      fOK = objHRProEngine.Initialise
-      objHRProEngine.Options.RefreshObjects = True
+      Set gobjHRProEngine.CommitDB = gADOCon
+      Set gobjHRProEngine.MetadataDB = daoDb
+      fOK = gobjHRProEngine.Initialise
+      gobjHRProEngine.Options.RefreshObjects = True
     End If
     
     
@@ -363,7 +361,7 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
       gobjProgress.UpdateProgress False
       DoEvents
       fOK = SaveExpressions(pfRefreshDatabase)
-      objHRProEngine.Script.ScriptObjects
+      gobjHRProEngine.Script.ScriptObjects
       fOK = fOK And Not gobjProgress.Cancelled
     End If
      
@@ -417,7 +415,7 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
       OutputCurrentProcess "Generating Column Triggers"
       gobjProgress.UpdateProgress False
       DoEvents
-      fOK = objHRProEngine.Script.ScriptTriggers
+      fOK = gobjHRProEngine.Script.ScriptTriggers
       fOK = fOK And SetTriggers(alngExpressions, pfRefreshDatabase)
       fOK = fOK And Not gobjProgress.Cancelled
     End If
@@ -472,7 +470,7 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
         OutputCurrentProcess2 "Configuring Procedures", 2
         fOK = ConfigureModuleSpecifics
         
-        fOK = fOK And objHRProEngine.Script.ScriptFunctions
+        fOK = fOK And gobjHRProEngine.Script.ScriptFunctions
         fOK = fOK And Not gobjProgress.Cancelled
         gobjProgress.UpdateProgress2
         
@@ -554,7 +552,6 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
       SaveSystemSetting "AdvancedDatabaseSetting", "ManualRecursionLevel", giManualRecursionLevel
       SaveSystemSetting "AdvancedDatabaseSetting", "SpecialFunctionAutoUpdate", gbDisableSpecialFunctionAutoUpdate
       SaveSystemSetting "AdvancedDatabaseSetting", "UpdateIndexesOvernight", gbReorganiseIndexesInOvernightJob
-      SaveSystemSetting "AdvancedDatabaseSetting", "UsedotNETDatabaseScripting", gbUsedotNetScriptEngine
     End If
   
     ' Save the default expression builder settings
@@ -657,7 +654,7 @@ TidyUpAndExit:
   
   If fOK Then
     
- objHRProEngine.ErrorLog.OutputToFile (App.Path + "\HRProEngine.log")
+    gobjHRProEngine.ErrorLog.OutputToFile (App.Path + "\HRProEngine.log")
     
     AuditAccess "Save", "System"
     
@@ -689,10 +686,6 @@ TidyUpAndExit:
       Application.AccessMode = accLimited
       frmSysMgr.SetCaption
     End If
-
-    ' Kill the phoenix engine
-'    objPhoenix.CloseSafely
-    Set objHRProEngine = Nothing
 
     '16/08/2001 MH Fault 2691
     gfRefreshStoredProcedures = False

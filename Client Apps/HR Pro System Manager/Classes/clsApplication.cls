@@ -501,8 +501,8 @@ Public Function CreateTempTables() As Boolean
   
   Dim sSQL As String
   Dim sSource As String
-  Dim tbdTemp As DAO.TableDef
-  Dim idxTemp As DAO.Index
+  Dim tbdTemp As dao.TableDef
+  Dim idxTemp As dao.Index
 
 
   Application.ChangedTableName = False
@@ -1964,7 +1964,9 @@ Public Function Logout() As Boolean
       gADOCon.Close
     End If
   End If
+  
   Set gADOCon = Nothing
+  Set gobjHRProEngine = Nothing
   
   'Make sure temp ASR database does not already exist
   If Dir(Environ("TEMP") & "\" & gsTempDatabaseName) <> vbNullString Then
@@ -1999,7 +2001,7 @@ End Sub
 Private Sub ActivateModules()
   ' Only show licenced modules in the menus.
   Dim sSQL As String
-  Dim rsWorkflows As DAO.Recordset
+  Dim rsWorkflows As dao.Recordset
   Dim sURL As String
   Dim sNewQueryString As String
   Dim sNewString As String
@@ -2035,7 +2037,6 @@ Private Sub ActivateModules()
 
   gbDisableSpecialFunctionAutoUpdate = GetSystemSetting("AdvancedDatabaseSetting", "SpecialFunctionAutoUpdate", False)
   gbReorganiseIndexesInOvernightJob = GetSystemSetting("AdvancedDatabaseSetting", "UpdateIndexesOvernight", True)
-  gbUsedotNetScriptEngine = GetSystemSetting("AdvancedDatabaseSetting", "UsedotNETDatabaseScripting", False)
   
   '26/07/2001 MH
   '' CMG settings
