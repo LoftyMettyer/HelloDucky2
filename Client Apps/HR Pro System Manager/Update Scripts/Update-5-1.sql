@@ -449,7 +449,7 @@ PRINT 'Step - Object scripting'
 					''Verdana'', 8, 0, 0, 0, 0,
 					40, 40, 1,
 					0, ''Verdana'', 8, 0, 0,
-					0, 0, ''Configuration'', 0);
+					0, 0, 0, 0);
 
 			-- Insert top most column (label)
 			INSERT INTO [dbo].[ASRSysControls](
@@ -831,64 +831,73 @@ PRINT 'Step - Menu & Category enhancements'
 		SELECT @tableid = ISNULL([parametervalue],0) FROM dbo.[ASRSysModuleSetup]
 			WHERE ModuleKey = 'MODULE_PERSONNEL' AND ParameterKey = 'Param_TablePersonnel' AND [ParameterType] = 'PType_TableID';
 		SELECT @categoryid = [ID] FROM dbo.tbuser_Object_Categories_Table WHERE Category_name = 'Personnel'
-		UPDATE ASRSysScreens SET category = @categoryid WHERE TableID = @tableid AND category IS NULL
+		SET @NVarCommand = 'UPDATE ASRSysScreens SET category = ' + convert(varchar(10),@categoryid) + '
+			WHERE TableID = ' + convert(varchar(10),@tableid) + ' AND category IS NULL';
+		EXECUTE sp_executeSQL @NVarCommand;
 
 		SELECT @categoryid = [ID] FROM dbo.tbuser_Object_Categories_Table WHERE Category_name = 'Absence'
-		UPDATE s SET s.category = @categoryid
-			FROM ASRSysScreens s
+		SET @NVarCommand = 'UPDATE s SET s.category = ' + convert(varchar(10),@categoryid) + 'FROM ASRSysScreens s
 			INNER JOIN ASRSysTables t ON t.tableid = s.tableid AND t.tabletype = 2
-			WHERE (Name LIKE '%Absence%' OR Name LIKE '%Maternity%' OR Name LIKE '%Paternity%' 
-				OR Name LIKE '%Adoption%' OR Name LIKE '%ASPP%')
-				AND category IS NULL
+			WHERE (Name LIKE ''%Absence%'' OR Name LIKE ''%Maternity%'' OR Name LIKE ''%Paternity%'' 
+				OR Name LIKE ''%Adoption%'' OR Name LIKE ''%ASPP%'')
+				AND category IS NULL';
+		EXECUTE sp_executeSQL @NVarCommand;
 
 		SELECT @categoryid = [ID] FROM dbo.tbuser_Object_Categories_Table WHERE Category_name = 'Salary'
-		UPDATE s SET s.category = @categoryid
+		SET @NVarCommand = 'UPDATE s SET s.category = ' + convert(varchar(10),@categoryid) + '
 			FROM ASRSysScreens s
 			INNER JOIN ASRSysTables t ON t.tableid = s.tableid AND t.tabletype = 2
-			WHERE (Name LIKE '%Allowances%' OR Name LIKE '%Benefits%' OR Name LIKE '%Bonuses%' 
-				OR Name LIKE '%Deductions%' OR Name LIKE '%Loans%' OR Name LIKE '%Pensions%' OR Name LIKE '%Salary%' OR Name LIKE '%Timesheets%')
-				AND category IS NULL
+			WHERE (Name LIKE ''%Allowances%'' OR Name LIKE ''%Benefits%'' OR Name LIKE ''%Bonuses%'' 
+				OR Name LIKE ''%Deductions%'' OR Name LIKE ''%Loans%'' OR Name LIKE ''%Pensions%'' OR Name LIKE ''%Salary%'' OR Name LIKE ''%Timesheets%'')
+				AND category IS NULL';
+		EXECUTE sp_executeSQL @NVarCommand;
 
 		SELECT @categoryid = [ID] FROM dbo.tbuser_Object_Categories_Table WHERE Category_name = 'Learning & Development'
-		UPDATE s SET s.category = @categoryid
+		SET @NVarCommand = 'UPDATE s SET s.category = ' + convert(varchar(10),@categoryid) + '
 			FROM ASRSysScreens s
 			INNER JOIN ASRSysTables t ON t.tableid = s.tableid AND t.tabletype = 2
-			WHERE (Name LIKE '%Competencies%' OR Name LIKE '%Course Bookings%' 
-				OR Name LIKE '%CPD Summary%' OR Name LIKE '%Languages%' OR Name LIKE '%Qualifications%' OR Name LIKE '%Subscriptions%' OR Name LIKE '%Training%')
-				AND category IS NULL
+			WHERE (Name LIKE ''%Competencies%'' OR Name LIKE ''%Course Bookings%''
+				OR Name LIKE ''%CPD Summary%'' OR Name LIKE ''%Languages%'' OR Name LIKE ''%Qualifications%'' OR Name LIKE ''%Subscriptions%'' OR Name LIKE ''%Training%'')
+				AND category IS NULL';
+		EXECUTE sp_executeSQL @NVarCommand;			
 
 		SELECT @categoryid = [ID] FROM dbo.tbuser_Object_Categories_Table WHERE Category_name = 'Health & Safety'
-		UPDATE s SET s.category = @categoryid
+		SET @NVarCommand = 'UPDATE s SET s.category = ' + convert(varchar(10),@categoryid) + '
 			FROM ASRSysScreens s
 			INNER JOIN ASRSysTables t ON t.tableid = s.tableid AND t.tabletype = 2
-			WHERE (Name LIKE '%Eye Tests%' OR Name LIKE '%Medicals%' OR Name LIKE '%Risk Assessments%' OR Name LIKE '%H&S%')
-				AND category IS NULL
+			WHERE (Name LIKE ''%Eye Tests%'' OR Name LIKE ''%Medicals%'' OR Name LIKE ''%Risk Assessments%'' OR Name LIKE ''%H&S%'')
+				AND category IS NULL';
+		EXECUTE sp_executeSQL @NVarCommand;
 
 		SELECT @categoryid = [ID] FROM dbo.tbuser_Object_Categories_Table WHERE Category_name = 'Applicant'
-		UPDATE s SET s.category = @categoryid
+		SET @NVarCommand = 'UPDATE s SET s.category = ' + convert(varchar(10),@categoryid) + '
 			FROM ASRSysScreens s
-			WHERE Name LIKE '%Applicant%' AND category IS NULL
+			WHERE Name LIKE ''%Applicant%'' AND category IS NULL';
+		EXECUTE sp_executeSQL @NVarCommand;
 
 		SELECT @categoryid = [ID] FROM dbo.tbuser_Object_Categories_Table WHERE Category_name = 'Recruitment'
-		UPDATE s SET s.category = @categoryid
+		SET @NVarCommand = 'UPDATE s SET s.category = ' + convert(varchar(10),@categoryid) + '
 			FROM ASRSysScreens s
 			INNER JOIN ASRSysTables t ON t.tableid = s.tableid AND t.tabletype = 2
-			WHERE Name LIKE '%Vacancy%' AND category IS NULL
+			WHERE Name LIKE ''%Vacancy%'' AND category IS NULL';
+		EXECUTE sp_executeSQL @NVarCommand;
 
 		SELECT @categoryid = [ID] FROM dbo.tbuser_Object_Categories_Table WHERE Category_name = 'Training'
-		UPDATE s SET s.category = @categoryid
+		SET @NVarCommand = 'UPDATE s SET s.category = ' + convert(varchar(10),@categoryid) + '
 			FROM ASRSysScreens s
 			INNER JOIN ASRSysTables t ON t.tableid = s.tableid AND t.tabletype = 2
-			WHERE (Name LIKE '%Training%' OR Name LIKE '%Course%' OR Name LIKE '%Delegate%')
-				AND category IS NULL
+			WHERE (Name LIKE ''%Training%'' OR Name LIKE ''%Course%'' OR Name LIKE ''%Delegate%'')
+				AND category IS NULL';
+		EXECUTE sp_executeSQL @NVarCommand;
 
 		SELECT @categoryid = [ID] FROM dbo.tbuser_Object_Categories_Table WHERE Category_name = 'General'
-		UPDATE s SET s.category = @categoryid
+		SET @NVarCommand = 'UPDATE s SET s.category = ' + convert(varchar(10),@categoryid) + '
 			FROM ASRSysScreens s
 			INNER JOIN ASRSysTables t ON t.tableid = s.tableid AND t.tabletype = 3
-			WHERE category IS NULL
+			WHERE category IS NULL';
+		EXECUTE sp_executeSQL @NVarCommand;
 
-		UPDATE ASRSysScreens SET category = 0 WHERE category IS NULL
+		EXECUTE sp_executeSQL N'UPDATE ASRSysScreens SET category = 0 WHERE category IS NULL';
 
 	END
 
