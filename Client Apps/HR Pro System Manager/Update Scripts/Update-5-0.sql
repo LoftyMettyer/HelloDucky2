@@ -4186,6 +4186,8 @@ PRINT 'Step 8 - New Mobile User Logins Table'
 	
 	UPDATE [dbo].[tbsys_mobileformelements] SET Caption = 'You have no items in your list.' WHERE ID = 46;
 	UPDATE [dbo].[tbsys_mobileformelements] SET Caption = 'You have no items in your list.' WHERE ID = 50;
+	UPDATE [dbo].[tbsys_mobileformelements] SET Caption = 'Select an item to start.' WHERE ID = 49;
+	UPDATE [dbo].[tbsys_mobileformelements] SET Caption = 'Select an item to continue.' WHERE ID = 47;
 		
 	IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[tbsys_mobilegroupworkflows]') AND type in (N'U'))
 	BEGIN
