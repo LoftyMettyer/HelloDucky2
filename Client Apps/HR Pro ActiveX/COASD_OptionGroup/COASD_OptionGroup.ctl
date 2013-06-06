@@ -432,6 +432,7 @@ Select Case miAlignment
       
       If BorderStyle = 1 Then
         intWidth = (Option1(Option1.UBound).Left) + Option1(Option1.UBound).Width + UserControl.TextWidth("WW")
+        If intWidth < (UserControl.TextWidth(Caption) + UserControl.TextWidth("WW")) Then intWidth = UserControl.TextWidth(Caption) + UserControl.TextWidth("WW")
       Else
         intWidth = (Option1(Option1.UBound).Left) + Option1(Option1.UBound).Width + UserControl.TextWidth("W")
       End If
