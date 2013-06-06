@@ -1378,7 +1378,7 @@ Private Sub WrdRunMailMerge()
       Kill mstrDefAttachmentName
     End If
     
-    wrdDocTemplate.SaveAs FileName:=mstrDefAttachmentName, FileFormat:=Val(mstrDefAttachmentFormat)
+    wrdDocTemplate.SaveAs FileName:=mstrDefAttachmentName, FileFormat:=Val(mstrDefTemplateFormat)
 
   End If
 
