@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Begin VB.Form frmDbMgr 
    Caption         =   "Database Manager"
    ClientHeight    =   5340
@@ -126,11 +126,13 @@ Begin VB.Form frmDbMgr
          NumPanels       =   2
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   2
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
          BeginProperty Panel2 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   1
             Object.Width           =   9393
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -707,10 +709,6 @@ Private Sub Form_Load()
   gsTreeViewNodeKey = "TABLES"
   
   ChangeView ListView1.View
-  
-  ' Get rid of the icon off the form
-  Me.Icon = Nothing
-  SetWindowLong Me.hWnd, GWL_EXSTYLE, WS_EX_WINDOWEDGE Or WS_EX_APPWINDOW Or WS_EX_DLGMODALFRAME
 
 End Sub
 
@@ -724,15 +722,15 @@ Private Sub Form_Resize()
   If Me.WindowState <> vbMinimized And frmSysMgr.WindowState <> vbMinimized Then
   'If Me.WindowState <> vbMinimized Then
   
-    If Me.WindowState <> vbMaximized Then
-      ' Limit the minimum size of the form.
-      If Me.Height < Me.MinHeight Then
-        Me.Height = Me.MinHeight
-      End If
-      If Me.Width < Me.MinWidth Then
-        Me.Width = Me.MinWidth
-      End If
-    End If
+'    If Me.WindowState <> vbMaximized Then
+'      ' Limit the minimum size of the form.
+'      If Me.Height < Me.MinHeight Then
+'        Me.Height = Me.MinHeight
+'      End If
+'      If Me.Width < Me.MinWidth Then
+'        Me.Width = Me.MinWidth
+'      End If
+'    End If
     
     ' Position the label controls on the form.
     Label1.Top = 0
@@ -747,17 +745,20 @@ Private Sub Form_Resize()
     ListView1.Height = lngHeight
   
     ' Position and size the split frame.
-    With fraSplit
-      .Width = UI.GetSystemMetrics(SM_CXFRAME) * Screen.TwipsPerPixelX
-      .Top = Label1.Top
-      .Height = Label1.Height + Treeview1.Height
-      If .Left + .Width > Me.ScaleWidth - 810 Then
-        .Left = Me.ScaleWidth - (810 + .Width)
-      End If
-    End With
+    If lngHeight > 0 Then
+      With fraSplit
+        .Width = UI.GetSystemMetrics(SM_CXFRAME) * Screen.TwipsPerPixelX
+        .Top = Label1.Top
+        .Height = Label1.Height + Treeview1.Height
+        If .Left + .Width > Me.ScaleWidth - 810 Then
+          .Left = Me.ScaleWidth - (810 + .Width)
+        End If
+      End With
+      
+      ' Call the routine to size the tree and list view controls.
+      SplitMove
     
-    ' Call the routine to size the tree and list view controls.
-    SplitMove
+    End If
     
     ' Refresh the form display.
     Me.Refresh
@@ -765,6 +766,7 @@ Private Sub Form_Resize()
     
   frmSysMgr.RefreshMenu
   
+  ' Clear the icon off the caption bar
   If Me.WindowState = vbMaximized Then
     SetBlankIcon Me
   Else
@@ -810,16 +812,16 @@ Private Sub fraSplit_MouseDown(piButton As Integer, piShift As Integer, pSngX As
   
 End Sub
 
-Private Sub fraSplit_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub fraSplit_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
   
   ' If we are moving the split then move it.
   If gfSplitMoving Then
-    fraSplit.Left = fraSplit.Left + (X - gSngSplitStartX)
+    fraSplit.Left = fraSplit.Left + (x - gSngSplitStartX)
   End If
   
 End Sub
 
-Private Sub fraSplit_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub fraSplit_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
   
   ' If the split is being moved then call the routine that resizes the
   ' tree and list views accordingly.
@@ -930,7 +932,7 @@ Private Sub ListView1_KeyUp(KeyCode As Integer, Shift As Integer)
 
 End Sub
 
-Private Sub ListView1_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub ListView1_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
   Dim lXMouse As Long
   Dim lYMouse As Long
   
@@ -1020,7 +1022,7 @@ Private Sub TreeView1_KeyPress(KeyAscii As Integer)
 
 End Sub
 
-Private Sub TreeView1_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub TreeView1_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
   Dim lXMouse As Long
   Dim lYMouse As Long
 
