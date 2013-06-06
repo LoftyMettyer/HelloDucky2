@@ -472,19 +472,15 @@ Private Sub abSecurity_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
     ' Help menu.
     '
     Case "ID_ContentsandIndex"
-      ' to be done
-
+    
       Dim plngHelp As Long
-      'plngHelp = ShellExecute(0&, vbNullString, App.Path & "\HRProHelp.chm", vbNullString, vbNullString, vbNormalNoFocus)
-      plngHelp = ShellExecute(0&, vbNullString, App.Path & "\" & App.HelpFile, vbNullString, vbNullString, vbNormalNoFocus)
-      If plngHelp = 0 Then
-        MsgBox "Error whilst attempting to display help file." & vbCrLf & vbCrLf & "Please use windows explorer to view the file 'HRProHelp.chm'.", vbExclamation + vbOKOnly, "HR Pro Data Manager"
+      
+      If Not ShowAirHelp(0) Then
+        plngHelp = ShellExecute(0&, vbNullString, App.Path & "\" & App.HelpFile, vbNullString, vbNullString, vbNormalNoFocus)
+        If plngHelp = 0 Then
+          MsgBox "Error whilst attempting to display help file." & vbCrLf & vbCrLf & "Please use windows explorer to find and view the file " & App.HelpFile & ".", vbExclamation + vbOKOnly, App.EXEName
+        End If
       End If
-
-      ' DOESNT SEEM TO WORK !
-      'CommonDialog1.HelpFile = "HRProHelp.chm"
-      'CommonDialog1.HelpCommand = cdlHelpContents
-      'CommonDialog1.ShowHelp
 
     Case "ID_VersionInfo"
       Screen.MousePointer = vbHourglass
