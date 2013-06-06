@@ -311,7 +311,7 @@ strUserMessage = ""
 On Error GoTo HandleError
     Call mProcStack.EnterProc("Form_Load", MODULE_NAME)
     
-    Hook Me.hWnd, 4800, 2610
+    Hook Me.hwnd, 4800, 2610
     
     lngOpenReturn = QA_Open("", "", lngHandle)
 
@@ -331,7 +331,7 @@ On Error GoTo HandleError
     'Set tab stops in lstResults
     arrTabs(1) = 235
     arrTabs(2) = 295
-    Call SendMessageA(lstResults.hWnd, LB_SETTABSTOPS, 2, arrTabs(1))
+    Call SendMessageA(lstResults.hwnd, LB_SETTABSTOPS, 2, arrTabs(1))
     
 ' End Error Handler
 Form_Load_Done:
@@ -387,9 +387,9 @@ On Error GoTo HandleError
     Call GetDataID
     
     ' Select engine and read current refinement prompt
-    frmQAProMain.MousePointer = ccHourglass
+    Screen.MousePointer = vbHourglass
     lngError = QA_SetActiveData(lngHandle, strCurrentData)
-    frmQAProMain.MousePointer = ccDefault
+    Screen.MousePointer = vbDefault
     If lngError = 0 Then
         lngError = QA_SetEngine(lngHandle, lngCurrentEngine)
         If lngError = 0 Then
@@ -404,9 +404,9 @@ On Error GoTo HandleError
     If lngError = 0 And lngCurrentEngine = qaengine_TYPEDOWN Then
     
         strSearchText = GetSearchText()
-        frmQAProMain.MousePointer = ccHourglass
+        Screen.MousePointer = vbHourglass
         lngError = QA_Search(lngHandle, strSearchText)
-        frmQAProMain.MousePointer = ccDefault
+        Screen.MousePointer = vbDefault
         
         ' Set the search context to indicate that we are at
         ' the first stage of picklist handling (level 0)
@@ -422,9 +422,9 @@ On Error GoTo HandleError
         Call EnableCapture
         Call SetPrompt(strPrompt)
 
-        frmQAProMain.MousePointer = ccHourglass
+        Screen.MousePointer = vbHourglass
         Call UpdatePicklist
-        frmQAProMain.MousePointer = ccDefault
+        Screen.MousePointer = vbDefault
 
     Else
 
@@ -550,7 +550,7 @@ Private Sub Form_Unload(Cancel As Integer)
         Cancel = 1
     End If
 
-  Unhook Me.hWnd
+  Unhook Me.hwnd
 End Sub
 
 '*****************************************************
@@ -1227,9 +1227,9 @@ On Error GoTo HandleError
     ' Refine and update picklist
     Call PerformRefinement
     
-    frmQAProMain.MousePointer = ccHourglass
+    Screen.MousePointer = vbHourglass
     Call UpdatePicklist
-    frmQAProMain.MousePointer = ccDefault
+    Screen.MousePointer = vbDefault
 
 ' End Error Handler
 HandleRefinement_Done:
@@ -1267,9 +1267,9 @@ On Error GoTo HandleError
             strStatus, 100)
     
         ' Get refinement text as entered by user and then apply to current picklist
-        frmQAProMain.MousePointer = ccHourglass
+        Screen.MousePointer = vbHourglass
         Call QA_Search(lngHandle, GetSearchText())
-        frmQAProMain.MousePointer = ccDefault
+        Screen.MousePointer = vbDefault
         
         If lngStatus = qavalue_FALSE Then
             ' Prompt is non-dynamic so clear search text
@@ -1384,9 +1384,9 @@ On Error GoTo HandleError
         ' If they were no errors
         If lngError = 0 Then
             If blnDisplay Then
-                frmQAProMain.MousePointer = ccHourglass
+                Screen.MousePointer = vbHourglass
                 Call UpdatePicklist
-                frmQAProMain.MousePointer = ccDefault
+                Screen.MousePointer = vbDefault
             End If
             HandleSelection = False
         Else
@@ -1434,9 +1434,9 @@ On Error GoTo HandleError
     
     ' Get the search text and submit to the single line engine
     strSearch = GetSearchText()
-    frmQAProMain.MousePointer = ccHourglass
+    Screen.MousePointer = vbHourglass
     lngError = QA_Search(lngHandle, strSearch)
-    frmQAProMain.MousePointer = ccDefault
+    Screen.MousePointer = vbDefault
     
     If lngError <> 0 Then
         
@@ -1523,9 +1523,9 @@ On Error GoTo HandleError
     ' Increment the level and perform the step-in
     lngPicklistLevel = lngPicklistLevel + 1
     
-    frmQAProMain.MousePointer = ccHourglass
+    Screen.MousePointer = vbHourglass
     Call QA_StepIn(lngHandle, lngListIndex)
-    frmQAProMain.MousePointer = ccDefault
+    Screen.MousePointer = vbDefault
     
     ' Reset the refinement text. Note that this is not cleared if stepping
     ' into an informational prompt as this needs to be carried through.
@@ -1673,9 +1673,9 @@ On Error GoTo HandleError
     Call SetPrompt(strPrompt)
     Call PerformRefinement
     
-    frmQAProMain.MousePointer = ccHourglass
+    Screen.MousePointer = vbHourglass
     Call UpdatePicklist
-    frmQAProMain.MousePointer = ccDefault
+    Screen.MousePointer = vbDefault
     
 ' End Error Handler
 HandleStepOut_Done:

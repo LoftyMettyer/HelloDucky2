@@ -1,6 +1,6 @@
 VERSION 5.00
-Object = "{1C203F10-95AD-11D0-A84B-00A0247B735B}#1.0#0"; "SSTree.ocx"
 Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
+Object = "{1C203F10-95AD-11D0-A84B-00A0247B735B}#1.0#0"; "SSTree.ocx"
 Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~2.OCX"
 Begin VB.Form frmHiddenStyle 
    Caption         =   "Hidden Form To Apply Styles"
@@ -8,6 +8,15 @@ Begin VB.Form frmHiddenStyle
    ClientLeft      =   120
    ClientTop       =   420
    ClientWidth     =   8805
+   BeginProperty Font 
+      Name            =   "Verdana"
+      Size            =   8.25
+      Charset         =   0
+      Weight          =   400
+      Underline       =   0   'False
+      Italic          =   0   'False
+      Strikethrough   =   0   'False
+   EndProperty
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    ScaleHeight     =   6420
@@ -29,6 +38,15 @@ Begin VB.Form frmHiddenStyle
       BackColor       =   -2147483643
       BorderStyle     =   1
       Appearance      =   1
+      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+         Name            =   "Verdana"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
       NumItems        =   0
    End
    Begin SSActiveTreeView.SSTree SSTree1 
@@ -39,13 +57,22 @@ Begin VB.Form frmHiddenStyle
       Width           =   2295
       _ExtentX        =   4048
       _ExtentY        =   4048
-      _Version        =   65536
+      _Version        =   65538
       Indentation     =   570
       PictureBackgroundUseMask=   0   'False
-      HasFont         =   0   'False
+      HasFont         =   -1  'True
       HasMouseIcon    =   0   'False
       HasPictureBackground=   0   'False
-      ImageList       =   "(None)"
+      ImageList       =   "<None>"
+      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+         Name            =   "Verdana"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
    End
    Begin XtremeSkinFramework.SkinFramework SkinFramework1 
       Left            =   120
