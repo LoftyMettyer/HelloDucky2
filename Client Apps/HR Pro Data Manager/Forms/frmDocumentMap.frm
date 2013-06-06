@@ -701,8 +701,13 @@ Private Sub cboTargetTable_Click()
   
   cboParent1Table.Clear
   cboParent1Keyfield.Clear
+  cboParent2Table.Clear
+  cboParent2Keyfield.Clear
   cboTargetColumn.Clear
   cboTargetKeyField.Clear
+  cboTargetCategory.Clear
+  cboTargetType.Clear
+  cboTargetGUID.Clear
   
   'Get all the columns for the selected table
   Set rsCols = datGeneral.GetColumnNames(cboTargetTable.ItemData(cboTargetTable.ListIndex))
