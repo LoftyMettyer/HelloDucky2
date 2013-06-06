@@ -282,6 +282,7 @@ Begin VB.Form frmAccordViewTransfers
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   1
             Object.Width           =   21696
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -327,7 +328,7 @@ Private mbEnableBlocking As Boolean
 
 Private miViewMode As AccordViewMode
 
-Const MaxTop = 100
+Const MaxTop = 100000
 
 Public Property Let ConnectionType(ByVal piNewValue As DataMgr.AccordConnection)
   miConnectionType = piNewValue
