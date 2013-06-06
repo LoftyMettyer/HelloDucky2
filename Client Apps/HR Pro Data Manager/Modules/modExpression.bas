@@ -1481,6 +1481,12 @@ Public Function ValidateFunctionParameters(plngFunctionID As Variant, piResultTy
         (piParam3Type = giEXPRVALUE_CHARACTER)
       piResultType = giEXPRVALUE_NUMERIC
     
+    Case 77 'Replace character in a String
+      fOK = (piParam1Type = giEXPRVALUE_CHARACTER) And _
+        (piParam2Type = giEXPRVALUE_CHARACTER) And _
+        (piParam3Type = giEXPRVALUE_CHARACTER)
+      piResultType = giEXPRVALUE_CHARACTER
+      
     Case Else ' Unknown function
       fOK = False
       
