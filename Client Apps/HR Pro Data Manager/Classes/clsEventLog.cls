@@ -242,7 +242,7 @@ ErrTrap:
   
   mlngBatchRunID = -1
   GetBatchRunID = mlngBatchRunID
-  MsgBox "Warning : Error whilst retrieving the maximum BatchRunID." & vbCrLf & "(" & Err.Description & ")", vbCritical + vbOKOnly, "Event Log Error"
+  COAMsgBox "Warning : Error whilst retrieving the maximum BatchRunID." & vbCrLf & "(" & Err.Description & ")", vbCritical + vbOKOnly, "Event Log Error"
   
 End Function
 

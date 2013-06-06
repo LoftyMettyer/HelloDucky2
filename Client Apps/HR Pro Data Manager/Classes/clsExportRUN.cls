@@ -73,7 +73,7 @@ Private mlngOutputEmailAddr As Long
 Private mstrOutputEmailSubject As String
 Private mstrOutputEmailAttachAs As String
 'Private mlngOutputEmailFileFormat As Long
-Private mstrOutputFilename As String
+Private mstrOutputFileName As String
 
 Private mlngExportParent1AllRecords As Long
 Private mlngExportParent1PickListID As Long
@@ -343,7 +343,7 @@ Public Function RunExport() As Boolean
 
   ' Purpose : This function is called from frmDefsel and Batch Jobs.
   '           It is the main function which runs the export.
-  ' Input   : bSilent, Boolean, Suppress msgboxs ? (ie, for batch jobs)
+  ' Input   : bSilent, Boolean, Suppress COAMsgBoxs ? (ie, for batch jobs)
   ' Output  : True/False Success
 
   On Error GoTo RunExport_ERROR
@@ -441,7 +441,7 @@ Public Function RunExport() As Boolean
   mstrErrorString = "Export : '" & mstrExportName & "' " & mstrErrorString
     
   If Not gblnBatchMode Then
-    MsgBox mstrErrorString, IIf(fOK, vbInformation, vbExclamation) + vbOKOnly, "Export"
+    COAMsgBox mstrErrorString, IIf(fOK, vbInformation, vbExclamation) + vbOKOnly, "Export"
   End If
   
   If fOK = True Then fOK = ClearUp Else ClearUp
@@ -544,7 +544,7 @@ Private Function ExecuteSql() As Boolean
     Exit Function
   End If
   
-  'MsgBox "Recordset will be generated from : " & vbCrLf & mstrSQL
+  'COAMsgBox "Recordset will be generated from : " & vbCrLf & mstrSQL
   mclsData.ExecuteSql mstrSQL
 
   ExecuteSql = True
@@ -645,7 +645,7 @@ Private Function GetExportDefinition() As Boolean
     mstrOutputEmailSubject = !OutputEmailSubject
     mstrOutputEmailAttachAs = IIf(IsNull(!OutputEmailAttachAs), vbNullString, !OutputEmailAttachAs)
     'mlngOutputEmailFileFormat = !OutputEmailFileFormat
-    mstrOutputFilename = !OutputFilename
+    mstrOutputFileName = !OutputFilename
    
 '    'If mstrExportOutputType = "S" Then
 '    If mlngOutputFormat = fmtSQLTable Then
@@ -2892,7 +2892,7 @@ Private Function ExportData_CMGfile() As Boolean
       If Not bExportFileOpened Then
 
         ' If filename specified already exists then delete it first.
-        If Len(Dir(mstrOutputFilename)) > 0 Then
+        If Len(Dir(mstrOutputFileName)) > 0 Then
 
 'NPG20080421 Fault 13113
 '          If mlngOutputSaveExisting = 3 Then  ' Append To File
@@ -2911,7 +2911,7 @@ Private Function ExportData_CMGfile() As Boolean
           Select Case mlngOutputSaveExisting
           Case 0  ' Overwrite
             bAppended = False
-            Kill mstrOutputFilename
+            Kill mstrOutputFileName
             
           Case 1  ' Do not overwrite (fail)
             mstrErrorString = "File already exists."
@@ -2919,7 +2919,7 @@ Private Function ExportData_CMGfile() As Boolean
             Exit Function
         
           Case 2  ' Add sequential number to filename
-            mstrOutputFilename = GetSequentialNumberedFile(mstrOutputFilename)
+            mstrOutputFileName = GetSequentialNumberedFile(mstrOutputFileName)
             bAppended = False
           
           Case 3  ' Append to Existing File
@@ -2935,9 +2935,9 @@ Private Function ExportData_CMGfile() As Boolean
         pintFileNo = FreeFile
       
         If bAppended Then
-          Open mstrOutputFilename For Append As pintFileNo
+          Open mstrOutputFileName For Append As pintFileNo
         Else
-          Open mstrOutputFilename For Output As pintFileNo
+          Open mstrOutputFileName For Output As pintFileNo
         End If
 
         bExportFileOpened = True
@@ -3003,7 +3003,7 @@ ExportData_CMGfile_ERROR:
 
   Select Case Err.Number
     Case 70 ' file creation error / sharing violation
-      mstrErrorString = "Error creating file '" & mstrOutputFilename & "'. File may already be in use." & vbCrLf & "(" & Err.Description & ")"
+      mstrErrorString = "Error creating file '" & mstrOutputFileName & "'. File may already be in use." & vbCrLf & "(" & Err.Description & ")"
     Case 76 ' path not found error
       mlngExportRecordCount = 0
       mstrErrorString = "Error whilst exporting to CMG file." & vbCrLf & "(" & Err.Description & ")"
@@ -3084,7 +3084,7 @@ Private Function ReadDataIntoArray() As Boolean
   Dim lngCount As Long
   Dim lngExportRows As Long
 
-  If Len(Dir(mstrOutputFilename)) > 0 Then
+  If Len(Dir(mstrOutputFileName)) > 0 Then
     bAppended = (mlngOutputSaveExisting = 3)  'Check if we are appending to file
   Else
     bAppended = False
@@ -3344,7 +3344,7 @@ Private Function SendArrayToOutputOptions()
       False, vbNullString, _
       mblnOutputSave, mlngOutputSaveExisting, _
       mblnOutputEmail, mlngOutputEmailAddr, mstrOutputEmailSubject, _
-      mstrOutputEmailAttachAs, mstrOutputFilename) Then
+      mstrOutputEmailAttachAs, mstrOutputFileName) Then
 
     'If mbForceHeader Or Not (Dir(mstrOutputFilename) <> vbNullString And mbOmitHeader) Then
     '  objOutput.FileHeader

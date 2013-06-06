@@ -48,7 +48,7 @@ Exit Function
 
 LocalErr:
   Screen.MousePointer = vbNormal
-  MsgBox "Error checking process information" & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, App.Title
+  COAMsgBox "Error checking process information" & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, App.Title
   CurrentUsersPopulate = False
 
 End Function
@@ -87,7 +87,7 @@ Exit Function
 
 LocalErr:
   Screen.MousePointer = vbNormal
-  MsgBox "Error checking process information" & vbCr & _
+  COAMsgBox "Error checking process information" & vbCr & _
          "(GetCurrentUsersCountOnServer - " & Err.Description & ")", vbCritical
 
 End Function
@@ -122,7 +122,7 @@ Exit Function
 
 LocalErr:
   Screen.MousePointer = vbNormal
-  MsgBox "Error checking process information" & vbCr & _
+  COAMsgBox "Error checking process information" & vbCr & _
          "(GetCurrentUsersCountInApp - " & Err.Description & ")", vbCritical
 
 End Function

@@ -165,7 +165,7 @@ TidyUpAndExit:
 
 ErrorTrap:
   fInsertedOK = False
-  MsgBox ODBC.FormatError(Err.Description), vbExclamation + vbOKOnly, Application.Name
+  COAMsgBox ODBC.FormatError(Err.Description), vbExclamation + vbOKOnly, Application.Name
   Resume TidyUpAndExit
 
 InsertErrorTrap:
@@ -289,7 +289,7 @@ TidyUpAndExit:
 
 ErrorTrap:
   fInsertedOK = False
-  MsgBox ODBC.FormatError(Err.Description), vbExclamation + vbOKOnly, Application.Name
+  COAMsgBox ODBC.FormatError(Err.Description), vbExclamation + vbOKOnly, Application.Name
   Resume TidyUpAndExit
 
 InsertErrorTrap:

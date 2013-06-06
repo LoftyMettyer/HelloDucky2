@@ -268,7 +268,7 @@ Private Sub OutputJobStatus()
   If Not gblnBatchMode Then
     gobjProgress.CloseProgress
     Screen.MousePointer = vbNormal
-    MsgBox mstrStatusMessage, IIf(fOK, vbInformation, vbExclamation), "Data Transfer"
+    COAMsgBox mstrStatusMessage, IIf(fOK, vbInformation, vbExclamation), "Data Transfer"
   End If
 
 End Sub

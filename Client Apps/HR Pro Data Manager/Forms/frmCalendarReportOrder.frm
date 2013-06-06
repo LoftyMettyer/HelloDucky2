@@ -139,13 +139,13 @@ Public Function Initialise(pblnNew As Boolean, pfrmForm As frmCalendarReport, _
   
   If pblnNew Then
     If pintLoop = 0 Then
-      MsgBox "No columns on the base table.", vbExclamation + vbOKOnly, mfrmForm.Caption
+      COAMsgBox "No columns on the base table.", vbExclamation + vbOKOnly, mfrmForm.Caption
       Initialise = False
       Exit Function
     End If
      
     If (mfrmForm.grdOrder.Rows = pintLoop And pintLoop > 0) Or (cboColumns.ListCount = 0) Then
-      MsgBox "You have selected all base columns in the sort order.", vbExclamation + vbOKOnly, mfrmForm.Caption
+      COAMsgBox "You have selected all base columns in the sort order.", vbExclamation + vbOKOnly, mfrmForm.Caption
       Initialise = False
       Exit Function
     End If
@@ -173,7 +173,7 @@ Public Function Initialise(pblnNew As Boolean, pfrmForm As frmCalendarReport, _
 Initialise_ERROR:
   
   Initialise = False
-  MsgBox "Error initialising the order form." & vbCrLf & vbCrLf & "(" & Err.Description & ")", vbCritical + vbOKOnly, mfrmForm.Caption
+  COAMsgBox "Error initialising the order form." & vbCrLf & vbCrLf & "(" & Err.Description & ")", vbCritical + vbOKOnly, mfrmForm.Caption
 
 End Function
 Private Function IsAlreadyAnOrderColumn(plngColumnID As Long) As Boolean
@@ -243,7 +243,7 @@ Private Sub cmdAction_Click(Index As Integer)
   If Index = 1 Then
     
     If cboColumns.Text = "" Then
-      MsgBox "You must select a column.", vbExclamation + vbOKOnly, mfrmForm.Caption
+      COAMsgBox "You must select a column.", vbExclamation + vbOKOnly, mfrmForm.Caption
       Exit Sub
     End If
 

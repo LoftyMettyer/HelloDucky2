@@ -1,6 +1,6 @@
 VERSION 5.00
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TabCtl32.Ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Begin VB.Form frmDiaryDelete 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Purge Diary Events"
@@ -226,18 +226,18 @@ Private Sub cmdOK_Click()
       'Validate new entry
       If Trim(cboPeriod(intCount).Text) = vbNullString Then
         Screen.MousePointer = vbDefault
-        MsgBox "Please select a valid unit of time", vbExclamation, Me.Caption
+        COAMsgBox "Please select a valid unit of time", vbExclamation, Me.Caption
         Exit Sub
         
       'ElseIf spnDays(intCount).Value < 1 Then
       ElseIf spnDays(intCount).Value < 0 Then
         Screen.MousePointer = vbDefault
-        MsgBox "Please select a valid number of " & LCase(cboPeriod(intCount).Text), vbExclamation, Me.Caption
+        COAMsgBox "Please select a valid number of " & LCase(cboPeriod(intCount).Text), vbExclamation, Me.Caption
         Exit Sub
       
       ElseIf (cboPeriod(intCount).ListIndex = 3) And (spnDays(intCount).Value > 200) Then
         Screen.MousePointer = vbDefault
-        MsgBox "You cannot select a purge period of greater than 200 years.", vbExclamation + vbOKOnly, Me.Caption
+        COAMsgBox "You cannot select a purge period of greater than 200 years.", vbExclamation + vbOKOnly, Me.Caption
         Exit Sub
       
       End If
@@ -270,7 +270,7 @@ Private Sub cmdOK_Click()
   Screen.MousePointer = vbDefault
 
   If optPurge(0) = True Or optPurge(1) = True Then
-    MsgBox "Diary purge completed.", vbInformation + vbOKOnly, "Diary Delete"
+    COAMsgBox "Diary purge completed.", vbInformation + vbOKOnly, "Diary Delete"
   End If
 
   Unload Me
@@ -278,7 +278,7 @@ Private Sub cmdOK_Click()
 Exit Sub
 
 LocalErr:
-  MsgBox "Error saving purge period", vbCritical, Me.Caption
+  COAMsgBox "Error saving purge period", vbCritical, Me.Caption
 
 End Sub
 

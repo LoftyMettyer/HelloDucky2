@@ -435,7 +435,7 @@ Private Sub GetRecords()
   Set rsInfo = datGeneral.GetOrderDefinition(mlngOrderID)
   
   If rsInfo.EOF And rsInfo.BOF Then
-    MsgBox "No order defined for this " & IIf(mlngViewID > 0, "view.", "table.") & _
+    COAMsgBox "No order defined for this " & IIf(mlngViewID > 0, "view.", "table.") & _
       vbCrLf & "Unable to display records.", vbExclamation, "Security"
     mfCancelled = True
     Me.Hide
@@ -638,7 +638,7 @@ Private Sub GetRecords()
     
     ' Inform the user if they do not have permission to see the data.
     If fNoSelect Then
-      MsgBox "You do not have 'read' permission on all of the columns in the selected order." & _
+      COAMsgBox "You do not have 'read' permission on all of the columns in the selected order." & _
         vbCrLf & "Only permitted columns will be shown.", vbExclamation, "Security"
     End If
     
@@ -676,7 +676,7 @@ Private Sub GetRecords()
       ' Configure the grid.
       ConfigureGrid
     Else
-      MsgBox "You do not have permission to read any of the columns in the selected order for this " & IIf(mlngViewID > 0, "view.", "table.") & _
+      COAMsgBox "You do not have permission to read any of the columns in the selected order for this " & IIf(mlngViewID > 0, "view.", "table.") & _
           vbCrLf & "Unable to display records.", vbExclamation, "Security"
       'TM20061031 - Fault 11657
       'There may be no records in the default view, but there may be in other views.
@@ -707,7 +707,7 @@ Public Function Initialise(plngTableID As Long, Optional pstrExistingIDs As Stri
   ' Populate the View combo.
   ConfigureViewCombo
   If cmbView.ListCount = 0 Then
-    MsgBox "You do not have 'read' permission on this table." & _
+    COAMsgBox "You do not have 'read' permission on this table." & _
       vbCrLf & "Unable to display the records.", vbExclamation, "Security"
     'mfCancelled = True
     'Me.Hide
@@ -724,7 +724,7 @@ Public Function Initialise(plngTableID As Long, Optional pstrExistingIDs As Stri
   ' Populate the Orders combo.
   ConfigureOrdersCombo
   If cmbOrders.ListCount = 0 Then
-    MsgBox "There are no orders defined for this table." & _
+    COAMsgBox "There are no orders defined for this table." & _
       vbCrLf & "Unable to display the records.", vbExclamation, "Security"
     'mfCancelled = True
     'Me.Hide
@@ -741,7 +741,7 @@ Public Function Initialise(plngTableID As Long, Optional pstrExistingIDs As Stri
   'JPD 20030507 There may be no records in the default view, but there may be in other views.
   ' So don't quit out here.
 '  If mrsFindRecords.BOF And mrsFindRecords.EOF Then
-'    MsgBox "There are no records which do not already exist in this picklist.", vbExclamation + vbOKOnly, "Picklists"
+'    COAMsgBox "There are no records which do not already exist in this picklist.", vbExclamation + vbOKOnly, "Picklists"
 '    Initialise = False
 '    Screen.MousePointer = vbDefault
 '    Exit Function
@@ -945,7 +945,7 @@ Private Sub ConfigureOrdersCombo()
       ' No orders.
       .AddItem "<No Order>"
       .ListIndex = 0
-      MsgBox "No orders defined for this table.", vbInformation, Me.Caption
+      COAMsgBox "No orders defined for this table.", vbInformation, Me.Caption
       .Enabled = False
     End If
   End With

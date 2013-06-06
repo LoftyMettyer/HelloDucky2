@@ -615,7 +615,7 @@ Initialise_ERROR:
 
   Initialise = False
   
-  MsgBox "An error has occurred whilst retrieving data. Please ensure your" & _
+  COAMsgBox "An error has occurred whilst retrieving data. Please ensure your" & _
   vbCrLf & "Absence module is setup correctly." & vbCrLf & vbCrLf & _
   "If contacting support, please state:" & vbCrLf & Err.Number & _
   " - " & Err.Description, vbExclamation + vbOKOnly, "Absence Calendar"

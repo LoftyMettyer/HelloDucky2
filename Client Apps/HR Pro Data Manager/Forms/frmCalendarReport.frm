@@ -1,7 +1,7 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TabCtl32.Ocx"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmCalendarReport 
@@ -69,11 +69,11 @@ Begin VB.Form frmCalendarReport
       TabCaption(2)   =   "Report Detai&ls"
       TabPicture(2)   =   "frmCalendarReport.frx":0044
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraReportStart"
+      Tab(2).Control(0)=   "fraDisplayOptions"
       Tab(2).Control(0).Enabled=   0   'False
       Tab(2).Control(1)=   "fraReportEnd"
       Tab(2).Control(1).Enabled=   0   'False
-      Tab(2).Control(2)=   "fraDisplayOptions"
+      Tab(2).Control(2)=   "fraReportStart"
       Tab(2).Control(2).Enabled=   0   'False
       Tab(2).ControlCount=   3
       TabCaption(3)   =   "&Sort Order"
@@ -84,8 +84,8 @@ Begin VB.Form frmCalendarReport
       TabCaption(4)   =   "O&utput"
       TabPicture(4)   =   "frmCalendarReport.frx":007C
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "fraOutputFormat"
-      Tab(4).Control(1)=   "fraOutputDestination"
+      Tab(4).Control(0)=   "fraOutputDestination"
+      Tab(4).Control(1)=   "fraOutputFormat"
       Tab(4).ControlCount=   2
       Begin VB.Frame fraOutputDestination 
          Caption         =   "Output Destination(s) :"
@@ -2187,7 +2187,7 @@ TidyUpAndExit:
   Exit Sub
 
 LocalErr:
-  MsgBox "Printing Calendar Report Definition Failed" & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Print Definition"
+  COAMsgBox "Printing Calendar Report Definition Failed" & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Print Definition"
   GoTo TidyUpAndExit
   
 End Sub
@@ -2299,7 +2299,7 @@ Private Function RetrieveCalendarReportDetails(plngCalendarReportID As Long) As 
                                      "FROM ASRSysCalendarReports WHERE ID = " & plngCalendarReportID)
   
   If rsTemp.BOF And rsTemp.EOF Then
-    MsgBox "This Report definition has been deleted by another user.", vbExclamation + vbOKOnly, "Calendar Reports"
+    COAMsgBox "This Report definition has been deleted by another user.", vbExclamation + vbOKOnly, "Calendar Reports"
     Set rsTemp = Nothing
     RetrieveCalendarReportDetails = False
     mblnDeleted = True
@@ -2474,7 +2474,7 @@ Private Function RetrieveCalendarReportDetails(plngCalendarReportID As Long) As 
     If cboPrinterName.Text <> rsTemp!OutputPrinterName Then
       cboPrinterName.AddItem rsTemp!OutputPrinterName
       cboPrinterName.ListIndex = cboPrinterName.NewIndex
-      MsgBox "This definition is set to output to printer " & rsTemp!OutputPrinterName & _
+      COAMsgBox "This definition is set to output to printer " & rsTemp!OutputPrinterName & _
              " which is not set up on your PC.", vbInformation, Me.Caption
     End If
   End If
@@ -2515,7 +2515,7 @@ Private Function RetrieveCalendarReportDetails(plngCalendarReportID As Long) As 
   Set rsTemp = datGeneral.GetRecords("SELECT * FROM ASRSysCalendarReportEvents WHERE CalendarReportID = " & plngCalendarReportID & " ORDER BY ID")
 
   If rsTemp.BOF And rsTemp.EOF Then
-    MsgBox "Cannot load the event information for this Calendar Report", vbExclamation + vbOKOnly, "Calendar Reports"
+    COAMsgBox "Cannot load the event information for this Calendar Report", vbExclamation + vbOKOnly, "Calendar Reports"
     RetrieveCalendarReportDetails = False
     Set rsTemp = Nothing
     Exit Function
@@ -2528,7 +2528,7 @@ Private Function RetrieveCalendarReportDetails(plngCalendarReportID As Long) As 
     If rsTemp!EventStartDateID > 0 Then
       sTempStartDateName = datGeneral.GetColumnName(rsTemp!EventStartDateID)
     Else
-      MsgBox "Cannot load the event information for this Calendar Report", vbExclamation + vbOKOnly, "Calendar Reports"
+      COAMsgBox "Cannot load the event information for this Calendar Report", vbExclamation + vbOKOnly, "Calendar Reports"
       RetrieveCalendarReportDetails = False
       Set rsTemp = Nothing
       Exit Function
@@ -2711,7 +2711,7 @@ Private Function RetrieveCalendarReportDetails(plngCalendarReportID As Long) As 
   Set rsTemp = datGeneral.GetRecords("SELECT * FROM ASRSysCalendarReportOrder WHERE CalendarReportID = " & plngCalendarReportID & " ORDER BY [OrderSequence]")
   
   If rsTemp.BOF And rsTemp.EOF Then
-    MsgBox "Cannot load the sort order for this Calendar Report", vbExclamation + vbOKOnly, "Calendar Reports"
+    COAMsgBox "Cannot load the sort order for this Calendar Report", vbExclamation + vbOKOnly, "Calendar Reports"
     RetrieveCalendarReportDetails = False
     Set rsTemp = Nothing
     Exit Function
@@ -2739,16 +2739,16 @@ TidyUpAndExit:
   Exit Function
   
 ErrorTrap:
-  MsgBox "Warning : Error whilst retrieving the Calendar Report definition." & vbCrLf & Err.Description, vbExclamation + vbOKOnly, "Calendar Reports"
+  COAMsgBox "Warning : Error whilst retrieving the Calendar Report definition." & vbCrLf & Err.Description, vbExclamation + vbOKOnly, "Calendar Reports"
   RetrieveCalendarReportDetails = False
   GoTo TidyUpAndExit
   
 End Function
 Public Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
-  cmdOk.Enabled = pblnChanged
+  cmdOK.Enabled = pblnChanged
 End Property
 
 Public Property Get SelectedID() As Long
@@ -2846,7 +2846,7 @@ Public Function Initialise(pbNew As Boolean, pbCopy As Boolean, Optional plngCal
         Initialise = False
         Exit Function
       Else
-        If MsgBox("HR Pro could not load all of the definition successfully. The recommendation is that" & vbCrLf & _
+        If COAMsgBox("HR Pro could not load all of the definition successfully. The recommendation is that" & vbCrLf & _
                "you delete the definition and create a new one, however, you may edit the existing" & vbCrLf & _
                "definition if you wish. Would you like to continue and edit this definition ?", vbQuestion + vbYesNo, "Calendar Reports") = vbNo Then
           Me.Cancelled = True
@@ -3130,7 +3130,7 @@ Public Function ValidateDefinition(lngCurrentID As Long) As Boolean
   
   ' Check a name has been entered
   If Trim(txtName.Text) = "" Then
-    MsgBox "You must give this definition a name.", vbExclamation, Me.Caption
+    COAMsgBox "You must give this definition a name.", vbExclamation, Me.Caption
     SSTab1.Tab = 0
     txtName.SetFocus
     Exit Function
@@ -3153,7 +3153,7 @@ Public Function ValidateDefinition(lngCurrentID As Long) As Boolean
   
   ' Check the name is unique
   If Not CheckUniqueName(Trim(txtName.Text), mlngCalendarReportID) Then
-    MsgBox "A Calendar Report definition called '" & Trim(txtName.Text) & "' already exists.", vbExclamation, Me.Caption
+    COAMsgBox "A Calendar Report definition called '" & Trim(txtName.Text) & "' already exists.", vbExclamation, Me.Caption
     SSTab1.Tab = 0
     txtName.SelStart = 0
     txtName.SelLength = Len(txtName.Text)
@@ -3163,7 +3163,7 @@ Public Function ValidateDefinition(lngCurrentID As Long) As Boolean
   ' BASE TABLE - If using a picklist, check one has been selected
   If optBasePicklist.Value Then
     If txtBasePicklist.Text = "" Or txtBasePicklist.Tag = "0" Or txtBasePicklist.Tag = "" Then
-      MsgBox "You must select a picklist, or change the record selection for your base table.", vbExclamation + vbOKOnly, "Calendar Reports"
+      COAMsgBox "You must select a picklist, or change the record selection for your base table.", vbExclamation + vbOKOnly, "Calendar Reports"
       SSTab1.Tab = 0
       cmdBasePicklist.SetFocus
       ValidateDefinition = False
@@ -3174,7 +3174,7 @@ Public Function ValidateDefinition(lngCurrentID As Long) As Boolean
   ' BASE TABLE - If using a filter, check one has been selected
   If optBaseFilter.Value Then
     If txtBaseFilter.Text = "" Or txtBaseFilter.Tag = "0" Or txtBaseFilter.Tag = "" Then
-      MsgBox "You must select a filter, or change the record selection for your base table.", vbExclamation + vbOKOnly, "Calendar Reports"
+      COAMsgBox "You must select a filter, or change the record selection for your base table.", vbExclamation + vbOKOnly, "Calendar Reports"
       SSTab1.Tab = 0
       cmdBaseFilter.SetFocus
       ValidateDefinition = False
@@ -3184,7 +3184,7 @@ Public Function ValidateDefinition(lngCurrentID As Long) As Boolean
   
   ' Check that a valid description column or a valid calculation has been selected
   If (cboDesc1.ItemData(cboDesc1.ListIndex) < 1) And (txtDescExpr.Tag < 1) And (cboDesc2.ItemData(cboDesc2.ListIndex) < 1) Then
-    MsgBox "You must select at least one base description column or calculation for the report.", vbExclamation + vbOKOnly, "Calendar Reports"
+    COAMsgBox "You must select at least one base description column or calculation for the report.", vbExclamation + vbOKOnly, "Calendar Reports"
     ValidateDefinition = False
     SSTab1.Tab = 0
     cboDesc1.SetFocus
@@ -3195,7 +3195,7 @@ Public Function ValidateDefinition(lngCurrentID As Long) As Boolean
   ' Check that at least 1 column has been defined as the report order
   With grdEvents
     If .Rows = 0 Then
-      MsgBox "You must select at least one event to report on.", vbExclamation + vbOKOnly, "Calendar Reports"
+      COAMsgBox "You must select at least one event to report on.", vbExclamation + vbOKOnly, "Calendar Reports"
       ValidateDefinition = False
       SSTab1.Tab = 1
       cmdAddEvent.SetFocus
@@ -3209,7 +3209,7 @@ Public Function ValidateDefinition(lngCurrentID As Long) As Boolean
   'check fixed start date is not empty (or null)
   If optFixedStart.Value Then
     If IsNull(GTMaskFixedStart.DateValue) Or IsEmpty(GTMaskFixedStart.DateValue) Then
-      MsgBox "You must select a Fixed Start Date for the report.", vbExclamation + vbOKOnly, "Calendar Reports"
+      COAMsgBox "You must select a Fixed Start Date for the report.", vbExclamation + vbOKOnly, "Calendar Reports"
       ValidateDefinition = False
       SSTab1.Tab = 2
       GTMaskFixedStart.SetFocus
@@ -3220,7 +3220,7 @@ Public Function ValidateDefinition(lngCurrentID As Long) As Boolean
   'check fixed end date is not empty (or null)
   If optFixedEnd.Value Then
     If IsNull(GTMaskFixedEnd.DateValue) Or IsEmpty(GTMaskFixedEnd.DateValue) Then
-      MsgBox "You must select a Fixed End Date for the report.", vbExclamation + vbOKOnly, "Calendar Reports"
+      COAMsgBox "You must select a Fixed End Date for the report.", vbExclamation + vbOKOnly, "Calendar Reports"
       ValidateDefinition = False
       SSTab1.Tab = 2
       GTMaskFixedEnd.SetFocus
@@ -3231,7 +3231,7 @@ Public Function ValidateDefinition(lngCurrentID As Long) As Boolean
   'check fixed end date is greater than or equal to the fixed start date
   If optFixedStart.Value And optFixedEnd.Value Then
     If GTMaskFixedEnd.DateValue < GTMaskFixedStart.DateValue Then
-      MsgBox "You must select a Fixed End Date later than or equal to the Fixed Start Date.", vbExclamation + vbOKOnly, "Calendar Reports"
+      COAMsgBox "You must select a Fixed End Date later than or equal to the Fixed Start Date.", vbExclamation + vbOKOnly, "Calendar Reports"
       ValidateDefinition = False
       SSTab1.Tab = 2
       GTMaskFixedEnd.SetFocus
@@ -3242,7 +3242,7 @@ Public Function ValidateDefinition(lngCurrentID As Long) As Boolean
   'check the end date offset is >= zero when fixed start is selected
   If optFixedStart.Value And optOffsetEnd.Value Then
     If spnFreqEnd.Value < 0 Then
-      MsgBox "You must select an End Date Offset greater than or equal to zero.", vbExclamation + vbOKOnly, "Calendar Reports"
+      COAMsgBox "You must select an End Date Offset greater than or equal to zero.", vbExclamation + vbOKOnly, "Calendar Reports"
       ValidateDefinition = False
       SSTab1.Tab = 2
       spnFreqEnd.SetFocus
@@ -3253,7 +3253,7 @@ Public Function ValidateDefinition(lngCurrentID As Long) As Boolean
   'check the end date offset is >= zero when current start is selected
   If optCurrentStart.Value And optOffsetEnd.Value Then
     If spnFreqEnd.Value < 0 Then
-      MsgBox "You must select an End Date Offset greater than or equal to zero.", vbExclamation + vbOKOnly, "Calendar Reports"
+      COAMsgBox "You must select an End Date Offset greater than or equal to zero.", vbExclamation + vbOKOnly, "Calendar Reports"
       ValidateDefinition = False
       SSTab1.Tab = 2
       spnFreqEnd.SetFocus
@@ -3264,7 +3264,7 @@ Public Function ValidateDefinition(lngCurrentID As Long) As Boolean
   'check the start date offset is <= zero when fixed end or current end is selected
   If optOffsetStart.Value And (optFixedEnd.Value Or optCurrentEnd.Value) Then
     If spnFreqStart.Value > 0 Then
-      MsgBox "You must select a Start Date Offset less than or equal to zero.", vbExclamation + vbOKOnly, "Calendar Reports"
+      COAMsgBox "You must select a Start Date Offset less than or equal to zero.", vbExclamation + vbOKOnly, "Calendar Reports"
       ValidateDefinition = False
       SSTab1.Tab = 2
       spnFreqStart.SetFocus
@@ -3277,7 +3277,7 @@ Public Function ValidateDefinition(lngCurrentID As Long) As Boolean
     
     'check the end date offset period (eg.days) is the same as the start date offset period
     If cboPeriodStart.ListIndex <> cboPeriodEnd.ListIndex Then
-      MsgBox "You must select the same End Date Offset period as Start Date Offset period.", vbExclamation + vbOKOnly, "Calendar Reports"
+      COAMsgBox "You must select the same End Date Offset period as Start Date Offset period.", vbExclamation + vbOKOnly, "Calendar Reports"
       ValidateDefinition = False
       SSTab1.Tab = 2
       cboPeriodEnd.SetFocus
@@ -3286,7 +3286,7 @@ Public Function ValidateDefinition(lngCurrentID As Long) As Boolean
     
     'check the end date offset is >= start date offset
     If spnFreqEnd.Value < spnFreqStart.Value Then
-      MsgBox "You must select an End Date Offset greater than or equal to the Start Date Offset.", vbExclamation + vbOKOnly, "Calendar Reports"
+      COAMsgBox "You must select an End Date Offset greater than or equal to the Start Date Offset.", vbExclamation + vbOKOnly, "Calendar Reports"
       ValidateDefinition = False
       SSTab1.Tab = 2
       spnFreqEnd.SetFocus
@@ -3297,7 +3297,7 @@ Public Function ValidateDefinition(lngCurrentID As Long) As Boolean
   
   If optCustomStart.Value Then
     If CLng(txtCustomStart.Tag) < 1 Then
-      MsgBox "You must select a calculation for the Report Start Date.", vbExclamation + vbOKOnly, "Calendar Reports"
+      COAMsgBox "You must select a calculation for the Report Start Date.", vbExclamation + vbOKOnly, "Calendar Reports"
       ValidateDefinition = False
       SSTab1.Tab = 2
       cmdCustomStart.SetFocus
@@ -3307,7 +3307,7 @@ Public Function ValidateDefinition(lngCurrentID As Long) As Boolean
   
   If optCustomEnd.Value Then
     If CLng(txtCustomEnd.Tag) < 1 Then
-      MsgBox "You must select a calculation for the Report End Date.", vbExclamation + vbOKOnly, "Calendar Reports"
+      COAMsgBox "You must select a calculation for the Report End Date.", vbExclamation + vbOKOnly, "Calendar Reports"
       ValidateDefinition = False
       SSTab1.Tab = 2
       cmdCustomEnd.SetFocus
@@ -3320,7 +3320,7 @@ Public Function ValidateDefinition(lngCurrentID As Long) As Boolean
   ' Check that at least 1 column has been defined as the report order
   With grdOrder
     If .Rows = 0 Then
-      MsgBox "You must select at least one column to order the report by.", vbExclamation + vbOKOnly, "Calendar Reports"
+      COAMsgBox "You must select at least one column to order the report by.", vbExclamation + vbOKOnly, "Calendar Reports"
       ValidateDefinition = False
       SSTab1.Tab = 3
       cmdNewOrder.SetFocus
@@ -3358,7 +3358,7 @@ Public Function ValidateDefinition(lngCurrentID As Long) As Boolean
       Next iCount
       
       If strTemp <> strDesc Then
-        If MsgBox("The sort order does not reflect the selected Group By Description columns. Do you wish to continue?", vbYesNo + vbInformation, Me.Caption) = vbNo Then
+        If COAMsgBox("The sort order does not reflect the selected Group By Description columns. Do you wish to continue?", vbYesNo + vbInformation, Me.Caption) = vbNo Then
           ValidateDefinition = False
           SSTab1.Tab = 3
           cmdDeleteOrder.SetFocus
@@ -3396,11 +3396,11 @@ If mlngCalendarReportID > 0 Then
 
     If (Not fBatchJobsOK) Then
       If Len(sBatchJobDetails_ScheduledForOtherUsers) > 0 Then
-        MsgBox "This definition cannot be made hidden from the following user groups :" & vbCrLf & vbCrLf & sBatchJobScheduledUserGroups & vbCrLf & _
+        COAMsgBox "This definition cannot be made hidden from the following user groups :" & vbCrLf & vbCrLf & sBatchJobScheduledUserGroups & vbCrLf & _
                "as it is used in the following batch jobs which are scheduled to be run by these user groups :" & vbCrLf & vbCrLf & sBatchJobDetails_ScheduledForOtherUsers, _
                vbExclamation + vbOKOnly, "Calendar Reports"
       Else
-        MsgBox "This definition cannot be made hidden as it is used in the following" & vbCrLf & _
+        COAMsgBox "This definition cannot be made hidden as it is used in the following" & vbCrLf & _
                "batch jobs of which you are not the owner :" & vbCrLf & vbCrLf & sBatchJobDetails_NotOwner, vbExclamation + vbOKOnly _
                , "Calendar Reports"
       End If
@@ -3410,7 +3410,7 @@ If mlngCalendarReportID > 0 Then
       Exit Function
 
     ElseIf (iCount_Owner > 0) Then
-      If MsgBox("Making this definition hidden to user groups will automatically" & vbCrLf & _
+      If COAMsgBox("Making this definition hidden to user groups will automatically" & vbCrLf & _
                 "make the following definition(s), of which you are the" & vbCrLf & _
                 "owner, hidden to the same user groups:" & vbCrLf & vbCrLf & _
                 sBatchJobDetails_Owner & vbCrLf & _
@@ -3757,7 +3757,7 @@ Private Function SaveDefinition() As Boolean
 Save_ERROR:
 
   SaveDefinition = False
-  MsgBox "Warning : An error has occurred whilst saving the Calendar Report. " & vbCrLf & Err.Description & vbCrLf & "Please cancel and try again. If this error continues, delete the definition.", vbCritical + vbOKOnly, "Calendar Reports"
+  COAMsgBox "Warning : An error has occurred whilst saving the Calendar Report. " & vbCrLf & Err.Description & vbCrLf & "Please cancel and try again. If this error continues, delete the definition.", vbCritical + vbOKOnly, "Calendar Reports"
 
 End Function
 Private Sub SaveAccess()
@@ -3880,7 +3880,7 @@ Private Function InsertCalendarReport(pstrSQL As String) As Long
     cmADO.Execute
               
     If Not fSavedOK Then
-      MsgBox "The new record could not be created." & vbCrLf & vbCrLf & _
+      COAMsgBox "The new record could not be created." & vbCrLf & vbCrLf & _
         Err.Description, vbOKOnly + vbExclamation, App.ProductName
         InsertCalendarReport = 0
         Set cmADO = Nothing
@@ -3948,7 +3948,7 @@ Private Sub cboBaseTable_Click()
   If mstrBaseTable = Me.cboBaseTable.Text And (mblnLoading = False) Then Exit Sub
 
   If Me.grdEvents.Rows > 0 Or Me.grdOrder.Rows > 0 Then
-    If MsgBox("Warning: Changing the base table will result in all table/column " & _
+    If COAMsgBox("Warning: Changing the base table will result in all table/column " & _
           "specific aspects of this report definition being cleared." & vbCrLf & _
           "Are you sure you wish to continue?", _
           vbQuestion + vbYesNo + vbDefaultButton2, "Calendar Reports") = vbYes Then
@@ -4023,7 +4023,7 @@ Private Sub chkStartOnCurrentMonth_Click()
 End Sub
 
 Private Sub cmdClearOrder_Click()
-  If MsgBox("Are you sure you wish to clear the sort order?", vbYesNo + vbQuestion, Me.Caption) = vbYes Then
+  If COAMsgBox("Are you sure you wish to clear the sort order?", vbYesNo + vbQuestion, Me.Caption) = vbYes Then
     grdOrder.RemoveAll
     UpdateOrderButtonStatus
     Me.Changed = True
@@ -4244,7 +4244,7 @@ End Sub
 Private Sub cboPeriodEnd_Click()
   If Not mblnLoading Then
     If (cboPeriodEnd.ListIndex <> cboPeriodStart.ListIndex) And (optOffsetStart.Value) And (optOffsetEnd.Value) Then
-      MsgBox "The End Date Offset period must be the same as the Start Date Offset period", vbExclamation + vbOKOnly, "Calendar Reports"
+      COAMsgBox "The End Date Offset period must be the same as the Start Date Offset period", vbExclamation + vbOKOnly, "Calendar Reports"
       mblnLoading = True
       cboPeriodEnd.ListIndex = cboPeriodStart.ListIndex
       mblnLoading = False
@@ -4944,7 +4944,7 @@ Private Sub cmdRemoveAllEvents_Click()
   
   sMessage = "Are you sure you want to remove all the Events from this Calendar Report definition?"
   
-  If MsgBox(sMessage, vbYesNo + vbQuestion, Me.Caption) = vbYes Then
+  If COAMsgBox(sMessage, vbYesNo + vbQuestion, Me.Caption) = vbYes Then
     grdEvents.RemoveAll
     mcolEvents.RemoveAll
     Changed = True
@@ -5070,7 +5070,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
     
   If Changed = True And Not FromPrint Then
     
-    pintAnswer = MsgBox("You have changed the current definition. Save changes ?", vbQuestion + vbYesNoCancel, "Calendar Reports")
+    pintAnswer = COAMsgBox("You have changed the current definition. Save changes ?", vbQuestion + vbYesNoCancel, "Calendar Reports")
       
     If pintAnswer = vbYes Then
       cmdOK_Click
@@ -5272,7 +5272,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
           (Not mblnReadOnly)
         If fRemove Then
           sBigMessage = "The '" & cboBaseTable.List(cboBaseTable.ListIndex) & "' table picklist will be removed from this definition as it is hidden and you do not have permission to make this definition hidden."
-          MsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
+          COAMsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
         Else
           fNeedToForceHidden = True
   
@@ -5327,7 +5327,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
 
         If fRemove Then
           sBigMessage = "The '" & cboBaseTable.List(cboBaseTable.ListIndex) & "' table filter will be removed from this definition as it is hidden and you do not have permission to make this definition hidden."
-          MsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
+          COAMsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
         Else
           fNeedToForceHidden = True
   
@@ -5381,7 +5381,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
           (Not mblnReadOnly)
         If fRemove Then
           sBigMessage = "The report description calculation will be removed from this definition as it is hidden and you do not have permission to make this definition hidden."
-          MsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
+          COAMsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
         Else
           fNeedToForceHidden = True
   
@@ -5435,7 +5435,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
           (Not mblnReadOnly)
         If fRemove Then
           sBigMessage = "The report start date calculation will be removed from this definition as it is hidden and you do not have permission to make this definition hidden."
-          MsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
+          COAMsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
         Else
           fNeedToForceHidden = True
   
@@ -5489,7 +5489,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
           (Not mblnReadOnly)
         If fRemove Then
           sBigMessage = "The report end date calculation will be removed from this definition as it is hidden and you do not have permission to make this definition hidden."
-          MsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
+          COAMsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
         Else
           fNeedToForceHidden = True
   
@@ -5551,7 +5551,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
 
               If fRemove Then
                 sBigMessage = "The '" & sEventFilter & "' event table filter will be removed from this definition as it is hidden and you do not have permission to make this definition hidden."
-                MsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
+                COAMsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
               Else
                 fNeedToForceHidden = True
   
@@ -5757,7 +5757,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
   ForceAccess
 
   If Len(sBigMessage) > 0 Then
-    MsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
+    COAMsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
   End If
 
   ForceDefinitionToBeHiddenIfNeeded = (Len(sBigMessage) = 0)

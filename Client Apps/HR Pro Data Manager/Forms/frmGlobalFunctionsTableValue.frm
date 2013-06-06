@@ -172,7 +172,7 @@ Public Function Initialise(lTableID As Long, lColumnID As Long, iColumnDataType 
     End If
 
   Else
-    MsgBox "There are no lookup columns which match the selected data type", vbExclamation
+    COAMsgBox "There are no lookup columns which match the selected data type", vbExclamation
   
   End If
 
@@ -342,7 +342,7 @@ Private Sub GetRecords()
     Loop
         
     .Enabled = (.ListCount > 0)
-    cmdOk.Enabled = (.ListCount > 0)
+    cmdOK.Enabled = (.ListCount > 0)
     .BackColor = IIf(.ListCount > 0, vbWindowBackground, vbButtonFace)
   
   End With
@@ -350,7 +350,7 @@ Private Sub GetRecords()
 Exit Sub
     
 Err_Trap:
-    MsgBox Err.Description
+    COAMsgBox Err.Description
     
 End Sub
 

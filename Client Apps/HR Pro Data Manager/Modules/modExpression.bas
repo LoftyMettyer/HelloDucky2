@@ -390,7 +390,7 @@ TidyUpAndExit:
   Exit Function
   
 ErrorTrap:
-  MsgBox "Error retrieving field value from database.", vbOKOnly + vbCritical, App.Title
+  COAMsgBox "Error retrieving field value from database.", vbOKOnly + vbCritical, App.Title
   Resume TidyUpAndExit
     
 End Function
@@ -419,7 +419,7 @@ TidyUpAndExit:
   Exit Function
   
 ErrorTrap:
-  MsgBox "Error retrieving field value from database.", vbOKOnly + vbCritical, App.Title
+  COAMsgBox "Error retrieving field value from database.", vbOKOnly + vbCritical, App.Title
   Resume TidyUpAndExit
     
 End Function
@@ -444,7 +444,7 @@ TidyUpAndExit:
   Exit Function
   
 ErrorTrap:
-  MsgBox "Error setting Expression Access.", vbOKOnly + vbCritical, App.Title
+  COAMsgBox "Error setting Expression Access.", vbOKOnly + vbCritical, App.Title
   Resume TidyUpAndExit
   
 End Function
@@ -468,7 +468,7 @@ TidyUpAndExit:
 
 ErrorTrap:
   isOwnerOfParent = False
-  MsgBox "Error checking owner of expression.", vbOKOnly + vbExclamation, App.Title
+  COAMsgBox "Error checking owner of expression.", vbOKOnly + vbExclamation, App.Title
   Resume TidyUpAndExit
   
 End Function
@@ -512,7 +512,7 @@ TidyUpAndExit:
 
 ErrorTrap:
   isOwnerOfComp = False
-  MsgBox "Error checking owner of component.", vbOKOnly + vbExclamation, App.Title
+  COAMsgBox "Error checking owner of component.", vbOKOnly + vbExclamation, App.Title
   Resume TidyUpAndExit
   
 End Function
@@ -559,7 +559,7 @@ TidyUpAndExit:
 
 ErrorTrap:
   isCompHidden = True
-  MsgBox "Error checking access of component.", vbOKOnly + vbExclamation, App.Title
+  COAMsgBox "Error checking access of component.", vbOKOnly + vbExclamation, App.Title
   Resume TidyUpAndExit
   
 End Function
@@ -613,7 +613,7 @@ TidyUpAndExit:
 
 ErrorTrap:
   isCompDeleted = True
-  MsgBox "Error checking if component has been deleted.", vbOKOnly + vbExclamation, App.Title
+  COAMsgBox "Error checking if component has been deleted.", vbOKOnly + vbExclamation, App.Title
   Resume TidyUpAndExit
     
 End Function
@@ -640,7 +640,7 @@ Public Function ValidComponent(objComp As clsExprComponent, _
   If bIsDeleted Then
     'the current expression no longer exists.
     If bShowMessages Then
-      MsgBox "The selected component has been deleted by another user. " _
+      COAMsgBox "The selected component has been deleted by another user. " _
               , vbExclamation + vbOKOnly, App.Title
     End If
     ValidComponent = 3
@@ -662,7 +662,7 @@ Public Function ValidComponent(objComp As clsExprComponent, _
         If objComp.ParentExpression.Access <> ACCESS_HIDDEN Then
           'the current expression is not already hidden.
           If bShowMessages Then
-            MsgBox "The selected component is hidden, " & _
+            COAMsgBox "The selected component is hidden, " & _
                     "the expression will now be made hidden." _
                     , vbInformation + vbOKOnly, App.Title
           End If
@@ -674,7 +674,7 @@ Public Function ValidComponent(objComp As clsExprComponent, _
         'current user is the owner of the expression but NOT the owner
         'of the selected (hidden) component.
         If bShowMessages Then
-          MsgBox "The selected component is owned by another user and " & vbCrLf & _
+          COAMsgBox "The selected component is owned by another user and " & vbCrLf & _
                   "has been made hidden. " _
                   , vbExclamation + vbOKOnly, App.Title
         End If
@@ -684,7 +684,7 @@ Public Function ValidComponent(objComp As clsExprComponent, _
     Else
       'current user is not the owner of the current expression.
       If bShowMessages Then
-        MsgBox "The selected component is hidden and cannot be added to " & _
+        COAMsgBox "The selected component is hidden and cannot be added to " & _
                 "another user's expression." _
                 , vbExclamation + vbOKOnly, App.Title
       End If
@@ -699,7 +699,7 @@ TidyUpAndExit:
 
 ErrorTrap:
   ValidComponent = -1
-  MsgBox "Error checking validity of component.", vbOKOnly + vbExclamation, App.Title
+  COAMsgBox "Error checking validity of component.", vbOKOnly + vbExclamation, App.Title
   Resume TidyUpAndExit
 
 End Function
@@ -777,7 +777,7 @@ Public Function ValidateExpr(objExpr As clsExprExpression, bShowMessages As Bool
     End Select
   
     If iValidationCode > 0 Then
-      MsgBox sMessage, vbExclamation + vbOKOnly, App.Title
+      COAMsgBox sMessage, vbExclamation + vbOKOnly, App.Title
     End If
     
   End If
@@ -790,7 +790,7 @@ TidyUpAndExit:
 
 ErrorTrap:
   ValidateExpr = -1
-  MsgBox "Error checking validity of expression.", vbOKOnly + vbExclamation, App.Title
+  COAMsgBox "Error checking validity of expression.", vbOKOnly + vbExclamation, App.Title
   Resume TidyUpAndExit
 
 End Function
@@ -822,7 +822,7 @@ TidyUpAndExit:
 
 ErrorTrap:
   RemoveUnowned_HDComps = False
-  MsgBox "Error removing hidden components.", vbOKOnly + vbExclamation, App.Title
+  COAMsgBox "Error removing hidden components.", vbOKOnly + vbExclamation, App.Title
   Resume TidyUpAndExit
 
 End Function
@@ -894,10 +894,10 @@ Public Function UniqueColumnValue(sTableName As String, sColumnName As String) A
     " FROM " & sTableName
   Set rsUniqueValue = datGeneral.GetRecords(sSQL)
   With rsUniqueValue
-    If IsNull(!newValue) Then
+    If IsNull(!NewValue) Then
       lngUniqueValue = 1
     Else
-      lngUniqueValue = !newValue
+      lngUniqueValue = !NewValue
     End If
     
     .Close

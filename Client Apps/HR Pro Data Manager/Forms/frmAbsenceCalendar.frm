@@ -927,7 +927,7 @@ Public Function AbsCal_IsDayABankHoliday(intIndex As Integer) As Boolean
   
 AbsCal_IsDayABankHolidayERROR:
   
-  MsgBox "Error whilst checking for bank holidays." & vbCrLf & Err.Description, vbExclamation + vbOKOnly, App.Title
+  COAMsgBox "Error whilst checking for bank holidays." & vbCrLf & Err.Description, vbExclamation + vbOKOnly, App.Title
   AbsCal_IsDayABankHoliday = False
   Set rstBankHolRegion = Nothing
 
@@ -1338,7 +1338,7 @@ Private Function CheckPermission_AbsCalSpecifics() As Boolean
   If Len(strModulePermErrorMSG) > 0 Then
     strModulePermErrorMSG = "The Absence Calendar failed for the following reasons: " & _
       vbCrLf & vbCrLf & strModulePermErrorMSG
-    MsgBox strModulePermErrorMSG, vbOKOnly + vbExclamation, "Absence Calendar"
+    COAMsgBox strModulePermErrorMSG, vbOKOnly + vbExclamation, "Absence Calendar"
     GoTo FailReport
   End If
   
@@ -1529,7 +1529,7 @@ Private Function CheckPermission_AbsCalSpecifics() As Boolean
   If Len(strModulePermErrorMSG) > 0 Then
     strModulePermErrorMSG = "The Absence Calendar failed for the following reasons: " & _
       vbCrLf & vbCrLf & strModulePermErrorMSG
-    MsgBox strModulePermErrorMSG, vbOKOnly + vbExclamation, "Absence Calendar"
+    COAMsgBox strModulePermErrorMSG, vbOKOnly + vbExclamation, "Absence Calendar"
     GoTo FailReport
   End If
   
@@ -1635,7 +1635,7 @@ Private Function GetAbsenceRecordSet() As Boolean
   
 GetAbsenceRecordSet_ERROR:
   
-  MsgBox "Error retrieving the Absence recordset." & vbCrLf & Err.Description, vbExclamation + vbOKOnly, App.Title
+  COAMsgBox "Error retrieving the Absence recordset." & vbCrLf & Err.Description, vbExclamation + vbOKOnly, App.Title
   Set mrstAbsenceRecords = Nothing
   GetAbsenceRecordSet = False
 
@@ -1830,7 +1830,7 @@ Public Sub Initialise()
   If Not GetInfoFromDB Then Exit Sub
     
   If mrstAbsenceRecords.BOF And mrstAbsenceRecords.EOF Then
-    If MsgBox("The current employee does not have any absence records." & vbCrLf & vbCrLf & _
+    If COAMsgBox("The current employee does not have any absence records." & vbCrLf & vbCrLf & _
               "Are you sure you want to view the absence calendar ?", vbYesNo + vbQuestion, App.Title) = vbNo Then
                 Screen.MousePointer = vbDefault
                 Exit Sub
@@ -1966,7 +1966,7 @@ Private Sub FillGridWithData()
   Loop
 
   If booOK = False Then
-    MsgBox "An Error Has Occurred Whilst Filling The Cal Labels:" & vbCrLf & Err.Number & " - " & Err.Description
+    COAMsgBox "An Error Has Occurred Whilst Filling The Cal Labels:" & vbCrLf & Err.Number & " - " & Err.Description
   End If
 
 End Sub
@@ -2048,7 +2048,7 @@ Private Sub lblCal_Click(Index As Integer)
   mrstAbsenceRecords.MoveFirst
   
   If mrstAbsenceRecords.BOF And mrstAbsenceRecords.EOF Then
-    MsgBox "Sorry, there are no absences for this employee", vbExclamation + vbOKCancel, "Absence Calendar"
+    COAMsgBox "Sorry, there are no absences for this employee", vbExclamation + vbOKCancel, "Absence Calendar"
     Exit Sub
   End If
   
@@ -2073,7 +2073,7 @@ Private Function LoadColourKey() As Boolean
   Set rstColourKey = datGeneral.GetRecords(strColourKeySQL)
 
   If rstColourKey.BOF And rstColourKey.EOF Then
-    MsgBox "You have no absence types defined in your Absence Type table", vbExclamation + vbOKOnly, "Absence Calendar"
+    COAMsgBox "You have no absence types defined in your Absence Type table", vbExclamation + vbOKOnly, "Absence Calendar"
     LoadColourKey = False
     Exit Function
   End If
@@ -2223,7 +2223,7 @@ Private Function LoadColourKey() As Boolean
   
 errLoadColourKey:
 
-  MsgBox "An error has occurred - LoadColourKey." & vbCrLf & "Please check your absence module setup.", vbCritical + vbOKOnly, "Absence Calendar"
+  COAMsgBox "An error has occurred - LoadColourKey." & vbCrLf & "Please check your absence module setup.", vbCritical + vbOKOnly, "Absence Calendar"
   LoadColourKey = False
   
 End Function
@@ -2331,8 +2331,8 @@ Print_ERR:
   Screen.MousePointer = vbDefault
 
   Select Case Err.Number
-    Case 482: MsgBox "Printer Error : Please check printer connection.", vbExclamation + vbInformation, "HR Pro"
-    Case Else: MsgBox Err.Description, vbExclamation + vbInformation, "HR Pro"
+    Case 482: COAMsgBox "Printer Error : Please check printer connection.", vbExclamation + vbInformation, "HR Pro"
+    Case Else: COAMsgBox Err.Description, vbExclamation + vbInformation, "HR Pro"
   End Select
   
 End Sub
@@ -2380,7 +2380,7 @@ Private Function LoadDefaultDisplayOptions() As Boolean
   
 Load_ERROR:
   
-  MsgBox "Error whilst loading default display options." & vbCrLf & Err.Description, vbExclamation + vbOKOnly, "Absence Calendar"
+  COAMsgBox "Error whilst loading default display options." & vbCrLf & Err.Description, vbExclamation + vbOKOnly, "Absence Calendar"
   LoadDefaultDisplayOptions = False
   
 End Function
@@ -2997,7 +2997,7 @@ Private Function GetPersonnelRecordSet() As Boolean
 PersonnelERROR:
   Set prstPersonnelData = Nothing
   GetPersonnelRecordSet = False
-  MsgBox "Error whilst retrieving the personnel information." & vbCrLf & Err.Description, vbExclamation + vbOKOnly, App.Title
+  COAMsgBox "Error whilst retrieving the personnel information." & vbCrLf & Err.Description, vbExclamation + vbOKOnly, App.Title
   Exit Function
 
 End Function
@@ -3028,7 +3028,7 @@ Private Function LoadKeyCaption() As Boolean
   Set rstColourKey = datGeneral.GetRecords(strColourKeySQL)
 
   If rstColourKey.BOF And rstColourKey.EOF Then
-    MsgBox "You have no absence types defined in your Absence Type table", vbExclamation + vbOKOnly, "Absence Calendar"
+    COAMsgBox "You have no absence types defined in your Absence Type table", vbExclamation + vbOKOnly, "Absence Calendar"
     LoadKeyCaption = False
     Exit Function
   End If
@@ -3060,6 +3060,6 @@ Private Function LoadKeyCaption() As Boolean
   Exit Function
   
 errLoadColourKey:
-  MsgBox "An error has occurred - LoadKeyCaption." & vbCrLf & "Please check your absence module setup.", vbCritical + vbOKOnly, "Absence Calendar"
+  COAMsgBox "An error has occurred - LoadKeyCaption." & vbCrLf & "Please check your absence module setup.", vbCritical + vbOKOnly, "Absence Calendar"
   LoadKeyCaption = False
 End Function

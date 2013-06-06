@@ -46,7 +46,7 @@ LocalError_Handler:
 
 LocalError:
   If ASRDEVELOPMENT Then
-    MsgBox Err.Description, vbCritical, "ASR DEVELOPMENT"
+    COAMsgBox Err.Description, vbCritical, "ASR DEVELOPMENT"
     Stop
   End If
   

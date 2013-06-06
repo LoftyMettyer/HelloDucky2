@@ -399,7 +399,7 @@ Public Function ValidatePersonnelParameters() As Boolean
     ' Check the Personnel Table ID is valid.
     fValid = (glngPersonnelTableID > 0)
     If Not fValid Then
-      MsgBox "The Personnel module is not properly configured." & vbCrLf & _
+      COAMsgBox "The Personnel module is not properly configured." & vbCrLf & _
         "The Personnel table is not defined.", vbOKOnly, App.ProductName
     End If
   End If
@@ -408,7 +408,7 @@ Public Function ValidatePersonnelParameters() As Boolean
     ' Check the Employee Number ID is valid.
     fValid = (mvar_lngPersonnelEmployeeNumberID > 0)
     If Not fValid Then
-      MsgBox "The Personnel module is not properly configured." & vbCrLf & _
+      COAMsgBox "The Personnel module is not properly configured." & vbCrLf & _
          "The Employee Number column is not defined.", vbOKOnly, App.ProductName
     End If
   End If
@@ -417,7 +417,7 @@ Public Function ValidatePersonnelParameters() As Boolean
     ' Check the Surname ID is valid.
     fValid = (mvar_lngPersonnelSurnameID > 0)
     If Not fValid Then
-      MsgBox "The Personnel module is not properly configured." & vbCrLf & _
+      COAMsgBox "The Personnel module is not properly configured." & vbCrLf & _
          "The Surname column is not defined.", vbOKOnly, App.ProductName
     End If
   End If
@@ -426,7 +426,7 @@ Public Function ValidatePersonnelParameters() As Boolean
     ' Check the Forename ID is valid.
     fValid = (mvar_lngPersonnelForenameID > 0)
     If Not fValid Then
-      MsgBox "The Personnel module is not properly configured." & vbCrLf & _
+      COAMsgBox "The Personnel module is not properly configured." & vbCrLf & _
          "The Forename column is not defined.", vbOKOnly, App.ProductName
     End If
   End If
@@ -435,7 +435,7 @@ Public Function ValidatePersonnelParameters() As Boolean
     ' Check the StartDate ID is valid.
     fValid = (glngPersonnelStartDateID > 0)
     If Not fValid Then
-      MsgBox "The Personnel module is not properly configured." & vbCrLf & _
+      COAMsgBox "The Personnel module is not properly configured." & vbCrLf & _
          "The Start Date column is not defined.", vbOKOnly, App.ProductName
     End If
   End If
@@ -444,7 +444,7 @@ Public Function ValidatePersonnelParameters() As Boolean
     ' Check the Leaving Date ID is valid.
     fValid = (mvar_lngPersonnelLeavingDateID > 0)
     If Not fValid Then
-      MsgBox "The Personnel module is not properly configured." & vbCrLf & _
+      COAMsgBox "The Personnel module is not properly configured." & vbCrLf & _
          "The Leaving Date column is not defined.", vbOKOnly, App.ProductName
     End If
   End If
@@ -453,7 +453,7 @@ Public Function ValidatePersonnelParameters() As Boolean
     ' Check the FullPartTime ID is valid.
     fValid = (mvar_lngPersonnelFullPartTimeID > 0)
     If Not fValid Then
-      MsgBox "The Personnel module is not properly configured." & vbCrLf & _
+      COAMsgBox "The Personnel module is not properly configured." & vbCrLf & _
          "The Full/Part Time column is not defined.", vbOKOnly, App.ProductName
     End If
   End If
@@ -462,7 +462,7 @@ Public Function ValidatePersonnelParameters() As Boolean
   '  ' Check the Email ID is valid.
   '  fValid = (mvar_lngPersonnelEmailID > 0)
   '  If Not fValid Then
-  '    MsgBox "The Personnel module is not properly configured." & vbCrLf & _
+  '    COAMsgBox "The Personnel module is not properly configured." & vbCrLf & _
   '       "The Email column is not defined.", vbOKOnly, App.ProductName
   '  End If
   'End If
@@ -471,7 +471,7 @@ Public Function ValidatePersonnelParameters() As Boolean
     ' Check the Department Date ID is valid.
     fValid = (mvar_lngPersonnelDepartmentID > 0)
     If Not fValid Then
-      MsgBox "The Personnel module is not properly configured." & vbCrLf & _
+      COAMsgBox "The Personnel module is not properly configured." & vbCrLf & _
          "The Department column is not defined.", vbOKOnly, App.ProductName
     End If
   End If
@@ -480,7 +480,7 @@ Public Function ValidatePersonnelParameters() As Boolean
     ' Check the Working Pattern Date ID is valid.
     fValid = (mvar_lngPersonnelWorkingPatternID > 0)
     If Not fValid Then
-      MsgBox "The Personnel module is not properly configured." & vbCrLf & _
+      COAMsgBox "The Personnel module is not properly configured." & vbCrLf & _
          "The Working Pattern column is not defined.", vbOKOnly, App.ProductName
     End If
   End If
@@ -489,7 +489,7 @@ Public Function ValidatePersonnelParameters() As Boolean
     ' Check the Region ID is valid.
     fValid = (mvar_lngPersonnelRegionID > 0)
     If Not fValid Then
-      MsgBox "The Personnel module is not properly configured." & vbCrLf & _
+      COAMsgBox "The Personnel module is not properly configured." & vbCrLf & _
          "The Region column is not defined.", vbOKOnly, App.ProductName
     End If
   End If
@@ -502,7 +502,7 @@ Public Function ValidatePersonnelParameters() As Boolean
 '    ' Check that the user has permission to see the Course Title column.
 '    fValid = objCourseColumnPrivileges.Item(gsCourseTitleColumnName).AllowSelect
 '    If Not fValid Then
-'      MsgBox "You do not have permission to see the defined Course Title column.", vbOKOnly, App.ProductName
+'      COAMsgBox "You do not have permission to see the defined Course Title column.", vbOKOnly, App.ProductName
 '    End If
 '  End If
 '
@@ -511,7 +511,7 @@ Public Function ValidatePersonnelParameters() As Boolean
 '    ' Check the Course Cancelled By column can be updated if it is defined.
 '    fValid = objCourseColumnPrivileges.Item(gsCourseCancelledByColumnName).AllowUpdate
 '    If Not fValid Then
-'      MsgBox "You do not have permission to update the defined Course Cancelled By column.", vbOKOnly, App.ProductName
+'      COAMsgBox "You do not have permission to update the defined Course Cancelled By column.", vbOKOnly, App.ProductName
 '    End If
 '  End If
 '

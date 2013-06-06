@@ -1,9 +1,9 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TabCtl32.Ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmMailMerge 
    BorderStyle     =   3  'Fixed Dialog
@@ -78,15 +78,15 @@ Begin VB.Form frmMailMerge
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmMailMerge.frx":08D6
       Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "fraDefinition(0)"
-      Tab(0).Control(1)=   "fraDefinition(1)"
+      Tab(0).Control(0)=   "fraDefinition(1)"
+      Tab(0).Control(1)=   "fraDefinition(0)"
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Colu&mns"
       TabPicture(1)   =   "frmMailMerge.frx":08F2
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraColumns(2)"
+      Tab(1).Control(0)=   "fraColumns(0)"
       Tab(1).Control(1)=   "fraColumns(1)"
-      Tab(1).Control(2)=   "fraColumns(0)"
+      Tab(1).Control(2)=   "fraColumns(2)"
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "&Sort Order"
       TabPicture(2)   =   "frmMailMerge.frx":090E
@@ -284,13 +284,13 @@ Begin VB.Form frmMailMerge
             RecordSelectors =   0   'False
             Col.Count       =   3
             stylesets.count =   5
-            stylesets(0).Name=   "ssetHeaderDisabled"
-            stylesets(0).ForeColor=   -2147483631
-            stylesets(0).BackColor=   -2147483633
+            stylesets(0).Name=   "ssetSelected"
+            stylesets(0).ForeColor=   -2147483634
+            stylesets(0).BackColor=   -2147483635
             stylesets(0).Picture=   "frmMailMerge.frx":0D1F
-            stylesets(1).Name=   "ssetSelected"
-            stylesets(1).ForeColor=   -2147483634
-            stylesets(1).BackColor=   -2147483635
+            stylesets(1).Name=   "ssetHeaderDisabled"
+            stylesets(1).ForeColor=   -2147483631
+            stylesets(1).BackColor=   -2147483633
             stylesets(1).Picture=   "frmMailMerge.frx":0D3B
             stylesets(2).Name=   "ssetEnabled"
             stylesets(2).ForeColor=   -2147483640
@@ -1780,27 +1780,27 @@ Private Sub cboBaseTable_Click()
   Call PrimaryTableClick
 End Sub
 
-Private Function ErrorMsgbox(strMessage As String) As Boolean
+Private Function ErrorCOAMsgBox(strMessage As String) As Boolean
   
   Dim sCaption As String
   sCaption = IIf(mbIsLabel, "Envelopes & Labels", "Mail Merge")
   
   Screen.MousePointer = vbDefault
-  MsgBox strMessage & vbCrLf & Err.Description, vbCritical, sCaption
+  COAMsgBox strMessage & vbCrLf & Err.Description, vbCritical, sCaption
 
 End Function
 
-Private Function WarningMsgbox(strMessage As String) As Boolean
+Private Function WarningCOAMsgBox(strMessage As String) As Boolean
   
   Dim sCaption As String
   sCaption = IIf(mbIsLabel, "Envelopes & Labels", "Mail Merge")
   
   If Screen.MousePointer = vbHourglass Then
     Screen.MousePointer = vbDefault
-    MsgBox strMessage, vbExclamation, sCaption
+    COAMsgBox strMessage, vbExclamation, sCaption
     Screen.MousePointer = vbHourglass
   Else
-    MsgBox strMessage, vbExclamation, sCaption
+    COAMsgBox strMessage, vbExclamation, sCaption
   End If
 End Function
 
@@ -1956,7 +1956,7 @@ Private Sub cmdCancel_Click()
 
   Dim strSQL As String
   Dim strMBText As String
-  Dim intMBButtons As Integer
+  Dim intMBButtons As Long
   Dim strMBTitle As String
   Dim intMBResponse As Integer
 
@@ -1966,7 +1966,7 @@ Private Sub cmdCancel_Click()
     strMBText = "You have changed the current definition. Save changes ?"
     intMBButtons = vbQuestion + vbYesNoCancel + vbDefaultButton1
     strMBTitle = Me.Caption
-    intMBResponse = MsgBox(strMBText, intMBButtons, strMBTitle)
+    intMBResponse = COAMsgBox(strMBText, intMBButtons, strMBTitle)
     
     Select Case intMBResponse
     Case vbYes
@@ -1984,7 +1984,7 @@ End Sub
 
 Private Sub cmdClearOrder_Click()
 
-  If MsgBox("Are you sure you wish to clear the sort order?", vbYesNo + vbQuestion, Me.Caption) = vbYes Then
+  If COAMsgBox("Are you sure you wish to clear the sort order?", vbYesNo + vbQuestion, Me.Caption) = vbYes Then
     grdReportOrder.RemoveAll
     UpdateOrderButtonStatus
     Me.Changed = True
@@ -2096,14 +2096,14 @@ Private Sub cmdFileName_Click(Index As Integer)
     End Select
 
     If Len(.FileName) > 256 Then
-      WarningMsgbox "Path and file name must not exceed 256 characters in length"
+      WarningCOAMsgBox "Path and file name must not exceed 256 characters in length"
       Exit Sub
     End If
 
     If .FileName <> "" Then
       'If Dir(CDialog.FileName) = vbNullString And Index = 1 Then  'Only show for templates
       If Dir(frmMain.CommonDialog1.FileName) = vbNullString And Index = 1 Then  'Only show for templates
-        If MsgBox("Template file does not exist.  Create it now?", vbYesNo + vbQuestion, Me.Caption) = vbYes Then
+        If COAMsgBox("Template file does not exist.  Create it now?", vbYesNo + vbQuestion, Me.Caption) = vbYes Then
 
           On Error GoTo WordErr
 
@@ -2156,9 +2156,9 @@ LocalErr:
   
     gobjProgress.CloseProgress
     If Err.Number = 429 Then
-      ErrorMsgbox "Error opening Word application"
+      ErrorCOAMsgBox "Error opening Word application"
     Else
-      ErrorMsgbox "Error selecting file"
+      ErrorCOAMsgBox "Error selecting file"
     End If
     txtFilename(Index).Text = vbNullString
   End If
@@ -2169,9 +2169,9 @@ WordErr:
   gobjProgress.CloseProgress
   Screen.MousePointer = vbDefault
   If Err.Number = 429 Then
-    MsgBox "Error opening Word application", vbCritical, Me.Caption
+    COAMsgBox "Error opening Word application", vbCritical, Me.Caption
   Else
-    ErrorMsgbox "Error creating template file"
+    ErrorCOAMsgBox "Error creating template file"
   End If
 
 End Sub
@@ -2210,14 +2210,14 @@ Private Sub cmdCalculations_Click()
       
         '08/08/2000 MH Fault 2664
         If mblnReadOnly Then
-          MsgBox "Unable to select calculation as you are viewing a read only definition", vbExclamation, Me.Caption
+          COAMsgBox "Unable to select calculation as you are viewing a read only definition", vbExclamation, Me.Caption
         Else
 
           strKey = "E" & CStr(.ExpressionID)
           If Not AlreadyUsed(strKey) Then
             sMessage = IsCalcValid(.ExpressionID)
             If sMessage <> vbNullString Then
-              MsgBox "This calculation has been deleted or hidden by another user." & vbCrLf & _
+              COAMsgBox "This calculation has been deleted or hidden by another user." & vbCrLf & _
                      "It cannot be added to this definition", vbExclamation, App.Title
             Else
               If optCalc.Value And (cboTblAvailable.ItemData(cboTblAvailable.ListIndex) = .BaseTableID) Then
@@ -2300,7 +2300,7 @@ LocalErr:
   Select Case Err.Number
   
     Case 35601:  ' Calc selected was hidden but user not definition owner
-    Case Else: ErrorMsgbox "Error selecting calculations"
+    Case Else: ErrorCOAMsgBox "Error selecting calculations"
 
   End Select
   
@@ -2657,7 +2657,7 @@ Private Sub cmdPicklist_Click()
 Exit Sub
 
 LocalErr:
-  ErrorMsgbox "Error selecting picklist"
+  ErrorCOAMsgBox "Error selecting picklist"
 
 End Sub
 
@@ -2669,7 +2669,7 @@ Private Sub cmdFilter_Click()
   Dim rsTemp As Recordset
 
   'If cboBaseTable.Text = "<None>" Then
-  '  MsgBox "No primary table specified", vbExclamation, Me.Caption
+  '  COAMsgBox "No primary table specified", vbExclamation, Me.Caption
   '  Exit Sub
   'End If
 
@@ -2703,7 +2703,7 @@ Private Sub cmdFilter_Click()
 Exit Sub
 
 LocalErr:
-  ErrorMsgbox "Error selecting filter"
+  ErrorCOAMsgBox "Error selecting filter"
 
 End Sub
 
@@ -2734,7 +2734,7 @@ End Sub
 'Exit Sub
 '
 'LocalErr:
-'  ErrorMsgbox "Error populating table combo box"
+'  ErrorCOAMsgBox "Error populating table combo box"
 '
 'End Sub
 
@@ -2811,7 +2811,7 @@ Public Function Initialise(bNew As Boolean, bCopy As Boolean, Optional lMailMerg
       
       'MH20000906
 '      If mblnDeletedCalc Then
-'        WarningMsgbox "This definition contains one or more calculation(s) which have been hidden or deleted by another user." & vbCrLf & _
+'        WarningCOAMsgBox "This definition contains one or more calculation(s) which have been hidden or deleted by another user." & vbCrLf & _
 '                     "They will be automatically removed from this definition"
 '      End If
       
@@ -2846,7 +2846,7 @@ Public Function Initialise(bNew As Boolean, bCopy As Boolean, Optional lMailMerg
 Exit Function
 
 LocalErr:
-  ErrorMsgbox "Error with " & Me.Caption & " definition"
+  ErrorCOAMsgBox "Error with " & Me.Caption & " definition"
 
 End Function
 
@@ -3114,7 +3114,7 @@ Private Sub RecordSelectionClick(blnPicklist As Boolean, blnFilter As Boolean)
 Exit Sub
 
 LocalErr:
-  ErrorMsgbox "Error with record selection criteria"
+  ErrorCOAMsgBox "Error with record selection criteria"
 
 End Sub
 
@@ -3517,7 +3517,7 @@ Private Function CopyToSelected(bAll As Boolean)
 Exit Function
 
 LocalErr:
-  ErrorMsgbox "Error selecting columns"
+  ErrorCOAMsgBox "Error selecting columns"
 
 End Function
 
@@ -3579,7 +3579,7 @@ Private Function CopyToAvailable(bAll As Boolean)
 Exit Function
 
 LocalErr:
-  ErrorMsgbox "Error deselecting columns"
+  ErrorCOAMsgBox "Error deselecting columns"
 
 End Function
 
@@ -3797,12 +3797,12 @@ Private Sub cmdRemoveAll_Click()
 
   ' Remove All items from the 'Selected' Listview
   If grdReportOrder.Rows > 0 Then
-    If MsgBox("Removing all selected columns will also clear the sort order." & vbCrLf & "Do you wish to continue ?", vbYesNo + vbQuestion, Me.Caption) = vbYes Then
+    If COAMsgBox("Removing all selected columns will also clear the sort order." & vbCrLf & "Do you wish to continue ?", vbYesNo + vbQuestion, Me.Caption) = vbYes Then
       grdReportOrder.RemoveAll
       CopyToAvailable True
     End If
   Else
-    If MsgBox("Are you sure you wish to remove all columns / calculations from this definition ?", vbYesNo + vbQuestion, Me.Caption) = vbYes Then
+    If COAMsgBox("Are you sure you wish to remove all columns / calculations from this definition ?", vbYesNo + vbQuestion, Me.Caption) = vbYes Then
       CopyToAvailable True
     End If
   End If
@@ -3926,7 +3926,7 @@ Private Function ValidateDefinition()
   
   If Len(strName) = 0 Then
     SSTab1.Tab = 0
-    MsgBox "You must give this definition a name.", vbExclamation, Me.Caption
+    COAMsgBox "You must give this definition a name.", vbExclamation, Me.Caption
     txtName.SetFocus
     Exit Function
   End If
@@ -3934,14 +3934,14 @@ Private Function ValidateDefinition()
   If optFilter Then
     If Val(txtFilter.Tag) = 0 Then
       SSTab1.Tab = 0
-      WarningMsgbox "No filter entered for the base table."
+      WarningCOAMsgBox "No filter entered for the base table."
       cmdFilter.SetFocus
       Exit Function
     End If
   ElseIf optPicklist Then
     If Val(txtPicklist.Tag) = 0 Then
       SSTab1.Tab = 0
-      WarningMsgbox "No picklist entered for the base table."
+      WarningCOAMsgBox "No picklist entered for the base table."
       cmdPicklist.SetFocus
       Exit Function
     End If
@@ -3951,7 +3951,7 @@ Private Function ValidateDefinition()
     SSTab1.Tab = 1
     'strMessage = "No " & IIf(mbIsLabel, "label", "merge") & " columns selected."
     strMessage = "No Columns Selected."
-    WarningMsgbox strMessage
+    WarningCOAMsgBox strMessage
     ListView1.SetFocus
     Exit Function
   End If
@@ -3959,8 +3959,8 @@ Private Function ValidateDefinition()
 '  If mbIsLabel Then
 '    If Not DoesJobFitOnLabel Then
 '      SSTab1.Tab = 1
-'      'WarningMsgbox "There are too many columns for the format of the label type."
-'      WarningMsgbox "There are too many columns for this template."
+'      'WarningCOAMsgBox "There are too many columns for the format of the label type."
+'      WarningCOAMsgBox "There are too many columns for this template."
 '      ListView1.SetFocus
 '      Exit Function
 '    End If
@@ -3970,7 +3970,7 @@ Private Function ValidateDefinition()
     SSTab1.Tab = 2
     'strMessage = "You must select at least 1 column to order the " & IIf(mbIsLabel, "label", "mail") & " merge by."
     strMessage = "You must select at least 1 column to order by."
-    WarningMsgbox strMessage
+    WarningCOAMsgBox strMessage
     cmdNewOrder.SetFocus
     Exit Function
   End If
@@ -3978,10 +3978,10 @@ Private Function ValidateDefinition()
   If txtFilename(1).Text = vbNullString Or txtFilename(1).Text = "<None>" Then
     SSTab1.Tab = 3
     If Not mbIsLabel Then
-      WarningMsgbox "No Template selected."
+      WarningCOAMsgBox "No Template selected."
       cmdFilename(1).SetFocus
     Else
-      WarningMsgbox "No Template selected."
+      WarningCOAMsgBox "No Template selected."
     End If
     Exit Function
   End If
@@ -3989,8 +3989,8 @@ Private Function ValidateDefinition()
   If mbIsLabel Then
     If Not DoesJobFitOnLabel Then
       SSTab1.Tab = 1
-      'WarningMsgbox "There are too many columns for the format of the label type."
-      WarningMsgbox "There are too many columns for this template."
+      'WarningCOAMsgBox "There are too many columns for the format of the label type."
+      WarningCOAMsgBox "There are too many columns for this template."
       ListView1.SetFocus
       Exit Function
     End If
@@ -4001,7 +4001,7 @@ Private Function ValidateDefinition()
   If Not mbIsLabel Then
     If Dir(txtFilename(1).Text) = vbNullString Then
       SSTab1.Tab = 3
-      WarningMsgbox "Template file not found."
+      WarningCOAMsgBox "Template file not found."
       cmdFilename(1).SetFocus
       Exit Function
     End If
@@ -4014,7 +4014,7 @@ Private Function ValidateDefinition()
     ' Word Doc validation
     If txtFilename(1).Text = txtFilename(0).Text Then
       SSTab1.Tab = 3
-      WarningMsgbox "Word cannot give the save document the same name as the template document." + vbCrLf + "Enter a different name for the document you want to save."
+      WarningCOAMsgBox "Word cannot give the save document the same name as the template document." + vbCrLf + "Enter a different name for the document you want to save."
       cmdFilename(0).SetFocus
       Exit Function
     End If
@@ -4023,13 +4023,13 @@ Private Function ValidateDefinition()
        chkDestination(1).Value = vbUnchecked And _
        chkDestination(2).Value = vbUnchecked Then
           SSTab1.Tab = 3
-          WarningMsgbox "You must select a destination."
+          WarningCOAMsgBox "You must select a destination."
           Exit Function
     End If
 
     If chkDestination(2).Value = vbChecked And Len(txtFilename(0).Text) = 0 Then
       SSTab1.Tab = 3
-      WarningMsgbox "You must enter a file name."
+      WarningCOAMsgBox "You must enter a file name."
       cmdFilename(0).SetFocus
       Exit Function
     End If
@@ -4038,7 +4038,7 @@ Private Function ValidateDefinition()
     ' Email validation
     If cboEMailField.Enabled And cboEMailField.Text = "<None>" Then
       SSTab1.Tab = 3
-      WarningMsgbox "No email column selected."
+      WarningCOAMsgBox "No email column selected."
       cboEMailField.SetFocus
       Exit Function
     End If
@@ -4046,7 +4046,7 @@ Private Function ValidateDefinition()
     If chkEMailAttachment.Value = vbChecked Then
       If Trim(txtEmailAttachmentName.Text) = vbNullString Then
         SSTab1.Tab = 3
-        WarningMsgbox "You must enter an attachment file name."
+        WarningCOAMsgBox "You must enter an attachment file name."
         txtEmailAttachmentName.SetFocus
         Exit Function
       End If
@@ -4061,7 +4061,7 @@ Private Function ValidateDefinition()
          InStr(txtEmailAttachmentName, "\") > 0 Or _
          InStr(txtEmailAttachmentName, "*") Then
         SSTab1.Tab = 3
-        WarningMsgbox "The attachment file name cannot contain any of the following characters:" & vbCrLf & _
+        WarningCOAMsgBox "The attachment file name cannot contain any of the following characters:" & vbCrLf & _
                       "/  :  ?  " & Chr(34) & "  <  >  |  \  *"
         txtEmailAttachmentName.SetFocus
         Exit Function
@@ -4071,7 +4071,7 @@ Private Function ValidateDefinition()
   ElseIf optOutputFormat(2).Value = True Then
     ' Document management validation
 '    If Val(txtDocumentMap.Tag) = 0 Then
-'      WarningMsgbox "No document management type is defined."
+'      WarningCOAMsgBox "No document management type is defined."
 '      SSTab1.Tab = 3
 '      cmdDocumentMap.SetFocus
 '      Exit Function
@@ -4083,7 +4083,7 @@ Private Function ValidateDefinition()
   'MH20020801 Fault 4227
   'If InStr(txtEmailAttachmentName, "\") > 0 Or InStr(txtEmailAttachmentName, "*") Then
   '  SSTab1.Tab = 3
-  '  WarningMsgbox "Invalid 'Attach as' name." & vbCrLf & _
+  '  WarningCOAMsgBox "Invalid 'Attach as' name." & vbCrLf & _
   '                "Please remove all '\' and '*' signs"
   '  txtEmailAttachmentName.SetFocus
   '  Exit Function
@@ -4114,7 +4114,7 @@ Private Function ValidateDefinition()
   If UniqueName(strName) = False Then
     SSTab1.Tab = 0
     strMessage = "A definition called '" & Trim(txtName.Text) & "' already exists."
-    WarningMsgbox strMessage
+    WarningCOAMsgBox strMessage
     txtName.SetFocus
     Exit Function
   End If
@@ -4152,11 +4152,11 @@ If mlngMailMergeID > 0 Then
 
     If (Not fBatchJobsOK) Then
       If Len(sBatchJobDetails_ScheduledForOtherUsers) > 0 Then
-        MsgBox "This definition cannot be made hidden from the following user groups :" & vbCrLf & vbCrLf & sBatchJobScheduledUserGroups & vbCrLf & _
+        COAMsgBox "This definition cannot be made hidden from the following user groups :" & vbCrLf & vbCrLf & sBatchJobScheduledUserGroups & vbCrLf & _
                "as it is used in the following batch jobs which are scheduled to be run by these user groups :" & vbCrLf & vbCrLf & sBatchJobDetails_ScheduledForOtherUsers, _
                vbExclamation + vbOKOnly, Me.Caption
       Else
-        MsgBox "This definition cannot be made hidden as it is used in the following" & vbCrLf & _
+        COAMsgBox "This definition cannot be made hidden as it is used in the following" & vbCrLf & _
                "batch jobs of which you are not the owner :" & vbCrLf & vbCrLf & sBatchJobDetails_NotOwner, vbExclamation + vbOKOnly _
                , Me.Caption
       End If
@@ -4168,7 +4168,7 @@ If mlngMailMergeID > 0 Then
     ElseIf (iCount_Owner > 0) Then
       
       
-      If MsgBox("Making this definition hidden to user groups will automatically" & vbCrLf & _
+      If COAMsgBox("Making this definition hidden to user groups will automatically" & vbCrLf & _
                 "make the following definition(s), of which you are the" & vbCrLf & _
                 "owner, hidden to the same user groups:" & _
                 sBatchJobDetails_Owner & vbCrLf & _
@@ -4195,7 +4195,7 @@ End If
 Exit Function
 
 LocalErr:
-  ErrorMsgbox "Error validating " & Me.Caption & " definition"
+  ErrorCOAMsgBox "Error validating " & Me.Caption & " definition"
   ValidateDefinition = False
 
 End Function
@@ -4224,7 +4224,7 @@ End Function
 '      intMBButtons = vbExclamation + vbYesNo
 '      strMBTitle = "Mail Merge"
 '
-'      intMBResponse = MsgBox(strMBText, intMBButtons, strMBTitle)
+'      intMBResponse = COAMsgBox(strMBText, intMBButtons, strMBTitle)
 '
 '      Select Case intMBResponse
 '      Case vbYes      'If deleted then save as new record
@@ -4241,7 +4241,7 @@ End Function
 '      intMBButtons = vbExclamation + vbYesNoCancel
 '      strMBTitle = "Mail Merge"
 '
-'      intMBResponse = MsgBox(strMBText, intMBButtons, strMBTitle)
+'      intMBResponse = COAMsgBox(strMBText, intMBButtons, strMBTitle)
 '
 '      Select Case intMBResponse
 '      Case vbYes      'overwrite existing definition and any changes
@@ -4554,7 +4554,7 @@ Private Function SaveDefinition() As Boolean
 Exit Function
 
 LocalErr:
-  ErrorMsgbox "Error saving " & Me.Caption & " definition"
+  ErrorCOAMsgBox "Error saving " & Me.Caption & " definition"
   SaveDefinition = False
 
 End Function
@@ -4661,7 +4661,7 @@ Private Function InsertMailMerge(pstrSQL As String) As Long
     cmADO.Execute
               
     If Not fSavedOK Then
-      MsgBox "The new record could not be created." & vbCrLf & vbCrLf & _
+      COAMsgBox "The new record could not be created." & vbCrLf & vbCrLf & _
         Err.Description, vbOKOnly + vbExclamation, App.ProductName
         InsertMailMerge = 0
         Set cmADO = Nothing
@@ -4759,7 +4759,7 @@ Private Function SaveColumns() As Boolean
 Exit Function
 
 LocalErr:
-  ErrorMsgbox "Error saving " & Me.Caption & " columns"
+  ErrorCOAMsgBox "Error saving " & Me.Caption & " columns"
   SaveColumns = False
 
 End Function
@@ -4797,7 +4797,7 @@ Private Sub RetreiveDefinition()
   'Set rsTemp = datData.OpenRecordset(strSQL, adOpenForwardOnly, adLockReadOnly)
   Set rsTemp = GetDefinition
   If rsTemp.BOF And rsTemp.EOF Then
-    MsgBox "This definition has been deleted by another user.", vbExclamation + vbOKOnly, Me.Caption
+    COAMsgBox "This definition has been deleted by another user.", vbExclamation + vbOKOnly, Me.Caption
     fOK = False
     Exit Sub
   End If
@@ -4842,7 +4842,7 @@ Private Sub RetreiveDefinition()
       txtEmailSubject.Text = rsTemp!EmailSubject
 
       If IIf(IsNull(rsTemp!EmailAddrID), 0, rsTemp!EmailAddrID) = 0 Then
-        MsgBox "Please select a destination email address for this merge.", vbExclamation, Me.Caption
+        COAMsgBox "Please select a destination email address for this merge.", vbExclamation, Me.Caption
         mblnRecordSelectionInvalid = True
       Else
         SetComboItem cboEMailField, rsTemp!EmailAddrID
@@ -4948,7 +4948,7 @@ Private Sub RetreiveDefinition()
 Exit Sub
 
 LocalErr:
-  ErrorMsgbox "Error retrieving " & Me.Caption & " definition"
+  ErrorCOAMsgBox "Error retrieving " & Me.Caption & " definition"
 
 End Sub
 
@@ -4960,7 +4960,7 @@ Private Function SetPrinterCombo(cboTemp As ComboBox, strValue As String) As Boo
     If cboTemp.Text <> strValue Then
       cboTemp.AddItem strValue
       cboTemp.ListIndex = cboPrinterName.NewIndex
-      MsgBox "This definition is set to output to printer " & strValue & _
+      COAMsgBox "This definition is set to output to printer " & strValue & _
              " which is not set up on your PC.", vbInformation, Me.Caption
     End If
   End If
@@ -5136,12 +5136,12 @@ Private Sub RetrieveColumns()
 '
 '          If FormPrint Then
 '            sMessage = Me.Caption & " print failed : " & vbCrLf & vbCrLf & sMessage
-'            MsgBox sMessage, vbExclamation + vbOKOnly, App.Title
+'            COAMsgBox sMessage, vbExclamation + vbOKOnly, App.Title
 '            Me.Cancelled = True
 '            Exit Sub
 '          End If
 '
-'          MsgBox sMessage & vbCrLf & _
+'          COAMsgBox sMessage & vbCrLf & _
 '                 "It will be removed from the definition.", vbExclamation + vbOKOnly, App.Title
 '
 '          fAlreadyNotified = True
@@ -5150,7 +5150,7 @@ Private Sub RetrieveColumns()
 '        mbNeedsSave = True
 '
 ''      ElseIf sMessage <> vbNullString And Not mblnDefinitionCreator Then
-''          MsgBox "This definition contains hidden calculation(s) and is owned by another user." & vbCrLf & "This definition will now be made hidden.", vbExclamation + vbOKOnly, App.Title
+''          COAMsgBox "This definition contains hidden calculation(s) and is owned by another user." & vbCrLf & "This definition will now be made hidden.", vbExclamation + vbOKOnly, App.Title
 ''          SetUtilityAccess mlngMailMergeID, "MAILMERGE", "HD"
 ''          Me.Changed = False
 ''          Me.Cancelled = True
@@ -5225,14 +5225,14 @@ Private Sub RetrieveColumns()
 Exit Sub
 
 LocalErr:
-  ErrorMsgbox "Error retrieving " & Me.Caption & " definition"
+  ErrorCOAMsgBox "Error retrieving " & Me.Caption & " definition"
 
 End Sub
 
 Private Sub PrimaryTableClick()
   
   Dim strMBText As String
-  Dim intMBButtons As Integer
+  Dim intMBButtons As Long
   Dim strMBTitle As String
   Dim intMBResponse As Integer
   
@@ -5255,7 +5255,7 @@ Private Sub PrimaryTableClick()
             "Are you sure you wish to continue?"
     intMBButtons = vbQuestion + vbYesNo
     strMBTitle = Me.Caption
-    intMBResponse = MsgBox(strMBText, intMBButtons, strMBTitle)
+    intMBResponse = COAMsgBox(strMBText, intMBButtons, strMBTitle)
 
   End If
 
@@ -5293,7 +5293,7 @@ Private Sub PrimaryTableClick()
 Exit Sub
 
 LocalErr:
-  ErrorMsgbox "Error changing base table"
+  ErrorCOAMsgBox "Error changing base table"
 
 End Sub
 
@@ -5367,7 +5367,7 @@ Private Sub LoadPrimaryDependantCombos()
 Exit Sub
 
 LocalErr:
-  ErrorMsgbox "Error populating email column combo box"
+  ErrorCOAMsgBox "Error populating email column combo box"
 
 End Sub
 
@@ -5496,7 +5496,7 @@ Private Sub PopulateAvailable()
 Exit Sub
 
 LocalErr:
-  ErrorMsgbox "Error populating columns available for selection"
+  ErrorCOAMsgBox "Error populating columns available for selection"
 
 End Sub
 
@@ -5570,7 +5570,7 @@ Private Sub PopulateTableCombo()
 Exit Sub
 
 LocalErr:
-  ErrorMsgbox "Error populating tables available for selection"
+  ErrorCOAMsgBox "Error populating tables available for selection"
   
 End Sub
 
@@ -5626,7 +5626,7 @@ Private Function GetSortOrder(lngID As Long, lngSeq As Long, strAscDesc As Strin
 Exit Function
 
 LocalErr:
-  ErrorMsgbox "Error checking sort order"
+  ErrorCOAMsgBox "Error checking sort order"
   
 End Function
 
@@ -5643,7 +5643,7 @@ Private Function IsInSortOrder(plngColExprID As Long) As Boolean
   Dim lRow As Long
   
   Dim strMBText As String
-  Dim intMBButtons As Integer
+  Dim intMBButtons As Long
   Dim strMBTitle As String
   Dim intMBResponse As Integer
   
@@ -5662,7 +5662,7 @@ Private Function IsInSortOrder(plngColExprID As Long) As Boolean
                     "Do you wish to continue ?"
         intMBButtons = vbExclamation + vbYesNo
         strMBTitle = Me.Caption
-        intMBResponse = MsgBox(strMBText, intMBButtons, strMBTitle)
+        intMBResponse = COAMsgBox(strMBText, intMBButtons, strMBTitle)
 
         If intMBResponse = vbYes Then
           If .Rows = 1 Then
@@ -5729,7 +5729,7 @@ Public Sub PrintDef(lMailMergeID As Long)
   mlngMailMergeID = lMailMergeID
   Set rsTemp = GetDefinition
   If rsTemp.BOF And rsTemp.EOF Then
-    MsgBox "This definition has been deleted by another user.", vbExclamation, Me.Caption
+    COAMsgBox "This definition has been deleted by another user.", vbExclamation, Me.Caption
     Exit Sub
   End If
   
@@ -5970,7 +5970,7 @@ Public Sub PrintDef(lMailMergeID As Long)
 Exit Sub
 
 LocalErr:
-  ErrorMsgbox "Printing " & Me.Caption & " Definition Failed"
+  ErrorCOAMsgBox "Printing " & Me.Caption & " Definition Failed"
 
 End Sub
 
@@ -6030,7 +6030,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
           (Not FormPrint)
         If fRemove Then
           sBigMessage = "The '" & cboBaseTable.List(cboBaseTable.ListIndex) & "' table picklist will be removed from this definition as it is hidden and you do not have permission to make this definition hidden."
-          MsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
+          COAMsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
         Else
           fNeedToForceHidden = True
           
@@ -6088,7 +6088,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
         
         If fRemove Then
           sBigMessage = "The '" & cboBaseTable.List(cboBaseTable.ListIndex) & "' table filter will be removed from this definition as it is hidden and you do not have permission to make this definition hidden."
-          MsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
+          COAMsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
         Else
           fNeedToForceHidden = True
           
@@ -6154,7 +6154,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
   
             If fRemove Then
               sBigMessage = "The '" & sCalcName & "' calculation will be removed from this definition as it is hidden and you do not have permission to make this definition hidden."
-              MsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
+              COAMsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
             Else
               fNeedToForceHidden = True
     
@@ -6335,7 +6335,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
       sBigMessage = Me.Caption & " print failed. The definition is currently invalid : " & vbCrLf & vbCrLf & sBigMessage
     End If
   
-    MsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
+    COAMsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
   End If
       
   ForceDefinitionToBeHiddenIfNeeded = (Len(sBigMessage) = 0)

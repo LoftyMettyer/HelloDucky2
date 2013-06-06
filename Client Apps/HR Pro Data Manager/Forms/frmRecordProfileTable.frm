@@ -83,16 +83,16 @@ Begin VB.Form frmRecordProfileTable
          Width           =   330
       End
       Begin VB.CommandButton cmdOrderClear 
-Caption = "O"
-BeginProperty Font
-    Name = "Wingdings 2"
-    Size = 20.25
-    Charset = 2
-    Weight = 400
-    Underline = 0
-    Italic = 0
-    Strikethrough = 0
-EndProperty
+         Caption         =   "O"
+         BeginProperty Font 
+            Name            =   "Wingdings 2"
+            Size            =   20.25
+            Charset         =   2
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
          Height          =   315
          Left            =   4125
          MaskColor       =   &H000000FF&
@@ -134,16 +134,16 @@ EndProperty
          Width           =   330
       End
       Begin VB.CommandButton cmdFilterClear 
-Caption = "O"
-BeginProperty Font
-    Name = "Wingdings 2"
-    Size = 20.25
-    Charset = 2
-    Weight = 400
-    Underline = 0
-    Italic = 0
-    Strikethrough = 0
-EndProperty
+         Caption         =   "O"
+         BeginProperty Font 
+            Name            =   "Wingdings 2"
+            Size            =   20.25
+            Charset         =   2
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
          Height          =   315
          Left            =   4125
          MaskColor       =   &H000000FF&
@@ -478,7 +478,7 @@ TidyUpAndExit:
   Exit Function
   
 Error_Trap:
-  MsgBox "Error initialising the the related tables form.", vbExclamation + vbOKOnly, "Record Profile"
+  COAMsgBox "Error initialising the the related tables form.", vbExclamation + vbOKOnly, "Record Profile"
   Initialize = False
   GoTo TidyUpAndExit
 
@@ -512,7 +512,7 @@ Private Function PopulateTableCombo() As Boolean
     GetRelatedTables mlngBaseTableID, "CHILD"
   
     If UBound(mavTables, 2) = 0 Then
-      MsgBox "All related tables for the current base table have been added to the record profile definition." _
+      COAMsgBox "All related tables for the current base table have been added to the record profile definition." _
               , vbInformation + vbOKOnly, "Record Profile"
       PopulateTableCombo = False
       Cancelled = True
@@ -527,7 +527,7 @@ Private Function PopulateTableCombo() As Boolean
     End If
   
     If cboTable.ListCount = 0 Then
-      MsgBox "All related tables for the current base table have been added to the record profile definition." _
+      COAMsgBox "All related tables for the current base table have been added to the record profile definition." _
               , vbInformation + vbOKOnly, "Record Profile"
       PopulateTableCombo = False
       Cancelled = True
@@ -557,7 +557,7 @@ TidyUpAndExit:
   Exit Function
 
 Error_Trap:
-  MsgBox "Error populating related tables dropdown box.", vbExclamation + vbOKOnly, "Record Profile"
+  COAMsgBox "Error populating related tables dropdown box.", vbExclamation + vbOKOnly, "Record Profile"
   PopulateTableCombo = False
   GoTo TidyUpAndExit
   
@@ -585,12 +585,12 @@ End Property
 
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
   
 End Property
 
 Public Property Let Changed(ByVal pfChanged As Boolean)
-  cmdOk.Enabled = pfChanged
+  cmdOK.Enabled = pfChanged
   
 End Property
 
@@ -680,7 +680,7 @@ Private Sub GetFilter(ctlSource As Control, ctlTarget As Control)
       If .SelectExpression(True) = True Then
         If .Access = ACCESS_HIDDEN Then
           If Not mfrmParent.DefinitionOwner Then
-            MsgBox "Unable to select this filter as it is a hidden filter and you are not the owner of this definition", vbExclamation
+            COAMsgBox "Unable to select this filter as it is a hidden filter and you are not the owner of this definition", vbExclamation
             If ctlTarget.Tag = .ExpressionID Or (.ExpressionID = 0) Then
               ctlTarget.Text = ""
               ctlTarget.Tag = 0
@@ -698,7 +698,7 @@ Private Sub GetFilter(ctlSource As Control, ctlTarget As Control)
         If ctlTarget.Tag = .ExpressionID Then
           If .Access = ACCESS_HIDDEN Then
             If Not mfrmParent.DefinitionOwner Then
-              MsgBox "Unable to select this filter as it is a hidden filter and you are not the owner of this definition", vbExclamation
+              COAMsgBox "Unable to select this filter as it is a hidden filter and you are not the owner of this definition", vbExclamation
               ctlTarget.Text = ""
               ctlTarget.Tag = 0
               Exit Sub
@@ -771,7 +771,7 @@ Private Sub GetOrder(ctlSource As Control, ctlTarget As Control)
 TidyUpAndExit:
   Set objOrder = Nothing
   If Not fOK Then
-    MsgBox "Error changing order ID.", vbExclamation + vbOKOnly, App.ProductName
+    COAMsgBox "Error changing order ID.", vbExclamation + vbOKOnly, App.ProductName
   End If
   Exit Sub
 
@@ -835,7 +835,7 @@ End Sub
 
 Private Sub cmdOK_Click()
   If Trim(cboTable.Text) = vbNullString Then
-    MsgBox "You must select a table.", vbExclamation, Me.Caption
+    COAMsgBox "You must select a table.", vbExclamation, Me.Caption
     Exit Sub
   End If
 
@@ -862,7 +862,7 @@ Private Function ValidateTableInfo() As Boolean
 
     If rsTemp.BOF And rsTemp.EOF Then
       sMessage = "The '" & txtFilter.Text & "' filter no longer exists."
-      MsgBox sMessage, vbExclamation + vbOKOnly, "Record Profile"
+      COAMsgBox sMessage, vbExclamation + vbOKOnly, "Record Profile"
       txtFilter.Text = vbNullString
       txtFilter.Tag = 0
       fOK = False
@@ -871,7 +871,7 @@ Private Function ValidateTableInfo() As Boolean
 
       If sMessage <> vbNullString Then
         sMessage = "The '" & txtFilter.Text & "' filter has been made hidden by another user."
-        MsgBox sMessage, vbExclamation + vbOKOnly, "Record Profile"
+        COAMsgBox sMessage, vbExclamation + vbOKOnly, "Record Profile"
         txtFilter.Text = vbNullString
         txtFilter.Tag = 0
         fOK = False
@@ -886,7 +886,7 @@ Private Function ValidateTableInfo() As Boolean
 
     If rsTemp.BOF And rsTemp.EOF Then
       sMessage = "The '" & txtOrder.Text & "' order no longer exists."
-      MsgBox sMessage, vbExclamation + vbOKOnly, "Record Profile"
+      COAMsgBox sMessage, vbExclamation + vbOKOnly, "Record Profile"
       txtOrder.Text = vbNullString
       txtOrder.Tag = 0
       fOK = False
@@ -902,7 +902,7 @@ TidyUpAndExit:
   Exit Function
 
 Error_Trap:
-  MsgBox "Error validating related table information.", vbExclamation + vbOKOnly, "Record Profile"
+  COAMsgBox "Error validating related table information.", vbExclamation + vbOKOnly, "Record Profile"
   ValidateTableInfo = False
   GoTo TidyUpAndExit
   

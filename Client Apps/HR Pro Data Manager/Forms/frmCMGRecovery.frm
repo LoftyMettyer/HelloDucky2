@@ -179,7 +179,7 @@ Private Sub cmdRollback_Click()
   On Error GoTo ErrTrap
   bOK = True
   
-  If MsgBox("Are you sure you want to rollback. This process cannot be reversed.", vbQuestion + vbYesNo, "Warning") = vbYes Then
+  If COAMsgBox("Are you sure you want to rollback. This process cannot be reversed.", vbQuestion + vbYesNo, "Warning") = vbYes Then
   
     strRollbackDate = Format(dbCommitDates.Columns("ActualCommitDate").Value, "YYYY/MM/DD hh:mm:ss")
   

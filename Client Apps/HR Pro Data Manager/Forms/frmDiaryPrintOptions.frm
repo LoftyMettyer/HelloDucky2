@@ -411,14 +411,14 @@ Private Sub cmdOK_Click()
       If Not ValidateGTMaskDate(cboManualDate(0)) Then
         Exit Sub
       ElseIf Not IsValidDate(cboManualDate(0)) Then
-        MsgBox "Please enter a valid date", vbExclamation
+        COAMsgBox "Please enter a valid date", vbExclamation
         cboManualDate(0).SetFocus
         Exit Sub
       End If
       If Not ValidateGTMaskDate(cboManualDate(1)) Then
         Exit Sub
       ElseIf Not IsValidDate(cboManualDate(1)) Then
-        MsgBox "Please enter a valid date", vbExclamation
+        COAMsgBox "Please enter a valid date", vbExclamation
         cboManualDate(1).SetFocus
         Exit Sub
       End If
@@ -450,7 +450,7 @@ Private Sub cmdOK_Click()
     mbCancelled = False
     Unload Me
   Else
-    MsgBox "Please complete date selection", vbExclamation, Me.Caption
+    COAMsgBox "Please complete date selection", vbExclamation, Me.Caption
   End If
 End Sub
 
@@ -531,7 +531,7 @@ Private Sub cmdExprDate_Click(Index As Integer)
         fOK = (.ReturnType = giEXPRVALUE_DATE)
         
         If Not fOK Then
-          MsgBox "This calculation does not return a date value.", vbExclamation, Me.Caption
+          COAMsgBox "This calculation does not return a date value.", vbExclamation, Me.Caption
         End If
       Loop While Not fOK
 

@@ -933,14 +933,14 @@ Private Sub cmdOK_Click()
   'Do some validation to make sure everything required has been entered
   If optTable Then
     If cboFromTable.Text = "" Or cboFromColumn.Text = "" Then
-      MsgBox "You must select a table and column.", vbExclamation, Me.Caption
+      COAMsgBox "You must select a table and column.", vbExclamation, Me.Caption
       Exit Sub
     End If
   End If
   
   If optCalculation Then
     If txtCalculation.Tag = 0 Then
-      MsgBox "You must select a calculation.", vbExclamation, Me.Caption
+      COAMsgBox "You must select a calculation.", vbExclamation, Me.Caption
       Exit Sub
     End If
 
@@ -948,7 +948,7 @@ Private Sub cmdOK_Click()
     'Check can still see calculation
     strErrorMsg = IsCalcValid(txtCalculation.Tag)
     If strErrorMsg <> vbNullString Then
-      MsgBox strErrorMsg, vbExclamation, App.Title
+      COAMsgBox strErrorMsg, vbExclamation, App.Title
       txtCalculation.Text = vbNullString
       txtCalculation.Tag = 0
       Exit Sub
@@ -959,7 +959,7 @@ Private Sub cmdOK_Click()
     ' they cant add it to the definition.
     Set prstTemp = datGeneral.GetReadOnlyRecords("SELECT * FROM AsrSysExpressions WHERE ExprID = " & Me.txtCalculation.Tag)
     If prstTemp.Fields("Access") = "HD" And Not mfrmForm.mblnDefinitionCreator Then
-      MsgBox "Cannot include the '" & Me.txtCalculation.Text & "' calculation." & vbCrLf & _
+      COAMsgBox "Cannot include the '" & Me.txtCalculation.Text & "' calculation." & vbCrLf & _
             " Its hidden and you are not the creator of this definition.", vbInformation + vbOKOnly, "Export"
       Exit Sub
     End If
@@ -969,7 +969,7 @@ Private Sub cmdOK_Click()
   If optText Then
     txtLength.Text = Len(txtOther.Text)
     If txtOther.Text = "" Then
-      MsgBox "You must enter some free text.", vbExclamation, Me.Caption
+      COAMsgBox "You must enter some free text.", vbExclamation, Me.Caption
       Exit Sub
     End If
   End If
@@ -979,7 +979,7 @@ Private Sub cmdOK_Click()
       If txtLength.Text = 0 Then
         blnCarriageReturn = (optOther.Value = True And cboOther.Text = "Carriage Return")
         If Not blnCarriageReturn Then
-          If MsgBox("Leaving a size of zero will result in the values not appearing." & vbCrLf & vbCrLf & _
+          If COAMsgBox("Leaving a size of zero will result in the values not appearing." & vbCrLf & vbCrLf & _
                     "Do you wish to continue ?", vbQuestion + vbYesNo, "Export") = vbNo Then
             Exit Sub
           End If
@@ -989,7 +989,7 @@ Private Sub cmdOK_Click()
   
   
     If Trim(txtHeading.Text) = vbNullString Then
-      MsgBox "You must give this column a heading.", vbExclamation, Me.Caption
+      COAMsgBox "You must give this column a heading.", vbExclamation, Me.Caption
       Exit Sub
     End If
   End If
@@ -1323,7 +1323,7 @@ Public Sub SetCMGOptions(ByVal sDefaultCMGCode As String)
   'NPG20080617 Suggestion S000816
   ' Expand the size of the form and show the Suppress Nulls check box for CMG exports
   Me.Height = 5325
-  cmdOk.Top = 4350
+  cmdOK.Top = 4350
   cmdCancel.Top = 4350
   fraType.Height = 4020
   fraProperties.Height = 2775

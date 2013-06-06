@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomct2.ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
 Begin VB.Form frmSelectEmbedded 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Select..."
@@ -447,7 +447,7 @@ Private Sub cmdProperties_Click()
   
   strProperties = strProperties & "Last Modified : " & mstrFileModifyDate
 
-  MsgBox strProperties, vbInformation, strCaption
+  COAMsgBox strProperties, vbInformation, strCaption
 
 
 End Sub
@@ -460,7 +460,7 @@ Private Sub cmdRemove_Click()
   strCaption = IIf(miOLEType = OLE_EMBEDDED, "Embedded", "Linked") & " Object"
   strDelType = IIf(miOLEType = OLE_EMBEDDED, "delete", "unlink")
 
-  If MsgBox("Are you sure you want to " & strDelType & " " & mstrFileName & "?", vbQuestion + vbYesNo, strCaption) = vbYes Then
+  If COAMsgBox("Are you sure you want to " & strDelType & " " & mstrFileName & "?", vbQuestion + vbYesNo, strCaption) = vbYes Then
     LoadBlankStream
     mbChanged = True
     mbDocumentEdited = False
@@ -655,7 +655,7 @@ Private Sub EditDocument()
       mbDocumentEdited = True
       
     Else
-      MsgBox "HR Pro has been unable to establish a connection to " & mstrFileName & " because another instance of this application is open." & vbCrLf _
+      COAMsgBox "HR Pro has been unable to establish a connection to " & mstrFileName & " because another instance of this application is open." & vbCrLf _
             & "Close the existing application and try again.", vbExclamation, "Error"
     End If
   End If
@@ -680,7 +680,7 @@ ErrorTrap:
     bResetFlags = False
     Resume Next
   Else
-    MsgBox "HR Pro has been unable to load " & mstrFileName & " because you do not have access." & vbCrLf, vbExclamation, "Error"
+    COAMsgBox "HR Pro has been unable to load " & mstrFileName & " because you do not have access." & vbCrLf, vbExclamation, "Error"
   End If
 
 
@@ -934,7 +934,7 @@ Function OpenDocument(pstrFileName As String, pbReadOnly As Boolean) As Long
 '    CreateDocumentStream miOLEType, pstrFileName, False
     
   Else
-    MsgBox "No application is associated with this file.", _
+    COAMsgBox "No application is associated with this file.", _
       vbExclamation + vbOKOnly, App.ProductName
   End If
   
@@ -994,31 +994,31 @@ Private Sub AddDocument(piOLEType As HRProDataMgr.OLEType)
     If mbEmbeddedEnabled And objCheckFileSize.Size >= mlngMaxOLESize And piOLEType = OLE_EMBEDDED Then
         
       ' File exceeds maximum size
-      MsgBox "File is too large to embed." & vbCrLf & "Maximum for this column is " & (mlngMaxOLESize / 1000) & " Kb", vbInformation, Me.Caption
+      COAMsgBox "File is too large to embed." & vbCrLf & "Maximum for this column is " & (mlngMaxOLESize / 1000) & " Kb", vbInformation, Me.Caption
     
     Else
       
       ' Defined maximum filename length of 70
       If Len(GetFileNameOnly(.FileName)) > 70 Then
-        MsgBox "File name is too long." & vbCrLf & "Maximum file length is 70 characters.", vbInformation, Me.Caption
+        COAMsgBox "File name is too long." & vbCrLf & "Maximum file length is 70 characters.", vbInformation, Me.Caption
         bOK = False
       End If
 
       ' Defined maximum filename length of 210
       If Len(GetPathOnly(.FileName, True)) > 210 And bOK Then
-        MsgBox "Directory structure is too long." & vbCrLf & "Maximum length is 210 characters.", vbInformation, Me.Caption
+        COAMsgBox "Directory structure is too long." & vbCrLf & "Maximum length is 210 characters.", vbInformation, Me.Caption
         bOK = False
       End If
 
       ' Defined maximum filename length of 60
       If Len(Trim(GetUNCOnly(.FileName))) > 60 And bOK Then
-        MsgBox "Network path is too long." & vbCrLf & "Maximum length is 60 characters.", vbInformation, Me.Caption
+        COAMsgBox "Network path is too long." & vbCrLf & "Maximum length is 60 characters.", vbInformation, Me.Caption
         bOK = False
       End If
 
       ' Make sure file is not zero length
       If objCheckFileSize.Size = 0 Then
-        MsgBox "File is zero length and cannot be read.", vbInformation, Me.Caption
+        COAMsgBox "File is zero length and cannot be read.", vbInformation, Me.Caption
         bOK = False
       End If
 
@@ -1199,7 +1199,7 @@ Private Function CancelChanges() As Boolean
   Dim pintAnswer As Integer
     
   If (mbChanged = True Or mbDocumentEdited) And Not mbIsReadOnly Then
-    pintAnswer = MsgBox("All changes will be lost. Are you sure you want to cancel?", vbQuestion + vbYesNo, Me.Caption)
+    pintAnswer = COAMsgBox("All changes will be lost. Are you sure you want to cancel?", vbQuestion + vbYesNo, Me.Caption)
     CancelChanges = (pintAnswer = vbYes)
   Else
     CancelChanges = True

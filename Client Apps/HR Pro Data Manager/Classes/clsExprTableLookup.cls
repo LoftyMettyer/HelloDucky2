@@ -43,7 +43,7 @@ TidyUpAndExit:
   Exit Function
 
 ErrorTrap:
-  MsgBox "Error checking for cyclic expressions.", _
+  COAMsgBox "Error checking for cyclic expressions.", _
     vbOKOnly + vbExclamation, App.ProductName
   Err = False
   Resume TidyUpAndExit
@@ -232,7 +232,7 @@ TidyUpAndExit:
 
 ErrorTrap:
   If ASRDEVELOPMENT Then
-    MsgBox Err.Description, vbCritical, "ASRDEVELOPMENT"
+    COAMsgBox Err.Description, vbCritical, "ASRDEVELOPMENT"
   End If
   fOK = False
   Resume TidyUpAndExit

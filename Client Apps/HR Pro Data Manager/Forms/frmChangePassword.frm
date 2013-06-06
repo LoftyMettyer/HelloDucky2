@@ -192,7 +192,7 @@ Public Function Initialise(iForceReason As PasswordChangeReason, lMinimumLength 
   
 Init_ERROR:
 
-  MsgBox "Error initialising the Change Password form." & vbNewLine & vbNewLine & _
+  COAMsgBox "Error initialising the Change Password form." & vbNewLine & vbNewLine & _
          "(" & Err.Number & " - " & Err.Description & ")", vbExclamation + vbOKOnly, App.Title
   
   Initialise = False
@@ -274,7 +274,7 @@ Private Sub cmdOK_Click()
       Me.Hide
     End If
   Else
-    MsgBox "Cannot change password. This account is currently being used " & _
+    COAMsgBox "Cannot change password. This account is currently being used " & _
             "by " & IIf(iUsers > 2, iUsers & " users", "another user") & " in the system.", vbExclamation + vbOKOnly, App.Title
     If mblnForceChange Then
       mblnExiting = True
@@ -290,7 +290,7 @@ Private Sub cmdCancel_Click()
   
   If mblnForceChange Then
     
-    If MsgBox("You must change your password before you can log in to HR Pro." & vbNewLine & _
+    If COAMsgBox("You must change your password before you can log in to HR Pro." & vbNewLine & _
               "Are you sure you wish to exit ?", vbYesNo + vbQuestion, App.Title) = vbYes Then
       mblnExiting = True
       Me.Hide
@@ -361,7 +361,7 @@ Private Function PasswordChange() As Boolean
     Set frmForm = Nothing
     
     If fRecFormOpen Then
-      If (MsgBox("Changing the password will automatically close all open record edit and find windows." & vbNewLine & _
+      If (COAMsgBox("Changing the password will automatically close all open record edit and find windows." & vbNewLine & _
         "Do you wish to continue?", vbQuestion + vbYesNo, App.Title) <> vbYes) Then
         
         PasswordChange = False
@@ -464,11 +464,11 @@ Private Function PasswordChange() As Boolean
 TidyAndExit:
 
   If fOK = True Then
-    MsgBox "Password successfully changed", vbInformation
+    COAMsgBox "Password successfully changed", vbInformation
   
   Else
     'Check if there is an error then reset all of the text boxes
-    MsgBox mstrErrorMessage, vbExclamation
+    COAMsgBox mstrErrorMessage, vbExclamation
     txtOldPW.Text = vbNullString
     txtNewPW.Text = vbNullString
     txtNewPWRetype.Text = vbNullString
@@ -612,7 +612,7 @@ Private Sub UpdateConfig()
 
 Update_ERROR:
 
-  MsgBox "Error updating AsrSysPasswords." & vbNewLine & vbNewLine & _
+  COAMsgBox "Error updating AsrSysPasswords." & vbNewLine & vbNewLine & _
          "(" & Err.Number & " - " & Err.Description & ")", vbExclamation + vbOKOnly, App.Title
   fOK = False
   Set rsInfo = Nothing
@@ -624,7 +624,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
   If Not mblnForceChange Then Exit Sub
 
   If UnloadMode = vbFormControlMenu Then
-    If MsgBox("You must change your password before you can log in to HR Pro." & vbNewLine & _
+    If COAMsgBox("You must change your password before you can log in to HR Pro." & vbNewLine & _
               "Are you sure you wish to exit ?", vbYesNo + vbQuestion, App.Title) = vbYes Then
       mblnExiting = True
       Me.Hide

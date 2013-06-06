@@ -53,7 +53,7 @@ Private mblnOutputEmail As Boolean
 Private mlngOutputEmailAddr As Long
 Private mstrOutputEmailSubject As String
 Private mstrOutputEmailAttachAs As String
-Private mstrOutputFilename As String
+Private mstrOutputFileName As String
 Private mblnPreviewOnScreen As Boolean
 
 Private mlngPicklistFilterID As Long
@@ -848,7 +848,7 @@ Public Function RunCustomReport() As Boolean
     If gobjProgress.Visible Then gobjProgress.CloseProgress
     'If (fOK = False) Or (mblnNoRecords = True) Then
     If (fOK = False) Or (mblnNoRecords = True) Or Not mblnPreviewOnScreen Then
-      MsgBox mstrErrorString, IIf(fOK, vbInformation, vbExclamation) + vbOKOnly, "Custom Reports"
+      COAMsgBox mstrErrorString, IIf(fOK, vbInformation, vbExclamation) + vbOKOnly, "Custom Reports"
     End If
   End If
   
@@ -919,7 +919,7 @@ Private Function ExecuteSql() As Boolean
 
   On Error GoTo ExecuteSQL_ERROR
 
-  'MsgBox "Recordset will be generated from : " & vbNewLine & mstrSQL
+  'COAMsgBox "Recordset will be generated from : " & vbNewLine & mstrSQL
 '  mclsData.ExecuteSql mstrSQL
 ' Execute the given SQL statement.
 
@@ -1013,7 +1013,7 @@ Private Function GetCustomReportDefinition() As Boolean
     mlngOutputEmailAddr = !OutputEmailAddr
     mstrOutputEmailSubject = !OutputEmailSubject
     mstrOutputEmailAttachAs = IIf(IsNull(!OutputEmailAttachAs), vbNullString, !OutputEmailAttachAs)
-    mstrOutputFilename = !OutputFilename
+    mstrOutputFileName = !OutputFilename
     
     mblnPreviewOnScreen = (!OutputPreview Or (mlngOutputFormat = fmtDataOnly And mblnOutputScreen))
 
@@ -5024,7 +5024,7 @@ Public Function RunBradfordReport(plngPersonnelID As Long)
   
   If Not gblnBatchMode Then
     If gobjProgress.Visible Then gobjProgress.CloseProgress
-    If (fOK = False) Or (mblnNoRecords = True) Then MsgBox mstrErrorString, IIf(fOK, vbInformation, vbExclamation) + vbOKOnly, "Bradford Factor Report"
+    If (fOK = False) Or (mblnNoRecords = True) Then COAMsgBox mstrErrorString, IIf(fOK, vbInformation, vbExclamation) + vbOKOnly, "Bradford Factor Report"
   End If
   
   Screen.MousePointer = vbNormal
@@ -5057,7 +5057,7 @@ Public Function OutputReport(blnPrompt As Boolean) As Boolean
   Dim lngIndex As Long
   
   Dim iRow As Integer
-  Dim iCol As Integer
+  Dim icol As Integer
   Dim bm As Variant
   Dim sAddString As String
   Dim sBreakValue As String
@@ -5088,7 +5088,7 @@ Public Function OutputReport(blnPrompt As Boolean) As Boolean
       mblnOutputPrinter, mstrOutputPrinterName, _
       mblnOutputSave, mlngOutputSaveExisting, _
       mblnOutputEmail, mlngOutputEmailAddr, mstrOutputEmailSubject, _
-      mstrOutputEmailAttachAs, mstrOutputFilename) Then
+      mstrOutputEmailAttachAs, mstrOutputFileName) Then
 
     If Not gblnBatchMode Then
       If mbIsBradfordIndexReport Then
@@ -5184,7 +5184,7 @@ Public Function OutputReport(blnPrompt As Boolean) As Boolean
             If mblnUserCancelled Then
               If blnPrompt Then
                 gobjProgress.CloseProgress
-                MsgBox strReportType & " Output cancelled by user.", vbExclamation + vbOKOnly, strMBTitle
+                COAMsgBox strReportType & " Output cancelled by user.", vbExclamation + vbOKOnly, strMBTitle
               End If
               
               OutputReport = False
@@ -5241,11 +5241,11 @@ Public Function OutputReport(blnPrompt As Boolean) As Boolean
               
               Else
                 'loop through the columns build up a string to add to the break grid.
-                For iCol = 0 To (.Columns.Count - 1) Step 1
-                  If .Columns(iCol).Visible Then
-                    sAddString = sAddString & .Columns(iCol).CellText(bm) & vbTab
+                For icol = 0 To (.Columns.Count - 1) Step 1
+                  If .Columns(icol).Visible Then
+                    sAddString = sAddString & .Columns(icol).CellText(bm) & vbTab
                   End If
-                Next iCol
+                Next icol
                 
                 mfrmOutput.grdBreak.AddItem sAddString
                 sAddString = vbNullString
@@ -5301,7 +5301,7 @@ Public Function OutputReport(blnPrompt As Boolean) As Boolean
         If mblnUserCancelled Then
           If blnPrompt Then
             gobjProgress.CloseProgress
-            MsgBox strReportType & " Output cancelled by user.", vbExclamation + vbOKOnly, strMBTitle
+            COAMsgBox strReportType & " Output cancelled by user.", vbExclamation + vbOKOnly, strMBTitle
           End If
           
           OutputReport = False
@@ -5339,10 +5339,10 @@ Public Function OutputReport(blnPrompt As Boolean) As Boolean
     DoEvents
     
     If fOK Then
-      MsgBox strReportType & " Output complete.", _
+      COAMsgBox strReportType & " Output complete.", _
           vbInformation, strMBTitle
     Else
-      MsgBox strReportType & " Output failed." & vbNewLine & vbNewLine & mstrErrorString, _
+      COAMsgBox strReportType & " Output failed." & vbNewLine & vbNewLine & mstrErrorString, _
           vbExclamation, strMBTitle
     End If
   End If
@@ -6017,7 +6017,7 @@ Public Sub SetOutputParameters( _
   mlngOutputEmailAddr = lngOutputEmailAddr
   mstrOutputEmailSubject = strOutputEmailSubject
   mstrOutputEmailAttachAs = strOutputEmailAttachAs
-  mstrOutputFilename = strOutputFilename
+  mstrOutputFileName = strOutputFilename
   mblnCustomReportsPrintFilterHeader = blnPrintFilterHeader
   mblnPreviewOnScreen = (blnPreviewOnScreen Or (mlngOutputFormat = fmtDataOnly And mblnOutputScreen))
   
@@ -6110,7 +6110,7 @@ Public Function GetReportConfig() As Boolean
   mlngOutputEmailAddr = GetSystemSetting(strReportType, "EmailAddr", 0)
   mstrOutputEmailSubject = GetSystemSetting(strReportType, "EmailSubject", vbNullString)
   mstrOutputEmailAttachAs = GetSystemSetting(strReportType, "EmailAttachAs", vbNullString)
-  mstrOutputFilename = GetSystemSetting(strReportType, "FileName", vbNullString)
+  mstrOutputFileName = GetSystemSetting(strReportType, "FileName", vbNullString)
 
   'mblnPreviewOnScreen = (GetSystemSetting(strReportType, "Preview", vbNullString) Or (mlngOutputFormat = fmtDataOnly And mblnOutputScreen))
   mblnPreviewOnScreen = (GetSystemSetting(strReportType, "Preview", True) Or (mlngOutputFormat = fmtDataOnly And mblnOutputScreen))

@@ -143,7 +143,7 @@ Public Function Activate() As Boolean
 
 ErrorTrap:
   If ASRDEVELOPMENT Then
-    MsgBox Err.Description, vbCritical, "ASRDEVELOPMENT"
+    COAMsgBox Err.Description, vbCritical, "ASRDEVELOPMENT"
     Stop
   End If
   Activate = False
@@ -332,7 +332,7 @@ Private Sub CheckOvernightJob()
   With rsTemp
     If Not .BOF And Not .EOF Then
       If rsTemp.Fields(0).Value > 24 Then
-        MsgBox "The overnight job has not completed within the last 24 hours.  This may affect date dependant areas of HR Pro." & vbCrLf & "Please inform your SQL administrator.", vbExclamation, "HR Pro Overnight Job"
+        COAMsgBox "The overnight job has not completed within the last 24 hours.  This may affect date dependant areas of HR Pro." & vbCrLf & "Please inform your SQL administrator.", vbExclamation, "HR Pro Overnight Job"
       End If
     End If
   End With

@@ -1,11 +1,11 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "TIMASK6.OCX"
-Object = "{49CBFCC0-1337-11D2-9BBF-00A024695830}#1.0#0"; "TINUMB6.OCX"
+Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "timask6.ocx"
+Object = "{49CBFCC0-1337-11D2-9BBF-00A024695830}#1.0#0"; "tinumb6.ocx"
 Object = "{E2D000D0-2DA1-11D2-B358-00104B59D73D}#1.0#0"; "titext6.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
-Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "CODEJO~1.OCX"
+Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "Codejock.Controls.v13.1.0.ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Object = "{96E404DC-B217-4A2D-A891-C73A92A628CC}#1.0#0"; "COA_WorkingPattern.ocx"
 Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "COA_Line.ocx"
@@ -988,7 +988,7 @@ Public Sub AddNewCopyOf()
       Set objOLEControl = Nothing
     Else
       'MH20031002 Fault 7082 Reference Property instead of object to trap errors
-      'MsgBox "You do not have 'new' permission on this " & IIf(mobjTableView.ViewID > 0, "view.", "table."), vbExclamation, "Security"
+      'COAMsgBox "You do not have 'new' permission on this " & IIf(mobjTableView.ViewID > 0, "view.", "table."), vbExclamation, "Security"
       COAMsgBox "You do not have 'new' permission on this " & IIf(Me.ViewID > 0, "view.", "table."), vbExclamation, "Security"
       Exit Sub
     End If
@@ -1130,7 +1130,7 @@ Private Sub ActiveBar1_Click(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "SaveRecord"
       If Not Screen.ActiveControl Is Nothing Then
         If LostFocusCheck(Screen.ActiveControl) = True Then
-          'MsgBox "true"
+          'COAMsgBox "true"
         Else
           Exit Sub
         End If
@@ -1586,14 +1586,14 @@ Private Sub GTMaskDate1_LostFocus(Index As Integer)
 '     GTMaskDate1(Index).Text <> "  /  /" Then
 '
 '     GTMaskDate1(Index).ForeColor = vbRed
-'     MsgBox "You have entered an invalid date.", vbOKOnly + vbExclamation, App.Title
+'     COAMsgBox "You have entered an invalid date.", vbOKOnly + vbExclamation, App.Title
 '     GTMaskDate1(Index).ForeColor = vbWindowText
 '     GTMaskDate1(Index).DateValue = Null
 '     GTMaskDate1(Index).SetFocus
 '     Exit Sub
 '  ElseIf GTMaskDate1(Index).DateValue < "01/01/1753" Or GTMaskDate1(Index).DateValue > "31/12/9999" Then
 '     GTMaskDate1(Index).ForeColor = vbRed
-'     MsgBox "You have entered an invalid date.", vbOKOnly + vbExclamation, App.Title
+'     COAMsgBox "You have entered an invalid date.", vbOKOnly + vbExclamation, App.Title
 '     GTMaskDate1(Index).ForeColor = vbWindowText
 '     GTMaskDate1(Index).DateValue = Null
 '     GTMaskDate1(Index).SetFocus
@@ -1607,7 +1607,7 @@ Private Sub GTMaskDate1_LostFocus(Index As Integer)
 '      If Not IsDate(.DateValue) Or .DateValue < #1/1/1753# Then
 '
 '        .ForeColor = vbRed
-'        MsgBox "You have entered an invalid date.", vbOKOnly + vbExclamation, App.Title
+'        COAMsgBox "You have entered an invalid date.", vbOKOnly + vbExclamation, App.Title
 '        .ForeColor = vbWindowText
 '        .DateValue = Null
 '        If .Visible And .Enabled Then
@@ -4038,7 +4038,7 @@ Public Function LoadScreen(ByVal plngScreenID As Long, ByVal plngViewID As Long)
   
       gobjProgress.Visible = False
       'MH20031002 Fault 7082 Reference Property instead of object to trap errors
-      'MsgBox "You do not have 'new' permission on this empty " & IIf(mobjTableView.ViewID > 0, "view.", "table."), vbExclamation, "Security"
+      'COAMsgBox "You do not have 'new' permission on this empty " & IIf(mobjTableView.ViewID > 0, "view.", "table."), vbExclamation, "Security"
       COAMsgBox "You do not have 'new' permission on this empty " & IIf(Me.ViewID > 0, "view.", "table."), vbExclamation, "Security"
       fOK = False
     End If
@@ -4655,7 +4655,7 @@ Err_Trap:
     Case 31031
 '      fProgBarVisible = gobjProgress.Visible
 '      gobjProgress.Visible = False
-'      MsgBox "The '" & sColumnName & "' column contains an OLE object stored locally," & vbNewLine & _
+'      COAMsgBox "The '" & sColumnName & "' column contains an OLE object stored locally," & vbNewLine & _
 '             "however, the object or its path does not exist on your machine.", vbInformation + vbOKOnly, Application.Name
 '      gobjProgress.Visible = fProgBarVisible
       Resume Next
@@ -5654,7 +5654,7 @@ Public Sub CancelCourse()
         ' Only ask the user if they want to transfer booking to another course if the current course has some bookings.
         'NHRD15012007 Fault 3905
         iUserChoice = COAMsgBox("Transfer bookings to another course ?", vbYesNo + vbQuestion, App.ProductName)
-        'iUserChoice = MsgBox("Transfer bookings to another course ?", vbYesNoCancel + vbQuestion, App.ProductName)
+        'iUserChoice = COAMsgBox("Transfer bookings to another course ?", vbYesNoCancel + vbQuestion, App.ProductName)
       Else
         iUserChoice = vbNo
       End If
@@ -6023,11 +6023,11 @@ Public Sub CancelCourse()
       'LocateRecord lngCurrentRecordID
       'If mrsRecords!ID <> lngCurrentRecordID Then
       '  If Filtered Then
-      '    MsgBox "The record saved does not satisfy the current filter.", vbExclamation, App.ProductName
+      '    COAMsgBox "The record saved does not satisfy the current filter.", vbExclamation, App.ProductName
       '  'MH20031002 Fault 7082 Reference Property instead of object to trap errors
       '  'ElseIf mobjTableView.ViewID > 0 Then
       '  ElseIf Me.ViewID > 0 Then
-      '    MsgBox "The record saved is no longer in the current view.", vbExclamation, App.ProductName
+      '    COAMsgBox "The record saved is no longer in the current view.", vbExclamation, App.ProductName
       '  End If
       'End If
       
@@ -6347,7 +6347,7 @@ Public Sub UpdateChildRecords()
 '  ' If no records match the filter, then clear it.
 '  If (mrsRecords.BOF And mrsRecords.EOF) And _
 '    Filtered Then
-'    MsgBox "No records match the current filter." & vbNewLine & _
+'    COAMsgBox "No records match the current filter." & vbNewLine & _
 '      "No filter is applied.", vbInformation + vbOKOnly, App.ProductName
 '    ReDim mavFilterCriteria(3, 0)
 '    mrsRecords.Close
@@ -6366,7 +6366,7 @@ Public Sub UpdateChildRecords()
         ' JPD20030225 Fault 5079
         If Me.Visible Then
           'MH20031002 Fault 7082 Reference Property instead of object to trap errors
-          'MsgBox "This " & IIf(mobjTableView.ViewID > 0, "view", "table") & " is empty" & _
+          'COAMsgBox "This " & IIf(mobjTableView.ViewID > 0, "view", "table") & " is empty" & _
             " and you do not have 'new' permission on it.", vbExclamation, "Security"
           COAMsgBox "This " & IIf(Me.ViewID > 0, "view", "table") & " is empty" & _
             " and you do not have 'new' permission on it.", vbExclamation, "Security"
@@ -6600,7 +6600,7 @@ Public Sub AddNew()
       mfAddingNewInProgress = False
     Else
       'MH20031002 Fault 7082 Reference Property instead of object to trap errors
-      'MsgBox "You do not have 'new' permission on this " & IIf(mobjTableView.ViewID > 0, "view.", "table."), vbExclamation, "Security"
+      'COAMsgBox "You do not have 'new' permission on this " & IIf(mobjTableView.ViewID > 0, "view.", "table."), vbExclamation, "Security"
       COAMsgBox "You do not have 'new' permission on this " & IIf(Me.ViewID > 0, "view.", "table."), vbExclamation, "Security"
       Exit Sub
     End If
@@ -6676,7 +6676,7 @@ Public Function SaveChanges(Optional pfUpdateControls As Variant, _
             ' The refreshed recordset is empty and a new record cannot be created.
             ' Kill the record edit form.
             'MH20031002 Fault 7082 Reference Property instead of object to trap errors
-            'MsgBox "This " & IIf(mobjTableView.ViewID > 0, "view", "table") & " is empty" & _
+            'COAMsgBox "This " & IIf(mobjTableView.ViewID > 0, "view", "table") & " is empty" & _
               " and you do not have 'new' permission on it.", vbExclamation, "Security"
             COAMsgBox "This " & IIf(Me.ViewID > 0, "view", "table") & " is empty" & _
               " and you do not have 'new' permission on it.", vbExclamation, "Security"
@@ -6771,7 +6771,7 @@ Public Function RecordChanged(Optional pfUpdateControls As Variant, _
               ' The refreshed recordset is empty and a new record cannot be created.
               ' Kill the record edit form.
               'MH20031002 Fault 7082 Reference Property instead of object to trap errors
-              'MsgBox "This " & IIf(mobjTableView.ViewID > 0, "view", "table") & " is empty" & _
+              'COAMsgBox "This " & IIf(mobjTableView.ViewID > 0, "view", "table") & " is empty" & _
                 " and you do not have 'new' permission on it.", vbExclamation, "Security"
               COAMsgBox "This " & IIf(Me.ViewID > 0, "view", "table") & " is empty" & _
                 " and you do not have 'new' permission on it.", vbExclamation, "Security"
@@ -9896,7 +9896,7 @@ Public Sub SelectOrder()
           ' If no records match the filter, then clear it.
 '          If (mrsRecords.BOF And mrsRecords.EOF) And _
 '            Filtered Then
-'            MsgBox "No records match the current filter." & vbNewLine & _
+'            COAMsgBox "No records match the current filter." & vbNewLine & _
 '              "No filter is applied.", vbInformation + vbOKOnly, App.ProductName
 '            ReDim mavFilterCriteria(3, 0)
 '            mrsRecords.Close
@@ -9913,7 +9913,7 @@ Public Sub SelectOrder()
               ' JPD20030311 Fault 5138
               If Me.Visible Then
                 'MH20031002 Fault 7082 Reference Property instead of object to trap errors
-                'MsgBox "This " & IIf(mobjTableView.ViewID > 0, "view", "table") & " is empty" & _
+                'COAMsgBox "This " & IIf(mobjTableView.ViewID > 0, "view", "table") & " is empty" & _
                   " and you do not have 'new' permission on it.", vbExclamation, "Security"
                 COAMsgBox "This " & IIf(Me.ViewID > 0, "view", "table") & " is empty" & _
                   " and you do not have 'new' permission on it.", vbExclamation, "Security"
@@ -9973,7 +9973,7 @@ Public Sub ClearFilter()
             ' JPD20030311 Fault 5138
             If Me.Visible Then
               'MH20031002 Fault 7082 Reference Property instead of object to trap errors
-              'MsgBox "This " & IIf(mobjTableView.ViewID > 0, "view", "table") & " is now empty" & _
+              'COAMsgBox "This " & IIf(mobjTableView.ViewID > 0, "view", "table") & " is now empty" & _
                 " and you do not have 'new' permission on it.", vbExclamation, "Security"
               COAMsgBox "This " & IIf(Me.ViewID > 0, "view", "table") & " is now empty" & _
                 " and you do not have 'new' permission on it.", vbExclamation, "Security"
@@ -10068,14 +10068,14 @@ Public Sub SelectFilter()
           
           End If
           
-          ' IMPORTANT : FIX PRODUCED WIERD ERRORS WHEN SELECTING NO TO THE MSGBOX
+          ' IMPORTANT : FIX PRODUCED WIERD ERRORS WHEN SELECTING NO TO THE COAMsgBox
           ' THEREFORE REMOVED FIX AND ORIGINAL CODE IS NOW IN PLACE, AS ABOVE
           
           ' RH 13/09/00 - SUG 635 - could be a bit dodgy, but worked ok in testing!
           ' If no records match the filter, then clear it.
           
 '          If mrsRecords.BOF And mrsRecords.EOF Then
-'            If MsgBox("No records match the current filter." & vbNewLine & _
+'            If COAMsgBox("No records match the current filter." & vbNewLine & _
 '              "Would you like to define another filter?", vbQuestion + vbYesNo, App.ProductName) = vbNo Then
 '              ReDim mavFilterCriteria(3, 0)
 '              mrsRecords.Close
@@ -10096,7 +10096,7 @@ Public Sub SelectFilter()
               ' JPD20030311 Fault 5138
               If Me.Visible Then
                 'MH20031002 Fault 7082 Reference Property instead of object to trap errors
-                'MsgBox "This " & IIf(mobjTableView.ViewID > 0, "view", "table") & " is empty" & _
+                'COAMsgBox "This " & IIf(mobjTableView.ViewID > 0, "view", "table") & " is empty" & _
                   " and you do not have 'new' permission on it.", vbExclamation, "Security"
                 COAMsgBox "This " & IIf(Me.ViewID > 0, "view", "table") & " is empty" & _
                   " and you do not have 'new' permission on it.", vbExclamation, "Security"
@@ -10607,20 +10607,20 @@ Private Function LostFocusCheck(pctlControl As Control) As Boolean
       '  (iDatePart2 <> Val(Mid(pctlControl.Text, InStr(1, pctlControl.Text, "/") + 1)) Mod 100) Or _
       '  (iDatePart3 <> Val(Mid(pctlControl.Text, InStr(InStr(1, pctlControl.Text, "/") + 1, pctlControl.Text, "/") + 1)) Mod 100) Then
       '  pctlControl.DateValue = Null
-      '  MsgBox "You have entered an invalid date.", vbExclamation + vbOKOnly, App.Title
+      '  COAMsgBox "You have entered an invalid date.", vbExclamation + vbOKOnly, App.Title
       '  LostFocusCheck = False
       '  pctlControl.SetFocus
       '  Exit Function
       'ElseIf Not IsDate(pctlControl.Text) Then
       'If Not IsDate(pctlControl.Text) Then
       '  pctlControl.DateValue = Null
-      '  MsgBox "You have entered an invalid date.", vbExclamation + vbOKOnly, App.Title
+      '  COAMsgBox "You have entered an invalid date.", vbExclamation + vbOKOnly, App.Title
       '  LostFocusCheck = False
       '  pctlControl.SetFocus
       '  Exit Function
       'ElseIf CDate(pctlControl.Text) < CDate("01/01/1800") Then
       '  pctlControl.DateValue = Null
-      '  MsgBox "You have entered an invalid date." & vbNewLine & "Date must be after 01/01/1800.", vbExclamation + vbOKOnly, App.Title
+      '  COAMsgBox "You have entered an invalid date." & vbNewLine & "Date must be after 01/01/1800.", vbExclamation + vbOKOnly, App.Title
       '  LostFocusCheck = False
       '  pctlControl.SetFocus
       '  Exit Function

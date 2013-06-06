@@ -1,7 +1,7 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TabCtl32.Ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmImport 
    BorderStyle     =   3  'Fixed Dialog
@@ -53,8 +53,8 @@ Begin VB.Form frmImport
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmImport.frx":000C
       Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "fraData"
-      Tab(0).Control(1)=   "fraDefinition(0)"
+      Tab(0).Control(0)=   "fraDefinition(0)"
+      Tab(0).Control(1)=   "fraData"
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Colu&mns"
       TabPicture(1)   =   "frmImport.frx":0028
@@ -947,7 +947,7 @@ Public Property Get SelectedID() As Long
 End Property
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
 End Property
 Private Sub ForceAccess(Optional pvAccess As Variant)
   Dim iLoop As Integer
@@ -981,7 +981,7 @@ End Sub
 
 
 Public Property Let Changed(ByVal pblnChanged As Boolean)
-  cmdOk.Enabled = pblnChanged
+  cmdOK.Enabled = pblnChanged
 End Property
 
 Private Sub cboBaseTable_Click()
@@ -991,7 +991,7 @@ Private Sub cboBaseTable_Click()
     Exit Sub
   End If
 
-  If MsgBox("Warning: Changing the base table will result in all table/column " & _
+  If COAMsgBox("Warning: Changing the base table will result in all table/column " & _
             "specific aspects of this import definition being cleared." & vbCrLf & _
             "Are you sure you wish to continue?", _
             vbQuestion + vbYesNo + vbDefaultButton2, "Import") = vbYes Then
@@ -1112,7 +1112,7 @@ Private Sub cboFileFormat_Click()
 '  ' If user changes to fixed length and columns already defined, remind them that
 '  ' they will need to enter the size of the columns on the 2nd tab before saving.
 '  If Me.grdColumns.Rows > 0 And cboFileFormat.ItemData(cboFileFormat.ListIndex) = 1 Then
-'    If MsgBox("You have changed the file format to fixed length, but already have columns defined" & vbCrLf & _
+'    If COAMsgBox("You have changed the file format to fixed length, but already have columns defined" & vbCrLf & _
 '      "in the definition. Do you wish to continue ?", vbQuestion + vbYesNo + vbDefaultButton1, "Import") = vbNo Then
 '        cboFileFormat.ListIndex = mintCurrentFileFormat
 '        Exit Sub
@@ -1177,7 +1177,7 @@ Private Sub cmdClearColumn_Click()
   'Input   : None
   'Output  : None
   
-  If MsgBox("Clear all import columns/fillers." & vbCrLf & "Are you sure ?", vbOKCancel + vbQuestion, "Import") = vbOK Then
+  If COAMsgBox("Clear all import columns/fillers." & vbCrLf & "Are you sure ?", vbOKCancel + vbQuestion, "Import") = vbOK Then
     grdColumns.RemoveAll
     UpdateButtonStatus
     Changed = True
@@ -1205,7 +1205,7 @@ Private Sub cmdDeleteColumn_Click()
 
   If (txtFilter.Tag > 0) And (grdColumns.Columns("ColExprID").CellText(grdColumns.Bookmark) > 0) Then
     If ColumnInFilter(grdColumns.Columns("ColExprID").CellText(grdColumns.Bookmark), txtFilter.Tag) Then
-      MsgBox "The column cannot be removed." & vbCr & _
+      COAMsgBox "The column cannot be removed." & vbCr & _
         "It is used in the File Filter definition.", _
         vbExclamation + vbOKOnly, Application.Name
       Exit Sub
@@ -1289,7 +1289,7 @@ Private Sub cmdEditColumn_Click()
         End If
 
         If blnColumnRemoved And ColumnInFilter(lngOriginalColumnID, txtFilter.Tag) Then
-          MsgBox "The '" & sColumnName & "' column cannot be removed." & vbCr & _
+          COAMsgBox "The '" & sColumnName & "' column cannot be removed." & vbCr & _
             "It is used in the File Filter definition.", _
             vbExclamation + vbOKOnly, Application.Name
           Exit Sub
@@ -1376,13 +1376,13 @@ Private Sub cmdFileName_Click()
     
     ' Saftey first !
     If Len(.FileName) > 256 Then
-      MsgBox "Path & file name must not exceed 256 characters in length.", vbExclamation + vbOKOnly, "Import"
+      COAMsgBox "Path & file name must not exceed 256 characters in length.", vbExclamation + vbOKOnly, "Import"
       Exit Sub
     End If
     
     ' If they select an Excel file but not Excel Worksheet in the list disallow it
     If cboFileFormat.ItemData(cboFileFormat.ListIndex) <> 2 And (Right(.FileName, 3) = "xls" Or Right(.FileName, 3) = "xlsx") Then
-      MsgBox "Cannot select an Excel file unless Excel Worksheet is selected as the file format.", vbExclamation + vbOKOnly, "Import"
+      COAMsgBox "Cannot select an Excel file unless Excel Worksheet is selected as the file format.", vbExclamation + vbOKOnly, "Import"
       Exit Sub
     End If
     
@@ -1426,7 +1426,7 @@ Public Function Initialise(pblnNew As Boolean, pblnCopy As Boolean, Optional pln
     mblnFromCopy = pblnCopy
     
     If Not RetrieveImportDetails(mlngImportID) Then
-      If MsgBox("HR Pro could not load all of the definition successfully. The recommendation is that" & vbCrLf & _
+      If COAMsgBox("HR Pro could not load all of the definition successfully. The recommendation is that" & vbCrLf & _
              "you delete the definition and create a new one, however, you may edit the existing" & vbCrLf & _
              "definition if you wish. Would you like to continue and edit this definition ?", vbQuestion + vbYesNo, "Import") = vbNo Then
         Initialise = False
@@ -1519,7 +1519,7 @@ LoadCombos_ERROR:
   
   pstrSQL = vbNullString
   Set prstTables = Nothing
-  MsgBox "Error populating the combo boxes." & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Import"
+  COAMsgBox "Error populating the combo boxes." & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Import"
  
 End Sub
 
@@ -1782,7 +1782,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
   
   If Changed = True Then
     
-    pintAnswer = MsgBox("You have changed the current definition. Save changes ?", vbQuestion + vbYesNoCancel, "Import")
+    pintAnswer = COAMsgBox("You have changed the current definition. Save changes ?", vbQuestion + vbYesNoCancel, "Import")
       
     If pintAnswer = vbYes Then
       cmdOK_Click
@@ -2118,13 +2118,13 @@ Private Sub txtDesc_GotFocus()
     .SelLength = Len(.Text)
   End With
 
-  cmdOk.Default = False
+  cmdOK.Default = False
   
 End Sub
 
 Private Sub txtDesc_LostFocus()
 
-  cmdOk.Default = True
+  cmdOK.Default = True
 
 End Sub
 
@@ -2271,7 +2271,7 @@ Private Function ValidateDefinition() As Boolean
   ' Check a name has been entered
   If Trim(txtName.Text) = "" Then
     tabImport.Tab = 0
-    MsgBox "You must give this definition a name.", vbExclamation, Me.Caption
+    COAMsgBox "You must give this definition a name.", vbExclamation, Me.Caption
     txtName.SetFocus
     ValidateDefinition = False
     Exit Function
@@ -2295,7 +2295,7 @@ Private Function ValidateDefinition() As Boolean
   ' Check the name is unique
   If Not CheckUniqueName(Trim(txtName.Text), mlngImportID) Then
     tabImport.Tab = 0
-    MsgBox "An Import definition called '" & Trim(txtName.Text) & "' already exists.", vbExclamation, Me.Caption
+    COAMsgBox "An Import definition called '" & Trim(txtName.Text) & "' already exists.", vbExclamation, Me.Caption
     txtName.SelStart = 0
     txtName.SelLength = Len(txtName.Text)
     ValidateDefinition = False
@@ -2305,7 +2305,7 @@ Private Function ValidateDefinition() As Boolean
   ' Check a filename has been selected
   If Len(Trim(txtFilename.Text)) = 0 Then
     tabImport.Tab = 2
-    MsgBox "You must select the file you wish to use with this import definition.", vbExclamation + vbOKOnly, "Import"
+    COAMsgBox "You must select the file you wish to use with this import definition.", vbExclamation + vbOKOnly, "Import"
     cmdFilename.SetFocus
     ValidateDefinition = False
     Exit Function
@@ -2316,7 +2316,7 @@ Private Function ValidateDefinition() As Boolean
 ''    Case 0:
 ''    'JPD20011003 No longer want to limit csv length files to be .txt or .csv files.
 '''      If (LCase(Right(txtFilename.Text, 4)) <> ".txt") And (LCase(Right(txtFilename.Text, 4)) <> ".csv") Then
-'''        MsgBox "Delimited files must have a '.txt' or '.csv' extension.", vbExclamation + vbOKOnly, "Import"
+'''        COAMsgBox "Delimited files must have a '.txt' or '.csv' extension.", vbExclamation + vbOKOnly, "Import"
 '''        txtFilename = ""
 '''        ValidateDefinition = False
 '''        Exit Function
@@ -2324,7 +2324,7 @@ Private Function ValidateDefinition() As Boolean
 ''    Case 1:
 ''    'JPD20011003 No longer want to limit fixed length files to be .txt files.
 '''      If (LCase(Right(txtFilename.Text, 4)) <> ".txt") Then
-'''        MsgBox "Fixed length files must have a '.txt' extension.", vbExclamation + vbOKOnly, "Import"
+'''        COAMsgBox "Fixed length files must have a '.txt' extension.", vbExclamation + vbOKOnly, "Import"
 '''        txtFilename = ""
 '''        ValidateDefinition = False
 '''        Exit Function
@@ -2332,7 +2332,7 @@ Private Function ValidateDefinition() As Boolean
 ''    Case 2:
 ''      If (LCase(Right(txtFilename.Text, 4)) <> ".xls") Then
 ''        tabImport.Tab = 2
-''        MsgBox "Excel worksheet files must have a '.xls' extension.", vbExclamation + vbOKOnly, "Import"
+''        COAMsgBox "Excel worksheet files must have a '.xls' extension.", vbExclamation + vbOKOnly, "Import"
 ''        ValidateDefinition = False
 ''        Exit Function
 ''      End If
@@ -2341,7 +2341,7 @@ Private Function ValidateDefinition() As Boolean
   ' Check that there are columns defined in the definition
   If grdColumns.Rows = 0 Then
     tabImport.Tab = 1
-    MsgBox "You must select at least 1 column for your import.", vbExclamation + vbOKOnly, "Import"
+    COAMsgBox "You must select at least 1 column for your import.", vbExclamation + vbOKOnly, "Import"
     ValidateDefinition = False
     Exit Function
   End If
@@ -2350,7 +2350,7 @@ Private Function ValidateDefinition() As Boolean
   If cboFileFormat.ItemData(cboFileFormat.ListIndex) = 0 Then
     If cboDelimiter.Text = "<Other>" And Trim(txtDelimiter.Text) = "" Then
       tabImport.Tab = 2
-      MsgBox "You must specify a delimiter for delimited files.", vbExclamation + vbOKOnly, "Import"
+      COAMsgBox "You must specify a delimiter for delimited files.", vbExclamation + vbOKOnly, "Import"
       ValidateDefinition = False
       Exit Function
     End If
@@ -2366,7 +2366,7 @@ Private Function ValidateDefinition() As Boolean
         pvarbookmark = .GetBookmark(pintLoop)
         If .Columns("Size").CellText(pvarbookmark) = "" Then
           tabImport.Tab = 1
-          MsgBox "You have specified this import definition as a fixed file format import, but" & vbCrLf & _
+          COAMsgBox "You have specified this import definition as a fixed file format import, but" & vbCrLf & _
             "not all columns defined have been given a size. Please ensure all" & vbCrLf & _
             "columns in the definition have sizes for fixed length imports.", vbExclamation + vbOKOnly, "Import"
           ValidateDefinition = False
@@ -2380,7 +2380,7 @@ Private Function ValidateDefinition() As Boolean
   ' Now check that there is at least 1 key field defined.
   If CheckForKeyFields = False Then
     tabImport.Tab = 1
-    MsgBox "You must define at least one key field on the '" & cboBaseTable.Text & "' table to update records. " & _
+    COAMsgBox "You must define at least one key field on the '" & cboBaseTable.Text & "' table to update records. " & _
            "If you are creating new records only, then please select " & _
            "the Create New Records Only option.", vbExclamation + vbOKOnly, "Import"
     ValidateDefinition = False
@@ -2389,7 +2389,7 @@ Private Function ValidateDefinition() As Boolean
     
   ' Check that they are not all key fields in the definition
   If CheckNotAllKeyFields = False Then
-    MsgBox "You must define at least one field that is not a key field.", vbExclamation + vbOKOnly, "Import"
+    COAMsgBox "You must define at least one field that is not a key field.", vbExclamation + vbOKOnly, "Import"
     ValidateDefinition = False
     Exit Function
   End If
@@ -2397,7 +2397,7 @@ Private Function ValidateDefinition() As Boolean
   ' If using a filter, check one has been selected
   If optFilter.Value Then
     If txtFilter.Text = "" Or txtFilter.Tag = "0" Then
-      MsgBox "You must select a filter, or change the record selection for your file.", vbExclamation + vbOKOnly, "Import"
+      COAMsgBox "You must select a filter, or change the record selection for your file.", vbExclamation + vbOKOnly, "Import"
       tabImport.Tab = 2
       cmdFilter.SetFocus
       ValidateDefinition = False
@@ -2431,11 +2431,11 @@ If mlngImportID > 0 Then
 
     If (Not fBatchJobsOK) Then
       If Len(sBatchJobDetails_ScheduledForOtherUsers) > 0 Then
-        MsgBox "This definition cannot be made hidden from the following user groups :" & vbCrLf & vbCrLf & sBatchJobScheduledUserGroups & vbCrLf & _
+        COAMsgBox "This definition cannot be made hidden from the following user groups :" & vbCrLf & vbCrLf & sBatchJobScheduledUserGroups & vbCrLf & _
                "as it is used in the following batch jobs which are scheduled to be run by these user groups :" & vbCrLf & vbCrLf & sBatchJobDetails_ScheduledForOtherUsers, _
                vbExclamation + vbOKOnly, "Import"
       Else
-        MsgBox "This definition cannot be made hidden as it is used in the following" & vbCrLf & _
+        COAMsgBox "This definition cannot be made hidden as it is used in the following" & vbCrLf & _
                "batch jobs of which you are not the owner :" & vbCrLf & vbCrLf & sBatchJobDetails_NotOwner, vbExclamation + vbOKOnly _
                , "Import"
       End If
@@ -2445,7 +2445,7 @@ If mlngImportID > 0 Then
       Exit Function
 
     ElseIf (iCount_Owner > 0) Then
-      If MsgBox("Making this definition hidden to user groups will automatically" & vbCrLf & _
+      If COAMsgBox("Making this definition hidden to user groups will automatically" & vbCrLf & _
                 "make the following definition(s), of which you are the" & vbCrLf & _
                 "owner, hidden to the same user groups:" & vbCrLf & vbCrLf & _
                 sBatchJobDetails_Owner & vbCrLf & _
@@ -2470,7 +2470,7 @@ End If
   
 ValidateDefinition_ERROR:
   
-  MsgBox "Error whilst validating import definition." & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Import"
+  COAMsgBox "Error whilst validating import definition." & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Import"
   ValidateDefinition = False
   
 End Function
@@ -2800,7 +2800,7 @@ Private Function SaveDefinition() As Boolean
 
 Err_Trap:
   
-  MsgBox "Error whilst saving Import definition." & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Import"
+  COAMsgBox "Error whilst saving Import definition." & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Import"
   SaveDefinition = False
 
 End Function
@@ -2939,7 +2939,7 @@ Private Function InsertImport(pstrSQL As String) As Long
     cmADO.Execute
               
     If Not fSavedOK Then
-      MsgBox "The new record could not be created." & vbCrLf & vbCrLf & _
+      COAMsgBox "The new record could not be created." & vbCrLf & vbCrLf & _
         Err.Description, vbOKOnly + vbExclamation, App.ProductName
         InsertImport = 0
         Set cmADO = Nothing
@@ -3027,7 +3027,7 @@ Private Function RetrieveImportDetails(plngImportID As Long) As Boolean
                                      "FROM ASRSysImportName WHERE ID = " & plngImportID)
 
   If rsTemp.BOF And rsTemp.EOF Then
-    MsgBox "Cannot load the definition for this import." & vbCrLf & "(" & Err.Description & ")", vbCritical + vbOKOnly, "Import"
+    COAMsgBox "Cannot load the definition for this import." & vbCrLf & "(" & Err.Description & ")", vbCritical + vbOKOnly, "Import"
     Set rsTemp = Nothing
     RetrieveImportDetails = False
     Exit Function
@@ -3146,7 +3146,7 @@ Private Function RetrieveImportDetails(plngImportID As Long) As Boolean
   Set rsTemp = datGeneral.GetRecords("SELECT * FROM ASRSysImportDetails WHERE ImportID = " & plngImportID & " ORDER BY ID")
   
   If rsTemp.BOF And rsTemp.EOF Then
-    MsgBox "Error loading the column definition for this import." & _
+    COAMsgBox "Error loading the column definition for this import." & _
            IIf(Err.Description <> vbNullString, vbCrLf & "(" & Err.Description & ")", vbNullString), vbCritical + vbOKOnly, "Import"
     Set rsTemp = Nothing
     RetrieveImportDetails = False
@@ -3192,7 +3192,7 @@ Private Function RetrieveImportDetails(plngImportID As Long) As Boolean
 
 Load_ERROR:
 
-  'MsgBox "Error whilst retrieving the import definition." & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Import"
+  'COAMsgBox "Error whilst retrieving the import definition." & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Import"
   RetrieveImportDetails = False
   Set rsTemp = Nothing
 
@@ -3357,7 +3357,7 @@ Private Function CheckMandatoryColumns() As Boolean
 '                strMandatoryColumns & vbCrLf & _
 '                "Please add these columns to the import definition."
 '
-'    MsgBox strMBText, vbExclamation + vbOKOnly, "Import"
+'    COAMsgBox strMBText, vbExclamation + vbOKOnly, "Import"
 '
 '  End If
 
@@ -3369,7 +3369,7 @@ Private Function CheckMandatoryColumns() As Boolean
                 "New records will not be imported without these columns." & vbCrLf & _
                 "Do you wish to continue ?"
 
-    If MsgBox(strMBText, vbQuestion + vbYesNo, "Import") = vbYes Then CheckMandatoryColumns = True
+    If COAMsgBox(strMBText, vbQuestion + vbYesNo, "Import") = vbYes Then CheckMandatoryColumns = True
 
   End If
 
@@ -3396,7 +3396,7 @@ Public Sub PrintDef(lImportID As Long)
                                      "FROM ASRSysImportName WHERE ID = " & mlngImportID)
                                         
   If rsTemp.BOF And rsTemp.EOF Then
-    MsgBox "This definition has been deleted by another user.", vbExclamation + vbOKOnly, "Print Definition"
+    COAMsgBox "This definition has been deleted by another user.", vbExclamation + vbOKOnly, "Print Definition"
     Set rsTemp = Nothing
     Exit Sub
   End If
@@ -3532,7 +3532,7 @@ Public Sub PrintDef(lImportID As Long)
 Exit Sub
 
 LocalErr:
-  MsgBox "Printing Import Definition Failed" & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Print Definition"
+  COAMsgBox "Printing Import Definition Failed" & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Print Definition"
 
 End Sub
 

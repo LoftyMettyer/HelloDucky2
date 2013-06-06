@@ -180,11 +180,11 @@ Private Function Validate() As Boolean
 
   If optPurge.Value Then
     If cboPeriod.Text = "" Then
-      MsgBox "You must select a period to purge event log entries.", vbExclamation + vbOKOnly, "Event Log"
+      COAMsgBox "You must select a period to purge event log entries.", vbExclamation + vbOKOnly, "Event Log"
       Validate = False
       Exit Function
     ElseIf (cboPeriod.ListIndex = 3) And (spnDays.Value > 200) Then
-      MsgBox "You cannot select a purge period of greater than 200 years.", vbExclamation + vbOKOnly, "Event Log"
+      COAMsgBox "You cannot select a purge period of greater than 200 years.", vbExclamation + vbOKOnly, "Event Log"
       Validate = False
       Exit Function
     
@@ -263,7 +263,7 @@ Private Sub SavePurgeInfo()
   ' Change pointer back to default
   Screen.MousePointer = vbDefault
   
-  If Me.optPurge.Value Then MsgBox "Purge completed.", vbInformation + vbOKOnly, "Event Log"
+  If Me.optPurge.Value Then COAMsgBox "Purge completed.", vbInformation + vbOKOnly, "Event Log"
   
   Exit Sub
   
@@ -276,7 +276,7 @@ ErrorTrap:
     
     Case Else
       Screen.MousePointer = vbDefault
-      MsgBox "Error saving purge information." & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Event Log"
+      COAMsgBox "Error saving purge information." & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Event Log"
       Exit Sub
   End Select
   

@@ -208,14 +208,14 @@ Private Function ValidateParameters() As Boolean
 '''    ' Check that the user has permission to update the Training Bookings Course Title column.
 '''    fValid = objTBColumnPrivileges.Item(gsTrainBookCourseTitleName).AllowUpdate
 '''    If Not fValid Then
-'''      MsgBox "You do not have 'edit' permission on the '" & gsTrainBookCourseTitleName & "' column.", vbOKOnly, App.ProductName
+'''      COAMsgBox "You do not have 'edit' permission on the '" & gsTrainBookCourseTitleName & "' column.", vbOKOnly, App.ProductName
 '''    End If
 
     If fValid Then
       ' Check that the user has permission to update the Training Bookings Status column.
       fValid = objTBColumnPrivileges.Item(gsTrainBookStatusColumnName).AllowUpdate
       If Not fValid Then
-        MsgBox "You do not have 'edit' permission on the '" & gsTrainBookStatusColumnName & "' column.", vbOKOnly + vbInformation, App.ProductName
+        COAMsgBox "You do not have 'edit' permission on the '" & gsTrainBookStatusColumnName & "' column.", vbOKOnly + vbInformation, App.ProductName
       End If
     End If
 
@@ -246,14 +246,14 @@ Public Function Initialise(plngCourseID As Long, pobjCourseTableView As CTablePr
     
     fOK = objColumns.IsValid(gsCourseTitleColumnName)
     If Not fOK Then
-      MsgBox "The '" & gsCourseTitleColumnName & "' column is not in your current view.", vbOKOnly + vbInformation, App.ProductName
+      COAMsgBox "The '" & gsCourseTitleColumnName & "' column is not in your current view.", vbOKOnly + vbInformation, App.ProductName
     End If
   End If
   
   If fOK Then
     fOK = objColumns.Item(gsCourseTitleColumnName).AllowSelect
     If Not fOK Then
-      MsgBox "You do not have 'read' permission on the '" & gsCourseTitleColumnName & "' column.", vbOKOnly + vbInformation, App.ProductName
+      COAMsgBox "You do not have 'read' permission on the '" & gsCourseTitleColumnName & "' column.", vbOKOnly + vbInformation, App.ProductName
     End If
   End If
     
@@ -346,7 +346,7 @@ Private Function lvRecords_Configure() As Boolean
 
   fOK = Not (rsInfo.EOF And rsInfo.BOF)
   If Not fOK Then
-    MsgBox "No default order defined for the delegate table." & _
+    COAMsgBox "No default order defined for the delegate table." & _
       vbCrLf & "Unable to display the records.", vbExclamation, "Security"
   Else
     ' Check the user's privilieges on the order columns.
@@ -495,7 +495,7 @@ Private Function lvRecords_Configure() As Boolean
 
     ' Inform the user if they do not have permission to see the data.
     If fNoSelect Then
-      MsgBox "You do not have 'read' permission on all of the columns in the selected order." & _
+      COAMsgBox "You do not have 'read' permission on all of the columns in the selected order." & _
         vbCrLf & "Only permitted columns will be shown.", vbExclamation, "Security"
     End If
     
@@ -542,12 +542,12 @@ Private Function lvRecords_Configure() As Boolean
         mSelectDelegateSQL = sSQL
       Else
         ' Unable to read from the delegate table.
-        MsgBox "You do not have permission to read the Delegate table." & _
+        COAMsgBox "You do not have permission to read the Delegate table." & _
           vbCrLf & "Unable to display records.", vbExclamation, "Security"
         fOK = False
       End If
     Else
-      MsgBox "You do not have permission to read any of the columns in the Delegate table's default order." & _
+      COAMsgBox "You do not have permission to read any of the columns in the Delegate table's default order." & _
         vbCrLf & "Unable to display records.", vbExclamation, "Security"
       fOK = False
     End If
@@ -562,7 +562,7 @@ TidyUpAndExit:
   Exit Function
   
 ErrorTrap:
-  MsgBox "Error reading Delegate records.", vbExclamation, Me.Caption
+  COAMsgBox "Error reading Delegate records.", vbExclamation, Me.Caption
   fOK = False
   Resume TidyUpAndExit
 
@@ -669,7 +669,7 @@ Private Function CheckAvailability() As Boolean
           " unavailable for the current course." & vbCrLf & _
           IIf(iFailedCount = lvRecords.ListItems.Count, "Unable to book the selected delegates.", "Continue booking the selected delegates that are available ?")
       
-        fOK = (MsgBox(sMessage, IIf(iFailedCount = lvRecords.ListItems.Count, vbOKOnly + vbInformation, vbOKCancel), App.ProductName) = vbOK) And _
+        fOK = (COAMsgBox(sMessage, IIf(iFailedCount = lvRecords.ListItems.Count, vbOKOnly + vbInformation, vbOKCancel), App.ProductName) = vbOK) And _
           (iFailedCount < lvRecords.ListItems.Count)
       End If
       
@@ -680,7 +680,7 @@ Private Function CheckAvailability() As Boolean
             " unavailable for the current course." & vbCrLf & _
             "Do you still want to book " & IIf(iFailedQueryCount = 1, "this delegate", "these delegates") & " on the course ?"
       
-          iReply = MsgBox(sMessage, vbYesNo + vbQuestion, App.ProductName)
+          iReply = COAMsgBox(sMessage, vbYesNo + vbQuestion, App.ProductName)
       
           ' Modify the check status with respect to the user's choice.
           For iLoop = 1 To UBound(mavSelectedRecords, 2)
@@ -803,7 +803,7 @@ Private Function CheckPreRequisites() As Boolean
           " failed to meet the pre-requisites for the current course." & vbCrLf & _
           IIf(iFailedCount = lvRecords.ListItems.Count, "Unable to book the selected delegates.", "Continue booking the selected delegates that met the pre-requisite criteria ?")
       
-        fOK = (MsgBox(sMessage, IIf(iFailedCount = lvRecords.ListItems.Count, vbOKOnly + vbQuestion, vbOKCancel + vbQuestion), App.ProductName) = vbOK) And _
+        fOK = (COAMsgBox(sMessage, IIf(iFailedCount = lvRecords.ListItems.Count, vbOKOnly + vbQuestion, vbOKCancel + vbQuestion), App.ProductName) = vbOK) And _
           (iFailedCount < lvRecords.ListItems.Count)
       End If
           
@@ -815,7 +815,7 @@ Private Function CheckPreRequisites() As Boolean
             "Do you still want to book " & IIf(iFailedQueryCount = 1, "this delegate", "these delegates") & " on the course ?" & vbCrLf & vbCrLf & _
             "Click Yes to continue or click No to go back and remove " & IIf(iFailedQueryCount = 1, "this delegate", "these delegates") & " from the Bulk Booking list ?"
       
-          iReply = MsgBox(sMessage, vbYesNo + vbQuestion, App.ProductName)
+          iReply = COAMsgBox(sMessage, vbYesNo + vbQuestion, App.ProductName)
           
           ' Modify the check status with respect to the user's choice.
           For iLoop = 1 To UBound(mavSelectedRecords, 2)
@@ -933,7 +933,7 @@ Private Function CreateBookings() As Boolean
 
             If Not fOK Then
               Screen.MousePointer = vbDefault
-              MsgBox "Unable to create booking record." & vbCrLf & vbCrLf & sErrorMsg, vbOKOnly + vbInformation, App.ProductName
+              COAMsgBox "Unable to create booking record." & vbCrLf & vbCrLf & sErrorMsg, vbOKOnly + vbInformation, App.ProductName
               Screen.MousePointer = vbHourglass
               
               gADOCon.RollbackTrans
@@ -956,7 +956,7 @@ Private Function CreateBookings() As Boolean
                   
                   If Not fOK Then
                     Screen.MousePointer = vbDefault
-                    MsgBox "Unable to delete waiting list record." & vbCrLf & vbCrLf & sErrorMsg, vbOKOnly + vbInformation, App.ProductName
+                    COAMsgBox "Unable to delete waiting list record." & vbCrLf & vbCrLf & sErrorMsg, vbOKOnly + vbInformation, App.ProductName
                     Screen.MousePointer = vbHourglass
                       
                     gADOCon.RollbackTrans
@@ -985,7 +985,7 @@ Private Function CreateBookings() As Boolean
         ' JPD20011101 Fault 3466
         ' JPD20011101 Fault 3082
         ' JPD20021115 Fault 4754
-        MsgBox Trim(Str(iBookedCount)) & " booking" & IIf(iBookedCount = 1, "", "s") & " made successfully.", vbOKOnly & vbInformation, App.ProductName
+        COAMsgBox Trim(Str(iBookedCount)) & " booking" & IIf(iBookedCount = 1, "", "s") & " made successfully.", vbOKOnly & vbInformation, App.ProductName
       End If
     End If
   End If
@@ -995,7 +995,7 @@ TidyUpAndExit:
     If fOK Then
       gADOCon.CommitTrans
       ' JPD20011101 Fault 3082
-      MsgBox "Booking(s) made successfully.", vbOKOnly & vbInformation, App.ProductName
+      COAMsgBox "Booking(s) made successfully.", vbOKOnly & vbInformation, App.ProductName
     Else
       gADOCon.RollbackTrans
     End If
@@ -1012,7 +1012,7 @@ TidyUpAndExit:
   
 ErrorTrap:
   fOK = False
-  MsgBox Err.Description, vbExclamation + vbOKOnly, Application.Name
+  COAMsgBox Err.Description, vbExclamation + vbOKOnly, Application.Name
   Resume TidyUpAndExit
 
 End Function
@@ -1068,11 +1068,11 @@ Private Function CheckOverlappedBooking(plngEmployeeID As Long, psDescription As
       Select Case .Parameters("result").Value
         Case 1    ' Overlapped booking (error).
           fOK = False
-          MsgBox "'" & psDescription & "'  is already booked on a course that overlaps with this course." & vbCrLf & _
+          COAMsgBox "'" & psDescription & "'  is already booked on a course that overlaps with this course." & vbCrLf & _
             "Unable to make the booking.", vbOKOnly + vbInformation, App.ProductName
             
         Case 2    ' Overlapped booking (over-rideable by the user).
-          fOK = (MsgBox("'" & psDescription & "' is already booked on a course that overlaps with this course." & vbCrLf & _
+          fOK = (COAMsgBox("'" & psDescription & "' is already booked on a course that overlaps with this course." & vbCrLf & _
             "Do you still want to make the booking ?", vbYesNo + vbQuestion, App.ProductName) = vbYes)
                   
         Case Else ' Course NOT fully booked.
@@ -1141,11 +1141,11 @@ Private Function CheckOverbooking(piNewBookings As Integer) As Boolean
       Select Case .Parameters("result").Value
         Case 1    ' Course fully booked (error).
           fOK = False
-          MsgBox "The number of delegates selected would exceed the maximum number allowed on the course." & vbCrLf & _
+          COAMsgBox "The number of delegates selected would exceed the maximum number allowed on the course." & vbCrLf & _
             "Unable to make the booking" & IIf(piNewBookings = 1, ".", "s."), vbOKOnly + vbInformation, App.ProductName
             
         Case 2    ' Course fully booked (over-rideable by the user).
-          fOK = (MsgBox("The number of delegates selected would exceed the maximum number allowed on the course." & vbCrLf & _
+          fOK = (COAMsgBox("The number of delegates selected would exceed the maximum number allowed on the course." & vbCrLf & _
             "Do you still want to make the booking" & IIf(piNewBookings = 1, "?", "s ?"), vbYesNo + vbQuestion, App.ProductName) = vbYes)
                   
         Case Else ' Course NOT fully booked.
@@ -1442,7 +1442,7 @@ Private Sub cmdAddFilter_Click()
           Next lngCount
         Else
           'NHRD19012007 Fault 4559
-          MsgBox "This delegate is already in the Bulk Booking list", vbExclamation
+          COAMsgBox "This delegate is already in the Bulk Booking list", vbExclamation
           lvRecords.SelectedItem.Selected = 1
         End If
 
@@ -1512,7 +1512,7 @@ End Sub
 
 Private Sub cmdDeleteAll_Click()
   ' Remove all items from the Bulk Booking selection.
-  If MsgBox("Remove all records from the Bulk Booking selection, are you sure ?", vbQuestion + vbYesNo, Me.Caption) = vbYes Then
+  If COAMsgBox("Remove all records from the Bulk Booking selection, are you sure ?", vbQuestion + vbYesNo, Me.Caption) = vbYes Then
     Screen.MousePointer = vbHourglass
     lvRecords.ListItems.Clear
     Screen.MousePointer = vbDefault
@@ -1624,7 +1624,7 @@ Private Sub cmdNew_Click()
                 Set objNode = Nothing
               Else
                 'NHRD15012007 Fault 10610
-                MsgBox "This delegate is already in the Bulk Booking list", vbExclamation
+                COAMsgBox "This delegate is already in the Bulk Booking list", vbExclamation
                 lvRecords.SelectedItem.Selected = 1
               End If
           
@@ -1851,7 +1851,7 @@ Private Sub cmdPicklistAdd_Click()
             Next lngCount
           Else
             'NHRD19012007 Fault 4559
-            MsgBox "This delegate is already in the Bulk Booking list", vbExclamation
+            COAMsgBox "This delegate is already in the Bulk Booking list", vbExclamation
             lvRecords.SelectedItem.Selected = 1          '
           End If
   

@@ -305,7 +305,7 @@ Public Sub StartSysInfo()
     
     Exit Sub
 SysInfoErr:
-    MsgBox "System information is unavailable.", vbOKOnly
+    COAMsgBox "System information is unavailable.", vbOKOnly
 End Sub
 
 Public Function GetKeyValue(KeyRoot As Long, KeyName As String, SubKeyRef As String, ByRef KeyVal As String) As Boolean
@@ -362,7 +362,7 @@ GetKeyError:      ' Cleanup After An Error Has Occured...
     rc = RegCloseKey(hKey)                                  ' Close Registry Key
 End Function
 
-Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub Form_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Redo link colour
   lblURL.ForeColor = &HFF0000
   DoEvents
@@ -395,17 +395,17 @@ Private Sub lblURL_Click()
   
   If plngID = 0 Then
     ' Uh oh...the browser wasnt initiated...tell the user
-    MsgBox "HR Pro cannot automatically open your default web browser." & vbCrLf & vbCrLf & "Please open your web browser manually and navigate to the " & vbCrLf & "web address which has been placed in your clipboard." & IIf(Err.Description = "", "", vbCrLf & vbCrLf & "(" & Err.Number & " - " & Err.Description & ")"), vbInformation + vbOKOnly, "Technical Support"
+    COAMsgBox "HR Pro cannot automatically open your default web browser." & vbCrLf & vbCrLf & "Please open your web browser manually and navigate to the " & vbCrLf & "web address which has been placed in your clipboard." & IIf(Err.Description = "", "", vbCrLf & vbCrLf & "(" & Err.Number & " - " & Err.Description & ")"), vbInformation + vbOKOnly, "Technical Support"
   End If
   
   Exit Sub
   
 ErrTrap:
-    MsgBox "HR Pro cannot automatically open your default web browser." & vbCrLf & vbCrLf & "Please open your web browser manually and navigate to the " & vbCrLf & "web address which has been placed in your clipboard." & IIf(Err.Description = "", "", vbCrLf & vbCrLf & "(" & Err.Number & " - " & Err.Description & ")"), vbInformation + vbOKOnly, "Technical Support"
+    COAMsgBox "HR Pro cannot automatically open your default web browser." & vbCrLf & vbCrLf & "Please open your web browser manually and navigate to the " & vbCrLf & "web address which has been placed in your clipboard." & IIf(Err.Description = "", "", vbCrLf & vbCrLf & "(" & Err.Number & " - " & Err.Description & ")"), vbInformation + vbOKOnly, "Technical Support"
 
 End Sub
 
-Private Sub lblURL_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub lblURL_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Highlight the link
   lblURL.ForeColor = vbRed
   DoEvents

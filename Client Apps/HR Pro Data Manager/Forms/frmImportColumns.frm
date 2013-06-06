@@ -323,9 +323,9 @@ Private Sub cmdOK_Click()
   If optTable Then
     If cboTable.Text = "" Or cboColumn.Text = "" Then
       If cboColumn.ListCount > 0 Then
-        MsgBox "You must select a table and column.", vbExclamation, Me.Caption
+        COAMsgBox "You must select a table and column.", vbExclamation, Me.Caption
       Else
-        MsgBox "All available columns have been selected.", vbExclamation, Me.Caption
+        COAMsgBox "All available columns have been selected.", vbExclamation, Me.Caption
       End If
       
       Exit Sub
@@ -334,19 +334,19 @@ Private Sub cmdOK_Click()
     If Len(Trim(txtLength.Text)) > 0 Then
       If IsNumeric(txtLength.Text) Then
         If Val(txtLength.Text) = "0" Then
-          MsgBox "The Length value must be greater than 0 characters.", vbExclamation, Me.Caption
+          COAMsgBox "The Length value must be greater than 0 characters.", vbExclamation, Me.Caption
           Exit Sub
         End If
         
         ' JIRA - 604 - Don't let the user go nuts with this figure
         If Val(txtLength.Text) > VARCHAR_MAX_Size Then
-          MsgBox "The Length value cannot exceed " & VARCHAR_MAX_Size & " characters.", vbExclamation, Me.Caption
+          COAMsgBox "The Length value cannot exceed " & VARCHAR_MAX_Size & " characters.", vbExclamation, Me.Caption
           txtLength.Text = VARCHAR_MAX_Size
           Exit Sub
         End If
         
       Else
-        MsgBox "The Length value must be numeric.", vbExclamation, Me.Caption
+        COAMsgBox "The Length value must be numeric.", vbExclamation, Me.Caption
         Exit Sub
       End If
     End If

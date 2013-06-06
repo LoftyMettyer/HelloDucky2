@@ -322,10 +322,10 @@ Private Function ReadTrainingBookingRecordParameters() As Boolean
 '  giTrainBookOverlapNotification = Val(GetModuleParameter(gsMODULEKEY_TRAININGBOOKING, gsPARAMETERKEY_TRAINBOOKOVERLAPNOTIFICATION))
 
   If Not fOK Then
-'    MsgBox "Error reading Training Booking parameters." & vbCrLf & _
+'    COAMsgBox "Error reading Training Booking parameters." & vbCrLf & _
       sErrMsg & vbCrLf & vbCrLf & _
       "Training Booking functionality will be disabled.", vbCritical + vbYesNo, App.Title
-    MsgBox "Error reading Training Booking parameters." & vbCrLf & _
+    COAMsgBox "Error reading Training Booking parameters." & vbCrLf & _
       sErrMsg & vbCrLf & vbCrLf & _
       "Training Booking functionality will be disabled.", vbExclamation + vbOKOnly, App.Title
   End If
@@ -400,10 +400,10 @@ Private Function ReadWaitingListParameters() As Boolean
   End If
   
   If Not fOK Then
-'    MsgBox "Error reading Training Booking parameters." & vbCrLf & _
+'    COAMsgBox "Error reading Training Booking parameters." & vbCrLf & _
       sErrMsg & vbCrLf & vbCrLf & _
       "Training Booking functionality will be disabled.", vbCritical + vbYesNo, App.Title
-    MsgBox "Error reading Training Booking parameters." & vbCrLf & _
+    COAMsgBox "Error reading Training Booking parameters." & vbCrLf & _
       sErrMsg & vbCrLf & vbCrLf & _
       "Training Booking functionality will be disabled.", vbExclamation + vbOKOnly, App.Title
   End If
@@ -467,10 +467,10 @@ Private Function ReadUnavailabilityParameters() As Boolean
 '  mvar_iUnavailDfltFailureNotification = Val(GetModuleParameter(gsMODULEKEY_TRAININGBOOKING, gsPARAMETERKEY_UNAVAILDFLTFAILURE))
     
   If Not fOK Then
-'    MsgBox "Error reading Training Booking parameters." & vbCrLf & _
+'    COAMsgBox "Error reading Training Booking parameters." & vbCrLf & _
       sErrMsg & vbCrLf & vbCrLf & _
       "Training Booking functionality will be disabled.", vbCritical + vbYesNo, App.Title
-    MsgBox "Error reading Training Booking parameters." & vbCrLf & _
+    COAMsgBox "Error reading Training Booking parameters." & vbCrLf & _
       sErrMsg & vbCrLf & vbCrLf & _
       "Training Booking functionality will be disabled.", vbExclamation + vbOKOnly, App.Title
   End If
@@ -515,7 +515,7 @@ Private Function ReadEmployeeRecordParameters() As Boolean
   End If
   
   If Not fOK Then
-    MsgBox "Error reading Training Booking parameters." & vbCrLf & _
+    COAMsgBox "Error reading Training Booking parameters." & vbCrLf & _
       sErrMsg & vbCrLf & vbCrLf & _
       "Training Booking functionality will be disabled.", vbExclamation + vbOKOnly, App.Title
   End If
@@ -639,7 +639,7 @@ DeadlockRecoveryPoint:
             gADOCon.Errors.Clear
         
             If Not fDoneOK Then
-              MsgBox "ERROR." & vbCrLf & vbCrLf & _
+              COAMsgBox "ERROR." & vbCrLf & vbCrLf & _
                 sErrorMsg, vbOKOnly + vbExclamation, App.ProductName
             End If
           End If
@@ -648,11 +648,11 @@ DeadlockRecoveryPoint:
             Select Case .Parameters("result").Value
               Case 1    ' Employee unavailable (error).
                 fOK = False
-                MsgBox "The delegate is unavailable for the course." & vbCrLf & _
+                COAMsgBox "The delegate is unavailable for the course." & vbCrLf & _
                   "Unable to make the booking.", vbOKOnly + vbInformation, App.ProductName
                   
               Case 2    ' Employee unavailable (over-rideable by the user).
-                fOK = (MsgBox("The delegate is unavailable for the course." & vbCrLf & _
+                fOK = (COAMsgBox("The delegate is unavailable for the course." & vbCrLf & _
                   "Do you still want to make the booking ?", vbYesNo + vbQuestion, App.ProductName) = vbYes)
               
               Case Else ' Employee available.
@@ -685,7 +685,7 @@ TidyUpAndExit:
 ErrorTrap:
   fDoneOK = False
   fOK = False
-  MsgBox ODBC.FormatError(Err.Description), vbExclamation + vbOKOnly, Application.Name
+  COAMsgBox ODBC.FormatError(Err.Description), vbExclamation + vbOKOnly, Application.Name
 
   gobjErrorStack.HandleError
   Exit Function
@@ -709,7 +709,7 @@ DeadlockErrorTrap:
       Resume DeadlockRecoveryPoint
     Else
       fDoneOK = False
-      MsgBox "Another user is deadlocking the database. Try saving again.", _
+      COAMsgBox "Another user is deadlocking the database. Try saving again.", _
         vbExclamation + vbOKOnly, Application.Name
       gobjErrorStack.HandleError
       Resume TidyUpAndExit
@@ -717,7 +717,7 @@ DeadlockErrorTrap:
   Else
     fDoneOK = False
     fOK = False
-    MsgBox ODBC.FormatError(Err.Description), vbExclamation + vbOKOnly, Application.Name
+    COAMsgBox ODBC.FormatError(Err.Description), vbExclamation + vbOKOnly, Application.Name
     gobjErrorStack.HandleError
     Resume TidyUpAndExit
   End If
@@ -841,7 +841,7 @@ DeadlockRecoveryPoint:
           gADOCon.Errors.Clear
       
           If Not fDoneOK Then
-            MsgBox "ERROR." & vbCrLf & vbCrLf & _
+            COAMsgBox "ERROR." & vbCrLf & vbCrLf & _
               sErrorMsg, vbOKOnly + vbExclamation, App.ProductName
           End If
         End If
@@ -850,11 +850,11 @@ DeadlockRecoveryPoint:
           Select Case .Parameters("result").Value
             Case 1    ' Course fully booked (error).
               fOK = False
-              MsgBox "The course is already fully booked." & vbCrLf & _
+              COAMsgBox "The course is already fully booked." & vbCrLf & _
                 "Unable to make the booking.", vbOKOnly + vbInformation, App.ProductName
                 
             Case 2    ' Course fully booked (over-rideable by the user).
-              fOK = (MsgBox("The course is already fully booked." & vbCrLf & _
+              fOK = (COAMsgBox("The course is already fully booked." & vbCrLf & _
                 "Do you still want to make the booking ?", vbYesNo + vbQuestion, App.ProductName) = vbYes)
                       
             Case Else ' Course NOT fully booked.
@@ -886,7 +886,7 @@ TidyUpAndExit:
 ErrorTrap:
   fDoneOK = False
   fOK = False
-  MsgBox ODBC.FormatError(Err.Description), vbExclamation + vbOKOnly, Application.Name
+  COAMsgBox ODBC.FormatError(Err.Description), vbExclamation + vbOKOnly, Application.Name
 
   gobjErrorStack.HandleError
   Exit Function
@@ -910,7 +910,7 @@ DeadlockErrorTrap:
       Resume DeadlockRecoveryPoint
     Else
       fDoneOK = False
-      MsgBox "Another user is deadlocking the database. Try saving again.", _
+      COAMsgBox "Another user is deadlocking the database. Try saving again.", _
         vbExclamation + vbOKOnly, Application.Name
       gobjErrorStack.HandleError
       Resume TidyUpAndExit
@@ -918,7 +918,7 @@ DeadlockErrorTrap:
   Else
     fDoneOK = False
     fOK = False
-    MsgBox ODBC.FormatError(Err.Description), vbExclamation + vbOKOnly, Application.Name
+    COAMsgBox ODBC.FormatError(Err.Description), vbExclamation + vbOKOnly, Application.Name
     gobjErrorStack.HandleError
     Resume TidyUpAndExit
   End If
@@ -1045,7 +1045,7 @@ DeadlockRecoveryPoint:
           gADOCon.Errors.Clear
       
           If Not fDoneOK Then
-            MsgBox "ERROR." & vbCrLf & vbCrLf & _
+            COAMsgBox "ERROR." & vbCrLf & vbCrLf & _
               sErrorMsg, vbOKOnly + vbExclamation, App.ProductName
           End If
         End If
@@ -1054,11 +1054,11 @@ DeadlockRecoveryPoint:
           Select Case .Parameters("result").Value
             Case 1    ' Overlapped booking (error).
               fOK = False
-              MsgBox "The delegate is already booked on a course that overlaps with this course." & vbCrLf & _
+              COAMsgBox "The delegate is already booked on a course that overlaps with this course." & vbCrLf & _
                 "Unable to make the booking.", vbOKOnly + vbInformation, App.ProductName
                 
             Case 2    ' Overlapped booking (over-rideable by the user).
-              fOK = (MsgBox("The delegate is already booked on a course that overlaps with this course." & vbCrLf & _
+              fOK = (COAMsgBox("The delegate is already booked on a course that overlaps with this course." & vbCrLf & _
                 "Do you still want to make the booking ?", vbYesNo + vbQuestion, App.ProductName) = vbYes)
                       
             Case Else ' Course NOT fully booked.
@@ -1090,7 +1090,7 @@ TidyUpAndExit:
 ErrorTrap:
   fDoneOK = False
   fOK = False
-  MsgBox ODBC.FormatError(Err.Description), vbExclamation + vbOKOnly, Application.Name
+  COAMsgBox ODBC.FormatError(Err.Description), vbExclamation + vbOKOnly, Application.Name
 
   gobjErrorStack.HandleError
   Exit Function
@@ -1114,7 +1114,7 @@ DeadlockErrorTrap:
       Resume DeadlockRecoveryPoint
     Else
       fDoneOK = False
-      MsgBox "Another user is deadlocking the database. Try saving again.", _
+      COAMsgBox "Another user is deadlocking the database. Try saving again.", _
         vbExclamation + vbOKOnly, Application.Name
       gobjErrorStack.HandleError
       Resume TidyUpAndExit
@@ -1122,7 +1122,7 @@ DeadlockErrorTrap:
   Else
     fDoneOK = False
     fOK = False
-    MsgBox ODBC.FormatError(Err.Description), vbExclamation + vbOKOnly, Application.Name
+    COAMsgBox ODBC.FormatError(Err.Description), vbExclamation + vbOKOnly, Application.Name
     gobjErrorStack.HandleError
     Resume TidyUpAndExit
   End If
@@ -1184,10 +1184,10 @@ Private Function ReadPreRequisiteParameters() As Boolean
 '  mvar_iPreReqDfltFailureNotification = Val(GetModuleParameter(gsMODULEKEY_TRAININGBOOKING, gsPARAMETERKEY_PREREQDFLTFAILURE))
 
   If Not fOK Then
-'    MsgBox "Error reading Training Booking parameters." & vbCrLf & _
+'    COAMsgBox "Error reading Training Booking parameters." & vbCrLf & _
       sErrMsg & vbCrLf & vbCrLf & _
       "Training Booking functionality will be disabled.", vbCritical + vbYesNo, App.Title
-    MsgBox "Error reading Training Booking parameters." & vbCrLf & _
+    COAMsgBox "Error reading Training Booking parameters." & vbCrLf & _
       sErrMsg & vbCrLf & vbCrLf & _
       "Training Booking functionality will be disabled.", vbExclamation + vbOKOnly, App.Title
   End If
@@ -1314,7 +1314,7 @@ DeadlockRecoveryPoint:
             gADOCon.Errors.Clear
         
             If Not fDoneOK Then
-              MsgBox "ERROR." & vbCrLf & vbCrLf & _
+              COAMsgBox "ERROR." & vbCrLf & vbCrLf & _
                 sErrorMsg, vbOKOnly + vbExclamation, App.ProductName
             End If
           End If
@@ -1323,11 +1323,11 @@ DeadlockRecoveryPoint:
             Select Case .Parameters("preReqsMet").Value
               Case 1    ' Pre-requisites not satisfied (error).
                 fOK = False
-                MsgBox "The delegate has not met the pre-requisites for the course." & vbCrLf & _
+                COAMsgBox "The delegate has not met the pre-requisites for the course." & vbCrLf & _
                   "Unable to make the booking.", vbOKOnly + vbInformation, App.ProductName
                   
               Case 2    ' Pre-requisites not satisfied (over-rideable by the user).
-                fOK = (MsgBox("The delegate has not met the pre-requisites for the course." & vbCrLf & _
+                fOK = (COAMsgBox("The delegate has not met the pre-requisites for the course." & vbCrLf & _
                   "Do you still want to make the booking ?", vbYesNo + vbQuestion, App.ProductName) = vbYes)
               
               Case Else ' Pre-requisites satisfied.
@@ -1360,7 +1360,7 @@ TidyUpAndExit:
 ErrorTrap:
   fDoneOK = False
   fOK = False
-  MsgBox ODBC.FormatError(Err.Description), vbExclamation + vbOKOnly, Application.Name
+  COAMsgBox ODBC.FormatError(Err.Description), vbExclamation + vbOKOnly, Application.Name
 
   gobjErrorStack.HandleError
   Exit Function
@@ -1384,7 +1384,7 @@ DeadlockErrorTrap:
       Resume DeadlockRecoveryPoint
     Else
       fDoneOK = False
-      MsgBox "Another user is deadlocking the database. Try saving again.", _
+      COAMsgBox "Another user is deadlocking the database. Try saving again.", _
         vbExclamation + vbOKOnly, Application.Name
       gobjErrorStack.HandleError
       Resume TidyUpAndExit
@@ -1392,7 +1392,7 @@ DeadlockErrorTrap:
   Else
     fDoneOK = False
     fOK = False
-    MsgBox ODBC.FormatError(Err.Description), vbExclamation + vbOKOnly, Application.Name
+    COAMsgBox ODBC.FormatError(Err.Description), vbExclamation + vbOKOnly, Application.Name
     gobjErrorStack.HandleError
     Resume TidyUpAndExit
   End If
@@ -1564,10 +1564,10 @@ Private Function ReadCourseRecordParameters() As Boolean
   End If
   
   If Not fOK Then
-'    MsgBox "Error reading Training Booking parameters." & vbCrLf & _
+'    COAMsgBox "Error reading Training Booking parameters." & vbCrLf & _
       sErrMsg & vbCrLf & vbCrLf & _
       "Training Booking functionality will be disabled.", vbCritical + vbYesNo, App.Title
-    MsgBox "Error reading Training Booking parameters." & vbCrLf & _
+    COAMsgBox "Error reading Training Booking parameters." & vbCrLf & _
       sErrMsg & vbCrLf & vbCrLf & _
       "Training Booking functionality will be disabled.", vbExclamation + vbOKOnly, App.Title
   End If

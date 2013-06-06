@@ -300,7 +300,7 @@ Private Sub ShowDetails()
       If blnRecalculateRecordDesc Or strTo = vbNullString Then
         CalculateEmail lngLinkID, lngRecordID, lngQueueID   'lngLinkID, lngRecordID, strRecordDesc, "", strUserName, strDateSent
         If Not blnRecalculateRecordDesc Then
-          MsgBox "No details have been stored for the current email.  This information has been calculated from the current email link but may not match the email which has actually been sent.", vbCritical
+          COAMsgBox "No details have been stored for the current email.  This information has been calculated from the current email link but may not match the email which has actually been sent.", vbCritical
         End If
       Else
         ReadEmailContents strDateSent, strTo, strCC, strBCC, strSubject, strAttachment, strMsgText
@@ -320,12 +320,12 @@ Private Sub cmdEmail_Click()
   
   
   If GetSystemSetting("email", "method", 1) = 0 Then
-    MsgBox "Unable to resend this message as server side emails are currently disabled." & vbCrLf & _
+    COAMsgBox "Unable to resend this message as server side emails are currently disabled." & vbCrLf & _
            "Please contact your system administrator.", vbCritical, Me.Caption
     Exit Sub
   End If
   
-  If MsgBox("Are you sure you want to resend this entry?", vbYesNo + vbQuestion, "Email Queue") <> vbYes Then
+  If COAMsgBox("Are you sure you want to resend this entry?", vbYesNo + vbQuestion, "Email Queue") <> vbYes Then
     Exit Sub
   End If
 
@@ -343,9 +343,9 @@ Private Sub cmdEmail_Click()
   Set objOutputEmail = Nothing
 
   If strError = vbNullString Then
-    MsgBox "Message resent.", vbInformation, "Email Queue"
+    COAMsgBox "Message resent.", vbInformation, "Email Queue"
   Else
-    MsgBox "Error sending email" & _
+    COAMsgBox "Error sending email" & _
       IIf(Err.Description <> vbNullString, " (" & Err.Description & ")", vbNullString), vbExclamation, "Email Queue"
   End If
 
@@ -420,7 +420,7 @@ Private Sub CalculateEmail(lngLinkID As Long, lngRecordID As Long, lngQueueID As
     .Execute
     
     If .Parameters(0).Value > 0 Then
-      MsgBox "This queue entry no longer matches the link filter and has been deleted.", vbInformation
+      COAMsgBox "This queue entry no longer matches the link filter and has been deleted.", vbInformation
       Unload Me
     Else
       txtTO.Text = RemoveLastChar(.Parameters("To").Value)
@@ -440,7 +440,7 @@ Private Sub CalculateEmail(lngLinkID As Long, lngRecordID As Long, lngQueueID As
 Exit Sub
 
 LocalErr:
-  MsgBox "Error populating email details", vbCritical
+  COAMsgBox "Error populating email details", vbCritical
 
 End Sub
 
@@ -550,7 +550,7 @@ Private Sub Form_Resize()
 
   'fraBOTTOM
   lTop = fraTop.Height + GAP2
-  lHeight = Me.ScaleHeight - (lTop + cmdOk.Height + GAP2)
+  lHeight = Me.ScaleHeight - (lTop + cmdOK.Height + GAP2)
   If lWidth >= 0 And lHeight >= 0 Then
     fraBottom.Move lLeft, lTop, lWidth, lHeight
   End If
@@ -584,14 +584,14 @@ Private Sub Form_Resize()
   txtDateSent.Left = lLeft
 
   'cmdOK
-  lLeft = Me.ScaleWidth - (cmdOk.Width + GAP)
-  lTop = Me.ScaleHeight - (cmdOk.Height + GAP)
+  lLeft = Me.ScaleWidth - (cmdOK.Width + GAP)
+  lTop = Me.ScaleHeight - (cmdOK.Height + GAP)
   If lLeft > GAP And lTop > GAP Then
-    cmdOk.Move lLeft, lTop
+    cmdOK.Move lLeft, lTop
   End If
 
   'cmdEmail
-  lLeft = lLeft - (cmdOk.Width + GAP)
+  lLeft = lLeft - (cmdOK.Width + GAP)
   If lLeft > GAP And lTop > GAP Then
     cmdEmail.Move lLeft, lTop
   End If

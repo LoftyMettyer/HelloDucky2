@@ -173,7 +173,7 @@ Public Property Let DiaryEventID(ByVal vNewID As Long)
   If vNewID > 0 Then
     Set rsSingleRecord = GetCurrentRecord
     If rsSingleRecord.BOF And rsSingleRecord.EOF Then
-      MsgBox "This diary event has been deleted by another user.", vbCritical, "Diary"
+      COAMsgBox "This diary event has been deleted by another user.", vbCritical, "Diary"
       mlngSelectedID = 0
       gobjDiary.RefreshDiaryData
     End If
@@ -332,7 +332,7 @@ LocalErr:
       Me.DateSelected = .MinDate
     
     Else
-      MsgBox "Error Changing Date" & vbCrLf & "(" & Err.Description & ")", vbCritical
+      COAMsgBox "Error Changing Date" & vbCrLf & "(" & Err.Description & ")", vbCritical
       Me.DateSelected = Now
     
     End If
@@ -490,7 +490,7 @@ Private Sub GetDiaryData(blnOnlyCountFilterMatch As Boolean, Optional dtStartDat
       'Filter applied and no records match (and not only counting match for alarm!)
 
         If gobjDiary.ViewingAlarms = True Then
-          MsgBox "All alarms on past events have now been cleared.", vbInformation + vbOKOnly, "Diary"
+          COAMsgBox "All alarms on past events have now been cleared.", vbInformation + vbOKOnly, "Diary"
           If frmDiaryDetail.Visible Then frmDiaryDetail.Hide
           frmDiary.Hide
         Else
@@ -499,7 +499,7 @@ Private Sub GetDiaryData(blnOnlyCountFilterMatch As Boolean, Optional dtStartDat
           FilterAlarmStatus = 0
           FilterOnlyMine = False
 
-          MsgBox "No records match the current filter." & vbCrLf & _
+          COAMsgBox "No records match the current filter." & vbCrLf & _
                  "No filter is applied.", vbInformation + vbOKOnly, "Diary Filter"
           frmDiary.Caption = Me.FilterText
           blnClearedFilter = True
@@ -726,7 +726,7 @@ On Error GoTo DateError
 DateError:
   'NHRD22072003 Fault 6294
   'If Err.Number = 35773 Then
-  '  MsgBox "Date ranges entered are not valid." & vbCrLf & "The dates must be within the months shown.", vbOKOnly + vbExclamation
+  '  COAMsgBox "Date ranges entered are not valid." & vbCrLf & "The dates must be within the months shown.", vbOKOnly + vbExclamation
   'End If
 End Sub
 
@@ -1085,7 +1085,7 @@ Public Function ShowAlarmedEvents(intFilterPastPresent As Integer, intViewMode A
                 "Would you like to view these now?"
     'intMBButtons = vbYesNo + vbQuestion
     'strMBTitle = "Alarmed Diary Events"
-    'intMBResponse = MsgBox(strMBText, intMBButtons, strMBTitle)
+    'intMBResponse = COAMsgBox(strMBText, intMBButtons, strMBTitle)
     intMBResponse = frmDiaryAlert.ShowAlert(intFilterPastPresent <> 1)
     lngErrorNumber = frmDiaryAlert.ErrorNumber
     Set frmDiaryAlert = Nothing
@@ -1167,7 +1167,7 @@ Public Sub SwitchAlarms(strSetAlarm As String)
   'MH20001019 Fault 1068
   'Warning message if you have been unable to change any of the alarms !
   If lngRecs = 0 Then
-    MsgBox "You do not have access to the alarms on any of these events", vbInformation, "Diary Alarms"
+    COAMsgBox "You do not have access to the alarms on any of these events", vbInformation, "Diary Alarms"
   End If
 
 End Sub
@@ -1631,7 +1631,7 @@ Public Sub DeleteCurrentEntry()
       'Warning message if you have been unable to delete any of the events
       lngRecs = datData.ExecuteSqlReturnAffected(strSQL)
       If lngRecs = 0 Then
-        MsgBox "You do not have permission to delete " & _
+        COAMsgBox "You do not have permission to delete " & _
                IIf(InStr(strSelectedIDs, ",") > 1, "all of these events.", "this event."), _
                vbExclamation, "Diary Delete"
       End If
@@ -1712,7 +1712,7 @@ Public Sub CutEntries(blnDelete As Boolean)
   If blnDelete Then
     
     If blnReadOnlyEvents Then
-        MsgBox "You do not have permission to delete " & _
+        COAMsgBox "You do not have permission to delete " & _
                IIf(InStr(strSelectedIDs, ",") > 1, "all of these events.", "this event."), _
                vbExclamation, "Diary Delete"
     End If
@@ -1747,7 +1747,7 @@ Public Sub PasteEntries()
         PutRecord .EventTitle, mdtSelectedDate, .EventTime, .EventNotes, .Alarm, .Access, .CopiedFromID
 
       Case mintVIEWBYMONTH
-        MsgBox "Unable to paste into the month view", vbExclamation, "Diary"
+        COAMsgBox "Unable to paste into the month view", vbExclamation, "Diary"
 
       End Select
     End With
@@ -1856,7 +1856,7 @@ Exit Function
 LocalErr:
   tmrDiary.Enabled = False
   gobjErrorStack.Enable
-  MsgBox "An error occurred checking for alarmed diary events.  No further checks will be made for alarmed events until HR Pro is restarted." & _
+  COAMsgBox "An error occurred checking for alarmed diary events.  No further checks will be made for alarmed events until HR Pro is restarted." & _
         IIf(Err.Description <> vbNullString, vbCrLf & "(" & Err.Description & ")", ""), vbExclamation, "Alarmed Diary Events"
 
 End Function

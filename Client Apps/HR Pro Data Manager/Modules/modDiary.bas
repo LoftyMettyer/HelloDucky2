@@ -13,7 +13,7 @@ Public Sub DiaryRebuild()
   Dim objColumns As CColumnPrivileges
   
   Dim strMBText As String
-  Dim intMBButtons As Integer
+  Dim intMBButtons As Long
   Dim strMBTitle As String
   Dim intMBResponse As Integer
   
@@ -25,7 +25,7 @@ Public Sub DiaryRebuild()
               "Do you wish to continue ?"
   intMBButtons = vbYesNo + vbQuestion + vbDefaultButton1
   strMBTitle = "Confirm Rebuild"
-  intMBResponse = MsgBox(strMBText, intMBButtons, strMBTitle)
+  intMBResponse = COAMsgBox(strMBText, intMBButtons, strMBTitle)
 
   If intMBResponse <> vbYes Then
     Exit Sub
@@ -112,9 +112,9 @@ TidyAndExit:
   gobjProgress.CloseProgress
 
   If fOK Then
-    MsgBox "Diary Rebuild Complete", vbInformation, "Diary Rebuild"
+    COAMsgBox "Diary Rebuild Complete", vbInformation, "Diary Rebuild"
   Else
-    MsgBox strErrorString, vbExclamation, "Diary Rebuild"
+    COAMsgBox strErrorString, vbExclamation, "Diary Rebuild"
   End If
 
 Exit Sub

@@ -100,7 +100,7 @@ DeadlockRecoveryPoint:
         If gobjProgress.Visible Then
           gobjProgress.CloseProgress
         End If
-        MsgBox "ERROR." & vbCrLf & vbCrLf & _
+        COAMsgBox "ERROR." & vbCrLf & vbCrLf & _
           sErrorMsg, vbOKOnly + vbExclamation, App.ProductName
       End If
     End If
@@ -149,7 +149,7 @@ DeadlockErrorTrap:
       If gobjProgress.Visible Then
         gobjProgress.CloseProgress
       End If
-      MsgBox "Another user is deadlocking the database.", _
+      COAMsgBox "Another user is deadlocking the database.", _
         vbExclamation + vbOKOnly, Application.Name
       gobjErrorStack.HandleError
       Resume TidyUpAndExit
@@ -168,7 +168,7 @@ DeadlockErrorTrap:
     If gobjProgress.Visible Then
       gobjProgress.CloseProgress
     End If
-    MsgBox ODBC.FormatError(Err.Description), vbExclamation + vbOKOnly, Application.Name
+    COAMsgBox ODBC.FormatError(Err.Description), vbExclamation + vbOKOnly, Application.Name
     gobjErrorStack.HandleError
     Resume TidyUpAndExit
   End If
@@ -351,7 +351,7 @@ DeadlockRecoveryPoint:
         If gobjProgress.Visible Then
           gobjProgress.CloseProgress
         End If
-        MsgBox "ERROR." & vbCrLf & vbCrLf & _
+        COAMsgBox "ERROR." & vbCrLf & vbCrLf & _
           sErrorMsg, vbOKOnly + vbExclamation, App.ProductName
       End If
     End If
@@ -400,7 +400,7 @@ DeadlockErrorTrap:
       If gobjProgress.Visible Then
         gobjProgress.CloseProgress
       End If
-      MsgBox "Another user is deadlocking the database.", _
+      COAMsgBox "Another user is deadlocking the database.", _
         vbExclamation + vbOKOnly, Application.Name
       gobjErrorStack.HandleError
       Resume TidyUpAndExit
@@ -413,7 +413,7 @@ DeadlockErrorTrap:
     If gobjProgress.Visible Then
       gobjProgress.CloseProgress
     End If
-    MsgBox ODBC.FormatError(Err.Description), vbExclamation + vbOKOnly, Application.Name
+    COAMsgBox ODBC.FormatError(Err.Description), vbExclamation + vbOKOnly, Application.Name
     gobjErrorStack.HandleError
     Resume TidyUpAndExit
   End If

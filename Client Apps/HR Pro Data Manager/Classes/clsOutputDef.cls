@@ -35,7 +35,7 @@ Public Sub PopulateOutputControls(rsTemp As Recordset)
       If .cboPrinterName.Text <> rsTemp!OutputPrinterName Then
         .cboPrinterName.AddItem rsTemp!OutputPrinterName
         .cboPrinterName.ListIndex = .cboPrinterName.NewIndex
-        MsgBox "This definition is set to output to printer " & rsTemp!OutputPrinterName & _
+        COAMsgBox "This definition is set to output to printer " & rsTemp!OutputPrinterName & _
                " which is not set up on your PC.", vbInformation, App.Title
       End If
     End If
@@ -445,7 +445,7 @@ Public Sub ReadDefFromRecset(rsDef As Recordset)
       If .cboPrinterName.Text <> rsDef!OutputPrinterName Then
         .cboPrinterName.AddItem rsDef!OutputPrinterName
         .cboPrinterName.ListIndex = .cboPrinterName.NewIndex
-        MsgBox "This definition is set to output to printer " & rsDef!OutputPrinterName & _
+        COAMsgBox "This definition is set to output to printer " & rsDef!OutputPrinterName & _
                " which is not set up on your PC.", vbInformation, .Caption
       End If
     End If
@@ -520,7 +520,7 @@ Private Sub cmdFileName_Click()
 
     If .FileName <> vbNullString Then
       If Len(.FileName) > 255 Then
-        MsgBox "Path and file name must not exceed 255 characters in length", vbExclamation, mfrmParent.Caption
+        COAMsgBox "Path and file name must not exceed 255 characters in length", vbExclamation, mfrmParent.Caption
       Else
         txtFilename.Text = vbNullString   'activates the change event
         txtFilename.Text = .FileName
@@ -542,7 +542,7 @@ Exit Sub
 
 LocalErr:
   If Err.Number <> 32755 Then   '32755 = Cancel was selected.
-    MsgBox Err.Description, vbCritical
+    COAMsgBox Err.Description, vbCritical
   End If
 
 End Sub
@@ -557,26 +557,26 @@ Public Function ValidDestination() As Boolean
 
   If mfrmParent.chkDestination(desSave).Value = vbChecked Then
     If mfrmParent.txtFilename.Text = vbNullString Then
-      MsgBox "You must enter a file name.", vbExclamation, mfrmParent.Caption
+      COAMsgBox "You must enter a file name.", vbExclamation, mfrmParent.Caption
       Exit Function
     End If
   End If
 
   If mfrmParent.chkDestination(desEmail).Value = vbChecked Then
     If Val(mfrmParent.txtEmailGroup.Tag) = 0 Then
-      MsgBox "You must select an email group.", vbExclamation, mfrmParent.Caption
+      COAMsgBox "You must select an email group.", vbExclamation, mfrmParent.Caption
       Exit Function
     End If
 
     If datGeneral.GetEmailGroupName(Val(mfrmParent.txtEmailGroup.Tag)) = vbNullString Then
-      MsgBox "The email group has been deleted by another user.", vbExclamation, mfrmParent.Caption
+      COAMsgBox "The email group has been deleted by another user.", vbExclamation, mfrmParent.Caption
       mfrmParent.txtEmailGroup.Text = vbNullString
       mfrmParent.txtEmailGroup.Tag = 0
       Exit Function
     End If
 
     If mfrmParent.txtEmailAttachAs.Text = vbNullString Then
-      MsgBox "You must enter an email attachment file name.", vbExclamation, mfrmParent.Caption
+      COAMsgBox "You must enter an email attachment file name.", vbExclamation, mfrmParent.Caption
       Exit Function
     End If
     
@@ -589,7 +589,7 @@ Public Function ValidDestination() As Boolean
        InStr(mfrmParent.txtEmailAttachAs.Text, "|") Or _
        InStr(mfrmParent.txtEmailAttachAs.Text, "\") Or _
        InStr(mfrmParent.txtEmailAttachAs.Text, "*") Then
-          MsgBox "The email attachment file name cannot contain any of the following characters:" & vbCrLf & _
+          COAMsgBox "The email attachment file name cannot contain any of the following characters:" & vbCrLf & _
                  "/  :  ?  " & Chr(34) & "  <  >  |  \  *", vbExclamation, mfrmParent.Caption
           Exit Function
     End If
@@ -609,7 +609,7 @@ Public Function ValidDestination() As Boolean
   End With
 
   If Not blnDestination Then
-    MsgBox "You must select a destination" & _
+    COAMsgBox "You must select a destination" & _
            IIf(blnPreview, " in addition to preview on screen.", "."), _
         vbExclamation, mfrmParent.Caption
     Exit Function

@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
 Begin VB.Form frmDefSel 
    Caption         =   "Select"
    ClientHeight    =   6465
@@ -670,7 +670,7 @@ Private Sub cmdDelete_Click()
 '
 '    If Trim$(.Fields("Username").Value) <> gsUserName And _
 '             .Fields("Access").Value = "RO" Then
-'      MsgBox "You do not have access to delete this definition", vbExclamation
+'      COAMsgBox "You do not have access to delete this definition", vbExclamation
 '              'StrConv(Trim$(.Fields("Username").Value), vbProperCase)
 '      Exit Sub
 '    End If
@@ -701,7 +701,7 @@ Private Sub cmdDelete_Click()
   'expression should not be hidden and not owned by another user.
   If msTypeCode = "CALCULATIONS" Or msTypeCode = "FILTERS" Then
     
-    If MsgBox("Delete this definition are you sure ?", vbQuestion + vbYesNo, "Delete " & msType) = vbYes Then
+    If COAMsgBox("Delete this definition are you sure ?", vbQuestion + vbYesNo, "Delete " & msType) = vbYes Then
       If Not CheckForUseage(msType, lngSelectedID) Then
         Unload Me
       End If
@@ -709,7 +709,7 @@ Private Sub cmdDelete_Click()
     
   Else
     ' Ask for user confirmation to delete the utility definition
-    If MsgBox("Delete this " & LCase(msType) & ", are you sure ?", vbQuestion + vbYesNo, "Delete " & msType) = vbYes Then
+    If COAMsgBox("Delete this " & LCase(msType) & ", are you sure ?", vbQuestion + vbYesNo, "Delete " & msType) = vbYes Then
       If Not CheckForUseage(msType, lngSelectedID) Then
           
         Select Case msType
@@ -963,7 +963,7 @@ TidyUp:
 Prop_ERROR:
   
   Screen.MousePointer = vbDefault
-  MsgBox "Error retrieving properties for this definition." & vbCrLf & "Please contact support stating : " & vbCrLf & vbCrLf & Err.Description, vbExclamation + vbOKOnly, "Properties"
+  COAMsgBox "Error retrieving properties for this definition." & vbCrLf & "Please contact support stating : " & vbCrLf & vbCrLf & Err.Description, vbExclamation + vbOKOnly, "Properties"
   Resume TidyUp
 
 End Sub
@@ -1124,9 +1124,9 @@ Private Sub List1_DblClick()
       If mfEnableRun Then
         ' If we are trying to RUN the item, ask confirmation
         If mblnCaptionIsRun Then
-          'If MsgBox("Are you sure you want to run the '" & List1.SelectedItem.Text & "' " & Me.Caption & " ?", vbYesNo + vbQuestion, "Confirmation...") = vbNo Then
+          'If COAMsgBox("Are you sure you want to run the '" & List1.SelectedItem.Text & "' " & Me.Caption & " ?", vbYesNo + vbQuestion, "Confirmation...") = vbNo Then
           'NHRD25082004 Fault 7802
-          If MsgBox("Are you sure you want to run the '" & List1.SelectedItem.Text & "' " & msSingularCaption & " ?", vbYesNo + vbQuestion, "Confirmation...") = vbNo Then
+          If COAMsgBox("Are you sure you want to run the '" & List1.SelectedItem.Text & "' " & msSingularCaption & " ?", vbYesNo + vbQuestion, "Confirmation...") = vbNo Then
             Exit Sub
           End If
         End If
@@ -1331,7 +1331,7 @@ Exit Sub
 
 LocalErr:
   UI.UnlockWindow
-  MsgBox Err.Description, vbCritical
+  COAMsgBox Err.Description, vbCritical
 
 End Sub
 
@@ -1432,7 +1432,7 @@ Private Function CheckForUseage(sDefType As String, lItemID As Long) As Boolean
           sMsg = "currently being used in:" & vbCrLf & vbCrLf & sMsg
         End If
   
-        MsgBox "Unable to delete this " & LCase(sDefType) & ", " & sMsg, vbExclamation, Me.Caption
+        COAMsgBox "Unable to delete this " & LCase(sDefType) & ", " & sMsg, vbExclamation, Me.Caption
         CheckForUseage = True
       End With
       
@@ -1741,7 +1741,7 @@ Exit_Populate_List:
   
 ErrorTrap:
   Populate_List = False
-  MsgBox Err.Description, vbExclamation + vbOKOnly, App.ProductName
+  COAMsgBox Err.Description, vbExclamation + vbOKOnly, App.ProductName
   If ASRDEVELOPMENT Then
     Stop
   End If
@@ -1855,7 +1855,7 @@ Private Function CanStillSeeDefinition(lngDefID As Long) As Boolean
 
   With rsTemp
     If .BOF And .EOF Then
-      MsgBox "This definition has been deleted by another user", vbExclamation, Me.Caption
+      COAMsgBox "This definition has been deleted by another user", vbExclamation, Me.Caption
       Call Populate_List
       CanStillSeeDefinition = False
       'Exit Sub
@@ -1872,18 +1872,18 @@ Private Function CanStillSeeDefinition(lngDefID As Long) As Boolean
           End If
           
           If sCurrentUserAccess = ACCESS_HIDDEN Then
-            MsgBox "This definition has been made hidden by another user", vbExclamation, Me.Caption
+            COAMsgBox "This definition has been made hidden by another user", vbExclamation, Me.Caption
             Call Populate_List
             CanStillSeeDefinition = False
           ElseIf sCurrentUserAccess = ACCESS_READONLY And Not mblnReadOnlyAccess Then
-            MsgBox "This definition is now read only", vbInformation, Me.Caption
+            COAMsgBox "This definition is now read only", vbInformation, Me.Caption
             mblnReadOnlyAccess = True
-            Call CanStillSeeDefinition(lngDefID)  'Check again after msgbox
+            Call CanStillSeeDefinition(lngDefID)  'Check again after COAMsgBox
       
           ElseIf sCurrentUserAccess = ACCESS_READWRITE And mblnReadOnlyAccess Then
-            MsgBox "This definition is now read write", vbInformation, Me.Caption
+            COAMsgBox "This definition is now read write", vbInformation, Me.Caption
             mblnReadOnlyAccess = False
-            Call CanStillSeeDefinition(lngDefID)  'Check again after msgbox
+            Call CanStillSeeDefinition(lngDefID)  'Check again after COAMsgBox
           End If
         End If
       End If
@@ -2201,17 +2201,17 @@ Public Function RunSelectedJobs() As Boolean
       lngID = List2.ItemData(lngCount)
 
       If objBatchJob.DoesUserHavePermissionForAllJobs(lngID) = False Then
-        MsgBox "The job '" & List2.List(lngCount) & "' will not be run as you do not have permission to run all of the jobs in this batch.", vbInformation, Me.Caption
+        COAMsgBox "The job '" & List2.List(lngCount) & "' will not be run as you do not have permission to run all of the jobs in this batch.", vbInformation, Me.Caption
         List2.Selected(lngCount) = False
 
       Else
         strError = objBatchJob.CheckBatchNeedsRunning2(lngID, List2.List(lngCount))
         If strError <> vbNullString Then
-          MsgBox strError, vbInformation, Me.Caption
+          COAMsgBox strError, vbInformation, Me.Caption
           List2.Selected(lngCount) = False
         Else
           If objBatchJob.LockJob(lngID, False) = False Then
-            MsgBox "The job '" & List2.List(lngCount) & "' will not be run as it is already being run by another user.", vbInformation, Me.Caption
+            COAMsgBox "The job '" & List2.List(lngCount) & "' will not be run as it is already being run by another user.", vbInformation, Me.Caption
             List2.Selected(lngCount) = False
           End If
         End If

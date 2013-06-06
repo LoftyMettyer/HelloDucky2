@@ -258,11 +258,11 @@ Public Function Initialise(sBaseTable As String, iCols As Integer, Optional blnE
   
   If Me.cboColumns.ListCount = 0 Then
     If iCols = 0 Then
-      MsgBox "You must add a column to the report before you can add to the sort order.", vbExclamation + vbOKOnly, "Custom Reports"
+      COAMsgBox "You must add a column to the report before you can add to the sort order.", vbExclamation + vbOKOnly, "Custom Reports"
       Initialise = False
       Exit Function
     Else
-      MsgBox "You must add more columns to the report before you can add to the sort order.", vbExclamation + vbOKOnly, "Custom Reports"
+      COAMsgBox "You must add more columns to the report before you can add to the sort order.", vbExclamation + vbOKOnly, "Custom Reports"
       Initialise = False
       Exit Function
     End If

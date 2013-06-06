@@ -141,7 +141,7 @@ Private Sub SavePurgeInfo()
   ' Change pointer back to default
   Screen.MousePointer = vbDefault
   
-  If Me.optPurge.Value Then MsgBox "Purge completed.", vbInformation + vbOKOnly, "Workflow Log"
+  If Me.optPurge.Value Then COAMsgBox "Purge completed.", vbInformation + vbOKOnly, "Workflow Log"
   
   Exit Sub
   
@@ -154,7 +154,7 @@ ErrorTrap:
     
     Case Else
       Screen.MousePointer = vbDefault
-      MsgBox "Error saving purge information." & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Workflow Log"
+      COAMsgBox "Error saving purge information." & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Workflow Log"
       Exit Sub
   End Select
   
@@ -164,11 +164,11 @@ Private Function Validate() As Boolean
 
   If optPurge.Value Then
     If cboPeriod.Text = "" Then
-      MsgBox "You must select a period to purge workflow log entries.", vbExclamation + vbOKOnly, "Workflow Log"
+      COAMsgBox "You must select a period to purge workflow log entries.", vbExclamation + vbOKOnly, "Workflow Log"
       Validate = False
       Exit Function
     ElseIf (cboPeriod.ListIndex = 3) And (spnDays.Value > 200) Then
-      MsgBox "You cannot select a purge period of greater than 200 years.", vbExclamation + vbOKOnly, "Workflow Log"
+      COAMsgBox "You cannot select a purge period of greater than 200 years.", vbExclamation + vbOKOnly, "Workflow Log"
       Validate = False
       Exit Function
     

@@ -86,7 +86,7 @@ Public Sub ReadBankHolidayParameters()
   
 ReadParametersERROR:
 
-  MsgBox "Error reading the Bank Holiday parameters." & vbCrLf & _
+  COAMsgBox "Error reading the Bank Holiday parameters." & vbCrLf & _
          Err.Description, vbExclamation + vbOKOnly, App.Title
   gfBankHolidaysEnabled = False
   Set objTable = Nothing
@@ -114,7 +114,7 @@ Public Function ValidateBankHolidayParameters() As Boolean
 '  If fValid Then
 '    fValid = (glngBHolTableID > 0)
 '    If Not fValid Then
-'      MsgBox "Bank Holidays are not properly configured." & vbCrLf & _
+'      COAMsgBox "Bank Holidays are not properly configured." & vbCrLf & _
 '         "The Bank Holiday table is not defined.", vbOKOnly, App.ProductName
 '    End If
 '  End If
@@ -122,7 +122,7 @@ Public Function ValidateBankHolidayParameters() As Boolean
 '  If fValid Then
 '    fValid = (glngBholRegionTableID > 0)
 '    If Not fValid Then
-'      MsgBox "Bank Holidays are not properly configured." & vbCrLf & _
+'      COAMsgBox "Bank Holidays are not properly configured." & vbCrLf & _
 '         "The Bank Holiday Region table is not defined.", vbOKOnly, App.ProductName
 '    End If
 '  End If
@@ -130,7 +130,7 @@ Public Function ValidateBankHolidayParameters() As Boolean
 '  If fValid Then
 '    fValid = (glngBHolRegionID > 0)
 '    If Not fValid Then
-'      MsgBox "Bank Holidays are not properly configured." & vbCrLf & _
+'      COAMsgBox "Bank Holidays are not properly configured." & vbCrLf & _
 '         "The Bank Holiday Region column is not defined.", vbOKOnly, App.ProductName
 '    End If
 '  End If
@@ -138,7 +138,7 @@ Public Function ValidateBankHolidayParameters() As Boolean
 '  If fValid Then
 '    fValid = (glngBHolDateID > 0)
 '    If Not fValid Then
-'      MsgBox "Bank Holidays are not properly configured." & vbCrLf & _
+'      COAMsgBox "Bank Holidays are not properly configured." & vbCrLf & _
 '         "The Bank Holiday Date column is not defined.", vbOKOnly, App.ProductName
 '    End If
 '  End If
@@ -146,7 +146,7 @@ Public Function ValidateBankHolidayParameters() As Boolean
 '  If fValid Then
 '    fValid = (glngBHolDescriptionID > 0)
 '    If Not fValid Then
-'      MsgBox "Bank Holidays are not properly configured." & vbCrLf & _
+'      COAMsgBox "Bank Holidays are not properly configured." & vbCrLf & _
 '         "The Bank Holiday Description column is not defined.", vbOKOnly, App.ProductName
 '    End If
 '  End If
@@ -157,7 +157,7 @@ Public Function ValidateBankHolidayParameters() As Boolean
 '
 'ValidateERROR:
 '
-'  MsgBox "Error whilst validating Bank Holiday parameters." & vbCrLf & _
+'  COAMsgBox "Error whilst validating Bank Holiday parameters." & vbCrLf & _
 '         Err.Description, vbExclamation + vbOKOnly, App.Title
 '  fValid = False
 '  Resume ResumePoint

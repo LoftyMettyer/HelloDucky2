@@ -1,9 +1,9 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TabCtl32.Ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmCustomReports 
    BorderStyle     =   3  'Fixed Dialog
@@ -101,28 +101,28 @@ Begin VB.Form frmCustomReports
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmCustomReports.frx":1CB4
       Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "fraInformation"
-      Tab(0).Control(1)=   "fraBase"
+      Tab(0).Control(0)=   "fraBase"
+      Tab(0).Control(1)=   "fraInformation"
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Related Ta&bles"
       TabPicture(1)   =   "frmCustomReports.frx":1CD0
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraChild"
+      Tab(1).Control(0)=   "fraParent1"
       Tab(1).Control(1)=   "fraParent2"
-      Tab(1).Control(2)=   "fraParent1"
+      Tab(1).Control(2)=   "fraChild"
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "Colu&mns"
       TabPicture(2)   =   "frmCustomReports.frx":1CEC
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraButtons"
+      Tab(2).Control(0)=   "fraFieldsAvailable"
       Tab(2).Control(1)=   "fraFieldsSelected"
-      Tab(2).Control(2)=   "fraFieldsAvailable"
+      Tab(2).Control(2)=   "fraButtons"
       Tab(2).ControlCount=   3
       TabCaption(3)   =   "&Sort Order"
       TabPicture(3)   =   "frmCustomReports.frx":1D08
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "fraReportOrder"
-      Tab(3).Control(1)=   "fraRepetition"
+      Tab(3).Control(0)=   "fraRepetition"
+      Tab(3).Control(1)=   "fraReportOrder"
       Tab(3).ControlCount=   2
       TabCaption(4)   =   "O&utput"
       TabPicture(4)   =   "frmCustomReports.frx":1D24
@@ -204,9 +204,9 @@ Begin VB.Form frmCustomReports
             HeadLines       =   2
             Col.Count       =   7
             stylesets.count =   6
-            stylesets(0).Name=   "ssetSelected"
-            stylesets(0).ForeColor=   -2147483634
-            stylesets(0).BackColor=   -2147483635
+            stylesets(0).Name=   "ssetHeaderDisabled"
+            stylesets(0).ForeColor=   -2147483631
+            stylesets(0).BackColor=   -2147483633
             stylesets(0).HasFont=   -1  'True
             BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -218,9 +218,9 @@ Begin VB.Form frmCustomReports
                Strikethrough   =   0   'False
             EndProperty
             stylesets(0).Picture=   "frmCustomReports.frx":1D40
-            stylesets(1).Name=   "ssetHeaderDisabled"
-            stylesets(1).ForeColor=   -2147483631
-            stylesets(1).BackColor=   -2147483633
+            stylesets(1).Name=   "ssetSelected"
+            stylesets(1).ForeColor=   -2147483634
+            stylesets(1).BackColor=   -2147483635
             stylesets(1).HasFont=   -1  'True
             BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -717,9 +717,9 @@ Begin VB.Form frmCustomReports
             RecordSelectors =   0   'False
             Col.Count       =   7
             stylesets.count =   5
-            stylesets(0).Name=   "ssetSelected"
-            stylesets(0).ForeColor=   -2147483634
-            stylesets(0).BackColor=   -2147483635
+            stylesets(0).Name=   "ssetHeaderDisabled"
+            stylesets(0).ForeColor=   -2147483631
+            stylesets(0).BackColor=   -2147483633
             stylesets(0).HasFont=   -1  'True
             BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -731,9 +731,9 @@ Begin VB.Form frmCustomReports
                Strikethrough   =   0   'False
             EndProperty
             stylesets(0).Picture=   "frmCustomReports.frx":2B6C
-            stylesets(1).Name=   "ssetHeaderDisabled"
-            stylesets(1).ForeColor=   -2147483631
-            stylesets(1).BackColor=   -2147483633
+            stylesets(1).Name=   "ssetSelected"
+            stylesets(1).ForeColor=   -2147483634
+            stylesets(1).BackColor=   -2147483635
             stylesets(1).HasFont=   -1  'True
             BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -970,9 +970,9 @@ Begin VB.Form frmCustomReports
             GroupHeadLines  =   0
             Col.Count       =   3
             stylesets.count =   5
-            stylesets(0).Name=   "ssetSelected"
-            stylesets(0).ForeColor=   -2147483634
-            stylesets(0).BackColor=   -2147483635
+            stylesets(0).Name=   "ssetHeaderDisabled"
+            stylesets(0).ForeColor=   -2147483631
+            stylesets(0).BackColor=   -2147483633
             stylesets(0).HasFont=   -1  'True
             BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -984,9 +984,9 @@ Begin VB.Form frmCustomReports
                Strikethrough   =   0   'False
             EndProperty
             stylesets(0).Picture=   "frmCustomReports.frx":2BF8
-            stylesets(1).Name=   "ssetHeaderDisabled"
-            stylesets(1).ForeColor=   -2147483631
-            stylesets(1).BackColor=   -2147483633
+            stylesets(1).Name=   "ssetSelected"
+            stylesets(1).ForeColor=   -2147483634
+            stylesets(1).BackColor=   -2147483635
             stylesets(1).HasFont=   -1  'True
             BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -2355,7 +2355,7 @@ Private Sub cboBaseTable_Click()
     If Me.ListView2.ListItems.Count > 0 Or Me.grdChildren.Rows > 0 _
       Or Me.optBaseFilter.Value Or optBaseFilter.Value Or optParent1Filter.Value _
       Or Me.optParent1Picklist.Value Or Me.optParent2Filter.Value Or Me.optParent2Picklist.Value Then
-      If MsgBox("Warning: Changing the base table will result in all table/column " & _
+      If COAMsgBox("Warning: Changing the base table will result in all table/column " & _
             "specific aspects of this report definition being cleared." & vbCrLf & _
             "Are you sure you wish to continue?", _
             vbQuestion + vbYesNo + vbDefaultButton2, "Custom Reports") = vbYes Then
@@ -2444,7 +2444,7 @@ Public Function Initialise(bNew As Boolean, bCopy As Boolean, Optional plngCusto
         Initialise = False
         Exit Function
       Else
-        If MsgBox("HR Pro could not load all of the definition successfully. The recommendation is that" & vbCrLf & _
+        If COAMsgBox("HR Pro could not load all of the definition successfully. The recommendation is that" & vbCrLf & _
                "you delete the definition and create a new one, however, you may edit the existing" & vbCrLf & _
                "definition if you wish. Would you like to continue and edit this definition ?", vbQuestion + vbYesNo, "Custom Reports") = vbNo Then
           Me.Cancelled = True
@@ -2554,7 +2554,7 @@ Private Sub cmdAddAll_LostFocus()
 End Sub
 
 Private Sub cmdClearOrder_Click()
-  If MsgBox("Are you sure you wish to clear the sort order?", vbYesNo + vbQuestion, Me.Caption) = vbYes Then
+  If COAMsgBox("Are you sure you wish to clear the sort order?", vbYesNo + vbQuestion, Me.Caption) = vbYes Then
     grdReportOrder.RemoveAll
     grdReportOrder.SelBookmarks.RemoveAll
     EnableDisableTabControls
@@ -2734,12 +2734,12 @@ Private Sub grdRepetition_Change()
           mblnGridChangeRecursive = True
           grdRepetition.Columns("repetition").Value = vbUnchecked
           sMessage = "You cannot select 'Repetition' for a hidden column."
-          MsgBox sMessage, vbOKOnly + vbInformation, "Custom Reports"
+          COAMsgBox sMessage, vbOKOnly + vbInformation, "Custom Reports"
         ElseIf objColumn.SurpressRepeatedValues And grdRepetition.Columns("repetition").Value Then
           mblnGridChangeRecursive = True
           grdRepetition.Columns("repetition").Value = vbUnchecked
           sMessage = "You cannot select both 'Suppress Repeated Values' and 'Repetition' for the same column."
-          MsgBox sMessage, vbOKOnly + vbInformation, "Custom Reports"
+          COAMsgBox sMessage, vbOKOnly + vbInformation, "Custom Reports"
         End If
         
       End Select
@@ -2771,7 +2771,7 @@ Private Sub grdRepetition_Click()
   Dim sKey As String
 
   If Not mblnIsChildColumnSelected And (grdRepetition.Rows > 0) Then
-    MsgBox "Repetition cannot be selected until a child table column or calculation has been added to the report.", vbOKOnly + vbInformation, "Custom Reports"
+    COAMsgBox "Repetition cannot be selected until a child table column or calculation has been added to the report.", vbOKOnly + vbInformation, "Custom Reports"
     Exit Sub
   End If
   
@@ -2811,7 +2811,7 @@ Private Sub grdRepetition_DblClick()
   Dim sKey As String
 
   If Not mblnIsChildColumnSelected And (grdRepetition.Rows > 0) Then
-    MsgBox "Repetition cannot be selected until a child table column or calculation has been added to the report.", vbOKOnly + vbInformation, "Custom Reports"
+    COAMsgBox "Repetition cannot be selected until a child table column or calculation has been added to the report.", vbOKOnly + vbInformation, "Custom Reports"
     Exit Sub
   End If
 
@@ -2861,7 +2861,7 @@ Private Sub grdRepetition_KeyUp(KeyCode As Integer, Shift As Integer)
 
   If Not mblnIsChildColumnSelected And (grdRepetition.Rows > 0) Then
     If (KeyCode = vbKeySpace) Then
-      MsgBox "Repetition cannot be selected until a child table column or calculation has been added to the report.", vbOKOnly + vbInformation, "Custom Reports"
+      COAMsgBox "Repetition cannot be selected until a child table column or calculation has been added to the report.", vbOKOnly + vbInformation, "Custom Reports"
       Exit Sub
     End If
   End If
@@ -2950,7 +2950,7 @@ Private Sub grdReportOrder_Change()
           mblnGridChangeRecursive = True
           grdReportOrder.Columns("break").Value = vbUnchecked
           sMessage = "You cannot select both 'Break on Change' and 'Page on Change' for the same column."
-          MsgBox sMessage, vbOKOnly + vbInformation, "Custom Reports"
+          COAMsgBox sMessage, vbOKOnly + vbInformation, "Custom Reports"
         End If
         
       Case 4
@@ -2958,7 +2958,7 @@ Private Sub grdReportOrder_Change()
           mblnGridChangeRecursive = True
           grdReportOrder.Columns("page").Value = vbUnchecked
           sMessage = "You cannot select both 'Break on Change' and 'Page on Change' for the same column."
-          MsgBox sMessage, vbOKOnly + vbInformation, "Custom Reports"
+          COAMsgBox sMessage, vbOKOnly + vbInformation, "Custom Reports"
         End If
       
       Case 5
@@ -2966,7 +2966,7 @@ Private Sub grdReportOrder_Change()
           mblnGridChangeRecursive = True
           grdReportOrder.Columns("value").Value = vbUnchecked
           sMessage = "You cannot select 'Value on Change' for a hidden column."
-          MsgBox sMessage, vbOKOnly + vbInformation, "Custom Reports"
+          COAMsgBox sMessage, vbOKOnly + vbInformation, "Custom Reports"
         End If
         
       Case 6
@@ -2974,12 +2974,12 @@ Private Sub grdReportOrder_Change()
           mblnGridChangeRecursive = True
           grdReportOrder.Columns("hide").Value = vbUnchecked
           sMessage = "You cannot select 'Suppress Repeated Values' for a hidden column."
-          MsgBox sMessage, vbOKOnly + vbInformation, "Custom Reports"
+          COAMsgBox sMessage, vbOKOnly + vbInformation, "Custom Reports"
         ElseIf objColumn.Repetition And grdReportOrder.Columns("hide").Value Then
           mblnGridChangeRecursive = True
           grdReportOrder.Columns("hide").Value = vbUnchecked
           sMessage = "You cannot select both 'Suppress Repeated Values' and 'Repetition' for the same column."
-          MsgBox sMessage, vbOKOnly + vbInformation, "Custom Reports"
+          COAMsgBox sMessage, vbOKOnly + vbInformation, "Custom Reports"
         End If
         
       End Select
@@ -3364,7 +3364,7 @@ Private Sub cmdAddChild_Click()
     Changed = True
 
   Else
-    MsgBox "The maximum of five child tables has been selected.", vbInformation + vbOKOnly, "Custom Reports"
+    COAMsgBox "The maximum of five child tables has been selected.", vbInformation + vbOKOnly, "Custom Reports"
   End If
 
 End Sub
@@ -3726,7 +3726,7 @@ Private Sub cmdNewCalculation_Click()
     
       '02/08/2000 MH Fault 2386
       If mblnReadOnly Then
-        MsgBox "Unable to select calculation as you are viewing a read only definition", vbExclamation, "Custom Reports"
+        COAMsgBox "Unable to select calculation as you are viewing a read only definition", vbExclamation, "Custom Reports"
       
       Else
         strKey = "E" & CStr(.ExpressionID)
@@ -3740,7 +3740,7 @@ Private Sub cmdNewCalculation_Click()
           'Check for hidden elements within the calc.
           sMessage = IsCalcValid(.ExpressionID)
           If sMessage <> vbNullString Then
-            MsgBox "This calculation has been deleted or hidden by another user." & vbCrLf & _
+            COAMsgBox "This calculation has been deleted or hidden by another user." & vbCrLf & _
                    "It cannot be added to this definition", vbExclamation, App.Title
           Else
             If optCalc.Value And (cboTblAvailable.ItemData(cboTblAvailable.ListIndex) = .BaseTableID) Then
@@ -3803,7 +3803,7 @@ NewCalc_ERROR:
   
     Case 35601:  ' Expression could not be selected because the copy was aborted - hidden calc
                  ' selected, but user not the definition owner.
-    Case Else: MsgBox "Error : " & Err.Description, vbExclamation + vbOKOnly, App.Title
+    Case Else: COAMsgBox "Error : " & Err.Description, vbExclamation + vbOKOnly, App.Title
   
   End Select
   
@@ -3894,7 +3894,7 @@ Private Sub cmdRemoveAllChilds_Click()
   Dim bNeedRefreshAvail As Boolean
   
   If IsChildColumnSelected Then
-    bContinueRemoval = (MsgBox("Removing all the child tables will remove all child table columns " & _
+    bContinueRemoval = (COAMsgBox("Removing all the child tables will remove all child table columns " & _
                               "included in the report definition. " & vbCrLf & _
                               "Do you wish to continue ?" _
                               , vbYesNo + vbQuestion, "Custom Reports") = vbYes)
@@ -4114,7 +4114,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
     
     If Changed = True And Not FormPrint Then
       
-      pintAnswer = MsgBox("You have changed the current definition. Save changes ?", vbQuestion + vbYesNoCancel, "Custom Reports")
+      pintAnswer = COAMsgBox("You have changed the current definition. Save changes ?", vbQuestion + vbYesNoCancel, "Custom Reports")
         
       If pintAnswer = vbYes Then
         cmdOK_Click
@@ -4811,7 +4811,7 @@ Private Function CopyToSelected(bAll As Boolean, Optional intBeforeIndex As Inte
                                                           "WHERE A.ExprID = " & lngColumnID)
         If Not prstTemp.BOF And Not prstTemp.EOF Then
           If prstTemp.Fields("Access") = "HD" And Not mblnDefinitionCreator Then
-            MsgBox "Cannot include the '" & objTempItem.Text & "' calculation." & vbCrLf & _
+            COAMsgBox "Cannot include the '" & objTempItem.Text & "' calculation." & vbCrLf & _
                   " Its hidden and you are not the creator of this definition.", vbInformation + vbOKOnly, "Custom Reports"
             fOK = False
           Else
@@ -4882,10 +4882,10 @@ Private Function CopyToSelected(bAll As Boolean, Optional intBeforeIndex As Inte
                                                           "WHERE A.ExprID = " & lngColumnID)
         
         If prstTemp.BOF And prstTemp.EOF Then
-          MsgBox "The selected calculation has been deleted.", vbExclamation + vbOKOnly, "Custom Reports"
+          COAMsgBox "The selected calculation has been deleted.", vbExclamation + vbOKOnly, "Custom Reports"
           fOK = True
         ElseIf prstTemp.Fields("Access") = "HD" And Not mblnDefinitionCreator Then
-          MsgBox "Cannot include the '" & objTempItem.Text & "' calculation." & vbCrLf & _
+          COAMsgBox "Cannot include the '" & objTempItem.Text & "' calculation." & vbCrLf & _
                 " Its hidden and you are not the creator of this definition.", vbInformation + vbOKOnly, "Custom Reports"
           fOK = False
         Else
@@ -4934,10 +4934,10 @@ Private Function CopyToSelected(bAll As Boolean, Optional intBeforeIndex As Inte
                                                           "WHERE A.ExprID = " & lngColumnID)
         
         If prstTemp.BOF And prstTemp.EOF Then
-          MsgBox "The selected calculation has been deleted.", vbExclamation + vbOKOnly, "Custom Reports"
+          COAMsgBox "The selected calculation has been deleted.", vbExclamation + vbOKOnly, "Custom Reports"
           fOK = True
         ElseIf prstTemp.Fields("Access") = "HD" And Not mblnDefinitionCreator Then
-          MsgBox "Cannot include the '" & objTempItem.Text & "' calculation." & vbCrLf & _
+          COAMsgBox "Cannot include the '" & objTempItem.Text & "' calculation." & vbCrLf & _
                 " Its hidden and you are not the creator of this definition.", vbInformation + vbOKOnly, "Custom Reports"
           fOK = False
         Else
@@ -5016,11 +5016,11 @@ Private Function CopyToSelected(bAll As Boolean, Optional intBeforeIndex As Inte
                                                           "     ON A.TableID = B.TableID " & _
                                                           "WHERE A.ExprID = " & lngColumnID)
           If prstTemp.BOF And prstTemp.EOF Then
-            MsgBox "One or more of the selected calculation(s) have been deleted.", vbExclamation + vbOKOnly, "Custom Reports"
+            COAMsgBox "One or more of the selected calculation(s) have been deleted.", vbExclamation + vbOKOnly, "Custom Reports"
             fOK = False
           End If
           If prstTemp.Fields("Access") = "HD" And Not mblnDefinitionCreator Then
-            MsgBox "Cannot include the '" & objTempItem.Text & "' calculation." & vbCrLf & _
+            COAMsgBox "Cannot include the '" & objTempItem.Text & "' calculation." & vbCrLf & _
                   " Its hidden and you are not the creator of this definition.", vbInformation + vbOKOnly, "Custom Reports"
             fOK = False
           Else
@@ -5063,7 +5063,7 @@ Private Function CopyToSelected(bAll As Boolean, Optional intBeforeIndex As Inte
                                                           "     ON A.TableID = B.TableID " & _
                                                           "WHERE A.ExprID = " & lngColumnID)
             If prstTemp.Fields("Access") = "HD" And Not mblnDefinitionCreator Then
-              MsgBox "Cannot include the '" & objTempItem.Text & "' calculation." & vbCrLf & _
+              COAMsgBox "Cannot include the '" & objTempItem.Text & "' calculation." & vbCrLf & _
                      " Its hidden and you are not the creator of this definition.", vbInformation + vbOKOnly, "Custom Reports"
               fOK = False
             Else
@@ -5228,7 +5228,7 @@ Private Function CopyToAvailable(bAll As Boolean, Optional intBeforeIndex As Int
     If Not bAll Then
       If ListView2.ListItems(iLoop).Selected Then
         If CheckInSortOrder(Right(ListView2.ListItems(iLoop).Key, Len(ListView2.ListItems(iLoop).Key) - 1)) = True Then
-          If MsgBox("Removing the following column will also remove it from the report sort order." & vbCrLf & vbCrLf & ListView2.ListItems(iLoop).Text & vbCrLf & vbCrLf & "Do you wish to continue ?", vbYesNo + vbQuestion, "Custom Reports") = vbYes Then
+          If COAMsgBox("Removing the following column will also remove it from the report sort order." & vbCrLf & vbCrLf & ListView2.ListItems(iLoop).Text & vbCrLf & vbCrLf & "Do you wish to continue ?", vbYesNo + vbQuestion, "Custom Reports") = vbYes Then
             iTempItemIndex = iLoop
             If CheckInRepetitionGrid(ListView2.ListItems(iLoop).Key) Then
               RemoveFromRepetition ListView2.ListItems(iLoop).Key
@@ -5513,12 +5513,12 @@ Private Sub cmdRemoveAll_Click()
 
   ' Remove All items from the 'Selected' Listview
   If Me.grdReportOrder.Rows > 0 Then
-    If MsgBox("Removing all selected report columns will also clear the report sort order." & vbCrLf & "Do you wish to continue ?", vbYesNo + vbQuestion, "Custom Reports") = vbYes Then
+    If COAMsgBox("Removing all selected report columns will also clear the report sort order." & vbCrLf & "Do you wish to continue ?", vbYesNo + vbQuestion, "Custom Reports") = vbYes Then
       CopyToAvailable True
       EnableColProperties
     End If
   Else
-    If MsgBox("Are you sure you wish to remove all columns / calculations from this definition ?", vbYesNo + vbQuestion, "Custom Reports") = vbYes Then
+    If COAMsgBox("Are you sure you wish to remove all columns / calculations from this definition ?", vbYesNo + vbQuestion, "Custom Reports") = vbYes Then
       CopyToAvailable True
       EnableColProperties
     End If
@@ -5972,7 +5972,7 @@ Private Function ValidateCollection() As Boolean
   ' First check the number of cols in the listview is the same as the
   ' number of items in the collection
   If ListView2.ListItems.Count <> mcolCustomReportColDetails.Count Then
-    MsgBox "A serious error has occurred. To rectify, please remove all columns from the report definition and try again." & vbCrLf & "Please contact support stating : The no. of columns does not match the no of items in the collection.", vbCritical + vbOKOnly, "Custom Reports"
+    COAMsgBox "A serious error has occurred. To rectify, please remove all columns from the report definition and try again." & vbCrLf & "Please contact support stating : The no. of columns does not match the no of items in the collection.", vbCritical + vbOKOnly, "Custom Reports"
     SSTab1.Tab = 2
     Exit Function
   End If
@@ -5982,7 +5982,7 @@ Private Function ValidateCollection() As Boolean
     intDupCount = 0
     
     If (mcolCustomReportColDetails.Item(ListView2.ListItems(intTemp).Key).Heading = "") And (Not mcolCustomReportColDetails.Item(ListView2.ListItems(intTemp).Key).Hidden) Then
-      MsgBox "The '" & ListView2.ListItems(intTemp).Text & "' column has a blank column heading.", vbExclamation + vbOKOnly, "Custom Reports"
+      COAMsgBox "The '" & ListView2.ListItems(intTemp).Text & "' column has a blank column heading.", vbExclamation + vbOKOnly, "Custom Reports"
       SSTab1.Tab = 2
       Exit Function
     End If
@@ -6009,7 +6009,7 @@ Private Function ValidateCollection() As Boolean
     Next intTemp2
     
     If intDupCount > 1 Then
-      MsgBox "One or more columns / calculations in your report have a heading of '" & mcolCustomReportColDetails.Item(Me.ListView2.ListItems(intTemp).Key).Heading & "'" & vbCrLf & "Column headings must be unique.", vbExclamation + vbOKOnly, "Custom Reports"
+      COAMsgBox "One or more columns / calculations in your report have a heading of '" & mcolCustomReportColDetails.Item(Me.ListView2.ListItems(intTemp).Key).Heading & "'" & vbCrLf & "Column headings must be unique.", vbExclamation + vbOKOnly, "Custom Reports"
       SSTab1.Tab = 2
       Exit Function
     End If
@@ -6023,7 +6023,7 @@ Private Function ValidateCollection() As Boolean
   If intHiddenCount = ListView2.ListItems.Count Then
     strMessage = "All columns / calculations selected in this definition are defined as hidden." & vbCrLf & vbCrLf & "Do you wish to continue?"
     
-    intAnswer = MsgBox(strMessage, vbExclamation + vbYesNo, Me.Caption)
+    intAnswer = COAMsgBox(strMessage, vbExclamation + vbYesNo, Me.Caption)
     
     If intAnswer = vbNo Then
       SSTab1.Tab = 2
@@ -6034,7 +6034,7 @@ Private Function ValidateCollection() As Boolean
   ' Check that at least one column has VOC ticked if it is a summary report.
   If chkSummaryReport.Value Then
     If Not blnHasAggregate Then
-      MsgBox "You have defined this report as a summary report but have not selected to show aggregates for any of the columns.", vbExclamation + vbOKOnly, "Custom Reports"
+      COAMsgBox "You have defined this report as a summary report but have not selected to show aggregates for any of the columns.", vbExclamation + vbOKOnly, "Custom Reports"
       ValidateCollection = False
       SSTab1.Tab = 2
       Exit Function
@@ -6044,7 +6044,7 @@ Private Function ValidateCollection() As Boolean
   ' Check that at least one numeric column has an aggregate ticked if 'Ignore Zeros' is checked.
   If chkIgnoreZeros.Value Then
     If Not blnHasNumericAggregate Then
-      MsgBox "You have chosen to ignore zeros when calculating aggregates, but have not selected to show aggregates for any numeric columns.", vbExclamation + vbOKOnly, "Custom Reports"
+      COAMsgBox "You have chosen to ignore zeros when calculating aggregates, but have not selected to show aggregates for any numeric columns.", vbExclamation + vbOKOnly, "Custom Reports"
       ValidateCollection = False
       SSTab1.Tab = 2
       Exit Function
@@ -6053,7 +6053,7 @@ Private Function ValidateCollection() As Boolean
 
   'MH20010511 Allow zero size columns
   'If pstrColumnsWithSizeZero <> "" Then
-  '  MsgBox "The following columns have a size of 0:" & vbCrLf & vbCrLf & pstrColumnsWithSizeZero & vbCrLf & _
+  '  COAMsgBox "The following columns have a size of 0:" & vbCrLf & vbCrLf & pstrColumnsWithSizeZero & vbCrLf & _
   '         "Either allocate a size for these columns or remove them from the report.", vbExclamation + vbOKOnly, "Custom Reports"
   '  SSTab1.Tab = 2
   '  Exit Function
@@ -6351,7 +6351,7 @@ Private Function SaveDefinition() As Boolean
 Save_ERROR:
 
   SaveDefinition = False
-  MsgBox "Warning : An error has occurred whilst saving..." & vbCrLf & Err.Description & vbCrLf & "Please cancel and try again. If this error continues, delete the definition.", vbCritical + vbOKOnly, "Custom Reports"
+  COAMsgBox "Warning : An error has occurred whilst saving..." & vbCrLf & Err.Description & vbCrLf & "Please cancel and try again. If this error continues, delete the definition.", vbCritical + vbOKOnly, "Custom Reports"
 
 End Function
 
@@ -6544,7 +6544,7 @@ Private Function RetrieveCustomReportDetails(plngCustomReportID As Long) As Bool
                                      "FROM ASRSysCustomReportsName WHERE ID = " & plngCustomReportID)
   
   If rsTemp.BOF And rsTemp.EOF Then
-    MsgBox "This Report definition has been deleted by another user.", vbExclamation + vbOKOnly, "Custom Reports"
+    COAMsgBox "This Report definition has been deleted by another user.", vbExclamation + vbOKOnly, "Custom Reports"
     Set rsTemp = Nothing
     RetrieveCustomReportDetails = False
     mblnDeleted = True
@@ -6687,7 +6687,7 @@ Private Function RetrieveCustomReportDetails(plngCustomReportID As Long) As Bool
 '    If cboPrinterName.Text <> rsTemp!OutputPrinterName Then
 '      cboPrinterName.AddItem rsTemp!OutputPrinterName
 '      cboPrinterName.ListIndex = cboPrinterName.NewIndex
-'      MsgBox "This definition is set to output to printer " & rsTemp!OutputPrinterName & _
+'      COAMsgBox "This definition is set to output to printer " & rsTemp!OutputPrinterName & _
 '             " which is not set up on your PC.", vbInformation, Me.Caption
 '    End If
 '  End If
@@ -6737,7 +6737,7 @@ Private Function RetrieveCustomReportDetails(plngCustomReportID As Long) As Bool
   Set rsTemp = datGeneral.GetRecords("SELECT * FROM ASRSysCustomReportsDetails WHERE CustomReportID = " & plngCustomReportID & " ORDER BY [Sequence]")
   
   If rsTemp.BOF And rsTemp.EOF Then
-    MsgBox "Cannot load the column definition for this Custom Report", vbExclamation + vbOKOnly, "Custom Reports"
+    COAMsgBox "Cannot load the column definition for this Custom Report", vbExclamation + vbOKOnly, "Custom Reports"
     RetrieveCustomReportDetails = False
     Set rsTemp = Nothing
     Exit Function
@@ -6763,13 +6763,13 @@ Private Function RetrieveCustomReportDetails(plngCustomReportID As Long) As Bool
   
           If FormPrint Then
             sMessage = "Custom Report print failed : " & vbCrLf & vbCrLf & sMessage
-            MsgBox sMessage, vbExclamation + vbOKOnly, "Custom Reports"
+            COAMsgBox sMessage, vbExclamation + vbOKOnly, "Custom Reports"
             Me.Cancelled = True
             RetrieveCustomReportDetails = False
             Exit Function
           End If
           
-          MsgBox sMessage & vbCrLf & _
+          COAMsgBox sMessage & vbCrLf & _
                    "It will be removed from the definition.", vbExclamation + vbOKOnly, "Custom Reports"
   
           fAlreadyNotified = True
@@ -6811,7 +6811,7 @@ Private Function RetrieveCustomReportDetails(plngCustomReportID As Long) As Bool
   Set rsTemp = datGeneral.GetRecords("SELECT * FROM ASRSysCustomReportsDetails WHERE CustomReportID = " & plngCustomReportID & " AND SortOrderSequence > 0 AND Type = 'C' ORDER BY [SortOrderSequence]")
   
   If rsTemp.BOF And rsTemp.EOF Then
-    MsgBox "Cannot load the sort order for this Custom Report", vbExclamation + vbOKOnly, "Custom Reports"
+    COAMsgBox "Cannot load the sort order for this Custom Report", vbExclamation + vbOKOnly, "Custom Reports"
     RetrieveCustomReportDetails = False
     Set rsTemp = Nothing
     Exit Function
@@ -6879,7 +6879,7 @@ Private Function RetrieveCustomReportDetails(plngCustomReportID As Long) As Bool
 
 Load_ERROR:
 
-  MsgBox "Warning : Error whilst retrieving the report definition." & vbCrLf & Err.Description, vbExclamation + vbOKOnly, "Custom Reports"
+  COAMsgBox "Warning : Error whilst retrieving the report definition." & vbCrLf & Err.Description, vbExclamation + vbOKOnly, "Custom Reports"
   RetrieveCustomReportDetails = False
   Set rsTemp = Nothing
 
@@ -7162,7 +7162,7 @@ Public Function AnyChildColumnsUsed(lngTableID As Long, Optional bAutoYes As Boo
   End If
   
   If Not bAutoYes Then
-    If MsgBox("One or more columns from the '" & datGeneral.GetTableName(lngTableID) & "' table have been included in the current report definition." & vbCrLf & _
+    If COAMsgBox("One or more columns from the '" & datGeneral.GetTableName(lngTableID) & "' table have been included in the current report definition." & vbCrLf & _
               "Changing the child table will remove these columns from the report definition." & vbCrLf & _
               "Do you wish to continue ?" _
               , vbYesNo + vbQuestion, "Custom Reports") = vbNo Then
@@ -7242,7 +7242,7 @@ Public Function ValidateDefinition(lngCurrentID As Long) As Boolean
   
   ' Check a name has been entered
   If Trim(txtName.Text) = "" Then
-    MsgBox "You must give this definition a name.", vbExclamation, Me.Caption
+    COAMsgBox "You must give this definition a name.", vbExclamation, Me.Caption
     SSTab1.Tab = 0
     txtName.SetFocus
     Exit Function
@@ -7264,7 +7264,7 @@ Public Function ValidateDefinition(lngCurrentID As Long) As Boolean
   
   ' Check the name is unique
   If Not CheckUniqueName(Trim(txtName.Text), mlngCustomReportID) Then
-    MsgBox "A Custom Report definition called '" & Trim(txtName.Text) & "' already exists.", vbExclamation, Me.Caption
+    COAMsgBox "A Custom Report definition called '" & Trim(txtName.Text) & "' already exists.", vbExclamation, Me.Caption
     SSTab1.Tab = 0
     txtName.SelStart = 0
     txtName.SelLength = Len(txtName.Text)
@@ -7274,7 +7274,7 @@ Public Function ValidateDefinition(lngCurrentID As Long) As Boolean
   ' BASE TABLE - If using a picklist, check one has been selected
   If optBasePicklist.Value Then
     If txtBasePicklist.Text = "" Or txtBasePicklist.Tag = "0" Or txtBasePicklist.Tag = "" Then
-      MsgBox "You must select a picklist, or change the record selection for your base table.", vbExclamation + vbOKOnly, "Custom Reports"
+      COAMsgBox "You must select a picklist, or change the record selection for your base table.", vbExclamation + vbOKOnly, "Custom Reports"
       SSTab1.Tab = 0
       cmdBasePicklist.SetFocus
       ValidateDefinition = False
@@ -7285,7 +7285,7 @@ Public Function ValidateDefinition(lngCurrentID As Long) As Boolean
   ' BASE TABLE - If using a filter, check one has been selected
   If optBaseFilter.Value Then
     If txtBaseFilter.Text = "" Or txtBaseFilter.Tag = "0" Or txtBaseFilter.Tag = "" Then
-      MsgBox "You must select a filter, or change the record selection for your base table.", vbExclamation + vbOKOnly, "Custom Reports"
+      COAMsgBox "You must select a filter, or change the record selection for your base table.", vbExclamation + vbOKOnly, "Custom Reports"
       SSTab1.Tab = 0
       cmdBaseFilter.SetFocus
       ValidateDefinition = False
@@ -7296,7 +7296,7 @@ Public Function ValidateDefinition(lngCurrentID As Long) As Boolean
   ' PARENT 1 TABLE - If using a picklist, check one has been selected
   If optParent1Picklist.Value Then
     If txtParent1Picklist.Text = "" Or txtParent1Picklist.Tag = "0" Or txtParent1Picklist.Tag = "" Then
-      MsgBox "You must select a picklist, or change the record selection for your first parent table.", vbExclamation + vbOKOnly, "Custom Reports"
+      COAMsgBox "You must select a picklist, or change the record selection for your first parent table.", vbExclamation + vbOKOnly, "Custom Reports"
       SSTab1.Tab = 1
       cmdParent1Picklist.SetFocus
       ValidateDefinition = False
@@ -7307,7 +7307,7 @@ Public Function ValidateDefinition(lngCurrentID As Long) As Boolean
   ' PARENT 1 TABLE - If using a filter, check one has been selected
   If optParent1Filter.Value Then
     If txtParent1Filter.Text = "" Or txtParent1Filter.Tag = "0" Or txtParent1Filter.Tag = "" Then
-      MsgBox "You must select a filter, or change the record selection for your first parent table.", vbExclamation + vbOKOnly, "Custom Reports"
+      COAMsgBox "You must select a filter, or change the record selection for your first parent table.", vbExclamation + vbOKOnly, "Custom Reports"
       SSTab1.Tab = 1
       cmdParent1Filter.SetFocus
       ValidateDefinition = False
@@ -7318,7 +7318,7 @@ Public Function ValidateDefinition(lngCurrentID As Long) As Boolean
   ' PARENT 2 TABLE - If using a picklist, check one has been selected
   If optParent2Picklist.Value Then
     If txtParent2Picklist.Text = "" Or txtParent2Picklist.Tag = "0" Or txtParent2Picklist.Tag = "" Then
-      MsgBox "You must select a picklist, or change the record selection for your second parent table.", vbExclamation + vbOKOnly, "Custom Reports"
+      COAMsgBox "You must select a picklist, or change the record selection for your second parent table.", vbExclamation + vbOKOnly, "Custom Reports"
       SSTab1.Tab = 1
       cmdParent2Picklist.SetFocus
       ValidateDefinition = False
@@ -7329,7 +7329,7 @@ Public Function ValidateDefinition(lngCurrentID As Long) As Boolean
   ' PARENT 2 TABLE - If using a filter, check one has been selected
   If optParent2Filter.Value Then
     If txtParent2Filter.Text = "" Or txtParent2Filter.Tag = "0" Or txtParent2Filter.Tag = "" Then
-      MsgBox "You must select a filter, or change the record selection for your second parent table.", vbExclamation + vbOKOnly, "Custom Reports"
+      COAMsgBox "You must select a filter, or change the record selection for your second parent table.", vbExclamation + vbOKOnly, "Custom Reports"
       SSTab1.Tab = 1
       cmdParent2Filter.SetFocus
       ValidateDefinition = False
@@ -7343,7 +7343,7 @@ Public Function ValidateDefinition(lngCurrentID As Long) As Boolean
   
   ' Check that there are columns defined in the report definition
   If ListView2.ListItems.Count = 0 Then
-    MsgBox "You must select at least 1 column for your report.", vbExclamation + vbOKOnly, "Custom Reports"
+    COAMsgBox "You must select at least 1 column for your report.", vbExclamation + vbOKOnly, "Custom Reports"
     SSTab1.Tab = 2
     Exit Function
   End If
@@ -7368,7 +7368,7 @@ Public Function ValidateDefinition(lngCurrentID As Long) As Boolean
     End With
     
     If Not blnHasVOC Then
-      If MsgBox("You have defined this report as a summary report but have not set a column as 'Value on Change'." & vbCrLf & vbCrLf & _
+      If COAMsgBox("You have defined this report as a summary report but have not set a column as 'Value on Change'." & vbCrLf & vbCrLf & _
                  "Do you wish to continue?", vbQuestion + vbYesNo, "Custom Reports") = vbNo Then
         ValidateDefinition = False
         SSTab1.Tab = 3
@@ -7383,7 +7383,7 @@ Public Function ValidateDefinition(lngCurrentID As Long) As Boolean
     Do Until LLoop = .Rows
       bm = .GetBookmark(LLoop)
       If .Columns(3).CellValue(bm) And .Columns(4).CellValue(bm) Then
-        MsgBox "You cannot select 'Break on Change' and 'Page Break' for the same column.", vbExclamation + vbOKOnly, "Custom Reports"
+        COAMsgBox "You cannot select 'Break on Change' and 'Page Break' for the same column.", vbExclamation + vbOKOnly, "Custom Reports"
         ValidateDefinition = False
         Exit Function
       End If
@@ -7394,7 +7394,7 @@ Public Function ValidateDefinition(lngCurrentID As Long) As Boolean
   ' Check that at least 1 column has been defined as the report order
   With grdReportOrder
     If .Rows = 0 Then
-      MsgBox "You must select at least one column to order the report by.", vbExclamation + vbOKOnly, "Custom Reports"
+      COAMsgBox "You must select at least one column to order the report by.", vbExclamation + vbOKOnly, "Custom Reports"
       ValidateDefinition = False
       SSTab1.Tab = 3
       Exit Function
@@ -7404,7 +7404,7 @@ Public Function ValidateDefinition(lngCurrentID As Long) As Boolean
 '  ' If exporting, and save box is checked, user must specify a filename
 '  If optOutput(1).Value Then
 '    If chkSave.Value And txtExportFilename = "" Then
-'      MsgBox "You must select a filename if you opt to save the document !", vbExclamation + vbOKOnly, "Custom Reports"
+'      COAMsgBox "You must select a filename if you opt to save the document !", vbExclamation + vbOKOnly, "Custom Reports"
 '      ValidateDefinition = False
 '      SSTab1.Tab = 4
 '      Exit Function
@@ -7434,11 +7434,11 @@ If mlngCustomReportID > 0 Then
 
     If (Not fBatchJobsOK) Then
       If Len(sBatchJobDetails_ScheduledForOtherUsers) > 0 Then
-        MsgBox "This definition cannot be made hidden from the following user groups :" & vbCrLf & vbCrLf & sBatchJobScheduledUserGroups & vbCrLf & _
+        COAMsgBox "This definition cannot be made hidden from the following user groups :" & vbCrLf & vbCrLf & sBatchJobScheduledUserGroups & vbCrLf & _
                "as it is used in the following batch jobs which are scheduled to be run by these user groups :" & vbCrLf & vbCrLf & sBatchJobDetails_ScheduledForOtherUsers, _
                vbExclamation + vbOKOnly, "Custom Reports"
       Else
-        MsgBox "This definition cannot be made hidden as it is used in the following" & vbCrLf & _
+        COAMsgBox "This definition cannot be made hidden as it is used in the following" & vbCrLf & _
                "batch jobs of which you are not the owner :" & vbCrLf & vbCrLf & sBatchJobDetails_NotOwner, vbExclamation + vbOKOnly _
                , "Custom Reports"
       End If
@@ -7448,7 +7448,7 @@ If mlngCustomReportID > 0 Then
       Exit Function
 
     ElseIf (iCount_Owner > 0) Then
-      If MsgBox("Making this definition hidden to user groups will automatically" & vbCrLf & _
+      If COAMsgBox("Making this definition hidden to user groups will automatically" & vbCrLf & _
                 "make the following definition(s), of which you are the" & vbCrLf & _
                 "owner, hidden to the same user groups:" & vbCrLf & vbCrLf & _
                 sBatchJobDetails_Owner & vbCrLf & _
@@ -8132,7 +8132,7 @@ Private Function InsertCustomReport(pstrSQL As String) As Long
     cmADO.Execute
               
     If Not fSavedOK Then
-      MsgBox "The new record could not be created." & vbCrLf & vbCrLf & _
+      COAMsgBox "The new record could not be created." & vbCrLf & vbCrLf & _
         Err.Description, vbOKOnly + vbExclamation, App.ProductName
         InsertCustomReport = 0
         Set cmADO = Nothing
@@ -8325,7 +8325,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
           (Not FormPrint)
         If fRemove Then
           sBigMessage = "The '" & cboBaseTable.List(cboBaseTable.ListIndex) & "' table picklist will be removed from this definition as it is hidden and you do not have permission to make this definition hidden."
-          MsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
+          COAMsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
         Else
           fNeedToForceHidden = True
   
@@ -8384,7 +8384,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
 
         If fRemove Then
           sBigMessage = "The '" & cboBaseTable.List(cboBaseTable.ListIndex) & "' table filter will be removed from this definition as it is hidden and you do not have permission to make this definition hidden."
-          MsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
+          COAMsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
         Else
           fNeedToForceHidden = True
   
@@ -8442,7 +8442,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
           (Not FormPrint)
         If fRemove Then
           sBigMessage = "The '" & txtParent1.Text & "' table picklist will be removed from this definition as it is hidden and you do not have permission to make this definition hidden."
-          MsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
+          COAMsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
         Else
           fNeedToForceHidden = True
   
@@ -8501,7 +8501,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
 
         If fRemove Then
           sBigMessage = "The '" & txtParent1.Text & "' table filter will be removed from this definition as it is hidden and you do not have permission to make this definition hidden."
-          MsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
+          COAMsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
         Else
           fNeedToForceHidden = True
   
@@ -8559,7 +8559,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
           (Not FormPrint)
         If fRemove Then
           sBigMessage = "The '" & txtParent2.Text & "' table picklist will be removed from this definition as it is hidden and you do not have permission to make this definition hidden."
-          MsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
+          COAMsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
         Else
           fNeedToForceHidden = True
   
@@ -8618,7 +8618,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
 
         If fRemove Then
           sBigMessage = "The '" & txtParent2.Text & "' table filter will be removed from this definition as it is hidden and you do not have permission to make this definition hidden."
-          MsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
+          COAMsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
         Else
           fNeedToForceHidden = True
   
@@ -8686,7 +8686,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
 
               If fRemove Then
                 sBigMessage = "The '" & sTableName & "' table filter will be removed from this definition as it is hidden and you do not have permission to make this definition hidden."
-                MsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
+                COAMsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
               Else
                 fNeedToForceHidden = True
   
@@ -8781,7 +8781,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
   
             If fRemove Then
               sBigMessage = "The '" & sCalcName & "' calculation will be removed from this definition as it is hidden and you do not have permission to make this definition hidden."
-              MsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
+              COAMsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
             Else
               fNeedToForceHidden = True
     
@@ -8963,7 +8963,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
       sBigMessage = Me.Caption & " print failed. The definition is currently invalid : " & vbCrLf & vbCrLf & sBigMessage
     End If
 
-    MsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
+    COAMsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
   End If
 
   ForceDefinitionToBeHiddenIfNeeded = (Len(sBigMessage) = 0)
@@ -9018,7 +9018,7 @@ Public Sub PrintDef(lCustomReportID As Long)
                                      "FROM ASRSysCustomReportsName WHERE ID = " & mlngCustomReportID)
                                         
   If rsTemp.BOF And rsTemp.EOF Then
-    MsgBox "This definition has been deleted by another user.", vbExclamation + vbOKOnly, "Print Definition"
+    COAMsgBox "This definition has been deleted by another user.", vbExclamation + vbOKOnly, "Print Definition"
     Set rsTemp = Nothing
     Exit Sub
   End If
@@ -9238,7 +9238,7 @@ Public Sub PrintDef(lCustomReportID As Long)
 Exit Sub
 
 LocalErr:
-  MsgBox "Printing Custom Report Definition Failed" & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Print Definition"
+  COAMsgBox "Printing Custom Report Definition Failed" & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Print Definition"
 
 End Sub
 Private Sub CheckListViewColWidth(lstvw As ListView)

@@ -225,7 +225,7 @@ TidyUpAndExit:
 
 ErrorTrap:
   LC_Initialise = False
-  MsgBox "Error Reading Security Settings" & vbCrLf & vbCrLf & Err.Number & " " & Err.Description, vbOKOnly + vbExclamation, App.Title
+  COAMsgBox "Error Reading Security Settings" & vbCrLf & vbCrLf & Err.Number & " " & Err.Description, vbOKOnly + vbExclamation, App.Title
   GoTo TidyUpAndExit
  
 End Function
@@ -266,7 +266,7 @@ Public Function LC_PCLocked() As Boolean
   If blnPCLocked Then
     strTimeRemaining = LC_FormatDateTimeMessage(DateDiff("s", Now(), DateAdd("s", glngCFG_LD, gdtPC_LKD)))
     strMessage = "This PC has been temporarily locked from using HR Pro." & vbCrLf & vbCrLf & "The lock will be removed in " & strTimeRemaining & "."
-    MsgBox strMessage, vbOKOnly + vbExclamation, App.Title
+    COAMsgBox strMessage, vbOKOnly + vbExclamation, App.Title
   End If
   
   'Re-initialise PC variables as these are always refreshed by "LC_ReadCurrentLockStatus"
@@ -342,7 +342,7 @@ TidyUpAndExit:
 
 ErrorTrap:
   LC_ReadCurrentLockStatus = False
-  MsgBox "Error Reading PC Security Settings" & vbCrLf & vbCrLf & Err.Number & " " & Err.Description, vbOKOnly + vbExclamation, App.Title
+  COAMsgBox "Error Reading PC Security Settings" & vbCrLf & vbCrLf & Err.Number & " " & Err.Description, vbOKOnly + vbExclamation, App.Title
   GoTo TidyUpAndExit
     
 End Function
@@ -397,7 +397,7 @@ TidyUpAndExit:
 
 ErrorTrap:
   LC_SaveCurrentLockStatus = False
-  MsgBox "Error Saving PC Security Settings" & vbCrLf & vbCrLf & Err.Number & " " & Err.Description, vbOKOnly + vbExclamation, App.Title
+  COAMsgBox "Error Saving PC Security Settings" & vbCrLf & vbCrLf & Err.Number & " " & Err.Description, vbOKOnly + vbExclamation, App.Title
   GoTo TidyUpAndExit
   
 End Function
@@ -450,7 +450,7 @@ TidyUpAndExit:
   Exit Function
 
 ErrorTrap:
-  MsgBox "Error Saving Security Settings" & vbCrLf & vbCrLf & Err.Number & " " & Err.Description, vbOKOnly + vbExclamation, App.Title
+  COAMsgBox "Error Saving Security Settings" & vbCrLf & vbCrLf & Err.Number & " " & Err.Description, vbOKOnly + vbExclamation, App.Title
   GoTo TidyUpAndExit
   
 End Function

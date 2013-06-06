@@ -156,22 +156,22 @@ Public Function Initialise(pblnNew As Boolean, pfrmForm As frmExport, Optional p
       Screen.MousePointer = vbNormal
       
 '      If (mfrmForm.grdExportOrder.Rows = pintLoop And pintLoop > 0) Or (cboColumns.ListCount = 0) Then
-'        MsgBox "You have selected all existing export columns in the sort order." & vbCrLf & "To add more sort order columns, you must add more columns to the export definition.", vbExclamation + vbOKOnly, "Export"
+'        COAMsgBox "You have selected all existing export columns in the sort order." & vbCrLf & "To add more sort order columns, you must add more columns to the export definition.", vbExclamation + vbOKOnly, "Export"
 '        Initialise = False
 '        Exit Function
 '      End If
 '
 '      If pintLoop = 0 Then
-'       MsgBox "You can order the export by columns selected in the export." & vbCrLf & "You must select a column for the export before you can sort by it.", vbExclamation + vbOKOnly, "Export"
+'       COAMsgBox "You can order the export by columns selected in the export." & vbCrLf & "You must select a column for the export before you can sort by it.", vbExclamation + vbOKOnly, "Export"
 '       Initialise = False
 '       Exit Function
 '      End If
      
         If cboColumns.ListCount = 0 Then
           If mfrmForm.grdColumns.Rows = 0 Then
-            MsgBox "You must add a column to the export before you can add to the sort order.", vbExclamation + vbOKOnly, "Export"
+            COAMsgBox "You must add a column to the export before you can add to the sort order.", vbExclamation + vbOKOnly, "Export"
           Else
-            MsgBox "You must add more columns to the export before you can add to the sort order.", vbExclamation + vbOKOnly, "Export"
+            COAMsgBox "You must add more columns to the export before you can add to the sort order.", vbExclamation + vbOKOnly, "Export"
           End If
         Initialise = False
         Exit Function
@@ -242,7 +242,7 @@ Public Function Initialise(pblnNew As Boolean, pfrmForm As frmExport, Optional p
 Initialise_ERROR:
   
   Initialise = False
-  MsgBox "Error initialising the Export Order form." & vbCrLf & vbCrLf & "(" & Err.Description & ")", vbCritical + vbOKOnly, "Export"
+  COAMsgBox "Error initialising the Export Order form." & vbCrLf & vbCrLf & "(" & Err.Description & ")", vbCritical + vbOKOnly, "Export"
 
 End Function
 
@@ -320,7 +320,7 @@ Private Sub cmdAction_Click(Index As Integer)
   Dim plngRow As Long
   
   If cboColumns.Text = "" Then
-    MsgBox "You must select a column.", vbExclamation + vbOKOnly, "Export"
+    COAMsgBox "You must select a column.", vbExclamation + vbOKOnly, "Export"
     Exit Sub
   End If
   ' OK pressed

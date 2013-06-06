@@ -1,5 +1,5 @@
 Attribute VB_Name = "modQAProErrorHandling"
-Public Declare Function SetWindowPos Lib "user32" (ByVal hwnd As Long, ByVal hWndInsertAfter As Long, ByVal x As Long, ByVal Y As Long, ByVal cx As Long, ByVal cy As Long, ByVal wFlags As Long) As Long
+Public Declare Function SetWindowPos Lib "user32" (ByVal hWnd As Long, ByVal hWndInsertAfter As Long, ByVal x As Long, ByVal y As Long, ByVal cx As Long, ByVal cy As Long, ByVal wFlags As Long) As Long
     
 Public Const conHwndTopmost = -1
 Public Const conSwpNoActivate = &H10
@@ -52,6 +52,6 @@ Public Function Process_Error(strModuleName As String, ByRef mErr As ErrObject, 
         Set objProc = objProc.NextProc
     Loop
     
-    piErrResponse = MsgBox(txtError, vbCritical + vbOKOnly, "Quick Address Error")
+    piErrResponse = COAMsgBox(txtError, vbCritical + vbOKOnly, "Quick Address Error")
 
 End Function

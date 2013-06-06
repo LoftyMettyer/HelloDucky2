@@ -203,7 +203,7 @@ Private Function TransferBooking() As Boolean
 
     If Not fOK Then
       Screen.MousePointer = vbDefault
-      MsgBox "Unable to create new booking record." & vbCrLf & vbCrLf & sErrorMsg, vbExclamation + vbOKOnly, App.ProductName
+      COAMsgBox "Unable to create new booking record." & vbCrLf & vbCrLf & sErrorMsg, vbExclamation + vbOKOnly, App.ProductName
       Screen.MousePointer = vbHourglass
       
       gADOCon.RollbackTrans
@@ -231,7 +231,7 @@ Private Function TransferBooking() As Boolean
 
     If Not fOK Then
       Screen.MousePointer = vbDefault
-      MsgBox "Unable to update the original booking record." & vbCrLf & vbCrLf & sErrorMsg, vbExclamation + vbOKOnly, App.ProductName
+      COAMsgBox "Unable to update the original booking record." & vbCrLf & vbCrLf & sErrorMsg, vbExclamation + vbOKOnly, App.ProductName
       Screen.MousePointer = vbHourglass
         
       gADOCon.RollbackTrans
@@ -258,7 +258,7 @@ TidyUpAndExit:
 
 ErrorTrap:
   fOK = False
-  MsgBox Err.Description, vbExclamation + vbOKOnly, Application.Name
+  COAMsgBox Err.Description, vbExclamation + vbOKOnly, Application.Name
   Resume TidyUpAndExit
 
 End Function
@@ -358,7 +358,7 @@ Public Function Initialise(plngBookingID As Long) As Boolean
   If fOK Then
     fOK = objColumns.Item(gsTrainBookStatusColumnName).AllowSelect
     If Not fOK Then
-      MsgBox "You do not have 'read' permission on the '" & gsTrainBookStatusColumnName & "'.", vbExclamation + vbOKOnly, App.ProductName
+      COAMsgBox "You do not have 'read' permission on the '" & gsTrainBookStatusColumnName & "'.", vbExclamation + vbOKOnly, App.ProductName
     End If
   End If
   
@@ -382,11 +382,11 @@ Public Function Initialise(plngBookingID As Long) As Boolean
         ' Ensure that the Training Booking records has associated Course and Employee records.
         fOK = (mlngCurrentCourseID > 0)
         If Not fOK Then
-          MsgBox "The selected Training Booking record has no associated Course record.", vbExclamation + vbOKOnly, App.ProductName
+          COAMsgBox "The selected Training Booking record has no associated Course record.", vbExclamation + vbOKOnly, App.ProductName
         Else
           fOK = (mlngCurrentEmployeeID > 0)
           If Not fOK Then
-            MsgBox "The selected Training Booking record has no associated Employee record.", vbExclamation + vbOKOnly, App.ProductName
+            COAMsgBox "The selected Training Booking record has no associated Employee record.", vbExclamation + vbOKOnly, App.ProductName
           End If
         End If
       End If
@@ -462,7 +462,7 @@ Public Function Initialise(plngBookingID As Long) As Boolean
       ' table.
       If UBound(asViews) = 0 Then
         fOK = False
-        MsgBox "You do not have 'read' permission on the '" & gsCourseTitleColumnName & "'.", vbExclamation + vbOKOnly, App.ProductName
+        COAMsgBox "You do not have 'read' permission on the '" & gsCourseTitleColumnName & "'.", vbExclamation + vbOKOnly, App.ProductName
       Else
         ' Add the column to the column list.
         sColumnCode = ""
@@ -505,7 +505,7 @@ Public Function Initialise(plngBookingID As Long) As Boolean
         End If
         
         If Not fOK Then
-          MsgBox "Unable to determine the '" & gsCourseTitleColumnName & "' from the '" & gsCourseTableName & "' table.", vbExclamation + vbOKOnly, App.ProductName
+          COAMsgBox "Unable to determine the '" & gsCourseTitleColumnName & "' from the '" & gsCourseTableName & "' table.", vbExclamation + vbOKOnly, App.ProductName
         Else
           msCourseTitle = .Fields(gsCourseTitleColumnName)
         End If
@@ -589,7 +589,7 @@ Private Function GetCourseRecords() As Boolean
 
   fOK = Not (rsInfo.EOF And rsInfo.BOF)
   If Not fOK Then
-    MsgBox "No default order defined for the course table." & _
+    COAMsgBox "No default order defined for the course table." & _
       vbCrLf & "Unable to display the records.", vbExclamation, "Security"
   Else
     ' Check the user's privilieges on the order columns.
@@ -785,7 +785,7 @@ Private Function GetCourseRecords() As Boolean
 
     ' Inform the user if they do not have permission to see the data.
     If fNoSelect Then
-      MsgBox "You do not have 'read' permission on all of the columns in the selected order." & _
+      COAMsgBox "You do not have 'read' permission on all of the columns in the selected order." & _
         vbCrLf & "Only permitted columns will be shown.", vbExclamation, "Security"
     End If
     
@@ -880,7 +880,7 @@ Private Function GetCourseRecords() As Boolean
         ' Check we have course records.
         fOK = (mlngRecordCount > 0)
         If Not fOK Then
-          MsgBox "No course records found.", vbExclamation, Me.Caption
+          COAMsgBox "No course records found.", vbExclamation, Me.Caption
         End If
         
         If fOK Then
@@ -889,12 +889,12 @@ Private Function GetCourseRecords() As Boolean
         End If
       Else
         ' Unable to read from the course table.
-        MsgBox "You do not have permission to read the Course table." & _
+        COAMsgBox "You do not have permission to read the Course table." & _
           vbCrLf & "Unable to display records.", vbExclamation, "Security"
         fOK = False
       End If
     Else
-      MsgBox "You do not have permission to read any of the columns in the Course table's default order." & _
+      COAMsgBox "You do not have permission to read any of the columns in the Course table's default order." & _
         vbCrLf & "Unable to display records.", vbExclamation, "Security"
       fOK = False
     End If
@@ -909,7 +909,7 @@ TidyUpAndExit:
   Exit Function
   
 ErrorTrap:
-  MsgBox "Error reading Course records.", vbExclamation, Me.Caption
+  COAMsgBox "Error reading Course records.", vbExclamation, Me.Caption
   fOK = False
   Resume TidyUpAndExit
 
@@ -929,14 +929,14 @@ Private Function ValidateParameters() As Boolean
 '''    ' Check that the user has permission to see the Training Bookings Course Title column.
 '''    fValid = objTBColumnPrivileges.Item(gsTrainBookCourseTitleName).AllowSelect
 '''    If Not fValid Then
-'''      MsgBox "You do not have 'read' permission on the '" & gsTrainBookCourseTitleName & "' column.", vbExclamation + vbOKOnly, App.ProductName
+'''      COAMsgBox "You do not have 'read' permission on the '" & gsTrainBookCourseTitleName & "' column.", vbExclamation + vbOKOnly, App.ProductName
 '''    End If
 '''
 '''    If fValid Then
 '''      ' Check that the user has permission to update the Training Bookings Course Title column.
 '''      fValid = objTBColumnPrivileges.Item(gsTrainBookCourseTitleName).AllowUpdate
 '''      If Not fValid Then
-'''        MsgBox "You do not have 'edit' permission on the '" & gsTrainBookCourseTitleName & "' column.", vbExclamation + vbOKOnly, App.ProductName
+'''        COAMsgBox "You do not have 'edit' permission on the '" & gsTrainBookCourseTitleName & "' column.", vbExclamation + vbOKOnly, App.ProductName
 '''      End If
 '''    End If
 '''

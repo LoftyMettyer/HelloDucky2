@@ -66,7 +66,7 @@ ErrorTrap:
     ' Flag any errors to the user, except the key collision one (err=457)
     ' which we can expect if the screen has more than one control
     ' referring to the same column.
-    MsgBox Err.Description
+    COAMsgBox Err.Description
   End If
   Resume TidyUpAndExit
   

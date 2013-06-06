@@ -223,7 +223,7 @@ Public Sub Initialise(pfrmParentForm As Form)
 
   'If there are no unique fields in the underlying table, inform user
   If cboField.ListCount = 0 Then
-    MsgBox "Quick Find can only be used on tables with columns defined as unique." & vbCrLf & _
+    COAMsgBox "Quick Find can only be used on tables with columns defined as unique." & vbCrLf & _
       "The current table has no unique columns.", vbInformation + vbOKOnly, Me.Caption
     Exit Sub
   End If
@@ -338,7 +338,7 @@ Private Sub cmdButton_Click(Index As Integer)
       If iDataType = sqlDate Then
         ' Check that the entered value is a date.
         If Not IsDate(txtValue.Text) Then
-          MsgBox "You must enter a valid date.", vbInformation + vbOKOnly, Me.Caption
+          COAMsgBox "You must enter a valid date.", vbInformation + vbOKOnly, Me.Caption
           Exit Sub
         Else
           sSQL = "SELECT ID" & _
@@ -347,7 +347,7 @@ Private Sub cmdButton_Click(Index As Integer)
         End If
       ElseIf (iDataType = sqlNumeric) Then
 '        If Not IsNumeric(txtValue.Text) Then
-'          MsgBox "You must enter a valid numeric value.", vbInformation + vbOKOnly, Me.Caption
+'          COAMsgBox "You must enter a valid numeric value.", vbInformation + vbOKOnly, Me.Caption
 '          Exit Sub
 '        Else
         
@@ -360,7 +360,7 @@ Private Sub cmdButton_Click(Index As Integer)
 '          For iCount = 0 To UBound(mavColumnInfo, 2)
 '            If mavColumnInfo(0, iCount) = cboField.ItemData(cboField.ListIndex) Then
 '              If Len(txtValue.Text) > mavColumnInfo(1, iCount) Then
-'                MsgBox "You have entered " & Len(txtValue.Text) & " characters." & vbCrLf & _
+'                COAMsgBox "You have entered " & Len(txtValue.Text) & " characters." & vbCrLf & _
 '                       "The " & cboField.Text & " field accepts a maximum of " & mavColumnInfo(1, iCount) & " characters.", vbExclamation + vbOKOnly, App.Title
 '                Exit Sub
 '              End If
@@ -403,7 +403,7 @@ Private Sub cmdButton_Click(Index As Integer)
             Screen.MousePointer = vbDefault
             
             'JPD 20030905 Fault 6358
-            MsgBox "No record can be found matching the following criteria:" & vbCrLf & vbCrLf & _
+            COAMsgBox "No record can be found matching the following criteria:" & vbCrLf & vbCrLf & _
                     cboField.Text & " = " & _
                     IIf((iDataType = sqlNumeric), tdbNumberValue.Text, txtValue.Text) & "." & vbCrLf & vbCrLf & _
                     IIf(mfrmParentForm.Filtered = True, "The current recordset is filtered - try removing the filter.", ""), vbInformation + vbOKOnly, Me.Caption
@@ -415,7 +415,7 @@ Private Sub cmdButton_Click(Index As Integer)
           ' JPD20030211 Fault 5043
           mfCancelled = False
         Else
-          MsgBox "No record can be found matching the following criteria:" & vbCrLf & vbCrLf & cboField.Text & " = " & IIf(iDataType = sqlNumeric, tdbNumberValue.Text, txtValue.Text) & ".", vbInformation + vbOKOnly, Me.Caption
+          COAMsgBox "No record can be found matching the following criteria:" & vbCrLf & vbCrLf & cboField.Text & " = " & IIf(iDataType = sqlNumeric, tdbNumberValue.Text, txtValue.Text) & ".", vbInformation + vbOKOnly, Me.Caption
           Screen.MousePointer = vbDefault
           Exit Sub
         End If
@@ -432,7 +432,7 @@ Private Sub cmdButton_Click(Index As Integer)
   
 ErrTrap:
   
-  MsgBox "Error whilst attempting to validate quickfind parameters." & vbCrLf & _
+  COAMsgBox "Error whilst attempting to validate quickfind parameters." & vbCrLf & _
          "If this problem persists, please contact support stating :" & vbCrLf & vbCrLf & _
          Err.Number & " - " & Err.Description, vbExclamation + vbOKOnly, App.Title
          
@@ -441,7 +441,7 @@ End Sub
 Private Function ValidateIt() As Boolean
   ' Has a field been selected in the field combo box?
   If cboField.ListIndex = -1 Then
-    MsgBox "You must select a field.", vbInformation + vbOKOnly, Me.Caption
+    COAMsgBox "You must select a field.", vbInformation + vbOKOnly, Me.Caption
     ValidateIt = False
     cboField.SetFocus
     Exit Function
@@ -450,19 +450,19 @@ Private Function ValidateIt() As Boolean
   ' Has anything been entered in the value text box?
   'NHRD16042004 Fault 8775 Changed the And to Or in the line below
    If txtValue.Visible And txtValue.Text = "" Then
-    MsgBox "You must enter a value.", vbInformation + vbOKOnly, Me.Caption
+    COAMsgBox "You must enter a value.", vbInformation + vbOKOnly, Me.Caption
     ValidateIt = False
     Exit Function
   End If
 
   If tdbNumberValue.Visible And tdbNumberValue.Text = "0.00" Then
-    MsgBox "You must enter a value.", vbInformation + vbOKOnly, Me.Caption
+    COAMsgBox "You must enter a value.", vbInformation + vbOKOnly, Me.Caption
     ValidateIt = False
     Exit Function
   End If
     
 '  If txtValue.Text = "" Or tdbNumberValue.Text = "0.00" Then
-'    MsgBox "You must enter a value.", vbInformation + vbOKOnly, Me.Caption
+'    COAMsgBox "You must enter a value.", vbInformation + vbOKOnly, Me.Caption
 '    ValidateIt = False
 '
 '    'txtValue.SetFocus

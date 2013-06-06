@@ -859,7 +859,7 @@ Private Function GetFindRecords() As Boolean
   Set rsInfo = datGeneral.GetOrderDefinition(mlngOrderID)
 
   If rsInfo.EOF And rsInfo.BOF Then
-    MsgBox "No order defined for this " & IIf(mobjTableView.IsTable, "table.", "view.") & _
+    COAMsgBox "No order defined for this " & IIf(mobjTableView.IsTable, "table.", "view.") & _
       vbCrLf & "Unable to display records.", vbExclamation, "Security"
     fOK = False
   Else
@@ -1060,7 +1060,7 @@ Private Function GetFindRecords() As Boolean
 
     ' Inform the user if they do not have permission to see the data.
     If fNoSelect And (Not mfMessageDisplayed) Then
-      MsgBox "You do not have 'read' permission on all of the columns in the selected order." & _
+      COAMsgBox "You do not have 'read' permission on all of the columns in the selected order." & _
         vbCrLf & "Only permitted columns will be shown.", vbExclamation, "Security"
       mfMessageDisplayed = True
     End If
@@ -1105,7 +1105,7 @@ Private Function GetFindRecords() As Boolean
       ConfigureGrid
       
     Else
-      MsgBox "You do not have permission to read any of the columns in the selected order for this " & _
+      COAMsgBox "You do not have permission to read any of the columns in the selected order for this " & _
         IIf(mobjTableView.IsTable, "table.", "view.") & _
         vbCrLf & "Unable to display records.", vbExclamation, "Security"
       fOK = False
@@ -1881,7 +1881,7 @@ Private Function ConfigureOrdersCombo() As Boolean
       
       .Enabled = True
     Else
-      MsgBox "No orders defined for this " & IIf(mobjTableView.IsTable, "table.", "view.") & _
+      COAMsgBox "No orders defined for this " & IIf(mobjTableView.IsTable, "table.", "view.") & _
         vbCrLf & "Unable to display records.", vbExclamation, "Security"
       fOK = False
     End If
@@ -2120,7 +2120,7 @@ Public Sub AddFromWaitingList()
       Set objCourseTableView = Nothing
     Else
       ' No selected course record.
-      MsgBox "No course record selected.", vbOKOnly + vbInformation, App.ProductName
+      COAMsgBox "No course record selected.", vbOKOnly + vbInformation, App.ProductName
     End If
   End If
   
@@ -2156,14 +2156,14 @@ Public Sub BookCourse()
   fOK = gfTrainingBookingEnabled
   
   If Not fOK Then
-    MsgBox "Training Booking functionality is not enabled.", vbOKOnly + vbInformation, App.ProductName
+    COAMsgBox "Training Booking functionality is not enabled.", vbOKOnly + vbInformation, App.ProductName
   Else
     ' Get the ID of the selected Waiting List record.
     lngWaitingListID = SelectedRecordID
   
     fOK = (lngWaitingListID > 0)
     If Not fOK Then
-      MsgBox "No Waiting List record selected.", vbOKOnly + vbInformation, App.ProductName
+      COAMsgBox "No Waiting List record selected.", vbOKOnly + vbInformation, App.ProductName
     End If
   End If
   
@@ -2172,14 +2172,14 @@ Public Sub BookCourse()
     Set objColumns = GetColumnPrivileges(msCurrentTableViewName)
     fOK = objColumns.IsValid(gsWaitListCourseTitleColumnName)
     If Not fOK Then
-      MsgBox "The '" & gsWaitListCourseTitleColumnName & "' column is not the current view.", vbOKOnly + vbInformation, App.ProductName
+      COAMsgBox "The '" & gsWaitListCourseTitleColumnName & "' column is not the current view.", vbOKOnly + vbInformation, App.ProductName
     End If
   End If
   
   If fOK Then
     fOK = objColumns.Item(gsWaitListCourseTitleColumnName).AllowSelect
     If Not fOK Then
-      MsgBox "You do not have 'read' permission on the '" & gsWaitListCourseTitleColumnName & "'.", vbOKOnly + vbInformation, App.ProductName
+      COAMsgBox "You do not have 'read' permission on the '" & gsWaitListCourseTitleColumnName & "'.", vbOKOnly + vbInformation, App.ProductName
     End If
   End If
 
@@ -2192,7 +2192,7 @@ Public Sub BookCourse()
     Set rsInfo = datGeneral.GetRecords(sSQL)
     fOK = Not (rsInfo.EOF And rsInfo.BOF)
     If Not fOK Then
-      MsgBox "Unable to read the Course Title from the Waiting List record.", vbOKOnly + vbInformation, App.ProductName
+      COAMsgBox "Unable to read the Course Title from the Waiting List record.", vbOKOnly + vbInformation, App.ProductName
     Else
       sSelectedCourseTitle = IIf(IsNull(rsInfo.Fields(gsWaitListCourseTitleColumnName)), "", rsInfo.Fields(gsWaitListCourseTitleColumnName))
       lngSelectedEmployeeID = IIf(IsNull(rsInfo.Fields("ID_" & glngEmployeeTableID)), 0, rsInfo.Fields("ID_" & glngEmployeeTableID))
@@ -2606,7 +2606,7 @@ Public Sub CancelBooking()
   fInTransaction = False
   
   If ssOleDBGridFindColumns.SelBookmarks.Count = 0 Then
-    MsgBox "No record selected.", vbOKOnly + vbInformation, App.ProductName
+    COAMsgBox "No record selected.", vbOKOnly + vbInformation, App.ProductName
     fOK = False
   End If
   
@@ -2620,7 +2620,7 @@ Public Sub CancelBooking()
       ' Check that the user has permission to update the Training Bookings Status column.
       fOK = objTBColumnPrivileges.Item(gsTrainBookStatusColumnName).AllowUpdate
       If Not fOK Then
-        MsgBox "You do not have 'edit' permission on the '" & gsTrainBookStatusColumnName & "' column.", vbOKOnly + vbInformation, App.ProductName
+        COAMsgBox "You do not have 'edit' permission on the '" & gsTrainBookStatusColumnName & "' column.", vbOKOnly + vbInformation, App.ProductName
         GoTo QuitWithoutRequery
       End If
     End If
@@ -2629,7 +2629,7 @@ Public Sub CancelBooking()
     If Len(gsTrainBookCancelDateColumnName) > 0 Then
       fOK = objTBColumnPrivileges.Item(gsTrainBookCancelDateColumnName).AllowUpdate
       If Not fOK Then
-        MsgBox "You do not have 'edit' permission on the '" & gsTrainBookCancelDateColumnName & "' column.", vbOKOnly + vbInformation, App.ProductName
+        COAMsgBox "You do not have 'edit' permission on the '" & gsTrainBookCancelDateColumnName & "' column.", vbOKOnly + vbInformation, App.ProductName
         GoTo QuitWithoutRequery
       End If
     End If
@@ -2657,14 +2657,14 @@ Public Sub CancelBooking()
 
     fOK = (lngSelectedEmployeeID > 0)
     If Not fOK Then
-      MsgBox "The selected Training Booking record has no associated Employee record.", vbOKOnly + vbInformation, App.ProductName
+      COAMsgBox "The selected Training Booking record has no associated Employee record.", vbOKOnly + vbInformation, App.ProductName
       GoTo QuitWithoutRequery
     End If
     
     If fOK Then
       fOK = (lngSelectedCourseID > 0)
       If Not fOK Then
-        MsgBox "The selected Training Booking record has no associated Course record.", vbOKOnly + vbInformation, App.ProductName
+        COAMsgBox "The selected Training Booking record has no associated Course record.", vbOKOnly + vbInformation, App.ProductName
         GoTo QuitWithoutRequery
       End If
     End If
@@ -2676,7 +2676,7 @@ Public Sub CancelBooking()
       (UCase(Left(sSelectedBookingStatus, 1)) = "P")
 
     If Not fOK Then
-      MsgBox "Bookings can only be cancelled if they have 'Booked'" & IIf(gfTrainBookStatus_P, " or 'Provisional'", "") & " status.", vbOKOnly + vbInformation, App.ProductName
+      COAMsgBox "Bookings can only be cancelled if they have 'Booked'" & IIf(gfTrainBookStatus_P, " or 'Provisional'", "") & " status.", vbOKOnly + vbInformation, App.ProductName
       GoTo QuitWithoutRequery:
     End If
   End If
@@ -2750,7 +2750,7 @@ Public Sub CancelBooking()
       ' table.
       If UBound(asViews) = 0 Then
         fCourseNameFound = False
-        MsgBox "You do not have 'read' permission on the '" & gsCourseTitleColumnName & "'.", vbOKOnly + vbInformation, App.ProductName
+        COAMsgBox "You do not have 'read' permission on the '" & gsCourseTitleColumnName & "'.", vbOKOnly + vbInformation, App.ProductName
       Else
         ' Add the column to the column list.
         sColumnCode = ""
@@ -2804,7 +2804,7 @@ Public Sub CancelBooking()
   
   If fOK Then
     If fCourseNameFound Then
-      iUserChoice = MsgBox("Transfer the booking to the employee's waiting list ?", vbYesNoCancel + vbQuestion, App.ProductName)
+      iUserChoice = COAMsgBox("Transfer the booking to the employee's waiting list ?", vbYesNoCancel + vbQuestion, App.ProductName)
     Else
       iUserChoice = vbNo
     End If
@@ -2832,7 +2832,7 @@ Public Sub CancelBooking()
 
       If Not fOK Then
         Screen.MousePointer = vbDefault
-        MsgBox "Unable to cancel the booking." & vbCrLf & vbCrLf & sErrorMsg, vbExclamation + vbOKOnly, App.ProductName
+        COAMsgBox "Unable to cancel the booking." & vbCrLf & vbCrLf & sErrorMsg, vbExclamation + vbOKOnly, App.ProductName
         
         Screen.MousePointer = vbHourglass
         
@@ -2863,12 +2863,12 @@ Public Sub CancelBooking()
             
             fOK = Not objTBColumn Is Nothing
             If Not fOK Then
-              MsgBox "Unable to find all related columns in the '" & gsTrainBookTableName & "' table.", vbOKOnly + vbInformation, App.ProductName
+              COAMsgBox "Unable to find all related columns in the '" & gsTrainBookTableName & "' table.", vbOKOnly + vbInformation, App.ProductName
               Exit For
             Else
               fOK = objTBColumn.AllowSelect
               If Not fOK Then
-                MsgBox "You do not have 'read' permission on the '" & objTBColumn.ColumnName & "' column in the '" & gsTrainBookTableName & "' table.", vbOKOnly + vbInformation, App.ProductName
+                COAMsgBox "You do not have 'read' permission on the '" & objTBColumn.ColumnName & "' column in the '" & gsTrainBookTableName & "' table.", vbOKOnly + vbInformation, App.ProductName
                 Exit For
               End If
             End If
@@ -2876,12 +2876,12 @@ Public Sub CancelBooking()
             If fOK Then
               fOK = Not objWLColumn Is Nothing
               If Not fOK Then
-                MsgBox "Unable to find all related columns in the '" & gsWaitListTableName & "' table.", vbOKOnly + vbInformation, App.ProductName
+                COAMsgBox "Unable to find all related columns in the '" & gsWaitListTableName & "' table.", vbOKOnly + vbInformation, App.ProductName
                 Exit For
               Else
                 fOK = objWLColumn.AllowUpdate
                 If Not fOK Then
-                  MsgBox "You do not have 'edit' permission on the '" & objWLColumn.ColumnName & "' column in the '" & gsWaitListTableName & "' table.", vbOKOnly + vbInformation, App.ProductName
+                  COAMsgBox "You do not have 'edit' permission on the '" & objWLColumn.ColumnName & "' column in the '" & gsWaitListTableName & "' table.", vbOKOnly + vbInformation, App.ProductName
                   Exit For
                 End If
               End If
@@ -2921,7 +2921,7 @@ Public Sub CancelBooking()
             ' Check that the user has permission to insert records from the Waiting List table.
             fOK = objWaitingListTable.AllowInsert
             If Not fOK Then
-              MsgBox "You do not have 'new' permission on the '" & gsWaitListTableName & "' table.", vbOKOnly + vbInformation, App.ProductName
+              COAMsgBox "You do not have 'new' permission on the '" & gsWaitListTableName & "' table.", vbOKOnly + vbInformation, App.ProductName
             End If
           End If
           
@@ -2929,7 +2929,7 @@ Public Sub CancelBooking()
             ' Check that the user has permission to see the Waiting List Course Title column.
             fOK = objWLColumnPrivileges.Item(gsWaitListCourseTitleColumnName).AllowUpdate
             If Not fOK Then
-              MsgBox "You do not have 'edit' permission on the '" & gsWaitListCourseTitleColumnName & "' column.", vbOKOnly + vbInformation, App.ProductName
+              COAMsgBox "You do not have 'edit' permission on the '" & gsWaitListCourseTitleColumnName & "' column.", vbOKOnly + vbInformation, App.ProductName
             End If
           End If
           
@@ -2953,7 +2953,7 @@ Public Sub CancelBooking()
               fOK = datGeneral.ExecuteSql(sSQL, sErrorMsg)
               If Not fOK Then
                 Screen.MousePointer = vbDefault
-                MsgBox "Unable to create waiting list records." & vbCrLf & vbCrLf & sErrorMsg, vbOKOnly + vbInformation, App.ProductName
+                COAMsgBox "Unable to create waiting list records." & vbCrLf & vbCrLf & sErrorMsg, vbOKOnly + vbInformation, App.ProductName
                 Screen.MousePointer = vbHourglass
                   
                 gADOCon.RollbackTrans
@@ -2973,7 +2973,7 @@ TidyUpAndExit:
     If fOK Then
       gADOCon.CommitTrans
       ' JPD20011101 Fault 3076
-      MsgBox "Booking cancelled.", vbOKOnly & vbInformation, App.ProductName
+      COAMsgBox "Booking cancelled.", vbOKOnly & vbInformation, App.ProductName
     Else
       gADOCon.RollbackTrans
     End If
@@ -3024,7 +3024,7 @@ QuitWithoutRequery:
   
 ErrorTrap:
   fOK = False
-  MsgBox Err.Description, vbExclamation + vbOKOnly, Application.Name
+  COAMsgBox Err.Description, vbExclamation + vbOKOnly, Application.Name
   Resume TidyUpAndExit
   
 End Sub
@@ -3055,7 +3055,7 @@ Public Sub DeleteRecord()
   nTotalSelRows = ssOleDBGridFindColumns.SelBookmarks.Count
   
   If (nTotalSelRows > 1) Then
-    If MsgBox("Delete the selected records, are you sure ?", vbQuestion + vbYesNo, "Delete Records") <> vbYes Then
+    If COAMsgBox("Delete the selected records, are you sure ?", vbQuestion + vbYesNo, "Delete Records") <> vbYes Then
       Exit Sub
     End If
   End If
@@ -3246,11 +3246,11 @@ Public Sub TransferBooking()
     Set objColumnPrivileges = GetColumnPrivileges(gsTrainBookTableName)
     fOK = objColumnPrivileges.Item(gsTrainBookStatusColumnName).AllowSelect
     If Not fOK Then
-      MsgBox "You do not have 'read' permission on the '" & gsTrainBookStatusColumnName & "' column.", vbOKOnly + vbInformation, App.ProductName
+      COAMsgBox "You do not have 'read' permission on the '" & gsTrainBookStatusColumnName & "' column.", vbOKOnly + vbInformation, App.ProductName
     Else
       fOK = objColumnPrivileges.Item(gsTrainBookStatusColumnName).AllowUpdate
       If Not fOK Then
-        MsgBox "You do not have 'edit' permission on the '" & gsTrainBookStatusColumnName & "' column.", vbOKOnly + vbInformation, App.ProductName
+        COAMsgBox "You do not have 'edit' permission on the '" & gsTrainBookStatusColumnName & "' column.", vbOKOnly + vbInformation, App.ProductName
       End If
     End If
     
@@ -3258,7 +3258,7 @@ Public Sub TransferBooking()
     If Len(gsTrainBookCancelDateColumnName) > 0 Then
       fOK = objColumnPrivileges.Item(gsTrainBookCancelDateColumnName).AllowUpdate
       If Not fOK Then
-        MsgBox "You do not have 'edit' permission on the '" & gsTrainBookCancelDateColumnName & "' column.", vbOKOnly + vbInformation, App.ProductName
+        COAMsgBox "You do not have 'edit' permission on the '" & gsTrainBookCancelDateColumnName & "' column.", vbOKOnly + vbInformation, App.ProductName
       End If
     End If
     
@@ -3278,7 +3278,7 @@ Public Sub TransferBooking()
     If fOK Then
       sSelectedBookingStatus = rsInfo.Fields(gsTrainBookStatusColumnName)
     Else
-      MsgBox "Error reading the selected booking's status.", vbOKOnly + vbExclamation, App.ProductName
+      COAMsgBox "Error reading the selected booking's status.", vbOKOnly + vbExclamation, App.ProductName
     End If
   
     rsInfo.Close
@@ -3290,7 +3290,7 @@ Public Sub TransferBooking()
       (UCase(Left(sSelectedBookingStatus, 1)) = "P")
     If Not fOK Then
       ' JPD20030206 Fault 5013
-      MsgBox "Training bookings can only be transferred if they have 'Booked'" & _
+      COAMsgBox "Training bookings can only be transferred if they have 'Booked'" & _
         IIf(gfTrainBookStatus_P, " or 'Provisional'", "") & " status.", vbOKOnly + vbInformation, App.ProductName
     End If
   End If
@@ -3735,7 +3735,7 @@ Private Sub ssOleDBGridFindColumns_DblClick()
           End If
           
           If .RecordID <> lngSelectedRecord Then
-            MsgBox "The selected record has been deleted by another user.", vbExclamation, App.ProductName
+            COAMsgBox "The selected record has been deleted by another user.", vbExclamation, App.ProductName
             .Requery False
           End If
   
@@ -3766,7 +3766,7 @@ Private Sub ssOleDBGridFindColumns_DblClick()
           End If
           
           If .RecordID <> lngSelectedRecord Then
-            MsgBox "The selected record has been deleted by another user.", vbExclamation, App.ProductName
+            COAMsgBox "The selected record has been deleted by another user.", vbExclamation, App.ProductName
             .Requery False
           End If
           
@@ -4395,13 +4395,13 @@ Dim pstrError As String
   'NHRD16072004 Fault 8740
   If Printers.Count = 0 Then
     pstrError = "Unable to print as no printers are installed."
-    MsgBox pstrError, vbExclamation + vbOKOnly, "HR Pro"
+    COAMsgBox pstrError, vbExclamation + vbOKOnly, "HR Pro"
     GoTo TidyUpAndExit
   End If
   
   With ssOleDBGridFindColumns
     If .Rows < 1 Then
-      MsgBox "There is no data in the current view to print", vbInformation + vbOKOnly, App.Title
+      COAMsgBox "There is no data in the current view to print", vbInformation + vbOKOnly, App.Title
       Exit Sub
     End If
     .Redraw = False

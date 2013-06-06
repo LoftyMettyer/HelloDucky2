@@ -1,7 +1,7 @@
 VERSION 5.00
 Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomct2.ocx"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TabCtl32.Ocx"
 Begin VB.Form frmLabelTypeDefinition 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Envelope & Label Template Definition"
@@ -57,11 +57,11 @@ Begin VB.Form frmLabelTypeDefinition
       TabCaption(1)   =   "&Format"
       TabPicture(1)   =   "frmLabelTypeDefinition.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraPreview"
-      Tab(1).Control(1)=   "fraFont(1)"
+      Tab(1).Control(0)=   "ImageList1"
+      Tab(1).Control(1)=   "picColour"
       Tab(1).Control(2)=   "fraFont(0)"
-      Tab(1).Control(3)=   "picColour"
-      Tab(1).Control(4)=   "ImageList1"
+      Tab(1).Control(3)=   "fraFont(1)"
+      Tab(1).Control(4)=   "fraPreview"
       Tab(1).ControlCount=   5
       Begin VB.Frame fraPreview 
          Caption         =   "Preview :"
@@ -1551,7 +1551,7 @@ Private Sub cmdCancel_Click()
 '    strMBText = "You have changed the current definition. Save changes ?"
 '    intMBButtons = vbQuestion + vbYesNoCancel + vbDefaultButton1
 '    strMBTitle = Me.Caption
-'    intMBResponse = MsgBox(strMBText, intMBButtons, strMBTitle)
+'    intMBResponse = COAMsgBox(strMBText, intMBButtons, strMBTitle)
 '
 '    Select Case intMBResponse
 '    Case vbYes
@@ -1995,7 +1995,7 @@ Private Function SaveDefinition() As Boolean
 Exit Function
 
 LocalErr:
-  'ErrorMsgbox "Error saving Label Type definition"
+  'ErrorCOAMsgBox "Error saving Label Type definition"
   SaveDefinition = False
 
 End Function
@@ -2019,7 +2019,7 @@ Private Function ValidateDefinition() As Boolean
   
   ' Check a name has been entered
   If Trim(txtName.Text) = "" Then
-    MsgBox "You must give this definition a name.", vbExclamation, Me.Caption
+    COAMsgBox "You must give this definition a name.", vbExclamation, Me.Caption
     SSTab1.Tab = 0
     txtName.SetFocus
     ValidateDefinition = False
@@ -2039,7 +2039,7 @@ Private Function ValidateDefinition() As Boolean
   
   ' Check the name is unique
   If Not CheckUniqueName(Trim(txtName.Text), mlngLabelDefinitionID) Then
-    MsgBox "An Envelope and Label Template called '" & Trim(txtName.Text) & "' already exists.", vbExclamation, Me.Caption
+    COAMsgBox "An Envelope and Label Template called '" & Trim(txtName.Text) & "' already exists.", vbExclamation, Me.Caption
     txtName.SelStart = 0
     txtName.SelLength = Len(txtName.Text)
     ValidateDefinition = False
@@ -2058,7 +2058,7 @@ Private Function ValidateDefinition() As Boolean
     bOK = bOK And (txtLabelNumberDown.Text <> "")
   
     If Not bOK Then
-      MsgBox "Label dimensions are not complete.", vbExclamation, Me.Caption
+      COAMsgBox "Label dimensions are not complete.", vbExclamation, Me.Caption
       ValidateDefinition = False
       Exit Function
     End If
@@ -2066,41 +2066,41 @@ Private Function ValidateDefinition() As Boolean
     ' Validate that this label fits on the page
     sngLabelWidth = (((upnLabelNumberAcross.Value - 100) / 100) * upnLabelHorizontalPitch.Value) + upnLabelWidth.Value + upnLabelSideMargin.Value
     If sngLabelWidth > upnLabelPageWidth.Value Then
-      MsgBox "Labels are too wide to fit on the page.", vbExclamation, Me.Caption
+      COAMsgBox "Labels are too wide to fit on the page.", vbExclamation, Me.Caption
       ValidateDefinition = False
       Exit Function
     End If
     
     sngLabelHeight = (((upnLabelNumberDown.Value - 100) / 100) * upnLabelVerticalPitch.Value) + upnLabelHeight.Value + upnLabelTopMargin.Value
     If sngLabelHeight > upnLabelPageHeight.Value Then
-      MsgBox "Labels are too tall to fit on the page.", vbExclamation, Me.Caption
+      COAMsgBox "Labels are too tall to fit on the page.", vbExclamation, Me.Caption
       ValidateDefinition = False
       Exit Function
     End If
  
     ' Check that the number of labels > 0
     If upnLabelNumberAcross.Value = 0 Then
-      MsgBox "Invalid number of labels across.", vbExclamation, Me.Caption
+      COAMsgBox "Invalid number of labels across.", vbExclamation, Me.Caption
       ValidateDefinition = False
       Exit Function
     End If
      
     If upnLabelNumberDown.Value = 0 Then
-      MsgBox "Invalid number of labels down.", vbExclamation, Me.Caption
+      COAMsgBox "Invalid number of labels down.", vbExclamation, Me.Caption
       ValidateDefinition = False
       Exit Function
     End If
 
     ' Check that labels dimensions are greater than 0
     If upnLabelHeight.Value = 0 Then
-      MsgBox "Invalid label height.", vbExclamation, Me.Caption
+      COAMsgBox "Invalid label height.", vbExclamation, Me.Caption
       ValidateDefinition = False
       Exit Function
     End If
      
     ' Check that labels dimensions are greater than 0
     If upnLabelWidth.Value = 0 Then
-      MsgBox "Invalid label width.", vbExclamation, Me.Caption
+      COAMsgBox "Invalid label width.", vbExclamation, Me.Caption
       ValidateDefinition = False
       Exit Function
     End If
@@ -2111,7 +2111,7 @@ Private Function ValidateDefinition() As Boolean
   
 ValidateDefinition_ERROR:
   
-  MsgBox "Error whilst validating " & IIf(mbIsEnvelope, "an envelope", "a label") & " definition." & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Export"
+  COAMsgBox "Error whilst validating " & IIf(mbIsEnvelope, "an envelope", "a label") & " definition." & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Export"
   ValidateDefinition = False
   
 End Function
@@ -2292,7 +2292,7 @@ Public Function Initialise(bNew As Boolean, bCopy As Boolean, Optional lLabelDef
   Next iCount
 
   If Len(strLoadingWarning) > 0 Then
-    MsgBox strLoadingWarning & " fonts are not installed on this machine." _
+    COAMsgBox strLoadingWarning & " fonts are not installed on this machine." _
         & vbCrLf & "Font(s) have been set to Verdana." _
         & vbCrLf & vbCrLf & "Please contact your system administrator", vbOKOnly + vbExclamation
     Me.Changed = True
@@ -2317,7 +2317,7 @@ Public Function Initialise(bNew As Boolean, bCopy As Boolean, Optional lLabelDef
 Exit Function
 
 LocalErr:
-  MsgBox "Error with Label type definition"
+  COAMsgBox "Error with Label type definition"
 
 End Function
 
@@ -2356,7 +2356,7 @@ InvalidPageSize:
 
   ' Handle if previously defined page size that is out of Word range (should only ever effect development builds (i.e QA)
   If Not mbPreviouslyWarned Then
-    MsgBox "This label type is outside the range of Microsoft Word. Please resave.", vbExclamation, Me.Caption
+    COAMsgBox "This label type is outside the range of Microsoft Word. Please resave.", vbExclamation, Me.Caption
     mbPreviouslyWarned = True
     Resume Next
   End If
@@ -2369,7 +2369,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
     
     If Changed = True And Not FormPrint Then
       
-      pintAnswer = MsgBox("You have changed the current definition. Save changes ?", vbQuestion + vbYesNoCancel, Me.Caption)
+      pintAnswer = COAMsgBox("You have changed the current definition. Save changes ?", vbQuestion + vbYesNoCancel, Me.Caption)
         
       If pintAnswer = vbYes Then
         cmdOK_Click
@@ -2396,7 +2396,7 @@ End Sub
 '    strMBText = "You have changed the current definition. Save changes ?"
 '    intMBButtons = vbQuestion + vbYesNoCancel + vbDefaultButton1
 '    strMBTitle = Me.Caption
-'    intMBResponse = MsgBox(strMBText, intMBButtons, strMBTitle)
+'    intMBResponse = COAMsgBox(strMBText, intMBButtons, strMBTitle)
 '
 '    Select Case intMBResponse
 '    Case vbYes
@@ -2680,7 +2680,7 @@ Private Function InsertLabelType(pstrSQL As String) As Long
     cmADO.Execute
               
     If Not fSavedOK Then
-      MsgBox "The new record could not be created." & vbCrLf & vbCrLf & _
+      COAMsgBox "The new record could not be created." & vbCrLf & vbCrLf & _
         Err.Description, vbOKOnly + vbExclamation, App.ProductName
         InsertLabelType = 0
         Set cmADO = Nothing
@@ -2728,7 +2728,7 @@ Private Sub RetreiveDefinition()
 
   Set rsTemp = GetDefinition
   If rsTemp.BOF And rsTemp.EOF Then
-    MsgBox "This definition has been deleted by another user.", vbExclamation + vbOKOnly, "Label Definition"
+    COAMsgBox "This definition has been deleted by another user.", vbExclamation + vbOKOnly, "Label Definition"
     fOK = False
     Exit Sub
   End If
@@ -2839,13 +2839,13 @@ LocalErr:
   ' Is the dimensions of the label/envelope outside of the required parameters
   If Err.Number = 380 Then
     If Not bPreviouslyWarned Then
-      MsgBox "This template definition is not supported by Microsoft Word. Please redefine.", vbExclamation + vbOKOnly, "Label Definition"
+      COAMsgBox "This template definition is not supported by Microsoft Word. Please redefine.", vbExclamation + vbOKOnly, "Label Definition"
       bPreviouslyWarned = True
     End If
     Resume Next
   End If
   
-  MsgBox "Error retrieving type definition"
+  COAMsgBox "Error retrieving type definition"
     
 End Sub
 
@@ -2871,7 +2871,7 @@ Private Function CheckAccess(Optional strType As String) As Boolean
     'Somebody else selects hidden component
     If Not mblnDefinitionCreator Then
       If blnHiddenComponent Then
-        MsgBox "Unable to select this " & strType & _
+        COAMsgBox "Unable to select this " & strType & _
                " as it is a hidden " & strType & _
                " and you are not the owner of this definition", vbExclamation
         CheckAccess = False
@@ -2901,7 +2901,7 @@ Private Function CheckAccess(Optional strType As String) As Boolean
 
   'Alert user of new status
   If strMessage <> vbNullString Then
-    MsgBox strMessage, vbInformation, "Mail Merge"
+    COAMsgBox strMessage, vbInformation, "Mail Merge"
   End If
 
 End Function
@@ -3021,7 +3021,7 @@ Public Sub PrintDefinition(plngLabelTypeID)
   mlngLabelDefinitionID = plngLabelTypeID
   Set rsTemp = GetDefinition
   If rsTemp.BOF And rsTemp.EOF Then
-    MsgBox "This definition has been deleted by another user.", vbExclamation, "Template Definition"
+    COAMsgBox "This definition has been deleted by another user.", vbExclamation, "Template Definition"
     Exit Sub
   End If
   
@@ -3065,7 +3065,7 @@ Public Sub PrintDefinition(plngLabelTypeID)
   Set rsPages = datData.OpenRecordset(strSQL, adOpenStatic, adLockReadOnly)
   
   If rsPages.BOF And rsPages.EOF Then
-    MsgBox "This label type has been deleted by another user.", vbExclamation, "Template Definition"
+    COAMsgBox "This label type has been deleted by another user.", vbExclamation, "Template Definition"
     Exit Sub
   End If
    
@@ -3200,7 +3200,7 @@ Public Sub PrintDefinition(plngLabelTypeID)
 Exit Sub
 
 LocalErr:
-  MsgBox "Printing Microsoft Word Template Definition Failed"
+  COAMsgBox "Printing Microsoft Word Template Definition Failed"
 
 End Sub
 
@@ -3363,7 +3363,7 @@ Private Sub PopulateColourCombos()
 Exit Sub
 
 LocalErr:
-  MsgBox Err.Description, vbExclamation, Me.Caption
+  COAMsgBox Err.Description, vbExclamation, Me.Caption
 
 End Sub
 
@@ -3819,7 +3819,7 @@ Private Sub TextBoxLostFocus(pobjTextBox As TextBox)
     pobjTextBox.Text = Format(Str(sngEnteredValue / msngConversion), strFormat) & strMeasurementText
   Else
     'NHRD26082004 Fault 7997
-    MsgBox "Measurement type should be '" + mstrMeasurementText + "'" + vbCrLf + vbCrLf + "Re-enter numeric part of measurement.", vbExclamation, Me.Caption
+    COAMsgBox "Measurement type should be '" + mstrMeasurementText + "'" + vbCrLf + vbCrLf + "Re-enter numeric part of measurement.", vbExclamation, Me.Caption
     SSTab1.Tab = 0
     pobjTextBox.SetFocus
   End If

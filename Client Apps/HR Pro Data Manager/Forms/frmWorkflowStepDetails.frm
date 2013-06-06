@@ -867,7 +867,7 @@ Private Function DoHeaderInfo() As Boolean
   
   With rstTemp
     If (.EOF And .BOF) Then
-      MsgBox "This record no longer exists in the workflow log.", vbExclamation + vbOKOnly, "Workflow Log"
+      COAMsgBox "This record no longer exists in the workflow log.", vbExclamation + vbOKOnly, "Workflow Log"
       DoHeaderInfo = False
       GoTo TidyUpAndExit
     End If
@@ -1140,7 +1140,7 @@ TidyUpAndExit:
 
 ErrorTrap:
 
-  MsgBox "Error whilst populating workflow step detail." & vbCrLf & "(" & Err.Description & ")"
+  COAMsgBox "Error whilst populating workflow step detail." & vbCrLf & "(" & Err.Description & ")"
   DoHeaderInfo = False
 
 End Function
@@ -1208,7 +1208,7 @@ TidyUpAndExit:
 
 ErrorTrap:
   Initialise = False
-  MsgBox "Error retrieving details for this workflow step." & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Workflow Log"
+  COAMsgBox "Error retrieving details for this workflow step." & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Workflow Log"
   GoTo TidyUpAndExit
   
 End Function
@@ -1531,7 +1531,7 @@ TidyUpAndExit:
   Exit Function
   
 ErrorTrap:
-  MsgBox "Error retrieving details for this workflow step." & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Workflow Log"
+  COAMsgBox "Error retrieving details for this workflow step." & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Workflow Log"
   fOK = False
   Resume TidyUpAndExit
   
@@ -1616,7 +1616,7 @@ Private Sub cmdOpenWebForm_Click()
   If Len(Trim(strExePath)) > 1 Then
     OpenWebForm mlngWorkflowInstanceID, mlngWorkflowElementID
   Else
-    MsgBox "Unable to open selected Workflow form." & vbCrLf & vbCrLf & "Please contact your system administrator.", vbExclamation + vbOKOnly, "Workflow"
+    COAMsgBox "Unable to open selected Workflow form." & vbCrLf & vbCrLf & "Please contact your system administrator.", vbExclamation + vbOKOnly, "Workflow"
   End If
 
 End Sub
@@ -1647,7 +1647,7 @@ Private Sub cmdResendEmail_Click()
 
   'MH20061219 Fault 11839
   If GetSystemSetting("email", "method", 1) = 0 Then
-    MsgBox "Unable to resend this message as server side emails are currently disabled." & vbCrLf & _
+    COAMsgBox "Unable to resend this message as server side emails are currently disabled." & vbCrLf & _
            "Please contact your system administrator.", vbCritical, Me.Caption
     Exit Sub
   End If
@@ -1726,7 +1726,7 @@ Private Sub cmdResendEmail_Click()
   objEmail.SendImmediateEmails
   gsUserName = sTemp
 
-  MsgBox "Email resent.", vbInformation + vbOKOnly, "Workflow Log"
+  COAMsgBox "Email resent.", vbInformation + vbOKOnly, "Workflow Log"
 
 TidyUpAndExit:
   Set datData = Nothing

@@ -97,7 +97,7 @@ Public Sub CheckWorkflowOutOfOffice()
 
     sMsg = sMsg & "?"
 
-    fTurnItOff = (MsgBox(sMsg, vbQuestion + vbYesNo, "Workflow") = vbYes)
+    fTurnItOff = (COAMsgBox(sMsg, vbQuestion + vbYesNo, "Workflow") = vbYes)
 
     If fTurnItOff Then
       sSQL = "EXEC spASRWorkflowOutOfOfficeSet 0"
@@ -152,7 +152,7 @@ Public Sub CheckPendingWorkflowSteps(pfFromMenu As Boolean)
   
   If rsTemp!objectCount = 0 Then
     If pfFromMenu Then
-      MsgBox "Unable to check for pending workflow steps. Contact your system administrator.", vbInformation + vbOKOnly, "Workflow"
+      COAMsgBox "Unable to check for pending workflow steps. Contact your system administrator.", vbInformation + vbOKOnly, "Workflow"
     End If
   
     rsTemp.Close
@@ -165,12 +165,12 @@ Public Sub CheckPendingWorkflowSteps(pfFromMenu As Boolean)
     
   If Len(sURL) = 0 Then
     If pfFromMenu Then
-      MsgBox "No Workflow URL has been configured. Contact your system administrator.", vbInformation + vbOKOnly, "Workflow"
+      COAMsgBox "No Workflow URL has been configured. Contact your system administrator.", vbInformation + vbOKOnly, "Workflow"
     End If
     Exit Sub
   ElseIf Len(Trim(strExePath)) = 0 Then
     If pfFromMenu Then
-      MsgBox "Unable to open Workflow forms." & vbCrLf & vbCrLf & "No default browser application.", vbExclamation + vbOKOnly, "Workflow"
+      COAMsgBox "Unable to open Workflow forms." & vbCrLf & vbCrLf & "No default browser application.", vbExclamation + vbOKOnly, "Workflow"
     End If
     Exit Sub
   End If
@@ -238,7 +238,7 @@ Public Sub CheckPendingWorkflowSteps(pfFromMenu As Boolean)
         
           'JPD 20090526 Fault 13679
           'If UBound(alngSelectedSteps) > 0 Then
-          '  MsgBox "Workflow form" & IIf(UBound(alngSelectedSteps) > 1, "s", "") & " opened successfully.", vbInformation + vbOKOnly, "Workflow"
+          '  COAMsgBox "Workflow form" & IIf(UBound(alngSelectedSteps) > 1, "s", "") & " opened successfully.", vbInformation + vbOKOnly, "Workflow"
           'End If
         End If
         
@@ -246,7 +246,7 @@ Public Sub CheckPendingWorkflowSteps(pfFromMenu As Boolean)
         lngLastAction = frmPrompt.Action
       End If
     ElseIf pfFromMenu Or (lngLastAction = edtRefresh) Then
-      MsgBox "No workflow steps pending your action.", vbInformation + vbOKOnly, "Workflow"
+      COAMsgBox "No workflow steps pending your action.", vbInformation + vbOKOnly, "Workflow"
     End If
   Loop While Not fExit
     
@@ -497,7 +497,7 @@ Public Sub WorkflowOutOfOffice()
   Set cmADO = Nothing
 
   If iRecordCount = 0 Then
-    MsgBox "Unable to set Workflow Out of Office." & vbCrLf & "You do not have an identifiable personnel record.", vbInformation + vbOKOnly, "Workflow"
+    COAMsgBox "Unable to set Workflow Out of Office." & vbCrLf & "You do not have an identifiable personnel record.", vbInformation + vbOKOnly, "Workflow"
   Else
     If fOutOfOffice Then
       ' If the current user IS OutOfOffice, ask them if they want to turn it off.
@@ -540,7 +540,7 @@ Public Sub WorkflowOutOfOffice()
         "?"
     End If
   
-    fToggle = (MsgBox(sMsg, vbQuestion + vbYesNo, "Workflow") = vbYes)
+    fToggle = (COAMsgBox(sMsg, vbQuestion + vbYesNo, "Workflow") = vbYes)
   End If
   
   If fToggle Then
@@ -795,16 +795,16 @@ End Function
 
 Private Sub InitTbl()
   Dim i As Integer
-  Dim j As Integer
+  Dim J As Integer
   Dim k As Integer
   
   If mfInitTrue = True Then Exit Sub
   
   For i = 0 To 255
-    For j = 0 To 255
-      mabytXTable(i, j) = CByte(i Xor j)
-      mabytAddTable(i, j) = CByte((i + j) Mod 255)
-    Next j
+    For J = 0 To 255
+      mabytXTable(i, J) = CByte(i Xor J)
+      mabytAddTable(i, J) = CByte((i + J) Mod 255)
+    Next J
   Next i
   
   mfInitTrue = True

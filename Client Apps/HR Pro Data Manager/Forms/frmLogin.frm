@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~2.OCX"
+Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "Codejock.SkinFramework.v13.1.0.ocx"
 Begin VB.Form frmLogin 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "HR Pro Data Manager - Login"
@@ -304,7 +304,7 @@ Private Sub Form_Load()
   'On Error GoTo ErrorTrap
 
   If Not CheckSQLDriver Then
-    MsgBox "The required ODBC Driver '" & ODBCDRIVER & "' is not installed." & vbNewLine & _
+    COAMsgBox "The required ODBC Driver '" & ODBCDRIVER & "' is not installed." & vbNewLine & _
       "Install the driver before running HR Pro.", _
       vbExclamation + vbOKOnly, App.ProductName
     Unload frmLogin
@@ -570,7 +570,7 @@ Private Sub CheckRegistrySettings()
          Or (sLocalOLEPath = vbNullString And bHasOleColumn) _
          Or (sDocumentsPath = vbNullString) Then
         
-        fContinue = MsgBox("One or more data paths have not yet been defined for this database." & vbNewLine & _
+        fContinue = COAMsgBox("One or more data paths have not yet been defined for this database." & vbNewLine & _
                            "HR Pro may not function correctly without these paths defined." & vbNewLine & _
                            "Would you like to define these now?", vbYesNo + vbQuestion + vbDefaultButton2, App.Title) = vbYes
       End If
@@ -837,7 +837,7 @@ Private Sub CheckPassword()
   
 Check_ERROR:
   
-  MsgBox "Error checking passwords." & vbNewLine & vbNewLine & "(" & Err.Number & " - " & Err.Description & ")", vbExclamation + vbOKOnly, App.Title
+  COAMsgBox "Error checking passwords." & vbNewLine & vbNewLine & "(" & Err.Number & " - " & Err.Description & ")", vbExclamation + vbOKOnly, App.Title
   
 End Sub
 
@@ -866,7 +866,7 @@ Private Sub UpdateConfig()
 
 Update_ERROR:
 
-  MsgBox "Error updating AsrSysPasswords." & vbNewLine & vbNewLine & _
+  COAMsgBox "Error updating AsrSysPasswords." & vbNewLine & vbNewLine & _
          "(" & Err.Number & " - " & Err.Description & ")", vbExclamation + vbOKOnly, App.Title
 
   Set rsInfo = Nothing
@@ -910,7 +910,7 @@ Public Sub Login()
   If InStr(1, gsDatabaseName, "'") > 0 Then
     gobjProgress.CloseProgress
     Screen.MousePointer = vbDefault
-    MsgBox "Error logging in." & vbNewLine & vbNewLine & _
+    COAMsgBox "Error logging in." & vbNewLine & vbNewLine & _
       "The database name contains an apostrophe.", _
       vbOKOnly + vbExclamation, Application.Name
     txtDatabase.SetFocus
@@ -921,7 +921,7 @@ Public Sub Login()
   gsConnectionString = GetSQLProviderString
   If Len(gsConnectionString) = 0 Then
     Screen.MousePointer = vbDefault
-    MsgBox "Microsoft SQL Native Client has not been correctly installed on this machine.", _
+    COAMsgBox "Microsoft SQL Native Client has not been correctly installed on this machine.", _
         vbExclamation + vbOKOnly, App.ProductName
     Exit Sub
   End If
@@ -933,7 +933,7 @@ Public Sub Login()
   Else
     gobjProgress.CloseProgress
     Screen.MousePointer = vbDefault
-    MsgBox "Please enter the name of the server on which the HR Pro database is located.", _
+    COAMsgBox "Please enter the name of the server on which the HR Pro database is located.", _
         vbExclamation + vbOKOnly, App.ProductName
     txtServer.SetFocus
     Exit Sub
@@ -946,7 +946,7 @@ Public Sub Login()
   Else
     gobjProgress.CloseProgress
     Screen.MousePointer = vbDefault
-    MsgBox "Please enter a user name.", _
+    COAMsgBox "Please enter a user name.", _
         vbExclamation + vbOKOnly, App.ProductName
     txtUID.SetFocus
     Exit Sub
@@ -959,7 +959,7 @@ Public Sub Login()
   Else
     gobjProgress.CloseProgress
     Screen.MousePointer = vbDefault
-    MsgBox "Please enter the name of the HR Pro database.", _
+    COAMsgBox "Please enter the name of the HR Pro database.", _
         vbExclamation + vbOKOnly, App.ProductName
     txtDatabase.SetFocus
     Exit Sub
@@ -1039,13 +1039,13 @@ TryUsingGroupSecurity:
     gobjProgress.CloseProgress
     Screen.MousePointer = vbDefault
     If ASRDEVELOPMENT Then
-      MsgBox sMsg & vbNewLine & "(ASR Development bypass)", vbExclamation, App.ProductName
+      COAMsgBox sMsg & vbNewLine & "(ASR Development bypass)", vbExclamation, App.ProductName
     Else
       If Not gADOCon Is Nothing Then
         gADOCon.Close
         Set gADOCon = Nothing
       End If
-      MsgBox sMsg, vbExclamation, App.ProductName
+      COAMsgBox sMsg, vbExclamation, App.ProductName
       Exit Sub
     End If
     
@@ -1064,7 +1064,7 @@ TryUsingGroupSecurity:
     gobjProgress.CloseProgress
     Screen.MousePointer = vbDefault
     
-    MsgBox "Error logging in." & vbNewLine & vbNewLine & _
+    COAMsgBox "Error logging in." & vbNewLine & vbNewLine & _
       "The user is not a member of any HR Pro user group.", _
       vbOKOnly + vbExclamation, Application.Name
     
@@ -1224,7 +1224,7 @@ LoginError:
   
     If ASRDEVELOPMENT And gADOCon.State <> adStateClosed Then
       If LenB(sMsg) <> 0 Then
-        MsgBox sMsg & vbNewLine & "(ASR Development bypass!)", vbExclamation, Me.Caption
+        COAMsgBox sMsg & vbNewLine & "(ASR Development bypass!)", vbExclamation, Me.Caption
       End If
       gsSQLUserName = txtUID.Text
       GoTo Bypass
@@ -1245,7 +1245,7 @@ LoginError:
             SendBatchLogonFailure sMsg
           'End If
         Else
-          MsgBox sMsg, vbExclamation, Me.Caption
+          COAMsgBox sMsg, vbExclamation, Me.Caption
         End If
       End If
     

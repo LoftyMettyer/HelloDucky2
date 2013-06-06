@@ -635,7 +635,7 @@ Public Function InitialiseAFD(PostCode As String, fIndiv As Boolean, frmCallingF
   'Test & report if Postcode Change has been detected
   'Temp$ = Trim$(oPostCode.PostcodeFrom)
   'If Temp$ <> "" Then
-  '   MsgBox "Postcode: " + Temp$ + " has changed to " + oPostCode.PostCode, 64, "Postcode Change"
+  '   COAMsgBox "Postcode: " + Temp$ + " has changed to " + oPostCode.PostCode, 64, "Postcode Change"
   'End If
   
   'Store the flags used in the grids tag property
@@ -667,7 +667,7 @@ Public Function InitialiseAFD(PostCode As String, fIndiv As Boolean, frmCallingF
       InitialiseAFD = True
     Else
      'Report no Sucess
-      MsgBox "Lookup Unsuccessful", 16
+      COAMsgBox "Lookup Unsuccessful", 16
       InitialiseAFD = False
     End If
  
@@ -911,7 +911,7 @@ Exit Sub
 
 DisplayAddressErr:
 
-MsgBox "Warning...An Error Has Occurred.  Could not display data from Afd Correctly", vbExclamation + vbOKOnly, "PostCode Software"
+COAMsgBox "Warning...An Error Has Occurred.  Could not display data from Afd Correctly", vbExclamation + vbOKOnly, "PostCode Software"
 
 End Sub
 
@@ -1117,7 +1117,7 @@ Public Function InitialiseQA(PostCode As String, fIndiv As Boolean, frmCallingFo
       InitialiseQA = True
     Else
      'Report no Sucess
-      MsgBox "Lookup Unsuccessful", 16
+      COAMsgBox "Lookup Unsuccessful", 16
       InitialiseQA = False
     End If
  

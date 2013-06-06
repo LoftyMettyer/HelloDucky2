@@ -101,7 +101,7 @@ DoesUserHavePermissionForAllJobs_ERROR:
   
   Set prstBatchDetails = Nothing
   DoesUserHavePermissionForAllJobs = False
-  MsgBox "Error while checking individual job permissions." & vbCrLf & "Contact Asr Support stating : " & Err.Description, vbCritical + vbOKOnly, "Batch Job"
+  COAMsgBox "Error while checking individual job permissions." & vbCrLf & "Contact Asr Support stating : " & Err.Description, vbCritical + vbOKOnly, "Batch Job"
   
 End Function
 
@@ -118,7 +118,7 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
   
   'This should never happen, but just in case...
   If rsBatchDetails.BOF And rsBatchDetails.EOF Then
-    MsgBox "Batch job has been deleted by another user.", vbExclamation + vbOKOnly, "Batch Jobs"
+    COAMsgBox "Batch job has been deleted by another user.", vbExclamation + vbOKOnly, "Batch Jobs"
     RunBatchJob = "Batch Failed : Batch job has been deleted by another user."
     Exit Function
   End If
@@ -174,7 +174,7 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
           gobjProgress.ResetBar2
           gobjProgress.Bar2Caption = "Pause Command Encountered"
           gobjProgress.Visible = False
-          MsgBox rsBatchDetails.Fields("Parameter"), vbInformation + vbOKOnly, "Pause Command Encountered"
+          COAMsgBox rsBatchDetails.Fields("Parameter"), vbInformation + vbOKOnly, "Pause Command Encountered"
           gobjProgress.Visible = True
           fOK = True
         End If
@@ -809,7 +809,7 @@ Public Function SetLastCompleteDate(lBatchJobID As Long, dLastComp As Date) As B
   
 SetLastCompleteDate_ERROR:
   
-  MsgBox "Error setting the LastCompleted Date In AsrSysBatchJobName" & vbCrLf & "(" & Err.Description & ")"
+  COAMsgBox "Error setting the LastCompleted Date In AsrSysBatchJobName" & vbCrLf & "(" & Err.Description & ")"
   SetLastCompleteDate = False
       
 End Function
@@ -1032,7 +1032,7 @@ Public Function LockJob(lngID As Long, blnClearLock As Boolean) As Boolean
 Exit Function
 
 LocalErr:
-  MsgBox Err.Description, vbExclamation
+  COAMsgBox Err.Description, vbExclamation
 
 End Function
 

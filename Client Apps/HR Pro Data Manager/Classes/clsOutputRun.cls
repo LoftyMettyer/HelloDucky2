@@ -870,7 +870,7 @@ Public Function SetOptions( _
         If .cboPrinterName.Text <> strPrinterName Then
           .cboPrinterName.AddItem strPrinterName
           .cboPrinterName.ListIndex = .cboPrinterName.NewIndex
-          MsgBox "This definition is set to output to printer " & strPrinterName & _
+          COAMsgBox "This definition is set to output to printer " & strPrinterName & _
                  " which is not set up on your PC.", vbInformation, .Caption
         End If
       End If

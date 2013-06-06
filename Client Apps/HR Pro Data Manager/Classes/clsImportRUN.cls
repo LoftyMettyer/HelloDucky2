@@ -397,7 +397,7 @@ Private Sub PopulateEventLog(fOK As Boolean)
   End If
   
   If Not gblnBatchMode Then
-    MsgBox "Import : " & mstrImportName & " " & mstrErrorString, IIf(fOK, vbInformation, vbExclamation) + vbOKOnly, "Import"
+    COAMsgBox "Import : " & mstrImportName & " " & mstrErrorString, IIf(fOK, vbInformation, vbExclamation) + vbOKOnly, "Import"
   Else
     mstrErrorString = "Import : " & mstrImportName & " " & mstrErrorString
   End If

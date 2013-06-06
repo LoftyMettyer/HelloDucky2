@@ -36,7 +36,7 @@ Private mlngOutputEmailAddr As Long
 Private mstrOutputEmailSubject As String
 Private mstrOutputEmailAttachAs As String
 'Private mlngOutputEmailFileFormat As Long
-Private mstrOutputFilename As String
+Private mstrOutputFileName As String
 Private mblnPreviewOnScreen As Boolean
 
 Private mblnIndentRelatedTables As String
@@ -258,7 +258,7 @@ Public Function RunRecordProfile(Optional plngRecordID As Long) As Boolean
     If gobjProgress.Visible Then gobjProgress.CloseProgress
     'If (fOK = False) Or (mfNoRecords = True) Then
     If (fOK = False) Or (mfNoRecords = True) Or Not mblnPreviewOnScreen Then
-      MsgBox msErrorString, IIf(fOK, vbInformation, vbExclamation) + vbOKOnly, "Record Profile"
+      COAMsgBox msErrorString, IIf(fOK, vbInformation, vbExclamation) + vbOKOnly, "Record Profile"
     End If
   End If
 
@@ -325,7 +325,7 @@ Private Function InitialisePreview() As Boolean
     .OutputEmailSubject = mstrOutputEmailSubject
     .OutputEmailAttachAs = mstrOutputEmailAttachAs
     '.OutputEmailFileFormat = mlngOutputEmailFileFormat
-    .OutputFilename = mstrOutputFilename
+    .OutputFilename = mstrOutputFileName
     
     .IndentRelatedTables = mblnIndentRelatedTables
     .SuppressEmptyRelatedTableTitles = mblnSuppressEmptyRelatedTableTitles
@@ -1495,7 +1495,7 @@ Private Function GetRecordProfileTables() As Boolean
     mstrOutputEmailSubject = IIf(IsNull(!OutputEmailSubject), "", !OutputEmailSubject)
     mstrOutputEmailAttachAs = IIf(IsNull(!OutputEmailAttachAs), "", !OutputEmailAttachAs)
     'mlngOutputEmailFileFormat = IIf(IsNull(!OutputEmailFileFormat), 0, !OutputEmailFileFormat)
-    mstrOutputFilename = IIf(IsNull(!OutputFilename), "", !OutputFilename)
+    mstrOutputFileName = IIf(IsNull(!OutputFilename), "", !OutputFilename)
   
     mblnPreviewOnScreen = (!OutputPreview Or (mlngOutputFormat = fmtDataOnly And mblnOutputScreen))
     

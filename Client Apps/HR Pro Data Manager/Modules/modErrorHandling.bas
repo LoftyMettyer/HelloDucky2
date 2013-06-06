@@ -140,7 +140,7 @@ Attribute VB_Name = "modErrorHandling"
 '  Err.Raise ERR_SYSEXCEPTION, Err.Source, "(&H" & Hex$(ExcRec.ExceptionCode) & ") " & strExc
 '
 'ErrorTrap:
-'  MsgBox Err.Description
+'  COAMsgBox Err.Description
 '  End
 '
 'End Function

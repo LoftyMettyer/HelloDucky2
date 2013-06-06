@@ -465,7 +465,7 @@ Private Sub cmdPrint_Click()
   mblnPortrait = (optPortrait.Value = True)
   mlngCopies = ASRSpinner1.Value
   mblnCollateCopies = (chkCollate = vbChecked)
-  mblnGridlines = (chkGridLines = vbChecked)
+  mblnGridlines = (chkGridlines = vbChecked)
   mblnShading = (chkShading = vbChecked)
   mblnHeadingsOnEveryPage = (chkHeadingsEveryPage = vbChecked)
   
@@ -689,7 +689,7 @@ Private Sub txtMargin_LostFocus(Index As Integer)
     End If
     
     With txtMargin(Index)
-      MsgBox "Margins must be numeric values between 0.5 and 5 inches", vbInformation + vbOKOnly, "Print Options Error"
+      COAMsgBox "Margins must be numeric values between 0.5 and 5 inches", vbInformation + vbOKOnly, "Print Options Error"
       .SetFocus
       .SelStart = 0
       .SelLength = Len(txtMargin(Index).Text)
@@ -711,7 +711,7 @@ Private Sub txtMargin_LostFocus(Index As Integer)
     End If
     
     With txtMargin(Index)
-      MsgBox "Margins must be numeric values between 1 and 10 centimetres", vbInformation + vbOKOnly, "Print Options Error"
+      COAMsgBox "Margins must be numeric values between 1 and 10 centimetres", vbInformation + vbOKOnly, "Print Options Error"
       .SetFocus
       .SelStart = 0
       .SelLength = Len(txtMargin(Index).Text)
@@ -740,8 +740,8 @@ Public Sub PrintDefinition()
   DenyCollate = True
   
   ' Grid lines only apply to reports
-  chkGridLines.Value = vbUnchecked
-  chkGridLines.Enabled = False
+  chkGridlines.Value = vbUnchecked
+  chkGridlines.Enabled = False
   
   ' Shading only apply to reports
   chkShading.Value = vbUnchecked

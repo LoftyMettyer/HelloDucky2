@@ -1,9 +1,9 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TabCtl32.Ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmRecordProfile 
    BorderStyle     =   3  'Fixed Dialog
@@ -119,35 +119,35 @@ Begin VB.Form frmRecordProfile
       TabCaption(2)   =   "Colu&mns"
       TabPicture(2)   =   "frmRecordProfile.frx":11D8
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraTable"
+      Tab(2).Control(0)=   "cmdRemoveAll"
       Tab(2).Control(0).Enabled=   0   'False
-      Tab(2).Control(1)=   "fraFieldsAvailable"
+      Tab(2).Control(1)=   "cmdAddAll"
       Tab(2).Control(1).Enabled=   0   'False
-      Tab(2).Control(2)=   "fraFieldsSelected"
+      Tab(2).Control(2)=   "cmdMoveDown"
       Tab(2).Control(2).Enabled=   0   'False
-      Tab(2).Control(3)=   "cmdAddSeparator"
+      Tab(2).Control(3)=   "cmdMoveUp"
       Tab(2).Control(3).Enabled=   0   'False
-      Tab(2).Control(4)=   "cmdAddHeading"
+      Tab(2).Control(4)=   "cmdRemove"
       Tab(2).Control(4).Enabled=   0   'False
       Tab(2).Control(5)=   "cmdAdd"
       Tab(2).Control(5).Enabled=   0   'False
-      Tab(2).Control(6)=   "cmdRemove"
+      Tab(2).Control(6)=   "cmdAddHeading"
       Tab(2).Control(6).Enabled=   0   'False
-      Tab(2).Control(7)=   "cmdMoveUp"
+      Tab(2).Control(7)=   "cmdAddSeparator"
       Tab(2).Control(7).Enabled=   0   'False
-      Tab(2).Control(8)=   "cmdMoveDown"
+      Tab(2).Control(8)=   "fraFieldsSelected"
       Tab(2).Control(8).Enabled=   0   'False
-      Tab(2).Control(9)=   "cmdAddAll"
+      Tab(2).Control(9)=   "fraFieldsAvailable"
       Tab(2).Control(9).Enabled=   0   'False
-      Tab(2).Control(10)=   "cmdRemoveAll"
+      Tab(2).Control(10)=   "fraTable"
       Tab(2).Control(10).Enabled=   0   'False
       Tab(2).ControlCount=   11
       TabCaption(3)   =   "Outpu&t"
       TabPicture(3)   =   "frmRecordProfile.frx":11F4
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "fraOutputFormat"
+      Tab(3).Control(0)=   "fraOutputDestination"
       Tab(3).Control(1)=   "fraReportOptions"
-      Tab(3).Control(2)=   "fraOutputDestination"
+      Tab(3).Control(2)=   "fraOutputFormat"
       Tab(3).ControlCount=   3
       Begin VB.Frame fraInformation 
          Height          =   1950
@@ -1502,7 +1502,7 @@ Public Function Initialise(bNew As Boolean, _
         Initialise = False
         Exit Function
       Else
-        If MsgBox("HR Pro could not load all of the definition successfully. The recommendation is that" & vbCrLf & _
+        If COAMsgBox("HR Pro could not load all of the definition successfully. The recommendation is that" & vbCrLf & _
                "you delete the definition and create a new one, however, you may edit the existing" & vbCrLf & _
                "definition if you wish. Would you like to continue and edit this definition ?", vbQuestion + vbYesNo, "Record Profile") = vbNo Then
           Cancelled = True
@@ -1697,7 +1697,7 @@ Private Function InsertRecordProfile(pstrSQL As String) As Long
     cmADO.Execute
 
     If Not fSavedOK Then
-      MsgBox "The new record profile could not be created." & vbCrLf & vbCrLf & _
+      COAMsgBox "The new record profile could not be created." & vbCrLf & vbCrLf & _
         Err.Description, vbOKOnly + vbExclamation, App.ProductName
         InsertRecordProfile = 0
         Set cmADO = Nothing
@@ -1765,7 +1765,7 @@ Private Function RetrieveRecordProfileDetails(plngRecordProfileID As Long) As Bo
     "FROM ASRSysRecordProfileName WHERE recordProfileID = " & plngRecordProfileID)
 
   If rsTemp.BOF And rsTemp.EOF Then
-    MsgBox "This Record Profile definition has been deleted by another user.", vbExclamation + vbOKOnly, "Record Profile"
+    COAMsgBox "This Record Profile definition has been deleted by another user.", vbExclamation + vbOKOnly, "Record Profile"
     Set rsTemp = Nothing
     RetrieveRecordProfileDetails = False
     mblnDeleted = True
@@ -1942,7 +1942,7 @@ Private Function RetrieveRecordProfileDetails(plngRecordProfileID As Long) As Bo
     If cboPrinterName.Text <> rsTemp!OutputPrinterName Then
       cboPrinterName.AddItem rsTemp!OutputPrinterName
       cboPrinterName.ListIndex = cboPrinterName.NewIndex
-      MsgBox "This definition is set to output to printer " & rsTemp!OutputPrinterName & _
+      COAMsgBox "This definition is set to output to printer " & rsTemp!OutputPrinterName & _
              " which is not set up on your PC.", vbInformation, Me.Caption
     End If
   End If
@@ -1983,7 +1983,7 @@ Private Function RetrieveRecordProfileDetails(plngRecordProfileID As Long) As Bo
   Set rsTemp = datGeneral.GetRecords("SELECT * FROM ASRSysRecordProfileDetails WHERE recordProfileID = " & plngRecordProfileID & " ORDER BY [Sequence]")
 
   If rsTemp.BOF And rsTemp.EOF Then
-    MsgBox "Cannot load the column definition for this Record Profile", vbExclamation + vbOKOnly, "Record Profile"
+    COAMsgBox "Cannot load the column definition for this Record Profile", vbExclamation + vbOKOnly, "Record Profile"
     RetrieveRecordProfileDetails = False
     Set rsTemp = Nothing
     Exit Function
@@ -2036,7 +2036,7 @@ Private Function RetrieveRecordProfileDetails(plngRecordProfileID As Long) As Bo
 
 Load_ERROR:
 
-  MsgBox "Warning : Error whilst retrieving the record profile definition." & vbCrLf & Err.Description, vbExclamation + vbOKOnly, "Record Profile"
+  COAMsgBox "Warning : Error whilst retrieving the record profile definition." & vbCrLf & Err.Description, vbExclamation + vbOKOnly, "Record Profile"
   RetrieveRecordProfileDetails = False
   Set rsTemp = Nothing
 
@@ -2095,7 +2095,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
           (Not FormPrint)
         If fRemove Then
           sBigMessage = "The selected '" & cboBaseTable.List(cboBaseTable.ListIndex) & "' table picklist will be removed from this definition as it is hidden and you do not have permission to make this definition hidden."
-          MsgBox sBigMessage, vbExclamation + vbOKOnly, "Record Profile"
+          COAMsgBox sBigMessage, vbExclamation + vbOKOnly, "Record Profile"
         Else
           fNeedToForceHidden = True
           
@@ -2158,7 +2158,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
         
         If fRemove Then
           sBigMessage = "The selected '" & cboBaseTable.List(cboBaseTable.ListIndex) & "' table filter will be removed from this definition as it is hidden and you do not have permission to make this definition hidden."
-          MsgBox sBigMessage, vbExclamation + vbOKOnly, "Record Profile"
+          COAMsgBox sBigMessage, vbExclamation + vbOKOnly, "Record Profile"
         Else
           fNeedToForceHidden = True
           
@@ -2227,7 +2227,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
               
               If fRemove Then
                 sBigMessage = "The selected '" & .Columns("Table").CellValue(varBookmark) & "' table filter will be removed from this definition as it is hidden and you do not have permission to make this definition hidden."
-                MsgBox sBigMessage, vbExclamation + vbOKOnly, "Record Profile"
+                COAMsgBox sBigMessage, vbExclamation + vbOKOnly, "Record Profile"
               Else
                 fNeedToForceHidden = True
   
@@ -2427,7 +2427,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
       sBigMessage = "Record Profile print failed. The definition is currently invalid : " & vbCrLf & vbCrLf & sBigMessage
     End If
   
-    MsgBox sBigMessage, vbExclamation + vbOKOnly, "Record Profile"
+    COAMsgBox sBigMessage, vbExclamation + vbOKOnly, "Record Profile"
   End If
       
   ForceDefinitionToBeHiddenIfNeeded = (Len(sBigMessage) = 0)
@@ -2526,7 +2526,7 @@ Public Sub PrintDef(plngRecordProfileID As Long)
     "FROM ASRSysRecordProfileName WHERE recordProfileID = " & mlngRecordProfileID)
 
   If rsTemp.BOF And rsTemp.EOF Then
-    MsgBox "This definition has been deleted by another user.", vbExclamation + vbOKOnly, "Print Definition"
+    COAMsgBox "This definition has been deleted by another user.", vbExclamation + vbOKOnly, "Print Definition"
     Set rsTemp = Nothing
     Exit Sub
   End If
@@ -2816,7 +2816,7 @@ Public Sub PrintDef(plngRecordProfileID As Long)
   Exit Sub
 
 LocalErr:
-  MsgBox "Printing Record Profile Definition Failed" & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Print Definition"
+  COAMsgBox "Printing Record Profile Definition Failed" & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Print Definition"
 
 End Sub
 
@@ -2839,11 +2839,11 @@ End Property
 
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
 End Property
 
 Public Property Let Changed(ByVal pblnChanged As Boolean)
-  cmdOk.Enabled = pblnChanged
+  cmdOK.Enabled = pblnChanged
 End Property
 
 
@@ -3319,7 +3319,7 @@ Private Function IsRecordSelectionValid() As Boolean
     
     If rsTemp.BOF And rsTemp.EOF Then
       ' Filter has been deleted by another user
-      MsgBox "The '" & txtBaseFilter.Text & "' filter has been deleted by another user.", vbExclamation + vbOKOnly, "Record Profile"
+      COAMsgBox "The '" & txtBaseFilter.Text & "' filter has been deleted by another user.", vbExclamation + vbOKOnly, "Record Profile"
       txtBaseFilter.Tag = 0
       txtBaseFilter.Text = "<None>"
       Set rsTemp = Nothing
@@ -3327,7 +3327,7 @@ Private Function IsRecordSelectionValid() As Boolean
       Exit Function
     ElseIf rsTemp!Access = "HD" And LCase(rsTemp!UserName) <> LCase(gsUserName) Then
       ' Filter has been made hidden by its owner
-      MsgBox "The '" & txtBaseFilter.Text & "' filter has been made hidden by another user.", vbExclamation + vbOKOnly, "Record Profile"
+      COAMsgBox "The '" & txtBaseFilter.Text & "' filter has been made hidden by another user.", vbExclamation + vbOKOnly, "Record Profile"
       txtBaseFilter.Tag = 0
       txtBaseFilter.Text = "<None>"
       Set rsTemp = Nothing
@@ -3341,7 +3341,7 @@ Private Function IsRecordSelectionValid() As Boolean
     
     If rsTemp.BOF And rsTemp.EOF Then
       ' Picklist has been deleted by another user
-      MsgBox "The '" & txtBasePicklist.Text & "' picklist has been deleted by another user.", vbExclamation + vbOKOnly, "Record Profile"
+      COAMsgBox "The '" & txtBasePicklist.Text & "' picklist has been deleted by another user.", vbExclamation + vbOKOnly, "Record Profile"
       txtBasePicklist.Tag = 0
       txtBasePicklist.Text = "<None>"
       Set rsTemp = Nothing
@@ -3349,7 +3349,7 @@ Private Function IsRecordSelectionValid() As Boolean
       Exit Function
     ElseIf rsTemp!Access = "HD" And LCase(rsTemp!UserName) <> LCase(gsUserName) Then
       ' Picklist has been made hidden by its owner
-      MsgBox "The '" & txtBasePicklist.Text & "' picklist has been made hidden by another user.", vbExclamation + vbOKOnly, "Record Profile"
+      COAMsgBox "The '" & txtBasePicklist.Text & "' picklist has been made hidden by another user.", vbExclamation + vbOKOnly, "Record Profile"
       txtBasePicklist.Tag = 0
       txtBasePicklist.Text = "<None>"
       Set rsTemp = Nothing
@@ -3369,7 +3369,7 @@ Private Function IsRecordSelectionValid() As Boolean
           Set rsTemp = datGeneral.GetReadOnlyRecords(sSQL)
           If rsTemp.BOF And rsTemp.EOF Then
             ' filter no longer exists !
-            MsgBox "The '" & .Columns("Filter").CellValue(pvarbookmark) & "' filter has been deleted by another user.", vbExclamation + vbOKOnly, "Record Profile"
+            COAMsgBox "The '" & .Columns("Filter").CellValue(pvarbookmark) & "' filter has been deleted by another user.", vbExclamation + vbOKOnly, "Record Profile"
             .Columns("FilterID").CellValue(pvarbookmark) = 0
             .Columns("Filter").CellValue(pvarbookmark) = vbNullString
             Set rsTemp = Nothing
@@ -3377,7 +3377,7 @@ Private Function IsRecordSelectionValid() As Boolean
             Exit Function
           ElseIf rsTemp!Access = "HD" And LCase(rsTemp!UserName) <> LCase(gsUserName) Then
             ' Filter has been made hidden by its owner
-            MsgBox "The '" & .Columns("Filter").CellValue(pvarbookmark) & "' filter has been made hidden by another user.", vbExclamation + vbOKOnly, "Record Profile"
+            COAMsgBox "The '" & .Columns("Filter").CellValue(pvarbookmark) & "' filter has been made hidden by another user.", vbExclamation + vbOKOnly, "Record Profile"
             .Columns("FilterID").CellValue(pvarbookmark) = 0
             .Columns("Filter").CellValue(pvarbookmark) = vbNullString
             Set rsTemp = Nothing
@@ -3484,7 +3484,7 @@ Private Sub cboBaseTable_Click()
   If mstrBaseTable = cboBaseTable.Text And (mblnLoading = False) Then Exit Sub
 
   If mcolRecordProfileColumnDetails.Count > 0 Or grdRelatedTables.Rows > 0 Then
-    If MsgBox("Warning: Changing the base table will result in all table/column " & _
+    If COAMsgBox("Warning: Changing the base table will result in all table/column " & _
           "specific aspects of this record profile definition being cleared." & vbCrLf & _
           "Are you sure you wish to continue?", _
           vbQuestion + vbYesNo + vbDefaultButton2, "Record Profile") = vbYes Then
@@ -4085,13 +4085,13 @@ Private Sub cmdAddAllTableColumns_Click()
         SelectAllColumns CLng(.Columns("TableID").CellText(.SelBookmarks(iLoop)))
       Next iLoop
     
-      MsgBox "All columns added for the selected table" & IIf(.SelBookmarks.Count = 1, "", "s") & ".", vbInformation + vbOKOnly, "Record Profile"
+      COAMsgBox "All columns added for the selected table" & IIf(.SelBookmarks.Count = 1, "", "s") & ".", vbInformation + vbOKOnly, "Record Profile"
     
       PopulateAvailable
       PopulateSelected
       UpdateButtonStatus (SSTab1.Tab)
     Else
-      MsgBox "No tables selected.", vbExclamation + vbOKOnly, "Record Profile"
+      COAMsgBox "No tables selected.", vbExclamation + vbOKOnly, "Record Profile"
     End If
   End With
 
@@ -4449,7 +4449,7 @@ Private Sub GetOrder(ctlSource As Control, ctlTarget As Control)
 TidyUpAndExit:
   Set objOrder = Nothing
   If Not fOK Then
-    MsgBox "Error changing order ID.", vbExclamation + vbOKOnly, App.ProductName
+    COAMsgBox "Error changing order ID.", vbExclamation + vbOKOnly, App.ProductName
   End If
   Exit Sub
 
@@ -5011,7 +5011,7 @@ Private Function ValidateDefinition(lngCurrentID As Long) As Boolean
   
   ' Check a name has been entered
   If Trim(txtName.Text) = "" Then
-    MsgBox "You must give this definition a name.", vbExclamation, Me.Caption
+    COAMsgBox "You must give this definition a name.", vbExclamation, Me.Caption
     SSTab1.Tab = 0
     txtName.SetFocus
     Exit Function
@@ -5034,7 +5034,7 @@ Private Function ValidateDefinition(lngCurrentID As Long) As Boolean
 
   ' Check the name is unique
   If Not CheckUniqueName(Trim(txtName.Text), mlngRecordProfileID) Then
-    MsgBox "A Record Profile definition called '" & Trim(txtName.Text) & "' already exists.", vbExclamation, Me.Caption
+    COAMsgBox "A Record Profile definition called '" & Trim(txtName.Text) & "' already exists.", vbExclamation, Me.Caption
     SSTab1.Tab = 0
     txtName.SelStart = 0
     txtName.SelLength = Len(txtName.Text)
@@ -5044,7 +5044,7 @@ Private Function ValidateDefinition(lngCurrentID As Long) As Boolean
   ' BASE TABLE - If using a picklist, check one has been selected
   If optBasePicklist.Value Then
     If txtBasePicklist.Text = "" Or txtBasePicklist.Tag = "0" Or txtBasePicklist.Tag = "" Then
-      MsgBox "You must select a picklist, or change the record selection for your base table.", vbExclamation + vbOKOnly, "Record Profile"
+      COAMsgBox "You must select a picklist, or change the record selection for your base table.", vbExclamation + vbOKOnly, "Record Profile"
       SSTab1.Tab = 0
       cmdBasePicklist.SetFocus
       Exit Function
@@ -5054,7 +5054,7 @@ Private Function ValidateDefinition(lngCurrentID As Long) As Boolean
   ' BASE TABLE - If using a filter, check one has been selected
   If optBaseFilter.Value Then
     If txtBaseFilter.Text = "" Or txtBaseFilter.Tag = "0" Or txtBaseFilter.Tag = "" Then
-      MsgBox "You must select a filter, or change the record selection for your base table.", vbExclamation + vbOKOnly, "Record Profile"
+      COAMsgBox "You must select a filter, or change the record selection for your base table.", vbExclamation + vbOKOnly, "Record Profile"
       SSTab1.Tab = 0
       cmdBaseFilter.SetFocus
       Exit Function
@@ -5095,7 +5095,7 @@ Private Function ValidateDefinition(lngCurrentID As Long) As Boolean
   Next iLoop
   
   If UBound(asTableErrors) = 1 Then
-    MsgBox "You must include the tables that relate the '" & asTableErrors(1) & "' table to the base table in the record profile.", vbExclamation + vbOKOnly, "Record Profile"
+    COAMsgBox "You must include the tables that relate the '" & asTableErrors(1) & "' table to the base table in the record profile.", vbExclamation + vbOKOnly, "Record Profile"
     SSTab1.Tab = 1
     Exit Function
   ElseIf UBound(asTableErrors) > 0 Then
@@ -5106,7 +5106,7 @@ Private Function ValidateDefinition(lngCurrentID As Long) As Boolean
         vbTab & asTableErrors(iLoop) & vbCrLf
     Next iLoop
     
-    MsgBox sText, vbExclamation + vbOKOnly, "Record Profile"
+    COAMsgBox sText, vbExclamation + vbOKOnly, "Record Profile"
     SSTab1.Tab = 1
     Exit Function
   End If
@@ -5132,7 +5132,7 @@ Private Function ValidateDefinition(lngCurrentID As Long) As Boolean
   Next iLoop
   
   If UBound(asTableErrors) = 1 Then
-    MsgBox "You must select at least 1 column for your record profile from the '" & asTableErrors(1) & "' table.", vbExclamation + vbOKOnly, "Record Profile"
+    COAMsgBox "You must select at least 1 column for your record profile from the '" & asTableErrors(1) & "' table.", vbExclamation + vbOKOnly, "Record Profile"
     SSTab1.Tab = 2
     Exit Function
   ElseIf UBound(asTableErrors) > 0 Then
@@ -5143,7 +5143,7 @@ Private Function ValidateDefinition(lngCurrentID As Long) As Boolean
         vbTab & asTableErrors(iLoop) & vbCrLf
     Next iLoop
     
-    MsgBox sText, vbExclamation + vbOKOnly, "Record Profile"
+    COAMsgBox sText, vbExclamation + vbOKOnly, "Record Profile"
     SSTab1.Tab = 2
     Exit Function
   End If
@@ -5172,11 +5172,11 @@ If mlngRecordProfileID > 0 Then
 
     If (Not fBatchJobsOK) Then
       If Len(sBatchJobDetails_ScheduledForOtherUsers) > 0 Then
-        MsgBox "This definition cannot be made hidden from the following user groups :" & vbCrLf & vbCrLf & sBatchJobScheduledUserGroups & vbCrLf & _
+        COAMsgBox "This definition cannot be made hidden from the following user groups :" & vbCrLf & vbCrLf & sBatchJobScheduledUserGroups & vbCrLf & _
                "as it is used in the following batch jobs which are scheduled to be run by these user groups :" & vbCrLf & vbCrLf & sBatchJobDetails_ScheduledForOtherUsers, _
                vbExclamation + vbOKOnly, "Record Profile"
       Else
-        MsgBox "This definition cannot be made hidden as it is used in the following" & vbCrLf & _
+        COAMsgBox "This definition cannot be made hidden as it is used in the following" & vbCrLf & _
                "batch jobs of which you are not the owner :" & vbCrLf & vbCrLf & sBatchJobDetails_NotOwner, vbExclamation + vbOKOnly _
                , "Record Profile"
       End If
@@ -5186,7 +5186,7 @@ If mlngRecordProfileID > 0 Then
       Exit Function
 
     ElseIf (iCount_Owner > 0) Then
-      If MsgBox("Making this definition hidden to user groups will automatically" & vbCrLf & _
+      If COAMsgBox("Making this definition hidden to user groups will automatically" & vbCrLf & _
                 "make the following definition(s), of which you are the" & vbCrLf & _
                 "owner, hidden to the same user groups:" & vbCrLf & vbCrLf & _
                 sBatchJobDetails_Owner & vbCrLf & _
@@ -5459,7 +5459,7 @@ SaveAccess
 Save_ERROR:
 
   SaveDefinition = False
-  MsgBox "Warning : An error has occurred whilst saving..." & vbCrLf & Err.Description & vbCrLf & "Please cancel and try again. If this error continues, delete the definition.", vbCritical + vbOKOnly, "Record Profile"
+  COAMsgBox "Warning : An error has occurred whilst saving..." & vbCrLf & Err.Description & vbCrLf & "Please cancel and try again. If this error continues, delete the definition.", vbCritical + vbOKOnly, "Record Profile"
 
 End Function
 
@@ -5519,7 +5519,7 @@ End Sub
 
 Private Sub cmdRemoveAll_Click()
   ' Remove All items from the 'Selected' Listview
-  If MsgBox("Are you sure you wish to remove all of the selected table's columns from this definition ?", vbYesNo + vbQuestion, "Record Profile") = vbYes Then
+  If COAMsgBox("Are you sure you wish to remove all of the selected table's columns from this definition ?", vbYesNo + vbQuestion, "Record Profile") = vbYes Then
     CopyToAvailable True
     EnableColProperties False
   End If
@@ -5544,7 +5544,7 @@ Private Sub cmdRemoveAllRelatedTables_Click()
   Dim lRow As Long
   Dim bNeedRefreshAvail As Boolean
   
-  bContinueRemoval = (MsgBox("Removing all the related tables will remove all related table columns " & _
+  bContinueRemoval = (COAMsgBox("Removing all the related tables will remove all related table columns " & _
                             "included in the record profile definition. " & vbCrLf & _
                             "Do you wish to continue ?" _
                             , vbYesNo + vbQuestion, "Record Profile") = vbYes)
@@ -5639,7 +5639,7 @@ Private Function AnyRelatedTableColumnsUsed(lngTableID As Long, Optional bAutoYe
   End If
   
   If (Not bAutoYes) And (Not pfJustChecking) Then
-    If MsgBox("One or more columns from the '" & datGeneral.GetTableName(lngTableID) & "' table have been included in the current record profile definition." & vbCrLf & _
+    If COAMsgBox("One or more columns from the '" & datGeneral.GetTableName(lngTableID) & "' table have been included in the current record profile definition." & vbCrLf & _
               "Changing the table will remove these columns from the record profile definition." & vbCrLf & _
               "Do you wish to continue ?" _
               , vbYesNo + vbQuestion, "Record Profile") = vbNo Then
@@ -5700,7 +5700,7 @@ Private Sub cmdRemoveRelatedTable_Click()
     Next iCount
       
     If Len(sTablesWithSelectedColumns) > 0 Then
-      If MsgBox("The following tables have one or more columns included in the current record profile definition." & vbCrLf & vbCrLf & _
+      If COAMsgBox("The following tables have one or more columns included in the current record profile definition." & vbCrLf & vbCrLf & _
         sTablesWithSelectedColumns & vbCrLf & _
         "Removing these tables will remove these columns from the record profile definition." & vbCrLf & _
         "Do you wish to continue ?" _
@@ -5803,7 +5803,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
   Dim pintAnswer As Integer
     
   If Changed = True And Not FormPrint Then
-    pintAnswer = MsgBox("You have changed the current definition. Save changes ?", vbQuestion + vbYesNoCancel, "Record Profile")
+    pintAnswer = COAMsgBox("You have changed the current definition. Save changes ?", vbQuestion + vbYesNoCancel, "Record Profile")
       
     If pintAnswer = vbYes Then
       cmdOK_Click
@@ -5992,7 +5992,7 @@ End Sub
 
 Private Sub ListView1_LostFocus()
   'JPD 20030912 Fault 5781
-  cmdOk.Default = True
+  cmdOK.Default = True
 
 End Sub
 
@@ -6133,7 +6133,7 @@ End Sub
 
 Private Sub ListView2_LostFocus()
   'JPD 20030912 Fault 5781
-  cmdOk.Default = True
+  cmdOK.Default = True
 
 End Sub
 
@@ -6397,13 +6397,13 @@ Private Sub txtDesc_GotFocus()
     .SelLength = Len(.Text)
   End With
   
-  cmdOk.Default = False
+  cmdOK.Default = False
 
 End Sub
 
 
 Private Sub txtDesc_LostFocus()
-  cmdOk.Default = True
+  cmdOK.Default = True
 
 End Sub
 

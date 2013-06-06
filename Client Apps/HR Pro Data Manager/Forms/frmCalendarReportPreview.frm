@@ -139,7 +139,7 @@ Begin VB.Form frmCalendarReportPreview
       _ExtentY        =   8493
       _Version        =   393216
       Appearance      =   0
-      Orientation     =   1179648
+      Orientation     =   1245184
    End
    Begin VB.CommandButton cmdOutput 
       Caption         =   "&Output"
@@ -288,7 +288,7 @@ Begin VB.Form frmCalendarReportPreview
          _ExtentY        =   2037
          _Version        =   393216
          Appearance      =   0
-         Orientation     =   1179648
+         Orientation     =   1245184
       End
    End
    Begin VB.PictureBox picPrint 
@@ -811,7 +811,7 @@ Private mlngOutputEmailAddr As Long
 Private mstrOutputEmailSubject As String
 Private mstrOutputEmailAttachAs As String
 'Private mlngOutputEmailFileFormat As Long
-Private mstrOutputFilename As String
+Private mstrOutputFileName As String
 
 Private mobjOutput As clsOutputRun
 
@@ -1471,7 +1471,7 @@ End Property
 'End Property
 
 Public Property Let OutputFilename(pstrOutputFilename As String)
-  mstrOutputFilename = pstrOutputFilename
+  mstrOutputFileName = pstrOutputFilename
 End Property
 
 Private Function AddDataToArray(pintRow As Integer, pintCol As Integer, _
@@ -2552,7 +2552,7 @@ Private Function FillGridWithEvents() As Boolean
   End With
   
   If fOK = False Then
-    MsgBox "An Error Has Occurred Whilst Filling The Cal Labels:" & vbNewLine & Err.Number & " - " & Err.Description
+    COAMsgBox "An Error Has Occurred Whilst Filling The Cal Labels:" & vbNewLine & Err.Number & " - " & Err.Description
   End If
 
 End Function
@@ -3416,7 +3416,7 @@ Private Function OutputArray_AddEvents() As Boolean
   End With
   
   If fOK = False Then
-    MsgBox "An Error Has Occurred Whilst Filling The Cal Labels:" & vbNewLine & Err.Number & " - " & Err.Description
+    COAMsgBox "An Error Has Occurred Whilst Filling The Cal Labels:" & vbNewLine & Err.Number & " - " & Err.Description
   End If
   
   OutputArray_AddEvents = True
@@ -4913,7 +4913,7 @@ TidyUpAndExit:
   Exit Function
   
 ErrorTrap:
-  MsgBox "An Error Has Occurred Whilst Filling The Calendar:" & vbNewLine & Err.Number & " - " & Err.Description
+  COAMsgBox "An Error Has Occurred Whilst Filling The Calendar:" & vbNewLine & Err.Number & " - " & Err.Description
   FillEventCalBoxes = False
   GoTo TidyUpAndExit
   
@@ -5792,7 +5792,7 @@ Private Sub cboMonth_Click()
     End If
     
     If blnShowMSG Then
-      MsgBox strMessage, vbExclamation + vbOKOnly, "Calendar Reports"
+      COAMsgBox strMessage, vbExclamation + vbOKOnly, "Calendar Reports"
     Else
       DateChange
     End If
@@ -5933,7 +5933,7 @@ Public Function OutputReport(blnPrompt As Boolean) As Boolean
       mblnOutputPrinter, mstrOutputPrinterName, _
       mblnOutputSave, mlngOutputSaveExisting, _
       mblnOutputEmail, mlngOutputEmailAddr, mstrOutputEmailSubject, _
-      mstrOutputEmailAttachAs, mstrOutputFilename) Then
+      mstrOutputEmailAttachAs, mstrOutputFileName) Then
 
     If mobjOutput.GetFile Then
     
@@ -5993,7 +5993,7 @@ Public Function OutputReport(blnPrompt As Boolean) As Boolean
       If (gobjProgress.Cancelled) Or (mobjOutput.UserCancelled) Then
         If Not gblnBatchMode And (mblnOutputFromPreview = True) Then
           gobjProgress.CloseProgress
-          MsgBox "Calendar Report Output cancelled by user.", vbExclamation + vbOKOnly, "Calendar Reports Output"
+          COAMsgBox "Calendar Report Output cancelled by user.", vbExclamation + vbOKOnly, "Calendar Reports Output"
         End If
         
         mblnUserCancelled = True
@@ -6019,7 +6019,7 @@ Public Function OutputReport(blnPrompt As Boolean) As Boolean
         If gobjProgress.Cancelled Or (mobjOutput.UserCancelled) Then
           If Not gblnBatchMode And (mblnOutputFromPreview = True) Then
             gobjProgress.CloseProgress
-            MsgBox "Calendar Report Output cancelled by user.", vbExclamation + vbOKOnly, "Calendar Reports Output"
+            COAMsgBox "Calendar Report Output cancelled by user.", vbExclamation + vbOKOnly, "Calendar Reports Output"
           End If
           
           mblnUserCancelled = True
@@ -6054,7 +6054,7 @@ Public Function OutputReport(blnPrompt As Boolean) As Boolean
         If gobjProgress.Cancelled Or (mobjOutput.UserCancelled) Then
           If Not gblnBatchMode And (mblnOutputFromPreview = True) Then
             gobjProgress.CloseProgress
-            MsgBox "Calendar Report Output cancelled by user.", vbExclamation + vbOKOnly, "Calendar Reports Output"
+            COAMsgBox "Calendar Report Output cancelled by user.", vbExclamation + vbOKOnly, "Calendar Reports Output"
           End If
           
           mblnUserCancelled = True
@@ -6083,7 +6083,7 @@ Public Function OutputReport(blnPrompt As Boolean) As Boolean
     If (gobjProgress.Cancelled) Or (mobjOutput.UserCancelled) Then
       If Not gblnBatchMode And (mblnOutputFromPreview = True) Then
         gobjProgress.CloseProgress
-        MsgBox "Calendar Report Output cancelled by user.", vbExclamation + vbOKOnly, "Calendar Reports Output"
+        COAMsgBox "Calendar Report Output cancelled by user.", vbExclamation + vbOKOnly, "Calendar Reports Output"
       End If
           
       mblnUserCancelled = True
@@ -6113,10 +6113,10 @@ Public Function OutputReport(blnPrompt As Boolean) As Boolean
   If blnPrompt Then
     gobjProgress.CloseProgress
     If fOK Then
-      MsgBox "Calendar Report: '" & mstrCalendarReportName & "' output complete.", _
+      COAMsgBox "Calendar Report: '" & mstrCalendarReportName & "' output complete.", _
           vbInformation, "Calendar Report"
     Else
-      MsgBox "Calendar Report: '" & mstrCalendarReportName & "' output failed." & vbNewLine & vbNewLine & mstrErrorMessage, _
+      COAMsgBox "Calendar Report: '" & mstrCalendarReportName & "' output failed." & vbNewLine & vbNewLine & mstrErrorMessage, _
           vbExclamation, "Calendar Report"
     End If
   End If
@@ -6493,7 +6493,7 @@ Private Sub spnYear_Change()
       End If
       
       If blnShowMSG Then
-        MsgBox strMessage, vbExclamation + vbOKOnly, "Calendar Reports"
+        COAMsgBox strMessage, vbExclamation + vbOKOnly, "Calendar Reports"
       Else
         DateChange
       End If

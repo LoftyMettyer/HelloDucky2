@@ -554,7 +554,7 @@ TidyUpAndExit:
   Exit Function
   
 Error_Trap:
-  MsgBox "Error initialising the the Calendar Report Event form.", vbExclamation + vbOKOnly, "Calendar Reports"
+  COAMsgBox "Error initialising the the Calendar Report Event form.", vbExclamation + vbOKOnly, "Calendar Reports"
   Initialize = False
   GoTo TidyUpAndExit
 End Function
@@ -1319,7 +1319,7 @@ TidyUpAndExit:
   Exit Function
   
 Error_Trap:
-  MsgBox "Error populating Event table dropdown box.", vbExclamation + vbOKOnly, "Calendar Reports"
+  COAMsgBox "Error populating Event table dropdown box.", vbExclamation + vbOKOnly, "Calendar Reports"
   PopulateTables = False
   GoTo TidyUpAndExit
 
@@ -1372,7 +1372,7 @@ Private Sub cboEventTable_Click()
       Set rsDateColumns = datData.OpenRecordset(sSQL, adOpenForwardOnly, adLockReadOnly)
     
       If rsDateColumns.BOF And rsDateColumns.EOF Then
-          MsgBox "The selected Event Table has no date columns. Please select an Event Table that contains date columns.", vbOKOnly + vbExclamation, "Calendar Reports"
+          COAMsgBox "The selected Event Table has no date columns. Please select an Event Table that contains date columns.", vbOKOnly + vbExclamation, "Calendar Reports"
 '          mblnLoading = True
 '          SetComboItem Me.cboEventTable, mlngEventTableID
 '          mblnLoading = False
@@ -1382,7 +1382,7 @@ Private Sub cboEventTable_Click()
       Else
         mlngDateColCount = rsDateColumns.Fields("DateColumnCount").Value
         If mlngDateColCount < 1 Then
-          MsgBox "The selected Event Table has no date columns. Please select an Event Table that contains date columns.", vbOKOnly + vbExclamation, "Calendar Reports"
+          COAMsgBox "The selected Event Table has no date columns. Please select an Event Table that contains date columns.", vbOKOnly + vbExclamation, "Calendar Reports"
 '          mblnLoading = True
 '          SetComboItem Me.cboEventTable, mlngEventTableID
 '          mblnLoading = False
@@ -1509,7 +1509,7 @@ Private Function ValidateEventInfo() As Boolean
 
   ' Check a name has been entered
   If (Trim(txtEventName.Text) = "") Or (Len(Trim(txtEventName.Text)) = 0) Then
-    MsgBox "You must give this event a name.", vbExclamation, Me.Caption
+    COAMsgBox "You must give this event a name.", vbExclamation, Me.Caption
     txtEventName.SetFocus
     ValidateEventInfo = False
     Exit Function
@@ -1517,7 +1517,7 @@ Private Function ValidateEventInfo() As Boolean
  
   ' Check the name is unique
   If Not CheckUniqueEventName(Trim(txtEventName.Text)) Then
-    MsgBox "An event called '" & Trim(txtEventName.Text) & "' already exists.", vbExclamation, Me.Caption
+    COAMsgBox "An event called '" & Trim(txtEventName.Text) & "' already exists.", vbExclamation, Me.Caption
     txtEventName.SetFocus
     ValidateEventInfo = False
     Exit Function
@@ -1525,7 +1525,7 @@ Private Function ValidateEventInfo() As Boolean
   
   ' Check that a valid event table has been selected
   If Not (cboEventTable.ItemData(cboEventTable.ListIndex) > 0) Then
-    MsgBox "A valid event table has not been selected.", vbExclamation, Me.Caption
+    COAMsgBox "A valid event table has not been selected.", vbExclamation, Me.Caption
     cboEventTable.SetFocus
     ValidateEventInfo = False
     Exit Function
@@ -1533,7 +1533,7 @@ Private Function ValidateEventInfo() As Boolean
 
   ' Check that the event table has date columns
   If (cboStartDate.ListCount < 1) Then
-          MsgBox "The selected Event Table has no date columns. Please select an Event Table that contains date columns.", vbOKOnly + vbExclamation, Me.Caption
+          COAMsgBox "The selected Event Table has no date columns. Please select an Event Table that contains date columns.", vbOKOnly + vbExclamation, Me.Caption
     cboEventTable.SetFocus
     ValidateEventInfo = False
     Exit Function
@@ -1542,13 +1542,13 @@ Private Function ValidateEventInfo() As Boolean
   ' Check that a valid start date column has been selected
   If cboStartDate.ListCount > 0 Then
     If Not (cboStartDate.ItemData(cboStartDate.ListIndex) > 0) Then
-      MsgBox "A valid start date column has not been selected.", vbExclamation, Me.Caption
+      COAMsgBox "A valid start date column has not been selected.", vbExclamation, Me.Caption
       cboStartDate.SetFocus
       ValidateEventInfo = False
       Exit Function
     End If
   Else
-    MsgBox "A valid start date column has not been selected.", vbExclamation, Me.Caption
+    COAMsgBox "A valid start date column has not been selected.", vbExclamation, Me.Caption
     cboStartDate.SetFocus
     ValidateEventInfo = False
     Exit Function
@@ -1556,13 +1556,13 @@ Private Function ValidateEventInfo() As Boolean
   
   ' Check that either a valid end date or duration column has been selected
   If optDuration.Value And Not (cboDuration.ItemData(cboDuration.ListIndex) > 0) Then
-    MsgBox "A valid duration column has not been selected.", vbExclamation, Me.Caption
+    COAMsgBox "A valid duration column has not been selected.", vbExclamation, Me.Caption
     optDuration.SetFocus
     ValidateEventInfo = False
     Exit Function
   End If
   If optEndDate.Value And Not (cboEndDate.ItemData(cboEndDate.ListIndex) > 0) Then
-    MsgBox "A valid end date column has not been selected.", vbExclamation, Me.Caption
+    COAMsgBox "A valid end date column has not been selected.", vbExclamation, Me.Caption
     optEndDate.SetFocus
     ValidateEventInfo = False
     Exit Function
@@ -1571,44 +1571,44 @@ Private Function ValidateEventInfo() As Boolean
   If mblnHasLookupColumn And (cboEventType.ListIndex >= 0) Then
     ' Check that a valid 'set' of lookup tables have been selected
     If optLegendLookup.Value And (cboLegendTable.ListCount < 1) Then
-      MsgBox "A valid lookup table has not been selected.", vbExclamation, Me.Caption
+      COAMsgBox "A valid lookup table has not been selected.", vbExclamation, Me.Caption
       ValidateEventInfo = False
       Exit Function
     ElseIf optLegendLookup.Value And Not (cboLegendTable.ItemData(cboLegendTable.ListIndex) > 0) Then
-      MsgBox "A valid lookup table has not been selected.", vbExclamation, Me.Caption
+      COAMsgBox "A valid lookup table has not been selected.", vbExclamation, Me.Caption
       cboLegendTable.SetFocus
       ValidateEventInfo = False
       Exit Function
     End If
     
     If optLegendLookup.Value And (cboLegendColumn.ListCount < 1) Then
-      MsgBox "A valid lookup column has not been selected.", vbExclamation, Me.Caption
+      COAMsgBox "A valid lookup column has not been selected.", vbExclamation, Me.Caption
       ValidateEventInfo = False
       Exit Function
     ElseIf optLegendLookup.Value And Not (cboLegendColumn.ItemData(cboLegendColumn.ListIndex) > 0) Then
-      MsgBox "A valid lookup column has not been selected.", vbExclamation, Me.Caption
+      COAMsgBox "A valid lookup column has not been selected.", vbExclamation, Me.Caption
       cboLegendColumn.SetFocus
       ValidateEventInfo = False
       Exit Function
     End If
     
     If optLegendLookup.Value And (cboLegendCode.ListCount < 1) Then
-      MsgBox "A valid lookup code has not been selected.", vbExclamation, Me.Caption
+      COAMsgBox "A valid lookup code has not been selected.", vbExclamation, Me.Caption
       ValidateEventInfo = False
       Exit Function
     ElseIf optLegendLookup.Value And Not (cboLegendCode.ItemData(cboLegendCode.ListIndex) > 0) Then
-      MsgBox "A valid lookup code has not been selected.", vbExclamation, Me.Caption
+      COAMsgBox "A valid lookup code has not been selected.", vbExclamation, Me.Caption
       cboLegendCode.SetFocus
       ValidateEventInfo = False
       Exit Function
     End If
     
     If optLegendLookup.Value And (cboLegendCode.ListCount < 1) Then
-      MsgBox "A valid event type has not been selected.", vbExclamation, Me.Caption
+      COAMsgBox "A valid event type has not been selected.", vbExclamation, Me.Caption
       ValidateEventInfo = False
       Exit Function
     ElseIf optLegendLookup.Value And Not (cboEventType.ItemData(cboEventType.ListIndex) > 0) Then
-      MsgBox "A valid event type has not been selected.", vbExclamation, Me.Caption
+      COAMsgBox "A valid event type has not been selected.", vbExclamation, Me.Caption
       cboEventType.SetFocus
       ValidateEventInfo = False
       Exit Function
@@ -1644,7 +1644,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
     
     If ((Changed = True) And (UnloadMode <> vbFormCode)) Or ((Changed = True) And (Cancelled = True)) Then
       
-      pintAnswer = MsgBox("Save changes ?", vbQuestion + vbYesNoCancel, "Calendar Reports")
+      pintAnswer = COAMsgBox("Save changes ?", vbQuestion + vbYesNoCancel, "Calendar Reports")
         
       If pintAnswer = vbYes Then
         cmdOK_Click
@@ -1727,7 +1727,7 @@ End Sub
 Private Sub txtCharacter_Validate(Cancel As Boolean)
   If Trim(txtCharacter.Text) = "." Then
     Cancel = True
-    MsgBox "The full stop/decimal point is a reserved character in Calendar Reports.", vbOKOnly + vbExclamation, "Calendar Reports"
+    COAMsgBox "The full stop/decimal point is a reserved character in Calendar Reports.", vbOKOnly + vbExclamation, "Calendar Reports"
     txtCharacter.SetFocus
   End If
 End Sub

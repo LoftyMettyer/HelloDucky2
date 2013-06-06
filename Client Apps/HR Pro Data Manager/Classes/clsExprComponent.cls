@@ -36,7 +36,7 @@ TidyUpAndExit:
   Exit Function
 
 ErrorTrap:
-  MsgBox "Error checking for cyclic expressions.", _
+  COAMsgBox "Error checking for cyclic expressions.", _
     vbOKOnly + vbExclamation, App.ProductName
   Err = False
   Resume TidyUpAndExit

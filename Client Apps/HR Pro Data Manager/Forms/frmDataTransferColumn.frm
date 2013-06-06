@@ -478,7 +478,7 @@ End Property
 Private Sub cmdOK_Click()
   
   If cboToColumn.ListIndex < 0 Then
-    MsgBox "No destination column selected", vbExclamation
+    COAMsgBox "No destination column selected", vbExclamation
     Exit Sub
   End If
   
@@ -646,7 +646,7 @@ Private Function ValidColumnTransfer() As Boolean
       iToColumnSize = datGeneral.GetOLEMaxSize(cboToColumn.ItemData(cboToColumn.ListIndex))
       
       If iToColumnSize >= 0 And (iFromColumnSize > iToColumnSize Or iFromColumnSize = -1) Then
-        ValidColumnTransfer = IIf(MsgBox("The source column is potentially larger than the destination column, which may result in data being read only." _
+        ValidColumnTransfer = IIf(COAMsgBox("The source column is potentially larger than the destination column, which may result in data being read only." _
             & vbCrLf & "Are you sure you wish to continue?", vbQuestion & vbYesNo, Me.Caption) = vbYes, True, False)
       End If
       
@@ -673,7 +673,7 @@ Private Function ValidColumnTransfer() As Boolean
     End Select
     
     If Not ValidColumnTransfer Then
-      MsgBox "The free text does not match the destination column data type", vbExclamation
+      COAMsgBox "The free text does not match the destination column data type", vbExclamation
     End If
     
   End If

@@ -145,15 +145,15 @@ Private Sub cmdOK_Click()
     
     'Validate new entry
     If Trim(cboPeriod.Text) = vbNullString Then
-      MsgBox "Please select a valid unit of time", vbExclamation, Me.Caption
+      COAMsgBox "Please select a valid unit of time", vbExclamation, Me.Caption
       Exit Sub
     'ElseIf spnDays.Value < 1 Then
     ElseIf spnDays.Value < 0 Then
-      MsgBox "Please select a valid number of " & LCase(cboPeriod.Text), vbExclamation, Me.Caption
+      COAMsgBox "Please select a valid number of " & LCase(cboPeriod.Text), vbExclamation, Me.Caption
       Exit Sub
       
     ElseIf (cboPeriod.ListIndex = 3) And (spnDays.Value > 200) Then
-      MsgBox "You cannot select a purge period of greater than 200 years.", vbExclamation + vbOKOnly, Me.Caption
+      COAMsgBox "You cannot select a purge period of greater than 200 years.", vbExclamation + vbOKOnly, Me.Caption
       Exit Sub
 
     End If
@@ -205,7 +205,7 @@ Private Sub cmdOK_Click()
 Exit Sub
 
 LocalErr:
-  MsgBox "Error saving purge period", vbCritical, Me.Caption
+  COAMsgBox "Error saving purge period", vbCritical, Me.Caption
 
 End Sub
 

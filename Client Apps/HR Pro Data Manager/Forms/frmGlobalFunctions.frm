@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TabCtl32.Ocx"
 Begin VB.Form frmGlobalFunctions 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Global "
@@ -254,7 +254,7 @@ Begin VB.Form frmGlobalFunctions
             Width           =   675
          End
          Begin VB.CommandButton cmdPicklist 
-Caption = "..."
+            Caption         =   "..."
             Enabled         =   0   'False
             Height          =   315
             Left            =   8900
@@ -264,7 +264,7 @@ Caption = "..."
             Width           =   330
          End
          Begin VB.CommandButton cmdFilter 
-Caption = "..."
+            Caption         =   "..."
             Enabled         =   0   'False
             Height          =   315
             Left            =   8900
@@ -275,9 +275,9 @@ Caption = "..."
          End
          Begin VB.ComboBox cboTables 
             Height          =   315
-            ItemData        =   "frmGlobalFunctions.frx":0DC8
+            ItemData        =   "frmGlobalFunctions.frx":0044
             Left            =   1620
-            List            =   "frmGlobalFunctions.frx":0DCA
+            List            =   "frmGlobalFunctions.frx":0046
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
             TabIndex        =   9
@@ -286,9 +286,9 @@ Caption = "..."
          End
          Begin VB.ComboBox cboChild 
             Height          =   315
-            ItemData        =   "frmGlobalFunctions.frx":0DCC
+            ItemData        =   "frmGlobalFunctions.frx":0048
             Left            =   1620
-            List            =   "frmGlobalFunctions.frx":0DCE
+            List            =   "frmGlobalFunctions.frx":004A
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
             TabIndex        =   11
@@ -389,7 +389,7 @@ Caption = "..."
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(0).Picture=   "frmGlobalFunctions.frx":0DD0
+            stylesets(0).Picture=   "frmGlobalFunctions.frx":004C
             stylesets(1).Name=   "ReadOnly"
             stylesets(1).ForeColor=   -2147483631
             stylesets(1).BackColor=   -2147483633
@@ -403,7 +403,7 @@ Caption = "..."
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(1).Picture=   "frmGlobalFunctions.frx":0DEC
+            stylesets(1).Picture=   "frmGlobalFunctions.frx":0068
             MultiLine       =   0   'False
             AllowRowSizing  =   0   'False
             AllowGroupSizing=   0   'False
@@ -796,7 +796,7 @@ Private Sub cboChild_Click()
     If Me.cboChild.Text = msComboText Then Exit Sub
 
     If grdColumns.Rows > 0 Then
-      If MsgBox("One or more columns from the '" & msComboText & "' table " & _
+      If COAMsgBox("One or more columns from the '" & msComboText & "' table " & _
                 "have been included in the current " & LCase(Me.Caption) & _
                 " definition. Changing the child table will remove these " & _
                 "columns from the " & LCase(Me.Caption) & " definition." & vbCrLf & _
@@ -833,7 +833,7 @@ Private Sub cboTables_Click()
     If Me.cboTables.Text = msComboText Then Exit Sub
     
     If grdColumns.Rows > 0 Then
-      If MsgBox("Warning: Changing the base table will result in all table/column " & _
+      If COAMsgBox("Warning: Changing the base table will result in all table/column " & _
             "specific aspects of this " & LCase(Me.Caption) & " being cleared." & vbCrLf & _
             "Are you sure you wish to continue?", _
             vbQuestion + vbYesNo + vbDefaultButton2, Me.Caption) = vbNo Then
@@ -932,7 +932,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
           (Not FormPrint)
         If fRemove Then
           sBigMessage = "The '" & cboTables.List(cboTables.ListIndex) & "' table picklist will be removed from this definition as it is hidden and you do not have permission to make this definition hidden."
-          MsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
+          COAMsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
         Else
           fNeedToForceHidden = True
   
@@ -991,7 +991,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
 
         If fRemove Then
           sBigMessage = "The '" & cboTables.List(cboTables.ListIndex) & "' table filter will be removed from this definition as it is hidden and you do not have permission to make this definition hidden."
-          MsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
+          COAMsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
         Else
           fNeedToForceHidden = True
   
@@ -1060,7 +1060,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
 
               If fRemove Then
                 sBigMessage = "The '" & sCalcName & "' calculation will be removed from this definition as it is hidden and you do not have permission to make this definition hidden."
-                MsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
+                COAMsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
               Else
                 fNeedToForceHidden = True
   
@@ -1244,7 +1244,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
       sBigMessage = Me.Caption & " print failed. The definition is currently invalid : " & vbCrLf & vbCrLf & sBigMessage
     End If
 
-    MsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
+    COAMsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
   End If
 
   ForceDefinitionToBeHiddenIfNeeded = (Len(sBigMessage) = 0)
@@ -1285,7 +1285,7 @@ Private Sub cmdCancel_Click()
   Dim sMessage As String
   
   Dim strMBText As String
-  Dim intMBButtons As Integer
+  Dim intMBButtons As Long
   Dim strMBTitle As String
   Dim intMBResponse As Integer
 
@@ -1308,7 +1308,7 @@ Private Sub cmdCancel_Click()
     strMBText = "You have changed the current definition. Save changes ?"
     intMBButtons = vbQuestion + vbYesNoCancel + vbDefaultButton1
     strMBTitle = sMessage
-    intMBResponse = MsgBox(strMBText, intMBButtons, strMBTitle)
+    intMBResponse = COAMsgBox(strMBText, intMBButtons, strMBTitle)
     
     Select Case intMBResponse
     Case vbYes
@@ -1327,7 +1327,7 @@ Private Sub cmdCancel_Click()
 End Sub
 
 Private Sub cmdClearAll_Click()
-  If MsgBox("Clear all selected columns, are you sure ?", vbQuestion + vbYesNo, Me.Caption) = vbYes Then
+  If COAMsgBox("Clear all selected columns, are you sure ?", vbQuestion + vbYesNo, Me.Caption) = vbYes Then
     Me.Changed = True
     grdColumns.RemoveAll
     cmdDelete.Enabled = False
@@ -1343,9 +1343,9 @@ Private Sub cmdDelete_Click()
   
   Dim lRow As Long
   
-  '08/08/2000 MH Fault 2663 Remove msgbox
+  '08/08/2000 MH Fault 2663 Remove COAMsgBox
   ' Delete the selected column definition.
-  'If MsgBox("Delete selected column ?", vbQuestion + vbOKCancel, Me.Caption) = vbOK Then
+  'If COAMsgBox("Delete selected column ?", vbQuestion + vbOKCancel, Me.Caption) = vbOK Then
     
     'grdColumns.DeleteSelected
     
@@ -1485,7 +1485,7 @@ Private Sub cmdNew_Click()
     Screen.MousePointer = vbDefault
     
     If .cboColumns.ListCount = 0 Then
-      MsgBox "All of the available columns have already been populated", vbInformation
+      COAMsgBox "All of the available columns have already been populated", vbInformation
       Exit Sub
     
     Else
@@ -2036,7 +2036,7 @@ Private Function SaveDefinition() As Boolean
     
   If Len(sMsg) > 0 Then
     SSTab1.Tab = 0
-    MsgBox sMsg, vbExclamation, Me.Caption
+    COAMsgBox sMsg, vbExclamation, Me.Caption
     With txtName
       If .Enabled Then
         .SelStart = 0
@@ -2050,7 +2050,7 @@ Private Function SaveDefinition() As Boolean
      
   If typGlobal <> glDelete Then
     If grdColumns.Rows = 0 Then
-      MsgBox "No columns selected.", vbExclamation, Me.Caption
+      COAMsgBox "No columns selected.", vbExclamation, Me.Caption
       SaveDefinition = False
       Exit Function
     End If
@@ -2059,7 +2059,7 @@ Private Function SaveDefinition() As Boolean
   If optPicklist Then
     If Val(txtPicklist.Tag) = 0 Then
       SSTab1.Tab = 0
-      MsgBox "No picklist selected.", vbExclamation, Me.Caption
+      COAMsgBox "No picklist selected.", vbExclamation, Me.Caption
       SaveDefinition = False
       Exit Function
     Else
@@ -2068,7 +2068,7 @@ Private Function SaveDefinition() As Boolean
   ElseIf optFilter Then
     If Val(txtFilter.Tag) = 0 Then
       SSTab1.Tab = 0
-      MsgBox "No filter selected.", vbExclamation, Me.Caption
+      COAMsgBox "No filter selected.", vbExclamation, Me.Caption
       SaveDefinition = False
       Exit Function
     Else
@@ -2127,11 +2127,11 @@ If mlFunctionID > 0 Then
     
     If (Not fBatchJobsOK) Then
       If Len(sBatchJobDetails_ScheduledForOtherUsers) > 0 Then
-        MsgBox "This definition cannot be made hidden from the following user groups :" & vbCrLf & vbCrLf & sBatchJobScheduledUserGroups & vbCrLf & _
+        COAMsgBox "This definition cannot be made hidden from the following user groups :" & vbCrLf & vbCrLf & sBatchJobScheduledUserGroups & vbCrLf & _
                "as it is used in the following batch jobs which are scheduled to be run by these user groups :" & vbCrLf & vbCrLf & sBatchJobDetails_ScheduledForOtherUsers, _
                vbExclamation + vbOKOnly, Me.Caption
       Else
-        MsgBox "This definition cannot be made hidden as it is used in the following" & vbCrLf & _
+        COAMsgBox "This definition cannot be made hidden as it is used in the following" & vbCrLf & _
                "batch jobs of which you are not the owner :" & vbCrLf & vbCrLf & sBatchJobDetails_NotOwner, vbExclamation + vbOKOnly _
                , Me.Caption
       End If
@@ -2142,7 +2142,7 @@ If mlFunctionID > 0 Then
       Exit Function
 
     ElseIf (iCount_Owner > 0) Then
-      If MsgBox("Making this definition hidden to user groups will automatically" & vbCrLf & _
+      If COAMsgBox("Making this definition hidden to user groups will automatically" & vbCrLf & _
                 "make the following definition(s), of which you are the" & vbCrLf & _
                 "owner, hidden to the same user groups:" & vbCrLf & vbCrLf & _
                 sBatchJobDetails_Owner & vbCrLf & _
@@ -2225,7 +2225,7 @@ End If
   Exit Function
 
 Err_Trap:
-  MsgBox Err.Description
+  COAMsgBox Err.Description
   SaveDefinition = False
   Screen.MousePointer = vbDefault
 
@@ -2342,7 +2342,7 @@ Private Function RetreiveDefinition() As Boolean
   
   Set rsTemp = GetFunctionDetails
   If rsTemp.BOF And rsTemp.EOF Then
-    MsgBox "This definition has been deleted by another user.", vbExclamation + vbOKOnly, GetCaption
+    COAMsgBox "This definition has been deleted by another user.", vbExclamation + vbOKOnly, GetCaption
     fOK = False
     Exit Function
   End If
@@ -2561,7 +2561,7 @@ Private Function RetreiveDefinition() As Boolean
 Exit Function
 
 LocalErr:
-  MsgBox "Error Retrieving Definition" & vbCrLf & "(" & Err.Description & ")", vbExclamation
+  COAMsgBox "Error Retrieving Definition" & vbCrLf & "(" & Err.Description & ")", vbExclamation
   RetreiveDefinition = False
 
 End Function
@@ -2604,7 +2604,7 @@ End Sub
 
 Public Sub DeleteAll()
 
-'  If MsgBox("Delete all columns, are you sure ?", vbQuestion + vbYesNo, Me.Caption) = vbYes Then
+'  If COAMsgBox("Delete all columns, are you sure ?", vbQuestion + vbYesNo, Me.Caption) = vbYes Then
 '    grdColumns.RemoveAll
 '    cmdDelete.Enabled = False
 '    cmdClearAll.Enabled = False
@@ -2633,7 +2633,7 @@ Private Function Exists(bNew As Boolean, lColumnID As Long) As Boolean
       For lCount = 0 To grdColumns.Rows - 1
         grdColumns.Bookmark = lCount
         If grdColumns.Columns(2).Text = lColumnID Then
-          MsgBox "This column already exists in the global function definition.", vbExclamation, Me.Caption
+          COAMsgBox "This column already exists in the global function definition.", vbExclamation, Me.Caption
           grdColumns.Bookmark = vOldBookmark
           grdColumns.SelBookmarks.Add grdColumns.Bookmark
           Exists = True
@@ -2648,7 +2648,7 @@ Private Function Exists(bNew As Boolean, lColumnID As Long) As Boolean
           grdColumns.Bookmark = lCount
           If lSelected <> lCount Then
             If grdColumns.Columns(2).Text = lColumnID Then
-              MsgBox "This column already exists in the global function definition.", vbExclamation, Me.Caption
+              COAMsgBox "This column already exists in the global function definition.", vbExclamation, Me.Caption
               grdColumns.Bookmark = vOldBookmark
               grdColumns.SelBookmarks.Add grdColumns.Bookmark
               Exists = True
@@ -2765,7 +2765,7 @@ Private Function CheckMandatoryColumns() As Boolean
   Dim strColumnIDs As String
 
   Dim strMBText As String
-  Dim intMBButtons As Integer
+  Dim intMBButtons As Long
   Dim strTitle As String
   
   strMandatoryColumns = vbNullString
@@ -2831,7 +2831,7 @@ Private Function CheckMandatoryColumns() As Boolean
                 "Please enter a source to populate these columns."
     intMBButtons = vbExclamation + vbOKOnly
     strTitle = App.ProductName
-    MsgBox strMBText, intMBButtons, strTitle
+    COAMsgBox strMBText, intMBButtons, strTitle
   End If
 
 End Function
@@ -2859,7 +2859,7 @@ Public Sub PrintDef(typeGlobal As GlobalType, lFunctionID As Long)
   mlFunctionID = lFunctionID
   Set rsTemp = GetFunctionDetails
   If rsTemp.BOF And rsTemp.EOF Then
-    MsgBox "This definition has been deleted by another user.", vbExclamation, GetCaption
+    COAMsgBox "This definition has been deleted by another user.", vbExclamation, GetCaption
     Exit Sub
   End If
   
@@ -2976,7 +2976,7 @@ Public Sub PrintDef(typeGlobal As GlobalType, lFunctionID As Long)
 Exit Sub
 
 LocalErr:
-  MsgBox "Printing " & strType & " Definition Failed", vbExclamation
+  COAMsgBox "Printing " & strType & " Definition Failed", vbExclamation
 
 End Sub
 
@@ -3071,7 +3071,7 @@ Private Function InsertGlobalFunction(pstrSQL As String) As Long
     cmADO.Execute
               
     If Not fSavedOK Then
-      MsgBox "The new record could not be created." & vbCrLf & vbCrLf & _
+      COAMsgBox "The new record could not be created." & vbCrLf & vbCrLf & _
         Err.Description, vbOKOnly + vbExclamation, App.ProductName
         InsertGlobalFunction = 0
         Set cmADO = Nothing

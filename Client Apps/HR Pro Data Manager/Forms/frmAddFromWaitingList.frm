@@ -342,7 +342,7 @@ Private Function GetDelegateRecords() As Boolean
 
   fOK = Not (rsInfo.EOF And rsInfo.BOF)
   If Not fOK Then
-    MsgBox "No default order defined for the delegate table." & _
+    COAMsgBox "No default order defined for the delegate table." & _
       vbCrLf & "Unable to display the records.", vbExclamation, "Security"
   Else
     ' Check the user's privilieges on the order columns.
@@ -543,7 +543,7 @@ ContinueLoop:
 
     ' Inform the user if they do not have permission to see the data.
     If fNoSelect Then
-      MsgBox "You do not have 'read' permission on all of the columns in the selected order." & _
+      COAMsgBox "You do not have 'read' permission on all of the columns in the selected order." & _
         vbCrLf & "Only permitted columns will be shown.", vbExclamation, "Security"
     End If
     
@@ -659,7 +659,7 @@ ContinueLoop:
         ' Check we have delegate records.
         fOK = (mlngRecordCount > 0)
         If Not fOK Then
-          MsgBox "No delegate records found.", vbExclamation, Me.Caption
+          COAMsgBox "No delegate records found.", vbExclamation, Me.Caption
           ConfigureGrid
           ' NPG20090120 Fault 13343
           ' Allow the method to continue so user can select a different view
@@ -672,12 +672,12 @@ ContinueLoop:
         End If
       Else
         ' Unable to read from the delegate table.
-        MsgBox "You do not have permission to read the Delegate table." & _
+        COAMsgBox "You do not have permission to read the Delegate table." & _
           vbCrLf & "Unable to display records.", vbExclamation, "Security"
         fOK = False
       End If
     Else
-      MsgBox "You do not have permission to read any of the columns in the Delegate table's default order." & _
+      COAMsgBox "You do not have permission to read any of the columns in the Delegate table's default order." & _
         vbCrLf & "Unable to display records.", vbExclamation, "Security"
       fOK = False
     End If
@@ -702,7 +702,7 @@ TidyUpAndExit:
   Exit Function
   
 ErrorTrap:
-  MsgBox "Error reading Delegate records.", vbExclamation, Me.Caption
+  COAMsgBox "Error reading Delegate records.", vbExclamation, Me.Caption
   fOK = False
   Resume TidyUpAndExit
   
@@ -818,14 +818,14 @@ Public Function Initialise(plngCourseID As Long, _
     
     fOK = objColumns.IsValid(gsCourseTitleColumnName)
     If Not fOK Then
-      MsgBox "The '" & gsCourseTitleColumnName & "' column is not in your current view.", vbOKOnly + vbInformation, App.ProductName
+      COAMsgBox "The '" & gsCourseTitleColumnName & "' column is not in your current view.", vbOKOnly + vbInformation, App.ProductName
     End If
   End If
   
   If fOK Then
     fOK = objColumns.Item(gsCourseTitleColumnName).AllowSelect
     If Not fOK Then
-      MsgBox "You do not have 'read' permission on the '" & gsCourseTitleColumnName & "' column.", vbOKOnly + vbInformation, App.ProductName
+      COAMsgBox "You do not have 'read' permission on the '" & gsCourseTitleColumnName & "' column.", vbOKOnly + vbInformation, App.ProductName
     End If
   End If
   
@@ -858,7 +858,7 @@ Public Function Initialise(plngCourseID As Long, _
   ' Populate the View combo.
   ConfigureViewCombo '1 'plngViewID
   If cmbView.ListCount = 0 Then
-    MsgBox "You do not have 'read' permission on this table." & _
+    COAMsgBox "You do not have 'read' permission on this table." & _
       vbCrLf & "Unable to display the records.", vbExclamation, "Security"
     mfCancelled = True
     Me.Hide
@@ -871,7 +871,7 @@ Public Function Initialise(plngCourseID As Long, _
   ConfigureOrdersCombo
   Screen.MousePointer = vbHourglass
   If cmbOrders.ListCount = 0 Then
-    MsgBox "There are no orders defined for this table." & _
+    COAMsgBox "There are no orders defined for this table." & _
       vbCrLf & "Unable to display the records.", vbExclamation, "Security"
     mfCancelled = True
     Me.Hide
@@ -1377,7 +1377,7 @@ Private Sub ConfigureOrdersCombo()
       .AddItem "<No order>"
       .ItemData(.NewIndex) = 0
       .ListIndex = 0
-      MsgBox "No orders defined for this " & IIf(mlngViewID > 0, "table.", "view."), vbInformation, Me.Caption
+      COAMsgBox "No orders defined for this " & IIf(mlngViewID > 0, "table.", "view."), vbInformation, Me.Caption
       .Enabled = False
     End If
   End With
@@ -1644,7 +1644,7 @@ Private Function ValidateParameters() As Boolean
     Set objTable = gcoTablePrivileges.Item(gsTrainBookTableName)
     fValid = objTable.AllowInsert
     If Not fValid Then
-      MsgBox "You do not have 'new' permission on the '" & gsTrainBookTableName & "' table.", vbOKOnly + vbInformation, App.ProductName
+      COAMsgBox "You do not have 'new' permission on the '" & gsTrainBookTableName & "' table.", vbOKOnly + vbInformation, App.ProductName
     End If
     
     If fValid Then
@@ -1652,13 +1652,13 @@ Private Function ValidateParameters() As Boolean
       
 '''      fValid = objColumns.Item(gsTrainBookCourseTitleName).AllowUpdate
 '''      If Not fValid Then
-'''        MsgBox "You do not have 'edit' permission on the '" & gsTrainBookCourseTitleName & "' column in the '" & gsTrainBookTableName & "' table.", vbOKOnly, App.ProductName
+'''        COAMsgBox "You do not have 'edit' permission on the '" & gsTrainBookCourseTitleName & "' column in the '" & gsTrainBookTableName & "' table.", vbOKOnly, App.ProductName
 '''      End If
       
       If fValid Then
         fValid = objColumns.Item(gsTrainBookStatusColumnName).AllowUpdate
         If Not fValid Then
-          MsgBox "You do not have 'edit' permission on the '" & gsTrainBookStatusColumnName & "' column in the '" & gsTrainBookTableName & "' table.", vbOKOnly + vbInformation, App.ProductName
+          COAMsgBox "You do not have 'edit' permission on the '" & gsTrainBookStatusColumnName & "' column in the '" & gsTrainBookTableName & "' table.", vbOKOnly + vbInformation, App.ProductName
         End If
       End If
       
@@ -1671,12 +1671,12 @@ Private Function ValidateParameters() As Boolean
           fValid = Not objColumn Is Nothing
           
           If Not fValid Then
-            MsgBox "Unable to find all related columns in the '" & gsTrainBookTableName & "' table.", vbOKOnly + vbInformation, App.ProductName
+            COAMsgBox "Unable to find all related columns in the '" & gsTrainBookTableName & "' table.", vbOKOnly + vbInformation, App.ProductName
             Exit For
           Else
             fValid = objColumn.AllowUpdate
             If Not fValid Then
-              MsgBox "You do not have 'edit' permission on the '" & objColumn.ColumnName & "' column in the '" & gsTrainBookTableName & "' table.", vbOKOnly + vbInformation, App.ProductName
+              COAMsgBox "You do not have 'edit' permission on the '" & objColumn.ColumnName & "' column in the '" & gsTrainBookTableName & "' table.", vbOKOnly + vbInformation, App.ProductName
               Exit For
             End If
           End If
@@ -1695,7 +1695,7 @@ Private Function ValidateParameters() As Boolean
     Set objTable = gcoTablePrivileges.Item(gsWaitListTableName)
     fValid = objTable.AllowDelete
     If Not fValid Then
-      MsgBox "You do not have 'delete' permission on the '" & gsWaitListTableName & "' table.", vbOKOnly + vbInformation, App.ProductName
+      COAMsgBox "You do not have 'delete' permission on the '" & gsWaitListTableName & "' table.", vbOKOnly + vbInformation, App.ProductName
     End If
     
     If fValid Then
@@ -1703,7 +1703,7 @@ Private Function ValidateParameters() As Boolean
       
       fValid = objColumns.Item(gsWaitListCourseTitleColumnName).AllowSelect
       If Not fValid Then
-        MsgBox "You do not have 'read' permission on the '" & gsWaitListCourseTitleColumnName & "' column in the '" & gsWaitListTableName & "' table.", vbOKOnly + vbInformation, App.ProductName
+        COAMsgBox "You do not have 'read' permission on the '" & gsWaitListCourseTitleColumnName & "' column in the '" & gsWaitListTableName & "' table.", vbOKOnly + vbInformation, App.ProductName
       End If
     
       ' Check the user has permission to edit all of the related Training Booking columns.
@@ -1713,12 +1713,12 @@ Private Function ValidateParameters() As Boolean
           fValid = Not objColumn Is Nothing
           
           If Not fValid Then
-            MsgBox "Unable to find all related columns in the '" & gsWaitListTableName & "' table.", vbOKOnly + vbInformation, App.ProductName
+            COAMsgBox "Unable to find all related columns in the '" & gsWaitListTableName & "' table.", vbOKOnly + vbInformation, App.ProductName
             Exit For
           Else
             fValid = objColumn.AllowSelect
             If Not fValid Then
-              MsgBox "You do not have 'read' permission on the '" & objColumn.ColumnName & "' column in the '" & gsTrainBookTableName & "' table.", vbOKOnly + vbInformation, App.ProductName
+              COAMsgBox "You do not have 'read' permission on the '" & objColumn.ColumnName & "' column in the '" & gsTrainBookTableName & "' table.", vbOKOnly + vbInformation, App.ProductName
               Exit For
             End If
           End If
@@ -1895,7 +1895,7 @@ Private Function CreateBooking() As Boolean
 
     If Not fOK Then
       Screen.MousePointer = vbDefault
-      MsgBox "Unable to create booking record." & vbCrLf & vbCrLf & sErrorMsg, vbOKOnly + vbInformation, App.ProductName
+      COAMsgBox "Unable to create booking record." & vbCrLf & vbCrLf & sErrorMsg, vbOKOnly + vbInformation, App.ProductName
       Screen.MousePointer = vbHourglass
       
       gADOCon.RollbackTrans
@@ -1913,7 +1913,7 @@ Private Function CreateBooking() As Boolean
 
     If Not fOK Then
       Screen.MousePointer = vbDefault
-      MsgBox "Unable to delete waiting list record." & vbCrLf & vbCrLf & sErrorMsg, vbOKOnly + vbInformation, App.ProductName
+      COAMsgBox "Unable to delete waiting list record." & vbCrLf & vbCrLf & sErrorMsg, vbOKOnly + vbInformation, App.ProductName
       Screen.MousePointer = vbHourglass
         
       gADOCon.RollbackTrans
@@ -1943,7 +1943,7 @@ TidyUpAndExit:
 
 ErrorTrap:
   fOK = False
-  MsgBox Err.Description, vbExclamation + vbOKOnly, Application.Name
+  COAMsgBox Err.Description, vbExclamation + vbOKOnly, Application.Name
   Resume TidyUpAndExit
 
 End Function
@@ -1965,13 +1965,13 @@ Dim pstrError As String
   'NHRD16072004 Fault 8740
   If Printers.Count = 0 Then
     pstrError = "Unable to print as no printers are installed."
-    MsgBox pstrError, vbExclamation + vbOKOnly, "HR Pro"
+    COAMsgBox pstrError, vbExclamation + vbOKOnly, "HR Pro"
     GoTo TidyUpAndExit
   End If
   
   With grdDelegates
     If .Rows < 1 Then
-      MsgBox "There is no data in the current view to print", vbInformation + vbOKOnly, App.Title
+      COAMsgBox "There is no data in the current view to print", vbInformation + vbOKOnly, App.Title
       Exit Sub
     End If
     .Redraw = False

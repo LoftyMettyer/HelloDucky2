@@ -594,7 +594,7 @@ On Error GoTo HandleError
     
     strMessage = strContext & " - " & strError
     
-    MsgBox strMessage
+    COAMsgBox strMessage
     
 ' End Error Handler
 ReportError_Done:
@@ -869,7 +869,7 @@ Private Function QuitProgram() As Boolean
 On Error GoTo HandleError
     Call mProcStack.EnterProc("QuitProgram", MODULE_NAME)
 
-    If True Then 'MsgBox("Do you really want to exit?", vbYesNo + vbQuestion, "Exit?") = vbYes Then
+    If True Then 'COAMsgBox("Do you really want to exit?", vbYesNo + vbQuestion, "Exit?") = vbYes Then
     
         Call ShutdownAPI
         QuitProgram = True

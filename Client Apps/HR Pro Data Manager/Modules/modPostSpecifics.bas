@@ -140,7 +140,7 @@ Public Function ValidatePostParameters() As Boolean
 
   
   If strError <> vbNullString Then
-    MsgBox "The following must be correctly configured in the Post module before proceeding:" & vbCrLf & _
+    COAMsgBox "The following must be correctly configured in the Post module before proceeding:" & vbCrLf & _
       strError, vbExclamation + vbOKOnly, "Post Module"
   End If
   

@@ -1254,7 +1254,7 @@ Public Sub PrintGrid(Optional pvarLastPage As Variant)
      .Show vbModal
       
       If .Cancelled Then
-        'MsgBox "Printing cancelled by user", vbExclamation
+        'COAMsgBox "Printing cancelled by user", vbExclamation
         mblnCancelled = True
         Unload frmPrintOptions
         Set frmPrintOptions = Nothing
@@ -1467,7 +1467,7 @@ Public Function PrintRecordProfilePage( _
      
       .Show vbModal
       If .Cancelled Then
-        'MsgBox "Printing cancelled by user", vbExclamation
+        'COAMsgBox "Printing cancelled by user", vbExclamation
         mblnCancelled = True
         Unload frmPrintOptions
         Set frmPrintOptions = Nothing

@@ -1,7 +1,7 @@
 VERSION 5.00
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Object = "{604A59D5-2409-101D-97D5-46626B63EF2D}#1.0#0"; "TDBNumbr.ocx"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmGlobalFunctionsColumn 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Global Update Column"
@@ -167,7 +167,7 @@ Begin VB.Form frmGlobalFunctionsColumn
          Text            =   "999"
       End
       Begin VB.CommandButton cmdTable 
-Caption = "..."
+         Caption         =   "..."
          Enabled         =   0   'False
          Height          =   315
          Left            =   4725
@@ -197,7 +197,7 @@ Caption = "..."
          Width           =   2775
       End
       Begin VB.CommandButton cmdExpr 
-Caption = "..."
+         Caption         =   "..."
          Enabled         =   0   'False
          Height          =   315
          Left            =   4725
@@ -504,7 +504,7 @@ Public Sub Initialise(bNew As Boolean, lTableID As Long, typGlobal As GlobalType
         ' Initialise the expression object.
         .ExpressionID = lValueID
         If Trim$(.Name) = vbNullString Then
-          MsgBox "This calculation has been deleted by another user", vbExclamation
+          COAMsgBox "This calculation has been deleted by another user", vbExclamation
           cmdExpr.Tag = vbNullString
         Else
           txtExpr.Text = .Name
@@ -613,7 +613,7 @@ Private Sub ASRDateValue_LostFocus()
 '     IsDate(ASRDateValue.DateValue) And _
 '     ASRDateValue.Text <> "  /  /" Then
 '
-'     MsgBox "You have entered an invalid date.", vbOKOnly + vbExclamation, App.Title
+'     COAMsgBox "You have entered an invalid date.", vbOKOnly + vbExclamation, App.Title
 '     ASRDateValue.DateValue = Null
 '     ASRDateValue.SetFocus
 '     Exit Sub
@@ -632,11 +632,11 @@ Private Sub ASRDateValue_Validate(Cancel As Boolean)
 '        Exit Sub
 '      End If
 '      If Not IsDate(ASRDateValue.Text) Then
-'        MsgBox "You have entered an invalid date.", vbExclamation + vbOKOnly, App.Title
+'        COAMsgBox "You have entered an invalid date.", vbExclamation + vbOKOnly, App.Title
 '        Cancel = True
 '        Exit Sub
 '      ElseIf CDate(ASRDateValue.Text) < "01/01/1800" Then
-'        MsgBox "You have entered an invalid date." & vbCrLf & "Date must be after 01/01/1800.", vbExclamation + vbOKOnly, App.Title
+'        COAMsgBox "You have entered an invalid date." & vbCrLf & "Date must be after 01/01/1800.", vbExclamation + vbOKOnly, App.Title
 '        Cancel = True
 '      End If
   
@@ -741,7 +741,7 @@ Private Sub cmdExpr_Click()
       If .Access = "HD" Then
         If mfrmParent.DefinitionCreator = False Then
           'JPD 20030903 Fault 6459
-          MsgBox "Unable to select this calculation as it is a hidden calculation and you are not the owner of this definition.", vbExclamation
+          COAMsgBox "Unable to select this calculation as it is a hidden calculation and you are not the owner of this definition.", vbExclamation
           fOK = False
         End If
       End If
@@ -789,7 +789,7 @@ Private Sub cmdOK_Click()
 '
 '        DoEvents
 '          Dim fSelected As Boolean
-'          fSelected = (MsgBox("No date has been entered." + vbCrLf + vbCrLf + "Do you want to keep it blank?", vbYesNo + vbExclamation, App.Title) = vbNo)
+'          fSelected = (COAMsgBox("No date has been entered." + vbCrLf + vbCrLf + "Do you want to keep it blank?", vbYesNo + vbExclamation, App.Title) = vbNo)
 '
 '        If fSelected = False Then
 '          .ForeColor = vbWindowText
@@ -842,7 +842,7 @@ Private Sub cmdOK_Click()
     ' The column is to be updated with a value pulled from a lookup table.
     'mlLookupTableID = 0 Or
     If Trim(txtTable.Text) = vbNullString Then
-      MsgBox "No lookup table value selected.", vbExclamation + vbOKOnly, Me.Caption
+      COAMsgBox "No lookup table value selected.", vbExclamation + vbOKOnly, Me.Caption
       fError = True
       Exit Sub
     Else
@@ -858,7 +858,7 @@ Private Sub cmdOK_Click()
   ElseIf optField Then
     ' The column is to be updated with a value pulled from a lookup table.
     If cboField.ListIndex = -1 Then
-      MsgBox "No field selected.", vbExclamation, Me.Caption
+      COAMsgBox "No field selected.", vbExclamation, Me.Caption
       fError = True
       Exit Sub
     End If
@@ -913,7 +913,7 @@ Private Sub cmdOK_Click()
   End If
   
   If fError Then
-    MsgBox sMsg, vbExclamation, Me.Caption
+    COAMsgBox sMsg, vbExclamation, Me.Caption
   Else
     'If mlValueType <> globfuncvaltyp_LOOKUPTABLE And Len(cmdTable.Tag) > 0 Then
     '  datGlobal.DeleteTableValue CLng(cmdTable.Tag)

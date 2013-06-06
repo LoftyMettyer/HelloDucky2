@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{20C62CAE-15DA-101B-B9A8-444553540000}#1.1#0"; "MSMAPI32.OCX"
+Object = "{20C62CAE-15DA-101B-B9A8-444553540000}#1.1#0"; "msmapi32.Ocx"
 Begin VB.Form frmEmailSel 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Select Email Recipients"
@@ -356,8 +356,8 @@ End Sub
 '    If Err > 0 Then
 '      If Err <> 32001 And Err <> 32003 Then
 '        'MH20020820 Fault 4317
-'        'MsgBox Error$, 48, "Mail Error"
-'        MsgBox "Email not configured correctly." & vbCrLf & _
+'        'COAMsgBox Error$, 48, "Mail Error"
+'        COAMsgBox "Email not configured correctly." & vbCrLf & _
 '               IIf(Err.Description <> vbNullString, "(" & Trim(Err.Description) & ")", ""), _
 '               vbExclamation, "Mail Error"
 '      End If
@@ -378,7 +378,7 @@ End Sub
 '    'Session currently exists
 '    MAPISession1.SignOff
 '    If Err > 0 Then
-'      MsgBox Error$, 48, "Mail Error"
+'      COAMsgBox Error$, 48, "Mail Error"
 '      MAPIsignoff = False
 '    Else
 '      MAPIMessages1.SessionID = 0
@@ -476,7 +476,7 @@ TidyAndExit:
   
   If strError <> vbNullString Then
     ssGrdRecipients.Redraw = True
-    MsgBox strError, vbExclamation + vbOKOnly, "Send Mail Message"
+    COAMsgBox strError, vbExclamation + vbOKOnly, "Send Mail Message"
   Else
     Unload Me
   End If
@@ -562,7 +562,7 @@ Private Function SendEventLog() As Boolean
     strSubject = GetSystemSetting("Licence", "Customer Name", "<<Unknown Customer>>") & " - HR Pro Event Log"
     strMsgText = GetEventDetails(mstrEventLogIDs)
     If Trim(strMsgText) = vbNullString Then
-      MsgBox "The selected Event Log record(s) have been deleted by another User.", vbOKOnly + vbExclamation, "Event Log"
+      COAMsgBox "The selected Event Log record(s) have been deleted by another User.", vbOKOnly + vbExclamation, "Event Log"
       GoTo TidyAndExit
     End If
 
@@ -576,7 +576,7 @@ TidyAndExit:
   
   If strError <> vbNullString Then
     ssGrdRecipients.Redraw = True
-    MsgBox strError, vbExclamation + vbOKOnly, "Send Mail Message"
+    COAMsgBox strError, vbExclamation + vbOKOnly, "Send Mail Message"
   Else
     Unload Me
   End If
@@ -617,7 +617,7 @@ Public Function SendBatchNotification(strSubject As String, strEventIDs As Strin
 
   If rsEmail.BOF And rsEmail.EOF Then
     If Not gblnBatchJobsOnly Then
-      MsgBox "Error retrieving email recipient(s)", vbExclamation, "Batch Job Notification"
+      COAMsgBox "Error retrieving email recipient(s)", vbExclamation, "Batch Job Notification"
     End If
     SendBatchNotification = False
     Exit Function
@@ -649,7 +649,7 @@ LocalErr:
     If gobjProgress.Visible Then
       gobjProgress.Visible = False
     End If
-    MsgBox "Error sending email" & _
+    COAMsgBox "Error sending email" & _
       IIf(Err.Description <> vbNullString, " (" & Err.Description & ")", vbNullString), vbExclamation, "Batch Job Notification"
   End If
   On Error Resume Next
@@ -847,7 +847,7 @@ Public Function SendEmail(strTo As String, strSubject As String, strMsgText As S
   Set objOutputEmail = Nothing
   
   If strError <> "" And blnErrorMessage Then
-    MsgBox strError, vbExclamation + vbOKOnly, "Send Mail Message"
+    COAMsgBox strError, vbExclamation + vbOKOnly, "Send Mail Message"
   End If
 
 End Function
@@ -878,10 +878,10 @@ End Sub
 '  strError = SendEmailFromServer(strTo, strCC, strBCC, strSubject, strMsgText, strAttachment)
 '
 '  If strError = vbNullString Then
-'    MsgBox "Message resent.", vbInformation, "Email Queue"
+'    COAMsgBox "Message resent.", vbInformation, "Email Queue"
 '    ResendEmailQueueEntry = True
 '  Else
-'    MsgBox "Error sending email" & _
+'    COAMsgBox "Error sending email" & _
 '      IIf(Err.Description <> vbNullString, " (" & Err.Description & ")", vbNullString), vbExclamation, "Email Queue"
 '    ResendEmailQueueEntry = False
 '  End If

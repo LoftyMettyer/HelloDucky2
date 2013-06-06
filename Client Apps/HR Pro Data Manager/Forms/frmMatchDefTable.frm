@@ -1,7 +1,7 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TabCtl32.Ocx"
 Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "Codejock.Controls.v13.1.0.ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmMatchDefTable 
@@ -96,14 +96,14 @@ Begin VB.Form frmMatchDefTable
       TabCaption(1)   =   "Breakdown Colu&mns"
       TabPicture(1)   =   "frmMatchDefTable.frx":11BC
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraFieldsSelected"
-      Tab(1).Control(1)=   "fraFieldsAvailable"
-      Tab(1).Control(2)=   "cmdRemoveAll"
-      Tab(1).Control(3)=   "cmdAddAll"
-      Tab(1).Control(4)=   "cmdMoveDown"
-      Tab(1).Control(5)=   "cmdMoveUp"
-      Tab(1).Control(6)=   "cmdRemove"
-      Tab(1).Control(7)=   "cmdAdd"
+      Tab(1).Control(0)=   "cmdAdd"
+      Tab(1).Control(1)=   "cmdRemove"
+      Tab(1).Control(2)=   "cmdMoveUp"
+      Tab(1).Control(3)=   "cmdMoveDown"
+      Tab(1).Control(4)=   "cmdAddAll"
+      Tab(1).Control(5)=   "cmdRemoveAll"
+      Tab(1).Control(6)=   "fraFieldsAvailable"
+      Tab(1).Control(7)=   "fraFieldsSelected"
       Tab(1).ControlCount=   8
       Begin VB.Frame fraExpressions 
          Height          =   2055
@@ -721,7 +721,7 @@ Public Sub NewRelation(pfrmParent As Form, lngBaseSelected() As Long, lngCriteri
 
   If lngAvailableTables = 0 Then
     Screen.MousePointer = vbDefault
-    MsgBox "You have selected the base table and all child tables of " & _
+    COAMsgBox "You have selected the base table and all child tables of " & _
       mfrmParent.cboTable1.List(mfrmParent.cboTable1.ListIndex), vbExclamation, mfrmParent.Caption
 
   Else
@@ -854,7 +854,7 @@ Private Sub cboMatchTables_Click()
       Val(txtPreferred.Tag) > 0 Or _
       Val(txtScore.Tag) > 0 Then
 
-      If MsgBox("Warning: Changing a table will result in all table/column " & _
+      If COAMsgBox("Warning: Changing a table will result in all table/column " & _
             "specific aspects of this breakdown being cleared." & vbCrLf & _
             "Are you sure you wish to continue?", _
             vbQuestion + vbYesNo + vbDefaultButton2, Me.Caption) = vbYes Then
@@ -881,7 +881,7 @@ Private Sub cboTables_Click()
       Val(txtPreferred.Tag) > 0 Or _
       Val(txtScore.Tag) > 0 Then
 
-      If MsgBox("Warning: Changing a table will result in all table/column " & _
+      If COAMsgBox("Warning: Changing a table will result in all table/column " & _
             "specific aspects of this breakdown being cleared." & vbCrLf & _
             "Are you sure you wish to continue?", _
             vbQuestion + vbYesNo + vbDefaultButton2, Me.Caption) = vbYes Then
@@ -977,7 +977,7 @@ Private Sub cmdRequiredClear_Click()
   
   Dim intMBResponse As Integer
   
-  intMBResponse = MsgBox("Are you sure you want to clear the Required expression?", vbExclamation + vbYesNo, mfrmParent.Caption)
+  intMBResponse = COAMsgBox("Are you sure you want to clear the Required expression?", vbExclamation + vbYesNo, mfrmParent.Caption)
   
   If intMBResponse = vbYes Then
     'mfrmParent.ExprDeleteOnOK cboTables.ItemData(cboTables.ListIndex), Val(txtRequired.Tag), giEXPR_MATCHWHEREEXPRESSION
@@ -995,7 +995,7 @@ Private Sub cmdPreferredClear_Click()
   
   Dim intMBResponse As Integer
   
-  intMBResponse = MsgBox("Are you sure you want to clear the Preferred expression?", vbExclamation + vbYesNo, mfrmParent.Caption)
+  intMBResponse = COAMsgBox("Are you sure you want to clear the Preferred expression?", vbExclamation + vbYesNo, mfrmParent.Caption)
   
   If intMBResponse = vbYes Then
     mfrmParent.ExprDeleteOnOK cboTables.ItemData(cboTables.ListIndex), Val(txtPreferred.Tag), giEXPR_MATCHJOINEXPRESSION
@@ -1013,7 +1013,7 @@ Private Sub cmdScoreClear_Click()
   Dim lngCount As Long
   Dim intMBResponse As Integer
   
-  intMBResponse = MsgBox("Are you sure you want to clear the Match Score expression?", vbExclamation + vbYesNo, mfrmParent.Caption)
+  intMBResponse = COAMsgBox("Are you sure you want to clear the Match Score expression?", vbExclamation + vbYesNo, mfrmParent.Caption)
   
   If intMBResponse = vbYes Then
     mfrmParent.ExprDeleteOnOK cboTables.ItemData(cboTables.ListIndex), Val(txtScore.Tag), giEXPR_MATCHSCOREEXPRESSION
@@ -1151,13 +1151,13 @@ Private Sub cmdOK_Click()
 
   If Val(txtRequired.Tag) = 0 And Val(txtPreferred.Tag) = 0 Then
     SSTab1.Tab = 0
-    MsgBox "You must select either a Required Match expression or Preferred Match expression.", vbExclamation + vbOKOnly, mfrmParent.Caption
+    COAMsgBox "You must select either a Required Match expression or Preferred Match expression.", vbExclamation + vbOKOnly, mfrmParent.Caption
     Exit Sub
   End If
   
   If ListView2.ListItems.Count = 0 Then
     SSTab1.Tab = 1
-    MsgBox "You must select at least one column to show in the breakdown.", vbExclamation + vbOKOnly, mfrmParent.Caption
+    COAMsgBox "You must select at least one column to show in the breakdown.", vbExclamation + vbOKOnly, mfrmParent.Caption
     Exit Sub
   End If
   
@@ -1165,7 +1165,7 @@ Private Sub cmdOK_Click()
   strDuplicateHeading = mfrmParent.CheckForDuplicateHeadings(mcolBreakdownCols)
   If strDuplicateHeading <> vbNullString Then
     SSTab1.Tab = 1
-    MsgBox "More than one column has a heading of '" & strDuplicateHeading & "'" & vbCrLf & "Column headings must be unique.", vbExclamation + vbOKOnly, mfrmParent.Caption
+    COAMsgBox "More than one column has a heading of '" & strDuplicateHeading & "'" & vbCrLf & "Column headings must be unique.", vbExclamation + vbOKOnly, mfrmParent.Caption
     Exit Sub
   End If
 
@@ -1179,14 +1179,14 @@ Private Sub cmdOK_Click()
   If datGeneral.IsAChildOf(lngChildTable1, lngParentTable1) And _
      datGeneral.IsAChildOf(lngChildTable1, lngParentTable2) Then
         SSTab1.Tab = 0
-        MsgBox "Cannot use the '" & cboTables.Text & "' table as it is a child table of both the '" & mfrmParent.cboTable1.Text & "' and the '" & mfrmParent.cboTable2.Text & "' tables.", vbExclamation + vbOKOnly, mfrmParent.Caption
+        COAMsgBox "Cannot use the '" & cboTables.Text & "' table as it is a child table of both the '" & mfrmParent.cboTable1.Text & "' and the '" & mfrmParent.cboTable2.Text & "' tables.", vbExclamation + vbOKOnly, mfrmParent.Caption
         Exit Sub
   End If
 
   If datGeneral.IsAChildOf(lngChildTable2, lngParentTable1) And _
      datGeneral.IsAChildOf(lngChildTable2, lngParentTable2) Then
         SSTab1.Tab = 0
-        MsgBox "Cannot use the '" & cboMatchTables.Text & "' table as it is a child table of both the '" & mfrmParent.cboTable1.Text & "' and the '" & mfrmParent.cboTable2.Text & "' tables.", vbExclamation + vbOKOnly, mfrmParent.Caption
+        COAMsgBox "Cannot use the '" & cboMatchTables.Text & "' table as it is a child table of both the '" & mfrmParent.cboTable1.Text & "' and the '" & mfrmParent.cboTable2.Text & "' tables.", vbExclamation + vbOKOnly, mfrmParent.Caption
         Exit Sub
   End If
 
@@ -1913,12 +1913,12 @@ Private Sub cmdRemoveAll_Click()
 
   ' Remove All items from the 'Selected' Listview
 '  If Me.grdReportOrder.Rows > 0 Then
-'    If MsgBox("Removing all selected report columns will also clear the report sort order." & vbCrLf & "Do you wish to continue ?", vbYesNo + vbQuestion, "Custom Reports") = vbYes Then
+'    If COAMsgBox("Removing all selected report columns will also clear the report sort order." & vbCrLf & "Do you wish to continue ?", vbYesNo + vbQuestion, "Custom Reports") = vbYes Then
 '      CopyToAvailable True
 '      EnableColProperties False
 '    End If
 '  Else
-    If MsgBox("Are you sure you wish to remove all breakdown columns?", vbYesNo + vbQuestion, Me.Caption) = vbYes Then
+    If COAMsgBox("Are you sure you wish to remove all breakdown columns?", vbYesNo + vbQuestion, Me.Caption) = vbYes Then
       CopyToAvailable True
       EnableColProperties False
     End If

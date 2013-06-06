@@ -1,6 +1,6 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TabCtl32.Ocx"
 Begin VB.Form frmOrder 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Order Definition"
@@ -729,16 +729,16 @@ Private Sub cmdCancel_Click()
   
   ' Check if any changes have been made.
   If mfChanged Then
-    intAnswer = MsgBox("The order definition has changed.  Save changes ?", vbQuestion + vbYesNoCancel + vbDefaultButton1, App.ProductName)
+    intAnswer = COAMsgBox("The order definition has changed.  Save changes ?", vbQuestion + vbYesNoCancel + vbDefaultButton1, App.ProductName)
     If intAnswer = vbYes Then
       If Me.cmdOK.Enabled Then
         Call cmdOK_Click
         Exit Sub
       Else
         If (Len(Me.txtOrderName(0).Text) = 0) Then
-          MsgBox "Invalid Order Name", vbExclamation + vbOKOnly, App.Title
+          COAMsgBox "Invalid Order Name", vbExclamation + vbOKOnly, App.Title
         Else
-          MsgBox "You must define both a find window order and a sort order" & vbCrLf & _
+          COAMsgBox "You must define both a find window order and a sort order" & vbCrLf & _
                  "for this table.", vbExclamation + vbOKOnly, App.Title
         End If
         Exit Sub
@@ -828,7 +828,7 @@ Private Sub cmdOK_Click()
     ' Validate the order name.
     fOK = Len(Trim(txtOrderName(0).Text)) > 0
     If Not fOK Then
-      MsgBox "Invalid order name.", vbOKOnly + vbExclamation, App.ProductName
+      COAMsgBox "Invalid order name.", vbOKOnly + vbExclamation, App.ProductName
     Else
       ' Check that the order has not been modified by someone else.
       If mobjOrder.OrderID > 0 Then
@@ -857,7 +857,7 @@ Private Sub cmdOK_Click()
             sMBText = "This order has been deleted by another user." & vbCrLf & _
               "Save as a new definition ?"
           
-            Select Case MsgBox(sMBText, vbExclamation + vbOKCancel, App.ProductName)
+            Select Case COAMsgBox(sMBText, vbExclamation + vbOKCancel, App.ProductName)
               Case vbOK         'save as new (but this may cause duplicate name message)
                 fContinueSave = True
                 fSaveAsNew = True
@@ -868,7 +868,7 @@ Private Sub cmdOK_Click()
             ' Prompt to see if user should overwrite definition
             sMBText = "This order has been amended by another user. " & vbCrLf & _
               "Would you like to overwrite this definition?" & vbCrLf
-            Select Case MsgBox(sMBText, vbExclamation + vbYesNoCancel, App.ProductName)
+            Select Case COAMsgBox(sMBText, vbExclamation + vbYesNoCancel, App.ProductName)
               Case vbYes        'overwrite existing definition and any changes
                 fContinueSave = True
               Case vbNo         'save as new (but this may cause duplicate name message)
@@ -901,7 +901,7 @@ Private Sub cmdOK_Click()
         fOK = .EOF And .BOF
         
         If Not fOK Then
-          MsgBox "An order named '" & Trim(txtOrderName(0).Text) & "' already exists !", vbOKOnly + vbExclamation, App.ProductName
+          COAMsgBox "An order named '" & Trim(txtOrderName(0).Text) & "' already exists !", vbOKOnly + vbExclamation, App.ProductName
         End If
       
         .Close
@@ -1007,16 +1007,16 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
   If UnloadMode <> vbFormCode Then
     'Check if any changes have been made.
     If mfChanged Then
-        intAnswer = MsgBox("You have changed the current definition. Save changes ?", vbQuestion + vbYesNoCancel + vbDefaultButton1, App.ProductName)
+        intAnswer = COAMsgBox("You have changed the current definition. Save changes ?", vbQuestion + vbYesNoCancel + vbDefaultButton1, App.ProductName)
         If intAnswer = vbYes Then
           If Me.cmdOK.Enabled Then
             Call cmdOK_Click
             If mfCancelled = True Then Cancel = 1
           Else
             If (Len(Me.txtOrderName(0).Text) = 0) Then
-              MsgBox "Invalid Order Name", vbExclamation + vbOKOnly, App.Title
+              COAMsgBox "Invalid Order Name", vbExclamation + vbOKOnly, App.Title
             Else
-              MsgBox "You must define both a find window order and a sort order" & vbCrLf & _
+              COAMsgBox "You must define both a find window order and a sort order" & vbCrLf & _
                    "for this table.", vbExclamation + vbOKOnly, App.Title
             End If
             Cancel = 1

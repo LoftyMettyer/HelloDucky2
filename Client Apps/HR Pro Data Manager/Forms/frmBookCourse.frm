@@ -212,7 +212,7 @@ Private Function GetCourseRecords() As Boolean
 
   fOK = Not (rsInfo.EOF And rsInfo.BOF)
   If Not fOK Then
-    MsgBox "No order defined for the course table." & _
+    COAMsgBox "No order defined for the course table." & _
       vbCrLf & "Unable to display the records.", vbExclamation, "Security"
   Else
     ' Check the user's privilieges on the order columns.
@@ -408,7 +408,7 @@ Private Function GetCourseRecords() As Boolean
 
     ' Inform the user if they do not have permission to see the data.
     If fNoSelect Then
-      MsgBox "You do not have 'read' permission on all of the columns in the selected order." & _
+      COAMsgBox "You do not have 'read' permission on all of the columns in the selected order." & _
         vbCrLf & "Only permitted columns will be shown.", vbExclamation, "Security"
     End If
     
@@ -501,7 +501,7 @@ Private Function GetCourseRecords() As Boolean
         ' Check we have course records.
         fOK = (mlngRecordCount > 0)
         If Not fOK Then
-          MsgBox "No course records found.", vbExclamation, Me.Caption
+          COAMsgBox "No course records found.", vbExclamation, Me.Caption
         End If
         
         If fOK Then
@@ -510,12 +510,12 @@ Private Function GetCourseRecords() As Boolean
         End If
       Else
         ' Unable to read from the course table.
-        MsgBox "You do not have permission to read the Course table." & _
+        COAMsgBox "You do not have permission to read the Course table." & _
           vbCrLf & "Unable to display records.", vbExclamation, "Security"
         fOK = False
       End If
     Else
-      MsgBox "You do not have permission to read any of the columns in the Course table's default order." & _
+      COAMsgBox "You do not have permission to read any of the columns in the Course table's default order." & _
         vbCrLf & "Unable to display records.", vbExclamation, "Security"
       fOK = False
     End If
@@ -530,7 +530,7 @@ TidyUpAndExit:
   Exit Function
   
 ErrorTrap:
-  MsgBox "Error reading Course records.", vbExclamation, Me.Caption
+  COAMsgBox "Error reading Course records.", vbExclamation, Me.Caption
   fOK = False
   Resume TidyUpAndExit
   
@@ -1049,7 +1049,7 @@ Private Function ValidateParameters() As Boolean
     Set objTable = gcoTablePrivileges.Item(gsTrainBookTableName)
     fValid = objTable.AllowInsert
     If Not fValid Then
-      MsgBox "You do not have 'new' permission on the '" & gsTrainBookTableName & "' table.", vbOKOnly, App.ProductName
+      COAMsgBox "You do not have 'new' permission on the '" & gsTrainBookTableName & "' table.", vbOKOnly, App.ProductName
     End If
     
     If fValid Then
@@ -1057,13 +1057,13 @@ Private Function ValidateParameters() As Boolean
       
 '''      fValid = objColumns.Item(gsTrainBookCourseTitleName).AllowUpdate
 '''      If Not fValid Then
-'''        MsgBox "You do not have 'edit' permission on the '" & gsTrainBookCourseTitleName & "' column in the '" & gsTrainBookTableName & "' table.", vbOKOnly, App.ProductName
+'''        COAMsgBox "You do not have 'edit' permission on the '" & gsTrainBookCourseTitleName & "' column in the '" & gsTrainBookTableName & "' table.", vbOKOnly, App.ProductName
 '''      End If
       
       If fValid Then
         fValid = objColumns.Item(gsTrainBookStatusColumnName).AllowUpdate
         If Not fValid Then
-          MsgBox "You do not have 'edit' permission on the '" & gsTrainBookStatusColumnName & "' column in the '" & gsTrainBookTableName & "' table.", vbOKOnly, App.ProductName
+          COAMsgBox "You do not have 'edit' permission on the '" & gsTrainBookStatusColumnName & "' column in the '" & gsTrainBookTableName & "' table.", vbOKOnly, App.ProductName
         End If
       End If
       
@@ -1076,12 +1076,12 @@ Private Function ValidateParameters() As Boolean
           fValid = Not objColumn Is Nothing
           
           If Not fValid Then
-            MsgBox "Unable to find all related columns in the '" & gsTrainBookTableName & "' table.", vbOKOnly, App.ProductName
+            COAMsgBox "Unable to find all related columns in the '" & gsTrainBookTableName & "' table.", vbOKOnly, App.ProductName
             Exit For
           Else
             fValid = objColumn.AllowUpdate
             If Not fValid Then
-              MsgBox "You do not have 'edit' permission on the '" & objColumn.ColumnName & "' column in the '" & gsTrainBookTableName & "' table.", vbOKOnly, App.ProductName
+              COAMsgBox "You do not have 'edit' permission on the '" & objColumn.ColumnName & "' column in the '" & gsTrainBookTableName & "' table.", vbOKOnly, App.ProductName
               Exit For
             End If
           End If
@@ -1100,7 +1100,7 @@ Private Function ValidateParameters() As Boolean
     Set objTable = gcoTablePrivileges.Item(gsWaitListTableName)
     fValid = objTable.AllowDelete
     If Not fValid Then
-      MsgBox "You do not have 'delete' permission on the '" & gsWaitListTableName & "' table.", vbOKOnly, App.ProductName
+      COAMsgBox "You do not have 'delete' permission on the '" & gsWaitListTableName & "' table.", vbOKOnly, App.ProductName
     End If
     
     If fValid Then
@@ -1112,12 +1112,12 @@ Private Function ValidateParameters() As Boolean
         fValid = Not objColumn Is Nothing
         
         If Not fValid Then
-          MsgBox "Unable to find all related columns in the '" & gsWaitListTableName & "' table.", vbOKOnly, App.ProductName
+          COAMsgBox "Unable to find all related columns in the '" & gsWaitListTableName & "' table.", vbOKOnly, App.ProductName
           Exit For
         Else
           fValid = objColumn.AllowSelect
           If Not fValid Then
-            MsgBox "You do not have 'read' permission on the '" & objColumn.ColumnName & "' column in the '" & gsTrainBookTableName & "' table.", vbOKOnly, App.ProductName
+            COAMsgBox "You do not have 'read' permission on the '" & objColumn.ColumnName & "' column in the '" & gsTrainBookTableName & "' table.", vbOKOnly, App.ProductName
             Exit For
           End If
         End If
@@ -1271,7 +1271,7 @@ Private Function CreateBooking() As Boolean
 
     If Not fOK Then
       Screen.MousePointer = vbDefault
-      MsgBox "Unable to create booking record." & vbCrLf & vbCrLf & sErrorMsg, vbOKOnly, App.ProductName
+      COAMsgBox "Unable to create booking record." & vbCrLf & vbCrLf & sErrorMsg, vbOKOnly, App.ProductName
       Screen.MousePointer = vbHourglass
       
       gADOCon.RollbackTrans
@@ -1289,7 +1289,7 @@ Private Function CreateBooking() As Boolean
 
     If Not fOK Then
       Screen.MousePointer = vbDefault
-      MsgBox "Unable to delete waiting list record." & vbCrLf & vbCrLf & sErrorMsg, vbOKOnly, App.ProductName
+      COAMsgBox "Unable to delete waiting list record." & vbCrLf & vbCrLf & sErrorMsg, vbOKOnly, App.ProductName
       Screen.MousePointer = vbHourglass
         
       gADOCon.RollbackTrans
@@ -1319,7 +1319,7 @@ TidyUpAndExit:
 
 ErrorTrap:
   fOK = False
-  MsgBox Err.Description, vbExclamation + vbOKOnly, Application.Name
+  COAMsgBox Err.Description, vbExclamation + vbOKOnly, Application.Name
   Resume TidyUpAndExit
 
 End Function
