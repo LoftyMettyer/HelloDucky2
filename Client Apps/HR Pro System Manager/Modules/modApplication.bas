@@ -2006,6 +2006,7 @@ Public Function CreateQueryDefs() As Boolean
       " , IIF(ISNULL(c.FieldSelectionOrderID),0,c.FieldSelectionOrderID) AS [columnorderid]" & _
       " , IIF(ISNULL(c.[FieldSelectionFilter]),0,c.FieldSelectionFilter) AS [columnfilterid]" & _
       " , IIF(ISNULL(c.[CalculationID]),0,c.CalculationID) AS [calculationid]" & _
+      " , IIF(ISNULL(c.[FilterID]),0,c.FilterID) AS [filterid]" & _
       " , IIF(ISNULL(c.[ValueType]),0,c.ValueType) AS [valuetype]" & _
       " , IIF(ISNULL(c.[ValueCharacter]),'',c.ValueCharacter) AS [valuestring]" & _
       " , IIF(ISNULL(c.[ValueNumeric]),0,c.ValueNumeric) AS [valuenumeric]" & _
@@ -2013,8 +2014,7 @@ Public Function CreateQueryDefs() As Boolean
       " , IIF(ISNULL(c.[ValueDate]),0,c.ValueDate) AS [valuedate]" & _
       " , IIF(ISNULL(c.[LookupTableID]),0,c.LookupTableID) AS [LookupTableID]" & _
       " , IIF(ISNULL(c.[LookupColumnID]),0,c.LookupColumnID) AS [LookupColumnID]" & _
-      " , 0 AS [isevaluated]" & _
-      " , c.exprid AS ExpressionID" & _
+      " , 0 AS [isevaluated] , c.exprid AS ExpressionID" & _
       " FROM tmpExpressions e" & _
       " INNER JOIN tmpComponents c ON c.exprID = e.exprID" & _
       " ORDER BY c.componentid ASC;"
@@ -2025,7 +2025,7 @@ Public Function CreateQueryDefs() As Boolean
       " , e.ReturnSize AS returnsize, e.ReturnDecimals AS returndecimals, c.[FunctionID] AS functionid, 0 AS operatorid" & _
       " , 0 AS [tableid], 0 AS columnid, 0 AS iscolumnbyreference, 0 AS columnaggregiatetype, 0 AS columnorderid, 0 AS columnfilterid" & _
       " , 0 AS [specificline]" & _
-      " , 0 AS calculationid, 0 AS valuetype, '' AS valuestring, 0 AS valuenumeric, 0 AS valuelogic, c.[ValueDate], 0 AS lookuptableid, 0 AS lookupcolumnid" & _
+      " , 0 AS calculationid, 0 AS filterid, 0 AS valuetype, '' AS valuestring, 0 AS valuenumeric, 0 AS valuelogic, c.[ValueDate], 0 AS lookuptableid, 0 AS lookupcolumnid" & _
       " , IIF(e.type=1 AND e.returnType=3,1,0) AS isevaluated, c.componentid AS ExpressionID" & _
       " FROM tmpComponents AS c" & _
       " INNER JOIN tmpExpressions AS e ON e.ParentComponentID = c.ComponentID" & _
