@@ -782,7 +782,8 @@ Private Function RefreshGrid() As Boolean
   With cboRecDesc
     If .ListIndex > 0 Then
       strWhere = IIf(strWhere <> "", strWhere & " AND ", "") & _
-          "q.RecordDesc = '" & Replace(.Text, "'", "''") & "'"
+          "CASE WHEN q.UserName = 'OpenHR Self-service Intranet' THEN q.RepTo ELSE q.RecordDesc END = '" & Replace(.Text, "'", "''") & "'"
+                    
     End If
   End With
   
@@ -802,10 +803,11 @@ Private Function RefreshGrid() As Boolean
         "q.DateSent IS NOT NULL"
   End Select
 
+' ' CASE WHEN q.UserName = 'OpenHR Self-service Intranet' THEN q.RepTo ELSE isnull(q.RecordDesc,'') END as [RecDesc]     ,
 
   pstrSQL = _
         "SELECT isnull(w.name+' (Workflow)',isnull(l.Title,CASE WHEN q.UserName = 'OpenHR Mobile' THEN q.Subject WHEN q.UserName = 'OpenHR Self-service Intranet' THEN q.Subject ELSE '' END)) as [QueueTitle]" & _
-        "     , isnull(q.RecordDesc,'') as [RecDesc]" & _
+        "     , CASE WHEN q.UserName = 'OpenHR Self-service Intranet' THEN q.RepTo ELSE isnull(q.RecordDesc,'') END as [RecDesc]" & _
         "     , isnull(t.TableName,'') as [TableName]" & _
         "     , case when q.WorkflowInstanceID > 0 or q.columnID IS NULL then '' else isnull(c.ColumnName,'<Multiple Columns>') end as [ColumnName]" & _
         "     , case when q.WorkflowInstanceID > 0 or q.columnID IS NULL then '' else isnull(q.ColumnValue,'<Multiple Values>') end as [ColumnValue]" & _
@@ -1098,8 +1100,8 @@ Private Sub PopulateCombos()
         "ORDER BY 1"
   PopulateCombo lblTitle, cboTitle, strSQL
   
-  
-  strSQL = "SELECT DISTINCT isnull(q.RecordDesc,'') " & _
+  ' SELECT DISTINCT isnull(q.RecordDesc,'')
+  strSQL = "SELECT DISTINCT (CASE WHEN q.username =  'OpenHR Self-service Intranet' THEN q.RepTo ELSE isnull(q.RecordDesc,'') END) " & _
         "FROM ASRSysEmailQueue q " & _
         "ORDER BY 1"
   PopulateCombo lblRecDesc, cboRecDesc, strSQL
