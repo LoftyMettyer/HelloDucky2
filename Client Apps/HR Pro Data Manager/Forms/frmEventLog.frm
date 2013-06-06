@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Begin VB.Form frmEventLog 
    Caption         =   "Event Log"
@@ -99,10 +99,10 @@ Begin VB.Form frmEventLog
       EndProperty
    End
    Begin SSDataWidgets_B.SSDBGrid grdEventLog 
-      Height          =   3645
+      Height          =   3425
       Left            =   120
       TabIndex        =   4
-      Top             =   1065
+      Top             =   1185
       Width           =   10020
       _Version        =   196617
       DataMode        =   1
@@ -228,7 +228,7 @@ Begin VB.Form frmEventLog
       Columns(10).FieldLen=   256
       TabNavigation   =   1
       _ExtentX        =   17674
-      _ExtentY        =   6429
+      _ExtentY        =   6041
       _StockProps     =   79
       BeginProperty PageFooterFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Verdana"
@@ -251,7 +251,7 @@ Begin VB.Form frmEventLog
    End
    Begin VB.Frame fraFilters 
       Caption         =   "Filters :"
-      Height          =   825
+      Height          =   945
       Left            =   120
       TabIndex        =   5
       Top             =   120
@@ -261,15 +261,15 @@ Begin VB.Form frmEventLog
          Left            =   8610
          Style           =   2  'Dropdown List
          TabIndex        =   3
-         Top             =   315
+         Top             =   500
          Width           =   1305
       End
       Begin VB.ComboBox cboUser 
          Height          =   315
-         Left            =   1260
+         Left            =   150
          Style           =   2  'Dropdown List
          TabIndex        =   0
-         Top             =   315
+         Top             =   500
          Width           =   2010
       End
       Begin VB.ComboBox cboMode 
@@ -277,7 +277,7 @@ Begin VB.Form frmEventLog
          Left            =   6660
          Style           =   2  'Dropdown List
          TabIndex        =   2
-         Top             =   315
+         Top             =   500
          Width           =   1050
       End
       Begin VB.ComboBox cboType 
@@ -288,18 +288,18 @@ Begin VB.Form frmEventLog
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
          TabIndex        =   1
-         Top             =   315
-         Width           =   1920
+         Top             =   500
+         Width           =   2200
       End
-      Begin VB.Label Label1 
+      Begin VB.Label lblStatus 
          AutoSize        =   -1  'True
          BackStyle       =   0  'Transparent
          Caption         =   "Status :"
          Height          =   195
-         Left            =   7875
+         Left            =   8610
          TabIndex        =   10
-         Top             =   375
-         Width           =   750
+         Top             =   255
+         Width           =   675
       End
       Begin VB.Label lblUser 
          AutoSize        =   -1  'True
@@ -308,28 +308,28 @@ Begin VB.Form frmEventLog
          Height          =   195
          Left            =   150
          TabIndex        =   9
-         Top             =   375
-         Width           =   1050
+         Top             =   255
+         Width           =   1065
       End
-      Begin VB.Label lblStatus 
+      Begin VB.Label lblMode 
          AutoSize        =   -1  'True
          BackStyle       =   0  'Transparent
          Caption         =   "Mode :"
          Height          =   195
-         Left            =   6030
+         Left            =   6660
          TabIndex        =   7
-         Top             =   375
-         Width           =   495
+         Top             =   255
+         Width           =   585
       End
       Begin VB.Label lblType 
          AutoSize        =   -1  'True
          BackStyle       =   0  'Transparent
          Caption         =   "Type :"
          Height          =   195
-         Left            =   3360
+         Left            =   3960
          TabIndex        =   6
-         Top             =   375
-         Width           =   465
+         Top             =   255
+         Width           =   555
       End
    End
    Begin ActiveBarLibraryCtl.ActiveBar abEventLog 
@@ -896,6 +896,7 @@ End Sub
 
 Private Sub Form_Resize()
 
+  Const COMBO_GAP As Integer = 170
   Const lngGap As Long = 120
   
   On Error GoTo ErrorTrap
@@ -914,6 +915,18 @@ Private Sub Form_Resize()
   fraButtons.Left = Me.ScaleWidth - (fraButtons.Width + lngGap)
   
   fraFilters.Width = fraButtons.Left - (lngGap * 2)
+  
+  cboStatus.Left = fraFilters.Width - (cboStatus.Width + COMBO_GAP)
+  lblStatus.Left = cboStatus.Left
+
+  cboMode.Left = cboStatus.Left - (cboMode.Width + COMBO_GAP)
+  lblMode.Left = cboMode.Left
+
+  cboType.Left = cboMode.Left - (cboType.Width + COMBO_GAP)
+  lblType.Left = cboType.Left
+
+  cboUser.Width = cboType.Left - (cboUser.Left + COMBO_GAP)
+
   grdEventLog.Width = fraFilters.Width
   grdEventLog.Height = Me.ScaleHeight - (fraFilters.Height + StatusBar1.Height + (lngGap * 3))
   
