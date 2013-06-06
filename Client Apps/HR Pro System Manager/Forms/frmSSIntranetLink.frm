@@ -1,7 +1,7 @@
 VERSION 5.00
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{65E121D4-0C60-11D2-A9FC-0000F8754DA1}#2.0#0"; "mschrt20.ocx"
+Object = "{65E121D4-0C60-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCHRT20.OCX"
 Begin VB.Form frmSSIntranetLink 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Self-service Intranet Link"
@@ -29,10 +29,10 @@ Begin VB.Form frmSSIntranetLink
    StartUpPosition =   2  'CenterScreen
    Begin VB.Frame fraChartLink 
       Caption         =   "Chart :"
-      Height          =   3315
+      Height          =   3375
       Left            =   2880
       TabIndex        =   61
-      Top             =   8310
+      Top             =   8280
       Width           =   6300
       Begin MSChart20Lib.MSChart MSChart1 
          Height          =   2505
@@ -43,7 +43,7 @@ Begin VB.Form frmSSIntranetLink
          Width           =   3330
       End
       Begin VB.CheckBox chkShowValues 
-         Caption         =   "S&how Values"
+         Caption         =   "Show &Values"
          Height          =   210
          Left            =   195
          TabIndex        =   66
@@ -100,6 +100,121 @@ Begin VB.Form frmSSIntranetLink
          TabIndex        =   62
          Top             =   300
          Width           =   1095
+      End
+   End
+   Begin VB.Frame fraDBValue 
+      Caption         =   "Database Value :"
+      Height          =   1875
+      Left            =   2880
+      TabIndex        =   71
+      Top             =   9990
+      Width           =   6300
+      Begin VB.ComboBox cboColumns 
+         Height          =   315
+         Left            =   1395
+         Sorted          =   -1  'True
+         Style           =   2  'Dropdown List
+         TabIndex        =   75
+         Top             =   705
+         Width           =   3930
+      End
+      Begin VB.ComboBox cboParents 
+         Height          =   315
+         Left            =   1395
+         Sorted          =   -1  'True
+         Style           =   2  'Dropdown List
+         TabIndex        =   73
+         Top             =   315
+         Width           =   3930
+      End
+      Begin VB.OptionButton optAggregateType 
+         Caption         =   "Count"
+         Height          =   285
+         Index           =   0
+         Left            =   2265
+         TabIndex        =   81
+         Top             =   1545
+         Value           =   -1  'True
+         Width           =   855
+      End
+      Begin VB.OptionButton optAggregateType 
+         Caption         =   "Total"
+         Height          =   285
+         Index           =   1
+         Left            =   3390
+         TabIndex        =   82
+         Top             =   1545
+         Width           =   765
+      End
+      Begin VB.CommandButton cmdFilter 
+         Caption         =   "..."
+         Height          =   315
+         Left            =   4650
+         TabIndex        =   78
+         Top             =   1080
+         Width           =   315
+      End
+      Begin VB.TextBox txtFilter 
+         Height          =   330
+         Left            =   1395
+         TabIndex        =   77
+         Top             =   1080
+         Width           =   3225
+      End
+      Begin VB.CommandButton cmdFilterClear 
+         Caption         =   "O"
+         BeginProperty Font 
+            Name            =   "Wingdings 2"
+            Size            =   20.25
+            Charset         =   2
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   315
+         Left            =   4965
+         MaskColor       =   &H000000FF&
+         TabIndex        =   79
+         ToolTipText     =   "Clear Path"
+         Top             =   1080
+         UseMaskColor    =   -1  'True
+         Width           =   330
+      End
+      Begin VB.Label lblParents 
+         AutoSize        =   -1  'True
+         Caption         =   "Table :"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   72
+         Top             =   330
+         Width           =   600
+      End
+      Begin VB.Label lblColumn 
+         AutoSize        =   -1  'True
+         Caption         =   "Column :"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   74
+         Top             =   720
+         Width           =   795
+      End
+      Begin VB.Label lblFilter 
+         Caption         =   "Filter :"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   76
+         Top             =   1155
+         Width           =   615
+      End
+      Begin VB.Label lblAggregateType 
+         AutoSize        =   -1  'True
+         Caption         =   "Aggregate Function :"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   80
+         Top             =   1575
+         Width           =   1785
       End
    End
    Begin VB.Frame fraLinkSeparator 
@@ -766,121 +881,6 @@ Begin VB.Form frmSSIntranetLink
          TabIndex        =   1
          Top             =   360
          Width           =   840
-      End
-   End
-   Begin VB.Frame fraDBValue 
-      Caption         =   "Database Value :"
-      Height          =   1875
-      Left            =   2880
-      TabIndex        =   71
-      Top             =   9990
-      Width           =   6300
-      Begin VB.ComboBox cboColumns 
-         Height          =   315
-         Left            =   1395
-         Sorted          =   -1  'True
-         Style           =   2  'Dropdown List
-         TabIndex        =   75
-         Top             =   705
-         Width           =   3930
-      End
-      Begin VB.ComboBox cboParents 
-         Height          =   315
-         Left            =   1395
-         Sorted          =   -1  'True
-         Style           =   2  'Dropdown List
-         TabIndex        =   73
-         Top             =   315
-         Width           =   3930
-      End
-      Begin VB.OptionButton optAggregateType 
-         Caption         =   "Count"
-         Height          =   285
-         Index           =   0
-         Left            =   2265
-         TabIndex        =   81
-         Top             =   1545
-         Value           =   -1  'True
-         Width           =   855
-      End
-      Begin VB.OptionButton optAggregateType 
-         Caption         =   "Total"
-         Height          =   285
-         Index           =   1
-         Left            =   3390
-         TabIndex        =   82
-         Top             =   1545
-         Width           =   765
-      End
-      Begin VB.CommandButton cmdFilter 
-         Caption         =   "..."
-         Height          =   315
-         Left            =   4650
-         TabIndex        =   78
-         Top             =   1080
-         Width           =   315
-      End
-      Begin VB.TextBox txtFilter 
-         Height          =   330
-         Left            =   1395
-         TabIndex        =   77
-         Top             =   1080
-         Width           =   3225
-      End
-      Begin VB.CommandButton cmdFilterClear 
-         Caption         =   "O"
-         BeginProperty Font 
-            Name            =   "Wingdings 2"
-            Size            =   20.25
-            Charset         =   2
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   315
-         Left            =   4965
-         MaskColor       =   &H000000FF&
-         TabIndex        =   79
-         ToolTipText     =   "Clear Path"
-         Top             =   1080
-         UseMaskColor    =   -1  'True
-         Width           =   330
-      End
-      Begin VB.Label lblParents 
-         AutoSize        =   -1  'True
-         Caption         =   "Table :"
-         Height          =   195
-         Left            =   210
-         TabIndex        =   72
-         Top             =   330
-         Width           =   600
-      End
-      Begin VB.Label lblColumn 
-         AutoSize        =   -1  'True
-         Caption         =   "Column :"
-         Height          =   195
-         Left            =   210
-         TabIndex        =   74
-         Top             =   720
-         Width           =   795
-      End
-      Begin VB.Label lblFilter 
-         Caption         =   "Filter :"
-         Height          =   195
-         Left            =   210
-         TabIndex        =   76
-         Top             =   1155
-         Width           =   615
-      End
-      Begin VB.Label lblAggregateType 
-         AutoSize        =   -1  'True
-         Caption         =   "Aggregate Function :"
-         Height          =   195
-         Left            =   210
-         TabIndex        =   80
-         Top             =   1575
-         Width           =   1785
       End
    End
 End
@@ -1722,7 +1722,7 @@ Private Sub RefreshControls()
   lblHRProUtilityMessage.Caption = sUtilityMessage
   
   ' Disable the OK button as required.
-  cmdOK.Enabled = mfChanged
+  cmdOk.Enabled = mfChanged
   
 
 End Sub
