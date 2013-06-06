@@ -34,7 +34,7 @@ Begin VB.Form frmBatchJob
    Begin TabDlg.SSTab SSTab1 
       Height          =   5610
       Left            =   45
-      TabIndex        =   57
+      TabIndex        =   56
       Top             =   45
       Width           =   9800
       _ExtentX        =   17277
@@ -52,8 +52,8 @@ Begin VB.Form frmBatchJob
       TabCaption(1)   =   "&Jobs"
       TabPicture(1)   =   "frmBatchJob.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "Frame1"
-      Tab(1).Control(1)=   "fraJobs"
+      Tab(1).Control(0)=   "fraJobs"
+      Tab(1).Control(1)=   "Frame1"
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "O&utput"
       TabPicture(2)   =   "frmBatchJob.frx":0044
@@ -68,7 +68,7 @@ Begin VB.Form frmBatchJob
       Begin VB.Frame fraInfo 
          Height          =   2355
          Left            =   -74850
-         TabIndex        =   71
+         TabIndex        =   70
          Top             =   450
          Width           =   9525
          Begin VB.TextBox txtUserName 
@@ -110,7 +110,7 @@ Begin VB.Form frmBatchJob
          Begin SSDataWidgets_B.SSDBGrid grdAccess 
             Height          =   1485
             Left            =   5940
-            TabIndex        =   77
+            TabIndex        =   76
             Top             =   720
             Width           =   3405
             ScrollBars      =   2
@@ -231,7 +231,7 @@ Begin VB.Form frmBatchJob
             Caption         =   "Owner :"
             Height          =   195
             Left            =   5085
-            TabIndex        =   76
+            TabIndex        =   75
             Top             =   360
             Width           =   810
          End
@@ -241,7 +241,7 @@ Begin VB.Form frmBatchJob
             Caption         =   "Name :"
             Height          =   195
             Left            =   240
-            TabIndex        =   75
+            TabIndex        =   74
             Top             =   360
             Width           =   690
          End
@@ -251,7 +251,7 @@ Begin VB.Form frmBatchJob
             Caption         =   "Description :"
             Height          =   195
             Left            =   240
-            TabIndex        =   74
+            TabIndex        =   73
             Top             =   1155
             Width           =   1080
          End
@@ -261,7 +261,7 @@ Begin VB.Form frmBatchJob
             Caption         =   "Access :"
             Height          =   195
             Left            =   5085
-            TabIndex        =   73
+            TabIndex        =   72
             Top             =   765
             Width           =   825
          End
@@ -269,7 +269,7 @@ Begin VB.Form frmBatchJob
             Caption         =   "Category :"
             Height          =   240
             Left            =   240
-            TabIndex        =   72
+            TabIndex        =   71
             Top             =   765
             Width           =   1005
          End
@@ -278,7 +278,7 @@ Begin VB.Form frmBatchJob
          Caption         =   "Output Format :"
          Height          =   3200
          Left            =   150
-         TabIndex        =   65
+         TabIndex        =   64
          Top             =   2280
          Width           =   2265
          Begin VB.OptionButton optOutputFormat 
@@ -286,7 +286,7 @@ Begin VB.Form frmBatchJob
             Height          =   195
             Index           =   2
             Left            =   200
-            TabIndex        =   78
+            TabIndex        =   77
             Top             =   480
             Width           =   1800
          End
@@ -295,7 +295,7 @@ Begin VB.Form frmBatchJob
             Height          =   195
             Index           =   3
             Left            =   200
-            TabIndex        =   40
+            TabIndex        =   39
             Top             =   780
             Value           =   -1  'True
             Width           =   1900
@@ -305,7 +305,7 @@ Begin VB.Form frmBatchJob
             Height          =   195
             Index           =   4
             Left            =   200
-            TabIndex        =   41
+            TabIndex        =   40
             Top             =   1080
             Width           =   1900
          End
@@ -314,7 +314,7 @@ Begin VB.Form frmBatchJob
          Caption         =   "Output Destination(s) :"
          Height          =   3200
          Left            =   2520
-         TabIndex        =   58
+         TabIndex        =   57
          Top             =   2280
          Width           =   7110
          Begin VB.CheckBox chkPreview 
@@ -322,7 +322,7 @@ Begin VB.Form frmBatchJob
             CausesValidation=   0   'False
             Height          =   195
             Left            =   3660
-            TabIndex        =   42
+            TabIndex        =   41
             TabStop         =   0   'False
             Top             =   165
             Visible         =   0   'False
@@ -334,7 +334,7 @@ Begin VB.Form frmBatchJob
             Height          =   195
             Index           =   0
             Left            =   240
-            TabIndex        =   43
+            TabIndex        =   42
             Top             =   135
             Visible         =   0   'False
             Width           =   2625
@@ -344,7 +344,7 @@ Begin VB.Form frmBatchJob
             Height          =   195
             Index           =   3
             Left            =   240
-            TabIndex        =   50
+            TabIndex        =   49
             Top             =   1755
             Width           =   1515
          End
@@ -353,7 +353,7 @@ Begin VB.Form frmBatchJob
             Height          =   195
             Index           =   2
             Left            =   240
-            TabIndex        =   46
+            TabIndex        =   45
             Top             =   975
             Width           =   1455
          End
@@ -362,7 +362,7 @@ Begin VB.Form frmBatchJob
             Height          =   195
             Index           =   1
             Left            =   240
-            TabIndex        =   44
+            TabIndex        =   43
             Top             =   510
             Width           =   1620
          End
@@ -371,8 +371,8 @@ Begin VB.Form frmBatchJob
             Enabled         =   0   'False
             Height          =   315
             Left            =   6550
-            TabIndex        =   52
-            Top             =   1695
+            TabIndex        =   51
+            Top             =   1710
             UseMaskColor    =   -1  'True
             Width           =   330
          End
@@ -381,7 +381,7 @@ Begin VB.Form frmBatchJob
             Enabled         =   0   'False
             Height          =   315
             Left            =   6550
-            TabIndex        =   48
+            TabIndex        =   47
             Top             =   915
             UseMaskColor    =   -1  'True
             Width           =   330
@@ -393,7 +393,7 @@ Begin VB.Form frmBatchJob
             Height          =   315
             Left            =   3660
             Locked          =   -1  'True
-            TabIndex        =   51
+            TabIndex        =   50
             TabStop         =   0   'False
             Tag             =   "0"
             Top             =   1710
@@ -404,7 +404,7 @@ Begin VB.Form frmBatchJob
             Enabled         =   0   'False
             Height          =   315
             Left            =   3660
-            TabIndex        =   53
+            TabIndex        =   52
             Top             =   2115
             Width           =   3240
          End
@@ -414,7 +414,7 @@ Begin VB.Form frmBatchJob
             Height          =   315
             Left            =   3660
             Style           =   2  'Dropdown List
-            TabIndex        =   49
+            TabIndex        =   48
             Top             =   1320
             Width           =   3240
          End
@@ -424,7 +424,7 @@ Begin VB.Form frmBatchJob
             Height          =   315
             Left            =   3660
             Style           =   2  'Dropdown List
-            TabIndex        =   45
+            TabIndex        =   44
             Top             =   510
             Width           =   3240
          End
@@ -435,7 +435,7 @@ Begin VB.Form frmBatchJob
             Height          =   315
             Left            =   3660
             Locked          =   -1  'True
-            TabIndex        =   47
+            TabIndex        =   46
             TabStop         =   0   'False
             Tag             =   "0"
             Top             =   915
@@ -447,7 +447,7 @@ Begin VB.Form frmBatchJob
             ForeColor       =   &H00000000&
             Height          =   315
             Left            =   3660
-            TabIndex        =   54
+            TabIndex        =   53
             Tag             =   "0"
             Top             =   2520
             Width           =   3240
@@ -458,7 +458,7 @@ Begin VB.Form frmBatchJob
             Enabled         =   0   'False
             Height          =   195
             Left            =   2190
-            TabIndex        =   64
+            TabIndex        =   63
             Top             =   510
             Width           =   1410
          End
@@ -468,7 +468,7 @@ Begin VB.Form frmBatchJob
             Enabled         =   0   'False
             Height          =   195
             Left            =   2190
-            TabIndex        =   63
+            TabIndex        =   62
             Top             =   1380
             Width           =   1350
          End
@@ -479,7 +479,7 @@ Begin VB.Form frmBatchJob
             Height          =   195
             Index           =   5
             Left            =   2190
-            TabIndex        =   62
+            TabIndex        =   61
             Top             =   1755
             Width           =   1200
          End
@@ -490,7 +490,7 @@ Begin VB.Form frmBatchJob
             Height          =   195
             Index           =   4
             Left            =   2190
-            TabIndex        =   61
+            TabIndex        =   60
             Top             =   2160
             Width           =   1305
          End
@@ -500,7 +500,7 @@ Begin VB.Form frmBatchJob
             Enabled         =   0   'False
             Height          =   195
             Left            =   2190
-            TabIndex        =   60
+            TabIndex        =   59
             Top             =   975
             Width           =   1095
          End
@@ -511,7 +511,7 @@ Begin VB.Form frmBatchJob
             Height          =   195
             Index           =   3
             Left            =   2190
-            TabIndex        =   59
+            TabIndex        =   58
             Top             =   2565
             Width           =   1065
          End
@@ -908,7 +908,7 @@ Begin VB.Form frmBatchJob
             Width           =   2160
          End
          Begin VB.CheckBox chkIndefinitely 
-            Caption         =   "Run &Indefinitely"
+            Caption         =   "Run Indefinitel&y"
             Enabled         =   0   'False
             Height          =   195
             Left            =   5100
@@ -1051,23 +1051,63 @@ Begin VB.Form frmBatchJob
          Caption         =   "Report Options :"
          Height          =   1800
          Left            =   150
-         TabIndex        =   66
+         TabIndex        =   65
          Top             =   420
          Width           =   9470
-         Begin VB.CommandButton cmdTitlePageTemplate 
-            Caption         =   "..."
+         Begin VB.CommandButton cmdTitlePageClear 
+            Caption         =   "O"
+            BeginProperty Font 
+               Name            =   "Wingdings 2"
+               Size            =   20.25
+               Charset         =   2
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
             Height          =   315
-            Left            =   8500
-            TabIndex        =   34
+            Left            =   8820
+            MaskColor       =   &H000000FF&
+            TabIndex        =   80
+            ToolTipText     =   "Clear Path"
             Top             =   360
             UseMaskColor    =   -1  'True
             Width           =   330
          End
+         Begin VB.CommandButton cmdTitlePageTemplate 
+            Caption         =   "..."
+            Height          =   315
+            Left            =   8490
+            TabIndex        =   79
+            Top             =   360
+            UseMaskColor    =   -1  'True
+            Width           =   330
+         End
+         Begin VB.CommandButton cmdfilterClear 
+            Caption         =   "O"
+            BeginProperty Font 
+               Name            =   "Wingdings 2"
+               Size            =   20.25
+               Charset         =   2
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+            Height          =   315
+            Left            =   8820
+            MaskColor       =   &H000000FF&
+            TabIndex        =   78
+            ToolTipText     =   "Clear Path"
+            Top             =   1080
+            UseMaskColor    =   -1  'True
+            Width           =   330
+         End
          Begin VB.CheckBox chkForceCoverSheet 
-            Caption         =   "Force co&ver sheet on individual reports"
+            Caption         =   "Force cover sheet on individua&l reports"
             Height          =   255
             Left            =   5400
-            TabIndex        =   39
+            TabIndex        =   38
             Top             =   1440
             Width           =   3855
          End
@@ -1075,7 +1115,7 @@ Begin VB.Form frmBatchJob
             Caption         =   "C&reate table of contents"
             Height          =   255
             Left            =   2750
-            TabIndex        =   38
+            TabIndex        =   37
             Top             =   1440
             Width           =   2415
          End
@@ -1094,7 +1134,7 @@ Begin VB.Form frmBatchJob
             ForeColor       =   &H00000000&
             Height          =   315
             Left            =   2750
-            TabIndex        =   35
+            TabIndex        =   34
             TabStop         =   0   'False
             Tag             =   "0"
             Top             =   720
@@ -1103,8 +1143,8 @@ Begin VB.Form frmBatchJob
          Begin VB.CommandButton cmdOverrideFilter 
             Caption         =   "..."
             Height          =   315
-            Left            =   8500
-            TabIndex        =   37
+            Left            =   8490
+            TabIndex        =   36
             Top             =   1080
             UseMaskColor    =   -1  'True
             Width           =   330
@@ -1114,7 +1154,7 @@ Begin VB.Form frmBatchJob
             Height          =   315
             Left            =   2750
             Locked          =   -1  'True
-            TabIndex        =   36
+            TabIndex        =   35
             TabStop         =   0   'False
             Tag             =   "0"
             Text            =   "<None>"
@@ -1126,7 +1166,7 @@ Begin VB.Form frmBatchJob
             ForeColor       =   &H00000000&
             Height          =   315
             Left            =   2750
-            TabIndex        =   70
+            TabIndex        =   69
             TabStop         =   0   'False
             Tag             =   "1"
             Text            =   "Personnel_Records"
@@ -1139,7 +1179,7 @@ Begin VB.Form frmBatchJob
             Caption         =   "Title Page Template :"
             Height          =   195
             Left            =   195
-            TabIndex        =   69
+            TabIndex        =   68
             Top             =   420
             Width           =   1830
          End
@@ -1148,7 +1188,7 @@ Begin VB.Form frmBatchJob
             Caption         =   "Report Pack Title :"
             Height          =   195
             Left            =   195
-            TabIndex        =   68
+            TabIndex        =   67
             Top             =   780
             Width           =   1590
          End
@@ -1157,7 +1197,7 @@ Begin VB.Form frmBatchJob
             Caption         =   "Personnel Override Filter :"
             Height          =   195
             Left            =   195
-            TabIndex        =   67
+            TabIndex        =   66
             Top             =   1140
             Width           =   2265
          End
@@ -1167,7 +1207,7 @@ Begin VB.Form frmBatchJob
       Caption         =   "&OK"
       Height          =   400
       Left            =   7320
-      TabIndex        =   55
+      TabIndex        =   54
       Top             =   5800
       Width           =   1200
    End
@@ -1176,7 +1216,7 @@ Begin VB.Form frmBatchJob
       Caption         =   "&Cancel"
       Height          =   400
       Left            =   8645
-      TabIndex        =   56
+      TabIndex        =   55
       Top             =   5800
       Width           =   1200
    End
@@ -1612,8 +1652,17 @@ Private Sub cmdEmailNotifyGroup_Click(Index As Integer)
 
 End Sub
 
+Private Sub cmdfilterClear_Click()
+  txtOverrideFilter = "<None>"
+  cmdfilterClear.Enabled = False
+  cmdOverrideFilter.SetFocus
+  Changed = Not mblnLoading
+End Sub
+
 Private Sub cmdOverrideFilter_Click()
   GetFilter txtFilterSource, txtOverrideFilter
+  cmdfilterClear.Enabled = txtOverrideFilter.Text <> "<None>"
+  Changed = Not mblnLoading
 End Sub
 Private Sub GetFilter(ctlSource As Control, ctlTarget As Control)
   ' Allow the user to select/create/modify a filter for the Data Transfer.
@@ -1654,113 +1703,125 @@ Private Sub GetFilter(ctlSource As Control, ctlTarget As Control)
   End If
 End Sub
 
-Private Sub cmdTitlePageTemplate_Click()
-  Dim wrdApp As Word.Application
-  Dim wrdDoc As Word.Document
-  Dim strFormat As String
+Private Sub cmdTitlePageClear_Click()
+  txtTitlePage.Text = vbNullString
+  txtReportPackTitle = vbNullString
+  cmdTitlePageClear.Enabled = False
+  cmdTitlePageTemplate.SetFocus
+  
+  Changed = Not mblnLoading
+End Sub
 
-  On Local Error GoTo LocalErr
-
-  'With CDialog
-  With frmMain.CommonDialog1
-    If Len(Trim(txtTitlePage.Text)) = 0 Then
-      .InitDir = gsDocumentsPath
-      .FileName = vbNullString
-    Else
-      .FileName = txtTitlePage.Text
-    End If
-Dim Index As Integer
-Index = 1
-
-    .CancelError = True
-'    Select Case index
+'Private Sub cmdTitlePageTemplatex_Click()
+'  Dim wrdApp As Word.Application
+'  Dim wrdDoc As Word.Document
+'  Dim strFormat As String
+'
+'  On Local Error GoTo LocalErr
+'
+'  'With CDialog
+'  With frmMain.CommonDialog1
+'    If Len(Trim(txtTitlePage.Text)) = 0 Then
+'      .InitDir = gsDocumentsPath
+'      .FileName = vbNullString
+'    Else
+'      .FileName = txtTitlePage.Text
+'    End If
+'
+'Dim Index As Integer
+'Index = 1
+'
+'    .CancelError = True
+'    Select Case Index
 '    Case 0
 '      .DialogTitle = Me.Caption & " Output Document"
 '      .Flags = cdlOFNExplorer + cdlOFNHideReadOnly + cdlOFNLongNames + cdlOFNOverwritePrompt
 '      InitialiseCommonDialogFormats frmMain.CommonDialog1, "Word", GetOfficeWordVersion, DirectionOutput
 '      .ShowSave
 '    Case 1
-      'Word template
-      .DialogTitle = Me.Caption & " Template"
-      .Flags = cdlOFNExplorer + cdlOFNHideReadOnly + cdlOFNLongNames '+ cdlOFNCreatePrompt
-      .Filter = "Word Template (*.dot;*.dotx;*.doc;*.docx)|*.dot;*.dotx;*.doc;*.docx"
-      .ShowOpen
+'      'Word template
+'      .DialogTitle = Me.Caption & " Template"
+'      .Flags = cdlOFNExplorer + cdlOFNHideReadOnly + cdlOFNLongNames '+ cdlOFNCreatePrompt
+'      .Filter = "Word Template (*.dot;*.dotx;*.doc;*.docx)|*.dot;*.dotx;*.doc;*.docx"
+'      .ShowOpen
+'
 '    End Select
-
-    If Len(.FileName) > 256 Then
-      COAMsgBox "Path and file name must not exceed 256 characters in length"
-      Exit Sub
-    End If
-
-    If .FileName <> "" Then
-      If Dir(frmMain.CommonDialog1.FileName) = vbNullString And Index = 1 Then  'Only show for templates
-        If COAMsgBox("Template file does not exist.  Create it now?", vbYesNo + vbQuestion, Me.Caption) = vbYes Then
-
-          On Error GoTo WordErr
-
-          txtTitlePage.Text = frmMain.CommonDialog1.FileName
-          strFormat = GetOfficeSaveAsFormat(frmMain.CommonDialog1.FileName, GetOfficeWordVersion)
-          
-          Screen.MousePointer = vbHourglass
-          gobjProgress.Caption = "Creating Word Document"
-          gobjProgress.MainCaption = Me.Caption
-          gobjProgress.AVI = dbWord
-          gobjProgress.NumberOfBars = 0
-          gobjProgress.Cancel = False
-          gobjProgress.OpenProgress
-
-          Set wrdApp = CreateObject("Word.Application")
-          Set wrdDoc = wrdApp.Documents.Add
-          wrdDoc.SaveAs frmMain.CommonDialog1.FileName, Val(strFormat)
-          wrdDoc.Close False
-          wrdApp.Quit False
-        
-          Set wrdDoc = Nothing
-          Set wrdApp = Nothing
-        
-          gobjProgress.CloseProgress
-          Screen.MousePointer = vbDefault
-        
-        End If
-      Else
-        txtTitlePage.Text = frmMain.CommonDialog1.FileName
-
-      End If
-    End If
-
-  End With
-
-Exit Sub
-
-LocalErr:
-  If Err.Number <> 32755 Then   '32755 = Cancel was selected.
-    On Local Error Resume Next
-    wrdDoc.Close False
-    wrdApp.Quit False
-    Set wrdDoc = Nothing
-    Set wrdApp = Nothing
-  
-    gobjProgress.CloseProgress
-    If Err.Number = 429 Then
-      COAMsgBox "Error opening Word application"
-    Else
-      COAMsgBox "Error selecting file"
-    End If
-    txtTitlePage.Text = vbNullString
-  End If
-
-Exit Sub
-
-WordErr:
-  gobjProgress.CloseProgress
-  Screen.MousePointer = vbDefault
-  If Err.Number = 429 Then
-    COAMsgBox "Error opening Word application", vbCritical, Me.Caption
-  Else
-    COAMsgBox "Error creating template file"
-  End If
-
-End Sub
+'
+'    If Len(.FileName) > 256 Then
+'      COAMsgBox "Path and file name must not exceed 256 characters in length"
+'      Exit Sub
+'    End If
+'
+'    If .FileName <> "" Then
+'      If Dir(frmMain.CommonDialog1.FileName) = vbNullString And Index = 1 Then  'Only show for templates
+'        If COAMsgBox("Template file does not exist.  Create it now?", vbYesNo + vbQuestion, Me.Caption) = vbYes Then
+'
+'          On Error GoTo WordErr
+'
+'          txtTitlePage.Text = frmMain.CommonDialog1.FileName
+'          strFormat = GetOfficeSaveAsFormat(frmMain.CommonDialog1.FileName, GetOfficeWordVersion)
+'
+'          Screen.MousePointer = vbHourglass
+'          gobjProgress.Caption = "Creating Word Document"
+'          gobjProgress.MainCaption = Me.Caption
+'          gobjProgress.AVI = dbWord
+'          gobjProgress.NumberOfBars = 0
+'          gobjProgress.Cancel = False
+'          gobjProgress.OpenProgress
+'
+'          Set wrdApp = CreateObject("Word.Application")
+'          Set wrdDoc = wrdApp.Documents.Add
+'          wrdDoc.SaveAs frmMain.CommonDialog1.FileName, Val(strFormat)
+'          wrdDoc.Close False
+'          wrdApp.Quit False
+'
+'          Set wrdDoc = Nothing
+'          Set wrdApp = Nothing
+'
+'          gobjProgress.CloseProgress
+'          Screen.MousePointer = vbDefault
+'
+'        End If
+'      Else
+'        txtTitlePage.Text = frmMain.CommonDialog1.FileName
+'        cmdTitlePageClear.Enabled = Len(txtTitlePage.Text) <> 0
+'
+'      End If
+'    End If
+'
+'  End With
+'
+'Exit Sub
+'
+'LocalErr:
+'  If Err.Number <> 32755 Then   '32755 = Cancel was selected.
+'    On Local Error Resume Next
+'    wrdDoc.Close False
+'    wrdApp.Quit False
+'    Set wrdDoc = Nothing
+'    Set wrdApp = Nothing
+'
+'    gobjProgress.CloseProgress
+'    If Err.Number = 429 Then
+'      COAMsgBox "Error opening Word application"
+'    Else
+'      COAMsgBox "Error selecting file"
+'    End If
+'    txtTitlePage.Text = vbNullString
+'  End If
+'
+'Exit Sub
+'
+'WordErr:
+'  gobjProgress.CloseProgress
+'  Screen.MousePointer = vbDefault
+'  If Err.Number = 429 Then
+'    COAMsgBox "Error opening Word application", vbCritical, Me.Caption
+'  Else
+'    COAMsgBox "Error creating template file"
+'  End If
+'
+'End Sub
 Private Sub Form_Activate()
   'JPD 20031120 Fault 7512
   'If Not mblnDontDoActivateCheck Then
@@ -1797,9 +1858,14 @@ Private Sub Form_Load()
     grdColumns.Columns(0).Width = (grdColumns.Width * 0.33) 'Job Type
     grdColumns.Columns(2).Width = (grdColumns.Width * 0.67) 'Job Name
     
+    grdColumns.Columns(0).Caption = "Report Type"
+    grdColumns.Columns(2).Caption = "Report Name"
+    
     Set mobjOutputDef = New clsOutputDef
     mobjOutputDef.ParentForm = Me
     mobjOutputDef.PopulateCombos True, True, True
+    
+    SSTab1.TabCaption(1) = "Report &Items"
   End If
 
   SSTab1.TabVisible(2) = IsReportPack
@@ -1821,7 +1887,7 @@ Public Function Initialise(pblnNew As Boolean, pblnCopy As Boolean, Optional pln
   
   iUtilityType = IIf(IsReportPack, utlReportPack, utlBatchJob)
   
-  If gblnReportPackMode Then
+  If IsReportPack Then
     Me.Caption = "Report Pack Definition"
     chkEmail(0).Caption = "&Send email if the report pack fails"
     chkEmail(1).Caption = "Send email if the repor&t pack is successful"
@@ -2190,11 +2256,14 @@ Private Function RetrieveBatchJobDetails() As Boolean
     txtTitlePage.Text = prstTemp!OutputTitlePage
     txtReportPackTitle.Text = prstTemp!OutputReportPackTitle
     txtOverrideFilter.Text = prstTemp!OutputOverrideFilter
+    
+    cmdTitlePageClear.Enabled = Not txtTitlePage.Text = ""
+    cmdfilterClear.Enabled = Not txtOverrideFilter.Text = "<None>"
+    
     chkForceCoverSheet.Value = IIf(prstTemp!OutputCoverSheet, vbChecked, vbUnchecked)
     chkTOC.Value = IIf(prstTemp!OutputTOC, vbChecked, vbUnchecked)
     optOutputFormat(prstTemp!OutputFormat).Value = True
     mobjOutputDef.PopulateOutputControls prstTemp
-    
   End If
     
   If mblnReadOnly Then
@@ -4620,12 +4689,20 @@ Public Sub PrintDef(lBatchJobID As Long)
         End If
       
       ' Now do the individual jobs
-      .PrintTitle "Jobs"
-      
+      If IsReportPack Then
+        .PrintTitle "Reports"
+      Else
+        .PrintTitle "Jobs"
+      End If
       Set rsColumns = datGeneral.GetRecords("SELECT * " & _
                                             "FROM ASRSysBatchJobDetails WHERE BatchJobNameID = " & mlngBatchJobID & _
                                             "ORDER BY JobOrder")
+      ' Change Titles according to Batch or Reports
+      If IsReportPack Then
+        .PrintBold "Report Type" & vbTab & "Report Name"
+      Else
         .PrintBold "Job Type" & vbTab & "Job Name"
+      End If
     
         Do While Not rsColumns.EOF
           If Not JobTypeRequiresDef(rsColumns!JobType) Then
