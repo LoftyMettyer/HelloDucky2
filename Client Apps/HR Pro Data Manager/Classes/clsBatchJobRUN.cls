@@ -13,6 +13,9 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
+Private mwrdApp As Word.Application
+Private mwrdDoc As Word.Document
+
 ' Data access class
 Private mclsData As clsDataAccess
 
@@ -35,6 +38,7 @@ Private mstrOutputEmailAttachAs As String
 Private mstrOutputFileName As String
 Private mblnPreviewOnScreen As Boolean
 Private mblnPrintFilterHeader As Boolean
+Private mstrErrorMessage As String
 
 Private Sub Class_Initialize()
   Set mclsData = New clsDataAccess
@@ -840,26 +844,87 @@ End If
     End If
     rsBatchDetails.MoveNext
   Loop
-
-
-  CheckNotifications lBatchJobID
-
-  Set rsBatchDetails = Nothing
   
+  'Insert TOC code here
+  If blnOutputTOC And gblnReportPackMode Then
+    'Open word file
+    If GetTOCFile(strOutputFilename) Then
+      
+      With mwrdApp.Selection 'Add TOC at the top
+        .TypeText Text:="Table of Contents"
+        .HomeKey Unit:=wdLine, Extend:=wdExtend
+        .Font.Size = 20
+        .Font.Bold = wdToggle
+        .ParagraphFormat.Alignment = wdAlignParagraphCenter
+        .MoveDown Unit:=wdLine, Count:=2
+        
+        With ActiveDocument
+            .TablesOfContents.Add Range:=Selection.Range, RightAlignPageNumbers:= _
+                True, UseHeadingStyles:=True, UpperHeadingLevel:=1, _
+                LowerHeadingLevel:=3, IncludePageNumbers:=True, AddedStyles:="", _
+                UseHyperlinks:=True, HidePageNumbersInWeb:=True, UseOutlineLevels:= _
+                True
+            .TablesOfContents(1).TabLeader = wdTabLeaderDots
+            .TablesOfContents.Format = wdIndexIndent
+        End With
+        
+        .InsertBreak Type:=wdPageBreak
+        mwrdDoc.Save
+        mwrdDoc.Close
+        mwrdApp.Quit
+      End With
+    Else
+      MsgBox mstrErrorMessage, vbExclamation, "Report Pack"
+    End If
+  End If
+  
+  CheckNotifications lBatchJobID
+  Set rsBatchDetails = Nothing
   gobjEventLog.TidyUp
   
-  
   Call UtilUpdateLastRun(IIf(gblnReportPackMode, utlReportPack, utlBatchJob), lBatchJobID)
-
   RunBatchJob = strNotes
-
   gblnBatchMode = False
 
   'Clean up and exit
   gobjProgress.CloseProgress
   Set rsBatchDetails = Nothing
+End Function
+
+Public Function GetPathOnly(pstrFilePath As String, pbStripDriveLetter As Boolean) As String
+' Extracts the path from a given filename
+  Dim l As Integer
+  Dim tempchar As String
+  Dim strPath As String
+  
+  l = Len(pstrFilePath)
+  
+  While l > 0
+    tempchar = Mid(pstrFilePath, l, 1)
+    If tempchar = "\" Then
+      strPath = Mid(pstrFilePath, 1, l - 1)
+      
+      ' Strip off drive letter
+      If pbStripDriveLetter And Mid(strPath, 2, 1) = ":" Then
+        strPath = Mid(strPath, 3, Len(strPath))
+      End If
+      
+      GetPathOnly = strPath
+      
+      Exit Function
+    End If
+    l = l - 1
+  Wend
   
 End Function
+
+' Extracts just the filename from a path
+Function GetFileNameOnly(pstrFilePath As String) As String
+  Dim astrPath() As String
+  astrPath = Split(pstrFilePath, "\")
+  GetFileNameOnly = astrPath(UBound(astrPath))
+End Function
+
 
 Public Function SetLastCompleteDate(lBatchJobID As Long, dLastComp As Date) As Boolean
 
@@ -1152,3 +1217,53 @@ Public Sub CheckNotifications(lngBatchJobID As Long)
   End If
 
 End Sub
+Public Function GetTOCFile(strTemplateFile) As Boolean
+  Dim strTempFileName As String
+  Dim lngFound As Long
+  Dim lngCount As Long
+
+  On Local Error GoTo LocalErr
+
+  If Not CreateWordApplication Then
+    GetTOCFile = False
+    Exit Function
+  End If
+  'Check if file already exists...
+  If Dir(strTemplateFile) <> vbNullString And strTemplateFile <> vbNullString Then
+    Set mwrdDoc = mwrdApp.Documents.Open(strTemplateFile)
+  Else
+    mstrErrorMessage = "Cannot find the Title Page document"
+  End If
+
+  GetTOCFile = (mstrErrorMessage = vbNullString)
+
+Exit Function
+
+LocalErr:
+  mstrErrorMessage = Err.Description
+  GetTOCFile = False
+
+End Function
+
+Private Function CreateWordApplication() As Boolean
+
+  On Local Error GoTo LocalErr
+
+  Set mwrdApp = CreateObject("Word.Application")
+  
+  If GetSystemSetting("Output", "WordVisible", "0") = "1" Then
+    mwrdApp.Visible = True
+    mwrdApp.DisplayAlerts = wdAlertsAll
+  Else
+    mwrdApp.DisplayAlerts = wdAlertsNone
+  End If
+  
+  CreateWordApplication = True
+
+Exit Function
+
+LocalErr:
+  mstrErrorMessage = "Error opening Word Application"
+  CreateWordApplication = False
+
+End Function
