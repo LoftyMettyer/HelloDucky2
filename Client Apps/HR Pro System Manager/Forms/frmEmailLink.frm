@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
@@ -1020,6 +1020,7 @@ Private Sub cmdOK_Click()
   
   Dim strErrorText As String
   Dim intIndex As Integer
+  Dim lngDateColumnID As Long
   
   
   'MH20020424 Fault 3760
@@ -1068,6 +1069,18 @@ Private Sub cmdOK_Click()
         MsgBox "Please select Insert, Update and/or Delete.", vbExclamation
         Exit Sub
       End If
+    
+    Else
+      lngDateColumnID = 0
+      If cboDateLinkColumn.ListIndex >= 0 Then
+        lngDateColumnID = cboDateLinkColumn.ItemData(cboDateLinkColumn.ListIndex)
+      End If
+    
+      If lngDateColumnID = 0 Then
+        MsgBox "No date column selected.", vbExclamation
+        Exit Sub
+      End If
+    
     End If
     
     
@@ -1583,7 +1596,11 @@ Private Sub PopulateColumns(lngTableID As Long)
   End With
 
   With cboDateLinkColumn
-    If .ListCount > 0 And .ListIndex < 0 Then
+    If .ListCount = 0 Then
+      cboDateLinkColumn.AddItem "<None>"
+      cboDateLinkColumn.ItemData(cboDateLinkColumn.NewIndex) = 0
+    End If
+    If .ListIndex < 0 Then
       .ListIndex = 0
     End If
   End With
