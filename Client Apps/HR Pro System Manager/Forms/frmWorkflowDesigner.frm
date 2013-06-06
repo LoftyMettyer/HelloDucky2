@@ -11437,7 +11437,7 @@ Private Sub Form_Load()
     End If
   End If
   
-  cmdOK.Enabled = IsNew
+  cmdOk.Enabled = IsNew
   
   scrollVertical.SmallChange = SMALLSCROLL
   scrollHorizontal.SmallChange = SMALLSCROLL
@@ -11589,7 +11589,7 @@ Private Function SaveWorkflow() As Boolean
         .Edit
         .Fields("name") = msWorkflowName
         .Fields("description") = msWorkflowDescription
-        .Fields("pictureid") = mlngWorkflowPictureID
+        .Fields("pictureid") = IIf(mlngWorkflowPictureID = 0, Null, mlngWorkflowPictureID)
         .Fields("enabled") = mfWorkflowEnabled
         .Fields("initiationType") = miInitiationType
         .Fields("baseTable") = mlngBaseTableID
@@ -13708,13 +13708,13 @@ End Property
 Public Property Let IsChanged(pfNewValue As Boolean)
   mfChanged = pfNewValue
   mfPerge = pfNewValue
-  cmdOK.Enabled = mfChanged
+  cmdOk.Enabled = mfChanged
 End Property
 
 Public Sub SetChanged(pfPerge As Boolean)
   mfChanged = True
   mfPerge = (mfPerge Or pfPerge)
-  cmdOK.Enabled = mfChanged
+  cmdOk.Enabled = mfChanged
 End Sub
 
 Public Function IsUniqueIdentifier(psIdentifier As String, plngIgnoreElementIndex As Long) As Boolean
