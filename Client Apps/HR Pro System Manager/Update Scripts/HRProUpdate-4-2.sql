@@ -1395,8 +1395,109 @@ PRINT 'Step 6 - Modifying Workflow Stored Procedures'
 
 	EXECUTE sp_executeSQL @sSPCode;
 
+
+
+
 /* ------------------------------------------------------------- */
-PRINT 'Step 7 - Updating Details for Rebranding'
+PRINT 'Step 7 - Updating audit procedure'
+/* ------------------------------------------------------------- */
+
+	IF EXISTS (SELECT *
+		FROM dbo.sysobjects
+		WHERE id = object_id(N'[dbo].[sp_ASRAudit]')
+			AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+		DROP PROCEDURE [dbo].[sp_ASRAudit];
+
+	SET @sSPCode = 'CREATE PROCEDURE [dbo].[sp_ASRAudit]
+		AS
+		BEGIN
+			DECLARE @iDummy integer;
+		END';
+	EXECUTE sp_executeSQL @sSPCode;
+
+	SET @sSPCode = 'ALTER PROCEDURE [dbo].[sp_ASRAudit] (
+			@piColumnID int,
+			@piRecordID int,
+			@psRecordDesc varchar(255),
+			@psOldValue varchar(MAX),
+			@psNewValue varchar(MAX))
+		AS
+		BEGIN
+
+			DECLARE @sTableName varchar(128);
+			DECLARE @sColumnName varchar(128);
+			DECLARE @sUserName varchar(128);
+			
+			-- Get the table & column name for the given column
+			SELECT     @sTableName = ASRSysTables.tableName,
+					   @sColumnName = ASRSysColumns.columnName
+			FROM       ASRSysColumns
+			INNER JOIN ASRSysTables
+					ON ASRSysColumns.tableID = ASRSysTables.tableID
+			WHERE      ASRSysColumns.columnID = @piColumnID;
+
+			IF @sTableName IS NULL SET @sTableName = ''<Unknown>'';
+
+			SET @sUsername = USER;
+			IF UPPER(LEFT(APP_NAME(), 15)) = ''HR PRO WORKFLOW''
+				SET @sUsername = ''HR Pro Workflow'';
+			ELSE
+			BEGIN
+				IF USER = ''dbo''
+				BEGIN
+					IF EXISTS(SELECT * FROM ASRSysSystemSettings
+							  WHERE [Section] = ''database''
+								AND [SettingKey] = ''updatingdatedependantcolumns''
+								AND [SettingValue] = 1)
+						SET @sUsername = ''HR Pro Overnight Process'';
+				END
+			END			
+
+
+			/* Delete any duplicates which have been created in the last 5 seconds */
+			DELETE FROM ASRSysAuditTrail
+			WHERE UserName = @sUsername
+			  AND tablename = @sTableName
+			  AND recordID = @piRecordID
+			  AND recordDesc = @psRecordDesc
+			  AND columnname = @sColumnName
+			  AND oldValue = @psOldValue
+			  AND newValue = @psNewValue
+			  AND deleted = 0
+			  AND datediff(s,dateTimeStamp,getdate()) < 5;
+
+
+			/* Insert a record into the Audit Trail table. */
+			INSERT INTO ASRSysAuditTrail 
+				(userName, 
+				dateTimeStamp, 
+				tablename, 
+				recordID, 
+				recordDesc, 
+				columnname, 
+				oldValue, 
+				newValue,
+				ColumnID, 
+				deleted)
+			VALUES 
+				(@sUsername,
+				getDate(), 
+				@sTableName, 
+				@piRecordID, 
+				@psRecordDesc, 
+				@sColumnName, 
+				@psOldValue, 
+				@psNewValue,
+				@piColumnID,
+				0);
+				
+		END';
+
+	EXECUTE sp_executeSQL @sSPCode;
+
+
+/* ------------------------------------------------------------- */
+PRINT 'Step 8 - Updating Details for Rebranding'
 /* ------------------------------------------------------------- */
 delete from asrsyssystemsettings
 where [Section] = 'support' and [SettingKey] = 'email'
@@ -1434,7 +1535,7 @@ Just uncomment and delete code above to use the new one.  NB - Script 4.0 has a 
 */
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 8 - Adding new control type'
+PRINT 'Step 9 - Adding new control type'
 /* ------------------------------------------------------------- */
 
     SELECT @NVarCommand = 'ALTER TABLE [dbo].[ASRSysColumns] ALTER COLUMN [ControlType] integer;'
@@ -1445,7 +1546,7 @@ PRINT 'Step 8 - Adding new control type'
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 9 - Integration Services'
+PRINT 'Step 10 - Integration Services'
 /* ------------------------------------------------------------- */
 
 		SELECT @iRecCount = count(id) FROM syscolumns
