@@ -1,13 +1,13 @@
 VERSION 5.00
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Begin VB.Form frmModuleDocument 
    BorderStyle     =   1  'Fixed Single
    Caption         =   "Document Management"
-   ClientHeight    =   7305
+   ClientHeight    =   6345
    ClientLeft      =   45
    ClientTop       =   345
-   ClientWidth     =   10065
+   ClientWidth     =   8640
    BeginProperty Font 
       Name            =   "Verdana"
       Size            =   8.25
@@ -19,16 +19,17 @@ Begin VB.Form frmModuleDocument
    EndProperty
    Icon            =   "frmModuleDocument.frx":0000
    LinkTopic       =   "Form1"
+   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   7305
-   ScaleWidth      =   10065
+   ScaleHeight     =   6345
+   ScaleWidth      =   8640
    ShowInTaskbar   =   0   'False
    StartUpPosition =   1  'CenterOwner
    Begin TabDlg.SSTab SSTab1 
       Height          =   5640
       Left            =   90
-      TabIndex        =   2
+      TabIndex        =   0
       Top             =   45
       Width           =   8385
       _ExtentX        =   14790
@@ -36,17 +37,18 @@ Begin VB.Form frmModuleDocument
       _Version        =   393216
       Style           =   1
       Tabs            =   2
-      Tab             =   1
       TabHeight       =   520
       TabCaption(0)   =   "Types"
       TabPicture(0)   =   "frmModuleDocument.frx":000C
-      Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "fraTypes"
-      Tab(0).Control(1)=   "fraComponent(5)"
+      Tab(0).ControlEnabled=   -1  'True
+      Tab(0).Control(0)=   "fraComponent(1)"
+      Tab(0).Control(0).Enabled=   0   'False
+      Tab(0).Control(1)=   "fraTypes"
+      Tab(0).Control(1).Enabled=   0   'False
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Mail Merge"
       TabPicture(1)   =   "frmModuleDocument.frx":0028
-      Tab(1).ControlEnabled=   -1  'True
+      Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "lblTransferTable"
       Tab(1).Control(0).Enabled=   0   'False
       Tab(1).Control(1)=   "lblColumnName"
@@ -64,18 +66,18 @@ Begin VB.Form frmModuleDocument
       Tab(1).ControlCount=   7
       Begin VB.TextBox txtCategory 
          Height          =   315
-         Left            =   930
+         Left            =   -74070
          MaxLength       =   30
-         TabIndex        =   20
+         TabIndex        =   16
          Text            =   "txtColName"
          Top             =   945
          Width           =   7110
       End
       Begin VB.ComboBox cboTransferTables 
          Height          =   315
-         Left            =   945
+         Left            =   -74040
          Style           =   2  'Dropdown List
-         TabIndex        =   18
+         TabIndex        =   14
          Top             =   540
          Width           =   3255
       End
@@ -83,8 +85,8 @@ Begin VB.Form frmModuleDocument
          Caption         =   "&Edit..."
          Enabled         =   0   'False
          Height          =   400
-         Left            =   6885
-         TabIndex        =   16
+         Left            =   -68115
+         TabIndex        =   18
          Top             =   1665
          Width           =   1200
       End
@@ -92,23 +94,23 @@ Begin VB.Form frmModuleDocument
          Caption         =   "Cle&ar"
          Enabled         =   0   'False
          Height          =   400
-         Left            =   6885
-         TabIndex        =   15
+         Left            =   -68115
+         TabIndex        =   19
          Top             =   2160
          Width           =   1200
       End
       Begin VB.Frame fraTypes 
          Caption         =   "Types : "
          Height          =   1755
-         Left            =   -74865
-         TabIndex        =   8
+         Left            =   135
+         TabIndex        =   5
          Top             =   1935
          Width           =   5865
          Begin VB.ComboBox cboTypeTable 
             Height          =   315
             Left            =   2430
             Style           =   2  'Dropdown List
-            TabIndex        =   11
+            TabIndex        =   7
             Top             =   315
             Width           =   3255
          End
@@ -116,7 +118,7 @@ Begin VB.Form frmModuleDocument
             Height          =   315
             Left            =   2430
             Style           =   2  'Dropdown List
-            TabIndex        =   10
+            TabIndex        =   11
             Tag             =   "cboTypeTable"
             Top             =   1215
             Width           =   3255
@@ -134,7 +136,7 @@ Begin VB.Form frmModuleDocument
             Caption         =   "Type Table : "
             Height          =   285
             Left            =   195
-            TabIndex        =   14
+            TabIndex        =   6
             Top             =   360
             Width           =   1095
          End
@@ -142,7 +144,7 @@ Begin VB.Form frmModuleDocument
             Caption         =   "Type Column : "
             Height          =   285
             Left            =   195
-            TabIndex        =   13
+            TabIndex        =   10
             Top             =   1260
             Width           =   1410
          End
@@ -150,7 +152,7 @@ Begin VB.Form frmModuleDocument
             Caption         =   "Type Category Column : "
             Height          =   285
             Left            =   195
-            TabIndex        =   12
+            TabIndex        =   8
             Top             =   810
             Width           =   2130
          End
@@ -158,9 +160,9 @@ Begin VB.Form frmModuleDocument
       Begin VB.Frame fraComponent 
          Caption         =   "Categories :"
          Height          =   1305
-         Index           =   5
-         Left            =   -74865
-         TabIndex        =   3
+         Index           =   1
+         Left            =   135
+         TabIndex        =   12
          Tag             =   "6"
          Top             =   450
          Width           =   5865
@@ -169,7 +171,7 @@ Begin VB.Form frmModuleDocument
             Left            =   2430
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
-            TabIndex        =   5
+            TabIndex        =   2
             Top             =   360
             Width           =   3255
          End
@@ -187,7 +189,7 @@ Begin VB.Form frmModuleDocument
             Caption         =   "Category Table : "
             Height          =   285
             Left            =   225
-            TabIndex        =   7
+            TabIndex        =   1
             Top             =   405
             Width           =   1680
          End
@@ -195,7 +197,7 @@ Begin VB.Form frmModuleDocument
             Caption         =   "Category Column : "
             Height          =   330
             Left            =   225
-            TabIndex        =   6
+            TabIndex        =   3
             Top             =   795
             Width           =   1815
          End
@@ -203,7 +205,7 @@ Begin VB.Form frmModuleDocument
       Begin SSDataWidgets_B.SSDBGrid grdTransferDetails 
          Height          =   3255
          Index           =   0
-         Left            =   135
+         Left            =   -74865
          TabIndex        =   17
          Top             =   1665
          Width           =   6510
@@ -434,16 +436,16 @@ Begin VB.Form frmModuleDocument
          BackStyle       =   0  'Transparent
          Caption         =   "Name :"
          Height          =   195
-         Left            =   225
-         TabIndex        =   21
+         Left            =   -74775
+         TabIndex        =   15
          Top             =   1005
          Width           =   645
       End
       Begin VB.Label lblTransferTable 
          Caption         =   "Table : "
          Height          =   285
-         Left            =   225
-         TabIndex        =   19
+         Left            =   -74775
+         TabIndex        =   13
          Top             =   585
          Width           =   600
       End
@@ -452,8 +454,8 @@ Begin VB.Form frmModuleDocument
       Cancel          =   -1  'True
       Caption         =   "&Cancel"
       Height          =   405
-      Left            =   5700
-      TabIndex        =   1
+      Left            =   7140
+      TabIndex        =   21
       Top             =   5850
       Width           =   1200
    End
@@ -462,8 +464,8 @@ Begin VB.Form frmModuleDocument
       Default         =   -1  'True
       Enabled         =   0   'False
       Height          =   405
-      Left            =   4410
-      TabIndex        =   0
+      Left            =   5850
+      TabIndex        =   20
       Top             =   5850
       Width           =   1200
    End
@@ -698,3 +700,6 @@ Private Sub PopulateParentsCombo(ByRef objCombo As ComboBox)
   
 End Sub
 
+Private Sub SSTab1_DblClick()
+
+End Sub
