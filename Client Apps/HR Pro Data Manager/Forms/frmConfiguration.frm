@@ -90,28 +90,38 @@ Begin VB.Form frmConfiguration
       TabCaption(3)   =   "&Batch Login"
       TabPicture(3)   =   "frmConfiguration.frx":0060
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "fraBatch(0)"
-      Tab(3).Control(1)=   "fraBatch(1)"
+      Tab(3).Control(0)=   "fraBatch(1)"
+      Tab(3).Control(0).Enabled=   0   'False
+      Tab(3).Control(1)=   "fraBatch(0)"
+      Tab(3).Control(1).Enabled=   0   'False
       Tab(3).ControlCount=   2
       TabCaption(4)   =   "E&vent Log"
       TabPicture(4)   =   "frmConfiguration.frx":007C
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "FraEventLog(2)"
+      Tab(4).Control(0)=   "FraEventLog(0)"
+      Tab(4).Control(0).Enabled=   0   'False
       Tab(4).Control(1)=   "FraEventLog(1)"
-      Tab(4).Control(2)=   "FraEventLog(0)"
+      Tab(4).Control(1).Enabled=   0   'False
+      Tab(4).Control(2)=   "FraEventLog(2)"
+      Tab(4).Control(2).Enabled=   0   'False
       Tab(4).ControlCount=   3
       TabCaption(5)   =   "Report Out&put"
       TabPicture(5)   =   "frmConfiguration.frx":0098
       Tab(5).ControlEnabled=   0   'False
-      Tab(5).Control(0)=   "Frame1"
+      Tab(5).Control(0)=   "FraOutput(0)"
+      Tab(5).Control(0).Enabled=   0   'False
       Tab(5).Control(1)=   "FraOutput(1)"
-      Tab(5).Control(2)=   "FraOutput(0)"
+      Tab(5).Control(1).Enabled=   0   'False
+      Tab(5).Control(2)=   "Frame1"
+      Tab(5).Control(2).Enabled=   0   'False
       Tab(5).ControlCount=   3
       TabCaption(6)   =   "Tool&bars"
       TabPicture(6)   =   "frmConfiguration.frx":00B4
       Tab(6).ControlEnabled=   0   'False
-      Tab(6).Control(0)=   "fraToolbarGeneral"
-      Tab(6).Control(1)=   "fraToolbars"
+      Tab(6).Control(0)=   "fraToolbars"
+      Tab(6).Control(0).Enabled=   0   'False
+      Tab(6).Control(1)=   "fraToolbarGeneral"
+      Tab(6).Control(1).Enabled=   0   'False
       Tab(6).ControlCount=   2
       Begin VB.Frame fraReports 
          Caption         =   "Report / Utility / Tool Selection && Access :"
@@ -1191,7 +1201,7 @@ Begin VB.Form frmConfiguration
             Left            =   480
             TabIndex        =   61
             Top             =   2235
-            Width           =   585
+            Width           =   1125
          End
          Begin VB.Label lblDatabase 
             AutoSize        =   -1  'True
@@ -1202,7 +1212,7 @@ Begin VB.Form frmConfiguration
             Left            =   480
             TabIndex        =   59
             Top             =   1830
-            Width           =   795
+            Width           =   1335
          End
          Begin VB.Label lblPassword 
             AutoSize        =   -1  'True
@@ -1213,7 +1223,7 @@ Begin VB.Form frmConfiguration
             Left            =   480
             TabIndex        =   57
             Top             =   1065
-            Width           =   795
+            Width           =   1335
          End
          Begin VB.Label lblUser 
             AutoSize        =   -1  'True
@@ -1224,7 +1234,7 @@ Begin VB.Form frmConfiguration
             Left            =   480
             TabIndex        =   55
             Top             =   660
-            Width           =   435
+            Width           =   975
          End
       End
       Begin VB.Frame fraBatch 
@@ -1271,7 +1281,7 @@ Begin VB.Form frmConfiguration
             Left            =   480
             TabIndex        =   66
             Top             =   660
-            Width           =   1095
+            Width           =   1455
          End
       End
       Begin VB.Frame fraReports 
@@ -1336,7 +1346,7 @@ Begin VB.Form frmConfiguration
             Left            =   195
             TabIndex        =   15
             Top             =   360
-            Width           =   1005
+            Width           =   1365
          End
       End
       Begin VB.Frame fraDisplay 
@@ -1399,7 +1409,7 @@ Begin VB.Form frmConfiguration
             Left            =   195
             TabIndex        =   7
             Top             =   1560
-            Width           =   1035
+            Width           =   1530
          End
          Begin VB.Label lblLookup 
             AutoSize        =   -1  'True
@@ -1408,8 +1418,8 @@ Begin VB.Form frmConfiguration
             Height          =   195
             Left            =   195
             TabIndex        =   5
-            Top             =   1160
-            Width           =   1125
+            Top             =   1155
+            Width           =   1620
          End
          Begin VB.Label lblHistory 
             AutoSize        =   -1  'True
@@ -1418,8 +1428,8 @@ Begin VB.Form frmConfiguration
             Height          =   195
             Left            =   195
             TabIndex        =   3
-            Top             =   760
-            Width           =   960
+            Top             =   765
+            Width           =   1455
          End
          Begin VB.Label lblPrimary 
             AutoSize        =   -1  'True
@@ -1429,7 +1439,7 @@ Begin VB.Form frmConfiguration
             Left            =   195
             TabIndex        =   1
             Top             =   375
-            Width           =   1095
+            Width           =   1590
          End
       End
       Begin VB.Frame fraDisplay 
@@ -1466,8 +1476,8 @@ Begin VB.Form frmConfiguration
             Height          =   195
             Left            =   195
             TabIndex        =   12
-            Top             =   760
-            Width           =   1140
+            Top             =   765
+            Width           =   1680
          End
          Begin VB.Label lblViewInColour 
             AutoSize        =   -1  'True
@@ -1476,7 +1486,7 @@ Begin VB.Form frmConfiguration
             Left            =   195
             TabIndex        =   10
             Top             =   360
-            Width           =   1140
+            Width           =   1680
          End
       End
       Begin VB.Frame FraOutput 
