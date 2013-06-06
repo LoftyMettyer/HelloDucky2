@@ -8862,6 +8862,7 @@ Private Function FormatScreen_Frame_DefaultValue() As Boolean
   
   Dim fFrameNeeded As Boolean
   Dim sngCurrentControlTop As Single
+  Dim lngMax As Long
   
   fFrameNeeded = False
   sngCurrentControlTop = YGAP_FRAME_CONTROL
@@ -8931,8 +8932,8 @@ Private Function FormatScreen_Frame_DefaultValue() As Boolean
         - .Left _
         - X_COLUMN1
       .Visible = True
-      
-      .Text = Left(mctlSelectedControl.WFDefaultCharValue, spnSize.value)
+
+      .Text = Left(mctlSelectedControl.WFDefaultCharValue, Minimum(spnSize.value, 8000))
     End With
 
     sngCurrentControlTop = sngCurrentControlTop _
