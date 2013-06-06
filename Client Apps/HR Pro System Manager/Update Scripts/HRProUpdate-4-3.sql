@@ -1443,7 +1443,7 @@ PRINT 'Step 11 - Add new calculation procedures'
 
 
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_isvalidpayrollcharacterset](
-			@input AS nvarchar(MAX),
+			@input AS varchar(MAX),
 			@charset varchar(1))
 		RETURNS bit
 		WITH SCHEMABINDING
@@ -1456,9 +1456,8 @@ PRINT 'Step 11 - Add new calculation procedures'
 			--Charset C - typically Forename
 			--Charset D - typically Surname
 
-			DECLARE @ValidCharacters varchar(MAX);
-			DECLARE @Index int;
-
+			DECLARE @ValidCharacters varchar(MAX),
+					@Index int;
 
 			IF      @Charset = ''A'' SET @ValidCharacters = ''abcdefghijhklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-''''0123456789,&/(). =!"%&*;<>+:?''
 			ELSE IF @Charset = ''B'' SET @ValidCharacters = ''abcdefghijhklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ''
