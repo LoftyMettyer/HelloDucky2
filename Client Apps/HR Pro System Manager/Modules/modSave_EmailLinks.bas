@@ -157,7 +157,7 @@ Private Function SaveLinkContent(lngContentID As Long)
           End If
 
           rsLinkContent.AddNew
-          rsLinkContent!id = !id
+          rsLinkContent!ID = !ID
           rsLinkContent!ContentID = !ContentID
           rsLinkContent!Sequence = !Sequence
           rsLinkContent!FixedText = !FixedText
@@ -344,7 +344,12 @@ Public Sub CreateEmailProcsForTable(lngTableID As Long, _
               strDelCol = "isnull(@delCol_" & CStr(lngColumnID) & ",'')"
             End Select
             strCheckColumns = IIf(strCheckColumns <> vbNullString, strCheckColumns & " OR ", "") & _
-                strInsCol & " <> " & strDelCol & " OR (@startingtrigger = 1 AND @startingtriggertable = " & lngTableID & ")"
+                strInsCol & " <> " & strDelCol & " AND ((@startingtrigger = 1 AND @startingtriggertable = " & lngTableID & ") OR @startingtrigger = 2)"
+
+
+
+
+
 
 
             strInsertUpdateOne = _
@@ -1022,9 +1027,9 @@ Public Function RemoveDuplicateDeclares(strSQL As String) As String
 End Function
 
 
-Public Function Exists(col As Collection, id As String) As Boolean
+Public Function Exists(col As Collection, ID As String) As Boolean
   On Local Error GoTo LocalErr
-  Exists = (Trim(col(id)) <> vbNullString)
+  Exists = (Trim(col(ID)) <> vbNullString)
 Exit Function
 LocalErr:
   Exists = False
