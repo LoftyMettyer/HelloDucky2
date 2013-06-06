@@ -619,23 +619,17 @@ Public Function SendEmail(strAttachment As String) As Boolean
   Dim strTo As String
 
   On Error GoTo LocalErr
-
-
+  
   blnShowMessage = False
-
-  'MH20040426 Fault 8023
+  
   If datGeneral.SystemPermission("EMAILGROUPS", "VIEW") = False Then
     mstrErrorMessage = "You do not have permission to use email groups."
     SendEmail = False
     Exit Function
   End If
 
-
   Screen.MousePointer = vbHourglass
 
-  'frmEmailSel.MAPISignon
-  'If frmEmailSel.MAPISession1.SessionID <> 0 Then
-  '  With frmEmailSel.MAPIMessages1
       strSQL = "SELECT ASRSysEmailGroupItems.*," & _
                " ASRSysEmailAddress.Name as 'AddrName', ASRSysEmailAddress.Fixed as 'AddrFixed'" & _
                " FROM ASRSysEmailGroupItems" & _
@@ -649,9 +643,76 @@ Public Function SendEmail(strAttachment As String) As Boolean
         Exit Function
       End If
 
-  '    .SessionID = frmEmailSel.MAPISession1.SessionID
-  '    .AddressResolveUI = True
-  '    .Compose
+      blnProgressVisible = gobjProgress.Visible
+      gobjProgress.Visible = False
+      
+      strTo = vbNullString
+      strErrorTemp = "Error resolving email recipient(s)"
+      Do While Not rsEmail.EOF
+        strAddress = Split(rsEmail!AddrFixed, ";")
+        
+        For lngCount = 0 To UBound(strAddress)
+          If Trim(strAddress(lngCount)) <> vbNullString Then
+            strTo = strTo & IIf(strTo <> vbNullString, ";", "") & strAddress(lngCount)
+          End If
+        Next
+        
+        rsEmail.MoveNext
+      Loop
+      strErrorTemp = vbNullString
+      
+      rsEmail.Close
+      Set rsEmail = Nothing
+      Set objOutputEmail = New clsOutputEMail
+      mstrErrorMessage = objOutputEmail.SendEmailFromClient(strTo, "", "", mstrEmailSubject, "", strAttachment, False)
+      Set objOutputEmail = Nothing
+
+      gobjProgress.Visible = blnProgressVisible
+  SendEmail = True
+Exit Function
+
+LocalErr:
+    If strErrorTemp = "" Then strErrorTemp = "Error sending email"
+    mstrErrorMessage = strErrorTemp & _
+      IIf(Err.Description <> vbNullString, " (" & Err.Description & ")", vbNullString)
+    On Error Resume Next
+    SendEmail = False
+End Function
+
+Public Function SendReportPackEmail(strAttachment As String) As Boolean
+  Dim objOutputEmail As clsOutputEMail
+  Dim rsEmail As Recordset
+  Dim strSQL As String
+  Dim strErrorTemp As String
+  Dim strAddress() As String
+  Dim lngCount As Long
+  Dim blnShowMessage As Boolean
+  Dim blnProgressVisible As Boolean
+
+  Dim strTo As String
+
+  On Error GoTo LocalErr
+  blnShowMessage = False
+
+  If datGeneral.SystemPermission("EMAILGROUPS", "VIEW") = False Then
+    mstrErrorMessage = "You do not have permission to use email groups."
+    SendReportPackEmail = False
+    Exit Function
+  End If
+
+  Screen.MousePointer = vbHourglass
+      strSQL = "SELECT ASRSysEmailGroupItems.*," & _
+               " ASRSysEmailAddress.Name as 'AddrName', ASRSysEmailAddress.Fixed as 'AddrFixed'" & _
+               " FROM ASRSysEmailGroupItems" & _
+               " JOIN ASRSysEmailAddress ON ASRSysEmailGroupItems.EmailDefID = ASRSysEmailAddress.EmailID" & _
+               " WHERE EmailGroupID = " & CStr(mlngEmailGroupID) & _
+               " ORDER BY AddrName"
+      Set rsEmail = datGeneral.GetReadOnlyRecords(strSQL)
+
+      If rsEmail.BOF And rsEmail.EOF Then
+        mstrErrorMessage = "Error retrieving email recipient(s)"
+        Exit Function
+      End If
 
       blnProgressVisible = gobjProgress.Visible
       gobjProgress.Visible = False
@@ -664,13 +725,6 @@ Public Function SendEmail(strAttachment As String) As Boolean
         For lngCount = 0 To UBound(strAddress)
           If Trim(strAddress(lngCount)) <> vbNullString Then
             strTo = strTo & IIf(strTo <> vbNullString, ";", "") & strAddress(lngCount)
-            '.RecipIndex = .RecipCount
-            '.RecipType = mapToList
-            '.RecipDisplayName = Trim(strAddress(lngCount))
-            '.RecipAddress = "smtp:" & Trim(strAddress(lngCount))
-            'If Not blnShowMessage Then
-            '  .ResolveName
-            'End If
           End If
         Next
         
@@ -681,51 +735,23 @@ Public Function SendEmail(strAttachment As String) As Boolean
       rsEmail.Close
       Set rsEmail = Nothing
 
-      '.MsgSubject = mstrEmailSubject
-      '.MsgNoteText = " "
-      'If strAttachment <> "" Then
-      '  .AttachmentPosition = 0
-      '  .AttachmentType = 0
-      '  .AttachmentPathName = strAttachment
-      '  .AttachmentName = mstrEmailAttachAs
-      'End If
-      
-      '.Send blnShowMessage
-
       Set objOutputEmail = New clsOutputEMail
       mstrErrorMessage = objOutputEmail.SendEmailFromClient(strTo, "", "", mstrEmailSubject, "", strAttachment, False)
       Set objOutputEmail = Nothing
 
       gobjProgress.Visible = blnProgressVisible
-    
-    'End With
-  'End If
-  
-  'Set frmEmailSel = Nothing
-  SendEmail = True
+
+  SendReportPackEmail = True
 
 Exit Function
 
 LocalErr:
-'  If Err.Number = 48389 Then
-'    'Simple MAPI is no longer supported in Microsoft Outlook 2007. It is still supported by Exchange Server 2003.
-'    'http://msdn.microsoft.com/en-us/library/cc815424.aspx
-'
-'    'Can't resolve recipients and get error on send so only option is to show the message..
-'    blnShowMessage = True
-'    Resume Next
-'  Else
     If strErrorTemp = "" Then strErrorTemp = "Error sending email"
     mstrErrorMessage = strErrorTemp & _
       IIf(Err.Description <> vbNullString, " (" & Err.Description & ")", vbNullString)
     On Error Resume Next
-    'frmEmailSel.MAPIsignoff
-    'Set frmEmailSel = Nothing
-    SendEmail = False
-'  End If
-
+    SendReportPackEmail = False
 End Function
-
 
 Public Function GetTempFileName(strFileName As String) As String
 
@@ -882,7 +908,7 @@ Public Function SetOptions( _
         .txtEmailGroup.Text = datGeneral.GetEmailGroupName(lngEmailAddr)
         .txtEmailGroup.Tag = lngEmailAddr
         .txtEmailSubject.Text = strEmailSubject
-        .txtEmailAttachAs.Text = strEmailAttachAs
+        .txtEMailAttachAs.Text = strEmailAttachAs
       End If
       .txtFilename.Text = strFileName
       .ShowFormats mblnData, mblnCSV, mblnHTML, mblnWord, mblnExcel, mblnChart, mblnPivot
@@ -903,12 +929,12 @@ Public Function SetOptions( _
       blnEmail = (.chkDestination(desEmail).Value = vbChecked)
       lngEmailAddr = Val(.txtEmailGroup.Tag)
       strEmailSubject = .txtEmailSubject.Text
-      strEmailAttachAs = .txtEmailAttachAs.Text
+      strEmailAttachAs = .txtEMailAttachAs.Text
       strFileName = .txtFilename.Text
 
       mlngEmailGroupID = .txtEmailGroup.Tag
       mstrEmailSubject = .txtEmailSubject.Text
-      mstrEmailAttachAs = .txtEmailAttachAs.Text
+      mstrEmailAttachAs = .txtEMailAttachAs.Text
 
       If .cboSaveExisting.ListIndex <> -1 Then
         lngSaveExisting = .cboSaveExisting.ItemData(.cboSaveExisting.ListIndex)

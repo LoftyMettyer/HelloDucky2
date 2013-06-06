@@ -1575,7 +1575,7 @@ Public Sub Complete()
 
 
   'EMAIL
-  If mblnEmail Then
+  If mblnEmail And Not gblnReportPackMode Then
     mstrErrorMessage = "Error sending email"
 
     strFormat = GetOfficeSaveAsFormat(mobjParent.EmailAttachAs, GetOfficeExcelVersion, oaExcel)
