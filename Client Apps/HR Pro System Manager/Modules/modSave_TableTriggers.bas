@@ -39,8 +39,8 @@ Private sInsertWorkflowCode As SystemMgr.cStringBuilder
 Private sUpdateWorkflowCode As SystemMgr.cStringBuilder
 Private sDeleteWorkflowCode As SystemMgr.cStringBuilder
 
-Private sUpdateAccordCode As SystemMgr.cStringBuilder
-Private sDeleteAccordCode As SystemMgr.cStringBuilder
+Private sUpdateFusionCode As SystemMgr.cStringBuilder
+Private sDeleteFusionCode As SystemMgr.cStringBuilder
 
 Private sDateDependentUpdateCode As SystemMgr.cStringBuilder
 Private sRelationshipCode As SystemMgr.cStringBuilder
@@ -278,8 +278,8 @@ Private Function SetTableTriggers_GetStrings(pLngCurrentTableID As Long, _
   Set sUpdateWorkflowCode = New SystemMgr.cStringBuilder
   Set sDeleteWorkflowCode = New SystemMgr.cStringBuilder
   
-  Set sUpdateAccordCode = New SystemMgr.cStringBuilder
-  Set sDeleteAccordCode = New SystemMgr.cStringBuilder
+  Set sUpdateFusionCode = New SystemMgr.cStringBuilder
+  Set sDeleteFusionCode = New SystemMgr.cStringBuilder
   
   sInsertWorkflowCode.TheString = vbNullString
   sUpdateWorkflowCode.TheString = vbNullString
@@ -319,14 +319,14 @@ Private Function SetTableTriggers_GetStrings(pLngCurrentTableID As Long, _
   
   ' Payroll Transfer Triggers
   ' --------------------------------
-  If gbAccordPayrollModule Then
+  If gbFusionlModule Then
     
-    Set sUpdateAccordCode = New SystemMgr.cStringBuilder
-    Set sDeleteAccordCode = New SystemMgr.cStringBuilder
+    Set sUpdateFusionCode = New SystemMgr.cStringBuilder
+    Set sDeleteFusionCode = New SystemMgr.cStringBuilder
 
     ' Is in a separate sub routine because this one is getting too big for VB to compile.
     ' All parameters passed by reference!
-    SetTableTriggers_AccordTransfer sUpdateAccordCode, sDeleteAccordCode, alngAuditColumns(), _
+    SetTableTriggers_AccordTransfer sUpdateFusionCode, sDeleteFusionCode, alngAuditColumns(), _
       sSelectInsCols, sSelectDelCols, _
       sFetchInsCols, sFetchDelCols, _
       sDeclareInsCols, sDeclareDelCols, _
@@ -729,9 +729,9 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
   Dim fParentCalcs As Boolean
   Dim fChildCalcs As Boolean
 
-  Dim sAccordProhibitFields As String
-  Dim rsAccordDetails As DAO.Recordset
-  Dim iTransferTypeID As Integer
+  Dim sFusionProhibitFields As String
+  Dim rsFusionDetails As DAO.Recordset
+  Dim iFusionTypeID As Integer
   Dim mbAccordAllowDelete As Boolean
 
   Dim strDiaryProcName As String
@@ -1108,7 +1108,7 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
     End If
     
     ' Insert the Payroll trigger code.
-    If sUpdateAccordCode.Length = 0 Then
+    If sUpdateFusionCode.Length = 0 Then
       sUpdateTriggerSQL.Append vbNewLine & vbNewLine & _
         "        /* ----------------------------------------- */" & vbNewLine & _
         "        /* No Payroll triggers required. */" & vbNewLine & _
@@ -1120,7 +1120,7 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
         "        /* ----------------------- */" & vbNewLine & _
         "        IF @fValidRecord = 1" & vbNewLine & _
         "        BEGIN" & vbNewLine & _
-        sUpdateAccordCode.ToString & _
+        sUpdateFusionCode.ToString & _
         "        END" & vbNewLine & vbNewLine
     End If
 
@@ -1230,32 +1230,32 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
       "    WHILE (@@fetch_status = 0)" & vbNewLine & _
       "    BEGIN" & vbNewLine
      
-    If gbAccordPayrollModule Then
+    If gbFusionlModule Then
     
       sSQL = "SELECT TransferTypeID FROM tmpAccordTransferTypes" _
           & " WHERE ASRBaseTableID = " & CStr(pLngCurrentTableID)
-      Set rsAccordDetails = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
+      Set rsFusionDetails = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
   
-      If Not (rsAccordDetails.EOF And rsAccordDetails.BOF) Then
+      If Not (rsFusionDetails.EOF And rsFusionDetails.BOF) Then
         If mbAccordAllowDelete Then
           sDeleteTriggerSQL.Append vbNewLine & _
             "        -- Prohibit delete if record has been transferred to Payroll" & vbNewLine & _
-            "        EXEC dbo.spASRAccordIsRecordInPayroll @recordID, " & rsAccordDetails.Fields("TransferTypeID").value & ", @hResult OUTPUT" & vbNewLine & _
+            "        EXEC dbo.spASRAccordIsRecordInPayroll @recordID, " & rsFusionDetails.Fields("TransferTypeID").value & ", @hResult OUTPUT" & vbNewLine & _
             "        IF @hResult <> 1" & vbNewLine & _
             "        BEGIN" & vbNewLine & _
-            "          EXEC dbo.spasRAccordDeleteTransactionsForRecord @recordID, " & rsAccordDetails.Fields("TransferTypeID").value & vbNewLine & _
+            "          EXEC dbo.spasRAccordDeleteTransactionsForRecord @recordID, " & rsFusionDetails.Fields("TransferTypeID").value & vbNewLine & _
             "        END" & vbNewLine & vbNewLine
         Else
           sDeleteTriggerSQL.Append vbNewLine & _
             "        -- Prohibit delete if record has been transferred to Payroll" & vbNewLine & _
-            "        EXEC dbo.spASRAccordIsRecordInPayroll @recordID, " & rsAccordDetails.Fields("TransferTypeID").value & ", @hResult OUTPUT" & vbNewLine & _
+            "        EXEC dbo.spASRAccordIsRecordInPayroll @recordID, " & rsFusionDetails.Fields("TransferTypeID").value & ", @hResult OUTPUT" & vbNewLine & _
             "        IF @hResult = 1" & vbNewLine & _
             "        BEGIN" & vbNewLine & _
             "          RAISERROR ('You cannot delete a record that has been transferred to payroll.',16,@hResult)" & vbNewLine & _
             "          ROLLBACK TRANSACTION" & vbNewLine & _
             "          RETURN" & vbNewLine & _
             "        END" & vbNewLine & _
-            "        ELSE EXEC dbo.spASRAccordDeleteTransactionsForRecord @recordID, " & rsAccordDetails.Fields("TransferTypeID").value & vbNewLine & vbNewLine
+            "        ELSE EXEC dbo.spASRAccordDeleteTransactionsForRecord @recordID, " & rsFusionDetails.Fields("TransferTypeID").value & vbNewLine & vbNewLine
         End If
       End If
     End If
@@ -1383,7 +1383,7 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
     End If
 
     ' Insert the Payroll trigger code.
-    If sDeleteAccordCode.Length = 0 Then
+    If sDeleteFusionCode.Length = 0 Then
       sDeleteTriggerSQL.Append vbNewLine & vbNewLine & _
         "        /* ----------------------------------------- */" & vbNewLine & _
         "        /* No Payroll triggers required. */" & vbNewLine & _
@@ -1393,7 +1393,7 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
         "        /* ----------------------- */" & vbNewLine & _
         "        /* Payroll Triggers. */" & vbNewLine & _
         "        /* ----------------------- */" & vbNewLine & _
-        sDeleteAccordCode.ToString & vbNewLine & vbNewLine
+        sDeleteFusionCode.ToString & vbNewLine & vbNewLine
     End If
 
 
@@ -1441,7 +1441,7 @@ ErrorTrap:
 End Function
 
 
-Private Function SetTableTriggers_AccordTransfer(ByRef sUpdateAccordCode As SystemMgr.cStringBuilder, ByRef sDeleteAccordCode As SystemMgr.cStringBuilder _
+Private Function SetTableTriggers_AccordTransfer(ByRef sUpdateFusionCode As SystemMgr.cStringBuilder, ByRef sDeleteFusionCode As SystemMgr.cStringBuilder _
 , ByRef alngAuditColumns() As Long _
 , ByRef sSelectInsCols As SystemMgr.cStringBuilder, ByRef sSelectDelCols As SystemMgr.cStringBuilder _
 , ByRef sFetchInsCols As SystemMgr.cStringBuilder, ByRef sFetchDelCols As SystemMgr.cStringBuilder _
@@ -1452,9 +1452,9 @@ Private Function SetTableTriggers_AccordTransfer(ByRef sUpdateAccordCode As Syst
 
   Dim bOK As Boolean
   Dim sDefinitionSQL As String
-  Dim sAccordDeclaration As String
-  Dim sAccordFilter As String
-  Dim rsAccordDetails As DAO.Recordset
+  Dim sFusionDeclaration As String
+  Dim sFusionFilter As String
+  Dim rsFusionDetails As DAO.Recordset
   Dim rsAssociatedColumns As DAO.Recordset
   Dim iLoop As Long
   Dim bColFound As Boolean
@@ -1462,25 +1462,25 @@ Private Function SetTableTriggers_AccordTransfer(ByRef sUpdateAccordCode As Syst
   Dim sConvertDelCols As String
   Dim sColumnName As String
   Dim lngColumnTableID As Long
-  Dim lngTransferType As Long
+  Dim lngFusionType As Long
   Dim lngFilterID As Long
   Dim lngASRColumnID As Long
   Dim sHasChangedCode As SystemMgr.cStringBuilder
-  Dim aiTransferTypes() As Long
-  Dim iTransferTypeLoop As Long
+  Dim aiFusionTypes() As Long
+  Dim iFusionTypeLoop As Long
   Dim strCurrentInsert As SystemMgr.cStringBuilder
   Dim strCurrentUpdate As SystemMgr.cStringBuilder
   Dim strCurrentDelete As SystemMgr.cStringBuilder
   Dim strTableName As String
   Dim strColumnName As String
   Dim sASRColumnID As String
-  Dim strTransferFieldID As String
+  Dim strFusionFieldID As String
   Dim lngGroupBy As Long
-  Dim sAccordProhibitFields As SystemMgr.cStringBuilder
-  Dim iTransferTypeID As Integer
+  Dim sFusionProhibitFields As SystemMgr.cStringBuilder
+  Dim iFusionTypeID As Integer
 
   ' Get Payroll Tranfers options
-  If gbAccordPayrollModule Then
+  If gbFusionlModule Then
     With recModuleSetup
       .Index = "idxModuleParameter"
       .Seek "=", gsMODULEKEY_ACCORD, gsPARAMETERKEY_DEFAULTSTATUS
@@ -1538,34 +1538,34 @@ Private Function SetTableTriggers_AccordTransfer(ByRef sUpdateAccordCode As Syst
   
   ReDim avAccordProhibitFields(0, 1)
   bOK = True
-  sUpdateAccordCode.TheString = vbNullString
-  sDeleteAccordCode.TheString = vbNullString
+  sUpdateFusionCode.TheString = vbNullString
+  sDeleteFusionCode.TheString = vbNullString
 
   ' Get the amount of transfer types attached to this table
-  ReDim aiTransferTypes(1, 0)
+  ReDim aiFusionTypes(1, 0)
   sDefinitionSQL = "SELECT TransferTypeID, ForceAsUpdate FROM tmpAccordTransferTypes" _
         & " WHERE ASRBaseTableID = " & CStr(pLngCurrentTableID)
-  Set rsAccordDetails = daoDb.OpenRecordset(sDefinitionSQL, dbOpenForwardOnly, dbReadOnly)
+  Set rsFusionDetails = daoDb.OpenRecordset(sDefinitionSQL, dbOpenForwardOnly, dbReadOnly)
 
-  Do While Not rsAccordDetails.EOF
-    ReDim Preserve aiTransferTypes(1, UBound(aiTransferTypes, 2) + 1)
-    aiTransferTypes(0, UBound(aiTransferTypes, 2)) = rsAccordDetails(0).value
-    aiTransferTypes(1, UBound(aiTransferTypes, 2)) = IIf(rsAccordDetails(1).value = True, 1, 0)
-    rsAccordDetails.MoveNext
+  Do While Not rsFusionDetails.EOF
+    ReDim Preserve aiFusionTypes(1, UBound(aiFusionTypes, 2) + 1)
+    aiFusionTypes(0, UBound(aiFusionTypes, 2)) = rsFusionDetails(0).value
+    aiFusionTypes(1, UBound(aiFusionTypes, 2)) = IIf(rsFusionDetails(1).value = True, 1, 0)
+    rsFusionDetails.MoveNext
   Loop
 
-  For iTransferTypeLoop = 1 To UBound(aiTransferTypes, 2)
+  For iFusionTypeLoop = 1 To UBound(aiFusionTypes, 2)
   
     sDefinitionSQL = "SELECT tt.TransferTypeID, tt.FilterID, td.TransferFieldID" _
           & ", td.ASRTableID, td.ASRMapType, td.IsEmployeeCode, td.IsCompanyCode, td.ConvertData, td.IsEmployeeName, td.IsDepartmentName, td.IsDepartmentCode, td.IsPayrollCode" _
           & ", td.ASRColumnID, td.ASRExprID, td.ASRValue, td.AlwaysTransfer, td.Description, td.GroupBy FROM tmpAccordTransferTypes tt" _
           & " INNER JOIN tmpAccordTransferFieldDefinitions td ON td.TransferTypeID = tt.TransferTypeID " _
           & " WHERE tt.ASRBaseTableID = " & CStr(pLngCurrentTableID) & " AND td.ASRMapType IS NOT NULL " _
-          & " AND tt.TransferTypeID = " & Str$(aiTransferTypes(0, iTransferTypeLoop)) _
+          & " AND tt.TransferTypeID = " & Str$(aiFusionTypes(0, iFusionTypeLoop)) _
           & " ORDER BY GroupBy DESC, TransferFieldID ASC"
-    Set rsAccordDetails = daoDb.OpenRecordset(sDefinitionSQL, dbOpenForwardOnly, dbReadOnly)
+    Set rsFusionDetails = daoDb.OpenRecordset(sDefinitionSQL, dbOpenForwardOnly, dbReadOnly)
     
-    With rsAccordDetails
+    With rsFusionDetails
      
       lngFilterID = 0
       bColFound = False
@@ -1576,9 +1576,9 @@ Private Function SetTableTriggers_AccordTransfer(ByRef sUpdateAccordCode As Syst
       While Not .EOF
 
         lngASRColumnID = !ASRColumnID
-        lngTransferType = !TransferTypeID
+        lngFusionType = !TransferTypeID
         lngFilterID = !FilterID
-        strTransferFieldID = !TransferFieldID
+        strFusionFieldID = !TransferFieldID
   
         Select Case !ASRMapType
           Case MAPTYPE_COLUMN
@@ -1691,7 +1691,7 @@ Private Function SetTableTriggers_AccordTransfer(ByRef sUpdateAccordCode As Syst
                   ' Get associated columns
                   sDefinitionSQL = "SELECT ASRColumnID FROM tmpAccordTransferFieldDefinitions td" _
                       & " WHERE GroupBy = " & Str(lngGroupBy) & " AND ASRColumnID > 0" _
-                      & " AND transferTypeID = " & Str$(aiTransferTypes(0, iTransferTypeLoop))
+                      & " AND transferTypeID = " & Str$(aiFusionTypes(0, iFusionTypeLoop))
                   Set rsAssociatedColumns = daoDb.OpenRecordset(sDefinitionSQL, dbOpenForwardOnly, dbReadOnly)
                   
                   strCurrentUpdate.Append vbNewLine & vbNewLine & Space$(14) & "IF"
@@ -1737,16 +1737,16 @@ Private Function SetTableTriggers_AccordTransfer(ByRef sUpdateAccordCode As Syst
               If !ConvertData Then
                 
                 strCurrentInsert.Append _
-                  Space$(12) & "EXEC @hResult = dbo.spASRAccordExpr_" & lngTransferType & "_" & strTransferFieldID & " @insCol_" & sASRColumnID & ",@sTempInsCol OUTPUT" & vbNewLine
+                  Space$(12) & "EXEC @hResult = dbo.spASRAccordExpr_" & lngFusionType & "_" & strFusionFieldID & " @insCol_" & sASRColumnID & ",@sTempInsCol OUTPUT" & vbNewLine
                 
                 strCurrentUpdate.Append _
-                  IIf(Not !AlwaysTransfer, Space$(18), Space$(14)) & "EXEC @hResult = dbo.spASRAccordExpr_" & lngTransferType & "_" & strTransferFieldID & " @insCol_" & sASRColumnID & ",@sTempInsCol OUTPUT" & vbNewLine & _
-                  IIf(Not !AlwaysTransfer, Space$(18), Space$(14)) & "EXEC @hResult = dbo.spASRAccordExpr_" & lngTransferType & "_" & strTransferFieldID & " @delCol_" & sASRColumnID & ",@sTempDelCol OUTPUT" & vbNewLine
+                  IIf(Not !AlwaysTransfer, Space$(18), Space$(14)) & "EXEC @hResult = dbo.spASRAccordExpr_" & lngFusionType & "_" & strFusionFieldID & " @insCol_" & sASRColumnID & ",@sTempInsCol OUTPUT" & vbNewLine & _
+                  IIf(Not !AlwaysTransfer, Space$(18), Space$(14)) & "EXEC @hResult = dbo.spASRAccordExpr_" & lngFusionType & "_" & strFusionFieldID & " @delCol_" & sASRColumnID & ",@sTempDelCol OUTPUT" & vbNewLine
                 
                 strCurrentDelete.Append _
                    vbNewLine & vbNewLine & Space$(12) & "/* ConvertDataForDeleteTransaction */" & vbNewLine
                 strCurrentDelete.Append _
-                  Space$(12) & "EXEC @hResult = dbo.spASRAccordExpr_" & lngTransferType & "_" & strTransferFieldID & " @delCol_" & sASRColumnID & ",@sTempDelCol OUTPUT" & vbNewLine
+                  Space$(12) & "EXEC @hResult = dbo.spASRAccordExpr_" & lngFusionType & "_" & strFusionFieldID & " @delCol_" & sASRColumnID & ",@sTempDelCol OUTPUT" & vbNewLine
   
               Else
                 
@@ -1761,10 +1761,10 @@ Private Function SetTableTriggers_AccordTransfer(ByRef sUpdateAccordCode As Syst
               End If
   
               strCurrentInsert.Append _
-                  Space$(12) & "EXEC dbo.spASRAccordPopulateTransactionData @iAccordTransactionID, " & strTransferFieldID & ", null, @sTempInsCol" & vbNewLine
+                  Space$(12) & "EXEC dbo.spASRAccordPopulateTransactionData @iAccordTransactionID, " & strFusionFieldID & ", null, @sTempInsCol" & vbNewLine
   
               strCurrentUpdate.Append _
-                IIf(Not !AlwaysTransfer, Space$(18), Space$(14)) & "EXEC dbo.spASRAccordPopulateTransactionData @iAccordTransactionID," & strTransferFieldID & ", @sTempDelCol,@sTempInsCol" & _
+                IIf(Not !AlwaysTransfer, Space$(18), Space$(14)) & "EXEC dbo.spASRAccordPopulateTransactionData @iAccordTransactionID," & strFusionFieldID & ", @sTempDelCol,@sTempInsCol" & _
                 IIf(Not !AlwaysTransfer, vbNewLine & Space$(14) & "END", vbNullString)
  
               ' AE20080616 Fault #13168
@@ -1778,7 +1778,7 @@ Private Function SetTableTriggers_AccordTransfer(ByRef sUpdateAccordCode As Syst
               End Select
               
               strCurrentDelete.Append _
-                Space$(12) & "EXEC dbo.spASRAccordPopulateTransactionData @iAccordTransactionID, " & strTransferFieldID & ", @sTempDelCol,null" & vbNullString & vbNullString
+                Space$(12) & "EXEC dbo.spASRAccordPopulateTransactionData @iAccordTransactionID, " & strFusionFieldID & ", @sTempDelCol,null" & vbNullString & vbNullString
             
             Else
       
@@ -1805,19 +1805,19 @@ Private Function SetTableTriggers_AccordTransfer(ByRef sUpdateAccordCode As Syst
               strCurrentInsert.Append vbNewLine & vbNewLine & _
                 Space$(12) & "SET @parentRecordID = (SELECT ID_" & lngColumnTableID & " FROM inserted WHERE id = @recordID)" & vbNewLine & _
                 Space$(12) & "SET @sTempInsCol = (SELECT " & strColumnName & " FROM " & strTableName & " WHERE ID = @parentRecordID)" & vbNewLine & _
-                Space$(12) & "EXEC dbo.spASRAccordPopulateTransactionData @iAccordTransactionID," & strTransferFieldID & ", null,@sTempInsCol"
+                Space$(12) & "EXEC dbo.spASRAccordPopulateTransactionData @iAccordTransactionID," & strFusionFieldID & ", null,@sTempInsCol"
   
               If !AlwaysTransfer Then
                 strCurrentUpdate.Append vbNewLine & vbNewLine & _
                   Space$(14) & "SET @parentRecordID = (SELECT ID_" & lngColumnTableID & " FROM inserted WHERE id = @recordID)" & vbNewLine & _
                   Space$(14) & "SET @sTempInsCol = (SELECT " & strColumnName & " FROM " & strTableName & " WHERE ID = @parentRecordID)" & vbNewLine & _
-                  Space$(14) & "EXEC dbo.spASRAccordPopulateTransactionData @iAccordTransactionID," & strTransferFieldID & ",@sTempInsCol,@sTempInsCol"
+                  Space$(14) & "EXEC dbo.spASRAccordPopulateTransactionData @iAccordTransactionID," & strFusionFieldID & ",@sTempInsCol,@sTempInsCol"
               End If
                 
               strCurrentDelete.Append vbNewLine & vbNewLine & _
                 Space$(12) & "SET @parentRecordID = (SELECT ID_" & lngColumnTableID & " FROM deleted WHERE id = @recordID)" & vbNewLine & _
                 Space$(12) & "SET @sTempDelCol = (SELECT " & strColumnName & " FROM " & strTableName & " WHERE ID = @parentRecordID)" & vbNewLine & _
-                Space$(12) & "EXEC dbo.spASRAccordPopulateTransactionData @iAccordTransactionID," & strTransferFieldID & ",@sTempDelCol,null"
+                Space$(12) & "EXEC dbo.spASRAccordPopulateTransactionData @iAccordTransactionID," & strFusionFieldID & ",@sTempDelCol,null"
             
             End If
           
@@ -1869,15 +1869,15 @@ Private Function SetTableTriggers_AccordTransfer(ByRef sUpdateAccordCode As Syst
           
             strCurrentInsert.Append vbNewLine & vbNewLine & _
               Space$(12) & "EXEC @hResult = dbo.sp_ASRExpr_" & Trim(Str(!ASRExprID)) & " @sTempInsCol OUTPUT, @recordID" & vbNewLine & _
-              Space$(12) & "EXEC dbo.spASRAccordPopulateTransactionData @iAccordTransactionID," & strTransferFieldID & ", null,@sTempInsCol"
+              Space$(12) & "EXEC dbo.spASRAccordPopulateTransactionData @iAccordTransactionID," & strFusionFieldID & ", null,@sTempInsCol"
   
             strCurrentUpdate.Append vbNewLine & vbNewLine & _
               Space$(14) & "EXEC @hResult = dbo.sp_ASRExpr_" & Trim(Str(!ASRExprID)) & " @sTempInsCol OUTPUT, @recordID" & vbNewLine & _
-              Space$(14) & "EXEC dbo.spASRAccordPopulateTransactionData @iAccordTransactionID," & strTransferFieldID & ", null,@sTempInsCol"
+              Space$(14) & "EXEC dbo.spASRAccordPopulateTransactionData @iAccordTransactionID," & strFusionFieldID & ", null,@sTempInsCol"
   
             strCurrentDelete.Append vbNewLine & vbNewLine & _
               Space$(12) & "EXEC @hResult = dbo.sp_ASRExpr_" & Trim(Str(!ASRExprID)) & " @sTempInsCol OUTPUT, @recordID" & vbNewLine & _
-              Space$(12) & "EXEC dbo.spASRAccordPopulateTransactionData @iAccordTransactionID," & strTransferFieldID & ", @sTempInsCol, null"
+              Space$(12) & "EXEC dbo.spASRAccordPopulateTransactionData @iAccordTransactionID," & strFusionFieldID & ", @sTempInsCol, null"
           
             ' If this transfer field is the Employee Name then update the transaction table
             If !IsEmployeeName Then
@@ -1912,13 +1912,13 @@ Private Function SetTableTriggers_AccordTransfer(ByRef sUpdateAccordCode As Syst
           Case MAPTYPE_VALUE
           
               strCurrentInsert.Append vbNewLine & vbNewLine & _
-                Space$(12) & "EXEC dbo.spASRAccordPopulateTransactionData @iAccordTransactionID," & strTransferFieldID & ",null,'" & Trim(!ASRValue) & "'"
+                Space$(12) & "EXEC dbo.spASRAccordPopulateTransactionData @iAccordTransactionID," & strFusionFieldID & ",null,'" & Trim(!ASRValue) & "'"
         
               strCurrentUpdate.Append vbNewLine & vbNewLine & _
-                Space$(14) & "EXEC dbo.spASRAccordPopulateTransactionData @iAccordTransactionID," & strTransferFieldID & ",'" & Trim(!ASRValue) & "','" & Trim(!ASRValue) & "'"
+                Space$(14) & "EXEC dbo.spASRAccordPopulateTransactionData @iAccordTransactionID," & strFusionFieldID & ",'" & Trim(!ASRValue) & "','" & Trim(!ASRValue) & "'"
         
               strCurrentDelete.Append vbNewLine & vbNewLine & _
-                Space$(12) & "EXEC dbo.spASRAccordPopulateTransactionData @iAccordTransactionID," & strTransferFieldID & ",'" & Trim(!ASRValue) & "',null"
+                Space$(12) & "EXEC dbo.spASRAccordPopulateTransactionData @iAccordTransactionID," & strFusionFieldID & ",'" & Trim(!ASRValue) & "',null"
         
               ' If this transfer field is the company code then update the transaction table
               If !IsCompanyCode Then
@@ -1952,103 +1952,103 @@ Private Function SetTableTriggers_AccordTransfer(ByRef sUpdateAccordCode As Syst
 
     ' If filter add it
     If lngFilterID > 0 Then
-      sAccordFilter = Space$(10) & "EXEC @hResult = dbo.sp_ASRExpr_" & Trim$(Str$(lngFilterID)) & " @bFilter OUTPUT, @recordID" & vbNewLine _
-                    & Space$(10) & "IF (@iAccordManualSendType = " & lngTransferType & " AND @bAccordBypassFilter = 1)" & vbNewLine _
-                    & Space$(12) & "OR (@iAccordManualSendType = " & lngTransferType & " AND @bAccordBypassFilter = 0 AND @bFilter = 1)" & vbNewLine _
+      sFusionFilter = Space$(10) & "EXEC @hResult = dbo.sp_ASRExpr_" & Trim$(Str$(lngFilterID)) & " @bFilter OUTPUT, @recordID" & vbNewLine _
+                    & Space$(10) & "IF (@iAccordManualSendType = " & lngFusionType & " AND @bAccordBypassFilter = 1)" & vbNewLine _
+                    & Space$(12) & "OR (@iAccordManualSendType = " & lngFusionType & " AND @bAccordBypassFilter = 0 AND @bFilter = 1)" & vbNewLine _
                     & Space$(12) & "OR (@bFilter = 1 AND @iAccordManualSendType = -1)" & vbNewLine _
                     & Space$(10) & "BEGIN" & vbNewLine
     Else
-      sAccordFilter = vbNullString
+      sFusionFilter = vbNullString
     End If
        
     If strCurrentUpdate.Length <> 0 Then
           
       sHasChangedCode.Append IIf(sHasChangedCode.Length <> 0, " OR ", vbNullString) & " @bAccordResend = 1"
 
-      sUpdateAccordCode.Append vbNewLine & vbNewLine & _
-        sAccordFilter & Space$(10) & "EXEC dbo.spASRAccordNeedToSendAll " & Str$(lngTransferType) & ", @recordID, @bAccordResend OUTPUT" & vbNewLine & _
+      sUpdateFusionCode.Append vbNewLine & vbNewLine & _
+        sFusionFilter & Space$(10) & "EXEC dbo.spASRAccordNeedToSendAll " & Str$(lngFusionType) & ", @recordID, @bAccordResend OUTPUT" & vbNewLine & _
         IIf(sHasChangedCode.Length <> 0, Space$(12) & "IF (" & sHasChangedCode.ToString & ")" & vbNewLine & _
         Space$(12) & "BEGIN" & vbNewLine, vbNullString) & vbNewLine & _
-        Space$(14) & "EXEC dbo.spASRAccordPopulateTransaction @iAccordTransactionID OUTPUT," & Str$(lngTransferType) & ", 1 , @iAccordDefaultStatus, @recordID, 1, @bAccordSendAllFields OUTPUT" & _
+        Space$(14) & "EXEC dbo.spASRAccordPopulateTransaction @iAccordTransactionID OUTPUT," & Str$(lngFusionType) & ", 1 , @iAccordDefaultStatus, @recordID, 1, @bAccordSendAllFields OUTPUT" & _
         strCurrentUpdate.ToString & vbNewLine & _
         Space$(12) & IIf(sHasChangedCode.Length <> 0, "END", vbNullString) & vbNewLine
     End If
 
     If strCurrentDelete.Length <> 0 Then
       
-      sDeleteAccordCode.Append vbNewLine & _
-        Space$(10) & "EXEC dbo.spASRAccordPopulateTransaction @iAccordTransactionID OUTPUT," & Str$(lngTransferType) & ",2, @iAccordDefaultStatus, @recordID, 1, @bAccordSendAllFields OUTPUT" & vbNewLine & _
+      sDeleteFusionCode.Append vbNewLine & _
+        Space$(10) & "EXEC dbo.spASRAccordPopulateTransaction @iAccordTransactionID OUTPUT," & Str$(lngFusionType) & ",2, @iAccordDefaultStatus, @recordID, 1, @bAccordSendAllFields OUTPUT" & vbNewLine & _
         Space$(10) & "IF @bAccordSendAllFields = 1" & vbNewLine & Space$(10) & "BEGIN" & vbNewLine & _
         strCurrentDelete.ToString & vbNewLine & Space$(10) & "END" & vbNewLine
 
     End If
    
     If lngFilterID > 0 Then
-      sUpdateAccordCode.Append vbNewLine & Space$(10) & "END"
+      sUpdateFusionCode.Append vbNewLine & Space$(10) & "END"
     End If
    
-    Set rsAccordDetails = Nothing
+    Set rsFusionDetails = Nothing
 
-  Next iTransferTypeLoop
+  Next iFusionTypeLoop
 
 
   ' Probihit changes
-  Set sAccordProhibitFields = New SystemMgr.cStringBuilder
-  sAccordProhibitFields.TheString = vbNullString
+  Set sFusionProhibitFields = New SystemMgr.cStringBuilder
+  sFusionProhibitFields.TheString = vbNullString
       
   ' We have to use "old" style syntax becuase dao is rubbish and doesn't understand join properly!
   sDefinitionSQL = "SELECT c.ColumnID, c.ColumnName, t.TransferTypeID FROM tmpAccordTransferTypes t" _
       & " ,tmpAccordTransferFieldDefinitions d, tmpColumns c" _
       & " WHERE d.ASRColumnID = c.ColumnID AND t.TransferTypeID = d.TransferTypeID" _
       & " AND t.asrBaseTableID = " & pLngCurrentTableID & " And d.PreventModify = true"
-  Set rsAccordDetails = daoDb.OpenRecordset(sDefinitionSQL, dbOpenForwardOnly, dbReadOnly)
+  Set rsFusionDetails = daoDb.OpenRecordset(sDefinitionSQL, dbOpenForwardOnly, dbReadOnly)
   
-  If Not (rsAccordDetails.EOF And rsAccordDetails.BOF) Then
-    iTransferTypeID = rsAccordDetails.Fields("TransferTypeID").value
+  If Not (rsFusionDetails.EOF And rsFusionDetails.BOF) Then
+    iFusionTypeID = rsFusionDetails.Fields("TransferTypeID").value
    
-    Do While Not rsAccordDetails.EOF
+    Do While Not rsFusionDetails.EOF
     
-      sAccordProhibitFields.Append "              IF @inscol_" & rsAccordDetails.Fields("ColumnID").value _
-        & " <> " & "@delcol_" & rsAccordDetails.Fields("ColumnID").value & vbNewLine _
+      sFusionProhibitFields.Append "              IF @inscol_" & rsFusionDetails.Fields("ColumnID").value _
+        & " <> " & "@delcol_" & rsFusionDetails.Fields("ColumnID").value & vbNewLine _
         & "              BEGIN" & vbNewLine _
-        & "                  RAISERROR ('You cannot update " & rsAccordDetails.Fields("ColumnName").value & ", because it has been transferred to payroll.',16,@hResult)" & vbNewLine _
+        & "                  RAISERROR ('You cannot update " & rsFusionDetails.Fields("ColumnName").value & ", because it has been transferred to payroll.',16,@hResult)" & vbNewLine _
         & "                  ROLLBACK TRANSACTION" & vbNewLine _
         & "                  RETURN" & vbNewLine _
         & "              END" & vbNewLine & vbNewLine
-      rsAccordDetails.MoveNext
+      rsFusionDetails.MoveNext
     Loop
   End If
-  rsAccordDetails.Close
+  rsFusionDetails.Close
     
-  If sAccordProhibitFields.Length > 0 Then
+  If sFusionProhibitFields.Length > 0 Then
   
-    sAccordProhibitFields.TheString = vbNewLine _
+    sFusionProhibitFields.TheString = vbNewLine _
       & "          -- Prohibit update of key fields if record has been transferred to Payroll" & vbNewLine _
-      & "          EXEC dbo.spASRAccordIsRecordInPayroll @recordID, " & iTransferTypeID & ", @hResult OUTPUT" & vbNewLine _
+      & "          EXEC dbo.spASRAccordIsRecordInPayroll @recordID, " & iFusionTypeID & ", @hResult OUTPUT" & vbNewLine _
       & "          IF (@hResult = 1) AND (@fUpdatingDateDependentColumns = 0)" & vbNewLine _
       & "          BEGIN" & vbNewLine _
-      & sAccordProhibitFields.ToString _
+      & sFusionProhibitFields.ToString _
       & "          END" & vbNewLine
   
   End If
 
   
   ' Startup Payroll code
-  sAccordDeclaration = Space$(10) & "DECLARE @iAccordTransactionID as int" & vbNewLine & _
+  sFusionDeclaration = Space$(10) & "DECLARE @iAccordTransactionID as int" & vbNewLine & _
     Space$(10) & "DECLARE @bFilter as bit" & vbNewLine & _
     Space$(10) & "DECLARE @bAccordSendAllFields as bit" & vbNewLine & _
     Space$(10) & "DECLARE @intDefaultAccordStatus as int" & vbNewLine & _
     Space$(10) & "DECLARE @intDefaultAccordType as int" & vbNewLine
   
-  sUpdateAccordCode.TheString = sAccordDeclaration & sAccordProhibitFields.ToString & sUpdateAccordCode.ToString & vbNewLine & _
+  sUpdateFusionCode.TheString = sFusionDeclaration & sFusionProhibitFields.ToString & sUpdateFusionCode.ToString & vbNewLine & _
     Space$(10) & "EXEC dbo.spASRAccordPurgeTemp 1, @recordID" & vbNewLine & vbNewLine
   
-  sDeleteAccordCode.TheString = sAccordDeclaration & sDeleteAccordCode.ToString & vbNewLine & _
+  sDeleteFusionCode.TheString = sFusionDeclaration & sDeleteFusionCode.ToString & vbNewLine & _
     Space$(10) & "EXEC dbo.spASRAccordPurgeTemp 1, @recordID" & vbNewLine & vbNewLine
 
 
 TidyUpAndExit:
-  Set rsAccordDetails = Nothing
+  Set rsFusionDetails = Nothing
   SetTableTriggers_AccordTransfer = bOK
   Exit Function
 
@@ -2060,6 +2060,627 @@ ErrorTrap:
   Resume TidyUpAndExit
 
 End Function
+
+Private Function SetTableTriggers_FusionTransfer(ByRef sUpdateFusionCode As SystemMgr.cStringBuilder, ByRef sDeleteFusionCode As SystemMgr.cStringBuilder _
+, ByRef alngAuditColumns() As Long _
+, ByRef sSelectInsCols As SystemMgr.cStringBuilder, ByRef sSelectDelCols As SystemMgr.cStringBuilder _
+, ByRef sFetchInsCols As SystemMgr.cStringBuilder, ByRef sFetchDelCols As SystemMgr.cStringBuilder _
+, ByRef sDeclareInsCols As SystemMgr.cStringBuilder, ByRef sDeclareDelCols As SystemMgr.cStringBuilder _
+, ByVal pLngCurrentTableID As Long) As Boolean
+
+  On Error GoTo ErrorTrap
+
+  Dim bOK As Boolean
+  Dim sDefinitionSQL As String
+  Dim sFusionDeclaration As String
+  Dim sFusionFilter As String
+  Dim rsFusionDetails As DAO.Recordset
+  Dim rsAssociatedColumns As DAO.Recordset
+  Dim iLoop As Long
+  Dim bColFound As Boolean
+  Dim sConvertInsCols As String
+  Dim sConvertDelCols As String
+  Dim sColumnName As String
+  Dim lngColumnTableID As Long
+  Dim lngFusionType As Long
+  Dim lngFilterID As Long
+  Dim lngASRColumnID As Long
+  Dim sHasChangedCode As SystemMgr.cStringBuilder
+  Dim aiFusionTypes() As Long
+  Dim iFusionTypeLoop As Long
+  Dim strCurrentInsert As SystemMgr.cStringBuilder
+  Dim strCurrentUpdate As SystemMgr.cStringBuilder
+  Dim strCurrentDelete As SystemMgr.cStringBuilder
+  Dim strTableName As String
+  Dim strColumnName As String
+  Dim sASRColumnID As String
+  Dim strFusionFieldID As String
+  Dim lngGroupBy As Long
+  Dim sFusionProhibitFields As SystemMgr.cStringBuilder
+  Dim iFusionTypeID As Integer
+
+  ' Get Fusion Tranfers options
+  If gbFusionlModule Then
+    With recModuleSetup
+      .Index = "idxModuleParameter"
+      .Seek "=", gsMODULEKEY_ACCORD, gsPARAMETERKEY_DEFAULTSTATUS
+      If .NoMatch Then
+        .Seek "=", gsMODULEKEY_ACCORD, gsPARAMETERKEY_DEFAULTSTATUS
+        If .NoMatch Then
+          miAccordDefaultStatus = ACCORD_STATUS_PENDING
+        Else
+          miAccordDefaultStatus = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, ACCORD_STATUS_PENDING, !parametervalue)
+        End If
+      Else
+        miAccordDefaultStatus = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, ACCORD_STATUS_PENDING, !parametervalue)
+      End If
+
+      .Index = "idxModuleParameter"
+      .Seek "=", gsMODULEKEY_ACCORD, gsPARAMETERKEY_STATUSFORUTILITIES
+      If .NoMatch Then
+        .Seek "=", gsMODULEKEY_ACCORD, gsPARAMETERKEY_STATUSFORUTILITIES
+        If .NoMatch Then
+          miAccordStatusForUtilities = ACCORD_STATUS_PENDING
+        Else
+          miAccordStatusForUtilities = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, ACCORD_STATUS_PENDING, !parametervalue)
+        End If
+      Else
+        miAccordStatusForUtilities = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, ACCORD_STATUS_PENDING, !parametervalue)
+      End If
+
+      .Index = "idxModuleParameter"
+      .Seek "=", gsMODULEKEY_ACCORD, gsPARAMETERKEY_ALLOWDELETE
+      If .NoMatch Then
+        .Seek "=", gsMODULEKEY_ACCORD, gsPARAMETERKEY_ALLOWDELETE
+        If .NoMatch Then
+          mbAccordAllowDelete = False
+        Else
+          mbAccordAllowDelete = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, False, !parametervalue)
+        End If
+      Else
+        mbAccordAllowDelete = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, False, !parametervalue)
+      End If
+
+    End With
+    miAccordDefaultStatus = GetModuleSetting(gsMODULEKEY_ACCORD, gsPARAMETERKEY_DEFAULTSTATUS, ACCORD_STATUS_PENDING)
+    mbAccordAllowDelete = GetModuleSetting(gsMODULEKEY_ACCORD, gsPARAMETERKEY_ALLOWDELETE, False)
+  Else
+    SetTableTriggers_AccordTransfer = True
+    Exit Function
+  End If
+  
+  
+  
+  Set sHasChangedCode = New SystemMgr.cStringBuilder
+  Set strCurrentInsert = New SystemMgr.cStringBuilder
+  Set strCurrentUpdate = New SystemMgr.cStringBuilder
+  Set strCurrentDelete = New SystemMgr.cStringBuilder
+  
+  ReDim avAccordProhibitFields(0, 1)
+  bOK = True
+  sUpdateFusionCode.TheString = vbNullString
+  sDeleteFusionCode.TheString = vbNullString
+
+  ' Get the amount of transfer types attached to this table
+  ReDim aiFusionTypes(1, 0)
+  sDefinitionSQL = "SELECT TransferTypeID, ForceAsUpdate FROM tmpAccordTransferTypes" _
+        & " WHERE ASRBaseTableID = " & CStr(pLngCurrentTableID)
+  Set rsFusionDetails = daoDb.OpenRecordset(sDefinitionSQL, dbOpenForwardOnly, dbReadOnly)
+
+  Do While Not rsFusionDetails.EOF
+    ReDim Preserve aiFusionTypes(1, UBound(aiFusionTypes, 2) + 1)
+    aiFusionTypes(0, UBound(aiFusionTypes, 2)) = rsFusionDetails(0).value
+    aiFusionTypes(1, UBound(aiFusionTypes, 2)) = IIf(rsFusionDetails(1).value = True, 1, 0)
+    rsFusionDetails.MoveNext
+  Loop
+
+  For iFusionTypeLoop = 1 To UBound(aiFusionTypes, 2)
+  
+    sDefinitionSQL = "SELECT tt.TransferTypeID, tt.FilterID, td.TransferFieldID" _
+          & ", td.ASRTableID, td.ASRMapType, td.IsEmployeeCode, td.IsCompanyCode, td.ConvertData, td.IsEmployeeName, td.IsDepartmentName, td.IsDepartmentCode, td.IsFusionCode" _
+          & ", td.ASRColumnID, td.ASRExprID, td.ASRValue, td.AlwaysTransfer, td.Description, td.GroupBy FROM tmpAccordTransferTypes tt" _
+          & " INNER JOIN tmpAccordTransferFieldDefinitions td ON td.TransferTypeID = tt.TransferTypeID " _
+          & " WHERE tt.ASRBaseTableID = " & CStr(pLngCurrentTableID) & " AND td.ASRMapType IS NOT NULL " _
+          & " AND tt.TransferTypeID = " & Str$(aiFusionTypes(0, iFusionTypeLoop)) _
+          & " ORDER BY GroupBy DESC, TransferFieldID ASC"
+    Set rsFusionDetails = daoDb.OpenRecordset(sDefinitionSQL, dbOpenForwardOnly, dbReadOnly)
+    
+    With rsFusionDetails
+     
+      lngFilterID = 0
+      bColFound = False
+      sHasChangedCode.TheString = vbNullString
+      strCurrentInsert.TheString = vbNullString
+      strCurrentUpdate.TheString = vbNullString
+           
+      While Not .EOF
+
+        lngASRColumnID = !ASRColumnID
+        lngFusionType = !TransferTypeID
+        lngFilterID = !FilterID
+        strFusionFieldID = !TransferFieldID
+  
+        Select Case !ASRMapType
+          Case MAPTYPE_COLUMN
+                
+            bColFound = False
+            lngColumnTableID = GetTableIDFromColumnID(lngASRColumnID)
+  
+            ' Handle differently if column is a parent column
+            If (lngColumnTableID = pLngCurrentTableID) Then
+            
+              ' Check if the column has already been declared and added to the select and fetch strings
+              For iLoop = 1 To UBound(alngAuditColumns)
+                If alngAuditColumns(iLoop) = lngASRColumnID Then
+                  bColFound = True
+                  Exit For
+                End If
+              Next iLoop
+    
+              sASRColumnID = Trim$(Str$(lngASRColumnID))
+                
+              If Not bColFound Then
+    
+                ReDim Preserve alngAuditColumns(UBound(alngAuditColumns) + 1)
+                alngAuditColumns(UBound(alngAuditColumns)) = lngASRColumnID
+              
+                sColumnName = GetColumnName(lngASRColumnID, True)
+    
+                sSelectInsCols.Append ", inserted." & sColumnName
+            '    sSelectInsCols2.Append ",@insCol_" & sASRColumnID & "=" & sColumnName
+                sSelectDelCols.Append ", deleted." & sColumnName
+    
+                sFetchInsCols.Append ", @insCol_" & sASRColumnID
+                sFetchDelCols.Append ", @delCol_" & sASRColumnID
+
+                sDeclareInsCols.Append ", @insCol_" & sASRColumnID
+                sDeclareDelCols.Append ", @delCol_" & sASRColumnID
+              End If
+    
+              Select Case GetColumnDataType(lngASRColumnID)
+                Case dtVARCHAR
+                  If Not bColFound Then
+                    sDeclareInsCols.Append " varchar(MAX)"
+                    sDeclareDelCols.Append " varchar(MAX)"
+                  End If
+                  sConvertInsCols = "ISNULL(CONVERT(varchar(255), @insCol_" & sASRColumnID & "), '')"
+                  sConvertDelCols = "ISNULL(CONVERT(varchar(255), @delCol_" & sASRColumnID & "), '')"
+    
+                Case dtLONGVARCHAR
+                  If Not bColFound Then
+                    sDeclareInsCols.Append " varchar(14)"
+                    sDeclareDelCols.Append " varchar(14)"
+                  End If
+                  sConvertInsCols = "ISNULL(CONVERT(varchar(255), @insCol_" & sASRColumnID & "), '')"
+                  sConvertDelCols = "ISNULL(CONVERT(varchar(255), @delCol_" & sASRColumnID & "), '')"
+    
+                Case dtINTEGER
+                  If Not bColFound Then
+                    sDeclareInsCols.Append " integer"
+                    sDeclareDelCols.Append " integer"
+                  End If
+                  sConvertInsCols = "ISNULL(CONVERT(varchar(255), @insCol_" & sASRColumnID & "), '')"
+                  sConvertDelCols = "ISNULL(CONVERT(varchar(255), @delCol_" & sASRColumnID & "), '')"
+    
+                Case dtNUMERIC
+                  If Not bColFound Then
+                    sDeclareInsCols.Append " numeric(" & Trim$(Str$(GetColumnSize(lngASRColumnID, False))) & "," & Trim$(Str$(GetColumnSize(lngASRColumnID, True))) & ")"
+                    sDeclareDelCols.Append " numeric(" & Trim$(Str$(GetColumnSize(lngASRColumnID, False))) & "," & Trim$(Str$(GetColumnSize(lngASRColumnID, True))) & ")"
+                  End If
+                  sConvertInsCols = "ISNULL(CONVERT(varchar(255), @insCol_" & sASRColumnID & "), '')"
+                  sConvertDelCols = "ISNULL(CONVERT(varchar(255), @delCol_" & sASRColumnID & "), '')"
+    
+                ' For Fusion date formats are converted to YYYYMMDD
+                Case dtTIMESTAMP
+                  If Not bColFound Then
+                    sDeclareInsCols.Append " datetime"
+                    sDeclareDelCols.Append " datetime"
+                  End If
+                  
+                  sConvertInsCols = "ISNULL(CONVERT(varchar(255),DATEPART(year, @insCol_" & sASRColumnID & ")) + RIGHT('0' + CONVERT(varchar(2),DATEPART(month, @insCol_" & Trim$(Str$(lngASRColumnID)) & ")),2) + RIGHT('0' + CONVERT(varchar(2),DATEPART(day, @insCol_" & Trim$(Str$(lngASRColumnID)) & ")),2),'00000000')"
+                  sConvertDelCols = "ISNULL(CONVERT(varchar(255),DATEPART(year, @delCol_" & sASRColumnID & ")) + RIGHT('0' + CONVERT(varchar(2),DATEPART(month, @delCol_" & Trim$(Str$(lngASRColumnID)) & ")),2) + RIGHT('0' + CONVERT(varchar(2),DATEPART(day, @delCol_" & Trim$(Str$(lngASRColumnID)) & ")),2),'00000000')"
+                  
+                Case dtBIT
+                  If Not bColFound Then
+                    sDeclareInsCols.Append " bit"
+                    sDeclareDelCols.Append " bit"
+                  End If
+                  sConvertInsCols = "ISNULL(CONVERT(varchar(255), @insCol_" & sASRColumnID & "), '')"
+                  sConvertDelCols = "ISNULL(CONVERT(varchar(255), @delCol_" & sASRColumnID & "), '')"
+    
+                Case dtVARBINARY, dtLONGVARBINARY
+                  If Not bColFound Then
+                    sDeclareInsCols.Append " varchar(255)"
+                    sDeclareDelCols.Append " varchar(255)"
+                  End If
+                  sConvertInsCols = "ISNULL(CONVERT(varchar(255), @insCol_" & sASRColumnID & "), '')"
+                  sConvertDelCols = "ISNULL(CONVERT(varchar(255), @delCol_" & sASRColumnID & "), '')"
+    
+                Case Else
+                  If Not bColFound Then
+                    sDeclareInsCols.Append " varchar(max)"
+                    sDeclareDelCols.Append " varchar(max)"
+                  End If
+                  sConvertInsCols = "ISNULL(CONVERT(varchar(255), @insCol_" & sASRColumnID & "), '')"
+                  sConvertDelCols = "ISNULL(CONVERT(varchar(255), @delCol_" & sASRColumnID & "), '')"
+              End Select
+    
+              lngGroupBy = !GroupBy
+              If lngGroupBy <> 0 Then
+              
+                  ' Get associated columns
+                  sDefinitionSQL = "SELECT ASRColumnID FROM tmpAccordTransferFieldDefinitions td" _
+                      & " WHERE GroupBy = " & Str(lngGroupBy) & " AND ASRColumnID > 0" _
+                      & " AND transferTypeID = " & Str$(aiFusionTypes(0, iFusionTypeLoop))
+                  Set rsAssociatedColumns = daoDb.OpenRecordset(sDefinitionSQL, dbOpenForwardOnly, dbReadOnly)
+                  
+                  strCurrentUpdate.Append vbNewLine & vbNewLine & Space$(14) & "IF"
+
+                  Do While Not rsAssociatedColumns.EOF
+                    ' AE20080616 Fault #13168
+                    Select Case GetColumnDataType(lngASRColumnID)
+                    Case dtINTEGER, dtNUMERIC, dtBIT
+                      strCurrentUpdate.Append _
+                        " ISNULL(@insCol_" & rsAssociatedColumns.Fields(0).value & ",0) <> ISNULL(@delCol_" & rsAssociatedColumns.Fields(0).value & ",0)"
+                    Case Else
+                      strCurrentUpdate.Append _
+                        " ISNULL(@insCol_" & rsAssociatedColumns.Fields(0).value & ",'') <> ISNULL(@delCol_" & rsAssociatedColumns.Fields(0).value & ",'')"
+                    End Select
+                    
+                    rsAssociatedColumns.MoveNext
+                    
+                    If Not rsAssociatedColumns.EOF Then
+                      strCurrentUpdate.Append " OR "
+                    End If
+                    
+                  Loop
+              
+                  strCurrentUpdate.Append " OR @bAccordSendAllFields = 1 OR @bAccordResend = 1" & vbNewLine & Space$(14) & _
+                    "BEGIN" & vbNewLine
+                  
+                  rsAssociatedColumns.Close
+              
+              Else
+                ' AE20080616 Fault #13168
+                Select Case GetColumnDataType(lngASRColumnID)
+                Case dtINTEGER, dtNUMERIC, dtBIT
+                  strCurrentUpdate.Append vbNewLine & _
+                    IIf(Not !AlwaysTransfer And !GroupBy = 0, Space$(14) & "IF ISNULL(@insCol_" & sASRColumnID & ",0) <> ISNULL(@delCol_" & sASRColumnID & ",0) OR @bAccordSendAllFields = 1 OR @bAccordResend = 1" & vbNewLine & Space$(14) & _
+                      "BEGIN" & vbNewLine, vbNullString)
+                Case Else
+                  strCurrentUpdate.Append vbNewLine & _
+                    IIf(Not !AlwaysTransfer And !GroupBy = 0, Space$(14) & "IF ISNULL(@insCol_" & sASRColumnID & ",'') <> ISNULL(@delCol_" & sASRColumnID & ",'') OR @bAccordSendAllFields = 1 OR @bAccordResend = 1" & vbNewLine & Space$(14) & _
+                      "BEGIN" & vbNewLine, vbNullString)
+                End Select
+              End If
+                
+              If !ConvertData Then
+                
+                strCurrentInsert.Append _
+                  Space$(12) & "EXEC @hResult = dbo.spASRAccordExpr_" & lngFusionType & "_" & strFusionFieldID & " @insCol_" & sASRColumnID & ",@sTempInsCol OUTPUT" & vbNewLine
+                
+                strCurrentUpdate.Append _
+                  IIf(Not !AlwaysTransfer, Space$(18), Space$(14)) & "EXEC @hResult = dbo.spASRAccordExpr_" & lngFusionType & "_" & strFusionFieldID & " @insCol_" & sASRColumnID & ",@sTempInsCol OUTPUT" & vbNewLine & _
+                  IIf(Not !AlwaysTransfer, Space$(18), Space$(14)) & "EXEC @hResult = dbo.spASRAccordExpr_" & lngFusionType & "_" & strFusionFieldID & " @delCol_" & sASRColumnID & ",@sTempDelCol OUTPUT" & vbNewLine
+                
+                strCurrentDelete.Append _
+                   vbNewLine & vbNewLine & Space$(12) & "/* ConvertDataForDeleteTransaction */" & vbNewLine
+                strCurrentDelete.Append _
+                  Space$(12) & "EXEC @hResult = dbo.spASRAccordExpr_" & lngFusionType & "_" & strFusionFieldID & " @delCol_" & sASRColumnID & ",@sTempDelCol OUTPUT" & vbNewLine
+  
+              Else
+                
+                strCurrentInsert.Append Space$(12) & "SET @sTempInsCol = " & sConvertInsCols & vbNewLine
+                
+                strCurrentUpdate.Append _
+                  IIf(Not !AlwaysTransfer, Space$(18), Space$(14)) & "SET @sTempInsCol = " & sConvertInsCols & vbNewLine & _
+                  IIf(Not !AlwaysTransfer, Space$(18), Space$(14)) & "SET @sTempDelCol = " & sConvertDelCols & vbNewLine
+                  
+                strCurrentDelete.Append vbNewLine & vbNewLine & Space$(12) & "SET @sTempDelCol = " & sConvertDelCols & vbNewLine
+
+              End If
+  
+              strCurrentInsert.Append _
+                  Space$(12) & "EXEC dbo.spASRAccordPopulateTransactionData @iAccordTransactionID, " & strFusionFieldID & ", null, @sTempInsCol" & vbNewLine
+  
+              strCurrentUpdate.Append _
+                IIf(Not !AlwaysTransfer, Space$(18), Space$(14)) & "EXEC dbo.spASRAccordPopulateTransactionData @iAccordTransactionID," & strFusionFieldID & ", @sTempDelCol,@sTempInsCol" & _
+                IIf(Not !AlwaysTransfer, vbNewLine & Space$(14) & "END", vbNullString)
+ 
+              ' AE20080616 Fault #13168
+              Select Case GetColumnDataType(lngASRColumnID)
+              Case dtINTEGER, dtNUMERIC, dtBIT
+                sHasChangedCode.Append IIf(sHasChangedCode.Length <> 0, " OR ", vbNullString) & _
+                  "ISNULL(@insCol_" & sASRColumnID & ",0) <> ISNULL(@delCol_" & sASRColumnID & ",0)"
+              Case Else
+                sHasChangedCode.Append IIf(sHasChangedCode.Length <> 0, " OR ", vbNullString) & _
+                  "ISNULL(@insCol_" & sASRColumnID & ",'') <> ISNULL(@delCol_" & sASRColumnID & ",'')"
+              End Select
+              
+              strCurrentDelete.Append _
+                Space$(12) & "EXEC dbo.spASRAccordPopulateTransactionData @iAccordTransactionID, " & strFusionFieldID & ", @sTempDelCol,null" & vbNullString & vbNullString
+            
+            Else
+      
+              strColumnName = GetColumnName(lngASRColumnID, True)
+              strTableName = GetTableName(lngColumnTableID)
+      
+              ' Convert data type
+              Select Case GetColumnDataType(lngASRColumnID)
+                Case dtBIT
+                Case dtLONGVARBINARY
+                Case dtVARBINARY
+                Case dtBINARY
+                Case dtLONGVARCHAR
+                Case dtNUMERIC
+                Case dtINTEGER
+                Case dtVARCHAR
+                Case dtTIMESTAMP
+                  strColumnName = "ISNULL(CONVERT(varchar(255),DATEPART(year, [" & strColumnName _
+                    & "])) + RIGHT('0' + CONVERT(varchar(2),DATEPART(month, [" & strColumnName _
+                    & "])),2) + RIGHT('0' + CONVERT(varchar(2),DATEPART(day, [" + strColumnName + "])),2),'00000000')"
+              End Select
+          
+              ' Column is on parent record - need to read value from parent record
+              strCurrentInsert.Append vbNewLine & vbNewLine & _
+                Space$(12) & "SET @parentRecordID = (SELECT ID_" & lngColumnTableID & " FROM inserted WHERE id = @recordID)" & vbNewLine & _
+                Space$(12) & "SET @sTempInsCol = (SELECT " & strColumnName & " FROM " & strTableName & " WHERE ID = @parentRecordID)" & vbNewLine & _
+                Space$(12) & "EXEC dbo.spASRAccordPopulateTransactionData @iAccordTransactionID," & strFusionFieldID & ", null,@sTempInsCol"
+  
+              If !AlwaysTransfer Then
+                strCurrentUpdate.Append vbNewLine & vbNewLine & _
+                  Space$(14) & "SET @parentRecordID = (SELECT ID_" & lngColumnTableID & " FROM inserted WHERE id = @recordID)" & vbNewLine & _
+                  Space$(14) & "SET @sTempInsCol = (SELECT " & strColumnName & " FROM " & strTableName & " WHERE ID = @parentRecordID)" & vbNewLine & _
+                  Space$(14) & "EXEC dbo.spASRAccordPopulateTransactionData @iAccordTransactionID," & strFusionFieldID & ",@sTempInsCol,@sTempInsCol"
+              End If
+                
+              strCurrentDelete.Append vbNewLine & vbNewLine & _
+                Space$(12) & "SET @parentRecordID = (SELECT ID_" & lngColumnTableID & " FROM deleted WHERE id = @recordID)" & vbNewLine & _
+                Space$(12) & "SET @sTempDelCol = (SELECT " & strColumnName & " FROM " & strTableName & " WHERE ID = @parentRecordID)" & vbNewLine & _
+                Space$(12) & "EXEC dbo.spASRAccordPopulateTransactionData @iAccordTransactionID," & strFusionFieldID & ",@sTempDelCol,null"
+            
+            End If
+          
+            ' If this transfer field is the company code then update the transaction table
+            If !IsCompanyCode Then
+              strCurrentInsert.Append vbNewLine & Space$(12) & "UPDATE ASRSysAccordTransactions SET [CompanyCode] = @sTempInsCol WHERE [TransactionID] = @iAccordTransactionID"
+              strCurrentUpdate.Append vbNewLine & Space$(14) & "UPDATE ASRSysAccordTransactions SET [CompanyCode] = @sTempInsCol WHERE [TransactionID] = @iAccordTransactionID"
+              strCurrentDelete.Append vbNewLine & Space$(12) & "UPDATE ASRSysAccordTransactions SET [CompanyCode] = @sTempDelCol WHERE [TransactionID] = @iAccordTransactionID"
+            End If
+          
+            ' If this transfer field is the employee code then update the transaction table
+            If !IsEmployeeCode Then
+              strCurrentInsert.Append vbNewLine & Space$(12) & "UPDATE ASRSysAccordTransactions SET [EmployeeCode] = @sTempInsCol WHERE [TransactionID] = @iAccordTransactionID"
+              strCurrentUpdate.Append vbNewLine & Space$(14) & "UPDATE ASRSysAccordTransactions SET [EmployeeCode] = @sTempInsCol WHERE [TransactionID] = @iAccordTransactionID"
+              strCurrentDelete.Append vbNewLine & Space$(12) & "UPDATE ASRSysAccordTransactions SET [EmployeeCode] = @sTempDelCol WHERE [TransactionID] = @iAccordTransactionID"
+            End If
+          
+            ' If this transfer field is the Employee Name then update the transaction table
+            If !IsEmployeeName Then
+              strCurrentInsert.Append vbNewLine & Space$(12) & "UPDATE ASRSysAccordTransactions SET [EmployeeName] = @sTempInsCol WHERE [TransactionID] = @iAccordTransactionID"
+              strCurrentUpdate.Append vbNewLine & Space$(14) & "UPDATE ASRSysAccordTransactions SET [EmployeeName] = @sTempInsCol WHERE [TransactionID] = @iAccordTransactionID"
+              strCurrentDelete.Append vbNewLine & Space$(12) & "UPDATE ASRSysAccordTransactions SET [EmployeeName] = @sTempDelCol WHERE [TransactionID] = @iAccordTransactionID"
+            End If
+          
+            ' If this transfer field is the Department Name then update the transaction table
+            If !IsDepartmentName Then
+              strCurrentInsert.Append vbNewLine & Space$(12) & "UPDATE ASRSysAccordTransactions SET [DepartmentName] = @sTempInsCol WHERE [TransactionID] = @iAccordTransactionID"
+              strCurrentUpdate.Append vbNewLine & Space$(14) & "UPDATE ASRSysAccordTransactions SET [DepartmentName] = @sTempInsCol WHERE [TransactionID] = @iAccordTransactionID"
+              strCurrentDelete.Append vbNewLine & Space$(12) & "UPDATE ASRSysAccordTransactions SET [DepartmentName] = @sTempDelCol WHERE [TransactionID] = @iAccordTransactionID"
+            End If
+          
+            ' If this transfer field is the Department Name then update the transaction table
+            If !IsDepartmentCode Then
+              strCurrentInsert.Append vbNewLine & Space$(12) & "UPDATE ASRSysAccordTransactions SET [DepartmentCode] = @sTempInsCol WHERE [TransactionID] = @iAccordTransactionID"
+              strCurrentUpdate.Append vbNewLine & Space$(14) & "UPDATE ASRSysAccordTransactions SET [DepartmentCode] = @sTempInsCol WHERE [TransactionID] = @iAccordTransactionID"
+              strCurrentDelete.Append vbNewLine & Space$(12) & "UPDATE ASRSysAccordTransactions SET [DepartmentCode] = @sTempDelCol WHERE [TransactionID] = @iAccordTransactionID"
+            End If
+          
+            ' If this transfer field is the Fusion code then update the transaction table
+            If !IsFusionCode Then
+              strCurrentInsert.Append vbNewLine & Space$(12) & "UPDATE ASRSysAccordTransactions SET [FusionCode] = @sTempInsCol WHERE [TransactionID] = @iAccordTransactionID"
+              strCurrentUpdate.Append vbNewLine & Space$(14) & "UPDATE ASRSysAccordTransactions SET [FusionCode] = @sTempInsCol WHERE [TransactionID] = @iAccordTransactionID"
+              strCurrentDelete.Append vbNewLine & Space$(12) & "UPDATE ASRSysAccordTransactions SET [FusionCode] = @sTempDelCol WHERE [TransactionID] = @iAccordTransactionID"
+            End If
+          
+          
+          ' This transfer field is an expression. (Only text calcs are allowed so no need to format)
+          Case MAPTYPE_EXPRESSION
+          
+            strCurrentInsert.Append vbNewLine & vbNewLine & _
+              Space$(12) & "EXEC @hResult = dbo.sp_ASRExpr_" & Trim(Str(!ASRExprID)) & " @sTempInsCol OUTPUT, @recordID" & vbNewLine & _
+              Space$(12) & "EXEC dbo.spASRAccordPopulateTransactionData @iAccordTransactionID," & strFusionFieldID & ", null,@sTempInsCol"
+  
+            strCurrentUpdate.Append vbNewLine & vbNewLine & _
+              Space$(14) & "EXEC @hResult = dbo.sp_ASRExpr_" & Trim(Str(!ASRExprID)) & " @sTempInsCol OUTPUT, @recordID" & vbNewLine & _
+              Space$(14) & "EXEC dbo.spASRAccordPopulateTransactionData @iAccordTransactionID," & strFusionFieldID & ", null,@sTempInsCol"
+  
+            strCurrentDelete.Append vbNewLine & vbNewLine & _
+              Space$(12) & "EXEC @hResult = dbo.sp_ASRExpr_" & Trim(Str(!ASRExprID)) & " @sTempInsCol OUTPUT, @recordID" & vbNewLine & _
+              Space$(12) & "EXEC dbo.spASRAccordPopulateTransactionData @iAccordTransactionID," & strFusionFieldID & ", @sTempInsCol, null"
+          
+            ' If this transfer field is the Employee Name then update the transaction table
+            If !IsEmployeeName Then
+              strCurrentInsert.Append vbNewLine & Space$(12) & "UPDATE ASRSysAccordTransactions SET [EmployeeName] = @sTempInsCol WHERE [TransactionID] = @iAccordTransactionID"
+              strCurrentUpdate.Append vbNewLine & Space$(14) & "UPDATE ASRSysAccordTransactions SET [EmployeeName] = @sTempInsCol WHERE [TransactionID] = @iAccordTransactionID"
+              strCurrentDelete.Append vbNewLine & Space$(12) & "UPDATE ASRSysAccordTransactions SET [EmployeeName] = @sTempInsCol WHERE [TransactionID] = @iAccordTransactionID"
+            End If
+            
+            ' If this transfer field is the Department Name then update the transaction table
+            If !IsDepartmentName Then
+              strCurrentInsert.Append vbNewLine & Space$(12) & "UPDATE ASRSysAccordTransactions SET [DepartmentName] = @sTempInsCol WHERE [TransactionID] = @iAccordTransactionID"
+              strCurrentUpdate.Append vbNewLine & Space$(14) & "UPDATE ASRSysAccordTransactions SET [DepartmentName] = @sTempInsCol WHERE [TransactionID] = @iAccordTransactionID"
+              strCurrentDelete.Append vbNewLine & Space$(12) & "UPDATE ASRSysAccordTransactions SET [DepartmentName] = @sTempInsCol WHERE [TransactionID] = @iAccordTransactionID"
+            End If
+          
+            ' If this transfer field is the Department Name then update the transaction table
+            If !IsDepartmentCode Then
+              strCurrentInsert.Append vbNewLine & Space$(12) & "UPDATE ASRSysAccordTransactions SET [DepartmentCode] = @sTempInsCol WHERE [TransactionID] = @iAccordTransactionID"
+              strCurrentUpdate.Append vbNewLine & Space$(14) & "UPDATE ASRSysAccordTransactions SET [DepartmentCode] = @sTempInsCol WHERE [TransactionID] = @iAccordTransactionID"
+              strCurrentDelete.Append vbNewLine & Space$(12) & "UPDATE ASRSysAccordTransactions SET [DepartmentCode] = @sTempInsCol WHERE [TransactionID] = @iAccordTransactionID"
+            End If
+          
+            ' If this transfer field is the Fusion code then update the transaction table
+            If !IsFusionCode Then
+              strCurrentInsert.Append vbNewLine & Space$(12) & "UPDATE ASRSysAccordTransactions SET [FusionCode] = @sTempInsCol WHERE [TransactionID] = @iAccordTransactionID"
+              strCurrentUpdate.Append vbNewLine & Space$(14) & "UPDATE ASRSysAccordTransactions SET [FusionCode] = @sTempInsCol WHERE [TransactionID] = @iAccordTransactionID"
+              strCurrentDelete.Append vbNewLine & Space$(12) & "UPDATE ASRSysAccordTransactions SET [FusionCode] = @sTempInsCol WHERE [TransactionID] = @iAccordTransactionID"
+            End If
+          
+          
+          ' This transfer field is a straight value.
+          Case MAPTYPE_VALUE
+          
+              strCurrentInsert.Append vbNewLine & vbNewLine & _
+                Space$(12) & "EXEC dbo.spASRAccordPopulateTransactionData @iAccordTransactionID," & strFusionFieldID & ",null,'" & Trim(!ASRValue) & "'"
+        
+              strCurrentUpdate.Append vbNewLine & vbNewLine & _
+                Space$(14) & "EXEC dbo.spASRAccordPopulateTransactionData @iAccordTransactionID," & strFusionFieldID & ",'" & Trim(!ASRValue) & "','" & Trim(!ASRValue) & "'"
+        
+              strCurrentDelete.Append vbNewLine & vbNewLine & _
+                Space$(12) & "EXEC dbo.spASRAccordPopulateTransactionData @iAccordTransactionID," & strFusionFieldID & ",'" & Trim(!ASRValue) & "',null"
+        
+              ' If this transfer field is the company code then update the transaction table
+              If !IsCompanyCode Then
+                strCurrentInsert.Append vbNewLine & Space$(12) & "UPDATE ASRSysAccordTransactions SET [CompanyCode] = '" & Trim(!ASRValue) & "' WHERE [TransactionID] = @iAccordTransactionID"
+                strCurrentUpdate.Append vbNewLine & Space$(12) & "UPDATE ASRSysAccordTransactions SET [CompanyCode] = '" & Trim(!ASRValue) & "' WHERE [TransactionID] = @iAccordTransactionID"
+                strCurrentDelete.Append vbNewLine & Space$(12) & "UPDATE ASRSysAccordTransactions SET [CompanyCode] = '" & Trim(!ASRValue) & "' WHERE [TransactionID] = @iAccordTransactionID"
+              End If
+        
+              ' If this transfer field is the Department Name then update the transaction table
+              If !IsDepartmentName Then
+                strCurrentInsert.Append vbNewLine & Space$(12) & "UPDATE ASRSysAccordTransactions SET [DepartmentName] = '" & Trim(!ASRValue) & "' WHERE [TransactionID] = @iAccordTransactionID"
+                strCurrentUpdate.Append vbNewLine & Space$(14) & "UPDATE ASRSysAccordTransactions SET [DepartmentName] = '" & Trim(!ASRValue) & "' WHERE [TransactionID] = @iAccordTransactionID"
+                strCurrentDelete.Append vbNewLine & Space$(12) & "UPDATE ASRSysAccordTransactions SET [DepartmentName] = '" & Trim(!ASRValue) & "' WHERE [TransactionID] = @iAccordTransactionID"
+              End If
+            
+              ' If this transfer field is the Department Name then update the transaction table
+              If !IsDepartmentCode Then
+                strCurrentInsert.Append vbNewLine & Space$(12) & "UPDATE ASRSysAccordTransactions SET [DepartmentCode] = '" & Trim(!ASRValue) & "' WHERE [TransactionID] = @iAccordTransactionID"
+                strCurrentUpdate.Append vbNewLine & Space$(14) & "UPDATE ASRSysAccordTransactions SET [DepartmentCode] = '" & Trim(!ASRValue) & "' WHERE [TransactionID] = @iAccordTransactionID"
+                strCurrentDelete.Append vbNewLine & Space$(12) & "UPDATE ASRSysAccordTransactions SET [DepartmentCode] = '" & Trim(!ASRValue) & "' WHERE [TransactionID] = @iAccordTransactionID"
+              End If
+        
+        End Select
+      
+        .MoveNext
+      Wend
+      
+      .Close
+      
+    End With
+
+    ' If filter add it
+    If lngFilterID > 0 Then
+      sFusionFilter = Space$(10) & "EXEC @hResult = dbo.sp_ASRExpr_" & Trim$(Str$(lngFilterID)) & " @bFilter OUTPUT, @recordID" & vbNewLine _
+                    & Space$(10) & "IF (@iAccordManualSendType = " & lngFusionType & " AND @bAccordBypassFilter = 1)" & vbNewLine _
+                    & Space$(12) & "OR (@iAccordManualSendType = " & lngFusionType & " AND @bAccordBypassFilter = 0 AND @bFilter = 1)" & vbNewLine _
+                    & Space$(12) & "OR (@bFilter = 1 AND @iAccordManualSendType = -1)" & vbNewLine _
+                    & Space$(10) & "BEGIN" & vbNewLine
+    Else
+      sFusionFilter = vbNullString
+    End If
+       
+    If strCurrentUpdate.Length <> 0 Then
+          
+      sHasChangedCode.Append IIf(sHasChangedCode.Length <> 0, " OR ", vbNullString) & " @bAccordResend = 1"
+
+      sUpdateFusionCode.Append vbNewLine & vbNewLine & _
+        sFusionFilter & Space$(10) & "EXEC dbo.spASRAccordNeedToSendAll " & Str$(lngFusionType) & ", @recordID, @bAccordResend OUTPUT" & vbNewLine & _
+        IIf(sHasChangedCode.Length <> 0, Space$(12) & "IF (" & sHasChangedCode.ToString & ")" & vbNewLine & _
+        Space$(12) & "BEGIN" & vbNewLine, vbNullString) & vbNewLine & _
+        Space$(14) & "EXEC dbo.spASRAccordPopulateTransaction @iAccordTransactionID OUTPUT," & Str$(lngFusionType) & ", 1 , @iAccordDefaultStatus, @recordID, 1, @bAccordSendAllFields OUTPUT" & _
+        strCurrentUpdate.ToString & vbNewLine & _
+        Space$(12) & IIf(sHasChangedCode.Length <> 0, "END", vbNullString) & vbNewLine
+    End If
+
+    If strCurrentDelete.Length <> 0 Then
+      
+      sDeleteFusionCode.Append vbNewLine & _
+        Space$(10) & "EXEC dbo.spASRAccordPopulateTransaction @iAccordTransactionID OUTPUT," & Str$(lngFusionType) & ",2, @iAccordDefaultStatus, @recordID, 1, @bAccordSendAllFields OUTPUT" & vbNewLine & _
+        Space$(10) & "IF @bAccordSendAllFields = 1" & vbNewLine & Space$(10) & "BEGIN" & vbNewLine & _
+        strCurrentDelete.ToString & vbNewLine & Space$(10) & "END" & vbNewLine
+
+    End If
+   
+    If lngFilterID > 0 Then
+      sUpdateFusionCode.Append vbNewLine & Space$(10) & "END"
+    End If
+   
+    Set rsFusionDetails = Nothing
+
+  Next iFusionTypeLoop
+
+
+  ' Probihit changes
+  Set sFusionProhibitFields = New SystemMgr.cStringBuilder
+  sFusionProhibitFields.TheString = vbNullString
+      
+  ' We have to use "old" style syntax becuase dao is rubbish and doesn't understand join properly!
+  sDefinitionSQL = "SELECT c.ColumnID, c.ColumnName, t.TransferTypeID FROM tmpAccordTransferTypes t" _
+      & " ,tmpAccordTransferFieldDefinitions d, tmpColumns c" _
+      & " WHERE d.ASRColumnID = c.ColumnID AND t.TransferTypeID = d.TransferTypeID" _
+      & " AND t.asrBaseTableID = " & pLngCurrentTableID & " And d.PreventModify = true"
+  Set rsFusionDetails = daoDb.OpenRecordset(sDefinitionSQL, dbOpenForwardOnly, dbReadOnly)
+  
+  If Not (rsFusionDetails.EOF And rsFusionDetails.BOF) Then
+    iFusionTypeID = rsFusionDetails.Fields("TransferTypeID").value
+   
+    Do While Not rsFusionDetails.EOF
+    
+      sFusionProhibitFields.Append "              IF @inscol_" & rsFusionDetails.Fields("ColumnID").value _
+        & " <> " & "@delcol_" & rsFusionDetails.Fields("ColumnID").value & vbNewLine _
+        & "              BEGIN" & vbNewLine _
+        & "                  RAISERROR ('You cannot update " & rsFusionDetails.Fields("ColumnName").value & ", because it has been transferred to Fusion.',16,@hResult)" & vbNewLine _
+        & "                  ROLLBACK TRANSACTION" & vbNewLine _
+        & "                  RETURN" & vbNewLine _
+        & "              END" & vbNewLine & vbNewLine
+      rsFusionDetails.MoveNext
+    Loop
+  End If
+  rsFusionDetails.Close
+    
+  If sFusionProhibitFields.Length > 0 Then
+  
+    sFusionProhibitFields.TheString = vbNewLine _
+      & "          -- Prohibit update of key fields if record has been transferred to Fusion" & vbNewLine _
+      & "          EXEC dbo.spASRAccordIsRecordInFusion @recordID, " & iFusionTypeID & ", @hResult OUTPUT" & vbNewLine _
+      & "          IF (@hResult = 1) AND (@fUpdatingDateDependentColumns = 0)" & vbNewLine _
+      & "          BEGIN" & vbNewLine _
+      & sFusionProhibitFields.ToString _
+      & "          END" & vbNewLine
+  
+  End If
+
+  
+  ' Startup Fusion code
+  sFusionDeclaration = Space$(10) & "DECLARE @iAccordTransactionID as int" & vbNewLine & _
+    Space$(10) & "DECLARE @bFilter as bit" & vbNewLine & _
+    Space$(10) & "DECLARE @bAccordSendAllFields as bit" & vbNewLine & _
+    Space$(10) & "DECLARE @intDefaultAccordStatus as int" & vbNewLine & _
+    Space$(10) & "DECLARE @intDefaultAccordType as int" & vbNewLine
+  
+  sUpdateFusionCode.TheString = sFusionDeclaration & sFusionProhibitFields.ToString & sUpdateFusionCode.ToString & vbNewLine & _
+    Space$(10) & "EXEC dbo.spASRAccordPurgeTemp 1, @recordID" & vbNewLine & vbNewLine
+  
+  sDeleteFusionCode.TheString = sFusionDeclaration & sDeleteFusionCode.ToString & vbNewLine & _
+    Space$(10) & "EXEC dbo.spASRAccordPurgeTemp 1, @recordID" & vbNewLine & vbNewLine
+
+
+TidyUpAndExit:
+  Set rsFusionDetails = Nothing
+  SetTableTriggers_AccordTransfer = bOK
+  Exit Function
+
+ErrorTrap:
+  bOK = False
+  gobjProgress.Visible = False
+  OutputError "Error creating Fusion table trigger"
+  Err = False
+  Resume TidyUpAndExit
+
+End Function
+
 
 Private Function SetTableTriggers_AutoUpdate(pLngCurrentTableID As Long, psTableName As String) As String
 
