@@ -1177,7 +1177,6 @@ Private Sub Form_Load()
   
   msDocumentsPath = GetPCSetting("DataPaths", "documentspath_" & gsDatabaseName, App.Path)
 
-  optLinkType(0).value = True
   RemoveIcon Me
 
 End Sub
