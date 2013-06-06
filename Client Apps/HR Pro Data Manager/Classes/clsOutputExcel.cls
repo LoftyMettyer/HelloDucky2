@@ -676,7 +676,11 @@ Public Function RecordProfilePage(pfrmRecProfile As frmRecordProfilePreview, _
   objRange.VerticalAlignment = xlCenter
   
   mxlWorkSheet.DisplayPageBreaks = False
-
+  
+  'Delete superfluous spacerrow and spacer cols if setup in User Config reports section
+  If mblnXLExcelOmitLeftCol Then mxlWorkSheet.Range("A:A").Delete
+  If mblnXLExcelOmitTopRow Then mxlWorkSheet.Range("1:1").Delete
+      
   mxlWorkBook.ActiveSheet.Range("A1").Select
   mxlWorkBook.Sheets(1).Select
 
