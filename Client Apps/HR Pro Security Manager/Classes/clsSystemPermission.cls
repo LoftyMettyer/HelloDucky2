@@ -50,11 +50,15 @@ Public Function PrintSecurity(piLevel As Integer) As Boolean
   End If
   
   If mvar_sCategoryKey = "ACCORD" Then
-    If IsModuleEnabled(modACCORD) = False Then GoTo TidyUpAndExit
+    If IsModuleEnabled(modAccord) = False Then GoTo TidyUpAndExit
   End If
   
   If mvar_sCategoryKey = "WORKFLOW" Then
     If IsModuleEnabled(modWorkflow) = False Then GoTo TidyUpAndExit
+  End If
+  'NHRD28042010 JIRA HRPO 884
+  If mvar_sCategoryKey = "VERSION1" Then
+    If IsModuleEnabled(modVersion1) = False Then GoTo TidyUpAndExit
   End If
   
   sPermission = IIf(mvar_fAllowed, "TRUE", "FALSE")
