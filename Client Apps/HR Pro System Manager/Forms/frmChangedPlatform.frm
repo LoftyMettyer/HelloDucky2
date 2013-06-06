@@ -423,7 +423,7 @@ Public Sub ShowMessage(Optional pvMode As Variant)
       Me.Height = (Screen.Height / 2)
 
     Case Else
-      sMessage = "The update script and System Manager save needs to be run on this system for the reasons detailed below. We would strongly recommend performing a backup of your database before continuing." _
+      sMessage = "The update script and System Manager save needs to be run on this system for the reasons detailed below. It is strongly recommended to make a backup of your database before continuing." _
         & vbCrLf & vbCrLf & "Would you like to continue?"
       sFrameCaption = "Details :"
       imgIcon(0).Picture = LoadResPicture("IMG_EXCLAMATION", 1)
