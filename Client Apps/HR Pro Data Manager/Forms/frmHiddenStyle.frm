@@ -1,7 +1,7 @@
 VERSION 5.00
-Object = "{1C203F10-95AD-11D0-A84B-00A0247B735B}#1.0#0"; "SSTree.ocx"
 Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
-Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "Codejock.SkinFramework.v13.1.0.ocx"
+Object = "{1C203F10-95AD-11D0-A84B-00A0247B735B}#1.0#0"; "SSTree.ocx"
+Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~2.OCX"
 Begin VB.Form frmHiddenStyle 
    Caption         =   "Hidden Form To Apply Styles"
    ClientHeight    =   6420
@@ -38,13 +38,13 @@ Begin VB.Form frmHiddenStyle
       Width           =   2295
       _ExtentX        =   4048
       _ExtentY        =   4048
-      _Version        =   65538
+      _Version        =   65536
       Indentation     =   570
       PictureBackgroundUseMask=   0   'False
       HasFont         =   0   'False
       HasMouseIcon    =   0   'False
       HasPictureBackground=   0   'False
-      ImageList       =   "<None>"
+      ImageList       =   "(None)"
    End
    Begin XtremeSkinFramework.SkinFramework SkinFramework1 
       Left            =   120
@@ -78,6 +78,15 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+  Select Case KeyCode
+    Case vbKeyF1
+      If ShowAirHelp(Me.HelpContextID) Then
+        KeyCode = 0
+      End If
+  End Select
+End Sub
+
 Private Sub Form_Load()
   LoadSkin Me, Me.SkinFramework1
 End Sub

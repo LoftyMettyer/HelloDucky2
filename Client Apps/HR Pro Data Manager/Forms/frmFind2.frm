@@ -1,7 +1,7 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
 Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "timask6.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Object = "{604A59D5-2409-101D-97D5-46626B63EF2D}#1.0#0"; "TDBNumbr.ocx"
 Object = "{4A4AA691-3E6F-11D2-822F-00104B9E07A1}#3.0#0"; "ssdw3bo.ocx"
 Begin VB.Form frmFind2 
@@ -3433,15 +3433,18 @@ Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
   '# RH 26/08/99. To pass shortcut keys thru to the activebar control
   Dim bHandled As Boolean
 
-  If KeyCode <> vbKeyF1 Then
-    bHandled = frmMain.abMain.OnKeyDown(KeyCode, Shift)
-  
-    If bHandled Then
-      KeyCode = 0
-      Shift = 0
-    End If
-  End If
-
+  Select Case KeyCode
+    Case vbKeyF1
+      If ShowAirHelp(Me.HelpContextID) Then
+        KeyCode = 0
+      End If
+    Case KeyCode <> vbKeyF1
+      bHandled = frmMain.abMain.OnKeyDown(KeyCode, Shift)
+      If bHandled Then
+        KeyCode = 0
+        Shift = 0
+      End If
+  End Select
 End Sub
 
 Private Sub Form_Load()

@@ -342,7 +342,7 @@ Private Sub GetRecords()
     Loop
         
     .Enabled = (.ListCount > 0)
-    cmdOK.Enabled = (.ListCount > 0)
+    cmdOk.Enabled = (.ListCount > 0)
     .BackColor = IIf(.ListCount > 0, vbWindowBackground, vbButtonFace)
   
   End With
@@ -352,6 +352,15 @@ Exit Sub
 Err_Trap:
     COAMsgBox Err.Description
     
+End Sub
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+  Select Case KeyCode
+    Case vbKeyF1
+      If ShowAirHelp(Me.HelpContextID) Then
+        KeyCode = 0
+      End If
+  End Select
 End Sub
 
 Private Sub Form_Resize()

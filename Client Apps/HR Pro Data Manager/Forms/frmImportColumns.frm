@@ -568,11 +568,14 @@ Private Function GetColumnSize(lColumnID As Long) As Long
 End Function
 
 Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
-
-  If KeyCode = 192 Then
-    KeyCode = 0
-  End If
-
+  Select Case KeyCode
+    Case vbKeyF1
+      If ShowAirHelp(Me.HelpContextID) Then
+        KeyCode = 0
+      End If
+    Case KeyCode = 192
+        KeyCode = 0
+  End Select
 End Sub
 
 Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
