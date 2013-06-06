@@ -299,7 +299,7 @@ Attribute Enabled.VB_Description = "Returns/sets a value that determines whether
   'imgImage.Enabled = New_Enabled
   'picPicture.Enabled = New_Enabled
   UserControl.Enabled = value
-  cmdSelect.Enabled = Not mblnReadOnly
+  cmdSelect.Enabled = value
   
   PropertyChanged "Enabled"
   
