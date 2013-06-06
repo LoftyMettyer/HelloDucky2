@@ -1970,13 +1970,13 @@ Public Sub Initialize(piType As SSINTRANETLINKTYPES, _
     GetHRProUtilityTypes
   End If
   
-  If psUtilityType = "" Then
-    cboHRProUtilityType.ListIndex = -1
-    cboHRProUtility.ListIndex = -1
-  Else
+  'If psUtilityType = "" Then
+  '  cboHRProUtilityType.ListIndex = -1
+  '  cboHRProUtility.ListIndex = -1
+  'Else
     UtilityType = psUtilityType
     UtilityID = psUtilityID
-  End If
+  'End If
   SetChartTypes
     
   Prompt = psPrompt
