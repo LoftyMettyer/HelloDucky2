@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Begin VB.Form frmDefSel 
    Caption         =   "Select"
    ClientHeight    =   6465
@@ -956,11 +956,11 @@ Private Sub List1_GotFocus()
   Refresh_Controls
 End Sub
 
-Private Sub Display_Button(Button As VB.CommandButton, ByVal BtnOpt As Long, ByVal X As Long, ByRef Y As Long)
+Private Sub Display_Button(Button As VB.CommandButton, ByVal BtnOpt As Long, ByVal x As Long, ByRef y As Long)
   If (Me.Options And BtnOpt) Then
-    Button.Move X, Y
+    Button.Move x, y
     Button.Visible = True
-    Y = Y + cmdNew.Height + ((UI.GetSystemMetrics(SM_CYFRAME) * Screen.TwipsPerPixelY) * 1.5)
+    y = y + cmdNew.Height + ((UI.GetSystemMetrics(SM_CYFRAME) * Screen.TwipsPerPixelY) * 1.5)
   Else
     Button.Visible = False
   End If
@@ -1646,7 +1646,7 @@ Private Function CanStillSeeDefinition(lngDefID As Long) As Boolean
 
 End Function
 
-Private Sub List1_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub List1_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
 
   If Button = vbRightButton Then
   
@@ -2021,24 +2021,47 @@ Public Function ShowList(lngUtilType As UtilityType, Optional msRecordSourceWher
       msType = "Scheduled Batch Jobs"
       strExtraWhereClause = "(Scheduled = 1) AND (GETDATE() >= StartDate) " & _
                             "AND (GETDATE() <= dateadd(d,1,EndDate) or EndDate is null) " & _
-                            "AND (RoleToPrompt = '" & gsUserGroup & "')"
+                            "AND (RoleToPrompt = '" & gsUserGroup & "')" & _
+                                            "AND (IsBatch = 1)"
       msGeneralCaption = "Scheduled Batch Jobs"
       msSingularCaption = "Scheduled Batch Job"
-      'Dynamically set HelpContextID in order for the Doc To Help jump to work properly
+      'Dynamically set HelpContextID
       Me.HelpContextID = 1107
-      
     Else
       msType = "Batch Job"
       msGeneralCaption = "Batch Jobs"
       msSingularCaption = "Batch Job"
-      
+      strExtraWhereClause = "(IsBatch = 1)"
       Me.HelpContextID = 1084
     End If
 
     msTableName = "ASRSysBatchJobName"
     msIDField = "ID"
     msAccessTableName = "ASRSysBatchJobAccess"
-
+    
+  Case utlReportPack
+    msTypeCode = "REPORTPACK"
+    msTypeCode = "BATCHJOBS" 'this needs to be removed
+    If blnScheduledJobs Then
+      msType = "Scheduled Report Packs"
+      strExtraWhereClause = "(Scheduled = 1) AND (GETDATE() >= StartDate) " & _
+                                            "AND (GETDATE() <= dateadd(d,1,EndDate) or EndDate is null) " & _
+                                            "AND (RoleToPrompt = '" & gsUserGroup & "')" & _
+                                            "AND (IsBatch = 0)"
+      msGeneralCaption = "Scheduled Reports"
+      msSingularCaption = "Scheduled Report"
+      'Dynamically set HelpContextID
+      Me.HelpContextID = 1107
+    Else
+      msType = "Report Pack"
+      msGeneralCaption = "Report Packs"
+      msSingularCaption = "Report Pack"
+      strExtraWhereClause = "(IsBatch = 0)"
+      Me.HelpContextID = 1084
+    End If
+    msTableName = "ASRSysBatchJobName"
+    msIDField = "ID"
+    msAccessTableName = "ASRSysBatchJobAccess"
 
   Case utlCalendarReport
     msTypeCode = "CALENDARREPORTS"
