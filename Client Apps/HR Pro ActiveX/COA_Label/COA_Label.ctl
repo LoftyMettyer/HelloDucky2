@@ -422,6 +422,11 @@ Private Sub UserControl_DblClick()
 
 End Sub
 
+Private Sub UserControl_Initialize()
+  mBackcolour = vbWhite
+  mForecolour = vbBlack
+End Sub
+
 Private Sub UserControl_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
   ' Pass the MouseDown event to the parent form.
   RaiseEvent MouseDown(Button, Shift, X, Y)
@@ -504,17 +509,22 @@ End Sub
 Public Property Get BackColor() As OLE_COLOR
 Attribute BackColor.VB_Description = "Returns/sets the background color used to display text and graphics in an object."
 Attribute BackColor.VB_UserMemId = -501
-    BackColor = lblLabel.BackColor
+  BackColor = mBackcolour
 End Property
 
 Public Property Get Alignment() As AlignmentConstants
   Alignment = lblLabel.Alignment
-  
 End Property
+
 Public Property Let BackColor(ByVal New_BackColor As OLE_COLOR)
+
+  If Not mblnReadOnly Then
     lblLabel.BackColor() = New_BackColor
-    mBackcolour = New_BackColor
-    PropertyChanged "BackColor"
+  End If
+  
+  mBackcolour = New_BackColor
+  PropertyChanged "BackColor"
+
 End Property
 
 Public Property Let Alignment(ByVal pNewValue As AlignmentConstants)
@@ -529,13 +539,18 @@ End Property
 Public Property Get ForeColor() As OLE_COLOR
 Attribute ForeColor.VB_Description = "Returns/sets the foreground color used to display text and graphics in an object."
 Attribute ForeColor.VB_UserMemId = -513
-    ForeColor = lblLabel.ForeColor
+  ForeColor = mForecolour
 End Property
 
 Public Property Let ForeColor(ByVal New_ForeColor As OLE_COLOR)
+
+  If Not mblnReadOnly Then
     lblLabel.ForeColor() = New_ForeColor
-    mForecolour = New_ForeColor
-    PropertyChanged "ForeColor"
+  End If
+  
+  mForecolour = New_ForeColor
+  PropertyChanged "ForeColor"
+
 End Property
 
 'WARNING! DO NOT REMOVE OR MODIFY THE FOLLOWING COMMENTED LINES!
