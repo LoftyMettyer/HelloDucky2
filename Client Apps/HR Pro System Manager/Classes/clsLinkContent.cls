@@ -110,7 +110,7 @@ Public Function AddDetailFromField(colAvailableComponents As Collection, strFixe
   On Local Error GoTo LocalErr
 
   strField = colAvailableComponents(strField)
-  AddDetail strFixedText, Left(strField, 1), Val(Mid(strField, 2))
+  AddDetail strFixedText, Left(strField, 1), val(Mid(strField, 2))
 
   AddDetailFromField = True
 
@@ -298,7 +298,7 @@ Public Function GetSQL(lngBaseTableID As Long, strBaseTableName As String, lngRe
 
   On Local Error GoTo LocalErr
 
-
+  Set col = New Collection
   strSQLJoin = vbNullString
   strSQLDeclares = vbNullString
   strSQLExpressions = vbNullString
@@ -330,13 +330,12 @@ Public Function GetSQL(lngBaseTableID As Long, strBaseTableName As String, lngRe
       With recColEdit
         .Index = "idxColumnID"
         .Seek "=", objDetail.FieldID
-
         If Not .NoMatch Then
           If !TableID <> lngBaseTableID Then
             strTableName = GetTableName(!TableID)
             If Not Exists(col, CStr(!TableID)) Then
               col.Add !TableID, CStr(!TableID)
-              strSQLJoin = "     JOIN [" & strTableName & "]" & _
+              strSQLJoin = strSQLJoin & "     FULL OUTER JOIN [" & strTableName & "]" & _
                         " ON [" & strTableName & "].ID" & _
                         " = [" & strBaseTableName & "].ID_" & CStr(!TableID) & vbCrLf
             End If
@@ -404,7 +403,11 @@ Public Function GetSQL(lngBaseTableID As Long, strBaseTableName As String, lngRe
   
   Next
 
-  If strOutput <> vbNullString Then
+  If strOutput = vbNullString Then
+    strOutput = "''"
+  End If
+  
+  'If strOutput <> vbNullString Then
     strOutput = _
         IIf(blnDeclareChar, "    DECLARE @tempChar varchar(max)" & vbCrLf, "") & _
         IIf(blnDeclareFloat, "    DECLARE @tempFloat float" & vbCrLf, "") & _
@@ -422,7 +425,7 @@ Public Function GetSQL(lngBaseTableID As Long, strBaseTableName As String, lngRe
         strSQLJoin & _
         "WHERE [" & strBaseTableName & "].ID = @RecordID"
     End If
-  End If
+  'End If
 
   GetSQL = strOutput
 
@@ -459,7 +462,7 @@ End Function
 
 Private Function Exists(col As Collection, id As String) As Boolean
   On Local Error GoTo LocalErr
-  Exists = (Val(col(id)) > 0)
+  Exists = (val(col(id)) > 0)
 Exit Function
 LocalErr:
   Exists = False
