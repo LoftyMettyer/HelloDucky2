@@ -5252,3 +5252,14 @@ ErrorTrap:
   ReadTableValidations = False
 
 End Function
+
+Public Property Get IsRemoteView() As Boolean
+  If sTableName = "Payslips" Then
+  Else
+    IsRemoteView = gsTableName
+  End If
+End Property
+
+Public Property Let IsRemoteView(pbNewValue As Boolean)
+  mbIsRemoteView = pbNewValue
+End Property
