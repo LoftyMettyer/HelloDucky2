@@ -30,8 +30,17 @@ Public Function ConfigureIntranetSpecifics() As Boolean
   
   mvar_fGeneralOK = True
   mvar_sGeneralMsg = ""
-
+ 
+  ' Read the Intranet parameters.
   fOK = ReadIntranetParameters
+  If Not fOK Then
+    mvar_fGeneralOK = False
+    sErrorMessage = "Intranet specifics not correctly configured." & vbNewLine & _
+      "Some functionality will be disabled if you do not change your configuration." & vbNewLine & mvar_sGeneralMsg
+    
+    fOK = (OutputMessage(sErrorMessage & vbNewLine & vbNewLine & "Continue saving changes ?") = vbYes)
+  End If
+  
   
   'Make sure that we drop the Intranet SPs
   DropIntranetObjects
@@ -87,8 +96,11 @@ Private Function ReadIntranetParameters() As Boolean
       lngLoginTable = GetTableIDFromColumnID(lngLoginColumn)
       mvar_sLoginColumn = GetColumnName(lngLoginColumn, True)
       mvar_sLoginTable = GetTableName(lngLoginTable)
-   
-      ' Get the Unique Email column.
+    End If
+    
+    
+    If fOK Then
+          ' Get the Unique Email column.
       .Seek "=", gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_WORKEMAIL
       If .NoMatch Then
         mvar_lngWorkEmailColumn = 0
@@ -97,6 +109,10 @@ Private Function ReadIntranetParameters() As Boolean
         mvar_sWorkEmailColumn = GetColumnName(mvar_lngWorkEmailColumn, True)
       End If
       
+      fOK = (mvar_lngWorkEmailColumn > 0)
+    End If
+    
+    If fOK Then
       ' Get the Intranet Activated User column.
       .Seek "=", gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_LOGINNAME
       If .NoMatch Then
@@ -106,7 +122,7 @@ Private Function ReadIntranetParameters() As Boolean
         mvar_sActivatedUserColumn = GetColumnName(mvar_lngActivatedUserColumn, True)
       End If
       
-      
+      fOK = (mvar_lngActivatedUserColumn > 0)
     End If
     
   End With
