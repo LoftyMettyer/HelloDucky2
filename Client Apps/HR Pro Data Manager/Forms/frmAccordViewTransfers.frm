@@ -311,12 +311,6 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
 
-Private Enum AccordViewMode
-  iLIVE_ALL = 0
-  iARCHIVE_ALL = 1
-  iCURRENT_RECORD = 2
-End Enum
-
 Private mbLoading As Boolean
 Private miConnectionType As HRProDataMgr.AccordConnection
 Private mdToDate As Date

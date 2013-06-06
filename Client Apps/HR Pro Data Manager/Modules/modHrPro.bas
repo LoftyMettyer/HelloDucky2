@@ -1,14 +1,7 @@
 Attribute VB_Name = "modHrPro"
 Option Explicit
 
-'Public classes
-Public Application As HRProDataMgr.Application
-Public Database As HRProDataMgr.Database
-Public datGeneral As HRProDataMgr.clsGeneral
-Public objEmail As clsEmail
-Public gobjDataAccess As HRProDataMgr.clsDataAccess
-Public gobjPerformance As HRProDataMgr.clsPerformance
-Public gsConnectionString As String
+
 
 ' Generic Postcode Structure (Moved from modAFDSpecifics)
 Public Type PostCode
@@ -26,67 +19,13 @@ Public Type PostCode
   Organisation As String * 120   'Organisation Name (includes Department, if any)
 End Type
 
-' Holds postcode for AFD and Quick Address
-Public oPostCode As HRProDataMgr.PostCode
-
-' New Progress Bar - Global class to be used for progress bars
-Public gobjProgress As COA_Progress
-'Public gobjProgress As New clsProgress
-
-' Utility Run Log - Global class used by utilities and batch jobs
-Public gobjEventLog As New clsEventLog
-
-'Diary Stuff (MH19991021)
-Public gobjDiary As New HRProDataMgr.clsDiary
-
-'Hold the current database name
-Public gsDatabaseName As String
-Public gsCustomerName As String
-Public gsServerName As String
-
-' Current User Information
-'Public gobjCurrentUser As HRProDataMgr.clsUser
-
-' Windows authentication stuff
-Public gbUseWindowsAuthentication As Boolean
-Public gstrWindowsCurrentDomain As String
-Public gstrWindowsCurrentUser As String
-
-Public gblnBatchMode As Boolean
-
-'Just do batch jobs (without prompting) then log off
-Public gblnBatchJobsOnly As Boolean
-
-'Don't check printer or MS Office etc..
-Public gblnStartupPrinter As Boolean
-Public gblnStartupMSOffice As Boolean
-
-' Automatic logon
-Public gblnAutomaticLogon As Boolean
-
-Public gblnResetPrinterDefaultBack As Boolean
-
-Public gobjOperatorDefs As New clsOperatorDefs
-Public gobjFunctionDefs As New clsFunctionDefs
-
-' Display Find Window or RecEdit when selected from the database menu
-' and also go straight to new record if we are displaying recedit first
-Public gcPrimary As DefaultDisplay
-Public gcHistory As DefaultDisplay
-Public gcLookUp As DefaultDisplay
-Public gcQuickAccess As DefaultDisplay
-
-' HR Pro constants.
-Public Const ODBCDRIVER As String = "SQL Server"
-
-Public UI As HRProDataMgr.UI
 
 'Public Constants
 Public Const INT_MASK As String = "##########"
 Public Const INT_MASK_NOBLANK As String = "#########0"
 Public Const COL_GREY As Long = &H8000000F
 Private mbDeleted As Boolean
-Public ASRDEVELOPMENT As Boolean
+
 
 'Public Const SQLMAILNOTSTARTEDMESSAGE = "SQL MAIL SESSION IS NOT STARTED."
 'Public Const SQLMAILEXECUTEDENIED = "EXECUTE PERMISSION DENIED ON OBJECT 'XP_SENDMAIL', DATABASE 'MASTER', OWNER 'DBO'."
@@ -100,143 +39,12 @@ Public Const DEADLOCK2_MESSAGEEND = ") WAS DEADLOCKED ON "
 Public Const CONNECTIONBROKEN_MESSAGE = "GENERAL NETWORK ERROR. CHECK YOUR NETWORK DOCUMENTATION."
 Public Const FRAMEWORK_MESSAGE = "An error occurred in the Microsoft .NET Framework while trying to load assembly id"
 
-Public gcoLookupValues As CLookupValues
-Public gcoTablePrivileges As CTablePrivileges
-Public gcolColumnPrivilegesCollection As Collection
-Public gcolHistoryScreensCollection As Collection
-Public gcolSummaryFieldsCollection As Collection
-Public gcolScreens As clsScreens
-Public gcolScreenControls As Collection
+' HR Pro constants.
+Public Const ODBCDRIVER As String = "SQL Server"
 
-Public gsPhotoPath As String
-Public gsOLEPath As String
-Public gsLocalOLEPath As String
-Public gsCrystalPath As String
-Public gsDocumentsPath As String
-
-Public gsUserName As String       ' NB. This is actually the SQL LOGIN name
-Public gsSQLUserName As String    ' NB. This is actually the SQL USER name
-Public gsPassword As String
-Public gfCurrentUserIsSysSecMgr As Boolean
-
-'Windows API functions
-Declare Function GetTempFileName Lib "kernel32" Alias "GetTempFileNameA" (ByVal lpszPath As String, ByVal lpPrefixString As String, ByVal wUnique As Long, ByVal lpTempFileName As String) As Long
-Declare Function GetTempPath Lib "kernel32" Alias "GetTempPathA" (ByVal nBufferLength As Long, ByVal lpBuffer As String) As Long
-Public Declare Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As Long)
-Public Declare Function FindExecutable Lib "shell32.dll" Alias "FindExecutableA" (ByVal lpFile As String, ByVal lpDirectory As String, ByVal lpResult As String) As Long
-Public Declare Function ShellExecute Lib "shell32.dll" Alias "ShellExecuteA" _
-(ByVal hWnd As Long, ByVal lpoperation As String, ByVal lpFile As String, _
-ByVal lpParameters As String, ByVal lpDirectory As String, ByVal nShowCmd As Long) As Long
 Private Declare Function GetModuleFileNameA Lib "kernel32" (ByVal hModule As Long, ByVal lpFilename As String, ByVal nSize As Long) As Long
-Public Declare Function WNetGetConnection Lib "mpr.dll" Alias "WNetGetConnectionA" (ByVal lpszLocalName As String, ByVal lpszRemoteName As String, cbRemoteName As Long) As Long
-
-Public Declare Function GetTickCount Lib "kernel32" () As Long
-
-'NPG20090305 Fault 13531
 Private Declare Function SHGetSpecialFolderPath Lib "shell32.dll" Alias "SHGetSpecialFolderPathA" (ByVal hWnd As Long, ByVal pszPath As String, ByVal csidl As Long, ByVal fCreate As Long) As Long
 
-' Stuff from ASRUserData module.
-
-Public gADOCon As ADODB.Connection
-
-Public gbForceLogonScreen As Boolean
-Public gsConnectString As String
-'Public gsUserName As String
-Public gsUserGroup As String
-
-'Background type constants
-Public Enum BackgroundLocationTypes
-  giLOCATION_TOPLEFT = 0
-  giLOCATION_TOPRIGHT = 1
-  giLOCATION_CENTRE = 2
-  giLOCATION_LEFTTILE = 3
-  giLOCATION_RIGHTTILE = 4
-  giLOCATION_TOPTILE = 5
-  giLOCATION_BOTTOMTILE = 6
-  giLOCATION_TILE = 7
-End Enum
-
-Public glngDesktopBitmapID As Long
-Public glngDesktopBitmapLocation As BackgroundLocationTypes
-Public glngDeskTopColour As Long
-
-' JDM - 22/06/01 - Moved from frmCrossTabRun because it needs to be accessed in several places
-Public Enum CrossTabType
-  cttNormal = 0
-  cttTurnover = 1
-  cttStability = 2
-  cttAbsenceBreakdown = 3
-End Enum
-
-Public Enum MatchReportType
-  mrtNormal = 0
-  mrtSucession = 1
-  mrtCareer = 2
-End Enum
-
-Public gbAccordEnabled As Boolean           ' Is the Payroll Transfer module enabled
-Public gbCMGEnabled As Boolean              ' Is the CMG module enabled
-Public gstrDefaultPrinterName As String     ' Default printer device name
-
-Public gobjErrorStack As clsErrorStack      ' Standard Error Handler
-
-Public glngSQLVersion As Long               ' SQL database Version
-
-' Output options
-Public gbAllowOutput_Word As Boolean        ' Is Microsoft Word Installed
-Public giOfficeVersion_Word As Integer      ' Microsoft Word Version
-Public giOfficeSaveVersion_Word As Integer
-Public gsOfficeFileFilter_Word As String
-Public gsOfficeTemplateFilter_Word  As String
-
-Public gbAllowOutput_Excel As Boolean       ' Is Microsoft Excel Installed
-Public giOfficeVersion_Excel As Integer     ' Microsoft Excel Version
-Public giOfficeSaveVersion_Excel As Integer
-Public gsOfficeFileFilter_Excel As String
-Public gsOfficeTemplateFilter_Excel As String
-
-
-Public gcolSystemPermissions As Collection  ' Holds system permissions for this user
-
-' Character trimming types
-Public Enum TrimmingTypes
-  giTRIMMING_NONE = 0
-  giTRIMMING_LEFTRIGHT = 1
-  giTRIMMING_LEFTONLY = 2
-  giTRIMMING_RIGHTONLY = 3
-End Enum
-
-Public gbEnableUDFFunctions As Boolean
-
-Public Enum ReturnPrintDateType
-  RETURN_DEFAULT = 0
-  RETURN_MANUAL = 1
-  RETURN_CALCULATION = 2
-End Enum
-
-Public Enum ToolbarPositions
-  giTOOLBAR_NONE = 0
-  giTOOLBAR_TOP = 1
-  giTOOLBAR_BOTTOM = 2
-  giTOOLBAR_LEFT = 4
-  giTOOLBAR_RIGHT = 8
-  giTOOLBAR_FLOAT = 16
-  giTOOLBAR_POPUP = 32
-End Enum
-
-Public gbReadToolbarDefaults As Boolean
-Public gbCloseDefSelAfterRun As Boolean
-
-Public giWeekdayStart As VbDayOfWeek
-
-Public giWindowState As FormWindowStateConstants
-Public glngWindowLeft As Long
-Public glngWindowTop As Long
-Public glngWindowHeight As Long
-Public glngWindowWidth As Long
-
-Public gbWorkflowEnabled As Boolean           ' Is the Workflow module enabled
-Public gbWorkflowOutOfOfficeEnabled As Boolean ' Is the Workflow module enabled AND have the OutOfOffice parameters been configured
 
 
 
