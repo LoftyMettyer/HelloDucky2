@@ -528,14 +528,16 @@ Public Property Let Enabled(ByVal booNewEnabled As Boolean)
   
   If Not booNewEnabled Then
     For Each objctl In UserControl.Controls
-      If TypeOf objctl Is CheckBox Then
-        objctl.Enabled = False
+      If TypeOf objctl Is CheckBox Or _
+        TypeOf objctl Is Label Then
+          objctl.Enabled = False
       End If
     Next
   Else
     For Each objctl In UserControl.Controls
-      If TypeOf objctl Is CheckBox Then
-        objctl.Enabled = True
+      If TypeOf objctl Is CheckBox Or _
+        TypeOf objctl Is Label Then
+          objctl.Enabled = True
       End If
     Next
   End If
