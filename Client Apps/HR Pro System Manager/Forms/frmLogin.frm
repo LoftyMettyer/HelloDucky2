@@ -20,6 +20,7 @@ Begin VB.Form frmLogin
    Icon            =   "frmLogin.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
+   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   3645
@@ -597,9 +598,11 @@ Public Sub Login()
   sConnect = sConnect & "Application Name=" & App.ProductName & ";"
 
   ' Clear any existing database connection.
+  On Error GoTo NoFramework
   Set gADOCon = Nothing
   Set gobjHRProEngine = New HRProEngine.SysMgr
   gobjHRProEngine.Initialise
+  On Error GoTo ErrorTrap
   
   ' Establish the database connection.
   Set gADOCon = New ADODB.Connection
@@ -887,6 +890,14 @@ ErrorTrap:
   
     Err.Clear
   End If
+  
+  Exit Sub
+
+NoFramework:
+  MsgBox "The HR Pro System Framework is not installed." & vbNewLine & vbNewLine & _
+    "Contact your System Administrator to install the latest HR Pro System Framework" & vbNewLine & vbNewLine _
+    , vbExclamation + vbOKOnly, Application.Name
+  Screen.MousePointer = vbNormal
 
 End Sub
 
