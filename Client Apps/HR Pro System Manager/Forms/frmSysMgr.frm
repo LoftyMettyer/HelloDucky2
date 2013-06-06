@@ -547,8 +547,10 @@ Public Sub RefreshMenu(Optional ByVal pfUnLoad As Boolean)
 
   End With
   
-    EnsureSaveButtonsCorrect
+  EnsureSaveButtonsCorrect
     
+  CheckForDisabledMenuItems
+
 End Sub
 
 Private Sub EnsureSaveButtonsCorrect()
@@ -681,6 +683,8 @@ Private Function ChangeView(ViewStyle As ComctlLib.ListViewConstants) As Boolean
   
   ChangeView = True
   
+  CheckForDisabledMenuItems
+
   Exit Function
   
 ErrorTrap:
@@ -948,6 +952,8 @@ Private Sub RefreshMenu_DBMgr(piFormCount As Integer)
 '  .Redraw = True
   End With
   
+  CheckForDisabledMenuItems
+
 End Sub
 
 Private Sub RefreshMenu_PictMgr(piFormCount As Integer)
@@ -1061,6 +1067,8 @@ Private Sub RefreshMenu_PictMgr(piFormCount As Integer)
   
   End With
   
+  CheckForDisabledMenuItems
+
 End Sub
 
 Private Sub RefreshMenu_WorkflowMgr(piFormCount As Integer)
@@ -1141,7 +1149,11 @@ Private Sub RefreshMenu_WorkflowMgr(piFormCount As Integer)
 
   End With
 
+  CheckForDisabledMenuItems
+
 End Sub
+
+
 Private Sub RefreshMenu_ScrMgr(piFormCount As Integer)
   
   ' Refresh the toolbar on the Screen Manager screen.
@@ -1221,6 +1233,8 @@ Private Sub RefreshMenu_ScrMgr(piFormCount As Integer)
   
   End With
   
+  CheckForDisabledMenuItems
+
 End Sub
 
 Private Sub RefreshMenu_ScrDesigner(piFormCount As Integer)
@@ -1507,6 +1521,8 @@ End With
   ' Disassociate object variables.
   Set objScreen = Nothing
 
+  CheckForDisabledMenuItems
+
 End Sub
 
 Private Sub RefreshMenu_WebFormDesigner(piFormCount As Integer)
@@ -1719,6 +1735,8 @@ Private Sub RefreshMenu_WebFormDesigner(piFormCount As Integer)
   ' Disassociate object variables.
   Set objScreen = Nothing
 
+  CheckForDisabledMenuItems
+
 End Sub
 
 Private Sub RefreshMenu_Defaults(piFormCount As Integer)
@@ -1844,6 +1862,8 @@ Private Sub RefreshMenu_Defaults(piFormCount As Integer)
 '    .Tools("ID_mnuHelp").Menu.Tools.Add "separator", , .Tools("ID_mnuHelp").Menu.Tools("ID_About").Index
 
   End With
+
+  CheckForDisabledMenuItems
 
 End Sub
 
@@ -2077,6 +2097,8 @@ Private Sub RefreshMenu_ViewMgr(piFormCount As Integer)
 
   End With
     
+  CheckForDisabledMenuItems
+
 End Sub
 
 
@@ -5041,5 +5063,22 @@ Private Function DoesTableExistInDB(ByRef lngObjectID As Long)
   Set rstTables = Nothing
 
   DoesTableExistInDB = bFound
+
+End Function
+
+
+Private Function CheckForDisabledMenuItems()
+
+  Dim objTool As ActiveBarLibraryCtl.Tool
+  Dim strDisabledItems As String
+  
+  
+  'Use this setting to disable menu items...
+  strDisabledItems = GetSystemSetting("Menu", "SysMgr", "")
+  For Each objTool In tbMain.Tools
+    If InStr("-" & strDisabledItems & "-", "-" & CStr(objTool.ToolID) & "-") > 0 Then
+      objTool.Enabled = False
+    End If
+  Next
 
 End Function
