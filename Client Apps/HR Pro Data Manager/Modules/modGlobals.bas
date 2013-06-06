@@ -8,12 +8,10 @@ Public gobjDataAccess As DataMgr.clsDataAccess
 Public gobjPerformance As DataMgr.clsPerformance
 Public gsConnectionString As String
 
-
 ' Holds postcode for AFD and Quick Address
 Public oPostCode As DataMgr.PostCode
 
 ' New Progress Bar - Global class to be used for progress bars
-'Public gobjProgress As COA_Progress
 Public gobjProgress As New clsProgress
 
 ' Utility Run Log - Global class used by utilities and batch jobs
@@ -24,11 +22,8 @@ Public gobjDiary As New DataMgr.clsDiary
 
 'Hold the current database name
 Public gsDatabaseName As String
-Public gsCustomerName As String
 Public gsServerName As String
-
-' Current User Information
-'Public gobjCurrentUser As DataMgr.clsUser
+Public gsCustomerName As String
 
 ' Windows authentication stuff
 Public gbUseWindowsAuthentication As Boolean
@@ -59,9 +54,7 @@ Public gcHistory As DefaultDisplay
 Public gcLookUp As DefaultDisplay
 Public gcQuickAccess As DefaultDisplay
 
-
 Public UI As DataMgr.UI
-
 
 Public gcoLookupValues As CLookupValues
 Public gcoTablePrivileges As CTablePrivileges
@@ -87,9 +80,7 @@ Public gADOCon As ADODB.Connection
 
 Public gbForceLogonScreen As Boolean
 Public gsConnectString As String
-'Public gsUserName As String
 Public gsUserGroup As String
-
 
 
 Public glngDesktopBitmapID As Long
@@ -104,31 +95,21 @@ Public gstrDefaultPrinterName As String     ' Default printer device name
 
 Public gobjErrorStack As clsErrorStack      ' Standard Error Handler
 
-'Public glngSQLVersion As Long               ' SQL database Version
-Public glngSQLVersion As Double   'Changed from Long for SQL2008 R2
+Public glngSQLVersion As Double             ' SQL Version
 
 ' Output options
-'Public gbAllowOutput_Word As Boolean        ' Is Microsoft Word Installed
 Public giOfficeVersion_Word As Integer      ' Microsoft Word Version
-'Public giOfficeSaveVersion_Word As Integer
-'Public gsOfficeFileFilter_Word As String
-'Public gsOfficeTemplateFilter_Word  As String
-
-'Public gbAllowOutput_Excel As Boolean       ' Is Microsoft Excel Installed
 Public giOfficeVersion_Excel As Integer     ' Microsoft Excel Version
-'Public giOfficeSaveVersion_Excel As Integer
-'Public gsOfficeFileFilter_Excel As String
-'Public gsOfficeTemplateFilter_Excel As String
 
 
 Public gcolSystemPermissions As Collection  ' Holds system permissions for this user
-
 Public gbEnableUDFFunctions As Boolean
 
 
 Public gbReadToolbarDefaults As Boolean
 Public gbCloseDefSelAfterRun As Boolean
 Public gbRecentDisplayDefSel As Boolean
+Public glngCurrentCategoryID As Long
 
 Public giWeekdayStart As VbDayOfWeek
 
