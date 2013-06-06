@@ -504,12 +504,12 @@ values('database', 'version', '4.1')
 delete from asrsyssystemsettings
 where [Section] = 'intranet' and [SettingKey] = 'minimum version'
 insert ASRSysSystemSettings([Section], [SettingKey], [SettingValue])
-values('intranet', 'minimum version', '4.0.0')
+values('intranet', 'minimum version', '4.1.0')
 
 delete from asrsyssystemsettings
 where [Section] = 'ssintranet' and [SettingKey] = 'minimum version'
 insert ASRSysSystemSettings([Section], [SettingKey], [SettingValue])
-values('ssintranet', 'minimum version', '4.0.0')
+values('ssintranet', 'minimum version', '4.1.0')
 
 delete from asrsyssystemsettings
 where [Section] = 'server dll' and [SettingKey] = 'minimum version'
@@ -519,17 +519,17 @@ values('server dll', 'minimum version', '3.4.0')
 delete from asrsyssystemsettings
 where [Section] = '.NET Assembly' and [SettingKey] = 'minimum version'
 insert ASRSysSystemSettings([Section], [SettingKey], [SettingValue])
-values('.NET Assembly', 'minimum version', '4.0.0')
+values('.NET Assembly', 'minimum version', '4.1.0')
 
 delete from asrsyssystemsettings
 where [Section] = 'outlook service' and [SettingKey] = 'minimum version'
 insert ASRSysSystemSettings([Section], [SettingKey], [SettingValue])
-values('outlook service', 'minimum version', '4.0.0')
+values('outlook service', 'minimum version', '4.1.0')
 
 delete from asrsyssystemsettings
 where [Section] = 'workflow service' and [SettingKey] = 'minimum version'
 insert ASRSysSystemSettings([Section], [SettingKey], [SettingValue])
-values('workflow service', 'minimum version', '4.0.0')
+values('workflow service', 'minimum version', '4.1.0')
 
 insert into asrsysauditaccess
 (DateTimeStamp, UserGroup, UserName, ComputerName, HRProModule, Action)
