@@ -12,7 +12,7 @@ Object = "{58F88252-94BB-43CE-9EF9-C971F73B93D4}#1.0#0"; "coasd_selection.ocx"
 Object = "{714061F3-25A6-4821-B196-7D15DCCDE00E}#1.0#0"; "coasd_selectionbox.ocx"
 Object = "{63212438-5384-4CC0-B836-A2C015CCBF9B}#1.0#0"; "COAWF_WebForm.ocx"
 Object = "{BD3A90B9-91E4-40D5-A504-C6DFB4380BBC}#1.0#0"; "coasd_grid.ocx"
-Object = "{66DD2720-DB90-4D94-963B-369CC9DC8BF8}#5.4#0"; "COAWF_TabPage.ocx"
+Object = "{66DD2720-DB90-4D94-963B-369CC9DC8BF8}#5.5#0"; "COAWF_TabPage.ocx"
 Begin VB.Form frmWorkflowWFDesigner 
    AutoRedraw      =   -1  'True
    BackColor       =   &H80000005&
@@ -7216,6 +7216,9 @@ Public Function LoadWebFormItems() As Boolean
       Set frmUsage = Nothing
     End If
     
+    ' Dock the containers to the tabstrip
+    DockPagesToTabStrip
+    
     fLoadOk = SetControlLevel
     
   End If
@@ -8099,11 +8102,11 @@ Private Function DropTabPage(Optional piTabPageIndex As Integer) As Boolean
       .BorderStyle = 0
       .Left = 50
       .Top = 50
-      .Width = tabPages.Width - 100
-      .Height = tabPages.Height - 100
       .Visible = True
       .ZOrder 1
     End With
+       
+    DockPagesToTabStrip
        
   End If
   
@@ -8143,10 +8146,21 @@ Private Sub DockPagesToTabStrip()
 
   Dim ctlPictureBox As PictureBox
 
-  ' Position and size the picture box containers of the tabstrip.
   For Each ctlPictureBox In objTabContainer
-    ctlPictureBox.Move tabPages.Left + tabPages.ClientLeft, tabPages.Top + tabPages.ClientTop, _
-      tabPages.ClientWidth, tabPages.ClientHeight
+    
+    If ctlPictureBox.Index > 0 Then
+    
+      ' Position and size the picture box containers of the tabstrip.
+      ctlPictureBox.Move tabPages.Left + tabPages.ClientLeft, tabPages.Top + tabPages.ClientTop, _
+        tabPages.ClientWidth, tabPages.ClientHeight
+    
+'      ' Set the 'transparency'
+'      If Me.Picture.Width > 0 Then
+'        ctlPictureBox.PaintPicture Me.Picture, 0, 0, ctlPictureBox.Width, ctlPictureBox.Height, ctlPictureBox.Left, ctlPictureBox.Top, ctlPictureBox.Width, ctlPictureBox.Height
+'      End If
+  
+    End If
+  
   Next ctlPictureBox
 
   Set ctlPictureBox = Nothing
@@ -8258,7 +8272,9 @@ Private Sub tabPages_Click()
     Screen.MousePointer = vbDefault
   
     fInClick = False
-    
+       
+    'DockPagesToTabStrip
+       
     UI.UnlockWindow
     
   End If
