@@ -808,10 +808,10 @@ Private Function CreateSP_MobileForgotLogin() As Boolean
     "      SET @psMessage = 'No registered user exists with the given email address.';" & vbNewLine & _
     "    End" & vbNewLine & _
     "    Else" & vbNewLine & _
-    "    BEGIN" & vbNewLine & _
-    "      SET @sMessage = 'Your OpenHR Mobile login is ''' + @sLogin + '.';" & vbNewLine
+    "    BEGIN" & vbNewLine & vbNewLine
     
-  sProcSQL = sProcSQL & "      SET @sMessage = 'Your OpenHR Mobile login is ''' + @sLogin + '''.';" & vbNewLine & _
+  sProcSQL = sProcSQL & "SET @sMessage = 'Your OpenHR Mobile login is ' + @sLogin + '.' + CHAR(13) + CHAR(10) + " & vbNewLine & _
+    "          'If you have forgotten your password, contact your system administrator.';" & vbNewLine & _
     "      INSERT [dbo].[ASRSysEmailQueue](" & vbNewLine & _
     "        RecordDesc," & vbNewLine & _
     "        ColumnValue," & vbNewLine & _
