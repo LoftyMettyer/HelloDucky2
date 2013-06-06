@@ -80,7 +80,7 @@ Public Function QuickChecks_2() As Boolean
               End If
               
               If (Not recColEdit!Deleted) Then
-                If (recColEdit!audit) And (Not fAudit_TableDone) Then
+                If (recColEdit!Audit) And (Not fAudit_TableDone) Then
                   iNextIndex = UBound(asAuditTables) + 1
                   ReDim Preserve asAuditTables(iNextIndex)
                   asAuditTables(iNextIndex) = !TableName
@@ -179,7 +179,7 @@ Public Function QuickChecks_3() As Boolean
         
       Do While (Not .EOF) And fOK
         
-        If (!TableType = TableTypes.iTabChild) Then
+        If (!TableType = enum_TableTypes.iTabChild) Then
           If (Not !Deleted) And Not (recRelEdit.BOF And recRelEdit.EOF) Then
             ' Check if it has any relationships.
             recRelEdit.MoveFirst

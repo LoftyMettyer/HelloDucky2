@@ -276,7 +276,7 @@ Private glngPictureID As Long
 Private lngScreenID As Long
 Private lngTableID As Long
 Private gfLockedTable As Boolean
-Private miTableType As TableTypes
+Private miTableType As enum_TableTypes
 
 Public Property Get Cancelled() As Boolean
   Cancelled = blnCancelled

@@ -3310,7 +3310,7 @@ Private Sub cboDataRecord_Refresh(piIndex As Integer)
   Dim lngTableID As Long
   Dim fTableIsInRecSel As Boolean
   Dim fParentTableIsInRecSel As Boolean
-  Dim iTableType As TableTypes
+  Dim iTableType As enum_TableTypes
   Dim sTableIDs As String
   Dim iAction As DataAction
   Dim iRecordSelection As WorkflowRecordSelectorTypes

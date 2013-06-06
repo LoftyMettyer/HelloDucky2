@@ -114,14 +114,14 @@ Public Property Let TableName(psNewName As String)
   
 End Property
 
-Public Property Get TableType() As TableTypes
+Public Property Get TableType() As enum_TableTypes
 
   ' Return the current table type.
   TableType = giTableType
   
 End Property
 
-Public Property Let TableType(piNewType As TableTypes)
+Public Property Let TableType(piNewType As enum_TableTypes)
 
   ' Set the table type.
   giTableType = piNewType
@@ -212,11 +212,11 @@ Public Function DeleteTable() As Boolean
     If TableIsUsed(mfrmUse) Then
       Screen.MousePointer = vbDefault
       Select Case Me.TableType
-        Case TableTypes.iTabParent
+        Case enum_TableTypes.iTabParent
           mfrmUse.ShowMessage Me.TableName & " Table", "The table cannot be deleted as the table is used by the following:", UsageCheckObject.Table
-        Case TableTypes.iTabChild
+        Case enum_TableTypes.iTabChild
           mfrmUse.ShowMessage Me.TableName & " Child Table", "The table cannot be deleted as the table is used by the following:", UsageCheckObject.ChildTable
-        Case TableTypes.iTabLookup
+        Case enum_TableTypes.iTabLookup
           mfrmUse.ShowMessage Me.TableName & " Lookup Table", "The table cannot be deleted as the table is used by the following:", UsageCheckObject.LookupTable
       End Select
       
