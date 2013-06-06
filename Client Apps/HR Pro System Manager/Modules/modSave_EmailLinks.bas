@@ -762,8 +762,8 @@ Private Function GetSQLEmailContent(lngTableID As Long, strTableName As String, 
   strSQL = strSQL & _
       content.GetSQL(lngTableID, strTableName, lngRecDescID, "@Subject") & vbNewLine & vbNewLine
   Set content = Nothing
-  
-  
+
+
   '@Message
   Set content = New clsLinkContent
   content.ReadDetail lngBodyID
@@ -804,7 +804,7 @@ Private Function CreateEmailProcedure(lngTableID As Long, strTableName As String
     GetSQLEmailContent(lngTableID, strTableName, 0, lngLinkID, lngSubjectID, lngBodyID, strAttachment) & vbNewLine & _
     "  UPDATE dbo.ASRSysEmailQueue SET RepTo = @To, RepCC = @CC, RepBCC = @BCC, Subject = @Subject, Msgtext = @Message, Attachment = @Attachment" & vbNewLine & _
     "  WHERE QueueID = @QueueID" & vbNewLine & vbNewLine
-    
+
   strSQL = _
     ApplyFilter(lngFilterID, lngTableID, strTableName, dtEffectiveDate, strSQL, False, False) & vbNewLine & _
     "  ELSE" & vbNewLine & _

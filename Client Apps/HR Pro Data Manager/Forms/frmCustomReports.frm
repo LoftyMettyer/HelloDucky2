@@ -4,11 +4,11 @@ Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "coa_spinner.ocx"
 Begin VB.Form frmCustomReports 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Custom Report Definition"
-   ClientHeight    =   6600
+   ClientHeight    =   6660
    ClientLeft      =   45
    ClientTop       =   330
    ClientWidth     =   9630
@@ -28,7 +28,7 @@ Begin VB.Form frmCustomReports
    LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   6600
+   ScaleHeight     =   6660
    ScaleWidth      =   9630
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
@@ -64,7 +64,7 @@ Begin VB.Form frmCustomReports
       Height          =   400
       Left            =   7050
       TabIndex        =   115
-      Top             =   6100
+      Top             =   6105
       Width           =   1200
    End
    Begin VB.CommandButton cmdCancel 
@@ -73,14 +73,14 @@ Begin VB.Form frmCustomReports
       Height          =   400
       Left            =   8330
       TabIndex        =   116
-      Top             =   6100
+      Top             =   6105
       Width           =   1200
    End
    Begin TabDlg.SSTab SSTab1 
       Height          =   5955
-      Left            =   50
+      Left            =   45
       TabIndex        =   117
-      Top             =   50
+      Top             =   45
       Width           =   9480
       _ExtentX        =   16722
       _ExtentY        =   10504
@@ -109,29 +109,40 @@ Begin VB.Form frmCustomReports
       TabCaption(1)   =   "Related Ta&bles"
       TabPicture(1)   =   "frmCustomReports.frx":1990
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraChild"
+      Tab(1).Control(0)=   "fraParent1"
+      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).Control(1)=   "fraParent2"
-      Tab(1).Control(2)=   "fraParent1"
+      Tab(1).Control(1).Enabled=   0   'False
+      Tab(1).Control(2)=   "fraChild"
+      Tab(1).Control(2).Enabled=   0   'False
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "Colu&mns"
       TabPicture(2)   =   "frmCustomReports.frx":19AC
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraButtons"
+      Tab(2).Control(0)=   "fraFieldsAvailable"
+      Tab(2).Control(0).Enabled=   0   'False
       Tab(2).Control(1)=   "fraFieldsSelected"
-      Tab(2).Control(2)=   "fraFieldsAvailable"
+      Tab(2).Control(1).Enabled=   0   'False
+      Tab(2).Control(2)=   "fraButtons"
+      Tab(2).Control(2).Enabled=   0   'False
       Tab(2).ControlCount=   3
       TabCaption(3)   =   "&Sort Order"
       TabPicture(3)   =   "frmCustomReports.frx":19C8
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "fraReportOrder"
-      Tab(3).Control(1)=   "fraRepetition"
+      Tab(3).Control(0)=   "fraRepetition"
+      Tab(3).Control(0).Enabled=   0   'False
+      Tab(3).Control(1)=   "fraReportOrder"
+      Tab(3).Control(1).Enabled=   0   'False
       Tab(3).ControlCount=   2
       TabCaption(4)   =   "O&utput"
       TabPicture(4)   =   "frmCustomReports.frx":19E4
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "fraOutputDestination"
+      Tab(4).Control(0)=   "fraReportOptions"
+      Tab(4).Control(0).Enabled=   0   'False
       Tab(4).Control(1)=   "fraOutputFormat"
-      Tab(4).Control(2)=   "fraReportOptions"
+      Tab(4).Control(1).Enabled=   0   'False
+      Tab(4).Control(2)=   "fraOutputDestination"
+      Tab(4).Control(2).Enabled=   0   'False
       Tab(4).ControlCount=   3
       Begin VB.Frame fraReportOrder 
          Caption         =   "Sort Order :"
@@ -1110,10 +1121,10 @@ Begin VB.Form frmCustomReports
       End
       Begin VB.Frame fraBase 
          Caption         =   "Data :"
-         Height          =   3340
+         Height          =   2940
          Left            =   150
          TabIndex        =   9
-         Top             =   2450
+         Top             =   2850
          Width           =   9180
          Begin VB.CheckBox chkPrintFilterHeader 
             Caption         =   "Display &title in the report header"
@@ -1717,11 +1728,18 @@ Begin VB.Form frmCustomReports
          End
       End
       Begin VB.Frame fraInformation 
-         Height          =   1950
+         Height          =   2355
          Left            =   150
          TabIndex        =   0
          Top             =   400
          Width           =   9180
+         Begin VB.ComboBox cboCategory 
+            Height          =   315
+            Left            =   1395
+            TabIndex        =   123
+            Top             =   720
+            Width           =   3090
+         End
          Begin VB.TextBox txtDesc 
             Height          =   1080
             Left            =   1395
@@ -1729,7 +1747,7 @@ Begin VB.Form frmCustomReports
             MultiLine       =   -1  'True
             ScrollBars      =   2  'Vertical
             TabIndex        =   4
-            Top             =   700
+            Top             =   1110
             Width           =   3090
          End
          Begin VB.TextBox txtName 
@@ -1751,7 +1769,7 @@ Begin VB.Form frmCustomReports
             Width           =   3405
          End
          Begin SSDataWidgets_B.SSDBGrid grdAccess 
-            Height          =   1080
+            Height          =   1485
             Left            =   5625
             TabIndex        =   8
             Top             =   705
@@ -1841,7 +1859,7 @@ Begin VB.Form frmCustomReports
             Columns(2).FieldLen=   256
             TabNavigation   =   1
             _ExtentX        =   6006
-            _ExtentY        =   1905
+            _ExtentY        =   2619
             _StockProps     =   79
             BeginProperty PageFooterFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -1862,6 +1880,14 @@ Begin VB.Form frmCustomReports
                Strikethrough   =   0   'False
             EndProperty
          End
+         Begin VB.Label lblCategory 
+            Caption         =   "Category :"
+            Height          =   240
+            Left            =   225
+            TabIndex        =   124
+            Top             =   765
+            Width           =   1005
+         End
          Begin VB.Label lblAccess 
             AutoSize        =   -1  'True
             BackStyle       =   0  'Transparent
@@ -1877,10 +1903,10 @@ Begin VB.Form frmCustomReports
             BackStyle       =   0  'Transparent
             Caption         =   "Description :"
             Height          =   195
-            Left            =   200
+            Left            =   195
             TabIndex        =   3
-            Top             =   750
-            Width           =   900
+            Top             =   1155
+            Width           =   1080
          End
          Begin VB.Label lblName 
             AutoSize        =   -1  'True
@@ -4083,7 +4109,7 @@ Private Sub cmdRemoveChild_Click()
   
 End Sub
 
-Private Sub Form_DragOver(Source As Control, X As Single, Y As Single, State As Integer)
+Private Sub Form_DragOver(Source As Control, x As Single, y As Single, State As Integer)
   
   ' SUB COMPLETE 28/01/00
   ' Change pointer to the nodrop icon
@@ -4563,7 +4589,7 @@ Private Sub ListView2_DblClick()
   
 End Sub
 
-Private Sub ListView1_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub ListView1_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
   
   If mblnReadOnly Then
     Exit Sub
@@ -4610,7 +4636,7 @@ Private Sub ListView2_ItemClick(ByVal Item As ComctlLib.ListItem)
   
 End Sub
 
-Private Sub ListView2_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub ListView2_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
   
   If mblnReadOnly Then
     Exit Sub
@@ -4642,7 +4668,7 @@ Private Sub ListView2_MouseUp(Button As Integer, Shift As Integer, X As Single, 
   
 End Sub
 
-Private Sub ListView1_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub ListView1_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
   
   If mblnReadOnly Then
     Exit Sub
@@ -4661,7 +4687,7 @@ Private Sub ListView1_MouseMove(Button As Integer, Shift As Integer, X As Single
 
 End Sub
 
-Private Sub ListView2_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub ListView2_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
   
   ' SUB COMPLETED 28/01/00
   'Start the drag operation
@@ -4680,7 +4706,7 @@ Private Sub ListView2_MouseMove(Button As Integer, Shift As Integer, X As Single
 
 End Sub
 
-Private Sub ListView1_DragDrop(Source As Control, X As Single, Y As Single)
+Private Sub ListView1_DragDrop(Source As Control, x As Single, y As Single)
   
   ' SUB COMPLETED 28/01/00
   ' Perform the drop operation
@@ -4693,30 +4719,30 @@ Private Sub ListView1_DragDrop(Source As Control, X As Single, Y As Single)
 
 End Sub
 
-Private Sub ListView2_DragDrop(Source As Control, X As Single, Y As Single)
+Private Sub ListView2_DragDrop(Source As Control, x As Single, y As Single)
   
   ' SUB COMPLETED 28/01/00
   ' Perform the drop operation - action depends on source and destination
   
   If Source Is ListView1 Then
-    If ListView2.HitTest(X, Y) Is Nothing Then
+    If ListView2.HitTest(x, y) Is Nothing Then
       CopyToSelected False
     Else
-      CopyToSelected False, ListView2.HitTest(X, Y).Index
+      CopyToSelected False, ListView2.HitTest(x, y).Index
     End If
     ListView1.Drag vbCancel
   Else
-    If ListView2.HitTest(X, Y) Is Nothing Then
+    If ListView2.HitTest(x, y) Is Nothing Then
       ChangeSelectedOrder
     Else
-      ChangeSelectedOrder ListView2.HitTest(X, Y).Index
+      ChangeSelectedOrder ListView2.HitTest(x, y).Index
     End If
     ListView2.Drag vbCancel
   End If
 
 End Sub
 
-Private Sub Frafieldsavailable_DragOver(Source As Control, X As Single, Y As Single, State As Integer)
+Private Sub Frafieldsavailable_DragOver(Source As Control, x As Single, y As Single, State As Integer)
   
   ' SUB COMPLETED 28/01/00
   ' Change pointer to the nodrop icon
@@ -4724,7 +4750,7 @@ Private Sub Frafieldsavailable_DragOver(Source As Control, X As Single, Y As Sin
   
 End Sub
 
-Private Sub Frafieldsselected_DragOver(Source As Control, X As Single, Y As Single, State As Integer)
+Private Sub Frafieldsselected_DragOver(Source As Control, x As Single, y As Single, State As Integer)
   
   ' SUB COMPLETED 28/01/00
   ' Change pointer to the nodrop icon
@@ -4732,7 +4758,7 @@ Private Sub Frafieldsselected_DragOver(Source As Control, X As Single, Y As Sing
   
 End Sub
 
-Private Sub ListView2_DragOver(Source As Control, X As Single, Y As Single, State As Integer)
+Private Sub ListView2_DragOver(Source As Control, x As Single, y As Single, State As Integer)
 
   ' SUB COMPLETED 28/01/00
   ' Change pointer to drop icon
@@ -4747,11 +4773,11 @@ Private Sub ListView2_DragOver(Source As Control, X As Single, Y As Single, Stat
   End If
 
   ' Set DropHighlight to the mouse's coordinates.
-  Set ListView2.DropHighlight = ListView2.HitTest(X, Y)
+  Set ListView2.DropHighlight = ListView2.HitTest(x, y)
 
 End Sub
 
-Private Sub ListView1_DragOver(Source As Control, X As Single, Y As Single, State As Integer)
+Private Sub ListView1_DragOver(Source As Control, x As Single, y As Single, State As Integer)
 
   ' SUB COMPLETED 28/01/00
   ' Change pointer to drop icon
