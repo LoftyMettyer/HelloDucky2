@@ -31,7 +31,7 @@ Public Function CreateLinkDocumentSP() As Boolean
             "    @DocumentType   nvarchar(255)," & vbNewLine & _
             "    @Parent1Key     nvarchar(100)," & vbNewLine & _
             "    @Parent2Key     nvarchar(100)," & vbNewLine & _
-            "    @ChildKey       nvarchar(100)," & vbNewLine & _
+            "    @Key            nvarchar(100)," & vbNewLine & _
             "    @DocumentGuid   uniqueidentifier," & vbNewLine & _
             "    @ToDelete       bit," & vbNewLine & _
             "    @Link           nvarchar(MAX))" & vbNewLine & _
@@ -66,32 +66,35 @@ Public Function CreateLinkDocumentSP() As Boolean
             "    SET @intParent1RecordID = 0;" & vbNewLine & vbNewLine
 
   sSQL = sSQL & _
-            "    SELECT @sTableName = t.[TableName], @sTargetLinkColumn = c1.[ColumnName], @sTargetKeyField = c2.[ColumnName]" & vbNewLine & _
-            "       , @intParent1TableID = d.[Parent1TableID], @sParent1KeyField = c3.[ColumnName], @sParent1TableName = pt.[TableName]" & vbNewLine & _
-            "       , @sTargetCategoryColumn  = c4.[ColumnName], @sTargetTypeColumn  = c5.[ColumnName], @sTargetGUIDColumn = c6.[ColumnName]" & vbNewLine & _
+            "    SELECT @sTableName = ISNULL(t.[TableName],''), @sTargetLinkColumn = ISNULL(c1.[ColumnName],''), @sTargetKeyField = ISNULL(c2.[ColumnName],'')" & vbNewLine & _
+            "       , @intParent1TableID = ISNULL(d.[Parent1TableID],''), @sParent1KeyField = ISNULL(c3.[ColumnName],''), @sParent1TableName = ISNULL(pt.[TableName],'')" & vbNewLine & _
+            "       , @sTargetCategoryColumn  = ISNULL(c4.[ColumnName],''), @sTargetTypeColumn  = ISNULL(c5.[ColumnName],''), @sTargetGUIDColumn = ISNULL(c6.[ColumnName],'')" & vbNewLine & _
             "    FROM dbo.[ASRSysDocumentManagementTypes] d" & vbNewLine & _
             "        INNER JOIN [" & sCategoryTableName & "] dc ON d.[CategoryRecordID] = dc.[id]" & vbNewLine & _
             "        LEFT JOIN [" & sTypeTableName & "] dt ON dt.[" & sTypeCategoryColumnName & "] = dc.[" & sCategoryColumnName & "]" & vbNewLine & _
             "        INNER JOIN [ASRSysTables] t ON t.[TableID] = d.[TargetTableID]" & vbNewLine & _
             "        LEFT JOIN [ASRSysTables] pt ON pt.[TableID] = d.[Parent1TableID]" & vbNewLine & _
-            "        INNER JOIN [ASRSysColumns] c1 ON c1.[ColumnID] = d.[TargetColumnID]" & vbNewLine & _
-            "        INNER JOIN [ASRSysColumns] c2 ON c2.[ColumnID] = d.[TargetKeyFieldColumnID]" & vbNewLine & _
-            "        INNER JOIN [ASRSysColumns] c3 ON c3.[ColumnID] = d.[Parent1KeyFieldColumnID]" & vbNewLine & _
-            "        INNER JOIN [ASRSysColumns] c4 ON c4.[ColumnID] = d.[TargetCategoryColumnID]" & vbNewLine & _
-            "        INNER JOIN [ASRSysColumns] c5 ON c5.[ColumnID] = d.[TargetTypeColumnID]" & vbNewLine & _
-            "        INNER JOIN [ASRSysColumns] c6 ON c6.[ColumnID] = d.[TargetGUIDColumnID]" & vbNewLine & _
+            "        LEFT JOIN [ASRSysColumns] c1 ON c1.[ColumnID] = d.[TargetColumnID]" & vbNewLine & _
+            "        LEFT JOIN [ASRSysColumns] c2 ON c2.[ColumnID] = d.[TargetKeyFieldColumnID]" & vbNewLine & _
+            "        LEFT JOIN [ASRSysColumns] c3 ON c3.[ColumnID] = d.[Parent1KeyFieldColumnID]" & vbNewLine & _
+            "        LEFT JOIN [ASRSysColumns] c4 ON c4.[ColumnID] = d.[TargetCategoryColumnID]" & vbNewLine & _
+            "        LEFT JOIN [ASRSysColumns] c5 ON c5.[ColumnID] = d.[TargetTypeColumnID]" & vbNewLine & _
+            "        LEFT JOIN [ASRSysColumns] c6 ON c6.[ColumnID] = d.[TargetGUIDColumnID]" & vbNewLine & _
             "    WHERE dc.[" & sCategoryColumnName & "] = @DocumentCategory AND dt.[" & sTypeColumnName & "] = @DocumentType;" & vbNewLine & vbNewLine
 
   sSQL = sSQL & _
-            "    SET @sWhereClause = '[' + @sTargetKeyField + '] = ''' + @DocumentType + ''''" & vbNewLine & _
-            "    IF LEN(@sParent1Keyfield) > 0" & vbNewLine & _
+            "    IF LEN(@sTargetKeyField) > 0" & vbNewLine & _
             "    BEGIN" & vbNewLine & _
-            "        SET @sGetParentID = 'SELECT @intParent1RecordID = [id] FROM dbo.[' + @sParent1TableName + '] WHERE [' + @sParent1KeyField + '] = ''' + @Parent1Key + '''';" & vbNewLine & _
-            "        SET @sParamDefinition = N'@intParent1RecordID integer output';" & vbNewLine & _
-            "        EXECUTE sp_executeSQL @sGetParentID, @sParamDefinition, @intParent1RecordID output;" & vbNewLine & _
-            "        SET @sWhereClause = @sWhereClause + ' AND [ID_' + convert(nvarchar(10),@intParent1TableID) + '] = ' + convert(nvarchar(10),@intParent1RecordID);" & vbNewLine & _
-            "        SET @sInsertColumns = '[ID_' + convert(nvarchar(10),@intParent1TableID) + '], '" & vbNewLine & _
-            "        SET @sInsertValues = convert(nvarchar(10),@intParent1RecordID) + ', ' " & vbNewLine & _
+            "        SET @sWhereClause = '[' + @sTargetKeyField + '] = ''' + @Key + ''''" & vbNewLine & _
+            "        IF LEN(@sParent1Keyfield) > 0" & vbNewLine & _
+            "        BEGIN" & vbNewLine & _
+            "            SET @sGetParentID = 'SELECT @intParent1RecordID = [id] FROM dbo.[' + @sParent1TableName + '] WHERE [' + @sParent1KeyField + '] = ''' + @Parent1Key + '''';" & vbNewLine & _
+            "            SET @sParamDefinition = N'@intParent1RecordID integer output';" & vbNewLine & _
+            "            EXECUTE sp_executeSQL @sGetParentID, @sParamDefinition, @intParent1RecordID output;" & vbNewLine & _
+            "            SET @sWhereClause = @sWhereClause + ' AND [ID_' + convert(nvarchar(10),@intParent1TableID) + '] = ' + convert(nvarchar(10),@intParent1RecordID);" & vbNewLine & _
+            "            SET @sInsertColumns = '[ID_' + convert(nvarchar(10),@intParent1TableID) + '], '" & vbNewLine & _
+            "            SET @sInsertValues = convert(nvarchar(10),@intParent1RecordID) + ', ' " & vbNewLine & _
+            "        END" & vbNewLine & _
             "    END" & vbNewLine & vbNewLine
 
   sSQL = sSQL & _
@@ -100,7 +103,7 @@ Public Function CreateLinkDocumentSP() As Boolean
 
   sSQL = sSQL & _
             "    SET @sInsertValues = @sInsertValues + '''' + @DocumentCategory + ''', ''' + @DocumentType" & vbNewLine & _
-            "                          + ''', ''' + convert(nvarchar(50),@DocumentGuid) + ''', ' + @ChildKey + ', ''' + @Link + '''';" & vbNewLine & vbNewLine
+            "                          + ''', ''' + convert(nvarchar(50),@DocumentGuid) + ''', ' + @Key + ', ''' + @Link + '''';" & vbNewLine & vbNewLine
 
   sSQL = sSQL & _
             "    SET @sExecuteSQL = 'IF EXISTS(SELECT [ID] FROM dbo.[' + @sTableName + '] WHERE ' + @sWhereClause + ') ' + CHAR(13) +" & vbNewLine & _
@@ -110,7 +113,8 @@ Public Function CreateLinkDocumentSP() As Boolean
 
 
   sSQL = sSQL & _
-            "EXECUTE sp_executeSQL @sExecuteSQL;" & vbNewLine
+            "    PRINT @sExecuteSQL;" & vbNewLine & _
+            "    EXECUTE sp_executeSQL @sExecuteSQL;" & vbNewLine
 
   sSQL = sSQL & "END"
   
