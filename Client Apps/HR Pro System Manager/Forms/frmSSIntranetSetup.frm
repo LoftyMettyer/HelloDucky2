@@ -1968,7 +1968,7 @@ Private Sub RefreshControls()
 
   End Select
 
-  cmdOK.Enabled = mfChanged
+  cmdOk.Enabled = mfChanged
   cmdPreview.Enabled = (cboSecurityGroup.Text <> "(All Groups)")
 
 End Sub
@@ -3090,7 +3090,7 @@ Private Sub cmdCopyButtonLink_Click()
         & vbTab & IIf(.chkDottedGridlines.value = 0, "0", "1") & vbTab & IIf(.chkStackSeries.value = 0, "0", "1") _
         & vbTab & .ChartViewID & vbTab & .ChartTableID & vbTab & .ChartColumnID & vbTab & .ChartFilterID _
         & vbTab & .ChartAggregateType & vbTab & IIf(.chkShowValues.value = 0, "0", "1") _
-        & vbTab & .chkFormatting.value & vbTab & .spnDBValueDecimals.value & vbTab & .chkDBVaUseThousandSeparator.value _
+        & vbTab & IIf(.UseFormatting = 0, "0", "1") & vbTab & .spnDBValueDecimals.value & vbTab & .chkDBVaUseThousandSeparator.value _
         & vbTab & .txtDBValuePrefix.Text & vbTab & .txtDBValueSuffix.Text _
         & vbTab & .chkConditionalFormatting.value _
         & vbTab & .ConditionalFormatting_Operator_1 & vbTab & .ConditionalFormatting_Value_1 & vbTab & .ConditionalFormatting_Style_1 & vbTab & .ConditionalFormatting_Colour_1 _
