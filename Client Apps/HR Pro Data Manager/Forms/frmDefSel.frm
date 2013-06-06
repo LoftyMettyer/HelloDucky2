@@ -333,6 +333,10 @@ Public Property Get Action() As Long
   Action = lngAction
 End Property
 
+Public Property Let Action(ByVal DefaultValue As Long)
+  lngAction = DefaultValue
+End Property
+
 Public Property Get Options() As Long
   Options = mlngOptions
 End Property
@@ -1081,6 +1085,7 @@ Private Sub Form_Resize()
   If Me.Visible = True Then
     SizeControls
   End If
+  
 End Sub
 
 Private Sub Form_Unload(Cancel As Integer)
@@ -2519,6 +2524,16 @@ Public Function ShowList(lngUtilType As UtilityType, Optional msRecordSourceWher
     mutlUtilityType = utlLabelType
     Me.HelpContextID = 1082
 
+  Case utlDocumentMapping
+    msTypeCode = "LABELDEFINITION"  ' change to when system permissions is done."V1DOCUMENTMAP"
+    msType = "Document Mapping"
+    msGeneralCaption = "Document Mappings"
+    msSingularCaption = "Document Mapping"
+    msTableName = "ASRSysDocumentMapping"
+    msIDField = "DocumentMapID"
+    mutlUtilityType = utlDocumentMapping
+    Me.HelpContextID = 1082
+
   Case utlPicklist
     msTypeCode = "PICKLISTS"
     msType = "Picklist"
@@ -2719,10 +2734,10 @@ Private Function DynamicallyChangeHelpContextID() As Integer
         Case utlWorkflow
         DynamicallyChangeHelpContextID = 1106
         
-        Case utlWorkflowPendingSteps
+        Case utlWorkFlowPendingSteps
         DynamicallyChangeHelpContextID = 1145
         
-        Case utlWorkflowPendingSteps
+        Case utlWorkFlowPendingSteps
         DynamicallyChangeHelpContextID = 1027
         
         
@@ -2751,5 +2766,19 @@ Private Sub ReadSelectedIDs()
   Next lngCount
   
 End Sub
+
+' Show the selection or just force through the specified ID
+Public Sub CustomShow(ByVal ShowMode As VBRUN.FormShowConstants)
+
+  If gbJustRunIt Then
+    Me.SelectedID = glngBypassDefsel_ID
+    Me.Action = edtSelect
+  Else
+    Me.Show ShowMode
+  End If
+
+End Sub
+
+
 
 
