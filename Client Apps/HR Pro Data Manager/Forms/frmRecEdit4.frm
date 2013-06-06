@@ -4317,7 +4317,8 @@ Public Sub UpdateControls(Optional pfNoWarnings As Boolean)
   For Each objControl In Me.Controls
     With objControl
       ' get the control's tag.
-      sTag = .Tag
+      'sTag = .Tag
+      sTag = GetTag(objControl)
 
       'JPD 20030610
       If TypeOf objControl Is ActiveBar Then
@@ -4769,6 +4770,27 @@ Err_Trap:
   End Select
 
 End Sub
+
+
+Public Function GetTag(objControl As Control) As String
+
+  Dim lngTimeOut As Long
+  
+  On Local Error GoTo LocalErr
+  lngTimeOut = Timer + 3
+  GetTag = objControl.Tag
+
+Exit Function
+
+LocalErr:
+  If lngTimeOut > Timer Then
+    Resume 0
+  End If
+  GetTag = vbNullString
+
+End Function
+
+
 
 Public Function UpdateWithAVI(Optional pfDeactivating As Variant, Optional SaveCaption As String) As Boolean
   ' NPG20090902 Fault HRPRO-219
