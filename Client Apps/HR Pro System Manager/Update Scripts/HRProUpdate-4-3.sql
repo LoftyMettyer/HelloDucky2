@@ -91,9 +91,575 @@ PRINT 'Step X - Rename base system tables'
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step X - '
+PRINT 'Step 4 - Add new calculation procedures'
 
+	IF EXISTS (SELECT *
+		FROM dbo.sysobjects
+		WHERE id = object_id(N'[dbo].[udfsys_absencebetweentwodates]')
+			AND xtype in (N'FN', N'IF', N'TF'))
+		DROP FUNCTION [dbo].[udfsys_absencebetweentwodates]
+	IF EXISTS (SELECT *
+		FROM dbo.sysobjects
+		WHERE id = object_id(N'[dbo].[udfsys_firstnamefromforenames]')
+			AND xtype in (N'FN', N'IF', N'TF'))
+		DROP FUNCTION [dbo].[udfsys_firstnamefromforenames]
+	IF EXISTS (SELECT *
+		FROM dbo.sysobjects
+		WHERE id = object_id(N'[dbo].[udfsys_getfieldfromdatabaserecord]')
+			AND xtype in (N'FN', N'IF', N'TF'))
+		DROP FUNCTION [dbo].[udfsys_getfieldfromdatabaserecord]
+	IF EXISTS (SELECT *
+		FROM dbo.sysobjects
+		WHERE id = object_id(N'[dbo].[udfsys_getfunctionparametertype]')
+			AND xtype in (N'FN', N'IF', N'TF'))
+		DROP FUNCTION [dbo].[udfsys_getfunctionparametertype]
+	IF EXISTS (SELECT *
+		FROM dbo.sysobjects
+		WHERE id = object_id(N'[dbo].[udfsys_initialsfromforenames]')
+			AND xtype in (N'FN', N'IF', N'TF'))
+		DROP FUNCTION [dbo].[udfsys_initialsfromforenames]
+	IF EXISTS (SELECT *
+		FROM dbo.sysobjects
+		WHERE id = object_id(N'[dbo].[udfsys_isfieldpopulated]')
+			AND xtype in (N'FN', N'IF', N'TF'))
+		DROP FUNCTION [dbo].[udfsys_isfieldpopulated]
+	IF EXISTS (SELECT *
+		FROM dbo.sysobjects
+		WHERE id = object_id(N'[dbo].[udfsys_isovernightprocess]')
+			AND xtype in (N'FN', N'IF', N'TF'))
+		DROP FUNCTION [dbo].[udfsys_isovernightprocess]
+	IF EXISTS (SELECT *
+		FROM dbo.sysobjects
+		WHERE id = object_id(N'[dbo].[udfsys_maternityexpectedreturndate]')
+			AND xtype in (N'FN', N'IF', N'TF'))
+		DROP FUNCTION [dbo].[udfsys_maternityexpectedreturndate]
+	IF EXISTS (SELECT *
+		FROM dbo.sysobjects
+		WHERE id = object_id(N'[dbo].[udfsys_nicedate]')
+			AND xtype in (N'FN', N'IF', N'TF'))
+		DROP FUNCTION [dbo].[udfsys_nicedate]
+	IF EXISTS (SELECT *
+		FROM dbo.sysobjects
+		WHERE id = object_id(N'[dbo].[udfsys_nicetime]')
+			AND xtype in (N'FN', N'IF', N'TF'))
+		DROP FUNCTION [dbo].[udfsys_nicetime]
+	IF EXISTS (SELECT *
+		FROM dbo.sysobjects
+		WHERE id = object_id(N'[dbo].[udfsys_parentalleaveentitlement]')
+			AND xtype in (N'FN', N'IF', N'TF'))
+		DROP FUNCTION [dbo].[udfsys_parentalleaveentitlement]
+	IF EXISTS (SELECT *
+		FROM dbo.sysobjects
+		WHERE id = object_id(N'[dbo].[udfsys_parentalleavetaken]')
+			AND xtype in (N'FN', N'IF', N'TF'))
+		DROP FUNCTION [dbo].[udfsys_parentalleavetaken]
+	IF EXISTS (SELECT *
+		FROM dbo.sysobjects
+		WHERE id = object_id(N'[dbo].[udfsys_propercase]')
+			AND xtype in (N'FN', N'IF', N'TF'))
+		DROP FUNCTION [dbo].[udfsys_propercase]
+	IF EXISTS (SELECT *
+		FROM dbo.sysobjects
+		WHERE id = object_id(N'[dbo].[udfsys_servicelength]')
+			AND xtype in (N'FN', N'IF', N'TF'))
+		DROP FUNCTION [dbo].[udfsys_servicelength]
+	IF EXISTS (SELECT *
+		FROM dbo.sysobjects
+		WHERE id = object_id(N'[dbo].[udfsys_statutoryredundancypay]')
+			AND xtype in (N'FN', N'IF', N'TF'))
+		DROP FUNCTION [dbo].[udfsys_statutoryredundancypay]
+	IF EXISTS (SELECT *
+		FROM dbo.sysobjects
+		WHERE id = object_id(N'[dbo].[udfsys_uniquecode]')
+			AND xtype in (N'FN', N'IF', N'TF'))
+		DROP FUNCTION [dbo].[udfsys_uniquecode]
+	IF EXISTS (SELECT *
+		FROM dbo.sysobjects
+		WHERE id = object_id(N'[dbo].[udfsys_username]')
+			AND xtype in (N'FN', N'IF', N'TF'))
+		DROP FUNCTION [dbo].[udfsys_username]
+	IF EXISTS (SELECT *
+		FROM dbo.sysobjects
+		WHERE id = object_id(N'[dbo].[udfsys_wholemonthsbetweentwodates]')
+			AND xtype in (N'FN', N'IF', N'TF'))
+		DROP FUNCTION [dbo].[udfsys_wholemonthsbetweentwodates]
+	IF EXISTS (SELECT *
+		FROM dbo.sysobjects
+		WHERE id = object_id(N'[dbo].[udfsys_wholeyearsbetweentwodates]')
+			AND xtype in (N'FN', N'IF', N'TF'))
+		DROP FUNCTION [dbo].[udfsys_wholeyearsbetweentwodates]
+	IF EXISTS (SELECT *
+		FROM dbo.sysobjects
+		WHERE id = object_id(N'[dbo].[udfsys_workingdaysbetweentwodates]')
+			AND xtype in (N'FN', N'IF', N'TF'))
+		DROP FUNCTION [dbo].[udfsys_workingdaysbetweentwodates]
 
+	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_wholemonthsbetweentwodates] 
+		(
+			@date1 	datetime,
+			@date2 	datetime
+		)
+		RETURNS integer
+		WITH SCHEMABINDING
+		AS
+		BEGIN
+		
+			DECLARE @result integer;
+		
+			-- Clean dates (trim time part)
+			SET @date1 = DATEADD(D, 0, DATEDIFF(D, 0, @date1));
+			SET @date2 = DATEADD(D, 0, DATEDIFF(D, 0, @date2));
+		
+			IF @date1 < @date2
+			BEGIN
+		
+				-- Get the total number of months
+				SET @result = DATEDIFF(mm, @date1, @date2);
+		      
+				-- See if the day field of pvParam2 < pvParam1 day field and if so - 1
+				IF DAY(@date2) < DAY(@date1)
+				BEGIN
+					SET @result = @result -1;
+				END
+			END
+			
+			RETURN @result
+			
+		END';
+	EXECUTE sp_executeSQL @sSPCode;
+
+	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_wholeyearsbetweentwodates] (
+		     @date1  datetime,
+		     @date2  datetime )
+		RETURNS integer 
+		WITH SCHEMABINDING
+		AS
+		BEGIN
+		
+			DECLARE @result integer = 0;
+			
+		    -- Get the number of whole years
+		    SET @result = YEAR(@date2) - YEAR(@date1);
+		
+		    -- See if the date passed in months are greater than todays month
+		    IF MONTH(@date1) > MONTH(@date2)
+		    BEGIN
+				SET @result = @result - 1;
+		    END
+		    
+		    -- See if the months are equal and if they are test the day value
+		    IF MONTH(@date1) = MONTH(@date2)
+		    BEGIN
+		        IF DAY(@date1) > DAY(@date2)
+		            BEGIN
+						SET @result = @result - 1;
+		            END
+		        END
+		        
+		    RETURN @result;
+		
+		END';
+	EXECUTE sp_executeSQL @sSPCode;
+
+	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_absencebetweentwodates] (
+		     @date1		datetime,
+		     @date2		datetime,
+		     @type		nvarchar(MAX) )
+		RETURNS integer 
+		WITH SCHEMABINDING
+		AS
+		BEGIN
+		
+			DECLARE @result integer = 0;
+			
+		    -- Get the number of whole years
+		    SET @result = YEAR(@date2) - YEAR(@date1);
+		
+		    -- See if the date passed in months are greater than todays month
+		    IF MONTH(@date1) > MONTH(@date2)
+		    BEGIN
+				SET @result = @result - 1;
+		    END
+		    
+		    -- See if the months are equal and if they are test the day value
+		    IF MONTH(@date1) = MONTH(@date2)
+		    BEGIN
+		        IF DAY(@date1) > DAY(@date2)
+		            BEGIN
+						SET @result = @result - 1;
+		            END
+		        END
+		        
+		    RETURN @result;
+		
+		END';
+	EXECUTE sp_executeSQL @sSPCode;
+
+	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_firstnamefromforenames] 
+		(
+			@forenames nvarchar(max)
+		)
+		RETURNS nvarchar(max)
+		WITH SCHEMABINDING
+		AS
+		BEGIN
+		
+			DECLARE @result nvarchar(max);
+		
+			IF (LEN(@forenames) = 0 ) OR (@forenames IS null)
+			BEGIN
+				SET @result = '''';
+			END
+			ELSE
+			BEGIN
+				IF CHARINDEX('' '', @forenames) > 0
+					SET @result = LEFT(@forenames, CHARINDEX('' '', @forenames));
+				ELSE
+					SET @result = @forenames;
+			END
+			
+			RETURN @result;
+			
+		END';
+	EXECUTE sp_executeSQL @sSPCode;
+
+	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_getfieldfromdatabaserecord](
+			@searchcolumn AS nvarchar(255),
+			@searchexpression AS nvarchar(MAX),
+			@returnfield AS nvarchar(255))
+		RETURNS nvarchar(MAX)
+		WITH SCHEMABINDING
+		AS
+		BEGIN
+		
+			DECLARE @result nvarchar(MAX);
+			RETURN @result;
+		
+		END';
+	EXECUTE sp_executeSQL @sSPCode;
+
+	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_getfunctionparametertype]
+			(@functionid integer, @parameterindex integer)
+		RETURNS integer
+		AS
+		BEGIN
+		
+			DECLARE @result integer;
+		
+			SELECT @result = [parametertype] FROM ASRSysFunctionParameters
+				WHERE @functionid = [functionID] AND @parameterindex = [parameterIndex];
+		
+			RETURN @result;
+		
+		END';
+	EXECUTE sp_executeSQL @sSPCode;
+
+	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_initialsfromforenames] 
+		(
+			@forenames	varchar(8000),
+			@padwithspace bit
+		)
+		RETURNS nvarchar(10)
+		WITH SCHEMABINDING
+		AS
+		BEGIN
+		
+			DECLARE @result nvarchar(10) = '''';
+			DECLARE @icounter integer = 1;
+		
+			IF LEN(@forenames) > 0 
+			BEGIN
+				SET @result = UPPER(left(@forenames,1));
+		
+				WHILE @icounter < LEN(@forenames)
+				BEGIN
+					IF SUBSTRING(@forenames, @icounter, 1) = '' ''
+					BEGIN
+						IF @padwithspace = 1
+							SET @result = @result + '' '' + UPPER(SUBSTRING(@forenames, @icounter+1, 1));
+						ELSE
+							SET @result = @result + UPPER(SUBSTRING(@forenames, @icounter+1, 1));
+					END
+			
+					SET @icounter = @icounter +1;
+				END
+		
+				SET @result = @result + '' ''
+			
+			END
+		
+			RETURN @result
+		
+		END';
+	EXECUTE sp_executeSQL @sSPCode;
+
+	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_isfieldpopulated](
+			@inputcolumn as nvarchar(MAX))
+		RETURNS bit
+		WITH SCHEMABINDING
+		AS
+		BEGIN
+		
+			DECLARE @result bit = 0;
+			SELECT @result = (
+				CASE 
+					WHEN @inputcolumn IS NULL THEN 0 
+					ELSE
+						CASE
+		--					WHEN LEN(convert(nvarchar(1),@inputcolumn)) = 0 THEN 0
+							WHEN DATALENGTH(@inputcolumn) = 0 THEN 0
+							ELSE 1
+						END
+					END);
+		
+			RETURN @result;
+			
+		END';
+	EXECUTE sp_executeSQL @sSPCode;
+
+	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_isovernightprocess] ()
+		RETURNS bit 
+		WITH SCHEMABINDING
+		AS
+		BEGIN
+		
+			DECLARE @result bit = 0;
+			
+		    RETURN @result;
+		
+		END';
+	EXECUTE sp_executeSQL @sSPCode;
+
+	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_maternityexpectedreturndate] (
+		     @id		integer)
+		RETURNS datetime
+		WITH SCHEMABINDING
+		AS
+		BEGIN
+		
+			DECLARE @result datetime;
+			
+			SET @result = GETDATE()
+		        
+		    RETURN @result;
+		
+		END';
+	EXECUTE sp_executeSQL @sSPCode;
+
+	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_nicedate](
+			@inputdate as datetime)
+		RETURNS nvarchar(max)
+		WITH SCHEMABINDING
+		AS
+		BEGIN
+		
+			DECLARE @result varchar(MAX) = '''';
+			SELECT @result = CONVERT(nvarchar(2),DATEPART(day, @inputdate))
+				+ '' '' + DATENAME(month, @inputdate) 
+				+ '' '' + CONVERT(nvarchar(4),DATEPART(YYYY, @inputdate));
+		
+			RETURN @result;
+			
+		END';
+	EXECUTE sp_executeSQL @sSPCode;
+
+	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_nicetime](
+			@inputdate as datetime)
+		RETURNS nvarchar(255)
+		WITH SCHEMABINDING
+		AS
+		BEGIN
+		
+			DECLARE @result varchar(255) = '''';
+		
+			SELECT @result =convert(char(8), @inputdate, 108)
+		
+			RETURN @result;
+			
+		END';
+	EXECUTE sp_executeSQL @sSPCode;
+
+	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_parentalleaveentitlement] (
+		     @id		integer)
+		RETURNS integer
+		WITH SCHEMABINDING
+		AS
+		BEGIN
+		
+			DECLARE @result integer;
+			
+			SET @result = 10;
+		        
+		    RETURN @result;
+		
+		END';
+	EXECUTE sp_executeSQL @sSPCode;
+
+	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_parentalleavetaken] (
+		     @id		integer)
+		RETURNS integer
+		WITH SCHEMABINDING
+		AS
+		BEGIN
+		
+			DECLARE @result integer;
+			
+			SET @result = 0;
+		        
+		    RETURN @result;
+		
+		END';
+	EXECUTE sp_executeSQL @sSPCode;
+
+	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_propercase](
+			@text as nvarchar(max))
+		RETURNS nvarchar(max)
+		WITH SCHEMABINDING
+		AS
+		BEGIN
+		
+			DECLARE @reset	bit = 1;
+			DECLARE @result varchar(8000) = '''';
+			DECLARE @i		int = 1;
+			DECLARE @c		char(1);
+		      
+			WHILE (@i <= len(@text))
+				SELECT @c= substring(@text,@i,1)
+					, @result = @result + CASE WHEN @reset=1 THEN UPPER(@c) 
+											   ELSE LOWER(@c) END
+					, @reset = CASE WHEN @c LIKE ''[a-zA-Z]'' THEN 0
+									ELSE 1
+									END
+					, @i = @i + 1;
+		
+			RETURN @result;
+			
+		END';
+	EXECUTE sp_executeSQL @sSPCode;
+
+	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_servicelength] (
+		     @startdate  datetime,
+		     @leavingdate  datetime,
+		     @period nvarchar(2))
+		RETURNS integer 
+		WITH SCHEMABINDING
+		AS
+		BEGIN
+		
+			DECLARE @result integer;
+			DECLARE @amount integer;
+		
+			-- If start date is in the future ignore
+			IF @startdate > GETDATE()
+				RETURN 0;
+			
+			-- Trim the leaving date
+			IF @leavingdate IS NULL OR @leavingdate > GETDATE()
+				SET @leavingdate = GETDATE();
+		
+		
+			SET @amount = [dbo].[udfsys_wholeyearsbetweentwodates]
+				(@startdate, @leavingdate);
+		
+			-- Years	
+			IF @period = ''Y'' SET @result = @amount
+			
+			--Months
+			ELSE IF @period = ''M''
+				SET @result = [dbo].[udfsys_wholemonthsbetweentwodates]
+					(@startdate, @leavingdate) - (@amount * 12);
+			
+		    RETURN @result;
+		
+		END';
+	EXECUTE sp_executeSQL @sSPCode;
+
+	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_statutoryredundancypay](
+			@startdate AS datetime,
+			@leavingdate AS datetime,
+			@dateofbirth AS datetime,
+			@weeklyrate AS numeric(10,2),
+			@limit as numeric(10,2))
+		RETURNS numeric(10,2)
+		WITH SCHEMABINDING
+		AS
+		BEGIN
+		
+			DECLARE @result numeric(10,2);
+			DECLARE @service_years integer;
+			
+			--/* First three parameters are compulsory, so return 0 and exit if they are not set */
+			IF (@startdate IS null) OR (@leavingdate IS null) OR (@weeklyrate IS null)
+			BEGIN
+				SET @result = 0;
+				RETURN @result;
+			END
+		
+			-- Calculate service years
+			SET @service_years = [dbo].[udfsys_wholeyearsbetweentwodates](@startdate, @leavingdate);
+		
+			SET @result = @service_years * @weeklyrate;
+		
+			RETURN @result;
+		
+		END';
+	EXECUTE sp_executeSQL @sSPCode;
+
+	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_uniquecode](
+			@prefix AS nvarchar(max),
+			@coderoot AS numeric(10,2))
+		RETURNS numeric(10,0)
+		WITH SCHEMABINDING
+		AS
+		BEGIN
+		
+			DECLARE @result numeric(10,0);
+		
+			SET @result = 0;
+		
+			--SELECT @result = [maxcodesuffix] 
+			--	FROM [dbo].[tb_uniquecodes]
+			--	WHERE [codeprefix] = @prefix;
+		
+			-- Update existing value 
+			/*
+			You can''t run an execute or an update in a UDF, so will have to create an extended
+			stored procedure which should be able to do it. Otherwise tack something into the end
+			of the update trigger on the base table that calls this function. (code stub already in
+			the admin module.
+			*/
+		
+			RETURN @result;
+		
+		END';
+	EXECUTE sp_executeSQL @sSPCode;
+
+	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_username]
+			(@userid as integer)
+		RETURNS varchar(255)
+		WITH SCHEMABINDING
+		AS
+		BEGIN
+		
+			RETURN SYSTEM_USER;
+		
+		END';
+	EXECUTE sp_executeSQL @sSPCode;
+
+	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_workingdaysbetweentwodates]
+		(
+			@date1 	datetime,
+			@date2 	datetime
+		)
+		RETURNS integer
+		WITH SCHEMABINDING
+		AS
+		BEGIN
+			
+			RETURN 0
+			
+		END';
+	EXECUTE sp_executeSQL @sSPCode;
 
 	
 /* ------------------------------------------------------------- */
