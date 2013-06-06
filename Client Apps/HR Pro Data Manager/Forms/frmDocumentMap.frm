@@ -2,11 +2,11 @@ VERSION 5.00
 Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "Codejock.Controls.v13.1.0.ocx"
 Begin VB.Form frmDocumentMap 
    BorderStyle     =   1  'Fixed Single
-   Caption         =   "Document Map"
-   ClientHeight    =   7575
+   Caption         =   "Document Management Type"
+   ClientHeight    =   7605
    ClientLeft      =   45
    ClientTop       =   345
-   ClientWidth     =   9780
+   ClientWidth     =   10755
    BeginProperty Font 
       Name            =   "Verdana"
       Size            =   8.25
@@ -16,22 +16,24 @@ Begin VB.Form frmDocumentMap
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
+   Icon            =   "frmDocumentMap.frx":0000
    LinkTopic       =   "Form1"
+   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   7575
-   ScaleWidth      =   9780
+   ScaleHeight     =   7605
+   ScaleWidth      =   10755
    ShowInTaskbar   =   0   'False
    StartUpPosition =   1  'CenterOwner
    Begin XtremeSuiteControls.TabControl TabControl1 
-      Height          =   6855
+      Height          =   6945
       Left            =   90
       TabIndex        =   2
       Top             =   45
-      Width           =   9555
+      Width           =   10545
       _Version        =   851969
-      _ExtentX        =   16854
-      _ExtentY        =   12091
+      _ExtentX        =   18600
+      _ExtentY        =   12250
       _StockProps     =   68
       ItemCount       =   2
       Item(0).Caption =   "Definition"
@@ -40,66 +42,113 @@ Begin VB.Form frmDocumentMap
       Item(0).Control(1)=   "fraClassification"
       Item(0).Control(2)=   "fraDestination"
       Item(1).Caption =   "Advanced"
-      Item(1).ControlCount=   1
+      Item(1).ControlCount=   2
       Item(1).Control(0)=   "fraHeader"
+      Item(1).Control(1)=   "chkLockTablesUntilComplete"
+      Begin VB.CheckBox chkLockTablesUntilComplete 
+         Caption         =   "Lock Tables Until Complete"
+         Height          =   240
+         Left            =   -69865
+         TabIndex        =   32
+         Top             =   4995
+         Value           =   1  'Checked
+         Visible         =   0   'False
+         Width           =   3210
+      End
       Begin VB.Frame fraHeader 
          Caption         =   "Header : "
          Height          =   4380
          Left            =   -69910
-         TabIndex        =   30
+         TabIndex        =   29
          Top             =   405
          Visible         =   0   'False
-         Width           =   9300
+         Width           =   10335
          Begin VB.TextBox txtHeader 
             Height          =   3525
             Left            =   225
             MultiLine       =   -1  'True
             ScrollBars      =   2  'Vertical
-            TabIndex        =   32
+            TabIndex        =   31
             Top             =   630
-            Width           =   8835
+            Width           =   9915
          End
          Begin VB.CheckBox chkManualHeader 
             Caption         =   "Manual Header"
             Height          =   285
             Left            =   225
-            TabIndex        =   31
+            TabIndex        =   30
             Top             =   315
             Width           =   2355
          End
       End
       Begin VB.Frame fraDestination 
          Caption         =   "Destination : "
-         Height          =   2625
+         Height          =   2715
          Left            =   90
          TabIndex        =   18
          Top             =   4095
-         Width           =   9300
-         Begin VB.CheckBox chkLockTablesUntilComplete 
-            Caption         =   "Lock Tables Until Complete"
-            Height          =   240
-            Left            =   5310
-            TabIndex        =   29
-            Top             =   315
-            Value           =   1  'Checked
-            Width           =   3210
+         Width           =   10335
+         Begin VB.ComboBox cboParent2Table 
+            Height          =   315
+            Left            =   7065
+            Sorted          =   -1  'True
+            Style           =   2  'Dropdown List
+            TabIndex        =   40
+            Top             =   1080
+            Width           =   3090
          End
-         Begin VB.ComboBox cboParentKeyfield 
+         Begin VB.ComboBox cboParent2Keyfield 
+            Height          =   315
+            Left            =   7065
+            Sorted          =   -1  'True
+            Style           =   2  'Dropdown List
+            TabIndex        =   39
+            Top             =   1485
+            Width           =   3090
+         End
+         Begin VB.ComboBox cboTargetCategory 
             Height          =   315
             Left            =   1845
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
-            TabIndex        =   28
+            TabIndex        =   38
+            Top             =   1485
+            Width           =   3090
+         End
+         Begin VB.ComboBox cboTargetType 
+            Height          =   315
+            Left            =   1845
+            Sorted          =   -1  'True
+            Style           =   2  'Dropdown List
+            TabIndex        =   37
             Top             =   1890
             Width           =   3090
          End
-         Begin VB.ComboBox cboParentTable 
+         Begin VB.ComboBox cboTargetGUID 
             Height          =   315
             Left            =   1845
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
+            TabIndex        =   36
+            Top             =   2295
+            Width           =   3090
+         End
+         Begin VB.ComboBox cboParent1Keyfield 
+            Height          =   315
+            Left            =   7065
+            Sorted          =   -1  'True
+            Style           =   2  'Dropdown List
+            TabIndex        =   28
+            Top             =   675
+            Width           =   3090
+         End
+         Begin VB.ComboBox cboParent1Table 
+            Height          =   315
+            Left            =   7065
+            Sorted          =   -1  'True
+            Style           =   2  'Dropdown List
             TabIndex        =   27
-            Top             =   1485
+            Top             =   270
             Width           =   3090
          End
          Begin VB.ComboBox cboTargetKeyField 
@@ -129,21 +178,61 @@ Begin VB.Form frmDocumentMap
             Top             =   270
             Width           =   3090
          End
-         Begin VB.Label lblParentKeyfield 
-            Caption         =   "Parent Key Field :"
-            Height          =   375
-            Left            =   225
-            TabIndex        =   26
-            Top             =   1935
-            Width           =   1545
+         Begin VB.Label lblParent2Table 
+            Caption         =   "Parent 2 Table :"
+            Height          =   195
+            Left            =   5310
+            TabIndex        =   42
+            Top             =   1125
+            Width           =   1725
          End
-         Begin VB.Label lblParentTable 
-            Caption         =   "Parent Table :"
+         Begin VB.Label lblParent2Keyfield 
+            Caption         =   "Parent 2 Key Field :"
+            Height          =   375
+            Left            =   5310
+            TabIndex        =   41
+            Top             =   1530
+            Width           =   1815
+         End
+         Begin VB.Label lblDestinationGUID 
+            Caption         =   "Unique ID :"
             Height          =   195
             Left            =   225
-            TabIndex        =   25
+            TabIndex        =   35
+            Top             =   2340
+            Width           =   1140
+         End
+         Begin VB.Label lblDestinationType 
+            Caption         =   "Type : "
+            Height          =   240
+            Left            =   225
+            TabIndex        =   34
+            Top             =   1935
+            Width           =   1095
+         End
+         Begin VB.Label lblDestinationCategory 
+            Caption         =   "Category :"
+            Height          =   285
+            Left            =   225
+            TabIndex        =   33
             Top             =   1530
-            Width           =   1275
+            Width           =   1410
+         End
+         Begin VB.Label lblParent1Keyfield 
+            Caption         =   "Parent 1 Key Field :"
+            Height          =   375
+            Left            =   5310
+            TabIndex        =   26
+            Top             =   720
+            Width           =   1815
+         End
+         Begin VB.Label lblParent1Table 
+            Caption         =   "Parent 1 Table :"
+            Height          =   195
+            Left            =   5310
+            TabIndex        =   25
+            Top             =   315
+            Width           =   1725
          End
          Begin VB.Label lblTargetTable 
             Caption         =   "Table :"
@@ -176,7 +265,7 @@ Begin VB.Form frmDocumentMap
          Left            =   90
          TabIndex        =   13
          Top             =   2520
-         Width           =   9300
+         Width           =   10335
          Begin VB.ComboBox cboTypes 
             Height          =   315
             Left            =   1845
@@ -227,21 +316,21 @@ Begin VB.Form frmDocumentMap
          Left            =   90
          TabIndex        =   3
          Top             =   405
-         Width           =   9300
+         Width           =   10335
          Begin VB.TextBox txtUserName 
             BackColor       =   &H8000000F&
             Enabled         =   0   'False
             Height          =   315
-            Left            =   6225
+            Left            =   7065
             MaxLength       =   30
             TabIndex        =   8
             Top             =   315
-            Width           =   2820
+            Width           =   3045
          End
          Begin VB.OptionButton optReadWrite 
             Caption         =   "Read / &Write"
             Height          =   195
-            Left            =   6225
+            Left            =   7065
             TabIndex        =   7
             Top             =   765
             Value           =   -1  'True
@@ -250,7 +339,7 @@ Begin VB.Form frmDocumentMap
          Begin VB.OptionButton optReadOnly 
             Caption         =   "&Read Only"
             Height          =   195
-            Left            =   6225
+            Left            =   7065
             TabIndex        =   6
             Top             =   1155
             Width           =   1470
@@ -279,7 +368,7 @@ Begin VB.Form frmDocumentMap
             Caption         =   "Owner :"
             Height          =   195
             Index           =   4
-            Left            =   5325
+            Left            =   5280
             TabIndex        =   12
             Top             =   360
             Width           =   585
@@ -312,7 +401,7 @@ Begin VB.Form frmDocumentMap
             Caption         =   "Access :"
             Height          =   195
             Index           =   3
-            Left            =   5325
+            Left            =   5280
             TabIndex        =   9
             Top             =   765
             Width           =   600
@@ -322,7 +411,7 @@ Begin VB.Form frmDocumentMap
    Begin XtremeSuiteControls.PushButton cmdCancel 
       Cancel          =   -1  'True
       Height          =   375
-      Left            =   8460
+      Left            =   9450
       TabIndex        =   1
       Top             =   7065
       Width           =   1200
@@ -335,7 +424,7 @@ Begin VB.Form frmDocumentMap
    End
    Begin XtremeSuiteControls.PushButton cmdOK 
       Height          =   375
-      Left            =   7200
+      Left            =   8190
       TabIndex        =   0
       Top             =   7065
       Width           =   1200
@@ -365,7 +454,7 @@ Private mbChanged As Boolean
 Private mdatData As HRProDataMgr.clsDataAccess
 Private mclsGeneral As HRProDataMgr.clsGeneral
 
-Private Const SQLTableDef = "ASRSysDocumentMapping"
+Private Const SQLTableDef = "ASRSysDocumentManagementTypes"
 
 ' Module Setup Constants
 Private Const MODULEKEY_DOCMANAGEMENT = "MODULE_DOCUMENTMANAGEMENT"
@@ -445,7 +534,7 @@ Private Sub RetreiveDefinition()
     mblnDefinitionCreator = (LCase$(rsTemp!UserName) = LCase$(gsUserName))
   End If
 
-  mblnReadOnly = Not datGeneral.SystemPermission("LABELDEFINITION", "EDIT")
+  mblnReadOnly = Not datGeneral.SystemPermission("VERSION1", "EDIT")
     
   SetComboItem cboCategories, IIf(IsNull(rsTemp.Fields("CategoryRecordID").Value), 0, rsTemp.Fields("CategoryRecordID").Value)
   SetComboItem cboTypes, IIf(IsNull(rsTemp.Fields("TypeRecordID").Value), 0, rsTemp.Fields("TypeRecordID").Value)
@@ -453,9 +542,16 @@ Private Sub RetreiveDefinition()
   SetComboItem cboTargetTable, IIf(IsNull(rsTemp.Fields("TargetTableID").Value), 0, rsTemp.Fields("TargetTableID").Value)
   SetComboItem cboTargetKeyField, IIf(IsNull(rsTemp.Fields("TargetKeyFieldColumnID").Value), 0, rsTemp.Fields("TargetKeyFieldColumnID").Value)
   SetComboItem cboTargetColumn, IIf(IsNull(rsTemp.Fields("TargetColumnID").Value), 0, rsTemp.Fields("TargetColumnID").Value)
+  SetComboItem cboTargetCategory, IIf(IsNull(rsTemp.Fields("TargetCategoryColumnID").Value), 0, rsTemp.Fields("TargetCategoryColumnID").Value)
+  SetComboItem cboTargetType, IIf(IsNull(rsTemp.Fields("TargetTypeColumnID").Value), 0, rsTemp.Fields("TargetTypeColumnID").Value)
 
-  SetComboItem cboParentTable, IIf(IsNull(rsTemp.Fields("ParentTableID").Value), 0, rsTemp.Fields("ParentTableID").Value)
-  SetComboItem cboParentKeyfield, IIf(IsNull(rsTemp.Fields("ParentKeyFieldID").Value), 0, rsTemp.Fields("ParentKeyFieldID").Value)
+  SetComboItem cboParent1Table, IIf(IsNull(rsTemp.Fields("Parent1TableID").Value), 0, rsTemp.Fields("Parent1TableID").Value)
+  SetComboItem cboParent1Keyfield, IIf(IsNull(rsTemp.Fields("Parent1KeyFieldColumnID").Value), 0, rsTemp.Fields("Parent1KeyFieldColumnID").Value)
+
+  SetComboItem cboParent2Table, IIf(IsNull(rsTemp.Fields("Parent2TableID").Value), 0, rsTemp.Fields("Parent2TableID").Value)
+  SetComboItem cboParent2Keyfield, IIf(IsNull(rsTemp.Fields("Parent2KeyFieldColumnID").Value), 0, rsTemp.Fields("Parent2KeyFieldColumnID").Value)
+
+
 
   chkManualHeader.Value = IIf(IsNull(rsTemp!ManualHeader), vbUnchecked, Abs(rsTemp!ManualHeader))
   txtHeader.Text = IIf(IsNull(rsTemp!HeaderText), vbNullString, rsTemp!HeaderText)
@@ -490,10 +586,6 @@ Private Function SaveDefinition() As Boolean
   bOK = True
   RefreshHeaderText
   
-  
-  
-  
-  
   If mlngDocumentMapID > 0 Then
     sSQL = "UPDATE dbo.[" & SQLTableDef & "] SET " _
               & "[Name] = '" & Replace(txtName.Text, "'", "''") & "', " _
@@ -502,10 +594,14 @@ Private Function SaveDefinition() As Boolean
               & "[TargetTableID] = " & GetComboItem(cboTargetTable) & ", " _
               & "[TargetKeyFieldColumnID] = " & GetComboItem(cboTargetKeyField) & ", " _
               & "[TargetColumnID] = " & GetComboItem(cboTargetColumn) & ", " _
+              & "[TargetCategoryColumnID] = " & GetComboItem(cboTargetType) & ", " _
+              & "[TargetTypeColumnID] = " & GetComboItem(cboTargetCategory) & ", " _
               & "[ManualHeader] = " & CStr(Abs(chkManualHeader.Value <> 0)) & ", " _
               & "[HeaderText] = '" & Replace(txtHeader.Text, "'", "''") & "', " _
-              & "[ParentTableID] = " & GetComboItem(cboParentTable) & ", " _
-              & "[ParentKeyFieldID] = " & GetComboItem(cboParentKeyfield) & ", " _
+              & "[Parent1TableID] = " & GetComboItem(cboParent1Table) & ", " _
+              & "[Parent1KeyFieldColumnID] = " & GetComboItem(cboParent1Keyfield) & ", " _
+              & "[Parent2TableID] = " & GetComboItem(cboParent2Table) & ", " _
+              & "[Parent2KeyFieldColumnID] = " & GetComboItem(cboParent2Keyfield) & ", " _
               & "[CategoryRecordID] = " & GetComboItem(cboCategories) & ", " _
               & "[TypeRecordID] = " & GetComboItem(cboTypes) _
               & " WHERE [DocumentMapID] = " & CStr(mlngDocumentMapID) & ";"
@@ -517,15 +613,18 @@ Private Function SaveDefinition() As Boolean
     sSQL = "INSERT " & SQLTableDef & " (" _
               & " [Name], [Description]," _
               & " [UserName], [Access], " _
-              & " [TargetTableID], [TargetKeyFieldColumnID], [TargetColumnID], [ParentTableID], [ParentKeyFieldID]," _
-              & " [CategoryRecordID], [TypeRecordID], [ManualHeader], [HeaderText]) " _
+              & " [TargetTableID], [TargetKeyFieldColumnID], [TargetColumnID], [Parent1TableID], [Parent1KeyFieldColumnID], [Parent2TableID], [Parent2KeyFieldColumnID]," _
+              & " [TargetCategoryColumnID], [TargetTypeColumnID], [CategoryRecordID], [TypeRecordID], [ManualHeader], [HeaderText]) " _
               & " VALUES('" _
               & Replace(txtName.Text, "'", "''") & "', '" & Replace(txtDesc.Text, "'", "''") _
               & "', '" & datGeneral.UserNameForSQL & "', " & IIf(optReadOnly.Value = True, "'RO'", "'RW'") _
               & ", " & GetComboItem(cboTargetTable) & ", " & GetComboItem(cboTargetKeyField) & ", " & GetComboItem(cboTargetColumn) _
-              & ", " & GetComboItem(cboParentTable) & ", " & GetComboItem(cboParentKeyfield) _
+              & ", " & GetComboItem(cboParent1Table) & ", " & GetComboItem(cboParent1Keyfield) _
+              & ", " & GetComboItem(cboParent2Table) & ", " & GetComboItem(cboParent2Keyfield) _
+              & ", " & GetComboItem(cboTargetCategory) & ", " & GetComboItem(cboTargetType) _
               & ", " & GetComboItem(cboCategories) & ", " & GetComboItem(cboTypes) _
               & ", " & CStr(Abs(chkManualHeader.Value <> 0)) & ", '" & Replace(txtHeader.Text, "'", "''") & "');"
+
 
     mlngDocumentMapID = InsertDocumentMap(sSQL)
     Call UtilCreated(utlDocumentMapping, mlngDocumentMapID)
@@ -541,16 +640,16 @@ Private Sub cboCategories_Click()
   RefreshHeaderText
 End Sub
 
-Private Sub cboParentTable_Click()
+Private Sub cboParent1Table_Click()
 
   Dim rsCols As ADODB.Recordset
 
   ' Columns for the parent table
-  If cboParentTable.Enabled Then
-    Set rsCols = mclsGeneral.GetColumnNames(GetComboItem(cboParentTable))
+  If cboParent1Table.Enabled Then
+    Set rsCols = mclsGeneral.GetColumnNames(GetComboItem(cboParent1Table))
     Do While Not rsCols.EOF
     
-      With cboParentKeyfield
+      With cboParent1Keyfield
         .AddItem rsCols!ColumnName
         .ItemData(.NewIndex) = rsCols!ColumnID
       End With
@@ -580,8 +679,8 @@ Private Sub cboTargetTable_Click()
   
   Screen.MousePointer = vbHourglass
   
-  cboParentTable.Clear
-  cboParentKeyfield.Clear
+  cboParent1Table.Clear
+  cboParent1Keyfield.Clear
   cboTargetColumn.Clear
   cboTargetKeyField.Clear
   
@@ -595,6 +694,16 @@ Private Sub cboTargetTable_Click()
     End With
     
     With cboTargetKeyField
+      .AddItem rsCols!ColumnName
+      .ItemData(.NewIndex) = rsCols!ColumnID
+    End With
+    
+    With cboTargetCategory
+      .AddItem rsCols!ColumnName
+      .ItemData(.NewIndex) = rsCols!ColumnID
+    End With
+    
+    With cboTargetType
       .AddItem rsCols!ColumnName
       .ItemData(.NewIndex) = rsCols!ColumnID
     End With
@@ -613,8 +722,12 @@ Private Sub cboTargetTable_Click()
            ""
     Set rsTables = mdatData.OpenRecordset(sSQL, adOpenForwardOnly, adLockReadOnly)
     Do While Not rsTables.EOF
-      cboParentTable.AddItem rsTables!TableName
-      cboParentTable.ItemData(cboParentTable.NewIndex) = rsTables!TableID
+      cboParent1Table.AddItem rsTables!TableName
+      cboParent1Table.ItemData(cboParent1Table.NewIndex) = rsTables!TableID
+      
+      cboParent2Table.AddItem rsTables!TableName
+      cboParent2Table.ItemData(cboParent1Table.NewIndex) = rsTables!TableID
+      
       rsTables.MoveNext
     Loop
     rsParents.MoveNext
@@ -622,12 +735,17 @@ Private Sub cboTargetTable_Click()
   Loop
   rsParents.Close
 
-  bHasParent = cboParentTable.ListCount > 0
+  bHasParent = cboParent1Table.ListCount > 0
   
-  EnableControl lblParentTable, bHasParent
-  EnableControl cboParentTable, bHasParent
-  EnableControl lblParentKeyfield, bHasParent
-  EnableControl cboParentKeyfield, bHasParent
+  EnableControl lblParent1Table, bHasParent
+  EnableControl cboParent1Table, bHasParent
+  EnableControl lblParent1Keyfield, bHasParent
+  EnableControl cboParent1Keyfield, bHasParent
+  
+  EnableControl lblParent2Table, bHasParent
+  EnableControl cboParent2Table, bHasParent
+  EnableControl lblParent2Keyfield, bHasParent
+  EnableControl cboParent2Keyfield, bHasParent
   
   RefreshHeaderText
 

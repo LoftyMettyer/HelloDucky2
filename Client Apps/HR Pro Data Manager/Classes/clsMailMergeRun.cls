@@ -2970,7 +2970,7 @@ Private Sub WrdSetV1HeaderText()
   ' If Version1 and we have auto add header then insert the header text at the top of a copy of the source template
   If mlngDocumentMapID > 0 Then
     
-    sSQL = "SELECT * FROM dbo.[ASRSysDocumentMapping] WHERE [DocumentMapID] = " & mlngDocumentMapID
+    sSQL = "SELECT * FROM dbo.[ASRSysDocumentManagementTypes] WHERE [DocumentMapID] = " & mlngDocumentMapID
     Set rsDocumentMap = datGeneral.GetRecords(sSQL)
     If Not (rsDocumentMap.EOF And rsDocumentMap.BOF) Then
       sHeader = IIf(IsNull(rsDocumentMap!HeaderText), "", rsDocumentMap!HeaderText)

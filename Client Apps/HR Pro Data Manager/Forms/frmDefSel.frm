@@ -2529,7 +2529,7 @@ Public Function ShowList(lngUtilType As UtilityType, Optional msRecordSourceWher
     msType = "Document Types"
     msGeneralCaption = "Document Types"
     msSingularCaption = "Document Type"
-    msTableName = "ASRSysDocumentMapping"
+    msTableName = "ASRSysDocumentManagementTypes"
     msIDField = "DocumentMapID"
     mutlUtilityType = utlDocumentMapping
     Me.HelpContextID = 1082
