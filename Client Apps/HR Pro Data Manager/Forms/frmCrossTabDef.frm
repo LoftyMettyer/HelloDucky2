@@ -6,7 +6,7 @@ Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Begin VB.Form frmCrossTabDef 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Cross Tab Definition"
-   ClientHeight    =   5265
+   ClientHeight    =   5730
    ClientLeft      =   45
    ClientTop       =   330
    ClientWidth     =   9705
@@ -28,7 +28,7 @@ Begin VB.Form frmCrossTabDef
    LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   5265
+   ScaleHeight     =   5730
    ScaleWidth      =   9705
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
@@ -37,8 +37,8 @@ Begin VB.Form frmCrossTabDef
       Caption         =   "&Cancel"
       Height          =   400
       Left            =   8400
-      TabIndex        =   49
-      Top             =   4740
+      TabIndex        =   46
+      Top             =   5190
       Width           =   1200
    End
    Begin VB.CommandButton cmdOK 
@@ -46,18 +46,18 @@ Begin VB.Form frmCrossTabDef
       Default         =   -1  'True
       Height          =   400
       Left            =   7140
-      TabIndex        =   48
-      Top             =   4740
+      TabIndex        =   45
+      Top             =   5190
       Width           =   1200
    End
    Begin TabDlg.SSTab SSTab1 
-      Height          =   4560
+      Height          =   5010
       Left            =   90
-      TabIndex        =   50
+      TabIndex        =   47
       Top             =   75
-      Width           =   9500
+      Width           =   9495
       _ExtentX        =   16748
-      _ExtentY        =   8043
+      _ExtentY        =   8837
       _Version        =   393216
       Style           =   1
       TabsPerRow      =   5
@@ -75,463 +75,70 @@ Begin VB.Form frmCrossTabDef
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmCrossTabDef.frx":000C
       Tab(0).ControlEnabled=   -1  'True
-      Tab(0).Control(0)=   "fraDefinition(0)"
+      Tab(0).Control(0)=   "fraDefinition(1)"
       Tab(0).Control(0).Enabled=   0   'False
-      Tab(0).Control(1)=   "fraDefinition(1)"
+      Tab(0).Control(1)=   "fraInformation"
       Tab(0).Control(1).Enabled=   0   'False
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Colu&mns"
       TabPicture(1)   =   "frmCrossTabDef.frx":0028
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraColumns(0)"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).Control(1)=   "fraColumns(1)"
-      Tab(1).Control(1).Enabled=   0   'False
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "O&utput"
       TabPicture(2)   =   "frmCrossTabDef.frx":0044
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraOutputDestination"
-      Tab(2).Control(0).Enabled=   0   'False
-      Tab(2).Control(1)=   "fraOutputFormat"
-      Tab(2).Control(1).Enabled=   0   'False
+      Tab(2).Control(0)=   "fraOutputFormat"
+      Tab(2).Control(1)=   "fraOutputDestination"
       Tab(2).ControlCount=   2
-      Begin VB.Frame fraOutputDestination 
-         Caption         =   "Output Destination(s) :"
-         Height          =   3975
-         Left            =   -72255
-         TabIndex        =   60
-         Top             =   405
-         Width           =   6600
-         Begin VB.TextBox txtEmailAttachAs 
-            BackColor       =   &H8000000F&
-            Enabled         =   0   'False
-            ForeColor       =   &H00000000&
-            Height          =   315
-            Left            =   3315
-            TabIndex        =   79
-            Tag             =   "0"
-            Top             =   3460
-            Width           =   3180
-         End
-         Begin VB.TextBox txtFilename 
-            BackColor       =   &H8000000F&
-            Enabled         =   0   'False
-            ForeColor       =   &H00000000&
-            Height          =   315
-            Left            =   3315
-            Locked          =   -1  'True
-            TabIndex        =   68
-            TabStop         =   0   'False
-            Tag             =   "0"
-            Top             =   1760
-            Width           =   2880
-         End
-         Begin VB.ComboBox cboPrinterName 
-            BackColor       =   &H8000000F&
-            Enabled         =   0   'False
-            Height          =   315
-            Left            =   3315
-            Style           =   2  'Dropdown List
-            TabIndex        =   65
-            Top             =   1240
-            Width           =   3180
-         End
-         Begin VB.ComboBox cboSaveExisting 
-            BackColor       =   &H8000000F&
-            Enabled         =   0   'False
-            Height          =   315
-            Left            =   3315
-            Style           =   2  'Dropdown List
-            TabIndex        =   71
-            Top             =   2160
-            Width           =   3180
-         End
-         Begin VB.TextBox txtEmailSubject 
-            BackColor       =   &H8000000F&
-            Enabled         =   0   'False
-            Height          =   315
-            Left            =   3315
-            TabIndex        =   77
-            Top             =   3060
-            Width           =   3180
-         End
-         Begin VB.TextBox txtEmailGroup 
-            BackColor       =   &H8000000F&
-            Enabled         =   0   'False
-            ForeColor       =   &H00000000&
-            Height          =   315
-            Left            =   3315
-            Locked          =   -1  'True
-            TabIndex        =   74
-            TabStop         =   0   'False
-            Tag             =   "0"
-            Top             =   2660
-            Width           =   2880
-         End
-         Begin VB.CommandButton cmdFilename 
-            Caption         =   "..."
-            DisabledPicture =   "frmCrossTabDef.frx":0060
-            Enabled         =   0   'False
-            Height          =   315
-            Left            =   6150
-            Picture         =   "frmCrossTabDef.frx":03C1
-            TabIndex        =   69
-            Top             =   1760
-            UseMaskColor    =   -1  'True
-            Width           =   330
-         End
-         Begin VB.CommandButton cmdEmailGroup 
-            Caption         =   "..."
-            DisabledPicture =   "frmCrossTabDef.frx":0722
-            Enabled         =   0   'False
-            Height          =   315
-            Left            =   6150
-            Picture         =   "frmCrossTabDef.frx":0A83
-            TabIndex        =   75
-            Top             =   2660
-            UseMaskColor    =   -1  'True
-            Width           =   330
-         End
-         Begin VB.CheckBox chkDestination 
-            Caption         =   "Displa&y output on screen"
-            Height          =   195
-            Index           =   0
-            Left            =   195
-            TabIndex        =   62
-            Top             =   850
-            Value           =   1  'Checked
-            Width           =   3105
-         End
-         Begin VB.CheckBox chkDestination 
-            Caption         =   "Send to &printer"
-            Height          =   195
-            Index           =   1
-            Left            =   195
-            TabIndex        =   63
-            Top             =   1300
-            Width           =   1650
-         End
-         Begin VB.CheckBox chkDestination 
-            Caption         =   "Save to &file"
-            Enabled         =   0   'False
-            Height          =   195
-            Index           =   2
-            Left            =   195
-            TabIndex        =   66
-            Top             =   1820
-            Width           =   1455
-         End
-         Begin VB.CheckBox chkDestination 
-            Caption         =   "Send as &email"
-            Enabled         =   0   'False
-            Height          =   195
-            Index           =   3
-            Left            =   195
-            TabIndex        =   72
-            Top             =   2720
-            Width           =   1560
-         End
-         Begin VB.CheckBox chkPreview 
-            Caption         =   "P&review on screen"
-            Enabled         =   0   'False
-            Height          =   195
-            Left            =   195
-            TabIndex        =   61
-            Top             =   400
-            Width           =   3495
-         End
-         Begin VB.Label lblEmail 
-            AutoSize        =   -1  'True
-            Caption         =   "Attach as :"
-            Enabled         =   0   'False
-            Height          =   195
-            Index           =   2
-            Left            =   1845
-            TabIndex        =   78
-            Top             =   3525
-            Width           =   1155
-         End
-         Begin VB.Label lblFileName 
-            AutoSize        =   -1  'True
-            Caption         =   "File name :"
-            Enabled         =   0   'False
-            Height          =   195
-            Left            =   1845
-            TabIndex        =   67
-            Top             =   1815
-            Width           =   1005
-         End
-         Begin VB.Label lblEmail 
-            AutoSize        =   -1  'True
-            Caption         =   "Email subject :"
-            Enabled         =   0   'False
-            Height          =   195
-            Index           =   1
-            Left            =   1845
-            TabIndex        =   76
-            Top             =   3120
-            Width           =   1395
-         End
-         Begin VB.Label lblEmail 
-            AutoSize        =   -1  'True
-            Caption         =   "Email group :"
-            Enabled         =   0   'False
-            Height          =   195
-            Index           =   0
-            Left            =   1845
-            TabIndex        =   73
-            Top             =   2715
-            Width           =   1290
-         End
-         Begin VB.Label lblSave 
-            AutoSize        =   -1  'True
-            Caption         =   "If existing file :"
-            Enabled         =   0   'False
-            Height          =   195
-            Left            =   1845
-            TabIndex        =   70
-            Top             =   2220
-            Width           =   1350
-         End
-         Begin VB.Label lblPrinter 
-            AutoSize        =   -1  'True
-            Caption         =   "Printer location :"
-            Enabled         =   0   'False
-            Height          =   195
-            Left            =   1845
-            TabIndex        =   64
-            Top             =   1305
-            Width           =   1455
-         End
-      End
-      Begin VB.Frame fraOutputFormat 
-         Caption         =   "Output Format :"
-         Height          =   3990
-         Left            =   -74880
-         TabIndex        =   52
-         Top             =   405
-         Width           =   2500
-         Begin VB.OptionButton optOutputFormat 
-            Caption         =   "Excel P&ivot Table"
-            Height          =   195
-            Index           =   6
-            Left            =   200
-            TabIndex        =   59
-            Top             =   2800
-            Width           =   1900
-         End
-         Begin VB.OptionButton optOutputFormat 
-            Caption         =   "Excel Char&t"
-            Height          =   195
-            Index           =   5
-            Left            =   200
-            TabIndex        =   58
-            Top             =   2400
-            Width           =   1900
-         End
-         Begin VB.OptionButton optOutputFormat 
-            Caption         =   "E&xcel Worksheet"
-            Height          =   195
-            Index           =   4
-            Left            =   200
-            TabIndex        =   57
-            Top             =   2000
-            Width           =   1900
-         End
-         Begin VB.OptionButton optOutputFormat 
-            Caption         =   "&Word Document"
-            Height          =   195
-            Index           =   3
-            Left            =   200
-            TabIndex        =   56
-            Top             =   1600
-            Width           =   1900
-         End
-         Begin VB.OptionButton optOutputFormat 
-            Caption         =   "&HTML Document"
-            Height          =   195
-            Index           =   2
-            Left            =   200
-            TabIndex        =   55
-            Top             =   1200
-            Width           =   1900
-         End
-         Begin VB.OptionButton optOutputFormat 
-            Caption         =   "CS&V File"
-            Height          =   195
-            Index           =   1
-            Left            =   200
-            TabIndex        =   54
-            Top             =   800
-            Width           =   1900
-         End
-         Begin VB.OptionButton optOutputFormat 
-            Caption         =   "D&ata Only"
-            Height          =   195
-            Index           =   0
-            Left            =   200
-            TabIndex        =   53
-            Top             =   400
-            Value           =   -1  'True
-            Width           =   1900
-         End
-      End
-      Begin VB.Frame fraDefinition 
-         Caption         =   "Data :"
-         Height          =   2015
-         Index           =   1
+      Begin VB.Frame fraInformation 
+         Height          =   2355
          Left            =   135
-         TabIndex        =   7
-         Top             =   2385
-         Width           =   9200
-         Begin VB.CheckBox chkPrintFilterHeader 
-            Caption         =   "Display &title in the report header"
-            Enabled         =   0   'False
-            Height          =   240
-            Left            =   4815
-            TabIndex        =   18
-            Tag             =   "PrintFilterHeader"
-            Top             =   1560
-            Width           =   3165
-         End
-         Begin VB.TextBox txtFilter 
-            BackColor       =   &H8000000F&
-            Enabled         =   0   'False
-            Height          =   315
-            Left            =   6735
-            Locked          =   -1  'True
-            TabIndex        =   16
-            Top             =   1080
-            Width           =   1950
-         End
-         Begin VB.TextBox txtPicklist 
-            BackColor       =   &H8000000F&
-            Enabled         =   0   'False
-            Height          =   315
-            Left            =   6735
-            Locked          =   -1  'True
-            TabIndex        =   13
-            Top             =   705
-            Width           =   1950
-         End
-         Begin VB.OptionButton optFilter 
-            Caption         =   "&Filter"
-            Height          =   195
-            Left            =   5715
-            TabIndex        =   15
-            Top             =   1120
-            Width           =   840
-         End
-         Begin VB.OptionButton optPicklist 
-            Caption         =   "&Picklist"
-            Height          =   195
-            Left            =   5715
-            TabIndex        =   12
-            Top             =   750
-            Width           =   885
-         End
-         Begin VB.OptionButton optAllRecords 
-            Caption         =   "&All"
-            Height          =   195
-            Left            =   5715
-            TabIndex        =   11
-            Top             =   365
-            Value           =   -1  'True
-            Width           =   540
-         End
-         Begin VB.ComboBox cboBaseTable 
-            Height          =   315
-            Left            =   1620
-            Sorted          =   -1  'True
-            Style           =   2  'Dropdown List
-            TabIndex        =   9
-            Top             =   315
-            Width           =   2910
-         End
-         Begin VB.CommandButton cmdPicklist 
-            Caption         =   "..."
-            Enabled         =   0   'False
-            Height          =   315
-            Left            =   8685
-            TabIndex        =   14
-            Top             =   705
-            UseMaskColor    =   -1  'True
-            Width           =   330
-         End
-         Begin VB.CommandButton cmdFilter 
-            Caption         =   "..."
-            Enabled         =   0   'False
-            Height          =   315
-            Left            =   8685
-            TabIndex        =   17
-            Top             =   1080
-            UseMaskColor    =   -1  'True
-            Width           =   330
-         End
-         Begin VB.Label Label1 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Base Table :"
-            Height          =   195
-            Index           =   4
-            Left            =   225
-            TabIndex        =   8
-            Top             =   360
-            Width           =   885
-         End
-         Begin VB.Label Label1 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Records :"
-            Height          =   195
-            Index           =   5
-            Left            =   4815
-            TabIndex        =   10
-            Top             =   360
-            Width           =   870
-         End
-      End
-      Begin VB.Frame fraDefinition 
-         Height          =   1950
-         Index           =   0
-         Left            =   135
-         TabIndex        =   51
+         TabIndex        =   76
          Top             =   405
-         Width           =   9200
+         Width           =   9180
          Begin VB.TextBox txtUserName 
             BackColor       =   &H8000000F&
             Enabled         =   0   'False
             Height          =   315
             Left            =   5625
             MaxLength       =   30
-            TabIndex        =   5
-            Top             =   315
+            TabIndex        =   77
+            Top             =   300
             Width           =   3405
          End
          Begin VB.TextBox txtName 
             Height          =   315
-            Left            =   1620
+            Left            =   1395
             MaxLength       =   50
             TabIndex        =   1
-            Top             =   315
-            Width           =   2910
+            Top             =   300
+            Width           =   3090
          End
          Begin VB.TextBox txtDesc 
             Height          =   1080
-            Left            =   1620
+            Left            =   1395
             MaxLength       =   255
             MultiLine       =   -1  'True
             ScrollBars      =   2  'Vertical
             TabIndex        =   3
-            Top             =   705
-            Width           =   2910
+            Top             =   1110
+            Width           =   3090
+         End
+         Begin VB.ComboBox cboCategory 
+            Height          =   315
+            Left            =   1395
+            Style           =   2  'Dropdown List
+            TabIndex        =   2
+            Top             =   720
+            Width           =   3090
          End
          Begin SSDataWidgets_B.SSDBGrid grdAccess 
-            Height          =   1080
+            Height          =   1485
             Left            =   5625
-            TabIndex        =   80
-            Top             =   720
+            TabIndex        =   4
+            Top             =   705
             Width           =   3405
             ScrollBars      =   2
             _Version        =   196617
@@ -552,7 +159,7 @@ Begin VB.Form frmCrossTabDef
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(0).Picture=   "frmCrossTabDef.frx":0DE4
+            stylesets(0).Picture=   "frmCrossTabDef.frx":0060
             stylesets(1).Name=   "ReadOnly"
             stylesets(1).ForeColor=   -2147483631
             stylesets(1).BackColor=   -2147483633
@@ -566,7 +173,7 @@ Begin VB.Form frmCrossTabDef
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(1).Picture=   "frmCrossTabDef.frx":0E00
+            stylesets(1).Picture=   "frmCrossTabDef.frx":007C
             MultiLine       =   0   'False
             AllowRowSizing  =   0   'False
             AllowGroupSizing=   0   'False
@@ -618,7 +225,7 @@ Begin VB.Form frmCrossTabDef
             Columns(2).FieldLen=   256
             TabNavigation   =   1
             _ExtentX        =   6006
-            _ExtentY        =   1905
+            _ExtentY        =   2619
             _StockProps     =   79
             ForeColor       =   -2147483630
             BeginProperty PageFooterFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -640,64 +247,464 @@ Begin VB.Form frmCrossTabDef
                Strikethrough   =   0   'False
             EndProperty
          End
-         Begin VB.Label Label1 
+         Begin VB.Label lblOwner 
             AutoSize        =   -1  'True
             BackStyle       =   0  'Transparent
             Caption         =   "Owner :"
             Height          =   195
-            Index           =   2
-            Left            =   4815
-            TabIndex        =   4
+            Left            =   4770
+            TabIndex        =   82
             Top             =   360
-            Width           =   675
+            Width           =   810
          End
-         Begin VB.Label Label1 
+         Begin VB.Label lblName 
             AutoSize        =   -1  'True
             BackStyle       =   0  'Transparent
             Caption         =   "Name :"
             Height          =   195
-            Index           =   0
-            Left            =   225
-            TabIndex        =   0
-            Top             =   365
-            Width           =   510
+            Left            =   195
+            TabIndex        =   81
+            Top             =   360
+            Width           =   690
          End
-         Begin VB.Label Label1 
+         Begin VB.Label lblDescription 
             AutoSize        =   -1  'True
             BackStyle       =   0  'Transparent
             Caption         =   "Description :"
             Height          =   195
-            Index           =   1
-            Left            =   225
-            TabIndex        =   2
-            Top             =   750
-            Width           =   1125
+            Left            =   195
+            TabIndex        =   80
+            Top             =   1155
+            Width           =   1080
          End
-         Begin VB.Label Label1 
+         Begin VB.Label lblAccess 
             AutoSize        =   -1  'True
             BackStyle       =   0  'Transparent
             Caption         =   "Access :"
             Height          =   195
+            Left            =   4770
+            TabIndex        =   79
+            Top             =   765
+            Width           =   825
+         End
+         Begin VB.Label lblCategory 
+            Caption         =   "Category :"
+            Height          =   240
+            Left            =   195
+            TabIndex        =   78
+            Top             =   765
+            Width           =   1005
+         End
+      End
+      Begin VB.Frame fraOutputDestination 
+         Caption         =   "Output Destination(s) :"
+         Height          =   4440
+         Left            =   -72255
+         TabIndex        =   56
+         Top             =   405
+         Width           =   6600
+         Begin VB.TextBox txtEmailAttachAs 
+            BackColor       =   &H8000000F&
+            Enabled         =   0   'False
+            ForeColor       =   &H00000000&
+            Height          =   315
+            Left            =   3315
+            TabIndex        =   75
+            Tag             =   "0"
+            Top             =   3460
+            Width           =   3180
+         End
+         Begin VB.TextBox txtFilename 
+            BackColor       =   &H8000000F&
+            Enabled         =   0   'False
+            ForeColor       =   &H00000000&
+            Height          =   315
+            Left            =   3315
+            Locked          =   -1  'True
+            TabIndex        =   64
+            TabStop         =   0   'False
+            Tag             =   "0"
+            Top             =   1760
+            Width           =   2880
+         End
+         Begin VB.ComboBox cboPrinterName 
+            BackColor       =   &H8000000F&
+            Enabled         =   0   'False
+            Height          =   315
+            Left            =   3315
+            Style           =   2  'Dropdown List
+            TabIndex        =   61
+            Top             =   1240
+            Width           =   3180
+         End
+         Begin VB.ComboBox cboSaveExisting 
+            BackColor       =   &H8000000F&
+            Enabled         =   0   'False
+            Height          =   315
+            Left            =   3315
+            Style           =   2  'Dropdown List
+            TabIndex        =   67
+            Top             =   2160
+            Width           =   3180
+         End
+         Begin VB.TextBox txtEmailSubject 
+            BackColor       =   &H8000000F&
+            Enabled         =   0   'False
+            Height          =   315
+            Left            =   3315
+            TabIndex        =   73
+            Top             =   3060
+            Width           =   3180
+         End
+         Begin VB.TextBox txtEmailGroup 
+            BackColor       =   &H8000000F&
+            Enabled         =   0   'False
+            ForeColor       =   &H00000000&
+            Height          =   315
+            Left            =   3315
+            Locked          =   -1  'True
+            TabIndex        =   70
+            TabStop         =   0   'False
+            Tag             =   "0"
+            Top             =   2660
+            Width           =   2880
+         End
+         Begin VB.CommandButton cmdFilename 
+            Caption         =   "..."
+            DisabledPicture =   "frmCrossTabDef.frx":0098
+            Enabled         =   0   'False
+            Height          =   315
+            Left            =   6150
+            Picture         =   "frmCrossTabDef.frx":03F9
+            TabIndex        =   65
+            Top             =   1760
+            UseMaskColor    =   -1  'True
+            Width           =   330
+         End
+         Begin VB.CommandButton cmdEmailGroup 
+            Caption         =   "..."
+            DisabledPicture =   "frmCrossTabDef.frx":075A
+            Enabled         =   0   'False
+            Height          =   315
+            Left            =   6150
+            Picture         =   "frmCrossTabDef.frx":0ABB
+            TabIndex        =   71
+            Top             =   2660
+            UseMaskColor    =   -1  'True
+            Width           =   330
+         End
+         Begin VB.CheckBox chkDestination 
+            Caption         =   "Displa&y output on screen"
+            Height          =   195
+            Index           =   0
+            Left            =   195
+            TabIndex        =   58
+            Top             =   850
+            Value           =   1  'Checked
+            Width           =   3105
+         End
+         Begin VB.CheckBox chkDestination 
+            Caption         =   "Send to &printer"
+            Height          =   195
+            Index           =   1
+            Left            =   195
+            TabIndex        =   59
+            Top             =   1300
+            Width           =   1650
+         End
+         Begin VB.CheckBox chkDestination 
+            Caption         =   "Save to &file"
+            Enabled         =   0   'False
+            Height          =   195
+            Index           =   2
+            Left            =   195
+            TabIndex        =   62
+            Top             =   1820
+            Width           =   1455
+         End
+         Begin VB.CheckBox chkDestination 
+            Caption         =   "Send as &email"
+            Enabled         =   0   'False
+            Height          =   195
             Index           =   3
+            Left            =   195
+            TabIndex        =   68
+            Top             =   2720
+            Width           =   1560
+         End
+         Begin VB.CheckBox chkPreview 
+            Caption         =   "P&review on screen"
+            Enabled         =   0   'False
+            Height          =   195
+            Left            =   195
+            TabIndex        =   57
+            Top             =   400
+            Width           =   3495
+         End
+         Begin VB.Label lblEmail 
+            AutoSize        =   -1  'True
+            Caption         =   "Attach as :"
+            Enabled         =   0   'False
+            Height          =   195
+            Index           =   2
+            Left            =   1845
+            TabIndex        =   74
+            Top             =   3525
+            Width           =   1155
+         End
+         Begin VB.Label lblFileName 
+            AutoSize        =   -1  'True
+            Caption         =   "File name :"
+            Enabled         =   0   'False
+            Height          =   195
+            Left            =   1845
+            TabIndex        =   63
+            Top             =   1815
+            Width           =   1005
+         End
+         Begin VB.Label lblEmail 
+            AutoSize        =   -1  'True
+            Caption         =   "Email subject :"
+            Enabled         =   0   'False
+            Height          =   195
+            Index           =   1
+            Left            =   1845
+            TabIndex        =   72
+            Top             =   3120
+            Width           =   1395
+         End
+         Begin VB.Label lblEmail 
+            AutoSize        =   -1  'True
+            Caption         =   "Email group :"
+            Enabled         =   0   'False
+            Height          =   195
+            Index           =   0
+            Left            =   1845
+            TabIndex        =   69
+            Top             =   2715
+            Width           =   1290
+         End
+         Begin VB.Label lblSave 
+            AutoSize        =   -1  'True
+            Caption         =   "If existing file :"
+            Enabled         =   0   'False
+            Height          =   195
+            Left            =   1845
+            TabIndex        =   66
+            Top             =   2220
+            Width           =   1350
+         End
+         Begin VB.Label lblPrinter 
+            AutoSize        =   -1  'True
+            Caption         =   "Printer location :"
+            Enabled         =   0   'False
+            Height          =   195
+            Left            =   1845
+            TabIndex        =   60
+            Top             =   1305
+            Width           =   1455
+         End
+      End
+      Begin VB.Frame fraOutputFormat 
+         Caption         =   "Output Format :"
+         Height          =   4440
+         Left            =   -74880
+         TabIndex        =   48
+         Top             =   405
+         Width           =   2500
+         Begin VB.OptionButton optOutputFormat 
+            Caption         =   "Excel P&ivot Table"
+            Height          =   195
+            Index           =   6
+            Left            =   200
+            TabIndex        =   55
+            Top             =   2800
+            Width           =   1900
+         End
+         Begin VB.OptionButton optOutputFormat 
+            Caption         =   "Excel Char&t"
+            Height          =   195
+            Index           =   5
+            Left            =   200
+            TabIndex        =   54
+            Top             =   2400
+            Width           =   1900
+         End
+         Begin VB.OptionButton optOutputFormat 
+            Caption         =   "E&xcel Worksheet"
+            Height          =   195
+            Index           =   4
+            Left            =   200
+            TabIndex        =   53
+            Top             =   2000
+            Width           =   1900
+         End
+         Begin VB.OptionButton optOutputFormat 
+            Caption         =   "&Word Document"
+            Height          =   195
+            Index           =   3
+            Left            =   200
+            TabIndex        =   52
+            Top             =   1600
+            Width           =   1900
+         End
+         Begin VB.OptionButton optOutputFormat 
+            Caption         =   "&HTML Document"
+            Height          =   195
+            Index           =   2
+            Left            =   200
+            TabIndex        =   51
+            Top             =   1200
+            Width           =   1900
+         End
+         Begin VB.OptionButton optOutputFormat 
+            Caption         =   "CS&V File"
+            Height          =   195
+            Index           =   1
+            Left            =   200
+            TabIndex        =   50
+            Top             =   800
+            Width           =   1900
+         End
+         Begin VB.OptionButton optOutputFormat 
+            Caption         =   "D&ata Only"
+            Height          =   195
+            Index           =   0
+            Left            =   200
+            TabIndex        =   49
+            Top             =   400
+            Value           =   -1  'True
+            Width           =   1900
+         End
+      End
+      Begin VB.Frame fraDefinition 
+         Caption         =   "Data :"
+         Height          =   2015
+         Index           =   1
+         Left            =   135
+         TabIndex        =   0
+         Top             =   2835
+         Width           =   9200
+         Begin VB.CheckBox chkPrintFilterHeader 
+            Caption         =   "Display &title in the report header"
+            Enabled         =   0   'False
+            Height          =   240
             Left            =   4815
-            TabIndex        =   6
+            TabIndex        =   15
+            Tag             =   "PrintFilterHeader"
+            Top             =   1560
+            Width           =   3165
+         End
+         Begin VB.TextBox txtFilter 
+            BackColor       =   &H8000000F&
+            Enabled         =   0   'False
+            Height          =   315
+            Left            =   6735
+            Locked          =   -1  'True
+            TabIndex        =   13
+            Top             =   1080
+            Width           =   1950
+         End
+         Begin VB.TextBox txtPicklist 
+            BackColor       =   &H8000000F&
+            Enabled         =   0   'False
+            Height          =   315
+            Left            =   6735
+            Locked          =   -1  'True
+            TabIndex        =   10
+            Top             =   705
+            Width           =   1950
+         End
+         Begin VB.OptionButton optFilter 
+            Caption         =   "&Filter"
+            Height          =   195
+            Left            =   5715
+            TabIndex        =   12
+            Top             =   1120
+            Width           =   840
+         End
+         Begin VB.OptionButton optPicklist 
+            Caption         =   "&Picklist"
+            Height          =   195
+            Left            =   5715
+            TabIndex        =   9
             Top             =   750
-            Width           =   735
+            Width           =   885
+         End
+         Begin VB.OptionButton optAllRecords 
+            Caption         =   "&All"
+            Height          =   195
+            Left            =   5715
+            TabIndex        =   8
+            Top             =   365
+            Value           =   -1  'True
+            Width           =   540
+         End
+         Begin VB.ComboBox cboBaseTable 
+            Height          =   315
+            Left            =   1620
+            Sorted          =   -1  'True
+            Style           =   2  'Dropdown List
+            TabIndex        =   6
+            Top             =   315
+            Width           =   2910
+         End
+         Begin VB.CommandButton cmdPicklist 
+            Caption         =   "..."
+            Enabled         =   0   'False
+            Height          =   315
+            Left            =   8685
+            TabIndex        =   11
+            Top             =   705
+            UseMaskColor    =   -1  'True
+            Width           =   330
+         End
+         Begin VB.CommandButton cmdFilter 
+            Caption         =   "..."
+            Enabled         =   0   'False
+            Height          =   315
+            Left            =   8685
+            TabIndex        =   14
+            Top             =   1080
+            UseMaskColor    =   -1  'True
+            Width           =   330
+         End
+         Begin VB.Label Label1 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Base Table :"
+            Height          =   195
+            Index           =   4
+            Left            =   225
+            TabIndex        =   5
+            Top             =   360
+            Width           =   885
+         End
+         Begin VB.Label Label1 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Records :"
+            Height          =   195
+            Index           =   5
+            Left            =   4815
+            TabIndex        =   7
+            Top             =   360
+            Width           =   870
          End
       End
       Begin VB.Frame fraColumns 
          Caption         =   "Intersection :"
-         Height          =   2015
+         Height          =   2460
          Index           =   1
          Left            =   -74865
-         TabIndex        =   39
+         TabIndex        =   36
          Top             =   2385
          Width           =   9200
          Begin VB.CheckBox chkThousandSeparators 
             Caption         =   "Use 1000 &separators"
             Height          =   330
             Left            =   5100
-            TabIndex        =   47
+            TabIndex        =   44
             Top             =   1290
             Width           =   2520
          End
@@ -705,7 +712,7 @@ Begin VB.Form frmCrossTabDef
             Caption         =   "Percentage of &Page"
             Height          =   195
             Left            =   5100
-            TabIndex        =   45
+            TabIndex        =   42
             Top             =   690
             Width           =   2250
          End
@@ -716,7 +723,7 @@ Begin VB.Form frmCrossTabDef
             List            =   "frmCrossTabDef.frx":0E1E
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
-            TabIndex        =   43
+            TabIndex        =   40
             Top             =   720
             Width           =   3000
          End
@@ -724,7 +731,7 @@ Begin VB.Form frmCrossTabDef
             Caption         =   "Percentage of &Type"
             Height          =   195
             Left            =   5100
-            TabIndex        =   44
+            TabIndex        =   41
             Top             =   360
             Width           =   2250
          End
@@ -733,7 +740,7 @@ Begin VB.Form frmCrossTabDef
             Left            =   1620
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
-            TabIndex        =   41
+            TabIndex        =   38
             Top             =   315
             Width           =   3000
          End
@@ -741,7 +748,7 @@ Begin VB.Form frmCrossTabDef
             Caption         =   "Suppress &Zeros"
             Height          =   195
             Left            =   5100
-            TabIndex        =   46
+            TabIndex        =   43
             Top             =   1020
             Width           =   1935
          End
@@ -751,7 +758,7 @@ Begin VB.Form frmCrossTabDef
             Height          =   195
             Index           =   14
             Left            =   225
-            TabIndex        =   42
+            TabIndex        =   39
             Top             =   765
             Width           =   570
          End
@@ -761,7 +768,7 @@ Begin VB.Form frmCrossTabDef
             Height          =   195
             Index           =   13
             Left            =   225
-            TabIndex        =   40
+            TabIndex        =   37
             Top             =   360
             Width           =   1125
          End
@@ -771,7 +778,7 @@ Begin VB.Form frmCrossTabDef
          Height          =   1950
          Index           =   0
          Left            =   -74865
-         TabIndex        =   19
+         TabIndex        =   16
          Top             =   405
          Width           =   9200
          Begin VB.ComboBox cboHorizontalCol 
@@ -779,7 +786,7 @@ Begin VB.Form frmCrossTabDef
             Left            =   1620
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
-            TabIndex        =   25
+            TabIndex        =   22
             Top             =   585
             Width           =   3000
          End
@@ -788,7 +795,7 @@ Begin VB.Form frmCrossTabDef
             Left            =   1620
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
-            TabIndex        =   35
+            TabIndex        =   32
             Top             =   1395
             Width           =   3000
          End
@@ -797,7 +804,7 @@ Begin VB.Form frmCrossTabDef
             Left            =   1620
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
-            TabIndex        =   30
+            TabIndex        =   27
             Top             =   990
             Width           =   3000
          End
@@ -805,7 +812,7 @@ Begin VB.Form frmCrossTabDef
             Height          =   315
             Index           =   0
             Left            =   5100
-            TabIndex        =   26
+            TabIndex        =   23
             Top             =   585
             Width           =   1200
             _ExtentX        =   2117
@@ -877,7 +884,7 @@ Begin VB.Form frmCrossTabDef
             Height          =   315
             Index           =   1
             Left            =   6457
-            TabIndex        =   27
+            TabIndex        =   24
             Top             =   585
             Width           =   1200
             _ExtentX        =   2117
@@ -949,7 +956,7 @@ Begin VB.Form frmCrossTabDef
             Height          =   315
             Index           =   2
             Left            =   7815
-            TabIndex        =   28
+            TabIndex        =   25
             Top             =   585
             Width           =   1200
             _ExtentX        =   2117
@@ -1021,7 +1028,7 @@ Begin VB.Form frmCrossTabDef
             Height          =   315
             Index           =   0
             Left            =   5100
-            TabIndex        =   31
+            TabIndex        =   28
             Top             =   990
             Width           =   1200
             _ExtentX        =   2117
@@ -1093,7 +1100,7 @@ Begin VB.Form frmCrossTabDef
             Height          =   315
             Index           =   1
             Left            =   6457
-            TabIndex        =   32
+            TabIndex        =   29
             Top             =   990
             Width           =   1200
             _ExtentX        =   2117
@@ -1165,7 +1172,7 @@ Begin VB.Form frmCrossTabDef
             Height          =   315
             Index           =   2
             Left            =   7815
-            TabIndex        =   33
+            TabIndex        =   30
             Top             =   990
             Width           =   1200
             _ExtentX        =   2117
@@ -1237,7 +1244,7 @@ Begin VB.Form frmCrossTabDef
             Height          =   315
             Index           =   0
             Left            =   5100
-            TabIndex        =   36
+            TabIndex        =   33
             Top             =   1395
             Width           =   1200
             _ExtentX        =   2117
@@ -1309,7 +1316,7 @@ Begin VB.Form frmCrossTabDef
             Height          =   315
             Index           =   1
             Left            =   6457
-            TabIndex        =   37
+            TabIndex        =   34
             Top             =   1395
             Width           =   1200
             _ExtentX        =   2117
@@ -1381,7 +1388,7 @@ Begin VB.Form frmCrossTabDef
             Height          =   315
             Index           =   2
             Left            =   7815
-            TabIndex        =   38
+            TabIndex        =   35
             Top             =   1395
             Width           =   1200
             _ExtentX        =   2117
@@ -1456,7 +1463,7 @@ Begin VB.Form frmCrossTabDef
             Height          =   195
             Index           =   6
             Left            =   1620
-            TabIndex        =   20
+            TabIndex        =   17
             Top             =   270
             Width           =   3000
          End
@@ -1466,7 +1473,7 @@ Begin VB.Form frmCrossTabDef
             Height          =   195
             Index           =   10
             Left            =   225
-            TabIndex        =   24
+            TabIndex        =   21
             Top             =   645
             Width           =   1155
          End
@@ -1476,7 +1483,7 @@ Begin VB.Form frmCrossTabDef
             Height          =   195
             Index           =   12
             Left            =   225
-            TabIndex        =   34
+            TabIndex        =   31
             Top             =   1455
             Width           =   1200
          End
@@ -1486,7 +1493,7 @@ Begin VB.Form frmCrossTabDef
             Height          =   195
             Index           =   11
             Left            =   225
-            TabIndex        =   29
+            TabIndex        =   26
             Top             =   1050
             Width           =   1110
          End
@@ -1497,7 +1504,7 @@ Begin VB.Form frmCrossTabDef
             Height          =   195
             Index           =   0
             Left            =   5100
-            TabIndex        =   21
+            TabIndex        =   18
             Top             =   270
             Width           =   1200
          End
@@ -1508,7 +1515,7 @@ Begin VB.Form frmCrossTabDef
             Height          =   195
             Index           =   1
             Left            =   6457
-            TabIndex        =   22
+            TabIndex        =   19
             Top             =   270
             Width           =   1200
          End
@@ -1519,7 +1526,7 @@ Begin VB.Form frmCrossTabDef
             Height          =   195
             Index           =   2
             Left            =   7815
-            TabIndex        =   23
+            TabIndex        =   20
             Top             =   270
             Width           =   1200
          End
@@ -1527,7 +1534,7 @@ Begin VB.Form frmCrossTabDef
    End
    Begin MSComDlg.CommonDialog CommonDialog1 
       Left            =   120
-      Top             =   4740
+      Top             =   5235
       _ExtentX        =   847
       _ExtentY        =   847
       _Version        =   393216
@@ -1918,6 +1925,11 @@ Public Function Initialise(bNew As Boolean, bCopy As Boolean, Optional lCrossTab
     'optOutput(0).Value = True
     txtUserName = gsUserName
     mblnDefinitionCreator = True
+    
+    ' Set the categories combo
+    GetObjectCategories cboCategory, utlCrossTab, 0, cboBaseTable.ItemData(cboBaseTable.ListIndex)
+    SetComboItem cboCategory, IIf(glngCurrentCategoryID = -1, 0, glngCurrentCategoryID)
+    
     PopulateAccessGrid
     Me.Changed = False
 
@@ -2623,6 +2635,9 @@ Private Sub RetreiveDefinition()
   End If
   Let mstrPrimaryTable = cboBaseTable.Text
 
+  ' Set the categories combo
+  GetObjectCategories cboCategory, utlCrossTab, mlngCrossTabID
+   
   Call LoadPrimaryDependantCombos
     
   'Horizontal column
@@ -2932,7 +2947,7 @@ Private Sub SaveDefinition()
           "OutputEmail = 1, " & _
           "OutputEmailAddr = " & txtEmailGroup.Tag & ", " & _
           "OutputEmailSubject = '" & Replace(txtEmailSubject.Text, "'", "''") & "', " & _
-          "OutputEmailAttachAs = '" & Replace(txtEmailAttachAs.Text, "'", "''") & "', "
+          "OutputEmailAttachAs = '" & Replace(txtEMailAttachAs.Text, "'", "''") & "', "
     Else
       strSQL = strSQL & _
           "OutputEmail = 0, " & _
@@ -2942,7 +2957,7 @@ Private Sub SaveDefinition()
     End If
     
     strSQL = strSQL & _
-        "OutputFilename = '" & Replace(txtFilename.Text, "'", "''") & "'"
+        "OutputFilename = '" & Replace(txtFileName.Text, "'", "''") & "'"
                
 
     strSQL = strSQL & _
@@ -2999,31 +3014,24 @@ Private Sub SaveDefinition()
       strSQL = strSQL & "1, " & _
           txtEmailGroup.Tag & ", " & _
           "'" & Replace(txtEmailSubject.Text, "'", "''") & "', " & _
-          "'" & Replace(txtEmailAttachAs.Text, "'", "''") & "', "
+          "'" & Replace(txtEMailAttachAs.Text, "'", "''") & "', "
     Else
       strSQL = strSQL & "0, 0, '', '', "
     End If
 
     strSQL = strSQL & _
-        "'" & Replace(txtFilename.Text, "'", "''") & "')"
-
-  
+        "'" & Replace(txtFileName.Text, "'", "''") & "')"
   
     
     ' RH 04/09/00 - Use the new util def stored procedure
     mlngCrossTabID = InsertCrossTab(strSQL)
-    
-    'gADOCon.Execute strSQL, , adCmdText
-  
-    'strSQL = "SELECT MAX(CrossTabID) FROM ASRSysCrossTab"
-    'Set rsTemp = datData.OpenRecordset(strSQL, adOpenForwardOnly, adLockReadOnly)
-    'mlngCrossTabID = Val(rsTemp(0))
-  
+      
     Call UtilCreated(utlCrossTab, mlngCrossTabID)
   
   End If
   
   SaveAccess
+  SaveObjectCategories cboCategory, utlCrossTab, mlngCrossTabID
 
   Screen.MousePointer = vbDefault
 
@@ -3946,7 +3954,7 @@ Public Sub PrintDef(lCrossTabID As Long)
         
         If chkDestination(2).Value = vbChecked Then
           .PrintNormal "Output Destination : Save to file"
-          .PrintNormal "File Name : " & txtFilename.Text
+          .PrintNormal "File Name : " & txtFileName.Text
           .PrintNormal "File Options : " & cboSaveExisting.List(cboSaveExisting.ListIndex)
         End If
         
@@ -3954,7 +3962,7 @@ Public Sub PrintDef(lCrossTabID As Long)
           .PrintNormal "Output Destination : Send to email"
           .PrintNormal "Email Group : " & txtEmailGroup.Text
           .PrintNormal "Email Subject : " & txtEmailSubject.Text
-          .PrintNormal "Email Attach As : " & txtEmailAttachAs.Text
+          .PrintNormal "Email Attach As : " & txtEMailAttachAs.Text
         End If
         
         .PrintEnd
