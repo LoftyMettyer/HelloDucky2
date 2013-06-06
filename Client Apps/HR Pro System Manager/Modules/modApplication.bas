@@ -1708,6 +1708,9 @@ Public Sub ActivateModules()
   gbAFDEnabled = IsModuleEnabled(modAFD)
   gbQAddressEnabled = IsModuleEnabled(modQAddress)
   
+  ' Needs settings to the ismoduleenabled, but function is not yet ready (and checked out by someone! else)
+  gfMobileModule = True
+  
   ' Workflow Module
   gfWorkflowModule = IsModuleEnabled(modWorkflow) _
     And (glngSQLVersion >= 8)
@@ -2118,4 +2121,21 @@ Public Sub EnableOpenForms(ByVal pbEnabled As Boolean)
 
 End Sub
 
+Public Sub EditMobileDesigner()
 
+  On Error GoTo ErrorTrap
+  
+  Dim objMobile As clsMobile
+  Dim bOK As Boolean
+  
+  Set objMobile = New clsMobile
+  objMobile.Edit
+  
+TidyUpAndExit:
+  Set objMobile = Nothing
+  Exit Sub
+
+ErrorTrap:
+  bOK = False
+
+End Sub

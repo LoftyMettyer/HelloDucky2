@@ -3,11 +3,10 @@ Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
 Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
 Begin VB.Form frmSelection 
-   BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Selection"
    ClientHeight    =   4950
-   ClientLeft      =   585
-   ClientTop       =   1710
+   ClientLeft      =   660
+   ClientTop       =   1785
    ClientWidth     =   4860
    BeginProperty Font 
       Name            =   "Verdana"
@@ -23,22 +22,9 @@ Begin VB.Form frmSelection
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
-   MaxButton       =   0   'False
-   MinButton       =   0   'False
    ScaleHeight     =   4950
    ScaleWidth      =   4860
-   ShowInTaskbar   =   0   'False
    StartUpPosition =   1  'CenterOwner
-   Begin VB.PictureBox picFormIcon 
-      Height          =   315
-      Left            =   4140
-      ScaleHeight     =   255
-      ScaleWidth      =   435
-      TabIndex        =   10
-      Top             =   3030
-      Visible         =   0   'False
-      Width           =   495
-   End
    Begin VB.TextBox txtDesc 
       BackColor       =   &H8000000F&
       Height          =   1000
@@ -129,7 +115,7 @@ Begin VB.Form frmSelection
       Height          =   3660
       Left            =   120
       Style           =   1  'Checkbox
-      TabIndex        =   11
+      TabIndex        =   10
       Top             =   100
       Visible         =   0   'False
       Width           =   3315
@@ -213,6 +199,8 @@ Private mobjEmail As clsEmailAddr
 'MH20040315 Outlook Folder
 Private mobjOutlookFolder As clsOutlookFolder
 
+Private mobjMobile As clsMobile
+
 ' Selection variables.
 Private mlngAction As Long
 Private mlngSelectedID As Long
@@ -226,6 +214,7 @@ Private Enum ObjectTypes
   OBJECT_ORDER = 2
   OBJECT_EMAIL = 3          'MH20000727
   OBJECT_OUTLOOKFOLDER = 4  'MH20040315
+  OBJECT_MOBILEDESIGN = 5
 End Enum
   
 Private mblnReadOnly As Boolean
@@ -440,6 +429,7 @@ Public Property Set Order(ByVal pobjNewValue As Order)
   Set mobjExpression = Nothing
   Set mobjEmail = Nothing
   Set mobjOutlookFolder = Nothing
+  Set mobjMobile = Nothing
   
   ConfigureScreen
   lstItems_Populate
@@ -468,6 +458,25 @@ Public Property Set Email(ByVal pobjNewValue As clsEmailAddr)
   
 End Property
 
+Public Property Get MobileDesigner() As clsMobile
+  Set MobileDesigner = mobjMobile
+End Property
+
+Public Property Set MobileDesigner(ByVal objNewValue As clsMobile)
+
+  Set mobjExpression = Nothing
+  Set mobjEmail = Nothing
+  Set mobjExpression = Nothing
+  Set mobjOrder = Nothing
+  Set mobjMobile = objNewValue
+
+  ConfigureScreen
+  lstItems_Populate
+
+  RefreshControls
+
+End Property
+
 
 Public Property Get OutlookFolder() As clsOutlookFolder
   Set OutlookFolder = mobjOutlookFolder
@@ -478,6 +487,7 @@ Public Property Set OutlookFolder(ByVal objNewValue As clsOutlookFolder)
   Set mobjEmail = Nothing
   Set mobjExpression = Nothing
   Set mobjOrder = Nothing
+  Set mobjMobile = Nothing
 
   ConfigureScreen
   lstItems_Populate
@@ -502,67 +512,12 @@ Private Sub ConfigureScreen()
       With mobjExpression
         'JPD 20030911 Fault 6359
         Me.Caption = mobjExpression.ExpressionTypeName & "s"
-        
-        Select Case .ExpressionType
-          Case giEXPR_COLUMNCALCULATION
-            picFormIcon.Picture = LoadResPicture("EXPR_CALCULATION", 1)
-            'Me.HelpContextID = 0
-          Case giEXPR_GOTFOCUS
-            picFormIcon.Picture = LoadResPicture("EXPR_VALIDATION", 1)
-            'Me.HelpContextID = 0
-          Case giEXPR_RECORDVALIDATION
-            picFormIcon.Picture = LoadResPicture("EXPR_VALIDATION", 1)
-            'Me.HelpContextID = 0
-          Case giEXPR_DEFAULTVALUE
-            picFormIcon.Picture = LoadResPicture("EXPR_DEFAULT", 1)
-            'Me.HelpContextID = 0
-          Case giEXPR_STATICFILTER
-            picFormIcon.Picture = LoadResPicture("EXPR_FILTER", 1)
-            'Me.HelpContextID = 0
-          Case giEXPR_RECORDDESCRIPTION
-            picFormIcon.Picture = LoadResPicture("EXPR_RECDESC", 1)
-            'Me.HelpContextID = 0
-          Case giEXPR_VIEWFILTER
-            picFormIcon.Picture = LoadResPicture("EXPR_FILTER", 1)
-            'Me.HelpContextID = 0
-          Case giEXPR_RUNTIMECALCULATION
-            picFormIcon.Picture = LoadResPicture("EXPR_CALCULATION", 1)
-            'Me.HelpContextID = 0
-          Case giEXPR_RUNTIMEFILTER
-            picFormIcon.Picture = LoadResPicture("EXPR_FILTER", 1)
-            'Me.HelpContextID = 0
-          Case giEXPR_EMAIL
-            'MH20000727 Added Email
-            picFormIcon.Picture = LoadResPicture("EXPR_EMAIL", 1)
-            Me.Caption = mobjExpression.ExpressionTypeName & "es"
-            'Me.HelpContextID = 0
-          Case giEXPR_LINKFILTER
-            picFormIcon.Picture = LoadResPicture("EXPR_FILTER", 1)
-            'Me.HelpContextID = 0
-          Case giEXPR_OUTLOOKFOLDER
-            picFormIcon.Picture = LoadResPicture("EXPR_RECDESC", 1)
-            'Me.HelpContextID = 0
-          Case giEXPR_OUTLOOKSUBJECT
-            picFormIcon.Picture = LoadResPicture("EXPR_RECDESC", 1)
-            'Me.HelpContextID = 0
-          Case giEXPR_WORKFLOWCALCULATION
-            picFormIcon.Picture = LoadResPicture("EXPR_WORKFLOWCALC", 1)
-            'Me.HelpContextID = 0
-          Case giEXPR_WORKFLOWSTATICFILTER
-            picFormIcon.Picture = LoadResPicture("EXPR_WORKFLOWCALC", 1)
-            'Me.HelpContextID = 0
-          Case giEXPR_WORKFLOWRUNTIMEFILTER
-            picFormIcon.Picture = LoadResPicture("EXPR_WORKFLOWCALC", 1)
-            'Me.HelpContextID = 0
-        End Select
+   
       End With
     
     ' The selection form is displaying the list of orders.
     Case OBJECT_ORDER
       Me.Caption = "Orders"
-      
-      picFormIcon.Picture = LoadResPicture("ORDER", 1)
-      
       txtDesc.Visible = False
       
       cmdSelect.Top = cmdPrint.Top + YBIGGAP
@@ -577,7 +532,6 @@ Private Sub ConfigureScreen()
     'MH20000727 Added Email
     Case OBJECT_EMAIL
       Me.Caption = "Email Addresses"
-      picFormIcon.Picture = LoadResPicture("EXPR_EMAIL", 1)
       txtDesc.Visible = False
   
       cmdSelect.Top = cmdPrint.Top + YBIGGAP
@@ -593,7 +547,6 @@ Private Sub ConfigureScreen()
     'MH20040315 Added Outlook Folder
     Case OBJECT_OUTLOOKFOLDER
       Me.Caption = "Outlook Folder"
-      picFormIcon.Picture = LoadResPicture("EXPR_EMAIL", 1)
       txtDesc.Visible = False
   
       cmdSelect.Top = cmdPrint.Top + YBIGGAP
@@ -603,8 +556,19 @@ Private Sub ConfigureScreen()
       lstItems.Height = cmdCancel.Top + cmdCancel.Height
       Me.Height = lstItems.Top + lstItems.Height + UI.CaptionHeight + (2 * UI.YBorder) + (2 * UI.YFrame) + YBORDERGAP
       'Me.HelpContextID = 0
+    
+    ' Mobile Design Groups
+    Case OBJECT_MOBILEDESIGN
+      Me.Caption = "Mobile Groups"
+      txtDesc.Visible = True
+      cmdSelect.Visible = False
+      cmdDeselect.Visible = False
+      cmdCancel.Caption = "OK"
   
   End Select
+  
+  ' Remove the icon from the caption bar
+  RemoveIcon Me
   
 End Sub
 
@@ -634,6 +598,11 @@ Private Function ObjectType() As ObjectTypes
     Exit Function
   End If
   
+  If Not mobjMobile Is Nothing Then
+    ObjectType = OBJECT_MOBILEDESIGN
+    Exit Function
+  End If
+  
   ObjectType = OBJECT_UNKNOWN
   Me.HelpContextID = 0
   
@@ -654,6 +623,7 @@ Public Property Set Expression(ByVal pobjNewValue As CExpression)
   Set mobjOrder = Nothing
   Set mobjEmail = Nothing
   Set mobjOutlookFolder = Nothing
+  Set mobjMobile = Nothing
   
   ' Format screen controls as appropriate.
   ConfigureScreen
@@ -690,22 +660,26 @@ Private Function lstItems_Populate() As Boolean
   ReDim mavItemInfo(4, 0)
   
   Select Case ObjectType
-  Case OBJECT_EXPRESSION
-    fOK = lstItems_ExpressionsPopulate
-    lngCurrentID = mobjExpression.ExpressionID
+    Case OBJECT_EXPRESSION
+      fOK = lstItems_ExpressionsPopulate
+      lngCurrentID = mobjExpression.ExpressionID
+      
+    Case OBJECT_ORDER
+      fOK = lstitems_OrdersPopulate
+      lngCurrentID = mobjOrder.OrderID
+  
+    Case OBJECT_EMAIL
+      fOK = items_EmailPopulate
+      lngCurrentID = mobjEmail.EmailID
     
-  Case OBJECT_ORDER
-    fOK = lstitems_OrdersPopulate
-    lngCurrentID = mobjOrder.OrderID
-
-  Case OBJECT_EMAIL
-    fOK = items_EmailPopulate
-    lngCurrentID = mobjEmail.EmailID
-  
-  Case OBJECT_OUTLOOKFOLDER
-    fOK = lstitems_OutlookFolderPopulate
-    lngCurrentID = mobjOutlookFolder.FolderID
-  
+    Case OBJECT_OUTLOOKFOLDER
+      fOK = lstitems_OutlookFolderPopulate
+      lngCurrentID = mobjOutlookFolder.FolderID
+    
+    Case OBJECT_MOBILEDESIGN
+      fOK = lstitems_SecurityGroupsPopulate
+      lngCurrentID = mobjMobile.MobileID
+    
   End Select
   
   If fOK Then
@@ -994,6 +968,48 @@ ErrorTrap:
 End Function
 
 
+Private Function lstitems_SecurityGroupsPopulate() As Boolean
+  On Error GoTo ErrorTrap
+  
+  Dim fOK As Boolean
+  Dim sSQL As String
+  Dim rsGroups As New ADODB.Recordset
+  Dim objListItem As ListItem
+
+  fOK = True
+  lstItems.ListItems.Clear
+
+  ' Get the recordset of user groups and their access on this definition.
+  sSQL = "SELECT gid, name FROM sysusers" & _
+    " WHERE gid = uid AND gid > 0" & _
+    "   AND not (name like 'ASRSys%') AND not (name like 'db[_]%')" & _
+    " ORDER BY name"
+  rsGroups.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly
+
+  With rsGroups
+    Do While Not .EOF
+      Set objListItem = lstItems.ListItems.Add(, , !Name)
+      objListItem.Tag = !gid
+      .MoveNext
+    Loop
+      
+    .Close
+  End With
+ 
+TidyUpAndExit:
+  lstitems_SecurityGroupsPopulate = fOK
+  Set rsGroups = Nothing
+  Exit Function
+  
+ErrorTrap:
+  fOK = False
+  MsgBox Err.Description, vbExclamation + vbOKOnly, App.ProductName
+  Err = False
+  Resume TidyUpAndExit
+
+End Function
+
+
 Private Sub RefreshControls()
   Dim fSelectionMade As Boolean
   Dim iLoop As Integer
@@ -1007,13 +1023,15 @@ Private Sub RefreshControls()
   End If
 
   ' Enable/disable controls depending on the state of other.
+  cmdNew.Enabled = Not ObjectType = OBJECT_MOBILEDESIGN
   cmdModify.Enabled = fSelectionMade
-  cmdCopy.Enabled = fSelectionMade And Not mblnReadOnly
-  cmdDelete.Enabled = fSelectionMade And Not mblnReadOnly
+  cmdCopy.Enabled = fSelectionMade And Not mblnReadOnly And Not ObjectType = OBJECT_MOBILEDESIGN
+  cmdDelete.Enabled = fSelectionMade And Not mblnReadOnly And Not ObjectType = OBJECT_MOBILEDESIGN
   cmdPrint.Enabled = fSelectionMade
   cmdSelect.Enabled = fSelectionMade _
     And (Not mblnReadOnly) _
-    And (Not mblnForcedReadOnly)
+    And (Not mblnForcedReadOnly) _
+    And Not ObjectType = OBJECT_MOBILEDESIGN
   
   If ObjectType = OBJECT_EXPRESSION Then
     ' Refresh the 'description' textbox.
@@ -1149,7 +1167,7 @@ Private Sub lstItems_ItemClick(ByVal Item As ComctlLib.ListItem)
   
 End Sub
 
-Private Sub lstItems_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub lstItems_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
 
   If Button = vbRightButton Then
   
