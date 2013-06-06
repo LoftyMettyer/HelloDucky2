@@ -221,35 +221,36 @@ Private Function CreateSP_MobileCheckLogin() As Boolean
     "BEGIN" & vbNewLine
 
   sProcSQL = sProcSQL & _
-    "  DECLARE @piuserID int" & vbNewLine & _
-    "  SET @piuserID = 0;" & vbNewLine & _
+    "  DECLARE @iuserID integer," & vbNewLine & _
+    "          @sActualUserName varchar(255)," & vbNewLine & _
+    "          @sRoleName varchar(255);" & vbNewLine & _
+    "  SET @iuserID = 0;" & vbNewLine & _
     "  SET @psMessage = '';" & vbNewLine & _
-    "  -- get the record id for this user" & vbNewLine & _
-    "  SELECT @piuserID = [ID]" & vbNewLine & _
-    "    From [" & mvar_sLoginTable & "]" & vbNewLine & _
+    "  -- Get the record id for this user" & vbNewLine & _
+    "  SELECT @iuserID = [ID]" & vbNewLine & _
+    "    FROM [" & mvar_sLoginTable & "]" & vbNewLine & _
     "    WHERE ISNULL([" & mvar_sLoginColumn & "], '') = @psKeyParameter" & vbNewLine & _
-    "  IF @piuserID > 0" & vbNewLine & _
+    "  IF @iuserID > 0" & vbNewLine & _
     "  BEGIN" & vbNewLine & _
     "    -- return the password for the record id in its encrypted form." & vbNewLine & _
     "    SELECT TOP 1 @psPWDParameter = [password]" & vbNewLine & _
-    "      From [tbsys_mobilelogins]" & vbNewLine & _
-    "      WHERE (ISNULL([tbsys_mobilelogins].[userid], '') = @piuserID);" & vbNewLine & _
-    "  End" & vbNewLine
+    "        FROM [tbsys_mobilelogins]" & vbNewLine & _
+    "        WHERE (ISNULL([tbsys_mobilelogins].[userid], '') = @iuserID);" & vbNewLine & _
+    "  END" & vbNewLine
     
   sProcSQL = sProcSQL & _
-    "  IF @piuserID = 0" & vbNewLine & _
-    "  BEGIN" & vbNewLine & _
-    "    SET @psMessage = 'Account not found.';" & vbNewLine & _
-    "  End" & vbNewLine & _
-    "  IF @psMessage='' AND ISNULL(@psPWDParameter, '')  = ''" & vbNewLine & _
-    "    BEGIN" & vbNewLine & _
-    "      SET @psMessage = 'Account not activated.';" & vbNewLine & _
-    "    END" & vbNewLine
+    "  IF @iuserID = 0" & vbNewLine & _
+    "      SET @psMessage = 'Account not found.';" & vbNewLine & _
+    "  IF @psMessage = '' AND ISNULL(@psPWDParameter, '')  = ''" & vbNewLine & _
+    "      SET @psMessage = 'Account not activated.';" & vbNewLine
 
-  ' Hack for development to continue. Will change in imminent future!
   sProcSQL = sProcSQL & _
-    "SELECT TOP 1 @piUserGroupID = [uid] FROM sys.sysusers WHERE issqlrole = 1" & vbNewLine & _
-    "    ORDER BY [uid] DESC" & vbNewLine & vbNewLine
+    "    EXEC dbo.spASRIntGetActualUserDetailsForLogin" & vbNewLine & _
+    "        @psKeyParameter," & vbNewLine & _
+    "        @psKeyParameter OUTPUT," & vbNewLine & _
+    "        @sRoleName OUTPUT," & vbNewLine & _
+    "        @piUserGroupID OUTPUT" & vbNewLine & vbNewLine & _
+    "    IF ISNULL(@piUserGroupID,0) = 0 SET @psMessage = 'No valid SQL account found.';" & vbNewLine & vbNewLine
     
   sProcSQL = sProcSQL & _
     "END"
@@ -300,7 +301,7 @@ Private Function CreateSP_MobileRegistration() As Boolean
     
   sProcSQL = sProcSQL & "  SET @iCount = 0;" & vbNewLine & _
     "  SET @psMessage = '';" & vbNewLine & _
-    "  SELECT @iCount = COUNT([" & mvar_sUniqueEmailColumn & "])" & vbNewLine & _
+    "  SELECT @iCount = COUNT([" & mvar_sLoginColumn & "])" & vbNewLine & _
     "      FROM " & mvar_sLoginTable & vbNewLine & _
     "      WHERE [" & mvar_sUniqueEmailColumn & "] = @psEmailAddress AND [" & mvar_sUniqueEmailColumn & "] IS NOT NULL;" & vbNewLine & _
     "  IF @iCount = 0" & vbNewLine & _
