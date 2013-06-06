@@ -4319,10 +4319,11 @@ End Function
 
 Public Function GetOfficeWordVersion() As Integer
 
+  Dim App As Word.Application
+  
   On Error GoTo NotInstalled
 
   If giOfficeVersion_Word = 0 Then
-    Dim App As New Word.Application
     Set App = CreateObject("Word.Application")
     giOfficeVersion_Word = Val(App.Version)
     App.Quit
@@ -4343,10 +4344,11 @@ End Function
 
 Public Function GetOfficeExcelVersion() As Integer
 
+  Dim App As Excel.Application
+  
   On Error GoTo NotInstalled
 
   If giOfficeVersion_Excel = 0 Then
-    Dim App As New Excel.Application
     Set App = CreateObject("Excel.Application")
     giOfficeVersion_Excel = Val(App.Version)
     App.Quit

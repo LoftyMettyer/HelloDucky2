@@ -34,6 +34,7 @@ Private mstrStatusMessage As String
 Private mblnUserCancelled As Boolean
 Private mlngSingleRecordID As Long
 
+
 'Merge Definition Variables
 Private mstrDefName As String
 Private mstrDefBaseTable As String
@@ -43,25 +44,39 @@ Private mlngDefOrderID As Long
 Private mintDefSelection As Integer
 Private mlngDefPickListID As Long
 Private mlngDefFilterID As Long
-Private mintDefOutput As Integer
-Private mblnDefDocSave As Boolean
-Private mstrDefDocFile As String
-Private mstrDefDocFileFormat As String
-Private mstrDefEmailCol As String
-Private mstrDefEMailSubject As String
 Private mstrDefTemplateFile As String
 Private mstrDefTemplateFormat As String
-Private mblnDefCloseDoc As Boolean
 Private mblnDefPauseBeforeMerge As Boolean
+Private mblnDefSuppressBlankLines As Boolean
+Private mbIsLabel As Boolean
+
+'Private mintDefOutput As Integer
+'Private mblnDefDocSave As Boolean
+'Private mstrDefDocFile As String
+'Private mstrDefDocFileFormat As String
+'Private mblnDefCloseDoc As Boolean
+'Private mstrOutputPrinterName As String
+
+Private mstrDefEmailCol As String
+Private mstrDefEMailSubject As String
 Private mblnDefEMailAttachment As Boolean
 Private mstrDefAttachmentName As String
-Private mblnDefSuppressBlankLines As Boolean
+Private mstrDefAttachmentFormat As String
 Private mstrEmailAddr As String
 Private mlngEmailAddrCalc As Long
-Private mbIsLabel As Boolean
+
+Private mintOutputFormat As Integer
+Private mblnOutputScreen As Boolean
+Private mblnOutputPrint As Boolean
 Private mstrOutputPrinterName As String
+Private mblnOutputSave As Boolean
+Private mstrOutputFileName As String
+Private mstrOutputFileFormat As String
+
 Private mlngDocumentMapID As Long
 Private mbManualHeader As Boolean
+
+
 
 Private mintType() As Integer
 Private mlngSize() As Long
@@ -267,7 +282,7 @@ Public Function ExecuteMailMerge(lngMailMergeID As Long, Optional lngRecordID As
   End If
 
   If Progress Then Call WrdRunMailMerge
-  If Progress Then Call WrdPrintDocument(mstrOutputPrinterName)
+  'If Progress Then Call WrdPrintDocument(mstrOutputPrinterName)
  
   
   
@@ -446,44 +461,50 @@ Private Sub SQLGetMergeDefinition()
 
     mstrDefName = !Name
     mlngDefBaseTableID = !TableID
-    'mstrDefBaseTable = datGeneral.GetTableName(mlngDefBaseTableID)
     mstrDefBaseTable = !TableName
     mlngRecordDescExprID = !RecordDescExprID
     'mlngDefOrderID = !OrderID
     mintDefSelection = !Selection
     mlngDefPickListID = !PicklistID
     mlngDefFilterID = !FilterID
-    mintDefOutput = !Output
     mstrDefTemplateFile = !TemplateFileName
-    mstrDefTemplateFormat = GetOfficeSaveAsFormat(mstrDefTemplateFormat, GetOfficeWordVersion)
-    mblnDefSuppressBlankLines = !SuppressBlanks
+    mstrDefTemplateFormat = GetOfficeSaveAsFormat(mstrDefTemplateFile, GetOfficeWordVersion)
     mblnDefPauseBeforeMerge = !PauseBeforeMerge
-    mblnDefCloseDoc = !CloseDoc
+    mblnDefSuppressBlankLines = !SuppressBlanks
     mbIsLabel = !IsLabel
     mlngLabelDefinitionID = IIf(IsNull(!LabelTypeID), 0, !LabelTypeID)
+    mintOutputFormat = !OutputFormat
+    'mintDefOutput = !Output
+    'mblnDefCloseDoc = !CloseDoc
     
     mlngEmailAddrCalc = 0
     mstrEmailAddr = vbNullString
         
-    If Not IsFileCompatibleWithWordVersion(mstrDefTemplateFile) Then
+    If mstrDefTemplateFormat = vbNullString Then
       mstrStatusMessage = "This definition is set to use a template file which is not compatible with your version of Microsoft Office."
       fOK = False
       GoTo TidyAndExit
     End If
 
-    Select Case mintDefOutput
-      Case wdSendToNewDocument
-        mblnDefDocSave = !DocSave
-        mstrDefDocFile = !DocFileName
-        mstrDefDocFileFormat = GetOfficeSaveAsFormat(mstrDefDocFile, GetOfficeWordVersion)
-      
-        If mstrDefDocFileFormat = "" Then
+    Select Case mintOutputFormat
+      Case 0    'Word Document
+        'mblnDefDocSave = !DocSave
+        'mstrDefDocFile = !DocFileName
+        'mstrDefDocFileFormat = GetOfficeSaveAsFormat(mstrDefDocFile, GetOfficeWordVersion)
+        mblnOutputScreen = !OutputScreen
+        mblnOutputPrint = !OutputPrinter
+        mstrOutputPrinterName = !OutputPrinterName
+        mblnOutputSave = !OutputSave
+        mstrOutputFileName = !OutputFilename
+        mstrOutputFileFormat = GetOfficeSaveAsFormat(mstrOutputFileName, GetOfficeWordVersion)
+        
+        If Trim(mstrOutputFileName) <> "" And Trim(mstrOutputFileFormat) = "" Then
           mstrStatusMessage = "This definition is set to save in a file format which is not compatible with your version of Microsoft Office."
           fOK = False
           GoTo TidyAndExit
         End If
       
-      Case wdSendToEmail
+      Case 1    'Individual Emails
         'MH20040122 Fault 5665
         If datGeneral.SystemPermission("EMAILADDRESSES", "VIEW") = False Then
           mstrStatusMessage = "You do not have permission to use email addresses."
@@ -503,16 +524,17 @@ Private Sub SQLGetMergeDefinition()
         'mstrDefEmailCol = !EmailAddrName  'GetTableAndColumnName(!EmailColumnID)
         mblnDefEMailAttachment = !EMailAsAttachment
         mstrDefAttachmentName = IIf(IsNull(!EmailAttachmentName), "", !EmailAttachmentName)
+        mstrDefAttachmentFormat = GetOfficeSaveAsFormat(mstrDefAttachmentName, GetOfficeWordVersion)
         mstrDefEMailSubject = !EmailSubject
         mlngEmailAddrCalc = !EmailAddrID
     
-        If Not IsFileCompatibleWithWordVersion(mstrDefAttachmentName) Then
+        If Trim(mstrDefAttachmentName) <> vbNullString And Trim(mstrDefAttachmentFormat) = vbNullString Then
           mstrStatusMessage = "This definition is set to email an attachment in a file format which is not compatible with your version of Microsoft Office."
           fOK = False
           GoTo TidyAndExit
         End If
       
-      Case wdSendToPrinter, 3 ' We use this as Version 1
+      Case 2    'Document Management
         mstrOutputPrinterName = !OutputPrinterName
         mlngDocumentMapID = IIf(IsNull(!DocumentMapID), 0, !DocumentMapID)
         mbManualHeader = IIf(IsNull(!ManualDocManHeader), 0, !ManualDocManHeader)
@@ -1290,7 +1312,7 @@ Private Sub WrdSetMergeOptions()
     .OpenDataSource Name:=mstrDataSourceName, AddToRecentFiles:=False
     .SuppressBlankLines = mblnDefSuppressBlankLines
     
-    If mintDefOutput = wdSendToEmail Then
+    If mintOutputFormat = 1 Then     'Email
       .Destination = wdSendToEmail
       .MailAddressFieldName = "Email_Address"
       .MailSubject = mstrDefEMailSubject
@@ -1355,7 +1377,7 @@ Private Sub WrdRunMailMerge()
       Kill mstrDefAttachmentName
     End If
     
-    wrdDocTemplate.SaveAs FileName:=mstrDefAttachmentName, FileFormat:=Val(mstrDefTemplateFormat)
+    wrdDocTemplate.SaveAs FileName:=mstrDefAttachmentName, FileFormat:=Val(mstrDefAttachmentFormat)
 
   End If
 
@@ -1363,37 +1385,54 @@ Private Sub WrdRunMailMerge()
 
   'Pause:=False to report errors in a new document.
   '(Pause:=True to have Word pause and display a troubleshooting dialog box if a mail merge error is found)
+  If mintOutputFormat = 1 Then    'Email
+    gobjProgress.Visible = False
+  End If
   wrdDocTemplate.MailMerge.Execute Pause:=False
+  gobjProgress.Visible = True
   
   
   Set wrdDocOutput = wrdApp.ActiveDocument
   wrdDocOutput.ActiveWindow.View.Type = wdNormalView
-  
-  Select Case mintDefOutput
-  Case wdSendToPrinter
-    
+
+
+  If mblnOutputSave Then
+    If Dir$(mstrOutputFileName) <> vbNullString Then
+      Kill mstrOutputFileName
+    End If
+    wrdDocOutput.SaveAs FileName:=mstrOutputFileName, FileFormat:=Val(mstrOutputFileFormat)
+    'Wait for the save to finish !
+    Do While wrdApp.BackgroundSavingStatus > 0
+      DoEvents
+    Loop
+  End If
+
+
+  If mblnOutputPrint Then
+    If Trim(mstrOutputPrinterName) <> "" Then
+      wrdApp.ActivePrinter = mstrOutputPrinterName
+    End If
+
     gobjProgress.Visible = False
     wrdApp.Visible = True
-    
     wrdDocOutput.PrintOut
+
+    'wrdDocOutput.PrintOut Range:=wdPrintAllDocument, Item:= _
+        wdPrintDocumentContent, Copies:=1, Pages:="", PageType:=wdPrintAllPages, _
+        ManualDuplexPrint:=False, Collate:=True, Background:=True, PrintToFile:= _
+        False, PrintZoomColumn:=0, PrintZoomRow:=0, PrintZoomPaperWidth:=0, _
+        PrintZoomPaperHeight:=0
+    
     'Wait for the print job to finish !
     Do While wrdApp.BackgroundPrintingStatus > 0
       DoEvents
     Loop
-    
     wrdApp.Visible = mblnAppVisible
     gobjProgress.Visible = True
+  End If
 
-  Case wdSendToNewDocument
-    If mblnDefDocSave = True Then
-      If Dir$(mstrDefDocFile) <> vbNullString Then
-        Kill mstrDefDocFile
-      End If
-      wrdDocOutput.SaveAs FileName:=mstrDefDocFile, FileFormat:=Val(mstrDefDocFileFormat)
-    End If
-  End Select
-  
-  
+
+
 Exit Sub
 
 LocalErr:
@@ -1418,7 +1457,7 @@ LocalErr:
     '* Check the path to make sure it was typed correctly.
     '* Select a file from the list of files and folders.
     'NHRD18082004 Fault 7994 Removed Mail Merge as this message is used for Env & Labs too.
-    mstrStatusMessage = "Error Saving to file <" & mstrDefDocFile & ">" & vbCrLf & _
+    mstrStatusMessage = "Error Saving to file <" & mstrOutputFileName & ">" & vbCrLf & _
                       "Please ensure that the output document path is correct within this definition"
 
   Case 5630
@@ -1508,9 +1547,11 @@ Private Sub TidyUpAndExit()
   Set wrdDocDataSource = Nothing
 
 
-  blnCloseWord = (mblnDefCloseDoc Or _
+  'blnCloseWord = (mblnDefCloseDoc Or _
                  (mintDefOutput <> wdSendToNewDocument) Or _
                  (fOK = False))
+  blnCloseWord = (mblnOutputScreen = False Or fOK = False)
+
 
   If blnCloseWord Then
     wrdDocOutput.Close SaveChanges:=False
@@ -2975,19 +3016,19 @@ CannotCreateTemplate:
 
 End Sub
 
-Private Sub WrdPrintDocument(ByVal psPrinterName As String)
-
-  If Len(psPrinterName) > 0 Then
-    wrdApp.ActivePrinter = psPrinterName
-    wrdDocOutput.PrintOut Range:=wdPrintAllDocument, Item:= _
-        wdPrintDocumentContent, Copies:=1, Pages:="", PageType:=wdPrintAllPages, _
-        ManualDuplexPrint:=False, Collate:=True, Background:=True, PrintToFile:= _
-        False, PrintZoomColumn:=0, PrintZoomRow:=0, PrintZoomPaperWidth:=0, _
-        PrintZoomPaperHeight:=0
-         
-  End If
- 
-End Sub
+'Private Sub WrdPrintDocument(ByVal psPrinterName As String)
+'
+'  If Len(psPrinterName) > 0 Then
+'    wrdApp.ActivePrinter = psPrinterName
+'    wrdDocOutput.PrintOut Range:=wdPrintAllDocument, Item:= _
+'        wdPrintDocumentContent, Copies:=1, Pages:="", PageType:=wdPrintAllPages, _
+'        ManualDuplexPrint:=False, Collate:=True, Background:=True, PrintToFile:= _
+'        False, PrintZoomColumn:=0, PrintZoomRow:=0, PrintZoomPaperWidth:=0, _
+'        PrintZoomPaperHeight:=0
+'
+'  End If
+'
+'End Sub
 
 Private Sub WrdSetV1HeaderText()
 
