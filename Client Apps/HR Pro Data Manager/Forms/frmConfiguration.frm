@@ -65,43 +65,43 @@ Begin VB.Form frmConfiguration
       TabCaption(1)   =   "&Reports && Utilities"
       TabPicture(1)   =   "frmConfiguration.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraReports(0)"
+      Tab(1).Control(0)=   "fraReports(1)"
       Tab(1).Control(1)=   "frmReportsGeneral"
-      Tab(1).Control(2)=   "fraReports(1)"
+      Tab(1).Control(2)=   "fraReports(0)"
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "&Network Configuration"
       TabPicture(2)   =   "frmConfiguration.frx":0044
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "frmOutputs"
-      Tab(2).Control(1)=   "fraNetwork(1)"
-      Tab(2).Control(2)=   "fraNetwork(0)"
-      Tab(2).Control(3)=   "frmAutoLogin"
+      Tab(2).Control(0)=   "frmAutoLogin"
+      Tab(2).Control(1)=   "fraNetwork(0)"
+      Tab(2).Control(2)=   "fraNetwork(1)"
+      Tab(2).Control(3)=   "frmOutputs"
       Tab(2).ControlCount=   4
       TabCaption(3)   =   "&Batch Login"
       TabPicture(3)   =   "frmConfiguration.frx":0060
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "fraBatch(0)"
-      Tab(3).Control(1)=   "fraBatch(1)"
+      Tab(3).Control(0)=   "fraBatch(1)"
+      Tab(3).Control(1)=   "fraBatch(0)"
       Tab(3).ControlCount=   2
       TabCaption(4)   =   "E&vent Log"
       TabPicture(4)   =   "frmConfiguration.frx":007C
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "FraEventLog(2)"
+      Tab(4).Control(0)=   "FraEventLog(0)"
       Tab(4).Control(1)=   "FraEventLog(1)"
-      Tab(4).Control(2)=   "FraEventLog(0)"
+      Tab(4).Control(2)=   "FraEventLog(2)"
       Tab(4).ControlCount=   3
       TabCaption(5)   =   "Report Out&put"
       TabPicture(5)   =   "frmConfiguration.frx":0098
       Tab(5).ControlEnabled=   0   'False
-      Tab(5).Control(0)=   "Frame1"
+      Tab(5).Control(0)=   "FraOutput(0)"
       Tab(5).Control(1)=   "FraOutput(1)"
-      Tab(5).Control(2)=   "FraOutput(0)"
+      Tab(5).Control(2)=   "Frame1"
       Tab(5).ControlCount=   3
       TabCaption(6)   =   "Tool&bars"
       TabPicture(6)   =   "frmConfiguration.frx":00B4
       Tab(6).ControlEnabled=   0   'False
-      Tab(6).Control(0)=   "fraToolbarGeneral"
-      Tab(6).Control(1)=   "fraToolbars"
+      Tab(6).Control(0)=   "fraToolbars"
+      Tab(6).Control(1)=   "fraToolbarGeneral"
       Tab(6).ControlCount=   2
       Begin VB.Frame fraReports 
          Caption         =   "Report / Utility / Tool Selection && Access :"
@@ -1755,6 +1755,8 @@ Private mlngToolbarPosition As Long
 Private mlngWordFormat As Long
 Private mlngExcelFormat As Long
 
+Private mblnRestoringDefaults As Boolean
+
 
 Private Sub cboColours_Click()
 
@@ -2050,15 +2052,15 @@ Private Sub cmdDefault_Click()
 ''    'Set all the defaults for the currently selected flag.
 '''    SetUserSettingDefaults
 ''    'Set the selected item of each of the drop-down boxes and check boxes.
-'''    ReadUserSettings
+'''    ReadUserSettings True
 ''
 ''    'TM20020111 Fault 2772
 ''    ReadUserSettingDefaults
 
-    gADOCon.Execute "DELETE FROM ASRSYSUserSettings WHERE username = System_User"
+    'gADOCon.Execute "DELETE FROM ASRSYSUserSettings WHERE username = System_User"
     cboWordFormat.ListIndex = -1
     cboExcelFormat.ListIndex = -1
-    ReadUserSettings
+    ReadUserSettings True
     Changed = True
 
     cboTextType_Click
@@ -2241,7 +2243,7 @@ Public Function Initialise(blnUserSettings As Boolean) As Boolean
   If mblnUserSettings Then
     Me.Caption = "User Configuration"
     PopulateControlsUserSettings
-    ReadUserSettings
+    ReadUserSettings False
     Me.HelpContextID = 1113
   
   Else
@@ -3293,8 +3295,8 @@ Private Sub PopulateControlsUserSettings()
     
     For lngCount = 0 To UBound(mstrDefs, 2)
       .AddItem mstrDefs(1, lngCount) & _
-        vbTab & GetUserSetting("defsel", "onlymine " & Replace(mstrDefs(2, lngCount), " ", ""), 0) & _
-        vbTab & AccessDescription(GetUserSetting("utils&reports", "dfltaccess " & Replace(mstrDefs(2, lngCount), " ", ""), ACCESS_READWRITE))
+        vbTab & GetUserSettingOrDefault("defsel", "onlymine " & Replace(mstrDefs(2, lngCount), " ", ""), 0) & _
+        vbTab & AccessDescription(GetUserSettingOrDefault("utils&reports", "dfltaccess " & Replace(mstrDefs(2, lngCount), " ", ""), ACCESS_READWRITE))
     Next
     
     .MoveFirst
@@ -3316,7 +3318,7 @@ Private Sub PopulateControlsUserSettings()
 
 End Sub
 
-Private Sub ReadUserSettings()
+Private Sub ReadUserSettings(blnRestoreDefaults As Boolean)
 
   Dim objControl As Control
   Dim lngCount As Long
@@ -3328,6 +3330,7 @@ Private Sub ReadUserSettings()
   Dim bLoggingExportSuccess As Boolean
   Dim bLoggingDTSuccess As Boolean
 
+  mblnRestoringDefaults = blnRestoreDefaults
 
   Set moutTitle = New clsOutputStyle
   Set moutHeading = New clsOutputStyle
@@ -3335,13 +3338,13 @@ Private Sub ReadUserSettings()
   
   
   With moutTitle
-    .StartCol = Val(GetUserSetting("Output", "TitleCol", "3"))
-    .StartRow = Val(GetUserSetting("Output", "TitleRow", "2"))
-    .Gridlines = (GetUserSetting("Output", "TitleGridLines", "0") = "1")
-    .Bold = (GetUserSetting("Output", "TitleBold", "1") = "1")
-    .Underline = (GetUserSetting("Output", "TitleUnderline", "0") = "1")
-    .BackCol = Val(GetUserSetting("Output", "TitleBackcolour", vbWhite))
-    .ForeCol = Val(GetUserSetting("Output", "TitleForecolour", GetColour("Midnight Blue")))
+    .StartCol = Val(GetUserSettingOrDefault("Output", "TitleCol", "3"))
+    .StartRow = Val(GetUserSettingOrDefault("Output", "TitleRow", "2"))
+    .Gridlines = (GetUserSettingOrDefault("Output", "TitleGridLines", "0") = "1")
+    .Bold = (GetUserSettingOrDefault("Output", "TitleBold", "1") = "1")
+    .Underline = (GetUserSettingOrDefault("Output", "TitleUnderline", "0") = "1")
+    .BackCol = Val(GetUserSettingOrDefault("Output", "TitleBackcolour", vbWhite))
+    .ForeCol = Val(GetUserSettingOrDefault("Output", "TitleForecolour", GetColour("Midnight Blue")))
   
     RefreshGridlines 0, .Gridlines
     RefreshBold 0, .Bold
@@ -3352,13 +3355,13 @@ Private Sub ReadUserSettings()
   End With
 
   With moutHeading
-    .StartCol = Val(GetUserSetting("Output", "HeadingCol", "2"))
-    .StartRow = Val(GetUserSetting("Output", "HeadingRow", "4"))
-    .Gridlines = (GetUserSetting("Output", "HeadingGridLines", "1") = "1")
-    .Bold = (GetUserSetting("Output", "HeadingBold", "1") = "1")
-    .Underline = (GetUserSetting("Output", "HeadingUnderline", "0") = "1")
-    .BackCol = Val(GetUserSetting("Output", "HeadingBackcolour", GetColour("Dolphin Blue")))
-    .ForeCol = Val(GetUserSetting("Output", "HeadingForecolour", GetColour("Midnight Blue")))
+    .StartCol = Val(GetUserSettingOrDefault("Output", "HeadingCol", "2"))
+    .StartRow = Val(GetUserSettingOrDefault("Output", "HeadingRow", "4"))
+    .Gridlines = (GetUserSettingOrDefault("Output", "HeadingGridLines", "1") = "1")
+    .Bold = (GetUserSettingOrDefault("Output", "HeadingBold", "1") = "1")
+    .Underline = (GetUserSettingOrDefault("Output", "HeadingUnderline", "0") = "1")
+    .BackCol = Val(GetUserSettingOrDefault("Output", "HeadingBackcolour", GetColour("Dolphin Blue")))
+    .ForeCol = Val(GetUserSettingOrDefault("Output", "HeadingForecolour", GetColour("Midnight Blue")))
   
     RefreshGridlines 1, .Gridlines
     RefreshBold 1, .Bold
@@ -3369,13 +3372,13 @@ Private Sub ReadUserSettings()
   End With
 
   With moutData
-    .StartCol = Val(GetUserSetting("Output", "DataCol", "2"))
-    .StartRow = Val(GetUserSetting("Output", "DataRow", "5"))
-    .Gridlines = (GetUserSetting("Output", "DataGridLines", "1") = "1")
-    .Bold = (GetUserSetting("Output", "DataBold", "0") = "1")
-    .Underline = (GetUserSetting("Output", "DataUnderline", "0") = "1")
-    .BackCol = Val(GetUserSetting("Output", "DataBackcolour", GetColour("Pale Grey")))
-    .ForeCol = Val(GetUserSetting("Output", "DataForecolour", GetColour("Midnight Blue")))
+    .StartCol = Val(GetUserSettingOrDefault("Output", "DataCol", "2"))
+    .StartRow = Val(GetUserSettingOrDefault("Output", "DataRow", "5"))
+    .Gridlines = (GetUserSettingOrDefault("Output", "DataGridLines", "1") = "1")
+    .Bold = (GetUserSettingOrDefault("Output", "DataBold", "0") = "1")
+    .Underline = (GetUserSettingOrDefault("Output", "DataUnderline", "0") = "1")
+    .BackCol = Val(GetUserSettingOrDefault("Output", "DataBackcolour", GetColour("Pale Grey")))
+    .ForeCol = Val(GetUserSettingOrDefault("Output", "DataForecolour", GetColour("Midnight Blue")))
   
     RefreshGridlines 2, .Gridlines
     RefreshBold 2, .Bold
@@ -3386,28 +3389,28 @@ Private Sub ReadUserSettings()
   End With
 
   
-  txtFilename(0).Text = GetUserSetting("Output", "ExcelTemplate", vbNullString)
-  txtFilename(1).Text = GetUserSetting("Output", "WordTemplate", vbNullString)
-  chkExcelHeaders.Value = IIf(GetUserSetting("Output", "ExcelHeaders", 0) = 1, vbChecked, vbUnchecked)
-  chkExcelGridlines.Value = IIf(GetUserSetting("Output", "ExcelGridlines", 0) = 1, vbChecked, vbUnchecked)
+  txtFilename(0).Text = GetUserSettingOrDefault("Output", "ExcelTemplate", vbNullString)
+  txtFilename(1).Text = GetUserSettingOrDefault("Output", "WordTemplate", vbNullString)
+  chkExcelHeaders.Value = IIf(GetUserSettingOrDefault("Output", "ExcelHeaders", 0) = 1, vbChecked, vbUnchecked)
+  chkExcelGridlines.Value = IIf(GetUserSettingOrDefault("Output", "ExcelGridlines", 0) = 1, vbChecked, vbUnchecked)
 
   
-  mcPrimary = GetUserSetting("RecordEditing", "Primary", disFindWindow)
+  mcPrimary = GetUserSettingOrDefault("RecordEditing", "Primary", disFindWindow)
   SetCombo cboPrimary, mcPrimary
   
-  mcHistory = GetUserSetting("RecordEditing", "History", disFindWindow)
+  mcHistory = GetUserSettingOrDefault("RecordEditing", "History", disFindWindow)
   SetCombo cboHistory, mcHistory
   
   'JPD20011005 Fault 2721 Default now set to Find Window
-  mcLookUp = GetUserSetting("RecordEditing", "LookUp", disFindWindow)
+  mcLookUp = GetUserSettingOrDefault("RecordEditing", "LookUp", disFindWindow)
   SetCombo cboLookUp, mcLookUp
   
-  mcQuickAccess = GetUserSetting("RecordEditing", "QuickAccess", disRecEdit_New)
+  mcQuickAccess = GetUserSettingOrDefault("RecordEditing", "QuickAccess", disRecEdit_New)
   SetCombo cboQuickAccess, mcQuickAccess
 
   'JDM - 16/03/01 - Fault 1935 - Defaults on expressions
   'JDM - Removed colour as last saved
-  mcExpressionColours = GetUserSetting("ExpressionBuilder", "ViewColours", EXPRESSIONBUILDER_COLOUROFF)
+  mcExpressionColours = GetUserSettingOrDefault("ExpressionBuilder", "ViewColours", EXPRESSIONBUILDER_COLOUROFF)
   If mcExpressionColours = EXPRESSIONBUILDER_COLOURLASTSAVE Then
     SetCombo cboColours, EXPRESSIONBUILDER_COLOUROFF
   Else
@@ -3415,69 +3418,69 @@ Private Sub ReadUserSettings()
   End If
   
   ' JDM - 03/01/02 - Fault 3316 - Remove last save as an option
-  mcExpressionNodeSize = GetUserSetting("ExpressionBuilder", "NodeSize", EXPRESSIONBUILDER_NODESMINIMIZE)
+  mcExpressionNodeSize = GetUserSettingOrDefault("ExpressionBuilder", "NodeSize", EXPRESSIONBUILDER_NODESMINIMIZE)
   If mcExpressionNodeSize = EXPRESSIONBUILDER_NODESLASTSAVE Then
     SetCombo cboNodeSize, EXPRESSIONBUILDER_NODESEXPAND
   Else
     SetCombo cboNodeSize, mcExpressionNodeSize
   End If
   
-  mlngDiaryDefaultView = GetUserSetting("Diary", "ViewMode", 1)
+  mlngDiaryDefaultView = GetUserSettingOrDefault("Diary", "ViewMode", 1)
   SetComboItem cboDiaryView, mlngDiaryDefaultView
   
   chkDiaryConstantCheck.Value = IIf(gblnDiaryConstCheck, vbChecked, vbUnchecked)
   
   'MH20041104
-  chkEmailRecDesc.Value = IIf(CBool(GetUserSetting("Email", "IncludeRecDesc", True)), vbChecked, vbUnchecked)
+  chkEmailRecDesc.Value = IIf(CBool(GetUserSettingOrDefault("Email", "IncludeRecDesc", True)), vbChecked, vbUnchecked)
  
   With lstWarningMsg
     For lngCount = 0 To UBound(mstrWarning)
-      .Selected(lngCount) = GetUserSetting("warningmsg", "warning " & Replace(mstrWarning(lngCount), " ", ""), 1)
+      .Selected(lngCount) = GetUserSettingOrDefault("warningmsg", "warning " & Replace(mstrWarning(lngCount), " ", ""), 1)
     Next
     .ListIndex = 0
   End With
 
-  mbCloseDefSelAfterRun = CBool(GetUserSetting("DefSel", "CloseAfterRun", False))
+  mbCloseDefSelAfterRun = CBool(GetUserSettingOrDefault("DefSel", "CloseAfterRun", False))
   chkCloseDefsel.Value = IIf(mbCloseDefSelAfterRun, vbChecked, vbUnchecked)
 
   ' Log successful Global Adds
-  bLoggingGASuccess = CBool(GetUserSetting("LogEvents", "Global_Add_Success", False))
+  bLoggingGASuccess = CBool(GetUserSettingOrDefault("LogEvents", "Global_Add_Success", False))
   chkGlobalAddSuccess.Value = IIf(bLoggingGASuccess, vbChecked, vbUnchecked)
   
   ' Log successful Global Updates
-  bLoggingGUSuccess = CBool(GetUserSetting("LogEvents", "Global_Update_Success", False))
+  bLoggingGUSuccess = CBool(GetUserSettingOrDefault("LogEvents", "Global_Update_Success", False))
   chkGlobalUpdateSuccess.Value = IIf(bLoggingGUSuccess, vbChecked, vbUnchecked)
   
   ' Log successful Global Deletes
-  bLoggingGDSuccess = CBool(GetUserSetting("LogEvents", "Global_Delete_Success", False))
+  bLoggingGDSuccess = CBool(GetUserSettingOrDefault("LogEvents", "Global_Delete_Success", False))
   chkGlobalDeleteSuccess.Value = IIf(bLoggingGDSuccess, vbChecked, vbUnchecked)
   
   ' Log successful Imports
-  bLoggingImportSuccess = CBool(GetUserSetting("LogEvents", "Import_Success", False))
+  bLoggingImportSuccess = CBool(GetUserSettingOrDefault("LogEvents", "Import_Success", False))
   chkImportSuccess.Value = IIf(bLoggingImportSuccess, vbChecked, vbUnchecked)
   
   ' Log successful Exports
-  bLoggingExportSuccess = CBool(GetUserSetting("LogEvents", "Export_Success", False))
+  bLoggingExportSuccess = CBool(GetUserSettingOrDefault("LogEvents", "Export_Success", False))
   chkExportSuccess.Value = IIf(bLoggingExportSuccess, vbChecked, vbUnchecked)
   
   ' Log successful Data Transfers
-  bLoggingDTSuccess = CBool(GetUserSetting("LogEvents", "Data_Transfer_Success", False))
+  bLoggingDTSuccess = CBool(GetUserSettingOrDefault("LogEvents", "Data_Transfer_Success", False))
   chkDataTransferSuccess.Value = IIf(bLoggingDTSuccess, vbChecked, vbUnchecked)
 
   ' Load the toolbar options
   cboToolbars.ListIndex = 1
 
   ' Load the toolbar position
-  mlngToolbarPosition = GetUserSetting("Toolbar", "Position", giTOOLBAR_TOP)
+  mlngToolbarPosition = GetUserSettingOrDefault("Toolbar", "Position", giTOOLBAR_TOP)
   SetCombo cboToolbarPosition, mlngToolbarPosition
 
-  mlngWordFormat = Val(GetUserSetting("Output", "WordFormat", mlngWordFormat))     'WdSaveFormat.wdFormatDocument97
+  mlngWordFormat = Val(GetUserSettingOrDefault("Output", "WordFormat", mlngWordFormat))     'WdSaveFormat.wdFormatDocument97
   SetComboItem cboWordFormat, mlngWordFormat
   If cboWordFormat.ListIndex < 0 And cboWordFormat.ListCount > 0 Then
     cboWordFormat.ListIndex = 0
   End If
 
-  mlngExcelFormat = Val(GetUserSetting("Output", "ExcelFormat", mlngExcelFormat))  'XlFileFormat.xlExcel8
+  mlngExcelFormat = Val(GetUserSettingOrDefault("Output", "ExcelFormat", mlngExcelFormat))  'XlFileFormat.xlExcel8
   SetComboItem cboExcelFormat, mlngExcelFormat
   If cboExcelFormat.ListIndex < 0 And cboExcelFormat.ListCount > 0 Then
     cboExcelFormat.ListIndex = 0
@@ -3515,7 +3518,7 @@ End Sub
 '  End If
 '
 '  ' JDM - 03/01/02 - Fault 3316 - Remove last save as an option
-'  mcExpressionNodeSize = GetUserSetting("ExpressionBuilder", "NodeSize", EXPRESSIONBUILDER_NODESMINIMIZE)
+'  mcExpressionNodeSize = GetUserSettingOrDefault("ExpressionBuilder", "NodeSize", EXPRESSIONBUILDER_NODESMINIMIZE)
 '  If mcExpressionNodeSize = EXPRESSIONBUILDER_NODESLASTSAVE Then
 '    SetCombo cboNodeSize, EXPRESSIONBUILDER_NODESEXPAND
 '  Else
@@ -4357,3 +4360,11 @@ LocalErr:
     
 End Function
 
+
+Public Function GetUserSettingOrDefault(strSection As String, strKey As String, varDefault As Variant) As Variant
+  If mblnRestoringDefaults Then
+    GetUserSettingOrDefault = varDefault
+  Else
+    GetUserSettingOrDefault = GetUserSetting(strSection, strKey, varDefault)
+  End If
+End Function
