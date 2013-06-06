@@ -2205,7 +2205,7 @@ Private Function GenerateSQLWhere() As Boolean
   Dim pstrParent2PickListIDs As String
   
   
-  If mstrPicklistFilterIDs <> "" Then
+  If mstrPicklistFilterIDs <> "" And mstrPicklistFilterIDs <> "0" Then
     mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & _
       mstrSQLFrom & ".ID IN (" & mstrPicklistFilterIDs & ")"
     GenerateSQLWhere = True
