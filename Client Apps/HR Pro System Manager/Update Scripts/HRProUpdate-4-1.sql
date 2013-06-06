@@ -1398,6 +1398,37 @@ PRINT 'Step 5 - Intranet Dashboard Implementation'
 
 	EXECUTE sp_executeSQL @sSPCode;
 
+
+
+	IF EXISTS (SELECT *
+		FROM dbo.sysobjects
+		WHERE id = object_id(N'[dbo].[spASRIntShowOutOfOfficeHyperlink]')
+			AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+		DROP PROCEDURE [dbo].[spASRIntShowOutOfOfficeHyperlink];
+
+	SET @sSPCode = 'CREATE PROCEDURE [dbo].[spASRIntShowOutOfOfficeHyperlink]
+		AS
+		BEGIN
+			DECLARE @iDummy integer;
+		END';
+	EXECUTE sp_executeSQL @sSPCode;
+
+	SET @sSPCode = 'ALTER PROCEDURE [dbo].[spASRIntShowOutOfOfficeHyperlink]	
+	@piTableID		integer,
+	@piViewID		integer,
+	@pfDisplayHyperlink	bit 	OUTPUT
+	)
+	AS
+	BEGIN
+		SELECT @pfDisplayHyperlink = WFOutOfOffice
+		FROM ASRSysSSIViews
+		WHERE (TableID = @piTableID) 
+			AND  (ViewID = @piViewID)
+	END';
+
+	EXECUTE sp_executeSQL @sSPCode;
+
+
 /* ------------------------------------------------------------- */
 PRINT 'Step 6 - Shared Table Integration'
 
