@@ -1,11 +1,11 @@
 [Version]
-Version=1.0.0.3
+Version=1.0.0.4
 
 [COASD_Frame.ocx <0009>]
 Dest=$(WinSysPath)
-Date=11/05/2010
-Time=11:27
-Version=1.0.0.3
+Date=20/09/2012
+Time=12:07
+Version=1.0.0.4
 CABFilename=COASD_Frame.CAB
 CABINFFile=COASD_Frame.INF
 Uses1=msvbvm60.dll
