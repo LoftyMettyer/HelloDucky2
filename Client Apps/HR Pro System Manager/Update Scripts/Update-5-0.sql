@@ -3464,6 +3464,16 @@ PRINT 'Step 4 - Workflow Tab Strips'
 		
 	--Fix for minimum dropdown widths
 	EXEC sp_executesql N'UPDATE ASRSysWorkflowElementItems SET Width = 64 WHERE ItemType = 13 AND Width < 64;';
+
+
+
+PRINT 'Step 4a - Remember Workflow Tab Strip'
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysWorkflowInstances', 'U') AND name = 'pageno')
+		BEGIN
+			EXEC sp_executesql N'ALTER TABLE dbo.ASRSysWorkflowInstances ADD pageno integer NULL;';
+			EXEC sp_executesql N'UPDATE ASRSysWorkflowInstances SET pageno = 0;';
+		END
+
 	 
 /* ------------------------------------------------------------- */
 PRINT 'Step 5 - New Shared Table Transfer Types for NFP'
