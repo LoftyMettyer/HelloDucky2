@@ -45,14 +45,14 @@ Begin VB.Form frmWorkflowSetup
       TabCaption(0)   =   "&Web Site"
       TabPicture(0)   =   "frmWorkflowSetup.frx":000C
       Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "fraWebSite"
-      Tab(0).Control(1)=   "fraWebSiteLogin"
+      Tab(0).Control(0)=   "fraWebSiteLogin"
+      Tab(0).Control(1)=   "fraWebSite"
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "&Personnel Identification"
       TabPicture(1)   =   "frmWorkflowSetup.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraDelegation"
-      Tab(1).Control(1)=   "fraPersonnelTable"
+      Tab(1).Control(0)=   "fraPersonnelTable"
+      Tab(1).Control(1)=   "fraDelegation"
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "&Service"
       TabPicture(2)   =   "frmWorkflowSetup.frx":0044
@@ -928,6 +928,7 @@ Private Sub cmdOK_Click()
   Dim sNewString As String
   Dim frmChangedPlatform As frmChangedPlatform
   Dim iLoop As Integer
+  Dim fGoAhead As Boolean
   
   fSaveOK = True
   
@@ -1000,6 +1001,19 @@ Private Sub cmdOK_Click()
       .Close
     End With
     Set rsWorkflows = Nothing
+    
+    
+    ' NPG20120402 Fault HRPRO-2155
+    If Application.MobileModule Then
+      fGoAhead = (MsgBox("Warning: The change in server/database configuration requires you to regenerate the mobile keys." & vbCrLf & _
+      "Do you want to do so now?", _
+      vbQuestion + vbYesNo + vbDefaultButton2, Me.Caption) = vbYes)
+    
+      If fGoAhead Then
+        cmdGenMobileKey_Click
+      End If
+    End If
+    
   End If
   
   If fSaveOK Then
@@ -1024,6 +1038,7 @@ Private Sub cmdOK_Click()
     SaveChanges
   End If
   
+
   UnLoad Me
 End Sub
 
