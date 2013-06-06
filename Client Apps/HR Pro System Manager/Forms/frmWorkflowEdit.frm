@@ -2,10 +2,10 @@ VERSION 5.00
 Begin VB.Form frmWorkflowEdit 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Properties"
-   ClientHeight    =   3240
+   ClientHeight    =   7515
    ClientLeft      =   -15
    ClientTop       =   375
-   ClientWidth     =   5265
+   ClientWidth     =   8475
    BeginProperty Font 
       Name            =   "Verdana"
       Size            =   8.25
@@ -22,9 +22,46 @@ Begin VB.Form frmWorkflowEdit
    LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   3240
-   ScaleWidth      =   5265
+   ScaleHeight     =   7515
+   ScaleWidth      =   8475
    ShowInTaskbar   =   0   'False
+   Begin VB.CommandButton cmdPictureClear 
+      Caption         =   "O"
+      BeginProperty Font 
+         Name            =   "Wingdings 2"
+         Size            =   20.25
+         Charset         =   2
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      Height          =   315
+      Left            =   4950
+      MaskColor       =   &H000000FF&
+      TabIndex        =   11
+      ToolTipText     =   "Clear Icon"
+      Top             =   15
+      UseMaskColor    =   -1  'True
+      Width           =   330
+   End
+   Begin VB.TextBox txtPicture 
+      Enabled         =   0   'False
+      Height          =   330
+      Left            =   840
+      TabIndex        =   10
+      Top             =   0
+      Width           =   3765
+   End
+   Begin VB.CommandButton cmdPicture 
+      Caption         =   "..."
+      Height          =   315
+      Left            =   4620
+      TabIndex        =   9
+      ToolTipText     =   "Select Icon"
+      Top             =   15
+      Width           =   315
+   End
    Begin VB.TextBox txtURL 
       BackColor       =   &H8000000F&
       ForeColor       =   &H80000011&
@@ -79,6 +116,21 @@ Begin VB.Form frmWorkflowEdit
       Top             =   700
       Width           =   3780
    End
+   Begin VB.Image picPicture 
+      Height          =   495
+      Left            =   5355
+      Stretch         =   -1  'True
+      Top             =   30
+      Width           =   510
+   End
+   Begin VB.Label lblPicture 
+      Caption         =   "Picture :"
+      Height          =   195
+      Left            =   0
+      TabIndex        =   12
+      Top             =   45
+      Width           =   615
+   End
    Begin VB.Label lblURL 
       BackStyle       =   0  'Transparent
       Caption         =   "URL :"
@@ -125,6 +177,7 @@ Private mfSaveChanges As Boolean
 
 Private msName As String
 Private msDescription As String
+Private mlngPictureID As Long
 Private mfEnabled As Boolean
 Private mfOriginalEnabled As Boolean
 Private msURL As String
@@ -141,21 +194,17 @@ Private Const MIN_FORM_WIDTH = 5385
 
 Public Property Let Cancelled(ByVal pfNewValue As Boolean)
   mfCancelled = pfNewValue
-  
 End Property
 
 Public Property Get Changed() As Boolean
   Changed = mfChanged
-  
 End Property
-
 
 Public Property Let Changed(ByVal pfNewValue As Boolean)
   If Not mfLoading Then
     mfChanged = pfNewValue
     RefreshScreen
   End If
-  
 End Property
 
 
@@ -239,30 +288,28 @@ End Function
 
 Public Property Get WorkflowName() As String
   WorkflowName = msName
-  
+End Property
+
+Public Property Let WorkflowName(psNewValue As String)
+  msName = psNewValue
 End Property
 
 Public Property Get WorkflowDescription() As String
   WorkflowDescription = msDescription
-  
 End Property
-
 
 Public Property Let WorkflowDescription(psNewValue As String)
   msDescription = psNewValue
-  
 End Property
 
-
-
-Public Property Let WorkflowName(psNewValue As String)
-  msName = psNewValue
-  
+Public Property Get WorkflowPictureID() As Long
+  WorkflowPictureID = mlngPictureID
 End Property
 
-
-
-
+Public Property Let WorkflowPictureID(plngNewValue As Long)
+  mlngPictureID = plngNewValue
+End Property
+ 
 Private Sub RefreshScreen()
   ' Refresh the screen controls.
   Dim fReadOnly As Boolean
@@ -282,6 +329,9 @@ Private Sub RefreshScreen()
 
 End Sub
 
+Public Property Get ReadOnly() As Boolean
+  ReadOnly = (Application.AccessMode <> accFull And Application.AccessMode <> accSupportMode)
+End Property
 
 Public Property Let MustSaveChanges(pfNewValue As Boolean)
   mfSaveChanges = pfNewValue
@@ -365,6 +415,7 @@ Private Function SaveChanges() As Boolean
           .Edit
           !Name = Trim(txtName.Text)
           !Description = Trim(txtDescription.Text)
+          !PictureID = IIf(mlngPictureID = 0, Null, mlngPictureID)
           !Enabled = (chkEnabled.value = vbChecked)
           !Changed = True
           .Update
@@ -391,6 +442,7 @@ Private Function SaveChanges() As Boolean
         !ID = WorkflowID
         !Name = Trim(txtName.Text)
         !Description = Trim(txtDescription.Text)
+        !PictureID = IIf(mlngPictureID = 0, Null, mlngPictureID)
         
         If miInitiationType = WORKFLOWINITIATIONTYPE_EXTERNAL Then
           sQueryString = GetWorkflowQueryString(WorkflowID * -1, -1)
@@ -463,8 +515,7 @@ Private Sub cmdCancel_Click()
 
 End Sub
 
-
-Private Sub cmdOk_Click()
+Private Sub cmdOK_Click()
   ' Validate and save the changes.
   On Error GoTo ErrorTrap
 
@@ -518,7 +569,6 @@ ErrorTrap:
 
 End Sub
 
-
 Private Sub Form_Activate()
   Dim sURL As String
   Dim sQueryString As String
@@ -545,6 +595,7 @@ Private Sub Form_Activate()
         If Not .NoMatch Then
           txtName.Text = Trim(.Fields("name"))
           txtDescription.Text = Trim(.Fields("description"))
+          mlngPictureID = IIf(IsNull(.Fields("PictureID")), 0, .Fields("PictureID"))
           txtURL.Text = IIf((Len(sURL) >= 0) And (Len(Trim(.Fields("queryString"))) > 0), sURL & "?" & Trim(.Fields("queryString")), "<undefined>")
           chkEnabled.value = IIf(.Fields("enabled"), vbChecked, vbUnchecked)
           Me.Caption = "Properties - " & Trim(.Fields("name"))
@@ -557,6 +608,8 @@ Private Sub Form_Activate()
       chkEnabled.value = vbUnchecked
       chkEnabled.Enabled = False
     End If
+
+    RefreshPictureControls
 
    'Set focus to column name textbox
     If txtName.Enabled Then
@@ -612,7 +665,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
     If mfChanged Then
       iAnswer = MsgBox("You have changed the definition. Save changes ?", vbQuestion + vbYesNoCancel + vbDefaultButton1, App.ProductName)
       If iAnswer = vbYes Then
-        Call cmdOk_Click
+        Call cmdOK_Click
         If Me.Cancelled Then Cancel = 1
       ElseIf iAnswer = vbNo Then
         Me.Cancelled = True
@@ -715,6 +768,59 @@ Private Sub txtURL_GotFocus()
   ' Select the whole string.
   UI.txtSelText
 
+End Sub
+
+Private Sub cmdPicture_Click()
+
+  Dim lngOriginalID As Long
+  
+  lngOriginalID = mlngPictureID
+  
+  frmPictSel.SelectedPicture = mlngPictureID
+  frmPictSel.ExcludedExtensions = ""
+  frmPictSel.Show vbModal
+  
+  mlngPictureID = frmPictSel.SelectedPicture
+  RefreshPictureControls
+
+  If lngOriginalID <> mlngPictureID Then
+    Changed = True
+  End If
+End Sub
+
+Private Sub cmdPictureClear_Click()
+  mlngPictureID = 0
+  RefreshPictureControls
+  Changed = True
+End Sub
+
+Private Sub RefreshPictureControls()
+  ' Refresh the Picture controls depending on the selected picture.
+  Dim sFileName As String
+
+  If mlngPictureID > 0 Then
+    With recPictEdit
+      .Index = "idxID"
+      .Seek "=", mlngPictureID
+      
+      If Not .NoMatch Then
+        txtPicture.Text = !Name
+        sFileName = ReadPicture
+        picPicture.Picture = LoadPicture(sFileName)
+        Kill sFileName
+      Else
+        mlngPictureID = 0
+      End If
+    End With
+  End If
+
+  If mlngPictureID = 0 Then
+    picPicture.Picture = LoadPicture("")
+    txtPicture.Text = ""
+  End If
+  
+  cmdPictureClear.Enabled = (mlngPictureID > 0) And (Not ReadOnly)
+  
 End Sub
 
 
