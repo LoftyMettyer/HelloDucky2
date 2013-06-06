@@ -501,6 +501,11 @@ Private Sub RetreiveDefinition()
   SetComboItem cboParent2Table, IIf(IsNull(rsTemp.Fields("Parent2TableID").Value), 0, rsTemp.Fields("Parent2TableID").Value)
   SetComboItem cboParent2Keyfield, IIf(IsNull(rsTemp.Fields("Parent2KeyFieldColumnID").Value), 0, rsTemp.Fields("Parent2KeyFieldColumnID").Value)
 
+  If mblnReadOnly Then
+    ControlsDisableAll Me
+    EnableControl cmdCancel, True
+  End If
+
   ' Tidy Up
   rsTemp.Close
   Set rsTemp = Nothing
