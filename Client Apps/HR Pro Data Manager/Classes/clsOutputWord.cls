@@ -397,7 +397,7 @@ Public Function RecordProfilePage(pfrmRecProfile As frmRecordProfilePreview, _
 
           ' Convert the text into a table.
           mwrdDoc.ActiveWindow.Selection.GoTo What:=wdGoToBookmark, Name:=strBookMark
-          mwrdDoc.ActiveWindow.Selection.EndKey Unit:=wdStory, Extend:=wdExtend
+          mwrdDoc.ActiveWindow.Selection.EndKey unit:=wdStory, Extend:=wdExtend
 
           Set mwrdTable = mwrdDoc.ActiveWindow.Selection.ConvertToTable _
             (Separator:=wdSeparateByTabs, _
@@ -471,7 +471,7 @@ Public Function RecordProfilePage(pfrmRecProfile As frmRecordProfilePreview, _
             pcolStyles.Remove pcolStyles.Count
           Loop
 
-          mwrdApp.Selection.EndKey Unit:=wdStory
+          mwrdApp.Selection.EndKey unit:=wdStory
 
           mwrdDoc.ActiveWindow.Selection.TypeParagraph
 
@@ -624,7 +624,7 @@ Public Function GetFile(objParent As clsOutputRun, colStyles As Collection) As B
         End If
   
         Set mwrdDoc = mwrdApp.Documents.Open(mstrFileName)
-        mwrdApp.Selection.EndKey Unit:=wdStory
+        mwrdApp.Selection.EndKey unit:=wdStory
         mwrdApp.Selection.InsertBreak Type:=wdPageBreak
   
       Case 4  'Create new worksheet within existing workbook...
@@ -674,7 +674,7 @@ Private Sub GetNewDocument()
     End If
 
     Set mwrdDoc = mwrdApp.Documents.Add(strTempFile)
-    mwrdApp.Selection.EndKey Unit:=wdStory
+    mwrdApp.Selection.EndKey unit:=wdStory
   Else
     Set mwrdDoc = mwrdApp.Documents.Add
     mwrdDoc.PageSetup.Orientation = IIf(mblnWrdLandscape, wdOrientLandscape, wdOrientPortrait)
@@ -693,7 +693,7 @@ Private Sub GetNewDocument()
       .Selection.Fields.Add Range:=.Selection.Range, Type:=wdFieldDate, _
           Text:="CREATEDATE \@ ""dd/MM/yyyy at HH:mm"" ", PreserveFormatting:=True
       .Selection.TypeText Text:=" by " & gsUserName
-      .Selection.MoveRight Unit:=wdCell
+      .Selection.MoveRight unit:=wdCell
   
       .Selection.ParagraphFormat.Alignment = wdAlignParagraphRight
       .Selection.TypeText Text:="Page "
@@ -765,33 +765,28 @@ Public Sub AddPage(strDefTitle As String, mstrSheetName As String, colStyles As 
       If mblnCoverSheet Then
         .TypeParagraph: .TypeParagraph: .TypeParagraph: .TypeParagraph
         .TypeParagraph: .TypeParagraph: .TypeParagraph: .TypeParagraph
-        .ParagraphFormat.Style = wdStyleHeading1
-        .ParagraphFormat.Alignment = wdAlignParagraphCenter
         .TypeText gobjProgress.Bar2Caption
-        .TypeParagraph: .TypeParagraph
+        .HomeKey unit:=wdLine, Extend:=wdExtend
+        ApplyStylesToRange mwrdApp.Selection.Range, colStyles("Title"), True
         .ParagraphFormat.Alignment = wdAlignParagraphCenter
-        '.TypeText gobjProgress.Bar1Caption ' Job x of x text
-        '.TypeParagraph
         .EndKey
-        .ParagraphFormat.Alignment = wdAlignParagraphLeft
         .InsertBreak Type:=wdSectionNewPage
       Else
-        'If mlngPageCount = 1 Then
-          .TypeParagraph: .TypeParagraph
-          .MoveUp Unit:=wdLine, Count:=2
-          .ParagraphFormat.Style = wdStyleHeading1
-          .TypeText gobjProgress.Bar2Caption
-          '.TypeText gobjProgress.Bar1Caption ' Job x of x text
-          .TypeParagraph: .TypeParagraph
-        'End If
+        .TypeParagraph: .TypeParagraph
+        .MoveUp unit:=wdLine, Count:=2
+        .TypeText gobjProgress.Bar2Caption
+        .HomeKey unit:=wdStory, Extend:=wdExtend
+        ApplyStylesToRange mwrdApp.Selection.Range, colStyles("Title"), True
+        .ParagraphFormat.Alignment = wdAlignParagraphCenter
+        .EndKey
       End If
     Else
-      .EndKey Unit:=wdStory, Extend:=wdExtend
-      'Apply the "title" style to this range
+      .EndKey unit:=wdStory, Extend:=wdExtend
       ApplyStylesToRange mwrdApp.Selection.Range, colStyles("Title"), True
+      .ParagraphFormat.Alignment = wdAlignParagraphCenter
     End If
     'Now move to the end of the document, store the formatting, ready for the data...
-    .EndKey Unit:=wdStory
+    .EndKey unit:=wdStory
     ApplyStylesToRange mwrdApp.Selection.Range, objStyle, False
   End With
 Exit Sub
@@ -864,7 +859,7 @@ Public Sub DataArray(strArray() As String, colColumns As Collection, colStyles A
   Next
 
   mwrdDoc.ActiveWindow.Selection.GoTo What:=wdGoToBookmark, Name:=strBookMark
-  mwrdDoc.ActiveWindow.Selection.EndKey Unit:=wdStory, Extend:=wdExtend
+  mwrdDoc.ActiveWindow.Selection.EndKey unit:=wdStory, Extend:=wdExtend
 
   'convert selected text into a table
   Set mwrdTable = mwrdDoc.ActiveWindow.Selection.ConvertToTable _
@@ -947,7 +942,7 @@ Public Sub DataArray(strArray() As String, colColumns As Collection, colStyles A
   '  mwrdApp.Selection.Cells.DistributeWidth
   'End With
 
-  mwrdApp.Selection.EndKey Unit:=wdStory
+  mwrdApp.Selection.EndKey unit:=wdStory
   mwrdDoc.ActiveWindow.Selection.TypeParagraph
 
 Exit Sub
@@ -1050,7 +1045,6 @@ Private Sub ApplyStylesToRange(objRange As Object, objStyle As clsOutputStyle, b
       .Font.Color = objStyle.ForeCol
     End If
 
-    'MH20050907 Fault 10318
     If objStyle.Name = "Heading" Then
       .Rows.HeadingFormat = True
     End If
@@ -1174,7 +1168,7 @@ Public Sub Complete()
   If mblnScreen Then
   
     mstrErrorMessage = "Error displaying Word"
-    mwrdApp.Selection.HomeKey Unit:=wdStory
+    mwrdApp.Selection.HomeKey unit:=wdStory
     mwrdApp.Visible = True
     mwrdApp.WindowState = wdWindowStateMaximize
     mwrdApp.Activate

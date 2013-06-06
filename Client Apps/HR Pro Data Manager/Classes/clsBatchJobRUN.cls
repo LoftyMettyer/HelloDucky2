@@ -18,9 +18,10 @@ Private mwrdDoc As Word.Document
 
 Private mxlApp As Excel.Application
 Private mxlWorkBook As Excel.Workbook
-Private mxlworksheet As Excel.Worksheet
+Private mxlWorkSheet As Excel.Worksheet
 
 Private mobjOutputType As Object
+Private mcolStyles As Collection
 Private objOutput As clsOutputHTML
 ' Data access class
 Private mclsData As clsDataAccess
@@ -1043,41 +1044,51 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
       Case fmtWordDoc
         'Open word file
         If GetTOCFile(strOutputFilename, lngOutputFormat, lngOutputSaveExisting) Then
+          InitialiseStyles
           'mwrdApp.Visible = True
-              With mwrdApp.Selection
-                .InsertBreak Type:=wdPageBreak
-                .HomeKey Unit:=wdStory
-                .TypeParagraph
-                .HomeKey Unit:=wdStory
-                .TypeParagraph: .TypeParagraph
-                .TypeText Text:="Report Pack Title"
-                .HomeKey Unit:=wdLine, Extend:=wdExtend
-                .Font.Bold = wdToggle: .Font.Size = 14
-                .ParagraphFormat.Alignment = wdAlignParagraphCenter
-                .MoveRight Unit:=wdCharacter, Count:=1
-                .TypeParagraph: .TypeParagraph
-                .TypeText Text:=sBatchJobName
-                .HomeKey Unit:=wdLine, Extend:=wdExtend
-                .Font.Size = 20
-                .ParagraphFormat.Alignment = wdAlignParagraphCenter
-                .MoveRight Unit:=wdCharacter, Count:=1
-                .InsertBreak Type:=wdPageBreak
-                .TypeText Text:="Table of Contents"
-                .TypeParagraph
-                .HomeKey Unit:=wdLine, Extend:=wdExtend
-                .Font.Size = 20
-                .ParagraphFormat.Alignment = wdAlignParagraphCenter
-                .Font.Size = 12
-                .TypeParagraph
-                With mwrdDoc
-                  .TablesOfContents.Add Range:=mwrdApp.Selection.Range, RightAlignPageNumbers:=True, UseHeadingStyles:=True, UpperHeadingLevel:=1, LowerHeadingLevel:=3, IncludePageNumbers:=True, AddedStyles:="", UseHyperlinks:=True
-                  .TablesOfContents(1).TabLeader = wdTabLeaderDots
-                  .TablesOfContents.Format = wdIndexIndent
-                End With
-              End With
-            mwrdDoc.Save
-            mwrdDoc.Close
-            mwrdApp.Quit
+          With mwrdApp.Selection
+            .HomeKey unit:=wdStory
+            'Insert TOC
+            With mwrdDoc
+              .TablesOfContents.Add Range:=mwrdApp.Selection.Range, RightAlignPageNumbers:=True, UseHeadingStyles:=True, UpperHeadingLevel:=1, LowerHeadingLevel:=3, IncludePageNumbers:=True, AddedStyles:="", UseHyperlinks:=True
+              .TablesOfContents(1).TabLeader = wdTabLeaderDots
+              .TablesOfContents.Format = wdIndexIndent
+            End With
+            .InsertBreak Type:=wdPageBreak
+            .MoveLeft unit:=wdCharacter
+            .HomeKey unit:=wdStory, Extend:=wdExtend
+            ApplyStylesToRange mwrdApp.Selection.Range, mcolStyles("Data"), True
+            .HomeKey unit:=wdStory
+            
+            'Insert TOC header text
+            .TypeParagraph: .TypeParagraph
+            .HomeKey unit:=wdStory
+            .TypeText Text:="Table of Contents"
+            .HomeKey unit:=wdLine, Extend:=wdExtend
+            ApplyStylesToRange mwrdApp.Selection.Range, mcolStyles("Heading"), True
+            .Font.Size = 14
+            
+            'Insert Report Title or Report Pack name if blank
+            .HomeKey unit:=wdStory
+            .InsertBreak Type:=wdPageBreak
+            .HomeKey unit:=wdStory
+            .TypeParagraph: .TypeParagraph: .TypeParagraph: .TypeParagraph
+            If strOutputReportPackTitle = vbNullString Then
+              .TypeText Text:=sBatchJobName
+            Else
+              .TypeText Text:=strOutputReportPackTitle
+            End If
+            .HomeKey unit:=wdLine, Extend:=wdExtend
+            ApplyStylesToRange mwrdApp.Selection.Range, mcolStyles("Heading"), True
+            .Font.Size = 20
+            .MoveLeft unit:=wdCharacter
+            
+            'Update TOC page numbers
+            mwrdDoc.TablesOfContents(1).UpdatePageNumbers
+          End With
+          mwrdDoc.Save
+          mwrdDoc.Close
+          mwrdApp.Quit
         Else
           MsgBox mstrErrorMessage, vbExclamation, "Report Pack"
         End If
@@ -1098,6 +1109,73 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
   gobjProgress.CloseProgress
   Set rsBatchDetails = Nothing
 End Function
+
+
+
+Private Sub InitialiseStyles()
+
+  Dim objStyle As clsOutputStyle
+  
+  Set mcolStyles = New Collection
+  
+  Set objStyle = New clsOutputStyle
+  With objStyle
+    .Name = "Title"
+    .StartCol = Val(GetUserSetting("Output", "TitleCol", "3"))
+    .StartRow = Val(GetUserSetting("Output", "TitleRow", "2"))
+    .Gridlines = (GetUserSetting("Output", "TitleGridLines", "0") = "1")
+    .Bold = (GetUserSetting("Output", "TitleBold", "1") = "1")
+    .Underline = (GetUserSetting("Output", "TitleUnderline", "1") = "1")
+    .BackCol = Val(GetUserSetting("Output", "TitleBackcolour", vbWhite))
+    .ForeCol = Val(GetUserSetting("Output", "TitleForecolour", GetColour("Midnight Blue")))
+  End With
+
+  mcolStyles.Add objStyle, objStyle.Name
+  
+  Set objStyle = New clsOutputStyle
+  With objStyle
+    .Name = "Heading"
+    .Gridlines = (GetUserSetting("Output", "HeadingGridLines", "1") = "1")
+    .Bold = (GetUserSetting("Output", "HeadingBold", "1") = "1")
+    .Underline = (GetUserSetting("Output", "HeadingUnderline", "0") = "1")
+    .BackCol = Val(GetUserSetting("Output", "HeadingBackcolour", GetColour("Dolphin Blue")))
+    .ForeCol = Val(GetUserSetting("Output", "HeadingForecolour", GetColour("Midnight Blue")))
+    .CenterText = True
+  End With
+
+  mcolStyles.Add objStyle, objStyle.Name
+  
+  Set objStyle = New clsOutputStyle
+  With objStyle
+    .Name = "HeadingCols"
+    .StartCol = 0
+    .StartRow = 0
+    .Gridlines = (GetUserSetting("Output", "HeadingGridLines", "1") = "1")
+    .Bold = (GetUserSetting("Output", "HeadingBold", "1") = "1")
+    .Underline = (GetUserSetting("Output", "HeadingUnderline", "0") = "1")
+    .BackCol = Val(GetUserSetting("Output", "HeadingBackcolour", GetColour("Dolphin Blue")))
+    .ForeCol = Val(GetUserSetting("Output", "HeadingForecolour", GetColour("Midnight Blue")))
+  End With
+
+  mcolStyles.Add objStyle, objStyle.Name
+
+  Set objStyle = New clsOutputStyle
+  With objStyle
+    .Name = "Data"
+    .StartCol = Val(GetUserSetting("Output", "DataCol", "2"))
+    .StartRow = Val(GetUserSetting("Output", "DataRow", "4"))
+    .Gridlines = (GetUserSetting("Output", "DataGridLines", "1") = "1")
+    .Bold = (GetUserSetting("Output", "DataBold", "0") = "1")
+    .Underline = (GetUserSetting("Output", "DataUnderline", "0") = "1")
+    .BackCol = Val(GetUserSetting("Output", "DataBackcolour", GetColour("Pale Grey")))
+    .ForeCol = Val(GetUserSetting("Output", "DataForecolour", GetColour("Midnight Blue")))
+  End With
+
+  mcolStyles.Add objStyle, objStyle.Name
+
+  Set objStyle = Nothing
+
+End Sub
 
 
 
@@ -1639,3 +1717,41 @@ Public Function GetSequentialNumberedFile(ByVal strFileName As String) As String
   GetSequentialNumberedFile = Left(strFileName, lngFound - 1) & "(" & CStr(lngCount) & ")" & Mid(strFileName, lngFound)
 
 End Function
+
+Private Sub ApplyStylesToRange(objRange As Object, objStyle As clsOutputStyle, blnColourIndex As Boolean)
+
+  On Local Error Resume Next
+  
+  With objRange
+    .Font.Bold = objStyle.Bold
+    .Font.Underline = objStyle.Underline
+
+    If objStyle.CenterText Then
+      .ParagraphFormat.Alignment = wdAlignParagraphCenter
+    End If
+
+    If Val(mwrdApp.Version) < 9 Then
+      If blnColourIndex Then
+        .Shading.BackgroundPatternColorIndex = GetWordColourIndex(objStyle.BackCol)
+        .Font.ColorIndex = GetWordColourIndex(objStyle.ForeCol)
+      Else
+        .Shading.BackgroundPatternColorIndex = objStyle.BackCol
+        .Font.ColorIndex = objStyle.ForeCol
+      End If
+    Else
+      If Not gblnReportPackMode Then .Shading.BackgroundPatternColor = objStyle.BackCol
+      .Font.Color = objStyle.ForeCol
+    End If
+
+    If objStyle.Name = "Heading" Then
+      .Rows.HeadingFormat = True
+    End If
+    
+    If gblnReportPackMode And objStyle.Name = "Title" Then
+      .Style = wdStyleHeading1
+    End If
+    
+  End With
+
+End Sub
+
