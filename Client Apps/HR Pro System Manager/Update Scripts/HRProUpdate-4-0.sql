@@ -12805,6 +12805,22 @@ PRINT 'Step 11 of X - New Shared Table Transfer Types'
 		EXEC sp_executesql @NVarCommand
 	END
 
+	-- Adjustment for v0.9 of Fulcrum absence spec
+	IF NOT EXISTS (SELECT TransferFieldID
+			FROM ASRSysAccordTransferFieldDefinitions WHERE TransferTypeID = 8 AND TransferFieldID = 22)
+	BEGIN	
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (22,8,0,''Work up to Placement'',0,0,2,0,0);'
+		EXEC sp_executesql @NVarCommand
+	END
+
+	IF NOT EXISTS (SELECT TransferFieldID
+			FROM ASRSysAccordTransferFieldDefinitions WHERE TransferTypeID = 73 AND TransferFieldID = 6)
+	BEGIN	
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions 
+		 (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (6,73,0,''Work up to Placement'',0,0,2,0,0);'
+		EXEC sp_executesql @NVarCommand
+	END
+
 
 /* ------------------------------------------------------------- */
 /* ------------------------------------------------------------- */
