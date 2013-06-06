@@ -49,6 +49,7 @@ Private mblnPreviewOnScreen As Boolean
 Private mblnPrintFilterHeader As Boolean
 Private mlngOverrideFilterID As Long
 Private mblnOutputRetainPivotOrChart As Boolean
+Private mblnOutputRetainCharts As Boolean
 Private mstrErrorMessage As String
 
 
@@ -163,6 +164,7 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
   Dim blnOutputCoverSheet As Boolean
   Dim lngOverrideFilterID As Long
   Dim blnOutputRetainPivotOrChart As Boolean
+  Dim blnOutputRetainCharts As Boolean
   
   'HTML IO vars
   Dim FileNum As Integer
@@ -170,10 +172,8 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
   Dim LineCount As Long
   Dim strReadInFileContents As String
   
-  'Dim objOutput As clsOutputHTML
-  
   gblnBatchMode = True
-  gstrHTMLOutputTOC = ""
+  
   'Retrive the individual job information for the specified batch job id
   Set rsBatchDetails = mclsData.OpenPersistentRecordset("SELECT * FROM AsrSysBatchJobDetails WHERE BatchJobNameID = " & lBatchJobID & " ORDER BY JobOrder", adOpenKeyset, adLockReadOnly)
   
@@ -185,7 +185,7 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
     strOutputOptions = "OutputPreview, OutputFormat, OutputScreen, OutputPrinter, OutputPrinterName, OutputSave, "
     strOutputOptions = strOutputOptions & "OutputSaveExisting, OutputEmail, OutputEmailAddr, OutputEmailSubject, "
     strOutputOptions = strOutputOptions & "OutputFilename, OutputEmailAttachAs, OutputTitlePage, OutputReportPackTitle, "
-    strOutputOptions = strOutputOptions & "OutputOverrideFilter, OutputTOC, OutputCoverSheet, OverrideFilterID, OutputRetainPivotOrChart"
+    strOutputOptions = strOutputOptions & "OutputOverrideFilter, OutputTOC, OutputCoverSheet, OverrideFilterID, OutputRetainPivotOrChart, outputRetainCharts"
     
     Set rsBatchOutputOptions = mclsData.OpenPersistentRecordset("SELECT " & strOutputOptions & " FROM ASRSysBatchJobName WHERE ID = " & lBatchJobID, adOpenKeyset, adLockReadOnly)
       
@@ -215,7 +215,16 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
       blnOutputCoverSheet = !OutputCoverSheet
       lngOverrideFilterID = !OverrideFilterID
       blnOutputRetainPivotOrChart = !OutputRetainPivotOrChart
+      blnOutputRetainCharts = !OutputRetainCharts
     End With
+  End If
+'1
+  If strOutputReportPackTitle = vbNullString Then
+    gstrHTMLOutputTOC = "<HTML><BODY><CENTER><FONT face=Verdana size=2>"
+    gstrHTMLOutputTOC = gstrHTMLOutputTOC & "<a id=" & "'" & "top" & "'" & "><h2>" & sBatchJobName & "</h2></a>"
+  Else
+    gstrHTMLOutputTOC = "<HTML><BODY><CENTER><FONT face=Verdana size=2>"
+    gstrHTMLOutputTOC = gstrHTMLOutputTOC & "<a id=" & "'" & "top" & "'" & "><h2>" & strOutputReportPackTitle & "</h2></a>"
   End If
 
   'This should never happen, but just in case...
@@ -360,7 +369,8 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
           blnOutputTOC, _
           blnOutputCoverSheet, _
           lngOverrideFilterID, _
-          blnOutputRetainPivotOrChart
+          blnOutputRetainPivotOrChart, _
+          blnOutputRetainCharts
         End If
             
         pobjCalendarReportRUN.CalendarReportID = rsBatchDetails.Fields("JobID")
@@ -415,7 +425,8 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
             blnOutputTOC, _
             blnOutputCoverSheet, _
             lngOverrideFilterID, _
-            blnOutputRetainPivotOrChart
+            blnOutputRetainPivotOrChart, _
+            blnOutputRetainCharts
           End If
           
           If datGeneral.SystemPermission("CROSSTABS", "RUN") Then
@@ -468,7 +479,8 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
             blnOutputTOC, _
             blnOutputCoverSheet, _
             lngOverrideFilterID, _
-            blnOutputRetainPivotOrChart
+            blnOutputRetainPivotOrChart, _
+            blnOutputRetainCharts
         End If
         
         If datGeneral.SystemPermission("CUSTOMREPORTS", "RUN") Then
@@ -517,7 +529,8 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
               blnOutputTOC, _
               blnOutputCoverSheet, _
               lngOverrideFilterID, _
-              blnOutputRetainPivotOrChart
+              blnOutputRetainPivotOrChart, _
+              blnOutputRetainCharts
             
           'MH20011107 Check permissions...
           If datGeneral.SystemPermission("RECORDPROFILE", "RUN") Then
@@ -794,7 +807,8 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
               blnOutputTOC, _
               blnOutputCoverSheet, _
               lngOverrideFilterID, _
-              blnOutputRetainPivotOrChart
+              blnOutputRetainPivotOrChart, _
+              blnOutputRetainCharts
               
           If datGeneral.SystemPermission("MATCHREPORTS", "RUN") Then
             fOK = pfrmMatchRUN.RunMatchReport
@@ -845,7 +859,8 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
               blnOutputTOC, _
               blnOutputCoverSheet, _
               lngOverrideFilterID, _
-              blnOutputRetainPivotOrChart
+              blnOutputRetainPivotOrChart, _
+              blnOutputRetainCharts
               
           If datGeneral.SystemPermission("SUCCESSION", "RUN") Then
             fOK = pfrmMatchRUN.RunMatchReport
@@ -896,7 +911,8 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
               blnOutputTOC, _
               blnOutputCoverSheet, _
               lngOverrideFilterID, _
-              blnOutputRetainPivotOrChart
+              blnOutputRetainPivotOrChart, _
+              blnOutputRetainCharts
               
           If datGeneral.SystemPermission("CAREER", "RUN") Then
             fOK = pfrmMatchRUN.RunMatchReport
@@ -1009,7 +1025,7 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
     End If
     rsBatchDetails.MoveNext
   Loop
-  
+  '4
   'Insert TOC code here as all Report Pack Jobs Or Batch Jobs would be done by now
   If gblnReportPackMode And blnOutputSave And blnOutputTOC Then
     Select Case lngOutputFormat
@@ -1093,6 +1109,37 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
           MsgBox mstrErrorMessage, vbExclamation, "Report Pack"
         End If
     End Select
+    
+    gblnReportPackMode = False
+  Else
+    If gblnReportPackMode And Not blnOutputTOC Then
+      Select Case lngOutputFormat
+        Case fmtHTML
+          If strOutputReportPackTitle = vbNullString Then strOutputReportPackTitle = sBatchJobName
+          
+          gstrHTMLOutputTOC = "<HTML><BODY><CENTER><FONT face=Verdana size=2>"
+          gstrHTMLOutputTOC = gstrHTMLOutputTOC & "<a id=" & "'" & "top" & "'" & "><h2>" & strOutputReportPackTitle & "</h2></a>"
+        
+          FileNum = FreeFile()
+          LineCount = 1
+          'Read the contents of the HTML file
+          Open strOutputFilename For Input As #FileNum
+            Do While Not EOF(FileNum)
+              Line Input #FileNum, NextLine
+              strReadInFileContents = strReadInFileContents & NextLine
+              LineCount = LineCount + 1
+            Loop
+          Close #FileNum
+          'Write back the contents with our added TOC HTML
+          Open strOutputFilename For Output As #FileNum
+              strReadInFileContents = gstrHTMLOutputTOC & strReadInFileContents
+              Print #FileNum, strReadInFileContents
+          Close #FileNum
+        
+        Case fmtWordDoc
+        Case fmtExcelchart, fmtExcelPivotTable, fmtExcelWorksheet
+      End Select
+    End If
     
     gblnReportPackMode = False
   End If
@@ -1524,6 +1571,7 @@ Public Function GetTOCFile(strExcelFile As String, intFormat As OutputFormats, l
           Set mxlWorkBook = mxlApp.Workbooks.Open(strExcelFile)
           mxlApp.Visible = True
         Else
+          CreateExcelApplication
           mstrErrorMessage = "Cannot find the Report"
         End If
       End If
