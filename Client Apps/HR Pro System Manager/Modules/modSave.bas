@@ -21,67 +21,20 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
   bFailed = False
   ReDim alngExpressions(2, 0)
 
-  'DiaryRebuild
-  'Stop
-
   OutputCurrentProcess "Start of save process", True
-
-
-'MH20070614 MOVED TO modTableTriggers.bas
-'  ' Get Payroll Tranfers options
-'  If gbAccordPayrollModule Then
-'    With recModuleSetup
-'      .Index = "idxModuleParameter"
-'      .Seek "=", gsMODULEKEY_ACCORD, gsPARAMETERKEY_DEFAULTSTATUS
-'      If .NoMatch Then
-'        .Seek "=", gsMODULEKEY_ACCORD, gsPARAMETERKEY_DEFAULTSTATUS
-'        If .NoMatch Then
-'          miAccordDefaultStatus = ACCORD_STATUS_PENDING
-'        Else
-'          miAccordDefaultStatus = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, ACCORD_STATUS_PENDING, !parametervalue)
-'        End If
-'      Else
-'        miAccordDefaultStatus = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, ACCORD_STATUS_PENDING, !parametervalue)
-'      End If
-'
-'      .Index = "idxModuleParameter"
-'      .Seek "=", gsMODULEKEY_ACCORD, gsPARAMETERKEY_ALLOWDELETE
-'      If .NoMatch Then
-'        .Seek "=", gsMODULEKEY_ACCORD, gsPARAMETERKEY_ALLOWDELETE
-'        If .NoMatch Then
-'          mbAccordAllowDelete = False
-'        Else
-'          mbAccordAllowDelete = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, False, !parametervalue)
-'        End If
-'      Else
-'        mbAccordAllowDelete = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, False, !parametervalue)
-'      End If
-'
-'    End With
-'  End If
-'
-'  ' Calculate the table trigger level
-'  miTriggerRecursionLevel = IIf(gbManualRecursionLevel, giManualRecursionLevel, giDefaultRecursionLevel)
 
   If IsMissing(pfRefreshDatabase) Then
     pfRefreshDatabase = False
   End If
   pfRefreshDatabase = (pfRefreshDatabase Or gfRefreshStoredProcedures)
   
-  'RH 02/10/00 - BUG 1044 - Disable the X button whilst saving
-  EnableCloseButton frmSysMgr.hWnd, False
   
-  'RH 21/08/00 - BUG 788. Disable all mdi forms while we save changes - this
-  '              prevents users from col editing etc whilst saving ! a good idea
-  '              methinks !
+  ' Disable control while we save changes
+  EnableCloseButton frmSysMgr.hWnd, False
   For iCount = 0 To (Forms.Count - 1)
-'    If Forms(iCount).Name <> "frmSysMgr" Then
       Forms(iCount).Enabled = False
-'    End If
   Next iCount
 
-  '27/07/2001 MH
-  ''''MH20010425
   fOK = True
   
   If fOK Then
@@ -473,7 +426,6 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
       fOK = fOK And Not gobjProgress.Cancelled
     End If
     
-    'JPD 20060613 Fault 10929 Must be done after views saved.
     ' Create the Record Validation stored procedures.
     If fOK Then
       gobjProgress.ResetBar2
@@ -483,17 +435,7 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
       fOK = CreateValidationStoredProcedures(pfRefreshDatabase)
       fOK = fOK And Not gobjProgress.Cancelled
     End If
-    
-    ' Create the child views.
-    ' JPD20020809 New child views
-  '  If fOK Then
-  '    OutputCurrentProcess "Creating Child Views"
-  '    gobjProgress.UpdateProgress False
-  '    DoEvents
-  '    fOK = CreateChildViews
-  '    fOK = fOK And Not gobjProgress.Cancelled
-  '  End If
-  
+     
     ' Save the OLE field stored procedures
     If fOK Then
       gobjProgress.ResetBar2
@@ -693,8 +635,6 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
     If fOK Then
       SaveSystemSetting "Platform", "SQLServerVersion", gstrSQLFullVersion
       ' AE20080215 - Changed to get the actual Server/DB name
-  '    SaveSystemSetting "Platform", "DatabaseName", gsDatabaseName
-  '    SaveSystemSetting "Platform", "ServerName", gsServerName
       SaveSystemSetting "Platform", "DatabaseName", IIf(GetDBName() = vbNullString, gsDatabaseName, GetDBName())
       SaveSystemSetting "Platform", "ServerName", IIf(GetServerName() = vbNullString, gsServerName, GetServerName())
     End If
@@ -771,12 +711,8 @@ TidyUpAndExit:
   Else
     ' Rollback transactions.
     If fInTransaction Then
-      'MsgBox "HR Pro will now undo changes that had been saved" & vbNewLine & _
-             "to the server before the error occurred.", vbInformation + vbOKOnly, App.Title
       
       'MH20010329 Put the next two lines of code in if you want the progress bar to be nearly complete.
-      ''gobjProgress.Bar1Value = gobjProgress.Bar1MaxValue - 2
-      ''gobjProgress.UpdateProgress False
       OutputCurrentProcess "Undoing changes to the server database"
       gobjProgress.Visible = True
 
@@ -788,7 +724,6 @@ TidyUpAndExit:
   End If
 
   If bLockedOK Then
-    ''MH20010425
     UnlockDatabase (lckSaving)
   End If
   
@@ -804,27 +739,17 @@ TidyUpAndExit:
   
   gobjProgress.CloseProgress
   
-  'RH 21/08/00 - BUG 788. Re-enable all mdi forms while we save changes - this
-  '              prevents users from col editing etc whilst saving ! a good idea
-  '              methinks !
+  'Re-enable all controls
   For iCount = 0 To Forms.Count - 1
-'    If Forms(iCount).Name <> "frmSysMgr" Then
       Forms(iCount).Enabled = True
-'    End If
   Next iCount
-  
-  'RH 02/10/00 - BUG 1044 - Enable the X button as finished/aborted saving
   EnableCloseButton frmSysMgr.hWnd, True
 
   OutputCurrentProcess "End of save process"
-
   Exit Function
 
 ErrorTrap:
-
   fOK = False
-  'gobjProgress.Visible = False
-  'MsgBox Err.Description, vbOKOnly + vbExclamation, Application.Name
   gobjProgress.ResetBar2
   OutputError "Error saving changes"
   Resume TidyUpAndExit
