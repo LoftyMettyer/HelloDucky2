@@ -1033,9 +1033,6 @@ Private Function CreateSP_GetCurrentUsers() As Boolean
 
   fCreatedOK = True
 
-  ' This should only be run on SQL Versions Post 2000
-  'If glngSQLVersion < 9 Then GoTo TidyUpAndExit
-
   ' Construct the stored procedure creation string.
   sProcSQL = _
     "/* ------------------------------------------------ */" & vbNewLine & _
@@ -1045,29 +1042,30 @@ Private Function CreateSP_GetCurrentUsers() As Boolean
     "ALTER PROCEDURE [dbo].[spASRGetCurrentUsers]" & vbNewLine & _
     "AS" & vbNewLine & _
     "BEGIN" & vbNewLine & vbNewLine & _
-    "   SET NOCOUNT ON" & vbNewLine & vbNewLine & _
+    "   SET NOCOUNT ON;" & vbNewLine & vbNewLine & _
     "   IF EXISTS (SELECT Name FROM sysobjects WHERE id = object_id('sp_ASRIntCheckPolls') AND sysstat & 0xf = 4)" & vbNewLine & _
     "       AND APP_NAME() NOT LIKE 'OpenHR Workflow%'" & vbNewLine & _
+    "       AND APP_NAME() NOT LIKE 'OpenHR Mobile%'" & vbNewLine & _
     "       AND APP_NAME() NOT LIKE 'OpenHR Outlook%'" & vbNewLine & _
     "       AND APP_NAME() NOT LIKE 'System Framework Assembly%'" & vbNewLine & _
     "       AND APP_NAME() NOT LIKE 'OpenHR Intranet Embedding%'" & vbNewLine & _
     "   BEGIN" & vbNewLine & _
-    "       EXEC sp_ASRIntCheckPolls" & vbNewLine & _
+    "       EXEC sp_executeSQL N'dbo.sp_ASRIntCheckPolls'" & vbNewLine & _
     "   END" & vbNewLine & vbNewLine
     
   sProcSQL = sProcSQL & _
-    "   DECLARE @sSQLVersion int" & vbNewLine & _
-    "   DECLARE @Mode smallint" & vbNewLine & vbNewLine & _
-    "   SELECT @Mode = [SettingValue] FROM ASRSysSystemSettings WHERE [Section] = 'ProcessAccount' AND [SettingKey] = 'Mode'" & vbNewLine & _
+    "   DECLARE @sSQLVersion  integer," & vbNewLine & _
+    "           @Mode         smallint" & vbNewLine & vbNewLine & _
+    "   SELECT @Mode = [SettingValue] FROM ASRSysSystemSettings WHERE [Section] = 'ProcessAccount' AND [SettingKey] = 'Mode';" & vbNewLine & _
     "   IF @@ROWCOUNT = 0 SET @Mode = 0" & vbNewLine & vbNewLine & _
-    "   SELECT @sSQLVersion = dbo.udfASRSQLVersion()" & vbNewLine & vbNewLine & _
+    "   SELECT @sSQLVersion = dbo.udfASRSQLVersion();" & vbNewLine & vbNewLine & _
     "   IF ((@Mode = 1 OR @Mode = 2) AND @sSQLVersion > 8) AND (NOT IS_SRVROLEMEMBER('sysadmin') = 1)" & vbNewLine & _
     "   BEGIN" & vbNewLine & _
-    "       EXECUTE dbo.[spASRGetCurrentUsersFromAssembly]" & vbNewLine & _
+    "       EXECUTE sp_executeSQL N'dbo.[spASRGetCurrentUsersFromAssembly]'" & vbNewLine & _
     "   END" & vbNewLine & _
     "   ELSE" & vbNewLine & _
     "   BEGIN" & vbNewLine & _
-    "       EXECUTE dbo.[spASRGetCurrentUsersFromMaster]" & vbNewLine & _
+    "       EXECUTE sp_executeSQL N'dbo.[spASRGetCurrentUsersFromMaster]'" & vbNewLine & _
     "   END" & vbNewLine & vbNewLine & _
     "END"
     
@@ -1097,10 +1095,7 @@ Private Function CreateSP_GetCurrentUsersFromMaster() As Boolean
   Dim sProcSQL As String
 
   fCreatedOK = True
-
-  ' This should only be run on SQL Versions Post 2000
-  'If glngSQLVersion < 9 Then GoTo TidyUpAndExit
-  
+ 
   ' Construct the stored procedure creation string.
   ' As non-sa user can't KILL processes we're going to ignore failed login
   ' attempts after the creation time of Save/Manual locks
@@ -1112,16 +1107,16 @@ Private Function CreateSP_GetCurrentUsersFromMaster() As Boolean
     "ALTER PROCEDURE [dbo].[spASRGetCurrentUsersFromMaster]" & vbNewLine & _
     "AS" & vbNewLine & _
     "BEGIN" & vbNewLine & vbNewLine & _
-    "   SET NOCOUNT ON" & vbNewLine & vbNewLine & _
-    "   DECLARE @login_time datetime" & vbNewLine & vbNewLine & _
+    "   SET NOCOUNT ON;" & vbNewLine & vbNewLine & _
+    "   DECLARE @login_time datetime;" & vbNewLine & vbNewLine & _
     "   SELECT TOP 1 @login_time = l.Lock_Time" & vbNewLine & _
     "   FROM ASRSysLock l" & vbNewLine & _
     "      INNER JOIN master..sysprocesses p ON p.spid = l.spid" & vbNewLine & _
     "         AND p.dbID = DB_ID()" & vbNewLine & _
     "         AND p.login_time = l.Login_Time" & vbNewLine & _
     "   WHERE L.Priority < 3" & vbNewLine & _
-    "   ORDER BY l.Priority" & vbNewLine & vbNewLine & _
-    "   SET @login_time = ISNULL(@login_time, GETDATE())" & vbNewLine & vbNewLine
+    "   ORDER BY l.Priority;" & vbNewLine & vbNewLine & _
+    "   SET @login_time = ISNULL(@login_time, GETDATE());" & vbNewLine & vbNewLine
     
    sProcSQL = sProcSQL & _
     "   SELECT p.hostname, p.loginame, p.program_name, p.hostprocess" & vbNewLine & _
@@ -1129,12 +1124,13 @@ Private Function CreateSP_GetCurrentUsersFromMaster() As Boolean
     "   FROM     master..sysprocesses p" & vbNewLine & _
     "   WHERE    p.program_name LIKE 'OpenHR%'" & vbNewLine & _
     "     AND    p.program_name NOT LIKE 'OpenHR Workflow%'" & vbNewLine & _
+    "     AND    p.program_name NOT LIKE 'OpenHR Mobile%'" & vbNewLine & _
     "     AND    p.program_name NOT LIKE 'OpenHR Outlook%'" & vbNewLine & _
     "     AND    p.program_name NOT LIKE 'System Framework Assembly%'" & vbNewLine & _
     "     AND    p.program_name NOT LIKE 'OpenHR Intranet Embedding%'" & vbNewLine & _
     "     AND    p.dbID = DB_ID()" & vbNewLine & _
     "     AND (p.login_Time < @login_time)" & vbNewLine & _
-    "   ORDER BY loginame" & vbNewLine & vbNewLine & _
+    "   ORDER BY loginame;" & vbNewLine & vbNewLine & _
     "END"
   
   gADOCon.Execute sProcSQL, , adExecuteNoRecords
