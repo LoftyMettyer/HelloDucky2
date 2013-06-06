@@ -541,6 +541,10 @@ Private Function ValidateFunctionParameters(plngFunctionID As Variant, piResultT
       fOK = True
       piResultType = giEXPRVALUE_LOGIC
 
+    Case 75 ' Is Valid NI Number
+      fOK = (piParam1Type = giEXPRVALUE_CHARACTER)
+      piResultType = giEXPRVALUE_LOGIC
+
     Case Else ' Unknown function
       fOK = False
   End Select
