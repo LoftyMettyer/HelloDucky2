@@ -746,10 +746,7 @@ Private Sub cboAggregateType_Click()
   SetComboItemOrTopItem cboSortByAgg, 0
   
   If Not mfLoading Then
-  
-    ' Disable the Y column if aggregate is set to 'Count'
-  cboColumnY.Enabled = (cboAggregateType.Text <> "Count")
-  
+    
   ChartAggregateType = cboAggregateType.ListIndex
   
   mfChanged = True
@@ -1047,9 +1044,6 @@ Private Sub cboTableZ_Click()
     ClearFilter
   End If
 
-  ' Disable the Y column if aggregate is set to 'Count'
-  cboColumnY.Enabled = (cboAggregateType.Text <> "Count")
-
   mfChanged = True
 
   RefreshControls
@@ -1060,6 +1054,8 @@ End Sub
 
 Private Sub optChartType_Click(Index As Integer)
 Dim piChartAggregateType As Integer
+
+On Error Resume Next
 
 ChangeChartType
 mfChanged = True
@@ -1128,7 +1124,32 @@ End Sub
 
 Private Sub RefreshControls()
   
-  cmdOk.Enabled = mfChanged
+  ChangeChartType
+  cmdOK.Enabled = mfChanged
+  
+  ' Disable the Y column if aggregate is set to 'Count'
+  cboColumnY.Enabled = (cboAggregateType.Text <> "Count")
+  
+  ' Fault HRPRO-1354
+  ' Disable Y-Axis labels and orders if no numeric columns found
+  If cboColumnY.ListCount = 0 Then
+    cboColumnY.Enabled = False
+    lblColumnY.Enabled = False
+    cboSortByAgg.Enabled = False
+    lblSortByAgg.Enabled = False
+    cboChartColColumn.Enabled = False
+    lblChartIntColour.Enabled = False
+  
+  Else
+    'enable them
+    cboColumnY.Enabled = True
+    lblColumnY.Enabled = True
+    cboSortByAgg.Enabled = True
+    lblSortByAgg.Enabled = True
+    cboChartColColumn.Enabled = True
+    lblChartIntColour.Enabled = True
+    
+  End If
   
 End Sub
 
@@ -1345,7 +1366,7 @@ Public Sub Initialize(plngChartViewID As Long, _
   txtFilter.Enabled = False
   txtFilter.BackColor = vbButtonFace
   
-  cmdOk.Enabled = (miChartTableID = 0)
+  cmdOK.Enabled = (miChartTableID = 0)
    
   mfLoading = False
   
@@ -1354,8 +1375,10 @@ Public Sub Initialize(plngChartViewID As Long, _
 End Sub
 
 Private Sub cmdOk_Click()
-  Cancelled = False
-  Me.Hide
+  If ValidateChartSetup Then
+    Cancelled = False
+    Me.Hide
+  End If
 End Sub
 
 Private Function PopulateColourCombo(plngTableID As Long) As Boolean
@@ -1926,7 +1949,41 @@ Private Function GetFilterBaseTableID(plngFilterID As Long) As Long
   
 End Function
 
+Private Function ValidateChartSetup() As Boolean
 
+  Dim fValid As Boolean
+
+  fValid = True
+  
+  
+If optChartType(0).value Then ' If One-Table chart
+  
+  
+ElseIf optChartType(1).value Then ' If Two-Table chart
+  ' Has column 2 been selected - this may be blank if the table has no numeric columns and a numeric
+  ' aggregate has been selected.
+  If cboColumnY.ListIndex < 0 Then
+    If cboAggregateType <> "Count" Then
+      fValid = False
+      MsgBox "No Y-Axis Column has been selected.", vbOKOnly + vbExclamation, Application.Name
+      cboColumnY.SetFocus
+    Else
+      If MsgBox("No numeric columns have been found for the Y-Axis" & vbCrLf & "The chart will be saved as a one-table chart.", vbOKCancel + vbQuestion, Me.Caption) = vbOK Then
+        fValid = True
+      Else
+        fValid = False
+      End If
+          
+    End If
+  End If
+ElseIf optChartType(2).value Then ' If Three-Table chart
+  
+  
+End If
+
+ValidateChartSetup = fValid
+
+End Function
 
 Public Property Get ChartTableID() As Long
   If cboTableX.ListIndex >= 0 Then
