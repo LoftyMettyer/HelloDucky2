@@ -3,10 +3,10 @@ Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~2.OCX"
 Begin VB.Form frmLogin 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "HR Pro System Manager - Login"
-   ClientHeight    =   3375
+   ClientHeight    =   5385
    ClientLeft      =   1530
    ClientTop       =   2595
-   ClientWidth     =   5745
+   ClientWidth     =   6150
    BeginProperty Font 
       Name            =   "Verdana"
       Size            =   8.25
@@ -22,162 +22,162 @@ Begin VB.Form frmLogin
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   3375
-   ScaleWidth      =   5745
+   ScaleHeight     =   5385
+   ScaleWidth      =   6150
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin VB.CheckBox chkRecover 
       Caption         =   "Recover?"
       Height          =   195
-      Left            =   4560
+      Left            =   3800
       TabIndex        =   13
-      Top             =   360
+      Top             =   2900
       Width           =   1215
    End
    Begin VB.CheckBox chkUseWindowsAuthentication 
       Caption         =   "&Use Windows Authentication"
       Height          =   210
-      Left            =   75
+      Left            =   120
       TabIndex        =   2
-      Top             =   2225
+      Top             =   4195
       Value           =   1  'Checked
       Width           =   3240
    End
    Begin VB.CommandButton cmdDetails 
       Caption         =   "&Details  >>"
       Height          =   400
-      Left            =   4445
+      Left            =   4830
       TabIndex        =   8
-      Top             =   2540
+      Top             =   4515
       Width           =   1200
    End
    Begin VB.CommandButton cmdOK 
       Caption         =   "&OK"
       Default         =   -1  'True
       Height          =   400
-      Left            =   4445
+      Left            =   4830
       TabIndex        =   5
-      Top             =   1385
+      Top             =   3360
       Width           =   1200
    End
    Begin VB.CommandButton cmdCancel 
       Cancel          =   -1  'True
       Caption         =   "&Cancel"
       Height          =   400
-      Left            =   4445
+      Left            =   4830
       TabIndex        =   6
-      Top             =   1940
+      Top             =   3915
       Width           =   1200
    End
    Begin VB.TextBox txtUID 
       Height          =   315
-      Left            =   1372
+      Left            =   1395
       TabIndex        =   0
-      Top             =   1385
-      Width           =   3000
+      Top             =   3360
+      Width           =   3280
    End
    Begin VB.TextBox txtPWD 
       Height          =   315
       IMEMode         =   3  'DISABLE
-      Left            =   1372
+      Left            =   1395
       MaxLength       =   128
       PasswordChar    =   "*"
       TabIndex        =   1
-      Top             =   1790
-      Width           =   3000
+      Top             =   3765
+      Width           =   3280
    End
    Begin VB.Timer Timer1 
       Enabled         =   0   'False
       Interval        =   65535
-      Left            =   5040
-      Top             =   2640
+      Left            =   4890
+      Top             =   4680
    End
    Begin VB.TextBox txtDatabase 
       Height          =   315
-      Left            =   1372
+      Left            =   1395
       TabIndex        =   3
-      Top             =   2540
+      Top             =   4515
       Visible         =   0   'False
-      Width           =   3000
+      Width           =   3280
    End
    Begin VB.TextBox txtServer 
       Height          =   315
-      Left            =   1372
+      Left            =   1395
       TabIndex        =   4
-      Top             =   2945
+      Top             =   4920
       Visible         =   0   'False
-      Width           =   3000
-   End
-   Begin XtremeSkinFramework.SkinFramework SkinFramework1 
-      Left            =   5040
-      Top             =   480
-      _Version        =   851969
-      _ExtentX        =   635
-      _ExtentY        =   635
-      _StockProps     =   0
+      Width           =   3280
    End
    Begin VB.Label lblDevelopmentMode 
       AutoSize        =   -1  'True
       Caption         =   "(Dev mode)"
       Height          =   195
-      Left            =   4610
+      Left            =   5025
       TabIndex        =   14
-      Top             =   75
+      Top             =   2900
       Width           =   1035
+   End
+   Begin XtremeSkinFramework.SkinFramework SkinFramework1 
+      Left            =   5535
+      Top             =   4755
+      _Version        =   851969
+      _ExtentX        =   635
+      _ExtentY        =   635
+      _StockProps     =   0
    End
    Begin VB.Line lnTopWhiteLine 
       BorderColor     =   &H80000005&
       X1              =   120
-      X2              =   5670
-      Y1              =   1250
-      Y2              =   1250
+      X2              =   6000
+      Y1              =   3200
+      Y2              =   3200
    End
    Begin VB.Label lblVersion 
       AutoSize        =   -1  'True
       BackStyle       =   0  'Transparent
       Caption         =   "lblVersion"
       Height          =   195
-      Left            =   105
+      Left            =   120
       TabIndex        =   12
-      Top             =   950
-      Width           =   1395
+      Top             =   2895
+      Width           =   840
    End
    Begin VB.Line lnTopGreyLine 
       BorderColor     =   &H80000010&
       BorderWidth     =   2
       X1              =   120
-      X2              =   5650
-      Y1              =   1250
-      Y2              =   1250
+      X2              =   5980
+      Y1              =   3200
+      Y2              =   3200
    End
    Begin VB.Label lblUser 
       AutoSize        =   -1  'True
       BackStyle       =   0  'Transparent
-      Caption         =   "User :"
+      Caption         =   "Username :"
       Height          =   195
-      Left            =   90
+      Left            =   120
       TabIndex        =   11
-      Top             =   1445
-      Width           =   435
+      Top             =   3420
+      Width           =   1005
    End
    Begin VB.Label lblPassword 
       AutoSize        =   -1  'True
       BackStyle       =   0  'Transparent
       Caption         =   "Password :"
       Height          =   195
-      Left            =   90
+      Left            =   120
       TabIndex        =   10
-      Top             =   1750
-      Width           =   795
+      Top             =   3825
+      Width           =   945
    End
    Begin VB.Label lblDatabase 
       AutoSize        =   -1  'True
       BackStyle       =   0  'Transparent
       Caption         =   "Database :"
       Height          =   195
-      Left            =   90
+      Left            =   120
       TabIndex        =   9
-      Top             =   2600
+      Top             =   4575
       Visible         =   0   'False
       Width           =   1020
    End
@@ -186,18 +186,18 @@ Begin VB.Form frmLogin
       BackStyle       =   0  'Transparent
       Caption         =   "Server :"
       Height          =   195
-      Left            =   90
+      Left            =   120
       TabIndex        =   7
-      Top             =   3005
+      Top             =   4980
       Visible         =   0   'False
       Width           =   810
    End
    Begin VB.Image imgASRLogo 
-      Height          =   900
-      Left            =   105
+      Height          =   2820
+      Left            =   0
       Picture         =   "frmLogin.frx":000C
-      Top             =   60
-      Width           =   2805
+      Top             =   0
+      Width           =   6150
    End
 End
 Attribute VB_Name = "frmLogin"
@@ -383,21 +383,23 @@ Private Sub Form_Load()
   SetWindowLong Me.hWnd, GWL_EXSTYLE, (GetWindowLong(hWnd, GWL_EXSTYLE) Or WS_EX_APPWINDOW)
 
   
-  lblVersion.Caption = "HR Pro System Manager - Version " & App.Major & "." & App.Minor & "." & App.Revision
+  'lblVersion.Caption = "HR Pro System Manager - Version " & App.Major & "." & App.Minor & "." & App.Revision
+  lblVersion.Caption = "Version " & App.Major & "." & App.Minor & "." & App.Revision
 
   If ASRDEVELOPMENT Then
     lblDevelopmentMode.Caption = "(Dev mode)"
     lblDevelopmentMode.Visible = True
     lblDevelopmentMode.Enabled = True
+    chkRecover.Visible = True
   Else
     lblDevelopmentMode.Caption = ""
     lblDevelopmentMode.Visible = False
     lblDevelopmentMode.Enabled = False
+    chkRecover.Visible = False
   End If
   
   gblnAutomaticLogon = False
   
-  chkRecover.Visible = ASRDEVELOPMENT
   
   ' Display the animated logo.
   'sAnimationPath = App.Path & "\videos\asr.avi"
