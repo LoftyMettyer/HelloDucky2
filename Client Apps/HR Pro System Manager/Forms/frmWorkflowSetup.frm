@@ -53,9 +53,9 @@ Begin VB.Form frmWorkflowSetup
       TabCaption(1)   =   "&Personnel Identification"
       TabPicture(1)   =   "frmWorkflowSetup.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraDelegation"
+      Tab(1).Control(0)=   "fraPersonnelTable"
       Tab(1).Control(0).Enabled=   0   'False
-      Tab(1).Control(1)=   "fraPersonnelTable"
+      Tab(1).Control(1)=   "fraDelegation"
       Tab(1).Control(1).Enabled=   0   'False
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "&Service"
@@ -66,9 +66,9 @@ Begin VB.Form frmWorkflowSetup
       TabCaption(3)   =   "&Mobile Specifics"
       TabPicture(3)   =   "frmWorkflowSetup.frx":0060
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "fraMobileKey"
+      Tab(3).Control(0)=   "Frame1"
       Tab(3).Control(0).Enabled=   0   'False
-      Tab(3).Control(1)=   "Frame1"
+      Tab(3).Control(1)=   "fraMobileKey"
       Tab(3).Control(1).Enabled=   0   'False
       Tab(3).ControlCount=   2
       Begin VB.Frame fraMobileKey 
@@ -1029,11 +1029,9 @@ Private Sub cmdOK_Click()
   ' all mobile cdropdowns none or selected?
   If Application.MobileModule Then
     If (mlngMobLoginColumnID = 0 And _
-      mlngWorkEmailColumnID = 0 And _
       mlngMobLeavingDateColumnID = 0 And _
       mlngMobActivatedColumnID = 0) Or _
       (mlngMobLoginColumnID > 0 And _
-      mlngWorkEmailColumnID > 0 And _
       mlngMobLeavingDateColumnID > 0 And _
       mlngMobActivatedColumnID > 0) Then
       fSaveOK = True

@@ -35,7 +35,7 @@ Public Function ConfigureIntranetSpecifics() As Boolean
   fOK = ReadIntranetParameters
   If Not fOK Then
     mvar_fGeneralOK = False
-    sErrorMessage = "Intranet specifics not correctly configured." & vbNewLine & _
+    sErrorMessage = "Intranet specifics not correctly configured in Personnel Module Setup." & vbNewLine & _
       "Some functionality will be disabled if you do not change your configuration." & vbNewLine & mvar_sGeneralMsg
     
     fOK = (OutputMessage(sErrorMessage & vbNewLine & vbNewLine & "Continue saving changes ?") = vbYes)
@@ -87,7 +87,7 @@ Private Function ReadIntranetParameters() As Boolean
    
       fOK = lngLoginColumn > 0
       If Not fOK Then
-        mvar_sGeneralMsg = mvar_sGeneralMsg & vbCrLf & "  Login column not defined."
+        mvar_sGeneralMsg = mvar_sGeneralMsg & vbCrLf & "  'Login name' column not defined in Personnel Module Setup."
       End If
       
     End If
@@ -110,6 +110,7 @@ Private Function ReadIntranetParameters() As Boolean
       End If
       
       fOK = (mvar_lngWorkEmailColumn > 0)
+      If Not fOK Then mvar_sGeneralMsg = mvar_sGeneralMsg & vbCrLf & "  'Work email' column not defined."
     End If
     
     If fOK Then
@@ -117,12 +118,14 @@ Private Function ReadIntranetParameters() As Boolean
       .Seek "=", gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_LOGINNAME
       If .NoMatch Then
         mvar_lngActivatedUserColumn = 0
+        
       Else
         mvar_lngActivatedUserColumn = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
         mvar_sActivatedUserColumn = GetColumnName(mvar_lngActivatedUserColumn, True)
       End If
       
       fOK = (mvar_lngActivatedUserColumn > 0)
+      If Not fOK Then mvar_sGeneralMsg = mvar_sGeneralMsg & vbCrLf & "  'Login name' column not defined."
     End If
     
   End With

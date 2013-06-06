@@ -50,17 +50,16 @@ Public Function ConfigureMobileSpecifics() As Boolean
   mvar_fGeneralOK = True
   mvar_sGeneralMsg = ""
     
-'  If fOK Then
 '    ' Read the Mobile parameters.
-    fOK = ReadMobileParameters
-'    If Not fOK Then
-'      mvar_fGeneralOK = False
-'      sErrorMessage = "Mobile specifics not correctly configured." & vbNewLine & _
-'        "Some functionality will be disabled if you do not change your configuration." & vbNewLine & mvar_sGeneralMsg
-'
-'      fOK = (OutputMessage(sErrorMessage & vbNewLine & vbNewLine & "Continue saving changes ?") = vbYes)
-'    End If
-'  End If
+  fOK = ReadMobileParameters
+  
+  If Not fOK Then
+    mvar_fGeneralOK = False
+    sErrorMessage = "Mobile specifics not correctly configured." & vbNewLine & _
+      "Some functionality will be disabled if you do not change your configuration." & vbNewLine & mvar_sGeneralMsg
+
+    fOK = (OutputMessage(sErrorMessage & vbNewLine & vbNewLine & "Continue saving changes ?") = vbYes)
+  End If
   
   'Make sure that we drop the Mobile SPs
   DropMobileObjects
@@ -164,7 +163,7 @@ Private Function ReadMobileParameters() As Boolean
    
       fOK = lngLoginColumn > 0
       If Not fOK Then
-        mvar_sGeneralMsg = mvar_sGeneralMsg & vbCrLf & "  Login column not defined."
+        mvar_sGeneralMsg = mvar_sGeneralMsg & vbCrLf & "  'Mobile Login Username' column not defined."
       End If
       
     End If
@@ -174,7 +173,7 @@ Private Function ReadMobileParameters() As Boolean
       mvar_sLoginColumn = GetColumnName(lngLoginColumn, True)
       mvar_sLoginTable = GetTableName(lngLoginTable)
    
-      ' Get the Unique Email column.
+      ' Get the Work Email column.
       .Seek "=", gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_WORKEMAIL
       If .NoMatch Then
         mvar_lngWorkEmailColumn = 0
@@ -182,7 +181,11 @@ Private Function ReadMobileParameters() As Boolean
         mvar_lngWorkEmailColumn = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
         mvar_sWorkEmailColumn = GetColumnName(mvar_lngWorkEmailColumn, True)
       End If
-    
+      
+      fOK = mvar_lngWorkEmailColumn > 0
+      If Not fOK Then mvar_sGeneralMsg = mvar_sGeneralMsg & vbCrLf & "  'Work e-mail address' column not defined in Personnel Module Setup."
+      
+      
       ' Get the Leaving Date column.
       .Seek "=", gsMODULEKEY_MOBILE, gsPARAMETERKEY_LEAVINGDATE
       If .NoMatch Then
@@ -191,6 +194,10 @@ Private Function ReadMobileParameters() As Boolean
         mvar_lngLeavingDateColumn = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
         mvar_sLeavingDateColumn = GetColumnName(mvar_lngLeavingDateColumn, True)
       End If
+      
+      fOK = fOK And mvar_lngLeavingDateColumn > 0
+      If mvar_lngLeavingDateColumn = 0 Then mvar_sGeneralMsg = mvar_sGeneralMsg & vbCrLf & "  'Login Expiry Date' column not defined."
+      
       
       ' Get the Mobile Activated User column.
       .Seek "=", gsMODULEKEY_MOBILE, gsPARAMETERKEY_MOBILEACTIVATED
@@ -201,6 +208,8 @@ Private Function ReadMobileParameters() As Boolean
         mvar_sActivatedUserColumn = GetColumnName(mvar_lngActivatedUserColumn, True)
       End If
       
+      fOK = fOK And mvar_lngActivatedUserColumn > 0
+      If mvar_lngActivatedUserColumn = 0 Then mvar_sGeneralMsg = mvar_sGeneralMsg & vbCrLf & "  'User Activated' column not defined."
       
     End If
     
