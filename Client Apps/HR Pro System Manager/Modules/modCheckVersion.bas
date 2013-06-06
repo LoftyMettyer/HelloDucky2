@@ -421,14 +421,14 @@ Private Function CheckFrameworkVersion() As Boolean
   sRequiredVersion = GetSystemSetting("system framework", "version", vbNullString)
   sActualVersion = gobjHRProEngine.Version
 
-  If sRequiredVersion <> sActualVersion And Not ASRDEVELOPMENT Then
-    MsgBox "The System Framework is invalid." & vbNewLine & _
-      "Contact your System Administrator to install the latest System Framework" & vbNewLine & vbNewLine & _
-      "Required Version : " & sRequiredVersion & vbNewLine & _
-      "Actual Version : " & sActualVersion & vbNewLine & vbNewLine _
-      , vbExclamation + vbOKOnly, Application.Name
-    bOK = False
-  End If
+'  If sRequiredVersion <> sActualVersion And Not ASRDEVELOPMENT Then
+'    MsgBox "The System Framework is invalid." & vbNewLine & _
+'      "Contact your System Administrator to install the latest System Framework" & vbNewLine & vbNewLine & _
+'      "Required Version : " & sRequiredVersion & vbNewLine & _
+'      "Actual Version : " & sActualVersion & vbNewLine & vbNewLine _
+'      , vbExclamation + vbOKOnly, Application.Name
+'    bOK = False
+'  End If
 
 TidyUpAndExit:
   CheckFrameworkVersion = bOK
