@@ -6400,3 +6400,17 @@ Public Function FormatGUID(ByRef GUID As Variant) As String
   End If
 
 End Function
+
+Public Function FormatTableName(ByVal Owner As String, TableName As String) As String
+
+  Dim strReturn As String
+  strReturn = "[" & Owner & "].[" & TableName & "]"
+  FormatTableName = strReturn
+
+End Function
+
+
+
+
+
+
