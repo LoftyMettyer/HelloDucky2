@@ -1,18 +1,12 @@
 [Version]
-Version=1.0.0.2
+Version=1.0.0.3
 
 [COA_Spinner.ocx <0009>]
-Dest=$(AppPath)
-Date=21/10/2009
-Time=13:01
-Version=1.0.0.2
+Dest=$(WinSysPath)
+Date=18/11/2009
+Time=16:47
+Version=1.0.0.3
 CABFilename=COA_Spinner.CAB
 CABINFFile=COA_Spinner.INF
-Uses1=MSVBVM60.DLL
-Uses2=OLEAUT32.DLL
-Uses3=OLEPRO32.DLL
-Uses4=ASYCFILT.DLL
-Uses5=STDOLE2.TLB
-Uses6=COMCAT.DLL
-Uses7=objsafe.tlb
-Uses8=COMCT232.OCX
+Uses1=objsafe.tlb
+Uses2=COMCT232.OCX
