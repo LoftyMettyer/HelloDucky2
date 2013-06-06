@@ -270,9 +270,11 @@ Private Function ApplyFilter(lngFilterID As Long, lngTableID As Long, strTableNa
 
   ' Record Type
   If bRecordInsert And Not bRecordUpdate Then
-    strFilter = strFilter & IIf(Len(strFilter) > 0, " AND ", "") & "@startingtrigger = 1"
+    strFilter = strFilter & IIf(Len(strFilter) > 0, " AND ", "") & "@startingtrigger = 1 AND @startingtriggertable = " & lngTableID
   ElseIf Not bRecordInsert And bRecordUpdate Then
-    strFilter = strFilter & IIf(Len(strFilter) > 0, " AND ", "") & "@startingtrigger = 2"
+    strFilter = strFilter & IIf(Len(strFilter) > 0, " AND ", "") & "@startingtrigger = 2 AND @startingtriggertable = " & lngTableID
+  ElseIf bRecordInsert And bRecordUpdate Then
+    strFilter = strFilter & IIf(Len(strFilter) > 0, " AND ", "") & "@startingtriggertable = " & lngTableID
   End If
 
   If strFilter <> vbNullString Then
@@ -530,8 +532,10 @@ Public Sub CreateEmailProcsForTable(lngTableID As Long, _
       "(@recordid int)" & vbNewLine & _
       "AS" & vbNewLine & _
       "BEGIN" & vbNewLine & vbNewLine & _
-      "  DECLARE @hResult bit" & vbNewLine & _
-      "  DECLARE @dateValue datetime" & vbNewLine & _
+      "  DECLARE @hResult   bit," & vbNewLine & _
+      "          @dateValue datetime," & vbNewLine & _
+      "          @username  varchar(255);" & vbNewLine & vbNewLine & _
+      "  SET @username = LTRIM(SYSTEM_USER);" & vbNewLine & _
       GetSQLForRecordDescription(lngRecordDescExprID) & vbCrLf & vbCrLf & _
       strTemp & vbNewLine & vbNewLine & vbNewLine & _
       "  DELETE FROM dbo.ASRSysEmailQueue WHERE Immediate = 0 AND DateSent IS NULL AND recordID = @recordID AND TableID = " & CStr(lngTableID) & vbNewLine & vbNewLine & _
