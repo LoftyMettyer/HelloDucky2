@@ -297,6 +297,9 @@ Private Sub clbItems_Click()
   RefreshControls
 End Sub
 
+Private Sub clbItems_DblClick()
+  RefreshControls
+End Sub
 
 Private Sub cmdCancel_Click()
   ' Set the action property and return to the calling form.
