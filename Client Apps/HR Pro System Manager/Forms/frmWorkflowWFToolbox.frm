@@ -1207,6 +1207,8 @@ Private Sub trvWorkflowValue_MouseDown(Button As Integer, Shift As Integer, X As
                trvWorkflowValue.DragIcon = picDragIcon_FileUpload.Picture
            Case "IMG_FILEDOWNLOAD"
                trvWorkflowValue.DragIcon = picDragIcon_FileDownload.Picture
+           Case "IMG_NAVIGATION"
+               trvWorkflowValue.DragIcon = picDragIcon_Textbox.Picture
            Case Else
                trvWorkflowValue.DragIcon = picDragIcon_ColumnDrag.Picture
         End Select
@@ -1491,6 +1493,8 @@ Private Sub trvColumns_MouseDown(Button As Integer, Shift As Integer, X As Singl
                trvColumns.DragIcon = picDragIcon_PageTab.Picture
            Case "IMG_FILEUPLOAD"
                trvColumns.DragIcon = picDragIcon_FileUpload.Picture
+           Case "IMG_NAVIGATION"
+               trvColumns.DragIcon = picDragIcon_Textbox.Picture
            Case Else
                trvColumns.DragIcon = picDragIcon_ColumnDrag.Picture
         End Select
@@ -1590,6 +1594,8 @@ Private Sub trvStandardControls_MouseDown(Button As Integer, Shift As Integer, X
                 trvStandardControls.DragIcon = picDragIcon_PageTab.Picture
             Case "IMG_FILEUPLOAD"
                 trvStandardControls.DragIcon = picDragIcon_FileUpload.Picture
+            Case "IMG_NAVIGATION"
+                trvStandardControls.DragIcon = picDragIcon_Textbox.Picture
             Case Else
                 trvStandardControls.DragIcon = picDragIcon_ColumnDrag.Picture
         End Select
@@ -1630,6 +1636,8 @@ Private Function GetColumnIcon(piColumnType As Integer) As String
       GetColumnIcon = "IMG_LINK"
     Case giCTRL_WORKINGPATTERN
       GetColumnIcon = "IMG_WORKINGPATTERN"
+    Case giCTRL_NAVIGATION
+      GetColumnIcon = "IMG_TEXTBOX"
     Case Else
       GetColumnIcon = "IMG_COLUMN"
     End Select
