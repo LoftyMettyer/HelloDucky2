@@ -325,7 +325,7 @@ Public Function RecordProfilePage(pfrmRecProfile As frmRecordProfilePreview, _
                           sTempName = GetTmpFName
                           SavePicture ctlTemp.StyleSets(iLoop4).Picture, sTempName
                           mwrdDoc.ActiveWindow.Selection.TypeText IIf(fFirstColumnDone, vbTab, "")
-                          mwrdDoc.ActiveWindow.Selection.InlineShapes.AddPicture fileName:=sTempName, LinkToFile:=False, SaveWithDocument:=True
+                          mwrdDoc.ActiveWindow.Selection.InlineShapes.AddPicture FileName:=sTempName, LinkToFile:=False, SaveWithDocument:=True
                           Kill sTempName
                           fPhotoDone = True
 
@@ -355,7 +355,7 @@ Public Function RecordProfilePage(pfrmRecProfile As frmRecordProfilePreview, _
                       sTempName = GetTmpFName
                       SavePicture ctlTemp.StyleSets(iLoop4).Picture, sTempName
                       mwrdDoc.ActiveWindow.Selection.TypeText IIf(fFirstColumnDone, vbTab, "")
-                      mwrdDoc.ActiveWindow.Selection.InlineShapes.AddPicture fileName:=sTempName, LinkToFile:=False, SaveWithDocument:=True
+                      mwrdDoc.ActiveWindow.Selection.InlineShapes.AddPicture FileName:=sTempName, LinkToFile:=False, SaveWithDocument:=True
                       Kill sTempName
                       fPhotoDone = True
 
@@ -543,7 +543,7 @@ Public Property Let Email(blnEmail As Boolean)
   mblnEmail = blnEmail
 End Property
 
-Public Property Let fileName(strFileName As String)
+Public Property Let FileName(strFileName As String)
   mstrFileName = strFileName
 End Property
 
@@ -590,11 +590,11 @@ Public Function GetFile(objParent As clsOutputRun, colStyles As Collection) As B
   End If
   
   If gblnReportPackMode And mlngSaveExisting = 0 And gobjProgress.Bar1Value > 0 Then
-      'reset write mode to append in order that the previous report job doesnt get overwritten
+      ' reset write mode to append in order that the  previous report job doesnt get overwritten
       mlngSaveExisting = 3
+      'mstrFileName = objParent.SequentialFileName
   End If
   'mwrdApp.Visible = True
-  
   'Check if file already exists...
   If Dir(mstrFileName) <> vbNullString And mstrFileName <> vbNullString Then
 
@@ -613,6 +613,7 @@ Public Function GetFile(objParent As clsOutputRun, colStyles As Collection) As B
   
       Case 2  'Add Sequential number to file
         mstrFileName = mobjParent.GetSequentialNumberedFile(mstrFileName)
+        'objParent.SequentialFileName = mstrFileName
         GetNewDocument
   
       Case 3  'Append to existing file
