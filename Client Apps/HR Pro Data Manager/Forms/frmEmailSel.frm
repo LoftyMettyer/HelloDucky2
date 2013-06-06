@@ -260,7 +260,7 @@ Public Sub SetupEventLogSend(pstrEventIDs As String)
   Dim strEmailGroup As String
           
   strEmailGroup = vbNullString
-  strEmailGroup = strEmailGroup & "SELECT DELETEME, [ASRSysEmailGroupName].[Name] AS 'Name'," & vbCrLf
+  strEmailGroup = strEmailGroup & "SELECT [ASRSysEmailGroupName].[Name] AS 'Name'," & vbCrLf
   strEmailGroup = strEmailGroup & "       '0' + char(9) +" & vbCrLf
   strEmailGroup = strEmailGroup & "       '0' + char(9) +" & vbCrLf
   strEmailGroup = strEmailGroup & "       '0' + char(9) +" & vbCrLf
