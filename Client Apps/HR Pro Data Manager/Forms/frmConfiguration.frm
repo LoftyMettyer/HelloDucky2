@@ -3,7 +3,7 @@ Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
-Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "Codejock.Controls.v13.1.0.ocx"
+Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "CODEJO~1.OCX"
 Begin VB.Form frmConfiguration 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Configuration"
@@ -50,12 +50,11 @@ Begin VB.Form frmConfiguration
       _Version        =   393216
       Style           =   1
       Tabs            =   7
-      Tab             =   5
       TabsPerRow      =   7
       TabHeight       =   520
       TabCaption(0)   =   "&Display Defaults"
       TabPicture(0)   =   "frmConfiguration.frx":000C
-      Tab(0).ControlEnabled=   0   'False
+      Tab(0).ControlEnabled=   -1  'True
       Tab(0).Control(0)=   "fraDisplay(1)"
       Tab(0).Control(0).Enabled=   0   'False
       Tab(0).Control(1)=   "fraDisplay(0)"
@@ -91,21 +90,15 @@ Begin VB.Form frmConfiguration
       TabPicture(4)   =   "frmConfiguration.frx":007C
       Tab(4).ControlEnabled=   0   'False
       Tab(4).Control(0)=   "FraEventLog(0)"
-      Tab(4).Control(0).Enabled=   0   'False
       Tab(4).Control(1)=   "FraEventLog(1)"
-      Tab(4).Control(1).Enabled=   0   'False
       Tab(4).Control(2)=   "FraEventLog(2)"
-      Tab(4).Control(2).Enabled=   0   'False
       Tab(4).ControlCount=   3
       TabCaption(5)   =   "Report Out&put"
       TabPicture(5)   =   "frmConfiguration.frx":0098
-      Tab(5).ControlEnabled=   -1  'True
-      Tab(5).Control(0)=   "FraOutput(0)"
-      Tab(5).Control(0).Enabled=   0   'False
+      Tab(5).ControlEnabled=   0   'False
+      Tab(5).Control(0)=   "Frame1"
       Tab(5).Control(1)=   "FraOutput(1)"
-      Tab(5).Control(1).Enabled=   0   'False
-      Tab(5).Control(2)=   "Frame1"
-      Tab(5).Control(2).Enabled=   0   'False
+      Tab(5).Control(2)=   "FraOutput(0)"
       Tab(5).ControlCount=   3
       TabCaption(6)   =   "Tool&bars"
       TabPicture(6)   =   "frmConfiguration.frx":00B4
@@ -116,7 +109,7 @@ Begin VB.Form frmConfiguration
       Begin VB.Frame frmReportsGeneral 
          Caption         =   "Selection Screen :"
          Height          =   1335
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   133
          Top             =   5310
          Width           =   6735
@@ -301,7 +294,7 @@ Begin VB.Form frmConfiguration
       Begin VB.Frame Frame1 
          Caption         =   "Excel Options :"
          Height          =   1750
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   105
          Top             =   4920
          Width           =   6735
@@ -616,7 +609,7 @@ Begin VB.Form frmConfiguration
          Caption         =   "Colours && Fonts :"
          Height          =   3225
          Index           =   1
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   79
          Top             =   400
          Width           =   6735
@@ -1251,7 +1244,6 @@ Begin VB.Form frmConfiguration
          Width           =   6735
          Begin VB.CheckBox chkUseWindowsAuthentication 
             Caption         =   "&Use Windows Authentication"
-            Enabled         =   0   'False
             Height          =   210
             Left            =   480
             TabIndex        =   59
@@ -1440,7 +1432,7 @@ Begin VB.Form frmConfiguration
          Caption         =   "Diary Options :"
          Height          =   1215
          Index           =   2
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   15
          Top             =   4020
          Width           =   6735
@@ -1478,7 +1470,7 @@ Begin VB.Form frmConfiguration
          Caption         =   "Record Editing :"
          Height          =   2380
          Index           =   0
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   0
          Top             =   400
          Width           =   6735
@@ -1579,7 +1571,7 @@ Begin VB.Form frmConfiguration
          Caption         =   "Filters / Calculations :"
          Height          =   1155
          Index           =   1
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   10
          Top             =   2820
          Width           =   6735
@@ -1626,7 +1618,7 @@ Begin VB.Form frmConfiguration
          Caption         =   "Word Options :"
          Height          =   1200
          Index           =   0
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   98
          Top             =   3680
          Width           =   6735
@@ -2324,8 +2316,6 @@ Public Function Initialise(blnUserSettings As Boolean) As Boolean
     ' JDM - 27/11/01 - Fault 3109 - Disable access to batch log on.
     SSTab1.TabVisible(3) = datGeneral.SystemPermission("CONFIGURATION", "PC")
  
-    ' JDM - 17/02/2005 - Fault 8997 - Disable if its SQL7
-    chkUseWindowsAuthentication.Enabled = (glngSQLVersion > 7)
     Me.HelpContextID = 1114
   End If
 
@@ -2362,7 +2352,7 @@ Private Sub cmdOK_Click()
   Exit Sub
   
 SaveError:
-  COAMsgBox "Error saving configuration settings." & vbCrLf & Err.Description, vbExclamation + vbOKOnly, App.Title
+  COAMsgBox "Error saving configuration settings." & vbCrLf & Err.Description, vbExclamation + vbOKOnly, app.Title
   
 End Sub
 
@@ -2635,7 +2625,7 @@ Private Sub DoPrinterTab()
       strMsg = strMsg & vbCrLf & objPrinter.DeviceName
     Next objPrinter
     strMsg = strMsg & vbCrLf & vbCrLf & "Default Printer : " & vbCrLf & vbCrLf & Printer.DeviceName
-    COAMsgBox strMsg, vbExclamation + vbOKOnly, App.Title
+    COAMsgBox strMsg, vbExclamation + vbOKOnly, app.Title
 '  Else
 '    cboPrinter.Text = mstrDefaultPrinter
   End If
@@ -2644,7 +2634,7 @@ Private Sub DoPrinterTab()
 
 InitERROR:
 
-  COAMsgBox "Error whilst intialising default printer tab." & vbCrLf & Err.Description, vbExclamation + vbOKOnly, App.Title
+  COAMsgBox "Error whilst intialising default printer tab." & vbCrLf & Err.Description, vbExclamation + vbOKOnly, app.Title
   
 End Sub
 
@@ -2717,7 +2707,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
   Dim iAnswer As Integer
   
   If Changed = True Then
-    iAnswer = COAMsgBox("You have changed the current configuration. Save changes?", vbYesNoCancel + vbExclamation, App.Title)
+    iAnswer = COAMsgBox("You have changed the current configuration. Save changes?", vbYesNoCancel + vbExclamation, app.Title)
     
     Select Case iAnswer
       Case vbYes
