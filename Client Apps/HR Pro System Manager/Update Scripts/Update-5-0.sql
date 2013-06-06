@@ -15,9 +15,9 @@ DECLARE @iRecCount integer,
 	@sIndexName	sysname,
 	@fPrimaryKey	bit;
 	
-DECLARE @ownerGUID uniqueidentifier
-DECLARE @nextid integer
-DECLARE @sSPCode nvarchar(max)
+DECLARE @ownerGUID uniqueidentifier,
+	@nextid integer,
+	@sSPCode nvarchar(max);
 
 DECLARE @admingroups TABLE(groupname nvarchar(255))
 
@@ -2562,7 +2562,485 @@ CLOSE c;
 DEALLOCATE c;
 
 
+/* ------------------------------------------------------------- */
+PRINT 'Step 10 - Message Bus Integration'
 
+	IF NOT EXISTS(SELECT * FROM sys.schemas where name = 'messagebus')
+		EXECUTE sp_executesql N'CREATE SCHEMA [messagebus];';
+
+	IF NOT EXISTS(SELECT * FROM sys.sysobjects where name = 'IdTranslation' AND xtype = 'U')
+		EXECUTE sp_executesql N'CREATE TABLE [messagebus].[IdTranslation](
+			[TranslationName] [varchar](50) NOT NULL,
+			[LocalId] [varchar](25) NOT NULL,
+			[BusRef] [uniqueidentifier] NOT NULL);';
+
+	IF NOT EXISTS(SELECT * FROM sys.sysobjects where name = 'MessageLog' AND xtype = 'U')
+		EXECUTE sp_executesql N'CREATE TABLE [messagebus].[MessageLog](
+			[MessageType] [varchar](50) NOT NULL,
+			[MessageRef] [uniqueidentifier] NOT NULL,
+			[ReceivedDate] [datetime] NOT NULL,
+			[Originator] [varchar](50) NULL);';
+
+	IF NOT EXISTS(SELECT * FROM sys.sysobjects where name = 'MessageTracking' AND xtype = 'U')
+		EXECUTE sp_executesql N'CREATE TABLE [messagebus].[MessageTracking](
+			[MessageType] [varchar](50) NOT NULL,
+			[BusRef] [uniqueidentifier] NOT NULL,
+			[LastGeneratedDate] [datetime] NULL,
+			[LastProcessedDate] [datetime] NULL,
+			[LastGeneratedXml] [varchar](max) NULL);';
+
+
+	DECLARE	@perstableid integer,
+			@columnid integer;
+
+	-- Message table mapping defintion
+	IF NOT EXISTS(SELECT * FROM sys.sysobjects where name = 'tbsys_MessageBusTables' AND xtype = 'U')
+	BEGIN
+		EXECUTE sp_executesql N'CREATE TABLE [dbo].[tbsys_MessageBusTables](
+			[MessageTypeID] [integer] NOT NULL,
+			[MessageType] [varchar](50) NOT NULL,
+			[BaseTableID] [integer],
+			[FilterID] [integer]);';
+
+		SELECT @perstableid = [parametervalue] FROM dbo.[ASRSysModuleSetup] WHERE ModuleKey = 'MODULE_PERSONNEL' AND ParameterKey = 'Param_TablePersonnel'
+			AND [ParameterType] = 'PType_TableID';
+
+		INSERT [dbo].[tbsys_MessageBusTables] ([MessageTypeID], [MessageType], [BaseTableID], [FilterID]) VALUES (1, 'staffchange', @perstableid, 0);
+		INSERT [dbo].[tbsys_MessageBusTables] ([MessageTypeID], [MessageType], [BaseTableID], [FilterID]) VALUES (2, 'staffpicturechange', @perstableid, 0);
+
+	END
+
+
+	-- Message column mapping defintion
+	IF NOT EXISTS(SELECT * FROM sys.sysobjects where name = 'tbsys_MessageBusColumns' AND xtype = 'U')
+	BEGIN
+		EXECUTE sp_executesql N'CREATE TABLE [dbo].[tbsys_MessageBusColumns](
+			[MessageTypeID] [integer] NOT NULL,
+			[NodeKey] [nvarchar](50),
+			[ColumnID] [integer]);';
+
+		SELECT @columnid = ISNULL([parametervalue],0) FROM dbo.[ASRSysModuleSetup] WHERE ModuleKey = 'MODULE_PERSONNEL' AND ParameterKey = 'Param_FieldsSurname' AND [ParameterType] = 'PType_ColumnID';
+		INSERT [dbo].[tbsys_MessageBusColumns] ([MessageTypeID], [NodeKey], [ColumnID]) VALUES (1,'SURNAME', @columnid)
+
+		SELECT @columnid = ISNULL([parametervalue],0) FROM dbo.[ASRSysModuleSetup] WHERE ModuleKey = 'MODULE_PERSONNEL' AND ParameterKey = 'Param_FieldsForename' AND [ParameterType] = 'PType_ColumnID';
+		INSERT [dbo].[tbsys_MessageBusColumns] ([MessageTypeID], [NodeKey], [ColumnID]) VALUES (1,'FORENAME', @columnid)
+
+	END
+
+
+	-- Configure the service broker
+	IF NOT EXISTS(SELECT name FROM sys.service_message_types WHERE name = 'TriggerMessageSend')
+		EXECUTE sp_executesql N'CREATE MESSAGE TYPE TriggerMessageSend VALIDATION = NONE;';
+
+	IF NOT EXISTS(SELECT name FROM sys.service_contracts WHERE name = 'TriggerMessageContract')
+		EXECUTE sp_executesql N'CREATE CONTRACT TriggerMessageContract (TriggerMessageSend SENT BY INITIATOR;';
+
+	IF NOT EXISTS(SELECT name FROM sys.service_queues WHERE name = 'qMessage')
+		EXECUTE sp_executesql N'CREATE QUEUE messagebus.qMessage WITH STATUS = ON;';
+
+	IF NOT EXISTS(SELECT name FROM sys.services WHERE name = 'MessageApplicationService')
+		EXECUTE sp_executesql N'CREATE SERVICE MessageApplicationService ON QUEUE messagebus.qMessage (TriggerMessageContract);';
+
+	IF NOT EXISTS(SELECT name FROM sys.services WHERE name = 'MessageConnectorService')
+		EXECUTE sp_executesql N'CREATE SERVICE MessageConnectorService ON QUEUE messagebus.qMessage (TriggerMessageContract);';
+
+
+	-- Apply the stored procedures
+	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[messagebus].[spSendMessage]') AND type in (N'P', N'PC'))
+		DROP PROCEDURE [messagebus].[spSendMessage]
+
+	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[messagebus].[spMessageTrackingSetLastProcessedDate]') AND type in (N'P', N'PC'))
+		DROP PROCEDURE [messagebus].[spMessageTrackingSetLastProcessedDate]
+
+	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[messagebus].[spMessageTrackingSetLastGeneratedXml]') AND type in (N'P', N'PC'))
+		DROP PROCEDURE [messagebus].[spMessageTrackingSetLastGeneratedXml]
+
+	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[messagebus].[spMessageTrackingSetLastGeneratedDate]') AND type in (N'P', N'PC'))
+		DROP PROCEDURE [messagebus].[spMessageTrackingSetLastGeneratedDate]
+
+	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[messagebus].[spMessageTrackingGetLastMessageDates]') AND type in (N'P', N'PC'))
+		DROP PROCEDURE [messagebus].[spMessageTrackingGetLastMessageDates]
+
+	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[messagebus].[spMessageTrackingGetLastGeneratedXml]') AND type in (N'P', N'PC'))
+		DROP PROCEDURE [messagebus].[spMessageTrackingGetLastGeneratedXml]
+
+	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[messagebus].[spMessageLogCheck]') AND type in (N'P', N'PC'))
+		DROP PROCEDURE [messagebus].[spMessageLogCheck]
+
+	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[messagebus].[spMessageLogAdd]') AND type in (N'P', N'PC'))
+		DROP PROCEDURE [messagebus].[spMessageLogAdd]
+
+	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[messagebus].[spIdTranslateSetBusRef]') AND type in (N'P', N'PC'))
+		DROP PROCEDURE [messagebus].[spIdTranslateSetBusRef]
+
+	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[messagebus].[spIdTranslateGetLocalId]') AND type in (N'P', N'PC'))
+		DROP PROCEDURE [messagebus].[spIdTranslateGetLocalId]
+
+	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[messagebus].[spIdTranslateGetBusRef]') AND type in (N'P', N'PC'))
+		DROP PROCEDURE [messagebus].[spIdTranslateGetBusRef]
+
+
+	EXECUTE sp_executesql N'
+	---------------------------------------------------------------------------------
+	-- Name:    spIdTranslateGetBusRef
+	--
+	-- Purpose: Converts a local identifier into a uniqueidentifier for the bus, 
+	--			returning consistent value for all future conversions.  
+	--          This will create a new identifier where one is not found where
+	--			@CanGenerate = 1
+	--
+	-- Returns: 0 = success, 1 = failure
+	---------------------------------------------------------------------------------
+
+	CREATE PROCEDURE [messagebus].[spIdTranslateGetBusRef]
+		(
+			@TranslationName varchar(50),
+			@LocalId varchar(25),
+			@BusRef uniqueidentifier output,
+			@CanGenerate bit = 1
+		)
+
+	AS
+	BEGIN
+		SET NOCOUNT ON;
+	
+		SET @BusRef = NULL;
+	
+		SELECT @BusRef = BusRef from [messagebus].IdTranslation WITH (ROWLOCK) 
+			WHERE TranslationName = @TranslationName AND LocalId = @LocalId;
+	
+		IF @@ROWCOUNT = 0
+		BEGIN
+			IF @CanGenerate = 1
+			BEGIN
+				SET @BusRef = NEWID();
+			
+				INSERT [messagebus].IdTranslation WITH (ROWLOCK) (TranslationName, LocalId, BusRef) 
+						VALUES (@TranslationName, @LocalId, @BusRef);
+					
+				RETURN 0;
+			END
+			RETURN 1;
+		END
+
+		RETURN 0;
+	END';
+
+
+	EXECUTE sp_executesql N'
+	---------------------------------------------------------------------------------
+	-- Name:    spIdTranslateGetLocalId
+	--
+	-- Purpose: Finds the local id equivelant for the given Bus reference number, 
+	--          assuming it has previous been created through spIdTranslateSetBusRef
+	--
+	-- Returns: 
+	---------------------------------------------------------------------------------
+
+	CREATE PROCEDURE [messagebus].[spIdTranslateGetLocalId]
+		(
+			@TranslationName varchar(50),
+			@BusRef uniqueidentifier,
+			@LocalId varchar(25) output
+		)
+
+	AS
+	BEGIN
+		SET NOCOUNT ON;
+	
+		SET @LocalId = null;
+	
+		SELECT @LocalId = LocalId from [messagebus].IdTranslation WITH (ROWLOCK) 
+			WHERE TranslationName = @TranslationName and BusRef = @BusRef;
+	END';
+
+
+	EXECUTE sp_executesql N'
+	---------------------------------------------------------------------------------
+	-- Name:    spIdTranslateSetBusRef
+	--
+	-- Purpose: Sets the conversion of a given local reference into the given bus ref
+	--
+	-- Returns: n/a
+	---------------------------------------------------------------------------------
+
+	CREATE PROCEDURE [messagebus].[spIdTranslateSetBusRef]
+		(
+			@TranslationName varchar(50),
+			@LocalId varchar(25),
+			@BusRef uniqueidentifier
+		)
+
+	AS
+	BEGIN
+		SET NOCOUNT ON;
+	
+		BEGIN TRAN;
+	
+		DELETE messagebus.IdTranslation WITH (ROWLOCK) 
+			WHERE TranslationName = @TranslationName and LocalId = @LocalId;
+		
+		INSERT messagebus.IdTranslation WITH (ROWLOCK) (TranslationName, LocalId, BusRef) 
+			VALUES (@TranslationName, @LocalId, @BusRef);
+
+		COMMIT TRAN;
+	END	'
+
+
+	EXECUTE sp_executesql N'
+	---------------------------------------------------------------------------------
+	-- Name:    spMessageLogAdd
+	--
+	-- Purpose: Adds fact that message has been processed to local message log
+	--
+	-- Returns: n/a
+	---------------------------------------------------------------------------------
+
+	CREATE PROCEDURE [messagebus].[spMessageLogAdd]
+		(
+			@MessageType varchar(50),
+			@MessageRef uniqueidentifier,
+			@Originator varchar(50) = NULL
+		)
+
+	AS
+	BEGIN
+		SET NOCOUNT ON;
+		
+		INSERT messagebus.MessageLog (MessageType, MessageRef, Originator, ReceivedDate) VALUES (@MessageType, @MessageRef, @Originator, GETUTCDATE());
+
+	END'
+
+
+	EXECUTE sp_executesql N'
+	---------------------------------------------------------------------------------
+	-- Name:    spMessageLogCheck
+	--
+	-- Purpose: Checks whether message has been processed before
+	--
+	-- Returns: n/a
+	---------------------------------------------------------------------------------
+
+	CREATE PROCEDURE [messagebus].[spMessageLogCheck]
+		(
+			@MessageType varchar(50),
+			@MessageRef uniqueidentifier,
+			@ReceivedBefore bit output
+		)
+
+	AS
+	BEGIN
+		SET NOCOUNT ON;
+	
+		IF EXISTS ( SELECT * FROM messagebus.MessageLog WHERE MessageType = @MessageType AND MessageRef = @MessageRef )
+		BEGIN
+			SET @ReceivedBefore = 1
+		END
+		ELSE
+		BEGIN
+			SET @ReceivedBefore = 0
+		END
+	END'
+
+
+	EXECUTE sp_executesql N'
+	---------------------------------------------------------------------------------
+	-- Name:    spMessageTrackingGetLastGeneratedXml
+	--
+	-- Purpose: Gets the last generated XML for a given message
+	--
+	-- Returns: n/a
+	---------------------------------------------------------------------------------
+
+	CREATE PROCEDURE [messagebus].[spMessageTrackingGetLastGeneratedXml]
+		(
+			@MessageType varchar(50),
+			@BusRef uniqueidentifier
+		)
+
+	AS
+	BEGIN
+		SET NOCOUNT ON;
+	
+		SELECT LastGeneratedXml
+			FROM messagebus.MessageTracking
+			WHERE MessageType = @MessageType AND BusRef = @BusRef;
+
+	END'
+
+
+
+	EXECUTE sp_executesql N'
+	---------------------------------------------------------------------------------
+	-- Name:    spMessageTrackingGetLastMessageDates
+	--
+	-- Purpose: Gets the last processing date of a given message
+	--
+	-- Returns: n/a
+	---------------------------------------------------------------------------------
+
+	CREATE PROCEDURE [messagebus].[spMessageTrackingGetLastMessageDates]
+		(
+			@MessageType varchar(50),
+			@BusRef uniqueidentifier
+		)
+
+	AS
+	BEGIN
+		SET NOCOUNT ON;
+	
+		SELECT LastProcessedDate, LastGeneratedDate
+			FROM messagebus.MessageTracking
+			WHERE MessageType = @MessageType AND BusRef = @BusRef;
+
+	END'
+
+
+	EXECUTE sp_executesql N'
+	---------------------------------------------------------------------------------
+	-- Name:    spMessageTrackingSetLastGeneratedDate
+	--
+	-- Purpose: Sets the last processed date of a given message
+	--
+	-- Returns: n/a
+	---------------------------------------------------------------------------------
+
+	CREATE PROCEDURE [messagebus].[spMessageTrackingSetLastGeneratedDate]
+		(
+			@MessageType varchar(50),
+			@BusRef uniqueidentifier,
+			@LastGeneratedDate datetime
+		)
+
+	AS
+	BEGIN
+		SET NOCOUNT ON;
+		
+		IF EXISTS (SELECT * FROM [messagebus].MessageTracking
+				   WHERE MessageType = @MessageType AND BusRef = @BusRef)
+		BEGIN	
+			UPDATE [messagebus].MessageTracking
+			   SET LastGeneratedDate = @LastGeneratedDate
+			   WHERE MessageType = @MessageType AND BusRef = @BusRef
+		END
+		ELSE
+		BEGIN
+			INSERT [messagebus].MessageTracking (MessageType, BusRef, LastGeneratedDate)
+				VALUES (@MessageType, @BusRef, @LastGeneratedDate)
+		END		
+	END'
+
+
+	EXECUTE sp_executesql N'
+	---------------------------------------------------------------------------------
+	-- Name:    spMessageTrackingSetLastGeneratedXml
+	--
+	-- Purpose: Sets the last generated XML for a given message
+	--
+	-- Returns: n/a
+	---------------------------------------------------------------------------------
+
+	CREATE PROCEDURE [messagebus].[spMessageTrackingSetLastGeneratedXml]
+		(
+			@MessageType varchar(50),
+			@BusRef uniqueidentifier,
+			@LastGeneratedXml varchar(max)
+		)
+
+	AS
+	BEGIN
+		SET NOCOUNT ON;
+		
+		IF EXISTS (SELECT * FROM messagebus.MessageTracking
+				   WHERE MessageType = @MessageType AND BusRef = @BusRef)
+		BEGIN	
+			UPDATE messagebus.MessageTracking
+			   SET LastGeneratedXml = @LastGeneratedXml
+			   WHERE MessageType = @MessageType AND BusRef = @BusRef
+		END
+		ELSE
+		BEGIN
+			INSERT messagebus.MessageTracking (MessageType, BusRef, LastGeneratedXml)
+				VALUES (@MessageType, @BusRef, @LastGeneratedXml)
+		END		
+	END'
+
+
+	EXECUTE sp_executesql N'
+	---------------------------------------------------------------------------------
+	-- Name:    spMessageTrackingSetLastProcessedDate
+	--
+	-- Purpose: Sets the last processed date of a given message
+	--
+	-- Returns: n/a
+	---------------------------------------------------------------------------------
+
+	CREATE PROCEDURE [messagebus].[spMessageTrackingSetLastProcessedDate]
+		(
+			@MessageType varchar(50),
+			@BusRef uniqueidentifier,
+			@LastProcessedDate datetime
+		)
+
+	AS
+	BEGIN
+		SET NOCOUNT ON;
+		
+		IF EXISTS (SELECT * FROM messagebus.MessageTracking
+				   WHERE MessageType = @MessageType AND BusRef = @BusRef)
+		BEGIN	
+			UPDATE messagebus.MessageTracking
+			   SET LastProcessedDate = @LastProcessedDate
+			   WHERE MessageType = @MessageType AND BusRef = @BusRef
+		END
+		ELSE
+		BEGIN
+			INSERT messagebus.MessageTracking (MessageType, BusRef, LastProcessedDate)
+				VALUES (@MessageType, @BusRef, @LastProcessedDate)
+		END		
+	END'
+
+
+	EXECUTE sp_executesql N'
+	---------------------------------------------------------------------------------
+	-- Name:    spSendMessage
+	--
+	-- Purpose: Triggers a message to be sent
+	--
+	-- Returns: n/a
+	---------------------------------------------------------------------------------
+
+	CREATE PROCEDURE [messagebus].[spSendMessage]
+		(
+			@MessageType varchar(50),
+			@LocalId int
+		)
+	AS
+	BEGIN
+		SET NOCOUNT ON;
+	
+		DECLARE @DialogHandle uniqueidentifier;
+		SET @DialogHandle = NEWID();
+
+		BEGIN DIALOG @DialogHandle 
+			FROM SERVICE MessageApplicationService 
+			TO SERVICE ''MessageConnectorService''
+			ON CONTRACT TriggerMessageContract
+			WITH ENCRYPTION = OFF;
+		
+		DECLARE @msg varchar(max);
+
+		SET @msg = (SELECT	@MessageType AS MessageType, 
+							@LocalId as LocalId,
+							CONVERT(varchar(50), GETUTCDATE(), 126)+''Z'' as TriggerDate 
+						FOR XML PATH(''SendMessage''));	
+		
+		SEND ON CONVERSATION @DialogHandle
+			MESSAGE TYPE TriggerMessageSend (@msg);
+	 
+		END CONVERSATION @DialogHandle;
+
+	END'
 
 
 
