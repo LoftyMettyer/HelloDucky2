@@ -18,6 +18,7 @@ Begin VB.Form frmSSIntranetView
    HelpContextID   =   1058
    Icon            =   "frmSSIntranetView.frx":0000
    LinkTopic       =   "Form1"
+   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   6720
@@ -26,11 +27,11 @@ Begin VB.Form frmSSIntranetView
    StartUpPosition =   2  'CenterScreen
    Begin VB.ComboBox cboTable 
       Height          =   315
-      Left            =   1700
+      Left            =   1790
       Style           =   2  'Dropdown List
       TabIndex        =   1
       Top             =   240
-      Width           =   4300
+      Width           =   4400
    End
    Begin VB.Frame fraLinksLink 
       Caption         =   "Hypertext Link for displaying the links page :"
@@ -178,11 +179,11 @@ Begin VB.Form frmSSIntranetView
    End
    Begin VB.ComboBox cboView 
       Height          =   315
-      Left            =   1700
+      Left            =   1790
       Style           =   2  'Dropdown List
       TabIndex        =   2
       Top             =   675
-      Width           =   4300
+      Width           =   4400
    End
    Begin VB.Frame fraOKCancel 
       Height          =   400
