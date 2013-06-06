@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.1#0"; "MSCOMCTL.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.OCX"
 Begin VB.Form frmDefSel 
    Caption         =   "Select"
    ClientHeight    =   7800
@@ -1666,7 +1666,7 @@ Private Function CanStillSeeDefinition(lngDefID As Long) As Boolean
 
   With rsTemp
     If .BOF And .EOF Then
-      COAMsgBox "This definition has been deleted by another user", vbExclamation, Me.Caption
+      COAMsgBox "This definition has been made hidden or deleted by another user", vbExclamation, Me.Caption
       Call Populate_List
       CanStillSeeDefinition = False
       'Exit Sub
