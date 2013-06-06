@@ -1,7 +1,7 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
+Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomct2.ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
-Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCT2.OCX"
 Begin VB.Form frmRecordProfilePreview 
    Caption         =   "Record Profile"
    ClientHeight    =   4530
@@ -100,7 +100,7 @@ Begin VB.Form frmRecordProfilePreview
       _ExtentY        =   2566
       _Version        =   393216
       Appearance      =   0
-      Orientation     =   1507328
+      Orientation     =   1179648
    End
    Begin MSComCtl2.FlatScrollBar scrollHorizontal 
       Height          =   255
@@ -113,7 +113,7 @@ Begin VB.Form frmRecordProfilePreview
       _Version        =   393216
       Appearance      =   0
       Arrows          =   65536
-      Orientation     =   1507329
+      Orientation     =   1179649
    End
    Begin VB.PictureBox picContainer 
       Height          =   1455
@@ -2039,7 +2039,6 @@ Private Function FormatData(pobjColumn As clsRecordProfileColDtl, pvData As Vari
     pvData = Format(pvData, DateFormat)
   End If
 
-
   If Not IsNull(pvData) Then pvData = Replace(pvData, vbCrLf, " ")
   If Not IsNull(pvData) Then pvData = Replace(pvData, vbTab, " ")
   If IsNull(pvData) Then pvData = ""
@@ -2506,6 +2505,10 @@ Private Function WidthOfText(psText As String) As Long
   ' Returns the length of the given text when displayed on the form.
   ' NB. We split the string into blocks of size BLOCKLENGTH to avoid
   ' the over flow error described in MSDN article Q298825.
+  
+  ' NB (2). Capped the return size otherwise grid hangs if data is very large (multiline columns for example)
+  '         data is still stored in its entirty so output still work.
+  
   On Error GoTo ErrorTrap
   
   Dim sText As String
@@ -2522,9 +2525,8 @@ Private Function WidthOfText(psText As String) As Long
     sText = Mid(sText, BLOCKLENGTH + 1)
   Loop While Len(sText) > 0
   
-
 TidyUpAndExit:
-  WidthOfText = lngTextWidth
+  WidthOfText = Minimum(CSng(lngTextWidth), 40000)
   Exit Function
   
 ErrorTrap:
