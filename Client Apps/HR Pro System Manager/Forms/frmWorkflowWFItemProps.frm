@@ -50,7 +50,6 @@ Begin VB.Form frmWorkflowWFItemProps
       BeginProperty Panels {0713E89E-850A-101B-AFC0-4210102A8DA7} 
          NumPanels       =   1
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -3412,7 +3411,7 @@ Public Function RefreshProperties(Optional pfStayOnSameLine As Boolean) As Boole
       End If
       .AddItem "Caption" & vbTab & sDescription & vbTab & Str(WFITEMPROP_TABCAPTION)
     End If
-    
+
     
     ' --------------------
     ' APPEARANCE PROPERTIES
