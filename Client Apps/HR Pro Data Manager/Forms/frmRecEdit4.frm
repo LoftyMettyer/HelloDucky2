@@ -13,7 +13,7 @@ Object = "{E28F058B-8430-42F1-9D74-4BEDD2F27CCE}#1.0#0"; "COA_OptionGroup.ocx"
 Object = "{4FD0EB05-F124-4460-A61D-CB587234FB75}#1.0#0"; "COA_Image.ocx"
 Object = "{EDB7B7A8-7908-4896-B964-57CE7262666E}#1.0#0"; "COA_OLE.ocx"
 Object = "{A48C54F8-25F4-4F50-9112-A9A3B0DBAD63}#1.0#0"; "COA_Label.ocx"
-Object = "{3389D561-C8E1-4CB0-A73E-77582EA68D3C}#1.0#0"; "COA_Lookup.ocx"
+Object = "{3389D561-C8E1-4CB0-A73E-77582EA68D3C}#1.1#0"; "COA_Lookup.ocx"
 Begin VB.Form frmRecEdit4 
    BorderStyle     =   1  'Fixed Single
    ClientHeight    =   5835
@@ -388,15 +388,15 @@ Begin VB.Form frmRecEdit4
          EndProperty
       End
       Begin COAOptionGroup.COA_OptionGroup OptionGroup1 
-         Height          =   720
+         Height          =   645
          Index           =   0
          Left            =   2115
          TabIndex        =   10
          Top             =   240
          Visible         =   0   'False
-         Width           =   1170
-         _ExtentX        =   2064
-         _ExtentY        =   1270
+         Width           =   1125
+         _ExtentX        =   1984
+         _ExtentY        =   1138
       End
       Begin VB.CommandButton Command1 
          Caption         =   "Command1"
@@ -953,7 +953,7 @@ Public Sub AddNewCopyOf()
     Else
       'MH20031002 Fault 7082 Reference Property instead of object to trap errors
       'MsgBox "You do not have 'new' permission on this " & IIf(mobjTableView.ViewID > 0, "view.", "table."), vbExclamation, "Security"
-      MsgBox "You do not have 'new' permission on this " & IIf(Me.ViewID > 0, "view.", "table."), vbExclamation, "Security"
+      COAMsgBox "You do not have 'new' permission on this " & IIf(Me.ViewID > 0, "view.", "table."), vbExclamation, "Security"
       Exit Sub
     End If
   End If
@@ -1211,10 +1211,10 @@ Private Sub SelectQuickFind()
 
   ' Display the quick find form.
   If RecordCount = 0 Then
-    MsgBox "No records exist.", vbExclamation, App.ProductName
+    COAMsgBox "No records exist.", vbExclamation, App.ProductName
     Exit Sub
   ElseIf (RecordCount = 1) And (mrsRecords.EditMode = adEditAdd) Then
-    MsgBox "No records exist.", vbExclamation, App.ProductName
+    COAMsgBox "No records exist.", vbExclamation, App.ProductName
     Exit Sub
   End If
     
@@ -1370,7 +1370,7 @@ Private Sub Form_Deactivate()
 Exit Sub
 
 LocalErr:
-  MsgBox Err.Description & vbCrLf & "(RecEdit4 - Form_Deactivate " & CStr(intErrorLine) & ")", vbCritical
+  COAMsgBox Err.Description & vbCrLf & "(RecEdit4 - Form_Deactivate " & CStr(intErrorLine) & ")", vbCritical
 
 End Sub
 
@@ -1670,7 +1670,7 @@ Private Sub ASRUserImage1_Click(Index As Integer)
       Else
   
         If Len(gsPhotoPath) = 0 Or (Dir(gsPhotoPath & IIf(Right(gsPhotoPath, 1) = "\", "*.*", "\*.*"), vbDirectory) = vbNullString) Then
-          MsgBox "Unable to edit photo fields." & vbNewLine & _
+          COAMsgBox "Unable to edit photo fields." & vbNewLine & _
                   "The photo path has not been defined, or is invalid." & vbNewLine & _
                   "Please set the Photo Path (non-linked) in PC Configuration." _
                    , vbExclamation + vbOKOnly, App.ProductName
@@ -2193,7 +2193,7 @@ Private Sub Command1_Click(Index As Integer)
             mfDataChanged = True
             frmMain.RefreshMainForm Me
           Else
-            MsgBox "The selected link record has been deleted.", vbExclamation, "Security"
+            COAMsgBox "The selected link record has been deleted.", vbExclamation, "Security"
           End If
         End If
       End If
@@ -2204,7 +2204,7 @@ Private Sub Command1_Click(Index As Integer)
   Else
     'NHRD12082004 Fault 8746
     sTempString = Replace(sRealSource, "_", " ")
-    MsgBox "You do not have permission to link to the " & sTempString & " table.", vbExclamation
+    COAMsgBox "You do not have permission to link to the " & sTempString & " table.", vbExclamation
   End If
     
   Screen.MousePointer = vbDefault
@@ -2654,7 +2654,7 @@ Private Sub ctlNewLookup1_Click(Index As Integer)
   Exit Sub
     
 Err_Trap:
-  MsgBox Err.Description & " - ctlNewLookup1_Click"
+  COAMsgBox Err.Description & " - ctlNewLookup1_Click", vbCritical
 
 End Sub
 
@@ -2780,7 +2780,7 @@ Private Sub RePopulateLookupControl(pctlLookupControl As COA_Lookup)
         sLookupFilterColumnName = vbNullString
         iLookupFilterColumnType = 0
         
-        MsgBox "You do not have 'read' permission on the lookup filter value column. No filter will be applied.", vbOKOnly, App.ProductName
+        COAMsgBox "You do not have 'read' permission on the lookup filter value column. No filter will be applied.", vbOKOnly, App.ProductName
       Else
         ' Update the value if it's painted onto current screen
         fControlFound = False
@@ -3092,7 +3092,7 @@ Private Sub RePopulateLookupControl(pctlLookupControl As COA_Lookup)
       End If
     
       If Not fOK Then
-        MsgBox "Unable to load the lookup values. You do not have 'read' permission on the '" & sLookupColumnName & "' column in the '" & objLookupTable.TableName & "' table.", vbOKOnly, App.ProductName
+        COAMsgBox "Unable to load the lookup values. You do not have 'read' permission on the '" & sLookupColumnName & "' column in the '" & objLookupTable.TableName & "' table.", vbOKOnly, App.ProductName
       Else
         ' User does have some read permission on the table (or views on it).
         Set frmLink = New frmLinkFind
@@ -3543,7 +3543,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
 Exit Sub
 
 LocalErr:
-  MsgBox Err.Description & vbCrLf & "(RecEdit4 - Form_QueryUnload " & CStr(intErrorLine) & ")", vbCritical
+  COAMsgBox Err.Description & vbCrLf & "(RecEdit4 - Form_QueryUnload " & CStr(intErrorLine) & ")", vbCritical
 
 End Sub
 
@@ -3950,7 +3950,7 @@ Public Function LoadScreen(ByVal plngScreenID As Long, ByVal plngViewID As Long)
       gobjProgress.Visible = False
       'MH20031002 Fault 7082 Reference Property instead of object to trap errors
       'MsgBox "You do not have 'new' permission on this empty " & IIf(mobjTableView.ViewID > 0, "view.", "table."), vbExclamation, "Security"
-      MsgBox "You do not have 'new' permission on this empty " & IIf(Me.ViewID > 0, "view.", "table."), vbExclamation, "Security"
+      COAMsgBox "You do not have 'new' permission on this empty " & IIf(Me.ViewID > 0, "view.", "table."), vbExclamation, "Security"
       fOK = False
     End If
   End If
@@ -4072,7 +4072,7 @@ ExitLoadScreen:
 
 ErrorTrap_LoadScreen:
   gobjProgress.Visible = False
-  MsgBox Err.Description & " - LoadScreen"
+  COAMsgBox Err.Description & " - LoadScreen", vbCritical
   fOK = False
   Err = False
   Resume ExitLoadScreen
@@ -4480,7 +4480,7 @@ Public Sub UpdateControls(Optional pfNoWarnings As Boolean)
       Next iLoop
     End If
   
-    MsgBox sWarning, vbExclamation + vbOKOnly, Application.Name
+    COAMsgBox sWarning, vbExclamation + vbOKOnly, Application.Name
     mfDataChanged = True
   End If
 
@@ -4546,7 +4546,7 @@ Err_Trap:
       If Len(sColumnName) > 0 Then
         fProgBarVisible = gobjProgress.Visible
         gobjProgress.Visible = False
-        MsgBox "The '" & sColumnName & "' field does not match the defined mask.", vbExclamation + vbOKOnly, Application.Name
+        COAMsgBox "The '" & sColumnName & "' field does not match the defined mask.", vbExclamation + vbOKOnly, Application.Name
         gobjProgress.Visible = fProgBarVisible
       End If
       mfDataChanged = True
@@ -4566,7 +4566,7 @@ Err_Trap:
     Case Else
         fProgBarVisible = gobjProgress.Visible
         gobjProgress.Visible = False
-        MsgBox Err.Description
+        COAMsgBox Err.Description, vbCritical
         gobjProgress.Visible = fProgBarVisible
         ' If the problem was an ole link type error, then still attempt to update the other fields
         If InStr(Err.Description, "link") Then Resume Next
@@ -4745,9 +4745,9 @@ Public Function Update(Optional pfDeactivating As Variant) As Boolean
         sMessage = "Unable to save record, a link must be made with the " & sMessage & " table."
         
         If sTableName <> "" Then
-          MsgBox sMessage, vbExclamation, Me.Caption
+          COAMsgBox sMessage, vbExclamation, Me.Caption
         Else
-          MsgBox "Unable to save record, a link must be made with the parent table.", vbExclamation, Me.Caption
+          COAMsgBox "Unable to save record, a link must be made with the parent table.", vbExclamation, Me.Caption
         End If
         Update = False
         
@@ -4758,7 +4758,7 @@ Public Function Update(Optional pfDeactivating As Variant) As Boolean
       
       'TM20020219 Fault 3522 - Added to catch if the table has no link columns defined.
       ElseIf (UBound(malngLinkRecordIDs) = 0) Then
-        MsgBox "Unable to save record, a link must be made with the parent table.", vbExclamation, Me.Caption
+        COAMsgBox "Unable to save record, a link must be made with the parent table.", vbExclamation, Me.Caption
         Update = False
         
         ' JPD20021206 Fault 4854
@@ -4955,7 +4955,7 @@ Public Function Update(Optional pfDeactivating As Variant) As Boolean
                 If Len(Trim(Replace(objControl.Text, UI.GetSystemDateSeparator, ""))) <> 0 Then
                   If Not IsDate(objControl.DateValue) Or objControl.DateValue < #1/1/1753# Then
                     objControl.ForeColor = vbRed
-                    MsgBox "You have entered an invalid date.", vbOKOnly + vbExclamation, App.Title
+                    COAMsgBox "You have entered an invalid date.", vbOKOnly + vbExclamation, App.Title
                     objControl.ForeColor = vbWindowText
                     objControl.DateValue = Null
                     If objControl.Visible And objControl.Enabled Then
@@ -5118,20 +5118,20 @@ Public Function Update(Optional pfDeactivating As Variant) As Boolean
       
       If mrsRecords!ID <> lngCurrentID Then
         If Filtered Then
-          MsgBox "The record saved does not satisfy the current filter.", vbExclamation, App.ProductName
+          COAMsgBox "The record saved does not satisfy the current filter.", vbExclamation, App.ProductName
         'MH20031002 Fault 7082 Reference Property instead of object to trap errors
         'ElseIf mobjTableView.ViewID > 0 Then
         ElseIf Me.ViewID > 0 Then
-          MsgBox "The record saved is no longer in the current view.", vbExclamation, App.ProductName
+          COAMsgBox "The record saved is no longer in the current view.", vbExclamation, App.ProductName
         End If
       End If
     Else
       If Filtered Then
-        MsgBox "The record saved does not satisfy the current filter.", vbExclamation, App.ProductName
+        COAMsgBox "The record saved does not satisfy the current filter.", vbExclamation, App.ProductName
       'MH20031002 Fault 7082 Reference Property instead of object to trap errors
       'ElseIf mobjTableView.ViewID > 0 Then
       ElseIf Me.ViewID > 0 Then
-        MsgBox "The record saved is no longer in the current view.", vbExclamation, App.ProductName
+        COAMsgBox "The record saved is no longer in the current view.", vbExclamation, App.ProductName
       End If
     End If
   
@@ -5202,7 +5202,7 @@ ExitUpdate:
 
 ErrorTrap:
   fSavedOK = False
-  MsgBox ODBC.FormatError(Err.Description), vbExclamation + vbOKOnly, Application.Name
+  COAMsgBox ODBC.FormatError(Err.Description), vbExclamation + vbOKOnly, Application.Name
   Resume ExitUpdate
 
 End Function
@@ -5307,7 +5307,7 @@ Private Sub AmendedRecord2(pfShowMessage As Boolean, piChangeReason As Integer)
         sMsg = "The record has been deleted by another user, screen will be refreshed."
     End Select
     
-    MsgBox sMsg, vbExclamation, App.ProductName
+    COAMsgBox sMsg, vbExclamation, App.ProductName
   End If
   
   Screen.MousePointer = vbHourglass
@@ -5484,7 +5484,7 @@ Public Sub CancelCourse()
   lngCurrentRecordID = mlngRecordID
   
   'NHRD15012007 Fault 3905, 07022007 Fault 11943
-  If MsgBox("Are you sure you want to cancel this Course ?", vbQuestion + vbYesNo, App.ProductName) = vbNo Then
+  If COAMsgBox("Are you sure you want to cancel this Course ?", vbQuestion + vbYesNo, App.ProductName) = vbNo Then
     Exit Sub
   End If
   
@@ -5502,7 +5502,7 @@ Public Sub CancelCourse()
         ' Check that the current user can read the table.
         fOK = objTBTable.AllowSelect
       Else
-        MsgBox "Unable to find the '" & gsTrainBookTableName & "' table.", vbOKOnly, App.ProductName
+        COAMsgBox "Unable to find the '" & gsTrainBookTableName & "' table.", vbOKOnly, App.ProductName
       End If
     End If
     
@@ -5511,14 +5511,14 @@ Public Sub CancelCourse()
       
       fOK = objTBColumnPrivileges.Item(gsTrainBookStatusColumnName).AllowUpdate
       If Not fOK Then
-        MsgBox "You do not have 'edit' permission on the '" & gsTrainBookStatusColumnName & "' column.", vbOKOnly, App.ProductName
+        COAMsgBox "You do not have 'edit' permission on the '" & gsTrainBookStatusColumnName & "' column.", vbOKOnly, App.ProductName
       End If
   
       ' If the training booking cancellation date is defined, check that the current user can update it.
       If Len(gsTrainBookCancelDateColumnName) > 0 Then
         fOK = objTBColumnPrivileges.Item(gsTrainBookCancelDateColumnName).AllowUpdate
         If Not fOK Then
-          MsgBox "You do not have 'edit' permission on the '" & gsTrainBookCancelDateColumnName & "' column.", vbOKOnly, App.ProductName
+          COAMsgBox "You do not have 'edit' permission on the '" & gsTrainBookCancelDateColumnName & "' column.", vbOKOnly, App.ProductName
         End If
       End If
     
@@ -5547,7 +5547,7 @@ Public Sub CancelCourse()
       If fTBRecordsExists Then
         ' Only ask the user if they want to transfer booking to another course if the current course has some bookings.
         'NHRD15012007 Fault 3905
-        iUserChoice = MsgBox("Transfer bookings to another course ?", vbYesNo + vbQuestion, App.ProductName)
+        iUserChoice = COAMsgBox("Transfer bookings to another course ?", vbYesNo + vbQuestion, App.ProductName)
         'iUserChoice = MsgBox("Transfer bookings to another course ?", vbYesNoCancel + vbQuestion, App.ProductName)
       Else
         iUserChoice = vbNo
@@ -5566,27 +5566,27 @@ Public Sub CancelCourse()
   
       fOK = objColumns.IsValid(gsCourseTitleColumnName)
       If Not fOK Then
-        MsgBox "The '" & gsCourseTitleColumnName & "' column is not in your current view.", vbOKOnly, App.ProductName
+        COAMsgBox "The '" & gsCourseTitleColumnName & "' column is not in your current view.", vbOKOnly, App.ProductName
       End If
   
       If fOK Then
         fOK = objColumns.Item(gsCourseTitleColumnName).AllowSelect
         If Not fOK Then
-          MsgBox "You do not have 'read' permission on the '" & gsCourseTitleColumnName & "' column.", vbOKOnly, App.ProductName
+          COAMsgBox "You do not have 'read' permission on the '" & gsCourseTitleColumnName & "' column.", vbOKOnly, App.ProductName
         End If
       End If
   
       If fOK Then
         fOK = objColumns.IsValid(gsCourseCancelDateColumnName)
         If Not fOK Then
-          MsgBox "The '" & gsCourseCancelDateColumnName & "' column is not in your current view.", vbOKOnly, App.ProductName
+          COAMsgBox "The '" & gsCourseCancelDateColumnName & "' column is not in your current view.", vbOKOnly, App.ProductName
         End If
       End If
   
       If fOK Then
         fOK = objColumns.Item(gsCourseCancelDateColumnName).AllowUpdate
         If Not fOK Then
-          MsgBox "You do not have 'edit' permission on the '" & gsCourseCancelDateColumnName & "' column.", vbOKOnly, App.ProductName
+          COAMsgBox "You do not have 'edit' permission on the '" & gsCourseCancelDateColumnName & "' column.", vbOKOnly, App.ProductName
         End If
       End If
   
@@ -5594,13 +5594,13 @@ Public Sub CancelCourse()
         If Len(gsCourseCancelledByColumnName) > 0 Then
           fOK = objColumns.IsValid(gsCourseCancelledByColumnName)
           If Not fOK Then
-            MsgBox "The '" & gsCourseCancelledByColumnName & "' column is not in your current view.", vbOKOnly, App.ProductName
+            COAMsgBox "The '" & gsCourseCancelledByColumnName & "' column is not in your current view.", vbOKOnly, App.ProductName
           End If
   
           If fOK Then
             fOK = objColumns.Item(gsCourseCancelledByColumnName).AllowUpdate
             If Not fOK Then
-              MsgBox "You do not have 'edit' permission on the '" & gsCourseCancelledByColumnName & "' column.", vbOKOnly, App.ProductName
+              COAMsgBox "You do not have 'edit' permission on the '" & gsCourseCancelledByColumnName & "' column.", vbOKOnly, App.ProductName
             End If
           End If
         End If
@@ -5723,7 +5723,7 @@ Public Sub CancelCourse()
         
         If fOK Then
           Screen.MousePointer = vbDefault
-          iUserChoice = MsgBox("Create waiting list entries for the cancelled bookings ?", vbYesNo + vbQuestion, App.ProductName)
+          iUserChoice = COAMsgBox("Create waiting list entries for the cancelled bookings ?", vbYesNo + vbQuestion, App.ProductName)
           Screen.MousePointer = vbHourglass
           
           If iUserChoice = vbYes Then
@@ -5752,12 +5752,12 @@ Public Sub CancelCourse()
 
             fOK = Not objTBColumn Is Nothing
             If Not fOK Then
-              MsgBox "Unable to find all related columns in the '" & gsTrainBookTableName & "' table.", vbOKOnly + vbInformation, App.ProductName
+              COAMsgBox "Unable to find all related columns in the '" & gsTrainBookTableName & "' table.", vbOKOnly + vbInformation, App.ProductName
               Exit For
             Else
               fOK = objTBColumn.AllowSelect
               If Not fOK Then
-                MsgBox "You do not have 'read' permission on the '" & objTBColumn.ColumnName & "' column in the '" & gsTrainBookTableName & "' table.", vbOKOnly + vbInformation, App.ProductName
+                COAMsgBox "You do not have 'read' permission on the '" & objTBColumn.ColumnName & "' column in the '" & gsTrainBookTableName & "' table.", vbOKOnly + vbInformation, App.ProductName
                 Exit For
               End If
             End If
@@ -5765,12 +5765,12 @@ Public Sub CancelCourse()
             If fOK Then
               fOK = Not objWLColumn Is Nothing
               If Not fOK Then
-                MsgBox "Unable to find all related columns in the '" & gsWaitListTableName & "' table.", vbOKOnly + vbInformation, App.ProductName
+                COAMsgBox "Unable to find all related columns in the '" & gsWaitListTableName & "' table.", vbOKOnly + vbInformation, App.ProductName
                 Exit For
               Else
                 fOK = objWLColumn.AllowUpdate
                 If Not fOK Then
-                  MsgBox "You do not have 'edit' permission on the '" & objWLColumn.ColumnName & "' column in the '" & gsWaitListTableName & "' table.", vbOKOnly + vbInformation, App.ProductName
+                  COAMsgBox "You do not have 'edit' permission on the '" & objWLColumn.ColumnName & "' column in the '" & gsWaitListTableName & "' table.", vbOKOnly + vbInformation, App.ProductName
                   Exit For
                 End If
               End If
@@ -5810,7 +5810,7 @@ Public Sub CancelCourse()
             ' Check that the user has permission to insert records from the Waiting List table.
             fOK = objWLTable.AllowInsert
             If Not fOK Then
-              MsgBox "You do not have 'new' permission on the '" & gsWaitListTableName & "' table.", vbOKOnly + vbInformation, App.ProductName
+              COAMsgBox "You do not have 'new' permission on the '" & gsWaitListTableName & "' table.", vbOKOnly + vbInformation, App.ProductName
             End If
           End If
           
@@ -5818,7 +5818,7 @@ Public Sub CancelCourse()
             ' Check that the user has permission to see the Waiting List Course Title column.
             fOK = objWLColumnPrivileges.Item(gsWaitListCourseTitleColumnName).AllowUpdate
             If Not fOK Then
-              MsgBox "You do not have 'edit' permission on the '" & gsWaitListCourseTitleColumnName & "' column.", vbOKOnly + vbInformation, App.ProductName
+              COAMsgBox "You do not have 'edit' permission on the '" & gsWaitListCourseTitleColumnName & "' column.", vbOKOnly + vbInformation, App.ProductName
             End If
           End If
             
@@ -5859,7 +5859,7 @@ Public Sub CancelCourse()
             
             If Not fOK Then
               Screen.MousePointer = vbDefault
-              MsgBox "Unable to create waiting list records." & vbNewLine & vbNewLine & sErrorMsg, vbOKOnly, App.ProductName
+              COAMsgBox "Unable to create waiting list records." & vbNewLine & vbNewLine & sErrorMsg, vbOKOnly, App.ProductName
               Screen.MousePointer = vbHourglass
             End If
           End If
@@ -5895,7 +5895,7 @@ Public Sub CancelCourse()
         fOK = datGeneral.ExecuteSql(sSQL, sErrorMsg)
         If Not fOK Then
           Screen.MousePointer = vbDefault
-          MsgBox "Unable to update the Training Booking records." & vbNewLine & vbNewLine & sErrorMsg, vbOKOnly, App.ProductName
+          COAMsgBox "Unable to update the Training Booking records." & vbNewLine & vbNewLine & sErrorMsg, vbOKOnly, App.ProductName
           Screen.MousePointer = vbHourglass
         End If
         
@@ -5945,7 +5945,7 @@ TidyUpAndExit:
 
 ErrorTrap:
   fOK = False
-  MsgBox ODBC.FormatError(Err.Description), vbExclamation + vbOKOnly, Application.Name
+  COAMsgBox ODBC.FormatError(Err.Description), vbExclamation + vbOKOnly, Application.Name
   Resume TidyUpAndExit
     
 End Sub
@@ -6079,7 +6079,7 @@ Public Function Find() As Boolean
   Exit Function
   
 Err_Trap:
-  MsgBox Err.Description & " - Find"
+  COAMsgBox Err.Description & " - Find", vbCritical
   
   ' JPD20020924
   Screen.MousePointer = vbDefault
@@ -6215,7 +6215,7 @@ Public Sub UpdateChildren(Optional pvCallingFormID As Variant)
   Exit Sub
   
 Err_Trap:
-  MsgBox Err.Description & " - UpdateChildren"
+  COAMsgBox Err.Description & " - UpdateChildren", vbCritical
 
 End Sub
 
@@ -6262,7 +6262,7 @@ Public Sub UpdateChildRecords()
           'MH20031002 Fault 7082 Reference Property instead of object to trap errors
           'MsgBox "This " & IIf(mobjTableView.ViewID > 0, "view", "table") & " is empty" & _
             " and you do not have 'new' permission on it.", vbExclamation, "Security"
-          MsgBox "This " & IIf(Me.ViewID > 0, "view", "table") & " is empty" & _
+          COAMsgBox "This " & IIf(Me.ViewID > 0, "view", "table") & " is empty" & _
             " and you do not have 'new' permission on it.", vbExclamation, "Security"
         End If
         RefreshFormCaption
@@ -6290,7 +6290,7 @@ Public Sub UpdateChildRecords()
   Exit Sub
   
 Err_Trap:
-  MsgBox Err.Description & " - UpdateChildRecords"
+  COAMsgBox Err.Description & " - UpdateChildRecords", vbCritical
 
 End Sub
 
@@ -6495,7 +6495,7 @@ Public Sub AddNew()
     Else
       'MH20031002 Fault 7082 Reference Property instead of object to trap errors
       'MsgBox "You do not have 'new' permission on this " & IIf(mobjTableView.ViewID > 0, "view.", "table."), vbExclamation, "Security"
-      MsgBox "You do not have 'new' permission on this " & IIf(Me.ViewID > 0, "view.", "table."), vbExclamation, "Security"
+      COAMsgBox "You do not have 'new' permission on this " & IIf(Me.ViewID > 0, "view.", "table."), vbExclamation, "Security"
       Exit Sub
     End If
   End If
@@ -6536,7 +6536,7 @@ Public Function SaveChanges(Optional pfUpdateControls As Variant, _
   If RecordChanged(pfUpdateControls, pfCancelUpdate) Or mbResendingToAccord Then
     ' prompt the user to save changes if the record has been changed.
     If mfDataChanged Then
-      iResult = MsgBox("Record changed, do you wish to save changes?", _
+      iResult = COAMsgBox("Record changed, do you wish to save changes?", _
         vbYesNoCancel + vbQuestion, Me.Caption)
     Else
       iResult = vbYes
@@ -6572,7 +6572,7 @@ Public Function SaveChanges(Optional pfUpdateControls As Variant, _
             'MH20031002 Fault 7082 Reference Property instead of object to trap errors
             'MsgBox "This " & IIf(mobjTableView.ViewID > 0, "view", "table") & " is empty" & _
               " and you do not have 'new' permission on it.", vbExclamation, "Security"
-            MsgBox "This " & IIf(Me.ViewID > 0, "view", "table") & " is empty" & _
+            COAMsgBox "This " & IIf(Me.ViewID > 0, "view", "table") & " is empty" & _
               " and you do not have 'new' permission on it.", vbExclamation, "Security"
             Screen.MousePointer = vbDefault
             Unload Me
@@ -6647,7 +6647,7 @@ Public Function RecordChanged(Optional pfUpdateControls As Variant, _
             'TM20020829 Fault 4168 & 4232 - only clear the filter if it is the parent, (Me.ParentTableID = 0).
             If (mrsRecords.BOF And mrsRecords.EOF) And Filtered And (Me.ParentTableID = 0) Then
               ' Clear the filter.
-              MsgBox "No records match the current filter." & vbNewLine & _
+              COAMsgBox "No records match the current filter." & vbNewLine & _
                 "The filter has been cleared.", vbInformation + vbOKOnly, App.ProductName
               ReDim mavFilterCriteria(3, 0)
               mrsRecords.Close
@@ -6667,7 +6667,7 @@ Public Function RecordChanged(Optional pfUpdateControls As Variant, _
               'MH20031002 Fault 7082 Reference Property instead of object to trap errors
               'MsgBox "This " & IIf(mobjTableView.ViewID > 0, "view", "table") & " is empty" & _
                 " and you do not have 'new' permission on it.", vbExclamation, "Security"
-              MsgBox "This " & IIf(Me.ViewID > 0, "view", "table") & " is empty" & _
+              COAMsgBox "This " & IIf(Me.ViewID > 0, "view", "table") & " is empty" & _
                 " and you do not have 'new' permission on it.", vbExclamation, "Security"
               Screen.MousePointer = vbDefault
               Unload Me
@@ -6692,7 +6692,7 @@ Public Function RecordChanged(Optional pfUpdateControls As Variant, _
   Exit Function
    
 Err_Trap:
-  MsgBox Err.Description & " - RecordChanged"
+  COAMsgBox Err.Description & " - RecordChanged", vbCritical
     
 End Function
 
@@ -7033,7 +7033,7 @@ ErrorTrap:
   Else
     fProgBarVisible = gobjProgress.Visible
     gobjProgress.Visible = False
-    MsgBox Err.Description & " - SetControlDefaults", vbExclamation + vbOKOnly, App.ProductName
+    COAMsgBox Err.Description & " - SetControlDefaults", vbExclamation + vbOKOnly, App.ProductName
     gobjProgress.Visible = fProgBarVisible
   End If
   
@@ -7447,7 +7447,7 @@ Private Function LoadControls(pobjScreen As clsScreen) As Boolean
 '          .BorderStyle = 0
 '        End If
 
-        If iControlType = ctlline Then
+        If iControlType = ctlLine Then
           .Alignment = objScreenControl.Alignment
         End If
 
@@ -7549,7 +7549,7 @@ Private Function LoadControls(pobjScreen As clsScreen) As Boolean
 
         ' Set the BackColor property for all controls
         ' except Images and tabs....and OLE's
-        If (iControlType And (ctlImage Or ctlTab Or ctlOle Or ctlPhoto Or ctlCommand Or ctlline)) = 0 Then
+        If (iControlType And (ctlImage Or ctlTab Or ctlOle Or ctlPhoto Or ctlCommand Or ctlLine)) = 0 Then
           .BackColor = objScreenControl.BackColor
         End If
 
@@ -7561,7 +7561,7 @@ Private Function LoadControls(pobjScreen As clsScreen) As Boolean
 
         ' Set the Font properties for all controls except
         ' images and OLE's
-        If (iControlType And (ctlImage Or ctlOle Or ctlPhoto Or ctlline)) = 0 Then
+        If (iControlType And (ctlImage Or ctlOle Or ctlPhoto Or ctlLine)) = 0 Then
           If iControlType = ctlLabel Then
             .Font = objScreenControl.FontName
             .FontSize = objScreenControl.FontSize
@@ -7571,7 +7571,7 @@ Private Function LoadControls(pobjScreen As clsScreen) As Boolean
             .FontUnderline = objScreenControl.FontUnderline
           Else
             ' JPD20030211 Fault 5041
-            If (iControlType = ctlworkingpattern) Or _
+            If (iControlType = ctlWorkingPattern) Or _
               (iControlType = ctlRadio) Then
               Dim objFont As StdFont
               Set objFont = New StdFont
@@ -7602,7 +7602,7 @@ Private Function LoadControls(pobjScreen As clsScreen) As Boolean
 
         ' Set the ForeColor property for all controls except
         ' images, ole's and tabs
-        If (iControlType And (ctlImage Or ctlOle Or ctlTab Or ctlPhoto Or ctlCommand Or ctlline)) = 0 Then
+        If (iControlType And (ctlImage Or ctlOle Or ctlTab Or ctlPhoto Or ctlCommand Or ctlLine)) = 0 Then
           .ForeColor = objScreenControl.ForeColor
         End If
 
@@ -7869,12 +7869,12 @@ Private Function LoadControls(pobjScreen As clsScreen) As Boolean
                 End If
 
                 If Not .Enabled Then
-                  If (iControlType And (ctlImage Or ctlOle Or ctlTab Or ctlPhoto Or ctlworkingpattern)) = 0 Then
+                  If (iControlType And (ctlImage Or ctlOle Or ctlTab Or ctlPhoto Or ctlWorkingPattern)) = 0 Then
                     .BackColor = COL_GREY
                   End If
                 End If
               Else
-                If (iControlType And (ctlImage Or ctlOle Or ctlTab Or ctlPhoto Or ctlworkingpattern)) = 0 Then
+                If (iControlType And (ctlImage Or ctlOle Or ctlTab Or ctlPhoto)) = 0 Then
                   .BackColor = COL_GREY
                   'NHRD23032007 Fault 11675 Making readonly multiline fields scrollable
                   If objScreenControl.Multiline Then
@@ -7887,7 +7887,7 @@ Private Function LoadControls(pobjScreen As clsScreen) As Boolean
             Else
               ' No Select privileges, grey it out and disable the control
               .Enabled = False
-              If (iControlType And (ctlImage Or ctlOle Or ctlTab Or ctlPhoto Or ctlworkingpattern)) = 0 Then
+              If (iControlType And (ctlImage Or ctlOle Or ctlTab Or ctlPhoto)) = 0 Then
                 .BackColor = COL_GREY
               End If
 
@@ -7900,12 +7900,12 @@ Private Function LoadControls(pobjScreen As clsScreen) As Boolean
           End If
         Else
           ' Parent table control.
-          If (iControlType And (ctlLabel Or ctlFrame Or ctlImage Or ctlline)) = 0 Then
+          If (iControlType And (ctlLabel Or ctlFrame Or ctlImage Or ctlLine)) = 0 Then
             .Enabled = False
 
             If (iControlType <> ctlImage) And _
               (iControlType <> ctlPhoto) And _
-              (iControlType <> ctlworkingpattern) And _
+              (iControlType <> ctlWorkingPattern) And _
               (iControlType <> ctlOle) Then 'NPG20080519 Fault 13003
               .BackColor = COL_GREY
               'NHRD23032007 Fault 11675 Making readonly multiline fields scrollable
@@ -7944,7 +7944,7 @@ Private Function LoadControls(pobjScreen As clsScreen) As Boolean
 
 ErrorTrap_LoadControls:
   gobjProgress.Visible = False
-  MsgBox Err.Description & " - LoadControls", vbExclamation + vbOKOnly, App.ProductName
+  COAMsgBox Err.Description & " - LoadControls", vbExclamation + vbOKOnly, App.ProductName
   LoadControls = False
 
 End Function
@@ -8126,7 +8126,7 @@ Private Function GetControlArray(ByRef pobjScreenControl As clsScreenControl) As
       
     Case ctlTab
     
-    Case ctlline
+    Case ctlLine
       Set objControlArray = Me.ASRLine1
       
     Case ctlFrame
@@ -8135,7 +8135,7 @@ Private Function GetControlArray(ByRef pobjScreenControl As clsScreenControl) As
     Case ctlCommand
       Set objControlArray = Me.Command1
       
-    Case ctlworkingpattern
+    Case ctlWorkingPattern
       Set objControlArray = Me.ASRWorkingPattern1
       
     Case Else
@@ -8454,7 +8454,7 @@ Private Function GetRecords() As Boolean
   
 ErrorTrap_GetRecords:
   GetRecords = False
-  MsgBox Err.Description & " - GetRecords", vbExclamation + vbOKOnly, App.ProductName
+  COAMsgBox Err.Description & " - GetRecords", vbExclamation + vbOKOnly, App.ProductName
   Err = False
     
 End Function
@@ -8911,7 +8911,7 @@ Private Sub OLE1_Click(Index As Integer)
           'JPD 20030828 Fault 4285
           If (Len(gsOLEPath) = 0) Or (Dir(gsOLEPath & IIf(Right(gsOLEPath, 1) = "\", "*.*", "\*.*"), vbDirectory) = vbNullString) Then
             fOLEOK = False
-            MsgBox "Unable to edit OLE fields." & vbNewLine & _
+            COAMsgBox "Unable to edit OLE fields." & vbNewLine & _
                  "The OLE path has not been defined, or is invalid." & vbNewLine & _
                  "Please set the Server OLE Path in PC Configuration." _
                  , vbExclamation + vbOKOnly, App.ProductName
@@ -8920,7 +8920,7 @@ Private Sub OLE1_Click(Index As Integer)
           'JPD 20030828 Fault 4285
           If (Len(gsLocalOLEPath) = 0) Or (Dir(gsLocalOLEPath & IIf(Right(gsLocalOLEPath, 1) = "\", "*.*", "\*.*"), vbDirectory) = vbNullString) Then
             fOLEOK = False
-            MsgBox "Unable to edit this OLE field." & vbNewLine & _
+            COAMsgBox "Unable to edit this OLE field." & vbNewLine & _
                  "The Local OLE path has not been defined, or is invalid." & vbNewLine & _
                  "Please set the Local OLE Path in PC Configuration." _
                  , vbExclamation + vbOKOnly, App.ProductName
@@ -9017,7 +9017,7 @@ Private Sub OLE1_Click(Index As Integer)
             
             'JPD 20040209 Fault ????
             If Len(mrsRecords.Fields(sThisControlsColumnName)) > 0 Then
-              MsgBox "This field contains the OLE object below, however, the column" & vbNewLine & _
+              COAMsgBox "This field contains the OLE object below, however, the column" & vbNewLine & _
                      "definition states OLE objects for this column are held locally" & vbNewLine & _
                      "and the object does not exist on your machine." & vbNewLine & vbNewLine & _
                      Replace(gsLocalOLEPath & "\" & mrsRecords.Fields(sThisControlsColumnName), "\\", "\") _
@@ -9608,7 +9608,7 @@ TidyUpAndExit:
   Exit Sub
   
 ErrorTrap:
-  MsgBox Err.Description & " - GotFocusCheck"
+  COAMsgBox Err.Description & " - GotFocusCheck", vbCritical
   Resume TidyUpAndExit
         
 End Sub
@@ -9647,21 +9647,21 @@ Public Sub Requery(pfReset As Boolean, Optional pvCallingFormID As Variant)
           'If mrsRecords!ID <> lngOldRecordID Then
           If mrsRecords!ID <> lngOldRecordID And lngOldRecordID <> 0 Then
             If Filtered Then
-              MsgBox "The '" & Replace(mobjTableView.TableName, "_", " ") & "' record does not satisfy the current filter.", vbExclamation, App.ProductName
+              COAMsgBox "The '" & Replace(mobjTableView.TableName, "_", " ") & "' record does not satisfy the current filter.", vbExclamation, App.ProductName
             ElseIf Me.ViewID > 0 Then
-              MsgBox "The '" & Replace(mobjTableView.TableName, "_", " ") & "' record is no longer in the current view.", vbExclamation, App.ProductName
+              COAMsgBox "The '" & Replace(mobjTableView.TableName, "_", " ") & "' record is no longer in the current view.", vbExclamation, App.ProductName
             End If
           End If
         Else
           'JPD 20041109 Fault 9008
           If Filtered Then
-            MsgBox "The '" & Replace(mobjTableView.TableName, "_", " ") & "' record does not satisfy the current filter.", vbExclamation, App.ProductName
+            COAMsgBox "The '" & Replace(mobjTableView.TableName, "_", " ") & "' record does not satisfy the current filter.", vbExclamation, App.ProductName
           
           'MH20060619 Fault 11236
           'Supress message if no records as the "has been deleted" message should appear instead.
           'ElseIf Me.ViewID > 0 Then
           ElseIf Me.ViewID > 0 And mrsRecords.RecordCount > 0 Then
-            MsgBox "The '" & Replace(mobjTableView.TableName, "_", " ") & "' record is no longer in the current view.", vbExclamation, App.ProductName
+            COAMsgBox "The '" & Replace(mobjTableView.TableName, "_", " ") & "' record is no longer in the current view.", vbExclamation, App.ProductName
           End If
         End If
       End If
@@ -9787,7 +9787,7 @@ Public Sub SelectOrder()
                 'MH20031002 Fault 7082 Reference Property instead of object to trap errors
                 'MsgBox "This " & IIf(mobjTableView.ViewID > 0, "view", "table") & " is empty" & _
                   " and you do not have 'new' permission on it.", vbExclamation, "Security"
-                MsgBox "This " & IIf(Me.ViewID > 0, "view", "table") & " is empty" & _
+                COAMsgBox "This " & IIf(Me.ViewID > 0, "view", "table") & " is empty" & _
                   " and you do not have 'new' permission on it.", vbExclamation, "Security"
               End If
               Unload Me
@@ -9847,7 +9847,7 @@ Public Sub ClearFilter()
               'MH20031002 Fault 7082 Reference Property instead of object to trap errors
               'MsgBox "This " & IIf(mobjTableView.ViewID > 0, "view", "table") & " is now empty" & _
                 " and you do not have 'new' permission on it.", vbExclamation, "Security"
-              MsgBox "This " & IIf(Me.ViewID > 0, "view", "table") & " is now empty" & _
+              COAMsgBox "This " & IIf(Me.ViewID > 0, "view", "table") & " is now empty" & _
                 " and you do not have 'new' permission on it.", vbExclamation, "Security"
             End If
             Screen.MousePointer = vbDefault
@@ -9926,7 +9926,7 @@ Public Sub SelectFilter()
           'TM20020107 Fault 1379
           'TM20020204 Fault 3416 - Clear the filter if no records AND is a parent table.
           If mrsRecords.BOF And mrsRecords.EOF And (Me.ParentTableID = 0) Then
-            MsgBox "No records match the current filter." & vbNewLine & _
+            COAMsgBox "No records match the current filter." & vbNewLine & _
                    "No filter is applied.", vbInformation + vbOKOnly, App.ProductName
 
             ReDim mavFilterCriteria(3, 0)
@@ -9970,7 +9970,7 @@ Public Sub SelectFilter()
                 'MH20031002 Fault 7082 Reference Property instead of object to trap errors
                 'MsgBox "This " & IIf(mobjTableView.ViewID > 0, "view", "table") & " is empty" & _
                   " and you do not have 'new' permission on it.", vbExclamation, "Security"
-                MsgBox "This " & IIf(Me.ViewID > 0, "view", "table") & " is empty" & _
+                COAMsgBox "This " & IIf(Me.ViewID > 0, "view", "table") & " is empty" & _
                   " and you do not have 'new' permission on it.", vbExclamation, "Security"
               End If
               Unload Me
@@ -10089,7 +10089,7 @@ Public Sub DeleteRecord(Optional pfPrompt As Variant, Optional pfFromFind As Boo
         sTemp = "Are you sure you want to delete this record ?"
       End If
       
-      If MsgBox(sTemp, vbQuestion + vbYesNo, "Delete Record " & IIf(Len(sRecordDescription) = 0, "", " - " & sRecordDescription)) <> vbYes Then
+      If COAMsgBox(sTemp, vbQuestion + vbYesNo, "Delete Record " & IIf(Len(sRecordDescription) = 0, "", " - " & sRecordDescription)) <> vbYes Then
         fDeleteOK = False
       End If
     End If
@@ -10142,7 +10142,7 @@ ExitDelete:
 
 ErrorTrap:
   fDeleteOK = False
-  MsgBox ODBC.FormatError(Err.Description), vbExclamation + vbOKOnly, Application.Name
+  COAMsgBox ODBC.FormatError(Err.Description), vbExclamation + vbOKOnly, Application.Name
   Resume ExitDelete
 
 End Sub
@@ -10432,7 +10432,7 @@ Private Function LostFocusCheck(pctlControl As Control) As Boolean
         If Not IsDate(.DateValue) Or .DateValue < #1/1/1753# Then
   
           .ForeColor = vbRed
-          MsgBox "You have entered an invalid date.", vbOKOnly + vbExclamation, App.Title
+          COAMsgBox "You have entered an invalid date.", vbOKOnly + vbExclamation, App.Title
           .ForeColor = vbWindowText
           .DateValue = Null
           If .Visible And .Enabled Then
@@ -10505,7 +10505,7 @@ TidyUpAndExit:
   Exit Function
   
 ErrorTrap:
-  MsgBox Err.Description & " - LostFocusCheck"
+  COAMsgBox Err.Description & " - LostFocusCheck", vbCritical
   Resume TidyUpAndExit
   
 End Function
@@ -10965,7 +10965,7 @@ Public Sub MailMergeClick()
   Dim blnOK As Boolean
 
   If mlngRecordID = 0 Then
-    MsgBox "Please select which record you would like to do a mail merge for", vbInformation
+    COAMsgBox "Please select which record you would like to do a mail merge for", vbInformation
     Exit Sub
   End If
 
@@ -11025,7 +11025,7 @@ Dim fOK As Boolean
   End If
 
   If mlngRecordID = 0 Then
-    MsgBox "The Absence Breakdown report can only be produced for existing records." & vbNewLine & "If you are currently adding a new record, please save the record first.", vbInformation + vbOKOnly, App.Title
+    COAMsgBox "The Absence Breakdown report can only be produced for existing records." & vbNewLine & "If you are currently adding a new record, please save the record first.", vbInformation + vbOKOnly, App.Title
     Exit Sub
   Else
 
@@ -11065,7 +11065,7 @@ Public Sub AbsenceCalendarClick()
   End If
   
   If mlngRecordID = 0 Then
-    MsgBox "The Absence Calendar can only be produced for existing records." & vbNewLine & "If you are currently adding a new record, please save the record first.", vbInformation + vbOKOnly, App.Title
+    COAMsgBox "The Absence Calendar can only be produced for existing records." & vbNewLine & "If you are currently adding a new record, please save the record first.", vbInformation + vbOKOnly, App.Title
     Exit Sub
   Else
     ' JDM - 13/08/01 - Fault 2629 - Validate parameters before running calendar
@@ -11091,7 +11091,7 @@ Public Sub BradfordFactorClick()
   End If
 
   If mlngRecordID = 0 Then
-    MsgBox "The Bradford Factor can only be produced for existing records." & vbNewLine & "If you are currently adding a new record, please save the record first.", vbInformation + vbOKOnly, App.Title
+    COAMsgBox "The Bradford Factor can only be produced for existing records." & vbNewLine & "If you are currently adding a new record, please save the record first.", vbInformation + vbOKOnly, App.Title
     Exit Sub
   Else
     'JDM - 24/07/01 - Fault 2478 - Not checking correct value
@@ -11128,7 +11128,7 @@ Public Sub DataTransferClick()
   Dim blnOK As Boolean
 
   If mlngRecordID = 0 Then
-    MsgBox "Please select which record you would like to do a data transfer for", vbInformation
+    COAMsgBox "Please select which record you would like to do a data transfer for", vbInformation
     Exit Sub
   End If
 
@@ -11215,7 +11215,7 @@ Public Function RefreshRecordset() As Boolean
     ' Check if the refreshed recordset is empty and filtered.
     If (.BOF And .EOF) And Filtered Then
       ' Clear the filter.
-      MsgBox "No records match the current filter." & vbNewLine & _
+      COAMsgBox "No records match the current filter." & vbNewLine & _
         "The filter has been cleared.", vbInformation + vbOKOnly, App.ProductName
       ReDim mavFilterCriteria(3, 0)
       .Close
@@ -11259,7 +11259,7 @@ Public Function RefreshRecordset() As Boolean
   
 TidyUpAndExit:
   If Not fOK Then
-    MsgBox sErrorMsg, vbExclamation, "Security"
+    COAMsgBox sErrorMsg, vbExclamation, "Security"
     ' Reset the mousepointer as it may have been changed in the calling method.
     Screen.MousePointer = vbDefault
     Unload Me
@@ -11281,7 +11281,7 @@ Public Sub EmailClick()
   Dim strRecordDetails As String
   
   If mlngRecordID = 0 Then
-    MsgBox "Please select which record you would like to do a mail merge for", vbInformation
+    COAMsgBox "Please select which record you would like to do a mail merge for", vbInformation
     Exit Sub
   End If
 
@@ -11322,7 +11322,7 @@ Public Sub LabelsClick()
   Dim blnOK As Boolean
 
   If mlngRecordID = 0 Then
-    MsgBox "Please select which record you would like to do a labels & envelopes for", vbInformation
+    COAMsgBox "Please select which record you would like to do a labels & envelopes for", vbInformation
     Exit Sub
   End If
 
@@ -11381,7 +11381,7 @@ Public Sub MatchReportClick(mrtMatchReportType As MatchReportType)
   Dim lngTYPE As UtilityType
   
   If mlngRecordID = 0 Then
-    MsgBox "Please select which record you would like to run a report for.", vbInformation
+    COAMsgBox "Please select which record you would like to run a report for.", vbInformation
     Exit Sub
   End If
 
@@ -11486,7 +11486,7 @@ Public Sub RecordProfileClick()
   Dim blnExit As Boolean
 
   If mlngRecordID = 0 Then
-    MsgBox "Please select which record you would like to run a record profile for.", vbInformation
+    COAMsgBox "Please select which record you would like to run a record profile for.", vbInformation
     Exit Sub
   End If
 
@@ -11540,7 +11540,7 @@ Public Sub CalendarReportClick()
   Dim blnExit As Boolean
 
   If mlngRecordID = 0 Then
-    MsgBox "Please select which record you would like to run a calendar report for.", vbInformation
+    COAMsgBox "Please select which record you would like to run a calendar report for.", vbInformation
     Exit Sub
   End If
 
@@ -11780,7 +11780,7 @@ Public Sub AccordClick()
   End If
 
   If mlngRecordID = 0 Then
-    MsgBox "Payroll transactions can only be produced for existing records." & vbNewLine & "If you are currently adding a new record, please save the record first.", vbInformation + vbOKOnly, App.Title
+    COAMsgBox "Payroll transactions can only be produced for existing records." & vbNewLine & "If you are currently adding a new record, please save the record first.", vbInformation + vbOKOnly, App.Title
     Exit Sub
   Else
   
@@ -11798,7 +11798,7 @@ Public Sub AccordClick()
       frmAccordViewTransfers.Show vbModal
       Set frmAccordViewTransfers = Nothing
     Else
-      MsgBox "Payroll transactions can only be viewed for defined transfer types.", vbInformation + vbOKOnly, App.Title
+      COAMsgBox "Payroll transactions can only be viewed for defined transfer types.", vbInformation + vbOKOnly, App.Title
       Exit Sub
     End If
   End If
@@ -11830,7 +11830,7 @@ TidyUpAndExit:
   Exit Function
   
 ErrorTrap:
-  MsgBox "Error setting control level." & vbCr & vbCr & _
+  COAMsgBox "Error setting control level." & vbCr & vbCr & _
     Err.Description, vbExclamation + vbOKOnly, App.ProductName
   fOK = False
   Resume TidyUpAndExit

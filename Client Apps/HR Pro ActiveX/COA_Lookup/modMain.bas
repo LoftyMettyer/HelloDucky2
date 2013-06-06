@@ -7,12 +7,14 @@ Public Declare Function GetWindowRect Lib "user32" (ByVal hwnd As Long, lpRect A
 Public Declare Function GetDesktopWindow Lib "user32" () As Long
 
 Public Type RECT
-        Left As Long
-        Top As Long
-        Right As Long
-        Bottom As Long
+    Left As Long
+    Top As Long
+    Right As Long
+    Bottom As Long
 End Type
 
 
-
-
+Public Sub TrySetFocus(ctl As Control)
+    On Local Error Resume Next
+    ctl.SetFocus
+End Sub

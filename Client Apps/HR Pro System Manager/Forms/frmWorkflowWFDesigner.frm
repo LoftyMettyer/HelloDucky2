@@ -83,7 +83,7 @@ Begin VB.Form frmWorkflowWFDesigner
       Top             =   240
       Visible         =   0   'False
       Width           =   1500
-      _ExtentX        =   2990
+      _ExtentX        =   2381
       _ExtentY        =   1111
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Verdana"
@@ -4885,21 +4885,11 @@ Public Function AutoSizeControl(pctlControl As VB.Control) As Boolean
                   
                     pctlControl.Width = sngWidth + (2 * XFrame)
                   Else
-                    pctlControl.Width = Me.TextWidth(String(.Fields("size"), "W")) + (2 * XFrame)
+                    pctlControl.Width = Default_ColumnWidth_Textbox(.Fields("size").value)
                   End If
                 End If
               Else
-                sngWidth = Me.TextWidth(String(.Fields("size"), "8"))
-                
-                If .Fields("decimals") > 0 Then
-                  sngWidth = sngWidth + Me.TextWidth(String(1, "."))
-                End If
-
-                If .Fields("Use1000Separator") = True Then
-                  sngWidth = sngWidth + Me.TextWidth(String(CInt((.Fields("size") - .Fields("decimals")) / 3), ","))
-                End If
-
-                pctlControl.Width = sngWidth + (2 * XFrame)
+                pctlControl.Width = Default_ColumnWidth_Numeric(.Fields("size").value, .Fields("decimals").value, .Fields("Use1000Separator").value)
               End If
             End If
         End Select
@@ -7678,5 +7668,23 @@ Private Sub lblBlankDesigner_MouseUp(Button As Integer, Shift As Integer, X As S
   Form_MouseUp Button, Shift, X + lblBlankDesigner.Left, Y + lblBlankDesigner.Top
 
 End Sub
+
+
+' Default column width following font change to Verdana (Textbox)
+Public Function Default_ColumnWidth_Textbox(ByRef plngColumnWidth As Long) As Long
+  Default_ColumnWidth_Textbox = CLng(((plngColumnWidth + 1) * 95 + 105) / 10) * 10
+End Function
+
+' Default column width following font change to Verdana (Textbox)
+Public Function Default_ColumnWidth_Numeric(ByRef plngNumeric As Long, ByRef plngDecimals As Long, ByRef pbSeperators As Boolean) As Long
+
+  Dim lngSeperators As Long
+  Dim lngWidth As Long
+
+  lngSeperators = 60 * IIf(pbSeperators, plngNumeric / 3, 0)
+  lngWidth = plngNumeric + IIf(plngDecimals > 0, plngDecimals + 1, 0) + 1
+
+  Default_ColumnWidth_Numeric = (plngNumeric * 105) + 120 + 60 + lngSeperators
+End Function
 
 

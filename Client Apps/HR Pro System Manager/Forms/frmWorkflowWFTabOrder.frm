@@ -828,7 +828,7 @@ Private Function GetPageControls(piPageNo As Integer) As Boolean
                                                         sName, sIcon, sIcon)
         With objItem
           .SubItems(1) = ControlTypeName(iWFItemType)
-          .SubItems(2) = Right(Space(6) & ctlControl.TabIndex, 10)
+          .SubItems(2) = Right(Space(6) & ctlControl.TabIndex, 6)
         End With
         
       End If
@@ -837,7 +837,7 @@ Private Function GetPageControls(piPageNo As Integer) As Boolean
   
   ListView1(piPageNo).Sorted = True
   For Each objItem In ListView1(piPageNo).ListItems
-    objItem.SubItems(2) = Right(Space(6) & objItem.Index, 10)
+    objItem.SubItems(2) = Right(Space(6) & objItem.Index, 6)
   Next
     
   fOK = True
