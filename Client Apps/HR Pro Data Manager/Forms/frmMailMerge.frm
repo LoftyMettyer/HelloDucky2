@@ -77,15 +77,15 @@ Begin VB.Form frmMailMerge
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmMailMerge.frx":08D6
       Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "fraDefinition(1)"
-      Tab(0).Control(1)=   "fraDefinition(0)"
+      Tab(0).Control(0)=   "fraDefinition(0)"
+      Tab(0).Control(1)=   "fraDefinition(1)"
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Colu&mns"
       TabPicture(1)   =   "frmMailMerge.frx":08F2
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraColumns(0)"
+      Tab(1).Control(0)=   "fraColumns(2)"
       Tab(1).Control(1)=   "fraColumns(1)"
-      Tab(1).Control(2)=   "fraColumns(2)"
+      Tab(1).Control(2)=   "fraColumns(0)"
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "&Sort Order"
       TabPicture(2)   =   "frmMailMerge.frx":090E
@@ -283,13 +283,13 @@ Begin VB.Form frmMailMerge
             RecordSelectors =   0   'False
             Col.Count       =   3
             stylesets.count =   5
-            stylesets(0).Name=   "ssetHeaderDisabled"
-            stylesets(0).ForeColor=   -2147483631
-            stylesets(0).BackColor=   -2147483633
+            stylesets(0).Name=   "ssetSelected"
+            stylesets(0).ForeColor=   -2147483634
+            stylesets(0).BackColor=   -2147483635
             stylesets(0).Picture=   "frmMailMerge.frx":0D1F
-            stylesets(1).Name=   "ssetSelected"
-            stylesets(1).ForeColor=   -2147483634
-            stylesets(1).BackColor=   -2147483635
+            stylesets(1).Name=   "ssetHeaderDisabled"
+            stylesets(1).ForeColor=   -2147483631
+            stylesets(1).BackColor=   -2147483633
             stylesets(1).Picture=   "frmMailMerge.frx":0D3B
             stylesets(2).Name=   "ssetEnabled"
             stylesets(2).ForeColor=   -2147483640
@@ -3022,9 +3022,9 @@ Private Sub optAllRecords_Click()
 End Sub
 
 Private Sub optOutputFormat_Click(Index As Integer)
-  fraOutput(0).Visible = (Index = 0)
-  fraOutput(1).Visible = (Index = 1)
-  fraOutput(2).Visible = (Index = 2)
+  FraOutput(0).Visible = (Index = 0)
+  FraOutput(1).Visible = (Index = 1)
+  FraOutput(2).Visible = (Index = 2)
   Me.Changed = True
 End Sub
 
@@ -3981,7 +3981,7 @@ Private Function ValidateDefinition()
           Exit Function
     End If
 
-    If chkDestination(2).Value = True And Len(txtFilename(0).Text) = 0 Then
+    If chkDestination(2).Value = vbChecked And Len(txtFilename(0).Text) = 0 Then
       SSTab1.Tab = 3
       WarningMsgbox "You must enter a file name."
       cmdFilename(0).SetFocus
