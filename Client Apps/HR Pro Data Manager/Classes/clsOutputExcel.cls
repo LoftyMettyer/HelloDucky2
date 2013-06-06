@@ -1176,7 +1176,7 @@ Private Sub CreatePivotTable(lngMaxRows As Long, lngMaxCols As Long, strHor As S
     Set mxlFirstSheet = mxlWorkSheet
   End If
 
-  xlDataSheet.Visible = IIf(gblnReportPackMode, xlSheetVisible, xlSheetHidden)
+  xlDataSheet.Visible = xlSheetHidden 'IIf(gblnReportPackMode, xlSheetVisible, xlSheetHidden)
   Set xlStart = mxlWorkSheet.Cells(mlngDataCurrentRow, mlngDataStartCol)
 
   mxlApp.DisplayAlerts = False
