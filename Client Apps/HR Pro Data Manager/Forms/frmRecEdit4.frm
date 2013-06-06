@@ -1362,7 +1362,7 @@ Private Sub Combo1_KeyPress(Index As Integer, KeyAscii As Integer)
 
   ' RH 31/07/00 - If space bar is pressed, then drop down the combo box
   If KeyAscii = 32 Then
-    UI.cboDropDown Combo1(Index).hwnd, True
+    UI.cboDropDown Combo1(Index).hWnd, True
   End If
   
 End Sub
@@ -3413,19 +3413,19 @@ Private Sub ctlNewLookup1_NewEntry(Index As Integer)
       '''' Only add a new ClookupValue to the ClookupValues collection if it
       '''' does not already exist.
       If gcoLookupValues.Count > 0 Then
-        If gcoLookupValues.IsValid(Me.hwnd) Then
-          gcoLookupValues.Remove CStr(Me.hwnd)
+        If gcoLookupValues.IsValid(Me.hWnd) Then
+          gcoLookupValues.Remove CStr(Me.hWnd)
         End If
       End If
       ' Add the ClookupValue to the ClookupValues collection.
-      Set objLUValue = gcoLookupValues.Add(sLookupColumnName, Me.hwnd, 0, mobjScreenControls.Item(ctlNewLookup1(Index).Tag).ColumnID)
+      Set objLUValue = gcoLookupValues.Add(sLookupColumnName, Me.hWnd, 0, mobjScreenControls.Item(ctlNewLookup1(Index).Tag).ColumnID)
   
       ' Disable the current record edit screen, and display the lookup table screen.
       DisableMe
       AddNewTableEntry mobjScreenControls.Item(sTag).LookupTableID
       
       ' Set the child Hwnd value in the ClookupValue object.
-      objLUValue.ChildHwnd = frmMain.ActiveForm.hwnd
+      objLUValue.ChildHwnd = frmMain.ActiveForm.hWnd
     End If
   End If
 
@@ -3809,7 +3809,7 @@ Private Sub Form_Unload(Cancel As Integer)
   If mfTableEntry Then
     ' Get the Hwnd value of the parent form.
     For Each objLUValue In gcoLookupValues.Collection
-      If objLUValue.ChildHwnd = Me.hwnd Then
+      If objLUValue.ChildHwnd = Me.hWnd Then
         lngParentHWnd = objLUValue.ParentHwnd
         Exit For
       End If
@@ -3818,7 +3818,7 @@ Private Sub Form_Unload(Cancel As Integer)
     
     ' Get the parent form.
     For Each fTemp In Forms
-      If fTemp.hwnd = lngParentHWnd Then
+      If fTemp.hWnd = lngParentHWnd Then
         fTemp.EnableMe
         
         If Not mfLeaveLookup Then
@@ -3868,7 +3868,7 @@ Private Sub Form_Unload(Cancel As Integer)
   Set mobjTableView = Nothing
 
   For Each fTemp In Forms
-    If fTemp.hwnd = lngParentHWnd Then
+    If fTemp.hWnd = lngParentHWnd Then
       fTemp.SetFocus
       frmMain.RefreshMainForm fTemp
       Exit For
@@ -4168,7 +4168,7 @@ Public Function LoadScreen(ByVal plngScreenID As Long, ByVal plngViewID As Long)
 
     ' Load the controls onto the screen.
     
-    UI.LockWindow Me.hwnd
+    UI.LockWindow Me.hWnd
     fOK = LoadControls(objScreen)
     UI.UnlockWindow
   End If
@@ -7728,7 +7728,7 @@ Private Function LoadControls(pobjScreen As clsScreen) As Boolean
         If TypeOf objNewControl Is TDBText6Ctl.TDBText _
           Or TypeOf objNewControl Is TDBNumber6Ctl.TDBNumber _
           Or TypeOf objNewControl Is GTMaskDate.GTMaskDate Then
-              mobjBorders.SetBorder objNewControl.hwnd, ctTextBox, RGB(169, 177, 184)
+              mobjBorders.SetBorder objNewControl.hWnd, ctTextBox, RGB(169, 177, 184)
         End If
 
 '        ' Position the new control on the screen
@@ -9746,7 +9746,7 @@ Private Sub TabStrip1_Click()
   If Not mfLoading Then
   
     ' Lock the window refreshing.
-    UI.LockWindow Me.hwnd
+    UI.LockWindow Me.hWnd
   
     ' Get the index of the selected tabpage.
     iIndex = TabStrip1.SelectedItem.Index
