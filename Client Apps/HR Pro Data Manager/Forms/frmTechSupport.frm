@@ -174,7 +174,7 @@ Private Sub Form_Load()
   navEmail.Caption = GetSystemSetting("Support", "Email", "")
   navEmail.NavigateTo = "mailto:" & navEmail.Caption
   
-  navSupport.Caption = "http://" & GetSystemSetting("Support", "Webpage", "")
+  navSupport.Caption = GetSystemSetting("Support", "Webpage", "")
   navSupport.NavigateTo = navSupport.Caption
 
 End Sub
