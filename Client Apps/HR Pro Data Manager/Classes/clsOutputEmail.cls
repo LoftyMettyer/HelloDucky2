@@ -147,11 +147,11 @@ Private Function SendEmailFromClientUsingMAPI(strTo As String, strCC As String, 
   blnShowMessage = False
   
   If strTo & strCC & strBCC = vbNullString Then
-    strError = "Please select recipient(s) to email"
+    SendEmailFromClientUsingMAPI = "Please select recipient(s) to email"
     Exit Function
   
   ElseIf strTo = vbNullString Then
-    strError = "Please select a recipient from the TO column"
+    SendEmailFromClientUsingMAPI = "Please select a recipient from the TO column"
     Exit Function
   
   End If

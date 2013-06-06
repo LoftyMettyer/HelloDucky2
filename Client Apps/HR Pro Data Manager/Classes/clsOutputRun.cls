@@ -673,7 +673,7 @@ Public Function SendEmail(strAttachment As String) As Boolean
         
         For lngCount = 0 To UBound(strAddress)
           If Trim(strAddress(lngCount)) <> vbNullString Then
-            strTo = strTo & IIf(strTo <> vbNullString, ";", "") & strTo
+            strTo = strTo & IIf(strTo <> vbNullString, ";", "") & strAddress(lngCount)
             '.RecipIndex = .RecipCount
             '.RecipType = mapToList
             '.RecipDisplayName = Trim(strAddress(lngCount))
