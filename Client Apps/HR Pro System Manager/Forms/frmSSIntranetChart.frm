@@ -1128,8 +1128,7 @@ End Sub
 
 Private Sub RefreshControls()
   
-  
-  ' cmdOK.Enabled = mfChanged
+  cmdOk.Enabled = mfChanged
   
 End Sub
 
@@ -1346,27 +1345,15 @@ Public Sub Initialize(plngChartViewID As Long, _
   txtFilter.Enabled = False
   txtFilter.BackColor = vbButtonFace
   
-
-  
-  
-  ' EnableDisableCombos
-  
+  cmdOk.Enabled = (miChartTableID = 0)
+   
   mfLoading = False
   
   mfChanged = False
   
-  RefreshControls
-  
 End Sub
 
 Private Sub cmdOk_Click()
-
-'  If cboChartType = "Multi Axis Chart" And (cboTableX = vbNullString Or cboColumnZ = vbNullString Or cboColumnY = vbNullString) Then
-'    MsgBox "Please populate all required columns before trying to save.", vbExclamation + vbOKOnly, "Chart Data"
-'    Exit Sub
-'  End If
-
-
   Cancelled = False
   Me.Hide
 End Sub

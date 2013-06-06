@@ -30,6 +30,38 @@ Begin VB.Form frmSSIntranetLink
    ScaleWidth      =   9360
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
+   Begin VB.Frame fraURLLink 
+      Caption         =   "URL :"
+      Height          =   1125
+      Left            =   2880
+      TabIndex        =   35
+      Top             =   4470
+      Width           =   6300
+      Begin VB.TextBox txtURL 
+         Height          =   315
+         Left            =   1575
+         MaxLength       =   500
+         TabIndex        =   37
+         Top             =   300
+         Width           =   4515
+      End
+      Begin VB.CheckBox chkNewWindow 
+         Caption         =   "D&isplay in new window"
+         Height          =   330
+         Left            =   1575
+         TabIndex        =   38
+         Top             =   690
+         Width           =   2685
+      End
+      Begin VB.Label lblURL 
+         Caption         =   "URL :"
+         Height          =   195
+         Left            =   195
+         TabIndex        =   36
+         Top             =   360
+         Width           =   570
+      End
+   End
    Begin VB.Frame fraChartLink 
       Caption         =   "Chart :"
       Height          =   6060
@@ -140,7 +172,7 @@ Begin VB.Form frmSSIntranetLink
          Width           =   1665
       End
       Begin VB.CheckBox chkStackSeries 
-         Caption         =   "S&tack Series"
+         Caption         =   "Stac&k Series"
          Height          =   210
          Left            =   210
          TabIndex        =   70
@@ -797,38 +829,6 @@ Begin VB.Form frmSSIntranetLink
          Stretch         =   -1  'True
          Top             =   330
          Width           =   510
-      End
-   End
-   Begin VB.Frame fraURLLink 
-      Caption         =   "URL :"
-      Height          =   1125
-      Left            =   2880
-      TabIndex        =   35
-      Top             =   4470
-      Width           =   6300
-      Begin VB.TextBox txtURL 
-         Height          =   315
-         Left            =   1575
-         MaxLength       =   500
-         TabIndex        =   37
-         Top             =   300
-         Width           =   4515
-      End
-      Begin VB.CheckBox chkNewWindow 
-         Caption         =   "&Display in new window"
-         Height          =   330
-         Left            =   1575
-         TabIndex        =   38
-         Top             =   690
-         Width           =   2685
-      End
-      Begin VB.Label lblURL 
-         Caption         =   "URL :"
-         Height          =   195
-         Left            =   195
-         TabIndex        =   36
-         Top             =   360
-         Width           =   570
       End
    End
    Begin VB.Frame fraLinkType 
@@ -1911,7 +1911,7 @@ Public Sub Initialize(piType As SSINTRANETLINKTYPES, _
   mlngTableID = plngTableID
   mlngViewID = plngViewID
   msTableViewName = psTableViewName
-  
+    
   FormatScreen
   
   GetTablesViews
