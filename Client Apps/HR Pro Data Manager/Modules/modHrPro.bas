@@ -3960,11 +3960,15 @@ Private Function Office_WordVersion() As Integer
 
   On Error GoTo NotInstalled
 
-  Dim App As New Word.Application
-  Set App = CreateObject("Word.Application")
-  Office_WordVersion = Val(App.Version)
-  App.Quit
- 
+  If giOfficeVersion_Word = 0 Then
+    Dim App As New Word.Application
+    Set App = CreateObject("Word.Application")
+    giOfficeVersion_Word = Val(App.Version)
+    App.Quit
+  End If
+
+  Office_WordVersion = giOfficeVersion_Word
+
 TidyUpAndExit:
   Set App = Nothing
   Exit Function
@@ -3979,14 +3983,19 @@ Private Function Office_ExcelVersion() As Integer
 
   On Error GoTo NotInstalled
 
-  Dim App As New Excel.Application
-  Set App = CreateObject("Excel.Application")
-  Office_ExcelVersion = Val(App.Version)
-  App.Quit
+  If giOfficeVersion_Excel = 0 Then
+    Dim App As New Excel.Application
+    Set App = CreateObject("Excel.Application")
+    giOfficeVersion_Excel = Val(App.Version)
+    App.Quit
+  End If
+
+  Office_ExcelVersion = giOfficeVersion_Excel
 
 TidyUpAndExit:
   Set App = Nothing
-  Exit Function
+
+Exit Function
 
 NotInstalled:
   Office_ExcelVersion = 0
