@@ -618,6 +618,13 @@ Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
   '# RH 26/08/99. To pass shortcut keys thru to the activebar control
   Dim fHandled As Boolean
   
+  Select Case KeyCode
+    Case vbKeyF1
+      If ShowAirHelp(Me.HelpContextID) Then
+        KeyCode = 0
+      End If
+  End Select
+  
   fHandled = frmMain.abSecurity.OnKeyDown(KeyCode, Shift)
 
   If fHandled Then

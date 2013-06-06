@@ -18,6 +18,7 @@ Begin VB.Form frmNewTrustedUser
    EndProperty
    HelpContextID   =   8037
    Icon            =   "frmNewTrustedUser.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -329,6 +330,15 @@ Private Sub RefreshGrid()
 
 End Sub
 
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
+
 Private Sub Form_Resize()
 
   'JPD 20030908 Fault 5756
@@ -340,10 +350,10 @@ Private Sub Form_Resize()
   lvList.ColumnHeaders(2).Width = lvList.Width - (lvList.ColumnHeaders(1).Width + 325)
   
   chkShowMembers.Top = Me.Height - 1100
-  cmdOk.Top = chkShowMembers.Top
-  cmdOk.Left = Me.Width - ((cmdOk.Width + cmdCancel.Width) + 250)
+  cmdOK.Top = chkShowMembers.Top
+  cmdOK.Left = Me.Width - ((cmdOK.Width + cmdCancel.Width) + 250)
   cmdCancel.Top = chkShowMembers.Top
-  cmdCancel.Left = cmdOk.Left + cmdOk.Width + 50
+  cmdCancel.Left = cmdOK.Left + cmdOK.Width + 50
 
 End Sub
 

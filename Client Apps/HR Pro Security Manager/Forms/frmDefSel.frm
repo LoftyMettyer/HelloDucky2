@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Begin VB.Form frmDefSel 
    Caption         =   "Select"
    ClientHeight    =   6045
@@ -865,12 +865,20 @@ Private Sub Form_Initialize()
 End Sub
 
 Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
-
-  If KeyCode = vbKeyF5 Then
-    Populate_List
-  ElseIf KeyCode = vbKeyDelete Then
-    If cmdDelete.Enabled Then cmdDelete_Click
-  End If
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+  Case KeyCode = vbKeyEscape
+    Unload Me
+  Case KeyCode = vbKeyF5
+      Populate_List
+  Case KeyCode = vbKeyDelete
+      If cmdDelete.Enabled Then
+        cmdDelete_Click
+       End If
+  End Select
 
 End Sub
 
@@ -952,11 +960,11 @@ Private Sub List1_GotFocus()
 
 End Sub
 
-Private Sub Display_Button(Button As VB.CommandButton, ByVal BtnOpt As Long, ByVal x As Long, ByRef y As Long)
+Private Sub Display_Button(Button As VB.CommandButton, ByVal BtnOpt As Long, ByVal X As Long, ByRef Y As Long)
   If (Me.Options And BtnOpt) Then
-    Button.Move x, y
+    Button.Move X, Y
     Button.Visible = True
-    y = y + cmdNew.Height + ((UI.GetSystemMetrics(SM_CYFRAME) * Screen.TwipsPerPixelY) * 1.5)
+    Y = Y + cmdNew.Height + ((UI.GetSystemMetrics(SM_CYFRAME) * Screen.TwipsPerPixelY) * 1.5)
   Else
     Button.Visible = False
   End If
@@ -1470,7 +1478,7 @@ Private Sub CheckListViewColWidth(lstvw As ListView)
 
 End Sub
 
-Private Sub List1_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub List1_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
 
   If Button = vbRightButton Then
   

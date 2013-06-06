@@ -17,6 +17,7 @@ Begin VB.Form frmLicence
    EndProperty
    HelpContextID   =   8019
    Icon            =   "frmLicence.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -292,6 +293,15 @@ Private Sub Form_Initialize()
 
 End Sub
 
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
+
 Private Sub Form_Load()
 
   Dim objLicence As COALicence.clsLicence2
@@ -403,7 +413,7 @@ Private Sub Text1_Change()
 
 End Sub
 
-Private Sub lstModules_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub lstModules_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
     Button = 0
     Shift = 0
 End Sub

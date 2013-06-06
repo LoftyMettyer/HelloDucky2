@@ -17,6 +17,7 @@ Begin VB.Form frmFindUser
    EndProperty
    HelpContextID   =   8064
    Icon            =   "frmFindUser.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -135,6 +136,15 @@ Private Sub cmdOK_Click()
   
   mbCancelled = False
   Unload Me
+End Sub
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
 End Sub
 
 Private Sub Form_Load()

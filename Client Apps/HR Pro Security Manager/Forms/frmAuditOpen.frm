@@ -17,6 +17,7 @@ Begin VB.Form frmAuditOpen
    EndProperty
    HelpContextID   =   8008
    Icon            =   "frmAuditOpen.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -108,6 +109,15 @@ Private Sub cmdOK_Click()
   mfCancelled = False
   Me.Hide
 
+End Sub
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
 End Sub
 
 Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)

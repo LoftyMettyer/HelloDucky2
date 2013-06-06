@@ -17,6 +17,7 @@ Begin VB.Form frmPasswordMaintenance
    EndProperty
    HelpContextID   =   8018
    Icon            =   "frmPasswordMaintenance.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -292,7 +293,7 @@ Private Sub cboUser_Click()
 End Sub
 
 Private Sub chkAccountIsLocked_Click()
-  cmdOk.Enabled = True
+  cmdOK.Enabled = True
 End Sub
 
 Private Sub chkEnforceExpiry_Click()
@@ -302,7 +303,7 @@ Private Sub chkEnforceExpiry_Click()
   End If
 
   chkForceChange.Enabled = (chkEnforceExpiry.Value = vbChecked) Or glngSQLVersion < 9
-  cmdOk.Enabled = True
+  cmdOK.Enabled = True
 
 End Sub
 
@@ -315,12 +316,12 @@ Private Sub chkEnforcePasswordPolicy_Click()
 
   chkEnforceExpiry.Enabled = (chkEnforcePasswordPolicy.Value = vbChecked)
   chkForceChange.Enabled = (chkEnforceExpiry.Value = vbChecked) Or glngSQLVersion < 9
-  cmdOk.Enabled = True
+  cmdOK.Enabled = True
 
 End Sub
 
 Private Sub chkForceChange_Click()
-  cmdOk.Enabled = True
+  cmdOK.Enabled = True
 End Sub
 
 Private Sub cmdCancel_Click()
@@ -335,6 +336,15 @@ Private Sub cmdOK_Click()
     End If
   End If
   
+End Sub
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
 End Sub
 
 Private Sub Form_Resize()
@@ -621,5 +631,5 @@ End Sub
 
 Private Sub txtPassword_Change()
   chkForceChange.Enabled = (chkEnforceExpiry.Value = vbChecked) Or glngSQLVersion < 9
-  cmdOk.Enabled = True
+  cmdOK.Enabled = True
 End Sub

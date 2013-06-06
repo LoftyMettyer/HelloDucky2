@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{1C203F10-95AD-11D0-A84B-00A0247B735B}#1.0#0"; "SSTree.ocx"
 Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
@@ -109,7 +109,7 @@ Begin VB.Form frmGroupMaint1
       Width           =   4000
       _ExtentX        =   7038
       _ExtentY        =   2302
-      _Version        =   65538
+      _Version        =   65536
       LabelEdit       =   1
       LineType        =   0
       Indentation     =   570
@@ -246,10 +246,11 @@ Begin VB.Form frmGroupMaint1
       Width           =   2000
       _ExtentX        =   3519
       _ExtentY        =   3519
-      _Version        =   65538
+      _Version        =   65536
       LabelEdit       =   1
       Indentation     =   345
       OLEDropMode     =   1
+      Sorted          =   1
       AutoSearch      =   0   'False
       HideSelection   =   0   'False
       PictureBackgroundUseMask=   0   'False
@@ -266,7 +267,6 @@ Begin VB.Form frmGroupMaint1
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      Sorted          =   1
    End
    Begin ComctlLib.StatusBar sbStatus 
       Align           =   2  'Align Bottom
@@ -911,6 +911,13 @@ Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
   
   '# RH 26/08/99. To pass shortcut keys thru to the activebar control
   Dim fHandled As Boolean
+  
+  Select Case KeyCode
+    Case vbKeyF1
+      If ShowAirHelp(Me.HelpContextID) Then
+        KeyCode = 0
+      End If
+  End Select
 
   fHandled = frmMain.abSecurity.OnKeyDown(KeyCode, Shift)
 
@@ -921,11 +928,6 @@ Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
 
   ' JPD20030218 Fault 5062
   If (KeyCode <> vbKeyF1) And (KeyCode <> 0) Then
-  
-  'MH20010621
-  'Still need to recognise F1 for help stuff !
-  'If KeyCode <> vbKeyF1 Then
-  
     ' JDM - 19/02/01 - Fault 1869 - Error when pressing CTRL-X on treeview control
     ' For some reason the Sheridan treeview control wants to fire off it own cutn'paste functionality
     ' must trap it here not in it's own keydown event
@@ -1114,25 +1116,25 @@ Private Sub Form_Unload(Cancel As Integer)
 
 End Sub
 
-Private Sub fraSplit_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub fraSplit_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
   ' Record the split move start position.
-  gSngSplitStartX = x
+  gSngSplitStartX = X
   
   ' Flag that the split is being moved.
   gfSplitMoving = True
 
 End Sub
 
-Private Sub fraSplit_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub fraSplit_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
   ' If we are moving the split then move it.
   If gfSplitMoving Then
-    fraSplit.Left = fraSplit.Left + (x - gSngSplitStartX)
+    fraSplit.Left = fraSplit.Left + (X - gSngSplitStartX)
   End If
   
 End Sub
 
 
-Private Sub fraSplit_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub fraSplit_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
   ' If the split is being moved then call the routine that resizes the
   ' tree and list views accordingly.
   If gfSplitMoving Then
@@ -1492,7 +1494,7 @@ Private Sub lvList_KeyUp(KeyCode As Integer, Shift As Integer)
   
 End Sub
 
-Private Sub lvList_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub lvList_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
   Dim lXMouse As Long
   Dim lYMouse As Long
 
@@ -1773,14 +1775,14 @@ Private Sub sstrvSystemPermissions_KeyPress(KeyAscii As Integer)
 End Sub
 
 
-Private Sub sstrvSystemPermissions_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub sstrvSystemPermissions_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
   ' Set the flag that shows that the mouse is down.
   gfMouseDown = True
 
 End Sub
 
 
-Private Sub sstrvSystemPermissions_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub sstrvSystemPermissions_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
   ' Set the flag that shows that the mouse is NOT down.
   'gfMouseDown = False
 
@@ -1933,7 +1935,7 @@ Private Sub trvConsole_GotFocus()
 
 End Sub
 
-Private Sub trvConsole_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub trvConsole_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
   Dim lXMouse As Long
   Dim lYMouse As Long
   Dim nodX As SSNode
@@ -1944,7 +1946,7 @@ Private Sub trvConsole_MouseUp(Button As Integer, Shift As Integer, x As Single,
   If Button = vbRightButton Then
   
     ' Check that we are over a node
-    Set nodX = trvConsole.HitTest(x, y)
+    Set nodX = trvConsole.HitTest(X, Y)
     
     If Not nodX Is Nothing Then
       Set nodX = Nothing

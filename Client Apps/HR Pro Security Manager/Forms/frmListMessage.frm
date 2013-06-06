@@ -16,6 +16,7 @@ Begin VB.Form frmListMessage
    EndProperty
    HelpContextID   =   8043
    Icon            =   "frmListMessage.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
@@ -212,6 +213,15 @@ Private Sub cmdPrint_Click()
 End Sub
 
 
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
 
 Private Sub Form_Load()
   Me.Width = FORM_START_WIDTH

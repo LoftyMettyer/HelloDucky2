@@ -17,6 +17,7 @@ Begin VB.Form frmNewUser
    EndProperty
    HelpContextID   =   8015
    Icon            =   "frmNewUser.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -338,6 +339,15 @@ ErrorTrap:
   
 End Sub
 
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
+
 Private Sub Form_Load()
   Dim iLoop As Integer
   Dim sSQL As String
@@ -532,11 +542,11 @@ Private Sub RefreshButtons()
   Select Case miLoginType
  
     Case iUSERTYPE_TRUSTEDUSER
-      cmdOk.Enabled = (Len(txtUserLogin.Text) > 0)
+      cmdOK.Enabled = (Len(txtUserLogin.Text) > 0)
       cmdGetWindowsLogins.Enabled = (cboDomain.Text <> "")
     
     Case iUSERTYPE_SQLLOGIN
-      cmdOk.Enabled = (Len(cboUserLogin.Text) > 0)
+      cmdOK.Enabled = (Len(cboUserLogin.Text) > 0)
     
   End Select
 

@@ -17,6 +17,7 @@ Begin VB.Form frmNewMultipleUser
    EndProperty
    HelpContextID   =   8029
    Icon            =   "frmNewMultipleUser.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -519,6 +520,15 @@ Private Sub cmdWindowsUsername_Click()
 
 End Sub
 
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
+
 Private Sub Form_Load()
   Dim iLoop As Integer
   Dim sSQL As String
@@ -644,7 +654,7 @@ Private Sub RefreshButtons()
       chkChangePassword.Value = vbChecked
       chkChangePassword.Enabled = True
     End If
-    cmdOk.Enabled = mlngSQLUserNameExprID > 0 And mlngPasswordExprID > 0
+    cmdOK.Enabled = mlngSQLUserNameExprID > 0 And mlngPasswordExprID > 0
   End If
   
   ' Windows Authentication  (Manual Username)
@@ -668,7 +678,7 @@ Private Sub RefreshButtons()
       
     chkChangePassword.Value = vbUnchecked
     chkChangePassword.Enabled = False
-    cmdOk.Enabled = mlngWindowsUserNameExprID > 0
+    cmdOK.Enabled = mlngWindowsUserNameExprID > 0
   End If
      
   ' Windows Authentication  (Auto map to username)
@@ -691,7 +701,7 @@ Private Sub RefreshButtons()
     txtWindowsUserName.Text = ""
     cmdWindowsUsername.Enabled = False
     
-    cmdOk.Enabled = True
+    cmdOK.Enabled = True
   End If
   
 End Sub

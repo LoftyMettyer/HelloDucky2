@@ -17,6 +17,7 @@ Begin VB.Form frmAuditView
    EndProperty
    HelpContextID   =   8011
    Icon            =   "frmAuditView.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
@@ -402,7 +403,7 @@ Public Sub Initialise(AuditType As audType, avView() As Boolean)
   End With
   
   cmdCancel.Top = dblCurrentHeight + iYGAP
-  cmdOk.Top = cmdCancel.Top
+  cmdOK.Top = cmdCancel.Top
     
   Me.Height = cmdCancel.Top + cmdCancel.Height + iYGAP + UI.CaptionHeight + (2 * UI.YFrame)
   Me.Width = iFORMWIDTH
@@ -429,6 +430,15 @@ Private Sub cmdOK_Click()
     mbCancelled = False
     Me.Hide
     
+End Sub
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
 End Sub
 
 Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
