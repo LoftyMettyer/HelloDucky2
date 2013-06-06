@@ -466,7 +466,7 @@ TidyUpAndExit:
   
 ErrorTrap:
   WriteReport = False
-  MsgBox "Error writing report for " & sUserName & ".", vbExclamation + vbOKOnly, App.Title
+  MsgBox "Error writing report for " & sUserName & "." & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, App.Title
   Resume TidyUpAndExit
 
 End Function
