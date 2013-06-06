@@ -1994,6 +1994,20 @@ PRINT 'Step 19 - New Shared Table Transfer Types for ASPP'
 	END
 
 /* ------------------------------------------------------------- */
+PRINT 'Step 20 - New Reserverd words'
+
+	-- Keywords Additional reserved words
+	SELECT @iRecCount = count(Keyword) FROM ASRSysKeywords WHERE keyword = 'tbsys' or keyword = 'ybstat' or keyword = 'tbuser'	
+	IF @iRecCount = 0
+	BEGIN
+		SELECT @NVarCommand = 'INSERT INTO ASRSysKeywords ([Provider], [Keyword]) VALUES (''Microsoft SQL Server'',''tbsys'')'
+		EXEC sp_executesql @NVarCommand
+		SELECT @NVarCommand = 'INSERT INTO ASRSysKeywords ([Provider], [Keyword]) VALUES (''Microsoft SQL Server'',''tbuser'')'
+		EXEC sp_executesql @NVarCommand
+		SELECT @NVarCommand = 'INSERT INTO ASRSysKeywords ([Provider], [Keyword]) VALUES (''Microsoft SQL Server'',''tbstat'')'
+		EXEC sp_executesql @NVarCommand
+	END
+/* ------------------------------------------------------------- */
 
 /*---------------------------------------------*/
 /* Ensure the required permissions are granted */
