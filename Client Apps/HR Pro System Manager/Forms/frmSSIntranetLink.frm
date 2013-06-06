@@ -168,12 +168,12 @@ Begin VB.Form frmSSIntranetLink
       End
       Begin VB.Label lblUtility 
          AutoSize        =   -1  'True
-         Caption         =   "Drill down utility :"
+         Caption         =   "Drill Down Utility :"
          Height          =   195
          Left            =   210
          TabIndex        =   122
          Top             =   3750
-         Width           =   1515
+         Width           =   1560
       End
       Begin VB.Label lblChartyType 
          AutoSize        =   -1  'True
