@@ -1379,6 +1379,12 @@ Public Sub CheckCommandLine()
         blnPassword = True
         chkUseWindowsAuthentication.value = vbChecked
 
+      Case "script"
+        gblnAutomaticScript = (LCase(strValue) = "true")
+      
+      Case "save"
+        gblnAutomaticSave = (LCase(strValue) = "true")
+
       End Select
 
     Next

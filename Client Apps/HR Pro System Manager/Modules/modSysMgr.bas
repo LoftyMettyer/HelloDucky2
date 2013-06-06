@@ -405,6 +405,8 @@ Public glngWindowWidth As Long
 
 ' Automatic logon
 Public gblnAutomaticLogon As Boolean
+Public gblnAutomaticScript As Boolean
+Public gblnAutomaticSave As Boolean
 
 'AE20071127 Fault #12645 - Added Form (Screen)
 Public Enum UsageCheckObject
