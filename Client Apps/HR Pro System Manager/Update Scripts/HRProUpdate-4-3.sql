@@ -660,6 +660,9 @@ PRINT 'Step 11 - Add new calculation procedures'
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsys_isnivalid]') AND xtype in (N'FN', N'IF', N'TF'))
 		DROP FUNCTION [dbo].[udfsys_isnivalid];
 
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsys_triggerrequiresrefresh]') AND xtype in (N'FN', N'IF', N'TF'))
+		DROP FUNCTION [dbo].[udfsys_triggerrequiresrefresh];
+
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsys_isovernightprocess]') AND xtype in (N'FN', N'IF', N'TF'))
 		DROP FUNCTION [dbo].[udfsys_isovernightprocess];
 
@@ -698,7 +701,7 @@ PRINT 'Step 11 - Add new calculation procedures'
 		
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsys_servicelength]') AND xtype in (N'FN', N'IF', N'TF'))
 		DROP FUNCTION [dbo].[udfsys_servicelength];
-		
+	
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsys_uniquecode]') AND xtype in (N'FN', N'IF', N'TF'))
 		DROP FUNCTION [dbo].[udfsys_uniquecode];
 		
@@ -1232,6 +1235,37 @@ PRINT 'Step 11 - Add new calculation procedures'
 		    RETURN @result;
 		
 		END';
+	EXECUTE sp_executeSQL @sSPCode;
+
+	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_triggerrequiresrefresh]()
+	RETURNS bit 
+	WITH SCHEMABINDING
+	AS
+	BEGIN
+	
+		DECLARE @result bit,
+				@lastsavedate datetime,
+				@lastovernight datetime,
+				@today datetime;
+		
+		SELECT @result = 1;
+		SET @today = DATEADD(dd, 0, DATEDIFF(dd, 0, CONVERT(datetime, GETDATE())))
+
+		-- Was overnight successful?
+		SELECT @lastovernight = DATEADD(dd, 0, DATEDIFF(dd, 0, CONVERT(datetime, [SettingValue],103)))
+			FROM dbo.[ASRSysSystemSettings]
+			WHERE section = ''overnight'' AND settingKey = ''last completed''
+
+		-- Has a system manager save been done since?
+		SELECT @lastsavedate = DATEADD(dd, 0, DATEDIFF(dd, 0, CONVERT(datetime, [SettingValue],103)))
+			FROM dbo.[ASRSysSystemSettings]
+			WHERE section = ''database'' AND settingKey = ''SystemLastSaveDate''
+
+		IF @lastovernight = @today AND @today > @lastsavedate AND dbo.[udfsys_isovernightprocess]() = 0
+			SET @result = 0;
+			
+		RETURN @result;
+	END';
 	EXECUTE sp_executeSQL @sSPCode;
 
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_statutoryredundancypay] 	(
