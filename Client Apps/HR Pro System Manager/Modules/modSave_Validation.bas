@@ -78,7 +78,7 @@ Private Function CreateValidationStoredProcedure(pLngCurrentTableID As Long, _
   Dim sDuplicateCheckCode As String
   Dim sDuplicateColumns As String
   Dim sParentTableName As String
-  Dim rsTableName As dao.Recordset
+  Dim rsTableName As DAO.Recordset
   Dim aryOverlapColumns() As String
   Dim aryOverlapParentJoins() As String
 
@@ -351,7 +351,7 @@ Private Function CreateValidationStoredProcedure(pLngCurrentTableID As Long, _
   ' done using the @ParentIDCount.                                              *
   '******************************************************************************
             
-            If !Mandatory And !columntype <> 4 Then
+            If !Mandatory And !ColumnType <> 4 Then
               ' Add the mandatory check code for the current column if required.
               sSPCode = sSPCode & vbNewLine & _
                 "    /* '" & !ColumnName & "' - mandatory check. */"
@@ -505,7 +505,7 @@ Private Function CreateValidationStoredProcedure(pLngCurrentTableID As Long, _
                 "    END" & vbNewLine
             End If
             
-            If (!columntype = giCOLUMNTYPE_DATA) And _
+            If (!ColumnType = giCOLUMNTYPE_DATA) And _
               ((!ControlType = giCTRL_OPTIONGROUP) Or (!ControlType = giCTRL_COMBOBOX)) Then
               ' Add the optionGroup/dropdownList check code for the current column if required.
               sSPCode = sSPCode & vbNewLine & _
@@ -730,7 +730,7 @@ Private Function CreateValidationStoredProcedure(pLngCurrentTableID As Long, _
         "        (sysmembers mem INNER JOIN sysusers usg ON mem.groupuid = usg.uid) ON usu.uid = mem.memberuid" & vbNewLine & _
         "        WHERE (usu.islogin = 1 AND usu.isaliased = 0 AND usu.hasdbaccess = 1) AND" & vbNewLine & _
         "         (usg.issqlrole = 1 OR usg.uid IS null) AND" & vbNewLine & _
-        "         usu.name = SYSTEM_USER AND NOT (usg.name LIKE 'ASRSys%') " & vbNewLine & _
+        "         usu.name =  dbo.udfsys_getsystemuser() AND NOT (usg.name LIKE 'ASRSys%') " & vbNewLine & _
         "        IF EXISTS" & vbNewLine & _
         "        (" & vbNewLine & _
         "            SELECT Name" & vbNewLine & _
@@ -781,7 +781,7 @@ End Function
 Private Function GetOverlapColumnsArray(ByVal plngTableID As Long) As String()
 
   Dim sSQL As String
-  Dim rsTemp As dao.Recordset
+  Dim rsTemp As DAO.Recordset
   Dim iDefaultItem As Integer
   Dim sTableName As String
   Dim arOverlaps() As String
@@ -821,7 +821,7 @@ End Function
 Private Function GetOverlapParentJoins(ByVal plngTableID As Long) As String()
 
   Dim sSQL As String
-  Dim rsTemp As dao.Recordset
+  Dim rsTemp As DAO.Recordset
   Dim iDefaultItem As Integer
   Dim sTableName As String
   Dim arOverlaps() As String

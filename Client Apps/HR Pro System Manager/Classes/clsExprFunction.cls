@@ -2684,7 +2684,7 @@ Public Function RuntimeCode(psRuntimeCode As String, _
             sCode = "(dbo.udf_ASRGetLoginName(" & sVarName & "))"
           End If
         Else
-          sCode = "system_user"
+          sCode = "dbo.udfsys_getsystemuser()"
         End If
         
       Case 18  ' Whole Years Until Current Date
