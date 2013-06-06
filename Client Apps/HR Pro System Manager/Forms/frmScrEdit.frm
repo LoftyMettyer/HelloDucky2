@@ -94,7 +94,7 @@ Begin VB.Form frmScrEdit
          Width           =   315
       End
       Begin VB.CheckBox chkSSIntranet 
-         Caption         =   "&Self-service Intranet Screen"
+         Caption         =   "Self-service &Intranet Screen"
          Height          =   315
          Left            =   5670
          TabIndex        =   9
