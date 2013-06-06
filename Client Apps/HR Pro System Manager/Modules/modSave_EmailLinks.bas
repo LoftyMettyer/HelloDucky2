@@ -526,11 +526,10 @@ Public Sub CreateEmailProcsForTable(lngTableID As Long, _
       "(@recordid int)" & vbNewLine & _
       "AS" & vbNewLine & _
       "BEGIN" & vbNewLine & vbNewLine & _
-      "  DECLARE @RecalculateRecordDesc bit" & vbNewLine & _
-      "  DECLARE @recordDesc varchar(max)" & vbNewLine & _
+      "  DECLARE @hResult bit" & vbNewLine & _
       "  DECLARE @dateValue datetime" & vbNewLine & _
-      strTemp & vbNewLine & vbNewLine & _
-      "  SELECT @RecalculateRecordDesc = 1, @recordDesc = ''" & vbNewLine & vbNewLine & _
+      strTemp & vbNewLine & vbNewLine & vbNewLine & _
+      GetSQLForRecordDescription(lngRecordDescExprID) & vbCrLf & vbCrLf & _
       "  DELETE FROM ASRSysEmailQueue WHERE Immediate = 0 AND DateSent IS NULL AND recordID = @recordID AND TableID = " & CStr(lngTableID) & vbNewLine & vbNewLine & _
       strRebuildAll & vbNewLine & _
       "END"
