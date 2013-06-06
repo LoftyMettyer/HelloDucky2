@@ -2375,12 +2375,16 @@ Private Function ConfigureGrid() As Boolean
     ' Add the extra width to handle the scroll bar
     '.Width = lngWidth + (UI.GetSystemMetrics(SM_CXVSCROLL) * Screen.TwipsPerPixelX) + 20
 
-    'Update the find window
-    ResizeFindColumns
+'    'Update the find window
+'    ResizeFindColumns
 
     mfFormattingGrid = False
     '.Rebind
     .Rows = RecordCount
+    
+    'MH20110121 HRPRO-1093 Put the resizefindcolumns bit after setting the rows so it know if we need a scrollbar or not
+    ResizeFindColumns
+
     .Redraw = True
 
   End With
@@ -2397,7 +2401,7 @@ Private Function ConfigureGrid() As Boolean
   ' RH 13/10/00 - BUG 1121 - Only resize the window if its not min/max.
   'StatusBar1.Panels(1).Text = ssOleDBGridFindColumns.Rows & " Record" & IIf(ssOleDBGridFindColumns.Rows = 1, "", "s") & _
         IIf(ssOleDBGridFindColumns.SelBookmarks.Count > 1, " - " & ssOleDBGridFindColumns.SelBookmarks.Count & " Selected", "")
-  UpdateStatusBar
+  'UpdateStatusBar
   
   
   'Setting the form to disabled here stops the find window getting focus
@@ -3731,6 +3735,7 @@ Private Sub UpdateStatusBar()
         IIf(ssOleDBGridFindColumns.SelBookmarks.Count > 1, " - " & ssOleDBGridFindColumns.SelBookmarks.Count & " Selected", "")
   StatusBar1.Panels(1).Text = ssOleDBGridFindColumns.Rows & " Record" & IIf(ssOleDBGridFindColumns.Rows = 1, "", "s") & _
         IIf(ssOleDBGridFindColumns.SelBookmarks.Count > 0, " - " & ssOleDBGridFindColumns.SelBookmarks.Count & " Selected", "")
+  
 End Sub
 
 
@@ -4732,9 +4737,9 @@ Public Sub UtilityClick(lngUtilType As UtilityType)
         End With
       
         frmMain.RefreshRecordEditScreens
-        frmMain.RefreshMainForm Me
+        'frmMain.RefreshMainForm Me
         
-        .UpdateAll
+        '.UpdateAll
       End With
 
       UI.UnlockWindow
@@ -4750,7 +4755,7 @@ Public Sub UtilityClick(lngUtilType As UtilityType)
       
   'StatusBar1.Panels(1).Text = ssOleDBGridFindColumns.Rows & " Record" & IIf(ssOleDBGridFindColumns.Rows = 1, "", "s") & _
         IIf(ssOleDBGridFindColumns.SelBookmarks.Count > 1, " - " & ssOleDBGridFindColumns.SelBookmarks.Count & " Selected", "")
-  UpdateStatusBar
+'  UpdateStatusBar
 
 '    End If
     
