@@ -84,60 +84,161 @@ Begin VB.Form frmTabEdit
       TabPicture(1)   =   "frmTabEdit.frx":0028
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "lblParentTable"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).Control(1)=   "fraColumns"
-      Tab(1).Control(1).Enabled=   0   'False
       Tab(1).Control(2)=   "cmdInsert"
-      Tab(1).Control(2).Enabled=   0   'False
       Tab(1).Control(3)=   "cmdDown"
-      Tab(1).Control(3).Enabled=   0   'False
       Tab(1).Control(4)=   "cmdUp"
-      Tab(1).Control(4).Enabled=   0   'False
       Tab(1).Control(5)=   "cmdRemove"
-      Tab(1).Control(5).Enabled=   0   'False
       Tab(1).Control(6)=   "cmdAdd"
-      Tab(1).Control(6).Enabled=   0   'False
       Tab(1).Control(7)=   "fraSummaryFields"
-      Tab(1).Control(7).Enabled=   0   'False
       Tab(1).Control(8)=   "cmdInsertBreak"
-      Tab(1).Control(8).Enabled=   0   'False
       Tab(1).Control(9)=   "cboParentTable"
-      Tab(1).Control(9).Enabled=   0   'False
       Tab(1).Control(10)=   "cmdColumnBreak"
-      Tab(1).Control(10).Enabled=   0   'False
       Tab(1).Control(11)=   "chkManualColumnBreak"
-      Tab(1).Control(11).Enabled=   0   'False
       Tab(1).ControlCount=   12
       TabCaption(2)   =   "Ema&il Links"
       TabPicture(2)   =   "frmTabEdit.frx":0044
       Tab(2).ControlEnabled=   0   'False
       Tab(2).Control(0)=   "fraEmail"
-      Tab(2).Control(0).Enabled=   0   'False
       Tab(2).ControlCount=   1
       TabCaption(3)   =   "Calendar Lin&ks"
       TabPicture(3)   =   "frmTabEdit.frx":0060
       Tab(3).ControlEnabled=   0   'False
       Tab(3).Control(0)=   "fraCalendarLinks"
-      Tab(3).Control(0).Enabled=   0   'False
       Tab(3).ControlCount=   1
       TabCaption(4)   =   "&Workflow Links"
       TabPicture(4)   =   "frmTabEdit.frx":007C
       Tab(4).ControlEnabled=   0   'False
       Tab(4).Control(0)=   "fraWorkflowLinks"
-      Tab(4).Control(0).Enabled=   0   'False
       Tab(4).ControlCount=   1
       TabCaption(5)   =   "Audi&t"
       TabPicture(5)   =   "frmTabEdit.frx":0098
       Tab(5).ControlEnabled=   0   'False
-      Tab(5).Control(0)=   "fraTableStats"
-      Tab(5).Control(0).Enabled=   0   'False
-      Tab(5).Control(1)=   "fraAudit"
-      Tab(5).Control(1).Enabled=   0   'False
+      Tab(5).Control(0)=   "fraAudit"
+      Tab(5).Control(1)=   "fraTableStats"
       Tab(5).ControlCount=   2
-      TabCaption(6)   =   "&Validation"
+      TabCaption(6)   =   "&Overlaps"
       TabPicture(6)   =   "frmTabEdit.frx":00B4
       Tab(6).ControlEnabled=   0   'False
-      Tab(6).ControlCount=   0
+      Tab(6).Control(0)=   "fraTableValidations"
+      Tab(6).Control(0).Enabled=   0   'False
+      Tab(6).ControlCount=   1
+      Begin VB.Frame fraTableValidations 
+         Caption         =   "Overlapping Column Validations :"
+         Height          =   4150
+         Left            =   -74800
+         TabIndex        =   59
+         Top             =   400
+         Width           =   7560
+         Begin VB.CommandButton cmdTableValidationNew 
+            Caption         =   "&New"
+            Enabled         =   0   'False
+            Height          =   400
+            Left            =   330
+            TabIndex        =   63
+            Top             =   3550
+            Width           =   1200
+         End
+         Begin VB.CommandButton cmdTableValidationDelete 
+            Caption         =   "&Delete"
+            Enabled         =   0   'False
+            Height          =   400
+            Left            =   4140
+            TabIndex        =   62
+            Top             =   3550
+            Width           =   1200
+         End
+         Begin VB.CommandButton cmdTableValidationDeleteAll 
+            Caption         =   "Delete &All"
+            Enabled         =   0   'False
+            Height          =   400
+            Left            =   6030
+            TabIndex        =   61
+            Top             =   3550
+            Width           =   1200
+         End
+         Begin VB.CommandButton cmdTableValidationEdit 
+            Caption         =   "&Edit"
+            Enabled         =   0   'False
+            Height          =   400
+            Left            =   2190
+            TabIndex        =   60
+            Top             =   3550
+            Width           =   1200
+         End
+         Begin SSDataWidgets_B.SSDBGrid ssGrdTableValidations 
+            Height          =   3045
+            Left            =   330
+            TabIndex        =   64
+            Top             =   300
+            Width           =   6915
+            ScrollBars      =   2
+            _Version        =   196617
+            DataMode        =   2
+            RecordSelectors =   0   'False
+            Col.Count       =   2
+            DefColWidth     =   26458
+            AllowUpdate     =   0   'False
+            MultiLine       =   0   'False
+            AllowRowSizing  =   0   'False
+            AllowGroupSizing=   0   'False
+            AllowColumnSizing=   0   'False
+            AllowGroupMoving=   0   'False
+            AllowColumnMoving=   0
+            AllowGroupSwapping=   0   'False
+            AllowColumnSwapping=   0
+            AllowGroupShrinking=   0   'False
+            AllowColumnShrinking=   0   'False
+            AllowDragDrop   =   0   'False
+            SelectTypeCol   =   0
+            SelectTypeRow   =   1
+            SelectByCell    =   -1  'True
+            BalloonHelp     =   0   'False
+            RowNavigation   =   3
+            MaxSelectedRows =   1
+            ForeColorEven   =   0
+            BackColorEven   =   -2147483643
+            BackColorOdd    =   -2147483643
+            RowHeight       =   423
+            Columns.Count   =   2
+            Columns(0).Width=   26458
+            Columns(0).Visible=   0   'False
+            Columns(0).Caption=   "ValidationID"
+            Columns(0).Name =   "ValidationID"
+            Columns(0).DataField=   "Column 0"
+            Columns(0).DataType=   8
+            Columns(0).FieldLen=   256
+            Columns(1).Width=   26458
+            Columns(1).Caption=   "Description"
+            Columns(1).Name =   "Description"
+            Columns(1).DataField=   "Column 1"
+            Columns(1).DataType=   8
+            Columns(1).FieldLen=   256
+            UseDefaults     =   0   'False
+            TabNavigation   =   1
+            _ExtentX        =   12188
+            _ExtentY        =   5380
+            _StockProps     =   79
+            BeginProperty PageFooterFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+            BeginProperty PageHeaderFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+         End
+      End
       Begin VB.Frame fraEmail 
          Caption         =   "Email Links :"
          Height          =   4150
@@ -164,7 +265,7 @@ Begin VB.Form frmTabEdit
          Begin VB.CommandButton cmdRemoveEmailLink 
             Caption         =   "&Delete"
             Height          =   400
-            Left            =   4050
+            Left            =   4140
             TabIndex        =   34
             Top             =   3550
             Width           =   1200
@@ -299,7 +400,7 @@ Begin VB.Form frmTabEdit
             Caption         =   "&Delete"
             Enabled         =   0   'False
             Height          =   400
-            Left            =   4050
+            Left            =   4140
             TabIndex        =   46
             Top             =   3550
             Width           =   1200
@@ -506,7 +607,7 @@ Begin VB.Form frmTabEdit
             Caption         =   "&Delete"
             Enabled         =   0   'False
             Height          =   400
-            Left            =   4050
+            Left            =   4140
             TabIndex        =   40
             Top             =   3550
             Width           =   1200
@@ -927,6 +1028,7 @@ Private Enum TableProperties_TabStrips
   iTABLEPROPERTYTTAB_CALENDARLINKS = 3
   iTABLEPROPERTYTTAB_WORKFLOWLINKS = 4
   iTABLEPROPERTYTTAB_AUDIT = 5
+  iTABLEPROPERTYTTAB_VALIDATION = 6
 End Enum
 
 Private mfRebuildWorkflowLinks As Boolean
@@ -1062,7 +1164,9 @@ Public Property Set Table(pObjTable As Object)
   ' Set the edit table property of the form.
   Dim objOutlookLink As clsOutlookLink
   Dim objWorkflowLink As clsWorkflowTriggeredLink
+  Dim objTableValidation As clsTableValidation
   Dim fSaved As Boolean
+  Dim sAddString As String
 
   Set mobjTable = pObjTable
   
@@ -1074,7 +1178,7 @@ Public Property Set Table(pObjTable As Object)
   If mobjTable.IsNew And Not fSaved Then
     Me.Caption = "New Table Properties"
     txtTableName = vbNullString
-    optTableType(1).value = True
+    optTableType(1).Value = True
     mlngOrderID = 0
     mlngRecDescExprID = 0
     mlngEmailID = 0
@@ -1082,13 +1186,13 @@ Public Property Set Table(pObjTable As Object)
   Else
     Me.Caption = "'" & mobjTable.TableName & "' Table Properties"
     txtTableName.Text = mobjTable.TableName
-    optTableType(mobjTable.TableType - 1).value = True
+    optTableType(mobjTable.TableType - 1).Value = True
     mlngOrderID = mobjTable.PrimaryOrderID
     mlngRecDescExprID = mobjTable.RecordDescriptionID
     mlngEmailID = mobjTable.PrimaryEmailID
     mbManualColumnBreaks = mobjTable.ManualSummaryColumnBreaks
-    chkAuditInsertion.value = IIf(mobjTable.AuditInsert = True, vbChecked, vbUnchecked)
-    chkAuditDeletion.value = IIf(mobjTable.AuditDelete = True, vbChecked, vbUnchecked)
+    chkAuditInsertion.Value = IIf(mobjTable.AuditInsert = True, vbChecked, vbUnchecked)
+    chkAuditDeletion.Value = IIf(mobjTable.AuditDelete = True, vbChecked, vbUnchecked)
     'mlngEmailNotification(0) = mobjTable.EmailInsertID
     'mlngEmailNotification(1) = mobjTable.EmailDeleteID
 
@@ -1100,9 +1204,7 @@ Public Property Set Table(pObjTable As Object)
     For iLoop = 1 To mobjTable.EmailLinks.Count
       mvarEmailLinks.Add mobjTable.EmailLinks.Item(iLoop), "ID" & mobjTable.EmailLinks.Item(iLoop).LinkID
     Next
-    
     PopulateEmailLinks 0
-    
     
     ssGrdOutlookLinks.RemoveAll
     For Each objOutlookLink In mobjTable.OutlookLinks
@@ -1118,8 +1220,19 @@ Public Property Set Table(pObjTable As Object)
       End With
     Next objWorkflowLink
     Set objWorkflowLink = Nothing
+       
+    ssGrdTableValidations.RemoveAll
+    For Each objTableValidation In mobjTable.TableValidations
+      With objTableValidation
+        sAddString = GetValidationString(objTableValidation)
+        ssGrdTableValidations.AddItem sAddString
+      End With
+    Next objTableValidation
+    Set objTableValidation = Nothing
+    
   End If
 
+  RefreshTableValidationsButtons
   RefreshOutlookLinksButtons
   cboParentTable_Initialise
   mfLoading = False
@@ -1155,7 +1268,7 @@ Private Sub chkManualColumnBreak_Click()
   Dim i As Integer
   
   ' Enable/disable the column break button
-  mbManualColumnBreaks = IIf(chkManualColumnBreak.value = vbChecked, True, False)
+  mbManualColumnBreaks = IIf(chkManualColumnBreak.Value = vbChecked, True, False)
   
   ' Remove column breaks from the summary columns list
   ' INSERT CODE HERE
@@ -1575,13 +1688,13 @@ Private Sub cmdOK_Click()
   ' If the table type has changed, check it does not contravene any rules
   ' dependent on the tsable type..
   If (mobjTable.TableID > 0) And _
-    ((optTableType(0).value And mobjTable.TableType <> iTabParent) Or _
-    (optTableType(1).value And mobjTable.TableType <> iTabChild) Or _
-    (optTableType(2).value And mobjTable.TableType <> iTabLookup)) Then
+    ((optTableType(0).Value And mobjTable.TableType <> iTabParent) Or _
+    (optTableType(1).Value And mobjTable.TableType <> iTabChild) Or _
+    (optTableType(2).Value And mobjTable.TableType <> iTabLookup)) Then
     ' Existing table AND table type has changed.
     
     ' If the table is now a Lookup table, make sure it has no relationships set up.
-    If optTableType(2).value Then
+    If optTableType(2).Value Then
       With recRelEdit
         .Index = "idxParentID"
         .Seek ">=", mobjTable.TableID
@@ -1608,7 +1721,7 @@ Private Sub cmdOK_Click()
     End If
   
     ' If the table is now a Parent table, make sure it is NOT a child in any configured relationships.
-    If optTableType(0).value Then
+    If optTableType(0).Value Then
       With recRelEdit
         .Index = "idxChildID"
         .Seek "=", mobjTable.TableID
@@ -1665,7 +1778,7 @@ Private Sub cmdOK_Click()
   'JDM - Fault 551 - Apply default permissions to existing security groups
   'NPG20080206 Fault 12874 - references new frmdefaultpermissions2 form now.
   If mobjTable.PermissionsPrompted = False And mobjTable.IsNew = True Then
-    If optTableType(2).value = True Then
+    If optTableType(2).Value = True Then
       frmPermissions.SetType "new", giTABLELOOKUP, Me.Icon
     Else
       frmPermissions.SetType "new", giTABLEPARENT, Me.Icon
@@ -1694,8 +1807,8 @@ Private Sub cmdOK_Click()
   End If
 
   mobjTable.TableName = sName
-  mobjTable.TableType = IIf(optTableType(0).value = True, 1, _
-    IIf(optTableType(1).value = True, 2, 3))
+  mobjTable.TableType = IIf(optTableType(0).Value = True, 1, _
+    IIf(optTableType(1).Value = True, 2, 3))
   mobjTable.PrimaryOrderID = mlngOrderID
   mobjTable.RecordDescriptionID = mlngRecDescExprID
   mobjTable.PrimaryEmailID = mlngEmailID
@@ -1705,8 +1818,8 @@ Private Sub cmdOK_Click()
 
 
   ' Notifications
-  mobjTable.AuditInsert = (chkAuditInsertion.value = vbChecked)
-  mobjTable.AuditDelete = (chkAuditDeletion.value = vbChecked)
+  mobjTable.AuditInsert = (chkAuditInsertion.Value = vbChecked)
+  mobjTable.AuditDelete = (chkAuditDeletion.Value = vbChecked)
   'mobjTable.EmailInsertID = mlngEmailNotification(0)
   'mobjTable.EmailDeleteID = mlngEmailNotification(1)
   
@@ -1992,7 +2105,7 @@ Private Sub cmdRemoveWorkflowLink_Click()
   Dim lngCount As Long
   Dim iLinkType As WorkflowTriggerLinkType
   
-  lngLinkID = ssGrdWorkflowLinks.Columns("LinkID").value
+  lngLinkID = ssGrdWorkflowLinks.Columns("LinkID").Value
   iLinkType = WORKFLOWTRIGGERLINKTYPE_COLUMN
   
   If DeleteRow("Workflow link", ssGrdWorkflowLinks) Then
@@ -2018,6 +2131,69 @@ Private Sub cmdRemoveWorkflowLink_Click()
   RefreshWorkflowLinksButtons
 
 
+End Sub
+
+Private Sub cmdTableValidationDelete_Click()
+
+  Dim objValidation As clsTableValidation
+  Dim lngValidationID As Long
+  Dim lngCount As Long
+  Dim iValidationType As clsTableValidation
+  
+  lngValidationID = ssGrdTableValidations.Columns("ValidationID").Value
+  
+  If DeleteRow("Table Validation", ssGrdTableValidations) Then
+    lngCount = 1
+    Do While lngCount <= mobjTable.TableValidations.Count
+      Set objValidation = mobjTable.TableValidations(lngCount)
+      
+      If objValidation.ValidationID = lngValidationID Then
+        objValidation.Deleted = True
+      End If
+      
+      lngCount = lngCount + 1
+    Loop
+
+    Changed = True
+    
+  End If
+
+  RefreshTableValidationsButtons
+
+End Sub
+
+Private Sub cmdTableValidationDeleteAll_Click()
+
+  Dim strMBText As String
+  Dim intMBButtons As Integer
+  Dim strMBTitle As String
+  Dim intMBResponse As Integer
+  Dim objLink As clsWorkflowTriggeredLink
+  
+  strMBText = "Remove all table validations for this table, are you sure ?"
+  intMBButtons = vbQuestion + vbYesNo
+  strMBTitle = "Confirm Remove All"
+  intMBResponse = MsgBox(strMBText, intMBButtons, strMBTitle)
+
+  If intMBResponse = vbYes Then
+
+    ssGrdTableValidations.RemoveAll
+    mobjTable.TableValidations = Nothing
+    mobjTable.TableValidations = New Collection
+
+    RefreshTableValidationsButtons
+    Changed = True
+  End If
+
+
+End Sub
+
+Private Sub cmdTableValidationEdit_Click()
+  TableValidation False
+End Sub
+
+Private Sub cmdTableValidationNew_Click()
+  TableValidation True
 End Sub
 
 Private Sub cmdUp_Click()
@@ -2106,7 +2282,7 @@ Private Sub Form_Activate()
   GetTableStats
   
   ' Set the manual column break setting
-  chkManualColumnBreak.value = IIf(mobjTable.ManualSummaryColumnBreaks, vbChecked, vbUnchecked)
+  chkManualColumnBreak.Value = IIf(mobjTable.ManualSummaryColumnBreaks, vbChecked, vbUnchecked)
   
   ' Set focus to table name textbox.
   If txtTableName.Enabled Then
@@ -2255,6 +2431,12 @@ Private Sub ssGrdEmailLinks_HeadClick(ByVal ColIndex As Integer)
 
 End Sub
 
+Private Sub ssGrdTableValidations_Click()
+  If cmdTableValidationEdit.Enabled Then
+    TableValidation False
+  End If
+End Sub
+
 Private Sub ssGrdWorkflowLinks_DblClick()
   If cmdWorkflowLinkProperties.Enabled Then
     cmdWorkflowLinkProperties_Click
@@ -2318,6 +2500,12 @@ Private Sub ssTabTableProperties_Click(PreviousTab As Integer)
   ' --------------------------
   fraWorkflowLinks.Enabled = (ssTabTableProperties.Tab = iTABLEPROPERTYTTAB_WORKFLOWLINKS)
   RefreshWorkflowLinksButtons
+  
+  ' --------------------------
+  ' TABLE VALIDATIONS tab
+  ' --------------------------
+  fraTableValidations.Enabled = (ssTabTableProperties.Tab = iTABLEPROPERTYTTAB_VALIDATION)
+  RefreshTableValidationsButtons
   
   ' --------------------------
   ' STATISTICS tab
@@ -2653,7 +2841,7 @@ Public Sub PrintDefinition()
         .PrintTitle "Definition"
         
         For iCount = 0 To optTableType.Count - 1
-          If optTableType(iCount).value = True Then strType = Replace(optTableType(iCount).Caption, "&", "")
+          If optTableType(iCount).Value = True Then strType = Replace(optTableType(iCount).Caption, "&", "")
         Next iCount
         .PrintNormal "Table Type : " & strType
         
@@ -2681,14 +2869,14 @@ Public Sub PrintDefinition()
                 (Not !ColumnType = giCOLUMNTYPE_SYSTEM) Then
       
                   ' Size
-                  If Database.ColumnHasSize(.Fields("DataType").value) Then
-                    If .Fields("Size").value = VARCHAR_MAX_Size Then
+                  If Database.ColumnHasSize(.Fields("DataType").Value) Then
+                    If .Fields("Size").Value = VARCHAR_MAX_Size Then
                       strSize = vbNullString
                     Else
-                      strSize = Trim(Str(.Fields("Size").value))
+                      strSize = Trim(Str(.Fields("Size").Value))
                     End If
-                    If Database.ColumnHasScale(.Fields("DataType").value) Then
-                      strDecimals = Trim(Str(.Fields("Decimals").value))
+                    If Database.ColumnHasScale(.Fields("DataType").Value) Then
+                      strDecimals = Trim(Str(.Fields("Decimals").Value))
                     Else
                       strDecimals = ""
                     End If
@@ -2698,7 +2886,7 @@ Public Sub PrintDefinition()
                   End If
       
                   ' Column Type
-                  Select Case .Fields("ColumnType").value
+                  Select Case .Fields("ColumnType").Value
                     Case giCOLUMNTYPE_SYSTEM
                      strColumnType = "System"
                     Case giCOLUMNTYPE_DATA
@@ -2711,7 +2899,7 @@ Public Sub PrintDefinition()
                       strColumnType = "Link"
                   End Select
       
-                  Select Case .Fields("ControlType").value
+                  Select Case .Fields("ControlType").Value
                     Case giCTRL_CHECKBOX
                       strControlType = "Check Box"
                     Case giCTRL_COMBOBOX
@@ -2729,7 +2917,7 @@ Public Sub PrintDefinition()
                   End Select
       
                   ' Data type
-                  strDataType = Database.GetDataDesc(.Fields("DataType").value)
+                  strDataType = Database.GetDataDesc(.Fields("DataType").Value)
                   
                   If Len(strSize) > 0 Then
                     If Len(strDecimals) > 0 Then
@@ -2744,7 +2932,7 @@ Public Sub PrintDefinition()
                     objPrinter.PrintBold "Column Name" & vbTab & vbTab & vbTab & "Data Type" & vbTab & "Control" & vbTab & "Type" '& vbTab & "Size"
                   End If
                   
-                  objPrinter.PrintNonBold .Fields("ColumnName").value & vbTab & vbTab & vbTab _
+                  objPrinter.PrintNonBold .Fields("ColumnName").Value & vbTab & vbTab & vbTab _
                         & strDataType & vbTab & strControlType & vbTab & strColumnType
                   iColumns = iColumns + 1
               End If
@@ -2777,8 +2965,8 @@ Public Sub PrintDefinition()
         
         ' Audit Log
         .PrintTitle "Audit Log"
-        .PrintNormal "Insertions : " & IIf(chkAuditInsertion.value = vbChecked, "Yes", "No")
-        .PrintNormal "Deletions : " & IIf(chkAuditDeletion.value = vbChecked, "Yes", "No")
+        .PrintNormal "Insertions : " & IIf(chkAuditInsertion.Value = vbChecked, "Yes", "No")
+        .PrintNormal "Deletions : " & IIf(chkAuditDeletion.Value = vbChecked, "Yes", "No")
   
         '' Email Notifications
         '.PrintTitle "Email Notification"
@@ -2795,7 +2983,7 @@ Public Sub PrintDefinition()
 
           ssGrdEmailLinks.MoveFirst
           For iCount = 1 To ssGrdEmailLinks.Rows
-            .PrintNonBold ssGrdEmailLinks.Columns(0).value & vbTab & ssGrdEmailLinks.Columns(1).value
+            .PrintNonBold ssGrdEmailLinks.Columns(0).Value & vbTab & ssGrdEmailLinks.Columns(1).Value
             ssGrdEmailLinks.MoveNext
           Next iCount
         Else
@@ -2812,7 +3000,7 @@ Public Sub PrintDefinition()
   
           ssGrdOutlookLinks.MoveFirst
           For iCount = 1 To ssGrdOutlookLinks.Rows
-            .PrintNonBold ssGrdOutlookLinks.Columns(1).value & vbTab & ssGrdOutlookLinks.Columns(2).value
+            .PrintNonBold ssGrdOutlookLinks.Columns(1).Value & vbTab & ssGrdOutlookLinks.Columns(2).Value
             ssGrdOutlookLinks.MoveNext
           Next iCount
         Else
@@ -2830,7 +3018,7 @@ Public Sub PrintDefinition()
     
             ssGrdWorkflowLinks.MoveFirst
             For iCount = 1 To ssGrdWorkflowLinks.Rows
-              .PrintNonBold ssGrdWorkflowLinks.Columns("Name").value & vbTab & IIf(ssGrdWorkflowLinks.Columns("Enabled").value, "Yes", "No")
+              .PrintNonBold ssGrdWorkflowLinks.Columns("Name").Value & vbTab & IIf(ssGrdWorkflowLinks.Columns("Enabled").Value, "Yes", "No")
               ssGrdWorkflowLinks.MoveNext
             Next iCount
           Else
@@ -2892,7 +3080,7 @@ Public Sub CopyDefinitionToClipboard()
   
   ' Table type
   For iCount = 0 To optTableType.Count - 1
-    If optTableType(iCount).value = True Then strType = Replace(optTableType(iCount).Caption, "&", "")
+    If optTableType(iCount).Value = True Then strType = Replace(optTableType(iCount).Caption, "&", "")
   Next iCount
   strClipboardText = strClipboardText & "Table Type : " & strType & vbCrLf
   
@@ -2927,10 +3115,10 @@ Public Sub CopyDefinitionToClipboard()
           (Not !ColumnType = giCOLUMNTYPE_SYSTEM) Then
     
             ' Size
-            If Database.ColumnHasSize(.Fields("DataType").value) Then
-              strSize = Trim(Str(.Fields("Size").value))
-              If Database.ColumnHasScale(.Fields("DataType").value) Then
-                strDecimals = Trim(Str(.Fields("Decimals").value))
+            If Database.ColumnHasSize(.Fields("DataType").Value) Then
+              strSize = Trim(Str(.Fields("Size").Value))
+              If Database.ColumnHasScale(.Fields("DataType").Value) Then
+                strDecimals = Trim(Str(.Fields("Decimals").Value))
               Else
                 strDecimals = ""
               End If
@@ -2940,7 +3128,7 @@ Public Sub CopyDefinitionToClipboard()
             End If
           
             ' Column Type
-            Select Case .Fields("ColumnType").value
+            Select Case .Fields("ColumnType").Value
               Case giCOLUMNTYPE_SYSTEM
                strColumnType = "System"
               Case giCOLUMNTYPE_DATA
@@ -2953,7 +3141,7 @@ Public Sub CopyDefinitionToClipboard()
                 strColumnType = "Link"
             End Select
           
-            Select Case .Fields("ControlType").value
+            Select Case .Fields("ControlType").Value
               Case giCTRL_CHECKBOX
                 strControlType = "Check Box"
               Case giCTRL_COMBOBOX
@@ -2971,13 +3159,13 @@ Public Sub CopyDefinitionToClipboard()
             End Select
           
             ' Data type
-            strDataType = Database.GetDataDesc(.Fields("DataType").value)
+            strDataType = Database.GetDataDesc(.Fields("DataType").Value)
           
             If iColumns = 0 Then
               strClipboardText = strClipboardText & "Column Name" & vbTab & "Data Type" & vbTab & "Control" & vbTab & "Type" & vbTab & "Size" & vbCrLf
             End If
             
-            strClipboardText = strClipboardText & .Fields("ColumnName").value & vbTab _
+            strClipboardText = strClipboardText & .Fields("ColumnName").Value & vbTab _
                   & strDataType & vbTab & strControlType & vbTab & strColumnType & vbTab _
                   & strSize & vbTab & strDecimals & vbCrLf
           
@@ -3021,7 +3209,7 @@ Public Sub CopyDefinitionToClipboard()
 
     ssGrdEmailLinks.MoveFirst
     For iCount = 1 To ssGrdEmailLinks.Rows
-      strClipboardText = strClipboardText & ssGrdEmailLinks.Columns(0).value & "          " & ssGrdEmailLinks.Columns(1).value & vbCrLf
+      strClipboardText = strClipboardText & ssGrdEmailLinks.Columns(0).Value & "          " & ssGrdEmailLinks.Columns(1).Value & vbCrLf
       ssGrdEmailLinks.MoveNext
     Next iCount
   Else
@@ -3038,7 +3226,7 @@ Public Sub CopyDefinitionToClipboard()
     
     ssGrdOutlookLinks.MoveFirst
     For iCount = 1 To ssGrdOutlookLinks.Rows
-      strClipboardText = strClipboardText & ssGrdOutlookLinks.Columns(1).value & "          " & ssGrdOutlookLinks.Columns(2).value & vbCrLf
+      strClipboardText = strClipboardText & ssGrdOutlookLinks.Columns(1).Value & "          " & ssGrdOutlookLinks.Columns(2).Value & vbCrLf
       ssGrdOutlookLinks.MoveNext
     Next iCount
   Else
@@ -3055,7 +3243,7 @@ Public Sub CopyDefinitionToClipboard()
   
       ssGrdWorkflowLinks.MoveFirst
       For iCount = 1 To ssGrdWorkflowLinks.Rows
-        strClipboardText = strClipboardText & ssGrdWorkflowLinks.Columns("Name").value & "          " & IIf(ssGrdWorkflowLinks.Columns("Enabled").value, "Yes", "No") & vbCrLf
+        strClipboardText = strClipboardText & ssGrdWorkflowLinks.Columns("Name").Value & "          " & IIf(ssGrdWorkflowLinks.Columns("Enabled").Value, "Yes", "No") & vbCrLf
         ssGrdWorkflowLinks.MoveNext
       Next iCount
     Else
@@ -3184,6 +3372,24 @@ Private Sub RefreshWorkflowLinksButtons()
 
 End Sub
 
+Private Sub RefreshTableValidationsButtons()
+  
+  Dim blnEnabled As Boolean
+  
+  With ssGrdTableValidations
+    If .Rows > 0 And .SelBookmarks.Count = 0 Then
+      .SelBookmarks.Add .AddItemBookmark(0)
+    End If
+
+    blnEnabled = (ssTabTableProperties.Tab = iTABLEPROPERTYTTAB_VALIDATION And Not mblnReadOnly)
+
+    cmdTableValidationNew.Enabled = blnEnabled
+    cmdTableValidationEdit.Enabled = (.SelBookmarks.Count > 0 And ssTabTableProperties.Tab = iTABLEPROPERTYTTAB_VALIDATION)
+    cmdTableValidationDelete.Enabled = (.SelBookmarks.Count > 0 And blnEnabled)
+    cmdTableValidationDeleteAll.Enabled = (.Rows > 0 And blnEnabled)
+  End With
+
+End Sub
 
 Private Sub cmdOutlookLinkProperties_Click()
   OutlookLink False
@@ -3426,6 +3632,26 @@ LocalErr:
 
 End Function
 
+Private Function GetNewTableValidationID() As Long
+  Dim objNewValidation As clsTableValidation
+  Dim lngNewID As Long
+  
+  On Local Error GoTo LocalErr
+  
+  lngNewID = Database.UniqueColumnValue("tmpTableValidations", "ValidationID")
+
+  Do While lngNewID < 99999
+    Set objNewValidation = mobjTable.TableValidations("ID" & lngNewID)
+    lngNewID = lngNewID + 1
+  Loop
+
+Exit Function
+
+LocalErr:
+  GetNewTableValidationID = lngNewID
+
+End Function
+
 
 Private Sub cmdRemoveOutlookLink_Click()
 
@@ -3433,7 +3659,7 @@ Private Sub cmdRemoveOutlookLink_Click()
   Dim lngLinkID As Long
   Dim lngCount As Long
 
-  lngLinkID = ssGrdOutlookLinks.Columns(0).value
+  lngLinkID = ssGrdOutlookLinks.Columns(0).Value
 
   If DeleteRow("outlook link", ssGrdOutlookLinks) Then
     'mvaroutlookLinks.Remove "C" & lngLinkID
@@ -3526,7 +3752,7 @@ Private Sub GetTableStats()
 
     With rsDetails
       If Not (.BOF And .EOF) Then
-        strOriginalName = .Fields("tableName").value
+        strOriginalName = .Fields("tableName").Value
       End If
       .Close
     End With
@@ -3540,9 +3766,9 @@ Private Sub GetTableStats()
     
       With rsDetails
         If Not (.BOF And .EOF) Then
-          lblStatsRows.Caption = "Rows : " & .Fields("Rows").value
+          lblStatsRows.Caption = "Rows : " & .Fields("Rows").Value
           
-          strSize = Replace(.Fields("Data").value, "KB", "") * 1000
+          strSize = Replace(.Fields("Data").Value, "KB", "") * 1000
           lblDataSize.Caption = "Table Size : " & NiceSize(strSize)
         End If
         .Close
@@ -3556,15 +3782,15 @@ Private Sub GetTableStats()
     
     Do While Not (rsDetails.EOF)
   
-      sSQL = "SELECT SUM(DATALENGTH(" & rsDetails.Fields(0).value & "))" _
+      sSQL = "SELECT SUM(DATALENGTH(" & rsDetails.Fields(0).Value & "))" _
           & " FROM " & strOriginalName _
-          & " WHERE DATALENGTH(" & rsDetails.Fields(0).value & ") > 300"
+          & " WHERE DATALENGTH(" & rsDetails.Fields(0).Value & ") > 300"
       rsDetails2.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly
       
       Do While Not (rsDetails2.EOF)
-        strSize = IIf(IsNull(rsDetails2.Fields(0).value), 0, rsDetails2.Fields(0).value)
+        strSize = IIf(IsNull(rsDetails2.Fields(0).Value), 0, rsDetails2.Fields(0).Value)
     
-        Set objListItem = lstOLEColumns.ListItems.Add(, , rsDetails.Fields(0).value)
+        Set objListItem = lstOLEColumns.ListItems.Add(, , rsDetails.Fields(0).Value)
         objListItem.SubItems(1) = NiceSize(strSize)
       
         rsDetails2.MoveNext
@@ -3767,7 +3993,7 @@ Private Sub cmdEmailLinkProperties_Click()
   On Error GoTo LocalErr
 
   'Get existing object
-  Set objNewLink = mvarEmailLinks.Item("ID" & ssGrdEmailLinks.Columns(3).value)
+  Set objNewLink = mvarEmailLinks.Item("ID" & ssGrdEmailLinks.Columns(3).Value)
   lngOldLinkID = objNewLink.LinkID
   
   Load frmEmail   'Required!
@@ -3854,7 +4080,7 @@ Private Sub cmdRemoveEmailLink_Click()
   Dim lngLinkID As Long
   Dim iLoop As Long
 
-  lngLinkID = ssGrdEmailLinks.Columns(3).value
+  lngLinkID = ssGrdEmailLinks.Columns(3).Value
 
   If DeleteRow("email link", ssGrdEmailLinks) Then
     'On Error Resume Next
@@ -3984,7 +4210,6 @@ Public Function RemoveAllRows(strType As String, ssgrd As SSDBGrid) As Boolean
 
 End Function
 
-
 Private Sub PopulateEmailLinks(intSelectedID As Integer)
 
   Dim objEmailLink As clsEmailLink
@@ -4044,3 +4269,82 @@ Private Sub PopulateEmailLinks(intSelectedID As Integer)
 
 End Sub
 
+
+Private Sub TableValidation(blnNew As Boolean)
+
+  Dim frmValidation As frmTableValidation
+  Dim objValidation As clsTableValidation
+  Dim strKey As String
+  Dim lngID As Long
+  Dim iLoop As Integer
+  Dim lngRow As Long
+  Dim sAddString As String
+  
+  Set frmValidation = New frmTableValidation
+  Set objValidation = New clsTableValidation
+  
+  'Set up defaults for new link
+  With objValidation
+    If blnNew Then
+      .ValidationID = GetNewTableValidationID
+      .TableID = mobjTable.TableID
+      .ValidationType = 3
+      .Message = vbNullString
+    Else
+      lngID = Val(ssGrdTableValidations.Columns(0).CellText(ssGrdTableValidations.Bookmark))
+      Set objValidation = mobjTable.TableValidations("ID" & CStr(lngID))
+    End If
+  End With
+
+  frmValidation.ValidationObject = objValidation
+
+  If frmValidation.PopulateControls Then
+    frmValidation.Show vbModal
+  End If
+
+  If Not frmValidation.Cancelled Then
+
+    Set objValidation = frmValidation.ValidationObject
+    strKey = "ID" & objValidation.ValidationID
+    If Not blnNew Then
+      mobjTable.TableValidations.Remove strKey
+    End If
+    mobjTable.TableValidations.Add objValidation, strKey
+
+    With ssGrdTableValidations
+      .Redraw = False
+
+      If Not blnNew Then
+        lngRow = .AddItemRowIndex(.Bookmark)
+        .RemoveItem lngRow
+      Else
+        lngRow = .Rows
+      End If
+
+      sAddString = GetValidationString(objValidation)
+      .AddItem sAddString, lngRow
+      .Redraw = True
+
+      .Redraw = False
+      .Bookmark = .AddItemBookmark(lngRow)
+      .SelBookmarks.RemoveAll
+      .SelBookmarks.Add .Bookmark
+      .Redraw = True
+    End With
+
+    RefreshTableValidationsButtons
+    Changed = True
+
+  End If
+
+  Set objValidation = Nothing
+  UnLoad frmValidation
+  Set frmValidation = Nothing
+
+End Sub
+
+Private Function GetValidationString(ByRef objValidation As clsTableValidation) As String
+
+  GetValidationString = objValidation.ValidationID & vbTab & objValidation.Message & vbTab
+
+End Function

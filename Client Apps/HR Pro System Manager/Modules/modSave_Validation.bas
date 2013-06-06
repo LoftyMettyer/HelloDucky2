@@ -79,6 +79,8 @@ Private Function CreateValidationStoredProcedure(pLngCurrentTableID As Long, _
   Dim sDuplicateColumns As String
   Dim sParentTableName As String
   Dim rsTableName As dao.Recordset
+  Dim aryOverlapColumns() As String
+  Dim aryOverlapParentJoins() As String
 
   fOK = True
   sSPName = gsVALIDATIONSPPREFIX & Trim$(Str$(pLngCurrentTableID))
@@ -113,9 +115,10 @@ Private Function CreateValidationStoredProcedure(pLngCurrentTableID As Long, _
     "/* ------------------------------------------------------------------------------- */" & vbNewLine & _
     "CREATE PROCEDURE dbo." & sSPName & vbNewLine & _
     "(" & vbNewLine & _
-    "    @pfResult bit OUTPUT," & vbNewLine & _
-    "    @psInvalidityMessage varchar(MAX) OUTPUT," & vbNewLine & _
-    "    @piRecordID integer" & vbNewLine & _
+    "    @pfResult             bit OUTPUT," & vbNewLine & _
+    "    @piSeverity           integer OUTPUT," & vbNewLine & _
+    "    @psInvalidityMessage  varchar(MAX) OUTPUT," & vbNewLine & _
+    "    @piRecordID           integer" & vbNewLine & _
     ")" & vbNewLine & _
     "AS" & vbNewLine
   sSPCode = sSPCode & _
@@ -137,6 +140,7 @@ Private Function CreateValidationStoredProcedure(pLngCurrentTableID As Long, _
     "        @iParentIDCount integer;" & vbNewLine & vbNewLine & _
     "    IF TRIGGER_NESTLEVEL() > 1 RETURN" & vbNewLine & vbNewLine & _
     "    SET @pfResult = 1;" & vbNewLine & _
+    "    SET @piSeverity = 0;" & vbNewLine & _
     "    SET @psInvalidityMessage = '';" & vbNewLine & _
     "    SET @iParentIDCount = 0;" & vbNewLine
 
@@ -690,6 +694,37 @@ Private Function CreateValidationStoredProcedure(pLngCurrentTableID As Long, _
         "    END" & vbNewLine
     End If
     
+    
+  ' Add overlap checks
+  aryOverlapColumns = GetOverlapColumnsArray(pLngCurrentTableID)
+  aryOverlapParentJoins = GetOverlapParentJoins(pLngCurrentTableID)
+  For iCounter = LBound(aryOverlapColumns, 2) To UBound(aryOverlapColumns, 2) - 1
+    sSPCode = sSPCode & vbNewLine & _
+        "    SELECT TOP 1 @psInvalidityMessage = @psInvalidityMessage + char(13) + '''Start_Date '' to ''End_Date'' overlaps with another record.'" & vbNewLine & _
+        "    FROM dbo.[" & psCurrentTableName & "]" & vbNewLine & _
+        Join(aryOverlapParentJoins, vbNewLine) & _
+        "    WHERE dbo.udfASRDateOverlap(" & _
+        IIf(Not aryOverlapColumns(0, iCounter) = vbNullString, "inserted.[" & aryOverlapColumns(0, iCounter) & "], ", "NULL, ") & _
+        IIf(Not aryOverlapColumns(1, iCounter) = vbNullString, "inserted.[" & aryOverlapColumns(1, iCounter) & "], ", "NULL, ") & _
+        IIf(Not aryOverlapColumns(2, iCounter) = vbNullString, "inserted.[" & aryOverlapColumns(2, iCounter) & "], ", "NULL, ") & _
+        IIf(Not aryOverlapColumns(3, iCounter) = vbNullString, "inserted.[" & aryOverlapColumns(3, iCounter) & "], ", "NULL, ") & _
+        IIf(Not aryOverlapColumns(4, iCounter) = vbNullString, "inserted.[" & aryOverlapColumns(4, iCounter) & "], ", "NULL, ") & vbNewLine & Space(12) & _
+        IIf(Not aryOverlapColumns(0, iCounter) = vbNullString, "dbo.[" & psCurrentTableName & "].[" & aryOverlapColumns(0, iCounter) & "], ", "NULL, ") & _
+        IIf(Not aryOverlapColumns(1, iCounter) = vbNullString, "dbo.[" & psCurrentTableName & "].[" & aryOverlapColumns(1, iCounter) & "], ", "NULL, ") & _
+        IIf(Not aryOverlapColumns(2, iCounter) = vbNullString, "dbo.[" & psCurrentTableName & "].[" & aryOverlapColumns(2, iCounter) & "], ", "NULL, ") & _
+        IIf(Not aryOverlapColumns(3, iCounter) = vbNullString, "dbo.[" & psCurrentTableName & "].[" & aryOverlapColumns(3, iCounter) & "], ", "NULL, ") & _
+        IIf(Not aryOverlapColumns(4, iCounter) = vbNullString, "dbo.[" & psCurrentTableName & "].[" & aryOverlapColumns(4, iCounter) & "]", "NULL") & ")=1 " & vbNewLine & _
+        "        AND NOT dbo.[" & psCurrentTableName & "].[ID] = @piRecordID;" & vbNewLine & _
+        "    IF LEN(@psInvalidityMessage) > 0 SET @pfResult = 0;" & vbNewLine
+    Next
+        
+    ' Any of these validations going to stop the record from saving?
+    If vbYes = vbNo Then
+      sSPCode = sSPCode & vbNewLine & _
+          "    IF LEN(@psInvalidityMessage) > 0 SET @piSeverity = 1;" & vbNewLine
+    End If
+    
+    
     If fIsTopLevel Then
       sSPCode = sSPCode & vbNewLine & _
         "    /* Check the record is still in a view that can be seen by the user. */" & vbNewLine & _
@@ -741,3 +776,80 @@ ErrorTrap:
  Resume TidyUpAndExit
 
 End Function
+
+
+Private Function GetOverlapColumnsArray(ByVal plngTableID As Long) As String()
+
+  Dim sSQL As String
+  Dim rsTemp As dao.Recordset
+  Dim iDefaultItem As Integer
+  Dim sTableName As String
+  Dim arOverlaps() As String
+  Dim lngCount As Long
+
+  lngCount = 0
+  ReDim arOverlaps(7, 10000)
+
+  sSQL = "SELECT *" & _
+    " FROM tmpTableValidations" & _
+    " WHERE (deleted = FALSE)" & _
+    " AND (tableID = " & CStr(plngTableID) & ")"
+  Set rsTemp = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
+  While Not rsTemp.EOF
+    
+    arOverlaps(0, lngCount) = GetColumnName(rsTemp.Fields("EventStartDateColumnID").Value, True)
+    arOverlaps(1, lngCount) = GetColumnName(rsTemp.Fields("EventStartSessionColumnID").Value, True)
+    arOverlaps(2, lngCount) = GetColumnName(rsTemp.Fields("EventEndDateColumnID").Value, True)
+    arOverlaps(3, lngCount) = GetColumnName(rsTemp.Fields("EventEndSessionColumnID").Value, True)
+    arOverlaps(4, lngCount) = GetColumnName(rsTemp.Fields("EventTypeColumnID").Value, True)
+    arOverlaps(5, lngCount) = rsTemp.Fields("Message").Value
+    arOverlaps(6, lngCount) = rsTemp.Fields("FilterID").Value
+        
+    lngCount = lngCount + 1
+    rsTemp.MoveNext
+  Wend
+  rsTemp.Close
+  
+  Set rsTemp = Nothing
+  
+  ReDim Preserve arOverlaps(7, lngCount)
+  GetOverlapColumnsArray = arOverlaps
+
+
+End Function
+
+Private Function GetOverlapParentJoins(ByVal plngTableID As Long) As String()
+
+  Dim sSQL As String
+  Dim rsTemp As dao.Recordset
+  Dim iDefaultItem As Integer
+  Dim sTableName As String
+  Dim arOverlaps() As String
+  Dim lngCount As Long
+
+  lngCount = 0
+  ReDim arOverlaps(10000)
+  
+  sTableName = GetTableName(plngTableID)
+  
+  sSQL = "SELECT *" & _
+    " FROM tmpRelations" & _
+    " " & _
+    " WHERE (ChildID = " & CStr(plngTableID) & ")"
+  Set rsTemp = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
+  While Not rsTemp.EOF
+'    arOverlaps(lngCount) = "        INNER JOIN inserted ON inserted.[ID_" & rsTemp.Fields("ParentID").Value & "] = dbo.[" & sTableName & "].[id_" & rsTemp.Fields("ParentID").Value & "]"
+    arOverlaps(lngCount) = "    INNER JOIN dbo.[" & sTableName & "] inserted ON inserted.[ID_" & rsTemp.Fields("ParentID").Value & "] = dbo.[" & sTableName & "].[id_" & rsTemp.Fields("ParentID").Value & "]" & _
+          " AND inserted.[ID] = @piRecordID"
+    lngCount = lngCount + 1
+    rsTemp.MoveNext
+  Wend
+  rsTemp.Close
+  
+  Set rsTemp = Nothing
+  
+  ReDim Preserve arOverlaps(lngCount)
+  GetOverlapParentJoins = arOverlaps
+
+End Function
+

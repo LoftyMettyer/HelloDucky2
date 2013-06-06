@@ -74,7 +74,7 @@ Public Function SaveTables(pfRefreshDatabase As Boolean, mfrmUse As frmUsage) ',
       
       'Now do new and changed ones
       If Not !Deleted Then
-        If !New Then
+        If !new Then
           OutputCurrentProcess2 recTabEdit!TableName, lngRecordCount
           gobjProgress.UpdateProgress2
           fOK = TableNew
@@ -145,6 +145,11 @@ Private Function TableDelete() As Boolean
   ' Delete summary fields for the table.
   sSQL = "DELETE FROM ASRSysSummaryFields" & _
     " WHERE historyTableID=" & strTableID
+  gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
+
+  ' Delete table validations for the table.
+  sSQL = "DELETE FROM [ASRSysTableValidations]" & _
+    " WHERE [TableID]=" & strTableID
   gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
 
   ' Delete column definitions for this table from Columns
@@ -239,6 +244,7 @@ Private Function TableNew() As Boolean
   Dim rsControlValues As ADODB.Recordset
   Dim objTable As Table
   Dim objSummaryField As cSummaryField
+  Dim objTableValidation As clsTableValidation
   Dim bEmbedded As Boolean
   Dim sTableCreate As HRProSystemMgr.cStringBuilder
 
@@ -295,6 +301,8 @@ Private Function TableNew() As Boolean
     Set objTable = New Table
     objTable.TableID = lngTableID
     If objTable.ReadTable Then
+    
+      ' Commit the summary objects
       For Each objSummaryField In objTable.SummaryFields
         sSQL = "INSERT INTO ASRSysSummaryFields (ID, historyTableID, parentColumnID, sequence, startOfGroup,StartOfColumn)" & _
           " VALUES(" & objSummaryField.id & ", " & _
@@ -306,6 +314,29 @@ Private Function TableNew() As Boolean
         gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
       Next objSummaryField
       Set objSummaryField = Nothing
+
+
+      ' Commit the table validations
+      For Each objTableValidation In objTable.TableValidations
+        sSQL = "INSERT INTO [ASRSysTableValidations] ([ValidationID], [TableID], [Type]" & _
+          ",[EventStartDateColumnID], [EventStartSessionColumnID], [EventEndDateColumnID], [EventEndSessionColumnID], [FilterID], [EventTypeColumnID] " & _
+          ",[Severity], [Message])" & _
+          " VALUES( " & objTableValidation.ValidationID & ", " & _
+          objTableValidation.TableID & ", " & _
+          objTableValidation.ValidationType & ", " & _
+          objTableValidation.EventStartdateColumnID & ", " & _
+          objTableValidation.EventStartSessionColumnID & ", " & _
+          objTableValidation.EventEnddateColumnID & ", " & _
+          objTableValidation.EventEndSessionColumnID & ", " & _
+          objTableValidation.FilterID & ", " & _
+          objTableValidation.EventTypeColumnID & ", " & _
+          objTableValidation.Severity & ", " & _
+          "'" & objTableValidation.Message & "')"
+        gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
+      Next
+      Set objTableValidation = Nothing
+     
+      
     End If
     Set objTable = Nothing
 
@@ -771,7 +802,7 @@ Private Function TableSave(mfrmUse As frmUsage) As Boolean
             iDataType = IIf(IsNull(.Fields("OriginalDataType").value), .Fields("DataType").value, .Fields("OriginalDataType").value)
             sColumnName = !ColumnName
 
-            If !New And (!DataType = dtBIT) Then
+            If !new And (!DataType = dtBIT) Then
               ' Initialise new logic columns (required by SQL Server).
               iColumnList = iColumnList + 1
               If iColumnList > UBound(asColumnList) Then
@@ -782,7 +813,7 @@ Private Function TableSave(mfrmUse As frmUsage) As Boolean
               asValueList(iColumnList) = "0"
 
 
-            ElseIf Not !New Then
+            ElseIf Not !new Then
               ' Copy data from the old database structure to the new one.
               ' NB. Only try to copy data if the columns have compatible data types.
               ' Get the old column definition.
