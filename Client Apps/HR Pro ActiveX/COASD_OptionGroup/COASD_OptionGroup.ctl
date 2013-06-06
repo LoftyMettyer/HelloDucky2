@@ -134,6 +134,7 @@ Private msWFDefaultValue As String
 Private mlngCalculationID As Long
 Private miDefaultValueType As WorkflowValueTypes
 
+Private mBackcolour As OLE_COLOR
 Private mForecolour As OLE_COLOR
 
 Public Enum ASRBackStyleConstants
@@ -238,7 +239,7 @@ Public Property Let WFDefaultValue(New_Value As String)
   msWFDefaultValue = New_Value
 End Property
 Public Property Get WFDefaultValue() As String
-  WFDefaultValue = Option1(GetSelectedOption()).Value
+' WFDefaultValue = Option1(GetSelectedOption()).Value
 End Property
 
 Public Property Let WFIdentifier(New_Value As String)
@@ -310,14 +311,16 @@ Private Sub UserControl_DblClick()
 
 End Sub
 
+Private Sub UserControl_Initialize()
+  mForecolour = vbBlack
+  mBackcolour = vbButtonFace
+End Sub
+
 Private Sub UserControl_InitProperties()
   On Error Resume Next
   Caption = Extender.Name
   Set Font = Ambient.Font
-  ForeColor = Ambient.ForeColor
-  BackColor = Ambient.BackColor
 End Sub
-
 
 Private Sub UserControl_KeyDown(KeyCode As Integer, Shift As Integer)
   ' Pass the keydown event to the parent form.
@@ -473,19 +476,25 @@ Public Property Let Alignment(ByVal vNewValue As Integer)
 End Property
 
 Public Property Get BackColor() As OLE_COLOR
-  BackColor = fraOptGroup.BackColor
+  BackColor = mBackcolour
 End Property
 
 Public Property Let BackColor(ByVal NewColor As OLE_COLOR)
   Dim Index As Integer
   
-  fraOptGroup.BackColor = NewColor
-  For Index = Option1.LBound To Option1.UBound
-    Option1(Index).BackColor = NewColor
-  Next Index
+  mBackcolour = NewColor
   
-  'JDM - 16/08/01 - Fault 2694 - Not setting background colour
-  fraInternal.BackColor = NewColor
+  If Not mblnReadOnly Then
+  
+    fraOptGroup.BackColor = mBackcolour
+    For Index = Option1.LBound To Option1.UBound
+      Option1(Index).BackColor = mBackcolour
+    Next Index
+    
+    'JDM - 16/08/01 - Fault 2694 - Not setting background colour
+    fraInternal.BackColor = mBackcolour
+    
+  End If
   
 End Property
 
@@ -550,18 +559,21 @@ Public Property Set Font(ByVal NewFont As Font)
 End Property
 
 Public Property Get ForeColor() As OLE_COLOR
-  ForeColor = fraOptGroup.ForeColor
+  ForeColor = mForecolour
 End Property
 
 Public Property Let ForeColor(ByVal NewColor As OLE_COLOR)
   Dim Index As Integer
   
-  fraOptGroup.ForeColor = NewColor
-  For Index = Option1.LBound To Option1.UBound
-    Option1(Index).ForeColor = NewColor
-  Next Index
-
   mForecolour = NewColor
+  
+  If Not mblnReadOnly Then
+    fraOptGroup.ForeColor = mForecolour
+    For Index = Option1.LBound To Option1.UBound
+      Option1(Index).ForeColor = mForecolour
+    Next Index
+  End If
+
 End Property
 
 Public Property Get hWnd() As Long
@@ -798,20 +810,16 @@ Public Property Get Read_Only() As Boolean
 End Property
 
 Public Property Let Read_Only(blnValue As Boolean)
-'NPG20071022
+  
   Dim lngIndex As Long
 
   mblnReadOnly = blnValue
 
-'  AE20080424 Fault #13124
-'  For lngIndex = Option1.LBound To Option1.UBound
-'    Option1(lngIndex).ForeColor = IIf(blnValue, vbGrayText, vbWindowText)
-'    fraOptGroup.ForeColor = IIf(blnValue, vbGrayText, vbWindowText)
-'  Next
-
   For lngIndex = Option1.LBound To Option1.UBound
     Option1(lngIndex).ForeColor = IIf(blnValue, vbGrayText, mForecolour)
+    Option1(lngIndex).BackColor = IIf(blnValue, vbButtonFace, mBackcolour)
     fraOptGroup.ForeColor = IIf(blnValue, vbGrayText, mForecolour)
+    fraOptGroup.BackColor = IIf(blnValue, vbButtonFace, mBackcolour)
   Next
 
 End Property
