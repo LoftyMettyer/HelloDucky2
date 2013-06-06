@@ -17,7 +17,7 @@ Begin VB.Form frmPersonnelSetup
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1020
+   HelpContextID   =   5020
    Icon            =   "frmPersonnelSetup.frx":0000
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
@@ -46,14 +46,14 @@ Begin VB.Form frmPersonnelSetup
       TabCaption(1)   =   "C&areer Change"
       TabPicture(1)   =   "frmPersonnelSetup.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraWorkingPattern"
-      Tab(1).Control(1)=   "fraRegion"
+      Tab(1).Control(0)=   "fraRegion"
+      Tab(1).Control(1)=   "fraWorkingPattern"
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "&Hierarchy"
       TabPicture(2)   =   "frmPersonnelSetup.frx":0044
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraPostAllocationTable"
-      Tab(2).Control(1)=   "fraHierarchyTable"
+      Tab(2).Control(0)=   "fraHierarchyTable"
+      Tab(2).Control(1)=   "fraPostAllocationTable"
       Tab(2).ControlCount=   2
       Begin VB.Frame fraPostAllocationTable 
          Caption         =   "Post Allocation Table :"
@@ -773,7 +773,7 @@ Public Property Get Changed() As Boolean
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
   mfChanged = pblnChanged
-  If Not mbLoading Then cmdOK.Enabled = True
+  If Not mbLoading Then cmdOk.Enabled = True
 End Property
 
 Private Sub cboGrade_Click()
@@ -877,7 +877,7 @@ Private Sub Form_Load()
   SSTab1.Tab = 0
     
   mbLoading = True
-  cmdOK.Enabled = False
+  cmdOk.Enabled = False
   'Changed = False
   
   ' Only display the Hierarchy tab if UDFs are enabled.
@@ -1210,8 +1210,8 @@ Private Sub RefreshPersonnelColumnControls()
         End If
         
         If (Not !Deleted) And _
-          (!ColumnType <> giCOLUMNTYPE_LINK) And _
-          (!ColumnType <> giCOLUMNTYPE_SYSTEM) Then
+          (!columnType <> giCOLUMNTYPE_LINK) And _
+          (!columnType <> giCOLUMNTYPE_SYSTEM) Then
           
           ' Only load date fields into the start/leaving date and dateOfBirth combos
           If !DataType = dtTIMESTAMP Then
@@ -1386,8 +1386,8 @@ Private Sub RefreshLoginColumnControls()
         End If
         
         If (Not !Deleted) And _
-          (!ColumnType <> giCOLUMNTYPE_LINK) And _
-          (!ColumnType <> giCOLUMNTYPE_SYSTEM) And _
+          (!columnType <> giCOLUMNTYPE_LINK) And _
+          (!columnType <> giCOLUMNTYPE_SYSTEM) And _
           (!DataType = dtVARCHAR) Then
           
           ' Load varchar fields
@@ -1514,8 +1514,8 @@ Private Sub RefreshHistoricRegionColumnControls()
         End If
         
         If (Not !Deleted) And _
-          (!ColumnType <> giCOLUMNTYPE_LINK) And _
-          (!ColumnType <> giCOLUMNTYPE_SYSTEM) Then
+          (!columnType <> giCOLUMNTYPE_LINK) And _
+          (!columnType <> giCOLUMNTYPE_SYSTEM) Then
           
           If !DataType = dtVARCHAR Then
             cboRegionField.AddItem !ColumnName
@@ -1575,8 +1575,8 @@ Private Sub RefreshHistoricWorkingPatternColumnControls()
         End If
         
         If (Not !Deleted) And _
-          (!ColumnType <> giCOLUMNTYPE_LINK) And _
-          (!ColumnType <> giCOLUMNTYPE_SYSTEM) Then
+          (!columnType <> giCOLUMNTYPE_LINK) And _
+          (!columnType <> giCOLUMNTYPE_SYSTEM) Then
           
           If !DataType = dtLONGVARCHAR Then
             cboWorkingPatternField.AddItem !ColumnName
@@ -2219,8 +2219,8 @@ Private Sub RefreshHierarchyControls()
         End If
         
         If (Not !Deleted) And _
-          (!ColumnType <> giCOLUMNTYPE_LINK) And _
-          (!ColumnType <> giCOLUMNTYPE_SYSTEM) Then
+          (!columnType <> giCOLUMNTYPE_LINK) And _
+          (!columnType <> giCOLUMNTYPE_SYSTEM) Then
 
           ' Load varchar fields
           If (!DataType = dtVARCHAR) Or _
@@ -2330,8 +2330,8 @@ Private Sub RefreshPostAllocationControls()
         End If
         
         If (Not !Deleted) And _
-          (!ColumnType <> giCOLUMNTYPE_LINK) And _
-          (!ColumnType <> giCOLUMNTYPE_SYSTEM) Then
+          (!columnType <> giCOLUMNTYPE_LINK) And _
+          (!columnType <> giCOLUMNTYPE_SYSTEM) Then
 
           ' Load date fields
           If !DataType = dtTIMESTAMP Then

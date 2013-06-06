@@ -6,7 +6,7 @@ Begin VB.Form frmSSIntranetChart
    ClientLeft      =   45
    ClientTop       =   375
    ClientWidth     =   5880
-   HelpContextID   =   1086
+   HelpContextID   =   5086
    Icon            =   "frmSSIntranetChart.frx":0000
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False

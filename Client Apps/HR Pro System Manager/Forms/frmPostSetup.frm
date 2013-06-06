@@ -15,7 +15,7 @@ Begin VB.Form frmPostSetup
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1045
+   HelpContextID   =   5045
    Icon            =   "frmPostSetup.frx":0000
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
@@ -188,7 +188,7 @@ Public Property Get Changed() As Boolean
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
   mfChanged = pblnChanged
-  If Not mbLoading Then cmdOK.Enabled = True
+  If Not mbLoading Then cmdOk.Enabled = True
 End Property
 
 Private Sub cboJobTitle_Click()
@@ -285,7 +285,7 @@ Private Sub Form_Load()
   
   mbLoading = True
   Changed = False
-  cmdOK.Enabled = False
+  cmdOk.Enabled = False
   mblnReadOnly = (Application.AccessMode <> accFull And _
                   Application.AccessMode <> accSupportMode)
 
@@ -407,7 +407,7 @@ Private Sub cboPostTable_Click()
           End If
 
           If (Not !Deleted) And _
-            (!ColumnType = giCOLUMNTYPE_LOOKUP) Then
+            (!columnType = giCOLUMNTYPE_LOOKUP) Then
   
             cboGrade.AddItem !ColumnName
             cboGrade.ItemData(cboGrade.NewIndex) = !ColumnID
@@ -511,8 +511,8 @@ Private Sub cboGrade_Click()
 
         
         If (Not !Deleted) And _
-          (!ColumnType <> giCOLUMNTYPE_LINK) And _
-          (!ColumnType <> giCOLUMNTYPE_SYSTEM) Then
+          (!columnType <> giCOLUMNTYPE_LINK) And _
+          (!columnType <> giCOLUMNTYPE_SYSTEM) Then
 
           If !ColumnID = lngGradeColumn Then
             txtGradeColumn.Text = !ColumnName
@@ -562,7 +562,7 @@ Private Function HasLookupColumn(lngTableID As Long) As Boolean
           Exit Do
         End If
 
-        If (Not !Deleted) And (!ColumnType = giCOLUMNTYPE_LOOKUP) Then
+        If (Not !Deleted) And (!columnType = giCOLUMNTYPE_LOOKUP) Then
           HasLookupColumn = True
           Exit Function
         End If

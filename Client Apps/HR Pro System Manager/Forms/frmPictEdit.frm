@@ -15,7 +15,7 @@ Begin VB.Form frmPictEdit
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1021
+   HelpContextID   =   5021
    Icon            =   "frmPictEdit.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True

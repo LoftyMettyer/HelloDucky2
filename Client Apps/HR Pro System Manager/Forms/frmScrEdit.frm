@@ -16,7 +16,7 @@ Begin VB.Form frmScrEdit
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1028
+   HelpContextID   =   5028
    Icon            =   "frmScrEdit.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
@@ -487,7 +487,7 @@ Private Sub cmdOK_Click()
             If (!TableID <> TableID) Then
               Exit Do
             End If
-            If (!ColumnType = giCOLUMNTYPE_LINK) Then
+            If (!columnType = giCOLUMNTYPE_LINK) Then
               bHasLink = True
             End If
             .MoveNext

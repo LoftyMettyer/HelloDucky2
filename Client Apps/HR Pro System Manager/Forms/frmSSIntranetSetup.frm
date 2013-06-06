@@ -17,7 +17,7 @@ Begin VB.Form frmSSIntranetSetup
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1040
+   HelpContextID   =   5040
    Icon            =   "frmSSIntranetSetup.frx":0000
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
@@ -1765,7 +1765,7 @@ Private Sub RefreshControls()
 
   End Select
 
-  cmdOK.Enabled = mfChanged
+  cmdOk.Enabled = mfChanged
 
 End Sub
 

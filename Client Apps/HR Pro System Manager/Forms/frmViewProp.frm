@@ -15,7 +15,7 @@ Begin VB.Form frmViewProp
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1038
+   HelpContextID   =   5038
    Icon            =   "frmViewProp.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
@@ -51,7 +51,7 @@ Begin VB.Form frmViewProp
       Width           =   3685
    End
    Begin VB.CommandButton cmdWhereClause 
-Caption = "..."
+      Caption         =   "..."
       Height          =   315
       Left            =   5160
       TabIndex        =   3
@@ -813,12 +813,12 @@ Private Sub txtViewDescription_GotFocus()
   
   UI.txtSelText
   
-  cmdOK.Default = False
+  cmdOk.Default = False
   
 End Sub
 
 Private Sub txtViewDescription_LostFocus()
-  cmdOK.Default = True
+  cmdOk.Default = True
 
 End Sub
 

@@ -19,7 +19,7 @@ Begin VB.Form frmTabEdit
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1033
+   HelpContextID   =   5033
    Icon            =   "frmTabEdit.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
@@ -83,18 +83,18 @@ Begin VB.Form frmTabEdit
       TabCaption(1)   =   "Su&mmary"
       TabPicture(1)   =   "frmTabEdit.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "lblParentTable"
-      Tab(1).Control(1)=   "fraColumns"
-      Tab(1).Control(2)=   "cmdInsert"
-      Tab(1).Control(3)=   "cmdDown"
-      Tab(1).Control(4)=   "cmdUp"
-      Tab(1).Control(5)=   "cmdRemove"
-      Tab(1).Control(6)=   "cmdAdd"
-      Tab(1).Control(7)=   "fraSummaryFields"
-      Tab(1).Control(8)=   "cmdInsertBreak"
-      Tab(1).Control(9)=   "cboParentTable"
-      Tab(1).Control(10)=   "cmdColumnBreak"
-      Tab(1).Control(11)=   "chkManualColumnBreak"
+      Tab(1).Control(0)=   "chkManualColumnBreak"
+      Tab(1).Control(1)=   "cmdColumnBreak"
+      Tab(1).Control(2)=   "cboParentTable"
+      Tab(1).Control(3)=   "cmdInsertBreak"
+      Tab(1).Control(4)=   "fraSummaryFields"
+      Tab(1).Control(5)=   "cmdAdd"
+      Tab(1).Control(6)=   "cmdRemove"
+      Tab(1).Control(7)=   "cmdUp"
+      Tab(1).Control(8)=   "cmdDown"
+      Tab(1).Control(9)=   "cmdInsert"
+      Tab(1).Control(10)=   "fraColumns"
+      Tab(1).Control(11)=   "lblParentTable"
       Tab(1).ControlCount=   12
       TabCaption(2)   =   "Ema&il Links"
       TabPicture(2)   =   "frmTabEdit.frx":0044
@@ -114,8 +114,8 @@ Begin VB.Form frmTabEdit
       TabCaption(5)   =   "Audi&t"
       TabPicture(5)   =   "frmTabEdit.frx":0098
       Tab(5).ControlEnabled=   0   'False
-      Tab(5).Control(0)=   "fraAudit"
-      Tab(5).Control(1)=   "fraTableStats"
+      Tab(5).Control(0)=   "fraTableStats"
+      Tab(5).Control(1)=   "fraAudit"
       Tab(5).ControlCount=   2
       TabCaption(6)   =   "&Validation"
       TabPicture(6)   =   "frmTabEdit.frx":00B4
@@ -2865,7 +2865,7 @@ Public Sub PrintDefinition()
       
               ' Ignore deleted and system columns.
               If (Not .Fields("deleted")) And _
-                (Not !ColumnType = giCOLUMNTYPE_SYSTEM) Then
+                (Not !columnType = giCOLUMNTYPE_SYSTEM) Then
       
                   ' Size
                   If Database.ColumnHasSize(.Fields("DataType").value) Then
@@ -3129,7 +3129,7 @@ Public Sub CopyDefinitionToClipboard()
           
         ' Ignore deleted and system columns.
         If (Not .Fields("deleted")) And _
-          (Not !ColumnType = giCOLUMNTYPE_SYSTEM) Then
+          (Not !columnType = giCOLUMNTYPE_SYSTEM) Then
     
             ' Size
             If Database.ColumnHasSize(.Fields("DataType").value) Then

@@ -18,7 +18,7 @@ Begin VB.Form frmViewMgr
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1037
+   HelpContextID   =   5037
    Icon            =   "frmViewMgr.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"

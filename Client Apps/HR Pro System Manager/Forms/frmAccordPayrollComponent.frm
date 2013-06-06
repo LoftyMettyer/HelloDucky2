@@ -17,7 +17,7 @@ Begin VB.Form frmAccordPayrollComponent
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1059
+   HelpContextID   =   5059
    Icon            =   "frmAccordPayrollComponent.frx":0000
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
@@ -298,15 +298,6 @@ Begin VB.Form frmAccordPayrollComponent
       Width           =   4665
       Begin VB.CommandButton cmdCalculation 
          Caption         =   "..."
-         BeginProperty Font 
-            Name            =   "Verdana"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
          Height          =   315
          Left            =   4110
          Picture         =   "frmAccordPayrollComponent.frx":0010

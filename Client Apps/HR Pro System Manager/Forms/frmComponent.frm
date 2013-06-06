@@ -19,7 +19,7 @@ Begin VB.Form frmComponent
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1008
+   HelpContextID   =   5008
    Icon            =   "frmComponent.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
@@ -1755,8 +1755,8 @@ Private Sub cboWorkflowFieldColumn_Refresh()
             (!Deleted = False) And _
             (!DataType <> dtLONGVARBINARY) And _
             (!DataType <> dtVARBINARY) And _
-            (!ColumnType <> giCOLUMNTYPE_LINK) And _
-            (!ColumnType <> giCOLUMNTYPE_SYSTEM) And _
+            (!columnType <> giCOLUMNTYPE_LINK) And _
+            (!columnType <> giCOLUMNTYPE_SYSTEM) And _
             ((optWorkflowField(2).value = False) Or _
               (!DataType = dtNUMERIC) Or _
               (!DataType = dtINTEGER)) Then
@@ -1843,8 +1843,8 @@ Private Sub cboFldColumn_Refresh()
           (!Deleted = False) And _
           (!DataType <> dtLONGVARBINARY) And _
           (!DataType <> dtVARBINARY) And _
-          (!ColumnType <> giCOLUMNTYPE_LINK) And _
-          (!ColumnType <> giCOLUMNTYPE_SYSTEM) And _
+          (!columnType <> giCOLUMNTYPE_LINK) And _
+          (!columnType <> giCOLUMNTYPE_SYSTEM) And _
           ((optField(2).value = False) Or _
             (!DataType = dtNUMERIC) Or _
             (!DataType = dtINTEGER)) Then
@@ -2333,8 +2333,8 @@ Private Sub cboTabValColumn_Refresh()
           ' Add each column name to the lookup columns combo.
           ' NB. We only want to add certain types of column. There's not use in
           ' looking up OLE or logic values.
-          If (!ColumnType <> giCOLUMNTYPE_SYSTEM) And _
-            (!ColumnType <> giCOLUMNTYPE_LINK) And _
+          If (!columnType <> giCOLUMNTYPE_SYSTEM) And _
+            (!columnType <> giCOLUMNTYPE_LINK) And _
             (Not !Deleted) And _
             (!DataType <> dtLONGVARBINARY) And _
             (!DataType <> dtVARBINARY) And _
@@ -2420,8 +2420,8 @@ Private Sub cboPValColumn_Refresh()
         Do While Not .EOF
           If (!TableID = lngTableID) And _
             (!Deleted = False) And _
-            (!ColumnType <> giCOLUMNTYPE_SYSTEM) And _
-            (!ColumnType <> giCOLUMNTYPE_LINK) And _
+            (!columnType <> giCOLUMNTYPE_SYSTEM) And _
+            (!columnType <> giCOLUMNTYPE_LINK) And _
             (!DataType <> dtLONGVARBINARY) And _
             (!DataType <> dtVARBINARY) And _
             (!DataType <> dtBIT) Then

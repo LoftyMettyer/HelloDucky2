@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{3B7C8863-D78F-101B-B9B5-04021C009402}#1.2#0"; "RICHTX32.OCX"
+Object = "{3B7C8863-D78F-101B-B9B5-04021C009402}#1.2#0"; "richtx32.ocx"
 Begin VB.Form frmRichTextEntry 
    Caption         =   "Message"
    ClientHeight    =   3705
@@ -15,7 +15,7 @@ Begin VB.Form frmRichTextEntry
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1081
+   HelpContextID   =   5081
    Icon            =   "frmRichTextEntry.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
@@ -49,6 +49,7 @@ Begin VB.Form frmRichTextEntry
          _ExtentY        =   4419
          _Version        =   393217
          BorderStyle     =   0
+         Enabled         =   -1  'True
          ScrollBars      =   2
          MaxLength       =   200
          AutoVerbMenu    =   -1  'True
@@ -155,7 +156,7 @@ Private Sub RefreshScreen()
   
   fOKToSave = mfChanged And (Not mfReadOnly)
   
-  cmdOK.Enabled = fOKToSave
+  cmdOk.Enabled = fOKToSave
 
 End Sub
 
@@ -680,7 +681,7 @@ Private Sub ResizeForm()
     .Left = Me.ScaleWidth - .Width - cmdSelectText.Left
   End With
   
-  With cmdOK
+  With cmdOk
     .Top = cmdCancel.Top
     .Left = cmdCancel.Left - .Width - 200
   End With

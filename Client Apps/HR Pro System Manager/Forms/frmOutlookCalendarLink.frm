@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "timask6.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmOutlookCalendarLink 
@@ -19,7 +19,7 @@ Begin VB.Form frmOutlookCalendarLink
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1061
+   HelpContextID   =   5061
    Icon            =   "frmOutlookCalendarLink.frx":0000
    LinkTopic       =   "Form2"
    LockControls    =   -1  'True
@@ -125,11 +125,11 @@ Begin VB.Form frmOutlookCalendarLink
       TabCaption(1)   =   "Colu&mns"
       TabPicture(1)   =   "frmOutlookCalendarLink.frx":11BC
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraColumns(0)"
+      Tab(1).Control(0)=   "fraColumns(2)"
       Tab(1).Control(0).Enabled=   0   'False
       Tab(1).Control(1)=   "fraColumns(1)"
       Tab(1).Control(1).Enabled=   0   'False
-      Tab(1).Control(2)=   "fraColumns(2)"
+      Tab(1).Control(2)=   "fraColumns(0)"
       Tab(1).Control(2).Enabled=   0   'False
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "Co&ntent"
@@ -1283,8 +1283,8 @@ Private Sub PopulateAvailable(blnFirstLoad As Boolean)
           (!ColumnType <> giCOLUMNTYPE_SYSTEM) Then
 
         If (Not !Deleted) And _
-          (!ColumnType <> giCOLUMNTYPE_LINK) And _
-          (!ColumnType <> giCOLUMNTYPE_SYSTEM) And _
+          (!columnType <> giCOLUMNTYPE_LINK) And _
+          (!columnType <> giCOLUMNTYPE_SYSTEM) And _
           (!ControlType <> giCTRL_OLE) And _
           (!ControlType <> giCTRL_PHOTO) And _
           (!ControlType <> giCTRL_LINK) Then

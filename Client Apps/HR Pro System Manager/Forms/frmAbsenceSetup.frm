@@ -17,7 +17,7 @@ Begin VB.Form frmAbsenceSetup
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1004
+   HelpContextID   =   5004
    Icon            =   "frmAbsenceSetup.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
@@ -82,27 +82,27 @@ Begin VB.Form frmAbsenceSetup
       TabCaption(2)   =   "Calen&dar"
       TabPicture(2)   =   "frmAbsenceSetup.frx":0044
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraCalendarDef"
+      Tab(2).Control(0)=   "fraCalendarInclude"
       Tab(2).Control(0).Enabled=   0   'False
-      Tab(2).Control(1)=   "fraCalendarInclude"
+      Tab(2).Control(1)=   "fraCalendarDef"
       Tab(2).Control(1).Enabled=   0   'False
       Tab(2).ControlCount=   2
       TabCaption(3)   =   "&SSP"
       TabPicture(3)   =   "frmAbsenceSetup.frx":0060
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "fraWorkingDays"
+      Tab(3).Control(0)=   "fraSSPColumns"
       Tab(3).Control(0).Enabled=   0   'False
-      Tab(3).Control(1)=   "fraSSPColumns"
+      Tab(3).Control(1)=   "fraWorkingDays"
       Tab(3).Control(1).Enabled=   0   'False
       Tab(3).ControlCount=   2
       TabCaption(4)   =   "&Parental Leave"
       TabPicture(4)   =   "frmAbsenceSetup.frx":007C
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "Frame1"
+      Tab(4).Control(0)=   "Frame3"
       Tab(4).Control(0).Enabled=   0   'False
       Tab(4).Control(1)=   "Frame2"
       Tab(4).Control(1).Enabled=   0   'False
-      Tab(4).Control(2)=   "Frame3"
+      Tab(4).Control(2)=   "Frame1"
       Tab(4).Control(2).Enabled=   0   'False
       Tab(4).ControlCount=   3
       Begin VB.Frame Frame3 
@@ -1019,7 +1019,7 @@ Public Property Get Changed() As Boolean
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
   mfChanged = pblnChanged
-  cmdOK.Enabled = mfChanged
+  cmdOk.Enabled = mfChanged
 End Property
 
 Private Sub cboAbsenceDuration_Click()
@@ -1624,8 +1624,8 @@ Private Sub RefreshAbsenceControls()
         End If
 
         If (Not !Deleted) And _
-          (!ColumnType <> giCOLUMNTYPE_LINK) And _
-          (!ColumnType <> giCOLUMNTYPE_SYSTEM) Then
+          (!columnType <> giCOLUMNTYPE_LINK) And _
+          (!columnType <> giCOLUMNTYPE_SYSTEM) Then
 
           ' Only load date fields into the start/leaving date combos
           If !DataType = dtTIMESTAMP Then
@@ -1643,7 +1643,7 @@ Private Sub RefreshAbsenceControls()
           End If
 
           ' Only load numeric calc columns into the Duration Combo
-          If !DataType = dtNUMERIC And !ColumnType = 2 Then
+          If !DataType = dtNUMERIC And !columnType = 2 Then
             
             cboAbsenceDuration.AddItem !ColumnName
             cboAbsenceDuration.ItemData(cboAbsenceDuration.NewIndex) = !ColumnID
@@ -1846,8 +1846,8 @@ Private Sub RefreshAbsencePersonnelControls()
         End If
 
         If (Not !Deleted) And _
-          (!ColumnType <> giCOLUMNTYPE_LINK) And _
-          (!ColumnType <> giCOLUMNTYPE_SYSTEM) Then
+          (!columnType <> giCOLUMNTYPE_LINK) And _
+          (!columnType <> giCOLUMNTYPE_SYSTEM) Then
 
           ' Only load integer and working pattern fields into the combo
           If (!DataType = dtINTEGER) Or (!DataType = dtLONGVARCHAR) Then
@@ -1874,8 +1874,8 @@ Private Sub RefreshAbsencePersonnelControls()
         End If
 
         If (Not !Deleted) And _
-          (!ColumnType <> giCOLUMNTYPE_LINK) And _
-          (!ColumnType <> giCOLUMNTYPE_SYSTEM) Then
+          (!columnType <> giCOLUMNTYPE_LINK) And _
+          (!columnType <> giCOLUMNTYPE_SYSTEM) Then
 
           ' Only load integer and working pattern fields into the start/leaving date combos
 '          If (!DataType = 4) Or (!ColumnType = giColumntype_WORKINGPATTERN) Then
@@ -1992,8 +1992,8 @@ Private Sub RefreshAbsenceTypeControls()
         End If
 
         If (Not !Deleted) And _
-          (!ColumnType <> giCOLUMNTYPE_LINK) And _
-          (!ColumnType <> giCOLUMNTYPE_SYSTEM) Then
+          (!columnType <> giCOLUMNTYPE_LINK) And _
+          (!columnType <> giCOLUMNTYPE_SYSTEM) Then
 
           ' Load Logic fields
           If !DataType = dtBIT Then
@@ -3357,8 +3357,8 @@ Private Sub RefreshDependantsControls()
         End If
 
         If (Not !Deleted) And _
-          (!ColumnType <> giCOLUMNTYPE_LINK) And _
-          (!ColumnType <> giCOLUMNTYPE_SYSTEM) Then
+          (!columnType <> giCOLUMNTYPE_LINK) And _
+          (!columnType <> giCOLUMNTYPE_SYSTEM) Then
 
           If !DataType = dtINTEGER Then
             'Dependants Child No
@@ -3437,8 +3437,8 @@ Private Sub RefreshPersonnelControls()
         End If
 
         If (Not !Deleted) And _
-          (!ColumnType <> giCOLUMNTYPE_LINK) And _
-          (!ColumnType <> giCOLUMNTYPE_SYSTEM) Then
+          (!columnType <> giCOLUMNTYPE_LINK) And _
+          (!columnType <> giCOLUMNTYPE_SYSTEM) Then
 
           If !DataType = dtVARCHAR Then
             cboParentalLeaveRegion.AddItem !ColumnName

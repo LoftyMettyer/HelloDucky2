@@ -18,7 +18,7 @@ Begin VB.Form frmWorkflowSetup
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1070
+   HelpContextID   =   5070
    Icon            =   "frmWorkflowSetup.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
@@ -42,14 +42,14 @@ Begin VB.Form frmWorkflowSetup
       TabCaption(0)   =   "&Web Site"
       TabPicture(0)   =   "frmWorkflowSetup.frx":000C
       Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "fraWebSiteLogin"
-      Tab(0).Control(1)=   "fraWebSite"
+      Tab(0).Control(0)=   "fraWebSite"
+      Tab(0).Control(1)=   "fraWebSiteLogin"
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "&Personnel Identification"
       TabPicture(1)   =   "frmWorkflowSetup.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraDelegation"
-      Tab(1).Control(1)=   "fraPersonnelTable"
+      Tab(1).Control(0)=   "fraPersonnelTable"
+      Tab(1).Control(1)=   "fraDelegation"
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "&Service"
       TabPicture(2)   =   "frmWorkflowSetup.frx":0044
@@ -440,7 +440,7 @@ Public Property Get Changed() As Boolean
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
   mfChanged = pblnChanged
-  If Not mbLoading Then cmdOK.Enabled = True
+  If Not mbLoading Then cmdOk.Enabled = True
 End Property
 Private Sub RefreshServiceSuspended()
 
@@ -611,7 +611,7 @@ End Function
 
 Private Sub cmdCancel_Click()
   Dim pintAnswer As Integer
-    If Changed = True And cmdOK.Enabled Then
+    If Changed = True And cmdOk.Enabled Then
       pintAnswer = MsgBox("You have made changes...do you wish to save these changes ?", vbQuestion + vbYesNoCancel, App.Title)
       If pintAnswer = vbYes Then
         'AE20071108 Fault #12551
@@ -976,7 +976,7 @@ Private Sub Form_Load()
   grdEmailAddressColumns.RowHeight = GRIDROWHEIGHT
   
   mbLoading = True
-  cmdOK.Enabled = False
+  cmdOk.Enabled = False
   
   ' Position the form in the same place it was last time.
   Me.Top = GetPCSetting(Me.Name, "Top", (Screen.Height - Me.Height) / 2)
@@ -1320,7 +1320,7 @@ Private Sub RefreshControls()
   chkCopyDelegateEmail.Enabled = (Not mblnReadOnly)
   
   ' Disable the OK button as required.
-  cmdOK.Enabled = mfChanged
+  cmdOk.Enabled = mfChanged
   
 End Sub
 
@@ -1367,8 +1367,8 @@ Private Sub RefreshPersonnelColumnControls()
         End If
 
         If (Not !Deleted) And _
-          (!ColumnType <> giCOLUMNTYPE_LINK) And _
-          (!ColumnType <> giCOLUMNTYPE_SYSTEM) Then
+          (!columnType <> giCOLUMNTYPE_LINK) And _
+          (!columnType <> giCOLUMNTYPE_SYSTEM) Then
 
           If !DataType = dtVARCHAR Then
             If !ColumnID <> mlngSecondLoginColumnID Then

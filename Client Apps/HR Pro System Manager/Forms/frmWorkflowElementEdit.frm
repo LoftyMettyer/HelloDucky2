@@ -16,7 +16,7 @@ Begin VB.Form frmWorkflowElementEdit
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1055
+   HelpContextID   =   5055
    Icon            =   "frmWorkflowElementEdit.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
@@ -1775,7 +1775,7 @@ Private Sub RefreshScreen()
   
   End Select
   
-  cmdOK.Enabled = mfChanged
+  cmdOk.Enabled = mfChanged
 
 End Sub
 

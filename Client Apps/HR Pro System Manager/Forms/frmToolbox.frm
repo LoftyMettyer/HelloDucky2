@@ -15,7 +15,7 @@ Begin VB.Form frmToolbox
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1035
+   HelpContextID   =   5035
    Icon            =   "frmToolbox.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"

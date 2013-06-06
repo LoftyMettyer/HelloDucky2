@@ -20,7 +20,7 @@ Begin VB.Form frmSplash
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1064
+   HelpContextID   =   5064
    Icon            =   "frmSplash.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form2"

@@ -16,7 +16,7 @@ Begin VB.Form frmWorkflowOpen
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1051
+   HelpContextID   =   5051
    Icon            =   "frmWorkflowOpen.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
@@ -1686,7 +1686,7 @@ Private Sub Form_Resize()
     cmdDelete.Left = cmdNew.Left
     cmdProperties.Left = cmdNew.Left
     cmdPrint.Left = cmdNew.Left
-    cmdOK.Left = cmdNew.Left
+    cmdOk.Left = cmdNew.Left
   End With
   
   With lstItems
@@ -1694,7 +1694,7 @@ Private Sub Form_Resize()
     txtDesc.Top = .Top + .Height + YGAP
   End With
     
-  cmdOK.Top = Me.Height - YGAP_BOTTOM - sbScrOpen.Height - YGAP - cmdOK.Height
+  cmdOk.Top = Me.Height - YGAP_BOTTOM - sbScrOpen.Height - YGAP - cmdOk.Height
     
   ' Get rid of the icon off the form
   RemoveIcon Me

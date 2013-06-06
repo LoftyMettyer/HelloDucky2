@@ -17,7 +17,7 @@ Begin VB.Form frmDiaryLink
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1014
+   HelpContextID   =   5014
    Icon            =   "frmDiaryLink.frx":0000
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
@@ -125,15 +125,6 @@ Begin VB.Form frmDiaryLink
       End
       Begin VB.CommandButton cmdFilter 
          Caption         =   "..."
-         BeginProperty Font 
-            Name            =   "Verdana"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
          Height          =   315
          Left            =   5835
          TabIndex        =   5

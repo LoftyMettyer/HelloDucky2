@@ -15,7 +15,7 @@ Begin VB.Form frmControlChange
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1011
+   HelpContextID   =   5011
    Icon            =   "frmControlChange.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
@@ -198,10 +198,10 @@ Public Property Let ScreenList(ByVal vNewValue As Variant)
   lblInfo2.Top = lngYPosition + iYAFTERSCREENLISTGAP
   optChoice(0).Top = lblInfo2.Top + iYGAP
   optChoice(1).Top = optChoice(0).Top + iYGAP
-  cmdOK.Top = optChoice(1).Top + iYBUTTONGAP
-  cmdCancel.Top = cmdOK.Top
-  Me.Height = cmdOK.Top + 1000
-  Me.Height = cmdOK.Top + cmdOK.Height + iYBORDERGAP + _
+  cmdOk.Top = optChoice(1).Top + iYBUTTONGAP
+  cmdCancel.Top = cmdOk.Top
+  Me.Height = cmdOk.Top + 1000
+  Me.Height = cmdOk.Top + cmdOk.Height + iYBORDERGAP + _
     (Screen.TwipsPerPixelY * (UI.GetSystemMetrics(SM_CYCAPTION) + UI.GetSystemMetrics(SM_CYFRAME)))
 
 End Property

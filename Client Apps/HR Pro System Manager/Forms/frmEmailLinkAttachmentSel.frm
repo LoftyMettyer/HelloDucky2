@@ -15,7 +15,7 @@ Begin VB.Form frmEmailLinkAttachmentSel
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1017
+   HelpContextID   =   5017
    Icon            =   "frmEmailLinkAttachmentSel.frx":0000
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False

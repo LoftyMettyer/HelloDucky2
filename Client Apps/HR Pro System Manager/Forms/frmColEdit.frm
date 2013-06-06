@@ -22,7 +22,7 @@ Begin VB.Form frmColEdit
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1007
+   HelpContextID   =   5007
    Icon            =   "frmColEdit.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True

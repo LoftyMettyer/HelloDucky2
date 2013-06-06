@@ -16,7 +16,7 @@ Begin VB.Form frmConfigurationPathSel
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1010
+   HelpContextID   =   5010
    Icon            =   "frmConfigurationPathSel.frx":0000
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False

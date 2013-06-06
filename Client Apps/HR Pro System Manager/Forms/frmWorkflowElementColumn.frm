@@ -18,7 +18,7 @@ Begin VB.Form frmWorkflowElementColumn
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1057
+   HelpContextID   =   5057
    Icon            =   "frmWorkflowElementColumn.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
@@ -719,19 +719,19 @@ Private Sub cboWebForm_Refresh()
   iIndex = -1
 
   ' Clear the current contents of the combo.
-  cboWebForm.Clear
+  cboWebform.Clear
 
   ' Add  an item to the combo for each preceding web form.
   ' Ignore the first item, as it will be the current web form.
   For iLoop = 2 To UBound(maWFPrecedingElements)
     If maWFPrecedingElements(iLoop).ElementType = elem_WebForm Then
-      cboWebForm.AddItem maWFPrecedingElements(iLoop).Identifier
-      cboWebForm.ItemData(cboWebForm.NewIndex) = iLoop
+      cboWebform.AddItem maWFPrecedingElements(iLoop).Identifier
+      cboWebform.ItemData(cboWebform.NewIndex) = iLoop
     End If
   Next iLoop
 
-  For iLoop = 0 To cboWebForm.ListCount - 1
-    If cboWebForm.List(iLoop) = msWFFormIdentifier Then
+  For iLoop = 0 To cboWebform.ListCount - 1
+    If cboWebform.List(iLoop) = msWFFormIdentifier Then
       iIndex = iLoop
     End If
   Next iLoop
@@ -740,7 +740,7 @@ Private Sub cboWebForm_Refresh()
     If (Len(Trim(msWFFormIdentifier)) > 0) Then
       sMsg = "The previously selected Workflow Value Web Form is no longer valid."
   
-      If cboWebForm.ListCount > 0 Then
+      If cboWebform.ListCount > 0 Then
         sMsg = sMsg & vbCrLf & "A default Workflow Value Web Form has been selected."
       End If
   
@@ -757,7 +757,7 @@ Private Sub cboWebForm_Refresh()
   End If
   
   ' Enable the combo if there are items.
-  With cboWebForm
+  With cboWebform
     If .ListCount > 0 Then
       .Enabled = True
       If iIndex < 0 Then
@@ -792,9 +792,9 @@ Private Sub cboWebFormValue_Refresh()
   ' Clear the current contents of the combo.
   cboWebFormValue.Clear
 
-  If cboWebForm.Enabled Then
+  If cboWebform.Enabled Then
     ' Add  an item to the combo for each input item in the preceding web form.
-    Set wfTemp = maWFPrecedingElements(cboWebForm.ItemData(cboWebForm.ListIndex))
+    Set wfTemp = maWFPrecedingElements(cboWebform.ItemData(cboWebform.ListIndex))
 
     asItems = wfTemp.Items
 
@@ -1109,7 +1109,7 @@ End Sub
 
 
 Private Sub cboWebform_Click()
-  msWFFormIdentifier = cboWebForm.List(cboWebForm.ListIndex)
+  msWFFormIdentifier = cboWebform.List(cboWebform.ListIndex)
   
   Changed = True
   
@@ -1317,8 +1317,8 @@ Private Sub cboColumns_Refresh()
         ' Do not allow the user to select system columns, or deleted columns
         If (!TableID = mlngTableID) _
           And (!Deleted = False) _
-          And (!ColumnType <> giCOLUMNTYPE_LINK) _
-          And (!ColumnType <> giCOLUMNTYPE_SYSTEM) Then
+          And (!columnType <> giCOLUMNTYPE_LINK) _
+          And (!columnType <> giCOLUMNTYPE_SYSTEM) Then
 
           fDone = False
           For iLoop = 1 To UBound(malngColumnsDone)
@@ -1569,7 +1569,7 @@ Private Sub FormatFrame_WFValue()
   ' Size and position the Workflow value item controls.
   Const iXGAP = 200
 
-  cboWebForm.Width = fraDefinition(giWFDATAVALUE_WFVALUE).Width - cboWebForm.Left - iXGAP
+  cboWebform.Width = fraDefinition(giWFDATAVALUE_WFVALUE).Width - cboWebform.Left - iXGAP
   cboWebFormValue.Width = fraDefinition(giWFDATAVALUE_WFVALUE).Width - cboWebFormValue.Left - iXGAP
   
 End Sub
@@ -1824,8 +1824,8 @@ Private Sub cboDBValueColumn_Refresh()
         If (!TableID = lngTableID) And _
           (!Deleted = False) And _
           (!DataType = miColumnDataType) And _
-          (!ColumnType <> giCOLUMNTYPE_LINK) And _
-          (!ColumnType <> giCOLUMNTYPE_SYSTEM) Then
+          (!columnType <> giCOLUMNTYPE_LINK) And _
+          (!columnType <> giCOLUMNTYPE_SYSTEM) Then
 
           fColumnOK = ((miColumnDataType <> sqlOle) _
             And (miColumnDataType <> sqlVarBinary)) _

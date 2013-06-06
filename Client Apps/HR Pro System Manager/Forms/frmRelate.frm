@@ -15,7 +15,7 @@ Begin VB.Form frmRelate
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1025
+   HelpContextID   =   5025
    Icon            =   "frmRelate.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True

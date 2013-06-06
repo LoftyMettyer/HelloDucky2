@@ -15,7 +15,7 @@ Begin VB.Form frmWorkflowEmailAddressColumn
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1069
+   HelpContextID   =   5069
    Icon            =   "frmWorkflowEmailAddressColumn.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
@@ -195,7 +195,7 @@ End Sub
 
 Private Sub RefreshControls()
   ' Disable the OK button as required.
-  cmdOK.Enabled = (ColumnID <> mlngColumnID)
+  cmdOk.Enabled = (ColumnID <> mlngColumnID)
     
 End Sub
 

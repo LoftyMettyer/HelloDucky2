@@ -15,7 +15,7 @@ Begin VB.Form frmWorkflowElementItem
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1056
+   HelpContextID   =   5056
    Icon            =   "frmWorkflowElementItem.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
@@ -1356,8 +1356,8 @@ Private Sub cboDBValueColumn_Refresh()
         ' OLE or Photo type columns.
         If (!TableID = lngTableID) And _
           (!Deleted = False) And _
-          (!ColumnType <> giCOLUMNTYPE_LINK) And _
-          (!ColumnType <> giCOLUMNTYPE_SYSTEM) Then
+          (!columnType <> giCOLUMNTYPE_LINK) And _
+          (!columnType <> giCOLUMNTYPE_SYSTEM) Then
                           
           If mfAttachmentSelection Then
             fColumnOK = ((!DataType = rdTypeLONGVARBINARY) _

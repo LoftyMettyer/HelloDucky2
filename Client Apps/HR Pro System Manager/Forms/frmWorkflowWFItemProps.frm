@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "COA_ColourPicker.ocx"
 Begin VB.Form frmWorkflowWFItemProps 
@@ -18,7 +18,7 @@ Begin VB.Form frmWorkflowWFItemProps
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1072
+   HelpContextID   =   5072
    Icon            =   "frmWorkflowWFItemProps.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
@@ -80,13 +80,15 @@ Begin VB.Form frmWorkflowWFItemProps
          Strikethrough   =   0   'False
       EndProperty
       stylesets(0).Picture=   "frmWorkflowWFItemProps.frx":000C
-      stylesets(1).Name=   "ssetBackColorEven"
+      stylesets(1).Name=   "ssetDormantRowBold"
+      stylesets(1).ForeColor=   -2147483630
+      stylesets(1).BackColor=   -2147483643
       stylesets(1).HasFont=   -1  'True
       BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Verdana"
          Size            =   8.25
          Charset         =   0
-         Weight          =   400
+         Weight          =   700
          Underline       =   0   'False
          Italic          =   0   'False
          Strikethrough   =   0   'False
@@ -104,15 +106,13 @@ Begin VB.Form frmWorkflowWFItemProps
          Strikethrough   =   0   'False
       EndProperty
       stylesets(2).Picture=   "frmWorkflowWFItemProps.frx":0044
-      stylesets(3).Name=   "ssetDormantRowBold"
-      stylesets(3).ForeColor=   -2147483630
-      stylesets(3).BackColor=   -2147483643
+      stylesets(3).Name=   "ssetBackColorEven"
       stylesets(3).HasFont=   -1  'True
       BeginProperty stylesets(3).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Verdana"
          Size            =   8.25
          Charset         =   0
-         Weight          =   700
+         Weight          =   400
          Underline       =   0   'False
          Italic          =   0   'False
          Strikethrough   =   0   'False
@@ -144,7 +144,7 @@ Begin VB.Form frmWorkflowWFItemProps
          Strikethrough   =   0   'False
       EndProperty
       stylesets(5).Picture=   "frmWorkflowWFItemProps.frx":0098
-      stylesets(6).Name=   "ssetBackColorValue"
+      stylesets(6).Name=   "ssetForeColorOdd"
       stylesets(6).HasFont=   -1  'True
       BeginProperty stylesets(6).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Verdana"
@@ -156,7 +156,7 @@ Begin VB.Form frmWorkflowWFItemProps
          Strikethrough   =   0   'False
       EndProperty
       stylesets(6).Picture=   "frmWorkflowWFItemProps.frx":00B4
-      stylesets(7).Name=   "ssetForeColorOdd"
+      stylesets(7).Name=   "ssetBackColorValue"
       stylesets(7).HasFont=   -1  'True
       BeginProperty stylesets(7).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Verdana"
@@ -168,7 +168,7 @@ Begin VB.Form frmWorkflowWFItemProps
          Strikethrough   =   0   'False
       EndProperty
       stylesets(7).Picture=   "frmWorkflowWFItemProps.frx":00D0
-      stylesets(8).Name=   "ssetForeColorValue"
+      stylesets(8).Name=   "ssetHeaderBackColor"
       stylesets(8).HasFont=   -1  'True
       BeginProperty stylesets(8).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Verdana"
@@ -180,7 +180,7 @@ Begin VB.Form frmWorkflowWFItemProps
          Strikethrough   =   0   'False
       EndProperty
       stylesets(8).Picture=   "frmWorkflowWFItemProps.frx":00EC
-      stylesets(9).Name=   "ssetHeaderBackColor"
+      stylesets(9).Name=   "ssetForeColorValue"
       stylesets(9).HasFont=   -1  'True
       BeginProperty stylesets(9).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Verdana"
@@ -218,9 +218,9 @@ Begin VB.Form frmWorkflowWFItemProps
          Strikethrough   =   0   'False
       EndProperty
       stylesets(11).Picture=   "frmWorkflowWFItemProps.frx":0140
-      stylesets(12).Name=   "ssetDisabled"
-      stylesets(12).ForeColor=   -2147483631
-      stylesets(12).BackColor=   -2147483633
+      stylesets(12).Name=   "ssetDormantRow"
+      stylesets(12).ForeColor=   -2147483630
+      stylesets(12).BackColor=   -2147483643
       stylesets(12).HasFont=   -1  'True
       BeginProperty stylesets(12).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Verdana"
@@ -232,9 +232,9 @@ Begin VB.Form frmWorkflowWFItemProps
          Strikethrough   =   0   'False
       EndProperty
       stylesets(12).Picture=   "frmWorkflowWFItemProps.frx":015C
-      stylesets(13).Name=   "ssetDormantRow"
-      stylesets(13).ForeColor=   -2147483630
-      stylesets(13).BackColor=   -2147483643
+      stylesets(13).Name=   "ssetDisabled"
+      stylesets(13).ForeColor=   -2147483631
+      stylesets(13).BackColor=   -2147483633
       stylesets(13).HasFont=   -1  'True
       BeginProperty stylesets(13).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Verdana"

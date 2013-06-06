@@ -15,7 +15,7 @@ Begin VB.Form frmChangePassword
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1006
+   HelpContextID   =   5006
    Icon            =   "frmChangePassword.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
@@ -220,7 +220,7 @@ Public Property Let ForceChange(ByVal bNewValue As Boolean)
     Me.txtNewPWRetype.Top = 1515
     Me.Label1(3).Top = 1575
     Me.cmdCancel.Top = 2235
-    Me.cmdOK.Top = 2235
+    Me.cmdOk.Top = 2235
     Me.fraPassword.Height = 2030
     Me.Height = 3150
   End If
