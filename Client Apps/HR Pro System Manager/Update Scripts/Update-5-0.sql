@@ -2043,6 +2043,534 @@ END
 
 
 /* ------------------------------------------------------------- */
+PRINT 'Step 9 - System procedures'
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRDeleteRecord]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].[sp_ASRDeleteRecord];
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRInsertNewRecord]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].[sp_ASRInsertNewRecord];
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRRecordAmended]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].[sp_ASRRecordAmended];
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRUpdateRecord]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].[sp_ASRUpdateRecord];
+		
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntInsertNewRecord]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].[spASRIntInsertNewRecord];
+		
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntUpdateRecord]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].[spASRIntUpdateRecord];
+		
+	EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[sp_ASRDeleteRecord]
+(
+    @piResult integer OUTPUT,   /* Output variable to hold the result. */
+    @piTableID integer,			/* TableID being deleted from. */
+    @psRealSource sysname,		/* RealSource being deleted from. */
+    @piID integer				/* ID the record being deleted. */
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    /*  Delete the given record. */
+    /* Check if the given record has been deleted or changed first. */
+    /* Return 0 if the record was OK to delete. */
+    /* NOT USED HERE - Return 1 if the record has been amended AND is still in the given table/view. */
+    /* Return 2 if the record has been amended AND is no longer in the given table/view. */
+    /* Return 3 if the record has been deleted from the table. */
+    DECLARE @sSQL nvarchar(MAX),
+		@psTableName sysname,
+        @iCount integer;
+    SET @piResult = 0;
+
+	SELECT @psTableName = TableName FROM dbo.tbsys_tables WHERE TableID = @piTableID;
+
+    /* Check that the record has not been updated by another user since it was last checked. */
+    SET @sSQL = ''SELECT @piResult = COUNT(id)'' +
+            '' FROM '' + @psTableName +
+            '' WHERE id = '' + convert(varchar(MAX), @piID);
+    EXECUTE sp_executesql @sSQL, N''@piResult int OUTPUT'', @iCount OUTPUT;  
+    IF @iCount = 0
+    BEGIN
+        /* Record deleted. */
+        SET @piResult = 3;
+    END
+    ELSE
+    BEGIN
+        /* Check if the record is still in the given realsource. */
+        SET @sSQL = ''SELECT @piResult = COUNT(id)'' +
+            '' FROM '' + @psRealSource +
+            '' WHERE id = '' + convert(varchar(MAX), @piID);
+        EXECUTE sp_executesql @sSQL, N''@piResult int OUTPUT'', @iCount OUTPUT;
+        IF @iCount > 0
+        BEGIN
+            SET @sSQL = ''DELETE '' +
+                '' FROM '' + @psRealSource +
+                '' WHERE id = '' + convert(varchar(MAX), @piID);
+            EXECUTE sp_executesql @sSQL;
+        END
+        ELSE
+        BEGIN
+            SET @piResult = 2;
+        END
+    END
+
+END'
+
+EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[sp_ASRInsertNewRecord]
+(
+    @piNewRecordID integer OUTPUT,   /* Output variable to hold the new record ID. */
+    @psInsertString nvarchar(MAX)    /* SQL Insert string to insert the new record. */
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    /* Run the given SQL INSERT string and get the ID value back. */
+    SET @psInsertString = @psInsertString + ''; SELECT @ID = SCOPE_IDENTITY()''
+		
+	EXECUTE sp_executesql @psInsertString, 
+						  N''@ID int OUTPUT'', 
+						  @ID = @piNewRecordID OUTPUT
+						  						  
+END'
+
+
+EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[sp_ASRRecordAmended]
+(
+    @piResult integer OUTPUT,	/* Output variable to hold the result. */
+    @piTableID integer,			/* TableID being updated. */
+    @psRealSource sysname,		/* RealSource being updated. */
+    @piID integer,				/* ID the record being updated. */
+    @piTimestamp integer		/* Original timestamp of the record being updated. */
+)
+AS
+BEGIN
+    /* Check if the given record has been deleted or changed by another user. */
+    /* Return 0 if the record has NOT been amended. */
+    /* Return 1 if the record has been amended AND is still in the given table/view. */
+    /* Return 2 if the record has been amended AND is no longer in the given table/view. */
+    /* Return 3 if the record has been deleted from the table. */
+    SET NOCOUNT ON;
+    DECLARE @iCurrentTimestamp integer,
+        @sSQL nvarchar(MAX),
+        @psTableName sysname,
+        @iCount integer;
+    SET @piResult = 0;
+
+	SELECT @psTableName = TableName FROM dbo.tbsys_tables WHERE TableID = @piTableID;
+
+    /* Check that the record has not been updated by another user since it was last checked. */
+    SET @sSQL = ''SELECT @iCurrentTimestamp = convert(integer, timestamp)'' +
+            '' FROM '' + @psTableName +
+            '' WHERE id = '' + convert(varchar(MAX), @piID);
+    EXECUTE sp_executesql @sSQL, N''@iCurrentTimestamp int OUTPUT'', @iCurrentTimestamp OUTPUT;
+    
+    IF @iCurrentTimestamp IS null
+    BEGIN
+        /* Record deleted. */
+        SET @piResult = 3;
+    END
+    ELSE
+    BEGIN
+        IF @iCurrentTimestamp <> @piTimestamp
+        BEGIN
+            /* Record changed. Check if it is in the given realsource. */
+           SET @sSQL = ''SELECT @piResult = COUNT(id)'' +
+             '' FROM '' + @psRealSource +
+             '' WHERE id = '' + convert(varchar(255), @piID);
+           EXECUTE sp_executesql @sSQL, N''@piResult int OUTPUT'', @iCount OUTPUT;
+           IF @iCount > 0
+           BEGIN
+               SET @piResult = 1;
+           END
+           ELSE
+           BEGIN
+               SET @piResult = 2;
+           END
+        END
+    END
+END'
+
+EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[sp_ASRUpdateRecord]
+(
+    @piResult integer OUTPUT,		/* Output variable to hold the result. */
+    @psUpdateString nvarchar(MAX),  /* SQL Update string to update the record. */
+    @piTableID integer,				/* TableID being updated. */
+    @psRealSource sysname,			/* RealSource being updated. */
+    @piID integer,					/* ID the record being updated. */
+    @piTimestamp integer			/* Original timestamp of the record being updated. */
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    /* Run the given SQL UPDATE string. */
+    /* Check if the given record has been deleted or changed first. */
+    /* Return 0 if the record was OK to update. */
+    /* Return 1 if the record has been amended AND is still in the given table/view. */
+    /* Return 2 if the record has been amended AND is no longer in the given table/view. */
+    /* Return 3 if the record has been deleted from the table. */
+    DECLARE @iCurrentTimestamp integer,
+        @sSQL nvarchar(MAX),
+        @psTableName sysname,
+        @iCount integer;
+    SET @piResult = 0;
+
+	SELECT @psTableName = TableName FROM dbo.tbsys_tables WHERE TableID = @piTableID; 
+
+    /* Check that the record has not been updated by another user since it was last checked. */
+    SET @sSQL = ''SELECT @iCurrentTimestamp = convert(integer, timestamp)'' +
+            '' FROM '' + @psTableName +
+            '' WHERE id = '' + convert(varchar(MAX), @piID);
+    EXECUTE sp_executesql @sSQL, N''@iCurrentTimestamp int OUTPUT'', @iCurrentTimestamp OUTPUT;
+    
+    IF @iCurrentTimestamp IS null
+    BEGIN
+        /* Record deleted. */
+        SET @piResult = 3;
+    END
+    ELSE
+    BEGIN
+        IF (@iCurrentTimestamp <> @piTimestamp) AND (NOT @piTimestamp IS null)
+        BEGIN
+            /* Record changed. Check if it is in the given realsource. */
+           SET @sSQL = ''SELECT @piResult = COUNT(id)'' +
+             '' FROM '' + @psRealSource +
+             '' WHERE id = '' + convert(varchar(255), @piID);
+           EXECUTE sp_executesql @sSQL, N''@piResult int OUTPUT'', @iCount OUTPUT;
+           IF @iCount > 0
+           BEGIN
+               SET @piResult = 1;
+           END
+           ELSE
+           BEGIN
+               SET @piResult = 2;
+           END
+        END
+        ELSE
+        BEGIN
+            -- Run the given SQL UPDATE string.
+            EXECUTE sp_executeSQL @psUpdateString;
+        END
+    END
+
+END'
+
+DECLARE @sql nvarchar(max)
+
+SET @sql = 'CREATE PROCEDURE [dbo].[spASRIntInsertNewRecord]
+(
+	@piNewRecordID	integer	OUTPUT,	/* Output variable to hold the new record ID. */
+	@psInsertDef	varchar(MAX)	/* SQL Insert string to insert the new record. */
+)
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	DECLARE
+		@sTempString	varchar(MAX),
+		@sInsertString	nvarchar(MAX),
+		@iTemp			integer,
+		@iCounter		integer,
+		@iIndex1		integer,
+		@iIndex2		integer,
+		@iIndex3		integer,
+		@sColumnID		varchar(255),
+		@sValue			varchar(MAX),
+		@sColumnList	varchar(MAX),
+		@sValueList		varchar(MAX),
+		@iCopiedRecordID	integer,
+		@iDataType		integer,
+		@sColumnName	varchar(255),
+		@sRealSource	sysname,
+		@sMask			varchar(255),
+		@iOLEType		integer,
+		@fCopyImageData	bit;
+
+	SET @sColumnList = "";
+	SET @sValueList = "";
+
+	SET @iIndex1 = charindex(CHAR(9), @psInsertDef);
+	SET @iIndex2 = charindex(CHAR(9), @psInsertDef, @iIndex1+1);
+	SET @iIndex3 = charindex(CHAR(9), @psInsertDef, @iIndex2+1);
+
+	SET @sRealSource = replace(LEFT(@psInsertDef, @iIndex1-1), """", """""");
+	SET @sValue = replace(SUBSTRING(@psInsertDef, @iIndex1+1, @iIndex2-@iIndex1-1), """", """""");
+	SET @fCopyImageData = convert(bit, @sValue);
+	SET @sValue = replace(SUBSTRING(@psInsertDef, @iIndex2+1, @iIndex3-@iIndex2-1), """", """""");
+	SET @iCopiedRecordID = convert(integer, @sValue);
+
+	SET @psInsertDef = SUBSTRING(@psInsertDef, @iIndex3+1, LEN(@psInsertDef) - @iIndex3);
+
+	SET @sColumnList = "INSERT INTO " + convert(varchar(255), @sRealSource) + " (";
+	SET @sValueList = "";
+	SET @iCounter = 0;
+
+	WHILE charindex(CHAR(9), @psInsertDef) > 0
+	BEGIN
+		SET @iIndex1 = charindex(CHAR(9), @psInsertDef);
+		SET @iIndex2 = charindex(CHAR(9), @psInsertDef, @iIndex1+1);
+
+		SET @sColumnID = replace(LEFT(@psInsertDef, @iIndex1-1), """", """""");
+		SET @sValue = replace(SUBSTRING(@psInsertDef, @iIndex1+1, @iIndex2-@iIndex1-1), """", """""");
+
+		IF LEFT(@sColumnID, 3) = "ID_"
+		BEGIN
+			SET @sColumnName = @sColumnID;
+		END
+		ELSE
+		BEGIN
+			SELECT @sColumnName = ASRSysColumns.columnName,
+				@iDataType = ASRSysColumns.dataType,
+				@sMask = ASRSysColumns.mask
+			FROM ASRSysColumns
+			WHERE ASRSysColumns.columnID = convert(integer, @sColumnID);
+
+			-- Date
+			IF (@iDataType = 11 AND @sValue <> "null") SET @sValue = """" + @sValue + """";
+
+			-- Character
+			IF (@iDataType = 12 AND (LEN(@sMask) = 0 OR @sValue <> "null")) SET @sValue = """" + @sValue + """";
+
+			-- WorkingPattern
+			IF (@iDataType = -1) SET @sValue = """" + @sValue + """";
+
+			-- Photo / OLE
+			IF (@iDataType = -3 OR @iDataType = -4)
+			BEGIN
+				SET @iOLEType = convert(integer, LEFT(@sValue, 1));
+				SET @sValue = SUBSTRING(@sValue, 2, LEN(@sValue) - 1);
+				IF (@iOLEType < 2) SET @sValue = """" + @sValue + """";
+			END
+		END
+
+		SET @sTempString =
+			CASE
+				WHEN @iCounter > 0 THEN ","
+				ELSE ""
+			END
+			+ convert(varchar(255), @sColumnName);
+
+		SET @sColumnList = @sColumnList + @sTempString;
+		SET @sTempString =
+			CASE
+				WHEN @iCounter > 0 THEN ","
+				ELSE ""
+			END
+			+ CASE
+				WHEN @fCopyImageData = 1 THEN REPLACE(convert(varchar(MAX), @sValue), """", """""")
+				ELSE convert(varchar(MAX), @sValue)
+			END;
+
+		SET @sValueList = @sValueList + @sTempString;
+		SET @iCounter = @iCounter + 1;
+		SET @psInsertDef = SUBSTRING(@psInsertDef, @iIndex2+1, LEN(@psInsertDef) - @iIndex2);
+	END
+
+	IF @fCopyImageData = 1
+	BEGIN
+		SET @sInsertString = @sColumnList + ")"
+			+ " EXECUTE(""SELECT " + @sValueList
+			+ " FROM " + convert(varchar(255), @sRealSource)
+			+ " WHERE id = " + convert(varchar(255), @iCopiedRecordID) + """)";
+	END
+	ELSE
+	BEGIN
+		SET @sInsertString = @sColumnList + ")" + " VALUES(" + @sValueList + ")";
+	END
+
+	-- Run the constructed SQL INSERT string and get the identity value.
+	SET @sInsertString = @sInsertString + "; SELECT @ID = SCOPE_IDENTITY()"
+		
+	EXECUTE sp_executesql @sInsertString, 
+						  N"@ID int OUTPUT", 
+						  @ID = @piNewRecordID OUTPUT
+						  
+END'
+
+SET @sql = REPLACE(@sql, '"', '''')
+EXEC sp_executesql @sql
+
+SET @sql = 'CREATE PROCEDURE [dbo].[spASRIntUpdateRecord]
+(
+	@piResult		integer	OUTPUT,	/* Output variable to hold the result. */
+	@psUpdateDef	varchar(MAX),	/* Update definition to update the record. */
+	@piTableID		integer,		/* TableID being updated. */
+	@psRealSource	sysname,		/* RealSource being updated. */
+	@piID			integer,		/* ID the record being updated. */
+	@piTimestamp	integer			/* Original timestamp of the record being updated. */
+)
+AS
+BEGIN
+	/* Return 0 if the record was OK to update. */
+	/* Return 1 if the record has been amended AND is still in the given table/view. */
+	/* Return 2 if the record has been amended AND is no longer in the given table/view. */
+	/* Return 3 if the record has been deleted from the table. */
+	SET NOCOUNT ON;
+
+	DECLARE
+		@iCurrentTimestamp	integer,
+		@sSQL				nvarchar(MAX),
+		@iCount				integer,
+		@sUpdateString		nvarchar(MAX),
+		@sTempString		varchar(MAX),
+		@iCounter			integer,
+		@iIndex1			integer,
+		@iIndex2			integer,
+		@sColumnID			varchar(255),
+		@sValue				varchar(MAX),
+		@iDataType			integer,
+		@sColumnName		varchar(255),
+		@sMask				varchar(MAX),
+		@iOLEType			integer;
+
+	-- Clean the input string parameters.
+	IF len(@psRealsource) > 0 SET @psRealsource = replace(@psRealsource, """", """""");
+
+	SET @piResult = 0;
+	SET @sUpdateString = "UPDATE " + convert(varchar(255), @psRealSource) + " SET ";
+	SET @iCounter = 0;
+
+	-- Check that the record has not been updated by another user since it was last checked.
+	DECLARE @psTableName sysname;
+	SELECT @psTableName = TableName FROM dbo.tbsys_tables WHERE TableID = @piTableID;
+	
+    SET @sSQL = "SELECT @iCurrentTimestamp = convert(integer, timestamp)" +
+            " FROM " + @psTableName +
+            " WHERE id = " + convert(varchar(MAX), @piID);
+    EXECUTE sp_executesql @sSQL, N"@iCurrentTimestamp int OUTPUT", @iCurrentTimestamp OUTPUT;
+
+	IF @iCurrentTimestamp IS null
+	BEGIN
+		-- Record deleted.
+		SET @piResult = 3;
+	END
+	ELSE
+	BEGIN
+		IF (@iCurrentTimestamp <> @piTimestamp) AND (NOT @piTimestamp IS null)
+		BEGIN
+			-- Record changed. Check if it is in the given realsource.
+			SET @sSQL = "SELECT @piResult = COUNT(id)" +
+				" FROM " + @psRealSource +
+				" WHERE id = " + convert(varchar(255), @piID)
+			EXECUTE sp_executesql @sSQL, N"@piResult int OUTPUT", @iCount OUTPUT;
+
+			IF @iCount > 0
+			BEGIN
+				SET @piResult = 1;
+			END
+			ELSE
+			BEGIN
+				SET @piResult = 2;
+			END
+		END
+		ELSE
+		BEGIN
+			WHILE charindex(CHAR(9), @psUpdateDef) > 0
+			BEGIN
+				SET @iIndex1 = charindex(CHAR(9), @psUpdateDef);
+				SET @iIndex2 = charindex(CHAR(9), @psUpdateDef, @iIndex1+1);
+
+				SET @sColumnID = replace(LEFT(@psUpdateDef, @iIndex1-1), """", """""");
+				SET @sValue = replace(SUBSTRING(@psUpdateDef, @iIndex1+1, @iIndex2-@iIndex1-1), """", """""");
+
+				IF LEFT(@sColumnID, 3) = "ID_"
+				BEGIN
+					SET @sColumnName = @sColumnID;
+				END
+				ELSE
+				BEGIN
+					SELECT @sColumnName = ASRSysColumns.columnName,
+						@iDataType = ASRSysColumns.dataType,
+						@sMask = ASRSysColumns.mask
+					FROM ASRSysColumns
+					WHERE ASRSysColumns.columnID = convert(integer, @sColumnID);
+
+					-- Date
+					IF (@iDataType = 11 AND @sValue <> "null") SET @sValue = """" + @sValue + """";
+
+					-- Character
+					IF (@iDataType = 12 AND (LEN(@sMask) = 0 OR @sValue <> "null")) SET @sValue = """" + @sValue + """";
+
+					-- WorkingPattern
+					IF (@iDataType = -1) SET @sValue = """" + @sValue + """";
+
+					-- Photo / OLE
+					IF (@iDataType = -3 OR @iDataType = -4)
+					BEGIN
+						SET @iOLEType = convert(integer, LEFT(@sValue, 1));
+						SET @sValue = SUBSTRING(@sValue, 2, LEN(@sValue) - 1);
+						IF (@iOLEType < 2) SET @sValue = """" + @sValue + """";
+					END
+				END
+
+				SET @sTempString =
+					CASE
+						WHEN @iCounter > 0 THEN ","
+						ELSE ""
+					END
+					+ convert(varchar(255), @sColumnName) + " = " + convert(varchar(MAX), @sValue);
+
+				SET @sUpdateString = @sUpdateString + @sTempString;
+				SET @iCounter = @iCounter + 1;
+				SET @psUpdateDef = SUBSTRING(@psUpdateDef, @iIndex2+1, LEN(@psUpdateDef) - @iIndex2);
+			END
+
+			SET @sUpdateString = @sUpdateString + " WHERE id = " + convert(varchar(255), @piID);
+
+			-- Run the constructed SQL UPDATE string.
+			EXEC sp_executeSQL @sUpdateString;
+		END
+	END
+END'
+
+SET @sql = REPLACE(@sql, '"', '''')
+EXEC sp_executesql @sql
+
+/* --------------------------------------------------- */
+/* Remove unused stored procedures from the database.  */
+/* --------------------------------------------------- */
+DECLARE @dropsql nvarchar(max), @name nvarchar(max)
+
+DECLARE c CURSOR FOR
+SELECT ROUTINE_NAME FROM INFORMATION_SCHEMA.ROUTINES
+WHERE ROUTINE_TYPE = 'PROCEDURE' AND 
+(
+ROUTINE_NAME LIKE 'sp_ASRDeleteRecord_%' OR
+ROUTINE_NAME LIKE 'sp_ASRInsertNewRecord_%' OR
+ROUTINE_NAME LIKE 'sp_ASRUpdateRecord_%' OR
+ROUTINE_NAME LIKE 'spASRIntInsertNewRecord_%' OR
+ROUTINE_NAME LIKE 'spASRIntUpdateRecord_%' OR
+ROUTINE_NAME LIKE 'sp_ASRRecordAmended_%' OR
+ROUTINE_NAME LIKE 'sp_ASRValidate[_][1-9]%'
+);
+
+OPEN c;
+FETCH NEXT FROM c INTO @name;
+WHILE @@FETCH_STATUS = 0
+BEGIN
+	SET @dropsql = 'DROP PROCEDURE [dbo].[' + @name + ']';
+
+	EXECUTE sp_executesql @dropsql;
+	
+	FETCH NEXT FROM c INTO @name;
+END
+CLOSE c;
+DEALLOCATE c;
+
+
+
+
+
+
+
+
+
+
+/* ------------------------------------------------------------- */
 /* Update the database version flag in the ASRSysSettings table. */
 /* Dont Set the flag to refresh the stored procedures            */
 /* ------------------------------------------------------------- */
