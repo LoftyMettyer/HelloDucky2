@@ -16,7 +16,7 @@ Begin VB.Form frmTechSupport
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1002
+   HelpContextID   =   5002
    Icon            =   "frmTechSupport.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
