@@ -1709,7 +1709,7 @@ Public Sub ActivateModules()
   gbQAddressEnabled = IsModuleEnabled(modQAddress)
   
   ' Needs settings to the ismoduleenabled, but function is not yet ready (and checked out by someone! else)
-  gfMobileModule = True
+  'gfMobileModule = True
   
   ' Workflow Module
   gfWorkflowModule = IsModuleEnabled(modWorkflow) _
@@ -1917,33 +1917,28 @@ Public Function CreateQueryDefs() As Boolean
       ", c.[uniquechecktype]" & _
       ", c.[Alignment], c.[trimming], c.[calculateifempty]" & _
       ", IIF(c.[deleted]=-1, 8 , IIF(c.[new]=-1,4 ,IIF(c.[changed]=-1,16, 2))) AS [state]" & _
-      " FROM tmpColumns c WHERE c.tableid = @parentid" & _
-      " AND c.columntype <> 3" & _
+      ", c.TableID" & _
+      " FROM tmpColumns c WHERE c.columntype <> 3" & _
       " ORDER BY c.[columnname];"
   daoDb.CreateQueryDef "spadmin_getcolumns", sSQL
 
   ' spadmin_getrelations
-  sSQL = "SELECT r.ParentID AS [parentid], r.ChildID AS [childid], t.TableName AS [name], 0 AS [relationship]" & _
-    " FROM tmpRelations r" & _
-    " INNER JOIN tmpTables t ON r.ChildID = t.TableID" & _
-    " WHERE r.ParentID = @tableid" & _
-    " UNION" & _
-    " SELECT r.ParentID AS [parentid], r.ChildID AS [childid], t.TableName AS [name], 1 AS [relationship]" & _
-    " FROM tmpRelations r" & _
-    "  INNER JOIN tmpTables t ON r.ParentID = t.TableID" & _
-    " WHERE r.ChildID = @tableid;"
+  sSQL = "SELECT r.ParentID, r.ChildID, p.TableName AS [ParentName], c.TableName AS [ChildName]" & _
+    " FROM tmpTables c" & _
+    " INNER JOIN (tmpTables p" & _
+    " INNER JOIN tmpRelations r ON p.tableid = r.ParentID) ON c.tableid = r.ChildID;"
   daoDb.CreateQueryDef "spadmin_getrelations", sSQL
 
   ' spadmin_getviews
   sSQL = "SELECT v.[viewid] AS [id], v.[viewname] AS [name], viewdescription AS [description], v.[viewtableid] AS [tableid], v.[expressionid] AS [filterid]" & _
     " FROM tmpviews v" & _
-    " WHERE v.viewtableid=@parentid" & _
     " ORDER BY v.[viewname];"
   daoDb.CreateQueryDef "spadmin_getviews", sSQL
 
   'spadmin_getviewitems
-  sSQL = "SELECT [viewid] AS [id], [ColumnID] from tmpviewcolumns" & _
-    " WHERE InView = true And ViewID = @viewid;"
+  sSQL = "SELECT [viewid], [ColumnID]" & _
+    " FROM tmpviewcolumns" & _
+    " WHERE InView = true;"
   daoDb.CreateQueryDef "spadmin_getviewitems", sSQL
 
   ' spadmin_getexpressions
@@ -1955,8 +1950,9 @@ Public Function CreateQueryDefs() As Boolean
     " , [ReturnSize] AS [size]" & _
     " , [ReturnDecimals] as [decimals]" & _
     " , IIF([deleted]=-1, 8 , IIF([new]=-1,4 ,IIF([changed]=-1,16, 2))) AS [state]" & _
+    " , [TableID]" & _
     " FROM tmpExpressions" & _
-    " WHERE tableid = @parentid AND ParentComponentID = 0 AND type < 10"
+    " WHERE ParentComponentID = 0 AND type < 10;"
   daoDb.CreateQueryDef "spadmin_getexpressions", sSQL
 
   ' spadmin_getcomponent_base
@@ -1981,9 +1977,9 @@ Public Function CreateQueryDefs() As Boolean
       " , IIF(ISNULL(c.[LookupTableID]),0,c.LookupTableID) AS [LookupTableID]" & _
       " , IIF(ISNULL(c.[LookupColumnID]),0,c.LookupColumnID) AS [LookupColumnID]" & _
       " , 0 AS [isevaluated]" & _
+      " , c.exprid AS ExpressionID" & _
       " FROM tmpExpressions e" & _
       " INNER JOIN tmpComponents c ON c.exprID = e.exprID" & _
-      " WHERE c.exprid = @expressionid" & _
       " ORDER BY c.componentid ASC;"
   daoDb.CreateQueryDef "spadmin_getcomponent_base", sSQL
 
@@ -1993,49 +1989,18 @@ Public Function CreateQueryDefs() As Boolean
       " , 0 AS [tableid], 0 AS columnid, 0 AS iscolumnbyreference, 0 AS columnaggregiatetype, 0 AS columnorderid, 0 AS columnfilterid" & _
       " , 0 AS [specificline]" & _
       " , 0 AS calculationid, 0 AS valuetype, '' AS valuestring, 0 AS valuenumeric, 0 AS valuelogic, c.[ValueDate], 0 AS lookuptableid, 0 AS lookupcolumnid" & _
-      " , IIF(e.type=1 AND e.returnType=3,1,0) AS isevaluated" & _
+      " , IIF(e.type=1 AND e.returnType=3,1,0) AS isevaluated, c.componentid AS ExpressionID" & _
       " FROM tmpComponents AS c" & _
       " INNER JOIN tmpExpressions AS e ON e.ParentComponentID = c.ComponentID" & _
-      " WHERE c.componentID =  @expressionid" & _
       " ORDER BY e.[ExprID];"
   daoDb.CreateQueryDef "spadmin_getcomponent_function", sSQL
 
-  ' spadmin_getcomponent_calculation
-  sSQL = "SELECT c.exprid AS [componentid], 9 AS [subtype], e.[Name] AS [name]" & _
-      " , 1 AS [level], 1 AS [sequence]" & _
-      " , e.ReturnType AS [returntype], e.ReturnSize AS [returnsize], e.ReturnDecimals AS [returndecimals]" & _
-      " , IIF(ISNULL(c.FunctionID),0,c.FunctionID) AS [functionid]" & _
-      " , IIF(ISNULL(c.OperatorID),0,c.OperatorID) AS [operatorid]" & _
-      " , IIF(ISNULL(c.fieldtableid),0,c.fieldtableid) AS [tableid]" & _
-      " , IIF(ISNULL(c.FieldColumnID),0,c.FieldColumnID) AS [columnid]" & _
-      " , IIF(ISNULL(c.FieldPassBy),1,c.FieldPassBy)-1 AS [iscolumnbyreference]" & _
-      " , IIF(ISNULL(c.FieldSelectionRecord),0,c.FieldSelectionRecord) AS [columnaggregiatetype]" & _
-      " , IIF(ISNULL(c.FieldSelectionLine),0,c.FieldSelectionLine) AS [specificline]" & _
-      " , IIF(ISNULL(c.FieldSelectionOrderID),0,c.FieldSelectionOrderID) AS [columnorderid]" & _
-      " , IIF(ISNULL(c.[FieldSelectionFilter]),0,c.FieldSelectionFilter) AS [columnfilterid]" & _
-      " , IIF(ISNULL(c.[CalculationID]),0,c.CalculationID) AS [calculationid]" & _
-      " , IIF(ISNULL(c.[ValueType]),0,c.ValueType) AS [valuetype]" & _
-      " , IIF(ISNULL(c.[ValueCharacter]),'',c.ValueCharacter) AS [valuestring]" & _
-      " , IIF(ISNULL(c.[ValueNumeric]),0,c.ValueNumeric) AS [valuenumeric]" & _
-      " , IIF(ISNULL(c.[ValueLogic]),0,c.ValueLogic) AS [valuelogic]" & _
-      " , IIF(ISNULL(c.[ValueDate]),0,c.ValueDate) AS [valuedate]" & _
-      " , IIF(ISNULL(c.[LookupTableID]),0) AS [lookuptableid]" & _
-      " , IIF(ISNULL(c.[LookupColumnID]),0) AS [lookupcolumnid]" & _
-      " , 0 AS [isevaluated]" & _
-      " FROM tmpExpressions e" & _
-      " INNER JOIN tmpComponents c ON c.CalculationID = e.exprID" & _
-      " WHERE c.ComponentID = @expressionid" & _
-      " ORDER BY c.componentid ASC;"
-  daoDb.CreateQueryDef "spadmin_getcomponent_calculation", sSQL
-
   ' spadmin_getorder
-  sSQL = "SELECT OrderID, Name, TableID, Type FROM tmpOrders" & _
-      " WHERE [TableID] = @tableid;"
+  sSQL = "SELECT OrderID, Name, TableID, Type FROM tmpOrders;"
   daoDb.CreateQueryDef "spadmin_getorders", sSQL
 
   ' spadmin_getorderitems
-  sSQL = "SELECT [OrderID], [ColumnID], [Type], [Sequence], [Ascending] FROM tmpOrderItems" & _
-      " WHERE [OrderID] = @orderid;"
+  sSQL = "SELECT [OrderID], [ColumnID], [Type], [Sequence], [Ascending] FROM tmpOrderItems;"
   daoDb.CreateQueryDef "spadmin_getorderitems", sSQL
 
   ' spadmin_getmodulesetup
@@ -2045,27 +2010,26 @@ Public Function CreateQueryDefs() As Boolean
   daoDb.CreateQueryDef "spadmin_getmodulesetup", sSQL
 
   ' spadmin_getvalidations
-  sSQL = "SELECT 1 AS [ValidationType], * FROM tmpColumns WHERE [Duplicate] = -1 AND tableid = @tableid " & _
-         "UNION " & _
-         "SELECT 2 AS [ValidationType], * FROM tmpColumns WHERE [UniqueCheckType] = -1 AND tableid = @tableid " & _
-         "UNION " & _
-         "SELECT 3 AS [ValidationType], * FROM tmpColumns WHERE [ChildUniqueCheck] = -2 AND tableid = @tableid " & _
-         "UNION " & _
-         "SELECT 4 AS [ValidationType], * FROM tmpColumns WHERE [Mandatory] = -1 AND tableid = @tableid"
+  sSQL = "SELECT 1 AS [ValidationType], * FROM tmpColumns WHERE [Duplicate] = -1" & _
+         " UNION " & _
+         " SELECT 2 AS [ValidationType], * FROM tmpColumns WHERE [UniqueCheckType] = -1" & _
+         " UNION " & _
+         " SELECT 3 AS [ValidationType], * FROM tmpColumns WHERE [ChildUniqueCheck] = -2" & _
+         " UNION " & _
+         " SELECT 4 AS [ValidationType], * FROM tmpColumns WHERE [Mandatory] = -1;"
   daoDb.CreateQueryDef "spadmin_getvalidations", sSQL
 
   ' spadmin_getdescriptions
-  sSQL = "SELECT tmpExpressions.[exprid] AS ID, tmpExpressions.[Name], tmpExpressions.[Type], tmpExpressions.[Description], tmpExpressions.[ReturnType], tmpExpressions.[ReturnSize] AS [size], tmpExpressions.[ReturnDecimals] AS decimals, IIf([tmpExpressions.deleted]=-1,8,IIf([tmpExpressions.new]=-1,4,IIf([tmpExpressions.changed]=-1,16,2))) AS state " & _
+  sSQL = "SELECT tmpExpressions.[exprid] AS ID, tmpExpressions.[Name], tmpExpressions.[Type], tmpExpressions.[Description], tmpExpressions.[ReturnType], tmpExpressions.[ReturnSize] AS [size], tmpExpressions.[ReturnDecimals] AS decimals, IIf([tmpExpressions.deleted]=-1,8,IIf([tmpExpressions.new]=-1,4,IIf([tmpExpressions.changed]=-1,16,2))) AS state, tmpExpressions.[TableID] " & _
          "FROM tmpExpressions " & _
          "INNER JOIN tmptables ON tmptables.RecordDescExprID = tmpExpressions.ExprID " & _
-         "WHERE (((tmpExpressions.[tableid])=[@parentid]) AND ((tmpExpressions.[ParentComponentID])=0)); "
+         "WHERE tmpExpressions.[ParentComponentID]=0;"
   daoDb.CreateQueryDef "spadmin_getdescriptions", sSQL
 
   ' spadmin_getmasks
-  sSQL = "SELECT [exprid] AS ID, [columnid], [Name], [Type], [Description], [ReturnType], [ReturnSize] AS [size], [ReturnDecimals] AS decimals, IIF([tmpexpressions.deleted]=-1, 8 , IIF([tmpexpressions.new]=-1,4 ,IIF([tmpexpressions.changed]=-1,16, 2))) AS state" & vbNewLine & _
+  sSQL = "SELECT [exprid] AS ID, [columnid], [Name], [Type], [Description], [ReturnType], [ReturnSize] AS [size], [ReturnDecimals] AS decimals, IIF([tmpexpressions.deleted]=-1, 8 , IIF([tmpexpressions.new]=-1,4 ,IIF([tmpexpressions.changed]=-1,16, 2))) AS state, tmpcolumns.TableID" & vbNewLine & _
          "FROM tmpcolumns" & vbNewLine & _
-         "INNER JOIN tmpexpressions ON tmpcolumns.[lostfocusexprid] = tmpexpressions.[exprid]" & vbNewLine & _
-         "WHERE tmpcolumns.tableid = @parentID;"
+         "INNER JOIN tmpexpressions ON tmpcolumns.[lostfocusexprid] = tmpexpressions.[exprid];"
   daoDb.CreateQueryDef "spadmin_getmasks", sSQL
 
 TidyUpAndExit:
