@@ -779,6 +779,13 @@ Private Function DoTransfer() As Boolean
   gADOCon.Execute strCommand
   DoEvents
   
+  ' Report Packs
+  Progress "Transferring Report Packs..."
+  strCommand = "UPDATE ASRSysBatchJobName SET Username = '" & strTo & "'"
+  strCommand = strCommand & sWhere
+  gADOCon.Execute strCommand
+  DoEvents
+  
   ' Calendar Reports
   Progress "Transferring Calendar Reports..."
   strCommand = "UPDATE ASRSysCalendarReports SET Username = '" & strTo & "'"
