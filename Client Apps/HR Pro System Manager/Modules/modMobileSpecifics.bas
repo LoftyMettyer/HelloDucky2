@@ -245,38 +245,42 @@ Private Function CreateSP_MobileCheckLogin() As Boolean
     "          @fActivated bit," & vbNewLine & _
     "          @sActualUserName varchar(255)," & vbNewLine & _
     "          @sRoleName varchar(255)," & vbNewLine & _
-    "          @dtExpiryDate datetime;" & vbNewLine & _
+    "          @dtExpiryDate datetime," & vbNewLine & _
+    "          @iCount integer;" & vbNewLine & _
     "  SET @iuserID = 0;" & vbNewLine & _
     "  SET @psMessage = '';" & vbNewLine & vbNewLine
  
+  sProcSQL = sProcSQL & _
+    "  -- Count records with the supplied login name" & vbNewLine & _
+    "  SELECT @iCount = COUNT([ID])" & vbNewLine & _
+    "    FROM [" & mvar_sLoginTable & "]" & vbNewLine & _
+    "    WHERE ISNULL([" & mvar_sLoginColumn & "], '') = @psKeyParameter" & vbNewLine & _
+    "    AND [" & mvar_sActivatedUserColumn & "] = 1" & vbNewLine & _
+    "    AND DATEDIFF(d, GETDATE(), ISNULL([" & mvar_sLeavingDateColumn & "], GETDATE())) >= 0;" & vbNewLine & vbNewLine & _
+    "  IF @iCount > 1" & vbNewLine & _
+    "      SET @psMessage = 'Multiple accounts exist with this login.';" & vbNewLine & vbNewLine
+ 
  sProcSQL = sProcSQL & _
-    "    -- Get the record id for this user" & vbNewLine & _
-    "    SELECT @iuserID = [ID], @dtExpiryDate = [" & mvar_sLeavingDateColumn & "]" & vbNewLine & _
-    "      FROM [" & mvar_sLoginTable & "]" & vbNewLine & _
-    "      WHERE ISNULL([" & mvar_sLoginColumn & "], '') = @psKeyParameter" & vbNewLine & _
-    "    IF @iuserID > 0" & vbNewLine & _
-    "    BEGIN" & vbNewLine & _
-    "      -- return the User Activated Status for the record id." & vbNewLine & _
-    "     SELECT @fActivated = [" & mvar_sActivatedUserColumn & "]" & vbNewLine & _
-    "          FROM [" & mvar_sLoginTable & "]" & vbNewLine & _
-    "          WHERE (ISNULL([" & mvar_sLoginTable & "].[ID], '') = @iuserID);" & vbNewLine & _
-    "    END" & vbNewLine
+    "  -- Check other parameters" & vbNewLine & _
+    "  SELECT @iuserID = [ID], @dtExpiryDate = [" & mvar_sLeavingDateColumn & "], @fActivated = [" & mvar_sActivatedUserColumn & "]" & vbNewLine & _
+    "    FROM [" & mvar_sLoginTable & "]" & vbNewLine & _
+    "    WHERE ISNULL([" & mvar_sLoginColumn & "], '') = @psKeyParameter" & vbNewLine & vbNewLine
     
   sProcSQL = sProcSQL & _
-    "    IF @iuserID = 0" & vbNewLine & _
-    "        SET @psMessage = 'Incorrect e-mail / password combination';" & vbNewLine & _
-    "    IF @psMessage = '' AND ISNULL(@fActivated, 0)  = 0" & vbNewLine & _
-    "        SET @psMessage = 'Account not activated.';" & vbNewLine & _
-    "    IF @psMessage = '' AND DATEDIFF(d, GETDATE(), ISNULL(@dtExpiryDate, GETDATE())) < 0" & vbNewLine & _
-    "        SET @psMessage = 'Account Expired.';" & vbNewLine
+    "  IF @psMessage = '' AND @iuserID = 0" & vbNewLine & _
+    "      SET @psMessage = 'Incorrect e-mail / password combination.';" & vbNewLine & _
+    "  IF @psMessage = '' AND ISNULL(@fActivated, 0)  = 0" & vbNewLine & _
+    "      SET @psMessage = 'Account not activated.';" & vbNewLine & _
+    "  IF @psMessage = '' AND DATEDIFF(d, GETDATE(), ISNULL(@dtExpiryDate, GETDATE())) < 0" & vbNewLine & _
+    "      SET @psMessage = 'Account Expired.';" & vbNewLine
 
   sProcSQL = sProcSQL & _
-    "      EXEC dbo.spASRIntGetActualUserDetailsForLogin" & vbNewLine & _
-    "          @psKeyParameter," & vbNewLine & _
-    "          @psKeyParameter OUTPUT," & vbNewLine & _
-    "          @sRoleName OUTPUT," & vbNewLine & _
-    "          @piUserGroupID OUTPUT" & vbNewLine & vbNewLine & _
-    "      IF ISNULL(@piUserGroupID,0) = 0 SET @psMessage = 'No valid SQL account found.';" & vbNewLine & vbNewLine
+    "  EXEC dbo.spASRIntGetActualUserDetailsForLogin" & vbNewLine & _
+    "      @psKeyParameter," & vbNewLine & _
+    "      @psKeyParameter OUTPUT," & vbNewLine & _
+    "      @sRoleName OUTPUT," & vbNewLine & _
+    "      @piUserGroupID OUTPUT" & vbNewLine & vbNewLine & _
+    "  IF ISNULL(@piUserGroupID,0) = 0 SET @psMessage = 'No valid SQL account found.';" & vbNewLine & vbNewLine
     
   sProcSQL = sProcSQL & _
     "END;"
