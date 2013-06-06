@@ -682,7 +682,7 @@ PRINT 'Step 9 - Add new calculation procedures'
 		AS
 		BEGIN
 		
-			DECLARE @result integer = 0;
+			DECLARE @result integer;
 			
 		    -- Get the number of whole years
 		    SET @result = YEAR(@date2) - YEAR(@date1);
@@ -716,7 +716,7 @@ PRINT 'Step 9 - Add new calculation procedures'
 		AS
 		BEGIN
 		
-			DECLARE @result integer = 0;
+			DECLARE @result integer;
 			
 		    -- Get the number of whole years
 		    SET @result = YEAR(@date2) - YEAR(@date1);
@@ -810,8 +810,11 @@ PRINT 'Step 9 - Add new calculation procedures'
 		AS
 		BEGIN
 		
-			DECLARE @result nvarchar(10) = '''';
-			DECLARE @icounter integer = 1;
+			DECLARE @result nvarchar(10);
+			DECLARE @icounter integer;
+
+			SET @result = '''';
+			SET @icounter = 1;
 		
 			IF LEN(@forenames) > 0 
 			BEGIN
@@ -849,8 +852,9 @@ PRINT 'Step 9 - Add new calculation procedures'
 		AS
 		BEGIN
 		
-			DECLARE @result bit = 0;
-
+			DECLARE @result bit;
+			
+			SET @result = 1;
 			SELECT @result = CASE WHEN @column1 BETWEEN @column2 AND @column3 THEN 1 ELSE 0 END
 				
 			RETURN @result;
@@ -866,7 +870,9 @@ PRINT 'Step 9 - Add new calculation procedures'
 		AS
 		BEGIN
 		
-			DECLARE @result bit = 0;
+			DECLARE @result bit;
+			
+			SET @result = 0;
 			SELECT @result = (
 				CASE 
 					WHEN @inputcolumn IS NULL THEN 0 
@@ -890,7 +896,9 @@ PRINT 'Step 9 - Add new calculation procedures'
 		AS
 		BEGIN
 		
-			DECLARE @result bit = 0;
+			DECLARE @result bit;
+			
+			SET @result = 0;			
 			SELECT @result = (
 				CASE 
 					WHEN @inputcolumn IS NULL THEN 1
@@ -913,8 +921,9 @@ PRINT 'Step 9 - Add new calculation procedures'
 		AS
 		BEGIN
 		
-			DECLARE @result bit = 0;
+			DECLARE @result bit;
 			
+			SET @result = 0;
 		    RETURN @result;
 		
 		END';
@@ -943,7 +952,9 @@ PRINT 'Step 9 - Add new calculation procedures'
 		AS
 		BEGIN
 		
-			DECLARE @result varchar(MAX) = '''';
+			DECLARE @result varchar(MAX);
+			
+			SET @result = '''';
 			SELECT @result = CONVERT(nvarchar(2),DATEPART(day, @inputdate))
 				+ '' '' + DATENAME(month, @inputdate) 
 				+ '' '' + CONVERT(nvarchar(4),DATEPART(YYYY, @inputdate));
@@ -960,8 +971,9 @@ PRINT 'Step 9 - Add new calculation procedures'
 		AS
 		BEGIN
 		
-			DECLARE @result varchar(255) = '''';
+			DECLARE @result varchar(255);
 		
+			SET @result = '''';
 			SELECT @result =convert(char(8), @inputdate, 108)
 		
 			RETURN @result;
@@ -1008,10 +1020,14 @@ PRINT 'Step 9 - Add new calculation procedures'
 		AS
 		BEGIN
 		
-			DECLARE @reset	bit = 1;
-			DECLARE @result varchar(8000) = '''';
-			DECLARE @i		int = 1;
-			DECLARE @c		char(1);
+			DECLARE @reset bit;
+			DECLARE @result varchar(8000);
+			DECLARE @i integer;
+			DECLARE @c char(1);
+
+			SET @i = 1;
+			SET @result = '''';
+			SET @reset = 1;
 		      
 			WHILE (@i <= len(@text))
 				SELECT @c= substring(@text,@i,1)
