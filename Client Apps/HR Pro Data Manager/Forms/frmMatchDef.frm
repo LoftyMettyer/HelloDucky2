@@ -100,8 +100,8 @@ Begin VB.Form frmMatchDef
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmMatchDef.frx":0E60
       Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "fraInformation"
-      Tab(0).Control(1)=   "fraDefinition(1)"
+      Tab(0).Control(0)=   "fraDefinition(1)"
+      Tab(0).Control(1)=   "fraInformation"
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Ta&bles"
       TabPicture(1)   =   "frmMatchDef.frx":0E7C
@@ -111,9 +111,9 @@ Begin VB.Form frmMatchDef
       TabCaption(2)   =   "Colu&mns"
       TabPicture(2)   =   "frmMatchDef.frx":0E98
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraFieldButtons"
+      Tab(2).Control(0)=   "fraFieldsSelected"
       Tab(2).Control(1)=   "fraFieldsAvailable"
-      Tab(2).Control(2)=   "fraFieldsSelected"
+      Tab(2).Control(2)=   "fraFieldButtons"
       Tab(2).ControlCount=   3
       TabCaption(3)   =   "&Sort Order"
       TabPicture(3)   =   "frmMatchDef.frx":0EB4
@@ -342,7 +342,6 @@ Begin VB.Form frmMatchDef
          Width           =   6675
          Begin VB.CheckBox chkPreview 
             Caption         =   "P&review on screen"
-            Enabled         =   0   'False
             Height          =   195
             Left            =   150
             TabIndex        =   97

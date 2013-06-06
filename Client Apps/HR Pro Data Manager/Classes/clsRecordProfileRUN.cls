@@ -44,14 +44,14 @@ Private mstrOutputOverrideFilter As String
 Private mblnOutputTOC As Boolean
 Private mblnOutputCoverSheet As Boolean
 Private mlngOverrideFilterID As Long
-Private mblnChkPicklistFilter As Boolean 'might not need
+Private mblnOutputRetainPivotOrChart As Boolean
 
+Private mblnChkPicklistFilter As Boolean 'might not need
 Private mblnIndentRelatedTables As String
 Private mblnSuppressEmptyRelatedTableTitles As String
 Private mblnSuppressTableRelationshipTitles As String
 
 Private miIndex As Integer
-
 Private msErrorString As String
 
 ' String to hold the SQL statement
@@ -200,14 +200,14 @@ Public Function RunRecordProfile(Optional plngRecordID As Long) As Boolean
     mblnUserCancelled = mfrmOutput.UserCancelled
 
     If Not mblnUserCancelled Then
-      If gblnBatchMode Or Not mblnPreviewOnScreen Then
+      If gblnBatchMode Or Not mblnOutputScreen Then
         fOK = mfrmOutput.ShowResults
         If fOK Then
           fOK = mfrmOutput.OutputReport(False)
         End If
         If Not fOK Then msErrorString = mfrmOutput.ErrorMessage
         gobjProgress.UpdateProgress True
-      ElseIf mblnPreviewOnScreen Then
+      ElseIf mblnOutputScreen Then
         fOK = mfrmOutput.ShowResults
         If Not fOK Then msErrorString = mfrmOutput.ErrorMessage
         
@@ -1522,8 +1522,9 @@ Private Function GetRecordProfileTables() As Boolean
     mstrOutputEmailAttachAs = IIf(lblnReportPackMode, mstrOutputEmailAttachAs, IIf(IsNull(!OutputEmailAttachAs), "", !OutputEmailAttachAs))
     mstrOutputFileName = IIf(lblnReportPackMode, mstrOutputFileName, IIf(IsNull(!OutputFilename), "", !OutputFilename))
     mlngOverrideFilterID = IIf(lblnReportPackMode, mlngOverrideFilterID, 0)
-    
-    
+    mblnOutputRetainPivotOrChart = IIf(lblnReportPackMode, mblnOutputRetainPivotOrChart, 0)
+    mblnOutputCoverSheet = IIf(lblnReportPackMode, mblnOutputCoverSheet, 0)
+    mblnOutputTOC = IIf(lblnReportPackMode, mblnOutputTOC, 0)
     
     mblnIndentRelatedTables = IIf(IsNull(!IndentRelatedTables), False, !IndentRelatedTables)
     mblnSuppressEmptyRelatedTableTitles = IIf(IsNull(!SuppressEmptyRelatedTableTitles), False, !SuppressEmptyRelatedTableTitles)
@@ -1750,7 +1751,8 @@ End Function
           Optional strOutputOverrideFilter As String, _
           Optional blnOutputTOC As Boolean, _
           Optional blnOutputCoverSheet As Boolean, _
-          Optional lngOverrideFilterID As Long)
+          Optional lngOverrideFilterID As Long, _
+          Optional blnOutputRetainPivotOrChart As Boolean)
 
   mlngOutputFormat = lngOutputFormat
   mblnOutputScreen = blnOutputScreen
@@ -1771,6 +1773,7 @@ End Function
   mblnOutputTOC = IIf(IsMissing(blnOutputTOC), giEXPRVALUE_CHARACTER, blnOutputTOC)
   mblnOutputCoverSheet = IIf(IsMissing(blnOutputCoverSheet), giEXPRVALUE_CHARACTER, blnOutputCoverSheet)
   mlngOverrideFilterID = IIf(IsMissing(lngOverrideFilterID), giEXPRVALUE_CHARACTER, lngOverrideFilterID)
+  mblnOutputRetainPivotOrChart = IIf(IsMissing(blnOutputRetainPivotOrChart), giEXPRVALUE_CHARACTER, blnOutputRetainPivotOrChart)
 End Sub
 
 Public Property Get InvalidPicklistFilter() As Boolean

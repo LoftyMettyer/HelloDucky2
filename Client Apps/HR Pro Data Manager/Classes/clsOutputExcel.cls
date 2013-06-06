@@ -985,7 +985,7 @@ LocalErr:
 
 End Sub
 
-Public Function AddPage(strDefTitle As String, strSheetName As String, colStyles As Collection)
+Public Function AddPage(strDefTitle As String, strSheetName As String, colStyles As Collection, Optional mblnOutputCoverSheet As Boolean)
 
   On Local Error GoTo LocalErr
 
