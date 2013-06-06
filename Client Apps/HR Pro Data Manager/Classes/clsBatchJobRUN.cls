@@ -16,6 +16,10 @@ Option Explicit
 Private mwrdApp As Word.Application
 Private mwrdDoc As Word.Document
 
+Private mxlApp As Excel.Application
+Private mxlWorkBook As Excel.Workbook
+Private mxlworksheet As Excel.Worksheet
+
 Private mobjOutputType As Object
 Private objOutput As clsOutputHTML
 ' Data access class
@@ -1004,6 +1008,17 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
   'Insert TOC code here as all Report Pack Jobs Or Batch Jobs would be done by now
   If gblnReportPackMode And blnOutputSave And blnOutputTOC Then
     Select Case lngOutputFormat
+      Case fmtExcelchart, fmtExcelPivotTable, fmtExcelWorksheet
+        'Try and open excel file
+        If GetTOCFile(strOutputFilename, lngOutputFormat, lngOutputSaveExisting) Then
+          'insert the TOC
+          CreateTOC
+          'Close up
+
+        Else
+          MsgBox mstrErrorMessage, vbExclamation, "Report Pack"
+        End If
+        
       Case fmtHTML
           FileNum = FreeFile()
           LineCount = 1
@@ -1023,7 +1038,7 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
         
       Case fmtWordDoc
         'Open word file
-        If GetTOCFile(strOutputFilename) Then
+        If GetTOCFile(strOutputFilename, lngOutputFormat, lngOutputSaveExisting) Then
           'mwrdApp.Visible = True
               With mwrdApp.Selection
                 .InsertBreak Type:=wdPageBreak
@@ -1408,24 +1423,42 @@ Public Sub CheckNotifications(lngBatchJobID As Long)
   End If
 
 End Sub
-Public Function GetTOCFile(strTemplateFile) As Boolean
+Public Function GetTOCFile(strExcelFile As String, intFormat As OutputFormats, lngSaveExisting As Long) As Boolean
   Dim strTempFileName As String
   Dim lngFound As Long
   Dim lngCount As Long
 
   On Local Error GoTo LocalErr
 
-  If Not CreateWordApplication Then
-    GetTOCFile = False
-    Exit Function
-  End If
-  'Check if file already exists...
-  If Dir(strTemplateFile) <> vbNullString And strTemplateFile <> vbNullString Then
-    Set mwrdDoc = mwrdApp.Documents.Open(strTemplateFile)
-  Else
-    mstrErrorMessage = "Cannot find the Title Page document"
-  End If
-
+  Select Case intFormat
+    Case fmtExcelWorksheet, fmtExcelchart, fmtExcelPivotTable
+      If Not CreateExcelApplication Then
+        GetTOCFile = False
+        Exit Function
+      Else
+        'Check if file already exists...
+        If Dir(strExcelFile) <> vbNullString And strExcelFile <> vbNullString Then
+          Set mxlWorkBook = mxlApp.Workbooks.Open(strExcelFile)
+          mxlApp.Visible = True
+        Else
+          mstrErrorMessage = "Cannot find the Report"
+        End If
+      End If
+    
+    Case fmtWordDoc
+      If Not CreateWordApplication Then
+        GetTOCFile = False
+        Exit Function
+      Else
+        'Check if file already exists...
+        If Dir(strExcelFile) <> vbNullString And strExcelFile <> vbNullString Then
+          Set mwrdDoc = mwrdApp.Documents.Open(strExcelFile)
+        Else
+          mstrErrorMessage = "Cannot find the Report"
+        End If
+      End If
+  End Select
+  
   GetTOCFile = (mstrErrorMessage = vbNullString)
 
 Exit Function
@@ -1459,7 +1492,145 @@ LocalErr:
 
 End Function
 
+Private Function CreateExcelApplication() As Boolean
+
+  On Local Error GoTo LocalErr
+
+  Set mxlApp = CreateObject("Excel.Application")
+  mxlApp.DisplayAlerts = False
+  
+  If GetSystemSetting("Output", "ExcelVisible", "0") = "1" Then
+    mxlApp.Visible = True
+    mxlApp.DisplayAlerts = True
+  Else
+    mxlApp.DisplayAlerts = False
+  End If
+  
+  CreateExcelApplication = True
+
+Exit Function
+
+LocalErr:
+  mstrErrorMessage = "Error opening Excel Application"
+  CreateExcelApplication = False
+
+End Function
 
 
 
+Public Function IsChart(cName As String) As Boolean
+     'Will return True or False if sheet is a Chart sheet object or not.
+     'Can be used as a worksheet function.
+    Dim tmpChart As Chart
+    On Error Resume Next
+     'If not a chart, this line will error out.
+    Set tmpChart = Charts(cName)
+     'Function will be determined if the variable is now an Object or not.
+    IsChart = IIf(tmpChart Is Nothing, False, True)
+End Function
+ 
+'Private Sub GotoChart()
+'     'This routine written to be assigned to button Object for Chart sheets only
+'     'as Chart sheets don't have cell references to hyperlink to.
+'    Dim obj As Object, objName As String
+'     'With the button text as the Chart name, we use the Caller method to obtain it.
+'    Set obj = ActiveSheet.Shapes(Application.Caller)
+'     'The latter portion of the AlternativeText will give us the exact Chart name.
+'    objName = Trim(Right(obj.AlternativeText, Len(obj.AlternativeText) - _
+'    InStr(1, obj.AlternativeText, ": ")))
+'     'Then we can perform a standard Chart sheet Activate method using the variable.
+'    Charts(objName).Activate
+'     'Optional: zoom Chart sheet to fit screen.
+'     'Depending on screen resolution, this may need adjustment(s).
+'    ActiveWindow.Zoom = 80
+'End Sub
 
+Sub CreateTOC()
+     'Declare all variables
+    Dim shtName As String
+    Dim nRow As Long, i As Long, N As Long, tmpCount As Long
+    Dim cShade As Long
+    
+    nRow = 3
+    'Add sheet as the first sheet in the workbook.
+    mxlApp.Sheets.Add Before:=mxlApp.Sheets(1)
+    On Error Resume Next
+     
+    'Set chart sheet varible counter
+    tmpCount = mxlWorkBook.Charts.Count
+    If tmpCount > 0 Then tmpCount = 1
+     
+     'Set a little formatting for the TOC sheet.
+    mxlApp.ActiveSheet.Name = "TOC"
+    With mxlApp.Sheets("TOC")
+        .Cells.Interior.ColorIndex = 2
+        .Rows("4:65536").RowHeight = 16
+        .Range("A1").Value = "Table of Contents"
+        .Range("A1").Font.Bold = True
+        .Range("A1").Font.Name = "Arial"
+        .Range("A1").Font.Size = "24"
+        .Range("A3").Select
+    End With
+     'Set variables for loop/iterations
+    N = mxlApp.Sheets.Count + tmpCount
+    For i = 2 To N
+        With mxlApp.Sheets("TOC")
+             'Check if sheet is a chart sheet.
+            If IsChart(mxlApp.Sheets(i).Name) Then
+
+            Else
+                 '** Sheet is NOT a Chart sheet.
+                shtName = mxlApp.Sheets(i).Name
+                 'Add a hyperlink to A1 of each sheet.
+                .Range("C" & nRow).Hyperlinks.Add _
+                Anchor:=.Range("C" & nRow), address:="#'" & _
+                shtName & "'!A1", TextToDisplay:=shtName
+                .Range("C" & nRow).HorizontalAlignment = xlLeft
+            End If
+            .Range("B" & nRow).Value = "Report " & nRow - 2 & ":"
+            nRow = nRow + 1
+        End With
+    Next i
+     'Perform some last minute formatting.
+    With mxlApp.Sheets("TOC")
+        .Range("C:C").EntireColumn.AutoFit
+        .Range("A4").Activate
+    End With
+ 
+    'Tidyup
+    mxlWorkBook.Save
+    mxlWorkBook.Close
+    mxlApp.Quit
+End Sub
+
+
+Public Function KillFile(strFileName As String) As Boolean
+
+  On Local Error GoTo LocalErr
+
+  Kill strFileName
+  KillFile = True
+
+Exit Function
+
+LocalErr:
+  mstrErrorMessage = "Error overwriting file '" & strFileName & "'" & _
+      IIf(Err.Description <> vbNullString, vbCrLf & "(" & Err.Description & ")", vbNullString)
+  'mstrErrorMessage = "Cannot access read-only document '" & Mid(strFileName, InStrRev(strFileName, "\") + 1) & "'."
+  KillFile = False
+
+End Function
+
+Public Function GetSequentialNumberedFile(ByVal strFileName As String) As String
+
+  Dim lngFound As Long
+  Dim lngCount As Long
+
+  lngCount = 2
+  lngFound = InStrRev(strFileName, ".")
+  Do While Dir(Left(strFileName, lngFound - 1) & "(" & CStr(lngCount) & ")" & Mid(strFileName, lngFound)) <> vbNullString
+    lngCount = lngCount + 1
+  Loop
+  GetSequentialNumberedFile = Left(strFileName, lngFound - 1) & "(" & CStr(lngCount) & ")" & Mid(strFileName, lngFound)
+
+End Function

@@ -399,7 +399,7 @@ Private Sub DrawControls(utlType As UtilityType)
   End If
   
   
-  cmdOK.Top = cmdOK.Top - lngOffset
+  cmdOk.Top = cmdOk.Top - lngOffset
   Me.Height = Me.Height - lngOffset
 
   ' Leave form size at its default if we are using as a change type form
@@ -956,6 +956,28 @@ Public Function CheckForUseage(piType As UtilityType, plngItemID As Long) As Boo
         " LEFT OUTER JOIN ASRSYSRecordProfileTables ON ASRSysRecordProfileName.recordProfileID = ASRSYSRecordProfileTables.recordProfileID" & _
         " WHERE ASRSysRecordProfileName.FilterID = " & strID & _
         " OR ASRSYSRecordProfileTables.FilterID = " & strID)
+    End If
+    
+    'Report Pack - Override Filters
+    If gfCurrentUserIsSysSecMgr Then
+      Call GetNameWhereUsed( _
+        "SELECT DISTINCT 'Report Pack'," & _
+        " ASRSysBatchJobName.Name," & _
+        " ASRSysBatchJobName.UserName," & _
+        " '" & ACCESS_READWRITE & "' AS access" & _
+        " FROM ASRSysBatchJobName" & _
+        " WHERE ASRSysBatchJobName.OverrideFilterID = " & strID)
+    Else
+      Call GetNameWhereUsed( _
+        "SELECT DISTINCT 'Report Pack'," & _
+        " ASRSysBatchJobName.Name," & _
+        " ASRSysBatchJobName.UserName," & _
+        " ASRSysBatchJobAccess.Access" & _
+        " FROM ASRSysBatchJobName" & _
+        " INNER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobAccess.ID = ASRSysBatchJobName.ID" & _
+        " INNER JOIN sysusers b ON ASRSysBatchJobAccess.groupname = b.name" & _
+        "   AND b.name = '" & gsUserGroup & "'" & _
+        " WHERE ASRSysBatchJobName.OverrideFilterID = " & strID)
     End If
     
     CheckSystemSettings strID, "F", "Stability"

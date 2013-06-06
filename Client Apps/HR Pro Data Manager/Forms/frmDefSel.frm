@@ -2134,7 +2134,7 @@ Public Sub GetSQL(lngUtilType As UtilityType, Optional psRecordSourceWhere As St
     
   Case utlReportPack
     msTypeCode = "REPORTPACKS"
-    gblnReportPackMode = True
+    'gblnReportPackMode = True
     If blnScheduledJobs Then
       msType = "Scheduled Report Packs"
       strExtraWhereClause = "(Scheduled = 1) AND (GETDATE() >= StartDate) " & _
@@ -2155,7 +2155,7 @@ Public Sub GetSQL(lngUtilType As UtilityType, Optional psRecordSourceWhere As St
     msTableName = "ASRSysBatchJobName"
     msIDField = "ID"
     msAccessTableName = "ASRSysBatchJobAccess"
-    gblnReportPackMode = False
+    'gblnReportPackMode = False
 
   Case utlCalendarReport
     msTypeCode = "CALENDARREPORTS"
