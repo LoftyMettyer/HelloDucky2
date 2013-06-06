@@ -1845,25 +1845,24 @@ PRINT 'Step - Administration module stored procedures'
             )
       AS
       BEGIN 
-            DECLARE @iRecCount integer
-                    ,@TransactionType integer;
+            DECLARE @iRecCount			integer
+                    ,@TransactionType	integer;
 
             SET NOCOUNT ON;
       
-            SELECT @TransactionType = TransactionType FROM ASRSysAccordTransactions WHERE TransactionID = @piTransactionID;   
-            IF @psOldValue = @psNewValue AND @TransactionType = 0
-                  SET @psOldValue = '''';
+            SELECT @TransactionType = TransactionType FROM dbo.ASRSysAccordTransactions WHERE TransactionID = @piTransactionID;   
+            IF @TransactionType = 0 SET @psOldValue = '''';
 
-            SELECT @iRecCount = COUNT(FieldID) FROM ASRSysAccordTransactionData WHERE @piTransactionID = TransactionID and FieldID = @piColumnID;
+            SELECT @iRecCount = COUNT(FieldID) FROM dbo.ASRSysAccordTransactionData WHERE @piTransactionID = TransactionID AND FieldID = @piColumnID;
 
             -- Insert a record into the Accord Transaction table. 
             IF @iRecCount = 0
-                  INSERT INTO ASRSysAccordTransactionData
+                  INSERT INTO dbo.ASRSysAccordTransactionData
                         ([TransactionID],[FieldID], [OldData], [NewData])
                   VALUES 
                         (@piTransactionID,@piColumnID,@psOldValue,@psNewValue);
             ELSE
-                  UPDATE ASRSysAccordTransactionData SET [OldData] = @psOldValue
+                  UPDATE dbo.ASRSysAccordTransactionData SET [OldData] = @psOldValue
                         WHERE @piTransactionID = TransactionID and FieldID = @piColumnID;
       END'
 
