@@ -408,7 +408,7 @@ Public Function CreateTempTables() As Boolean
   
     ' Create the local Workflows table.
     sSQL = "SELECT ASRSysWorkflows.*," & _
-      " FALSE AS changed, 0 AS changedstatus, FALSE AS new, FALSE AS deleted" & _
+      " FALSE AS changed, FALSE AS perge, FALSE AS new, FALSE AS deleted" & _
       " INTO tmpWorkflows FROM ASRSysWorkflows IN " & sSource
     daoDb.Execute sSQL
   

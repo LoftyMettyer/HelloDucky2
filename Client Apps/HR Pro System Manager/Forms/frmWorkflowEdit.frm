@@ -339,17 +339,7 @@ Private Function SaveChanges() As Boolean
     SaveChanges = True
     Exit Function
   End If
-  
-  If Not mfrmCallingForm Is Nothing Then
-    If mfrmCallingForm.Name = "frmWorkflowOpen" Then
-      If WorkflowsWithStatus(WorkflowID, giWFSTATUS_COMPLETE) Or WorkflowsWithStatus(WorkflowID, giWFSTATUS_ERROR) Then
-      
-        fOK = (MsgBox("Saving these changes will purge all instances of this workflow from the log." & vbCrLf & _
-          "Do you wish to continue?", vbQuestion + vbYesNo, App.ProductName) = vbYes)
-      End If
-    End If
-  End If
-  
+    
   If fOK Then
     ' Begin the transaction of data to the local database.
     daoWS.BeginTrans
@@ -362,12 +352,33 @@ Private Function SaveChanges() As Boolean
         .Seek "=", WorkflowID
   
         If Not .NoMatch Then
+        
+          Dim perge As Boolean
+          
+          If Trim(!Name) <> Trim(txtName.Text) Or _
+             Trim(!Description) <> Trim(txtDescription.Text) Or _
+             !Enabled <> (chkEnabled.value = vbChecked) Then
+            perge = True
+          End If
+
+          If perge And Not mfrmCallingForm Is Nothing Then
+            If mfrmCallingForm.Name = "frmWorkflowOpen" Then
+              If WorkflowsWithStatus(WorkflowID, giWFSTATUS_COMPLETE) Or WorkflowsWithStatus(WorkflowID, giWFSTATUS_ERROR) Then
+
+                fOK = (MsgBox("Saving these changes will purge all instances of this workflow from the log." & vbCrLf & _
+                              "Do you wish to continue?", vbQuestion + vbYesNo, App.ProductName) = vbYes)
+              End If
+            End If
+          End If
+          If Not fOK Then GoTo TidyUpAndExit
+          
           .Edit
           !Name = Trim(txtName.Text)
           !Description = Trim(txtDescription.Text)
           !PictureID = IIf(mlngPictureID = 0, Null, mlngPictureID)
           !Enabled = (chkEnabled.value = vbChecked)
           !Changed = True
+          !perge = !perge Or perge
           .Update
         End If
         
