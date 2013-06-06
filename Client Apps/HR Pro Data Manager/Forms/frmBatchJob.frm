@@ -1266,10 +1266,10 @@ Private Sub RefreshColumnsGrid()
 End Sub
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
-  cmdOk.Enabled = pblnChanged
+  cmdOK.Enabled = pblnChanged
 End Property
 
 Private Function JobUtilityType(psJobType As String) As UtilityType
@@ -4259,58 +4259,54 @@ Public Sub PrintDef(lBatchJobID As Long)
           .PrintNormal grdAccess.Columns("GroupName").CellValue(varBookmark) & " : " & grdAccess.Columns("Access").CellValue(varBookmark)
         Next iLoop
         
-        ' Output Options
-        .PrintTitle "Output Options"
-        
-        .PrintNormal "Title Page Template: " & rsTemp!OutputTitlePage
-        .PrintNormal "Report Pack Title : " & rsTemp!OutputReportPackTitle
-        
-        .PrintNormal " "
-        
-        .PrintNormal "Override Filter : " & rsTemp!OutputOverrideFilter
-        .PrintNormal "Print Table Of Contents : " & rsTemp!OutputTOC
-        .PrintNormal "Force Cover Sheet : " & rsTemp!OutputCoverSheet
-        
-        .PrintNormal " "
-        
-        Select Case rsTemp!OutputFormat
-          Case fmtExcelWorksheet
-            .PrintNormal "Output Format : Excel Worksheet"
-          Case fmtWordDoc
-            .PrintNormal "Output Format : Word Document"
-          Case fmtHTML
-            .PrintNormal "Output Format : HTML"
-        End Select
-        
-        .PrintNormal " "
-        
-        If rsTemp!OutputPrinter Then
-          .PrintNormal "Output Destination : Send to printer"
-          .PrintNormal "Printer Location : " & rsTemp!OutputPrinterName
-          .PrintNormal "File Name : " & rsTemp!OutputFilename
+        If gblnReportPackMode Then
+          ' Only include Output Options for Report Packs for the mo
+          .PrintTitle "Output Options"
+          .PrintNormal "Title Page Template: " & rsTemp!OutputTitlePage
+          .PrintNormal "Report Pack Title : " & rsTemp!OutputReportPackTitle
           .PrintNormal " "
-        End If
-        
-
-        
-        If rsTemp!OutputSave Then
-          .PrintNormal "Output Destination : Save to file"
+          .PrintNormal "Override Filter : " & rsTemp!OutputOverrideFilter
+          .PrintNormal "Print Table Of Contents : " & rsTemp!OutputTOC
+          .PrintNormal "Force Cover Sheet : " & rsTemp!OutputCoverSheet
+          .PrintNormal " "
           
-          Select Case rsTemp!OutputSaveExisting
-            Case 0: .PrintNormal "If Existing File : Overwrite"
-            Case 1: .PrintNormal "If Existing File : Do not overwrite"
-            Case 2: .PrintNormal "If Existing File : Add sequential number to name"
-            Case 3: .PrintNormal "If Existing File : Append to file"
+          Select Case rsTemp!OutputFormat
+            Case fmtExcelWorksheet
+              .PrintNormal "Output Format : Excel Worksheet"
+            Case fmtWordDoc
+              .PrintNormal "Output Format : Word Document"
+            Case fmtHTML
+              .PrintNormal "Output Format : HTML"
           End Select
+          
           .PrintNormal " "
-        End If
-        
-        If rsTemp!OutputEmail Then
-          txtEmailGroup.Text = datGeneral.GetEmailGroupName(rsTemp!OutputEmailAddr)
-          .PrintNormal "Output Destination : Send to email"
-          .PrintNormal "Email Group : " & IIf(txtEmailGroup.Text = "", "N/A", txtEmailGroup.Text)
-          .PrintNormal "Email Subject : " & rsTemp!OutputEmailSubject
-          .PrintNormal "Email Attach As : " & rsTemp!OutputEmailAttachAs
+          
+          If rsTemp!OutputPrinter Then
+            .PrintNormal "Output Destination : Send to printer"
+            .PrintNormal "Printer Location : " & rsTemp!OutputPrinterName
+            .PrintNormal "File Name : " & rsTemp!OutputFilename
+            .PrintNormal " "
+          End If
+          
+          If rsTemp!OutputSave Then
+            .PrintNormal "Output Destination : Save to file"
+            
+            Select Case rsTemp!OutputSaveExisting
+              Case 0: .PrintNormal "If Existing File : Overwrite"
+              Case 1: .PrintNormal "If Existing File : Do not overwrite"
+              Case 2: .PrintNormal "If Existing File : Add sequential number to name"
+              Case 3: .PrintNormal "If Existing File : Append to file"
+            End Select
+            .PrintNormal " "
+          End If
+          
+          If rsTemp!OutputEmail Then
+            txtEmailGroup.Text = datGeneral.GetEmailGroupName(rsTemp!OutputEmailAddr)
+            .PrintNormal "Output Destination : Send to email"
+            .PrintNormal "Email Group : " & IIf(txtEmailGroup.Text = "", "N/A", txtEmailGroup.Text)
+            .PrintNormal "Email Subject : " & rsTemp!OutputEmailSubject
+            .PrintNormal "Email Attach As : " & rsTemp!OutputEmailAttachAs
+          End If
         End If
       
       ' Now do the individual jobs
