@@ -3,11 +3,11 @@ Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "coa_spinner.ocx"
 Begin VB.Form frmCalendarReport 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Calendar Report Definition"
-   ClientHeight    =   6990
+   ClientHeight    =   7035
    ClientLeft      =   45
    ClientTop       =   330
    ClientWidth     =   9645
@@ -27,19 +27,19 @@ Begin VB.Form frmCalendarReport
    LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   6990
+   ScaleHeight     =   7035
    ScaleMode       =   0  'User
    ScaleWidth      =   9781.917
    ShowInTaskbar   =   0   'False
    StartUpPosition =   1  'CenterOwner
    Begin TabDlg.SSTab SSTab1 
-      Height          =   6315
+      Height          =   6360
       Left            =   90
       TabIndex        =   79
       Top             =   90
       Width           =   9450
       _ExtentX        =   16669
-      _ExtentY        =   11139
+      _ExtentY        =   11218
       _Version        =   393216
       Style           =   1
       Tabs            =   5
@@ -66,6 +66,7 @@ Begin VB.Form frmCalendarReport
       TabPicture(1)   =   "frmCalendarReport.frx":0028
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraEvents"
+      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "Report Detai&ls"
       TabPicture(2)   =   "frmCalendarReport.frx":0044
@@ -81,12 +82,13 @@ Begin VB.Form frmCalendarReport
       TabPicture(3)   =   "frmCalendarReport.frx":0060
       Tab(3).ControlEnabled=   0   'False
       Tab(3).Control(0)=   "fraSort"
+      Tab(3).Control(0).Enabled=   0   'False
       Tab(3).ControlCount=   1
       TabCaption(4)   =   "O&utput"
       TabPicture(4)   =   "frmCalendarReport.frx":007C
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "fraOutputFormat"
-      Tab(4).Control(1)=   "fraOutputDestination"
+      Tab(4).Control(0)=   "fraOutputDestination"
+      Tab(4).Control(1)=   "fraOutputFormat"
       Tab(4).ControlCount=   2
       Begin VB.Frame fraOutputDestination 
          Caption         =   "Output Destination(s) :"
@@ -1171,20 +1173,20 @@ Begin VB.Form frmCalendarReport
       End
       Begin VB.Frame fraBase 
          Caption         =   "Data :"
-         Height          =   3780
+         Height          =   3330
          Left            =   120
          TabIndex        =   85
-         Top             =   2400
+         Top             =   2850
          Width           =   9180
          Begin VB.ComboBox cboDescriptionSeparator 
             Height          =   315
             ItemData        =   "frmCalendarReport.frx":02D8
-            Left            =   1575
+            Left            =   5895
             List            =   "frmCalendarReport.frx":0300
             Style           =   2  'Dropdown List
             TabIndex        =   14
-            Top             =   3210
-            Width           =   1425
+            Top             =   2805
+            Width           =   3090
          End
          Begin VB.CommandButton cmdDescExpr 
             Caption         =   "..."
@@ -1220,13 +1222,13 @@ Begin VB.Form frmCalendarReport
          Begin VB.ComboBox cboRegion 
             Height          =   315
             ItemData        =   "frmCalendarReport.frx":03BE
-            Left            =   5800
+            Left            =   5895
             List            =   "frmCalendarReport.frx":03C5
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
             TabIndex        =   15
             Top             =   1980
-            Width           =   3185
+            Width           =   3090
          End
          Begin VB.ComboBox cboDesc2 
             Height          =   315
@@ -1253,9 +1255,9 @@ Begin VB.Form frmCalendarReport
          Begin VB.CheckBox chkGroupByDesc 
             Caption         =   "&Group by Description "
             Height          =   240
-            Left            =   180
+            Left            =   4815
             TabIndex        =   13
-            Top             =   2850
+            Top             =   2445
             Width           =   2145
          End
          Begin VB.TextBox txtBaseFilter 
@@ -1341,9 +1343,9 @@ Begin VB.Form frmCalendarReport
          Begin VB.Label lblDescSeparator 
             Caption         =   "Separator :"
             Height          =   285
-            Left            =   195
+            Left            =   4830
             TabIndex        =   105
-            Top             =   3270
+            Top             =   2865
             Width           =   1035
          End
          Begin VB.Label lblDescExpr 
@@ -1405,7 +1407,7 @@ Begin VB.Form frmCalendarReport
          End
       End
       Begin VB.Frame fraInformation 
-         Height          =   1950
+         Height          =   2355
          Left            =   120
          TabIndex        =   80
          Top             =   400
@@ -1598,7 +1600,7 @@ Begin VB.Form frmCalendarReport
       Height          =   400
       Left            =   8357
       TabIndex        =   78
-      Top             =   6495
+      Top             =   6540
       Width           =   1183
    End
    Begin VB.CommandButton cmdOK 
@@ -1607,7 +1609,7 @@ Begin VB.Form frmCalendarReport
       Height          =   400
       Left            =   7095
       TabIndex        =   77
-      Top             =   6495
+      Top             =   6540
       Width           =   1183
    End
    Begin MSComDlg.CommonDialog CommonDialog1 
