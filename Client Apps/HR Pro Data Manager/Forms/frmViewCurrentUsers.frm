@@ -42,7 +42,6 @@ Begin VB.Form frmViewCurrentUsers
          _Version        =   196617
          DataMode        =   2
          RecordSelectors =   0   'False
-         Col.Count       =   3
          AllowUpdate     =   0   'False
          MultiLine       =   0   'False
          AllowRowSizing  =   0   'False
@@ -71,13 +70,13 @@ Begin VB.Form frmViewCurrentUsers
          Columns(0).DataField=   "Column 0"
          Columns(0).DataType=   8
          Columns(0).FieldLen=   256
-         Columns(1).Width=   3281
+         Columns(1).Width=   2752
          Columns(1).Caption=   "Machine"
          Columns(1).Name =   "Machine"
          Columns(1).DataField=   "Column 1"
          Columns(1).DataType=   8
          Columns(1).FieldLen=   256
-         Columns(2).Width=   4339
+         Columns(2).Width=   4842
          Columns(2).Caption=   "Module"
          Columns(2).Name =   "Module"
          Columns(2).DataField=   "Column 2"
