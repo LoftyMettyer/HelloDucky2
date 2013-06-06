@@ -666,8 +666,8 @@ PRINT 'Step 11 - Add new calculation procedures'
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsys_convertcurrency]') AND xtype in (N'FN', N'IF', N'TF'))
 		DROP FUNCTION [dbo].[udfsys_convertcurrency];
 
-	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsys_divideby]') AND xtype in (N'FN', N'IF', N'TF'))
-		DROP FUNCTION [dbo].udfsys_divideby;
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsys_divide]') AND xtype in (N'FN', N'IF', N'TF'))
+		DROP FUNCTION [dbo].udfsys_divide;
 
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsys_fieldchangedbetweentwodates]')AND xtype in (N'FN', N'IF', N'TF'))
 		DROP FUNCTION [dbo].[udfsys_fieldchangedbetweentwodates];
@@ -957,7 +957,7 @@ PRINT 'Step 11 - Add new calculation procedures'
 	END';
 	EXECUTE sp_executeSQL @sSPCode;
 
-	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_divideby](@value numeric(38,8), @divideby numeric(38,8))
+	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_divide](@value numeric(38,8), @divideby numeric(38,8))
 	RETURNS numeric(38,8)
 	WITH SCHEMABINDING
 	AS
