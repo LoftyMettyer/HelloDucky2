@@ -1031,7 +1031,7 @@ Dim plngHelp As Long
 
 Select Case KeyCode
   Case vbKeyF1
-    AIRhelp = App.Path & "\HR Pro Data Manager Help\HR Pro Data Manager Help.exe"
+    AIRhelp = App.Path & "\HR Pro Data Manager Help\HR Pro Data Managersfsdf Help.exe"
     CommandLine = " -csh mapnumber " & CStr(Me.HelpContextID)
     
     plngHelp = ShellExecute(0&, vbNullString, AIRhelp, CommandLine, vbNullString, vbNormalNoFocus)
@@ -1108,6 +1108,15 @@ End Select
 '  ElseIf KeyCode = vbKeyDelete Then
 '    If cmdDelete.Enabled Then cmdDelete_Click
 '  End If
+
+'THIS BIT NEEDS WORK
+If plngHelp <> 42 Then
+  KeyCode = 112
+Else
+  KeyCode = 0
+End If
+      
+      
 
 End Sub
 
