@@ -2130,14 +2130,14 @@ Public Sub EditMobileDesigner()
   Dim service As New MobileDesignerSerivce
   service.InitialiseForVB6 (Environ("TEMP") & "\" & gsTempDatabaseName)
   Set service = Nothing
-  
-  Screen.MousePointer = vbDefault
-  
+    
   Dim changesMade As Boolean
   Dim frm As New DesignerForm
   frm.ReadOnly = (Application.AccessMode <> accFull And Application.AccessMode <> accSupportMode)
-  changesMade = frm.ShowForVB6
   
+  Screen.MousePointer = vbDefault
+  changesMade = frm.ShowForVB6
+      
   If changesMade Then
     Application.Changed = True
     frmSysMgr.RefreshMenu True
