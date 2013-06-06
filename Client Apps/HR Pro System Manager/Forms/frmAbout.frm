@@ -77,7 +77,7 @@ Begin VB.Form frmAbout
    Begin VB.Label lblURL 
       AutoSize        =   -1  'True
       BackStyle       =   0  'Transparent
-      Caption         =   "http://www.coasolutions.com"
+      Caption         =   "http://www.advancedcomputersoftware.com"
       BeginProperty Font 
          Name            =   "Verdana"
          Size            =   8.25
@@ -90,11 +90,11 @@ Begin VB.Form frmAbout
       ForeColor       =   &H00FF0000&
       Height          =   195
       Left            =   150
-      MouseIcon       =   "frmAbout.frx":08EB
+      MouseIcon       =   "frmAbout.frx":3050
       MousePointer    =   99  'Custom
       TabIndex        =   10
-      Top             =   1510
-      Width           =   2490
+      Top             =   1515
+      Width           =   3810
    End
    Begin VB.Label lblDatabase 
       AutoSize        =   -1  'True
@@ -139,13 +139,13 @@ Begin VB.Form frmAbout
    Begin VB.Label lblCopyRight 
       AutoSize        =   -1  'True
       BackStyle       =   0  'Transparent
-      Caption         =   "Copyright © COA Solutions Limited 1997-2009"
+      Caption         =   "Copyright © Advanced Computer Software"
       ForeColor       =   &H00000000&
       Height          =   195
       Left            =   150
       TabIndex        =   4
-      Top             =   1300
-      Width           =   4005
+      Top             =   1305
+      Width           =   3705
    End
    Begin VB.Label lblTitle 
       AutoSize        =   -1  'True
@@ -252,11 +252,11 @@ Private Sub Form_Load()
   sngMaxX = IIf(lblSql.Left + lblSql.Width > sngMaxX, lblSql.Left + lblSql.Width, sngMaxX)
   sngMaxX = IIf(lblCopyRight.Left + lblCopyRight.Width > sngMaxX, lblCopyRight.Left + lblCopyRight.Width, sngMaxX)
   
-  cmdOK.Left = sngMaxX + 250
-  cmdSysInfo.Left = cmdOK.Left
-  cmdTech.Left = cmdOK.Left
+  cmdOk.Left = sngMaxX + 250
+  cmdSysInfo.Left = cmdOk.Left
+  cmdTech.Left = cmdOk.Left
   
-  Me.Width = cmdOK.Left + cmdOK.Width + 200
+  Me.Width = cmdOk.Left + cmdOk.Width + 200
 TidyUpAndExit:
   Exit Sub
 

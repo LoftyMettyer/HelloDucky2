@@ -6,7 +6,7 @@ Begin VB.Form frmTechSupport
    ClientHeight    =   2355
    ClientLeft      =   45
    ClientTop       =   330
-   ClientWidth     =   4815
+   ClientWidth     =   6600
    BeginProperty Font 
       Name            =   "Verdana"
       Size            =   8.25
@@ -24,7 +24,7 @@ Begin VB.Form frmTechSupport
    MinButton       =   0   'False
    MouseIcon       =   "frmTechSupport.frx":000C
    ScaleHeight     =   2355
-   ScaleWidth      =   4815
+   ScaleWidth      =   6600
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin VB.Frame Frame1 
@@ -33,14 +33,14 @@ Begin VB.Form frmTechSupport
       Left            =   120
       TabIndex        =   1
       Top             =   100
-      Width           =   4580
+      Width           =   6375
       Begin COANavigation.COA_Navigation navSupport 
          Height          =   215
          Left            =   1350
          TabIndex        =   6
          Top             =   1110
-         Width           =   3135
-         _ExtentX        =   5530
+         Width           =   4800
+         _ExtentX        =   8467
          _ExtentY        =   370
          Caption         =   "navSupport"
          DisplayType     =   0
@@ -65,6 +65,7 @@ Begin VB.Form frmTechSupport
          FontStrikethrough=   0   'False
          FontUnderline   =   -1  'True
          ForeColor       =   16711680
+         BackColor       =   -2147483633
          NavigateOnSave  =   0   'False
       End
       Begin COANavigation.COA_Navigation navEmail 
@@ -72,8 +73,8 @@ Begin VB.Form frmTechSupport
          Left            =   1350
          TabIndex        =   7
          Top             =   750
-         Width           =   3135
-         _ExtentX        =   5530
+         Width           =   4800
+         _ExtentX        =   8467
          _ExtentY        =   370
          Caption         =   "navEmail"
          DisplayType     =   0
@@ -98,6 +99,7 @@ Begin VB.Form frmTechSupport
          FontStrikethrough=   0   'False
          FontUnderline   =   -1  'True
          ForeColor       =   16711680
+         BackColor       =   -2147483633
          NavigateOnSave  =   0   'False
       End
       Begin VB.Label lblTitle 
@@ -148,7 +150,7 @@ Begin VB.Form frmTechSupport
       Caption         =   "&OK"
       Default         =   -1  'True
       Height          =   400
-      Left            =   3500
+      Left            =   5295
       TabIndex        =   0
       Top             =   1815
       Width           =   1200
