@@ -507,6 +507,7 @@ Sub Main()
 
   ' If we get problems, just in case...
   gbDisableCodeJock = (InStr(LCase(Command$), "/skin=false") > 0)
+  gbActivateJobServer = (InStr(LCase(Command$), "/jobseek=true") > 0)
 
   If App.StartMode = vbSModeAutomation Then
     'If started via OLE automation, return control back to client application
