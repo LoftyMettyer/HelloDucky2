@@ -484,7 +484,6 @@ Public Function Initialise(bNew As Boolean, bCopy As Boolean, Optional lngDocume
   LoadTableCombo cboTargetTable
 
   If bNew Then
-  
     mlngDocumentMapID = 0
     sAccess = GetUserSetting("utils&reports", "dfltaccess version1", ACCESS_READWRITE)
     Select Case sAccess
@@ -493,11 +492,9 @@ Public Function Initialise(bNew As Boolean, bCopy As Boolean, Optional lngDocume
       Case Else
         optReadOnly.Value = True
     End Select
-  
   Else
     mblnFromCopy = bCopy
     mlngDocumentMapID = lngDocumentMapID
-    
     RetreiveDefinition
   End If
   
@@ -560,8 +557,12 @@ Private Sub RetreiveDefinition()
   Select Case rsTemp!Access
   Case "RW"
     optReadWrite = True
+    optReadWrite.Enabled = mblnDefinitionCreator
+    optReadOnly.Enabled = mblnDefinitionCreator
   Case "RO"
     optReadOnly = True
+    optReadWrite.Enabled = mblnDefinitionCreator
+    optReadOnly.Enabled = mblnDefinitionCreator
     mblnReadOnly = ((mblnReadOnly Or Not mblnDefinitionCreator) And Not gfCurrentUserIsSysSecMgr)
   End Select
     
