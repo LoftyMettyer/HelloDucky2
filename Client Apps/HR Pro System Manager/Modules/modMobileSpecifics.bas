@@ -331,21 +331,50 @@ Private Function CreateSP_MobileRegistration() As Boolean
     "          SET @psMessage = 'This user has already been registered. Use the ''forgot password'' screen to reset your password.';" & vbNewLine & _
     "        END;" & vbNewLine
         
-  sProcSQL = sProcSQL & "        ELSE" & vbNewLine & _
-    "        BEGIN" & vbNewLine & _
-    "            -- Add the user to the logins table." & vbNewLine & _
-    "          INSERT [dbo].[tbsys_mobilelogins](" & vbNewLine & _
-    "             userid)" & vbNewLine & _
-    "          VALUES (@iUserRecordID);" & vbNewLine & _
-    "          --URL for activation" & vbNewLine & _
-    "          IF RIGHT(@sURL, 5) <> '.ASPX' AND RIGHT(@sURL, 1) <> '/' SET @sURL = @sURL + '/';" & vbNewLine & _
-    "          --Add the activation Page" & vbNewLine & _
-    "          SET @sURL = @sURL + 'default.aspx';" & vbNewLine & _
-    "          --Add the activation URL" & vbNewLine & _
-    "          SET @sURL = @sURL + '?' + @psActivationURL;" & vbNewLine & _
-    "          SET @sMessage = 'Thank you for registering to use OpenHR Mobile. Your username is: ' + @sUserName + '. To complete your registration click this link: ' + @sURL;" & vbNewLine
-    
-  sProcSQL = sProcSQL & "          INSERT [dbo].[ASRSysEmailQueue](" & vbNewLine & _
+'  sProcSQL = sProcSQL & "        ELSE" & vbNewLine & _
+'    "        BEGIN" & vbNewLine & _
+'    "            -- Add the user to the logins table." & vbNewLine & _
+'    "          INSERT [dbo].[tbsys_mobilelogins](" & vbNewLine & _
+'    "             userid)" & vbNewLine & _
+'    "          VALUES (@iUserRecordID);" & vbNewLine & _
+'    "          --URL for activation" & vbNewLine & _
+'    "          IF RIGHT(@sURL, 5) <> '.ASPX' AND RIGHT(@sURL, 1) <> '/' SET @sURL = @sURL + '/';" & vbNewLine & _
+'    "          --Add the activation Page" & vbNewLine & _
+'    "          SET @sURL = @sURL + 'default.aspx';" & vbNewLine & _
+'    "          --Add the activation URL" & vbNewLine & _
+'    "          SET @sURL = @sURL + '?' + @psActivationURL;" & vbNewLine & _
+'    "          SET @sMessage = 'Thank you for registering to use OpenHR Mobile. Your username is: ' + @sUserName + '. To complete your registration click this link: ' + @sURL;" & vbNewLine
+'
+'  sProcSQL = sProcSQL & "          INSERT [dbo].[ASRSysEmailQueue](" & vbNewLine & _
+'    "             RecordDesc," & vbNewLine & _
+'    "             ColumnValue," & vbNewLine & _
+'    "             DateDue," & vbNewLine & _
+'    "             UserName," & vbNewLine & _
+'    "             [Immediate]," & vbNewLine & _
+'    "             RecalculateRecordDesc," & vbNewLine & _
+'    "             RepTo," & vbNewLine & _
+'    "             MsgText," & vbNewLine & _
+'    "             WorkflowInstanceID," & vbNewLine & _
+'    "             [Subject])" & vbNewLine & _
+'    "          VALUES (''," & vbNewLine
+'
+'  sProcSQL = sProcSQL & "             ''," & vbNewLine & _
+'    "             getdate()," & vbNewLine & _
+'    "             'OpenHR  Mobile'," & vbNewLine & _
+'    "             1," & vbNewLine & _
+'    "             0," & vbNewLine & _
+'    "             @psEmailAddress," & vbNewLine & _
+'    "             @sMessage," & vbNewLine & _
+'    "             0," & vbNewLine & _
+'    "             'OpenHR Mobile registration details');" & vbNewLine & _
+'    "        END;" & vbNewLine & _
+'    "  END;" & vbNewLine & _
+'    "END;"
+'
+
+  sProcSQL = sProcSQL & "          IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id(N'[dbo].[spASRSendMail]') AND xtype = 'P')" & vbNewLine & _
+    "          BEGIN" & vbNewLine & _
+    "          INSERT [dbo].[ASRSysEmailQueue](" & vbNewLine & _
     "             RecordDesc," & vbNewLine & _
     "             ColumnValue," & vbNewLine & _
     "             DateDue," & vbNewLine & _
@@ -355,10 +384,10 @@ Private Function CreateSP_MobileRegistration() As Boolean
     "             RepTo," & vbNewLine & _
     "             MsgText," & vbNewLine & _
     "             WorkflowInstanceID," & vbNewLine & _
-    "             [Subject])" & vbNewLine & _
-    "          VALUES (''," & vbNewLine
-        
-  sProcSQL = sProcSQL & "             ''," & vbNewLine & _
+    "             [Subject])" & vbNewLine
+
+  sProcSQL = sProcSQL & "          VALUES (''," & vbNewLine & _
+    "             ''," & vbNewLine & _
     "             getdate()," & vbNewLine & _
     "             'OpenHR  Mobile'," & vbNewLine & _
     "             1," & vbNewLine & _
@@ -367,10 +396,22 @@ Private Function CreateSP_MobileRegistration() As Boolean
     "             @sMessage," & vbNewLine & _
     "             0," & vbNewLine & _
     "             'OpenHR Mobile registration details');" & vbNewLine & _
+    "          END;" & vbNewLine & _
+    "          ELSE" & vbNewLine
+          
+  sProcSQL = sProcSQL & "          BEGIN" & vbNewLine & _
+    "            DECLARE @HResult int" & vbNewLine & _
+    "            EXEC spASRSendMail" & vbNewLine & _
+    "              @HResult OUTPUT," & vbNewLine & _
+    "              @psEmailAddress," & vbNewLine & _
+    "              ''," & vbNewLine & _
+    "              ''," & vbNewLine & _
+    "              'OpenHR Mobile registration details'," & vbNewLine & _
+    "              @sMessage," & vbNewLine & _
+    "              '';" & vbNewLine & _
+    "          END;" & vbNewLine & _
     "        END;" & vbNewLine & _
-    "  END;" & vbNewLine & _
-    "END;"
-    
+    "  END;" & vbNewLine
 
   gADOCon.Execute sProcSQL, , adExecuteNoRecords
 
@@ -675,35 +716,79 @@ Private Function CreateSP_MobileForgotLogin() As Boolean
     "      SET @psMessage = 'No registered user exists with the given email address.';" & vbNewLine & _
     "    End" & vbNewLine & _
     "    Else" & vbNewLine & _
-    "    BEGIN" & vbNewLine
-      
-  sProcSQL = sProcSQL & "      SET @sMessage = 'Your OpenHR Mobile login is ''' + @sLogin + '.';" & vbNewLine & _
-    "      INSERT [dbo].[ASRSysEmailQueue](" & vbNewLine & _
-    "        RecordDesc," & vbNewLine & _
-    "        ColumnValue," & vbNewLine & _
-    "        DateDue," & vbNewLine & _
-    "        UserName," & vbNewLine & _
-    "        [Immediate]," & vbNewLine & _
-    "        RecalculateRecordDesc," & vbNewLine & _
-    "        RepTo," & vbNewLine & _
-    "        MsgText," & vbNewLine & _
-    "        WorkflowInstanceID," & vbNewLine & _
-    "        [Subject])" & vbNewLine
-      
-  sProcSQL = sProcSQL & "      VALUES (''," & vbNewLine & _
-    "        ''," & vbNewLine & _
-    "        getdate()," & vbNewLine & _
-    "        'OpenHR  Mobile'," & vbNewLine & _
-    "        1," & vbNewLine & _
-    "        0," & vbNewLine & _
-    "        @psEmailAddress," & vbNewLine & _
-    "        @sMessage," & vbNewLine & _
-    "        0," & vbNewLine & _
-    "        'OpenHR Mobile login details');" & vbNewLine & _
-    "    END;" & vbNewLine & _
-    "  END;" & vbNewLine & _
-    "END;"
+    "    BEGIN" & vbNewLine & _
+    "      SET @sMessage = 'Your OpenHR Mobile login is ''' + @sLogin + '.';" & vbNewLine
+    
+'  sProcSQL = sProcSQL & "      SET @sMessage = 'Your OpenHR Mobile login is ''' + @sLogin + '.';" & vbNewLine & _
+'    "      INSERT [dbo].[ASRSysEmailQueue](" & vbNewLine & _
+'    "        RecordDesc," & vbNewLine & _
+'    "        ColumnValue," & vbNewLine & _
+'    "        DateDue," & vbNewLine & _
+'    "        UserName," & vbNewLine & _
+'    "        [Immediate]," & vbNewLine & _
+'    "        RecalculateRecordDesc," & vbNewLine & _
+'    "        RepTo," & vbNewLine & _
+'    "        MsgText," & vbNewLine & _
+'    "        WorkflowInstanceID," & vbNewLine & _
+'    "        [Subject])" & vbNewLine
+'
+'  sProcSQL = sProcSQL & "      VALUES (''," & vbNewLine & _
+'    "        ''," & vbNewLine & _
+'    "        getdate()," & vbNewLine & _
+'    "        'OpenHR  Mobile'," & vbNewLine & _
+'    "        1," & vbNewLine & _
+'    "        0," & vbNewLine & _
+'    "        @psEmailAddress," & vbNewLine & _
+'    "        @sMessage," & vbNewLine & _
+'    "        0," & vbNewLine & _
+'    "        'OpenHR Mobile login details');" & vbNewLine & _
+'    "    END;" & vbNewLine & _
+'    "  END;" & vbNewLine & _
+'    "END;"
 
+    
+  sProcSQL = sProcSQL & "          IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id(N'[dbo].[spASRSendMail]') AND xtype = 'P')" & vbNewLine & _
+    "          BEGIN" & vbNewLine & _
+    "          INSERT [dbo].[ASRSysEmailQueue](" & vbNewLine & _
+    "             RecordDesc," & vbNewLine & _
+    "             ColumnValue," & vbNewLine & _
+    "             DateDue," & vbNewLine & _
+    "             UserName," & vbNewLine & _
+    "             [Immediate]," & vbNewLine & _
+    "             RecalculateRecordDesc," & vbNewLine & _
+    "             RepTo," & vbNewLine & _
+    "             MsgText," & vbNewLine & _
+    "             WorkflowInstanceID," & vbNewLine & _
+    "             [Subject])" & vbNewLine
+
+  sProcSQL = sProcSQL & "          VALUES (''," & vbNewLine & _
+    "             ''," & vbNewLine & _
+    "             getdate()," & vbNewLine & _
+    "             'OpenHR  Mobile'," & vbNewLine & _
+    "             1," & vbNewLine & _
+    "             0," & vbNewLine & _
+    "             @psEmailAddress," & vbNewLine & _
+    "             @sMessage," & vbNewLine & _
+    "             0," & vbNewLine & _
+    "             'OpenHR Mobile login details');" & vbNewLine & _
+    "          END;" & vbNewLine & _
+    "          ELSE" & vbNewLine
+          
+  sProcSQL = sProcSQL & "          BEGIN" & vbNewLine & _
+    "            DECLARE @HResult int" & vbNewLine & _
+    "            EXEC spASRSendMail" & vbNewLine & _
+    "              @HResult OUTPUT," & vbNewLine & _
+    "              @psEmailAddress," & vbNewLine & _
+    "              ''," & vbNewLine & _
+    "              ''," & vbNewLine & _
+    "              'OpenHR Mobile login details'," & vbNewLine & _
+    "              @sMessage," & vbNewLine & _
+    "              '';" & vbNewLine & _
+    "          END;" & vbNewLine & _
+    "        END;" & vbNewLine & _
+    "      END;" & vbNewLine & _
+    "  END;" & vbNewLine
+    
     
   gADOCon.Execute sProcSQL, , adExecuteNoRecords
 
