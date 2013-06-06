@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.ocx"
 Begin VB.Form frmDefSel 
    Caption         =   "Select"
    ClientHeight    =   7800
@@ -960,11 +960,13 @@ Private Sub Form_Load()
 End Sub
 
 Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
-  If UnloadMode <> vbFormCode Then
-    lngAction = 0
-  End If
+
   If Not FromCopy Then
     GetSelected
+  End If
+  
+  If UnloadMode <> vbFormCode Then
+    lngAction = 0
   End If
   
   mlngHeight = Me.Height
@@ -1064,7 +1066,7 @@ Public Sub Refresh_Controls()
   Dim iCount As Integer
   Dim lngTempIndex As Long
   Dim sType As String
-  Dim lngType As UtilityType
+  Dim lngTYPE As UtilityType
   Dim bSystemMgrDefined As Boolean
   
   If mblnLoading Then
