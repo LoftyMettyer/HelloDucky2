@@ -577,8 +577,8 @@ Private Function SaveDefinition() As Boolean
               & "[TargetTableID] = " & GetComboItem(cboTargetTable) & ", " _
               & "[TargetKeyFieldColumnID] = " & GetComboItem(cboTargetKeyField) & ", " _
               & "[TargetColumnID] = " & GetComboItem(cboTargetColumn) & ", " _
-              & "[TargetCategoryColumnID] = " & GetComboItem(cboTargetType) & ", " _
-              & "[TargetTypeColumnID] = " & GetComboItem(cboTargetCategory) & ", " _
+              & "[TargetCategoryColumnID] = " & GetComboItem(cboTargetCategory) & ", " _
+              & "[TargetTypeColumnID] = " & GetComboItem(cboTargetType) & ", " _
               & "[TargetGUIDColumnID] = 0, " _
               & "[Parent1TableID] = " & GetComboItem(cboParent1Table) & ", " _
               & "[Parent1KeyFieldColumnID] = " & GetComboItem(cboParent1Keyfield) & ", " _
