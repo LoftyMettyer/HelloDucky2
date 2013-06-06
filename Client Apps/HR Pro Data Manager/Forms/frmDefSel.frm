@@ -1587,7 +1587,7 @@ Exit_Populate_List:
   
 ErrorTrap:
   Populate_List = False
-  COAMsgBox Err.Description, vbExclamation + vbOKOnly, App.ProductName
+  COAMsgBox Err.Description, vbExclamation + vbOKOnly, app.ProductName
   If ASRDEVELOPMENT Then
     Stop
   End If
@@ -2443,7 +2443,8 @@ Public Sub GetSQL(lngUtilType As utilityType, Optional psRecordSourceWhere As St
     sCategoryFilter = " LEFT JOIN dbo.tbsys_objectcategories cat ON cat.objectid = " & msTableName & "." & msIDField & ""
     
     If mutlUtilityType = utlAll Then
-      strExtraWhereClause = strExtraWhereClause & IIf(strExtraWhereClause <> vbNullString, " AND ", "") & " ASRSysAllObjectAccess.objecttype = cat.objecttype"
+      'strExtraWhereClause = strExtraWhereClause & IIf(strExtraWhereClause <> vbNullString, " AND ", "") & " ASRSysAllObjectAccess.objecttype = cat.objecttype"
+      sCategoryFilter = sCategoryFilter & " AND cat.objecttype = ASRSysAllObjectNames.objecttype"
     Else
       sCategoryFilter = sCategoryFilter & " AND cat.objecttype = " & CStr(mutlUtilityType)
     End If
