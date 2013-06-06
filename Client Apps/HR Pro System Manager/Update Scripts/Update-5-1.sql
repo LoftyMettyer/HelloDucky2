@@ -536,12 +536,13 @@ PRINT 'Step - Menu & Category enhancements'
 			INSERT dbo.tbuser_Categories_Table ([Category_Name]) VALUES ('Training')
 			INSERT dbo.tbuser_Categories_Table ([Category_Name]) VALUES ('Documents')
 			INSERT dbo.tbuser_Categories_Table ([Category_Name]) VALUES ('Discipline')
-			INSERT dbo.tbuser_Categories_Table ([Category_Name]) VALUES ('Grienvances')
+			INSERT dbo.tbuser_Categories_Table ([Category_Name]) VALUES ('Grievances')
 			INSERT dbo.tbuser_Categories_Table ([Category_Name]) VALUES ('Health & Safety')
 			INSERT dbo.tbuser_Categories_Table ([Category_Name]) VALUES ('Learning & Development')
 			INSERT dbo.tbuser_Categories_Table ([Category_Name]) VALUES ('Bank')
 			INSERT dbo.tbuser_Categories_Table ([Category_Name]) VALUES ('Pension')
 			INSERT dbo.tbuser_Categories_Table ([Category_Name]) VALUES ('Configuration')
+			INSERT dbo.tbuser_Categories_Table ([Category_Name]) VALUES ('Parental Leave')			
 		END
 		
 	END
