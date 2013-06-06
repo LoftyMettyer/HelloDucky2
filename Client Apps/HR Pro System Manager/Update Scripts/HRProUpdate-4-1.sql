@@ -1227,6 +1227,13 @@ PRINT 'Step 5 - Intranet Dashboard Implementation'
 	END
 
 	IF NOT EXISTS(SELECT id FROM syscolumns
+	              WHERE  id = OBJECT_ID('ASRSysSSIntranetLinks', 'U') AND name = 'Chart_ShowValues')
+    BEGIN
+		EXEC sp_executesql N'ALTER TABLE ASRSysSSIntranetLinks ADD Chart_ShowValues bit NULL'
+		EXEC sp_executesql N'UPDATE ASRSysSSIntranetLinks SET Chart_ShowValues = 0'
+	END
+	
+	IF NOT EXISTS(SELECT id FROM syscolumns
 	              WHERE  id = OBJECT_ID('ASRSysSSIntranetLinks', 'U') AND name = 'Chart_viewID')
     BEGIN
 		EXEC sp_executesql N'ALTER TABLE ASRSysSSIntranetLinks ADD Chart_viewID int NULL'
