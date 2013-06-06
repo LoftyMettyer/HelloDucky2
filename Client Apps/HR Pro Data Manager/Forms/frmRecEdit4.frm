@@ -10103,19 +10103,9 @@ Public Sub SelectOrder()
   If SaveChanges Then
     If Database.Validation Then
     
-      'MH20031002 Fault 7082 Reference Property instead of object to trap errors
-      'If mobjTableView.ViewID > 0 Then
+      ' Reference Property instead of object to trap errors
       If Me.ViewID > 0 Then
-        'MH20031002 Fault 7082 Reference Property instead of object to trap errors
-        'sSQL = "SELECT DISTINCT ASRSysOrders.name, ASRSysOrders.orderID" & _
-          " FROM ASRSysOrders" & _
-          " INNER JOIN ASRSysOrderItems ON ASRSysOrders.orderID = ASRSysOrderItems.orderID" & _
-          " INNER JOIN ASRSysViewColumns ON ASRSysOrderItems.columnID = ASRSysViewColumns.columnID" & _
-          " WHERE ASRSysOrders.tableID = " & mobjTableView.TableID & _
-          " AND ASRSysViewColumns.inView = 1" & _
-          " AND ASRSysOrderItems.type = 'O'" & _
-          " AND ASRSysViewColumns.viewID = " & mobjTableView.ViewID & _
-          " AND ASRSysOrders.type = 1"   'MH20010510
+
         sSQL = "SELECT DISTINCT ASRSysOrders.name, ASRSysOrders.orderID" & _
           " FROM ASRSysOrders" & _
           " INNER JOIN ASRSysOrderItems ON ASRSysOrders.orderID = ASRSysOrderItems.orderID" & _
@@ -10124,25 +10114,26 @@ Public Sub SelectOrder()
           " AND ASRSysViewColumns.inView = 1" & _
           " AND ASRSysOrderItems.type = 'O'" & _
           " AND ASRSysViewColumns.viewID = " & Me.ViewID & _
-          " AND ASRSysOrders.type = 1"   'MH20010510
+          " AND ASRSysOrders.type = 1"
       Else
-        'MH20031002 Fault 7082 Reference Property instead of object to trap errors
-        'sSQL = "SELECT name, orderID" & _
-          " FROM ASRSysOrders" & _
-          " WHERE tableID=" & mobjTableView.TableID & _
-          " AND type = 1"   'MH20010510
         sSQL = "SELECT name, orderID" & _
           " FROM ASRSysOrders" & _
           " WHERE tableID=" & Me.TableID & _
-          " AND type = 1"   'MH20010510
+          " AND type = 1"
       End If
       
       With frmDefSel
+        .SelectedUtilityType = utlOrder
         .Caption = "Select Order"
-        .HideDescription = True
         .Options = edtSelect
-        
-        If Not .ShowOrders(sSQL, mlngOrderID) Then
+        .EnableRun = False
+        .TableComboEnabled = False
+        .TableComboVisible = True
+        .HideDescription = True
+        .TableID = Me.TableID
+        .SelectedID = mlngOrderID
+               
+        If Not .ShowList(utlOrder) Then
           Exit Sub
         End If
       
@@ -10160,17 +10151,6 @@ Public Sub SelectOrder()
           Set mrsRecords = Nothing
           GetRecords
           
-          'TM20020107 Fault 1379
-          ' If no records match the filter, then clear it.
-'          If (mrsRecords.BOF And mrsRecords.EOF) And _
-'            Filtered Then
-'            COAMsgBox "No records match the current filter." & vbNewLine & _
-'              "No filter is applied.", vbInformation + vbOKOnly, App.ProductName
-'            ReDim mavFilterCriteria(3, 0)
-'            mrsRecords.Close
-'            Set mrsRecords = Nothing
-'            GetRecords
-'          End If
             
           ' Check if the refreshed recordset is still empty.
           If mrsRecords.BOF And mrsRecords.EOF Then
@@ -10180,9 +10160,6 @@ Public Sub SelectOrder()
             Else
               ' JPD20030311 Fault 5138
               If Me.Visible Then
-                'MH20031002 Fault 7082 Reference Property instead of object to trap errors
-                'COAMsgBox "This " & IIf(mobjTableView.ViewID > 0, "view", "table") & " is empty" & _
-                  " and you do not have 'new' permission on it.", vbExclamation, "Security"
                 COAMsgBox "This " & IIf(Me.ViewID > 0, "view", "table") & " is empty" & _
                   " and you do not have 'new' permission on it.", vbExclamation, "Security"
               End If
@@ -10191,8 +10168,7 @@ Public Sub SelectOrder()
               Exit Sub
             End If
           Else
-            ' Select the originally selected record if it is still in
-            ' the recordset.
+            ' Select the originally selected record if it is still in the recordset.
             LocateRecord mlngRecordID
           End If
             
@@ -10205,7 +10181,6 @@ Public Sub SelectOrder()
           UpdateControls
           UpdateChildren
           UpdateFindWindow
-'          UpdateParentWindow
             
           Screen.MousePointer = vbDefault
         End If
