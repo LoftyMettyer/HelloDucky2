@@ -6,7 +6,7 @@ Option Explicit On
 	Private mvarPrompts() As Object
 	Private mstrRealSource As String
 	Private mstrBaseTableRealSource As String
-	Private mlngTableViews() As Integer
+  Private mlngTableViews(,) As Integer
 	Private mstrViews() As String
 	Private mobjTableView As CTablePrivilege
 	Private mobjColumnPrivileges As CColumnPrivileges

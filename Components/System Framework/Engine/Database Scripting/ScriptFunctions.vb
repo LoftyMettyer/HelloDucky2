@@ -48,7 +48,7 @@ Namespace ScriptDB
                     "    RETURN ISNULL(@result,0);" & vbNewLine & _
                     "END", sObjectName, objConversionTable.Name, objValueColumn.Name, objNameColumn.Name, objDecimalsColumn.Name _
                       , objNameColumn.DataTypeSyntax)
-                  Script.DropUDF("dbo", sObjectName)
+            Script.DropUDF("dbo", sObjectName)
             bOK = CommitDB.ScriptStatement(sSQL, True)
           End If
 
@@ -67,7 +67,6 @@ Namespace ScriptDB
     Public Function UniqueCodeViews() As Boolean
 
       Dim bOK As Boolean = True
-      Dim sSQL As String = vbNullString
 
       Try
 
@@ -101,7 +100,7 @@ Namespace ScriptDB
       Dim sReturnType As String
       Dim sSafeReturnType As String
       Dim bProcess As Boolean = False
-      Dim ReturnColumnType As ColumnTypes
+      Dim returnColumnType As ColumnTypes
 
       Try
 
@@ -136,17 +135,17 @@ Namespace ScriptDB
           objColumn = objTable1.Columns.GetById(objPart3.ColumnID)
           If Not objColumn Is Nothing Then
 
-            ReturnColumnType = objTable1.Columns.GetById(objPart3.ColumnID).DataType
+            returnColumnType = objTable1.Columns.GetById(objPart3.ColumnID).DataType
 
             Select Case FunctionDataType
               Case ComponentValueTypes.Date
-                bProcess = (ReturnColumnType = ColumnTypes.Date)
+                bProcess = (returnColumnType = ColumnTypes.Date)
               Case ComponentValueTypes.Numeric
-                bProcess = (ReturnColumnType = ColumnTypes.Numeric Or ReturnColumnType = ColumnTypes.Integer)
+                bProcess = (returnColumnType = ColumnTypes.Numeric Or returnColumnType = ColumnTypes.Integer)
               Case ComponentValueTypes.Logic
-                bProcess = (ReturnColumnType = ColumnTypes.Logic)
+                bProcess = (returnColumnType = ColumnTypes.Logic)
               Case Else
-                bProcess = (ReturnColumnType = ColumnTypes.Text Or ReturnColumnType = ColumnTypes.WorkingPattern)
+                bProcess = (returnColumnType = ColumnTypes.Text Or returnColumnType = ColumnTypes.WorkingPattern)
             End Select
 
             If bProcess Then

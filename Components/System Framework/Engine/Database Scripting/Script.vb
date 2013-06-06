@@ -322,7 +322,6 @@ Namespace ScriptDB
       Dim objColumn As Column
       Dim objRelation As Relation
       Dim objIndex As Index
-      Dim objMessage As FusionMessage
       Dim bBypassValidation As Boolean = False
 
       Dim sSQL As String = String.Empty

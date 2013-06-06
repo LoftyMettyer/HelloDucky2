@@ -5,8 +5,8 @@
     Inherits Expression
 
     Public Sub GenerateMaskCode()
-      Me.ExpressionType = ScriptDB.ExpressionType.Mask
-      MyBase.GenerateCodeForColumn()
+      ExpressionType = ScriptDB.ExpressionType.Mask
+      GenerateCodeForColumn()
     End Sub
 
   End Class

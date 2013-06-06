@@ -1,0 +1,21 @@
+[Version]
+Version=1.0.0.12
+
+[COA_Progress.exe <0009>]
+Dest=$(WinSysPath)
+Date=07/10/2010
+Time=15:20
+Version=1.0.0.12
+CABFilename=COA_Progress.CAB
+CABINFFile=COA_Progress.INF
+Uses1=msvbvm60.dll
+Uses2=OLEAUT32.DLL
+Uses3=OLEPRO32.DLL
+Uses4=ASYCFILT.DLL
+Uses5=STDOLE2.TLB
+Uses6=COMCAT.DLL
+Uses7=objsafe.tlb
+Uses8=mscomctl.OCX
+Uses9=mscomct2.ocx
+Uses10=Codejock.SkinFramework.v13.1.0.ocx
+Uses11=ComCt232.ocx

@@ -19,284 +19,284 @@ Option Explicit On
 	Private mstrFileCreateDate As String
 	Private mstrFileModifyDate As String
 	Private mstrFileDateAccessed As String
-	
-	Private mobjFileSystem As Scripting.FileSystemObject
-	
-	Private mbUseEncryption As Boolean
-	Private mbUseFileSecurity As Boolean
-	Private mstrCurrentSessionKey As String
-	Private mstrCurrentUser As String
-	Private mstrProcessUser As String
-	
-	Private mobjStream As ADODB.Stream
-	Private mstrDummyConnectionString As String
-	
-	' Holds the names of the OLE files for this record session
-	Private mastrOLEFilesInThisSession() As String
-	
-	' Do we use encryption?
-	Public WriteOnly Property UseEncryption() As Boolean
-		Set(ByVal Value As Boolean)
-			mbUseEncryption = Value
-		End Set
-	End Property
-	
-	' Do we use file security?
-	Public WriteOnly Property UseFileSecurity() As Boolean
-		Set(ByVal Value As Boolean)
-			mbUseFileSecurity = Value
-		End Set
-	End Property
-	
-	' The current session key (used for encryption purposes)
-	Public WriteOnly Property CurrentSessionKey() As String
-		Set(ByVal Value As String)
-			mstrCurrentSessionKey = Value
-		End Set
-	End Property
-	
-	' The current user (used for security purposes)
-	Public WriteOnly Property CurrentUser() As String
-		Set(ByVal Value As String)
-			mstrCurrentUser = Value
-		End Set
-	End Property
-	
-	' Path in which temporary documents are to be created (physical directory on the server)
-	Public WriteOnly Property TempLocationPhysical() As String
-		Set(ByVal Value As String)
-			mstrTempLocationPhysical = Value
-		End Set
-	End Property
-	
-	' The current UNC of the asp page being run
-	Public WriteOnly Property TempLocationUNC() As String
-		Set(ByVal Value As String)
-			mstrTempLocationUNC = Value
-		End Set
-	End Property
-	
-	
-	Public Property OLEType() As Short
-		Get
-			OLEType = miOLEType
-		End Get
-		Set(ByVal Value As Short)
-			miOLEType = Value
-		End Set
-	End Property
-	
-	
-	Public Property FileName() As String
-		Get
-			' If linked file return proper link
-			If miOLEType = 2 Then
-				FileName = mstrTempLocationUNC & GetFileNameOnly(mstrFileName)
-			Else
-				FileName = mstrFileName
-			End If
-			
-		End Get
-		Set(ByVal Value As String)
-			mstrFileName = Value
-		End Set
-	End Property
-	
-	
-	Public Property DisplayFilename() As String
-		Get
-			DisplayFilename = mstrDisplayFileName
-		End Get
-		Set(ByVal Value As String)
-			mstrDisplayFileName = Value
-		End Set
-	End Property
-	
-	Public ReadOnly Property DocumentModifyDate() As String
-		Get
-			DocumentModifyDate = mstrFileModifyDate
-		End Get
-	End Property
-	
-	' Returns the size of the document in a nice formatted method
-	Public ReadOnly Property DocumentSize() As String
-		Get
-			Select Case Len(mstrDocumentSize)
-				Case Is < 5
-					DocumentSize = mstrDocumentSize & " bytes"
-					
-				Case Is < 7
-					DocumentSize = Mid(mstrDocumentSize, 1, Len(mstrDocumentSize) - 3) & "KB"
-					
-				Case 7
-					DocumentSize = Mid(mstrDocumentSize, 1, 1) & "." & Mid(mstrDocumentSize, 2, 2) & "MB"
-					
-				Case Is < 10
-					DocumentSize = Mid(mstrDocumentSize, 1, Len(mstrDocumentSize) - 6) & "MB"
-					
-			End Select
-			
-		End Get
-	End Property
-	
-	Public WriteOnly Property Connection() As Object
-		Set(ByVal Value As Object)
-			
-			' JDM - Create connection object differently if we are in development mode (i.e. debug mode)
-			If ASRDEVELOPMENT Then
-				gADOCon = New ADODB.Connection
-				'UPGRADE_WARNING: Couldn't resolve default property of object vConnection. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				gADOCon.Open(Value)
-			Else
-				gADOCon = Value
-			End If
-			
-			' We need to create a dummy connection string as the one passed in from the Intranet doesn't read the image data type.
-			' I don't know why...
-			'  mstrDummyConnectionString = Replace(gADOCon.ConnectionString, "MSDASQL", "SQLOLEDB") & ";Use Procedure for Prepare=1;Auto Translate=True;Packet Size=32767;Use Encryption for Data=False;Tag with column collation when possible=False"
-			'  mstrDummyConnectionString = Replace(mstrDummyConnectionString, "Mode=ReadWrite;", "")
-			'  mstrDummyConnectionString = Replace(mstrDummyConnectionString, "APP=HR Pro Intranet;", "APP=HR Pro Intranet Embedding;")
-			'  mstrDummyConnectionString = Replace(mstrDummyConnectionString, "APP=HR Pro Self-service Intranet;", "APP=HR Pro Intranet Embedding;")
-			
-			'Changed for Native Client
-			mstrDummyConnectionString = gADOCon.ConnectionString & ";Pooling=False;DataTypeCompatibility=80"
-			mstrDummyConnectionString = Replace(mstrDummyConnectionString, "Application Name=OpenHR Intranet;", "Application Name=OpenHR Intranet Embedding;")
-			mstrDummyConnectionString = Replace(mstrDummyConnectionString, "Application Name=OpenHR Self-service Intranet;", "Application Name=OpenHR Intranet Embedding;")
-			
-		End Set
-	End Property
-	
-	Public WriteOnly Property OLEFileSize() As String
-		Set(ByVal Value As String)
-			mstrFileSize = Value
-		End Set
-	End Property
-	
-	Public WriteOnly Property OLEModifiedDate() As String
-		Set(ByVal Value As String)
-			mstrFileModifyDate = Value
-		End Set
-	End Property
-	
-	
-	Public Function CreateOLEDocument(ByRef plngRecordID As Object, ByRef plngColumnID As Integer, ByRef pstrRealSource As String) As String
-		
-		On Error GoTo ErrorTrap
-		
-		Dim bOK As Boolean
-		Dim sSQL As String
-		Dim objDummyConnection As ADODB.Connection
-		Dim rsDocument As ADODB.Recordset
-		
-		Dim strTempFile As String
-		Dim strProperties As String
-		Dim strColumnName As String
-		Dim objTextStream As Scripting.TextStream
-		
-		bOK = True
-		
-		objDummyConnection = New ADODB.Connection
-		'UPGRADE_NOTE: Object mobjStream may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		mobjStream = Nothing
-		
-		' Open a temporary connection string to stream the data
-		objDummyConnection.Open(mstrDummyConnectionString)
-		
-		' New record - thus no stream will exist
-		'UPGRADE_WARNING: Couldn't resolve default property of object plngRecordID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		If plngRecordID = 0 Then
-			CreateOLEDocument = ""
-			GoTo TidyUpAndExit
-		End If
-		
-		strColumnName = datGeneral.GetColumnName(CInt(plngColumnID))
-		
-		'UPGRADE_WARNING: Couldn't resolve default property of object plngRecordID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		sSQL = "SELECT " & strColumnName & " FROM " & pstrRealSource & " WHERE ID=" & plngRecordID
-		
-		rsDocument = New ADODB.Recordset
-		rsDocument.Open(sSQL, objDummyConnection, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly, ADODB.CommandTypeEnum.adCmdText)
-		
-		With rsDocument
-			.MoveFirst()
-			
-			If mobjStream Is Nothing Then
-				mobjStream = New ADODB.Stream
-			End If
-			
-			If mobjStream.State <> ADODB.ObjectStateEnum.adStateOpen Then
-				mobjStream.Open()
-				mobjStream.Type = ADODB.StreamTypeEnum.adTypeBinary
-			End If
-			
-			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-			If Not IsDbNull(rsDocument.Fields(strColumnName).Value) Then
-				mobjStream.Write(rsDocument.Fields(strColumnName).Value)
-			Else
-				CreateOLEDocument = ""
-				miOLEType = 3
-				mstrDisplayFileName = ""
-				GoTo TidyUpAndExit
-			End If
-			
-			If mobjStream.Size > 0 Then
-				strTempFile = GetTmpFName
-				mobjStream.SaveToFile(strTempFile, ADODB.SaveOptionsEnum.adSaveCreateOverWrite)
-				objTextStream = mobjFileSystem.OpenTextFile(strTempFile, Scripting.IOMode.ForReading)
-				strProperties = Trim(objTextStream.Read(400))
-				
-				miOLEType = Val(Mid(strProperties, 9, 2))
-				mstrDisplayFileName = Trim(GetFileNameOnly(Mid(strProperties, 11, 70)))
-				mstrFileName = IIf(miOLEType = 2, GetTmpFName, mstrDisplayFileName)
-				mstrPath = Trim(Mid(strProperties, 81, 210))
-				mstrUNC = Trim(Mid(strProperties, 291, 60))
-				mstrDocumentSize = Trim(Mid(strProperties, 351, 10))
-				mstrFileCreateDate = Trim(Mid(strProperties, 361, 20))
-				mstrFileModifyDate = Trim(Mid(strProperties, 381, 20))
-				
-				objTextStream.Close()
-				
-				' Generate the file if it's not linked
-				If miOLEType = 2 Then
-					mstrFileName = GenerateDocumentFromStream
-					mstrTempFileToDelete = mstrFileName
-				Else
-					mstrFileName = mstrUNC & mstrPath & "\" & mstrFileName
-					mstrTempFileToDelete = ""
-				End If
-				
-			End If
-			
-		End With
-		
-TidyUpAndExit: 
-		If Not rsDocument.State = ADODB.ObjectStateEnum.adStateClosed Then
-			rsDocument.Close()
-		End If
-		
-		If Not objDummyConnection.State = ADODB.ObjectStateEnum.adStateClosed Then
-			objDummyConnection.Close()
-		End If
-		
-ExitFunction: 
-		'UPGRADE_NOTE: Object rsDocument may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsDocument = Nothing
-		'UPGRADE_NOTE: Object objDummyConnection may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		objDummyConnection = Nothing
-		'UPGRADE_NOTE: Object objTextStream may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		objTextStream = Nothing
-		CreateOLEDocument = mstrFileName
-		
-		Exit Function
-		
-ErrorTrap: 
-		mstrFileName = ""
-		mstrDisplayFileName = ""
-		ProgramError("CreateOLEDocument", Err, Erl())
-		
-		Resume ExitFunction
-		
-	End Function
+
+  Private mobjFileSystem As Scripting.FileSystemObject
+
+  Private mbUseEncryption As Boolean
+  Private mbUseFileSecurity As Boolean
+  Private mstrCurrentSessionKey As String
+  Private mstrCurrentUser As String
+  Private mstrProcessUser As String
+
+  Private mobjStream As ADODB.Stream
+  Private mstrDummyConnectionString As String
+
+  ' Holds the names of the OLE files for this record session
+  Private mastrOLEFilesInThisSession() As String
+
+  ' Do we use encryption?
+  Public WriteOnly Property UseEncryption() As Boolean
+    Set(ByVal Value As Boolean)
+      mbUseEncryption = Value
+    End Set
+  End Property
+
+  ' Do we use file security?
+  Public WriteOnly Property UseFileSecurity() As Boolean
+    Set(ByVal Value As Boolean)
+      mbUseFileSecurity = Value
+    End Set
+  End Property
+
+  ' The current session key (used for encryption purposes)
+  Public WriteOnly Property CurrentSessionKey() As String
+    Set(ByVal Value As String)
+      mstrCurrentSessionKey = Value
+    End Set
+  End Property
+
+  ' The current user (used for security purposes)
+  Public WriteOnly Property CurrentUser() As String
+    Set(ByVal Value As String)
+      mstrCurrentUser = Value
+    End Set
+  End Property
+
+  ' Path in which temporary documents are to be created (physical directory on the server)
+  Public WriteOnly Property TempLocationPhysical() As String
+    Set(ByVal Value As String)
+      mstrTempLocationPhysical = Value
+    End Set
+  End Property
+
+  ' The current UNC of the asp page being run
+  Public WriteOnly Property TempLocationUNC() As String
+    Set(ByVal Value As String)
+      mstrTempLocationUNC = Value
+    End Set
+  End Property
+
+
+  Public Property OLEType() As Short
+    Get
+      OLEType = miOLEType
+    End Get
+    Set(ByVal Value As Short)
+      miOLEType = Value
+    End Set
+  End Property
+
+
+  Public Property FileName() As String
+    Get
+      ' If linked file return proper link
+      If miOLEType = 2 Then
+        FileName = mstrTempLocationUNC & GetFileNameOnly(mstrFileName)
+      Else
+        FileName = mstrFileName
+      End If
+
+    End Get
+    Set(ByVal Value As String)
+      mstrFileName = Value
+    End Set
+  End Property
+
+
+  Public Property DisplayFilename() As String
+    Get
+      DisplayFilename = mstrDisplayFileName
+    End Get
+    Set(ByVal Value As String)
+      mstrDisplayFileName = Value
+    End Set
+  End Property
+
+  Public ReadOnly Property DocumentModifyDate() As String
+    Get
+      DocumentModifyDate = mstrFileModifyDate
+    End Get
+  End Property
+
+  ' Returns the size of the document in a nice formatted method
+  Public ReadOnly Property DocumentSize() As String
+    Get
+      Select Case Len(mstrDocumentSize)
+        Case Is < 5
+          DocumentSize = mstrDocumentSize & " bytes"
+
+        Case Is < 7
+          DocumentSize = Mid(mstrDocumentSize, 1, Len(mstrDocumentSize) - 3) & "KB"
+
+        Case 7
+          DocumentSize = Mid(mstrDocumentSize, 1, 1) & "." & Mid(mstrDocumentSize, 2, 2) & "MB"
+
+        Case Is < 10
+          DocumentSize = Mid(mstrDocumentSize, 1, Len(mstrDocumentSize) - 6) & "MB"
+
+      End Select
+
+    End Get
+  End Property
+
+  Public WriteOnly Property Connection() As Object
+    Set(ByVal Value As Object)
+
+      ' JDM - Create connection object differently if we are in development mode (i.e. debug mode)
+      If ASRDEVELOPMENT Then
+        gADOCon = New ADODB.Connection
+        'UPGRADE_WARNING: Couldn't resolve default property of object vConnection. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+        gADOCon.Open(Value)
+      Else
+        gADOCon = Value
+      End If
+
+      ' We need to create a dummy connection string as the one passed in from the Intranet doesn't read the image data type.
+      ' I don't know why...
+      '  mstrDummyConnectionString = Replace(gADOCon.ConnectionString, "MSDASQL", "SQLOLEDB") & ";Use Procedure for Prepare=1;Auto Translate=True;Packet Size=32767;Use Encryption for Data=False;Tag with column collation when possible=False"
+      '  mstrDummyConnectionString = Replace(mstrDummyConnectionString, "Mode=ReadWrite;", "")
+      '  mstrDummyConnectionString = Replace(mstrDummyConnectionString, "APP=HR Pro Intranet;", "APP=HR Pro Intranet Embedding;")
+      '  mstrDummyConnectionString = Replace(mstrDummyConnectionString, "APP=HR Pro Self-service Intranet;", "APP=HR Pro Intranet Embedding;")
+
+      'Changed for Native Client
+      mstrDummyConnectionString = gADOCon.ConnectionString & ";Pooling=False;DataTypeCompatibility=80"
+      mstrDummyConnectionString = Replace(mstrDummyConnectionString, "Application Name=OpenHR Intranet;", "Application Name=OpenHR Intranet Embedding;")
+      mstrDummyConnectionString = Replace(mstrDummyConnectionString, "Application Name=OpenHR Self-service Intranet;", "Application Name=OpenHR Intranet Embedding;")
+
+    End Set
+  End Property
+
+  Public WriteOnly Property OLEFileSize() As String
+    Set(ByVal Value As String)
+      mstrFileSize = Value
+    End Set
+  End Property
+
+  Public WriteOnly Property OLEModifiedDate() As String
+    Set(ByVal Value As String)
+      mstrFileModifyDate = Value
+    End Set
+  End Property
+
+
+  Public Function CreateOLEDocument(ByRef plngRecordID As Object, ByRef plngColumnID As Integer, ByRef pstrRealSource As String) As String
+
+    On Error GoTo ErrorTrap
+
+    Dim bOK As Boolean
+    Dim sSQL As String
+    Dim objDummyConnection As ADODB.Connection
+    Dim rsDocument As ADODB.Recordset
+
+    Dim strTempFile As String
+    Dim strProperties As String
+    Dim strColumnName As String
+    Dim objTextStream As Scripting.TextStream
+
+    bOK = True
+
+    objDummyConnection = New ADODB.Connection
+    'UPGRADE_NOTE: Object mobjStream may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+    mobjStream = Nothing
+
+    ' Open a temporary connection string to stream the data
+    objDummyConnection.Open(mstrDummyConnectionString)
+
+    ' New record - thus no stream will exist
+    'UPGRADE_WARNING: Couldn't resolve default property of object plngRecordID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+    If plngRecordID = 0 Then
+      CreateOLEDocument = ""
+      GoTo TidyUpAndExit
+    End If
+
+    strColumnName = datGeneral.GetColumnName(CInt(plngColumnID))
+
+    'UPGRADE_WARNING: Couldn't resolve default property of object plngRecordID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+    sSQL = "SELECT " & strColumnName & " FROM " & pstrRealSource & " WHERE ID=" & plngRecordID
+
+    rsDocument = New ADODB.Recordset
+    rsDocument.Open(sSQL, objDummyConnection, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly, ADODB.CommandTypeEnum.adCmdText)
+
+    With rsDocument
+      .MoveFirst()
+
+      If mobjStream Is Nothing Then
+        mobjStream = New ADODB.Stream
+      End If
+
+      If mobjStream.State <> ADODB.ObjectStateEnum.adStateOpen Then
+        mobjStream.Open()
+        mobjStream.Type = ADODB.StreamTypeEnum.adTypeBinary
+      End If
+
+      'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+      If Not IsDbNull(rsDocument.Fields(strColumnName).Value) Then
+        mobjStream.Write(rsDocument.Fields(strColumnName).Value)
+      Else
+        CreateOLEDocument = ""
+        miOLEType = 3
+        mstrDisplayFileName = ""
+        GoTo TidyUpAndExit
+      End If
+
+      If mobjStream.Size > 0 Then
+        strTempFile = GetTmpFName
+        mobjStream.SaveToFile(strTempFile, ADODB.SaveOptionsEnum.adSaveCreateOverWrite)
+        objTextStream = mobjFileSystem.OpenTextFile(strTempFile, Scripting.IOMode.ForReading)
+        strProperties = Trim(objTextStream.Read(400))
+
+        miOLEType = Val(Mid(strProperties, 9, 2))
+        mstrDisplayFileName = Trim(GetFileNameOnly(Mid(strProperties, 11, 70)))
+        mstrFileName = IIf(miOLEType = 2, GetTmpFName, mstrDisplayFileName)
+        mstrPath = Trim(Mid(strProperties, 81, 210))
+        mstrUNC = Trim(Mid(strProperties, 291, 60))
+        mstrDocumentSize = Trim(Mid(strProperties, 351, 10))
+        mstrFileCreateDate = Trim(Mid(strProperties, 361, 20))
+        mstrFileModifyDate = Trim(Mid(strProperties, 381, 20))
+
+        objTextStream.Close()
+
+        ' Generate the file if it's not linked
+        If miOLEType = 2 Then
+          mstrFileName = GenerateDocumentFromStream
+          mstrTempFileToDelete = mstrFileName
+        Else
+          mstrFileName = mstrUNC & mstrPath & "\" & mstrFileName
+          mstrTempFileToDelete = ""
+        End If
+
+      End If
+
+    End With
+
+TidyUpAndExit:
+    If Not rsDocument.State = ADODB.ObjectStateEnum.adStateClosed Then
+      rsDocument.Close()
+    End If
+
+    If Not objDummyConnection.State = ADODB.ObjectStateEnum.adStateClosed Then
+      objDummyConnection.Close()
+    End If
+
+ExitFunction:
+    'UPGRADE_NOTE: Object rsDocument may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+    rsDocument = Nothing
+    'UPGRADE_NOTE: Object objDummyConnection may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+    objDummyConnection = Nothing
+    'UPGRADE_NOTE: Object objTextStream may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+    objTextStream = Nothing
+    CreateOLEDocument = mstrFileName
+
+    Exit Function
+
+ErrorTrap:
+    mstrFileName = ""
+    mstrDisplayFileName = ""
+    ProgramError("CreateOLEDocument", Err, Erl())
+
+    Resume ExitFunction
+
+  End Function
 	
 	Public Function CloseStream() As Boolean
 		mobjStream.Close()

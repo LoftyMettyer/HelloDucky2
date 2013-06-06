@@ -10,8 +10,12 @@ Option Explicit On
 	Private mabytXTable(255, 255) As Byte
 	'UPGRADE_ISSUE: Declaring a parameter 'As Any' is not supported. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="FAE78A8D-8978-4FD4-8208-5B7324A8F795"'
 	'UPGRADE_ISSUE: Declaring a parameter 'As Any' is not supported. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="FAE78A8D-8978-4FD4-8208-5B7324A8F795"'
-	Private Declare Sub CopyMem Lib "kernel32"  Alias "RtlMoveMemory"(ByRef Destination As Any, ByRef Source As Any, ByVal Length As Integer)
-	
+  Private Declare Sub CopyMem Lib "kernel32" Alias "RtlMoveMemory" (ByRef Destination As Long, ByRef Source As Long, ByVal Length As Integer)
+
+  ' TODO - Values that are not supported in .NET upgrade - hardcode values for now.
+  Private Const vbFromUnicode = 128
+  Private Const vbUnicode = 64
+
 	Public Function EncryptString(ByRef psText As String, Optional ByRef psKey As String = "", Optional ByRef pbOutputInHex As Boolean = False) As String
 		
 		Dim abytArray() As Byte
@@ -21,7 +25,7 @@ Option Explicit On
 		psText = psText & " "
 		'UPGRADE_ISSUE: Constant vbFromUnicode was not upgraded. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="55B59875-9A95-4B71-9D6A-7C294BF7139D"'
 		'UPGRADE_TODO: Code was upgraded to use System.Text.UnicodeEncoding.Unicode.GetBytes() which may not have the same behavior. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="93DD716C-10E3-41BE-A4A8-3BA40157905B"'
-		abytArray = System.Text.UnicodeEncoding.Unicode.GetBytes(StrConv(psText, vbFromUnicode))
+    abytArray = System.Text.UnicodeEncoding.Unicode.GetBytes(StrConv(psText, vbFromUnicode))
 		'UPGRADE_ISSUE: Constant vbFromUnicode was not upgraded. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="55B59875-9A95-4B71-9D6A-7C294BF7139D"'
 		'UPGRADE_TODO: Code was upgraded to use System.Text.UnicodeEncoding.Unicode.GetBytes() which may not have the same behavior. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="93DD716C-10E3-41BE-A4A8-3BA40157905B"'
 		abytKey = System.Text.UnicodeEncoding.Unicode.GetBytes(StrConv(psKey, vbFromUnicode))
