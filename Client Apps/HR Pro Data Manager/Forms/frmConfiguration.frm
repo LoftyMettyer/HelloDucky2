@@ -1,9 +1,9 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
-Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "CODEJO~1.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TabCtl32.Ocx"
+Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "Codejock.Controls.v13.1.0.ocx"
 Begin VB.Form frmConfiguration 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Configuration"
@@ -50,36 +50,34 @@ Begin VB.Form frmConfiguration
       _Version        =   393216
       Style           =   1
       Tabs            =   7
-      Tab             =   1
+      Tab             =   2
       TabsPerRow      =   7
       TabHeight       =   520
       TabCaption(0)   =   "&Display Defaults"
       TabPicture(0)   =   "frmConfiguration.frx":000C
       Tab(0).ControlEnabled=   0   'False
       Tab(0).Control(0)=   "fraDisplay(1)"
-      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).Control(1)=   "fraDisplay(0)"
-      Tab(0).Control(1).Enabled=   0   'False
       Tab(0).Control(2)=   "fraDisplay(2)"
-      Tab(0).Control(2).Enabled=   0   'False
       Tab(0).ControlCount=   3
       TabCaption(1)   =   "&Reports && Utilities"
       TabPicture(1)   =   "frmConfiguration.frx":0028
-      Tab(1).ControlEnabled=   -1  'True
-      Tab(1).Control(0)=   "fraReports(1)"
-      Tab(1).Control(0).Enabled=   0   'False
+      Tab(1).ControlEnabled=   0   'False
+      Tab(1).Control(0)=   "fraReports(0)"
       Tab(1).Control(1)=   "frmReportsGeneral"
-      Tab(1).Control(1).Enabled=   0   'False
-      Tab(1).Control(2)=   "fraReports(0)"
-      Tab(1).Control(2).Enabled=   0   'False
+      Tab(1).Control(2)=   "fraReports(1)"
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "&Network Configuration"
       TabPicture(2)   =   "frmConfiguration.frx":0044
-      Tab(2).ControlEnabled=   0   'False
+      Tab(2).ControlEnabled=   -1  'True
       Tab(2).Control(0)=   "frmAutoLogin"
+      Tab(2).Control(0).Enabled=   0   'False
       Tab(2).Control(1)=   "fraNetwork(0)"
+      Tab(2).Control(1).Enabled=   0   'False
       Tab(2).Control(2)=   "fraNetwork(1)"
+      Tab(2).Control(2).Enabled=   0   'False
       Tab(2).Control(3)=   "frmOutputs"
+      Tab(2).Control(3).Enabled=   0   'False
       Tab(2).ControlCount=   4
       TabCaption(3)   =   "&Batch Login"
       TabPicture(3)   =   "frmConfiguration.frx":0060
@@ -111,7 +109,7 @@ Begin VB.Form frmConfiguration
          Caption         =   "Report / Utility / Tool Selection && Access :"
          Height          =   3500
          Index           =   0
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   19
          Top             =   400
          Width           =   6735
@@ -359,7 +357,7 @@ Begin VB.Form frmConfiguration
       Begin VB.Frame frmOutputs 
          Caption         =   "Output :"
          Height          =   945
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   127
          Top             =   2060
          Width           =   6735
@@ -417,7 +415,7 @@ Begin VB.Form frmConfiguration
       Begin VB.Frame frmReportsGeneral 
          Caption         =   "General :"
          Height          =   700
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   24
          Top             =   5970
          Width           =   6735
@@ -949,7 +947,7 @@ Begin VB.Form frmConfiguration
          Caption         =   "OLE Locations :"
          Height          =   1575
          Index           =   1
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   47
          Top             =   3070
          Width           =   6735
@@ -1160,7 +1158,7 @@ Begin VB.Form frmConfiguration
          Caption         =   "Printer :"
          Height          =   1600
          Index           =   0
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   26
          Top             =   400
          Width           =   6735
@@ -1373,7 +1371,7 @@ Begin VB.Form frmConfiguration
          Caption         =   "Warning Message :"
          Height          =   1950
          Index           =   1
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   21
          Top             =   3960
          Width           =   6735
@@ -1666,7 +1664,7 @@ Begin VB.Form frmConfiguration
       Begin VB.Frame frmAutoLogin 
          Caption         =   "Login :"
          Height          =   780
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   126
          Top             =   4710
          Width           =   6735
@@ -2227,7 +2225,10 @@ End Sub
 Public Function Initialise(blnUserSettings As Boolean) As Boolean
   'JPD 20030915 Fault 6884
   Screen.MousePointer = vbHourglass
-  frmMain.DisableMenu
+  ' NPG20100824 - As frmlogin can now call this form we don't want to always disable the menus...
+  ' frmMain.DisableMenu
+  If Not gcoTablePrivileges Is Nothing Then frmMain.DisableMenu
+  
 
   mbLoading = True
 
@@ -2301,70 +2302,103 @@ End Sub
 
 
 Private Sub cmdOLEPath_Click()
-  ' Display the path selection form.
-  Dim frmSelectPath As frmPathSel
-    
-  Set frmSelectPath = New frmPathSel
-  With frmSelectPath
-    .QuietMode = True
-    .SelectionType = 2
-    .Show vbModal
-  End With
-  Set frmSelectPath = Nothing
+'  ' Display the path selection form.
+'  Dim frmSelectPath As frmPathSel
+'
+'  Set frmSelectPath = New frmPathSel
+'  With frmSelectPath
+'    .QuietMode = True
+'    .SelectionType = 2
+'    .Show vbModal
+'  End With
+'  Set frmSelectPath = Nothing
+'
+'  If txtOLEPath.Text <> gsOLEPath Then
+'    txtOLEPath.Text = gsOLEPath
+'    Changed = Not mbLoading
+'  End If
+'
+'  cmdOLEPathClear.Enabled = Not (gsOLEPath = "")
   
-  If txtOLEPath.Text <> gsOLEPath Then
-    txtOLEPath.Text = gsOLEPath
+  Dim strFolder As String
+      
+  strFolder = BrowseFolders("You have opted to change the default storage folder.")
+  
+  If txtOLEPath.Text <> strFolder And strFolder <> vbNullString Then
+    txtOLEPath.Text = strFolder
     Changed = Not mbLoading
   End If
-  
-  cmdOLEPathClear.Enabled = Not (gsOLEPath = "")
-  
+    
+  cmdOLEPathClear.Enabled = Not (txtOLEPath.Text = "")
+    
   Screen.MousePointer = vbDefault
 
 End Sub
 
 Private Sub cmdPhotoPath_Click()
-  ' Display the path selection form.
-  Dim frmSelectPath As frmPathSel
-    
-  Set frmSelectPath = New frmPathSel
-  With frmSelectPath
-    .QuietMode = True
-    .SelectionType = 1
-    .Show vbModal
-  End With
-  Set frmSelectPath = Nothing
+'  ' Display the path selection form.
+'  Dim frmSelectPath As frmPathSel
+'
+'  Set frmSelectPath = New frmPathSel
+'  With frmSelectPath
+'    .QuietMode = True
+'    .SelectionType = 1
+'    .Show vbModal
+'  End With
+'  Set frmSelectPath = Nothing
+'
+'  If txtPhotoPath.Text <> gsPhotoPath Then
+'    txtPhotoPath.Text = gsPhotoPath
+'    Changed = Not mbLoading
+'  End If
+'
+'  cmdPhotoPathClear.Enabled = Not (gsPhotoPath = "")
+
+  Dim strFolder As String
+      
+  strFolder = BrowseFolders("You have opted to change the default storage folder.")
   
-  If txtPhotoPath.Text <> gsPhotoPath Then
-    txtPhotoPath.Text = gsPhotoPath
+  If txtPhotoPath.Text <> strFolder And strFolder <> vbNullString Then
+    txtPhotoPath.Text = strFolder
     Changed = Not mbLoading
   End If
-  
-  cmdPhotoPathClear.Enabled = Not (gsPhotoPath = "")
 
+  cmdPhotoPathClear.Enabled = Not (txtPhotoPath.Text = "")
+  
   Screen.MousePointer = vbDefault
 
 End Sub
 
 Private Sub cmdDocumentsPath_Click()
 
-  ' Display the path selection form.
-  Dim frmSelectPath As frmPathSel
-    
-  Set frmSelectPath = New frmPathSel
-  With frmSelectPath
-    .QuietMode = True
-    .SelectionType = 8
-    .Show vbModal
-  End With
-  Set frmSelectPath = Nothing
+'  ' Display the path selection form.
+'  Dim frmSelectPath As frmPathSel
+'
+'  Set frmSelectPath = New frmPathSel
+'  With frmSelectPath
+'    .QuietMode = True
+'    .SelectionType = 8
+'    .Show vbModal
+'  End With
+'  Set frmSelectPath = Nothing
+'
+'  If txtDocumentsPath.Text <> gsDocumentsPath Then
+'    txtDocumentsPath.Text = gsDocumentsPath
+'    Changed = Not mbLoading
+'  End If
+'
+'  cmdDocumentsPathClear.Enabled = Not (gsDocumentsPath = "")
   
-  If txtDocumentsPath.Text <> gsDocumentsPath Then
-    txtDocumentsPath.Text = gsDocumentsPath
+  Dim strFolder As String
+  
+  strFolder = BrowseFolders("You have opted to change the default storage folder.")
+  
+  If txtDocumentsPath.Text <> strFolder And strFolder <> vbNullString Then
+    txtDocumentsPath.Text = strFolder
     Changed = Not mbLoading
   End If
-  
-  cmdDocumentsPathClear.Enabled = Not (gsDocumentsPath = "")
+    
+  cmdDocumentsPathClear.Enabled = Not (txtDocumentsPath.Text = "")
   
   Screen.MousePointer = vbDefault
 
@@ -2395,23 +2429,34 @@ End Sub
 
 
 Private Sub cmdLocalOLEPath_Click()
-  ' Display the path selection form.
-  Dim frmSelectPath As frmPathSel
-    
-  Set frmSelectPath = New frmPathSel
-  With frmSelectPath
-    .QuietMode = True
-    .SelectionType = 16
-    .Show vbModal
-  End With
-  Set frmSelectPath = Nothing
+'  ' Display the path selection form.
+'  Dim frmSelectPath As frmPathSel
+'
+'  Set frmSelectPath = New frmPathSel
+'  With frmSelectPath
+'    .QuietMode = True
+'    .SelectionType = 16
+'    .Show vbModal
+'  End With
+'  Set frmSelectPath = Nothing
+'
+'  If txtLocalOLEPath.Text <> gsLocalOLEPath Then
+'    txtLocalOLEPath.Text = gsLocalOLEPath
+'    Changed = Not mbLoading
+'  End If
+'
+'  cmdLocalOLEPathClear.Enabled = Not (gsLocalOLEPath = "")
   
-  If txtLocalOLEPath.Text <> gsLocalOLEPath Then
-    txtLocalOLEPath.Text = gsLocalOLEPath
+  Dim strFolder As String
+  
+  strFolder = BrowseFolders("You have opted to change the default storage folder.")
+  
+  If txtLocalOLEPath.Text <> strFolder And strFolder <> vbNullString Then
+    txtLocalOLEPath.Text = strFolder
     Changed = Not mbLoading
   End If
   
-  cmdLocalOLEPathClear.Enabled = Not (gsLocalOLEPath = "")
+  cmdLocalOLEPathClear.Enabled = Not (txtLocalOLEPath.Text = "")
 
   Screen.MousePointer = vbDefault
 
@@ -4385,3 +4430,24 @@ Public Function GetUserSettingOrDefault(strSection As String, strKey As String, 
     GetUserSettingOrDefault = GetUserSetting(strSection, strKey, varDefault)
   End If
 End Function
+
+Public Function BrowseFolders(Optional odtvTitle As String) As String
+    Dim lpIDList As Long
+    Dim sBuffer As String
+    Dim szTitle As String
+    Dim tBrowseInfo As BrowseInfo
+    szTitle = odtvTitle
+    With tBrowseInfo
+           .hwndOwner = Me.hWnd
+           .lpszTitle = lstrcat(szTitle, "")
+           .ulFlags = BIF_RETURNONLYFSDIRS
+        End With
+    lpIDList = SHBrowseForFolder(tBrowseInfo)
+    If (lpIDList) Then
+        sBuffer = Space(MAX_PATH)
+        SHGetPathFromIDList lpIDList, sBuffer
+        sBuffer = Left(sBuffer, InStr(sBuffer, vbNullChar) - 1)
+        BrowseFolders = sBuffer
+    End If
+End Function
+
