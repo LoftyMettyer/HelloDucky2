@@ -963,15 +963,17 @@ Public Sub Login()
   
   strUserName = Replace(txtUID.Text, ";", "")
  
-  If LenB(strUserName) <> 0 Then
-    gsConnectionString = gsConnectionString & "User ID=" & strUserName '& ";PWD=" & txtPWD.Text & ";"
-  Else
-    gobjProgress.CloseProgress
-    Screen.MousePointer = vbDefault
-    COAMsgBox "Please enter a user name.", _
-        vbExclamation + vbOKOnly, App.ProductName
-    txtUID.SetFocus
-    Exit Sub
+  If Not gblnBatchJobsOnly Then
+    If LenB(strUserName) <> 0 Then
+      gsConnectionString = gsConnectionString & "User ID=" & strUserName '& ";PWD=" & txtPWD.Text & ";"
+    Else
+      gobjProgress.CloseProgress
+      Screen.MousePointer = vbDefault
+      COAMsgBox "Please enter a user name.", _
+          vbExclamation + vbOKOnly, App.ProductName
+      txtUID.SetFocus
+      Exit Sub
+    End If
   End If
   
   gsConnectionString = gsConnectionString & ";Password=" & Replace(txtPWD.Text, ";", "") & ";"
@@ -1147,10 +1149,12 @@ Bypass:
   End If
   
   ' AE20080303 Fault #12766 If the users default database is not 'master' then make it so.
-  sSQL = "IF EXISTS(SELECT 1 FROM master..syslogins WHERE loginname = SUSER_NAME() AND dbname <> 'master')" & vbNewLine & _
-                             "  EXEC sp_defaultdb [" & gsUserName & "], master"
-  gADOCon.Execute sSQL, , adCmdText
-      
+  If Not gblnBatchJobsOnly Then
+    sSQL = "IF EXISTS(SELECT 1 FROM master..syslogins WHERE loginname = SUSER_NAME() AND dbname <> 'master')" & vbNewLine & _
+                               "  EXEC sp_defaultdb [" & gsUserName & "], master"
+    gADOCon.Execute sSQL, , adCmdText
+  End If
+  
   LC_ResetLock
   LC_SaveSettingsToRegistry
 
