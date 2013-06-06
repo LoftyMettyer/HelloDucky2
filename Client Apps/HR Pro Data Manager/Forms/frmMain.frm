@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "11:29"
+            TextSave        =   "12:39"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -985,7 +985,7 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
     
     ' <Workflow>
     Case "Workflow"
-      WorkflowClick
+      BrowseUtility utlWorkflow
     
     ' Pending Payroll stuff
     Case "ID_Accord_Live"
@@ -2506,8 +2506,8 @@ Private Function DoImport(ByVal Action As EditOptions, ByRef SelectedID As Long,
 End Function
 
 
-Public Sub WorkflowClick()
-  Dim frmSelection As frmDefSel
+Private Function DoWorkflow(ByVal Action As EditOptions, ByRef SelectedID As Long, FromCopy As Boolean, SelectedText As String) As Boolean
+
   Dim cmADO As ADODB.Command
   Dim pmADO As ADODB.Parameter
   Dim fExit As Boolean
@@ -2530,13 +2530,13 @@ Public Sub WorkflowClick()
   sURL = WorkflowURL
   If Len(sURL) = 0 Then
     COAMsgBox "No Workflow URL has been configured. Contact your system administrator.", vbInformation + vbOKOnly, "Workflow"
-    Exit Sub
+    Exit Function
   End If
   
   ReadWebLogon sUser, sPassword
   If Len(sUser) = 0 Then
     COAMsgBox "No Workflow Web Logon has been configured. Contact your system administrator.", vbInformation + vbOKOnly, "Workflow"
-    Exit Sub
+    Exit Function
   End If
   
   Screen.MousePointer = vbHourglass
@@ -2545,108 +2545,86 @@ Public Sub WorkflowClick()
   fRunning = False
   strExePath = GetDefaultBrowserApplication(fIsDLL)
   
-  Set frmSelection = New frmDefSel
+  Select Case Action
+    Case edtSelect
+      fRunning = True
+      
+      Set cmADO = New ADODB.Command
+      With cmADO
+        .CommandText = "dbo.spASRInstantiateWorkflow"
+        .CommandType = adCmdStoredProc
+        .CommandTimeout = 0
+        Set .ActiveConnection = gADOCon
 
-  With frmSelection
-    ' Loop until the operation has been cancelled.
-    Do While Not fExit
-      .Options = edtSelect
-      .EnableRun = True
+        Set pmADO = .CreateParameter("WorkflowID", adInteger, adParamInput)
+        .Parameters.Append pmADO
+        pmADO.Value = SelectedID
 
-      If .ShowList(utlWorkflow) Then
-        .CustomShow vbModal
+        Set pmADO = .CreateParameter("InstanceID", adInteger, adParamOutput)
+        .Parameters.Append pmADO
 
-        Select Case .Action
-          Case edtSelect
-            fRunning = True
-            
-            Set cmADO = New ADODB.Command
-            With cmADO
-              .CommandText = "dbo.spASRInstantiateWorkflow"
-              .CommandType = adCmdStoredProc
-              .CommandTimeout = 0
-              Set .ActiveConnection = gADOCon
+        Set pmADO = .CreateParameter("FormElements", adVarChar, adParamOutput, VARCHAR_MAX_Size)
+        .Parameters.Append pmADO
 
-              Set pmADO = .CreateParameter("WorkflowID", adInteger, adParamInput)
-              .Parameters.Append pmADO
-              pmADO.Value = frmSelection.SelectedID
-    
-              Set pmADO = .CreateParameter("InstanceID", adInteger, adParamOutput)
-              .Parameters.Append pmADO
+        Set pmADO = .CreateParameter("Message", adVarChar, adParamOutput, VARCHAR_MAX_Size)
+        .Parameters.Append pmADO
 
-              Set pmADO = .CreateParameter("FormElements", adVarChar, adParamOutput, VARCHAR_MAX_Size)
-              .Parameters.Append pmADO
+        cmADO.Execute
 
-              Set pmADO = .CreateParameter("Message", adVarChar, adParamOutput, VARCHAR_MAX_Size)
-              .Parameters.Append pmADO
-
-              cmADO.Execute
-
-              lngInstanceID = IIf(IsNull(.Parameters("InstanceID").Value), 0, .Parameters("InstanceID").Value)
-              sFormElements = IIf(IsNull(.Parameters("FormElements").Value), vbNullString, .Parameters("FormElements").Value)
-              sMessage = IIf(IsNull(.Parameters("Message").Value), vbNullString, .Parameters("Message").Value)
-            End With
-            Set cmADO = Nothing
-            
-            If Len(sMessage) > 0 Then
-              ' Instantiation failed for some reason. Tell the user why.
-              COAMsgBox "Workflow : '" & .SelectedText & "' initiation failed." & vbCrLf & vbCrLf & sMessage, vbExclamation + vbOKOnly, "Workflow"
-            Else
-              ' Launch the default browser to hit the OpenHR Workflow webservice
-              ' passing in the InstanceID and the InstanceStepID
-              ' This is done for each form element that needs to be displayed.
-              ReDim asForms(0)
-              Do While InStr(sFormElements, vbTab) > 0
-                iIndex = InStr(sFormElements, vbTab)
-                    
-                ReDim Preserve asForms(UBound(asForms) + 1)
-                asForms(UBound(asForms)) = Left(sFormElements, iIndex - 1)
-                
-                sFormElements = Mid(sFormElements, iIndex + 1)
-              Loop
-  
-              ' Inform the user that the Workflow has been initiated.
-              If UBound(asForms) > 0 Then
-                For iLoop = 1 To UBound(asForms)
-                  OpenWebForm lngInstanceID, CLng(asForms(iLoop))
-                Next iLoop
-                
-                If Len(Trim(strExePath)) > 1 Then
-                  'JPD 20071205 Fault 12680
-                  'COAMsgBox "Workflow : '" & .SelectedText & "' initiated successfully." & vbCrLf & vbCrLf & "Please complete the required Workflow forms.", vbInformation + vbOKOnly, "Workflow"
-                Else
-                  COAMsgBox "Workflow : '" & .SelectedText & "' initiated successfully, but unable to open required Workflow forms." & vbCrLf & vbCrLf & "Please contact your system administrator.", vbExclamation + vbOKOnly, "Workflow"
-                End If
-              Else
-                COAMsgBox "Workflow : '" & .SelectedText & "' initiated successfully.", vbInformation + vbOKOnly, "Workflow"
-              End If
-  
-              Me.SetFocus
-  
-              fExit = gbCloseDefSelAfterRun
-              fRunning = False
-              UpdateUsage utlWorkflow, frmSelection.SelectedID, edtSelect
+        lngInstanceID = IIf(IsNull(.Parameters("InstanceID").Value), 0, .Parameters("InstanceID").Value)
+        sFormElements = IIf(IsNull(.Parameters("FormElements").Value), vbNullString, .Parameters("FormElements").Value)
+        sMessage = IIf(IsNull(.Parameters("Message").Value), vbNullString, .Parameters("Message").Value)
+      End With
+      Set cmADO = Nothing
+      
+      If Len(sMessage) > 0 Then
+        ' Instantiation failed for some reason. Tell the user why.
+        COAMsgBox "Workflow : '" & SelectedText & "' initiation failed." & vbCrLf & vbCrLf & sMessage, vbExclamation + vbOKOnly, "Workflow"
+      Else
+        ' Launch the default browser to hit the OpenHR Workflow webservice
+        ' passing in the InstanceID and the InstanceStepID
+        ' This is done for each form element that needs to be displayed.
+        ReDim asForms(0)
+        Do While InStr(sFormElements, vbTab) > 0
+          iIndex = InStr(sFormElements, vbTab)
               
-            End If
-            
-          Case edtCancel
-            fExit = True
-        End Select
+          ReDim Preserve asForms(UBound(asForms) + 1)
+          asForms(UBound(asForms)) = Left(sFormElements, iIndex - 1)
+          
+          sFormElements = Mid(sFormElements, iIndex + 1)
+        Loop
+
+        ' Inform the user that the Workflow has been initiated.
+        If UBound(asForms) > 0 Then
+          For iLoop = 1 To UBound(asForms)
+            OpenWebForm lngInstanceID, CLng(asForms(iLoop))
+          Next iLoop
+          
+          If Len(Trim(strExePath)) > 1 Then
+            'JPD 20071205 Fault 12680
+            'COAMsgBox "Workflow : '" & .SelectedText & "' initiated successfully." & vbCrLf & vbCrLf & "Please complete the required Workflow forms.", vbInformation + vbOKOnly, "Workflow"
+          Else
+            COAMsgBox "Workflow : '" & SelectedText & "' initiated successfully, but unable to open required Workflow forms." & vbCrLf & vbCrLf & "Please contact your system administrator.", vbExclamation + vbOKOnly, "Workflow"
+          End If
+        Else
+          COAMsgBox "Workflow : '" & SelectedText & "' initiated successfully.", vbInformation + vbOKOnly, "Workflow"
+        End If
+
+        fExit = gbCloseDefSelAfterRun
+        fRunning = False
+        
       End If
-    Loop
-  End With
+      
+  End Select
 
-  Unload frmSelection
-  Set frmSelection = Nothing
-
-  Exit Sub
+  Exit Function
 
 ErrorTrap:
   COAMsgBox "Error " & IIf(fRunning, "running Workflow.", "displaying Workflows.") & vbCrLf & _
     Err.Description, _
     vbOKOnly + vbExclamation, Application.Name
 
-End Sub
+End Function
 
 Private Function DoExport(ByVal Action As EditOptions, ByRef SelectedID As Long, FromCopy As Boolean) As Boolean
   
@@ -3081,6 +3059,9 @@ Private Sub RefreshQuickLinks(ByVal MenuType As UserMenuType)
           Case utlReportPack
             sIconName = "BLANK"
             sType = "Report Pack : "
+          Case utlWorkflow
+            sIconName = "WORKFLOW"
+            sType = "Workflow : "
           Case Else
             sIconName = "BLANK"
         End Select
@@ -3712,6 +3693,10 @@ Public Sub RunUtility(ByRef UtilType As UtilityType, ByRef UtilityID As Long)
           .EnableRun = True
           .CategoryID = glngCurrentCategoryID
               
+          If UtilType = utlWorkflow Then
+            .Options = edtSelect
+          End If
+              
           If .ShowList(UtilType) Then
 
             .Action = edtSelect
@@ -3783,6 +3768,9 @@ Public Sub RunUtility(ByRef UtilType As UtilityType, ByRef UtilityID As Long)
         
                 Case utlReportPack
                   DoReportPack .Action, lngSelectedID, .FromCopy, .SelectedText
+                
+                Case utlWorkflow
+                  DoWorkflow .Action, lngSelectedID, .FromCopy, .SelectedText
         
               End Select
             
@@ -3799,6 +3787,8 @@ Public Sub RunUtility(ByRef UtilType As UtilityType, ByRef UtilityID As Long)
       End With
   
   End Select
+
+  Screen.MousePointer = vbDefault
 
 End Sub
 
