@@ -448,10 +448,6 @@ Public Function OpenProgress() As Boolean
   
   With fProgress
   
-    ' Show or hide the Animation
-    .SetAVI CInt(mintAvi)
-    
-    
     ' Which progress bars to show
     lngTop = 1110
     .fraProgress2.Visible = False
@@ -540,7 +536,10 @@ Public Function OpenProgress() As Boolean
     
     Visible = True
     .Show
-    
+
+    ' Show or hide the Animation
+    .SetAVI CInt(mintAvi)
+
   End With
   
   Visible = True
@@ -673,6 +672,20 @@ Public Sub UpdateProgress2(Optional pblnBatchMode As Boolean)
   
 End Sub
 
+Public Sub ResetBar1()
+
+  RefreshProgressBar
+
+  mlngBar1Value = 0
+  fProgress.pbrProgress2.Value = mlngBar1Value
+  fProgress.lblBar1Percent.Caption = ""
+  Bar1Caption = ""
+  Bar1RecordsCaption = ""
+
+  DoEvents
+  
+End Sub
+
 Public Sub ResetBar2()
 
   RefreshProgressBar
@@ -681,7 +694,7 @@ Public Sub ResetBar2()
 
   mlngBar2Value = 0
   fProgress.pbrProgress2.Value = mlngBar2Value
-'  mstrBar2Caption = ""
+  fProgress.lblBar2Percent.Caption = ""
   Bar2Caption = ""
   Bar2RecordsCaption = ""
 

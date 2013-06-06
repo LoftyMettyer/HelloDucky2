@@ -284,6 +284,7 @@ Private Sub cmdAutoRetrySave_Click()
     'Set objProgress = New HRProProgress.clsHRProProgress
     'Set objProgress = New clsProgress
     gobjProgress.NumberOfBars = 1
+    gobjProgress.ResetBar1
     gobjProgress.Bar1Caption = "Automatic Retry Save..."
     gobjProgress.Cancel = True
     'gobjProgress.Caption = gobjProgress.Caption
