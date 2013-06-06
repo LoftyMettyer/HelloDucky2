@@ -2633,7 +2633,7 @@ PRINT 'Step 10 - Message Bus Integration'
 		EXECUTE sp_executesql N'CREATE MESSAGE TYPE TriggerMessageSend VALIDATION = NONE;';
 
 	IF NOT EXISTS(SELECT name FROM sys.service_contracts WHERE name = 'TriggerMessageContract')
-		EXECUTE sp_executesql N'CREATE CONTRACT TriggerMessageContract (TriggerMessageSend SENT BY INITIATOR;';
+		EXECUTE sp_executesql N'CREATE CONTRACT TriggerMessageContract (TriggerMessageSend SENT BY INITIATOR);';
 
 	IF NOT EXISTS(SELECT name FROM sys.service_queues WHERE name = 'qMessage')
 		EXECUTE sp_executesql N'CREATE QUEUE messagebus.qMessage WITH STATUS = ON;';
