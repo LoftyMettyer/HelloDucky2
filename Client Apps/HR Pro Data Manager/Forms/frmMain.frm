@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "12:20"
+            TextSave        =   "13:55"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -3825,7 +3825,7 @@ Public Sub RunUtility(ByRef UtilType As UtilityType, ByRef UtilityID As Long, By
               fExit = gbCloseDefSelAfterRun Or bRunOnce
             
               ' Record the event
-              If bOk Then UpdateUsage UtilType, .SelectedID, .Action
+              If bOk Then UpdateUsage .SelectedUtilityType, .SelectedID, .Action
             
             End If
             

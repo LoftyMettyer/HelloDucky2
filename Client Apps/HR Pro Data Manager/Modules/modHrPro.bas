@@ -4563,6 +4563,9 @@ Public Function GetBatchJobType(ByVal Utility As UtilityType) As String
 
   Select Case Utility
   
+    Case utlBatchJob
+      GetBatchJobType = "Batch Job"
+  
     Case utlCalendarReport
       GetBatchJobType = "Calendar Report"
   

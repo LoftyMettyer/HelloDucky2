@@ -494,8 +494,11 @@ End Sub
 
 Private Sub cboOwner_Click()
 
+  Dim sExtraFilter As String
+
   If Not mblnScheduledJobs Then
-    GetSQL mutlUtilityType, mstrExtraWhereClause, False
+    sExtraFilter = IIf(Len(mstrExtraWhereClause) > 0, "(" & mstrExtraWhereClause & ") AND ", "") & "(name LIKE '%" & txtSearchFor.Text & "%')"
+    GetSQL mutlUtilityType, sExtraFilter, False
     Call Populate_List
   End If
 
@@ -503,12 +506,15 @@ End Sub
 
 Private Sub cboTables_Click()
   
+  Dim sExtraFilter As String
+  
   If Not mblnScheduledJobs Then
     With cboTables
       If .ListIndex > -1 Then
         If mlngTableID <> .ItemData(.ListIndex) Then
           mlngTableID = .ItemData(.ListIndex)
-          GetSQL mutlUtilityType, mstrExtraWhereClause, False
+          sExtraFilter = IIf(Len(mstrExtraWhereClause) > 0, "(" & mstrExtraWhereClause & ") AND ", "") & "(name LIKE '%" & txtSearchFor.Text & "%')"
+          GetSQL mutlUtilityType, sExtraFilter, False
           Call Populate_List
         End If
       End If
@@ -613,7 +619,7 @@ Private Sub cmdDelete_Click()
           datGeneral.DeleteRecord "AsrSysExportDetails", "ExportID", lngSelectedID
           datGeneral.DeleteRecord "ASRSysExportAccess", "ID", lngSelectedID
                     
-        Case utlGlobalAdd, utlGlobalDelete, utlGlobalUpdate
+        Case UtlGlobalAdd, utlGlobalDelete, utlGlobalUpdate
           datGeneral.DeleteRecord "ASRSysGlobalAccess", "ID", lngSelectedID
   
         Case utlRecordProfile
@@ -1033,7 +1039,7 @@ Public Sub Refresh_Controls()
   Dim iCount As Integer
   Dim lngTempIndex As Long
   Dim sType As String
-  Dim lngTYPE As UtilityType
+  Dim lngType As UtilityType
   Dim bSystemMgrDefined As Boolean
   
   If mblnLoading Then
@@ -1471,7 +1477,7 @@ Dim fAllColumns As Boolean
             lngMax = lngLen
           End If
 
-          If .Fields(msIDField) = mlngSelectedID Then
+          If .Fields(msIDField).Value = mlngSelectedID Then ' And .Fields("objecttype").Value = SelectedUtilityType Then
             Set List1.SelectedItem = objListItem
           End If
 
@@ -2203,10 +2209,10 @@ Public Sub GetSQL(lngUtilType As UtilityType, Optional psRecordSourceWhere As St
     mutlUtilityType = utlFilter
     Me.HelpContextID = 1093
     
-  Case utlGlobalAdd, utlGlobalDelete, utlGlobalUpdate
+  Case UtlGlobalAdd, utlGlobalDelete, utlGlobalUpdate
   
     Select Case lngUtilType
-    Case utlGlobalAdd: msTypeCode = "GLOBALADD"
+    Case UtlGlobalAdd: msTypeCode = "GLOBALADD"
         Me.HelpContextID = 1094
     
     Case utlGlobalUpdate: msTypeCode = "GLOBALUPDATE"
@@ -2462,7 +2468,7 @@ Private Function DynamicallyChangeHelpContextID() As Integer
         Case utlExport
         DynamicallyChangeHelpContextID = 1092
         
-        Case utlGlobalAdd
+        Case UtlGlobalAdd
         DynamicallyChangeHelpContextID = 1094
         
         Case utlGlobalDelete
@@ -2641,7 +2647,7 @@ Private Function GetTypeCode(ByVal UtilityType As UtilityType) As String
     Case utlFilter
       GetTypeCode = "FILTERS"
       
-    Case utlGlobalAdd
+    Case UtlGlobalAdd
       GetTypeCode = "GLOBALADD"
     
     Case utlGlobalDelete
