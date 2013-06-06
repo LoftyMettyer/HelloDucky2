@@ -654,13 +654,20 @@ PRINT 'Step - Report Packs'
 			[OutputReportPackTitle] [varchar](255) NULL,
 			[OutputOverrideFilter] [varchar](255) NULL,
 			[OutputTOC] [bit] NULL,
-			[OutputCoverSheet] [bit] NULL,
-			[OverrideFilterID] [int] NULL';
+			[OutputCoverSheet] [bit] NULL';
+		EXEC sp_executesql @NVarCommand;
+
+	SELECT @iRecCount = count(id) FROM syscolumns WHERE id = (select id from sysobjects where name = 'ASRSysBatchJobName') and name = 'OverrideFilterID'
+	IF @iRecCount = 0
+	  BEGIN
+		SELECT @NVarCommand = 'ALTER TABLE [dbo].[ASRSysBatchJobName] ADD
+			[OverrideFilterID] [int] NULL,
+			[OutputRetainPivotOrChart] [bit] NULL';
 		EXEC sp_executesql @NVarCommand;
 
 		EXECUTE sp_executeSQL N'UPDATE AsrSysBatchJobName SET IsBatch = 1;';	
 	  END 
-  
+	  	  
 	-- Insert the system permissions for Report Packs and new picture too
 	IF NOT EXISTS(SELECT * FROM dbo.[ASRSysPermissionCategories] WHERE [categoryID] = 44)
 	BEGIN
@@ -683,9 +690,8 @@ PRINT 'Step - Report Packs'
 	where id = (select id from sysobjects where name = 'ASRSysEventLog')
 	and name = 'ReportPack'
 
-	if @iRecCount = 0
+	IF @iRecCount = 0
 	BEGIN
-
 	 SELECT @NVarCommand = 'ALTER TABLE [dbo].[ASRSysEventLog] 
 		ADD [ReportPack] bit NULL'
 	 EXEC sp_executesql @NVarCommand
