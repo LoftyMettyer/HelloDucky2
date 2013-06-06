@@ -12,6 +12,7 @@ Begin VB.UserControl COASD_Combo
       Enabled         =   0   'False
       Height          =   315
       Left            =   960
+      Picture         =   "COASD_Combo.ctx":0000
       ScaleHeight     =   255
       ScaleWidth      =   240
       TabIndex        =   0
