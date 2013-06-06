@@ -723,13 +723,13 @@ Function GetHostName() As String
 End Function
 
 
-Function GetRGB(ByVal pLngRGBValue As Long, piRValue As Integer, piGValue As Integer, piBValue As Integer) As Boolean
+Function GetRGB(ByVal plngRGBValue As Long, piRValue As Integer, piGValue As Integer, piBValue As Integer) As Boolean
   Dim lngRGB As Long
   Dim iRed As Integer
   Dim iGreen As Integer
   Dim iBlue As Integer
   
-  lngRGB = (pLngRGBValue And ((2 ^ 24) - 1))
+  lngRGB = (plngRGBValue And ((2 ^ 24) - 1))
   iBlue = Int(lngRGB / (2 ^ 16))
   iGreen = Int((lngRGB And ((2 ^ 16) - 1)) / (2 ^ 8))
   iRed = (lngRGB And ((2 ^ 8) - 1))
@@ -740,6 +740,40 @@ Function GetRGB(ByVal pLngRGBValue As Long, piRValue As Integer, piGValue As Int
   
   GetRGB = True
   
+End Function
+
+' Converts RGB value into a hex code for IExplorer
+Function GetHexColour(iRed As Integer, iGreen As Integer, iBlue As Integer) As String
+
+  GetHexColour = "#" & Right("0" & Hex(iRed), 2) & Right("0" & Hex(iGreen), 2) & Right("0" & Hex(iBlue), 2)
+
+End Function
+
+Function SysColorToHex(ByVal plngRGBValue As Long)
+  Dim iRed As Integer
+  Dim iGreen As Integer
+  Dim iBlue As Integer
+  Dim fOK As Boolean
+
+  fOK = GetRGB(plngRGBValue, iRed, iGreen, iBlue)
+  SysColorToHex = UI.GetHexColour(iRed, iGreen, iBlue)
+
+End Function
+
+Function HexToSysColor(ByVal sHexColor As String) As String
+  'The input at this point could be HexColor = "#00FF1F"
+  Dim iRed As Integer
+  Dim iGreen As Integer
+  Dim iBlue As Integer
+  
+  sHexColor = Replace(sHexColor, "#", "")
+  
+  iRed = val("&H" & Mid(sHexColor, 1, 2))
+  iGreen = val("&H" & Mid(sHexColor, 3, 2))
+  iBlue = val("&H" & Mid(sHexColor, 5, 2))
+  
+  HexToSysColor = RGB(iRed, iGreen, iBlue)
+      
 End Function
 
 Function GetSystemColor(ByVal pLngColorDef As Long) As Long

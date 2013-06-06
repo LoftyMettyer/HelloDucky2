@@ -1,7 +1,9 @@
 VERSION 5.00
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{65E121D4-0C60-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCHRT20.OCX"
+Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "COA_ColourPicker.ocx"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
+Object = "{65E121D4-0C60-11D2-A9FC-0000F8754DA1}#2.0#0"; "mschrt20.ocx"
 Begin VB.Form frmSSIntranetLink 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Self-service Intranet Link"
@@ -28,13 +30,238 @@ Begin VB.Form frmSSIntranetLink
    ScaleWidth      =   9360
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
+   Begin VB.ListBox lstDummySort 
+      Height          =   255
+      Left            =   195
+      Sorted          =   -1  'True
+      TabIndex        =   103
+      Top             =   7875
+      Visible         =   0   'False
+      Width           =   2085
+   End
    Begin VB.Frame fraDBValue 
       Caption         =   "Database Value :"
-      Height          =   1875
-      Left            =   2880
+      Height          =   5550
+      Left            =   2895
       TabIndex        =   71
-      Top             =   9990
+      Top             =   6315
       Width           =   6300
+      Begin VB.ComboBox cboDBValCFOperator 
+         Height          =   315
+         Index           =   2
+         Left            =   210
+         Style           =   2  'Dropdown List
+         TabIndex        =   113
+         Top             =   4320
+         Width           =   2730
+      End
+      Begin VB.TextBox txtDBValCFValue 
+         Height          =   315
+         Index           =   2
+         Left            =   2970
+         TabIndex        =   112
+         Top             =   4320
+         Width           =   645
+      End
+      Begin VB.ComboBox cboDBValCFStyle 
+         Height          =   315
+         Index           =   2
+         Left            =   3660
+         Style           =   2  'Dropdown List
+         TabIndex        =   111
+         Top             =   4320
+         Width           =   1035
+      End
+      Begin VB.TextBox txtDBValCFColour 
+         BackColor       =   &H00FFFFFF&
+         Enabled         =   0   'False
+         Height          =   315
+         Index           =   2
+         Left            =   4740
+         TabIndex        =   110
+         Text            =   "Formatted colour"
+         Top             =   4320
+         Width           =   990
+      End
+      Begin VB.CommandButton cmdDBValueColPick 
+         Caption         =   "..."
+         Height          =   315
+         Index           =   2
+         Left            =   5745
+         TabIndex        =   109
+         Top             =   4320
+         UseMaskColor    =   -1  'True
+         Width           =   315
+      End
+      Begin VB.ComboBox cboDBValCFOperator 
+         Height          =   315
+         Index           =   1
+         Left            =   210
+         Style           =   2  'Dropdown List
+         TabIndex        =   108
+         Top             =   3960
+         Width           =   2730
+      End
+      Begin VB.TextBox txtDBValCFValue 
+         Height          =   315
+         Index           =   1
+         Left            =   2970
+         TabIndex        =   107
+         Top             =   3960
+         Width           =   645
+      End
+      Begin VB.ComboBox cboDBValCFStyle 
+         Height          =   315
+         Index           =   1
+         Left            =   3660
+         Style           =   2  'Dropdown List
+         TabIndex        =   106
+         Top             =   3960
+         Width           =   1035
+      End
+      Begin VB.TextBox txtDBValCFColour 
+         BackColor       =   &H00FFFFFF&
+         Enabled         =   0   'False
+         Height          =   315
+         Index           =   1
+         Left            =   4740
+         TabIndex        =   105
+         Text            =   "Formatted colour"
+         Top             =   3960
+         Width           =   990
+      End
+      Begin VB.CommandButton cmdDBValueColPick 
+         Caption         =   "..."
+         Height          =   315
+         Index           =   1
+         Left            =   5745
+         TabIndex        =   104
+         Top             =   3960
+         UseMaskColor    =   -1  'True
+         Width           =   315
+      End
+      Begin VB.CommandButton cmdDBValSample 
+         Caption         =   "Preview ->"
+         Height          =   315
+         Left            =   1665
+         TabIndex        =   100
+         Top             =   5010
+         Width           =   1215
+      End
+      Begin VB.TextBox txtDBValueSample 
+         Height          =   315
+         Left            =   210
+         TabIndex        =   99
+         Text            =   "12345.210"
+         Top             =   5025
+         Width           =   1290
+      End
+      Begin COASpinner.COA_Spinner spnDBValueDecimals 
+         Height          =   300
+         Left            =   1770
+         TabIndex        =   98
+         Top             =   2385
+         Width           =   840
+         _ExtentX        =   1482
+         _ExtentY        =   529
+         BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+            Name            =   "Verdana"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Text            =   "0"
+      End
+      Begin VB.CommandButton cmdDBValueColPick 
+         Caption         =   "..."
+         Height          =   315
+         Index           =   0
+         Left            =   5745
+         TabIndex        =   97
+         Top             =   3600
+         UseMaskColor    =   -1  'True
+         Width           =   315
+      End
+      Begin VB.TextBox txtDBValCFColour 
+         BackColor       =   &H00FFFFFF&
+         Enabled         =   0   'False
+         Height          =   315
+         Index           =   0
+         Left            =   4740
+         TabIndex        =   96
+         Text            =   "Formatted colour"
+         Top             =   3600
+         Width           =   990
+      End
+      Begin VB.ComboBox cboDBValCFStyle 
+         Height          =   315
+         Index           =   0
+         ItemData        =   "frmSSIntranetLink.frx":000C
+         Left            =   3660
+         List            =   "frmSSIntranetLink.frx":000E
+         Style           =   2  'Dropdown List
+         TabIndex        =   95
+         Top             =   3600
+         Width           =   1035
+      End
+      Begin VB.TextBox txtDBValCFValue 
+         Height          =   315
+         Index           =   0
+         Left            =   2970
+         TabIndex        =   94
+         Top             =   3600
+         Width           =   645
+      End
+      Begin VB.ComboBox cboDBValCFOperator 
+         Height          =   315
+         Index           =   0
+         Left            =   210
+         Style           =   2  'Dropdown List
+         TabIndex        =   93
+         Top             =   3600
+         Width           =   2730
+      End
+      Begin VB.CheckBox chkConditionalFormatting 
+         Caption         =   "Use Conditional Formatting"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   92
+         Top             =   3315
+         Width           =   2835
+      End
+      Begin VB.TextBox txtDBValueSuffix 
+         Height          =   300
+         Left            =   3975
+         TabIndex        =   91
+         Top             =   2745
+         Width           =   1965
+      End
+      Begin VB.TextBox txtDBValuePrefix 
+         Height          =   300
+         Left            =   960
+         TabIndex        =   89
+         Top             =   2745
+         Width           =   1965
+      End
+      Begin VB.CheckBox chkDBVaUseThousandSeparator 
+         Caption         =   "Use 1000 Separator (,)"
+         Height          =   240
+         Left            =   3660
+         TabIndex        =   87
+         Top             =   2430
+         Width           =   2280
+      End
+      Begin VB.CheckBox chkFormatting 
+         Caption         =   "Use formatting"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   85
+         Top             =   2040
+         Width           =   1575
+      End
       Begin VB.ComboBox cboColumns 
          Height          =   315
          Left            =   1395
@@ -107,6 +334,79 @@ Begin VB.Form frmSSIntranetLink
          UseMaskColor    =   -1  'True
          Width           =   330
       End
+      Begin VB.Label lblConditionWarning 
+         AutoSize        =   -1  'True
+         Caption         =   "(in priority order)"
+         Height          =   195
+         Left            =   4530
+         TabIndex        =   114
+         Top             =   3315
+         Width           =   1500
+      End
+      Begin VB.Label lblDBVSampleHeader 
+         Caption         =   "Sample :"
+         Height          =   195
+         Left            =   195
+         TabIndex        =   102
+         Top             =   4710
+         Width           =   870
+      End
+      Begin VB.Label lblDBValueSample 
+         Caption         =   "lblDBValueSample"
+         Height          =   315
+         Left            =   3060
+         TabIndex        =   101
+         Top             =   5070
+         Width           =   2910
+      End
+      Begin VB.Line Line3 
+         BorderColor     =   &H80000015&
+         X1              =   1110
+         X2              =   6075
+         Y1              =   4815
+         Y2              =   4815
+      End
+      Begin VB.Line Line2 
+         BorderColor     =   &H80000015&
+         X1              =   195
+         X2              =   6075
+         Y1              =   3195
+         Y2              =   3195
+      End
+      Begin VB.Label lblDBValueSuffix 
+         AutoSize        =   -1  'True
+         Caption         =   "Suffix :"
+         Height          =   195
+         Left            =   3225
+         TabIndex        =   90
+         Top             =   2790
+         Width           =   630
+      End
+      Begin VB.Label lblDBValuePrefix 
+         AutoSize        =   -1  'True
+         Caption         =   "Prefix :"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   88
+         Top             =   2790
+         Width           =   630
+      End
+      Begin VB.Label lblDBValueDecimals 
+         AutoSize        =   -1  'True
+         Caption         =   "Decimal places :"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   86
+         Top             =   2430
+         Width           =   1425
+      End
+      Begin VB.Line Line1 
+         BorderColor     =   &H80000015&
+         X1              =   195
+         X2              =   6075
+         Y1              =   1920
+         Y2              =   1920
+      End
       Begin VB.Label lblParents 
          AutoSize        =   -1  'True
          Caption         =   "Table :"
@@ -141,81 +441,6 @@ Begin VB.Form frmSSIntranetLink
          TabIndex        =   80
          Top             =   1575
          Width           =   1785
-      End
-   End
-   Begin VB.Frame fraChartLink 
-      Caption         =   "Chart :"
-      Height          =   3255
-      Left            =   2880
-      TabIndex        =   61
-      Top             =   8280
-      Width           =   6300
-      Begin MSChart20Lib.MSChart MSChart1 
-         Height          =   2505
-         Left            =   2730
-         OleObjectBlob   =   "frmSSIntranetLink.frx":000C
-         TabIndex        =   69
-         Top             =   555
-         Width           =   3330
-      End
-      Begin VB.CheckBox chkShowValues 
-         Caption         =   "Show &Values"
-         Height          =   210
-         Left            =   195
-         TabIndex        =   66
-         Top             =   1695
-         Width           =   1665
-      End
-      Begin VB.CommandButton cmdChartData 
-         Caption         =   "Data..."
-         Height          =   375
-         Left            =   180
-         TabIndex        =   68
-         Top             =   2355
-         Width           =   1200
-      End
-      Begin VB.CheckBox chkStackSeries 
-         Caption         =   "S&tack Series"
-         Height          =   210
-         Left            =   210
-         TabIndex        =   67
-         Top             =   2040
-         Width           =   1665
-      End
-      Begin VB.CheckBox chkDottedGridlines 
-         Caption         =   "Dotted &Gridlines"
-         Height          =   195
-         Left            =   195
-         TabIndex        =   65
-         Top             =   1350
-         Width           =   1980
-      End
-      Begin VB.CheckBox chkShowLegend 
-         Caption         =   "Show &Legend"
-         Height          =   240
-         Left            =   195
-         TabIndex        =   64
-         Top             =   990
-         Width           =   1710
-      End
-      Begin VB.ComboBox cboChartType 
-         Height          =   315
-         ItemData        =   "frmSSIntranetLink.frx":24FC
-         Left            =   195
-         List            =   "frmSSIntranetLink.frx":24FE
-         Style           =   2  'Dropdown List
-         TabIndex        =   63
-         Top             =   555
-         Width           =   2205
-      End
-      Begin VB.Label lblChartyType 
-         AutoSize        =   -1  'True
-         Caption         =   "Chart Type :"
-         Height          =   195
-         Left            =   195
-         TabIndex        =   62
-         Top             =   300
-         Width           =   1095
       End
    End
    Begin VB.Frame fraLinkSeparator 
@@ -312,9 +537,9 @@ Begin VB.Form frmSSIntranetLink
       End
       Begin VB.ComboBox cboHRProUtilityType 
          Height          =   315
-         ItemData        =   "frmSSIntranetLink.frx":2500
+         ItemData        =   "frmSSIntranetLink.frx":0010
          Left            =   1400
-         List            =   "frmSSIntranetLink.frx":2502
+         List            =   "frmSSIntranetLink.frx":0012
          Style           =   2  'Dropdown List
          TabIndex        =   31
          Top             =   300
@@ -482,7 +707,7 @@ Begin VB.Form frmSSIntranetLink
    End
    Begin VB.Frame fraLinkType 
       Caption         =   "Link Type :"
-      Height          =   3645
+      Height          =   5645
       Left            =   150
       TabIndex        =   9
       Top             =   1920
@@ -582,7 +807,7 @@ Begin VB.Form frmSSIntranetLink
    End
    Begin VB.Frame fraHRProScreenLink 
       Caption         =   "HR Pro Screen :"
-      Height          =   3645
+      Height          =   5645
       Left            =   2880
       TabIndex        =   20
       Top             =   1920
@@ -613,9 +838,9 @@ Begin VB.Form frmSSIntranetLink
       End
       Begin VB.ComboBox cboStartMode 
          Height          =   315
-         ItemData        =   "frmSSIntranetLink.frx":2504
+         ItemData        =   "frmSSIntranetLink.frx":0014
          Left            =   1575
-         List            =   "frmSSIntranetLink.frx":2506
+         List            =   "frmSSIntranetLink.frx":0016
          Style           =   2  'Dropdown List
          TabIndex        =   28
          Top             =   1500
@@ -690,9 +915,9 @@ Begin VB.Form frmSSIntranetLink
       Width           =   9000
       Begin VB.ComboBox cboTableView 
          Height          =   315
-         ItemData        =   "frmSSIntranetLink.frx":2508
+         ItemData        =   "frmSSIntranetLink.frx":0018
          Left            =   1485
-         List            =   "frmSSIntranetLink.frx":250A
+         List            =   "frmSSIntranetLink.frx":001A
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
          TabIndex        =   6
@@ -740,7 +965,7 @@ Begin VB.Form frmSSIntranetLink
             Italic          =   0   'False
             Strikethrough   =   0   'False
          EndProperty
-         stylesets(0).Picture=   "frmSSIntranetLink.frx":250C
+         stylesets(0).Picture=   "frmSSIntranetLink.frx":001C
          stylesets(1).Name=   "ReadOnly"
          stylesets(1).ForeColor=   -2147483631
          stylesets(1).BackColor=   -2147483633
@@ -754,7 +979,7 @@ Begin VB.Form frmSSIntranetLink
             Italic          =   0   'False
             Strikethrough   =   0   'False
          EndProperty
-         stylesets(1).Picture=   "frmSSIntranetLink.frx":2528
+         stylesets(1).Picture=   "frmSSIntranetLink.frx":0038
          MultiLine       =   0   'False
          AllowRowSizing  =   0   'False
          AllowGroupSizing=   0   'False
@@ -884,6 +1109,88 @@ Begin VB.Form frmSSIntranetLink
          Width           =   390
       End
    End
+   Begin VB.Frame fraChartLink 
+      Caption         =   "Chart :"
+      Height          =   3255
+      Left            =   2880
+      TabIndex        =   61
+      Top             =   8280
+      Width           =   6300
+      Begin MSChart20Lib.MSChart MSChart1 
+         Height          =   2505
+         Left            =   2730
+         OleObjectBlob   =   "frmSSIntranetLink.frx":0054
+         TabIndex        =   69
+         Top             =   555
+         Width           =   3330
+      End
+      Begin VB.CheckBox chkShowValues 
+         Caption         =   "Show &Values"
+         Height          =   210
+         Left            =   195
+         TabIndex        =   66
+         Top             =   1695
+         Width           =   1665
+      End
+      Begin VB.CommandButton cmdChartData 
+         Caption         =   "Data..."
+         Height          =   375
+         Left            =   180
+         TabIndex        =   68
+         Top             =   2355
+         Width           =   1200
+      End
+      Begin VB.CheckBox chkStackSeries 
+         Caption         =   "S&tack Series"
+         Height          =   210
+         Left            =   210
+         TabIndex        =   67
+         Top             =   2040
+         Width           =   1665
+      End
+      Begin VB.CheckBox chkDottedGridlines 
+         Caption         =   "Dotted &Gridlines"
+         Height          =   195
+         Left            =   195
+         TabIndex        =   65
+         Top             =   1350
+         Width           =   1980
+      End
+      Begin VB.CheckBox chkShowLegend 
+         Caption         =   "Show &Legend"
+         Height          =   240
+         Left            =   195
+         TabIndex        =   64
+         Top             =   990
+         Width           =   1710
+      End
+      Begin VB.ComboBox cboChartType 
+         Height          =   315
+         ItemData        =   "frmSSIntranetLink.frx":2544
+         Left            =   195
+         List            =   "frmSSIntranetLink.frx":2546
+         Style           =   2  'Dropdown List
+         TabIndex        =   63
+         Top             =   555
+         Width           =   2205
+      End
+      Begin VB.Label lblChartyType 
+         AutoSize        =   -1  'True
+         Caption         =   "Chart Type :"
+         Height          =   195
+         Left            =   195
+         TabIndex        =   62
+         Top             =   300
+         Width           =   1095
+      End
+   End
+   Begin COAColourPicker.COA_ColourPicker ColorPicker 
+      Left            =   240
+      Top             =   11535
+      _ExtentX        =   820
+      _ExtentY        =   820
+      ShowSysColorButton=   0   'False
+   End
 End
 Attribute VB_Name = "frmSSIntranetLink"
 Attribute VB_GlobalNameSpace = False
@@ -931,6 +1238,11 @@ Private mblnReadOnly As Boolean
 
 Private mcolSSITableViews As clsSSITableViews
 Private mcolGroups As Collection
+
+Private gForeColour As ColorConstants
+Private jnCount As Integer
+
+
 
 Public Property Let Cancelled(ByVal bCancel As Boolean)
   mblnCancelled = bCancel
@@ -1342,19 +1654,10 @@ Private Sub GetTablesViews()
 End Sub
 
 Public Sub Initialize(piType As SSINTRANETLINKTYPES, _
-                      psPrompt As String, _
-                      psText As String, _
-                      psHRProScreenID As String, _
-                      psPageTitle As String, _
-                      psURL As String, _
-                      plngTableID As Long, _
-                      psStartMode As String, _
-                      plngViewID As Long, _
-                      psUtilityType As String, psUtilityID As String, _
-                      pfCopy As Boolean, psHiddenGroups As String, _
-                      psTableViewName As String, _
-                      pfNewWindow As Boolean, _
-                      psEMailAddress As String, psEMailSubject As String, _
+                      psPrompt As String, psText As String, psHRProScreenID As String, psPageTitle As String, _
+                      psURL As String, plngTableID As Long, psStartMode As String, plngViewID As Long, _
+                      psUtilityType As String, psUtilityID As String, pfCopy As Boolean, psHiddenGroups As String, _
+                      psTableViewName As String, pfNewWindow As Boolean, psEMailAddress As String, psEMailSubject As String, _
                       psAppFilePath As String, psAppParameters As String, _
                       psDocumentFilePath As String, pfDisplayDocumentHyperlink As Boolean, _
                       piElement_Type As Integer, piSeparatorOrientation As Integer, plngPictureID As Long, _
@@ -1362,8 +1665,13 @@ Public Sub Initialize(piType As SSINTRANETLINKTYPES, _
                       pfChartStackSeries As Boolean, plngChartViewID As Long, miChartTableID As Long, _
                       plngChartColumnID As Long, plngChartFilterID As Long, piChartAggregateType As Integer, _
                       pfChartShowValues As Boolean, pcolGroups As Collection, _
+                      pfUseFormatting As Boolean, piFormatting_DecimalPlaces As Integer, pfFormatting_Use1000Separator As Boolean, _
+                      psFormatting_Prefix As String, psFormatting_Suffix As String, pfUseConditionalFormatting As Boolean, _
+                      psConditionalFormatting_Operator_1 As String, psConditionalFormatting_Value_1 As String, psConditionalFormatting_Style_1 As String, psConditionalFormatting_Colour_1 As String, _
+                      psConditionalFormatting_Operator_2 As String, psConditionalFormatting_Value_2 As String, psConditionalFormatting_Style_2 As String, psConditionalFormatting_Colour_2 As String, _
+                      psConditionalFormatting_Operator_3 As String, psConditionalFormatting_Value_3 As String, psConditionalFormatting_Style_3 As String, psConditionalFormatting_Colour_3 As String, _
                       ByRef pcolSSITableViews As clsSSITableViews)
-  
+   
   Set mcolSSITableViews = pcolSSITableViews
   Set mcolGroups = pcolGroups
   
@@ -1495,6 +1803,29 @@ Public Sub Initialize(piType As SSINTRANETLINKTYPES, _
   txtFilter.Enabled = False
   txtFilter.BackColor = vbButtonFace
   
+  UseFormatting = pfUseFormatting
+  Formatting_DecimalPlaces = piFormatting_DecimalPlaces
+  Formatting_Use1000Separator = pfFormatting_Use1000Separator
+  Formatting_Prefix = psFormatting_Prefix
+  Formatting_Suffix = psFormatting_Suffix
+  UseConditionalFormatting = pfUseConditionalFormatting
+  
+  PopulateDBValOperatorCombos
+  PopulateDBValStyleCombos
+  
+  ConditionalFormatting_Operator_1 = psConditionalFormatting_Operator_1
+  ConditionalFormatting_Value_1 = psConditionalFormatting_Value_1
+  ConditionalFormatting_Style_1 = psConditionalFormatting_Style_1
+  ConditionalFormatting_Colour_1 = psConditionalFormatting_Colour_1
+  ConditionalFormatting_Operator_2 = psConditionalFormatting_Operator_2
+  ConditionalFormatting_Value_2 = psConditionalFormatting_Value_2
+  ConditionalFormatting_Style_2 = psConditionalFormatting_Style_2
+  ConditionalFormatting_Colour_2 = psConditionalFormatting_Colour_2
+  ConditionalFormatting_Operator_3 = psConditionalFormatting_Operator_3
+  ConditionalFormatting_Value_3 = psConditionalFormatting_Value_3
+  ConditionalFormatting_Style_3 = psConditionalFormatting_Style_3
+  ConditionalFormatting_Colour_3 = psConditionalFormatting_Colour_3
+      
   ' Hide Workflow items if not licensed
   If Not IsModuleEnabled(modWorkflow) Then optLink(SSINTLINKPWFSTEPS).Visible = False
   
@@ -1654,6 +1985,28 @@ Private Sub RefreshControls()
     If optLink(SSINTLINKCHART).value Then
       MSChart1.RowCount = 1
     End If
+    
+    ' disable the DB Value items
+    lblDBValueDecimals.Enabled = chkFormatting
+    spnDBValueDecimals.Enabled = chkFormatting
+    chkDBVaUseThousandSeparator.Enabled = chkFormatting
+    lblDBValuePrefix.Enabled = chkFormatting
+    txtDBValuePrefix.Enabled = chkFormatting
+    txtDBValuePrefix.BackColor = IIf(chkFormatting, vbWindowBackground, vbButtonFace)
+    lblDBValueSuffix.Enabled = chkFormatting
+    txtDBValueSuffix.Enabled = chkFormatting
+    txtDBValueSuffix.BackColor = IIf(chkFormatting, vbWindowBackground, vbButtonFace)
+    
+    For jnCount = 0 To 2
+      cboDBValCFOperator(jnCount).Enabled = chkConditionalFormatting
+      txtDBValCFValue(jnCount).Enabled = chkConditionalFormatting
+      txtDBValCFValue(jnCount).BackColor = IIf(chkConditionalFormatting, vbWindowBackground, vbButtonFace)
+      cboDBValCFStyle(jnCount).Enabled = chkConditionalFormatting
+      txtDBValCFColour(jnCount).Enabled = chkConditionalFormatting
+      ' txtDBValCFColour(jnCount).BackColor = IIf(chkConditionalFormatting, vbWindowBackground, vbButtonFace)
+      cmdDBValueColPick(jnCount).Enabled = chkConditionalFormatting
+    Next
+    
   Else
     ' NPG20100427 Fault HRPRO-888
     If Not txtPrompt.Enabled Then txtPrompt.Text = ""
@@ -1733,7 +2086,7 @@ Private Sub RefreshControls()
   lblHRProUtilityMessage.Caption = sUtilityMessage
   
   ' Disable the OK button as required.
-  cmdOK.Enabled = mfChanged
+  cmdOk.Enabled = mfChanged
   
 
 End Sub
@@ -2056,6 +2409,8 @@ Private Function ValidateLink() As Boolean
     End If
   End If
 
+  
+
   ValidateLink = fValid
   
 End Function
@@ -2082,6 +2437,28 @@ Private Function imgIcon_Refresh() As Boolean
   End If
 End Function
 
+Private Sub PopulateDBValOperatorCombos()
+  For jnCount = 0 To 2
+    cboDBValCFOperator(jnCount).Clear
+    cboDBValCFOperator(jnCount).AddItem ""
+    cboDBValCFOperator(jnCount).AddItem "is equal to"
+    cboDBValCFOperator(jnCount).AddItem "is NOT equal to"
+    cboDBValCFOperator(jnCount).AddItem "is less than or equal to"
+    cboDBValCFOperator(jnCount).AddItem "is greater than or equal to"
+    cboDBValCFOperator(jnCount).AddItem "is greater than"
+    cboDBValCFOperator(jnCount).AddItem "is less than"
+  Next
+End Sub
+
+Private Sub PopulateDBValStyleCombos()
+  For jnCount = 0 To 2
+    cboDBValCFStyle(jnCount).Clear
+    cboDBValCFStyle(jnCount).AddItem ""
+    cboDBValCFStyle(jnCount).AddItem "Normal"
+    cboDBValCFStyle(jnCount).AddItem "Bold"
+    cboDBValCFStyle(jnCount).AddItem "Hidden"
+  Next
+End Sub
 
 Private Sub PopulateParentsCombo(plngDefaultID As Long)
   
@@ -2185,7 +2562,6 @@ ErrorTrap:
 End Function
 
 
-
 Private Sub cboChartType_Click()
   mfChanged = True
   ' Display new chart details
@@ -2218,6 +2594,16 @@ Private Sub cboColumns_Click()
   RefreshControls
 End Sub
 
+Private Sub cboDBValCFOperator_Click(Index As Integer)
+  mfChanged = True
+  RefreshControls
+End Sub
+
+Private Sub cboDBValCFStyle_Click(Index As Integer)
+  mfChanged = True
+  RefreshControls
+End Sub
+
 Private Sub cboParents_Click()
 
   mfChanged = True
@@ -2245,6 +2631,120 @@ Private Sub cboParents_Click()
   RefreshControls
 End Sub
 
+Private Sub chkConditionalFormatting_Click()
+  mfChanged = True
+  RefreshControls
+End Sub
+
+Private Sub chkDBVaUseThousandSeparator_Click()
+  mfChanged = True
+  RefreshControls
+End Sub
+
+Private Sub chkFormatting_Click()
+  mfChanged = True
+  RefreshControls
+End Sub
+
+Private Sub cmdDBValSample_Click()
+  ' Display the sample value with all the formatting applied
+  Dim strFormatString As String
+  
+'  If Not chkFormatting Or Not chkConditionalFormatting Then
+'    lblDBValueSample = txtDBValueSample
+'    Exit Sub
+'  End If
+  
+  strFormatString = IIf(chkDBVaUseThousandSeparator, "###,###,###", "")
+  If spnDBValueDecimals.value > 0 Then
+    strFormatString = strFormatString & "."
+    For jnCount = 1 To spnDBValueDecimals.value
+      strFormatString = strFormatString + "0"
+    Next
+  End If
+  
+  ' Conditional formatting
+  ' Conditions are in priority order!
+  For jnCount = 0 To 2
+    Select Case cboDBValCFOperator(jnCount)
+      Case "is equal to"
+        If CDec(txtDBValueSample) = CDec(txtDBValCFValue(jnCount)) Then
+          lblDBValueSample.ForeColor = txtDBValCFColour(jnCount).BackColor
+          lblDBValueSample.FontBold = IIf(cboDBValCFStyle(jnCount) = "Bold", True, False)
+          lblDBValueSample.Visible = IIf(cboDBValCFStyle(jnCount) = "Hidden", False, True)
+          Exit For
+        End If
+    
+      Case "is not equal to"
+        If CDec(txtDBValueSample) <> CDec(txtDBValCFValue(jnCount)) Then
+          lblDBValueSample.ForeColor = txtDBValCFColour(jnCount).BackColor
+          lblDBValueSample.FontBold = IIf(cboDBValCFStyle(jnCount) = "Bold", True, False)
+          lblDBValueSample.Visible = IIf(cboDBValCFStyle(jnCount) = "Hidden", False, True)
+          Exit For
+        End If
+    
+      Case "is less than or equal to"
+        If CDec(txtDBValueSample) <= CDec(txtDBValCFValue(jnCount)) Then
+          lblDBValueSample.ForeColor = txtDBValCFColour(jnCount).BackColor
+          lblDBValueSample.FontBold = IIf(cboDBValCFStyle(jnCount) = "Bold", True, False)
+          lblDBValueSample.Visible = IIf(cboDBValCFStyle(jnCount) = "Hidden", False, True)
+          Exit For
+        End If
+    
+      Case "is greater than or equal to"
+        If CDec(txtDBValueSample) >= CDec(txtDBValCFValue(jnCount)) Then
+          lblDBValueSample.ForeColor = txtDBValCFColour(jnCount).BackColor
+          lblDBValueSample.FontBold = IIf(cboDBValCFStyle(jnCount) = "Bold", True, False)
+          lblDBValueSample.Visible = IIf(cboDBValCFStyle(jnCount) = "Hidden", False, True)
+          Exit For
+        End If
+    
+      Case "is less than"
+        If CDec(txtDBValueSample) < CDec(txtDBValCFValue(jnCount)) Then
+          lblDBValueSample.ForeColor = txtDBValCFColour(jnCount).BackColor
+          lblDBValueSample.FontBold = IIf(cboDBValCFStyle(jnCount) = "Bold", True, False)
+          lblDBValueSample.Visible = IIf(cboDBValCFStyle(jnCount) = "Hidden", False, True)
+          Exit For
+        End If
+    
+      Case "is greater than"
+        If CDec(txtDBValueSample) > CDec(txtDBValCFValue(jnCount)) Then
+          lblDBValueSample.ForeColor = txtDBValCFColour(jnCount).BackColor
+          lblDBValueSample.FontBold = IIf(cboDBValCFStyle(jnCount) = "Bold", True, False)
+          lblDBValueSample.Visible = IIf(cboDBValCFStyle(jnCount) = "Hidden", False, True)
+          Exit For
+        End If
+            
+    End Select
+  Next
+    
+  lblDBValueSample = txtDBValuePrefix + Format(txtDBValueSample, strFormatString) + txtDBValueSuffix
+End Sub
+
+
+Private Sub cmdDBValueColPick_Click(Index As Integer)
+  On Error GoTo ErrorTrap
+
+  With ColorPicker
+    ' Set the colour properties of the dialogue box.
+    .Color = gForeColour
+    ' Display the dialogue box.
+    .ShowPalette
+    ' Read the colour properties of the dialogue box.
+    gForeColour = .Color
+  End With
+
+  txtDBValCFColour(Index).BackColor = gForeColour
+  txtDBValCFColour(Index).ForeColor = UI.GetInverseColor(gForeColour)
+    
+  mfChanged = True
+  
+  RefreshControls
+ErrorTrap:
+  ' User pressed cancel.
+  
+End Sub
+
 Private Sub cmdFilterClear_Click()
   txtFilter.Text = vbNullString
   txtFilter.Tag = 0
@@ -2254,6 +2754,12 @@ Private Sub cmdFilterClear_Click()
   mfChanged = True
     
   RefreshControls
+End Sub
+
+
+
+Private Sub COASD_Spinner1_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+
 End Sub
 
 Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
@@ -2796,6 +3302,52 @@ Private Sub optLink_Click(Index As Integer)
 
 End Sub
 
+Private Sub txtDBValCFValue1_LostFocus()
+'  If Not IsNumeric(txtDBValCFValue1) Then
+'    MsgBox "Value must be numeric.", vbOKOnly + vbExclamation, Application.Name
+'    txtDBValCFValue1.SetFocus
+'  End If
+End Sub
+
+Private Sub txtDBValCFValue2_LostFocus()
+'  If Not IsNumeric(txtDBValCFValue2) Then
+'    MsgBox "Value must be numeric.", vbOKOnly + vbExclamation, Application.Name
+'    txtDBValCFValue2.SetFocus
+'  End If
+End Sub
+
+Private Sub txtDBValCFValue3_LostFocus()
+'  If Not IsNumeric(txtDBValCFValue3) Then
+'    MsgBox "Value must be numeric.", vbOKOnly + vbExclamation, Application.Name
+'    txtDBValCFValue3.SetFocus
+'  End If
+End Sub
+
+Private Sub spnDBValueDecimals_Change()
+  mfChanged = True
+  RefreshControls
+End Sub
+
+Private Sub txtDBValCFColour_Change(Index As Integer)
+  mfChanged = True
+  RefreshControls
+End Sub
+
+Private Sub txtDBValCFValue_Change(Index As Integer)
+  mfChanged = True
+  RefreshControls
+End Sub
+
+Private Sub txtDBValuePrefix_Change()
+  mfChanged = True
+  RefreshControls
+End Sub
+
+Private Sub txtDBValueSuffix_Change()
+  mfChanged = True
+  RefreshControls
+End Sub
+
 Private Sub txtDocumentFilePath_Change()
   mfChanged = True
   RefreshControls
@@ -3300,13 +3852,216 @@ Public Property Let ChartShowValues(ByVal pfNewValue As Boolean)
   chkShowValues.value = IIf(pfNewValue, vbChecked, vbUnchecked)
 End Property
 
+Public Property Get UseFormatting() As Boolean
+  UseFormatting = chkFormatting.value
+End Property
 
+Public Property Let UseFormatting(ByVal pfNewValue As Boolean)
+  chkFormatting.value = IIf(pfNewValue, vbChecked, vbUnchecked)
+End Property
 
+Public Property Get Formatting_DecimalPlaces() As Integer
+  Formatting_DecimalPlaces = spnDBValueDecimals.value
+End Property
 
+Public Property Let Formatting_DecimalPlaces(ByVal piNewValue As Integer)
+  spnDBValueDecimals.value = piNewValue
+End Property
 
+Public Property Get Formatting_Use1000Separator() As Boolean
+  Formatting_Use1000Separator = chkDBVaUseThousandSeparator.value
+End Property
 
+Public Property Let Formatting_Use1000Separator(ByVal pfNewValue As Boolean)
+  chkDBVaUseThousandSeparator.value = IIf(pfNewValue, vbChecked, vbUnchecked)
+End Property
 
+Public Property Get Formatting_Prefix() As String
+  Formatting_Prefix = txtDBValuePrefix.Text
+End Property
 
+Public Property Let Formatting_Prefix(ByVal psNewValue As String)
+  txtDBValuePrefix.Text = IIf(miLinkType = SSINTLINK_BUTTON, psNewValue, "")
+End Property
 
+Public Property Get Formatting_Suffix() As String
+  Formatting_Suffix = txtDBValueSuffix.Text
+End Property
 
+Public Property Let Formatting_Suffix(ByVal psNewValue As String)
+  txtDBValueSuffix.Text = IIf(miLinkType = SSINTLINK_BUTTON, psNewValue, "")
+End Property
+
+Public Property Get UseConditionalFormatting() As Boolean
+  UseConditionalFormatting = chkConditionalFormatting.value
+End Property
+
+Public Property Let UseConditionalFormatting(ByVal pfNewValue As Boolean)
+  chkConditionalFormatting.value = IIf(pfNewValue, vbChecked, vbUnchecked)
+End Property
+
+Public Property Get ConditionalFormatting_Operator_1() As String
+  ConditionalFormatting_Operator_1 = cboDBValCFOperator(0).Text
+End Property
+
+Public Property Let ConditionalFormatting_Operator_1(ByVal psNewValue As String)
+  Dim iLoop As Integer
+
+  If (optLink(SSINTLINKDB_VALUE).value And psNewValue <> vbNullString) Then
+    For iLoop = 0 To cboDBValCFOperator(0).ListCount - 1
+      If cboDBValCFOperator(0).List(iLoop) = psNewValue Then
+        cboDBValCFOperator(0).ListIndex = iLoop
+        Exit For
+      End If
+    Next iLoop
+  End If
+
+ 'cboDBValCFOperator(0).Text = IIf(miLinkType = SSINTLINK_BUTTON, psNewValue, "")
+End Property
+
+Public Property Get ConditionalFormatting_Value_1() As String
+  ConditionalFormatting_Value_1 = txtDBValCFValue(0).Text
+End Property
+
+Public Property Let ConditionalFormatting_Value_1(ByVal psNewValue As String)
+  txtDBValCFValue(0).Text = IIf(miLinkType = SSINTLINK_BUTTON, psNewValue, "")
+End Property
+
+Public Property Get ConditionalFormatting_Style_1() As String
+  ConditionalFormatting_Style_1 = cboDBValCFStyle(0).Text
+End Property
+
+Public Property Let ConditionalFormatting_Style_1(ByVal psNewValue As String)
+  Dim iLoop As Integer
+
+  If (optLink(SSINTLINKDB_VALUE).value And psNewValue <> vbNullString) Then
+    For iLoop = 0 To cboDBValCFStyle(0).ListCount - 1
+      If cboDBValCFStyle(0).List(iLoop) = psNewValue Then
+        cboDBValCFStyle(0).ListIndex = iLoop
+        Exit For
+      End If
+    Next iLoop
+  End If
+
+  'cboDBValCFStyle(0).Text = IIf(miLinkType = SSINTLINK_BUTTON, psNewValue, "")
+End Property
+
+Public Property Get ConditionalFormatting_Colour_1() As String
+  ConditionalFormatting_Colour_1 = UI.SysColorToHex(txtDBValCFColour(0).BackColor)
+End Property
+
+Public Property Let ConditionalFormatting_Colour_1(ByVal psNewValue As String)
+  txtDBValCFColour(0).BackColor = IIf(psNewValue <> vbNullString, UI.HexToSysColor(psNewValue), vbWindowBackground)
+  txtDBValCFColour(0).ForeColor = UI.GetInverseColor(IIf(psNewValue <> vbNullString, UI.HexToSysColor(psNewValue), vbWindowBackground))
+End Property
+
+Public Property Get ConditionalFormatting_Operator_2() As String
+  ConditionalFormatting_Operator_2 = cboDBValCFOperator(1).Text
+End Property
+
+Public Property Let ConditionalFormatting_Operator_2(ByVal psNewValue As String)
+  Dim iLoop As Integer
+
+  If (optLink(SSINTLINKDB_VALUE).value And psNewValue <> vbNullString) Then
+    For iLoop = 0 To cboDBValCFOperator(1).ListCount - 1
+      If cboDBValCFOperator(1).List(iLoop) = psNewValue Then
+        cboDBValCFOperator(1).ListIndex = iLoop
+        Exit For
+      End If
+    Next iLoop
+  End If
+
+'  cboDBValCFOperator(1).Text = IIf(miLinkType = SSINTLINK_BUTTON, psNewValue, "")
+End Property
+
+Public Property Get ConditionalFormatting_Value_2() As String
+  ConditionalFormatting_Value_2 = txtDBValCFValue(1).Text
+End Property
+
+Public Property Let ConditionalFormatting_Value_2(ByVal psNewValue As String)
+  txtDBValCFValue(1).Text = IIf(miLinkType = SSINTLINK_BUTTON, psNewValue, "")
+End Property
+
+Public Property Get ConditionalFormatting_Style_2() As String
+  ConditionalFormatting_Style_2 = cboDBValCFStyle(1).Text
+End Property
+
+Public Property Let ConditionalFormatting_Style_2(ByVal psNewValue As String)
+  Dim iLoop As Integer
+
+  If (optLink(SSINTLINKDB_VALUE).value And psNewValue <> vbNullString) Then
+    For iLoop = 0 To cboDBValCFStyle(1).ListCount - 1
+      If cboDBValCFStyle(1).List(iLoop) = psNewValue Then
+        cboDBValCFStyle(1).ListIndex = iLoop
+        Exit For
+      End If
+    Next iLoop
+  End If
+
+'  cboDBValCFStyle(1).Text = IIf(miLinkType = SSINTLINK_BUTTON, psNewValue, "")
+End Property
+
+Public Property Get ConditionalFormatting_Colour_2() As String
+  ConditionalFormatting_Colour_2 = UI.SysColorToHex(txtDBValCFColour(1).BackColor)
+End Property
+
+Public Property Let ConditionalFormatting_Colour_2(ByVal psNewValue As String)
+  txtDBValCFColour(1).BackColor = IIf(psNewValue <> vbNullString, UI.HexToSysColor(psNewValue), vbWindowBackground)
+  txtDBValCFColour(1).ForeColor = UI.GetInverseColor(IIf(psNewValue <> vbNullString, UI.HexToSysColor(psNewValue), vbWindowBackground))
+End Property
+
+Public Property Get ConditionalFormatting_Operator_3() As String
+  ConditionalFormatting_Operator_3 = cboDBValCFOperator(2).Text
+End Property
+
+Public Property Let ConditionalFormatting_Operator_3(ByVal psNewValue As String)
+  Dim iLoop As Integer
+
+  If (optLink(SSINTLINKDB_VALUE).value And psNewValue <> vbNullString) Then
+    For iLoop = 0 To cboDBValCFOperator(2).ListCount - 1
+      If cboDBValCFOperator(2).List(iLoop) = psNewValue Then
+        cboDBValCFOperator(2).ListIndex = iLoop
+        Exit For
+      End If
+    Next iLoop
+  End If
+
+'  cboDBValCFOperator(2).Text = IIf(miLinkType = SSINTLINK_BUTTON, psNewValue, "")
+End Property
+
+Public Property Get ConditionalFormatting_Value_3() As String
+  ConditionalFormatting_Value_3 = txtDBValCFValue(2).Text
+End Property
+
+Public Property Let ConditionalFormatting_Value_3(ByVal psNewValue As String)
+  txtDBValCFValue(2).Text = IIf(miLinkType = SSINTLINK_BUTTON, psNewValue, "")
+End Property
+
+Public Property Get ConditionalFormatting_Style_3() As String
+  ConditionalFormatting_Style_3 = cboDBValCFStyle(2).Text
+End Property
+
+Public Property Let ConditionalFormatting_Style_3(ByVal psNewValue As String)
+  Dim iLoop As Integer
+
+  If (optLink(SSINTLINKDB_VALUE).value And psNewValue <> vbNullString) Then
+    For iLoop = 0 To cboDBValCFStyle(2).ListCount - 1
+      If cboDBValCFStyle(2).List(iLoop) = psNewValue Then
+        cboDBValCFStyle(2).ListIndex = iLoop
+        Exit For
+      End If
+    Next iLoop
+  End If
+
+'  cboDBValCFStyle(2).Text = IIf(miLinkType = SSINTLINK_BUTTON, psNewValue, "")
+End Property
+
+Public Property Get ConditionalFormatting_Colour_3() As String
+  ConditionalFormatting_Colour_3 = UI.SysColorToHex(txtDBValCFColour(2).BackColor)
+End Property
+
+Public Property Let ConditionalFormatting_Colour_3(ByVal psNewValue As String)
+  txtDBValCFColour(2).BackColor = IIf(psNewValue <> vbNullString, UI.HexToSysColor(psNewValue), vbWindowBackground)
+  txtDBValCFColour(2).ForeColor = UI.GetInverseColor(IIf(psNewValue <> vbNullString, UI.HexToSysColor(psNewValue), vbWindowBackground))
+End Property
 

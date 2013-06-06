@@ -955,7 +955,11 @@ Private Function SaveModuleDefinitions() As Boolean
       "viewID, newWindow, tableID, EMailAddress, EMailSubject, AppFilePath, AppParameters, " & _
       "DocumentFilePath, DisplayDocumentHyperlink, Element_Type, SeparatorOrientation, PictureID, Chart_ShowLegend, " & _
       "Chart_Type, Chart_ShowGrid, Chart_StackSeries, Chart_viewID, Chart_TableID, Chart_ColumnID, Chart_FilterID, " & _
-      "Chart_AggregateType, Chart_ShowValues)" & _
+      "Chart_AggregateType, Chart_ShowValues, UseFormatting, Formatting_DecimalPlaces, Formatting_Use1000Separator, " & _
+      "Formatting_Prefix, Formatting_Suffix, UseConditionalFormatting, ConditionalFormatting_Operator_1, ConditionalFormatting_Value_1, " & _
+      "ConditionalFormatting_Style_1, ConditionalFormatting_Colour_1, ConditionalFormatting_Operator_2, ConditionalFormatting_Value_2, " & _
+      "ConditionalFormatting_Style_2, ConditionalFormatting_Colour_2, ConditionalFormatting_Operator_3, ConditionalFormatting_Value_3, " & _
+      "ConditionalFormatting_Style_3, ConditionalFormatting_Colour_3)" & _
       " VALUES(" & _
       CStr(rsLinks!LinkType) & "," & _
       CStr(rsLinks!linkOrder) & "," & _
@@ -989,8 +993,28 @@ Private Function SaveModuleDefinitions() As Boolean
       CStr(IIf(IsNull(rsLinks!Chart_TableID), 0, rsLinks!Chart_TableID)) & "," & _
       CStr(IIf(IsNull(rsLinks!Chart_ColumnID), 0, rsLinks!Chart_ColumnID)) & "," & _
       CStr(IIf(IsNull(rsLinks!Chart_FilterID), 0, rsLinks!Chart_FilterID)) & "," & _
-      CStr(IIf(IsNull(rsLinks!Chart_AggregateType), 0, rsLinks!Chart_AggregateType)) & "," & _
-      IIf(IsNull(rsLinks!Chart_ShowValues), "0", IIf(rsLinks!Chart_ShowValues, "1", "0")) & _
+      CStr(IIf(IsNull(rsLinks!Chart_AggregateType), 0, rsLinks!Chart_AggregateType)) & ","
+
+    sSQL = sSQL & _
+      IIf(IsNull(rsLinks!Chart_ShowValues), "0", IIf(rsLinks!Chart_ShowValues, "1", "0")) & "," & _
+      IIf(IsNull(rsLinks!UseFormatting), "0", IIf(rsLinks!UseFormatting, "1", "0")) & "," & _
+      CStr(IIf(IsNull(rsLinks!Formatting_DecimalPlaces), 0, rsLinks!Formatting_DecimalPlaces)) & "," & _
+      IIf(IsNull(rsLinks!Formatting_Use1000Separator), "0", IIf(rsLinks!Formatting_Use1000Separator, "1", "0")) & "," & _
+      "'" & Replace(IIf(IsNull(rsLinks!Formatting_Prefix), "", rsLinks!Formatting_Prefix), "'", "''") & "'," & _
+      "'" & Replace(IIf(IsNull(rsLinks!Formatting_Suffix), "", rsLinks!Formatting_Suffix), "'", "''") & "'," & _
+      IIf(IsNull(rsLinks!UseConditionalFormatting), "0", IIf(rsLinks!UseConditionalFormatting, "1", "0")) & "," & _
+      "'" & Replace(IIf(IsNull(rsLinks!ConditionalFormatting_Operator_1), "", rsLinks!ConditionalFormatting_Operator_1), "'", "''") & "'," & _
+      "'" & Replace(IIf(IsNull(rsLinks!ConditionalFormatting_Value_1), "", rsLinks!ConditionalFormatting_Value_1), "'", "''") & "'," & _
+      "'" & Replace(IIf(IsNull(rsLinks!ConditionalFormatting_Style_1), "", rsLinks!ConditionalFormatting_Style_1), "'", "''") & "'," & _
+      "'" & Replace(IIf(IsNull(rsLinks!ConditionalFormatting_Colour_1), "", rsLinks!ConditionalFormatting_Colour_1), "'", "''") & "'," & _
+      "'" & Replace(IIf(IsNull(rsLinks!ConditionalFormatting_Operator_2), "", rsLinks!ConditionalFormatting_Operator_2), "'", "''") & "'," & _
+      "'" & Replace(IIf(IsNull(rsLinks!ConditionalFormatting_Value_2), "", rsLinks!ConditionalFormatting_Value_2), "'", "''") & "'," & _
+      "'" & Replace(IIf(IsNull(rsLinks!ConditionalFormatting_Style_2), "", rsLinks!ConditionalFormatting_Style_2), "'", "''") & "'," & _
+      "'" & Replace(IIf(IsNull(rsLinks!ConditionalFormatting_Colour_2), "", rsLinks!ConditionalFormatting_Colour_2), "'", "''") & "'," & _
+      "'" & Replace(IIf(IsNull(rsLinks!ConditionalFormatting_Operator_3), "", rsLinks!ConditionalFormatting_Operator_3), "'", "''") & "'," & _
+      "'" & Replace(IIf(IsNull(rsLinks!ConditionalFormatting_Value_3), "", rsLinks!ConditionalFormatting_Value_3), "'", "''") & "'," & _
+      "'" & Replace(IIf(IsNull(rsLinks!ConditionalFormatting_Style_3), "", rsLinks!ConditionalFormatting_Style_3), "'", "''") & "'," & _
+      "'" & Replace(IIf(IsNull(rsLinks!ConditionalFormatting_Colour_3), "", rsLinks!ConditionalFormatting_Colour_3), "'", "''") & "'" & _
       ")"
 
     gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
