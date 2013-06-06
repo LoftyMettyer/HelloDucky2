@@ -2020,6 +2020,29 @@ END
 
 
 /* ------------------------------------------------------------- */
+PRINT 'Step 8 - Modify Workflow Table - Add PictureID Column '
+
+/* ASRSysWorkflowElements - Add new Attachment_DBColumnID column */
+SELECT @iRecCount = COUNT(id) FROM syscolumns
+WHERE id = OBJECT_ID('tbsys_Workflows', 'U')
+AND name = 'PictureID'
+
+IF @iRecCount = 0
+BEGIN
+	SELECT @NVarCommand = 'ALTER TABLE tbsys_Workflows ADD 
+						PictureID [int] NULL'
+	EXEC sp_executesql @NVarCommand
+
+	SET @NVarCommand = 'UPDATE tbsys_Workflows
+						SET tbsys_Workflows.PictureID = 0
+						WHERE tbsys_Workflows.PictureID IS NULL'
+	EXEC sp_executesql @NVarCommand
+END
+
+
+
+
+/* ------------------------------------------------------------- */
 /* Update the database version flag in the ASRSysSettings table. */
 /* Dont Set the flag to refresh the stored procedures            */
 /* ------------------------------------------------------------- */
