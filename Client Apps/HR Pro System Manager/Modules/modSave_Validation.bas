@@ -78,7 +78,7 @@ Private Function CreateValidationStoredProcedure(pLngCurrentTableID As Long, _
   Dim sDuplicateCheckCode As String
   Dim sDuplicateColumns As String
   Dim sParentTableName As String
-  Dim rsTableName As dao.Recordset
+  Dim rsTableName As DAO.Recordset
   Dim aryOverlapColumns() As String
   Dim aryOverlapParentJoins() As String
 
@@ -246,11 +246,11 @@ Private Function CreateValidationStoredProcedure(pLngCurrentTableID As Long, _
               'TM05052004 - Unique Not Mandatory
               If Not !Mandatory Then
                 Select Case !DataType
-                  Case dtVARCHAR, dtLONGVARCHAR, dtLONGVARBINARY, dtVARBINARY
+                  Case dtVARCHAR, dtlongvarchar, dtLONGVARBINARY, dtVARBINARY
                     sSPCode = sSPCode & _
                       "        AND (ISNULL(tmpA." & !ColumnName & ",'') <> '')" & vbNewLine
                   
-                  Case dtINTEGER, dtNUMERIC
+                  Case dtinteger, dtNUMERIC
                     sSPCode = sSPCode & _
                       "        AND (ISNULL(tmpA." & !ColumnName & ",0) <> 0)" & vbNewLine
                   
@@ -292,11 +292,11 @@ Private Function CreateValidationStoredProcedure(pLngCurrentTableID As Long, _
                 'TM05052004 - Unique Not Mandatory
                 If Not !Mandatory Then
                   Select Case !DataType
-                    Case dtVARCHAR, dtLONGVARCHAR, dtLONGVARBINARY, dtVARBINARY
+                    Case dtVARCHAR, dtlongvarchar, dtLONGVARBINARY, dtVARBINARY
                       sSPCode = sSPCode & _
                         "        AND (ISNULL(tmpA." & !ColumnName & ",'') <> '')" & vbNewLine
                     
-                    Case dtINTEGER, dtNUMERIC
+                    Case dtinteger, dtNUMERIC
                       sSPCode = sSPCode & _
                         "        AND (ISNULL(tmpA." & !ColumnName & ",0) <> 0)" & vbNewLine
                     
@@ -359,13 +359,13 @@ Private Function CreateValidationStoredProcedure(pLngCurrentTableID As Long, _
   ' done using the @ParentIDCount.                                              *
   '******************************************************************************
             
-            If !Mandatory And !ColumnType <> 4 Then
+            If !Mandatory And !columntype <> 4 Then
               ' Add the mandatory check code for the current column if required.
               sSPCode = sSPCode & vbNewLine & _
                 "    /* '" & !ColumnName & "' - mandatory check. */"
                 
               Select Case !DataType
-                Case dtVARCHAR, dtLONGVARCHAR, dtLONGVARBINARY, dtVARBINARY
+                Case dtVARCHAR, dtlongvarchar, dtLONGVARBINARY, dtVARBINARY
                   sSPCode = sSPCode & vbNewLine & _
                     "    SELECT @sTmpChar = " & !ColumnName & vbNewLine & _
                     "    FROM " & psCurrentTableName & vbNewLine & _
@@ -398,7 +398,7 @@ Private Function CreateValidationStoredProcedure(pLngCurrentTableID As Long, _
                     "            END" & vbNewLine & _
                     "        END" & vbNewLine & _
                     "    END" & vbNewLine
-                Case dtINTEGER, dtNUMERIC
+                Case dtinteger, dtNUMERIC
                   'JPD 20060105 Fault 10655
                   sSPCode = sSPCode & vbNewLine & _
                     "    SELECT @dblTmpNum = " & !ColumnName & vbNewLine & _
@@ -526,7 +526,7 @@ Private Function CreateValidationStoredProcedure(pLngCurrentTableID As Long, _
                 "    END" & vbNewLine
             End If
             
-            If (!ColumnType = giCOLUMNTYPE_DATA) And _
+            If (!columntype = giCOLUMNTYPE_DATA) And _
               ((!ControlType = giCTRL_OPTIONGROUP) Or (!ControlType = giCTRL_COMBOBOX)) Then
               ' Add the optionGroup/dropdownList check code for the current column if required.
               sSPCode = sSPCode & vbNewLine & _
@@ -605,11 +605,23 @@ Private Function CreateValidationStoredProcedure(pLngCurrentTableID As Long, _
                         "        SELECT @sOneChar = substring(@sTmpChar, " & Trim$(Str$(iCharIndex)) & ", 1)" & vbNewLine & _
                         "        IF (ascii(@sOneChar) < ascii('A')) OR (ascii(@sOneChar) > ascii('Z')) SET @fItemOK = 0" & vbNewLine & _
                         "        IF (ascii(@sOneChar) <> ascii('_')) SET @fEmptyMask = 0" & vbNewLine
-                    
+
                     Case "a" ' Character must be lowercase alphabetic.
                       sSPCode = sSPCode & _
                         "        SELECT @sOneChar = substring(@sTmpChar, " & Trim$(Str$(iCharIndex)) & ", 1)" & vbNewLine & _
                         "        IF (ascii(@sOneChar) < ascii('a')) OR (ascii(@sOneChar) > ascii('z')) SET @fItemOK = 0" & vbNewLine & _
+                        "        IF (ascii(@sOneChar) <> ascii('_')) SET @fEmptyMask = 0" & vbNewLine
+                    
+                    Case "S" ' Character must be uppercase alphabetic or SPACE
+                      sSPCode = sSPCode & _
+                        "        SELECT @sOneChar = substring(@sTmpChar, " & Trim$(Str$(iCharIndex)) & ", 1)" & vbNewLine & _
+                        "        IF ((ascii(@sOneChar) < ascii('A')) OR (ascii(@sOneChar) > ascii('Z'))) AND @sOneChar <> ' ' SET @fItemOK = 0" & vbNewLine & _
+                        "        IF (ascii(@sOneChar) <> ascii('_')) SET @fEmptyMask = 0" & vbNewLine
+
+                    Case "s" ' Character must be lowercase alphabetic or SPACE
+                      sSPCode = sSPCode & _
+                        "        SELECT @sOneChar = substring(@sTmpChar, " & Trim$(Str$(iCharIndex)) & ", 1)" & vbNewLine & _
+                        "        IF ((ascii(@sOneChar) < ascii('a')) OR (ascii(@sOneChar) > ascii('z'))) AND @sOneChar <> ' ' SET @fItemOK = 0" & vbNewLine & _
                         "        IF (ascii(@sOneChar) <> ascii('_')) SET @fEmptyMask = 0" & vbNewLine
                     
                     Case "\" ' Next character is a literal.
@@ -784,7 +796,7 @@ End Function
 Private Function GetOverlapColumnsArray(ByVal plngTableID As Long) As String()
 
   Dim sSQL As String
-  Dim rsTemp As dao.Recordset
+  Dim rsTemp As DAO.Recordset
   Dim iDefaultItem As Integer
   Dim sTableName As String
   Dim arOverlaps() As String
@@ -824,7 +836,7 @@ End Function
 Private Function GetOverlapParentJoins(ByVal plngTableID As Long) As String()
 
   Dim sSQL As String
-  Dim rsTemp As dao.Recordset
+  Dim rsTemp As DAO.Recordset
   Dim iDefaultItem As Integer
   Dim sTableName As String
   Dim arOverlaps() As String

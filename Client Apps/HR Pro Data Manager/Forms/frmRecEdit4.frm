@@ -7854,7 +7854,7 @@ Private Function LoadControls(pobjScreen As clsScreen) As Boolean
                     End If
 
                   Case Else
-                    .Format = objScreenControl.Mask
+                    .Format = Replace(Replace(objScreenControl.Mask, "S", "A"), "s", "a")
                     
                 End Select
               Else
