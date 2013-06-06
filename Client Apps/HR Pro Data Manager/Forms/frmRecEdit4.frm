@@ -65,6 +65,7 @@ Begin VB.Form frmRecEdit4
          Index           =   0
          Left            =   2160
          TabIndex        =   20
+         TabStop         =   0   'False
          Top             =   1530
          Width           =   1185
          _ExtentX        =   2090
@@ -606,6 +607,7 @@ Begin VB.Form frmRecEdit4
          NumTabs         =   1
          BeginProperty Tab1 {0713F341-850A-101B-AFC0-4210102A8DA7} 
             Caption         =   ""
+            Key             =   ""
             Object.Tag             =   ""
             ImageVarType    =   2
          EndProperty
@@ -635,6 +637,7 @@ Begin VB.Form frmRecEdit4
       BeginProperty Panels {0713E89E-850A-101B-AFC0-4210102A8DA7} 
          NumPanels       =   1
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -7735,6 +7738,7 @@ Private Function LoadControls(pobjScreen As clsScreen) As Boolean
           .NavigateTo = objScreenControl.NavigateTo
           .NavigateIn = objScreenControl.NavigateIn
           .NavigateOnSave = objScreenControl.NavigateOnSave
+          .TabStop = (.DisplayType = NavigationDisplayType.Button)
           .Enabled = True
         End If
 
