@@ -3204,7 +3204,7 @@ PRINT 'Step 10 - New Shared Table Transfer Types'
 
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferTypes  (TransferTypeID, TransferType, ASRBaseTableID, FilterID, ForceAsUpdate, IsVisible) VALUES (101, ''Leave Reason'' ,0,0,0,1)'
 		EXEC sp_executesql @NVarCommand
-		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (0,101,1,''Code Table ID'',0,0,2,1,1)'
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer, ASRMapType, ASRValue) VALUES (0,101,1,''Code Table ID'',0,0,2,1,1,2,''11'')'
 		EXEC sp_executesql @NVarCommand
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (1,101,1,''Code'',0,0,2,1,1)'
 		EXEC sp_executesql @NVarCommand
@@ -3244,7 +3244,7 @@ PRINT 'Step 10 - New Shared Table Transfer Types'
 
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferTypes  (TransferTypeID, TransferType, ASRBaseTableID, FilterID, ForceAsUpdate, IsVisible) VALUES (102, ''Marital Status'' ,0,0,0,1)'
 		EXEC sp_executesql @NVarCommand
-		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (0,102,1,''Code Table ID'',0,0,2,1,1)'
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer, ASRMApType, ASRValue) VALUES (0,102,1,''Code Table ID'',0,0,2,1,1,2,''10'')'
 		EXEC sp_executesql @NVarCommand
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (1,102,1,''Code'',0,0,2,1,1)'
 		EXEC sp_executesql @NVarCommand
@@ -3284,7 +3284,7 @@ PRINT 'Step 10 - New Shared Table Transfer Types'
 
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferTypes  (TransferTypeID, TransferType, ASRBaseTableID, FilterID, ForceAsUpdate, IsVisible) VALUES (103, ''Cost Centre'' ,0,0,0,1)'
 		EXEC sp_executesql @NVarCommand
-		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (0,103,1,''Code Table ID'',0,0,2,1,1)'
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer, ASRMApType, ASRValue) VALUES (0,103,1,''Code Table ID'',0,0,2,1,1,2,''2'')'
 		EXEC sp_executesql @NVarCommand
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (1,103,1,''Code'',0,0,2,1,1)'
 		EXEC sp_executesql @NVarCommand
@@ -3326,7 +3326,7 @@ PRINT 'Step 10 - New Shared Table Transfer Types'
 
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferTypes  (TransferTypeID, TransferType, ASRBaseTableID, FilterID, ForceAsUpdate, IsVisible) VALUES (104, ''Job Grade'' ,0,0,0,1)'
 		EXEC sp_executesql @NVarCommand
-		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (0,104,1,''Code Table ID'',0,0,2,1,1)'
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer, ASRMapType, ASRValue) VALUES (0,104,1,''Code Table ID'',0,0,2,1,1,2,''3'')'
 		EXEC sp_executesql @NVarCommand
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (1,104,1,''Code'',0,0,2,1,1)'
 		EXEC sp_executesql @NVarCommand
@@ -3366,7 +3366,7 @@ PRINT 'Step 10 - New Shared Table Transfer Types'
 
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferTypes  (TransferTypeID, TransferType, ASRBaseTableID, FilterID, ForceAsUpdate, IsVisible) VALUES (105, ''Sort Code 1'' ,0,0,0,1)'
 		EXEC sp_executesql @NVarCommand
-		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (0,105,1,''Code Table ID'',0,0,2,1,1)'
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer, ASRMapType, ASRValue) VALUES (0,105,1,''Code Table ID'',0,0,2,1,1,2,''4'')'
 		EXEC sp_executesql @NVarCommand
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (1,105,1,''Code'',0,0,2,1,1)'
 		EXEC sp_executesql @NVarCommand
@@ -3406,7 +3406,7 @@ PRINT 'Step 10 - New Shared Table Transfer Types'
 
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferTypes  (TransferTypeID, TransferType, ASRBaseTableID, FilterID, ForceAsUpdate, IsVisible) VALUES (106, ''Sort Code 2'' ,0,0,0,1)'
 		EXEC sp_executesql @NVarCommand
-		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (0,106,1,''Code Table ID'',0,0,2,1,1)'
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer, ASRMapType, ASRValue) VALUES (0,106,1,''Code Table ID'',0,0,2,1,1,2,''5'')'
 		EXEC sp_executesql @NVarCommand
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (1,106,1,''Code'',0,0,2,1,1)'
 		EXEC sp_executesql @NVarCommand
@@ -3446,7 +3446,7 @@ PRINT 'Step 10 - New Shared Table Transfer Types'
 
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferTypes  (TransferTypeID, TransferType, ASRBaseTableID, FilterID, ForceAsUpdate, IsVisible) VALUES (107, ''Sort Code 3'' ,0,0,0,1)'
 		EXEC sp_executesql @NVarCommand
-		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (0,107,1,''Code Table ID'',0,0,2,1,1)'
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer, ASRMapType, ASRValue) VALUES (0,107,1,''Code Table ID'',0,0,2,1,1,2,''6'')'
 		EXEC sp_executesql @NVarCommand
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (1,107,1,''Code'',0,0,2,1,1)'
 		EXEC sp_executesql @NVarCommand
@@ -3486,7 +3486,7 @@ PRINT 'Step 10 - New Shared Table Transfer Types'
 
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferTypes  (TransferTypeID, TransferType, ASRBaseTableID, FilterID, ForceAsUpdate, IsVisible) VALUES (108, ''Sort Code 4'' ,0,0,0,1)'
 		EXEC sp_executesql @NVarCommand
-		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (0,108,1,''Code Table ID'',0,0,2,1,1)'
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer, ASRMapType, ASRValue) VALUES (0,108,1,''Code Table ID'',0,0,2,1,1,2,''7'')'
 		EXEC sp_executesql @NVarCommand
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (1,108,1,''Code'',0,0,2,1,1)'
 		EXEC sp_executesql @NVarCommand
@@ -3526,7 +3526,7 @@ PRINT 'Step 10 - New Shared Table Transfer Types'
 
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferTypes  (TransferTypeID, TransferType, ASRBaseTableID, FilterID, ForceAsUpdate, IsVisible) VALUES (109, ''Sort Code 5'' ,0,0,0,1)'
 		EXEC sp_executesql @NVarCommand
-		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (0,109,1,''Code Table ID'',0,0,2,1,1)'
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer, ASRMapType, ASRValue) VALUES (0,109,1,''Code Table ID'',0,0,2,1,1,2,''8'')'
 		EXEC sp_executesql @NVarCommand
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (1,109,1,''Code'',0,0,2,1,1)'
 		EXEC sp_executesql @NVarCommand
@@ -3566,7 +3566,7 @@ PRINT 'Step 10 - New Shared Table Transfer Types'
 
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferTypes  (TransferTypeID, TransferType, ASRBaseTableID, FilterID, ForceAsUpdate, IsVisible) VALUES (110, ''Sort Code 6'' ,0,0,0,1)'
 		EXEC sp_executesql @NVarCommand
-		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (0,110,1,''Code Table ID'',0,0,2,1,1)'
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer, ASRMapType, ASRValue) VALUES (0,110,1,''Code Table ID'',0,0,2,1,1,2,''9'')'
 		EXEC sp_executesql @NVarCommand
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (1,110,1,''Code'',0,0,2,1,1)'
 		EXEC sp_executesql @NVarCommand
@@ -3606,7 +3606,7 @@ PRINT 'Step 10 - New Shared Table Transfer Types'
 
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferTypes  (TransferTypeID, TransferType, ASRBaseTableID, FilterID, ForceAsUpdate, IsVisible) VALUES (111, ''Job Title'' ,0,0,0,1)'
 		EXEC sp_executesql @NVarCommand
-		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (0,111,1,''Code Table ID'',0,0,2,1,1)'
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer, ASRMapType, ASRValue) VALUES (0,111,1,''Code Table ID'',0,0,2,1,1,2,''14'')'
 		EXEC sp_executesql @NVarCommand
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (1,111,1,''Code'',0,0,2,1,1)'
 		EXEC sp_executesql @NVarCommand
@@ -3646,7 +3646,7 @@ PRINT 'Step 10 - New Shared Table Transfer Types'
 
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferTypes  (TransferTypeID, TransferType, ASRBaseTableID, FilterID, ForceAsUpdate, IsVisible) VALUES (112, ''Ethnic Origin'' ,0,0,0,1)'
 		EXEC sp_executesql @NVarCommand
-		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (0,112,1,''Code Table ID'',0,0,2,1,1)'
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer, ASRMapType, ASRValue) VALUES (0,112,1,''Code Table ID'',0,0,2,1,1,2,''13'')'
 		EXEC sp_executesql @NVarCommand
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (1,112,1,''Code'',0,0,2,1,1)'
 		EXEC sp_executesql @NVarCommand
@@ -3686,7 +3686,7 @@ PRINT 'Step 10 - New Shared Table Transfer Types'
 
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferTypes  (TransferTypeID, TransferType, ASRBaseTableID, FilterID, ForceAsUpdate, IsVisible) VALUES (113, ''Nationality'' ,0,0,0,1)'
 		EXEC sp_executesql @NVarCommand
-		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (0,113,1,''Code Table ID'',0,0,2,1,1)'
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer, ASRMapType, ASRValue) VALUES (0,113,1,''Code Table ID'',0,0,2,1,1,2,''12'')'
 		EXEC sp_executesql @NVarCommand
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (1,113,1,''Code'',0,0,2,1,1)'
 		EXEC sp_executesql @NVarCommand
@@ -3726,7 +3726,7 @@ PRINT 'Step 10 - New Shared Table Transfer Types'
 
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferTypes  (TransferTypeID, TransferType, ASRBaseTableID, FilterID, ForceAsUpdate, IsVisible) VALUES (114, ''Reports To (1)'' ,0,0,0,1)'
 		EXEC sp_executesql @NVarCommand
-		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (0,114,1,''Code Table ID'',0,0,2,1,1)'
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer, ASRMapType, ASRValue) VALUES (0,114,1,''Code Table ID'',0,0,2,1,1,2,''15'')'
 		EXEC sp_executesql @NVarCommand
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (1,114,1,''Code'',0,0,2,1,1)'
 		EXEC sp_executesql @NVarCommand
@@ -3766,7 +3766,7 @@ PRINT 'Step 10 - New Shared Table Transfer Types'
 
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferTypes  (TransferTypeID, TransferType, ASRBaseTableID, FilterID, ForceAsUpdate, IsVisible) VALUES (115, ''Reports To (2)'' ,0,0,0,1)'
 		EXEC sp_executesql @NVarCommand
-		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (0,115,1,''Code Table ID'',0,0,2,1,1)'
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer, ASRMapType, ASRValue) VALUES (0,115,1,''Code Table ID'',0,0,2,1,1,2,''16'')'
 		EXEC sp_executesql @NVarCommand
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (1,115,1,''Code'',0,0,2,1,1)'
 		EXEC sp_executesql @NVarCommand
@@ -3806,7 +3806,7 @@ PRINT 'Step 10 - New Shared Table Transfer Types'
 
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferTypes  (TransferTypeID, TransferType, ASRBaseTableID, FilterID, ForceAsUpdate, IsVisible) VALUES (116, ''Absence Type'' ,0,0,0,1)'
 		EXEC sp_executesql @NVarCommand
-		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (0,116,1,''Code Table ID'',0,0,2,1,1)'
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer, ASRMapType, ASRValue) VALUES (0,116,1,''Code Table ID'',0,0,2,1,1,2,''900'')'
 		EXEC sp_executesql @NVarCommand
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (1,116,1,''Code'',0,0,2,1,1)'
 		EXEC sp_executesql @NVarCommand
@@ -3852,7 +3852,7 @@ PRINT 'Step 10 - New Shared Table Transfer Types'
 
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferTypes  (TransferTypeID, TransferType, ASRBaseTableID, FilterID, ForceAsUpdate, IsVisible) VALUES (117, ''Absence Reason'' ,0,0,0,1)'
 		EXEC sp_executesql @NVarCommand
-		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (0,117,1,''Code Table ID'',0,0,2,1,1)'
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer, ASRMapType, ASRValue) VALUES (0,117,1,''Code Table ID'',0,0,2,1,1,2,''901'')'
 		EXEC sp_executesql @NVarCommand
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (1,117,1,''Code'',0,0,2,1,1)'
 		EXEC sp_executesql @NVarCommand
@@ -3920,7 +3920,7 @@ PRINT 'Step 10 - New Shared Table Transfer Types'
 
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferTypes  (TransferTypeID, TransferType, ASRBaseTableID, FilterID, ForceAsUpdate, IsVisible) VALUES (131, ''Extra Code Table - User Defined 1'' ,0,0,0,1)'
 		EXEC sp_executesql @NVarCommand
-		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (0,131,1,''Code Table ID'',0,0,2,1,1)'
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer, ASRMapType, ASRValue) VALUES (0,131,1,''Code Table ID'',0,0,2,1,1,2,''100'')'
 		EXEC sp_executesql @NVarCommand
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (1,131,1,''Code'',0,0,2,1,1)'
 		EXEC sp_executesql @NVarCommand
@@ -3960,7 +3960,7 @@ PRINT 'Step 10 - New Shared Table Transfer Types'
 
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferTypes  (TransferTypeID, TransferType, ASRBaseTableID, FilterID, ForceAsUpdate, IsVisible) VALUES (132, ''Extra Code Table - User Defined 2'' ,0,0,0,1)'
 		EXEC sp_executesql @NVarCommand
-		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (0,132,1,''Code Table ID'',0,0,2,1,1)'
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer, ASRMapType, ASRValue) VALUES (0,132,1,''Code Table ID'',0,0,2,1,1,2,''101'')'
 		EXEC sp_executesql @NVarCommand
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (1,132,1,''Code'',0,0,2,1,1)'
 		EXEC sp_executesql @NVarCommand
@@ -4000,7 +4000,7 @@ PRINT 'Step 10 - New Shared Table Transfer Types'
 
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferTypes  (TransferTypeID, TransferType, ASRBaseTableID, FilterID, ForceAsUpdate, IsVisible) VALUES (133, ''Extra Code Table - User Defined 3'' ,0,0,0,1)'
 		EXEC sp_executesql @NVarCommand
-		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (0,133,1,''Code Table ID'',0,0,2,1,1)'
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer, ASRMapType, ASRValue) VALUES (0,133,1,''Code Table ID'',0,0,2,1,1,2,''102'')'
 		EXEC sp_executesql @NVarCommand
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (1,133,1,''Code'',0,0,2,1,1)'
 		EXEC sp_executesql @NVarCommand
@@ -4040,7 +4040,7 @@ PRINT 'Step 10 - New Shared Table Transfer Types'
 
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferTypes  (TransferTypeID, TransferType, ASRBaseTableID, FilterID, ForceAsUpdate, IsVisible) VALUES (134, ''Extra Code Table - User Defined 4'' ,0,0,0,1)'
 		EXEC sp_executesql @NVarCommand
-		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (0,134,1,''Code Table ID'',0,0,2,1,1)'
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer, ASRMapType, ASRValue) VALUES (0,134,1,''Code Table ID'',0,0,2,1,1,2,''103'')'
 		EXEC sp_executesql @NVarCommand
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (1,134,1,''Code'',0,0,2,1,1)'
 		EXEC sp_executesql @NVarCommand
@@ -4080,7 +4080,7 @@ PRINT 'Step 10 - New Shared Table Transfer Types'
 
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferTypes  (TransferTypeID, TransferType, ASRBaseTableID, FilterID, ForceAsUpdate, IsVisible) VALUES (135, ''Extra Code Table - User Defined 5'' ,0,0,0,1)'
 		EXEC sp_executesql @NVarCommand
-		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (0,135,1,''Code Table ID'',0,0,2,1,1)'
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer, ASRMapType, ASRValue) VALUES (0,135,1,''Code Table ID'',0,0,2,1,1,2,''104'')'
 		EXEC sp_executesql @NVarCommand
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (1,135,1,''Code'',0,0,2,1,1)'
 		EXEC sp_executesql @NVarCommand
@@ -4120,7 +4120,7 @@ PRINT 'Step 10 - New Shared Table Transfer Types'
 
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferTypes  (TransferTypeID, TransferType, ASRBaseTableID, FilterID, ForceAsUpdate, IsVisible) VALUES (136, ''Extra Code Table - User Defined 6'' ,0,0,0,1)'
 		EXEC sp_executesql @NVarCommand
-		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (0,136,1,''Code Table ID'',0,0,2,1,1)'
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer, ASRMapType, ASRValue) VALUES (0,136,1,''Code Table ID'',0,0,2,1,1,2,''105'')'
 		EXEC sp_executesql @NVarCommand
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (1,136,1,''Code'',0,0,2,1,1)'
 		EXEC sp_executesql @NVarCommand
@@ -4160,7 +4160,7 @@ PRINT 'Step 10 - New Shared Table Transfer Types'
 
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferTypes  (TransferTypeID, TransferType, ASRBaseTableID, FilterID, ForceAsUpdate, IsVisible) VALUES (137, ''Extra Code Table - User Defined 7'' ,0,0,0,1)'
 		EXEC sp_executesql @NVarCommand
-		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (0,137,1,''Code Table ID'',0,0,2,1,1)'
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer, ASRMapType, ASRValue) VALUES (0,137,1,''Code Table ID'',0,0,2,1,1,2,''106'')'
 		EXEC sp_executesql @NVarCommand
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (1,137,1,''Code'',0,0,2,1,1)'
 		EXEC sp_executesql @NVarCommand
@@ -4200,7 +4200,7 @@ PRINT 'Step 10 - New Shared Table Transfer Types'
 
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferTypes  (TransferTypeID, TransferType, ASRBaseTableID, FilterID, ForceAsUpdate, IsVisible) VALUES (138, ''Extra Code Table - User Defined 8'' ,0,0,0,1)'
 		EXEC sp_executesql @NVarCommand
-		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (0,138,1,''Code Table ID'',0,0,2,1,1)'
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer, ASRMapType, ASRValue) VALUES (0,138,1,''Code Table ID'',0,0,2,1,1,2,''107'')'
 		EXEC sp_executesql @NVarCommand
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (1,138,1,''Code'',0,0,2,1,1)'
 		EXEC sp_executesql @NVarCommand
@@ -4240,7 +4240,7 @@ PRINT 'Step 10 - New Shared Table Transfer Types'
 
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferTypes  (TransferTypeID, TransferType, ASRBaseTableID, FilterID, ForceAsUpdate, IsVisible) VALUES (139, ''Extra Code Table - User Defined 9'' ,0,0,0,1)'
 		EXEC sp_executesql @NVarCommand
-		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (0,139,1,''Code Table ID'',0,0,2,1,1)'
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer, ASRMapType, ASRValue) VALUES (0,139,1,''Code Table ID'',0,0,2,1,1,2,''108'')'
 		EXEC sp_executesql @NVarCommand
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (1,139,1,''Code'',0,0,2,1,1)'
 		EXEC sp_executesql @NVarCommand
@@ -4280,7 +4280,7 @@ PRINT 'Step 10 - New Shared Table Transfer Types'
 
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferTypes  (TransferTypeID, TransferType, ASRBaseTableID, FilterID, ForceAsUpdate, IsVisible) VALUES (140, ''Extra Code Table - User Defined 10'' ,0,0,0,1)'
 		EXEC sp_executesql @NVarCommand
-		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (0,140,1,''Code Table ID'',0,0,2,1,1)'
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer, ASRMapType, ASRValue) VALUES (0,140,1,''Code Table ID'',0,0,2,1,1,2,''109'')'
 		EXEC sp_executesql @NVarCommand
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (1,140,1,''Code'',0,0,2,1,1)'
 		EXEC sp_executesql @NVarCommand
@@ -4312,7 +4312,36 @@ PRINT 'Step 10 - New Shared Table Transfer Types'
 		EXEC sp_executesql @NVarCommand
 
 	END
+	
+	-- Updates to Employee Shared Table
+	SELECT @iRecCount = count(TransferFieldID) FROM ASRSysAccordTransferFieldDefinitions WHERE TransferFieldID = 195 AND TransferTypeID = 0
+	IF @iRecCount = 0
+	BEGIN
 
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (195,0,0,''Analysis Code 1'',0,0,2,0,0)'
+		EXEC sp_executesql @NVarCommand
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (196,0,0,''Analysis Code 2'',0,0,2,0,0)'
+		EXEC sp_executesql @NVarCommand
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (197,0,0,''Analysis Code 3'',0,0,2,0,0)'
+		EXEC sp_executesql @NVarCommand
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (198,0,0,''Analysis Code 4'',0,0,2,0,0)'
+		EXEC sp_executesql @NVarCommand
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (199,0,0,''Analysis Code 5'',0,0,2,0,0)'
+		EXEC sp_executesql @NVarCommand
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (200,0,0,''Analysis Code 6'',0,0,2,0,0)'
+		EXEC sp_executesql @NVarCommand
+	
+	END
+	
+	-- Update to Absence Shared Table
+	SELECT @iRecCount = count(TransferFieldID) FROM ASRSysAccordTransferFieldDefinitions WHERE TransferFieldID = 12 AND TransferTypeID = 72
+	IF @iRecCount = 0
+	BEGIN
+
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (12,72,0,''Memo'',0,0,2,0,0)'
+		EXEC sp_executesql @NVarCommand
+
+	END
 
 
 /* ------------------------------------------------------------- */
