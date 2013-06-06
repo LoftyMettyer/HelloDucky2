@@ -526,7 +526,44 @@ PRINT 'Step 2 of x - Updating Email Procedures'
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 3 of x - Creating Conversion Function'
+PRINT 'Step 3 of x - Updating email queue'
+
+	DECLARE @iQueueID int,
+		@iRecordID int,
+		@iRecordDescID int,
+		@sRecordDesc varchar(8000)
+
+	DECLARE emailQueue_cursor CURSOR LOCAL FAST_FORWARD FOR 
+	SELECT ASRSysEmailQueue.queueID, 
+		ASRSysEmailQueue.recordID, 
+		ASRSysTables.recordDescExprID
+	FROM ASRSysEmailQueue
+	INNER JOIN ASRSysEmailLinks ON ASRSysEmailQueue.LinkID = ASRSysEmailLinks.LinkID
+	INNER JOIN ASRSysTables ON ASRSysTables.TableID = ASRSysEmailLinks.TableID
+	WHERE ASRSysEmailQueue.RecordDesc IS NULL
+	
+	OPEN emailQueue_cursor
+	FETCH NEXT FROM emailQueue_cursor INTO @iQueueID, @iRecordID, @iRecordDescID
+
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		SET @sRecordDesc = ''
+		
+		SELECT @sSQL = 'sp_ASRExpr_' + convert(varchar,@iRecordDescID)
+		IF EXISTS (SELECT * FROM sysobjects WHERE type = 'P' AND name = @sSQL)
+		BEGIN
+			EXEC @sSQL @sRecordDesc OUTPUT, @iRecordID
+		END
+
+		UPDATE ASRSysEmailQueue SET RecordDesc = @sRecordDesc WHERE queueid = @iQueueID
+		FETCH NEXT FROM emailQueue_cursor INTO @iQueueID, @iRecordID, @iRecordDescID
+	END
+	CLOSE emailQueue_cursor
+	DEALLOCATE emailQueue_cursor
+			
+			
+/* ------------------------------------------------------------- */
+PRINT 'Step 4 of x - Creating Conversion Function'
 
 
 	IF NOT OBJECT_ID('udfASRConvertNumeric', 'FN') IS NULL	
@@ -568,7 +605,7 @@ PRINT 'Step 3 of x - Creating Conversion Function'
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 4 of X - Modifying Workflow Data Structures'
+PRINT 'Step 5 of X - Modifying Workflow Data Structures'
 
 	/* ASRSysWorkflowInstanceValues - Add new TempFileUpload_File column */
 	SELECT @iRecCount = COUNT(id) FROM syscolumns
@@ -608,7 +645,7 @@ PRINT 'Step 4 of X - Modifying Workflow Data Structures'
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 5 of X - Upgrade system tables to handle new multiline support'
+PRINT 'Step 6 of X - Upgrade system tables to handle new multiline support'
 
 	IF EXISTS (SELECT *
 		FROM dbo.sysobjects
@@ -707,7 +744,7 @@ PRINT 'Step 5 of X - Upgrade system tables to handle new multiline support'
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 6 of X - Column Definition Data'
+PRINT 'Step 7 of X - Column Definition Data'
 
 	/* ASRSysColumns - Remove IsMaxSize column */
 	SELECT @iRecCount = COUNT(id) FROM syscolumns
@@ -758,14 +795,14 @@ PRINT 'Step 6 of X - Column Definition Data'
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 7 of X - Shared Table Integration Enhancements'
+PRINT 'Step 8 of X - Shared Table Integration Enhancements'
 
 	SET @sSPCode_0 = 'UPDATE ASRSysAccordTransferTypes SET IsVisible = 1 WHERE TransferTypeID IN (5,6,7,8);'
 	EXEC sp_executesql @sSPCode_0;
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 8 of X - Removal of unused procedures (Resourcesafication)'
+PRINT 'Step 9 of X - Removal of unused procedures (Resourcesafication)'
 
 	-- sp_ASRColumnDefault
 	IF NOT OBJECT_ID('sp_ASRColumnDefault', N'P') IS NULL
@@ -851,7 +888,7 @@ PRINT 'Step 8 of X - Removal of unused procedures (Resourcesafication)'
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 9 of X - Multiline Character Modifications'
+PRINT 'Step 10 of X - Multiline Character Modifications'
 
 	----------------------------------------------------------------------
 	-- sp_ASR_AbsenceBreakdown_Run
@@ -12619,7 +12656,7 @@ PRINT 'Step 9 of X - Multiline Character Modifications'
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 10 of X - New Shared Table Transfer Types'
+PRINT 'Step 11 of X - New Shared Table Transfer Types'
 
 	-- SMP
 	SELECT @iRecCount = count(TransferTypeID) FROM ASRSysAccordTransferFieldDefinitions WHERE TransferTypeID = 6 AND TransferFieldID = 20
@@ -12816,7 +12853,7 @@ DEALLOCATE curObjects
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 11 of X - Adding New Standard Colours'
+PRINT 'Step 12 of X - Adding New Standard Colours'
 
 DECLARE @iMaxColOrder integer
 
@@ -12849,7 +12886,7 @@ END
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 12 of X - Updating System Permissions Icons'
+PRINT 'Step 13 of X - Updating System Permissions Icons'
 
 /* Updating System Permissions Icon for Module Access */
 SELECT @iRecCount = count(*)
