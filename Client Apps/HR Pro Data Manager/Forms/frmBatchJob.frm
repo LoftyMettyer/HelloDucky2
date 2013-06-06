@@ -1,7 +1,7 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "coa_spinner.ocx"
 Begin VB.Form frmBatchJob 
@@ -54,14 +54,19 @@ Begin VB.Form frmBatchJob
       TabPicture(1)   =   "frmBatchJob.frx":0028
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraJobs"
+      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).Control(1)=   "Frame1"
+      Tab(1).Control(1).Enabled=   0   'False
       Tab(1).ControlCount=   2
-      TabCaption(2)   =   "&Output"
+      TabCaption(2)   =   "O&utput"
       TabPicture(2)   =   "frmBatchJob.frx":0044
       Tab(2).ControlEnabled=   0   'False
       Tab(2).Control(0)=   "Frame4"
+      Tab(2).Control(0).Enabled=   0   'False
       Tab(2).Control(1)=   "Frame2"
+      Tab(2).Control(1).Enabled=   0   'False
       Tab(2).Control(2)=   "Frame3"
+      Tab(2).Control(2).Enabled=   0   'False
       Tab(2).ControlCount=   3
       Begin VB.Frame Frame3 
          Caption         =   "Output Format :"
@@ -1038,7 +1043,7 @@ Begin VB.Form frmBatchJob
             Width           =   330
          End
          Begin VB.CheckBox chkForceCoverSheet 
-            Caption         =   "Force cover sheet on individual reports"
+            Caption         =   "Force co&ver sheet on individual reports"
             Height          =   255
             Left            =   5280
             TabIndex        =   43
@@ -1046,7 +1051,7 @@ Begin VB.Form frmBatchJob
             Width           =   3975
          End
          Begin VB.CheckBox chkTOC 
-            Caption         =   "Print Table Of Contents"
+            Caption         =   "P&rint table of contents"
             Height          =   255
             Left            =   2750
             TabIndex        =   42
@@ -1054,10 +1059,9 @@ Begin VB.Form frmBatchJob
             Width           =   2295
          End
          Begin VB.TextBox txtTitlePage 
-            BackColor       =   &H8000000F&
             ForeColor       =   &H00000000&
             Height          =   315
-            Left            =   2760
+            Left            =   2750
             TabIndex        =   37
             TabStop         =   0   'False
             Tag             =   "0"
@@ -1065,10 +1069,9 @@ Begin VB.Form frmBatchJob
             Width           =   5750
          End
          Begin VB.TextBox txtReportPackTitle 
-            BackColor       =   &H8000000F&
             ForeColor       =   &H00000000&
             Height          =   315
-            Left            =   2760
+            Left            =   2750
             TabIndex        =   39
             TabStop         =   0   'False
             Tag             =   "0"
@@ -1085,7 +1088,6 @@ Begin VB.Form frmBatchJob
             Width           =   330
          End
          Begin VB.TextBox txtOverrideFilter 
-            BackColor       =   &H8000000F&
             ForeColor       =   &H00000000&
             Height          =   315
             Left            =   2750
@@ -1241,10 +1243,10 @@ Private Sub RefreshColumnsGrid()
 End Sub
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
-  cmdOK.Enabled = pblnChanged
+  cmdOk.Enabled = pblnChanged
 End Property
 
 Private Function JobUtilityType(psJobType As String) As UtilityType
@@ -1670,7 +1672,16 @@ Public Function Initialise(pblnNew As Boolean, pblnCopy As Boolean, Optional pln
   Set mclsData = New DataMgr.clsDataAccess           'Instantiate class
   
   Screen.MousePointer = vbHourglass
-  If gblnReportPackMode Then Me.Caption = "Report Pack Defintion"
+  
+  Select Case gblnReportPackMode
+    Case True
+      Me.Caption = "Report Pack Definition"
+      chkEmail(0).Caption = "Send email if the report pack &fails"
+      chkEmail(1).Caption = "Send email if the repor&t pack is successful"
+    Case False
+      'chkEmail(0).Caption = "Send an email if the batch job &fails"
+  End Select
+  
   mblnLoading = True
   
   If pblnNew Then                                  'If this is a new definition
@@ -1688,7 +1699,7 @@ Public Function Initialise(pblnNew As Boolean, pblnCopy As Boolean, Optional pln
     If Not RetrieveBatchJobDetails Then
       If COAMsgBox("OpenHR could not load all of the definition successfully." & vbCrLf & vbCrLf & "The recommendation is that " & _
              "you delete the definition and create a new one," & vbCrLf & "however, you may edit the existing " & _
-             "definition if you wish." & vbCrLf & vbCrLf & "Would you like to continue and edit this definition ?", vbQuestion + vbYesNo, "Batch Job") = vbNo Then
+             "definition if you wish." & vbCrLf & vbCrLf & "Would you like to continue and edit this definition ?", vbQuestion + vbYesNo, IIf(gblnReportPackMode, "Report Pack", "Batch Job")) = vbNo Then
         Initialise = False
         Exit Function
       End If
@@ -1968,7 +1979,7 @@ Private Function RetrieveBatchJobDetails() As Boolean
       bob = ("SELECT ASRSysBatchJobName.*, isnull(fail.name,'') as 'EmailFailedName', isnull(success.name,'') as 'EmailSuccessName', CONVERT(integer, ASRSysBatchJobName.TimeStamp) AS intTimeStamp FROM ASRSysBatchJobName LEFT OUTER JOIN ASRSysEmailGroupName fail ON fail.EmailGroupID = EmailFailed LEFT OUTER JOIN ASRSysEmailGroupName success ON success.EmailGroupID = EmailSuccess WHERE ID = " & mlngBatchJobID)
       
   If prstTemp.BOF And prstTemp.EOF Then
-    COAMsgBox "Cannot load the definition for this batch job." & vbCrLf & "(" & Err.Description & ")", vbCritical + vbOKOnly, "Batch Job"
+    COAMsgBox "Cannot load the definition for this batch job." & vbCrLf & "(" & Err.Description & ")", vbCritical + vbOKOnly, IIf(gblnReportPackMode, "Report Pack", "Batch Job")
     Set prstTemp = Nothing
     RetrieveBatchJobDetails = False
     Exit Function
@@ -2051,7 +2062,7 @@ Private Function RetrieveBatchJobDetails() As Boolean
                                       "ORDER BY JobOrder")
   
   If prstTemp.BOF And prstTemp.EOF Then
-    COAMsgBox "Cannot load the individual jobs for this batch job definition." & vbCrLf & "(" & Err.Description & ")", vbCritical + vbOKOnly, "Batch Job"
+    COAMsgBox "Cannot load the individual jobs for this batch job definition." & vbCrLf & "(" & Err.Description & ")", vbCritical + vbOKOnly, IIf(gblnReportPackMode, "Report Pack", "Batch Job")
     Set prstTemp = Nothing
     RetrieveBatchJobDetails = False
     Exit Function
@@ -2064,23 +2075,23 @@ Private Function RetrieveBatchJobDetails() As Boolean
     Do While Not prstTemp.EOF
       fJobOK = True
       
-      If (prstTemp!jobtype = "Absence Breakdown") Or _
-        (prstTemp!jobtype = "Bradford Factor") Then
+      If (prstTemp!JobType = "Absence Breakdown") Or _
+        (prstTemp!JobType = "Bradford Factor") Then
         fJobOK = gfAbsenceEnabled
       End If
       
-      If (prstTemp!jobtype = "Stability Index Report") Or _
-        (prstTemp!jobtype = "Turnover Report") Then
+      If (prstTemp!JobType = "Stability Index Report") Or _
+        (prstTemp!JobType = "Turnover Report") Then
         fJobOK = gfPersonnelEnabled
       End If
       
       If fJobOK Then
-        pstrAddString = prstTemp!jobtype & vbTab
+        pstrAddString = prstTemp!JobType & vbTab
         pstrAddString = pstrAddString & prstTemp!JobID & vbTab
         
         'If prstTemp!jobtype <> "-- Pause --" Then
         If prstTemp!JobID > 0 Then
-          pstrAddString = pstrAddString & GetJobName(prstTemp!jobtype, prstTemp!JobID) & vbTab
+          pstrAddString = pstrAddString & GetJobName(prstTemp!JobType, prstTemp!JobID) & vbTab
           pstrAddString = pstrAddString & "N/A"
         Else
           pstrAddString = pstrAddString & vbTab
@@ -2093,7 +2104,7 @@ Private Function RetrieveBatchJobDetails() As Boolean
         .AddItem pstrAddString
       Else
         sMessage = sMessage & vbCrLf & _
-          vbTab & prstTemp!jobtype
+          vbTab & prstTemp!JobType
       End If
       
       prstTemp.MoveNext
@@ -2136,7 +2147,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
   
   If Changed = True And Not mblnReadOnly Then
     
-    pintAnswer = COAMsgBox("You have changed the current definition. Save changes ?", vbQuestion + vbYesNoCancel, "Batch Job")
+    pintAnswer = COAMsgBox("You have changed the current definition. Save changes ?", vbQuestion + vbYesNoCancel, IIf(gblnReportPackMode, "Report Pack", "Batch Job"))
       
     If pintAnswer = vbYes Then
       Cancel = True
@@ -2171,7 +2182,7 @@ End Sub
 
 Private Sub cmdClearAll_Click()
 
-  If COAMsgBox("Are you sure you wish to clear all jobs from this batch job definition ?", vbQuestion + vbYesNo, "Batch Job") = vbYes Then
+  If COAMsgBox("Are you sure you wish to clear all jobs from this batch job definition ?", vbQuestion + vbYesNo, IIf(gblnReportPackMode, "Report Pack", "Batch Job")) = vbYes Then
     grdColumns.RemoveAll
     
     ForceDefinitionToBeHiddenIfNeeded
@@ -2766,7 +2777,7 @@ Private Function SaveDefinition() As Boolean
 
 Err_Trap:
 
-  COAMsgBox "Error whilst saving batch job definition." & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Batch Job"
+  COAMsgBox "Error whilst saving batch job definition." & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, IIf(gblnReportPackMode, "Report Pack", "Batch Job")
   SaveDefinition = False
 
 End Function
@@ -2848,7 +2859,7 @@ Private Function SaveDefinition2() As Boolean
       sSQL = sSQL & "OutputScreen = " & IIf(chkDestination(desScreen).Value = vbChecked, "1", "0") & ", "
       'Printer Options
       sSQL = sSQL & IIf(chkDestination(desPrinter), (" OutputPrinterName = '" & Replace(cboPrinterName.Text, " '", "''") & "',"), (" OutputPrinterName = '', "))
-      sSQL = sSQL & "OutputFilename = '" & Replace(txtFileName.Text, "'", "''") & "',"
+      sSQL = sSQL & "OutputFilename = '" & Replace(txtFilename.Text, "'", "''") & "',"
       'outputSaveExisting
       If chkDestination(desSave).Value = vbChecked Then
         sSQL = sSQL & "OutputSaveExisting = " & cboSaveExisting.ItemData(cboSaveExisting.ListIndex) & ", "
@@ -2864,7 +2875,7 @@ Private Function SaveDefinition2() As Boolean
     sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmail = 1, "), ("OutputEmail = 0, "))
     sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmailAddr = " & txtEmailGroup.Tag & ", "), ("OutputEmailAddr = 0, "))
     sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmailSubject = '" & Replace(txtEmailSubject.Text, "'", "''") & "', "), ("OutputEmailSubject = '', "))
-    sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmailAttachAs = '" & Replace(txtEMailAttachAs.Text, "'", "''") & "'"), ("OutputEmailAttachAs = ''"))
+    sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmailAttachAs = '" & Replace(txtEmailAttachAs.Text, "'", "''") & "'"), ("OutputEmailAttachAs = ''"))
     
     
     'FINAL WHERE CLAUSE
@@ -2951,9 +2962,9 @@ Private Function SaveDefinition2() As Boolean
           'outputEmailSubject
           sSQL = sSQL & IIf(chkDestination(desEmail), ("'" & Replace(txtEmailSubject.Text, "'", "''") & "', "), ("'', "))
           'outputFilename
-          sSQL = sSQL & "'" & Replace(txtFileName.Text, "'", "''") & "',"
+          sSQL = sSQL & "'" & Replace(txtFilename.Text, "'", "''") & "',"
           'outputEmailAttachAs
-          sSQL = sSQL & IIf(chkDestination(desEmail), ("'" & Replace(txtEMailAttachAs.Text, "'", "''") & "',"), ("'',"))
+          sSQL = sSQL & IIf(chkDestination(desEmail), ("'" & Replace(txtEmailAttachAs.Text, "'", "''") & "',"), ("'',"))
           'outputTitlePage
           sSQL = sSQL & "'" & Replace(txtTitlePage.Text, "'", "''") & "', "
           'outputReportPackTitle
@@ -3027,7 +3038,7 @@ Private Function SaveDefinition2() As Boolean
 
 Err_Trap:
 
-  COAMsgBox "Error whilst saving batch job definition." & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Batch Job"
+  COAMsgBox "Error whilst saving batch job definition." & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, IIf(gblnReportPackMode, "Report Pack", "Batch Job")
   SaveDefinition2 = False
 
 End Function
@@ -3148,7 +3159,7 @@ Private Function ValidateDefinition() As Boolean
 
   ' Check a name has been entered
   If Trim(txtName.Text) = "" Then
-    COAMsgBox "You must give this batch job definition a name.", vbExclamation + vbOKOnly, "Batch Job"
+    COAMsgBox "You must give this " & IIf(gblnReportPackMode, "report packs", "batch job") & " definition a name.", vbExclamation + vbOKOnly, IIf(gblnReportPackMode, "Report Pack", "Batch Job")
     SSTab1.Tab = 0
     txtName.SetFocus
     ValidateDefinition = False
@@ -3162,7 +3173,6 @@ Private Function ValidateDefinition() As Boolean
   ElseIf pblnSaveAsNew Then
     txtUserName = gsUserName
     
-    'JPD 20030815 Fault 6698
     mblnDefinitionCreator = True
     mlngBatchJobID = 0
   
@@ -3182,7 +3192,7 @@ Private Function ValidateDefinition() As Boolean
   
   ' Check the name is unique
   If Not CheckUniqueName(Trim(txtName.Text), mlngBatchJobID) Then
-    COAMsgBox "A batch job definition called '" & Trim(txtName.Text) & "' already exists.", vbExclamation, Me.Caption
+    COAMsgBox "A " & IIf(gblnReportPackMode, "report packs", "batch job") & " definition called '" & Trim(txtName.Text) & "' already exists.", vbExclamation, Me.Caption
     SSTab1.Tab = 0
     txtName.SelStart = 0
     txtName.SelLength = Len(txtName.Text)
@@ -3192,23 +3202,13 @@ Private Function ValidateDefinition() As Boolean
   
   ' Check for a start date
   If IsNull(cboStartDate.DateValue) And chkScheduled.Value = vbChecked And Len(Trim(Replace(cboStartDate.Text, UI.GetSystemDateSeparator, ""))) = 0 Then
-    COAMsgBox "You must select a start date if you wish the batch job to be scheduled.", vbExclamation + vbOKOnly, "Batch Job"
+    COAMsgBox "You must select a start date if you wish the " & IIf(gblnReportPackMode, "report packs", "batch job") & " to be scheduled.", vbExclamation + vbOKOnly, IIf(gblnReportPackMode, "Report Pack", "Batch Job")
     SSTab1.Tab = 0
     cboStartDate.SetFocus
     ValidateDefinition = False
     Exit Function
   End If
   
-'  ' Check for an invalid start date
-'  If IsNull(cboStartDate.DateValue) And chkScheduled.Value = vbChecked Then
-'    COAMsgBox "You must enter a valid start date if you wish the batch job to be scheduled.", vbExclamation + vbOKOnly, "Batch Job"
-'    SSTab1.Tab = 0
-'    cboStartDate.SetFocus
-'    ValidateDefinition = False
-'    Exit Function
-'  End If
-  
-  'MH20020424 Fault 3760
   '(Avoid changing 01/13/2002 to 13/01/2002)
   'Double check valid date in case lost focus is missed
   '(by pressing enter for default button lostfocus is not run)
@@ -3217,19 +3217,9 @@ Private Function ValidateDefinition() As Boolean
     Exit Function
   End If
   
-  
-'  ' Ensure start date is >= today
-'  If mlngBatchJobID = 0 And chkScheduled.Value = vbChecked And cboStartDate.DateValue < Date Then
-'    COAMsgBox "The start date cannot be historic.", vbExclamation + vbOKOnly, "Batch Job"
-'    SSTab1.Tab = 0
-'    cboStartDate.SetFocus
-'    ValidateDefinition = False
-'    Exit Function
-'  End If
-  
   ' Check for an end date if not indefinetly
   If IsNull(cboEndDate.DateValue) And chkScheduled.Value = vbChecked And chkIndefinitely.Value = vbUnchecked Then
-    COAMsgBox "You must select a valid end date or run indefinitely if you wish the batch job to be scheduled.", vbExclamation + vbOKOnly, "Batch Job"
+    COAMsgBox "You must select a valid end date or run indefinitely if you wish the " & IIf(gblnReportPackMode, "report packs", "batch job") & " to be scheduled.", vbExclamation + vbOKOnly, IIf(gblnReportPackMode, "Report Pack", "Batch Job")
     SSTab1.Tab = 0
     cboEndDate.SetFocus
     ValidateDefinition = False
@@ -3247,7 +3237,7 @@ Private Function ValidateDefinition() As Boolean
   
   ' Check end date is after start date
   If chkScheduled.Value = vbChecked And chkIndefinitely.Value = vbUnchecked And (cboStartDate.DateValue > cboEndDate.DateValue) Then
-    COAMsgBox "Start date must be prior to end date.", vbExclamation + vbOKOnly, "Batch Job"
+    COAMsgBox "Start date must be prior to end date.", vbExclamation + vbOKOnly, IIf(gblnReportPackMode, "Report Packs", "Batch Jobs")
     SSTab1.Tab = 0
     cboEndDate.SetFocus
     ValidateDefinition = False
@@ -3255,8 +3245,8 @@ Private Function ValidateDefinition() As Boolean
   End If
   
   ' Check that there are jobs defined in the batch job
-  If grdColumns.Rows = 0 Or OnlyPauseJobsDefined Then
-    COAMsgBox "You must select at least 1 (non pause) job in your batch job.", vbExclamation + vbOKOnly, "Batch Job"
+  If grdColumns.Rows = 0 Or (OnlyPauseJobsDefined) Then
+    COAMsgBox "You must select at least 1" & IIf(gblnReportPackMode, " ", " (non pause) ") & "job in your " & IIf(gblnReportPackMode, "report packs", "batch job") & ".", vbExclamation + vbOKOnly, IIf(gblnReportPackMode, "Report Packs", "Batch Jobs")
     SSTab1.Tab = 1
     Exit Function
   End If
@@ -3265,7 +3255,7 @@ Private Function ValidateDefinition() As Boolean
   ' (Needed incase a user group has been deleted)
   If chkScheduled.Value Then
     If cboRoleToPrompt.Text = "" Then
-      COAMsgBox "You must select a valid user group for this batch job.", vbExclamation + vbOKOnly, "Batch Jobs"
+      COAMsgBox "You must select a valid user group for this " & IIf(gblnReportPackMode, "report packs", "batch job") & ".", vbExclamation + vbOKOnly, IIf(gblnReportPackMode, "Report Packs", "Batch Jobs")
       SSTab1.Tab = 0
       cboRoleToPrompt.SetFocus
       ValidateDefinition = False
@@ -3276,14 +3266,14 @@ Private Function ValidateDefinition() As Boolean
   
   If chkEmail(0).Value = vbChecked And Val(txtEmailNotifyGroup(0).Tag) = 0 Then
     SSTab1.Tab = 1
-    COAMsgBox "You must select an email group for failed job notification.", vbExclamation, "Batch Jobs"
+    COAMsgBox "You must select an email group for failed job notification.", vbExclamation, IIf(gblnReportPackMode, "Report Packs", "Batch Jobs")
     ValidateDefinition = False
     Exit Function
   End If
   
   If chkEmail(1).Value = vbChecked And Val(txtEmailNotifyGroup(1).Tag) = 0 Then
     SSTab1.Tab = 1
-    COAMsgBox "You must select an email group for successful job notification.", vbExclamation, "Batch Jobs"
+    COAMsgBox "You must select an email group for successful job notification.", vbExclamation, IIf(gblnReportPackMode, "Report Packs", "Batch Jobs")
     ValidateDefinition = False
     Exit Function
   End If
@@ -3295,7 +3285,7 @@ Private Function ValidateDefinition() As Boolean
   
 ValidateDefinition_ERROR:
   
-  COAMsgBox "Error whilst validating batch job definition." & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Batch Job"
+  COAMsgBox IIf(gblnReportPackMode, "Error whilst validating report pack definition.", "Error whilst validating " & IIf(gblnReportPackMode, "report packs", "batch job") & " definition.") & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, IIf(gblnReportPackMode, "Report Pack", "Batch Job")
   ValidateDefinition = False
 
 End Function
@@ -4160,12 +4150,12 @@ Public Sub PrintDef(lBatchJobID As Long)
     
         Do While Not rsColumns.EOF
           
-          If Not JobTypeRequiresDef(rsColumns!jobtype) Then
-            .PrintNonBold rsColumns!jobtype & vbTab & _
+          If Not JobTypeRequiresDef(rsColumns!JobType) Then
+            .PrintNonBold rsColumns!JobType & vbTab & _
                           rsColumns!Parameter
           Else
-            .PrintNonBold rsColumns!jobtype & vbTab & _
-                          GetJobName(rsColumns!jobtype, rsColumns!JobID)
+            .PrintNonBold rsColumns!JobType & vbTab & _
+                          GetJobName(rsColumns!JobType, rsColumns!JobID)
           End If
 
           rsColumns.MoveNext
