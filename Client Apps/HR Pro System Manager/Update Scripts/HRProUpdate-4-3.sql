@@ -1949,6 +1949,11 @@ PRINT 'Step - System metadata indexing'
 /* ------------------------------------------------------------- */
 PRINT 'Step - New Shared Table Transfer Types for ASPP'
 
+	-- Clear temporary payroll table
+	DELETE FROM dbo.[ASRSysAccordTransactionProcessInfo];
+
+
+
 	-- ASPP Adoption
 	SELECT @iRecCount = count(TransferTypeID) FROM ASRSysAccordTransferTypes WHERE TransferTypeID = 77
 	IF @iRecCount = 0
