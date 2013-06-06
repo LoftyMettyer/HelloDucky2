@@ -361,7 +361,19 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
       gobjProgress.UpdateProgress False
       DoEvents
       fOK = SaveExpressions(pfRefreshDatabase)
+      
+      'Do progress bar for new scripting bit tacked on the end here
+      gobjProgress.ResetBar2
+      gobjProgress.Bar2MaxValue = 100
+      gobjProgress.Bar2Value = 35
+      gobjProgress.UpdateProgress2
+      OutputCurrentProcess2 "Scripting System Framework Object"
+      
       gobjHRProEngine.Script.ScriptObjects
+      
+      gobjProgress.Bar2Value = 99
+      gobjProgress.UpdateProgress2
+      
       fOK = fOK And Not gobjProgress.Cancelled
     End If
      
