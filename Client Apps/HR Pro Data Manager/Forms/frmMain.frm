@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "15:13"
+            TextSave        =   "15:59"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -3667,6 +3667,7 @@ Public Sub RunUtility(ByRef UtilType As UtilityType, ByRef UtilityID As Long)
   Dim fExit As Boolean
   Dim bRunOnce As Boolean
   Dim bOK As Boolean
+  Dim lngSelectedID As Long
    
   bOK = True
   fExit = False
@@ -3702,6 +3703,7 @@ Public Sub RunUtility(ByRef UtilType As UtilityType, ByRef UtilityID As Long)
           .EnableRun = True
               
           If .ShowList(UtilType) Then
+          
             .Action = edtSelect
           
             ' Running a specific utility or just browsing?
@@ -3713,65 +3715,67 @@ Public Sub RunUtility(ByRef UtilType As UtilityType, ByRef UtilityID As Long)
               fExit = True
             Else
                 
+              lngSelectedID = .SelectedID
+                
               '
               Select Case UtilType
                 Case utlCrossTab
-                  bOK = DoCrossTab(.Action, .SelectedID, .FromCopy)
+                  bOK = DoCrossTab(.Action, lngSelectedID, .FromCopy)
                 
                 Case utlCustomReport
-                  bOK = DoCustomReport(.Action, .SelectedID, .FromCopy)
+                  bOK = DoCustomReport(.Action, lngSelectedID, .FromCopy)
                 
                 Case utlCalendarReport
-                  bOK = DoCalendarReport(.Action, .SelectedID, .FromCopy)
+                  bOK = DoCalendarReport(.Action, lngSelectedID, .FromCopy)
                               
                 Case utlRecordProfile
-                  bOK = DoRecordProfile(.Action, .SelectedID, .FromCopy)
+                  bOK = DoRecordProfile(.Action, lngSelectedID, .FromCopy)
                
                 Case utlMatchReport
-                  bOK = DoMatchReport(mrtNormal, .Action, .SelectedID, .FromCopy)
+                  bOK = DoMatchReport(mrtNormal, .Action, lngSelectedID, .FromCopy)
                 
                 Case utlCareer
-                  bOK = DoMatchReport(mrtCareer, .Action, .SelectedID, .FromCopy)
+                  bOK = DoMatchReport(mrtCareer, .Action, lngSelectedID, .FromCopy)
                             
                 Case utlSuccession
-                  bOK = DoMatchReport(mrtSucession, .Action, .SelectedID, .FromCopy)
+                  bOK = DoMatchReport(mrtSucession, .Action, lngSelectedID, .FromCopy)
           
                 Case utlLabel
-                   DoEnvelope .Action, .SelectedID, .FromCopy
+                   DoEnvelope .Action, lngSelectedID, .FromCopy
         
                 Case utlMailMerge
-                   DoMailMerge .Action, .SelectedID, .FromCopy
+                   DoMailMerge .Action, lngSelectedID, .FromCopy
                 
                 Case UtlGlobalAdd
-                  DoGlobal glAdd, .Action, .SelectedID, .FromCopy
+                  DoGlobal glAdd, .Action, lngSelectedID, .FromCopy
                 
                 Case utlGlobalUpdate
-                  DoGlobal glUpdate, .Action, .SelectedID, .FromCopy
+                  DoGlobal glUpdate, .Action, lngSelectedID, .FromCopy
                 
                 Case utlGlobalDelete
-                  DoGlobal glDelete, .Action, .SelectedID, .FromCopy
+                  DoGlobal glDelete, .Action, lngSelectedID, .FromCopy
         
                 Case utlDataTransfer
-                  DoDataTransfer .Action, .SelectedID, .FromCopy
+                  DoDataTransfer .Action, lngSelectedID, .FromCopy
         
                 Case utlImport
-                  DoImport .Action, .SelectedID, .FromCopy
+                  DoImport .Action, lngSelectedID, .FromCopy
         
                 Case utlExport
-                  DoExport .Action, .SelectedID, .FromCopy
+                  DoExport .Action, lngSelectedID, .FromCopy
         
                 Case utlBatchJob
-                  DoBatchJob .Action, .SelectedID, .FromCopy, .SelectedText
+                  DoBatchJob .Action, lngSelectedID, .FromCopy, .SelectedText
         
                 Case utlReportPack
-                  DoReportPack .Action, .SelectedID, .FromCopy, .SelectedText
+                  DoReportPack .Action, lngSelectedID, .FromCopy, .SelectedText
         
               End Select
             
               ' Record the event
               If bOK Then UpdateUsage UtilType, .SelectedID, .Action
             
-            
+              .SelectedID = lngSelectedID
               fExit = gbCloseDefSelAfterRun Or bRunOnce
             
             End If
