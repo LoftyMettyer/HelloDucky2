@@ -484,7 +484,7 @@ Public Function DataGrid(objNewValue As SSDBGrid)
   Dim blnGroupHeaders As Boolean
   Dim blnIgnoreRow As Boolean
   Dim varBookmark As Variant
-
+  
   On Local Error GoTo LocalErr
 
   If mblnPrintData Then
@@ -619,13 +619,16 @@ Public Function SendEmail(strAttachment As String) As Boolean
   Dim rsEmail As Recordset
   Dim strSQL As String
   
+  Dim strErrorTemp As String
   Dim strAddress() As String
   Dim lngCount As Long
-  
+  Dim blnShowMessage As Boolean
   Dim blnProgressVisible As Boolean
 
   On Error GoTo LocalErr
 
+
+  blnShowMessage = False
 
   'MH20040426 Fault 8023
   If datGeneral.SystemPermission("EMAILGROUPS", "VIEW") = False Then
@@ -653,26 +656,33 @@ Public Function SendEmail(strAttachment As String) As Boolean
         Exit Function
       End If
 
+      .SessionID = frmEmailSel.MAPISession1.SessionID
+      .AddressResolveUI = True
       .Compose
 
       blnProgressVisible = gobjProgress.Visible
       gobjProgress.Visible = False
       
+      strErrorTemp = "Error resolving email recipient(s)"
       Do While Not rsEmail.EOF
         strAddress = Split(rsEmail!AddrFixed, ";")
         
         For lngCount = 0 To UBound(strAddress)
           If Trim(strAddress(lngCount)) <> vbNullString Then
             .RecipIndex = .RecipCount
-            .RecipAddress = Trim(strAddress(lngCount))
             .RecipType = mapToList
-            .ResolveName
+            .RecipDisplayName = Trim(strAddress(lngCount))
+            .RecipAddress = "smtp:" & Trim(strAddress(lngCount))
+            If Not blnShowMessage Then
+              .ResolveName
+            End If
           End If
         Next
         
         rsEmail.MoveNext
       Loop
-
+      strErrorTemp = vbNullString
+      
       rsEmail.Close
       Set rsEmail = Nothing
 
@@ -685,7 +695,7 @@ Public Function SendEmail(strAttachment As String) As Boolean
         .AttachmentName = mstrEmailAttachAs
       End If
       
-      .Send False
+      .Send blnShowMessage
       gobjProgress.Visible = blnProgressVisible
     
     End With
@@ -698,12 +708,22 @@ Public Function SendEmail(strAttachment As String) As Boolean
 Exit Function
 
 LocalErr:
-  mstrErrorMessage = "Error sending email" & _
-    IIf(Err.Description <> vbNullString, " (" & Err.Description & ")", vbNullString)
-  On Error Resume Next
-  frmEmailSel.MAPIsignoff
-  Set frmEmailSel = Nothing
-  SendEmail = False
+  If Err.Number = 48389 Then
+    'Simple MAPI is no longer supported in Microsoft Outlook 2007. It is still supported by Exchange Server 2003.
+    'http://msdn.microsoft.com/en-us/library/cc815424.aspx
+    
+    'Can't resolve recipients and get error on send so only option is to show the message..
+    blnShowMessage = True
+    Resume Next
+  Else
+    If strErrorTemp = "" Then strErrorTemp = "Error sending email"
+    mstrErrorMessage = strErrorTemp & _
+      IIf(Err.Description <> vbNullString, " (" & Err.Description & ")", vbNullString)
+    On Error Resume Next
+    frmEmailSel.MAPIsignoff
+    Set frmEmailSel = Nothing
+    SendEmail = False
+  End If
 
 End Function
 
@@ -1136,6 +1156,10 @@ End Property
 
 Public Property Let PageTitles(ByVal blnNewValue As Boolean)
   mblnPageTitles = blnNewValue
+End Property
+
+Public Property Get EmailAttachAs() As String
+  EmailAttachAs = mstrEmailAttachAs
 End Property
 
 Private Function CheckEmailAttachment(strExt As String)
