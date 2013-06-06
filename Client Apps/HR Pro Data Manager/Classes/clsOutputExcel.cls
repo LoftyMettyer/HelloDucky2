@@ -796,9 +796,9 @@ Public Function GetFile(objParent As clsOutputRun, colStyles As Collection) As B
   ' Leave the app there after user has closed the worksheet
   mxlApp.UserControl = True
 
-  If gblnReportPackMode And mlngSaveExisting = 2 And gobjProgress.Bar1Value > 0 Then
+  If gblnReportPackMode And mlngSaveExisting = 0 And gobjProgress.Bar1Value > 0 Then
       'reset write mode to append in order that the previous report job doesnt get overwritten
-      mlngSaveExisting = 3
+      mlngSaveExisting = 4
   End If
   'mxlApp.Visible = True
   

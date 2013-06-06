@@ -366,7 +366,7 @@ Public Function GetFile(objParent As clsOutputRun, colSytles As Collection) As B
       End If
     End If
   Else
-    If gblnReportPackMode And mlngSaveExisting = 2 And gobjProgress.Bar1Value > 0 Then
+    If gblnReportPackMode And mlngSaveExisting = 0 And gobjProgress.Bar1Value > 0 Then
         'reset write mode to append in order that the previous report job doesnt get overwritten
         mlngSaveExisting = 3
     End If
