@@ -2,9 +2,9 @@ VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
 Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmMatchDef 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Match Report Definition"
@@ -107,18 +107,23 @@ Begin VB.Form frmMatchDef
       TabPicture(1)   =   "frmMatchDef.frx":11BC
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraRelations"
+      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "Colu&mns"
       TabPicture(2)   =   "frmMatchDef.frx":11D8
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraFieldButtons"
+      Tab(2).Control(0)=   "fraFieldsSelected"
+      Tab(2).Control(0).Enabled=   0   'False
       Tab(2).Control(1)=   "fraFieldsAvailable"
-      Tab(2).Control(2)=   "fraFieldsSelected"
+      Tab(2).Control(1).Enabled=   0   'False
+      Tab(2).Control(2)=   "fraFieldButtons"
+      Tab(2).Control(2).Enabled=   0   'False
       Tab(2).ControlCount=   3
       TabCaption(3)   =   "&Sort Order"
       TabPicture(3)   =   "frmMatchDef.frx":11F4
       Tab(3).ControlEnabled=   0   'False
       Tab(3).Control(0)=   "fraReportOrder"
+      Tab(3).Control(0).Enabled=   0   'False
       Tab(3).ControlCount=   1
       TabCaption(4)   =   "O&utput"
       TabPicture(4)   =   "frmMatchDef.frx":1210
@@ -1184,30 +1189,28 @@ Begin VB.Form frmMatchDef
                Width           =   540
             End
             Begin VB.CommandButton cmdPicklist 
+               Caption         =   "..."
                DisabledPicture =   "frmMatchDef.frx":1264
                Enabled         =   0   'False
                Height          =   315
                Index           =   1
                Left            =   3870
-               Picture         =   "frmMatchDef.frx":15C5
-               Style           =   1  'Graphical
                TabIndex        =   26
                Top             =   345
                UseMaskColor    =   -1  'True
-               Width           =   300
+               Width           =   330
             End
             Begin VB.CommandButton cmdFilter 
-               DisabledPicture =   "frmMatchDef.frx":1926
+               Caption         =   "..."
+               DisabledPicture =   "frmMatchDef.frx":15C5
                Enabled         =   0   'False
                Height          =   315
                Index           =   1
                Left            =   3870
-               Picture         =   "frmMatchDef.frx":1C87
-               Style           =   1  'Graphical
                TabIndex        =   29
                Top             =   720
                UseMaskColor    =   -1  'True
-               Width           =   300
+               Width           =   330
             End
             Begin VB.Label lblTable2Records 
                AutoSize        =   -1  'True
@@ -1413,7 +1416,7 @@ Begin VB.Form frmMatchDef
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(0).Picture=   "frmMatchDef.frx":1FE8
+            stylesets(0).Picture=   "frmMatchDef.frx":1926
             stylesets(1).Name=   "ReadOnly"
             stylesets(1).ForeColor=   -2147483631
             stylesets(1).BackColor=   -2147483633
@@ -1427,7 +1430,7 @@ Begin VB.Form frmMatchDef
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(1).Picture=   "frmMatchDef.frx":2004
+            stylesets(1).Picture=   "frmMatchDef.frx":1942
             MultiLine       =   0   'False
             AllowRowSizing  =   0   'False
             AllowGroupSizing=   0   'False
@@ -1567,15 +1570,15 @@ Begin VB.Form frmMatchDef
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
          NumListImages   =   3
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmMatchDef.frx":2020
+            Picture         =   "frmMatchDef.frx":195E
             Key             =   "IMG_TABLE"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmMatchDef.frx":23EC
+            Picture         =   "frmMatchDef.frx":1D2A
             Key             =   "IMG_CALC"
          EndProperty
          BeginProperty ListImage3 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmMatchDef.frx":27FC
+            Picture         =   "frmMatchDef.frx":213A
             Key             =   "IMG_MATCH"
          EndProperty
       EndProperty
@@ -1594,7 +1597,7 @@ Begin VB.Form frmMatchDef
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      Bands           =   "frmMatchDef.frx":2BE0
+      Bands           =   "frmMatchDef.frx":251E
    End
 End
 Attribute VB_Name = "frmMatchDef"
