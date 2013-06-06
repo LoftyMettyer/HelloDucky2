@@ -932,7 +932,7 @@ Begin VB.Form frmSSIntranetLink
          Width           =   960
       End
       Begin VB.OptionButton optLink 
-         Caption         =   "&Report / Utility"
+         Caption         =   "Report / Utilit&y"
          Height          =   315
          Index           =   2
          Left            =   200
