@@ -1,7 +1,7 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.ocx"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
 Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "Codejock.SkinFramework.v13.1.0.ocx"
 Begin VB.MDIForm frmMain 
    AutoShowChildren=   0   'False
@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "16:55"
+            TextSave        =   "11:20"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -180,8 +180,6 @@ Dim pic As StdPicture, hMemDC As Long, pHeight As Long, pWidth As Long
 Dim mfMenuDisabled As Boolean
 
 Private mstrLastAlarmCheck As String
-
-Public BypassDefsel_ID As Long
 
 'Private mblnLoggingOff As Boolean
 
@@ -679,7 +677,7 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
   Dim plngHelp As Long
   
   ' JPD20020926 Fault 4431
-  If Screen.MousePointer = vbHourglass Then Exit Sub
+  If Screen.MousePointer = vbHourglass And Not gbJustRunIt Then Exit Sub
   
   ' Get rid of any screen display residue.
   'DoEvents
@@ -1016,6 +1014,8 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
         RefreshRecordEditScreens
       End If
 
+
+    ' <Tools> menu.
     Case "Calculations"
       CalculationsClick
       
@@ -1030,6 +1030,11 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
 
     Case "ID_LabelTemplates"
       LabelTemplatesClick
+
+    Case "ID_DocumentTypes"
+      DocumentTypesClick
+
+
 
     ' <WINDOW> menu.
     
@@ -1227,10 +1232,22 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
         MsgBox "CMG Commit successful", vbOKOnly & vbInformation, "CMG"
       End If
     
+    
+    ' Version 1 stuff
+    Case "ID_PollMode"
+      RunPollJob
+    
+    
+    ' Message boxes
+    Case "MessageBox"
+      MsgBox Tool.Text, vbOKOnly
+    
+    
     ' JPD20021126 Fault 4805
     Case "ID_Print"
       ActiveForm.PrintGrid
-    
+       
+       
     Case Else
       ' It must be a screen of some kind so decide what type it is.
       Select Case Left(Tool.Name, 2)
@@ -2103,7 +2120,7 @@ Public Sub PickListClick()
       
       If .ShowList(utlPicklist) Then
       
-        .Show vbModal
+        .CustomShow vbModal
         
         Select Case .Action
           Case edtAdd
@@ -2176,7 +2193,7 @@ Public Sub DataTransferClick()
       .EnableRun = True
       
       If .ShowList(utlDataTransfer) Then
-        .Show vbModal
+        .CustomShow vbModal
             
         Select Case .Action
           Case edtAdd
@@ -2290,7 +2307,7 @@ Public Sub GlobalClick(FormType As GlobalType)
       .EnableRun = True
 
       If .ShowList(lngTYPE) Then
-        .Show vbModal
+        .CustomShow vbModal
 
         Select Case .Action
         Case edtAdd
@@ -2395,7 +2412,7 @@ Public Sub ImportClick()
         
       If .ShowList(utlImport) Then
         
-        .Show vbModal
+        .CustomShow vbModal
             
         Select Case .Action
           Case edtAdd
@@ -2497,7 +2514,7 @@ Public Sub WorkflowClick()
       .EnableRun = True
 
       If .ShowList(utlWorkflow) Then
-        .Show vbModal
+        .CustomShow vbModal
 
         Select Case .Action
           Case edtSelect
@@ -2612,7 +2629,7 @@ Public Sub ExportClick()
         
       If .ShowList(utlExport) Then
         
-        .Show vbModal
+        .CustomShow vbModal
             
         Select Case .Action
           Case edtAdd
@@ -2698,7 +2715,7 @@ Public Sub BatchJobsClick()
       
       If .ShowList(utlBatchJob) Then
         
-        .Show vbModal
+        .CustomShow vbModal
         DoEvents
         
         Select Case .Action
@@ -3283,7 +3300,7 @@ Public Sub CalendarReportsClick()
       
       If .ShowList(utlCalendarReport) Then
         
-        .Show vbModal
+        .CustomShow vbModal
         Select Case .Action
           Case edtAdd
             Set frmEdit = New frmCalendarReport
@@ -3433,7 +3450,7 @@ Public Sub CustomReportsClick()
       
       If .ShowList(utlCustomReport) Then
         
-        .Show vbModal
+        .CustomShow vbModal
         Select Case .Action
           Case edtAdd
             Set frmEdit = New frmCustomReports
@@ -3534,7 +3551,7 @@ Public Sub MatchReportClick(mrtMatchReportType As MatchReportType)
 
       If .ShowList(lngTYPE, "MatchReportType = " & CStr(mrtMatchReportType)) Then
 
-        .Show vbModal
+        .CustomShow vbModal
         Select Case .Action
         Case edtAdd
           Set frmEdit = New frmMatchDef
@@ -3633,7 +3650,7 @@ Public Sub CrossTabClick()
       
       If .ShowList(utlCrossTab) Then
         
-        .Show vbModal
+        .CustomShow vbModal
         'TM09012004 Fault 4150
         'DoEvents
         
@@ -3712,8 +3729,8 @@ Public Sub MailMergeClick()
       .EnableRun = True
       
       If .ShowList(utlMailMerge) Then
-        
-        .Show vbModal
+       
+        .CustomShow vbModal
         
         Select Case .Action
         Case edtAdd
@@ -3916,7 +3933,8 @@ Public Sub LabelsAndEnvelopesClick()
       
       If .ShowList(utlLabel) Then
         
-        .Show vbModal
+        .CustomShow vbModal
+        
         Select Case .Action
         Case edtAdd
           Set frmDefinition = New frmMailMerge
@@ -3992,7 +4010,7 @@ Public Sub EmailGroupClick()
 
       If .ShowList(utlEmailGroup) Then
 
-        .Show vbModal
+        .CustomShow vbModal
         Select Case .Action
         Case edtAdd
           Set frmDefinition = New frmEmailDefGroup
@@ -4218,7 +4236,7 @@ Public Sub LabelTemplatesClick()
 
       If .ShowList(utlLabelType) Then
 
-        .Show vbModal
+        .CustomShow vbModal
         Select Case .Action
         Case edtAdd
           Set frmDefinition = New frmLabelTypeDefinition
@@ -4301,3 +4319,156 @@ Public Sub CheckForNonactiveForms(pfrmCallingForm As Form)
 
 End Sub
 
+' Poll the server for any jobs that need executing.
+Private Sub RunPollJob()
+
+  On Error GoTo ErrorTrap
+
+  Dim bPreviousCloseDefSelAfterRun As Boolean
+
+  Dim objTool As New ActiveBarLibraryCtl.Tool
+  
+  Dim sSQL As String
+  Dim sJob As String
+  Dim rsMessages As ADODB.Recordset
+  Dim lngStart As Long
+  Dim lngEnd As Long
+
+  bPreviousCloseDefSelAfterRun = gbCloseDefSelAfterRun
+
+  If Application.LoggedIn Then
+
+    gbCloseDefSelAfterRun = True
+    gblnBatchMode = True
+    gbIsInPollMode = True
+    gbJustRunIt = True
+  
+    With gobjProgress
+      .Bar1MaxValue = 1
+      .Caption = "Running Jobs..."
+      .MainCaption = "Waiting for job..."
+      .AVI = dbTable
+      .Time = False
+      .Cancel = True
+      .NumberOfBars = 2
+      .OpenProgress
+    End With
+  
+    
+    sSQL = "exec dbo.[spASRGetJobs];"
+    
+    Do While Not gobjProgress.Cancelled
+    
+      Set rsMessages = gobjDataAccess.OpenRecordset(sSQL, adOpenForwardOnly, adLockReadOnly)
+      With rsMessages
+        Do While Not .EOF
+          sJob = rsMessages.Fields(0).Value
+          
+          lngStart = InStr(1, sJob, "(")
+          lngEnd = InStr(1, sJob, ")")
+          If lngStart > 0 And lngEnd > 0 Then
+            glngBypassDefsel_ID = Mid(sJob, lngStart + 1, (lngEnd - lngStart) - 1)
+            objTool.Name = Mid(sJob, 1, lngStart - 1)
+          Else
+            objTool.Name = sJob
+          End If
+          
+          abMain_Click objTool
+          glngBypassDefsel_ID = 0
+          
+          gobjProgress.MainCaption = "Waiting for job..."
+          
+          rsMessages.MoveNext
+        Loop
+      
+        .Close
+      End With
+    
+    Loop
+       
+    
+  End If
+    
+TidyUpAndExit:
+    gobjProgress.CloseProgress
+    Set rsMessages = Nothing
+    
+    gbCloseDefSelAfterRun = bPreviousCloseDefSelAfterRun
+    gblnBatchMode = False
+    gbIsInPollMode = False
+    gbJustRunIt = False
+    
+    Exit Sub
+
+ErrorTrap:
+  GoTo TidyUpAndExit
+    
+End Sub
+
+Private Sub DocumentTypesClick()
+
+  Dim frmDefinition As frmDocumentMap
+  Dim frmSelection As frmDefSel
+  Dim blnExit As Boolean
+  Dim blnOK As Boolean
+  Dim strSelectedName As String
+  Dim lngSelectedID As Long
+
+  Set frmSelection = New frmDefSel
+  blnExit = False
+   
+  With frmSelection
+    Do While Not blnExit
+      
+      .Options = edtAdd + edtDelete + edtEdit + edtCopy + edtPrint + edtProperties
+      .EnableRun = False
+      .TableComboEnabled = False
+      .TableComboVisible = False
+           
+      If .ShowList(utlDocumentMapping) Then
+        
+        .Show vbModal
+        Select Case .Action
+        Case edtAdd
+          Set frmDefinition = New frmDocumentMap
+          frmDefinition.Initialise True, .FromCopy, , False
+          frmDefinition.Show vbModal
+          .SelectedID = frmDefinition.SelectedID
+          Unload frmDefinition
+          Set frmDefinition = Nothing
+                    
+        Case edtEdit
+          Set frmDefinition = New frmDocumentMap
+          frmDefinition.Initialise False, .FromCopy, .SelectedID
+          
+          If Not frmDefinition.Cancelled Then
+            frmDefinition.Show vbModal
+            If .FromCopy And frmDefinition.SelectedID > 0 Then
+              .SelectedID = frmDefinition.SelectedID
+            End If
+          End If
+          Unload frmDefinition
+          Set frmDefinition = Nothing
+           
+        Case edtPrint
+          Set frmDefinition = New frmDocumentMap
+          frmDefinition.PrintDefinition .SelectedID
+          Unload frmDefinition
+          Set frmDefinition = Nothing
+        
+        Case 0
+          blnExit = True  'cancel
+
+        End Select
+           
+      End If
+    
+    Loop
+  End With
+
+  Unload frmSelection
+  Set frmSelection = Nothing
+
+  RefreshMainForm Me, False
+  
+End Sub
