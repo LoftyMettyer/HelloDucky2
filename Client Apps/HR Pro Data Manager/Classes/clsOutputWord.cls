@@ -325,7 +325,7 @@ Public Function RecordProfilePage(pfrmRecProfile As frmRecordProfilePreview, _
                           sTempName = GetTmpFName
                           SavePicture ctlTemp.StyleSets(iLoop4).Picture, sTempName
                           mwrdDoc.ActiveWindow.Selection.TypeText IIf(fFirstColumnDone, vbTab, "")
-                          mwrdDoc.ActiveWindow.Selection.InlineShapes.AddPicture FileName:=sTempName, LinkToFile:=False, SaveWithDocument:=True
+                          mwrdDoc.ActiveWindow.Selection.InlineShapes.AddPicture fileName:=sTempName, LinkToFile:=False, SaveWithDocument:=True
                           Kill sTempName
                           fPhotoDone = True
 
@@ -355,7 +355,7 @@ Public Function RecordProfilePage(pfrmRecProfile As frmRecordProfilePreview, _
                       sTempName = GetTmpFName
                       SavePicture ctlTemp.StyleSets(iLoop4).Picture, sTempName
                       mwrdDoc.ActiveWindow.Selection.TypeText IIf(fFirstColumnDone, vbTab, "")
-                      mwrdDoc.ActiveWindow.Selection.InlineShapes.AddPicture FileName:=sTempName, LinkToFile:=False, SaveWithDocument:=True
+                      mwrdDoc.ActiveWindow.Selection.InlineShapes.AddPicture fileName:=sTempName, LinkToFile:=False, SaveWithDocument:=True
                       Kill sTempName
                       fPhotoDone = True
 
@@ -543,7 +543,7 @@ Public Property Let Email(blnEmail As Boolean)
   mblnEmail = blnEmail
 End Property
 
-Public Property Let FileName(strFileName As String)
+Public Property Let fileName(strFileName As String)
   mstrFileName = strFileName
 End Property
 
@@ -1204,7 +1204,12 @@ Public Sub Complete()
    
     Select Case UCase(strExtension)
       Case "PDF"
-        mwrdDoc.SaveAs mstrFileName, FileFormat:=Val(wdFormatPDF)
+        If gblnReportPackMode Then
+          'For report packs we cant save the file in pdf format until we have output all reports and added the TOC
+          mwrdDoc.SaveAs mstrFileName, FileFormat:=Val(wdFormatDocument97)
+        Else
+          mwrdDoc.SaveAs mstrFileName, FileFormat:=Val(wdFormatPDF)
+        End If
       Case "DOCX"
         mwrdDoc.SaveAs mstrFileName, FileFormat:=Val(wdFormatXMLDocument)
       Case "DOC"
