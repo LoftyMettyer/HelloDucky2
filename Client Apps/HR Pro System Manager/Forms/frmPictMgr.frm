@@ -1179,33 +1179,33 @@ Private Function PictureIsUsed(glngPictureID As Long) As Boolean
   End If
 
   
-  ' Check that it is not used as a background picture on a workflow web form.
-  sSQL = "SELECT DISTINCT tmpWorkflowElements.workflowID," & _
-    "   tmpWorkflowElements.identifier" & _
-    " FROM tmpWorkflowElements" & _
-    " WHERE tmpWorkflowElements.webFormBGImageID = " & Trim(Str(glngPictureID))
-
-  Set rsScreens = daoDb.OpenRecordset(sSQL, _
-    dbOpenForwardOnly, dbReadOnly)
-  If Not (rsScreens.BOF And rsScreens.EOF) Then
-    Do Until rsScreens.EOF
-      recWorkflowEdit.Index = "idxWorkflowID"
-      recWorkflowEdit.Seek "=", rsScreens.Fields("workflowID")
-
-      If Not recWorkflowEdit.NoMatch Then
-        If recWorkflowEdit.Fields("deleted").value = False Then
-          fUsed = True
-          mfrmUse.AddToList ("Workflow : " & recWorkflowEdit.Fields("name").value & " <'" & rsScreens.Fields("identifier") & "' web form background picture>")
-        End If
-      End If
-      
-      rsScreens.MoveNext
-    Loop
-  End If
-  'Close temporary recordset
-  rsScreens.Close
-      
   If Application.WorkflowModule Then
+    ' Check that it is not used as a background picture on a workflow web form.
+    sSQL = "SELECT DISTINCT tmpWorkflowElements.workflowID," & _
+      "   tmpWorkflowElements.identifier" & _
+      " FROM tmpWorkflowElements" & _
+      " WHERE tmpWorkflowElements.webFormBGImageID = " & Trim(Str(glngPictureID))
+  
+    Set rsScreens = daoDb.OpenRecordset(sSQL, _
+      dbOpenForwardOnly, dbReadOnly)
+    If Not (rsScreens.BOF And rsScreens.EOF) Then
+      Do Until rsScreens.EOF
+        recWorkflowEdit.Index = "idxWorkflowID"
+        recWorkflowEdit.Seek "=", rsScreens.Fields("workflowID")
+  
+        If Not recWorkflowEdit.NoMatch Then
+          If recWorkflowEdit.Fields("deleted").value = False Then
+            fUsed = True
+            mfrmUse.AddToList ("Workflow : " & recWorkflowEdit.Fields("name").value & " <'" & rsScreens.Fields("identifier") & "' web form background picture>")
+          End If
+        End If
+        
+        rsScreens.MoveNext
+      Loop
+    End If
+    'Close temporary recordset
+    rsScreens.Close
+      
     ' Check that it is not used as a picture on a workflow web form.
     sSQL = "SELECT DISTINCT tmpWorkflowElements.workflowID," & _
       "   tmpWorkflowElements.identifier" & _
