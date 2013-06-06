@@ -845,18 +845,17 @@ Public Function EmailIsUsed(pfrmUsage As frmUsage) As Boolean
 
   'TM20011003 Fault 2191 - 5
   'Make check for the email definition being used in email link definitions.
-    sSQL = "SELECT DISTINCT tmpColumns.columnID, tmpColumns.ColumnName, tmpEmailLinksRecipients.RecipientID, tmpTables.Tablename " & vbCrLf & _
-           "FROM tmpColumns,tmpEmailLinks,tmpEmailLinksRecipients, tmpTables " & vbCrLf & _
-           "WHERE (tmpColumns.ColumnID = tmpEmailLinks.ColumnID) " & _
-           "  AND (tmpEmailLinksRecipients.LinkID = tmpEmailLinks.LinkID) " & _
-           "  AND (tmpColumns.TableID = tmpTables.TableID) " & _
+    sSQL = "SELECT DISTINCT tmpEmailLinks.Title, tmpTables.Tablename " & vbCrLf & _
+           "FROM tmpEmailLinks, tmpEmailLinksRecipients, tmpTables " & vbCrLf & _
+           "WHERE (tmpEmailLinksRecipients.LinkID = tmpEmailLinks.LinkID) " & _
+           "  AND (tmpEmailLinks.TableID = tmpTables.TableID) " & _
            "  AND (tmpEmailLinksRecipients.RecipientID = " & Me.EmailID & ")"
     Set rsDAOCheck = daoDb.OpenRecordset(sSQL)
     With rsDAOCheck
       If Not (.EOF And .BOF) Then
         fUsed = True
         Do Until .EOF
-          mfrmUse.AddToList "Email Link : " & !ColumnName & " <" & !TableName & ">"
+          mfrmUse.AddToList "Email Link : " & !Title & " <" & !TableName & ">"
           .MoveNext
         Loop
         .Close
