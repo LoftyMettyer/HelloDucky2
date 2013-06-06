@@ -1055,6 +1055,95 @@ PRINT 'Step 2 - Version 1 Integration Modifications'
 	END
 
 
+/* ------------------------------------------------------------- */
+PRINT 'Step 3 - Office Output Formats'
+
+
+	EXEC sp_executesql N'IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[ASRSysFileFormats]'') AND type in (N''U''))
+		DROP TABLE [dbo].[ASRSysFileFormats]'
+
+	EXEC sp_executesql N'CREATE TABLE [dbo].[ASRSysFileFormats]
+		( [Destination] [varchar](255) NULL
+		, [Sequence] [int] NULL
+		, [Description] [varchar](255) NULL
+		, [Extension] [varchar](255) NULL
+		, [Value] [int] NULL
+		, [Default] [bit] NULL
+		, [MinimumVersion] [int] NULL
+		) ON [PRIMARY]'
+
+	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(''Word'', 1,''Word 97-2003 Document (*.doc)''    ,''doc'',  0,1,0)'
+	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(''Word'', 2,''Word 2007-2010 Document (*.docx)'' ,''docx'',16,0,0)'
+	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(''Word'', 3,''PDF format (*.pdf)''               ,''pdf'', 17,0,0)'
+	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(''Word'', 4,''XML document format (*.xml)''      ,''xml'', 12,0,0)'
+	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(''Excel'',5,''Excel 97-2003 Workbook (*.xls)''   ,''xls'', 56,1,0)'
+	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(''Excel'',6,''Excel 2007-2010 Workbook (*.xlsx)'',''xlsx'',51,0,0)'
+
+
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE id = OBJECT_ID('ASRSysCalendarReports', 'U') AND name = 'OutputSaveFormat')
+	BEGIN
+		EXEC sp_executesql
+			N'ALTER TABLE ASRSysCalendarReports
+            ADD OutputSaveFormat int NULL, OutputEmailFileFormat int NULL'
+		EXEC sp_executesql
+			N'UPDATE ASRSysCalendarReports
+            SET OutputSaveFormat = CASE WHEN OutputFormat in (4,5,6) THEN 56 ELSE 0 END,
+            OutputEmailFileFormat = CASE WHEN OutputFormat in (4,5,6) THEN 56 ELSE 0 END'
+	END
+
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE id = OBJECT_ID('ASRSysCrossTab', 'U') AND name = 'OutputSaveFormat')
+	BEGIN
+		EXEC sp_executesql
+			N'ALTER TABLE ASRSysCrossTab
+            ADD OutputSaveFormat int NULL, OutputEmailFileFormat int NULL'
+		EXEC sp_executesql
+			N'UPDATE ASRSysCrossTab
+            SET OutputSaveFormat = CASE WHEN OutputFormat in (4,5,6) THEN 56 ELSE 0 END,
+            OutputEmailFileFormat = CASE WHEN OutputFormat in (4,5,6) THEN 56 ELSE 0 END'
+	END
+
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE id = OBJECT_ID('ASRSysCustomReportsName', 'U') AND name = 'OutputSaveFormat')
+	BEGIN
+		EXEC sp_executesql N'ALTER TABLE ASRSysCustomReportsName
+			ADD OutputSaveFormat int NULL, OutputEmailFileFormat int NULL'
+		EXEC sp_executesql
+			N'UPDATE ASRSysCustomReportsName
+			SET OutputSaveFormat = CASE WHEN OutputFormat in (4,5,6) THEN 56 ELSE 0 END,
+			OutputEmailFileFormat = CASE WHEN OutputFormat in (4,5,6) THEN 56 ELSE 0 END'
+	END
+
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE id = OBJECT_ID('ASRSysExportName', 'U') AND name = 'OutputSaveFormat')
+	BEGIN
+		EXEC sp_executesql
+			N'ALTER TABLE ASRSysExportName
+            ADD OutputSaveFormat int NULL, OutputEmailFileFormat int NULL'
+		EXEC sp_executesql
+			N'UPDATE ASRSysExportName
+			SET OutputSaveFormat = CASE WHEN OutputFormat in (4,5,6) THEN 56 ELSE 0 END,
+			OutputEmailFileFormat = CASE WHEN OutputFormat in (4,5,6) THEN 56 ELSE 0 END'
+	END
+
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE id = OBJECT_ID('ASRSysMatchReportName', 'U') AND name = 'OutputSaveFormat')
+	BEGIN
+		EXEC sp_executesql
+			N'ALTER TABLE ASRSysMatchReportName
+			ADD OutputSaveFormat int NULL, OutputEmailFileFormat int NULL'
+		EXEC sp_executesql
+			N'UPDATE ASRSysMatchReportName
+			SET OutputSaveFormat = CASE WHEN OutputFormat in (4,5,6) THEN 56 ELSE 0 END,
+			OutputEmailFileFormat = CASE WHEN OutputFormat in (4,5,6) THEN 56 ELSE 0 END'
+	END
+
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE id = OBJECT_ID('ASRSysRecordProfileName', 'U') AND name = 'OutputSaveFormat')
+	BEGIN
+		EXEC sp_executesql
+			N'ALTER TABLE ASRSysRecordProfileName
+			ADD OutputSaveFormat int NULL, OutputEmailFileFormat int NULL'
+		EXEC sp_executesql
+			N'UPDATE ASRSysRecordProfileName
+			SET OutputSaveFormat = CASE WHEN OutputFormat in (4,5,6) THEN 56 ELSE 0 END,
+            OutputEmailFileFormat = CASE WHEN OutputFormat in (4,5,6) THEN 56 ELSE 0 END'
+	END
 
 
 
