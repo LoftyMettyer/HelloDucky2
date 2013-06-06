@@ -867,7 +867,7 @@ Private Sub GetWorkBook(strWorkbook As String, strWorksheet As String)
     
     'Save a temp template in the format of the output...
     If mstrFileName <> vbNullString Then
-      strFormat = GetOfficeSaveAsFormat(mstrFileName, GetOfficeExcelVersion)
+      strFormat = GetOfficeSaveAsFormat(mstrFileName, GetOfficeExcelVersion, oaExcel)
       If strFormat <> "" Then
         strTempFile = mobjParent.GetTempFileName("")
         mxlTemplateBook.SaveAs strTempFile, Val(strFormat)
@@ -889,7 +889,7 @@ Private Sub GetWorkBook(strWorkbook As String, strWorksheet As String)
       'Make sure the new workbook is in the same format as the template
       'otherwise we won't be able to copy sheets into the new workbook.
       lngOriginalFormat = mxlApp.DefaultSaveFormat
-      mxlApp.DefaultSaveFormat = GetOfficeSaveAsFormat(mstrXLTemplate, GetOfficeExcelVersion)
+      mxlApp.DefaultSaveFormat = GetOfficeSaveAsFormat(mstrXLTemplate, GetOfficeExcelVersion, oaExcel)
       Set mxlWorkBook = mxlApp.Workbooks.Add
       mxlApp.DefaultSaveFormat = lngOriginalFormat
     Else
@@ -1552,7 +1552,7 @@ Public Sub Complete()
   If mblnSave Then
     mstrErrorMessage = "Error saving file <" & mstrFileName & ">"
     
-    strFormat = GetOfficeSaveAsFormat(mstrFileName, GetOfficeExcelVersion)
+    strFormat = GetOfficeSaveAsFormat(mstrFileName, GetOfficeExcelVersion, oaExcel)
     If strFormat = "" Then
       mstrErrorMessage = "This definition is set to save in a file format which is not compatible with your version of Microsoft Office."
       GoTo TidyAndExit
@@ -1578,7 +1578,7 @@ Public Sub Complete()
   If mblnEmail Then
     mstrErrorMessage = "Error sending email"
 
-    strFormat = GetOfficeSaveAsFormat(mobjParent.EmailAttachAs, GetOfficeExcelVersion)
+    strFormat = GetOfficeSaveAsFormat(mobjParent.EmailAttachAs, GetOfficeExcelVersion, oaExcel)
     If strFormat = "" Then
       mstrErrorMessage = "This definition is set to email an attachment in a file format which is not compatible with your version of Microsoft Office."
       GoTo TidyAndExit
