@@ -1605,6 +1605,88 @@ PRINT 'Step 10 - Integration Services'
 
 
 /* ------------------------------------------------------------- */
+PRINT 'Step 11 - Adding Workflow Indexes'
+
+	-- ASRSysWorkflowInstances
+
+	SELECT @iRecCount = COUNT(*)
+	FROM sysobjects
+	WHERE name = 'PK_ASRSysWorkflowInstances'
+		and xtype = 'PK'
+		and parent_obj = object_id(N'[dbo].[ASRSysWorkflowInstances]');
+		
+	IF @iRecCount = 0
+	BEGIN
+		ALTER TABLE ASRSysWorkflowInstances
+		ADD
+		CONSTRAINT [PK_ASRSysWorkflowInstances] PRIMARY KEY NONCLUSTERED 
+		(
+			[ID] ASC
+		)
+		WITH 
+		(
+			PAD_INDEX  = OFF, 
+			STATISTICS_NORECOMPUTE  = OFF, 
+			IGNORE_DUP_KEY = OFF, 
+			ALLOW_ROW_LOCKS  = ON, 
+			ALLOW_PAGE_LOCKS  = ON
+		) ON [PRIMARY];
+	END;
+
+	-- ASRSysWorkflowInstanceSteps
+
+	SELECT @iRecCount = COUNT(*)
+	FROM sysobjects
+	WHERE name = 'PK_ASRSysWorkflowInstanceSteps'
+		and xtype = 'PK'
+		and parent_obj = object_id(N'[dbo].[ASRSysWorkflowInstanceSteps]');
+
+	IF @iRecCount = 0
+	BEGIN
+		ALTER TABLE ASRSysWorkflowInstanceSteps
+		ADD
+		CONSTRAINT [PK_ASRSysWorkflowInstanceSteps] PRIMARY KEY NONCLUSTERED 
+		(
+			[ID] ASC
+		)
+		WITH 
+		(
+			PAD_INDEX  = OFF, 
+			STATISTICS_NORECOMPUTE  = OFF, 
+			IGNORE_DUP_KEY = OFF, 
+			ALLOW_ROW_LOCKS  = ON, 
+			ALLOW_PAGE_LOCKS  = ON
+		) ON [PRIMARY];
+	END;
+
+	-- ASRSysWorkflowInstanceValues
+
+	SELECT @iRecCount = COUNT(*)
+	FROM sysobjects
+	WHERE name = 'PK_ASRSysWorkflowInstanceValues'
+		and xtype = 'PK'
+		and parent_obj = object_id(N'[dbo].[ASRSysWorkflowInstanceValues]');
+
+	IF @iRecCount = 0
+	BEGIN
+		ALTER TABLE ASRSysWorkflowInstanceValues
+		ADD
+		CONSTRAINT [PK_ASRSysWorkflowInstanceValues] PRIMARY KEY NONCLUSTERED 
+		(
+			[ID] ASC
+		)
+		WITH 
+		(
+			PAD_INDEX  = OFF, 
+			STATISTICS_NORECOMPUTE  = OFF, 
+			IGNORE_DUP_KEY = OFF, 
+			ALLOW_ROW_LOCKS  = ON, 
+			ALLOW_PAGE_LOCKS  = ON
+		) ON [PRIMARY];
+	END;
+
+	
+/* ------------------------------------------------------------- */
 PRINT 'Step X - '
 
 	
