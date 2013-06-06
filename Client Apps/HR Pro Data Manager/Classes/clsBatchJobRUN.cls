@@ -1134,6 +1134,34 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
                 strReadInFileContents = gstrHTMLOutputTOC & strReadInFileContents
                 Print #FileNum, strReadInFileContents
             Close #FileNum
+            
+          Case fmtWordDoc
+            'Open word file
+            If GetTOCFile(strOutputFilename, fmtWordDoc) Then
+              InitialiseStyles
+              mwrdApp.Visible = True
+              With mwrdApp.Selection
+                'Insert Report Title or Report Pack name if blank
+                .HomeKey unit:=wdStory
+                .InsertBreak Type:=wdPageBreak
+                .HomeKey unit:=wdStory
+                .TypeParagraph: .TypeParagraph: .TypeParagraph: .TypeParagraph
+                If strOutputReportPackTitle = vbNullString Then
+                  .TypeText Text:=sBatchJobName
+                Else
+                  .TypeText Text:=strOutputReportPackTitle
+                End If
+                .HomeKey unit:=wdLine, Extend:=wdExtend
+                ApplyStylesToRange mwrdApp.Selection.Range, mcolStyles("Heading"), True
+                .Font.Size = 20
+                .MoveLeft unit:=wdCharacter
+              End With
+              mwrdDoc.Save
+              mwrdDoc.Close
+              mwrdApp.Quit
+            Else
+              MsgBox mstrErrorMessage, vbExclamation, "Report Pack"
+            End If
         End Select
     End If
     
