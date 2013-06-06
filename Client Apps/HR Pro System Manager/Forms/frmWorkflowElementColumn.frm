@@ -37,10 +37,9 @@ Begin VB.Form frmWorkflowElementColumn
       Top             =   4440
       Width           =   3990
       Begin VB.CommandButton cmdCalcCalculation 
+Caption = "..."
          Height          =   315
          Left            =   3480
-         Picture         =   "frmWorkflowElementColumn.frx":000C
-         Style           =   1  'Graphical
          TabIndex        =   36
          Top             =   300
          UseMaskColor    =   -1  'True
@@ -2493,4 +2492,5 @@ ErrorTrap:
   Resume TidyUpAndExit
   
 End Function
+
 

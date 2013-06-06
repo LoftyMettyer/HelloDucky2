@@ -57,39 +57,34 @@ Begin VB.Form frmTrainingBookingSetup
       _Version        =   393216
       Style           =   1
       Tabs            =   5
+      Tab             =   4
       TabsPerRow      =   5
       TabHeight       =   520
       TabCaption(0)   =   "Cour&ses"
       TabPicture(0)   =   "frmTrainingBookingSetup.frx":000C
-      Tab(0).ControlEnabled=   -1  'True
+      Tab(0).ControlEnabled=   0   'False
       Tab(0).Control(0)=   "fraCourses"
-      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).ControlCount=   1
       TabCaption(1)   =   "&Pre-requisites"
       TabPicture(1)   =   "frmTrainingBookingSetup.frx":0028
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraPreRequisites"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "De&legates"
       TabPicture(2)   =   "frmTrainingBookingSetup.frx":0044
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraDelegates"
-      Tab(2).Control(0).Enabled=   0   'False
-      Tab(2).Control(1)=   "fraUnavailability"
-      Tab(2).Control(1).Enabled=   0   'False
+      Tab(2).Control(0)=   "fraUnavailability"
+      Tab(2).Control(1)=   "fraDelegates"
       Tab(2).ControlCount=   2
       TabCaption(3)   =   "Waiting List / &Bookings"
       TabPicture(3)   =   "frmTrainingBookingSetup.frx":0060
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "fraWaitingList"
-      Tab(3).Control(0).Enabled=   0   'False
-      Tab(3).Control(1)=   "fraTrainingBookings"
-      Tab(3).Control(1).Enabled=   0   'False
+      Tab(3).Control(0)=   "fraTrainingBookings"
+      Tab(3).Control(1)=   "fraWaitingList"
       Tab(3).ControlCount=   2
       TabCaption(4)   =   "&Related Columns"
       TabPicture(4)   =   "frmTrainingBookingSetup.frx":007C
-      Tab(4).ControlEnabled=   0   'False
+      Tab(4).ControlEnabled=   -1  'True
       Tab(4).Control(0)=   "fraRelatedColumns"
       Tab(4).Control(0).Enabled=   0   'False
       Tab(4).ControlCount=   1
@@ -97,7 +92,7 @@ Begin VB.Form frmTrainingBookingSetup
          Caption         =   "Related Columns :"
          Enabled         =   0   'False
          Height          =   5400
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   77
          Top             =   500
          Width           =   6945
@@ -579,10 +574,9 @@ Begin VB.Form frmTrainingBookingSetup
             Width           =   2800
          End
          Begin VB.CommandButton cmdEmployeeTableOrder 
+            Caption         =   "..."
             Height          =   315
             Left            =   6255
-            Picture         =   "frmTrainingBookingSetup.frx":0098
-            Style           =   1  'Graphical
             TabIndex        =   25
             Top             =   900
             UseMaskColor    =   -1  'True
@@ -629,15 +623,14 @@ Begin VB.Form frmTrainingBookingSetup
       Begin VB.Frame fraCourses 
          Caption         =   "Course Records :"
          Height          =   5400
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   44
          Top             =   500
          Width           =   6945
          Begin VB.CommandButton cmdCourseTableOrder 
+            Caption         =   "..."
             Height          =   315
             Left            =   6390
-            Picture         =   "frmTrainingBookingSetup.frx":01E6
-            Style           =   1  'Graphical
             TabIndex        =   13
             Top             =   4650
             UseMaskColor    =   -1  'True
@@ -3450,4 +3443,5 @@ Private Sub RefreshRelatedColumns()
   End With
 
 End Sub
+
 

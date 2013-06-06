@@ -46,10 +46,9 @@ Begin VB.Form frmWorkflowElementEdit
          Width           =   2580
       End
       Begin VB.CommandButton cmdEmailCC 
+         Caption         =   "..."
          Height          =   315
          Left            =   4360
-         Picture         =   "frmWorkflowElementEdit.frx":000C
-         Style           =   1  'Graphical
          TabIndex        =   19
          Top             =   2300
          UseMaskColor    =   -1  'True
@@ -57,9 +56,9 @@ Begin VB.Form frmWorkflowElementEdit
       End
       Begin VB.ComboBox cboEmailTable 
          Height          =   315
-         ItemData        =   "frmWorkflowElementEdit.frx":015A
+         ItemData        =   "frmWorkflowElementEdit.frx":000C
          Left            =   1780
-         List            =   "frmWorkflowElementEdit.frx":015C
+         List            =   "frmWorkflowElementEdit.frx":000E
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
          TabIndex        =   13
@@ -76,9 +75,9 @@ Begin VB.Form frmWorkflowElementEdit
       End
       Begin VB.ComboBox cboEmailElement 
          Height          =   315
-         ItemData        =   "frmWorkflowElementEdit.frx":015E
+         ItemData        =   "frmWorkflowElementEdit.frx":0010
          Left            =   1780
-         List            =   "frmWorkflowElementEdit.frx":0160
+         List            =   "frmWorkflowElementEdit.frx":0012
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
          TabIndex        =   9
@@ -87,9 +86,9 @@ Begin VB.Form frmWorkflowElementEdit
       End
       Begin VB.ComboBox cboEmailRecordSelector 
          Height          =   315
-         ItemData        =   "frmWorkflowElementEdit.frx":0162
+         ItemData        =   "frmWorkflowElementEdit.frx":0014
          Left            =   1780
-         List            =   "frmWorkflowElementEdit.frx":0164
+         List            =   "frmWorkflowElementEdit.frx":0016
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
          TabIndex        =   11
@@ -98,19 +97,18 @@ Begin VB.Form frmWorkflowElementEdit
       End
       Begin VB.ComboBox cboEmailRecord 
          Height          =   315
-         ItemData        =   "frmWorkflowElementEdit.frx":0166
+         ItemData        =   "frmWorkflowElementEdit.frx":0018
          Left            =   1780
-         List            =   "frmWorkflowElementEdit.frx":0168
+         List            =   "frmWorkflowElementEdit.frx":001A
          Style           =   2  'Dropdown List
          TabIndex        =   7
          Top             =   300
          Width           =   2895
       End
       Begin VB.CommandButton cmdEmail 
+         Caption         =   "..."
          Height          =   315
          Left            =   4360
-         Picture         =   "frmWorkflowElementEdit.frx":016A
-         Style           =   1  'Graphical
          TabIndex        =   16
          Top             =   1900
          UseMaskColor    =   -1  'True
@@ -296,11 +294,19 @@ Begin VB.Form frmWorkflowElementEdit
          EndProperty
       End
       Begin VB.CommandButton cmdAttachClear 
-         DisabledPicture =   "frmWorkflowElementEdit.frx":02B8
+         Caption         =   "O"
+         BeginProperty Font 
+            Name            =   "Wingdings 2"
+            Size            =   21.75
+            Charset         =   2
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
          Height          =   315
          Left            =   4360
          MaskColor       =   &H000000FF&
-         Picture         =   "frmWorkflowElementEdit.frx":068A
          Style           =   1  'Graphical
          TabIndex        =   25
          Top             =   2900
@@ -309,10 +315,9 @@ Begin VB.Form frmWorkflowElementEdit
          Width           =   315
       End
       Begin VB.CommandButton cmdAttachAttachment 
+         Caption         =   "..."
          Height          =   315
          Left            =   4045
-         Picture         =   "frmWorkflowElementEdit.frx":0A65
-         Style           =   1  'Graphical
          TabIndex        =   24
          Top             =   2900
          UseMaskColor    =   -1  'True
@@ -444,9 +449,9 @@ Begin VB.Form frmWorkflowElementEdit
          Begin VB.ComboBox cboDataRecordTable 
             Height          =   315
             Index           =   1
-            ItemData        =   "frmWorkflowElementEdit.frx":0BB3
+            ItemData        =   "frmWorkflowElementEdit.frx":001C
             Left            =   1730
-            List            =   "frmWorkflowElementEdit.frx":0BB5
+            List            =   "frmWorkflowElementEdit.frx":001E
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
             TabIndex        =   65
@@ -456,9 +461,9 @@ Begin VB.Form frmWorkflowElementEdit
          Begin VB.ComboBox cboDataRecord 
             Height          =   315
             Index           =   1
-            ItemData        =   "frmWorkflowElementEdit.frx":0BB7
+            ItemData        =   "frmWorkflowElementEdit.frx":0020
             Left            =   1730
-            List            =   "frmWorkflowElementEdit.frx":0BB9
+            List            =   "frmWorkflowElementEdit.frx":0022
             Style           =   2  'Dropdown List
             TabIndex        =   59
             Top             =   250
@@ -467,9 +472,9 @@ Begin VB.Form frmWorkflowElementEdit
          Begin VB.ComboBox cboDataElement 
             Height          =   315
             Index           =   1
-            ItemData        =   "frmWorkflowElementEdit.frx":0BBB
+            ItemData        =   "frmWorkflowElementEdit.frx":0024
             Left            =   1730
-            List            =   "frmWorkflowElementEdit.frx":0BBD
+            List            =   "frmWorkflowElementEdit.frx":0026
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
             TabIndex        =   61
@@ -479,9 +484,9 @@ Begin VB.Form frmWorkflowElementEdit
          Begin VB.ComboBox cboDataRecordSelector 
             Height          =   315
             Index           =   1
-            ItemData        =   "frmWorkflowElementEdit.frx":0BBF
+            ItemData        =   "frmWorkflowElementEdit.frx":0028
             Left            =   1730
-            List            =   "frmWorkflowElementEdit.frx":0BC1
+            List            =   "frmWorkflowElementEdit.frx":002A
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
             TabIndex        =   63
@@ -542,9 +547,9 @@ Begin VB.Form frmWorkflowElementEdit
          Begin VB.ComboBox cboDataRecordTable 
             Height          =   315
             Index           =   0
-            ItemData        =   "frmWorkflowElementEdit.frx":0BC3
+            ItemData        =   "frmWorkflowElementEdit.frx":002C
             Left            =   1730
-            List            =   "frmWorkflowElementEdit.frx":0BC5
+            List            =   "frmWorkflowElementEdit.frx":002E
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
             TabIndex        =   56
@@ -554,9 +559,9 @@ Begin VB.Form frmWorkflowElementEdit
          Begin VB.ComboBox cboDataRecord 
             Height          =   315
             Index           =   0
-            ItemData        =   "frmWorkflowElementEdit.frx":0BC7
+            ItemData        =   "frmWorkflowElementEdit.frx":0030
             Left            =   1730
-            List            =   "frmWorkflowElementEdit.frx":0BC9
+            List            =   "frmWorkflowElementEdit.frx":0032
             Style           =   2  'Dropdown List
             TabIndex        =   50
             Top             =   250
@@ -565,9 +570,9 @@ Begin VB.Form frmWorkflowElementEdit
          Begin VB.ComboBox cboDataElement 
             Height          =   315
             Index           =   0
-            ItemData        =   "frmWorkflowElementEdit.frx":0BCB
+            ItemData        =   "frmWorkflowElementEdit.frx":0034
             Left            =   1730
-            List            =   "frmWorkflowElementEdit.frx":0BCD
+            List            =   "frmWorkflowElementEdit.frx":0036
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
             TabIndex        =   52
@@ -577,9 +582,9 @@ Begin VB.Form frmWorkflowElementEdit
          Begin VB.ComboBox cboDataRecordSelector 
             Height          =   315
             Index           =   0
-            ItemData        =   "frmWorkflowElementEdit.frx":0BCF
+            ItemData        =   "frmWorkflowElementEdit.frx":0038
             Left            =   1730
-            List            =   "frmWorkflowElementEdit.frx":0BD1
+            List            =   "frmWorkflowElementEdit.frx":003A
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
             TabIndex        =   54
@@ -663,9 +668,9 @@ Begin VB.Form frmWorkflowElementEdit
       End
       Begin VB.ComboBox cboDataAction 
          Height          =   315
-         ItemData        =   "frmWorkflowElementEdit.frx":0BD3
+         ItemData        =   "frmWorkflowElementEdit.frx":003C
          Left            =   1050
-         List            =   "frmWorkflowElementEdit.frx":0BE0
+         List            =   "frmWorkflowElementEdit.frx":0049
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
          TabIndex        =   45
@@ -850,10 +855,9 @@ Begin VB.Form frmWorkflowElementEdit
             Width           =   2685
          End
          Begin VB.CommandButton cmdDecisionFlowExpression 
+            Caption         =   "..."
             Height          =   315
             Left            =   4305
-            Picture         =   "frmWorkflowElementEdit.frx":0BFC
-            Style           =   1  'Graphical
             TabIndex        =   42
             Top             =   650
             UseMaskColor    =   -1  'True
@@ -889,9 +893,9 @@ Begin VB.Form frmWorkflowElementEdit
       End
       Begin VB.ComboBox cboDecisionCaption 
          Height          =   315
-         ItemData        =   "frmWorkflowElementEdit.frx":0D4A
+         ItemData        =   "frmWorkflowElementEdit.frx":0065
          Left            =   1965
-         List            =   "frmWorkflowElementEdit.frx":0D5A
+         List            =   "frmWorkflowElementEdit.frx":0075
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
          TabIndex        =   36
@@ -1771,7 +1775,7 @@ Private Sub RefreshScreen()
   
   End Select
   
-  cmdOk.Enabled = mfChanged
+  cmdOK.Enabled = mfChanged
 
 End Sub
 
@@ -4876,5 +4880,6 @@ Private Sub txtIdentifier_GotFocus()
   UI.txtSelText
 
 End Sub
+
 
 

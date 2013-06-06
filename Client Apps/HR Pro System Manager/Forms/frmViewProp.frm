@@ -51,10 +51,9 @@ Begin VB.Form frmViewProp
       Width           =   3685
    End
    Begin VB.CommandButton cmdWhereClause 
+Caption = "..."
       Height          =   315
       Left            =   5160
-      Picture         =   "frmViewProp.frx":000C
-      Style           =   1  'Graphical
       TabIndex        =   3
       Top             =   2400
       UseMaskColor    =   -1  'True
@@ -949,3 +948,4 @@ ErrorTrap:
   Resume TidyUpAndExit
   
 End Function
+

@@ -78,11 +78,10 @@ Begin VB.Form frmOutlookFolder
       Top             =   1000
       Width           =   5715
       Begin VB.CommandButton cmdCalc 
+         Caption         =   "..."
          Enabled         =   0   'False
          Height          =   315
          Left            =   5205
-         Picture         =   "frmOutlookFolder.frx":000C
-         Style           =   1  'Graphical
          TabIndex        =   8
          Top             =   3120
          UseMaskColor    =   -1  'True
@@ -166,11 +165,11 @@ Begin VB.Form frmOutlookFolder
       BeginProperty Images {2C247F25-8591-11D1-B16A-00C0F0283628} 
          NumListImages   =   2
          BeginProperty ListImage1 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmOutlookFolder.frx":015A
+            Picture         =   "frmOutlookFolder.frx":000C
             Key             =   "OPENFLDR"
          EndProperty
          BeginProperty ListImage2 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmOutlookFolder.frx":0527
+            Picture         =   "frmOutlookFolder.frx":03D9
             Key             =   "CALENDAR"
          EndProperty
       EndProperty
@@ -637,3 +636,4 @@ End Property
 Public Property Let Changed(ByVal blnNewValue As Boolean)
   cmdOK.Enabled = blnNewValue And Not mblnReadOnly
 End Property
+

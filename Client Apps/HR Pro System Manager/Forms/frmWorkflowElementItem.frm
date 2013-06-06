@@ -33,10 +33,9 @@ Begin VB.Form frmWorkflowElementItem
       Top             =   2760
       Width           =   3200
       Begin VB.CommandButton cmdFileFile 
+Caption = "..."
          Height          =   315
          Left            =   2300
-         Picture         =   "frmWorkflowElementItem.frx":000C
-         Style           =   1  'Graphical
          TabIndex        =   36
          Top             =   300
          UseMaskColor    =   -1  'True
@@ -82,10 +81,9 @@ Begin VB.Form frmWorkflowElementItem
          Width           =   1000
       End
       Begin VB.CommandButton cmdCalcCalculation 
+Caption = "..."
          Height          =   315
          Left            =   2300
-         Picture         =   "frmWorkflowElementItem.frx":015A
-         Style           =   1  'Graphical
          TabIndex        =   32
          Top             =   300
          UseMaskColor    =   -1  'True
@@ -2081,3 +2079,4 @@ Public Property Let FileAttachment(ByVal psNewValue As String)
   msAttachmentFile = psNewValue
   
 End Property
+

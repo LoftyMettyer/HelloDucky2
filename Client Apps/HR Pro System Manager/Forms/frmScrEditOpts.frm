@@ -83,10 +83,9 @@ Begin VB.Form frmScrEditOpts
             Width           =   2500
          End
          Begin VB.CommandButton cmdForeColor 
+Caption = "..."
             Height          =   315
             Left            =   2715
-            Picture         =   "frmScrEditOpts.frx":0044
-            Style           =   1  'Graphical
             TabIndex        =   3
             Top             =   1000
             UseMaskColor    =   -1  'True
@@ -109,10 +108,9 @@ Begin VB.Form frmScrEditOpts
             Width           =   750
          End
          Begin VB.CommandButton cmdFont 
+Caption = "..."
             Height          =   315
             Left            =   2715
-            Picture         =   "frmScrEditOpts.frx":0192
-            Style           =   1  'Graphical
             TabIndex        =   0
             Top             =   200
             UseMaskColor    =   -1  'True
@@ -509,5 +507,6 @@ Private Sub txtWidth_GotFocus()
   UI.txtSelText
 
 End Sub
+
 
 

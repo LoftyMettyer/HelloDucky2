@@ -149,10 +149,9 @@ Begin VB.Form frmSSIntranetLink
       Top             =   4200
       Width           =   6300
       Begin VB.CommandButton cmdAppFilePathSel 
+Caption = "..."
          Height          =   315
          Left            =   5760
-         Picture         =   "frmSSIntranetLink.frx":000C
-         Style           =   1  'Graphical
          TabIndex        =   38
          Top             =   300
          UseMaskColor    =   -1  'True
@@ -2102,4 +2101,5 @@ End Property
 Public Property Get TableViewName() As String
   TableViewName = msTableViewName
 End Property
+
 
