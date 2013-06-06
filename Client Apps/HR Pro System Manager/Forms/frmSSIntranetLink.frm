@@ -2445,7 +2445,7 @@ Private Sub RefreshChart()
   
 
   ' disable dotted gridlines option for pie charts
-  chkDottedGridlines.value = IIf(MSChart1.ChartType <> VtChChartType2dPie, 0, chkDottedGridlines.value)
+  chkDottedGridlines.value = IIf(MSChart1.ChartType = VtChChartType2dPie, 0, chkDottedGridlines.value)
   chkDottedGridlines.Enabled = (MSChart1.ChartType <> VtChChartType2dPie)
     
   ' disable and clear stacking option
