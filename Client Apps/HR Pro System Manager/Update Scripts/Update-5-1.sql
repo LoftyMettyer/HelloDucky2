@@ -169,6 +169,9 @@ END
 /* ------------------------------------------------------------- */
 /* Step - Structure changes */
 /* ------------------------------------------------------------- */
+	
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysWorkflowElementItems', 'U') AND name = 'LookupOrderID')
+		EXEC sp_executesql N'ALTER TABLE dbo.ASRSysWorkflowElementItems ADD LookupOrderID int NULL;';
 
 	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysScreens', 'U') AND name = 'category')
 	BEGIN
@@ -2560,12 +2563,6 @@ PRINT 'Step - Indexing Updates'
 	IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ASRSysAuditPermissions]') AND name = N'IDX_DateTimeStamp')
 		EXEC sp_executesql N'CREATE NONCLUSTERED INDEX IDX_DateTimeStamp ON dbo.ASRSysAuditPermissions (DateTimeStamp) WITH( STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]';
 
-/* ------------------------------------------------------------- */
-/* Step - Workflow Updates */
-/* ------------------------------------------------------------- */
-	
-	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysWorkflowElementItems', 'U') AND name = 'LookupOrderID')
-		EXEC sp_executesql N'ALTER TABLE dbo.ASRSysWorkflowElementItems ADD LookupOrderID int NULL;';
 
 /* ------------------------------------------------------------- */
 /* Step - Reset Password Parameters */
