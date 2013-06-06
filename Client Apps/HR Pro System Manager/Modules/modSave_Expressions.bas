@@ -23,14 +23,14 @@ Public Function SaveExpressions(pfRefreshDatabase As Boolean) As Boolean
     OutputCurrentProcess2 vbNullString, lngRecordCount
     
     Do While fOK And Not .EOF
-      lngExprID = .Fields("exprID").Value
+      lngExprID = .Fields("exprID").value
       
       If !Deleted Then
-        OutputCurrentProcess2 .Fields("Name").Value
+        OutputCurrentProcess2 .Fields("Name").value
         fOK = ExpressionDelete
       
       ElseIf !New Then
-        OutputCurrentProcess2 .Fields("Name").Value
+        OutputCurrentProcess2 .Fields("Name").value
         fOK = ExpressionNew
 
       Else
@@ -55,8 +55,8 @@ Public Function SaveExpressions(pfRefreshDatabase As Boolean) As Boolean
         End If
         
         If fSave Then
-          If .Fields("ParentComponentID").Value = 0 Then
-            OutputCurrentProcess2 .Fields("Name").Value
+          If .Fields("ParentComponentID").value = 0 Then
+            OutputCurrentProcess2 .Fields("Name").value
           End If
           fOK = ExpressionSave
         Else
@@ -172,7 +172,7 @@ Private Function ExpressionNew() As Boolean
   Set rsTables = New ADODB.Recordset
   Set rsTemp = New ADODB.Recordset
   
-  lngExprID = recExprEdit.Fields("exprID").Value
+  lngExprID = recExprEdit.Fields("exprID").value
   fNewExpr = True
     
   'Open the expressions table
@@ -180,13 +180,13 @@ Private Function ExpressionNew() As Boolean
   
   'JDM - 13/06/03 - Fault 5975 - Independant table calcs "disappearing"
   'JPD 20020122 Fault 3375
-  If (recExprEdit.Fields("type").Value = giEXPR_UTILRUNTIMEFILTER _
-    Or (recExprEdit.Fields("type").Value = giEXPR_RECORDINDEPENDANTCALC)) Then
+  If (recExprEdit.Fields("type").value = giEXPR_UTILRUNTIMEFILTER _
+    Or (recExprEdit.Fields("type").value = giEXPR_RECORDINDEPENDANTCALC)) Then
     
     fNotNeeded = False
-  ElseIf (recExprEdit.Fields("type").Value = giEXPR_WORKFLOWCALCULATION) Then
+  ElseIf (recExprEdit.Fields("type").value = giEXPR_WORKFLOWCALCULATION) Then
     ' Check that the expression's Workflow still exists.
-    lngUtilityID = IIf(IsNull(recExprEdit.Fields("utilityID").Value), 0, recExprEdit.Fields("utilityID").Value)
+    lngUtilityID = IIf(IsNull(recExprEdit.Fields("utilityID").value), 0, recExprEdit.Fields("utilityID").value)
     sSQL = "SELECT ID, enabled" & _
       " FROM ASRSysWorkflows" & _
       " WHERE ID = " & Trim$(Str$(lngUtilityID))
@@ -194,14 +194,15 @@ Private Function ExpressionNew() As Boolean
 
     fNotNeeded = (rsTemp.EOF And rsTemp.BOF)
     If Not fNotNeeded Then
-      fWorkflowEnabled = rsTemp!Enabled
+      ' JPD 2010/03/18 Jira HRPRO-821
+      fWorkflowEnabled = rsTemp!Enabled Or WorkflowsWithStatus(rsTemp!id, giWFSTATUS_INPROGRESS)
     End If
     rsTemp.Close
   Else
-    If (recExprEdit.Fields("type").Value = giEXPR_WORKFLOWSTATICFILTER) _
-      Or (recExprEdit.Fields("type").Value = giEXPR_WORKFLOWRUNTIMEFILTER) Then
+    If (recExprEdit.Fields("type").value = giEXPR_WORKFLOWSTATICFILTER) _
+      Or (recExprEdit.Fields("type").value = giEXPR_WORKFLOWRUNTIMEFILTER) Then
       ' Check that the expression's Workflow still exists.
-      lngUtilityID = IIf(IsNull(recExprEdit.Fields("utilityID").Value), 0, recExprEdit.Fields("utilityID").Value)
+      lngUtilityID = IIf(IsNull(recExprEdit.Fields("utilityID").value), 0, recExprEdit.Fields("utilityID").value)
       sSQL = "SELECT ID, enabled" & _
         " FROM ASRSysWorkflows" & _
         " WHERE ID = " & Trim$(Str$(lngUtilityID))
@@ -209,14 +210,15 @@ Private Function ExpressionNew() As Boolean
 
       fNotNeeded = (rsTemp.EOF And rsTemp.BOF)
       If Not fNotNeeded Then
-        fWorkflowEnabled = rsTemp!Enabled
+        ' JPD 2010/03/18 Jira HRPRO-821
+        fWorkflowEnabled = rsTemp!Enabled Or WorkflowsWithStatus(rsTemp!id, giWFSTATUS_INPROGRESS)
       End If
       rsTemp.Close
     End If
 
     If Not fNotNeeded Then
       ' Check that the expression's base table still exists.
-      lngTableID = recExprEdit.Fields("TableID").Value
+      lngTableID = recExprEdit.Fields("TableID").value
       sSQL = "SELECT tableID" & _
         " FROM ASRSysTables" & _
         " WHERE tableID = " & Trim$(Str$(lngTableID))
@@ -245,9 +247,9 @@ Private Function ExpressionNew() As Boolean
       ' Create the SQL stored procedure for the expression only for
       ' root caclulation type expressions. ie. not the expression that form the
       ' paramters of function components.
-      If (recExprEdit.Fields("parentComponentID").Value = 0) Then
+      If (recExprEdit.Fields("parentComponentID").value = 0) Then
 
-        iType = recExprEdit.Fields("type").Value
+        iType = recExprEdit.Fields("type").value
 
         Select Case iType
           Case giEXPR_COLUMNCALCULATION, _
@@ -357,8 +359,8 @@ Private Function ExpressionNew() As Boolean
             For iColumn = 0 To .Fields.Count - 1
               sName = .Fields(iColumn).Name
               
-              If Not IsNull(recCompEdit.Fields(sName).Value) Then
-                .Fields(iColumn).Value = recCompEdit.Fields(sName).Value
+              If Not IsNull(recCompEdit.Fields(sName).value) Then
+                .Fields(iColumn).value = recCompEdit.Fields(sName).value
               End If
             Next iColumn
             
