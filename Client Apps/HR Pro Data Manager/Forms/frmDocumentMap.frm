@@ -3,7 +3,7 @@ Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "CODEJO~1.OCX"
 Begin VB.Form frmDocumentMap 
    BorderStyle     =   1  'Fixed Single
    Caption         =   "Document Management Type"
-   ClientHeight    =   7815
+   ClientHeight    =   7275
    ClientLeft      =   45
    ClientTop       =   345
    ClientWidth     =   10755
@@ -21,19 +21,19 @@ Begin VB.Form frmDocumentMap
    LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   7815
+   ScaleHeight     =   7275
    ScaleWidth      =   10755
    ShowInTaskbar   =   0   'False
    StartUpPosition =   1  'CenterOwner
    Begin XtremeSuiteControls.TabControl TabControl1 
-      Height          =   7125
+      Height          =   6630
       Left            =   90
       TabIndex        =   18
       Top             =   45
       Width           =   10545
       _Version        =   851969
       _ExtentX        =   18600
-      _ExtentY        =   12568
+      _ExtentY        =   11695
       _StockProps     =   68
       ItemCount       =   1
       Item(0).Caption =   "Definition"
@@ -43,7 +43,7 @@ Begin VB.Form frmDocumentMap
       Item(0).Control(2)=   "fraDestination"
       Begin VB.Frame fraDestination 
          Caption         =   "Record Identification : "
-         Height          =   2850
+         Height          =   2355
          Left            =   90
          TabIndex        =   27
          Top             =   4095
@@ -55,6 +55,7 @@ Begin VB.Form frmDocumentMap
             Style           =   2  'Dropdown List
             TabIndex        =   15
             Top             =   2295
+            Visible         =   0   'False
             Width           =   3090
          End
          Begin VB.ComboBox cboParent2Keyfield 
@@ -64,6 +65,7 @@ Begin VB.Form frmDocumentMap
             Style           =   2  'Dropdown List
             TabIndex        =   16
             Top             =   2295
+            Visible         =   0   'False
             Width           =   3090
          End
          Begin VB.ComboBox cboTargetCategory 
@@ -135,6 +137,7 @@ Begin VB.Form frmDocumentMap
             Left            =   225
             TabIndex        =   36
             Top             =   2340
+            Visible         =   0   'False
             Width           =   1725
          End
          Begin VB.Label lblParent2Keyfield 
@@ -143,6 +146,7 @@ Begin VB.Form frmDocumentMap
             Left            =   5310
             TabIndex        =   35
             Top             =   2340
+            Visible         =   0   'False
             Width           =   1815
          End
          Begin VB.Label lblDestinationType 
@@ -356,7 +360,7 @@ Begin VB.Form frmDocumentMap
       Height          =   375
       Left            =   9450
       TabIndex        =   17
-      Top             =   7290
+      Top             =   6750
       Width           =   1200
       _Version        =   851969
       _ExtentX        =   2117
@@ -369,7 +373,7 @@ Begin VB.Form frmDocumentMap
       Height          =   375
       Left            =   8190
       TabIndex        =   0
-      Top             =   7290
+      Top             =   6750
       Width           =   1200
       _Version        =   851969
       _ExtentX        =   2117
@@ -558,16 +562,16 @@ Private Function ValidateDefinition() As Boolean
   End If
    
   
-  ' Keyfield of parent 2
-  If Me.cboParent2Table.Enabled Then
-    If GetComboItem(cboParent2Table) = 0 Then
-      strErrorMessage = strErrorMessage & "Parent 2 table must be specified." & vbNewLine
-    End If
-     
-    If GetComboItem(cboParent2Keyfield) = 0 Then
-      strErrorMessage = strErrorMessage & "Parent 2 key field column must be specified." & vbNewLine
-    End If
-  End If
+'  ' Keyfield of parent 2
+'  If Me.cboParent2Table.Enabled Then
+'    If GetComboItem(cboParent2Table) = 0 Then
+'      strErrorMessage = strErrorMessage & "Parent 2 table must be specified." & vbNewLine
+'    End If
+'
+'    If GetComboItem(cboParent2Keyfield) = 0 Then
+'      strErrorMessage = strErrorMessage & "Parent 2 key field column must be specified." & vbNewLine
+'    End If
+'  End If
    
    
   If Len(strErrorMessage) > 0 Then
