@@ -46,14 +46,14 @@ Begin VB.Form frmPersonnelSetup
       TabCaption(1)   =   "C&areer Change"
       TabPicture(1)   =   "frmPersonnelSetup.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraWorkingPattern"
-      Tab(1).Control(1)=   "fraRegion"
+      Tab(1).Control(0)=   "fraRegion"
+      Tab(1).Control(1)=   "fraWorkingPattern"
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "&Hierarchy"
       TabPicture(2)   =   "frmPersonnelSetup.frx":0044
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraPostAllocationTable"
-      Tab(2).Control(1)=   "fraHierarchyTable"
+      Tab(2).Control(0)=   "fraHierarchyTable"
+      Tab(2).Control(1)=   "fraPostAllocationTable"
       Tab(2).ControlCount=   2
       Begin VB.Frame fraPostAllocationTable 
          Caption         =   "Post Allocation Table :"
@@ -548,14 +548,14 @@ Begin VB.Form frmPersonnelSetup
             _ExtentY        =   53
          End
          Begin VB.Label lblIntranetWelcome 
-            AutoSize        =   -1  'True
             BackStyle       =   0  'Transparent
-            Caption         =   "Intranet Welcome Column :"
-            Height          =   195
+            Caption         =   "Self-Service Welcome Column :"
+            Height          =   450
             Left            =   195
             TabIndex        =   70
-            Top             =   4995
-            Width           =   2385
+            Top             =   4860
+            Width           =   1905
+            WordWrap        =   -1  'True
          End
          Begin VB.Label Label5 
             AutoSize        =   -1  'True
