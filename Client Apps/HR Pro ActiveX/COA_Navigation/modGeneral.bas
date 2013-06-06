@@ -108,7 +108,7 @@ End Function
 
 Public Sub Navigate(ByVal Address As String)
 
-  If Not gbInScreenDesigner Then
+  If Not gbInScreenDesigner And Len(Address) > 0 Then
     ShellEx Address, , , , "open", 0
   End If
 
