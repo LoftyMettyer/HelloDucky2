@@ -424,79 +424,52 @@ Public Property Get SelectedID() As Long
 End Property
 
 Public Sub PrintDefinition(plngDocumentMapID)
-'Public Sub PrintDefinition(plngLabelTypeID)
-
   Dim objPrintDef As clsPrintDef
   Dim rsTemp As Recordset
-  Dim rsPages As Recordset
-  Dim strSQL As String
-  Dim bIsDocument As Boolean
   Dim strDocumentTypeName As String
-  Dim strAlignment As String
-  Dim strFontStyle As String
-  Dim sngWidth As Single
-  Dim sngHeight As Single
   
   Set mdatData = New HRProDataMgr.clsDataAccess
-  
-  mlngDocumentMapID = plngDocumentMapID
   Set rsTemp = GetDefinition
+  
   If rsTemp.BOF And rsTemp.EOF Then
     COAMsgBox "This definition has been deleted by another user.", vbExclamation, "Document Definition"
     Exit Sub
   End If
-  
    
   Set objPrintDef = New HRProDataMgr.clsPrintDef
 
   If objPrintDef.IsOK Then
-  
-'I am here printig def and then needing to lookup values from database values.
-'do a printout of a document and see what I mean
-  
     With objPrintDef
       If .PrintStart(False) Then
-      
         .PrintHeader strDocumentTypeName & " Document Type Definition: " & rsTemp!Name
         .PrintNormal "Name : " & rsTemp!Name
         .PrintNormal "Description : " & rsTemp!Description
-        .PrintNormal "Owner : " & rsTemp!UserName
-        Select Case rsTemp!Access
-          Case "RW": .PrintNormal "Access : Read / Write"
-          Case "RO": .PrintNormal "Access : Read only"
-        End Select
-        
-        .PrintTitle "Document Description"
-        .PrintNormal "Category Value : " & rsTemp!CategoryRecordID
-        .PrintNormal "Type Value : " & rsTemp!TypeRecordID
-        
-        .PrintTitle "Record Identification"
-        .PrintNormal "Table : " & rsTemp!TargetTableID
-        .PrintNormal "Category : " & rsTemp!TargetCategoryColumnID
-        .PrintNormal "Type : " & rsTemp!TargetTypeColumnID
-        .PrintNormal "Key Field : " & rsTemp!Description
-        .PrintNormal "Document URL : " & rsTemp!Description
-        .PrintNormal "Parent Table : " & rsTemp!parent1tableid
-        .PrintNormal "Parent Key Field : " & rsTemp!Parent1Keyfieldcolumnid
-        
         .PrintNormal
+        Select Case rsTemp!Access
+          Case "RW": .PrintNormal "Owner : " & rsTemp!UserName & vbTab & "Access : Read / Write"
+          Case "RO": .PrintNormal "Owner : " & rsTemp!UserName & vbTab & "Access : Read only"
+        End Select
+        .PrintTitle "Document Description"
+        .PrintNormal "Category Value : " & Me.cboCategories
+        .PrintNormal "Type Value : " & Me.cboTypes
+        .PrintTitle "Record Identification"
+        .PrintNormal "Table : " & Me.cboTargetTable & vbTab & "Key Field : " & Me.cboTargetKeyField
+        .PrintNormal "Category : " & Me.cboTargetCategory & vbTab & "Document URL : " & Me.cboTargetColumn
+        .PrintNormal "Type : " & Me.cboTargetType
+        .PrintNormal
+        .PrintNormal "Parent Table : " & Me.cboParent1Table & vbTab & "Parent Key Field : " & Me.cboParent1Keyfield
         .PrintEnd
-        
       End If
-
-  
     End With
-    
   End If
   
   Set mdatData = Nothing
-
 Exit Sub
 
 LocalErr:
   COAMsgBox "Printing Document Typed Definition Failed"
-
 End Sub
+
 
 
 Public Function Initialise(bNew As Boolean, bCopy As Boolean, Optional lngDocumentMapID As Long, Optional bPrint As Boolean) As Boolean
