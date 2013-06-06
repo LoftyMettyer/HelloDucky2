@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Begin VB.Form frmWorkflowWFToolbox 
    Caption         =   "Toolbox"
    ClientHeight    =   9180
@@ -392,7 +392,7 @@ Begin VB.Form frmWorkflowWFToolbox
                Name            =   "Verdana"
                Size            =   8.25
                Charset         =   0
-               Weight          =   700
+               Weight          =   400
                Underline       =   0   'False
                Italic          =   0   'False
                Strikethrough   =   0   'False
@@ -403,7 +403,7 @@ Begin VB.Form frmWorkflowWFToolbox
             Left            =   420
             TabIndex        =   9
             Top             =   45
-            Width           =   1395
+            Width           =   1425
          End
       End
       Begin VB.Frame fraToolboxTitle 
@@ -432,7 +432,7 @@ Begin VB.Form frmWorkflowWFToolbox
                Name            =   "Verdana"
                Size            =   8.25
                Charset         =   0
-               Weight          =   700
+               Weight          =   400
                Underline       =   0   'False
                Italic          =   0   'False
                Strikethrough   =   0   'False
@@ -443,7 +443,7 @@ Begin VB.Form frmWorkflowWFToolbox
             Left            =   420
             TabIndex        =   7
             Top             =   45
-            Width           =   1575
+            Width           =   1620
          End
       End
       Begin VB.Frame fraToolboxTitle 
@@ -463,18 +463,18 @@ Begin VB.Form frmWorkflowWFToolbox
                Name            =   "Verdana"
                Size            =   8.25
                Charset         =   0
-               Weight          =   700
+               Weight          =   400
                Underline       =   0   'False
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
             ForeColor       =   &H80000009&
-            Height          =   315
+            Height          =   195
             Index           =   0
             Left            =   420
             TabIndex        =   5
             Top             =   0
-            Width           =   2070
+            Width           =   2085
          End
          Begin VB.Image imgToolboxImage 
             Height          =   255
