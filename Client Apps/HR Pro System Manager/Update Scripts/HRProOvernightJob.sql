@@ -9,7 +9,9 @@
   DECLARE @SchedInterval varchar(8000)
   DECLARE @SchedTime varchar(8000)
 
-  DECLARE @sSQLVersion nvarchar(20)
+  DECLARE @numSQLVersion numeric(3,1)
+
+
 
   SET @SchedType = 4 --default to daily
   SELECT @SchedType = settingvalue
@@ -31,8 +33,17 @@
   INNER JOIN master..sysprocesses ON master..sysdatabases.dbid = master..sysprocesses.dbid
   WHERE master..sysprocesses.spid = @@spid
 
+  SELECT @numSQLVersion = convert(float,substring(@@version,charindex('-',@@version)+2,2))
 
   DECLARE @NVarCommand nvarchar(4000)
+
+  IF @numSQLVersion < 11
+  BEGIN
+	  SELECT @NVarCommand = 'USE master
+		GRANT EXECUTE ON xp_StartMail TO public
+		GRANT EXECUTE ON xp_SendMail TO public'
+	  EXEC sp_executesql @NVarCommand;
+  END
 
   SELECT @NVarCommand = 'USE master
     GRANT EXECUTE ON sp_OACreate TO public
@@ -42,14 +53,12 @@
     GRANT EXECUTE ON sp_OAMethod TO public
     GRANT EXECUTE ON sp_OASetProperty TO public
     GRANT EXECUTE ON sp_OAStop TO public
-    GRANT EXECUTE ON xp_StartMail TO public
-    GRANT EXECUTE ON xp_SendMail TO public
     GRANT EXECUTE ON xp_LoginConfig TO public
     GRANT EXECUTE ON xp_EnumGroups TO public'
-  EXEC sp_executesql @NVarCommand
-
-  SELECT @NVarCommand = 'USE ['+@sDBName + ']'
-  EXEC sp_executesql @NVarCommand
+  EXEC sp_executesql @NVarCommand;
+  
+  SELECT @NVarCommand = 'USE ['+@sDBName + ']';
+  EXEC sp_executesql @NVarCommand;
 
 
 BEGIN TRANSACTION            
