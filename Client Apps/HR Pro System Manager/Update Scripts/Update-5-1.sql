@@ -2745,6 +2745,20 @@ PRINT 'Step - Indexing Updates'
 
 
 /* ------------------------------------------------------------- */
+/* Step - Parallel code stream readiness */
+/* ------------------------------------------------------------- */
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spadmin_generatesysprotects]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].[spadmin_generatesysprotects];
+		
+	EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[spadmin_generatesysprotects]
+	AS
+	BEGIN
+		DECLARE @icount integer
+	END'
+	
+
+/* ------------------------------------------------------------- */
 /* Step - Reset Password Parameters */
 /* ------------------------------------------------------------- */
 
