@@ -27,6 +27,7 @@ Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
+Implements IObjectSafetyTLB.IObjectSafety
 
 'Declare Public Events
 Public Event Click() 'MappingInfo=UserControl,UserControl,-1,Click
@@ -81,6 +82,7 @@ Private m_BackColor             As OLE_COLOR
 Private m_Appearance            As cpAppearanceConstants
 Private m_Color                 As OLE_COLOR
 Private m_DefaultColor          As OLE_COLOR
+
 
 Private Sub UserControl_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
     RaiseEvent MouseDown(Button, Shift, X * Screen.TwipsPerPixelX, Y * Screen.TwipsPerPixelY)
@@ -361,4 +363,93 @@ Public Property Let ShowToolTips(ByVal New_ShowToolTips As Boolean)
     m_ShowToolTips = New_ShowToolTips
     PropertyChanged "ShowToolTips"
 End Property
+
+Private Sub IObjectSafety_GetInterfaceSafetyOptions(ByVal riid As Long, _
+                                                    pdwSupportedOptions As Long, _
+                                                    pdwEnabledOptions As Long)
+
+    Dim Rc      As Long
+    Dim rClsId  As udtGUID
+    Dim IID     As String
+    Dim bIID()  As Byte
+
+    pdwSupportedOptions = INTERFACESAFE_FOR_UNTRUSTED_CALLER Or _
+                          INTERFACESAFE_FOR_UNTRUSTED_DATA
+
+    If (riid <> 0) Then
+        CopyMemory rClsId, ByVal riid, Len(rClsId)
+
+        bIID = String$(MAX_GUIDLEN, 0)
+        Rc = StringFromGUID2(rClsId, VarPtr(bIID(0)), MAX_GUIDLEN)
+        Rc = InStr(1, bIID, vbNullChar) - 1
+        IID = Left$(UCase(bIID), Rc)
+
+        Select Case IID
+            Case IID_IDispatch
+                pdwEnabledOptions = IIf(m_fSafeForScripting, _
+              INTERFACESAFE_FOR_UNTRUSTED_CALLER, 0)
+                Exit Sub
+            Case IID_IPersistStorage, IID_IPersistStream, _
+               IID_IPersistPropertyBag
+                pdwEnabledOptions = IIf(m_fSafeForInitializing, _
+              INTERFACESAFE_FOR_UNTRUSTED_DATA, 0)
+                Exit Sub
+            Case Else
+                Err.Raise E_NOINTERFACE
+                Exit Sub
+        End Select
+    End If
+    
+End Sub
+
+Private Sub IObjectSafety_SetInterfaceSafetyOptions(ByVal riid As Long, _
+                                                    ByVal dwOptionsSetMask As Long, _
+                                                    ByVal dwEnabledOptions As Long)
+    Dim Rc          As Long
+    Dim rClsId      As udtGUID
+    Dim IID         As String
+    Dim bIID()      As Byte
+
+    If (riid <> 0) Then
+        CopyMemory rClsId, ByVal riid, Len(rClsId)
+
+        bIID = String$(MAX_GUIDLEN, 0)
+        Rc = StringFromGUID2(rClsId, VarPtr(bIID(0)), MAX_GUIDLEN)
+        Rc = InStr(1, bIID, vbNullChar) - 1
+        IID = Left$(UCase(bIID), Rc)
+
+        Select Case IID
+            Case IID_IDispatch
+                If ((dwEnabledOptions And dwOptionsSetMask) <> _
+             INTERFACESAFE_FOR_UNTRUSTED_CALLER) Then
+                    Err.Raise E_FAIL
+                    Exit Sub
+                Else
+                    If Not m_fSafeForScripting Then
+                        Err.Raise E_FAIL
+                    End If
+                    Exit Sub
+                End If
+
+            Case IID_IPersistStorage, IID_IPersistStream, _
+          IID_IPersistPropertyBag
+                If ((dwEnabledOptions And dwOptionsSetMask) <> _
+              INTERFACESAFE_FOR_UNTRUSTED_DATA) Then
+                    Err.Raise E_FAIL
+                    Exit Sub
+                Else
+                    If Not m_fSafeForInitializing Then
+                        Err.Raise E_FAIL
+                    End If
+                    Exit Sub
+                End If
+
+            Case Else
+                Err.Raise E_NOINTERFACE
+                Exit Sub
+        End Select
+    End If
+    
+End Sub
+
 

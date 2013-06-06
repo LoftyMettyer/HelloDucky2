@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmTabOrd 
    BorderStyle     =   3  'Fixed Dialog
@@ -442,7 +442,7 @@ Private Sub cmdOK_Click()
   
   Dim iIndex As Integer
   Dim iListNo As Integer
-  Dim iControlType As Integer
+  Dim iControlType As Long
   Dim iNextIndex As Integer
   Dim sKey As String
   Dim ctlControl As VB.Control
@@ -925,7 +925,7 @@ Private Function GetPageControls(piPageNo As Integer) As Boolean
   On Error GoTo ErrorTrap
   
   Dim fOK As Boolean
-  Dim iControlType As Integer
+  Dim iControlType As Long
   Dim iLoop As Integer
   Dim sName As String
   Dim sIcon As String

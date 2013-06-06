@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
 Begin VB.Form frmToolbox 
    Caption         =   "Toolbox"
    ClientHeight    =   8160
@@ -1286,7 +1286,7 @@ End Sub
 
 
 
-Private Function GetColumnIcon(piColumnType As Integer, piDataType As Integer) As String
+Private Function GetColumnIcon(piColumnType As Long, piDataType As Integer) As String
   'Dim iLoop As Integer
   
   ' Depending on the control type of the current column, determine the
@@ -1319,6 +1319,9 @@ Private Function GetColumnIcon(piColumnType As Integer, piDataType As Integer) A
       'NHRD We are using the textbox icon for Navigation control
       GetColumnIcon = "IMG_TEXTBOX"
       
+    Case giCTRL_COLOURPICKER
+      GetColumnIcon = "IMG_TEXTBOX"
+    
     Case Else
       GetColumnIcon = "IMG_COLUMN"
     End Select
