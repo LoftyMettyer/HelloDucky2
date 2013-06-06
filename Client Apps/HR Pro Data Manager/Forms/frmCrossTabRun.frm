@@ -620,10 +620,10 @@ Private Sub chkPercentage_Click()
   If mblnLoading Then Exit Sub
   
   blnEnabled = (chkPercentage.Value = vbChecked And cboPageBreak.Enabled = True)
-  chkPercentageofPage.Enabled = blnEnabled
+  chkPercentageOfPage.Enabled = blnEnabled
   If Not blnEnabled Then
     mblnLoading = True
-    chkPercentageofPage.Value = vbUnchecked
+    chkPercentageOfPage.Value = vbUnchecked
     mblnLoading = False
   End If
 
@@ -636,7 +636,7 @@ End Sub
 Private Sub chkPercentageOfPage_Click()
   If mblnLoading Then Exit Sub
   PopulateGrid
-  chkPercentageofPage.SetFocus
+  chkPercentageOfPage.SetFocus
 End Sub
 
 Private Sub chkSuppressZeros_Click()
@@ -660,7 +660,7 @@ End Sub
 
 Private Sub Form_Activate()
   If Me.Visible And Me.Enabled Then
-    cmdOK.SetFocus
+    cmdOk.SetFocus
   End If
 End Sub
 
@@ -1902,7 +1902,7 @@ Private Function GetPercentageFactor(lngPage As Long, lngType As Long)
   'mdblPercentageFactor will be used in FORMATCELL, if required
   mdblPercentageFactor = 0
   If chkPercentage.Value = vbChecked Then
-    If chkPercentageofPage = vbChecked Then
+    If chkPercentageOfPage = vbChecked Then
       If mdblPageTotal(lngPage, lngType) > 0 Then
         mdblPercentageFactor = 1 / mdblPageTotal(lngPage, lngType)
       End If
@@ -2378,10 +2378,10 @@ Private Sub Form_Resize()
 
   
   'Position the command buttons...
-  lngTop = Me.ScaleHeight - (cmdOK.Height + lngGap)
+  lngTop = Me.ScaleHeight - (cmdOk.Height + lngGap)
   
-  lngLeft = Me.ScaleWidth - (cmdOK.Width + lngGap)
-  cmdOK.Move lngLeft, lngTop
+  lngLeft = Me.ScaleWidth - (cmdOk.Width + lngGap)
+  cmdOk.Move lngLeft, lngTop
 
   lngLeft = lngLeft - (cmdOutput.Width + lngGap)
   cmdOutput.Move lngLeft, lngTop
@@ -2407,7 +2407,7 @@ Private Sub Form_Resize()
     'fraIntersection.Visible = False
     Me.lblColumn.Visible = False
     Me.chkPercentage.Visible = False
-    Me.chkPercentageofPage.Visible = False
+    Me.chkPercentageOfPage.Visible = False
     Me.lblType.Top = Me.lblColumn.Top
     Me.chkSuppressZeros.Top = Me.lblColumn.Top
     Me.txtIntersectionCol.Text = mstrCrossTabName
@@ -2487,8 +2487,8 @@ Private Sub PrepareForms()
   
   
   chkPercentage.Value = IIf(mblnShowPercentage, vbChecked, vbUnchecked)
-  chkPercentageofPage.Value = IIf(mblnPercentageofPage, vbChecked, vbUnchecked)
-  chkPercentageofPage.Enabled = (mblnPageBreak = True And mblnShowPercentage = True)
+  chkPercentageOfPage.Value = IIf(mblnPercentageofPage, vbChecked, vbUnchecked)
+  chkPercentageOfPage.Enabled = (mblnPageBreak = True And mblnShowPercentage = True)
   chkSuppressZeros.Value = IIf(mblnSuppressZeros, vbChecked, vbUnchecked)
   chkThousandSeparators.Value = IIf(mbThousandSeparators, vbChecked, vbUnchecked)
 
@@ -4357,7 +4357,7 @@ Private Function OutputReport(blnPrompt As Boolean) As Boolean
 
     If objOutput.GetFile Then
 
-      If objOutput.Format = fmtExcelPivotTable Then 'And mlngCrossTabType = cttNormal Then
+      If objOutput.Format = fmtExcelPivotTable Then
 
         objOutput.PivotSuppressBlanks = (chkSuppressZeros.Value = vbChecked)
         'AE20071018 Fault #12540
