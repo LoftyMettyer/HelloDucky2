@@ -1,8 +1,8 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "coa_colourpicker.ocx"
+Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "COA_ColourPicker.ocx"
 Begin VB.Form frmWorkflowWFItemProps 
    Caption         =   "Control Properties"
    ClientHeight    =   5070
@@ -3136,9 +3136,9 @@ Public Function RefreshProperties(Optional pfStayOnSameLine As Boolean) As Boole
       If CurrentWebForm.ActiveControl.Name = "TabPages" Then
       ' The screen's tab strip is the active control.
         Me.StatusBar1.SimpleText = "Tab"
-        If CurrentWebForm.TabPages.Tabs.Count > 0 Then
+        If CurrentWebForm.tabPages.Tabs.Count > 0 Then
           
-          With CurrentWebForm.TabPages
+          With CurrentWebForm.tabPages
             ' Read the Caption property from the tab strip.
             avProperties(WFITEMPROP_TABCAPTION, 1) = True
             msTabCaption = Replace(.SelectedItem.Caption, "&&", "&")
@@ -4079,6 +4079,10 @@ Private Function UpdateControls(piProperty As WFItemProperty) As Boolean
               .BackColorHighlight = mColBackColorHighlight
 
             Case WFITEMPROP_PICTURE
+              If (.PictureID <> mlngPictureID) Then
+                fChangeMade = True
+              End If
+              
               sFileName = ""
               If mlngPictureID > 0 Then
                 recPictEdit.Index = "idxID"
@@ -4093,11 +4097,7 @@ Private Function UpdateControls(piProperty As WFItemProperty) As Boolean
                   Kill sFileName
                 End If
               End If
-              
-              If (.PictureID <> mlngPictureID) Then
-                fChangeMade = True
-              End If
-              
+                            
               If mlngPictureID = 0 Then
                 .Picture = sFileName
                 .PictureID = mlngPictureID
@@ -4120,7 +4120,7 @@ Private Function UpdateControls(piProperty As WFItemProperty) As Boolean
         Next iCount
 
         ' If tab page is selected then force a refresh.
-        If mfrmWebForm.TabPages.Selected Then
+        If mfrmWebForm.tabPages.Selected Then
           mfrmWebForm.DockPagesToTabStrip
         End If
 
@@ -4231,6 +4231,10 @@ Private Function UpdateControls(piProperty As WFItemProperty) As Boolean
             .BackColor = mColBackColor
             
           Case WFITEMPROP_PICTURE
+            If (.PictureID <> mlngPictureID) Then
+              fChangeMade = True
+            End If
+            
             sFileName = ""
             If mlngPictureID > 0 Then
               recPictEdit.Index = "idxID"
@@ -4245,11 +4249,7 @@ Private Function UpdateControls(piProperty As WFItemProperty) As Boolean
                 Kill sFileName
               End If
             End If
-            
-            If (.PictureID <> mlngPictureID) Then
-              fChangeMade = True
-            End If
-              
+                          
             If mlngPictureID = 0 Then
               .Picture = LoadPicture(sFileName)
               .PictureID = mlngPictureID
@@ -4267,23 +4267,23 @@ Private Function UpdateControls(piProperty As WFItemProperty) As Boolean
         
           Case WFITEMPROP_TABNUMBER
             
-            If mlngTabNumber <> mfrmWebForm.TabPages.SelectedItem.Tag Then
-              lngTargetPageNumber = mfrmWebForm.TabPages.SelectedItem.Tag
-              sCaption = mfrmWebForm.TabPages.SelectedItem.Caption
+            If mlngTabNumber <> mfrmWebForm.tabPages.SelectedItem.Tag Then
+              lngTargetPageNumber = mfrmWebForm.tabPages.SelectedItem.Tag
+              sCaption = mfrmWebForm.tabPages.SelectedItem.Caption
               
-              mfrmWebForm.TabPages.SelectedItem.Tag = mfrmWebForm.TabPages.Tabs.Item(mlngTabNumber).Tag
-              mfrmWebForm.TabPages.Tabs.Item(mlngTabNumber).Tag = lngTargetPageNumber
+              mfrmWebForm.tabPages.SelectedItem.Tag = mfrmWebForm.tabPages.Tabs.Item(mlngTabNumber).Tag
+              mfrmWebForm.tabPages.Tabs.Item(mlngTabNumber).Tag = lngTargetPageNumber
               
               ' Select the new page
-              mfrmWebForm.TabPages.SelectedItem.Caption = mfrmWebForm.TabPages.Tabs.Item(mlngTabNumber).Caption
-              mfrmWebForm.TabPages.Tabs.Item(mlngTabNumber).Caption = sCaption
+              mfrmWebForm.tabPages.SelectedItem.Caption = mfrmWebForm.tabPages.Tabs.Item(mlngTabNumber).Caption
+              mfrmWebForm.tabPages.Tabs.Item(mlngTabNumber).Caption = sCaption
               mfrmWebForm.PageNo = mlngTabNumber
               mfrmWebForm.IsChanged = True
               blnDontRefresh = True
             End If
             
           Case WFITEMPROP_TABCAPTION
-            mfrmWebForm.TabPages.Tabs.Item(mlngTabNumber).Caption = Replace(ssGridProperties.ActiveCell.Text, "&", "&&")
+            mfrmWebForm.tabPages.Tabs.Item(mlngTabNumber).Caption = Replace(ssGridProperties.ActiveCell.Text, "&", "&&")
             mfrmWebForm.IsChanged = True
             blnDontRefresh = True
             
