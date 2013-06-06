@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TabCtl32.Ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Begin VB.Form frmSSIntranetSetup 
    BorderStyle     =   3  'Fixed Dialog
@@ -62,13 +62,11 @@ Begin VB.Form frmSSIntranetSetup
       TabPicture(0)   =   "frmSSIntranetSetup.frx":000C
       Tab(0).ControlEnabled=   0   'False
       Tab(0).Control(0)=   "fraViews"
-      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).ControlCount=   1
       TabCaption(1)   =   "&Hypertext Links"
       TabPicture(1)   =   "frmSSIntranetSetup.frx":0028
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraHypertextLinks"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "Dash&board"
       TabPicture(2)   =   "frmSSIntranetSetup.frx":0044
@@ -80,13 +78,11 @@ Begin VB.Form frmSSIntranetSetup
       TabPicture(3)   =   "frmSSIntranetSetup.frx":0060
       Tab(3).ControlEnabled=   0   'False
       Tab(3).Control(0)=   "fraDropdownListLinks"
-      Tab(3).Control(0).Enabled=   0   'False
       Tab(3).ControlCount=   1
       TabCaption(4)   =   "On-screen Docume&nt Display"
       TabPicture(4)   =   "frmSSIntranetSetup.frx":007C
       Tab(4).ControlEnabled=   0   'False
       Tab(4).Control(0)=   "fraDocuments"
-      Tab(4).Control(0).Enabled=   0   'False
       Tab(4).ControlCount=   1
       Begin VB.Frame fraDocuments 
          Caption         =   "On-screen Document Display :"
@@ -4230,15 +4226,19 @@ Private Function getHiddenGroups(ctlSourceGrid As SSDBGrid) As String
   Dim aHiddenGroups As Variant
   Dim varBookmark As Variant
   Dim sCombinedHiddenGroups As String
+  Dim fNoGroupsFound As Boolean
+  
+  fNoGroupsFound = True
   
   sCombinedHiddenGroups = vbTab & ""
   For iLoop = 1 To ctlSourceGrid.Rows - 1
-        
     varBookmark = ctlSourceGrid.AddItemBookmark(iLoop)
     sHiddenGroups = ctlSourceGrid.Columns("HiddenGroups").CellText(varBookmark)
     
     If ctlSourceGrid.Columns("Element_Type").CellText(varBookmark) = 3 Then
     
+      fNoGroupsFound = False
+      
       aHiddenGroups = Split(sHiddenGroups, vbTab)
   
       For jLoop = 1 To UBound(aHiddenGroups)
@@ -4248,12 +4248,11 @@ Private Function getHiddenGroups(ctlSourceGrid As SSDBGrid) As String
       Next
       
     End If
-    
   Next
   
   sCombinedHiddenGroups = sCombinedHiddenGroups & vbTab
-  
-  getHiddenGroups = sCombinedHiddenGroups
+    
+  getHiddenGroups = IIf(fNoGroupsFound, "", sCombinedHiddenGroups)
 End Function
 
 

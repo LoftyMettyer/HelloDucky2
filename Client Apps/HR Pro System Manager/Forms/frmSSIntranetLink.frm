@@ -1,7 +1,7 @@
 VERSION 5.00
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{65E121D4-0C60-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCHRT20.OCX"
+Object = "{65E121D4-0C60-11D2-A9FC-0000F8754DA1}#2.0#0"; "mschrt20.ocx"
 Begin VB.Form frmSSIntranetLink 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Self-service Intranet Link"
@@ -1984,7 +1984,7 @@ Private Function ValidateLink() As Boolean
 
   ' Only one Pending Workflow Steps per security group...
   If fValid Then
-    If optLink(SSINTLINKPWFSTEPS).value Then
+    If optLink(SSINTLINKPWFSTEPS).value And Len(msCombinedHiddenGroups) > 0 Then
       
       ' loop through the chosen security groups and check they're in the combined string
       
