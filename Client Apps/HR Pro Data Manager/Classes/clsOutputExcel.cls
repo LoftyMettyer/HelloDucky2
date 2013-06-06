@@ -1548,25 +1548,6 @@ Public Sub Complete()
   
   mxlFirstSheet.Activate
 
-
-  'EMAIL
-  If mblnEmail Then
-    mstrErrorMessage = "Error sending email"
-
-    strFormat = GetOfficeSaveAsFormat(mobjParent.EmailAttachAs, GetOfficeExcelVersion)
-    If strFormat = "" Then
-      mstrErrorMessage = "This definition is set to email an attachment in a file format which is not compatible with your version of Microsoft Office."
-      GoTo TidyAndExit
-    End If
-
-    strTempFile = mobjParent.GetTempFileName(mobjParent.EmailAttachAs)
-    mxlWorkBook.SaveAs strTempFile, Val(strFormat)
-    mxlWorkBook.Close
-    mobjParent.SendEmail strTempFile
-    Set mxlWorkBook = mxlApp.Workbooks.Open(strTempFile)
-  End If
-
-
   'SAVE
   If mblnSave Then
     mstrErrorMessage = "Error saving file <" & mstrFileName & ">"
@@ -1591,6 +1572,25 @@ Public Sub Complete()
     End Select
 
   End If
+
+
+  'EMAIL
+  If mblnEmail Then
+    mstrErrorMessage = "Error sending email"
+
+    strFormat = GetOfficeSaveAsFormat(mobjParent.EmailAttachAs, GetOfficeExcelVersion)
+    If strFormat = "" Then
+      mstrErrorMessage = "This definition is set to email an attachment in a file format which is not compatible with your version of Microsoft Office."
+      GoTo TidyAndExit
+    End If
+
+    strTempFile = mobjParent.GetTempFileName(mobjParent.EmailAttachAs)
+    mxlWorkBook.SaveAs strTempFile, Val(strFormat)
+    mxlWorkBook.Close False
+    mobjParent.SendEmail strTempFile
+    Set mxlWorkBook = mxlApp.Workbooks.Open(strTempFile)
+  End If
+  
 
   'PRINTER
   If mblnPrinter Then
