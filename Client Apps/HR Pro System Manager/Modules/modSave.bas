@@ -728,9 +728,9 @@ TidyUpAndExit:
 
 
     ' Refresh the local tables.
-    fOK = Application.DropTempTables
+    fOK = DropTempTables
     If fOK Then
-      fOK = Application.CreateTempTables
+      fOK = CreateTempTables
     End If
   
   Else

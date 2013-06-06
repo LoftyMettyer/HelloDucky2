@@ -74,8 +74,8 @@ Sub Main()
   gstrWindowsCurrentUser = Environ("USERNAME")
 
   'Instantiate public classes
-  Set Application = New SystemMgr.Application
-  Set ODBC = New SystemMgr.ODBC
+  Set Application = New SystemMgr.clsApplication
+  Set ODBC = New SystemMgr.clsODBC
 
   'Instantiate Progress Bar class
   'Set gobjProgress = New COAProgress.COA_Progress
@@ -88,7 +88,7 @@ Sub Main()
     Exit Sub
   ElseIf App.StartMode = vbSModeStandalone Then
     'Login to database
-    If Application.Login Then
+    If Login Then
       'Display splash screen
       frmSplash.Show
       frmSplash.Refresh
@@ -96,7 +96,7 @@ Sub Main()
       ApplyHotfixes (BEFORELOAD)
       
       'Activate System Manager
-      Application.Activate
+      Activate
       
       'Unload splash screen
       UnLoad frmSplash

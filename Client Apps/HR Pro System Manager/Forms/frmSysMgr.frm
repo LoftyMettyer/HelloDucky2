@@ -435,7 +435,7 @@ Private Sub MDIForm_Unload(Cancel As Integer)
   End If
   
 'Logout
-  Application.Logout
+  Logout
   
 End Sub
 
