@@ -1,8 +1,8 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.OCX"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
-Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~2.OCX"
+Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "Codejock.SkinFramework.v13.1.0.ocx"
 Begin VB.MDIForm frmMain 
    AutoShowChildren=   0   'False
    BackColor       =   &H00F7EEE9&
@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "09:46"
+            TextSave        =   "13:36"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -1405,6 +1405,7 @@ Public Sub RefreshRecordMenu(pfrmCallingForm As Form, Optional ByVal pfUnLoad As
   Dim fSomeEnabled As Boolean
   Dim fBeginGroup As Boolean
   Dim fBeginGroupDone As Boolean
+  Dim strGroupType As String
   
   fNewRecordEnabled = False
   fCopyRecordEnabled = False
@@ -1580,6 +1581,8 @@ Public Sub RefreshRecordMenu(pfrmCallingForm As Form, Optional ByVal pfUnLoad As
         fCustomReportExists = pfrmCallingForm.CustomReportExists
         fCalendarReportExists = pfrmCallingForm.CalendarReportExists
         fGlobalUpdateExists = pfrmCallingForm.GlobalUpdateExists
+        fDataTransferExists = pfrmCallingForm.DataTransferExists
+        fMailMergeExists = pfrmCallingForm.MailMergeExists
       
       End If
       
@@ -1609,7 +1612,6 @@ Public Sub RefreshRecordMenu(pfrmCallingForm As Form, Optional ByVal pfUnLoad As
           strSQL = "SELECT COUNT(*) FROM ASRSysEmailAddress " & _
                    "WHERE TableID = 0 OR TableID = " & CStr(pfrmCallingForm.TableID)
           fEmailAddrExists = (GetRecCount(strSQL) > 0)
-
 
           strSQL = "SELECT COUNT(*) FROM ASRSysMatchReportName " & _
                    "WHERE MatchReportType = 0 " & _
@@ -2021,16 +2023,40 @@ Public Sub RefreshRecordMenu(pfrmCallingForm As Form, Optional ByVal pfUnLoad As
       .Bands(0).Tools("AddFromWaitingListFind").Enabled = fAddFromWaitingListEnabled
       .Bands(0).Tools("ID_Print").Enabled = True
       
-      .Bands(0).Tools("CustomReports").Visible = fCustomReportExists
+      .Bands(0).Tools("CustomReports").Visible = fCustomReportExists And (.Bands(0).Tools("CustomReports").Visible)
       .Bands(0).Tools("CustomReports").Enabled = fSelectionMade
       
-      .Bands(0).Tools("CalendarReports").Visible = fCalendarReportExists
+      .Bands(0).Tools("CalendarReports").Visible = fCalendarReportExists And (.Bands(0).Tools("CalendarReports").Visible)
       .Bands(0).Tools("CalendarReports").Enabled = fSelectionMade
       .Bands(0).Tools("CalendarReports").BeginGroup = Not fCustomReportExists
       
-      .Bands(0).Tools("GlobalUpdate").Visible = fGlobalUpdateExists
+      .Bands(0).Tools("GlobalUpdate").Visible = fGlobalUpdateExists And (.Bands(0).Tools("GlobalUpdate").Visible)
       .Bands(0).Tools("GlobalUpdate").Enabled = fSelectionMade
       '.Bands(0).Tools("GlobalUpdate").BeginGroup = (Not fCustomReportExists And Not fCalendarReportExists)
+
+      .Bands(0).Tools("DataTransfer").Visible = fDataTransferExists And (.Bands(0).Tools("DataTransfer").Visible)
+      .Bands(0).Tools("DataTransfer").Enabled = fSelectionMade
+
+      .Bands(0).Tools("MailMerge").Visible = fMailMergeExists And (.Bands(0).Tools("MailMerge").Visible)
+      .Bands(0).Tools("MailMerge").Enabled = fSelectionMade
+
+      ' Recalculate the new utility/report group separators
+      strGroupType = ""
+      For Each objTool In .Bands(0).Tools
+        If (objTool.Name = "GlobalUpdate" Or objTool.Name = "DataTransfer" Or objTool.Name = "MailMerge") _
+          And (strGroupType = "" Or strGroupType <> "Utilities") Then
+            ' set the objtool to begingroup and change the flag
+            objTool.BeginGroup = True
+            strGroupType = "Utilities"
+        End If
+            
+        If (objTool.Name = "CalendarReports" Or objTool.Name = "CustomReports") _
+          And (strGroupType = "" Or strGroupType <> "Reports") Then
+            ' set the objtool to begingroup and change the flag
+            objTool.BeginGroup = True
+            strGroupType = "Reports"
+        End If
+      Next objTool
 
     End If
 
