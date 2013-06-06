@@ -1,7 +1,7 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
-Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~2.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
+Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "Codejock.SkinFramework.v13.1.0.ocx"
 Begin VB.MDIForm frmSysMgr 
    AutoShowChildren=   0   'False
    BackColor       =   &H00F7EEE9&
@@ -1772,6 +1772,7 @@ Private Sub RefreshMenu_Defaults(piFormCount As Integer)
     .Tools("ID_AccordTransfer").Enabled = gbAccordPayrollModule
     .Tools("ID_CMG").Enabled = gbCMGExportEnabled
     .Tools("ID_WorkflowSetup").Enabled = Application.WorkflowModule
+    .Tools("ID_MobileSetup").Enabled = Application.MobileModule
     .Tools("ID_ModuleDocument").Enabled = Application.Version1Module
     .Tools("ID_AuditModule").Enabled = True
     .Tools("ID_BankHoliday").Enabled = Application.PersonnelModule
@@ -1805,6 +1806,7 @@ Private Sub RefreshMenu_Defaults(piFormCount As Integer)
     .Tools("ID_AccordTransfer").Visible = True
     .Tools("ID_CMG").Visible = True
     .Tools("ID_WorkflowSetup").Visible = True
+    .Tools("ID_MobileSetup").Visible = True
     .Tools("ID_ModuleDocument").Visible = True
     .Tools("ID_AuditModule").Visible = True
     .Tools("ID_BankHoliday").Visible = True
@@ -2196,6 +2198,11 @@ Private Sub ToolClick_DBMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       frmWorkflowSetup.Show vbModal
       Set frmWorkflowSetup = Nothing
 
+    Case "ID_MobileSetup"
+      ' Call up the Mobile Module Setup screen.
+      frmMobileSetup.Show vbModal
+      Set frmMobileSetup = Nothing
+
     Case "ID_ModuleDocument"
       ' Call up the Version 1 Module Setup screen
       frmModuleDocument.Show vbModal
@@ -2524,6 +2531,11 @@ Private Sub ToolClick_PictMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       ' Call up the Workflow Module Setup screen.
       frmWorkflowSetup.Show vbModal
       Set frmWorkflowSetup = Nothing
+
+    Case "ID_MobileSetup"
+      ' Call up the Mobile Module Setup screen.
+      frmMobileSetup.Show vbModal
+      Set frmMobileSetup = Nothing
 
     Case "ID_ModuleDocument"
       ' Call up the Version 1 Module Setup screen
@@ -2869,6 +2881,11 @@ Private Sub ToolClick_ScrMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       frmWorkflowSetup.Show vbModal
       Set frmWorkflowSetup = Nothing
 
+    Case "ID_MobileSetup"
+      ' Call up the Mobile Module Setup screen.
+      frmMobileSetup.Show vbModal
+      Set frmMobileSetup = Nothing
+
     Case "ID_ModuleDocument"
       ' Call up the Version 1 Module Setup screen
       frmModuleDocument.Show vbModal
@@ -3186,6 +3203,11 @@ Private Sub ToolClick_WorkflowMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       ' Call up the Workflow Module Setup screen.
       frmWorkflowSetup.Show vbModal
       Set frmWorkflowSetup = Nothing
+
+    Case "ID_MobileSetup"
+      ' Call up the Mobile Module Setup screen.
+      frmMobileSetup.Show vbModal
+      Set frmMobileSetup = Nothing
 
     Case "ID_ModuleDocument"
       ' Call up the Version 1 Module Setup screen
@@ -3505,6 +3527,11 @@ Private Sub ToolClick_ViewMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       ' Call up the Workflow Module Setup screen.
       frmWorkflowSetup.Show vbModal
       Set frmWorkflowSetup = Nothing
+
+    Case "ID_MobileSetup"
+      ' Call up the Mobile Module Setup screen.
+      frmMobileSetup.Show vbModal
+      Set frmMobileSetup = Nothing
 
     Case "ID_ModuleDocument"
       ' Call up the Version 1 Module Setup screen
@@ -3868,6 +3895,11 @@ Private Sub ToolClick_SysMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       frmWorkflowSetup.Show vbModal
       Set frmWorkflowSetup = Nothing
 
+    Case "ID_MobileSetup"
+      ' Call up the Mobile Module Setup screen.
+      frmMobileSetup.Show vbModal
+      Set frmMobileSetup = Nothing
+
     Case "ID_ModuleDocument"
       ' Call up the Version 1 Module Setup screen
       frmModuleDocument.Show vbModal
@@ -4152,6 +4184,11 @@ Private Sub ToolClick_ScrDesigner(ByVal pTool As ActiveBarLibraryCtl.Tool)
       ' Call up the Workflow Module Setup screen.
       frmWorkflowSetup.Show vbModal
       Set frmWorkflowSetup = Nothing
+
+    Case "ID_MobileSetup"
+      ' Call up the Mobile Module Setup screen.
+      frmMobileSetup.Show vbModal
+      Set frmMobileSetup = Nothing
 
     Case "ID_ModuleDocument"
       ' Call up the Version 1 Module Setup screen
@@ -4561,6 +4598,11 @@ Private Sub ToolClick_WebFormDesigner(ByVal pTool As ActiveBarLibraryCtl.Tool)
       ' Call up the Workflow Module Setup screen.
       frmWorkflowSetup.Show vbModal
       Set frmWorkflowSetup = Nothing
+
+    Case "ID_MobileSetup"
+      ' Call up the Mobile Module Setup screen.
+      frmMobileSetup.Show vbModal
+      Set frmMobileSetup = Nothing
 
     Case "ID_ModuleDocument"
       ' Call up the Version 1 Module Setup screen
