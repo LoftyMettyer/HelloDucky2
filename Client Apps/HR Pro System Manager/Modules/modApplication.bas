@@ -411,6 +411,23 @@ Public Function CreateTempTables() As Boolean
       " INTO tmpAccordTransferTypes FROM ASRSysAccordTransferTypes IN " & sSource
     daoDb.Execute sSQL
   
+'NHRD Prototype Fusion Code***********************************************************
+      ' Create the local Fusion Field Definition table.
+    sSQL = "SELECT ASRSysFusionFieldDefinitions.*" & _
+      " INTO tmpFusionFieldDefinitions FROM ASRSysFusionFieldDefinitions IN " & sSource
+    daoDb.Execute sSQL
+  
+    ' Create the local Fusion Mapping table.
+    sSQL = "SELECT ASRSysFusionFieldMappings.*" & _
+      " INTO tmpFusionFieldMappings FROM ASRSysFusionFieldMappings IN " & sSource
+    daoDb.Execute sSQL
+  
+    ' Create the local Fusion Transfer Type table.
+    sSQL = "SELECT ASRSysFusionTypes.*" & _
+      " INTO tmpFusionTypes FROM ASRSysFusionTypes IN " & sSource
+    daoDb.Execute sSQL
+'NHRD Prototype Fusion Code***********************************************************
+    
     'TM20020211 Fault 3487
     ' Create the local mail merge table.
     sSQL = "SELECT ASRSysMailMergeName.* " & _
@@ -1499,10 +1516,14 @@ Public Function DropTempTables() As Boolean
   daoDb.Execute "DROP TABLE tmpSSIViews"
 
   daoDb.Execute "DROP TABLE tmpAccordTransferFieldDefinitions"
-
   daoDb.Execute "DROP TABLE tmpAccordTransferFieldMappings"
-
   daoDb.Execute "DROP TABLE tmpAccordTransferTypes"
+
+'NHRD Prototype Fusion Code **********************************
+  daoDb.Execute "DROP TABLE tmpFusionFieldDefinitions"
+  daoDb.Execute "DROP TABLE tmpFusionFieldMappings"
+  daoDb.Execute "DROP TABLE tmpFusionTypes"
+'NHRD Prototype Fusion Code **********************************
 
   recMailMerge.Close
   daoDb.Execute "DROP TABLE tmpMailMerge"
@@ -1725,6 +1746,11 @@ Public Sub ActivateModules()
   
   ' Payroll Module
   gbAccordPayrollModule = IsModuleEnabled(modAccordPayroll)
+
+'NHRD Prototype Fusion Code **********************************
+' Fusion Module
+  gbFusionModule = True 'IsModuleEnabled(modFusion)
+'NHRD Prototype Fusion Code **********************************
 
   ' Version 1 Module
   gfVersion1Module = IsModuleEnabled(modVersion1)
