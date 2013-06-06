@@ -1,7 +1,7 @@
 VERSION 5.00
 Begin VB.Form frmTableValidation 
    BorderStyle     =   3  'Fixed Dialog
-   Caption         =   "Overlapping Validation"
+   Caption         =   "Overlapping Dates"
    ClientHeight    =   2895
    ClientLeft      =   45
    ClientTop       =   345
