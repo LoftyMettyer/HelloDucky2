@@ -13,8 +13,8 @@ Public gsConnectionString As String
 Public oPostCode As HRProDataMgr.PostCode
 
 ' New Progress Bar - Global class to be used for progress bars
-Public gobjProgress As COA_Progress
-'Public gobjProgress As New clsProgress
+'Public gobjProgress As COA_Progress
+Public gobjProgress As New clsProgress
 
 ' Utility Run Log - Global class used by utilities and batch jobs
 Public gobjEventLog As New clsEventLog
