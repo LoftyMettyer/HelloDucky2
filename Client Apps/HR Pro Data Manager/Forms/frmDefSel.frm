@@ -860,7 +860,7 @@ Private Sub cmdSelect_Click()
   lngAction = edtSelect
   If mblnScheduledJobs Then
     Select Case mutlUtilityType
-    Case utlBatchJob
+    Case utlBatchJob, utlReportPack
       RunSelectedJobs
       
     Case utlWorkflow
@@ -1458,7 +1458,7 @@ Dim fAllColumns As Boolean
       
       If mblnScheduledJobs Then
         Select Case mutlUtilityType
-        Case utlBatchJob
+        Case utlBatchJob, utlReportPack
           Set objBatchJob = New clsBatchJobRUN
           'List2.Clear
           Do While Not .EOF
