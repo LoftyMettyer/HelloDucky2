@@ -302,6 +302,7 @@ Private Function ViewNew() As Boolean
   
     ' Now create the view
     sSQL = "CREATE VIEW dbo." & recViewEdit.Fields("ViewName").value & vbNewLine & _
+      "--WITH SCHEMABINDING" & vbNewLine & _
       "AS" & vbNewLine & _
       "    SELECT " & sColumns & vbNewLine & _
       "    FROM " & sTable & vbNewLine & _
@@ -495,7 +496,7 @@ Private Function ViewSave() As Boolean
       ' Now create the view
       If fOK Then
         sSQL = "CREATE VIEW dbo." & recViewEdit.Fields("ViewName").value & vbNewLine & _
-          "WITH SCHEMABINDING" & vbNewLine & _
+          "--WITH SCHEMABINDING" & vbNewLine & _
           "AS" & vbNewLine & _
           "    SELECT " & sColumns & vbNewLine & _
           "    FROM dbo." & sTable & vbNewLine & _
