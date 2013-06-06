@@ -40,7 +40,7 @@ Begin VB.Form frmCustomReports
       Picture         =   "frmCustomReports.frx":0596
       ScaleHeight     =   420
       ScaleWidth      =   480
-      TabIndex        =   122
+      TabIndex        =   123
       Top             =   6075
       Visible         =   0   'False
       Width           =   540
@@ -53,7 +53,7 @@ Begin VB.Form frmCustomReports
       Picture         =   "frmCustomReports.frx":10AA
       ScaleHeight     =   405
       ScaleWidth      =   465
-      TabIndex        =   121
+      TabIndex        =   122
       Top             =   6090
       Visible         =   0   'False
       Width           =   525
@@ -63,7 +63,7 @@ Begin VB.Form frmCustomReports
       Default         =   -1  'True
       Height          =   400
       Left            =   7050
-      TabIndex        =   115
+      TabIndex        =   116
       Top             =   6105
       Width           =   1200
    End
@@ -72,14 +72,14 @@ Begin VB.Form frmCustomReports
       Caption         =   "&Cancel"
       Height          =   400
       Left            =   8330
-      TabIndex        =   116
+      TabIndex        =   117
       Top             =   6105
       Width           =   1200
    End
    Begin TabDlg.SSTab SSTab1 
       Height          =   5955
       Left            =   45
-      TabIndex        =   117
+      TabIndex        =   118
       Top             =   45
       Width           =   9480
       _ExtentX        =   16722
@@ -110,53 +110,42 @@ Begin VB.Form frmCustomReports
       TabPicture(1)   =   "frmCustomReports.frx":1990
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraParent1"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).Control(1)=   "fraParent2"
-      Tab(1).Control(1).Enabled=   0   'False
       Tab(1).Control(2)=   "fraChild"
-      Tab(1).Control(2).Enabled=   0   'False
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "Colu&mns"
       TabPicture(2)   =   "frmCustomReports.frx":19AC
       Tab(2).ControlEnabled=   0   'False
       Tab(2).Control(0)=   "fraFieldsAvailable"
-      Tab(2).Control(0).Enabled=   0   'False
       Tab(2).Control(1)=   "fraFieldsSelected"
-      Tab(2).Control(1).Enabled=   0   'False
       Tab(2).Control(2)=   "fraButtons"
-      Tab(2).Control(2).Enabled=   0   'False
       Tab(2).ControlCount=   3
       TabCaption(3)   =   "&Sort Order"
       TabPicture(3)   =   "frmCustomReports.frx":19C8
       Tab(3).ControlEnabled=   0   'False
       Tab(3).Control(0)=   "fraRepetition"
-      Tab(3).Control(0).Enabled=   0   'False
       Tab(3).Control(1)=   "fraReportOrder"
-      Tab(3).Control(1).Enabled=   0   'False
       Tab(3).ControlCount=   2
       TabCaption(4)   =   "O&utput"
       TabPicture(4)   =   "frmCustomReports.frx":19E4
       Tab(4).ControlEnabled=   0   'False
       Tab(4).Control(0)=   "fraReportOptions"
-      Tab(4).Control(0).Enabled=   0   'False
       Tab(4).Control(1)=   "fraOutputFormat"
-      Tab(4).Control(1).Enabled=   0   'False
       Tab(4).Control(2)=   "fraOutputDestination"
-      Tab(4).Control(2).Enabled=   0   'False
       Tab(4).ControlCount=   3
       Begin VB.Frame fraReportOrder 
          Caption         =   "Sort Order :"
          Enabled         =   0   'False
          Height          =   3435
          Left            =   -74850
-         TabIndex        =   74
+         TabIndex        =   75
          Top             =   400
          Width           =   9180
          Begin VB.CommandButton cmdClearOrder 
             Caption         =   "Remo&ve All"
             Height          =   400
             Left            =   7800
-            TabIndex        =   79
+            TabIndex        =   80
             Top             =   1740
             Width           =   1200
          End
@@ -164,7 +153,7 @@ Begin VB.Form frmCustomReports
             Caption         =   "&Add..."
             Height          =   400
             Left            =   7800
-            TabIndex        =   76
+            TabIndex        =   77
             Top             =   300
             Width           =   1200
          End
@@ -172,7 +161,7 @@ Begin VB.Form frmCustomReports
             Caption         =   "&Remove"
             Height          =   400
             Left            =   7800
-            TabIndex        =   78
+            TabIndex        =   79
             Top             =   1260
             Width           =   1200
          End
@@ -180,7 +169,7 @@ Begin VB.Form frmCustomReports
             Caption         =   "&Edit..."
             Height          =   400
             Left            =   7800
-            TabIndex        =   77
+            TabIndex        =   78
             Top             =   780
             Width           =   1200
          End
@@ -188,7 +177,7 @@ Begin VB.Form frmCustomReports
             Caption         =   "Move U&p"
             Height          =   400
             Left            =   7800
-            TabIndex        =   80
+            TabIndex        =   81
             Top             =   2360
             Width           =   1200
          End
@@ -196,14 +185,14 @@ Begin VB.Form frmCustomReports
             Caption         =   "Move Do&wn"
             Height          =   400
             Left            =   7800
-            TabIndex        =   81
+            TabIndex        =   82
             Top             =   2840
             Width           =   1200
          End
          Begin SSDataWidgets_B.SSDBGrid grdReportOrder 
             Height          =   2940
             Left            =   195
-            TabIndex        =   75
+            TabIndex        =   76
             Top             =   300
             Width           =   7470
             _Version        =   196617
@@ -412,7 +401,7 @@ Begin VB.Form frmCustomReports
          Caption         =   "Output Destination(s) :"
          Height          =   3975
          Left            =   -72255
-         TabIndex        =   95
+         TabIndex        =   96
          Top             =   1800
          Width           =   6555
          Begin VB.TextBox txtEmailAttachAs 
@@ -421,7 +410,7 @@ Begin VB.Form frmCustomReports
             ForeColor       =   &H00000000&
             Height          =   315
             Left            =   3270
-            TabIndex        =   114
+            TabIndex        =   115
             Tag             =   "0"
             Top             =   3460
             Width           =   3120
@@ -433,7 +422,7 @@ Begin VB.Form frmCustomReports
             Height          =   315
             Left            =   3270
             Locked          =   -1  'True
-            TabIndex        =   103
+            TabIndex        =   104
             TabStop         =   0   'False
             Tag             =   "0"
             Top             =   1760
@@ -445,7 +434,7 @@ Begin VB.Form frmCustomReports
             Height          =   315
             Left            =   3270
             Style           =   2  'Dropdown List
-            TabIndex        =   100
+            TabIndex        =   101
             Top             =   1240
             Width           =   3135
          End
@@ -455,7 +444,7 @@ Begin VB.Form frmCustomReports
             Height          =   315
             Left            =   3270
             Style           =   2  'Dropdown List
-            TabIndex        =   106
+            TabIndex        =   107
             Top             =   2160
             Width           =   3135
          End
@@ -464,7 +453,7 @@ Begin VB.Form frmCustomReports
             Enabled         =   0   'False
             Height          =   315
             Left            =   3270
-            TabIndex        =   112
+            TabIndex        =   113
             Top             =   3060
             Width           =   3120
          End
@@ -475,7 +464,7 @@ Begin VB.Form frmCustomReports
             Height          =   315
             Left            =   3270
             Locked          =   -1  'True
-            TabIndex        =   109
+            TabIndex        =   110
             TabStop         =   0   'False
             Tag             =   "0"
             Top             =   2660
@@ -488,7 +477,7 @@ Begin VB.Form frmCustomReports
             Height          =   315
             Left            =   6060
             Picture         =   "frmCustomReports.frx":1E09
-            TabIndex        =   104
+            TabIndex        =   105
             Top             =   1760
             UseMaskColor    =   -1  'True
             Width           =   330
@@ -500,7 +489,7 @@ Begin VB.Form frmCustomReports
             Height          =   315
             Left            =   6060
             Picture         =   "frmCustomReports.frx":24CB
-            TabIndex        =   110
+            TabIndex        =   111
             Top             =   2660
             UseMaskColor    =   -1  'True
             Width           =   330
@@ -510,7 +499,7 @@ Begin VB.Form frmCustomReports
             Height          =   195
             Index           =   0
             Left            =   150
-            TabIndex        =   97
+            TabIndex        =   98
             Top             =   850
             Value           =   1  'Checked
             Width           =   3105
@@ -520,7 +509,7 @@ Begin VB.Form frmCustomReports
             Height          =   195
             Index           =   1
             Left            =   150
-            TabIndex        =   98
+            TabIndex        =   99
             Top             =   1300
             Width           =   1650
          End
@@ -530,7 +519,7 @@ Begin VB.Form frmCustomReports
             Height          =   195
             Index           =   2
             Left            =   150
-            TabIndex        =   101
+            TabIndex        =   102
             Top             =   1820
             Width           =   1455
          End
@@ -540,7 +529,7 @@ Begin VB.Form frmCustomReports
             Height          =   195
             Index           =   3
             Left            =   150
-            TabIndex        =   107
+            TabIndex        =   108
             Top             =   2720
             Width           =   1560
          End
@@ -549,7 +538,7 @@ Begin VB.Form frmCustomReports
             Enabled         =   0   'False
             Height          =   195
             Left            =   150
-            TabIndex        =   96
+            TabIndex        =   97
             Top             =   400
             Width           =   3495
          End
@@ -560,7 +549,7 @@ Begin VB.Form frmCustomReports
             Height          =   195
             Index           =   2
             Left            =   1800
-            TabIndex        =   113
+            TabIndex        =   114
             Top             =   3525
             Width           =   1020
          End
@@ -570,7 +559,7 @@ Begin VB.Form frmCustomReports
             Enabled         =   0   'False
             Height          =   195
             Left            =   1800
-            TabIndex        =   102
+            TabIndex        =   103
             Top             =   1815
             Width           =   1005
          End
@@ -581,7 +570,7 @@ Begin VB.Form frmCustomReports
             Height          =   195
             Index           =   1
             Left            =   1800
-            TabIndex        =   111
+            TabIndex        =   112
             Top             =   3120
             Width           =   1305
          End
@@ -592,7 +581,7 @@ Begin VB.Form frmCustomReports
             Height          =   195
             Index           =   0
             Left            =   1800
-            TabIndex        =   108
+            TabIndex        =   109
             Top             =   2715
             Width           =   1200
          End
@@ -602,7 +591,7 @@ Begin VB.Form frmCustomReports
             Enabled         =   0   'False
             Height          =   195
             Left            =   1800
-            TabIndex        =   105
+            TabIndex        =   106
             Top             =   2220
             Width           =   1350
          End
@@ -612,7 +601,7 @@ Begin VB.Form frmCustomReports
             Enabled         =   0   'False
             Height          =   195
             Left            =   1800
-            TabIndex        =   99
+            TabIndex        =   100
             Top             =   1305
             Width           =   1410
          End
@@ -622,14 +611,14 @@ Begin VB.Form frmCustomReports
          Caption         =   "Buttons :"
          Height          =   5385
          Left            =   -71040
-         TabIndex        =   53
+         TabIndex        =   54
          Top             =   400
          Width           =   1515
          Begin VB.CommandButton cmdAdd 
             Caption         =   "&Add"
             Height          =   400
             Left            =   120
-            TabIndex        =   54
+            TabIndex        =   55
             Top             =   1020
             Width           =   1275
          End
@@ -637,7 +626,7 @@ Begin VB.Form frmCustomReports
             Caption         =   "&Remove"
             Height          =   400
             Left            =   120
-            TabIndex        =   56
+            TabIndex        =   57
             Top             =   2220
             Width           =   1275
          End
@@ -646,7 +635,7 @@ Begin VB.Form frmCustomReports
             Enabled         =   0   'False
             Height          =   400
             Left            =   120
-            TabIndex        =   58
+            TabIndex        =   59
             Top             =   3420
             Width           =   1275
          End
@@ -655,7 +644,7 @@ Begin VB.Form frmCustomReports
             Enabled         =   0   'False
             Height          =   400
             Left            =   120
-            TabIndex        =   59
+            TabIndex        =   60
             Top             =   3900
             Width           =   1275
          End
@@ -663,7 +652,7 @@ Begin VB.Form frmCustomReports
             Caption         =   "Add A&ll"
             Height          =   400
             Left            =   120
-            TabIndex        =   55
+            TabIndex        =   56
             Top             =   1500
             Width           =   1275
          End
@@ -671,7 +660,7 @@ Begin VB.Form frmCustomReports
             Caption         =   "Remo&ve All"
             Height          =   400
             Left            =   120
-            TabIndex        =   57
+            TabIndex        =   58
             Top             =   2700
             Width           =   1275
          End
@@ -680,14 +669,14 @@ Begin VB.Form frmCustomReports
          Caption         =   "Child Tables : "
          Height          =   2400
          Left            =   -74850
-         TabIndex        =   41
+         TabIndex        =   42
          Top             =   3390
          Width           =   9180
          Begin VB.CommandButton cmdEditChild 
             Caption         =   "&Edit..."
             Height          =   400
             Left            =   7800
-            TabIndex        =   44
+            TabIndex        =   45
             Top             =   790
             Width           =   1200
          End
@@ -695,7 +684,7 @@ Begin VB.Form frmCustomReports
             Caption         =   "Remo&ve All "
             Height          =   400
             Left            =   7800
-            TabIndex        =   46
+            TabIndex        =   47
             Top             =   1770
             Width           =   1200
          End
@@ -703,7 +692,7 @@ Begin VB.Form frmCustomReports
             Caption         =   "&Add..."
             Height          =   400
             Left            =   7800
-            TabIndex        =   43
+            TabIndex        =   44
             Top             =   300
             Width           =   1200
          End
@@ -711,14 +700,14 @@ Begin VB.Form frmCustomReports
             Caption         =   "&Remove"
             Height          =   400
             Left            =   7800
-            TabIndex        =   45
+            TabIndex        =   46
             Top             =   1280
             Width           =   1200
          End
          Begin SSDataWidgets_B.SSDBGrid grdChildren 
             Height          =   1875
             Left            =   195
-            TabIndex        =   42
+            TabIndex        =   43
             Top             =   300
             Width           =   7455
             ScrollBars      =   0
@@ -892,7 +881,7 @@ Begin VB.Form frmCustomReports
          Caption         =   "Output Format :"
          Height          =   3975
          Left            =   -74880
-         TabIndex        =   87
+         TabIndex        =   88
          Top             =   1800
          Width           =   2500
          Begin VB.OptionButton optOutputFormat 
@@ -900,7 +889,7 @@ Begin VB.Form frmCustomReports
             Height          =   195
             Index           =   6
             Left            =   200
-            TabIndex        =   94
+            TabIndex        =   95
             Top             =   2800
             Width           =   1900
          End
@@ -909,7 +898,7 @@ Begin VB.Form frmCustomReports
             Height          =   195
             Index           =   5
             Left            =   200
-            TabIndex        =   93
+            TabIndex        =   94
             Top             =   2400
             Width           =   1900
          End
@@ -918,7 +907,7 @@ Begin VB.Form frmCustomReports
             Height          =   195
             Index           =   4
             Left            =   200
-            TabIndex        =   92
+            TabIndex        =   93
             Top             =   2000
             Width           =   1900
          End
@@ -927,7 +916,7 @@ Begin VB.Form frmCustomReports
             Height          =   195
             Index           =   3
             Left            =   200
-            TabIndex        =   91
+            TabIndex        =   92
             Top             =   1600
             Width           =   1900
          End
@@ -936,7 +925,7 @@ Begin VB.Form frmCustomReports
             Height          =   195
             Index           =   2
             Left            =   200
-            TabIndex        =   90
+            TabIndex        =   91
             Top             =   1200
             Width           =   1900
          End
@@ -945,7 +934,7 @@ Begin VB.Form frmCustomReports
             Height          =   195
             Index           =   1
             Left            =   200
-            TabIndex        =   89
+            TabIndex        =   90
             Top             =   800
             Width           =   1900
          End
@@ -954,7 +943,7 @@ Begin VB.Form frmCustomReports
             Height          =   195
             Index           =   0
             Left            =   200
-            TabIndex        =   88
+            TabIndex        =   89
             Top             =   400
             Value           =   -1  'True
             Width           =   1900
@@ -964,13 +953,13 @@ Begin VB.Form frmCustomReports
          Caption         =   "Repetition : "
          Height          =   1830
          Left            =   -74850
-         TabIndex        =   83
+         TabIndex        =   84
          Top             =   3960
          Width           =   9180
          Begin SSDataWidgets_B.SSDBGrid grdRepetition 
             Height          =   1335
             Left            =   195
-            TabIndex        =   82
+            TabIndex        =   83
             Top             =   300
             Width           =   8865
             _Version        =   196617
@@ -1123,14 +1112,14 @@ Begin VB.Form frmCustomReports
          Caption         =   "Data :"
          Height          =   2940
          Left            =   150
-         TabIndex        =   9
+         TabIndex        =   10
          Top             =   2850
          Width           =   9180
          Begin VB.CheckBox chkPrintFilterHeader 
             Caption         =   "Display &title in the report header"
             Height          =   240
             Left            =   4770
-            TabIndex        =   20
+            TabIndex        =   21
             Top             =   1560
             Width           =   3960
          End
@@ -1141,7 +1130,7 @@ Begin VB.Form frmCustomReports
             Height          =   315
             Left            =   8685
             Picture         =   "frmCustomReports.frx":2CA5
-            TabIndex        =   19
+            TabIndex        =   20
             Top             =   1100
             UseMaskColor    =   -1  'True
             Width           =   330
@@ -1153,7 +1142,7 @@ Begin VB.Form frmCustomReports
             Height          =   315
             Left            =   8685
             Picture         =   "frmCustomReports.frx":3367
-            TabIndex        =   16
+            TabIndex        =   17
             Top             =   700
             UseMaskColor    =   -1  'True
             Width           =   330
@@ -1162,7 +1151,7 @@ Begin VB.Form frmCustomReports
             Height          =   315
             Left            =   1395
             Style           =   2  'Dropdown List
-            TabIndex        =   11
+            TabIndex        =   12
             Top             =   300
             Width           =   3090
          End
@@ -1170,7 +1159,7 @@ Begin VB.Form frmCustomReports
             Caption         =   "&All"
             Height          =   195
             Left            =   5715
-            TabIndex        =   13
+            TabIndex        =   14
             Top             =   360
             Value           =   -1  'True
             Width           =   585
@@ -1179,7 +1168,7 @@ Begin VB.Form frmCustomReports
             Caption         =   "&Picklist"
             Height          =   195
             Left            =   5715
-            TabIndex        =   14
+            TabIndex        =   15
             Top             =   760
             Width           =   885
          End
@@ -1187,7 +1176,7 @@ Begin VB.Form frmCustomReports
             Caption         =   "&Filter"
             Height          =   195
             Left            =   5715
-            TabIndex        =   17
+            TabIndex        =   18
             Top             =   1160
             Width           =   795
          End
@@ -1197,7 +1186,7 @@ Begin VB.Form frmCustomReports
             Height          =   315
             Left            =   6700
             Locked          =   -1  'True
-            TabIndex        =   15
+            TabIndex        =   16
             Tag             =   "0"
             Top             =   700
             Width           =   2000
@@ -1208,7 +1197,7 @@ Begin VB.Form frmCustomReports
             Height          =   315
             Left            =   6700
             Locked          =   -1  'True
-            TabIndex        =   18
+            TabIndex        =   19
             Tag             =   "0"
             Top             =   1100
             Width           =   2000
@@ -1219,7 +1208,7 @@ Begin VB.Form frmCustomReports
             Caption         =   "Records :"
             Height          =   195
             Left            =   4770
-            TabIndex        =   12
+            TabIndex        =   13
             Top             =   360
             Width           =   870
          End
@@ -1229,7 +1218,7 @@ Begin VB.Form frmCustomReports
             Caption         =   "Base Table :"
             Height          =   195
             Left            =   195
-            TabIndex        =   10
+            TabIndex        =   11
             Top             =   360
             Width           =   1110
          End
@@ -1238,7 +1227,7 @@ Begin VB.Form frmCustomReports
          Caption         =   "Parent 2 :"
          Height          =   1440
          Left            =   -74850
-         TabIndex        =   31
+         TabIndex        =   32
          Top             =   1890
          Width           =   9180
          Begin VB.CommandButton cmdParent2Picklist 
@@ -1248,7 +1237,7 @@ Begin VB.Form frmCustomReports
             Height          =   315
             Left            =   8700
             Picture         =   "frmCustomReports.frx":3A29
-            TabIndex        =   37
+            TabIndex        =   38
             Top             =   535
             UseMaskColor    =   -1  'True
             Width           =   330
@@ -1259,7 +1248,7 @@ Begin VB.Form frmCustomReports
             Height          =   315
             Left            =   6700
             Locked          =   -1  'True
-            TabIndex        =   36
+            TabIndex        =   37
             Tag             =   "0"
             Top             =   535
             Width           =   2000
@@ -1268,7 +1257,7 @@ Begin VB.Form frmCustomReports
             Caption         =   "All"
             Height          =   195
             Left            =   5760
-            TabIndex        =   34
+            TabIndex        =   35
             Top             =   240
             Value           =   -1  'True
             Width           =   585
@@ -1277,7 +1266,7 @@ Begin VB.Form frmCustomReports
             Caption         =   "Picklist"
             Height          =   195
             Left            =   5760
-            TabIndex        =   35
+            TabIndex        =   36
             Top             =   595
             Width           =   885
          End
@@ -1285,7 +1274,7 @@ Begin VB.Form frmCustomReports
             Caption         =   "Filter"
             Height          =   195
             Left            =   5760
-            TabIndex        =   38
+            TabIndex        =   39
             Top             =   985
             Width           =   795
          End
@@ -1295,7 +1284,7 @@ Begin VB.Form frmCustomReports
             Height          =   315
             Left            =   1000
             Locked          =   -1  'True
-            TabIndex        =   33
+            TabIndex        =   34
             TabStop         =   0   'False
             Tag             =   "0"
             Top             =   300
@@ -1307,7 +1296,7 @@ Begin VB.Form frmCustomReports
             Height          =   315
             Left            =   6700
             Locked          =   -1  'True
-            TabIndex        =   39
+            TabIndex        =   40
             TabStop         =   0   'False
             Tag             =   "0"
             Top             =   925
@@ -1320,7 +1309,7 @@ Begin VB.Form frmCustomReports
             Height          =   315
             Left            =   8700
             Picture         =   "frmCustomReports.frx":40EB
-            TabIndex        =   40
+            TabIndex        =   41
             Top             =   925
             UseMaskColor    =   -1  'True
             Width           =   330
@@ -1331,7 +1320,7 @@ Begin VB.Form frmCustomReports
             Caption         =   "Records :"
             Height          =   195
             Left            =   4860
-            TabIndex        =   120
+            TabIndex        =   121
             Top             =   240
             Width           =   960
          End
@@ -1341,7 +1330,7 @@ Begin VB.Form frmCustomReports
             Caption         =   "Table :"
             Height          =   195
             Left            =   200
-            TabIndex        =   32
+            TabIndex        =   33
             Top             =   360
             Width           =   495
          End
@@ -1350,14 +1339,14 @@ Begin VB.Form frmCustomReports
          Caption         =   "Parent 1 :"
          Height          =   1440
          Left            =   -74850
-         TabIndex        =   21
+         TabIndex        =   22
          Top             =   400
          Width           =   9180
          Begin VB.OptionButton optParent1Filter 
             Caption         =   "Filter"
             Height          =   195
             Left            =   5760
-            TabIndex        =   28
+            TabIndex        =   29
             Top             =   985
             Width           =   840
          End
@@ -1365,7 +1354,7 @@ Begin VB.Form frmCustomReports
             Caption         =   "Picklist"
             Height          =   195
             Left            =   5760
-            TabIndex        =   25
+            TabIndex        =   26
             Top             =   595
             Width           =   885
          End
@@ -1373,7 +1362,7 @@ Begin VB.Form frmCustomReports
             Caption         =   "All"
             Height          =   195
             Left            =   5760
-            TabIndex        =   24
+            TabIndex        =   25
             Top             =   240
             Value           =   -1  'True
             Width           =   630
@@ -1384,7 +1373,7 @@ Begin VB.Form frmCustomReports
             Height          =   315
             Left            =   6700
             Locked          =   -1  'True
-            TabIndex        =   26
+            TabIndex        =   27
             Tag             =   "0"
             Top             =   535
             Width           =   2000
@@ -1396,7 +1385,7 @@ Begin VB.Form frmCustomReports
             Height          =   315
             Left            =   8700
             Picture         =   "frmCustomReports.frx":47AD
-            TabIndex        =   27
+            TabIndex        =   28
             Top             =   535
             UseMaskColor    =   -1  'True
             Width           =   330
@@ -1407,7 +1396,7 @@ Begin VB.Form frmCustomReports
             Height          =   315
             Left            =   1000
             Locked          =   -1  'True
-            TabIndex        =   23
+            TabIndex        =   24
             TabStop         =   0   'False
             Tag             =   "0"
             Top             =   300
@@ -1419,7 +1408,7 @@ Begin VB.Form frmCustomReports
             Height          =   315
             Left            =   6700
             Locked          =   -1  'True
-            TabIndex        =   29
+            TabIndex        =   30
             TabStop         =   0   'False
             Tag             =   "0"
             Top             =   925
@@ -1432,7 +1421,7 @@ Begin VB.Form frmCustomReports
             Height          =   315
             Left            =   8700
             Picture         =   "frmCustomReports.frx":4E6F
-            TabIndex        =   30
+            TabIndex        =   31
             Top             =   925
             UseMaskColor    =   -1  'True
             Width           =   330
@@ -1443,7 +1432,7 @@ Begin VB.Form frmCustomReports
             Caption         =   "Records :"
             Height          =   195
             Left            =   4860
-            TabIndex        =   119
+            TabIndex        =   120
             Top             =   240
             Width           =   915
          End
@@ -1453,7 +1442,7 @@ Begin VB.Form frmCustomReports
             Caption         =   "Table :"
             Height          =   195
             Left            =   200
-            TabIndex        =   22
+            TabIndex        =   23
             Top             =   360
             Width           =   495
          End
@@ -1462,7 +1451,7 @@ Begin VB.Form frmCustomReports
          Caption         =   "Columns / Calculations Selected :"
          Height          =   5385
          Left            =   -69300
-         TabIndex        =   60
+         TabIndex        =   61
          Top             =   400
          Width           =   3615
          Begin VB.CheckBox chkProp_Group 
@@ -1470,7 +1459,7 @@ Begin VB.Form frmCustomReports
             Enabled         =   0   'False
             Height          =   255
             Left            =   1545
-            TabIndex        =   73
+            TabIndex        =   74
             Top             =   4950
             Width           =   1695
          End
@@ -1479,7 +1468,7 @@ Begin VB.Form frmCustomReports
             Enabled         =   0   'False
             Height          =   255
             Left            =   260
-            TabIndex        =   72
+            TabIndex        =   73
             Top             =   4950
             Width           =   1095
          End
@@ -1489,7 +1478,7 @@ Begin VB.Form frmCustomReports
             Height          =   315
             Left            =   1260
             MaxLength       =   50
-            TabIndex        =   63
+            TabIndex        =   64
             Top             =   3390
             Width           =   2115
          End
@@ -1498,7 +1487,7 @@ Begin VB.Form frmCustomReports
             Enabled         =   0   'False
             Height          =   195
             Left            =   260
-            TabIndex        =   69
+            TabIndex        =   70
             Top             =   4650
             Width           =   1080
          End
@@ -1507,7 +1496,7 @@ Begin VB.Form frmCustomReports
             Enabled         =   0   'False
             Height          =   195
             Left            =   1545
-            TabIndex        =   70
+            TabIndex        =   71
             Top             =   4650
             Width           =   840
          End
@@ -1516,7 +1505,7 @@ Begin VB.Form frmCustomReports
             Enabled         =   0   'False
             Height          =   195
             Left            =   2640
-            TabIndex        =   71
+            TabIndex        =   72
             Top             =   4650
             Width           =   825
          End
@@ -1524,7 +1513,7 @@ Begin VB.Form frmCustomReports
             Enabled         =   0   'False
             Height          =   195
             Left            =   2880
-            TabIndex        =   66
+            TabIndex        =   67
             TabStop         =   0   'False
             Top             =   3480
             Visible         =   0   'False
@@ -1533,7 +1522,7 @@ Begin VB.Form frmCustomReports
          Begin COASpinner.COA_Spinner spnSize 
             Height          =   315
             Left            =   1260
-            TabIndex        =   65
+            TabIndex        =   66
             Top             =   3795
             Width           =   1185
             _ExtentX        =   2090
@@ -1555,7 +1544,7 @@ Begin VB.Form frmCustomReports
          Begin ComctlLib.ListView ListView2 
             Height          =   3000
             Left            =   200
-            TabIndex        =   61
+            TabIndex        =   62
             Top             =   300
             Width           =   3225
             _ExtentX        =   5689
@@ -1584,7 +1573,7 @@ Begin VB.Form frmCustomReports
          Begin COASpinner.COA_Spinner spnDec 
             Height          =   315
             Left            =   1260
-            TabIndex        =   68
+            TabIndex        =   69
             Top             =   4185
             Width           =   1185
             _ExtentX        =   2090
@@ -1608,7 +1597,7 @@ Begin VB.Form frmCustomReports
             Caption         =   "Decimals :"
             Height          =   195
             Left            =   260
-            TabIndex        =   67
+            TabIndex        =   68
             Top             =   4245
             Width           =   1140
          End
@@ -1617,7 +1606,7 @@ Begin VB.Form frmCustomReports
             Caption         =   "Size :"
             Height          =   195
             Left            =   255
-            TabIndex        =   64
+            TabIndex        =   65
             Top             =   3855
             Width           =   615
          End
@@ -1626,7 +1615,7 @@ Begin VB.Form frmCustomReports
             Caption         =   "Heading :"
             Height          =   195
             Left            =   260
-            TabIndex        =   62
+            TabIndex        =   63
             Top             =   3450
             Width           =   1260
          End
@@ -1635,14 +1624,14 @@ Begin VB.Form frmCustomReports
          Caption         =   "Columns / Calculations Available :"
          Height          =   5385
          Left            =   -74850
-         TabIndex        =   47
+         TabIndex        =   48
          Top             =   400
          Width           =   3615
          Begin VB.ComboBox cboTblAvailable 
             Height          =   315
             Left            =   200
             Style           =   2  'Dropdown List
-            TabIndex        =   48
+            TabIndex        =   49
             Top             =   300
             Width           =   3225
          End
@@ -1650,7 +1639,7 @@ Begin VB.Form frmCustomReports
             Caption         =   "Calculat&ion Definitions..."
             Height          =   400
             Left            =   200
-            TabIndex        =   52
+            TabIndex        =   53
             Top             =   4800
             Visible         =   0   'False
             Width           =   3225
@@ -1658,7 +1647,7 @@ Begin VB.Form frmCustomReports
          Begin ComctlLib.ListView ListView1 
             Height          =   3650
             Left            =   200
-            TabIndex        =   51
+            TabIndex        =   52
             Top             =   1050
             Width           =   3225
             _ExtentX        =   5689
@@ -1688,7 +1677,7 @@ Begin VB.Form frmCustomReports
             Caption         =   "&Columns"
             Height          =   255
             Left            =   390
-            TabIndex        =   49
+            TabIndex        =   50
             Top             =   740
             Value           =   -1  'True
             Width           =   1110
@@ -1697,7 +1686,7 @@ Begin VB.Form frmCustomReports
             Caption         =   "Calculatio&ns"
             Height          =   255
             Left            =   1750
-            TabIndex        =   50
+            TabIndex        =   51
             Top             =   740
             Width           =   1335
          End
@@ -1707,14 +1696,14 @@ Begin VB.Form frmCustomReports
          Enabled         =   0   'False
          Height          =   1335
          Left            =   -74880
-         TabIndex        =   84
+         TabIndex        =   85
          Top             =   400
          Width           =   9180
          Begin VB.CheckBox chkIgnoreZeros 
             Caption         =   "Ignore &zeros when calculating aggregates"
             Height          =   255
             Left            =   200
-            TabIndex        =   86
+            TabIndex        =   87
             Top             =   720
             Width           =   3975
          End
@@ -1722,7 +1711,7 @@ Begin VB.Form frmCustomReports
             Caption         =   "Summary report"
             Height          =   240
             Left            =   200
-            TabIndex        =   85
+            TabIndex        =   86
             Top             =   360
             Width           =   1935
          End
@@ -1736,7 +1725,8 @@ Begin VB.Form frmCustomReports
          Begin VB.ComboBox cboCategory 
             Height          =   315
             Left            =   1395
-            TabIndex        =   123
+            Style           =   2  'Dropdown List
+            TabIndex        =   4
             Top             =   720
             Width           =   3090
          End
@@ -1746,7 +1736,7 @@ Begin VB.Form frmCustomReports
             MaxLength       =   255
             MultiLine       =   -1  'True
             ScrollBars      =   2  'Vertical
-            TabIndex        =   4
+            TabIndex        =   5
             Top             =   1110
             Width           =   3090
          End
@@ -1764,14 +1754,14 @@ Begin VB.Form frmCustomReports
             Height          =   315
             Left            =   5625
             MaxLength       =   30
-            TabIndex        =   6
+            TabIndex        =   7
             Top             =   300
             Width           =   3405
          End
          Begin SSDataWidgets_B.SSDBGrid grdAccess 
             Height          =   1485
             Left            =   5625
-            TabIndex        =   8
+            TabIndex        =   9
             Top             =   705
             Width           =   3405
             ScrollBars      =   2
@@ -1883,7 +1873,7 @@ Begin VB.Form frmCustomReports
          Begin VB.Label lblCategory 
             Caption         =   "Category :"
             Height          =   240
-            Left            =   225
+            Left            =   195
             TabIndex        =   124
             Top             =   765
             Width           =   1005
@@ -1894,8 +1884,8 @@ Begin VB.Form frmCustomReports
             Caption         =   "Access :"
             Height          =   195
             Left            =   4770
-            TabIndex        =   7
-            Top             =   750
+            TabIndex        =   8
+            Top             =   765
             Width           =   825
          End
          Begin VB.Label lblDescription 
@@ -1913,10 +1903,10 @@ Begin VB.Form frmCustomReports
             BackStyle       =   0  'Transparent
             Caption         =   "Name :"
             Height          =   195
-            Left            =   200
+            Left            =   195
             TabIndex        =   1
             Top             =   360
-            Width           =   510
+            Width           =   690
          End
          Begin VB.Label lblOwner 
             AutoSize        =   -1  'True
@@ -1924,7 +1914,7 @@ Begin VB.Form frmCustomReports
             Caption         =   "Owner :"
             Height          =   195
             Left            =   4770
-            TabIndex        =   5
+            TabIndex        =   6
             Top             =   360
             Width           =   810
          End
@@ -1936,7 +1926,7 @@ Begin VB.Form frmCustomReports
       Picture         =   "frmCustomReports.frx":5208
       ScaleHeight     =   435
       ScaleWidth      =   465
-      TabIndex        =   118
+      TabIndex        =   119
       TabStop         =   0   'False
       Top             =   6075
       Visible         =   0   'False
@@ -2528,6 +2518,10 @@ Private Sub PopulateAccessGrid()
   End If
   Set rsAccess = Nothing
 
+End Sub
+
+Private Sub cboCategory_Click()
+  Changed = True
 End Sub
 
 Private Sub cboPrinterName_Click()
@@ -4109,7 +4103,7 @@ Private Sub cmdRemoveChild_Click()
   
 End Sub
 
-Private Sub Form_DragOver(Source As Control, x As Single, y As Single, State As Integer)
+Private Sub Form_DragOver(Source As Control, X As Single, Y As Single, State As Integer)
   
   ' SUB COMPLETE 28/01/00
   ' Change pointer to the nodrop icon
@@ -4589,7 +4583,7 @@ Private Sub ListView2_DblClick()
   
 End Sub
 
-Private Sub ListView1_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub ListView1_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
   
   If mblnReadOnly Then
     Exit Sub
@@ -4636,7 +4630,7 @@ Private Sub ListView2_ItemClick(ByVal Item As ComctlLib.ListItem)
   
 End Sub
 
-Private Sub ListView2_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub ListView2_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
   
   If mblnReadOnly Then
     Exit Sub
@@ -4668,7 +4662,7 @@ Private Sub ListView2_MouseUp(Button As Integer, Shift As Integer, x As Single, 
   
 End Sub
 
-Private Sub ListView1_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub ListView1_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
   
   If mblnReadOnly Then
     Exit Sub
@@ -4687,7 +4681,7 @@ Private Sub ListView1_MouseMove(Button As Integer, Shift As Integer, x As Single
 
 End Sub
 
-Private Sub ListView2_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub ListView2_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
   
   ' SUB COMPLETED 28/01/00
   'Start the drag operation
@@ -4706,7 +4700,7 @@ Private Sub ListView2_MouseMove(Button As Integer, Shift As Integer, x As Single
 
 End Sub
 
-Private Sub ListView1_DragDrop(Source As Control, x As Single, y As Single)
+Private Sub ListView1_DragDrop(Source As Control, X As Single, Y As Single)
   
   ' SUB COMPLETED 28/01/00
   ' Perform the drop operation
@@ -4719,30 +4713,30 @@ Private Sub ListView1_DragDrop(Source As Control, x As Single, y As Single)
 
 End Sub
 
-Private Sub ListView2_DragDrop(Source As Control, x As Single, y As Single)
+Private Sub ListView2_DragDrop(Source As Control, X As Single, Y As Single)
   
   ' SUB COMPLETED 28/01/00
   ' Perform the drop operation - action depends on source and destination
   
   If Source Is ListView1 Then
-    If ListView2.HitTest(x, y) Is Nothing Then
+    If ListView2.HitTest(X, Y) Is Nothing Then
       CopyToSelected False
     Else
-      CopyToSelected False, ListView2.HitTest(x, y).Index
+      CopyToSelected False, ListView2.HitTest(X, Y).Index
     End If
     ListView1.Drag vbCancel
   Else
-    If ListView2.HitTest(x, y) Is Nothing Then
+    If ListView2.HitTest(X, Y) Is Nothing Then
       ChangeSelectedOrder
     Else
-      ChangeSelectedOrder ListView2.HitTest(x, y).Index
+      ChangeSelectedOrder ListView2.HitTest(X, Y).Index
     End If
     ListView2.Drag vbCancel
   End If
 
 End Sub
 
-Private Sub Frafieldsavailable_DragOver(Source As Control, x As Single, y As Single, State As Integer)
+Private Sub Frafieldsavailable_DragOver(Source As Control, X As Single, Y As Single, State As Integer)
   
   ' SUB COMPLETED 28/01/00
   ' Change pointer to the nodrop icon
@@ -4750,7 +4744,7 @@ Private Sub Frafieldsavailable_DragOver(Source As Control, x As Single, y As Sin
   
 End Sub
 
-Private Sub Frafieldsselected_DragOver(Source As Control, x As Single, y As Single, State As Integer)
+Private Sub Frafieldsselected_DragOver(Source As Control, X As Single, Y As Single, State As Integer)
   
   ' SUB COMPLETED 28/01/00
   ' Change pointer to the nodrop icon
@@ -4758,7 +4752,7 @@ Private Sub Frafieldsselected_DragOver(Source As Control, x As Single, y As Sing
   
 End Sub
 
-Private Sub ListView2_DragOver(Source As Control, x As Single, y As Single, State As Integer)
+Private Sub ListView2_DragOver(Source As Control, X As Single, Y As Single, State As Integer)
 
   ' SUB COMPLETED 28/01/00
   ' Change pointer to drop icon
@@ -4773,11 +4767,11 @@ Private Sub ListView2_DragOver(Source As Control, x As Single, y As Single, Stat
   End If
 
   ' Set DropHighlight to the mouse's coordinates.
-  Set ListView2.DropHighlight = ListView2.HitTest(x, y)
+  Set ListView2.DropHighlight = ListView2.HitTest(X, Y)
 
 End Sub
 
-Private Sub ListView1_DragOver(Source As Control, x As Single, y As Single, State As Integer)
+Private Sub ListView1_DragOver(Source As Control, X As Single, Y As Single, State As Integer)
 
   ' SUB COMPLETED 28/01/00
   ' Change pointer to drop icon
@@ -6322,11 +6316,13 @@ Private Function SaveDefinition() As Boolean
 
     mlngCustomReportID = InsertCustomReport(sSQL)
     
+   
     Call UtilCreated(utlCustomReport, mlngCustomReportID)
   
   End If
   
   SaveAccess
+  SaveObjectCategories cboCategory, utlCustomReport, mlngCustomReportID
   
   '########################### 2 Of 3 - SAVE THE CHILD DETAILS
   ' First, remove any records from the child detail tables.
@@ -6573,7 +6569,7 @@ Private Function RetrieveCustomReportDetails(plngCustomReportID As Long) As Bool
   Dim tmpColumn As clsColumn
   
   On Error GoTo Load_ERROR
-  
+   
   'Load the basic guff first
   Set rsTemp = datGeneral.GetRecords("SELECT ASRSysCustomReportsName.*, " & _
                                      "CONVERT(integer, ASRSysCustomReportsName.TimeStamp) AS intTimeStamp " & _
@@ -6586,6 +6582,9 @@ Private Function RetrieveCustomReportDetails(plngCustomReportID As Long) As Bool
     mblnDeleted = True
     Exit Function
   End If
+  
+  ' Set the categories combo
+  GetObjectCategories cboCategory, utlCustomReport, plngCustomReportID
   
   ' Set Definition Name
   txtName.Text = rsTemp!Name
