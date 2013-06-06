@@ -313,7 +313,7 @@ Public Sub CreateEmailProcsForTable(lngTableID As Long, _
   Dim strCheckColumns As String
   Dim lngColumnID As Long
   Dim lngColumnType As Long
-
+  Dim strColumn As String
 
 
   On Error GoTo LocalErr
@@ -390,6 +390,7 @@ Public Sub CreateEmailProcsForTable(lngTableID As Long, _
 
             'RECORD RELATED
             If !Type = 1 Then
+              strColumn = "null"
               strInsCol = "''"
               strDelCol = "''"
             
@@ -397,7 +398,7 @@ Public Sub CreateEmailProcsForTable(lngTableID As Long, _
               If !RecordDelete Then
                 strDeleteOne = _
                     GetSQLEmailContent(lngTableID, "deleted", lngRecordDescExprID, lngLinkID, lngSubjectID, lngBodyID, !Attachment) & _
-                    GetInsertCommand(!Type, lngLinkID, lngTableID, True, False, lngColumnID, strDelCol, True)
+                    GetInsertCommand(!Type, lngLinkID, lngTableID, True, False, "null", strDelCol, True)
                 strDeleteOne = _
                   "                    SELECT @emailDate = getDate()" & vbNewLine & _
                   ApplyFilter(!FilterID, !EffectiveDate, strDeleteOne)
@@ -406,6 +407,7 @@ Public Sub CreateEmailProcsForTable(lngTableID As Long, _
             Else              'Column Related
               
               lngColumnID = IsRelatedToSingleColumn(lngLinkID)
+              strColumn = CStr(lngColumnID)
               If lngColumnID = 0 Then
                 strInsCol = "null"
               Else
@@ -421,7 +423,7 @@ Public Sub CreateEmailProcsForTable(lngTableID As Long, _
 
             strInsertUpdateOne = _
               "            DELETE FROM ASRSysEmailQueue WHERE DateSent IS NULL AND recordID = @recordID AND LinkID = " & CStr(lngLinkID) & vbNewLine & _
-              GetInsertCommand(!Type, lngLinkID, lngTableID, True, True, lngColumnID, strInsCol, False)
+              GetInsertCommand(!Type, lngLinkID, lngTableID, True, True, strColumn, strInsCol, False)
             
             strInsertUpdateOne = _
               "                    SELECT @emailDate = getDate()" & vbNewLine & _
@@ -861,7 +863,7 @@ Private Function GetSQLForRebuild(lngLinkID As Long, lngTableID As Long, sCurren
     "                IF (DateDiff(day, @purgeDate, @emailDate) >= 0 OR @PurgeDate IS NULL)" & vbNewLine & _
     "                 AND IsNull(@LastSent,'') <> " & strDateValue & vbNewLine & _
     "                BEGIN" & vbNewLine & _
-    GetInsertCommand(LinkRebuild, lngLinkID, lngTableID, False, True, lngDateColumnID, strDateValue, False) & vbNewLine & _
+    GetInsertCommand(LinkRebuild, lngLinkID, lngTableID, False, True, CStr(lngDateColumnID), strDateValue, False) & vbNewLine & _
     "                END" & vbNewLine
 
   strOutput = ApplyFilter(lngFilterID, dtEffectiveDate, strOutput)
@@ -890,7 +892,7 @@ Private Function GetSQLForOffsetEmail(lngLinkID As Long, lngTableID As Long, sCu
       "                  IF (DateDiff(day, getdate(), @emailDate) > 0) AND (@LastSent IS NOT NULL)" & vbNewLine & _
       "                  BEGIN" & vbNewLine & _
       "                    SELECT @emailDate = getDate()" & vbNewLine & _
-      GetInsertCommand(LinkAmendment, lngLinkID, lngTableID, False, True, lngDateColumnID, strInsVar, False) & vbNewLine & _
+      GetInsertCommand(LinkAmendment, lngLinkID, lngTableID, False, True, CStr(lngDateColumnID), strInsVar, False) & vbNewLine & _
       "                  END" & vbNewLine & vbNewLine
   End If
 
@@ -898,7 +900,7 @@ Private Function GetSQLForOffsetEmail(lngLinkID As Long, lngTableID As Long, sCu
     "                IF (DateDiff(day, @purgeDate, @emailDate) >= 0 OR @PurgeDate IS NULL)" & vbNewLine & _
     "                    OR (@LastSent IS NOT NULL) " & vbNewLine & _
     "                BEGIN" & vbNewLine & _
-    GetInsertCommand(LinkOffset, lngLinkID, lngTableID, False, True, lngDateColumnID, strInsVar, False) & vbNewLine & _
+    GetInsertCommand(LinkOffset, lngLinkID, lngTableID, False, True, CStr(lngDateColumnID), strInsVar, False) & vbNewLine & _
     strOutput & _
     "                END" & vbNewLine
   
@@ -1062,7 +1064,7 @@ Private Function IsRelatedToSingleColumn(lngLinkID As Long) As Long
 End Function
 
 
-Private Function GetInsertCommand(intType As EmailType, lngLinkID As Long, lngTableID As Long, blnImmediate As Boolean, blnRecalcRecDesc As Boolean, lngColumnID As Long, strColumnValue As String, blnIncludeContent As Boolean) As String
+Private Function GetInsertCommand(intType As EmailType, lngLinkID As Long, lngTableID As Long, blnImmediate As Boolean, blnRecalcRecDesc As Boolean, strColumn As String, strColumnValue As String, blnIncludeContent As Boolean) As String
 
   Dim strOutput As String
 
@@ -1099,15 +1101,19 @@ Private Function GetInsertCommand(intType As EmailType, lngLinkID As Long, lngTa
     "," & CStr(intType) & _
     "," & IIf(blnRecalcRecDesc, "1", "0") & _
     ",@recordDesc" & _
-    "," & CStr(lngColumnID)
-      
-  If GetColumnDataType(lngColumnID) = dtTIMESTAMP Then
+    "," & strColumn
+
+  Select Case GetColumnDataType(Val(strColumn))
+  Case dtTIMESTAMP
     strOutput = strOutput & _
       ",isnull(convert(varchar(max)," & strColumnValue & "," & CStr(glngEmailDateFormat) & "),'')"
-  Else
+  Case dtBIT
+    strOutput = strOutput & _
+      ",CASE WHEN " & strColumnValue & " = 1 THEN 'Yes' ELSE 'No' END"
+  Case Else
     strOutput = strOutput & _
       "," & strColumnValue
-  End If
+  End Select
 
   If blnIncludeContent Then
     strOutput = strOutput & _
