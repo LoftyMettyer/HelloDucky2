@@ -108,33 +108,25 @@ Begin VB.Form frmMatchDef
       TabPicture(1)   =   "frmMatchDef.frx":11BC
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraRelations"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "Colu&mns"
       TabPicture(2)   =   "frmMatchDef.frx":11D8
       Tab(2).ControlEnabled=   0   'False
       Tab(2).Control(0)=   "fraFieldButtons"
-      Tab(2).Control(0).Enabled=   0   'False
       Tab(2).Control(1)=   "fraFieldsAvailable"
-      Tab(2).Control(1).Enabled=   0   'False
       Tab(2).Control(2)=   "fraFieldsSelected"
-      Tab(2).Control(2).Enabled=   0   'False
       Tab(2).ControlCount=   3
       TabCaption(3)   =   "&Sort Order"
       TabPicture(3)   =   "frmMatchDef.frx":11F4
       Tab(3).ControlEnabled=   0   'False
       Tab(3).Control(0)=   "fraReportOrder"
-      Tab(3).Control(0).Enabled=   0   'False
       Tab(3).ControlCount=   1
       TabCaption(4)   =   "O&utput"
       TabPicture(4)   =   "frmMatchDef.frx":1210
       Tab(4).ControlEnabled=   0   'False
       Tab(4).Control(0)=   "fraOutputDestination"
-      Tab(4).Control(0).Enabled=   0   'False
       Tab(4).Control(1)=   "fraOutputFormat"
-      Tab(4).Control(1).Enabled=   0   'False
       Tab(4).Control(2)=   "fraReportOptions"
-      Tab(4).Control(2).Enabled=   0   'False
       Tab(4).ControlCount=   3
       Begin VB.Frame fraOutputDestination 
          Caption         =   "Output Destination(s) :"
@@ -1575,11 +1567,11 @@ Begin VB.Form frmMatchDef
             Key             =   "IMG_TABLE"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmMatchDef.frx":1D2A
+            Picture         =   "frmMatchDef.frx":1EB0
             Key             =   "IMG_CALC"
          EndProperty
          BeginProperty ListImage3 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmMatchDef.frx":213A
+            Picture         =   "frmMatchDef.frx":2402
             Key             =   "IMG_MATCH"
          EndProperty
       EndProperty
@@ -1598,7 +1590,7 @@ Begin VB.Form frmMatchDef
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      Bands           =   "frmMatchDef.frx":251E
+      Bands           =   "frmMatchDef.frx":2954
    End
 End
 Attribute VB_Name = "frmMatchDef"
@@ -2796,7 +2788,7 @@ Private Sub ForceAccess(Optional pvAccess As Variant)
   Dim iLoop As Integer
   Dim varBookmark As Variant
   
-  UI.LockWindow grdAccess.hWnd
+  UI.LockWindow grdAccess.hwnd
   
   With grdAccess
     .MoveFirst
@@ -3085,10 +3077,6 @@ Private Sub optPicklist_Click(Index As Integer)
   
   ForceDefinitionToBeHiddenIfNeeded
   
-End Sub
-
-Private Sub picDocument_Click()
-
 End Sub
 
 Private Sub spnLimit_Change()
@@ -4977,7 +4965,7 @@ Private Sub SaveAccess()
   datData.ExecuteSql (sSQL)
 
   ' Update the new access records with the real access values.
-  UI.LockWindow grdAccess.hWnd
+  UI.LockWindow grdAccess.hwnd
   
   With grdAccess
     For iLoop = 1 To (.Rows - 1)
