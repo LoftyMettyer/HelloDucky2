@@ -1783,12 +1783,12 @@ Private Function ConfigureModuleSpecifics() As Boolean
     fOK = modTrainingBookingSpecifics.ConfigureTrainingBookingSpecifics
   End If
 
-  'MH20001025
-  'If Application.AbsenceModule Then
   If fOK And Application.AbsenceModule Then
     OutputCurrentProcess2 "Absence"
     fOK = modAbsenceSpecifics.ConfigureAbsenceSpecifics
-    
+  End If
+
+  If fOK Then
     OutputCurrentProcess2 "Maternity"
     fOK = modMaternitySpecifics.ConfigureMaternitySpecifics
   End If
