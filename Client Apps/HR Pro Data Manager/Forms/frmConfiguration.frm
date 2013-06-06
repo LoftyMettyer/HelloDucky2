@@ -7,7 +7,7 @@ Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "CODEJO~1.OCX"
 Begin VB.Form frmConfiguration 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Configuration"
-   ClientHeight    =   7530
+   ClientHeight    =   7875
    ClientLeft      =   45
    ClientTop       =   330
    ClientWidth     =   7215
@@ -25,9 +25,10 @@ Begin VB.Form frmConfiguration
    Icon            =   "frmConfiguration.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
+   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   7530
+   ScaleHeight     =   7875
    ScaleWidth      =   7215
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
@@ -36,17 +37,17 @@ Begin VB.Form frmConfiguration
       Height          =   400
       Left            =   90
       TabIndex        =   119
-      Top             =   7020
+      Top             =   7290
       Width           =   1620
    End
    Begin TabDlg.SSTab SSTab1 
-      Height          =   6825
+      Height          =   7050
       Left            =   120
       TabIndex        =   122
       Top             =   120
       Width           =   6975
       _ExtentX        =   12303
-      _ExtentY        =   12039
+      _ExtentY        =   12435
       _Version        =   393216
       Style           =   1
       Tabs            =   7
@@ -429,17 +430,25 @@ Begin VB.Form frmConfiguration
       End
       Begin VB.Frame frmReportsGeneral 
          Caption         =   "General :"
-         Height          =   700
+         Height          =   975
          Left            =   120
          TabIndex        =   24
          Top             =   5970
          Width           =   6735
+         Begin VB.CheckBox chkRunRecentImmediate 
+            Caption         =   "Recent menu displa&y selection screen"
+            Height          =   330
+            Left            =   200
+            TabIndex        =   133
+            Top             =   540
+            Width           =   5100
+         End
          Begin VB.CheckBox chkCloseDefsel 
             Caption         =   "C&lose selection screen after run"
             Height          =   285
             Left            =   200
             TabIndex        =   25
-            Top             =   300
+            Top             =   255
             Width           =   3100
          End
       End
@@ -1700,7 +1709,7 @@ Begin VB.Form frmConfiguration
       Height          =   400
       Left            =   5875
       TabIndex        =   121
-      Top             =   7020
+      Top             =   7290
       Width           =   1200
    End
    Begin VB.CommandButton cmdOK 
@@ -1708,13 +1717,13 @@ Begin VB.Form frmConfiguration
       Height          =   400
       Left            =   4550
       TabIndex        =   120
-      Top             =   7020
+      Top             =   7290
       Width           =   1200
    End
    Begin ComctlLib.ImageList ilstToolbar 
       Index           =   0
       Left            =   2640
-      Top             =   6690
+      Top             =   6960
       _ExtentX        =   1005
       _ExtentY        =   1005
       BackColor       =   -2147483638
@@ -1758,6 +1767,7 @@ Private mcQuickAccess As DefaultDisplay
 Private mstrDefs() As String
 Private mstrWarning() As String
 Private mbCloseDefSelAfterRun As Boolean
+Private mbRecentDisplayDefSel As Boolean
 
 Private mcExpressionColours As ExpressionColour
 Private mcExpressionNodeSize As ExpressionSaveView
@@ -2019,6 +2029,10 @@ Private Sub chkPrintingConfirm_Click()
 End Sub
 
 Private Sub chkPrintingPrompt_Click()
+  Changed = Not mbLoading
+End Sub
+
+Private Sub chkRunRecentImmediate_Click()
   Changed = Not mbLoading
 End Sub
 
@@ -3214,7 +3228,10 @@ Private Sub SaveUserSettings()
   
   ' Close defsel after run
   gbCloseDefSelAfterRun = IIf(chkCloseDefsel.Value = vbChecked, True, False)
+  gbRecentDisplayDefSel = IIf(chkRunRecentImmediate.Value = vbChecked, True, False)
+  
   SaveUserSetting "DefSel", "CloseAfterRun", gbCloseDefSelAfterRun
+  SaveUserSetting "DefSel", "RecentDisplayDefSel", gbRecentDisplayDefSel
   
   'TM20010727 Fault 1607 (Suggestion)
   ShowWarningSave
@@ -3532,6 +3549,9 @@ Private Sub ReadUserSettings(blnRestoreDefaults As Boolean)
 
   mbCloseDefSelAfterRun = CBool(GetUserSettingOrDefault("DefSel", "CloseAfterRun", False))
   chkCloseDefsel.Value = IIf(mbCloseDefSelAfterRun, vbChecked, vbUnchecked)
+
+  mbRecentDisplayDefSel = CBool(GetUserSettingOrDefault("DefSel", "RecentDisplayDefSel", False))
+  chkRunRecentImmediate.Value = IIf(mbRecentDisplayDefSel, vbChecked, vbUnchecked)
 
   ' Log successful Global Adds
   bLoggingGASuccess = CBool(GetUserSettingOrDefault("LogEvents", "Global_Add_Success", False))

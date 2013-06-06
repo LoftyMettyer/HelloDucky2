@@ -1193,6 +1193,14 @@ Public Property Let SelectedText(ByVal sText As String)
 
 End Property
 
+Public Sub SetSelected(ByVal plngSelectedID As Long)
+
+
+
+
+End Sub
+
+
 Private Sub GetSelected()
   
   If lngAction > 0 And lngAction <> edtAdd Then

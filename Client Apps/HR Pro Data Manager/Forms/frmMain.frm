@@ -1,8 +1,8 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.ocx"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
-Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~3.OCX"
+Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~2.OCX"
 Begin VB.MDIForm frmMain 
    AutoShowChildren=   0   'False
    BackColor       =   &H00F7EEE9&
@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "17:48"
+            TextSave        =   "10:15"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -179,7 +179,7 @@ Private mbChanging As Boolean
 Private mblnLogOff As Boolean
 
 ' Functions to tile the background image
-Private Declare Function BitBlt Lib "gdi32" (ByVal hDestDC As Long, ByVal X As Long, ByVal Y As Long, ByVal nWidth As Long, ByVal nHeight As Long, ByVal hSrcDC As Long, ByVal xSrc As Long, ByVal ySrc As Long, ByVal dwRop As Long) As Long
+Private Declare Function BitBlt Lib "gdi32" (ByVal hDestDC As Long, ByVal x As Long, ByVal y As Long, ByVal nWidth As Long, ByVal nHeight As Long, ByVal hSrcDC As Long, ByVal xSrc As Long, ByVal ySrc As Long, ByVal dwRop As Long) As Long
 Private Declare Function CreateCompatibleDC Lib "gdi32" (ByVal lDC As Long) As Long
 Private Declare Function DeleteDC Lib "gdi32" (ByVal lDC As Long) As Long
 Private Declare Function SelectObject Lib "gdi32" (ByVal lDC As Long, ByVal hObject As Long) As Long
@@ -283,7 +283,7 @@ End Sub
 
 Public Sub SetBackground(ByRef mbIsLoading As Boolean)
 
-  Dim X, Y, hMemDC, pHeight, pWidth As Long
+  Dim x, y, hMemDC, pHeight, pWidth As Long
   Dim pic As StdPicture
   Dim sFileName As String
 
@@ -326,24 +326,24 @@ Public Sub SetBackground(ByRef mbIsLoading As Boolean)
 
       ' Tiled backdrop
       If glngDesktopBitmapLocation = giLOCATION_TILE Then
-        For X = 0 To Me.ScaleWidth Step pWidth
-          For Y = 0 To Me.ScaleHeight Step pHeight
-            BitBlt picWork.hDC, X \ Screen.TwipsPerPixelX, Y \ Screen.TwipsPerPixelX, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
+        For x = 0 To Me.ScaleWidth Step pWidth
+          For y = 0 To Me.ScaleHeight Step pHeight
+            BitBlt picWork.hDC, x \ Screen.TwipsPerPixelX, y \ Screen.TwipsPerPixelX, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
           Next
         Next
       End If
 
       ' Tiled down the lefthand side
       If glngDesktopBitmapLocation = giLOCATION_LEFTTILE Then
-        For Y = 0 To Me.ScaleHeight Step pHeight
-          BitBlt picWork.hDC, 0, Y \ Screen.TwipsPerPixelX, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
+        For y = 0 To Me.ScaleHeight Step pHeight
+          BitBlt picWork.hDC, 0, y \ Screen.TwipsPerPixelX, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
         Next
       End If
 
       ' Tiled down the righthand side
       If glngDesktopBitmapLocation = giLOCATION_RIGHTTILE Then
-        For Y = 0 To Me.ScaleHeight Step pHeight
-          BitBlt picWork.hDC, (Me.ScaleWidth - pWidth) \ Screen.TwipsPerPixelX, Y \ Screen.TwipsPerPixelX, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
+        For y = 0 To Me.ScaleHeight Step pHeight
+          BitBlt picWork.hDC, (Me.ScaleWidth - pWidth) \ Screen.TwipsPerPixelX, y \ Screen.TwipsPerPixelX, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
         Next
       End If
 
@@ -359,22 +359,22 @@ Public Sub SetBackground(ByRef mbIsLoading As Boolean)
 
       ' Centred on the backdrop
       If glngDesktopBitmapLocation = giLOCATION_CENTRE Then
-        X = (ScaleWidth - pWidth) \ 2: X = X \ Screen.TwipsPerPixelX
-        Y = (ScaleHeight - pHeight) \ 2: Y = Y \ Screen.TwipsPerPixelY
-        BitBlt picWork.hDC, X, Y, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
+        x = (ScaleWidth - pWidth) \ 2: x = x \ Screen.TwipsPerPixelX
+        y = (ScaleHeight - pHeight) \ 2: y = y \ Screen.TwipsPerPixelY
+        BitBlt picWork.hDC, x, y, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
       End If
 
       ' Tiled across the top
       If glngDesktopBitmapLocation = giLOCATION_TOPTILE Then
-        For X = 0 To Me.ScaleWidth Step pWidth
-          BitBlt picWork.hDC, X \ Screen.TwipsPerPixelX, 0, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
+        For x = 0 To Me.ScaleWidth Step pWidth
+          BitBlt picWork.hDC, x \ Screen.TwipsPerPixelX, 0, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
         Next
       End If
 
       'Tiled across the bottom
       If glngDesktopBitmapLocation = giLOCATION_BOTTOMTILE Then
-        For X = 0 To Me.ScaleWidth Step pWidth
-          BitBlt picWork.hDC, X \ Screen.TwipsPerPixelX, (Me.ScaleHeight - pHeight) \ Screen.TwipsPerPixelX, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
+        For x = 0 To Me.ScaleWidth Step pWidth
+          BitBlt picWork.hDC, x \ Screen.TwipsPerPixelX, (Me.ScaleHeight - pHeight) \ Screen.TwipsPerPixelX, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
         Next
       End If
 
@@ -413,10 +413,10 @@ Private Sub abMain_BandOpen(ByVal Band As ActiveBarLibraryCtl.Band)
   Select Case Band.Name
     
     Case "bndRecentReports"
-      RefreshQuickLinks RecentlyRun
+      RefreshQuickLinks UserMenuType.RecentlyRun
 
     Case "bndFavourites"
-      RefreshQuickLinks Favourites
+      RefreshQuickLinks UserMenuType.Favourites
 
     Case "mnuWindow"
       bNoSeparator = False
@@ -915,7 +915,7 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
       
     ' <Envelopes & Labels>
     Case "mnuLabels"
-      LabelsAndEnvelopesClick
+      BrowseUtility utlLabel
             
     ' <Standard Reports>
     Case "AbsenceBreakdown", "BradfordIndex", "StabilityIndex", "Turnover", _
@@ -938,7 +938,7 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
     ' <Data Transfer>
     Case "DataTransfer"
       If SaveCurrentRecordEditScreen Then
-        DataTransferClick
+        BrowseUtility utlDataTransfer
         ' RH - Note : this sub causes the enabling history menu bug
         RefreshRecordEditScreens
       End If
@@ -946,7 +946,8 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
     ' <Global Functions - Add>
     Case "GlobalAdd"
       If SaveCurrentRecordEditScreen Then
-        GlobalClick glAdd
+        BrowseUtility UtlGlobalAdd
+      
         ' RH - Note : this sub causes the enabling history menu bug
         RefreshRecordEditScreens
       End If
@@ -954,7 +955,8 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
     ' <Global Functions - Update>
     Case "GlobalUpdate"
       If SaveCurrentRecordEditScreen Then
-        GlobalClick glUpdate
+        BrowseUtility utlGlobalUpdate
+        
         ' RH - Note : this sub causes the enabling history menu bug
         RefreshRecordEditScreens
       End If
@@ -962,7 +964,8 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
     ' <Global Functions - Delete>
     Case "GlobalDelete"
       If SaveCurrentRecordEditScreen Then
-        GlobalClick glDelete
+        BrowseUtility utlGlobalDelete
+        
         ' RH - Note : this sub causes the enabling history menu bug
         RefreshRecordEditScreens
       End If
@@ -970,14 +973,15 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
     ' <Import>
     Case "Import"
       If SaveCurrentRecordEditScreen Then
-        ImportClick
+      BrowseUtility utlImport
+
         ' RH - Note : this sub causes the enabling history menu bug
         RefreshRecordEditScreens
       End If
 
     ' <Export>
     Case "Export"
-      ExportClick
+      BrowseUtility utlExport
     
     ' <Workflow>
     Case "Workflow"
@@ -2330,92 +2334,54 @@ Public Sub AbsenceCalendarClick()
   
 End Sub
 
+Private Function DoDataTransfer(ByVal Action As EditOptions, ByRef SelectedID As Long, FromCopy As Boolean) As Boolean
 
-Public Sub DataTransferClick()
-  ' Display the Data Transfer selection form.
-  Dim fExit As Boolean
   Dim frmEdit As frmDataTransfer
-  Dim frmSelection As frmDefSel
-  
   Dim objExecution As clsDataTransferRun
+  Dim bOK As Boolean
   
-  Screen.MousePointer = vbHourglass
-    
-  Set frmSelection = New frmDefSel
-  fExit = False
-  
-  With frmSelection
-    Do While Not fExit
+  bOK = True
+            
+  Select Case Action
+    Case edtAdd
+      Set frmEdit = New frmDataTransfer
+      frmEdit.Initialise True, FromCopy
+      frmEdit.Show vbModal
+      SelectedID = frmEdit.SelectedID
+      Unload frmEdit
+      Set frmEdit = Nothing
       
-      .EnableRun = True
-      
-      If .ShowList(utlDataTransfer) Then
-        .CustomShow vbModal
-            
-        Select Case .Action
-          Case edtAdd
-            Set frmEdit = New frmDataTransfer
-            frmEdit.Initialise True, .FromCopy
-            frmEdit.Show vbModal
-            .SelectedID = frmEdit.SelectedID
-            Unload frmEdit
-            Set frmEdit = Nothing
-            
-          Case edtEdit
-            Set frmEdit = New frmDataTransfer
-            frmEdit.Initialise False, .FromCopy, .SelectedID
-            If Not frmEdit.Cancelled Then
-              frmEdit.Show vbModal
-              If .FromCopy And frmEdit.SelectedID > 0 Then
-                .SelectedID = frmEdit.SelectedID
-              End If
-            End If
-            Unload frmEdit
-            Set frmEdit = Nothing
-  
-'          Case edtDelete
-'            Set frmEdit = New frmDataTransfer
-'            frmEdit.Initialise False, .FromCopy, .SelectedID
-'            If Not frmEdit.Cancelled Then
-'              datGeneral.DeleteRecord "ASRSysDataTransferName", "DataTransferID", .SelectedID
-'              datGeneral.DeleteRecord "ASRSysDataTransferColumns", "DataTransferID", .SelectedID
-'            End If
-'            Unload frmEdit
-'            Set frmEdit = Nothing
-  
-          Case edtSelect
-            'FOR NORMAL RUNNING...
-            'datGeneral.RunDataTransfer .SelectedID, False
-            
-            'FOR SILENT MODE...
-            'datGeneral.RunDataTransfer .SelectedID, True
-            
-            Set objExecution = New clsDataTransferRun
-            objExecution.ExecuteDataTransfer .SelectedID
-            Set objExecution = Nothing
-            fExit = gbCloseDefSelAfterRun
-          
-          Case edtPrint
-            Set frmEdit = New frmDataTransfer
-            frmEdit.Initialise False, False, .SelectedID, True
-            If Not frmEdit.Cancelled Then
-              frmEdit.PrintDef .SelectedID
-            End If
-            Unload frmEdit
-            Set frmEdit = Nothing
-
-          Case edtCancel
-            fExit = True
-        End Select
+    Case edtEdit
+      Set frmEdit = New frmDataTransfer
+      frmEdit.Initialise False, FromCopy, SelectedID
+      If Not frmEdit.Cancelled Then
+        frmEdit.Show vbModal
+        If FromCopy And frmEdit.SelectedID > 0 Then
+          SelectedID = frmEdit.SelectedID
+        End If
       End If
+      Unload frmEdit
+      Set frmEdit = Nothing
 
-    Loop
-  End With
+    Case edtSelect
+      Set objExecution = New clsDataTransferRun
+      bOK = objExecution.ExecuteDataTransfer(SelectedID)
+      Set objExecution = Nothing
+    
+    Case edtPrint
+      Set frmEdit = New frmDataTransfer
+      frmEdit.Initialise False, False, SelectedID, True
+      If Not frmEdit.Cancelled Then
+        frmEdit.PrintDef SelectedID
+      End If
+      Unload frmEdit
+      Set frmEdit = Nothing
 
-  Unload frmSelection
-  Set frmSelection = Nothing
-
-End Sub
+  End Select
+        
+  DoDataTransfer = bOK
+  
+End Function
 
 Public Sub FilterClick()
   
@@ -2441,186 +2407,103 @@ Public Sub FilterClick()
 
 End Sub
 
-Public Sub GlobalClick(FormType As GlobalType)
-  
-  Dim fExit As Boolean
+Private Function DoGlobal(FormType As GlobalType, ByVal Action As EditOptions, ByRef SelectedID As Long, FromCopy As Boolean) As Boolean
+ 
   Dim frmEdit As frmGlobalFunctions
-  Dim frmSelection As frmDefSel
   Dim objGlobalRun As clsGlobalRun
-  Dim blnOK As Boolean
-  Dim lngTYPE As Long
+  Dim bOK As Boolean
 
-  Screen.MousePointer = vbHourglass
-    
-  'sType = Choose(FormType, "ADD", "UPDATE", "DELETE")
-  lngTYPE = Choose(FormType, UtlGlobalAdd, utlGlobalUpdate, utlGlobalDelete)
+  bOK = True
 
-  fExit = False
-  Set frmSelection = New frmDefSel
-
-  With frmSelection
-    ' Loop until the picklist operation has been cancelled.
-    Do While Not fExit
-      .EnableRun = True
-
-      If .ShowList(lngTYPE) Then
-        .CustomShow vbModal
-
-        Select Case .Action
-        Case edtAdd
-          Set frmEdit = New frmGlobalFunctions
-          If frmEdit.Initialise(True, .FromCopy, FormType) Then
-            frmEdit.Show vbModal
-            .SelectedID = frmEdit.SelectedID
-          End If
-          Unload frmEdit
-          Set frmEdit = Nothing
-        
-        'TM20010808 Fault 2656 - Must validate the definition before allowing the edit/copy.
-        Case edtEdit
-          Set frmEdit = New frmGlobalFunctions
-          If frmEdit.Initialise(False, .FromCopy, FormType, .SelectedID) Then
-            If Not frmEdit.Cancelled Then
-              frmEdit.Show vbModal
-              If .FromCopy And frmEdit.SelectedID > 0 Then
-                .SelectedID = frmEdit.SelectedID
-              End If
-            End If
-          End If
-          Unload frmEdit
-          Set frmEdit = Nothing
-
-'        'TM20010808 Fault 2656 - Must validate the definition before allowing the delete.
-'        Case edtDelete
-'          Set frmEdit = New frmGlobalFunctions
-'          frmEdit.Initialise False, False, FormType, .SelectedID
-'          If Not frmEdit.Cancelled Then
-'            datGeneral.DeleteRecord "ASRSysGlobalFunctions", "FunctionID", .SelectedID
-'            datGeneral.DeleteRecord "ASRSysGlobalItems", "FunctionID", .SelectedID
-'          End If
-'          Unload frmEdit
-'          Set frmEdit = Nothing
-
-        Case edtSelect
-          
-          'Select Case sType
-          'Case "ADD", "UPDATE"
-            'Set objGlobalAddUpdate = New clsGlobalAddUpdateRun
-            ''blnOK = objGlobalAddUpdate.RunGlobalAddUpdate(.SelectedID, False, FormType)
-            'blnOK = objGlobalAddUpdate.RunGlobal(.SelectedID, False, FormType)
-            'Set objGlobalAddUpdate = Nothing
-            Set objGlobalRun = New clsGlobalRun
-            'blnOK = objGlobalAddUpdate.RunGlobalAddUpdate(.SelectedID, False, FormType)
-            blnOK = objGlobalRun.RunGlobal(.SelectedID, FormType, "")
-            Set objGlobalRun = Nothing
-            fExit = gbCloseDefSelAfterRun
-
-          'Case "DELETE"
-            'Set objGlobalDelete = New clsGlobalDeleteRun
-            'blnOK = objGlobalDelete.RunGlobalDelete(.SelectedID, False)
-            'Set objGlobalDelete = Nothing
-          
-          'End Select
-
-        'TM20010808 Fault 2656 - Must validate the definition before allowing the print.
-        Case edtPrint
-          Set frmEdit = New frmGlobalFunctions
-          frmEdit.Initialise False, False, FormType, .SelectedID, True
-          If Not frmEdit.Cancelled Then
-            frmEdit.PrintDef FormType, .SelectedID
-          End If
-          Unload frmEdit
-          Set frmEdit = Nothing
-        
-        Case edtCancel
-          fExit = True
-
-        End Select
-      End If
-
-    Loop
-  End With
+  Select Case Action
+  Case edtAdd
+    Set frmEdit = New frmGlobalFunctions
+    If frmEdit.Initialise(True, FromCopy, FormType) Then
+      frmEdit.Show vbModal
+      SelectedID = frmEdit.SelectedID
+    End If
+    Unload frmEdit
+    Set frmEdit = Nothing
   
-  Unload frmSelection
-  Set frmSelection = Nothing
+  Case edtEdit
+    Set frmEdit = New frmGlobalFunctions
+    If frmEdit.Initialise(False, FromCopy, FormType, SelectedID) Then
+      If Not frmEdit.Cancelled Then
+        frmEdit.Show vbModal
+        If FromCopy And frmEdit.SelectedID > 0 Then
+          SelectedID = frmEdit.SelectedID
+        End If
+      End If
+    End If
+    Unload frmEdit
+    Set frmEdit = Nothing
 
-End Sub
+  Case edtSelect
+    Set objGlobalRun = New clsGlobalRun
+    bOK = objGlobalRun.RunGlobal(SelectedID, FormType, "")
+    Set objGlobalRun = Nothing
 
-Public Sub ImportClick()
+  Case edtPrint
+    Set frmEdit = New frmGlobalFunctions
+    frmEdit.Initialise False, False, FormType, SelectedID, True
+    If Not frmEdit.Cancelled Then
+      frmEdit.PrintDef FormType, SelectedID
+    End If
+    Unload frmEdit
+    Set frmEdit = Nothing
+  
 
-  ' Set reference to the Run class
-  Dim frmSelection As frmDefSel
+  End Select
+
+End Function
+
+Private Function DoImport(ByVal Action As EditOptions, ByRef SelectedID As Long, FromCopy As Boolean) As Boolean
+
   Dim frmEdit As frmImport
   Dim pobjImport As clsImportRUN
-  Dim fExit As Boolean
+  Dim bOK As Boolean
     
-  Screen.MousePointer = vbHourglass
-    
-  fExit = False
-    
-  Set frmSelection = New frmDefSel
-  
-  With frmSelection
-    
-    ' Loop until the picklist operation has been cancelled.
-    Do While Not fExit
-        
-      .EnableRun = True
-        
-      If .ShowList(utlImport) Then
-        
-        .CustomShow vbModal
+  bOK = True
             
-        Select Case .Action
-          Case edtAdd
-            
-            Set frmEdit = New frmImport
-            If frmEdit.Initialise(True, .FromCopy) Then
-              frmEdit.Show vbModal
-              .SelectedID = frmEdit.SelectedID
-            End If
-            Unload frmEdit
-            Set frmEdit = Nothing
-                    
-          Case edtEdit
-            
-            Set frmEdit = New frmImport
-            
-            If frmEdit.Initialise(False, .FromCopy, .SelectedID) Then
-              frmEdit.Show vbModal
-              If .FromCopy And frmEdit.SelectedID > 0 Then
-                .SelectedID = frmEdit.SelectedID
-              End If
-            End If
-            Unload frmEdit
-            Set frmEdit = Nothing
-                    
-          Case edtSelect
-
-            Set pobjImport = New clsImportRUN
-            pobjImport.ImportID = .SelectedID
-            pobjImport.RunImport
-            fExit = gbCloseDefSelAfterRun
-            Set pobjImport = Nothing
-
-          Case edtPrint
-            Set frmEdit = New frmImport
-            frmEdit.PrintDef .SelectedID
-            Unload frmEdit
-            Set frmEdit = Nothing
-            
-          Case edtCancel
-            fExit = True
-        End Select
+  Select Case Action
+    Case edtAdd
+      Set frmEdit = New frmImport
+      If frmEdit.Initialise(True, FromCopy) Then
+        frmEdit.Show vbModal
+        SelectedID = frmEdit.SelectedID
       End If
+      Unload frmEdit
+      Set frmEdit = Nothing
+              
+    Case edtEdit
+      Set frmEdit = New frmImport
+      
+      If frmEdit.Initialise(False, FromCopy, SelectedID) Then
+        frmEdit.Show vbModal
+        If FromCopy And frmEdit.SelectedID > 0 Then
+          SelectedID = frmEdit.SelectedID
+        End If
+      End If
+      Unload frmEdit
+      Set frmEdit = Nothing
+              
+    Case edtSelect
+      Set pobjImport = New clsImportRUN
+      pobjImport.ImportID = SelectedID
+      bOK = pobjImport.RunImport
+      Set pobjImport = Nothing
 
-    Loop
-  End With
-
-  Unload frmSelection
-  Set frmSelection = Nothing
+    Case edtPrint
+      Set frmEdit = New frmImport
+      frmEdit.PrintDef SelectedID
+      Unload frmEdit
+      Set frmEdit = Nothing
+      
+  End Select
   
-End Sub
+  DoImport = bOK
+  
+End Function
 
 
 Public Sub WorkflowClick()
@@ -2742,6 +2625,8 @@ Public Sub WorkflowClick()
   
               fExit = gbCloseDefSelAfterRun
               fRunning = False
+              UpdateUsage utlWorkflow, frmSelection.SelectedID, edtSelect
+              
             End If
             
           Case edtCancel
@@ -2763,96 +2648,59 @@ ErrorTrap:
 
 End Sub
 
-Public Sub ExportClick()
+Private Function DoExport(ByVal Action As EditOptions, ByRef SelectedID As Long, FromCopy As Boolean) As Boolean
   
-  ' Set reference to the Run class
-  Dim frmSelection As frmDefSel
   Dim frmEdit As frmExport
   Dim pobjExport As clsExportRUN
-  Dim fExit As Boolean
-    
-  Screen.MousePointer = vbHourglass
-    
-  fExit = False
-    
-  Set frmSelection = New frmDefSel
-  
-  With frmSelection
-    
-    ' Loop until the picklist operation has been cancelled.
-    Do While Not fExit
+  Dim bOK As Boolean
         
-      .EnableRun = True
+  bOK = True
         
-      If .ShowList(utlExport) Then
-        
-        .CustomShow vbModal
-            
-        Select Case .Action
-          Case edtAdd
-            Set frmEdit = New frmExport
-            If frmEdit.Initialise(True, .FromCopy) Then
-              frmEdit.Show vbModal
-              .SelectedID = frmEdit.SelectedID
-            End If
-            Unload frmEdit
-            Set frmEdit = Nothing
-                    
-          Case edtEdit
-            
-            Set frmEdit = New frmExport
-            If frmEdit.Initialise(False, .FromCopy, .SelectedID) Then
-              If Not frmEdit.Cancelled Then
-                frmEdit.Show vbModal
-                If .FromCopy And frmEdit.SelectedID > 0 Then
-                  .SelectedID = frmEdit.SelectedID
-                End If
-              End If
-            End If
-            Unload frmEdit
-            Set frmEdit = Nothing
-                    
-'          'TM20010808 Fault 2656 - Must validate the definition before allowing the delete.
-'          Case edtDelete
-'            Set frmEdit = New frmExport
-'            frmEdit.Initialise False, False, .SelectedID
-'            If Not frmEdit.Cancelled Then
-'              datGeneral.DeleteRecord "AsrSysExportName", "ID", .SelectedID
-'              datGeneral.DeleteRecord "AsrSysExportDetails", "ExportID", .SelectedID
-'            End If
-'            Unload frmEdit
-'            Set frmEdit = Nothing
-                    
-          Case edtSelect
-
-            Set pobjExport = New clsExportRUN
-            pobjExport.ExportID = .SelectedID
-
-            'TO RUN AS NORMAL
-            pobjExport.RunExport
-            fExit = gbCloseDefSelAfterRun
-            Set pobjExport = Nothing
-
-          Case edtPrint
-            Set frmEdit = New frmExport
-            frmEdit.Initialise False, False, .SelectedID, True
-            If Not frmEdit.Cancelled Then
-              frmEdit.PrintDef .SelectedID
-            End If
-            Unload frmEdit
-            Set frmEdit = Nothing
-                    
-          Case edtCancel
-            fExit = True
-        End Select
+  Select Case Action
+    Case edtAdd
+      Set frmEdit = New frmExport
+      If frmEdit.Initialise(True, FromCopy) Then
+        frmEdit.Show vbModal
+        SelectedID = frmEdit.SelectedID
       End If
-    Loop
-  End With
+      Unload frmEdit
+      Set frmEdit = Nothing
+              
+    Case edtEdit
+      
+      Set frmEdit = New frmExport
+      If frmEdit.Initialise(False, FromCopy, SelectedID) Then
+        If Not frmEdit.Cancelled Then
+          frmEdit.Show vbModal
+          If FromCopy And frmEdit.SelectedID > 0 Then
+            SelectedID = frmEdit.SelectedID
+          End If
+        End If
+      End If
+      Unload frmEdit
+      Set frmEdit = Nothing
+                                 
+    Case edtSelect
 
-  Unload frmSelection
-  Set frmSelection = Nothing
+      Set pobjExport = New clsExportRUN
+      pobjExport.ExportID = SelectedID
+      bOK = pobjExport.RunExport
+      Set pobjExport = Nothing
+
+    Case edtPrint
+      Set frmEdit = New frmExport
+      frmEdit.Initialise False, False, SelectedID, True
+      If Not frmEdit.Cancelled Then
+        frmEdit.PrintDef SelectedID
+      End If
+      Unload frmEdit
+      Set frmEdit = Nothing
+
+  End Select
   
-End Sub
+  DoExport = bOK
+  
+End Function
 
 
 Private Sub BatchJobsClick(ByRef UtilityID As Integer)
@@ -3260,6 +3108,30 @@ Private Sub RefreshQuickLinks(ByVal MenuType As UserMenuType)
           Case utlMailMerge
             sIconName = "MAILMERGE"
             sType = "Mail Merge : "
+          Case utlLabel
+            sIconName = "ENVELOPES&LABELS"
+            sType = "Envelopes && Labels : "
+          Case utlExport
+            sIconName = "EXPORT"
+            sType = "Export : "
+          Case utlImport
+            sIconName = "IMPORT"
+            sType = "Import : "
+          Case utlDataTransfer
+            sIconName = "DATATRANSFER"
+            sType = "Data Transfer : "
+          Case UtlGlobalAdd
+            sIconName = "GLOBALADD"
+            sType = "Global Add : "
+          Case utlGlobalUpdate
+            sIconName = "GLOBALUPDATE"
+            sType = "Global Update : "
+          Case utlGlobalDelete
+            sIconName = "GLOBALDELETE"
+            sType = "Global Delete : "
+            
+            
+            
           Case utlReportPack
             sIconName = "BLANK"
             sType = "Report Park : "
@@ -3881,15 +3753,14 @@ Public Sub RunUtility(ByRef UtilType As UtilityType, ByRef UtilityID As Long)
         ' Loop until the operation has been cancelled.
         Do While Not fExit
           .EnableRun = True
-    
+          .SelectedID = UtilityID
+              
           If .ShowList(UtilType) Then
             .Action = edtSelect
           
             ' Running a specific utility or just browsing?
-            If UtilityID = 0 Then
+            If UtilityID = 0 Or gbRecentDisplayDefSel Then
               .CustomShow vbModal
-            Else
-              .SelectedID = UtilityID
             End If
           
             If .Action = edtCancel Then
@@ -3918,9 +3789,31 @@ Public Sub RunUtility(ByRef UtilType As UtilityType, ByRef UtilityID As Long)
                             
                 Case utlSuccession
                   bOK = DoMatchReport(mrtSucession, .Action, .SelectedID, .FromCopy)
+          
+                Case utlLabel
+                   DoEnvelope .Action, .SelectedID, .FromCopy
         
                 Case utlMailMerge
                    DoMailMerge .Action, .SelectedID, .FromCopy
+                
+                Case UtlGlobalAdd
+                  DoGlobal glAdd, .Action, .SelectedID, .FromCopy
+                
+                Case utlGlobalUpdate
+                  DoGlobal glUpdate, .Action, .SelectedID, .FromCopy
+                
+                Case utlGlobalDelete
+                  DoGlobal glDelete, .Action, .SelectedID, .FromCopy
+        
+                Case utlDataTransfer
+                  DoDataTransfer .Action, .SelectedID, .FromCopy
+        
+                Case utlImport
+                  DoImport .Action, .SelectedID, .FromCopy
+        
+                Case utlExport
+                  DoExport .Action, .SelectedID, .FromCopy
+        
         
                 Case utlBatchJob
                '   BatchJobsClick UtilityID
@@ -4160,83 +4053,57 @@ Public Sub BradfordIndexClick()
 End Sub
 
 
-Public Sub LabelsAndEnvelopesClick()
+Private Function DoEnvelope(ByVal Action As EditOptions, ByRef SelectedID As Long, FromCopy As Boolean) As Boolean
 
   Dim frmDefinition As frmMailMerge
   Dim objExecution As clsMailMergeRun
-  Dim frmSelection As frmDefSel
-  Dim blnExit As Boolean
-
-  Set frmSelection = New frmDefSel
-  blnExit = False
+  Dim bOK As Boolean
   
-  'sSQL = "Select Name, MailMergeID From ASRSysMailMergeName " & _
-         "WHERE Username = '" & gsUserName & "' OR Access <> 'HD'"
-
-  Set frmDefinition = New frmMailMerge
+  bOK = True
   
-  With frmSelection
-    Do While Not blnExit
-      
-      .EnableRun = True
-      
-      If .ShowList(utlLabel) Then
-        
-        .CustomShow vbModal
-        
-        Select Case .Action
-        Case edtAdd
-          Set frmDefinition = New frmMailMerge
-          frmDefinition.IsLabel = True
-          frmDefinition.Initialise True, .FromCopy
-          frmDefinition.Show vbModal
-          .SelectedID = frmDefinition.SelectedID
-          Unload frmDefinition
-          Set frmDefinition = Nothing
-                    
-        Case edtEdit
-          Set frmDefinition = New frmMailMerge
-          frmDefinition.IsLabel = True
-          frmDefinition.Initialise False, .FromCopy, .SelectedID
-          If Not frmDefinition.Cancelled Then
-            frmDefinition.Show vbModal
-            If .FromCopy And frmDefinition.SelectedID > 0 Then
-              .SelectedID = frmDefinition.SelectedID
-            End If
-          End If
-          Unload frmDefinition
-          Set frmDefinition = Nothing
-           
-        Case edtSelect
-          Set objExecution = New clsMailMergeRun
-          objExecution.ExecuteMailMerge .SelectedID
-          Set objExecution = Nothing
-          blnExit = gbCloseDefSelAfterRun
-
-        Case edtPrint
-          Set frmDefinition = New frmMailMerge
-          frmDefinition.IsLabel = True
-          frmDefinition.Initialise False, False, .SelectedID, True
-          If Not frmDefinition.Cancelled Then
-            frmDefinition.PrintDef .SelectedID
-          End If
-          Unload frmDefinition
-          Set frmDefinition = Nothing
-        
-        Case edtCancel
-          blnExit = True  'cancel
-
-        End Select
-      
+  Select Case Action
+    Case edtAdd
+      Set frmDefinition = New frmMailMerge
+      frmDefinition.IsLabel = True
+      frmDefinition.Initialise True, FromCopy
+      frmDefinition.Show vbModal
+      SelectedID = frmDefinition.SelectedID
+      Unload frmDefinition
+      Set frmDefinition = Nothing
+                
+    Case edtEdit
+      Set frmDefinition = New frmMailMerge
+      frmDefinition.IsLabel = True
+      frmDefinition.Initialise False, FromCopy, SelectedID
+      If Not frmDefinition.Cancelled Then
+        frmDefinition.Show vbModal
+        If FromCopy And frmDefinition.SelectedID > 0 Then
+          SelectedID = frmDefinition.SelectedID
+        End If
       End If
+      Unload frmDefinition
+      Set frmDefinition = Nothing
+       
+    Case edtSelect
+      Set objExecution = New clsMailMergeRun
+      bOK = objExecution.ExecuteMailMerge(SelectedID)
+      Set objExecution = Nothing
+  
+    Case edtPrint
+      Set frmDefinition = New frmMailMerge
+      frmDefinition.IsLabel = True
+      frmDefinition.Initialise False, False, SelectedID, True
+      If Not frmDefinition.Cancelled Then
+        frmDefinition.PrintDef SelectedID
+      End If
+      Unload frmDefinition
+      Set frmDefinition = Nothing
 
-    Loop
-  End With
+  End Select
 
-  Unload frmSelection
-  Set frmSelection = Nothing
+  DoEnvelope = bOK
 
-End Sub
+End Function
 
 
 Public Sub EmailGroupClick()
