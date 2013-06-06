@@ -162,16 +162,23 @@ Begin VB.Form frmEmailLink
             Width           =   6645
          End
          Begin VB.CommandButton cmdAttachmentClear 
-            DisabledPicture =   "frmEmailLink.frx":1DAC
+Caption = "O"
+BeginProperty Font
+    Name = "Wingdings 2"
+    Size = 20.25
+    Charset = 2
+    Weight = 400
+    Underline = 0
+    Italic = 0
+    Strikethrough = 0
+EndProperty
             Height          =   315
             Left            =   8295
             MaskColor       =   &H000000FF&
-            Picture         =   "frmEmailLink.frx":2336
-            Style           =   1  'Graphical
             TabIndex        =   44
             Top             =   1900
             UseMaskColor    =   -1  'True
-            Width           =   300
+            Width           =   330
          End
          Begin VB.TextBox txtContent 
             Height          =   3720
@@ -350,14 +357,22 @@ Begin VB.Form frmEmailLink
             Width           =   6540
          End
          Begin VB.CommandButton cmdFilter 
+Caption = "O"
+BeginProperty Font
+    Name = "Wingdings 2"
+    Size = 20.25
+    Charset = 2
+    Weight = 400
+    Underline = 0
+    Italic = 0
+    Strikethrough = 0
+EndProperty
             Height          =   315
             Left            =   8340
-            Picture         =   "frmEmailLink.frx":28C0
-            Style           =   1  'Graphical
             TabIndex        =   5
             Top             =   700
             UseMaskColor    =   -1  'True
-            Width           =   300
+            Width           =   330
          End
          Begin VB.TextBox txtTitle 
             Height          =   315
@@ -1760,4 +1775,5 @@ Private Function GetEmailAddressName(lngRecipientID As Long) As String
 ErrorTrap:
 
 End Function
+
 

@@ -124,14 +124,22 @@ Begin VB.Form frmDiaryLink
          Width           =   4395
       End
       Begin VB.CommandButton cmdFilter 
+Caption = "O"
+BeginProperty Font
+    Name = "Wingdings 2"
+    Size = 20.25
+    Charset = 2
+    Weight = 400
+    Underline = 0
+    Italic = 0
+    Strikethrough = 0
+EndProperty
          Height          =   315
          Left            =   5835
-         Picture         =   "frmDiaryLink.frx":0059
-         Style           =   1  'Graphical
          TabIndex        =   5
          Top             =   700
          UseMaskColor    =   -1  'True
-         Width           =   300
+         Width           =   330
       End
       Begin VB.TextBox txtFilter 
          BackColor       =   &H8000000F&
@@ -798,3 +806,4 @@ Private Sub spnDateLinkOffset_Change()
   If Not mfLoading Then mblnChanged = True
 
 End Sub
+

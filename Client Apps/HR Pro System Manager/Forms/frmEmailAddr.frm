@@ -67,7 +67,7 @@ Begin VB.Form frmEmailAddr
          MaxLength       =   50
          TabIndex        =   2
          Top             =   300
-         Width           =   3000
+         Width           =   3045
       End
       Begin VB.Label Label1 
          AutoSize        =   -1  'True
@@ -99,15 +99,23 @@ Begin VB.Form frmEmailAddr
       Top             =   1000
       Width           =   4780
       Begin VB.CommandButton cmdCalculated 
+         Caption         =   "O"
          Enabled         =   0   'False
+         BeginProperty Font 
+            Name            =   "Wingdings 2"
+            Size            =   20.25
+            Charset         =   2
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
          Height          =   315
          Left            =   4300
-         Picture         =   "frmEmailAddr.frx":000C
-         Style           =   1  'Graphical
          TabIndex        =   10
          Top             =   1100
          UseMaskColor    =   -1  'True
-         Width           =   300
+         Width           =   330
       End
       Begin VB.ComboBox cboColumn 
          BackColor       =   &H8000000F&
@@ -118,7 +126,7 @@ Begin VB.Form frmEmailAddr
          Style           =   2  'Dropdown List
          TabIndex        =   7
          Top             =   700
-         Width           =   3000
+         Width           =   3045
       End
       Begin VB.TextBox txtCalculated 
          BackColor       =   &H8000000F&
@@ -135,7 +143,7 @@ Begin VB.Form frmEmailAddr
          MaxLength       =   50
          TabIndex        =   5
          Top             =   300
-         Width           =   3000
+         Width           =   3045
       End
       Begin VB.OptionButton optCalculated 
          Caption         =   "Calculated"
@@ -258,7 +266,7 @@ Private Sub cmdCancel_Click()
   mblnCancelled = True
 
   If mblnCancelled Then
-    If mfChanged And cmdOK.Enabled Then
+    If mfChanged And cmdOk.Enabled Then
       
       pintAnswer = MsgBox("You have made changes...do you wish to save these changes ?", vbQuestion + vbYesNoCancel, App.Title)
         
@@ -677,5 +685,6 @@ LocalErr:
   MsgBox Err.Description, vbCritical, Me.Caption
 
 End Function
+
 
 

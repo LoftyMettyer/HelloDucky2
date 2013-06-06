@@ -2,8 +2,8 @@ VERSION 5.00
 Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "timask6.ocx"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "COA_ColourPicker.ocx"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmConfiguration 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Configuration"
@@ -75,45 +75,37 @@ Begin VB.Form frmConfiguration
       _Version        =   393216
       Style           =   1
       Tabs            =   5
+      Tab             =   4
       TabsPerRow      =   5
       TabHeight       =   520
       TabCaption(0)   =   "&Email"
       TabPicture(0)   =   "frmConfiguration.frx":000C
-      Tab(0).ControlEnabled=   -1  'True
-      Tab(0).Control(0)=   "fraTestSQLMail"
-      Tab(0).Control(0).Enabled=   0   'False
+      Tab(0).ControlEnabled=   0   'False
+      Tab(0).Control(0)=   "fraEmailSetup"
       Tab(0).Control(1)=   "fraEmailOptions"
-      Tab(0).Control(1).Enabled=   0   'False
-      Tab(0).Control(2)=   "fraEmailSetup"
-      Tab(0).Control(2).Enabled=   0   'False
+      Tab(0).Control(2)=   "fraTestSQLMail"
       Tab(0).ControlCount=   3
       TabCaption(1)   =   "&Processing Account"
       TabPicture(1)   =   "frmConfiguration.frx":0028
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraSQL2005"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "&Display"
       TabPicture(2)   =   "frmConfiguration.frx":0044
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "frmBackgrounds"
-      Tab(2).Control(0).Enabled=   0   'False
+      Tab(2).Control(0)=   "frmExpressions"
       Tab(2).Control(1)=   "fraGeneral"
-      Tab(2).Control(1).Enabled=   0   'False
-      Tab(2).Control(2)=   "frmExpressions"
-      Tab(2).Control(2).Enabled=   0   'False
+      Tab(2).Control(2)=   "frmBackgrounds"
       Tab(2).ControlCount=   3
       TabCaption(3)   =   "Dev"
       TabPicture(3)   =   "frmConfiguration.frx":0060
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "fraQuickAddress"
-      Tab(3).Control(0).Enabled=   0   'False
-      Tab(3).Control(1)=   "frmDeveloperAFD"
-      Tab(3).Control(1).Enabled=   0   'False
+      Tab(3).Control(0)=   "frmDeveloperAFD"
+      Tab(3).Control(1)=   "fraQuickAddress"
       Tab(3).ControlCount=   2
       TabCaption(4)   =   "&Advanced"
       TabPicture(4)   =   "frmConfiguration.frx":007C
-      Tab(4).ControlEnabled=   0   'False
+      Tab(4).ControlEnabled=   -1  'True
       Tab(4).Control(0)=   "fraTime"
       Tab(4).Control(0).Enabled=   0   'False
       Tab(4).Control(1)=   "fraOutlookCalendar"
@@ -124,7 +116,7 @@ Begin VB.Form frmConfiguration
       Begin VB.Frame fraAdvancedSettings 
          Caption         =   "Database Settings : "
          Height          =   2055
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   77
          Top             =   3375
          Width           =   6465
@@ -179,7 +171,7 @@ Begin VB.Form frmConfiguration
       Begin VB.Frame fraOutlookCalendar 
          Caption         =   "Outlook Calendar :"
          Height          =   1485
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   64
          Top             =   400
          Width           =   6465
@@ -447,7 +439,7 @@ Begin VB.Form frmConfiguration
       Begin VB.Frame fraTime 
          Caption         =   "Overnight Processing :"
          Height          =   1365
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   73
          Top             =   1920
          Width           =   6465
@@ -790,14 +782,22 @@ Begin VB.Form frmConfiguration
          Top             =   400
          Width           =   6465
          Begin VB.CommandButton cmdColourPicker 
+            Caption         =   "O"
+            BeginProperty Font 
+               Name            =   "Wingdings 2"
+               Size            =   20.25
+               Charset         =   2
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
             Height          =   315
             Left            =   4380
-            Picture         =   "frmConfiguration.frx":0478
-            Style           =   1  'Graphical
             TabIndex        =   36
             ToolTipText     =   "Select Colour"
             Top             =   300
-            Width           =   300
+            Width           =   330
          End
          Begin VB.PictureBox picHolder 
             Height          =   1470
@@ -825,14 +825,13 @@ Begin VB.Form frmConfiguration
             Width           =   2790
          End
          Begin VB.CommandButton cmdPictureSelect 
+            Caption         =   "..."
             Height          =   315
             Left            =   4080
-            Picture         =   "frmConfiguration.frx":04F0
-            Style           =   1  'Graphical
             TabIndex        =   39
             ToolTipText     =   "Select Path"
             Top             =   700
-            Width           =   300
+            Width           =   330
          End
          Begin VB.TextBox txtDeskTopBitmapName 
             BackColor       =   &H8000000F&
@@ -846,17 +845,24 @@ Begin VB.Form frmConfiguration
             Width           =   2160
          End
          Begin VB.CommandButton cmdPictureClear 
-            DisabledPicture =   "frmConfiguration.frx":0568
+            Caption         =   "O"
+            BeginProperty Font 
+               Name            =   "Wingdings 2"
+               Size            =   20.25
+               Charset         =   2
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
             Height          =   315
             Left            =   4380
             MaskColor       =   &H000000FF&
-            Picture         =   "frmConfiguration.frx":093A
-            Style           =   1  'Graphical
             TabIndex        =   40
             ToolTipText     =   "Clear Path"
             Top             =   700
             UseMaskColor    =   -1  'True
-            Width           =   300
+            Width           =   330
          End
          Begin VB.Label lblBackColour 
             Appearance      =   0  'Flat
@@ -897,7 +903,7 @@ Begin VB.Form frmConfiguration
       Begin VB.Frame fraEmailSetup 
          Caption         =   "Setup :"
          Height          =   2535
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   0
          Top             =   400
          Width           =   6465
@@ -911,9 +917,9 @@ Begin VB.Form frmConfiguration
          End
          Begin VB.ComboBox cboEmailMethod 
             Height          =   315
-            ItemData        =   "frmConfiguration.frx":0D15
+            ItemData        =   "frmConfiguration.frx":0478
             Left            =   1875
-            List            =   "frmConfiguration.frx":0D17
+            List            =   "frmConfiguration.frx":047A
             Style           =   2  'Dropdown List
             TabIndex        =   2
             Top             =   270
@@ -921,9 +927,9 @@ Begin VB.Form frmConfiguration
          End
          Begin VB.ComboBox cboEmailProfile 
             Height          =   315
-            ItemData        =   "frmConfiguration.frx":0D19
+            ItemData        =   "frmConfiguration.frx":047C
             Left            =   1875
-            List            =   "frmConfiguration.frx":0D1B
+            List            =   "frmConfiguration.frx":047E
             Style           =   2  'Dropdown List
             TabIndex        =   4
             Top             =   700
@@ -987,19 +993,18 @@ Begin VB.Form frmConfiguration
       Begin VB.Frame fraEmailOptions 
          Caption         =   "Options :"
          Height          =   1190
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   14
          Top             =   4240
          Width           =   6465
          Begin VB.CommandButton cmdAttachmentsPath 
+            Caption         =   "..."
             Height          =   315
             Left            =   5685
-            Picture         =   "frmConfiguration.frx":0D1D
-            Style           =   1  'Graphical
             TabIndex        =   19
             ToolTipText     =   "Select Path"
             Top             =   700
-            Width           =   300
+            Width           =   330
          End
          Begin VB.TextBox txtAttachmentsPath 
             BackColor       =   &H8000000F&
@@ -1013,23 +1018,30 @@ Begin VB.Form frmConfiguration
             Width           =   3810
          End
          Begin VB.CommandButton cmdAttachmentsPathClear 
-            DisabledPicture =   "frmConfiguration.frx":0D95
+            Caption         =   "O"
+            BeginProperty Font 
+               Name            =   "Wingdings 2"
+               Size            =   20.25
+               Charset         =   2
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
             Height          =   315
             Left            =   5985
             MaskColor       =   &H000000FF&
-            Picture         =   "frmConfiguration.frx":1167
-            Style           =   1  'Graphical
             TabIndex        =   20
             ToolTipText     =   "Clear Path"
             Top             =   700
             UseMaskColor    =   -1  'True
-            Width           =   300
+            Width           =   330
          End
          Begin VB.ComboBox cboEmailDateFormat 
             Height          =   315
-            ItemData        =   "frmConfiguration.frx":1542
+            ItemData        =   "frmConfiguration.frx":0480
             Left            =   1875
-            List            =   "frmConfiguration.frx":1544
+            List            =   "frmConfiguration.frx":0482
             Style           =   2  'Dropdown List
             TabIndex        =   16
             Top             =   300
@@ -1059,7 +1071,7 @@ Begin VB.Form frmConfiguration
       Begin VB.Frame fraTestSQLMail 
          Caption         =   "Test :"
          Height          =   1190
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   10
          Top             =   3000
          Width           =   6465
@@ -1479,7 +1491,7 @@ End Sub
 Private Sub cmdCancel_Click()
 'UnLoad Me
 Dim pintAnswer As Integer
-If Changed = True Or cmdOK.Enabled Then
+If Changed = True Or cmdOk.Enabled Then
   pintAnswer = MsgBox("You have made changes...do you wish to save these changes ?", vbQuestion + vbYesNoCancel, App.Title)
   If pintAnswer = vbYes Then
     'AE20071108 Fault #12551
@@ -2564,5 +2576,6 @@ End Property
 
 Private Property Let Changed(ByVal fNewValue As Boolean)
   mfChanged = fNewValue
-  cmdOK.Enabled = mfChanged
+  cmdOk.Enabled = mfChanged
 End Property
+

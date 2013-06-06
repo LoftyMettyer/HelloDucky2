@@ -245,14 +245,22 @@ Begin VB.Form frmWorkflowLink
          Width           =   4100
       End
       Begin VB.CommandButton cmdFilter 
+Caption = "O"
+BeginProperty Font
+    Name = "Wingdings 2"
+    Size = 20.25
+    Charset = 2
+    Weight = 400
+    Underline = 0
+    Italic = 0
+    Strikethrough = 0
+EndProperty
          Height          =   315
          Left            =   5835
-         Picture         =   "frmWorkflowLink.frx":006C
-         Style           =   1  'Graphical
          TabIndex        =   5
          Top             =   700
          UseMaskColor    =   -1  'True
-         Width           =   300
+         Width           =   330
       End
       Begin GTMaskDate.GTMaskDate cboEffectiveDate 
          Height          =   315
@@ -964,3 +972,4 @@ Private Sub spnDateLinkOffset_Change()
   Changed = True
 
 End Sub
+
