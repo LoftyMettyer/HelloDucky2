@@ -1980,7 +1980,7 @@ Dim pstrError As String
   'NHRD16072004 Fault 8740
   If Printers.Count = 0 Then
     pstrError = "Unable to print as no printers are installed."
-    COAMsgBox pstrError, vbExclamation + vbOKOnly, "HR Pro"
+    COAMsgBox pstrError, vbExclamation + vbOKOnly, Application.Name
     GoTo TidyUpAndExit
   End If
   

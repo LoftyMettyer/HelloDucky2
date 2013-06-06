@@ -1,9 +1,9 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmMailMerge 
    BorderStyle     =   3  'Fixed Dialog
@@ -1450,7 +1450,7 @@ Private Const sTYPECODE_EXPRESSION = "E"
 
 Private fOK As Boolean
 Private rsTables As New ADODB.Recordset
-Private datData As HRProDataMgr.clsDataAccess          'DataAccess Class
+Private datData As DataMgr.clsDataAccess          'DataAccess Class
 Private mlngTimeStamp As Long
 
 Private mlngMailMergeID As Long
@@ -2753,7 +2753,7 @@ Public Function Initialise(bNew As Boolean, bCopy As Boolean, Optional lMailMerg
 
   On Error GoTo LocalErr
 
-  Set datData = New HRProDataMgr.clsDataAccess
+  Set datData = New DataMgr.clsDataAccess
 
   Screen.MousePointer = vbHourglass
 
@@ -3201,7 +3201,7 @@ Private Sub ListView2_DblClick()
   
 End Sub
 
-Private Sub ListView1_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub ListView1_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
   
   If mblnReadOnly Then
     Exit Sub
@@ -3248,7 +3248,7 @@ Private Sub ListView2_ItemClick(ByVal Item As ComctlLib.ListItem)
 
 End Sub
 
-Private Sub ListView2_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub ListView2_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
 
   If mblnReadOnly Then
     Exit Sub
@@ -3285,7 +3285,7 @@ Private Sub ListView2_MouseUp(Button As Integer, Shift As Integer, x As Single, 
   
 End Sub
 
-Private Sub ListView1_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub ListView1_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
   
   ' Start the drag operation
   Dim objItem As ComctlLib.ListItem
@@ -3304,7 +3304,7 @@ Private Sub ListView1_MouseMove(Button As Integer, Shift As Integer, x As Single
 
 End Sub
 
-Private Sub ListView2_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub ListView2_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
   
   'Start the drag operation
   Dim objItem As ComctlLib.ListItem
@@ -3322,7 +3322,7 @@ Private Sub ListView2_MouseMove(Button As Integer, Shift As Integer, x As Single
 
 End Sub
 
-Private Sub ListView1_DragDrop(Source As Control, x As Single, y As Single)
+Private Sub ListView1_DragDrop(Source As Control, X As Single, Y As Single)
   
   ' Perform the drop operation
   If Source Is ListView2 Then
@@ -3334,7 +3334,7 @@ Private Sub ListView1_DragDrop(Source As Control, x As Single, y As Single)
 
 End Sub
 
-Private Sub ListView2_DragDrop(Source As Control, x As Single, y As Single)
+Private Sub ListView2_DragDrop(Source As Control, X As Single, Y As Single)
   
   ' Perform the drop operation - action depends on source and destination
   
@@ -3346,10 +3346,10 @@ Private Sub ListView2_DragDrop(Source As Control, x As Single, y As Single)
     'End If
     ListView1.Drag vbCancel
   Else
-    If ListView2.HitTest(x, y) Is Nothing Then
+    If ListView2.HitTest(X, Y) Is Nothing Then
       ChangeSelectedOrder
     Else
-      ChangeSelectedOrder ListView2.HitTest(x, y).Index
+      ChangeSelectedOrder ListView2.HitTest(X, Y).Index
     End If
     ListView2.Drag vbCancel
   End If
@@ -3357,7 +3357,7 @@ Private Sub ListView2_DragDrop(Source As Control, x As Single, y As Single)
 End Sub
 
 
-Private Sub fraColumns_DragOver(Index As Integer, Source As Control, x As Single, y As Single, State As Integer)
+Private Sub fraColumns_DragOver(Index As Integer, Source As Control, X As Single, Y As Single, State As Integer)
 
   ' Change pointer to the nodrop icon
   Source.DragIcon = picNoDrop.Picture
@@ -3365,7 +3365,7 @@ Private Sub fraColumns_DragOver(Index As Integer, Source As Control, x As Single
 End Sub
 
 
-Private Sub ListView2_DragOver(Source As Control, x As Single, y As Single, State As Integer)
+Private Sub ListView2_DragOver(Source As Control, X As Single, Y As Single, State As Integer)
 
   ' Change pointer to drop icon
   If (Source Is ListView1) Or (Source Is ListView2) Then
@@ -3377,11 +3377,11 @@ Private Sub ListView2_DragOver(Source As Control, x As Single, y As Single, Stat
   End If
 
   ' Set DropHighlight to the mouse's coordinates.
-  Set ListView2.DropHighlight = ListView2.HitTest(x, y)
+  Set ListView2.DropHighlight = ListView2.HitTest(X, Y)
 
 End Sub
 
-Private Sub ListView1_DragOver(Source As Control, x As Single, y As Single, State As Integer)
+Private Sub ListView1_DragOver(Source As Control, X As Single, Y As Single, State As Integer)
 
   ' Change pointer to drop icon
   If (Source Is ListView1) Or (Source Is ListView2) Then
@@ -5736,7 +5736,7 @@ Public Sub PrintDef(lMailMergeID As Long)
   Dim varBookmark As Variant
   Dim strType As String
   
-  Set datData = New HRProDataMgr.clsDataAccess
+  Set datData = New DataMgr.clsDataAccess
   
   mlngMailMergeID = lMailMergeID
   Set rsTemp = GetDefinition
@@ -5745,7 +5745,7 @@ Public Sub PrintDef(lMailMergeID As Long)
     Exit Sub
   End If
   
-  Set objPrintDef = New HRProDataMgr.clsPrintDef
+  Set objPrintDef = New DataMgr.clsPrintDef
 
   If objPrintDef.IsOK Then
   

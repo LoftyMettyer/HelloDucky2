@@ -785,7 +785,7 @@ Resume QAShowMappedFieldsResume
 
 End Sub
 
-Public Function QAddressGetPostcodes(pstrPostcode As String, ByRef pobjQAPostcodes() As HRProDataMgr.PostCode) As Long
+Public Function QAddressGetPostcodes(pstrPostcode As String, ByRef pobjQAPostcodes() As DataMgr.PostCode) As Long
   
   Dim iResult As Integer
   Dim iCount As Integer
@@ -848,7 +848,7 @@ Public Function QAddressGetPostcodes(pstrPostcode As String, ByRef pobjQAPostcod
 
 End Function
 
-Private Sub GetQAProSubItems(ByVal lListIndex As Long, ByRef pobjQAPostcodes() As HRProDataMgr.PostCode)
+Private Sub GetQAProSubItems(ByVal lListIndex As Long, ByRef pobjQAPostcodes() As DataMgr.PostCode)
 
   Dim rsBuffer As String * 200
   Dim vlBufLen As Long
@@ -971,7 +971,7 @@ Private Sub GetQAProSubItems(ByVal lListIndex As Long, ByRef pobjQAPostcodes() A
 End Sub
 
 
-Private Sub GetQARapidPostcodes(ByVal lListIndex As Long, ByRef pobjQAPostcodes() As HRProDataMgr.PostCode)
+Private Sub GetQARapidPostcodes(ByVal lListIndex As Long, ByRef pobjQAPostcodes() As DataMgr.PostCode)
 
     Dim rsBuffer As String * 200
     Dim vlBufLen As Long

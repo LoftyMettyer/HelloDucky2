@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Begin VB.Form frmAccordViewTransfers 
    Caption         =   "Payroll Transfers"
@@ -312,7 +312,7 @@ Attribute VB_Exposed = False
 Option Explicit
 
 Private mbLoading As Boolean
-Private miConnectionType As HRProDataMgr.AccordConnection
+Private miConnectionType As DataMgr.AccordConnection
 Private mdToDate As Date
 Private mdFromDate As Date
 Private miTransferType As Integer
@@ -328,7 +328,7 @@ Private mbEnableBlocking As Boolean
 
 Private miViewMode As AccordViewMode
 
-Public Property Let ConnectionType(ByVal piNewValue As HRProDataMgr.AccordConnection)
+Public Property Let ConnectionType(ByVal piNewValue As DataMgr.AccordConnection)
   miConnectionType = piNewValue
 End Property
 
@@ -354,10 +354,10 @@ Private Sub RefreshGrid()
   Dim strTransfer As String
   Dim strStatusBarText As String
   Dim lngRecordCount As Long
-  Dim objString As HRProDataMgr.clsStringBuilder
+  Dim objString As DataMgr.clsStringBuilder
   Dim sDateFormat As String
    
-  Set objString = New HRProDataMgr.clsStringBuilder
+  Set objString = New DataMgr.clsStringBuilder
   sDateFormat = UI.GetSystemDateFormat
    
   ' Clear the existing data
@@ -584,7 +584,7 @@ End Sub
 Private Sub cmdEdit_Click()
 
   'Dim lngRow As Long
-  Dim frmRecord As New HRProDataMgr.frmAccordRecord
+  Dim frmRecord As New DataMgr.frmAccordRecord
   
   grdTransferDetails.Bookmark = grdTransferDetails.SelBookmarks(0)
   'lngRow = grdTransferDetails.AddItemRowIndex(grdTransferDetails.Bookmark)
@@ -633,7 +633,7 @@ Private Sub cmdUnblock_Click()
 End Sub
 
 Private Sub Form_Initialize()
-  Set datData = New HRProDataMgr.clsDataAccess
+  Set datData = New DataMgr.clsDataAccess
   mbAllTransferTypes = True
   mstrOrderBy = "CreatedDateTime"
   mstrOrderOrder = "DESC"

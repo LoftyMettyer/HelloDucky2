@@ -1,9 +1,9 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmRecordProfile 
    BorderStyle     =   3  'Fixed Dialog
@@ -1309,7 +1309,7 @@ Attribute VB_Exposed = False
 Option Explicit
 
 'DataAccess Class
-Private datData As HRProDataMgr.clsDataAccess
+Private datData As DataMgr.clsDataAccess
 
 ' Collection Class (Holds column details such as heading, size etc)
 Public mcolRecordProfileColumnDetails As clsRecordProfileColDtls
@@ -1448,7 +1448,7 @@ Public Function Initialise(bNew As Boolean, _
   Screen.MousePointer = vbHourglass
   
   ' Set references to class modules
-  Set datData = New HRProDataMgr.clsDataAccess
+  Set datData = New DataMgr.clsDataAccess
   
   mblnLoading = True
 
@@ -1491,7 +1491,7 @@ Public Function Initialise(bNew As Boolean, _
         Initialise = False
         Exit Function
       Else
-        If COAMsgBox("HR Pro could not load all of the definition successfully. The recommendation is that" & vbCrLf & _
+        If COAMsgBox("OpenHR could not load all of the definition successfully. The recommendation is that" & vbCrLf & _
                "you delete the definition and create a new one, however, you may edit the existing" & vbCrLf & _
                "definition if you wish. Would you like to continue and edit this definition ?", vbQuestion + vbYesNo, "Record Profile") = vbNo Then
           Cancelled = True
@@ -2523,7 +2523,7 @@ Public Sub PrintDef(plngRecordProfileID As Long)
   GetRelatedTables rsTemp!BaseTable, "PARENT"
   GetRelatedTables rsTemp!BaseTable, "CHILD"
   
-  Set objPrintDef = New HRProDataMgr.clsPrintDef
+  Set objPrintDef = New DataMgr.clsPrintDef
 
   If objPrintDef.IsOK Then
     With objPrintDef
@@ -5766,7 +5766,7 @@ Private Sub cmdRemoveRelatedTable_Click()
 
 End Sub
 
-Private Sub Form_DragOver(Source As Control, x As Single, y As Single, State As Integer)
+Private Sub Form_DragOver(Source As Control, X As Single, Y As Single, State As Integer)
   ' Change pointer to the nodrop icon
   Source.DragIcon = picNoDrop.Picture
 
@@ -5822,14 +5822,14 @@ Private Sub Form_Resize()
 
 End Sub
 
-Private Sub Frafieldsavailable_DragOver(Source As Control, x As Single, y As Single, State As Integer)
+Private Sub Frafieldsavailable_DragOver(Source As Control, X As Single, Y As Single, State As Integer)
   ' Change pointer to the nodrop icon
   Source.DragIcon = picNoDrop.Picture
 
 End Sub
 
 
-Private Sub Frafieldsselected_DragOver(Source As Control, x As Single, y As Single, State As Integer)
+Private Sub Frafieldsselected_DragOver(Source As Control, X As Single, Y As Single, State As Integer)
   ' Change pointer to the nodrop icon
   Source.DragIcon = picNoDrop.Picture
 
@@ -5939,7 +5939,7 @@ Private Sub ListView1_DblClick()
 End Sub
 
 
-Private Sub ListView1_DragDrop(Source As Control, x As Single, y As Single)
+Private Sub ListView1_DragDrop(Source As Control, X As Single, Y As Single)
   ' Perform the drop operation
   If Source Is ListView2 Then
     CopyToAvailable False
@@ -5951,7 +5951,7 @@ Private Sub ListView1_DragDrop(Source As Control, x As Single, y As Single)
 End Sub
 
 
-Private Sub ListView1_DragOver(Source As Control, x As Single, y As Single, State As Integer)
+Private Sub ListView1_DragOver(Source As Control, X As Single, Y As Single, State As Integer)
   ' Change pointer to drop icon
   If (Source Is ListView1) Or (Source Is ListView2) Then
     Source.DragIcon = picDocument.Picture
@@ -5994,7 +5994,7 @@ Private Sub ListView1_LostFocus()
 
 End Sub
 
-Private Sub ListView1_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub ListView1_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
   If mblnReadOnly Then
     Exit Sub
   End If
@@ -6013,7 +6013,7 @@ Private Sub ListView1_MouseMove(Button As Integer, Shift As Integer, x As Single
 End Sub
 
 
-Private Sub ListView1_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub ListView1_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
   If mblnReadOnly Then
     Exit Sub
   End If
@@ -6062,21 +6062,21 @@ Private Sub ListView2_DblClick()
 End Sub
 
 
-Private Sub ListView2_DragDrop(Source As Control, x As Single, y As Single)
+Private Sub ListView2_DragDrop(Source As Control, X As Single, Y As Single)
   ' Perform the drop operation - action depends on source and destination
   
   If Source Is ListView1 Then
-    If ListView2.HitTest(x, y) Is Nothing Then
+    If ListView2.HitTest(X, Y) Is Nothing Then
       CopyToSelected False
     Else
-      CopyToSelected False, ListView2.HitTest(x, y).Index
+      CopyToSelected False, ListView2.HitTest(X, Y).Index
     End If
     ListView1.Drag vbCancel
   Else
-    If ListView2.HitTest(x, y) Is Nothing Then
+    If ListView2.HitTest(X, Y) Is Nothing Then
       ChangeSelectedOrder
     Else
-      ChangeSelectedOrder ListView2.HitTest(x, y).Index
+      ChangeSelectedOrder ListView2.HitTest(X, Y).Index
     End If
     ListView2.Drag vbCancel
   End If
@@ -6084,14 +6084,14 @@ Private Sub ListView2_DragDrop(Source As Control, x As Single, y As Single)
 End Sub
 
 
-Private Sub ListView2_DragOver(Source As Control, x As Single, y As Single, State As Integer)
+Private Sub ListView2_DragOver(Source As Control, X As Single, Y As Single, State As Integer)
   ' Change pointer to drop icon
   If (Source Is ListView1) Or (Source Is ListView2) Then
     Source.DragIcon = picDocument.Picture
   End If
 
   ' Set DropHighlight to the mouse's coordinates.
-  Set ListView2.DropHighlight = ListView2.HitTest(x, y)
+  Set ListView2.DropHighlight = ListView2.HitTest(X, Y)
 
 End Sub
 
@@ -6135,7 +6135,7 @@ Private Sub ListView2_LostFocus()
 
 End Sub
 
-Private Sub ListView2_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub ListView2_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
   'Start the drag operation
   Dim objItem As ComctlLib.ListItem
 
@@ -6153,7 +6153,7 @@ Private Sub ListView2_MouseMove(Button As Integer, Shift As Integer, x As Single
 End Sub
 
 
-Private Sub ListView2_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub ListView2_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
   If mblnReadOnly Then
     Exit Sub
   End If

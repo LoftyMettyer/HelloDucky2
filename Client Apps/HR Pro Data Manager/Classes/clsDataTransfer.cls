@@ -31,7 +31,7 @@ Option Explicit
 
 Private fOK As Boolean
 Private mblnUserCancelled As Boolean
-Private datData As HRProDataMgr.clsDataAccess
+Private datData As DataMgr.clsDataAccess
 Private rsDataTransferColumns As Recordset
 Private mstrStatusMessage As String
 Private mlngSelectedID As Long
@@ -885,7 +885,7 @@ Private Sub CreateStoredProcedure()
   
 
   strSQL = "/* ------------------------------------- */" & vbCrLf & _
-           "/* HR Pro Data Transfer stored procedure. */" & vbCrLf & _
+           "/* OpenHR Data Transfer stored procedure. */" & vbCrLf & _
            "/* ------------------------------------- */" & vbCrLf & _
            "CREATE PROCEDURE " & mstrProcedureName & "(@RecordID int)" & vbCrLf & _
            "AS" & vbCrLf & _

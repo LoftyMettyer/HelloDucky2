@@ -166,7 +166,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
 
-Private mclsData As New HRProDataMgr.clsDataAccess
+Private mclsData As New DataMgr.clsDataAccess
 Private mblnNew As Boolean
 Private mblnCancelled As Boolean
 Private mlngEditingColumnID As Long
@@ -185,7 +185,7 @@ Public Function Initialise(bNew As Boolean, sType As String, lTableID As Long, l
         
   Dim prstTemp As Recordset
   
-  Set mclsData = New HRProDataMgr.clsDataAccess
+  Set mclsData = New DataMgr.clsDataAccess
   Set mfrmForm = frmParentForm
   
   mblnNew = bNew

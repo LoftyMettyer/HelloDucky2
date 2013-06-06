@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Begin VB.Form frmDataTransfer 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Data Transfer Definition"
@@ -595,7 +595,7 @@ Private mbFromCopy As Boolean
 Private mblnFormPrint As Boolean
 Private mbLoading As Boolean
 Private mblnReadOnly As Boolean
-Private datData As HRProDataMgr.clsDataAccess
+Private datData As DataMgr.clsDataAccess
 'Private mbChanged As Boolean
 Private mblnDefinitionCreator As Boolean
 
@@ -626,7 +626,7 @@ End Property
 
 Public Function Initialise(bNew As Boolean, bCopy As Boolean, Optional lTransferID As Long, Optional bPrint As Boolean) As Boolean
     
-  Set datData = New HRProDataMgr.clsDataAccess
+  Set datData = New DataMgr.clsDataAccess
   
   Screen.MousePointer = vbHourglass
   
@@ -2806,7 +2806,7 @@ Public Sub PrintDef(lTransferID As Long)
   Dim iLoop As Integer
   Dim varBookmark As Variant
 
-  Set datData = New HRProDataMgr.clsDataAccess
+  Set datData = New DataMgr.clsDataAccess
   
   mlTransferID = lTransferID
   Set rsTemp = GetDefinition
@@ -2816,7 +2816,7 @@ Public Sub PrintDef(lTransferID As Long)
   End If
   
   
-  Set objPrintDef = New HRProDataMgr.clsPrintDef
+  Set objPrintDef = New DataMgr.clsPrintDef
 
   If objPrintDef.IsOK Then
   

@@ -710,8 +710,8 @@ Private Sub Class_Initialize()
   ' Purpose : Sets references to other classes and redimensions arrays
   '           used for table usage information
   
-  Set mclsData = New HRProDataMgr.clsDataAccess
-  Set mclsGeneral = New HRProDataMgr.clsGeneral
+  Set mclsData = New DataMgr.clsDataAccess
+  Set mclsGeneral = New DataMgr.clsGeneral
   ReDim mvarSortOrder(2, 0)
   ReDim mvarColDetails(25, 0)
   ReDim mlngTableViews(2, 0)
@@ -1107,8 +1107,8 @@ Private Function GetDetailsRecordsets() As Boolean
       'Now we need to decide on what the heading needs to be because QA want to
       'be able to have similar headings for hidden columns...I warned them, but
       'NO...they thought that the best move was to spend ages fixing faults in
-      'v2 and put HR Pro .NET on the back-burner so that we can release a
-      'Limited Edition of HR Pro called HR Pro .NET 2012 Olympic Edition.
+      'v2 and put OpenHR .NET on the back-burner so that we can release a
+      'Limited Edition of OpenHR called OpenHR .NET 2012 Olympic Edition.
       'What twats!!!...Fault 10211.
       
       If IIf((IsNull(!Hidden) Or (!Hidden)), True, False) Then
@@ -1144,7 +1144,7 @@ Private Function GetDetailsRecordsets() As Boolean
         mvarColDetails(22, intTemp) = CBool(.Fields("Use1000Separator").Value)
         
       Else
-        Dim objExpr As HRProDataMgr.clsExprExpression
+        Dim objExpr As DataMgr.clsExprExpression
         Set objExpr = New clsExprExpression
 
         objExpr.ExpressionID = CLng(!ColExprID)
@@ -4867,7 +4867,7 @@ Private Function GetBradfordRecordSet() As Boolean
         mvarColDetails(16, intTemp) = ""
       
         'MH20010307
-        Dim objExpr As HRProDataMgr.clsExprExpression
+        Dim objExpr As DataMgr.clsExprExpression
         Set objExpr = New clsExprExpression
         objExpr.ExpressionID = CLng(mvarColDetails(12, intTemp))
         objExpr.ConstructExpression

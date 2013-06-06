@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{96E404DC-B217-4A2D-A891-C73A92A628CC}#1.0#0"; "COA_WorkingPattern.ocx"
+Object = "{96E404DC-B217-4A2D-A891-C73A92A628CC}#1.0#0"; "coa_workingpattern.ocx"
 Begin VB.Form frmAbsenceCalendar 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Absence Calendar "
@@ -2349,8 +2349,8 @@ Print_ERR:
   Screen.MousePointer = vbDefault
 
   Select Case Err.Number
-    Case 482: COAMsgBox "Printer Error : Please check printer connection.", vbExclamation + vbInformation, "HR Pro"
-    Case Else: COAMsgBox Err.Description, vbExclamation + vbInformation, "HR Pro"
+    Case 482: COAMsgBox "Printer Error : Please check printer connection.", vbExclamation + vbInformation, Application.Name
+    Case Else: COAMsgBox Err.Description, vbExclamation + vbInformation, Application.Name
   End Select
   
 End Sub

@@ -134,12 +134,12 @@ Private miLabelStartRow As Integer
 ' Array holding the User Defined functions that are needed for this report
 Private mastrUDFsRequired() As String
 
-Private mobjFormatDetails(1) As HRProDataMgr.clsOutputStyle
+Private mobjFormatDetails(1) As DataMgr.clsOutputStyle
 
 Private mstrPicklistFilterIDs As String
 
 Private Sub Class_Initialize()
-  Set mdatData = New HRProDataMgr.clsDataAccess
+  Set mdatData = New DataMgr.clsDataAccess
 End Sub
 
 Private Sub Class_Terminate()
@@ -222,8 +222,8 @@ Public Function ExecuteMailMerge(lngMailMergeID As Long, Optional strRecordIDs A
 
   ReDim mastrUDFsRequired(0)
 
-  Set mobjFormatDetails(0) = New HRProDataMgr.clsOutputStyle
-  Set mobjFormatDetails(1) = New HRProDataMgr.clsOutputStyle
+  Set mobjFormatDetails(0) = New DataMgr.clsOutputStyle
+  Set mobjFormatDetails(1) = New DataMgr.clsOutputStyle
 
   'SQL Stuff
   If fOK Then Call SQLGetMergeDefinition
@@ -733,7 +733,7 @@ Private Sub WrdOpenTemplate(blnSuppressPrompt As Boolean)
   
   'It seems to be a good idea to show the word app when
   'opening the template file in case there is a problem
-  'with the data source document (in which case, HR Pro
+  'with the data source document (in which case, OpenHR
   'would appear to hang!)
   'wrdApp.Visible = True
   
@@ -1526,7 +1526,7 @@ LocalErr:
   
   Case 70
     ' Permission denied - file is either open, or we do not have security to it.
-    mstrStatusMessage = "HR Pro cannot get access to the output file." & vbCrLf & "Ensure that no other applications have this file open."
+    mstrStatusMessage = "OpenHR cannot get access to the output file." & vbCrLf & "Ensure that no other applications have this file open."
   
   Case Else
     If Trim(Err.Description) <> vbNullString Then
@@ -1850,7 +1850,7 @@ End Sub
 Private Sub SQLCodeCreate()
 
   Dim strPicklistFilterSelect As String
-  Dim objExpr As HRProDataMgr.clsExprExpression
+  Dim objExpr As DataMgr.clsExprExpression
   Dim intIndex As Integer
   Dim objTableView As CTablePrivilege
   Dim lngRecordCount As Integer

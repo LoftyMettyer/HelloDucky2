@@ -16,7 +16,7 @@ Attribute VB_Ext_KEY = "Top_Level" ,"Yes"
 Option Explicit
 
 'For batch job checking
-Private datData As HRProDataMgr.clsDataAccess
+Private datData As DataMgr.clsDataAccess
 
 'Instantiate internal classes
 Private ODBC As New ODBC
@@ -361,7 +361,7 @@ Private Sub CheckOvernightJob()
   With rsTemp
     If Not .BOF And Not .EOF Then
       If rsTemp.Fields(0).Value > 24 Then
-        COAMsgBox "The overnight job has not completed within the last 24 hours.  This may affect date dependant areas of HR Pro." & vbCrLf & "Please inform your SQL administrator.", vbExclamation, "HR Pro Overnight Job"
+        COAMsgBox "The overnight job has not completed within the last 24 hours.  This may affect date dependant areas of OpenHR." & vbCrLf & "Please inform your SQL administrator.", vbExclamation, "OpenHR Overnight Job"
       End If
     End If
   End With

@@ -428,7 +428,7 @@ Private Function GetDetailsRecordsets() As Boolean
 
       Else
         'MH20010307
-        Dim objExpr As HRProDataMgr.clsExprExpression
+        Dim objExpr As DataMgr.clsExprExpression
         Set objExpr = New clsExprExpression
 
         objExpr.ExpressionID = CLng(!ColExprID)

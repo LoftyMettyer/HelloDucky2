@@ -1,8 +1,8 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{604A59D5-2409-101D-97D5-46626B63EF2D}#1.0#0"; "TDBNumbr.ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Begin VB.Form frmCrossTabDef 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Cross Tab Definition"
@@ -1543,7 +1543,7 @@ Option Explicit
 Private mobjOutputDef As clsOutputDef
 
 Private mblnReadOnly As Boolean
-Private datData As HRProDataMgr.clsDataAccess          'DataAccess Class
+Private datData As DataMgr.clsDataAccess          'DataAccess Class
 Private fOK As Boolean
 Private mrsColumns As New Recordset
 Private mstrPrimaryTable As String
@@ -1895,7 +1895,7 @@ Public Function Initialise(bNew As Boolean, bCopy As Boolean, Optional lCrossTab
   mblnLoading = True
   fOK = True
 
-  Set datData = New HRProDataMgr.clsDataAccess
+  Set datData = New DataMgr.clsDataAccess
   
   For lngCount = 0 To 2
     datGeneral.FormatTDBNumberControl mskHorizontalRange(lngCount)
@@ -3815,7 +3815,7 @@ Public Sub PrintDef(lCrossTabID As Long)
   Dim iLoop As Integer
   Dim varBookmark As Variant
 
-  Set datData = New HRProDataMgr.clsDataAccess
+  Set datData = New DataMgr.clsDataAccess
   
   mlngCrossTabID = lCrossTabID
   Set rsTemp = GetDefinition
@@ -3828,7 +3828,7 @@ Public Sub PrintDef(lCrossTabID As Long)
   mobjOutputDef.ReadDefFromRecset rsTemp
 
 
-  Set objPrintDef = New HRProDataMgr.clsPrintDef
+  Set objPrintDef = New DataMgr.clsPrintDef
 
   If objPrintDef.IsOK Then
   

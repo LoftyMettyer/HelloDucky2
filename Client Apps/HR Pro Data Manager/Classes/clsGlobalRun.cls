@@ -58,7 +58,7 @@ Public Property Get UserCancelled() As Boolean
 End Property
 
 Private Sub Class_Initialize()
-  Set mdatData = New HRProDataMgr.clsDataAccess
+  Set mdatData = New DataMgr.clsDataAccess
 End Sub
 
 Private Sub Class_Terminate()

@@ -114,7 +114,7 @@ ErrorTrap:
 
 End Function
 
-Public Function OpenAccordRecordset(ByVal piConnectionType As HRProDataMgr.AccordConnection, _
+Public Function OpenAccordRecordset(ByVal piConnectionType As DataMgr.AccordConnection, _
   sSQL As String, CursorType As ADODB.CursorTypeEnum, _
   LockType As ADODB.LockTypeEnum, Optional varCursorLocation As Variant) As ADODB.Recordset
   
@@ -275,7 +275,7 @@ DeadlockErrorTrap:
 
 End Function
 
-Public Sub ExecuteAccordSql(ByVal piConnectionType As HRProDataMgr.AccordConnection, sSQL As String)
+Public Sub ExecuteAccordSql(ByVal piConnectionType As DataMgr.AccordConnection, sSQL As String)
    
   Dim tmpADOAccordConnection As ADODB.Connection
     

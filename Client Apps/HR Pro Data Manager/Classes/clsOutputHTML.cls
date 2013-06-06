@@ -482,10 +482,10 @@ End Sub
 Public Sub DataArray(strArray() As String, colColumns As Collection, colStyles As Collection, colMerges As Collection)
 
   Dim objColumn As clsColumn
-  Dim strOutput As New HRProDataMgr.clsStringBuilder
+  Dim strOutput As New DataMgr.clsStringBuilder
   Dim lngGridCol As Long
   Dim lngGridRow As Long
-  Dim strHTMLOutput As New HRProDataMgr.clsStringBuilder
+  Dim strHTMLOutput As New DataMgr.clsStringBuilder
   
   On Local Error GoTo LocalErr
   

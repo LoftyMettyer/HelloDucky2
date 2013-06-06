@@ -817,7 +817,7 @@ Public Sub PrintExpression()
 
   If fOK Then
       
-    Set objPrintDef = New HRProDataMgr.clsPrintDef
+    Set objPrintDef = New DataMgr.clsPrintDef
 
     If objPrintDef.IsOK Then
     
@@ -3460,7 +3460,7 @@ Private Function ValidateAssociatedExpressionsSQLCode(plngFixedExpressionID As L
   Dim sSQL As String
   Dim rsTemp As Recordset
   Dim objComp As clsExprComponent
-  Dim objExpr As HRProDataMgr.clsExprExpression
+  Dim objExpr As DataMgr.clsExprExpression
 
   iValidationCode = giEXPRVALIDATION_NOERRORS
   

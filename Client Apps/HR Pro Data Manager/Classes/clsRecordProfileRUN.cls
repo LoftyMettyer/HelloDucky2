@@ -1242,7 +1242,7 @@ Private Function GetRecordProfileColumns() As Boolean
   'Dim iTempDigitGrouping As Integer
   Dim bTempThousandSeparator As Boolean
   Dim bBlankIfZero As Boolean
-  Dim iOLEType As HRProDataMgr.OLEType
+  Dim iOLEType As DataMgr.OLEType
   Dim fIsSystemColumn As Boolean
   
   ReDim alngRelatingColumns(2, 0)
@@ -1736,8 +1736,8 @@ Public Property Get RecordProfileID() As Long
 End Property
 
 Private Sub Class_Initialize()
-  Set mclsData = New HRProDataMgr.clsDataAccess
-  Set mclsGeneral = New HRProDataMgr.clsGeneral
+  Set mclsData = New DataMgr.clsDataAccess
+  Set mclsGeneral = New DataMgr.clsGeneral
   ReDim mavTableViews(4, 0)
   
   Set mobjDefinition = New clsRecordProfileTabDtls

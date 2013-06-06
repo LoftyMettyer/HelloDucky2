@@ -100,7 +100,7 @@ Private mstrSQLOrderList As String
 Private mstrSQLIDs As String
 Private mstrSQLDynamicLegendWhere As String
 Private mintDynamicEventCount As Integer
-Private mstrSQLCreateTable As HRProDataMgr.clsStringBuilder
+Private mstrSQLCreateTable As DataMgr.clsStringBuilder
 
 Private mblnHasEventFilterIDs As Boolean
 Private mstrEventFilterIDs As String
@@ -705,8 +705,8 @@ Private Sub Class_Initialize()
   ' Purpose : Sets references to other classes and redimensions arrays
   '           used for table usage information
   
-  Set mclsData = New HRProDataMgr.clsDataAccess
-  Set mclsGeneral = New HRProDataMgr.clsGeneral
+  Set mclsData = New DataMgr.clsDataAccess
+  Set mclsGeneral = New DataMgr.clsGeneral
   ReDim mvarSortOrder(2, 0)
   
   ' Dimension an array of tables/views joined to the base table/view
@@ -720,7 +720,7 @@ Private Sub Class_Initialize()
   
   ReDim mvarEventColumnViews(1, 0)
   
-  Set mstrSQLCreateTable = New HRProDataMgr.clsStringBuilder
+  Set mstrSQLCreateTable = New DataMgr.clsStringBuilder
   mstrSQLCreateTable.TheString = vbNullString
   
   
@@ -1665,7 +1665,7 @@ Private Function GenerateSQLSelect(pstrEventKey As String, _
   
   Dim objEvent As clsCalendarEvent
 
-  Dim strColList As HRProDataMgr.clsStringBuilder
+  Dim strColList As DataMgr.clsStringBuilder
   Dim strBaseColList As String
   
   Dim strLookupTableName As String
@@ -1682,7 +1682,7 @@ Private Function GenerateSQLSelect(pstrEventKey As String, _
   Dim strTempStartSession As String
   Dim strTempEndSession As String
   
-  Set strColList = New HRProDataMgr.clsStringBuilder
+  Set strColList = New DataMgr.clsStringBuilder
 
   'Get the Base ID column values so that these can be used in the group by clause when checking
   'for multiple events in MultipleCheck().

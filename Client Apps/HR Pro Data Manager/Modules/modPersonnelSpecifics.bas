@@ -176,9 +176,9 @@ End Function
 
 Public Function IdentifyingColumnDataType() As SQLDataType
   Dim lngIdentifyingColumnID As Long
-  Dim datGeneral As HRProDataMgr.clsGeneral
+  Dim datGeneral As DataMgr.clsGeneral
 
-  Set datGeneral = New HRProDataMgr.clsGeneral
+  Set datGeneral = New DataMgr.clsGeneral
 
   lngIdentifyingColumnID = Val(GetModuleParameter(gsMODULEKEY_HIERARCHY, gsPARAMETERKEY_IDENTIFIER))
   

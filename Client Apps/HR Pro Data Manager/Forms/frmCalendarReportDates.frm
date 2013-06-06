@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "COA_Line.ocx"
+Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "coa_line.ocx"
 Begin VB.Form frmCalendarReportDates 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Calendar Report Event"
@@ -417,7 +417,7 @@ Private mblnLoading As Boolean
 Private mlngBaseTableID As Long
 
 'DataAccess Class
-Private datData As HRProDataMgr.clsDataAccess
+Private datData As DataMgr.clsDataAccess
 
 Private mblnNew As Boolean
 Private mfrmParent As frmCalendarReport
@@ -493,7 +493,7 @@ Public Function Initialize(pbNew As Boolean, pfrmParentForm As frmCalendarReport
   mblnLoading = True
   
   ' Set references to class modules
-  Set datData = New HRProDataMgr.clsDataAccess
+  Set datData = New DataMgr.clsDataAccess
 
   Set mcolReportEvents = pcolEvents
   

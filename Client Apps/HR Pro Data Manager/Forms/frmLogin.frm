@@ -1,8 +1,8 @@
 VERSION 5.00
-Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "Codejock.SkinFramework.v13.1.0.ocx"
+Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~2.OCX"
 Begin VB.Form frmLogin 
    BorderStyle     =   3  'Fixed Dialog
-   Caption         =   "HR Pro Data Manager - Login"
+   Caption         =   "OpenHR Data Manager - Login"
    ClientHeight    =   3660
    ClientLeft      =   1530
    ClientTop       =   2595
@@ -288,7 +288,7 @@ Private Sub Form_Load()
   ' Position the login screen in the centre of the screen.
   UI.frmAtCenter Me
 
-  'lblVersion.Caption = "HR Pro Data Manager - Version " & App.Major & "." & App.Minor & "." & App.Revision
+  'lblVersion.Caption = "OpenHR Data Manager - Version " & App.Major & "." & App.Minor & "." & App.Revision
   lblVersion.Caption = "Version " & App.Major & "." & App.Minor & "." & App.Revision
   
   If ASRDEVELOPMENT Then
@@ -310,7 +310,7 @@ Private Sub Form_Load()
 
   If Not CheckSQLDriver Then
     COAMsgBox "The required ODBC Driver '" & ODBCDRIVER & "' is not installed." & vbNewLine & _
-      "Install the driver before running HR Pro.", _
+      "Install the driver before running OpenHR.", _
       vbExclamation + vbOKOnly, App.ProductName
     Unload frmLogin
     Exit Sub
@@ -552,13 +552,6 @@ Private Sub CheckRegistrySettings()
   sCurrentPath = CurDir
   
   ' Retrieve all the paths
-  
-  ' NPG20110118 - Fault HRPRO-1340
-'  sDocumentsPath = GetPCSetting("Datapaths", "documentspath_" & gsDatabaseName, vbNullString)
-'  sLocalOLEPath = GetPCSetting("Datapaths", "localolepath_" & gsDatabaseName, vbNullString)
-'  sOLEPath = GetPCSetting("Datapaths", "olepath_" & gsDatabaseName, vbNullString)
-'  sPhotoPath = GetPCSetting("Datapaths", "photopath_" & gsDatabaseName, vbNullString)
- 
   gsPhotoPath = GetPCSetting("DataPaths", "PhotoPath_" & gsDatabaseName, vbNullString)
   gsOLEPath = GetPCSetting("DataPaths", "OLEPath_" & gsDatabaseName, vbNullString)
   gsCrystalPath = GetPCSetting("DataPaths", "crystalpath_" & gsDatabaseName, vbNullString)
@@ -587,7 +580,7 @@ Private Sub CheckRegistrySettings()
          Or (gsDocumentsPath = vbNullString) Then
         
         fContinue = COAMsgBox("One or more data paths have not yet been defined for this database." & vbNewLine & _
-                           "HR Pro may not function correctly without these paths defined." & vbNewLine & _
+                           "OpenHR may not function correctly without these paths defined." & vbNewLine & _
                            "Would you like to define these now?", vbYesNo + vbQuestion + vbDefaultButton2, App.Title) = vbYes
       End If
       
@@ -961,7 +954,7 @@ Public Sub Login()
   Else
     gobjProgress.CloseProgress
     Screen.MousePointer = vbDefault
-    COAMsgBox "Please enter the name of the server on which the HR Pro database is located.", _
+    COAMsgBox "Please enter the name of the server on which the OpenHR database is located.", _
         vbExclamation + vbOKOnly, App.ProductName
     txtServer.SetFocus
     Exit Sub
@@ -987,7 +980,7 @@ Public Sub Login()
   Else
     gobjProgress.CloseProgress
     Screen.MousePointer = vbDefault
-    COAMsgBox "Please enter the name of the HR Pro database.", _
+    COAMsgBox "Please enter the name of the OpenHR database.", _
         vbExclamation + vbOKOnly, App.ProductName
     txtDatabase.SetFocus
     Exit Sub
@@ -1070,7 +1063,7 @@ TryUsingGroupSecurity:
     Screen.MousePointer = vbDefault
 
     sMsg = "You do not have permission to run the Data Manager" & vbNewLine & vbNewLine & _
-           "Contact your HR Pro security administrator"
+           "Contact your OpenHR security administrator"
 
     gobjProgress.CloseProgress
     Screen.MousePointer = vbDefault
@@ -1101,7 +1094,7 @@ TryUsingGroupSecurity:
     Screen.MousePointer = vbDefault
     
     COAMsgBox "Error logging in." & vbNewLine & vbNewLine & _
-      "The user is not a member of any HR Pro user group.", _
+      "The user is not a member of any OpenHR user group.", _
       vbOKOnly + vbExclamation, Application.Name
     
     Exit Sub
@@ -1291,7 +1284,7 @@ LoginError:
         
         If gblnBatchJobsOnly Then
             'frmEmailSel.SendEmail _
-            '  strBatchEmail, "HR Pro Batch Logon Failure", sMsg, False
+            '  strBatchEmail, "OpenHR Batch Logon Failure", sMsg, False
             'Unload frmEmailSel
             'Set frmEmailSel = Nothing
             SendBatchLogonFailure sMsg
@@ -1488,7 +1481,7 @@ Private Sub SendBatchLogonFailure(strMsgText As String)
   strTo = GetPCSetting("BatchLogon", "Email", vbNullString)
   If strTo <> vbNullString Then
     Set objOutputEmail = New clsOutputEMail
-    objOutputEmail.SendEmailFromClient strTo, "", "", "HR Pro Batch Logon Failure", strMsgText, "", False
+    objOutputEmail.SendEmailFromClient strTo, "", "", "OpenHR Batch Logon Failure", strMsgText, "", False
     Set objOutputEmail = Nothing
   End If
 

@@ -163,8 +163,8 @@ Private Sub Class_Initialize()
   ' Input   : None
   ' Output  : None
   
-  Set mclsData = New HRProDataMgr.clsDataAccess
-  Set mclsGeneral = New HRProDataMgr.clsGeneral
+  Set mclsData = New DataMgr.clsDataAccess
+  Set mclsGeneral = New DataMgr.clsGeneral
   ReDim mvarSortOrder(2, 0)
   'ReDim mvarColDetails(6, 0)
 '  ReDim mvarColDetails(10, 0)
@@ -2508,7 +2508,7 @@ Private Function ExportData_CMGfile() As Boolean
     
   Dim iLoop As Integer
   Dim pintFileNo As Integer
-  Dim pstrExportString As HRProDataMgr.clsStringBuilder
+  Dim pstrExportString As DataMgr.clsStringBuilder
   Dim strExportColumn As String
   Dim prstReadyToExport As Recordset
   Dim pintLoop As Integer
@@ -2567,7 +2567,7 @@ Private Function ExportData_CMGfile() As Boolean
   
   On Error GoTo ExportData_CMGfile_ERROR
   
-  Set pstrExportString = New HRProDataMgr.clsStringBuilder
+  Set pstrExportString = New DataMgr.clsStringBuilder
   Set rsAffectedRecords = New ADODB.Recordset
   
   ' Which fields to export and their size
@@ -3067,7 +3067,7 @@ End Function
 Private Function ReadDataIntoArray() As Boolean
 
   'Dim pintFileNo As Integer
-  Dim pstrExportString As New HRProDataMgr.clsStringBuilder
+  Dim pstrExportString As New DataMgr.clsStringBuilder
   'Dim pstrDateString As String
   Dim prstReadyToExport As ADODB.Recordset
   Dim pintLoop As Integer

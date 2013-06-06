@@ -41,7 +41,7 @@ Private Function SendEmailFromClientUsingShell(strTo As String, strCC As String,
   
   strError = vbNullString
   
-  'NHRD23062011 JIRA HR Pro 1509
+  'NHRD23062011 JIRA OpenHR 1509
   strCommand = "mailto:" & Replace(strTo, ",", ";") & " " & _
                "?cc=" & Replace(strCC, ",", ";") & " " & _
                "&bcc=" & Replace(strBCC, ",", ";") & " " & _

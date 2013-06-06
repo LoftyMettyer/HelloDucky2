@@ -1,8 +1,8 @@
 VERSION 5.00
 Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.OCX"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "CODEJO~1.OCX"
 Begin VB.Form frmConfiguration 
    BorderStyle     =   3  'Fixed Dialog
@@ -2031,7 +2031,7 @@ Private Sub cmdBatchEmail_Click()
     Screen.MousePointer = vbHourglass
     If frmEmailSel.SendEmail _
       (txtBatchEmailAddr.Text, "Test Message", _
-          "This is a test message from HR Pro Batch Login configuration.  Please ignore.", True) Then
+          "This is a test message from OpenHR Batch Login configuration.  Please ignore.", True) Then
       Screen.MousePointer = vbDefault
       COAMsgBox "Message Sent.", vbInformation
     End If
@@ -2496,7 +2496,7 @@ Private Sub cmdTestLogon_Click()
              "Server=" & txtServer.Text & ";" & _
              "UID=" & txtUID.Text & ";" & _
              "PWD=" & txtPWD.Tag & ";" & _
-             "Database=" & txtDatabase.Text & ";Pooling=false;App=Test HR Pro Batch;"
+             "Database=" & txtDatabase.Text & ";Pooling=false;App=Test OpenHR Batch;"
 
   Set objTestConn = New ADODB.Connection
   With objTestConn
@@ -3111,7 +3111,7 @@ Private Function SavePCSettings() As Boolean
   gstrDefaultPrinterName = cboPrinter.Text
 
   ' NPG20110105 Fault HRPRO-1089
-  ' NHRD04052011 JIRA HR Pro-1533 If you are coming from frmMain
+  ' NHRD04052011 JIRA OpenHR-1533 If you are coming from frmMain
   gblnStartupPrinter = False 'Don't run this bit of code for now (InStr(LCase(Command$), "/printer=true") > 0)
   If gblnStartupPrinter Then 'Or OpenedMe.Name = "frmMain" Then
   'If gblnStartupPrinter Or OpenedMe.Name = "frmMain" Then
@@ -4105,13 +4105,13 @@ Private Sub LoadToolBarOptions(pbReadDefaultValues As Boolean)
     
     Case "Record Editing"
       strToolbarToLoad = mstrRECORDEDITBAND
-      Set frmForm = New HRProDataMgr.frmRecEdit4
+      Set frmForm = New DataMgr.frmRecEdit4
       strActiveBarToLoad = frmForm.ActiveBar1.Tag   'Triggers form_load and the reshuffle event
       Set objActiveBar = frmForm.ActiveBar1
       
     Case "Find Window"
       strToolbarToLoad = mstrFINDWINDOWBAND
-      Set frmForm = New HRProDataMgr.frmFind2
+      Set frmForm = New DataMgr.frmFind2
       strActiveBarToLoad = frmForm.ActiveBar1.Tag   'Triggers form_load and the reshuffle event
       Set objActiveBar = frmForm.ActiveBar1
   

@@ -26,7 +26,7 @@ Private mlDisplaySize As Long
 Private mlSize As Long
 Private mlDecimals As Long
 Private mbUseThousandSeparator As Boolean
-Private miOLEType As HRProDataMgr.OLEType
+Private miOLEType As DataMgr.OLEType
 
 Public Property Get AllowSelect() As Boolean
   AllowSelect = mfSelect
@@ -131,10 +131,10 @@ Public Property Let UseThousandSeparator(ByVal pbNewValue As Boolean)
   mbUseThousandSeparator = pbNewValue
 End Property
 
-Public Property Get OLEType() As HRProDataMgr.OLEType
+Public Property Get OLEType() As DataMgr.OLEType
   OLEType = miOLEType
 End Property
 
-Public Property Let OLEType(ByVal piNewValue As HRProDataMgr.OLEType)
+Public Property Let OLEType(ByVal piNewValue As DataMgr.OLEType)
   miOLEType = piNewValue
 End Property

@@ -233,7 +233,7 @@ Private mblnLoading As Boolean
 Private mlngBaseTableID As Long
 
 'DataAccess Class
-Private datData As HRProDataMgr.clsDataAccess
+Private datData As DataMgr.clsDataAccess
 
 Private mfrmParent As frmCustomReports
 
@@ -798,7 +798,7 @@ Public Function Initialize(bNew As Boolean, frmParentForm As frmCustomReports, O
   On Error GoTo Error_Trap
 
   ' Set references to class modules
-  Set datData = New HRProDataMgr.clsDataAccess
+  Set datData = New DataMgr.clsDataAccess
   
   mblnNew = bNew
   

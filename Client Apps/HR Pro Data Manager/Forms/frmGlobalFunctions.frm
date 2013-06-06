@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Begin VB.Form frmGlobalFunctions 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Global "
@@ -547,8 +547,8 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
 
-'Private datGlobal As HRProDataMgr.clsGlobal
-Private datData As HRProDataMgr.clsDataAccess
+'Private datGlobal As DataMgr.clsGlobal
+Private datData As DataMgr.clsDataAccess
 'Private mlngTimeStamp As Long
 Private mblnReadOnly As Boolean
 
@@ -643,7 +643,7 @@ Public Function Initialise(bNew As Boolean, bFromCopy As Boolean, typeGlobal As 
   ' Initialise the Global Function definition form.
 
   Screen.MousePointer = vbHourglass
-  'Set datGlobal = New HRProDataMgr.clsGlobal
+  'Set datGlobal = New DataMgr.clsGlobal
 
   mlFunctionID = 0
   mbFromCopy = bFromCopy
@@ -1630,7 +1630,7 @@ End Sub
 
 Private Sub Form_Load()
   
-  Set datData = New HRProDataMgr.clsDataAccess
+  Set datData = New DataMgr.clsDataAccess
   
   SSTab1.Tab = 0
 
@@ -2855,8 +2855,8 @@ Public Sub PrintDef(typeGlobal As GlobalType, lFunctionID As Long)
   Dim strDestin As String
   Dim varBookmark As Variant
 
-  Set datData = New HRProDataMgr.clsDataAccess
-  'Set datGlobal = New HRProDataMgr.clsGlobal
+  Set datData = New DataMgr.clsDataAccess
+  'Set datGlobal = New DataMgr.clsGlobal
   
   typGlobal = typeGlobal
   strType = GetCaption
@@ -2869,7 +2869,7 @@ Public Sub PrintDef(typeGlobal As GlobalType, lFunctionID As Long)
   End If
   
   
-  Set objPrintDef = New HRProDataMgr.clsPrintDef
+  Set objPrintDef = New DataMgr.clsPrintDef
 
   If objPrintDef.IsOK Then
   

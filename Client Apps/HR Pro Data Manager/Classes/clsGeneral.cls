@@ -610,7 +610,7 @@ Public Function GetPrimaryTableMenu() As Variant
   gobjErrorStack.PushStack "clsGeneral.GetPrimaryTableMenu()"
 
   ' Return an array of information that can be used to format the main Database menu for the current user.
-  ' The recordset contains a row for each primary table in the HR Pro database.
+  ' The recordset contains a row for each primary table in the OpenHR database.
   ' For each primary table the following information is given :
   '  tableID     ID of the primary table
   '  tableName   Name of the primary table
@@ -1062,7 +1062,7 @@ End Function
 
 Private Sub Class_Initialize()
 
-  Set datData = New HRProDataMgr.clsDataAccess
+  Set datData = New DataMgr.clsDataAccess
 
 End Sub
 
@@ -2912,11 +2912,11 @@ Public Function AFDEnabled() As AFDTypes
     'If GetPCSetting( "Afd", "ShowError" & CStr(App.Major & "." & App.Minor & "." & App.Revision), True) = True Then
     If GetPCSetting("Afd", "ShowError" & CStr(App.Major & "." & App.Minor), True) = True Then
       If Not ASRDEVELOPMENT And Not gblnBatchJobsOnly Then
-        COAMsgBox "HR Pro is configured to use Afd Postcode Names and Numbers software," & vbCrLf & _
+        COAMsgBox "OpenHR is configured to use Afd Postcode Names and Numbers software," & vbCrLf & _
                "but one or more of the required files are missing from your PC." & vbCrLf & vbCrLf & _
-               "HR Pro will continue, but all Afd functionality will be disabled." & vbCrLf & vbCrLf & _
-               "(This message will not appear again until a new version of HR Pro is installed.)" _
-               , vbExclamation + vbOKOnly, "HR Pro"
+               "OpenHR will continue, but all Afd functionality will be disabled." & vbCrLf & vbCrLf & _
+               "(This message will not appear again until a new version of OpenHR is installed.)" _
+               , vbExclamation + vbOKOnly, Application.Name
         'MH20010830 New version stuff
         'SavePCSetting "Afd", "ShowError" & CStr(App.Major & "." & App.Minor & "." & App.Revision), False
         SavePCSetting "Afd", "ShowError" & CStr(App.Major & "." & App.Minor), False
@@ -3032,10 +3032,10 @@ LocalErr:
   End If
 
   If strOutput <> vbNullString And Not gblnBatchJobsOnly Then
-    COAMsgBox "HR Pro is configured to send emails dependant upon data entered " & _
+    COAMsgBox "OpenHR is configured to send emails dependant upon data entered " & _
            "but there is currently a problem sending emails from the SQL server." & vbCrLf & vbCrLf & _
            Err.Description & vbCrLf & vbCrLf & _
-           "HR Pro will continue, but the email link functionality will be disabled.", vbExclamation + vbOKOnly, "HR Pro"
+           "OpenHR will continue, but the email link functionality will be disabled.", vbExclamation + vbOKOnly, Application.Name
   End If
   
   Set adoCmd = Nothing
@@ -4210,7 +4210,7 @@ Public Function CheckCanMakeHidden(pstrType As String, _
 '                  "make the following definition(s), of which you are the" & vbCrLf & _
 '                  "owner, hidden also:" & vbCrLf & vbCrLf & _
 '                  sDetails_Owner & sBatchJobDetails_Owner & vbCrLf & _
-'                  "Do you wish to continue ?", vbQuestion + vbYesNo, IIf(Len(pstrCaption) = 0, "HR Pro - Data Manager", pstrCaption)) _
+'                  "Do you wish to continue ?", vbQuestion + vbYesNo, IIf(Len(pstrCaption) = 0, "OpenHR - Data Manager", pstrCaption)) _
 '                  = vbNo Then
 '          Screen.MousePointer = vbDefault
 '          CheckCanMakeHidden = False
@@ -4219,7 +4219,7 @@ Public Function CheckCanMakeHidden(pstrType As String, _
         If COAMsgBox("Changing the selected " & IIf(UCase(pstrType) = "F", "filter", "calculation") & " to hidden will automatically " & _
                   "make the following definition(s)," & vbCrLf & " of which you are the owner, hidden also:" & vbCrLf & vbCrLf & _
                   sDetails_Owner & sBatchJobDetails_Owner & vbCrLf & _
-                  "Do you wish to continue ?", vbQuestion + vbYesNo, IIf(Len(pstrCaption) = 0, "HR Pro - Data Manager", pstrCaption)) _
+                  "Do you wish to continue ?", vbQuestion + vbYesNo, IIf(Len(pstrCaption) = 0, "OpenHR - Data Manager", pstrCaption)) _
                   = vbNo Then
           Screen.MousePointer = vbDefault
           CheckCanMakeHidden = False
@@ -4345,12 +4345,12 @@ Public Function CheckCanMakeHidden(pstrType As String, _
           COAMsgBox "This " & IIf(UCase(pstrType) = "F", "filter", "calculation") & " cannot be made hidden as it is used in " & vbCrLf & _
                  "definition(s) which are included in the following" & vbCrLf & _
                  "batch jobs which are scheduled to be run by other user groups :" & vbCrLf & vbCrLf & sBatchJobDetails_ScheduledForOtherUsers, vbExclamation + vbOKOnly _
-                 , IIf(Len(pstrCaption) = 0, "HR Pro - Data Manager", pstrCaption)
+                 , IIf(Len(pstrCaption) = 0, "OpenHR - Data Manager", pstrCaption)
         Else
           COAMsgBox "This " & IIf(UCase(pstrType) = "F", "filter", "calculation") & " cannot be made hidden as it is used in " & vbCrLf & _
                  "definition(s) which are included in the following" & vbCrLf & _
                  "batch jobs of which you are not the owner :" & vbCrLf & vbCrLf & sBatchJobDetails_NotOwner, vbExclamation + vbOKOnly _
-                 , IIf(Len(pstrCaption) = 0, "HR Pro - Data Manager", pstrCaption)
+                 , IIf(Len(pstrCaption) = 0, "OpenHR - Data Manager", pstrCaption)
         End If
 
         Screen.MousePointer = vbDefault
@@ -4362,7 +4362,7 @@ Public Function CheckCanMakeHidden(pstrType As String, _
         COAMsgBox "This " & IIf(UCase(pstrType) = "F", "filter", "calculation") & " cannot be made hidden as it is used in the" & vbCrLf & _
                "following definition(s), of which you are not the" & vbCrLf & _
                "owner :" & vbCrLf & vbCrLf & sDetails_NotOwner, _
-               vbExclamation + vbOKOnly, IIf(Len(pstrCaption) = 0, "HR Pro - Data Manager", pstrCaption)
+               vbExclamation + vbOKOnly, IIf(Len(pstrCaption) = 0, "OpenHR - Data Manager", pstrCaption)
         Screen.MousePointer = vbDefault
         CheckCanMakeHidden = False
         Exit Function
@@ -5092,7 +5092,7 @@ Public Function CheckCanMakeHidden(pstrType As String, _
 '                  "make the following definition(s), of which you are the" & vbCrLf & _
 '                  "owner, hidden also:" & vbCrLf & vbCrLf & _
 '                  sDetails_Owner & sBatchJobDetails_Owner & vbCrLf & _
-'                  "Do you wish to continue ?", vbQuestion + vbYesNo, IIf(Len(pstrCaption) = 0, "HR Pro - Data Manager", pstrCaption)) _
+'                  "Do you wish to continue ?", vbQuestion + vbYesNo, IIf(Len(pstrCaption) = 0, "OpenHR - Data Manager", pstrCaption)) _
 '                  = vbNo Then
 '          Screen.MousePointer = vbDefault
 '          CheckCanMakeHidden = False
@@ -5101,7 +5101,7 @@ Public Function CheckCanMakeHidden(pstrType As String, _
         If COAMsgBox("Changing the selected " & IIf(UCase(pstrType) = "F", "filter", "calculation") & " to hidden will automatically " & _
                   "make the following definition(s)," & vbCrLf & " of which you are the owner, hidden also:" & vbCrLf & vbCrLf & _
                   sDetails_Owner & sBatchJobDetails_Owner & vbCrLf & _
-                  "Do you wish to continue ?", vbQuestion + vbYesNo, IIf(Len(pstrCaption) = 0, "HR Pro - Data Manager", pstrCaption)) _
+                  "Do you wish to continue ?", vbQuestion + vbYesNo, IIf(Len(pstrCaption) = 0, "OpenHR - Data Manager", pstrCaption)) _
                   = vbNo Then
           Screen.MousePointer = vbDefault
           CheckCanMakeHidden = False
@@ -5214,12 +5214,12 @@ Public Function CheckCanMakeHidden(pstrType As String, _
           COAMsgBox "This picklist cannot be made hidden as it is used in " & vbCrLf & _
                  "definition(s) which are included in the following" & vbCrLf & _
                  "batch jobs which are scheduled to be run by other user groups :" & vbCrLf & vbCrLf & sBatchJobDetails_ScheduledForOtherUsers, vbExclamation + vbOKOnly _
-                 , IIf(Len(pstrCaption) = 0, "HR Pro - Data Manager", pstrCaption)
+                 , IIf(Len(pstrCaption) = 0, "OpenHR - Data Manager", pstrCaption)
         Else
           COAMsgBox "This picklist cannot be made hidden as it is used in " & vbCrLf & _
                  "definition(s) which are included in the following" & vbCrLf & _
                  "batch jobs of which you are not the owner :" & vbCrLf & vbCrLf & sBatchJobDetails_NotOwner, vbExclamation + vbOKOnly _
-                 , IIf(Len(pstrCaption) = 0, "HR Pro - Data Manager", pstrCaption)
+                 , IIf(Len(pstrCaption) = 0, "OpenHR - Data Manager", pstrCaption)
         End If
         Screen.MousePointer = vbDefault
         CheckCanMakeHidden = False
@@ -5230,7 +5230,7 @@ Public Function CheckCanMakeHidden(pstrType As String, _
         COAMsgBox "This picklist cannot be made hidden as it is used in the" & vbCrLf & _
                "following definition(s), of which you are not the" & vbCrLf & _
                "owner :" & vbCrLf & vbCrLf & sDetails_NotOwner, _
-               vbExclamation + vbOKOnly, IIf(Len(pstrCaption) = 0, "HR Pro - Data Manager", pstrCaption)
+               vbExclamation + vbOKOnly, IIf(Len(pstrCaption) = 0, "OpenHR - Data Manager", pstrCaption)
         Screen.MousePointer = vbDefault
         CheckCanMakeHidden = False
         Exit Function
@@ -6476,7 +6476,7 @@ Public Function GetDecimalsSize(plngColumnID As Long) As Integer
 
 End Function
 
-Public Function QAddressEnabled() As HRProDataMgr.QAddressTypes
+Public Function QAddressEnabled() As DataMgr.QAddressTypes
 
   On Error GoTo QAddressNotInstalled
 
@@ -6484,7 +6484,7 @@ Public Function QAddressEnabled() As HRProDataMgr.QAddressTypes
   Dim strSeedValue As String * 100
   Dim lSearchReturn As Long
   Dim lOpen As Long
-  Dim iQAddressType As HRProDataMgr.QAddressTypes
+  Dim iQAddressType As DataMgr.QAddressTypes
   Dim lngHandle As Long
 
   bLicensed = IsModuleEnabled(modQAddress)
@@ -6557,11 +6557,11 @@ Public Function QAddressEnabled() As HRProDataMgr.QAddressTypes
   If iQAddressType = QADDRESS_DISABLED And bLicensed Then
     If GetPCSetting("QAddress", "ShowError" & CStr(App.Major & "." & App.Minor), True) = True Then
       If Not ASRDEVELOPMENT And Not gblnBatchJobsOnly Then
-        COAMsgBox "HR Pro is configured to use Quick Address Postcode recognition," & vbCrLf & _
+        COAMsgBox "OpenHR is configured to use Quick Address Postcode recognition," & vbCrLf & _
                "but one or more of the required files are missing from your PC." & vbCrLf & vbCrLf & _
-               "HR Pro will continue, but all Quick Address functionality will be disabled." & vbCrLf & vbCrLf & _
-               "(This message will not appear again until a new version of HR Pro is installed.)" _
-               , vbExclamation + vbOKOnly, "HR Pro"
+               "OpenHR will continue, but all Quick Address functionality will be disabled." & vbCrLf & vbCrLf & _
+               "(This message will not appear again until a new version of OpenHR is installed.)" _
+               , vbExclamation + vbOKOnly, Application.Name
         SavePCSetting "QAddress", "ShowError" & CStr(App.Major & "." & App.Minor), False
       End If
     End If
@@ -6633,14 +6633,14 @@ Public Function ReEstablishADOConnection() As Boolean
   End If
 
   If COAMsgBox("A Windows network error has occured, and your connection to the database has been severed." & vbNewLine & vbNewLine _
-      & "Would you like HR Pro to try reconnecting?", vbCritical + vbYesNo) = vbYes Then
+      & "Would you like OpenHR to try reconnecting?", vbCritical + vbYesNo) = vbYes Then
 
     If Not datGeneral.Connect(gADOCon.ConnectionString, sErrorMsg, gsUserName, lngTimeOut, bDBLocked) Then
     
-        COAMsgBox "HR Pro cannot establish a connection to the database." _
+        COAMsgBox "OpenHR cannot establish a connection to the database." _
           & "This is likely a problem with your network connection. Please check your network connections, " & vbNewLine _
           & "or contact your IT system administrator." & vbNewLine & vbNewLine _
-          & "HR Pro will now exit.", vbInformation
+          & "OpenHR will now exit.", vbInformation
         ReEstablishADOConnection = False
         Stop
       
@@ -6649,7 +6649,7 @@ Public Function ReEstablishADOConnection() As Boolean
         AuditAccess iDISCONNECTED, "Data"
         AuditAccess iRECONNECT, "Data"
         
-        COAMsgBox "HR Pro has successfully logged back in." & vbNewLine & vbNewLine _
+        COAMsgBox "OpenHR has successfully logged back in." & vbNewLine & vbNewLine _
           & "If you experience this error on a regular basis it may point to a problem with your " _
           & "network environment. Please contact your IT system administrator.", vbInformation
           

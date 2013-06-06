@@ -404,8 +404,8 @@ Private mbChanged As Boolean
 Private mlngLabelDefinitionID As Long
 Private mlngDocumentDefinitionID As Long
 
-Private mdatData As HRProDataMgr.clsDataAccess
-Private mclsGeneral As HRProDataMgr.clsGeneral
+Private mdatData As DataMgr.clsDataAccess
+Private mclsGeneral As DataMgr.clsGeneral
 
 Private Const SQLTableDef = "ASRSysDocumentManagementTypes"
 
@@ -430,7 +430,7 @@ Public Sub PrintDefinition(plngDocumentMapID)
   Dim rsTemp As Recordset
   Dim strDocumentTypeName As String
   
-  Set mdatData = New HRProDataMgr.clsDataAccess
+  Set mdatData = New DataMgr.clsDataAccess
   Set rsTemp = GetDefinition
   
   If rsTemp.BOF And rsTemp.EOF Then
@@ -438,7 +438,7 @@ Public Sub PrintDefinition(plngDocumentMapID)
     Exit Sub
   End If
    
-  Set objPrintDef = New HRProDataMgr.clsPrintDef
+  Set objPrintDef = New DataMgr.clsPrintDef
 
   If objPrintDef.IsOK Then
     With objPrintDef
@@ -476,8 +476,8 @@ End Sub
 
 Public Function Initialise(bNew As Boolean, bCopy As Boolean, Optional lngDocumentMapID As Long, Optional bPrint As Boolean) As Boolean
 
-  Set mdatData = New HRProDataMgr.clsDataAccess
-  Set mclsGeneral = New HRProDataMgr.clsGeneral
+  Set mdatData = New DataMgr.clsDataAccess
+  Set mclsGeneral = New DataMgr.clsGeneral
   Dim sAccess As String
 
   PopulateCategoriesCombo
@@ -1167,9 +1167,9 @@ End Function
 'Private mbChanged As Boolean
 'Private mlngLabelDefinitionID As Long
 'Private mlngDocumentDefinitionID As Long
-''Private datData As HRProDataMgr.clsDataAccess
-'Private mdatData As HRProDataMgr.clsDataAccess
-'Private mclsGeneral As HRProDataMgr.clsGeneral
+''Private datData As DataMgr.clsDataAccess
+'Private mdatData As DataMgr.clsDataAccess
+'Private mclsGeneral As DataMgr.clsGeneral
 
 Private Sub txtUserName_Change()
   Changed = True

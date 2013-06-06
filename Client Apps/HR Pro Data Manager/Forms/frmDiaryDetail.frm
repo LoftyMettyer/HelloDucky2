@@ -574,7 +574,7 @@ Private Sub cmdPrint_Click()
 
   Dim objPrintDef As clsPrintDef
 
-  Set objPrintDef = New HRProDataMgr.clsPrintDef
+  Set objPrintDef = New DataMgr.clsPrintDef
 
   If objPrintDef.IsOK Then
   

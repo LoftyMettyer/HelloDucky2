@@ -1,7 +1,7 @@
 VERSION 5.00
 Begin VB.Form frmDiaryAlert 
    BorderStyle     =   3  'Fixed Dialog
-   Caption         =   "HR Pro Alarmed Diary Events"
+   Caption         =   "OpenHR Alarmed Diary Events"
    ClientHeight    =   1425
    ClientLeft      =   45
    ClientTop       =   435

@@ -43,7 +43,7 @@ End Function
 Public Function Add(pfSelect As Boolean, pfUpdate As Boolean, psColumnName As String, _
   piColumnType As Integer, piDataType As Integer, plngColumnID As Long, _
   pfUniqueCheck As Boolean, plngDisplaySize As Long, plngSize As Long, plngDecimals As Long, _
-  pbUseThousandSeparator As Boolean, piOLEType As HRProDataMgr.OLEType) As CColumnPrivilege
+  pbUseThousandSeparator As Boolean, piOLEType As DataMgr.OLEType) As CColumnPrivilege
   'create a new object
   Dim objNewMember As CColumnPrivilege
   Set objNewMember = New CColumnPrivilege

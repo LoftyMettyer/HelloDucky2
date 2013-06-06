@@ -39,7 +39,7 @@ Public Const DEADLOCK2_MESSAGEEND = ") WAS DEADLOCKED ON "
 Public Const CONNECTIONBROKEN_MESSAGE = "GENERAL NETWORK ERROR. CHECK YOUR NETWORK DOCUMENTATION."
 Public Const FRAMEWORK_MESSAGE = "An error occurred in the Microsoft .NET Framework while trying to load assembly id"
 
-' HR Pro constants.
+' Constants.
 Public Const ODBCDRIVER As String = "SQL Server"
 
 Private Declare Function GetModuleFileNameA Lib "kernel32" (ByVal hModule As Long, ByVal lpFilename As String, ByVal nSize As Long) As Long
@@ -128,104 +128,6 @@ TidyUpAndExit:
 Error_Trap:
   EnableActiveBar = False
   GoTo TidyUpAndExit
-  
-End Function
-
-
-'Public Function UserSessions(sUserID As String) As Integer
-'
-'  Dim sSQL As String
-'  Dim rsUsers As ADODB.Recordset
-'
-'  On Error GoTo Error_Trap
-'
-'  'JPD 20020218 Fault 3343 - this check needs to be made over ALL databases, not
-'  ' just the current one.
-'  sSQL = "SELECT DISTINCT hostname, loginame, program_name, hostprocess " & _
-'    "FROM master..sysprocesses " & _
-'    "WHERE program_name like 'HR Pro%' " & _
-'    "  AND program_name NOT LIKE 'HR Pro Workflow%' " & _
-'    "  AND LOWER(loginame) = '" & LCase(sUserID) & "' "
-''                    "AND dbid in (" & _
-''                        "SELECT dbid " & _
-''                        "FROM master..sysdatabases " & _
-''                        "WHERE name = '" & gsDatabaseName & "') "
-'
-'  Set rsUsers = datGeneral.GetRecords(sSQL)
-'
-'  With rsUsers
-'
-'    'MH20020611
-'    'Program name is "Visual Basic" when in debug and get BOF/EOF Error...
-'    '(Seems intermittent!)
-'    If Not .BOF And Not .EOF Then
-'      .MoveLast
-'      .MoveFirst
-'      UserSessions = .RecordCount
-'    Else
-'      UserSessions = 0
-'    End If
-'
-'  End With
-'  rsUsers.Close
-'
-'TidyUpAndExit:
-'  Set rsUsers = Nothing
-'  Exit Function
-'
-'Error_Trap:
-'  COAMsgBox "Error validating current users.", vbExclamation + vbOKOnly, App.Title
-'  UserSessions = True
-'  GoTo TidyUpAndExit
-'
-'End Function
-
-Public Function SetUtilityAccess(lngID As Long, sUtility As String, sAccessType As String) As Boolean
-'JPD 20030425 - NO LONGER  USED !
-'  Dim datData As clsDataAccess
-'  Dim sSQL As String
-'
-'  On Error GoTo ErrorTrap
-'
-'  Set datData = New clsDataAccess
-'
-'  Select Case sUtility
-'    Case "REPORT"
-'      sSQL = "UPDATE ASRSysCustomReportsName " & _
-'               "SET Access = '" & sAccessType & "' " & _
-'               "WHERE ID = " & lngID
-'    Case "GLOBAL"
-'      sSQL = "UPDATE ASRSysGlobalFunctions " & _
-'               "SET Access = '" & sAccessType & "' " & _
-'               "WHERE FunctionID = " & lngID
-'    Case "MAILMERGE"
-'      sSQL = "UPDATE ASRSysMailMergeName " & _
-'               "SET Access = '" & sAccessType & "' " & _
-'               "WHERE MailMergeID = " & lngID
-'    Case "EXPORT"
-'      sSQL = "UPDATE ASRSysExportName " & _
-'               "SET Access = '" & sAccessType & "' " & _
-'               "WHERE ID = " & lngID
-'    Case "DATATRANSFER"
-'      sSQL = "UPDATE ASRSysDataTransferName " & _
-'               "SET Access = '" & sAccessType & "' " & _
-'               "WHERE DataTransferID = " & lngID
-'
-'    Case "RECORDPROFILE"
-'      sSQL = "UPDATE ASRSysRecordProfileName " & _
-'               "SET Access = '" & sAccessType & "' " & _
-'               "WHERE recordProfileID = " & lngID
-'
-'  End Select
-'  datData.ExecuteSql sSQL
-'
-'TidyUpAndExit:
-'  Set datData = Nothing
-'  Exit Function
-'
-'ErrorTrap:
-'  COAMsgBox "Error setting " & StrConv(sUtility, vbProperCase) & " definition access.", vbOKOnly + vbCritical, App.Title
-'  Resume TidyUpAndExit
   
 End Function
 
@@ -459,24 +361,24 @@ Sub Main()
   
   'Instantiate Application class
   DebugOutput "modHRPro.Main", "Set Application"
-  Set Application = New HRProDataMgr.Application
+  Set Application = New DataMgr.Application
 
   'Instantiate Application class
   DebugOutput "modHRPro.Main", "Set Database"
-  Set Database = New HRProDataMgr.Database
+  Set Database = New DataMgr.Database
   
   DebugOutput "modHRPro.Main", "Set General"
-  Set datGeneral = New HRProDataMgr.clsGeneral
+  Set datGeneral = New DataMgr.clsGeneral
   
   DebugOutput "modHRPro.Main", "Set Email"
   Set objEmail = New clsEmail
   
   ' Create Current User class
-  'Set gobjCurrentUser = New HRProDataMgr.clsUser
+  'Set gobjCurrentUser = New DataMgr.clsUser
   
   'Instantiate User Interface class
   DebugOutput "modHRPro.Main", "Set UI"
-  Set UI = New HRProDataMgr.UI
+  Set UI = New DataMgr.UI
   
   'Instantiate Progress Bar class
   'Set gobjProgress = New COA_Progress
@@ -495,11 +397,11 @@ Sub Main()
   
   ' Initialise the generic data access class
   DebugOutput "modHRPro.Main", "Set DataAccess"
-  Set gobjDataAccess = New HRProDataMgr.clsDataAccess
+  Set gobjDataAccess = New DataMgr.clsDataAccess
   
   ' Initialse the performance monitor
   DebugOutput "modHRPro.Main", "Set Performance"
-  Set gobjPerformance = New HRProDataMgr.clsPerformance
+  Set gobjPerformance = New DataMgr.clsPerformance
   
   ' Default logged on user information
   DebugOutput "modHRPro.Main", "Set WindowsCurrent"
@@ -4015,7 +3917,7 @@ Public Function LoadFileNameFromStream(ByRef pobjStream As ADODB.Stream, pbFullP
   Dim strFileName As String
   Dim strPath As String
   Dim strUNC As String
-  Dim iType As HRProDataMgr.OLEType
+  Dim iType As DataMgr.OLEType
 
   strTempFileName = GetTmpFName
 
@@ -4075,7 +3977,7 @@ Public Function LoadPictureFromStream(ByRef pobjStream As ADODB.Stream) As IPict
   'Dim objTextStream As TextStream
   Dim strTempFileName As String
   Dim objDocumentStream As New ADODB.Stream
-  'Dim iOLEType As HRProDataMgr.OLEType
+  'Dim iOLEType As DataMgr.OLEType
   
   ' Save the document information to file to read in.
   strTempFileName = GetTmpFName
@@ -4128,7 +4030,7 @@ ErrorTrap:
 End Function
 
 ' Get the OLE Type froma stream (linked/embedded)
-Public Function LoadOLETypeFromStream(ByRef pobjStream As ADODB.Stream) As HRProDataMgr.OLEType
+Public Function LoadOLETypeFromStream(ByRef pobjStream As ADODB.Stream) As DataMgr.OLEType
 
   Dim objTextStream As TextStream
   Dim strTempFileName As String

@@ -234,9 +234,9 @@ Private Sub Class_Initialize()
   ' Input   : None
   ' Output  : None
   
-  Set mclsData = New HRProDataMgr.clsDataAccess
-  Set mclsGeneral = New HRProDataMgr.clsGeneral
-  Set mclsDeadlock = New HRProDataMgr.clsDeadlock
+  Set mclsData = New DataMgr.clsDataAccess
+  Set mclsGeneral = New DataMgr.clsGeneral
+  Set mclsDeadlock = New DataMgr.clsDeadlock
   'MH20020402 Moved to ConvertExcelFile
   'Set mobjExcelApp = New Excel.Application
   ReDim mvarColDetails(13, 0)

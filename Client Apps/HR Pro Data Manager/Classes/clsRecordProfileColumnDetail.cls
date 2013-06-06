@@ -28,7 +28,7 @@ Private miDataType As Integer
 Private mlngGridColumnWidth As Long
 Private mblnThousandSeparator As Boolean
 Private mbBlankIfZero As Boolean
-Private miOLEType As HRProDataMgr.OLEType
+Private miOLEType As DataMgr.OLEType
 
 Private miPositionInRecordset As Integer
 Private mfDisplayed As Boolean
@@ -297,11 +297,11 @@ Public Property Let BlankIfZero(ByVal pfNewValue As Boolean)
   mbBlankIfZero = pfNewValue
 End Property
 
-Public Property Get OLEType() As HRProDataMgr.OLEType
+Public Property Get OLEType() As DataMgr.OLEType
   OLEType = miOLEType
 End Property
 
-Public Property Let OLEType(ByVal piNewValue As HRProDataMgr.OLEType)
+Public Property Let OLEType(ByVal piNewValue As DataMgr.OLEType)
   miOLEType = piNewValue
 End Property
 

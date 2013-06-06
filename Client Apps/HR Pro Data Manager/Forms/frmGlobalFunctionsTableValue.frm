@@ -118,7 +118,7 @@ Option Explicit
 
 Private mbCancelled As Boolean
 Private mbLoading As Boolean
-Private datData As HRProDataMgr.clsDataAccess
+Private datData As DataMgr.clsDataAccess
 Private miColumnDataType As SQLDataType
 
 Public Property Get LookupTableID() As Long

@@ -407,7 +407,7 @@ End Function
 Public Function CurrentUserIsSysSecMgr() As Boolean
   Dim sSQL As String
   Dim rsAccess As ADODB.Recordset
-  Dim datData As HRProDataMgr.clsDataAccess
+  Dim datData As DataMgr.clsDataAccess
   Dim fIsSysSecUser As Boolean
   
     sSQL = "SELECT count(*) AS [result]" & _
@@ -653,7 +653,7 @@ Public Sub HideUtilities(piUtilityType As UtilityType, _
   '   NB. this string starts with a TAB also.
   
   Dim sSQL As String
-  Dim datData As HRProDataMgr.clsDataAccess
+  Dim datData As DataMgr.clsDataAccess
   Dim sTableName As String
   Dim sAccessTableName As String
   Dim sIDColumnName As String
@@ -811,7 +811,7 @@ Public Function GetUtilityAccessRecords(piUtilityType As UtilityType, _
   Dim sSQL As String
   Dim sDefaultAccess As String
   Dim rsAccess As ADODB.Recordset
-  Dim datData As HRProDataMgr.clsDataAccess
+  Dim datData As DataMgr.clsDataAccess
   Dim sAccessTableName As String
   Dim sKey As String
   
@@ -961,7 +961,7 @@ Public Function GetSysSecMgrUserGroups() As ADODB.Recordset
   
   Dim sSQL As String
   Dim rsAccess As ADODB.Recordset
-  Dim datData As HRProDataMgr.clsDataAccess
+  Dim datData As DataMgr.clsDataAccess
   
   sSQL = "SELECT DISTINCT sysusers.name" & _
     " FROM sysusers" & _
@@ -1004,7 +1004,7 @@ Public Function GetUtilityAccessRecordsIgnoreSysSecUsers(piUtilityType As Utilit
   Dim sSQL As String
   Dim sDefaultAccess As String
   Dim rsAccess As ADODB.Recordset
-  Dim datData As HRProDataMgr.clsDataAccess
+  Dim datData As DataMgr.clsDataAccess
   Dim sAccessTableName As String
   Dim sKey As String
   
@@ -1231,7 +1231,7 @@ Public Function CurrentUserAccess(piUtilityType As UtilityType, _
   Dim sSQL As String
   Dim sDefaultAccess As String
   Dim rsAccess As ADODB.Recordset
-  Dim datData As HRProDataMgr.clsDataAccess
+  Dim datData As DataMgr.clsDataAccess
   Dim sTableName As String
   Dim sAccessTableName As String
   Dim sIDColumnName As String
@@ -1392,7 +1392,7 @@ Public Function UtilityIsHiddenToAnyone(piUtilityType As UtilityType, _
   Dim fIsHidden As Boolean
   Dim sSQL As String
   Dim rsAccess As ADODB.Recordset
-  Dim datData As HRProDataMgr.clsDataAccess
+  Dim datData As DataMgr.clsDataAccess
   Dim sAccessTableName As String
   
   fIsHidden = True

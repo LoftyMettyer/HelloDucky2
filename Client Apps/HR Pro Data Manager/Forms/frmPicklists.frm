@@ -264,7 +264,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
 
-Private datData As HRProDataMgr.clsDataAccess
+Private datData As DataMgr.clsDataAccess
 Private fOK As Boolean
 Private mblnReportedRestriction As Boolean
 
@@ -959,7 +959,7 @@ Private Sub lvRecords_ItemClick(ByVal Item As MSComctlLib.ListItem)
   
 End Sub
 
-Private Sub lvRecords_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub lvRecords_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
 
   If Button = vbRightButton Then
   
@@ -1715,7 +1715,7 @@ Public Sub PrintDef(plngTableID As Long, plngPicklistID As Long)
   Set datData = New clsDataAccess
   Set rsTemp = GetPicklist(mlngPicklistID)
   
-  Set objPrintDef = New HRProDataMgr.clsPrintDef
+  Set objPrintDef = New DataMgr.clsPrintDef
 
   If objPrintDef.IsOK Then
   

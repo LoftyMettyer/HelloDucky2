@@ -28,7 +28,7 @@ Begin VB.Form frmSystemLocked
    Begin VB.Label lblLockMessage 
       Alignment       =   2  'Center
       BackStyle       =   0  'Transparent
-      Caption         =   "HR Pro is locked until the external OLE/photo editing application is terminated."
+      Caption         =   "OpenHR is locked until the external OLE/photo editing application is terminated."
       Height          =   495
       Left            =   150
       TabIndex        =   0
@@ -43,7 +43,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
 
-Private miLockType As HRProDataMgr.LockType
+Private miLockType As DataMgr.LockType
 Private mlngProcessID As Long
 Private mbIsFileHandleOK As Boolean
 
@@ -53,19 +53,19 @@ Private Declare Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As Long)
 
 Const STILL_ACTIVE = &H103
 
-Public Property Let LockType(ByVal piNewValue As HRProDataMgr.LockType)
+Public Property Let LockType(ByVal piNewValue As DataMgr.LockType)
   ' Set the lock type.
   miLockType = piNewValue
 
   Select Case miLockType
     Case giLOCKTYPE_PHOTO
-      lblLockMessage.Caption = "HR Pro is locked until the photo editing application is terminated."
+      lblLockMessage.Caption = "OpenHR is locked until the photo editing application is terminated."
     
     Case giLOCKTYPE_OLE
-      lblLockMessage.Caption = "HR Pro is locked until the OLE document application is terminated."
+      lblLockMessage.Caption = "OpenHR is locked until the OLE document application is terminated."
       
     Case giLOCKTYPE_CRYSTAL
-      lblLockMessage.Caption = "HR Pro is locked until the Crystal Reports application is terminated."
+      lblLockMessage.Caption = "OpenHR is locked until the Crystal Reports application is terminated."
       
     Case Else
       Unload Me
