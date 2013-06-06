@@ -3651,21 +3651,23 @@ BEGIN
 END'
 
 EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[sp_ASRInsertNewRecord]
-(
-    @piNewRecordID integer OUTPUT,   /* Output variable to hold the new record ID. */
-    @psInsertString nvarchar(MAX)    /* SQL Insert string to insert the new record. */
-)
-AS
-BEGIN
-    SET NOCOUNT ON;
+	(
+		@piNewRecordID integer OUTPUT,   /* Output variable to hold the new record ID. */
+		@psInsertString nvarchar(MAX)    /* SQL Insert string to insert the new record. */
+	)
+	AS
+	BEGIN
+		SET NOCOUNT ON;
 
-    /* Run the given SQL INSERT string and get the ID value back. */
-    SET @psInsertString = @psInsertString + ''; SELECT @ID = SCOPE_IDENTITY()''
-		
-	EXECUTE sp_executesql @psInsertString, 
-						  N''@ID int OUTPUT'', 
-						  @ID = @piNewRecordID OUTPUT
-						  						  
+		DECLARE @ssql nvarchar(MAX);
+
+		-- Run the given SQL INSERT
+		EXECUTE sp_executesql @psInsertString;
+
+		-- Calculate the ID
+		SET @ssql = ''SELECT @ID = MAX(ID) FROM '' + SUBSTRING(@psInsertString,7, CHARINDEX('' ('', @psInsertString)-7)
+		EXECUTE sp_executesql @ssql, N''@ID int OUTPUT'', @ID = @piNewRecordID OUTPUT;
+
 END'
 
 
