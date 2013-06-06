@@ -2,7 +2,7 @@ VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "coa_spinner.ocx"
 Begin VB.Form frmImport 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Import Definition"
@@ -33,14 +33,13 @@ Begin VB.Form frmImport
    Begin TabDlg.SSTab tabImport 
       Height          =   4755
       Left            =   90
-      TabIndex        =   54
+      TabIndex        =   51
       Top             =   90
       Width           =   9705
       _ExtentX        =   17119
       _ExtentY        =   8387
       _Version        =   393216
       Style           =   1
-      Tab             =   2
       TabHeight       =   520
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Verdana"
@@ -53,9 +52,11 @@ Begin VB.Form frmImport
       EndProperty
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmImport.frx":000C
-      Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "fraDefinition(0)"
-      Tab(0).Control(1)=   "fraData"
+      Tab(0).ControlEnabled=   -1  'True
+      Tab(0).Control(0)=   "fraData"
+      Tab(0).Control(0).Enabled=   0   'False
+      Tab(0).Control(1)=   "fraInformation"
+      Tab(0).Control(1).Enabled=   0   'False
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Colu&mns"
       TabPicture(1)   =   "frmImport.frx":0028
@@ -64,16 +65,217 @@ Begin VB.Form frmImport
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "O&ptions"
       TabPicture(2)   =   "frmImport.frx":0044
-      Tab(2).ControlEnabled=   -1  'True
-      Tab(2).Control(0)=   "fraOptions"
-      Tab(2).Control(0).Enabled=   0   'False
-      Tab(2).Control(1)=   "fraFileDetails"
-      Tab(2).Control(1).Enabled=   0   'False
+      Tab(2).ControlEnabled=   0   'False
+      Tab(2).Control(0)=   "fraFileDetails"
+      Tab(2).Control(1)=   "fraOptions"
       Tab(2).ControlCount=   2
+      Begin VB.Frame fraInformation 
+         Height          =   2355
+         Left            =   150
+         TabIndex        =   54
+         Top             =   400
+         Width           =   9180
+         Begin VB.TextBox txtUserName 
+            BackColor       =   &H8000000F&
+            Enabled         =   0   'False
+            Height          =   315
+            Left            =   5625
+            MaxLength       =   30
+            TabIndex        =   4
+            Top             =   300
+            Width           =   3405
+         End
+         Begin VB.TextBox txtName 
+            Height          =   315
+            Left            =   1395
+            MaxLength       =   50
+            TabIndex        =   1
+            Top             =   300
+            Width           =   3090
+         End
+         Begin VB.TextBox txtDesc 
+            Height          =   1080
+            Left            =   1395
+            MaxLength       =   255
+            MultiLine       =   -1  'True
+            ScrollBars      =   2  'Vertical
+            TabIndex        =   3
+            Top             =   1110
+            Width           =   3090
+         End
+         Begin VB.ComboBox cboCategory 
+            Height          =   315
+            Left            =   1395
+            Style           =   2  'Dropdown List
+            TabIndex        =   2
+            Top             =   720
+            Width           =   3090
+         End
+         Begin SSDataWidgets_B.SSDBGrid grdAccess 
+            Height          =   1485
+            Left            =   5625
+            TabIndex        =   5
+            Top             =   705
+            Width           =   3405
+            ScrollBars      =   2
+            _Version        =   196617
+            DataMode        =   2
+            RecordSelectors =   0   'False
+            Col.Count       =   3
+            stylesets.count =   2
+            stylesets(0).Name=   "SysSecMgr"
+            stylesets(0).ForeColor=   -2147483631
+            stylesets(0).BackColor=   -2147483633
+            stylesets(0).HasFont=   -1  'True
+            BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+            stylesets(0).Picture=   "frmImport.frx":0060
+            stylesets(1).Name=   "ReadOnly"
+            stylesets(1).ForeColor=   -2147483631
+            stylesets(1).BackColor=   -2147483633
+            stylesets(1).HasFont=   -1  'True
+            BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+            stylesets(1).Picture=   "frmImport.frx":007C
+            MultiLine       =   0   'False
+            AllowRowSizing  =   0   'False
+            AllowGroupSizing=   0   'False
+            AllowColumnSizing=   0   'False
+            AllowGroupMoving=   0   'False
+            AllowColumnMoving=   0
+            AllowGroupSwapping=   0   'False
+            AllowColumnSwapping=   0
+            AllowGroupShrinking=   0   'False
+            AllowColumnShrinking=   0   'False
+            AllowDragDrop   =   0   'False
+            SelectTypeCol   =   0
+            SelectTypeRow   =   0
+            BalloonHelp     =   0   'False
+            MaxSelectedRows =   0
+            ForeColorEven   =   0
+            BackColorEven   =   -2147483643
+            BackColorOdd    =   -2147483643
+            RowHeight       =   423
+            Columns.Count   =   3
+            Columns(0).Width=   2963
+            Columns(0).Caption=   "User Group"
+            Columns(0).Name =   "GroupName"
+            Columns(0).AllowSizing=   0   'False
+            Columns(0).DataField=   "Column 0"
+            Columns(0).DataType=   8
+            Columns(0).FieldLen=   256
+            Columns(0).Locked=   -1  'True
+            Columns(1).Width=   2566
+            Columns(1).Caption=   "Access"
+            Columns(1).Name =   "Access"
+            Columns(1).AllowSizing=   0   'False
+            Columns(1).DataField=   "Column 1"
+            Columns(1).DataType=   8
+            Columns(1).FieldLen=   256
+            Columns(1).Locked=   -1  'True
+            Columns(1).Style=   3
+            Columns(1).Row.Count=   3
+            Columns(1).Col.Count=   2
+            Columns(1).Row(0).Col(0)=   "Read / Write"
+            Columns(1).Row(1).Col(0)=   "Read Only"
+            Columns(1).Row(2).Col(0)=   "Hidden"
+            Columns(2).Width=   3200
+            Columns(2).Visible=   0   'False
+            Columns(2).Caption=   "SysSecMgr"
+            Columns(2).Name =   "SysSecMgr"
+            Columns(2).DataField=   "Column 2"
+            Columns(2).DataType=   8
+            Columns(2).FieldLen=   256
+            TabNavigation   =   1
+            _ExtentX        =   6006
+            _ExtentY        =   2619
+            _StockProps     =   79
+            BeginProperty PageFooterFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+            BeginProperty PageHeaderFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+         End
+         Begin VB.Label lblOwner 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Owner :"
+            Height          =   195
+            Left            =   4770
+            TabIndex        =   59
+            Top             =   360
+            Width           =   810
+         End
+         Begin VB.Label lblName 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Name :"
+            Height          =   195
+            Left            =   195
+            TabIndex        =   58
+            Top             =   360
+            Width           =   690
+         End
+         Begin VB.Label lblDescription 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Description :"
+            Height          =   195
+            Left            =   195
+            TabIndex        =   57
+            Top             =   1155
+            Width           =   1080
+         End
+         Begin VB.Label lblAccess 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Access :"
+            Height          =   195
+            Left            =   4770
+            TabIndex        =   56
+            Top             =   765
+            Width           =   825
+         End
+         Begin VB.Label lblCategory 
+            Caption         =   "Category :"
+            Height          =   240
+            Left            =   195
+            TabIndex        =   55
+            Top             =   765
+            Width           =   1005
+         End
+      End
       Begin VB.Frame fraColumns 
          Height          =   4170
          Left            =   -74850
-         TabIndex        =   11
+         TabIndex        =   8
          Top             =   405
          Width           =   9400
          Begin VB.CommandButton cmdMoveDown 
@@ -81,7 +283,7 @@ Begin VB.Form frmImport
             Enabled         =   0   'False
             Height          =   400
             Left            =   7950
-            TabIndex        =   18
+            TabIndex        =   15
             Top             =   3315
             Width           =   1200
          End
@@ -90,7 +292,7 @@ Begin VB.Form frmImport
             Enabled         =   0   'False
             Height          =   400
             Left            =   7950
-            TabIndex        =   17
+            TabIndex        =   14
             Top             =   2775
             Width           =   1200
          End
@@ -99,7 +301,7 @@ Begin VB.Form frmImport
             Enabled         =   0   'False
             Height          =   400
             Left            =   7950
-            TabIndex        =   16
+            TabIndex        =   13
             Top             =   1935
             Width           =   1200
          End
@@ -108,7 +310,7 @@ Begin VB.Form frmImport
             Enabled         =   0   'False
             Height          =   400
             Left            =   7950
-            TabIndex        =   15
+            TabIndex        =   12
             Top             =   1395
             Width           =   1200
          End
@@ -117,7 +319,7 @@ Begin VB.Form frmImport
             Enabled         =   0   'False
             Height          =   400
             Left            =   7950
-            TabIndex        =   14
+            TabIndex        =   11
             Top             =   855
             Width           =   1200
          End
@@ -125,14 +327,14 @@ Begin VB.Form frmImport
             Caption         =   "&Add..."
             Height          =   400
             Left            =   7950
-            TabIndex        =   13
+            TabIndex        =   10
             Top             =   315
             Width           =   1200
          End
          Begin SSDataWidgets_B.SSDBGrid grdColumns 
             Height          =   3405
             Left            =   210
-            TabIndex        =   12
+            TabIndex        =   9
             Top             =   315
             Width           =   7575
             ScrollBars      =   0
@@ -153,7 +355,7 @@ Begin VB.Form frmImport
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(0).Picture=   "frmImport.frx":0060
+            stylesets(0).Picture=   "frmImport.frx":0098
             stylesets(1).Name=   "ssetActive"
             stylesets(1).ForeColor=   16777215
             stylesets(1).BackColor=   8388608
@@ -167,7 +369,7 @@ Begin VB.Form frmImport
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(1).Picture=   "frmImport.frx":007C
+            stylesets(1).Picture=   "frmImport.frx":00B4
             AllowUpdate     =   0   'False
             MultiLine       =   0   'False
             AllowRowSizing  =   0   'False
@@ -275,17 +477,17 @@ Begin VB.Form frmImport
       Begin VB.Frame fraFileDetails 
          Caption         =   "File :"
          Height          =   2775
-         Left            =   150
-         TabIndex        =   19
+         Left            =   -74850
+         TabIndex        =   16
          Top             =   405
          Width           =   9400
          Begin VB.ComboBox cboFileFormat 
             Height          =   315
-            ItemData        =   "frmImport.frx":0098
+            ItemData        =   "frmImport.frx":00D0
             Left            =   2400
-            List            =   "frmImport.frx":009A
+            List            =   "frmImport.frx":00D2
             Style           =   2  'Dropdown List
-            TabIndex        =   56
+            TabIndex        =   53
             Top             =   300
             Width           =   2550
          End
@@ -295,18 +497,18 @@ Begin VB.Form frmImport
             Height          =   315
             Left            =   2400
             Locked          =   -1  'True
-            TabIndex        =   55
+            TabIndex        =   52
             Tag             =   "0"
             Top             =   2215
             Width           =   2250
          End
          Begin VB.ComboBox cboDateSeparator 
             Height          =   315
-            ItemData        =   "frmImport.frx":009C
+            ItemData        =   "frmImport.frx":00D4
             Left            =   6795
-            List            =   "frmImport.frx":00AC
+            List            =   "frmImport.frx":00E4
             Style           =   2  'Dropdown List
-            TabIndex        =   42
+            TabIndex        =   39
             Top             =   1500
             Width           =   1275
          End
@@ -314,7 +516,7 @@ Begin VB.Form frmImport
             Caption         =   "&Filter"
             Height          =   315
             Left            =   1470
-            TabIndex        =   30
+            TabIndex        =   27
             Top             =   2215
             Width           =   800
          End
@@ -322,7 +524,7 @@ Begin VB.Form frmImport
             Caption         =   "&All"
             Height          =   195
             Left            =   1470
-            TabIndex        =   29
+            TabIndex        =   26
             Top             =   1960
             Value           =   -1  'True
             Width           =   800
@@ -332,18 +534,18 @@ Begin VB.Form frmImport
             Enabled         =   0   'False
             Height          =   315
             Left            =   4650
-            TabIndex        =   31
+            TabIndex        =   28
             Top             =   2215
             UseMaskColor    =   -1  'True
             Width           =   330
          End
          Begin VB.ComboBox cboDelimiter 
             Height          =   315
-            ItemData        =   "frmImport.frx":00C1
+            ItemData        =   "frmImport.frx":00F9
             Left            =   6795
-            List            =   "frmImport.frx":00CE
+            List            =   "frmImport.frx":0106
             Style           =   2  'Dropdown List
-            TabIndex        =   33
+            TabIndex        =   30
             Top             =   300
             Width           =   1275
          End
@@ -353,7 +555,7 @@ Begin VB.Form frmImport
             Height          =   315
             Left            =   2400
             Locked          =   -1  'True
-            TabIndex        =   22
+            TabIndex        =   19
             TabStop         =   0   'False
             Top             =   700
             Width           =   2250
@@ -362,7 +564,7 @@ Begin VB.Form frmImport
             Caption         =   "..."
             Height          =   315
             Left            =   4650
-            TabIndex        =   23
+            TabIndex        =   20
             Top             =   700
             UseMaskColor    =   -1  'True
             Width           =   330
@@ -373,7 +575,7 @@ Begin VB.Form frmImport
             Height          =   315
             Left            =   8895
             MaxLength       =   1
-            TabIndex        =   35
+            TabIndex        =   32
             Top             =   300
             Width           =   300
          End
@@ -382,25 +584,25 @@ Begin VB.Form frmImport
             Height          =   315
             Left            =   6795
             MaxLength       =   1
-            TabIndex        =   37
+            TabIndex        =   34
             Text            =   """"
             Top             =   700
             Width           =   300
          End
          Begin VB.ComboBox cboDateFormat 
             Height          =   315
-            ItemData        =   "frmImport.frx":00E5
+            ItemData        =   "frmImport.frx":011D
             Left            =   6795
-            List            =   "frmImport.frx":00F5
+            List            =   "frmImport.frx":012D
             Style           =   2  'Dropdown List
-            TabIndex        =   39
+            TabIndex        =   36
             Top             =   1100
             Width           =   1275
          End
          Begin COASpinner.COA_Spinner spnHeaderLines 
             Height          =   315
             Left            =   2400
-            TabIndex        =   25
+            TabIndex        =   22
             Top             =   1080
             Width           =   810
             _ExtentX        =   1429
@@ -421,7 +623,7 @@ Begin VB.Form frmImport
          Begin COASpinner.COA_Spinner spnFooterLines 
             Height          =   315
             Left            =   2400
-            TabIndex        =   27
+            TabIndex        =   24
             Top             =   1500
             Width           =   810
             _ExtentX        =   1429
@@ -445,7 +647,7 @@ Begin VB.Form frmImport
             Caption         =   "Footer Lines to Ignore :"
             Height          =   195
             Left            =   225
-            TabIndex        =   26
+            TabIndex        =   23
             Top             =   1560
             Width           =   1710
          End
@@ -455,7 +657,7 @@ Begin VB.Form frmImport
             Caption         =   "Header Lines to Ignore :"
             Height          =   195
             Left            =   225
-            TabIndex        =   24
+            TabIndex        =   21
             Top             =   1155
             Width           =   2070
          End
@@ -465,7 +667,7 @@ Begin VB.Form frmImport
             Caption         =   "Separator :"
             Height          =   195
             Left            =   5175
-            TabIndex        =   41
+            TabIndex        =   38
             Top             =   1560
             Width           =   960
          End
@@ -475,7 +677,7 @@ Begin VB.Form frmImport
             Caption         =   "File Records :"
             Height          =   195
             Left            =   225
-            TabIndex        =   28
+            TabIndex        =   25
             Top             =   1965
             Width           =   1200
          End
@@ -485,7 +687,7 @@ Begin VB.Form frmImport
             Caption         =   "Other :"
             Height          =   195
             Left            =   8205
-            TabIndex        =   34
+            TabIndex        =   31
             Top             =   360
             Width           =   525
          End
@@ -495,7 +697,7 @@ Begin VB.Form frmImport
             Caption         =   "File name :"
             Height          =   195
             Left            =   225
-            TabIndex        =   21
+            TabIndex        =   18
             Top             =   760
             Width           =   780
          End
@@ -505,7 +707,7 @@ Begin VB.Form frmImport
             Caption         =   "Format :"
             Height          =   195
             Left            =   225
-            TabIndex        =   20
+            TabIndex        =   17
             Top             =   360
             Width           =   615
          End
@@ -515,7 +717,7 @@ Begin VB.Form frmImport
             Caption         =   "Delimiter :"
             Height          =   195
             Left            =   5175
-            TabIndex        =   32
+            TabIndex        =   29
             Top             =   360
             Width           =   915
          End
@@ -525,7 +727,7 @@ Begin VB.Form frmImport
             Caption         =   "Data enclosed in :"
             Height          =   195
             Left            =   5175
-            TabIndex        =   36
+            TabIndex        =   33
             Top             =   765
             Width           =   1605
          End
@@ -534,7 +736,7 @@ Begin VB.Form frmImport
             BackStyle       =   0  'Transparent
             Height          =   195
             Left            =   7400
-            TabIndex        =   50
+            TabIndex        =   47
             Top             =   750
             Width           =   45
          End
@@ -544,7 +746,7 @@ Begin VB.Form frmImport
             Caption         =   "Date format :"
             Height          =   195
             Left            =   5175
-            TabIndex        =   38
+            TabIndex        =   35
             Top             =   1155
             Width           =   1110
          End
@@ -554,7 +756,7 @@ Begin VB.Form frmImport
             Caption         =   "(No Separator)"
             Height          =   195
             Left            =   8050
-            TabIndex        =   40
+            TabIndex        =   37
             Top             =   1155
             Visible         =   0   'False
             Width           =   1350
@@ -563,8 +765,8 @@ Begin VB.Form frmImport
       Begin VB.Frame fraOptions 
          Caption         =   "Records :"
          Height          =   1350
-         Left            =   150
-         TabIndex        =   43
+         Left            =   -74850
+         TabIndex        =   40
          Top             =   3220
          Width           =   9400
          Begin VB.Frame Frame1 
@@ -572,14 +774,14 @@ Begin VB.Form frmImport
             Caption         =   "Frame1"
             Height          =   1200
             Left            =   5550
-            TabIndex        =   51
+            TabIndex        =   48
             Top             =   120
             Width           =   3600
             Begin VB.OptionButton optDontUpdateAny 
                Caption         =   "Update &None"
                Height          =   195
                Left            =   1320
-               TabIndex        =   49
+               TabIndex        =   46
                Top             =   825
                Width           =   2430
             End
@@ -587,7 +789,7 @@ Begin VB.Form frmImport
                Caption         =   "&Update All"
                Height          =   195
                Left            =   1320
-               TabIndex        =   48
+               TabIndex        =   45
                Top             =   510
                Value           =   -1  'True
                Width           =   1845
@@ -598,7 +800,7 @@ Begin VB.Form frmImport
                Caption         =   "If key field(s) return multiple records :"
                Height          =   195
                Left            =   -15
-               TabIndex        =   47
+               TabIndex        =   44
                Top             =   195
                Width           =   3330
             End
@@ -608,7 +810,7 @@ Begin VB.Form frmImport
             Height          =   195
             Index           =   0
             Left            =   240
-            TabIndex        =   46
+            TabIndex        =   43
             Top             =   945
             Width           =   5760
          End
@@ -617,7 +819,7 @@ Begin VB.Form frmImport
             Height          =   195
             Index           =   2
             Left            =   240
-            TabIndex        =   44
+            TabIndex        =   41
             Top             =   315
             Value           =   -1  'True
             Width           =   4815
@@ -627,216 +829,23 @@ Begin VB.Form frmImport
             Height          =   195
             Index           =   1
             Left            =   240
-            TabIndex        =   45
+            TabIndex        =   42
             Top             =   630
             Width           =   3375
          End
       End
-      Begin VB.Frame fraDefinition 
-         Height          =   1950
-         Index           =   0
-         Left            =   -74850
-         TabIndex        =   0
-         Top             =   405
-         Width           =   9400
-         Begin VB.TextBox txtUserName 
-            BackColor       =   &H8000000F&
-            Enabled         =   0   'False
-            Height          =   315
-            Left            =   5865
-            MaxLength       =   30
-            TabIndex        =   6
-            TabStop         =   0   'False
-            Top             =   315
-            Width           =   3405
-         End
-         Begin VB.TextBox txtName 
-            Height          =   315
-            Left            =   1620
-            MaxLength       =   50
-            TabIndex        =   2
-            Top             =   315
-            Width           =   3000
-         End
-         Begin VB.TextBox txtDesc 
-            Height          =   1080
-            Left            =   1620
-            MaxLength       =   255
-            MultiLine       =   -1  'True
-            ScrollBars      =   2  'Vertical
-            TabIndex        =   4
-            Top             =   690
-            Width           =   3000
-         End
-         Begin SSDataWidgets_B.SSDBGrid grdAccess 
-            Height          =   1080
-            Left            =   5850
-            TabIndex        =   57
-            Top             =   720
-            Width           =   3405
-            ScrollBars      =   2
-            _Version        =   196617
-            DataMode        =   2
-            RecordSelectors =   0   'False
-            Col.Count       =   3
-            stylesets.count =   2
-            stylesets(0).Name=   "SysSecMgr"
-            stylesets(0).ForeColor=   -2147483631
-            stylesets(0).BackColor=   -2147483633
-            stylesets(0).HasFont=   -1  'True
-            BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-               Name            =   "Verdana"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
-            stylesets(0).Picture=   "frmImport.frx":010D
-            stylesets(1).Name=   "ReadOnly"
-            stylesets(1).ForeColor=   -2147483631
-            stylesets(1).BackColor=   -2147483633
-            stylesets(1).HasFont=   -1  'True
-            BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-               Name            =   "Verdana"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
-            stylesets(1).Picture=   "frmImport.frx":0129
-            MultiLine       =   0   'False
-            AllowRowSizing  =   0   'False
-            AllowGroupSizing=   0   'False
-            AllowColumnSizing=   0   'False
-            AllowGroupMoving=   0   'False
-            AllowColumnMoving=   0
-            AllowGroupSwapping=   0   'False
-            AllowColumnSwapping=   0
-            AllowGroupShrinking=   0   'False
-            AllowColumnShrinking=   0   'False
-            AllowDragDrop   =   0   'False
-            SelectTypeCol   =   0
-            SelectTypeRow   =   0
-            BalloonHelp     =   0   'False
-            MaxSelectedRows =   0
-            ForeColorEven   =   0
-            BackColorEven   =   -2147483643
-            BackColorOdd    =   -2147483643
-            RowHeight       =   423
-            Columns.Count   =   3
-            Columns(0).Width=   2963
-            Columns(0).Caption=   "User Group"
-            Columns(0).Name =   "GroupName"
-            Columns(0).AllowSizing=   0   'False
-            Columns(0).DataField=   "Column 0"
-            Columns(0).DataType=   8
-            Columns(0).FieldLen=   256
-            Columns(0).Locked=   -1  'True
-            Columns(1).Width=   2566
-            Columns(1).Caption=   "Access"
-            Columns(1).Name =   "Access"
-            Columns(1).AllowSizing=   0   'False
-            Columns(1).DataField=   "Column 1"
-            Columns(1).DataType=   8
-            Columns(1).FieldLen=   256
-            Columns(1).Locked=   -1  'True
-            Columns(1).Style=   3
-            Columns(1).Row.Count=   3
-            Columns(1).Col.Count=   2
-            Columns(1).Row(0).Col(0)=   "Read / Write"
-            Columns(1).Row(1).Col(0)=   "Read Only"
-            Columns(1).Row(2).Col(0)=   "Hidden"
-            Columns(2).Width=   3200
-            Columns(2).Visible=   0   'False
-            Columns(2).Caption=   "SysSecMgr"
-            Columns(2).Name =   "SysSecMgr"
-            Columns(2).DataField=   "Column 2"
-            Columns(2).DataType=   8
-            Columns(2).FieldLen=   256
-            TabNavigation   =   1
-            _ExtentX        =   6006
-            _ExtentY        =   1905
-            _StockProps     =   79
-            BeginProperty PageFooterFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-               Name            =   "Verdana"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
-            BeginProperty PageHeaderFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-               Name            =   "Verdana"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
-         End
-         Begin VB.Label Label1 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Owner :"
-            Height          =   195
-            Index           =   2
-            Left            =   5010
-            TabIndex        =   5
-            Top             =   360
-            Width           =   720
-         End
-         Begin VB.Label Label1 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Name :"
-            Height          =   195
-            Index           =   0
-            Left            =   225
-            TabIndex        =   1
-            Top             =   360
-            Width           =   735
-         End
-         Begin VB.Label Label1 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Description :"
-            Height          =   195
-            Index           =   1
-            Left            =   225
-            TabIndex        =   3
-            Top             =   750
-            Width           =   1125
-         End
-         Begin VB.Label Label1 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Access :"
-            Height          =   195
-            Index           =   3
-            Left            =   5010
-            TabIndex        =   7
-            Top             =   720
-            Width           =   735
-         End
-      End
       Begin VB.Frame fraData 
          Caption         =   "Data :"
-         Height          =   2130
-         Left            =   -74850
-         TabIndex        =   8
-         Top             =   2445
+         Height          =   1680
+         Left            =   150
+         TabIndex        =   0
+         Top             =   2895
          Width           =   9400
          Begin VB.ComboBox cboBaseTable 
             Height          =   315
             Left            =   1620
             Style           =   2  'Dropdown List
-            TabIndex        =   10
+            TabIndex        =   7
             Top             =   360
             Width           =   3000
          End
@@ -846,7 +855,7 @@ Begin VB.Form frmImport
             Caption         =   "Base Table :"
             Height          =   195
             Left            =   225
-            TabIndex        =   9
+            TabIndex        =   6
             Top             =   420
             Width           =   885
          End
@@ -857,7 +866,7 @@ Begin VB.Form frmImport
       Default         =   -1  'True
       Height          =   375
       Left            =   7335
-      TabIndex        =   52
+      TabIndex        =   49
       Top             =   4965
       Width           =   1200
    End
@@ -866,7 +875,7 @@ Begin VB.Form frmImport
       Caption         =   "&Cancel"
       Height          =   375
       Left            =   8590
-      TabIndex        =   53
+      TabIndex        =   50
       Top             =   4965
       Width           =   1200
    End
@@ -1414,6 +1423,9 @@ Public Function Initialise(pblnNew As Boolean, pblnCopy As Boolean, Optional pln
     
     'Load All Possible Base Tables into combo
     LoadCombos
+  
+    GetObjectCategories cboCategory, utlExport, 0, cboBaseTable.ItemData(cboBaseTable.ListIndex)
+    SetComboItem cboCategory, IIf(glngCurrentCategoryID = -1, 0, glngCurrentCategoryID)
   
     mblnDefinitionCreator = True
   
@@ -2665,25 +2677,12 @@ Private Function SaveDefinition() As Boolean
   Else
 
     ' Adding a new import definition
-
-    'sSQL = "Insert ASRSysImportName (" & _
-           "Name, Description, BaseTable, " & _
-           "FileType, FileName, Delimiter, OtherDelimiter, DateFormat, " & _
-           "Encapsulator, MultipleRecordAction, " & _
-           "IgnoreFirstLine, CreateNewOnly, " & _
-           "Access, UserName) "
-    
-    'TM20020726 Fault 2123 - Insert the DateSeparator field.
-    'MH20010816 Fault 2017
     sSQL = "Insert ASRSysImportName (" & _
            "Name, Description, BaseTable, " & _
            "FileType, FileName, Delimiter, OtherDelimiter, DateFormat, " & _
            "Encapsulator, MultipleRecordAction, " & _
            "HeaderLines, FooterLines, ImportType, " & _
            "UserName, FilterID, DateSeparator) "
-    
-           '"IgnoreFirstLine, IgnoreLastLine, ImportType, " & _
-
     
     sSQL = sSQL & _
            "Values('" & _
@@ -2697,23 +2696,10 @@ Private Function SaveDefinition() As Boolean
     sSQL = sSQL & ", '" & cboDelimiter.Text & "'"
     sSQL = sSQL & ", '" & Replace(Me.txtDelimiter.Text, "'", "''") & "'"
     sSQL = sSQL & ", '" & Me.cboDateFormat.Text & "'"
-    'JPD20011005 Fault 2872 - Encapsulator column in the database in char(1). So if there is no
-    ' encapsulator, setting the value to '' will actually appear in the database as ' '.
-    ' Then when the definition is read back, the encapsulator is read as a space.
-    ' So we need to set it to null in the databse if there is no encapsulator.
-    'sSQL = sSQL & ", '" & Replace(Me.txtEncapsulator.Text, "'", "''") & "'"
     sSQL = sSQL & ", " & IIf(Len(Me.txtEncapsulator.Text) = 0, "Null", "'" & Replace(Me.txtEncapsulator.Text, "'", "''") & "'")
     sSQL = sSQL & ", " & IIf(Me.optUpdateAll.Value, 1, 0)
-    
-    'MH20071003
-    'sSQL = sSQL & ", " & IIf(Me.chkIgnoreFirstLine.Value, 1, 0)
-    'sSQL = sSQL & ", " & IIf(Me.chkIgnoreLastLine.Value, 1, 0)
     sSQL = sSQL & ", " & CStr(spnHeaderLines.Value)
     sSQL = sSQL & ", " & CStr(spnFooterLines.Value)
-    
-    
-    'MH20010816 Fault 2017
-    'sSQL = sSQL & ", " & IIf(Me.chkCreateNewOnly.Value, 1, 0)
     sSQL = sSQL & ", " & CStr(lngImportType)
     sSQL = sSQL & ", '" & datGeneral.UserNameForSQL & "'"
     sSQL = sSQL & ", " & txtFilter.Tag
@@ -2731,6 +2717,7 @@ Private Function SaveDefinition() As Boolean
   End If
 
   SaveAccess
+  SaveObjectCategories cboCategory, utlImport, mlngImportID
   
   ' Now save the column details
 
@@ -3054,6 +3041,9 @@ Private Function RetrieveImportDetails(plngImportID As Long) As Boolean
   LoadCombos
   SetComboText cboBaseTable, datGeneral.GetTableName(rsTemp!BaseTable)
   mstrBaseTable = cboBaseTable.Text
+  
+  ' Set the categories combo
+  GetObjectCategories cboCategory, utlImport, plngImportID
   
   Select Case rsTemp!filetype
     Case 0: SetComboText cboFileFormat, "Delimited File"
@@ -3548,7 +3538,9 @@ LocalErr:
 
 End Sub
 
-
+Private Sub cboCategory_Click()
+  Changed = True
+End Sub
 
 
 
