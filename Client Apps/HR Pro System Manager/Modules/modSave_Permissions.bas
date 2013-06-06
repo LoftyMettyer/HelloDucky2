@@ -1215,7 +1215,7 @@ Private Function ApplyPermissions_ChildTables2() As Boolean
   sSysSecRoles = vbNullString
   sNonSysSecRoles = vbNullString
   For Each objGroup In gObjGroups.Collection
-    sGroupName = IIf(IsVersion7, "[" & objGroup.Name & "]", objGroup.Name)
+    sGroupName = "[" & objGroup.Name & "]"
     
     If (objGroup.SecurityManager) Or (objGroup.SystemManager) Then
       sSysSecRoles = sSysSecRoles & IIf(LenB(sSysSecRoles) <> 0, ",", vbNullString) & sGroupName

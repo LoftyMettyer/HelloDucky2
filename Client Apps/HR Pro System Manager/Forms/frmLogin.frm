@@ -641,11 +641,11 @@ Public Sub Login()
   End With
   Set rsSQLInfo = Nothing
 
-  If Not IsVersion7 Then
-    ' The version of SQL Server is neither 6.5 nor 7.0 so tell the user.
+  If Not IsVersion10 Then
+    ' The version of SQL Server is below 2008
     Screen.MousePointer = vbNormal
-    MsgBox "You are running an invalid version of SQL Server." & vbNewLine & vbNewLine & _
-      "OpenHR requires SQL Server version 7.0 or above.", _
+    MsgBox "You are running an uunsupported version of SQL Server." & vbNewLine & vbNewLine & _
+      "OpenHR requires SQL Server version 2008 or above.", _
       vbOKOnly, App.ProductName
     Exit Sub
   End If
