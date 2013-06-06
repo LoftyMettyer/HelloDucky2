@@ -1002,7 +1002,11 @@ PRINT 'Step - Menu & Category enhancements'
 		DROP VIEW [dbo].[ASRSysAllObjectAccess]
 	EXEC sp_executesql N'CREATE VIEW dbo.[ASRSysAllObjectAccess]
 	AS
-		SELECT 0 AS [objectType], * FROM [ASRSysBatchJobAccess]
+		SELECT CASE b.[IsBatch] 
+					WHEN 0 THEN 29
+					WHEN 1 THEN 0
+				END	AS [objectType], a.* FROM ASRSysBatchJobAccess a
+			INNER JOIN ASRSysBatchJobName b ON a.ID = b.ID
 		UNION
 		SELECT 1 AS [objectType], * FROM [ASRSysCrossTabAccess]
 		UNION
@@ -1038,7 +1042,6 @@ PRINT 'Step - Menu & Category enhancements'
 		UNION
 		SELECT 20 AS [objectType], * FROM [ASRSysRecordProfileAccess]';
 	GRANT SELECT ON dbo.[ASRSysAllObjectAccess] TO [ASRSysGroup];
-
 
 
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spstat_recentlyrunobjects]') AND xtype = 'P')
