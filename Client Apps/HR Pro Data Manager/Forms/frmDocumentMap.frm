@@ -35,52 +35,12 @@ Begin VB.Form frmDocumentMap
       _ExtentX        =   18600
       _ExtentY        =   12568
       _StockProps     =   68
-      ItemCount       =   2
+      ItemCount       =   1
       Item(0).Caption =   "Definition"
       Item(0).ControlCount=   3
       Item(0).Control(0)=   "fraDefinition"
       Item(0).Control(1)=   "fraClassification"
       Item(0).Control(2)=   "fraDestination"
-      Item(1).Caption =   "Advanced"
-      Item(1).ControlCount=   2
-      Item(1).Control(0)=   "fraHeader"
-      Item(1).Control(1)=   "chkLockTablesUntilComplete"
-      Begin VB.CheckBox chkLockTablesUntilComplete 
-         Caption         =   "Lock Tables Until Complete"
-         Height          =   240
-         Left            =   -69865
-         TabIndex        =   32
-         Top             =   4995
-         Value           =   1  'Checked
-         Visible         =   0   'False
-         Width           =   3210
-      End
-      Begin VB.Frame fraHeader 
-         Caption         =   "Header : "
-         Height          =   4380
-         Left            =   -69910
-         TabIndex        =   29
-         Top             =   405
-         Visible         =   0   'False
-         Width           =   10335
-         Begin VB.TextBox txtHeader 
-            Height          =   3525
-            Left            =   225
-            MultiLine       =   -1  'True
-            ScrollBars      =   2  'Vertical
-            TabIndex        =   31
-            Top             =   630
-            Width           =   9915
-         End
-         Begin VB.CheckBox chkManualHeader 
-            Caption         =   "Manual Header"
-            Height          =   285
-            Left            =   225
-            TabIndex        =   30
-            Top             =   315
-            Width           =   2355
-         End
-      End
       Begin VB.Frame fraDestination 
          Caption         =   "Record Identification : "
          Height          =   2850
@@ -93,7 +53,7 @@ Begin VB.Form frmDocumentMap
             Left            =   1845
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
-            TabIndex        =   40
+            TabIndex        =   36
             Top             =   2295
             Width           =   3090
          End
@@ -102,7 +62,7 @@ Begin VB.Form frmDocumentMap
             Left            =   7065
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
-            TabIndex        =   39
+            TabIndex        =   35
             Top             =   2295
             Width           =   3090
          End
@@ -111,7 +71,7 @@ Begin VB.Form frmDocumentMap
             Left            =   7065
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
-            TabIndex        =   38
+            TabIndex        =   34
             Top             =   675
             Width           =   3090
          End
@@ -120,7 +80,7 @@ Begin VB.Form frmDocumentMap
             Left            =   7065
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
-            TabIndex        =   37
+            TabIndex        =   33
             Top             =   1080
             Width           =   3090
          End
@@ -129,7 +89,7 @@ Begin VB.Form frmDocumentMap
             Left            =   7065
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
-            TabIndex        =   36
+            TabIndex        =   32
             Top             =   1485
             Width           =   3090
          End
@@ -182,7 +142,7 @@ Begin VB.Form frmDocumentMap
             Caption         =   "Parent 2 Table :"
             Height          =   195
             Left            =   225
-            TabIndex        =   42
+            TabIndex        =   38
             Top             =   2340
             Width           =   1725
          End
@@ -190,7 +150,7 @@ Begin VB.Form frmDocumentMap
             Caption         =   "Parent 2 Key Field :"
             Height          =   375
             Left            =   5310
-            TabIndex        =   41
+            TabIndex        =   37
             Top             =   2340
             Width           =   1815
          End
@@ -198,7 +158,7 @@ Begin VB.Form frmDocumentMap
             Caption         =   "Unique ID :"
             Height          =   195
             Left            =   5310
-            TabIndex        =   35
+            TabIndex        =   31
             Top             =   1530
             Width           =   1140
          End
@@ -206,7 +166,7 @@ Begin VB.Form frmDocumentMap
             Caption         =   "Type : "
             Height          =   240
             Left            =   5310
-            TabIndex        =   34
+            TabIndex        =   30
             Top             =   1125
             Width           =   1095
          End
@@ -214,7 +174,7 @@ Begin VB.Form frmDocumentMap
             Caption         =   "Category :"
             Height          =   285
             Left            =   5310
-            TabIndex        =   33
+            TabIndex        =   29
             Top             =   720
             Width           =   1410
          End
@@ -456,14 +416,6 @@ Private mclsGeneral As HRProDataMgr.clsGeneral
 
 Private Const SQLTableDef = "ASRSysDocumentManagementTypes"
 
-' Module Setup Constants
-Private Const MODULEKEY_DOCMANAGEMENT = "MODULE_DOCUMENTMANAGEMENT"
-Private Const PARAMETERKEY_DOCMAN_CATEGORYTABLE = "Param_DocmanCatageoryTable"
-Private Const PARAMETERKEY_DOCMAN_CATEGORYCOLUMN = "Param_DocManCatageoryColumn"
-Private Const PARAMETERKEY_DOCMAN_TYPETABLE = "Param_DocmanTypeTable"
-Private Const PARAMETERKEY_DOCMAN_TYPECOLUMN = "Param_DocManTypeColumn"
-Private Const PARAMETERKEY_DOCMAN_TYPECATEGORYCOLUMN = "Param_DocManTypeCategoryColumn"
-
 Public Property Get Cancelled() As Boolean
   Cancelled = mblnCancelled
 End Property
@@ -551,51 +503,6 @@ Private Sub RetreiveDefinition()
   SetComboItem cboParent2Table, IIf(IsNull(rsTemp.Fields("Parent2TableID").Value), 0, rsTemp.Fields("Parent2TableID").Value)
   SetComboItem cboParent2Keyfield, IIf(IsNull(rsTemp.Fields("Parent2KeyFieldColumnID").Value), 0, rsTemp.Fields("Parent2KeyFieldColumnID").Value)
 
-
-  chkManualHeader.Value = IIf(IsNull(rsTemp!ManualHeader), vbUnchecked, Abs(rsTemp!ManualHeader))
-  txtHeader.Text = IIf(IsNull(rsTemp!HeaderText), vbNullString, rsTemp!HeaderText)
-  RefreshHeaderText
-
-End Sub
-
-Private Sub RefreshHeaderText()
-
-  Dim sHeader As String
-  
-  If chkManualHeader.Value = vbUnchecked Then
-  
-    'If cboTypes.Text = "<None>" Then
-  
-    sHeader = "~~@[DOC_SECTION:" & cboCategories.Text & "]~~@[DOC_TYPE:" & cboTypes.Text & "]" & vbNewLine
-    sHeader = sHeader & ";wordmergefield{{" & datGeneral.GetColumnName(GetComboItem(cboTargetKeyField), True) & "}}>>"
-    
-    txtHeader.Text = sHeader
-    
-    
-'
-'~~!:~~@[$TABLE:COMPLETE_FILES]
-'~~@[DOC_SECTION:REVIEWS]
-'~~@[DOC_TYPE:Amendment to Terms of Employment]
-'~~@[STAFF_NO:"Personnel_Records_Staff_Number"]
-'~~@[SURNAME:"Personnel_Records_Surname"]
-'~~@[FORENAME:"Calculation_First_Forename"]
-'~~@[DOC_DATE:04/03/2010]~~
-'
-'This breaks down as follows (example):
-'
-'TABLE:      This is a fixed value of 'COMPLETE FILES'
-'DOC_SECTION:    This is the document category as selected
-'DOC_TYPE:   This is the document type as selected
-'STAFF_NO:   Acquired from the Personnel Module Setup
-'SURNAME:    Acquired from the Personnel Module Setup
-'FORENAME:   Acquired from the Personnel Module Setup
-'DOC_DATE:   Set to System Date
-'
-'
-    
-    
-  End If
-
 End Sub
 
 Private Function ValidateDefinition() As Boolean
@@ -623,7 +530,6 @@ Private Function SaveDefinition() As Boolean
   Dim bOK As Boolean
   
   bOK = True
-  RefreshHeaderText
  
   If mlngDocumentMapID > 0 Then
     sSQL = "UPDATE dbo.[" & SQLTableDef & "] SET " _
@@ -636,8 +542,6 @@ Private Function SaveDefinition() As Boolean
               & "[TargetCategoryColumnID] = " & GetComboItem(cboTargetType) & ", " _
               & "[TargetTypeColumnID] = " & GetComboItem(cboTargetCategory) & ", " _
               & "[TargetGUIDColumnID] = " & GetComboItem(cboTargetGUID) & ", " _
-              & "[ManualHeader] = " & CStr(Abs(chkManualHeader.Value <> 0)) & ", " _
-              & "[HeaderText] = '" & Replace(txtHeader.Text, "'", "''") & "', " _
               & "[Parent1TableID] = " & GetComboItem(cboParent1Table) & ", " _
               & "[Parent1KeyFieldColumnID] = " & GetComboItem(cboParent1Keyfield) & ", " _
               & "[Parent2TableID] = " & GetComboItem(cboParent2Table) & ", " _
@@ -654,7 +558,7 @@ Private Function SaveDefinition() As Boolean
               & " [Name], [Description]," _
               & " [UserName], [Access], " _
               & " [TargetTableID], [TargetKeyFieldColumnID], [TargetColumnID], [Parent1TableID], [Parent1KeyFieldColumnID], [Parent2TableID], [Parent2KeyFieldColumnID]," _
-              & " [TargetCategoryColumnID], [TargetTypeColumnID], [TargetGUIDColumnID], [CategoryRecordID], [TypeRecordID], [ManualHeader], [HeaderText]) " _
+              & " [TargetCategoryColumnID], [TargetTypeColumnID], [TargetGUIDColumnID], [CategoryRecordID], [TypeRecordID]) " _
               & " VALUES('" _
               & Replace(txtName.Text, "'", "''") & "', '" & Replace(txtDesc.Text, "'", "''") _
               & "', '" & datGeneral.UserNameForSQL & "', " & IIf(optReadOnly.Value = True, "'RO'", "'RW'") _
@@ -662,8 +566,7 @@ Private Function SaveDefinition() As Boolean
               & ", " & GetComboItem(cboParent1Table) & ", " & GetComboItem(cboParent1Keyfield) _
               & ", " & GetComboItem(cboParent2Table) & ", " & GetComboItem(cboParent2Keyfield) _
               & ", " & GetComboItem(cboTargetCategory) & ", " & GetComboItem(cboTargetType) & ", " & GetComboItem(cboTargetGUID) _
-              & ", " & GetComboItem(cboCategories) & ", " & GetComboItem(cboTypes) _
-              & ", " & CStr(Abs(chkManualHeader.Value <> 0)) & ", '" & Replace(txtHeader.Text, "'", "''") & "');"
+              & ", " & GetComboItem(cboCategories) & ", " & GetComboItem(cboTypes) & ");"
 
     mlngDocumentMapID = InsertDocumentMap(sSQL)
     Call UtilCreated(utlDocumentMapping, mlngDocumentMapID)
@@ -676,7 +579,6 @@ End Function
 
 Private Sub cboCategories_Click()
   PopulateTypesCombo
-  RefreshHeaderText
 End Sub
 
 Private Sub cboParent1Table_Click()
@@ -722,11 +624,11 @@ Private Sub cboParent2Table_Click()
 End Sub
 
 Private Sub cboTargetColumn_Click()
-  RefreshHeaderText
+  mbChanged = True
 End Sub
 
 Private Sub cboTargetKeyField_Click()
-  RefreshHeaderText
+  mbChanged = True
 End Sub
 
 Private Sub cboTargetTable_Click()
@@ -743,11 +645,37 @@ Private Sub cboTargetTable_Click()
   cboParent1Keyfield.Clear
   cboParent2Table.Clear
   cboParent2Keyfield.Clear
-  cboTargetColumn.Clear
-  cboTargetKeyField.Clear
-  cboTargetCategory.Clear
-  cboTargetType.Clear
-  cboTargetGUID.Clear
+  
+  With cboTargetColumn
+    .Clear
+    .AddItem "<None>"
+    .ItemData(.NewIndex) = 0
+  End With
+  
+  With cboTargetKeyField
+    .Clear
+    .AddItem "<None>"
+    .ItemData(.NewIndex) = 0
+  End With
+  
+  With cboTargetCategory
+    .Clear
+    .AddItem "<None>"
+    .ItemData(.NewIndex) = 0
+  End With
+  
+  With cboTargetType
+    .Clear
+    .AddItem "<None>"
+    .ItemData(.NewIndex) = 0
+  End With
+  
+  With cboTargetGUID
+    .Clear
+    .AddItem "<None>"
+    .ItemData(.NewIndex) = 0
+  End With
+  
   
   'Get all the columns for the selected table
   Set rsCols = datGeneral.GetColumnNames(cboTargetTable.ItemData(cboTargetTable.ListIndex))
@@ -818,8 +746,6 @@ Private Sub cboTargetTable_Click()
   EnableControl cboParent2Table, (iParents > 1)
   EnableControl lblParent2Keyfield, (iParents > 1)
   EnableControl cboParent2Keyfield, (iParents > 1)
-  
-  RefreshHeaderText
 
   Set rsParents = Nothing
   Set rsTables = Nothing
@@ -829,12 +755,7 @@ Private Sub cboTargetTable_Click()
 End Sub
 
 Private Sub cboTypes_Click()
-  RefreshHeaderText
-End Sub
-
-Private Sub chkManualHeader_Click()
-  txtHeader.Enabled = (chkManualHeader.Value = vbChecked)
-  RefreshHeaderText
+  mbChanged = True
 End Sub
 
 Private Sub cmdCancel_Click()
@@ -1002,4 +923,3 @@ Private Sub PopulateTypesCombo()
   Set rsTypes = Nothing
 
 End Sub
-

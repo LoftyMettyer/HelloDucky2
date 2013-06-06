@@ -61,6 +61,7 @@ Private mlngEmailAddrCalc As Long
 Private mbIsLabel As Boolean
 Private mstrOutputPrinterName As String
 Private mlngDocumentMapID As Long
+Private mbManualHeader As Boolean
 
 Private mintType() As Integer
 Private mlngSize() As Long
@@ -240,7 +241,6 @@ Public Function ExecuteMailMerge(lngMailMergeID As Long, Optional lngRecordID As
   
   If Progress Then Call WrdCreateDataSource
   If Progress Then Call WrdPopulateDataSource
-  If Progress Then Call WrdSetV1HeaderText
   If Progress Then Call WrdOpenTemplate(False)
   
   If fOK Then
@@ -250,6 +250,7 @@ Public Function ExecuteMailMerge(lngMailMergeID As Long, Optional lngRecordID As
       'may occur.
       If Progress Then Call WrdValidateTemplateMergeFields(True)
       If Progress Then Call WrdSetMergeOptions
+      If Progress Then Call WrdSetV1HeaderText
     
     Else
       'If not running in batch mode then
@@ -260,6 +261,7 @@ Public Function ExecuteMailMerge(lngMailMergeID As Long, Optional lngRecordID As
       If Progress Then Call WrdPauseBeforeMerge
       If Progress Then Call WrdValidateTemplateMergeFields(False)
       If Progress Then Call WrdCheckIfSaveTemplate
+      If Progress Then Call WrdSetV1HeaderText
     
     End If
   End If
@@ -513,6 +515,7 @@ Private Sub SQLGetMergeDefinition()
       Case wdSendToPrinter, 3 ' We use this as Version 1
         mstrOutputPrinterName = !OutputPrinterName
         mlngDocumentMapID = IIf(IsNull(!DocumentMapID), 0, !DocumentMapID)
+        mbManualHeader = IIf(IsNull(!ManualDocManHeader), 0, !ManualDocManHeader)
     
     End Select
 
@@ -1494,10 +1497,10 @@ Private Sub TidyUpAndExit()
     Kill mstrDefAttachmentName
   End If
 
-  ' We are not using the original template - kill this fake
-  If mlngDocumentMapID > 0 Then
-    Kill mstrDefTemplateFile
-  End If
+'''''''  ' We are not using the original template - kill this fake
+'''''''  If mlngDocumentMapID > 0 Then
+'''''''    Kill mstrDefTemplateFile
+'''''''  End If
 
   'Kill the data source
   wrdDocDataSource.Close SaveChanges:=False
@@ -2990,49 +2993,87 @@ Private Sub WrdSetV1HeaderText()
 
   On Error GoTo LocalErr
 
-  Dim objFile As New FileSystemObject
   Dim rsDocumentMap As ADODB.Recordset
+  Dim rsData As ADODB.Recordset
+  Dim objWordTemplate As Word.Document
+  Dim objWordSelection As Word.Selection
+  
   Dim sTempTemplateFile As String
   Dim sHeader As String
   Dim sSQL As String
+  
+  Dim sTableName As String
+  Dim sColumnName As String
+  
+  Dim sCategory As String
+  Dim sType As String
+  Dim sKeyField1 As String
+  Dim sKeyField2 As String
+  Dim sKeyField3 As String
 
   ' If Version1 and we have auto add header then insert the header text at the top of a copy of the source template
-  If mlngDocumentMapID > 0 Then
+  If mlngDocumentMapID > 0 And Not mbManualHeader Then
     
     sSQL = "SELECT * FROM dbo.[ASRSysDocumentManagementTypes] WHERE [DocumentMapID] = " & mlngDocumentMapID
     Set rsDocumentMap = datGeneral.GetRecords(sSQL)
     If Not (rsDocumentMap.EOF And rsDocumentMap.BOF) Then
-      sHeader = IIf(IsNull(rsDocumentMap!HeaderText), "", rsDocumentMap!HeaderText)
-    End If
-    rsDocumentMap.Close
+      
+      sTableName = datGeneral.GetTableName(Val(GetModuleParameter(MODULEKEY_DOCMANAGEMENT, PARAMETERKEY_DOCMAN_CATEGORYTABLE)))
+      sColumnName = datGeneral.GetColumnName(Val(GetModuleParameter(MODULEKEY_DOCMANAGEMENT, PARAMETERKEY_DOCMAN_CATEGORYCOLUMN)))
+      Set rsData = datGeneral.GetRecords("SELECT DISTINCT [id], [" & sColumnName & "] FROM dbo.[" & sTableName & "] " & _
+                    "WHERE [id] = " & rsDocumentMap!CategoryRecordID)
+      If Not (rsData.EOF And rsData.BOF) Then
+        sCategory = rsData.Fields(1).Value
+      End If
+      rsData.Close
+
+      sTableName = datGeneral.GetTableName(Val(GetModuleParameter(MODULEKEY_DOCMANAGEMENT, PARAMETERKEY_DOCMAN_TYPETABLE)))
+      sColumnName = datGeneral.GetColumnName(Val(GetModuleParameter(MODULEKEY_DOCMANAGEMENT, PARAMETERKEY_DOCMAN_TYPECOLUMN)))
+      Set rsData = datGeneral.GetRecords("SELECT [id], [" & sColumnName & "] FROM dbo.[" & sTableName & "] " & _
+                    "WHERE [id] = " & rsDocumentMap!TypeRecordID)
+      If Not (rsData.EOF And rsData.BOF) Then
+        sType = rsData.Fields(1).Value
+      End If
+      rsData.Close
+      
+      sKeyField1 = datGeneral.GetColumnName(rsDocumentMap!Parent1KeyfieldColumnID, True)
+      sKeyField2 = datGeneral.GetColumnName(rsDocumentMap!TargetKeyfieldColumnID, True)
+      sKeyField3 = 0
+      
+      wrdDocTemplate.ActiveWindow.Selection.Font.Size = 10
+      wrdDocTemplate.ActiveWindow.Selection.Font.Color = vbRed
     
-    ' Copy the source template
-    sTempTemplateFile = GetTmpFName
-    objFile.CopyFile mstrDefTemplateFile, sTempTemplateFile, True
-    
-    ' Insert the header text
-    Set wrdDocTemplate = wrdApp.Documents.Open( _
-        FileName:=sTempTemplateFile, _
-        ConfirmConversions:=False, _
-        ReadOnly:=False, _
-        AddToRecentFiles:=False, _
-        Revert:=False)
+      Set objWordSelection = wrdApp.Selection
+
+      With wrdDocTemplate.Fields
+
+        objWordSelection.TypeText "~~!:~~@[$TABLE:COMPLETE_FILES]~~@[DOC_SECTION:" & sCategory & "]"
+        objWordSelection.TypeText "~~@[DOC_TYPE:" & sType & "]"
         
-    wrdDocTemplate.ActiveWindow.Selection.Font.Size = 4
-    wrdDocTemplate.ActiveWindow.Selection.Font.Color = vbRed
-    wrdDocTemplate.ActiveWindow.Selection.TypeText sHeader
-    
-    wrdDocTemplate.Save
-    wrdDocTemplate.Close
-    
-    ' Set the mail merge to look at our new modified template
-    mstrDefTemplateFile = sTempTemplateFile
+        If Len(sKeyField1) > 0 Then
+          objWordSelection.TypeText "~~@[STAFF_NO:"
+          .Add objWordSelection.Range, wdFieldMergeField, Replace(sKeyField1, ".", "_", 1), False
+          objWordSelection.TypeText "]"
+        End If
+
+        If Len(sKeyField2) > 0 Then
+          objWordSelection.TypeText "~~@[DOCUMENT_KEY:"
+          .Add objWordSelection.Range, wdFieldMergeField, Replace(sKeyField2, ".", "_", 1), False
+          objWordSelection.TypeText "]"
+        End If
+        
+        objWordSelection.TypeText "~~@[DOC_DATE:08/03/2010]~~"
+
+      End With
+    End If
+  
+    ' Tidy up
+    rsDocumentMap.Close
   
   End If
-
-  ' Tidy up
+  
+  Set rsData = Nothing
   Set rsDocumentMap = Nothing
-  Set wrdDocTemplate = Nothing
 
 Exit Sub
 
@@ -3041,5 +3082,6 @@ LocalErr:
   fOK = False
 
 End Sub
+
 
 
