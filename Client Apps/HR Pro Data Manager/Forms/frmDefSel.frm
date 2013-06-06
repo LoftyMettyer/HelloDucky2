@@ -732,7 +732,9 @@ Private Sub cmdDelete_Click()
         
         End Select
   
-        datGeneral.DeleteRecord msTableName, msIDField, lngSelectedID
+        If Not mutlUtilityType = utlAll Then
+          datGeneral.DeleteRecord msTableName, msIDField, lngSelectedID
+        End If
         
         If mutlUtilityType <> -1 Then
           Call DeleteUtilAccessLog(mutlUtilityType, lngSelectedID)
