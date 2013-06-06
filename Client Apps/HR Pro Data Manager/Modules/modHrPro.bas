@@ -4362,3 +4362,120 @@ NotInstalled:
 
 End Function
 
+
+'Private Function GetCommonDialogFormats(strDestin As String, intOfficeVersion As Integer) As String
+'
+'  Dim rsTemp As Recordset
+'  Dim strSQL As String
+'  Dim strOutput As String
+'  Dim strFormatField As String
+'
+'  On Local Error GoTo LocalErr
+'
+'  strFormatField = IIf(intOfficeVersion < 12, "Office2003", "Office2007")
+'
+'  strSQL = "SELECT * " & _
+'           "FROM   ASRSysFileFormats " & _
+'           "WHERE  Destination = '" & Replace(strDestin, "'", "''") & "' " & _
+'           "  AND  NOT " & strFormatField & " IS NULL " & _
+'           "ORDER BY ID"
+'  Set rsTemp = datGeneral.GetRecords(strSQL)
+'
+'  mlngFileFormatsDefault = 0
+'  strOutput = vbNullString
+'  Do While Not rsTemp.EOF
+'    If strOutput <> vbNullString Then
+'      strOutput = strOutput & "|"
+'    End If
+'
+'    If rsTemp.Fields("Default").Value = True Then
+'      mlngFileFormatsDefault = rsTemp.Fields("ID").Value
+'    End If
+'
+'    strOutput = strOutput & _
+'      rsTemp.Fields("Description").Value & "|*." & rsTemp.Fields("Extension").Value
+'    mlngFileFormats.Add rsTemp.Fields("ID").Value & "|" & rsTemp.Fields("Extension").Value
+'
+'    rsTemp.MoveNext
+'  Loop
+'
+'  mlngFileFormatsDefault = GetUserSetting("Output", strDestin & "Format", mlngFileFormatsDefault)
+'
+'  GetCommonDialogFormats = strOutput
+'
+'LocalErr:
+'  If Not rsTemp Is Nothing Then
+'    If rsTemp.State <> adStateClosed Then
+'      rsTemp.Close
+'    End If
+'    Set rsTemp = Nothing
+'  End If
+'
+'End Function
+
+
+Public Function InitialiseCommonDialogFormats(cd1 As CommonDialog, strDestin As String, intOfficeVersion As Integer) As Boolean
+
+  Dim rsTemp As Recordset
+  Dim strSQL As String
+  Dim strFormatField As String
+  Dim intUserDefault As Integer
+  Dim intCount As Integer
+  Dim blnResult As Boolean
+  
+  Dim strFilter As String
+  Dim intFilterIndex As Integer
+  
+  On Local Error GoTo LocalErr
+  
+  blnResult = False
+  
+  
+  strFormatField = IIf(intOfficeVersion < 12, "Office2003", "Office2007")
+  
+  strSQL = "SELECT * " & _
+           "FROM   ASRSysFileFormats " & _
+           "WHERE  Destination = '" & Replace(strDestin, "'", "''") & "' " & _
+           "  AND  NOT " & strFormatField & " IS NULL " & _
+           "ORDER BY ID"
+  Set rsTemp = datGeneral.GetRecords(strSQL)
+
+  intUserDefault = GetUserSetting("Output", strDestin & "Format", 0)
+  
+  strFilter = vbNullString
+  intFilterIndex = 0
+  intCount = 1
+  Do While Not rsTemp.EOF
+    
+    strFilter = strFilter & _
+      IIf(strFilter <> vbNullString, "|", "") & _
+      rsTemp.Fields("Description").Value & "|*." & rsTemp.Fields("Extension").Value
+    
+    If intUserDefault = rsTemp.Fields(strFormatField).Value Then
+      intFilterIndex = intCount
+    ElseIf rsTemp.Fields("Default").Value = True Then
+      If intFilterIndex = 0 Then
+        intFilterIndex = intCount
+      End If
+    End If
+    
+    intCount = intCount + 1
+    rsTemp.MoveNext
+  Loop
+
+  cd1.Filter = strFilter
+  cd1.FilterIndex = intFilterIndex
+
+  blnResult = True
+
+LocalErr:
+  If Not rsTemp Is Nothing Then
+    If rsTemp.State <> adStateClosed Then
+      rsTemp.Close
+    End If
+    Set rsTemp = Nothing
+  End If
+    
+  InitialiseCommonDialogFormats = blnResult
+
+End Function

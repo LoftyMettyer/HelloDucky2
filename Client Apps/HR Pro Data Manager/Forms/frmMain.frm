@@ -46,7 +46,7 @@ Begin VB.MDIForm frmMain
       Left            =   3570
       Top             =   2460
    End
-   Begin MSComDlg.CommonDialog CommonDialog1 
+   Begin MSComDlg.CommonDialog CommonDialogOLD 
       Left            =   2160
       Top             =   1515
       _ExtentX        =   847
@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "10:06"
+            TextSave        =   "12:06"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -122,6 +122,13 @@ Begin VB.MDIForm frmMain
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
+   End
+   Begin MSComDlg.CommonDialog CommonDialog1 
+      Left            =   3075
+      Top             =   1560
+      _ExtentX        =   847
+      _ExtentY        =   847
+      _Version        =   393216
    End
    Begin XtremeSkinFramework.SkinFramework SkinFramework1 
       Left            =   5400

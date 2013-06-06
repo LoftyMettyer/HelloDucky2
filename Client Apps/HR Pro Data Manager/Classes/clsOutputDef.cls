@@ -18,10 +18,10 @@ Attribute mfrmParent.VB_VarHelpID = -1
 Private mlngFormat As OutputFormats
 Private WithEvents cmdEmailGroup As CommandButton
 Attribute cmdEmailGroup.VB_VarHelpID = -1
-Private WithEvents cmdFileName As CommandButton
-Attribute cmdFileName.VB_VarHelpID = -1
-Private mlngFileFormats As Collection
-Private mlngFileFormatsDefault As Long
+Private WithEvents cmdFilename As CommandButton
+Attribute cmdFilename.VB_VarHelpID = -1
+'Private mlngFileFormats As Collection
+'Private mlngFileFormatsDefault As Long
 
 Public Sub PopulateOutputControls(rsTemp As Recordset)
 
@@ -42,8 +42,8 @@ Public Sub PopulateOutputControls(rsTemp As Recordset)
     
     .chkDestination(desSave).Value = IIf(rsTemp!OutputSave, vbChecked, vbUnchecked)
     If .chkDestination(desSave).Value Then
-      .txtFileName.Text = rsTemp!OutputFilename
-      .txtFileName.SelLength = Len(.txtFileName.Text)
+      .txtFilename.Text = rsTemp!OutputFilename
+      .txtFilename.SelLength = Len(.txtFilename.Text)
       '.txtFilename.Tag = rsTemp!OutputSaveFormat
       SetComboItem .cboSaveExisting, rsTemp!OutputSaveExisting
     End If
@@ -52,7 +52,7 @@ Public Sub PopulateOutputControls(rsTemp As Recordset)
     If rsTemp!OutputEmail Then
       .txtEmailGroup.Text = datGeneral.GetEmailGroupName(rsTemp!OutputEmailAddr)
       .txtEmailGroup.Tag = rsTemp!OutputEmailAddr
-      .txtEMailSubject.Text = rsTemp!OutputEmailSubject
+      .txtEmailSubject.Text = rsTemp!OutputEmailSubject
       .txtEmailAttachAs.Text = IIf(IsNull(rsTemp!OutputEmailAttachAs), vbNullString, rsTemp!OutputEmailAttachAs)
       '.txtEmailAttachAs.Tag = rsTemp!OutputEmailFileFormat
     End If
@@ -85,7 +85,7 @@ Public Property Let ParentForm(ByVal frmNewValue As Form)
   
   Set mfrmParent = frmNewValue
   Set cmdEmailGroup = mfrmParent.cmdEmailGroup
-  Set cmdFileName = mfrmParent.cmdFileName
+  Set cmdFilename = mfrmParent.cmdFilename
   
   If Not IsADestinationChecked Then
     CheckFirstAvailableDestination
@@ -99,7 +99,7 @@ Public Sub FormatClick(Index As Integer, Optional blnDataToScreen As Boolean = T
   mlngFormat = Index
   CheckIfPreviewAvailable Index
   
-  Set mlngFileFormats = New Collection
+  'Set mlngFileFormats = New Collection
   
   Select Case mlngFormat
   'DATA ONLY
@@ -111,7 +111,8 @@ Public Sub FormatClick(Index As Integer, Optional blnDataToScreen As Boolean = T
     EnableDestinations False, False, True, True
     'JPD 20041202 Fault 9577
     'mfrmParent.CommonDialog1.Filter = "Comma Separated Values (*.csv)|*.csv|Text (*.txt)|*.txt"
-    mfrmParent.CommonDialog1.Filter = "Comma Separated Values (*.csv)|*.csv|Text (*.txt)|*.txt|All Files|*.*"
+    'mfrmParent.CommonDialog1.Filter = "Comma Separated Values (*.csv)|*.csv|Text (*.txt)|*.txt|All Files|*.*"
+    frmMain.CommonDialog1.Filter = "Comma Separated Values (*.csv)|*.csv|Text (*.txt)|*.txt|All Files|*.*"
 
 
   'FIXEDLENGTH
@@ -119,25 +120,32 @@ Public Sub FormatClick(Index As Integer, Optional blnDataToScreen As Boolean = T
     EnableDestinations False, False, True, True
     'JPD 20041202 Fault 9577
     'mfrmParent.CommonDialog1.Filter = "Text (*.txt)|*.txt"
-    mfrmParent.CommonDialog1.Filter = "Text (*.txt)|*.txt|All Files|*.*"
+    'mfrmParent.CommonDialog1.Filter = "Text (*.txt)|*.txt|All Files|*.*"
+    frmMain.CommonDialog1.Filter = "Text (*.txt)|*.txt|All Files|*.*"
 
 
   'HTML
   Case fmtHTML
     EnableDestinations True, False, True, True
-    mfrmParent.CommonDialog1.Filter = "HTML Document (*.htm)|*.htm"
+    'mfrmParent.CommonDialog1.Filter = "HTML Document (*.htm)|*.htm"
+    frmMain.CommonDialog1.Filter = "HTML Document (*.htm)|*.htm"
 
   'WORD
   Case fmtWordDoc
     EnableDestinations True, True, True, True
     'mfrmParent.CommonDialog1.Filter = gsOfficeFileFilter_Word
-    mfrmParent.CommonDialog1.Filter = GetCommonDialogFormats("Word", GetOfficeWordVersion)
+    'mfrmParent.CommonDialog1.Filter = GetCommonDialogFormats("Word", GetOfficeWordVersion)
+    'InitialiseCommonDialogFormats mfrmParent.CommonDialog1, "Word", GetOfficeWordVersion
+    InitialiseCommonDialogFormats frmMain.CommonDialog1, "Word", GetOfficeWordVersion
 
   'EXCEL
   Case fmtExcelWorksheet, fmtExcelChart, fmtExcelPivotTable
     EnableDestinations True, True, True, True
     'mfrmParent.CommonDialog1.Filter = gsOfficeFileFilter_Excel
-    mfrmParent.CommonDialog1.Filter = GetCommonDialogFormats("Excel", GetOfficeExcelVersion)
+    'mfrmParent.CommonDialog1.Filter = GetCommonDialogFormats("Excel", GetOfficeExcelVersion)
+    'InitialiseCommonDialogFormats mfrmParent.CommonDialog1, "Excel", GetOfficeWordVersion
+    'InitialiseCommonDialogFormats mfrmParent.CommonDialog1, "Excel", GetOfficeWordVersion
+    InitialiseCommonDialogFormats frmMain.CommonDialog1, "Excel", GetOfficeWordVersion
 
   'SQL TABLE
   Case fmtSQLTable
@@ -148,9 +156,11 @@ Public Sub FormatClick(Index As Integer, Optional blnDataToScreen As Boolean = T
 
   'In case the output format has changed, ensure
   'the extension of the output file name is correct
-  If mfrmParent.txtFileName.Text <> vbNullString Then
-    mfrmParent.txtFileName.Text = Left(mfrmParent.txtFileName.Text, InStrRev(mfrmParent.txtFileName.Text, ".")) & _
+  If mfrmParent.txtFilename.Text <> vbNullString Then
+    'mfrmParent.txtFilename.Text = Left(mfrmParent.txtFilename.Text, InStrRev(mfrmParent.txtFilename.Text, ".")) & _
       Right(Split(mfrmParent.CommonDialog1.Filter, ".")(1), 3)
+    mfrmParent.txtFilename.Text = Left(mfrmParent.txtFilename.Text, InStrRev(mfrmParent.txtFilename.Text, ".")) & _
+      Right(Split(frmMain.CommonDialog1.Filter, ".")(1), 3)
   End If
 
   'Need to check if we can allow "Add new Worksheet" option
@@ -268,9 +278,9 @@ Public Sub DestinationClick(Index As Integer)
       .lblSave.Enabled = blnSave
       .lblSaveAs.Enabled = blnSave
       .lblFileName.Enabled = blnSave
-      .cmdFileName.Enabled = blnSave
+      .cmdFilename.Enabled = blnSave
       If Not blnSave Then
-        .txtFileName.Text = vbNullString
+        .txtFilename.Text = vbNullString
       End If
       EnableCombo .cboSaveExisting, blnSave
       EnableCombo .cboSaveAs, blnSave
@@ -282,24 +292,24 @@ Public Sub DestinationClick(Index As Integer)
       .lblEmail(2).Enabled = blnEmail
       .lblEmail(3).Enabled = blnEmail
       .cmdEmailGroup.Enabled = blnEmail
-      .txtEMailSubject.Enabled = blnEmail
-      .txtEMailSubject.BackColor = IIf(blnEmail, vbWindowBackground, vbButtonFace)
+      .txtEmailSubject.Enabled = blnEmail
+      .txtEmailSubject.BackColor = IIf(blnEmail, vbWindowBackground, vbButtonFace)
       .txtEmailAttachAs.Enabled = blnEmail
       .txtEmailAttachAs.BackColor = IIf(blnEmail, vbWindowBackground, vbButtonFace)
       'EnableCombo .cboEmailFileFormat, blnEmail
       
       If blnEmail Then
         .txtEmailGroup.Text = "<None>"
-        .txtEMailSubject.Text = Trim(.txtName.Text)
-        If (.txtFileName.Text <> vbNullString) Then
-          .txtEmailAttachAs.Text = FileFromFullPath(.txtFileName.Text)
+        .txtEmailSubject.Text = Trim(.txtName.Text)
+        If (.txtFilename.Text <> vbNullString) Then
+          .txtEmailAttachAs.Text = FileFromFullPath(.txtFilename.Text)
         ElseIf Trim(.txtName.Text) <> vbNullString Then
           .txtEmailAttachAs.Text = Trim(.txtName.Text) & "." & Choose(mlngFormat, "csv", "htm", "doc", "xls", "xls", "xls")
         End If
       Else
         .txtEmailGroup.Text = vbNullString
         .txtEmailGroup.Tag = 0
-        .txtEMailSubject.Text = vbNullString
+        .txtEmailSubject.Text = vbNullString
         .txtEmailAttachAs.Text = vbNullString
         .txtEmailAttachAs.Tag = 0
       End If
@@ -442,7 +452,7 @@ Public Sub ReadDefFromRecset(rsDef As Recordset)
   
     .chkDestination(desSave).Value = IIf(rsDef!OutputSave, vbChecked, vbUnchecked)
     If rsDef!OutputSave Then
-      .txtFileName.Text = rsDef!OutputFilename
+      .txtFilename.Text = rsDef!OutputFilename
       '.txtFilename.Tag = rsDef!OutputSaveFormat
       SetComboItem .cboSaveExisting, rsDef!OutputSaveExisting
     End If
@@ -451,7 +461,7 @@ Public Sub ReadDefFromRecset(rsDef As Recordset)
     If rsDef!OutputEmail Then
       .txtEmailGroup.Text = datGeneral.GetEmailGroupName(rsDef!OutputEmailAddr)
       .txtEmailGroup.Tag = rsDef!OutputEmailAddr
-      .txtEMailSubject.Text = rsDef!OutputEmailSubject
+      .txtEmailSubject.Text = rsDef!OutputEmailSubject
       .txtEmailAttachAs.Text = IIf(IsNull(rsDef!OutputEmailAttachAs), vbNullString, rsDef!OutputEmailAttachAs)
       '.txtEmailAttachAs.Tag = IIf(IsNull(rsDef!OutputEmailFileFormat), vbNullString, rsDef!OutputEmailFileFormat)
     End If
@@ -471,7 +481,7 @@ End Sub
 Private Sub cmdFileName_Click()
 
   Dim cd1 As CommonDialog
-  Dim txtFileName As TextBox
+  Dim txtFilename As TextBox
   Dim txtEmailAttachAs As TextBox
   Dim blnEmail As Boolean
   Dim lngIndex As Long
@@ -479,16 +489,17 @@ Private Sub cmdFileName_Click()
 
   On Local Error GoTo LocalErr
   
-  Set cd1 = mfrmParent.CommonDialog1
-  Set txtFileName = mfrmParent.txtFileName
+  'Set cd1 = mfrmParent.CommonDialog1
+  Set cd1 = frmMain.CommonDialog1
+  Set txtFilename = mfrmParent.txtFilename
   Set txtEmailAttachAs = mfrmParent.txtEmailAttachAs
   blnEmail = (mfrmParent.chkDestination(desEmail).Value = vbChecked)
   
   
   With cd1
 
-    .FileName = txtFileName.Text
-    If txtFileName.Text = vbNullString Then
+    .FileName = txtFilename.Text
+    If txtFilename.Text = vbNullString Then
       .InitDir = gsDocumentsPath
     End If
 
@@ -497,13 +508,13 @@ Private Sub cmdFileName_Click()
     .Flags = cdlOFNExplorer + cdlOFNHideReadOnly + cdlOFNLongNames
       
       
-    lngFormat = IIf(txtFileName.Text <> "", Val(txtFileName.Tag), mlngFileFormatsDefault)
-    For lngIndex = 1 To mlngFileFormats.Count
-      If Val(mlngFileFormats(lngIndex)) = lngFormat Then
-        .FilterIndex = lngIndex
-        Exit For
-      End If
-    Next
+'    lngFormat = IIf(txtFilename.Text <> "", Val(txtFilename.Tag), mlngFileFormatsDefault)
+'    For lngIndex = 1 To mlngFileFormats.Count
+'      If Val(mlngFileFormats(lngIndex)) = lngFormat Then
+'        .FilterIndex = lngIndex
+'        Exit For
+'      End If
+'    Next
     
     .ShowSave
 
@@ -511,10 +522,10 @@ Private Sub cmdFileName_Click()
       If Len(.FileName) > 255 Then
         MsgBox "Path and file name must not exceed 255 characters in length", vbExclamation, mfrmParent.Caption
       Else
-        txtFileName.Text = vbNullString   'activates the change event
-        txtFileName.Text = .FileName
-        txtFileName.SelStart = Len(txtFileName.Text)
-        txtFileName.Tag = mlngFileFormats(.FilterIndex)
+        txtFilename.Text = vbNullString   'activates the change event
+        txtFilename.Text = .FileName
+        txtFilename.SelStart = Len(txtFilename.Text)
+        'txtFilename.Tag = mlngFileFormats(.FilterIndex)
         
         If blnEmail Then
           If Trim(txtEmailAttachAs.Text) = vbNullString Then
@@ -545,7 +556,7 @@ Public Function ValidDestination() As Boolean
   ValidDestination = False
 
   If mfrmParent.chkDestination(desSave).Value = vbChecked Then
-    If mfrmParent.txtFileName.Text = vbNullString Then
+    If mfrmParent.txtFilename.Text = vbNullString Then
       MsgBox "You must enter a file name.", vbExclamation, mfrmParent.Caption
       Exit Function
     End If
@@ -731,58 +742,3 @@ End Function
 '  End If
 '
 'End Function
-
-
-Private Function GetCommonDialogFormats(strDestin As String, intOfficeVersion As Integer) As String
-
-  Dim rsTemp As Recordset
-  Dim strSQL As String
-  Dim strOutput As String
-  Dim strFormatField As String
-  
-  On Local Error GoTo LocalErr
-  
-  strFormatField = IIf(intOfficeVersion < 12, "Office2003", "Office2007")
-  
-  strSQL = "SELECT * " & _
-           "FROM   ASRSysFileFormats " & _
-           "WHERE  Destination = '" & Replace(strDestin, "'", "''") & "' " & _
-           "  AND  NOT " & strFormatField & " IS NULL " & _
-           "ORDER BY ID"
-  Set rsTemp = datGeneral.GetRecords(strSQL)
-
-  mlngFileFormatsDefault = 0
-  strOutput = vbNullString
-  Do While Not rsTemp.EOF
-    If strOutput <> vbNullString Then
-      strOutput = strOutput & "|"
-    End If
-    
-    If rsTemp.Fields("Default").Value = True Then
-      mlngFileFormatsDefault = rsTemp.Fields("ID").Value
-    End If
-    
-    strOutput = strOutput & _
-      rsTemp.Fields("Description").Value & "|*." & rsTemp.Fields("Extension").Value
-    mlngFileFormats.Add rsTemp.Fields("ID").Value & "|" & rsTemp.Fields("Extension").Value
-    
-    rsTemp.MoveNext
-  Loop
-
-  mlngFileFormatsDefault = GetUserSetting("Output", strDestin & "Format", mlngFileFormatsDefault)
-  
-  GetCommonDialogFormats = strOutput
-
-LocalErr:
-  If Not rsTemp Is Nothing Then
-    If rsTemp.State <> adStateClosed Then
-      rsTemp.Close
-    End If
-    Set rsTemp = Nothing
-  End If
-    
-End Function
-
-
-
-

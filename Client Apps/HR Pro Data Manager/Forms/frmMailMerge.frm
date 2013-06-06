@@ -1,8 +1,8 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmMailMerge 
@@ -98,13 +98,9 @@ Begin VB.Form frmMailMerge
       TabPicture(3)   =   "frmMailMerge.frx":092A
       Tab(3).ControlEnabled=   0   'False
       Tab(3).Control(0)=   "fraOutput(2)"
-      Tab(3).Control(0).Enabled=   0   'False
       Tab(3).Control(1)=   "fraOutput(1)"
-      Tab(3).Control(1).Enabled=   0   'False
       Tab(3).Control(2)=   "fraOutput(3)"
-      Tab(3).Control(2).Enabled=   0   'False
       Tab(3).Control(3)=   "fraOutput(0)"
-      Tab(3).Control(3).Enabled=   0   'False
       Tab(3).ControlCount=   4
       Begin VB.Frame fraOutput 
          Caption         =   "Options :"
@@ -2018,7 +2014,8 @@ Private Sub cmdFileName_Click(Index As Integer)
 
   On Local Error GoTo LocalErr
 
-  With CDialog
+  'With CDialog
+  With frmMain.CommonDialog1
     'TM20011031 Fault 3035
 '    If Len(txtFilename(Index).Text) > 0 And txtFilename(Index).Text <> "<None>" Then
 '      .FileName = txtFilename(Index).Text
@@ -2038,12 +2035,15 @@ Private Sub cmdFileName_Click(Index As Integer)
       .DialogTitle = Me.Caption & " Output Document"
       '.Filter = gsOfficeFileFilter_Word
       .Flags = cdlOFNExplorer + cdlOFNHideReadOnly + cdlOFNLongNames + cdlOFNOverwritePrompt
+      InitialiseCommonDialogFormats frmMain.CommonDialog1, "Word", GetOfficeWordVersion
       .ShowSave
     Case 1
       'Word template
       .DialogTitle = Me.Caption & " Template"
       '.Filter = gsOfficeTemplateFilter_Word
       .Flags = cdlOFNExplorer + cdlOFNHideReadOnly + cdlOFNLongNames '+ cdlOFNCreatePrompt
+      'InitialiseCommonDialogFormats frmMain.CommonDialog1, "WordTemplate", GetOfficeWordVersion
+      .Filter = "Word Template (*.dot;*.dotx;*.doc;*.docx)|*.dot;*.dotx;*.doc;*.docx"
       .ShowOpen
     End Select
 
@@ -2053,13 +2053,16 @@ Private Sub cmdFileName_Click(Index As Integer)
     End If
 
     If .FileName <> "" Then
-      If Dir(CDialog.FileName) = vbNullString And Index = 1 Then  'Only show for templates
+      'If Dir(CDialog.FileName) = vbNullString And Index = 1 Then  'Only show for templates
+      If Dir(frmMain.CommonDialog1.FileName) = vbNullString And Index = 1 Then  'Only show for templates
         If MsgBox("Template file does not exist.  Create it now?", vbYesNo + vbQuestion, Me.Caption) = vbYes Then
 
           On Error GoTo WordErr
 
-          txtFilename(Index) = CDialog.FileName
-          strFormat = GetOfficeSaveAsFormat(CDialog.FileName, GetOfficeWordVersion)
+          'txtFilename(Index) = CDialog.FileName
+          'strFormat = GetOfficeSaveAsFormat(CDialog.FileName, GetOfficeWordVersion)
+          txtFilename(Index).Text = frmMain.CommonDialog1.FileName
+          strFormat = GetOfficeSaveAsFormat(frmMain.CommonDialog1.FileName, GetOfficeWordVersion)
           
           Screen.MousePointer = vbHourglass
           gobjProgress.Caption = "Creating Word Document"
@@ -2072,7 +2075,8 @@ Private Sub cmdFileName_Click(Index As Integer)
 
           Set wrdApp = CreateObject("Word.Application")
           Set wrdDoc = wrdApp.Documents.Add
-          wrdDoc.SaveAs CDialog.FileName, Val(strFormat)
+          'wrdDoc.SaveAs CDialog.FileName, Val(strFormat)
+          wrdDoc.SaveAs frmMain.CommonDialog1.FileName, Val(strFormat)
           wrdDoc.Close False
           wrdApp.Quit False
         
@@ -2084,7 +2088,8 @@ Private Sub cmdFileName_Click(Index As Integer)
         
         End If
       Else
-        txtFilename(Index) = CDialog.FileName
+        'txtFilename(Index) = CDialog.FileName
+        txtFilename(Index).Text = frmMain.CommonDialog1.FileName
 
       End If
     End If
@@ -2107,7 +2112,7 @@ LocalErr:
     Else
       ErrorMsgbox "Error selecting file"
     End If
-    txtFilename(Index) = vbNullString
+    txtFilename(Index).Text = vbNullString
   End If
 
 Exit Sub
@@ -3022,7 +3027,7 @@ Private Sub OutputClick(pOutputType As OutputType)
 
   On Error GoTo LocalErr
 
-  FraOutput(1).Visible = (pOutputType = Document)
+  fraOutput(1).Visible = (pOutputType = Document)
   chkDocSave.Enabled = (pOutputType = Document)
   If Not pOutputType = Document Then
     chkDocSave.Value = vbUnchecked
@@ -3032,8 +3037,8 @@ Private Sub OutputClick(pOutputType As OutputType)
     chkCloseDocument.Value = vbUnchecked
   End If
 
-  FraOutput(2).Visible = (pOutputType = Email)
-  FraOutput(3).Visible = (pOutputType = Printer Or pOutputType = Version1)
+  fraOutput(2).Visible = (pOutputType = Email)
+  fraOutput(3).Visible = (pOutputType = Printer Or pOutputType = Version1)
   
   'MH20040419 Fault 5665 REMOVED
   'If blnEmail Then
@@ -3072,7 +3077,7 @@ Private Sub OutputClick(pOutputType As OutputType)
   End If
   
   ' Version 1/Printer information
-  FraOutput(3).Caption = IIf(pOutputType = Version1, "Document Management :", "Printer :")
+  fraOutput(3).Caption = IIf(pOutputType = Version1, "Document Management :", "Printer :")
   lblPrinter.Caption = IIf(pOutputType = Version1, "Engine :", "Printer :")
   
   ' Do we prompt where to start labels
@@ -6357,9 +6362,9 @@ Private Sub EnableDisableTabControls()
   
   ' Output tab page controls
   fraSort(0).Enabled = (SSTab1.Tab = 2)
-  FraOutput(0).Enabled = (SSTab1.Tab = 3)
-  FraOutput(1).Enabled = (SSTab1.Tab = 3)
-  FraOutput(2).Enabled = (SSTab1.Tab = 3)
+  fraOutput(0).Enabled = (SSTab1.Tab = 3)
+  fraOutput(1).Enabled = (SSTab1.Tab = 3)
+  fraOutput(2).Enabled = (SSTab1.Tab = 3)
   
 End Sub
 
