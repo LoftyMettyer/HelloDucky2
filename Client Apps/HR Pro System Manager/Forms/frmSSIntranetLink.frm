@@ -27,18 +27,133 @@ Begin VB.Form frmSSIntranetLink
    ScaleWidth      =   9360
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
+   Begin VB.Frame fraDBValue 
+      Caption         =   "Database Value :"
+      Height          =   1875
+      Left            =   2850
+      TabIndex        =   73
+      Top             =   9990
+      Width           =   6300
+      Begin VB.ComboBox cboColumns 
+         Height          =   315
+         Left            =   1395
+         Sorted          =   -1  'True
+         Style           =   2  'Dropdown List
+         TabIndex        =   80
+         Top             =   705
+         Width           =   3930
+      End
+      Begin VB.ComboBox cboParents 
+         Height          =   315
+         Left            =   1395
+         Sorted          =   -1  'True
+         Style           =   2  'Dropdown List
+         TabIndex        =   79
+         Top             =   315
+         Width           =   3930
+      End
+      Begin VB.OptionButton optAggregateType 
+         Caption         =   "Count"
+         Height          =   285
+         Index           =   0
+         Left            =   2265
+         TabIndex        =   78
+         Top             =   1545
+         Value           =   -1  'True
+         Width           =   855
+      End
+      Begin VB.OptionButton optAggregateType 
+         Caption         =   "Total"
+         Height          =   285
+         Index           =   1
+         Left            =   3390
+         TabIndex        =   77
+         Top             =   1545
+         Width           =   765
+      End
+      Begin VB.CommandButton cmdFilter 
+         Caption         =   "..."
+         Height          =   315
+         Left            =   4635
+         TabIndex        =   76
+         Top             =   1080
+         Width           =   315
+      End
+      Begin VB.TextBox txtFilter 
+         Height          =   330
+         Left            =   1395
+         TabIndex        =   75
+         Top             =   1080
+         Width           =   3225
+      End
+      Begin VB.CommandButton cmdFilterClear 
+         Caption         =   "O"
+         BeginProperty Font 
+            Name            =   "Wingdings 2"
+            Size            =   20.25
+            Charset         =   2
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   315
+         Left            =   4965
+         MaskColor       =   &H000000FF&
+         TabIndex        =   74
+         ToolTipText     =   "Clear Path"
+         Top             =   1080
+         UseMaskColor    =   -1  'True
+         Width           =   330
+      End
+      Begin VB.Label lblParents 
+         AutoSize        =   -1  'True
+         Caption         =   "Table :"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   84
+         Top             =   345
+         Width           =   600
+      End
+      Begin VB.Label lblColumn 
+         AutoSize        =   -1  'True
+         Caption         =   "Column :"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   83
+         Top             =   720
+         Width           =   795
+      End
+      Begin VB.Label lblFilter 
+         Caption         =   "Filter :"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   82
+         Top             =   1155
+         Width           =   615
+      End
+      Begin VB.Label lblAggregateType 
+         AutoSize        =   -1  'True
+         Caption         =   "Aggregate Function :"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   81
+         Top             =   1575
+         Width           =   1785
+      End
+   End
    Begin VB.Frame fraChartLink 
       Caption         =   "Chart :"
       Height          =   3315
       Left            =   2865
-      TabIndex        =   61
+      TabIndex        =   63
       Top             =   8310
       Width           =   6300
       Begin VB.CheckBox chkShowValues 
          Caption         =   "S&how Values"
          Height          =   210
          Left            =   195
-         TabIndex        =   71
+         TabIndex        =   72
          Top             =   1695
          Width           =   1665
       End
@@ -46,7 +161,7 @@ Begin VB.Form frmSSIntranetLink
          Caption         =   "Data..."
          Height          =   375
          Left            =   180
-         TabIndex        =   68
+         TabIndex        =   70
          Top             =   2355
          Width           =   1200
       End
@@ -54,7 +169,7 @@ Begin VB.Form frmSSIntranetLink
          Height          =   2505
          Left            =   2610
          OleObjectBlob   =   "frmSSIntranetLink.frx":000C
-         TabIndex        =   67
+         TabIndex        =   69
          Top             =   570
          Width           =   3330
       End
@@ -62,7 +177,7 @@ Begin VB.Form frmSSIntranetLink
          Caption         =   "S&tack Series"
          Height          =   210
          Left            =   195
-         TabIndex        =   66
+         TabIndex        =   68
          Top             =   2040
          Width           =   1665
       End
@@ -70,7 +185,7 @@ Begin VB.Form frmSSIntranetLink
          Caption         =   "Dotted &Gridlines"
          Height          =   195
          Left            =   195
-         TabIndex        =   65
+         TabIndex        =   67
          Top             =   1350
          Width           =   1980
       End
@@ -78,7 +193,7 @@ Begin VB.Form frmSSIntranetLink
          Caption         =   "Show &Legend"
          Height          =   240
          Left            =   195
-         TabIndex        =   64
+         TabIndex        =   66
          Top             =   990
          Width           =   1710
       End
@@ -88,7 +203,7 @@ Begin VB.Form frmSSIntranetLink
          Left            =   195
          List            =   "frmSSIntranetLink.frx":24FE
          Style           =   2  'Dropdown List
-         TabIndex        =   62
+         TabIndex        =   64
          Top             =   555
          Width           =   2205
       End
@@ -97,7 +212,7 @@ Begin VB.Form frmSSIntranetLink
          Caption         =   "Chart Type :"
          Height          =   195
          Left            =   195
-         TabIndex        =   63
+         TabIndex        =   65
          Top             =   300
          Width           =   1095
       End
@@ -106,14 +221,14 @@ Begin VB.Form frmSSIntranetLink
       Caption         =   "Separator :"
       Height          =   1875
       Left            =   2880
-      TabIndex        =   55
+      TabIndex        =   57
       Top             =   7440
       Width           =   6300
       Begin VB.CommandButton cmdIcon 
          Caption         =   "..."
          Height          =   315
          Left            =   4830
-         TabIndex        =   57
+         TabIndex        =   59
          Top             =   315
          Width           =   315
       End
@@ -121,7 +236,7 @@ Begin VB.Form frmSSIntranetLink
          Enabled         =   0   'False
          Height          =   330
          Left            =   1050
-         TabIndex        =   56
+         TabIndex        =   58
          Top             =   300
          Width           =   3765
       End
@@ -139,7 +254,7 @@ Begin VB.Form frmSSIntranetLink
          Height          =   315
          Left            =   5160
          MaskColor       =   &H000000FF&
-         TabIndex        =   58
+         TabIndex        =   60
          ToolTipText     =   "Clear Path"
          Top             =   315
          UseMaskColor    =   -1  'True
@@ -149,7 +264,7 @@ Begin VB.Form frmSSIntranetLink
          Caption         =   "Column &break"
          Height          =   255
          Left            =   1050
-         TabIndex        =   59
+         TabIndex        =   61
          Top             =   690
          Width           =   2040
       End
@@ -158,7 +273,7 @@ Begin VB.Form frmSSIntranetLink
          Caption         =   "There are no configurable options for this link type"
          Height          =   195
          Left            =   210
-         TabIndex        =   69
+         TabIndex        =   71
          Top             =   1110
          Visible         =   0   'False
          Width           =   4350
@@ -167,7 +282,7 @@ Begin VB.Form frmSSIntranetLink
          Caption         =   "Icon :"
          Height          =   195
          Left            =   210
-         TabIndex        =   60
+         TabIndex        =   62
          Top             =   345
          Width           =   615
       End
@@ -183,14 +298,14 @@ Begin VB.Form frmSSIntranetLink
       Caption         =   "HR Pro Report / Utility :"
       Height          =   1485
       Left            =   2880
-      TabIndex        =   25
+      TabIndex        =   29
       Top             =   6180
       Width           =   6300
       Begin VB.ComboBox cboHRProUtility 
          Height          =   315
          Left            =   1400
          Style           =   2  'Dropdown List
-         TabIndex        =   29
+         TabIndex        =   33
          Top             =   700
          Width           =   4700
       End
@@ -200,7 +315,7 @@ Begin VB.Form frmSSIntranetLink
          Left            =   1400
          List            =   "frmSSIntranetLink.frx":2502
          Style           =   2  'Dropdown List
-         TabIndex        =   27
+         TabIndex        =   31
          Top             =   300
          Width           =   4700
       End
@@ -210,7 +325,7 @@ Begin VB.Form frmSSIntranetLink
          ForeColor       =   &H000000FF&
          Height          =   195
          Left            =   1395
-         TabIndex        =   30
+         TabIndex        =   34
          Top             =   1160
          Width           =   4695
          WordWrap        =   -1  'True
@@ -219,7 +334,7 @@ Begin VB.Form frmSSIntranetLink
          Caption         =   "Name :"
          Height          =   195
          Left            =   195
-         TabIndex        =   28
+         TabIndex        =   32
          Top             =   765
          Width           =   780
       End
@@ -227,7 +342,7 @@ Begin VB.Form frmSSIntranetLink
          Caption         =   "Type :"
          Height          =   195
          Left            =   195
-         TabIndex        =   26
+         TabIndex        =   30
          Top             =   360
          Width           =   645
       End
@@ -236,14 +351,14 @@ Begin VB.Form frmSSIntranetLink
       Caption         =   "Email Link :"
       Height          =   1245
       Left            =   2880
-      TabIndex        =   41
+      TabIndex        =   45
       Top             =   5310
       Width           =   6300
       Begin VB.TextBox txtEmailSubject 
          Height          =   315
          Left            =   1575
          MaxLength       =   500
-         TabIndex        =   45
+         TabIndex        =   49
          Top             =   700
          Width           =   4515
       End
@@ -251,7 +366,7 @@ Begin VB.Form frmSSIntranetLink
          Height          =   315
          Left            =   1575
          MaxLength       =   500
-         TabIndex        =   43
+         TabIndex        =   47
          Top             =   300
          Width           =   4515
       End
@@ -260,7 +375,7 @@ Begin VB.Form frmSSIntranetLink
          Caption         =   "Email Subject :"
          Height          =   195
          Left            =   195
-         TabIndex        =   44
+         TabIndex        =   48
          Top             =   765
          Width           =   1275
       End
@@ -269,7 +384,7 @@ Begin VB.Form frmSSIntranetLink
          Caption         =   "Email Address :"
          Height          =   195
          Left            =   195
-         TabIndex        =   42
+         TabIndex        =   46
          Top             =   360
          Width           =   1320
       End
@@ -278,14 +393,14 @@ Begin VB.Form frmSSIntranetLink
       Caption         =   "URL :"
       Height          =   1125
       Left            =   2880
-      TabIndex        =   31
+      TabIndex        =   35
       Top             =   4470
       Width           =   6300
       Begin VB.TextBox txtURL 
          Height          =   315
          Left            =   1575
          MaxLength       =   500
-         TabIndex        =   33
+         TabIndex        =   37
          Top             =   300
          Width           =   4515
       End
@@ -293,7 +408,7 @@ Begin VB.Form frmSSIntranetLink
          Caption         =   "&Display in new window"
          Height          =   330
          Left            =   1575
-         TabIndex        =   34
+         TabIndex        =   38
          Top             =   690
          Width           =   2685
       End
@@ -301,7 +416,7 @@ Begin VB.Form frmSSIntranetLink
          Caption         =   "URL :"
          Height          =   195
          Left            =   195
-         TabIndex        =   32
+         TabIndex        =   36
          Top             =   360
          Width           =   570
       End
@@ -310,14 +425,14 @@ Begin VB.Form frmSSIntranetLink
       Caption         =   "Document :"
       Height          =   1125
       Left            =   165
-      TabIndex        =   46
+      TabIndex        =   50
       Top             =   6435
       Width           =   9060
       Begin VB.TextBox txtDocumentFilePath 
          Height          =   315
          Left            =   1400
          MaxLength       =   500
-         TabIndex        =   48
+         TabIndex        =   52
          Top             =   300
          Width           =   7365
       End
@@ -325,7 +440,7 @@ Begin VB.Form frmSSIntranetLink
          Caption         =   "Displa&y hyperlink to document"
          Height          =   330
          Left            =   1395
-         TabIndex        =   49
+         TabIndex        =   53
          Top             =   690
          Width           =   3720
       End
@@ -334,7 +449,7 @@ Begin VB.Form frmSSIntranetLink
          Caption         =   "URL :"
          Height          =   195
          Left            =   195
-         TabIndex        =   47
+         TabIndex        =   51
          Top             =   360
          Width           =   390
       End
@@ -350,14 +465,14 @@ Begin VB.Form frmSSIntranetLink
       Caption         =   "Application :"
       Height          =   1245
       Left            =   2880
-      TabIndex        =   35
+      TabIndex        =   39
       Top             =   3585
       Width           =   6300
       Begin VB.CommandButton cmdAppFilePathSel 
          Caption         =   "..."
          Height          =   315
          Left            =   5760
-         TabIndex        =   38
+         TabIndex        =   42
          Top             =   300
          UseMaskColor    =   -1  'True
          Width           =   315
@@ -366,7 +481,7 @@ Begin VB.Form frmSSIntranetLink
          Height          =   315
          Left            =   1575
          MaxLength       =   500
-         TabIndex        =   37
+         TabIndex        =   41
          Top             =   300
          Width           =   4185
       End
@@ -374,7 +489,7 @@ Begin VB.Form frmSSIntranetLink
          Height          =   315
          Left            =   1575
          MaxLength       =   500
-         TabIndex        =   40
+         TabIndex        =   44
          Top             =   700
          Width           =   4515
       End
@@ -383,7 +498,7 @@ Begin VB.Form frmSSIntranetLink
          Caption         =   "File Path :"
          Height          =   195
          Left            =   195
-         TabIndex        =   36
+         TabIndex        =   40
          Top             =   360
          Width           =   720
       End
@@ -392,7 +507,7 @@ Begin VB.Form frmSSIntranetLink
          Caption         =   "Parameters :"
          Height          =   195
          Left            =   195
-         TabIndex        =   39
+         TabIndex        =   43
          Top             =   765
          Width           =   930
       End
@@ -405,11 +520,20 @@ Begin VB.Form frmSSIntranetLink
       Top             =   1920
       Width           =   2500
       Begin VB.OptionButton optLink 
+         Caption         =   "&Database Value"
+         Height          =   450
+         Index           =   8
+         Left            =   195
+         TabIndex        =   18
+         Top             =   2985
+         Width           =   2235
+      End
+      Begin VB.OptionButton optLink 
          Caption         =   "Pending &Workflows"
          Height          =   195
          Index           =   7
          Left            =   195
-         TabIndex        =   70
+         TabIndex        =   17
          Top             =   2775
          Width           =   2235
       End
@@ -418,7 +542,7 @@ Begin VB.Form frmSSIntranetLink
          Height          =   315
          Index           =   6
          Left            =   195
-         TabIndex        =   54
+         TabIndex        =   16
          Top             =   2385
          Width           =   1305
       End
@@ -427,17 +551,17 @@ Begin VB.Form frmSSIntranetLink
          Height          =   315
          Index           =   5
          Left            =   195
-         TabIndex        =   53
+         TabIndex        =   15
          Top             =   2040
          Width           =   1305
       End
       Begin VB.OptionButton optLink 
          Caption         =   "&On-screen Document Display"
          Height          =   450
-         Index           =   8
+         Index           =   9
          Left            =   200
-         TabIndex        =   15
-         Top             =   3000
+         TabIndex        =   19
+         Top             =   3420
          Visible         =   0   'False
          Width           =   2235
       End
@@ -492,14 +616,14 @@ Begin VB.Form frmSSIntranetLink
       Caption         =   "HR Pro Screen :"
       Height          =   3645
       Left            =   2880
-      TabIndex        =   16
+      TabIndex        =   20
       Top             =   1920
       Width           =   6300
       Begin VB.TextBox txtPageTitle 
          Height          =   315
          Left            =   1575
          MaxLength       =   100
-         TabIndex        =   22
+         TabIndex        =   26
          Top             =   1100
          Width           =   4515
       End
@@ -507,7 +631,7 @@ Begin VB.Form frmSSIntranetLink
          Height          =   315
          Left            =   1575
          Style           =   2  'Dropdown List
-         TabIndex        =   20
+         TabIndex        =   24
          Top             =   700
          Width           =   4515
       End
@@ -515,7 +639,7 @@ Begin VB.Form frmSSIntranetLink
          Height          =   315
          Left            =   1575
          Style           =   2  'Dropdown List
-         TabIndex        =   18
+         TabIndex        =   22
          Top             =   300
          Width           =   4515
       End
@@ -525,7 +649,7 @@ Begin VB.Form frmSSIntranetLink
          Left            =   1575
          List            =   "frmSSIntranetLink.frx":2506
          Style           =   2  'Dropdown List
-         TabIndex        =   24
+         TabIndex        =   28
          Top             =   1500
          Width           =   4515
       End
@@ -534,7 +658,7 @@ Begin VB.Form frmSSIntranetLink
          Caption         =   "Page Title :"
          Height          =   195
          Left            =   200
-         TabIndex        =   21
+         TabIndex        =   25
          Top             =   1160
          Width           =   810
       End
@@ -542,7 +666,7 @@ Begin VB.Form frmSSIntranetLink
          Caption         =   "Screen :"
          Height          =   195
          Left            =   195
-         TabIndex        =   19
+         TabIndex        =   23
          Top             =   765
          Width           =   915
       End
@@ -550,7 +674,7 @@ Begin VB.Form frmSSIntranetLink
          Caption         =   "Table :"
          Height          =   195
          Left            =   195
-         TabIndex        =   17
+         TabIndex        =   21
          Top             =   360
          Width           =   810
       End
@@ -559,7 +683,7 @@ Begin VB.Form frmSSIntranetLink
          Caption         =   "Start Mode :"
          Height          =   195
          Left            =   200
-         TabIndex        =   23
+         TabIndex        =   27
          Top             =   1560
          Width           =   900
       End
@@ -567,7 +691,7 @@ Begin VB.Form frmSSIntranetLink
    Begin VB.Frame fraOKCancel 
       Height          =   400
       Left            =   6600
-      TabIndex        =   50
+      TabIndex        =   54
       Top             =   12150
       Width           =   2600
       Begin VB.CommandButton cmdOk 
@@ -575,7 +699,7 @@ Begin VB.Form frmSSIntranetLink
          Default         =   -1  'True
          Height          =   400
          Left            =   135
-         TabIndex        =   51
+         TabIndex        =   55
          Top             =   0
          Width           =   1200
       End
@@ -584,7 +708,7 @@ Begin VB.Form frmSSIntranetLink
          Caption         =   "&Cancel"
          Height          =   400
          Left            =   1400
-         TabIndex        =   52
+         TabIndex        =   56
          Top             =   0
          Width           =   1200
       End
@@ -778,7 +902,8 @@ Public Enum SSINTRANETSCREENTYPES
   SSINTLINKSEPARATOR = 5
   SSINTLINKCHART = 6
   SSINTLINKPWFSTEPS = 7
-  SSINTLINKSCREEN_DOCUMENT = 8
+  SSINTLINKDB_VALUE = 8
+  SSINTLINKSCREEN_DOCUMENT = 9
 End Enum
 
 Private mblnCancelled As Boolean
@@ -787,6 +912,7 @@ Private mfChanged As Boolean
 'Private mlngPersonnelTableID As Long
 Private mblnRefreshing As Boolean
 Private mlngTableID As Long
+Private mlngColumnID As Long
 Private mlngViewID As Long
 Private msTableViewName As String
 Private glngPictureID As Long
@@ -879,6 +1005,10 @@ Private Sub FormatScreen()
       fraChartLink.Top = .Top
       fraChartLink.Height = .Height
       fraChartLink.Left = .Left
+      
+      fraDBValue.Top = .Top
+      fraDBValue.Height = .Height
+      fraDBValue.Left = .Left
     End With
   End If
 
@@ -1281,6 +1411,7 @@ Public Sub Initialize(piType As SSINTRANETLINKTYPES, _
     ' disable the irrelevant options
     optLink(SSINTLINKPWFSTEPS).Enabled = False
     optLink(SSINTLINKCHART).Enabled = False
+    optLink(SSINTLINKDB_VALUE).Enabled = False
     
     
   ElseIf miLinkType = SSINTLINK_DOCUMENT Then
@@ -1294,6 +1425,8 @@ Public Sub Initialize(piType As SSINTRANETLINKTYPES, _
     optLink(SSINTLINKCHART).value = True
   ElseIf piElement_Type = 3 Then
     optLink(SSINTLINKPWFSTEPS).value = True
+  ElseIf piElement_Type = 4 Then
+    optLink(SSINTLINKDB_VALUE).value = True
   End If
   
 
@@ -1302,7 +1435,7 @@ Public Sub Initialize(piType As SSINTRANETLINKTYPES, _
   GetHRProUtilityTypes
   UtilityType = psUtilityType
   SetChartTypes
-  
+    
   Prompt = psPrompt
   Text = psText
   HRProScreenID = psHRProScreenID
@@ -1341,6 +1474,20 @@ Public Sub Initialize(piType As SSINTRANETLINKTYPES, _
   ChartStackSeries = pfChartStackSeries
   ChartShowValues = pfChartShowValues
   
+  ' Set up 'Database Value' combos...
+  PopulateParentsCombo (miChartTableID) ' populate and set default value
+  PopulateColumnsCombo (cboParents.ItemData(cboParents.ListIndex))
+  optAggregateType(0).value = IIf(ChartAggregateType = 0, True, False)
+  optAggregateType(1).value = IIf(ChartAggregateType = 1, True, False)
+  txtFilter.Tag = miChartFilterID
+  txtFilter.Text = GetExpressionName(txtFilter.Tag)
+  
+  
+  txtFilter.Enabled = False
+  txtFilter.BackColor = vbButtonFace
+
+  
+  
   PopulateAccessGrid psHiddenGroups
 
   mfChanged = False
@@ -1365,6 +1512,7 @@ Private Sub RefreshControls()
   fraDocument.Visible = optLink(SSINTLINKSCREEN_DOCUMENT).value
   fraLinkSeparator.Visible = (optLink(SSINTLINKSEPARATOR).value Or optLink(SSINTLINKPWFSTEPS).value)
   fraChartLink.Visible = optLink(SSINTLINKCHART).value
+  fraDBValue.Visible = optLink(SSINTLINKDB_VALUE).value
       
   ' Disable the HR Pro screen controls as required.
   cboHRProTable.Enabled = (optLink(SSINTLINKSCREEN_HRPRO).value) And (cboHRProTable.ListCount > 0)
@@ -1473,18 +1621,22 @@ Private Sub RefreshControls()
 
   
   If optLink(SSINTLINKSEPARATOR).value Or optLink(SSINTLINKCHART) _
-      Or optLink(SSINTLINKPWFSTEPS).value Then
+      Or optLink(SSINTLINKPWFSTEPS).value Or optLink(SSINTLINKDB_VALUE).value Then
     txtPrompt.Enabled = False
     txtPrompt.BackColor = vbButtonFace
     
     If optLink(SSINTLINKPWFSTEPS).value Then
       txtText.Enabled = False
       txtText.BackColor = vbButtonFace
+    Else
+      txtText.Enabled = True
+      txtText.BackColor = vbWindowBackground
     End If
         
     If optLink(SSINTLINKSEPARATOR).value Then txtPrompt.Text = "<SEPARATOR>"
     If optLink(SSINTLINKCHART).value Then txtPrompt.Text = "<CHART>"
     If optLink(SSINTLINKPWFSTEPS).value Then txtPrompt.Text = "<PENDING WORKFLOWS>"
+    If optLink(SSINTLINKDB_VALUE).value Then txtPrompt.Text = "<DATABASE VALUE>"
     
     If optLink(SSINTLINKCHART).value Then
       MSChart1.RowCount = 1
@@ -1505,16 +1657,26 @@ Private Sub RefreshControls()
     lblNoOptions.Visible = True
     lblNoOptions.Top = 345
     
-    If optLink(SSINTLINKPWFSTEPS).value Then
-      fraLinkSeparator.Caption = "Pending Workflow Steps :"
-    Else
-      fraLinkSeparator.Caption = "Separator :"
-    End If
+  ElseIf (optLink(SSINTLINKSEPARATOR).value And miLinkType <> SSINTLINK_HYPERTEXT) Then
+    ' Enable the icon and new column options for dashboard link separators...
+    chkNewColumn.Visible = True
+    lblIcon.Visible = True
+    txtIcon.Visible = True
+    cmdIcon.Visible = True
+    cmdIconClear.Visible = True
+    imgIcon.Visible = True
+    lblNoOptions.Visible = False
+    lblNoOptions.Top = 345
   Else
     lblNoOptions.Visible = False
     lblNoOptions.Top = 345
   End If
   
+  If optLink(SSINTLINKPWFSTEPS).value Then
+    fraLinkSeparator.Caption = "Pending Workflow Steps :"
+  Else
+    fraLinkSeparator.Caption = "Separator :"
+  End If
   
   If optLink(SSINTLINKCHART).value And cboChartType.ListIndex >= 0 Then
   
@@ -1821,6 +1983,100 @@ Private Function imgIcon_Refresh() As Boolean
 End Function
 
 
+Private Sub PopulateParentsCombo(plngDefaultID As Long)
+  
+  Dim i As Integer
+  ' Clear the contents of the combo.
+  cboParents.Clear
+
+  With recTabEdit
+    .Index = "idxName"
+
+    If Not (.BOF And .EOF) Then
+      .MoveFirst
+    End If
+
+    Do While Not .EOF
+      If !TableType <> iTabLookup And Not !Deleted Then
+        cboParents.AddItem !TableName
+        cboParents.ItemData(cboParents.NewIndex) = !TableID
+      End If
+
+      .MoveNext
+    Loop
+  End With
+
+  ' Set the correct item as default
+  If plngDefaultID = 0 Then
+    cboParents.ListIndex = 0
+  Else
+    For i = 0 To cboParents.ListCount - 1
+      If cboParents.ItemData(i) = plngDefaultID Then
+        cboParents.ListIndex = i
+        Exit For
+      End If
+    Next
+  End If
+
+End Sub
+
+Private Function PopulateColumnsCombo(plngTableID As Long) As Boolean
+
+  Dim i As Integer
+  
+  ' Clear the contents of the combo
+  cboColumns.Clear
+
+  ' Add the table's columns to the view definition in the local database.
+  On Error GoTo ErrorTrap
+
+  Dim fOK As Boolean
+
+  recColEdit.Index = "idxTableID"
+  recColEdit.Seek "=", plngTableID
+
+  fOK = Not recColEdit.NoMatch
+
+  If fOK Then
+
+    Do While Not recColEdit.EOF
+
+      ' If no more columns for this table exit loop
+      If recColEdit!TableID <> plngTableID Then
+        Exit Do
+      End If
+
+      ' Don't add deleted or system columns
+      If recColEdit!Deleted <> True And recColEdit!columnType <> giCOLUMNTYPE_SYSTEM Then
+        ' Add the column to the combo
+        cboColumns.AddItem recColEdit.Fields("ColumnName")
+        cboColumns.ItemData(cboColumns.NewIndex) = recColEdit.Fields("ColumnID")
+      End If
+
+      recColEdit.MoveNext
+    Loop
+
+
+    ' Set the correct item as default
+    For i = 0 To cboColumns.ListCount - 1
+      If cboColumns.ItemData(i) = ChartColumnID Then
+        cboColumns.ListIndex = i
+        Exit For
+      End If
+    Next
+  End If
+
+TidyUpAndExit:
+  Exit Function
+
+ErrorTrap:
+  fOK = False
+  Resume TidyUpAndExit
+
+End Function
+
+
+
 Private Sub cboChartType_Click()
   mfChanged = True
   ' Display new chart details
@@ -1828,6 +2084,94 @@ Private Sub cboChartType_Click()
   RefreshControls
 End Sub
 
+Private Sub cboColumns_Click()
+
+  mfChanged = True
+
+  miChartColumnID = cboColumns.ItemData(cboColumns.ListIndex)
+  
+  RefreshControls
+End Sub
+
+Private Sub cboParents_Click()
+
+  mfChanged = True
+
+  miChartTableID = cboParents.ItemData(cboParents.ListIndex)
+  PopulateColumnsCombo (miChartTableID)
+  
+  RefreshControls
+End Sub
+
+Private Sub cmdFilterClear_Click()
+  txtFilter.Text = vbNullString
+  txtFilter.Tag = 0
+  miChartFilterID = 0
+  mfChanged = True
+  
+  RefreshControls
+End Sub
+
+Private Sub optAggregateType_Click(Index As Integer)
+
+  mfChanged = True
+
+  miChartAggregateType = IIf(optAggregateType(0).value, 0, 1)
+  
+  RefreshControls
+End Sub
+
+Private Sub cmdFilter_Click()
+
+  ' Display the 'Where Clause' expression selection form.
+  'On Error GoTo ErrorTrap
+
+  Dim fOK As Boolean
+  Dim objExpr As CExpression
+
+  fOK = True
+
+  ' Instantiate an expression object.
+  Set objExpr = New CExpression
+
+  With objExpr
+    ' Set the properties of the expression object.
+    .Initialise miChartTableID, txtFilter.Tag, giEXPR_LINKFILTER, giEXPRVALUE_LOGIC
+
+    ' Instruct the expression object to display the
+    ' expression selection form.
+    If .SelectExpression Then
+      txtFilter.Tag = .ExpressionID
+      txtFilter.Text = GetExpressionName(txtFilter.Tag)
+      
+      miChartFilterID = .ExpressionID
+      mfChanged = True
+      
+      RefreshControls
+      
+    Else
+      ' Check in case the original expression has been deleted.
+      txtFilter.Text = GetExpressionName(txtFilter.Tag)
+      If txtFilter.Text = vbNullString Then
+        txtFilter.Tag = 0
+      End If
+    End If
+
+  End With
+
+
+TidyUpAndExit:
+  Set objExpr = Nothing
+  If Not fOK Then
+    MsgBox "Error changing filter ID.", vbExclamation + vbOKOnly, App.ProductName
+  End If
+  Exit Sub
+
+ErrorTrap:
+  fOK = False
+  Resume TidyUpAndExit
+
+End Sub
 Private Sub chkDottedGridlines_Click()
   mfChanged = True
   ' refresh the chart
@@ -2281,6 +2625,8 @@ Private Sub optLink_Click(Index As Integer)
     ElementType = 2
   ElseIf optLink(SSINTLINKPWFSTEPS).value Then
     ElementType = 3
+  ElseIf optLink(SSINTLINKDB_VALUE).value Then
+    ElementType = 4
   Else
     ElementType = 0
   End If
