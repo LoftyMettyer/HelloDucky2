@@ -1,7 +1,7 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCT2.OCX"
+Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomct2.ocx"
 Begin VB.Form frmDiary 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Diary Events"
@@ -164,14 +164,14 @@ Begin VB.Form frmDiary
       Left            =   0
       TabIndex        =   3
       Top             =   0
-      Width           =   8115
+      Width           =   8970
       Begin SSDataWidgets_B.SSDBGrid grdViewByList 
          Height          =   4575
          Left            =   120
          TabIndex        =   8
          TabStop         =   0   'False
          Top             =   240
-         Width           =   7965
+         Width           =   8820
          ScrollBars      =   2
          _Version        =   196617
          DataMode        =   1
@@ -256,7 +256,7 @@ Begin VB.Form frmDiary
          Columns(3).DataType=   8
          Columns(3).FieldLen=   256
          TabNavigation   =   1
-         _ExtentX        =   14049
+         _ExtentX        =   15557
          _ExtentY        =   8070
          _StockProps     =   79
          BackColor       =   -2147483624
@@ -306,7 +306,7 @@ Begin VB.Form frmDiary
       Left            =   0
       TabIndex        =   0
       Top             =   0
-      Width           =   8080
+      Width           =   9030
       Begin SSDataWidgets_B.SSDBGrid grdViewByDay 
          Height          =   4100
          Left            =   120
@@ -466,7 +466,7 @@ Begin VB.Form frmDiary
       Left            =   0
       TabIndex        =   1
       Top             =   0
-      Width           =   8080
+      Width           =   9030
       Begin SSDataWidgets_B.SSDBGrid grdViewByWeek 
          Height          =   975
          Index           =   0
@@ -1524,7 +1524,7 @@ Begin VB.Form frmDiary
       Left            =   0
       TabIndex        =   2
       Top             =   0
-      Width           =   8085
+      Width           =   9030
       Begin MSComCtl2.MonthView mvwViewbyMonth 
          Height          =   4515
          Left            =   120
@@ -1551,7 +1551,7 @@ Begin VB.Form frmDiary
          MonthRows       =   2
          MonthBackColor  =   -2147483624
          ScrollRate      =   1
-         StartOfWeek     =   120782849
+         StartOfWeek     =   76939265
          TitleBackColor  =   8388608
          TitleForeColor  =   -2147483639
          TrailingForeColor=   -2147483643
@@ -1617,6 +1617,9 @@ Public Sub Initialise()
 
   frmDiary.Caption = gobjDiary.FilterText
   ChangeView (lngViewMode)  'This does a refresh too
+
+
+fraViewType(lngViewMode).ZOrder 0
 
 End Sub
 
@@ -2445,5 +2448,48 @@ Private Sub grdViewByList_MouseUp(Button As Integer, Shift As Integer, x As Sing
   If Button = vbRightButton Then
     Me.ActiveBar1.Bands("bndDiary").TrackPopup -1, -1
   End If
+End Sub
+
+
+Private Sub Form_Load()
+  SetColours
+End Sub
+
+
+Private Sub SetColours()
+
+  Dim intIndex As Integer
+
+  SetGridColours grdViewByList
+  SetGridColours grdViewByDay
+
+  For intIndex = 0 To 6
+    SetGridColours grdViewByWeek(intIndex)
+  Next
+
+  With mvwViewbyMonth
+    .BackColor = glngDEFAULTDATABACKCOLOUR
+    .ForeColor = glngDEFAULTDATAFORECOLOUR
+    .MonthBackColor = glngDEFAULTDATABACKCOLOUR
+    .TitleBackColor = glngDEFAULTHEADINGFORECOLOUR
+    .TitleForeColor = glngDEFAULTHEADINGBACKCOLOUR
+    .TrailingForeColor = glngDEFAULTHEADINGFORECOLOUR
+  End With
+
+End Sub
+
+
+Private Sub SetGridColours(grd As SSDBGrid)
+
+  With grd
+    .BackColor = glngDEFAULTDATABACKCOLOUR
+    .BackColorEven = glngDEFAULTDATABACKCOLOUR
+    .BackColorOdd = glngDEFAULTDATABACKCOLOUR
+    .ForeColor = glngDEFAULTDATAFORECOLOUR
+    .ForeColorEven = glngDEFAULTDATAFORECOLOUR
+    .ForeColorOdd = glngDEFAULTDATAFORECOLOUR
+    .StyleSets("Alarm").BackColor = glngDEFAULTDATABACKCOLOUR
+  End With
+
 End Sub
 
