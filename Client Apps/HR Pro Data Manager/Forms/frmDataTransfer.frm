@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TabCtl32.Ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Begin VB.Form frmDataTransfer 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Data Transfer Definition"
@@ -53,7 +53,6 @@ Begin VB.Form frmDataTransfer
       TabPicture(1)   =   "frmDataTransfer.frx":0028
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraColumnDefinition"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       Begin VB.Frame fraColumnDefinition 
          Enabled         =   0   'False
@@ -1248,7 +1247,16 @@ Private Sub Form_Activate()
 End Sub
 
 Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
-  If KeyCode = 192 Then KeyCode = 0
+
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+  Case KeyCode = 192
+    KeyCode = 0
+End Select
+  
 End Sub
 
 Private Sub Form_Load()
