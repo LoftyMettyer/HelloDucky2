@@ -55,6 +55,7 @@ Private gLngColumnID As Long
 Private giControlLevel As Integer
 Private gfSelected As Boolean
 Private msWFIdentifier As String
+Private msHotSpotIdentifier As String
 Private miWFItemType As Integer
 
 Public Enum ASRBackStyleConstants
@@ -85,6 +86,13 @@ Public Property Let WFIdentifier(New_Value As String)
 End Property
 Public Property Get WFIdentifier() As String
   WFIdentifier = msWFIdentifier
+End Property
+
+Public Property Let HotSpotIdentifier(New_Value As String)
+  msHotSpotIdentifier = New_Value
+End Property
+Public Property Get HotSpotIdentifier() As String
+  HotSpotIdentifier = msHotSpotIdentifier
 End Property
 
 Public Property Let WFItemType(New_Value As Integer)
