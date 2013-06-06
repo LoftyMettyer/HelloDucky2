@@ -40,7 +40,7 @@ Begin VB.UserControl COA_Navigation
       NoFolders       =   0   'False
       Transparent     =   0   'False
       ViewID          =   "{0057D0E0-3573-11CF-AE69-08002B2E1262}"
-      Location        =   "http://search.mywebsearch.com/mywebsearch/AJmain.jhtml?PG=SEASUSH&SEC=ABMANY&st=kwd&ptnrS=ZJxdm088LCGB"
+      Location        =   ""
    End
    Begin VB.PictureBox picHidden 
       Appearance      =   0  'Flat
@@ -332,6 +332,12 @@ Public Property Get DisplayType() As enum_DisplayType
 End Property
 
 Public Property Let DisplayType(ByVal NewValue As enum_DisplayType)
+
+  If miDisplayType <> NewValue Then
+    If NewValue = Hyperlink Then mForeColor = vbBlue
+    If NewValue = Button Then mForeColor = vbBlack
+  End If
+
   miDisplayType = NewValue
   RefreshControls
 End Property
