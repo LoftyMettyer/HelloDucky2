@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
 Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~2.OCX"
 Begin VB.MDIForm frmMain 
@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "13:07"
+            TextSave        =   "12:45"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -757,6 +757,7 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
         'The F3 key was added to the log off option in the active bar designer.
         If COAMsgBox("Are you sure you wish to log off?", vbQuestion + vbYesNo, "Logging Off") = vbYes Then
           'Looks like we want to log off so do the necessary.
+          mblnLogOff = True
           Database.Validation = True
           'RH 12/10/00 - Now call from frmMain_QueryUnload
           'Call AuditAccess(False, "Data")
@@ -764,7 +765,6 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
           
           If Database.Validation Then
             gbForceLogonScreen = True
-            mblnLogOff = True
             datGeneral.ClearConnection
             Main
           End If
