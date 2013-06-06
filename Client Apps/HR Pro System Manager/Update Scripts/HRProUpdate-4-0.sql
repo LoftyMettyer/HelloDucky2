@@ -531,7 +531,8 @@ PRINT 'Step 3 of x - Updating email queue'
 	SELECT @NVarCommand = 'DECLARE @iQueueID int,
 		@iRecordID int,
 		@iRecordDescID int,
-		@sRecordDesc varchar(8000)
+		@sRecordDesc varchar(8000),
+		@sSQL varchar(max)
 
 	DECLARE emailQueue_cursor CURSOR LOCAL FAST_FORWARD FOR 
 	SELECT ASRSysEmailQueue.queueID, 
