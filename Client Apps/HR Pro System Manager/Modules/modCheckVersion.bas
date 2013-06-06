@@ -545,7 +545,7 @@ Private Function UpdateDatabase( _
 
   'MH20020430 From v1.32.4 Make sure that we run the script
   'for the overnight job rather than during the save process
-  strFileName = "OvernightJob.sql"
+  strFileName = "HRProOvernightJob.sql"
   RunScript strScriptPath & strFileName, sConnect
   gobjProgress.UpdateProgress False
   
