@@ -215,6 +215,32 @@ ErrorTrap:
 
 End Function
 
+Public Function UniqueFileName(sTableName As String, sFileName As String) As Boolean
+  On Error GoTo ErrorTrap
+
+  Dim recUniqueValue As DAO.Recordset
+  Dim sSQL As String
+  UniqueFileName = False
+  
+  ' Create a record set of CountNames.
+  sSQL = "SELECT COUNT(Name) as CountNames From " & sTableName & " where Name='" & sFileName & "'"
+  Set recUniqueValue = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
+  ' Record value.
+  UniqueFileName = recUniqueValue.Fields("CountNames") = 0
+  ' Close the temporary recordset.
+  recUniqueValue.Close
+
+TidyUpAndExit:
+  ' Disassociate object variables.
+  Set recUniqueValue = Nothing
+  Exit Function
+
+ErrorTrap:
+  UniqueFileName = False
+  Resume TidyUpAndExit
+
+End Function
+
 Public Function UniqueColumnValue(sTableName As String, sColumnName As String) As Long
   On Error GoTo ErrorTrap
 
