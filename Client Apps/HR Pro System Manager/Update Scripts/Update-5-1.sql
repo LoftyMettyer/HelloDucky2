@@ -857,6 +857,16 @@ PRINT 'Step - Menu & Category enhancements'
 		SELECT 31 AS [objectType], 0 AS ID, ''Stability Index'', '''' AS Username, '''' AS Description;'
 	GRANT SELECT ON dbo.[ASRSysAllobjectNames] TO [ASRSysGroup];
 
+
+	IF EXISTS (SELECT * FROM sys.views WHERE object_id = object_ID(N'[dbo].[ASRSysAllObjectAccess]'))
+		DROP VIEW [dbo].[ASRSysAllObjectAccess]
+	EXEC sp_executesql N'CREATE VIEW dbo.[ASRSysAllObjectAccess]
+	AS
+		SELECT 0 AS [objectType],* FROM [ASRSysCustomReportAccess];';
+	GRANT SELECT ON dbo.[ASRSysCustomReportAccess] TO [ASRSysGroup];
+
+
+
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spstat_recentlyrunobjects]') AND xtype = 'P')
 		DROP PROCEDURE [dbo].[spstat_recentlyrunobjects];
 	EXEC sp_executesql N'CREATE PROCEDURE dbo.[spstat_recentlyrunobjects]
