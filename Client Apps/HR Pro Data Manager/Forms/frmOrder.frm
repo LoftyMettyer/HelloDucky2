@@ -1,6 +1,6 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TabCtl32.Ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Begin VB.Form frmOrder 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Order Definition"
@@ -979,6 +979,15 @@ Private Sub cmdSortColumnAscDesc_Click()
     mfChanged = True
   End If
 
+End Sub
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+  Select Case KeyCode
+    Case vbKeyF1
+      If ShowAirHelp(Me.HelpContextID) Then
+        KeyCode = 0
+      End If
+  End Select
 End Sub
 
 Private Sub Form_Load()

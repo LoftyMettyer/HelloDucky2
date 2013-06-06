@@ -18,6 +18,7 @@ Begin VB.Form frmRecordProfileTable
    EndProperty
    HelpContextID   =   1064
    Icon            =   "frmRecordProfileTable.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -925,6 +926,15 @@ Private Sub cmdOrderClear_Click()
 
 End Sub
 
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+  Select Case KeyCode
+    Case vbKeyF1
+      If ShowAirHelp(Me.HelpContextID) Then
+        KeyCode = 0
+      End If
+  End Select
+End Sub
 
 Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
   If UnloadMode <> vbFormCode Then

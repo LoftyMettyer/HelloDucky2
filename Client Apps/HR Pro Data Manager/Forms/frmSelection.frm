@@ -16,6 +16,7 @@ Begin VB.Form frmSelection
       Strikethrough   =   0   'False
    EndProperty
    Icon            =   "frmSelection.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -27,15 +28,6 @@ Begin VB.Form frmSelection
    Begin VB.PictureBox Picture1 
       AutoSize        =   -1  'True
       BorderStyle     =   0  'None
-      BeginProperty Font 
-         Name            =   "Verdana"
-         Size            =   8.25
-         Charset         =   0
-         Weight          =   400
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
       Height          =   480
       Left            =   120
       Picture         =   "frmSelection.frx":000C
@@ -189,6 +181,15 @@ Public Property Let Source(ByVal strNewValue As String)
   Me.Caption = strNewValue & " Selection"
   lblSource = "You have opted to delete entries from the " & strNewValue
 End Property
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+  Select Case KeyCode
+    Case vbKeyF1
+      If ShowAirHelp(Me.HelpContextID) Then
+        KeyCode = 0
+      End If
+  End Select
+End Sub
 
 Private Sub Form_Load()
   mintAnswer = -1

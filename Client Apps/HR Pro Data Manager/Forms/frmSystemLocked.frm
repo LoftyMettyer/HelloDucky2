@@ -18,6 +18,7 @@ Begin VB.Form frmSystemLocked
    EndProperty
    HelpContextID   =   1003
    Icon            =   "frmSystemLocked.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
@@ -117,6 +118,15 @@ Private Sub Form_Activate()
     End If
   End If
   
+End Sub
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+  Select Case KeyCode
+    Case vbKeyF1
+      If ShowAirHelp(Me.HelpContextID) Then
+        KeyCode = 0
+      End If
+  End Select
 End Sub
 
 Private Sub Form_Resize()

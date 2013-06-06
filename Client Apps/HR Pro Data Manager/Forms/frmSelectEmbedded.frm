@@ -1,6 +1,6 @@
 VERSION 5.00
-Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomct2.ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
+Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCT2.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Begin VB.Form frmSelectEmbedded 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Select..."
@@ -19,6 +19,7 @@ Begin VB.Form frmSelectEmbedded
    EndProperty
    HelpContextID   =   1150
    Icon            =   "frmSelectEmbedded.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -477,6 +478,15 @@ Private Sub Form_Initialize()
   mstrTempPath = Space(1024)
   Call GetTempPath(1024, mstrTempPath)
 
+End Sub
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+  Select Case KeyCode
+    Case vbKeyF1
+      If ShowAirHelp(Me.HelpContextID) Then
+        KeyCode = 0
+      End If
+  End Select
 End Sub
 
 Private Sub Form_Load()

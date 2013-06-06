@@ -86,6 +86,15 @@ Private Sub cmdOK_Click()
     Unload Me
 End Sub
 
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+  Select Case KeyCode
+    Case vbKeyF1
+      If ShowAirHelp(Me.HelpContextID) Then
+        KeyCode = 0
+      End If
+  End Select
+End Sub
+
 Private Sub Form_Load()
     Me.Height = 1500
     SetWindowPos Me.hWnd, conHwndTopmost, (Me.Left / 15.5), (Me.Top / 15.5), (Me.Width / 15.5) + 13, (Me.Height / 15.5), conSwpNoActivate Or conSwpShowWindow

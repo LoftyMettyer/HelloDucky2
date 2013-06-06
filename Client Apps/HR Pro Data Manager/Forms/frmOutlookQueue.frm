@@ -43,6 +43,7 @@ Begin VB.Form frmOutlookQueue
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   1
             Object.Width           =   19817
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -305,11 +306,16 @@ End Sub
 
 Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
 
-  If KeyCode = vbKeyEscape Then
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+  Case KeyCode = vbKeyEscape
     Unload Me
-  ElseIf KeyCode = vbKeyF5 Then
+  Case KeyCode = vbKeyF5
     RefreshGrid
-  End If
+End Select
 
 End Sub
 

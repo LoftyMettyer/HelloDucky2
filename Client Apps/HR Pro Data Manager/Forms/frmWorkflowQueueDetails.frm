@@ -18,6 +18,7 @@ Begin VB.Form frmWorkflowQueueDetails
    EndProperty
    HelpContextID   =   1150
    Icon            =   "frmWorkflowQueueDetails.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -265,6 +266,15 @@ Private Sub Form_Load()
   Me.Height = GetPCSetting("WorkflowLogQueueDetails", "Height", Me.Height)
   Me.Width = GetPCSetting("WorkflowLogQueueDetails", "Width", Me.Width)
 
+End Sub
+
+Private Sub Form_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+  Select Case KeyCode
+    Case vbKeyF1
+      If ShowAirHelp(Me.HelpContextID) Then
+        KeyCode = 0
+      End If
+  End Select
 End Sub
 
 Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
