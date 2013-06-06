@@ -46,11 +46,11 @@ Begin VB.Form frmCustomReports
       Width           =   540
    End
    Begin VB.PictureBox picDocument 
-      DragIcon        =   "frmCustomReports.frx":0E60
+      DragIcon        =   "frmCustomReports.frx":0B20
       Height          =   465
       Index           =   1
       Left            =   5130
-      Picture         =   "frmCustomReports.frx":13EA
+      Picture         =   "frmCustomReports.frx":10AA
       ScaleHeight     =   405
       ScaleWidth      =   465
       TabIndex        =   121
@@ -100,33 +100,33 @@ Begin VB.Form frmCustomReports
          Strikethrough   =   0   'False
       EndProperty
       TabCaption(0)   =   "&Definition"
-      TabPicture(0)   =   "frmCustomReports.frx":1CB4
+      TabPicture(0)   =   "frmCustomReports.frx":1974
       Tab(0).ControlEnabled=   0   'False
       Tab(0).Control(0)=   "fraBase"
       Tab(0).Control(1)=   "fraInformation"
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Related Ta&bles"
-      TabPicture(1)   =   "frmCustomReports.frx":1CD0
+      TabPicture(1)   =   "frmCustomReports.frx":1990
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraParent1"
       Tab(1).Control(1)=   "fraParent2"
       Tab(1).Control(2)=   "fraChild"
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "Colu&mns"
-      TabPicture(2)   =   "frmCustomReports.frx":1CEC
+      TabPicture(2)   =   "frmCustomReports.frx":19AC
       Tab(2).ControlEnabled=   0   'False
       Tab(2).Control(0)=   "fraFieldsAvailable"
       Tab(2).Control(1)=   "fraFieldsSelected"
       Tab(2).Control(2)=   "fraButtons"
       Tab(2).ControlCount=   3
       TabCaption(3)   =   "&Sort Order"
-      TabPicture(3)   =   "frmCustomReports.frx":1D08
+      TabPicture(3)   =   "frmCustomReports.frx":19C8
       Tab(3).ControlEnabled=   0   'False
       Tab(3).Control(0)=   "fraRepetition"
       Tab(3).Control(1)=   "fraReportOrder"
       Tab(3).ControlCount=   2
       TabCaption(4)   =   "O&utput"
-      TabPicture(4)   =   "frmCustomReports.frx":1D24
+      TabPicture(4)   =   "frmCustomReports.frx":19E4
       Tab(4).ControlEnabled=   -1  'True
       Tab(4).Control(0)=   "fraReportOptions"
       Tab(4).Control(0).Enabled=   0   'False
@@ -218,7 +218,7 @@ Begin VB.Form frmCustomReports
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(0).Picture=   "frmCustomReports.frx":1D40
+            stylesets(0).Picture=   "frmCustomReports.frx":1A00
             stylesets(1).Name=   "ssetSelected"
             stylesets(1).ForeColor=   -2147483634
             stylesets(1).BackColor=   -2147483635
@@ -232,7 +232,7 @@ Begin VB.Form frmCustomReports
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(1).Picture=   "frmCustomReports.frx":1D5C
+            stylesets(1).Picture=   "frmCustomReports.frx":1A1C
             stylesets(2).Name=   "ssetEnabled"
             stylesets(2).ForeColor=   -2147483640
             stylesets(2).BackColor=   -2147483643
@@ -246,7 +246,7 @@ Begin VB.Form frmCustomReports
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(2).Picture=   "frmCustomReports.frx":1D78
+            stylesets(2).Picture=   "frmCustomReports.frx":1A38
             stylesets(3).Name=   "ssetHeaderEnabled"
             stylesets(3).ForeColor=   -2147483630
             stylesets(3).BackColor=   -2147483633
@@ -260,7 +260,7 @@ Begin VB.Form frmCustomReports
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(3).Picture=   "frmCustomReports.frx":1D94
+            stylesets(3).Picture=   "frmCustomReports.frx":1A54
             stylesets(4).Name=   "ssetCheckBoxSelected"
             stylesets(4).ForeColor=   -2147483640
             stylesets(4).BackColor=   -2147483635
@@ -274,7 +274,7 @@ Begin VB.Form frmCustomReports
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(4).Picture=   "frmCustomReports.frx":1DB0
+            stylesets(4).Picture=   "frmCustomReports.frx":1A70
             stylesets(5).Name=   "ssetDisabled"
             stylesets(5).ForeColor=   -2147483631
             stylesets(5).BackColor=   -2147483633
@@ -288,7 +288,7 @@ Begin VB.Form frmCustomReports
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(5).Picture=   "frmCustomReports.frx":1DCC
+            stylesets(5).Picture=   "frmCustomReports.frx":1A8C
             CheckBox3D      =   0   'False
             MultiLine       =   0   'False
             AllowRowSizing  =   0   'False
@@ -474,11 +474,11 @@ Begin VB.Form frmCustomReports
          End
          Begin VB.CommandButton cmdFilename 
             Caption         =   "..."
-            DisabledPicture =   "frmCustomReports.frx":1DE8
+            DisabledPicture =   "frmCustomReports.frx":1AA8
             Enabled         =   0   'False
             Height          =   315
             Left            =   6060
-            Picture         =   "frmCustomReports.frx":2149
+            Picture         =   "frmCustomReports.frx":1E09
             TabIndex        =   104
             Top             =   1760
             UseMaskColor    =   -1  'True
@@ -486,11 +486,11 @@ Begin VB.Form frmCustomReports
          End
          Begin VB.CommandButton cmdEmailGroup 
             Caption         =   "..."
-            DisabledPicture =   "frmCustomReports.frx":24AA
+            DisabledPicture =   "frmCustomReports.frx":216A
             Enabled         =   0   'False
             Height          =   315
             Left            =   6060
-            Picture         =   "frmCustomReports.frx":280B
+            Picture         =   "frmCustomReports.frx":24CB
             TabIndex        =   110
             Top             =   2660
             UseMaskColor    =   -1  'True
@@ -731,7 +731,7 @@ Begin VB.Form frmCustomReports
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(0).Picture=   "frmCustomReports.frx":2B6C
+            stylesets(0).Picture=   "frmCustomReports.frx":282C
             stylesets(1).Name=   "ssetSelected"
             stylesets(1).ForeColor=   -2147483634
             stylesets(1).BackColor=   -2147483635
@@ -745,7 +745,7 @@ Begin VB.Form frmCustomReports
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(1).Picture=   "frmCustomReports.frx":2B88
+            stylesets(1).Picture=   "frmCustomReports.frx":2848
             stylesets(2).Name=   "ssetEnabled"
             stylesets(2).ForeColor=   -2147483640
             stylesets(2).BackColor=   -2147483643
@@ -759,7 +759,7 @@ Begin VB.Form frmCustomReports
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(2).Picture=   "frmCustomReports.frx":2BA4
+            stylesets(2).Picture=   "frmCustomReports.frx":2864
             stylesets(3).Name=   "ssetHeaderEnabled"
             stylesets(3).ForeColor=   -2147483630
             stylesets(3).BackColor=   -2147483633
@@ -773,7 +773,7 @@ Begin VB.Form frmCustomReports
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(3).Picture=   "frmCustomReports.frx":2BC0
+            stylesets(3).Picture=   "frmCustomReports.frx":2880
             stylesets(4).Name=   "ssetDisabled"
             stylesets(4).ForeColor=   -2147483631
             stylesets(4).BackColor=   -2147483633
@@ -787,7 +787,7 @@ Begin VB.Form frmCustomReports
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(4).Picture=   "frmCustomReports.frx":2BDC
+            stylesets(4).Picture=   "frmCustomReports.frx":289C
             AllowUpdate     =   0   'False
             MultiLine       =   0   'False
             AllowRowSizing  =   0   'False
@@ -984,7 +984,7 @@ Begin VB.Form frmCustomReports
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(0).Picture=   "frmCustomReports.frx":2BF8
+            stylesets(0).Picture=   "frmCustomReports.frx":28B8
             stylesets(1).Name=   "ssetSelected"
             stylesets(1).ForeColor=   -2147483634
             stylesets(1).BackColor=   -2147483635
@@ -998,7 +998,7 @@ Begin VB.Form frmCustomReports
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(1).Picture=   "frmCustomReports.frx":2C14
+            stylesets(1).Picture=   "frmCustomReports.frx":28D4
             stylesets(2).Name=   "ssetEnabled"
             stylesets(2).ForeColor=   -2147483640
             stylesets(2).BackColor=   -2147483643
@@ -1012,7 +1012,7 @@ Begin VB.Form frmCustomReports
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(2).Picture=   "frmCustomReports.frx":2C30
+            stylesets(2).Picture=   "frmCustomReports.frx":28F0
             stylesets(3).Name=   "ssetHeaderEnabled"
             stylesets(3).ForeColor=   -2147483630
             stylesets(3).BackColor=   -2147483633
@@ -1026,7 +1026,7 @@ Begin VB.Form frmCustomReports
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(3).Picture=   "frmCustomReports.frx":2C4C
+            stylesets(3).Picture=   "frmCustomReports.frx":290C
             stylesets(4).Name=   "ssetDisabled"
             stylesets(4).ForeColor=   -2147483631
             stylesets(4).BackColor=   -2147483633
@@ -1040,7 +1040,7 @@ Begin VB.Form frmCustomReports
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(4).Picture=   "frmCustomReports.frx":2C68
+            stylesets(4).Picture=   "frmCustomReports.frx":2928
             CheckBox3D      =   0   'False
             MultiLine       =   0   'False
             AllowRowSizing  =   0   'False
@@ -1127,11 +1127,11 @@ Begin VB.Form frmCustomReports
          End
          Begin VB.CommandButton cmdBaseFilter 
             Caption         =   "..."
-            DisabledPicture =   "frmCustomReports.frx":2C84
+            DisabledPicture =   "frmCustomReports.frx":2944
             Enabled         =   0   'False
             Height          =   315
             Left            =   8685
-            Picture         =   "frmCustomReports.frx":2FE5
+            Picture         =   "frmCustomReports.frx":2CA5
             TabIndex        =   19
             Top             =   1100
             UseMaskColor    =   -1  'True
@@ -1139,11 +1139,11 @@ Begin VB.Form frmCustomReports
          End
          Begin VB.CommandButton cmdBasePicklist 
             Caption         =   "..."
-            DisabledPicture =   "frmCustomReports.frx":3346
+            DisabledPicture =   "frmCustomReports.frx":3006
             Enabled         =   0   'False
             Height          =   315
             Left            =   8685
-            Picture         =   "frmCustomReports.frx":36A7
+            Picture         =   "frmCustomReports.frx":3367
             TabIndex        =   16
             Top             =   700
             UseMaskColor    =   -1  'True
@@ -1234,11 +1234,11 @@ Begin VB.Form frmCustomReports
          Width           =   9180
          Begin VB.CommandButton cmdParent2Picklist 
             Caption         =   "..."
-            DisabledPicture =   "frmCustomReports.frx":3A08
+            DisabledPicture =   "frmCustomReports.frx":36C8
             Enabled         =   0   'False
             Height          =   315
             Left            =   8700
-            Picture         =   "frmCustomReports.frx":3D69
+            Picture         =   "frmCustomReports.frx":3A29
             TabIndex        =   37
             Top             =   535
             UseMaskColor    =   -1  'True
@@ -1306,11 +1306,11 @@ Begin VB.Form frmCustomReports
          End
          Begin VB.CommandButton cmdParent2Filter 
             Caption         =   "..."
-            DisabledPicture =   "frmCustomReports.frx":40CA
+            DisabledPicture =   "frmCustomReports.frx":3D8A
             Enabled         =   0   'False
             Height          =   315
             Left            =   8700
-            Picture         =   "frmCustomReports.frx":442B
+            Picture         =   "frmCustomReports.frx":40EB
             TabIndex        =   40
             Top             =   925
             UseMaskColor    =   -1  'True
@@ -1382,11 +1382,11 @@ Begin VB.Form frmCustomReports
          End
          Begin VB.CommandButton cmdParent1Picklist 
             Caption         =   "..."
-            DisabledPicture =   "frmCustomReports.frx":478C
+            DisabledPicture =   "frmCustomReports.frx":444C
             Enabled         =   0   'False
             Height          =   315
             Left            =   8700
-            Picture         =   "frmCustomReports.frx":4AED
+            Picture         =   "frmCustomReports.frx":47AD
             TabIndex        =   27
             Top             =   535
             UseMaskColor    =   -1  'True
@@ -1418,11 +1418,11 @@ Begin VB.Form frmCustomReports
          End
          Begin VB.CommandButton cmdParent1Filter 
             Caption         =   "..."
-            DisabledPicture =   "frmCustomReports.frx":4E4E
+            DisabledPicture =   "frmCustomReports.frx":4B0E
             Enabled         =   0   'False
             Height          =   315
             Left            =   8700
-            Picture         =   "frmCustomReports.frx":51AF
+            Picture         =   "frmCustomReports.frx":4E6F
             TabIndex        =   30
             Top             =   925
             UseMaskColor    =   -1  'True
@@ -1777,7 +1777,7 @@ Begin VB.Form frmCustomReports
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(0).Picture=   "frmCustomReports.frx":5510
+            stylesets(0).Picture=   "frmCustomReports.frx":51D0
             stylesets(1).Name=   "ReadOnly"
             stylesets(1).ForeColor=   -2147483631
             stylesets(1).BackColor=   -2147483633
@@ -1791,7 +1791,7 @@ Begin VB.Form frmCustomReports
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(1).Picture=   "frmCustomReports.frx":552C
+            stylesets(1).Picture=   "frmCustomReports.frx":51EC
             MultiLine       =   0   'False
             AllowRowSizing  =   0   'False
             AllowGroupSizing=   0   'False
@@ -1909,7 +1909,7 @@ Begin VB.Form frmCustomReports
    Begin VB.PictureBox picNoDrop 
       Height          =   495
       Left            =   4035
-      Picture         =   "frmCustomReports.frx":5548
+      Picture         =   "frmCustomReports.frx":5208
       ScaleHeight     =   435
       ScaleWidth      =   465
       TabIndex        =   118
@@ -1939,11 +1939,11 @@ Begin VB.Form frmCustomReports
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
          NumListImages   =   2
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmCustomReports.frx":5E12
+            Picture         =   "frmCustomReports.frx":5AD2
             Key             =   "IMG_TABLE"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmCustomReports.frx":6364
+            Picture         =   "frmCustomReports.frx":5CAC
             Key             =   "IMG_CALC"
          EndProperty
       EndProperty
@@ -1962,7 +1962,7 @@ Begin VB.Form frmCustomReports
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      Bands           =   "frmCustomReports.frx":68B6
+      Bands           =   "frmCustomReports.frx":61FE
    End
 End
 Attribute VB_Name = "frmCustomReports"
@@ -2016,10 +2016,10 @@ Private mblnGridChangeRecursive As Boolean
 
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
-  cmdOk.Enabled = (pblnChanged) And (Not mblnReadOnly)
+  cmdOK.Enabled = (pblnChanged) And (Not mblnReadOnly)
 End Property
 
 
@@ -2621,7 +2621,7 @@ Private Sub ForceAccess(Optional pvAccess As Variant)
   Dim iLoop As Integer
   Dim varBookmark As Variant
   
-  UI.LockWindow grdAccess.hwnd
+  UI.LockWindow grdAccess.hWnd
   
   With grdAccess
     .MoveFirst
@@ -4279,7 +4279,7 @@ Private Sub ListView1_GotFocus()
 End Sub
 
 Private Sub ListView1_LostFocus()
-  cmdOk.Default = True
+  cmdOK.Default = True
 End Sub
 
 Private Sub ListView2_GotFocus()
@@ -4287,7 +4287,7 @@ Private Sub ListView2_GotFocus()
 End Sub
 
 Private Sub ListView2_LostFocus()
-  cmdOk.Default = True
+  cmdOK.Default = True
 End Sub
 
 Private Sub optBaseAllRecords_Click()
@@ -5847,13 +5847,13 @@ Private Sub txtDesc_GotFocus()
     .SelLength = Len(.Text)
   End With
   
-  cmdOk.Default = False
+  cmdOK.Default = False
   
 End Sub
 
 Private Sub txtDesc_LostFocus()
 
-  cmdOk.Default = True
+  cmdOK.Default = True
 
 End Sub
 
@@ -6398,7 +6398,7 @@ Private Sub SaveAccess()
   datData.ExecuteSql (sSQL)
 
   ' Update the new access records with the real access values.
-  UI.LockWindow grdAccess.hwnd
+  UI.LockWindow grdAccess.hWnd
   
   With grdAccess
     For iLoop = 1 To (.Rows - 1)

@@ -47,7 +47,7 @@ Begin VB.Form frmMatchDef
    Begin VB.PictureBox picNoDrop 
       Height          =   495
       Left            =   1380
-      Picture         =   "frmMatchDef.frx":08D6
+      Picture         =   "frmMatchDef.frx":0596
       ScaleHeight     =   435
       ScaleWidth      =   465
       TabIndex        =   82
@@ -97,7 +97,7 @@ Begin VB.Form frmMatchDef
          Strikethrough   =   0   'False
       EndProperty
       TabCaption(0)   =   "&Definition"
-      TabPicture(0)   =   "frmMatchDef.frx":11A0
+      TabPicture(0)   =   "frmMatchDef.frx":0E60
       Tab(0).ControlEnabled=   -1  'True
       Tab(0).Control(0)=   "fraDefinition(0)"
       Tab(0).Control(0).Enabled=   0   'False
@@ -105,24 +105,24 @@ Begin VB.Form frmMatchDef
       Tab(0).Control(1).Enabled=   0   'False
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Ta&bles"
-      TabPicture(1)   =   "frmMatchDef.frx":11BC
+      TabPicture(1)   =   "frmMatchDef.frx":0E7C
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraRelations"
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "Colu&mns"
-      TabPicture(2)   =   "frmMatchDef.frx":11D8
+      TabPicture(2)   =   "frmMatchDef.frx":0E98
       Tab(2).ControlEnabled=   0   'False
       Tab(2).Control(0)=   "fraFieldButtons"
       Tab(2).Control(1)=   "fraFieldsAvailable"
       Tab(2).Control(2)=   "fraFieldsSelected"
       Tab(2).ControlCount=   3
       TabCaption(3)   =   "&Sort Order"
-      TabPicture(3)   =   "frmMatchDef.frx":11F4
+      TabPicture(3)   =   "frmMatchDef.frx":0EB4
       Tab(3).ControlEnabled=   0   'False
       Tab(3).Control(0)=   "fraReportOrder"
       Tab(3).ControlCount=   1
       TabCaption(4)   =   "O&utput"
-      TabPicture(4)   =   "frmMatchDef.frx":1210
+      TabPicture(4)   =   "frmMatchDef.frx":0ED0
       Tab(4).ControlEnabled=   0   'False
       Tab(4).Control(0)=   "fraOutputDestination"
       Tab(4).Control(1)=   "fraOutputFormat"
@@ -798,7 +798,7 @@ Begin VB.Form frmMatchDef
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(0).Picture=   "frmMatchDef.frx":122C
+            stylesets(0).Picture=   "frmMatchDef.frx":0EEC
             stylesets(1).Name=   "ssetActive"
             stylesets(1).ForeColor=   16777215
             stylesets(1).BackColor=   -2147483646
@@ -812,7 +812,7 @@ Begin VB.Form frmMatchDef
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(1).Picture=   "frmMatchDef.frx":1248
+            stylesets(1).Picture=   "frmMatchDef.frx":0F08
             MultiLine       =   0   'False
             AllowRowSizing  =   0   'False
             AllowGroupSizing=   0   'False
@@ -1183,7 +1183,7 @@ Begin VB.Form frmMatchDef
             End
             Begin VB.CommandButton cmdPicklist 
                Caption         =   "..."
-               DisabledPicture =   "frmMatchDef.frx":1264
+               DisabledPicture =   "frmMatchDef.frx":0F24
                Enabled         =   0   'False
                Height          =   315
                Index           =   1
@@ -1195,7 +1195,7 @@ Begin VB.Form frmMatchDef
             End
             Begin VB.CommandButton cmdFilter 
                Caption         =   "..."
-               DisabledPicture =   "frmMatchDef.frx":15C5
+               DisabledPicture =   "frmMatchDef.frx":1285
                Enabled         =   0   'False
                Height          =   315
                Index           =   1
@@ -1409,7 +1409,7 @@ Begin VB.Form frmMatchDef
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(0).Picture=   "frmMatchDef.frx":1926
+            stylesets(0).Picture=   "frmMatchDef.frx":15E6
             stylesets(1).Name=   "ReadOnly"
             stylesets(1).ForeColor=   -2147483631
             stylesets(1).BackColor=   -2147483633
@@ -1423,7 +1423,7 @@ Begin VB.Form frmMatchDef
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(1).Picture=   "frmMatchDef.frx":1942
+            stylesets(1).Picture=   "frmMatchDef.frx":1602
             MultiLine       =   0   'False
             AllowRowSizing  =   0   'False
             AllowGroupSizing=   0   'False
@@ -1563,15 +1563,15 @@ Begin VB.Form frmMatchDef
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
          NumListImages   =   3
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmMatchDef.frx":195E
+            Picture         =   "frmMatchDef.frx":161E
             Key             =   "IMG_TABLE"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmMatchDef.frx":1EB0
+            Picture         =   "frmMatchDef.frx":1BB8
             Key             =   "IMG_CALC"
          EndProperty
          BeginProperty ListImage3 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmMatchDef.frx":2402
+            Picture         =   "frmMatchDef.frx":210A
             Key             =   "IMG_MATCH"
          EndProperty
       EndProperty
@@ -1590,7 +1590,7 @@ Begin VB.Form frmMatchDef
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      Bands           =   "frmMatchDef.frx":2954
+      Bands           =   "frmMatchDef.frx":265C
    End
 End
 Attribute VB_Name = "frmMatchDef"
@@ -2788,7 +2788,7 @@ Private Sub ForceAccess(Optional pvAccess As Variant)
   Dim iLoop As Integer
   Dim varBookmark As Variant
   
-  UI.LockWindow grdAccess.hwnd
+  UI.LockWindow grdAccess.hWnd
   
   With grdAccess
     .MoveFirst
@@ -4965,7 +4965,7 @@ Private Sub SaveAccess()
   datData.ExecuteSql (sSQL)
 
   ' Update the new access records with the real access values.
-  UI.LockWindow grdAccess.hwnd
+  UI.LockWindow grdAccess.hWnd
   
   With grdAccess
     For iLoop = 1 To (.Rows - 1)

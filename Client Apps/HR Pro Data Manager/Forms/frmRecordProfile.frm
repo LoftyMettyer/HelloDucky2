@@ -65,7 +65,7 @@ Begin VB.Form frmRecordProfile
    Begin VB.PictureBox picNoDrop 
       Height          =   495
       Left            =   1380
-      Picture         =   "frmRecordProfile.frx":08D6
+      Picture         =   "frmRecordProfile.frx":03C8
       ScaleHeight     =   435
       ScaleWidth      =   465
       TabIndex        =   94
@@ -104,7 +104,7 @@ Begin VB.Form frmRecordProfile
          Strikethrough   =   0   'False
       EndProperty
       TabCaption(0)   =   "&Definition"
-      TabPicture(0)   =   "frmRecordProfile.frx":11A0
+      TabPicture(0)   =   "frmRecordProfile.frx":0C92
       Tab(0).ControlEnabled=   -1  'True
       Tab(0).Control(0)=   "fraBase"
       Tab(0).Control(0).Enabled=   0   'False
@@ -112,43 +112,31 @@ Begin VB.Form frmRecordProfile
       Tab(0).Control(1).Enabled=   0   'False
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Related Ta&bles"
-      TabPicture(1)   =   "frmRecordProfile.frx":11BC
+      TabPicture(1)   =   "frmRecordProfile.frx":0CAE
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraRelatedTables"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "Colu&mns"
-      TabPicture(2)   =   "frmRecordProfile.frx":11D8
+      TabPicture(2)   =   "frmRecordProfile.frx":0CCA
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraTable"
-      Tab(2).Control(0).Enabled=   0   'False
-      Tab(2).Control(1)=   "fraFieldsAvailable"
-      Tab(2).Control(1).Enabled=   0   'False
-      Tab(2).Control(2)=   "fraFieldsSelected"
-      Tab(2).Control(2).Enabled=   0   'False
-      Tab(2).Control(3)=   "cmdAddSeparator"
-      Tab(2).Control(3).Enabled=   0   'False
-      Tab(2).Control(4)=   "cmdAddHeading"
-      Tab(2).Control(4).Enabled=   0   'False
+      Tab(2).Control(0)=   "cmdRemoveAll"
+      Tab(2).Control(1)=   "cmdAddAll"
+      Tab(2).Control(2)=   "cmdMoveDown"
+      Tab(2).Control(3)=   "cmdMoveUp"
+      Tab(2).Control(4)=   "cmdRemove"
       Tab(2).Control(5)=   "cmdAdd"
-      Tab(2).Control(5).Enabled=   0   'False
-      Tab(2).Control(6)=   "cmdRemove"
-      Tab(2).Control(6).Enabled=   0   'False
-      Tab(2).Control(7)=   "cmdMoveUp"
-      Tab(2).Control(7).Enabled=   0   'False
-      Tab(2).Control(8)=   "cmdMoveDown"
-      Tab(2).Control(8).Enabled=   0   'False
-      Tab(2).Control(9)=   "cmdAddAll"
-      Tab(2).Control(9).Enabled=   0   'False
-      Tab(2).Control(10)=   "cmdRemoveAll"
-      Tab(2).Control(10).Enabled=   0   'False
+      Tab(2).Control(6)=   "cmdAddHeading"
+      Tab(2).Control(7)=   "cmdAddSeparator"
+      Tab(2).Control(8)=   "fraFieldsSelected"
+      Tab(2).Control(9)=   "fraFieldsAvailable"
+      Tab(2).Control(10)=   "fraTable"
       Tab(2).ControlCount=   11
       TabCaption(3)   =   "Outpu&t"
-      TabPicture(3)   =   "frmRecordProfile.frx":11F4
+      TabPicture(3)   =   "frmRecordProfile.frx":0CE6
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "fraOutputFormat"
+      Tab(3).Control(0)=   "fraOutputDestination"
       Tab(3).Control(1)=   "fraReportOptions"
-      Tab(3).Control(2)=   "fraOutputDestination"
+      Tab(3).Control(2)=   "fraOutputFormat"
       Tab(3).ControlCount=   3
       Begin VB.Frame fraInformation 
          Height          =   1950
@@ -209,7 +197,7 @@ Begin VB.Form frmRecordProfile
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(0).Picture=   "frmRecordProfile.frx":1210
+            stylesets(0).Picture=   "frmRecordProfile.frx":0D02
             stylesets(1).Name=   "ReadOnly"
             stylesets(1).ForeColor=   -2147483631
             stylesets(1).BackColor=   -2147483633
@@ -223,7 +211,7 @@ Begin VB.Form frmRecordProfile
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(1).Picture=   "frmRecordProfile.frx":122C
+            stylesets(1).Picture=   "frmRecordProfile.frx":0D1E
             MultiLine       =   0   'False
             AllowRowSizing  =   0   'False
             AllowGroupSizing=   0   'False
@@ -882,7 +870,7 @@ Begin VB.Form frmRecordProfile
             Caption         =   "..."
             Height          =   315
             Left            =   4050
-            Picture         =   "frmRecordProfile.frx":1248
+            Picture         =   "frmRecordProfile.frx":0D3A
             TabIndex        =   13
             Top             =   700
             UseMaskColor    =   -1  'True
@@ -1310,7 +1298,7 @@ Begin VB.Form frmRecordProfile
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      Bands           =   "frmRecordProfile.frx":12C0
+      Bands           =   "frmRecordProfile.frx":0DB2
    End
 End
 Attribute VB_Name = "frmRecordProfile"
@@ -1364,7 +1352,7 @@ Private Sub ForceAccess(Optional pvAccess As Variant)
   Dim iLoop As Integer
   Dim varBookmark As Variant
   
-  UI.LockWindow grdAccess.hwnd
+  UI.LockWindow grdAccess.hWnd
   
   With grdAccess
     .MoveFirst
@@ -1633,7 +1621,7 @@ Private Sub SaveAccess()
   datData.ExecuteSql (sSQL)
 
   ' Update the new access records with the real access values.
-  UI.LockWindow grdAccess.hwnd
+  UI.LockWindow grdAccess.hWnd
   
   With grdAccess
     For iLoop = 1 To (.Rows - 1)

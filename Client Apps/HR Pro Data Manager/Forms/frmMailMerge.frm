@@ -1349,7 +1349,7 @@ Begin VB.Form frmMailMerge
       EndProperty
       Height          =   495
       Left            =   4515
-      Picture         =   "frmMailMerge.frx":1A12
+      Picture         =   "frmMailMerge.frx":16D2
       ScaleHeight     =   435
       ScaleWidth      =   465
       TabIndex        =   85
@@ -1397,11 +1397,11 @@ Begin VB.Form frmMailMerge
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
          NumListImages   =   2
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmMailMerge.frx":22DC
+            Picture         =   "frmMailMerge.frx":1F9C
             Key             =   "IMG_TABLE"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmMailMerge.frx":282E
+            Picture         =   "frmMailMerge.frx":2536
             Key             =   "IMG_CALC"
          EndProperty
       EndProperty
@@ -1420,7 +1420,7 @@ Begin VB.Form frmMailMerge
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      Bands           =   "frmMailMerge.frx":2D80
+      Bands           =   "frmMailMerge.frx":2A88
    End
 End
 Attribute VB_Name = "frmMailMerge"
@@ -2930,7 +2930,7 @@ Private Sub ForceAccess(Optional pvAccess As Variant)
   Dim iLoop As Integer
   Dim varBookmark As Variant
   
-  UI.LockWindow grdAccess.hwnd
+  UI.LockWindow grdAccess.hWnd
   
   With grdAccess
     .MoveFirst
@@ -4601,7 +4601,7 @@ Private Sub SaveAccess()
   datData.ExecuteSql (sSQL)
 
   ' Update the new access records with the real access values.
-  UI.LockWindow grdAccess.hwnd
+  UI.LockWindow grdAccess.hWnd
   
   With grdAccess
     For iLoop = 1 To (.Rows - 1)

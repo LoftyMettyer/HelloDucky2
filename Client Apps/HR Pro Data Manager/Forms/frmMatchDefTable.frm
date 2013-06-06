@@ -87,7 +87,7 @@ Begin VB.Form frmMatchDefTable
       TabsPerRow      =   2
       TabHeight       =   520
       TabCaption(0)   =   "Ta&bles"
-      TabPicture(0)   =   "frmMatchDefTable.frx":11A0
+      TabPicture(0)   =   "frmMatchDefTable.frx":0E60
       Tab(0).ControlEnabled=   -1  'True
       Tab(0).Control(0)=   "fraTables"
       Tab(0).Control(0).Enabled=   0   'False
@@ -95,16 +95,16 @@ Begin VB.Form frmMatchDefTable
       Tab(0).Control(1).Enabled=   0   'False
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Breakdown Colu&mns"
-      TabPicture(1)   =   "frmMatchDefTable.frx":11BC
+      TabPicture(1)   =   "frmMatchDefTable.frx":0E7C
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraFieldsSelected"
-      Tab(1).Control(1)=   "fraFieldsAvailable"
-      Tab(1).Control(2)=   "cmdRemoveAll"
-      Tab(1).Control(3)=   "cmdAddAll"
-      Tab(1).Control(4)=   "cmdMoveDown"
-      Tab(1).Control(5)=   "cmdMoveUp"
-      Tab(1).Control(6)=   "cmdRemove"
-      Tab(1).Control(7)=   "cmdAdd"
+      Tab(1).Control(0)=   "cmdAdd"
+      Tab(1).Control(1)=   "cmdRemove"
+      Tab(1).Control(2)=   "cmdMoveUp"
+      Tab(1).Control(3)=   "cmdMoveDown"
+      Tab(1).Control(4)=   "cmdAddAll"
+      Tab(1).Control(5)=   "cmdRemoveAll"
+      Tab(1).Control(6)=   "fraFieldsAvailable"
+      Tab(1).Control(7)=   "fraFieldsSelected"
       Tab(1).ControlCount=   8
       Begin VB.Frame fraExpressions 
          Height          =   2055
@@ -663,15 +663,15 @@ Begin VB.Form frmMatchDefTable
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
          NumListImages   =   3
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmMatchDefTable.frx":11D8
+            Picture         =   "frmMatchDefTable.frx":0E98
             Key             =   "IMG_TABLE"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmMatchDefTable.frx":172A
+            Picture         =   "frmMatchDefTable.frx":1432
             Key             =   "IMG_CALC"
          EndProperty
          BeginProperty ListImage3 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmMatchDefTable.frx":1C7C
+            Picture         =   "frmMatchDefTable.frx":1984
             Key             =   "IMG_MATCH"
          EndProperty
       EndProperty
@@ -2227,6 +2227,10 @@ Private Sub AddToCollection(objTemp As Object)
   Set objColumnPrivileges = Nothing
   
   mblnLoading = False
+
+End Sub
+
+Private Sub picDocument_Click()
 
 End Sub
 
