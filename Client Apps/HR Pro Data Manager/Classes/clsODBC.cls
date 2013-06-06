@@ -15,41 +15,6 @@ Attribute VB_Ext_KEY = "SavedWithClassBuilder" ,"Yes"
 Attribute VB_Ext_KEY = "Top_Level" ,"Yes"
 Option Explicit
 
-'ODBC constants
-Private Const SQL_DROP As Long = 1
-Private Const SQL_NTS As Long = -3
-Private Const SQL_NULL_DATA As Long = -1
-
-'SQLGetInfo constants
-Public Enum SQLInfo
-  SQL_USER_NAME = 47
-  SQL_DATABASE_NAME = 16
-  SQL_DBMS_NAME = 17
-  SQL_DBMS_VER = 18
-  SQL_KEYWORDS = 89
-  SQL_MAX_COLUMN_NAME_LEN = 30
-  SQL_MAX_COLUMNS_IN_TABLE = 101
-  SQL_MAX_TABLE_NAME_LEN = 35
-  SQL_SERVER_NAME = 13
-End Enum
-
-'ODBC datatype constants
-Private Const SQL_SIGNED_OFFSET As Long = -20
-Private Const SQL_CHAR As Long = 1
-Private Const SQL_INTEGER As Long = 4
-Private Const SQL_SMALLINT As Long = 5
-Private Const SQL_C_CHAR As Long = SQL_CHAR
-Private Const SQL_C_LONG As Long = SQL_INTEGER
-Private Const SQL_C_SHORT As Long = SQL_SMALLINT
-Private Const SQL_C_SSHORT As Long = SQL_C_SHORT + SQL_SIGNED_OFFSET
-Private Const SQL_C_SLONG As Long = SQL_C_LONG + SQL_SIGNED_OFFSET
-
-'ODBC return value constants
-Private Const SQL_SUCCESS As Long = 0
-Private Const SQL_SUCCESS_WITH_INFO As Long = 1
-
-Private Const STR_LEN = 254
-
 Function FormatError(ByVal ErrorMsg As String) As String
 '  On Error Resume Next
 '

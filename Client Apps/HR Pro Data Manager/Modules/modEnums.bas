@@ -220,6 +220,36 @@ End Enum
 
 
 ' ------------
+' clsODBC
+' ------------
+Public Enum SQLInfo
+  SQL_USER_NAME = 47
+  SQL_DATABASE_NAME = 16
+  SQL_DBMS_NAME = 17
+  SQL_DBMS_VER = 18
+  SQL_KEYWORDS = 89
+  SQL_MAX_COLUMN_NAME_LEN = 30
+  SQL_MAX_COLUMNS_IN_TABLE = 101
+  SQL_MAX_TABLE_NAME_LEN = 35
+  SQL_SERVER_NAME = 13
+End Enum
+
+
+' ------------
+' clsUI
+' ------------
+Public Enum SystemMetrics
+  SM_CXVSCROLL = 2
+  SM_CYCAPTION = 4
+  SM_CXBORDER = 5
+  SM_CYBORDER = 6
+  SM_CXFRAME = 32
+  SM_CYFRAME = 33
+  SM_CYSMCAPTION = 51
+End Enum
+
+
+' ------------
 ' modHRPro
 ' ------------
 Public Enum LockType

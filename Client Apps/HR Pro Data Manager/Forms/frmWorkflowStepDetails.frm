@@ -722,15 +722,6 @@ Public Enum WorkflowWebFormItemTypes
   giWFFORMITEM_WFFILE = 20
 End Enum
 
-Private Declare Function SendMessage Lib "user32" _
-    Alias "SendMessageA" _
-   (ByVal hWnd As Long, _
-    ByVal wMsg As Long, _
-    ByVal wParam As Long, _
-    lParam As Any) As Long
-
-Private Const EM_GETLINECOUNT  As Long = &HBA
-
 Private Function DoHeaderInfo() As Boolean
 
   ' Populate all the relevant header fields and position the controls

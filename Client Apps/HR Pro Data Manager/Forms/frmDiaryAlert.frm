@@ -67,40 +67,6 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
 
-Private Const SC_CLOSE As Long = &HF060&
-Private Const xSC_CLOSE As Long = -10&
-
-Private Const HWND_TOPMOST = -1
-Private Const SWP_NOSIZE = &H1
-Private Const SWP_NOMOVE = &H2
-Private Const WM_LBUTTONDBLCLK = &H203
-
-Private Const MIIM_STATE As Long = &H1&
-Private Const MIIM_ID As Long = &H2&
-Private Const MFS_GRAYED As Long = &H3&
-Private Const WM_NCACTIVATE As Long = &H86
-
-Private Type MENUITEMINFO
-    cbSize As Long
-    fMask As Long
-    fType As Long
-    fState As Long
-    wID As Long
-    hSubMenu As Long
-    hbmpChecked As Long
-    hbmpUnchecked As Long
-    dwItemData As Long
-    dwTypeData As String
-    cch As Long
-End Type
-
-Private Declare Function GetSystemMenu Lib "user32" (ByVal hWnd As Long, ByVal bRevert As Long) As Long
-Private Declare Function GetMenuItemInfo Lib "user32" Alias "GetMenuItemInfoA" (ByVal hMenu As Long, ByVal un As Long, ByVal b As Boolean, lpMenuItemInfo As MENUITEMINFO) As Long
-Private Declare Function SetMenuItemInfo Lib "user32" Alias "SetMenuItemInfoA" (ByVal hMenu As Long, ByVal un As Long, ByVal bool As Boolean, lpcMenuItemInfo As MENUITEMINFO) As Long
-Private Declare Function SendMessage Lib "user32" Alias "SendMessageA" (ByVal hWnd As Long, ByVal wMsg As Long, ByVal wParam As Long, lParam As Any) As Long
-Private Declare Function IsWindow Lib "user32" (ByVal hWnd As Long) As Long
-Private Declare Function SetForegroundWindow Lib "user32" (ByVal hWnd As Long) As Long
-
 Private mlngResponse As Long
 Private mlngErrorNumber As Long
 
