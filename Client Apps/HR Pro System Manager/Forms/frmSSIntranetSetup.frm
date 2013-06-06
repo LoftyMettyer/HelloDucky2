@@ -2712,7 +2712,8 @@ Private Sub cmdCopyButtonLink_Click()
   Dim iLoop As Integer
   Dim lngOriginalTableID As Long
   Dim lngOriginalViewID As Long
- 
+  Dim sAllWFHiddenGroups As String
+
   Set ctlSourceGrid = CurrentLinkGrid(SSINTLINK_BUTTON)
   If ctlSourceGrid Is Nothing Then
     Exit Sub
@@ -2723,6 +2724,8 @@ Private Sub cmdCopyButtonLink_Click()
 
   lngOriginalTableID = GetTableIDFromCollection(mcolSSITableViews, cboButtonLinkView.List(cboButtonLinkView.ListIndex))
   lngOriginalViewID = GetViewIDFromCollection(mcolSSITableViews, cboButtonLinkView.List(cboButtonLinkView.ListIndex))
+  
+  sAllWFHiddenGroups = getHiddenGroups(ctlSourceGrid)
   
   With frmLink
   
@@ -2750,7 +2753,7 @@ Private Sub cmdCopyButtonLink_Click()
       Val(ctlSourceGrid.Columns("ChartColumnID").Text), _
       Val(ctlSourceGrid.Columns("ChartFilterID").Text), _
       Val(ctlSourceGrid.Columns("ChartAggregateType").Text), _
-      ctlSourceGrid.Columns("ChartShowValues").value, "", mcolSSITableViews
+      ctlSourceGrid.Columns("ChartShowValues").value, sAllWFHiddenGroups, mcolSSITableViews
     .Show vbModal
 
     If Not .Cancelled Then
@@ -4228,10 +4231,14 @@ Private Function getHiddenGroups(ctlSourceGrid As SSDBGrid) As String
   Dim sCombinedHiddenGroups As String
   Dim fNoGroupsFound As Boolean
   
+  ' this function will find all the hidden access (user) groups for Workflow Pending Steps only
+  ' and concatenate the list into a string. This will be used in link validation to ensure only one
+  ' workflow pending steps is on screen per access (user) group.
+  
   fNoGroupsFound = True
   
   sCombinedHiddenGroups = vbTab & ""
-  For iLoop = 1 To ctlSourceGrid.Rows - 1
+  For iLoop = 0 To ctlSourceGrid.Rows - 1
     varBookmark = ctlSourceGrid.AddItemBookmark(iLoop)
     sHiddenGroups = ctlSourceGrid.Columns("HiddenGroups").CellText(varBookmark)
     
