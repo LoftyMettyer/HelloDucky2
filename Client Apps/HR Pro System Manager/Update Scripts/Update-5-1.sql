@@ -88,8 +88,12 @@ PRINT 'Step - Deletion changes'
 PRINT 'Step - Fusion Message Bus Integration'
 /* ------------------------------------------------------------- */
 
-
-
+	IF NOT EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[fusion].[spFusionMessageSend]') AND xtype = 'P')
+		EXECUTE sp_executesql N'CREATE PROCEDURE fusion.spFusionMessageSend(@TableID integer, @RecordID integer)
+		AS
+		BEGIN
+			SET NOCOUNT ON;
+		END'
 
 
 
