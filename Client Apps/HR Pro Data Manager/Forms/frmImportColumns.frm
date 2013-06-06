@@ -94,6 +94,7 @@ Begin VB.Form frmImportColumns
          Enabled         =   0   'False
          Height          =   315
          Left            =   1155
+         MaxLength       =   9
          TabIndex        =   9
          Top             =   1100
          Width           =   1545
@@ -519,6 +520,7 @@ Private Function GetColumnSize(lColumnID As Long) As Long
   Dim blnLookupColumn As Boolean
   Dim blnDefaultKeyed As Boolean
   Dim blnAllowKeyed As Boolean
+  Dim lngLen As Long
 
   sSQL = "Select Size, Datatype, ReadOnly, ColumnType From ASRSysColumns Where ColumnID = " & lColumnID
   
@@ -537,7 +539,8 @@ Private Function GetColumnSize(lColumnID As Long) As Long
         txtLength.Text = "14"
       
       Case Else:
-        txtLength.Text = CStr(rsColumns(0))
+        lngLen = rsColumns(0)
+        txtLength.Text = IIf(lngLen > 999999999, "999999999", CStr(lngLen))
     End Select
 '  Else
 '    txtLength.Text = vbNullString
