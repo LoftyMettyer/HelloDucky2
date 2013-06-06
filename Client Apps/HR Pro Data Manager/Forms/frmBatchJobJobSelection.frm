@@ -127,7 +127,6 @@ Public mblnCancelled As Boolean                         'Has The Form Been Cance
 Private mclsData As DataMgr.clsDataAccess
 Private mblnDefinitionCreator As Boolean
 Private mstrPrevSelectedJob As String
-
 Private msBatchJobHiddenGroups As String
 Public Property Get DefinitionCreator() As Boolean
   DefinitionCreator = mblnDefinitionCreator
@@ -135,31 +134,21 @@ End Property
 Public Property Let DefinitionCreator(ByVal bDefinitionCreator As Boolean)
   mblnDefinitionCreator = bDefinitionCreator
 End Property
-
-
 Public Property Let BatchJobHiddenGroups(ByVal psBatchJobHiddenGroups As String)
   msBatchJobHiddenGroups = UCase(psBatchJobHiddenGroups)
-  
 End Property
-
-
-
 Public Property Get Cancelled() As Boolean
   Cancelled = mblnCancelled                             'Expose value of cancelled flag
 End Property
 Public Property Let Cancelled(ByVal bCancel As Boolean)
   mblnCancelled = bCancel                               'Set value of cancelled flag
 End Property
-
 Private Sub chkOnlyMine_Click()
-
   mstrPrevSelectedJob = Me.cboJobName.Text
   cboJobName.Clear                                      'Clear Previous JobNames/IDs
   'ChangeControlStatus True                            'Enable Jobname combo, disable paramter
   GetIndividualJobs
-  
 End Sub
-
 Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
 Select Case KeyCode
   Case vbKeyF1
@@ -172,9 +161,13 @@ End Sub
 Private Sub Form_Load()
   
   Set mclsData = New DataMgr.clsDataAccess
+  Dim blnReportItemsOnly As Boolean
+  
+  blnReportItemsOnly = Not frmBatchJob.SSTab1.TabVisible(2)
+  
   
   With cboJobType                                       'Add Job Types To Combo
-    .AddItem "-- Pause --"
+    If blnReportItemsOnly Then .AddItem "-- Pause --"
     
     'JPD 20040227 Fault 8156
     If gfAbsenceEnabled Then
@@ -186,13 +179,17 @@ Private Sub Form_Load()
     .AddItem "Career Progression"   'MH20030519
     .AddItem "Cross Tab"
     .AddItem "Custom Report"
-    .AddItem "Data Transfer"
+    
+    If blnReportItemsOnly Then .AddItem "Data Transfer"
+    
     .AddItem "Envelopes & Labels"
-    .AddItem "Export"
-    .AddItem "Global Add"
-    .AddItem "Global Delete"
-    .AddItem "Global Update"
-    .AddItem "Import"
+    
+    If blnReportItemsOnly Then .AddItem "Export"
+    If blnReportItemsOnly Then .AddItem "Global Add"
+    If blnReportItemsOnly Then .AddItem "Global Delete"
+    If blnReportItemsOnly Then .AddItem "Global Update"
+    If blnReportItemsOnly Then .AddItem "Import"
+    
     .AddItem "Mail Merge"
     .AddItem "Match Report"
     .AddItem "Record Profile"
