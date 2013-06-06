@@ -308,6 +308,14 @@ Private msSingularCaption As String
 
 Private malngSelectedIDs()
 
+'Private Sub EnsureSelectedVisible()
+'  If List1.ListItems.Count > 0 Then
+'    If Not IsEmpty(List1.SelectedItem) Then
+'      List1.SelectedItem.EnsureVisible
+'    End If
+'  End If
+'End Sub
+
 Public Property Get SelectedID() As Long
   SelectedID = mlngSelectedID
 End Property
@@ -1017,6 +1025,8 @@ Private Sub Form_Activate()
   'MH20020227 Not Required?
   Refresh_Controls
 
+  'EnsureSelectedVisible
+
 End Sub
 
 
@@ -1059,6 +1069,9 @@ Private Sub Form_Load()
 
   'mstrEventLogIDs = vbNullString
   SizeControls
+
+
+
 
 End Sub
 
@@ -1152,11 +1165,11 @@ Private Sub List1_GotFocus()
   Refresh_Controls
 End Sub
 
-Private Sub Display_Button(Button As VB.CommandButton, ByVal BtnOpt As Long, ByVal x As Long, ByRef y As Long)
+Private Sub Display_Button(Button As VB.CommandButton, ByVal BtnOpt As Long, ByVal X As Long, ByRef Y As Long)
   If (Me.Options And BtnOpt) Then
-    Button.Move x, y
+    Button.Move X, Y
     Button.Visible = True
-    y = y + cmdNew.Height + ((UI.GetSystemMetrics(SM_CYFRAME) * Screen.TwipsPerPixelY) * 1.5)
+    Y = Y + cmdNew.Height + ((UI.GetSystemMetrics(SM_CYFRAME) * Screen.TwipsPerPixelY) * 1.5)
   Else
     Button.Visible = False
   End If
@@ -1925,7 +1938,7 @@ End Function
 '
 'End Sub
 
-Private Sub List1_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub List1_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
 
   If Button = vbRightButton Then
   
