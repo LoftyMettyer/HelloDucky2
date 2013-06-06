@@ -4597,7 +4597,12 @@ Public Sub UtilityClick(lngUtilType As UtilityType)
   Dim blnOK As Boolean
   Dim strSelectedRecords As String
 
+  Dim varBookMark As Variant
+
   strSelectedRecords = GetSelectedIDs
+  
+  varBookMark = ssOleDBGridFindColumns.Bookmark
+  
   If strSelectedRecords <> vbNullString Then
     If mfrmParent.SaveChanges(False) Then
       If Not Database.Validation Then
@@ -4668,8 +4673,14 @@ Public Sub UtilityClick(lngUtilType As UtilityType)
       UI.UnlockWindow
       frmMain.EnableMenu Me
     End If
+    
+    'NPG20100812 - Reinstate the selected items in the grid
+    If strSelectedRecords <> vbNullString Then
+      ReinstateSelectedRows (strSelectedRecords)
+      ssOleDBGridFindColumns.Bookmark = varBookMark
+    End If
+    
   End If
-
 
 
   With ssOleDBGridFindColumns
@@ -4690,7 +4701,50 @@ Public Sub UtilityClick(lngUtilType As UtilityType)
 
 End Sub
 
+Public Function ReinstateSelectedRows(pstrSelectedRecords As String)
+  Dim arrayBookmarks() As String
+  Dim nTotalSelRows As Variant
+  Dim intCount As Integer
+  Dim iGridLoop As Integer
+    
+  If pstrSelectedRecords = vbNullString Then Exit Function
+  
+  'Avoid crash when no rows !!    MH20000713
+  If ssOleDBGridFindColumns.Rows = 0 Then
+    Exit Function
+  End If
+  
+  With ssOleDBGridFindColumns
+  
+  .Redraw = False
+  
+  arrayBookmarks = Split(pstrSelectedRecords, ",")
+  
+  ' clear the grid's bookmarks
+  .SelBookmarks.RemoveAll
+  
+  For intCount = 0 To UBound(arrayBookmarks)
+    
+    ' match record id stored in array to the "ID" column of the grid, then
+    ' add the bookmark to selbookmarks if found.
+    
+    .MoveFirst
+            
+    For iGridLoop = 1 To RecordCount
+      If .Columns("ID").Value = arrayBookmarks(intCount) Then
+        nTotalSelRows = .Bookmark
+        .SelBookmarks.Add nTotalSelRows
+      End If
+      .MoveNext
+    Next
 
+  Next
+    
+  .Redraw = True
+  
+  End With
+  
+End Function
 Private Function GetRecCount(strSQL As String) As Long
 
   Dim rsTemp As ADODB.Recordset
