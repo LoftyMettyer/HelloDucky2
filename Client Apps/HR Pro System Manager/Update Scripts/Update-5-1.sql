@@ -1743,7 +1743,7 @@ PRINT 'Step - Menu & Category enhancements'
 	IF EXISTS(SELECT * FROM ASRSysPictures p
 		INNER JOIN ASRSysSystemSettings s ON s.SettingValue = p.PictureID
 		WHERE s.Section = 'desktopsetting' AND s.SettingKey = 'bitmapid'
-			AND p.[name] IN ('Advanced Business Solutions Wallpaper 1024x768.jpg', 'Advanced Business Solutions Wallpaper 1280 x800.jpg',
+			AND p.[name] IN ('Advanced Business Solutions Wallpaper 1024x768.jpg', 'Advanced Business Solutions Wallpaper 1280x800.jpg',
 			'Advanced Business Solutions Wallpaper 1440x900.jpg', 'Advanced Business Solutions Wallpaper 2560x1600.jpg',
 			'ASRDesktopImagePersonnelnPost.bmp', 'ASR Splash.jpg', 'ASRDesktopImage2005.jpg', 'ASRDesktopImage2005b.jpg',
 			'ASRDesktopImage 1024x768.jpg', 'ASRDesktopImage 1600x1200.jpg',
