@@ -697,6 +697,7 @@ PRINT 'Step 6 of X - Upgrade system tables to handle new multiline support'
 	EXECUTE spASRResizeColumn 'ASRSysAuditTrail','NewValue','MAX';
 	EXECUTE spASRResizeColumn 'ASRSysColumns','DefaultValue','MAX';
 	EXECUTE spASRResizeColumn 'ASRSysColumns','Mask','MAX';
+	EXECUTE spASRResizeColumn 'ASRSysControls','Caption','MAX';
 	EXECUTE spASRResizeColumn 'ASRSysDataTransferColumns','FromText','MAX';
 	EXECUTE spASRResizeColumn 'ASRSysDiaryEvents','EventNotes','MAX';
 	EXECUTE spASRResizeColumn 'ASRSysEmailLinks','Body','MAX';
