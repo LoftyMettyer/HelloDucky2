@@ -4,10 +4,10 @@ Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Begin VB.Form frmModuleDocument 
    BorderStyle     =   1  'Fixed Single
    Caption         =   "Document Management"
-   ClientHeight    =   6345
+   ClientHeight    =   4575
    ClientLeft      =   45
    ClientTop       =   345
-   ClientWidth     =   8640
+   ClientWidth     =   6375
    BeginProperty Font 
       Name            =   "Verdana"
       Size            =   8.25
@@ -19,35 +19,35 @@ Begin VB.Form frmModuleDocument
    EndProperty
    Icon            =   "frmModuleDocument.frx":0000
    LinkTopic       =   "Form1"
-   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   6345
-   ScaleWidth      =   8640
+   ScaleHeight     =   4575
+   ScaleWidth      =   6375
    ShowInTaskbar   =   0   'False
    StartUpPosition =   1  'CenterOwner
    Begin TabDlg.SSTab SSTab1 
-      Height          =   5640
+      Height          =   3885
       Left            =   90
       TabIndex        =   0
       Top             =   45
-      Width           =   8385
-      _ExtentX        =   14790
-      _ExtentY        =   9948
+      Width           =   6180
+      _ExtentX        =   10901
+      _ExtentY        =   6853
       _Version        =   393216
       Style           =   1
       Tabs            =   2
-      Tab             =   1
       TabHeight       =   520
       TabCaption(0)   =   "Types"
       TabPicture(0)   =   "frmModuleDocument.frx":000C
-      Tab(0).ControlEnabled=   0   'False
+      Tab(0).ControlEnabled=   -1  'True
       Tab(0).Control(0)=   "fraComponent(1)"
+      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).Control(1)=   "fraTypes"
+      Tab(0).Control(1).Enabled=   0   'False
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Mail Merge"
       TabPicture(1)   =   "frmModuleDocument.frx":0028
-      Tab(1).ControlEnabled=   -1  'True
+      Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "lblTransferTable"
       Tab(1).Control(0).Enabled=   0   'False
       Tab(1).Control(1)=   "lblColumnName"
@@ -65,7 +65,7 @@ Begin VB.Form frmModuleDocument
       Tab(1).ControlCount=   7
       Begin VB.ComboBox cboCategory 
          Height          =   315
-         Left            =   945
+         Left            =   -74055
          Style           =   2  'Dropdown List
          TabIndex        =   21
          Top             =   495
@@ -73,7 +73,7 @@ Begin VB.Form frmModuleDocument
       End
       Begin VB.ComboBox cboTables 
          Height          =   315
-         Left            =   960
+         Left            =   -74040
          Style           =   2  'Dropdown List
          TabIndex        =   14
          Top             =   900
@@ -83,7 +83,7 @@ Begin VB.Form frmModuleDocument
          Caption         =   "&Edit..."
          Enabled         =   0   'False
          Height          =   400
-         Left            =   6885
+         Left            =   -68115
          TabIndex        =   17
          Top             =   1665
          Width           =   1200
@@ -92,7 +92,7 @@ Begin VB.Form frmModuleDocument
          Caption         =   "Cle&ar"
          Enabled         =   0   'False
          Height          =   400
-         Left            =   6885
+         Left            =   -68115
          TabIndex        =   18
          Top             =   2160
          Width           =   1200
@@ -100,7 +100,7 @@ Begin VB.Form frmModuleDocument
       Begin VB.Frame fraTypes 
          Caption         =   "Types : "
          Height          =   1755
-         Left            =   -74865
+         Left            =   135
          TabIndex        =   5
          Top             =   1935
          Width           =   5865
@@ -159,7 +159,7 @@ Begin VB.Form frmModuleDocument
          Caption         =   "Categories :"
          Height          =   1305
          Index           =   1
-         Left            =   -74865
+         Left            =   135
          TabIndex        =   12
          Tag             =   "6"
          Top             =   450
@@ -203,7 +203,7 @@ Begin VB.Form frmModuleDocument
       Begin SSDataWidgets_B.SSDBGrid grdTransferDetails 
          Height          =   3255
          Index           =   0
-         Left            =   135
+         Left            =   -74865
          TabIndex        =   16
          Top             =   1665
          Width           =   6510
@@ -317,7 +317,7 @@ Begin VB.Form frmModuleDocument
          BackStyle       =   0  'Transparent
          Caption         =   "Name :"
          Height          =   195
-         Left            =   225
+         Left            =   -74775
          TabIndex        =   15
          Top             =   555
          Width           =   645
@@ -325,7 +325,7 @@ Begin VB.Form frmModuleDocument
       Begin VB.Label lblTransferTable 
          Caption         =   "Table : "
          Height          =   285
-         Left            =   225
+         Left            =   -74775
          TabIndex        =   13
          Top             =   945
          Width           =   600
@@ -335,9 +335,9 @@ Begin VB.Form frmModuleDocument
       Cancel          =   -1  'True
       Caption         =   "&Cancel"
       Height          =   405
-      Left            =   7140
+      Left            =   5070
       TabIndex        =   20
-      Top             =   5850
+      Top             =   4050
       Width           =   1200
    End
    Begin VB.CommandButton cmdOk 
@@ -345,9 +345,9 @@ Begin VB.Form frmModuleDocument
       Default         =   -1  'True
       Enabled         =   0   'False
       Height          =   405
-      Left            =   5850
+      Left            =   3780
       TabIndex        =   19
-      Top             =   5850
+      Top             =   4050
       Width           =   1200
    End
 End
@@ -625,7 +625,7 @@ Private Sub InitialiseCombos()
 End Sub
 
 Private Sub RefreshButtons()
-  cmdOk.Enabled = mbChanged
+  cmdOK.Enabled = mbChanged
 End Sub
 
 Private Sub RetrieveDefinition()
@@ -644,6 +644,9 @@ Private Sub Form_Load()
   Dim iLoop As Integer
 
   ReDim mavarCategoryTableIDs(2, 0)
+
+  tabOptions.TabVisible(0) = True
+  tabOptions.TabVisible(1) = False
 
   mblnReadOnly = (Application.AccessMode <> accFull And _
                  Application.AccessMode <> accSupportMode)
