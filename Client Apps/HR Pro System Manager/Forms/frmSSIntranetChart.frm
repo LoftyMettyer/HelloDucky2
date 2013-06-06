@@ -2032,7 +2032,10 @@ Private Function ValidateChartSetup() As Boolean
 
   fValid = True
   
-  
+  If cboColumnX.ListCount = 0 Then
+      fValid = False
+      MsgBox "No X-Axis Column has been selected.", vbOKOnly + vbExclamation, Application.Name
+  End If
 'If optChartType(0).value Then ' If One-Table chart
 '
 '
