@@ -102,7 +102,11 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 
 Public Sub Initialize(psUtilityType As String, psUtilityID As String)
-
+  
+  Dim mfChanged As Boolean
+  
+  mfChanged = False
+  
   GetHRProUtilityTypes
   UtilityType = CStr(utlCalendarreport)
   
