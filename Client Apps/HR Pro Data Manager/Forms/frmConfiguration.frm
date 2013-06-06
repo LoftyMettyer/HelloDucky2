@@ -1,8 +1,8 @@
 VERSION 5.00
 Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "CODEJO~1.OCX"
 Begin VB.Form frmConfiguration 
    BorderStyle     =   3  'Fixed Dialog
@@ -10,7 +10,7 @@ Begin VB.Form frmConfiguration
    ClientHeight    =   7530
    ClientLeft      =   45
    ClientTop       =   330
-   ClientWidth     =   7170
+   ClientWidth     =   7215
    ClipControls    =   0   'False
    BeginProperty Font 
       Name            =   "Verdana"
@@ -28,29 +28,29 @@ Begin VB.Form frmConfiguration
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   7530
-   ScaleWidth      =   7170
+   ScaleWidth      =   7215
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin VB.CommandButton cmdDefault 
       Caption         =   "Re&store Defaults"
       Height          =   400
       Left            =   90
-      TabIndex        =   122
+      TabIndex        =   119
       Top             =   7020
       Width           =   1620
    End
    Begin TabDlg.SSTab SSTab1 
       Height          =   6825
-      Left            =   90
-      TabIndex        =   125
+      Left            =   120
+      TabIndex        =   122
       Top             =   120
-      Width           =   6990
-      _ExtentX        =   12330
+      Width           =   6975
+      _ExtentX        =   12303
       _ExtentY        =   12039
       _Version        =   393216
       Style           =   1
       Tabs            =   7
-      Tab             =   2
+      Tab             =   5
       TabsPerRow      =   7
       TabHeight       =   520
       TabCaption(0)   =   "&Display Defaults"
@@ -69,15 +69,11 @@ Begin VB.Form frmConfiguration
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "&Network Configuration"
       TabPicture(2)   =   "frmConfiguration.frx":0044
-      Tab(2).ControlEnabled=   -1  'True
-      Tab(2).Control(0)=   "frmAutoLogin"
-      Tab(2).Control(0).Enabled=   0   'False
-      Tab(2).Control(1)=   "fraNetwork(0)"
-      Tab(2).Control(1).Enabled=   0   'False
-      Tab(2).Control(2)=   "fraNetwork(1)"
-      Tab(2).Control(2).Enabled=   0   'False
-      Tab(2).Control(3)=   "frmOutputs"
-      Tab(2).Control(3).Enabled=   0   'False
+      Tab(2).ControlEnabled=   0   'False
+      Tab(2).Control(0)=   "frmOutputs"
+      Tab(2).Control(1)=   "fraNetwork(1)"
+      Tab(2).Control(2)=   "fraNetwork(0)"
+      Tab(2).Control(3)=   "frmAutoLogin"
       Tab(2).ControlCount=   4
       TabCaption(3)   =   "&Batch Login"
       TabPicture(3)   =   "frmConfiguration.frx":0060
@@ -94,10 +90,13 @@ Begin VB.Form frmConfiguration
       Tab(4).ControlCount=   3
       TabCaption(5)   =   "Report Out&put"
       TabPicture(5)   =   "frmConfiguration.frx":0098
-      Tab(5).ControlEnabled=   0   'False
+      Tab(5).ControlEnabled=   -1  'True
       Tab(5).Control(0)=   "FraOutput(0)"
+      Tab(5).Control(0).Enabled=   0   'False
       Tab(5).Control(1)=   "FraOutput(1)"
+      Tab(5).Control(1).Enabled=   0   'False
       Tab(5).Control(2)=   "Frame1"
+      Tab(5).Control(2).Enabled=   0   'False
       Tab(5).ControlCount=   3
       TabCaption(6)   =   "Tool&bars"
       TabPicture(6)   =   "frmConfiguration.frx":00B4
@@ -261,15 +260,15 @@ Begin VB.Form frmConfiguration
       Begin VB.Frame Frame1 
          Caption         =   "Excel Options :"
          Height          =   1750
-         Left            =   -74880
-         TabIndex        =   105
+         Left            =   120
+         TabIndex        =   102
          Top             =   4920
          Width           =   6735
          Begin VB.ComboBox cboExcelFormat 
             Height          =   315
             Left            =   1725
             Style           =   2  'Dropdown List
-            TabIndex        =   111
+            TabIndex        =   108
             Top             =   700
             Width           =   4800
          End
@@ -289,7 +288,7 @@ Begin VB.Form frmConfiguration
             Index           =   0
             Left            =   6180
             MaskColor       =   &H000000FF&
-            TabIndex        =   109
+            TabIndex        =   106
             ToolTipText     =   "Clear Path"
             Top             =   300
             UseMaskColor    =   -1  'True
@@ -300,7 +299,7 @@ Begin VB.Form frmConfiguration
             Height          =   315
             Index           =   0
             Left            =   5850
-            TabIndex        =   108
+            TabIndex        =   105
             ToolTipText     =   "Select Path"
             Top             =   300
             Width           =   330
@@ -312,7 +311,7 @@ Begin VB.Form frmConfiguration
             Index           =   0
             Left            =   1725
             Locked          =   -1  'True
-            TabIndex        =   107
+            TabIndex        =   104
             TabStop         =   0   'False
             Top             =   300
             Width           =   4125
@@ -321,7 +320,7 @@ Begin VB.Form frmConfiguration
             Caption         =   "Row && Column &Headings"
             Height          =   255
             Left            =   1725
-            TabIndex        =   112
+            TabIndex        =   109
             Top             =   1100
             Width           =   2400
          End
@@ -329,7 +328,7 @@ Begin VB.Form frmConfiguration
             Caption         =   "Gr&idlines"
             Height          =   255
             Left            =   1725
-            TabIndex        =   113
+            TabIndex        =   110
             Top             =   1400
             Width           =   1100
          End
@@ -339,7 +338,7 @@ Begin VB.Form frmConfiguration
             Caption         =   "Default Format :"
             Height          =   195
             Left            =   195
-            TabIndex        =   110
+            TabIndex        =   107
             Top             =   765
             Width           =   1410
          End
@@ -349,7 +348,7 @@ Begin VB.Form frmConfiguration
             Caption         =   "Template :"
             Height          =   195
             Left            =   195
-            TabIndex        =   106
+            TabIndex        =   103
             Top             =   360
             Width           =   930
          End
@@ -357,8 +356,8 @@ Begin VB.Form frmConfiguration
       Begin VB.Frame frmOutputs 
          Caption         =   "Output :"
          Height          =   945
-         Left            =   120
-         TabIndex        =   127
+         Left            =   -74880
+         TabIndex        =   124
          Top             =   2060
          Width           =   6735
          Begin VB.CommandButton cmdDocumentsPath 
@@ -406,7 +405,7 @@ Begin VB.Form frmConfiguration
             Caption         =   "Document default output path :"
             Height          =   480
             Left            =   135
-            TabIndex        =   128
+            TabIndex        =   125
             Top             =   330
             Width           =   1590
             WordWrap        =   -1  'True
@@ -432,14 +431,14 @@ Begin VB.Form frmConfiguration
          Caption         =   "Layout :"
          Height          =   680
          Left            =   -74880
-         TabIndex        =   119
+         TabIndex        =   116
          Top             =   6000
          Width           =   6735
          Begin VB.ComboBox cboToolbarPosition 
             Height          =   315
             Left            =   1450
             Style           =   2  'Dropdown List
-            TabIndex        =   121
+            TabIndex        =   118
             Top             =   240
             Width           =   5070
          End
@@ -447,7 +446,7 @@ Begin VB.Form frmConfiguration
             Caption         =   "Position :"
             Height          =   270
             Left            =   200
-            TabIndex        =   120
+            TabIndex        =   117
             Top             =   300
             Width           =   800
          End
@@ -456,7 +455,7 @@ Begin VB.Form frmConfiguration
          Caption         =   "Buttons :"
          Height          =   5565
          Left            =   -74880
-         TabIndex        =   114
+         TabIndex        =   111
          Top             =   400
          Width           =   6735
          Begin VB.ComboBox cboToolbars 
@@ -466,7 +465,7 @@ Begin VB.Form frmConfiguration
             List            =   "frmConfiguration.frx":0142
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
-            TabIndex        =   129
+            TabIndex        =   126
             Top             =   315
             Width           =   5070
          End
@@ -474,7 +473,7 @@ Begin VB.Form frmConfiguration
             Caption         =   "S&how"
             Height          =   400
             Left            =   5300
-            TabIndex        =   116
+            TabIndex        =   113
             Top             =   800
             Width           =   1200
          End
@@ -482,7 +481,7 @@ Begin VB.Form frmConfiguration
             Height          =   4575
             Index           =   0
             Left            =   195
-            TabIndex        =   115
+            TabIndex        =   112
             Top             =   795
             Width           =   4905
             _ExtentX        =   8652
@@ -540,7 +539,7 @@ Begin VB.Form frmConfiguration
          Begin XtremeSuiteControls.PushButton cmdMoveDown 
             Height          =   405
             Left            =   5300
-            TabIndex        =   118
+            TabIndex        =   115
             Top             =   2000
             Width           =   1200
             _Version        =   851969
@@ -553,7 +552,7 @@ Begin VB.Form frmConfiguration
          Begin XtremeSuiteControls.PushButton cmdMoveUp 
             Height          =   405
             Left            =   5300
-            TabIndex        =   117
+            TabIndex        =   114
             Top             =   1500
             Width           =   1200
             _Version        =   851969
@@ -567,7 +566,7 @@ Begin VB.Form frmConfiguration
             Caption         =   "Toolbar :"
             Height          =   195
             Left            =   200
-            TabIndex        =   130
+            TabIndex        =   127
             Top             =   375
             Width           =   800
          End
@@ -576,33 +575,49 @@ Begin VB.Form frmConfiguration
          Caption         =   "Colours && Fonts :"
          Height          =   3225
          Index           =   1
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   78
          Top             =   400
          Width           =   6735
-         Begin VB.CheckBox chkGridlines 
-            Caption         =   "&Gridlines"
-            Height          =   195
-            Left            =   4300
-            TabIndex        =   87
-            Top             =   1160
-            Width           =   1215
-         End
          Begin VB.CheckBox chkUnderLine 
             Caption         =   "&Underline"
             Height          =   195
-            Left            =   4300
-            TabIndex        =   86
-            Top             =   760
-            Width           =   1215
+            Left            =   4080
+            TabIndex        =   131
+            Top             =   540
+            Width           =   1695
          End
          Begin VB.CheckBox chkBold 
             Caption         =   "Bo&ld"
             Height          =   195
-            Left            =   4300
-            TabIndex        =   85
-            Top             =   360
-            Width           =   1125
+            Left            =   4080
+            TabIndex        =   129
+            Top             =   285
+            Width           =   1005
+         End
+         Begin VB.CheckBox chkGridlines 
+            Caption         =   "&Gridlines"
+            Height          =   195
+            Left            =   4080
+            TabIndex        =   128
+            Top             =   795
+            Width           =   1095
+         End
+         Begin VB.CheckBox chkOmitSpacerCol 
+            Caption         =   "O&mit Empty Col"
+            Height          =   195
+            Left            =   4080
+            TabIndex        =   132
+            Top             =   1305
+            Width           =   1815
+         End
+         Begin VB.CheckBox chkOmitTopRow 
+            Caption         =   "&Omit Empty Row"
+            Height          =   195
+            Left            =   4080
+            TabIndex        =   130
+            Top             =   1050
+            Width           =   1920
          End
          Begin VB.PictureBox Picture1 
             BackColor       =   &H80000005&
@@ -610,9 +625,9 @@ Begin VB.Form frmConfiguration
             Left            =   1725
             ScaleHeight     =   1440
             ScaleWidth      =   4740
-            TabIndex        =   90
+            TabIndex        =   87
             TabStop         =   0   'False
-            Top             =   1500
+            Top             =   1620
             Width           =   4800
             Begin VB.Label lblHeading 
                Appearance      =   0  'Flat
@@ -632,7 +647,7 @@ Begin VB.Form frmConfiguration
                Height          =   300
                Index           =   1
                Left            =   2040
-               TabIndex        =   93
+               TabIndex        =   90
                Top             =   615
                Width           =   2055
             End
@@ -654,7 +669,7 @@ Begin VB.Form frmConfiguration
                Height          =   300
                Index           =   0
                Left            =   480
-               TabIndex        =   92
+               TabIndex        =   89
                Top             =   615
                Width           =   1605
             End
@@ -675,9 +690,9 @@ Begin VB.Form frmConfiguration
                ForeColor       =   &H80000008&
                Height          =   300
                Index           =   3
-               Left            =   2040
-               TabIndex        =   97
-               Top             =   1185
+               Left            =   70920
+               TabIndex        =   94
+               Top             =   -4200
                Width           =   2055
             End
             Begin VB.Label lblData 
@@ -698,7 +713,7 @@ Begin VB.Form frmConfiguration
                Height          =   300
                Index           =   2
                Left            =   480
-               TabIndex        =   96
+               TabIndex        =   93
                Top             =   1185
                Width           =   1605
             End
@@ -720,7 +735,7 @@ Begin VB.Form frmConfiguration
                Height          =   300
                Index           =   1
                Left            =   2040
-               TabIndex        =   95
+               TabIndex        =   92
                Top             =   900
                Width           =   2055
             End
@@ -742,7 +757,7 @@ Begin VB.Form frmConfiguration
                Height          =   300
                Index           =   0
                Left            =   480
-               TabIndex        =   94
+               TabIndex        =   91
                Top             =   900
                Width           =   1605
             End
@@ -763,7 +778,7 @@ Begin VB.Form frmConfiguration
                ForeColor       =   &H80000008&
                Height          =   285
                Left            =   1440
-               TabIndex        =   91
+               TabIndex        =   88
                Top             =   120
                Width           =   570
             End
@@ -819,7 +834,7 @@ Begin VB.Form frmConfiguration
             Left            =   6360
             ScaleHeight     =   195
             ScaleWidth      =   195
-            TabIndex        =   88
+            TabIndex        =   85
             Top             =   840
             Visible         =   0   'False
             Width           =   255
@@ -831,7 +846,7 @@ Begin VB.Form frmConfiguration
             Height          =   195
             Index           =   3
             Left            =   195
-            TabIndex        =   89
+            TabIndex        =   86
             Top             =   1560
             Width           =   810
          End
@@ -947,7 +962,7 @@ Begin VB.Form frmConfiguration
          Caption         =   "OLE Locations :"
          Height          =   1575
          Index           =   1
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   47
          Top             =   3070
          Width           =   6735
@@ -1158,7 +1173,7 @@ Begin VB.Form frmConfiguration
          Caption         =   "Printer :"
          Height          =   1600
          Index           =   0
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   26
          Top             =   400
          Width           =   6735
@@ -1586,15 +1601,15 @@ Begin VB.Form frmConfiguration
          Caption         =   "Word Options :"
          Height          =   1200
          Index           =   0
-         Left            =   -74880
-         TabIndex        =   98
+         Left            =   120
+         TabIndex        =   95
          Top             =   3680
          Width           =   6735
          Begin VB.ComboBox cboWordFormat 
             Height          =   315
             Left            =   1725
             Style           =   2  'Dropdown List
-            TabIndex        =   104
+            TabIndex        =   101
             Top             =   700
             Width           =   4800
          End
@@ -1614,7 +1629,7 @@ Begin VB.Form frmConfiguration
             Index           =   1
             Left            =   6180
             MaskColor       =   &H000000FF&
-            TabIndex        =   102
+            TabIndex        =   99
             ToolTipText     =   "Clear Path"
             Top             =   300
             UseMaskColor    =   -1  'True
@@ -1627,7 +1642,7 @@ Begin VB.Form frmConfiguration
             Index           =   1
             Left            =   1725
             Locked          =   -1  'True
-            TabIndex        =   100
+            TabIndex        =   97
             TabStop         =   0   'False
             Top             =   300
             Width           =   4125
@@ -1637,7 +1652,7 @@ Begin VB.Form frmConfiguration
             Height          =   315
             Index           =   1
             Left            =   5850
-            TabIndex        =   101
+            TabIndex        =   98
             ToolTipText     =   "Select Path"
             Top             =   300
             Width           =   330
@@ -1648,7 +1663,7 @@ Begin VB.Form frmConfiguration
             Caption         =   "Default Format :"
             Height          =   195
             Left            =   195
-            TabIndex        =   103
+            TabIndex        =   100
             Top             =   765
             Width           =   1410
          End
@@ -1658,7 +1673,7 @@ Begin VB.Form frmConfiguration
             Caption         =   "Template :"
             Height          =   195
             Left            =   195
-            TabIndex        =   99
+            TabIndex        =   96
             Top             =   360
             Width           =   930
          End
@@ -1666,8 +1681,8 @@ Begin VB.Form frmConfiguration
       Begin VB.Frame frmAutoLogin 
          Caption         =   "Login :"
          Height          =   780
-         Left            =   120
-         TabIndex        =   126
+         Left            =   -74880
+         TabIndex        =   123
          Top             =   4710
          Width           =   6735
          Begin VB.CheckBox chkBypassLogonDetails 
@@ -1684,7 +1699,7 @@ Begin VB.Form frmConfiguration
       Caption         =   "&Cancel"
       Height          =   400
       Left            =   5875
-      TabIndex        =   124
+      TabIndex        =   121
       Top             =   7020
       Width           =   1200
    End
@@ -1692,7 +1707,7 @@ Begin VB.Form frmConfiguration
       Caption         =   "&OK"
       Height          =   400
       Left            =   4550
-      TabIndex        =   123
+      TabIndex        =   120
       Top             =   7020
       Width           =   1200
    End
@@ -1991,16 +2006,22 @@ Private Sub chkImportSuccess_Click()
 
 End Sub
 
+Private Sub chkOmitSpacerCol_Click()
+moutCurrent.OmitSpacerCol = (chkOmitSpacerCol.Value = vbChecked)
+Changed = Not mbLoading
+End Sub
+
+Private Sub chkOmitTopRow_Click()
+moutCurrent.OmitSpacerRow = (chkOmitTopRow.Value = vbChecked)
+Changed = Not mbLoading
+End Sub
+
 Private Sub chkPrintingConfirm_Click()
-
   Changed = Not mbLoading
-
 End Sub
 
 Private Sub chkPrintingPrompt_Click()
-
   Changed = Not mbLoading
-
 End Sub
 
 Private Sub chkUseWindowsAuthentication_Click()
@@ -3229,6 +3250,8 @@ Private Sub SaveUserSettings()
     SaveUserSetting "Output", "TitleUnderline", IIf(.Underline, 1, 0)
     SaveUserSetting "Output", "TitleBackcolour", .BackCol
     SaveUserSetting "Output", "TitleForecolour", .ForeCol
+    SaveUserSetting "Output", "ColSpacer", IIf(.OmitSpacerCol, 1, 0)
+    SaveUserSetting "Output", "RowSpacer", IIf(.OmitSpacerRow, 1, 0)
   End With
 
   With moutHeading
@@ -3249,6 +3272,8 @@ Private Sub SaveUserSettings()
     SaveUserSetting "Output", "DataUnderline", IIf(.Underline, 1, 0)
     SaveUserSetting "Output", "DataBackcolour", .BackCol
     SaveUserSetting "Output", "DataForecolour", .ForeCol
+    SaveUserSetting "Output", "DataCol", IIf(moutTitle.OmitSpacerCol, 1, 2)
+    SaveUserSetting "Output", "DataRow", IIf(moutTitle.OmitSpacerRow, 4, 5)
   End With
 
   SaveUserSetting "Output", "ExcelTemplate", txtFilename(0).Text
@@ -3409,6 +3434,8 @@ Private Sub ReadUserSettings(blnRestoreDefaults As Boolean)
     .Underline = (GetUserSettingOrDefault("Output", "TitleUnderline", "0") = "1")
     .BackCol = Val(GetUserSettingOrDefault("Output", "TitleBackcolour", vbWhite))
     .ForeCol = Val(GetUserSettingOrDefault("Output", "TitleForecolour", GetColour("Midnight Blue")))
+    .OmitSpacerCol = (GetUserSettingOrDefault("Output", "ColSpacer", "0") = "1")
+    .OmitSpacerRow = (GetUserSettingOrDefault("Output", "RowSpacer", "0") = "1")
   
     RefreshGridlines 0, .Gridlines
     RefreshBold 0, .Bold
@@ -3946,6 +3973,9 @@ Private Sub cboTextType_Click()
   chkBold.Value = IIf(moutCurrent.Bold, vbChecked, vbUnchecked)
   chkUnderLine.Value = IIf(moutCurrent.Underline, vbChecked, vbUnchecked)
   chkGridlines.Value = IIf(moutCurrent.Gridlines, vbChecked, vbUnchecked)
+  chkOmitSpacerCol.Value = IIf(moutCurrent.OmitSpacerCol, vbChecked, vbUnchecked)
+  chkOmitTopRow.Value = IIf(moutCurrent.OmitSpacerRow, vbChecked, vbUnchecked)
+  
   
   mbLoading = False
   
