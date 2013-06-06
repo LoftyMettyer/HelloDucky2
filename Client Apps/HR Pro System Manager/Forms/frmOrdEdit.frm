@@ -359,11 +359,11 @@ Begin VB.Form frmOrdEdit
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
          NumListImages   =   2
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmOrdEdit.frx":18AB
+            Picture         =   "frmOrdEdit.frx":1A31
             Key             =   "IMG_DOWN"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmOrdEdit.frx":1C87
+            Picture         =   "frmOrdEdit.frx":1D85
             Key             =   "IMG_UP"
          EndProperty
       EndProperty
@@ -486,7 +486,7 @@ Private Sub cmdCancel_Click()
   If mfChanged Then
     intAnswer = MsgBox("The order definition has changed.  Save changes ?", vbQuestion + vbYesNoCancel + vbDefaultButton1, App.ProductName)
     If intAnswer = vbYes Then
-      If Me.cmdOK.Enabled Then
+      If Me.cmdOk.Enabled Then
         Call cmdOK_Click
         Exit Sub
       Else
@@ -656,7 +656,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
     If mfChanged Then
       intAnswer = MsgBox("The order definition has changed.  Save changes ?", vbQuestion + vbYesNoCancel + vbDefaultButton1, App.ProductName)
       If intAnswer = vbYes Then
-        If Me.cmdOK.Enabled Then
+        If Me.cmdOk.Enabled Then
           Call cmdOK_Click
           If mfCancelled = True Then Cancel = 1
         Else
@@ -684,7 +684,7 @@ Private Sub PopulateTreeViews()
   ' Populate the Find Columns treeview.
   Dim lngTableID As Long
   Dim sSQL As String
-  Dim rsInfo As DAO.Recordset
+  Dim rsInfo As dao.Recordset
   Dim objNode As ComctlLib.Node
   
   lngTableID = 0
@@ -848,7 +848,7 @@ Private Sub FindColumns_RefreshControls()
     (Not fSelectedLastNode)
     
   ' Disable the OK command control if there are no order items specified.
-  cmdOK.Enabled = (trvSelectedFindColumns.Nodes.Count > 0) And _
+  cmdOk.Enabled = (trvSelectedFindColumns.Nodes.Count > 0) And _
     (trvSelectedSortColumns.Nodes.Count > 0) And _
     (Len(Trim(txtOrderName(0).Text)) > 0) And Not mblnReadOnly
 
@@ -889,7 +889,7 @@ Private Sub SortColumns_RefreshControls()
     (Not fSelectedLastNode)
     
   ' Disable the OK command control if there are no order items specified.
-  cmdOK.Enabled = (trvSelectedFindColumns.Nodes.Count > 0) And _
+  cmdOk.Enabled = (trvSelectedFindColumns.Nodes.Count > 0) And _
     (trvSelectedSortColumns.Nodes.Count > 0) And _
     (Len(Trim(txtOrderName(0).Text)) > 0) And Not mblnReadOnly
 
@@ -1219,7 +1219,7 @@ Private Sub sscmdRemoveFindColumn_Click()
   Dim lngColumnID As Long
   Dim sSQL As String
   Dim objNode As ComctlLib.Node
-  Dim rsInfo As DAO.Recordset
+  Dim rsInfo As dao.Recordset
   
   With trvSelectedFindColumns
     If Not .SelectedItem Is Nothing Then
@@ -1258,7 +1258,7 @@ Private Sub sscmdRemoveSortColumn_Click()
   Dim lngColumnID As Long
   Dim sSQL As String
   Dim objNode As ComctlLib.Node
-  Dim rsInfo As DAO.Recordset
+  Dim rsInfo As dao.Recordset
   
   With trvSelectedSortColumns
     If Not .SelectedItem Is Nothing Then
@@ -1820,7 +1820,7 @@ Private Sub txtOrderName_Change(Index As Integer)
   mfChanged = True
   
   ' Disable the OK command control if there are no order items specified.
-  cmdOK.Enabled = (trvSelectedFindColumns.Nodes.Count > 0) And _
+  cmdOk.Enabled = (trvSelectedFindColumns.Nodes.Count > 0) And _
     (trvSelectedSortColumns.Nodes.Count > 0) And _
     (Len(Trim(txtOrderName(0).Text)) > 0) And Not mblnReadOnly
 
