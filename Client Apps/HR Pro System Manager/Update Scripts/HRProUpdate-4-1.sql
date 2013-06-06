@@ -1414,9 +1414,10 @@ PRINT 'Step 5 - Intranet Dashboard Implementation'
 	EXECUTE sp_executeSQL @sSPCode;
 
 	SET @sSPCode = 'ALTER PROCEDURE [dbo].[spASRIntShowOutOfOfficeHyperlink]	
-	@piTableID		integer,
-	@piViewID		integer,
-	@pfDisplayHyperlink	bit 	OUTPUT
+	(
+		@piTableID		integer,
+		@piViewID		integer,
+		@pfDisplayHyperlink	bit 	OUTPUT
 	)
 	AS
 	BEGIN
