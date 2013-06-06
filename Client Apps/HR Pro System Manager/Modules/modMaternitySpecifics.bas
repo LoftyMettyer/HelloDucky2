@@ -32,7 +32,7 @@ ErrorTrap:
 End Function
 
 
-Private Function CreateParentalLeaveEntitlementUDF()
+Private Function CreateParentalLeaveEntitlementUDF() As Boolean
   
   Dim strDependantsTableName As String
   Dim strDepDateOfBirthColumn As String
@@ -125,7 +125,7 @@ ErrorTrap:
 End Function
 
 
-Private Function CreateParentalLeaveTakenUDF()
+Private Function CreateParentalLeaveTakenUDF() As Boolean
 
   Dim lngPersID As Long
   Dim strDependantsTableName As String
@@ -225,7 +225,7 @@ ErrorTrap:
 
 End Function
 
-Private Function CreateMaternityExpectedReturnDateUDF()
+Private Function CreateMaternityExpectedReturnDateUDF() As Boolean
 
   Dim strMaternityTableName As String
   Dim strMatEWCDateColumn As String
