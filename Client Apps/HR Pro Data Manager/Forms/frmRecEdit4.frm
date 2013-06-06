@@ -11821,6 +11821,8 @@ Public Sub MatchReportClick(mrtMatchReportType As MatchReportType)
       'MH20031002 Fault 7082 Reference Property instead of object to trap errors
       '.TableID = mobjTableView.TableID
       .TableID = Me.TableID
+      .TableComboVisible = True
+      .TableComboEnabled = False
 
       Select Case mrtMatchReportType
       Case mrtNormal: lngTYPE = utlMatchReport
