@@ -1408,15 +1408,21 @@ Public Sub Initialize(piType As SSINTRANETLINKTYPES, _
     
     optLink(SSINTLINKSCREEN_UTILITY).value = True
     
+  
+  End If
+  
+  If miLinkType = SSINTLINK_DOCUMENT Then
+    optLink(SSINTLINKSCREEN_DOCUMENT).value = True
+  End If
+  
+  If miLinkType <> SSINTLINK_BUTTON Then
     ' disable the irrelevant options
     optLink(SSINTLINKPWFSTEPS).Enabled = False
     optLink(SSINTLINKCHART).Enabled = False
     optLink(SSINTLINKDB_VALUE).Enabled = False
-    
-    
-  ElseIf miLinkType = SSINTLINK_DOCUMENT Then
-    optLink(SSINTLINKSCREEN_DOCUMENT).value = True
   End If
+    
+    
   
   If piElement_Type = 1 Then
     optLink(SSINTLINKSEPARATOR).value = True
@@ -1482,11 +1488,8 @@ Public Sub Initialize(piType As SSINTRANETLINKTYPES, _
   txtFilter.Tag = miChartFilterID
   txtFilter.Text = GetExpressionName(txtFilter.Tag)
   
-  
   txtFilter.Enabled = False
   txtFilter.BackColor = vbButtonFace
-
-  
   
   PopulateAccessGrid psHiddenGroups
 
@@ -1646,7 +1649,7 @@ Private Sub RefreshControls()
     txtPrompt.BackColor = vbWindowBackground
   End If
   
-  If (optLink(SSINTLINKSEPARATOR).value And miLinkType = SSINTLINK_HYPERTEXT) Or optLink(SSINTLINKPWFSTEPS).value Then
+  If (optLink(SSINTLINKSEPARATOR).value And miLinkType = SSINTLINK_HYPERTEXT) Or optLink(SSINTLINKPWFSTEPS).value Or miLinkType = SSINTLINK_DROPDOWNLIST Then
     ' Disable the icon and new column options for hypertext link separators...
     chkNewColumn.Visible = False
     lblIcon.Visible = False
@@ -1709,7 +1712,7 @@ Private Sub RefreshControls()
   lblHRProUtilityMessage.Caption = sUtilityMessage
   
   ' Disable the OK button as required.
-  cmdOK.Enabled = mfChanged
+  cmdOk.Enabled = mfChanged
   
 
 End Sub
@@ -1820,6 +1823,11 @@ Private Sub RefreshChart()
   ' Stack Series
   MSChart1.Stacking = chkStackSeries
   
+  ' set the colours to the new set
+  If MSChart1.ColumnCount > 0 Then MSChart1.Plot.SeriesCollection(1).DataPoints(-1).Brush.FillColor.Set 166, 206, 227
+  If MSChart1.ColumnCount > 1 Then MSChart1.Plot.SeriesCollection(2).DataPoints(-1).Brush.FillColor.Set 178, 223, 138
+  If MSChart1.ColumnCount > 2 Then MSChart1.Plot.SeriesCollection(3).DataPoints(-1).Brush.FillColor.Set 251, 154, 153
+  If MSChart1.ColumnCount > 3 Then MSChart1.Plot.SeriesCollection(4).DataPoints(-1).Brush.FillColor.Set 253, 191, 111
   
   ' Show Values
   With MSChart1
@@ -1956,6 +1964,16 @@ Private Function ValidateLink() As Boolean
       txtDocumentFilePath.SetFocus
     End If
   End If
+
+  If fValid Then
+    If optLink(SSINTLINKCHART).value And _
+      ChartColumnID = 0 Then
+      fValid = False
+      MsgBox "Please define chart data using the 'Data' button.", vbOKOnly + vbExclamation, Application.Name
+      cmdChartData.SetFocus
+    End If
+  End If
+
 
   ValidateLink = fValid
   
