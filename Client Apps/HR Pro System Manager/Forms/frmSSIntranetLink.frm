@@ -522,19 +522,19 @@ Begin VB.Form frmSSIntranetLink
       Begin VB.OptionButton optLink 
          Caption         =   "&Database Value"
          Height          =   450
-         Index           =   8
+         Index           =   7
          Left            =   195
          TabIndex        =   18
-         Top             =   2985
+         Top             =   2685
          Width           =   2235
       End
       Begin VB.OptionButton optLink 
          Caption         =   "Pending &Workflows"
          Height          =   195
-         Index           =   7
+         Index           =   8
          Left            =   195
          TabIndex        =   17
-         Top             =   2775
+         Top             =   3150
          Width           =   2235
       End
       Begin VB.OptionButton optLink 
@@ -901,8 +901,8 @@ Public Enum SSINTRANETSCREENTYPES
   'NPG Dashboard
   SSINTLINKSEPARATOR = 5
   SSINTLINKCHART = 6
-  SSINTLINKPWFSTEPS = 7
-  SSINTLINKDB_VALUE = 8
+  SSINTLINKDB_VALUE = 7
+  SSINTLINKPWFSTEPS = 8
   SSINTLINKSCREEN_DOCUMENT = 9
 End Enum
 
@@ -974,7 +974,7 @@ Private Sub FormatScreen()
   lblTableView.Top = cboTableView.Top + (lblText.Top - txtText.Top)
  
   ' HR Pro screen links only required for Button or Dropdown List Links
-  optLink(0).Enabled = (miLinkType <> SSINTLINK_HYPERTEXT) And (miLinkType <> SSINTLINK_DOCUMENT)
+  optLink(SSINTLINKSCREEN_HRPRO).Enabled = (miLinkType <> SSINTLINK_HYPERTEXT) And (miLinkType <> SSINTLINK_DOCUMENT)
   
   If miLinkType = SSINTLINK_DOCUMENT Then
     fraLinkType.Visible = False
