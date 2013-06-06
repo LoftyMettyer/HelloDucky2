@@ -1,0 +1,90 @@
+[Root]
+Most Recent Package=Dep File 1
+
+
+[Package|Dep File 1|Root]
+SubWizProgID=PDWizard.DepPkgSubWiz
+BuildFolder=C:\DEV\HR Pro\HR Pro ActiveX\COA_Progress
+RA Server Support=No
+
+[Package|Dep File 1|Configure DAO ISAMs]
+Applicable=No
+
+[Package|Dep File 1|Configure DAO ODBC]
+JetWorkspace=
+ODBCDirect=
+
+[Package|Dep File 1|Files Found]
+
+[Package|Dep File 1|Files Released]
+
+[Package|Dep File 1|Missing Dependency Information]
+C:\Program Files\Codejock Software\ActiveX\Xtreme Skin Framework Bundle ActiveX v13.1.0\Bin\Codejock.SkinFramework.v13.1.0.ocx=
+
+[Package|Dep File 1|Out-of-Date Dependency Information]
+
+[Package|Dep File 1|Files Added]
+C:\WINDOWS\system32\AutPrx32.dll=This file is needed for RA server support.
+C:\WINDOWS\system32\AutMgr32.exe=This file is needed for RA server support.
+C:\WINDOWS\system32\RACMgr32.exe=This file is needed for RA server support.
+
+[Package|Dep File 1|Files Removed]
+c:\windows\system32\autprx32.dll=
+c:\windows\system32\autmgr32.exe=
+c:\windows\system32\racmgr32.exe=
+c:\windows\system32\racreg32.dll=
+c:\windows\system32\odkob32.dll=
+
+[Package|Dep File 1|Files In Project]
+C:\DEV\HR Pro\HR Pro ActiveX\COA_Progress\COA_Progress.exe=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\msvbvm60.dll=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEAUT32.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEPRO32.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ASYCFILT.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\STDOLE2.TLB=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCAT.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\objsafe.tlb=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\mscomctl.OCX=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\mscomct2.ocx=Yes
+C:\Program Files\Codejock Software\ActiveX\Xtreme Skin Framework Bundle ActiveX v13.1.0\Bin\Codejock.SkinFramework.v13.1.0.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ComCt232.ocx=Yes
+C:\WINDOWS\system32\AUTPRX32.DLL=No
+C:\WINDOWS\system32\AUTMGR32.EXE=No
+C:\WINDOWS\system32\RACMGR32.EXE=No
+C:\WINDOWS\system32\RACREG32.DLL=No
+C:\WINDOWS\system32\ODKOB32.DLL=No
+
+[Package|Dep File 1|Configure Registry Files]
+Applicable=
+
+[Package|Dep File 1|Configure Remote Servers]
+Applicable=
+
+[Package|Dep File 1|Install Locations]
+C:\DEV\HR Pro\HR Pro ActiveX\COA_Progress\COA_Progress.exe=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\msvbvm60.dll=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEAUT32.DLL=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEPRO32.DLL=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ASYCFILT.DLL=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\STDOLE2.TLB=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCAT.DLL=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\objsafe.tlb=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\mscomctl.OCX=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\mscomct2.ocx=$(WinSysPath)
+C:\Program Files\Codejock Software\ActiveX\Xtreme Skin Framework Bundle ActiveX v13.1.0\Bin\Codejock.SkinFramework.v13.1.0.ocx=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ComCt232.ocx=$(WinSysPath)
+
+[Package|Dep File 1|Configure Shared Files]
+Applicable=
+
+[Package|Dep File 1|DepFile]
+DepCabFile=COA_Progress.CAB
+DepCabRun=COA_Progress.INF
+
+[Package|Dep File 1|Package]
+PackageFolder=C:\DEV\HR Pro\HR Pro ActiveX\COA_Progress
+ProjectFolder=C:\DEV\HR Pro\HR Pro ActiveX\COA_Progress
+ServerSideCab=
+File1=C:\DEV\HR Pro\HR Pro ActiveX\COA_Progress\COA_Progress.DEP
+Handler1=PDWizard.FolderDplySubWiz
+Handler2=PDWizard.WebPostDplySubWiz
