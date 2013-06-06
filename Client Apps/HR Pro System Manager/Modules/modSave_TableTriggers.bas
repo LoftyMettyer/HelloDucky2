@@ -895,30 +895,13 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
         "        --END" & vbNewLine
 
     End If
-        
-'    If LenB(gstrInsertEmailCode) = 0 Then
-'      sInsertTriggerSQL.Append _
-'        "        /* ----------------------------------------- */" & vbNewLine & _
-'        "        /* No Email triggers required.               */" & vbNewLine & _
-'        "        /* ----------------------------------------- */" & vbNewLine & vbNewLine
-'    Else
-'      sInsertTriggerSQL.Append vbNewLine & _
-'        "        /* ----------------------- */" & vbNewLine & _
-'        "        /* Email Triggers. */" & vbNewLine & _
-'        "        /* ----------------------- */" & vbNewLine & _
-'        "        IF @fValidRecord = 1" & vbNewLine & _
-'        "        BEGIN" & vbNewLine & _
-'        gstrInsertEmailCode & vbNewLine & _
-'        "        END" & vbNewLine
-'    End If
-
 
     'MH20040331
     sInsertTriggerSQL.Append vbNewLine & _
       "        /* ----------------------- */" & vbNewLine & _
       "        /* Outlook Triggers. */" & vbNewLine & _
       "        /* ----------------------- */" & vbNewLine & _
-      "        IF @fValidRecord = 1" & vbNewLine & _
+      "        IF @fValidRecord = 1 AND @startingtriggertable = " & pLngCurrentTableID & vbNewLine & _
       "        BEGIN" & vbNewLine & _
       "        IF EXISTS (SELECT Name FROM sysobjects WHERE type = 'P' AND name = 'spASROutlook_" & CStr(pLngCurrentTableID) & "')" & vbNewLine & _
       "          EXEC dbo.spASROutlook_" & CStr(pLngCurrentTableID) & " @recordID" & vbNewLine & _
@@ -1133,7 +1116,7 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
         "        /* ----------------------- */" & vbNewLine & _
         "        /* Email Triggers. */" & vbNewLine & _
         "        /* ----------------------- */" & vbNewLine & _
-        "        IF @fValidRecord = 1" & vbNewLine & _
+        "        IF @fValidRecord = 1 AND @startingtriggertable = " & pLngCurrentTableID & vbNewLine & _
         "        BEGIN" & vbNewLine & _
         gstrUpdateEmailCode & vbNewLine & _
         "        END" & vbNewLine & vbNewLine
@@ -1145,7 +1128,7 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
       "        /* ----------------------- */" & vbNewLine & _
       "        /* Outlook Triggers. */" & vbNewLine & _
       "        /* ----------------------- */" & vbNewLine & _
-      "        IF @fValidRecord = 1" & vbNewLine & _
+      "        IF @fValidRecord = 1 AND @startingtriggertable = " & pLngCurrentTableID & vbNewLine & _
       "        BEGIN" & vbNewLine & _
       "          IF EXISTS (SELECT Name FROM sysobjects WHERE type = 'P' AND name = 'spASROutlook_" & CStr(pLngCurrentTableID) & "')" & vbNewLine & _
       "            EXEC dbo.spASROutlook_" & CStr(pLngCurrentTableID) & " @recordID" & vbNewLine & _
