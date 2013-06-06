@@ -745,6 +745,9 @@ Private Sub cboAggregateType_Click()
   
   If Not mfLoading Then
   
+    ' Disable the Y column if aggregate is set to 'Count'
+  cboColumnY.Enabled = (cboAggregateType.Text <> "Count")
+
   mfChanged = True
     
   RefreshControls
@@ -1040,6 +1043,8 @@ Private Sub cboTableZ_Click()
     ClearFilter
   End If
 
+  ' Disable the Y column if aggregate is set to 'Count'
+  cboColumnY.Enabled = (cboAggregateType.Text <> "Count")
 
   mfChanged = True
 
@@ -1100,7 +1105,7 @@ End Sub
 Private Sub RefreshControls()
   
   
-  cmdOK.Enabled = mfChanged
+  cmdOk.Enabled = mfChanged
   
 End Sub
 
@@ -1532,10 +1537,11 @@ Private Function PopulateColumnYCombo(plngTableID As Long)
       If recColEdit!Deleted <> True And recColEdit!columntype <> giCOLUMNTYPE_SYSTEM Then
         ' Add the column to the combo
         ' Making sure it isn't ole, photo, wp or link...
-        If recColEdit!DataType <> dtLONGVARCHAR And _
-          recColEdit!DataType <> dtBINARY And _
-          recColEdit!DataType <> dtVARBINARY And _
-          recColEdit!DataType <> dtLONGVARBINARY Then
+        If recColEdit!DataType = dtNUMERIC Or recColEdit!DataType = dtINTEGER Then  ' numerics ONLY for Y columns
+'        If recColEdit!DataType <> dtLONGVARCHAR And _
+'          recColEdit!DataType <> dtBINARY And _
+'          recColEdit!DataType <> dtVARBINARY And _
+'          recColEdit!DataType <> dtLONGVARBINARY Then
             cboColumnY.AddItem recColEdit.Fields("ColumnName")
             cboColumnY.ItemData(cboColumnY.NewIndex) = recColEdit.Fields("ColumnID")
         End If
@@ -1755,9 +1761,10 @@ Private Function PopulateAggregateCombo(plngColumnID As Long) As Boolean
   cboAggregateType.AddItem "Count"
   cboAggregateType.ItemData(cboAggregateType.NewIndex) = 0
       
-  piColumnDataType = GetColumnDataType(plngColumnID)
+  ' Always numerics now.
+  'piColumnDataType = GetColumnDataType(plngColumnID)
   
-  If piColumnDataType = dtINTEGER Or piColumnDataType = dtNUMERIC Then
+  'If piColumnDataType = dtINTEGER Or piColumnDataType = dtNUMERIC Then
     cboAggregateType.AddItem "Total"
     cboAggregateType.ItemData(cboAggregateType.NewIndex) = 1
     cboAggregateType.AddItem "Average"
@@ -1766,7 +1773,7 @@ Private Function PopulateAggregateCombo(plngColumnID As Long) As Boolean
     cboAggregateType.ItemData(cboAggregateType.NewIndex) = 3
     cboAggregateType.AddItem "Maximum"
     cboAggregateType.ItemData(cboAggregateType.NewIndex) = 4
-  End If
+  'End If
   
 End Function
 
@@ -1781,6 +1788,9 @@ Private Function SetAggregateValue(piAggregateType As Integer)
   Next
 
   If cboAggregateType.ListIndex < 0 Then cboAggregateType.ListIndex = 0
+  
+  ' Disable the Y column if aggregate is set to 'Count'
+  cboColumnY.Enabled = (cboAggregateType.Text <> "Count")
   
 End Function
 
