@@ -657,7 +657,7 @@ TidyUpAndExit:
   
   If fOK Then
     
- objHRProEngine.ErrorLog.OutputToFile (App.Path + "\dbscripter.log")
+ objHRProEngine.ErrorLog.OutputToFile (App.Path + "\HRProEngine.log")
     
     AuditAccess "Save", "System"
     
