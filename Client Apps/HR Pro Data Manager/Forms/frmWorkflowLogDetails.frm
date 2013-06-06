@@ -845,7 +845,7 @@ Public Function Initialise(plngKey As Long, pfrmWorkflowLog As frmWorkflowLog) A
   End With
 
   ' Let user know we have finished, and can now redraw the form
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   Me.AutoRedraw = True
 
   mblnLoading = False

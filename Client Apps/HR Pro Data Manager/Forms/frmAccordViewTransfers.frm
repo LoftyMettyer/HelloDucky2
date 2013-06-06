@@ -543,7 +543,7 @@ Public Function Initialise()
   PopulateFilters
   RefreshGrid
   
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   gobjProgress.CloseProgress
   
   ' Get rid of the icon off the form
@@ -615,7 +615,7 @@ Private Sub cmdEdit_Click()
         
       RefreshGrid
       
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
       gobjProgress.CloseProgress
       
     End If

@@ -656,7 +656,7 @@ Private Sub Form_Load()
   ' Get rid of the icon off the form
   RemoveIcon Me
 
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
 
 End Sub
 

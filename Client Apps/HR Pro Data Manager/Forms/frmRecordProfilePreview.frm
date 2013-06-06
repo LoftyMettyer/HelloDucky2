@@ -2122,7 +2122,7 @@ Public Function ShowResults() As Boolean
 
   If fOK Then Form_Resize
 
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
 
   mblnLoading = False
 

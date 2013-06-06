@@ -446,7 +446,7 @@ Public Function RunExport() As Boolean
   
   If fOK = True Then fOK = ClearUp Else ClearUp
   
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   
   RunExport = fOK
   

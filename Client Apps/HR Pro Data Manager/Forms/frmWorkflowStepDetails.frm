@@ -1199,7 +1199,7 @@ Public Function Initialise(plngInstanceStepID As Long, _
   If fOK Then Form_Resize
 
   ' Let user know we have finished, and can now redraw the form
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   Me.AutoRedraw = True
 
 TidyUpAndExit:

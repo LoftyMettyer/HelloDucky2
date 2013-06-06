@@ -1523,7 +1523,7 @@ Public Function Initialise(bNew As Boolean, _
     
   EnableDisableTabControls
   Cancelled = False
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   mblnLoading = False
   
 End Function
@@ -2486,7 +2486,7 @@ Private Sub SelectAllColumns(plngTableID As Long)
   ' Clear recordset reference
   Set rsColumns = Nothing
   
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   
 End Sub
 
@@ -3742,7 +3742,7 @@ Private Function CopyToSelected(pfAll As Boolean, Optional piBeforeIndex As Inte
 RefreshCollectionSequence
     SelectFirst ListView2
     UpdateButtonStatus (SSTab1.Tab)
-    Screen.MousePointer = vbNormal
+    Screen.MousePointer = vbDefault
     Changed = True
     Exit Function
   End If
@@ -3799,7 +3799,7 @@ RefreshCollectionSequence
 
 RefreshCollectionSequence
     UpdateButtonStatus (SSTab1.Tab)
-    Screen.MousePointer = vbNormal
+    Screen.MousePointer = vbDefault
     Changed = True
     Exit Function
   End If
@@ -3844,7 +3844,7 @@ RefreshCollectionSequence
 
   RefreshCollectionSequence
   UpdateButtonStatus (SSTab1.Tab)
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   Changed = True
 
 End Function
@@ -4114,7 +4114,7 @@ Private Sub cmdAddHeading_Click()
   RefreshCollectionSequence
   
   UpdateButtonStatus (SSTab1.Tab)
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   Changed = True
 
 End Sub
@@ -4260,7 +4260,7 @@ Private Sub cmdAddSeparator_Click()
   RefreshCollectionSequence
   
   UpdateButtonStatus (SSTab1.Tab)
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   Changed = True
 
 End Sub
@@ -4965,16 +4965,16 @@ Private Sub cmdOK_Click()
     
     'TM20020508 Fault 3839 - need to set the mouse pointer to default before exit sub is called.
     If Not ValidateDefinition(mlngRecordProfileID) Then
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
       Exit Sub
     End If
     
     If Not SaveDefinition Then
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
       Exit Sub
     End If
     
-    Screen.MousePointer = vbNormal
+    Screen.MousePointer = vbDefault
   End If
   
   Me.Hide
@@ -5182,7 +5182,7 @@ If mlngRecordProfileID > 0 Then
                , "Record Profile"
       End If
 
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
       SSTab1.Tab = 0
       Exit Function
 
@@ -5192,7 +5192,7 @@ If mlngRecordProfileID > 0 Then
                 "owner, hidden to the same user groups:" & vbCrLf & vbCrLf & _
                 sBatchJobDetails_Owner & vbCrLf & _
                 "Do you wish to continue ?", vbQuestion + vbYesNo, "Record Profile") = vbNo Then
-        Screen.MousePointer = vbNormal
+        Screen.MousePointer = vbDefault
         SSTab1.Tab = 0
         Exit Function
       Else
@@ -5506,7 +5506,7 @@ Private Function CopyToAvailable(bAll As Boolean, Optional intBeforeIndex As Int
 
   Changed = True
 
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
 
 End Function
 

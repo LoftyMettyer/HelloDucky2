@@ -1617,7 +1617,7 @@ Public Function ShowCalendar() As Boolean
 
   HookFormSizes
 
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
 
   mblnLoading = False
 
@@ -1835,7 +1835,7 @@ Private Sub DateChange()
     RefreshCalendar
     FillGridWithEvents
     RefreshDateSpecifics
-    Screen.MousePointer = vbNormal
+    Screen.MousePointer = vbDefault
   End If
   
   EnableDisableNavigation
@@ -5911,7 +5911,7 @@ Private Sub cmdOutput_Click()
   
   OutputReport (True)
   
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
 
 End Sub
 

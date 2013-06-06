@@ -4212,7 +4212,7 @@ Public Function CheckCanMakeHidden(pstrType As String, _
 '                  sDetails_Owner & sBatchJobDetails_Owner & vbCrLf & _
 '                  "Do you wish to continue ?", vbQuestion + vbYesNo, IIf(Len(pstrCaption) = 0, "HR Pro - Data Manager", pstrCaption)) _
 '                  = vbNo Then
-'          Screen.MousePointer = vbNormal
+'          Screen.MousePointer = vbDefault
 '          CheckCanMakeHidden = False
 '          Exit Function
         'NHRD12112004 Fault 6335
@@ -4221,7 +4221,7 @@ Public Function CheckCanMakeHidden(pstrType As String, _
                   sDetails_Owner & sBatchJobDetails_Owner & vbCrLf & _
                   "Do you wish to continue ?", vbQuestion + vbYesNo, IIf(Len(pstrCaption) = 0, "HR Pro - Data Manager", pstrCaption)) _
                   = vbNo Then
-          Screen.MousePointer = vbNormal
+          Screen.MousePointer = vbDefault
           CheckCanMakeHidden = False
           Exit Function
         Else
@@ -4353,7 +4353,7 @@ Public Function CheckCanMakeHidden(pstrType As String, _
                  , IIf(Len(pstrCaption) = 0, "HR Pro - Data Manager", pstrCaption)
         End If
 
-        Screen.MousePointer = vbNormal
+        Screen.MousePointer = vbDefault
         CheckCanMakeHidden = False
         Exit Function
 
@@ -4363,7 +4363,7 @@ Public Function CheckCanMakeHidden(pstrType As String, _
                "following definition(s), of which you are not the" & vbCrLf & _
                "owner :" & vbCrLf & vbCrLf & sDetails_NotOwner, _
                vbExclamation + vbOKOnly, IIf(Len(pstrCaption) = 0, "HR Pro - Data Manager", pstrCaption)
-        Screen.MousePointer = vbNormal
+        Screen.MousePointer = vbDefault
         CheckCanMakeHidden = False
         Exit Function
       
@@ -5094,7 +5094,7 @@ Public Function CheckCanMakeHidden(pstrType As String, _
 '                  sDetails_Owner & sBatchJobDetails_Owner & vbCrLf & _
 '                  "Do you wish to continue ?", vbQuestion + vbYesNo, IIf(Len(pstrCaption) = 0, "HR Pro - Data Manager", pstrCaption)) _
 '                  = vbNo Then
-'          Screen.MousePointer = vbNormal
+'          Screen.MousePointer = vbDefault
 '          CheckCanMakeHidden = False
 '          Exit Function
         'NHRD12112004 Fault 6335
@@ -5103,7 +5103,7 @@ Public Function CheckCanMakeHidden(pstrType As String, _
                   sDetails_Owner & sBatchJobDetails_Owner & vbCrLf & _
                   "Do you wish to continue ?", vbQuestion + vbYesNo, IIf(Len(pstrCaption) = 0, "HR Pro - Data Manager", pstrCaption)) _
                   = vbNo Then
-          Screen.MousePointer = vbNormal
+          Screen.MousePointer = vbDefault
           CheckCanMakeHidden = False
           Exit Function
         Else
@@ -5221,7 +5221,7 @@ Public Function CheckCanMakeHidden(pstrType As String, _
                  "batch jobs of which you are not the owner :" & vbCrLf & vbCrLf & sBatchJobDetails_NotOwner, vbExclamation + vbOKOnly _
                  , IIf(Len(pstrCaption) = 0, "HR Pro - Data Manager", pstrCaption)
         End If
-        Screen.MousePointer = vbNormal
+        Screen.MousePointer = vbDefault
         CheckCanMakeHidden = False
         Exit Function
 
@@ -5231,7 +5231,7 @@ Public Function CheckCanMakeHidden(pstrType As String, _
                "following definition(s), of which you are not the" & vbCrLf & _
                "owner :" & vbCrLf & vbCrLf & sDetails_NotOwner, _
                vbExclamation + vbOKOnly, IIf(Len(pstrCaption) = 0, "HR Pro - Data Manager", pstrCaption)
-        Screen.MousePointer = vbNormal
+        Screen.MousePointer = vbDefault
         CheckCanMakeHidden = False
         Exit Function
       

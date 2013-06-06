@@ -264,7 +264,7 @@ Sub ShowError(ErrorNumber&)
                                                                                             'Name Searches are attempted at same time
  End Select
 
-Screen.MousePointer = vbNormal
+Screen.MousePointer = vbDefault
 
 End Sub
 
@@ -457,7 +457,7 @@ On Error GoTo AdfShowMappedFieldsError
 
   'Call the Afd routines. If they fail, exit sub, if not, show the Afd form
   If frmAFDFields.InitialiseAFD(PostCode, fIndividual, frmForm, FieldName) = False Then
-    Screen.MousePointer = vbNormal
+    Screen.MousePointer = vbDefault
     Exit Sub
   End If
   

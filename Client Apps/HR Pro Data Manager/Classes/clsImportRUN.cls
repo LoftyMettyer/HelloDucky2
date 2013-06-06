@@ -2925,7 +2925,7 @@ Private Sub ClearUp()
 ''  'Eeeekkk... this caused a messagebox on the screen if Import failed.
 ''  'gblnBatchMode = False
 ''  mstrColumnList = ""
-''  Screen.MousePointer = vbNormal
+''  Screen.MousePointer = vbDefault
 
 End Sub
 

@@ -812,7 +812,7 @@ Public Function RunCalendarReport(pstrPicklistFilterIDs As String) As Boolean
       
       If fOK And Not mblnUserCancelled Then
         gobjProgress.CloseProgress
-        Screen.MousePointer = vbNormal
+        Screen.MousePointer = vbDefault
         If fOK And mblnPreviewOnScreen Then
           mfrmOutput.Show vbModal
         End If
@@ -852,7 +852,7 @@ Public Function RunCalendarReport(pstrPicklistFilterIDs As String) As Boolean
     End If
   End If
   
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   
   RunCalendarReport = fOK
   

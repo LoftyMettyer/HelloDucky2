@@ -307,7 +307,7 @@ Dim strUtilityName As String
     End If
   End If
 
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   RunMatchReport = fOK
 
   Exit Function

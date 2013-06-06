@@ -154,7 +154,7 @@ Public Function Initialise(pblnNew As Boolean, pfrmForm As frmExport, Optional p
      
      'AE20071024 Fault #8474
      .Redraw = True
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
       
 '      If (mfrmForm.grdExportOrder.Rows = pintLoop And pintLoop > 0) Or (cboColumns.ListCount = 0) Then
 '        COAMsgBox "You have selected all existing export columns in the sort order." & vbCrLf & "To add more sort order columns, you must add more columns to the export definition.", vbExclamation + vbOKOnly, "Export"

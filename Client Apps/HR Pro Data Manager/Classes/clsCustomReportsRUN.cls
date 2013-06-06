@@ -795,7 +795,7 @@ Public Function RunCustomReport(pstrPicklistFilterIDs As String) As Boolean
   '    If Not fOK Then mstrErrorString = mfrmOutput.ErrorMessage
   '    gobjProgress.UpdateProgress True
   '  Else
-  '    Screen.MousePointer = vbNormal
+  '    Screen.MousePointer = vbDefault
   '    mfrmOutput.HelpContextID = 1017
   '    mfrmOutput.Show vbModal
   '  End If
@@ -806,7 +806,7 @@ Public Function RunCustomReport(pstrPicklistFilterIDs As String) As Boolean
       fOK = OutputReport(False)
     
     ElseIf mblnPreviewOnScreen Then
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
       mfrmOutput.BaseTable = mstrCustomReportsBaseTableName
       mfrmOutput.Parent = Me
       mfrmOutput.HelpContextID = 1017
@@ -853,7 +853,7 @@ Public Function RunCustomReport(pstrPicklistFilterIDs As String) As Boolean
     End If
   End If
   
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   
   RunCustomReport = fOK
   If fOK = True Then fOK = ClearUp Else ClearUp
@@ -4990,7 +4990,7 @@ Public Function RunBradfordReport(pstrPicklistFilterIDs As String) As Boolean
       fOK = OutputReport(False)
   
     ElseIf mblnPreviewOnScreen And fOK Then
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
       mfrmOutput.Caption = "Bradford Factor Report"
       mfrmOutput.BaseTable = mstrCustomReportsBaseTableName
       mfrmOutput.Parent = Me
@@ -5033,7 +5033,7 @@ Public Function RunBradfordReport(pstrPicklistFilterIDs As String) As Boolean
     If (fOK = False) Or (mblnNoRecords = True) Then COAMsgBox mstrErrorString, IIf(fOK, vbInformation, vbExclamation) + vbOKOnly, "Bradford Factor Report"
   End If
   
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   
   If fOK = False Then RunBradfordReport = False Else RunBradfordReport = True
   If fOK = True Then fOK = ClearUp Else ClearUp

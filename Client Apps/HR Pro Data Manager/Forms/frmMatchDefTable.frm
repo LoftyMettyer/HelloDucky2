@@ -1648,7 +1648,7 @@ Private Function CopyToSelected(bAll As Boolean, Optional intBeforeIndex As Inte
     SelectFirst ListView2
     UpdateButtonStatus (Me.SSTab1.Tab)
     'ForceDefinitionToBeHiddenIfNeeded
-    Screen.MousePointer = vbNormal
+    Screen.MousePointer = vbDefault
     Changed = True
     Exit Function
   End If
@@ -1706,7 +1706,7 @@ Private Function CopyToSelected(bAll As Boolean, Optional intBeforeIndex As Inte
     
     UpdateButtonStatus (Me.SSTab1.Tab)
     'ForceDefinitionToBeHiddenIfNeeded
-    Screen.MousePointer = vbNormal
+    Screen.MousePointer = vbDefault
     Changed = True
     Exit Function
   End If
@@ -1754,7 +1754,7 @@ Private Function CopyToSelected(bAll As Boolean, Optional intBeforeIndex As Inte
 
   UpdateButtonStatus (Me.SSTab1.Tab)
   'ForceDefinitionToBeHiddenIfNeeded
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   Changed = True
   
 End Function
@@ -1797,7 +1797,7 @@ Private Function CopyToAvailable(bAll As Boolean, Optional intBeforeIndex As Int
 
   Changed = True
 
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
 
 End Function
 

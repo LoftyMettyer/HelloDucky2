@@ -1684,7 +1684,7 @@ Private Sub chkCaptions_Click()
   If Not mblnLoading Then
     Screen.MousePointer = vbHourglass
     RefreshCal
-    Screen.MousePointer = vbNormal
+    Screen.MousePointer = vbDefault
   End If
 
 End Sub
@@ -1694,7 +1694,7 @@ Private Sub chkShadeWeekends_Click()
   If Not mblnLoading Then
     Screen.MousePointer = vbHourglass
     RefreshCal
-    Screen.MousePointer = vbNormal
+    Screen.MousePointer = vbDefault
   End If
   
 End Sub
@@ -1704,7 +1704,7 @@ Private Sub chkShadeBHols_Click()
   If Not mblnLoading Then
     Screen.MousePointer = vbHourglass
     RefreshCal
-    Screen.MousePointer = vbNormal
+    Screen.MousePointer = vbDefault
   End If
   
 End Sub
@@ -1714,7 +1714,7 @@ Private Sub chkIncludeWorkingDaysOnly_Click()
   If Not mblnLoading Then
     Screen.MousePointer = vbHourglass
     RefreshCal
-    Screen.MousePointer = vbNormal
+    Screen.MousePointer = vbDefault
   End If
   
 End Sub
@@ -1724,7 +1724,7 @@ Private Sub chkIncludeBHols_Click()
   If Not mblnLoading Then
     Screen.MousePointer = vbHourglass
     RefreshCal
-    Screen.MousePointer = vbNormal
+    Screen.MousePointer = vbDefault
   End If
   
 End Sub
@@ -1742,7 +1742,7 @@ Private Sub RefreshCal()
   'Complete the grid according to options set by the user
   FillGridWithData
 
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   
 End Sub
 
@@ -1780,7 +1780,7 @@ Private Sub cmdYearAdd_Click()
 
   RefreshCal
   
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
     
 End Sub
 
@@ -1813,7 +1813,7 @@ Private Sub cmdYearSubtract_Click()
   
   RefreshCal
   
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
     
 End Sub
 
@@ -1871,7 +1871,7 @@ Public Sub Initialise()
   ' Unset the loading flag
   mblnLoading = False
     
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   
   ' Show the form
   Me.Show vbModal
@@ -2064,11 +2064,11 @@ Private Sub lblCal_Click(Index As Integer)
   
   Screen.MousePointer = vbHourglass
   If frmAbsenceCalendarDetails.Initialise(mrstAbsenceRecords, dtmDateToFind, strSession, (Not mblnDisableRegions), (Not mblnDisableWPs)) Then
-    Screen.MousePointer = vbNormal
+    Screen.MousePointer = vbDefault
     frmAbsenceCalendarDetails.Show vbModal
   End If
 
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
     
 End Sub
 

@@ -1913,7 +1913,7 @@ Private Sub cmdAddHeading_Click()
   itmX.Selected = True
   
   UpdateButtonStatus
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   Changed = True
 
 End Sub
@@ -1950,7 +1950,7 @@ Private Sub cmdAddSeparator_Click()
   itmX.Selected = True
   
   UpdateButtonStatus
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   Changed = True
 
 End Sub
@@ -2847,7 +2847,7 @@ Public Function Initialise(bNew As Boolean, bCopy As Boolean, Optional lMailMerg
 
   UpdateButtonStatus
 
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   mblnLoading = False
   Initialise = fOK
 
@@ -3522,7 +3522,7 @@ Private Function CopyToSelected(bAll As Boolean)
   msHiddenCalcsSelected = vbNullString
   
   Me.Changed = True
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
 
 Exit Function
 
@@ -3584,7 +3584,7 @@ Private Function CopyToAvailable(bAll As Boolean)
   Call UpdateButtonStatus
 
   Me.Changed = True
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
 
 Exit Function
 
@@ -4171,7 +4171,7 @@ If mlngMailMergeID > 0 Then
                , Me.Caption
       End If
 
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
       SSTab1.Tab = 0
       Exit Function
 
@@ -4184,7 +4184,7 @@ If mlngMailMergeID > 0 Then
                 sBatchJobDetails_Owner & vbCrLf & _
                 "Do you wish to continue ?", vbQuestion + vbYesNo, Me.Caption) = vbNo Then
                 
-        Screen.MousePointer = vbNormal
+        Screen.MousePointer = vbDefault
         SSTab1.Tab = 0
         Exit Function
       Else

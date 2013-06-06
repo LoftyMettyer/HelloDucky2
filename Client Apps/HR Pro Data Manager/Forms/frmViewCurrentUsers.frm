@@ -252,13 +252,13 @@ End Sub
 '  Set rsUsers = Nothing
 '
 '  Form_Resize
-'  Screen.MousePointer = vbNormal
+'  Screen.MousePointer = vbDefault
 '
 '  Exit Sub
 '
 'ErrRefresh:
 '
-'  Screen.MousePointer = vbNormal
+'  Screen.MousePointer = vbDefault
 '  COAMsgBox "Error whilst refreshing the grid." & vbCrLf & vbCrLf & Err.Number & " - " & Err.Description, vbExclamation + vbOKOnly, App.Title
 '
 'End Sub

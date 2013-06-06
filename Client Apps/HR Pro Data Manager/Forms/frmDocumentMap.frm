@@ -927,7 +927,7 @@ Private Sub cboTargetTable_Click()
   Set rsParents = Nothing
   Set rsTables = Nothing
   Set rsCols = Nothing
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
 
 End Sub
 
@@ -958,11 +958,11 @@ Private Sub cmdOK_Click()
   Screen.MousePointer = vbHourglass
     
   If Not SaveDefinition Then
-    Screen.MousePointer = vbNormal
+    Screen.MousePointer = vbDefault
     Exit Sub
   End If
   
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   
   Me.Hide
 

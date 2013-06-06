@@ -1727,7 +1727,7 @@ Public Function Initialise(bNew As Boolean, bCopy As Boolean, Optional plngMatch
 '
 '  If mblnForceHidden Then mblnForceHidden = True
 '  Cancelled = False
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   mblnLoading = False
   
 End Function
@@ -2677,7 +2677,7 @@ Private Sub cmdOK_Click()
 
   End If
 
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
 
 End Sub
 
@@ -3476,7 +3476,7 @@ Private Function CopyToSelected(bAll As Boolean, Optional intBeforeIndex As Inte
     SelectFirst ListView2
     UpdateButtonStatus (SSTab1.Tab)
     ForceDefinitionToBeHiddenIfNeeded
-    Screen.MousePointer = vbNormal
+    Screen.MousePointer = vbDefault
     Changed = True
     Exit Function
   End If
@@ -3624,7 +3624,7 @@ Private Function CopyToSelected(bAll As Boolean, Optional intBeforeIndex As Inte
     If bCheckIfHidden Then
       ForceDefinitionToBeHiddenIfNeeded
     End If
-    Screen.MousePointer = vbNormal
+    Screen.MousePointer = vbDefault
     Changed = True
     Exit Function
   End If
@@ -3754,7 +3754,7 @@ Private Function CopyToSelected(bAll As Boolean, Optional intBeforeIndex As Inte
 
   UpdateButtonStatus (SSTab1.Tab)
   ForceDefinitionToBeHiddenIfNeeded
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   Changed = True
 
 '
@@ -3873,7 +3873,7 @@ Private Function CopyToSelected(bAll As Boolean, Optional intBeforeIndex As Inte
 '  UpdateButtonStatus
 '  ForceDefinitionToBeHiddenIfNeeded
 '
-'  Screen.MousePointer = vbNormal
+'  Screen.MousePointer = vbDefault
 '
 '  Changed = True
   
@@ -4040,7 +4040,7 @@ Private Function CopyToAvailable(bAll As Boolean, Optional intBeforeIndex As Int
 
   Changed = True
 
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
 
 End Function
 
@@ -5910,7 +5910,7 @@ If mlngMatchReportID > 0 Then
                , Me.Caption
       End If
 
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
       SSTab1.Tab = 0
       Exit Function
 
@@ -5920,7 +5920,7 @@ If mlngMatchReportID > 0 Then
                 "owner, hidden to the same user groups:" & vbCrLf & vbCrLf & _
                 sBatchJobDetails_Owner & vbCrLf & _
                 "Do you wish to continue ?", vbQuestion + vbYesNo, Me.Caption) = vbNo Then
-        Screen.MousePointer = vbNormal
+        Screen.MousePointer = vbDefault
         SSTab1.Tab = 0
         Exit Function
       Else

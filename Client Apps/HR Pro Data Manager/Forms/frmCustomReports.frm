@@ -2472,7 +2472,7 @@ Public Function Initialise(bNew As Boolean, bCopy As Boolean, Optional plngCusto
     mblnForceHidden = True
   End If
   Cancelled = False
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   mblnLoading = False
   
 End Function
@@ -3849,16 +3849,16 @@ Private Sub cmdOK_Click()
     
     'TM20020508 Fault 3839 - need to set the mouse pointer to default before exit sub is called.
     If Not ValidateDefinition(mlngCustomReportID) Then
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
       Exit Sub
     End If
     
     If Not SaveDefinition Then
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
       Exit Sub
     End If
     
-    Screen.MousePointer = vbNormal
+    Screen.MousePointer = vbDefault
   End If
   
   Me.Hide
@@ -4843,7 +4843,7 @@ Private Function CopyToSelected(bAll As Boolean, Optional intBeforeIndex As Inte
     SelectFirst ListView2
     UpdateButtonStatus (Me.SSTab1.Tab)
     ForceDefinitionToBeHiddenIfNeeded
-    Screen.MousePointer = vbNormal
+    Screen.MousePointer = vbDefault
     Changed = True
     Exit Function
   End If
@@ -4991,7 +4991,7 @@ Private Function CopyToSelected(bAll As Boolean, Optional intBeforeIndex As Inte
     If bCheckIfHidden Then
       ForceDefinitionToBeHiddenIfNeeded
     End If
-    Screen.MousePointer = vbNormal
+    Screen.MousePointer = vbDefault
     Changed = True
     Exit Function
   End If
@@ -5121,7 +5121,7 @@ Private Function CopyToSelected(bAll As Boolean, Optional intBeforeIndex As Inte
 
   UpdateButtonStatus (Me.SSTab1.Tab)
   ForceDefinitionToBeHiddenIfNeeded
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   Changed = True
   
 End Function
@@ -5288,7 +5288,7 @@ Private Function CopyToAvailable(bAll As Boolean, Optional intBeforeIndex As Int
 
   Changed = True
 
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
 
 End Function
 
@@ -7453,7 +7453,7 @@ If mlngCustomReportID > 0 Then
                , "Custom Reports"
       End If
 
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
       SSTab1.Tab = 0
       Exit Function
 
@@ -7463,7 +7463,7 @@ If mlngCustomReportID > 0 Then
                 "owner, hidden to the same user groups:" & vbCrLf & vbCrLf & _
                 sBatchJobDetails_Owner & vbCrLf & _
                 "Do you wish to continue ?", vbQuestion + vbYesNo, "Custom Reports") = vbNo Then
-        Screen.MousePointer = vbNormal
+        Screen.MousePointer = vbDefault
         SSTab1.Tab = 0
         Exit Function
       Else

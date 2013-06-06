@@ -206,7 +206,7 @@ Public Function RunRecordProfile(Optional plngRecordID As Long) As Boolean
         
         If fOK And Not mblnUserCancelled Then
           gobjProgress.CloseProgress
-          Screen.MousePointer = vbNormal
+          Screen.MousePointer = vbDefault
           If fOK Then mfrmOutput.Show vbModal
         End If
       End If
@@ -262,7 +262,7 @@ Public Function RunRecordProfile(Optional plngRecordID As Long) As Boolean
     End If
   End If
 
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   gobjProgress.ResetBar2
   
   RunRecordProfile = fOK
