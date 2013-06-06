@@ -173,10 +173,10 @@ PRINT 'Step 1 - System procedures'
 			ExtentFrag DECIMAL)
 
 		-- Open the cursor
-		OPEN tables
+		OPEN tables;
 
 		-- Loop through all the tables in the database running dbcc showcontig on each one
-		FETCH NEXT FROM tables INTO @tableidchar
+		FETCH NEXT FROM tables INTO @tableidchar;
 
 		WHILE @@FETCH_STATUS = 0
 		BEGIN
@@ -185,12 +185,12 @@ PRINT 'Step 1 - System procedures'
 			INSERT INTO @fraglist 
 				EXEC (''DBCC SHOWCONTIG ('''''' + @tableidchar + '''''') WITH FAST, TABLERESULTS, ALL_INDEXES, NO_INFOMSGS'');
 
-			FETCH NEXT FROM tables INTO @tableidchar
+			FETCH NEXT FROM tables INTO @tableidchar;
 		END
 
 		-- Close and deallocate the cursor
-		CLOSE tables
-		DEALLOCATE tables
+		CLOSE tables;
+		DEALLOCATE tables;
 
 		-- Begin Stage 2: (defrag) declare cursor for list of indexes to be defragged
 		DECLARE indexes CURSOR FOR
@@ -198,27 +198,25 @@ PRINT 'Step 1 - System procedures'
 		FROM @fraglist f
 		JOIN sysobjects so ON f.ObjectId=so.id
 		WHERE ScanDensity <= @maxfrag
-			AND INDEXPROPERTY (ObjectId, IndexName, ''IndexDepth'') > 0
+			AND INDEXPROPERTY (ObjectId, IndexName, ''IndexDepth'') > 0;
 
 		-- Open the cursor
-		OPEN indexes
+		OPEN indexes;
 
 		-- Loop through the indexes
-		FETCH NEXT
-		FROM indexes
-		INTO @tablename, @objectowner, @objectid, @indexname, @frag
+		FETCH NEXT FROM indexes	INTO @tablename, @objectowner, @objectid, @indexname, @frag;
 
 		WHILE @@FETCH_STATUS = 0
 		BEGIN
-			SET QUOTED_IDENTIFIER ON
+			SET QUOTED_IDENTIFIER ON;
 
-			SET @sSQL = ''ALTER INDEX '' +  RTRIM(@indexname) + '' ON '' + RTRIM(@objectowner) + ''.'' + RTRIM(@tablename) + '' REBUILD''
+			SET @sSQL = ''ALTER INDEX ['' +  RTRIM(@indexname) + ''] ON '' + RTRIM(@objectowner) + ''.'' + RTRIM(@tablename) + '' REBUILD'';
 
 			EXECUTE sp_executeSQL @sSQL;
 
-			SET QUOTED_IDENTIFIER OFF
+			SET QUOTED_IDENTIFIER OFF;
 
-			FETCH NEXT FROM indexes INTO @tablename, @objectowner, @objectid, @indexname, @frag
+			FETCH NEXT FROM indexes INTO @tablename, @objectowner, @objectid, @indexname, @frag;
 		END
 
 		-- Close and deallocate the cursor
