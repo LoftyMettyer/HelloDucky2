@@ -39,7 +39,7 @@ Public Function CloneDetail(pavCloneRegister As Variant, lngContentID As Long)
   Clear
 
   With recLinkContentEdit
-    .Index = "idxContentIDSequence"
+    .index = "idxContentIDSequence"
     .Seek ">=", lngContentID, 0
   
     If Not .NoMatch Then
@@ -80,7 +80,7 @@ Public Sub ReadDetail(lngContentID As Long)
   Clear
 
   With recLinkContentEdit
-    .Index = "idxContentIDSequence"
+    .index = "idxContentIDSequence"
     .Seek ">=", mlngContentID, 0
   
     If Not .NoMatch Then
@@ -141,17 +141,20 @@ LocalErr:
   If Left(strField, 13) = "Calculation: " Then
     strExprName = Mid(strField, 14)
     With recExprEdit
-      .Index = "idxExprName"
+      .index = "idxExprName"
       .Seek "=", strExprName
       If Not .NoMatch Then
         Do
           'This is a case sensitive comparison
-          If strExprName = !Name Then
-            If lngTableID = !TableID Then
+          'If strExprName = !Name Then
+          '  If lngTableID = !TableID Then
+          If strExprName = !Name And lngTableID = !TableID Then
+            Select Case !Type
+            Case giEXPR_COLUMNCALCULATION, giEXPR_RECORDDESCRIPTION, giEXPR_EMAIL
               AddDetail strFixedText, "E", !ExprID
               AddDetailFromField = True
               Exit Do
-            End If
+            End Select
           End If
           .MoveNext
         Loop While LCase(strExprName) = LCase(!Name)
@@ -318,7 +321,7 @@ Public Function GetSQL(lngBaseTableID As Long, strBaseTableName As String, lngRe
       
       blnColumn = True
       With recColEdit
-        .Index = "idxColumnID"
+        .index = "idxColumnID"
         .Seek "=", objDetail.FieldID
 
         If Not .NoMatch Then

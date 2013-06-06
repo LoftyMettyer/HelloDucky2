@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
@@ -1589,10 +1589,7 @@ Private Sub PopulateCalculationNodes()
 
       If ((!Type = giEXPR_COLUMNCALCULATION) Or _
         (!Type = giEXPR_RECORDDESCRIPTION) Or _
-        (!Type = giEXPR_OUTLOOKFOLDER) Or _
-        (!Type = giEXPR_OUTLOOKSUBJECT) Or _
-        (!Type = giEXPR_EMAIL) Or _
-        (!Type = giEXPR_RECORDVALIDATION)) And _
+        (!Type = giEXPR_EMAIL)) And _
         (!ParentComponentID = 0) And _
         (Not !Deleted) And _
         ((!UserName = gsUserName) Or (!Access <> ACCESS_HIDDEN)) And _
