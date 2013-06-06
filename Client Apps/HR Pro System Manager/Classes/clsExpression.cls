@@ -1615,7 +1615,7 @@ TidyUpAndExit:
   Exit Function
   
 ErrorTrap:
-  sProcCode = vbNullString
+  sProcCode.TheString = vbNullString
   Resume TidyUpAndExit
 
 End Function
