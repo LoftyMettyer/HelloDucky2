@@ -4794,11 +4794,11 @@ End Property
 
 Public Property Get Chart_Description() As String
 
-  If ChartColumnID = 0 Then
+  If ChartTableID = 0 Then
     Chart_Description = ""
-  ElseIf Chart_ColumnID_2 = 0 And Chart_ColumnID_3 = 0 Then
+  ElseIf Chart_TableID_2 = 0 And Chart_TableID_3 = 0 Then
     Chart_Description = "1-T"
-  ElseIf Chart_ColumnID_2 > 0 Then  ' table 2 is actually the Z-Axis
+  ElseIf Chart_TableID_2 > 0 Then  ' table 2 is actually the Z-Axis
     Chart_Description = "3-T"
   Else
     Chart_Description = "2-T"
