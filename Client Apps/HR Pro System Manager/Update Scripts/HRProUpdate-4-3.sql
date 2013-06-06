@@ -11,8 +11,11 @@ DECLARE @iRecCount integer,
 	@NVarCommand nvarchar(max),
 	@sObject sysname,
 	@sObjectType char(2),
-	@ptrval binary(16)
-
+	@ptrval binary(16),
+	@sTableName	sysname,
+	@sIndexName	sysname,
+	@fPrimaryKey	bit;
+	
 DECLARE @ownerGUID uniqueidentifier
 DECLARE @nextid integer
 DECLARE @sSPCode nvarchar(max)
@@ -2328,6 +2331,488 @@ PRINT 'Step - System metadata indexing'
 		FROM sys.sysindexes
 		WHERE name LIKE 'IDX_getfromdb_%';
 	EXECUTE sp_executeSQL @NVarCommand;
+	
+	----------------------------
+	--Create new Workflow table indexes
+	----------------------------	
+
+	----------------------------
+	--ASRSysWorkflowElementItems
+	----------------------------
+	SET @sTableName = 'ASRSysWorkflowElementItems';
+
+	-- Drop existing indexes
+	DECLARE curIndexes CURSOR LOCAL FAST_FORWARD FOR
+	SELECT si.name, si.is_primary_key
+	FROM sys.indexes si
+	INNER JOIN sysobjects pso ON si.object_id = pso.id
+	WHERE pso.name = @sTableName;
+
+	OPEN curIndexes
+	FETCH NEXT FROM curIndexes INTO @sIndexName, @fPrimaryKey
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		SET @NVarCommand = '';
+		
+		IF @fPrimaryKey = 0
+		BEGIN
+			SET @NVarCommand = 'DROP INDEX [' + @sIndexName + '] ON dbo.[' + @sTableName + '];';
+		END
+		ELSE
+		BEGIN
+			SET @NVarCommand = 'ALTER TABLE [dbo].[' + @sTableName + '] DROP CONSTRAINT [' + @sIndexName + '];';
+		END;
+
+		EXECUTE sp_executeSQL @NVarCommand;
+
+		FETCH NEXT FROM curIndexes INTO @sIndexName, @fPrimaryKey;
+	END
+	CLOSE curIndexes;
+	DEALLOCATE curIndexes;
+
+	--Create the new indexes
+	CREATE UNIQUE CLUSTERED INDEX [IDX_ID] ON [dbo].[ASRSysWorkflowElementItems] 
+	(
+		[ID] ASC
+	)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+
+	CREATE NONCLUSTERED INDEX [IDX_ElementTypeIdentifier] ON [dbo].[ASRSysWorkflowElementItems] 
+	(
+		[ElementID] ASC,
+		[ItemType] ASC
+	)
+	INCLUDE ( [Identifier]) WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+
+	----------------------------
+	--ASRSysWorkflowElementItemValues
+	----------------------------
+	SET @sTableName = 'ASRSysWorkflowElementItemValues';
+
+	-- Drop existing indexes
+	DECLARE curIndexes CURSOR LOCAL FAST_FORWARD FOR
+	SELECT si.name, si.is_primary_key
+	FROM sys.indexes si
+	INNER JOIN sysobjects pso ON si.object_id = pso.id
+	WHERE pso.name = @sTableName;
+
+	OPEN curIndexes
+	FETCH NEXT FROM curIndexes INTO @sIndexName, @fPrimaryKey
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		SET @NVarCommand = '';
+		
+		IF @fPrimaryKey = 0
+		BEGIN
+			SET @NVarCommand = 'DROP INDEX [' + @sIndexName + '] ON dbo.[' + @sTableName + '];';
+		END
+		ELSE
+		BEGIN
+			SET @NVarCommand = 'ALTER TABLE [dbo].[' + @sTableName + '] DROP CONSTRAINT [' + @sIndexName + '];';
+		END;
+
+		EXECUTE sp_executeSQL @NVarCommand;
+
+		FETCH NEXT FROM curIndexes INTO @sIndexName, @fPrimaryKey;
+	END
+	CLOSE curIndexes;
+	DEALLOCATE curIndexes;
+
+	--Create the new indexes
+	CREATE NONCLUSTERED INDEX [IDX_itemID] ON [dbo].[ASRSysWorkflowElementItemValues] 
+	(
+		[itemID] ASC
+	)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+
+	----------------------------
+	--ASRSysWorkflowElements
+	----------------------------
+	SET @sTableName = 'ASRSysWorkflowElements';
+
+	-- Drop existing indexes
+	DECLARE curIndexes CURSOR LOCAL FAST_FORWARD FOR
+	SELECT si.name, si.is_primary_key
+	FROM sys.indexes si
+	INNER JOIN sysobjects pso ON si.object_id = pso.id
+	WHERE pso.name = @sTableName;
+
+	OPEN curIndexes
+	FETCH NEXT FROM curIndexes INTO @sIndexName, @fPrimaryKey
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		SET @NVarCommand = '';
+		
+		IF @fPrimaryKey = 0
+		BEGIN
+			SET @NVarCommand = 'DROP INDEX [' + @sIndexName + '] ON dbo.[' + @sTableName + '];';
+		END
+		ELSE
+		BEGIN
+			SET @NVarCommand = 'ALTER TABLE [dbo].[' + @sTableName + '] DROP CONSTRAINT [' + @sIndexName + '];';
+		END;
+
+		EXECUTE sp_executeSQL @NVarCommand;
+
+		FETCH NEXT FROM curIndexes INTO @sIndexName, @fPrimaryKey;
+	END
+	CLOSE curIndexes;
+	DEALLOCATE curIndexes;
+
+	--Create the new indexes
+	CREATE UNIQUE CLUSTERED INDEX [IDX_ID] ON [dbo].[ASRSysWorkflowElements] 
+	(
+		[ID] ASC
+	)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+
+
+	CREATE NONCLUSTERED INDEX [IDX_WorkflowTypeIdentifier] ON [dbo].[ASRSysWorkflowElements] 
+	(
+		[WorkflowID] ASC,
+		[Type] ASC
+	)
+	INCLUDE ( [Identifier]) WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+
+	----------------------------
+	--ASRSysWorkflowInstances
+	----------------------------
+	SET @sTableName = 'ASRSysWorkflowInstances';
+
+	-- Drop existing indexes
+	DECLARE curIndexes CURSOR LOCAL FAST_FORWARD FOR
+	SELECT si.name, si.is_primary_key
+	FROM sys.indexes si
+	INNER JOIN sysobjects pso ON si.object_id = pso.id
+	WHERE pso.name = @sTableName;
+
+	OPEN curIndexes
+	FETCH NEXT FROM curIndexes INTO @sIndexName, @fPrimaryKey
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		SET @NVarCommand = '';
+		
+		IF @fPrimaryKey = 0
+		BEGIN
+			SET @NVarCommand = 'DROP INDEX [' + @sIndexName + '] ON dbo.[' + @sTableName + '];';
+		END
+		ELSE
+		BEGIN
+			SET @NVarCommand = 'ALTER TABLE [dbo].[' + @sTableName + '] DROP CONSTRAINT [' + @sIndexName + '];';
+		END;
+
+		EXECUTE sp_executeSQL @NVarCommand;
+
+		FETCH NEXT FROM curIndexes INTO @sIndexName, @fPrimaryKey;
+	END
+	CLOSE curIndexes;
+	DEALLOCATE curIndexes;
+
+	--Create the new indexes
+	CREATE UNIQUE CLUSTERED INDEX [IDX_ID] ON [dbo].[ASRSysWorkflowInstances] 
+	(
+		[ID] ASC
+	)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+
+
+	CREATE NONCLUSTERED INDEX [IDX_Workflow] ON [dbo].[ASRSysWorkflowInstances] 
+	(
+		[WorkflowID] ASC
+	)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+
+	----------------------------
+	--ASRSysWorkflowInstanceSteps
+	----------------------------
+	SET @sTableName = 'ASRSysWorkflowInstanceSteps';
+
+	-- Drop existing indexes
+	DECLARE curIndexes CURSOR LOCAL FAST_FORWARD FOR
+	SELECT si.name, si.is_primary_key
+	FROM sys.indexes si
+	INNER JOIN sysobjects pso ON si.object_id = pso.id
+	WHERE pso.name = @sTableName;
+
+	OPEN curIndexes
+	FETCH NEXT FROM curIndexes INTO @sIndexName, @fPrimaryKey
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		SET @NVarCommand = '';
+		
+		IF @fPrimaryKey = 0
+		BEGIN
+			SET @NVarCommand = 'DROP INDEX [' + @sIndexName + '] ON dbo.[' + @sTableName + '];';
+		END
+		ELSE
+		BEGIN
+			SET @NVarCommand = 'ALTER TABLE [dbo].[' + @sTableName + '] DROP CONSTRAINT [' + @sIndexName + '];';
+		END;
+
+		EXECUTE sp_executeSQL @NVarCommand;
+
+		FETCH NEXT FROM curIndexes INTO @sIndexName, @fPrimaryKey;
+	END
+	CLOSE curIndexes;
+	DEALLOCATE curIndexes;
+
+	--Create the new indexes
+	CREATE UNIQUE CLUSTERED INDEX [IDX_ID] ON [dbo].[ASRSysWorkflowInstanceSteps] 
+	(
+		[ID] ASC
+	)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+
+	CREATE NONCLUSTERED INDEX [IDX_InstanceElement] ON [dbo].[ASRSysWorkflowInstanceSteps] 
+	(
+		[InstanceID] ASC,
+		[ElementID] ASC
+	)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+
+	----------------------------
+	--ASRSysWorkflowInstanceValues
+	----------------------------
+	SET @sTableName = 'ASRSysWorkflowInstanceValues';
+
+	-- Drop existing indexes
+	DECLARE curIndexes CURSOR LOCAL FAST_FORWARD FOR
+	SELECT si.name, si.is_primary_key
+	FROM sys.indexes si
+	INNER JOIN sysobjects pso ON si.object_id = pso.id
+	WHERE pso.name = @sTableName;
+
+	OPEN curIndexes
+	FETCH NEXT FROM curIndexes INTO @sIndexName, @fPrimaryKey
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		SET @NVarCommand = '';
+		
+		IF @fPrimaryKey = 0
+		BEGIN
+			SET @NVarCommand = 'DROP INDEX [' + @sIndexName + '] ON dbo.[' + @sTableName + '];';
+		END
+		ELSE
+		BEGIN
+			SET @NVarCommand = 'ALTER TABLE [dbo].[' + @sTableName + '] DROP CONSTRAINT [' + @sIndexName + '];';
+		END;
+
+		EXECUTE sp_executeSQL @NVarCommand;
+
+		FETCH NEXT FROM curIndexes INTO @sIndexName, @fPrimaryKey;
+	END
+	CLOSE curIndexes;
+	DEALLOCATE curIndexes;
+
+	--Create the new indexes
+	CREATE UNIQUE CLUSTERED INDEX [IDX_ID] ON [dbo].[ASRSysWorkflowInstanceValues] 
+	(
+		[ID] ASC
+	)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+
+	CREATE NONCLUSTERED INDEX [IDX_InstanceElementIdentifier] ON [dbo].[ASRSysWorkflowInstanceValues] 
+	(
+		[InstanceID] ASC,
+		[ElementID] ASC
+	)
+	INCLUDE ( [Identifier]) WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+
+	----------------------------
+	--ASRSysWorkflowLinks
+	----------------------------
+	SET @sTableName = 'ASRSysWorkflowLinks';
+
+	-- Drop existing indexes
+	DECLARE curIndexes CURSOR LOCAL FAST_FORWARD FOR
+	SELECT si.name, si.is_primary_key
+	FROM sys.indexes si
+	INNER JOIN sysobjects pso ON si.object_id = pso.id
+	WHERE pso.name = @sTableName;
+
+	OPEN curIndexes
+	FETCH NEXT FROM curIndexes INTO @sIndexName, @fPrimaryKey
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		SET @NVarCommand = '';
+		
+		IF @fPrimaryKey = 0
+		BEGIN
+			SET @NVarCommand = 'DROP INDEX [' + @sIndexName + '] ON dbo.[' + @sTableName + '];';
+		END
+		ELSE
+		BEGIN
+			SET @NVarCommand = 'ALTER TABLE [dbo].[' + @sTableName + '] DROP CONSTRAINT [' + @sIndexName + '];';
+		END;
+
+		EXECUTE sp_executeSQL @NVarCommand;
+
+		FETCH NEXT FROM curIndexes INTO @sIndexName, @fPrimaryKey;
+	END
+	CLOSE curIndexes;
+	DEALLOCATE curIndexes;
+
+	--Create the new indexes
+	CREATE UNIQUE CLUSTERED INDEX [IDX_ID] ON [dbo].[ASRSysWorkflowLinks] 
+	(
+		[ID] ASC
+	)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+
+	CREATE NONCLUSTERED INDEX [IDX_WorkflowStartEnd] ON [dbo].[ASRSysWorkflowLinks] 
+	(
+		[WorkflowID] ASC,
+		[StartElementID] ASC,
+		[EndElementID] ASC
+	)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+
+	----------------------------
+	--ASRSysWorkflowQueue
+	----------------------------
+	SET @sTableName = 'ASRSysWorkflowQueue';
+
+	-- Drop existing indexes
+	DECLARE curIndexes CURSOR LOCAL FAST_FORWARD FOR
+	SELECT si.name, si.is_primary_key
+	FROM sys.indexes si
+	INNER JOIN sysobjects pso ON si.object_id = pso.id
+	WHERE pso.name = @sTableName;
+
+	OPEN curIndexes
+	FETCH NEXT FROM curIndexes INTO @sIndexName, @fPrimaryKey
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		SET @NVarCommand = '';
+		
+		IF @fPrimaryKey = 0
+		BEGIN
+			SET @NVarCommand = 'DROP INDEX [' + @sIndexName + '] ON dbo.[' + @sTableName + '];';
+		END
+		ELSE
+		BEGIN
+			SET @NVarCommand = 'ALTER TABLE [dbo].[' + @sTableName + '] DROP CONSTRAINT [' + @sIndexName + '];';
+		END;
+
+		EXECUTE sp_executeSQL @NVarCommand;
+
+		FETCH NEXT FROM curIndexes INTO @sIndexName, @fPrimaryKey;
+	END
+	CLOSE curIndexes;
+	DEALLOCATE curIndexes;
+
+	--Create the new indexes
+	ALTER TABLE [dbo].[ASRSysWorkflowQueue] ADD  CONSTRAINT [IDX_QueueID] PRIMARY KEY CLUSTERED 
+	(
+		[QueueID] ASC
+	)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON, FILLFACTOR = 90) ON [PRIMARY]
+
+	CREATE NONCLUSTERED INDEX [IDX_Instance] ON [dbo].[ASRSysWorkflowQueue] 
+	(
+		[InstanceID] ASC
+	)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+
+	----------------------------
+	--ASRSysWorkflows
+	----------------------------
+	SET @sTableName = 'ASRSysWorkflows';
+
+	-- Drop existing indexes
+	DECLARE curIndexes CURSOR LOCAL FAST_FORWARD FOR
+	SELECT si.name, si.is_primary_key
+	FROM sys.indexes si
+	INNER JOIN sysobjects pso ON si.object_id = pso.id
+	WHERE pso.name = @sTableName;
+
+	OPEN curIndexes
+	FETCH NEXT FROM curIndexes INTO @sIndexName, @fPrimaryKey
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		SET @NVarCommand = '';
+		
+		IF @fPrimaryKey = 0
+		BEGIN
+			SET @NVarCommand = 'DROP INDEX [' + @sIndexName + '] ON dbo.[' + @sTableName + '];';
+		END
+		ELSE
+		BEGIN
+			SET @NVarCommand = 'ALTER TABLE [dbo].[' + @sTableName + '] DROP CONSTRAINT [' + @sIndexName + '];';
+		END;
+
+		EXECUTE sp_executeSQL @NVarCommand;
+
+		FETCH NEXT FROM curIndexes INTO @sIndexName, @fPrimaryKey;
+	END
+	CLOSE curIndexes;
+	DEALLOCATE curIndexes;
+
+	SET @sTableName = 'tbsys_Workflows';
+
+	DECLARE curIndexes CURSOR LOCAL FAST_FORWARD FOR
+	SELECT si.name, si.is_primary_key
+	FROM sys.indexes si
+	INNER JOIN sysobjects pso ON si.object_id = pso.id
+	WHERE pso.name = @sTableName;
+
+	OPEN curIndexes
+	FETCH NEXT FROM curIndexes INTO @sIndexName, @fPrimaryKey
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		SET @NVarCommand = '';
+		
+		IF @fPrimaryKey = 0
+		BEGIN
+			SET @NVarCommand = 'DROP INDEX [' + @sIndexName + '] ON dbo.[' + @sTableName + '];';
+		END
+		ELSE
+		BEGIN
+			SET @NVarCommand = 'ALTER TABLE [dbo].[' + @sTableName + '] DROP CONSTRAINT [' + @sIndexName + '];';
+		END;
+
+		EXECUTE sp_executeSQL @NVarCommand;
+
+		FETCH NEXT FROM curIndexes INTO @sIndexName, @fPrimaryKey;
+	END
+	CLOSE curIndexes;
+	DEALLOCATE curIndexes;
+
+	--Create the new indexes
+	ALTER TABLE [dbo].[tbsys_Workflows] ADD  CONSTRAINT [IDX_ID] PRIMARY KEY CLUSTERED 
+	(
+		[id] ASC
+	)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON, FILLFACTOR = 90) ON [PRIMARY]
+
+	----------------------------
+	--ASRSysWorkflowStepDelegation
+	----------------------------
+	SET @sTableName = 'ASRSysWorkflowStepDelegation';
+
+	-- Drop existing indexes
+	DECLARE curIndexes CURSOR LOCAL FAST_FORWARD FOR
+	SELECT si.name, si.is_primary_key
+	FROM sys.indexes si
+	INNER JOIN sysobjects pso ON si.object_id = pso.id
+	WHERE pso.name = @sTableName;
+
+	OPEN curIndexes
+	FETCH NEXT FROM curIndexes INTO @sIndexName, @fPrimaryKey
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		SET @NVarCommand = '';
+		
+		IF @fPrimaryKey = 0
+		BEGIN
+			SET @NVarCommand = 'DROP INDEX [' + @sIndexName + '] ON dbo.[' + @sTableName + '];';
+		END
+		ELSE
+		BEGIN
+			SET @NVarCommand = 'ALTER TABLE [dbo].[' + @sTableName + '] DROP CONSTRAINT [' + @sIndexName + '];';
+		END;
+
+		EXECUTE sp_executeSQL @NVarCommand;
+
+		FETCH NEXT FROM curIndexes INTO @sIndexName, @fPrimaryKey;
+	END
+	CLOSE curIndexes;
+	DEALLOCATE curIndexes;
+
+	--Create the new indexes
+	CREATE UNIQUE NONCLUSTERED INDEX [IDX_ID] ON [dbo].[ASRSysWorkflowStepDelegation] 
+	(
+		[ID] ASC
+	)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+
+
 
 
 /* ------------------------------------------------------------- */
