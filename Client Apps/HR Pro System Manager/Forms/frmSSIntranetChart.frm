@@ -1055,9 +1055,23 @@ ErrorTrap:
 End Sub
 
 Private Sub optChartType_Click(Index As Integer)
+Dim piChartAggregateType As Integer
 
 ChangeChartType
 mfChanged = True
+
+If Index = 0 Then
+  piChartAggregateType = cboColumnX.ItemData(cboColumnX.ListIndex)
+ElseIf Index = 1 Then
+  piChartAggregateType = cboColumnY.ItemData(cboColumnY.ListIndex)
+ElseIf Index = 2 Then
+  piChartAggregateType = cboColumnZ.ItemData(cboColumnZ.ListIndex)
+End If
+
+SetAggregateValue piChartAggregateType
+PopulateSortByCombo
+
+SetComboItemOrTopItem cboSortByAgg, 0
 
 RefreshControls
 
@@ -1105,7 +1119,7 @@ End Sub
 Private Sub RefreshControls()
   
   
-  cmdOk.Enabled = mfChanged
+  cmdOK.Enabled = mfChanged
   
 End Sub
 
