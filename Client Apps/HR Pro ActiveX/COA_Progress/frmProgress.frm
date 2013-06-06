@@ -409,8 +409,8 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
   If UnloadMode <> vbFormCode Then
     If cmdCancel.Visible Then
         cmdCancel_Click
-        Cancel = True
     End If
+    Cancel = True
   End If
 End Sub
 
