@@ -464,7 +464,6 @@ Private Const PARAMETERKEY_DOCMAN_TYPETABLE = "Param_DocmanTypeTable"
 Private Const PARAMETERKEY_DOCMAN_TYPECOLUMN = "Param_DocManTypeColumn"
 Private Const PARAMETERKEY_DOCMAN_TYPECATEGORYCOLUMN = "Param_DocManTypeCategoryColumn"
 
-
 Public Property Get Cancelled() As Boolean
   Cancelled = mblnCancelled
 End Property
@@ -544,13 +543,13 @@ Private Sub RetreiveDefinition()
   SetComboItem cboTargetColumn, IIf(IsNull(rsTemp.Fields("TargetColumnID").Value), 0, rsTemp.Fields("TargetColumnID").Value)
   SetComboItem cboTargetCategory, IIf(IsNull(rsTemp.Fields("TargetCategoryColumnID").Value), 0, rsTemp.Fields("TargetCategoryColumnID").Value)
   SetComboItem cboTargetType, IIf(IsNull(rsTemp.Fields("TargetTypeColumnID").Value), 0, rsTemp.Fields("TargetTypeColumnID").Value)
+  SetComboItem cboTargetGUID, IIf(IsNull(rsTemp.Fields("TargetGUIDColumnID").Value), 0, rsTemp.Fields("TargetGUIDColumnID").Value)
 
   SetComboItem cboParent1Table, IIf(IsNull(rsTemp.Fields("Parent1TableID").Value), 0, rsTemp.Fields("Parent1TableID").Value)
   SetComboItem cboParent1Keyfield, IIf(IsNull(rsTemp.Fields("Parent1KeyFieldColumnID").Value), 0, rsTemp.Fields("Parent1KeyFieldColumnID").Value)
 
   SetComboItem cboParent2Table, IIf(IsNull(rsTemp.Fields("Parent2TableID").Value), 0, rsTemp.Fields("Parent2TableID").Value)
   SetComboItem cboParent2Keyfield, IIf(IsNull(rsTemp.Fields("Parent2KeyFieldColumnID").Value), 0, rsTemp.Fields("Parent2KeyFieldColumnID").Value)
-
 
 
   chkManualHeader.Value = IIf(IsNull(rsTemp!ManualHeader), vbUnchecked, Abs(rsTemp!ManualHeader))
@@ -596,6 +595,7 @@ Private Function SaveDefinition() As Boolean
               & "[TargetColumnID] = " & GetComboItem(cboTargetColumn) & ", " _
               & "[TargetCategoryColumnID] = " & GetComboItem(cboTargetType) & ", " _
               & "[TargetTypeColumnID] = " & GetComboItem(cboTargetCategory) & ", " _
+              & "[TargetGUIDColumnID] = " & GetComboItem(cboTargetGUID) & ", " _
               & "[ManualHeader] = " & CStr(Abs(chkManualHeader.Value <> 0)) & ", " _
               & "[HeaderText] = '" & Replace(txtHeader.Text, "'", "''") & "', " _
               & "[Parent1TableID] = " & GetComboItem(cboParent1Table) & ", " _
@@ -614,17 +614,16 @@ Private Function SaveDefinition() As Boolean
               & " [Name], [Description]," _
               & " [UserName], [Access], " _
               & " [TargetTableID], [TargetKeyFieldColumnID], [TargetColumnID], [Parent1TableID], [Parent1KeyFieldColumnID], [Parent2TableID], [Parent2KeyFieldColumnID]," _
-              & " [TargetCategoryColumnID], [TargetTypeColumnID], [CategoryRecordID], [TypeRecordID], [ManualHeader], [HeaderText]) " _
+              & " [TargetCategoryColumnID], [TargetTypeColumnID], [TargetGUIDColumnID], [CategoryRecordID], [TypeRecordID], [ManualHeader], [HeaderText]) " _
               & " VALUES('" _
               & Replace(txtName.Text, "'", "''") & "', '" & Replace(txtDesc.Text, "'", "''") _
               & "', '" & datGeneral.UserNameForSQL & "', " & IIf(optReadOnly.Value = True, "'RO'", "'RW'") _
               & ", " & GetComboItem(cboTargetTable) & ", " & GetComboItem(cboTargetKeyField) & ", " & GetComboItem(cboTargetColumn) _
               & ", " & GetComboItem(cboParent1Table) & ", " & GetComboItem(cboParent1Keyfield) _
               & ", " & GetComboItem(cboParent2Table) & ", " & GetComboItem(cboParent2Keyfield) _
-              & ", " & GetComboItem(cboTargetCategory) & ", " & GetComboItem(cboTargetType) _
+              & ", " & GetComboItem(cboTargetCategory) & ", " & GetComboItem(cboTargetType) & ", " & GetComboItem(cboTargetGUID) _
               & ", " & GetComboItem(cboCategories) & ", " & GetComboItem(cboTypes) _
               & ", " & CStr(Abs(chkManualHeader.Value <> 0)) & ", '" & Replace(txtHeader.Text, "'", "''") & "');"
-
 
     mlngDocumentMapID = InsertDocumentMap(sSQL)
     Call UtilCreated(utlDocumentMapping, mlngDocumentMapID)
@@ -661,6 +660,27 @@ Private Sub cboParent1Table_Click()
 
 End Sub
 
+Private Sub cboParent2Table_Click()
+
+  Dim rsCols As ADODB.Recordset
+
+  ' Columns for the parent table
+  If cboParent2Table.Enabled Then
+    Set rsCols = mclsGeneral.GetColumnNames(GetComboItem(cboParent2Table))
+    Do While Not rsCols.EOF
+    
+      With cboParent2Keyfield
+        .AddItem rsCols!ColumnName
+        .ItemData(.NewIndex) = rsCols!ColumnID
+      End With
+      
+      rsCols.MoveNext
+    Loop
+    rsCols.Close
+  End If
+
+End Sub
+
 Private Sub cboTargetColumn_Click()
   RefreshHeaderText
 End Sub
@@ -675,7 +695,7 @@ Private Sub cboTargetTable_Click()
   Dim rsCols As ADODB.Recordset
   Dim rsParents As ADODB.Recordset
   Dim rsTables As ADODB.Recordset
-  Dim bHasParent As Boolean
+  Dim iParents As Integer
   
   Screen.MousePointer = vbHourglass
   
@@ -708,6 +728,11 @@ Private Sub cboTargetTable_Click()
       .ItemData(.NewIndex) = rsCols!ColumnID
     End With
     
+    With cboTargetGUID
+      .AddItem rsCols!ColumnName
+      .ItemData(.NewIndex) = rsCols!ColumnID
+    End With
+    
     rsCols.MoveNext
   Loop
   rsCols.Close
@@ -716,6 +741,9 @@ Private Sub cboTargetTable_Click()
   ' Get parent tables
   sSQL = "SELECT [ParentID] FROM dbo.[ASRSysRelations] WHERE [ChildID] = " & cboTargetTable.ItemData(cboTargetTable.ListIndex) & ";"
   Set rsParents = mdatData.OpenRecordset(sSQL, adOpenForwardOnly, adLockReadOnly)
+    
+  iParents = rsParents.RecordCount
+
   Do While Not rsParents.EOF
     sSQL = "SELECT TableName, TableID FROM ASRSysTables " & _
            "WHERE TableID = " & rsParents!ParentID & " " & _
@@ -735,17 +763,16 @@ Private Sub cboTargetTable_Click()
   Loop
   rsParents.Close
 
-  bHasParent = cboParent1Table.ListCount > 0
   
-  EnableControl lblParent1Table, bHasParent
-  EnableControl cboParent1Table, bHasParent
-  EnableControl lblParent1Keyfield, bHasParent
-  EnableControl cboParent1Keyfield, bHasParent
+  EnableControl lblParent1Table, (iParents > 0)
+  EnableControl cboParent1Table, (iParents > 0)
+  EnableControl lblParent1Keyfield, (iParents > 0)
+  EnableControl cboParent1Keyfield, (iParents > 0)
   
-  EnableControl lblParent2Table, bHasParent
-  EnableControl cboParent2Table, bHasParent
-  EnableControl lblParent2Keyfield, bHasParent
-  EnableControl cboParent2Keyfield, bHasParent
+  EnableControl lblParent2Table, (iParents > 1)
+  EnableControl cboParent2Table, (iParents > 1)
+  EnableControl lblParent2Keyfield, (iParents > 1)
+  EnableControl cboParent2Keyfield, (iParents > 1)
   
   RefreshHeaderText
 
