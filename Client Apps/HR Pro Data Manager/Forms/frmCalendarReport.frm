@@ -35,7 +35,7 @@ Begin VB.Form frmCalendarReport
    Begin TabDlg.SSTab SSTab1 
       Height          =   6360
       Left            =   90
-      TabIndex        =   79
+      TabIndex        =   81
       Top             =   90
       Width           =   9450
       _ExtentX        =   16669
@@ -57,44 +57,242 @@ Begin VB.Form frmCalendarReport
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmCalendarReport.frx":000C
       Tab(0).ControlEnabled=   -1  'True
-      Tab(0).Control(0)=   "fraInformation"
+      Tab(0).Control(0)=   "fraBase"
       Tab(0).Control(0).Enabled=   0   'False
-      Tab(0).Control(1)=   "fraBase"
+      Tab(0).Control(1)=   "fraInformation"
       Tab(0).Control(1).Enabled=   0   'False
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Eve&nt Details"
       TabPicture(1)   =   "frmCalendarReport.frx":0028
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraEvents"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "Report Detai&ls"
       TabPicture(2)   =   "frmCalendarReport.frx":0044
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraReportStart"
-      Tab(2).Control(0).Enabled=   0   'False
+      Tab(2).Control(0)=   "fraDisplayOptions"
       Tab(2).Control(1)=   "fraReportEnd"
-      Tab(2).Control(1).Enabled=   0   'False
-      Tab(2).Control(2)=   "fraDisplayOptions"
-      Tab(2).Control(2).Enabled=   0   'False
+      Tab(2).Control(2)=   "fraReportStart"
       Tab(2).ControlCount=   3
       TabCaption(3)   =   "&Sort Order"
       TabPicture(3)   =   "frmCalendarReport.frx":0060
       Tab(3).ControlEnabled=   0   'False
       Tab(3).Control(0)=   "fraSort"
-      Tab(3).Control(0).Enabled=   0   'False
       Tab(3).ControlCount=   1
       TabCaption(4)   =   "O&utput"
       TabPicture(4)   =   "frmCalendarReport.frx":007C
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "fraOutputDestination"
-      Tab(4).Control(1)=   "fraOutputFormat"
+      Tab(4).Control(0)=   "fraOutputFormat"
+      Tab(4).Control(1)=   "fraOutputDestination"
       Tab(4).ControlCount=   2
+      Begin VB.Frame fraInformation 
+         Height          =   2355
+         Left            =   135
+         TabIndex        =   103
+         Top             =   405
+         Width           =   9180
+         Begin VB.TextBox txtUserName 
+            BackColor       =   &H8000000F&
+            Enabled         =   0   'False
+            Height          =   315
+            Left            =   5625
+            MaxLength       =   30
+            TabIndex        =   3
+            Top             =   300
+            Width           =   3405
+         End
+         Begin VB.TextBox txtName 
+            Height          =   315
+            Left            =   1395
+            MaxLength       =   50
+            TabIndex        =   0
+            Top             =   300
+            Width           =   3090
+         End
+         Begin VB.TextBox txtDesc 
+            Height          =   1080
+            Left            =   1395
+            MaxLength       =   255
+            MultiLine       =   -1  'True
+            ScrollBars      =   2  'Vertical
+            TabIndex        =   2
+            Top             =   1110
+            Width           =   3090
+         End
+         Begin VB.ComboBox cboCategory 
+            Height          =   315
+            Left            =   1395
+            Style           =   2  'Dropdown List
+            TabIndex        =   1
+            Top             =   720
+            Width           =   3090
+         End
+         Begin SSDataWidgets_B.SSDBGrid grdAccess 
+            Height          =   1485
+            Left            =   5625
+            TabIndex        =   4
+            Top             =   705
+            Width           =   3405
+            ScrollBars      =   2
+            _Version        =   196617
+            DataMode        =   2
+            RecordSelectors =   0   'False
+            Col.Count       =   3
+            stylesets.count =   2
+            stylesets(0).Name=   "SysSecMgr"
+            stylesets(0).ForeColor=   -2147483631
+            stylesets(0).BackColor=   -2147483633
+            stylesets(0).HasFont=   -1  'True
+            BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+            stylesets(0).Picture=   "frmCalendarReport.frx":0098
+            stylesets(1).Name=   "ReadOnly"
+            stylesets(1).ForeColor=   -2147483631
+            stylesets(1).BackColor=   -2147483633
+            stylesets(1).HasFont=   -1  'True
+            BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+            stylesets(1).Picture=   "frmCalendarReport.frx":00B4
+            MultiLine       =   0   'False
+            AllowRowSizing  =   0   'False
+            AllowGroupSizing=   0   'False
+            AllowColumnSizing=   0   'False
+            AllowGroupMoving=   0   'False
+            AllowColumnMoving=   0
+            AllowGroupSwapping=   0   'False
+            AllowColumnSwapping=   0
+            AllowGroupShrinking=   0   'False
+            AllowColumnShrinking=   0   'False
+            AllowDragDrop   =   0   'False
+            SelectTypeCol   =   0
+            SelectTypeRow   =   0
+            BalloonHelp     =   0   'False
+            MaxSelectedRows =   0
+            ForeColorEven   =   0
+            BackColorEven   =   -2147483643
+            BackColorOdd    =   -2147483643
+            RowHeight       =   423
+            Columns.Count   =   3
+            Columns(0).Width=   2963
+            Columns(0).Caption=   "User Group"
+            Columns(0).Name =   "GroupName"
+            Columns(0).AllowSizing=   0   'False
+            Columns(0).DataField=   "Column 0"
+            Columns(0).DataType=   8
+            Columns(0).FieldLen=   256
+            Columns(0).Locked=   -1  'True
+            Columns(1).Width=   2566
+            Columns(1).Caption=   "Access"
+            Columns(1).Name =   "Access"
+            Columns(1).AllowSizing=   0   'False
+            Columns(1).DataField=   "Column 1"
+            Columns(1).DataType=   8
+            Columns(1).FieldLen=   256
+            Columns(1).Locked=   -1  'True
+            Columns(1).Style=   3
+            Columns(1).Row.Count=   3
+            Columns(1).Col.Count=   2
+            Columns(1).Row(0).Col(0)=   "Read / Write"
+            Columns(1).Row(1).Col(0)=   "Read Only"
+            Columns(1).Row(2).Col(0)=   "Hidden"
+            Columns(2).Width=   3200
+            Columns(2).Visible=   0   'False
+            Columns(2).Caption=   "SysSecMgr"
+            Columns(2).Name =   "SysSecMgr"
+            Columns(2).DataField=   "Column 2"
+            Columns(2).DataType=   8
+            Columns(2).FieldLen=   256
+            TabNavigation   =   1
+            _ExtentX        =   6006
+            _ExtentY        =   2619
+            _StockProps     =   79
+            BeginProperty PageFooterFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+            BeginProperty PageHeaderFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+         End
+         Begin VB.Label lblOwner 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Owner :"
+            Height          =   195
+            Left            =   4770
+            TabIndex        =   108
+            Top             =   360
+            Width           =   810
+         End
+         Begin VB.Label lblName 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Name :"
+            Height          =   195
+            Left            =   195
+            TabIndex        =   107
+            Top             =   360
+            Width           =   690
+         End
+         Begin VB.Label lblDescription 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Description :"
+            Height          =   195
+            Left            =   195
+            TabIndex        =   106
+            Top             =   1155
+            Width           =   1080
+         End
+         Begin VB.Label lblAccess 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Access :"
+            Height          =   195
+            Left            =   4770
+            TabIndex        =   105
+            Top             =   765
+            Width           =   825
+         End
+         Begin VB.Label lblCategory 
+            Caption         =   "Category :"
+            Height          =   240
+            Left            =   195
+            TabIndex        =   104
+            Top             =   765
+            Width           =   1005
+         End
+      End
       Begin VB.Frame fraOutputDestination 
          Caption         =   "Output Destination(s) :"
          Height          =   3975
          Left            =   -72240
-         TabIndex        =   57
+         TabIndex        =   59
          Top             =   400
          Width           =   6555
          Begin VB.CheckBox chkPreview 
@@ -102,7 +300,7 @@ Begin VB.Form frmCalendarReport
             Enabled         =   0   'False
             Height          =   195
             Left            =   150
-            TabIndex        =   58
+            TabIndex        =   60
             Top             =   400
             Width           =   3495
          End
@@ -112,7 +310,7 @@ Begin VB.Form frmCalendarReport
             Height          =   195
             Index           =   3
             Left            =   150
-            TabIndex        =   69
+            TabIndex        =   71
             Top             =   2720
             Width           =   1515
          End
@@ -122,7 +320,7 @@ Begin VB.Form frmCalendarReport
             Height          =   195
             Index           =   2
             Left            =   150
-            TabIndex        =   63
+            TabIndex        =   65
             Top             =   1820
             Width           =   1455
          End
@@ -131,7 +329,7 @@ Begin VB.Form frmCalendarReport
             Height          =   195
             Index           =   1
             Left            =   150
-            TabIndex        =   60
+            TabIndex        =   62
             Top             =   1300
             Width           =   1650
          End
@@ -140,7 +338,7 @@ Begin VB.Form frmCalendarReport
             Height          =   195
             Index           =   0
             Left            =   150
-            TabIndex        =   59
+            TabIndex        =   61
             Top             =   850
             Value           =   1  'Checked
             Width           =   3105
@@ -150,8 +348,8 @@ Begin VB.Form frmCalendarReport
             Enabled         =   0   'False
             Height          =   315
             Left            =   6105
-            Picture         =   "frmCalendarReport.frx":0098
-            TabIndex        =   72
+            Picture         =   "frmCalendarReport.frx":00D0
+            TabIndex        =   74
             Top             =   2660
             UseMaskColor    =   -1  'True
             Width           =   300
@@ -161,8 +359,8 @@ Begin VB.Form frmCalendarReport
             Enabled         =   0   'False
             Height          =   315
             Left            =   6105
-            Picture         =   "frmCalendarReport.frx":0110
-            TabIndex        =   66
+            Picture         =   "frmCalendarReport.frx":0148
+            TabIndex        =   68
             Top             =   1760
             UseMaskColor    =   -1  'True
             Width           =   300
@@ -174,7 +372,7 @@ Begin VB.Form frmCalendarReport
             Height          =   315
             Left            =   3270
             Locked          =   -1  'True
-            TabIndex        =   71
+            TabIndex        =   73
             TabStop         =   0   'False
             Tag             =   "0"
             Top             =   2660
@@ -185,7 +383,7 @@ Begin VB.Form frmCalendarReport
             Enabled         =   0   'False
             Height          =   315
             Left            =   3270
-            TabIndex        =   74
+            TabIndex        =   76
             Top             =   3060
             Width           =   3135
          End
@@ -195,7 +393,7 @@ Begin VB.Form frmCalendarReport
             Height          =   315
             Left            =   3270
             Style           =   2  'Dropdown List
-            TabIndex        =   68
+            TabIndex        =   70
             Top             =   2160
             Width           =   3135
          End
@@ -205,7 +403,7 @@ Begin VB.Form frmCalendarReport
             Height          =   315
             Left            =   3270
             Style           =   2  'Dropdown List
-            TabIndex        =   62
+            TabIndex        =   64
             Top             =   1240
             Width           =   3135
          End
@@ -216,7 +414,7 @@ Begin VB.Form frmCalendarReport
             Height          =   315
             Left            =   3270
             Locked          =   -1  'True
-            TabIndex        =   65
+            TabIndex        =   67
             TabStop         =   0   'False
             Tag             =   "0"
             Top             =   1760
@@ -228,7 +426,7 @@ Begin VB.Form frmCalendarReport
             ForeColor       =   &H00000000&
             Height          =   315
             Left            =   3270
-            TabIndex        =   76
+            TabIndex        =   78
             Tag             =   "0"
             Top             =   3460
             Width           =   3135
@@ -239,7 +437,7 @@ Begin VB.Form frmCalendarReport
             Enabled         =   0   'False
             Height          =   195
             Left            =   1800
-            TabIndex        =   61
+            TabIndex        =   63
             Top             =   1305
             Width           =   1410
          End
@@ -249,7 +447,7 @@ Begin VB.Form frmCalendarReport
             Enabled         =   0   'False
             Height          =   195
             Left            =   1800
-            TabIndex        =   67
+            TabIndex        =   69
             Top             =   2220
             Width           =   1395
          End
@@ -260,7 +458,7 @@ Begin VB.Form frmCalendarReport
             Height          =   195
             Index           =   0
             Left            =   1800
-            TabIndex        =   70
+            TabIndex        =   72
             Top             =   2715
             Width           =   1245
          End
@@ -271,7 +469,7 @@ Begin VB.Form frmCalendarReport
             Height          =   195
             Index           =   1
             Left            =   1800
-            TabIndex        =   73
+            TabIndex        =   75
             Top             =   3120
             Width           =   1305
          End
@@ -281,7 +479,7 @@ Begin VB.Form frmCalendarReport
             Enabled         =   0   'False
             Height          =   195
             Left            =   1800
-            TabIndex        =   64
+            TabIndex        =   66
             Top             =   1815
             Width           =   1095
          End
@@ -292,7 +490,7 @@ Begin VB.Form frmCalendarReport
             Height          =   195
             Index           =   2
             Left            =   1800
-            TabIndex        =   75
+            TabIndex        =   77
             Top             =   3525
             Width           =   1245
          End
@@ -301,7 +499,7 @@ Begin VB.Form frmCalendarReport
          Caption         =   "Sort Order :"
          Height          =   5730
          Left            =   -74880
-         TabIndex        =   96
+         TabIndex        =   93
          Top             =   400
          Width           =   9180
          Begin VB.CommandButton cmdClearOrder 
@@ -309,7 +507,7 @@ Begin VB.Form frmCalendarReport
             Enabled         =   0   'False
             Height          =   400
             Left            =   7800
-            TabIndex        =   46
+            TabIndex        =   48
             Top             =   1860
             Width           =   1200
          End
@@ -318,7 +516,7 @@ Begin VB.Form frmCalendarReport
             Enabled         =   0   'False
             Height          =   400
             Left            =   7800
-            TabIndex        =   48
+            TabIndex        =   50
             Top             =   5025
             Width           =   1200
          End
@@ -327,7 +525,7 @@ Begin VB.Form frmCalendarReport
             Enabled         =   0   'False
             Height          =   400
             Left            =   7800
-            TabIndex        =   47
+            TabIndex        =   49
             Top             =   4575
             Width           =   1200
          End
@@ -335,7 +533,7 @@ Begin VB.Form frmCalendarReport
             Caption         =   "&Add..."
             Height          =   400
             Left            =   7800
-            TabIndex        =   43
+            TabIndex        =   45
             Top             =   315
             Width           =   1200
          End
@@ -344,7 +542,7 @@ Begin VB.Form frmCalendarReport
             Enabled         =   0   'False
             Height          =   400
             Left            =   7800
-            TabIndex        =   44
+            TabIndex        =   46
             Top             =   765
             Width           =   1200
          End
@@ -353,14 +551,14 @@ Begin VB.Form frmCalendarReport
             Enabled         =   0   'False
             Height          =   400
             Left            =   7800
-            TabIndex        =   45
+            TabIndex        =   47
             Top             =   1399
             Width           =   1200
          End
          Begin SSDataWidgets_B.SSDBGrid grdOrder 
             Height          =   5205
             Left            =   195
-            TabIndex        =   49
+            TabIndex        =   51
             Top             =   315
             Width           =   7425
             ScrollBars      =   0
@@ -439,14 +637,14 @@ Begin VB.Form frmCalendarReport
          Caption         =   "Events :"
          Height          =   5760
          Left            =   -74880
-         TabIndex        =   91
+         TabIndex        =   88
          Top             =   400
          Width           =   9180
          Begin VB.CommandButton cmdRemoveEvent 
             Caption         =   "Re&move"
             Height          =   400
             Left            =   7800
-            TabIndex        =   18
+            TabIndex        =   20
             Top             =   1305
             Width           =   1200
          End
@@ -454,7 +652,7 @@ Begin VB.Form frmCalendarReport
             Caption         =   "&Add..."
             Height          =   400
             Left            =   7800
-            TabIndex        =   16
+            TabIndex        =   18
             Top             =   300
             Width           =   1200
          End
@@ -462,7 +660,7 @@ Begin VB.Form frmCalendarReport
             Caption         =   "Remo&ve All "
             Height          =   400
             Left            =   7800
-            TabIndex        =   19
+            TabIndex        =   21
             Top             =   1755
             Width           =   1200
          End
@@ -470,14 +668,14 @@ Begin VB.Form frmCalendarReport
             Caption         =   "&Edit..."
             Height          =   400
             Left            =   7800
-            TabIndex        =   17
+            TabIndex        =   19
             Top             =   750
             Width           =   1200
          End
          Begin SSDataWidgets_B.SSDBGrid grdEvents 
             Height          =   5235
             Left            =   195
-            TabIndex        =   20
+            TabIndex        =   22
             Top             =   300
             Width           =   7440
             _Version        =   196617
@@ -706,7 +904,7 @@ Begin VB.Form frmCalendarReport
          Caption         =   "Output Format :"
          Height          =   3975
          Left            =   -74880
-         TabIndex        =   100
+         TabIndex        =   97
          Top             =   400
          Width           =   2505
          Begin VB.OptionButton optOutputFormat 
@@ -715,7 +913,7 @@ Begin VB.Form frmCalendarReport
             Height          =   195
             Index           =   6
             Left            =   200
-            TabIndex        =   56
+            TabIndex        =   58
             TabStop         =   0   'False
             Top             =   2800
             Visible         =   0   'False
@@ -727,7 +925,7 @@ Begin VB.Form frmCalendarReport
             Height          =   195
             Index           =   5
             Left            =   200
-            TabIndex        =   55
+            TabIndex        =   57
             TabStop         =   0   'False
             Top             =   2400
             Visible         =   0   'False
@@ -738,7 +936,7 @@ Begin VB.Form frmCalendarReport
             Height          =   195
             Index           =   4
             Left            =   200
-            TabIndex        =   54
+            TabIndex        =   56
             Top             =   2000
             Width           =   1900
          End
@@ -747,7 +945,7 @@ Begin VB.Form frmCalendarReport
             Height          =   195
             Index           =   3
             Left            =   200
-            TabIndex        =   53
+            TabIndex        =   55
             Top             =   1600
             Width           =   1900
          End
@@ -756,7 +954,7 @@ Begin VB.Form frmCalendarReport
             Height          =   195
             Index           =   2
             Left            =   200
-            TabIndex        =   52
+            TabIndex        =   54
             Top             =   1200
             Width           =   1900
          End
@@ -765,7 +963,7 @@ Begin VB.Form frmCalendarReport
             Height          =   195
             Index           =   1
             Left            =   200
-            TabIndex        =   51
+            TabIndex        =   53
             Top             =   800
             Width           =   1900
          End
@@ -774,7 +972,7 @@ Begin VB.Form frmCalendarReport
             Height          =   195
             Index           =   0
             Left            =   200
-            TabIndex        =   50
+            TabIndex        =   52
             Top             =   400
             Value           =   -1  'True
             Width           =   1900
@@ -784,14 +982,14 @@ Begin VB.Form frmCalendarReport
          Caption         =   "Default Display Options :"
          Height          =   2055
          Left            =   -74880
-         TabIndex        =   99
+         TabIndex        =   96
          Top             =   2880
          Width           =   9140
          Begin VB.CheckBox chkStartOnCurrentMonth 
             Caption         =   "Start on Cu&rrent Month"
             Height          =   255
             Left            =   240
-            TabIndex        =   42
+            TabIndex        =   44
             Top             =   1650
             Value           =   1  'Checked
             Width           =   2820
@@ -800,7 +998,7 @@ Begin VB.Form frmCalendarReport
             Caption         =   "Include &Bank Holidays"
             Height          =   255
             Left            =   240
-            TabIndex        =   37
+            TabIndex        =   39
             Top             =   300
             Width           =   2655
          End
@@ -808,7 +1006,7 @@ Begin VB.Form frmCalendarReport
             Caption         =   "&Working Days Only"
             Height          =   255
             Left            =   240
-            TabIndex        =   38
+            TabIndex        =   40
             Top             =   570
             Width           =   3000
          End
@@ -816,7 +1014,7 @@ Begin VB.Form frmCalendarReport
             Caption         =   "Show Calendar Ca&ptions"
             Height          =   240
             Left            =   240
-            TabIndex        =   40
+            TabIndex        =   42
             Top             =   1110
             Value           =   1  'Checked
             Width           =   2835
@@ -825,7 +1023,7 @@ Begin VB.Form frmCalendarReport
             Caption         =   "Show Wee&kends"
             Height          =   255
             Left            =   240
-            TabIndex        =   41
+            TabIndex        =   43
             Top             =   1380
             Value           =   1  'Checked
             Width           =   2460
@@ -834,7 +1032,7 @@ Begin VB.Form frmCalendarReport
             Caption         =   "Show Bank &Holidays"
             Height          =   255
             Left            =   240
-            TabIndex        =   39
+            TabIndex        =   41
             Top             =   840
             Width           =   2595
          End
@@ -843,14 +1041,14 @@ Begin VB.Form frmCalendarReport
          Caption         =   "End Date : "
          Height          =   2310
          Left            =   -70200
-         TabIndex        =   94
+         TabIndex        =   91
          Top             =   400
          Width           =   4450
          Begin VB.OptionButton optCustomEnd 
             Caption         =   "Cus&tom"
             Height          =   255
             Left            =   765
-            TabIndex        =   35
+            TabIndex        =   37
             Top             =   1800
             Width           =   990
          End
@@ -860,7 +1058,7 @@ Begin VB.Form frmCalendarReport
             Height          =   315
             Left            =   2040
             Locked          =   -1  'True
-            TabIndex        =   101
+            TabIndex        =   98
             TabStop         =   0   'False
             Tag             =   "0"
             Top             =   1800
@@ -871,8 +1069,8 @@ Begin VB.Form frmCalendarReport
             Enabled         =   0   'False
             Height          =   315
             Left            =   4005
-            Picture         =   "frmCalendarReport.frx":0188
-            TabIndex        =   36
+            Picture         =   "frmCalendarReport.frx":01C0
+            TabIndex        =   38
             Top             =   1800
             UseMaskColor    =   -1  'True
             Width           =   300
@@ -881,18 +1079,18 @@ Begin VB.Form frmCalendarReport
             Caption         =   "Current Date"
             Height          =   255
             Left            =   765
-            TabIndex        =   31
+            TabIndex        =   33
             Top             =   840
             Width           =   1470
          End
          Begin VB.ComboBox cboPeriodEnd 
             Enabled         =   0   'False
             Height          =   315
-            ItemData        =   "frmCalendarReport.frx":0200
+            ItemData        =   "frmCalendarReport.frx":0238
             Left            =   2760
-            List            =   "frmCalendarReport.frx":0210
+            List            =   "frmCalendarReport.frx":0248
             Style           =   2  'Dropdown List
-            TabIndex        =   34
+            TabIndex        =   36
             Top             =   1260
             Width           =   1550
          End
@@ -900,7 +1098,7 @@ Begin VB.Form frmCalendarReport
             Caption         =   "Fi&xed"
             Height          =   195
             Left            =   765
-            TabIndex        =   29
+            TabIndex        =   31
             Top             =   360
             Value           =   -1  'True
             Width           =   1095
@@ -909,14 +1107,14 @@ Begin VB.Form frmCalendarReport
             Caption         =   "O&ffset"
             Height          =   255
             Left            =   765
-            TabIndex        =   32
+            TabIndex        =   34
             Top             =   1320
             Width           =   855
          End
          Begin COASpinner.COA_Spinner spnFreqEnd 
             Height          =   315
             Left            =   2040
-            TabIndex        =   33
+            TabIndex        =   35
             Top             =   1260
             Width           =   600
             _ExtentX        =   1058
@@ -939,7 +1137,7 @@ Begin VB.Form frmCalendarReport
          Begin GTMaskDate.GTMaskDate GTMaskFixedEnd 
             Height          =   315
             Left            =   2040
-            TabIndex        =   30
+            TabIndex        =   32
             Top             =   300
             Width           =   1305
             _Version        =   65537
@@ -1000,7 +1198,7 @@ Begin VB.Form frmCalendarReport
             Caption         =   "End : "
             Height          =   255
             Left            =   240
-            TabIndex        =   95
+            TabIndex        =   92
             Top             =   365
             Width           =   450
          End
@@ -1009,14 +1207,14 @@ Begin VB.Form frmCalendarReport
          Caption         =   "Start Date :"
          Height          =   2310
          Left            =   -74880
-         TabIndex        =   92
+         TabIndex        =   89
          Top             =   400
          Width           =   4450
          Begin VB.OptionButton optCustomStart 
             Caption         =   "Custo&m"
             Height          =   255
             Left            =   855
-            TabIndex        =   27
+            TabIndex        =   29
             Top             =   1800
             Width           =   1035
          End
@@ -1026,7 +1224,7 @@ Begin VB.Form frmCalendarReport
             Height          =   315
             Left            =   2040
             Locked          =   -1  'True
-            TabIndex        =   102
+            TabIndex        =   99
             TabStop         =   0   'False
             Tag             =   "0"
             Top             =   1800
@@ -1037,8 +1235,8 @@ Begin VB.Form frmCalendarReport
             Enabled         =   0   'False
             Height          =   315
             Left            =   4005
-            Picture         =   "frmCalendarReport.frx":0230
-            TabIndex        =   28
+            Picture         =   "frmCalendarReport.frx":0268
+            TabIndex        =   30
             Top             =   1800
             UseMaskColor    =   -1  'True
             Width           =   300
@@ -1047,18 +1245,18 @@ Begin VB.Form frmCalendarReport
             Caption         =   "Offs&et"
             Height          =   255
             Left            =   855
-            TabIndex        =   24
+            TabIndex        =   26
             Top             =   1320
             Width           =   855
          End
          Begin VB.ComboBox cboPeriodStart 
             Enabled         =   0   'False
             Height          =   315
-            ItemData        =   "frmCalendarReport.frx":02A8
+            ItemData        =   "frmCalendarReport.frx":02E0
             Left            =   2760
-            List            =   "frmCalendarReport.frx":02B8
+            List            =   "frmCalendarReport.frx":02F0
             Style           =   2  'Dropdown List
-            TabIndex        =   26
+            TabIndex        =   28
             Top             =   1260
             Width           =   1550
          End
@@ -1066,7 +1264,7 @@ Begin VB.Form frmCalendarReport
             Caption         =   "F&ixed"
             Height          =   255
             Left            =   855
-            TabIndex        =   21
+            TabIndex        =   23
             Top             =   360
             Value           =   -1  'True
             Width           =   1080
@@ -1075,14 +1273,14 @@ Begin VB.Form frmCalendarReport
             Caption         =   "Current Date"
             Height          =   255
             Left            =   855
-            TabIndex        =   23
+            TabIndex        =   25
             Top             =   840
             Width           =   1470
          End
          Begin GTMaskDate.GTMaskDate GTMaskFixedStart 
             Height          =   315
             Left            =   2040
-            TabIndex        =   22
+            TabIndex        =   24
             Top             =   300
             Width           =   1305
             _Version        =   65537
@@ -1142,7 +1340,7 @@ Begin VB.Form frmCalendarReport
          Begin COASpinner.COA_Spinner spnFreqStart 
             Height          =   315
             Left            =   2040
-            TabIndex        =   25
+            TabIndex        =   27
             Top             =   1260
             Width           =   600
             _ExtentX        =   1058
@@ -1166,7 +1364,7 @@ Begin VB.Form frmCalendarReport
             Caption         =   "Start : "
             Height          =   255
             Left            =   200
-            TabIndex        =   93
+            TabIndex        =   90
             Top             =   365
             Width           =   615
          End
@@ -1175,16 +1373,16 @@ Begin VB.Form frmCalendarReport
          Caption         =   "Data :"
          Height          =   3330
          Left            =   120
-         TabIndex        =   85
+         TabIndex        =   82
          Top             =   2850
          Width           =   9180
          Begin VB.ComboBox cboDescriptionSeparator 
             Height          =   315
-            ItemData        =   "frmCalendarReport.frx":02D8
+            ItemData        =   "frmCalendarReport.frx":0310
             Left            =   5895
-            List            =   "frmCalendarReport.frx":0300
+            List            =   "frmCalendarReport.frx":0338
             Style           =   2  'Dropdown List
-            TabIndex        =   14
+            TabIndex        =   16
             Top             =   2805
             Width           =   3090
          End
@@ -1193,8 +1391,8 @@ Begin VB.Form frmCalendarReport
             Enabled         =   0   'False
             Height          =   315
             Left            =   4215
-            Picture         =   "frmCalendarReport.frx":0346
-            TabIndex        =   12
+            Picture         =   "frmCalendarReport.frx":037E
+            TabIndex        =   14
             Top             =   2385
             UseMaskColor    =   -1  'True
             Width           =   300
@@ -1205,7 +1403,7 @@ Begin VB.Form frmCalendarReport
             Height          =   315
             Left            =   1575
             Locked          =   -1  'True
-            TabIndex        =   104
+            TabIndex        =   101
             Tag             =   "0"
             Top             =   2385
             Width           =   2640
@@ -1214,41 +1412,41 @@ Begin VB.Form frmCalendarReport
             Caption         =   "Display &title in the report header"
             Height          =   240
             Left            =   4815
-            TabIndex        =   9
+            TabIndex        =   11
             Tag             =   "PrintFilterHeader"
             Top             =   1560
             Width           =   4110
          End
          Begin VB.ComboBox cboRegion 
             Height          =   315
-            ItemData        =   "frmCalendarReport.frx":03BE
+            ItemData        =   "frmCalendarReport.frx":03F6
             Left            =   5895
-            List            =   "frmCalendarReport.frx":03C5
+            List            =   "frmCalendarReport.frx":03FD
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
-            TabIndex        =   15
+            TabIndex        =   17
             Top             =   1980
             Width           =   3090
          End
          Begin VB.ComboBox cboDesc2 
             Height          =   315
-            ItemData        =   "frmCalendarReport.frx":03D1
+            ItemData        =   "frmCalendarReport.frx":0409
             Left            =   1575
-            List            =   "frmCalendarReport.frx":03D8
+            List            =   "frmCalendarReport.frx":0410
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
-            TabIndex        =   11
+            TabIndex        =   13
             Top             =   1950
             Width           =   2955
          End
          Begin VB.ComboBox cboDesc1 
             Height          =   315
-            ItemData        =   "frmCalendarReport.frx":03E6
+            ItemData        =   "frmCalendarReport.frx":041E
             Left            =   1575
-            List            =   "frmCalendarReport.frx":03ED
+            List            =   "frmCalendarReport.frx":0425
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
-            TabIndex        =   10
+            TabIndex        =   12
             Top             =   1530
             Width           =   2955
          End
@@ -1256,7 +1454,7 @@ Begin VB.Form frmCalendarReport
             Caption         =   "&Group by Description "
             Height          =   240
             Left            =   4815
-            TabIndex        =   13
+            TabIndex        =   15
             Top             =   2445
             Width           =   2145
          End
@@ -1266,7 +1464,7 @@ Begin VB.Form frmCalendarReport
             Height          =   315
             Left            =   6705
             Locked          =   -1  'True
-            TabIndex        =   87
+            TabIndex        =   84
             Tag             =   "0"
             Top             =   1100
             Width           =   1995
@@ -1277,7 +1475,7 @@ Begin VB.Form frmCalendarReport
             Height          =   315
             Left            =   6705
             Locked          =   -1  'True
-            TabIndex        =   86
+            TabIndex        =   83
             Tag             =   "0"
             Top             =   700
             Width           =   1995
@@ -1286,7 +1484,7 @@ Begin VB.Form frmCalendarReport
             Caption         =   "&Filter"
             Height          =   195
             Left            =   5760
-            TabIndex        =   7
+            TabIndex        =   9
             Top             =   1155
             Width           =   885
          End
@@ -1294,7 +1492,7 @@ Begin VB.Form frmCalendarReport
             Caption         =   "&Picklist"
             Height          =   195
             Left            =   5760
-            TabIndex        =   5
+            TabIndex        =   7
             Top             =   765
             Width           =   975
          End
@@ -1302,19 +1500,19 @@ Begin VB.Form frmCalendarReport
             Caption         =   "&All"
             Height          =   195
             Left            =   5760
-            TabIndex        =   4
+            TabIndex        =   6
             Top             =   360
             Value           =   -1  'True
             Width           =   675
          End
          Begin VB.ComboBox cboBaseTable 
             Height          =   315
-            ItemData        =   "frmCalendarReport.frx":03FA
+            ItemData        =   "frmCalendarReport.frx":0432
             Left            =   1575
-            List            =   "frmCalendarReport.frx":0401
+            List            =   "frmCalendarReport.frx":0439
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
-            TabIndex        =   3
+            TabIndex        =   5
             Top             =   300
             Width           =   2955
          End
@@ -1323,8 +1521,8 @@ Begin VB.Form frmCalendarReport
             Enabled         =   0   'False
             Height          =   315
             Left            =   8700
-            Picture         =   "frmCalendarReport.frx":0410
-            TabIndex        =   6
+            Picture         =   "frmCalendarReport.frx":0448
+            TabIndex        =   8
             Top             =   700
             UseMaskColor    =   -1  'True
             Width           =   300
@@ -1334,8 +1532,8 @@ Begin VB.Form frmCalendarReport
             Enabled         =   0   'False
             Height          =   315
             Left            =   8700
-            Picture         =   "frmCalendarReport.frx":0488
-            TabIndex        =   8
+            Picture         =   "frmCalendarReport.frx":04C0
+            TabIndex        =   10
             Top             =   1100
             UseMaskColor    =   -1  'True
             Width           =   300
@@ -1344,7 +1542,7 @@ Begin VB.Form frmCalendarReport
             Caption         =   "Separator :"
             Height          =   285
             Left            =   4830
-            TabIndex        =   105
+            TabIndex        =   102
             Top             =   2865
             Width           =   1035
          End
@@ -1353,7 +1551,7 @@ Begin VB.Form frmCalendarReport
             Caption         =   "Description 3 : "
             Height          =   195
             Left            =   195
-            TabIndex        =   103
+            TabIndex        =   100
             Top             =   2415
             Width           =   1260
          End
@@ -1363,7 +1561,7 @@ Begin VB.Form frmCalendarReport
             Caption         =   "Region :"
             Height          =   195
             Left            =   4815
-            TabIndex        =   98
+            TabIndex        =   95
             Top             =   2025
             Width           =   600
          End
@@ -1372,7 +1570,7 @@ Begin VB.Form frmCalendarReport
             Caption         =   "Description 2 : "
             Height          =   195
             Left            =   195
-            TabIndex        =   97
+            TabIndex        =   94
             Top             =   1995
             Width           =   1260
          End
@@ -1382,7 +1580,7 @@ Begin VB.Form frmCalendarReport
             Caption         =   "Base Table :"
             Height          =   195
             Left            =   200
-            TabIndex        =   90
+            TabIndex        =   87
             Top             =   360
             Width           =   885
          End
@@ -1392,7 +1590,7 @@ Begin VB.Form frmCalendarReport
             Caption         =   "Records :"
             Height          =   195
             Left            =   4815
-            TabIndex        =   89
+            TabIndex        =   86
             Top             =   360
             Width           =   825
          End
@@ -1401,196 +1599,9 @@ Begin VB.Form frmCalendarReport
             Caption         =   "Description 1 : "
             Height          =   195
             Left            =   195
-            TabIndex        =   88
+            TabIndex        =   85
             Top             =   1575
             Width           =   1260
-         End
-      End
-      Begin VB.Frame fraInformation 
-         Height          =   2355
-         Left            =   120
-         TabIndex        =   80
-         Top             =   400
-         Width           =   9180
-         Begin VB.TextBox txtUserName 
-            BackColor       =   &H8000000F&
-            Enabled         =   0   'False
-            Height          =   315
-            Left            =   5670
-            MaxLength       =   30
-            TabIndex        =   2
-            Top             =   300
-            Width           =   3405
-         End
-         Begin VB.TextBox txtName 
-            Height          =   315
-            Left            =   1575
-            MaxLength       =   50
-            TabIndex        =   0
-            Top             =   300
-            Width           =   2955
-         End
-         Begin VB.TextBox txtDesc 
-            Height          =   1080
-            Left            =   1575
-            MaxLength       =   255
-            MultiLine       =   -1  'True
-            ScrollBars      =   2  'Vertical
-            TabIndex        =   1
-            Top             =   700
-            Width           =   2955
-         End
-         Begin SSDataWidgets_B.SSDBGrid grdAccess 
-            Height          =   1080
-            Left            =   5670
-            TabIndex        =   106
-            Top             =   720
-            Width           =   3405
-            ScrollBars      =   2
-            _Version        =   196617
-            DataMode        =   2
-            RecordSelectors =   0   'False
-            Col.Count       =   3
-            stylesets.count =   2
-            stylesets(0).Name=   "SysSecMgr"
-            stylesets(0).ForeColor=   -2147483631
-            stylesets(0).BackColor=   -2147483633
-            stylesets(0).HasFont=   -1  'True
-            BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-               Name            =   "Verdana"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
-            stylesets(0).Picture=   "frmCalendarReport.frx":0500
-            stylesets(1).Name=   "ReadOnly"
-            stylesets(1).ForeColor=   -2147483631
-            stylesets(1).BackColor=   -2147483633
-            stylesets(1).HasFont=   -1  'True
-            BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-               Name            =   "Verdana"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
-            stylesets(1).Picture=   "frmCalendarReport.frx":051C
-            MultiLine       =   0   'False
-            AllowRowSizing  =   0   'False
-            AllowGroupSizing=   0   'False
-            AllowColumnSizing=   0   'False
-            AllowGroupMoving=   0   'False
-            AllowColumnMoving=   0
-            AllowGroupSwapping=   0   'False
-            AllowColumnSwapping=   0
-            AllowGroupShrinking=   0   'False
-            AllowColumnShrinking=   0   'False
-            AllowDragDrop   =   0   'False
-            SelectTypeCol   =   0
-            SelectTypeRow   =   0
-            BalloonHelp     =   0   'False
-            MaxSelectedRows =   0
-            ForeColorEven   =   0
-            BackColorEven   =   -2147483643
-            BackColorOdd    =   -2147483643
-            RowHeight       =   423
-            Columns.Count   =   3
-            Columns(0).Width=   2963
-            Columns(0).Caption=   "User Group"
-            Columns(0).Name =   "GroupName"
-            Columns(0).AllowSizing=   0   'False
-            Columns(0).DataField=   "Column 0"
-            Columns(0).DataType=   8
-            Columns(0).FieldLen=   256
-            Columns(0).Locked=   -1  'True
-            Columns(1).Width=   2566
-            Columns(1).Caption=   "Access"
-            Columns(1).Name =   "Access"
-            Columns(1).AllowSizing=   0   'False
-            Columns(1).DataField=   "Column 1"
-            Columns(1).DataType=   8
-            Columns(1).FieldLen=   256
-            Columns(1).Locked=   -1  'True
-            Columns(1).Style=   3
-            Columns(1).Row.Count=   3
-            Columns(1).Col.Count=   2
-            Columns(1).Row(0).Col(0)=   "Read / Write"
-            Columns(1).Row(1).Col(0)=   "Read Only"
-            Columns(1).Row(2).Col(0)=   "Hidden"
-            Columns(2).Width=   3200
-            Columns(2).Visible=   0   'False
-            Columns(2).Caption=   "SysSecMgr"
-            Columns(2).Name =   "SysSecMgr"
-            Columns(2).DataField=   "Column 2"
-            Columns(2).DataType=   8
-            Columns(2).FieldLen=   256
-            TabNavigation   =   1
-            _ExtentX        =   6006
-            _ExtentY        =   1905
-            _StockProps     =   79
-            BeginProperty PageFooterFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-               Name            =   "Verdana"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
-            BeginProperty PageHeaderFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-               Name            =   "Verdana"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
-         End
-         Begin VB.Label lblOwner 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Owner :"
-            Height          =   195
-            Left            =   4815
-            TabIndex        =   84
-            Top             =   315
-            Width           =   765
-         End
-         Begin VB.Label lblName 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Name :"
-            Height          =   195
-            Left            =   200
-            TabIndex        =   83
-            Top             =   360
-            Width           =   510
-         End
-         Begin VB.Label lblDescription 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Description :"
-            Height          =   195
-            Left            =   200
-            TabIndex        =   82
-            Top             =   750
-            Width           =   900
-         End
-         Begin VB.Label lblAccess 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Access :"
-            Height          =   195
-            Left            =   4815
-            TabIndex        =   81
-            Top             =   750
-            Width           =   780
          End
       End
    End
@@ -1599,7 +1610,7 @@ Begin VB.Form frmCalendarReport
       Caption         =   "&Cancel"
       Height          =   400
       Left            =   8357
-      TabIndex        =   78
+      TabIndex        =   80
       Top             =   6540
       Width           =   1183
    End
@@ -1608,7 +1619,7 @@ Begin VB.Form frmCalendarReport
       Default         =   -1  'True
       Height          =   400
       Left            =   7095
-      TabIndex        =   77
+      TabIndex        =   79
       Top             =   6540
       Width           =   1183
    End
@@ -2309,6 +2320,9 @@ Private Function RetrieveCalendarReportDetails(plngCalendarReportID As Long) As 
     Exit Function
   End If
   
+  ' Set the categories combo
+  GetObjectCategories cboCategory, utlCalendarReport, plngCalendarReportID
+    
   ' Set Definition Name
   txtName.Text = rsTemp!Name
   
@@ -2823,6 +2837,10 @@ Public Function Initialise(pbNew As Boolean, pbCopy As Boolean, Optional plngCal
     'Load all possible Base Tables into combo
     LoadBaseCombo
 
+    ' Set the categories combo
+    GetObjectCategories cboCategory, utlCalendarReport, 0, cboBaseTable.ItemData(cboBaseTable.ListIndex)
+    SetComboItem cboCategory, IIf(glngCurrentCategoryID = -1, 0, glngCurrentCategoryID)
+    
     UpdateDependantFields
     
     optOutputFormat(0).Value = True
@@ -3671,6 +3689,8 @@ Private Function SaveDefinition() As Boolean
   End If
   
   SaveAccess
+  SaveObjectCategories cboCategory, utlCalendarReport, mlngCalendarReportID
+
 
   '*** Step 2 Of 3 - Save the event level information
   ' First, remove any records from the event details table which has the
@@ -5933,21 +5953,17 @@ Private Sub txtEmailSubject_Change()
   End If
 End Sub
 
-
 Private Sub txtFilename_Change()
   If Not mblnLoading Then
     Changed = True
   End If
 End Sub
 
-
 Private Sub txtName_Change()
   If Not mblnLoading Then
     Changed = True
   End If
 End Sub
-
-
 
 Private Sub txtName_GotFocus()
   With txtName
@@ -5956,8 +5972,9 @@ Private Sub txtName_GotFocus()
   End With
 End Sub
 
-
-
+Private Sub cboCategory_Click()
+  Changed = True
+End Sub
 
 
 
