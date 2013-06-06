@@ -58,53 +58,37 @@ Begin VB.Form frmConfiguration
       TabPicture(0)   =   "frmConfiguration.frx":000C
       Tab(0).ControlEnabled=   0   'False
       Tab(0).Control(0)=   "fraDisplay(1)"
-      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).Control(1)=   "fraDisplay(0)"
-      Tab(0).Control(1).Enabled=   0   'False
       Tab(0).Control(2)=   "fraDisplay(2)"
-      Tab(0).Control(2).Enabled=   0   'False
       Tab(0).Control(3)=   "Frame2"
-      Tab(0).Control(3).Enabled=   0   'False
       Tab(0).ControlCount=   4
       TabCaption(1)   =   "&Reports && Utilities"
       TabPicture(1)   =   "frmConfiguration.frx":0028
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraReports(1)"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).Control(1)=   "frmReportsGeneral"
-      Tab(1).Control(1).Enabled=   0   'False
       Tab(1).Control(2)=   "fraReports(0)"
-      Tab(1).Control(2).Enabled=   0   'False
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "&Network Configuration"
       TabPicture(2)   =   "frmConfiguration.frx":0044
       Tab(2).ControlEnabled=   0   'False
       Tab(2).Control(0)=   "frmAutoLogin"
-      Tab(2).Control(0).Enabled=   0   'False
       Tab(2).Control(1)=   "fraNetwork(0)"
-      Tab(2).Control(1).Enabled=   0   'False
       Tab(2).Control(2)=   "fraNetwork(1)"
-      Tab(2).Control(2).Enabled=   0   'False
       Tab(2).Control(3)=   "frmOutputs"
-      Tab(2).Control(3).Enabled=   0   'False
       Tab(2).ControlCount=   4
       TabCaption(3)   =   "&Batch Login"
       TabPicture(3)   =   "frmConfiguration.frx":0060
       Tab(3).ControlEnabled=   0   'False
       Tab(3).Control(0)=   "fraBatch(1)"
-      Tab(3).Control(0).Enabled=   0   'False
       Tab(3).Control(1)=   "fraBatch(0)"
-      Tab(3).Control(1).Enabled=   0   'False
       Tab(3).ControlCount=   2
       TabCaption(4)   =   "E&vent Log"
       TabPicture(4)   =   "frmConfiguration.frx":007C
       Tab(4).ControlEnabled=   0   'False
       Tab(4).Control(0)=   "FraEventLog(0)"
-      Tab(4).Control(0).Enabled=   0   'False
       Tab(4).Control(1)=   "FraEventLog(1)"
-      Tab(4).Control(1).Enabled=   0   'False
       Tab(4).Control(2)=   "FraEventLog(2)"
-      Tab(4).Control(2).Enabled=   0   'False
       Tab(4).ControlCount=   3
       TabCaption(5)   =   "Report Out&put"
       TabPicture(5)   =   "frmConfiguration.frx":0098
@@ -120,9 +104,7 @@ Begin VB.Form frmConfiguration
       TabPicture(6)   =   "frmConfiguration.frx":00B4
       Tab(6).ControlEnabled=   0   'False
       Tab(6).Control(0)=   "fraToolbars"
-      Tab(6).Control(0).Enabled=   0   'False
       Tab(6).Control(1)=   "fraToolbarGeneral"
-      Tab(6).Control(1).Enabled=   0   'False
       Tab(6).ControlCount=   2
       Begin VB.Frame fraReports 
          Caption         =   "Report / Utility / Tool Selection && Access :"
@@ -334,16 +316,16 @@ Begin VB.Form frmConfiguration
             Width           =   330
          End
          Begin VB.CommandButton cmdDocumentsPathClear 
-Caption = "O"
-BeginProperty Font
-    Name = "Wingdings 2"
-    Size = 20.25
-    Charset = 2
-    Weight = 400
-    Underline = 0
-    Italic = 0
-    Strikethrough = 0
-EndProperty
+            Caption         =   "O"
+            BeginProperty Font 
+               Name            =   "Wingdings 2"
+               Size            =   20.25
+               Charset         =   2
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
             Height          =   315
             Left            =   6200
             MaskColor       =   &H000000FF&
@@ -424,9 +406,9 @@ EndProperty
          Width           =   6735
          Begin VB.ComboBox cboToolbars 
             Height          =   315
-            ItemData        =   "frmConfiguration.frx":08ED
+            ItemData        =   "frmConfiguration.frx":0140
             Left            =   2200
-            List            =   "frmConfiguration.frx":08EF
+            List            =   "frmConfiguration.frx":0142
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
             TabIndex        =   125
@@ -952,16 +934,16 @@ EndProperty
             Width           =   330
          End
          Begin VB.CommandButton cmdCrystalPathClear 
-Caption = "O"
-BeginProperty Font
-    Name = "Wingdings 2"
-    Size = 20.25
-    Charset = 2
-    Weight = 400
-    Underline = 0
-    Italic = 0
-    Strikethrough = 0
-EndProperty
+            Caption         =   "O"
+            BeginProperty Font 
+               Name            =   "Wingdings 2"
+               Size            =   20.25
+               Charset         =   2
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
             Height          =   315
             Left            =   6200
             MaskColor       =   &H000000FF&
@@ -972,16 +954,16 @@ EndProperty
             Width           =   330
          End
          Begin VB.CommandButton cmdPhotoPathClear 
-Caption = "O"
-BeginProperty Font
-    Name = "Wingdings 2"
-    Size = 20.25
-    Charset = 2
-    Weight = 400
-    Underline = 0
-    Italic = 0
-    Strikethrough = 0
-EndProperty
+            Caption         =   "O"
+            BeginProperty Font 
+               Name            =   "Wingdings 2"
+               Size            =   20.25
+               Charset         =   2
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
             Height          =   315
             Left            =   6200
             MaskColor       =   &H000000FF&
@@ -992,16 +974,16 @@ EndProperty
             Width           =   330
          End
          Begin VB.CommandButton cmdLocalOLEPathClear 
-Caption = "O"
-BeginProperty Font
-    Name = "Wingdings 2"
-    Size = 20.25
-    Charset = 2
-    Weight = 400
-    Underline = 0
-    Italic = 0
-    Strikethrough = 0
-EndProperty
+            Caption         =   "O"
+            BeginProperty Font 
+               Name            =   "Wingdings 2"
+               Size            =   20.25
+               Charset         =   2
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
             Height          =   315
             Left            =   6200
             MaskColor       =   &H000000FF&
@@ -1012,16 +994,16 @@ EndProperty
             Width           =   330
          End
          Begin VB.CommandButton cmdOLEPathClear 
-Caption = "O"
-BeginProperty Font
-    Name = "Wingdings 2"
-    Size = 20.25
-    Charset = 2
-    Weight = 400
-    Underline = 0
-    Italic = 0
-    Strikethrough = 0
-EndProperty
+            Caption         =   "O"
+            BeginProperty Font 
+               Name            =   "Wingdings 2"
+               Size            =   20.25
+               Charset         =   2
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
             Height          =   315
             Left            =   6200
             MaskColor       =   &H000000FF&
@@ -1340,9 +1322,9 @@ EndProperty
          Width           =   6735
          Begin VB.ListBox lstWarningMsg 
             Height          =   1185
-            ItemData        =   "frmConfiguration.frx":27A5
+            ItemData        =   "frmConfiguration.frx":0144
             Left            =   195
-            List            =   "frmConfiguration.frx":27A7
+            List            =   "frmConfiguration.frx":0146
             Style           =   1  'Checkbox
             TabIndex        =   24
             Top             =   600
@@ -1367,9 +1349,9 @@ EndProperty
          Width           =   6735
          Begin VB.ComboBox cboDiaryView 
             Height          =   315
-            ItemData        =   "frmConfiguration.frx":27A9
+            ItemData        =   "frmConfiguration.frx":0148
             Left            =   2200
-            List            =   "frmConfiguration.frx":27AB
+            List            =   "frmConfiguration.frx":014A
             Style           =   2  'Dropdown List
             TabIndex        =   16
             Top             =   300
@@ -1405,9 +1387,9 @@ EndProperty
          Width           =   6735
          Begin VB.ComboBox cboQuickAccess 
             Height          =   315
-            ItemData        =   "frmConfiguration.frx":27AD
+            ItemData        =   "frmConfiguration.frx":014C
             Left            =   2200
-            List            =   "frmConfiguration.frx":27AF
+            List            =   "frmConfiguration.frx":014E
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
             TabIndex        =   8
@@ -1416,9 +1398,9 @@ EndProperty
          End
          Begin VB.ComboBox cboLookUp 
             Height          =   315
-            ItemData        =   "frmConfiguration.frx":27B1
+            ItemData        =   "frmConfiguration.frx":0150
             Left            =   2200
-            List            =   "frmConfiguration.frx":27B3
+            List            =   "frmConfiguration.frx":0152
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
             TabIndex        =   6
@@ -1427,9 +1409,9 @@ EndProperty
          End
          Begin VB.ComboBox cboHistory 
             Height          =   315
-            ItemData        =   "frmConfiguration.frx":27B5
+            ItemData        =   "frmConfiguration.frx":0154
             Left            =   2200
-            List            =   "frmConfiguration.frx":27B7
+            List            =   "frmConfiguration.frx":0156
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
             TabIndex        =   4
@@ -1438,9 +1420,9 @@ EndProperty
          End
          Begin VB.ComboBox cboPrimary 
             Height          =   315
-            ItemData        =   "frmConfiguration.frx":27B9
+            ItemData        =   "frmConfiguration.frx":0158
             Left            =   2200
-            List            =   "frmConfiguration.frx":27BB
+            List            =   "frmConfiguration.frx":015A
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
             TabIndex        =   2
@@ -1498,9 +1480,9 @@ EndProperty
          Width           =   6735
          Begin VB.ComboBox cboNodeSize 
             Height          =   315
-            ItemData        =   "frmConfiguration.frx":27BD
+            ItemData        =   "frmConfiguration.frx":015C
             Left            =   2200
-            List            =   "frmConfiguration.frx":27BF
+            List            =   "frmConfiguration.frx":015E
             Style           =   2  'Dropdown List
             TabIndex        =   13
             Top             =   700
@@ -1508,9 +1490,9 @@ EndProperty
          End
          Begin VB.ComboBox cboColours 
             Height          =   315
-            ItemData        =   "frmConfiguration.frx":27C1
+            ItemData        =   "frmConfiguration.frx":0160
             Left            =   2200
-            List            =   "frmConfiguration.frx":27C3
+            List            =   "frmConfiguration.frx":0162
             Style           =   2  'Dropdown List
             TabIndex        =   11
             Top             =   300
@@ -1544,17 +1526,17 @@ EndProperty
          Top             =   3775
          Width           =   3800
          Begin VB.CommandButton cmdFileClear 
-Caption = "O"
-BeginProperty Font
-    Name = "Wingdings 2"
-    Size = 20.25
-    Charset = 2
-    Weight = 400
-    Underline = 0
-    Italic = 0
-    Strikethrough = 0
-EndProperty
+            Caption         =   "O"
             Enabled         =   0   'False
+            BeginProperty Font 
+               Name            =   "Wingdings 2"
+               Size            =   20.25
+               Charset         =   2
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
             Height          =   315
             Index           =   1
             Left            =   3345
@@ -1610,17 +1592,17 @@ EndProperty
             Width           =   330
          End
          Begin VB.CommandButton cmdFileClear 
-Caption = "O"
-BeginProperty Font
-    Name = "Wingdings 2"
-    Size = 20.25
-    Charset = 2
-    Weight = 400
-    Underline = 0
-    Italic = 0
-    Strikethrough = 0
-EndProperty
+            Caption         =   "O"
             Enabled         =   0   'False
+            BeginProperty Font 
+               Name            =   "Wingdings 2"
+               Size            =   20.25
+               Charset         =   2
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
             Height          =   315
             Index           =   0
             Left            =   3345
@@ -1755,11 +1737,11 @@ Private Sub cboColours_Click()
 End Sub
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
   If Not mbLoading Then
-    cmdOK.Enabled = pblnChanged
+    cmdOk.Enabled = pblnChanged
   End If
 End Property
 
@@ -3452,7 +3434,7 @@ Private Sub ReadUserSettingDefaults()
   'Title
   With moutTitle
     .Gridlines = False
-    .Bold = False
+    .Bold = True
     .Underline = False
     .BackCol = vbWhite
     .ForeCol = GetColour("Midnight Blue")
@@ -3466,7 +3448,7 @@ Private Sub ReadUserSettingDefaults()
 
   With moutHeading
     .Gridlines = True
-    .Bold = False
+    .Bold = True
     .Underline = False
     .BackCol = GetColour("Dolphin Blue")
     .ForeCol = GetColour("Midnight Blue")
