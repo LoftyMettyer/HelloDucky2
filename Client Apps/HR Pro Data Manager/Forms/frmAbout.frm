@@ -50,15 +50,21 @@ Begin VB.Form frmAbout
       Appearance      =   0  'Flat
       BackColor       =   &H80000005&
       ForeColor       =   &H80000008&
-      Height          =   1050
-      Left            =   200
-      Picture         =   "frmAbout.frx":000C
-      ScaleHeight     =   1020
-      ScaleWidth      =   1125
+      Height          =   1095
+      Left            =   240
+      ScaleHeight     =   1065
+      ScaleWidth      =   1185
       TabIndex        =   5
       TabStop         =   0   'False
-      Top             =   150
-      Width           =   1155
+      Top             =   120
+      Width           =   1215
+      Begin VB.Image Image1 
+         Height          =   720
+         Left            =   220
+         Picture         =   "frmAbout.frx":000C
+         Top             =   160
+         Width           =   720
+      End
    End
    Begin VB.CommandButton cmdOK 
       Cancel          =   -1  'True
@@ -94,7 +100,7 @@ Begin VB.Form frmAbout
       ForeColor       =   &H00FF0000&
       Height          =   195
       Left            =   150
-      MouseIcon       =   "frmAbout.frx":3C14
+      MouseIcon       =   "frmAbout.frx":07C4
       MousePointer    =   99  'Custom
       TabIndex        =   11
       Top             =   1515
