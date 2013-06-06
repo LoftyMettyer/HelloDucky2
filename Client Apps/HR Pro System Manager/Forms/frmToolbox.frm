@@ -824,7 +824,8 @@ Private Sub RefreshColumnsTreeView()
         trvColumns.Nodes.Clear
           
         ' Get column details for the primary table.
-        sSQL = "SELECT tableID, columnID, columnName, columnType, deleted, controlType " & _
+        ' NPG20091013 Fault HRPRO-478 (added dataType to the select)
+        sSQL = "SELECT tableID, columnID, columnName, columnType, deleted, controlType, dataType " & _
           " FROM tmpColumns" & _
           " WHERE tableID = " & Trim(Str(lngTableID)) & _
           " AND columnType <>" & Trim(Str(giCOLUMNTYPE_SYSTEM)) & _
@@ -857,7 +858,8 @@ Private Sub RefreshColumnsTreeView()
           End If
               
           ' Get the correct icon for the current column.
-          sIconKey = GetColumnIcon(rsColumns!ControlType)
+          ' NPG20091013 Fault HRPRO-478 added the datatype parameter for numeric columns
+          sIconKey = GetColumnIcon(rsColumns!ControlType, rsColumns!DataType)
 
           'Add column to TreeView
           Set objNode = trvColumns.Nodes.Add("T" & rsColumns!TableID, _
@@ -873,7 +875,7 @@ Private Sub RefreshColumnsTreeView()
         Set rsColumns = Nothing
       
         ' Get column details for the primary table's parent tables.
-        sSQL = "SELECT tableID, columnID, columnName, columnType, deleted, controlType " & _
+        sSQL = "SELECT tableID, columnID, columnName, columnType, deleted, controlType, dataType " & _
           " FROM tmpColumns, tmpRelations" & _
           " WHERE parentID = tableID" & _
           " AND childID = " & Trim(Str(lngTableID)) & _
@@ -907,7 +909,8 @@ Private Sub RefreshColumnsTreeView()
           End If
               
           ' Get the correct icon for the current column.
-          sIconKey = GetColumnIcon(rsColumns!ControlType)
+          ' NPG20091013 Fault HRPRO-478 added the datatype parameter for numeric columns
+          sIconKey = GetColumnIcon(rsColumns!ControlType, rsColumns!DataType)
 
           'Add column to TreeView
           Set objNode = trvColumns.Nodes.Add("T" & rsColumns!TableID, _
@@ -996,7 +999,7 @@ Private Sub fraColumns_Click()
 
 End Sub
 
-Private Sub fraColumns_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub fraColumns_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
   
   fraColumns_Click
 
@@ -1129,7 +1132,7 @@ Private Sub trvColumns_MouseDown(piButton As Integer, piShift As Integer, pSngX 
 End Sub
 
 
-Private Sub trvColumns_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub trvColumns_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
   
   ' Signal that the drag operation has ended.
   trvColumns.Drag vbEndDrag
@@ -1250,7 +1253,7 @@ Private Sub trvStandardControls_MouseDown(piButton As Integer, piShift As Intege
 End Sub
 
 
-Private Sub trvStandardControls_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub trvStandardControls_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
   
   ' Cancel the control drag operation.
   trvColumns.Drag vbEndDrag
@@ -1259,14 +1262,19 @@ End Sub
 
 
 
-Private Function GetColumnIcon(piColumnType As Integer) As String
+Private Function GetColumnIcon(piColumnType As Integer, piDataType As Integer) As String
   'Dim iLoop As Integer
   
   ' Depending on the control type of the current column, determine the
   ' associated icon key, as defined in the imageList2 control.
+  ' NPG20091013 Fault HRPRO-478 added the datatype parameter for numeric columns
   Select Case piColumnType
     Case giCTRL_TEXTBOX
-      GetColumnIcon = "IMG_TEXTBOX"
+      If piDataType = sqlNumeric Or piDataType = sqlInteger Then  '11
+        GetColumnIcon = "IMG_NUMERIC"
+      Else
+        GetColumnIcon = "IMG_TEXTBOX"
+      End If
     Case giCTRL_CHECKBOX
       GetColumnIcon = "IMG_CHECKBOX"
     Case giCTRL_OPTIONGROUP
