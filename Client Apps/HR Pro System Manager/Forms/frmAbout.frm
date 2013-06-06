@@ -243,7 +243,7 @@ Private Sub Form_Load()
   lblUser.Caption = "Current User : " & Trim(gsUserName)
   lblSecurity.Caption = "User Group : " & gsSecurityGroup
   lblSql.Caption = GetSqlVersion
-  lblCopyRight.Caption = "Copyright © Advanced Business Solutions Limited 2011"
+  lblCopyRight.Caption = "Copyright © Advanced Business Software and Solutions Limited"
 
   sngMaxX = lblTitle.Left + lblTitle.Width
   sngMaxX = IIf(lblDatabase.Left + lblDatabase.Width > sngMaxX, lblDatabase.Left + lblDatabase.Width, sngMaxX)
