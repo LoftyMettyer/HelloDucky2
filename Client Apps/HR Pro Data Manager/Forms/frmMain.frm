@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "17:05"
+            TextSave        =   "09:26"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -3146,32 +3146,6 @@ Public Sub RefreshHistoryMenu(pfrmCallingForm As Form, Optional ByVal pfUnLoad A
 
 End Sub
 
-'Public Sub RefreshReportsMenu(pfrmCallingForm As Form, Optional ByVal pfUnLoad As Boolean)
-'
-'  ' Enable/disable the items on the Standard Reports menu.
-'
-'  ' Note that if StdReports is disabled (ie, no RUN permission) then this
-'  ' should overide any other conditions on en/disabling the individual
-'  ' reports.
-'
-'  'Dim fStdreportsEnabled As Boolean
-'
-'  ' Do we have permission to run Standard Reports at all.
-'  'fStdreportsEnabled = datGeneral.SystemPermission("STANDARDREPORTS", "RUN")
-'
-'  'TM20011123 Fault 3066 - Only show the reports if the respective modules are enabled.
-'  abMain.Tools("AbsenceBreakdown").Visible = gfAbsenceEnabled And datGeneral.SystemPermission("STANDARDREPORTS", "RUN_AB")
-'  abMain.Tools("BradfordIndex").Visible = gfAbsenceEnabled And datGeneral.SystemPermission("STANDARDREPORTS", "RUN_BF")
-'  abMain.Tools("StabilityIndex").Visible = gfPersonnelEnabled And datGeneral.SystemPermission("STANDARDREPORTS", "RUN_SI")
-'  abMain.Tools("Turnover").Visible = gfPersonnelEnabled And datGeneral.SystemPermission("STANDARDREPORTS", "RUN_TR")
-'
-'  abMain.Tools("AbsenceBreakdown").Enabled = gfAbsenceEnabled And datGeneral.SystemPermission("STANDARDREPORTS", "RUN_AB")
-'  abMain.Tools("BradfordIndex").Enabled = gfAbsenceEnabled And datGeneral.SystemPermission("STANDARDREPORTS", "RUN_BF")
-'  abMain.Tools("StabilityIndex").Enabled = gfPersonnelEnabled And datGeneral.SystemPermission("STANDARDREPORTS", "RUN_SI")
-'  abMain.Tools("Turnover").Enabled = gfPersonnelEnabled And datGeneral.SystemPermission("STANDARDREPORTS", "RUN_TR")
-'
-'End Sub
-
 
 Public Sub PopulateHistoryMenu()
   ' Enable/disable the history menu with the appropriate values.
@@ -3220,7 +3194,7 @@ Public Sub PopulateHistoryMenu()
     For iLoop = 1 To objHistoryScreens.Count
       fFound = False
       For iLoop2 = 1 To UBound(avTablesDone, 2)
-        If avTablesDone(1, iLoop2) = objHistoryScreens.Item(iLoop).TableID Then
+        If avTablesDone(1, iLoop2) = objHistoryScreens.Item(iLoop).TableName Then
           fFound = True
           avTablesDone(2, iLoop2) = avTablesDone(2, iLoop2) + 1
         End If
@@ -3228,7 +3202,7 @@ Public Sub PopulateHistoryMenu()
       
       If Not fFound Then
         ReDim Preserve avTablesDone(3, UBound(avTablesDone, 2) + 1)
-        avTablesDone(1, UBound(avTablesDone, 2)) = objHistoryScreens.Item(iLoop).TableID
+        avTablesDone(1, UBound(avTablesDone, 2)) = objHistoryScreens.Item(iLoop).TableName
         avTablesDone(2, UBound(avTablesDone, 2)) = 1
         avTablesDone(3, UBound(avTablesDone, 2)) = False
       End If
@@ -3238,14 +3212,8 @@ Public Sub PopulateHistoryMenu()
     For iLoop = 1 To objHistoryScreens.Count
       
       ' Create the history screen menu item (without placing it in the menu).
-      If objHistoryScreens.Item(iLoop).ViewID > 0 Then
-        Set objFileTool = .Tools.Add(.Tools.Count + 1, "HV" & objHistoryScreens.Item(iLoop).HistoryScreenID & ":" & objHistoryScreens.Item(iLoop).ViewID)
-        objFileTool.Caption = Replace(objHistoryScreens.Item(iLoop).HistoryScreenName, "&", "&&") & _
-          " (" & RemoveUnderScores(objHistoryScreens.Item(iLoop).ViewName) & " view)..."
-      Else
-        Set objFileTool = .Tools.Add(.Tools.Count + 1, "HT" & objHistoryScreens.Item(iLoop).HistoryScreenID)
-        objFileTool.Caption = Replace(objHistoryScreens.Item(iLoop).HistoryScreenName, "&", "&&") & "..."
-      End If
+      Set objFileTool = .Tools.Add(.Tools.Count + 1, "HT" & objHistoryScreens.Item(iLoop).HistoryScreenID)
+      objFileTool.Caption = Replace(objHistoryScreens.Item(iLoop).HistoryScreenName, "&", "&&") & "..."
       objFileTool.Style = DDSStandard
       If objHistoryScreens.Item(iLoop).PictureID > 0 Then
         LoadMenuPicture objHistoryScreens.Item(iLoop).PictureID, objFileTool
@@ -3256,7 +3224,7 @@ Public Sub PopulateHistoryMenu()
       fTableDone = False
       fMultiScreen = False
       For iLoop2 = 1 To UBound(avTablesDone, 2)
-        If avTablesDone(1, iLoop2) = objHistoryScreens.Item(iLoop).TableID Then
+        If avTablesDone(1, iLoop2) = objHistoryScreens.Item(iLoop).TableName Then
           fTableDone = avTablesDone(3, iLoop2)
           fMultiScreen = (avTablesDone(2, iLoop2) > 1)
           avTablesDone(3, iLoop2) = True
@@ -3287,14 +3255,8 @@ Public Sub PopulateHistoryMenu()
           .Bands(sBand).Tools.RemoveAll
           
           Set objBandTool = .Tools.Add(.Tools.Count + 1, sBand)
-          If objHistoryScreens.Item(iLoop).ViewID > 0 Then
-            objBandTool.Caption = objHistoryScreens.Item(iLoop).TableName & _
-              " (" & objHistoryScreens.Item(iLoop).ViewName & " view)"
-            objBandTool.SetPicture 0, LoadResPicture("VIEW", 0), COL_GREY
-          Else
-            objBandTool.Caption = objHistoryScreens.Item(iLoop).TableName
-            objBandTool.SetPicture 0, LoadResPicture("SCREEN", 0), COL_GREY
-          End If
+          objBandTool.Caption = objHistoryScreens.Item(iLoop).TableName
+          objBandTool.SetPicture 0, LoadResPicture("SCREEN", 0), COL_GREY
           objBandTool.SubBand = sBand
           
           iIndex = -1
@@ -3311,7 +3273,6 @@ Public Sub PopulateHistoryMenu()
           ' added to the menu so just add this screen to the main menu as normal.
           iIndex = -1
           For iLoop2 = 0 To (.Bands("mnuHistory").Tools.Count - 1)
-            'TM20011220 Fault 2670 - need to compare lowercase to lowercase to sort menu items.
             If LCase(.Bands("mnuHistory").Tools(iLoop2).Caption) > LCase(objFileTool.Caption) Then
               iIndex = iLoop2
               Exit For
@@ -3322,28 +3283,28 @@ Public Sub PopulateHistoryMenu()
       End If
     Next iLoop
 
-    ' Position 'beginGroup' lines in the sub-menus.
-    For iLoop = 0 To (.Bands("mnuHistory").Tools.Count - 1)
-      If Len(.Bands("mnuHistory").Tools(iLoop).SubBand) > 0 Then
-        lngLastScreenID = 0
-        
-        For iLoop2 = 0 To (.Bands(.Bands("mnuHistory").Tools(iLoop).SubBand).Tools.Count - 1)
-          If Left(.Bands(.Bands("mnuHistory").Tools(iLoop).SubBand).Tools(iLoop2).Name, 2) = "HT" Then
-            lngScreenID = Val(Right(.Bands(.Bands("mnuHistory").Tools(iLoop).SubBand).Tools(iLoop2).Name, _
-              Len(.Bands(.Bands("mnuHistory").Tools(iLoop).SubBand).Tools(iLoop2).Name) - 2))
-          Else
-            lngPos = InStr(1, .Bands(.Bands("mnuHistory").Tools(iLoop).SubBand).Tools(iLoop2).Name, ":")
-            lngScreenID = Val(Mid$(.Bands(.Bands("mnuHistory").Tools(iLoop).SubBand).Tools(iLoop2).Name, 3, lngPos - 1))
-          End If
-    
-          If lngLastScreenID <> lngScreenID Then
-            .Bands(.Bands("mnuHistory").Tools(iLoop).SubBand).Tools(iLoop2).BeginGroup = True
-          End If
-          
-          lngLastScreenID = lngScreenID
-        Next iLoop2
-      End If
-    Next iLoop
+'    ' Position 'beginGroup' lines in the sub-menus.
+'    For iLoop = 0 To (.Bands("mnuHistory").Tools.Count - 1)
+'      If Len(.Bands("mnuHistory").Tools(iLoop).SubBand) > 0 Then
+'        lngLastScreenID = 0
+'
+'        For iLoop2 = 0 To (.Bands(.Bands("mnuHistory").Tools(iLoop).SubBand).Tools.Count - 1)
+'          If Left(.Bands(.Bands("mnuHistory").Tools(iLoop).SubBand).Tools(iLoop2).Name, 2) = "HT" Then
+'            lngScreenID = Val(Right(.Bands(.Bands("mnuHistory").Tools(iLoop).SubBand).Tools(iLoop2).Name, _
+'              Len(.Bands(.Bands("mnuHistory").Tools(iLoop).SubBand).Tools(iLoop2).Name) - 2))
+'          Else
+'            lngPos = InStr(1, .Bands(.Bands("mnuHistory").Tools(iLoop).SubBand).Tools(iLoop2).Name, ":")
+'            lngScreenID = Val(Mid$(.Bands(.Bands("mnuHistory").Tools(iLoop).SubBand).Tools(iLoop2).Name, 3, lngPos - 1))
+'          End If
+'
+'          If lngLastScreenID <> lngScreenID Then
+'            .Bands(.Bands("mnuHistory").Tools(iLoop).SubBand).Tools(iLoop2).BeginGroup = True
+'          End If
+'
+'          lngLastScreenID = lngScreenID
+'        Next iLoop2
+'      End If
+'    Next iLoop
   
   End With
 

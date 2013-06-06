@@ -1184,7 +1184,7 @@ Public Function GetHistoryScreens(plngScreenID As Long) As clsHistoryScreens
   
   Do While Not rsScreens.EOF
     ' Check the screen is for a readable table.
-    If gcoTablePrivileges.Item(rsScreens!TableName).AllowSelect Then
+    If gcoTablePrivileges.Item(rsScreens!RealSource).AllowSelect Then
       objHistoryScreens.Add rsScreens!ScreenID, rsScreens!Name, rsScreens!PictureID, _
         rsScreens!TableID, 0, "", rsScreens!TableName
       End If
