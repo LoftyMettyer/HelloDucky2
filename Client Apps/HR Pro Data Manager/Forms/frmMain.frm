@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "16:11"
+            TextSave        =   "08:08"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -188,8 +188,6 @@ Dim pic As StdPicture, hMemDC As Long, pHeight As Long, pWidth As Long
 Dim mfMenuDisabled As Boolean
 
 Private mstrLastAlarmCheck As String
-
-'Private mblnLoggingOff As Boolean
 
 Public Sub DisableMenu()
   'JPD 20030905 Fault 5184
@@ -707,7 +705,7 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
   Dim strVersionFilename As String
   Dim plngHelp As Long
   Dim iUtilityType As UtilityType
-  Dim iUtilityID As Integer
+  Dim lngUtilityID As Long
   
   ' JPD20020926 Fault 4431
   If Screen.MousePointer = vbHourglass And Not gbJustRunIt Then Exit Sub
@@ -880,72 +878,47 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
     
     ' <Cross Tabulations>
     Case "CrossTab"
-      'RunUtility utlCrossTab, 0
-       CrossTabClick
-    
-    ' <Crystal Reports"
-    Case "CrystalReports"
-      CrystalReportsClick
+      BrowseUtility utlCrossTab
     
     ' <Custom Reports>
     Case "CustomReports"
-      CustomReportsClick
+      BrowseUtility utlCustomReport
     
     ' <Calendar Report>
     Case "CalendarReport"
-      CalendarReportsClick
+      BrowseUtility utlCalendarReport
     
     ' <Match Report>
     Case "MatchReport"
-      MatchReportClick mrtNormal
+      BrowseUtility utlMatchReport
     
     ' <Match Report>
     Case "Career"
-      MatchReportClick mrtCareer
+      BrowseUtility utlCareer
     
     ' <Match Report>
     Case "Succession"
-      MatchReportClick mrtSucession
+      BrowseUtility utlSuccession
     
     ' <Record Profile>
     Case "RecordProfile"
-      RecordProfileClick
+      BrowseUtility utlRecordProfile
     
     ' <Mail Merge>
     Case "MailMerge"
-      MailMergeClick
+      BrowseUtility utlMailMerge
       
     ' <Envelopes & Labels>
     Case "mnuLabels"
       LabelsAndEnvelopesClick
-      
-'    ' <Standard Reports - Absence Calendar>
-'    Case "AbsenceCalendar"
-'      If Forms.Count > 1 Then
-'        If Not ActiveForm.SaveChanges Then
-'          Exit Sub
-'        End If
-'        If ValidateAbsenceParameters Then AbsenceCalendarClick
-'      End If
-     
-    Case "AbsenceBreakdown", _
-         "AbsenceBreakdownCfg", _
-         "BradfordIndex", _
-         "BradfordIndexCfg", _
-         "StabilityIndex", _
-         "StabilityIndexCfg", _
-         "Turnover", _
-         "TurnoverCfg"
+            
+    ' <Standard Reports>
+    Case "AbsenceBreakdown", "BradfordIndex", "StabilityIndex", "Turnover", _
+        "AbsenceBreakdownCfg", "BradfordIndexCfg", "StabilityIndexCfg", "TurnoverCfg"
       If SaveCurrentRecordEditScreen Then
-        StandardReportClick Tool.Name
+        DoStandardReport Tool.Name
       End If
-
-    'Case "Career"
-    '  CareerSuccessionClick mrtCareer
-
-    'Case "Succession"
-    '  CareerSuccessionClick mrtSucession
-
+      
 
     ' <UTILITIES> menu.
     
@@ -1039,14 +1012,15 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
   
     Case "BatchJobs"
       If SaveCurrentRecordEditScreen Then
-        BatchJobsClick
+        BrowseUtility utlBatchJob
         ' RH - Note : this sub causes the enabling history menu bug
         RefreshRecordEditScreens
       End If
     
     Case "ReportPack"
       If SaveCurrentRecordEditScreen Then
-        ReportPackClick
+        BrowseUtility utlReportPack
+        
         ' RH - Note : this sub causes the enabling history menu bug
         RefreshRecordEditScreens
       End If
@@ -1292,15 +1266,11 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
       ' It must be a screen of some kind so decide what type it is.
       Select Case Left(Tool.Name, 2)
                 
-        Case "RC" ' Recently used
-   '     "RC" & rsTemp("ObjectType").Value & ":" & rsTemp("ID").Value)
-          
-          iUtilityType = Val(Right(Tool.Name, Len(Tool.Name) - 2))
-          iUtilityID = Val(Right(Tool.Name, Len(Tool.Name) - 2))
-          
-                
-        Case "FV" ' Favourite
-        
+        Case "RC", "FV" ' Recently used. Favourites.
+          lPos = InStr(1, Tool.Name, ":")
+          iUtilityType = Val(Mid$(Tool.Name, 3, lPos - 3))
+          lngUtilityID = Val(Mid$(Tool.Name, lPos + 1, Len(Tool.Name)))
+          RunUtility iUtilityType, lngUtilityID
         
         Case "QE" ' Quick Entry Screen.
           EditForm_Load Val(Right(Tool.Name, Len(Tool.Name) - 2)), screenQuickEntry
@@ -2845,7 +2815,7 @@ Public Sub ExportClick()
 End Sub
 
 
-Public Sub BatchJobsClick()
+Private Sub BatchJobsClick(ByRef UtilityID As Integer)
   Dim fExit As Boolean
   Dim frmSelection As frmDefSel
   Dim frmEdit As frmBatchJob
@@ -2942,7 +2912,7 @@ Public Sub BatchJobsClick()
 End Sub
 
 
-Public Sub ReportPackClick()
+Private Sub ReportPackClick(ByRef UtilityID As Integer)
   Dim fExit As Boolean
   Dim frmSelection As frmDefSel
   Dim frmEdit As frmBatchJob
@@ -3194,7 +3164,7 @@ Public Sub RefreshRecentlyUsed()
       iCount = iCount + 1
 
       With abMain
-        Set objFileTool = .Bands("bndRecentReports").Tools.Add(.Tools.Count + 1, "RC" & rsTemp("ObjectType").Value & ":" & rsTemp("ID").Value)
+        Set objFileTool = .Bands("bndRecentReports").Tools.Add(.Tools.Count + 1, "RC" & rsTemp("ObjectType").Value & ":" & rsTemp("ObjectID").Value)
         
         Select Case rsTemp("ObjectType").Value
           Case utlCustomReport
@@ -3211,6 +3181,13 @@ Public Sub RefreshRecentlyUsed()
             sType = "Standard Report : "
           Case utlBradfordFactor
             sIconName = "BRADFORDFACTOR"
+            sType = "Standard Report : "
+          Case utlStability
+            sIconName = "STABILITY"
+            sType = "Standard Report : "
+          Case utlTurnover
+            sIconName = "TURNOVER"
+            sType = "Standard Report : "
           Case utlCalendarReport
             sIconName = "CALENDARREPORTS"
             sType = "Calendar Report :"
@@ -3219,10 +3196,10 @@ Public Sub RefreshRecentlyUsed()
             sType = "Record Profile : "
           Case utlSuccession
             sIconName = "SUCCESSION"
-            sType = "Standard Report : "
+            sType = "Succession Planning: "
           Case utlCareer
             sIconName = "CAREER"
-            sType = "Standard Report : "
+            sType = "Career Progression: "
           Case utlMailMerge
             sIconName = "MAILMERGE"
             sType = "Mail Merge : "
@@ -3595,575 +3572,442 @@ End Sub
 
 Private Sub tmrDiary_Timer()
   DebugOutput "frmMain", "tmrDiary_Timer"
-'
-'  'This time will be disabled if the variable
-'  'gblnDiaryConstCheck is set to false
-'
-'  On Local Error GoTo LocalErr
-'
-'  Static lngNextAlarmTime As Long
-'  Static lngLastDiaryCheck As Long
-'  Dim lngCurrentTime As Long
-'
-'  'MH20021120 Fault 4794
-'  gobjErrorStack.Disable
-'
-'  'Get current time (to the nearest whole minute)
-'  lngCurrentTime = (Timer \ 60) * 60
-'
-'  'Check for next event
-'  If (lngCurrentTime - lngLastDiaryCheck) >= (glngDiaryIntervalCheck * 60) Or _
-'    tmrDiary.Interval = 1 Then
-'        lngLastDiaryCheck = lngCurrentTime
-'        Call gobjDiary.GetNextAlarmTime(lngNextAlarmTime)
-'  End If
-'
-'  If lngCurrentTime >= lngNextAlarmTime And lngNextAlarmTime > -1 Then
-'    '2=Current and Future,0=DayView
-'    gobjDiary.ShowAlarmedEvents 2, 0
-'    lngLastDiaryCheck = 0   'When next in, check for next alarm
-'  End If
-'
-'  If tmrDiary.Interval < 60000 Then
-'    tmrDiary.Interval = (60 - (Int(Timer) Mod 60)) * 1000
-'  End If
-'
-'  'MH20021120 Fault 4794
-'  gobjErrorStack.Enable
-'
-'Exit Sub
-'
-'LocalErr:
-'  On Local Error Resume Next
-'  tmrDiary.Enabled = False
-'  COAMsgBox "An error occurred checking for alarmed diary events.  No further checks will be made for alarmed events until OpenHR is restarted." & _
-'         IIf(Err.Description <> vbNullString, vbCrLf & "(" & Err.Description & ")", ""), vbExclamation, "Alarmed Diary Events"
-'
+
   gobjDiary.CheckAlarmedEvents tmrDiary, mstrLastAlarmCheck
 
 End Sub
 
-Public Sub CalendarReportsClick()
+Private Function DoCalendarReport(ByVal Action As EditOptions, ByRef SelectedID As Long, FromCopy As Boolean) As Boolean
 
   Dim pobjCalendarReports As clsCalendarReportsRUN
-  
-  'Dim sSQL As String
-  Dim fExit As Boolean
-  Dim frmSelection As frmDefSel
   Dim frmEdit As frmCalendarReport
-  
-  Screen.MousePointer = vbHourglass
-  
-  fExit = False
-  Set frmSelection = New frmDefSel
-    
-  With frmSelection
-    ' Loop until the picklist operation has been cancelled.
-    Do While Not fExit
-      .EnableRun = True
-      
-      If .ShowList(utlCalendarReport) Then
-        
-        .CustomShow vbModal
-        Select Case .Action
-          Case edtAdd
-            Set frmEdit = New frmCalendarReport
-            frmEdit.Initialise True, .FromCopy, , False
-            frmEdit.Show vbModal
-            .SelectedID = frmEdit.SelectedID
-            Unload frmEdit
-            Set frmEdit = Nothing
+  Dim bOK As Boolean
 
+  bOK = True
 
-          Case edtEdit
-            Set frmEdit = New frmCalendarReport
-            frmEdit.Initialise False, .FromCopy, .SelectedID, False
-            If Not frmEdit.Cancelled Then
-              frmEdit.Show vbModal
-              If .FromCopy And frmEdit.SelectedID > 0 Then
-                .SelectedID = frmEdit.SelectedID
-              End If
-            End If
-            Unload frmEdit
-            Set frmEdit = Nothing
-       
-          Case edtSelect
-  '        'TO RUN AS NORMAL
-            Set pobjCalendarReports = New clsCalendarReportsRUN
-            pobjCalendarReports.CalendarReportID = .SelectedID
-            pobjCalendarReports.RunCalendarReport ""
-            Set pobjCalendarReports = Nothing
-            fExit = gbCloseDefSelAfterRun
-  
-          Case edtPrint
-            Set frmEdit = New frmCalendarReport
-            frmEdit.Initialise False, False, .SelectedID, True
-            If Not frmEdit.Cancelled Then
-              frmEdit.PrintDef .SelectedID
-            End If
-            Unload frmEdit
-            Set frmEdit = Nothing
-  
-          Case edtCancel
-            fExit = True
-              
-          End Select
+  Select Case Action
+    Case edtAdd
+      Set frmEdit = New frmCalendarReport
+      frmEdit.Initialise True, FromCopy, , False
+      frmEdit.Show vbModal
+      SelectedID = frmEdit.SelectedID
+      Unload frmEdit
+      Set frmEdit = Nothing
+
+    Case edtEdit
+      Set frmEdit = New frmCalendarReport
+      frmEdit.Initialise False, FromCopy, SelectedID, False
+      If Not frmEdit.Cancelled Then
+        frmEdit.Show vbModal
+        If FromCopy And frmEdit.SelectedID > 0 Then
+          SelectedID = frmEdit.SelectedID
         End If
-    Loop
-  End With
+      End If
+      Unload frmEdit
+      Set frmEdit = Nothing
+
+    Case edtSelect
+      Set pobjCalendarReports = New clsCalendarReportsRUN
+      pobjCalendarReports.CalendarReportID = SelectedID
+      bOK = pobjCalendarReports.RunCalendarReport("")
+      Set pobjCalendarReports = Nothing
+
+    Case edtPrint
+      Set frmEdit = New frmCalendarReport
+      frmEdit.Initialise False, False, SelectedID, True
+      If Not frmEdit.Cancelled Then
+        frmEdit.PrintDef SelectedID
+      End If
+      Unload frmEdit
+      Set frmEdit = Nothing
   
-  Unload frmSelection
-  Set frmSelection = Nothing
+  End Select
+  
+  DoCalendarReport = bOK
+  
+End Function
 
-End Sub
-
-Public Sub RecordProfileClick()
+Private Function DoRecordProfile(ByVal Action As EditOptions, ByRef SelectedID As Long, FromCopy As Boolean) As Boolean
 
   Dim pobjRecordProfiles As clsRecordProfileRUN
-  
-  Dim lForms As Long
-  Dim fExit As Boolean
-  Dim frmSelection As frmDefSel
+  Dim bOK As Boolean
   Dim frmEdit As frmRecordProfile
-  
-  Screen.MousePointer = vbHourglass
-  
-  fExit = False
-  Set frmSelection = New frmDefSel
     
-  With frmSelection
-    ' Loop until the picklist operation has been cancelled.
-    Do While Not fExit
-      .EnableRun = True
-
-      If .ShowList(utlRecordProfile) Then
-        
-        .CustomShow vbModal
-        Select Case .Action
-          Case edtAdd
-            Set frmEdit = New frmRecordProfile
-            frmEdit.Initialise True, .FromCopy
-            frmEdit.Show vbModal
-            .SelectedID = frmEdit.SelectedID
-            Unload frmEdit
-            Set frmEdit = Nothing
-          
-          'TM20010808 Fault 2656 - Must validate, check ownership etc... before allowing the edit/copy.
-          Case edtEdit
-            Set frmEdit = New frmRecordProfile
-            frmEdit.Initialise False, .FromCopy, .SelectedID
-            If Not frmEdit.Cancelled Then
-              frmEdit.Show vbModal
-              If .FromCopy And frmEdit.SelectedID > 0 Then
-                .SelectedID = frmEdit.SelectedID
-              End If
-            End If
-            Unload frmEdit
-            Set frmEdit = Nothing
-        
-          Case edtSelect
-            Set pobjRecordProfiles = New clsRecordProfileRUN
-            pobjRecordProfiles.RecordProfileID = .SelectedID
-            pobjRecordProfiles.RunRecordProfile
-            Set pobjRecordProfiles = Nothing
-            fExit = gbCloseDefSelAfterRun
-  
-          'TM20010808 Fault 2656 - Must validate, check ownership etc... before allowing the print.
-          Case edtPrint
-            Set frmEdit = New frmRecordProfile
-            frmEdit.Initialise False, False, .SelectedID, True
-            If Not frmEdit.Cancelled Then
-              frmEdit.PrintDef .SelectedID
-            End If
-            Unload frmEdit
-            Set frmEdit = Nothing
-  
-        Case 0
-          fExit = True
-              
-          End Select
-        
+  bOK = True
+    
+  Select Case Action
+    Case edtAdd
+      Set frmEdit = New frmRecordProfile
+      frmEdit.Initialise True, FromCopy
+      frmEdit.Show vbModal
+      SelectedID = frmEdit.SelectedID
+      Unload frmEdit
+      Set frmEdit = Nothing
+    
+    Case edtEdit
+      Set frmEdit = New frmRecordProfile
+      frmEdit.Initialise False, FromCopy, SelectedID
+      If Not frmEdit.Cancelled Then
+        frmEdit.Show vbModal
+        If FromCopy And frmEdit.SelectedID > 0 Then
+          SelectedID = frmEdit.SelectedID
         End If
-    Loop
-  End With
+      End If
+      Unload frmEdit
+      Set frmEdit = Nothing
   
-  Unload frmSelection
-  Set frmSelection = Nothing
+    Case edtSelect
+      Set pobjRecordProfiles = New clsRecordProfileRUN
+      pobjRecordProfiles.RecordProfileID = SelectedID
+      bOK = pobjRecordProfiles.RunRecordProfile
+      Set pobjRecordProfiles = Nothing
 
-End Sub
+    Case edtPrint
+      Set frmEdit = New frmRecordProfile
+      frmEdit.Initialise False, False, SelectedID, True
+      If Not frmEdit.Cancelled Then
+        frmEdit.PrintDef SelectedID
+      End If
+      Unload frmEdit
+      Set frmEdit = Nothing
+  
+  End Select
 
+  DoRecordProfile = bOK
 
-Public Sub CustomReportsClick()
+End Function
+
+Private Function DoCustomReport(ByVal Action As EditOptions, ByRef SelectedID As Long, FromCopy As Boolean) As Boolean
 
   Dim pobjCustomReports As clsCustomReportsRUN
-  
-  'Dim sSQL As String
-  Dim fExit As Boolean
-  Dim frmSelection As frmDefSel
   Dim frmEdit As frmCustomReports
-  
-  Screen.MousePointer = vbHourglass
-  
-  fExit = False
-  Set frmSelection = New frmDefSel
+  Dim bOK As Boolean
+
+  bOK = True
     
-  With frmSelection
-    ' Loop until the picklist operation has been cancelled.
-    Do While Not fExit
-      .EnableRun = True
-      
-      If .ShowList(utlCustomReport) Then
-        
-        .CustomShow vbModal
-        Select Case .Action
-          Case edtAdd
-            Set frmEdit = New frmCustomReports
-            frmEdit.Initialise True, .FromCopy
-            frmEdit.Show vbModal
-            .SelectedID = frmEdit.SelectedID
-            Unload frmEdit
-            Set frmEdit = Nothing
-          
-          'TM20010808 Fault 2656 - Must validate, check ownership etc... before allowing the edit/copy.
-          Case edtEdit
-            Set frmEdit = New frmCustomReports
-            frmEdit.Initialise False, .FromCopy, .SelectedID
-            If Not frmEdit.Cancelled Then
-              frmEdit.Show vbModal
-              If .FromCopy And frmEdit.SelectedID > 0 Then
-                .SelectedID = frmEdit.SelectedID
-              End If
-            End If
-            Unload frmEdit
-            Set frmEdit = Nothing
-        
-'        'TM20010808 Fault 2656 - Must validate, check ownership etc... before allowing the delete.
-'        Case edtDelete
-'            Set frmEdit = New frmCustomReports
-'            frmEdit.Initialise False, .FromCopy, .SelectedID
-'            If Not frmEdit.Cancelled Then
-'              datGeneral.DeleteRecord "ASRSysCustomReportsName", "ID", .SelectedID
-'              datGeneral.DeleteRecord "ASRSysCustomReportsDetails", "CustomReportID", .SelectedID
-'            End If
-'            Unload frmEdit
-'            Set frmEdit = Nothing
-        
-          Case edtSelect
-  '        'TO RUN AS NORMAL
-            Set pobjCustomReports = New clsCustomReportsRUN
-            pobjCustomReports.CustomReportID = .SelectedID
-            pobjCustomReports.RunCustomReport ("")
-            Set pobjCustomReports = Nothing
-            fExit = gbCloseDefSelAfterRun
-  
-          'TM20010808 Fault 2656 - Must validate, check ownership etc... before allowing the print.
-          Case edtPrint
-            Set frmEdit = New frmCustomReports
-            frmEdit.Initialise False, False, .SelectedID, True
-            If Not frmEdit.Cancelled Then
-              frmEdit.PrintDef .SelectedID
-            End If
-            Unload frmEdit
-            Set frmEdit = Nothing
-  
-          Case edtCancel
-            fExit = True
-              
-          End Select
+  Select Case Action
+    Case edtAdd
+      Set frmEdit = New frmCustomReports
+      frmEdit.Initialise True, FromCopy
+      frmEdit.Show vbModal
+      SelectedID = frmEdit.SelectedID
+      Unload frmEdit
+      Set frmEdit = Nothing
+    
+    Case edtEdit
+      Set frmEdit = New frmCustomReports
+      frmEdit.Initialise False, FromCopy, SelectedID
+      If Not frmEdit.Cancelled Then
+        frmEdit.Show vbModal
+        If FromCopy And frmEdit.SelectedID > 0 Then
+          SelectedID = frmEdit.SelectedID
         End If
-    Loop
-  End With
+      End If
+      Unload frmEdit
+      Set frmEdit = Nothing
+         
+    Case edtSelect
+      Set pobjCustomReports = New clsCustomReportsRUN
+      pobjCustomReports.CustomReportID = SelectedID
+      bOK = pobjCustomReports.RunCustomReport("")
+      Set pobjCustomReports = Nothing
+
+    Case edtPrint
+      Set frmEdit = New frmCustomReports
+      frmEdit.Initialise False, False, SelectedID, True
+      If Not frmEdit.Cancelled Then
+        frmEdit.PrintDef SelectedID
+      End If
+      Unload frmEdit
+      Set frmEdit = Nothing
+        
+  End Select
+
+  DoCustomReport = bOK
+
+End Function
+
+Private Function DoMatchReport(mrtMatchReportType As MatchReportType, ByVal Action As EditOptions, ByRef SelectedID As Long, FromCopy As Boolean) As Boolean
   
-  Unload frmSelection
-  Set frmSelection = Nothing
-
-End Sub
-
-
-
-Public Sub MatchReportClick(mrtMatchReportType As MatchReportType)
-  
-  Dim fExit As Boolean
-  Dim frmSelection As frmDefSel
   Dim frmEdit As frmMatchDef
   Dim frmRun As frmMatchRun
   Dim lngType As UtilityType
+  Dim bOK As Boolean
 
+  bOK = True
 
   If mrtMatchReportType <> mrtNormal Then
     If Not ValidatePostParameters Then
-      Exit Sub
+      Exit Function
     End If
   End If
 
 
-  Screen.MousePointer = vbHourglass
+  Select Case mrtMatchReportType
+    Case mrtNormal: lngType = utlMatchReport
+    Case mrtSucession: lngType = utlSuccession
+    Case mrtCareer: lngType = utlCareer
+  End Select
 
-  fExit = False
-  Set frmSelection = New frmDefSel
+  Select Case Action
+    Case edtAdd
+      Set frmEdit = New frmMatchDef
+      frmEdit.MatchReportType = mrtMatchReportType
+      frmEdit.Initialise True, FromCopy
+      frmEdit.Show vbModal
+      SelectedID = frmEdit.SelectedID
+      Unload frmEdit
+      Set frmEdit = Nothing
 
-  With frmSelection
-    
-    Do While Not fExit
-      .EnableRun = True
-
-      Select Case mrtMatchReportType
-      Case mrtNormal: lngType = utlMatchReport
-      Case mrtSucession: lngType = utlSuccession
-      Case mrtCareer: lngType = utlCareer
-      End Select
-
-      If .ShowList(lngType, "MatchReportType = " & CStr(mrtMatchReportType)) Then
-
-        .CustomShow vbModal
-        Select Case .Action
-        Case edtAdd
-          Set frmEdit = New frmMatchDef
-          frmEdit.MatchReportType = mrtMatchReportType
-          frmEdit.Initialise True, .FromCopy
-          frmEdit.Show vbModal
-          .SelectedID = frmEdit.SelectedID
-          Unload frmEdit
-          Set frmEdit = Nothing
-
-        Case edtEdit
-          Set frmEdit = New frmMatchDef
-          frmEdit.MatchReportType = mrtMatchReportType
-          frmEdit.Initialise False, .FromCopy, .SelectedID
-          If Not frmEdit.Cancelled Then
-            frmEdit.Show vbModal
-            If .FromCopy And frmEdit.SelectedID > 0 Then
-              .SelectedID = frmEdit.SelectedID
-            End If
-          End If
-          Unload frmEdit
-          Set frmEdit = Nothing
-
-        Case edtSelect
-          Set frmRun = New frmMatchRun
-          frmRun.MatchReportType = mrtMatchReportType
-          frmRun.MatchReportID = .SelectedID
-          frmRun.RunMatchReport
-          If frmRun.PreviewOnScreen Then
-            frmRun.Show vbModal
-          End If
-          Set frmRun = Nothing
-          fExit = gbCloseDefSelAfterRun
-
-        Case edtPrint
-          Set frmEdit = New frmMatchDef
-          frmEdit.MatchReportType = mrtMatchReportType
-          frmEdit.Initialise False, False, .SelectedID, True
-          If Not frmEdit.Cancelled Then
-            frmEdit.PrintDef .SelectedID
-          End If
-          Unload frmEdit
-          Set frmEdit = Nothing
-
-        Case edtCancel
-          fExit = True
-
-          End Select
+    Case edtEdit
+      Set frmEdit = New frmMatchDef
+      frmEdit.MatchReportType = mrtMatchReportType
+      frmEdit.Initialise False, FromCopy, SelectedID
+      If Not frmEdit.Cancelled Then
+        frmEdit.Show vbModal
+        If FromCopy And frmEdit.SelectedID > 0 Then
+          SelectedID = frmEdit.SelectedID
         End If
-    Loop
-  End With
+      End If
+      Unload frmEdit
+      Set frmEdit = Nothing
+
+    Case edtSelect
+      Set frmRun = New frmMatchRun
+      frmRun.MatchReportType = mrtMatchReportType
+      frmRun.MatchReportID = SelectedID
+      bOK = frmRun.RunMatchReport
+      If frmRun.PreviewOnScreen Then
+        frmRun.Show vbModal
+      End If
+      Set frmRun = Nothing
+
+    Case edtPrint
+      Set frmEdit = New frmMatchDef
+      frmEdit.MatchReportType = mrtMatchReportType
+      frmEdit.Initialise False, False, SelectedID, True
+      If Not frmEdit.Cancelled Then
+        frmEdit.PrintDef SelectedID
+      End If
+      Unload frmEdit
+      Set frmEdit = Nothing
+      
+  End Select
+
+  DoMatchReport = bOK
+
+End Function
+
+' Browse the utilities
+Public Sub BrowseUtility(ByRef UtilType As UtilityType)
+  RunUtility UtilType, 0
+End Sub
+
+' Run a utility
+Public Sub RunUtility(ByRef UtilType As UtilityType, ByRef UtilityID As Long)
+
+  Dim frmSelection As frmDefSel
+  Dim fExit As Boolean
+  Dim bRunOnce As Boolean
+  Dim bOK As Boolean
+   
+  bOK = True
+  fExit = False
+  bRunOnce = Not (UtilityID = 0)
+
+  Select Case UtilType
+   
+    Case utlAbsenceBreakdown
+      bOK = DoStandardReport("AbsenceBreakdown")
+      If bOK Then UpdateUsage UtilType, 0, edtSelect
+
+    Case utlBradfordFactor
+      bOK = DoStandardReport("BradfordIndex")
+      If bOK Then UpdateUsage UtilType, 0, edtSelect
+    
+    Case utlTurnover
+      bOK = DoStandardReport("StabilityIndex")
+      If bOK Then UpdateUsage UtilType, 0, edtSelect
+    
+    Case utlStability
+      bOK = DoStandardReport("Turnover")
+      If bOK Then UpdateUsage UtilType, 0, edtSelect
+
+    Case Else
   
-  Unload frmSelection
-  Set frmSelection = Nothing
+      Set frmSelection = New frmDefSel
+      With frmSelection
+      
+        ' Loop until the operation has been cancelled.
+        Do While Not fExit
+          .EnableRun = True
+    
+          If .ShowList(UtilType) Then
+            .Action = edtSelect
+          
+            ' Running a specific utility or just browsing?
+            If UtilityID = 0 Then
+              .CustomShow vbModal
+            Else
+              .SelectedID = UtilityID
+            End If
+          
+            If .Action = edtCancel Then
+              fExit = True
+            Else
+                
+              '
+              Select Case UtilType
+                Case utlCrossTab
+                  bOK = DoCrossTab(.Action, .SelectedID, .FromCopy)
+                
+                Case utlCustomReport
+                  bOK = DoCustomReport(.Action, .SelectedID, .FromCopy)
+                
+                Case utlCalendarReport
+                  bOK = DoCalendarReport(.Action, .SelectedID, .FromCopy)
+                              
+                Case utlRecordProfile
+                  bOK = DoRecordProfile(.Action, .SelectedID, .FromCopy)
+               
+                Case utlMatchReport
+                  bOK = DoMatchReport(mrtNormal, .Action, .SelectedID, .FromCopy)
+                
+                Case utlCareer
+                  bOK = DoMatchReport(mrtCareer, .Action, .SelectedID, .FromCopy)
+                            
+                Case utlSuccession
+                  bOK = DoMatchReport(mrtSucession, .Action, .SelectedID, .FromCopy)
+        
+                Case utlMailMerge
+                   DoMailMerge .Action, .SelectedID, .FromCopy
+        
+                Case utlBatchJob, utlReportPack
+               '   BatchJobsClick UtilityID
+        
+                Case utlReportPack
+              '    ReportPackClick UtilityID
+        
+              End Select
+            
+              ' Record the event
+              If bOK Then UpdateUsage UtilType, .SelectedID, .Action
+            
+            
+              fExit = gbCloseDefSelAfterRun Or bRunOnce
+            
+            End If
+            
+          End If
+        Loop
+      End With
+  
+  End Select
 
 End Sub
 
-'Public Sub RunUtility(ByRef UtilType As UtilityType, ByRef UtilityID As Integer)
-'
-'  Dim frmSelection As frmDefSel
-'  Set frmSelection = New frmDefSel
-'
-'  With frmSelection
-'    If .ShowList(UtilType) Then
-'      Select Case UtilType
-'        Case utlCrossTab
-'          CrossTabClick
-'
-'
-'      End Select
-'    End If
-'  End With
-'
-'End Sub
-
-Public Sub CrossTabClick() 'ByRef UtilityID As Integer
+Private Function DoCrossTab(ByVal Action As EditOptions, ByRef SelectedID As Long, FromCopy As Boolean) As Boolean
 
   Dim frmDefinition As frmCrossTabDef
   Dim frmExecution As frmCrossTabRun
-  Dim frmSelection As frmDefSel
-  Dim blnExit As Boolean
-  Dim blnOK As Boolean
+  Dim bOK As Boolean
 
-  Screen.MousePointer = vbHourglass
-
-  Set frmSelection = New frmDefSel
-  blnExit = False
+  bOK = True
   
-  With frmSelection
-    Do While Not blnExit
-      
-      .EnableRun = True
-      
-      If .ShowList(utlCrossTab) Then
-        
-        .CustomShow vbModal
-        'TM09012004 Fault 4150
-        'DoEvents
-        
-        Select Case .Action
-        Case edtAdd
-          Set frmDefinition = New frmCrossTabDef
-          If frmDefinition.Initialise(True, .FromCopy) Then
-            frmDefinition.Show vbModal
-            .SelectedID = frmDefinition.SelectedID
-          End If
-          Unload frmDefinition
-          Set frmDefinition = Nothing
-                    
-        Case edtEdit
-          Set frmDefinition = New frmCrossTabDef
-          If frmDefinition.Initialise(False, .FromCopy, .SelectedID) Then
-            frmDefinition.Show vbModal
-            If .FromCopy And frmDefinition.SelectedID > 0 Then
-              .SelectedID = frmDefinition.SelectedID
-            End If
-          End If
-          Unload frmDefinition
-          Set frmDefinition = Nothing
-                    
-        Case edtSelect
-          Set frmExecution = New frmCrossTabRun
-          blnOK = frmExecution.ExecuteCrossTab(.SelectedID)
-          If frmExecution.PreviewOnScreen Then
-            frmExecution.Show vbModal
-          End If
-          Unload frmExecution
-          Set frmExecution = Nothing
-          blnExit = gbCloseDefSelAfterRun
-
-        Case edtPrint
-          Set frmDefinition = New frmCrossTabDef
-          frmDefinition.PrintDef .SelectedID
-          Unload frmDefinition
-          Set frmDefinition = Nothing
-        
-        Case edtCancel    'Cancel
-          blnExit = True
-
-        End Select
-      
+  Select Case Action
+  Case edtAdd
+    Set frmDefinition = New frmCrossTabDef
+    If frmDefinition.Initialise(True, FromCopy) Then
+      frmDefinition.Show vbModal
+      SelectedID = frmDefinition.SelectedID
+    End If
+    Unload frmDefinition
+    Set frmDefinition = Nothing
+              
+  Case edtEdit
+    Set frmDefinition = New frmCrossTabDef
+    If frmDefinition.Initialise(False, FromCopy, SelectedID) Then
+      frmDefinition.Show vbModal
+      If FromCopy And frmDefinition.SelectedID > 0 Then
+        SelectedID = frmDefinition.SelectedID
       End If
+    End If
+    Unload frmDefinition
+    Set frmDefinition = Nothing
+              
+  Case edtSelect
+    Set frmExecution = New frmCrossTabRun
+    bOK = frmExecution.ExecuteCrossTab(SelectedID)
+    If frmExecution.PreviewOnScreen Then
+      frmExecution.Show vbModal
+    End If
+    Unload frmExecution
+    Set frmExecution = Nothing
 
-    Loop
+  Case edtPrint
+    Set frmDefinition = New frmCrossTabDef
+    frmDefinition.PrintDef SelectedID
+    Unload frmDefinition
+    Set frmDefinition = Nothing
   
-  End With
-
-  Unload frmSelection
-  Set frmSelection = Nothing
+  End Select
   
-End Sub
+  DoCrossTab = bOK
+  
+End Function
 
-
-Public Sub MailMergeClick()
+Private Function DoMailMerge(ByVal Action As EditOptions, ByRef SelectedID As Long, FromCopy As Boolean) As Boolean
 
   Dim frmDefinition As frmMailMerge
   Dim objExecution As clsMailMergeRun
   Dim frmSelection As frmDefSel
-  Dim blnExit As Boolean
+  Dim bOK As Boolean
 
-  Set frmSelection = New frmDefSel
-  blnExit = False
-  
-  'sSQL = "Select Name, MailMergeID From ASRSysMailMergeName " & _
-         "WHERE Username = '" & gsUserName & "' OR Access <> 'HD'"
-
-  Set frmDefinition = New frmMailMerge
-  
-  With frmSelection
-    Do While Not blnExit
-      
-      .EnableRun = True
-      
-      If .ShowList(utlMailMerge) Then
-       
-        .CustomShow vbModal
+  bOK = True
         
-        Select Case .Action
-        Case edtAdd
-          Set frmDefinition = New frmMailMerge
-          frmDefinition.IsLabel = False
-          frmDefinition.Initialise True, .FromCopy
-          frmDefinition.Show vbModal
-          .SelectedID = frmDefinition.SelectedID
-          Unload frmDefinition
-          Set frmDefinition = Nothing
-                    
-        'TM20010808 Fault 2656 - Must validate the definition before allowing the edit/copy.
-        Case edtEdit
-          Set frmDefinition = New frmMailMerge
-          frmDefinition.IsLabel = False
-          frmDefinition.Initialise False, .FromCopy, .SelectedID
-          If Not frmDefinition.Cancelled Then
-            frmDefinition.Show vbModal
-            If .FromCopy And frmDefinition.SelectedID > 0 Then
-              .SelectedID = frmDefinition.SelectedID
-            End If
-          End If
-          Unload frmDefinition
-          Set frmDefinition = Nothing
-           
-'        'TM20010808 Fault 2656 - Must validate the definition before allowing the delete.
-'        Case edtDelete
-'          Set frmDefinition = New frmMailMerge
-'          frmDefinition.Initialise False, .FromCopy, .SelectedID
-'          If Not frmDefinition.Cancelled Then
-'            datGeneral.DeleteRecord "ASRSysMailMergeName", "MailMergeID", .SelectedID
-'            datGeneral.DeleteRecord "ASRSysMailMergeColumns", "MailMergeID", .SelectedID
-'          End If
-'          Unload frmDefinition
-'          Set frmDefinition = Nothing
-
-        
-        Case edtSelect
-          Set objExecution = New clsMailMergeRun
-          objExecution.ExecuteMailMerge .SelectedID
-          Set objExecution = Nothing
-          blnExit = gbCloseDefSelAfterRun
-          
-        'TM20010808 Fault 2656 - Must validate the definition before allowing the print.
-        Case edtPrint
-          Set frmDefinition = New frmMailMerge
-          frmDefinition.IsLabel = False
-          frmDefinition.Initialise False, False, .SelectedID, True
-          If Not frmDefinition.Cancelled Then
-            frmDefinition.PrintDef .SelectedID
-          End If
-          Unload frmDefinition
-          Set frmDefinition = Nothing
-        
-        Case edtCancel
-          blnExit = True  'cancel
-
-        End Select
-      
+  Select Case Action
+    Case edtAdd
+      Set frmDefinition = New frmMailMerge
+      frmDefinition.IsLabel = False
+      frmDefinition.Initialise True, FromCopy
+      frmDefinition.Show vbModal
+      SelectedID = frmDefinition.SelectedID
+      Unload frmDefinition
+      Set frmDefinition = Nothing
+                
+    Case edtEdit
+      Set frmDefinition = New frmMailMerge
+      frmDefinition.IsLabel = False
+      frmDefinition.Initialise False, FromCopy, SelectedID
+      If Not frmDefinition.Cancelled Then
+        frmDefinition.Show vbModal
+        If FromCopy And frmDefinition.SelectedID > 0 Then
+          SelectedID = frmDefinition.SelectedID
+        End If
       End If
+      Unload frmDefinition
+      Set frmDefinition = Nothing
+               
+    Case edtSelect
+      Set objExecution = New clsMailMergeRun
+      bOK = objExecution.ExecuteMailMerge(SelectedID)
+      Set objExecution = Nothing
+    
+    Case edtPrint
+      Set frmDefinition = New frmMailMerge
+      frmDefinition.IsLabel = False
+      frmDefinition.Initialise False, False, SelectedID, True
+      If Not frmDefinition.Cancelled Then
+        frmDefinition.PrintDef SelectedID
+      End If
+      Unload frmDefinition
+      Set frmDefinition = Nothing
+    
+  End Select
 
-    Loop
-  End With
+  DoMailMerge = bOK
 
-  Unload frmSelection
-  Set frmSelection = Nothing
-
-End Sub
-
-Public Sub CrystalReportsClick()
-
-End Sub
+End Function
 
 Public Sub CalculationsClick()
 
@@ -4541,13 +4385,14 @@ Private Function MenuEnabled(strCategory As String) As Boolean
                 gfCurrentUserIsSysSecMgr
 End Function
 
-
-Private Sub StandardReportClick(strToolName As String)
+Private Function DoStandardReport(strToolName As String) As Boolean
 
   Dim frmDef As frmConfigurationReports
   Dim bExit As Boolean
+  Dim bOK As Boolean
 
   bExit = False
+  bOK = True
   Set frmDef = New frmConfigurationReports
   
   With frmDef
@@ -4582,14 +4427,22 @@ Private Sub StandardReportClick(strToolName As String)
     Do While Not bExit
       .Show vbModal
       bExit = IIf(.Action = rptRun, gbCloseDefSelAfterRun, True)
+      
+      ' Record the event
+      If .Action = rptRun Then
+        UpdateUsage .ReportType, 0, edtSelect
+      End If
+      
     Loop
   
   End With
 
   Unload frmDef
   Set frmDef = Nothing
+  
+  DoStandardReport = bOK
 
-End Sub
+End Function
 
 Public Sub LabelTemplatesClick()
 

@@ -2508,9 +2508,6 @@ Public Sub CustomShow(ByVal ShowMode As VBRUN.FormShowConstants)
     Me.Show ShowMode
   End If
 
-  ' Record the event
-  UpdateUsage mutlUtilityType, mlngSelectedID, lngAction
-
 End Sub
 
 

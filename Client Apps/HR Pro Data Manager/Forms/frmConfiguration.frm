@@ -1,8 +1,8 @@
 VERSION 5.00
 Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.OCX"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "CODEJO~1.OCX"
 Begin VB.Form frmConfiguration 
    BorderStyle     =   3  'Fixed Dialog
@@ -50,22 +50,25 @@ Begin VB.Form frmConfiguration
       _Version        =   393216
       Style           =   1
       Tabs            =   7
-      Tab             =   5
+      Tab             =   1
       TabsPerRow      =   7
       TabHeight       =   520
       TabCaption(0)   =   "&Display Defaults"
       TabPicture(0)   =   "frmConfiguration.frx":000C
       Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "fraDisplay(1)"
+      Tab(0).Control(0)=   "fraDisplay(2)"
       Tab(0).Control(1)=   "fraDisplay(0)"
-      Tab(0).Control(2)=   "fraDisplay(2)"
+      Tab(0).Control(2)=   "fraDisplay(1)"
       Tab(0).ControlCount=   3
       TabCaption(1)   =   "&Reports && Utilities"
       TabPicture(1)   =   "frmConfiguration.frx":0028
-      Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraReports(0)"
+      Tab(1).ControlEnabled=   -1  'True
+      Tab(1).Control(0)=   "fraReports(1)"
+      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).Control(1)=   "frmReportsGeneral"
-      Tab(1).Control(2)=   "fraReports(1)"
+      Tab(1).Control(1).Enabled=   0   'False
+      Tab(1).Control(2)=   "fraReports(0)"
+      Tab(1).Control(2).Enabled=   0   'False
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "&Network Configuration"
       TabPicture(2)   =   "frmConfiguration.frx":0044
@@ -90,13 +93,10 @@ Begin VB.Form frmConfiguration
       Tab(4).ControlCount=   3
       TabCaption(5)   =   "Report Out&put"
       TabPicture(5)   =   "frmConfiguration.frx":0098
-      Tab(5).ControlEnabled=   -1  'True
-      Tab(5).Control(0)=   "FraOutput(0)"
-      Tab(5).Control(0).Enabled=   0   'False
+      Tab(5).ControlEnabled=   0   'False
+      Tab(5).Control(0)=   "Frame1"
       Tab(5).Control(1)=   "FraOutput(1)"
-      Tab(5).Control(1).Enabled=   0   'False
-      Tab(5).Control(2)=   "Frame1"
-      Tab(5).Control(2).Enabled=   0   'False
+      Tab(5).Control(2)=   "FraOutput(0)"
       Tab(5).ControlCount=   3
       TabCaption(6)   =   "Tool&bars"
       TabPicture(6)   =   "frmConfiguration.frx":00B4
@@ -108,7 +108,7 @@ Begin VB.Form frmConfiguration
          Caption         =   "Report / Utility / Tool Selection && Access :"
          Height          =   3500
          Index           =   0
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   19
          Top             =   400
          Width           =   6735
@@ -260,7 +260,7 @@ Begin VB.Form frmConfiguration
       Begin VB.Frame Frame1 
          Caption         =   "Excel Options :"
          Height          =   1750
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   102
          Top             =   4920
          Width           =   6735
@@ -430,7 +430,7 @@ Begin VB.Form frmConfiguration
       Begin VB.Frame frmReportsGeneral 
          Caption         =   "General :"
          Height          =   700
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   24
          Top             =   5970
          Width           =   6735
@@ -591,7 +591,7 @@ Begin VB.Form frmConfiguration
          Caption         =   "Colours && Fonts :"
          Height          =   3225
          Index           =   1
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   78
          Top             =   400
          Width           =   6735
@@ -1388,7 +1388,7 @@ Begin VB.Form frmConfiguration
          Caption         =   "Warning Message :"
          Height          =   1950
          Index           =   1
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   21
          Top             =   3960
          Width           =   6735
@@ -1601,7 +1601,7 @@ Begin VB.Form frmConfiguration
          Caption         =   "Word Options :"
          Height          =   1200
          Index           =   0
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   95
          Top             =   3680
          Width           =   6735
@@ -2091,6 +2091,12 @@ Private Sub cmdDefault_Click()
     Changed = True
 
     cboTextType_Click
+   
+    ' Clear recent menu history
+    gADOCon.Execute "EXEC dbo.[spstat_clearrecentusage]"
+   
+    ' Clear favourites
+    gADOCon.Execute "EXEC dbo.[spstat_clearfavourites]"
 
   End If
 
