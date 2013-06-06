@@ -4236,8 +4236,10 @@ Private Sub cboHotSpotIdentifier_refresh(ByVal psCurrentValue As String)
           Case giWFFORMITEM_INPUTVALUE_FILEUPLOAD
             fItemOK = False
           Case Else
-            fItemOK = True
         
+            'Item is ok to add to the list if it is on the same tab page as the selected control
+            fItemOK = (asItems(78, iLoop) = mfrmCallingForm.GetControlPageNo(mctlSelectedControl))
+                
         End Select
 
         If fItemOK _
