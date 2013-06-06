@@ -5103,7 +5103,12 @@ Public Function OutputReport(blnPrompt As Boolean) As Boolean
       End If
     End If
 
-    objOutput.IndicatorColumn = (mlngOriginalOutputFormat = fmtExcelchart Or mlngOriginalOutputFormat = fmtExcelPivotTable) And Not mblnCustomReportsSummaryReport
+    If gblnReportPackMode Then
+      objOutput.IndicatorColumn = (mlngOutputFormat = fmtExcelWorksheet) And (mlngOriginalOutputFormat = fmtExcelchart Or mlngOriginalOutputFormat = fmtExcelPivotTable) And Not mblnCustomReportsSummaryReport
+    Else
+      objOutput.IndicatorColumn = (mlngOutputFormat = fmtExcelchart Or mlngOutputFormat = fmtExcelPivotTable) And Not mblnCustomReportsSummaryReport
+    End If
+    
     objOutput.SizeColumnsIndependently = True
     If objOutput.GetFile Then
 
