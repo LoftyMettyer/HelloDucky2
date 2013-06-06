@@ -1155,15 +1155,15 @@ PRINT 'Step 11 - Add new calculation procedures'
 
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_isovernightprocess] ()
 	RETURNS bit 
-	WITH SCHEMABINDING
 	AS
 	BEGIN
 	
 		DECLARE @result bit;
 		
 		SET @result = 0;
-	    RETURN @result;
-	
+		SELECT @result = ISNULL(settingValue,0) FROM ASRSysSystemSettings WHERE section = ''database'' AND settingKey = ''updatingdatedependantcolumns'';
+		
+		RETURN @result;
 	END';
 	EXECUTE sp_executeSQL @sSPCode;
 
