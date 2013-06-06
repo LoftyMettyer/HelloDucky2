@@ -118,6 +118,9 @@ Public Function CheckVersion(sConnect As String, fReRunScript As Boolean, bIsSQL
     End If
   End If
      
+  'Check to see if the engine is ticking over
+  fOK = GetSysFrameworkVersion()
+  
   ' AE20080218 Fault #12834, 12859
   If fOK Then
     If (fReRunScript Or gblnAutomaticScript) And bIsSQLSystemAdmin Then
@@ -407,7 +410,22 @@ ErrorTrap:
   Resume TidyUpAndExit
   
 End Function
+Private Function GetSysFrameworkVersion() As Boolean
+On Error GoTo ErrorTrap
+Dim bDummy As Boolean
 
+GetSysFrameworkVersion = True
+
+bDummy = gobjHRProEngine.InitialiseLite = True
+
+TidyUpAndExit:
+  GetSysFrameworkVersion = True
+  Exit Function
+ErrorTrap:
+  MsgBox "The HR Pro System Framework install has not been run on this machine! It is essential that the HR Pro System Framework MSI is run before you can upgrade to version 4.3." & vbCrLf & vbCrLf & "The 4.3 upgrade will now TERMINATE with no changes to HR Pro." & vbCrLf & vbCrLf & " You must install the HR Pro System Framework MSI and then re-run the v4.3 install again.", vbCritical, "System Manager Upgrade"
+  GetSysFrameworkVersion = False
+
+End Function
 
 Private Function GetServerDLLVersion(sConnect As String) As String
 
