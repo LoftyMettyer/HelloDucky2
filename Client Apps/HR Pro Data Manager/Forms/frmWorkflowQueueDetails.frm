@@ -268,7 +268,7 @@ Private Sub Form_Load()
 
 End Sub
 
-Private Sub Form_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
   Select Case KeyCode
     Case vbKeyF1
       If ShowAirHelp(Me.HelpContextID) Then
