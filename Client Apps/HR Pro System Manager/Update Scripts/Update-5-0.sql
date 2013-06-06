@@ -3679,7 +3679,7 @@ PRINT 'Step 8 - New Mobile User Logins Table'
 		UPDATE tbsys_mobileformelements SET PictureID = @cancel WHERE ID = 42
 		UPDATE tbsys_mobileformelements SET PictureID = @ok WHERE ID = 43
 	END
-		
+	UPDATE [dbo].[tbsys_mobileformelements] SET Caption = 'Enter your registration details and an activation email will be sent to you.' WHERE ID = 44;
 
 	IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[tbsys_mobilegroupworkflows]') AND type in (N'U'))
 	BEGIN
