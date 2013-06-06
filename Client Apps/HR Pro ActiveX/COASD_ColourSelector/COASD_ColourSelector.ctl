@@ -125,8 +125,42 @@ End Sub
 
 
 Private Sub UserControl_Resize()
-  cboComboBox.Left = UserControl.Width - cboComboBox.Width
-  lblColour.Width = cboComboBox.Left
+
+  ' Resize the contained controls as the UserControl is resized.
+  Dim lngControlWidth As Long
+  Dim lngMinHeight As Long
+  Dim lngMinWidth As Long
+  
+  ' Do not let the user make the control too small.
+  lngMinHeight = MinimumHeight
+  lngMinWidth = MinimumWidth
+  
+  With UserControl
+    If .Width < lngMinWidth Then
+      .Width = lngMinWidth
+    End If
+      
+    lngControlWidth = .Width
+  End With
+
+  ' Resize the dummy combobox sub-controls.
+  With lblColour
+    .Height = lngMinHeight
+    .Left = 0
+    .Top = 0
+    .Width = lngControlWidth
+  End With
+  
+  With cboComboBox
+    .Height = lngMinHeight
+    .Left = lngControlWidth - .Width
+    .Top = 0
+  End With
+
+  UserControl.Height = lngMinHeight
+
+  'cboComboBox.Left = UserControl.Width - cboComboBox.Width
+  'lblColour.Width = cboComboBox.Left
 End Sub
 
 Private Sub UserControl_WriteProperties(PropBag As PropertyBag)
