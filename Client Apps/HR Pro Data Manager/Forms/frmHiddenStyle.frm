@@ -1,5 +1,6 @@
 VERSION 5.00
 Object = "{1C203F10-95AD-11D0-A84B-00A0247B735B}#1.0#0"; "SSTree.ocx"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "Codejock.SkinFramework.v13.1.0.ocx"
 Begin VB.Form frmHiddenStyle 
    Caption         =   "Hidden Form To Apply Styles"
@@ -12,6 +13,23 @@ Begin VB.Form frmHiddenStyle
    ScaleWidth      =   8805
    StartUpPosition =   3  'Windows Default
    Visible         =   0   'False
+   Begin MSComctlLib.ListView ListView1 
+      Height          =   2310
+      Left            =   3780
+      TabIndex        =   2
+      Top             =   2895
+      Width           =   1680
+      _ExtentX        =   2963
+      _ExtentY        =   4075
+      LabelWrap       =   -1  'True
+      HideSelection   =   -1  'True
+      _Version        =   393217
+      ForeColor       =   -2147483640
+      BackColor       =   -2147483643
+      BorderStyle     =   1
+      Appearance      =   1
+      NumItems        =   0
+   End
    Begin SSActiveTreeView.SSTree SSTree1 
       Height          =   2295
       Left            =   960
