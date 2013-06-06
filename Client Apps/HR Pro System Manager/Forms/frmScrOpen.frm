@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Begin VB.Form frmScrOpen 
    Caption         =   "Screen Manager"
@@ -7,6 +7,7 @@ Begin VB.Form frmScrOpen
    ClientLeft      =   315
    ClientTop       =   1665
    ClientWidth     =   5595
+   ControlBox      =   0   'False
    BeginProperty Font 
       Name            =   "Verdana"
       Size            =   8.25
@@ -24,6 +25,7 @@ Begin VB.Form frmScrOpen
    MDIChild        =   -1  'True
    ScaleHeight     =   5670
    ScaleWidth      =   5595
+   WindowState     =   2  'Maximized
    Begin VB.CommandButton cmdAction 
       Caption         =   "&OK"
       Height          =   400
@@ -339,35 +341,6 @@ End Sub
 
 
 Private Sub Form_Load()
-  Dim sAppName  As String
-  Dim sSection  As String
-  
-  Hook Me.hWnd, MIN_FORM_WIDTH, MIN_FORM_HEIGHT
-  
-  ' Initialise form properties from registry settings.
-  With Me
-  
-    sAppName = App.ProductName
-    sSection = .Name
-  
-    .Top = GetPCSetting(sSection, "Top", (Screen.Height - .Height) / 2)
-    
-    ' JDM - 06/12/01 - Fault 3258 - Was saving negative values to the registry
-    .Top = IIf(.Top < 0, (Screen.Height - .Height) / 2, .Top)
-    
-    .Left = GetPCSetting(sSection, "Left", (Screen.Width - .Width) / 2)
-    .Height = GetPCSetting(sSection, "Height", .Height)
-    .Width = GetPCSetting(sSection, "Width", .Width)
-  End With
-  
-  'NHRD25042002 Fault 3744 Changed this variable so that it is more local.
-  'The windowstate was being changed by other screens.
-  'If gbMaximizeScreens Then
-  If mIamMaximised Then
-    Me.WindowState = vbMaximized
-  Else
-    Me.WindowState = GetPCSetting(Me.Name, "State", Me.WindowState)
-  End If
   
   With ssGrdScreens
     .Columns(0).Width = .Width
@@ -430,31 +403,9 @@ Private Sub Form_Resize()
 End Sub
 
 Private Sub Form_Unload(Cancel As Integer)
-  Dim sAppName As String
-  Dim sSection As String
-  
-  ' Save form size and position to the registry.
-  With Me
-  
-    sAppName = App.ProductName
-    sSection = .Name
-    'nhrd investigation
-    ' JDM - 06/12/01 - Fault 3258 - Was saving negative values to the registry
-    If .WindowState = vbNormal Then
-      SavePCSetting sSection, "Top", .Top
-      SavePCSetting sSection, "Left", .Left
-      SavePCSetting sSection, "Height", .Height
-      SavePCSetting sSection, "Width", .Width
-    End If
-    
-    SavePCSetting Me.Name, "State", Me.WindowState
 
-  End With
-  
   ' Update the menu.
   frmSysMgr.RefreshMenu True
-  
-  Unhook Me.hWnd
   
 End Sub
 

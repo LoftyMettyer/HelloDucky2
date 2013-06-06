@@ -1,11 +1,12 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Begin VB.Form frmWorkflowOpen 
    Caption         =   "Workflow Manager"
    ClientHeight    =   6285
    ClientLeft      =   60
    ClientTop       =   450
    ClientWidth     =   5535
+   ControlBox      =   0   'False
    BeginProperty Font 
       Name            =   "Verdana"
       Size            =   8.25
@@ -23,6 +24,7 @@ Begin VB.Form frmWorkflowOpen
    MDIChild        =   -1  'True
    ScaleHeight     =   6285
    ScaleWidth      =   5535
+   WindowState     =   2  'Maximized
    Begin VB.Frame fraDetails 
       Height          =   1125
       Left            =   150
@@ -1109,12 +1111,13 @@ Private Sub cmdModify_Click()
 
       End With
     End If
-    frmWFDes.Show
 
+    Me.Hide
+
+    frmWFDes.Show
+    
     'Update the progress bar
     gobjProgress.UpdateProgress
-
-    UnLoad Me
 
     DoEvents
     frmWFDes.IsChanged = False
@@ -1604,31 +1607,37 @@ End Sub
 
 
 Private Sub Form_Load()
-  Dim sAppName  As String
-  Dim sSection  As String
+'  Dim sAppName  As String
+'  Dim sSection  As String
   
-  Hook Me.hWnd, MIN_FORM_WIDTH, MIN_FORM_HEIGHT
+'  Dim lngTop As Long
+'  Dim lngLeft As Long
+'  Dim lngWidth As Long
+'  Dim lngHeight As Long
+'
   
   ' Clear the menu shortcuts. This needs to be done so that some shortcut keys
   ' (eg. DEL) will function normally in textboxes instead of triggering menu options.
   frmSysMgr.ClearMenuShortcuts
   
-  ' Initialise form properties from registry settings.
-  With Me
-    sAppName = App.ProductName
-    sSection = .Name
-  
-    .Top = GetPCSetting(sSection, "Top", (Screen.Height - .Height) / 2)
-    
-    ' JDM - 06/12/01 - Fault 3258 - Was saving negative values to the registry
-    .Top = IIf(.Top < 0, (Screen.Height - .Height) / 2, .Top)
-    
-    .Left = GetPCSetting(sSection, "Left", (Screen.Width - .Width) / 2)
-    .Height = GetPCSetting(sSection, "Height", .Height)
-    .Width = GetPCSetting(sSection, "Width", .Width)
-  
-    .WindowState = GetPCSetting(Me.Name, "State", Me.WindowState)
-  End With
+'  ' Initialise form properties from registry settings.
+'  With Me
+'    sAppName = App.ProductName
+'    sSection = .Name
+'
+'    .WindowState = GetPCSetting(Me.Name, "State", Me.WindowState)
+'
+'    lngTop = GetPCSetting(sSection, "Top", (Screen.Height - .Height) / 2)
+'
+'    ' JDM - 06/12/01 - Fault 3258 - Was saving negative values to the registry
+'    lngTop = IIf(lngTop < 0, (Screen.Height - .Height) / 2, lngTop)
+'    lngLeft = GetPCSetting(sSection, "Left", (Screen.Width - .Width) / 2)
+'    lngHeight = GetPCSetting(sSection, "Height", .Height)
+'    lngWidth = GetPCSetting(sSection, "Width", .Width)
+'
+'    .Move lngLeft, lngTop, lngWidth, lngHeight
+'
+'  End With
   
   mblnReadOnly = (Application.AccessMode <> accFull And _
                   Application.AccessMode <> accSupportMode)
@@ -1649,7 +1658,6 @@ Private Sub Form_Load()
   
 End Sub
 
-
 Private Sub Form_Resize()
   
   Const XGAP = 150
@@ -1661,11 +1669,9 @@ Private Sub Form_Resize()
   'JPD 20070927 Fault 12501
   'DisplayApplication
   
-  frmSysMgr.RefreshMenu
-
-  If Me.WindowState = vbMinimized Then Exit Sub
-  If Me.WindowState = vbMaximized And frmSysMgr.WindowState = 0 Then Exit Sub
-  If frmSysMgr.WindowState = vbMinimized Then Exit Sub
+'  If Me.WindowState = vbMinimized Then Exit Sub
+'  If Me.WindowState = vbMaximized And frmSysMgr.WindowState = 0 Then Exit Sub
+'  If frmSysMgr.WindowState = vbMinimized Then Exit Sub
 
   With fraDetails
     .Width = Me.Width - XGAP_RIGHT - cmdNew.Width - XGAP - .Left
@@ -1697,33 +1703,29 @@ Private Sub Form_Resize()
     
 End Sub
 
-
-
 Private Sub Form_Unload(Cancel As Integer)
-  Dim sAppName As String
-  Dim sSection As String
-  
-  ' Save form size and position to the registry.
-  With Me
-  
-    sAppName = App.ProductName
-    sSection = .Name
-    'nhrd investigation
-    ' JDM - 06/12/01 - Fault 3258 - Was saving negative values to the registry
-    If .WindowState = vbNormal Then
-      SavePCSetting sSection, "Top", .Top
-      SavePCSetting sSection, "Left", .Left
-      SavePCSetting sSection, "Height", .Height
-      SavePCSetting sSection, "Width", .Width
-    End If
-    
-    SavePCSetting Me.Name, "State", Me.WindowState
-  End With
+
+'  Dim sAppName As String
+'  Dim sSection As String
+'
+'  ' Save form size and position to the registry.
+'  With Me
+'
+'    sAppName = App.ProductName
+'    sSection = .Name
+'
+'    If .WindowState = vbNormal Then
+'      SavePCSetting sSection, "Top", .Top
+'      SavePCSetting sSection, "Left", .Left
+'      SavePCSetting sSection, "Height", .Height
+'      SavePCSetting sSection, "Width", .Width
+'    End If
+'
+'    SavePCSetting Me.Name, "State", Me.WindowState
+'  End With
   
   ' Update the menu.
   frmSysMgr.RefreshMenu True
-  
-  Unhook Me.hWnd
   
 End Sub
 
