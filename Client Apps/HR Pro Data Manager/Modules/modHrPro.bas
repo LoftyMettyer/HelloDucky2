@@ -4471,6 +4471,9 @@ Public Sub GetObjectCategories(ByRef theCombo As ComboBox, UtilityType As Utilit
 
   Dim rsTemp As ADODB.Recordset
   Dim iListIndex As Integer
+  Dim bFound As Boolean
+  
+  bFound = False
   
   ' Add <none>
   theCombo.AddItem "<None>"
@@ -4488,6 +4491,7 @@ Public Sub GetObjectCategories(ByRef theCombo As ComboBox, UtilityType As Utilit
       
       If rsTemp.Fields("Selected").Value = 1 Then
         iListIndex = theCombo.NewIndex
+        bFound = True
       End If
       rsTemp.MoveNext
     Loop
@@ -4497,6 +4501,8 @@ Public Sub GetObjectCategories(ByRef theCombo As ComboBox, UtilityType As Utilit
     
   If iListIndex > -1 And UtilityID > 0 Then
     theCombo.ListIndex = iListIndex
+  ElseIf TableID > -1 Then
+    SetComboItem theCombo, TableID
   End If
   
 TidyUpAndExit:
