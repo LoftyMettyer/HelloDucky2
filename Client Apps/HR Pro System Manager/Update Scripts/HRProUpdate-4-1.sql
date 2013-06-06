@@ -4082,6 +4082,51 @@ PRINT 'Step 10 - New Shared Table Transfer Types'
 
 
 
+/* ------------------------------------------------------------- */
+PRINT 'Step 11 - Update Round To Nearest Number Function'
+
+
+	IF EXISTS (SELECT *
+		FROM dbo.sysobjects
+		WHERE id = object_id(N'[dbo].[sp_ASRFn_RoundToNearestNumber]')
+			AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+		DROP PROCEDURE [dbo].[sp_ASRFn_RoundToNearestNumber];
+
+	SET @sSPCode = 'CREATE PROCEDURE [dbo].[sp_ASRFn_RoundToNearestNumber]
+		AS
+		BEGIN
+			DECLARE @iDummy integer;
+		END';
+	EXECUTE sp_executeSQL @sSPCode;
+
+	SET @sSPCode = 'ALTER PROCEDURE [dbo].[sp_ASRFn_RoundToNearestNumber]
+		(
+			@pfReturn 			float OUTPUT,
+			@pfNumberToRound 	float,
+			@pfNearestNumber	float
+		)
+		AS
+		BEGIN
+
+			DECLARE @pfRemainder float;
+
+			/* Calculate the remainder. Cannot use the % because it only works on integers and not floats. */
+			set @pfReturn = 0;
+			if @pfNearestNumber <= 0 return
+	
+			set @pfRemainder = @pfNumberToRound - (floor(@pfNumberToRound / @pfNearestNumber) * @pfNearestNumber);
+
+			/* Formula for rounding to the nearest specified number */
+			if ((@pfNumberToRound < 0) AND (@pfRemainder <= (@pfNearestNumber / 2.0)))
+				OR ((@pfNumberToRound >= 0) AND (@pfRemainder < (@pfNearestNumber / 2.0)))
+					set @pfReturn = @pfNumberToRound - @pfRemainder;
+				else
+					set @pfReturn = @pfNumberToRound + @pfNearestNumber - @pfRemainder;
+
+		END';
+
+	EXECUTE sp_executeSQL @sSPCode;
+
 
 	
 /* ------------------------------------------------------------- */
