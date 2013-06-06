@@ -621,11 +621,11 @@ Public Property Get SelectedID() As Long
 End Property
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 
 Public Property Let Changed(blnChanged As Boolean)
-  cmdOK.Enabled = blnChanged
+  cmdOk.Enabled = blnChanged
 End Property
 
 Public Property Get FormPrint() As Boolean
@@ -2495,11 +2495,11 @@ Private Sub txtDesc_GotFocus()
     .SelStart = 0
     .SelLength = Len(.Text)
   End With
-  cmdOK.Default = False
+  cmdOk.Default = False
 End Sub
 
 Private Sub txtDesc_LostFocus()
-  cmdOK.Default = True
+  cmdOk.Default = True
 End Sub
 
 Private Sub txtName_Change()
@@ -2820,6 +2820,7 @@ Public Sub PrintDef(lTransferID As Long)
       If .PrintStart(False) Then
         ' First section --------------------------------------------------------
         .PrintHeader "Data Transfer : " & rsTemp!Name
+        .PrintNormal "Category : " & GetObjectCategory(utlDataTransfer, mlTransferID)
         
         .PrintNormal "Description : " & rsTemp!Description
         .PrintNormal "Owner : " & rsTemp!UserName

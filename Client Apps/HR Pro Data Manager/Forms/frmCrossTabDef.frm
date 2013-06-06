@@ -83,14 +83,14 @@ Begin VB.Form frmCrossTabDef
       TabCaption(1)   =   "Colu&mns"
       TabPicture(1)   =   "frmCrossTabDef.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraColumns(1)"
-      Tab(1).Control(1)=   "fraColumns(0)"
+      Tab(1).Control(0)=   "fraColumns(0)"
+      Tab(1).Control(1)=   "fraColumns(1)"
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "O&utput"
       TabPicture(2)   =   "frmCrossTabDef.frx":0044
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraOutputDestination"
-      Tab(2).Control(1)=   "fraOutputFormat"
+      Tab(2).Control(0)=   "fraOutputFormat"
+      Tab(2).Control(1)=   "fraOutputDestination"
       Tab(2).ControlCount=   2
       Begin VB.Frame fraInformation 
          Height          =   2355
@@ -3846,6 +3846,7 @@ Public Sub PrintDef(lCrossTabID As Long)
         ' First section --------------------------------------------------------
         .PrintHeader "Cross Tab : " & rsTemp!Name
         
+        .PrintNormal "Category : " & GetObjectCategory(utlCrossTab, mlngCrossTabID)
         .PrintNormal "Description : " & rsTemp!Description
         .PrintNormal "Owner : " & rsTemp!UserName
         

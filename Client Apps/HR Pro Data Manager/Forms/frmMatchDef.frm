@@ -108,23 +108,18 @@ Begin VB.Form frmMatchDef
       TabPicture(1)   =   "frmMatchDef.frx":0E7C
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraRelations"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "Colu&mns"
       TabPicture(2)   =   "frmMatchDef.frx":0E98
       Tab(2).ControlEnabled=   0   'False
       Tab(2).Control(0)=   "fraFieldsSelected"
-      Tab(2).Control(0).Enabled=   0   'False
       Tab(2).Control(1)=   "fraFieldsAvailable"
-      Tab(2).Control(1).Enabled=   0   'False
       Tab(2).Control(2)=   "fraFieldButtons"
-      Tab(2).Control(2).Enabled=   0   'False
       Tab(2).ControlCount=   3
       TabCaption(3)   =   "&Sort Order"
       TabPicture(3)   =   "frmMatchDef.frx":0EB4
       Tab(3).ControlEnabled=   0   'False
       Tab(3).Control(0)=   "fraReportOrder"
-      Tab(3).Control(0).Enabled=   0   'False
       Tab(3).ControlCount=   1
       TabCaption(4)   =   "O&utput"
       TabPicture(4)   =   "frmMatchDef.frx":0ED0
@@ -1574,11 +1569,11 @@ Begin VB.Form frmMatchDef
             Key             =   "IMG_TABLE"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmMatchDef.frx":1BB8
+            Picture         =   "frmMatchDef.frx":17F8
             Key             =   "IMG_CALC"
          EndProperty
          BeginProperty ListImage3 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmMatchDef.frx":210A
+            Picture         =   "frmMatchDef.frx":1D4A
             Key             =   "IMG_MATCH"
          EndProperty
       EndProperty
@@ -1597,7 +1592,7 @@ Begin VB.Form frmMatchDef
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      Bands           =   "frmMatchDef.frx":265C
+      Bands           =   "frmMatchDef.frx":229C
    End
 End
 Attribute VB_Name = "frmMatchDef"
@@ -2705,7 +2700,7 @@ Private Sub Form_Activate()
   
 End Sub
 
-Private Sub Form_DragOver(Source As Control, x As Single, y As Single, State As Integer)
+Private Sub Form_DragOver(Source As Control, X As Single, Y As Single, State As Integer)
   
   ' Change pointer to the nodrop icon
   Source.DragIcon = picNoDrop.Picture
@@ -3186,7 +3181,7 @@ Private Sub ListView2_DblClick()
   
 End Sub
 
-Private Sub ListView1_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub ListView1_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
   
   If mblnReadOnly Then
     Exit Sub
@@ -3229,7 +3224,7 @@ Private Sub ListView2_ItemClick(ByVal Item As ComctlLib.ListItem)
 
 End Sub
 
-Private Sub ListView2_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub ListView2_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
   
   If mblnReadOnly Then
     Exit Sub
@@ -3288,7 +3283,7 @@ Private Sub ActiveBar1_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
 
 End Sub
 
-Private Sub ListView1_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub ListView1_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
   
   If mblnReadOnly Then
     Exit Sub
@@ -3306,7 +3301,7 @@ Private Sub ListView1_MouseMove(Button As Integer, Shift As Integer, x As Single
 
 End Sub
 
-Private Sub ListView2_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub ListView2_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
   
   'Start the drag operation
   Dim objItem As ComctlLib.ListItem
@@ -3324,7 +3319,7 @@ Private Sub ListView2_MouseMove(Button As Integer, Shift As Integer, x As Single
 
 End Sub
 
-Private Sub ListView1_DragDrop(Source As Control, x As Single, y As Single)
+Private Sub ListView1_DragDrop(Source As Control, X As Single, Y As Single)
   
   ' Perform the drop operation
   If Source Is ListView2 Then
@@ -3336,43 +3331,43 @@ Private Sub ListView1_DragDrop(Source As Control, x As Single, y As Single)
 
 End Sub
 
-Private Sub ListView2_DragDrop(Source As Control, x As Single, y As Single)
+Private Sub ListView2_DragDrop(Source As Control, X As Single, Y As Single)
   
   ' Perform the drop operation - action depends on source and destination
   
   If Source Is ListView1 Then
-    If ListView2.HitTest(x, y) Is Nothing Then
+    If ListView2.HitTest(X, Y) Is Nothing Then
       CopyToSelected False
     Else
-      CopyToSelected False, ListView2.HitTest(x, y).Index
+      CopyToSelected False, ListView2.HitTest(X, Y).Index
     End If
     ListView1.Drag vbCancel
   Else
-    If ListView2.HitTest(x, y) Is Nothing Then
+    If ListView2.HitTest(X, Y) Is Nothing Then
       ChangeSelectedOrder
     Else
-      ChangeSelectedOrder ListView2.HitTest(x, y).Index
+      ChangeSelectedOrder ListView2.HitTest(X, Y).Index
     End If
     ListView2.Drag vbCancel
   End If
 
 End Sub
 
-Private Sub Frafieldsavailable_DragOver(Source As Control, x As Single, y As Single, State As Integer)
+Private Sub Frafieldsavailable_DragOver(Source As Control, X As Single, Y As Single, State As Integer)
   
   ' Change pointer to the nodrop icon
   Source.DragIcon = picNoDrop.Picture
   
 End Sub
 
-Private Sub Frafieldsselected_DragOver(Source As Control, x As Single, y As Single, State As Integer)
+Private Sub Frafieldsselected_DragOver(Source As Control, X As Single, Y As Single, State As Integer)
   
   ' Change pointer to the nodrop icon
   Source.DragIcon = picNoDrop.Picture
   
 End Sub
 
-Private Sub ListView2_DragOver(Source As Control, x As Single, y As Single, State As Integer)
+Private Sub ListView2_DragOver(Source As Control, X As Single, Y As Single, State As Integer)
 
   ' Change pointer to drop icon
   If (Source Is ListView1) Or (Source Is ListView2) Then
@@ -3380,11 +3375,11 @@ Private Sub ListView2_DragOver(Source As Control, x As Single, y As Single, Stat
   End If
 
   ' Set DropHighlight to the mouse's coordinates.
-  Set ListView2.DropHighlight = ListView2.HitTest(x, y)
+  Set ListView2.DropHighlight = ListView2.HitTest(X, Y)
 
 End Sub
 
-Private Sub ListView1_DragOver(Source As Control, x As Single, y As Single, State As Integer)
+Private Sub ListView1_DragOver(Source As Control, X As Single, Y As Single, State As Integer)
 
   ' Change pointer to drop icon
   If (Source Is ListView1) Or (Source Is ListView2) Then
@@ -6806,6 +6801,8 @@ Public Sub PrintDef(lMatchReportID As Long)
   Dim lngCount As Long
   Dim iLoop As Integer
   Dim varBookmark As Variant
+  Dim iUtilityType As UtilityType
+  
 
   'mlngMatchReportID = lMatchReportID
   
@@ -6818,9 +6815,18 @@ Public Sub PrintDef(lMatchReportID As Long)
         
         ' First section --------------------------------------------------------
         Select Case mlngMatchReportType
-          Case mrtNormal: .PrintHeader "Match Report : " & txtName.Text
-          Case mrtSucession: .PrintHeader "Succession Planning : " & txtName.Text
-          Case mrtCareer: .PrintHeader "Career Progression : " & txtName.Text
+          Case mrtNormal
+            .PrintHeader "Match Report : " & txtName.Text
+            .PrintNormal "Category : " & GetObjectCategory(utlMatchReport, mlngMatchReportID)
+          
+          Case mrtSucession
+            .PrintHeader "Succession Planning : " & txtName.Text
+            .PrintNormal "Category : " & GetObjectCategory(utlSuccession, mlngMatchReportID)
+          
+          Case mrtCareer
+            .PrintHeader "Career Progression : " & txtName.Text
+            .PrintNormal "Category : " & GetObjectCategory(utlCareer, mlngMatchReportID)
+          
         End Select
 
         .PrintNormal "Description : " & txtDesc.Text

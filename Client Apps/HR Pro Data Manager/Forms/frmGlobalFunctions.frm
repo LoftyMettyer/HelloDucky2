@@ -638,11 +638,11 @@ End Property
 
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
 End Property
 
 Public Property Let Changed(blnChanged As Boolean)
-  cmdOk.Enabled = blnChanged
+  cmdOK.Enabled = blnChanged
 End Property
 
 
@@ -2695,11 +2695,11 @@ Private Sub txtDesc_GotFocus()
     .SelStart = 0
     .SelLength = Len(.Text)
   End With
-  cmdOk.Default = False
+  cmdOK.Default = False
 End Sub
 
 Private Sub txtDesc_LostFocus()
-  cmdOk.Default = True
+  cmdOK.Default = True
 End Sub
 
 Private Sub txtName_Change()
@@ -2756,8 +2756,8 @@ Private Sub FormatForm()
       cmdCancel.Move lngLeft, lngTop
 
       'Command OK
-      lngLeft = lngLeft - (cmdOk.Width + GAP)
-      cmdOk.Move lngLeft, lngTop
+      lngLeft = lngLeft - (cmdOK.Width + GAP)
+      cmdOK.Move lngLeft, lngTop
     End With
 
     SSTab1.Visible = False
@@ -2865,6 +2865,7 @@ Public Sub PrintDef(typeGlobal As GlobalType, lFunctionID As Long)
   Dim strSource As String
   Dim strDestin As String
   Dim varBookmark As Variant
+  Dim iUtilityType As UtilityType
 
   Set datData = New DataMgr.clsDataAccess
   'Set datGlobal = New DataMgr.clsGlobal
@@ -2879,6 +2880,14 @@ Public Sub PrintDef(typeGlobal As GlobalType, lFunctionID As Long)
     Exit Sub
   End If
   
+  Select Case typGlobal
+    Case glAdd
+      iUtilityType = utlGlobalAdd
+    Case glDelete
+      iUtilityType = utlGlobalDelete
+    Case glUpdate
+      iUtilityType = utlGlobalUpdate
+  End Select
   
   Set objPrintDef = New DataMgr.clsPrintDef
 
@@ -2889,6 +2898,7 @@ Public Sub PrintDef(typeGlobal As GlobalType, lFunctionID As Long)
         ' First section --------------------------------------------------------
         .PrintHeader strType & " : " & rsTemp!Name
     
+        .PrintNormal "Category : " & GetObjectCategory(iUtilityType, mlFunctionID)
         .PrintNormal "Description : " & rsTemp!Description
         .PrintNormal "Owner : " & rsTemp!UserName
         
