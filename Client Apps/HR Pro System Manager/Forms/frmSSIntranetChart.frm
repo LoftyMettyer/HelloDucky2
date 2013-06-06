@@ -10,6 +10,7 @@ Begin VB.Form frmSSIntranetChart
    Icon            =   "frmSSIntranetChart.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
+   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   6210
@@ -826,12 +827,12 @@ End Sub
 
 Private Sub cboColumnX_Click()
 
-If optChartType(0).value Then
+'If optChartType(0).value Then
   ' set the aggregate
   PopulateAggregateCombo ' cboColumnX.ItemData(cboColumnX.ListIndex)
   SetComboItemOrTopItem cboAggregateType, ChartAggregateType
   PopulateColourCombo cboTableX.ItemData(cboTableX.ListIndex)
-End If
+'End If
 
 mfChanged = True
 
@@ -841,7 +842,7 @@ End Sub
 
 Private Sub cboColumnY_Click()
   ' set the aggregate
-  If mfLoading Then PopulateAggregateCombo ' cboColumnY.ItemData(cboColumnY.ListIndex)
+   PopulateAggregateCombo
   SetComboItemOrTopItem cboAggregateType, ChartAggregateType
   PopulateColourCombo cboTableY.ItemData(cboTableY.ListIndex)
   
@@ -850,9 +851,9 @@ Private Sub cboColumnY_Click()
   
   chkSortByAggregate.value = 0
   
-mfChanged = True
-
-RefreshControls
+  mfChanged = True
+  
+  RefreshControls
   
 End Sub
 
@@ -1193,7 +1194,7 @@ End Sub
 Private Sub RefreshControls()
   
   ChangeChartType
-  cmdOk.Enabled = mfChanged
+  cmdOK.Enabled = mfChanged
   
   ' Disable the Y column if aggregate is set to 'Count'
   cboColumnY.Enabled = (cboAggregateType.Text <> "Count")
@@ -1445,7 +1446,7 @@ Public Sub Initialize(plngChartViewID As Long, _
   txtFilter.Enabled = False
   txtFilter.BackColor = vbButtonFace
   
-  cmdOk.Enabled = (miChartTableID = 0)
+  cmdOK.Enabled = (miChartTableID = 0)
    
   mfLoading = False
   
