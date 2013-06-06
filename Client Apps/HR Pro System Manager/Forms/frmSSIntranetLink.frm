@@ -30,6 +30,127 @@ Begin VB.Form frmSSIntranetLink
    ScaleWidth      =   9360
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
+   Begin VB.Frame fraLinkSeparator 
+      Caption         =   "Separator :"
+      Height          =   2610
+      Left            =   2880
+      TabIndex        =   55
+      Top             =   5250
+      Width           =   6300
+      Begin VB.CheckBox chkSeparatorUseFormatting 
+         Caption         =   "Use &formatting"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   61
+         Top             =   1260
+         Width           =   1800
+      End
+      Begin VB.TextBox txtSeparatorColour 
+         BackColor       =   &H00FFFFFF&
+         Enabled         =   0   'False
+         Height          =   315
+         Left            =   2580
+         TabIndex        =   62
+         Top             =   1545
+         Width           =   1170
+      End
+      Begin VB.CommandButton cmdSeparatorColPick 
+         Caption         =   "..."
+         Height          =   315
+         Left            =   3765
+         TabIndex        =   63
+         ToolTipText     =   "Select Border Colour"
+         Top             =   1530
+         UseMaskColor    =   -1  'True
+         Width           =   315
+      End
+      Begin VB.CommandButton cmdIcon 
+         Caption         =   "..."
+         Height          =   315
+         Left            =   4830
+         TabIndex        =   58
+         ToolTipText     =   "Select Icon"
+         Top             =   315
+         Width           =   315
+      End
+      Begin VB.TextBox txtIcon 
+         Enabled         =   0   'False
+         Height          =   330
+         Left            =   1050
+         TabIndex        =   57
+         Top             =   300
+         Width           =   3765
+      End
+      Begin VB.CommandButton cmdIconClear 
+         Caption         =   "O"
+         BeginProperty Font 
+            Name            =   "Wingdings 2"
+            Size            =   20.25
+            Charset         =   2
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   315
+         Left            =   5160
+         MaskColor       =   &H000000FF&
+         TabIndex        =   59
+         ToolTipText     =   "Clear Icon"
+         Top             =   315
+         UseMaskColor    =   -1  'True
+         Width           =   330
+      End
+      Begin VB.CheckBox chkNewColumn 
+         Caption         =   "Column &break"
+         Height          =   255
+         Left            =   1050
+         TabIndex        =   60
+         Top             =   690
+         Width           =   2040
+      End
+      Begin VB.Label lblSeparatorColour 
+         AutoSize        =   -1  'True
+         Caption         =   "Separator border colour :"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   124
+         Top             =   1575
+         Width           =   2205
+      End
+      Begin VB.Line Line4 
+         BorderColor     =   &H80000015&
+         X1              =   210
+         X2              =   6075
+         Y1              =   1080
+         Y2              =   1080
+      End
+      Begin VB.Label lblNoOptions 
+         AutoSize        =   -1  'True
+         Caption         =   "There are no configurable options for this link type"
+         Height          =   195
+         Left            =   285
+         TabIndex        =   82
+         Top             =   2190
+         Visible         =   0   'False
+         Width           =   4350
+      End
+      Begin VB.Label lblIcon 
+         Caption         =   "Icon :"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   56
+         Top             =   345
+         Width           =   615
+      End
+      Begin VB.Image imgIcon 
+         Height          =   495
+         Left            =   5565
+         Stretch         =   -1  'True
+         Top             =   330
+         Width           =   510
+      End
+   End
    Begin VB.Frame fraURLLink 
       Caption         =   "URL :"
       Height          =   1125
@@ -708,127 +829,6 @@ Begin VB.Form frmSSIntranetLink
          TabIndex        =   92
          Top             =   1575
          Width           =   1785
-      End
-   End
-   Begin VB.Frame fraLinkSeparator 
-      Caption         =   "Separator :"
-      Height          =   2610
-      Left            =   2880
-      TabIndex        =   55
-      Top             =   5250
-      Width           =   6300
-      Begin VB.CheckBox chkSeparatorUseFormatting 
-         Caption         =   "Use &formatting"
-         Height          =   195
-         Left            =   210
-         TabIndex        =   61
-         Top             =   1260
-         Width           =   1800
-      End
-      Begin VB.TextBox txtSeparatorColour 
-         BackColor       =   &H00FFFFFF&
-         Enabled         =   0   'False
-         Height          =   315
-         Left            =   2580
-         TabIndex        =   62
-         Top             =   1545
-         Width           =   1170
-      End
-      Begin VB.CommandButton cmdSeparatorColPick 
-         Caption         =   "..."
-         Height          =   315
-         Left            =   3765
-         TabIndex        =   63
-         ToolTipText     =   "Select Border Colour"
-         Top             =   1530
-         UseMaskColor    =   -1  'True
-         Width           =   315
-      End
-      Begin VB.CommandButton cmdIcon 
-         Caption         =   "..."
-         Height          =   315
-         Left            =   4830
-         TabIndex        =   58
-         ToolTipText     =   "Select Icon"
-         Top             =   315
-         Width           =   315
-      End
-      Begin VB.TextBox txtIcon 
-         Enabled         =   0   'False
-         Height          =   330
-         Left            =   1050
-         TabIndex        =   57
-         Top             =   300
-         Width           =   3765
-      End
-      Begin VB.CommandButton cmdIconClear 
-         Caption         =   "O"
-         BeginProperty Font 
-            Name            =   "Wingdings 2"
-            Size            =   20.25
-            Charset         =   2
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   315
-         Left            =   5160
-         MaskColor       =   &H000000FF&
-         TabIndex        =   59
-         ToolTipText     =   "Clear Icon"
-         Top             =   315
-         UseMaskColor    =   -1  'True
-         Width           =   330
-      End
-      Begin VB.CheckBox chkNewColumn 
-         Caption         =   "Column &break"
-         Height          =   255
-         Left            =   1050
-         TabIndex        =   60
-         Top             =   690
-         Width           =   2040
-      End
-      Begin VB.Label lblSeparatorColour 
-         AutoSize        =   -1  'True
-         Caption         =   "Separator border colour :"
-         Height          =   195
-         Left            =   210
-         TabIndex        =   124
-         Top             =   1575
-         Width           =   2205
-      End
-      Begin VB.Line Line4 
-         BorderColor     =   &H80000015&
-         X1              =   210
-         X2              =   6075
-         Y1              =   1080
-         Y2              =   1080
-      End
-      Begin VB.Label lblNoOptions 
-         AutoSize        =   -1  'True
-         Caption         =   "There are no configurable options for this link type"
-         Height          =   195
-         Left            =   285
-         TabIndex        =   82
-         Top             =   2190
-         Visible         =   0   'False
-         Width           =   4350
-      End
-      Begin VB.Label lblIcon 
-         Caption         =   "Icon :"
-         Height          =   195
-         Left            =   210
-         TabIndex        =   56
-         Top             =   345
-         Width           =   615
-      End
-      Begin VB.Image imgIcon 
-         Height          =   495
-         Left            =   5565
-         Stretch         =   -1  'True
-         Top             =   330
-         Width           =   510
       End
    End
    Begin VB.Frame fraLinkType 
@@ -2307,9 +2307,10 @@ Private Sub RefreshControls()
     txtText.BackColor = vbWindowBackground
   End If
   
-  If (optLink(SSINTLINKSEPARATOR).value And miLinkType = SSINTLINK_HYPERTEXT) Or optLink(SSINTLINKPWFSTEPS).value Or _
-          miLinkType = SSINTLINK_DROPDOWNLIST Then
-    ' Disable the icon and new column options for hypertext link separators...
+  If optLink(SSINTLINKPWFSTEPS).value Or _
+          miLinkType = SSINTLINK_DROPDOWNLIST Or _
+          optLink(SSINTLINKTODAYS_EVENTS).value Then
+    ' Disable the icon and new column options for dropdown lists & pwfs...
     chkNewColumn.Visible = False
     lblIcon.Visible = False
     txtIcon.Visible = False
@@ -2324,39 +2325,22 @@ Private Sub RefreshControls()
     cmdSeparatorColPick.Visible = False
     chkSeparatorUseFormatting.Visible = False
     Line4.Visible = False
-  ElseIf (optLink(SSINTLINKSEPARATOR).value And miLinkType <> SSINTLINK_HYPERTEXT) Then
+  ElseIf optLink(SSINTLINKSEPARATOR).value Then
     ' Enable the icon and new column options for dashboard link separators...
-    chkNewColumn.Visible = True
     lblIcon.Visible = True
     txtIcon.Visible = True
     cmdIcon.Visible = True
     cmdIconClear.Visible = True
     cmdIconClear.Enabled = txtIcon.Text <> ""
-    'cmdFilterClear.Enabled = txtFilter.Text <> ""
     imgIcon.Visible = True
-    lblNoOptions.Visible = False
+    chkNewColumn.Visible = (miLinkType = SSINTLINK_BUTTON)
+    lblNoOptions.Visible = (miLinkType = SSINTLINK_BUTTON)
     lblNoOptions.Top = 345
-    lblSeparatorColour.Visible = True
-    txtSeparatorColour.Visible = True
-    cmdSeparatorColPick.Visible = True
-    chkSeparatorUseFormatting.Visible = True
-    Line4.Visible = True
-  ElseIf optLink(SSINTLINKTODAYS_EVENTS).value Then
-    ' Disable the icon and new column options for hypertext link separators...
-    chkNewColumn.Visible = False
-    lblIcon.Visible = False
-    txtIcon.Visible = False
-    cmdIcon.Visible = False
-    cmdIconClear.Visible = False
-    cmdIconClear.Enabled = False
-    imgIcon.Visible = False
-    lblNoOptions.Visible = True
-    lblNoOptions.Top = 345
-    lblSeparatorColour.Visible = False
-    txtSeparatorColour.Visible = False
-    cmdSeparatorColPick.Visible = False
-    chkSeparatorUseFormatting.Visible = False
-    Line4.Visible = False
+    lblSeparatorColour.Visible = (miLinkType = SSINTLINK_BUTTON)
+    txtSeparatorColour.Visible = (miLinkType = SSINTLINK_BUTTON)
+    cmdSeparatorColPick.Visible = (miLinkType = SSINTLINK_BUTTON)
+    chkSeparatorUseFormatting.Visible = (miLinkType = SSINTLINK_BUTTON)
+    Line4.Visible = (miLinkType = SSINTLINK_BUTTON)
   Else
     lblNoOptions.Visible = False
     lblNoOptions.Top = 345
@@ -3045,7 +3029,7 @@ Private Sub cboChartType_Click()
   mfChanged = True
   ' Display new chart details
   RefreshChart
-  RefreshControls
+  If Not mfLoading Then RefreshControls
 End Sub
 
 Private Sub cboColumns_Click()
@@ -3134,7 +3118,7 @@ Private Sub cboParents_Click()
   End With
   
   
-  RefreshControls
+  If Not mfLoading Then RefreshControls
 End Sub
 
 Private Sub chkConditionalFormatting_Click()
@@ -3457,7 +3441,7 @@ End Sub
 
 Private Sub cboHRProUtility_Click()
   mfChanged = True
-  RefreshControls
+  If Not mfLoading Then RefreshControls
 End Sub
 
 Private Sub cboHRProUtilityType_Click()
@@ -3465,7 +3449,7 @@ Private Sub cboHRProUtilityType_Click()
     GetHRProUtilities cboHRProUtilityType.ItemData(cboHRProUtilityType.ListIndex)
     
     mfChanged = True
-    RefreshControls
+    If Not mfLoading Then RefreshControls
   End If
 End Sub
 
@@ -3503,7 +3487,7 @@ Private Sub cboTableView_Click()
   End If
   
   mfChanged = True
-  RefreshControls
+  If Not mfLoading Then RefreshControls
 
 End Sub
 
@@ -3860,7 +3844,7 @@ Private Sub optLink_Click(Index As Integer)
   mfChanged = True
  ' mfChanged = False
   
-  RefreshControls
+  If Not mfLoading Then RefreshControls
 
 End Sub
 
@@ -4028,7 +4012,7 @@ End Sub
 Private Sub txtPrompt_Change()
 '  If optLink(SSINTLINKSEPARATOR).value Then txtLinkSeparator.Text = Prompt  'keep them in sync
   mfChanged = True
-  RefreshControls
+  If Not mfLoading Then RefreshControls
 End Sub
 
 Private Sub txtPrompt_GotFocus()
@@ -4038,7 +4022,7 @@ End Sub
 Private Sub txtText_Change()
   'txtLinkSeparator.Text = Text
   mfChanged = True
-  RefreshControls
+  If Not mfLoading Then RefreshControls
 End Sub
 
 Private Sub txtText_GotFocus()
