@@ -18,6 +18,7 @@ Begin VB.Form frmAFDFields
    EndProperty
    HelpContextID   =   1007
    Icon            =   "frmAFDFields.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False

@@ -17,6 +17,7 @@ Begin VB.Form frmMatchRun
    EndProperty
    HelpContextID   =   1075
    Icon            =   "frmMatchRun.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form4"
    ScaleHeight     =   7125
    ScaleWidth      =   10665

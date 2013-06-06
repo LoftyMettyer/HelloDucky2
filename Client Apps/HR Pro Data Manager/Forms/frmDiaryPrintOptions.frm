@@ -18,6 +18,7 @@ Begin VB.Form frmDiaryPrintOptions
    EndProperty
    HelpContextID   =   1080
    Icon            =   "frmDiaryPrintOptions.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False

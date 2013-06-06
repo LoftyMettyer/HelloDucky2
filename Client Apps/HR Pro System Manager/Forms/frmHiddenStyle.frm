@@ -8,6 +8,7 @@ Begin VB.Form frmHiddenStyle
    ClientLeft      =   120
    ClientTop       =   420
    ClientWidth     =   8805
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    ScaleHeight     =   6420
    ScaleWidth      =   8805

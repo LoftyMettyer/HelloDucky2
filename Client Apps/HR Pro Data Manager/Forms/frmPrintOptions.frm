@@ -18,6 +18,7 @@ Begin VB.Form frmPrintOptions
    EndProperty
    HelpContextID   =   1052
    Icon            =   "frmPrintOptions.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -465,7 +466,7 @@ Private Sub cmdPrint_Click()
   mblnPortrait = (optPortrait.Value = True)
   mlngCopies = ASRSpinner1.Value
   mblnCollateCopies = (chkCollate = vbChecked)
-  mblnGridlines = (chkGridLines = vbChecked)
+  mblnGridlines = (chkGridlines = vbChecked)
   mblnShading = (chkShading = vbChecked)
   mblnHeadingsOnEveryPage = (chkHeadingsEveryPage = vbChecked)
   
@@ -749,8 +750,8 @@ Public Sub PrintDefinition()
   DenyCollate = True
   
   ' Grid lines only apply to reports
-  chkGridLines.Value = vbUnchecked
-  chkGridLines.Enabled = False
+  chkGridlines.Value = vbUnchecked
+  chkGridlines.Enabled = False
   
   ' Shading only apply to reports
   chkShading.Value = vbUnchecked

@@ -19,6 +19,7 @@ Begin VB.Form frmDiaryDetail
    EndProperty
    HelpContextID   =   1028
    Icon            =   "frmDiaryDetail.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False

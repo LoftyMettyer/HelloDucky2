@@ -17,6 +17,7 @@ Begin VB.Form frmBulkBookingFind
    EndProperty
    HelpContextID   =   1013
    Icon            =   "frmBulkBookingFind.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False

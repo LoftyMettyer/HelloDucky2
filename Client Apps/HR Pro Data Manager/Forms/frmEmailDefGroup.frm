@@ -18,6 +18,7 @@ Begin VB.Form frmEmailDefGroup
    EndProperty
    HelpContextID   =   1073
    Icon            =   "frmEmailDefGroup.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form5"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -177,15 +178,11 @@ Begin VB.Form frmEmailDefGroup
          RecordSelectors =   0   'False
          Col.Count       =   2
          stylesets.count =   5
-         stylesets(0).Name=   "ssetSelected"
-         stylesets(0).ForeColor=   -2147483634
-         stylesets(0).BackColor=   -2147483635
-         stylesets(0).Picture=   "frmEmailDefGroup.frx":000C
-         stylesets(1).Name=   "ssetHeaderDisabled"
-         stylesets(1).ForeColor=   -2147483631
-         stylesets(1).BackColor=   -2147483633
-         stylesets(1).HasFont=   -1  'True
-         BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+         stylesets(0).Name=   "ssetHeaderDisabled"
+         stylesets(0).ForeColor=   -2147483631
+         stylesets(0).BackColor=   -2147483633
+         stylesets(0).HasFont=   -1  'True
+         BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
             Name            =   "Verdana"
             Size            =   8.25
             Charset         =   0
@@ -194,6 +191,10 @@ Begin VB.Form frmEmailDefGroup
             Italic          =   0   'False
             Strikethrough   =   0   'False
          EndProperty
+         stylesets(0).Picture=   "frmEmailDefGroup.frx":000C
+         stylesets(1).Name=   "ssetSelected"
+         stylesets(1).ForeColor=   -2147483634
+         stylesets(1).BackColor=   -2147483635
          stylesets(1).Picture=   "frmEmailDefGroup.frx":0028
          stylesets(2).Name=   "ssetEnabled"
          stylesets(2).ForeColor=   -2147483640

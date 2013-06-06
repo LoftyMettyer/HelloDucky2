@@ -15,6 +15,7 @@ Begin VB.Form frmQAProMain
       Strikethrough   =   0   'False
    EndProperty
    Icon            =   "frmQAProMain.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "frmMain"
    LockControls    =   -1  'True
    MaxButton       =   0   'False

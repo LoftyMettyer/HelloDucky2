@@ -18,6 +18,7 @@ Begin VB.Form frmCrossTabCellBreakDown
    EndProperty
    HelpContextID   =   1016
    Icon            =   "frmCrossTabCellBreakDown.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form3"
    MaxButton       =   0   'False
    MinButton       =   0   'False

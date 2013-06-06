@@ -22,6 +22,7 @@ Begin VB.Form frmCalendarReport
    EndProperty
    HelpContextID   =   1066
    Icon            =   "frmCalendarReport.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -69,11 +70,11 @@ Begin VB.Form frmCalendarReport
       TabCaption(2)   =   "Report Detai&ls"
       TabPicture(2)   =   "frmCalendarReport.frx":0044
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraDisplayOptions"
+      Tab(2).Control(0)=   "fraReportStart"
       Tab(2).Control(0).Enabled=   0   'False
       Tab(2).Control(1)=   "fraReportEnd"
       Tab(2).Control(1).Enabled=   0   'False
-      Tab(2).Control(2)=   "fraReportStart"
+      Tab(2).Control(2)=   "fraDisplayOptions"
       Tab(2).Control(2).Enabled=   0   'False
       Tab(2).ControlCount=   3
       TabCaption(3)   =   "&Sort Order"
@@ -84,8 +85,8 @@ Begin VB.Form frmCalendarReport
       TabCaption(4)   =   "O&utput"
       TabPicture(4)   =   "frmCalendarReport.frx":007C
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "fraOutputDestination"
-      Tab(4).Control(1)=   "fraOutputFormat"
+      Tab(4).Control(0)=   "fraOutputFormat"
+      Tab(4).Control(1)=   "fraOutputDestination"
       Tab(4).ControlCount=   2
       Begin VB.Frame fraOutputDestination 
          Caption         =   "Output Destination(s) :"

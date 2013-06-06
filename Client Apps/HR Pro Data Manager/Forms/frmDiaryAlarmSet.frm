@@ -17,6 +17,7 @@ Begin VB.Form frmDiaryAlarmSet
    EndProperty
    HelpContextID   =   1029
    Icon            =   "frmDiaryAlarmSet.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False

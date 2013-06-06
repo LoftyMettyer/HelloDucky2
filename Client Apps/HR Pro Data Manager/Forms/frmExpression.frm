@@ -143,7 +143,7 @@ Begin VB.Form frmExpression
          HasFont         =   -1  'True
          HasMouseIcon    =   0   'False
          HasPictureBackground=   0   'False
-         ImageList       =   "<None>"
+         ImageList       =   "(None)"
          BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
             Name            =   "Verdana"
             Size            =   8.25
