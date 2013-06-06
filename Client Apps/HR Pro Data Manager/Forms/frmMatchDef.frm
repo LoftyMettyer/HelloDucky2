@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
@@ -1779,10 +1779,10 @@ End Sub
 
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
-  cmdOk.Enabled = pblnChanged
+  cmdOK.Enabled = pblnChanged
 End Property
 
 Public Property Get Cancelled() As Boolean
@@ -2982,7 +2982,7 @@ Private Sub ListView1_GotFocus()
 End Sub
 
 Private Sub ListView1_LostFocus()
-  cmdOk.Default = True
+  cmdOK.Default = True
 End Sub
 
 Private Sub ListView2_GotFocus()
@@ -2990,7 +2990,7 @@ Private Sub ListView2_GotFocus()
 End Sub
 
 Private Sub ListView2_LostFocus()
-  cmdOk.Default = True
+  cmdOK.Default = True
 End Sub
 
 Private Sub optAllRecords_Click(Index As Integer)
@@ -4530,13 +4530,13 @@ Private Sub txtDesc_GotFocus()
     .SelLength = Len(.Text)
   End With
   
-  cmdOk.Default = False
+  cmdOK.Default = False
   
 End Sub
 
 Private Sub txtDesc_LostFocus()
 
-  cmdOk.Default = True
+  cmdOK.Default = True
 
 End Sub
 
@@ -4724,41 +4724,28 @@ Private Function SaveDefinition() As Boolean
         "OutputPrinter = " & IIf(chkDestination(desPrinter).Value = vbChecked, "1", "0") & ", " & _
         "OutputPrinterName = '" & Replace(cboPrinterName.Text, " '", "''") & "', "
         
-'    If chkDestination(desSave).Value = vbChecked Then
-'      sSQL = sSQL & _
-'        "OutputSave = 1, " & _
-'        "OutputSaveExisting = " & cboSaveExisting.ItemData(cboSaveExisting.ListIndex) & ", "
-'    Else
-'      sSQL = sSQL & _
-'        "OutputSave = 0, " & _
-'        "OutputSaveExisting = 0, "
-'    End If
     If chkDestination(desSave).Value = vbChecked Then
       sSQL = sSQL & _
         "OutputSave = 1, " & _
-        "OutputSaveFormat = " & Val(txtFilename.Tag) & ", " & _
         "OutputSaveExisting = " & cboSaveExisting.ItemData(cboSaveExisting.ListIndex) & ", "
     Else
       sSQL = sSQL & _
         "OutputSave = 0, " & _
-        "OutputSaveFormat = 0, " & _
         "OutputSaveExisting = 0, "
     End If
-    
+        
     If chkDestination(desEmail).Value = vbChecked Then
       sSQL = sSQL & _
           "OutputEmail = 1, " & _
           "OutputEmailAddr = " & txtEmailGroup.Tag & ", " & _
           "OutputEmailSubject = '" & Replace(txtEmailSubject.Text, "'", "''") & "', " & _
-          "OutputEmailAttachAs = '" & Replace(txtEmailAttachAs.Text, "'", "''") & "', " & _
-          "OutputEmailFileFormat = " & CStr(Val(txtEmailAttachAs.Tag)) & ", "
+          "OutputEmailAttachAs = '" & Replace(txtEmailAttachAs.Text, "'", "''") & "', "
     Else
       sSQL = sSQL & _
           "OutputEmail = 0, " & _
           "OutputEmailAddr = 0, " & _
           "OutputEmailSubject = '', " & _
-          "OutputEmailAttachAs = '', " & _
-          "OutputEmailFileFormat = 0, "
+          "OutputEmailAttachAs = '', "
     End If
     
     sSQL = sSQL & _
@@ -4789,8 +4776,8 @@ Private Function SaveDefinition() As Boolean
         "ScoreMode, NumRecords, ScoreCheck, ScoreLimit, EqualGrade, ReportingStructure, " & _
         "Table1ID, Table1AllRecords, Table1Picklist, Table1Filter, PrintFilterHeader, " & _
         "Table2ID, Table2AllRecords, Table2Picklist, Table2Filter, " & _
-        "OutputPreview, OutputFormat, OutputScreen, OutputPrinter, OutputPrinterName, OutputSave, OutputSaveFormat, " & _
-        "OutputSaveExisting, OutputEmail, OutputEmailAddr, OutputEmailSubject, OutputEmailAttachAs, OutputEmailFileFormat, OutputFilename) "
+        "OutputPreview, OutputFormat, OutputScreen, OutputPrinter, OutputPrinterName, OutputSave, " & _
+        "OutputSaveExisting, OutputEmail, OutputEmailAddr, OutputEmailSubject, OutputEmailAttachAs, OutputFilename) "
 
     sSQL = sSQL & "VALUES(" & _
         "'" & Trim(Replace(txtName.Text, "'", "''")) & "', " & _
@@ -4827,20 +4814,19 @@ Private Function SaveDefinition() As Boolean
         "'" & Replace(cboPrinterName.Text, "'", "''") & "', "
 
     If chkDestination(desSave).Value = vbChecked Then
-      sSQL = sSQL & "1, " & CStr(Val(txtFilename.Tag)) & ", " & _
+      sSQL = sSQL & "1, " & _
         cboSaveExisting.ItemData(cboSaveExisting.ListIndex) & ", "
     Else
-      sSQL = sSQL & "0, 0, 0, "
+      sSQL = sSQL & "0, 0, "
     End If
 
     If chkDestination(desEmail).Value = vbChecked Then
       sSQL = sSQL & "1, " & _
           txtEmailGroup.Tag & ", " & _
           "'" & Replace(txtEmailSubject.Text, "'", "''") & "', " & _
-          "'" & Replace(txtEmailAttachAs.Text, "'", "''") & ", " & _
-          CStr(Val(txtEmailAttachAs.Tag)) & ", "      'OutputEmail, OutputEmailAddr, OutputEmailAttachAs, OutputEmailFileFormat, OutputEmailSubject
+          "'" & Replace(txtEmailAttachAs.Text, "'", "''") & "', "
     Else
-      sSQL = sSQL & "0, 0, '', '', 0, "               'OutputEmail, OutputEmailAddr, OutputEmailAttachAs, OutputEmailFileFormat, OutputEmailSubject
+      sSQL = sSQL & "0, 0, '', '', "
     End If
 
     sSQL = sSQL & _
