@@ -96,7 +96,7 @@ Public Function SelectOrder() As Boolean
       .TableComboVisible = False
       .HideDescription = True
 
-      sSQL = "SELECT name, orderID" & _
+      sSQL = "SELECT name, orderID, " & utlOrder & " AS [objecttype]" & _
                " FROM ASRSysOrders" & _
                " WHERE tableID = " & CStr(TableID) & _
                " AND type = " & CStr(OrderType)
