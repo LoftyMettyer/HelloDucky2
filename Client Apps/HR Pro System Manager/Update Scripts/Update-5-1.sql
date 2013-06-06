@@ -64,6 +64,410 @@ END
 	EXECUTE sp_executeSQL N'UPDATE ASRSysColumns SET dfltValueExprID = 0 WHERE (dfltValueExprID = - 1);';
 
 
+/* ------------------------------------------------------------- */
+/* Step - Structure changes */
+/* ------------------------------------------------------------- */
+
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysScreens', 'U') AND name = 'category')
+		EXEC sp_executesql N'ALTER TABLE ASRSysScreens ADD
+				[category] nvarchar(255),
+				[groupscreens] bit;';
+
+
+
+/* ------------------------------------------------------------- */
+/* Basic object scripting engine								 */
+/* ------------------------------------------------------------- */
+PRINT 'Step - Object scripting'
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spstat_scriptnewcolumn]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].[spstat_scriptnewcolumn];
+	EXECUTE sp_executeSQL N'CREATE PROCEDURE dbo.spstat_scriptnewcolumn (@columnid integer OUTPUT, @tableid integer, @columnname varchar(255)
+		, @datatype integer, @description varchar(255), @size integer, @decimals integer, @islocked bit, @uniquekey varchar(37), @IsIDColumn bit)
+	AS
+	BEGIN
+
+		DECLARE @ssql nvarchar(MAX),
+				@tablename varchar(255),
+				@datasyntax	varchar(255);
+
+		DECLARE @spinnerMinimum integer,
+			@spinnerMaximum integer,
+			@spinnerIncrement integer,
+			@audit bit,
+			@duplicate bit,
+			@defaultvalue varchar(max),
+			@columntype integer,
+			@mandatory bit,
+			@uniquecheck bit,
+			@convertcase smallint,
+			@mask varchar(MAX),
+			@lookupTableID integer,
+			@lookupColumnID integer,
+			@controltype integer,
+			@alphaonly bit,
+			@blankIfZero bit,
+			@multiline bit,
+			@alignment smallint,
+			@calcExprID integer,
+			@gotFocusExprID integer,
+			@lostFocusExprID integer,
+			@calcTrigger smallint,
+			@readOnly bit,
+			@statusBarMessage varchar(255),
+			@errorMessage varchar(255),
+			@linkTableID integer, 
+			@Afdenabled bit, 
+			@Afdindividual integer,
+			@Afdforename integer, 
+			@Afdsurname integer,
+			@Afdinitial integer, 
+			@Afdtelephone integer, 
+			@Afdaddress integer,
+			@Afdproperty integer, 
+			@Afdstreet integer, 
+			@Afdlocality integer, 
+			@Afdtown integer, 
+			@Afdcounty integer,
+			@dfltValueExprID integer, 
+			@linkOrderID integer, 
+			@OleOnServer bit, 
+			@childUniqueCheck bit,
+			@LinkViewID integer, 
+			@DefaultDisplayWidth integer, 
+			@UniqueCheckType integer,
+			@Trimming integer, 
+			@Use1000Separator bit,
+			@LookupFilterColumnID integer, 
+			@LookupFilterValueID integer, 
+			@QAddressEnabled integer, 
+			@QAIndividual integer, 
+			@QAAddress integer, 
+			@QAProperty integer, 
+			@QAStreet integer,
+			@QALocality integer, 
+			@QATown integer, 
+			@QACounty integer, 
+			@LookupFilterOperator integer, 
+			@Embedded bit, 
+			@OLEType integer, 
+			@MaxOLESizeEnabled bit, 
+			@MaxOLESize integer,
+			@AutoUpdateLookupValues bit, 
+			@CalculateIfEmpty bit;
+
+		-- Can we safely create this column?
+		IF EXISTS(SELECT [columnid] FROM dbo.[ASRSysColumns] WHERE tableid = @tableid AND columnname = @columnname)
+			RETURN;
+
+
+		SELECT @tablename = [tablename] FROM dbo.[ASRSysTables] WHERE tableid = @tableid;
+		SELECT @columnid = MAX(columnid) + 1 FROM dbo.[ASRSysColumns];
+			
+		SET @defaultvalue = '''';		
+		SET @spinnerMinimum = 0;
+		SET @spinnerMaximum = 0;
+		SET @spinnerIncrement = 0;
+		SET @audit = 0;
+		SET @duplicate = 0;
+		SET @columntype = 0;
+		SET @mandatory = 0;
+		SET @uniquecheck = 0;
+		SET @convertcase = 0;
+		SET @mask = '''';
+		SET @lookupTableID = 0;
+		SET	@lookupColumnID = 0;
+		SET	@controltype = 0;	
+		SET @alphaonly = 0;
+		SET @blankIfZero = 0;
+		SET @multiline = 0;
+		SET @alignment = 0;
+		SET @calcExprID = 0;
+		SET @gotFocusExprID = 0;
+		SET @lostFocusExprID = 0;
+		SET @calcTrigger = 0;
+		SET @readOnly = 0;
+		SET @statusBarMessage = '''';
+		SET @errorMessage = '''';
+		SET @linkTableID = 0; 
+		SET @Afdenabled = 0; 
+		SET @Afdindividual = 0;
+		SET @Afdforename = 0; 
+		SET @Afdsurname = 0;
+		SET @Afdinitial = 0; 
+		SET @Afdtelephone = 0; 
+		SET @Afdaddress = 0;
+		SET @Afdproperty = 0; 
+		SET @Afdstreet = 0; 
+		SET @Afdlocality = 0; 
+		SET @Afdtown = 0; 
+		SET @Afdcounty = 0;
+		SET @dfltValueExprID = 0; 
+		SET @linkOrderID = 0; 
+		SET @OleOnServer = 0; 
+		SET @childUniqueCheck = 0;
+		SET @LinkViewID = 0; 
+		SET @DefaultDisplayWidth = 0; 
+		SET @UniqueCheckType = 0;
+		SET @Trimming = 0;
+		SET @Use1000Separator = 0;
+		SET @LookupFilterColumnID = 0; 
+		SET @LookupFilterValueID = 0; 
+		SET @QAddressEnabled = 0; 
+		SET @QAIndividual = 0; 
+		SET @QAAddress = 0; 
+		SET @QAProperty = 0; 
+		SET @QAStreet = 0;
+		SET @QALocality = 0; 
+		SET @QATown = 0; 
+		SET @QACounty = 0; 
+		SET @LookupFilterOperator = 0; 
+		SET @Embedded = 0; 
+		SET @OLEType = 0; 
+		SET @MaxOLESizeEnabled = 0; 
+		SET @MaxOLESize = 0;
+		SET @AutoUpdateLookupValues = 0; 
+		SET @CalculateIfEmpty = 0;
+
+		-- Is ID column?
+		IF @IsIDColumn = 1 SET @columntype = 3;	
+
+		-- Logic
+		IF @datatype = -7
+		BEGIN
+			SET @datasyntax = ''bit'';
+			SET @defaultvalue = ''FALSE'';
+			SET @controltype = 1;
+		END
+
+		-- OLE
+		IF @datatype = -4
+			SET @controltype = 1;
+
+		-- Photo
+		IF @datatype = -3
+			SET @controltype = 1024;
+
+		-- Link
+		IF @datatype = -2
+		BEGIN
+			SET @datasyntax = ''varchar(255)'';
+			SET @controltype = 2048;
+		END
+
+		-- Working Pattern
+		IF @datatype = -1
+		BEGIN
+			SET @datasyntax = ''varchar(14)'';
+			SET @controltype = 4096;
+		END
+		
+		-- Numeric
+		IF @datatype = 2
+		BEGIN
+			SET @datasyntax = ''numeric('' + convert(varchar(5),@size) + '','' + @decimals + '')'';
+			SET @defaultvalue = 0;	
+			SET @controltype = 64;
+		END
+
+		-- Integers
+		IF @datatype = 4
+		BEGIN
+			SET @datasyntax = ''integer'';
+			SET @controltype = 64;
+		END
+		
+		-- Date
+		IF @datatype = 11
+		BEGIN
+			SET @datasyntax = ''datetime'';
+			SET @controltype = 64;
+		END
+
+		-- Character
+		IF @datatype = 12
+		BEGIN
+			SET @datasyntax = ''varchar('' + convert(varchar(5),@size) + '')'';
+			SET @controltype = 64;
+		END
+
+		-- System objects update
+		INSERT dbo.[tbsys_scriptedobjects] ([guid], [objecttype], [targetid], [ownerid], [effectivedate], [revision], [locked], [lastupdated])
+			SELECT @uniquekey, 2, @columnid, ''AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE'', ''01/01/1900'',1,@islocked, GETDATE()
+
+		-- Update base table								
+		INSERT dbo.[tbsys_columns] ([columnID], [tableID], [columnType], [datatype], [defaultValue], [size], [decimals]
+				, [lookupTableID], [lookupColumnID], [controltype], [spinnerMinimum], [spinnerMaximum], [spinnerIncrement], [audit]
+				, [duplicate], [mandatory], [uniquecheck], [convertcase], [mask], [alphaonly], [blankIfZero], [multiline], [alignment]
+				, [calcExprID], [gotFocusExprID], [lostFocusExprID], [calcTrigger], [readOnly], [statusBarMessage], [errorMessage]
+				, [linkTableID], [Afdenabled], [Afdindividual], [Afdforename], [Afdsurname], [Afdinitial], [Afdtelephone], [Afdaddress]
+				, [Afdproperty], [Afdstreet], [Afdlocality], [Afdtown], [Afdcounty], [dfltValueExprID], [linkOrderID], [OleOnServer]
+				, [childUniqueCheck], [LinkViewID], [DefaultDisplayWidth], [ColumnName], [UniqueCheckType], [Trimming], [Use1000Separator]
+				, [LookupFilterColumnID], [LookupFilterValueID], [QAddressEnabled], [QAIndividual], [QAAddress], [QAProperty], [QAStreet]
+				, [QALocality], [QATown], [QACounty], [LookupFilterOperator], [Embedded], [OLEType], [MaxOLESizeEnabled], [MaxOLESize]
+				, [AutoUpdateLookupValues], [CalculateIfEmpty]) 
+			VALUES (@columnid, @tableid, @columntype, @datatype, @defaultvalue, @size, @decimals
+				, @lookupTableID, @lookupColumnID, @controltype, @spinnerMinimum, @spinnerMaximum, @spinnerIncrement, @audit
+				, @duplicate, @mandatory, @uniquecheck, @convertcase, @mask, @alphaonly, @blankIfZero, @multiline, @alignment
+				, @calcExprID, @gotFocusExprID, @lostFocusExprID, @calcTrigger, @readOnly, @statusBarMessage, @errorMessage
+				, @linkTableID, @Afdenabled, @Afdindividual, @Afdforename, @Afdsurname, @Afdinitial, @Afdtelephone, @Afdaddress
+				, @Afdproperty, @Afdstreet, @Afdlocality, @Afdtown, @Afdcounty, @dfltValueExprID, @linkOrderID, @OleOnServer
+				, @childUniqueCheck, @LinkViewID, @DefaultDisplayWidth, @ColumnName, @UniqueCheckType, @Trimming, @Use1000Separator
+				, @LookupFilterColumnID, @LookupFilterValueID, @QAddressEnabled, @QAIndividual, @QAAddress, @QAProperty, @QAStreet
+				, @QALocality, @QATown, @QACounty, @LookupFilterOperator, @Embedded, @OLEType, @MaxOLESizeEnabled, @MaxOLESize
+				, @AutoUpdateLookupValues, @CalculateIfEmpty);
+
+			-- Physically create this column (is regenerated by the System Manager save)
+			IF @IsIDColumn = 0
+			BEGIN 	
+				SET @ssql = N''ALTER TABLE dbo.tbuser_'' + @tablename + '' ADD '' + @columnname + '' '' + @datasyntax;
+				EXECUTE sp_executesql @ssql;
+			END
+
+		RETURN;
+
+	END';
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spstat_scriptnewtable]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].[spstat_scriptnewtable];
+	EXECUTE sp_executeSQL N'CREATE PROCEDURE dbo.[spstat_scriptnewtable](@tableID integer OUTPUT, @tablename varchar(255), @tabletype tinyint, @uniquekey varchar(37))
+		AS
+		BEGIN
+
+			SET NOCOUNT ON;
+			
+			DECLARE @ssql nvarchar(MAX),
+					@newtableID integer;		
+
+			-- Can we safely create this table?
+			SELECT @newtableID = ISNULL(tableID,0) FROM dbo.[tbsys_tables] WHERE [TableName] = @tablename;
+
+			IF @newtableID > 0 RETURN;
+
+			SELECT @newtableID = MAX(tableID) + 1 FROM dbo.[tbsys_tables];
+
+			-- System objects update
+			INSERT dbo.[tbsys_scriptedobjects] ([guid], [objecttype], [targetid], [ownerid], [effectivedate], [revision], [locked], [lastupdated])
+				SELECT @uniquekey, 1, @newtableID, ''AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE'', ''01/01/1900'',1, 1, GETDATE()
+
+			-- System metadata
+			INSERT dbo.[tbsys_tables] (TableID, TableType, TableName, DefaultOrderID, RecordDescExprID, DefaultEmailID
+					, ManualSummaryColumnBreaks, AuditDelete, AuditInsert, isremoteview)
+				VALUES (@newtableID, @tabletype, @tablename, 0, 0, 0, 0, 0, 0, 0)
+
+			-- Physically create this table (is regenerated by the System Manager save)	
+			SET @ssql = N''CREATE TABLE dbo.tbuser_'' + @tablename + '' ([ID] integer IDENTITY(1,1) PRIMARY KEY CLUSTERED
+								, [updflag] int NULL, [_description] nvarchar(MAX) NULL, [TimeStamp] timestamp NOT NULL);'';
+			EXECUTE sp_executesql @ssql;
+
+			-- Create a veiw on this table (is replaced by System Manager save, so no need to be precise)
+			SET @ssql = N''CREATE VIEW dbo.['' + @tablename + ''] AS SELECT * FROM dbo.[tbuser_'' + @tablename + ''];'';
+			EXECUTE sp_executesql @ssql;
+
+			SET @tableID = @newtableID;
+
+		END';
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spstat_scriptnewprimaryorder]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].[spstat_scriptnewprimaryorder];
+	EXECUTE sp_executeSQL N'CREATE PROCEDURE dbo.[spstat_scriptnewprimaryorder](@tableID integer, @ordername varchar(255))
+		AS
+		BEGIN
+
+			SET NOCOUNT ON;
+			
+			DECLARE @ssql			nvarchar(MAX),
+					@orderID		integer,
+					@columncount	smallint,
+					@newtableID		integer;		
+
+			-- Can we safely create this order?
+			IF NOT EXISTS(SELECT [tableID] FROM dbo.[ASRSysOrders] WHERE [TableID] = @tableID)
+			BEGIN
+
+				SELECT @orderID = MAX(OrderID) + 1 FROM dbo.[ASRSysOrders];
+			
+				-- Default order
+				INSERT dbo.[ASRSysOrders] (OrderID, Name, TableID, [Type])
+					VALUES (@orderID, @ordername, @tableID, 1);
+
+				-- Order columns
+				INSERT dbo.[ASRSysOrderItems] (OrderID, ColumnID, [Type], Sequence, Ascending)
+					SELECT TOP 1 @orderID, [columnID], ''O'', 1,0
+					FROM dbo.tbsys_columns WHERE [tableID] = @tableID AND columnname NOT LIKE ''ID%'' ORDER BY [columnID];
+
+				-- Find window items
+				INSERT dbo.[ASRSysOrderItems] (OrderID, ColumnID, [Type], Sequence, Ascending)
+					SELECT TOP 1 @orderID, [columnID], ''F'', 1,0
+					FROM dbo.tbsys_columns WHERE [tableID] = @tableID AND columnname NOT LIKE ''ID%'' ORDER BY [columnID];
+
+				-- Set this as the primary order
+				UPDATE dbo.tbsys_tables SET [DefaultOrderID] = @orderID WHERE [TableID] = @tableID;
+
+			END
+
+		END';
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spstat_scriptnewprimaryscreen]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].[spstat_scriptnewprimaryscreen];
+	EXECUTE sp_executeSQL N'CREATE PROCEDURE dbo.[spstat_scriptnewprimaryscreen](@tableID integer, @screenname varchar(255))
+	AS
+	BEGIN
+	
+		SET NOCOUNT ON;
+
+		DECLARE @screenID integer;
+
+		-- Can we safely create this order?
+		IF NOT EXISTS(SELECT [tableID] FROM dbo.[ASRSysScreens] WHERE [TableID] = @tableID)
+		BEGIN
+
+			SELECT @screenID = ISNULL(MAX(ScreenID),0) + 1 FROM dbo.[ASRSysScreens];
+
+			-- Insert base screen
+			INSERT INTO [dbo].[ASRSysScreens]
+				   ([ScreenID], [Name], [TableID], [OrderID], [Height], [Width], [PictureID],
+					[FontName], [FontSize], [FontBold], [FontItalic], [FontStrikeThru], [FontUnderline],
+					[GridX], [GridY], [AlignToGrid],
+					[DfltForeColour], [DfltFontName], [DfltFontSize], [DfltFontBold], [DfltFontItalic],
+					[QuickEntry], [SSIntranet], [category], [groupscreens])
+			 VALUES
+				   (@screenID, @screenname, @tableID, 0, 1600, 7100, 0,
+					''Verdana'', 8, 0, 0, 0, 0,
+					40, 40, 1,
+					0, ''Verdana'', 8, 0, 0,
+					0, 0, ''Configuration'', 0);
+
+			-- Insert top most column (label)
+			INSERT INTO [dbo].[ASRSysControls](
+					[ScreenID], [PageNo], [ControlLevel], [TableID], [ColumnID], [ControlType], [ControlIndex],
+					[TopCoord], [LeftCoord], [Height], [Width], [Caption], [BackColor], [ForeColor],
+					[FontName], [FontSize], [FontBold], [FontItalic], [FontStrikeThru], [FontUnderline],
+					[TabIndex], [ReadOnly],	[NavigateOnSave])
+				SELECT TOP 1 @screenID, 0, 2, NULL, 0, 256, 0,
+						440, 240, 195, 1485, REPLACE([columnname],''_'','' '') + '':'' , -2147483633, 0, 
+						''Verdana'', 8, 0, 0, 0, 0,
+						22, 0, 0
+					FROM dbo.tbsys_columns WHERE [tableID] = @tableID AND columnname NOT LIKE ''ID%'' ORDER BY [columnID];
+
+			-- Insert top most column (control)
+			INSERT INTO [dbo].[ASRSysControls](
+					[ScreenID], [PageNo], [ControlLevel], [TableID], [ColumnID], [ControlType], [ControlIndex],
+					[TopCoord], [LeftCoord], [Height], [Width], [Caption], [BackColor], [ForeColor],
+					[FontName], [FontSize], [FontBold], [FontItalic], [FontStrikeThru], [FontUnderline],
+					[TabIndex], [ReadOnly],	[NavigateOnSave])
+				SELECT TOP 1 @screenID, 0, 1, [tableid], [columnid], [controltype], 0,
+						360, 1920, 315, 4950, [columnname], 16777215, 0, 
+						''Verdana'', 8, 0, 0, 0, 0,
+						21, 0, 0
+					FROM dbo.tbsys_columns WHERE [tableID] = @tableID AND columnname NOT LIKE ''ID%'' ORDER BY [columnID];
+
+		END
+	END'
+
+
+
+
 
 /* ------------------------------------------------------------- */
 /* Update ASRSysBatchJob Table with columns       */
@@ -100,9 +504,49 @@ PRINT 'Step - Adding new columns to Batch Jobs'
   
 
 /* ------------------------------------------------------------- */
-/* Step - Menu Enhancements */
+/* Step - Menu & Category Enhancements */
 /* ------------------------------------------------------------- */
+PRINT 'Step - Menu & Category enhancements'
 
+
+	-- Generate, configure and populate the categories table
+	DECLARE @categorytableid integer,
+			@namecolumnid integer
+
+	EXECUTE dbo.spstat_scriptnewtable @categorytableid OUTPUT, 'Categories_Table', 3, 'D749F8E9-9625-47D3-889F-6A673B6C5F4A';
+	IF @categorytableid > 0 
+	BEGIN
+		EXECUTE dbo.spstat_scriptnewcolumn @namecolumnid OUTPUT, @categorytableid, 'ID', 4, 'ID', 0, 0, 1, 'DB0F209B-A0C0-4B8B-9044-8519EB94C718', 1;
+		EXECUTE dbo.spstat_scriptnewcolumn @namecolumnid OUTPUT, @categorytableid, 'Category_Name', 12, 'Category name', 50, 0, 1, 'CF24AEC1-28C3-4A44-A56C-B4363C275785', 0;
+		EXECUTE dbo.spstat_scriptnewprimaryorder @categorytableid, 'Category_Name';
+		EXECUTE spstat_scriptnewprimaryscreen @categorytableid, 'Category';
+		
+		-- Configure the module
+		EXECUTE dbo.spstat_setdefaultmodulesetting 'MODULE_CATEGORY', 'Param_CategoryTable', @categorytableid, 'PType_TableID';
+		EXECUTE dbo.spstat_setdefaultmodulesetting 'MODULE_CATEGORY', 'Param_CatageoryNameColumn', @namecolumnid, 'PType_ColumnID';
+
+		-- Populate with some basic categories
+		IF @categorytableid > 0 AND @namecolumnid > 0
+		BEGIN
+			INSERT dbo.tbuser_Categories_Table ([Category_Name]) VALUES ('Personnel')		
+			INSERT dbo.tbuser_Categories_Table ([Category_Name]) VALUES ('Absence')
+			INSERT dbo.tbuser_Categories_Table ([Category_Name]) VALUES ('Applicant')
+			INSERT dbo.tbuser_Categories_Table ([Category_Name]) VALUES ('Salary')
+			INSERT dbo.tbuser_Categories_Table ([Category_Name]) VALUES ('Training')
+			INSERT dbo.tbuser_Categories_Table ([Category_Name]) VALUES ('Documents')
+			INSERT dbo.tbuser_Categories_Table ([Category_Name]) VALUES ('Discipline')
+			INSERT dbo.tbuser_Categories_Table ([Category_Name]) VALUES ('Grienvances')
+			INSERT dbo.tbuser_Categories_Table ([Category_Name]) VALUES ('Health & Safety')
+			INSERT dbo.tbuser_Categories_Table ([Category_Name]) VALUES ('Learning & Development')
+			INSERT dbo.tbuser_Categories_Table ([Category_Name]) VALUES ('Bank')
+			INSERT dbo.tbuser_Categories_Table ([Category_Name]) VALUES ('Pension')
+			INSERT dbo.tbuser_Categories_Table ([Category_Name]) VALUES ('Configuration')
+		END
+		
+	END
+
+
+	-- Menus
 	IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = object_ID(N'tbsys_userusage') AND type in (N'U'))
 	BEGIN
 		EXEC sp_executesql N'CREATE TABLE [tbsys_userusage](
