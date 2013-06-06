@@ -1437,7 +1437,7 @@ Dim fAllColumns As Boolean
   lngMax = 1000
   lngList2Max = 0
   
-  If mblnScheduledJobs Then
+  If mblnBatchPrompt Then
     List2.Clear
   Else
     List1.ListItems.Clear
@@ -1870,7 +1870,7 @@ Private Sub ShowControls()
    
   ' Table combo flag now used to show categories or tables
   lblTables.Visible = Not (mutlUtilityType = utlWorkflow Or mutlUtilityType = utlDocumentMapping _
-                        Or mutlUtilityType = utlLabelType Or mutlUtilityType = utlEmailGroup)
+                        Or mutlUtilityType = utlLabelType Or mutlUtilityType = utlEmailGroup Or mblnScheduledJobs)
   cboTables.Visible = lblTables.Visible
     
   If mblnTableComboVisible Then
