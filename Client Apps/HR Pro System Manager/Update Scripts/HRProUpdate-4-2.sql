@@ -57,7 +57,7 @@ END
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 1 of X - Create New IsValidNINumber function'
+PRINT 'Step 1 - Create New IsValidNINumber function'
 
 	DELETE FROM [ASRSysFunctions] WHERE FunctionID = 75
 	INSERT [ASRSysFunctions]
@@ -129,7 +129,7 @@ PRINT 'Step 1 of X - Create New IsValidNINumber function'
 	EXECUTE sp_executeSQL @sSPCode;
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 2 of X - Create New IsValidPayrollCharacterSet function'
+PRINT 'Step 2 - Create New IsValidPayrollCharacterSet function'
 
 	DELETE FROM [ASRSysFunctions] WHERE FunctionID = 76
 	INSERT [ASRSysFunctions]
@@ -192,7 +192,7 @@ PRINT 'Step 2 of X - Create New IsValidPayrollCharacterSet function'
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 3 of X - Create New Replace Characters within a String function'
+PRINT 'Step 3 - Create New Replace Characters within a String function'
 
 	DELETE FROM [ASRSysFunctions] WHERE FunctionID = 77
 	INSERT [ASRSysFunctions]
@@ -239,7 +239,7 @@ PRINT 'Step 3 of X - Create New Replace Characters within a String function'
 	EXECUTE sp_executeSQL @sSPCode;
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 4 of X - Add new formatting columns to ASRSysSSIntranetLinks'
+PRINT 'Step 4 - Add new formatting columns to ASRSysSSIntranetLinks'
 
 	IF NOT EXISTS(SELECT id FROM syscolumns
 	              WHERE  id = OBJECT_ID('ASRSysSSIntranetLinks', 'U') AND name = 'UseFormatting')
@@ -446,7 +446,7 @@ PRINT 'Step 4 of X - Add new formatting columns to ASRSysSSIntranetLinks'
 	
 	
 /* ------------------------------------------------------------- */
-PRINT 'Step 5 of X - Modifying Workflow Data Structures'
+PRINT 'Step 5 - Modifying Workflow Data Structures'
 
 	/* ASRSysWorkflowElementItems - Add new LookupFilterColumnID column */
 	SELECT @iRecCount = COUNT(id) FROM syscolumns
@@ -485,7 +485,7 @@ PRINT 'Step 5 of X - Modifying Workflow Data Structures'
 	END
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 6 of X - Modifying Workflow Stored Procedures'
+PRINT 'Step 6 - Modifying Workflow Stored Procedures'
 
 
 	----------------------------------------------------------------------
@@ -1375,7 +1375,7 @@ PRINT 'Step 6 of X - Modifying Workflow Stored Procedures'
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 7 of X - Updating Details for ACS Rebranding'
+PRINT 'Step 7 - Updating Details for ACS Rebranding'
 /* ------------------------------------------------------------- */
 delete from asrsyssystemsettings
 where [Section] = 'support' and [SettingKey] = 'email'
@@ -1399,9 +1399,23 @@ values('support', 'webpage', 'http//webfirst.advancedcomputersoftware.com')
 /* ------------------------------------------------------------- */
 
 
+/* ------------------------------------------------------------- */
+PRINT 'Step 8 - Adding new control type'
+/* ------------------------------------------------------------- */
+
+    SELECT @NVarCommand = 'ALTER TABLE [dbo].[ASRSysColumns] ALTER COLUMN [ControlType] integer;'
+    EXEC sp_executesql @NVarCommand;
+
+    SELECT @NVarCommand = 'ALTER TABLE [dbo].[ASRSysControls] ALTER COLUMN [ControlType] integer;'
+    EXEC sp_executesql @NVarCommand;
+
 
 /* ------------------------------------------------------------- */
-PRINT 'Step X of X - '
+
+
+
+/* ------------------------------------------------------------- */
+PRINT 'Step X - '
 
 	
 /* ------------------------------------------------------------- */
