@@ -284,7 +284,7 @@ Dim strUtilityName As String
   RemoveTemporarySQLObjects
   
   If fOK Then
-    If gblnBatchMode Or Not mblnPreviewOnScreen Then
+    If gblnBatchMode Or gblnReportPackMode Or Not mblnPreviewOnScreen Then
       fOK = OutputReport(False)
     End If
   End If
