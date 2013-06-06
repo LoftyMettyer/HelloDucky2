@@ -3,7 +3,7 @@ Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
 Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{1C203F10-95AD-11D0-A84B-00A0247B735B}#1.0#0"; "SSTree.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Begin VB.Form frmGroupMaint1 
    BackColor       =   &H80000004&
    Caption         =   "Group Permissions"
@@ -283,14 +283,12 @@ Begin VB.Form frmGroupMaint1
          NumPanels       =   2
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   2
-            TextSave        =   ""
             Key             =   ""
             Object.Tag             =   ""
          EndProperty
          BeginProperty Panel2 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   1
             Object.Width           =   8969
-            TextSave        =   ""
             Key             =   ""
             Object.Tag             =   ""
          EndProperty
@@ -5915,8 +5913,10 @@ Private Sub EditMenu_AutomaticAdd()
           bOK = oUserNames.UDFCalculationCode(alngSourceTables, mvarUDFsRequired(), True)
         End If
       
-      ' Bolt on the domain string
-      strUserNameCode = "'" & strUserDomainName & "\' + " & strUserNameCode
+        ' Bolt on the domain string
+        If Len(strUserDomainName) > 0 Then
+          strUserNameCode = "'" & strUserDomainName & "\' + " & strUserNameCode
+        End If
       
       End If
       Set oUserNames = Nothing
