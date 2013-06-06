@@ -461,7 +461,7 @@ Private Function GetServerDLLVersion(sConnect As String) As String
   rsExists.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly
 
   If rsExists.Fields(0).value = 0 Then
-    RunScript App.Path & "\Update Scripts\HRProLock.sql", sConnect
+    RunScript App.Path & "\Update Scripts\Lock.sql", sConnect
   End If
 
   rsExists.Close
@@ -610,13 +610,13 @@ Private Function UpdateDatabase( _
   'MH20010903 We don't know how old the database is so make
   'sure that the lock stuff in in there before we start...
   strScriptPath = App.Path & "\Update Scripts\"
-  strFileName = "HRProLock.sql"
+  strFileName = "Lock.sql"
   RunScript strScriptPath & strFileName, sConnect
   gobjProgress.UpdateProgress False
 
   'MH20020430 From v1.32.4 Make sure that we run the script
   'for the overnight job rather than during the save process
-  strFileName = "HRProOvernightJob.sql"
+  strFileName = "OvernightJob.sql"
   RunScript strScriptPath & strFileName, sConnect
   gobjProgress.UpdateProgress False
   
@@ -736,7 +736,7 @@ Private Function UpdateDatabase( _
   End If
   
   Dim nextFile As String
-  nextFile = Dir$(strScriptPath & "HRProUpdate-*.Sql")
+  nextFile = Dir$(strScriptPath & "Update-*.Sql")
 
   Dim iFileMajor As Integer
   Dim iFileMinor As Integer
@@ -804,17 +804,16 @@ Private Function UpdateDatabase( _
     
     If intMajor < App.Major Or intMinor < App.Minor Or fReRunScript Then
     
-      'strFileName = "HRProUpdate-" & CStr(intMajor) & "-" & CStr(intMinor + IIf(fReRunScript, 0, 1)) & ".sql"
       If fReRunScript Then
-        strFileName = "HRProUpdate-" & CStr(intMajor) & "-" & CStr(intMinor) & ".sql"
+        strFileName = "Update-" & CStr(intMajor) & "-" & CStr(intMinor) & ".sql"
       Else
-        strFileName = "HRProUpdate-" & CStr(intMajor) & "-" & CStr(intMinor + 1) & ".sql"
+        strFileName = "Update-" & CStr(intMajor) & "-" & CStr(intMinor + 1) & ".sql"
       End If
       
       If Dir(strScriptPath & strFileName) = vbNullString Then
         If intMajor < App.Major Then
           intMinor = 0
-          strFileName = "HRProUpdate-" & CStr(intMajor + 1) & "-" & CStr(intMinor) & ".sql"
+          strFileName = "Update-" & CStr(intMajor + 1) & "-" & CStr(intMinor) & ".sql"
         End If
       End If
   

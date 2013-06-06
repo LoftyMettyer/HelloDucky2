@@ -18,7 +18,7 @@ Public Function CreateOvernightProcess(palngExpressions As Variant, pfRefreshDat
   
   If Application.ChangedOvernightJobSchedule Then
     'Make sure that we run the script for the overnight job Schedule
-    strFileName = "HRProOvernightJob.sql"
+    strFileName = "OvernightJob.sql"
     strScriptPath = App.Path & "\Update Scripts\" & strFileName
     
     RunOvernightScript strScriptPath
