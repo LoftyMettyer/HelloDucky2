@@ -391,8 +391,7 @@ sProcSQL = sProcSQL & "  IF @psMessage = ''" & vbNewLine & _
     "            ELSE" & vbNewLine & _
     "            BEGIN" & vbNewLine & _
     "            SET @sMessage = 'Thank you for registering for OpenHR Mobile Workflow access.' + CHAR(13) + CHAR(10)" & vbNewLine & _
-    "              + CHAR(13) + CHAR(10) + 'You can use your windows username and password to log in' + CHAR(13) + CHAR(10)" & vbNewLine & _
-    "              + CHAR(13) + CHAR(10) + 'after you''ve clicked the following link to activate your registration: ' + CHAR(13) + CHAR(10)" & vbNewLine & _
+    "              + CHAR(13) + CHAR(10) + 'You can use your windows username and password to log in, after you''ve clicked the following link to activate your registration: ' + CHAR(13) + CHAR(10)" & vbNewLine & _
     "               + CHAR(13) + CHAR(10) + @psActivationURL;" & vbNewLine & _
     "            END" & vbNewLine
           
