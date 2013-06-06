@@ -1324,10 +1324,10 @@ Private Sub RefreshColumnsGrid()
 End Sub
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
-  cmdOK.Enabled = pblnChanged
+  cmdOk.Enabled = pblnChanged
 End Property
 
 Private Function JobUtilityType(psJobType As String) As UtilityType
@@ -1674,14 +1674,14 @@ Private Sub cmdFilterClear_Click()
   txtOverrideFilter = ""
   txtOverrideFilter.Tag = 0
   ForceDefinitionToBeHiddenIfNeeded2
-  cmdfilterClear.Enabled = False
+  cmdFilterClear.Enabled = False
   cmdOverrideFilter.SetFocus
   Changed = Not mblnLoading
 End Sub
 
 Private Sub cmdOverrideFilter_Click()
   GetFilter txtFilterSource, txtOverrideFilter
-  cmdfilterClear.Enabled = txtOverrideFilter.Text <> ""
+  cmdFilterClear.Enabled = txtOverrideFilter.Text <> ""
   Changed = Not mblnLoading
 End Sub
 Private Sub GetFilter(ctlSource As Control, ctlTarget As Control)
@@ -2168,7 +2168,7 @@ Private Function RetrieveBatchJobDetails() As Boolean
     txtOverrideFilter.Tag = prstTemp!OverrideFilterID
     
     cmdTitlePageClear.Enabled = Not txtTitlePage.Text = ""
-    cmdfilterClear.Enabled = Not txtOverrideFilter.Text = ""
+    cmdFilterClear.Enabled = Not txtOverrideFilter.Text = ""
     
     optOutputFormat(prstTemp!OutputFormat).Value = True
     mobjOutputDef.PopulateOutputControls prstTemp
@@ -3027,7 +3027,7 @@ Private Function SaveDefinition2() As Boolean
     sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmail = 1, "), ("OutputEmail = 0, "))
     sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmailAddr = " & txtEmailGroup.Tag & ", "), ("OutputEmailAddr = 0, "))
     sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmailSubject = '" & Replace(txtEmailSubject.Text, "'", "''") & "', "), ("OutputEmailSubject = '', "))
-    sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmailAttachAs = '" & Replace(txtEMailAttachAs.Text, "'", "''") & "'"), ("OutputEmailAttachAs = ''"))
+    sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmailAttachAs = '" & Replace(txtEmailAttachAs.Text, "'", "''") & "'"), ("OutputEmailAttachAs = ''"))
     
     'FINAL WHERE CLAUSE
     sSQL = sSQL & " WHERE ID = " & mlngBatchJobID
@@ -3115,7 +3115,7 @@ Private Function SaveDefinition2() As Boolean
           'outputFilename
           sSQL = sSQL & "'" & Replace(txtFilename.Text, "'", "''") & "',"
           'outputEmailAttachAs
-          sSQL = sSQL & IIf(chkDestination(desEmail), ("'" & Replace(txtEMailAttachAs.Text, "'", "''") & "',"), ("'',"))
+          sSQL = sSQL & IIf(chkDestination(desEmail), ("'" & Replace(txtEmailAttachAs.Text, "'", "''") & "',"), ("'',"))
           'outputTitlePage
           sSQL = sSQL & "'" & Replace(txtTitlePage.Text, "'", "''") & "', "
           'outputReportPackTitle
@@ -3469,7 +3469,7 @@ Private Function ValidDestination() As Boolean
   
     Select Case mobjOutputDef.Format
     Case fmtWordDoc, fmtExcelWorksheet, fmtExcelchart, fmtExcelPivotTable
-      If txtEMailAttachAs.Text Like "*.html" Then
+      If txtEmailAttachAs.Text Like "*.html" Then
         COAMsgBox "You cannot email html output from word or excel.", vbExclamation, Caption
         Exit Function
       End If
@@ -3487,20 +3487,20 @@ Private Function ValidDestination() As Boolean
       Exit Function
     End If
 
-    If txtEMailAttachAs.Text = vbNullString Then
+    If txtEmailAttachAs.Text = vbNullString Then
       COAMsgBox "You must enter an email attachment file name.", vbExclamation, Caption
       Exit Function
     End If
     
-    If InStr(txtEMailAttachAs.Text, "/") Or _
-       InStr(txtEMailAttachAs.Text, ":") Or _
-       InStr(txtEMailAttachAs.Text, "?") Or _
-       InStr(txtEMailAttachAs.Text, Chr(34)) Or _
-       InStr(txtEMailAttachAs.Text, "<") Or _
-       InStr(txtEMailAttachAs.Text, ">") Or _
-       InStr(txtEMailAttachAs.Text, "|") Or _
-       InStr(txtEMailAttachAs.Text, "\") Or _
-       InStr(txtEMailAttachAs.Text, "*") Then
+    If InStr(txtEmailAttachAs.Text, "/") Or _
+       InStr(txtEmailAttachAs.Text, ":") Or _
+       InStr(txtEmailAttachAs.Text, "?") Or _
+       InStr(txtEmailAttachAs.Text, Chr(34)) Or _
+       InStr(txtEmailAttachAs.Text, "<") Or _
+       InStr(txtEmailAttachAs.Text, ">") Or _
+       InStr(txtEmailAttachAs.Text, "|") Or _
+       InStr(txtEmailAttachAs.Text, "\") Or _
+       InStr(txtEmailAttachAs.Text, "*") Then
           COAMsgBox "The email attachment file name cannot contain any of the following characters:" & vbCrLf & _
                  "/  :  ?  " & Chr(34) & "  <  >  |  \  *", vbExclamation, Caption
           Exit Function
@@ -4361,7 +4361,7 @@ Private Sub SSTab1_Click(PreviousTab As Integer)
   fraScheduling.Enabled = (SSTab1.Tab = 0)
   fraJobs.Enabled = (SSTab1.Tab = 1)
   fraEMailNotify.Enabled = (SSTab1.Tab = 1)
-  FraOutput.Enabled = (SSTab1.Tab = 2)
+  fraOutput.Enabled = (SSTab1.Tab = 2)
   fraDest.Enabled = (SSTab1.Tab = 2)
   fraOptions.Enabled = (SSTab1.Tab = 2)
   
