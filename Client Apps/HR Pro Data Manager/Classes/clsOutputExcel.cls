@@ -681,7 +681,7 @@ Public Function RecordProfilePage(pfrmRecProfile As frmRecordProfilePreview, _
   If mblnXLExcelOmitTopRow Then mxlWorkBook.ActiveSheet.Range("1:1").Delete
       
   mxlWorkBook.ActiveSheet.Range("A1").Select
-  mxlWorkBook.Sheets(1).Select
+  'mxlWorkBook.Sheets(1).Activate
 
   On Local Error Resume Next  'MH20040120 Fault 7955
   mxlWorkBook.ActiveSheet.PageSetup.Orientation = IIf(mblnXLLandscape, xlLandscape, xlPortrait)
