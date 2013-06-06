@@ -118,9 +118,6 @@ Public Function CheckVersion(sConnect As String, fReRunScript As Boolean, bIsSQL
     End If
   End If
      
-  'Check to see if the engine is ticking over
-  fOK = CheckFrameworkVersion()
-  
   ' AE20080218 Fault #12834, 12859
   If fOK Then
     If (fReRunScript Or gblnAutomaticScript) And bIsSQLSystemAdmin Then
@@ -380,6 +377,9 @@ Public Function CheckVersion(sConnect As String, fReRunScript As Boolean, bIsSQL
     gfRefreshStoredProcedures = (GetSystemSetting("Database", "RefreshStoredProcedures", 0) = 1)
     Application.Changed = Application.Changed Or gfRefreshStoredProcedures
   End If
+  
+  'Check to see if the engine is the correct version
+  fOK = CheckFrameworkVersion()
   
   ' Upload scripts
   If fOK Then
