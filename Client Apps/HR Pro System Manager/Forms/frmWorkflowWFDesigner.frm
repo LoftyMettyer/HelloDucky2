@@ -1,17 +1,17 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{A48C54F8-25F4-4F50-9112-A9A3B0DBAD63}#1.0#0"; "coa_label.ocx"
-Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "coa_line.ocx"
-Object = "{98B2556E-F719-4726-9028-5F2EAB345800}#1.0#0"; "coasd_checkbox.ocx"
-Object = "{3EBC9263-7DE3-4E87-8721-81ACE59CD84E}#1.1#0"; "coasd_combo.ocx"
-Object = "{3CCEDCBE-4766-494F-84C9-95993D77BD56}#1.0#0"; "coasd_command.ocx"
+Object = "{A48C54F8-25F4-4F50-9112-A9A3B0DBAD63}#1.0#0"; "COA_Label.ocx"
+Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "COA_Line.ocx"
+Object = "{98B2556E-F719-4726-9028-5F2EAB345800}#1.0#0"; "COASD_Checkbox.ocx"
+Object = "{3EBC9263-7DE3-4E87-8721-81ACE59CD84E}#1.1#0"; "COASD_Combo.ocx"
+Object = "{3CCEDCBE-4766-494F-84C9-95993D77BD56}#1.0#0"; "COASD_Command.ocx"
 Object = "{FFAE31F9-C18D-4C20-AAF7-74C1356185D9}#1.0#0"; "COASD_Frame.ocx"
-Object = "{5F165695-EDF2-40E1-BD8E-8D2E6325BDCF}#1.0#0"; "coasd_image.ocx"
-Object = "{CE18FF03-F3BF-4C4F-81DC-192ED1E1B91F}#1.0#0"; "coasd_optiongroup.ocx"
-Object = "{58F88252-94BB-43CE-9EF9-C971F73B93D4}#1.0#0"; "coasd_selection.ocx"
-Object = "{714061F3-25A6-4821-B196-7D15DCCDE00E}#1.0#0"; "coasd_selectionbox.ocx"
+Object = "{5F165695-EDF2-40E1-BD8E-8D2E6325BDCF}#1.0#0"; "COASD_Image.ocx"
+Object = "{CE18FF03-F3BF-4C4F-81DC-192ED1E1B91F}#1.0#0"; "COASD_OptionGroup.ocx"
+Object = "{58F88252-94BB-43CE-9EF9-C971F73B93D4}#1.0#0"; "COASD_Selection.ocx"
+Object = "{714061F3-25A6-4821-B196-7D15DCCDE00E}#1.0#0"; "COASD_SelectionBox.ocx"
 Object = "{63212438-5384-4CC0-B836-A2C015CCBF9B}#1.0#0"; "COAWF_WebForm.ocx"
-Object = "{BD3A90B9-91E4-40D5-A504-C6DFB4380BBC}#1.0#0"; "coasd_grid.ocx"
+Object = "{BD3A90B9-91E4-40D5-A504-C6DFB4380BBC}#1.0#0"; "COASD_Grid.ocx"
 Object = "{66DD2720-DB90-4D94-963B-369CC9DC8BF8}#5.6#0"; "COAWF_TabPage.ocx"
 Begin VB.Form frmWorkflowWFDesigner 
    AutoRedraw      =   -1  'True
@@ -8966,17 +8966,16 @@ Private Sub tabPages_GotFocus()
 
   ' Deselect all controls.
   If tabPages.Tabs.Count > 0 Then
-    If mlngCurrentPageNo <> tabPages.SelectedItem.Index Then
-      DeselectAllControls
 
-      ' Refresh the menu.
-      frmSysMgr.RefreshMenu
+    DeselectAllControls
+      
+    ' Refresh the menu.
+    frmSysMgr.RefreshMenu
 
-      ' Refresh the properties screen.
-      Set frmWorkflowWFItemProps.CurrentWebForm = Me
-      frmWorkflowWFItemProps.RefreshProperties
-
-    End If
+    ' Refresh the properties screen.
+    Set frmWorkflowWFItemProps.CurrentWebForm = Me
+    frmWorkflowWFItemProps.RefreshProperties
+      
   End If
 
 End Sub
