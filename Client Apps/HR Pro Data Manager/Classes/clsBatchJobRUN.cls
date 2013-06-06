@@ -101,7 +101,7 @@ DoesUserHavePermissionForAllJobs_ERROR:
   
   Set prstBatchDetails = Nothing
   DoesUserHavePermissionForAllJobs = False
-  COAMsgBox "Error while checking individual job permissions." & vbCrLf & "Contact Asr Support stating : " & Err.Description, vbCritical + vbOKOnly, "Batch Job"
+  COAMsgBox "Error while checking individual job permissions." & vbCrLf & "Contact Asr Support stating : " & Err.Description, vbCritical + vbOKOnly, IIf(gblnReportPackMode, "Report Pack", "Batch Job")
   
 End Function
 
@@ -118,8 +118,8 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
   
   'This should never happen, but just in case...
   If rsBatchDetails.BOF And rsBatchDetails.EOF Then
-    COAMsgBox "Batch job has been deleted by another user.", vbExclamation + vbOKOnly, "Batch Jobs"
-    RunBatchJob = "Batch Failed : Batch job has been deleted by another user."
+    COAMsgBox IIf(gblnReportPackMode, "report pack", "batch job") & " has been deleted by another user.", vbExclamation + vbOKOnly, IIf(gblnReportPackMode, "Report Pack", "Batch Job")
+    RunBatchJob = IIf(gblnReportPackMode, "Report pack", "Batch job") & " Failed : " & IIf(gblnReportPackMode, "Report pack", "Batch job") & " has been deleted by another user."
     Exit Function
   End If
     
@@ -127,39 +127,25 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
   rsBatchDetails.MoveLast
   rsBatchDetails.MoveFirst
   
-  'If Not mblnAllCancelled Then
     With gobjProgress
       .Bar1MaxValue = rsBatchDetails.RecordCount
-      .Caption = "Batch Job : " & sBatchJobName
-
-      '''MH20071121 Fault - Fixed this dodgy bodge!!  :O)
-      ''''Need this otherwise no avis will be shown during the batch job - trust me !
-      ''''.AviFile = App.Path & "\videos\dummy.avi"
-      ''.ForceAVI = True
-      '.AviFile = App.Path & "\videos\dummy.avi"
+      .Caption = IIf(gblnReportPackMode, "Report Pack", "Batch Job") & " : " & sBatchJobName
       .AVI = dbTransfer
-
       .Time = False
       .Cancel = True
       .NumberOfBars = 2
       .OpenProgress
     End With
-  'End If
 
-  '# RH 18/05/00 - New Event Log Stuff
   gobjEventLog.GetBatchRunID
   gobjEventLog.BatchJobID = lBatchJobID
   gobjEventLog.BatchJobName = sBatchJobName
   
   mstrEventLogIDs = vbNullString
-  '#
     
   'Loop thru the individual jobs, running them in turn
   fOK = True
   Do Until rsBatchDetails.EOF
-   
-    'mblnJobCancelled = mblnJobCancelled Or mblnAllCancelled
-    
     'Update the job pintCounter of pintCounter progress bar caption
     gobjProgress.Bar1Caption = "Job " & rsBatchDetails.AbsolutePosition & " Of " & rsBatchDetails.RecordCount
     
@@ -169,7 +155,6 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
         'NHRD29102004 Fault 8240 added gblnBatchJobsOnly variable
         If fOK And (Not mblnBatchCancelled) And (Not gblnBatchJobsOnly) Then
           ' No previous jobs in the batch have been cancelled so run this
-          'gobjProgress.AviFile = App.Path & "\videos\dummy.avi"
           gobjProgress.AVI = dbTransfer
           gobjProgress.ResetBar2
           gobjProgress.Bar2Caption = "Pause Command Encountered"
@@ -190,7 +175,6 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
               strNotes = pobjAbsenceBreakdown.ErrorString
               mblnJobCancelled = pobjAbsenceBreakdown.UserCancelled
             Else
-              'JPD 20040227 Fault 8156
               fOK = False
               strNotes = "The system is not configured to run the Absence Breakdown Report"
               gobjEventLog.AddHeader eltStandardReport, "Absence Breakdown"
@@ -224,7 +208,6 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
               strNotes = pobjBradfordFactor.ErrorString
               mblnJobCancelled = pobjBradfordFactor.UserCancelled
             Else
-              'JPD 20040227 Fault 8156
               fOK = False
               strNotes = "The system is not configured to run the Bradford Factor Report"
               gobjEventLog.AddHeader eltStandardReport, "Bradford Factor Report"
@@ -246,7 +229,6 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
         End If
         Set pobjBradfordFactor = Nothing
 
-
       Case "Calendar Report"
       
         Dim pobjCalendarReportRUN As clsCalendarReportsRUN
@@ -254,7 +236,6 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
         pobjCalendarReportRUN.CalendarReportID = rsBatchDetails.Fields("JobID")
         If fOK And Not mblnBatchCancelled Then
           ' No previous jobs in the batch have been cancelled so run this
-          
           If datGeneral.SystemPermission("CALENDARREPORTS", "RUN") Then
             fOK = pobjCalendarReportRUN.RunCalendarReport("")
             strNotes = pobjCalendarReportRUN.ErrorString
@@ -266,7 +247,6 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
             gobjEventLog.ChangeHeaderStatus elsFailed
             gobjEventLog.AddDetailEntry strNotes
           End If
-
         Else
           ' A job previous in the batch has been cancelled,
           ' so populate event log with skipped
@@ -281,8 +261,7 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
         Set pfrmCrossTabRUN = New frmCrossTabRun
         If fOK And Not mblnBatchCancelled Then
           ' No previous jobs in the batch have been cancelled so run this
-          
-          'MH20011107 Check permissions...
+          'Check permissions...
           If datGeneral.SystemPermission("CROSSTABS", "RUN") Then
             fOK = pfrmCrossTabRUN.ExecuteCrossTab(rsBatchDetails.Fields("JobID"))
             strNotes = pfrmCrossTabRUN.ErrorString
@@ -294,7 +273,6 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
             gobjEventLog.ChangeHeaderStatus elsFailed
             gobjEventLog.AddDetailEntry strNotes
           End If
-
         Else
           ' A job previous in the batch has been cancelled,
           ' so populate event log with skipped
@@ -310,8 +288,7 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
         pobjReportRUN.CustomReportID = rsBatchDetails.Fields("JobID")
         If fOK And Not mblnBatchCancelled Then
           ' No previous jobs in the batch have been cancelled so run this
-          
-          'MH20011107 Check permissions...
+          'Check permissions...
           If datGeneral.SystemPermission("CUSTOMREPORTS", "RUN") Then
             fOK = pobjReportRUN.RunCustomReport("")
             strNotes = pobjReportRUN.ErrorString
@@ -323,7 +300,6 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
             gobjEventLog.ChangeHeaderStatus elsFailed
             gobjEventLog.AddDetailEntry strNotes
           End If
-        
         Else
           ' A job previous in the batch has been cancelled,
           ' so populate event log with skipped
@@ -975,7 +951,7 @@ wasntalastcompdate:
   Exit Function
 
 CheckBatchNeedsRunning_ERROR:
-  CheckBatchNeedsRunning2 = "Error whilst calculating whether batch job is due or not." & vbCrLf & "Contact Asr Support stating : " & Err.Description
+  CheckBatchNeedsRunning2 = "Error whilst calculating whether " & IIf(gblnReportPackMode, "report pack", "batch job") & " is due or not." & vbCrLf & "Contact Asr Support stating : " & Err.Description
 
 End Function
 
@@ -1063,13 +1039,13 @@ Public Sub CheckNotifications(lngBatchJobID As Long)
       If fOK = False Then
         If rsBatch!EmailFailed > 0 Then
           Set frmSendEmail = New frmEmailSel
-          frmSendEmail.SendBatchNotification "OpenHR Batch Job Failed: '" & rsBatch!Name & "'", mstrEventLogIDs, rsBatch!EmailFailed
+          frmSendEmail.SendBatchNotification "OpenHR " & IIf(gblnReportPackMode, "Report Pack", "Batch Job") & " Failed: '" & rsBatch!Name & "'", mstrEventLogIDs, rsBatch!EmailFailed
           Set frmSendEmail = Nothing
         End If
       Else
         If rsBatch!EmailSuccess > 0 Then
           Set frmSendEmail = New frmEmailSel
-          frmSendEmail.SendBatchNotification "OpenHR Batch Job Succeeded: '" & rsBatch!Name & "'", mstrEventLogIDs, rsBatch!EmailSuccess
+          frmSendEmail.SendBatchNotification "OpenHR " & IIf(gblnReportPackMode, "Report Pack", "Batch Job") & " Succeeded: '" & rsBatch!Name & "'", mstrEventLogIDs, rsBatch!EmailFailed
           Set frmSendEmail = Nothing
         End If
       End If

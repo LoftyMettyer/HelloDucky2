@@ -366,16 +366,12 @@ Public Sub PrintConfirm(pstrMessage As String, pstrHeading As String)
   
   If gbPrinterConfirm And Not gblnBatchMode Then
     
-    'MH20040127 Fault 7941
-    'strMBText = pstrMessage & " printing complete." _
-      & vbCrLf & vbCrLf & "(" & Printer.DeviceName & ")"
     strMBText = pstrMessage & " printing complete." _
       & vbCrLf & vbCrLf & "(" & mstrSelectedPrinter & ")"
   
     iShowMeAgain = IIf(gbPrinterConfirm, 1, 0)
     If iShowMeAgain = 1 Then
       Set msb = New frmMessageBox
-      'TM20020829 Fault 4293 - the checkbox should not be checked.
       iShowMeAgain = 0
       msb.MessageBox strMBText, vbInformation, App.ProductName, iShowMeAgain, "Don't show me this confirmation again."
       gbPrinterConfirm = IIf(iShowMeAgain = 0, True, False)
