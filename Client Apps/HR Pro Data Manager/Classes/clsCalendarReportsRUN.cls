@@ -1362,6 +1362,7 @@ Private Function GetCalendarReportDefinition() As Boolean
     mlngOverrideFilterID = IIf(lblnReportPackMode, mlngOverrideFilterID, 0)
     mblnOutputRetainPivotOrChart = IIf(lblnReportPackMode, mblnOutputRetainPivotOrChart, 0)
 
+    mblnPreviewOnScreen = (mblnPreviewOnScreen Or (mlngOutputFormat = fmtDataOnly And mblnOutputScreen))
 
     If mstrPicklistFilterIDs <> vbNullString Then
       mstrSQLIDs = mstrPicklistFilterIDs
