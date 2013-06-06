@@ -555,7 +555,7 @@
     <Content Include="Content\themes\ui-lightness\jquery.ui.tabs.min.css" />
     <Content Include="Content\themes\ui-lightness\jquery.ui.theme.min.css" />
     <Content Include="Content\themes\ui-lightness\jquery.ui.tooltip.min.css" />
-    <Content Include="Database\UpdateScript8.0.7.sql" />
+    <Content Include="Database\UpdateScript8.0.8.sql" />
     <Content Include="lpks\ssmain.lpk" />
     <Content Include="Content\fonts\SSI80v194934\SSI80v1.woff" />
     <None Include="My Project\PublishProfiles\Arcade Server.pubxml" />
