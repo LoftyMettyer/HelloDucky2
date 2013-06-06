@@ -24,6 +24,7 @@ Begin VB.Form frmDrop
    MinButton       =   0   'False
    ScaleHeight     =   2835
    ScaleWidth      =   3720
+   ShowInTaskbar   =   0   'False
    Begin XtremeSuiteControls.PushButton cmdCancel 
       Cancel          =   -1  'True
       Height          =   420
