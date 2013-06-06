@@ -421,14 +421,14 @@ sProcSQL = sProcSQL & "  IF @psMessage = ''" & vbNewLine & _
     "          VALUES (''," & vbNewLine & _
     "             ''," & vbNewLine & _
     "             GETDATE()," & vbNewLine & _
-    "             'OpenHR  Mobile'," & vbNewLine & _
+    "             'OpenHR Mobile'," & vbNewLine & _
     "             1," & vbNewLine & _
     "             0," & vbNewLine & _
     "             @psEmailAddress," & vbNewLine & _
     "             @sMessage," & vbNewLine & _
     "             0," & vbNewLine & _
     "             'OpenHR Mobile registration details');" & vbNewLine & vbNewLine & _
-    "          EXEC [dbo].[spASREmailImmediate] 'OpenHR Workflow';" & vbNewLine & _
+    "          EXEC [dbo].[spASREmailImmediate] 'OpenHR Mobile';" & vbNewLine & _
     "        END;" & vbNewLine & _
     "   END;" & vbNewLine & _
     "END;"
@@ -826,14 +826,14 @@ Private Function CreateSP_MobileForgotLogin() As Boolean
   sProcSQL = sProcSQL & "      VALUES (''," & vbNewLine & _
     "        ''," & vbNewLine & _
     "        getdate()," & vbNewLine & _
-    "        'OpenHR  Mobile'," & vbNewLine & _
+    "        'OpenHR Mobile'," & vbNewLine & _
     "        1," & vbNewLine & _
     "        0," & vbNewLine & _
     "        @psEmailAddress," & vbNewLine & _
     "        @sMessage," & vbNewLine & _
     "        0," & vbNewLine & _
     "        'OpenHR Mobile login details');" & vbNewLine & vbNewLine & _
-    "      EXEC [dbo].[spASREmailImmediate] 'OpenHR Workflow';" & vbNewLine & _
+    "      EXEC [dbo].[spASREmailImmediate] 'OpenHR Mobile';" & vbNewLine & _
     "    END;" & vbNewLine & _
     "  END;" & vbNewLine & _
     "END;"
