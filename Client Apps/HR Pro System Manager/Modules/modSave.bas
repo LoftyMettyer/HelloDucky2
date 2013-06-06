@@ -378,7 +378,7 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
     
     ' Save the new and modified Expressions records.
     ' Delete the deleted ones.
-    If fOK Then
+    If fOK And Not gbUsedotNetScriptEngine Then
       gobjProgress.ResetBar2
       OutputCurrentProcess "Saving Calculation Definitions"
       gobjProgress.UpdateProgress False
@@ -422,7 +422,7 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
     End If
   
     ' Create the Column Calculation, Audit and Relationship Triggers.
-    If fOK Then
+    If fOK And Not gbUsedotNetScriptEngine Then
       gobjProgress.ResetBar2
       OutputCurrentProcess "Generating Column Triggers"
       gobjProgress.UpdateProgress False
