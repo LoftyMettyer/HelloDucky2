@@ -1252,6 +1252,11 @@ Public Function CurrentUserAccess(piUtilityType As UtilityType, _
       sTableName = "ASRSysBatchJobName"
       sAccessTableName = "ASRSysBatchJobAccess"
       sIDColumnName = "ID"
+    
+    Case utlReportPack
+      sTableName = "ASRSysBatchJobName"
+      sAccessTableName = "ASRSysBatchJobAccess"
+      sIDColumnName = "ID"
       
     Case utlCalendarReport
       sTableName = "ASRSysCalendarReports"

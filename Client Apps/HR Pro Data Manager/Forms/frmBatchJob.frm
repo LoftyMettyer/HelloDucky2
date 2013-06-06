@@ -1204,6 +1204,7 @@ Private mlngTimeStamp As Long                           'Timestamp for def locki
 Private mblnDefinitionCreator As Boolean
 Private mblnGridFlag As Boolean
 Private mblnForceChanged As Boolean
+Private mblnForceHidden As Boolean
 Private mblnLoading As Boolean
 Private mblnAlreadyActivated As Boolean
 Private mblnIsBatch As Boolean                          'Flag for whether this Batch Job or Report Pack
@@ -1644,8 +1645,11 @@ Private Sub GetFilter(ctlSource As Control, ctlTarget As Control)
   
   Set objExpression = Nothing
 
-  ForceDefinitionToBeHiddenIfNeeded
-
+  If gblnReportPackMode Then
+    ForceDefinitionToBeHiddenIfNeeded2
+  Else
+    ForceDefinitionToBeHiddenIfNeeded
+  End If
 End Sub
 Private Sub Form_Activate()
   'JPD 20031120 Fault 7512
@@ -3424,6 +3428,329 @@ Private Function ValidDestination() As Boolean
   ValidDestination = True
 
 End Function
+
+
+Private Function ForceDefinitionToBeHiddenIfNeeded2(Optional pvOnlyFatalMessages As Variant) As Boolean
+
+  Dim iLoop As Integer
+  Dim varBookmark As Variant
+  Dim lngFilterID As Long
+  Dim sRow As String
+  Dim iResult As RecordSelectionValidityCodes
+  Dim sBigMessage As String
+  Dim asDeletedParameters() As String
+  Dim asHiddenBySelfParameters() As String
+  Dim asHiddenByOtherParameters() As String
+  Dim asInvalidParameters() As String
+  Dim fChangesRequired As Boolean
+  Dim fDefnAlreadyHidden As Boolean
+  Dim fNeedToForceHidden As Boolean
+  Dim fRemove As Boolean
+  Dim strColumnType As String
+  Dim lngColumnID As Long
+  Dim sCalcName As String
+  Dim sTableName As String
+  Dim fOnlyFatalMessages As Boolean
+ 
+  If IsMissing(pvOnlyFatalMessages) Then
+    fOnlyFatalMessages = mblnLoading
+  Else
+    fOnlyFatalMessages = CBool(pvOnlyFatalMessages)
+  End If
+  
+  ' Return false if some of the filters/picklists/calcs need to be removed from the definition,
+  ' or if the definition needs to be made hidden.
+  fChangesRequired = False
+  fDefnAlreadyHidden = AllHiddenAccess
+  fNeedToForceHidden = False
+
+  ' Dimension arrays to hold details of the filters/picklists that
+  ' have been deleted, made hidden or are now invalid.
+  ' Column 1 - parameter description
+  ReDim asDeletedParameters(0)
+  ReDim asHiddenBySelfParameters(0)
+  ReDim asHiddenByOtherParameters(0)
+  ReDim asInvalidParameters(0)
+
+  ' Base Table Filter
+  If Len(txtOverrideFilter.Tag) > 0 And Val(txtOverrideFilter.Tag) <> 0 Then
+    fRemove = False
+    iResult = ValidateRecordSelection(REC_SEL_FILTER, CLng(txtOverrideFilter.Tag))
+
+    Select Case iResult
+      Case REC_SEL_VALID_HIDDENBYUSER
+        ' Filter hidden by the current user.
+        ' Only a problem if the current definition is NOT owned by the current user,
+        ' or if the current definition is not already hidden.
+        fRemove = mblnDefinitionCreator And mblnReadOnly
+        
+        fRemove = (Not mblnDefinitionCreator) And _
+          (Not mblnReadOnly)
+          
+        If fRemove Then
+          sBigMessage = "This table filter will be removed from this definition as it is hidden and you do not have permission to make this definition hidden."
+          COAMsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
+        Else
+          fNeedToForceHidden = True
+  
+          ReDim Preserve asHiddenBySelfParameters(UBound(asHiddenBySelfParameters) + 1)
+          asHiddenBySelfParameters(UBound(asHiddenBySelfParameters)) = "'" & txtOverrideFilter.Text & "' table filter"
+        End If
+        
+      Case REC_SEL_VALID_DELETED
+        ' Deleted by another user.
+        ReDim Preserve asDeletedParameters(UBound(asDeletedParameters) + 1)
+        asDeletedParameters(UBound(asDeletedParameters)) = "'" & txtOverrideFilter.Text & "' table filter"
+
+        fRemove = mblnReadOnly
+
+      Case REC_SEL_VALID_HIDDENBYOTHER
+        ' Hidden by another user.
+        If Not gfCurrentUserIsSysSecMgr Then
+          ReDim Preserve asHiddenByOtherParameters(UBound(asHiddenByOtherParameters) + 1)
+          asHiddenByOtherParameters(UBound(asHiddenByOtherParameters)) = "'" & txtOverrideFilter.Text & "' table filter"
+  
+          fRemove = mblnReadOnly
+        End If
+
+      Case REC_SEL_VALID_INVALID
+        ' Picklist invalid.
+        ReDim Preserve asInvalidParameters(UBound(asInvalidParameters) + 1)
+        asInvalidParameters(UBound(asInvalidParameters)) = "'" & txtOverrideFilter.Text & "' table filter"
+
+        fRemove = mblnReadOnly
+         ' (Not FormPrint)
+    End Select
+
+    If fRemove Then
+      ' Filter invalid, deleted or hidden by another user. Remove it from this definition.
+      txtOverrideFilter.Tag = 0
+      txtOverrideFilter.Text = "<None>"
+      'mblnRecordSelectionInvalid = True
+    End If
+  End If
+  
+  ' Construct one big message with all of the required error messages.
+  sBigMessage = ""
+
+  If UBound(asHiddenBySelfParameters) = 1 Then
+    If mblnReadOnly Then
+      'JPD 20040219 Fault 7897
+      If Not fDefnAlreadyHidden Then
+        sBigMessage = "This definition needs to be made hidden as the " & asHiddenBySelfParameters(1) & " is hidden."
+      End If
+    ElseIf mblnDefinitionCreator Then
+      If fDefnAlreadyHidden Then
+        If (Not mblnForceHidden) And (Not fOnlyFatalMessages) Then
+          sBigMessage = "The definition access cannot be changed as the " & asHiddenBySelfParameters(1) & " is hidden."
+        End If
+      Else
+        If (Not mblnFromCopy) Or (Not fOnlyFatalMessages) Then
+          sBigMessage = "This definition will now be made hidden as the " & asHiddenBySelfParameters(1) & " is hidden."
+        End If
+      End If
+    Else
+      sBigMessage = "The " & asHiddenBySelfParameters(1) & " will be removed from this definition as it is hidden and you do not have permission to make this definition hidden."
+    End If
+  ElseIf UBound(asHiddenBySelfParameters) > 1 Then
+    If mblnReadOnly Then
+      'JPD 20040308 Fault 7897
+      If Not fDefnAlreadyHidden Then
+        sBigMessage = "This definition needs to be made hidden as the following parameters are hidden :" & vbCrLf
+      End If
+    ElseIf mblnDefinitionCreator Then
+      If fDefnAlreadyHidden Then
+        If Not mblnForceHidden And (Not fOnlyFatalMessages) Then
+          sBigMessage = "The definition access cannot be changed as the following parameters are hidden :" & vbCrLf
+        End If
+      Else
+        If (Not mblnFromCopy) Or (Not fOnlyFatalMessages) Then
+          sBigMessage = "This definition will now be made hidden as the following parameters are hidden :" & vbCrLf
+        End If
+      End If
+    Else
+      sBigMessage = "The following parameters will be removed from this definition as they are hidden and you do not have permission to make this definition hidden :" & vbCrLf
+    End If
+
+    If Len(sBigMessage) > 0 Then
+      For iLoop = 1 To UBound(asHiddenBySelfParameters)
+        sBigMessage = sBigMessage & vbCrLf & vbTab & asHiddenBySelfParameters(iLoop)
+      Next iLoop
+    End If
+  End If
+
+  If UBound(asDeletedParameters) = 1 Then
+    If mblnReadOnly Then
+      sBigMessage = sBigMessage & IIf(Len(sBigMessage) > 0, vbCrLf & vbCrLf, "") & _
+        "The " & asDeletedParameters(1) & " has been deleted."
+    Else
+      sBigMessage = sBigMessage & IIf(Len(sBigMessage) > 0, vbCrLf & vbCrLf, "") & _
+        "The " & asDeletedParameters(1) & " will be removed from this definition as it has been deleted."
+    End If
+  ElseIf UBound(asDeletedParameters) > 1 Then
+    If mblnReadOnly Then
+      sBigMessage = sBigMessage & IIf(Len(sBigMessage) > 0, vbCrLf & vbCrLf, "") & _
+        "This definition is currently invalid as the following parameters have been deleted :" & vbCrLf
+    Else
+      sBigMessage = sBigMessage & IIf(Len(sBigMessage) > 0, vbCrLf & vbCrLf, "") & _
+        "The following parameters will be removed from this definition as they have been deleted :" & vbCrLf
+    End If
+
+    For iLoop = 1 To UBound(asDeletedParameters)
+      sBigMessage = sBigMessage & vbCrLf & vbTab & asDeletedParameters(iLoop)
+    Next iLoop
+  End If
+
+  If UBound(asHiddenByOtherParameters) = 1 Then
+    If mblnReadOnly Then
+      sBigMessage = sBigMessage & IIf(Len(sBigMessage) > 0, vbCrLf & vbCrLf, "") & _
+        "The " & asHiddenByOtherParameters(1) & " has been made hidden by another user."
+    Else
+      sBigMessage = sBigMessage & IIf(Len(sBigMessage) > 0, vbCrLf & vbCrLf, "") & _
+        "The " & asHiddenByOtherParameters(1) & " will be removed from this definition as it has been made hidden by another user."
+    End If
+  ElseIf UBound(asHiddenByOtherParameters) > 1 Then
+    If mblnReadOnly Then
+      sBigMessage = sBigMessage & IIf(Len(sBigMessage) > 0, vbCrLf & vbCrLf, "") & _
+        "This definition is currently invalid as the following parameters have been made hidden by another user :" & vbCrLf
+    Else
+      sBigMessage = sBigMessage & IIf(Len(sBigMessage) > 0, vbCrLf & vbCrLf, "") & _
+        "The following parameters will be removed from this definition as they have been made hidden by another user :" & vbCrLf
+    End If
+
+    For iLoop = 1 To UBound(asHiddenByOtherParameters)
+      sBigMessage = sBigMessage & vbCrLf & vbTab & asHiddenByOtherParameters(iLoop)
+    Next iLoop
+  End If
+
+  If UBound(asInvalidParameters) = 1 Then
+    If mblnReadOnly Then
+      sBigMessage = sBigMessage & IIf(Len(sBigMessage) > 0, vbCrLf & vbCrLf, "") & _
+        "The " & asInvalidParameters(1) & " is invalid."
+    Else
+      sBigMessage = sBigMessage & IIf(Len(sBigMessage) > 0, vbCrLf & vbCrLf, "") & _
+        "The " & asInvalidParameters(1) & " will be removed from this definition as it is invalid."
+    End If
+  ElseIf UBound(asInvalidParameters) > 1 Then
+    If mblnReadOnly Then
+      sBigMessage = sBigMessage & IIf(Len(sBigMessage) > 0, vbCrLf & vbCrLf, "") & _
+        "This definition is currently invalid as the following parameters are invalid :" & vbCrLf
+    Else
+      sBigMessage = sBigMessage & IIf(Len(sBigMessage) > 0, vbCrLf & vbCrLf, "") & _
+        "The following parameters will be removed from this definition as they are invalid :" & vbCrLf
+    End If
+
+    For iLoop = 1 To UBound(asInvalidParameters)
+      sBigMessage = sBigMessage & vbCrLf & vbTab & asInvalidParameters(iLoop)
+    Next iLoop
+  End If
+
+    If mblnForceHidden And (Not fNeedToForceHidden) And (Not fOnlyFatalMessages) Then
+      sBigMessage = "This definition no longer has to be hidden." & IIf(Len(sBigMessage) > 0, vbCrLf & vbCrLf, "") & _
+        sBigMessage
+    End If
+
+    mblnForceHidden = fNeedToForceHidden
+Dim bob As Variant
+bob = IIf(fNeedToForceHidden, "HD", "RW")
+    ForceAccess bob
+
+  If Len(sBigMessage) > 0 Then
+    COAMsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
+  End If
+
+  ForceDefinitionToBeHiddenIfNeeded2 = (Len(sBigMessage) = 0)
+  
+  'RefreshRepetitionGrid
+  
+End Function
+Private Sub RefreshRepetitionGrid()
+  
+  Dim objItem As ListItem
+  Dim iLoop As Integer
+  Dim sKey As String
+  Dim objColumm  As clsColumn
+  
+  If mblnLoading Then
+    Exit Sub
+  End If
+  
+  mblnIsChildColumnSelected = IsChildColumnSelected
+  
+  FormatGridColumnWidths
+  
+  With grdRepetition
+    .Enabled = True
+    .AllowUpdate = ((Not mblnReadOnly) And (mblnIsChildColumnSelected))
+    .Columns(1).Locked = True
+    .CheckBox3D = False
+    
+    If mblnReadOnly Or (Not mblnIsChildColumnSelected) Then
+      If (Not mblnIsChildColumnSelected) Then
+        ClearRepetition
+      End If
+      .HeadStyleSet = "ssetHeaderDisabled"
+      .StyleSet = "ssetDisabled"
+'      .ActiveRowStyleSet = "ssetDisabled"
+      .RowNavigation = ssRowNavigationAllLock
+      .SelectTypeRow = ssSelectionTypeNone
+      .SelectByCell = False
+      .SelectTypeCol = ssSelectionTypeNone
+    Else
+      .HeadStyleSet = "ssetHeaderEnabled"
+      .StyleSet = "ssetEnabled"
+'      .ActiveRowStyleSet = "ssetEnabled"
+      .RowNavigation = ssRowNavigationLRLock
+      .SelectTypeRow = ssSelectionTypeNone
+      .SelectByCell = False
+      .SelectTypeCol = ssSelectionTypeNone
+
+      .SelBookmarks.RemoveAll
+      .SelBookmarks.Add .Bookmark
+    End If
+    
+  End With
+ 
+  grdRepetition_RowColChange 0, 0
+
+End Sub
+
+
+Private Sub ForceAccess(Optional pvAccess As Variant)
+  Dim iLoop As Integer
+  Dim varBookmark As Variant
+  
+  UI.LockWindow grdAccess.hWnd
+  
+  With grdAccess
+    .MoveFirst
+
+    For iLoop = 0 To (.Rows - 1)
+      varBookmark = .Bookmark
+      
+      If iLoop = 0 Then
+        .Columns("Access").Text = ""
+      Else
+        If .Columns("SysSecMgr").CellText(varBookmark) <> "1" Then
+          If mblnForceHidden Then
+            .Columns("Access").Text = AccessDescription(ACCESS_HIDDEN)
+          Else
+            If Not IsMissing(pvAccess) Then
+              .Columns("Access").Text = AccessDescription(CStr(pvAccess))
+            End If
+          End If
+        End If
+      End If
+      
+      .MoveNext
+    Next iLoop
+    
+    .MoveFirst
+  End With
+
+  UI.UnlockWindow
+
+End Sub
 Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages As Variant, _
   Optional psRoleToPrompt As String) As Boolean
   ' Check if the job selection requires this Batch Job definition to be made hidden
@@ -3923,6 +4250,26 @@ End Function
 
 
 
+Private Function AllHiddenAccess() As Boolean
+  Dim iLoop As Integer
+  Dim varBookmark As Variant
+  
+  With grdAccess
+    For iLoop = 1 To (.Rows - 1)
+      varBookmark = .AddItemBookmark(iLoop)
+      
+      If .Columns("SysSecMgr").CellText(varBookmark) <> "1" Then
+        If .Columns("Access").CellText(varBookmark) <> AccessDescription(ACCESS_HIDDEN) Then
+          AllHiddenAccess = False
+          Exit Function
+        End If
+      End If
+    Next iLoop
+  End With
+
+  AllHiddenAccess = True
+  
+End Function
 Private Function OnlyPauseJobsDefined() As Boolean
 
   Dim pintLoop As Integer
