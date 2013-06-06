@@ -147,13 +147,6 @@ PRINT 'Step 3 - New admin system security'
 /* ------------------------------------------------------------- */
 PRINT 'Step 4 - Audit changes'
 
-	-- Rename the base audit log
-	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[ASRSysAuditTrail]') AND xtype = 'V')
-	BEGIN
-		DROP VIEW [dbo].[ASRSysAuditTrail];
-		EXECUTE sp_executesql N'EXECUTE sp_rename [tbsys_audittrail], [ASRSysAuditTrail];';
-	END
-
 	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysAuditTrail', 'U') AND name = 'TableID')
 		EXEC sp_executesql N'ALTER TABLE ASRSysAuditTrail ADD tableid bit NULL'
 
