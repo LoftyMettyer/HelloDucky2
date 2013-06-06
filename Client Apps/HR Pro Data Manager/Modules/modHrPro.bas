@@ -24,8 +24,6 @@ End Type
 Public Const INT_MASK As String = "##########"
 Public Const INT_MASK_NOBLANK As String = "#########0"
 Public Const COL_GREY As Long = &H8000000F
-Private mbDeleted As Boolean
-
 
 'Public Const SQLMAILNOTSTARTEDMESSAGE = "SQL MAIL SESSION IS NOT STARTED."
 'Public Const SQLMAILEXECUTEDENIED = "EXECUTE PERMISSION DENIED ON OBJECT 'XP_SENDMAIL', DATABASE 'MASTER', OWNER 'DBO'."
@@ -1861,25 +1859,6 @@ Public Function GetDisplayFormat(psMask As String) As String
   End If
 
 End Function
-
-Public Function RecordAmended(plngRecordID As Long, plngTimestamp As Long, psTable As String) As Boolean
-  ' Return TRUE if the given record has been amended.
-  RecordAmended = datGeneral.RecordAmended(plngRecordID, plngTimestamp, psTable, mbDeleted)
-    
-End Function
-
-Public Function RecordAmended2(psRealSource As String, _
-  plngTableID As Long, _
-  plngRecordID As Long, _
-  plngTimestamp As Long) As Integer
-  ' Return 0 if the given record has NOT been amended.
-  ' Return 1 if the given record has been amended AND is still in the given table/view.
-  ' Return 2 if the given record has been amended AND is no longer in the given table/view.
-  ' Return 3 if the given record has been deleted from the table.
-  RecordAmended2 = datGeneral.RecordAmended2(psRealSource, plngTableID, plngRecordID, plngTimestamp)
-    
-End Function
-
 
 Public Function GetModuleParameter(psModuleKey As String, psParameterKey As String) As String
   ' Return the value of the given parameter.

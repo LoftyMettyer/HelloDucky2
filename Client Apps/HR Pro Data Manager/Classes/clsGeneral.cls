@@ -1568,61 +1568,14 @@ Public Function GetTableIDFromTableViewName(ByVal psTableViewName As String) As 
   
 End Function
 
-Public Function RecordAmended(plngRecordID As Long, plngTimestamp As Long, _
-                              psTable As String, pfDeleted As Boolean) As Boolean
-
-  On Error GoTo ErrorTrap
-  gobjErrorStack.PushStack "clsGeneral.RecordAmended(plngRecordID,plngTimestamp,psTable,pfDeleted)", Array(plngRecordID, plngTimestamp, psTable, pfDeleted)
-                              
-  ' Return TRUE if the given record has been amended.
-  Dim sSQL As String
-  Dim rsCheck As ADODB.Recordset
-  
-  If plngRecordID > 0 Then
-    ' Compare the given Timestamp with the Timestamp in the given record on the server.
-    sSQL = "SELECT convert(int, timestamp) AS TimeStamp" & _
-      " FROM " & psTable & _
-      " WHERE ID = " & Trim(Str(plngRecordID))
-    Set rsCheck = datData.OpenRecordset(sSQL, adOpenForwardOnly, adLockReadOnly)
-
-    If Not (rsCheck.BOF And rsCheck.EOF) Then
-      If plngTimestamp = rsCheck!Timestamp Then
-        ' Timestamps match, so no change made.
-        RecordAmended = False
-      Else
-        ' Timestamps do not match so the record on the server must be an updated one.
-        RecordAmended = True
-        pfDeleted = False
-      End If
-    Else
-      ' No matching record on the server. It must have been deleted.
-      RecordAmended = True
-      pfDeleted = True
-    End If
-  
-    rsCheck.Close
-    Set rsCheck = Nothing
-  Else
-    ' The record cannot have been modified by another user if it hs not yet been given a record ID.
-    RecordAmended = False
-    pfDeleted = False
-  End If
-  
-TidyUpAndExit:
-  gobjErrorStack.PopStack
-  Exit Function
-ErrorTrap:
-  gobjErrorStack.HandleError
-
-End Function
-
-Public Function RecordAmended2(psRealSource As String, _
-  plngTableID As Long, _
+Public Function RecordAmended(plngTableID As Long, _
+  psTableName As String, _
+  psRealSource As String, _
   plngRecordID As Long, _
   plngTimestamp As Long) As Integer
 
   On Error GoTo ErrorTrap
-  gobjErrorStack.PushStack "clsGeneral.RecordAmended2(psRealSource,plngTableID,plngRecordID,plngTimestamp)", Array(psRealSource, plngTableID, plngRecordID, plngTimestamp)
+  gobjErrorStack.PushStack "clsGeneral.RecordAmended2(psRealSource,plngRecordID,plngTimestamp)", Array(psRealSource, plngRecordID, plngTimestamp)
   
   ' Return 0 if the given record has NOT been amended.
   ' Return 1 if the given record has been amended AND is still in the given table/view.
@@ -1649,23 +1602,16 @@ Public Function RecordAmended2(psRealSource As String, _
   fDoneOK = True
   iRetryCount = 0
   
-  Const sSPName = "sp_ASRRecordAmended_"
+  Const sSPName = "sp_ASRRecordAmended"
   
   iResult = 0
   
   If plngRecordID > 0 Then
-    ' Check that the required stored procedure exists.
-    sSQL = "SELECT COUNT(*) as recCount" & _
-      " FROM sysobjects" & _
-      " WHERE type = 'P'" & _
-      " AND name = '" & sSPName & Trim(Str(plngTableID)) & "'"
-    Set rsInfo = datGeneral.GetRecords(sSQL)
         
-    If rsInfo!recCount > 0 Then
       ' Run the stored procedure to see if the given record has changed
       Set cmADO = New ADODB.Command
       With cmADO
-        .CommandText = sSPName & Trim(Str(plngTableID))
+        .CommandText = sSPName
         .CommandType = adCmdStoredProc
         .CommandTimeout = 0
         Set .ActiveConnection = gADOCon
@@ -1673,6 +1619,10 @@ Public Function RecordAmended2(psRealSource As String, _
         Set pmADO = .CreateParameter("resultCode", adInteger, adParamOutput)
         .Parameters.Append pmADO
             
+        Set pmADO = .CreateParameter("tableName", adLongVarChar, adParamInput, -1)
+        .Parameters.Append pmADO
+        pmADO.Value = psTableName
+        
         Set pmADO = .CreateParameter("realSource", adLongVarChar, adParamInput, -1)
         .Parameters.Append pmADO
         pmADO.Value = psRealSource
@@ -1753,20 +1703,10 @@ DeadlockRecoveryPoint:
         Loop
       End With
       Set cmADO = Nothing
-    Else
-      ' Manually do the check.
-      ' NB. This is not as good as the stored procedure check as it reports that a record has been deleted
-      ' even if has simply been excluded from the given view.
-      If RecordAmended(plngRecordID, plngTimestamp, psRealSource, fDeleted) Then
-        iResult = IIf(fDeleted, 3, 1)
-      End If
-    End If
-    
-    rsInfo.Close
-    Set rsInfo = Nothing
+
   End If
   
-  RecordAmended2 = iResult
+  RecordAmended = iResult
   
 TidyUpAndExit:
   If (iOldCursorLocation = adUseClient) Or _
@@ -5359,25 +5299,10 @@ Public Function InsertTableRecord(psInsertSQL As String, _
   iOldCursorLocation = gADOCon.CursorLocation
   fInsertedOK = True
   iRetryCount = 0
-  
-  ' Check that the required update stored procedure exists.
-  sSQL = "SELECT COUNT(*) as recCount" & _
-    " FROM sysobjects" & _
-    " WHERE type = 'P'" & _
-    " AND name = 'sp_ASRInsertNewRecord_" & Trim(Str(plngTableID)) & "'"
-  Set rsInfo = datGeneral.GetRecords(sSQL)
-  fInsertedOK = (rsInfo!recCount > 0)
-  rsInfo.Close
-  Set rsInfo = Nothing
-          
-  If Not fInsertedOK Then
-    COAMsgBox "The new record could not be created." & vbCrLf & vbCrLf & _
-      "The required stored procedure 'sp_ASRInsertNewRecord_" & Trim(Str(plngTableID)) & "' does not exist.", _
-      vbOKOnly + vbExclamation, App.ProductName
-  Else
+            
     Set cmADO = New ADODB.Command
     With cmADO
-      .CommandText = "sp_ASRInsertNewRecord_" & Trim(Str(plngTableID))
+      .CommandText = "sp_ASRInsertNewRecord"
       .CommandType = adCmdStoredProc
       .CommandTimeout = 0
       Set .ActiveConnection = gADOCon
@@ -5457,11 +5382,6 @@ InsertDeadlockRecoveryPoint:
       Loop
     End With
     Set cmADO = Nothing
-  End If
-  
-  'If fInsertedOK Then
-  '  objEmail.SendImmediateEmails
-  'End If
 
 TidyUpAndExit:
   If (iOldCursorLocation = adUseClient) Or _
@@ -5525,7 +5445,7 @@ InsertErrorTrap:
   End If
   
 End Function
-Public Function DeleteTableRecord(plngTableID As Long, _
+Public Function DeleteTableRecord(plngTableID As Long, psTableName As String, _
   psRealSource As String, _
   plngRecordID As Long) As Boolean
   ' Insert the given record in the given table.
@@ -5537,13 +5457,12 @@ Public Function DeleteTableRecord(plngTableID As Long, _
   Dim iOldCursorLocation As Integer
   Dim sSQL As String
   Dim sErrorMsg As String
-  Dim rsInfo As ADODB.Recordset
+  'Dim rsInfo As ADODB.Recordset
   Dim cmADO As ADODB.Command
   Dim pmADO As ADODB.Parameter
   Dim ADOErr As ADODB.Error
   Dim ODBC As New ODBC
 
-  
   Const iRETRIES = 5
   Const iPAUSE = 5000
   
@@ -5551,31 +5470,20 @@ Public Function DeleteTableRecord(plngTableID As Long, _
   fDeletedOK = True
   iRetryCount = 0
   
-  ' Check that the required update stored procedure exists.
-  sSQL = "SELECT COUNT(*) as recCount" & _
-    " FROM sysobjects" & _
-    " WHERE type = 'P'" & _
-    " AND name = 'sp_ASRDeleteRecord_" & Trim(Str(plngTableID)) & "'"
-  Set rsInfo = datGeneral.GetRecords(sSQL)
-  fDeletedOK = (rsInfo!recCount > 0)
-  rsInfo.Close
-  Set rsInfo = Nothing
-          
-  If Not fDeletedOK Then
-    COAMsgBox "The record could not be deleted." & vbCrLf & vbCrLf & _
-      "The required stored procedure 'sp_ASRDeleteRecord_" & Trim(Str(plngTableID)) & "' does not exist.", _
-      vbOKOnly + vbExclamation, App.ProductName
-  Else
     Set cmADO = New ADODB.Command
     With cmADO
-      .CommandText = "sp_ASRDeleteRecord_" & Trim(Str(plngTableID))
+      .CommandText = "sp_ASRDeleteRecord"
       .CommandType = adCmdStoredProc
       .CommandTimeout = 0
       Set .ActiveConnection = gADOCon
               
       Set pmADO = .CreateParameter("resultCode", adInteger, adParamOutput)
       .Parameters.Append pmADO
-    
+      
+      Set pmADO = .CreateParameter("tableName", adVarChar, adParamInput, 255)
+      .Parameters.Append pmADO
+      pmADO.Value = psTableName
+      
       Set pmADO = .CreateParameter("realSource", adVarChar, adParamInput, 255)
       .Parameters.Append pmADO
       pmADO.Value = psRealSource
@@ -5654,13 +5562,7 @@ DeleteDeadlockRecoveryPoint:
       Loop
     End With
     Set cmADO = Nothing
-  End If
-  
-  ' Fault 830 - Now send emails on deleting
-  'If fDeletedOK Then
-  '  objEmail.SendImmediateEmails
-  'End If
-  
+    
 TidyUpAndExit:
   If (iOldCursorLocation = adUseClient) Or _
     (iOldCursorLocation = adUseServer) Then
@@ -5711,6 +5613,7 @@ End Function
 
 Public Function UpdateTableRecord(psUpdateSQL As String, _
   plngTableID As Long, _
+  psTableName As String, _
   psRealSource As String, _
   plngRecordID As Long, _
   Optional pvTimestamp As Variant) As Boolean
@@ -5738,24 +5641,9 @@ Public Function UpdateTableRecord(psUpdateSQL As String, _
   fUpdatedOK = True
   iRetryCount = 0
   
-  ' Check that the required update stored procedure exists.
-  sSQL = "SELECT COUNT(*) as recCount" & _
-    " FROM sysobjects" & _
-    " WHERE type = 'P'" & _
-    " AND name = 'sp_ASRUpdateRecord_" & Trim(Str(plngTableID)) & "'"
-  Set rsInfo = datGeneral.GetRecords(sSQL)
-  fUpdatedOK = (rsInfo!recCount > 0)
-  rsInfo.Close
-  Set rsInfo = Nothing
-          
-  If Not fUpdatedOK Then
-    COAMsgBox "The record could not be updated." & vbCrLf & vbCrLf & _
-      "The required stored procedure 'sp_ASRUpdateRecord_" & Trim(Str(plngTableID)) & "' does not exist.", _
-      vbOKOnly + vbExclamation, App.ProductName
-  Else
     Set cmADO = New ADODB.Command
     With cmADO
-      .CommandText = "sp_ASRUpdateRecord_" & Trim(Str(plngTableID))
+      .CommandText = "sp_ASRUpdateRecord"
       .CommandType = adCmdStoredProc
       .CommandTimeout = 0
       Set .ActiveConnection = gADOCon
@@ -5767,6 +5655,10 @@ Public Function UpdateTableRecord(psUpdateSQL As String, _
       .Parameters.Append pmADO
       pmADO.Value = psUpdateSQL
               
+      Set pmADO = .CreateParameter("tableName", adVarChar, adParamInput, 255)
+      .Parameters.Append pmADO
+      pmADO.Value = psTableName
+      
       Set pmADO = .CreateParameter("realSource", adVarChar, adParamInput, 255)
       .Parameters.Append pmADO
       pmADO.Value = psRealSource
@@ -5860,11 +5752,6 @@ UpdateDeadlockRecoveryPoint:
       Loop
     End With
     Set cmADO = Nothing
-  End If
-  
-  'If fUpdatedOK Then
-  '  objEmail.SendImmediateEmails
-  'End If
 
 TidyUpAndExit:
   If (iOldCursorLocation = adUseClient) Or _

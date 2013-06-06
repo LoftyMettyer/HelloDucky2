@@ -628,6 +628,7 @@ Begin VB.Form frmRecEdit4
          NumTabs         =   1
          BeginProperty Tab1 {0713F341-850A-101B-AFC0-4210102A8DA7} 
             Caption         =   ""
+            Key             =   ""
             Object.Tag             =   ""
             ImageVarType    =   2
          EndProperty
@@ -657,6 +658,7 @@ Begin VB.Form frmRecEdit4
       BeginProperty Panels {0713E89E-850A-101B-AFC0-4210102A8DA7} 
          NumPanels       =   1
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -4924,7 +4926,7 @@ Public Function Update(Optional pfDeactivating As Variant) As Boolean
   If mrsRecords.EditMode <> adEditAdd Then
     'MH20031002 Fault 7082 Reference Property instead of object to trap errors
     'iChangeReason = RecordAmended2(mobjTableView.RealSource, mobjTableView.TableID, mlngRecordID, mlngTimeStamp)
-    iChangeReason = RecordAmended2(mobjTableView.RealSource, Me.TableID, mlngRecordID, mlngTimeStamp)
+    iChangeReason = datGeneral.RecordAmended(Me.TableID, mobjTableView.TableName, mobjTableView.RealSource, mlngRecordID, mlngTimeStamp)
     If iChangeReason > 0 Then
       AmendedRecord2 True, iChangeReason
       Update = True
@@ -5350,7 +5352,7 @@ Public Function Update(Optional pfDeactivating As Variant) As Boolean
 
           'MH20031002 Fault 7082 Reference Property instead of object to trap errors
           'fSavedOK = datGeneral.UpdateTableRecord(sSQL, mobjTableView.TableID, mobjTableView.RealSource, mlngRecordID, mlngTimeStamp)
-          fSavedOK = datGeneral.UpdateTableRecord(sSQL, Me.TableID, mobjTableView.RealSource, mlngRecordID, mlngTimeStamp)
+          fSavedOK = datGeneral.UpdateTableRecord(sSQL, Me.TableID, mobjTableView.TableName, mobjTableView.RealSource, mlngRecordID, mlngTimeStamp)
         End If
     End Select
     
@@ -5971,7 +5973,7 @@ Public Sub CancelCourse()
         Screen.MousePointer = vbHourglass
         'MH20031002 Fault 7082 Reference Property instead of object to trap errors
         'fOK = datGeneral.UpdateTableRecord(sSQL, mobjTableView.TableID, mobjTableView.RealSource, mlngRecordID, mlngTimeStamp)
-        fOK = datGeneral.UpdateTableRecord(sSQL, Me.TableID, mobjTableView.RealSource, mlngRecordID, mlngTimeStamp)
+        fOK = datGeneral.UpdateTableRecord(sSQL, Me.TableID, mobjTableView.TableName, mobjTableView.RealSource, mlngRecordID, mlngTimeStamp)
         
         If Not fOK Then
           gADOCon.RollbackTrans
@@ -10439,7 +10441,7 @@ Public Sub DeleteRecord(Optional pfPrompt As Variant, Optional pfFromFind As Boo
   'First check that the record hasn't already been deleted or amended !
   'MH20031002 Fault 7082 Reference Property instead of object to trap errors
   'iChangeReason = RecordAmended2(mobjTableView.RealSource, mobjTableView.TableID, mlngRecordID, mlngTimeStamp)
-  iChangeReason = RecordAmended2(mobjTableView.RealSource, Me.TableID, mlngRecordID, mlngTimeStamp)
+  iChangeReason = datGeneral.RecordAmended(Me.TableID, mobjTableView.TableName, mobjTableView.RealSource, mlngRecordID, mlngTimeStamp)
   
   If iChangeReason = 2 Then
     ' The current record has been amended AND is no longer in the given table/view.
@@ -10485,7 +10487,7 @@ Public Sub DeleteRecord(Optional pfPrompt As Variant, Optional pfFromFind As Boo
       ' Check that the required stored procedure exists.
       'MH20031002 Fault 7082 Reference Property instead of object to trap errors
       'fDeleteOK = datGeneral.DeleteTableRecord(mobjTableView.TableID, mobjTableView.RealSource, mlngRecordID)
-      fDeleteOK = datGeneral.DeleteTableRecord(Me.TableID, mobjTableView.RealSource, mlngRecordID)
+      fDeleteOK = datGeneral.DeleteTableRecord(Me.TableID, mobjTableView.TableName, mobjTableView.RealSource, mlngRecordID)
       
       If fDeleteOK Then
         mrsRecords.MoveNext
