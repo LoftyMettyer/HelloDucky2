@@ -32,11 +32,27 @@ Begin VB.Form frmSSIntranetLink
    StartUpPosition =   2  'CenterScreen
    Begin VB.Frame fraChartLink 
       Caption         =   "Chart :"
-      Height          =   5160
+      Height          =   6060
       Left            =   2880
       TabIndex        =   64
-      Top             =   6375
+      Top             =   5760
       Width           =   6300
+      Begin VB.CheckBox chkDataGridUseFormatting 
+         Caption         =   "Use formatting in Data Grids"
+         Height          =   240
+         Left            =   210
+         TabIndex        =   134
+         Top             =   4395
+         Width           =   3495
+      End
+      Begin VB.CheckBox chkDataGrid1000Separator 
+         Caption         =   "Use &1000 separator"
+         Height          =   240
+         Left            =   4065
+         TabIndex        =   132
+         Top             =   4755
+         Width           =   2010
+      End
       Begin VB.CheckBox chkShowPercentages 
          Caption         =   "Show Values as Perce&nt"
          Height          =   195
@@ -156,6 +172,41 @@ Begin VB.Form frmSSIntranetLink
          TabIndex        =   66
          Top             =   555
          Width           =   2205
+      End
+      Begin COASpinner.COA_Spinner spnDataGridDecimals 
+         Height          =   300
+         Left            =   2535
+         TabIndex        =   131
+         Top             =   4710
+         Width           =   600
+         _ExtentX        =   1058
+         _ExtentY        =   529
+         BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+            Name            =   "Verdana"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Text            =   "0"
+      End
+      Begin VB.Label lblDataGridDecimals 
+         AutoSize        =   -1  'True
+         Caption         =   "Fix decimal places :"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   133
+         Top             =   4755
+         Width           =   1695
+      End
+      Begin VB.Line Line5 
+         BorderColor     =   &H80000015&
+         X1              =   210
+         X2              =   6015
+         Y1              =   4200
+         Y2              =   4200
       End
       Begin VB.Label lblChartData 
          AutoSize        =   -1  'True
@@ -1980,6 +2031,8 @@ Public Sub Initialize(piType As SSINTRANETLINKTYPES, _
   ChartShowValues = pfChartShowValues
   chkPrimaryDisplay.value = IIf(InitialDisplayMode = 1, 1, 0)
   ChartShowPercentages = pfShowPercentages
+  If chkShowValues.value = 0 Then ChartShowPercentages = 0
+  chkShowPercentages.Enabled = (chkShowValues.value = 1)
   
   ' Set up 'Database Value' combos...
   PopulateParentsCombo (miChartTableID) ' populate and set default value
@@ -2181,6 +2234,18 @@ Private Sub RefreshControls()
     If optLink(SSINTLINKCHART).value Then
       MSChart1.RowCount = 1
     End If
+    
+    ' Chart DataGrid formatting
+    lblDataGridDecimals.Enabled = chkFormatting
+    If chkDataGridUseFormatting Then
+      spnDataGridDecimals.Enabled = True
+      lblDataGridDecimals.Enabled = True
+    Else
+      spnDataGridDecimals.Enabled = False
+      lblDataGridDecimals.Enabled = False
+      spnDataGridDecimals.value = 0
+    End If
+    chkDataGrid1000Separator.Enabled = chkDataGridUseFormatting
     
     ' disable the DB Value items
     lblDBValueDecimals.Enabled = chkFormatting
@@ -3048,6 +3113,11 @@ Private Sub chkConditionalFormatting_Click()
   RefreshControls
 End Sub
 
+Private Sub chkDataGridUseFormatting_Click()
+  mfChanged = True
+  RefreshControls
+End Sub
+
 Private Sub chkDBVaUseThousandSeparator_Click()
   mfChanged = True
   RefreshControls
@@ -3288,6 +3358,11 @@ End Sub
 
 Private Sub chkShowValues_Click()
   mfChanged = True
+  
+  If chkShowValues.value = 0 Then ChartShowPercentages = 0
+  
+  chkShowPercentages.Enabled = (chkShowValues.value = 1)
+  
   ' refresh the chart
   RefreshChart
   RefreshControls
@@ -4375,6 +4450,8 @@ Public Property Get UseFormatting() As Boolean
     UseFormatting = chkFormatting.value
   ElseIf optLink(SSINTLINKSEPARATOR) Then
     UseFormatting = chkSeparatorUseFormatting
+  ElseIf optLink(SSINTLINKCHART) Then
+    UseFormatting = chkDataGridUseFormatting
   End If
 End Property
 
@@ -4383,23 +4460,41 @@ Public Property Let UseFormatting(ByVal pfNewValue As Boolean)
     chkFormatting.value = IIf(pfNewValue, vbChecked, vbUnchecked)
   ElseIf optLink(SSINTLINKSEPARATOR) Then
     chkSeparatorUseFormatting.value = IIf(pfNewValue, vbChecked, vbUnchecked)
+  ElseIf optLink(SSINTLINKCHART) Then
+    chkDataGridUseFormatting.value = IIf(pfNewValue, vbChecked, vbUnchecked)
   End If
 End Property
 
 Public Property Get Formatting_DecimalPlaces() As Integer
-  Formatting_DecimalPlaces = spnDBValueDecimals.value
+  If optLink(SSINTLINKDB_VALUE) Then
+    Formatting_DecimalPlaces = spnDBValueDecimals.value
+  ElseIf optLink(SSINTLINKCHART) Then
+    Formatting_DecimalPlaces = spnDataGridDecimals.value
+  End If
 End Property
 
 Public Property Let Formatting_DecimalPlaces(ByVal piNewValue As Integer)
-  spnDBValueDecimals.value = piNewValue
+  If optLink(SSINTLINKDB_VALUE) Then
+    spnDBValueDecimals.value = piNewValue
+  ElseIf optLink(SSINTLINKCHART) Then
+    spnDataGridDecimals.value = piNewValue
+  End If
 End Property
 
 Public Property Get Formatting_Use1000Separator() As Boolean
-  Formatting_Use1000Separator = chkDBVaUseThousandSeparator.value
+  If optLink(SSINTLINKDB_VALUE) Then
+    Formatting_Use1000Separator = chkDBVaUseThousandSeparator.value
+  ElseIf optLink(SSINTLINKCHART) Then
+    Formatting_Use1000Separator = chkDataGrid1000Separator.value
+  End If
 End Property
 
 Public Property Let Formatting_Use1000Separator(ByVal pfNewValue As Boolean)
-  chkDBVaUseThousandSeparator.value = IIf(pfNewValue, vbChecked, vbUnchecked)
+  If optLink(SSINTLINKDB_VALUE) Then
+    chkDBVaUseThousandSeparator.value = IIf(pfNewValue, vbChecked, vbUnchecked)
+  ElseIf optLink(SSINTLINKCHART) Then
+    chkDataGrid1000Separator.value = IIf(pfNewValue, vbChecked, vbUnchecked)
+  End If
 End Property
 
 Public Property Get Formatting_Prefix() As String
@@ -4695,8 +4790,6 @@ Public Property Get Chart_Utility_Description() As String
   End If
     
 End Property
-
-
 
 
 
