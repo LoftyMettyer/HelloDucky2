@@ -1,9 +1,9 @@
 VERSION 5.00
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
-Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "COA_Line.ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
+Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "coa_line.ocx"
 Begin VB.Form frmPersonnelSetup 
    BorderStyle     =   3  'Fixed Dialog
-   Caption         =   "Personnel Module"
+   Caption         =   "Personnel"
    ClientHeight    =   7965
    ClientLeft      =   45
    ClientTop       =   330
@@ -47,14 +47,14 @@ Begin VB.Form frmPersonnelSetup
       TabCaption(1)   =   "C&areer Change"
       TabPicture(1)   =   "frmPersonnelSetup.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraWorkingPattern"
-      Tab(1).Control(1)=   "fraRegion"
+      Tab(1).Control(0)=   "fraRegion"
+      Tab(1).Control(1)=   "fraWorkingPattern"
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "&Hierarchy"
       TabPicture(2)   =   "frmPersonnelSetup.frx":0044
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraPostAllocationTable"
-      Tab(2).Control(1)=   "fraHierarchyTable"
+      Tab(2).Control(0)=   "fraHierarchyTable"
+      Tab(2).Control(1)=   "fraPostAllocationTable"
       Tab(2).ControlCount=   2
       Begin VB.Frame fraPostAllocationTable 
          Caption         =   "Post Allocation Table :"

@@ -1,9 +1,9 @@
 VERSION 5.00
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Begin VB.Form frmTrainingBookingSetup 
    BorderStyle     =   3  'Fixed Dialog
-   Caption         =   "Training Booking Module"
+   Caption         =   "Training Booking"
    ClientHeight    =   6945
    ClientLeft      =   45
    ClientTop       =   330
@@ -71,29 +71,23 @@ Begin VB.Form frmTrainingBookingSetup
       TabPicture(1)   =   "frmTrainingBookingSetup.frx":0028
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraPreRequisites"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "De&legates"
       TabPicture(2)   =   "frmTrainingBookingSetup.frx":0044
       Tab(2).ControlEnabled=   0   'False
       Tab(2).Control(0)=   "fraDelegates"
-      Tab(2).Control(0).Enabled=   0   'False
       Tab(2).Control(1)=   "fraUnavailability"
-      Tab(2).Control(1).Enabled=   0   'False
       Tab(2).ControlCount=   2
       TabCaption(3)   =   "Waiting List / &Bookings"
       TabPicture(3)   =   "frmTrainingBookingSetup.frx":0060
       Tab(3).ControlEnabled=   0   'False
       Tab(3).Control(0)=   "fraWaitingList"
-      Tab(3).Control(0).Enabled=   0   'False
       Tab(3).Control(1)=   "fraTrainingBookings"
-      Tab(3).Control(1).Enabled=   0   'False
       Tab(3).ControlCount=   2
       TabCaption(4)   =   "&Related Columns"
       TabPicture(4)   =   "frmTrainingBookingSetup.frx":007C
       Tab(4).ControlEnabled=   0   'False
       Tab(4).Control(0)=   "fraRelatedColumns"
-      Tab(4).Control(0).Enabled=   0   'False
       Tab(4).ControlCount=   1
       Begin VB.Frame fraRelatedColumns 
          Caption         =   "Related Columns :"

@@ -2,7 +2,7 @@ VERSION 5.00
 Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "coa_line.ocx"
 Begin VB.Form frmBankHolidaySetup 
    BorderStyle     =   3  'Fixed Dialog
-   Caption         =   "Bank Holidays Setup"
+   Caption         =   "Bank Holidays"
    ClientHeight    =   4155
    ClientLeft      =   45
    ClientTop       =   330
@@ -184,7 +184,7 @@ Public Property Get Changed() As Boolean
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
   mfChanged = pblnChanged
-  cmdOk.Enabled = True
+  cmdOK.Enabled = True
 End Property
 
 Private Sub cboBHolDate_Change()
@@ -242,7 +242,7 @@ Private Sub Form_Load()
   
   'AE20080204 Fault #12829
   mfChanged = False
-  cmdOk.Enabled = False
+  cmdOK.Enabled = False
   Screen.MousePointer = vbDefault
 End Sub
 

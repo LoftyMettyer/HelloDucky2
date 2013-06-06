@@ -1,10 +1,10 @@
 VERSION 5.00
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "COA_Line.ocx"
+Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "coa_line.ocx"
 Begin VB.Form frmWorkflowSetup 
    BorderStyle     =   3  'Fixed Dialog
-   Caption         =   "Workflow Module"
+   Caption         =   "Workflow Configuration"
    ClientHeight    =   6495
    ClientLeft      =   45
    ClientTop       =   435
@@ -38,30 +38,31 @@ Begin VB.Form frmWorkflowSetup
       _ExtentY        =   9975
       _Version        =   393216
       Style           =   1
-      Tab             =   2
       TabHeight       =   520
       TabCaption(0)   =   "&Web Site"
       TabPicture(0)   =   "frmWorkflowSetup.frx":000C
-      Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "fraWebSiteLogin"
-      Tab(0).Control(1)=   "fraWebSite"
+      Tab(0).ControlEnabled=   -1  'True
+      Tab(0).Control(0)=   "fraWebSite"
+      Tab(0).Control(0).Enabled=   0   'False
+      Tab(0).Control(1)=   "fraWebSiteLogin"
+      Tab(0).Control(1).Enabled=   0   'False
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "&Personnel Identification"
       TabPicture(1)   =   "frmWorkflowSetup.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraDelegation"
-      Tab(1).Control(1)=   "fraPersonnelTable"
+      Tab(1).Control(0)=   "fraPersonnelTable"
+      Tab(1).Control(1)=   "fraDelegation"
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "&Service"
       TabPicture(2)   =   "frmWorkflowSetup.frx":0044
-      Tab(2).ControlEnabled=   -1  'True
+      Tab(2).ControlEnabled=   0   'False
       Tab(2).Control(0)=   "fraService"
       Tab(2).Control(0).Enabled=   0   'False
       Tab(2).ControlCount=   1
       Begin VB.Frame fraWebSiteLogin 
          Caption         =   "Login :"
          Height          =   1700
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   4
          Top             =   1500
          Width           =   6500
@@ -115,7 +116,7 @@ Begin VB.Form frmWorkflowSetup
       Begin VB.Frame fraService 
          Caption         =   "Service :"
          Height          =   925
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   29
          Top             =   500
          Width           =   6500
@@ -364,7 +365,7 @@ Begin VB.Form frmWorkflowSetup
       Begin VB.Frame fraWebSite 
          Caption         =   "Address :"
          Height          =   850
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   1
          Top             =   500
          Width           =   6500
@@ -730,12 +731,12 @@ Private Sub cmdOK_Click()
           If (msOriginalUser <> txtUID.Text) _
             Or (msOriginalPassword <> txtPWD.Tag) Then
           
-            sNewQueryString = GetWorkflowQueryString(!id * -1, -1, txtUID.Text, txtPWD.Tag)
+            sNewQueryString = GetWorkflowQueryString(!ID * -1, -1, txtUID.Text, txtPWD.Tag)
             
             sSQL = "UPDATE tmpWorkflows" & _
               " SET changed = TRUE," & _
               "   queryString = '" & Replace(sNewQueryString, "'", "''") & "'" & _
-              " WHERE ID = " & CStr(!id)
+              " WHERE ID = " & CStr(!ID)
             daoDb.Execute sSQL
           Else
             sNewQueryString = !queryString

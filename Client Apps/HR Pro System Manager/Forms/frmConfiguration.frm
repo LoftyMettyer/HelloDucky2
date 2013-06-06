@@ -6,7 +6,7 @@ Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "coa_colourpicker.ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmConfiguration 
    BorderStyle     =   3  'Fixed Dialog
-   Caption         =   "Configuration"
+   Caption         =   "Server Configuration"
    ClientHeight    =   6285
    ClientLeft      =   45
    ClientTop       =   435
@@ -92,17 +92,13 @@ Begin VB.Form frmConfiguration
       TabPicture(1)   =   "frmConfiguration.frx":0028
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraSQL2005"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "&Display"
       TabPicture(2)   =   "frmConfiguration.frx":0044
       Tab(2).ControlEnabled=   0   'False
       Tab(2).Control(0)=   "frmBackgrounds"
-      Tab(2).Control(0).Enabled=   0   'False
       Tab(2).Control(1)=   "fraGeneral"
-      Tab(2).Control(1).Enabled=   0   'False
       Tab(2).Control(2)=   "frmExpressions"
-      Tab(2).Control(2).Enabled=   0   'False
       Tab(2).ControlCount=   3
       TabCaption(3)   =   "Dev"
       TabPicture(3)   =   "frmConfiguration.frx":0060
@@ -114,11 +110,8 @@ Begin VB.Form frmConfiguration
       TabPicture(4)   =   "frmConfiguration.frx":007C
       Tab(4).ControlEnabled=   0   'False
       Tab(4).Control(0)=   "fraTime"
-      Tab(4).Control(0).Enabled=   0   'False
       Tab(4).Control(1)=   "fraOutlookCalendar"
-      Tab(4).Control(1).Enabled=   0   'False
       Tab(4).Control(2)=   "fraAdvancedSettings"
-      Tab(4).Control(2).Enabled=   0   'False
       Tab(4).ControlCount=   3
       Begin VB.Frame fraAdvancedSettings 
          Caption         =   "Database Settings : "
@@ -1478,7 +1471,7 @@ End Sub
 Private Sub cmdCancel_Click()
 'UnLoad Me
 Dim pintAnswer As Integer
-If Changed = True Or cmdOk.Enabled Then
+If Changed = True Or cmdOK.Enabled Then
   pintAnswer = MsgBox("You have made changes...do you wish to save these changes ?", vbQuestion + vbYesNoCancel, App.Title)
   If pintAnswer = vbYes Then
     'AE20071108 Fault #12551
@@ -2535,6 +2528,6 @@ End Property
 
 Private Property Let Changed(ByVal fNewValue As Boolean)
   mfChanged = fNewValue
-  cmdOk.Enabled = mfChanged
+  cmdOK.Enabled = mfChanged
 End Property
 
