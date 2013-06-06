@@ -1864,7 +1864,7 @@ Private Function CheckIfRebuildDiaryOrEmail() As Boolean
                      "BEGIN " & _
                      "EXEC sp_ASRemailRebuild_" & CStr(recTabEdit!TableID) & " " & _
                      "END"
-            strSQL = "EXEC spASREmailRebuild"
+            strSQL = "EXEC dbo.spASREmailRebuild"
             gADOCon.Execute strSQL, , adCmdText + adExecuteNoRecords
       '    End If
 
@@ -1916,7 +1916,7 @@ Private Function CheckIfRebuildDiaryOrEmail() As Boolean
                 "  FETCH NEXT FROM curRecords INTO @iCurrentID;" & vbNewLine & _
                 "  WHILE @@fetch_status <> -1" & vbNewLine & _
                 "  BEGIN" & vbNewLine & _
-                "    SET @sSQL = 'EXEC spASROutlook_" & CStr(recTabEdit!TableID) & " ' + convert(varchar(100), @iCurrentID);" & vbNewLine & _
+                "    SET @sSQL = 'EXEC dbo.spASROutlook_" & CStr(recTabEdit!TableID) & " ' + convert(varchar(100), @iCurrentID);" & vbNewLine & _
                 "    EXECUTE sp_executeSQL @sSQL;" & vbNewLine & _
                 "    FETCH NEXT FROM curRecords INTO @iCurrentID;" & vbNewLine & _
                 "  END" & vbNewLine & _
@@ -1952,7 +1952,7 @@ Private Function CheckIfRebuildDiaryOrEmail() As Boolean
       Application.ChangedWorkflowLink = False
 
       OutputCurrentProcess "Rebuilding workflow queue"
-      strSQL = "EXEC spASRWorkflowRebuild"
+      strSQL = "EXEC dbo.spASRWorkflowRebuild"
       gADOCon.Execute strSQL, , adCmdText + adExecuteNoRecords
     End If
   End If
