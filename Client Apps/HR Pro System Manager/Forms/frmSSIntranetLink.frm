@@ -27,121 +27,6 @@ Begin VB.Form frmSSIntranetLink
    ScaleWidth      =   9360
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
-   Begin VB.Frame fraDBValue 
-      Caption         =   "Database Value :"
-      Height          =   1875
-      Left            =   2880
-      TabIndex        =   71
-      Top             =   9990
-      Width           =   6300
-      Begin VB.ComboBox cboColumns 
-         Height          =   315
-         Left            =   1395
-         Sorted          =   -1  'True
-         Style           =   2  'Dropdown List
-         TabIndex        =   75
-         Top             =   705
-         Width           =   3930
-      End
-      Begin VB.ComboBox cboParents 
-         Height          =   315
-         Left            =   1395
-         Sorted          =   -1  'True
-         Style           =   2  'Dropdown List
-         TabIndex        =   73
-         Top             =   315
-         Width           =   3930
-      End
-      Begin VB.OptionButton optAggregateType 
-         Caption         =   "Count"
-         Height          =   285
-         Index           =   0
-         Left            =   2265
-         TabIndex        =   81
-         Top             =   1545
-         Value           =   -1  'True
-         Width           =   855
-      End
-      Begin VB.OptionButton optAggregateType 
-         Caption         =   "Total"
-         Height          =   285
-         Index           =   1
-         Left            =   3390
-         TabIndex        =   82
-         Top             =   1545
-         Width           =   765
-      End
-      Begin VB.CommandButton cmdFilter 
-         Caption         =   "..."
-         Height          =   315
-         Left            =   4650
-         TabIndex        =   78
-         Top             =   1080
-         Width           =   315
-      End
-      Begin VB.TextBox txtFilter 
-         Height          =   330
-         Left            =   1395
-         TabIndex        =   77
-         Top             =   1080
-         Width           =   3225
-      End
-      Begin VB.CommandButton cmdFilterClear 
-         Caption         =   "O"
-         BeginProperty Font 
-            Name            =   "Wingdings 2"
-            Size            =   20.25
-            Charset         =   2
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   315
-         Left            =   4965
-         MaskColor       =   &H000000FF&
-         TabIndex        =   79
-         ToolTipText     =   "Clear Path"
-         Top             =   1080
-         UseMaskColor    =   -1  'True
-         Width           =   330
-      End
-      Begin VB.Label lblParents 
-         AutoSize        =   -1  'True
-         Caption         =   "Table :"
-         Height          =   195
-         Left            =   210
-         TabIndex        =   72
-         Top             =   330
-         Width           =   600
-      End
-      Begin VB.Label lblColumn 
-         AutoSize        =   -1  'True
-         Caption         =   "Column :"
-         Height          =   195
-         Left            =   210
-         TabIndex        =   74
-         Top             =   720
-         Width           =   795
-      End
-      Begin VB.Label lblFilter 
-         Caption         =   "Filter :"
-         Height          =   195
-         Left            =   210
-         TabIndex        =   76
-         Top             =   1155
-         Width           =   615
-      End
-      Begin VB.Label lblAggregateType 
-         AutoSize        =   -1  'True
-         Caption         =   "Aggregate Function :"
-         Height          =   195
-         Left            =   210
-         TabIndex        =   80
-         Top             =   1575
-         Width           =   1785
-      End
-   End
    Begin VB.Frame fraChartLink 
       Caption         =   "Chart :"
       Height          =   3315
@@ -149,6 +34,14 @@ Begin VB.Form frmSSIntranetLink
       TabIndex        =   61
       Top             =   8310
       Width           =   6300
+      Begin MSChart20Lib.MSChart MSChart1 
+         Height          =   2505
+         Left            =   2730
+         OleObjectBlob   =   "frmSSIntranetLink.frx":000C
+         TabIndex        =   69
+         Top             =   555
+         Width           =   3330
+      End
       Begin VB.CheckBox chkShowValues 
          Caption         =   "S&how Values"
          Height          =   210
@@ -164,14 +57,6 @@ Begin VB.Form frmSSIntranetLink
          TabIndex        =   68
          Top             =   2355
          Width           =   1200
-      End
-      Begin MSChart20Lib.MSChart MSChart1 
-         Height          =   2505
-         Left            =   2610
-         OleObjectBlob   =   "frmSSIntranetLink.frx":000C
-         TabIndex        =   69
-         Top             =   570
-         Width           =   3330
       End
       Begin VB.CheckBox chkStackSeries 
          Caption         =   "S&tack Series"
@@ -881,6 +766,121 @@ Begin VB.Form frmSSIntranetLink
          TabIndex        =   1
          Top             =   360
          Width           =   840
+      End
+   End
+   Begin VB.Frame fraDBValue 
+      Caption         =   "Database Value :"
+      Height          =   1875
+      Left            =   2880
+      TabIndex        =   71
+      Top             =   9990
+      Width           =   6300
+      Begin VB.ComboBox cboColumns 
+         Height          =   315
+         Left            =   1395
+         Sorted          =   -1  'True
+         Style           =   2  'Dropdown List
+         TabIndex        =   75
+         Top             =   705
+         Width           =   3930
+      End
+      Begin VB.ComboBox cboParents 
+         Height          =   315
+         Left            =   1395
+         Sorted          =   -1  'True
+         Style           =   2  'Dropdown List
+         TabIndex        =   73
+         Top             =   315
+         Width           =   3930
+      End
+      Begin VB.OptionButton optAggregateType 
+         Caption         =   "Count"
+         Height          =   285
+         Index           =   0
+         Left            =   2265
+         TabIndex        =   81
+         Top             =   1545
+         Value           =   -1  'True
+         Width           =   855
+      End
+      Begin VB.OptionButton optAggregateType 
+         Caption         =   "Total"
+         Height          =   285
+         Index           =   1
+         Left            =   3390
+         TabIndex        =   82
+         Top             =   1545
+         Width           =   765
+      End
+      Begin VB.CommandButton cmdFilter 
+         Caption         =   "..."
+         Height          =   315
+         Left            =   4650
+         TabIndex        =   78
+         Top             =   1080
+         Width           =   315
+      End
+      Begin VB.TextBox txtFilter 
+         Height          =   330
+         Left            =   1395
+         TabIndex        =   77
+         Top             =   1080
+         Width           =   3225
+      End
+      Begin VB.CommandButton cmdFilterClear 
+         Caption         =   "O"
+         BeginProperty Font 
+            Name            =   "Wingdings 2"
+            Size            =   20.25
+            Charset         =   2
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   315
+         Left            =   4965
+         MaskColor       =   &H000000FF&
+         TabIndex        =   79
+         ToolTipText     =   "Clear Path"
+         Top             =   1080
+         UseMaskColor    =   -1  'True
+         Width           =   330
+      End
+      Begin VB.Label lblParents 
+         AutoSize        =   -1  'True
+         Caption         =   "Table :"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   72
+         Top             =   330
+         Width           =   600
+      End
+      Begin VB.Label lblColumn 
+         AutoSize        =   -1  'True
+         Caption         =   "Column :"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   74
+         Top             =   720
+         Width           =   795
+      End
+      Begin VB.Label lblFilter 
+         Caption         =   "Filter :"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   76
+         Top             =   1155
+         Width           =   615
+      End
+      Begin VB.Label lblAggregateType 
+         AutoSize        =   -1  'True
+         Caption         =   "Aggregate Function :"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   80
+         Top             =   1575
+         Width           =   1785
       End
    End
 End
@@ -1722,7 +1722,7 @@ Private Sub RefreshControls()
   lblHRProUtilityMessage.Caption = sUtilityMessage
   
   ' Disable the OK button as required.
-  cmdOk.Enabled = mfChanged
+  cmdOK.Enabled = mfChanged
   
 
 End Sub
@@ -1785,6 +1785,7 @@ End Sub
 Private Sub RefreshChart()
   
   Dim numSeries As Integer, iCount As Integer
+  Dim iLoop As Integer
   
   ' Set the chart type from the combo
   MSChart1.ChartType = cboChartType.ItemData(cboChartType.ListIndex)
@@ -1851,8 +1852,36 @@ Private Sub RefreshChart()
         .Plot.SeriesCollection.Item(iCount).DataPoints.Item(-1).DataPointLabel.LocationType = VtChLabelLocationTypeNone
       End If
     Next iCount
-  
   End With
+  
+  ' set the angle of the 3d chart to improve clarity...
+  If MSChart1.Chart3d = True Then MSChart1.Plot.View3d.Set 165, 5
+  
+  'Set the font text of the axis for clarity
+  For iLoop = 1 To MSChart1.Plot.Axis(1).Labels.Count
+    MSChart1.Plot.Axis(1).Labels(iLoop).VtFont.Size = IIf(MSChart1.Chart3d, 10, 8)
+  Next
+    
+    
+  MSChart1.Plot.Axis(0).AxisScale.Hide = True
+  MSChart1.Plot.Axis(2).AxisScale.Hide = True
+  MSChart1.Plot.Axis(3).AxisScale.Hide = True
+    
+  MSChart1.Legend.Location.LocationType = VtChLocationTypeRight
+                     
+  ' Set X Y coordinates for bottom left corner
+  MSChart1.Legend.Location.Rect.Min.X = MSChart1.Width - 60
+  MSChart1.Legend.Location.Rect.Min.Y = 0
+  ' Set X Y coordinates for top right corner
+  MSChart1.Legend.Location.Rect.Max.X = MSChart1.Width
+  MSChart1.Legend.Location.Rect.Max.Y = MSChart1.Height
+                 
+  MSChart1.Plot.LocationRect.Min.X = 0
+  MSChart1.Plot.LocationRect.Min.Y = 0
+  '1200 twips
+  MSChart1.Plot.LocationRect.Max.X = MSChart1.Width - 1000
+  MSChart1.Plot.LocationRect.Max.Y = MSChart1.Height
+  
 End Sub
 
 
