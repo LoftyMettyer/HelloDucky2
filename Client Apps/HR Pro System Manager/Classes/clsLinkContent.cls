@@ -39,7 +39,7 @@ Public Function CloneDetail(pavCloneRegister As Variant, lngContentID As Long)
   Clear
 
   With recLinkContentEdit
-    .index = "idxContentIDSequence"
+    .Index = "idxContentIDSequence"
     .Seek ">=", lngContentID, 0
   
     If Not .NoMatch Then
@@ -80,7 +80,7 @@ Public Sub ReadDetail(lngContentID As Long)
   Clear
 
   With recLinkContentEdit
-    .index = "idxContentIDSequence"
+    .Index = "idxContentIDSequence"
     .Seek ">=", mlngContentID, 0
   
     If Not .NoMatch Then
@@ -141,7 +141,7 @@ LocalErr:
   If Left(strField, 13) = "Calculation: " Then
     strExprName = Mid(strField, 14)
     With recExprEdit
-      .index = "idxExprName"
+      .Index = "idxExprName"
       .Seek "=", strExprName
       If Not .NoMatch Then
         Do
@@ -321,7 +321,7 @@ Public Function GetSQL(lngBaseTableID As Long, strBaseTableName As String, lngRe
       
       blnColumn = True
       With recColEdit
-        .index = "idxColumnID"
+        .Index = "idxColumnID"
         .Seek "=", objDetail.FieldID
 
         If Not .NoMatch Then
@@ -446,7 +446,7 @@ End Function
 
 Private Function Exists(col As Collection, id As String) As Boolean
   On Local Error GoTo LocalErr
-  Exists = Not (col(id) > 0)
+  Exists = (Val(col(id)) > 0)
 Exit Function
 LocalErr:
   Exists = False
