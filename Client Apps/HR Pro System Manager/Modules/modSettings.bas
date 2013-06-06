@@ -438,31 +438,56 @@ End Function
 
 Public Function SaveSystemSetting(strSection As String, strKey As String, varSetting As Variant) As Boolean
 
-  Dim strSQL As String
+  Dim cmADO As ADODB.Command
+  Dim pmADO As ADODB.Parameter
 
-  DeleteSystemSetting strSection, strKey
+  On Error GoTo LocalErr
+   
+  Set cmADO = New ADODB.Command
+  With cmADO
+    .CommandText = "spsys_setsystemsetting"
+    .CommandType = adCmdStoredProc
+    .CommandTimeout = 0
+    Set .ActiveConnection = gADOCon
 
-  strSQL = "INSERT ASRSysSystemSettings " & _
-           "(Section, SettingKey, SettingValue) " & _
-           "VALUES " & _
-           "('" & LCase(strSection) & "'," & _
-           " '" & LCase(strKey) & "'," & _
-           " '" & CStr(varSetting) & "')"
-  gADOCon.Execute strSQL, , adExecuteNoRecords
+    Set pmADO = .CreateParameter("@section", adVarChar, adParamInput, 50)
+    .Parameters.Append pmADO
+    pmADO.value = strSection
+    
+    Set pmADO = .CreateParameter("@settingkey", adVarChar, adParamInput, 50)
+    .Parameters.Append pmADO
+    pmADO.value = strKey
+
+    Set pmADO = .CreateParameter("@settingvalue", adVarChar, adParamInput, VARCHAR_MAX_Size)
+    .Parameters.Append pmADO
+    pmADO.value = varSetting
+
+    cmADO.Execute
+
+  End With
+  Set pmADO = Nothing
+  Set cmADO = Nothing
+
+  SaveSystemSetting = True
+
+Exit Function
+
+LocalErr:
+  SaveSystemSetting = False
 
 End Function
 
 
-Public Function DeleteSystemSetting(strSection As String, strKey As String) As Boolean
-
-  Dim strSQL As String
-  
-  strSQL = "DELETE FROM ASRSysSystemSettings " & _
-           " WHERE Section = '" & LCase(strSection) & "'" & _
-           " AND SettingKey = '" & LCase(strKey) & "'"
-  gADOCon.Execute strSQL, , adExecuteNoRecords
-
-End Function
+'Public Function DeleteSystemSetting(strSection As String, strKey As String) As Boolean
+'
+'  Dim strSQL As String
+'
+'  strSQL = "DELETE FROM ASRSysSystemSettings " & _
+'           " WHERE Section = '" & LCase(strSection) & "'" & _
+'           " AND SettingKey = '" & LCase(strKey) & "'"
+'  gADOCon.Execute strSQL, , adExecuteNoRecords
+'
+'End Function
 
 
 Public Function GetSystemSetting(strSection As String, strKey As String, varDefault As Variant) As Variant
