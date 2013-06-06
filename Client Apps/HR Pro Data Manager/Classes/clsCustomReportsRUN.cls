@@ -110,7 +110,7 @@ Dim mlngColWidth() As Long
 Private mvarGroupWith() As Variant
 
 'Array used to store the 'POC' values when outputting.
-Private mvarPageBreak() As Variant
+Private mvarPageBreak() As String
 Private mblnPageBreak As Boolean
 Private mintPageBreakRowIndex As Long
 
@@ -173,7 +173,7 @@ Private mbUseSequence As Boolean
 
 ' Array holding the User Defined functions that are needed for this report
 Private mastrUDFsRequired() As String
-Private Function AddPageBreakValue(pintRowIndex As Integer, pvarValue As Variant)
+Private Function AddPageBreakValue(pintRowIndex As Integer, pvarValue As String)
 
   ReDim Preserve mvarPageBreak(pintRowIndex)
   mvarPageBreak(pintRowIndex) = pvarValue
