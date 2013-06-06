@@ -3,7 +3,7 @@ Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "coa_spinner.ocx"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmBatchJob 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Batch Job Definition"
@@ -46,8 +46,8 @@ Begin VB.Form frmBatchJob
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmBatchJob.frx":000C
       Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "fraScheduling"
-      Tab(0).Control(1)=   "fraInfo"
+      Tab(0).Control(0)=   "fraInfo"
+      Tab(0).Control(1)=   "fraScheduling"
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "&Jobs"
       TabPicture(1)   =   "frmBatchJob.frx":0028
@@ -1211,6 +1211,7 @@ Private mblnIsBatch As Boolean                          'Flag for whether this B
 Private mobjOutputDef As clsOutputDef
 
 Public IsReportPack As Boolean
+Private mblnIsChildColumnSelected As Boolean
 
 Private Function BatchJobHiddenGroups() As String
   Dim sBatchJobHiddenGroups As String
@@ -1266,10 +1267,10 @@ Private Sub RefreshColumnsGrid()
 End Sub
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
-  cmdOk.Enabled = pblnChanged
+  cmdOK.Enabled = pblnChanged
 End Property
 
 Private Function JobUtilityType(psJobType As String) As UtilityType
@@ -1986,7 +1987,7 @@ Private Sub ClearForNew()
   SetComboText cboPeriod, "Day(s)"
   cboStartDate.Text = ""
   cboEndDate.Text = ""
-  chkWeekEnds.Value = 0
+  chkWeekends.Value = 0
   chkIndefinitely.Value = 0
   chkScheduled = False
   chkRunOnce.Value = 0
@@ -2019,9 +2020,6 @@ Private Function RetrieveBatchJobDetails() As Boolean
       "LEFT OUTER JOIN ASRSysEmailGroupName fail ON fail.EmailGroupID = EmailFailed " & _
       "LEFT OUTER JOIN ASRSysEmailGroupName success ON success.EmailGroupID = EmailSuccess " & _
       "WHERE ID = " & mlngBatchJobID)
-
-      Dim bob As String
-      bob = ("SELECT ASRSysBatchJobName.*, isnull(fail.name,'') as 'EmailFailedName', isnull(success.name,'') as 'EmailSuccessName', CONVERT(integer, ASRSysBatchJobName.TimeStamp) AS intTimeStamp FROM ASRSysBatchJobName LEFT OUTER JOIN ASRSysEmailGroupName fail ON fail.EmailGroupID = EmailFailed LEFT OUTER JOIN ASRSysEmailGroupName success ON success.EmailGroupID = EmailSuccess WHERE ID = " & mlngBatchJobID)
       
   If prstTemp.BOF And prstTemp.EOF Then
     COAMsgBox "Cannot load the definition for this " & IIf(gblnReportPackMode, "report pack", "batch job") & "." & vbCrLf & "(" & Err.Description & ")", vbCritical + vbOKOnly, IIf(gblnReportPackMode, "Report Pack", "Batch Job")
@@ -2064,7 +2062,7 @@ Private Function RetrieveBatchJobDetails() As Boolean
   cboStartDate.Text = IIf(IsDate(prstTemp!StartDate) And Not IsNull(prstTemp!StartDate), Format(prstTemp!StartDate, DateFormat), "")
   cboEndDate.Text = IIf(IsDate(prstTemp!EndDate) And Not IsNull(prstTemp!EndDate), Format(prstTemp!EndDate, DateFormat), "")
   chkIndefinitely.Value = IIf(prstTemp!Indefinitely = True, vbChecked, vbUnchecked)
-  chkWeekEnds.Value = IIf(prstTemp!Weekends = True, vbChecked, vbUnchecked)
+  chkWeekends.Value = IIf(prstTemp!Weekends = True, vbChecked, vbUnchecked)
   chkRunOnce.Value = IIf(prstTemp!RunOnce = True, vbChecked, vbUnchecked)
   sRoleToPrompt = IIf(IsNull(prstTemp!RoleToPrompt), "", prstTemp!RoleToPrompt)
   
@@ -2270,7 +2268,7 @@ Private Sub SchedControls(Value As Boolean)
     cboStartDate.Text = vbNullString
     cboEndDate.Text = vbNullString
     chkIndefinitely.Value = vbUnchecked
-    chkWeekEnds.Value = vbUnchecked
+    chkWeekends.Value = vbUnchecked
     chkRunOnce.Value = vbUnchecked
   End If
   
@@ -2280,7 +2278,7 @@ Private Sub SchedControls(Value As Boolean)
   cboStartDate.Enabled = Value
   cboEndDate.Enabled = IIf(chkIndefinitely.Value = 1, False, Value)
   chkIndefinitely.Enabled = Value
-  chkWeekEnds.Enabled = Value
+  chkWeekends.Enabled = Value
   chkRunOnce.Enabled = Value
   
   'MH20010704
@@ -2712,7 +2710,7 @@ Private Function SaveDefinition() As Boolean
 'Removed code that set the 'Last Completed' date to Null.
 'Therefore when editing the definition, the history of the batch job stays the same.
           
-    sSQL = sSQL & "Weekends = " & IIf(chkWeekEnds.Value = 1, 1, 0) & "," & _
+    sSQL = sSQL & "Weekends = " & IIf(chkWeekends.Value = 1, 1, 0) & "," & _
              "RunOnce = " & IIf(chkRunOnce.Value = 1, 1, 0) & "," & _
              "RoleToPrompt = '" & cboRoleToPrompt.Text & "'" & _
               " WHERE ID = " & mlngBatchJobID
@@ -2761,7 +2759,7 @@ Private Function SaveDefinition() As Boolean
        sSQL = sSQL & "'" & Replace(Format(CDate(cboEndDate.Text), "mm/dd/yyyy"), UI.GetSystemDateSeparator, "/") & "'" & ","
     End If
     
-    sSQL = sSQL & IIf(chkWeekEnds.Value = 1, 1, 0) & ",'" & _
+    sSQL = sSQL & IIf(chkWeekends.Value = 1, 1, 0) & ",'" & _
            datGeneral.UserNameForSQL & "'," & _
            IIf(chkRunOnce.Value = 1, 1, 0) & ",'" & _
            cboRoleToPrompt.Text & "'," '"')"
@@ -2892,7 +2890,7 @@ Private Function SaveDefinition2() As Boolean
     
     sSQL = sSQL & "RoleToPrompt = '" & cboRoleToPrompt.Text & "', "
     sSQL = sSQL & "Indefinitely = " & IIf(chkIndefinitely.Value = 1, 1, 0) & ","
-    sSQL = sSQL & "Weekends = " & IIf(chkWeekEnds.Value = 1, 1, 0) & ","
+    sSQL = sSQL & "Weekends = " & IIf(chkWeekends.Value = 1, 1, 0) & ","
     sSQL = sSQL & "RunOnce = " & IIf(chkRunOnce.Value = 1, 1, 0) & ","
     
     'JOBS TAB
@@ -2918,7 +2916,7 @@ Private Function SaveDefinition2() As Boolean
       sSQL = sSQL & "OutputScreen = " & IIf(chkDestination(desScreen).Value = vbChecked, "1", "0") & ", "
       'Printer Options
       sSQL = sSQL & IIf(chkDestination(desPrinter), (" OutputPrinterName = '" & Replace(cboPrinterName.Text, " '", "''") & "',"), (" OutputPrinterName = '', "))
-      sSQL = sSQL & "OutputFilename = '" & Replace(txtFileName.Text, "'", "''") & "',"
+      sSQL = sSQL & "OutputFilename = '" & Replace(txtFilename.Text, "'", "''") & "',"
       'outputSaveExisting
       If chkDestination(desSave).Value = vbChecked Then
         sSQL = sSQL & "OutputSaveExisting = " & cboSaveExisting.ItemData(cboSaveExisting.ListIndex) & ", "
@@ -2934,7 +2932,7 @@ Private Function SaveDefinition2() As Boolean
     sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmail = 1, "), ("OutputEmail = 0, "))
     sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmailAddr = " & txtEmailGroup.Tag & ", "), ("OutputEmailAddr = 0, "))
     sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmailSubject = '" & Replace(txtEmailSubject.Text, "'", "''") & "', "), ("OutputEmailSubject = '', "))
-    sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmailAttachAs = '" & Replace(txtEMailAttachAs.Text, "'", "''") & "'"), ("OutputEmailAttachAs = ''"))
+    sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmailAttachAs = '" & Replace(txtEmailAttachAs.Text, "'", "''") & "'"), ("OutputEmailAttachAs = ''"))
     
     'FINAL WHERE CLAUSE
     sSQL = sSQL & " WHERE ID = " & mlngBatchJobID
@@ -2985,7 +2983,7 @@ Private Function SaveDefinition2() As Boolean
              sSQL = sSQL & "'" & Replace(Format(CDate(cboEndDate.Text), "mm/dd/yyyy"), UI.GetSystemDateSeparator, "/") & "'" & ","
           End If
     
-    sSQL = sSQL & IIf(chkWeekEnds.Value = 1, 1, 0) & ",'" & _
+    sSQL = sSQL & IIf(chkWeekends.Value = 1, 1, 0) & ",'" & _
            datGeneral.UserNameForSQL & "'," & _
            IIf(chkRunOnce.Value = 1, 1, 0) & ",'" & _
            cboRoleToPrompt.Text & "',"
@@ -3020,9 +3018,9 @@ Private Function SaveDefinition2() As Boolean
           'outputEmailSubject
           sSQL = sSQL & IIf(chkDestination(desEmail), ("'" & Replace(txtEmailSubject.Text, "'", "''") & "', "), ("'', "))
           'outputFilename
-          sSQL = sSQL & "'" & Replace(txtFileName.Text, "'", "''") & "',"
+          sSQL = sSQL & "'" & Replace(txtFilename.Text, "'", "''") & "',"
           'outputEmailAttachAs
-          sSQL = sSQL & IIf(chkDestination(desEmail), ("'" & Replace(txtEMailAttachAs.Text, "'", "''") & "',"), ("'',"))
+          sSQL = sSQL & IIf(chkDestination(desEmail), ("'" & Replace(txtEmailAttachAs.Text, "'", "''") & "',"), ("'',"))
           'outputTitlePage
           sSQL = sSQL & "'" & Replace(txtTitlePage.Text, "'", "''") & "', "
           'outputReportPackTitle
@@ -3362,7 +3360,7 @@ Private Function ValidDestination() As Boolean
   ValidDestination = False
 
   If chkDestination(desSave).Value = vbChecked Then
-    If txtFileName.Text = vbNullString Then
+    If txtFilename.Text = vbNullString Then
       COAMsgBox "You must enter a file name.", vbExclamation, Caption
       Exit Function
     End If
@@ -3381,20 +3379,20 @@ Private Function ValidDestination() As Boolean
       Exit Function
     End If
 
-    If txtEMailAttachAs.Text = vbNullString Then
+    If txtEmailAttachAs.Text = vbNullString Then
       COAMsgBox "You must enter an email attachment file name.", vbExclamation, Caption
       Exit Function
     End If
     
-    If InStr(txtEMailAttachAs.Text, "/") Or _
-       InStr(txtEMailAttachAs.Text, ":") Or _
-       InStr(txtEMailAttachAs.Text, "?") Or _
-       InStr(txtEMailAttachAs.Text, Chr(34)) Or _
-       InStr(txtEMailAttachAs.Text, "<") Or _
-       InStr(txtEMailAttachAs.Text, ">") Or _
-       InStr(txtEMailAttachAs.Text, "|") Or _
-       InStr(txtEMailAttachAs.Text, "\") Or _
-       InStr(txtEMailAttachAs.Text, "*") Then
+    If InStr(txtEmailAttachAs.Text, "/") Or _
+       InStr(txtEmailAttachAs.Text, ":") Or _
+       InStr(txtEmailAttachAs.Text, "?") Or _
+       InStr(txtEmailAttachAs.Text, Chr(34)) Or _
+       InStr(txtEmailAttachAs.Text, "<") Or _
+       InStr(txtEmailAttachAs.Text, ">") Or _
+       InStr(txtEmailAttachAs.Text, "|") Or _
+       InStr(txtEmailAttachAs.Text, "\") Or _
+       InStr(txtEmailAttachAs.Text, "*") Then
           COAMsgBox "The email attachment file name cannot contain any of the following characters:" & vbCrLf & _
                  "/  :  ?  " & Chr(34) & "  <  >  |  \  *", vbExclamation, Caption
           Exit Function
@@ -3445,6 +3443,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded2(Optional pvOnlyFatalMessages
   Dim sCalcName As String
   Dim sTableName As String
   Dim fOnlyFatalMessages As Boolean
+  Dim vForceHidden As Variant
  
   If IsMissing(pvOnlyFatalMessages) Then
     fOnlyFatalMessages = mblnLoading
@@ -3639,15 +3638,15 @@ Private Function ForceDefinitionToBeHiddenIfNeeded2(Optional pvOnlyFatalMessages
     Next iLoop
   End If
 
-    If mblnForceHidden And (Not fNeedToForceHidden) And (Not fOnlyFatalMessages) Then
-      sBigMessage = "This definition no longer has to be hidden." & IIf(Len(sBigMessage) > 0, vbCrLf & vbCrLf, "") & _
-        sBigMessage
-    End If
+  If mblnForceHidden And (Not fNeedToForceHidden) And (Not fOnlyFatalMessages) Then
+    sBigMessage = "This definition no longer has to be hidden." & IIf(Len(sBigMessage) > 0, vbCrLf & vbCrLf, "") & _
+      sBigMessage
+  End If
 
-    mblnForceHidden = fNeedToForceHidden
-Dim bob As Variant
-bob = IIf(fNeedToForceHidden, "HD", "RW")
-    ForceAccess bob
+  mblnForceHidden = fNeedToForceHidden
+  
+  vForceHidden = IIf(fNeedToForceHidden, "HD", "RW")
+  ForceAccess vForceHidden
 
   If Len(sBigMessage) > 0 Then
     COAMsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
@@ -3658,56 +3657,6 @@ bob = IIf(fNeedToForceHidden, "HD", "RW")
   'RefreshRepetitionGrid
   
 End Function
-Private Sub RefreshRepetitionGrid()
-  
-  Dim objItem As ListItem
-  Dim iLoop As Integer
-  Dim sKey As String
-  Dim objColumm  As clsColumn
-  
-  If mblnLoading Then
-    Exit Sub
-  End If
-  
-  mblnIsChildColumnSelected = IsChildColumnSelected
-  
-  FormatGridColumnWidths
-  
-  With grdRepetition
-    .Enabled = True
-    .AllowUpdate = ((Not mblnReadOnly) And (mblnIsChildColumnSelected))
-    .Columns(1).Locked = True
-    .CheckBox3D = False
-    
-    If mblnReadOnly Or (Not mblnIsChildColumnSelected) Then
-      If (Not mblnIsChildColumnSelected) Then
-        ClearRepetition
-      End If
-      .HeadStyleSet = "ssetHeaderDisabled"
-      .StyleSet = "ssetDisabled"
-'      .ActiveRowStyleSet = "ssetDisabled"
-      .RowNavigation = ssRowNavigationAllLock
-      .SelectTypeRow = ssSelectionTypeNone
-      .SelectByCell = False
-      .SelectTypeCol = ssSelectionTypeNone
-    Else
-      .HeadStyleSet = "ssetHeaderEnabled"
-      .StyleSet = "ssetEnabled"
-'      .ActiveRowStyleSet = "ssetEnabled"
-      .RowNavigation = ssRowNavigationLRLock
-      .SelectTypeRow = ssSelectionTypeNone
-      .SelectByCell = False
-      .SelectTypeCol = ssSelectionTypeNone
-
-      .SelBookmarks.RemoveAll
-      .SelBookmarks.Add .Bookmark
-    End If
-    
-  End With
- 
-  grdRepetition_RowColChange 0, 0
-
-End Sub
 
 
 Private Sub ForceAccess(Optional pvAccess As Variant)
@@ -4242,8 +4191,6 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
       
 End Function
 
-
-
 Private Function AllHiddenAccess() As Boolean
   Dim iLoop As Integer
   Dim varBookmark As Variant
@@ -4265,11 +4212,8 @@ Private Function AllHiddenAccess() As Boolean
   
 End Function
 Private Function OnlyPauseJobsDefined() As Boolean
-
   Dim pintLoop As Integer
   Dim pvarbookmark As Variant
-  
-  
   ' Return true if only pause jobs exist
   
   grdColumns.MoveFirst
@@ -4284,12 +4228,6 @@ Private Function OnlyPauseJobsDefined() As Boolean
   OnlyPauseJobsDefined = True
 
 End Function
-
-
-
-
-
-
 Private Sub optOutputFormat_Click(Index As Integer)
   mobjOutputDef.FormatClick Index
   Changed = True
@@ -4362,85 +4300,7 @@ Private Sub txtName_GotFocus()
   End With
 End Sub
 
-
-
-Private Sub LoadRoleCombo()
-'JPD 20030513 No longer required ?
-'
-'  On Error GoTo ErrorTrap
-'
-'  Dim fOK As Boolean
-'  Dim fGoodGroup As Boolean
-'  Dim iNextIndex As Integer
-'  Dim sGroupName As String
-'  Dim rsGroups As Recordset
-'  Dim rsSysRoles As Recordset
-'
-'  fOK = True
-'  ReDim asFixedRoles(0)
-'
-'  ' Get a list of groups/Roles from SQL Server
-'  Set rsGroups = datGeneral.GetRecords("sp_helprole")
-'  Set rsSysRoles = datGeneral.GetRecords("sp_helpdbfixedrole")
-'  With rsSysRoles
-'    Do While Not .EOF
-'      iNextIndex = UBound(asFixedRoles) + 1
-'      ReDim Preserve asFixedRoles(iNextIndex)
-'      asFixedRoles(iNextIndex) = .Fields(0).Value
-'      .MoveNext
-'    Loop
-'
-'    .Close
-'  End With
-'  Set rsSysRoles = Nothing
-'
-'  ' Create a security tables and security users collection for each group.
-'  With rsGroups
-'    If Not .EOF And Not .BOF Then
-'      While Not .EOF
-'        sGroupName = Trim(.Fields(0).Value)
-'
-'        fGoodGroup = True
-'        ' Check that the group is valid.
-'        If sGroupName = "public" Then
-'          fGoodGroup = False
-'        Else
-'          ' Check if the group is a 'fixed system role'.
-'          For iNextIndex = 1 To UBound(asFixedRoles)
-'            If asFixedRoles(iNextIndex) = sGroupName Then
-'              fGoodGroup = False
-'              Exit For
-'            End If
-'          Next iNextIndex
-'        End If
-'
-'        If fGoodGroup Then
-'          ' Add the group to the role combo
-'          cboRoleToPrompt.AddItem sGroupName
-'        End If
-'
-'        .MoveNext
-'      Wend
-'    End If
-'
-'    .Close
-'  End With
-'
-'TidyUpAndExit:
-'  Set rsGroups = Nothing
-'  Exit Sub
-'
-'ErrorTrap:
-'  fOK = False
-'  COAMsgBox "Error reading database roles." & vbCrLf & "(" & Err.Description & ")"
-'  Resume TidyUpAndExit
-'
-End Sub
-
-
 Private Function CheckUniqueName(sName As String, lngCurrentID As Long, blnIsReport As Boolean) As Boolean
-
-  
   Dim sSQL As String
   Dim rsTemp As Recordset
   
