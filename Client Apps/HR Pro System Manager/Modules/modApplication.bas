@@ -25,8 +25,6 @@ Public Function Activate() As Boolean
       
         ' Load defintions into system framework (ultimately will replace the above temp tables, but this has to be done piecemeal)
         PopulateMetaData
-     
-      
       
         CreateQueryDefs
       
@@ -141,9 +139,7 @@ ErrorTrap:
     vbOKOnly + vbExclamation, Name
   Err = False
 
-
 End Sub
-
 
 Public Function CreateTempTables() As Boolean
   
@@ -260,23 +256,7 @@ Public Function CreateTempTables() As Boolean
       " INTO tmpOrderItems FROM ASRSysOrderItems IN " & sSource
     daoDb.Execute sSQL
        
-'NHRD Was going to use tmpDocumentManagementTypes for usage checks but other checks refer directly to the db
-'    'Create the local Document Types table.
-'    sSQL = "SELECT ASRSysDocumentManagementTypes.*" & _
-'      " INTO tmpDocumentManagementTypes FROM ASRSysDocumentManagementTypes IN " & sSource
-'    daoDb.Execute sSQL
-
-'    ' Create the local OrderItems table.
-'    sSQL = "SELECT ASRSysDocumentManagementCategories.*" & _
-'      " INTO tmpDocumentManagementCategories FROM ASRSysDocumentManagementCategories IN " & sSource
-'    daoDb.Execute sSQL
-'
-'    ' Create the local OrderItems table.
-'    sSQL = "SELECT ASRSysDocumentManagementHeaderInfo.*" & _
-'      " INTO tmpDocumentManagementHeaderInfo FROM ASRSysDocumentManagementHeaderInfo IN " & sSource
-'    daoDb.Execute sSQL
     
-    'MH20000727 Added Email Tables
     ' Create the local Email Address table.
     sSQL = "SELECT ASRSysEmailAddress.*," & _
       " FALSE AS changed, FALSE AS new, FALSE AS deleted" & _
@@ -346,12 +326,6 @@ Public Function CreateTempTables() As Boolean
     daoDb.Execute sSQL
     
     ' Create the local View table.
-'NPG20080206 Fault 12874
-'    sSQL = "SELECT ASRSysViews.*," & _
-'      " FALSE AS changed, FALSE AS new, FALSE AS deleted," & _
-'      " ViewName as OriginalViewName," & _
-'      " 0 AS copySecurityViewID, '' As CopySecurityViewName, 0 As GrantRead, 0 AS GrantNew, 0 As GrantEdit, 0 As GrantDelete " & _
-'      " INTO tmpViews FROM ASRSysViews IN " & sSource
     sSQL = "SELECT ASRSysViews.*," & _
       " FALSE AS changed, FALSE AS new, FALSE AS deleted," & _
       " ViewName as OriginalViewName," & _
@@ -411,7 +385,6 @@ Public Function CreateTempTables() As Boolean
       " INTO tmpAccordTransferTypes FROM ASRSysAccordTransferTypes IN " & sSource
     daoDb.Execute sSQL
   
-'NHRD Prototype Fusion Code***********************************************************
       ' Create the local Fusion Field Definition table.
     sSQL = "SELECT ASRSysFusionFieldDefinitions.*" & _
       " INTO tmpFusionFieldDefinitions FROM ASRSysFusionFieldDefinitions IN " & sSource
@@ -426,7 +399,6 @@ Public Function CreateTempTables() As Boolean
     sSQL = "SELECT ASRSysFusionTypes.*" & _
       " INTO tmpFusionTypes FROM ASRSysFusionTypes IN " & sSource
     daoDb.Execute sSQL
-'NHRD Prototype Fusion Code***********************************************************
     
     'TM20020211 Fault 3487
     ' Create the local mail merge table.
@@ -480,6 +452,27 @@ Public Function CreateTempTables() As Boolean
     sSQL = "SELECT ASRSysWorkflowTriggeredLinkColumns.*" & _
       " INTO tmpWorkflowTriggeredLinkColumns FROM ASRSysWorkflowTriggeredLinkColumns IN " & sSource
     daoDb.Execute sSQL
+   
+    ' Mobile navigation tables (layouts).
+    sSQL = "SELECT tbsys_MobileFormLayout.*" & _
+      " INTO tmpmobileformlayout FROM tbsys_MobileFormLayout IN " & sSource
+    daoDb.Execute sSQL
+  
+    ' Mobile navigation tables (elements).
+    sSQL = "SELECT tbsys_MobileFormElements.*" & _
+      " INTO tmpmobileformelements FROM tbsys_MobileFormElements IN " & sSource
+    daoDb.Execute sSQL
+  
+    ' Local copy of the security groups
+    sSQL = "SELECT uid, name INTO tmpmobileusergroups FROM sysusers " & _
+      " IN " & sSource & " WHERE gid = uid And gid > 0 AND not (name like 'ASRSys%') AND NOT (name like 'db[_]%')"
+    daoDb.Execute sSQL
+   
+    ' Mobile group workflows
+    sSQL = "SELECT tbsys_mobilegroupworkflows.*" & _
+      " INTO tmpmobilegroupworkflows FROM tbsys_mobilegroupworkflows IN " & sSource
+    daoDb.Execute sSQL
+  
   
     ' Create the indices for the local Tables table.
     Set tbdTemp = daoDb.TableDefs("tmpTables")
@@ -1447,33 +1440,23 @@ Public Function DropTempTables() As Boolean
   
   recOrdItemEdit.Close
   daoDb.Execute "DROP TABLE tmpOrderItems"
-  
-  ' Document Management
-'  daoDb.Execute "DROP TABLE tmpDocumentManagementCategories"
-'  daoDb.Execute "DROP TABLE tmpDocumentManagementHeaderInfo"
-  
+   
   'MH20000727 Added Email Tables
   recEmailAddrEdit.Close
   daoDb.Execute "DROP TABLE tmpEmailAddresses"
   
   recEmailLinksEdit.Close
   daoDb.Execute "DROP TABLE tmpEmailLinks"
-  
-  'recEmailAttachmentsEdit.Close
-  'daoDb.Execute "DROP TABLE tmpEmailLinksAttachments"
-  
+   
   recEmailLinksColumnsEdit.Close
   daoDb.Execute "DROP TABLE tmpEmailLinksColumns"
   
   recEmailRecipientsEdit.Close
   daoDb.Execute "DROP TABLE tmpEmailLinksRecipients"
-
-  
+ 
   'MH20090520
   recLinkContentEdit.Close
   daoDb.Execute "DROP TABLE tmpLinkContent"
-
-
 
   'MH20040301
   recOutlookFolders.Close
@@ -1487,9 +1470,7 @@ Public Function DropTempTables() As Boolean
 
   recOutlookLinksDestinations.Close
   daoDb.Execute "DROP TABLE tmpOutlookLinksDestinations"
-  
-  
-  
+   
   recExprEdit.Close
   daoDb.Execute "DROP TABLE tmpExpressions"
   
@@ -1515,15 +1496,21 @@ Public Function DropTempTables() As Boolean
   daoDb.Execute "DROP TABLE tmpSSIHiddenGroups"
   daoDb.Execute "DROP TABLE tmpSSIViews"
 
+  ' Payroll Integration Tables
   daoDb.Execute "DROP TABLE tmpAccordTransferFieldDefinitions"
   daoDb.Execute "DROP TABLE tmpAccordTransferFieldMappings"
   daoDb.Execute "DROP TABLE tmpAccordTransferTypes"
 
-'NHRD Prototype Fusion Code **********************************
+  ' Fusion Tables
   daoDb.Execute "DROP TABLE tmpFusionFieldDefinitions"
   daoDb.Execute "DROP TABLE tmpFusionFieldMappings"
   daoDb.Execute "DROP TABLE tmpFusionTypes"
-'NHRD Prototype Fusion Code **********************************
+
+  ' Mobile Navigation Tables
+  daoDb.Execute "DROP TABLE tmpmobileformlayout"
+  daoDb.Execute "DROP TABLE tmpmobileformelements"
+  daoDb.Execute "DROP TABLE tmpmobileusergroups"
+  daoDb.Execute "DROP TABLE tmpmobilegroupworkflows"
 
   recMailMerge.Close
   daoDb.Execute "DROP TABLE tmpMailMerge"
@@ -1747,10 +1734,8 @@ Public Sub ActivateModules()
   ' Payroll Module
   gbAccordPayrollModule = IsModuleEnabled(modAccordPayroll)
 
-'NHRD Prototype Fusion Code **********************************
-' Fusion Module
-  gbFusionModule = True 'IsModuleEnabled(modFusion)
-'NHRD Prototype Fusion Code **********************************
+  ' Fusion Module
+  gbFusionModule = IsModuleEnabled(modFusion)
 
   ' Version 1 Module
   gfVersion1Module = IsModuleEnabled(modVersion1)
@@ -1760,7 +1745,7 @@ Public Sub ActivateModules()
   gbQAddressEnabled = IsModuleEnabled(modQAddress)
   
   ' Needs settings to the ismoduleenabled, but function is not yet ready (and checked out by someone! else)
-  'gfMobileModule = True
+  gfMobileModule = IsModuleEnabled(modMobile)
   
   ' Workflow Module
   gfWorkflowModule = IsModuleEnabled(modWorkflow) _
@@ -2140,14 +2125,18 @@ Public Sub EditMobileDesigner()
 
   On Error GoTo ErrorTrap
 
-  Dim objMobile As clsMobile
+'  Dim objMobile As clsMobile
   Dim bOK As Boolean
+'
+'  Set objMobile = New clsMobile
+''  objMobile.Edit
 
-  Set objMobile = New clsMobile
-'  objMobile.Edit
+ 'Dim obj As New MobileDesigner.DesignerForm
+ ' obj.EditDesign
+
 
 TidyUpAndExit:
-  Set objMobile = Nothing
+  'Set objMobile = Nothing
   Exit Sub
 
 ErrorTrap:

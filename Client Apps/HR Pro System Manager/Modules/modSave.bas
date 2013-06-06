@@ -47,7 +47,7 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
       .MainCaption = "Saving Changes"
       .NumberOfBars = 2
       .Bar1Value = 0
-      .Bar1MaxValue = 31
+      .Bar1MaxValue = 32
       .Bar2Value = 0
       .Bar1Caption = "Updating the server database..."
       .Time = False
@@ -339,6 +339,16 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
       fOK = fOK And Not gobjProgress.Cancelled
     End If
     
+    ' Mobile navigation definitions
+    If fOK Then
+      gobjProgress.ResetBar2
+      OutputCurrentProcess "Mobile Navigation"
+      gobjProgress.UpdateProgress False
+      DoEvents
+      fOK = SaveMobileNavigation
+      fOK = fOK And Not gobjProgress.Cancelled
+    End If
+    
     ' Hierarchy specifics.
     If fOK Then
       gobjProgress.ResetBar2
@@ -445,7 +455,8 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
       fOK = CreateOLEStoredProcedure
       fOK = fOK And Not gobjProgress.Cancelled
     End If
-    
+       
+    ' Apply permissions
     If fOK Then
       gobjProgress.ResetBar2
       OutputCurrentProcess "Applying Permissions"
@@ -1189,8 +1200,6 @@ Private Function SaveModuleDefinitions() As Boolean
     rsAccord.MoveNext
   Wend
   rsAccord.Close
-
-
 
 
   ' Store the Fusion Transfer Types
@@ -2098,3 +2107,119 @@ ErrorTrap:
   RunRecordSaveOptimiser = False
 
 End Function
+
+
+Private Function SaveMobileNavigation() As Boolean
+
+  Dim sValues As String
+  Dim sInsert As String
+  Dim sSQL As String
+  Dim bOK As Boolean
+  Dim objTable As DAO.TableDef
+  Dim objField As DAO.Field
+  Dim objRecordset As DAO.Recordset
+
+  On Error GoTo ErrorTrap
+
+  bOK = True
+ 
+  bOK = bOK And SquirtDAOTableToSQL("tmpmobileformlayout", "tbsys_mobileformlayout")
+  bOK = bOK And SquirtDAOTableToSQL("tmpmobileformelements", "tbsys_mobileformelements")
+  bOK = bOK And SquirtDAOTableToSQL("tmpmobilegroupworkflows", "tbsys_mobilegroupworkflows")
+  
+TidyUpAndExit:
+  SaveMobileNavigation = bOK
+  Exit Function
+
+ErrorTrap:
+  OutputError "Error Saving Mobile Navigation"
+  bOK = False
+  Resume TidyUpAndExit
+
+
+End Function
+
+' An incredibly inefficient way of hoofing data from the Access DB to SQL. As soon as we can move to NHibernate the better!
+Public Function SquirtDAOTableToSQL(ByRef strAccessTable As String, ByRef strSQLTable As String) As Boolean
+
+  Dim sValues As String
+  Dim sInsert As String
+  Dim sSQL As String
+  Dim bOK As Boolean
+  Dim objTable As DAO.TableDef
+  Dim objField As DAO.Field
+  Dim objRecordset As DAO.Recordset
+
+  On Error GoTo ErrorTrap
+
+  bOK = True
+
+  ' Get rid of existing data
+  gADOCon.Execute "DELETE FROM " & strSQLTable, , adCmdText + adExecuteNoRecords
+
+  ' Build insert string
+  sInsert = ""
+  Set objTable = daoDb.TableDefs(strAccessTable)
+  For Each objField In objTable.Fields
+    sInsert = sInsert & ", " & objField.Name
+  Next objField
+  sInsert = Mid(sInsert, 2)
+  sInsert = "INSERT [" & strSQLTable & "] (" & sInsert & ") VALUES ("
+  
+  ' Build each of the update commands
+  Set objRecordset = daoDb.OpenRecordset("SELECT * FROM " & strAccessTable)
+  If objRecordset.EOF And objRecordset.BOF Then
+    SquirtDAOTableToSQL = True
+    Exit Function
+  End If
+  
+  objRecordset.MoveFirst
+  Do While Not objRecordset.EOF
+  
+    sValues = ""
+    For Each objField In objRecordset.Fields
+    
+      Select Case objField.Type
+        Case 1 ' Boolean
+          sValues = sValues & ", " & CStr(IIf(IsNull(objField.value), "NULL", IIf(objField.value, "1", "0")))
+         
+        Case 2, 7 ' Number
+          sValues = sValues & ", " & CStr(IIf(IsNull(objField.value), "NULL", objField.value))
+               
+        Case 10, 12 ' Text
+          If IsNull(objField.value) Then
+            sValues = sValues & ", NULL"
+          Else
+            sValues = sValues & ", '" & Replace(objField.value, "'", "''") & "'"
+          End If
+          
+        Case 4 ' Date
+          sValues = sValues & ", " & CStr(IIf(IsNull(objField.value), "NULL", objField.value))
+          
+        Case Else
+          sValues = sValues & ", " & CStr(IIf(IsNull(objField.value), "NULL", objField.value))
+      
+      End Select
+    Next objField
+    sValues = Mid(sValues, 2)
+    
+    sSQL = sInsert & sValues & ")"
+
+    ' Insert into SQL
+    gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
+
+    objRecordset.MoveNext
+  Loop
+
+TidyUpAndExit:
+  SquirtDAOTableToSQL = bOK
+  Exit Function
+
+ErrorTrap:
+  OutputError "Error Saving Mobile Navigation"
+  bOK = False
+  Resume TidyUpAndExit
+
+
+End Function
+
