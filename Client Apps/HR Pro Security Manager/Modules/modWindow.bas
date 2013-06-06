@@ -3,8 +3,8 @@ Private Const GWL_WNDPROC = -4
 Private Const WM_GETMINMAXINFO = &H24
 
 Private Type POINTAPI
-  x As Long
-  y As Long
+  X As Long
+  Y As Long
 End Type
 
 Private Type MINMAXINFO
@@ -75,12 +75,12 @@ Private Function WindowProc(ByVal lhWnd As Long, ByVal uMsg As Long, _
     Set sizeInfo = m_WinSizeInfoCol.Item(CStr(lhWnd))
     
     'Specify new minimum size for window.
-    MinMax.ptMinTrackSize.x = sizeInfo.MinX
-    MinMax.ptMinTrackSize.y = sizeInfo.MinY
+    MinMax.ptMinTrackSize.X = sizeInfo.MinX
+    MinMax.ptMinTrackSize.Y = sizeInfo.MinY
 
     'Specify new maximum size for window.
-    MinMax.ptMaxTrackSize.x = sizeInfo.MaxX
-    MinMax.ptMaxTrackSize.y = sizeInfo.MaxY
+    MinMax.ptMaxTrackSize.X = sizeInfo.MaxX
+    MinMax.ptMaxTrackSize.Y = sizeInfo.MaxY
     
     'Copy local structure back.
     CopyMemoryFromMinMaxInfo lParam, MinMax, Len(MinMax)
@@ -137,4 +137,25 @@ Public Sub ApplySkinToActiveBar(ByRef pobjActiveBar As ActiveBarLibraryCtl.Activ
   End With
 
 End Sub
+
+
+' Textwidth function causes overflow on larger pieces of data. This wrapper should handle it.
+Public Function BigTextWidth(ByRef sInString As Variant, ByVal MaximumSize As Long) As Long
+
+  Dim lngTextWidth As Long
+
+  If Len(sInString) > 400 Then
+    lngTextWidth = Printer.TextWidth(Left(sInString, 400)) + _
+          BigTextWidth(Right(sInString, Len(sInString) - 400), 0)
+  Else
+    lngTextWidth = Printer.TextWidth(sInString)
+  End If
+
+  If MaximumSize > 0 Then
+    BigTextWidth = Minimum(lngTextWidth, MaximumSize)
+  Else
+    BigTextWidth = lngTextWidth
+  End If
+
+End Function
 
