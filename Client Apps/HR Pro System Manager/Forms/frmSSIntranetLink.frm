@@ -118,6 +118,7 @@ Begin VB.Form frmSSIntranetLink
          Width           =   315
       End
       Begin VB.TextBox txtIcon 
+         Enabled         =   0   'False
          Height          =   330
          Left            =   1050
          TabIndex        =   56
@@ -1466,6 +1467,11 @@ Private Sub RefreshControls()
   End If
   
   ' NPG Dashboard
+  
+  txtIcon.Enabled = False
+  txtIcon.BackColor = vbButtonFace
+
+  
   If optLink(SSINTLINKSEPARATOR).value Or optLink(SSINTLINKCHART) _
       Or optLink(SSINTLINKPWFSTEPS).value Then
     txtPrompt.Enabled = False
@@ -1541,7 +1547,7 @@ Private Sub RefreshControls()
   lblHRProUtilityMessage.Caption = sUtilityMessage
   
   ' Disable the OK button as required.
-  cmdOk.Enabled = mfChanged
+  cmdOK.Enabled = mfChanged
   
 
 End Sub
@@ -1688,7 +1694,7 @@ Private Function ValidateLink() As Boolean
   
   ' Check that text has been entered
   If fValid Then
-    If (Len(txtText.Text) = 0) And Not optLink(SSINTLINKPWFSTEPS).value Then
+    If (Len(txtText.Text) = 0) And Not optLink(SSINTLINKPWFSTEPS).value And Not optLink(SSINTLINKSEPARATOR).value Then
       fValid = False
       MsgBox "No text has been entered.", vbOKOnly + vbExclamation, Application.Name
       txtText.SetFocus
