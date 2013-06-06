@@ -2609,9 +2609,8 @@ PRINT 'Step 5 - New Shared Table Transfer Types for NFP'
 		EXEC sp_executesql @NVarCommand
 	END
 
-/* ------------------------------------------------------------- */
-PRINT 'Step 6 - New Shared Table Transfer Columns for Employee'
 
+	-- New mappings on employee for NFP
 	IF (SELECT [Description] FROM ASRSysAccordTransferFieldDefinitions WHERE TransferTypeID = 0 AND TransferFieldID = 57) = 'Unused'
 	BEGIN
 		SELECT @NVarCommand = 'UPDATE ASRSysAccordTransferFieldDefinitions  SET Description = ''Known As''  WHERE TransferTypeID = 0 AND TransferFieldID = 57'
@@ -2672,6 +2671,92 @@ PRINT 'Step 6 - New Shared Table Transfer Columns for Employee'
 		EXEC sp_executesql @NVarCommand
 	END
 
+/* ------------------------------------------------------------- */
+
+PRINT 'Step 6 - Changes to Shared Table Transfer for RTI'
+	
+	-- Update existing columns for Employee transfer
+	IF (SELECT [Description] FROM ASRSysAccordTransferFieldDefinitions WHERE TransferTypeID = 0 AND TransferFieldID = 195) = 'Analysis Code 1'
+	BEGIN
+		SELECT @NVarCommand = 'UPDATE ASRSysAccordTransferFieldDefinitions  SET Description = ''Passport Number''  WHERE TransferTypeID = 0 AND TransferFieldID = 195'
+		EXEC sp_executesql @NVarCommand
+	END
+
+	IF (SELECT [Description] FROM ASRSysAccordTransferFieldDefinitions WHERE TransferTypeID = 0 AND TransferFieldID = 196) = 'Analysis Code 2'
+	BEGIN
+		SELECT @NVarCommand = 'UPDATE ASRSysAccordTransferFieldDefinitions  SET Description = ''Work Status''  WHERE TransferTypeID = 0 AND TransferFieldID = 196'
+		EXEC sp_executesql @NVarCommand
+	END
+
+	IF (SELECT [Description] FROM ASRSysAccordTransferFieldDefinitions WHERE TransferTypeID = 0 AND TransferFieldID = 197) = 'Analysis Code 3'
+	BEGIN
+		SELECT @NVarCommand = 'UPDATE ASRSysAccordTransferFieldDefinitions  SET Description = ''EPM6 (Modified) Scheme''  WHERE TransferTypeID = 0 AND TransferFieldID = 197'
+		EXEC sp_executesql @NVarCommand
+	END
+
+	IF (SELECT [Description] FROM ASRSysAccordTransferFieldDefinitions WHERE TransferTypeID = 0 AND TransferFieldID = 198) = 'Analysis Code 4'
+	BEGIN
+		SELECT @NVarCommand = 'UPDATE ASRSysAccordTransferFieldDefinitions  SET Description = ''EEA/Commonwealth Citizen''  WHERE TransferTypeID = 0 AND TransferFieldID = 198'
+		EXEC sp_executesql @NVarCommand
+	END
+
+	IF (SELECT [Description] FROM ASRSysAccordTransferFieldDefinitions WHERE TransferTypeID = 0 AND TransferFieldID = 199) = 'Analysis Code 5'
+	BEGIN
+		SELECT @NVarCommand = 'UPDATE ASRSysAccordTransferFieldDefinitions  SET Description = ''Starter Statement A''  WHERE TransferTypeID = 0 AND TransferFieldID = 199'
+		EXEC sp_executesql @NVarCommand
+	END
+
+	IF (SELECT [Description] FROM ASRSysAccordTransferFieldDefinitions WHERE TransferTypeID = 0 AND TransferFieldID = 200) = 'Analysis Code 6'
+	BEGIN
+		SELECT @NVarCommand = 'UPDATE ASRSysAccordTransferFieldDefinitions  SET Description = ''Starter Statement B''  WHERE TransferTypeID = 0 AND TransferFieldID = 200'
+		EXEC sp_executesql @NVarCommand
+	END
+
+	-- Add new mappings for Employee transfer
+	SELECT @iRecCount = count(TransferFieldID) FROM ASRSysAccordTransferFieldDefinitions WHERE TransferFieldID = 201 AND TransferTypeID = 0
+	IF @iRecCount = 0
+	BEGIN
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (201,0,0,''Starter Statement C'',0,0,2,0,0)'
+		EXEC sp_executesql @NVarCommand
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (202,0,0,''Irregular Payment Pattern'',0,0,2,0,0)'
+		EXEC sp_executesql @NVarCommand
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (203,0,0,''Student Loan Indicator'',0,0,2,0,0)'
+		EXEC sp_executesql @NVarCommand
+	END
+
+	-- Update existing column for ASPP (Adoption) transfer
+	IF (SELECT [Description] FROM ASRSysAccordTransferFieldDefinitions WHERE TransferTypeID = 77 AND TransferFieldID = 10) = 'Adopter Name'
+	BEGIN
+		SELECT @NVarCommand = 'UPDATE ASRSysAccordTransferFieldDefinitions  SET Description = ''Adopter Surname'', Mandatory = 1 WHERE TransferTypeID = 77 AND TransferFieldID = 10'
+		EXEC sp_executesql @NVarCommand
+	END
+
+	-- Add new mappings for ASPP (Adoption) transfer
+	SELECT @iRecCount = count(TransferFieldID) FROM ASRSysAccordTransferFieldDefinitions WHERE TransferFieldID = 25 AND TransferTypeID = 77
+	IF @iRecCount = 0
+	BEGIN
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (25,77,1,''Adopter Forename 1'',0,0,2,0,0)'
+		EXEC sp_executesql @NVarCommand
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (26,77,0,''Adopter Forename 2'',0,0,2,0,0)'
+		EXEC sp_executesql @NVarCommand
+	END
+
+	-- Update existing column for ASPP (Birth) transfer
+	IF (SELECT [Description] FROM ASRSysAccordTransferFieldDefinitions WHERE TransferTypeID = 78 AND TransferFieldID = 10) = 'Mother Name'
+	BEGIN
+		SELECT @NVarCommand = 'UPDATE ASRSysAccordTransferFieldDefinitions  SET Description = ''Mother Surname'', Mandatory = 1 WHERE TransferTypeID = 78 AND TransferFieldID = 10'
+		EXEC sp_executesql @NVarCommand
+	END
+
+	-- Add new mappings for ASPP (Birth) transfer
+	SELECT @iRecCount = count(TransferFieldID) FROM ASRSysAccordTransferFieldDefinitions WHERE TransferFieldID = 25 AND TransferTypeID = 78
+	IF @iRecCount = 0
+	BEGIN
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (25,78,1,''Mother Forename 1'',0,0,2,0,0)'
+		EXEC sp_executesql @NVarCommand
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (26,78,0,''Mother Forename 2'',0,0,2,0,0)'
+		EXEC sp_executesql @NVarCommand
+	END
 
 /* ------------------------------------------------------------- */
 PRINT 'Step 7 - New Mobile User Logins Table'
