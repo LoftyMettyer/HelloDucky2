@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "10:17"
+            TextSave        =   "13:37"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -3059,7 +3059,7 @@ Public Sub PopulateHistoryMenu()
       If objHistoryScreens.Item(iLoop).PictureID > 0 Then
         LoadMenuPicture objHistoryScreens.Item(iLoop).PictureID, objFileTool
       Else
-        objFileTool.SetPicture 0, LoadResPicture("TABLE", 1), COL_GREY
+        objFileTool.SetPicture 0, LoadResPicture("TABLE", 0), COL_GREY
       End If
           
       fTableDone = False
@@ -3099,10 +3099,10 @@ Public Sub PopulateHistoryMenu()
           If objHistoryScreens.Item(iLoop).ViewID > 0 Then
             objBandTool.Caption = objHistoryScreens.Item(iLoop).TableName & _
               " (" & objHistoryScreens.Item(iLoop).ViewName & " view)"
-            objBandTool.SetPicture 0, LoadResPicture("VIEW", 1), COL_GREY
+            objBandTool.SetPicture 0, LoadResPicture("VIEW", 0), COL_GREY
           Else
             objBandTool.Caption = objHistoryScreens.Item(iLoop).TableName
-            objBandTool.SetPicture 0, LoadResPicture("SCREEN", 1), COL_GREY
+            objBandTool.SetPicture 0, LoadResPicture("SCREEN", 0), COL_GREY
           End If
           objBandTool.SubBand = sBand
           
