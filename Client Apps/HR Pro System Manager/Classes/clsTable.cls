@@ -1834,7 +1834,7 @@ Public Function CloneTable(pavCloneRegister As Variant, pfCopyData As Boolean, p
             recCtrlEdit!TabIndex = .Fields("TabIndex")
             recCtrlEdit!BorderStyle = .Fields("BorderStyle")
             recCtrlEdit!Alignment = .Fields("Alignment")
-            recCtrlEdit!readonly = .Fields("ReadOnly")      'NPG20071023
+            recCtrlEdit!ReadOnly = .Fields("ReadOnly")      'NPG20071023
           
             recCtrlEdit.Update
             
@@ -2794,6 +2794,26 @@ Public Function AddIDColumn(pLngParentTableID As Long) As Boolean
     .Properties("size") = 0
     .Properties("decimals") = 0
     .Properties("columnType") = giCOLUMNTYPE_SYSTEM
+    .Properties("Afdenabled") = False
+    .Properties("Afdindividual") = False
+    .Properties("Afdforename") = 0
+    .Properties("Afdsurname") = 0
+    .Properties("Afdinitial") = 0
+    .Properties("Afdtelephone") = 0
+    .Properties("Afdaddress") = 0
+    .Properties("Afdproperty") = 0
+    .Properties("Afdstreet") = 0
+    .Properties("Afdlocality") = 0
+    .Properties("Afdtown") = 0
+    .Properties("Afdcounty") = 0
+    .Properties("QAddressEnabled") = False
+    .Properties("QAindividual") = False
+    .Properties("QAaddress") = 0
+    .Properties("QAproperty") = 0
+    .Properties("QAstreet") = 0
+    .Properties("QAlocality") = 0
+    .Properties("QAtown") = 0
+    .Properties("QAcounty") = 0
     
     recColEdit.Index = "idxName"
     recColEdit.Seek "=", TableID, .Properties("columnName"), False
