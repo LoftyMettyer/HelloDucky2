@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobileDesigner", "MobileDesigner\MobileDesigner.csproj", "{6D7DBE8A-D215-4F00-9438-DD412B50E48B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobileDesigner.Test", "MobileDesigner.Test\MobileDesigner.Test.csproj", "{DC0A927D-9ADA-423D-880B-304F4C4D7529}"
+EndProject
+Global
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 3
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = http://harptfs01:8080/tfs/defaultcollection
+		SccProjectUniqueName0 = MobileDesigner\\MobileDesigner.csproj
+		SccProjectName0 = MobileDesigner
+		SccLocalPath0 = MobileDesigner
+		SccProjectUniqueName1 = MobileDesigner.Test\\MobileDesigner.Test.csproj
+		SccProjectName1 = MobileDesigner.Test
+		SccLocalPath1 = MobileDesigner.Test
+		SccLocalPath2 = .
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6D7DBE8A-D215-4F00-9438-DD412B50E48B}.Debug|x86.ActiveCfg = Debug|x86
+		{6D7DBE8A-D215-4F00-9438-DD412B50E48B}.Debug|x86.Build.0 = Debug|x86
+		{6D7DBE8A-D215-4F00-9438-DD412B50E48B}.Release|x86.ActiveCfg = Release|x86
+		{6D7DBE8A-D215-4F00-9438-DD412B50E48B}.Release|x86.Build.0 = Release|x86
+		{DC0A927D-9ADA-423D-880B-304F4C4D7529}.Debug|x86.ActiveCfg = Debug|x86
+		{DC0A927D-9ADA-423D-880B-304F4C4D7529}.Debug|x86.Build.0 = Debug|x86
+		{DC0A927D-9ADA-423D-880B-304F4C4D7529}.Release|x86.ActiveCfg = Release|x86
+		{DC0A927D-9ADA-423D-880B-304F4C4D7529}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
