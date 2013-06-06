@@ -420,8 +420,6 @@ Private mfExpressionsChanged As Boolean
 
 Private mlngCurrentPageNo As Long
 
-Private miFromTab As Long
-
 Private Function ControlIsUsed(pctlControl As VB.Control, _
   Optional pavMessages As Variant) As Boolean
   ' Return True if the given controls is used and connot be deleted.
@@ -2823,8 +2821,8 @@ End Sub
 
 Private Sub Form_GotFocus()
   ' Refresh the properties screen.
-  Set frmWorkflowWFItemProps.CurrentWebForm = Me
-  frmWorkflowWFItemProps.RefreshProperties
+ ' Set frmWorkflowWFItemProps.CurrentWebForm = Me
+ ' frmWorkflowWFItemProps.RefreshProperties
 End Sub
 
 Private Sub Form_Initialize()
@@ -2892,7 +2890,7 @@ Private Sub Form_Initialize()
   End With
   
   ' Clear the tab strip.
-  tabPages.Tabs.Clear
+  TabPages.Tabs.Clear
   
   ' Disable the 'undo' menu option until we have somethig to undo.
   giLastActionFlag = giACTION_NOACTION
@@ -2936,7 +2934,7 @@ Private Sub Form_KeyUp(KeyCode As Integer, Shift As Integer)
   End If
 
   ' Ensure that the container controls are docked correctly
-  If tabPages.Selected Then
+  If TabPages.Selected Then
     DockPagesToTabStrip
   End If
 
@@ -3049,16 +3047,16 @@ Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
       If KeyCode = vbKeyDelete Then
       
         If SelectedControlsCount > 0 Then
-          If tabPages.Selected Then
-            DeleteTabPage tabPages.SelectedItem.Index, True
+          If TabPages.Selected Then
+            DeleteTabPage TabPages.SelectedItem.Index, True
             bHandled = True
           ElseIf Not DeleteSelectedControls Then
             MsgBox "Unable to delete controls." & vbCr & vbCr & _
               Err.Description, vbExclamation + vbOKOnly, App.ProductName
           End If
         Else
-          If tabPages.Tabs.Count > 0 Then
-            If Not DeleteTabPage(tabPages.SelectedItem.Index, True) Then
+          If TabPages.Tabs.Count > 0 Then
+            If Not DeleteTabPage(TabPages.SelectedItem.Index, True) Then
               MsgBox "Unable to delete the tab." & vbCr & vbCr & _
                 Err.Description, vbExclamation + vbOKOnly, App.ProductName
             Else
@@ -3224,15 +3222,15 @@ Public Sub EditMenu(ByVal psMenuOption As String)
       ' If there are no selected controls then the current tab page is deleted.
       ' If there are no selected controls and no tab pages then nothing happens.
       If SelectedControlsCount > 0 Then
-        If tabPages.Selected Then
-          DeleteTabPage tabPages.SelectedItem.Index, True
+        If TabPages.Selected Then
+          DeleteTabPage TabPages.SelectedItem.Index, True
         ElseIf Not DeleteSelectedControls Then
           MsgBox "Unable to delete controls." & vbCr & vbCr & _
             Err.Description, vbExclamation + vbOKOnly, App.ProductName
         End If
       Else
-        If tabPages.Tabs.Count > 0 Then
-          If Not DeleteTabPage(tabPages.SelectedItem.Index, True) Then
+        If TabPages.Tabs.Count > 0 Then
+          If Not DeleteTabPage(TabPages.SelectedItem.Index, True) Then
             MsgBox "Unable to delete the tab." & vbCr & vbCr & _
               Err.Description, vbExclamation + vbOKOnly, App.ProductName
           End If
@@ -3510,6 +3508,7 @@ Private Sub Form_MouseUp(Button As Integer, Shift As Integer, x As Single, y As 
   Dim VarPageContainer As Variant
   Dim bInSelectionBand As Boolean
   Dim bOnTagePage As Boolean
+  Dim iControlsSelected As Integer
   
   Select Case Button
     
@@ -3539,6 +3538,8 @@ Private Sub Form_MouseUp(Button As Integer, Shift As Integer, x As Single, y As 
       
       ' Lock the window refresh.
 '      UI.LockWindow Me.hWnd
+      
+      iControlsSelected = 0
       
       ' Select thr highlighted controls
       For Each ctlControl In Me.Controls
@@ -3584,6 +3585,7 @@ Private Sub Form_MouseUp(Button As Integer, Shift As Integer, x As Single, y As 
                   Else
                     .Selected = True
                     SelectControl ctlControl
+                    iControlsSelected = iControlsSelected + 1
                   End If
 
                 End If
@@ -3597,12 +3599,10 @@ Private Sub Form_MouseUp(Button As Integer, Shift As Integer, x As Single, y As 
       Next ctlControl
       
       ' If no controls selected, try and select the tab page
-'      If SelectedControlsCount = 0 And bOnTagePage Then
-'        tabPages.Selected = True
-'        SelectControl tabPages
-''      Else
-''        tabPages_Click
-'      End If
+      If iControlsSelected = 0 And bOnTagePage Then
+        TabPages.Selected = True
+        SelectControl TabPages
+      End If
       
       ' Disassociate object variables.
       Set ctlControl = Nothing
@@ -3820,8 +3820,8 @@ Private Function DeleteTabPage(piTabIndex As Integer, pfPromptUser As Boolean) A
   objContainer.SetFocus
   
   ' Get the given tab page's container control.
-  Set ctlPageContainer = objTabContainer(tabPages.SelectedItem.Tag)
-  strCaption = tabPages.TabPage(tabPages.SelectedItem.Index).Caption
+  Set ctlPageContainer = objTabContainer(TabPages.SelectedItem.Tag)
+  strCaption = TabPages.TabPage(TabPages.SelectedItem.Index).Caption
     
   ' Construct an array of the given tab page's screen controls.
   ReDim actlScreenControls(0)
@@ -3893,22 +3893,22 @@ Private Function DeleteTabPage(piTabIndex As Integer, pfPromptUser As Boolean) A
       objTabContainer(piTabIndex).Visible = False
   
       ' Remember the tabpage caption.
-      gsUndo_TabPageCaption = tabPages.TabPage(piTabIndex).Caption
+      gsUndo_TabPageCaption = TabPages.TabPage(piTabIndex).Caption
       
       ' Remove the tab from the tabstrip.
-      tabPages.RemoveTab piTabIndex
+      TabPages.RemoveTab piTabIndex
   
       ' Hide the tabstrip if we now have no tabs left.
       ' Otherwise select the first tab page.
-      If tabPages.Tabs.Count = 0 Then
+      If TabPages.Tabs.Count = 0 Then
       
         For Each objContainer In objTabContainer
           objContainer.Visible = False
         Next
       
-        tabPages.Visible = False
+        TabPages.Visible = False
       Else
-        tabPages.TabPage(1).Selected = True
+        TabPages.TabPage(1).Selected = True
         tabPages_Click
       End If
           
@@ -4244,14 +4244,14 @@ Public Property Let PageNo(piPageNumber As Integer)
   Dim ctlPictureBox As PictureBox
   
   ' Do nothing if there are no tabpages.
-  If tabPages.Tabs.Count > 0 Then
+  If TabPages.Tabs.Count > 0 Then
     
     ' If the given page number is not valid, just select the first page.
-    If piPageNumber > tabPages.Tabs.Count Then
+    If piPageNumber > TabPages.Tabs.Count Then
       piPageNumber = 1
     End If
     
-    iPageTag = tabPages.SelectedItem.Index
+    iPageTag = TabPages.SelectedItem.Index
     
     ' Position and size the picture box containers of the tabstrip.
     For Each ctlPictureBox In objTabContainer
@@ -4268,7 +4268,7 @@ Public Property Let PageNo(piPageNumber As Integer)
     Next ctlPictureBox
     
     'tabPages.Tabs(piPageNumber).Selected = True
-    tabPages.Tabs.Item(piPageNumber).Selected = True
+    TabPages.Tabs.Item(piPageNumber).Selected = True
       
     ' If the page has changed then ensure that the old page
     ' controls are deselected.
@@ -4303,10 +4303,10 @@ Public Property Get PageNo() As Integer
   
   Dim iPageNo As Integer
   
-  If tabPages.Tabs.Count = 0 Then
+  If TabPages.Tabs.Count = 0 Then
     iPageNo = 0
   Else
-    iPageNo = tabPages.SelectedItem.Index
+    iPageNo = TabPages.SelectedItem.Index
   End If
   
 TidyUpAndExit:
@@ -4794,8 +4794,8 @@ Private Function PasteControls() As Boolean
   UI.LockWindow Me.hWnd
   
   ' Get the current page container.
-  If tabPages.Selected Then
-    Set VarPageContainer = objTabContainer(tabPages.SelectedItem.Tag)
+  If TabPages.Selected Then
+    Set VarPageContainer = objTabContainer(TabPages.SelectedItem.Tag)
   Else
     Set VarPageContainer = CurrentPageContainer(0, 0)
   End If
@@ -4972,9 +4972,9 @@ Public Function LoadTabPage(piPageNumber As Integer) As Boolean
     Exit Function
   End If
  
-  If tabPages.Tabs.Count > 0 Then
+  If TabPages.Tabs.Count > 0 Then
     'iOriginalPageNumber = tabPages.Tabs(piPageNumber).Tag
-    iOriginalPageNumber = tabPages.TabPage(piPageNumber).Tag
+    iOriginalPageNumber = TabPages.TabPage(piPageNumber).Tag
   Else
     iOriginalPageNumber = 0
   End If
@@ -5225,22 +5225,22 @@ Private Function AddTabPage(ByVal Captions As String) As VB.Control
   aryCaptions = Split(Captions, ";")
   lngCount = 0
   For lngCount = LBound(aryCaptions) To UBound(aryCaptions) - 1
-    tabPages.AddTabPage aryCaptions(lngCount)
-    tabPages.TabPage(lngCount + 1).Tag = lngCount + 1
+    TabPages.AddTabPage aryCaptions(lngCount)
+    TabPages.TabPage(lngCount + 1).Tag = lngCount + 1
     
-    Load objTabContainer(tabPages.Tabs.Count)
-    With objTabContainer(tabPages.Tabs.Count)
+    Load objTabContainer(TabPages.Tabs.Count)
+    With objTabContainer(TabPages.Tabs.Count)
       .BorderStyle = 0
-      .Left = tabPages.Left + 50
-      .Top = tabPages.Top + 100
-      .Width = tabPages.Width - 100
-      .Height = tabPages.Height - 100
+      .Left = TabPages.Left + 50
+      .Top = TabPages.Top + 100
+      .Width = TabPages.Width - 100
+      .Height = TabPages.Height - 100
     End With
     
   Next
 
-  Set AddTabPage = tabPages
-  tabPages.Visible = True
+  Set AddTabPage = TabPages
+  TabPages.Visible = True
 
 TidyUpAndExit:
   Exit Function
@@ -7425,7 +7425,7 @@ Public Function LoadWebFormItems() As Boolean
   
       ' Create the new control.
       If iWFItemType = giWFFORMITEM_PAGETAB Then
-        Set ctlControl = tabPages
+        Set ctlControl = TabPages
       Else
         Set ctlControl = AddControl(iWFItemType)
       End If
@@ -7618,8 +7618,8 @@ Public Function LoadWebFormItems() As Boolean
           For Each objPageTab In objTabContainer
             objPageTab.Top = 400 'PixelsToTwips(CLng(tabPages.ClientTop))
             objPageTab.Left = 100 'PixelsToTwips(CLng(tabPages.ClientLeft))
-            objPageTab.Width = tabPages.Width - 200
-            objPageTab.Height = tabPages.Height - 500
+            objPageTab.Width = TabPages.Width - 200
+            objPageTab.Height = TabPages.Height - 500
           Next
         End If
        
@@ -8106,7 +8106,7 @@ Private Function BringSelectedControlsToFront()
   Next iCount
 
   ' Tab container should be topped
-  If tabPages.Tabs.Count > 0 Then
+  If TabPages.Tabs.Count > 0 Then
     tabPages_Click
   End If
 
@@ -8686,7 +8686,7 @@ Private Function DropTabPage(Optional piTabPageIndex As Integer) As Boolean
   Dim iContainerIndex As Integer
   
   ' Do not exceed the maximum number of pages.
-  If tabPages.Tabs.Count = giMAXTABS Then
+  If TabPages.Tabs.Count = giMAXTABS Then
     ' Flag the error to the user if we are not just loading the screen.
     MsgBox "Unable to add more than " & Trim(Str(giMAXTABS)) & " page tabs."
     
@@ -8696,18 +8696,18 @@ Private Function DropTabPage(Optional piTabPageIndex As Integer) As Boolean
   
   ' Get the index of the new tab page.
   If (IsMissing(piTabPageIndex)) Or (piTabPageIndex = 0) Then
-    piTabPageIndex = tabPages.Tabs.Count + 1
-  ElseIf (piTabPageIndex > tabPages.Tabs.Count + 1) Then
-    piTabPageIndex = tabPages.Tabs.Count + 1
+    piTabPageIndex = TabPages.Tabs.Count + 1
+  ElseIf (piTabPageIndex > TabPages.Tabs.Count + 1) Then
+    piTabPageIndex = TabPages.Tabs.Count + 1
   End If
    
   iContainerIndex = objTabContainer.UBound + 1
    
   ' If we are adding the first tab page then move all existing controls onto this page
-  If tabPages.Tabs.Count = 0 Then
+  If TabPages.Tabs.Count = 0 Then
   
     ' Add the new tab, and initialise its caption.
-    tabPages.AddTabPage "Page 1"
+    TabPages.AddTabPage "Page 1"
        
     ' Move all screen controls onto the new tab page's picture container.
     GetControlLevel (Me.hWnd)
@@ -8717,8 +8717,8 @@ Private Function DropTabPage(Optional piTabPageIndex As Integer) As Boolean
       .BorderStyle = 0
       .Left = 50
       .Top = 50
-      .Width = tabPages.Width - 100
-      .Height = tabPages.Height - 100
+      .Width = TabPages.Width - 100
+      .Height = TabPages.Height - 100
       .Visible = True
       .ZOrder vbSendToBack
     End With
@@ -8743,7 +8743,7 @@ Private Function DropTabPage(Optional piTabPageIndex As Integer) As Boolean
     ' form dimensions to allow for the tabs.
     If fControlsMoved Then
       With Me
-        .Height = .Height + (tabPages.Height - tabPages.ClientHeight) + (2 * YFrame)
+        .Height = .Height + (TabPages.Height - TabPages.ClientHeight) + (2 * YFrame)
         .Width = .Width + (4 * XFrame)
       End With
     
@@ -8758,7 +8758,7 @@ Private Function DropTabPage(Optional piTabPageIndex As Integer) As Boolean
     
   Else
     ' Add the new tab.
-    tabPages.AddTabPage "Page " & tabPages.Tabs.Count + 1
+    TabPages.AddTabPage "Page " & TabPages.Tabs.Count + 1
        
     Load objTabContainer(iContainerIndex)
     With objTabContainer(iContainerIndex)
@@ -8774,7 +8774,7 @@ Private Function DropTabPage(Optional piTabPageIndex As Integer) As Boolean
   End If
   
   ' Set the 'tag' property of the tab page. We use to relate a tab page with its associated picture container control.
-  tabPages.TabPage(piTabPageIndex).Tag = iContainerIndex
+  TabPages.TabPage(piTabPageIndex).Tag = iContainerIndex
 
   ' Resize the tab strip only the first time
   If piTabPageIndex = 1 Then
@@ -8783,10 +8783,10 @@ Private Function DropTabPage(Optional piTabPageIndex As Integer) As Boolean
     fOK = True
   End If
   
-  tabPages.Visible = True
+  TabPages.Visible = True
   
   ' Select the new page if we are not just loading the screen.
-  tabPages.TabPage(piTabPageIndex).Selected = True
+  TabPages.TabPage(piTabPageIndex).Selected = True
   tabPages_Click
   
 TidyUpAndExit:
@@ -8811,8 +8811,8 @@ Public Sub DockPagesToTabStrip()
     
     ' Position and size the picture box containers of the tabstrip.
     If ctlPictureBox.Index > 0 Then
-      ctlPictureBox.Move tabPages.Left + tabPages.ClientLeft, tabPages.Top + tabPages.ClientTop, _
-        tabPages.ClientWidth, tabPages.ClientHeight
+      ctlPictureBox.Move TabPages.Left + TabPages.ClientLeft, TabPages.Top + TabPages.ClientTop, _
+        TabPages.ClientWidth, TabPages.ClientHeight
     End If
   
   Next ctlPictureBox
@@ -8828,7 +8828,7 @@ Private Function TabPages_Resize() As Boolean
   Dim fOK As Boolean
   
   ' Position and size the tabstrip to fill the form's client area.
-  tabPages.Move XFrame, YFrame, Me.ScaleWidth - (XFrame * 2), Me.ScaleHeight - (YFrame * 2)
+  TabPages.Move XFrame, YFrame, Me.ScaleWidth - (XFrame * 2), Me.ScaleHeight - (YFrame * 2)
 
   DockPagesToTabStrip
   fOK = True
@@ -8851,7 +8851,7 @@ Private Function tabPages_ResizeSmall() As Boolean
   Dim fOK As Boolean
   
   ' Position and size the tabstrip to fill the form's client area.
-  tabPages.Move XFrame, YFrame, Me.ScaleWidth - (XFrame * 2), Me.ScaleHeight - (YFrame * 2)
+  TabPages.Move XFrame, YFrame, Me.ScaleWidth - (XFrame * 2), Me.ScaleHeight - (YFrame * 2)
   'tabPages.Move XFrame, YFrame, 1000, 1000
   
   DockPagesToTabStrip
@@ -8900,17 +8900,17 @@ End Sub
 Private Sub objTabContainer_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Pass the MouseDown event to the parent form.
   mbFromTabPage = True
-  Form_MouseDown Button, Shift, tabPages.Left + x + tabPages.ClientLeft, tabPages.Top + y + tabPages.ClientTop
+  Form_MouseDown Button, Shift, TabPages.Left + x + TabPages.ClientLeft, TabPages.Top + y + TabPages.ClientTop
 End Sub
 
 Private Sub objTabContainer_MouseMove(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Pass the MouseMove event to the parent form.
-  Form_MouseMove Button, Shift, tabPages.Left + x + tabPages.ClientLeft, tabPages.Top + y + tabPages.ClientTop
+  Form_MouseMove Button, Shift, TabPages.Left + x + TabPages.ClientLeft, TabPages.Top + y + TabPages.ClientTop
 End Sub
 
 Private Sub objTabContainer_MouseUp(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Pass the MouseUp event to the parent form.
-  Form_MouseUp Button, Shift, tabPages.Left + x + tabPages.ClientLeft, tabPages.Top + y + tabPages.ClientTop
+  Form_MouseUp Button, Shift, TabPages.Left + x + TabPages.ClientLeft, TabPages.Top + y + TabPages.ClientTop
   mbFromTabPage = False
 End Sub
 
@@ -8920,12 +8920,12 @@ Public Sub tabPages_Click()
   Dim iOldPage As Integer
   Dim ctlPictureBox As PictureBox
 
-  tabPages.Enabled = False
+  TabPages.Enabled = False
   Screen.MousePointer = vbHourglass
 
   ' Set the active page.
-  If tabPages.Tabs.Count > 0 Then
-    mlngCurrentPageNo = tabPages.SelectedItem.Tag
+  If TabPages.Tabs.Count > 0 Then
+    mlngCurrentPageNo = TabPages.SelectedItem.Tag
 
     For Each ctlPictureBox In objTabContainer
     With ctlPictureBox
@@ -8944,19 +8944,13 @@ Public Sub tabPages_Click()
     mlngCurrentPageNo = 0
   End If
 
-
-  ' Refresh the properties screen.
-'  Set frmWorkflowWFItemProps.CurrentWebForm = Me
-'  frmWorkflowWFItemProps.RefreshProperties
-'  frmSysMgr.RefreshMenu
-
-  tabPages.Enabled = True
+  TabPages.Enabled = True
   Screen.MousePointer = vbDefault
 
 End Sub
 
 Private Sub tabPages_DragDrop(Source As Control, x As Single, y As Single)
-  WebFormControl_DragDrop tabPages, Source, x, y
+  WebFormControl_DragDrop TabPages, Source, x, y
 End Sub
 
 Private Sub tabPages_GotFocus()
@@ -8966,19 +8960,19 @@ Private Sub tabPages_GotFocus()
     gfActivating = False
     Exit Sub
   End If
-  
+
   ' Deselect all controls.
-  If tabPages.Tabs.Count > 0 Then
-    If mlngCurrentPageNo <> tabPages.SelectedItem.Index Then
+  If TabPages.Tabs.Count > 0 Then
+    If mlngCurrentPageNo <> TabPages.SelectedItem.Index Then
       DeselectAllControls
-  
+
       ' Refresh the menu.
       frmSysMgr.RefreshMenu
-      
+
       ' Refresh the properties screen.
       Set frmWorkflowWFItemProps.CurrentWebForm = Me
       frmWorkflowWFItemProps.RefreshProperties
-      
+
     End If
   End If
 
@@ -8995,8 +8989,8 @@ Public Function GetControlPageNo(pctlControl As VB.Control) As Integer
   
   iPageNo = 0
         
-  If (tabPages.Tabs.Count > 0) And (Not pctlControl.Container Is Me) Then
-    For Each objTabPage In tabPages.Tabs
+  If (TabPages.Tabs.Count > 0) And (Not pctlControl.Container Is Me) Then
+    For Each objTabPage In TabPages.Tabs
       If objTabPage.Tag = pctlControl.Container.Index Then
         iPageNo = objTabPage.Index
       End If
@@ -9022,15 +9016,15 @@ Private Function CurrentPageContainer(x As Single, y As Single) As Variant
   
   bSelectTab = False
   
-  If tabPages.Tabs.Count > 0 And tabPages.Selected Then
-    If x > tabPages.ClientLeft And x < tabPages.ClientLeft + tabPages.ClientWidth _
-      And y > tabPages.ClientTop And y < tabPages.ClientTop + tabPages.ClientHeight Then
+  If TabPages.Tabs.Count > 0 And TabPages.Selected Then
+    If x > TabPages.ClientLeft And x < TabPages.ClientLeft + TabPages.ClientWidth _
+      And y > TabPages.ClientTop And y < TabPages.ClientTop + TabPages.ClientHeight Then
         bSelectTab = True
     End If
   End If
   
   If bSelectTab Then
-    Set CurrentPageContainer = objTabContainer(tabPages.SelectedItem.Tag)
+    Set CurrentPageContainer = objTabContainer(TabPages.SelectedItem.Tag)
   Else
     Set CurrentPageContainer = Me
   End If
@@ -9112,9 +9106,9 @@ Private Sub AutoDockInTabControl(ByRef pObjControl As Control)
   Y1 = pObjControl.Top
   Y2 = pObjControl.Top + pObjControl.Height
 
-  If tabPages.Tabs.Count > 0 And pObjControl.Container Is Me Then
-    If X1 > tabPages.ClientLeft + tabPages.Left And X2 < tabPages.ClientLeft + tabPages.Left + tabPages.ClientWidth _
-      And Y1 > tabPages.ClientTop + tabPages.Top And Y2 < tabPages.ClientTop + tabPages.Top + tabPages.ClientHeight Then
+  If TabPages.Tabs.Count > 0 And pObjControl.Container Is Me Then
+    If X1 > TabPages.ClientLeft + TabPages.Left And X2 < TabPages.ClientLeft + TabPages.Left + TabPages.ClientWidth _
+      And Y1 > TabPages.ClientTop + TabPages.Top And Y2 < TabPages.ClientTop + TabPages.Top + TabPages.ClientHeight Then
         bIsContained = True
     End If
   End If
@@ -9122,10 +9116,10 @@ Private Sub AutoDockInTabControl(ByRef pObjControl As Control)
   
   ' Yup - autodock it!
   If bIsContained Then
-    Set pObjControl.Container = objTabContainer(tabPages.SelectedItem.Tag)
+    Set pObjControl.Container = objTabContainer(TabPages.SelectedItem.Tag)
     
-    pObjControl.Top = pObjControl.Top - tabPages.ClientTop - tabPages.Top
-    pObjControl.Left = pObjControl.Left - tabPages.ClientLeft - tabPages.Left
+    pObjControl.Top = pObjControl.Top - TabPages.ClientTop - TabPages.Top
+    pObjControl.Left = pObjControl.Left - TabPages.ClientLeft - TabPages.Left
         
     For Each ctlMarker In ASRSelectionMarkers
       With ctlMarker
@@ -9141,11 +9135,6 @@ Private Sub AutoDockInTabControl(ByRef pObjControl As Control)
   End If
 
 End Sub
-
-Private Sub TabPages_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
-  miFromTab = tabPages.SelectedItem.Index
-End Sub
-
 
 Private Function OLEType(iColumnID As Integer) As String
 
@@ -9173,20 +9162,13 @@ Public Function WebformControl_HasOptions(piControlType As Long) As Boolean
   ' Return true if the given control has an Options property.
   WebformControl_HasOptions = (piControlType = giWFFORMITEM_INPUTVALUE_OPTIONGROUP)
 End Function
+
 Public Function WebformControl_HasDisplayType(piControlType As Long) As Boolean
   ' Return true if the given control has a DisplayType property.
-  WebformControl_HasDisplayType = _
-    (piControlType = giCTRL_NAVIGATION)
+  WebformControl_HasDisplayType = (piControlType = giCTRL_NAVIGATION)
 End Function
+
 Public Function WebformControl_HasNavigation(piControlType As Long) As Boolean
   ' Return true if the given control has a NavigateTo property.
   WebformControl_HasNavigation = (piControlType = giCTRL_NAVIGATION)
 End Function
-
-Private Sub TabPages_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
-
-  Set frmWorkflowWFItemProps.CurrentWebForm = Me
-  frmWorkflowWFItemProps.RefreshProperties
-  frmSysMgr.RefreshMenu
-
-End Sub
