@@ -3895,6 +3895,7 @@ Private Sub GetSQL2(strCol() As String)
   Dim strCode As String
   Dim strColumn As String
   Dim blnCharColumn As Boolean
+  Dim bColumnsExist As Boolean
 
   On Error GoTo LocalErr
   
@@ -3930,17 +3931,6 @@ Private Sub GetSQL2(strCol() As String)
     If fColumnOK Then
       ' The column can be read from the base table/view, or directly from a parent table.
       ' Add the column to the column list.
-
-'      If strSelectedRecords = vbNullString And mstrPicklistFilter <> vbNullString Then
-'
-'        If mlngCrossTabType = cttAbsenceBreakdown Then
-'          strSelectedRecords = mstrSQLFrom & ".ID_" & Trim(Str(glngPersonnelTableID)) & " IN (" & mstrPicklistFilter & ")"
-'        Else
-'          strSelectedRecords = mstrSQLFrom & ".ID IN (" & mstrPicklistFilter & ")"
-'        End If
-'
-'      End If
-
       strColumn = mstrSQLFrom & "." & strCol(1, lngCount)
       If blnCharColumn Then
         strColumn = FormatSQLColumn(strColumn)
@@ -3965,7 +3955,17 @@ Private Sub GetSQL2(strCol() As String)
           ' Get the column permission for the view.
           Set objColumnPrivileges = GetColumnPrivileges(sSource)
 
-          If objColumnPrivileges.IsValid(strCol(1, lngCount)) Then
+          ' JIRA-2341 - Don't include view if they don;t have the starting and leaving date in it.
+          If mlngCrossTabType = cttStability Or mlngCrossTabType = cttTurnover Then
+            bColumnsExist = False
+            If objColumnPrivileges.IsValid(gsPersonnelStartDateColumnName) And objColumnPrivileges.IsValid(gsPersonnelLeavingDateColumnName) Then
+              bColumnsExist = True
+            End If
+          Else
+            bColumnsExist = True
+          End If
+
+          If objColumnPrivileges.IsValid(strCol(1, lngCount)) And bColumnsExist Then
             If objColumnPrivileges.Item(strCol(1, lngCount)).AllowSelect Then
               ' Add the view info to an array to be put into the column list or order code below.
               iNextIndex = UBound(asViews) + 1
@@ -4000,13 +4000,6 @@ Private Sub GetSQL2(strCol() As String)
                 strSelectedRecords = strSelectedRecords & _
                   IIf(strSelectedRecords <> vbNullString, " OR ", vbNullString) & _
                   mstrSQLFrom & ".ID IN (SELECT ID FROM " & sSource & ")"
-
-'                'If mstrPicklistFilter <> vbNullString Then
-'                  strSelectedRecords = strSelectedRecords & _
-'                      IIf(strSelectedRecords <> vbNullString, " OR ", vbNullString) & "(" & _
-'                      IIf(mstrPicklistFilter <> vbNullString, sSource & ".ID IN (" & mstrPicklistFilter & ") AND ", vbNullString) & _
-'                      sSource & ".ID > 0)"
-'                'End If
                 
               End If
             End If
@@ -4024,35 +4017,13 @@ Private Sub GetSQL2(strCol() As String)
       ' table.
       If UBound(asViews) = 0 Then
         fOK = False
-        'MH20010716 Fault 2497
         'If its the ID column they they don't have any access to the table.
-        'mstrErrorMessage = "You do not have permission to see the column '" & strCol(1, lngCount) & "' " & _
-                            "either directly or through any views." & vbCrLf
         mstrErrorMessage = "You do not have permission to see the " & _
                             IIf(strCol(1, lngCount) = "ID", "table '" & mstrBaseTable, "column '" & strCol(1, lngCount)) & _
                             "' either directly or through any views." & vbCrLf
         Exit Sub
       Else
 
-'MH20071106 Fault 12585
-''        ' Add the column to the column list.
-''        sCaseStatement = "CASE"
-''        sWhereColumn = vbNullString
-''        For iNextIndex = 1 To UBound(asViews)
-''          sCaseStatement = sCaseStatement & _
-''            " WHEN NOT " & asViews(iNextIndex) & "." & strCol(1, lngCount) & " IS NULL THEN " & asViews(iNextIndex) & "." & strCol(1, lngCount) & vbCrLf
-''        Next iNextIndex
-''
-''        If Len(sCaseStatement) > 0 Then
-''          sCaseStatement = sCaseStatement & _
-''            " ELSE NULL END AS " & _
-''            "'" & strCol(2, lngCount) & "'"
-''
-''          mstrSQLSelect = mstrSQLSelect & _
-''            IIf(Len(mstrSQLSelect) > 0, ", ", "") & vbCrLf & _
-''            sCaseStatement
-''        End If
-      
         ' Add the column to the column list.
         If UBound(asViews) = 1 Then
           strColumn = asViews(1) & "." & strCol(1, lngCount)
@@ -4095,14 +4066,12 @@ Private Sub GetSQL2(strCol() As String)
             "(UPPER(" + gsAbsenceTypeColumnName + ") IN (" & msAbsenceBreakdownTypes & "))"
       End If
       
-      'MH20060619 Fault
       mstrSQLWhere = mstrSQLWhere & _
           IIf(mstrSQLWhere <> vbNullString, " AND ", " WHERE ") & _
           "( " & gsAbsenceStartDateColumnName & _
           " <= CONVERT(datetime, '" & FormatDateSQL(mdtReportEndDate) + "'))" & _
           "And (" & gsAbsenceEndDateColumnName & _
           " >= CONVERT(datetime, '" & FormatDateSQL(mdtReportStartDate) + "') OR " & gsAbsenceEndDateColumnName & " IS NULL)"
-          '" >= CONVERT(datetime, '" & FormatDateSQL(mdtReportStartDate) + "'))"
   
   'MH20040113 Fault 7234 - Disregard records outside of the report period...
   Case cttStability, cttTurnover
