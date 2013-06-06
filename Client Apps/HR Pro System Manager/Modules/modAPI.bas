@@ -15,6 +15,8 @@ Public Declare Function GetTickCount Lib "kernel32" () As Long
 
 Public Declare Function RegOpenKeyEx Lib "advapi32" Alias "RegOpenKeyExA" (ByVal hKey As Long, ByVal lpSubKey As String, ByVal ulOptions As Long, ByVal samDesired As Long, ByRef phkResult As Long) As Long
 Public Declare Function RegCloseKey Lib "advapi32" (ByVal hKey As Long) As Long
+Public Declare Function RegQueryValueEx Lib "advapi32" Alias "RegQueryValueExA" (ByVal hKey As Long, ByVal lpValueName As String, ByVal lpReserved As Long, ByRef lpType As Long, ByVal lpData As String, ByRef lpcbData As Long) As Long
+
 
 Public Declare Function GetSystemMetrics Lib "user32" (ByVal nIndex As Long) As Long
 Public Declare Function LoadImageAsString Lib "user32" Alias "LoadImageA" ( _

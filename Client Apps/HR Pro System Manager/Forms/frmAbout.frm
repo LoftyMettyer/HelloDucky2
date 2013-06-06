@@ -189,13 +189,6 @@ Const gREGVALSYSINFOLOC = "MSINFO"
 Const gREGKEYSYSINFO = "SOFTWARE\Microsoft\Shared Tools\MSINFO"
 Const gREGVALSYSINFO = "PATH"
 
-Private Declare Function RegOpenKeyEx Lib "advapi32" Alias "RegOpenKeyExA" (ByVal hKey As Long, ByVal lpSubKey As String, ByVal ulOptions As Long, ByVal samDesired As Long, ByRef phkResult As Long) As Long
-Private Declare Function RegQueryValueEx Lib "advapi32" Alias "RegQueryValueExA" (ByVal hKey As Long, ByVal lpValueName As String, ByVal lpReserved As Long, ByRef lpType As Long, ByVal lpData As String, ByRef lpcbData As Long) As Long
-Private Declare Function RegCloseKey Lib "advapi32" (ByVal hKey As Long) As Long
-
-
-
-
 Private Sub cmdSysInfo_Click()
   
   ' Call the system info screen.

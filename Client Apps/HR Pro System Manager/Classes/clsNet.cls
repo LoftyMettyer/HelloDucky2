@@ -21,14 +21,6 @@ Private Declare Function GetComputerName Lib "kernel32" Alias "GetComputerNameA"
 Private Declare Function SQLConfigDataSource Lib "ODBCCP32.DLL" (ByVal _
     hwndParent As Long, ByVal fRequest As Long, ByVal lpszDriver As String, _
     ByVal lpszAttributes As String) As Long
-Private Declare Function RegCloseKey Lib "advapi32" (ByVal hKey As Long) As Long
-Private Declare Function RegOpenKeyEx Lib "advapi32" Alias "RegOpenKeyExA" _
-    (ByVal hKey As Long, ByVal lpSubKey As String, ByVal ulOptions As Long, _
-    ByVal samDesired As Long, ByRef phkResult As Long) As Long
-Private Declare Function RegQueryValueEx Lib "advapi32" Alias _
-    "RegQueryValueExA" (ByVal hKey As Long, ByVal lpValueName As String, _
-    ByVal lpReserved As Long, ByRef lpType As Long, ByVal lpData As String, _
-    ByRef lpcbData As Long) As Long
 
 Const REG_SZ = 1
 Const KEY_ALL_ACCESS = &H2003F
