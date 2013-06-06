@@ -134,25 +134,6 @@ Public Function ConfigureCustomAuditLog() As Boolean
   ReDim saryFromList(9)
   ReDim saryToList(9)
 
-  ' Drop existing insert trigger
-  sSQL = "IF EXISTS" & _
-    " (SELECT Name" & _
-    "   FROM sysobjects" & _
-    "   WHERE id = object_id('[INS_ASRSysAuditTrail]')" & _
-    "     AND objectproperty(id, N'IsTrigger') = 1)" & _
-    " DROP TRIGGER [INS_ASRSysAuditTrail]"
-  gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
-
-  ' Drop existing delete trigger
-  sSQL = "IF EXISTS" & _
-    " (SELECT Name" & _
-    "   FROM sysobjects" & _
-    "   WHERE id = object_id('[DEL_ASRSysAuditTrail]')" & _
-    "     AND objectproperty(id, N'IsTrigger') = 1)" & _
-    " DROP TRIGGER [DEL_ASRSysAuditTrail]"
-  gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
-
-
   ' Get audit module definition
   sAuditTableName = GetModuleSetupValue(gsMODULEKEY_AUDIT, gsPARAMETERKEY_AUDITTABLE, "T")
   If Len(sAuditTableName) > 0 Then
@@ -233,28 +214,35 @@ Public Function ConfigureCustomAuditLog() As Boolean
       ReDim Preserve saryFromList(iDefined - 1)
       ReDim Preserve saryToList(iDefined - 1)
     
-      ' Generate insert trigger
-      sSQL = "CREATE TRIGGER [dbo].[INS_ASRSysAuditTrail] ON [dbo].[ASRSysAuditTrail]" & vbNewLine _
-        & "FOR INSERT" & vbNewLine & "AS" & vbNewLine & "BEGIN" & vbNewLine _
-        & "    DECLARE @iRecordID int;" & vbNewLine & vbNewLine _
-        & "    INSERT " & sAuditTableName & "(" & Join(saryToList, ", ") & ")" & vbNewLine _
-        & "        SELECT " & Join(saryFromList, ", ") & vbNewLine _
-        & "            FROM inserted;" & vbNewLine & vbNewLine _
-        & "END"
+
+'        & "        SELECT " & Join(saryFromList, ", ") & vbNewLine _
+
+
+      ' Drop the auto generated view
+      sSQL = "IF EXISTS (SELECT Name FROM sysobjects " & _
+              "WHERE id = object_id('dbo." & sAuditTableName & "') " & _
+              "AND sysstat & 0xf = 2) " & _
+              "DROP VIEW dbo." & sAuditTableName
       gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
-
-      ' Generate delete trigger
-      If Len(sIDColumn) > 0 Then
-        sSQL = "CREATE TRIGGER [dbo].[DEL_ASRSysAuditTrail] ON [dbo].[ASRSysAuditTrail]" & vbNewLine _
-          & "FOR DELETE" & vbNewLine & "AS" & vbNewLine & "BEGIN" & vbNewLine _
-          & "    DECLARE @iRecordID int;" & vbNewLine & vbNewLine _
-          & "    DELETE FROM [dbo].[" & sAuditTableName & "] WHERE [" & sIDColumn & "]" _
-          & " IN (SELECT [id] FROM deleted);" & vbNewLine & vbNewLine _
-          & "END"
+  
+  
+      ' Recreate using a new view
+      sSQL = "CREATE VIEW dbo.[" & sAuditTableName & "]" & vbNewLine _
+          & "WITH SCHEMABINDING" & vbNewLine _
+          & "AS" & vbNewLine _
+          & "SELECT [ID] AS [ID]" & vbNewLine _
+          & ", [ID] AS [" & sIDColumn & "]" & vbNewLine _
+          & ",[UserName] AS [" & sUserColumn & "]" & vbNewLine _
+          & ",[DateTimeStamp] AS [" & sDateColumn & "]" & vbNewLine _
+          & ",[Tablename] AS [" & sTableColumn & "]" & vbNewLine _
+          & ",[Columnname] AS [" & sColumnColumn & "]" & vbNewLine _
+          & ",[OldValue] AS [" & sOldValueColumn & "]" & vbNewLine _
+          & ",[NewValue] AS [" & sNewValueColumn & "]" & vbNewLine _
+          & ",'' AS [" & sModuleColumn & "]" & vbNewLine _
+          & ",[RecordDesc] AS [" & sDescriptionColumn & "]" & vbNewLine _
+          & "FROM [dbo].[ASRSysAuditTrail]"
         gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
-      End If
-
-
+        
     End If
   End If
 
