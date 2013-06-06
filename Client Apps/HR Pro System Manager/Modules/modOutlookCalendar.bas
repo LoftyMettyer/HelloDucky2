@@ -41,7 +41,7 @@ Public Function SaveOutlookLinks(lngTableID As Long) As Boolean
             rsOutlookLinks!ColumnStartTime = !ColumnStartTime
             rsOutlookLinks!ColumnEndTime = !ColumnEndTime
             rsOutlookLinks!Subject = !Subject
-            rsOutlookLinks!Content = IIf(IsNull(!Content), vbNullString, !Content)
+            rsOutlookLinks!content = IIf(IsNull(!content), vbNullString, !content)
             rsOutlookLinks!Reminder = !Reminder
             rsOutlookLinks!ReminderOffset = !ReminderOffset
             rsOutlookLinks!ReminderPeriod = !ReminderPeriod
@@ -354,18 +354,18 @@ Public Function CreateOutlookEventsForTable(lngTableID As Long, sCurrentTable As
 
           strSQLLinks = strSQLLinks & vbCrLf & _
             "  -- " & strChildTableName & vbCrLf & _
-            "  DECLARE HRProCursor CURSOR" & vbCrLf & _
+            "  DECLARE HRProCursor" & CStr(lngTableID) & " CURSOR" & vbCrLf & _
             "  FOR SELECT ID FROM [" & strChildTableName & "] WHERE ID_" & CStr(lngTableID) & " = @RecordID" & vbCrLf & _
-            "  OPEN HRProCursor" & vbCrLf & vbCrLf & _
-            "  FETCH NEXT FROM HRProCursor INTO @ChildID" & vbCrLf & _
+            "  OPEN HRProCursor" & CStr(lngTableID) & vbCrLf & vbCrLf & _
+            "  FETCH NEXT FROM HRProCursor" & CStr(lngTableID) & " INTO @ChildID" & vbCrLf & _
             "  WHILE (@@fetch_status <> -1)" & vbCrLf & _
             "  BEGIN" & vbCrLf & _
             "    IF (@@fetch_status <> -2)" & vbCrLf & _
             "      EXEC dbo.spASROutlook_" & CStr(!childID) & " @ChildID" & vbCrLf & _
-            "    FETCH NEXT FROM HRProCursor INTO @ChildID" & vbCrLf & _
+            "    FETCH NEXT FROM HRProCursor" & CStr(lngTableID) & " INTO @ChildID" & vbCrLf & _
             "  END" & vbCrLf & vbCrLf & _
-            "  CLOSE HRProCursor" & vbCrLf & _
-            "  DEALLOCATE HRProCursor" & vbCrLf
+            "  CLOSE HRProCursor" & CStr(lngTableID) & vbCrLf & _
+            "  DEALLOCATE HRProCursor" & CStr(lngTableID) & vbCrLf
 
         End If
       End If
