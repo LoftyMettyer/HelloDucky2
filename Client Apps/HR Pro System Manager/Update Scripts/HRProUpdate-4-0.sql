@@ -8407,8 +8407,8 @@ PRINT 'Step 10 of X - Multiline Character Modifications'
 					/* NB. The empty string that precede the char codes ARE required. */
 					SET @psMessage = @psMessage +
 						CASE
-							WHEN @sCaption = ''L'' THEN '''' + char(13) + ''--------------------------------------------------'' + char(13)
-							WHEN @sCaption = ''N'' THEN '''' + char(13)
+							WHEN @sCaption = ''L'' THEN '''' + char(13) + char(10) + ''--------------------------------------------------'' + char(13) + char(10)
+							WHEN @sCaption = ''N'' THEN '''' + char(13) + char(10)
 							WHEN @sCaption = ''T'' THEN '''' + char(9)
 							ELSE ''''
 						END;
@@ -8462,14 +8462,14 @@ PRINT 'Step 10 of X - Multiline Character Modifications'
 		
 			IF @iCount > 0 
 			BEGIN
-				SET @psMessage_HypertextLinks = @psMessage_HypertextLinks + CHAR(13) + CHAR(13)
+				SET @psMessage_HypertextLinks = @psMessage_HypertextLinks + char(13) + char(10) + char(13) + char(10)
 					+ ''Click on the following link''
 					+ CASE
 						WHEN @iCount = 1 THEN ''''
 						ELSE ''s''
 					END
 					+ '' to action:''
-					+ CHAR(13);
+					+ char(13) + char(10);
 		
 				DECLARE elementCursor CURSOR LOCAL FAST_FORWARD FOR 
 				SELECT SE.elementID, ISNULL(WE.caption, '''')
@@ -8487,7 +8487,7 @@ PRINT 'Step 10 of X - Multiline Character Modifications'
 								
 					IF LEN(@sQueryString) = 0 
 					BEGIN
-						SET @psMessage_HypertextLinks = @psMessage_HypertextLinks + CHAR(13) +
+						SET @psMessage_HypertextLinks = @psMessage_HypertextLinks + char(13) + char(10) +
 							@sCaption + '' - Error constructing the query string. Please contact your system administrator.'';
 					END
 					ELSE
@@ -8500,8 +8500,8 @@ PRINT 'Step 10 of X - Multiline Character Modifications'
 							+ convert(varchar(MAX), @iElementID)
 							+ char(9);
 		
-						SET @psMessage_HypertextLinks = @psMessage_HypertextLinks + CHAR(13) +
-							@sCaption + '' - '' + CHAR(13) + 
+						SET @psMessage_HypertextLinks = @psMessage_HypertextLinks + char(13) + char(10) +
+							@sCaption + '' - '' + char(13) + char(10) + 
 							''<'' + @sURL + ''?'' + @sQueryString + ''>'';
 					END
 					
@@ -8511,13 +8511,13 @@ PRINT 'Step 10 of X - Multiline Character Modifications'
 				CLOSE elementCursor;
 				DEALLOCATE elementCursor;
 		
-				SET @psMessage_HypertextLinks = @psMessage_HypertextLinks + CHAR(13) + CHAR(13)
+				SET @psMessage_HypertextLinks = @psMessage_HypertextLinks + char(13) + char(10) + char(13) + char(10)
 					+ ''Please make sure that the link''
 					+ CASE
 						WHEN @iCount = 1 THEN '' has''
 						ELSE ''s have''
 					END
-					+ '' not been cut off by your display.'' + CHAR(13)
+					+ '' not been cut off by your display.'' + char(13) + char(10)
 					+ ''If ''
 					+ CASE
 						WHEN @iCount = 1 THEN ''it has''
@@ -12635,6 +12635,7 @@ PRINT 'Step 10 of X - Multiline Character Modifications'
 	EXECUTE sp_executeSQL @sSPCode;
 
 
+
 /* ------------------------------------------------------------- */
 PRINT 'Step 11 of X - New Shared Table Transfer Types'
 
@@ -12820,46 +12821,6 @@ PRINT 'Step 11 of X - New Shared Table Transfer Types'
 		 (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (6,73,0,''Work up to Placement'',0,0,2,0,0);'
 		EXEC sp_executesql @NVarCommand
 	END
-
-
-/* ------------------------------------------------------------- */
-/* ------------------------------------------------------------- */
-
-
-/*---------------------------------------------*/
-/* Ensure the required permissions are granted */
-/*---------------------------------------------*/
-DECLARE curObjects CURSOR LOCAL FAST_FORWARD FOR
-SELECT sysobjects.name, sysobjects.xtype
-FROM sysobjects
-     INNER JOIN sysusers ON sysobjects.uid = sysusers.uid
-WHERE (((sysobjects.xtype = 'p') AND (sysobjects.name LIKE 'sp_asr%' OR sysobjects.name LIKE 'spasr%'))
-    OR ((sysobjects.xtype = 'u') AND (sysobjects.name LIKE 'asrsys%'))
-    OR ((sysobjects.xtype = 'fn') AND (sysobjects.name LIKE 'udf_ASRFn%')))
-    AND (sysusers.name = 'dbo')
---IF (@@ERROR <> 0) goto QuitWithRollback
-
-OPEN curObjects
-FETCH NEXT FROM curObjects INTO @sObject, @sObjectType
-WHILE (@@fetch_status = 0)
-BEGIN
-    IF rtrim(@sObjectType) = 'P' OR rtrim(@sObjectType) = 'FN'
-    BEGIN
-        SET @sSQL = 'GRANT EXEC ON [' + @sObject + '] TO [ASRSysGroup]'
-        EXEC(@sSQL)
-        --IF (@@ERROR <> 0) goto QuitWithRollback
-    END
-    ELSE
-    BEGIN
-        SET @sSQL = 'GRANT SELECT,INSERT,UPDATE,DELETE ON [' + @sObject + '] TO [ASRSysGroup]'
-        EXEC(@sSQL)
-        --IF (@@ERROR <> 0) goto QuitWithRollback
-    END
-
-    FETCH NEXT FROM curObjects INTO @sObject, @sObjectType
-END
-CLOSE curObjects
-DEALLOCATE curObjects
 
 
 /* ------------------------------------------------------------- */
@@ -13468,6 +13429,45 @@ END
 
 
 
+
+
+/* ------------------------------------------------------------- */
+/* ------------------------------------------------------------- */
+
+/*---------------------------------------------*/
+/* Ensure the required permissions are granted */
+/*---------------------------------------------*/
+DECLARE curObjects CURSOR LOCAL FAST_FORWARD FOR
+SELECT sysobjects.name, sysobjects.xtype
+FROM sysobjects
+     INNER JOIN sysusers ON sysobjects.uid = sysusers.uid
+WHERE (((sysobjects.xtype = 'p') AND (sysobjects.name LIKE 'sp_asr%' OR sysobjects.name LIKE 'spasr%'))
+    OR ((sysobjects.xtype = 'u') AND (sysobjects.name LIKE 'asrsys%'))
+    OR ((sysobjects.xtype = 'fn') AND (sysobjects.name LIKE 'udf_ASRFn%')))
+    AND (sysusers.name = 'dbo')
+--IF (@@ERROR <> 0) goto QuitWithRollback
+
+OPEN curObjects
+FETCH NEXT FROM curObjects INTO @sObject, @sObjectType
+WHILE (@@fetch_status = 0)
+BEGIN
+    IF rtrim(@sObjectType) = 'P' OR rtrim(@sObjectType) = 'FN'
+    BEGIN
+        SET @sSQL = 'GRANT EXEC ON [' + @sObject + '] TO [ASRSysGroup]'
+        EXEC(@sSQL)
+        --IF (@@ERROR <> 0) goto QuitWithRollback
+    END
+    ELSE
+    BEGIN
+        SET @sSQL = 'GRANT SELECT,INSERT,UPDATE,DELETE ON [' + @sObject + '] TO [ASRSysGroup]'
+        EXEC(@sSQL)
+        --IF (@@ERROR <> 0) goto QuitWithRollback
+    END
+
+    FETCH NEXT FROM curObjects INTO @sObject, @sObjectType
+END
+CLOSE curObjects
+DEALLOCATE curObjects
 /* ------------------------------------------------------------- */
 /* Update the database version flag in the ASRSysSettings table. */
 /* Dont Set the flag to refresh the stored procedures            */
