@@ -1547,7 +1547,7 @@ PRINT 'Step 1 - System procedures'
 				newValue AS [New Value], 
 				recordDesc AS [Record Description],
 				id
-				FROM dbo.ASRSysAuditTrail'';
+				FROM dbo.ASRSysAuditTrail '';
 
 			IF LEN(@psOrder) > 0
 				SET @sExecString = @sSQL + @psOrder;
@@ -1566,7 +1566,7 @@ PRINT 'Step 1 - System procedures'
 				action AS [Action],
 				permission AS [Permission], 
 				id
-				FROM dbo.ASRSysAuditPermissions'';
+				FROM dbo.ASRSysAuditPermissions '';
 
 			IF LEN(@psOrder) > 0
 				SET @sExecString = @sSQL + @psOrder;
@@ -1582,7 +1582,7 @@ PRINT 'Step 1 - System procedures'
 				userLogin AS [User Login],
 				[Action], 
 				id
-				FROM dbo.ASRSysAuditGroup'';
+				FROM dbo.ASRSysAuditGroup '';
 
 			IF LEN(@psOrder) > 0
 				SET @sExecString = @sSQL + @psOrder;
@@ -1599,7 +1599,7 @@ PRINT 'Step 1 - System procedures'
 				HRProModule AS [Module],
 				Action AS [Action], 
 				id
-				FROM dbo.ASRSysAuditAccess'';
+				FROM dbo.ASRSysAuditAccess '';
 
 			IF LEN(@psOrder) > 0
 				SET @sExecString = @sSQL + @psOrder;
