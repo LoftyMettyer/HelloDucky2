@@ -2025,7 +2025,7 @@ Private Function RunRecordSaveOptimiser() As Boolean
     "     AND sysstat & 0xf = 4)" & _
     " EXECUTE sp_executeSQL spadmin_optimiserecordsave;"
     
-  gADOCon.Execute strSQL, , adExecuteNoRecords
+ ' gADOCon.Execute strSQL, , adExecuteNoRecords
 
   RunRecordSaveOptimiser = bOK
 Exit Function
