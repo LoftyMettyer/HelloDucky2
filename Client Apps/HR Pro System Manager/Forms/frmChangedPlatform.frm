@@ -573,7 +573,11 @@ Private Function CopyData() As Boolean
   
   Screen.MousePointer = vbHourglass
   
-  Clipboard.SetText lblUsageMSG.Caption & vbNewLine & vbNewLine
+  If miMode = miMODE_MOBILECREDENTIALS Then
+    Clipboard.SetText vbNullString
+  Else
+    Clipboard.SetText lblUsageMSG.Caption & vbNewLine & vbNewLine
+  End If
 
   For iLoop = 1 To lstUsage.ListItems.Count
     Select Case miMode

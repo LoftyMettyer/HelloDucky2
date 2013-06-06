@@ -39,57 +39,139 @@ Begin VB.Form frmWorkflowSetup
       _ExtentY        =   9975
       _Version        =   393216
       Style           =   1
+      Tabs            =   4
+      Tab             =   3
+      TabsPerRow      =   4
       TabHeight       =   520
       TabCaption(0)   =   "&Web Site"
       TabPicture(0)   =   "frmWorkflowSetup.frx":000C
-      Tab(0).ControlEnabled=   -1  'True
-      Tab(0).Control(0)=   "fraWebSite"
-      Tab(0).Control(0).Enabled=   0   'False
-      Tab(0).Control(1)=   "fraWebSiteLogin"
-      Tab(0).Control(1).Enabled=   0   'False
-      Tab(0).Control(2)=   "fraMobileKey"
-      Tab(0).Control(2).Enabled=   0   'False
-      Tab(0).ControlCount=   3
+      Tab(0).ControlEnabled=   0   'False
+      Tab(0).Control(0)=   "fraWebSiteLogin"
+      Tab(0).Control(1)=   "fraWebSite"
+      Tab(0).ControlCount=   2
       TabCaption(1)   =   "&Personnel Identification"
       TabPicture(1)   =   "frmWorkflowSetup.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraPersonnelTable"
-      Tab(1).Control(1)=   "fraDelegation"
+      Tab(1).Control(0)=   "fraDelegation"
+      Tab(1).Control(1)=   "fraPersonnelTable"
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "&Service"
       TabPicture(2)   =   "frmWorkflowSetup.frx":0044
       Tab(2).ControlEnabled=   0   'False
       Tab(2).Control(0)=   "fraService"
       Tab(2).ControlCount=   1
+      TabCaption(3)   =   "&Mobile Specifics"
+      TabPicture(3)   =   "frmWorkflowSetup.frx":0060
+      Tab(3).ControlEnabled=   -1  'True
+      Tab(3).Control(0)=   "Frame1"
+      Tab(3).Control(0).Enabled=   0   'False
+      Tab(3).Control(1)=   "fraMobileKey"
+      Tab(3).Control(1).Enabled=   0   'False
+      Tab(3).ControlCount=   2
       Begin VB.Frame fraMobileKey 
-         Caption         =   "Mobile Credentials :"
+         Caption         =   "Custom.Web.Config :"
          Height          =   975
-         Left            =   165
-         TabIndex        =   33
-         Top             =   3330
+         Left            =   150
+         TabIndex        =   42
+         Top             =   2880
          Width           =   6500
          Begin VB.CommandButton cmdGenMobileKey 
             Caption         =   "&Generate"
             Height          =   400
             Left            =   5100
-            TabIndex        =   34
+            TabIndex        =   43
             Top             =   315
             Width           =   1200
          End
          Begin VB.Label lblGetMobileKey 
             AutoSize        =   -1  'True
-            Caption         =   "Generate Mobile Keys :"
+            Caption         =   "Generate Mobile Web Config Keys :"
             Height          =   195
             Left            =   195
-            TabIndex        =   35
+            TabIndex        =   44
             Top             =   420
-            Width           =   2010
+            Width           =   3060
+         End
+      End
+      Begin VB.Frame Frame1 
+         Caption         =   "Personnel Table :"
+         Height          =   2250
+         Left            =   150
+         TabIndex        =   33
+         Top             =   500
+         Width           =   6500
+         Begin VB.ComboBox cboMobLoginName 
+            Height          =   315
+            Left            =   2370
+            Style           =   2  'Dropdown List
+            TabIndex        =   37
+            Top             =   1110
+            Width           =   3975
+         End
+         Begin VB.ComboBox cboMobPersonnelTable 
+            Enabled         =   0   'False
+            Height          =   315
+            Left            =   2370
+            Style           =   2  'Dropdown List
+            TabIndex        =   36
+            Top             =   300
+            Width           =   3975
+         End
+         Begin VB.ComboBox cboMobEMailColumn 
+            Height          =   315
+            Left            =   2370
+            Style           =   2  'Dropdown List
+            TabIndex        =   35
+            Top             =   720
+            Width           =   3975
+         End
+         Begin VB.ComboBox cboMobLeavingDateColumn 
+            Height          =   315
+            Left            =   2370
+            Style           =   2  'Dropdown List
+            TabIndex        =   34
+            Top             =   1530
+            Width           =   3975
+         End
+         Begin VB.Label lblMobEmailAddresses 
+            Caption         =   "Registration Email Address :"
+            Height          =   390
+            Left            =   195
+            TabIndex        =   41
+            Top             =   660
+            Width           =   1770
+         End
+         Begin VB.Label lblMobLoginNameColumn 
+            AutoSize        =   -1  'True
+            Caption         =   "Mobile Login Username :"
+            Height          =   195
+            Left            =   195
+            TabIndex        =   40
+            Top             =   1170
+            Width           =   2115
+         End
+         Begin VB.Label Label1 
+            Caption         =   "Personnel Table :"
+            Enabled         =   0   'False
+            Height          =   195
+            Left            =   195
+            TabIndex        =   39
+            Top             =   360
+            Width           =   1560
+         End
+         Begin VB.Label lblMobLeavingDateColumn 
+            Caption         =   "Login Expiry Date :"
+            Height          =   195
+            Left            =   195
+            TabIndex        =   38
+            Top             =   1575
+            Width           =   1995
          End
       End
       Begin VB.Frame fraWebSiteLogin 
          Caption         =   "Login :"
          Height          =   1700
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   4
          Top             =   1500
          Width           =   6500
@@ -392,7 +474,7 @@ Begin VB.Form frmWorkflowSetup
       Begin VB.Frame fraWebSite 
          Caption         =   "Address :"
          Height          =   850
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   1
          Top             =   500
          Width           =   6500
@@ -451,6 +533,10 @@ Private mlngDelegationActivatedColumnID As Long
 Private mlngDelegateEmailID As Long
 Private mfCopyDelegateEmail As Boolean
 Private mfServiceSuspended As Boolean
+Private mlngMobPersonnelTableID As Long
+Private mlngMobLoginColumnID As Long
+Private mlngMobUniqueEmailColumnID As Long
+Private mlngMobLeavingDateColumnID As Long
 
 Private msOriginalURL As String
 Private msOriginalUser As String
@@ -491,6 +577,8 @@ Private Sub cboDelegationActivatedColumn_Click()
 End Sub
 
 
+
+
 Private Sub cboLoginName_Click(Index As Integer)
   With cboLoginName(Index)
     If Index = 1 Then
@@ -511,6 +599,53 @@ Private Sub cboLoginName_Click(Index As Integer)
 
 End Sub
 
+
+Private Sub cboMobEMailColumn_Click()
+  With cboMobEMailColumn
+    mlngMobUniqueEmailColumnID = .ItemData(.ListIndex)
+  End With
+  
+  If Not mbLoading Then
+    mbLoading = True
+    RefreshPersonnelColumnControls
+    mbLoading = False
+    Changed = True
+  End If
+  
+  RefreshControls
+
+End Sub
+
+Private Sub cboMobLeavingDateColumn_Click()
+ With cboMobLeavingDateColumn
+    mlngMobLeavingDateColumnID = .ItemData(.ListIndex)
+  End With
+  
+  If Not mbLoading Then
+    mbLoading = True
+    RefreshPersonnelColumnControls
+    mbLoading = False
+    Changed = True
+  End If
+  
+  RefreshControls
+
+End Sub
+
+Private Sub cboMobLoginName_Click()
+  With cboMobLoginName
+    mlngMobLoginColumnID = .ItemData(.ListIndex)
+  End With
+  
+  If Not mbLoading Then
+    mbLoading = True
+    RefreshPersonnelColumnControls
+    mbLoading = False
+    Changed = True
+  End If
+  
+  RefreshControls
+End Sub
 
 Private Sub cboPersonnelTable_Click()
   Dim iLoop As Integer
@@ -877,6 +1012,11 @@ Private Sub SaveChanges()
   SaveModuleSetting gsMODULEKEY_WORKFLOW, gsPARAMETERKEY_LOGINNAME, gsPARAMETERTYPE_COLUMNID, mlngLoginColumnID
   SaveModuleSetting gsMODULEKEY_WORKFLOW, gsPARAMETERKEY_SECONDLOGINNAME, gsPARAMETERTYPE_COLUMNID, mlngSecondLoginColumnID
   
+  SaveModuleSetting gsMODULEKEY_MOBILE, gsPARAMETERKEY_PERSONNELTABLE, gsPARAMETERTYPE_TABLEID, mlngMobPersonnelTableID
+  SaveModuleSetting gsMODULEKEY_MOBILE, gsPARAMETERKEY_LOGINNAME, gsPARAMETERTYPE_COLUMNID, mlngMobLoginColumnID
+  SaveModuleSetting gsMODULEKEY_MOBILE, gsPARAMETERKEY_UNIQUEEMAILCOLUMN, gsPARAMETERTYPE_COLUMNID, mlngMobUniqueEmailColumnID
+  SaveModuleSetting gsMODULEKEY_MOBILE, gsPARAMETERKEY_LEAVINGDATE, gsPARAMETERTYPE_COLUMNID, mlngMobLeavingDateColumnID
+  
   ' Save the Email Address columns
   ' Clear the current database values.
   daoDb.Execute "DELETE FROM tmpModuleSetup" & _
@@ -1154,6 +1294,11 @@ Private Sub ReadParameters()
   mlngLoginColumnID = GetModuleSetting(gsMODULEKEY_WORKFLOW, gsPARAMETERKEY_LOGINNAME, 0)
   mlngSecondLoginColumnID = GetModuleSetting(gsMODULEKEY_WORKFLOW, gsPARAMETERKEY_SECONDLOGINNAME, 0)
 
+  mlngMobPersonnelTableID = GetModuleSetting(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_PERSONNELTABLE, 0)
+  mlngMobLoginColumnID = GetModuleSetting(gsMODULEKEY_MOBILE, gsPARAMETERKEY_LOGINNAME, 0)
+  mlngMobUniqueEmailColumnID = GetModuleSetting(gsMODULEKEY_MOBILE, gsPARAMETERKEY_UNIQUEEMAILCOLUMN, 0)
+  mlngMobLeavingDateColumnID = GetModuleSetting(gsMODULEKEY_MOBILE, gsPARAMETERKEY_LEAVINGDATE, 0)
+
   If (mlngLoginColumnID = 0) _
     And (mlngSecondLoginColumnID <> 0) Then
     
@@ -1404,6 +1549,26 @@ Private Sub RefreshControls()
   lblGetMobileKey.Enabled = (Application.MobileModule)
   cmdGenMobileKey.Enabled = (Application.MobileModule)
   
+  cboMobPersonnelTable.Clear
+  cboMobPersonnelTable.AddItem (cboPersonnelTable)
+  cboMobPersonnelTable.ListIndex = 0
+  
+  
+  cboMobLoginName.Enabled = (cboMobLoginName.ListCount > 1) And _
+      (Not mblnReadOnly)
+    cboMobLoginName.BackColor = IIf(cboMobLoginName.Enabled, vbWindowBackground, vbButtonFace)
+  lblMobLoginNameColumn.Enabled = cboMobLoginName.Enabled
+  
+  cboMobEMailColumn.Enabled = (cboMobEMailColumn.ListCount > 1) And _
+    (Not mblnReadOnly)
+    cboMobEMailColumn.BackColor = IIf(cboMobEMailColumn.Enabled, vbWindowBackground, vbButtonFace)
+  lblMobEmailAddresses.Enabled = cboMobEMailColumn.Enabled
+  
+  cboMobLeavingDateColumn.Enabled = (cboMobLeavingDateColumn.ListCount > 1) And _
+    (Not mblnReadOnly)
+    cboMobLeavingDateColumn.BackColor = IIf(cboMobLeavingDateColumn.Enabled, vbWindowBackground, vbButtonFace)
+  lblMobLeavingDateColumn.Enabled = cboMobLeavingDateColumn.Enabled
+  
   ' Disable the OK button as required.
   cmdOK.Enabled = mfChanged
   
@@ -1417,6 +1582,11 @@ Private Sub RefreshPersonnelColumnControls()
   Dim iLoginColumnListIndex As Integer
   Dim iSecondLoginColumnListIndex As Integer
   Dim iDelegationActivatedListIndex As Integer
+  
+  Dim iMobLoginColumnListIndex As Integer
+  Dim iMobEmailColumnListIndex As Integer
+  Dim iMobLeavingDateListIndex As Integer
+
   Dim objctl As Control
 
   iLoginColumnListIndex = 0
@@ -1429,7 +1599,10 @@ Private Sub RefreshPersonnelColumnControls()
   For Each objctl In Me
     If (TypeOf objctl Is ComboBox) And _
       ((objctl.Name = "cboDelegationActivatedColumn") Or _
-      (objctl.Name = "cboLoginName")) Then
+      (objctl.Name = "cboLoginName") Or _
+      (objctl.Name = "cboMobLoginName") Or _
+      (objctl.Name = "cboMobEMailColumn") Or _
+      (objctl.Name = "cboMobLeavingDateColumn")) Then
 
       With objctl
         .Clear
@@ -1471,6 +1644,27 @@ Private Sub RefreshPersonnelColumnControls()
                 iSecondLoginColumnListIndex = cboLoginName(1).NewIndex
               End If
             End If
+            
+            ' Mobile specifics
+            cboMobLoginName.AddItem !ColumnName
+            cboMobLoginName.ItemData(cboMobLoginName.NewIndex) = !ColumnID
+            If !ColumnID = mlngMobLoginColumnID Then
+              iMobLoginColumnListIndex = cboMobLoginName.NewIndex
+            End If
+
+            cboMobEMailColumn.AddItem !ColumnName
+            cboMobEMailColumn.ItemData(cboMobEMailColumn.NewIndex) = !ColumnID
+            If !ColumnID = mlngMobUniqueEmailColumnID Then
+              iMobEmailColumnListIndex = cboMobEMailColumn.NewIndex
+            End If
+            
+          End If
+          
+          If !DataType = dtTIMESTAMP Then
+              cboMobLeavingDateColumn.AddItem !ColumnName
+              cboMobLeavingDateColumn.ItemData(cboMobLeavingDateColumn.NewIndex) = !ColumnID
+              If !ColumnID = mlngMobLeavingDateColumnID Then
+                iMobLeavingDateListIndex = cboMobLeavingDateColumn.NewIndex
           End If
           
           If !DataType = dtBIT Then
@@ -1482,8 +1676,8 @@ Private Sub RefreshPersonnelColumnControls()
             End If
           End If
         End If
-
-        .MoveNext
+      End If
+      .MoveNext
       Loop
     End If
   End With
@@ -1492,6 +1686,10 @@ Private Sub RefreshPersonnelColumnControls()
   cboLoginName(0).ListIndex = iLoginColumnListIndex
   cboLoginName(1).ListIndex = iSecondLoginColumnListIndex
   cboDelegationActivatedColumn.ListIndex = iDelegationActivatedListIndex
+
+  cboMobLoginName.ListIndex = iMobLoginColumnListIndex
+  cboMobEMailColumn.ListIndex = iMobEmailColumnListIndex
+  cboMobLeavingDateColumn.ListIndex = iMobLeavingDateListIndex
 
   UI.UnlockWindow
 
