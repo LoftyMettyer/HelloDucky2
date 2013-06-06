@@ -386,10 +386,12 @@ Private mblnOutputPrinter As Boolean
 Private mstrOutputPrinterName As String
 Private mblnOutputSave As Boolean
 Private mlngOutputSaveExisting As Long
+Private mlngOutputSaveFormat As Long
 Private mblnOutputEmail As Boolean
 Private mlngOutputEmailAddr As Long
 Private mstrOutputEmailSubject As String
 Private mstrOutputEmailAttachAs As String
+Private mlngOutputEmailFileFormat As Long
 Private mstrOutputFilename As String
 Private mblnChkPicklistFilter As String
 
@@ -609,10 +611,10 @@ Private Sub chkPercentage_Click()
   If mblnLoading Then Exit Sub
   
   blnEnabled = (chkPercentage.Value = vbChecked And cboPageBreak.Enabled = True)
-  chkPercentageOfPage.Enabled = blnEnabled
+  chkPercentageofPage.Enabled = blnEnabled
   If Not blnEnabled Then
     mblnLoading = True
-    chkPercentageOfPage.Value = vbUnchecked
+    chkPercentageofPage.Value = vbUnchecked
     mblnLoading = False
   End If
 
@@ -625,7 +627,7 @@ End Sub
 Private Sub chkPercentageOfPage_Click()
   If mblnLoading Then Exit Sub
   PopulateGrid
-  chkPercentageOfPage.SetFocus
+  chkPercentageofPage.SetFocus
 End Sub
 
 Private Sub chkSuppressZeros_Click()
@@ -649,7 +651,7 @@ End Sub
 
 Private Sub Form_Activate()
   If Me.Visible And Me.Enabled Then
-    cmdOK.SetFocus
+    cmdOk.SetFocus
   End If
 End Sub
 
@@ -1114,10 +1116,12 @@ Public Sub RetreiveDefinition(lngCrossTabID As Long)
     mstrOutputPrinterName = !OutputPrinterName
     mblnOutputSave = !OutputSave
     mlngOutputSaveExisting = !OutputSaveExisting
+    mlngOutputSaveFormat = !OutputSaveFormat
     mblnOutputEmail = !OutputEmail
     mlngOutputEmailAddr = !OutputEmailAddr
     mstrOutputEmailSubject = !OutputEmailSubject
     mstrOutputEmailAttachAs = IIf(IsNull(!OutputEmailAttachAs), vbNullString, !OutputEmailAttachAs)
+    mlngOutputEmailFileFormat = !OutputEmailFileFormat
     mstrOutputFilename = !OutputFilename
 
     mblnPreviewOnScreen = (!OutputPreview Or (mlngOutputFormat = fmtDataOnly And mblnOutputScreen))
@@ -1878,7 +1882,7 @@ Private Function GetPercentageFactor(lngPage As Long, lngTYPE As Long)
   'mdblPercentageFactor will be used in FORMATCELL, if required
   mdblPercentageFactor = 0
   If chkPercentage.Value = vbChecked Then
-    If chkPercentageOfPage = vbChecked Then
+    If chkPercentageofPage = vbChecked Then
       If mdblPageTotal(lngPage, lngTYPE) > 0 Then
         mdblPercentageFactor = 1 / mdblPageTotal(lngPage, lngTYPE)
       End If
@@ -2345,10 +2349,10 @@ Private Sub Form_Resize()
 
   
   'Position the command buttons...
-  lngTop = Me.ScaleHeight - (cmdOK.Height + lngGap)
+  lngTop = Me.ScaleHeight - (cmdOk.Height + lngGap)
   
-  lngLeft = Me.ScaleWidth - (cmdOK.Width + lngGap)
-  cmdOK.Move lngLeft, lngTop
+  lngLeft = Me.ScaleWidth - (cmdOk.Width + lngGap)
+  cmdOk.Move lngLeft, lngTop
 
   lngLeft = lngLeft - (cmdOutput.Width + lngGap)
   cmdOutput.Move lngLeft, lngTop
@@ -2374,7 +2378,7 @@ Private Sub Form_Resize()
     'fraIntersection.Visible = False
     Me.lblColumn.Visible = False
     Me.chkPercentage.Visible = False
-    Me.chkPercentageOfPage.Visible = False
+    Me.chkPercentageofPage.Visible = False
     Me.lblType.Top = Me.lblColumn.Top
     Me.chkSuppressZeros.Top = Me.lblColumn.Top
     Me.txtIntersectionCol.Text = mstrCrossTabName
@@ -2454,8 +2458,8 @@ Private Sub PrepareForms()
   
   
   chkPercentage.Value = IIf(mblnShowPercentage, vbChecked, vbUnchecked)
-  chkPercentageOfPage.Value = IIf(mblnPercentageofPage, vbChecked, vbUnchecked)
-  chkPercentageOfPage.Enabled = (mblnPageBreak = True And mblnShowPercentage = True)
+  chkPercentageofPage.Value = IIf(mblnPercentageofPage, vbChecked, vbUnchecked)
+  chkPercentageofPage.Enabled = (mblnPageBreak = True And mblnShowPercentage = True)
   chkSuppressZeros.Value = IIf(mblnSuppressZeros, vbChecked, vbUnchecked)
   chkThousandSeparators.Value = IIf(mbThousandSeparators, vbChecked, vbUnchecked)
 
@@ -4427,12 +4431,12 @@ Private Function OutputReport(blnPrompt As Boolean) As Boolean
     End With
   End If
 
-  If objOutput.SetOptions _
+ If objOutput.SetOptions _
       (blnPrompt, mlngOutputFormat, mblnOutputScreen, _
       mblnOutputPrinter, mstrOutputPrinterName, _
-      mblnOutputSave, mlngOutputSaveExisting, _
+      mblnOutputSave, mlngOutputSaveExisting, mlngOutputSaveFormat, _
       mblnOutputEmail, mlngOutputEmailAddr, mstrOutputEmailSubject, _
-      mstrOutputEmailAttachAs, mstrOutputFilename) Then
+      mstrOutputEmailAttachAs, mlngOutputEmailFileFormat, mstrOutputFilename) Then
 
     If Not gblnBatchMode Then
       If mlngCrossTabType = cttNormal Then
@@ -4770,10 +4774,12 @@ Public Sub GetReportConfig(strReportType As String)
   mstrOutputPrinterName = GetSystemSetting(strReportType, "PrinterName", vbNullString)
   mblnOutputSave = (GetSystemSetting(strReportType, "Save", 0) = 1)
   mlngOutputSaveExisting = GetSystemSetting(strReportType, "SaveExisting", -1)
+  mlngOutputSaveFormat = GetSystemSetting(strReportType, "SaveFormat", 0)
   mblnOutputEmail = (GetSystemSetting(strReportType, "Email", 0) = 1)
   mlngOutputEmailAddr = GetSystemSetting(strReportType, "EmailAddr", 0)
   mstrOutputEmailSubject = GetSystemSetting(strReportType, "EmailSubject", vbNullString)
   mstrOutputEmailAttachAs = GetSystemSetting(strReportType, "EmailAttachAs", vbNullString)
+  mlngOutputEmailFileFormat = GetSystemSetting(strReportType, "EmailFileFormat", vbNullString)
   mstrOutputFilename = GetSystemSetting(strReportType, "FileName", vbNullString)
   mblnPreviewOnScreen = (GetSystemSetting(strReportType, "Preview", True) Or (mlngOutputFormat = fmtDataOnly And mblnOutputScreen))
   mblnChkPicklistFilter = (GetSystemSetting(strReportType, "PrintFilterHeader", 0) = 1)
@@ -4823,11 +4829,13 @@ Public Sub SetOutputParameters( _
           blnOutputPrinter As Boolean, _
           strOutputPrinterName As String, _
           blnOutputSave As Boolean, _
+          lngOutputSaveFormat As Long, _
           lngOutputSaveExisting As Long, _
           blnOutputEmail As Boolean, _
           lngOutputEmailAddr As Long, _
           strOutputEmailSubject As String, _
           strOutputEmailAttachAs As String, _
+          lngOutputEmailFileFormat As Long, _
           strOutputFilename As String, _
           blnPreviewOnScreen As Boolean, _
           blnChkPicklistFilter As Boolean)
@@ -4838,10 +4846,12 @@ Public Sub SetOutputParameters( _
   mstrOutputPrinterName = strOutputPrinterName
   mblnOutputSave = blnOutputSave
   mlngOutputSaveExisting = lngOutputSaveExisting
+  mlngOutputSaveFormat = lngOutputSaveFormat
   mblnOutputEmail = blnOutputEmail
   mlngOutputEmailAddr = lngOutputEmailAddr
   mstrOutputEmailSubject = strOutputEmailSubject
   mstrOutputEmailAttachAs = strOutputEmailAttachAs
+  mlngOutputEmailFileFormat = lngOutputEmailFileFormat
   mstrOutputFilename = strOutputFilename
   mblnPreviewOnScreen = blnPreviewOnScreen
   mblnChkPicklistFilter = blnChkPicklistFilter

@@ -2907,28 +2907,41 @@ Private Sub SaveDefinition()
         "OutputPrinter = " & IIf(chkDestination(desPrinter).Value = vbChecked, "1", "0") & ", " & _
         "OutputPrinterName = '" & Replace(cboPrinterName.Text, " '", "''") & "', "
         
+'    If chkDestination(desSave).Value = vbChecked Then
+'      strSQL = strSQL & _
+'        "OutputSave = 1, " & _
+'        "OutputSaveExisting = " & cboSaveExisting.ItemData(cboSaveExisting.ListIndex) & ", "
+'    Else
+'      strSQL = strSQL & _
+'        "OutputSave = 0, " & _
+'        "OutputSaveExisting = 0, "
+'    End If
     If chkDestination(desSave).Value = vbChecked Then
       strSQL = strSQL & _
         "OutputSave = 1, " & _
+        "OutputSaveFormat = " & Val(txtFilename.Tag) & "," & _
         "OutputSaveExisting = " & cboSaveExisting.ItemData(cboSaveExisting.ListIndex) & ", "
     Else
       strSQL = strSQL & _
         "OutputSave = 0, " & _
+        "OutputSaveFormat = 0, " & _
         "OutputSaveExisting = 0, "
     End If
-        
+
     If chkDestination(desEmail).Value = vbChecked Then
       strSQL = strSQL & _
           "OutputEmail = 1, " & _
           "OutputEmailAddr = " & txtEmailGroup.Tag & ", " & _
           "OutputEmailSubject = '" & Replace(txtEmailSubject.Text, "'", "''") & "', " & _
-          "OutputEmailAttachAs = '" & Replace(txtEmailAttachAs.Text, "'", "''") & "', "
+          "OutputEmailAttachAs = '" & Replace(txtEmailAttachAs.Text, "'", "''") & "', " & _
+          "OutputEmailFileFormat = " & CStr(Val(txtEmailAttachAs.Tag)) & ", "
     Else
       strSQL = strSQL & _
           "OutputEmail = 0, " & _
           "OutputEmailAddr = 0, " & _
           "OutputEmailSubject = '', " & _
-          "OutputEmailAttachAs = '', "
+          "OutputEmailAttachAs = '', " & _
+          "OutputEmailFileFormat = 0, "
     End If
     
     strSQL = strSQL & _
@@ -2955,8 +2968,8 @@ Private Sub SaveDefinition()
                "IntersectionType, IntersectionColID, Percentage, PercentageofPage, SuppressZeros, ThousandSeparators, " & _
                "PrintFilterHeader, " & _
                "UserName, " & _
-               "OutputPreview, OutputFormat, OutputScreen, OutputPrinter, OutputPrinterName, OutputSave, " & _
-               "OutputSaveExisting, OutputEmail, OutputEmailAddr, OutputEmailSubject, OutputEmailAttachAs, OutputFilename) "
+               "OutputPreview, OutputFormat, OutputScreen, OutputPrinter, OutputPrinterName, OutputSave, OutputSaveFormat, " & _
+               "OutputSaveExisting, OutputEmail, OutputEmailAddr, OutputEmailSubject, OutputEmailAttachAs, OutputEmailFileFormat, OutputFilename) "
                '"DefaultOutput, DefaultExportTo, DefaultSave, DefaultSaveAs, DefaultCloseApp) "
                
     strSQL = strSQL & _
@@ -2979,19 +2992,20 @@ Private Sub SaveDefinition()
         "'" & Replace(cboPrinterName.Text, "'", "''") & "', "
 
     If chkDestination(desSave).Value = vbChecked Then
-      strSQL = strSQL & "1, " & _
+      strSQL = strSQL & "1, " & CStr(Val(txtFilename.Tag)) & ", " & _
         cboSaveExisting.ItemData(cboSaveExisting.ListIndex) & ", "
     Else
-      strSQL = strSQL & "0, 0, "
+      strSQL = strSQL & "0, 0, 0, "
     End If
 
     If chkDestination(desEmail).Value = vbChecked Then
       strSQL = strSQL & "1, " & _
           txtEmailGroup.Tag & ", " & _
           "'" & Replace(txtEmailSubject.Text, "'", "''") & "', " & _
-          "'" & Replace(txtEmailAttachAs.Text, "'", "''") & "', "
+          "'" & Replace(txtEmailAttachAs.Text, "'", "''") & ", " & _
+          CStr(Val(txtEmailAttachAs.Tag)) & ", "      'OutputEmail, OutputEmailAddr, OutputEmailAttachAs, OutputEmailFileFormat, OutputEmailSubject
     Else
-      strSQL = strSQL & "0, 0, '', '', "
+      strSQL = strSQL & "0, 0, '', '', 0, "               'OutputEmail, OutputEmailAddr, OutputEmailAttachAs, OutputEmailFileFormat, OutputEmailSubject
     End If
 
     strSQL = strSQL & _

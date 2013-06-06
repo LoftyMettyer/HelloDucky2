@@ -173,10 +173,12 @@ Private mblnOutputPrinter As Boolean
 Private mstrOutputPrinterName As String
 Private mblnOutputSave As Boolean
 Private mlngOutputSaveExisting As Long
+Private mlngOutputSaveFormat As Long
 Private mblnOutputEmail As Boolean
 Private mlngOutputEmailAddr As Long
 Private mstrOutputEmailSubject As String
 Private mstrOutputEmailAttachAs As String
+Private mlngOutputEmailFileFormat As Long
 Private mstrOutputFilename As String
 
 ' Array holding the User Defined functions that are needed for this report
@@ -1735,10 +1737,12 @@ Private Function GetMatchReportDefinition() As Boolean
     mstrOutputPrinterName = !OutputPrinterName
     mblnOutputSave = !OutputSave
     mlngOutputSaveExisting = !OutputSaveExisting
+    mlngOutputSaveFormat = !OutputSaveFormat
     mblnOutputEmail = !OutputEmail
     mlngOutputEmailAddr = !OutputEmailAddr
     mstrOutputEmailSubject = !OutputEmailSubject
     mstrOutputEmailAttachAs = IIf(IsNull(!OutputEmailAttachAs), vbNullString, !OutputEmailAttachAs)
+    mlngOutputEmailFileFormat = !OutputEmailFileFormat
     mstrOutputFilename = !OutputFilename
 
     mblnPreviewOnScreen = (!OutputPreview Or (mlngOutputFormat = fmtDataOnly And mblnOutputScreen))
@@ -2394,9 +2398,9 @@ Private Function OutputReport(blnPrompt As Boolean) As Boolean
 
   If objOutput.SetOptions(blnPrompt, mlngOutputFormat, mblnOutputScreen, _
       mblnOutputPrinter, mstrOutputPrinterName, _
-      mblnOutputSave, mlngOutputSaveExisting, _
+      mblnOutputSave, mlngOutputSaveExisting, mlngOutputSaveFormat, _
       mblnOutputEmail, mlngOutputEmailAddr, mstrOutputEmailSubject, _
-      mstrOutputEmailAttachAs, mstrOutputFilename) Then
+      mstrOutputEmailAttachAs, mlngOutputEmailFileFormat, mstrOutputFilename) Then
 
     objOutput.PageTitles = False
 
