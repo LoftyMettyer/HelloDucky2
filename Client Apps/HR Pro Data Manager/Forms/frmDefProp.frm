@@ -399,7 +399,7 @@ Private Sub DrawControls(utlType As UtilityType)
   End If
   
   
-  cmdOk.Top = cmdOk.Top - lngOffset
+  cmdOK.Top = cmdOK.Top - lngOffset
   Me.Height = Me.Height - lngOffset
 
   ' Leave form size at its default if we are using as a change type form
@@ -444,7 +444,7 @@ Private Sub cmdOK_Click()
 End Sub
 
 
-Public Function CheckForUseage(psType As String, plngItemID As Long) As Boolean
+Public Function CheckForUseage(piType As UtilityType, plngItemID As Long) As Boolean
   
   Dim strSQL As String
   Dim rsTemp As Recordset
@@ -453,6 +453,7 @@ Public Function CheckForUseage(psType As String, plngItemID As Long) As Boolean
   Dim strModuleDefinition As String
   Dim strID As String
   Dim strRootIDs As String
+  Dim sBatchJobType As String
   
   strGlobalFunction = _
     "CASE WHEN ASRSysGlobalFunctions.Type = 'A' " & _
@@ -484,8 +485,8 @@ Public Function CheckForUseage(psType As String, plngItemID As Long) As Boolean
   strID = CStr(plngItemID)
   List1.Clear
 
-  Select Case Trim(UCase(psType))
-  Case "PICKLIST"
+  Select Case piType
+  Case utlPicklist
 
     CheckSystemSettings strID, "P", "Absence Breakdown"
     CheckSystemSettings strID, "P", "Bradford Factor"
@@ -699,7 +700,7 @@ Public Function CheckForUseage(psType As String, plngItemID As Long) As Boolean
     CheckSystemSettings strID, "P", "Stability"
     CheckSystemSettings strID, "P", "Turnover"
 
-  Case "FILTER"
+  Case utlFilter
 
     strRootIDs = GetExprRootIDs(strID)
     
@@ -960,7 +961,7 @@ Public Function CheckForUseage(psType As String, plngItemID As Long) As Boolean
     CheckSystemSettings strID, "F", "Stability"
     CheckSystemSettings strID, "F", "Turnover"
   
-  Case "CALCULATION"
+  Case utlCalculation
     
     strRootIDs = GetExprRootIDs(strID)
 
@@ -1132,10 +1133,12 @@ Public Function CheckForUseage(psType As String, plngItemID As Long) As Boolean
     CheckSystemSettings strID, "X", "Stability"
     CheckSystemSettings strID, "X", "Turnover"
 
-  Case "CROSS TAB", "CUSTOM REPORT", "DATA TRANSFER", "EXPORT", "GLOBAL ADD", _
-       "GLOBAL DELETE", "GLOBAL UPDATE", "MAIL MERGE", "IMPORT", _
-       "CALENDAR REPORT", "RECORD PROFILE", "ENVELOPES & LABELS", _
-       "MATCH REPORT", "SUCCESSION PLANNING", "CAREER PROGRESSION"
+  Case utlCrossTab, utlCustomReport, utlDataTransfer, utlExport, UtlGlobalAdd, _
+       utlGlobalDelete, utlGlobalUpdate, utlMailMerge, utlImport, _
+       utlCalendarReport, utlRecordProfile, utlLabel, _
+       utlMatchReport, utlSuccession, utlCareer
+
+      sBatchJobType = GetBatchJobType(piType)
 
       'Check if this has been used in a batch job
       If gfCurrentUserIsSysSecMgr Then
@@ -1147,7 +1150,7 @@ Public Function CheckForUseage(psType As String, plngItemID As Long) As Boolean
           " FROM ASRSysBatchJobDetails" & _
           " INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobDetails.BatchJobNameID = ASRSysBatchJobName.ID" & _
           " WHERE AsrSysBatchJobName.IsBatch = 1 " & _
-          "   AND ASRSysBatchJobDetails.JobType = '" & psType & "' " & _
+          "   AND ASRSysBatchJobDetails.JobType = '" & sBatchJobType & "' " & _
           "   AND ASRSysBatchJobDetails.JobID = " & strID)
       Else
         Call GetNameWhereUsed( _
@@ -1161,7 +1164,7 @@ Public Function CheckForUseage(psType As String, plngItemID As Long) As Boolean
           " INNER JOIN sysusers b ON ASRSysBatchJobAccess.groupname = b.name" & _
           "   AND b.name = '" & gsUserGroup & "'" & _
           " WHERE AsrSysBatchJobName.IsBatch = 1 " & _
-          "   AND ASRSysBatchJobDetails.JobType = '" & psType & "' " & _
+          "   AND ASRSysBatchJobDetails.JobType = '" & sBatchJobType & "' " & _
           "   AND ASRSysBatchJobDetails.JobID = " & strID)
       End If
       'Check if this has been used in a Report Pack
@@ -1174,7 +1177,7 @@ Public Function CheckForUseage(psType As String, plngItemID As Long) As Boolean
           " FROM ASRSysBatchJobDetails" & _
           " INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobDetails.BatchJobNameID = ASRSysBatchJobName.ID" & _
           " WHERE AsrSysBatchJobName.IsBatch = 0 " & _
-          "   AND ASRSysBatchJobDetails.JobType = '" & psType & "' " & _
+          "   AND ASRSysBatchJobDetails.JobType = '" & sBatchJobType & "' " & _
           "   AND ASRSysBatchJobDetails.JobID = " & strID)
       Else
         Call GetNameWhereUsed( _
@@ -1188,14 +1191,13 @@ Public Function CheckForUseage(psType As String, plngItemID As Long) As Boolean
           " INNER JOIN sysusers b ON ASRSysBatchJobAccess.groupname = b.name" & _
           "   AND b.name = '" & gsUserGroup & "'" & _
           " WHERE AsrSysBatchJobName.IsBatch = 0 " & _
-          "   AND ASRSysBatchJobDetails.JobType = '" & psType & "' " & _
+          "   AND ASRSysBatchJobDetails.JobType = '" & sBatchJobType & "' " & _
           "   AND ASRSysBatchJobDetails.JobID = " & strID)
       End If
     'JPD 20040729 Fault 8978
-    CheckModuleSetup psType, plngItemID
+    CheckModuleSetup piType, plngItemID
     
-    
-  Case "ENVELOPE & LABEL TEMPLATE"
+  Case utlLabelType
     If gfCurrentUserIsSysSecMgr Then
       Call GetNameWhereUsed( _
         "SELECT DISTINCT 'Envelopes & Labels'," & _
@@ -1217,7 +1219,7 @@ Public Function CheckForUseage(psType As String, plngItemID As Long) As Boolean
         " WHERE ASRSysMailMergeName.LabelTypeID = " & strID)
     End If
     
-  Case "EMAIL ADDRESS"
+  Case utlEmailAddress
     Call GetNameWhereUsed( _
       "SELECT DISTINCT 'Default Email', AsrSysTables.TableName, " & _
       "'' as Username, '" & ACCESS_READONLY & "' as Access " & _
@@ -1268,8 +1270,9 @@ Public Function CheckForUseage(psType As String, plngItemID As Long) As Boolean
       "FROM ASRSysWorkflowElements " & _
       "INNER JOIN ASRSysWorkflows ON ASRSysWorkflowElements.workflowID = ASRSysWorkflows.ID " & _
       "WHERE ASRSysWorkflowElements.EmailID = " & CStr(plngItemID))
-  
-  Case "EMAIL GROUP"
+    
+    
+  Case utlEmailGroup
 
     If gfCurrentUserIsSysSecMgr Then
       Call GetNameWhereUsed( _
@@ -1426,9 +1429,9 @@ Public Function CheckForUseage(psType As String, plngItemID As Long) As Boolean
         "   AND b.name = '" & gsUserGroup & "'" & _
         " WHERE ASRSysRecordProfileName.OutputEmailAddr = " & strID)
     End If
-  
-  
-  Case "ORDER"
+    
+    
+  Case utlOrder
 
     strRootIDs = GetExprRootIDs(strID, True)
 
@@ -1534,21 +1537,21 @@ Public Function CheckForUseage(psType As String, plngItemID As Long) As Boolean
       " INNER JOIN ASRSysWorkflowElementItems ON ASRSysWorkflowElements.ID = ASRSysWorkflowElementItems.elementID" & _
       " WHERE (ASRSysWorkflowElementItems.recordOrderID = " & strID & ")")
   
-  Case "BATCH JOB", "SCHEDULED BATCH JOBS"
+  Case utlBatchJob
     Call GetNameWhereUsed( _
       "SELECT DISTINCT JobType, JobID, JobOrder, " & _
       "'' as Username, '" & ACCESS_READONLY & "' as Access " & _
       "FROM ASRSYSBatchJobDetails " & _
       "WHERE ASRSYSBatchJobDetails.BatchJobNameID = " & CStr(plngItemID) & " ORDER BY JobOrder", True)
 
-  Case "REPORT PACK", "SCHEDULED REPORT PACKS"
+  Case utlReportPack
     Call GetNameWhereUsed( _
       "SELECT DISTINCT JobType, JobID, JobOrder, " & _
       "'' as Username, '" & ACCESS_READONLY & "' as Access " & _
       "FROM ASRSYSBatchJobDetails " & _
       "WHERE ASRSYSBatchJobDetails.BatchJobNameID = " & CStr(plngItemID) & " ORDER BY JobOrder", True)
       
-  Case "LABEL TYPES"
+  Case utlLabelType
     If gfCurrentUserIsSysSecMgr Then
       Call GetNameWhereUsed( _
         "SELECT DISTINCT 'Envelopes & Labels'," & _
@@ -1570,13 +1573,6 @@ Public Function CheckForUseage(psType As String, plngItemID As Long) As Boolean
         " WHERE ASRSysMailMergeName.PickListID = " & CStr(plngItemID))
     End If
 
-  ' Not used in the mail merge any more
-  Case "DOCUMENT TYPE"
-'    Call GetNameWhereUsed( _
-'      "SELECT DISTINCT Name, MailMergeID" & _
-'      ", Username, '" & ACCESS_READONLY & "' as Access " & _
-'      "FROM dbo.[ASRSysMailMergeName] " & _
-'      "WHERE [DocumentMapID] = " & CStr(plngItemID) & " ORDER BY [Name]", False)
 
   Case Else
     List1.AddItem "<Error Checking Usage>"    'Do not allow delete if not recognised
@@ -1584,10 +1580,10 @@ Public Function CheckForUseage(psType As String, plngItemID As Long) As Boolean
   End Select
 
   miUsageCount = List1.ListCount
-  If UCase(psType) = "BATCH JOB" Then
-    CheckForUseage = (List1.ListCount > 0 And Not Trim(UCase(psType)) = "BATCH JOB")
+  If piType = utlBatchJob Then
+    CheckForUseage = (List1.ListCount > 0 And Not piType = utlBatchJob)
   Else
-    CheckForUseage = (List1.ListCount > 0 And Not Trim(UCase(psType)) = "REPORT PACK")
+    CheckForUseage = (List1.ListCount > 0 And Not piType = utlReportPack)
   End If
   
   If miUsageCount = 0 Then
@@ -1636,50 +1632,13 @@ Private Sub GetNameWhereUsed(strSQL As String, Optional blnBatchJob As Boolean) 
 End Sub
 
 
-Private Sub CheckModuleSetup(psType As String, plngItemID As Long)
+Private Sub CheckModuleSetup(piType As UtilityType, plngItemID As Long)
   
   Dim rsResults As ADODB.Recordset
   Dim strSQL As String
   Dim lngUtilType As Long
   
-  lngUtilType = -1
-  
-  Select Case UCase(psType)
-    Case "ABSENCE BREAKDOWN"
-      lngUtilType = utlAbsenceBreakdown
-    Case "BRADFORD FACTOR"
-      lngUtilType = utlBradfordFactor
-    Case "CALENDAR REPORT"
-      lngUtilType = utlCalendarReport
-    Case "CAREER PROGRESSION"
-      lngUtilType = utlCareer
-    Case "CROSS TAB"
-      lngUtilType = utlCrossTab
-    Case "CUSTOM REPORT"
-      lngUtilType = utlCustomReport
-    Case "DATA TRANSFER"
-      lngUtilType = utlDataTransfer
-    Case "EXPORT"
-      lngUtilType = utlExport
-    Case "GLOBAL ADD"
-      lngUtilType = UtlGlobalAdd
-    Case "GLOBAL DELETE"
-      lngUtilType = utlGlobalDelete
-    Case "GLOBAL UPDATE"
-      lngUtilType = utlGlobalUpdate
-    Case "IMPORT"
-      lngUtilType = utlImport
-    Case "ENVELOPES & LABELS"
-      lngUtilType = utlLabel
-    Case "MAIL MERGE"
-      lngUtilType = utlMailMerge
-    Case "MATCH REPORT"
-      lngUtilType = utlMatchReport
-    Case "RECORD PROFILE"
-      lngUtilType = utlRecordProfile
-    Case "SUCESSION PLANNING"
-      lngUtilType = utlSuccession
-  End Select
+  lngUtilType = piType
   
   If lngUtilType < 0 Then Exit Sub
   

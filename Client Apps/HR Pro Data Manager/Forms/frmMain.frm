@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "15:50"
+            TextSave        =   "11:57"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -3735,6 +3735,7 @@ Public Sub RunUtility(ByRef UtilType As UtilityType, ByRef UtilityID As Long, By
       
         ' Loop until the operation has been cancelled.
         Do While Not fExit
+          .EnableNew = Not (UtilType = utlAll)
           .EnableRun = True
           .CategoryID = glngCurrentCategoryID
               

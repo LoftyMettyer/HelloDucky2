@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{1C203F10-95AD-11D0-A84B-00A0247B735B}#1.0#0"; "SSTree.ocx"
+Object = "{1C203F10-95AD-11D0-A84B-00A0247B735B}#1.0#0"; "sstree.ocx"
 Begin VB.Form frmExpression 
    Caption         =   "Expression Definition"
    ClientHeight    =   6390
@@ -368,11 +368,11 @@ Private Function AccessState(lngExprID As Long) As String
 End Function
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
 End Property
 
 Public Property Let Changed(blnChanged As Boolean)
-  cmdOk.Enabled = blnChanged
+  cmdOK.Enabled = blnChanged
 End Property
 
 Private Sub RemoveComponentNode(psNodeKey As String)
@@ -1263,15 +1263,11 @@ Private Function AllowChangeReturnType() As Boolean
   Dim varWhereUsed As Variant
   Dim intCount As Integer
   Dim strUsage As String
-  Dim strExpressionType As String
-  
-  If Me.Expression.ExpressionType = 10 Then
-    strExpressionType = "CALCULATION"
-  Else
-    strExpressionType = "FILTER"
-  End If
-  
+  Dim lngExpressionType As UtilityType
+    
   On Error GoTo Prop_ERROR
+  
+  lngExpressionType = IIf(Me.Expression.ExpressionType = 10, utlCalculation, utlFilter)
   
   ' RH Show the user we are doing something...checking for usage could take a while
   Screen.MousePointer = vbHourglass
@@ -1284,7 +1280,7 @@ Private Function AllowChangeReturnType() As Boolean
     .Caption = Me.Caption
     .UtilName = Me.Expression.Name
     .PopulateUtil Me.Expression.ComponentType, Me.Expression.ExpressionID
-    .CheckForUseage strExpressionType, Me.Expression.ExpressionID
+    .CheckForUseage lngExpressionType, Me.Expression.ExpressionID
     
     ' RH return the pointer to norma
     Screen.MousePointer = vbDefault
@@ -2043,7 +2039,7 @@ Private Sub sstrvComponents_AfterLabelEdit(Cancel As SSActiveTreeView.SSReturnBo
   mfLabelEditing = False
   
   ' RH - Fault 1909 - Put the default button back on
-  cmdOk.Default = True
+  cmdOK.Default = True
   
   ' Validate the entered label.
   If Len(NewString) = 0 Then
@@ -2077,7 +2073,7 @@ Private Sub sstrvComponents_BeforeLabelEdit(Cancel As SSActiveTreeView.SSReturnB
   CreateUndoView (giUNDO_RENAME)
   
   ' RH - Fault 1909 - Remove the default button
-  cmdOk.Default = False
+  cmdOK.Default = False
   
   ' Only allow sub-expression labels to be edited.
   If sstrvComponents.SelectedItem.Key = ROOTKEY Then
@@ -2312,12 +2308,12 @@ End Sub
 Private Sub txtDescription_GotFocus()
   ' Select the entire contents of the textbox.
   UI.txtSelText
-  cmdOk.Default = False
+  cmdOK.Default = False
 
 End Sub
 
 Private Sub txtDescription_LostFocus()
-  cmdOk.Default = True
+  cmdOK.Default = True
 End Sub
 
 Private Sub txtExpressionName_Change()
