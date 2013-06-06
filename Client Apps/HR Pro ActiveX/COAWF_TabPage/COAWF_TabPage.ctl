@@ -1,17 +1,18 @@
 VERSION 5.00
 Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Begin VB.UserControl COAWF_TabPage 
-   ClientHeight    =   1545
+   BackStyle       =   0  'Transparent
+   ClientHeight    =   3210
    ClientLeft      =   0
    ClientTop       =   0
-   ClientWidth     =   1965
-   ScaleHeight     =   1545
-   ScaleWidth      =   1965
+   ClientWidth     =   5190
+   ScaleHeight     =   3210
+   ScaleWidth      =   5190
    Begin MSComctlLib.TabStrip TabStrip1 
       Height          =   870
-      Left            =   225
+      Left            =   1710
       TabIndex        =   0
-      Top             =   180
+      Top             =   360
       Width           =   1095
       _ExtentX        =   1931
       _ExtentY        =   1535
@@ -51,6 +52,7 @@ Public Event DblClick()
 Private gfSelected As Boolean
 Private miWFItemType As Integer
 Private miCurrentTab As Integer
+Private mbMovingTab As Boolean
 
 Private Const Xframe = 20
 Private Const YFrame = 20
@@ -88,6 +90,13 @@ Public Property Get hWnd() As Long
   hWnd = UserControl.hWnd
 End Property
 
+Public Sub RemoveTab(ByVal Number As Integer)
+
+  TabStrip1.Tabs.Remove Number
+  miCurrentTab = IIf(Number = 0, 0, Number - 1)
+
+End Sub
+
 Public Sub AddTabPage(ByVal Caption As String)
   
   Dim iContainerIndex As Long
@@ -118,6 +127,8 @@ Private Sub TabStrip1_Click()
   
   If TabStrip1.SelectedItem.Index <> miCurrentTab Then
     RaiseEvent Click
+  Else
+  
   End If
 
   miCurrentTab = TabStrip1.SelectedItem.Index
@@ -134,6 +145,10 @@ Private Sub TabStrip1_MouseDown(Button As Integer, Shift As Integer, x As Single
 '
 '  miCurrentTab = TabStrip1.SelectedItem.Index
   
+End Sub
+
+Private Sub TabStrip1_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+  RaiseEvent MouseUp(Button, Shift, x, y)
 End Sub
 
 Private Sub UserControl_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
@@ -237,5 +252,4 @@ Public Property Let Caption(ByVal NewValue As String)
 ErrorTrap:
 
 End Property
-
 
