@@ -42,7 +42,7 @@ Public Sub PopulateOutputControls(rsTemp As Recordset)
         .cboPrinterName.AddItem rsTemp!OutputPrinterName
         .cboPrinterName.ListIndex = .cboPrinterName.NewIndex
         COAMsgBox "This definition is set to output to printer " & rsTemp!OutputPrinterName & _
-               " which is not set up on your PC.", vbInformation, app.Title
+               " which is not set up on your PC.", vbInformation, app.title
       End If
     End If
     
@@ -812,7 +812,7 @@ Private Sub cmdTitlePageTemplate_Click()
         txtFilename.SelStart = Len(txtFilename.Text)
         mfrmParent.cmdTitlePageClear.Enabled = txtFilename.SelStart <> 0
         
-        If txtReportTitle.Text = vbNullString Then
+        If txtReportTitle.Text = vbNullString And mlngFormat <> fmtExcelWorksheet Then
           txtReportTitle.Text = FileFromFullPath(.FileName)
           txtReportTitle.Text = Left(txtReportTitle.Text, InStrRev(txtReportTitle.Text, ".") - 1)
         End If
