@@ -241,7 +241,7 @@ Private Sub UserControl_Resize()
           End With
         Next Index
         
-        intWidth = intWidth + (GetAvgCharWidth(UserControl.hDC) * 2) + 200
+        intWidth = intWidth + (GetAvgCharWidth(UserControl.hDC) * 2) '+ 200
         
         With UserControl
           .Height = intHeight
@@ -287,8 +287,8 @@ Private Sub UserControl_Resize()
         
 '        intHeight = Option1(Option1.UBound).Height + 90
         
-        If BorderStyle = 1 Then
-          intWidth = (Option1(Option1.UBound).Left) + Option1(Option1.UBound).Width + UserControl.TextWidth("WW")
+        If Not fraOptGroup.BorderStyle = xtpFrameNone Then
+          intWidth = Maximum((Option1(Option1.UBound).Left) + Option1(Option1.UBound).Width + UserControl.TextWidth("WW"), UserControl.TextWidth(Caption) + 400)
         Else
           intWidth = (Option1(Option1.UBound).Left) + Option1(Option1.UBound).Width + UserControl.TextWidth("W")
         End If
@@ -307,6 +307,11 @@ Private Sub UserControl_Resize()
   End Select
 
 End Sub
+
+' Returns the maximum of two values
+Private Function Maximum(psngValue1 As Long, psngValue2 As Long) As Long
+  Maximum = IIf(psngValue1 > psngValue2, psngValue1, psngValue2)
+End Function
 
 Public Property Get Alignment() As Integer
   Alignment = miAlignment
