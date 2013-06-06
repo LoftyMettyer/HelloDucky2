@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "11:45"
+            TextSave        =   "09:46"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -2030,7 +2030,7 @@ Public Sub RefreshRecordMenu(pfrmCallingForm As Form, Optional ByVal pfUnLoad As
       
       .Bands(0).Tools("GlobalUpdate").Visible = fGlobalUpdateExists
       .Bands(0).Tools("GlobalUpdate").Enabled = fSelectionMade
-      .Bands(0).Tools("GlobalUpdate").BeginGroup = (Not fCustomReportExists And Not fCalendarReportExists)
+      '.Bands(0).Tools("GlobalUpdate").BeginGroup = (Not fCustomReportExists And Not fCalendarReportExists)
 
     End If
 
