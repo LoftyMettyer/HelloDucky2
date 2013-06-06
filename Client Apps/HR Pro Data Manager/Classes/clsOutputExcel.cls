@@ -857,8 +857,8 @@ Private Sub GetWorkBook(strWorkbook As String, strWorksheet As String)
   If mblnApplyStyles Then
     If mstrXLTemplate <> "" And Dir(mstrXLTemplate) <> "" Then
     
-      If mobjParent.GetOfficeFormat(mstrXLTemplate, giOfficeVersion_Excel) = "" Then
-        mstrErrorMessage = "Your output options are set to use a template format which is not compatible with your version of Microsoft Office."
+      If IsFileCompatibleWithOfficeVersion(mstrXLTemplate, GetOfficeWordVersion) Then
+        mstrErrorMessage = "Your User Configuration Output Options are set to use a template file which is not compatible with your version of Microsoft Office."
         Exit Sub
       End If
 
@@ -878,7 +878,7 @@ Private Sub GetWorkBook(strWorkbook As String, strWorksheet As String)
     Set mxlDeleteSheet = mxlWorkBook.Sheets(1)
 
   Case "Open"
-    If mobjParent.GetOfficeFormat(mstrFileName, giOfficeVersion_Excel) = "" Then
+    If IsFileCompatibleWithOfficeVersion(mstrFileName, GetOfficeExcelVersion) Then
       mstrErrorMessage = "This definition is set to append to a file which is not compatible with your version of Microsoft Office."
       Exit Sub
     End If
@@ -1579,7 +1579,7 @@ Public Sub Complete()
   If mblnSave Then
     mstrErrorMessage = "Error saving file <" & mstrFileName & ">"
     
-    strFormat = mobjParent.GetOfficeFormat(mstrFileName, giOfficeVersion_Excel)
+    strFormat = GetOfficeSaveAsFormat(mstrFileName, GetOfficeExcelVersion)
     If strFormat = "" Then
       mstrErrorMessage = "This definition is set to save in a file format which is not compatible with your version of Microsoft Office."
       GoTo TidyAndExit
@@ -1596,7 +1596,7 @@ Public Sub Complete()
     If Not mblnSave Then
       mstrFileName = mobjParent.GetTempFileName(mstrFileName)
       
-      strFormat = mobjParent.GetOfficeFormat(mstrFileName, giOfficeVersion_Excel)
+      strFormat = GetOfficeSaveAsFormat(mstrFileName, GetOfficeExcelVersion)
       If strFormat = "" Then
         mstrErrorMessage = "This definition is set to email an attachment in a file format which is not compatible with your version of Microsoft Office."
         GoTo TidyAndExit

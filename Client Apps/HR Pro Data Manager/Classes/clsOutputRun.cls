@@ -861,8 +861,8 @@ Public Function SetOptions( _
         .txtEmailAttachAs.Text = strEmailAttachAs
         .txtEmailAttachAs.Tag = lngEmailFileFormat
       End If
-      .txtFileName.Text = strFileName
-      .txtFileName.Tag = lngSaveFileFormat
+      .txtFilename.Text = strFileName
+      .txtFilename.Tag = lngSaveFileFormat
 
       .ShowFormats mblnData, mblnCSV, mblnHTML, mblnWord, mblnExcel, mblnChart, mblnPivot
       .PageRange = mblnPageRange
@@ -884,9 +884,9 @@ Public Function SetOptions( _
       lngEmailAddr = Val(.txtEmailGroup.Tag)
       strEmailSubject = .txtEMailSubject.Text
       strEmailAttachAs = .txtEmailAttachAs.Text
-      strFileName = .txtFileName.Text
+      strFileName = .txtFilename.Text
 
-      lngSaveFileFormat = Val(.txtFileName.Tag)
+      lngSaveFileFormat = Val(.txtFilename.Tag)
       lngEmailFileFormat = Val(.txtEmailAttachAs.Tag)
       If InStr(.txtEmailAttachAs.Tag, "|") > 0 Then
         strEmailFileExtension = Split(.txtEmailAttachAs.Tag, "|")(1)
@@ -1261,32 +1261,3 @@ Public Property Get UpdateProgressPerRow() As Boolean
   UpdateProgressPerRow = mblnUpdateProgress
 End Property
 
-
-Public Function GetOfficeFormat(strFileName As String, intOfficeVersion As Integer) As String
-  
-  Dim rsTemp As ADODB.Recordset
-  Dim sSQL As String
-  Dim strExtension As String
-  
-  On Local Error GoTo LocalErr
-  
-  GetOfficeFormat = ""
-
-  If InStr(strFileName, ".") Then
-    strExtension = Mid(strFileName, InStrRev(strFileName, ".") + 1) 'Split(strFileName, ".")(1)
-  
-    sSQL = "SELECT " & IIf(intOfficeVersion < 12, "Office2003", "Office2007") & _
-           " FROM ASRSysFileFormats WHERE Extension = '" & strExtension & "'"
-    Set rsTemp = datGeneral.GetReadOnlyRecords(sSQL)
-    GetOfficeFormat = IIf(IsNull(rsTemp(0).Value), "", rsTemp(0).Value)
-    rsTemp.Close
-    Set rsTemp = Nothing
-  End If
-
-
-Exit Function
-
-LocalErr:
-  GetOfficeFormat = ""
-
-End Function
