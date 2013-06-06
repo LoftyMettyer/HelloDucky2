@@ -1784,7 +1784,6 @@ PRINT 'Step - Menu & Category enhancements'
 	END
 
 
-
 /* ------------------------------------------------------------- */
 /* Update the database version flag in the ASRSysSettings table. */
 /* Dont Set the flag to refresh the stored procedures            */
