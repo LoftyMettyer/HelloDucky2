@@ -474,3 +474,8 @@ End Property
 'Public Sub Terminate()
 '  Set mobjBaseComponent = Nothing
 'End Sub
+
+' Code stub for .NET migration
+Public Function GetSQLElementCode() As String
+  GetSQLElementCode = vbNullString
+End Function

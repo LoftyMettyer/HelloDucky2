@@ -1924,3 +1924,7 @@ Public Property Let RecordTableID(ByVal plngNewValue As Long)
   
 End Property
 
+' Code stub for .NET migration
+Public Function GetSQLElementCode() As String
+  GetSQLElementCode = vbNullString
+End Function

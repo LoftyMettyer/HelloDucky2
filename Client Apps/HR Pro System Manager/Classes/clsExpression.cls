@@ -4914,4 +4914,7 @@ Public Function ShowExpressionUsage() As Boolean
 
 End Function
 
-
+' Code stub for .NET migration
+Public Function GetSQLElementCode() As String
+  GetSQLElementCode = vbNullString
+End Function
