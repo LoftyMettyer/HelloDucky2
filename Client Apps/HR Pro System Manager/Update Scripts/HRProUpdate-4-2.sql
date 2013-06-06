@@ -238,7 +238,138 @@ PRINT 'Step 3 of X - Create New Replace Characters within a String function'
 	
 	EXECUTE sp_executeSQL @sSPCode;
 
+/* ------------------------------------------------------------- */
+PRINT 'Step 4 of X - Add new formatting columns to ASRSysSSIntranetLinks'
 
+	IF NOT EXISTS(SELECT id FROM syscolumns
+	              WHERE  id = OBJECT_ID('ASRSysSSIntranetLinks', 'U') AND name = 'UseFormatting')
+    BEGIN
+		EXEC sp_executesql N'ALTER TABLE ASRSysSSIntranetLinks ADD UseFormatting bit NULL'
+		EXEC sp_executesql N'UPDATE ASRSysSSIntranetLinks SET UseFormatting = 0'
+	END
+	
+	IF NOT EXISTS(SELECT id FROM syscolumns
+	              WHERE  id = OBJECT_ID('ASRSysSSIntranetLinks', 'U') AND name = 'Formatting_DecimalPlaces')
+    BEGIN
+		EXEC sp_executesql N'ALTER TABLE ASRSysSSIntranetLinks ADD Formatting_DecimalPlaces int NULL'
+		EXEC sp_executesql N'UPDATE ASRSysSSIntranetLinks SET Formatting_DecimalPlaces = 0'
+	END
+	
+	IF NOT EXISTS(SELECT id FROM syscolumns
+	              WHERE  id = OBJECT_ID('ASRSysSSIntranetLinks', 'U') AND name = 'Formatting_Use1000Separator')
+    BEGIN
+		EXEC sp_executesql N'ALTER TABLE ASRSysSSIntranetLinks ADD Formatting_Use1000Separator bit NULL'
+		EXEC sp_executesql N'UPDATE ASRSysSSIntranetLinks SET Formatting_Use1000Separator = 0'
+	END	
+	
+	IF NOT EXISTS(SELECT id FROM syscolumns
+	              WHERE  id = OBJECT_ID('ASRSysSSIntranetLinks', 'U') AND name = 'Formatting_Prefix')
+    BEGIN
+		EXEC sp_executesql N'ALTER TABLE ASRSysSSIntranetLinks ADD Formatting_Prefix varchar(MAX) NULL'
+		EXEC sp_executesql N'UPDATE ASRSysSSIntranetLinks SET Formatting_Prefix = '''''
+	END	
+	
+	IF NOT EXISTS(SELECT id FROM syscolumns
+	              WHERE  id = OBJECT_ID('ASRSysSSIntranetLinks', 'U') AND name = 'Formatting_Suffix')
+    BEGIN
+		EXEC sp_executesql N'ALTER TABLE ASRSysSSIntranetLinks ADD Formatting_Suffix varchar(MAX) NULL'
+		EXEC sp_executesql N'UPDATE ASRSysSSIntranetLinks SET Formatting_Suffix = '''''
+	END	
+	
+--------------------------------------------------------------------------------------------
+-- Conditional Formatting Columns
+--------------------------------------------------------------------------------------------
+
+	IF NOT EXISTS(SELECT id FROM syscolumns
+	              WHERE  id = OBJECT_ID('ASRSysSSIntranetLinks', 'U') AND name = 'UseConditionalFormatting')
+    BEGIN
+		EXEC sp_executesql N'ALTER TABLE ASRSysSSIntranetLinks ADD UseConditionalFormatting bit NULL'
+		EXEC sp_executesql N'UPDATE ASRSysSSIntranetLinks SET UseConditionalFormatting = 0'
+	END
+
+	IF NOT EXISTS(SELECT id FROM syscolumns
+	              WHERE  id = OBJECT_ID('ASRSysSSIntranetLinks', 'U') AND name = 'ConditionalFormatting_Operator_1')
+    BEGIN
+		EXEC sp_executesql N'ALTER TABLE ASRSysSSIntranetLinks ADD ConditionalFormatting_Operator_1 varchar(MAX) NULL'
+		EXEC sp_executesql N'UPDATE ASRSysSSIntranetLinks SET ConditionalFormatting_Operator_1 = '''''
+	END	
+	
+	IF NOT EXISTS(SELECT id FROM syscolumns
+	              WHERE  id = OBJECT_ID('ASRSysSSIntranetLinks', 'U') AND name = 'ConditionalFormatting_Value_1')
+    BEGIN
+		EXEC sp_executesql N'ALTER TABLE ASRSysSSIntranetLinks ADD ConditionalFormatting_Value_1 varchar(MAX) NULL'
+		EXEC sp_executesql N'UPDATE ASRSysSSIntranetLinks SET ConditionalFormatting_Value_1 = '''''
+	END	
+
+	IF NOT EXISTS(SELECT id FROM syscolumns
+	              WHERE  id = OBJECT_ID('ASRSysSSIntranetLinks', 'U') AND name = 'ConditionalFormatting_Style_1')
+    BEGIN
+		EXEC sp_executesql N'ALTER TABLE ASRSysSSIntranetLinks ADD ConditionalFormatting_Style_1 varchar(MAX) NULL'
+		EXEC sp_executesql N'UPDATE ASRSysSSIntranetLinks SET ConditionalFormatting_Style_1 = '''''
+	END	
+	
+	IF NOT EXISTS(SELECT id FROM syscolumns
+	              WHERE  id = OBJECT_ID('ASRSysSSIntranetLinks', 'U') AND name = 'ConditionalFormatting_Colour_1')
+    BEGIN
+		EXEC sp_executesql N'ALTER TABLE ASRSysSSIntranetLinks ADD ConditionalFormatting_Colour_1 varchar(MAX) NULL'
+		EXEC sp_executesql N'UPDATE ASRSysSSIntranetLinks SET ConditionalFormatting_Colour_1 = '''''
+	END
+
+	IF NOT EXISTS(SELECT id FROM syscolumns
+	              WHERE  id = OBJECT_ID('ASRSysSSIntranetLinks', 'U') AND name = 'ConditionalFormatting_Operator_2')
+    BEGIN
+		EXEC sp_executesql N'ALTER TABLE ASRSysSSIntranetLinks ADD ConditionalFormatting_Operator_2 varchar(MAX) NULL'
+		EXEC sp_executesql N'UPDATE ASRSysSSIntranetLinks SET ConditionalFormatting_Operator_2 = '''''
+	END	
+	
+	IF NOT EXISTS(SELECT id FROM syscolumns
+	              WHERE  id = OBJECT_ID('ASRSysSSIntranetLinks', 'U') AND name = 'ConditionalFormatting_Value_2')
+    BEGIN
+		EXEC sp_executesql N'ALTER TABLE ASRSysSSIntranetLinks ADD ConditionalFormatting_Value_2 varchar(MAX) NULL'
+		EXEC sp_executesql N'UPDATE ASRSysSSIntranetLinks SET ConditionalFormatting_Value_2 = '''''
+	END	
+
+	IF NOT EXISTS(SELECT id FROM syscolumns
+	              WHERE  id = OBJECT_ID('ASRSysSSIntranetLinks', 'U') AND name = 'ConditionalFormatting_Style_2')
+    BEGIN
+		EXEC sp_executesql N'ALTER TABLE ASRSysSSIntranetLinks ADD ConditionalFormatting_Style_2 varchar(MAX) NULL'
+		EXEC sp_executesql N'UPDATE ASRSysSSIntranetLinks SET ConditionalFormatting_Style_2 = '''''
+	END	
+	
+	IF NOT EXISTS(SELECT id FROM syscolumns
+	              WHERE  id = OBJECT_ID('ASRSysSSIntranetLinks', 'U') AND name = 'ConditionalFormatting_Colour_2')
+    BEGIN
+		EXEC sp_executesql N'ALTER TABLE ASRSysSSIntranetLinks ADD ConditionalFormatting_Colour_2 varchar(MAX) NULL'
+		EXEC sp_executesql N'UPDATE ASRSysSSIntranetLinks SET ConditionalFormatting_Colour_2 = '''''
+	END
+
+	IF NOT EXISTS(SELECT id FROM syscolumns
+	              WHERE  id = OBJECT_ID('ASRSysSSIntranetLinks', 'U') AND name = 'ConditionalFormatting_Operator_3')
+    BEGIN
+		EXEC sp_executesql N'ALTER TABLE ASRSysSSIntranetLinks ADD ConditionalFormatting_Operator_3 varchar(MAX) NULL'
+		EXEC sp_executesql N'UPDATE ASRSysSSIntranetLinks SET ConditionalFormatting_Operator_3 = '''''
+	END	
+	
+	IF NOT EXISTS(SELECT id FROM syscolumns
+	              WHERE  id = OBJECT_ID('ASRSysSSIntranetLinks', 'U') AND name = 'ConditionalFormatting_Value_3')
+    BEGIN
+		EXEC sp_executesql N'ALTER TABLE ASRSysSSIntranetLinks ADD ConditionalFormatting_Value_3 varchar(MAX) NULL'
+		EXEC sp_executesql N'UPDATE ASRSysSSIntranetLinks SET ConditionalFormatting_Value_3 = '''''
+	END	
+
+	IF NOT EXISTS(SELECT id FROM syscolumns
+	              WHERE  id = OBJECT_ID('ASRSysSSIntranetLinks', 'U') AND name = 'ConditionalFormatting_Style_3')
+    BEGIN
+		EXEC sp_executesql N'ALTER TABLE ASRSysSSIntranetLinks ADD ConditionalFormatting_Style_3 varchar(MAX) NULL'
+		EXEC sp_executesql N'UPDATE ASRSysSSIntranetLinks SET ConditionalFormatting_Style_3 = '''''
+	END	
+	
+	IF NOT EXISTS(SELECT id FROM syscolumns
+	              WHERE  id = OBJECT_ID('ASRSysSSIntranetLinks', 'U') AND name = 'ConditionalFormatting_Colour_3')
+    BEGIN
+		EXEC sp_executesql N'ALTER TABLE ASRSysSSIntranetLinks ADD ConditionalFormatting_Colour_3 varchar(MAX) NULL'
+		EXEC sp_executesql N'UPDATE ASRSysSSIntranetLinks SET ConditionalFormatting_Colour_3 = '''''
+	END
 
 
 
