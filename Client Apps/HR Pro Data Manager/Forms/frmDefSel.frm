@@ -2307,22 +2307,7 @@ Public Function ShowList(lngUtilType As UtilityType, Optional msRecordSourceWher
         "   AND ISNULL(ASRSysWorkflows.initiationType, 0) = 0"
       Me.HelpContextID = 1106
     End If
-  
-  Case utlMobileGroups
-    msTypeCode = "MOBILEGROUP"
-    msIDField = "UID"
-    msTableName = "sysusers"
-    mblnApplyDefAccess = False
-    mutlUtilityType = utlMobileGroups
-    msType = "Mobile Groups"
-    msGeneralCaption = "Mobile Groups"
-    msSingularCaption = "Mobile Group"
-      
-    msRecordSource = "SELECT UID, name, '' AS description" & _
-      " FROM " & msTableName & _
-      " WHERE issqlrole = 1"
-    Me.HelpContextID = 1106
-  
+
   End Select
 
   Me.Caption = msGeneralCaption
