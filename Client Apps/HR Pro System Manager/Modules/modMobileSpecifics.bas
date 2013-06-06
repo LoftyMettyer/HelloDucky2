@@ -48,17 +48,17 @@ Public Function ConfigureMobileSpecifics() As Boolean
   mvar_fGeneralOK = True
   mvar_sGeneralMsg = ""
     
-  If fOK Then
-    ' Read the Mobile parameters.
-    fOK = ReadMobileParameters
-    If Not fOK Then
-      mvar_fGeneralOK = False
-      sErrorMessage = "Mobile specifics not correctly configured." & vbNewLine & _
-        "Some functionality will be disabled if you do not change your configuration." & vbNewLine & mvar_sGeneralMsg
-      
-      fOK = (OutputMessage(sErrorMessage & vbNewLine & vbNewLine & "Continue saving changes ?") = vbYes)
-    End If
-  End If
+'  If fOK Then
+'    ' Read the Mobile parameters.
+'    fOK = ReadMobileParameters
+'    If Not fOK Then
+'      mvar_fGeneralOK = False
+'      sErrorMessage = "Mobile specifics not correctly configured." & vbNewLine & _
+'        "Some functionality will be disabled if you do not change your configuration." & vbNewLine & mvar_sGeneralMsg
+'
+'      fOK = (OutputMessage(sErrorMessage & vbNewLine & vbNewLine & "Continue saving changes ?") = vbYes)
+'    End If
+'  End If
   
   'Make sure that we drop the Mobile SPs
   DropMobileObjects
