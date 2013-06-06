@@ -382,7 +382,7 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
             fOK = pobjCalendarReportRUN.RunCalendarReport("")
             strNotes = pobjCalendarReportRUN.ErrorString
             mblnJobCancelled = pobjCalendarReportRUN.UserCancelled
-            blnRecords = blnRecords And Not pobjCalendarReportRUN.NoRecords
+            blnRecords = blnRecords Or Not pobjCalendarReportRUN.NoRecords
           Else
             fOK = False
             strNotes = "You do not have permission to run calendar report definitions"
@@ -435,7 +435,7 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
             fOK = pfrmCrossTabRUN.ExecuteCrossTab(rsBatchDetails.Fields("JobID"))
             strNotes = pfrmCrossTabRUN.ErrorString
             mblnJobCancelled = pfrmCrossTabRUN.UserCancelled
-            blnRecords = blnRecords And Not pfrmCrossTabRUN.NoRecords
+            blnRecords = blnRecords Or Not pfrmCrossTabRUN.NoRecords
           Else
             fOK = False
             strNotes = "You do not have permission to run cross tab definitions"
@@ -490,7 +490,7 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
             fOK = pobjReportRUN.RunCustomReport("")
             strNotes = pobjReportRUN.ErrorString
             mblnJobCancelled = pobjReportRUN.UserCancelled
-            blnRecords = blnRecords And Not pobjReportRUN.NoRecords
+            blnRecords = blnRecords Or Not pobjReportRUN.NoRecords
           Else
             fOK = False
             strNotes = "You do not have permission to run custom report definitions"
@@ -541,7 +541,7 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
             fOK = pobjRecordProfileRUN.RunRecordProfile
             strNotes = pobjRecordProfileRUN.ErrorString
             mblnJobCancelled = pobjRecordProfileRUN.UserCancelled
-            blnRecords = blnRecords And Not pobjRecordProfileRUN.NoRecords
+            blnRecords = blnRecords Or Not pobjRecordProfileRUN.NoRecords
           Else
             fOK = False
             strNotes = "You do not have permission to run record profile definitions"
@@ -819,7 +819,7 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
             fOK = pfrmMatchRUN.RunMatchReport
             strNotes = pfrmMatchRUN.ErrorString
             mblnJobCancelled = pfrmMatchRUN.UserCancelled
-            blnRecords = blnRecords And Not pfrmMatchRUN.NoRecords
+            blnRecords = blnRecords Or Not pfrmMatchRUN.NoRecords
           Else
             fOK = False
             strNotes = "You do not have permission to run match report definitions"
@@ -872,7 +872,7 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
             fOK = pfrmMatchRUN.RunMatchReport
             strNotes = pfrmMatchRUN.ErrorString
             mblnJobCancelled = pfrmMatchRUN.UserCancelled
-            blnRecords = blnRecords And Not pfrmMatchRUN.NoRecords
+            blnRecords = blnRecords Or Not pfrmMatchRUN.NoRecords
           Else
             fOK = False
             strNotes = "You do not have permission to run succession planning definitions"
@@ -925,7 +925,7 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
             fOK = pfrmMatchRUN.RunMatchReport
             strNotes = pfrmMatchRUN.ErrorString
             mblnJobCancelled = pfrmMatchRUN.UserCancelled
-            blnRecords = blnRecords And Not pfrmMatchRUN.NoRecords
+            blnRecords = blnRecords Or Not pfrmMatchRUN.NoRecords
           Else
             fOK = False
             strNotes = "You do not have permission to run career progression definitions"
