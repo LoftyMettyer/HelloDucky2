@@ -2,7 +2,7 @@ VERSION 5.00
 Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Begin VB.Form frmScrOpen 
-   Caption         =   "Screen Designer"
+   Caption         =   "Screen Manager"
    ClientHeight    =   5670
    ClientLeft      =   315
    ClientTop       =   1665
@@ -433,7 +433,7 @@ End Sub
 '    Case "ID_New"
 '      NewScreen
 '
-'    ' Open the screen designer form for the selected screen.
+'    ' Open the Screen Manager form for the selected screen.
 '    Case "ID_Open"
 '      OpenScreen
 '
@@ -460,7 +460,7 @@ End Sub
 'End Sub
 
 Private Function GetScreenForm(ByVal TableID As Long) As Form
-  ' Return the screen designer form for the given screen ID, if it exists.
+  ' Return the Screen Manager form for the given screen ID, if it exists.
   Dim iLoop As Integer
   
   For iLoop = 1 To Forms.Count - 1
@@ -900,7 +900,7 @@ Private Function EditScreen() As Boolean
       ' screen, if it is open.
       Set frmScrDes = GetScreenForm(ScreenID)
       If Not frmScrDes Is Nothing Then
-        frmScrDes.Caption = "Screen Designer - " & ssGrdScreens.Columns(0).CellValue(ssGrdScreens.Bookmark) & vbNullString
+        frmScrDes.Caption = "Screen Manager - " & ssGrdScreens.Columns(0).CellValue(ssGrdScreens.Bookmark) & vbNullString
       End If
     End If
     
@@ -929,7 +929,7 @@ Private Function OpenScreen() As Boolean
   
     'Define a progress bar
     With gobjProgress
-      .Caption = "Screen Designer"
+      .Caption = "Screen Manager"
       .NumberOfBars = 1
       .Bar1Value = 1
       .Bar1MaxValue = 5
@@ -943,7 +943,7 @@ Private Function OpenScreen() As Boolean
       .OpenProgress
     End With
   
-    ' Display the screen designer form for the selected screen.
+    ' Display the Screen Manager form for the selected screen.
     Set frmScrDes = GetScreenForm(ScreenID)
     If frmScrDes Is Nothing Then
       Set frmScrDes = New frmScrDesigner2
@@ -989,7 +989,7 @@ Private Function OpenScreen() As Boolean
     
     UnLoad Me
     
-    ' RH 06/04/2000. Fault 44. Screen designer prompts when no changes have been made
+    ' RH 06/04/2000. Fault 44. Screen Manager prompts when no changes have been made
     DoEvents
     frmScrDes.IsChanged = False
     
@@ -1190,7 +1190,7 @@ Private Function NewScreen() As Boolean
       
   'Define a progress bar
   With gobjProgress
-    .Caption = "Screen Designer"
+    .Caption = "Screen Manager"
     .AVI = dbScreenLoad
     .NumberOfBars = 1
     .Bar1Value = 1
@@ -1201,7 +1201,7 @@ Private Function NewScreen() As Boolean
     .OpenProgress
   End With
       
-  ' If the screen properties were confirmed then display the screen designer form.
+  ' If the screen properties were confirmed then display the Screen Manager form.
   If fOK Then
     If lngScreenID > 0 Then
     
