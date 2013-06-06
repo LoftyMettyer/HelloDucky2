@@ -3260,36 +3260,76 @@ PRINT 'Step 10 - Message Bus Integration'
 			@columnid integer;
 
 	-- Message table mapping defintion
-	IF NOT EXISTS(SELECT * FROM sys.sysobjects where name = 'tbsys_fusionTables' AND xtype = 'U')
+	IF NOT EXISTS(SELECT * FROM sys.sysobjects where name = 'ASRSysFusionTypes' AND xtype = 'U')
 	BEGIN
-		EXECUTE sp_executesql N'CREATE TABLE [dbo].[tbsys_fusionTables](
-			[MessageTypeID] [integer] NOT NULL,
-			[MessageType] [varchar](50) NOT NULL,
-			[BaseTableID] [integer],
-			[FilterID] [integer]);';
+		EXECUTE sp_executesql N'CREATE TABLE [dbo].[ASRSysFusionTypes](
+			[FusionTypeID] [int] NOT NULL,
+			[FusionType] [nvarchar](40) NULL,
+			[FilterID] [int] NULL,
+			[ASRBaseTableID] [int] NULL,
+			[IsVisible] [bit] NULL,
+			[ForceAsUpdate] [bit] NULL,
+		 CONSTRAINT [PK_FusionTypeID] PRIMARY KEY NONCLUSTERED ([FusionTypeID] ASC));';
 
 		SELECT @perstableid = [parametervalue] FROM dbo.[ASRSysModuleSetup] WHERE ModuleKey = 'MODULE_PERSONNEL' AND ParameterKey = 'Param_TablePersonnel'
 			AND [ParameterType] = 'PType_TableID';
 
-		INSERT [dbo].[tbsys_fusionTables] ([MessageTypeID], [MessageType], [BaseTableID], [FilterID]) VALUES (1, 'staffchange', @perstableid, 0);
-		INSERT [dbo].[tbsys_fusionTables] ([MessageTypeID], [MessageType], [BaseTableID], [FilterID]) VALUES (2, 'staffpicturechange', @perstableid, 0);
+		INSERT [dbo].[ASRSysFusionTypes] ([FusionTypeID], [FusionType], [ASRBaseTableID], [FilterID], [IsVisible]) VALUES (1, 'staffchange', @perstableid, 0, 1);
+		INSERT [dbo].[ASRSysFusionTypes] ([FusionTypeID], [FusionType], [ASRBaseTableID], [FilterID], [IsVisible]) VALUES (2, 'staffpicturechange', @perstableid, 0, 1);
 
+	END
+
+	-- Message data mapping defintion
+	IF NOT EXISTS(SELECT * FROM sys.sysobjects where name = 'ASRSysFusionFieldMappings' AND xtype = 'U')
+	BEGIN
+		EXECUTE sp_executesql N'CREATE TABLE [dbo].[ASRSysFusionFieldMappings](
+			[FusionID] [int] NOT NULL,
+			[NodeKey] [varchar](255) NOT NULL,
+			[HRProValue] [varchar](100) NOT NULL,
+			[FusionValue] [varchar](100) NOT NULL);';
 	END
 
 
 	-- Message column mapping defintion
-	IF NOT EXISTS(SELECT * FROM sys.sysobjects where name = 'tbsys_fusionColumns' AND xtype = 'U')
+	IF NOT EXISTS(SELECT * FROM sys.sysobjects where name = 'ASRSysFusionFieldDefinitions' AND xtype = 'U')
 	BEGIN
-		EXECUTE sp_executesql N'CREATE TABLE [dbo].[tbsys_fusionColumns](
-			[MessageTypeID] [integer] NOT NULL,
-			[NodeKey] [nvarchar](50),
-			[ColumnID] [integer]);';
+		EXECUTE sp_executesql N'CREATE TABLE [dbo].[ASRSysFusionFieldDefinitions](
+			[NodeKey] [varchar](255) NOT NULL,
+			[FusionTypeID] [int] NOT NULL,
+			[Mandatory] [bit] NOT NULL,
+			[Description] [char](40) NOT NULL,
+			[AlwaysTransfer] [bit] NULL,
+			[IsKeyField] [bit] NULL,
+			[IsCompanyCode] [bit] NULL,
+			[IsEmployeeCode] [bit] NULL,
+			[Direction] [int] NULL,
+			[ASRMapType] [int] NULL,
+			[ASRTableID] [int] NULL,
+			[ASRColumnID] [int] NULL,
+			[ASRExprID] [int] NULL,
+			[ASRValue] [char](40) NULL,
+			[ConvertData] [bit] NULL,
+			[IsEmployeeName] [bit] NULL,
+			[IsDepartmentCode] [bit] NULL,
+			[IsDepartmentName] [bit] NULL,
+			[IsFusionCode] [bit] NULL,
+			[GroupBy] [int] NULL,
+			[PreventModify] [bit] NULL);';
 
 		SELECT @columnid = ISNULL([parametervalue],0) FROM dbo.[ASRSysModuleSetup] WHERE ModuleKey = 'MODULE_PERSONNEL' AND ParameterKey = 'Param_FieldsSurname' AND [ParameterType] = 'PType_ColumnID';
-		INSERT [dbo].[tbsys_fusionColumns] ([MessageTypeID], [NodeKey], [ColumnID]) VALUES (1,'SURNAME', @columnid)
+		INSERT [dbo].[ASRSysFusionFieldDefinitions] ([FusionTypeID], [NodeKey], [ASRMapType], [ASRTableID], [ASRColumnID], [Mandatory], [Description], [ASRExprID], [ASRValue]) VALUES (1,'SURNAME', 1, @perstableid, @columnid, 1, 'Surname Description',0,'')
 
 		SELECT @columnid = ISNULL([parametervalue],0) FROM dbo.[ASRSysModuleSetup] WHERE ModuleKey = 'MODULE_PERSONNEL' AND ParameterKey = 'Param_FieldsForename' AND [ParameterType] = 'PType_ColumnID';
-		INSERT [dbo].[tbsys_fusionColumns] ([MessageTypeID], [NodeKey], [ColumnID]) VALUES (1,'FORENAME', @columnid)
+		INSERT [dbo].[ASRSysFusionFieldDefinitions] ([FusionTypeID], [NodeKey], [ASRMapType], [ASRTableID], [ASRColumnID], [Mandatory], [Description], [ASRExprID], [ASRValue]) VALUES (1,'FORENAME', 1, @perstableid, @columnid, 1, 'Forename Description',0,'')
+
+		SELECT @columnid = ISNULL([parametervalue],0) FROM dbo.[ASRSysModuleSetup] WHERE ModuleKey = 'MODULE_PERSONNEL' AND ParameterKey = 'Param_FieldsDateOfBirth' AND [ParameterType] = 'PType_ColumnID';
+		INSERT [dbo].[ASRSysFusionFieldDefinitions] ([FusionTypeID], [NodeKey], [ASRMapType], [ASRTableID], [ASRColumnID], [Mandatory], [Description], [ASRExprID], [ASRValue]) VALUES (1,'DATEOFBIRTH', 1, @perstableid, @columnid, 1, 'Date of Birth Description',0,'')
+
+		SELECT @columnid = ISNULL([parametervalue],0) FROM dbo.[ASRSysModuleSetup] WHERE ModuleKey = 'MODULE_PERSONNEL' AND ParameterKey = 'Param_FieldsDepartment' AND [ParameterType] = 'PType_ColumnID';
+		INSERT [dbo].[ASRSysFusionFieldDefinitions] ([FusionTypeID], [NodeKey], [ASRMapType], [ASRTableID], [ASRColumnID], [Mandatory], [Description], [ASRExprID], [ASRValue]) VALUES (1,'DEPARTMENT', 1, @perstableid, @columnid, 1, 'Department Description',0,'')
+
+		SELECT @columnid = ISNULL([parametervalue],0) FROM dbo.[ASRSysModuleSetup] WHERE ModuleKey = 'MODULE_PERSONNEL' AND ParameterKey = 'Param_FieldsStartDate' AND [ParameterType] = 'PType_ColumnID';
+		INSERT [dbo].[ASRSysFusionFieldDefinitions] ([FusionTypeID], [NodeKey], [ASRMapType], [ASRTableID], [ASRColumnID], [Mandatory], [Description], [ASRExprID], [ASRValue]) VALUES (1,'STARTDATE', 1, @perstableid, @columnid, 1, 'Start Date Description',0,'')
 
 	END
 

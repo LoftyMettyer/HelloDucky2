@@ -798,7 +798,7 @@ Private Function ApplyPermissions_NonChildTables() As Boolean
                   gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
                 End If
               Else
-                gADOCon.Execute "GRANT SELECT(id) ON " & sTableName & " TO " & sGroupName
+                gADOCon.Execute "GRANT SELECT(id, TimeStamp) ON " & sTableName & " TO " & sGroupName
               End If
               
               ' Update permissions
@@ -838,7 +838,7 @@ Private Function ApplyPermissions_NonChildTables() As Boolean
               gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
             End If
             
-            gADOCon.Execute "GRANT SELECT(id) ON " & sTableName & " TO " & sGroupName
+            gADOCon.Execute "GRANT SELECT(id, TimeStamp) ON " & sTableName & " TO " & sGroupName
             
             If rsTables!GrantEdit Then
               sSQL = "GRANT UPDATE ON " & sTableName & " TO " & sGroupName
