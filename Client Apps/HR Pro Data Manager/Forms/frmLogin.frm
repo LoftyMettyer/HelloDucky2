@@ -577,14 +577,14 @@ Private Sub CheckRegistrySettings()
 
   'JDM - 09/10/01 - Fault 2932 - Only allow if user has access to PC configuration
 '  If datGeneral.SystemPermission("CONFIGURATION", "PC") Then
-    If Not gblnBatchJobsOnly Then 'And Not ASRDEVELOPMENT Then
+    If Not gblnBatchJobsOnly And Not ASRDEVELOPMENT Then
       'TM20011008 Fault 2261
       'Only show the message if the database has columns of these particular datatypes and
       ' a path has not yet been defined.
-      If (sPhotoPath = vbNullString And bHasPhotoColumn) _
-         Or (sOLEPath = vbNullString And bHasOleColumn) _
-         Or (sLocalOLEPath = vbNullString And bHasOleColumn) _
-         Or (sDocumentsPath = vbNullString) Then
+      If (gsPhotoPath = vbNullString And bHasPhotoColumn) _
+         Or (gsOLEPath = vbNullString And bHasOleColumn) _
+         Or (gsLocalOLEPath = vbNullString And bHasOleColumn) _
+         Or (gsDocumentsPath = vbNullString) Then
         
         fContinue = COAMsgBox("One or more data paths have not yet been defined for this database." & vbNewLine & _
                            "HR Pro may not function correctly without these paths defined." & vbNewLine & _
