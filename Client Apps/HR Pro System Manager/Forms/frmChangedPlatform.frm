@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Begin VB.Form frmChangedPlatform 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Platform Change Details"
@@ -423,7 +423,7 @@ Public Sub ShowMessage(Optional pvMode As Variant)
       Me.Height = (Screen.Height / 2)
 
     Case Else
-      sMessage = "The update script and System Manager save needs to be run on this system for the reasons detailed below." _
+      sMessage = "The update script and System Manager save needs to be run on this system for the reasons detailed below. We would strongly recommend performing a backup of your database before continuing." _
         & vbCrLf & vbCrLf & "Would you like to continue?"
       sFrameCaption = "Details :"
       imgIcon(0).Picture = LoadResPicture("IMG_EXCLAMATION", 1)
