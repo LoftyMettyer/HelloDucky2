@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "Codejock.Controls.v13.1.0.ocx"
@@ -96,22 +96,14 @@ Begin VB.Form frmMatchDefTable
       TabCaption(1)   =   "Breakdown Colu&mns"
       TabPicture(1)   =   "frmMatchDefTable.frx":11BC
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "cmdAdd"
-      Tab(1).Control(0).Enabled=   0   'False
-      Tab(1).Control(1)=   "cmdRemove"
-      Tab(1).Control(1).Enabled=   0   'False
-      Tab(1).Control(2)=   "cmdMoveUp"
-      Tab(1).Control(2).Enabled=   0   'False
-      Tab(1).Control(3)=   "cmdMoveDown"
-      Tab(1).Control(3).Enabled=   0   'False
-      Tab(1).Control(4)=   "cmdAddAll"
-      Tab(1).Control(4).Enabled=   0   'False
-      Tab(1).Control(5)=   "cmdRemoveAll"
-      Tab(1).Control(5).Enabled=   0   'False
-      Tab(1).Control(6)=   "fraFieldsAvailable"
-      Tab(1).Control(6).Enabled=   0   'False
-      Tab(1).Control(7)=   "fraFieldsSelected"
-      Tab(1).Control(7).Enabled=   0   'False
+      Tab(1).Control(0)=   "fraFieldsSelected"
+      Tab(1).Control(1)=   "fraFieldsAvailable"
+      Tab(1).Control(2)=   "cmdRemoveAll"
+      Tab(1).Control(3)=   "cmdAddAll"
+      Tab(1).Control(4)=   "cmdMoveDown"
+      Tab(1).Control(5)=   "cmdMoveUp"
+      Tab(1).Control(6)=   "cmdRemove"
+      Tab(1).Control(7)=   "cmdAdd"
       Tab(1).ControlCount=   8
       Begin VB.Frame fraExpressions 
          Height          =   2055
@@ -120,12 +112,19 @@ Begin VB.Form frmMatchDefTable
          Top             =   1720
          Width           =   7380
          Begin VB.CommandButton cmdPreferredClear 
-            DisabledPicture =   "frmMatchDefTable.frx":11D8
+            Caption         =   "O"
+            BeginProperty Font 
+               Name            =   "Wingdings 2"
+               Size            =   20.25
+               Charset         =   2
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
             Height          =   315
             Left            =   5280
             MaskColor       =   &H000000FF&
-            Picture         =   "frmMatchDefTable.frx":15AA
-            Style           =   1  'Graphical
             TabIndex        =   12
             ToolTipText     =   "Clear Path"
             Top             =   700
@@ -133,12 +132,19 @@ Begin VB.Form frmMatchDefTable
             Width           =   330
          End
          Begin VB.CommandButton cmdScoreClear 
-            DisabledPicture =   "frmMatchDefTable.frx":1985
+            Caption         =   "O"
+            BeginProperty Font 
+               Name            =   "Wingdings 2"
+               Size            =   20.25
+               Charset         =   2
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
             Height          =   315
             Left            =   5280
             MaskColor       =   &H000000FF&
-            Picture         =   "frmMatchDefTable.frx":1D57
-            Style           =   1  'Graphical
             TabIndex        =   16
             ToolTipText     =   "Clear Path"
             Top             =   1100
@@ -146,12 +152,19 @@ Begin VB.Form frmMatchDefTable
             Width           =   330
          End
          Begin VB.CommandButton cmdRequiredClear 
-            DisabledPicture =   "frmMatchDefTable.frx":2132
+            Caption         =   "O"
+            BeginProperty Font 
+               Name            =   "Wingdings 2"
+               Size            =   20.25
+               Charset         =   2
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
             Height          =   315
             Left            =   5280
             MaskColor       =   &H000000FF&
-            Picture         =   "frmMatchDefTable.frx":2504
-            Style           =   1  'Graphical
             TabIndex        =   8
             ToolTipText     =   "Clear Path"
             Top             =   300
@@ -649,15 +662,15 @@ Begin VB.Form frmMatchDefTable
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
          NumListImages   =   3
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmMatchDefTable.frx":28DF
+            Picture         =   "frmMatchDefTable.frx":11D8
             Key             =   "IMG_TABLE"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmMatchDefTable.frx":2CAB
+            Picture         =   "frmMatchDefTable.frx":172A
             Key             =   "IMG_CALC"
          EndProperty
          BeginProperty ListImage3 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmMatchDefTable.frx":30BB
+            Picture         =   "frmMatchDefTable.frx":1C7C
             Key             =   "IMG_MATCH"
          EndProperty
       EndProperty
@@ -830,7 +843,7 @@ Public Property Let ReadOnly(blnNewValue As Boolean)
 End Property
 
 Private Property Let Changed(blnNewValue As Boolean)
-  cmdOk.Enabled = blnNewValue
+  cmdOK.Enabled = blnNewValue
 End Property
 
 Private Sub cboMatchTables_Click()
@@ -1422,7 +1435,7 @@ Private Sub ListView1_GotFocus()
 End Sub
 
 Private Sub ListView1_LostFocus()
-  cmdOk.Default = True
+  cmdOK.Default = True
 End Sub
 
 Private Sub ListView2_GotFocus()
@@ -1430,7 +1443,7 @@ Private Sub ListView2_GotFocus()
 End Sub
 
 Private Sub ListView2_LostFocus()
-  cmdOk.Default = True
+  cmdOK.Default = True
 End Sub
 
 Private Sub ListView1_DblClick()

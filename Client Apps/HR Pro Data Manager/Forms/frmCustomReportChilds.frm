@@ -74,7 +74,16 @@ Begin VB.Form frmCustomReportChilds
          Width           =   330
       End
       Begin VB.CommandButton cmdOrderClear 
-         Caption         =   "X"
+         Caption         =   "O"
+         BeginProperty Font 
+            Name            =   "Wingdings 2"
+            Size            =   20.25
+            Charset         =   2
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
          Height          =   315
          Left            =   3945
          TabIndex        =   4
@@ -84,7 +93,16 @@ Begin VB.Form frmCustomReportChilds
          Width           =   330
       End
       Begin VB.CommandButton cmdFilterClear 
-         Caption         =   "X"
+         Caption         =   "O"
+         BeginProperty Font 
+            Name            =   "Wingdings 2"
+            Size            =   20.25
+            Charset         =   2
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
          Height          =   315
          Left            =   3945
          TabIndex        =   7

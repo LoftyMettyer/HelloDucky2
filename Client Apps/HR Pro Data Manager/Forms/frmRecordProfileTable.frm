@@ -83,12 +83,19 @@ Begin VB.Form frmRecordProfileTable
          Width           =   330
       End
       Begin VB.CommandButton cmdOrderClear 
-         DisabledPicture =   "frmRecordProfileTable.frx":000C
+Caption = "O"
+BeginProperty Font
+    Name = "Wingdings 2"
+    Size = 20.25
+    Charset = 2
+    Weight = 400
+    Underline = 0
+    Italic = 0
+    Strikethrough = 0
+EndProperty
          Height          =   315
          Left            =   4125
          MaskColor       =   &H000000FF&
-         Picture         =   "frmRecordProfileTable.frx":03DE
-         Style           =   1  'Graphical
          TabIndex        =   10
          ToolTipText     =   "Clear Order"
          Top             =   1100
@@ -127,12 +134,19 @@ Begin VB.Form frmRecordProfileTable
          Width           =   330
       End
       Begin VB.CommandButton cmdFilterClear 
-         DisabledPicture =   "frmRecordProfileTable.frx":07B9
+Caption = "O"
+BeginProperty Font
+    Name = "Wingdings 2"
+    Size = 20.25
+    Charset = 2
+    Weight = 400
+    Underline = 0
+    Italic = 0
+    Strikethrough = 0
+EndProperty
          Height          =   315
          Left            =   4125
          MaskColor       =   &H000000FF&
-         Picture         =   "frmRecordProfileTable.frx":0B8B
-         Style           =   1  'Graphical
          TabIndex        =   6
          ToolTipText     =   "Clear Filter"
          Top             =   700
@@ -958,6 +972,7 @@ Private Sub txtOrder_Change()
   cmdOrderClear.Enabled = (txtOrder.Tag > 0)
 
 End Sub
+
 
 
 
