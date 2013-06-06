@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
-Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.0#0"; "COA_Line.ocx"
+Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "COA_Line.ocx"
 Begin VB.Form frmAbsenceSetup 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Absence Setup"
@@ -77,15 +77,12 @@ Begin VB.Form frmAbsenceSetup
       TabPicture(1)   =   "frmAbsenceSetup.frx":0028
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraAbsenceType"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "Calen&dar"
       TabPicture(2)   =   "frmAbsenceSetup.frx":0044
       Tab(2).ControlEnabled=   0   'False
       Tab(2).Control(0)=   "fraCalendarInclude"
-      Tab(2).Control(0).Enabled=   0   'False
       Tab(2).Control(1)=   "fraCalendarDef"
-      Tab(2).Control(1).Enabled=   0   'False
       Tab(2).ControlCount=   2
       TabCaption(3)   =   "&SSP"
       TabPicture(3)   =   "frmAbsenceSetup.frx":0060
@@ -99,11 +96,8 @@ Begin VB.Form frmAbsenceSetup
       TabPicture(4)   =   "frmAbsenceSetup.frx":007C
       Tab(4).ControlEnabled=   0   'False
       Tab(4).Control(0)=   "Frame1"
-      Tab(4).Control(0).Enabled=   0   'False
       Tab(4).Control(1)=   "Frame2"
-      Tab(4).Control(1).Enabled=   0   'False
       Tab(4).Control(2)=   "Frame3"
-      Tab(4).Control(2).Enabled=   0   'False
       Tab(4).ControlCount=   3
       Begin VB.Frame Frame3 
          Caption         =   "Personnel Records :"
@@ -136,14 +130,14 @@ Begin VB.Form frmAbsenceSetup
          Enabled         =   0   'False
          Height          =   825
          Left            =   -74850
-         TabIndex        =   87
+         TabIndex        =   5
          Top             =   390
          Width           =   5565
          Begin VB.ComboBox cboCalStartMonth 
             Height          =   315
             Left            =   2910
             Style           =   2  'Dropdown List
-            TabIndex        =   88
+            TabIndex        =   24
             Top             =   300
             Width           =   2500
          End
@@ -152,7 +146,7 @@ Begin VB.Form frmAbsenceSetup
             Caption         =   "Calendar Start Month :"
             Height          =   195
             Left            =   195
-            TabIndex        =   89
+            TabIndex        =   86
             Top             =   360
             Width           =   2025
          End
@@ -207,8 +201,6 @@ Begin VB.Form frmAbsenceSetup
          Begin COALine.COA_Line ASRDummyLine3 
             Height          =   30
             Left            =   120
-            TabIndex        =   86
-            TabStop         =   0   'False
             Top             =   760
             Width           =   5200
             _ExtentX        =   9181
@@ -465,12 +457,12 @@ Begin VB.Form frmAbsenceSetup
                Width           =   195
             End
             Begin VB.Label lblWorkingDays 
-               Caption         =   " S  M  T  W  T  F  S"
+               Caption         =   " S M T W T F S"
                Height          =   195
                Left            =   225
                TabIndex        =   55
                Top             =   150
-               Width           =   1300
+               Width           =   1440
             End
          End
          Begin VB.ComboBox cboWorkingDaysNumericValue 
@@ -595,8 +587,6 @@ Begin VB.Form frmAbsenceSetup
          Begin COALine.COA_Line ASRDummyLine1 
             Height          =   30
             Left            =   180
-            TabIndex        =   5
-            TabStop         =   0   'False
             Top             =   1155
             Width           =   5200
             _ExtentX        =   9181
@@ -768,8 +758,6 @@ Begin VB.Form frmAbsenceSetup
          Begin COALine.COA_Line ASRDummyLine2 
             Height          =   30
             Left            =   165
-            TabIndex        =   24
-            TabStop         =   0   'False
             Top             =   765
             Width           =   5200
             _ExtentX        =   9181
