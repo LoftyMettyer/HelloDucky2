@@ -178,10 +178,11 @@ Private Sub InitialiseStyles()
   Set objStyle = New clsOutputStyle
   With objStyle
     .Name = "Title"
-    .StartCol = Val(GetUserSetting("Output", "TitleCol", "3"))
-    .StartRow = Val(GetUserSetting("Output", "TitleRow", "2"))
+    .OmitSpacerCol = (GetUserSetting("Output", "ColSpacer", "0") = "1")
+    .OmitSpacerRow = (GetUserSetting("Output", "RowSpacer", "0") = "1")
+    .StartCol = IIf(.OmitSpacerCol, 2, 3)
+    .StartRow = IIf(.OmitSpacerRow, 1, 2)
     .Gridlines = (GetUserSetting("Output", "TitleGridLines", "0") = "1")
-    '.Gridlines = (GetUserSetting("Output", "ExcelGridlines", "0") = "1")
     .Bold = (GetUserSetting("Output", "TitleBold", "1") = "1")
     .Underline = (GetUserSetting("Output", "TitleUnderline", "1") = "1")
     .BackCol = Val(GetUserSetting("Output", "TitleBackcolour", vbWhite))
@@ -189,8 +190,7 @@ Private Sub InitialiseStyles()
   End With
 
   mcolStyles.Add objStyle, objStyle.Name
-
-
+  
   Set objStyle = New clsOutputStyle
   With objStyle
     .Name = "Heading"
@@ -225,7 +225,7 @@ Private Sub InitialiseStyles()
     .Name = "Data"
     .StartCol = Val(GetUserSetting("Output", "DataCol", "2"))
     .StartRow = Val(GetUserSetting("Output", "DataRow", "4"))
-    .Gridlines = (GetUserSetting("Output", "DataGridLines", "1") = "1")
+    .Gridlines = (GetUserSetting("Output", "DataGridLines", "0") = "1")
     .Bold = (GetUserSetting("Output", "DataBold", "0") = "1")
     .Underline = (GetUserSetting("Output", "DataUnderline", "0") = "1")
     .BackCol = Val(GetUserSetting("Output", "DataBackcolour", GetColour("Pale Grey")))
