@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.1#0"; "MSCOMCTL.OCX"
 Begin VB.Form frmCrossTabRun 
    Caption         =   "Cross Tabs"
    ClientHeight    =   7455
@@ -402,7 +402,7 @@ Private mblnOutputTOC As Boolean
 Private mblnOutputCoverSheet As Boolean
 Private mlngOverrideFilterID As Long
 Private mblnOutputRetainPivotOrChart As Boolean
-Private mblnOutputRetainCharts As Boolean
+'Private mblnOutputRetainCharts As Boolean
 Private mlngOriginalOutputFormat As Long
 ' Array holding the User Defined functions that are needed for this report
 Private mastrUDFsRequired() As String
@@ -1147,7 +1147,7 @@ Public Sub RetreiveDefinition(lngCrossTabID As Long)
     mstrOutputFileName = IIf(lblnReportPackMode, mstrOutputFileName, !OutputFilename)
     mlngOverrideFilterID = IIf(lblnReportPackMode, mlngOverrideFilterID, 0)
     mblnOutputRetainPivotOrChart = IIf(lblnReportPackMode, mblnOutputRetainPivotOrChart, 0)
-    mblnOutputRetainCharts = IIf(lblnReportPackMode, mblnOutputRetainCharts, 0)
+    'mblnOutputRetainCharts = IIf(lblnReportPackMode, mblnOutputRetainCharts, 0)
     
     If fOK = False Then
       Exit Sub
@@ -4346,7 +4346,6 @@ Private Function OutputReport(blnPrompt As Boolean) As Boolean
       mblnOutputCoverSheet, _
       mlngOverrideFilterID, _
       mblnOutputRetainPivotOrChart, _
-      mblnOutputRetainCharts, _
       mlngOriginalOutputFormat) Then
 
     If Not gblnBatchMode Then
@@ -4783,8 +4782,7 @@ Public Sub SetOutputParameters( _
           Optional blnOutputTOC As Boolean, _
           Optional blnOutputCoverSheet As Boolean, _
           Optional lngOverrideFilterID As Long, _
-          Optional blnOutputRetainPivotOrChart As Boolean, _
-          Optional blnOutputRetainCharts As Boolean)
+          Optional blnOutputRetainPivotOrChart As Boolean)
 
   mlngOutputFormat = lngOutputFormat
   mblnOutputScreen = blnOutputScreen
@@ -4806,7 +4804,7 @@ Public Sub SetOutputParameters( _
   mblnOutputCoverSheet = IIf(IsMissing(blnOutputCoverSheet), giEXPRVALUE_CHARACTER, blnOutputCoverSheet)
   mlngOverrideFilterID = IIf(IsMissing(lngOverrideFilterID), giEXPRVALUE_CHARACTER, lngOverrideFilterID)
   mblnOutputRetainPivotOrChart = IIf(IsMissing(blnOutputRetainPivotOrChart), giEXPRVALUE_CHARACTER, blnOutputRetainPivotOrChart)
-  mblnOutputRetainCharts = IIf(IsMissing(blnOutputRetainCharts), giEXPRVALUE_CHARACTER, blnOutputRetainCharts)
+  'mblnOutputRetainCharts = IIf(IsMissing(blnOutputRetainCharts), giEXPRVALUE_CHARACTER, blnOutputRetainCharts)
 End Sub
 
 

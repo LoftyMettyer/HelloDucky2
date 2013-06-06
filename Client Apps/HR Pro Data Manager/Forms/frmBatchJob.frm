@@ -1054,21 +1054,13 @@ Begin VB.Form frmBatchJob
          TabIndex        =   70
          Top             =   3420
          Width           =   9470
-         Begin VB.CheckBox ChkRetainCharts 
-            Caption         =   "Retain ch&arts"
-            Height          =   255
-            Left            =   5640
-            TabIndex        =   82
-            Top             =   1590
-            Width           =   1575
-         End
          Begin VB.CheckBox chkRetainPivot 
-            Caption         =   "Retain pi&vot table"
+            Caption         =   "Retain pi&vot/chart"
             Height          =   255
-            Left            =   3720
+            Left            =   2760
             TabIndex        =   58
             Top             =   1590
-            Width           =   1815
+            Width           =   2295
          End
          Begin VB.CommandButton cmdTitlePageClear 
             Caption         =   "O"
@@ -1193,15 +1185,6 @@ Begin VB.Form frmBatchJob
             Top             =   960
             Visible         =   0   'False
             Width           =   945
-         End
-         Begin VB.Label Label1 
-            AutoSize        =   -1  'True
-            Caption         =   "In Excel :"
-            Height          =   195
-            Left            =   2760
-            TabIndex        =   83
-            Top             =   1590
-            Width           =   825
          End
          Begin VB.Label lblTitlePage 
             AutoSize        =   -1  'True
@@ -1341,10 +1324,10 @@ Private Sub RefreshColumnsGrid()
 End Sub
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
-  cmdOk.Enabled = pblnChanged
+  cmdOK.Enabled = pblnChanged
 End Property
 
 Private Function JobUtilityType(psJobType As String) As UtilityType
@@ -1591,9 +1574,7 @@ End Sub
 Private Sub chkRetainPivot_click()
   Changed = True
 End Sub
-Private Sub ChkRetainCharts_Click()
-  Changed = True
-End Sub
+
 Private Sub chkRunOnce_Click()
   Changed = True
 End Sub
@@ -1692,14 +1673,14 @@ End Sub
 Private Sub cmdFilterClear_Click()
   txtOverrideFilter = ""
   txtOverrideFilter.Tag = 0
-  cmdFilterClear.Enabled = False
+  cmdfilterClear.Enabled = False
   cmdOverrideFilter.SetFocus
   Changed = Not mblnLoading
 End Sub
 
 Private Sub cmdOverrideFilter_Click()
   GetFilter txtFilterSource, txtOverrideFilter
-  cmdFilterClear.Enabled = txtOverrideFilter.Text <> ""
+  cmdfilterClear.Enabled = txtOverrideFilter.Text <> ""
   Changed = Not mblnLoading
 End Sub
 Private Sub GetFilter(ctlSource As Control, ctlTarget As Control)
@@ -2185,7 +2166,7 @@ Private Function RetrieveBatchJobDetails() As Boolean
     txtOverrideFilter.Tag = prstTemp!OverrideFilterID
     
     cmdTitlePageClear.Enabled = Not txtTitlePage.Text = ""
-    cmdFilterClear.Enabled = Not txtOverrideFilter.Text = ""
+    cmdfilterClear.Enabled = Not txtOverrideFilter.Text = ""
     
     optOutputFormat(prstTemp!OutputFormat).Value = True
     mobjOutputDef.PopulateOutputControls prstTemp
@@ -2193,7 +2174,7 @@ Private Function RetrieveBatchJobDetails() As Boolean
     chkForceCoverSheet.Value = IIf(prstTemp!OutputCoverSheet, vbChecked, vbUnchecked)
     chkTOC.Value = IIf(prstTemp!OutputTOC, vbChecked, vbUnchecked)
     chkRetainPivot.Value = IIf(prstTemp!OutputRetainPivotOrChart, vbChecked, vbUnchecked)
-    ChkRetainCharts.Value = IIf(prstTemp!OutputRetainCharts, vbChecked, vbUnchecked)
+    'ChkRetainCharts.Value = IIf(prstTemp!OutputRetainCharts, vbChecked, vbUnchecked)
     chkForceCoverSheet.Value = IIf(prstTemp!OutputCoverSheet, vbChecked, vbUnchecked)
 
   End If
@@ -3018,7 +2999,7 @@ Private Function SaveDefinition2() As Boolean
       sSQL = sSQL & "OutputTOC = " & IIf(chkTOC.Value = 1, 1, 0) & ","                                'Table of Contents
       sSQL = sSQL & "OutputCoverSheet = " & IIf(chkForceCoverSheet.Value = 1, 1, 0) & ","             'Force Cover sheet
       sSQL = sSQL & "OutputRetainPivotOrChart = " & IIf(chkRetainPivot.Value = 1, 1, 0) & ","         'Retain Pivot
-      sSQL = sSQL & "OutputRetainCharts = " & IIf(ChkRetainCharts.Value = 1, 1, 0) & ","         'Retain chart
+      'sSQL = sSQL & "OutputRetainCharts = " & IIf(ChkRetainCharts.Value = 1, 1, 0) & ","         'Retain chart
       
       'OUTPUT FORMAT FRAME
       sSQL = sSQL & "OutputFormat = " & CStr(mobjOutputDef.GetSelectedFormatIndex) & ", "
@@ -3028,7 +3009,7 @@ Private Function SaveDefinition2() As Boolean
       sSQL = sSQL & "OutputScreen = " & IIf(chkDestination(desScreen).Value = vbChecked, "1", "0") & ", "
       'Printer Options
       sSQL = sSQL & IIf(chkDestination(desPrinter), (" OutputPrinterName = '" & Replace(cboPrinterName.Text, " '", "''") & "',"), (" OutputPrinterName = '', "))
-      sSQL = sSQL & "OutputFilename = '" & Replace(txtFilename.Text, "'", "''") & "',"
+      sSQL = sSQL & "OutputFilename = '" & Replace(txtFileName.Text, "'", "''") & "',"
       'outputSaveExisting
       If chkDestination(desSave).Value = vbChecked Then
         sSQL = sSQL & "OutputSaveExisting = " & cboSaveExisting.ItemData(cboSaveExisting.ListIndex) & ", "
@@ -3044,7 +3025,7 @@ Private Function SaveDefinition2() As Boolean
     sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmail = 1, "), ("OutputEmail = 0, "))
     sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmailAddr = " & txtEmailGroup.Tag & ", "), ("OutputEmailAddr = 0, "))
     sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmailSubject = '" & Replace(txtEmailSubject.Text, "'", "''") & "', "), ("OutputEmailSubject = '', "))
-    sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmailAttachAs = '" & Replace(txtEmailAttachAs.Text, "'", "''") & "'"), ("OutputEmailAttachAs = ''"))
+    sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmailAttachAs = '" & Replace(txtEMailAttachAs.Text, "'", "''") & "'"), ("OutputEmailAttachAs = ''"))
     
     'FINAL WHERE CLAUSE
     sSQL = sSQL & " WHERE ID = " & mlngBatchJobID
@@ -3071,7 +3052,7 @@ Private Function SaveDefinition2() As Boolean
           "OutputSaveExisting, OutputEmail, OutputEmailAddr, " & _
           "OutputEmailSubject, OutputFilename, OutputEmailAttachAs, " & _
           "OutputTitlePage, OutputReportPackTitle, OutputOverrideFilter, " & _
-          "OutputTOC, OutputCoverSheet, OverrideFilterID, OutputRetainPivotOrChart, OutputRetainCharts)"
+          "OutputTOC, OutputCoverSheet, OverrideFilterID, OutputRetainPivotOrChart)" ', OutputRetainCharts)"
           
     sSQL = sSQL & _
            "Values(" & _
@@ -3130,9 +3111,9 @@ Private Function SaveDefinition2() As Boolean
           'outputEmailSubject
           sSQL = sSQL & IIf(chkDestination(desEmail), ("'" & Replace(txtEmailSubject.Text, "'", "''") & "', "), ("'', "))
           'outputFilename
-          sSQL = sSQL & "'" & Replace(txtFilename.Text, "'", "''") & "',"
+          sSQL = sSQL & "'" & Replace(txtFileName.Text, "'", "''") & "',"
           'outputEmailAttachAs
-          sSQL = sSQL & IIf(chkDestination(desEmail), ("'" & Replace(txtEmailAttachAs.Text, "'", "''") & "',"), ("'',"))
+          sSQL = sSQL & IIf(chkDestination(desEmail), ("'" & Replace(txtEMailAttachAs.Text, "'", "''") & "',"), ("'',"))
           'outputTitlePage
           sSQL = sSQL & "'" & Replace(txtTitlePage.Text, "'", "''") & "', "
           'outputReportPackTitle
@@ -3148,7 +3129,7 @@ Private Function SaveDefinition2() As Boolean
           'Retain Pivot when excel selected
           sSQL = sSQL & IIf(chkRetainPivot.Value = 1, 1, 0) & ","
           'Retain Chart when excel selected
-          sSQL = sSQL & IIf(ChkRetainCharts.Value = 1, 1, 0) & ")"
+          'sSQL = sSQL & IIf(ChkRetainCharts.Value = 1, 1, 0) & ")"
           
     If ForceDefinitionToBeHiddenIfNeeded(True) = False Then
       SaveDefinition2 = False
@@ -3478,7 +3459,7 @@ Private Function ValidDestination() As Boolean
   ValidDestination = False
 
   If chkDestination(desSave).Value = vbChecked Then
-    If txtFilename.Text = vbNullString Then
+    If txtFileName.Text = vbNullString Then
       COAMsgBox "You must enter a file name.", vbExclamation, Caption
       Exit Function
     End If
@@ -3497,20 +3478,20 @@ Private Function ValidDestination() As Boolean
       Exit Function
     End If
 
-    If txtEmailAttachAs.Text = vbNullString Then
+    If txtEMailAttachAs.Text = vbNullString Then
       COAMsgBox "You must enter an email attachment file name.", vbExclamation, Caption
       Exit Function
     End If
     
-    If InStr(txtEmailAttachAs.Text, "/") Or _
-       InStr(txtEmailAttachAs.Text, ":") Or _
-       InStr(txtEmailAttachAs.Text, "?") Or _
-       InStr(txtEmailAttachAs.Text, Chr(34)) Or _
-       InStr(txtEmailAttachAs.Text, "<") Or _
-       InStr(txtEmailAttachAs.Text, ">") Or _
-       InStr(txtEmailAttachAs.Text, "|") Or _
-       InStr(txtEmailAttachAs.Text, "\") Or _
-       InStr(txtEmailAttachAs.Text, "*") Then
+    If InStr(txtEMailAttachAs.Text, "/") Or _
+       InStr(txtEMailAttachAs.Text, ":") Or _
+       InStr(txtEMailAttachAs.Text, "?") Or _
+       InStr(txtEMailAttachAs.Text, Chr(34)) Or _
+       InStr(txtEMailAttachAs.Text, "<") Or _
+       InStr(txtEMailAttachAs.Text, ">") Or _
+       InStr(txtEMailAttachAs.Text, "|") Or _
+       InStr(txtEMailAttachAs.Text, "\") Or _
+       InStr(txtEMailAttachAs.Text, "*") Then
           COAMsgBox "The email attachment file name cannot contain any of the following characters:" & vbCrLf & _
                  "/  :  ?  " & Chr(34) & "  <  >  |  \  *", vbExclamation, Caption
           Exit Function
@@ -4587,8 +4568,8 @@ Public Sub PrintDef(lBatchJobID As Long)
           .PrintNormal "Override Filter : " & rsTemp!OutputOverrideFilter
           .PrintNormal "Create Table Of Contents : " & IIf(rsTemp!OutputTOC = True, "Yes", "No")
           .PrintNormal "Force Cover Sheet : " & IIf(rsTemp!OutputCoverSheet = True, "Yes", "No")
-          .PrintNormal "Retain Pivot : " & IIf(rsTemp!OutputRetainPivotOrChart = True, "Yes", "No")
-          .PrintNormal "Retain Chart : " & IIf(rsTemp!OutputRetainCharts = True, "Yes", "No")
+          .PrintNormal "Retain Pivot/chart : " & IIf(rsTemp!OutputRetainPivotOrChart = True, "Yes", "No")
+          '.PrintNormal "Retain Chart : " & IIf(rsTemp!OutputRetainCharts = True, "Yes", "No")
           
           .PrintNormal " "
           

@@ -333,7 +333,7 @@ Private mblnOutputTOC As Boolean
 Private mblnOutputCoverSheet As Boolean
 Private mlngOverrideFilterID As Long
 Private mblnOutputRetainPivotOrChart As Boolean
-Private mblnOutputRetainCharts As Boolean
+'Private mblnOutputRetainCharts As Boolean
 
 Private mblnIndentRelatedTables As Boolean
 Private mblnSuppressEmptyRelatedTableTitles As Boolean
@@ -1529,13 +1529,6 @@ Public Function OutputReport(pfPrompt As Boolean) As Boolean
 
   objOutput.ShowFormats True, False, True, True, True, False, False
 
-'  If objOutput.SetOptions _
-'    (pfPrompt, mlngOutputFormat, mblnOutputScreen, _
-'    mblnOutputPrinter, mstrOutputPrinterName, _
-'    mblnOutputSave, mlngOutputSaveExisting, _
-'    mblnOutputEmail, mlngOutputEmailAddr, mstrOutputEmailSubject, _
-'    mstrOutputEmailAttachAs, mstrOutputFileName) Then
-
   If objOutput.SetOptions _
       (pfPrompt, _
       mlngOutputFormat, _
@@ -1557,8 +1550,7 @@ Public Function OutputReport(pfPrompt As Boolean) As Boolean
       mblnOutputTOC, _
       mblnOutputCoverSheet, _
       mlngOverrideFilterID, _
-      mblnOutputRetainPivotOrChart, _
-      mblnOutputRetainCharts) Then
+      mblnOutputRetainPivotOrChart) Then
     
     If objOutput.GetFile Then
 
