@@ -5445,7 +5445,7 @@ InsertErrorTrap:
   End If
   
 End Function
-Public Function DeleteTableRecord(plngTableID As Long, psTableName As String, _
+Public Function DeleteTableRecord(plngTableID As Long, _
   psRealSource As String, _
   plngRecordID As Long) As Boolean
   ' Insert the given record in the given table.
@@ -5480,9 +5480,9 @@ Public Function DeleteTableRecord(plngTableID As Long, psTableName As String, _
       Set pmADO = .CreateParameter("resultCode", adInteger, adParamOutput)
       .Parameters.Append pmADO
       
-      Set pmADO = .CreateParameter("tableName", adVarChar, adParamInput, 255)
+      Set pmADO = .CreateParameter("tableID", adInteger, adParamInput)
       .Parameters.Append pmADO
-      pmADO.Value = psTableName
+      pmADO.Value = plngTableID
       
       Set pmADO = .CreateParameter("realSource", adVarChar, adParamInput, 255)
       .Parameters.Append pmADO
@@ -5613,7 +5613,6 @@ End Function
 
 Public Function UpdateTableRecord(psUpdateSQL As String, _
   plngTableID As Long, _
-  psTableName As String, _
   psRealSource As String, _
   plngRecordID As Long, _
   Optional pvTimestamp As Variant) As Boolean
@@ -5655,10 +5654,10 @@ Public Function UpdateTableRecord(psUpdateSQL As String, _
       .Parameters.Append pmADO
       pmADO.Value = psUpdateSQL
               
-      Set pmADO = .CreateParameter("tableName", adVarChar, adParamInput, 255)
+      Set pmADO = .CreateParameter("tableID", adInteger, adParamInput)
       .Parameters.Append pmADO
-      pmADO.Value = psTableName
-      
+      pmADO.Value = plngTableID
+            
       Set pmADO = .CreateParameter("realSource", adVarChar, adParamInput, 255)
       .Parameters.Append pmADO
       pmADO.Value = psRealSource
