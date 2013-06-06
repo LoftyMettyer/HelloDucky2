@@ -119,7 +119,7 @@ Public Function CheckVersion(sConnect As String, fReRunScript As Boolean, bIsSQL
   End If
      
   'Check to see if the engine is ticking over
-  fOK = GetSysFrameworkVersion()
+  fOK = CheckFrameworkVersion()
   
   ' AE20080218 Fault #12834, 12859
   If fOK Then
@@ -410,20 +410,40 @@ ErrorTrap:
   Resume TidyUpAndExit
   
 End Function
-Private Function GetSysFrameworkVersion() As Boolean
-On Error GoTo ErrorTrap
-Dim bDummy As Boolean
 
-GetSysFrameworkVersion = True
+Private Function CheckFrameworkVersion() As Boolean
 
-bDummy = gobjHRProEngine.InitialiseLite = True
+  On Error GoTo ErrorTrap
+  
+  Dim sActualVersion As String
+  Dim sRequiredVersion As String
+  Dim bOK As Boolean
+  Dim rsInfo As New ADODB.Recordset
+   
+  bOK = True
+  
+  sRequiredVersion = GetSystemSetting("system framework", "version", vbNullString)
+  sActualVersion = gobjHRProEngine.Version
+
+  If sRequiredVersion <> sActualVersion And Not ASRDEVELOPMENT Then
+    MsgBox "The HR Pro System Framework is invalid." & vbNewLine & _
+      "Contact your System Administrator to install the latest HR Pro System Framework" & vbNewLine & vbNewLine & _
+      "Required Version : " & sRequiredVersion & vbNewLine & _
+      "Actual Version : " & sActualVersion & vbNewLine & vbNewLine _
+      , vbExclamation + vbOKOnly, Application.Name
+    bOK = False
+  End If
 
 TidyUpAndExit:
-  GetSysFrameworkVersion = True
+  CheckFrameworkVersion = bOK
   Exit Function
 ErrorTrap:
-  MsgBox "The HR Pro System Framework install has not been run on this machine! It is essential that the HR Pro System Framework MSI is run before you can upgrade to version 4.3." & vbCrLf & vbCrLf & "The 4.3 upgrade will now TERMINATE with no changes to HR Pro." & vbCrLf & vbCrLf & " You must install the HR Pro System Framework MSI and then re-run the v4.3 install again.", vbCritical, "System Manager Upgrade"
-  GetSysFrameworkVersion = False
+  MsgBox "The HR Pro System Framework is not installed." & vbNewLine & _
+    "Contact your System Administrator to install the latest HR Pro System Framework" & vbNewLine & vbNewLine & _
+    "Required Version : " & sRequiredVersion & vbNewLine _
+    , vbExclamation + vbOKOnly, Application.Name
+  bOK = False
+  Resume TidyUpAndExit
 
 End Function
 
@@ -512,7 +532,6 @@ Private Function GetDBVersion() As String
   End If
 
 End Function
-
 
 Private Function UpdateDatabase( _
     sConnect As String, fReRunScript As Boolean, Optional fPlatform As Boolean) As Boolean
