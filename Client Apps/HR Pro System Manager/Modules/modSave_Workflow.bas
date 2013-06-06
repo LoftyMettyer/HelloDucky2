@@ -79,7 +79,7 @@ Private Function WorkflowDelete() As Boolean
   Dim fOK As Boolean
   Dim lngWorkflowID As Long
 
-  lngWorkflowID = recWorkflowEdit!id
+  lngWorkflowID = recWorkflowEdit!ID
 
   gADOCon.Execute "DELETE FROM ASRSysWorkflows WHERE ID=" & lngWorkflowID, , adCmdText + adExecuteNoRecords
   gADOCon.Execute "DELETE FROM ASRSysWorkflowElementItems WHERE elementID IN (SELECT ID FROM ASRSysWorkflowElements WHERE workflowID=" & lngWorkflowID & ")", , adCmdText + adExecuteNoRecords
@@ -138,6 +138,7 @@ Private Function WorkflowNew() As Boolean
   Dim rsWorkflows As New ADODB.Recordset
   Dim rsElements As New ADODB.Recordset
   Dim rsElementItems As New ADODB.Recordset
+  Dim rsElementPages As New ADODB.Recordset
   Dim rsElementItemValues As New ADODB.Recordset
   Dim rsElementColumns As New ADODB.Recordset
   Dim rsElementValidations As New ADODB.Recordset
@@ -168,12 +169,12 @@ Private Function WorkflowNew() As Boolean
 
   With recWorkflowElementEdit
     .Index = "idxWorkflowID"
-    .Seek ">=", recWorkflowEdit!id
+    .Seek ">=", recWorkflowEdit!ID
 
     If Not .NoMatch Then
       Do While Not .EOF
         'If no more elements for this workflow exit loop
-        If !WorkflowID <> recWorkflowEdit!id Then
+        If !WorkflowID <> recWorkflowEdit!ID Then
           Exit Do
         End If
 
@@ -191,12 +192,12 @@ Private Function WorkflowNew() As Boolean
         rsElementItems.Open "ASRSysWorkflowElementItems", gADOCon, adOpenForwardOnly, adLockOptimistic, adCmdTable
 
         recWorkflowElementItemEdit.Index = "idxElementID"
-        recWorkflowElementItemEdit.Seek ">=", recWorkflowElementEdit!id
+        recWorkflowElementItemEdit.Seek ">=", recWorkflowElementEdit!ID
 
         If Not recWorkflowElementItemEdit.NoMatch Then
           Do While Not recWorkflowElementItemEdit.EOF
             'If no more items for this element exit loop
-            If recWorkflowElementItemEdit!elementID <> recWorkflowElementEdit!id Then
+            If recWorkflowElementItemEdit!elementID <> recWorkflowElementEdit!ID Then
               Exit Do
             End If
 
@@ -215,12 +216,12 @@ Private Function WorkflowNew() As Boolean
             rsElementItemValues.Open "ASRSysWorkflowElementItemValues", gADOCon, adOpenForwardOnly, adLockOptimistic, adCmdTable
             
             recWorkflowElementItemValuesEdit.Index = "idxItemID"
-            recWorkflowElementItemValuesEdit.Seek ">=", recWorkflowElementItemEdit!id
+            recWorkflowElementItemValuesEdit.Seek ">=", recWorkflowElementItemEdit!ID
             
             If Not recWorkflowElementItemValuesEdit.NoMatch Then
               Do While Not recWorkflowElementItemValuesEdit.EOF
                 'If no more item values for this element item exit loop
-                If recWorkflowElementItemValuesEdit!itemID <> recWorkflowElementItemEdit!id Then
+                If recWorkflowElementItemValuesEdit!itemID <> recWorkflowElementItemEdit!ID Then
                   Exit Do
                 End If
             
@@ -250,12 +251,12 @@ Private Function WorkflowNew() As Boolean
         rsElementColumns.Open "ASRSysWorkflowElementColumns", gADOCon, adOpenForwardOnly, adLockOptimistic, adCmdTable
 
         recWorkflowElementColumnEdit.Index = "idxElementID"
-        recWorkflowElementColumnEdit.Seek ">=", recWorkflowElementEdit!id
+        recWorkflowElementColumnEdit.Seek ">=", recWorkflowElementEdit!ID
 
         If Not recWorkflowElementColumnEdit.NoMatch Then
           Do While Not recWorkflowElementColumnEdit.EOF
             'If no more columns for this element exit loop
-            If recWorkflowElementColumnEdit!elementID <> recWorkflowElementEdit!id Then
+            If recWorkflowElementColumnEdit!elementID <> recWorkflowElementEdit!ID Then
               Exit Do
             End If
 
@@ -279,12 +280,12 @@ Private Function WorkflowNew() As Boolean
         rsElementValidations.Open "ASRSysWorkflowElementValidations", gADOCon, adOpenForwardOnly, adLockOptimistic, adCmdTable
 
         recWorkflowElementValidationEdit.Index = "idxElementID"
-        recWorkflowElementValidationEdit.Seek ">=", recWorkflowElementEdit!id
+        recWorkflowElementValidationEdit.Seek ">=", recWorkflowElementEdit!ID
 
         If Not recWorkflowElementValidationEdit.NoMatch Then
           Do While Not recWorkflowElementValidationEdit.EOF
             'If no more Validations for this element exit loop
-            If recWorkflowElementValidationEdit!elementID <> recWorkflowElementEdit!id Then
+            If recWorkflowElementValidationEdit!elementID <> recWorkflowElementEdit!ID Then
               Exit Do
             End If
 
@@ -316,12 +317,12 @@ Private Function WorkflowNew() As Boolean
     
   With recWorkflowLinkEdit
     .Index = "idxWorkflowID"
-    .Seek ">=", recWorkflowEdit!id
+    .Seek ">=", recWorkflowEdit!ID
 
     If Not .NoMatch Then
       Do While Not .EOF
         'If no more links for this workflow exit loop
-        If !WorkflowID <> recWorkflowEdit!id Then
+        If !WorkflowID <> recWorkflowEdit!ID Then
           Exit Do
         End If
 
