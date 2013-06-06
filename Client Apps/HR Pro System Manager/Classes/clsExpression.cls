@@ -4086,6 +4086,13 @@ Public Function CreateStoredProcedure() As Boolean
   ' Construct the expression from the database definition.
   fOK = ConstructExpression
   
+  ' Bypass certain types as they have moved to the .NET engine
+  If Me.ExpressionType = giEXPR_COLUMNCALCULATION _
+    Or Me.ExpressionType = giEXPR_RECORDVALIDATION Then
+    fOK = True
+    GoTo TidyUpAndExit
+  End If
+  
   If fOK Then
   
     sProcedureName = "sp_ASRExpr_" & mlngExpressionID
