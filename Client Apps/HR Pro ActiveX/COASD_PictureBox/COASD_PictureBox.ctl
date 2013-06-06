@@ -7,13 +7,22 @@ Begin VB.UserControl COASD_PictureBox
    ScaleHeight     =   3600
    ScaleWidth      =   4800
    Begin VB.PictureBox picPicture 
-      Height          =   975
+      Appearance      =   0  'Flat
+      BackColor       =   &H80000005&
+      ForeColor       =   &H80000008&
+      Height          =   1260
       Left            =   1125
-      ScaleHeight     =   915
-      ScaleWidth      =   1455
+      ScaleHeight     =   1230
+      ScaleWidth      =   2295
       TabIndex        =   0
       Top             =   570
-      Width           =   1515
+      Width           =   2325
+   End
+   Begin VB.Image Image1 
+      Height          =   660
+      Left            =   3075
+      Top             =   2445
+      Width           =   1095
    End
 End
 Attribute VB_Name = "COASD_PictureBox"
@@ -420,8 +429,94 @@ Public Property Get PictureLocation() As Long
 End Property
 
 Public Property Let PictureLocation(ByVal New_PictureLocation As Long)
+  On Error GoTo ErrorTrap
+
+  Dim tx As Integer
+  Dim tw As Integer
+  Dim th As Integer
+  Dim pw As Long
+  Dim ph As Long
+  Dim twippyBorder As Long
+  
+  If Image1.Picture = 0 Then GoTo ErrorTrap
+      
+  picPicture.Picture = LoadPicture()
+  picPicture.AutoRedraw = True
+  twippyBorder = 40
+  
+  Select Case CLng(New_PictureLocation)
+    Case 0  ' Top Left
+      picPicture.PaintPicture Image1.Picture, 0, 0
+      
+    Case 1  ' Top Right
+      picPicture.PaintPicture Image1.Picture, Int(picPicture.Width - Image1.Width) - twippyBorder, 0
+      
+    Case 2  ' Centre
+      picPicture.PaintPicture Image1.Picture, Int((picPicture.Width / 2) - (Image1.Width / 2) + 1), Int((picPicture.Height / 2) - (Image1.Height / 2) + 1)
+      
+    Case 3  ' Left Tile
+      tw = Int(picPicture.Width / Image1.Width) + 1
+      th = Int(picPicture.Height / Image1.Height) + 1
+      ph = Image1.Height
+
+      For ty = 0 To th
+         picPicture.PaintPicture Image1.Picture, 0, ty * ph
+      Next
+     
+    Case 4  ' Right Tile
+      tw = Int(picPicture.Width / Image1.Width) + 1
+      th = Int(picPicture.Height / Image1.Height) + 1
+      ph = Image1.Height
+      pw = (picPicture.Width - Image1.Width) - twippyBorder
+
+      For ty = 0 To th
+         picPicture.PaintPicture Image1.Picture, pw, ty * ph
+      Next
+      
+    Case 5  ' Top Tile
+      tw = Int(picPicture.Width / Image1.Width) + 1
+      pw = Image1.Width
+      ph = Image1.Height
+
+      For tx = 0 To tw
+           picPicture.PaintPicture Image1.Picture, tx * pw, 0
+      Next
+      
+    Case 6  ' Bottom Tile
+      tw = Int(picPicture.Width / Image1.Width) + 1
+      pw = Image1.Width
+      ph = Image1.Height
+      th = (picPicture.Height - Image1.Height) - twippyBorder
+      
+      For tx = 0 To tw
+           picPicture.PaintPicture Image1.Picture, tx * pw, th
+      Next
+
+    Case 7  ' Tile
+      tw = Int(picPicture.Width / Image1.Width) + 1
+      th = Int(picPicture.Height / Image1.Height) + 1
+      pw = Image1.Width
+      ph = Image1.Height
+
+      For tx = 0 To tw
+        For ty = 0 To th
+           picPicture.PaintPicture Image1.Picture, tx * pw, ty * ph
+        Next
+      Next
+    
+    Case Else
+      picPicture.PaintPicture Image1.Picture, 0, 0
+
+  End Select
+  
   m_PictureLocation = New_PictureLocation
   PropertyChanged "PictureLocation"
+  
+  Exit Property
+  
+ErrorTrap:
+  picPicture.Picture = Nothing
+  
 End Property
 
 
@@ -439,9 +534,14 @@ Public Property Let Picture(ByVal psNewValue As String)
   picPicture.Picture = LoadPicture(psNewValue)
   gsPicture = psNewValue
   
+  ' set the image prop too
+  Image1 = picPicture
+  
+  
   Exit Property
   
 ErrorTrap:
+  MsgBox (Err.Description)
   picPicture.Picture = Nothing
   
 End Property
