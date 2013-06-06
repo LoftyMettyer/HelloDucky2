@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~2.OCX"
 Begin VB.MDIForm frmSysMgr 
    AutoShowChildren=   0   'False
@@ -37,7 +37,6 @@ Begin VB.MDIForm frmSysMgr
       BeginProperty Panels {0713E89E-850A-101B-AFC0-4210102A8DA7} 
          NumPanels       =   1
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -1801,6 +1800,7 @@ Private Sub RefreshMenu_Defaults(piFormCount As Integer)
     
     ' Only enable the Save Changes option if changes have been made.
     .Tools("ID_SaveChanges").Enabled = Application.Changed
+    .Tools("ID_SaveChangesNew").Visible = gbUsedotNetScriptEngine
     
     ' Add the required separators to the tool and menu bars.
     If Application.TrainingBookingModule Then
@@ -3910,6 +3910,9 @@ Private Sub ToolClick_SysMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       'Set frmPrompt = Nothing
       SaveChanges_Click
       
+    Case "ID_SaveChangesNew"
+      SaveChangesNew_Click
+      
     Case "ID_Exit"
       ' Exit from the System Administrator module.
       UnLoad frmSysMgr
@@ -4997,6 +5000,11 @@ Private Sub Timer1_Timer()
 
 End Sub
 
+Private Sub SaveChangesNew_Click()
+
+  SaveChangesNew
+
+End Sub
 
 
 Private Sub SaveChanges_Click()
