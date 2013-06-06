@@ -1489,9 +1489,6 @@ Private Sub UpdateRecordsOLD()
 
     ElseIf strRecordError <> vbNullString Then
 
-      strRecordError = GetRecordDesc(mlngRecordIDs(lngRec)) & vbNewLine & vbNewLine & _
-                       strRecordError
-
       Call gobjEventLog.AddDetailEntry(strRecordError)
       mlngFailCount = mlngFailCount + 1
       'fOK = False
