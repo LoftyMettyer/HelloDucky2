@@ -1,1 +1,1 @@
-Attribute VB_Name = "Module1"
+Attribute VB_Name = "modGlobals"
