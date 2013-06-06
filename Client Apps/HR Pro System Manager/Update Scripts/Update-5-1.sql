@@ -2881,6 +2881,42 @@ PRINT 'Step - Indexing Update'
 	END
 
 
+
+/* ------------------------------------------------------------- */
+/* Step - System farmework/fusion configuration dependencies */
+/* ------------------------------------------------------------- */
+
+	IF EXISTS (SELECT id FROM dbo.sysobjects WHERE id = object_id(N'[dbo].[spsys_getmodulesetting]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].[spsys_getmodulesetting];
+
+	IF EXISTS (SELECT id FROM dbo.sysobjects WHERE id = object_id(N'[dbo].[spsys_getaccordmodulesetting]')	AND xtype = 'P')
+		DROP PROCEDURE [dbo].[spsys_getaccordmodulesetting];
+
+	EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[spsys_getaccordmodulesetting](
+			@moduleKey AS varchar(50),
+			@parameterKey AS varchar(50),
+			@paramterType AS varchar(50),			
+			@parameterValue AS nvarchar(MAX) OUTPUT)
+		AS
+		BEGIN
+			SELECT @parameterValue = [parameterValue] FROM [asrsysModuleSetup] WHERE [ModuleKey] = @moduleKey 
+				AND [ParameterKey] = @parameterKey AND [ParameterType] = @paramterType
+		END';
+
+	EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[spsys_getmodulesetting](
+			@moduleKey AS varchar(50),
+			@parameterKey AS varchar(50),
+			@paramterType AS varchar(50),			
+			@parameterValue AS nvarchar(MAX) OUTPUT)
+		AS
+		BEGIN
+			SELECT @parameterValue = [parameterValue] FROM [asrsysModuleSetup] WHERE [ModuleKey] = @moduleKey 
+				AND [ParameterKey] = @parameterKey AND [ParameterType] = @paramterType
+		END';
+
+
+
+
 /* ------------------------------------------------------------- */
 /* Update the database version flag in the ASRSysSettings table. */
 /* Dont Set the flag to refresh the stored procedures            */
