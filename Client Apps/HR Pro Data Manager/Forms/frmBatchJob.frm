@@ -41,7 +41,7 @@ Begin VB.Form frmBatchJob
       _ExtentY        =   9895
       _Version        =   393216
       Style           =   1
-      Tab             =   1
+      Tab             =   2
       TabHeight       =   520
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmBatchJob.frx":000C
@@ -51,18 +51,19 @@ Begin VB.Form frmBatchJob
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "&Jobs"
       TabPicture(1)   =   "frmBatchJob.frx":0028
-      Tab(1).ControlEnabled=   -1  'True
-      Tab(1).Control(0)=   "fraJobs"
-      Tab(1).Control(0).Enabled=   0   'False
-      Tab(1).Control(1)=   "Frame1"
-      Tab(1).Control(1).Enabled=   0   'False
+      Tab(1).ControlEnabled=   0   'False
+      Tab(1).Control(0)=   "Frame1"
+      Tab(1).Control(1)=   "fraJobs"
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "O&utput"
       TabPicture(2)   =   "frmBatchJob.frx":0044
-      Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "Frame3"
+      Tab(2).ControlEnabled=   -1  'True
+      Tab(2).Control(0)=   "Frame4"
+      Tab(2).Control(0).Enabled=   0   'False
       Tab(2).Control(1)=   "Frame2"
-      Tab(2).Control(2)=   "Frame4"
+      Tab(2).Control(1).Enabled=   0   'False
+      Tab(2).Control(2)=   "Frame3"
+      Tab(2).Control(2).Enabled=   0   'False
       Tab(2).ControlCount=   3
       Begin VB.Frame fraInfo 
          Height          =   2355
@@ -276,7 +277,7 @@ Begin VB.Form frmBatchJob
       Begin VB.Frame Frame3 
          Caption         =   "Output Format :"
          Height          =   3000
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   68
          Top             =   420
          Width           =   2265
@@ -312,7 +313,7 @@ Begin VB.Form frmBatchJob
       Begin VB.Frame Frame2 
          Caption         =   "Output Destination(s) :"
          Height          =   3000
-         Left            =   -72485
+         Left            =   2515
          TabIndex        =   61
          Top             =   420
          Width           =   7110
@@ -518,7 +519,7 @@ Begin VB.Form frmBatchJob
       Begin VB.Frame Frame1 
          Caption         =   "Email Notifications :"
          Height          =   1400
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   26
          Top             =   4080
          Width           =   9495
@@ -593,7 +594,7 @@ Begin VB.Form frmBatchJob
       End
       Begin VB.Frame fraJobs 
          Height          =   3600
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   18
          Top             =   420
          Width           =   9495
@@ -1049,7 +1050,7 @@ Begin VB.Form frmBatchJob
       Begin VB.Frame Frame4 
          Caption         =   "Report Options :"
          Height          =   2020
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   69
          Top             =   3420
          Width           =   9470
@@ -2167,11 +2168,14 @@ Private Function RetrieveBatchJobDetails() As Boolean
     cmdTitlePageClear.Enabled = Not txtTitlePage.Text = ""
     cmdfilterClear.Enabled = Not txtOverrideFilter.Text = "<None>"
     
+    optOutputFormat(prstTemp!OutputFormat).Value = True
+    mobjOutputDef.PopulateOutputControls prstTemp
+    
     chkForceCoverSheet.Value = IIf(prstTemp!OutputCoverSheet, vbChecked, vbUnchecked)
     chkTOC.Value = IIf(prstTemp!OutputTOC, vbChecked, vbUnchecked)
     chkRetainPivot.Value = IIf(prstTemp!OutputRetainPivotOrChart, vbChecked, vbUnchecked)
-    optOutputFormat(prstTemp!OutputFormat).Value = True
-    mobjOutputDef.PopulateOutputControls prstTemp
+    chkForceCoverSheet.Value = IIf(prstTemp!OutputCoverSheet, vbChecked, vbUnchecked)
+
   End If
     
   If mblnReadOnly Then

@@ -966,12 +966,13 @@ Private Function GetCustomReportDefinition() As Boolean
     mlngCustomReportsBaseTable = !BaseTable
     mstrCustomReportsBaseTableName = datGeneral.GetTableName(mlngCustomReportsBaseTable)
     mlngCustomReportsAllRecords = !AllRecords
-    mlngCustomReportsPickListID = !picklist
     'if basetable is personnel and ReportPack Override filter exists use that swap
     If mlngCustomReportsBaseTable = glngPersonnelTableID And gblnReportPackMode Then
       mlngCustomReportsFilterID = mlngOverrideFilterID
+      mlngCustomReportsPickListID = 0
     Else
       mlngCustomReportsFilterID = !Filter
+      mlngCustomReportsPickListID = !picklist
     End If
     mlngCustomReportsParent1Table = !parent1table
     mstrCustomReportsParent1TableName = datGeneral.GetTableName(mlngCustomReportsParent1Table)

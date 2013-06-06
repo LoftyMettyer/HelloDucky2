@@ -1159,12 +1159,13 @@ Private Function GetCalendarReportDefinition() As Boolean
     End If
     
     mlngCalendarReportsAllRecords = !AllRecords
-    mlngCalendarReportsPickListID = !picklist
     'This is where we use the override filter if necessary
     If mlngCalendarReportsBaseTable = glngPersonnelTableID And gblnReportPackMode Then
       mlngCalendarReportsFilterID = mlngOverrideFilterID
+      mlngCalendarReportsPickListID = 0
     Else
       mlngCalendarReportsFilterID = !Filter
+      mlngCalendarReportsPickListID = !picklist
     End If
     
     mlngDescription1 = IIf(IsNull(!Description1), 0, !Description1)

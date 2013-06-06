@@ -16,6 +16,8 @@ Option Explicit
 Private mwrdApp As Word.Application
 Private mwrdDoc As Word.Document
 
+Private mobjOutputType As Object
+Private objOutput As clsOutputHTML
 ' Data access class
 Private mclsData As clsDataAccess
 
@@ -35,12 +37,15 @@ Private mblnOutputEmail As Boolean
 Private mlngOutputEmailAddr As Long
 Private mstrOutputEmailSubject As String
 Private mstrOutputEmailAttachAs As String
+
 Private mstrOutputFileName As String
+
 Private mblnPreviewOnScreen As Boolean
 Private mblnPrintFilterHeader As Boolean
 Private mlngOverrideFilterID As Long
 Private mblnOutputRetainPivotOrChart As Boolean
 Private mstrErrorMessage As String
+
 
 Private Sub Class_Initialize()
   Set mclsData = New clsDataAccess
@@ -154,8 +159,16 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
   Dim lngOverrideFilterID As Long
   Dim blnOutputRetainPivotOrChart As Boolean
   
+  'HTML IO vars
+  Dim FileNum As Integer
+  Dim NextLine As String
+  Dim LineCount As Long
+  Dim strReadInFileContents As String
+  
+  'Dim objOutput As clsOutputHTML
+  
   gblnBatchMode = True
-
+  gstrHTMLOutputTOC = ""
   'Retrive the individual job information for the specified batch job id
   Set rsBatchDetails = mclsData.OpenPersistentRecordset("SELECT * FROM AsrSysBatchJobDetails WHERE BatchJobNameID = " & lBatchJobID & " ORDER BY JobOrder", adOpenKeyset, adLockReadOnly)
   
@@ -989,54 +1002,68 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
   Loop
   
   'Insert TOC code here as all Report Pack Jobs Or Batch Jobs would be done by now
-  If gblnReportPackMode And blnOutputSave And blnOutputTOC And lngOutputFormat <> fmtHTML Then
-    'Open word file
-    If GetTOCFile(strOutputFilename) Then
-      'mwrdApp.Visible = True
-      With mwrdApp.Selection 'Add TOC at the top
-        .TypeParagraph
-        .TypeParagraph
-        .TypeText Text:="Report Pack Title"
-        .HomeKey Unit:=wdLine, Extend:=wdExtend
-        .Font.Bold = wdToggle
-        .Font.Size = 14
-        .ParagraphFormat.Alignment = wdAlignParagraphCenter
-        .MoveRight Unit:=wdCharacter, Count:=1
-        .TypeParagraph
-        .TypeText Text:=sBatchJobName
-        .HomeKey Unit:=wdLine, Extend:=wdExtend
-        .Font.Size = 20
-        .ParagraphFormat.Alignment = wdAlignParagraphCenter
-        .MoveRight Unit:=wdCharacter, Count:=1
-        .InsertBreak Type:=wdPageBreak
+  If gblnReportPackMode And blnOutputSave And blnOutputTOC Then
+    Select Case lngOutputFormat
+      Case fmtHTML
+          FileNum = FreeFile()
+          LineCount = 1
+          'Read the contents of the HTML file
+          Open strOutputFilename For Input As #FileNum
+              Do While Not EOF(FileNum)
+                Line Input #FileNum, NextLine
+                strReadInFileContents = strReadInFileContents & NextLine
+                LineCount = LineCount + 1
+              Loop
+          Close #FileNum
+          'Write back the contents with our added TOC HTML
+          Open strOutputFilename For Output As #FileNum
+              strReadInFileContents = gstrHTMLOutputTOC & strReadInFileContents
+              Print #FileNum, strReadInFileContents
+          Close #FileNum
         
-        
-        .MoveUp Unit:=wdLine
-        
-        .TypeText Text:="Table of Contents"
-        .HomeKey Unit:=wdLine, Extend:=wdExtend
-        .Font.Size = 20
-        .ParagraphFormat.Alignment = wdAlignParagraphCenter
-        .MoveRight Unit:=wdCharacter, Count:=2
-        .Font.Size = 12
-        .TypeParagraph
-        
-        With mwrdDoc
-            .TablesOfContents.Add Range:=mwrdApp.Selection.Range, RightAlignPageNumbers:=True, UseHeadingStyles:=True, _
-                UpperHeadingLevel:=1, LowerHeadingLevel:=3, IncludePageNumbers:=True, AddedStyles:="", UseHyperlinks:=True ', UseOutlineLeveles:=True
-            .TablesOfContents(1).TabLeader = wdTabLeaderDots
-            .TablesOfContents.Format = wdIndexIndent
-        End With
-        
-        .InsertBreak Type:=wdPageBreak
-        
-        mwrdDoc.Save
-        mwrdDoc.Close
-        mwrdApp.Quit
-      End With
-    Else
-      MsgBox mstrErrorMessage, vbExclamation, "Report Pack"
-    End If
+      Case fmtWordDoc
+        'Open word file
+        If GetTOCFile(strOutputFilename) Then
+          mwrdApp.Visible = True
+              With mwrdApp.Selection
+                .InsertBreak Type:=wdPageBreak
+                .HomeKey Unit:=wdStory
+                .TypeParagraph
+                .HomeKey Unit:=wdStory
+                .TypeParagraph: .TypeParagraph
+                .TypeText Text:="Report Pack Title"
+                .HomeKey Unit:=wdLine, Extend:=wdExtend
+                .Font.Bold = wdToggle: .Font.Size = 14
+                .ParagraphFormat.Alignment = wdAlignParagraphCenter
+                .MoveRight Unit:=wdCharacter, Count:=1
+                .TypeParagraph: .TypeParagraph
+                .TypeText Text:=sBatchJobName
+                .HomeKey Unit:=wdLine, Extend:=wdExtend
+                .Font.Size = 20
+                .ParagraphFormat.Alignment = wdAlignParagraphCenter
+                .MoveRight Unit:=wdCharacter, Count:=1
+                .InsertBreak Type:=wdPageBreak
+                .TypeText Text:="Table of Contents"
+                .TypeParagraph
+                .HomeKey Unit:=wdLine, Extend:=wdExtend
+                .Font.Size = 20
+                .ParagraphFormat.Alignment = wdAlignParagraphCenter
+                .Font.Size = 12
+                .TypeParagraph
+                With mwrdDoc
+                  .TablesOfContents.Add Range:=mwrdApp.Selection.Range, RightAlignPageNumbers:=True, UseHeadingStyles:=True, UpperHeadingLevel:=1, LowerHeadingLevel:=3, IncludePageNumbers:=True, AddedStyles:="", UseHyperlinks:=True
+                  .TablesOfContents(1).TabLeader = wdTabLeaderDots
+                  .TablesOfContents.Format = wdIndexIndent
+                End With
+              End With
+            mwrdDoc.Save
+            mwrdDoc.Close
+            mwrdApp.Quit
+        Else
+          MsgBox mstrErrorMessage, vbExclamation, "Report Pack"
+        End If
+    End Select
+    
     gblnReportPackMode = False
   End If
   
@@ -1052,6 +1079,8 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
   gobjProgress.CloseProgress
   Set rsBatchDetails = Nothing
 End Function
+
+
 
 Public Function GetPathOnly(pstrFilePath As String, pbStripDriveLetter As Boolean) As String
 ' Extracts the path from a given filename
@@ -1429,3 +1458,8 @@ LocalErr:
   CreateWordApplication = False
 
 End Function
+
+
+
+
+
