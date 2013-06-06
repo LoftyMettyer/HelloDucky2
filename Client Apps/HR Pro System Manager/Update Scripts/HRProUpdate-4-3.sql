@@ -862,29 +862,6 @@ PRINT 'Step 9 - Add new calculation procedures'
 	END';
 	EXECUTE sp_executeSQL @sSPCode;
 
-
-	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_convertcurrency]
-	(
-		@currency numeric(38,8),
-		@from varchar(10),
-		@to varchar(10)
-	)
-	RETURNS numeric(38,8)
-	WITH SCHEMABINDING
-	AS
-	BEGIN
-
-		DECLARE @result numeric(38,8);
-
-		SELECT @result = 0;
-
-		RETURN @result;
-
-	END'
-	EXECUTE sp_executeSQL @sSPCode;
-
-
-
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_firstnamefromforenames] 
 		(
 			@forenames nvarchar(max)
