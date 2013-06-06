@@ -668,7 +668,7 @@ TidyUpAndExit:
   OutputCurrentProcess vbNullString
   
   If Not gobjHRProEngine.ErrorLog Is Nothing Then
-    gobjHRProEngine.ErrorLog.OutputToFile (App.Path + "\HRProSystemFramework.log")
+    gobjHRProEngine.ErrorLog.OutputToFile (App.Path + "\OpenHRFramework.log")
     If gobjHRProEngine.ErrorLog.ErrorCount > 0 Then
       gobjProgress.Visible = False
       gobjHRProEngine.ErrorLog.Show
