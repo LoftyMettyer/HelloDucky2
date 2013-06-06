@@ -193,6 +193,7 @@ Begin VB.Form frmScrEdit
          Begin VB.TextBox txtName 
             Height          =   315
             Left            =   1000
+            MaxLength       =   255
             TabIndex        =   2
             Text            =   "txtName"
             Top             =   200
