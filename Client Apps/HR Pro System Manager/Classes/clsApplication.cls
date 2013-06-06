@@ -2468,6 +2468,7 @@ Private Function CreateQueryDefs() As Boolean
       " , IIF(ISNULL(c.[ValueDate]),0,c.ValueDate) AS [valuedate]" & _
       " , IIF(ISNULL(c.[LookupTableID]),0,c.LookupTableID) AS [LookupTableID]" & _
       " , IIF(ISNULL(c.[LookupColumnID]),0,c.LookupColumnID) AS [LookupColumnID]" & _
+      " , 0 AS [isevaluated]" & _
       " FROM tmpExpressions e" & _
       " INNER JOIN tmpComponents c ON c.exprID = e.exprID" & _
       " WHERE c.exprid = @expressionid" & _
@@ -2486,6 +2487,7 @@ Private Function CreateQueryDefs() As Boolean
       " , 0 AS [columnfilterid], 0 AS [calculationid]" & _
       " , 0 AS [valuetype], '' AS [valuestring], 0 AS [valuenumeric], 0 AS [valuelogic], c.[ValueDate]" & _
       " , 0 AS [lookuptableid], 0 AS [lookupcolumnid]" & _
+      " , IIF(e.type=1 AND e.returnType=3,1,0) AS [isevaluated]" & _
       " FROM ((tmpExpressions e" & _
       "  INNER JOIN tmpComponents c ON c.exprID = e.exprID)" & _
       "  INNER JOIN tmpComponents p ON p.componentid = e.ParentComponentID)" & _
@@ -2513,6 +2515,7 @@ Private Function CreateQueryDefs() As Boolean
       " , IIF(ISNULL(c.[ValueDate]),0,c.ValueDate) AS [valuedate]" & _
       " , IIF(ISNULL(c.[LookupTableID]),0) AS [lookuptableid]" & _
       " , IIF(ISNULL(c.[LookupColumnID]),0) AS [lookupcolumnid]" & _
+      " , 0 AS [isevaluated]" & _
       " FROM tmpExpressions e" & _
       " INNER JOIN tmpComponents c ON c.CalculationID = e.exprID" & _
       " WHERE c.ComponentID = @expressionid" & _
