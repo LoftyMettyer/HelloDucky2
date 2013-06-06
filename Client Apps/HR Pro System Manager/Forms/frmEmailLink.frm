@@ -143,7 +143,6 @@ Begin VB.Form frmEmailLink
       TabPicture(1)   =   "frmEmailLink.frx":1D90
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "frmContent"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       Begin VB.Frame frmContent 
          Height          =   6240
@@ -478,7 +477,6 @@ Begin VB.Form frmEmailLink
          Begin VB.ListBox lstColumnLinkColumns 
             Height          =   3660
             Left            =   195
-            Sorted          =   -1  'True
             Style           =   1  'Checkbox
             TabIndex        =   13
             Top             =   300
@@ -680,6 +678,7 @@ Private mblnReadOnly As Boolean
 Private mcolAvailableComponents As Collection
 Private mcolRecipients() As Collection
 
+Private mlngSelectedID As Long
 
 Public Property Let Changed(ByVal value As Boolean)
   If Not mblnLoading Then
@@ -1193,6 +1192,14 @@ End Sub
 
 Private Sub Form_Activate()
   Form_Resize
+
+  'MH20100326 HRPRO-736 Bodge to get list index to ensure the selected item is visible
+  If mlngSelectedID > 0 Then
+    lstColumnLinkColumns.ListIndex = 0
+    lstColumnLinkColumns.ListIndex = mlngSelectedID - 1
+    mlngSelectedID = 0
+  End If
+
 End Sub
 
 Private Sub Form_Load()
@@ -1579,6 +1586,8 @@ End Sub
 
 Private Sub PopulateColumns(lngTableID As Long)
 
+  'Dim lngSelectedID As Long
+
   lstColumnLinkColumns.Clear
   cboDateLinkColumn.Clear
   
@@ -1604,6 +1613,10 @@ Private Sub PopulateColumns(lngTableID As Long)
           lstColumnLinkColumns.ItemData(lstColumnLinkColumns.NewIndex) = !ColumnID
           lstColumnLinkColumns.Selected(lstColumnLinkColumns.NewIndex) = mobjTempLink.IsColumnSelected(!ColumnID)
 
+          If mlngSelectedID = 0 And lstColumnLinkColumns.SelCount > 0 Then
+            mlngSelectedID = lstColumnLinkColumns.NewIndex + 1
+          End If
+          
           If !DataType = sqlDate Then
             cboDateLinkColumn.AddItem !ColumnName
             cboDateLinkColumn.ItemData(cboDateLinkColumn.NewIndex) = !ColumnID
@@ -1616,6 +1629,20 @@ Private Sub PopulateColumns(lngTableID As Long)
     End If
   End With
 
+'  If lngSelectedID > 0 Then
+'    lstColumnLinkColumns.Refresh
+'    If lngSelectedID = lstColumnLinkColumns.ListCount - 1 Then
+'      lstColumnLinkColumns.ListIndex = 0
+'      lstColumnLinkColumns.ListIndex = lstColumnLinkColumns.ListCount - 1
+'    Else
+'      'lstColumnLinkColumns.ListIndex = 0
+'      'lstColumnLinkColumns.AddItem lstColumnLinkColumns.List(lstColumnLinkColumns.ListCount - 1) & "z"  'Add to the bottom...
+'      lstColumnLinkColumns.ListIndex = lngSelectedID + 1
+'      'lstColumnLinkColumns.RemoveItem lstColumnLinkColumns.NewIndex
+'    End If
+'  End If
+  
+  
   With cboDateLinkColumn
     If .ListCount = 0 Then
       cboDateLinkColumn.AddItem "<None>"
