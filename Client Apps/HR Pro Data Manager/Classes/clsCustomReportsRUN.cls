@@ -458,7 +458,7 @@ Private Function CreateMutipleChildTempTable() As Boolean
                 Case adDBTimeStamp, adDate, adDBDate, adDBTime
                   'TM20030124 Fault 4973
                   If Not IsNull(rsParent.Fields(iFields).Value) Then
-                    sVALUES = sVALUES & "'" & Replace(Format(rsParent.Fields(iFields).Value, "mm/dd/yyyy"), UI.GetSystemDateSeparator, "/") & "',"
+                    sVALUES = sVALUES & "'" & Replace(format(rsParent.Fields(iFields).Value, "mm/dd/yyyy"), UI.GetSystemDateSeparator, "/") & "',"
                   Else
                     sVALUES = sVALUES & "NULL,"
                   End If
@@ -497,7 +497,7 @@ Private Function CreateMutipleChildTempTable() As Boolean
                     Case adDBTimeStamp, adDate, adDBDate, adDBTime
                       'TM20030124 Fault 4973
                       If Not IsNull(avChildRecordsets(0, iChildCount).Fields(iFields).Value) Then
-                        sVALUES = sVALUES & "'" & Replace(Format(avChildRecordsets(0, iChildCount).Fields(iFields).Value, "mm/dd/yyyy"), UI.GetSystemDateSeparator, "/") & "',"
+                        sVALUES = sVALUES & "'" & Replace(format(avChildRecordsets(0, iChildCount).Fields(iFields).Value, "mm/dd/yyyy"), UI.GetSystemDateSeparator, "/") & "',"
                       Else
                         sVALUES = sVALUES & "NULL,"
                       End If
@@ -559,7 +559,7 @@ Private Function CreateMutipleChildTempTable() As Boolean
               Case adDBTimeStamp, adDate, adDBDate, adDBTime
                 'TM20030124 Fault 4973
                 If Not IsNull(rsParent.Fields(iFields).Value) Then
-                  sVALUES = sVALUES & "'" & Replace(Format(rsParent.Fields(iFields).Value, "mm/dd/yyyy"), UI.GetSystemDateSeparator, "/") & "',"
+                  sVALUES = sVALUES & "'" & Replace(format(rsParent.Fields(iFields).Value, "mm/dd/yyyy"), UI.GetSystemDateSeparator, "/") & "',"
                 Else
                   sVALUES = sVALUES & "NULL,"
                 End If
@@ -798,9 +798,9 @@ Public Function RunCustomReport(pstrPicklistFilterIDs As String) As Boolean
   If fOK Then fOK = PopulateGrid
 
   If fOK Then
-    If gblnBatchMode Or gblnReportPackMode Or Not mblnPreviewOnScreen Or Not mblnOutputScreen Then
+    If gblnBatchMode Or gblnReportPackMode Or Not mblnPreviewOnScreen Then
       fOK = OutputReport(False)
-    ElseIf mblnPreviewOnScreen Or mblnOutputScreen Then
+    ElseIf mblnPreviewOnScreen Then
       Screen.MousePointer = vbDefault
       mfrmOutput.BaseTable = mstrCustomReportsBaseTableName
       mfrmOutput.Parent = Me
@@ -2975,16 +2975,16 @@ Private Function PopulateGrid_FormatData(sfieldname As String, vData As Variant 
       'Do the DP thing
       If mvarColDetails(3, pintLoop) Then 'Is Numeric
         If mvarColDetails(2, pintLoop) <> 0 Then
-          vData = Format(vData, "0." & String(mvarColDetails(2, pintLoop), "0"))
+          vData = format(vData, "0." & String(mvarColDetails(2, pintLoop), "0"))
         Else
 
           If mvarColDetails(1, pintLoop) > 0 Then   'Size restriction
             'RH 02/02/01 - Bug 1706 - If we are displaying with zero decimal places
             '                         and the data is 0, format as 0 not #
             If vData = "0" Then
-              vData = Format(vData, "0")
+              vData = format(vData, "0")
             Else
-              vData = Format(vData, "#")
+              vData = format(vData, "#")
             End If
           End If
 
@@ -2999,15 +2999,15 @@ Private Function PopulateGrid_FormatData(sfieldname As String, vData As Variant 
 
       'If its a date column, format it as dateformat
       If mvarColDetails(17, pintLoop) Then
-        vData = Format(vData, DateFormat)
+        vData = format(vData, DateFormat)
       End If
 
       'Numeric digit separators
       If mvarColDetails(22, pintLoop) Then
         If mvarColDetails(2, pintLoop) <> 0 Then
-          vData = Format(vData, "#,0." & String(mvarColDetails(2, pintLoop), "0"))
+          vData = format(vData, "#,0." & String(mvarColDetails(2, pintLoop), "0"))
         Else
-          vData = Format(vData, "#,0")
+          vData = format(vData, "#,0")
         End If
       End If
 
@@ -3169,7 +3169,7 @@ Private Function PopulateGrid_DoSummaryInfo(pavColumns As Variant, _
           Else
             If mvarColDetails(17, iColumnIndex) Then
               ' Date column.
-              sWhereCode = sWhereCode & "([" & CStr(mvarColDetails(0, iColumnIndex)) & "] = '" & Replace(Format(pavColumns(3, iColumnIndex), "mm/dd/yyyy"), UI.GetSystemDateSeparator, "/") & "')"
+              sWhereCode = sWhereCode & "([" & CStr(mvarColDetails(0, iColumnIndex)) & "] = '" & Replace(format(pavColumns(3, iColumnIndex), "mm/dd/yyyy"), UI.GetSystemDateSeparator, "/") & "')"
             Else
               If mvarColDetails(18, iColumnIndex) Then
                 ' Logic Column.
@@ -3345,22 +3345,22 @@ Private Function PopulateGrid_DoSummaryInfo(pavColumns As Variant, _
         ElseIf mvarColDetails(2, iLoop) = 0 And mvarColDetails(1, iLoop) = 0 Then
           strAggrValue = rsTemp.Fields("avg_" & Trim(Str(iLoop)))
         ElseIf mvarColDetails(1, iLoop) > 0 And mvarColDetails(2, iLoop) = 0 Then
-          strAggrValue = Format(rsTemp.Fields("avg_" & Trim(Str(iLoop))), "#0")
+          strAggrValue = format(rsTemp.Fields("avg_" & Trim(Str(iLoop))), "#0")
         ElseIf mvarColDetails(2, iLoop) = 0 Then
           strAggrValue = rsTemp.Fields("avg_" & Trim(Str(iLoop)))
         Else
-          strAggrValue = Format(rsTemp.Fields("avg_" & Trim(Str(iLoop))), "0." & String(mvarColDetails(2, iLoop), "0"))
+          strAggrValue = format(rsTemp.Fields("avg_" & Trim(Str(iLoop))), "0." & String(mvarColDetails(2, iLoop), "0"))
         End If
         
         If mvarColDetails(22, iLoop) Then
           If mvarColDetails(2, iLoop) = 0 And (InStr(1, strAggrValue, ".") <= 0) Then
-            strAggrValue = Format(strAggrValue, "#,0" & String(mvarColDetails(2, iLoop), "0"))
+            strAggrValue = format(strAggrValue, "#,0" & String(mvarColDetails(2, iLoop), "0"))
           ElseIf (mvarColDetails(1, iLoop) > 0) And (mvarColDetails(2, iLoop) = 0) Then
-            strAggrValue = Format(strAggrValue, "#,0")
+            strAggrValue = format(strAggrValue, "#,0")
           ElseIf mvarColDetails(2, iLoop) = 0 Then
-            strAggrValue = Format(strAggrValue, "#,0.#")
+            strAggrValue = format(strAggrValue, "#,0.#")
           Else
-            strAggrValue = Format(strAggrValue, "#,0." & String(mvarColDetails(2, iLoop), "0"))
+            strAggrValue = format(strAggrValue, "#,0." & String(mvarColDetails(2, iLoop), "0"))
           End If
         End If
         
@@ -3414,7 +3414,7 @@ Private Function PopulateGrid_DoSummaryInfo(pavColumns As Variant, _
           miAmountOfRecords = IIf(Not IsNull(rsTemp.Fields("cnt_" & Trim(Str(iLoop)))), rsTemp.Fields("cnt_" & Trim(Str(iLoop))), 0)
         End If
         
-        sCountAddString = sCountAddString & IIf(IsNull(rsTemp.Fields("cnt_" & Trim(Str(iLoop)))), "0", Format(rsTemp.Fields("cnt_" & Trim(Str(iLoop))), "0")) & vbTab
+        sCountAddString = sCountAddString & IIf(IsNull(rsTemp.Fields("cnt_" & Trim(Str(iLoop)))), "0", format(rsTemp.Fields("cnt_" & Trim(Str(iLoop))), "0")) & vbTab
         
         If Not IsNull(rsTemp.Fields("cnt_" & Trim(Str(iLoop)))) Then
           If mfrmOutput.TextWidth(rsTemp.Fields("cnt_" & Trim(Str(iLoop)))) > mlngColWidth(intColCounter) Then
@@ -3464,16 +3464,16 @@ Private Function PopulateGrid_DoSummaryInfo(pavColumns As Variant, _
         ElseIf mvarColDetails(2, iLoop) = 0 And mvarColDetails(1, iLoop) = 0 Then
           strAggrValue = rsTemp.Fields("ttl_" & Trim(Str(iLoop)))
         ElseIf mvarColDetails(2, iLoop) = 0 Then
-          strAggrValue = Format(rsTemp.Fields("ttl_" & Trim(Str(iLoop))), "0")
+          strAggrValue = format(rsTemp.Fields("ttl_" & Trim(Str(iLoop))), "0")
         Else
-          strAggrValue = Format(rsTemp.Fields("ttl_" & Trim(Str(iLoop))), "0." & String(mvarColDetails(2, iLoop), "0"))
+          strAggrValue = format(rsTemp.Fields("ttl_" & Trim(Str(iLoop))), "0." & String(mvarColDetails(2, iLoop), "0"))
         End If
         
         If mvarColDetails(22, iLoop) Then
           If mvarColDetails(2, iLoop) = 0 Then
-            strAggrValue = Format(strAggrValue, "#,0" & String(mvarColDetails(2, iLoop), "0"))
+            strAggrValue = format(strAggrValue, "#,0" & String(mvarColDetails(2, iLoop), "0"))
           Else
-            strAggrValue = Format(strAggrValue, "#,0." & String(mvarColDetails(2, iLoop), "0"))
+            strAggrValue = format(strAggrValue, "#,0." & String(mvarColDetails(2, iLoop), "0"))
           End If
         End If
         
@@ -3785,22 +3785,22 @@ Private Function PopulateGrid_DoGrandSummary() As Boolean
         ElseIf mvarColDetails(2, iLoop) = 0 And mvarColDetails(1, iLoop) = 0 Then
           strAggrValue = rsTemp.Fields("avg_" & Trim(Str(iLoop)))
         ElseIf mvarColDetails(1, iLoop) > 0 And mvarColDetails(2, iLoop) = 0 Then
-          strAggrValue = Format(rsTemp.Fields("avg_" & Trim(Str(iLoop))), "#0")
+          strAggrValue = format(rsTemp.Fields("avg_" & Trim(Str(iLoop))), "#0")
         ElseIf mvarColDetails(2, iLoop) = 0 Then
           strAggrValue = rsTemp.Fields("avg_" & Trim(Str(iLoop)))
         Else
-          strAggrValue = Format(rsTemp.Fields("avg_" & Trim(Str(iLoop))), "0." & String(mvarColDetails(2, iLoop), "0"))
+          strAggrValue = format(rsTemp.Fields("avg_" & Trim(Str(iLoop))), "0." & String(mvarColDetails(2, iLoop), "0"))
         End If
       
         If mvarColDetails(22, iLoop) Then
           If mvarColDetails(2, iLoop) = 0 And (InStr(1, strAggrValue, ".") <= 0) Then
-            strAggrValue = Format(strAggrValue, "#,0" & String(mvarColDetails(2, iLoop), "0"))
+            strAggrValue = format(strAggrValue, "#,0" & String(mvarColDetails(2, iLoop), "0"))
           ElseIf (mvarColDetails(1, iLoop) > 0) And (mvarColDetails(2, iLoop) = 0) Then
-            strAggrValue = Format(strAggrValue, "#,0")
+            strAggrValue = format(strAggrValue, "#,0")
           ElseIf mvarColDetails(2, iLoop) = 0 Then
-            strAggrValue = Format(strAggrValue, "#,0.#")
+            strAggrValue = format(strAggrValue, "#,0.#")
           Else
-            strAggrValue = Format(strAggrValue, "#,0." & String(mvarColDetails(2, iLoop), "0"))
+            strAggrValue = format(strAggrValue, "#,0." & String(mvarColDetails(2, iLoop), "0"))
           End If
         End If
         
@@ -3848,7 +3848,7 @@ Private Function PopulateGrid_DoGrandSummary() As Boolean
           fHasCount = True
         End If
 
-        sCountAddString = sCountAddString & IIf(IsNull(rsTemp.Fields("cnt_" & Trim(Str(iLoop)))), "0", Format(rsTemp.Fields("cnt_" & Trim(Str(iLoop))), "0")) & vbTab
+        sCountAddString = sCountAddString & IIf(IsNull(rsTemp.Fields("cnt_" & Trim(Str(iLoop)))), "0", format(rsTemp.Fields("cnt_" & Trim(Str(iLoop))), "0")) & vbTab
       
         If Not IsNull(rsTemp.Fields("cnt_" & Trim(Str(iLoop)))) Then
           If mfrmOutput.TextWidth(rsTemp.Fields("cnt_" & Trim(Str(iLoop)))) > mlngColWidth(intColCounter) Then
@@ -3895,17 +3895,17 @@ Private Function PopulateGrid_DoGrandSummary() As Boolean
           strAggrValue = rsTemp.Fields("ttl_" & Trim(Str(iLoop)))
         ElseIf mvarColDetails(2, iLoop) = 0 Then
 '          sTotalAddString = sTotalAddString & Format(rsTemp.Fields("ttl_" & Trim(Str(iLoop))), "0") & vbTab
-          strAggrValue = Format(rsTemp.Fields("ttl_" & Trim(Str(iLoop))), "0")
+          strAggrValue = format(rsTemp.Fields("ttl_" & Trim(Str(iLoop))), "0")
         Else
 '          sTotalAddString = sTotalAddString & Format(rsTemp.Fields("ttl_" & Trim(Str(iLoop))), "0." & String(mvarColDetails(2, iLoop), "0")) & vbTab
-          strAggrValue = Format(rsTemp.Fields("ttl_" & Trim(Str(iLoop))), "0." & String(mvarColDetails(2, iLoop), "0"))
+          strAggrValue = format(rsTemp.Fields("ttl_" & Trim(Str(iLoop))), "0." & String(mvarColDetails(2, iLoop), "0"))
         End If
         
         If mvarColDetails(22, iLoop) Then
           If (mvarColDetails(2, iLoop) = 0) Then
-            strAggrValue = Format(strAggrValue, "#,0" & String(mvarColDetails(2, iLoop), "0"))
+            strAggrValue = format(strAggrValue, "#,0" & String(mvarColDetails(2, iLoop), "0"))
           Else
-            strAggrValue = Format(strAggrValue, "#,0." & String(mvarColDetails(2, iLoop), "0"))
+            strAggrValue = format(strAggrValue, "#,0." & String(mvarColDetails(2, iLoop), "0"))
           End If
         End If
         
@@ -4322,8 +4322,8 @@ Private Function CalculateBradfordFactors() As Boolean
   'TM24062004 Fault 8800 - we don't need to pass the full date AND time through.
 '  strReportStartDate = Format(mdtAbsenceFrom, "YYYY/MM/DD 00:00:00.000")
 '  strReportEndDate = Format(mdtAbsenceTo, "YYYY/MM/DD 00:00:00.000")
-  strReportStartDate = Format(mdtAbsenceFrom, "YYYY/MM/DD")
-  strReportEndDate = Format(mdtAbsenceTo, "YYYY/MM/DD")
+  strReportStartDate = format(mdtAbsenceFrom, "YYYY/MM/DD")
+  strReportEndDate = format(mdtAbsenceTo, "YYYY/MM/DD")
 
   ' Merge the absence records if the continuous field is defined.
   If Not Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCECONTINUOUS)) = "0" Then
@@ -4574,12 +4574,12 @@ Private Function GetBradfordReportDefinition() As Boolean
     End If
     
     'Append the resulting string expression to the grid header
-    mstrCustomReportsName = "Bradford Factor Report (" + Format(mdtAbsenceFrom, DateFormat) + _
-        " - " + Format(mdtAbsenceTo, DateFormat) & ")" & strExprId
+    mstrCustomReportsName = "Bradford Factor Report (" + format(mdtAbsenceFrom, DateFormat) + _
+        " - " + format(mdtAbsenceTo, DateFormat) & ")" & strExprId
   Else
     'Set the grid header with no picklist/filter information
-    mstrCustomReportsName = "Bradford Factor Report (" + Format(mdtAbsenceFrom, DateFormat) + _
-        " - " + Format(mdtAbsenceTo, DateFormat) & ")"
+    mstrCustomReportsName = "Bradford Factor Report (" + format(mdtAbsenceFrom, DateFormat) + _
+        " - " + format(mdtAbsenceTo, DateFormat) & ")"
   End If
               
   mstrCustomReportsDescription = mstrCustomReportsName
@@ -5221,7 +5221,7 @@ Public Function OutputReport(blnPrompt As Boolean) As Boolean
               
             ElseIf (.Columns(0).CellText(bm) <> "*") Then
               blnBreakCheck = False
-              If objOutput.Format = fmtExcelPivotTable And _
+              If objOutput.format = fmtExcelPivotTable And _
                     ((.Columns(0).CellText(bm) = "*average*") Or _
                     (.Columns(0).CellText(bm) = "*count*") Or _
                     (.Columns(0).CellText(bm) = "*total*")) Then
@@ -5475,7 +5475,7 @@ Private Function PopulateGrid_LoadRecords() As Boolean
                 'RH 01/02/01
                 'Dates need to be formatted with yyyy for boc to work ok
                 If mvarColDetails(17, iColumnIndex) Then 'Date
-                  vValue = Left(Format(mrstCustomReportsOutput.Fields(iColumnIndex - 1).Value, sDateFormat), mvarColDetails(1, iColumnIndex))
+                  vValue = Left(format(mrstCustomReportsOutput.Fields(iColumnIndex - 1).Value, sDateFormat), mvarColDetails(1, iColumnIndex))
                   
                 ElseIf mvarColDetails(3, iColumnIndex) Then 'Numeric
                   vValue = Left(mrstCustomReportsOutput.Fields(iColumnIndex - 1).Value, mvarColDetails(1, iColumnIndex))
@@ -5638,7 +5638,7 @@ Private Function PopulateGrid_LoadRecords() As Boolean
   
             'TM17052005 Fault 10086 - Need to store diffent values depending on the type.
             If mvarColDetails(17, intSkippedIndex + 1) Then 'Date
-              mvarColDetails(11, intSkippedIndex + 1) = Format(mrstCustomReportsOutput.Fields(intSkippedIndex).Value, sDateFormat)
+              mvarColDetails(11, intSkippedIndex + 1) = format(mrstCustomReportsOutput.Fields(intSkippedIndex).Value, sDateFormat)
               
             ElseIf (mvarColDetails(3, intSkippedIndex + 1)) Then 'Numeric
               mvarColDetails(11, intSkippedIndex + 1) = IIf(IsNull(mrstCustomReportsOutput.Fields(intSkippedIndex).Value), "", mrstCustomReportsOutput.Fields(intSkippedIndex).Value)
@@ -5673,7 +5673,7 @@ Private Function PopulateGrid_LoadRecords() As Boolean
          
             'TM17052005 Fault 10086 - Need to store diffent values depending on the type.
             If mvarColDetails(17, iLoop + 1) Then 'Date
-              mvarColDetails(11, iLoop + 1) = Format(mrstCustomReportsOutput.Fields(iLoop).Value, sDateFormat)
+              mvarColDetails(11, iLoop + 1) = format(mrstCustomReportsOutput.Fields(iLoop).Value, sDateFormat)
               
             ElseIf (mvarColDetails(3, iLoop + 1)) Then 'Numeric
               mvarColDetails(11, iLoop + 1) = IIf(IsNull(mrstCustomReportsOutput.Fields(iLoop).Value), "", mrstCustomReportsOutput.Fields(iLoop).Value)
