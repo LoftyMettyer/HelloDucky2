@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
@@ -22,6 +22,7 @@ Begin VB.Form frmEmailLink
    HelpContextID   =   1016
    Icon            =   "frmEmailLink.frx":0000
    LinkTopic       =   "Form2"
+   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   7500
@@ -115,6 +116,7 @@ Begin VB.Form frmEmailLink
       _Version        =   393216
       Style           =   1
       Tabs            =   2
+      Tab             =   1
       TabHeight       =   520
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Verdana"
@@ -127,26 +129,22 @@ Begin VB.Form frmEmailLink
       EndProperty
       TabCaption(0)   =   "De&finition"
       TabPicture(0)   =   "frmEmailLink.frx":1D74
-      Tab(0).ControlEnabled=   -1  'True
+      Tab(0).ControlEnabled=   0   'False
       Tab(0).Control(0)=   "fraLinkTypeDetails(1)"
-      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).Control(1)=   "fraLinkTypeDetails(2)"
-      Tab(0).Control(1).Enabled=   0   'False
       Tab(0).Control(2)=   "fraLinkTypeDetails(0)"
-      Tab(0).Control(2).Enabled=   0   'False
       Tab(0).Control(3)=   "frmDefinition(0)"
-      Tab(0).Control(3).Enabled=   0   'False
       Tab(0).Control(4)=   "frmDefinition(1)"
-      Tab(0).Control(4).Enabled=   0   'False
       Tab(0).ControlCount=   5
       TabCaption(1)   =   "Co&ntent"
       TabPicture(1)   =   "frmEmailLink.frx":1D90
-      Tab(1).ControlEnabled=   0   'False
+      Tab(1).ControlEnabled=   -1  'True
       Tab(1).Control(0)=   "frmContent"
+      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       Begin VB.Frame frmContent 
          Height          =   6240
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   33
          Top             =   360
          Visible         =   0   'False
@@ -304,7 +302,7 @@ Begin VB.Form frmEmailLink
          Caption         =   "Link Type :"
          Height          =   4105
          Index           =   1
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   8
          Top             =   2495
          Width           =   1480
@@ -342,7 +340,7 @@ Begin VB.Form frmEmailLink
       Begin VB.Frame frmDefinition 
          Height          =   2075
          Index           =   0
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   0
          Top             =   360
          Width           =   8800
@@ -470,7 +468,7 @@ Begin VB.Form frmEmailLink
          Caption         =   "Column Related Link :"
          Height          =   4105
          Index           =   0
-         Left            =   1720
+         Left            =   -73280
          TabIndex        =   12
          Top             =   2495
          Width           =   7200
@@ -488,7 +486,7 @@ Begin VB.Form frmEmailLink
          Caption         =   "Date Related Link :"
          Height          =   4105
          Index           =   2
-         Left            =   1720
+         Left            =   -73280
          TabIndex        =   18
          Top             =   2495
          Visible         =   0   'False
@@ -580,7 +578,7 @@ Begin VB.Form frmEmailLink
          Caption         =   "Record Related Link :"
          Height          =   4105
          Index           =   1
-         Left            =   1720
+         Left            =   -73280
          TabIndex        =   14
          Top             =   2495
          Visible         =   0   'False
@@ -658,8 +656,8 @@ Private Const FORMMINHEIGHT = 5715
 
 Private Const EM_CHARFROMPOS& = &HD7
 Private Type POINTAPI
-    x As Long
-    y As Long
+    X As Long
+    Y As Long
 End Type
 
 Private Declare Function SendMessageLong Lib "user32" Alias "SendMessageA" (ByVal hWnd As Long, ByVal wMsg As Long, ByVal wParam As Long, ByVal lParam As Long) As Long
@@ -682,23 +680,23 @@ Private mcolRecipients() As Collection
 
 Public Property Let Changed(ByVal value As Boolean)
   If Not mblnLoading Then
-    cmdOK.Enabled = value
+    cmdOk.Enabled = value
   End If
 End Property
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 
 
 ' Return the character position under the mouse.
-Public Function TextBoxCursorPos(ByVal txt As TextBox, ByVal x As Single, ByVal y As Single) As Long
+Public Function TextBoxCursorPos(ByVal txt As TextBox, ByVal X As Single, ByVal Y As Single) As Long
     ' Convert the position to pixels.
-    x = x \ Screen.TwipsPerPixelX
-    y = y \ Screen.TwipsPerPixelY
+    X = X \ Screen.TwipsPerPixelX
+    Y = Y \ Screen.TwipsPerPixelY
 
     ' Get the character number
-    TextBoxCursorPos = SendMessageLong(txt.hWnd, EM_CHARFROMPOS, 0&, CLng(x + y * &H10000)) And &HFFFF&
+    TextBoxCursorPos = SendMessageLong(txt.hWnd, EM_CHARFROMPOS, 0&, CLng(X + Y * &H10000)) And &HFFFF&
 End Function
 
 
@@ -1224,36 +1222,19 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
 End Sub
 
 Private Sub Form_Resize()
-  
+'
   Dim GAP As Long
   Dim lngLeft As Long
   Dim lngTop As Long
   Dim lngWidth As Long
   Dim lngHeight As Long
-  
+
   On Local Error Resume Next
-  
-'  Private Const FORMMINWIDTH = 7395
-'Private Const FORMMINHEIGHT = 5715
-'
-'
-'
-'  If FORMMINWIDTH < 7395 Then
-'    FORMMINWIDTH = 7395
-'    Me.Refresh
-'    Exit Sub
-'  End If
-'
-'  If FORMMINHEIGHT < 5715 Then
-'    FORMMINHEIGHT = 5715
-'    Exit Sub
-'  End If
-  
-  
+
   'JPD 20030908 Fault 5756
   DisplayApplication
-  
-  
+
+
   GAP = 100
 
 
@@ -1261,15 +1242,15 @@ Private Sub Form_Resize()
   lngLeft = Me.ScaleWidth - (cmdCancel.Width + GAP)
   lngTop = Me.ScaleHeight - (cmdCancel.Height + GAP)
   cmdCancel.Move lngLeft, lngTop
-  
-  lngLeft = lngLeft - (cmdOK.Width + GAP)
-  cmdOK.Move lngLeft, lngTop
-  
+
+  lngLeft = lngLeft - (cmdOk.Width + GAP)
+  cmdOk.Move lngLeft, lngTop
+
   lngWidth = Me.ScaleWidth - (GAP * 2)
   lngHeight = lngTop - (GAP * 2)
   SSTab1.Move GAP, GAP, lngWidth, lngHeight
-  
-  
+
+
   GAP = 200
 
 
@@ -1278,36 +1259,36 @@ Private Sub Form_Resize()
   lngTop = 240 + GAP
   lngWidth = lngWidth - (frmContent.Left + GAP)
   lngHeight = lngHeight - (frmContent.Top + GAP)
-  
+
   frmDefinition(0).Move lngLeft, lngTop, lngWidth
   frmContent.Move lngLeft, lngTop, lngWidth, lngHeight
 
-  
+
   lngLeft = GAP
   lngTop = frmDefinition(0).Top + frmDefinition(0).Height + 100
   lngWidth = frmDefinition(1).Width
   lngHeight = SSTab1.Height - (lngTop + GAP)
-  
+
   frmDefinition(1).Move lngLeft, lngTop, lngWidth, lngHeight
-  
+
   lngLeft = frmDefinition(1).Left + frmDefinition(1).Width + GAP
   lngWidth = SSTab1.Width - (lngLeft + GAP)
-  
+
   fraLinkTypeDetails(0).Move lngLeft, lngTop, lngWidth, lngHeight
   fraLinkTypeDetails(1).Move lngLeft, lngTop, lngWidth, lngHeight
   fraLinkTypeDetails(2).Move lngLeft, lngTop, lngWidth, lngHeight
-  
-  
+
+
   'DEFINITION TAB CONTROLS
   lngWidth = frmDefinition(0).Width - GAP
-  
+
   txtTitle.Width = lngWidth - txtTitle.Left
   cmdFilter.Left = lngWidth - cmdFilter.Width
   txtFilter.Width = cmdFilter.Left - txtFilter.Left
-  
+
   lngWidth = fraLinkTypeDetails(0).Width - GAP
   lngHeight = fraLinkTypeDetails(0).Height - GAP
-  
+
   lstColumnLinkColumns.Width = lngWidth - (lstColumnLinkColumns.Left)
   lstColumnLinkColumns.Height = lngHeight - (lstColumnLinkColumns.Top)
   cboDateLinkColumn.Width = lngWidth - (cboDateLinkColumn.Left)
@@ -1316,16 +1297,21 @@ Private Sub Form_Resize()
   'CONTENT TAB CONTROLS
   lngWidth = frmContent.Width - GAP
   lngHeight = frmContent.Height - GAP
-  
+
   txtRecipients(0).Width = lngWidth - txtRecipients(0).Left
   txtRecipients(1).Width = lngWidth - txtRecipients(0).Left
   txtRecipients(2).Width = lngWidth - txtRecipients(0).Left
   txtContent(0).Width = lngWidth - txtContent(0).Left
+
+  cmdAttachmentClear.Font.Size = 8
   cmdAttachmentClear.Left = lngWidth - cmdAttachmentClear.Width
+  cmdAttachmentClear.Font.Size = 20
+  
   txtAttachment.Width = cmdAttachmentClear.Left - txtAttachment.Left
   txtContent(1).Height = lngHeight - txtContent(1).Top
   txtContent(1).Width = lngWidth - txtContent(1).Left
   sstrvAvailable.Height = lngHeight - sstrvAvailable.Top
+
 
   On Local Error GoTo 0
 
@@ -1417,11 +1403,11 @@ Private Sub txtContent_Change(Index As Integer)
 End Sub
 
 Private Sub txtContent_GotFocus(Index As Integer)
-  cmdOK.Default = False
+  cmdOk.Default = False
 End Sub
 
 Private Sub txtContent_LostFocus(Index As Integer)
-  cmdOK.Default = True
+  cmdOk.Default = True
 End Sub
 
 Private Sub txtFilter_Change()
@@ -1655,9 +1641,9 @@ End Sub
 '  End If
 'End Sub
 
-Private Sub sstrvAvailable_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub sstrvAvailable_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
 
-  sstrvAvailable.SelectedItem = sstrvAvailable.HitTest(x, y)
+  sstrvAvailable.SelectedItem = sstrvAvailable.HitTest(X, Y)
   
   If Button = vbLeftButton Then
     If Not (sstrvAvailable.SelectedItem Is Nothing) Then
@@ -1670,7 +1656,7 @@ Private Sub sstrvAvailable_MouseDown(Button As Integer, Shift As Integer, x As S
 End Sub
 
 
-Private Sub sstrvAvailable_DragOver(Source As Control, x As Single, y As Single, State As Integer)
+Private Sub sstrvAvailable_DragOver(Source As Control, X As Single, Y As Single, State As Integer)
   
   'Key Prefixes:
   '
@@ -1680,7 +1666,7 @@ Private Sub sstrvAvailable_DragOver(Source As Control, x As Single, y As Single,
   ' Z = Heading (no action)
   
   If sstrvAvailable.SelectedItem Is Nothing Then
-    sstrvAvailable.SelectedItem = sstrvAvailable.HitTest(x, y)
+    sstrvAvailable.SelectedItem = sstrvAvailable.HitTest(X, Y)
   End If
   
   If Not (sstrvAvailable.SelectedItem Is Nothing) Then
@@ -1697,11 +1683,11 @@ Private Sub sstrvAvailable_DragOver(Source As Control, x As Single, y As Single,
   End If
 End Sub
 
-Private Sub frmContent_DragOver(Source As Control, x As Single, y As Single, State As Integer)
+Private Sub frmContent_DragOver(Source As Control, X As Single, Y As Single, State As Integer)
   Source.DragIcon = picNoDrop.Picture
 End Sub
 
-Private Sub txtContent_DragOver(Index As Integer, Source As Control, x As Single, y As Single, State As Integer)
+Private Sub txtContent_DragOver(Index As Integer, Source As Control, X As Single, Y As Single, State As Integer)
   If TypeOf Source Is TreeView Then
     
     'sstrvAvailable.SelectedItem = sstrvAvailable.HitTest(x, y)
@@ -1721,20 +1707,20 @@ Private Sub txtContent_DragOver(Index As Integer, Source As Control, x As Single
     End If
     
     ' Source.DragIcon = picDocument(0).Picture
-    txtContent(Index).SelStart = TextBoxCursorPos(txtContent(Index), x, y)
+    txtContent(Index).SelStart = TextBoxCursorPos(txtContent(Index), X, Y)
     txtContent(Index).SelLength = 0
   Else
     Source.DragIcon = picNoDrop.Picture
   End If
 End Sub
 
-Private Sub txtContent_DragDrop(Index As Integer, Source As Control, x As Single, y As Single)
+Private Sub txtContent_DragDrop(Index As Integer, Source As Control, X As Single, Y As Single)
 
   Dim strFieldText As String
   Dim lngStart As Long
 
   If TypeOf Source Is TreeView Then
-    lngStart = TextBoxCursorPos(txtContent(Index), x, y)
+    lngStart = TextBoxCursorPos(txtContent(Index), X, Y)
     InsertColumn Index, lngStart
   End If
 
