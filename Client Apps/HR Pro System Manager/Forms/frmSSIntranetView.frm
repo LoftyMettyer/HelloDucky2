@@ -213,7 +213,7 @@ Begin VB.Form frmSSIntranetView
          Height          =   400
          Left            =   1400
          TabIndex        =   24
-         Top             =   -15
+         Top             =   0
          Width           =   1200
       End
       Begin VB.CommandButton cmdOk 
