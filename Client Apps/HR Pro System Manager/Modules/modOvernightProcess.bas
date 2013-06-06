@@ -27,11 +27,9 @@ Public Function CreateOvernightProcess(palngExpressions As Variant, pfRefreshDat
   'fOK = OvernightJob2(palngExpressions)   'Always refresh Step 2 !!!
   fOK = gobjHRProEngine.Script.ScriptOvernightStep2
 
-  If pfRefreshDatabase Then
-    If fOK Then fOK = OvernightJob1       'Step 1
-    If fOK Then fOK = OvernightJob3       'Step 3
-    If fOK Then fOK = OvernightJob4       'Step 4
-  End If
+  If fOK Then fOK = OvernightJob1       'Step 1
+  If fOK Then fOK = OvernightJob3       'Step 3
+  If fOK Then fOK = OvernightJob4       'Step 4
 
   ' Reindex and update stats job
   If fOK Then fOK = OvernightJob5         'Always refresh Step 5 !!!
@@ -387,7 +385,6 @@ Private Function OvernightJob3() As Boolean
     "    DELETE FROM ASRSYSSystemSettings WHERE [Section] = 'database' and [SettingKey] = 'updatingdatedependantcolumns'" & vbNewLine & vbNewLine & _
     "    INSERT ASRSYSSystemSettings([Section],[SettingKey],[SettingValue])" & vbNewLine & _
     "    VALUES('database','updatingdatedependantcolumns',0)" & vbNewLine & vbNewLine & _
-    "    EXEC sp_dboption @sDBName, 'recursive triggers', 'FALSE'" & vbNewLine & vbNewLine & _
     "END"
     
   gADOCon.Execute strSQL, , adExecuteNoRecords
