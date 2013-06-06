@@ -2,7 +2,7 @@ VERSION 5.00
 Begin VB.Form frmLicence 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Licence Information"
-   ClientHeight    =   6120
+   ClientHeight    =   6135
    ClientLeft      =   45
    ClientTop       =   330
    ClientWidth     =   5325
@@ -22,7 +22,7 @@ Begin VB.Form frmLicence
    LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   6120
+   ScaleHeight     =   6135
    ScaleWidth      =   5325
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
@@ -370,6 +370,8 @@ Private Sub PopulateModules()
     .AddItem "Payroll (Shared Table)": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
     .AddItem "Workflow": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
     .AddItem "Version One": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
+    .AddItem "Mobile Interface": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
+    .AddItem "Fusion Integration": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
     
     lngBit = lngBit * 2
   End With
