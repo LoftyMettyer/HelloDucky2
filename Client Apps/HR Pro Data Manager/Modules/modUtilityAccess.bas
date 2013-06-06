@@ -451,6 +451,7 @@ Public Function OldAccessUtility(piUtilityType As UtilityType) As Boolean
     (piUtilityType = utlEmailGroup) Or _
     (piUtilityType = utlFilter) Or _
     (piUtilityType = utlLabelType) Or _
+    (piUtilityType = utlDocumentMapping) Or _
     (piUtilityType = utlOrder) Or _
     (piUtilityType = utlPicklist)
 
