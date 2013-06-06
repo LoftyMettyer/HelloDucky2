@@ -303,12 +303,26 @@ Public Function CreateEmailSendStoredProcedure(strProcName As String, lngMethod 
     GrantExecuteToPublic "master", "xp_sendmail"
     
     sSQL = sSQL & _
+        "    DECLARE @To8000 varchar(8000)" & vbCrLf & _
+        "    DECLARE @CC8000 varchar(8000)" & vbCrLf & _
+        "    DECLARE @BCC8000 varchar(8000)" & vbCrLf & _
+        "    DECLARE @Subject8000 varchar(8000)" & vbCrLf & _
+        "    DECLARE @Message8000 varchar(8000)" & vbCrLf & vbCrLf
+
+    sSQL = sSQL & _
+        "    SET @To8000 = Left(@To,8000)" & vbCrLf & _
+        "    SET @CC8000 = Left(@CC,8000)" & vbCrLf & _
+        "    SET @BCC8000 = Left(@BCC,8000)" & vbCrLf & _
+        "    SET @Subject8000 = Left(@Subject,8000)" & vbCrLf & _
+        "    SET @Message8000 = Left(@Message,8000)" & vbCrLf & vbCrLf
+    
+    sSQL = sSQL & _
         "    EXEC @hResult = master..xp_sendmail " & vbCrLf & _
-        "    @recipients=@To, " & vbCrLf & _
-        "    @copy_recipients=@CC, " & vbCrLf & _
-        "    @blind_copy_recipients=@BCC, " & vbCrLf & _
-        "    @subject=@Subject, " & vbCrLf & _
-        "    @message=@Message, " & vbCrLf & _
+        "    @recipients=@To8000, " & vbCrLf & _
+        "    @copy_recipients=@CC8000, " & vbCrLf & _
+        "    @blind_copy_recipients=@BCC8000, " & vbCrLf & _
+        "    @subject=@Subject8000, " & vbCrLf & _
+        "    @message=@Message8000, " & vbCrLf & _
         "    @attachments=@Attachment"
 
   Case 2
