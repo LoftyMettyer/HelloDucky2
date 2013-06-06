@@ -56,37 +56,37 @@ Begin VB.Form frmConfiguration
       TabCaption(0)   =   "&Display Defaults"
       TabPicture(0)   =   "frmConfiguration.frx":000C
       Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "fraDisplay(2)"
+      Tab(0).Control(0)=   "fraDisplay(1)"
       Tab(0).Control(1)=   "fraDisplay(0)"
-      Tab(0).Control(2)=   "fraDisplay(1)"
+      Tab(0).Control(2)=   "fraDisplay(2)"
       Tab(0).ControlCount=   3
       TabCaption(1)   =   "&Reports && Utilities"
       TabPicture(1)   =   "frmConfiguration.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraReports(1)"
+      Tab(1).Control(0)=   "fraReports(0)"
       Tab(1).Control(1)=   "frmReportsGeneral"
-      Tab(1).Control(2)=   "fraReports(0)"
+      Tab(1).Control(2)=   "fraReports(1)"
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "&Network Configuration"
       TabPicture(2)   =   "frmConfiguration.frx":0044
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "frmOutputs"
-      Tab(2).Control(1)=   "fraNetwork(1)"
-      Tab(2).Control(2)=   "fraNetwork(0)"
-      Tab(2).Control(3)=   "frmAutoLogin"
+      Tab(2).Control(0)=   "frmAutoLogin"
+      Tab(2).Control(1)=   "fraNetwork(0)"
+      Tab(2).Control(2)=   "fraNetwork(1)"
+      Tab(2).Control(3)=   "frmOutputs"
       Tab(2).ControlCount=   4
       TabCaption(3)   =   "&Batch Login"
       TabPicture(3)   =   "frmConfiguration.frx":0060
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "fraBatch(0)"
-      Tab(3).Control(1)=   "fraBatch(1)"
+      Tab(3).Control(0)=   "fraBatch(1)"
+      Tab(3).Control(1)=   "fraBatch(0)"
       Tab(3).ControlCount=   2
       TabCaption(4)   =   "E&vent Log"
       TabPicture(4)   =   "frmConfiguration.frx":007C
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "FraEventLog(2)"
+      Tab(4).Control(0)=   "FraEventLog(0)"
       Tab(4).Control(1)=   "FraEventLog(1)"
-      Tab(4).Control(2)=   "FraEventLog(0)"
+      Tab(4).Control(2)=   "FraEventLog(2)"
       Tab(4).ControlCount=   3
       TabCaption(5)   =   "Report Out&put"
       TabPicture(5)   =   "frmConfiguration.frx":0098
@@ -101,8 +101,8 @@ Begin VB.Form frmConfiguration
       TabCaption(6)   =   "Tool&bars"
       TabPicture(6)   =   "frmConfiguration.frx":00B4
       Tab(6).ControlEnabled=   0   'False
-      Tab(6).Control(0)=   "fraToolbars"
-      Tab(6).Control(1)=   "fraToolbarGeneral"
+      Tab(6).Control(0)=   "fraToolbarGeneral"
+      Tab(6).Control(1)=   "fraToolbars"
       Tab(6).ControlCount=   2
       Begin VB.Frame fraReports 
          Caption         =   "Report / Utility / Tool Selection && Access :"
@@ -264,6 +264,22 @@ Begin VB.Form frmConfiguration
          TabIndex        =   102
          Top             =   4920
          Width           =   6735
+         Begin VB.CheckBox chkOmitTopRow 
+            Caption         =   "&Omit Empty Row"
+            Height          =   195
+            Left            =   4320
+            TabIndex        =   132
+            Top             =   1080
+            Width           =   1920
+         End
+         Begin VB.CheckBox chkOmitSpacerCol 
+            Caption         =   "O&mit Empty Column"
+            Height          =   195
+            Left            =   4320
+            TabIndex        =   131
+            Top             =   1380
+            Width           =   2175
+         End
          Begin VB.ComboBox cboExcelFormat 
             Height          =   315
             Left            =   1725
@@ -321,15 +337,15 @@ Begin VB.Form frmConfiguration
             Height          =   255
             Left            =   1725
             TabIndex        =   109
-            Top             =   1100
+            Top             =   1080
             Width           =   2400
          End
          Begin VB.CheckBox chkExcelGridlines 
             Caption         =   "Gr&idlines"
-            Height          =   255
+            Height          =   195
             Left            =   1725
             TabIndex        =   110
-            Top             =   1400
+            Top             =   1380
             Width           =   1100
          End
          Begin VB.Label Label3 
@@ -583,7 +599,7 @@ Begin VB.Form frmConfiguration
             Caption         =   "&Underline"
             Height          =   195
             Left            =   4080
-            TabIndex        =   131
+            TabIndex        =   130
             Top             =   540
             Width           =   1695
          End
@@ -602,22 +618,6 @@ Begin VB.Form frmConfiguration
             TabIndex        =   128
             Top             =   795
             Width           =   1095
-         End
-         Begin VB.CheckBox chkOmitSpacerCol 
-            Caption         =   "O&mit Empty Col"
-            Height          =   195
-            Left            =   4080
-            TabIndex        =   132
-            Top             =   1305
-            Width           =   1815
-         End
-         Begin VB.CheckBox chkOmitTopRow 
-            Caption         =   "&Omit Empty Row"
-            Height          =   195
-            Left            =   4080
-            TabIndex        =   130
-            Top             =   1050
-            Width           =   1920
          End
          Begin VB.PictureBox Picture1 
             BackColor       =   &H80000005&
@@ -2007,12 +2007,10 @@ Private Sub chkImportSuccess_Click()
 End Sub
 
 Private Sub chkOmitSpacerCol_Click()
-moutCurrent.OmitSpacerCol = (chkOmitSpacerCol.Value = vbChecked)
 Changed = Not mbLoading
 End Sub
 
 Private Sub chkOmitTopRow_Click()
-moutCurrent.OmitSpacerRow = (chkOmitTopRow.Value = vbChecked)
 Changed = Not mbLoading
 End Sub
 
@@ -3250,8 +3248,6 @@ Private Sub SaveUserSettings()
     SaveUserSetting "Output", "TitleUnderline", IIf(.Underline, 1, 0)
     SaveUserSetting "Output", "TitleBackcolour", .BackCol
     SaveUserSetting "Output", "TitleForecolour", .ForeCol
-    SaveUserSetting "Output", "ColSpacer", IIf(.OmitSpacerCol, 1, 0)
-    SaveUserSetting "Output", "RowSpacer", IIf(.OmitSpacerRow, 1, 0)
   End With
 
   With moutHeading
@@ -3272,15 +3268,15 @@ Private Sub SaveUserSettings()
     SaveUserSetting "Output", "DataUnderline", IIf(.Underline, 1, 0)
     SaveUserSetting "Output", "DataBackcolour", .BackCol
     SaveUserSetting "Output", "DataForecolour", .ForeCol
-    SaveUserSetting "Output", "DataCol", IIf(moutTitle.OmitSpacerCol, 1, 2)
-    SaveUserSetting "Output", "DataRow", IIf(moutTitle.OmitSpacerRow, 4, 5)
   End With
 
   SaveUserSetting "Output", "ExcelTemplate", txtFilename(0).Text
   SaveUserSetting "Output", "WordTemplate", txtFilename(1).Text
   SaveUserSetting "Output", "ExcelHeaders", IIf(chkExcelHeaders.Value = vbChecked, 1, 0)
   SaveUserSetting "Output", "ExcelGridlines", IIf(chkExcelGridlines.Value = vbChecked, 1, 0)
- 
+  SaveUserSetting "Output", "ExcelOmitSpacerRow", IIf(chkOmitTopRow.Value = vbChecked, 1, 0)
+  SaveUserSetting "Output", "ExcelOmitSpacerCol", IIf(chkOmitSpacerCol.Value = vbChecked, 1, 0)
+  
   SaveUserSetting "Toolbar", "Position", mlngToolbarPosition
   SaveToolBarOptions
 
@@ -3434,15 +3430,12 @@ Private Sub ReadUserSettings(blnRestoreDefaults As Boolean)
     .Underline = (GetUserSettingOrDefault("Output", "TitleUnderline", "0") = "1")
     .BackCol = Val(GetUserSettingOrDefault("Output", "TitleBackcolour", vbWhite))
     .ForeCol = Val(GetUserSettingOrDefault("Output", "TitleForecolour", GetColour("Midnight Blue")))
-    .OmitSpacerCol = (GetUserSettingOrDefault("Output", "ColSpacer", "0") = "1")
-    .OmitSpacerRow = (GetUserSettingOrDefault("Output", "RowSpacer", "0") = "1")
   
     RefreshGridlines 0, .Gridlines
     RefreshBold 0, .Bold
     RefreshUnderLine 0, .Underline
     RefreshBackColour 0, .BackCol
     RefreshForeColour 0, .ForeCol
-  
   End With
 
   With moutHeading
@@ -3459,7 +3452,6 @@ Private Sub ReadUserSettings(blnRestoreDefaults As Boolean)
     RefreshUnderLine 1, .Underline
     RefreshBackColour 1, .BackCol
     RefreshForeColour 1, .ForeCol
-  
   End With
 
   With moutData
@@ -3484,7 +3476,8 @@ Private Sub ReadUserSettings(blnRestoreDefaults As Boolean)
   txtFilename(1).Text = GetUserSettingOrDefault("Output", "WordTemplate", vbNullString)
   chkExcelHeaders.Value = IIf(GetUserSettingOrDefault("Output", "ExcelHeaders", 0) = 1, vbChecked, vbUnchecked)
   chkExcelGridlines.Value = IIf(GetUserSettingOrDefault("Output", "ExcelGridlines", 0) = 1, vbChecked, vbUnchecked)
-
+  chkOmitSpacerCol.Value = IIf(GetUserSettingOrDefault("Output", "ExcelOmitSpacerCol", 0) = 1, vbChecked, vbUnchecked)
+  chkOmitTopRow.Value = IIf(GetUserSettingOrDefault("Output", "ExcelOmitSpacerRow", 0) = 1, vbChecked, vbUnchecked)
   
   mcPrimary = GetUserSettingOrDefault("RecordEditing", "Primary", disFindWindow)
   SetCombo cboPrimary, mcPrimary
@@ -3973,9 +3966,6 @@ Private Sub cboTextType_Click()
   chkBold.Value = IIf(moutCurrent.Bold, vbChecked, vbUnchecked)
   chkUnderLine.Value = IIf(moutCurrent.Underline, vbChecked, vbUnchecked)
   chkGridlines.Value = IIf(moutCurrent.Gridlines, vbChecked, vbUnchecked)
-  chkOmitSpacerCol.Value = IIf(moutCurrent.OmitSpacerCol, vbChecked, vbUnchecked)
-  chkOmitTopRow.Value = IIf(moutCurrent.OmitSpacerRow, vbChecked, vbUnchecked)
-  
   
   mbLoading = False
   
