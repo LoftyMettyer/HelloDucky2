@@ -70,10 +70,12 @@ Private mstrFilteredIDs As String
   Private mstrOutputPrinterName As String
   Private mblnOutputSave As Boolean
   Private mlngOutputSaveExisting As Long
+  Private mlngOutputSaveFormat As Long
   Private mblnOutputEmail As Boolean
   Private mlngOutputEmailAddr As Long
   Private mstrOutputEmailSubject As String
   Private mstrOutputEmailAttachAs As String
+  Private mlngOutputEmailFileFormat As Long
   Private mstrOutputFilename As String
   Private mblnPreviewOnScreen As Boolean
  
@@ -1330,10 +1332,12 @@ Private Function GetCalendarReportDefinition() As Boolean
     mstrOutputPrinterName = !OutputPrinterName
     mblnOutputSave = !OutputSave
     mlngOutputSaveExisting = !OutputSaveExisting
+    mlngOutputSaveFormat = !OutputSaveFormat
     mblnOutputEmail = !OutputEmail
     mlngOutputEmailAddr = !OutputEmailAddr
     mstrOutputEmailSubject = !OutputEmailSubject
     mstrOutputEmailAttachAs = IIf(IsNull(!OutputEmailAttachAs), vbNullString, !OutputEmailAttachAs)
+    mlngOutputEmailFileFormat = !OutputEmailFileFormat
     mstrOutputFilename = !OutputFilename
 
     mblnPreviewOnScreen = (!OutputPreview Or (mlngOutputFormat = fmtDataOnly And mblnOutputScreen))
@@ -1529,7 +1533,7 @@ Private Function GetEventsCollection() As Boolean
                       !EventEndDateID, sTempEndDateName, _
                       !EventEndSessionID, sTempEndSessionName, _
                       !EventDurationID, sTempDurationName, _
-                      !LegendType, !LegendCharacter, _
+                      !LegendType, !LegendCharacter, 0, _
                       !LegendLookupTableID, sTempLegendTableName, _
                       !LegendLookupColumnID, sTempLegendColumnName, _
                       !LegendLookupCodeID, sTempLegendCodeName, _
@@ -2654,10 +2658,12 @@ Private Function InitialisePreview() As Boolean
     .OutputPrinterName = mstrOutputPrinterName
     .OutputSave = mblnOutputSave
     .OutputSaveExisting = mlngOutputSaveExisting
+    .OutputSaveFormat = mlngOutputSaveFormat
     .OutputEmail = mblnOutputEmail
     .OutputEmailAddr = mlngOutputEmailAddr
     .OutputEmailSubject = mstrOutputEmailSubject
     .OutputEmailAttachAs = mstrOutputEmailAttachAs
+    .OutputEmailFileFormat = mlngOutputEmailFileFormat
     .OutputFilename = mstrOutputFilename
     
     .HasMultipleEvents = mblnHasMultipleEvents
@@ -2722,10 +2728,12 @@ Private Function ClearUp() As Boolean
   mstrOutputPrinterName = vbNullString
   mblnOutputSave = False
   mlngOutputSaveExisting = 0
+  mlngOutputSaveFormat = 0
   mblnOutputEmail = False
   mlngOutputEmailAddr = 0
   mstrOutputEmailSubject = vbNullString
   mstrOutputEmailAttachAs = vbNullString
+  mlngOutputEmailFileFormat = 0
   mstrOutputFilename = vbNullString
   
   mblnDefinitionOwner = False
