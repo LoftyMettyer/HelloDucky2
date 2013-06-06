@@ -1356,8 +1356,18 @@ Private Sub WrdSetMergeOptions()
         .DataSource.FirstRecord = wdDefaultFirstRecord
         .DataSource.LastRecord = wdDefaultLastRecord
         
-        Set objTemp = wrdDocTemplate.MailMerge
-        objTemp.MailFormat = GetSystemSetting("Mail Merge", "Email Format", 1)
+        'MH20100726 Email from Microsoft (Bill Goldade):
+        '
+        'The Word 2010 help topic for MailFormat (below) states that
+        '"The MailFormat property is ignored if the MailAsAttachment property is set to True."
+        'However, it appears that Word 2010 does not ignore the property as per the help topic.
+        'Please try to run your macro in 2010 where you comment out or remove the Mail.Merge.MailFormat property from the code.
+        
+        If Not mblnDefEMailAttachment And Not mbIsLabel Then
+          Set objTemp = wrdDocTemplate.MailMerge
+          objTemp.MailFormat = GetSystemSetting("Mail Merge", "Email Format", 1)
+          Set objTemp = Nothing
+        End If
       End If
     Else
       'If destination = printer then send to new document
