@@ -3083,7 +3083,7 @@ Private Sub cmdCopyButtonLink_Click()
         & vbTab & .Text & vbTab & .URL & vbTab & .HRProScreenID _
         & vbTab & .PageTitle & vbTab & .StartMode & vbTab & .UtilityType & vbTab & .UtilityID _
         & vbTab & vbTab & IIf(.NewWindow, "1", "0") & vbTab & .EMailAddress & vbTab & .EMailSubject _
-        & vbTab & .AppFilePath & vbTab & .AppParameters & vbTab & IIf(.optLink(SSINTLINKSEPARATOR).value, 1, IIf(.optLink(SSINTLINKCHART).value, 2, IIf(.optLink(SSINTLINKPWFSTEPS).value, 3, IIf(.optLink(SSINTLINKDB_VALUE).value, 4, 0)))) _
+        & vbTab & .AppFilePath & vbTab & .AppParameters & vbTab & IIf(.optLink(SSINTLINKSEPARATOR).value, 1, IIf(.optLink(SSINTLINKCHART).value, 2, IIf(.optLink(SSINTLINKPWFSTEPS).value, 3, IIf(.optLink(SSINTLINKDB_VALUE).value, 4, IIf(.optLink(SSINTLINKTODAYS_EVENTS).value, 5, 0))))) _
         & vbTab & IIf(.chkNewColumn.value = 0, "0", "1") & vbTab & IIf(Len(.txtIcon.Text) > 0, CStr(.PictureID), "") _
         & vbTab & IIf(.chkShowLegend.value = 0, "0", "1") & vbTab & .cboChartType.ItemData(.cboChartType.ListIndex) _
         & vbTab & IIf(.chkDottedGridlines.value = 0, "0", "1") & vbTab & IIf(.chkStackSeries.value = 0, "0", "1") _
@@ -3540,7 +3540,7 @@ Private Sub cmdEditButtonLink_Click()
   lngOriginalViewID = GetViewIDFromCollection(mcolSSITableViews, cboButtonLinkView.List(cboButtonLinkView.ListIndex))
   
   ' If pending workflow steps get the visibility details for all other wf steps...
-  If ctlSourceGrid.Columns("Element_Type").value = 3 Then
+  If ctlSourceGrid.Columns("Element_Type").value = 3 Or ctlSourceGrid.Columns("Element_Type").value = 5 Then
     BuildUserGroupCollection
     PopulateWFAccessGroup ctlSourceGrid, lngRow
   End If
@@ -4536,7 +4536,7 @@ Private Sub cmdMoveTableViewUp_Click()
   MoveView MOVEDIRECTION_UP
 End Sub
 
-Private Sub cmdOK_Click()
+Private Sub cmdOk_Click()
   'AE20071119 Fault #12607
   'If ValidateSetup Then
     'SaveChanges
@@ -5838,8 +5838,17 @@ Private Sub BuildUserGroupCollection()
   With rsGroups
     Do While Not .EOF
       Set objGroup = New clsSecgroup
-                  
-      objGroup.GroupName = Trim(!Name)
+                        
+      ' Add element type 3 - PWF steps
+      objGroup.GroupName = Trim(!Name) & "3"
+      objGroup.Allow = True
+      
+      mcolGroups.Add objGroup, objGroup.GroupName
+            
+      Set objGroup = New clsSecgroup
+            
+      ' Repeat for Today's Events (element type 5)
+      objGroup.GroupName = Trim(!Name) & "5"
       objGroup.Allow = True
       
       mcolGroups.Add objGroup, objGroup.GroupName
@@ -5890,7 +5899,7 @@ Private Sub PopulateWFAccessGroup(ctlSourceGrid As SSDBGrid, ExcludeRowNum As Lo
     varBookMark = ctlSourceGrid.AddItemBookmark(iLoop)
     sHiddenGroups = ctlSourceGrid.Columns("HiddenGroups").CellText(varBookMark)
     
-    If ctlSourceGrid.Columns("Element_Type").CellText(varBookMark) = 3 And iLoop <> ExcludeRowNum Then
+    If (ctlSourceGrid.Columns("Element_Type").CellText(varBookMark) = 3 Or ctlSourceGrid.Columns("Element_Type").CellText(varBookMark) = 5) And iLoop <> ExcludeRowNum Then
     
       fNoGroupsFound = False
       
@@ -5899,8 +5908,14 @@ Private Sub PopulateWFAccessGroup(ctlSourceGrid As SSDBGrid, ExcludeRowNum As Lo
       For jLoop = 1 To mcolGroups.Count
         ' if the hidden group list doesn't contain this security group it's visible (duh) so
         ' change the allow property to false
-        If InStr(sHiddenGroups, vbTab & mcolGroups(jLoop).GroupName) & vbTab = 0 Then
-          mcolGroups(jLoop).Allow = False
+        
+        If InStr(sHiddenGroups, vbTab & Left(mcolGroups(jLoop).GroupName, Len(mcolGroups(jLoop).GroupName) - 1) & vbTab) = 0 Then
+          ' if workflow element, update workflow groupname
+          If ctlSourceGrid.Columns("Element_Type").CellText(varBookMark) = 3 Then
+            mcolGroups(Left(mcolGroups(jLoop).GroupName, Len(mcolGroups(jLoop).GroupName) - 1) & "3").Allow = False
+          ElseIf ctlSourceGrid.Columns("Element_Type").CellText(varBookMark) = 5 Then
+            mcolGroups(Left(mcolGroups(jLoop).GroupName, Len(mcolGroups(jLoop).GroupName) - 1) & "5").Allow = False
+          End If
         End If
       Next
       
