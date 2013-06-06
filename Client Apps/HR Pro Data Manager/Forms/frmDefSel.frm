@@ -1847,7 +1847,8 @@ Private Sub ShowControls()
   fraBottomButtons.Height = lngOffset + 10
    
   ' Table combo flag now used to show categories or tables
-  lblTables.Visible = True
+  lblTables.Visible = Not (mutlUtilityType = utlWorkflow Or mutlUtilityType = utlDocumentMapping _
+                        Or mutlUtilityType = utlLabelType Or mutlUtilityType = utlEmailGroup)
   cboTables.Visible = lblTables.Visible
     
   If mblnTableComboVisible Then
