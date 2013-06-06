@@ -14,13 +14,14 @@ Object = "{58F88252-94BB-43CE-9EF9-C971F73B93D4}#1.0#0"; "COASD_Selection.ocx"
 Object = "{714061F3-25A6-4821-B196-7D15DCCDE00E}#1.0#0"; "COASD_SelectionBox.ocx"
 Object = "{0BE8C79E-5090-4700-B420-B767D1E19561}#1.0#0"; "COASD_Spinner.ocx"
 Object = "{93EA589D-C793-4EE4-BE53-52A646038BAF}#1.0#0"; "COASD_WorkingPattern.ocx"
+Object = "{AD837810-DD1E-44E0-97C5-854390EA7D3A}#3.1#0"; "COA_Navigation.ocx"
 Begin VB.Form frmScrDesigner2 
    AutoRedraw      =   -1  'True
    Caption         =   "Screen Designer"
-   ClientHeight    =   3675
+   ClientHeight    =   7365
    ClientLeft      =   60
    ClientTop       =   345
-   ClientWidth     =   7890
+   ClientWidth     =   13905
    BeginProperty Font 
       Name            =   "Verdana"
       Size            =   8.25
@@ -36,10 +37,45 @@ Begin VB.Form frmScrDesigner2
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MDIChild        =   -1  'True
-   ScaleHeight     =   3675
-   ScaleWidth      =   7890
+   ScaleHeight     =   7365
+   ScaleWidth      =   13905
    ShowInTaskbar   =   0   'False
    Visible         =   0   'False
+   Begin COANavigation.COA_Navigation ASRDummyNavigation 
+      Height          =   510
+      Index           =   0
+      Left            =   6030
+      TabIndex        =   19
+      Top             =   2430
+      Visible         =   0   'False
+      Width           =   1230
+      _ExtentX        =   2170
+      _ExtentY        =   900
+      Caption         =   "Navigate..."
+      DisplayType     =   1
+      NavigateIn      =   0
+      NavigateTo      =   ""
+      InScreenDesigner=   -1  'True
+      ColumnID        =   0
+      ColumnName      =   ""
+      Selected        =   0   'False
+      Enabled         =   -1  'True
+      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+         Name            =   "Verdana"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   -1  'True
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      FontBold        =   0   'False
+      FontSize        =   8.25
+      FontStrikethrough=   0   'False
+      FontUnderline   =   -1  'True
+      ForeColor       =   -2147483630
+      ExecuteOnSave   =   -1  'True
+   End
    Begin VB.PictureBox picFormIcon 
       Height          =   285
       Left            =   7440
@@ -560,6 +596,7 @@ Private Sub abScreen_PreCustomizeMenu(ByVal Cancel As ActiveBarLibraryCtl.Return
 
 End Sub
 
+
 Private Sub asrDummyCheckBox_DragDrop(Index As Integer, Source As Control, X As Single, Y As Single)
   ' Drop a control onto the screen.
   ScreenControl_DragDrop asrDummyCheckBox(Index), Source, X, Y
@@ -607,6 +644,30 @@ Private Sub asrDummyCombo_MouseUp(Index As Integer, Button As Integer, Shift As 
   ScreenControl_MouseUp asrDummyCombo(Index), Button, Shift, X, Y
 
 End Sub
+
+
+' ASR Navigation Fire events
+
+Private Sub ASRDummyNavigation_DragDrop(Index As Integer, Source As Control, X As Single, Y As Single)
+  ScreenControl_DragDrop ASRDummyNavigation(Index), Source, X, Y
+End Sub
+
+Private Sub ASRDummyNavigation_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+  ScreenControl_MouseDown ASRDummyNavigation(Index), Button, Shift, X, Y
+End Sub
+
+Private Sub ASRDummyNavigation_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+  ScreenControl_MouseMove ASRDummyNavigation(Index), Button, X, Y
+End Sub
+
+Private Sub ASRDummyNavigation_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+  ScreenControl_MouseUp ASRDummyNavigation(Index), Button, Shift, X, Y
+End Sub
+
+
+
+
+
 
 Private Sub asrDummyFrame_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
   
@@ -1087,7 +1148,7 @@ Private Function DropControl(pVarPageContainer As Variant, pCtlSource As Control
               ctlControl.Left = AlignX(CLng(pSngX))
               ctlControl.Top = AlignY(CLng(pSngY))
               ctlControl.ColumnID = .Fields("columnID")
-              
+                            
               ' Give the control a tooltip.
               sColumnName = .Fields("columnName")
               With recTabEdit
@@ -1099,6 +1160,11 @@ Private Function DropControl(pVarPageContainer As Variant, pCtlSource As Control
                   ctlControl.ToolTipText = sTableName & "." & sColumnName
                 End If
               End With
+              
+              ' Initialise the navigation properties
+              If ScreenControl_HasNavigation(iControlType) Then
+                ctlControl.ColumnName = GetColumnName(ctlControl.ColumnID, False)
+              End If
               
               ' Initialise the new control's font and forecolour.
               If ScreenControl_HasFont(iControlType) Then
@@ -1227,6 +1293,10 @@ Private Function DropControl(pVarPageContainer As Variant, pCtlSource As Control
           
             Case "LINECTRL"
               iControlType = giCTRL_LINE
+              Set ctlControl = AddControl(iControlType)
+          
+            Case "NAVIGATIONCTRL"
+              iControlType = giCTRL_NAVIGATION
               Set ctlControl = AddControl(iControlType)
           
           End Select
@@ -2065,6 +2135,11 @@ Private Sub AutoFormatScreen()
             .ToolTipText = sTableName & "." & sColumnName
           End If
         
+          ' Initialise the navigation properties
+          If ScreenControl_HasNavigation(iControlType) Then
+            ctlControl.ColumnName = GetColumnName(ctlControl.ColumnID, False)
+          End If
+              
           ' Initialise the new control's font and forecolour.
           If ScreenControl_HasFont(iControlType) Then
             Set objFont = New StdFont
@@ -3941,6 +4016,10 @@ Private Function AddControl(piControlType As Integer) As VB.Control
       Load ASRDummyLine(ASRDummyLine.UBound + 1)
       Set AddControl = ASRDummyLine(ASRDummyLine.UBound)
       
+    Case giCTRL_NAVIGATION
+      Load ASRDummyNavigation(ASRDummyNavigation.UBound + 1)
+      Set AddControl = ASRDummyNavigation(ASRDummyNavigation.UBound)
+      
   End Select
   
 TidyUpAndExit:
@@ -5114,6 +5193,7 @@ Public Function IsScreenControl(pctlControl As VB.Control) As Boolean
     sName = "asrDummyLink" Or _
     sName = "ASRCustomDummyWP" Or _
     sName = "ASRDummyLine" Or _
+    sName = "ASRDummyNavigation" Or _
     sName = "ASRDummyOptions" Then
     
     ' Do not bother with the dummy screen controls.
@@ -5162,12 +5242,21 @@ Public Function ScreenControl_HasForeColor(piControlType As Integer) As Boolean
     (piControlType = giCTRL_OPTIONGROUP) Or _
     (piControlType = giCTRL_SPINNER) Or _
     (piControlType = giCTRL_WORKINGPATTERN) Or _
+    (piControlType = giCTRL_NAVIGATION) Or _
     (piControlType = giCTRL_TEXTBOX)
 
 End Function
+
 Public Function ScreenControl_HasDisplayType(piControlType As Integer) As Boolean
   ' Return true if the given control has a DisplayType property.
-  ScreenControl_HasDisplayType = (piControlType = giCTRL_OLE)
+  ScreenControl_HasDisplayType = _
+    (piControlType = giCTRL_NAVIGATION)
+
+End Function
+
+Public Function ScreenControl_HasNavigation(piControlType As Integer) As Boolean
+  ' Return true if the given control has a NavigateTo property.
+  ScreenControl_HasNavigation = (piControlType = giCTRL_NAVIGATION)
 
 End Function
 
@@ -5196,9 +5285,11 @@ Public Function ScreenControl_HasFont(piControlType As Integer) As Boolean
     (piControlType = giCTRL_SPINNER) Or _
     (piControlType = giCTRL_LINK) Or _
     (piControlType = giCTRL_WORKINGPATTERN) Or _
+    (piControlType = giCTRL_NAVIGATION) Or _
     (piControlType = giCTRL_TEXTBOX)
 
 End Function
+
 Public Function ScreenControl_IsTabStop(piControlType As Integer) As Boolean
   ' Return true if the given control has a TabStop property.
   ScreenControl_IsTabStop = (piControlType = giCTRL_CHECKBOX) Or _
@@ -5239,8 +5330,7 @@ End Function
 
 Public Function ScreenControl_HasPicture(piControlType As Integer) As Boolean
   ' Return true if the given control has a Picture property.
-  ScreenControl_HasPicture = _
-    (piControlType = giCTRL_IMAGE)
+  ScreenControl_HasPicture = (piControlType = giCTRL_IMAGE)
 
 End Function
 
@@ -5256,6 +5346,7 @@ Public Function ScreenControl_HasWidth(piControlType As Integer) As Boolean
     (piControlType = giCTRL_LINK) Or _
     (piControlType = giCTRL_LINE) Or _
     (piControlType = giCTRL_SPINNER) Or _
+    (piControlType = giCTRL_NAVIGATION) Or _
     (piControlType = giCTRL_TEXTBOX)
 
 End Function
@@ -5305,10 +5396,10 @@ Public Function ScreenControl_HasCaption(piControlType As Integer) As Boolean
     (piControlType = giCTRL_FRAME) Or _
     (piControlType = giCTRL_LABEL) Or _
     (piControlType = giCTRL_LINK) Or _
+    (piControlType = giCTRL_NAVIGATION) Or _
     (piControlType = giCTRL_OPTIONGROUP)
 
 End Function
-
 
 Public Function ScreenControl_HasText(piControlType As Integer) As Boolean
   ' Return true if the given control has a Caption property.
@@ -5350,6 +5441,8 @@ Public Function ScreenControl_Type(pctlControl As VB.Control) As Integer
       ScreenControl_Type = giCTRL_WORKINGPATTERN
     Case "ASRDummyLine"
       ScreenControl_Type = giCTRL_LINE
+    Case "ASRDummyNavigation"
+      ScreenControl_Type = giCTRL_NAVIGATION
   End Select
   
 End Function
@@ -5409,11 +5502,13 @@ Private Function SaveControl(pctlControl As VB.Control) As Boolean
       End If
 
       If ScreenControl_HasDisplayType(iControlType) Then
-      
-'XXXXXXXXXXXXXXXXXXXXXX
-'        If iControlType = giCTRL_OLE Then
-'          .Fields("displayType") = IIf(Right(pctlControl.Caption, Len(gsOLEDISPLAYTYPE_ICON)) = gsOLEDISPLAYTYPE_ICON, giOLEDISPLAYICON, giOLEDISPLAYCONTENTS)
-'        End If
+        .Fields("displayType") = pctlControl.DisplayType
+      End If
+
+      If ScreenControl_HasNavigation(iControlType) Then
+        .Fields("NavigateTo") = pctlControl.NavigateTo
+        .Fields("NavigateIn") = pctlControl.NavigateIn
+        .Fields("NavigateOnSave") = pctlControl.NavigateOnSave
       End If
 
       If ScreenControl_HasBorderStyle(iControlType) Then
@@ -5527,6 +5622,7 @@ Public Function ScreenControl_HasHeight(piControlType As Integer) As Boolean
     (piControlType = giCTRL_LINK) Or _
     (piControlType = giCTRL_LINE) Or _
     (piControlType = giCTRL_SPINNER) Or _
+    (piControlType = giCTRL_NAVIGATION) Or _
     (piControlType = giCTRL_TEXTBOX)
 
 End Function
@@ -6193,6 +6289,19 @@ Public Function LoadTabPage(piPageNumber As Integer) As Boolean
                   ctlControl.SetOptions ReadColumnControlValues(recColEdit.Fields("columnID"))
                 End If
               End If
+    
+              ' Set the controls Display type properties
+              If ScreenControl_HasDisplayType(iCtrlType) Then
+                ctlControl.DisplayType = IIf(IsNull(.Fields("DisplayType")), NavigationDisplayType.Button, .Fields("DisplayType"))
+              End If
+    
+              ' Set the controls navigate properties
+              If ScreenControl_HasNavigation(iCtrlType) Then
+                ctlControl.NavigateTo = IIf(IsNull(.Fields("NavigateTo")), "", .Fields("NavigateTo"))
+                ctlControl.NavigateIn = IIf(IsNull(.Fields("NavigateIn")), NavigateIn.URL, .Fields("NavigateIn"))
+                ctlControl.NavigateOnSave = IIf(IsNull(.Fields("NavigateOnSave")), vbNo, .Fields("NavigateOnSave"))
+              End If
+  
   
             'TM20010914 Fault 1753
             'The ActiveBar control does mot have the visible property, so to avoid err

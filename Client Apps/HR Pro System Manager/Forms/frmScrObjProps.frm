@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "COA_ColourPicker.ocx"
 Begin VB.Form frmScrObjProps 
@@ -44,6 +44,7 @@ Begin VB.Form frmScrObjProps
       BeginProperty Panels {0713E89E-850A-101B-AFC0-4210102A8DA7} 
          NumPanels       =   1
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -57,6 +58,7 @@ Begin VB.Form frmScrObjProps
       _Version        =   196617
       DataMode        =   2
       RecordSelectors =   0   'False
+      Col.Count       =   3
       stylesets.count =   4
       stylesets(0).Name=   "ssetBackColorValue"
       stylesets(0).HasFont=   -1  'True
@@ -234,7 +236,10 @@ Dim giBorderStyle As Integer
 Dim mblnReadOnly As Boolean   'NPG20071022
 
 Dim gsCaption As String
-Dim giDisplayType As Integer
+Dim gsNavigateTo As String
+Dim giDisplayType As NavigationDisplayType
+Dim giNavigateIn As NavigateIn
+Dim gbNavigateOnSave As Boolean
 Dim gObjFont As StdFont
 Dim gColForeColor As OLE_COLOR
 Dim gLngHeight As Long
@@ -259,8 +264,16 @@ Const gsREADONLYNOTEXT = "No"
 Const gsREADONLYYESTEXT = "Yes"
 
 ' Display Type text constants.
-Const gsDISPLAYTYPECONTENTSTEXT = "Contents"
-Const gsDISPLAYTYPEICONTEXT = "Icon"
+Const gsDISPLAYTYPE_HYPERLINK = "Hyperlink"
+Const gsDISPLAYTYPE_BUTTON = "Button"
+Const gsDISPLAYTYPE_BROWSER = "Browser"
+Const gsDISPLAYTYPE_HIDDEN = "Hidden"
+
+' Navigate In constants
+Const gsNAVIGATE_URL = "URL"
+Const gsNAVIGATE_MENUBAR = "Menu"
+Const gsNAVIGATE_DATABASE = "Database"
+
 ' Picture text constants.
 Const gsPICTURENONETEXT = "(None)"
 Const gsPICTURESELECTEDTEXT = "(Picture)"
@@ -281,6 +294,9 @@ Const giPROPID_WIDTH = 12
 Const giPROPID_ORIENTATION = 13
 Const giPROPID_TABNUMBER = 14
 Const giPROPID_READONLY = 15      'NPG20071022
+Const giPROPID_NAVIGATETO = 16
+Const giPROPID_NAVIGATEIN = 17
+Const giPROPID_NAVIGATEONSAVE = 18
 
 Private Const MIN_FORM_HEIGHT = 2850
 Private Const MIN_FORM_WIDTH = 2850
@@ -424,9 +440,7 @@ Private Sub ssGridProperties_Change()
   ' RH 08/08/00 - FAULT 55 - Captions now update in real time (ie, as you
   '                          type them into the properties window.
   
-  
   If Val(ssGridProperties.Columns(2).CellText(ssGridProperties.Bookmark)) = giPROPID_CAPTION Then
-    
     gsCaption = ssGridProperties.ActiveCell.Text
     UpdateControls giPROPID_CAPTION
   End If
@@ -472,6 +486,11 @@ Private Sub ssGridProperties_BeforeUpdate(Cancel As Integer)
       gsCaption = sNewValue
         
     Case giPROPID_DISPLAYTYPE
+        
+    Case giPROPID_NAVIGATETO
+      gsNavigateTo = sNewValue
+        
+    Case giPROPID_NAVIGATEONSAVE
         
     Case giPROPID_FONT
         
@@ -661,7 +680,6 @@ Private Sub ssGridProperties_ComboCloseUp()
   
   ' Debug.Print "ssGridProperties_ComboCloseUp"
   
-  
   Dim iPropertyTag As Integer
   Dim sNewValue As String
   
@@ -685,8 +703,6 @@ Private Sub ssGridProperties_ComboCloseUp()
         giBorderStyle = vbFixedSingle
       End If
           
-    
-    'NPG20071022
     Case giPROPID_READONLY
       If sNewValue = gsREADONLYNOTEXT Then
         mblnReadOnly = False
@@ -694,14 +710,35 @@ Private Sub ssGridProperties_ComboCloseUp()
         mblnReadOnly = True
       End If
 
-
     Case giPROPID_DISPLAYTYPE
-      If sNewValue = gsDISPLAYTYPECONTENTSTEXT Then
-        giDisplayType = giOLEDISPLAYCONTENTS
+      Select Case sNewValue
+        Case gsDISPLAYTYPE_HYPERLINK
+          giDisplayType = NavigationDisplayType.Hyperlink
+        Case gsDISPLAYTYPE_BUTTON
+          giDisplayType = NavigationDisplayType.Button
+        Case gsDISPLAYTYPE_BROWSER
+          giDisplayType = NavigationDisplayType.Browser
+        Case gsDISPLAYTYPE_HIDDEN
+          giDisplayType = NavigationDisplayType.Hidden
+      End Select
+
+    Case giPROPID_NAVIGATEIN
+      Select Case sNewValue
+        Case gsNAVIGATE_URL
+          giNavigateIn = NavigateIn.URL
+        Case gsNAVIGATE_MENUBAR
+          giNavigateIn = NavigateIn.MenuBar
+        Case gsNAVIGATE_DATABASE
+          giNavigateIn = NavigateIn.DB
+      End Select
+
+    Case giPROPID_NAVIGATEONSAVE
+      If sNewValue = gsREADONLYNOTEXT Then
+        gbNavigateOnSave = False
       Else
-        giDisplayType = giOLEDISPLAYICON
+        gbNavigateOnSave = True
       End If
-                  
+
     Case giPROPID_ORIENTATION
       If sNewValue = gsORIENTATIONVERTICAL Then
         giOrientation = 0
@@ -768,16 +805,25 @@ Private Sub ssGridProperties_DblClick()
         ssGridProperties.Columns(1).Text = gsREADONLYYESTEXT
       End If
 
-
     Case giPROPID_DISPLAYTYPE
-      If giDisplayType = giOLEDISPLAYICON Then
-        giDisplayType = giOLEDISPLAYCONTENTS
-        ssGridProperties.Columns(1).Text = gsDISPLAYTYPECONTENTSTEXT
+      Select Case giDisplayType
+        Case NavigationDisplayType.Hyperlink
+          ssGridProperties.Columns(1).Text = gsDISPLAYTYPE_HYPERLINK
+        Case NavigationDisplayType.Button
+          ssGridProperties.Columns(1).Text = gsDISPLAYTYPE_BUTTON
+        Case NavigationDisplayType.Browser
+          ssGridProperties.Columns(1).Text = gsDISPLAYTYPE_BROWSER
+        Case NavigationDisplayType.Hidden
+          ssGridProperties.Columns(1).Text = gsDISPLAYTYPE_HIDDEN
+      End Select
+
+    Case giPROPID_NAVIGATEONSAVE
+      If gbNavigateOnSave = True Then
+        ssGridProperties.Columns(1).Text = gsREADONLYNOTEXT
       Else
-        giDisplayType = giOLEDISPLAYICON
-        ssGridProperties.Columns(1).Text = gsDISPLAYTYPEICONTEXT
+        ssGridProperties.Columns(1).Text = gsREADONLYYESTEXT
       End If
-    
+
     Case giPROPID_FONT
       ssGridProperties_BtnClick
     
@@ -854,7 +900,7 @@ Private Sub ssGridProperties_MouseUp(Button As Integer, Shift As Integer, X As S
   iPropertyTag = Val(ssGridProperties.Columns(2).CellText(ssGridProperties.Bookmark))
   
   Select Case iPropertyTag
-    Case giPROPID_CAPTION, giPROPID_HEIGHT, giPROPID_LEFT, giPROPID_TOP, giPROPID_WIDTH, giPROPID_TABNUMBER
+    Case giPROPID_CAPTION, giPROPID_HEIGHT, giPROPID_LEFT, giPROPID_TOP, giPROPID_WIDTH, giPROPID_TABNUMBER, giPROPID_NAVIGATETO
     Case Else
       With ssGridProperties
         .ActiveCell.SelStart = 0
@@ -910,15 +956,13 @@ Private Sub ssGridProperties_RowColChange(ByVal LastRow As Variant, ByVal LastCo
         .Columns(1).List(0) = gsBORDERSTYLENONETEXT
         .Columns(1).List(1) = gsBORDERSTYLEFIXEDSINGLETEXT
       
-      
-      'NPG20071022
       Case giPROPID_READONLY
         .Columns(1).Locked = True
         .Columns(1).DataType = vbString
         .Columns(1).Style = ssStyleComboBox
-        .Columns(1).List(0) = gsREADONLYNOTEXT
-        .Columns(1).List(1) = gsREADONLYYESTEXT
-      
+        .Columns(1).RemoveAll
+        .Columns(1).AddItem gsREADONLYNOTEXT, False
+        .Columns(1).AddItem gsREADONLYYESTEXT, True
       
       Case giPROPID_CAPTION
         .Columns(1).Locked = False
@@ -926,11 +970,36 @@ Private Sub ssGridProperties_RowColChange(ByVal LastRow As Variant, ByVal LastCo
         .Columns(1).Style = ssStyleEdit
 
       Case giPROPID_DISPLAYTYPE
+        .Columns(1).Locked = False
+        .Columns(1).DataType = vbString
+        .Columns(1).Style = ssStyleComboBox
+        .Columns(1).RemoveAll
+        .Columns(1).AddItem gsDISPLAYTYPE_HYPERLINK, NavigationDisplayType.Hyperlink
+        .Columns(1).AddItem gsDISPLAYTYPE_BUTTON, NavigationDisplayType.Button
+        .Columns(1).AddItem gsDISPLAYTYPE_BROWSER, NavigationDisplayType.Browser
+        .Columns(1).AddItem gsDISPLAYTYPE_HIDDEN, NavigationDisplayType.Hidden
+
+      Case giPROPID_NAVIGATEIN
+        .Columns(1).Locked = False
+        .Columns(1).DataType = vbString
+        .Columns(1).Style = ssStyleComboBox
+        .Columns(1).RemoveAll
+        .Columns(1).AddItem gsNAVIGATE_URL, NavigateIn.URL
+        .Columns(1).AddItem gsNAVIGATE_MENUBAR, NavigateIn.MenuBar
+        .Columns(1).AddItem gsNAVIGATE_DATABASE, NavigateIn.DB
+
+      Case giPROPID_NAVIGATETO
+        .Columns(1).Locked = False
+        .Columns(1).DataType = vbString
+        .Columns(1).Style = ssStyleEdit
+
+      Case giPROPID_NAVIGATEONSAVE
         .Columns(1).Locked = True
         .Columns(1).DataType = vbString
         .Columns(1).Style = ssStyleComboBox
-        .Columns(1).List(giOLEDISPLAYCONTENTS) = gsDISPLAYTYPECONTENTSTEXT
-        .Columns(1).List(giOLEDISPLAYICON) = gsDISPLAYTYPEICONTEXT
+        .Columns(1).RemoveAll
+        .Columns(1).AddItem gsREADONLYNOTEXT, False
+        .Columns(1).AddItem gsREADONLYYESTEXT, True
 
       Case giPROPID_FONT
         .Columns(1).Locked = True
@@ -1047,12 +1116,12 @@ Public Function RefreshProperties(Optional StayOnSameLine As Boolean) As Boolean
   Dim fOK As Boolean
   Dim fPassedOnce As Boolean
   Dim iLoop As Integer
-  Dim iDisplayType As Integer
+  Dim iDisplayType As NavigationDisplayType
   Dim iControlType As Integer
   Dim sDescription As String
   Dim objCtlFont As StdFont
   Dim ctlControl As VB.Control
-  Dim avProperties(15, 3) As Variant
+  Dim avProperties(18, 3) As Variant
   
   'JDM - Fault 63 - Cache the SelectedControlCount to speed things up a bit.
   Dim iSelectedControlCount As Integer
@@ -1197,22 +1266,66 @@ Public Function RefreshProperties(Optional StayOnSameLine As Boolean) As Boolean
                 End If
               End If
               
+              
+              ' Read the NavigateTo property from the control if required.
+              If avProperties(giPROPID_NAVIGATETO, 1) Then
+                If gFrmScreen.ScreenControl_HasNavigation(iControlType) Then
+                  If (fPassedOnce) And (Not avProperties(giPROPID_NAVIGATETO, 2)) Then
+                    If gsNavigateTo <> .NavigateTo Then
+                      avProperties(giPROPID_NAVIGATETO, 2) = True
+                    End If
+                  Else
+                    gsNavigateTo = .NavigateTo
+                  End If
+                Else
+                  avProperties(giPROPID_NAVIGATETO, 1) = False
+                End If
+              End If
+              
+              
+              ' Read the NavigateTo property from the control if required.
+              If avProperties(giPROPID_NAVIGATEIN, 1) Then
+                If gFrmScreen.ScreenControl_HasNavigation(iControlType) Then
+                  If (fPassedOnce) And (Not avProperties(giPROPID_NAVIGATEIN, 2)) Then
+                    If giNavigateIn <> .NavigateIn Then
+                      avProperties(giPROPID_NAVIGATEIN, 2) = True
+                    End If
+                  Else
+                    giNavigateIn = .NavigateIn
+                  End If
+                Else
+                  avProperties(giPROPID_NAVIGATEIN, 1) = False
+                End If
+              End If
+              
+              
               ' Read the DisplayType property from the control if required.
               If avProperties(giPROPID_DISPLAYTYPE, 1) Then
                 If gFrmScreen.ScreenControl_HasDisplayType(iControlType) Then
-                  If iControlType = giCTRL_OLE Then
-                    iDisplayType = IIf(Right(ctlControl.Caption, Len(gsOLEDISPLAYTYPE_ICON)) = gsOLEDISPLAYTYPE_ICON, giOLEDISPLAYICON, giOLEDISPLAYCONTENTS)
-                  End If
-                  
                   If (fPassedOnce) And (Not avProperties(giPROPID_DISPLAYTYPE, 2)) Then
-                    If giDisplayType <> iDisplayType Then
+                    If giDisplayType <> .DisplayType Then
                       avProperties(giPROPID_DISPLAYTYPE, 2) = True
                     End If
                   Else
-                    giDisplayType = iDisplayType
+                    giDisplayType = .DisplayType
                   End If
                 Else
                   avProperties(giPROPID_DISPLAYTYPE, 1) = False
+                End If
+              End If
+              
+              ' Read the NavigateOnSave property
+              If avProperties(giPROPID_NAVIGATEONSAVE, 1) Then
+                If gFrmScreen.ScreenControl_HasNavigation(iControlType) Then
+                  If (fPassedOnce) And (Not avProperties(giPROPID_NAVIGATEONSAVE, 2)) Then
+                    If gbNavigateOnSave <> .NavigateOnSave Then
+                      avProperties(giPROPID_NAVIGATEONSAVE, 2) = True
+                    End If
+                  Else
+                    gbNavigateOnSave = .NavigateOnSave
+                  End If
+                Else
+                  avProperties(giPROPID_NAVIGATEONSAVE, 1) = False
                 End If
               End If
               
@@ -1466,21 +1579,80 @@ Public Function RefreshProperties(Optional StayOnSameLine As Boolean) As Boolean
     avProperties(giPROPID_CAPTION, 3) = ssGridProperties.Rows - 1
   End If
   
+  
+  
+  ' Add the NavigateOnSave property row to the properties grid if required.
+  If avProperties(giPROPID_NAVIGATEONSAVE, 1) Then
+    If avProperties(giPROPID_NAVIGATEONSAVE, 2) Then
+      sDescription = ""
+    Else
+      If gbNavigateOnSave = False Then
+        sDescription = gsREADONLYNOTEXT
+      Else
+        sDescription = gsREADONLYYESTEXT
+      End If
+    End If
+    
+    ssGridProperties.AddItem "Navigate On Save" & vbTab & sDescription & vbTab & Str(giPROPID_NAVIGATEONSAVE)
+    avProperties(giPROPID_NAVIGATEONSAVE, 3) = ssGridProperties.Rows - 1
+  End If
+  
+    
   ' Add the DisplayType property row to the properties grid if required.
-'  If avProperties(giPROPID_DISPLAYTYPE, 1) Then
-'    If avProperties(giPROPID_DISPLAYTYPE, 2) Then
-'      sDescription = ""
-'    Else
-'      If giDisplayType = giOLEDISPLAYCONTENTS Then
-'        sDescription = gsDISPLAYTYPECONTENTSTEXT
-'      Else
-'        sDescription = gsDISPLAYTYPEICONTEXT
-'      End If
-'    End If
-'
-'    ssGridProperties.AddItem "Display Type" & vbTab & sDescription & vbTab & Str(giPROPID_DISPLAYTYPE)
-'    avProperties(giPROPID_DISPLAYTYPE, 3) = ssGridProperties.Rows - 1
-'  End If
+  If avProperties(giPROPID_DISPLAYTYPE, 1) Then
+    If avProperties(giPROPID_DISPLAYTYPE, 2) Then
+      sDescription = ""
+    Else
+      Select Case giDisplayType
+        Case NavigationDisplayType.Hyperlink
+          sDescription = gsDISPLAYTYPE_HYPERLINK
+        Case NavigationDisplayType.Button
+          sDescription = gsDISPLAYTYPE_BUTTON
+        Case NavigationDisplayType.Browser
+          sDescription = gsDISPLAYTYPE_BROWSER
+        Case NavigationDisplayType.Hidden
+          sDescription = gsDISPLAYTYPE_HIDDEN
+      End Select
+
+    End If
+
+    ssGridProperties.AddItem "Display Type" & vbTab & sDescription & vbTab & Str(giPROPID_DISPLAYTYPE)
+    avProperties(giPROPID_DISPLAYTYPE, 3) = ssGridProperties.Rows - 1
+  End If
+  
+  
+  ' Add the NavigateTo property row to the properties grid if required.
+  If avProperties(giPROPID_NAVIGATETO, 1) Then
+    If avProperties(giPROPID_NAVIGATETO, 2) Then
+      sDescription = ""
+    Else
+      sDescription = gsNavigateTo
+    End If
+    
+    ssGridProperties.AddItem "Navigate To" & vbTab & sDescription & vbTab & Str(giPROPID_NAVIGATETO)
+    avProperties(giPROPID_NAVIGATETO, 3) = ssGridProperties.Rows - 1
+  End If
+  
+  
+  ' Add the NavigateTo property row to the properties grid if required.
+  If avProperties(giPROPID_NAVIGATEIN, 1) Then
+    If avProperties(giPROPID_NAVIGATEIN, 2) Then
+      sDescription = ""
+    Else
+      Select Case giNavigateIn
+        Case NavigateIn.URL
+          sDescription = gsNAVIGATE_URL
+        Case NavigateIn.MenuBar
+          sDescription = gsNAVIGATE_MENUBAR
+        Case NavigateIn.DB
+          sDescription = gsNAVIGATE_DATABASE
+      End Select
+    End If
+    
+    ssGridProperties.AddItem "Navigate In" & vbTab & sDescription & vbTab & Str(giPROPID_NAVIGATEIN)
+    avProperties(giPROPID_NAVIGATEIN, 3) = ssGridProperties.Rows - 1
+  End If
+  
   
   ' Add the Font property row to the properties grid if required.
   If avProperties(giPROPID_FONT, 1) Then
@@ -1752,7 +1924,16 @@ Private Function UpdateControls(piProperty As Integer) As Boolean
               End If
 
             Case giPROPID_DISPLAYTYPE
-              .Caption = .ToolTipText & IIf(giDisplayType = giOLEDISPLAYICON, gsOLEDISPLAYTYPE_ICON, gsOLEDISPLAYTYPE_CONTENTS)
+              .DisplayType = giDisplayType
+
+            Case giPROPID_NAVIGATETO
+              .NavigateTo = gsNavigateTo
+
+            Case giPROPID_NAVIGATEIN
+              .NavigateIn = giNavigateIn
+
+            Case giPROPID_NAVIGATEONSAVE
+              .NavigateOnSave = gbNavigateOnSave
 
             Case giPROPID_FONT
               Set objFont = New StdFont
