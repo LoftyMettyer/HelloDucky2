@@ -739,13 +739,16 @@ Public Sub AddPage(strDefTitle As String, mstrSheetName As String, colStyles As 
     Set objStyle = GetCurrentStyle(mwrdDoc.ActiveWindow.Selection)
     
     'If its the first page then add the definition title...
-    mlngPageCount = mlngPageCount + 1
+     mlngPageCount = mlngPageCount + 1
     If mlngPageCount = 1 Then
       If Not gblnReportPackMode Then
-        .ParagraphFormat.Alignment = wdAlignParagraphCenter
         .TypeText strDefTitle
+        .HomeKey unit:=wdLine, Extend:=wdExtend
+        ApplyStylesToRange mwrdApp.Selection.Range, colStyles("Title"), True
+        .ParagraphFormat.Alignment = wdAlignParagraphCenter
+        .EndKey
         .TypeParagraph
-        .ParagraphFormat.Alignment = wdAlignParagraphLeft
+        .Style = mwrdDoc.Styles("Normal")
         .TypeParagraph
       End If
     Else
@@ -754,7 +757,11 @@ Public Sub AddPage(strDefTitle As String, mstrSheetName As String, colStyles As 
 
     If mstrSheetName <> vbNullString And mobjParent.PageTitles Then
       .TypeText mstrSheetName
+      .HomeKey unit:=wdLine, Extend:=wdExtend
+      ApplyStylesToRange mwrdApp.Selection.Range, colStyles("Title"), True
+      .EndKey
       .TypeParagraph
+      .Style = mwrdDoc.Styles("Normal")
       .TypeParagraph
     End If
     
@@ -770,20 +777,26 @@ Public Sub AddPage(strDefTitle As String, mstrSheetName As String, colStyles As 
         ApplyStylesToRange mwrdApp.Selection.Range, colStyles("Title"), True
         .ParagraphFormat.Alignment = wdAlignParagraphCenter
         .EndKey
+        .TypeParagraph
+        .Style = mwrdDoc.Styles("Normal")
         .InsertBreak Type:=wdSectionNewPage
+        
       Else
         .TypeParagraph: .TypeParagraph
         .MoveUp unit:=wdLine, Count:=2
         .TypeText gobjProgress.Bar2Caption
-        .HomeKey unit:=wdStory, Extend:=wdExtend
+        .HomeKey unit:=wdLine, Extend:=wdExtend
         ApplyStylesToRange mwrdApp.Selection.Range, colStyles("Title"), True
         .ParagraphFormat.Alignment = wdAlignParagraphCenter
         .EndKey
+        .MoveDown unit:=wdLine
+        .Style = mwrdDoc.Styles("Normal")
       End If
     Else
-      .EndKey unit:=wdStory, Extend:=wdExtend
-      ApplyStylesToRange mwrdApp.Selection.Range, colStyles("Title"), True
-      .ParagraphFormat.Alignment = wdAlignParagraphCenter
+'      .EndKey unit:=wdStory, Extend:=wdExtend
+ '     ApplyStylesToRange mwrdApp.Selection.Range, colStyles("Title"), True
+  '    .ParagraphFormat.Alignment = wdAlignParagraphCenter
+      .EndKey
     End If
     'Now move to the end of the document, store the formatting, ready for the data...
     .EndKey unit:=wdStory
@@ -899,14 +912,12 @@ Public Sub DataArray(strArray() As String, colColumns As Collection, colStyles A
     .EndRow = -1
   End With
   
-  
   With colStyles("Heading")
     .StartCol = 0
     .StartRow = 0
     .EndCol = mwrdTable.Columns.Count - 1
     .EndRow = mlngHeaderRows - 1
   End With
-  
   
   If mlngHeaderCols > 0 Then
     With colStyles("HeadingCols")

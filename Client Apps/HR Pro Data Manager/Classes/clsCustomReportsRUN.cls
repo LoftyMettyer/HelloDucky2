@@ -56,6 +56,7 @@ Private mblnOutputTOC As Boolean
 Private mblnOutputCoverSheet As Boolean
 Private mlngOverrideFilterID As Long
 Private mblnOutputRetainPivotOrChart As Boolean
+Private mblnOutputRetainCharts As Boolean
           
 Private mlngPicklistFilterID As Long
 Private mstrPicklistFilterType As String
@@ -793,7 +794,7 @@ Public Function RunCustomReport(pstrPicklistFilterIDs As String) As Boolean
   If fOK Then fOK = PopulateGrid
 
   If fOK Then
-    If gblnBatchMode Or gblnReportPackMode Then
+    If gblnBatchMode Or gblnReportPackMode Or Not mblnPreviewOnScreen Or Not mblnOutputScreen Then
       fOK = OutputReport(False)
     ElseIf mblnPreviewOnScreen Or mblnOutputScreen Then
       Screen.MousePointer = vbDefault
@@ -5083,7 +5084,8 @@ Public Function OutputReport(blnPrompt As Boolean) As Boolean
       mblnOutputTOC, _
       mblnOutputCoverSheet, _
       mlngOverrideFilterID, _
-      mblnOutputRetainPivotOrChart) Then
+      mblnOutputRetainPivotOrChart, _
+      mblnOutputRetainCharts) Then
 
     If Not gblnBatchMode Then
       If mbIsBradfordIndexReport Then
@@ -5912,7 +5914,8 @@ Public Sub SetOutputParameters( _
           Optional blnOutputTOC As Boolean, _
           Optional blnOutputCoverSheet As Boolean, _
           Optional lngOverrideFilterID As Long, _
-          Optional blnOutputRetainPivotOrChart As Boolean)
+          Optional blnOutputRetainPivotOrChart As Boolean, _
+          Optional blnOutputRetainCharts As Boolean)
 
   mlngOutputFormat = lngOutputFormat
   mblnOutputScreen = blnOutputScreen
@@ -5934,6 +5937,7 @@ Public Sub SetOutputParameters( _
   mblnOutputCoverSheet = IIf(IsMissing(blnOutputCoverSheet), giEXPRVALUE_CHARACTER, blnOutputCoverSheet)
   mlngOverrideFilterID = IIf(IsMissing(lngOverrideFilterID), giEXPRVALUE_NUMERIC, lngOverrideFilterID)
   mblnOutputRetainPivotOrChart = IIf(IsMissing(blnOutputRetainPivotOrChart), giEXPRVALUE_CHARACTER, blnOutputRetainPivotOrChart)
+  mblnOutputRetainCharts = IIf(IsMissing(blnOutputRetainCharts), giEXPRVALUE_CHARACTER, blnOutputRetainCharts)
 End Sub
 
 

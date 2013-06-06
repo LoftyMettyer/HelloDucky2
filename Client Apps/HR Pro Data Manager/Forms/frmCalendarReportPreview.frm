@@ -144,7 +144,7 @@ Begin VB.Form frmCalendarReportPreview
       _ExtentY        =   8493
       _Version        =   393216
       Appearance      =   0
-      Orientation     =   1179648
+      Orientation     =   1572864
    End
    Begin VB.CommandButton cmdOutput 
       Caption         =   "&Output"
@@ -293,7 +293,7 @@ Begin VB.Form frmCalendarReportPreview
          _ExtentY        =   2037
          _Version        =   393216
          Appearance      =   0
-         Orientation     =   1179648
+         Orientation     =   1572864
       End
    End
    Begin VB.PictureBox picPrint 
@@ -821,6 +821,7 @@ Private mstrOutputOverrideFilter As String
 Private mblnOutputTOC As Boolean
 Private mblnOutputCoverSheet As Boolean
 Private mblnOutputRetainPivotOrChart As Boolean
+Private mblnOutputRetainCharts As Boolean
 Private mlngOverrideFilterID As Long
   
 Private mblnChkPicklistFilter As Boolean 'might not need

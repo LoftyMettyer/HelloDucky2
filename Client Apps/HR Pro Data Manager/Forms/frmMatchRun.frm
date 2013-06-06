@@ -190,6 +190,7 @@ Private mblnOutputTOC As Boolean
 Private mblnOutputCoverSheet As Boolean
 Private mlngOverrideFilterID As Long
 Private mblnOutputRetainPivotOrChart As Boolean
+Private mblnOutputRetainCharts As Boolean
 
 ' Array holding the User Defined functions that are needed for this report
 Private mastrUDFsRequired() As String
@@ -2470,7 +2471,8 @@ Private Function OutputReport(blnPrompt As Boolean) As Boolean
       mblnOutputTOC, _
       mblnOutputCoverSheet, _
       mlngOverrideFilterID, _
-      mblnOutputRetainPivotOrChart) Then
+      mblnOutputRetainPivotOrChart, _
+      mblnOutputRetainCharts) Then
       
     objOutput.PageTitles = False
 
@@ -2961,7 +2963,8 @@ Public Sub SetOutputParameters( _
           Optional blnOutputTOC As Boolean, _
           Optional blnOutputCoverSheet As Boolean, _
           Optional lngOverrideFilterID As Long, _
-          Optional blnOutputRetainPivotOrChart As Boolean)
+          Optional blnOutputRetainPivotOrChart As Boolean, _
+          Optional blnOutputRetainCharts As Boolean)
 
   mlngOutputFormat = lngOutputFormat
   mblnOutputScreen = blnOutputScreen
@@ -2983,6 +2986,7 @@ Public Sub SetOutputParameters( _
   mblnOutputCoverSheet = IIf(IsMissing(blnOutputCoverSheet), giEXPRVALUE_CHARACTER, blnOutputCoverSheet)
   mlngOverrideFilterID = IIf(IsMissing(lngOverrideFilterID), giEXPRVALUE_CHARACTER, lngOverrideFilterID)
   mblnOutputRetainPivotOrChart = IIf(IsMissing(blnOutputRetainPivotOrChart), giEXPRVALUE_CHARACTER, blnOutputRetainPivotOrChart)
+  mblnOutputRetainCharts = IIf(IsMissing(blnOutputRetainCharts), giEXPRVALUE_CHARACTER, blnOutputRetainCharts)
 End Sub
 
 

@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.1#0"; "MSCOMCTL.OCX"
 Begin VB.Form frmCrossTabRun 
    Caption         =   "Cross Tabs"
    ClientHeight    =   7455
@@ -402,7 +402,8 @@ Private mblnOutputTOC As Boolean
 Private mblnOutputCoverSheet As Boolean
 Private mlngOverrideFilterID As Long
 Private mblnOutputRetainPivotOrChart As Boolean
-
+Private mblnOutputRetainCharts As Boolean
+Private mlngOriginalOutputFormat As Long
 ' Array holding the User Defined functions that are needed for this report
 Private mastrUDFsRequired() As String
 
@@ -659,7 +660,7 @@ End Sub
 
 Private Sub Form_Activate()
   If Me.Visible And Me.Enabled Then
-    cmdOk.SetFocus
+    cmdOK.SetFocus
   End If
 End Sub
 
@@ -688,7 +689,7 @@ Public Function ExecuteCrossTab(lngCrossTabID As Long) As Boolean
   Set datData = New DataMgr.clsDataAccess
   mblnLoading = True
 
-  mlngCrossTabType = cttNormal  'Not turnover nor stability report !
+  mlngCrossTabType = cttnormal  'Not turnover nor stability report !
   mblnShowAllPagesTogether = False
 
   fOK = True
@@ -772,7 +773,7 @@ Private Sub OutputJobStatus()
   'mstrErrorMessage = _
     IIf(mlngCrossTabType = cttNormal, "Cross Tab : ", "") & _
     mstrCrossTabName & " " & mstrErrorMessage
-  If mlngCrossTabType = cttNormal Then
+  If mlngCrossTabType = cttnormal Then
     mstrErrorMessage = "Cross Tab : '" & mstrCrossTabName & "' " & mstrErrorMessage
   Else
     mstrErrorMessage = mstrCrossTabName & " " & mstrErrorMessage
@@ -801,7 +802,7 @@ Dim strUtilityAction As String
     '.AviFile = App.Path & "\videos\crosstab.avi"
       .AVI = dbText
       Select Case mlngCrossTabType
-        Case cttNormal
+        Case cttnormal
           strUtilityAction = "Cross Tab"
         Case cttTurnover
           strUtilityAction = "Turnover Report"
@@ -820,14 +821,14 @@ Dim strUtilityAction As String
       .Time = False
       .Cancel = True
       .Bar1Value = 0
-      .Bar1MaxValue = IIf(mlngCrossTabType = cttNormal, 12, 17)
-      .Bar1Caption = IIf(mlngCrossTabType = cttNormal, "Cross Tab : " & mstrCrossTabName, Me.Caption)
+      .Bar1MaxValue = IIf(mlngCrossTabType = cttnormal, 12, 17)
+      .Bar1Caption = IIf(mlngCrossTabType = cttnormal, "Cross Tab : " & mstrCrossTabName, Me.Caption)
       .MainCaption = strUtilityAction
       .OpenProgress
     Else
       .ResetBar2
-      .Bar2MaxValue = IIf(mlngCrossTabType = cttNormal, 12, 17)
-      .Bar2Caption = IIf(mlngCrossTabType = cttNormal, "Cross Tab : " & mstrCrossTabName, Me.Caption)
+      .Bar2MaxValue = IIf(mlngCrossTabType = cttnormal, 12, 17)
+      .Bar2Caption = IIf(mlngCrossTabType = cttnormal, "Cross Tab : " & mstrCrossTabName, Me.Caption)
       .MainCaption = strUtilityAction
     End If
   End With
@@ -1128,22 +1129,10 @@ Public Sub RetreiveDefinition(lngCrossTabID As Long)
     
     mstrPicklistFilter = GetPicklistFilterSelect(!PicklistID, !FilterID)
     
-'    mlngOutputFormat = !OutputFormat
-'    mblnOutputScreen = !OutputScreen
-'    mblnOutputPrinter = !OutputPrinter
-'    mstrOutputPrinterName = !OutputPrinterName
-'    mblnOutputSave = !OutputSave
-'    mlngOutputSaveExisting = !OutputSaveExisting
-'    mblnOutputEmail = !OutputEmail
-'    mlngOutputEmailAddr = !OutputEmailAddr
-'    mstrOutputEmailSubject = !OutputEmailSubject
-'    mstrOutputEmailAttachAs = IIf(IsNull(!OutputEmailAttachAs), vbNullString, !OutputEmailAttachAs)
-'    mstrOutputFileName = !OutputFilename
-    'mblnPreviewOnScreen = (!OutputPreview Or (mlngOutputFormat = fmtDataOnly And mblnOutputScreen))
-    
     'Change Output Options to Report Pack owning these Jobs if in Report Pack mode
     mblnPreviewOnScreen = IIf(lblnReportPackMode, False, !OutputPreview Or (mlngOutputFormat = fmtDataOnly And mblnOutputScreen))
     mblnOutputScreen = IIf(lblnReportPackMode, False, !OutputScreen)
+    mlngOriginalOutputFormat = !OutputFormat
     mlngOutputFormat = IIf(lblnReportPackMode, mlngOutputFormat, !OutputFormat)
     mblnOutputPrinter = IIf(lblnReportPackMode, mblnOutputPrinter, !OutputPrinter)
     mstrOutputPrinterName = IIf(lblnReportPackMode, mstrOutputPrinterName, !OutputPrinterName)
@@ -1156,6 +1145,7 @@ Public Sub RetreiveDefinition(lngCrossTabID As Long)
     mstrOutputFileName = IIf(lblnReportPackMode, mstrOutputFileName, !OutputFilename)
     mlngOverrideFilterID = IIf(lblnReportPackMode, mlngOverrideFilterID, 0)
     mblnOutputRetainPivotOrChart = IIf(lblnReportPackMode, mblnOutputRetainPivotOrChart, 0)
+    mblnOutputRetainCharts = IIf(lblnReportPackMode, mblnOutputRetainCharts, 0)
     
     If fOK = False Then
       Exit Sub
@@ -1975,7 +1965,7 @@ Public Sub BuildOutputStrings(lngSinglePage As Long)
     mstrOutput(lngRow + 1) = Trim(mvarHeadings(VER)(lngRow)) & strDelim & mstrOutput(lngRow + 1)
   Next
   mstrOutput(lngNumRows + 2) = _
-    IIf(mlngCrossTabType = cttNormal, cboType.Text, "Total") & _
+    IIf(mlngCrossTabType = cttnormal, cboType.Text, "Total") & _
     strDelim & mstrOutput(lngNumRows + 2)
   
   If mblnShowAllPagesTogether Then
@@ -2032,7 +2022,7 @@ Public Sub BuildOutputStrings(lngSinglePage As Long)
 
     'Add the last column details (Vertical totals)
     'If mlngCrossTabType <> cttAbsenceBreakdown Then
-    If mlngCrossTabType = cttNormal Then
+    If mlngCrossTabType = cttnormal Then
       mstrOutput(0) = mstrOutput(0) & strDelim & cboType.Text
       For lngRow = 0 To lngNumRows
         mstrOutput(lngRow + 1) = mstrOutput(lngRow + 1) & strDelim & _
@@ -2219,7 +2209,7 @@ Private Sub OutputGrid(Optional blnRestoreCursorPosition As Boolean = True)
       .Row = lngTempRow
       '.Redraw = True
 
-      If mlngCrossTabType = cttNormal Then
+      If mlngCrossTabType = cttnormal Then
         lngCount = lngTempCol - Int(lngVisibleCols / 2)
         If lngCount < 1 Then
           .LeftCol = 1
@@ -2266,7 +2256,7 @@ Private Function FormatCell(ByVal dblCellValue As Double, Optional lngHOR As Lon
   
   If dblCellValue <> 0 Or chkSuppressZeros <> vbChecked Then
 
-    If mlngCrossTabType <> cttNormal Then
+    If mlngCrossTabType <> cttnormal Then
  
       If mlngCrossTabType = cttAbsenceBreakdown Then
         'NHRD22092004 Fault 7999 Changed it so doubles would show two decimal places
@@ -2388,16 +2378,16 @@ Private Sub Form_Resize()
 
   
   'Position the command buttons...
-  lngTop = Me.ScaleHeight - (cmdOk.Height + lngGap)
+  lngTop = Me.ScaleHeight - (cmdOK.Height + lngGap)
   
-  lngLeft = Me.ScaleWidth - (cmdOk.Width + lngGap)
-  cmdOk.Move lngLeft, lngTop
+  lngLeft = Me.ScaleWidth - (cmdOK.Width + lngGap)
+  cmdOK.Move lngLeft, lngTop
 
   lngLeft = lngLeft - (cmdOutput.Width + lngGap)
   cmdOutput.Move lngLeft, lngTop
 
 
-  If mlngCrossTabType = cttNormal Then
+  If mlngCrossTabType = cttnormal Then
     'Position the frames...
     lngTop = lngTop - (fraIntersection.Height + lngGap)
     fraIntersection.Move lngGap, lngTop
@@ -2510,7 +2500,7 @@ Private Sub PrepareForms()
     .ReportMode = mlngCrossTabType
 
     .Caption = Me.Caption & " Cell Breakdown"
-    If mlngCrossTabType <> cttNormal Then
+    If mlngCrossTabType <> cttnormal Then
       If mlngCrossTabType = cttAbsenceBreakdown Then
         .lblHorizontalFieldName = "Day :"
       Else
@@ -2535,7 +2525,7 @@ Private Sub PrepareForms()
       .Columns.Add 0
       .Columns(0).Caption = mstrBaseTable
       
-      If mlngCrossTabType <> cttNormal Then
+      If mlngCrossTabType <> cttnormal Then
         .Columns(0).Width = .Width - 2400
         .Columns.Add 1
         .Columns(1).Caption = Replace(gsPersonnelStartDateColumnName, "_", " ")
@@ -2617,7 +2607,7 @@ Private Sub PopulateCombos()
   
   With frmBreakDown
     
-    If mlngCrossTabType = cttNormal Then
+    If mlngCrossTabType = cttnormal Then
       PopulateComboWithArray .cboValue(HOR), mvarHeadings(HOR), True, Not mblnShowAllPagesTogether
     Else
 
@@ -3211,7 +3201,7 @@ Public Function PopulateCellBreakdown2(lngHOR As Long, lngVER As Long, lngPGB As
         'ID Column
         strOutput = .Fields("RecDesc").Value
 
-        If mlngCrossTabType <> cttNormal Then
+        If mlngCrossTabType <> cttnormal Then
 
           If mlngCrossTabType = cttAbsenceBreakdown Then
             strOutput = strOutput & vbTab
@@ -3276,7 +3266,7 @@ Public Function PopulateCellBreakdown2(lngHOR As Long, lngVER As Long, lngPGB As
   
   End With
   
-  frmBreakDown.txtCellValue = IIf(mlngCrossTabType = cttNormal, SSDBGrid1.ActiveCell.Text, frmBreakDown.SSDBGrid1.Rows)
+  frmBreakDown.txtCellValue = IIf(mlngCrossTabType = cttnormal, SSDBGrid1.ActiveCell.Text, frmBreakDown.SSDBGrid1.Rows)
   mblnLoading = False
   PopulateCellBreakdown2 = True
 
@@ -4062,7 +4052,7 @@ Private Sub CreateTempTable()
     strColumn(2, lngMax) = "Ins"
   End If
 
-  If mlngCrossTabType <> cttNormal Then
+  If mlngCrossTabType <> cttnormal Then
     
     If mlngCrossTabType = cttAbsenceBreakdown Then
       lngMax = lngMax + 7
@@ -4353,10 +4343,12 @@ Private Function OutputReport(blnPrompt As Boolean) As Boolean
       mblnOutputTOC, _
       mblnOutputCoverSheet, _
       mlngOverrideFilterID, _
-      mblnOutputRetainPivotOrChart) Then
+      mblnOutputRetainPivotOrChart, _
+      mblnOutputRetainCharts, _
+      mlngOriginalOutputFormat) Then
 
     If Not gblnBatchMode Then
-      If mlngCrossTabType = cttNormal Then
+      If mlngCrossTabType = cttnormal Then
         objOutput.OpenProgress "Cross Tab", mstrCrossTabName, UBound(mvarHeadings(PGB)) + 2
       Else
         objOutput.OpenProgress mstrCrossTabName, vbNullString, UBound(mvarHeadings(PGB)) + 2
@@ -4580,7 +4572,7 @@ Private Function OutputReport(blnPrompt As Boolean) As Boolean
   If blnPrompt Then
     gobjProgress.CloseProgress
 
-    If mlngCrossTabType = cttNormal Then
+    If mlngCrossTabType = cttnormal Then
       strDefTitle = "Cross Tab : '" & mstrCrossTabName & "'"
     Else
       strDefTitle = mstrCrossTabName
@@ -4789,7 +4781,8 @@ Public Sub SetOutputParameters( _
           Optional blnOutputTOC As Boolean, _
           Optional blnOutputCoverSheet As Boolean, _
           Optional lngOverrideFilterID As Long, _
-          Optional blnOutputRetainPivotOrChart As Boolean)
+          Optional blnOutputRetainPivotOrChart As Boolean, _
+          Optional blnOutputRetainCharts As Boolean)
 
   mlngOutputFormat = lngOutputFormat
   mblnOutputScreen = blnOutputScreen
@@ -4811,6 +4804,7 @@ Public Sub SetOutputParameters( _
   mblnOutputCoverSheet = IIf(IsMissing(blnOutputCoverSheet), giEXPRVALUE_CHARACTER, blnOutputCoverSheet)
   mlngOverrideFilterID = IIf(IsMissing(lngOverrideFilterID), giEXPRVALUE_CHARACTER, lngOverrideFilterID)
   mblnOutputRetainPivotOrChart = IIf(IsMissing(blnOutputRetainPivotOrChart), giEXPRVALUE_CHARACTER, blnOutputRetainPivotOrChart)
+  mblnOutputRetainCharts = IIf(IsMissing(blnOutputRetainCharts), giEXPRVALUE_CHARACTER, blnOutputRetainCharts)
 End Sub
 
 

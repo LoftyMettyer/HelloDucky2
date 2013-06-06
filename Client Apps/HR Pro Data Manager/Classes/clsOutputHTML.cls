@@ -356,10 +356,12 @@ Public Function GetFile(objParent As clsOutputRun, colSytles As Collection) As B
   strHTMLOutput = ""
   ReDim mastrHTMLOutput(0)
   blnAppending = False
-  
+  '2
   If gstrHTMLOutputTOC = vbNullString Then
     gstrHTMLOutputTOC = "<HTML><BODY><CENTER><FONT face=Verdana size=2>"
     gstrHTMLOutputTOC = gstrHTMLOutputTOC & "<a id=" & "'" & "top" & "'" & "><h3>Table Of Contents</h3></a>"
+  Else
+    gstrHTMLOutputTOC = gstrHTMLOutputTOC & "</BR><a id=" & "'" & "top" & "'" & "><h3>Table Of Contents</h3></a>"
   End If
   
   'Just in case we are emailing but not saving...
@@ -744,7 +746,7 @@ Public Sub Complete()
   On Local Error GoTo LocalErr
 
   blnOK = True
-
+'3
   'Table of Contents HTML
   gstrHTMLOutputTOC = gstrHTMLOutputTOC & "<a href=" & "'#" & ""
   gstrHTMLOutputTOC = gstrHTMLOutputTOC & mstrDefTitle & "'>" & mstrDefTitle & "</a><BR>"
