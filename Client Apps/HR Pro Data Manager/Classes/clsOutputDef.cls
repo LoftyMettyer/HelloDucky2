@@ -128,7 +128,7 @@ Public Sub FormatClick(Index As Integer, Optional blnDataToScreen As Boolean = T
     Case fmtExcelWorksheet, fmtExcelchart, fmtExcelPivotTable
       EnableDestinations True, True, True, True
       EnableTitlePageTemplate True
-      If gblnReportPackMode Then EnableReportPackOutputs True, True, False, True
+      If gblnReportPackMode Then EnableReportPackOutputs False, True, False, True
     
     Case fmtSQLTable
       EnableDestinations False, False, False, False

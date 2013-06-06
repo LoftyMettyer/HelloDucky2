@@ -1027,19 +1027,8 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
   Loop
   '4
   'Insert TOC code here as all Report Pack Jobs Or Batch Jobs would be done by now
-  If gblnReportPackMode And blnOutputSave And blnOutputTOC Then
+  If gblnReportPackMode And fOK And blnOutputSave And blnOutputTOC Then
     Select Case lngOutputFormat
-      Case fmtExcelchart, fmtExcelPivotTable, fmtExcelWorksheet
-        'Try and open excel file
-        If GetTOCFile(strOutputFilename, lngOutputFormat, lngOutputSaveExisting) Then
-          'insert the TOC
-          CreateTOC
-          'Close up
-
-        Else
-          MsgBox mstrErrorMessage, vbExclamation, "Report Pack"
-        End If
-        
       Case fmtHTML
           FileNum = FreeFile()
           LineCount = 1
