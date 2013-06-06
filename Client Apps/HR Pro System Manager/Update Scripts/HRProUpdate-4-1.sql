@@ -1078,21 +1078,21 @@ PRINT 'Step 3 - Office Output Formats'
 		, [Default] [bit] NULL
 		) ON [PRIMARY]'
 
-	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(901,''Word'',''Word 97-2003 Document (*.doc)''           ,''doc'',     0, 0,1)'
-	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(902,''Word'',''Word 2007-2010 Document (*.docx)''        ,''docx'', null,16,0)'
-	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(903,''Word'',''XML document format (*.xml)''             ,''xml'',  null,12,0)'
-	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(904,''Word'',''PDF format (*.pdf)''                      ,''pdf'',  null,17,0)'
-	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(905,''Word'',''XPS format (*.xps)''                      ,''xps'',  null,18,0)'
+	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(901,''Word'',''Word 97-2003 Document (*.doc)''        ,''doc'',     0, 0,1)'
+	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(902,''Word'',''Word Document (*.docx)''               ,''docx'', null,16,0)'
+	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(903,''Word'',''XML document format (*.xml)''          ,''xml'',  null,12,0)'
+	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(904,''Word'',''PDF format (*.pdf)''                   ,''pdf'',  null,17,0)'
+	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(905,''Word'',''XPS format (*.xps)''                   ,''xps'',  null,18,0)'
 
-	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(911,''WordTemplate'',''Word 97-2003 Document (*.doc)''   ,''doc'',     0, 0,0)'
-	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(912,''WordTemplate'',''Word 97-2003 Template (*.dot)''   ,''dot'',     0, 0,1)'
-	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(913,''WordTemplate'',''Word 2007-2010 Document (*.docx)'',''docx'', null, 0,0)'
-	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(914,''WordTemplate'',''Word 2007-2010 Template (*.dotx)'',''dotx'', null, 0,0)'
+	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(911,''WordTemplate'',''Word 97-2003 Document (*.doc)'',''doc'',     0, 0,0)'
+	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(912,''WordTemplate'',''Word 97-2003 Template (*.dot)'',''dot'',     0, 0,1)'
+	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(913,''WordTemplate'',''Word Document (*.docx)''       ,''docx'', null, 0,0)'
+	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(914,''WordTemplate'',''Word Template (*.dotx)''       ,''dotx'', null, 0,0)'
 
-	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(921,''Excel'',''Excel 97-2003 Workbook (*.xls)''         ,''xls'', -4143,56,1)'
-	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(922,''Excel'',''Excel 2007-2010 Workbook (*.xlsx)''      ,''xlsx'', null,51,0)'
+	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(921,''Excel'',''Excel 97-2003 Workbook (*.xls)'',''xls'', -4143,56,1)'
+	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(922,''Excel'',''Excel Workbook (*.xlsx)''       ,''xlsx'', null,51,0)'
 
-
+/*
 	IF NOT EXISTS(SELECT id FROM syscolumns WHERE id = OBJECT_ID('ASRSysCalendarReports', 'U') AND name = 'OutputSaveFormat')
 	BEGIN
 		EXEC sp_executesql
@@ -1157,7 +1157,7 @@ PRINT 'Step 3 - Office Output Formats'
             SET OutputSaveFormat = CASE WHEN OutputFormat = 3 THEN 921 WHEN OutputFormat IN (4,5,6) THEN 901 ELSE 0 END,
             OutputEmailFileFormat = CASE WHEN OutputFormat = 3 THEN 921 WHEN OutputFormat IN (4,5,6) THEN 901 ELSE 0 END'
 	END
-
+*/
 
 /* ------------------------------------------------------------- */
 PRINT 'Step 4 - Overlapping dates functionality'
