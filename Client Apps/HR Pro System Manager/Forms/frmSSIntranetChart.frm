@@ -1137,6 +1137,10 @@ PopulateSortByCombo
 'SetComboItemOrTopItem cboSortByAgg, 0
 chkSortByAggregate.value = 0
 
+If Index = 0 Or (Index > 0 And cboAggregateType.ListCount = 1) Then
+  PopulateAggregateCombo
+  SetComboItemOrTopItem cboAggregateType, 0
+End If
 ' clear the filter if it doesn't match the base table
 
 If MatchFilterToBaseTable = False Then
@@ -1189,7 +1193,7 @@ End Sub
 Private Sub RefreshControls()
   
   ChangeChartType
-  cmdOK.Enabled = mfChanged
+  cmdOk.Enabled = mfChanged
   
   ' Disable the Y column if aggregate is set to 'Count'
   cboColumnY.Enabled = (cboAggregateType.Text <> "Count")
@@ -1441,7 +1445,7 @@ Public Sub Initialize(plngChartViewID As Long, _
   txtFilter.Enabled = False
   txtFilter.BackColor = vbButtonFace
   
-  cmdOK.Enabled = (miChartTableID = 0)
+  cmdOk.Enabled = (miChartTableID = 0)
    
   mfLoading = False
   
@@ -1650,7 +1654,7 @@ Private Function PopulateColumnYCombo(plngTableID As Long)
       If recColEdit!Deleted <> True And recColEdit!columntype <> giCOLUMNTYPE_SYSTEM Then
         ' Add the column to the combo
         ' Making sure it isn't ole, photo, wp or link...
-        If recColEdit!DataType = dtNUMERIC Or recColEdit!DataType = dtinteger Then  ' numerics ONLY for Y columns
+        If recColEdit!DataType = dtNUMERIC Or recColEdit!DataType = dtINTEGER Then  ' numerics ONLY for Y columns
 '        If recColEdit!DataType <> dtLONGVARCHAR And _
 '          recColEdit!DataType <> dtBINARY And _
 '          recColEdit!DataType <> dtVARBINARY And _
@@ -1870,14 +1874,21 @@ Private Function PopulateAggregateCombo() As Boolean
   
   Dim piColumnDataType As Integer
   
+  On Error GoTo ErrorTrap
+  
   cboAggregateType.Clear
   cboAggregateType.AddItem "Count"
   cboAggregateType.ItemData(cboAggregateType.NewIndex) = 0
-      
-  ' Always numerics now.
-  'piColumnDataType = GetColumnDataType(plngColumnID)
+        
+  If optChartType(0).value Then
+    piColumnDataType = GetColumnDataType(cboColumnX.ItemData(cboColumnX.ListIndex))
+  ElseIf optChartType(1).value Or optChartType(2).value Then
+    piColumnDataType = GetColumnDataType(cboColumnY.ItemData(cboColumnY.ListIndex))
+  Else
+    Exit Function
+  End If
   
-  'If piColumnDataType = dtINTEGER Or piColumnDataType = dtNUMERIC Then
+  If piColumnDataType = dtINTEGER Or piColumnDataType = dtNUMERIC Then
     cboAggregateType.AddItem "Total"
     cboAggregateType.ItemData(cboAggregateType.NewIndex) = 1
     cboAggregateType.AddItem "Average"
@@ -1886,9 +1897,10 @@ Private Function PopulateAggregateCombo() As Boolean
     cboAggregateType.ItemData(cboAggregateType.NewIndex) = 3
     cboAggregateType.AddItem "Maximum"
     cboAggregateType.ItemData(cboAggregateType.NewIndex) = 4
-  'End If
+  End If
   
-  
+ErrorTrap:
+
   
 End Function
 
