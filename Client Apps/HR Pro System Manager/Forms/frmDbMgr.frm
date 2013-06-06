@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Begin VB.Form frmDbMgr 
    Caption         =   "Database Manager"
    ClientHeight    =   5340
@@ -204,79 +204,79 @@ Begin VB.Form frmDbMgr
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
          NumListImages   =   19
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":15960
+            Picture         =   "frmDbMgr.frx":16034
             Key             =   "IMG_PARENTTABLE"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":161B2
+            Picture         =   "frmDbMgr.frx":16886
             Key             =   "IMG_CHARACTER"
          EndProperty
          BeginProperty ListImage3 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":16A04
+            Picture         =   "frmDbMgr.frx":170D8
             Key             =   "IMG_WORKINGPATTERN"
          EndProperty
          BeginProperty ListImage4 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":17256
+            Picture         =   "frmDbMgr.frx":1792A
             Key             =   "IMG_LOGIC"
          EndProperty
          BeginProperty ListImage5 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":17AA8
+            Picture         =   "frmDbMgr.frx":1817C
             Key             =   "IMG_RELATION"
          EndProperty
          BeginProperty ListImage6 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":182FA
+            Picture         =   "frmDbMgr.frx":189CE
             Key             =   "IMG_RELATIONGROUP"
          EndProperty
          BeginProperty ListImage7 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":18B4C
+            Picture         =   "frmDbMgr.frx":19220
             Key             =   "IMG_DATE"
          EndProperty
          BeginProperty ListImage8 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":1939E
+            Picture         =   "frmDbMgr.frx":19A72
             Key             =   "IMG_LABEL"
          EndProperty
          BeginProperty ListImage9 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":19BF0
+            Picture         =   "frmDbMgr.frx":1A2C4
             Key             =   "IMG_LINK"
          EndProperty
          BeginProperty ListImage10 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":1A442
+            Picture         =   "frmDbMgr.frx":1AB16
             Key             =   ""
          EndProperty
          BeginProperty ListImage11 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":1A794
+            Picture         =   "frmDbMgr.frx":1AE68
             Key             =   "IMG_NUMERIC"
          EndProperty
          BeginProperty ListImage12 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":1AFE6
+            Picture         =   "frmDbMgr.frx":1B6BA
             Key             =   "IMG_OLE"
          EndProperty
          BeginProperty ListImage13 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":1B838
+            Picture         =   "frmDbMgr.frx":1BF0C
             Key             =   "IMG_RADIO"
          EndProperty
          BeginProperty ListImage14 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":1C08A
+            Picture         =   "frmDbMgr.frx":1C75E
             Key             =   "IMG_PHOTO"
          EndProperty
          BeginProperty ListImage15 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":1C8DC
+            Picture         =   "frmDbMgr.frx":1CFB0
             Key             =   "IMG_LOOKUP"
          EndProperty
          BeginProperty ListImage16 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":1D12E
+            Picture         =   "frmDbMgr.frx":1D802
             Key             =   "IMG_CHILDTABLE"
          EndProperty
          BeginProperty ListImage17 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":1D980
+            Picture         =   "frmDbMgr.frx":1E054
             Key             =   "IMG_TABLE"
          EndProperty
          BeginProperty ListImage18 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":1E1D2
+            Picture         =   "frmDbMgr.frx":1E8A6
             Key             =   "IMG_UNKNOWN"
          EndProperty
          BeginProperty ListImage19 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":1EA24
+            Picture         =   "frmDbMgr.frx":1F0F8
             Key             =   "IMG_COLUMN"
          EndProperty
       EndProperty
@@ -304,87 +304,87 @@ Begin VB.Form frmDbMgr
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
          NumListImages   =   21
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":1F276
+            Picture         =   "frmDbMgr.frx":1F94A
             Key             =   "IMG_DATABASE"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":1FAC8
+            Picture         =   "frmDbMgr.frx":2019C
             Key             =   "IMG_NUMERIC"
          EndProperty
          BeginProperty ListImage3 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":2001A
+            Picture         =   "frmDbMgr.frx":206EE
             Key             =   "IMG_DATE"
          EndProperty
          BeginProperty ListImage4 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":2056C
+            Picture         =   "frmDbMgr.frx":20C40
             Key             =   "IMG_PARENTTABLE"
          EndProperty
          BeginProperty ListImage5 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":20ABE
+            Picture         =   "frmDbMgr.frx":21192
             Key             =   "IMG_LOOKUP"
          EndProperty
          BeginProperty ListImage6 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":21010
+            Picture         =   "frmDbMgr.frx":216E4
             Key             =   "IMG_CHILDTABLE"
          EndProperty
          BeginProperty ListImage7 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":21562
+            Picture         =   "frmDbMgr.frx":21C36
             Key             =   "IMG_TABLE"
          EndProperty
          BeginProperty ListImage8 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":21AB4
+            Picture         =   "frmDbMgr.frx":22188
             Key             =   "IMG_RELATIONGROUP"
          EndProperty
          BeginProperty ListImage9 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":22006
+            Picture         =   "frmDbMgr.frx":226DA
             Key             =   "IMG_RELATION"
          EndProperty
          BeginProperty ListImage10 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":22558
+            Picture         =   "frmDbMgr.frx":22C2C
             Key             =   "IMG_UNKNOWN"
          EndProperty
          BeginProperty ListImage11 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":22AAA
+            Picture         =   "frmDbMgr.frx":2317E
             Key             =   "IMG_PHOTO"
          EndProperty
          BeginProperty ListImage12 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":22FFC
+            Picture         =   "frmDbMgr.frx":236D0
             Key             =   "IMG_SPINNER"
          EndProperty
          BeginProperty ListImage13 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":2354E
+            Picture         =   "frmDbMgr.frx":23C22
             Key             =   "IMG_CHARACTER"
          EndProperty
          BeginProperty ListImage14 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":23AA0
+            Picture         =   "frmDbMgr.frx":24174
             Key             =   "IMG_WORKINGPATTERN"
          EndProperty
          BeginProperty ListImage15 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":23FF2
+            Picture         =   "frmDbMgr.frx":246C6
             Key             =   "IMG_BUTTON"
          EndProperty
          BeginProperty ListImage16 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":24544
+            Picture         =   "frmDbMgr.frx":24C18
             Key             =   "IMG_LOGIC"
          EndProperty
          BeginProperty ListImage17 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":24A96
+            Picture         =   "frmDbMgr.frx":2516A
             Key             =   "IMG_COLUMN"
          EndProperty
          BeginProperty ListImage18 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":24FE8
+            Picture         =   "frmDbMgr.frx":256BC
             Key             =   "IMG_LABEL"
          EndProperty
          BeginProperty ListImage19 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":2553A
+            Picture         =   "frmDbMgr.frx":25C0E
             Key             =   "IMG_LINK"
          EndProperty
          BeginProperty ListImage20 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":25A8C
+            Picture         =   "frmDbMgr.frx":26160
             Key             =   "IMG_OLE"
          EndProperty
          BeginProperty ListImage21 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":25FDE
+            Picture         =   "frmDbMgr.frx":266B2
             Key             =   "IMG_RADIO"
          EndProperty
       EndProperty
