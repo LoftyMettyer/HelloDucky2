@@ -1,31 +1,10 @@
 Attribute VB_Name = "modSave_EmailLinks"
 Option Explicit
 
-Public glngExpressionTableIDForDeleteTrigger As Long
-
 Private rsEmailLinks As ADODB.Recordset
 Private rsEmailRecipients As ADODB.Recordset
 Private rsEmailColumns As ADODB.Recordset
 Private rsLinkContent As ADODB.Recordset
-
-
-'MH20090520
-Public Const strDelimStart As String = "«"   'asc = 171
-Public Const strDelimStop As String = "»"    'asc = 187
-
-
-Public glngEmailMethod As Long
-Public gstrEmailProfile As String
-Public gstrEmailServer As String
-Public gstrEmailAccount As String
-
-Public glngEmailDateFormat As Long
-Public gstrEmailAttachmentPath As String
-Public gstrEmailTestAddr As String
-
-'Public gstrInsertEmailCode As String
-Public gstrUpdateEmailCode As String
-Public gstrDeleteEmailCode As String
 
 Public Function OpenEmailRecordsets()
 
@@ -42,7 +21,6 @@ Public Function OpenEmailRecordsets()
   rsEmailColumns.Open "ASRSysEmailLinksColumns", gADOCon, adOpenForwardOnly, adLockOptimistic, adCmdTableDirect
 
 End Function
-
 
 Public Function SaveEmailLinks(lngTableID As Long) As Boolean
 

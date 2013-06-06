@@ -293,4 +293,7 @@ Public Const WORKFLOWWEBFORM_MAXSIZE_FILEUPLOAD = 8000
 Public Const WORKFLOWWEBFORM_MAXSIZE_CHARINPUT = VARCHAR_MAX_Size
 Public Const WORKFLOWWEBFORM_MAXSIZE_NUMINPUT = 15
 
+' Email links
+Public Const strDelimStart As String = "«"   'asc = 171
+Public Const strDelimStop As String = "»"    'asc = 187
 
