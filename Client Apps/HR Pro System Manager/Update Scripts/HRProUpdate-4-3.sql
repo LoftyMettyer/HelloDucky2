@@ -71,6 +71,9 @@ PRINT 'Step - System Functions'
 	IF EXISTS (SELECT id FROM dbo.sysobjects WHERE id = object_id(N'[dbo].[spsys_setsystemsetting]')	AND xtype = 'P')
 		DROP PROCEDURE [dbo].[spsys_setsystemsetting];
 
+	IF EXISTS (SELECT id FROM dbo.sysobjects WHERE id = object_id(N'[dbo].[spASRSaveSetting]')	AND xtype = 'P')
+		DROP PROCEDURE [dbo].[spASRSaveSetting];
+
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_getownerid]()
 		RETURNS uniqueidentifier
 		AS
@@ -99,8 +102,8 @@ PRINT 'Step - System Functions'
 	EXECUTE sp_executeSQL @sSPCode;
 
 	SET @sSPCode = 'CREATE PROCEDURE [dbo].[spsys_setsystemsetting](
-			@section AS nvarchar(255),
-			@settingkey AS nvarchar(255),
+			@section AS varchar(50),
+			@settingkey AS varchar(50),
 			@settingvalue AS nvarchar(MAX))
 		AS
 		BEGIN
@@ -111,6 +114,19 @@ PRINT 'Step - System Functions'
 		END';
 	EXECUTE sp_executeSQL @sSPCode;
 
+	SET @sSPCode = 'CREATE PROCEDURE [dbo].[spASRSaveSetting] (
+			@psSection		varchar(50),
+			@psKey			varchar(50),
+			@psValue		varchar(200))
+		AS
+		BEGIN
+
+			IF EXISTS(SELECT [settingValue] FROM dbo.[ASRSysSystemSettings] WHERE [Section] = @psSection AND [settingKey] = @psKey)
+				UPDATE dbo.[ASRSysSystemSettings] SET [settingValue] = @psValue WHERE [Section] = @psSection AND [settingKey] = @psKey;
+			ELSE				
+				INSERT INTO dbo.[ASRSysSystemSettings] (section, settingKey, settingValue) VALUES (@psSection, @psKey, @psValue);
+		END'
+	EXECUTE sp_executeSQL @sSPCode;
 
 /* ------------------------------------------------------------- */
 PRINT 'Step - Scripted Updates Date Effective Module'
@@ -2057,11 +2073,17 @@ PRINT 'Step - System metadata indexing'
 		DROP INDEX [IDX_RecordTableID] ON [dbo].[ASRSysEmailQueue] WITH ( ONLINE = OFF )
 	IF  EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[tbsys_intransactiontrigger]') AND name = N'IDX_Transaction')
 		DROP INDEX [IDX_Transaction] ON [dbo].[tbsys_intransactiontrigger] WITH ( ONLINE = OFF )
+	IF  EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ASRSysSystemSettings]') AND name = N'IDX_SectionSettingKey')
+		DROP INDEX [IDX_SectionSettingKey] ON [dbo].[ASRSysSystemSettings] WITH ( ONLINE = OFF )
+	IF  EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ASRSysWorkflowElements]') AND name = N'IDX_IDType')
+		DROP INDEX [IDX_IDType] ON [dbo].[ASRSysWorkflowElements] WITH ( ONLINE = OFF )
 
 	EXEC sp_executesql N'CREATE CLUSTERED INDEX [IDX_EventLogID] ON [dbo].[ASRSysEventLogDetails] ([EventLogID] ASC)'
 	EXEC sp_executesql N'CREATE NONCLUSTERED INDEX [IDX_RecordTableID] ON [dbo].[ASRSysEmailQueue] ([RecordID] ASC, [TableID] ASC)'
 	EXEC sp_executesql N'CREATE NONCLUSTERED INDEX [IDX_LinkRecordID] ON [dbo].[ASRSysEmailQueue] ([LinkID] ASC, [RecordID] ASC)'
 	EXEC sp_executesql N'CREATE UNIQUE NONCLUSTERED INDEX [IDX_Transaction] ON [dbo].[tbsys_intransactiontrigger] ([tablefromid] ASC, [spid] ASC)'
+	EXEC sp_executesql N'CREATE UNIQUE NONCLUSTERED INDEX [IDX_SectionSettingKey] ON [dbo].[ASRSysSystemSettings] ([Section] ASC, [SettingKey] ASC)'
+	EXEC sp_executesql N'CREATE NONCLUSTERED INDEX [IDX_IDType] ON [dbo].[ASRSysWorkflowElements] ([Type] ASC, [ID] ASC)'
 
 /* ------------------------------------------------------------- */
 PRINT 'Step - New Shared Table Transfer Types for ASPP'
