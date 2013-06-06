@@ -28,7 +28,7 @@ Begin VB.Form frmSSIntranetChart
       EndProperty
       Height          =   400
       Left            =   3165
-      TabIndex        =   12
+      TabIndex        =   13
       Top             =   2340
       Width           =   1200
    End
@@ -62,7 +62,7 @@ Begin VB.Form frmSSIntranetChart
          Height          =   315
          Left            =   4950
          MaskColor       =   &H000000FF&
-         TabIndex        =   10
+         TabIndex        =   9
          ToolTipText     =   "Clear Path"
          Top             =   1095
          UseMaskColor    =   -1  'True
@@ -80,7 +80,7 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   330
          Left            =   1380
-         TabIndex        =   9
+         TabIndex        =   7
          Top             =   1095
          Width           =   3225
       End
@@ -115,7 +115,7 @@ Begin VB.Form frmSSIntranetChart
          Height          =   285
          Index           =   1
          Left            =   3375
-         TabIndex        =   7
+         TabIndex        =   12
          Top             =   1560
          Width           =   765
       End
@@ -133,7 +133,7 @@ Begin VB.Form frmSSIntranetChart
          Height          =   285
          Index           =   0
          Left            =   2250
-         TabIndex        =   6
+         TabIndex        =   11
          Top             =   1560
          Value           =   -1  'True
          Width           =   855
@@ -170,7 +170,7 @@ Begin VB.Form frmSSIntranetChart
          Left            =   1380
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
-         TabIndex        =   2
+         TabIndex        =   5
          Top             =   720
          Width           =   3930
       End
@@ -188,7 +188,7 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   195
          Left            =   195
-         TabIndex        =   13
+         TabIndex        =   10
          Top             =   1590
          Width           =   1785
       End
@@ -205,7 +205,7 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   195
          Left            =   195
-         TabIndex        =   11
+         TabIndex        =   6
          Top             =   1170
          Width           =   615
       End
@@ -223,7 +223,7 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   195
          Left            =   195
-         TabIndex        =   5
+         TabIndex        =   4
          Top             =   735
          Width           =   795
       End
@@ -241,7 +241,7 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   195
          Left            =   195
-         TabIndex        =   4
+         TabIndex        =   2
          Top             =   360
          Width           =   600
       End
