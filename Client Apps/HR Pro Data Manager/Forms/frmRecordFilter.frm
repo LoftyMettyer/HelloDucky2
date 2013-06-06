@@ -407,7 +407,7 @@ Private Sub cmdAddToList_Click()
   fValidParameters = (cboColumns.ItemData(cboColumns.ListIndex) > 0)
   
   If Not fValidParameters Then
-    COAMsgBox "Invalid column selected.", vbExclamation, App.ProductName
+    COAMsgBox "Invalid column selected.", vbExclamation, app.ProductName
     cboColumns.SetFocus
   End If
   
@@ -416,7 +416,7 @@ Private Sub cmdAddToList_Click()
     fValidParameters = (cboOperators.ItemData(cboOperators.ListIndex) > 0)
     
     If Not fValidParameters Then
-      COAMsgBox "Invalid operator selected.", vbExclamation, App.ProductName
+      COAMsgBox "Invalid operator selected.", vbExclamation, app.ProductName
       cboOperators.SetFocus
     End If
   End If
@@ -427,7 +427,7 @@ Private Sub cmdAddToList_Click()
     fValidParameters = mvar_objColumnPrivileges.IsValid(cboColumns.List(cboColumns.ListIndex))
     
     If Not fValidParameters Then
-      COAMsgBox "Invalid column selected.", vbExclamation, App.ProductName
+      COAMsgBox "Invalid column selected.", vbExclamation, app.ProductName
       cboColumns.SetFocus
     End If
   End If
@@ -446,7 +446,7 @@ Private Sub cmdAddToList_Click()
         End If
         fValidParameters = IsNumeric(Replace(tdbNumberValue.Text, ",", ""))
         If Not fValidParameters Then
-          COAMsgBox "Invalid numeric value entered.", vbExclamation, App.ProductName
+          COAMsgBox "Invalid numeric value entered.", vbExclamation, app.ProductName
           tdbNumberValue.SetFocus
         End If
 
@@ -475,7 +475,7 @@ Private Sub cmdAddToList_Click()
             fValidParameters = True
           Else
             txtStringValue.ForeColor = vbRed
-            COAMsgBox "You have entered an invalid date.", vbExclamation, App.ProductName
+            COAMsgBox "You have entered an invalid date.", vbExclamation, app.ProductName
             txtStringValue.ForeColor = vbWindowText
             txtStringValue.Text = ""
             txtStringValue.SetFocus
@@ -594,6 +594,12 @@ Private Sub cboColumns_Populate()
       If Not IsNull(fldFilter.Properties("BASETABLENAME")) Then
         
         sTableViewName = fldFilter.Properties("BASETABLENAME")
+        
+        ' PG20121120 Fault HRPRO-2730 SQL2012 is sometimes returning the real base table when we actually want the base view
+        If sTableViewName Like "tbuser_*" Then
+          sTableViewName = Mid$(sTableViewName, 8)
+        End If
+        
         Set objTableView = gcoTablePrivileges.FindRealSource(sTableViewName)
         If Not objTableView Is Nothing Then
           sTableViewName = objTableView.TableName
@@ -944,7 +950,7 @@ Private Sub txtStringValue_LostFocus()
     
     If Not fValidParameters Then
       txtStringValue.ForeColor = vbRed
-      COAMsgBox "You have entered an invalid date.", vbExclamation, App.ProductName
+      COAMsgBox "You have entered an invalid date.", vbExclamation, app.ProductName
       txtStringValue.ForeColor = vbWindowText
       txtStringValue.Text = ""
       txtStringValue.SetFocus
