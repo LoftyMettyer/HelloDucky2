@@ -379,7 +379,9 @@ Public Function CheckVersion(sConnect As String, fReRunScript As Boolean, bIsSQL
   End If
   
   'Check to see if the engine is the correct version
-  fOK = CheckFrameworkVersion()
+  If fOK Then
+    fOK = CheckFrameworkVersion()
+  End If
   
   ' Upload scripts
   If fOK Then
