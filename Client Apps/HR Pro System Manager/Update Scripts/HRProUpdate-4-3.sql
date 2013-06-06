@@ -222,7 +222,7 @@ PRINT 'Step 4 - Create object tracking system'
 	-- Modification history table
 	IF OBJECT_ID('tbsys_scriptedchanges', N'U') IS NULL	
 	BEGIN
-		EXECUTE sp_executeSQL N'CREATE TABLE tbsys_scriptedchanges ([id] uniqueidentifier, [order] integer, [file] nvarchar(MAX), [uploaddate] datetime, [ispostsave] bit, [lastrundate] datetime, [runonce] bit);'
+		EXECUTE sp_executeSQL N'CREATE TABLE tbsys_scriptedchanges ([id] uniqueidentifier, [order] integer, [file] nvarchar(MAX), [uploaddate] datetime, [ispostsave] bit, [lastrundate] datetime, [runonce] bit, [runinversion] nvarchar(10));'
 	END
 
 	-- Generate apply scripts procedure
