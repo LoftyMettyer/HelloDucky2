@@ -78,50 +78,6 @@ Private Function OvernightJob1() As Boolean
   
   DropExistingJobStep (strOvernightSP)
 
-  'strSQL = "CREATE PROCEDURE dbo." & strOvernightSP & " AS" & vbNewline & _
-           "BEGIN" & vbNewline & _
-           "/* This sets all of the flags prior to updating date dependant columns */" & vbNewline & _
-           vbNewline & _
-           "update ASRSysConfig set updatingDateDependentColumns = 1" & vbNewline & _
-           vbNewline & _
-           "exec sp_configure 'nested triggers', '0'" & vbNewline & _
-           "reconfigure" & vbNewline & _
-           "exec sp_dboption '" & Replace(Database.DatabaseName, "'", "''") & "', 'recursive triggers', 'FALSE'" & vbNewline & _
-           vbNewline & _
-           "END"
-
-  'MH20020807 Fault 4209
-  'Added "With Override" option and get current process database name
-
-  'strSQL = "CREATE PROCEDURE dbo." & strOvernightSP & " AS" & vbNewLine & _
-    "BEGIN" & vbNewLine & _
-    "    DECLARE @sDBName nvarchar(MAX)" & vbNewLine & vbNewLine & _
-    "    SELECT @sDBName = master..sysdatabases.name" & vbNewLine & _
-    "    FROM master..sysdatabases" & vbNewLine & _
-    "    INNER JOIN master..sysprocesses ON master..sysdatabases.dbid = master..sysprocesses.dbid" & vbNewLine & _
-    "    WHERE master..sysprocesses.spid = @@spid" & vbNewLine & vbNewLine & _
-    "    /* This sets all of the flags prior to updating date dependant columns */" & vbNewLine & _
-    "    DELETE FROM ASRSYSSystemSettings WHERE [Section] = 'database' and [SettingKey] = 'updatingdatedependantcolumns'" & vbNewLine & vbNewLine & _
-    "    INSERT ASRSYSSystemSettings([Section],[SettingKey],[SettingValue])" & vbNewLine & _
-    "    VALUES('database','updatingdatedependantcolumns',1)" & vbNewLine & vbNewLine & _
-    "    exec sp_configure 'nested triggers', '0'" & vbNewLine & _
-    "    RECONFIGURE WITH OVERRIDE" & vbNewLine & vbNewLine & _
-    "    exec sp_dboption @sDBName, 'recursive triggers', 'FALSE'" & vbNewLine & _
-    "END"
-    
-'  strSQL = "CREATE PROCEDURE dbo." & strOvernightSP & " AS" & vbNewLine & _
-'    "BEGIN" & vbNewLine & _
-'    "    DECLARE @sDBName nvarchar(MAX)" & vbNewLine & vbNewLine & _
-'    "    SELECT @sDBName = db_name()" & vbNewLine & vbNewLine & _
-'    "    /* This sets all of the flags prior to updating date dependant columns */" & vbNewLine & _
-'    "    DELETE FROM ASRSYSSystemSettings WHERE [Section] = 'database' and [SettingKey] = 'updatingdatedependantcolumns'" & vbNewLine & vbNewLine & _
-'    "    INSERT ASRSYSSystemSettings([Section],[SettingKey],[SettingValue])" & vbNewLine & _
-'    "    VALUES('database','updatingdatedependantcolumns',1)" & vbNewLine & vbNewLine & _
-'    "    exec sp_configure 'nested triggers', '0'" & vbNewLine & _
-'    "    RECONFIGURE WITH OVERRIDE" & vbNewLine & vbNewLine & _
-'    "    exec sp_dboption @sDBName, 'recursive triggers', 'FALSE'" & vbNewLine & _
-'    "END"
-    
     'AE20080214 Fault #12726 - Nested Trigger check is now in the UPD_ triggers
   strSQL = "/* ------------------------------------------------------------------------------- */" & vbNewLine & _
     "/* HR Pro system stored procedure.                  */" & vbNewLine & _
@@ -135,7 +91,8 @@ Private Function OvernightJob1() As Boolean
     "    DELETE FROM ASRSYSSystemSettings WHERE [Section] = 'database' and [SettingKey] = 'updatingdatedependantcolumns'" & vbNewLine & vbNewLine & _
     "    INSERT ASRSYSSystemSettings([Section],[SettingKey],[SettingValue])" & vbNewLine & _
     "    VALUES('database','updatingdatedependantcolumns',1)" & vbNewLine & vbNewLine & _
-    "    exec sp_dboption @sDBName, 'recursive triggers', 'FALSE'" & vbNewLine & _
+    "    SELECT @NVarCommand = 'ALTER DATABASE ['+ DB_NAME() + '] SET RECURSIVE_TRIGGERS OFF';" & vbNewLine & _
+    "    EXEC sp_executesql @NVarCommand;" & _
     "END"
     
   gADOCon.Execute strSQL, , adExecuteNoRecords
