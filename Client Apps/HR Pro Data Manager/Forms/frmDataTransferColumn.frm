@@ -74,10 +74,10 @@ Begin VB.Form frmDataTransferColumn
          Caption         =   "Column :"
          Height          =   195
          Index           =   3
-         Left            =   200
+         Left            =   195
          TabIndex        =   15
-         Top             =   760
-         Width           =   630
+         Top             =   765
+         Width           =   810
       End
       Begin VB.Label lblTitle 
          AutoSize        =   -1  'True
@@ -85,10 +85,10 @@ Begin VB.Form frmDataTransferColumn
          Caption         =   "Table :"
          Height          =   195
          Index           =   2
-         Left            =   200
+         Left            =   195
          TabIndex        =   14
          Top             =   360
-         Width           =   495
+         Width           =   810
       End
    End
    Begin VB.Frame fraFrom 
@@ -156,10 +156,10 @@ Begin VB.Form frmDataTransferColumn
          BackStyle       =   0  'Transparent
          Caption         =   "Text :"
          Height          =   195
-         Left            =   500
+         Left            =   495
          TabIndex        =   16
          Top             =   2100
-         Width           =   435
+         Width           =   615
       End
       Begin VB.Label lblTitle 
          AutoSize        =   -1  'True
@@ -170,7 +170,7 @@ Begin VB.Form frmDataTransferColumn
          Left            =   495
          TabIndex        =   13
          Top             =   1155
-         Width           =   765
+         Width           =   810
       End
       Begin VB.Label lblTitle 
          AutoSize        =   -1  'True
@@ -178,10 +178,10 @@ Begin VB.Form frmDataTransferColumn
          Caption         =   "Table :"
          Height          =   195
          Index           =   0
-         Left            =   500
+         Left            =   495
          TabIndex        =   12
-         Top             =   760
-         Width           =   495
+         Top             =   765
+         Width           =   720
       End
    End
 End
