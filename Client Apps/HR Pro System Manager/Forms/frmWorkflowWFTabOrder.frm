@@ -331,9 +331,9 @@ Private Sub asrPage_Change()
   
   If Not mfLoading Then
     ' Get the new page number.
-    iPageNo = val(asrPage.Text)
+    iPageNo = asrPage.value
     
-    If cboPage.ListIndex <> (iPageNo - 1) Then cboPage.ListIndex = (iPageNo - 1)
+    If cboPage.ListIndex <> (iPageNo) Then cboPage.ListIndex = (iPageNo)
     
     If (iPageNo >= ListView1.LBound) And (iPageNo <= ListView1.UBound) Then
       For iListNo = ListView1.LBound To ListView1.UBound
@@ -384,8 +384,8 @@ Private Sub cboPage_Click()
   If Not mfLoading Then
     With cboPage
       If .ListCount > 0 And .ListIndex >= 0 Then
-        iPageNo = .ListIndex + 1
-        If (val(asrPage.Text) <> iPageNo) Then asrPage.Text = Trim(Str(iPageNo))
+        iPageNo = .ListIndex
+        If asrPage.value <> iPageNo Then asrPage.value = iPageNo
       End If
     End With
   End If
@@ -613,53 +613,59 @@ Private Sub Form_Activate()
   ' Variables used for passing count and selected index to RefreshUpDown function.
   Dim iListCount As Integer
   Dim iSelectedIndex As Integer
-      
+       
   If mfLoading Then
     If Not mfrmWebForm Is Nothing Then
     
+      ' Add an item to the combo for form itself.
+      cboPage.AddItem "Page Form"
+      cboPage.ItemData(cboPage.NewIndex) = 0
+      
+      Load ListView1(1)
+      GetPageControls 0
+    
       iCurrentPageNo = mfrmWebForm.PageNo
       iPageCount = mfrmWebForm.tabPages.Tabs.Count
-      iPageCount = iPageCount + 1
 
+      ' Are there tab pages
       If iPageCount > 0 Then
-        ' Add an item to the combo for form itself.
-        GetPageControls 0
+
         ' Add items to the combo for each tab page.
         For Each objTab In mfrmWebForm.tabPages.Tabs
           With objTab
             cboPage.AddItem .Caption
-            cboPage.ItemData(cboPage.NewIndex) = val(.Tag) + 1
-            
+            cboPage.ItemData(cboPage.NewIndex) = val(.Tag)
+
             If .Index > ListView1.UBound Then
               Load ListView1(.Index)
             End If
-            
+
             GetPageControls .Index
           End With
         Next objTab
-      
+
          ' Disassociate object variables.
          Set objTab = Nothing
-         
+
          With asrPage
            .MinimumValue = 0
-           .MaximumValue = iPageCount - 1
+           .MaximumValue = iPageCount
          End With
-        
-         cboPage.ListIndex = iCurrentPageNo - 1
-         
+
+         cboPage.ListIndex = iCurrentPageNo
+
          If ListView1(iCurrentPageNo).ListItems.Count > 0 Then
            ListView1(iCurrentPageNo).SelectedItem = ListView1(iCurrentPageNo).ListItems(1)
          End If
       Else
-        GetPageControls 0
+        cboPage.ListIndex = 0
       End If
 
-    ' If the number of pages on the form is one then the combobox is disabled.
-    If iPageCount <= 1 Then cboPage.Enabled = False
+      ' If the number of pages on the form is one then the combobox is disabled.
+      If iPageCount < 1 Then cboPage.Enabled = False
     
       With asrPage
-        .Text = Trim(Str(iCurrentPageNo))
+        .value = iCurrentPageNo
         .Enabled = (cboPage.ListCount > 1)
       End With
     
