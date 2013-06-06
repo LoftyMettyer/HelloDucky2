@@ -48,7 +48,7 @@ TidyUpAndExit:
   Exit Function
   
 ErrorTrap:
-  BigTextWidth = 50
+  BigTextWidth = Len(sInString) * 100
   GoTo TidyUpAndExit
  
   
