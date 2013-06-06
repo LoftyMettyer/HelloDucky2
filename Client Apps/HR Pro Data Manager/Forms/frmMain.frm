@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "17:30"
+            TextSave        =   "15:29"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -4459,19 +4459,11 @@ Private Sub DocumentTypesClick()
           Set frmDefinition = Nothing
            
         Case edtPrint
-        
-Set frmDefinition = New frmDocumentMap
-
-frmDefinition.Initialise False, .FromCopy, .SelectedID
-frmDefinition.PrintDefinition .SelectedID
-'If Not frmDefinition.Cancelled Then
-'  frmDefinition.Hide
-'  If .FromCopy And frmDefinition.SelectedID > 0 Then
-'    .SelectedID = frmDefinition.SelectedID
-'  End If
-'End If
-Unload frmDefinition
-Set frmDefinition = Nothing
+          Set frmDefinition = New frmDocumentMap
+          frmDefinition.Initialise False, .FromCopy, .SelectedID
+          frmDefinition.PrintDefinition .SelectedID
+          Unload frmDefinition
+          Set frmDefinition = Nothing
         
         Case 0
           blnExit = True  'cancel
