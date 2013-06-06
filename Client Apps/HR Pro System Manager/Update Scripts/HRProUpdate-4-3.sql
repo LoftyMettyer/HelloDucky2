@@ -971,6 +971,15 @@ PRINT 'Step 11 - Add new calculation procedures'
 		END';
 	EXECUTE sp_executeSQL @sSPCode;
 
+	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_getsystemuser]()
+		RETURNS [varchar](255)
+		WITH SCHEMABINDING
+		AS
+		BEGIN
+			RETURN SYSTEM_USER;
+		END';
+	EXECUTE sp_executeSQL @sSPCode;
+
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_initialsfromforenames] 
 		(
 			@forenames	varchar(255),
