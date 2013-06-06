@@ -62,6 +62,7 @@ Begin VB.Form frmMailMerge
       _Version        =   393216
       Style           =   1
       Tabs            =   4
+      Tab             =   3
       TabsPerRow      =   6
       TabHeight       =   520
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -75,7 +76,7 @@ Begin VB.Form frmMailMerge
       EndProperty
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmMailMerge.frx":08D6
-      Tab(0).ControlEnabled=   -1  'True
+      Tab(0).ControlEnabled=   0   'False
       Tab(0).Control(0)=   "fraDefinition(1)"
       Tab(0).Control(0).Enabled=   0   'False
       Tab(0).Control(1)=   "fraDefinition(0)"
@@ -84,9 +85,9 @@ Begin VB.Form frmMailMerge
       TabCaption(1)   =   "Colu&mns"
       TabPicture(1)   =   "frmMailMerge.frx":08F2
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraColumns(0)"
+      Tab(1).Control(0)=   "fraColumns(2)"
       Tab(1).Control(1)=   "fraColumns(1)"
-      Tab(1).Control(2)=   "fraColumns(2)"
+      Tab(1).Control(2)=   "fraColumns(0)"
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "&Sort Order"
       TabPicture(2)   =   "frmMailMerge.frx":090E
@@ -95,7 +96,7 @@ Begin VB.Form frmMailMerge
       Tab(2).ControlCount=   1
       TabCaption(3)   =   "Ou&tput"
       TabPicture(3)   =   "frmMailMerge.frx":092A
-      Tab(3).ControlEnabled=   0   'False
+      Tab(3).ControlEnabled=   -1  'True
       Tab(3).Control(0)=   "fraOutput(1)"
       Tab(3).Control(0).Enabled=   0   'False
       Tab(3).Control(1)=   "fraOutput(0)"
@@ -110,7 +111,7 @@ Begin VB.Form frmMailMerge
       Begin VB.Frame fraOutputFormat 
          Caption         =   "Output Format :"
          Height          =   3330
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   53
          Top             =   1440
          Width           =   2745
@@ -145,7 +146,7 @@ Begin VB.Form frmMailMerge
       Begin VB.Frame fraOutputOptions 
          Caption         =   "Options :"
          Height          =   1005
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   47
          Top             =   360
          Width           =   9600
@@ -284,13 +285,13 @@ Begin VB.Form frmMailMerge
             RecordSelectors =   0   'False
             Col.Count       =   3
             stylesets.count =   5
-            stylesets(0).Name=   "ssetHeaderDisabled"
-            stylesets(0).ForeColor=   -2147483631
-            stylesets(0).BackColor=   -2147483633
+            stylesets(0).Name=   "ssetSelected"
+            stylesets(0).ForeColor=   -2147483634
+            stylesets(0).BackColor=   -2147483635
             stylesets(0).Picture=   "frmMailMerge.frx":0D1F
-            stylesets(1).Name=   "ssetSelected"
-            stylesets(1).ForeColor=   -2147483634
-            stylesets(1).BackColor=   -2147483635
+            stylesets(1).Name=   "ssetHeaderDisabled"
+            stylesets(1).ForeColor=   -2147483631
+            stylesets(1).BackColor=   -2147483633
             stylesets(1).Picture=   "frmMailMerge.frx":0D3B
             stylesets(2).Name=   "ssetEnabled"
             stylesets(2).ForeColor=   -2147483640
@@ -382,7 +383,7 @@ Begin VB.Form frmMailMerge
          EndProperty
          Height          =   1950
          Index           =   0
-         Left            =   135
+         Left            =   -74865
          TabIndex        =   0
          Top             =   405
          Width           =   9600
@@ -969,7 +970,7 @@ Begin VB.Form frmMailMerge
          Caption         =   "Data :"
          Height          =   2385
          Index           =   1
-         Left            =   135
+         Left            =   -74865
          TabIndex        =   8
          Top             =   2385
          Width           =   9600
@@ -1074,7 +1075,7 @@ Begin VB.Form frmMailMerge
          Caption         =   "Document Management :"
          Height          =   3330
          Index           =   2
-         Left            =   -72015
+         Left            =   2985
          TabIndex        =   74
          Top             =   1440
          Width           =   6735
@@ -1145,7 +1146,7 @@ Begin VB.Form frmMailMerge
          Caption         =   "Word Document :"
          Height          =   3330
          Index           =   0
-         Left            =   -72015
+         Left            =   2985
          TabIndex        =   57
          Top             =   1440
          Width           =   6735
@@ -1237,7 +1238,7 @@ Begin VB.Form frmMailMerge
          Caption         =   "Individual Emails :"
          Height          =   3330
          Index           =   1
-         Left            =   -72015
+         Left            =   2985
          TabIndex        =   66
          Top             =   1440
          Width           =   6735
@@ -2042,9 +2043,11 @@ Private Sub cmdFileName_Click(Index As Integer)
 '    Else
 '      .FileName = vbNullString
 '    End If
-    .FileName = txtFilename(Index).Text
     If Len(Trim(txtFilename(Index).Text)) = 0 Or txtFilename(Index).Text = "<None>" Then
       .InitDir = gsDocumentsPath
+      .FileName = vbNullString
+    Else
+      .FileName = txtFilename(Index).Text
     End If
 
     .CancelError = True
@@ -3037,9 +3040,9 @@ Private Sub optOutputFormat_Click(Index As Integer)
   chkDocManManualHeader.Value = vbUnchecked
   chkDocManScreen.Value = vbUnchecked
   
-  FraOutput(0).Visible = (Index = 0)
-  FraOutput(1).Visible = (Index = 1)
-  FraOutput(2).Visible = (Index = 2)
+  fraOutput(0).Visible = (Index = 0)
+  fraOutput(1).Visible = (Index = 1)
+  fraOutput(2).Visible = (Index = 2)
   
   Me.Changed = True
 
