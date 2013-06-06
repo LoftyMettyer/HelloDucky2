@@ -232,16 +232,16 @@ Private Sub UserControl_Resize()
             Else
               .Top = Option1(Index - 1).Top + UserControl.TextHeight(.Caption) + 50
             End If
-            
+
             .Left = UserControl.TextWidth("W")
-              
+
             intHeight = intHeight + .Height
             If .Width > intWidth Then intWidth = .Width
           
           End With
         Next Index
         
-        intWidth = intWidth + (GetAvgCharWidth(UserControl.hDC) * 2)
+        intWidth = intWidth + (GetAvgCharWidth(UserControl.hDC) * 2) + 20
         
         With UserControl
           .Height = intHeight
