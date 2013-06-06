@@ -139,13 +139,13 @@ Begin VB.Form frmAbout
    Begin VB.Label lblCopyRight 
       AutoSize        =   -1  'True
       BackStyle       =   0  'Transparent
-      Caption         =   "Copyright © Advanced Business Software and Solutions Limited"
+      Caption         =   "Copyright © Advanced Business Software and Solutions Ltd 2012"
       ForeColor       =   &H00000000&
       Height          =   195
       Left            =   150
       TabIndex        =   4
       Top             =   1305
-      Width           =   5490
+      Width           =   5610
    End
    Begin VB.Label lblTitle 
       AutoSize        =   -1  'True
@@ -245,11 +245,11 @@ Private Sub Form_Load()
   sngMaxX = IIf(lblSql.Left + lblSql.Width > sngMaxX, lblSql.Left + lblSql.Width, sngMaxX)
   sngMaxX = IIf(lblCopyRight.Left + lblCopyRight.Width > sngMaxX, lblCopyRight.Left + lblCopyRight.Width, sngMaxX)
   
-  cmdOK.Left = sngMaxX + 250
-  cmdSysInfo.Left = cmdOK.Left
-  cmdTech.Left = cmdOK.Left
+  cmdOk.Left = sngMaxX + 250
+  cmdSysInfo.Left = cmdOk.Left
+  cmdTech.Left = cmdOk.Left
   
-  Me.Width = cmdOK.Left + cmdOK.Width + 200
+  Me.Width = cmdOk.Left + cmdOk.Width + 200
 TidyUpAndExit:
   Exit Sub
 
