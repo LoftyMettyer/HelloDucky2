@@ -2152,6 +2152,10 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
       "    SET @fValidRecord = 1" & vbNewLine & vbNewLine
 
     sInsertTriggerSQL.Append _
+      "       -- Only fire this trigger when called from the _u02" & vbNewLine & _
+      "       IF UPDATE([updflag]) RETURN;" & vbNewLine & vbNewLine
+
+    sInsertTriggerSQL.Append _
       "    IF EXISTS(SELECT [SettingValue] FROM ASRSysSystemSettings WHERE [Section] = 'TMP_AccordRunningInBatch' AND [SettingKey] = @@SPID)" & vbNewLine & _
       "    BEGIN" & vbNewLine & _
       "        SET @iAccordDefaultStatus = " & miAccordStatusForUtilities & vbNewLine & _
@@ -2587,6 +2591,10 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
       "        @iTemp int," & vbNewLine & _
       "        @fResult bit" & vbNewLine & vbNewLine
       '"        @login_time datetime" & vbNewLine & vbNewLine
+    
+    sUpdateTriggerSQL.Append _
+      "       -- Only fire this trigger when called from the _u02" & vbNewLine & _
+      "       IF UPDATE([updflag]) RETURN;" & vbNewLine & vbNewLine
     
     sUpdateTriggerSQL.Append _
       "    SET @RecalculateRecordDesc = 1" & vbNewLine & vbNewLine
@@ -3167,6 +3175,10 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
       "        @strTemp varchar(max)," & vbNewLine & _
       "        @fResult bit," & vbNewLine & _
       "        @iTemp int" & vbNewLine & vbNewLine
+      
+    sDeleteTriggerSQL.Append _
+      "       -- Only fire this trigger when called from the _u02" & vbNewLine & _
+      "       IF UPDATE([updflag]) RETURN;" & vbNewLine & vbNewLine
       
     sDeleteTriggerSQL.Append _
       "    SET @RecalculateRecordDesc = 0" & vbNewLine & _
