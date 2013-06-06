@@ -2545,6 +2545,14 @@ Private Function CreateQueryDefs() As Boolean
          "SELECT 4 AS [ValidationType], * FROM tmpColumns WHERE [Mandatory] = -1 AND tableid = @tableid"
   daoDb.CreateQueryDef "spadmin_getvalidations", sSQL
 
+  ' spadmin_getdescriptions
+  sSQL = "SELECT tmpExpressions.[exprid] AS ID, tmpExpressions.[Name], tmpExpressions.[Type], tmpExpressions.[Description], tmpExpressions.[ReturnType], tmpExpressions.[ReturnSize] AS [size], tmpExpressions.[ReturnDecimals] AS decimals, IIf([tmpExpressions.deleted]=-1,8,IIf([tmpExpressions.new]=-1,4,IIf([tmpExpressions.changed]=-1,16,2))) AS state " & _
+         "FROM tmpExpressions " & _
+         "INNER JOIN tmptables ON tmptables.RecordDescExprID = tmpExpressions.ExprID " & _
+         "WHERE (((tmpExpressions.[tableid])=[@parentid]) AND ((tmpExpressions.[ParentComponentID])=0)); "
+  daoDb.CreateQueryDef "spadmin_getdescriptions", sSQL
+
+
 
 
 TidyUpAndExit:
