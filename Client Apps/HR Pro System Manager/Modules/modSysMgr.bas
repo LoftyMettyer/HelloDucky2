@@ -128,8 +128,8 @@ Public UI As New UI
 Public gsTempDatabaseName As String
 
 ' New Progress Bar - Global class to be used for progress bars
-Public gobjProgress As COAProgress.COA_Progress
-'Public gobjProgress As clsProgress
+'Public gobjProgress As COAProgress.COA_Progress
+Public gobjProgress As clsProgress
 
 ' Private global variables
 Private gasTableViewPrivileges() As String
@@ -551,8 +551,8 @@ Sub Main()
   Set ODBC = New HRProSystemMgr.ODBC
 
   'Instantiate Progress Bar class
-  Set gobjProgress = New COAProgress.COA_Progress
-  'Set gobjProgress = New clsProgress
+  'Set gobjProgress = New COAProgress.COA_Progress
+  Set gobjProgress = New clsProgress
   gobjProgress.StyleResource = CodeJockStylePath
   gobjProgress.StyleIni = CodeJockStyleIni
   
@@ -5785,7 +5785,7 @@ Public Function ValidateGTMaskDate(dtTemp As GTMaskDate.GTMaskDate) As Boolean
       'If Not IsDate(.DateValue) Or .DateValue < #1/1/1753# Or Left(.Text, 5) <> Left(.DateValue, 5) Then
       
       'MH20020423 Fault 3543 Also make sure that they enter a valid year
-      blnYearOkay = (Val(Mid(.Text, InStrRev(.Text, sSysDateSeparator) + 1)) >= 1753)
+      blnYearOkay = (val(Mid(.Text, InStrRev(.Text, sSysDateSeparator) + 1)) >= 1753)
       
       If Not IsDate(.DateValue) Or .DateValue < #1/1/1753# Or _
           Format(.DateValue, DateFormat) <> .Text Or Not blnYearOkay Then
@@ -5836,7 +5836,7 @@ Public Function EnableUDFFunctions() As Boolean
   sSQL = "exec sp_server_info 500"
   rsResult.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly
   
-  Select Case Val(rsResult(2))
+  Select Case val(rsResult(2))
     Case Is >= 8
       EnableUDFFunctions = True
     Case Else
@@ -6355,11 +6355,11 @@ Public Function GetModuleSetupValue(sModuleKey As String, sParameterKey As Strin
       If Not IsNull(!parametervalue) Then
         Select Case strType
         Case "T"
-          GetModuleSetupValue = GetTableName(Val(!parametervalue))
+          GetModuleSetupValue = GetTableName(val(!parametervalue))
         Case "C"
-          GetModuleSetupValue = GetColumnName(Val(!parametervalue), False)
+          GetModuleSetupValue = GetColumnName(val(!parametervalue), False)
         Case "ColumnNameOnly"
-          GetModuleSetupValue = GetColumnName(Val(!parametervalue), True)
+          GetModuleSetupValue = GetColumnName(val(!parametervalue), True)
         Case Else
           GetModuleSetupValue = !parametervalue
         End Select
