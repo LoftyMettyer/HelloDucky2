@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "10:38"
+            TextSave        =   "16:46"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -2997,7 +2997,7 @@ Private Sub RefreshQuickLinks(ByVal MenuType As UserMenuType)
       iCount = iCount + 1
 
       With abMain
-        Set objFileTool = .Bands(sBandName).Tools.Add(.Tools.Count + 1, "RC" & rsTemp("ObjectType").Value & ":" & rsTemp("ObjectID").Value)
+        Set objFileTool = .Bands(sBandName).Tools.Add(.Tools.Count + 2, "RC" & rsTemp("ObjectType").Value & ":" & rsTemp("ObjectID").Value)
         .Tools.Add objFileTool.ToolID, objFileTool.Name
         
         Select Case rsTemp("ObjectType").Value
@@ -3153,7 +3153,7 @@ Private Sub RefreshQuickLinks(ByVal MenuType As UserMenuType)
     Loop
   Else
   
-    Set objFileTool = abMain.Tools.Add(abMain.Tools.Count + 1, "RC_None")
+    Set objFileTool = abMain.Tools.Add(abMain.Tools.Count + 2, "RC_None")
     objFileTool.Caption = "<None>"
     objFileTool.Enabled = False
     abMain.Bands(sBandName).Tools.Insert 0, objFileTool
