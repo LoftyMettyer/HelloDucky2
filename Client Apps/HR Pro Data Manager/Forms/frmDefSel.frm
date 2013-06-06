@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.1#0"; "MSCOMCTL.OCX"
 Begin VB.Form frmDefSel 
    Caption         =   "Select"
    ClientHeight    =   7800
@@ -551,7 +551,7 @@ Private Sub cmdCancel_Click()
   Dim frmOutput As frmEventLog
 
   If mblnScheduledJobs Then
-    If mutlUtilityType = utlBatchJob Then
+    If mutlUtilityType = utlBatchJob Or mutlUtilityType = utlReportPack Then
       'If not batch logon then show event log with only selected jobs
       If Not gblnBatchJobsOnly And mstrEventLogIDs <> vbNullString Then
         Set frmOutput = New frmEventLog
