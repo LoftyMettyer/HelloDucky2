@@ -1634,8 +1634,17 @@ PRINT 'Step 3 - System indexes'
 	EXEC sp_executesql N'CREATE NONCLUSTERED INDEX [IDX_TargetObjectID] ON [dbo].[tbsys_scriptedobjects] ([targetid] ASC, [objecttype] ASC) INCLUDE ([lastupdated],	[lastupdatedby], [effectivedate], [locked])'
 
 
-		
+/* ------------------------------------------------------------- */
+PRINT 'Step 4 - Workflow Tab Strips'
 
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysWorkflowElementItems', 'U') AND name = 'pageno')
+		BEGIN
+			EXEC sp_executesql N'ALTER TABLE ASRSysWorkflowElementItems ADD pageno integer NULL;';
+			EXEC sp_executesql N'UPDATE ASRSysWorkflowElementItems SET pageno = 0;';
+		END
+
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysWorkflowElementItems', 'U') AND name = 'buttonstyle')
+		EXEC sp_executesql N'ALTER TABLE ASRSysWorkflowElementItems ADD buttonstyle tinyint NULL;';
 
 
 
