@@ -1763,10 +1763,13 @@ PRINT 'Step - Populate code generation tables'
 PRINT 'Step - Administration module stored procedures'
 
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spadmin_getcomponentcode]') AND xtype = 'P')
-		DROP PROCEDURE [dbo].[spadmin_getcomponentcode]
+		DROP PROCEDURE [dbo].[spadmin_getcomponentcode];
 
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spadmin_getcomponentcodedependancies]') AND xtype = 'P')
-		DROP PROCEDURE [dbo].[spadmin_getcomponentcodedependancies]
+		DROP PROCEDURE [dbo].[spadmin_getcomponentcodedependancies];
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spadmin_optimiserecordsave]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].[spadmin_optimiserecordsave];
 
 	EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[spadmin_getcomponentcode]
 	AS
@@ -1804,6 +1807,25 @@ PRINT 'Step - Administration module stored procedures'
 			WHERE c.id = @componentid;
 	END';
 
+
+	EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[spadmin_optimiserecordsave]
+	AS
+	BEGIN
+
+		SET NOCOUNT ON;
+
+		DECLARE @sCode nvarchar(MAX);
+
+		SET @sCode = '''';
+--		SELECT @sCode = @sCode + ''UPDATE dbo.[tbuser_'' + [tablename] + ''] SET [updflag] = 0 WHERE [id] IN (SELECT TOP 1 ID FROM [tbuser_'' + [tablename] + '']);'' + CHAR(13)
+		SELECT @sCode = @sCode + ''UPDATE dbo.[tbuser_'' + [tablename] + ''] SET [updflag] = 0 WHERE [id] = 0;'' + CHAR(13)
+			FROM tbsys_tables
+			WHERE [TableType] IN (1,2)
+			ORDER BY [tabletype];
+
+		EXECUTE sp_executesql @sCode;
+	
+	END';
 
 /* ------------------------------------------------------------- */
 PRINT 'Step - Remove redundant procedures'
