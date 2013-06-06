@@ -17,7 +17,6 @@ Public Declare Function RegOpenKeyEx Lib "advapi32" Alias "RegOpenKeyExA" (ByVal
 Public Declare Function RegCloseKey Lib "advapi32" (ByVal hKey As Long) As Long
 Public Declare Function RegQueryValueEx Lib "advapi32" Alias "RegQueryValueExA" (ByVal hKey As Long, ByVal lpValueName As String, ByVal lpReserved As Long, ByRef lpType As Long, ByVal lpData As String, ByRef lpcbData As Long) As Long
 
-
 Public Declare Function GetSystemMetrics Lib "user32" (ByVal nIndex As Long) As Long
 Public Declare Function LoadImageAsString Lib "user32" Alias "LoadImageA" ( _
       ByVal hInst As Long, _
@@ -26,5 +25,9 @@ Public Declare Function LoadImageAsString Lib "user32" Alias "LoadImageA" ( _
       ByVal cxDesired As Long, _
       ByVal cyDesired As Long, _
       ByVal fuLoad As Long) As Long
+
+Public Declare Function ShellExecute Lib "shell32.dll" Alias "ShellExecuteA" _
+  (ByVal hWnd As Long, ByVal lpoperation As String, ByVal lpFile As String, _
+  ByVal lpParameters As String, ByVal lpDirectory As String, ByVal nShowCmd As Long) As Long
 
 

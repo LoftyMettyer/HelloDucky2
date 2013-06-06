@@ -1,27 +1,6 @@
 Attribute VB_Name = "modAbsenceSpecifics"
 Option Explicit
 
-''26/07/2001 MH Refer modLicence
-'Public Enum Module
-'    Personnel = 1
-'    Recruitment = 2
-'    Absence = 4
-'    Training = 8
-'    Skills = 16
-'    Web = 32
-'    Afd = 64
-'End Enum
-
-
-' COPY THIS INTO MODSYSMGR ASAP !
-Public gsDatabaseName As String
-'##############################
-
-
-Public Declare Function ShellExecute Lib "shell32.dll" Alias "ShellExecuteA" _
-(ByVal hWnd As Long, ByVal lpoperation As String, ByVal lpFile As String, _
-ByVal lpParameters As String, ByVal lpDirectory As String, ByVal nShowCmd As Long) As Long
-
 ' Absence table variables.
 Private mvar_lngAbsenceTableID As Long
 Private mvar_sAbsenceTableName As String
@@ -69,9 +48,6 @@ Private mvar_lngAbsenceType_SSPAppliesColumnID As Long
 Private mvar_sAbsenceType_SSPAppliesColumnName As String
 Private mvar_lngAbsenceType_IncludeInBradfordColumnName As Long
 Private mvar_sAbsenceType_IncludeInBradfordColumnName As String
-
-Public Const gsSSP_PROCEDURENAME = "spsys_absencessp"
-Public Const gsWorkingDaysBetween2Dates_PROCEDURENAME = "sp_ASRFn_WorkingDaysBetweenTwoDates"
 
 Private mvar_fGeneralOK As Boolean
 Private mvar_sGeneralMsg As String
