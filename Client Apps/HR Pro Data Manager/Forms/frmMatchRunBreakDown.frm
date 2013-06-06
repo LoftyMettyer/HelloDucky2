@@ -349,6 +349,7 @@ Private Sub cboTable1_Click()
   'Dim lngTemp() As Long
   Dim lngTempID As Long
   Dim lngIndex As Long
+  Dim strTemp As String
 
   'lngTemp = mcolCrossRefArrays("ID" & cboTable1.ItemData(cboTable1.ListIndex))
   If mblnLoading = True Then
@@ -372,7 +373,9 @@ Private Sub cboTable1_Click()
       For lngIndex = 0 To UBound(mlngCrossRefArray, 2)
         
         If mlngCrossRefArray(0, lngIndex) = cboTable1.ItemData(cboTable1.ListIndex) Then
-          .AddItem mcolRecDesc2("ID" & CStr(mlngCrossRefArray(1, lngIndex)))
+          strTemp = "ID" & CStr(mlngCrossRefArray(1, lngIndex))
+          strTemp = mcolRecDesc2(strTemp)
+          .AddItem strTemp
           .ItemData(.NewIndex) = mlngCrossRefArray(1, lngIndex)
           If mlngCrossRefArray(1, lngIndex) = lngTempID Then
             .ListIndex = .NewIndex
@@ -396,6 +399,7 @@ Private Sub cboTable2_Click()
   'Dim lngTemp() As Long
   Dim lngTempID As Long
   Dim lngIndex As Long
+  Dim strTemp As String
 
   'lngTemp = mcolCrossRefArrays("ID" & cboTable1.ItemData(cboTable1.ListIndex))
   If mblnLoading = True Then
@@ -419,7 +423,9 @@ Private Sub cboTable2_Click()
 
     For lngIndex = 1 To UBound(mlngCrossRefArray, 2)
       If mlngCrossRefArray(1, lngIndex) = cboTable2.ItemData(cboTable2.ListIndex) Then
-        .AddItem mcolRecDesc1("ID" & CStr(mlngCrossRefArray(0, lngIndex)))
+        strTemp = "ID" & CStr(mlngCrossRefArray(0, lngIndex))
+        strTemp = mcolRecDesc1(strTemp)
+        .AddItem strTemp
         .ItemData(.NewIndex) = mlngCrossRefArray(0, lngIndex)
         If mlngCrossRefArray(0, lngIndex) = lngTempID Then
           .ListIndex = .NewIndex
@@ -480,19 +486,22 @@ Private Sub Form_Load()
   lngMinWidth = lngComboLeft + 3000 + lngGap
   lngMinHeight = cboRelation.Top + cmdOK.Height + cmdOK.Height + (lngGap * 2) + 2500
 
-  Hook Me.hWnd, lngMinWidth, lngMinHeight
+  Hook Me.hwnd, lngMinWidth, lngMinHeight
 End Sub
 
 Public Sub ShowBreakdown(lngTable1ID As Long, lngTable2ID As Long, lngMatchReportType As MatchReportType)
 
   Dim lngIndex As Long
+  Dim strTemp As String
 
   'mblnLoading = True
 
   If mlngTable2RecDescExprID > 0 Then
     With cboTable1
       .Clear
-      .AddItem mcolRecDesc1("ID" & CStr(lngTable1ID))
+      strTemp = "ID" & CStr(lngTable1ID)
+      strTemp = mcolRecDesc1(strTemp)
+      .AddItem strTemp
       .ItemData(.NewIndex) = lngTable1ID
       .ListIndex = 0
     End With
@@ -631,6 +640,6 @@ End Sub
 'End Function
 
 Private Sub Form_Unload(Cancel As Integer)
-  Unhook Me.hWnd
+  Unhook Me.hwnd
 End Sub
 

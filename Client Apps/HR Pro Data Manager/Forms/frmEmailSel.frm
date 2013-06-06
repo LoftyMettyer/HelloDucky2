@@ -574,6 +574,8 @@ Private Function SendEventLog() As Boolean
     Set objOutputEmail = Nothing
   End If
 
+  SendEventLog = True
+
 TidyAndExit:
   Screen.MousePointer = vbDefault
   
@@ -588,6 +590,7 @@ Exit Function
 
 LocalErr:
   strError = "Error sending email (" & Err.Description & ")"
+  SendEventLog = False
   Resume TidyAndExit
 
 End Function

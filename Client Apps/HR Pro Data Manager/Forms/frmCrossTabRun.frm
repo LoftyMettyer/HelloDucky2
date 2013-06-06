@@ -520,7 +520,7 @@ Public Property Get UserCancelled() As Boolean
   UserCancelled = mblnUserCancelled
 End Property
 
-Public Function AbsenceBreakdownExecuteReport(lngPersonnelID As Long)
+Public Function AbsenceBreakdownExecuteReport(lngPersonnelID As Long) As Boolean
 
 '(dtStartDate As Date, dtEndDate As Date _
     , lngHorColID As Long, lngVerColID As Long, lngPicklistID As Long, lngFilterID As Long _
@@ -2337,7 +2337,7 @@ Private Sub Form_Load()
 '    Me.Height = Screen.Height
 '  End If
 
- Hook Me.hWnd, mlngMinFormWidth, mlngMinFormHeight
+ Hook Me.hwnd, mlngMinFormWidth, mlngMinFormHeight
 
 End Sub
 
@@ -2456,7 +2456,7 @@ Private Sub Form_Unload(Cancel As Integer)
   Unload frmOutputOptions
   Set frmOutputOptions = Nothing
 
-  Unhook Me.hWnd
+  Unhook Me.hwnd
   
 End Sub
 
@@ -3279,7 +3279,7 @@ LocalErr:
 End Function
 
 
-Public Function TurnoverExecuteReport()
+Public Function TurnoverExecuteReport() As Boolean
   
   Set datData = New HRProDataMgr.clsDataAccess
   mblnLoading = True
@@ -3325,7 +3325,7 @@ Public Function TurnoverExecuteReport()
 End Function
 
 
-Public Function TurnoverStabilityReport()
+Public Function TurnoverStabilityReport() As Boolean
   
   Dim strReportType As String
   
