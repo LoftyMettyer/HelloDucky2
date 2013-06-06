@@ -53,12 +53,12 @@ Public Function CheckVersion(sConnect As String, fReRunScript As Boolean, bIsSQL
         "Version number not found.", _
         vbOKOnly + vbExclamation, Application.Name
     Else
-      iMajorAppVersion = Val(Split(sDBVersion, ".")(0))
-      iMinorAppVersion = Val(Split(sDBVersion, ".")(1))
+      iMajorAppVersion = val(Split(sDBVersion, ".")(0))
+      iMinorAppVersion = val(Split(sDBVersion, ".")(1))
       
       blnNewStyleVersionNo = (UBound(Split(sDBVersion, ".")) = 1)
       If Not blnNewStyleVersionNo Then
-        iRevisionAppVersion = Val(Split(sDBVersion, ".")(2))
+        iRevisionAppVersion = val(Split(sDBVersion, ".")(2))
       End If
     End If
   End If
@@ -93,7 +93,7 @@ Public Function CheckVersion(sConnect As String, fReRunScript As Boolean, bIsSQL
    
   ' AE20080218 Fault #12834, 12859
   If fOK Then
-    If fReRunScript And bIsSQLSystemAdmin Then
+    If (fReRunScript Or gblnAutomaticScript) And bIsSQLSystemAdmin Then
       fVersionOK = UpdateDatabase(sConnect, fReRunScript)
     Else
       Dim frmChangedPlatform As frmChangedPlatform
@@ -162,7 +162,7 @@ Public Function CheckVersion(sConnect As String, fReRunScript As Boolean, bIsSQL
         ' AE20090623 Fault #13661
         '    - Reversal of 13514 as now fixed in SEC
         'If mstrLastSQLServerVersion <> gstrSQLFullVersion Then
-        If Val(mstrLastSQLServerVersion) <> glngSQLVersion Then
+        If val(mstrLastSQLServerVersion) <> glngSQLVersion Then
           ReDim Preserve mavValidationMessages(3, UBound(mavValidationMessages, 2) + 1)
           mavValidationMessages(0, UBound(mavValidationMessages, 2)) = "Microsoft SQL Version Upgraded"
           mavValidationMessages(1, UBound(mavValidationMessages, 2)) = mstrLastSQLServerVersion
@@ -274,12 +274,12 @@ Public Function CheckVersion(sConnect As String, fReRunScript As Boolean, bIsSQL
     sDBVersion = GetSystemSetting("Database", "Minimum Version", vbNullString)
     If LenB(sDBVersion) <> 0 Then
       
-      iMajorAppVersion = Val(Split(sDBVersion, ".")(0))
-      iMinorAppVersion = Val(Split(sDBVersion, ".")(1))
+      iMajorAppVersion = val(Split(sDBVersion, ".")(0))
+      iMinorAppVersion = val(Split(sDBVersion, ".")(1))
       
       blnNewStyleVersionNo = (UBound(Split(sDBVersion, ".")) = 1)
       If Not blnNewStyleVersionNo Then
-        iRevisionAppVersion = Val(Split(sDBVersion, ".")(2))
+        iRevisionAppVersion = val(Split(sDBVersion, ".")(2))
       End If
       
       If (App.Major < iMajorAppVersion) Or _
@@ -307,15 +307,15 @@ Public Function CheckVersion(sConnect As String, fReRunScript As Boolean, bIsSQL
 
     If LenB(sDependencyVersion) > 0 And LenB(sMinVersion) > 0 Then
 
-      iMinimumMajor = Val(Split(sMinVersion, ".")(0))
-      iMinimumMinor = Val(Split(sMinVersion, ".")(1))
+      iMinimumMajor = val(Split(sMinVersion, ".")(0))
+      iMinimumMinor = val(Split(sMinVersion, ".")(1))
 
-      iMajorDependencyVersion = Val(Split(sDependencyVersion, ".")(0))
-      iMinorDependencyVersion = Val(Split(sDependencyVersion, ".")(1))
+      iMajorDependencyVersion = val(Split(sDependencyVersion, ".")(0))
+      iMinorDependencyVersion = val(Split(sDependencyVersion, ".")(1))
 
       blnNewStyleVersionNo = (UBound(Split(sDependencyVersion, ".")) = 1)
       If Not blnNewStyleVersionNo Then
-        iRevisionAppVersion = Val(Split(sDependencyVersion, ".")(2))
+        iRevisionAppVersion = val(Split(sDependencyVersion, ".")(2))
       End If
 
       If (iMajorDependencyVersion <> iMinimumMajor) Or _
@@ -500,7 +500,7 @@ Private Function UpdateDatabase( _
   End If
 
   ' AE20080218 Fault #12834
-  If fReRunScript And Not fPlatform Then
+  If fReRunScript And Not fPlatform And Not gblnAutomaticScript Then
     strMBText = "Are you sure that you would like to re-run the latest update script?"
 '  Else
 '    strMBText = "The database is out of date.  Would you like to update it now?"
