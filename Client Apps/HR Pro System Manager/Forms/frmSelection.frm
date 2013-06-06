@@ -890,10 +890,7 @@ Private Function items_EmailPopulate() As Boolean
   fOK = True
   lstItems.ListItems.Clear
 
-  ' Define the selection string which determines
-  ' what objects are displayed on the selection form.
-  '" WHERE tableID = " & Trim(Str(mobjEmail.TableID)) & _
-
+  ' Define the selection string which determines what objects are displayed on the selection form.
   sSQL = "SELECT name, EMailID, Deleted " & _
     " FROM tmpEmailAddresses " & _
     " WHERE (tableID = 0 OR tableID = " & CStr(mobjEmail.TableID) & ")" & _
@@ -906,12 +903,8 @@ Private Function items_EmailPopulate() As Boolean
     Do While Not .EOF
       
       If mblnSelectMultiple Then
-        clbItems.AddItem (!Name)
-        clbItems.ItemData(clbItems.NewIndex) = !EmailID
-        clbItems.Selected(clbItems.NewIndex) = Exists(mcolSelectedIDs, CStr(!EmailID))
+        AddItemToListbox clbItems, !Name, !EmailID, Exists(mcolSelectedIDs, CStr(!EmailID))
       Else
-        'lstItems.AddItem !Name
-        'lstItems.ItemData(lstItems.NewIndex) = !EmailID
         Set objListItem = lstItems.ListItems.Add(, , !Name)
         objListItem.Tag = !EmailID
       End If
