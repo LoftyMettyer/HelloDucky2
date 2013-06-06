@@ -24,8 +24,8 @@
 
   Public Enum GenerateType
     [InlineCode] = 0
-    [SimpleUDF] = 1
-    [ComplexUDF] = 2
+    SimpleUdf = 1
+    ComplexUdf = 2
   End Enum
 
   Public Enum ExpressionType
@@ -94,10 +94,10 @@
     [SystemVariable] = 5
     [Condition] = 6            ' typically first parameter of a if then else (e.g. field = value)
     '[Another_Unknown] = 100
-    [ByRef_String] = 101
-    [ByRef_Numeric] = 102
-    [ByRef_Logic] = 103
-    [ByRef_Date] = 104
+    ByRefString = 101
+    ByRefNumeric = 102
+    ByRefLogic = 103
+    ByRefDate = 104
   End Enum
 
   Public Enum CaseReturnType

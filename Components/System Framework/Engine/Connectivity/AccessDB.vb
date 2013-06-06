@@ -1,15 +1,14 @@
 ﻿Namespace Connectivity
-  Public Class AccessDB
+  Public Class AccessDb
     Implements IConnection
 
-    Public DB As OleDb.OleDbConnection
+    Public Db As OleDb.OleDbConnection
     Public NativeObject As DAO.Database
 
-    Public Function ExecuteQuery(ByVal QueryName As String, ByVal Parms As Connectivity.Parameters) As System.Data.DataSet Implements IConnection.ExecStoredProcedure
+    Public Function ExecuteQuery(ByVal queryName As String, ByVal parms As Parameters) As DataSet Implements IConnection.ExecStoredProcedure
 
       Dim objAdapter As New OleDb.OleDbDataAdapter
       Dim sqlParms As OleDb.OleDbParameterCollection
-      Dim sqlParm As OleDb.OleDbParameter
       Dim objCommand As New OleDb.OleDbCommand
 
       Dim dsDataSet As New DataSet
@@ -18,31 +17,31 @@
 
         With objCommand
           .CommandType = CommandType.StoredProcedure
-          .CommandText = QueryName
-          .Connection = DB
+          .CommandText = queryName
+          .Connection = Db
           '       .Connection.Open()
 
           ' Clear any previous parameters from the Command object
           Call .Parameters.Clear()
 
-          If Parms IsNot Nothing Then
+          If parms IsNot Nothing Then
 
             ' Convert passed in parameter array to sql parameters
             sqlParms = objCommand.Parameters
-            For Each objParameter In Parms
+            For Each objParameter In parms
 
               Select Case objParameter.DBType
-                Case Connectivity.DBType.Integer
-                  sqlParm = sqlParms.AddWithValue(objParameter.Name, CInt(objParameter.Value))
+                Case DBType.Integer
+                  sqlParms.AddWithValue(objParameter.Name, CInt(objParameter.Value))
 
-                Case Connectivity.DBType.String
-                  sqlParm = sqlParms.AddWithValue(objParameter.Name, objParameter.Value.ToString)
+                Case DBType.String
+                  sqlParms.AddWithValue(objParameter.Name, objParameter.Value.ToString)
 
-                Case Connectivity.DBType.GUID
+                Case DBType.GUID
                   If objParameter.Value Is Nothing OrElse CType(objParameter.Value, Guid) = Guid.Empty Then
-                    sqlParm = sqlParms.AddWithValue(objParameter.Name, DBNull.Value)
+                    sqlParms.AddWithValue(objParameter.Name, DBNull.Value)
                   Else
-                    sqlParm = sqlParms.AddWithValue(objParameter.Name, objParameter.Value.ToString)
+                    sqlParms.AddWithValue(objParameter.Name, objParameter.Value.ToString)
                   End If
 
               End Select
@@ -57,14 +56,10 @@
         objAdapter.Fill(dsDataSet)
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(SystemFramework.ErrorHandler.Section.LoadingData, "ExecuteQuery", SystemFramework.ErrorHandler.Severity.Error, ex.Message, ex.InnerException.ToString)
+        ErrorLog.Add(ErrorHandler.Section.LoadingData, "ExecuteQuery", ErrorHandler.Severity.Error, ex.Message, ex.InnerException.ToString)
         Return Nothing
 
       Finally
-        objAdapter = Nothing
-        sqlParms = Nothing
-        sqlParm = Nothing
-        objCommand = Nothing
 
       End Try
 
@@ -95,7 +90,7 @@
     Public Sub Open() Implements IConnection.Open
     End Sub
 
-    Public Function ScriptStatement(ByVal statement As String, ByRef IsCritical As Boolean) As Boolean Implements IConnection.ScriptStatement
+    Public Function ScriptStatement(ByVal statement As String, ByRef isCritical As Boolean) As Boolean Implements IConnection.ScriptStatement
       Return False
     End Function
 

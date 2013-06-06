@@ -8,8 +8,8 @@ Namespace Things
 
     Public Property Table As Table
 
-    Public Property CalcID As Integer
-      Public Property Calculation As Expression
+    Public Property CalcId As Integer
+    Public Property Calculation As Expression
 
     Public Property DataType As ColumnTypes
     Public Property Size As Integer
@@ -26,27 +26,27 @@ Namespace Things
     Public Property TrimType As TrimType
     Public Property Alignment As AlignType
     Public Property Mandatory As Boolean
-    Public Property OLEType As OLEType
+    Public Property OleType As OleType
 
     Public Property UniqueType As UniqueCheckScope
 
-    Public Property DefaultCalcID As Integer
+    Public Property DefaultCalcId As Integer
     Public Property DefaultCalculation As Expression
     Public Property DefaultValue As String
 
     Public ReadOnly Property DataTypeSize As String
       Get
 
-        Select Case Me.DataType
+        Select Case DataType
           Case ColumnTypes.Text
-            If Me.Multiline Or Me.Size > 8000 Then
+            If Multiline Or Size > 8000 Then
               Return "MAX"
             Else
-              Return CStr(Me.Size)
+              Return CStr(Size)
             End If
 
           Case ColumnTypes.Numeric
-            Return (Me.Size + Me.Decimals).ToString
+            Return (Size + Decimals).ToString
 
           Case ColumnTypes.Logic
             Return "1"
@@ -55,7 +55,7 @@ Namespace Things
             Return "20"
 
           Case Else
-            Return CStr(Me.Size)
+            Return CStr(Size)
 
         End Select
       End Get
@@ -67,19 +67,19 @@ Namespace Things
 
         Dim sqlType As String = String.Empty
 
-        Select Case Me.DataType
+        Select Case DataType
           Case ColumnTypes.Text
-            If Me.Multiline Or Me.Size > 8000 Then
+            If Multiline Or Size > 8000 Then
               sqlType = "varchar(MAX)"
             Else
-              sqlType = String.Format("varchar({0})", Me.Size)
+              sqlType = String.Format("varchar({0})", Size)
             End If
 
           Case ColumnTypes.Integer
             sqlType = String.Format("integer")
 
           Case ColumnTypes.Numeric
-            sqlType = String.Format("numeric({0},{1})", Me.Size, Me.Decimals)
+            sqlType = String.Format("numeric({0},{1})", Size, Decimals)
 
           Case ColumnTypes.Date
             sqlType = "datetime"
@@ -110,16 +110,16 @@ Namespace Things
     Public ReadOnly Property HasDefaultValue As Boolean
       Get
 
-        If Me.DefaultCalcID > 0 Then
+        If DefaultCalcId > 0 Then
           Return True
         Else
-          Select Case Me.DataType
+          Select Case DataType
             Case ColumnTypes.Text
-              Return Me.DefaultValue.Length > 0
+              Return DefaultValue.Length > 0
             Case ColumnTypes.Numeric, ColumnTypes.Integer
-              Return CInt(Me.DefaultValue) <> 0
+              Return CInt(DefaultValue) <> 0
             Case ColumnTypes.Logic
-              Return CBool(Me.DefaultValue) <> True
+              Return CBool(DefaultValue) <> True
             Case Else
               Return False
           End Select
@@ -131,7 +131,7 @@ Namespace Things
 
     Public ReadOnly Property IsCalculated As Boolean
       Get
-        Return CalcID > 0
+        Return CalcId > 0
       End Get
     End Property
 
@@ -141,16 +141,16 @@ Namespace Things
 
     Public Function ApplyFormatting(ByVal prefix As String) As String
 
-      Dim format As String = Me.Name
+      Dim format As String = Name
 
       If Not prefix = String.Empty Then
         format = String.Format("[{0}].[{1}]", prefix, format)
       End If
 
-      If Me.DataType = ColumnTypes.Text Then
+      If DataType = ColumnTypes.Text Then
 
         ' Case
-        Select Case Me.CaseType
+        Select Case CaseType
           Case CaseType.Lower
             format = String.Format("LOWER({0})", format)
           Case CaseType.Proper
@@ -160,7 +160,7 @@ Namespace Things
         End Select
 
         ' Trim type
-        Select Case Me.TrimType
+        Select Case TrimType
           Case TrimType.Both
             format = String.Format("LTRIM(RTRIM({0}))", format)
           Case TrimType.Left
@@ -177,7 +177,7 @@ Namespace Things
     Public ReadOnly Property SafeReturnType As String
       Get
 
-        Select Case CInt(Me.DataType)
+        Select Case CInt(DataType)
           Case ColumnTypes.Text, ColumnTypes.WorkingPattern, ColumnTypes.Link
             Return "''"
           Case ColumnTypes.Integer, ColumnTypes.Numeric, ColumnTypes.Logic
@@ -193,7 +193,7 @@ Namespace Things
     Public ReadOnly Property ComponentReturnType As ScriptDB.ComponentValueTypes
       Get
 
-        Select Case CInt(Me.DataType)
+        Select Case CInt(DataType)
 
           Case ColumnTypes.Text, ColumnTypes.WorkingPattern, ColumnTypes.Link
             Return ScriptDB.ComponentValueTypes.String

@@ -6,7 +6,7 @@ Public Module Extensions
   <Extension()>
   Public Sub AddIfNew(Of T As Base)(ByVal items As ICollection(Of T), ByVal item As T)
 
-    If Not items.Any(Function(i) i.ID = item.ID AndAlso item.GetType = i.GetType) Then
+    If Not items.Any(Function(i) i.Id = item.Id AndAlso item.GetType = i.GetType) Then
       items.Add(item)
     End If
 
@@ -15,7 +15,7 @@ Public Module Extensions
   <Extension()>
   Public Function GetById(Of T As Base)(ByVal items As ICollection(Of T), ByVal id As Integer) As T
 
-    Return items.FirstOrDefault(Function(item) item.ID = id)
+    Return items.FirstOrDefault(Function(item) item.Id = id)
 
   End Function
 

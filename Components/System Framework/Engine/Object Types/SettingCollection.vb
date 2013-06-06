@@ -1,7 +1,7 @@
 ﻿Namespace Things
 
   Public Class SettingCollection
-    Inherits ObjectModel.Collection(Of Setting)
+    Inherits Collection(Of Setting)
 
     Public Function Setting(ByVal [module] As String, ByVal parameter As String) As Setting
 

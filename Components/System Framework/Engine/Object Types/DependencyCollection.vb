@@ -4,39 +4,37 @@ Public Structure Dependency
   Property PartNumber As Integer
   Property Declaration As String
   Property Code As String
-
   Property Thing As Object
-  Property Filter As Things.Expression
-  Property Order As Things.TableOrder
+  Property Filter As Expression
+  Property Order As TableOrder
   Property RowNumber As Integer
 End Structure
 
-
 Public Class ExpressionDependencies
 
-  Private colThings As New Collection(Of Dependency)
-  Private colCode As New Collection(Of ScriptDB.GeneratedUDF)
+  Private ReadOnly _colThings As New Collection(Of Dependency)
+  Private ReadOnly _colCode As New Collection(Of ScriptDB.GeneratedUdf)
 
-  Private dicColumns As New Dictionary(Of Column, Long)
+  Private ReadOnly _dicColumns As New Dictionary(Of Column, Long)
 
-  Private dicTables As New Dictionary(Of Table, Long)
-  Private dicExpressions As New Dictionary(Of Expression, Long)
-  Private dicRelations As New Dictionary(Of Relation, Long)
+  Private ReadOnly _dicTables As New Dictionary(Of Table, Long)
+  Private ReadOnly _dicExpressions As New Dictionary(Of Expression, Long)
+  Private ReadOnly _dicRelations As New Dictionary(Of Relation, Long)
 
   ' Code expressions
-  Public Overloads Function Add(ByVal pobjExpression As Things.Expression) As String
+  Public Overloads Function Add(ByVal pobjExpression As Expression) As String
 
     Dim iPartNumber As Integer = 0
-    Dim code As New ScriptDB.GeneratedUDF
+    Dim code As New ScriptDB.GeneratedUdf
     Dim bFound As Boolean = False
 
-    code.SelectCode = pobjExpression.UDF.SelectCode
-    code.FromCode = pobjExpression.UDF.FromCode
-    code.JoinCode = pobjExpression.UDF.JoinCode
-    code.WhereCode = pobjExpression.UDF.WhereCode
+    code.SelectCode = pobjExpression.Udf.SelectCode
+    code.FromCode = pobjExpression.Udf.FromCode
+    code.JoinCode = pobjExpression.Udf.JoinCode
+    code.WhereCode = pobjExpression.Udf.WhereCode
 
     ' Is this column/filter/order/line no in the dependcy stack
-    For Each objThing As ScriptDB.GeneratedUDF In colCode
+    For Each objThing As ScriptDB.GeneratedUdf In _colCode
       If objThing.SelectCode = code.SelectCode And objThing.FromCode = code.FromCode And objThing.JoinCode = code.JoinCode And objThing.WhereCode = code.WhereCode Then
         iPartNumber = objThing.PartNumber
         bFound = True
@@ -47,7 +45,7 @@ Public Class ExpressionDependencies
     ' Not in the list - add it and return this value
     If Not bFound Then
 
-      iPartNumber = colCode.Count
+      iPartNumber = _colCode.Count
       code.PartNumber = iPartNumber
 
       code.Declaration = String.Format("@part_{0} {1}", iPartNumber, pobjExpression.DataTypeSyntax)
@@ -60,7 +58,7 @@ Public Class ExpressionDependencies
 
       code.Code = Regex.Replace(code.Code, "\s*(\n)", "$1")
 
-      colCode.Add(code)
+      _colCode.Add(code)
     End If
 
     Return String.Format("@part_{0}", iPartNumber)
@@ -68,7 +66,7 @@ Public Class ExpressionDependencies
   End Function
 
   ' Child Columns
-  Public Overloads Function Add(ByVal Child As ChildRowDetails) As Integer
+  Public Overloads Function Add(ByVal child As ChildRowDetails) As Integer
 
     Dim objDepends As New Dependency
     Dim objOrderFilter As TableOrderFilter
@@ -77,14 +75,14 @@ Public Class ExpressionDependencies
     Dim sTypesafeCode As String
     Dim aryParameters As New ArrayList
 
-    objDepends.Thing = Child.Column
-    objDepends.Filter = Child.Filter
-    objDepends.Order = Child.Order
-    objDepends.RowNumber = Child.RowNumber
+    objDepends.Thing = child.Column
+    objDepends.Filter = child.Filter
+    objDepends.Order = child.Order
+    objDepends.RowNumber = child.RowNumber
 
     ' Is this column/filter/order/line no in the dependcy stack
-    For Each objThing As Dependency In colThings
-      If objThing.Thing Is Child.Column And objThing.Filter Is Child.Filter And objThing.Order Is Child.Order And objThing.RowNumber = Child.RowNumber Then
+    For Each objThing As Dependency In _colThings
+      If objThing.Thing Is child.Column And objThing.Filter Is child.Filter And objThing.Order Is child.Order And objThing.RowNumber = child.RowNumber Then
         iPartNumber = objThing.PartNumber
         bFound = True
         Exit For
@@ -96,44 +94,44 @@ Public Class ExpressionDependencies
 
       aryParameters.Add(String.Format("@prm_ID"))
 
-      iPartNumber = colThings.Count
+      iPartNumber = _colThings.Count
       objDepends.PartNumber = iPartNumber
 
-      If Child.RowSelection = ScriptDB.ColumnRowSelection.Total Or Child.RowSelection = ScriptDB.ColumnRowSelection.Count Then
+      If child.RowSelection = ScriptDB.ColumnRowSelection.Total Or child.RowSelection = ScriptDB.ColumnRowSelection.Count Then
         objDepends.Declaration = String.Format("@child_{0} numeric(38,8)", iPartNumber)
         sTypesafeCode = "0"
       Else
-        objDepends.Declaration = String.Format("@child_{0} {1}", iPartNumber, Child.Column.DataTypeSyntax)
-        sTypesafeCode = Child.Column.SafeReturnType
+        objDepends.Declaration = String.Format("@child_{0} {1}", iPartNumber, child.Column.DataTypeSyntax)
+        sTypesafeCode = child.Column.SafeReturnType
       End If
 
 
       ' Calculate the extra parameters we require if there's a filter attached
-      If Not Child.Filter Is Nothing Then
+      If Not child.Filter Is Nothing Then
 
-        Child.Filter.AssociatedColumn = Child.Filter.BaseTable.Columns(0)
-        Child.Filter.ExpressionType = ScriptDB.ExpressionType.ColumnFilter
-        Child.Filter.GenerateCodeForColumn()
+        child.Filter.AssociatedColumn = child.Filter.BaseTable.Columns(0)
+        child.Filter.ExpressionType = ScriptDB.ExpressionType.ColumnFilter
+        child.Filter.GenerateCodeForColumn()
 
         ' Add the dependent columns
-        For Each objColumn In Child.Filter.Dependencies.Columns
-          If objColumn.Table Is Child.BaseTable Then
+        For Each objColumn In child.Filter.Dependencies.Columns
+          If objColumn.Table Is child.BaseTable Then
             'aryParameters.Add(String.Format("@prm_{0}", objColumn.Name))
           End If
         Next
 
       End If
 
-      objOrderFilter = Child.Column.Table.TableOrderFilter(Child)
-      objOrderFilter.IncludedColumns.AddIfNew(Child.Column)
+      objOrderFilter = child.Column.Table.TableOrderFilter(child)
+      objOrderFilter.IncludedColumns.AddIfNew(child.Column)
 
       objDepends.Code = String.Format("SET @child_{0} = {2};" & vbNewLine & _
           "SELECT @child_{0} = ISNULL(base.[{1}],{2})" & vbNewLine & _
           "    FROM [dbo].[{3}]({4}) base" & vbNewLine _
-          , iPartNumber.ToString, Child.Column.Name, sTypesafeCode, objOrderFilter.Name _
+          , iPartNumber.ToString, child.Column.Name, sTypesafeCode, objOrderFilter.Name _
           , String.Join(", ", aryParameters.ToArray()))
 
-      colThings.Add(objDepends)
+      _colThings.Add(objDepends)
     End If
 
     Return iPartNumber
@@ -141,74 +139,74 @@ Public Class ExpressionDependencies
   End Function
 
   ' Adds tables
-  Public Overloads Sub Add(ByVal Dependency As Table)
-    If dicTables.ContainsKey(Dependency) Then
-      dicTables(Dependency) = dicTables(Dependency) + 1
+  Public Overloads Sub Add(ByVal dependency As Table)
+    If _dicTables.ContainsKey(dependency) Then
+      _dicTables(dependency) = _dicTables(dependency) + 1
     Else
-      dicTables.Add(Dependency, 0)
+      _dicTables.Add(dependency, 0)
     End If
   End Sub
 
   ' Adds columns
-  Public Overloads Sub Add(ByVal Dependency As Column)
-    If dicColumns.ContainsKey(Dependency) Then
-      dicColumns(Dependency) = dicColumns(Dependency) + 1
+  Public Overloads Sub Add(ByVal dependency As Column)
+    If _dicColumns.ContainsKey(dependency) Then
+      _dicColumns(dependency) = _dicColumns(dependency) + 1
     Else
-      dicColumns.Add(Dependency, 0)
+      _dicColumns.Add(dependency, 0)
     End If
   End Sub
 
   ' Adds relation
-  Public Overloads Sub Add(ByVal Dependency As Relation)
-    If dicRelations.ContainsKey(Dependency) Then
-      dicRelations(Dependency) = dicRelations(Dependency) + 1
+  Public Overloads Sub Add(ByVal dependency As Relation)
+    If _dicRelations.ContainsKey(dependency) Then
+      _dicRelations(dependency) = _dicRelations(dependency) + 1
     Else
-      dicRelations.Add(Dependency, 0)
+      _dicRelations.Add(dependency, 0)
     End If
   End Sub
 
 
   Public Sub Clear()
-    colThings.Clear()
-    dicColumns.Clear()
-    dicTables.Clear()
-    dicExpressions.Clear()
-    dicRelations.Clear()
+    _colThings.Clear()
+    _dicColumns.Clear()
+    _dicTables.Clear()
+    _dicExpressions.Clear()
+    _dicRelations.Clear()
   End Sub
 
-  Public ReadOnly Property Statements As ICollection(Of ScriptDB.GeneratedUDF)
+  Public ReadOnly Property Statements As ICollection(Of ScriptDB.GeneratedUdf)
     Get
-      Return colCode
+      Return _colCode
     End Get
   End Property
 
   Public ReadOnly Property ChildRowDetails As ICollection(Of Dependency)
     Get
-      Return colThings
+      Return _colThings
     End Get
   End Property
 
   Public ReadOnly Property Relations As ICollection(Of Relation)
     Get
-      Return dicRelations.Keys
+      Return _dicRelations.Keys
     End Get
   End Property
 
   Public ReadOnly Property Expressions As ICollection(Of Expression)
     Get
-      Return dicExpressions.Keys
+      Return _dicExpressions.Keys
     End Get
   End Property
 
   Public ReadOnly Property Tables As ICollection(Of Table)
     Get
-      Return dicTables.Keys
+      Return _dicTables.Keys
     End Get
   End Property
 
   Public ReadOnly Property Columns As ICollection(Of Column)
     Get
-      Return dicColumns.Keys
+      Return _dicColumns.Keys
     End Get
   End Property
 

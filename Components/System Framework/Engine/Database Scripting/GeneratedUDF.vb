@@ -1,7 +1,7 @@
 ﻿Namespace ScriptDB
 
   <Serializable()>
-  Public Structure GeneratedUDF
+  Public Structure GeneratedUdf
 
     Public Name As String
     Public Code As String
@@ -33,7 +33,7 @@
         Return Name.Substring(7, Name.Length - 8)
       End Get
     End Property
-  
+
     Public Function SqlCreate() As String
       Return Code
     End Function

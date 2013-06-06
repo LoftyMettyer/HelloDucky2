@@ -1,19 +1,18 @@
 ﻿Imports System.Xml.Serialization
-Imports System.Reflection
 Imports System.Runtime.InteropServices
 
 Namespace Things
 
   <Serializable(), ClassInterface(ClassInterfaceType.None)>
   Public MustInherit Class Base
-    Implements COMInterfaces.IObject
+    Implements IObject
 
-    Public Property ID As Integer
+    Public Property Id As Integer
     Public Overridable Property Name As String Implements IObject.Name
     Public Property Description As String
     Public Property SchemaName As String
     Public Property Encrypted As Boolean
-    Public Property State As System.Data.DataRowState
+    Public Property State As DataRowState
     Public Property Tuning As New ScriptDB.Tuning
 
     Public Overridable ReadOnly Property PhysicalName As String Implements IObject.PhysicalName
@@ -24,12 +23,12 @@ Namespace Things
 
 #Region "IClonable & XML"
 
-    Public Sub ToXML(ByVal fileName As String)
+    Public Sub ToXml(ByVal fileName As String)
 
       Dim serializer As New XmlSerializer(Me.GetType())
       Dim namespaces As New XmlSerializerNamespaces()
       namespaces.Add("", "")
-      Using stream As New System.IO.FileStream(fileName, System.IO.FileMode.Create)
+      Using stream As New IO.FileStream(fileName, IO.FileMode.Create)
         serializer.Serialize(stream, Me, namespaces)
       End Using
 

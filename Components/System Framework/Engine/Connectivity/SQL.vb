@@ -1,20 +1,19 @@
 ﻿Imports System.Data.SqlClient
-Imports Microsoft.SqlServer.Server
 
 Namespace Connectivity
 
-  Public Class SQL
+  Public Class Sql
     Implements IConnection
 
-    Private mobjLogin As Connectivity.Login
-    Private mConn As New SqlConnection
+    Private _mobjLogin As Login
+    Private _mConn As New SqlConnection
 
-    Public Property Login As Connectivity.Login Implements IConnection.Login
+    Public Property Login As Login Implements IConnection.Login
       Get
-        Return mobjLogin
+        Return _mobjLogin
       End Get
-      Set(ByVal value As Connectivity.Login)
-        mobjLogin = value
+      Set(ByVal value As Login)
+        _mobjLogin = value
       End Set
     End Property
 
@@ -25,7 +24,7 @@ Namespace Connectivity
       Try
 
         If Login.UseContext Then
-          mConn = New SqlConnection("context connection=true")
+          _mConn = New SqlConnection("context connection=true")
         Else
 
           sConnection = String.Format("Initial Catalog={0}; Server={1};" _
@@ -33,54 +32,52 @@ Namespace Connectivity
                               , Login.Database, Login.Server _
                               , Login.UserName, Login.Password _
                               , "ScriptDB")
-          mConn = New SqlConnection(sConnection)
+          _mConn = New SqlConnection(sConnection)
 
         End If
 
-        mConn.Open()
+        _mConn.Open()
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(SystemFramework.ErrorHandler.Section.LoadingData, String.Empty, SystemFramework.ErrorHandler.Severity.Error, ex.Message, sConnection)
+        ErrorLog.Add(ErrorHandler.Section.LoadingData, String.Empty, ErrorHandler.Severity.Error, ex.Message, sConnection)
 
       End Try
 
     End Sub
 
-    Public Function ExecStoredProcedure(ByVal ProcedureName As String, ByVal Parms As Connectivity.Parameters) As System.Data.DataSet Implements IConnection.ExecStoredProcedure
+    Public Function ExecStoredProcedure(ByVal queryName As String, ByVal parms As Parameters) As DataSet Implements IConnection.ExecStoredProcedure
 
-      Dim SQLParms As SqlParameterCollection
-      Dim objParameter As Connectivity.Parameter
-      Dim sqlParm As SqlParameter
-      Dim _cmdSQLCommand As New SqlCommand
-      Dim _adpAdapter As New SqlClient.SqlDataAdapter
+      Dim sqlParms As SqlParameterCollection
+      Dim objParameter As Parameter
+      Dim cmdSqlCommand As New SqlCommand
+      Dim adpAdapter As New SqlDataAdapter
       Dim dsDataSet As New DataSet
-      Dim bOK As Boolean
 
       ' Configure the SqlCommand object
-      With _cmdSQLCommand
+      With cmdSqlCommand
         .CommandType = CommandType.StoredProcedure      'Set type to StoredProcedure
-        .CommandText = ProcedureName                    'Specify stored procedure to run
-        .Connection = mConn
+        .CommandText = queryName                    'Specify stored procedure to run
+        .Connection = _mConn
 
         ' Clear any previous parameters from the Command object
         Call .Parameters.Clear()
 
         ' Convert passed in parameter array to sql parameters
-        SQLParms = _cmdSQLCommand.Parameters
-        For Each objParameter In Parms
+        sqlParms = cmdSqlCommand.Parameters
+        For Each objParameter In parms
 
           Select Case objParameter.DBType
-            Case Connectivity.DBType.Integer
-              sqlParm = SQLParms.AddWithValue(objParameter.Name, CInt(objParameter.Value))
+            Case DBType.Integer
+              sqlParms.AddWithValue(objParameter.Name, CInt(objParameter.Value))
 
-            Case Connectivity.DBType.String
-              sqlParm = SQLParms.AddWithValue(objParameter.Name, objParameter.Value.ToString)
+            Case DBType.String
+              sqlParms.AddWithValue(objParameter.Name, objParameter.Value.ToString)
 
-            Case Connectivity.DBType.GUID
+            Case DBType.GUID
               If objParameter.Value Is Nothing OrElse CType(objParameter.Value, Guid) = Guid.Empty Then
-                sqlParm = SQLParms.AddWithValue(objParameter.Name, DBNull.Value)
+                sqlParms.AddWithValue(objParameter.Name, DBNull.Value)
               Else
-                sqlParm = SQLParms.AddWithValue(objParameter.Name, objParameter.Value.ToString)
+                sqlParms.AddWithValue(objParameter.Name, objParameter.Value.ToString)
               End If
 
           End Select
@@ -91,11 +88,10 @@ Namespace Connectivity
 
       ' Configure Adapter to use newly created command object and fill the dataset.
       Try
-        _adpAdapter.SelectCommand = _cmdSQLCommand
-        _adpAdapter.Fill(dsDataSet)
+        adpAdapter.SelectCommand = cmdSqlCommand
+        adpAdapter.Fill(dsDataSet)
 
       Catch ex As Exception
-        bOK = False
 
       End Try
 
@@ -103,26 +99,26 @@ Namespace Connectivity
     End Function
 
     Public Sub Close() Implements IConnection.Close
-      mConn.Close()
+      _mConn.Close()
     End Sub
 
-    Public Function ScriptStatement(ByVal statement As String, ByRef IsCritical As Boolean) As Boolean Implements IConnection.ScriptStatement
+    Public Function ScriptStatement(ByVal statement As String, ByRef isCritical As Boolean) As Boolean Implements IConnection.ScriptStatement
 
       Dim objCommand As New SqlCommand
-      Dim bOK As Boolean
+      Dim bOk As Boolean
 
       objCommand.CommandText = statement
 
       If Login.UseContext Then
         Microsoft.SqlServer.Server.SqlContext.Pipe.ExecuteAndSend(objCommand)
       Else
-        objCommand.Connection = mConn
+        objCommand.Connection = _mConn
         objCommand.ExecuteNonQuery()
       End If
 
-      bOK = True
+      bOk = True
 
-      Return bOK
+      Return bOk
 
     End Function
 

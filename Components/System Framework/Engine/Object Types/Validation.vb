@@ -11,7 +11,7 @@
 
         Dim sMessage As String = vbNullString
 
-        Select Case Me.ValidationType
+        Select Case ValidationType
           Case ValidationType.Mandatory
             sMessage = String.Format("{0} is mandatory.", Column.Name)
 
@@ -29,7 +29,6 @@
 
       End Get
     End Property
-
 
   End Class
 End Namespace

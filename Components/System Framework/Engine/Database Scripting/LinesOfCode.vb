@@ -6,90 +6,82 @@ Namespace ScriptDB
   Public Class LinesOfCode
     Inherits Collection(Of CodeElement)
 
-    Private mbAppendAfterNext As Boolean
-    Private miNextInsertPoint As Integer
-    Private miLastInsertOperatorType As OperatorSubType
+    Private _mbAppendAfterNext As Boolean
+    Private _miNextInsertPoint As Integer
+    Private _miLastInsertOperatorType As OperatorSubType
 
     Public Property CodeLevel As Integer
     Public Property ReturnType As ComponentValueTypes
     Public Property MakeTypesafe As Boolean = True
-    Public Property CaseReturnType As CaseReturnType = ScriptDB.CaseReturnType.Result
+    Public Property CaseReturnType As CaseReturnType = CaseReturnType.Result
     Public Property IsLogicBlock As Boolean
 
-    Public Overloads Sub Add(ByVal LineOfCode As CodeElement)
+    Public Overloads Sub Add(ByVal lineOfCode As CodeElement)
 
-      If mbAppendAfterNext Then
-        Me.Items.Insert(Me.Items.Count - 1, LineOfCode)
-        mbAppendAfterNext = False
+      If _mbAppendAfterNext Then
+        Items.Insert(Items.Count - 1, lineOfCode)
+        _mbAppendAfterNext = False
       Else
-        Me.Items.Add(LineOfCode)
+        Items.Add(lineOfCode)
 
-        If miLastInsertOperatorType <> LineOfCode.OperatorType Then
-          miLastInsertOperatorType = LineOfCode.OperatorType
-          miNextInsertPoint = Me.Items.Count - 1
+        If _miLastInsertOperatorType <> lineOfCode.OperatorType Then
+          _miLastInsertOperatorType = lineOfCode.OperatorType
+          _miNextInsertPoint = Items.Count - 1
         End If
       End If
 
     End Sub
 
-    Public Overloads Sub InsertBeforePrevious(ByVal LineOfCode As CodeElement)
-      Me.Items.Insert(miNextInsertPoint, LineOfCode)
+    Public Overloads Sub InsertBeforePrevious(ByVal lineOfCode As CodeElement)
+      Items.Insert(_miNextInsertPoint, lineOfCode)
     End Sub
 
-    Public Overloads Sub AppendAfterNext(ByVal LineOfCode As CodeElement)
-      mbAppendAfterNext = True
-      Me.Items.Add(LineOfCode)
+    Public Overloads Sub AppendAfterNext(ByVal lineOfCode As CodeElement)
+      _mbAppendAfterNext = True
+      Items.Add(lineOfCode)
     End Sub
-
-    '' Property to calculate the character indenation in the code (to beautify the code)
-    'Public ReadOnly Property Indentation() As String
-    '  Get
-    '    Return Space(8)
-    '  End Get
-    'End Property
 
     Public Function ToArray() As String()
-      Return Me.Items.Select(Function(c) c.Code).ToArray()
+      Return Items.Select(Function(c) c.Code).ToArray()
     End Function
 
     Public ReadOnly Property Statement() As String
       Get
 
-        Dim Chunk As CodeElement
+        Dim chunk As CodeElement
         Dim iThisElement As Integer
         Dim bComparisonSinceLastLogic As Boolean
 
         Dim bNeedsIsEqualTo As Boolean
         Dim bNewLine As Boolean
-        Dim bConvertLogicToResult = False
 
         Statement = String.Empty
-        For Each Chunk In Me.Items
+        For Each chunk In Items
           bNeedsIsEqualTo = False
           bNewLine = False
 
           If ReturnType = ComponentValueTypes.Logic Then
 
-            If Chunk.CodeType = ComponentTypes.Operator Then
+            If chunk.CodeType = ComponentTypes.Operator Then
 
-              If Chunk.OperatorType = OperatorSubType.Comparison Then
+              If chunk.OperatorType = OperatorSubType.Comparison Then
                 bComparisonSinceLastLogic = True
                 IsLogicBlock = True
 
-              ElseIf Chunk.OperatorType = OperatorSubType.Logic Then
+              ElseIf chunk.OperatorType = OperatorSubType.Logic Then
                 bComparisonSinceLastLogic = False
                 IsLogicBlock = True
                 bNewLine = True
 
-              ElseIf Chunk.OperatorType = OperatorSubType.Modifier Then
+              ElseIf chunk.OperatorType = OperatorSubType.Modifier Then
                 IsLogicBlock = True
               End If
 
             End If
 
             ' Is there an operator after this component?
-            If Me.Items.Count - 1 > iThisElement Then
-              If Me.Items(iThisElement + 1).OperatorType = OperatorSubType.Logic Then
+            If Items.Count - 1 > iThisElement Then
+              If Items(iThisElement + 1).OperatorType = OperatorSubType.Logic Then
                 If Not bComparisonSinceLastLogic Then
                   bNeedsIsEqualTo = True
                   IsLogicBlock = True
@@ -100,8 +92,8 @@ Namespace ScriptDB
             End If
 
             ' Am I the last component and was there an operator before me?
-            If iThisElement = Me.Items.Count - 1 And iThisElement > 0 Then
-              If Me.Items(iThisElement - 1).OperatorType = OperatorSubType.Logic Then
+            If iThisElement = Items.Count - 1 And iThisElement > 0 Then
+              If Items(iThisElement - 1).OperatorType = OperatorSubType.Logic Then
                 If Not bComparisonSinceLastLogic Then
                   bNeedsIsEqualTo = True
                 End If
@@ -115,16 +107,16 @@ Namespace ScriptDB
           ' Some logic expressions return a simple logic while others are set specifically 
           ' to logicval = 0, or have the not in front of them!
           If IsLogicBlock And bNeedsIsEqualTo Then
-            Statement = String.Format("{0}{1}{2} = 1", Statement, IIf(bNewLine, vbNewLine & New String(CChar(vbTab), CodeLevel), vbNullString), Chunk.Code)
+            Statement = String.Format("{0}{1}{2} = 1", Statement, IIf(bNewLine, vbNewLine & New String(CChar(vbTab), CodeLevel), vbNullString), chunk.Code)
             IsLogicBlock = True
             bNeedsIsEqualTo = False
 
-          ElseIf bNeedsIsEqualTo And CaseReturnType = ScriptDB.CaseReturnType.Condition Then
-            Statement = String.Format("{0}{1}{2} = 1", Statement, IIf(bNewLine, vbNewLine & New String(CChar(vbTab), CodeLevel), vbNullString), Chunk.Code)
+          ElseIf bNeedsIsEqualTo And CaseReturnType = CaseReturnType.Condition Then
+            Statement = String.Format("{0}{1}{2} = 1", Statement, IIf(bNewLine, vbNewLine & New String(CChar(vbTab), CodeLevel), vbNullString), chunk.Code)
             IsLogicBlock = True
             bNeedsIsEqualTo = False
           Else
-            Statement = String.Format("{0}{1}{2}", Statement, IIf(bNewLine, vbNewLine & New String(CChar(vbTab), CodeLevel), vbNullString), Chunk.Code)
+            Statement = String.Format("{0}{1}{2}", Statement, IIf(bNewLine, vbNewLine & New String(CChar(vbTab), CodeLevel), vbNullString), chunk.Code)
           End If
 
           iThisElement = iThisElement + 1
@@ -132,15 +124,12 @@ Namespace ScriptDB
         Next
 
         ' Wrap to return code chunks in safety (was there 'not' statement)
-        If IsLogicBlock And CaseReturnType = ScriptDB.CaseReturnType.Result Then
+        If IsLogicBlock And CaseReturnType = CaseReturnType.Result Then
           Statement = String.Format("CASE WHEN ({0}) THEN 1 ELSE 0 END", Statement)
         End If
 
       End Get
     End Property
-
-
-
 
   End Class
 

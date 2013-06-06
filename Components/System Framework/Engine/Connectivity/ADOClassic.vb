@@ -44,7 +44,7 @@ Namespace Connectivity
 
     End Function
 
-    Public Function ExecStoredProcedure(ByVal ProcedureName As String, ByVal Parms As Parameters) As System.Data.DataSet Implements COMInterfaces.IConnection.ExecStoredProcedure
+    Public Function ExecStoredProcedure(ByVal queryName As String, ByVal parms As Parameters) As System.Data.DataSet Implements COMInterfaces.IConnection.ExecStoredProcedure
 
       Dim objAdapter As New OleDb.OleDbDataAdapter
       Dim sqlParm As New ADODB.Parameter
@@ -56,7 +56,7 @@ Namespace Connectivity
 
         With objCommand
           .CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
-          .CommandText = ProcedureName
+          .CommandText = queryName
           .ActiveConnection = NativeObject
 
           If Parms IsNot Nothing Then
@@ -100,7 +100,7 @@ Namespace Connectivity
     Public Sub Open() Implements COMInterfaces.IConnection.Open
     End Sub
 
-    Public Function ScriptStatement(ByVal statement As String, ByRef IsCritical As Boolean) As Boolean Implements COMInterfaces.IConnection.ScriptStatement
+    Public Function ScriptStatement(ByVal statement As String, ByRef isCritical As Boolean) As Boolean Implements COMInterfaces.IConnection.ScriptStatement
 
       Dim bOK As Boolean = True
       Dim iSeverity As ErrorHandler.Severity

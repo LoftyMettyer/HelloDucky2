@@ -69,7 +69,7 @@
     Proper = 3
   End Enum
 
-  Public Enum OLEType
+  Public Enum OleType
     LocalPath = 0
     ServerPath = 1
     Linked = 2

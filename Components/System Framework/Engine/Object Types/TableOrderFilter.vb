@@ -6,7 +6,7 @@
 
     Public Property Table As Table
     Public Property ComponentNumber As Long
-    Public UDF As ScriptDB.GeneratedUDF
+    Public Udf As ScriptDB.GeneratedUdf
     Public RowDetails As ChildRowDetails
     Public Property IncludedColumns As ICollection(Of Column)
     Public Property Dependencies As ICollection(Of Column)
@@ -23,15 +23,15 @@
         sName = String.Format("udftab_{0}", Table.Name)
 
         If Not RowDetails.Order Is Nothing Then
-          sName = sName + "_" + String.Format("{0}({1})", RowDetails.Order.Name, RowDetails.Order.ID)
+          sName = sName + "_" + String.Format("{0}({1})", RowDetails.Order.Name, RowDetails.Order.Id)
         End If
 
         If Not RowDetails.Filter Is Nothing Then
-          sName = sName + "_" + String.Format("{0}({1})", RowDetails.Filter.Name, RowDetails.Filter.ID)
+          sName = sName + "_" + String.Format("{0}({1})", RowDetails.Filter.Name, RowDetails.Filter.Id)
         End If
 
         If Not RowDetails.Relation Is Nothing Then
-          sName = String.Format("{0}_{1}", sName, RowDetails.Relation.ParentID)
+          sName = String.Format("{0}_{1}", sName, RowDetails.Relation.ParentId)
         End If
 
         Select Case RowDetails.RowSelection
@@ -81,9 +81,7 @@
       ' Build the where clause
       If Not RowDetails.Filter Is Nothing Then
 
-        ' RowDetails.Filter.AssociatedColumn = Globals.Tables(0).Columns(0)
-
-        RowDetails.Filter.AssociatedColumn = Me.Table.Columns(0)
+        RowDetails.Filter.AssociatedColumn = Table.Columns(0)
         RowDetails.Filter.ExpressionType = ScriptDB.ExpressionType.ColumnFilter
         RowDetails.Filter.GenerateCodeForColumn()
 
@@ -92,15 +90,10 @@
           Dependencies.Add(objColumn)
         Next
 
-        'For Each objColumn In RowDetails.Filter.Dependencies.Columns
-        '  Dependencies.Add(objColumn)
-        'Next
-
-
         aryDeclarations.AddRange(RowDetails.Filter.Declarations)
         aryStatements.AddRange(RowDetails.Filter.PreStatements)
-        aryWheres.Add(String.Format("({0} = 1)", RowDetails.Filter.UDF.SelectCode))
-        aryJoins.Add(RowDetails.Filter.UDF.JoinCode)
+        aryWheres.Add(String.Format("({0} = 1)", RowDetails.Filter.Udf.SelectCode))
+        aryJoins.Add(RowDetails.Filter.Udf.JoinCode)
 
       End If
 
@@ -110,7 +103,7 @@
         For Each objOrderItem In RowDetails.Order.Items
           If objOrderItem.ColumnType = "O" And Not objOrderItem.Column Is Nothing Then
 
-            If Not objOrderItem.Column Is Nothing And objOrderItem.Column.Table Is Me.Table Then
+            If Not objOrderItem.Column Is Nothing And objOrderItem.Column.Table Is Table Then
               Select Case objOrderItem.Ascending
                 Case Order.Ascending
                   aryOrderBy.Add(String.Format("base.[{1}] {2}", objOrderItem.Column.Table.Name, objOrderItem.Column.Name, If(bReverseOrder, "DESC", "ASC")))
@@ -128,8 +121,8 @@
 
       ' Add foreign key
       If Not RowDetails.Relation Is Nothing Then
-        aryParameters.Add(String.Format("@prm_ID_{0} integer", RowDetails.Relation.ParentID))
-        aryWheres.Add(String.Format("[ID_{0}] = @prm_ID_{0}", RowDetails.Relation.ParentID))
+        aryParameters.Add(String.Format("@prm_ID_{0} integer", RowDetails.Relation.ParentId))
+        aryWheres.Add(String.Format("[ID_{0}] = @prm_ID_{0}", RowDetails.Relation.ParentId))
         objIndex.Relations.AddIfNew(RowDetails.Relation)
       End If
 
@@ -151,20 +144,13 @@
       Next
 
       ' Create index for this object
-      objIndex.Name = String.Format("IDX_{0}", Me.Name)
+      objIndex.Name = String.Format("IDX_{0}", Name)
       objIndex.IncludePrimaryKey = False
       objIndex.IsTableIndex = True
       objIndex.IsClustered = False
 
-      ' Add any columns from the base table that are referenced by the child filter
-      For Each objColumn In Dependencies
-        If Not objColumn.Table Is Me.Table Then
-          'aryParameters.Add(String.Format("@prm_{0} {1}", objColumn.Name, objColumn.DataTypeSyntax))
-        End If
-      Next
-
-      With UDF
-        .Name = "[dbo].[" & Me.Name & "]"
+      With Udf
+        .Name = "[dbo].[" & Name & "]"
 
         .Declarations = If(aryDeclarations.Count > 0, vbTab & "DECLARE " & String.Join("," & vbNewLine & vbTab & vbTab & vbTab, aryDeclarations.ToArray()) & ";" & vbNewLine, "")
         .Prerequisites = If(aryStatements.Count > 0, vbTab & String.Join(vbNewLine, aryStatements.ToArray()) & vbNewLine & vbNewLine, "")
@@ -188,9 +174,9 @@
              "        WHERE [rownumber] = {9}" & vbNewLine & _
              "    RETURN;" & vbNewLine & _
              "END" _
-            , Me.Name, String.Join(", ", aryParameters.ToArray()) _
+            , Name, String.Join(", ", aryParameters.ToArray()) _
             , String.Join(", ", aryReturnDefintion.ToArray()), String.Join(", ", aryColumnList.ToArray()) _
-            , Me.Table.Name, String.Join(vbNewLine, aryJoins.ToArray()), .WhereCode, .OrderCode, sRowSelection _
+            , Table.Name, String.Join(vbNewLine, aryJoins.ToArray()), .WhereCode, .OrderCode, sRowSelection _
             , RowDetails.RowNumber, .Declarations, .Prerequisites)
 
         Else
@@ -206,9 +192,9 @@
                          "        {7}" & vbNewLine & _
                          "    RETURN;" & vbNewLine & _
                          "END" _
-                        , Me.Name, String.Join(", ", aryParameters.ToArray()) _
+                        , Name, String.Join(", ", aryParameters.ToArray()) _
                         , String.Join(", ", aryReturnDefintion.ToArray()), String.Join(", ", aryColumnList.ToArray()) _
-                        , Me.Table.Name, String.Join(vbNewLine, aryJoins.ToArray()), .WhereCode, .OrderCode, sRowSelection _
+                        , Table.Name, String.Join(vbNewLine, aryJoins.ToArray()), .WhereCode, .OrderCode, sRowSelection _
                         , .Declarations, .Prerequisites)
         End If
 
@@ -217,7 +203,7 @@
           Case ScriptDB.ColumnRowSelection.Count
           Case ScriptDB.ColumnRowSelection.Total
           Case Else
-            Me.Table.Indexes.Add(objIndex)
+            Table.Indexes.Add(objIndex)
         End Select
 
 

@@ -5,32 +5,32 @@ Namespace ErrorHandler
   <ClassInterface(ClassInterfaceType.None)>
   Public Class Errors
     Inherits Collection(Of [Error])
-    Implements COMInterfaces.IErrors
+    Implements IErrors
 
     Private _isCatastrophic As Boolean
 
-    Public Overloads Sub Add(ByVal Section As Section, ByVal ObjectName As String, ByVal Severity As Severity, ByVal Message As String, ByVal Detail As String)
+    Public Overloads Sub Add(ByVal section As Section, ByVal objectName As String, ByVal severity As Severity, ByVal message As String, ByVal detail As String)
 
       Dim item As [Error]
 
       item.Section = section
-      item.ObjectName = ObjectName
-      item.Severity = Severity
-      item.Message = Message
+      item.ObjectName = objectName
+      item.Severity = severity
+      item.Message = message
       item.Detail = Detail
       item.User = Globals.Login.UserName
       item.DateTime = Now
 
-			If Not MyBase.Items.Any(Function(e) e.Section = item.Section AndAlso
-						e.ObjectName = item.ObjectName AndAlso
-						e.Section = item.Section AndAlso
-						e.Message = item.Message AndAlso
-						e.Detail = item.Detail AndAlso
-						e.User = item.User) Then
-				Add(item)
-			End If
+      If Not Items.Any(Function(e) e.Section = item.Section AndAlso
+            e.ObjectName = item.ObjectName AndAlso
+            e.Section = item.Section AndAlso
+            e.Message = item.Message AndAlso
+            e.Detail = item.Detail AndAlso
+            e.User = item.User) Then
+        Add(item)
+      End If
 
-		End Sub
+    End Sub
 
     Public Function DetailedReport() As String
 
@@ -48,7 +48,7 @@ Namespace ErrorHandler
 
       Dim message As String = vbNullString
 
-      For Each item As [Error] In Me.Items
+      For Each item As [Error] In Items
 
         Select Case item.Severity
           Case Severity.Error
@@ -65,12 +65,12 @@ Namespace ErrorHandler
 
     End Function
 
-    Public Sub OutputToFile(ByVal FileName As String) Implements COMInterfaces.IErrors.OutputToFile
+    Public Sub OutputToFile(ByVal fileName As String) Implements IErrors.OutputToFile
 
-      System.IO.File.Delete(FileName)
-      Dim objWriter As System.IO.StreamWriter = System.IO.File.AppendText(FileName)
+      IO.File.Delete(fileName)
+      Dim objWriter As IO.StreamWriter = IO.File.AppendText(fileName)
 
-      For Each objError As ErrorHandler.Error In Me.Items
+      For Each objError As ErrorHandler.Error In Items
         Dim message As String = String.Format("{1}{1}{1}{1}{0}{1}{2}{1}", objError.Message, vbNewLine, objError.Detail)
         objWriter.Write(message)
       Next
@@ -103,16 +103,16 @@ Namespace ErrorHandler
   End Class
 
   Public Structure [Error]
-		Public ID As Guid
-		Public Section As ErrorHandler.Section
+    Public Id As Guid
+    Public Section As Section
 		Public ObjectName As String
-		Public Severity As ErrorHandler.Severity
+    Public Severity As Severity
 		Public Message As String
 		Public Detail As String
 		Public DateTime As Date
 		Public User As String
 		Public ErrorNumber As Long
-		Public ErrorArticleID As Long
+    Public ErrorArticleId As Long
 
 
   End Structure
@@ -125,7 +125,7 @@ Namespace ErrorHandler
   Public Enum Section
     General = 0
     LoadingData = 1
-    UDFs = 2
+    UdFs = 2
     Triggers = 3
     Views = 4
     TableAndColumns = 5

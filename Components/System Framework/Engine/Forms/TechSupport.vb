@@ -1,24 +1,24 @@
 ﻿Public Class TechSupport
-  Implements COMInterfaces.IForm
+  Implements IForm
 
 #Region "COMInterfaces.iForm"
 
   Public Sub Show1() Implements COMInterfaces.IForm.Show
-    Me.Show()
+    Show()
   End Sub
 
   Public Sub ShowDialog1() Implements COMInterfaces.IForm.ShowDialog
-    Me.ShowDialog()
+    ShowDialog()
   End Sub
 
 #End Region
 
-  Private Sub TechSupport_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+  Private Sub TechSupport_Load(ByVal sender As System.Object, ByVal e As EventArgs) Handles MyBase.Load
 
     Try
       lblTelephone.Text = "Telephone : " & Globals.SystemSettings.Setting("support", "telephone no").Value
-      linkEmail.Text = Globals.SystemSettings.Setting("support", "email").Value
-      LinkWeb.Text = Globals.SystemSettings.Setting("support", "webpage").Value
+      linkEmail.Text = SystemSettings.Setting("support", "email").Value
+      LinkWeb.Text = SystemSettings.Setting("support", "webpage").Value
 
       linkEmail.Links.Add(0, linkEmail.Text.Length, linkEmail.Text)
       LinkWeb.Links.Add(0, LinkWeb.Text.Length, LinkWeb.Text)
@@ -29,11 +29,11 @@
 
   End Sub
 
-  Private Sub LinkWeb_LinkClicked(ByVal sender As System.Object, ByVal e As System.Windows.Forms.LinkLabelLinkClickedEventArgs) Handles LinkWeb.LinkClicked
-    System.Diagnostics.Process.Start(e.Link.LinkData.ToString)
+  Private Sub LinkWeb_LinkClicked(ByVal sender As System.Object, ByVal e As Windows.Forms.LinkLabelLinkClickedEventArgs) Handles LinkWeb.LinkClicked
+    Process.Start(e.Link.LinkData.ToString)
   End Sub
 
-  Private Sub linkEmail_LinkClicked(ByVal sender As System.Object, ByVal e As System.Windows.Forms.LinkLabelLinkClickedEventArgs) Handles linkEmail.LinkClicked
-    System.Diagnostics.Process.Start("mailto:" & e.Link.LinkData.ToString)
+  Private Sub linkEmail_LinkClicked(ByVal sender As System.Object, ByVal e As Windows.Forms.LinkLabelLinkClickedEventArgs) Handles linkEmail.LinkClicked
+    Process.Start("mailto:" & e.Link.LinkData.ToString)
   End Sub
 End Class

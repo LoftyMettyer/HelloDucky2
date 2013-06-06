@@ -1,18 +1,4 @@
-﻿
-Imports System.Runtime.InteropServices
-Imports System.Text
-
-Namespace ScriptDB
-
-  'Public Structure ExpressionComplexity
-  '  Public Functions As Integer
-  '  Public Operators As Integer
-  '  Public ParentColumns As Integer
-  '  Public ChildColumns As Integer
-  '  Public Calculations As Integer
-  '  Public FreeEntryColumns As Integer
-  '  Public CalculatedColumns As Integer
-  'End Structure
+﻿Namespace ScriptDB
 
   <Serializable()>
   Public Class Tuning
@@ -26,10 +12,10 @@ Namespace ScriptDB
     Private mlngSelectUDFCount As Long
     Private mlngSelectAsParameter As Long
 
-    Private mlngFunctions As Long
+    Private _mlngFunctions As Long
 
     Public Sub IncrementFunction()
-      mlngFunctions += 1
+      _mlngFunctions += 1
     End Sub
 
     Public Sub IncrementFilter()
@@ -39,10 +25,6 @@ Namespace ScriptDB
     Public Sub IncrementOrder()
       mlngOrderCount += 1
     End Sub
-
-    'Public Sub IncrementSelect()
-    '  mlngSelectCount = mlngSelectCount + 1
-    'End Sub
 
     Public Sub IncrementSelectAsCalculation()
       mlngSelectUDFCount += 1
@@ -54,9 +36,9 @@ Namespace ScriptDB
 
     Public ReadOnly Property ExpressionComplexity As String
       Get
-        Dim sComplexity As String = vbNullString
+        Dim sComplexity As String
         sComplexity = String.Format("{0} Functions. {1} Parent Columns. {2} Child Columns. {3} Trigger Columns." _
-              , mlngFunctions, 0, 0, 0)
+              , _mlngFunctions, 0, 0, 0)
 
         Return sComplexity
 

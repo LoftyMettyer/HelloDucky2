@@ -10,10 +10,10 @@
     Public Property AfterCode As String
     Public Property ReturnType As ScriptDB.ComponentValueTypes
     Public Property RowNumberRequired As Boolean
-    Public Property RecordIDRequired As Boolean
+    Public Property RecordIdRequired As Boolean
     Public Property OvernightOnly As Boolean
     Public Property CalculatePostAudit As Boolean
-    Public Property IsGetFieldFromDB As Boolean
+    Public Property IsGetFieldFromDb As Boolean
     Public Property IsUniqueCode As Boolean
     Public Property CaseCount As Integer
     Public Property MakeTypeSafe As Boolean

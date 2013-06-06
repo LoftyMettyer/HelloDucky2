@@ -4,8 +4,8 @@ Imports SystemFramework.ErrorHandler
 
 Public Module Globals
 
-  Public MetadataDB As IConnection
-  Public CommitDB As IConnection
+  Public MetadataDb As IConnection
+  Public CommitDb As IConnection
 
   Public MetadataProvider As Connectivity.MetadataProvider = Connectivity.MetadataProvider.PhoenixStoredProcs
 
@@ -20,14 +20,14 @@ Public Module Globals
   Public SystemSettings As SettingCollection
   Public Options As HCMOptions
   Public Modifications As Modifications
-  Public GetFieldsFromDB As ICollection(Of Component)
+  Public GetFieldsFromDb As ICollection(Of Component)
   Public PerformanceIndexes As ICollection(Of Column)
   Public OnBankHolidayUpdate As ICollection(Of TriggeredUpdate)
 
-  Public ScriptDB As ScriptDB.Script
+  Public ScriptDb As Script
   Public Login As Connectivity.Login
 
-  Public Version As System.Version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version
+  Public Version As Version = Reflection.Assembly.GetExecutingAssembly().GetName().Version
 
   Public Sub Initialise()
 
@@ -40,13 +40,13 @@ Public Module Globals
     ErrorLog = New Errors
     TuningLog = New Tuning.Report
     ModuleSetup = New SettingCollection
-    ScriptDB = New ScriptDB.Script
+    ScriptDb = New Script
     Options = New HCMOptions
     Modifications = New Modifications
     SystemSettings = New SettingCollection
 
     ' Dependency stack for special objects that will have procedures written for
-    GetFieldsFromDB = New Collection(Of Component)
+    GetFieldsFromDb = New Collection(Of Component)
     OnBankHolidayUpdate = New Collection(Of TriggeredUpdate)
     PerformanceIndexes = New Collection(Of Column)
 

@@ -6,12 +6,12 @@ Namespace Things
   Public Class GlobalModifyItem
     Inherits Base
 
-    Public Property ColumnID As Integer
+    Public Property ColumnId As Integer
     Public Property Value As String
-    Public Property CalculationID As Integer
-    Public Property RefColumnID As Integer
-    Public Property LookupTableID As Integer
-    Public Property LookupColumnID As Integer
+    Public Property CalculationId As Integer
+    Public Property RefColumnId As Integer
+    Public Property LookupTableId As Integer
+    Public Property LookupColumnId As Integer
 
     Public ReadOnly Property DisplayValue As String
       Get
@@ -21,7 +21,7 @@ Namespace Things
 
     Public ReadOnly Property DisplayColumn As String
       Get
-        Return ColumnID.ToString
+        Return ColumnId.ToString
       End Get
     End Property
 

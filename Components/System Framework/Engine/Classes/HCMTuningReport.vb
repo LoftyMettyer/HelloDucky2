@@ -13,7 +13,7 @@ Namespace Tuning
       Expressions = New Collection(Of Column)
     End Sub
 
-    Public Sub OutputToFile(ByVal FileName As String) Implements COMInterfaces.IErrors.OutputToFile
+    Public Sub OutputToFile(ByVal fileName As String) Implements COMInterfaces.IErrors.OutputToFile
 
       Dim objWriter As System.IO.StreamWriter
       Dim objThing As Base

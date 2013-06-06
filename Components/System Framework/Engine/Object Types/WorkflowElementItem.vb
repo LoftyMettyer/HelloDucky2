@@ -1,7 +1,6 @@
 ﻿Imports System.Runtime.InteropServices
 
 Namespace Things
-
   <ClassInterface(ClassInterfaceType.None), ComVisible(True), Serializable()>
   Public Class WorkflowElementItem
     Inherits Base
@@ -77,6 +76,5 @@ Namespace Things
     Public Property LookupFilterColumnID As Integer Implements IWorkflowElementItem.LookupFilterColumnID
     Public Property LookupFilterOperator As String Implements IWorkflowElementItem.LookupFilterOperator
     Public Property LookupFilterValue As String Implements IWorkflowElementItem.LookupFilterValue
-
   End Class
 End Namespace

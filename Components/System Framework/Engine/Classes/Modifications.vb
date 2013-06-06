@@ -6,15 +6,15 @@ Public Class Modifications
 
   Dim _structureChanged As Boolean
 
-  Public Property ExpressionChanged As Boolean Implements COMInterfaces.IModifications.ExpressionChanged
-  Public Property ModuleSetupChanged As Boolean Implements COMInterfaces.IModifications.ModuleSetupChanged
-  Public Property ScreenChanged As Boolean Implements COMInterfaces.IModifications.ScreenChanged
-  Public Property WorkflowChanged As Boolean Implements COMInterfaces.IModifications.WorkflowChanged
-  Public Property PlatformChanged As Boolean Implements COMInterfaces.IModifications.PlatformChanged
+  Public Property ExpressionChanged As Boolean Implements IModifications.ExpressionChanged
+  Public Property ModuleSetupChanged As Boolean Implements IModifications.ModuleSetupChanged
+  Public Property ScreenChanged As Boolean Implements IModifications.ScreenChanged
+  Public Property WorkflowChanged As Boolean Implements IModifications.WorkflowChanged
+  Public Property PlatformChanged As Boolean Implements IModifications.PlatformChanged
 
-  Public Property StructureChanged As Boolean Implements COMInterfaces.IModifications.StructureChanged
+  Public Property StructureChanged As Boolean Implements IModifications.StructureChanged
     Get
-      If Globals.Options.OptimiseSaveProcess Then
+      If Options.OptimiseSaveProcess Then
         Return _structureChanged
       Else
         Return True

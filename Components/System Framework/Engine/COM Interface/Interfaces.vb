@@ -1,6 +1,6 @@
 ﻿Imports SystemFramework.Things
 
-Public Module COMInterfaces
+Public Module ComInterfaces
 
   Public Interface ICommitDB
     Function ScriptTables() As Boolean
@@ -27,12 +27,12 @@ Public Module COMInterfaces
     Function Initialise() As Boolean
     Function PopulateObjects() As Boolean
     Function CloseSafely() As Boolean
-    ReadOnly Property Version As System.Version
+    ReadOnly Property Version As Version
     ReadOnly Property Modifications As Modifications
   End Interface
 
   Public Interface IErrors
-    Sub OutputToFile(ByVal FileName As String)
+    Sub OutputToFile(ByVal fileName As String)
     Sub Show()
     ReadOnly Property ErrorCount As Integer
     ReadOnly Property IsCatastrophic As Boolean
@@ -53,8 +53,8 @@ Public Module COMInterfaces
   Public Interface IConnection
     Sub Open()
     Sub Close()
-    Function ExecStoredProcedure(ByVal ProcedureName As String, ByVal Parms As Connectivity.Parameters) As System.Data.DataSet
-    Function ScriptStatement(ByVal statement As String, ByRef IsCritical As Boolean) As Boolean
+    Function ExecStoredProcedure(ByVal queryName As String, ByVal parms As Connectivity.Parameters) As DataSet
+    Function ScriptStatement(ByVal statement As String, ByRef isCritical As Boolean) As Boolean
     Property Login As Connectivity.Login
   End Interface
 
@@ -227,7 +227,7 @@ Public Module COMInterfaces
     Property TrimType As TrimType
     Property Alignment As AlignType
     Property Mandatory As Boolean
-    Property OLEType As OLEType
+    Property OLEType As OleType
     Property DefaultCalcID As Integer
     Property DefaultCalculation As Expression
     Property DefaultValue As String
