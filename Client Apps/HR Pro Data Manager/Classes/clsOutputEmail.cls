@@ -146,7 +146,7 @@ Private Function SendEmailFromClientUsingMAPI(strTo As String, strCC As String, 
   strError = vbNullString
   blnShowMessage = False
   
-  If Trim(Replace(strTo, ";")) = vbNullString Then
+  If Trim(Replace(strTo, ";", "")) = vbNullString Then
     SendEmailFromClientUsingMAPI = "Please select recipient(s) to email"
     Exit Function
   End If
