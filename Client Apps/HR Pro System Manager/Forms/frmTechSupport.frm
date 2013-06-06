@@ -1,10 +1,10 @@
 VERSION 5.00
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
-Object = "{20C62CAE-15DA-101B-B9A8-444553540000}#1.1#0"; "MSMAPI32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
+Object = "{20C62CAE-15DA-101B-B9A8-444553540000}#1.1#0"; "msmapi32.Ocx"
 Begin VB.Form frmTechSupport 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Technical Support"
-   ClientHeight    =   2640
+   ClientHeight    =   2265
    ClientLeft      =   45
    ClientTop       =   330
    ClientWidth     =   4815
@@ -24,13 +24,13 @@ Begin VB.Form frmTechSupport
    MaxButton       =   0   'False
    MinButton       =   0   'False
    MouseIcon       =   "frmTechSupport.frx":000C
-   ScaleHeight     =   2640
+   ScaleHeight     =   2265
    ScaleWidth      =   4815
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin VB.Frame Frame1 
       Caption         =   "Contacts for Technical Support :"
-      Height          =   1950
+      Height          =   1500
       Left            =   120
       TabIndex        =   1
       Top             =   100
@@ -53,9 +53,9 @@ Begin VB.Form frmTechSupport
          Left            =   1350
          MouseIcon       =   "frmTechSupport.frx":015E
          MousePointer    =   99  'Custom
-         TabIndex        =   9
-         Top             =   1450
-         Width           =   2900
+         TabIndex        =   7
+         Top             =   1080
+         Width           =   2895
       End
       Begin VB.Label lblEMail 
          AutoSize        =   -1  'True
@@ -75,19 +75,9 @@ Begin VB.Form frmTechSupport
          Left            =   1350
          MouseIcon       =   "frmTechSupport.frx":02B0
          MousePointer    =   99  'Custom
-         TabIndex        =   8
-         Top             =   1100
-         Width           =   2900
-      End
-      Begin VB.Label lblFax 
-         AutoSize        =   -1  'True
-         BackStyle       =   0  'Transparent
-         Caption         =   "01582 714820"
-         Height          =   195
-         Left            =   1350
-         TabIndex        =   7
-         Top             =   750
-         Width           =   1215
+         TabIndex        =   6
+         Top             =   720
+         Width           =   2895
       End
       Begin VB.Label lblTel 
          AutoSize        =   -1  'True
@@ -95,7 +85,7 @@ Begin VB.Form frmTechSupport
          Caption         =   "01582 714800"
          Height          =   195
          Left            =   1350
-         TabIndex        =   6
+         TabIndex        =   5
          Top             =   400
          Width           =   1215
       End
@@ -106,8 +96,8 @@ Begin VB.Form frmTechSupport
          Height          =   195
          Index           =   4
          Left            =   195
-         TabIndex        =   5
-         Top             =   1455
+         TabIndex        =   4
+         Top             =   1080
          Width           =   870
       End
       Begin VB.Label lblTitle 
@@ -117,20 +107,9 @@ Begin VB.Form frmTechSupport
          Height          =   195
          Index           =   3
          Left            =   195
-         TabIndex        =   4
-         Top             =   1100
-         Width           =   600
-      End
-      Begin VB.Label lblTitle 
-         AutoSize        =   -1  'True
-         BackStyle       =   0  'Transparent
-         Caption         =   "Fax :"
-         Height          =   195
-         Index           =   2
-         Left            =   195
          TabIndex        =   3
-         Top             =   750
-         Width           =   435
+         Top             =   720
+         Width           =   600
       End
       Begin VB.Label lblTitle 
          AutoSize        =   -1  'True
@@ -150,7 +129,7 @@ Begin VB.Form frmTechSupport
       Height          =   400
       Left            =   3500
       TabIndex        =   0
-      Top             =   2150
+      Top             =   1740
       Width           =   1200
    End
    Begin MSComDlg.CommonDialog CommonDialog1 
@@ -199,7 +178,7 @@ Private Sub Form_Load()
   
   'Get all the required support details
   lblTel.Caption = GetSystemSetting("Support", "Telephone No", "")
-  lblFax.Caption = GetSystemSetting("Support", "Fax", "")
+  ' lblFax.Caption = GetSystemSetting("Support", "Fax", "")
   lblEMail.Caption = GetSystemSetting("Support", "Email", "")
   lblURL.Caption = GetSystemSetting("Support", "Webpage", "")
 
