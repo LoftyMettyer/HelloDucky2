@@ -204,7 +204,7 @@ Begin VB.Form frmAuditOrder
       Begin VB.Label lblColumn 
          AutoSize        =   -1  'True
          BackStyle       =   0  'Transparent
-         Caption         =   "HR Pro Module :"
+         Caption         =   "OpenHR Module :"
          Height          =   195
          Index           =   23
          Left            =   195

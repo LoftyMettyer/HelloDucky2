@@ -1,7 +1,7 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Begin VB.Form frmAudit 
    Caption         =   "Audit"
    ClientHeight    =   2745
@@ -97,7 +97,7 @@ Begin VB.Form frmAudit
       Columns(3).DataType=   8
       Columns(3).FieldLen=   256
       Columns(4).Width=   3200
-      Columns(4).Caption=   "HR Pro Module"
+      Columns(4).Caption=   "OpenHR Module"
       Columns(4).Name =   "Module Name"
       Columns(4).DataField=   "Column 4"
       Columns(4).DataType=   8
@@ -1685,7 +1685,7 @@ PrintErr:
     Case Else: pstrError = Err.Description
   End Select
   
-  MsgBox pstrError, vbExclamation + vbOKOnly, "HR Pro"
+  MsgBox pstrError, vbExclamation + vbOKOnly, Application.Name
 
 End Function
 

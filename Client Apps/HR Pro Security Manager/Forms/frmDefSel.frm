@@ -611,10 +611,10 @@ Private Sub cmdDelete_Click()
   Dim sSQL As String
   Dim rsTemp As Recordset
   Dim objExpression As clsExprExpression
-  Dim objDatabase As HrProSecurityMgr.Database
+  Dim objDatabase As SecurityMgr.Database
   
   'TM01062004 Fault 8730 need to initialize this object.
-  Set objDatabase = New HrProSecurityMgr.Database
+  Set objDatabase = New SecurityMgr.Database
   
   lngHighLightIndex = List1.SelectedItem.Index
   lngSelectedID = Val(List1.SelectedItem.Tag)

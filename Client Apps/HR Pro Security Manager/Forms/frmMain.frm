@@ -4,7 +4,7 @@ Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~2.OCX"
 Begin VB.MDIForm frmMain 
    AutoShowChildren=   0   'False
    BackColor       =   &H00F7EEE9&
-   Caption         =   "HR Pro - Security Manager"
+   Caption         =   "OpenHR - Security Manager"
    ClientHeight    =   1710
    ClientLeft      =   2550
    ClientTop       =   2820
@@ -489,15 +489,15 @@ Private Sub abSecurity_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
     Case "ID_VersionInfo"
       Screen.MousePointer = vbHourglass
       
-      strVersionFilename = App.Path & "\HR Pro Security Manager Version Information.htm"
+      strVersionFilename = App.Path & "\OpenHR Security Manager Version Information.htm"
       
       If Len(strVersionFilename) > 0 Then
         plngHelp = ShellExecute(0&, vbNullString, strVersionFilename, vbNullString, vbNullString, vbNormalNoFocus)
         If plngHelp = 0 Then
-          MsgBox "Error whilst attempting to display version information file.", vbExclamation + vbOKOnly, "HR Pro Security Manager"
+          MsgBox "Error whilst attempting to display version information file.", vbExclamation + vbOKOnly, Application.Name
         End If
       Else
-        MsgBox "No version information found.", vbExclamation + vbOKOnly, "HR Pro Security Manager"
+        MsgBox "No version information found.", vbExclamation + vbOKOnly, "OpenHR Security Manager"
       End If
       
       Screen.MousePointer = vbNormal
@@ -525,7 +525,7 @@ End Sub
 Private Sub MDIForm_Activate()
   RefreshMenu False
 
-  ' NPG20091007 Fault HR Pro-416
+  ' NPG20091007 Fault 416
   ' set the new multi-size icons for taskbar, application, and alt-tab
   ' NB Only works when run as the executable
   SetIcon Me.hWnd, "!ABS", True
@@ -916,8 +916,8 @@ End Sub
 Private Sub SetCaption()
 
   '09/08/2001 MH Fault 2667
-  'Me.Caption = "HR Pro - Security Manager"
-  Me.Caption = "HR Pro Security Manager - " & gsDatabaseName
+  'Me.Caption = "OpenHR - Security Manager"
+  Me.Caption = Application.Name & gsDatabaseName
 
   Select Case Application.AccessMode
   Case accFull

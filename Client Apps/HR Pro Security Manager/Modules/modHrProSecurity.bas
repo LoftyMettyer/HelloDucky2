@@ -6,7 +6,7 @@ Option Explicit
 'Public rdoCon As RDO.rdoConnection                  ' The Remote Data Object Connection
 Public gADOCon As ADODB.Connection
 
-Public giSQLServerAuthenticationType As HrProSecurityMgr.SQLServerAuthenticationType
+Public giSQLServerAuthenticationType As SecurityMgr.SQLServerAuthenticationType
 Public gsSQLServerName As String
 'Public glngSQLVersion As Long                          ' Database version
 Public glngSQLVersion As Double     'changed from Long to Double for SQL2008 R2 (i.e. version 10.5)
@@ -27,16 +27,16 @@ Public gstrWindowsCurrentUser As String
 Public gstrServerDefaultDomain As String
 
 'Public classes
-Public Application As HrProSecurityMgr.Application     ' Application Class
-Public Database As HrProSecurityMgr.Database           ' Database Class
-Public UI As HrProSecurityMgr.UI                       ' User interface class
+Public Application As SecurityMgr.Application     ' Application Class
+Public Database As SecurityMgr.Database           ' Database Class
+Public UI As SecurityMgr.UI                       ' User interface class
 'Public gobjProgress As COAProgress.COA_Progress
 Public gobjProgress As clsProgress
 
 'MH20060427
-'''Public gobjCurrentUser As HrProSecurityMgr.clsUser     ' Logged on user information
+'''Public gobjCurrentUser As SecurityMgr.clsUser     ' Logged on user information
 Public ASRDEVELOPMENT As Boolean                       ' Running in VB or as EXE
-Public gobjNET As New HrProSecurityMgr.Net             ' Useful network functions
+Public gobjNET As New SecurityMgr.Net             ' Useful network functions
 
 ' Net API constants (Used for building domain info)
 Public Const FILTER_TEMP_DUPLICATE_ACCOUNT As Long = &H1&
@@ -68,10 +68,10 @@ Sub Main()
   gstrWindowsCurrentUser = Environ("USERNAME")
 
   ' Instantiate the Application class.
-  Set Application = New HrProSecurityMgr.Application
+  Set Application = New SecurityMgr.Application
 
   ' Instantiate the Database class.
-  Set Database = New HrProSecurityMgr.Database
+  Set Database = New SecurityMgr.Database
   
   'Instantiate Progress Bar class
   'Set gobjProgress = New COAProgress.COA_Progress
@@ -80,11 +80,11 @@ Sub Main()
   gobjProgress.StyleIni = CodeJockStyleIni
   
   ' Instantiate the User Interface class.
-  Set UI = New HrProSecurityMgr.UI
+  Set UI = New SecurityMgr.UI
   
   'MH20060427
   ''' Create Current User class
-  '''Set gobjCurrentUser = New HrProSecurityMgr.clsUser
+  '''Set gobjCurrentUser = New SecurityMgr.clsUser
  
   If App.StartMode = vbSModeAutomation Then
     ' If started via OLE automation, return control back to client application.
@@ -331,13 +331,13 @@ End Function
 '  If pTool.Checked = False Then
 '    sSQL = "exec sp_ASRSetLock '" & gsUserName & "'"
 '    gADOCon.Execute sSQL, , adExecuteNoRecords
-'    sMsg = "All other users are now locked out of HR Pro."
+'    sMsg = "All other users are now locked out of OpenHR."
 '    pTool.Caption = "Un&lock Users"
 '    pTool.Checked = True
 '  Else
 '    sSQL = "exec sp_ASRRemoveLock"
 '    gADOCon.Execute sSQL, , adExecuteNoRecords
-'    sMsg = "All users are now able to use HR Pro."
+'    sMsg = "All users are now able to use OpenHR."
 '    pTool.Caption = "&Lock Users"
 '    pTool.Checked = False
 '  End If

@@ -300,7 +300,7 @@ Init_ERROR:
     Case Else: pstrError = Err.Description
   End Select
   
-  MsgBox pstrError, vbExclamation + vbOKOnly, "HR Pro"
+  MsgBox pstrError, vbExclamation + vbOKOnly, Application.Name
   
 End Sub
 

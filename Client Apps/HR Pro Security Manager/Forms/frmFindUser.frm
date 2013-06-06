@@ -105,7 +105,7 @@ Public Function Initialise() As Boolean
     cboUser.ListIndex = 0
     Initialise = True
   Else
-    MsgBox "There are no valid HR Pro users in the database.", vbExclamation + vbOKOnly, App.Title
+    MsgBox "There are no valid users in the database.", vbExclamation + vbOKOnly, App.Title
     Initialise = False
   End If
 

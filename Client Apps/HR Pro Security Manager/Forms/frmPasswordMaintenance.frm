@@ -234,7 +234,7 @@ Public Function Initialise() As Boolean
       Initialise = False
     End If
   Else
-    MsgBox "There are no HR Pro users mapped to SQL logins. Please select at least one user.", vbExclamation + vbOKOnly, App.Title
+    MsgBox "There are no OpenHR users mapped to SQL logins. Please select at least one user.", vbExclamation + vbOKOnly, App.Title
     Initialise = False
   End If
 
@@ -258,8 +258,8 @@ End Function
 '
 '  sSQL = "SELECT DISTINCT hostname, loginame, program_name, hostprocess " & _
 '    "FROM master..sysprocesses " & _
-'    "WHERE program_name like 'HR Pro%' " & _
-'    "  AND program_name NOT LIKE 'HR Pro Workflow%' " & _
+'    "WHERE program_name like 'OpenHR%' " & _
+'    "  AND program_name NOT LIKE 'OpenHR Workflow%' " & _
 '    "  AND LOWER(loginame) = '" & LCase(sUserID) & "' "
 ''                    "AND dbid in (" & _
 ''                        "SELECT dbid " & _

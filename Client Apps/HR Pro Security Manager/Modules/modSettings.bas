@@ -215,7 +215,7 @@ ErrorTrap:
     ' .NET error, SQL process login details are incorrect
     Case 6522
       If piAssemblyRetryCount > 1 Then
-        MsgBox "The HR Pro Server Assembly is out of date." & vbNewLine & _
+        MsgBox "The OpenHR Server Assembly is out of date." & vbNewLine & _
           "Please ask the System Administrator to update the database in the System Manager.", vbExclamation + vbOKOnly, App.Title
       Else
         Call ReRegisterAssembly
@@ -224,12 +224,12 @@ ErrorTrap:
       
     Case Else
       MsgBox "Error initialising the Domain Security Settings." & vbNewLine & _
-              IIf(glngSQLVersion = 8, "Ensure the HR Pro Server DLL is registered." & vbNewLine, "") & _
+              IIf(glngSQLVersion = 8, "Ensure the OpenHR Server DLL is registered." & vbNewLine, "") & _
              "(" & gADOCon.Errors(0).NativeError & " - " & gADOCon.Errors(0).Description & ")", vbExclamation + vbOKOnly, App.Title
     End Select
   Else
     MsgBox "Error initialising the Domain Security Settings." & vbNewLine & _
-          IIf(glngSQLVersion = 8, "Ensure the HR Pro Server DLL is registered." & vbNewLine, "") & _
+          IIf(glngSQLVersion = 8, "Ensure the OpenHR Server DLL is registered." & vbNewLine, "") & _
          "(" & Err.Number & " - " & Err.Description & ")", vbExclamation + vbOKOnly, App.Title
   End If
   
@@ -578,7 +578,7 @@ Public Function LC_PCLocked() As Boolean
   
   If blnPCLocked Then
     strTimeRemaining = LC_FormatDateTimeMessage(DateDiff("s", Now(), DateAdd("s", glngCFG_LD, gdtPC_LKD)))
-    strMessage = "This PC has been temporarily locked from using HR Pro." & vbCrLf & vbCrLf & "The lock will be removed in " & strTimeRemaining & "."
+    strMessage = "This PC has been temporarily locked from using OpenHR." & vbCrLf & vbCrLf & "The lock will be removed in " & strTimeRemaining & "."
     MsgBox strMessage, vbOKOnly + vbExclamation, App.Title
   End If
   
@@ -884,7 +884,7 @@ End Function
 Public Function GetSQLNCLIVersion() As Integer
 On Error GoTo SQLNCLI_Err
 
-  Dim Rc As Long                                          ' Return Code
+  Dim rc As Long                                          ' Return Code
   Dim hKey As Long                                        ' Handle To An Open Registry Key
   Dim tmpKey As Integer
   tmpKey = 0
@@ -893,16 +893,16 @@ On Error GoTo SQLNCLI_Err
   Const sREGKEYSQLNCLI = "SOFTWARE\Microsoft\Microsoft SQL Native Client\CurrentVersion"
   Const sREGKEYSQLNCLI10 = "SOFTWARE\Microsoft\Microsoft SQL Server Native Client 10.0\CurrentVersion"
 
-  Rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE, sREGKEYSQLNCLI, 0, KEY_READ, hKey) ' Open Registry Key
-  If (Rc = 0) Then
+  rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE, sREGKEYSQLNCLI, 0, KEY_READ, hKey) ' Open Registry Key
+  If (rc = 0) Then
     tmpKey = 9
-    Rc = RegCloseKey(hKey) ' Close Registry Key
+    rc = RegCloseKey(hKey) ' Close Registry Key
   End If
 
-  Rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE, sREGKEYSQLNCLI10, 0, KEY_READ, hKey) ' Open Registry Key
-  If (Rc = 0) Then
+  rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE, sREGKEYSQLNCLI10, 0, KEY_READ, hKey) ' Open Registry Key
+  If (rc = 0) Then
     tmpKey = 10
-    Rc = RegCloseKey(hKey) ' Close Registry Key
+    rc = RegCloseKey(hKey) ' Close Registry Key
   End If
 
 SQLNCLI_Err_Handler:
@@ -910,7 +910,7 @@ SQLNCLI_Err_Handler:
   Exit Function
     
 SQLNCLI_Err:
-  Rc = RegCloseKey(hKey) ' Close Registry Key
+  rc = RegCloseKey(hKey) ' Close Registry Key
   tmpKey = 0
   Resume SQLNCLI_Err_Handler
 End Function

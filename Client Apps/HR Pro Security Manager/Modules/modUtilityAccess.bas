@@ -861,7 +861,7 @@ Public Function CheckCanMakeHidden(pstrType As String, _
                   "make the following definition(s), of which you are the" & vbCrLf & _
                   "owner, hidden also:" & vbCrLf & vbCrLf & _
                   sDetails_Owner & sBatchJobDetails_Owner & vbCrLf & _
-                  "Do you wish to continue ?", vbQuestion + vbYesNo, IIf(Len(pstrCaption) = 0, "HR Pro - Data Manager", pstrCaption)) _
+                  "Do you wish to continue ?", vbQuestion + vbYesNo, IIf(Len(pstrCaption) = 0, Application.Name, pstrCaption)) _
                   = vbNo Then
           Screen.MousePointer = vbNormal
           CheckCanMakeHidden = False
@@ -988,12 +988,12 @@ Public Function CheckCanMakeHidden(pstrType As String, _
           MsgBox "This " & IIf(UCase(pstrType) = "F", "filter", "calculation") & " cannot be made hidden as it is used in " & vbCrLf & _
                  "definition(s) which are included in the following" & vbCrLf & _
                  "batch jobs which are scheduled to be run by other user groups :" & vbCrLf & vbCrLf & sBatchJobDetails_ScheduledForOtherUsers, vbExclamation + vbOKOnly _
-                 , IIf(Len(pstrCaption) = 0, "HR Pro - Data Manager", pstrCaption)
+                 , IIf(Len(pstrCaption) = 0, Application.Name, pstrCaption)
         Else
           MsgBox "This " & IIf(UCase(pstrType) = "F", "filter", "calculation") & " cannot be made hidden as it is used in " & vbCrLf & _
                  "definition(s) which are included in the following" & vbCrLf & _
                  "batch jobs of which you are not the owner :" & vbCrLf & vbCrLf & sBatchJobDetails_NotOwner, vbExclamation + vbOKOnly _
-                 , IIf(Len(pstrCaption) = 0, "HR Pro - Data Manager", pstrCaption)
+                 , IIf(Len(pstrCaption) = 0, Application.Name, pstrCaption)
         End If
 
         Screen.MousePointer = vbNormal
@@ -1005,7 +1005,7 @@ Public Function CheckCanMakeHidden(pstrType As String, _
         MsgBox "This " & IIf(UCase(pstrType) = "F", "filter", "calculation") & " cannot be made hidden as it is used in the" & vbCrLf & _
                "following definition(s), of which you are not the" & vbCrLf & _
                "owner :" & vbCrLf & vbCrLf & sDetails_NotOwner, _
-               vbExclamation + vbOKOnly, IIf(Len(pstrCaption) = 0, "HR Pro - Data Manager", pstrCaption)
+               vbExclamation + vbOKOnly, IIf(Len(pstrCaption) = 0, Application.Name, pstrCaption)
         Screen.MousePointer = vbNormal
         CheckCanMakeHidden = False
         Exit Function
@@ -1735,7 +1735,7 @@ Public Function CheckCanMakeHidden(pstrType As String, _
                   "make the following definition(s), of which you are the" & vbCrLf & _
                   "owner, hidden also:" & vbCrLf & vbCrLf & _
                   sDetails_Owner & sBatchJobDetails_Owner & vbCrLf & _
-                  "Do you wish to continue ?", vbQuestion + vbYesNo, IIf(Len(pstrCaption) = 0, "HR Pro - Data Manager", pstrCaption)) _
+                  "Do you wish to continue ?", vbQuestion + vbYesNo, IIf(Len(pstrCaption) = 0, Application.Name, pstrCaption)) _
                   = vbNo Then
           Screen.MousePointer = vbNormal
           CheckCanMakeHidden = False
@@ -1849,12 +1849,12 @@ Public Function CheckCanMakeHidden(pstrType As String, _
           MsgBox "This expression cannot be made hidden as it is used in " & vbCrLf & _
                  "definition(s) which are included in the following" & vbCrLf & _
                  "batch jobs which are scheduled to be run by other user groups :" & vbCrLf & vbCrLf & sBatchJobDetails_ScheduledForOtherUsers, vbExclamation + vbOKOnly _
-                 , IIf(Len(pstrCaption) = 0, "HR Pro - Data Manager", pstrCaption)
+                 , IIf(Len(pstrCaption) = 0, Application.Name, pstrCaption)
         Else
           MsgBox "This picklist cannot be made hidden as it is used in " & vbCrLf & _
                  "definition(s) which are included in the following" & vbCrLf & _
                  "batch jobs of which you are not the owner :" & vbCrLf & vbCrLf & sBatchJobDetails_NotOwner, vbExclamation + vbOKOnly _
-                 , IIf(Len(pstrCaption) = 0, "HR Pro - Data Manager", pstrCaption)
+                 , IIf(Len(pstrCaption) = 0, Application.Name, pstrCaption)
         End If
         Screen.MousePointer = vbNormal
         CheckCanMakeHidden = False
@@ -1865,7 +1865,7 @@ Public Function CheckCanMakeHidden(pstrType As String, _
         MsgBox "This picklist cannot be made hidden as it is used in the" & vbCrLf & _
                "following definition(s), of which you are not the" & vbCrLf & _
                "owner :" & vbCrLf & vbCrLf & sDetails_NotOwner, _
-               vbExclamation + vbOKOnly, IIf(Len(pstrCaption) = 0, "HR Pro - Data Manager", pstrCaption)
+               vbExclamation + vbOKOnly, IIf(Len(pstrCaption) = 0, Application.Name, pstrCaption)
         Screen.MousePointer = vbNormal
         CheckCanMakeHidden = False
         Exit Function

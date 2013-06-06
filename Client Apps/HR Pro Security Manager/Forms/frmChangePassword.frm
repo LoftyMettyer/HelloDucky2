@@ -301,7 +301,7 @@ Private Sub cmdCancel_Click()
   
   If mblnForceChange Then
     
-    If MsgBox("You must change your password before you can log in to HR Pro." & vbNewLine & _
+    If MsgBox("You must change your password before you can log in to OpenHR." & vbNewLine & _
               "Are you sure you wish to exit ?", vbYesNo + vbQuestion, App.Title) = vbYes Then
       mblnExiting = True
       Me.Hide
@@ -365,14 +365,14 @@ Private Function PasswordChange() As Boolean
      ' AE20090601 Fault #13685
     ' No open ADO connection. We need to establish a slightly modified ado connection provider...
 '    gADOCon.ConnectionString = "Provider=SQLNCLI;DataTypeCompatibility=80;Server=" & gsServerName _
-'      & ";UID=" & gsUserName & ";Database=" & gsDatabaseName & ";APP=HR Pro Security Manager" _
+'      & ";UID=" & gsUserName & ";Database=" & gsDatabaseName & ";APP=OpenHR Security Manager" _
 '      & ";Old Password=" & strOldPassword & ";Password=" & strNewPassword
 
     Dim sConn As String
     Select Case GetSQLNCLIVersion
     Case 9 ' SQL Native Client 2005
         ' AE20090624 Fault #13689
-'      sConn = "Provider=SQLNCLI;Persist Security Info=True;DataTypeCompatibility=80;APP=HR Pro Security Manager;" & _
+'      sConn = "Provider=SQLNCLI;Persist Security Info=True;DataTypeCompatibility=80;APP=OpenHR Security Manager;" & _
 '              "User ID=" & gsUserName & ";" & _
 '              "Initial Catalog=" & gsDatabaseName & ";" & _
 '              "Data Source=" & gsServerName & ";" & _
@@ -380,7 +380,7 @@ Private Function PasswordChange() As Boolean
 '              "Password=" & strNewPassword & ";"
 
       sConn = "Provider=SQLNCLI;Persist Security Info=False;DataTypeCompatibility=80;" & _
-              "Application Name=HR Pro Security Manager;" & _
+              "Application Name=OpenHR Security Manager;" & _
               "User ID=" & gsUserName & ";" & _
               "Initial Catalog='';" & _
               "Data Source=" & gsServerName & ";" & _
@@ -390,7 +390,7 @@ Private Function PasswordChange() As Boolean
     Case 10 ' SQL Native Client 2008
     
       ' AE20090624 Fault #13689
-'      sConn = "Provider=SQLNCLI10;Persist Security Info=True;DataTypeCompatibility=80;APP=HR Pro Security Manager;" & _
+'      sConn = "Provider=SQLNCLI10;Persist Security Info=True;DataTypeCompatibility=80;APP=OpenHR Security Manager;" & _
 '              "User ID=" & gsUserName & ";" & _
 '              "Initial Catalog=" & gsDatabaseName & ";" & _
 '              "Data Source=" & gsServerName & ";" & _
@@ -398,7 +398,7 @@ Private Function PasswordChange() As Boolean
 '              "Password=" & strNewPassword & ";"
 
       sConn = "Provider=SQLNCLI10;Persist Security Info=False;DataTypeCompatibility=80;" & _
-              "Application Name=HR Pro Security Manager;" & _
+              "Application Name=OpenHR Security Manager;" & _
               "User ID=" & gsUserName & ";" & _
               "Initial Catalog='';" & _
               "Data Source=" & gsServerName & ";" & _
@@ -591,7 +591,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
   If Not mblnForceChange Then Exit Sub
 
   If UnloadMode = vbFormControlMenu Then
-    If MsgBox("You must change your password before you can log in to HR Pro." & vbNewLine & _
+    If MsgBox("You must change your password before you can log in to OpenHR." & vbNewLine & _
               "Are you sure you wish to exit ?", vbYesNo + vbQuestion, App.Title) = vbYes Then
       mblnExiting = True
       Me.Hide

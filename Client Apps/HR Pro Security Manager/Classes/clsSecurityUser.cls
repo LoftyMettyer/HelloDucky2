@@ -25,7 +25,7 @@ Private mvar_fChanged As Boolean
 Private mvar_fDeleteUser As Boolean
 Private mlngPersonnelID As Long
 Private mbForcePasswordChange As Boolean
-Private miLoginType As HrProSecurityMgr.LoginType
+Private miLoginType As SecurityMgr.LoginType
 Private mbIsLocked As Boolean
 Private mbIsMustChange As Boolean
 Private mdPasswordLastSetTime As Date
@@ -33,11 +33,11 @@ Private mbIsExpired As Boolean
 Private mbIsPolicyChecked As Boolean
 Private mbIsExpirationChecked As Boolean
 
-Public Property Let LoginType(ByVal piData As HrProSecurityMgr.LoginType)
+Public Property Let LoginType(ByVal piData As SecurityMgr.LoginType)
   miLoginType = piData
 End Property
 
-Public Property Get LoginType() As HrProSecurityMgr.LoginType
+Public Property Get LoginType() As SecurityMgr.LoginType
   LoginType = miLoginType
 End Property
 
