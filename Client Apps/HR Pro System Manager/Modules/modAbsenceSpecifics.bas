@@ -262,7 +262,7 @@ Private Function CreateAbsenceDurationStoredProcedure(Optional pbCreateBreakdown
     recTabEdit.Index = "idxTableID"
     recTabEdit.Seek "=", iTempID
     If Not recTabEdit.NoMatch Then
-      sHistoricRegionTableName = recTabEdit!TableName
+      sHistoricRegionTableName = FormatTableName("dbo", recTabEdit!TableName)
     Else
       sHistoricRegionTableName = vbNullString
     End If
@@ -399,7 +399,7 @@ Private Function CreateAbsenceDurationStoredProcedure(Optional pbCreateBreakdown
     recTabEdit.Index = "idxTableID"
     recTabEdit.Seek "=", iTempID
     If Not recTabEdit.NoMatch Then
-      sHistoricWPTableName = recTabEdit!TableName
+      sHistoricWPTableName = FormatTableName("dbo", recTabEdit!TableName)
     Else
       sHistoricWPTableName = vbNullString
     End If
@@ -484,7 +484,7 @@ Private Function CreateAbsenceDurationStoredProcedure(Optional pbCreateBreakdown
     recTabEdit.Index = "idxTableID"
     recTabEdit.Seek "=", iTempID
     If Not recTabEdit.NoMatch Then
-      sBHolRegionTableName = recTabEdit!TableName
+      sBHolRegionTableName = FormatTableName("dbo", recTabEdit!TableName)
     Else
       iBHolRegionTableID = 0
       sBHolRegionTableName = vbNullString
@@ -522,7 +522,7 @@ Private Function CreateAbsenceDurationStoredProcedure(Optional pbCreateBreakdown
     recTabEdit.Index = "idxTableID"
     recTabEdit.Seek "=", iTempID
     If Not recTabEdit.NoMatch Then
-      sBHolTableName = recTabEdit!TableName
+      sBHolTableName = FormatTableName("dbo", recTabEdit!TableName)
     Else
       iBHolTableID = 0
       sBHolTableName = vbNullString
@@ -576,7 +576,7 @@ Private Function CreateAbsenceDurationStoredProcedure(Optional pbCreateBreakdown
     recTabEdit.Index = "idxTableID"
     recTabEdit.Seek "=", iTempID
     If Not recTabEdit.NoMatch Then
-      sPersonnelTableName = recTabEdit!TableName
+      sPersonnelTableName = FormatTableName("dbo", recTabEdit!TableName)
     Else
       iPersonnelTableID = 0
       sPersonnelTableName = vbNullString
