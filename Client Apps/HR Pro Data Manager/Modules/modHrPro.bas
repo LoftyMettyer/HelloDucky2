@@ -4644,6 +4644,9 @@ Public Function GetBatchJobType(ByVal Utility As UtilityType) As String
     Case utlWorkflow
       GetBatchJobType = "Workflow"
       
+    Case utlReportPack
+      GetBatchJobType = "Report Pack"
+      
     Case Else
       GetBatchJobType = ""
 
