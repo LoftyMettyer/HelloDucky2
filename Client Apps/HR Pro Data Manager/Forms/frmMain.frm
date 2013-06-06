@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "17:01"
+            TextSave        =   "11:57"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -629,9 +629,13 @@ Private Sub MDIForm_QueryUnload(Cancel As Integer, UnloadMode As Integer)
     If Forms(1).Name = "frmRecEdit4" Then
       lngFormID = Forms(1).FormID
     End If
+    ' Hackette to get around the Batch Job Jira 2422
+    If Forms(1).Name = "frmBatchJob" Then
+      Forms(1).Changed = False
+    End If
     
     Unload Forms(1)
-  DebugOutput "frmMain", "MDIForm_QueryUnload 1"
+    DebugOutput "frmMain", "MDIForm_QueryUnload 1"
     DoEvents
 
     ' If the number of loaded forms has not changed then the
