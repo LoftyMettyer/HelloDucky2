@@ -1057,8 +1057,8 @@ PRINT 'Step - Menu & Category enhancements'
 		END
 		ELSE
 		BEGIN
-			UPDATE dbo.[tbsys_userusage] SET [lastrun] = GETDATE(), [runcount] = [runcount] + 1
-				WHERE [objecttype] = @objecttype AND [objectid] = @objectID AND [username] = @sUsername AND [lastaction] = @lastaction
+			UPDATE dbo.[tbsys_userusage] SET [lastrun] = GETDATE(), [runcount] = [runcount] + 1, [lastaction] = @lastaction
+				WHERE [objecttype] = @objecttype AND [objectid] = @objectID AND [username] = @sUsername
 		END
 
 	END';
