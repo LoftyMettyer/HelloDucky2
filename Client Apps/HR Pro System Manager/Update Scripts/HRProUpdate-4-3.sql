@@ -188,7 +188,7 @@ PRINT 'Step 4 - Create object tracking system'
 		-- Add view definitions
 		SELECT @nextid = MAX([viewid]) + 1 FROM dbo.[ASRSysViews];
 		SET @NVarCommand = 'INSERT tbsys_systemobjects ([objecttype], [tablename], [viewname], [description], [nextid], [allowselect], [allowupdate])
-			VALUES (3,''tbsys_screens'',''ASRSysScreens'', ''View definitions '' ,'  + convert(nvarchar(255),@nextid) + ', 1, 0);';
+			VALUES (3,''tbsys_views'',''ASRSysViews'', ''View definitions '' ,'  + convert(nvarchar(255),@nextid) + ', 1, 0);';
 		EXEC sp_executesql @NVarCommand;
 
 		-- Add workflow definitions
