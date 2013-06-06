@@ -1527,7 +1527,7 @@ PRINT 'Step 10 - Integration Services'
 			SELECT @NVarCommand = 'ALTER TABLE ASRSysTables ADD [isremoteview] [bit] NULL;';
 			EXEC sp_executesql @NVarCommand;
 
-			SELECT @NVarCommand = 'UPDATE ASRSysTables SET isremoteview = 0;';
+			SELECT @NVarCommand = 'UPDATE ASRSysTables SET isremoteview = 1;';
 			EXEC sp_executesql @NVarCommand;
 		END
 
