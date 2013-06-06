@@ -19,6 +19,7 @@ Begin VB.Form frmLinkFind
    Icon            =   "frmLinkFind.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
+   MaxButton       =   0   'False
    ScaleHeight     =   3660
    ScaleWidth      =   6240
    StartUpPosition =   1  'CenterOwner
