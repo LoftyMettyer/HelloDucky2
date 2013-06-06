@@ -322,6 +322,7 @@ Private mdblHorizontalScrollRatio As Double
 Private miControlIndex As Integer
 Private mlngWorkflowID As Long
 Private mfChanged As Boolean
+Private mfPerge As Boolean
 Private mfAppChanged As Boolean
 Private mfNewWorkflow As Boolean
 Private msWorkflowName As String
@@ -10043,6 +10044,8 @@ Public Sub EditMenu(ByVal psMenuOption As String)
     Case "ID_WorkflowProperties"
       CancelElementAddMode
       
+      Dim perge As Boolean
+      
       frmWorkflowEdit.WorkflowID = mlngWorkflowID
       Set frmWorkflowEdit.CallingForm = Me
       frmWorkflowEdit.WorkflowName = msWorkflowName
@@ -10065,6 +10068,10 @@ Public Sub EditMenu(ByVal psMenuOption As String)
           Or (Trim(msWorkflowDescription) <> Trim(sDescription)) _
           Or (mlngWorkflowPictureID <> lPictureID) _
           Or (mfWorkflowEnabled <> fEnabled)
+          
+        perge = (Trim(msWorkflowName) <> Trim(sName)) _
+          Or (Trim(msWorkflowDescription) <> Trim(sDescription)) _
+          Or (mfWorkflowEnabled <> fEnabled)
       End If
        
       Set frmWorkflowEdit = Nothing
@@ -10078,8 +10085,8 @@ Public Sub EditMenu(ByVal psMenuOption As String)
         mfWorkflowEnabled = fEnabled
         
         Me.Caption = "Workflow Designer - " & sName
-              
-        IsChanged = True
+        
+        SetChanged perge
       End If
       
     Case "ID_WorkflowElementProperties"
@@ -11430,7 +11437,7 @@ Private Sub Form_Load()
     End If
   End If
   
-  cmdOK.Enabled = IsNew
+  cmdOk.Enabled = IsNew
   
   scrollVertical.SmallChange = SMALLSCROLL
   scrollHorizontal.SmallChange = SMALLSCROLL
@@ -11545,11 +11552,13 @@ Private Function SaveWorkflow() As Boolean
   fOK = ValidateWorkflow(True, False, False)
 
   If fOK Then
-    If WorkflowsWithStatus(WorkflowID, giWFSTATUS_COMPLETE) _
-      Or WorkflowsWithStatus(WorkflowID, giWFSTATUS_ERROR) Then
-      
-      fOK = (MsgBox("Saving the definition will purge all instances of this workflow from the log." & vbCrLf & _
-        "Do you wish to continue?", vbQuestion + vbYesNo, App.ProductName) = vbYes)
+    If mfPerge Then
+      If WorkflowsWithStatus(WorkflowID, giWFSTATUS_COMPLETE) _
+        Or WorkflowsWithStatus(WorkflowID, giWFSTATUS_ERROR) Then
+        
+        fOK = (MsgBox("Saving the definition will purge all instances of this workflow from the log." & vbCrLf & _
+          "Do you wish to continue?", vbQuestion + vbYesNo, App.ProductName) = vbYes)
+      End If
     End If
   End If
   
@@ -11585,6 +11594,7 @@ Private Function SaveWorkflow() As Boolean
         .Fields("initiationType") = miInitiationType
         .Fields("baseTable") = mlngBaseTableID
         .Fields("changed") = True
+        .Fields("perge") = (.Fields("perge") Or mfPerge)
       End If
 
       .Update
@@ -11605,6 +11615,7 @@ ExitSaveWorkflow:
   If fOK Then
     mfNewWorkflow = False
     mfChanged = False
+    mfPerge = False
     Application.Changed = True
     frmSysMgr.RefreshMenu
 
@@ -12941,6 +12952,7 @@ Private Function LoadWorkflow() As Boolean
         IIf(miInitiationType = WORKFLOWINITIATIONTYPE_TRIGGERED, _
           giWFRECSEL_TRIGGEREDRECORD, giWFRECSEL_UNIDENTIFIED))
       mfChanged = False
+      mfPerge = False
       mbLocked = IIf(IsNull(.Fields("locked")), False, .Fields("locked"))
       
       ' Set the screen caption and size.
@@ -13693,17 +13705,17 @@ Public Property Get IsChanged() As Boolean
   
 End Property
 
-
 Public Property Let IsChanged(pfNewValue As Boolean)
-  ' Set the 'workflow changed' flag.
-  
   mfChanged = pfNewValue
-  cmdOK.Enabled = mfChanged
-  
-  ' Menu may be dependent on the status of the screen.
-  'frmSysMgr.RefreshMenu
-  
+  mfPerge = pfNewValue
+  cmdOk.Enabled = mfChanged
 End Property
+
+Public Sub SetChanged(pfPerge As Boolean)
+  mfChanged = True
+  mfPerge = (mfPerge Or pfPerge)
+  cmdOk.Enabled = mfChanged
+End Sub
 
 Public Function IsUniqueIdentifier(psIdentifier As String, plngIgnoreElementIndex As Long) As Boolean
   ' Return true if the given Identifier string is unique in this workflow.
@@ -15404,7 +15416,7 @@ Private Sub WorkflowElement_MouseMove(Index As Integer, Button As Integer, Shift
         End With
         LSet startPointSingle = currPoint
         
-        IsChanged = True
+        SetChanged False
       End If
 
     End If

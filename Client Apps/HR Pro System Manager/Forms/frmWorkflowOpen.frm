@@ -196,8 +196,6 @@ Begin VB.Form frmWorkflowOpen
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   1
             Object.Width           =   9234
-            TextSave        =   ""
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -392,7 +390,7 @@ Private Sub cmdCopy_Click()
 
     recWorkflowEdit!ID = lngWorkflowID
     recWorkflowEdit!Changed = False
-    recWorkflowEdit!ChangedStatus = ChangedStatus.None
+    recWorkflowEdit!perge = False
     recWorkflowEdit!New = True
     recWorkflowEdit!Deleted = False
     recWorkflowEdit!Name = sWorkflowName
@@ -1680,7 +1678,7 @@ Private Sub Form_Resize()
     cmdDelete.Left = cmdNew.Left
     cmdProperties.Left = cmdNew.Left
     cmdPrint.Left = cmdNew.Left
-    cmdOk.Left = cmdNew.Left
+    cmdOK.Left = cmdNew.Left
   End With
   
   With lstItems
@@ -1688,7 +1686,7 @@ Private Sub Form_Resize()
     txtDesc.Top = .Top + .Height + YGAP
   End With
     
-  cmdOk.Top = Me.Height - YGAP_BOTTOM - sbScrOpen.Height - YGAP - cmdOk.Height
+  cmdOK.Top = Me.Height - YGAP_BOTTOM - sbScrOpen.Height - YGAP - cmdOK.Height
     
   ' Get rid of the icon off the form
   RemoveIcon Me
