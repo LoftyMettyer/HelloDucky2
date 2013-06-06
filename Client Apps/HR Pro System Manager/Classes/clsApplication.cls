@@ -2476,23 +2476,15 @@ Private Function CreateQueryDefs() As Boolean
   daoDb.CreateQueryDef "spadmin_getcomponent_base", sSQL
 
   ' spadmin_getcomponent_function
-  sSQL = "SELECT DISTINCT e.ExprID AS [componentid], 9 AS [subtype], e.Name AS [name]" & _
-      " , 1 AS [level]" & _
-      " , e.[exprid] AS [sequence]" & _
-      " , e.ReturnType AS [returntype]" & _
-      " , e.ReturnSize AS [returnsize], e.ReturnDecimals AS [returndecimals]" & _
-      " , p.[FunctionID] AS [functionid] , 0 AS [operatorid], 0 AS [tableid], 0 AS [columnid]" & _
-      " , 0 AS [iscolumnbyreference]" & _
-      " , 0 AS [columnaggregiatetype],0 AS [columnorderid]" & _
-      " , 0 AS [columnfilterid], 0 AS [calculationid]" & _
-      " , 0 AS [valuetype], '' AS [valuestring], 0 AS [valuenumeric], 0 AS [valuelogic], c.[ValueDate]" & _
-      " , 0 AS [lookuptableid], 0 AS [lookupcolumnid]" & _
-      " , IIF(e.type=1 AND e.returnType=3,1,0) AS [isevaluated]" & _
-      " FROM ((tmpExpressions e" & _
-      "  INNER JOIN tmpComponents c ON c.exprID = e.exprID)" & _
-      "  INNER JOIN tmpComponents p ON p.componentid = e.ParentComponentID)" & _
-      " WHERE e.ParentComponentID = @expressionid" & _
-      " ORDER BY e.[ExprID] ASC;"
+  sSQL = "SELECT e.ExprID AS componentid, 9 AS subtype, e.name, 1 AS [level], e.[exprid] AS sequence, e.returntype" & _
+      " , e.ReturnSize AS returnsize, e.ReturnDecimals AS returndecimals, c.[FunctionID] AS functionid, 0 AS operatorid" & _
+      " , 0 AS [tableid], 0 AS columnid, 0 AS iscolumnbyreference, 0 AS columnaggregiatetype, 0 AS columnorderid, 0 AS columnfilterid" & _
+      " , 0 AS calculationid, 0 AS valuetype, '' AS valuestring, 0 AS valuenumeric, 0 AS valuelogic, c.[ValueDate], 0 AS lookuptableid, 0 AS lookupcolumnid" & _
+      " , IIF(e.type=1 AND e.returnType=3,1,0) AS isevaluated" & _
+      " FROM tmpComponents AS c" & _
+      " INNER JOIN tmpExpressions AS e ON e.ParentComponentID = c.ComponentID" & _
+      " WHERE c.componentID =  @expressionid" & _
+      " ORDER BY e.[ExprID];"
   daoDb.CreateQueryDef "spadmin_getcomponent_function", sSQL
 
   ' spadmin_getcomponent_calculation
