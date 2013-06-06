@@ -6,7 +6,7 @@ Public Const VARCHAR_MAX_Size = 2147483646 'Yup one below the actual max, needs 
 ' Generic API for doing "interesting" stuff (mainly icon handling)
 Public Declare Function SendMessageLong Lib "user32" Alias "SendMessageA" ( _
       ByVal hWnd As Long, ByVal wMsg As Long, _
-      ByVal wParam As Long, ByVal lParam As Long _
+      ByVal wParam As Long, ByVal LParam As Long _
    ) As Long
 
 Public Declare Function GetWindowLong Lib "user32" Alias "GetWindowLongA" _
@@ -809,11 +809,9 @@ Public Function DecryptLogonDetails(ByVal strInput As String, ByRef strUserName 
   
   intMajor = CInt(Split(strVersion, ".")(0))
   intMinor = CInt(Split(strVersion, ".")(1))
-  If intMajor = 3 And intMinor >= 7 Then
+  If (intMajor = 3 And intMinor >= 7) Or intMajor >= 4 Then
     strInput = ProcessDecryptString(strInput)
   End If
- 
-
  
   lngStart = Len(strInput) - 14
   strEKey = Mid(strInput, lngStart + 1, 10)
@@ -845,7 +843,7 @@ Public Sub SaveModuleSetting(pstrModuleKey As String, _
   pvarValue As Variant)
   
   With recModuleSetup
-    .index = "idxModuleParameter"
+    .Index = "idxModuleParameter"
     .Seek "=", pstrModuleKey, pstrParameterKey
     
     If .NoMatch Then
@@ -857,7 +855,7 @@ Public Sub SaveModuleSetting(pstrModuleKey As String, _
     End If
     
     !ParameterType = pstrParameterType
-    !parameterValue = pvarValue
+    !parametervalue = pvarValue
     .Update
   End With
 
@@ -890,12 +888,12 @@ Public Function GetModuleSetting(pstrModuleKey As String, _
   End If
   
   With recModuleSetup
-    .index = "idxModuleParameter"
+    .Index = "idxModuleParameter"
     .Seek "=", pstrModuleKey, pstrParameterKey
     
     If Not .NoMatch Then
-      If Not IsNull(!parameterValue) And Len(!parameterValue) > 0 Then
-        varResult = !parameterValue
+      If Not IsNull(!parametervalue) And Len(!parametervalue) > 0 Then
+        varResult = !parametervalue
         fFound = True
       End If
     End If
@@ -907,12 +905,12 @@ Public Function GetModuleSetting(pstrModuleKey As String, _
     pstrModuleKey = gsMODULEKEY_WORKFLOW
     
     With recModuleSetup
-      .index = "idxModuleParameter"
+      .Index = "idxModuleParameter"
       .Seek "=", pstrModuleKey, pstrParameterKey
       
       If Not .NoMatch Then
-        If Not IsNull(!parameterValue) And Len(!parameterValue) > 0 Then
-          varResult = !parameterValue
+        If Not IsNull(!parametervalue) And Len(!parametervalue) > 0 Then
+          varResult = !parametervalue
         End If
       End If
     End With
