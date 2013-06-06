@@ -677,6 +677,7 @@ End Sub
 
 Private Sub cboFldTable_Refresh()
 
+  Dim lngNewIndex As Long
   Dim iIndex As Integer
   Dim iDefaultIndex As Integer
   Dim bTableOK As Boolean
@@ -708,15 +709,14 @@ Private Sub cboFldTable_Refresh()
         End If
         
         If bTableOK Then
-          cboFldTable.AddItem !TableName
-          cboFldTable.ItemData(cboFldTable.NewIndex) = !TableID
+          lngNewIndex = AddItemToComboBox(cboFldTable, !TableName, !TableID)
           
           If !TableID = mlngTableID Then
-            iIndex = cboFldTable.NewIndex
+            iIndex = lngNewIndex
           End If
           
           If !TableID = mlngBaseTableID Then
-            iDefaultIndex = cboFldTable.NewIndex
+            iDefaultIndex = lngNewIndex
           End If
         End If
       End If
@@ -740,9 +740,7 @@ Private Sub cboFldTable_Refresh()
       cboFldTable.ListIndex = iIndex
     Else
       .Enabled = False
-      
-      cboFldTable.AddItem "<no tables>"
-      cboFldTable.ItemData(cboFldTable.NewIndex) = 0
+      AddItemToComboBox cboFldTable, "<no tables>", 0
       cboFldTable.ListIndex = 0
       cboFldColumn_Refresh
     End If
@@ -757,6 +755,7 @@ Private Sub cboFldColumn_Refresh()
   Dim iIndex As Integer
   Dim lngTableID As Integer
   Dim bAdd As Boolean
+  Dim lngNewIndex As Long
   
   iIndex = 0
   lngTableID = GetComboItem(cboFldTable)
@@ -784,18 +783,10 @@ Private Sub cboFldColumn_Refresh()
           (.Fields("dataType") <> dtLONGVARBINARY) And _
           (.Fields("dataType") <> dtVARBINARY) Then
           
-'          If mbIsKeyField Then
-'            If .Fields("Mandatory") = True Then
-'              cboFldColumn.AddItem .Fields("columnName")
-'              cboFldColumn.ItemData(cboFldColumn.NewIndex) = .Fields("columnID")
-'            End If
-'          Else
-            cboFldColumn.AddItem .Fields("columnName")
-            cboFldColumn.ItemData(cboFldColumn.NewIndex) = .Fields("columnID")
-'          End If
-      
+          lngNewIndex = AddItemToComboBox(cboFldColumn, .Fields("columnName").value, .Fields("columnID").value)
+     
           If .Fields("columnID") = mlngColumnID Then
-            iIndex = cboFldColumn.NewIndex
+            iIndex = lngNewIndex
           End If
         End If
     

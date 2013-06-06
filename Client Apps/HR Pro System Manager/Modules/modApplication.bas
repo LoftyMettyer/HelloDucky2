@@ -1728,12 +1728,12 @@ Public Sub ActivateModules()
           Do Until .EOF
             sOldString = IIf(Len(!queryString) > 0, sURL & "?" & !queryString, "")
             
-            sNewQueryString = GetWorkflowQueryString(!id * -1, -1)
+            sNewQueryString = GetWorkflowQueryString(!ID * -1, -1)
   
             sSQL = "UPDATE tmpWorkflows" & _
               " SET changed = TRUE," & _
               "   queryString = '" & Replace(sNewQueryString, "'", "''") & "'" & _
-              " WHERE ID = " & CStr(!id)
+              " WHERE ID = " & CStr(!ID)
             daoDb.Execute sSQL
 
             sNewString = IIf((Len(sNewQueryString) > 0), sURL & "?" & sNewQueryString, "")
@@ -2085,7 +2085,7 @@ Public Function AddItemToComboBox(ByRef Combo As ComboBox, ItemText As String, I
   lngKey = Combo.NewIndex
   
   Combo.ItemData(lngKey) = ItemData
-  
+ 
   AddItemToComboBox = lngKey
 
 End Function
