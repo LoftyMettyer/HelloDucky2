@@ -305,7 +305,6 @@ Begin VB.Form frmScrDesigner2
          NumTabs         =   1
          BeginProperty Tab1 {0713F341-850A-101B-AFC0-4210102A8DA7} 
             Caption         =   ""
-            Key             =   ""
             Object.Tag             =   ""
             ImageVarType    =   2
          EndProperty
@@ -6160,15 +6159,18 @@ Public Function LoadTabPage(piPageNumber As Integer) As Boolean
               End If
 
               ' Set the control's level in the z-order.
-              ctlControl.ControlLevel = .Fields("controlLevel").value
+              'ctlControl.ControlLevel = .Fields("controlLevel").value
 
               ' Set the control's size.
-              ctlControl.Top = IIf(IsNull(.Fields("topCoord").value), 0, .Fields("topCoord").value)
-              ctlControl.Left = IIf(IsNull(.Fields("leftCoord").value), 0, .Fields("leftCoord").value)
+'              ctlControl.Top = IIf(IsNull(.Fields("topCoord").value), 0, .Fields("topCoord").value)
+'              ctlControl.Left = IIf(IsNull(.Fields("leftCoord").value), 0, .Fields("leftCoord").value)
+'
+'              ' Set the control's dimensions.
+'              ctlControl.Height = IIf(IsNull(.Fields("height").value), 0, .Fields("height").value)
+'              ctlControl.Width = IIf(IsNull(.Fields("width").value), 0, .Fields("width").value)
+              ctlControl.Move IIf(IsNull(.Fields("leftCoord").value), 0, .Fields("leftCoord").value), IIf(IsNull(.Fields("topCoord").value), 0, .Fields("topCoord").value), _
+                  IIf(IsNull(.Fields("width").value), 0, .Fields("width").value), IIf(IsNull(.Fields("height").value), 0, .Fields("height").value)
 
-              ' Set the control's dimensions.
-              ctlControl.Height = IIf(IsNull(.Fields("height").value), 0, .Fields("height").value)
-              ctlControl.Width = IIf(IsNull(.Fields("width").value), 0, .Fields("width").value)
 
               ' Set the controls tab index.
               ctlControl.TabIndex = iNextIndex
