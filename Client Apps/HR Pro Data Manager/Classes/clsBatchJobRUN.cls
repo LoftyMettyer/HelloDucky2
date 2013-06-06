@@ -859,7 +859,7 @@ End If
         .MoveDown Unit:=wdLine, Count:=2
         
         With mwrdDoc
-            .TablesOfContents.Add Range:=mwrdApp.Selection.Range, RightAlignPageNumbers:=True, UseHeadingStyles:=True, UpperHeadingLevel:=1, LowerHeadingLevel:=3, IncludePageNumbers:=True, AddedStyles:="", UseHyperlinks:=True, HidePageNumbersInWeb:=True, UseOutlineLevels:=True
+            .TablesOfContents.Add Range:=mwrdApp.Selection.Range, RightAlignPageNumbers:=True, UseHeadingStyles:=True, UpperHeadingLevel:=1, LowerHeadingLevel:=3, IncludePageNumbers:=True, AddedStyles:="", UseHyperlinks:=True, HidePageNumbersInWeb:=True
             .TablesOfContents(1).TabLeader = wdTabLeaderDots
             .TablesOfContents.Format = wdIndexIndent
         End With
