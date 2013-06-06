@@ -104,7 +104,8 @@ Public gstrDefaultPrinterName As String     ' Default printer device name
 
 Public gobjErrorStack As clsErrorStack      ' Standard Error Handler
 
-Public glngSQLVersion As Long               ' SQL database Version
+'Public glngSQLVersion As Long               ' SQL database Version
+Public glngSQLVersion As Double   'Changed from Long for SQL2008 R2
 
 ' Output options
 'Public gbAllowOutput_Word As Boolean        ' Is Microsoft Word Installed

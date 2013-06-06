@@ -3721,7 +3721,7 @@ End Function
 Public Function CheckPlatform() As Boolean
 
   Dim sSQL As String, sMsg As String
-  Dim lngSQLVersion As Long
+  Dim lngSQLVersion As Double
   
   Dim strLastSQLServerVersion As String
   Dim strLastDatabaseName As String
