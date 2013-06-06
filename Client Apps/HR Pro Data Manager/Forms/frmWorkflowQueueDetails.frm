@@ -21,6 +21,8 @@ Begin VB.Form frmWorkflowQueueDetails
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
+   MaxButton       =   0   'False
+   MinButton       =   0   'False
    ScaleHeight     =   5430
    ScaleWidth      =   8010
    StartUpPosition =   1  'CenterOwner
