@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Begin VB.Form frmWorkflowLog 
    Caption         =   "Workflow Log"
@@ -845,7 +845,7 @@ Private Function RefreshGrid() As Boolean
     " INNER JOIN ASRSysWorkflows WF ON WI.workflowID = WF.ID"
 
   If cboType.ListIndex > 0 Then
-    pstrSQL = pstrSQL & " WHERE [Name] = '" & cboType.Text & "'"
+    pstrSQL = pstrSQL & " WHERE [Name] = '" & Replace(cboType.Text, "'", "''") & "'"
   End If
 
   If cboStatus.ListIndex > 0 Then
@@ -884,7 +884,7 @@ Private Function RefreshGrid() As Boolean
       " WHERE Q.dateInitiated IS null"
   
     If cboType.ListIndex > 0 Then
-      pstrSQL = pstrSQL & " AND [Name] = '" & cboType.Text & "'"
+      pstrSQL = pstrSQL & " AND [Name] = '" & Replace(cboType.Text, "'", "''") & "'"
     End If
   End If
 
