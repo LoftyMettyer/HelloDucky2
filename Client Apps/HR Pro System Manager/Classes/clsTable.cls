@@ -1776,20 +1776,35 @@ Public Function CloneTable(pavCloneRegister As Variant, pfCopyData As Boolean, p
               Next iIndex
             End If
             
-            'NPG20080507 Fault 12974
-            ' Parent table ID's are to be retained.
-            lngTableID = IIf(IsNull(.Fields("TableID")), vbNull, .Fields("TableID"))
+'            'NPG20080507 Fault 12974
+'            ' Parent table ID's are to be retained.
+'            lngTableID = IIf(IsNull(.Fields("TableID")), vbNull, .Fields("TableID"))
+'
+'            If .Fields("TableID") = TableID Then ' Not a parent table ID, so assign new tableID
+'              lngTableID = objNewTable.TableID
+'            End If
             
-            If .Fields("TableID") = TableID Then ' Not a parent table ID, so assign new tableID
-              lngTableID = objNewTable.TableID
+            ' Get the copied screen control's new column ID.
+            lngTableID = IIf(IsNull(.Fields("TableID")), 0, .Fields("TableID"))
+            If lngTableID > 0 Then
+              For iIndex = 1 To UBound(pavCloneRegister, 2)
+                If pavCloneRegister(1, iIndex) = "TABLE" And _
+                  pavCloneRegister(2, iIndex) = .Fields("TableID") Then
+                  lngTableID = pavCloneRegister(3, iIndex)
+                  Exit For
+                End If
+              Next iIndex
             End If
+            
             
             recCtrlEdit!ScreenID = lngScreenID
             recCtrlEdit!PageNo = .Fields("PageNo")
             recCtrlEdit!ControlLevel = .Fields("ControlLevel")
             'NPG20080507 Fault 12974
             'recCtrlEdit!TableID = objNewTable.TableID
-            recCtrlEdit!TableID = lngTableID
+            If lngTableID > 0 Then
+              recCtrlEdit!TableID = lngTableID
+            End If
             recCtrlEdit!ColumnID = lngColumnID
             recCtrlEdit!ControlType = .Fields("ControlType")
             recCtrlEdit!ControlIndex = .Fields("ControlIndex")
