@@ -24,188 +24,8 @@ Private mvar_sLoginTable As String
 Private mvar_lngActivateDelegationColumn As Long
 Private mvar_sActivateDelegationColumn As String
 Private mvar_lngDelegationEmail As Long
-
 Private malngEmailColumns() As Long
 
-Public Enum WorkflowWebFormItemTypes
-  giWFFORMITEM_FORM = -2
-  giWFFORMITEM_UNKNOWN = -1
-  giWFFORMITEM_BUTTON = 0
-  giWFFORMITEM_DBVALUE = 1
-  giWFFORMITEM_LABEL = 2
-  giWFFORMITEM_INPUTVALUE_CHAR = 3
-  giWFFORMITEM_WFVALUE = 4
-  giWFFORMITEM_INPUTVALUE_NUMERIC = 5
-  giWFFORMITEM_INPUTVALUE_LOGIC = 6
-  giWFFORMITEM_INPUTVALUE_DATE = 7
-  giWFFORMITEM_FRAME = 8
-  giWFFORMITEM_LINE = 9
-  giWFFORMITEM_IMAGE = 10
-  giWFFORMITEM_INPUTVALUE_GRID = 11
-  giWFFORMITEM_FORMATCODE = 12 ' NB. Only used in emails.
-  giWFFORMITEM_INPUTVALUE_DROPDOWN = 13
-  giWFFORMITEM_INPUTVALUE_LOOKUP = 14
-  giWFFORMITEM_INPUTVALUE_OPTIONGROUP = 15
-  giWFFORMITEM_CALC = 16
-  giWFFORMITEM_INPUTVALUE_FILEUPLOAD = 17
-  giWFFORMITEM_FILEATTACHMENT = 18
-  giWFFORMITEM_DBFILE = 19
-  giWFFORMITEM_WFFILE = 20
-End Enum
-
-Public Enum WorkflowInstanceStatus
-  giWFSTATUS_UNKNOWN = -1
-  giWFSTATUS_INPROGRESS = 0
-  giWFSTATUS_CANCELLED = 1 ' No longer used
-  giWFSTATUS_ERROR = 2
-  giWFSTATUS_COMPLETE = 3
-  giWFSTATUS_SCHEDULED = 4
-End Enum
-
-Public Enum WorkflowStoredDataValueTypes
-  giWFDATAVALUE_UNKNOWN = -1
-  giWFDATAVALUE_FIXED = 0
-  giWFDATAVALUE_WFVALUE = 1
-  giWFDATAVALUE_DBVALUE = 2
-  giWFDATAVALUE_CALC = 3
-End Enum
-
-Public Enum WorkflowRecordSelectorTypes
-  giWFRECSEL_UNKNOWN = -1         ' Oops, something's wrong
-  giWFRECSEL_INITIATOR = 0        ' Initiator's personnel table record
-  giWFRECSEL_IDENTIFIEDRECORD = 1 ' Identified via WebForm RecordSelector or StoredData Inserted/Updated Record
-  giWFRECSEL_ALL = 2              ' Show all records from the table in a WebForm RecordSelector
-  giWFRECSEL_UNIDENTIFIED = 3     ' Used when StoredData Inserts into a top-level table
-  giWFRECSEL_TRIGGEREDRECORD = 4  ' Triggered Base table record
-End Enum
-
-Public Enum WorkflowFindUsageOption
-  wfNone = 0
-  wfRecSelType = 1
-  wfElement = 2
-  wfWebFormItem = 3
-End Enum
-
-Public Enum WorkflowInitiationTypes
-  WORKFLOWINITIATIONTYPE_MANUAL = 0
-  WORKFLOWINITIATIONTYPE_TRIGGERED = 1
-  WORKFLOWINITIATIONTYPE_EXTERNAL = 2
-End Enum
-
-Public Enum WorkflowWebFormValidationTypes
-  WORKFLOWWFVALIDATIONTYPE_ERROR = 0
-  WORKFLOWWFVALIDATIONTYPE_WARNING = 1
-End Enum
-
-Public Enum DecisionCaptionType
-  decisionCaption_T_F = 0
-  decisionCaption_Y_N = 1
-  decisionCaption_1_0 = 2
-  decisionCaption_tick_cross = 3
-End Enum
-
-Public Enum WFItemPropertyOrientation
-  wfItemPropertyOrientation_Vertical = 0
-  wfItemPropertyOrientation_Horizontal = 1
-End Enum
-
-Public Enum WFItemPropertyState
-  wfItemPropertyState_No = 0
-  wfItemPropertyState_ReadOnly = 1
-  wfItemPropertyState_ReadWrite = 2
-End Enum
-
-Public Enum WorkflowButtonAction
-  WORKFLOWBUTTONACTION_SUBMIT = 0
-  WORKFLOWBUTTONACTION_SAVEFORLATER = 1
-  WORKFLOWBUTTONACTION_CANCEL = 2
-End Enum
-
-Public Enum WorkflowWebFormMessageType
-  WORKFLOWWEBFORMMESSAGE_COMPLETION = 0
-  WORKFLOWWEBFORMMESSAGE_SAVEDFORLATER = 1
-  WORKFLOWWEBFORMMESSAGE_FOLLOWONFORMS = 2
-End Enum
-
-' Property type constants.
-Public Enum WFItemProperty
-  WFITEMPROP_NONE = -1 ' Used for the category markers in the property grid
-  WFITEMPROP_UNKNOWN = 0
-  WFITEMPROP_ALIGNMENT = 1
-  WFITEMPROP_BACKCOLOR = 2
-  WFITEMPROP_BORDERSTYLE = 3
-  WFITEMPROP_CAPTION = 4
-  WFITEMPROP_FONT = 5
-  WFITEMPROP_FORECOLOR = 6
-  WFITEMPROP_HEIGHT = 7
-  WFITEMPROP_LEFT = 8
-  WFITEMPROP_PICTURE = 9
-  WFITEMPROP_TOP = 10
-  WFITEMPROP_WIDTH = 11
-  WFITEMPROP_WFIDENTIFIER = 12  ' Identifier of the Input/RecSel control in this WebForm
-  WFITEMPROP_PICTURELOCATION = 13
-  WFITEMPROP_DEFAULTVALUE_CHAR = 14
-  WFITEMPROP_DBRECORD = 15 ' RecordSelection type of a DBValue control
-  WFITEMPROP_SIZE = 16
-  WFITEMPROP_DECIMALS = 17
-  WFITEMPROP_DEFAULTVALUE_DATE = 18
-  WFITEMPROP_DEFAULTVALUE_LOGIC = 19
-  WFITEMPROP_DEFAULTVALUE_NUMERIC = 20
-  WFITEMPROP_BACKSTYLE = 21
-  WFITEMPROP_BACKCOLOREVEN = 22
-  WFITEMPROP_BACKCOLORODD = 23
-  WFITEMPROP_COLUMNHEADERS = 24
-  WFITEMPROP_FORECOLOREVEN = 25
-  WFITEMPROP_FORECOLORODD = 26
-  WFITEMPROP_HEADERBACKCOLOR = 27
-  WFITEMPROP_HEADFONT = 28
-  WFITEMPROP_HEADLINES = 29
-  WFITEMPROP_TABLEID = 30
-  WFITEMPROP_ELEMENTIDENTIFIER = 31 ' Identifier of a preceding record identifying element (StoredData or WebForm with RecSel)
-  WFITEMPROP_RECORDSELECTOR = 32  ' Identifier of a RecSel control in the WebForm identified by WFITEMPROP_ELEMENTIDENTIFIER
-  WFITEMPROP_RECSELTYPE = 33 ' RecordSelection type of a RecSel control
-  WFITEMPROP_BACKCOLORHIGHLIGHT = 34
-  WFITEMPROP_FORECOLORHIGHLIGHT = 35
-  WFITEMPROP_TIMEOUT = 36
-  WFITEMPROP_CONTROLVALUELIST = 37
-  WFITEMPROP_DEFAULTVALUE_LIST = 38
-  WFITEMPROP_LOOKUPTABLEID = 39
-  WFITEMPROP_LOOKUPCOLUMNID = 40
-  WFITEMPROP_DEFAULTVALUE_LOOKUP = 41
-  WFITEMPROP_RECORDTABLEID = 42 ' Table identified by WFITEMPROP_ELEMENTIDENTIFIER/WFITEMPROP_RECORDSELECTOR (can be ascendant table of the one in the element/recsel)
-  WFITEMPROP_DESCRIPTION = 43
-  WFITEMPROP_ORIENTATION = 44
-  WFITEMPROP_RECORDORDER = 45
-  WFITEMPROP_RECORDFILTER = 46
-  WFITEMPROP_VALIDATION = 47
-  WFITEMPROP_MANDATORY = 48
-  WFITEMPROP_DEFAULTVALUE_EXPRID = 49
-  WFITEMPROP_DEFAULTVALUE_WORKPATTERN = 50
-  WFITEMPROP_DESCRIPTION_WORKFLOWNAME = 51
-  WFITEMPROP_DESCRIPTION_ELEMENTCAPTION = 52
-  WFITEMPROP_SUBMITTYPE = 53
-  WFITEMPROP_CALCULATION = 54
-  WFITEMPROP_CAPTIONTYPE = 55
-  WFITEMPROP_DEFAULTVALUETYPE = 56
-  WFITEMPROP_VERTICALOFFSETBEHAVIOUR = 57
-  WFITEMPROP_HORIZONTALOFFSETBEHAVIOUR = 58
-  WFITEMPROP_VERTICALOFFSET = 59
-  WFITEMPROP_HORIZONTALOFFSET = 60
-  WFITEMPROP_HEIGHTBEHAVIOUR = 61
-  WFITEMPROP_WIDTHBEHAVIOUR = 62
-  WFITEMPROP_PASSWORDTYPE = 63
-  WFITEMPROP_COMPLETIONMESSAGETYPE = 64
-  WFITEMPROP_COMPLETIONMESSAGE = 65
-  WFITEMPROP_SAVEDFORLATERMESSAGETYPE = 66
-  WFITEMPROP_SAVEDFORLATERMESSAGE = 67
-  WFITEMPROP_FOLLOWONFORMSMESSAGETYPE = 68
-  WFITEMPROP_FOLLOWONFORMSMESSAGE = 69
-  WFITEMPROP_FILEEXTENSIONS = 70
-  WFITEMPROP_LOOKUPFILTER = 71
-  WFITEMPROP_LOOKUPFILTERCOLUMN = 72
-  WFITEMPROP_LOOKUPFILTEROPERATOR = 73
-  WFITEMPROP_LOOKUPFILTERVALUE = 74
-End Enum
 ' NB. If you add any properties to this enum you'll need to increment the WFITEMPROPERTYCOUNT constant below
 ' This constant is (3 + <max value in the enum>)
 Public Const WFITEMPROPERTYCOUNT = 77
@@ -579,7 +399,7 @@ Private Function BaseTableColumnsUsedInDeleteTriggeredWorkflow(plngWorkflowID As
         fFound = False
         
         For lngLoop = 1 To UBound(alngColumnsUsed)
-          If alngColumnsUsed(lngLoop) = !dbColumnID Then
+          If alngColumnsUsed(lngLoop) = !DBColumnID Then
             fFound = True
             Exit For
           End If
@@ -587,7 +407,7 @@ Private Function BaseTableColumnsUsedInDeleteTriggeredWorkflow(plngWorkflowID As
       
         If Not fFound Then
           ReDim Preserve alngColumnsUsed(UBound(alngColumnsUsed) + 1)
-          alngColumnsUsed(UBound(alngColumnsUsed)) = !dbColumnID
+          alngColumnsUsed(UBound(alngColumnsUsed)) = !DBColumnID
         End If
         
         .MoveNext
@@ -618,7 +438,7 @@ Private Function BaseTableColumnsUsedInDeleteTriggeredWorkflow(plngWorkflowID As
         fFound = False
         
         For lngLoop = 1 To UBound(alngColumnsUsed)
-          If alngColumnsUsed(lngLoop) = !dbColumnID Then
+          If alngColumnsUsed(lngLoop) = !DBColumnID Then
             fFound = True
             Exit For
           End If
@@ -626,7 +446,7 @@ Private Function BaseTableColumnsUsedInDeleteTriggeredWorkflow(plngWorkflowID As
       
         If Not fFound Then
           ReDim Preserve alngColumnsUsed(UBound(alngColumnsUsed) + 1)
-          alngColumnsUsed(UBound(alngColumnsUsed)) = !dbColumnID
+          alngColumnsUsed(UBound(alngColumnsUsed)) = !DBColumnID
         End If
         
         .MoveNext
@@ -657,7 +477,7 @@ Private Function BaseTableColumnsUsedInDeleteTriggeredWorkflow(plngWorkflowID As
         fFound = False
         
         For lngLoop = 1 To UBound(alngColumnsUsed)
-          If alngColumnsUsed(lngLoop) = !dbColumnID Then
+          If alngColumnsUsed(lngLoop) = !DBColumnID Then
             fFound = True
             Exit For
           End If
@@ -665,7 +485,7 @@ Private Function BaseTableColumnsUsedInDeleteTriggeredWorkflow(plngWorkflowID As
       
         If Not fFound Then
           ReDim Preserve alngColumnsUsed(UBound(alngColumnsUsed) + 1)
-          alngColumnsUsed(UBound(alngColumnsUsed)) = !dbColumnID
+          alngColumnsUsed(UBound(alngColumnsUsed)) = !DBColumnID
         End If
         
         .MoveNext
@@ -1445,7 +1265,7 @@ Public Function CloneWorkflow(plngWorkflowID As Long, _
         recWorkflowElementEdit!WorkflowID = lngWorkflowID
         recWorkflowElementEdit!Type = .Fields("Type")
         recWorkflowElementEdit!Caption = .Fields("Caption")
-        recWorkflowElementEdit!connectionPairID = .Fields("connectionPairID")
+        recWorkflowElementEdit!ConnectionPairID = .Fields("connectionPairID")
         recWorkflowElementEdit!LeftCoord = .Fields("leftCoord")
         recWorkflowElementEdit!TopCoord = .Fields("topCoord")
         recWorkflowElementEdit!Identifier = .Fields("Identifier")
@@ -1529,20 +1349,20 @@ Public Function CloneWorkflow(plngWorkflowID As Long, _
         recWorkflowElementEdit!WebFormBGColor = .Fields("WebFormBGColor")
         recWorkflowElementEdit!WebFormBGImageID = .Fields("WebFormBGImageID")
         recWorkflowElementEdit!WebFormBGImageLocation = .Fields("WebFormBGImageLocation")
-        recWorkflowElementEdit!webFormDefaultFontName = .Fields("webFormDefaultFontName")
-        recWorkflowElementEdit!webFormDefaultFontSize = .Fields("webFormDefaultFontSize")
-        recWorkflowElementEdit!webFormDefaultFontBold = .Fields("webFormDefaultFontBold")
-        recWorkflowElementEdit!webFormDefaultFontItalic = .Fields("webFormDefaultFontItalic")
-        recWorkflowElementEdit!webFormDefaultFontStrikeThru = .Fields("webFormDefaultFontStrikeThru")
-        recWorkflowElementEdit!webFormDefaultFontUnderline = .Fields("webFormDefaultFontUnderline")
+        recWorkflowElementEdit!WebFormDefaultFontName = .Fields("webFormDefaultFontName")
+        recWorkflowElementEdit!WebFormDefaultFontSize = .Fields("webFormDefaultFontSize")
+        recWorkflowElementEdit!WebFormDefaultFontBold = .Fields("webFormDefaultFontBold")
+        recWorkflowElementEdit!WebFormDefaultFontItalic = .Fields("webFormDefaultFontItalic")
+        recWorkflowElementEdit!WebFormDefaultFontStrikeThru = .Fields("webFormDefaultFontStrikeThru")
+        recWorkflowElementEdit!WebFormDefaultFontUnderline = .Fields("webFormDefaultFontUnderline")
         recWorkflowElementEdit!WebFormWidth = .Fields("WebFormWidth")
         recWorkflowElementEdit!WebFormHeight = .Fields("WebFormHeight")
-        recWorkflowElementEdit!recSelWebFormIdentifier = .Fields("recSelWebFormIdentifier")
-        recWorkflowElementEdit!recSelIdentifier = .Fields("recSelIdentifier")
+        recWorkflowElementEdit!RecSelWebFormIdentifier = .Fields("recSelWebFormIdentifier")
+        recWorkflowElementEdit!RecSelIdentifier = .Fields("recSelIdentifier")
         
         recWorkflowElementEdit!SecondaryDataRecord = .Fields("SecondaryDataRecord")
-        recWorkflowElementEdit!secondaryRecSelWebFormIdentifier = .Fields("secondaryRecSelWebFormIdentifier")
-        recWorkflowElementEdit!secondaryRecSelIdentifier = .Fields("secondaryRecSelIdentifier")
+        recWorkflowElementEdit!SecondaryRecSelWebFormIdentifier = .Fields("secondaryRecSelWebFormIdentifier")
+        recWorkflowElementEdit!SecondaryRecSelIdentifier = .Fields("secondaryRecSelIdentifier")
         
         lngTempNewID = IIf(IsNull(.Fields("DataRecordTable")), 0, .Fields("DataRecordTable"))
         If lngTempNewID > 0 Then
@@ -1566,7 +1386,7 @@ Public Function CloneWorkflow(plngWorkflowID As Long, _
             End If
           Next iIndex
         End If
-        recWorkflowElementEdit!secondaryDataRecordTable = lngTempNewID
+        recWorkflowElementEdit!SecondaryDataRecordTable = lngTempNewID
         
         recWorkflowElementEdit!EMailSubject = .Fields("EmailSubject")
         recWorkflowElementEdit!TimeoutFrequency = .Fields("TimeoutFrequency")
@@ -1636,7 +1456,7 @@ Public Function CloneWorkflow(plngWorkflowID As Long, _
             End If
           Next iIndex
         End If
-        recWorkflowElementItemEdit!dbColumnID = lngTempNewID
+        recWorkflowElementItemEdit!DBColumnID = lngTempNewID
         
         recWorkflowElementItemEdit!DBRecord = .Fields("DBRecord")
         recWorkflowElementItemEdit!Identifier = .Fields("Identifier")
@@ -1677,7 +1497,7 @@ Public Function CloneWorkflow(plngWorkflowID As Long, _
         recWorkflowElementItemEdit!HeadFontItalic = .Fields("HeadFontItalic")
         recWorkflowElementItemEdit!HeadFontStrikeThru = .Fields("HeadFontStrikeThru")
         recWorkflowElementItemEdit!HeadFontUnderline = .Fields("HeadFontUnderline")
-        recWorkflowElementItemEdit!HeadLines = .Fields("Headlines")
+        recWorkflowElementItemEdit!Headlines = .Fields("Headlines")
 
         lngTempNewID = IIf(IsNull(.Fields("TableID")), 0, .Fields("TableID"))
         If lngTempNewID > 0 Then
@@ -1691,8 +1511,8 @@ Public Function CloneWorkflow(plngWorkflowID As Long, _
         End If
         recWorkflowElementItemEdit!TableID = lngTempNewID
         
-        recWorkflowElementItemEdit!recSelWebFormIdentifier = .Fields("recSelWebFormIdentifier")
-        recWorkflowElementItemEdit!recSelIdentifier = .Fields("recSelIdentifier")
+        recWorkflowElementItemEdit!RecSelWebFormIdentifier = .Fields("recSelWebFormIdentifier")
+        recWorkflowElementItemEdit!RecSelIdentifier = .Fields("recSelIdentifier")
         recWorkflowElementItemEdit!ForeColorHighlight = .Fields("ForeColorHighlight")
         recWorkflowElementItemEdit!BackColorHighlight = .Fields("BackColorHighlight")
         recWorkflowElementItemEdit!LookupTableID = .Fields("LookupTableID")
@@ -1846,7 +1666,7 @@ Public Function CloneWorkflow(plngWorkflowID As Long, _
             End If
           Next iIndex
         End If
-        recWorkflowElementColumnEdit!dbColumnID = lngTempNewID
+        recWorkflowElementColumnEdit!DBColumnID = lngTempNewID
 
         recWorkflowElementColumnEdit!DBRecord = .Fields("DBRecord")
 

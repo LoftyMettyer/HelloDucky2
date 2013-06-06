@@ -13,14 +13,6 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-Public Enum WorkflowElementProperties
-  WORKFLOWELEMENTPROP_ITEMVALUE = 0
-  WORKFLOWELEMENTPROP_COMPETIONCOUNT = 1
-  WORKFLOWELEMENTPROP_FAILURECOUNT = 2
-  WORKFLOWELEMENTPROP_TIMEOUTCOUNT = 3
-  WORKFLOWELEMENTPROP_MESSAGE = 4
-End Enum
-
 ' Component definition variables.
 Private msElementIdentifier As String
 Private msItemIdentifier As String
@@ -29,16 +21,10 @@ Private miElementProperty As WorkflowElementProperties
 ' Class handling variables.
 Private mobjBaseComponent As CExprComponent
 
-
-
 Public Sub ColumnsUsedInThisComponent(ByRef pvColumns As Variant)
   ' Return an array of the columns used this expression.
   ' Do nothing for table values.
-  
 End Sub
-
-
-
 
 Public Function ElementPropertyDescription(piElementProperty As WorkflowElementProperties) As String
   Dim sDescription As String

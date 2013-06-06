@@ -343,56 +343,6 @@ Private mcolwfSelectedElements As Collection
 Private mcolwfSelectedLinks As Collection
 Private malngIndexDirectory() As Long
 
-Public Enum ElementType
-  elem_Begin = 0
-  elem_Terminator = 1
-  elem_WebForm = 2
-  elem_Email = 3
-  elem_Decision = 4
-  elem_StoredData = 5
-  elem_SummingJunction = 6
-  elem_Or = 7
-  elem_Connector1 = 8
-  elem_Connector2 = 9
-End Enum
-
-Public Enum LineDirection
-  lineDirection_Down = 0
-  lineDirection_Left = 1
-  lineDirection_Right = 2
-  lineDirection_Up = 3
-End Enum
-
-Public Enum VerticalOffset
-  offsetTop = 0
-  offsetBottom = 1
-End Enum
-
-Public Enum HorizontalOffset
-  offsetLeft = 0
-  offsetRight = 1
-End Enum
-
-Public Enum ControlSizeBehaviour
-  behaveFixed = 0
-  behaveFull = 1
-End Enum
-
-Public Enum DecisionOutboundFlows
-  decisionOutFlow_False = 0
-  decisionOutFlow_True = 1
-End Enum
-
-Public Enum WebFormOutboundFlows
-  webFormOutFlow_Normal = 0
-  webFormOutFlow_Timeout = 1
-End Enum
-
-Public Enum StoredDataOutboundFlows
-  storedDataOutFlow_Success = 0
-  storedDataOutFlow_Failure = 1
-End Enum
-
 Private mlngXDrop As Long
 Private mlngYDrop As Long
 
@@ -11148,7 +11098,7 @@ Private Sub cmdCancel_Click()
 
 End Sub
 
-Private Sub cmdOK_Click()
+Private Sub cmdOk_Click()
  If SaveWorkflow Then
    UnLoad Me
  End If

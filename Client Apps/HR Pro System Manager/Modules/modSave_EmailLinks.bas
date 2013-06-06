@@ -27,16 +27,6 @@ Public gstrEmailTestAddr As String
 Public gstrUpdateEmailCode As String
 Public gstrDeleteEmailCode As String
 
-Public Enum EmailType
-  LinkRecord = 0
-  LinkColumn = 1
-  LinkOffset = 2
-  LinkAmendment = 3
-  LinkRebuild = 4
-End Enum
-
-
-
 Public Function OpenEmailRecordsets()
 
   Set rsEmailLinks = New ADODB.Recordset

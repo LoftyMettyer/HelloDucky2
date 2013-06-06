@@ -377,19 +377,6 @@ Public Const gsMODULEKEY_SQL = "MODULE_SQL"
 
 Public Const giEXPRVALUE_BYREF_OFFSET = 100
 
-'SQL DatType
-Public Enum SQLDataType
-  sqlUnknown = 0      ' ?
-  sqlOle = -4         ' OLE columns
-  sqlBoolean = -7     ' Logic columns
-  sqlNumeric = 2      ' Numeric columns
-  sqlInteger = 4      ' Integer columns
-  sqlDate = 11        ' Date columns
-  sqlVarChar = 12     ' Character columns
-  sqlVarBinary = -3   ' Photo columns
-  sqlLongVarChar = -1 ' Working Pattern columns
-End Enum
-
 Public gbEnableUDFFunctions As Boolean
 
 Public glngPageNum As Long

@@ -130,32 +130,6 @@ Const WS_THICKFRAME = &H40000
 
 Const MAX_COMPUTERNAME_LENGTH = 15
 
-'System metrics constants
-Public Enum SystemMetrics
-  SM_CYCAPTION = 4
-  SM_CXBORDER = 5
-  SM_CYBORDER = 6
-  SM_CXFRAME = 32
-  SM_CYFRAME = 33
-  SM_CXICON = 11
-  SM_CXICONSPACING = 38
-  SM_CYICON = 12
-  SM_CYICONSPACING = 39
-  SM_CYSMCAPTION = 51
-  SM_CXVSCROLL = 2
-End Enum
-
-' GetWindow constants.
-Public Enum GetWindowConstants
-  GW_HWNDFIRST = 0
-  GW_HWNDLAST = 1
-  GW_HWNDNEXT = 2
-  GW_HWNDPREV = 3
-  GW_OWNER = 4
-  GW_CHILD = 5
-  GW_MAX = 5
-End Enum
-
 'Keyboard constants
 Const KEYEVENTF_KEYUP = &H2
 

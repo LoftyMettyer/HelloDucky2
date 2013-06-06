@@ -366,7 +366,7 @@ Public Enum UtilityType
   utlMatchReport = 14
   utlAbsenceBreakdown = 15
   utlBradfordFactor = 16
-  utlCalendarReport = 17
+  utlCalendarreport = 17
   utlLabel = 18
   utlLabelType = 19
   utlRecordProfile = 20
@@ -415,6 +415,244 @@ Public Enum WorkflowTriggerOffsetPeriod
   WORKFLOWTRIGGERLINKOFFESTPERIOD_YEAR = 3
 End Enum
 
+Public Enum WorkflowElementProperties
+  WORKFLOWELEMENTPROP_ITEMVALUE = 0
+  WORKFLOWELEMENTPROP_COMPETIONCOUNT = 1
+  WORKFLOWELEMENTPROP_FAILURECOUNT = 2
+  WORKFLOWELEMENTPROP_TIMEOUTCOUNT = 3
+  WORKFLOWELEMENTPROP_MESSAGE = 4
+End Enum
+
+Public Enum WorkflowWebFormItemTypes
+  giWFFORMITEM_FORM = -2
+  giWFFORMITEM_UNKNOWN = -1
+  giWFFORMITEM_BUTTON = 0
+  giWFFORMITEM_DBVALUE = 1
+  giWFFORMITEM_LABEL = 2
+  giWFFORMITEM_INPUTVALUE_CHAR = 3
+  giWFFORMITEM_WFVALUE = 4
+  giWFFORMITEM_INPUTVALUE_NUMERIC = 5
+  giWFFORMITEM_INPUTVALUE_LOGIC = 6
+  giWFFORMITEM_INPUTVALUE_DATE = 7
+  giWFFORMITEM_FRAME = 8
+  giWFFORMITEM_LINE = 9
+  giWFFORMITEM_IMAGE = 10
+  giWFFORMITEM_INPUTVALUE_GRID = 11
+  giWFFORMITEM_FORMATCODE = 12 ' NB. Only used in emails.
+  giWFFORMITEM_INPUTVALUE_DROPDOWN = 13
+  giWFFORMITEM_INPUTVALUE_LOOKUP = 14
+  giWFFORMITEM_INPUTVALUE_OPTIONGROUP = 15
+  giWFFORMITEM_CALC = 16
+  giWFFORMITEM_INPUTVALUE_FILEUPLOAD = 17
+  giWFFORMITEM_FILEATTACHMENT = 18
+  giWFFORMITEM_DBFILE = 19
+  giWFFORMITEM_WFFILE = 20
+End Enum
+
+Public Enum WorkflowInstanceStatus
+  giWFSTATUS_UNKNOWN = -1
+  giWFSTATUS_INPROGRESS = 0
+  giWFSTATUS_CANCELLED = 1 ' No longer used
+  giWFSTATUS_ERROR = 2
+  giWFSTATUS_COMPLETE = 3
+  giWFSTATUS_SCHEDULED = 4
+End Enum
+
+Public Enum WorkflowStoredDataValueTypes
+  giWFDATAVALUE_UNKNOWN = -1
+  giWFDATAVALUE_FIXED = 0
+  giWFDATAVALUE_WFVALUE = 1
+  giWFDATAVALUE_DBVALUE = 2
+  giWFDATAVALUE_CALC = 3
+End Enum
+
+Public Enum WorkflowRecordSelectorTypes
+  giWFRECSEL_UNKNOWN = -1         ' Oops, something's wrong
+  giWFRECSEL_INITIATOR = 0        ' Initiator's personnel table record
+  giWFRECSEL_IDENTIFIEDRECORD = 1 ' Identified via WebForm RecordSelector or StoredData Inserted/Updated Record
+  giWFRECSEL_ALL = 2              ' Show all records from the table in a WebForm RecordSelector
+  giWFRECSEL_UNIDENTIFIED = 3     ' Used when StoredData Inserts into a top-level table
+  giWFRECSEL_TRIGGEREDRECORD = 4  ' Triggered Base table record
+End Enum
+
+Public Enum WorkflowFindUsageOption
+  wfNone = 0
+  wfRecSelType = 1
+  wfElement = 2
+  wfWebFormItem = 3
+End Enum
+
+Public Enum WorkflowInitiationTypes
+  WORKFLOWINITIATIONTYPE_MANUAL = 0
+  WORKFLOWINITIATIONTYPE_TRIGGERED = 1
+  WORKFLOWINITIATIONTYPE_EXTERNAL = 2
+End Enum
+
+Public Enum WorkflowWebFormValidationTypes
+  WORKFLOWWFVALIDATIONTYPE_ERROR = 0
+  WORKFLOWWFVALIDATIONTYPE_WARNING = 1
+End Enum
+
+Public Enum DecisionCaptionType
+  decisionCaption_T_F = 0
+  decisionCaption_Y_N = 1
+  decisionCaption_1_0 = 2
+  decisionCaption_tick_cross = 3
+End Enum
+
+Public Enum WFItemPropertyOrientation
+  wfItemPropertyOrientation_Vertical = 0
+  wfItemPropertyOrientation_Horizontal = 1
+End Enum
+
+Public Enum WFItemPropertyState
+  wfItemPropertyState_No = 0
+  wfItemPropertyState_ReadOnly = 1
+  wfItemPropertyState_ReadWrite = 2
+End Enum
+
+Public Enum WorkflowButtonAction
+  WORKFLOWBUTTONACTION_SUBMIT = 0
+  WORKFLOWBUTTONACTION_SAVEFORLATER = 1
+  WORKFLOWBUTTONACTION_CANCEL = 2
+End Enum
+
+Public Enum WorkflowWebFormMessageType
+  WORKFLOWWEBFORMMESSAGE_COMPLETION = 0
+  WORKFLOWWEBFORMMESSAGE_SAVEDFORLATER = 1
+  WORKFLOWWEBFORMMESSAGE_FOLLOWONFORMS = 2
+End Enum
+
+' Property type constants.
+Public Enum WFItemProperty
+  WFITEMPROP_NONE = -1 ' Used for the category markers in the property grid
+  WFITEMPROP_UNKNOWN = 0
+  WFITEMPROP_ALIGNMENT = 1
+  WFITEMPROP_BACKCOLOR = 2
+  WFITEMPROP_BORDERSTYLE = 3
+  WFITEMPROP_CAPTION = 4
+  WFITEMPROP_FONT = 5
+  WFITEMPROP_FORECOLOR = 6
+  WFITEMPROP_HEIGHT = 7
+  WFITEMPROP_LEFT = 8
+  WFITEMPROP_PICTURE = 9
+  WFITEMPROP_TOP = 10
+  WFITEMPROP_WIDTH = 11
+  WFITEMPROP_WFIDENTIFIER = 12  ' Identifier of the Input/RecSel control in this WebForm
+  WFITEMPROP_PICTURELOCATION = 13
+  WFITEMPROP_DEFAULTVALUE_CHAR = 14
+  WFITEMPROP_DBRECORD = 15 ' RecordSelection type of a DBValue control
+  WFITEMPROP_SIZE = 16
+  WFITEMPROP_DECIMALS = 17
+  WFITEMPROP_DEFAULTVALUE_DATE = 18
+  WFITEMPROP_DEFAULTVALUE_LOGIC = 19
+  WFITEMPROP_DEFAULTVALUE_NUMERIC = 20
+  WFITEMPROP_BACKSTYLE = 21
+  WFITEMPROP_BACKCOLOREVEN = 22
+  WFITEMPROP_BACKCOLORODD = 23
+  WFITEMPROP_COLUMNHEADERS = 24
+  WFITEMPROP_FORECOLOREVEN = 25
+  WFITEMPROP_FORECOLORODD = 26
+  WFITEMPROP_HEADERBACKCOLOR = 27
+  WFITEMPROP_HEADFONT = 28
+  WFITEMPROP_HEADLINES = 29
+  WFITEMPROP_TABLEID = 30
+  WFITEMPROP_ELEMENTIDENTIFIER = 31 ' Identifier of a preceding record identifying element (StoredData or WebForm with RecSel)
+  WFITEMPROP_RECORDSELECTOR = 32  ' Identifier of a RecSel control in the WebForm identified by WFITEMPROP_ELEMENTIDENTIFIER
+  WFITEMPROP_RECSELTYPE = 33 ' RecordSelection type of a RecSel control
+  WFITEMPROP_BACKCOLORHIGHLIGHT = 34
+  WFITEMPROP_FORECOLORHIGHLIGHT = 35
+  WFITEMPROP_TIMEOUT = 36
+  WFITEMPROP_CONTROLVALUELIST = 37
+  WFITEMPROP_DEFAULTVALUE_LIST = 38
+  WFITEMPROP_LOOKUPTABLEID = 39
+  WFITEMPROP_LOOKUPCOLUMNID = 40
+  WFITEMPROP_DEFAULTVALUE_LOOKUP = 41
+  WFITEMPROP_RECORDTABLEID = 42 ' Table identified by WFITEMPROP_ELEMENTIDENTIFIER/WFITEMPROP_RECORDSELECTOR (can be ascendant table of the one in the element/recsel)
+  WFITEMPROP_DESCRIPTION = 43
+  WFITEMPROP_ORIENTATION = 44
+  WFITEMPROP_RECORDORDER = 45
+  WFITEMPROP_RECORDFILTER = 46
+  WFITEMPROP_VALIDATION = 47
+  WFITEMPROP_MANDATORY = 48
+  WFITEMPROP_DEFAULTVALUE_EXPRID = 49
+  WFITEMPROP_DEFAULTVALUE_WORKPATTERN = 50
+  WFITEMPROP_DESCRIPTION_WORKFLOWNAME = 51
+  WFITEMPROP_DESCRIPTION_ELEMENTCAPTION = 52
+  WFITEMPROP_SUBMITTYPE = 53
+  WFITEMPROP_CALCULATION = 54
+  WFITEMPROP_CAPTIONTYPE = 55
+  WFITEMPROP_DEFAULTVALUETYPE = 56
+  WFITEMPROP_VERTICALOFFSETBEHAVIOUR = 57
+  WFITEMPROP_HORIZONTALOFFSETBEHAVIOUR = 58
+  WFITEMPROP_VERTICALOFFSET = 59
+  WFITEMPROP_HORIZONTALOFFSET = 60
+  WFITEMPROP_HEIGHTBEHAVIOUR = 61
+  WFITEMPROP_WIDTHBEHAVIOUR = 62
+  WFITEMPROP_PASSWORDTYPE = 63
+  WFITEMPROP_COMPLETIONMESSAGETYPE = 64
+  WFITEMPROP_COMPLETIONMESSAGE = 65
+  WFITEMPROP_SAVEDFORLATERMESSAGETYPE = 66
+  WFITEMPROP_SAVEDFORLATERMESSAGE = 67
+  WFITEMPROP_FOLLOWONFORMSMESSAGETYPE = 68
+  WFITEMPROP_FOLLOWONFORMSMESSAGE = 69
+  WFITEMPROP_FILEEXTENSIONS = 70
+  WFITEMPROP_LOOKUPFILTER = 71
+  WFITEMPROP_LOOKUPFILTERCOLUMN = 72
+  WFITEMPROP_LOOKUPFILTEROPERATOR = 73
+  WFITEMPROP_LOOKUPFILTERVALUE = 74
+End Enum
+
+Public Enum ElementType
+  elem_Begin = 0
+  elem_Terminator = 1
+  elem_WebForm = 2
+  elem_Email = 3
+  elem_Decision = 4
+  elem_StoredData = 5
+  elem_SummingJunction = 6
+  elem_Or = 7
+  elem_Connector1 = 8
+  elem_Connector2 = 9
+End Enum
+
+Public Enum LineDirection
+  lineDirection_Down = 0
+  lineDirection_Left = 1
+  lineDirection_Right = 2
+  lineDirection_Up = 3
+End Enum
+
+Public Enum VerticalOffset
+  offsetTop = 0
+  offsetBottom = 1
+End Enum
+
+Public Enum HorizontalOffset
+  offsetLeft = 0
+  offsetRight = 1
+End Enum
+
+Public Enum ControlSizeBehaviour
+  behaveFixed = 0
+  behaveFull = 1
+End Enum
+
+Public Enum DecisionOutboundFlows
+  decisionOutFlow_False = 0
+  decisionOutFlow_True = 1
+End Enum
+
+Public Enum WebFormOutboundFlows
+  webFormOutFlow_Normal = 0
+  webFormOutFlow_Timeout = 1
+End Enum
+
+Public Enum StoredDataOutboundFlows
+  storedDataOutFlow_Success = 0
+  storedDataOutFlow_Failure = 1
+End Enum
+
 Public Enum ProcessAdminConfig
   iPROCESSADMIN_DISABLED = 0
   iPROCESSADMIN_SERVICEACCOUNT = 1
@@ -422,4 +660,116 @@ Public Enum ProcessAdminConfig
   iPROCESSADMIN_EVERYONE = 3
 End Enum
 
+Public Enum EmailType
+  LinkRecord = 0
+  LinkColumn = 1
+  LinkOffset = 2
+  LinkAmendment = 3
+  LinkRebuild = 4
+End Enum
 
+Public Enum Module
+  modPersonnel = 1
+  modRecruitment = 2
+  modAbsence = 4
+  modTraining = 8
+  modIntranet = 16
+  modAFD = 32
+  modFullSysMgr = 64
+  modCMG = 128
+  modQAddress = 256
+  modAccordPayroll = 512
+  modWorkflow = 1024
+  modVersion1 = 2048
+End Enum
+
+'System metrics constants
+Public Enum SystemMetrics
+  SM_CYCAPTION = 4
+  SM_CXBORDER = 5
+  SM_CYBORDER = 6
+  SM_CXFRAME = 32
+  SM_CYFRAME = 33
+  SM_CXICON = 11
+  SM_CXICONSPACING = 38
+  SM_CYICON = 12
+  SM_CYICONSPACING = 39
+  SM_CYSMCAPTION = 51
+  SM_CXVSCROLL = 2
+End Enum
+
+' GetWindow constants.
+Public Enum GetWindowConstants
+  GW_HWNDFIRST = 0
+  GW_HWNDLAST = 1
+  GW_HWNDNEXT = 2
+  GW_HWNDPREV = 3
+  GW_OWNER = 4
+  GW_CHILD = 5
+  GW_MAX = 5
+End Enum
+
+Public Enum DataTypes
+  dtBIT = -7
+  dtLONGVARBINARY = -4
+  dtVARBINARY = -3
+  dtBINARY = -2
+  dtLONGVARCHAR = -1
+  dtNUMERIC = 2
+  dtINTEGER = 4
+  dtTIMESTAMP = 11
+  dtVARCHAR = 12
+  dtGUID = 15
+  ' These are temp for frmworkflowelementitem - TM has the file checked out and JED needs a build.
+  ' To be removed when frmworkflowelementitem is available
+  rdTypeLONGVARBINARY = -4
+  rdTypeVARBINARY = -3
+End Enum
+
+Public Enum SSINTRANETLINKTYPES
+  SSINTLINK_HYPERTEXT = 0
+  SSINTLINK_BUTTON = 1
+  SSINTLINK_DROPDOWNLIST = 2
+  SSINTLINK_DOCUMENT = 3
+End Enum
+
+Public Enum SSINTRANETSCREENTYPES
+  SSINTLINKSCREEN_HRPRO = 0
+  SSINTLINKSCREEN_URL = 1
+  SSINTLINKSCREEN_UTILITY = 2
+  SSINTLINKSCREEN_EMAIL = 3
+  SSINTLINKSCREEN_APPLICATION = 4
+  SSINTLINKSEPARATOR = 5
+  SSINTLINKCHART = 6
+  SSINTLINKDB_VALUE = 7
+  SSINTLINKPWFSTEPS = 8
+  SSINTLINKTODAYS_EVENTS = 9
+  SSINTLINKSCREEN_DOCUMENT = 10
+End Enum
+
+'Column type constants
+Public Enum ColumnTypes
+  giCOLUMNTYPE_DATA = 0
+  giCOLUMNTYPE_LOOKUP = 1
+  giCOLUMNTYPE_CALCULATED = 2
+  giCOLUMNTYPE_SYSTEM = 3
+  giCOLUMNTYPE_LINK = 4
+End Enum
+
+Public Enum UniqueCheckTypes
+  giUNIQUECHECKTYPE_NONE = 0
+  giUNIQUECHECKTYPE_ENTIRE = -1
+  giUNIQUECHECKTYPE_SIBLINGSALL = -2
+End Enum
+
+Public Enum SQLDataType
+  sqlUnknown = 0      ' ?
+  sqlOle = -4         ' OLE columns
+  sqlBoolean = -7     ' Logic columns
+  sqlNumeric = 2      ' Numeric columns
+  sqlInteger = 4      ' Integer columns
+  sqlDate = 11        ' Date columns
+  sqlVarChar = 12     ' Character columns
+  sqlVarBinary = -3   ' Photo columns
+  sqlLongVarChar = -1 ' Working Pattern columns
+End Enum
