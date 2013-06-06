@@ -627,7 +627,6 @@ Begin VB.Form frmRecEdit4
       BeginProperty Tabs {0713E432-850A-101B-AFC0-4210102A8DA7} 
          NumTabs         =   1
          BeginProperty Tab1 {0713F341-850A-101B-AFC0-4210102A8DA7} 
-            Caption         =   ""
             Key             =   ""
             Object.Tag             =   ""
             ImageVarType    =   2
@@ -5069,9 +5068,17 @@ Public Function Update(Optional pfDeactivating As Variant) As Boolean
       ' and is updatable.
       If (mobjScreenControls.Item(sTag).ColumnID > 0) Then
         'JPD 20040706 Fault 8993
-        fDoControl = objControl.Enabled
-        
+        fDoControl = objControl.Enabled Or mobjScreenControls.Item(sTag).ScreenReadOnly
+               
         If fDoControl Then
+          
+          ' Check we have write permission
+          If mcolColumnPrivileges.IsValid(mobjScreenControls.Item(sTag).ColumnName) Then
+            fDoControl = mcolColumnPrivileges.Item(mobjScreenControls.Item(sTag).ColumnName).AllowUpdate
+          Else
+            fDoControl = False
+          End If
+          
           If TypeOf objControl Is TDBText6Ctl.TDBText Then
             fDoControl = Not objControl.ReadOnly
           End If
@@ -8199,7 +8206,7 @@ Private Function LoadControls(pobjScreen As clsScreen) As Boolean
                 .Enabled = True
                 .NavigateOnSave = objScreenControl.NavigateOnSave
               Else
-                .Enabled = Not objScreenControl.ReadOnly
+                .Enabled = Not (objScreenControl.ReadOnly Or objScreenControl.ScreenReadOnly)
               End If
               
               If .Enabled Then
