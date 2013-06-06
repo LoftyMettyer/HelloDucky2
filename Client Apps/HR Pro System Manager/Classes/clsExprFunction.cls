@@ -3032,6 +3032,9 @@ Public Function RuntimeCode(psRuntimeCode As String, _
           " THEN (" + sParamCode1 + ")-(" + strRemainString + ")" & _
           " ELSE (" + sParamCode1 + ")+(" + sParamCode2 + ")-(" + strRemainString + ") END"
 
+        'MH20100629
+        sCode = "CASE WHEN (" & sParamCode2 & " > 0) THEN " & sCode & " ELSE 0 END"
+
       'MH20010515
       Case 50  ' Is overnight process
         'sCode = "(SELECT UpdatingDateDependentColumns FROM ASRSysConfig)"
