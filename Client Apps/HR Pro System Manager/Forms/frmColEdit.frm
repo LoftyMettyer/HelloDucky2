@@ -1,6 +1,6 @@
 VERSION 5.00
-Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "timask6.ocx"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "TIMASK6.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{604A59D5-2409-101D-97D5-46626B63EF2D}#1.0#0"; "TDBNumbr.ocx"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
@@ -2209,7 +2209,7 @@ End Property
 
 Public Property Let Changed(pblnNewValue As Boolean)
   mblnChanged = pblnNewValue
-  cmdOK.Enabled = mblnChanged
+  cmdOk.Enabled = mblnChanged
 End Property
 
 Public Property Get Changed() As Boolean
@@ -3246,7 +3246,7 @@ End Sub
 
 Private Sub cmdCancel_Click()
   Dim pintAnswer As Integer
-    If Changed = True And cmdOK.Enabled Then
+    If Changed = True And cmdOk.Enabled Then
       pintAnswer = MsgBox("You have made changes...do you wish to save these changes ?", vbQuestion + vbYesNoCancel, App.Title)
       If pintAnswer = vbYes Then
         Me.MousePointer = vbHourglass
@@ -4884,7 +4884,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
 
   If mfCancelled = True Then
     If UnloadMode <> vbFormCode Then
-      If Changed = True And cmdOK.Enabled Then
+      If Changed = True And cmdOk.Enabled Then
         pintAnswer = MsgBox("You have made changes...do you wish to save these changes ?", vbQuestion + vbYesNoCancel, App.Title)
         If pintAnswer = vbYes Then
           cmdOK_Click
@@ -6614,13 +6614,13 @@ End Sub
 Private Sub txtListValues_GotFocus()
   ' Disable the 'Default' property of the 'OK' button as the return key is
   ' used by this textbox.
-  cmdOK.Default = False
+  cmdOk.Default = False
   
 End Sub
 
 Private Sub txtListValues_LostFocus()
   ' Enable the 'Default' property of the OK button.
-  cmdOK.Default = True
+  cmdOk.Default = True
 
   ' Refresh the list of possible default values.
   cboDefault_Refresh
@@ -7025,7 +7025,7 @@ Private Sub RefreshOptionsTab()
         TDBDefaultNumber.Visible = True
                     
         sFormat = ""
-        For iCount = 1 To (asrSize.value - asrDecimals.value)
+        For iCount = 1 To (Minimum(asrSize.value, 5) - asrDecimals.value)
           sFormat = sFormat & "#"
         Next iCount
 
