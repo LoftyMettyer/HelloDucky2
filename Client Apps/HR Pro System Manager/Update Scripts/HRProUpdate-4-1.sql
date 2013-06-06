@@ -1020,20 +1020,6 @@ PRINT 'Step 2 - Version 1 Integration Modifications'
 	END	
 
 
-	-- Add columns to ASRSysMailMergeName
-	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysMailMergeName', 'U') AND name = 'OutputPrinterName')
-    BEGIN
-		EXEC sp_executesql N'ALTER TABLE ASRSysMailMergeName
-								 ADD [OutputPrinterName] nvarchar(255), [DocumentMapID] integer';
-	END
-
-	-- Add columns to ASRSysMailMergeName
-	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysMailMergeName', 'U') AND name = 'ManualDocManHeader')
-    BEGIN
-		EXEC sp_executesql N'ALTER TABLE ASRSysMailMergeName
-								 ADD [ManualDocManHeader] bit';
-	END
-
 	-- Add columns to ASRSysControls
 	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysControls', 'U') AND name = 'NavigateTo')
     BEGIN
@@ -1068,6 +1054,55 @@ PRINT 'Step 2 - Version 1 Integration Modifications'
 
 
 /* ------------------------------------------------------------- */
+PRINT 'Step 3 - Mail Merge Modifications'
+
+
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysMailMergeName', 'U') AND name = 'OutputFormat')
+    BEGIN
+
+    	IF EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysMailMergeName', 'U') AND name = 'OutputPrinterName')
+			EXEC sp_executesql N'ALTER TABLE ASRSysMailMergeName DROP COLUMN [OutputPrinterName]';
+
+    	IF EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysMailMergeName', 'U') AND name = 'DocumentMapID')
+			EXEC sp_executesql N'ALTER TABLE ASRSysMailMergeName DROP COLUMN [DocumentMapID]';
+
+    	IF EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysMailMergeName', 'U') AND name = 'ManualDocManHeader')
+			EXEC sp_executesql N'ALTER TABLE ASRSysMailMergeName DROP COLUMN [ManualDocManHeader]';
+
+		EXEC sp_executesql N'ALTER TABLE [ASRSysMailMergeName] ADD
+				[OutputFormat]       [int] NULL,
+				[OutputScreen]       [bit] NULL,
+				[OutputPrinter]      [bit] NULL,
+				[OutputPrinterName]  [varchar] (255) NULL,
+				[OutputSave]         [bit] NULL,
+				[OutputFilename]     [varchar] (255) NULL,
+				[DocumentMapID]      integer NULL,
+				[ManualDocManHeader] bit NULL';
+
+		EXEC sp_executesql N'UPDATE [ASRSysMailMergeName] SET
+				[OutputFormat]       = CASE Output   WHEN 2 THEN 1 ELSE 0 END,
+				[OutputScreen]       = CASE CloseDoc WHEN 0 THEN 1 ELSE 0 END,
+				[OutputPrinter]      = CASE Output   WHEN 1 THEN 1 ELSE 0 END,
+				[OutputPrinterName]  = '''',
+				[OutputSave]         = DocSave,
+				[OutputFileName]     = DocFileName,
+				[DocumentMapID]      = 0,
+				[ManualDocManHeader] = 0';
+
+		EXEC sp_executesql N'ALTER TABLE [ASRSysMailMergeName] DROP COLUMN
+				[Output],
+				[CloseDoc],
+				[DocSave],
+				[DocFileName]';
+
+		EXECUTE spASRResizeColumn 'ASRSysMailMergeName','EmailSubject','MAX';
+		EXECUTE spASRResizeColumn 'ASRSysMailMergeName','EmailAttachmentName','MAX';
+
+	END
+
+
+
+/* ------------------------------------------------------------- */
 PRINT 'Step 3 - Office Output Formats'
 
 
@@ -1086,9 +1121,9 @@ PRINT 'Step 3 - Office Output Formats'
 
 	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(901,''Word'',''Word 97-2003 Document (*.doc)''        ,''doc'',     0, 0,1)'
 	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(902,''Word'',''Word Document (*.docx)''               ,''docx'', null,16,0)'
-	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(903,''Word'',''XML document format (*.xml)''          ,''xml'',  null,12,0)'
-	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(904,''Word'',''PDF format (*.pdf)''                   ,''pdf'',  null,17,0)'
-	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(905,''Word'',''XPS format (*.xps)''                   ,''xps'',  null,18,0)'
+	--EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(903,''Word'',''XML document format (*.xml)''          ,''xml'',  null,12,0)'
+	--EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(904,''Word'',''PDF format (*.pdf)''                   ,''pdf'',  null,17,0)'
+	--EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(905,''Word'',''XPS format (*.xps)''                   ,''xps'',  null,18,0)'
 
 	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(911,''WordTemplate'',''Word 97-2003 Document (*.doc)'',''doc'',     0, 0,0)'
 	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(912,''WordTemplate'',''Word 97-2003 Template (*.dot)'',''dot'',     0, 0,1)'
@@ -1098,72 +1133,7 @@ PRINT 'Step 3 - Office Output Formats'
 	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(921,''Excel'',''Excel 97-2003 Workbook (*.xls)'',''xls'', -4143,56,1)'
 	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(922,''Excel'',''Excel Workbook (*.xlsx)''       ,''xlsx'', null,51,0)'
 
-/*
-	IF NOT EXISTS(SELECT id FROM syscolumns WHERE id = OBJECT_ID('ASRSysCalendarReports', 'U') AND name = 'OutputSaveFormat')
-	BEGIN
-		EXEC sp_executesql
-			N'ALTER TABLE ASRSysCalendarReports
-            ADD OutputSaveFormat int NULL, OutputEmailFileFormat int NULL'
-		EXEC sp_executesql
-			N'UPDATE ASRSysCalendarReports
-            SET OutputSaveFormat = CASE WHEN OutputFormat = 3 THEN 921 WHEN OutputFormat IN (4,5,6) THEN 901 ELSE 0 END,
-            OutputEmailFileFormat = CASE WHEN OutputFormat = 3 THEN 921 WHEN OutputFormat IN (4,5,6) THEN 901 ELSE 0 END'
-	END
 
-	IF NOT EXISTS(SELECT id FROM syscolumns WHERE id = OBJECT_ID('ASRSysCrossTab', 'U') AND name = 'OutputSaveFormat')
-	BEGIN
-		EXEC sp_executesql
-			N'ALTER TABLE ASRSysCrossTab
-            ADD OutputSaveFormat int NULL, OutputEmailFileFormat int NULL'
-		EXEC sp_executesql
-			N'UPDATE ASRSysCrossTab
-            SET OutputSaveFormat = CASE WHEN OutputFormat = 3 THEN 921 WHEN OutputFormat IN (4,5,6) THEN 901 ELSE 0 END,
-            OutputEmailFileFormat = CASE WHEN OutputFormat = 3 THEN 921 WHEN OutputFormat IN (4,5,6) THEN 901 ELSE 0 END'
-	END
-
-	IF NOT EXISTS(SELECT id FROM syscolumns WHERE id = OBJECT_ID('ASRSysCustomReportsName', 'U') AND name = 'OutputSaveFormat')
-	BEGIN
-		EXEC sp_executesql N'ALTER TABLE ASRSysCustomReportsName
-			ADD OutputSaveFormat int NULL, OutputEmailFileFormat int NULL'
-		EXEC sp_executesql
-			N'UPDATE ASRSysCustomReportsName
-            SET OutputSaveFormat = CASE WHEN OutputFormat = 3 THEN 921 WHEN OutputFormat IN (4,5,6) THEN 901 ELSE 0 END,
-            OutputEmailFileFormat = CASE WHEN OutputFormat = 3 THEN 921 WHEN OutputFormat IN (4,5,6) THEN 901 ELSE 0 END'
-	END
-
-	IF NOT EXISTS(SELECT id FROM syscolumns WHERE id = OBJECT_ID('ASRSysExportName', 'U') AND name = 'OutputSaveFormat')
-	BEGIN
-		EXEC sp_executesql
-			N'ALTER TABLE ASRSysExportName
-            ADD OutputSaveFormat int NULL, OutputEmailFileFormat int NULL'
-		EXEC sp_executesql
-			N'UPDATE ASRSysExportName
-            SET OutputSaveFormat = CASE WHEN OutputFormat = 3 THEN 921 WHEN OutputFormat IN (4,5,6) THEN 901 ELSE 0 END,
-            OutputEmailFileFormat = CASE WHEN OutputFormat = 3 THEN 921 WHEN OutputFormat IN (4,5,6) THEN 901 ELSE 0 END'
-	END
-
-	IF NOT EXISTS(SELECT id FROM syscolumns WHERE id = OBJECT_ID('ASRSysMatchReportName', 'U') AND name = 'OutputSaveFormat')
-	BEGIN
-		EXEC sp_executesql
-			N'ALTER TABLE ASRSysMatchReportName
-			ADD OutputSaveFormat int NULL, OutputEmailFileFormat int NULL'
-		EXEC sp_executesql
-			N'UPDATE ASRSysMatchReportName
-            SET OutputSaveFormat = CASE WHEN OutputFormat = 3 THEN 921 WHEN OutputFormat IN (4,5,6) THEN 901 ELSE 0 END,
-            OutputEmailFileFormat = CASE WHEN OutputFormat = 3 THEN 921 WHEN OutputFormat IN (4,5,6) THEN 901 ELSE 0 END'
-	END
-
-	IF NOT EXISTS(SELECT id FROM syscolumns WHERE id = OBJECT_ID('ASRSysRecordProfileName', 'U') AND name = 'OutputSaveFormat')
-	BEGIN
-		EXEC sp_executesql
-			N'ALTER TABLE ASRSysRecordProfileName
-			ADD OutputSaveFormat int NULL, OutputEmailFileFormat int NULL'
-		EXEC sp_executesql
-			N'UPDATE ASRSysRecordProfileName
-            SET OutputSaveFormat = CASE WHEN OutputFormat = 3 THEN 921 WHEN OutputFormat IN (4,5,6) THEN 901 ELSE 0 END,
-            OutputEmailFileFormat = CASE WHEN OutputFormat = 3 THEN 921 WHEN OutputFormat IN (4,5,6) THEN 901 ELSE 0 END'
-	END
-*/
 
 /* ------------------------------------------------------------- */
 PRINT 'Step 4 - Overlapping dates functionality'
