@@ -6143,7 +6143,7 @@ DEALLOCATE c;
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 10 - Message Bus Integration'
+PRINT 'Step 10 - Fusion Services (may be superseded by Fusion Installer)'
 
 	IF NOT EXISTS(SELECT * FROM sys.schemas where name = 'fusion')
 		EXECUTE sp_executesql N'CREATE SCHEMA [fusion];';
@@ -6169,6 +6169,29 @@ PRINT 'Step 10 - Message Bus Integration'
 			[LastProcessedDate] [datetime] NULL,
 			[LastGeneratedXml] [varchar](max) NULL);';
 
+	IF NOT EXISTS(SELECT * FROM sys.sysobjects where name = 'MessageDefinition' AND xtype = 'U')
+		EXECUTE sp_executesql N'CREATE TABLE fusion.[MessageDefinition] (
+			[ID] smallint NOT NULL,
+			[Name] varchar(255) NOT NULL,
+			[Description] varchar(MAX) NOT NULL,
+			[Version] tinyint NOT NULL,
+			[AllowPublish] bit NOT NULL, 
+			[AllowSubscribe] bit NOT NULL,			
+			[TableID] integer NULL,
+			[StopDeletion] bit NOT NULL,
+			[BypassValidation] bit NOT NULL
+			CONSTRAINT [PK_MessageCategory] PRIMARY KEY CLUSTERED ([id] ASC));';
+
+	IF NOT EXISTS(SELECT * FROM sys.sysobjects where name = 'ValidationWarnings' AND xtype = 'U')
+		EXECUTE sp_executesql N'CREATE TABLE fusion.[ValidationWarnings] (
+			[ID] integer IDENTITY(1,1) NOT NULL,
+			[TableID] smallint NOT NULL,
+			[RecordID] integer NOT NULL,
+			[MessageName] varchar(255) NOT NULL,
+			[ValidationMessage] varchar(MAX),
+			[CreatedDateTime] datetime NOT NULL
+			CONSTRAINT [PK_ValidationWarnings] PRIMARY KEY CLUSTERED ([ID] ASC));';
+
 	-- Configure the service broker
 	IF NOT EXISTS(SELECT name FROM sys.service_message_types WHERE name = 'TriggerFusionSend')
 		EXECUTE sp_executesql N'CREATE MESSAGE TYPE TriggerFusionSend VALIDATION = NONE;';
@@ -6187,6 +6210,9 @@ PRINT 'Step 10 - Message Bus Integration'
 
 
 	-- Apply the stored procedures
+	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[fusion].[spGetMessageDefinitions]') AND type in (N'P', N'PC'))
+		DROP PROCEDURE [fusion].[spGetMessageDefinitions];
+
 	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[fusion].[spSendMessage]') AND type in (N'P', N'PC'))
 		DROP PROCEDURE [fusion].[spSendMessage];
 
@@ -6223,7 +6249,15 @@ PRINT 'Step 10 - Message Bus Integration'
 	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[fusion].[spIdTranslateGetBusRef]') AND type in (N'P', N'PC'))
 		DROP PROCEDURE [fusion].[spIdTranslateGetBusRef];
 
-
+	EXECUTE sp_executesql N'CREATE PROCEDURE fusion.[spGetMessageDefinitions]
+	AS
+	BEGIN
+		SELECT [ID], [name], [description],
+			[version], [allowpublish], [allowsubscribe], [bypassvalidation], [stopdeletion],
+			ISNULL([tableid],0) AS [tableid]
+			
+		 FROM fusion.[MessageDefinition]
+	END';
 
 	EXECUTE sp_executesql N'
 	---------------------------------------------------------------------------------
@@ -6271,7 +6305,6 @@ PRINT 'Step 10 - Message Bus Integration'
 		RETURN 0;
 	END';
 
-
 	EXECUTE sp_executesql N'
 	---------------------------------------------------------------------------------
 	-- Name:    spIdTranslateGetLocalId
@@ -6298,7 +6331,6 @@ PRINT 'Step 10 - Message Bus Integration'
 		SELECT @LocalId = LocalId from [fusion].IdTranslation WITH (ROWLOCK) 
 			WHERE TranslationName = @TranslationName and BusRef = @BusRef;
 	END';
-
 
 	EXECUTE sp_executesql N'
 	---------------------------------------------------------------------------------
@@ -6331,7 +6363,6 @@ PRINT 'Step 10 - Message Bus Integration'
 		COMMIT TRAN;
 	END	'
 
-
 	EXECUTE sp_executesql N'
 	---------------------------------------------------------------------------------
 	-- Name:    spMessageLogAdd
@@ -6355,7 +6386,6 @@ PRINT 'Step 10 - Message Bus Integration'
 		INSERT fusion.MessageLog (MessageType, MessageRef, Originator, ReceivedDate) VALUES (@MessageType, @MessageRef, @Originator, GETUTCDATE());
 
 	END'
-
 
 	EXECUTE sp_executesql N'
 	---------------------------------------------------------------------------------
@@ -6387,7 +6417,6 @@ PRINT 'Step 10 - Message Bus Integration'
 		END
 	END'
 
-
 	EXECUTE sp_executesql N'
 	---------------------------------------------------------------------------------
 	-- Name:    spMessageTrackingGetLastGeneratedXml
@@ -6413,8 +6442,6 @@ PRINT 'Step 10 - Message Bus Integration'
 
 	END'
 
-
-
 	EXECUTE sp_executesql N'
 	---------------------------------------------------------------------------------
 	-- Name:    spMessageTrackingGetLastMessageDates
@@ -6439,7 +6466,6 @@ PRINT 'Step 10 - Message Bus Integration'
 			WHERE MessageType = @MessageType AND BusRef = @BusRef;
 
 	END'
-
 
 	EXECUTE sp_executesql N'
 	---------------------------------------------------------------------------------
@@ -6475,7 +6501,6 @@ PRINT 'Step 10 - Message Bus Integration'
 		END		
 	END'
 
-
 	EXECUTE sp_executesql N'
 	---------------------------------------------------------------------------------
 	-- Name:    spMessageTrackingSetLastGeneratedXml
@@ -6510,7 +6535,6 @@ PRINT 'Step 10 - Message Bus Integration'
 		END		
 	END'
 
-
 	EXECUTE sp_executesql N'
 	---------------------------------------------------------------------------------
 	-- Name:    spMessageTrackingSetLastProcessedDate
@@ -6544,7 +6568,6 @@ PRINT 'Step 10 - Message Bus Integration'
 				VALUES (@MessageType, @BusRef, @LastProcessedDate)
 		END		
 	END'
-
 
 	EXECUTE sp_executesql N'
 	---------------------------------------------------------------------------------
@@ -6586,7 +6609,6 @@ PRINT 'Step 10 - Message Bus Integration'
 		END CONVERSATION @DialogHandle;
 
 	END'
-
 
 	EXECUTE sp_executesql N'
 	---------------------------------------------------------------------------------
