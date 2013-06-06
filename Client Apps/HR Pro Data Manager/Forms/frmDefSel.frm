@@ -412,9 +412,34 @@ Private Sub abDefSel_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
     Case "Run"
       cmdSelect_Click
       
+    Case "ID_FavouriteAdd"
+      Favourites (True)
+    
+    Case "ID_FavouriteRemove"
+      Favourites (False)
+      
   End Select
   
 End Sub
+
+Private Sub Favourites(ByVal bAdd As Boolean)
+
+  Dim sSQL As String
+  Dim lngSelectedID As Integer
+
+  lngSelectedID = Val(List1.SelectedItem.Tag)
+  
+  If bAdd Then
+    sSQL = "EXEC dbo.[spstat_addtofavourites] " & mutlUtilityType & "," & lngSelectedID
+  Else
+  End If
+  
+
+  gADOCon.Execute sSQL
+
+
+End Sub
+
 
 Private Sub cboTables_Click()
   
