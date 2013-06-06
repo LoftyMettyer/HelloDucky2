@@ -234,8 +234,8 @@ Begin VB.Form frmWorkflowDesigner
             Top             =   1800
             Visible         =   0   'False
             Width           =   120
-            _ExtentX        =   26
-            _ExtentY        =   26
+            _ExtentX        =   370
+            _ExtentY        =   370
          End
          Begin COASDSelectionBox.COASD_SelectionBox asrboxMultiSelection 
             Height          =   570
@@ -11870,6 +11870,8 @@ Public Function ValidateWorkflow(pfSaving As Boolean, _
     If fContinue Then
       If pfSaving Then
         If Not mfWorkflowEnabled Then
+          
+          gobjProgress.CloseProgress
           If MsgBox("The workflow definition is valid." & vbCrLf & _
             "Do you want to enable this definition?", vbQuestion + vbYesNo, App.ProductName) = vbYes Then
             
