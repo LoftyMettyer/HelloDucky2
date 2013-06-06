@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "10:52"
+            TextSave        =   "11:13"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -2024,21 +2024,21 @@ Public Sub RefreshRecordMenu(pfrmCallingForm As Form, Optional ByVal pfUnLoad As
       .Bands(0).Tools("ID_Print").Enabled = True
       
       .Bands(0).Tools("CustomReports").Visible = fCustomReportExists And (.Bands(0).Tools("CustomReports").Visible)
-      .Bands(0).Tools("CustomReports").Enabled = fSelectionMade
+      .Bands(0).Tools("CustomReports").Enabled = MenuEnabled("CUSTOMREPORTS") And Not fAddingNewRecord And (fSelectionMade Or TypeOf pfrmCallingForm Is frmRecEdit4)
       
       .Bands(0).Tools("CalendarReports").Visible = fCalendarReportExists And (.Bands(0).Tools("CalendarReports").Visible)
-      .Bands(0).Tools("CalendarReports").Enabled = fSelectionMade
+      .Bands(0).Tools("CalendarReports").Enabled = MenuEnabled("CALENDARREPORTS") And Not fAddingNewRecord And (fSelectionMade Or TypeOf pfrmCallingForm Is frmRecEdit4)
       .Bands(0).Tools("CalendarReports").BeginGroup = Not fCustomReportExists
       
       .Bands(0).Tools("GlobalUpdate").Visible = fGlobalUpdateExists And (.Bands(0).Tools("GlobalUpdate").Visible)
-      .Bands(0).Tools("GlobalUpdate").Enabled = fSelectionMade
+      .Bands(0).Tools("GlobalUpdate").Enabled = MenuEnabled("GLOBALUPDATE") And Not fAddingNewRecord And (fSelectionMade Or TypeOf pfrmCallingForm Is frmRecEdit4)
       '.Bands(0).Tools("GlobalUpdate").BeginGroup = (Not fCustomReportExists And Not fCalendarReportExists)
 
       .Bands(0).Tools("DataTransfer").Visible = fDataTransferExists And (.Bands(0).Tools("DataTransfer").Visible)
-      .Bands(0).Tools("DataTransfer").Enabled = fSelectionMade
+      .Bands(0).Tools("DataTransfer").Enabled = MenuEnabled("DATATRANSFER") And Not fAddingNewRecord And (fSelectionMade Or TypeOf pfrmCallingForm Is frmRecEdit4)
 
       .Bands(0).Tools("MailMerge").Visible = fMailMergeExists And (.Bands(0).Tools("MailMerge").Visible)
-      .Bands(0).Tools("MailMerge").Enabled = fSelectionMade
+      .Bands(0).Tools("MailMerge").Enabled = MenuEnabled("MAILMERGE") And Not fAddingNewRecord And (fSelectionMade Or TypeOf pfrmCallingForm Is frmRecEdit4)
 
       ' Recalculate the new utility/report group separators
       strGroupType = ""
