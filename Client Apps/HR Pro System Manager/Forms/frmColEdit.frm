@@ -64,7 +64,6 @@ Begin VB.Form frmColEdit
       _Version        =   393216
       Style           =   1
       Tabs            =   8
-      Tab             =   2
       TabsPerRow      =   8
       TabHeight       =   520
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -78,7 +77,7 @@ Begin VB.Form frmColEdit
       EndProperty
       TabCaption(0)   =   "De&finition"
       TabPicture(0)   =   "frmColEdit.frx":000C
-      Tab(0).ControlEnabled=   0   'False
+      Tab(0).ControlEnabled=   -1  'True
       Tab(0).Control(0)=   "fraDefinitionPage"
       Tab(0).Control(0).Enabled=   0   'False
       Tab(0).ControlCount=   1
@@ -90,7 +89,7 @@ Begin VB.Form frmColEdit
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "Opt&ions"
       TabPicture(2)   =   "frmColEdit.frx":0044
-      Tab(2).ControlEnabled=   -1  'True
+      Tab(2).ControlEnabled=   0   'False
       Tab(2).Control(0)=   "fraOptionsPage"
       Tab(2).Control(0).Enabled=   0   'False
       Tab(2).ControlCount=   1
@@ -683,7 +682,7 @@ Begin VB.Form frmColEdit
          BorderStyle     =   0  'None
          Enabled         =   0   'False
          Height          =   5350
-         Left            =   50
+         Left            =   -74950
          TabIndex        =   90
          Top             =   320
          Visible         =   0   'False
@@ -1736,7 +1735,7 @@ Begin VB.Form frmColEdit
          BackColor       =   &H8000000C&
          BorderStyle     =   0  'None
          Height          =   5550
-         Left            =   -74955
+         Left            =   45
          TabIndex        =   99
          Top             =   315
          Width           =   8205
@@ -3270,7 +3269,7 @@ Private Sub cmdCancel_Click()
       pintAnswer = MsgBox("You have made changes...do you wish to save these changes ?", vbQuestion + vbYesNoCancel, App.Title)
       If pintAnswer = vbYes Then
         Me.MousePointer = vbHourglass
-        cmdOK_Click 'This is just like saving
+        cmdOk_Click 'This is just like saving
         Me.MousePointer = vbNormal
         Exit Sub
       ElseIf pintAnswer = vbCancel Then
@@ -3616,7 +3615,7 @@ Private Sub cmdLinkOrder_Click()
 
 End Sub
 
-Private Sub cmdOK_Click()
+Private Sub cmdOk_Click()
   
   'MH20020424 Fault 3760
   '(Avoid changing 01/13/2002 to 13/01/2002)
@@ -5010,7 +5009,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
       If Changed = True And cmdOk.Enabled Then
         pintAnswer = MsgBox("You have made changes...do you wish to save these changes ?", vbQuestion + vbYesNoCancel, App.Title)
         If pintAnswer = vbYes Then
-          cmdOK_Click
+          cmdOk_Click
           Exit Sub
         ElseIf pintAnswer = vbCancel Then
           Cancel = True
@@ -7802,13 +7801,15 @@ Private Sub FieldMappingInitialiseCombos()
   Dim objControl As Control
   
   For Each objControl In Me.Controls
-    If TypeOf objControl Is ComboBox And objControl.Container.Name = "fraFieldMapping" Then
-      ' Add <None> to the combos.
-      With objControl
-        .AddItem "<None>"
-        .ItemData(.NewIndex) = "0"
-        .ListIndex = 0
-      End With
+    If Not TypeOf objControl Is COA_ColourPicker Then
+      If TypeOf objControl Is ComboBox And objControl.Container.Name = "fraFieldMapping" Then
+        ' Add <None> to the combos.
+        With objControl
+          .AddItem "<None>"
+          .ItemData(.NewIndex) = "0"
+          .ListIndex = 0
+        End With
+      End If
     End If
   Next objControl
 
@@ -7826,12 +7827,14 @@ Private Sub FieldMappingInitialiseCombos()
   If Not rsColumns.BOF And Not rsColumns.EOF Then
     Do Until rsColumns.EOF
       For Each objControl In Me.Controls
-        If TypeOf objControl Is ComboBox And objControl.Container.Name = "fraFieldMapping" Then
-          'add columnname to the combos
-          With objControl
-            .AddItem rsColumns("ColumnName")
-            .ItemData(.NewIndex) = rsColumns("ColumnID")
-          End With
+        If Not TypeOf objControl Is COA_ColourPicker Then
+          If TypeOf objControl Is ComboBox And objControl.Container.Name = "fraFieldMapping" Then
+            'add columnname to the combos
+            With objControl
+              .AddItem rsColumns("ColumnName")
+              .ItemData(.NewIndex) = rsColumns("ColumnID")
+            End With
+          End If
         End If
       Next objControl
       
