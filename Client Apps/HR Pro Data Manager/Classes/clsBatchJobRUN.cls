@@ -21,6 +21,21 @@ Private mblnJobCancelled As Boolean
 Private mblnBatchCancelled As Boolean
 Private fOK As Boolean
 
+'New Default Output Variables
+Private mlngOutputFormat As Long
+Private mblnOutputScreen As Boolean
+Private mblnOutputPrinter As Boolean
+Private mstrOutputPrinterName As String
+Private mblnOutputSave As Boolean
+Private mlngOutputSaveExisting As Long
+Private mblnOutputEmail As Boolean
+Private mlngOutputEmailAddr As Long
+Private mstrOutputEmailSubject As String
+Private mstrOutputEmailAttachAs As String
+Private mstrOutputFileName As String
+Private mblnPreviewOnScreen As Boolean
+Private mblnPrintFilterHeader As Boolean
+
 Private Sub Class_Initialize()
   Set mclsData = New clsDataAccess
 End Sub
@@ -106,16 +121,68 @@ DoesUserHavePermissionForAllJobs_ERROR:
 End Function
 
 Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEventLogID As Long) As String
-
   Dim rsBatchDetails As Recordset
+  Dim rsBatchOutputOptions As Recordset
   Dim strNotes As String
-  'Dim iAnswer As Integer
+  Dim strOutputOptions As String
+  
+'New Default Output Variables
+Dim lngOutputFormat As Long
+Dim blnOutputScreen As Boolean
+Dim blnOutputPrinter As Boolean
+Dim strOutputPrinterName As String
+Dim blnOutputSave As Boolean
+Dim lngOutputSaveExisting As Long
+Dim blnOutputEmail As Boolean
+Dim lngOutputEmailAddr As Long
+Dim strOutputEmailSubject As String
+Dim strOutputEmailAttachAs As String
+Dim strOutputFilename As String
+Dim blnPreviewOnScreen As Boolean
+Dim blnPrintFilterHeader As Boolean
+Dim strOutputTitlePage As String
+Dim strOutputReportPackTitle As String
+Dim strOutputOverrideFilter As String
+Dim blnOutputTOC As Boolean
+Dim blnOutputCoverSheet As Boolean
   
   gblnBatchMode = True
-  
+
   'Retrive the individual job information for the specified batch job id
   Set rsBatchDetails = mclsData.OpenPersistentRecordset("SELECT * FROM AsrSysBatchJobDetails WHERE BatchJobNameID = " & lBatchJobID & " ORDER BY JobOrder", adOpenKeyset, adLockReadOnly)
   
+  If gblnReportPackMode Then
+    'GetBatchJobDefaultOutputParams
+    strOutputOptions = "outputPreview, outputFormat, outputScreen, outputPrinter,OutputPrinterName, outputSave, outputSaveExisting, outputEmail, outputEmailAddr, outputEmailSubject, outputFilename, outputEmailAttachAs, outputTitlePage, outputReportPackTitle, outputOverrideFilter, outputTOC, outputCoverSheet, OutputTitlePage, OutputReportPackTitle, OutputOverrideFilter, OutputTOC, OutputCoverSheet"
+    Set rsBatchOutputOptions = mclsData.OpenPersistentRecordset("SELECT " & strOutputOptions & " FROM ASRSysBatchJobName WHERE ID = " & lBatchJobID, adOpenKeyset, adLockReadOnly)
+      
+    With rsBatchOutputOptions
+      rsBatchOutputOptions.MoveLast
+      rsBatchOutputOptions.MoveFirst
+      'Populate local vars
+      blnPreviewOnScreen = False '!OutputPreview 'its always going to be false so why read it in
+      blnOutputScreen = False '!OutputScreen 'its always going to be false so why read it in
+      lngOutputFormat = !OutputFormat
+      blnOutputPrinter = !OutputPrinter
+      strOutputPrinterName = !OutputPrinterName
+      
+      blnOutputSave = !OutputSave
+      lngOutputSaveExisting = !OutputSaveExisting
+      strOutputFilename = !OutputFilename
+      
+      blnOutputEmail = !OutputEmail
+      lngOutputEmailAddr = !OutputEmailAddr
+      strOutputEmailSubject = !OutputEmailSubject
+      strOutputEmailAttachAs = IIf(IsNull(!OutputEmailAttachAs), vbNullString, !OutputEmailAttachAs)
+      
+      strOutputTitlePage = !OutputTitlePage
+      strOutputReportPackTitle = !OutputReportPackTitle
+      strOutputOverrideFilter = !OutputOverrideFilter
+      blnOutputTOC = !OutputTOC
+      blnOutputCoverSheet = !OutputCoverSheet
+    End With
+End If
+
   'This should never happen, but just in case...
   If rsBatchDetails.BOF And rsBatchDetails.EOF Then
     COAMsgBox IIf(gblnReportPackMode, "report pack", "batch job") & " has been deleted by another user.", vbExclamation + vbOKOnly, IIf(gblnReportPackMode, "Report Pack", "Batch Job")
@@ -123,10 +190,10 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
     Exit Function
   End If
     
-  'Get record count and initialise progress bar
+  'Get record counts and initialise progress bar
   rsBatchDetails.MoveLast
   rsBatchDetails.MoveFirst
-  
+ 
     With gobjProgress
       .Bar1MaxValue = rsBatchDetails.RecordCount
       .Caption = IIf(gblnReportPackMode, "Report Pack", "Batch Job") & " : " & sBatchJobName
@@ -286,6 +353,29 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
         Dim pobjReportRUN As New clsCustomReportsRUN
         Set pobjReportRUN = New clsCustomReportsRUN
         pobjReportRUN.CustomReportID = rsBatchDetails.Fields("JobID")
+        
+        If gblnReportPackMode Then
+          pobjReportRUN.SetOutputParameters _
+            lngOutputFormat, _
+            blnOutputScreen, _
+            blnOutputPrinter, _
+            strOutputPrinterName, _
+            blnOutputSave, _
+            lngOutputSaveExisting, _
+            blnOutputEmail, _
+            lngOutputEmailAddr, _
+            strOutputEmailSubject, _
+            strOutputEmailAttachAs, _
+            strOutputFilename, _
+            blnPreviewOnScreen, _
+            blnPrintFilterHeader, _
+            strOutputTitlePage, _
+            strOutputReportPackTitle, _
+            strOutputOverrideFilter, _
+            blnOutputTOC, _
+            blnOutputCoverSheet
+        End If
+          
         If fOK And Not mblnBatchCancelled Then
           ' No previous jobs in the batch have been cancelled so run this
           'Check permissions...
@@ -754,7 +844,8 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
   
   gobjEventLog.TidyUp
   
-  Call UtilUpdateLastRun(utlBatchJob, lBatchJobID)
+  
+  Call UtilUpdateLastRun(IIf(gblnReportPackMode, utlReportPack, utlBatchJob), lBatchJobID)
 
   RunBatchJob = strNotes
 

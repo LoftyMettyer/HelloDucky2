@@ -836,17 +836,21 @@ Public Function SetOptions( _
     lngEmailAddr As Long, _
     strEmailSubject As String, _
     strEmailAttachAs As String, _
-    strFileName As String) As Boolean
-  
-  
+    strFileName As String, _
+    Optional blnPrintFilterHeader, _
+    Optional blnPreviewOnScreen As Boolean, _
+    Optional strOutputTitlePage As String, _
+    Optional strOutputReportPackTitle As String, _
+    Optional strOutputOverrideFilter As String, _
+    Optional blnOutputTOC As Boolean, _
+    Optional blnOutputCoverSheet As Boolean) As Boolean
+
   Dim objColumn As clsColumn
   Dim blnCancelled As Boolean
   'Dim lngSaveExisting As Long
   Dim strEmailFileExtension As String
 
-
   On Local Error GoTo LocalErr
-
 
   blnCancelled = False
   mlngEmailGroupID = lngEmailAddr
