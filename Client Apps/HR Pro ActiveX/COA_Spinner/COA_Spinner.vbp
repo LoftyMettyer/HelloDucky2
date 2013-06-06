@@ -4,7 +4,7 @@ Reference=*\G{C67830E0-D11D-11CF-BD80-00AA00575603}#1.0#0#..\..\..\..\WINNT\syst
 Object={FE0065C0-1B7B-11CF-9D53-00AA003C9CB6}#1.1#0; COMCT232.OCX
 Module=modSafeCtl; modSafeCtl.bas
 UserControl=COA_Spinner.ctl
-Startup="(None)"
+Startup="Sub Main"
 HelpFile=""
 Title="COA_Spinner"
 ExeName32="COA_Spinner.ocx"
@@ -17,7 +17,7 @@ CompatibleEXE32="..\COA_Spinner.ocx"
 VersionCompatible32="1"
 MajorVer=1
 MinorVer=0
-RevisionVer=2
+RevisionVer=3
 AutoIncrementVer=1
 ServerSupportFiles=0
 VersionCompanyName="COA Solutions Limited"
@@ -40,7 +40,8 @@ Retained=0
 ThreadPerObject=0
 MaxNumberOfThreads=1
 ThreadingModel=1
-DebugStartupOption=0
+DebugStartupOption=1
+DebugStartupComponent=COA_Spinner
 
 [MS Transaction Server]
 AutoRefresh=1
