@@ -1762,7 +1762,7 @@ Private Sub RefreshControls()
 
   End Select
 
-  cmdOK.Enabled = mfChanged
+  cmdOk.Enabled = mfChanged
 
 End Sub
 
@@ -4483,6 +4483,7 @@ Private Sub ReadParameters()
   Dim ctlGrid As SSDBGrid
   Dim sHiddenGroups As String
   Dim iIndex As Integer
+  Dim fWorkflowLicensed As Boolean
   
   ' Get the configured Personnel table ID and Personnel table view ID.
   With recModuleSetup
@@ -4554,9 +4555,13 @@ Private Sub ReadParameters()
     
   Set rsLinks = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
 
+  fWorkflowLicensed = IsModuleEnabled(modWorkflow)
+
   While Not rsLinks.EOF
     Set ctlGrid = Nothing
     
+    ' NPG20100520 Fault HRPRO-938 - Don't display workflow items if not licensed for workflow.
+    If Not (rsLinks!UtilityType = 25 And Not fWorkflowLicensed) And Not (rsLinks!Element_Type = 3 And Not fWorkflowLicensed) Then
     Select Case rsLinks!LinkType
       Case SSINTLINK_HYPERTEXT
         iIndex = -1
@@ -4713,7 +4718,7 @@ Private Sub ReadParameters()
       'JPD 20050118 Fault 9722
       ctlGrid.MoveFirst
     End If
-    
+    End If
     rsLinks.MoveNext
   Wend
   rsLinks.Close

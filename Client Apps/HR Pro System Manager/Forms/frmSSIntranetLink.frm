@@ -1494,6 +1494,9 @@ Public Sub Initialize(piType As SSINTRANETLINKTYPES, _
   txtFilter.Enabled = False
   txtFilter.BackColor = vbButtonFace
   
+  ' Hide Workflow items if not licensed
+  If Not IsModuleEnabled(modWorkflow) Then optLink(SSINTLINKPWFSTEPS).Visible = False
+  
   PopulateAccessGrid psHiddenGroups
 
   mfChanged = False
@@ -1729,7 +1732,7 @@ Private Sub RefreshControls()
   lblHRProUtilityMessage.Caption = sUtilityMessage
   
   ' Disable the OK button as required.
-  cmdOK.Enabled = mfChanged
+  cmdOk.Enabled = mfChanged
   
 
 End Sub

@@ -312,6 +312,12 @@ Public Sub Initialize(plngViewID As Long, _
   
   mfChanged = False
   
+  If Not IsModuleEnabled(modWorkflow) Then
+    fraWFOutOfOffice.Visible = False
+    fraOKCancel.Top = fraOKCancel.Top - fraWFOutOfOffice.Height
+    Me.Height = Me.Height - fraWFOutOfOffice.Height
+  End If
+    
   RefreshControls
   
 End Sub
@@ -401,7 +407,7 @@ Private Sub RefreshControls()
   End If
   
   ' Disable the OK button as required.
-  cmdOk.Enabled = mfChanged And fValid
+  cmdOK.Enabled = mfChanged And fValid
     
 End Sub
 
