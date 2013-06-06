@@ -46,14 +46,14 @@ Begin VB.Form frmBatchJob
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmBatchJob.frx":000C
       Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "fraScheduling"
-      Tab(0).Control(1)=   "fraInfo"
+      Tab(0).Control(0)=   "fraInfo"
+      Tab(0).Control(1)=   "fraScheduling"
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "&Jobs"
       TabPicture(1)   =   "frmBatchJob.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "Frame1"
-      Tab(1).Control(1)=   "fraJobs"
+      Tab(1).Control(0)=   "fraJobs"
+      Tab(1).Control(1)=   "Frame1"
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "O&utput"
       TabPicture(2)   =   "frmBatchJob.frx":0044
@@ -664,15 +664,11 @@ Begin VB.Form frmBatchJob
             GroupHeaders    =   0   'False
             Col.Count       =   5
             stylesets.count =   5
-            stylesets(0).Name=   "ssetHeaderDisabled"
-            stylesets(0).ForeColor=   -2147483631
-            stylesets(0).BackColor=   -2147483633
-            stylesets(0).Picture=   "frmBatchJob.frx":0098
-            stylesets(1).Name=   "ssetSelected"
-            stylesets(1).ForeColor=   -2147483634
-            stylesets(1).BackColor=   -2147483635
-            stylesets(1).HasFont=   -1  'True
-            BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+            stylesets(0).Name=   "ssetSelected"
+            stylesets(0).ForeColor=   -2147483634
+            stylesets(0).BackColor=   -2147483635
+            stylesets(0).HasFont=   -1  'True
+            BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
                Size            =   8.25
                Charset         =   0
@@ -681,6 +677,10 @@ Begin VB.Form frmBatchJob
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
+            stylesets(0).Picture=   "frmBatchJob.frx":0098
+            stylesets(1).Name=   "ssetHeaderDisabled"
+            stylesets(1).ForeColor=   -2147483631
+            stylesets(1).BackColor=   -2147483633
             stylesets(1).Picture=   "frmBatchJob.frx":00B4
             stylesets(2).Name=   "ssetEnabled"
             stylesets(2).ForeColor=   -2147483640
@@ -1324,10 +1324,10 @@ Private Sub RefreshColumnsGrid()
 End Sub
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
-  cmdOK.Enabled = pblnChanged
+  cmdOk.Enabled = pblnChanged
 End Property
 
 Private Function JobUtilityType(psJobType As String) As UtilityType
@@ -1674,14 +1674,14 @@ Private Sub cmdFilterClear_Click()
   txtOverrideFilter = ""
   txtOverrideFilter.Tag = 0
   ForceDefinitionToBeHiddenIfNeeded2
-  cmdFilterClear.Enabled = False
+  cmdfilterClear.Enabled = False
   cmdOverrideFilter.SetFocus
   Changed = Not mblnLoading
 End Sub
 
 Private Sub cmdOverrideFilter_Click()
   GetFilter txtFilterSource, txtOverrideFilter
-  cmdFilterClear.Enabled = txtOverrideFilter.Text <> ""
+  cmdfilterClear.Enabled = txtOverrideFilter.Text <> ""
   Changed = Not mblnLoading
 End Sub
 Private Sub GetFilter(ctlSource As Control, ctlTarget As Control)
@@ -2068,7 +2068,7 @@ Private Sub ClearForNew()
   SetComboText cboPeriod, "Day(s)"
   cboStartDate.Text = ""
   cboEndDate.Text = ""
-  chkWeekends.Value = 0
+  chkWeekEnds.Value = 0
   chkIndefinitely.Value = 0
   chkScheduled = False
   chkRunOnce.Value = 0
@@ -2143,7 +2143,7 @@ Private Function RetrieveBatchJobDetails() As Boolean
   cboStartDate.Text = IIf(IsDate(prstTemp!StartDate) And Not IsNull(prstTemp!StartDate), Format(prstTemp!StartDate, DateFormat), "")
   cboEndDate.Text = IIf(IsDate(prstTemp!EndDate) And Not IsNull(prstTemp!EndDate), Format(prstTemp!EndDate, DateFormat), "")
   chkIndefinitely.Value = IIf(prstTemp!Indefinitely = True, vbChecked, vbUnchecked)
-  chkWeekends.Value = IIf(prstTemp!Weekends = True, vbChecked, vbUnchecked)
+  chkWeekEnds.Value = IIf(prstTemp!Weekends = True, vbChecked, vbUnchecked)
   chkRunOnce.Value = IIf(prstTemp!RunOnce = True, vbChecked, vbUnchecked)
   sRoleToPrompt = IIf(IsNull(prstTemp!RoleToPrompt), "", prstTemp!RoleToPrompt)
   
@@ -2167,7 +2167,7 @@ Private Function RetrieveBatchJobDetails() As Boolean
     txtOverrideFilter.Tag = prstTemp!OverrideFilterID
     
     cmdTitlePageClear.Enabled = Not txtTitlePage.Text = ""
-    cmdFilterClear.Enabled = Not txtOverrideFilter.Text = ""
+    cmdfilterClear.Enabled = Not txtOverrideFilter.Text = ""
     
     optOutputFormat(prstTemp!OutputFormat).Value = True
     mobjOutputDef.PopulateOutputControls prstTemp
@@ -2358,7 +2358,7 @@ Private Sub SchedControls(Value As Boolean)
     cboStartDate.Text = vbNullString
     cboEndDate.Text = vbNullString
     chkIndefinitely.Value = vbUnchecked
-    chkWeekends.Value = vbUnchecked
+    chkWeekEnds.Value = vbUnchecked
     chkRunOnce.Value = vbUnchecked
   End If
   
@@ -2368,7 +2368,7 @@ Private Sub SchedControls(Value As Boolean)
   cboStartDate.Enabled = Value
   cboEndDate.Enabled = IIf(chkIndefinitely.Value = 1, False, Value)
   chkIndefinitely.Enabled = Value
-  chkWeekends.Enabled = Value
+  chkWeekEnds.Enabled = Value
   chkRunOnce.Enabled = Value
   
   'MH20010704
@@ -2800,7 +2800,7 @@ Private Function SaveDefinition() As Boolean
 'Removed code that set the 'Last Completed' date to Null.
 'Therefore when editing the definition, the history of the batch job stays the same.
           
-    sSQL = sSQL & "Weekends = " & IIf(chkWeekends.Value = 1, 1, 0) & "," & _
+    sSQL = sSQL & "Weekends = " & IIf(chkWeekEnds.Value = 1, 1, 0) & "," & _
              "RunOnce = " & IIf(chkRunOnce.Value = 1, 1, 0) & "," & _
              "RoleToPrompt = '" & cboRoleToPrompt.Text & "'" & _
               " WHERE ID = " & mlngBatchJobID
@@ -2849,7 +2849,7 @@ Private Function SaveDefinition() As Boolean
        sSQL = sSQL & "'" & Replace(Format(CDate(cboEndDate.Text), "mm/dd/yyyy"), UI.GetSystemDateSeparator, "/") & "'" & ","
     End If
     
-    sSQL = sSQL & IIf(chkWeekends.Value = 1, 1, 0) & ",'" & _
+    sSQL = sSQL & IIf(chkWeekEnds.Value = 1, 1, 0) & ",'" & _
            datGeneral.UserNameForSQL & "'," & _
            IIf(chkRunOnce.Value = 1, 1, 0) & ",'" & _
            cboRoleToPrompt.Text & "'," '"')"
@@ -2980,7 +2980,7 @@ Private Function SaveDefinition2() As Boolean
     
     sSQL = sSQL & "RoleToPrompt = '" & cboRoleToPrompt.Text & "', "
     sSQL = sSQL & "Indefinitely = " & IIf(chkIndefinitely.Value = 1, 1, 0) & ","
-    sSQL = sSQL & "Weekends = " & IIf(chkWeekends.Value = 1, 1, 0) & ","
+    sSQL = sSQL & "Weekends = " & IIf(chkWeekEnds.Value = 1, 1, 0) & ","
     sSQL = sSQL & "RunOnce = " & IIf(chkRunOnce.Value = 1, 1, 0) & ","
     
     'JOBS TAB
@@ -3010,7 +3010,7 @@ Private Function SaveDefinition2() As Boolean
       sSQL = sSQL & "OutputScreen = " & IIf(chkDestination(desScreen).Value = vbChecked, "1", "0") & ", "
       'Printer Options
       sSQL = sSQL & IIf(chkDestination(desPrinter), (" OutputPrinterName = '" & Replace(cboPrinterName.Text, " '", "''") & "',"), (" OutputPrinterName = '', "))
-      sSQL = sSQL & "OutputFilename = '" & Replace(txtFilename.Text, "'", "''") & "',"
+      sSQL = sSQL & "OutputFilename = '" & Replace(txtFileName.Text, "'", "''") & "',"
       'outputSaveExisting
       If chkDestination(desSave).Value = vbChecked Then
         sSQL = sSQL & "OutputSaveExisting = " & cboSaveExisting.ItemData(cboSaveExisting.ListIndex) & ", "
@@ -3026,7 +3026,7 @@ Private Function SaveDefinition2() As Boolean
     sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmail = 1, "), ("OutputEmail = 0, "))
     sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmailAddr = " & txtEmailGroup.Tag & ", "), ("OutputEmailAddr = 0, "))
     sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmailSubject = '" & Replace(txtEmailSubject.Text, "'", "''") & "', "), ("OutputEmailSubject = '', "))
-    sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmailAttachAs = '" & Replace(txtEmailAttachAs.Text, "'", "''") & "'"), ("OutputEmailAttachAs = ''"))
+    sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmailAttachAs = '" & Replace(txtEMailAttachAs.Text, "'", "''") & "'"), ("OutputEmailAttachAs = ''"))
     
     'FINAL WHERE CLAUSE
     sSQL = sSQL & " WHERE ID = " & mlngBatchJobID
@@ -3053,7 +3053,7 @@ Private Function SaveDefinition2() As Boolean
           "OutputSaveExisting, OutputEmail, OutputEmailAddr, " & _
           "OutputEmailSubject, OutputFilename, OutputEmailAttachAs, " & _
           "OutputTitlePage, OutputReportPackTitle, OutputOverrideFilter, " & _
-          "OutputTOC, OutputCoverSheet, OverrideFilterID, OutputRetainPivotOrChart)" ', OutputRetainCharts)"
+          "OutputTOC, OutputCoverSheet, OverrideFilterID, OutputRetainPivotOrChart)"
           
     sSQL = sSQL & _
            "Values(" & _
@@ -3077,7 +3077,7 @@ Private Function SaveDefinition2() As Boolean
              sSQL = sSQL & "'" & Replace(Format(CDate(cboEndDate.Text), "mm/dd/yyyy"), UI.GetSystemDateSeparator, "/") & "'" & ","
           End If
     
-    sSQL = sSQL & IIf(chkWeekends.Value = 1, 1, 0) & ",'" & _
+    sSQL = sSQL & IIf(chkWeekEnds.Value = 1, 1, 0) & ",'" & _
            datGeneral.UserNameForSQL & "'," & _
            IIf(chkRunOnce.Value = 1, 1, 0) & ",'" & _
            cboRoleToPrompt.Text & "',"
@@ -3112,9 +3112,9 @@ Private Function SaveDefinition2() As Boolean
           'outputEmailSubject
           sSQL = sSQL & IIf(chkDestination(desEmail), ("'" & Replace(txtEmailSubject.Text, "'", "''") & "', "), ("'', "))
           'outputFilename
-          sSQL = sSQL & "'" & Replace(txtFilename.Text, "'", "''") & "',"
+          sSQL = sSQL & "'" & Replace(txtFileName.Text, "'", "''") & "',"
           'outputEmailAttachAs
-          sSQL = sSQL & IIf(chkDestination(desEmail), ("'" & Replace(txtEmailAttachAs.Text, "'", "''") & "',"), ("'',"))
+          sSQL = sSQL & IIf(chkDestination(desEmail), ("'" & Replace(txtEMailAttachAs.Text, "'", "''") & "',"), ("'',"))
           'outputTitlePage
           sSQL = sSQL & "'" & Replace(txtTitlePage.Text, "'", "''") & "', "
           'outputReportPackTitle
@@ -3127,10 +3127,8 @@ Private Function SaveDefinition2() As Boolean
           sSQL = sSQL & IIf(chkForceCoverSheet.Value = 1, 1, 0) & ","
           'Override Filter ID
           sSQL = sSQL & Replace(txtOverrideFilter.Tag, "'", "''") & ","
-          'Retain Pivot when excel selected
-          sSQL = sSQL & IIf(chkRetainPivot.Value = 1, 1, 0) & ","
-          'Retain Chart when excel selected
-          'sSQL = sSQL & IIf(ChkRetainCharts.Value = 1, 1, 0) & ")"
+          'Retain Pivot or Chart when excel selected
+          sSQL = sSQL & IIf(chkRetainPivot.Value = 1, 1, 0) & ")"
           
     If ForceDefinitionToBeHiddenIfNeeded(True) = False Then
       SaveDefinition2 = False
@@ -3255,7 +3253,7 @@ Private Function InsertBatchJob(pstrSQL As String) As Long
               
     If Not fSavedOK Then
       COAMsgBox "The new record could not be created." & vbCrLf & vbCrLf & _
-        Err.Description, vbOKOnly + vbExclamation, App.ProductName
+        Err.Description, vbOKOnly + vbExclamation, app.ProductName
         InsertBatchJob = 0
         Set cmADO = Nothing
         Exit Function
@@ -3460,7 +3458,7 @@ Private Function ValidDestination() As Boolean
   ValidDestination = False
 
   If chkDestination(desSave).Value = vbChecked Then
-    If txtFilename.Text = vbNullString Then
+    If txtFileName.Text = vbNullString Then
       COAMsgBox "You must enter a file name.", vbExclamation, Caption
       Exit Function
     End If
@@ -3479,20 +3477,20 @@ Private Function ValidDestination() As Boolean
       Exit Function
     End If
 
-    If txtEmailAttachAs.Text = vbNullString Then
+    If txtEMailAttachAs.Text = vbNullString Then
       COAMsgBox "You must enter an email attachment file name.", vbExclamation, Caption
       Exit Function
     End If
     
-    If InStr(txtEmailAttachAs.Text, "/") Or _
-       InStr(txtEmailAttachAs.Text, ":") Or _
-       InStr(txtEmailAttachAs.Text, "?") Or _
-       InStr(txtEmailAttachAs.Text, Chr(34)) Or _
-       InStr(txtEmailAttachAs.Text, "<") Or _
-       InStr(txtEmailAttachAs.Text, ">") Or _
-       InStr(txtEmailAttachAs.Text, "|") Or _
-       InStr(txtEmailAttachAs.Text, "\") Or _
-       InStr(txtEmailAttachAs.Text, "*") Then
+    If InStr(txtEMailAttachAs.Text, "/") Or _
+       InStr(txtEMailAttachAs.Text, ":") Or _
+       InStr(txtEMailAttachAs.Text, "?") Or _
+       InStr(txtEMailAttachAs.Text, Chr(34)) Or _
+       InStr(txtEMailAttachAs.Text, "<") Or _
+       InStr(txtEMailAttachAs.Text, ">") Or _
+       InStr(txtEMailAttachAs.Text, "|") Or _
+       InStr(txtEMailAttachAs.Text, "\") Or _
+       InStr(txtEMailAttachAs.Text, "*") Then
           COAMsgBox "The email attachment file name cannot contain any of the following characters:" & vbCrLf & _
                  "/  :  ?  " & Chr(34) & "  <  >  |  \  *", vbExclamation, Caption
           Exit Function
