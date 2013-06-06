@@ -75,10 +75,10 @@ Private Const Y_OFFSET = 2550
 Private Const X_BORDER = 100
 Private Const Y_BORDER = 100
 
-Private mpropColumnTypes As HRProSystemMgr.Properties
+Private mpropColumnTypes As SystemMgr.Properties
 
 ' Load the property column bag that we're dealing with.
-Public Property Let PropertySet(ppropColumnTypes As HRProSystemMgr.Properties)
+Public Property Let PropertySet(ppropColumnTypes As SystemMgr.Properties)
   Set mpropColumnTypes = ppropColumnTypes
 End Property
 
@@ -88,7 +88,7 @@ UnLoad Me
 
 End Sub
 
-Private Sub cmdOK_Click()
+Private Sub cmdOk_Click()
 
 Dim iCount As Integer
 

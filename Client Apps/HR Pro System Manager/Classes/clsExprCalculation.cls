@@ -130,11 +130,11 @@ Public Function StoredProcedureCode(Optional strBaseTable As String) As String
   On Error GoTo ErrorTrap
   
   Dim objCalc As CExpression
-  Dim sProcCode As HRProSystemMgr.cStringBuilder
+  Dim sProcCode As SystemMgr.cStringBuilder
   Dim sVarName As String
   Dim sIfNullCode  As String
   
-  Set sProcCode = New HRProSystemMgr.cStringBuilder
+  Set sProcCode = New SystemMgr.cStringBuilder
   sVarName = "@component" & Trim$(Str$(mobjBaseComponent.ComponentID))
   sProcCode.TheString = "    /* Evaluate calculation component " & Trim$(Str$(mobjBaseComponent.ComponentID)) & ". */" & vbNewLine
   

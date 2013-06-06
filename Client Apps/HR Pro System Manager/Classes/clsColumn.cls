@@ -40,7 +40,7 @@ Private gLngTableID As Long
 Private gsControlValues As String
 
 ' Local variable to hold collection
-Private gMVarProperties As HRProSystemMgr.Properties
+Private gMVarProperties As SystemMgr.Properties
 Private mobjDiaryLinks As Collection
 'Private mobjEmailLinks As Collection
 
@@ -91,18 +91,18 @@ Public Property Let TableID(plngID As Long)
 
 End Property
 
-Public Property Get Properties() As HRProSystemMgr.Properties
+Public Property Get Properties() As SystemMgr.Properties
 
   ' Return the current instance of the properties class.
   If gMVarProperties Is Nothing Then
-    Set gMVarProperties = New HRProSystemMgr.Properties
+    Set gMVarProperties = New SystemMgr.Properties
   End If
   
   Set Properties = gMVarProperties
   
 End Property
 
-Public Property Set Properties(pvData As HRProSystemMgr.Properties)
+Public Property Set Properties(pvData As SystemMgr.Properties)
   ' Set the properties class property.
   Set gMVarProperties = pvData
   
@@ -2034,7 +2034,7 @@ Public Function WriteColumn() As Boolean
       
   If fOK Then
     ' Write the table record.
-    Set objTable = New HRProSystemMgr.Table
+    Set objTable = New SystemMgr.Table
     objTable.TableID = TableID
     
     fOK = objTable.ReadTable
@@ -2136,7 +2136,7 @@ Public Property Get ColumnDataType() As ExpressionValueTypes
     Case dtNUMERIC
       ColumnDataType = giEXPRVALUE_NUMERIC
  
-    Case dtinteger
+    Case dtINTEGER
       ColumnDataType = giEXPRVALUE_NUMERIC
     
     Case dtBIT
@@ -2408,7 +2408,7 @@ Public Function CloneColumn(pbAddCopyOfText As Boolean) As Column
   fOK = ReadColumn
   If fOK Then
     ' Instantiate a column objet to be the clone.
-    Set objNewColumn = New HRProSystemMgr.Column
+    Set objNewColumn = New SystemMgr.Column
     ' Copy properties from the current column object to the clone.
     With objNewColumn
       Set .Properties = Properties
@@ -2508,7 +2508,7 @@ End Property
 '  Set mobjEmailLinks = pobjNewCollection
 'End Property
 
-Public Function PrintDefinition(piOutputType As HRProSystemMgr.OutputDefintionTypes) As Boolean
+Public Function PrintDefinition(piOutputType As SystemMgr.OutputDefintionTypes) As Boolean
 
   On Error GoTo ErrorTrap
 

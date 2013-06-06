@@ -46,53 +46,53 @@ Public gbCanUseWindowsAuthentication As Boolean
 Public gbUseWindowsAuthentication As Boolean
 Public gstrWindowsCurrentDomain As String
 Public gstrWindowsCurrentUser As String
-Public giSQLServerAuthenticationType As HRProSystemMgr.SQLServerAuthenticationType
+Public giSQLServerAuthenticationType As SystemMgr.SQLServerAuthenticationType
 Public gbAttemptRecovery As Boolean
 
 Public gADOCon As ADODB.Connection
 Public gobjHRProEngine As HRProEngine.SysMgr
 
-Public daoWS As dao.Workspace
-Public daoDb As dao.Database
-Public recTabEdit As dao.Recordset
-Public recTableValidationEdit As dao.Recordset
-Public recSummaryEdit As dao.Recordset
-Public recColEdit As dao.Recordset
-Public recDiaryEdit As dao.Recordset
-Public recContValEdit As dao.Recordset
-Public recRelEdit As dao.Recordset
-Public recHistScrEdit As dao.Recordset
-Public recScrEdit As dao.Recordset
-Public recPageCaptEdit As dao.Recordset
-Public recCtrlEdit As dao.Recordset
-Public recPictEdit As dao.Recordset
-Public recOrdEdit As dao.Recordset
-Public recOrdItemEdit As dao.Recordset
-Public recWorkflowEdit As dao.Recordset
-Public recWorkflowElementEdit As dao.Recordset
-Public recWorkflowLinkEdit As dao.Recordset
-Public recWorkflowElementItemEdit As dao.Recordset
-Public recWorkflowElementItemValuesEdit As dao.Recordset
-Public recWorkflowElementColumnEdit As dao.Recordset
-Public recWorkflowElementValidationEdit As dao.Recordset
-Public recWorkflowTriggeredLinks As dao.Recordset
-Public recWorkflowTriggeredLinkColumns As dao.Recordset
+Public daoWS As DAO.Workspace
+Public daoDb As DAO.Database
+Public recTabEdit As DAO.Recordset
+Public recTableValidationEdit As DAO.Recordset
+Public recSummaryEdit As DAO.Recordset
+Public recColEdit As DAO.Recordset
+Public recDiaryEdit As DAO.Recordset
+Public recContValEdit As DAO.Recordset
+Public recRelEdit As DAO.Recordset
+Public recHistScrEdit As DAO.Recordset
+Public recScrEdit As DAO.Recordset
+Public recPageCaptEdit As DAO.Recordset
+Public recCtrlEdit As DAO.Recordset
+Public recPictEdit As DAO.Recordset
+Public recOrdEdit As DAO.Recordset
+Public recOrdItemEdit As DAO.Recordset
+Public recWorkflowEdit As DAO.Recordset
+Public recWorkflowElementEdit As DAO.Recordset
+Public recWorkflowLinkEdit As DAO.Recordset
+Public recWorkflowElementItemEdit As DAO.Recordset
+Public recWorkflowElementItemValuesEdit As DAO.Recordset
+Public recWorkflowElementColumnEdit As DAO.Recordset
+Public recWorkflowElementValidationEdit As DAO.Recordset
+Public recWorkflowTriggeredLinks As DAO.Recordset
+Public recWorkflowTriggeredLinkColumns As DAO.Recordset
 
 'MH20000727
-Public recEmailAddrEdit As dao.Recordset
-Public recEmailLinksEdit As dao.Recordset
+Public recEmailAddrEdit As DAO.Recordset
+Public recEmailLinksEdit As DAO.Recordset
 'Public recEmailAttachmentsEdit As dao.Recordset
-Public recEmailRecipientsEdit As dao.Recordset
-Public recEmailLinksColumnsEdit As dao.Recordset
+Public recEmailRecipientsEdit As DAO.Recordset
+Public recEmailLinksColumnsEdit As DAO.Recordset
 
 'MH20090521
-Public recLinkContentEdit As dao.Recordset
+Public recLinkContentEdit As DAO.Recordset
 
 'MH20040301
-Public recOutlookFolders As dao.Recordset
-Public recOutlookLinks As dao.Recordset
-Public recOutlookLinksColumns As dao.Recordset
-Public recOutlookLinksDestinations As dao.Recordset
+Public recOutlookFolders As DAO.Recordset
+Public recOutlookLinks As DAO.Recordset
+Public recOutlookLinksColumns As DAO.Recordset
+Public recOutlookLinksDestinations As DAO.Recordset
 
 'MH20040301
 Public glngAMStartTime As Long
@@ -101,14 +101,14 @@ Public glngPMStartTime As Long
 Public glngPMEndTime As Long
 
 
-Public recExprEdit As dao.Recordset
-Public recCompEdit As dao.Recordset
-Public recViewEdit As dao.Recordset
-Public recViewColEdit As dao.Recordset
-Public recViewScreens As dao.Recordset
-Public recModuleSetup As dao.Recordset
-Public recModuleRelatedColumns As dao.Recordset
-Public recMailMerge As dao.Recordset
+Public recExprEdit As DAO.Recordset
+Public recCompEdit As DAO.Recordset
+Public recViewEdit As DAO.Recordset
+Public recViewColEdit As DAO.Recordset
+Public recViewScreens As DAO.Recordset
+Public recModuleSetup As DAO.Recordset
+Public recModuleRelatedColumns As DAO.Recordset
+Public recMailMerge As DAO.Recordset
 Public gsUserName As String
 Public gsActualSQLLogin As String
 Public gbCurrentUserIsSysSecMgr As Boolean
@@ -119,9 +119,9 @@ Public gsSecurityGroup As String
 'Public intSPID As Integer
 
 'Public classes
-Public Application As HRProSystemMgr.Application
-Public Database As HRProSystemMgr.Database
-Public ODBC As HRProSystemMgr.ODBC
+Public Application As SystemMgr.Application
+Public Database As SystemMgr.Database
+Public ODBC As SystemMgr.ODBC
 Public UI As New UI
 
 'Public string holding the Temp DB name (ASRTemp_<dbname>.mdb)
@@ -149,7 +149,7 @@ Public Const gsPARAMETERKEY_DELEGATEEMAIL = "Param_DelegateEmail"
 Public Const gsPARAMETERKEY_COPYDELEGATEEMAIL = "Param_CopyDelegateEmail"
 Public Const gsPARAMETERKEY_LOGINDETAILS = "Param_FieldsLoginDetails"
 
-Public Const gsWORKFLOWAPPLICATIONPREFIX = "HR Pro Workflow"
+Public Const gsWORKFLOWAPPLICATIONPREFIX = "OpenHR Workflow"
 
 
 ' TRAINING BOOKING MODULE CONSTANTS
@@ -532,6 +532,11 @@ Public Function IsVersion7() As Boolean
   
 End Function
 
+' Is this version of SQL 2008 or above
+Public Function IsVersion10() As Boolean
+  IsVersion10 = (glngSQLVersion >= 10)
+End Function
+
 
 Sub Main()
 
@@ -548,9 +553,9 @@ Sub Main()
   gstrWindowsCurrentUser = Environ("USERNAME")
 
   'Instantiate public classes
-  Set Application = New HRProSystemMgr.Application
-  Set Database = New HRProSystemMgr.Database
-  Set ODBC = New HRProSystemMgr.ODBC
+  Set Application = New SystemMgr.Application
+  Set Database = New SystemMgr.Database
+  Set ODBC = New SystemMgr.ODBC
 
   'Instantiate Progress Bar class
   'Set gobjProgress = New COAProgress.COA_Progress
@@ -1319,8 +1324,8 @@ End Function
 '  Dim dblMaxValue As Double
 '  Dim sSQL As String
 '  Dim sTempCopy As String
-'  Dim sValueList As HRProSystemMgr.cStringBuilder
-'  Dim sColumnList As HRProSystemMgr.cStringBuilder
+'  Dim sValueList As SystemMgr.cStringBuilder
+'  Dim sColumnList As SystemMgr.cStringBuilder
 '  Dim sSourceTableName As String
 '  Dim sDestinationTableName As String
 '  Dim rsTableName As dao.Recordset
@@ -1328,8 +1333,8 @@ End Function
 '  Dim rsCommonColumns As New ADODB.Recordset
 '  Dim strColumnName As String
 '
-'  Set sValueList = New HRProSystemMgr.cStringBuilder
-'  Set sColumnList = New HRProSystemMgr.cStringBuilder
+'  Set sValueList = New SystemMgr.cStringBuilder
+'  Set sColumnList = New SystemMgr.cStringBuilder
 '  fOK = True
 '
 '  With recTabEdit
@@ -3665,7 +3670,7 @@ End Function
 'End Function
 
 'Private Function ReadPermissions(ByRef psErrMsg As String) As Boolean
-'  ' Create a collection of HR Pro user groups and their table/view/column permissions
+'  ' Create a collection of OpenHR user groups and their table/view/column permissions
 '  ' Return TRUE if everything went okay.
 '  On Error GoTo ErrorTrap
 '
@@ -3678,13 +3683,13 @@ End Function
 '  Dim rsPermissions As New ADODB.Recordset
 '  Dim objGroup As clsSecurityGroup
 '  Dim lngAmountOfGroups As Long
-'  Dim objPerformance As HRProSystemMgr.clsPerformance
+'  Dim objPerformance As SystemMgr.clsPerformance
 '
 '  fOK = True
 '  Set gObjGroups = Nothing
 '  Set gObjGroups = New clsSecurityGroups
 '
-'  Set objPerformance = New HRProSystemMgr.clsPerformance
+'  Set objPerformance = New SystemMgr.clsPerformance
 '  objPerformance.ClearLogFile
 '
 '  'MH20040112 Fault 5627
@@ -3794,7 +3799,7 @@ End Function
 '  Dim lngChildViewID As Long
 '  Dim sSQL As String
 '  Dim sLastRealSource As String
-'  Dim sRealSourceList As HRProSystemMgr.cStringBuilder
+'  Dim sRealSourceList As SystemMgr.cStringBuilder
 '  Dim sTableViewName As String
 '  Dim rsInfo As ADODB.Recordset
 '  Dim rsTables As ADODB.Recordset
@@ -3814,7 +3819,7 @@ End Function
 '  Dim iUpdate As Integer
 '  Dim iTableType As Integer
 '
-'  Set sRealSourceList = New HRProSystemMgr.cStringBuilder
+'  Set sRealSourceList = New SystemMgr.cStringBuilder
 '  Set rsInfo = New ADODB.Recordset
 '  Set rsTables = New ADODB.Recordset
 '  Set rsViews = New ADODB.Recordset
@@ -4787,7 +4792,7 @@ End Function
 '  Dim sTemp As String
 '  Dim iParentJoinType As Integer
 '  Dim lngParentViewID As Long
-'  Dim sCreatedChildViews As HRProSystemMgr.cStringBuilder
+'  Dim sCreatedChildViews As SystemMgr.cStringBuilder
 '  Dim lngLastParentID As Long
 '  Dim lngOriginalTableID As Long
 '  Dim sOriginalTableName As String
@@ -4800,7 +4805,7 @@ End Function
 '  Dim sOriginalColumnName As String
 '  Dim strParentIDs As String
 '
-'  Set sCreatedChildViews = New HRProSystemMgr.cStringBuilder
+'  Set sCreatedChildViews = New SystemMgr.cStringBuilder
 '  Set rsInfo = New ADODB.Recordset
 '  Set rsChildViews = New ADODB.Recordset
 '

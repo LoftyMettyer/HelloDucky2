@@ -6059,7 +6059,7 @@ Private Function GeneratePreviewHTML(ByVal strTmpFolder As String) As String
   Open strFileName For Output As intFileNo
   
   ' Start document
-  strHTML = "<html><head><title>HR Pro Self-service Intranet</title>" & _
+  strHTML = "<html><head><title>OpenHR Self-service Intranet</title>" & _
             "<STYLE TYPE='text/css'>" & _
             "<!--" & _
             ".dashelement_width {width:100%;min-width:300px;}" & _

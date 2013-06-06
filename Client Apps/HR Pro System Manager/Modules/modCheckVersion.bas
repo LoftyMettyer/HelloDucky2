@@ -109,8 +109,8 @@ Public Function CheckVersion(sConnect As String, fReRunScript As Boolean, bIsSQL
           .MoveFirst
           idxname = .RecordCount
           MsgBox "There are " & idxname & " tables starting with the reserved word prefix of either 'tbstat', 'tbuser' or 'tbsys'" & _
-            vbCrLf & vbCrLf & "Please rename these tables before upgrading to the latest version of HR Pro." & _
-            vbCrLf & vbCrLf & "The System Manager will now terminate the Upgrade Script.", vbCritical, "HR Pro System Manager"
+            vbCrLf & vbCrLf & "Please rename these tables before upgrading to the latest version." & _
+            vbCrLf & vbCrLf & "The System Manager will now terminate the Upgrade Script.", vbCritical, Application.Name
         End If
       End With
       
@@ -350,8 +350,8 @@ Public Function CheckVersion(sConnect As String, fReRunScript As Boolean, bIsSQL
 
         fVersionOK = False
         
-        MsgBox "The HR Pro Server package is out of date." & vbNewLine & _
-          "Contact your System Administrator to install the latest HR Pro Server package on the SQL Server." & vbNewLine & vbNewLine & _
+        MsgBox "The OpenHR Server package is out of date." & vbNewLine & _
+          "Contact your System Administrator to install the latest OpenHR Server package on the SQL Server." & vbNewLine & vbNewLine & _
           "Database Name : " & gsDatabaseName & vbNewLine & _
           "Minimum Server Version : " & sMinVersion & vbNewLine & _
           "Actual Server Version : " & sDependencyVersion & vbNewLine & vbNewLine & _
@@ -428,8 +428,8 @@ Private Function CheckFrameworkVersion() As Boolean
   sActualVersion = gobjHRProEngine.Version
 
   If sRequiredVersion <> sActualVersion And Not ASRDEVELOPMENT Then
-    MsgBox "The HR Pro System Framework is invalid." & vbNewLine & _
-      "Contact your System Administrator to install the latest HR Pro System Framework" & vbNewLine & vbNewLine & _
+    MsgBox "The System Framework is invalid." & vbNewLine & _
+      "Contact your System Administrator to install the latest System Framework" & vbNewLine & vbNewLine & _
       "Required Version : " & sRequiredVersion & vbNewLine & _
       "Actual Version : " & sActualVersion & vbNewLine & vbNewLine _
       , vbExclamation + vbOKOnly, Application.Name
@@ -440,8 +440,8 @@ TidyUpAndExit:
   CheckFrameworkVersion = bOK
   Exit Function
 ErrorTrap:
-  MsgBox "The HR Pro System Framework is not installed." & vbNewLine & _
-    "Contact your System Administrator to install the latest HR Pro System Framework" & vbNewLine & vbNewLine & _
+  MsgBox "The System Framework is not installed." & vbNewLine & _
+    "Contact your System Administrator to install the latest System Framework" & vbNewLine & vbNewLine & _
     "Required Version : " & sRequiredVersion & vbNewLine _
     , vbExclamation + vbOKOnly, Application.Name
   bOK = False
@@ -565,7 +565,7 @@ Private Function UpdateDatabase( _
   'TM20081126 - Do not upgrade SQL 2000 databases to v3.7 or later.
   If (glngSQLVersion < 9) Then
     Screen.MousePointer = vbDefault
-    MsgBox "This version of HR Pro is only compatible with SQL Server 2005 or later. Please upgrade SQL Server before upgrading to this version of HR Pro.", vbCritical
+    MsgBox "This version of OpenHR is only compatible with SQL Server 2005 or later. Please upgrade SQL Server before upgrading to this version of OpenHR.", vbCritical
     UpdateDatabase = False
     Exit Function
   End If
@@ -598,7 +598,7 @@ Private Function UpdateDatabase( _
   gobjProgress.AVI = dbTransfer
   gobjProgress.NumberOfBars = 1
   gobjProgress.Caption = App.ProductName
-  gobjProgress.Bar1Caption = "Updating HR Pro..."
+  gobjProgress.Bar1Caption = "Updating Database & Software..."
   gobjProgress.Bar1MaxValue = iUpdates
   gobjProgress.Cancel = False
   gobjProgress.OpenProgress
@@ -657,14 +657,7 @@ Private Function UpdateDatabase( _
   
   ' Deploy the .NET assemblies
   If glngSQLVersion > 8 Then
-  
-'    gobjProgress.NumberOfBars = 1
-'    gobjProgress.Caption = App.ProductName
-'    gobjProgress.Bar1Caption = "Updating HR Pro..."
-'    gobjProgress.Bar1MaxValue = 6
-'    gobjProgress.Cancel = False
-'    gobjProgress.OpenProgress
-    
+     
     bOK = MakeServerReadyForAssembly
     gobjProgress.UpdateProgress False
     
@@ -688,7 +681,7 @@ Private Function UpdateDatabase( _
       gobjProgress.UpdateProgress False
     Else
       gobjProgress.CloseProgress
-      MsgBox "Error deploying HR Pro Server Assembly" & vbNewLine & "Please see your System Administrator", vbExclamation
+      MsgBox "Error deploying System Framework Assembly" & vbNewLine & "Please see your System Administrator", vbExclamation
       UpdateDatabase = False
       GoTo TidyUpAndExit
     End If
@@ -882,11 +875,11 @@ End Function
 
 'Private Function RunScript2(strFileName As String, sConnect As String) As Boolean
 '
-'  Dim sUpdateScript As HRProSystemMgr.cStringBuilder
+'  Dim sUpdateScript As SystemMgr.cStringBuilder
 '  Dim sReadString As String
 '
 '  'sUpdateScript = vbNullString
-'  Set sUpdateScript = New HRProSystemMgr.cStringBuilder
+'  Set sUpdateScript = New SystemMgr.cStringBuilder
 '  sUpdateScript.TheString = vbNullString
 '
 '  Open strFileName For Input As #1
@@ -1052,7 +1045,7 @@ Private Function CreateSP_GetCurrentUsers() As Boolean
   ' Construct the stored procedure creation string.
   sProcSQL = _
     "/* ------------------------------------------------ */" & vbNewLine & _
-    "/* HR Pro Update module stored procedure.           */" & vbNewLine & _
+    "/* Update module stored procedure.           */" & vbNewLine & _
     "/* Automatically generated by the System manager.   */" & vbNewLine & _
     "/* ------------------------------------------------ */" & vbNewLine & _
     "ALTER PROCEDURE [dbo].[spASRGetCurrentUsers]" & vbNewLine & _
@@ -1060,10 +1053,10 @@ Private Function CreateSP_GetCurrentUsers() As Boolean
     "BEGIN" & vbNewLine & vbNewLine & _
     "   SET NOCOUNT ON" & vbNewLine & vbNewLine & _
     "   IF EXISTS (SELECT Name FROM sysobjects WHERE id = object_id('sp_ASRIntCheckPolls') AND sysstat & 0xf = 4)" & vbNewLine & _
-    "       AND APP_NAME() NOT LIKE 'HR Pro Workflow%'" & vbNewLine & _
-    "       AND APP_NAME() NOT LIKE 'HR Pro Outlook%'" & vbNewLine & _
-    "       AND APP_NAME() NOT LIKE 'HR Pro Server.Net%'" & vbNewLine & _
-    "       AND APP_NAME() NOT LIKE 'HR Pro Intranet Embedding%'" & vbNewLine & _
+    "       AND APP_NAME() NOT LIKE 'OpenHR Workflow%'" & vbNewLine & _
+    "       AND APP_NAME() NOT LIKE 'OpenHR Outlook%'" & vbNewLine & _
+    "       AND APP_NAME() NOT LIKE 'System Framework Assembly%'" & vbNewLine & _
+    "       AND APP_NAME() NOT LIKE 'OpenHR Intranet Embedding%'" & vbNewLine & _
     "   BEGIN" & vbNewLine & _
     "       EXEC sp_ASRIntCheckPolls" & vbNewLine & _
     "   END" & vbNewLine & vbNewLine
@@ -1115,33 +1108,11 @@ Private Function CreateSP_GetCurrentUsersFromMaster() As Boolean
   'If glngSQLVersion < 9 Then GoTo TidyUpAndExit
   
   ' Construct the stored procedure creation string.
-'  sProcSQL = _
-'    "/* ------------------------------------------------ */" & vbNewLine & _
-'    "/* HR Pro Update module stored procedure.           */" & vbNewLine & _
-'    "/* Automatically generated by the System manager.   */" & vbNewLine & _
-'    "/* ------------------------------------------------ */" & vbNewLine & _
-'    "ALTER PROCEDURE [dbo].[spASRGetCurrentUsersFromMaster]" & vbNewLine & _
-'    "AS" & vbNewLine & _
-'    "BEGIN" & vbNewLine & vbNewLine & _
-'    "   SET NOCOUNT ON" & vbNewLine & vbNewLine & _
-'    "   SELECT p.hostname, p.loginame, p.program_name, p.hostprocess" & vbNewLine & _
-'    "        , p.sid, p.login_time, p.spid" & vbNewLine & _
-'    "   FROM     master..sysprocesses p" & vbNewLine & _
-'    "   JOIN     master..sysdatabases d ON d.dbid = p.dbid" & vbNewLine & _
-'    "   WHERE    p.program_name LIKE 'HR Pro%'" & vbNewLine & _
-'    "     AND    p.program_name NOT LIKE 'HR Pro Workflow%'" & vbNewLine & _
-'    "     AND    p.program_name NOT LIKE 'HR Pro Outlook%'" & vbNewLine & _
-'    "     AND    p.program_name NOT LIKE 'HR Pro Server.Net%'" & vbNewLine & _
-'    "     AND    d.name = DB_NAME()" & vbNewLine & _
-'    "   ORDER BY loginame" & vbNewLine & vbNewLine & _
-'    "END"
-  
-  ' AE20080428 Fault #13088
   ' As non-sa user can't KILL processes we're going to ignore failed login
   ' attempts after the creation time of Save/Manual locks
   sProcSQL = _
     "/* ------------------------------------------------ */" & vbNewLine & _
-    "/* HR Pro Update module stored procedure.           */" & vbNewLine & _
+    "/* Update module stored procedure.           */" & vbNewLine & _
     "/* Automatically generated by the System manager.   */" & vbNewLine & _
     "/* ------------------------------------------------ */" & vbNewLine & _
     "ALTER PROCEDURE [dbo].[spASRGetCurrentUsersFromMaster]" & vbNewLine & _
@@ -1162,11 +1133,11 @@ Private Function CreateSP_GetCurrentUsersFromMaster() As Boolean
     "   SELECT p.hostname, p.loginame, p.program_name, p.hostprocess" & vbNewLine & _
     "        , p.sid, p.login_time, p.spid, p.uid" & vbNewLine & _
     "   FROM     master..sysprocesses p" & vbNewLine & _
-    "   WHERE    p.program_name LIKE 'HR Pro%'" & vbNewLine & _
-    "     AND    p.program_name NOT LIKE 'HR Pro Workflow%'" & vbNewLine & _
-    "     AND    p.program_name NOT LIKE 'HR Pro Outlook%'" & vbNewLine & _
-    "     AND    p.program_name NOT LIKE 'HR Pro Server.Net%'" & vbNewLine & _
-    "     AND    p.program_name NOT LIKE 'HR Pro Intranet Embedding%'" & vbNewLine & _
+    "   WHERE    p.program_name LIKE 'OpenHR%'" & vbNewLine & _
+    "     AND    p.program_name NOT LIKE 'OpenHR Workflow%'" & vbNewLine & _
+    "     AND    p.program_name NOT LIKE 'OpenHR Outlook%'" & vbNewLine & _
+    "     AND    p.program_name NOT LIKE 'System Framework Assembly%'" & vbNewLine & _
+    "     AND    p.program_name NOT LIKE 'OpenHR Intranet Embedding%'" & vbNewLine & _
     "     AND    p.dbID = DB_ID()" & vbNewLine & _
     "     AND (p.login_Time < @login_time)" & vbNewLine & _
     "   ORDER BY loginame" & vbNewLine & vbNewLine & _
@@ -1205,15 +1176,13 @@ Private Function CreateSP_LockCheck() As Boolean
   ' Construct the stored procedure creation string.
   sProcSQL = _
     "/* ------------------------------------------------ */" & vbNewLine & _
-    "/* HR Pro Update module stored procedure.           */" & vbNewLine & _
+    "/* Update module stored procedure.           */" & vbNewLine & _
     "/* Automatically generated by the System manager.   */" & vbNewLine & _
     "/* ------------------------------------------------ */" & vbNewLine & _
     "ALTER PROCEDURE [dbo].[sp_ASRLockCheck] AS " & vbNewLine & _
     "   BEGIN" & vbNewLine & _
-    "     SET NOCOUNT ON" & vbNewLine & _
-    "     DECLARE @sSQLVersion int" & vbNewLine & _
-    "     SELECT @sSQLVersion = dbo.udfASRSQLVersion()" & vbNewLine & _
-    "     IF @sSQLVersion >= 9 AND APP_NAME() <> 'HR Pro Workflow Service' AND APP_NAME() <> 'HR Pro Outlook Calendar Service'" & vbNewLine & _
+    "     SET NOCOUNT ON;" & vbNewLine & vbNewLine & _
+    "     IF APP_NAME() <> 'OpenHR Workflow Service' AND APP_NAME() <> 'OpenHR Outlook Calendar Service'" & vbNewLine & _
     "     BEGIN" & vbNewLine
     
   sProcSQL = sProcSQL & _
@@ -1227,22 +1196,20 @@ Private Function CreateSP_LockCheck() As Boolean
     "         ,spid int" & vbNewLine & _
     "         ,uid smallint)" & vbNewLine & _
     "       INSERT #tmpProcesses EXEC dbo.[spASRGetCurrentUsers]" & vbNewLine & _
-    "       SELECT ASRSysLock.* FROM ASRSysLock" & vbNewLine & _
-    "       LEFT OUTER JOIN #tmpProcesses syspro " & vbNewLine & _
-    "         ON ASRSysLock.spid = syspro.spid AND ASRSysLock.login_time = syspro.login_time" & vbNewLine & _
-    "       WHERE priority = 2 OR syspro.spid IS NOT NULL" & vbNewLine & _
-    "       ORDER BY priority" & vbNewLine & _
+    "       SELECT l.* FROM dbo.ASRSysLock l" & vbNewLine & _
+    "       LEFT OUTER JOIN #tmpProcesses syspro ON l.spid = syspro.spid AND l.login_time = syspro.login_time" & vbNewLine & _
+    "       WHERE l.[priority] = 2 OR syspro.spid IS NOT NULL" & vbNewLine & _
+    "       ORDER BY l.[priority]" & vbNewLine & _
     "       DROP TABLE #tmpProcesses" & vbNewLine & _
     "     END" & vbNewLine
     
   sProcSQL = sProcSQL & _
     "     ELSE" & vbNewLine & _
     "     BEGIN" & vbNewLine & _
-    "       SELECT ASRSysLock.* FROM ASRSysLock" & vbNewLine & _
-    "       LEFT OUTER JOIN master..sysprocesses syspro " & vbNewLine & _
-    "         ON asrsyslock.spid = syspro.spid AND asrsyslock.login_time = syspro.login_time" & vbNewLine & _
-    "       WHERE Priority = 2 OR syspro.spid IS NOT NULL" & vbNewLine & _
-    "       ORDER BY Priority" & vbNewLine & _
+    "       SELECT l.* FROM dbo.ASRSysLock l" & vbNewLine & _
+    "       LEFT OUTER JOIN master..sysprocesses syspro ON l.spid = syspro.spid AND l.login_time = syspro.login_time" & vbNewLine & _
+    "       WHERE l.[priority] = 2 OR syspro.spid IS NOT NULL" & vbNewLine & _
+    "       ORDER BY l.[priority]" & vbNewLine & _
     "     END" & vbNewLine & _
     "   END"
 
@@ -1282,7 +1249,7 @@ Private Function CreateUDF_SQLVersion() As Boolean
   ' Construct the function creation string.
   sUDFSQL = _
     "/* ------------------------------------------------ */" & vbNewLine & _
-    "/* HR Pro System module user defined function.      */" & vbNewLine & _
+    "/* System module user defined function.      */" & vbNewLine & _
     "/* Automatically generated by the System manager.   */" & vbNewLine & _
     "/* ------------------------------------------------ */" & vbNewLine & _
     "CREATE FUNCTION [dbo].[udfASRSQLVersion]" & vbNewLine & _

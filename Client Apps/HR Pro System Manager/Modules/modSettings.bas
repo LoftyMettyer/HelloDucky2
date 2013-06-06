@@ -136,10 +136,10 @@ Public glngExpressionViewNodes As ExpressionSaveView
 Public gbMaximizeScreens As Boolean
 
 Public gbRememberDBColumnsView As Boolean
-Public gpropShowColumns_DataMgr As HRProSystemMgr.Properties  ' Column display
-Public gpropShowColumns_DataMgrTable As HRProSystemMgr.Properties  ' Table display
-Public gpropShowColumns_PictMgr As HRProSystemMgr.Properties
-Public gpropShowColumns_ViewMgr As HRProSystemMgr.Properties
+Public gpropShowColumns_DataMgr As SystemMgr.Properties  ' Column display
+Public gpropShowColumns_DataMgrTable As SystemMgr.Properties  ' Table display
+Public gpropShowColumns_PictMgr As SystemMgr.Properties
+Public gpropShowColumns_ViewMgr As SystemMgr.Properties
 
 'Security Settings - Login Checks i.e.Bad Attempts
 Private gblnCFG_PCL As Boolean
@@ -386,7 +386,7 @@ Public Function LC_PCLocked() As Boolean
   
   If blnPCLocked Then
     strTimeRemaining = LC_FormatDateTimeMessage(DateDiff("s", Now(), DateAdd("s", glngCFG_LD, gdtPC_LKD)))
-    strMessage = "This PC has been temporarily locked from using HR Pro." & vbCrLf & vbCrLf & "The lock will be removed in " & strTimeRemaining & "."
+    strMessage = "This PC has been temporarily locked from using OpenHR." & vbCrLf & vbCrLf & "The lock will be removed in " & strTimeRemaining & "."
     MsgBox strMessage, vbOKOnly + vbExclamation, App.Title
   End If
   

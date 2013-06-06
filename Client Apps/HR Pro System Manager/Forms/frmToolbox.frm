@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Begin VB.Form frmToolbox 
    Caption         =   "Toolbox"
    ClientHeight    =   8460
@@ -824,7 +824,7 @@ Private Sub SplitMove()
 End Sub
 Private Sub RefreshColumnsTreeView()
   ' Populate the treeview of database column controls.
-  Dim objTable As HRProSystemMgr.Table
+  Dim objTable As SystemMgr.Table
   Dim objNode As ComctlLib.Node
   Dim rsColumns As DAO.Recordset
   Dim fPopulated As Boolean
@@ -840,7 +840,7 @@ Private Sub RefreshColumnsTreeView()
     ' If there is a primary table associated with the current screen ...
     If gFrmScreen.TableID > 0 Then
       ' Get primary table details
-      Set objTable = New HRProSystemMgr.Table
+      Set objTable = New SystemMgr.Table
       objTable.TableID = gFrmScreen.TableID
       
       If objTable.ReadTable Then
@@ -849,7 +849,7 @@ Private Sub RefreshColumnsTreeView()
         datUpdated = objTable.LastUpdated
         
         Set objTable = Nothing
-        Set objTable = New HRProSystemMgr.Table
+        Set objTable = New SystemMgr.Table
         
         ' Remove any existing nodes from the treeview.
         trvColumns.Nodes.Clear

@@ -42,7 +42,7 @@ Begin VB.Form frmSSIntranetUtility
       Width           =   1200
    End
    Begin VB.Frame fraHRProUtilityLink 
-      Caption         =   "HR Pro Report / Utility :"
+      Caption         =   "OpenHR Report / Utility :"
       Height          =   1260
       Left            =   180
       TabIndex        =   4

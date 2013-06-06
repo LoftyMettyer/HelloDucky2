@@ -2423,7 +2423,7 @@ Private Function TestProcessLogon(ByRef bNotifyIfSuccessful As Boolean) As Proce
                   "PWD=" & Replace(txtPassword.Tag, ";", "") & ";" & _
                   "Database=" & gsDatabaseName & ";" & _
                   "Pooling=False;" & _
-                  "App=Test HR Pro Config;"
+                  "App=Test OpenHR Config;"
                  
       Set objTestConn = New ADODB.Connection
       With objTestConn

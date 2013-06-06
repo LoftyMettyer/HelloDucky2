@@ -1084,7 +1084,7 @@ Public Function CloneTable(pavCloneRegister As Variant, pfCopyData As Boolean, p
       ' For each relation definition ...
       Do While (Not .EOF) And fOK
         ' Instantiate the original child table object.
-        Set objChildTable = New HRProSystemMgr.Table
+        Set objChildTable = New SystemMgr.Table
         objChildTable.TableID = .Fields("childID")
         ' Instruct the original child table object to clone itself.
         Set objCopyChildTable = objChildTable.CloneTable(pavCloneRegister, pfCopyData, pfCopySecurity, bGrantRead, bGrantNew, bGrantEdit, bGrantDelete)
@@ -2779,7 +2779,7 @@ End Function
 Public Function AddIDColumn(pLngParentTableID As Long) As Boolean
   On Error GoTo ErrorTrap
   
-  Dim IDColumn As New HRProSystemMgr.Column
+  Dim IDColumn As New SystemMgr.Column
   Dim fAddOk As Boolean
   
   fAddOk = False
@@ -2790,7 +2790,7 @@ Public Function AddIDColumn(pLngParentTableID As Long) As Boolean
     .InitColumnProps
     .Properties("new") = True
     .Properties("columnName") = IIf(pLngParentTableID = TableID, "ID", "ID_" & pLngParentTableID)
-    .Properties("dataType") = dtinteger
+    .Properties("dataType") = dtINTEGER
     .Properties("size") = 0
     .Properties("decimals") = 0
     .Properties("columnType") = giCOLUMNTYPE_SYSTEM
@@ -4879,7 +4879,7 @@ Public Property Let ManualSummaryColumnBreaks(ByVal bNewValue As Boolean)
   mbManualColumnBreaks = bNewValue
 End Property
 
-Public Function PrintDefinition(piOutputType As HRProSystemMgr.OutputDefintionTypes) As Boolean
+Public Function PrintDefinition(piOutputType As SystemMgr.OutputDefintionTypes) As Boolean
   On Error GoTo ErrorTrap
 
   Dim bOK As Boolean

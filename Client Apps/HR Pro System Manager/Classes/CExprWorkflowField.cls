@@ -131,7 +131,7 @@ Public Function StoredProcedureCode(Optional strBaseTable As String) As String
   Dim iColumnDataType As Integer
   Dim sSQL As String
   Dim sVarName As String
-  Dim sProcCode As New HRProSystemMgr.cStringBuilder
+  Dim sProcCode As New SystemMgr.cStringBuilder
   Dim sColumnName As String
   Dim sTableName As String
   Dim sOrderCode As String
@@ -139,11 +139,11 @@ Public Function StoredProcedureCode(Optional strBaseTable As String) As String
   Dim sLocalResult As String
   Dim sConvertCode As String
   Dim sFetchNextCode As String
-  Dim rsInfo As dao.Recordset
+  Dim rsInfo As DAO.Recordset
   Dim avOrderJoinTables() As Variant
   Dim objColumn As Column
   Dim iPersTableID As Integer
-  Dim rsTemp As dao.Recordset
+  Dim rsTemp As DAO.Recordset
   Dim lngElementID As Long
   Dim iElementType As ElementType
 
@@ -630,7 +630,7 @@ Public Property Get ReturnType() As ExpressionValueTypes
   Dim iLoop2 As Integer
   Dim lngLoop3 As Long
   Dim sSQL As String
-  Dim rsInfo As dao.Recordset
+  Dim rsInfo As DAO.Recordset
   Dim alngValidTables() As Long
   Dim fFound As Boolean
   
@@ -699,7 +699,7 @@ Public Property Get ReturnType() As ExpressionValueTypes
       ' Determine the field's type by creating an
       ' instance of the column class, and instructing
       ' it to read its own details (including type).
-      Set objColumn = New HRProSystemMgr.Column
+      Set objColumn = New SystemMgr.Column
       objColumn.ColumnID = mlngColumnID
       objColumn.TableID = mlngTableID
   
@@ -908,14 +908,14 @@ Public Function RuntimeCode(psRuntimeCode As String, _
   Dim sParentTableName As String
   Dim sOrderCode As String
   Dim sFilterCode As String
-  Dim rsInfo As dao.Recordset
+  Dim rsInfo As DAO.Recordset
   Dim avOrderJoinTables() As Variant
   Dim objFilterExpr As CExpression
   Dim sVarName As String
   Dim lngPersonnelTableID As Long
   Dim lngElementID As Long
   Dim iElementType As ElementType
-  Dim rsTemp As dao.Recordset
+  Dim rsTemp As DAO.Recordset
   Dim lngColumnSize As Long
   Dim iDataType As DataTypes
   Dim iColumnDataType As Integer

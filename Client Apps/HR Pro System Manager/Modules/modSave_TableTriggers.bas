@@ -11,46 +11,46 @@ Private mstrGetFieldAutoUpdateCode_INSERT As String
 Private mstrGetFieldAutoUpdateCode_UPDATE As String
 Private mstrGetFieldAutoUpdateCode_DELETE As String
 
-Private asCalcSelfCode() As HRProSystemMgr.cStringBuilder
-Private asCalcParentCode() As New HRProSystemMgr.cStringBuilder
-Private asCalcChildCode() As New HRProSystemMgr.cStringBuilder
+Private asCalcSelfCode() As SystemMgr.cStringBuilder
+Private asCalcParentCode() As New SystemMgr.cStringBuilder
+Private asCalcChildCode() As New SystemMgr.cStringBuilder
 
-Private sDeclareInsCols As HRProSystemMgr.cStringBuilder
-Private sDeclareDelCols As HRProSystemMgr.cStringBuilder
-Private sFetchInsCols As HRProSystemMgr.cStringBuilder
-Private sFetchDelCols As HRProSystemMgr.cStringBuilder
-Private sSelectInsCols As HRProSystemMgr.cStringBuilder
-'Private sSelectInsCols2 As HRProSystemMgr.cStringBuilder
-Private sSelectDelCols As HRProSystemMgr.cStringBuilder
-'Private sSelectInsLargeCols As HRProSystemMgr.cStringBuilder
-'Private sSelectInsLargeCols2 As HRProSystemMgr.cStringBuilder
-'Private sSelectDelLargeCols As HRProSystemMgr.cStringBuilder
+Private sDeclareInsCols As SystemMgr.cStringBuilder
+Private sDeclareDelCols As SystemMgr.cStringBuilder
+Private sFetchInsCols As SystemMgr.cStringBuilder
+Private sFetchDelCols As SystemMgr.cStringBuilder
+Private sSelectInsCols As SystemMgr.cStringBuilder
+'Private sSelectInsCols2 As SystemMgr.cStringBuilder
+Private sSelectDelCols As SystemMgr.cStringBuilder
+'Private sSelectInsLargeCols As SystemMgr.cStringBuilder
+'Private sSelectInsLargeCols2 As SystemMgr.cStringBuilder
+'Private sSelectDelLargeCols As SystemMgr.cStringBuilder
 Private sConvertInsCols As String
 Private sConvertDelCols As String
 Private alngAuditColumns() As Long
-Private sExprDeclarationCode As HRProSystemMgr.cStringBuilder
+Private sExprDeclarationCode As SystemMgr.cStringBuilder
 
 Private sInsertSpecialFunctionsCode As String
 Private sUpdateSpecialFunctionsCode1 As String
 Private sUpdateSpecialFunctionsCode2 As String
 Private sDeleteSpecialFunctionsCode As String
-Private sCalcDfltCode As HRProSystemMgr.cStringBuilder
+Private sCalcDfltCode As SystemMgr.cStringBuilder
 
-Private sDfltExprDeclarationCode As HRProSystemMgr.cStringBuilder
+Private sDfltExprDeclarationCode As SystemMgr.cStringBuilder
 
-Private sInsertAuditCode As HRProSystemMgr.cStringBuilder
-Private sUpdateAuditCode As HRProSystemMgr.cStringBuilder
-Private sDeleteAuditCode As HRProSystemMgr.cStringBuilder
+Private sInsertAuditCode As SystemMgr.cStringBuilder
+Private sUpdateAuditCode As SystemMgr.cStringBuilder
+Private sDeleteAuditCode As SystemMgr.cStringBuilder
 
-Private sInsertWorkflowCode As HRProSystemMgr.cStringBuilder
-Private sUpdateWorkflowCode As HRProSystemMgr.cStringBuilder
-Private sDeleteWorkflowCode As HRProSystemMgr.cStringBuilder
+Private sInsertWorkflowCode As SystemMgr.cStringBuilder
+Private sUpdateWorkflowCode As SystemMgr.cStringBuilder
+Private sDeleteWorkflowCode As SystemMgr.cStringBuilder
 
-Private sUpdateAccordCode As HRProSystemMgr.cStringBuilder
-Private sDeleteAccordCode As HRProSystemMgr.cStringBuilder
+Private sUpdateAccordCode As SystemMgr.cStringBuilder
+Private sDeleteAccordCode As SystemMgr.cStringBuilder
 
-Private sDateDependentUpdateCode As HRProSystemMgr.cStringBuilder
-Private sRelationshipCode As HRProSystemMgr.cStringBuilder
+Private sDateDependentUpdateCode As SystemMgr.cStringBuilder
+Private sRelationshipCode As SystemMgr.cStringBuilder
 
 
 
@@ -235,24 +235,24 @@ Private Function SetTableTriggers_GetStrings(pLngCurrentTableID As Long, _
   
   Dim bIsMaxSize As Boolean
   
-  Set sDateDependentUpdateCode = New HRProSystemMgr.cStringBuilder
-  Set sExprDeclarationCode = New HRProSystemMgr.cStringBuilder
+  Set sDateDependentUpdateCode = New SystemMgr.cStringBuilder
+  Set sExprDeclarationCode = New SystemMgr.cStringBuilder
   
   Set rsParents = New ADODB.Recordset
   'Set rsChildren = New ADODB.Recordset
   Set rsCalcColumns = New ADODB.Recordset
   Set rsExpressions = New ADODB.Recordset
-  Set sCalcDfltCode = New HRProSystemMgr.cStringBuilder
-  Set sDfltExprDeclarationCode = New HRProSystemMgr.cStringBuilder
+  Set sCalcDfltCode = New SystemMgr.cStringBuilder
+  Set sDfltExprDeclarationCode = New SystemMgr.cStringBuilder
   Set rsDfltColumns = New ADODB.Recordset
   
-  Set sDeclareInsCols = New HRProSystemMgr.cStringBuilder
-  Set sDeclareDelCols = New HRProSystemMgr.cStringBuilder
-  Set sFetchInsCols = New HRProSystemMgr.cStringBuilder
-  Set sFetchDelCols = New HRProSystemMgr.cStringBuilder
-  Set sSelectInsCols = New HRProSystemMgr.cStringBuilder
-'  Set sSelectInsCols2 = New HRProSystemMgr.cStringBuilder
-  Set sSelectDelCols = New HRProSystemMgr.cStringBuilder
+  Set sDeclareInsCols = New SystemMgr.cStringBuilder
+  Set sDeclareDelCols = New SystemMgr.cStringBuilder
+  Set sFetchInsCols = New SystemMgr.cStringBuilder
+  Set sFetchDelCols = New SystemMgr.cStringBuilder
+  Set sSelectInsCols = New SystemMgr.cStringBuilder
+'  Set sSelectInsCols2 = New SystemMgr.cStringBuilder
+  Set sSelectDelCols = New SystemMgr.cStringBuilder
   
   sDeclareInsCols.TheString = "    DECLARE @sTempInsCol varchar(MAX)"
   sDeclareDelCols.TheString = "    DECLARE @sTempDelCol varchar(MAX)"
@@ -279,16 +279,16 @@ Private Function SetTableTriggers_GetStrings(pLngCurrentTableID As Long, _
   '
   ' Create the trigger code required for handling the Auditing of columns in the current table.
   '
-  Set sInsertAuditCode = New HRProSystemMgr.cStringBuilder
-  Set sUpdateAuditCode = New HRProSystemMgr.cStringBuilder
-  Set sDeleteAuditCode = New HRProSystemMgr.cStringBuilder
+  Set sInsertAuditCode = New SystemMgr.cStringBuilder
+  Set sUpdateAuditCode = New SystemMgr.cStringBuilder
+  Set sDeleteAuditCode = New SystemMgr.cStringBuilder
   
-  Set sInsertWorkflowCode = New HRProSystemMgr.cStringBuilder
-  Set sUpdateWorkflowCode = New HRProSystemMgr.cStringBuilder
-  Set sDeleteWorkflowCode = New HRProSystemMgr.cStringBuilder
+  Set sInsertWorkflowCode = New SystemMgr.cStringBuilder
+  Set sUpdateWorkflowCode = New SystemMgr.cStringBuilder
+  Set sDeleteWorkflowCode = New SystemMgr.cStringBuilder
   
-  Set sUpdateAccordCode = New HRProSystemMgr.cStringBuilder
-  Set sDeleteAccordCode = New HRProSystemMgr.cStringBuilder
+  Set sUpdateAccordCode = New SystemMgr.cStringBuilder
+  Set sDeleteAccordCode = New SystemMgr.cStringBuilder
   
   sInsertWorkflowCode.TheString = vbNullString
   sUpdateWorkflowCode.TheString = vbNullString
@@ -304,7 +304,7 @@ Private Function SetTableTriggers_GetStrings(pLngCurrentTableID As Long, _
     ' Table level audit insert stuff
     If .Fields("AuditInsert").value = True Then
       sInsertAuditCode.Append vbNewLine & vbTab & "/* Table level audit */" & _
-        vbNewLine & vbTab & "EXECUTE dbo.sp_ASRAuditTable " & pLngCurrentTableID & ", @recordID, @recordDesc, '* New Record *'" & vbNewLine
+        vbNewLine & vbTab & "EXECUTE dbo.spstat_audittable " & pLngCurrentTableID & ", @recordID, @recordDesc, '* New Record *'" & vbNewLine
     Else
       sInsertAuditCode.TheString = vbNullString
     End If
@@ -312,7 +312,7 @@ Private Function SetTableTriggers_GetStrings(pLngCurrentTableID As Long, _
     ' Table level audit delete stuff
     If .Fields("AuditDelete").value = True Then
       sDeleteAuditCode.Append vbNewLine & vbTab & "/* Table level audit */" & _
-        vbNewLine & vbTab & "EXECUTE dbo.sp_ASRAuditTable " & pLngCurrentTableID & ", @recordID, @recordDesc, '* Deleted Record *'" & vbNewLine
+        vbNewLine & vbTab & "EXECUTE dbo.spstat_audittable " & pLngCurrentTableID & ", @recordID, @recordDesc, '* Deleted Record *'" & vbNewLine
     Else
       sDeleteAuditCode.TheString = vbNullString
     End If
@@ -330,8 +330,8 @@ Private Function SetTableTriggers_GetStrings(pLngCurrentTableID As Long, _
   ' --------------------------------
   If gbAccordPayrollModule Then
     
-    Set sUpdateAccordCode = New HRProSystemMgr.cStringBuilder
-    Set sDeleteAccordCode = New HRProSystemMgr.cStringBuilder
+    Set sUpdateAccordCode = New SystemMgr.cStringBuilder
+    Set sDeleteAccordCode = New SystemMgr.cStringBuilder
 
     ' Is in a separate sub routine because this one is getting too big for VB to compile.
     ' All parameters passed by reference!
@@ -739,18 +739,18 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
   Dim fChildCalcs As Boolean
 
   Dim sAccordProhibitFields As String
-  Dim rsAccordDetails As dao.Recordset
+  Dim rsAccordDetails As DAO.Recordset
   Dim iTransferTypeID As Integer
   Dim mbAccordAllowDelete As Boolean
 
   Dim strDiaryProcName As String
-  Dim sInsertTriggerSQL As HRProSystemMgr.cStringBuilder
-  Dim sUpdateTriggerSQL As HRProSystemMgr.cStringBuilder
-  Dim sDeleteTriggerSQL As HRProSystemMgr.cStringBuilder
+  Dim sInsertTriggerSQL As SystemMgr.cStringBuilder
+  Dim sUpdateTriggerSQL As SystemMgr.cStringBuilder
+  Dim sDeleteTriggerSQL As SystemMgr.cStringBuilder
      
-  Set sInsertTriggerSQL = New HRProSystemMgr.cStringBuilder
-  Set sUpdateTriggerSQL = New HRProSystemMgr.cStringBuilder
-  Set sDeleteTriggerSQL = New HRProSystemMgr.cStringBuilder
+  Set sInsertTriggerSQL = New SystemMgr.cStringBuilder
+  Set sUpdateTriggerSQL = New SystemMgr.cStringBuilder
+  Set sDeleteTriggerSQL = New SystemMgr.cStringBuilder
 
   miTriggerRecursionLevel = IIf(gbManualRecursionLevel, giManualRecursionLevel, giDefaultRecursionLevel)
   mbAccordAllowDelete = GetModuleSetting(gsMODULEKEY_ACCORD, gsPARAMETERKEY_ALLOWDELETE, False)
@@ -790,7 +790,7 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
       
     ' Create the trigger header.
 '    sInsertTriggerSQL.Append "/* ------------------------------------- */" & vbNewLine & _
-'      "/* HR Pro created trigger. */" & vbNewLine & _
+'      "/* created trigger. */" & vbNewLine & _
 '      "/* ------------------------------------- */" & vbNewLine & _
 '      "CREATE TRIGGER INS_" & psTableName & " ON dbo." & psTableName & vbNewLine & _
 '      "FOR INSERT" & vbNewLine & _
@@ -1608,17 +1608,6 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
       Close #1
     End If
     '*******************************************
-
-    ' Execute the DELETE trigger creation.
-  '  gADOCon.Execute sDeleteTriggerSQL.ToString, , adCmdText + adExecuteNoRecords
-  
-    ' JPD20030110 Fault 4162
-    ' Ensure the HR Pro trigger fires before any custom triggers.
-    ' NB. Can only do this on SQL 2000 and above.
-'    If glngSQLVersion >= 8 Then
-'      sSQL = "EXEC dbo.sp_settriggerorder @triggername = '[DEL_" & psTableName & "]', @order = 'LAST', @stmttype = 'DELETE'"
-'      gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
-'    End If
     
     ' Pass this trigegr code to the engine
     objTable.SysMgrInsertTrigger = sInsertTriggerSQL.ToString
@@ -1643,11 +1632,11 @@ ErrorTrap:
 End Function
 
 
-Private Function SetTableTriggers_AccordTransfer(ByRef sUpdateAccordCode As HRProSystemMgr.cStringBuilder, ByRef sDeleteAccordCode As HRProSystemMgr.cStringBuilder _
+Private Function SetTableTriggers_AccordTransfer(ByRef sUpdateAccordCode As SystemMgr.cStringBuilder, ByRef sDeleteAccordCode As SystemMgr.cStringBuilder _
 , ByRef alngAuditColumns() As Long _
-, ByRef sSelectInsCols As HRProSystemMgr.cStringBuilder, ByRef sSelectDelCols As HRProSystemMgr.cStringBuilder _
-, ByRef sFetchInsCols As HRProSystemMgr.cStringBuilder, ByRef sFetchDelCols As HRProSystemMgr.cStringBuilder _
-, ByRef sDeclareInsCols As HRProSystemMgr.cStringBuilder, ByRef sDeclareDelCols As HRProSystemMgr.cStringBuilder _
+, ByRef sSelectInsCols As SystemMgr.cStringBuilder, ByRef sSelectDelCols As SystemMgr.cStringBuilder _
+, ByRef sFetchInsCols As SystemMgr.cStringBuilder, ByRef sFetchDelCols As SystemMgr.cStringBuilder _
+, ByRef sDeclareInsCols As SystemMgr.cStringBuilder, ByRef sDeclareDelCols As SystemMgr.cStringBuilder _
 , ByVal pLngCurrentTableID As Long) As Boolean
 
   On Error GoTo ErrorTrap
@@ -1656,8 +1645,8 @@ Private Function SetTableTriggers_AccordTransfer(ByRef sUpdateAccordCode As HRPr
   Dim sDefinitionSQL As String
   Dim sAccordDeclaration As String
   Dim sAccordFilter As String
-  Dim rsAccordDetails As dao.Recordset
-  Dim rsAssociatedColumns As dao.Recordset
+  Dim rsAccordDetails As DAO.Recordset
+  Dim rsAssociatedColumns As DAO.Recordset
   Dim iLoop As Long
   Dim bColFound As Boolean
   Dim sConvertInsCols As String
@@ -1667,18 +1656,18 @@ Private Function SetTableTriggers_AccordTransfer(ByRef sUpdateAccordCode As HRPr
   Dim lngTransferType As Long
   Dim lngFilterID As Long
   Dim lngASRColumnID As Long
-  Dim sHasChangedCode As HRProSystemMgr.cStringBuilder
+  Dim sHasChangedCode As SystemMgr.cStringBuilder
   Dim aiTransferTypes() As Long
   Dim iTransferTypeLoop As Long
-  Dim strCurrentInsert As HRProSystemMgr.cStringBuilder
-  Dim strCurrentUpdate As HRProSystemMgr.cStringBuilder
-  Dim strCurrentDelete As HRProSystemMgr.cStringBuilder
+  Dim strCurrentInsert As SystemMgr.cStringBuilder
+  Dim strCurrentUpdate As SystemMgr.cStringBuilder
+  Dim strCurrentDelete As SystemMgr.cStringBuilder
   Dim strTableName As String
   Dim strColumnName As String
   Dim sASRColumnID As String
   Dim strTransferFieldID As String
   Dim lngGroupBy As Long
-  Dim sAccordProhibitFields As HRProSystemMgr.cStringBuilder
+  Dim sAccordProhibitFields As SystemMgr.cStringBuilder
   Dim iTransferTypeID As Integer
 
   ' Get Payroll Tranfers options
@@ -1733,10 +1722,10 @@ Private Function SetTableTriggers_AccordTransfer(ByRef sUpdateAccordCode As HRPr
   
   
   
-  Set sHasChangedCode = New HRProSystemMgr.cStringBuilder
-  Set strCurrentInsert = New HRProSystemMgr.cStringBuilder
-  Set strCurrentUpdate = New HRProSystemMgr.cStringBuilder
-  Set strCurrentDelete = New HRProSystemMgr.cStringBuilder
+  Set sHasChangedCode = New SystemMgr.cStringBuilder
+  Set strCurrentInsert = New SystemMgr.cStringBuilder
+  Set strCurrentUpdate = New SystemMgr.cStringBuilder
+  Set strCurrentDelete = New SystemMgr.cStringBuilder
   
   ReDim avAccordProhibitFields(0, 1)
   bOK = True
@@ -2195,7 +2184,7 @@ Private Function SetTableTriggers_AccordTransfer(ByRef sUpdateAccordCode As HRPr
 
 
   ' Probihit changes
-  Set sAccordProhibitFields = New HRProSystemMgr.cStringBuilder
+  Set sAccordProhibitFields = New SystemMgr.cStringBuilder
   sAccordProhibitFields.TheString = vbNullString
       
   ' We have to use "old" style syntax becuase dao is rubbish and doesn't understand join properly!
@@ -2270,7 +2259,7 @@ Private Function SetTableTriggers_AutoUpdate(pLngCurrentTableID As Long, psTable
     
     Dim sAUSQL As String
     Dim rsAULookupColumns As New ADODB.Recordset
-    Dim sAULookupCode As New HRProSystemMgr.cStringBuilder
+    Dim sAULookupCode As New SystemMgr.cStringBuilder
     
     sAULookupCode.TheString = vbNullString
     
@@ -2881,7 +2870,7 @@ Private Function SetTableTriggers_SpecialFunctions( _
   On Error GoTo ErrorTrap
 
   Dim bOK As Boolean
-  Dim rsTemp As dao.Recordset
+  Dim rsTemp As DAO.Recordset
   Dim iLoop As Long
   Dim sTableName As String
   'Dim sSubString As String
@@ -2945,10 +2934,10 @@ Private Function SetTableTriggers_SpecialFunctions( _
   Dim fTableDone As Boolean
   Dim sColumnName As String
   Dim sSQL As String
-  Dim sInsertUpdate As HRProSystemMgr.cStringBuilder
-  Dim sUpdateSelect As HRProSystemMgr.cStringBuilder
-  Dim sUpdateUpdate As HRProSystemMgr.cStringBuilder
-  Dim sDeleteUpdate As HRProSystemMgr.cStringBuilder
+  Dim sInsertUpdate As SystemMgr.cStringBuilder
+  Dim sUpdateSelect As SystemMgr.cStringBuilder
+  Dim sUpdateUpdate As SystemMgr.cStringBuilder
+  Dim sDeleteUpdate As SystemMgr.cStringBuilder
   Dim alngTempArray() As Long
   
   Dim sSSPSwitch1 As String
@@ -2956,10 +2945,10 @@ Private Function SetTableTriggers_SpecialFunctions( _
   Dim fDoneAbsenceTable As Boolean
 
   bOK = True
-  Set sInsertUpdate = New HRProSystemMgr.cStringBuilder
-  Set sUpdateSelect = New HRProSystemMgr.cStringBuilder
-  Set sUpdateUpdate = New HRProSystemMgr.cStringBuilder
-  Set sDeleteUpdate = New HRProSystemMgr.cStringBuilder
+  Set sInsertUpdate = New SystemMgr.cStringBuilder
+  Set sUpdateSelect = New SystemMgr.cStringBuilder
+  Set sUpdateUpdate = New SystemMgr.cStringBuilder
+  Set sDeleteUpdate = New SystemMgr.cStringBuilder
   
   sInsertSpecialFunctionsCode = vbNullString
   sUpdateSpecialFunctionsCode1 = vbNullString
@@ -3563,7 +3552,7 @@ Private Function GetTriggerRelationshipCode(pLngCurrentTableID)
   ' Create the trigger code required to handle the relationships.
   ' ie. the code to delete any child records when a record in the given table is deleted.
   '
-  Set sRelationshipCode = New HRProSystemMgr.cStringBuilder
+  Set sRelationshipCode = New SystemMgr.cStringBuilder
   
   
   sRelationshipCode.TheString = vbNullString

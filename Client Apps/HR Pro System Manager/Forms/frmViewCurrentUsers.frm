@@ -264,7 +264,7 @@ Private mblnCancelled As Boolean
 Private mintLockType As LockTypes
 Private mblnDBLocked As Boolean
 
-Private Declare Sub Sleep Lib "Kernel32.dll" (ByVal dwMilliseconds As Long)
+Private Declare Sub Sleep Lib "kernel32.dll" (ByVal dwMilliseconds As Long)
 Private Declare Function timeGetTime Lib "WinMM.dll" () As Long
 
 Private Sub chkASRDevBypass_Click()
@@ -438,112 +438,6 @@ Dim bOK As Boolean
     LockCheck
   End If
 End Sub
-
-'Private Sub GetUsers()
-'
-'  'Dim rsUsers As Recordset
-'  Dim fUsersExist As Boolean
-'  Dim rsUsers As New ADODB.Recordset
-'
-'  Dim sDisplay As String
-'  Dim sSQL As String
-'  Dim sDatabase As String
-'  Dim sComputerName As String
-'
-'  Dim sSystemName As String
-'  Dim sSecurityName As String
-'  Dim sUserModuleName As String
-'
-'  Dim sProgName As String
-'  Dim sHostName As String
-'  Dim sLoginName As String
-'  Dim intTempPointer As Integer
-'
-'  On Error GoTo ErrRefresh
-'
-'  intTempPointer = Screen.MousePointer
-'  Screen.MousePointer = vbHourglass
-'
-'  grdUsers.RemoveAll
-'
-'  fUsersExist = False
-'
-'  'Now we're connected, check for number of users logged on. First check if anyone is using
-'  'NOT THESE at the moment = System Manager or Security Manager
-'  'Data manager  (NB Sys/Sec left in bcos in future, poss read only access)
-'
-'
-'  'MH20010823 Fault 2600
-'  If LCase(Trim(gsUserName)) = "sa" Or gbCurrentUserIsSysSecMgr Then
-'    sSQL = "IF EXISTS (SELECT Name FROM sysobjects WHERE id = object_id('sp_ASRIntCheckPolls') AND sysstat & 0xf = 4) " & _
-'           "BEGIN EXEC sp_ASRIntCheckPolls END"
-'    gADOCon.Execute sSQL
-'  End If
-'
-'
-'  ' Generate our view of the sysprocesses table -> ASRTempSysProcesses
-'  sSQL = "IF EXISTS (SELECT Name FROM sysobjects WHERE id = object_id('spASRGenerateSysProcesses') AND sysstat & 0xf = 4) " & _
-'         "EXEC spASRGenerateSysProcesses " & _
-'         "ELSE BEGIN " & _
-'         "  IF EXISTS (SELECT Name FROM dbo.sysobjects WHERE id = object_id(N'[dbo].[ASRTempSysProcesses]') and OBJECTPROPERTY(id, N'IsTable') = 1)" & _
-'         "    DROP TABLE dbo.ASRTempSysProcesses" & _
-'         "  SELECT dbid, hostname, loginame, program_name, hostprocess INTO dbo.ASRTempSysProcesses FROM master..sysprocesses" & _
-'         " END"
-'
-'         'MH20061016
-'         '"  SELECT * INTO dbo.ASRTempSysProcesses FROM master..sysprocesses" & _
-'
-'  gADOCon.Execute sSQL
-'
-'  sSQL = "SELECT DISTINCT hostname, loginame, program_name, hostprocess " & _
-'     "FROM dbo.ASRTempSysProcesses " & _
-'     "WHERE program_name like 'HR Pro%' " & mstrUsersToLogOut & " " & _
-'     "  AND program_name NOT LIKE 'HR Pro Workflow%' " & _
-'     "  AND dbid in (" & _
-'                     "SELECT dbid " & _
-'                     "FROM master..sysdatabases " & _
-'                     "WHERE name = '" & gsDatabaseName & "') " & _
-'     "ORDER BY loginame"
-'
-'
-'  rsUsers.Open sSQL, gADOCon, adOpenDynamic, adLockReadOnly
-'
-'  Do While Not rsUsers.EOF
-'
-'    sProgName = Trim(rsUsers!Program_name)
-'    sHostName = Trim(rsUsers!HostName)
-'    sLoginName = Trim(rsUsers!Loginame)
-'
-'    'Ignore this app on this PC if this login..
-'    If LCase(Trim(sHostName)) <> LCase(Trim(UI.GetHostName)) Or _
-'       LCase(Trim(sProgName)) <> LCase(Trim(App.ProductName)) Or _
-'       LCase(Trim(sLoginName)) <> LCase(Trim(gsUserName)) Then
-'
-'      grdUsers.AddItem Trim(sLoginName) & vbTab & Trim(sHostName) & vbTab & IIf(LCase(Trim(sProgName)) = "", "HR Pro", Trim(sProgName))
-'      fUsersExist = True
-'
-'    End If
-'
-'    rsUsers.MoveNext
-'
-'  Loop
-'
-'  rsUsers.Close
-'  Set rsUsers = Nothing
-'
-'  Form_Resize
-'  cmdSendMessage.Enabled = fUsersExist
-'  Screen.MousePointer = intTempPointer
-'
-'  Exit Sub
-'
-'ErrRefresh:
-'
-'  Screen.MousePointer = vbNormal
-'  MsgBox "Error whilst refreshing the grid." & vbCrLf & vbCrLf & Err.Number & " - " & Err.Description, vbExclamation + vbOKOnly, App.Title
-'
-'End Sub
-
 
 Private Function GetUsers() As Boolean
   

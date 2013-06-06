@@ -1,7 +1,7 @@
 VERSION 5.00
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
-Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "COA_ColourPicker.ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
+Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "coa_colourpicker.ocx"
 Begin VB.Form frmScrEditOpts 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Screen Edit Options"
@@ -435,7 +435,7 @@ Dim ErrorString As String
   If (val(txtWidth.Text) > 9999) Or (val(txtHeight.Text) > 9999) Then
     'ErrorString = "The Width or Height you have specified is too large." & vbCrLf & "A figure lower than 5000 is more practical for the screen designer."
     ErrorString = "Value too high."
-    MsgBox ErrorString, vbExclamation + vbOKOnly, "HR Pro"
+    MsgBox ErrorString, vbExclamation + vbOKOnly, Application.Name
     mblnOK = False
     Exit Function
   Else

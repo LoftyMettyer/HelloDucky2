@@ -19,13 +19,6 @@ Option Explicit
 Private ODBC As New ODBC
 
 'Local variable to hold property values
-'Private mvarDatabaseName As String
-'Private mvarKeyWords As String
-'Private mvarMaxTableNameLength As Integer
-'Private mvarMaxColumns As Integer
-'Private mvarMaxColumnNameLength As Integer
-'Private mvarName As String
-'Private mvarVersion As String
 Private mvarServerName As String
 
 Public Enum DataTypes
@@ -35,7 +28,7 @@ Public Enum DataTypes
   dtBINARY = -2
   dtLONGVARCHAR = -1
   dtNUMERIC = 2
-  dtinteger = 4
+  dtINTEGER = 4
   dtTIMESTAMP = 11
   dtVARCHAR = 12
   dtGUID = 15
@@ -45,90 +38,20 @@ Public Enum DataTypes
   ' To be removed when frmworkflowelementitem is available
   rdTypeLONGVARBINARY = -4
   rdTypeVARBINARY = -3
-  
-  
-  
+
 End Enum
 
-
-'''Public Property Get DatabaseName() As String
-'''  mvarDatabaseName = ODBC.GetInfoString(rdoCon.hDbc, SQL_DATABASE_NAME, 128)
-'''  DatabaseName = mvarDatabaseName
-'''End Property
-'''
-'''Public Property Get CurrentUserName() As String
-'''  CurrentUserName = rdoEngine.rdoDefaultUser
-'''End Property
-'''
-'''
-'''
-'''Public Property Get KeyWords() As String
-'''  mvarKeyWords = ODBC.GetInfoString(rdoCon.hDbc, SQL_KEYWORDS, 4096)
-'''  KeyWords = "," & mvarKeyWords & ",Tables,Columns,Keywords,"
-'''
-'''End Property
-
 Public Property Get MaxColumnNameLength() As Integer
-  
-  'mvarMaxColumnNameLength = ODBC.GetInfo(rdoCon.hDbc, SQL_MAX_COLUMN_NAME_LEN)
-  'MaxColumnNameLength = mvarMaxColumnNameLength
-
-  ' RH 16/03/01 - 128 Chars creates a problem when we create triggers
-  '               as HR Pro called its triggers INS_<name> (a total of 132 chars)
   MaxColumnNameLength = 100
-
 End Property
-
-'''Public Property Get MaxColumns() As Integer
-'''  mvarMaxColumns = ODBC.GetInfo(rdoCon.hDbc, SQL_MAX_COLUMNS_IN_TABLE)
-'''  MaxColumns = mvarMaxColumns
-'''End Property
 
 Public Property Get MaxTableNameLength() As Integer
-  
-  '  mvarMaxTableNameLength = ODBC.GetInfo(rdoCon.hDbc, SQL_MAX_TABLE_NAME_LEN)
-  '  MaxTableNameLength = mvarMaxTableNameLength
-
-  ' RH 16/03/01 - 128 Chars creates a problem when we create triggers
-  '               as HR Pro called its triggers INS_<name> (a total of 132 chars)
   MaxTableNameLength = 100
-
 End Property
-
-'''Public Property Get Name() As String
-'''  mvarName = ODBC.GetInfoString(rdoCon.hDbc, SQL_DBMS_NAME, 128)
-'''  Name = mvarName
-'''End Property
-'''
-'''Public Property Get Version() As String
-'''  mvarVersion = ODBC.GetInfoString(rdoCon.hDbc, SQL_DBMS_VER, 128)
-'''  Version = mvarVersion
-'''End Property
-'''
-'''Public Sub ClearConnection()
-'''  If Not rdoCon Is Nothing Then
-'''    If rdoCon.hDbc > 0 Then
-'''      rdoCon.Close
-'''    End If
-'''    Set rdoCon = Nothing
-'''  End If
-'''End Sub
-'''
-'''Public Sub ClearEnvironment()
-'''  If Not rdoEnv Is Nothing Then
-'''    If rdoEnv.henv > 0 Then
-'''      rdoEnv.Close
-'''    End If
-'''    Set rdoEnv = Nothing
-'''  End If
-'''End Sub
-'''
 
 ' Return whether or not the given data type requires a defined number of decimals.
 Public Function ColumnHasScale(ByVal DataType As DataTypes) As Boolean
-
   ColumnHasScale = (DataType = dtNUMERIC)
-
 End Function
 
 ' Return whether or not the given data type requires a defined size.
@@ -142,7 +65,6 @@ Public Function ColumnHasSize(ByVal DataType As DataTypes) As Boolean
   End Select
 
 End Function
-
 
 Public Function FormatName(ByVal NameString As String) As String
   On Error GoTo ErrorTrap
@@ -190,7 +112,7 @@ Public Function GetDataDesc(ByVal DataType As DataTypes) As String
     Case dtVARCHAR
       sDesc = "Character"
 
-    Case dtinteger
+    Case dtINTEGER
       sDesc = "Integer"
 
     Case dtNUMERIC

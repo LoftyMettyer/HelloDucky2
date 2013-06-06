@@ -1,7 +1,7 @@
 Attribute VB_Name = "modSysProcesses"
 Option Explicit
 
-Public glngProcessMethod As HRProSystemMgr.ProcessAdminConfig
+Public glngProcessMethod As SystemMgr.ProcessAdminConfig
 
 Public Enum ProcessAdminConfig
   iPROCESSADMIN_DISABLED = 0
@@ -94,11 +94,11 @@ Public Function GetCurrentUsersCountOnServer(strUserName As String) As Long
 
     Set pmADO = .CreateParameter("UserName", adVarChar, adParamInput, VARCHAR_MAX_Size)
     .Parameters.Append pmADO
-    pmADO.Value = strUserName
+    pmADO.value = strUserName
 
     cmADO.Execute
 
-    GetCurrentUsersCountOnServer = IIf(IsNull(.Parameters(0).Value), 0, .Parameters(0).Value)
+    GetCurrentUsersCountOnServer = IIf(IsNull(.Parameters(0).value), 0, .Parameters(0).value)
   End With
   Set pmADO = Nothing
   Set cmADO = Nothing
@@ -133,7 +133,7 @@ Public Function GetCurrentUsersCountInApp() As Long
 
     cmADO.Execute
 
-    GetCurrentUsersCountInApp = IIf(IsNull(.Parameters(0).Value), 0, .Parameters(0).Value)
+    GetCurrentUsersCountInApp = IIf(IsNull(.Parameters(0).value), 0, .Parameters(0).value)
   End With
   Set pmADO = Nothing
   Set cmADO = Nothing

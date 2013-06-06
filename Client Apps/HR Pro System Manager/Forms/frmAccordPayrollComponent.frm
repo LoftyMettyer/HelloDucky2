@@ -237,7 +237,7 @@ Begin VB.Form frmAccordPayrollComponent
          ExtraHeight     =   79
          Columns.Count   =   2
          Columns(0).Width=   3625
-         Columns(0).Caption=   "HR Pro Value"
+         Columns(0).Caption=   "OpenHR Value"
          Columns(0).Name =   "HRProValue"
          Columns(0).DataField=   "Column 0"
          Columns(0).DataType=   8
@@ -348,7 +348,7 @@ Private mbLoading As Boolean
 Private mlngTransferID As Long
 Private mlngTransferFieldID As Long
 
-Private miMapType As HRProSystemMgr.AccordMapType
+Private miMapType As SystemMgr.AccordMapType
 Private mlngBaseTableID As Long
 Private mlngTableID As Long
 Private mlngColumnID As Long
@@ -552,7 +552,7 @@ Private Sub cmdCancel_Click()
   
 End Sub
 
-Private Sub cmdOK_Click()
+Private Sub cmdOk_Click()
   
   If Validate Then
     SaveMappings
@@ -924,7 +924,7 @@ Private Sub SaveMappings()
 
   Dim iLoop As Integer
   Dim sSQL As String
-  Dim varBookmark As Variant
+  Dim varBookMark As Variant
 
   daoDb.Execute "DELETE FROM tmpAccordTransferFieldMappings" & _
                   " WHERE TransferID = " & CStr(mlngTransferID) & _

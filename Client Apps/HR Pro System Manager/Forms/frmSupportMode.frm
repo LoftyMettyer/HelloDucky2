@@ -212,7 +212,7 @@ Begin VB.Form frmSupportMode
       Width           =   2055
    End
    Begin VB.Label Label1 
-      Caption         =   "Please call HR Pro Support on"
+      Caption         =   "Please call OpenHR Support on"
       Height          =   615
       Left            =   345
       TabIndex        =   14
@@ -291,17 +291,13 @@ Private Sub cmdCancel_Click()
   Me.Hide
 End Sub
 
-Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
-
-End Sub
-
 Private Sub Form_Load()
 
   lblSupportTel.Visible = (Application.AccessMode = accLimited)
   
   If Application.AccessMode = accLimited Then
     Label1.Caption = _
-      "Please call HR Pro Support on" & vbCrLf & _
+      "Please call support on" & vbCrLf & _
       "quoting the key shown below to obtain an authorisation code."
     lblSupportTel = GetSystemSetting("Support", "Telephone No", "")
 

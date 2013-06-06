@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Begin VB.Form frmPictSel 
    Caption         =   "Open Picture"
    ClientHeight    =   4935
@@ -168,7 +168,7 @@ Private Sub cmdCancel_Click()
 
 End Sub
 
-Private Sub cmdOK_Click()
+Private Sub cmdOk_Click()
 
   Cancelled = False
   SelectPicture
@@ -195,7 +195,7 @@ Private Sub Form_Activate()
         'gobjProgress.AviFile = ""
         gobjProgress.AVI = dbPicture
         gobjProgress.MainCaption = "Picture Manager"
-        gobjProgress.Caption = "HR Pro - System Manager"
+        gobjProgress.Caption = Application.Name
         gobjProgress.NumberOfBars = 1
         gobjProgress.Bar1MaxValue = .RecordCount
         gobjProgress.Bar1Caption = "Loading pictures..."
