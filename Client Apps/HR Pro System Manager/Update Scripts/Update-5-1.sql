@@ -67,8 +67,6 @@ END
 /* Step - Menu Enhancements */
 /* ------------------------------------------------------------- */
 
-
-
 	IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = object_ID(N'tbsys_userusage') AND type in (N'U'))
 	BEGIN
 		EXEC sp_executesql N'CREATE TABLE [tbsys_userusage](
@@ -158,6 +156,15 @@ END
 	END';
 	GRANT EXECUTE ON dbo.[spstat_recentlyrunobjects] TO [ASRSysGroup];
 
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spstat_clearrecentusage]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].[spstat_clearrecentusage];
+	EXEC sp_executesql N'CREATE PROCEDURE dbo.[spstat_clearrecentusage]
+		AS
+		BEGIN		
+			DELETE FROM dbo.tbsys_userusage WHERE [username] = SYSTEM_USER;
+		END';
+	GRANT EXECUTE ON dbo.[spstat_clearfavourites] TO [ASRSysGroup];
+
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spstat_getfavourites]') AND xtype = 'P')
 		DROP PROCEDURE [dbo].[spstat_getfavourites];
 	EXEC sp_executesql N'CREATE PROCEDURE dbo.[spstat_getfavourites]
@@ -192,6 +199,16 @@ END
 
 		END';
 	GRANT EXECUTE ON dbo.[spstat_addtofavourites] TO [ASRSysGroup];
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spstat_clearfavourites]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].[spstat_clearfavourites];
+	EXEC sp_executesql N'CREATE PROCEDURE dbo.[spstat_clearfavourites]
+		AS
+		BEGIN		
+			DELETE FROM dbo.tbsys_userfavourites WHERE [username] = SYSTEM_USER;
+		END';
+	GRANT EXECUTE ON dbo.[spstat_clearfavourites] TO [ASRSysGroup];
+
 
 
 /* ------------------------------------------------------------- */
