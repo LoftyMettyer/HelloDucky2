@@ -51,10 +51,9 @@ Begin VB.Form frmNewUser
          Width           =   2670
       End
       Begin VB.CommandButton cmdGetWindowsLogins 
+         Caption         =   "..."
          Height          =   300
          Left            =   3945
-         Picture         =   "frmNewUser.frx":000C
-         Style           =   1  'Graphical
          TabIndex        =   8
          Top             =   1950
          UseMaskColor    =   -1  'True
