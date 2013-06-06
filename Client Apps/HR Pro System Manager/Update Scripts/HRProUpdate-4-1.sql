@@ -1673,15 +1673,16 @@ PRINT 'Step 5 - Intranet Dashboard Implementation'
 	
 
 
+/* ------------------------------------------------------------- */
+PRINT 'Step 6 - Shared Table Integration'
 
 
-
-
-
-
-
-
-
+	-- Add columns to ASRSysMailMergeName
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysAccordTransactions', 'U') AND name = 'BatchID')
+    BEGIN
+		EXEC sp_executesql N'ALTER TABLE dbo.[ASRSysAccordTransactions]
+								 ADD [BatchID] integer';
+	END
 
 
 
