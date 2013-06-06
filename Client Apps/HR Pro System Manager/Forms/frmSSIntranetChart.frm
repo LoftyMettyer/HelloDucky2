@@ -27,7 +27,7 @@ Begin VB.Form frmSSIntranetChart
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      Height          =   5310
+      Height          =   5325
       Left            =   150
       TabIndex        =   35
       Top             =   165
@@ -212,7 +212,7 @@ Begin VB.Form frmSSIntranetChart
          Width           =   2670
       End
       Begin VB.Label lblChartIntColour 
-         Caption         =   "Chart Colour Column :"
+         Caption         =   "Colour Column :"
          BeginProperty Font 
             Name            =   "Verdana"
             Size            =   8.25
@@ -222,11 +222,11 @@ Begin VB.Form frmSSIntranetChart
             Italic          =   0   'False
             Strikethrough   =   0   'False
          EndProperty
-         Height          =   390
-         Left            =   4530
+         Height          =   180
+         Left            =   4485
          TabIndex        =   37
-         Top             =   1080
-         Width           =   1170
+         Top             =   1170
+         Width           =   1440
          WordWrap        =   -1  'True
       End
       Begin VB.Label lblSortByAgg 
@@ -242,7 +242,7 @@ Begin VB.Form frmSSIntranetChart
             Strikethrough   =   0   'False
          EndProperty
          Height          =   195
-         Left            =   4530
+         Left            =   4485
          TabIndex        =   36
          Top             =   810
          Width           =   780
@@ -260,7 +260,7 @@ Begin VB.Form frmSSIntranetChart
             Strikethrough   =   0   'False
          EndProperty
          Height          =   195
-         Left            =   4530
+         Left            =   4485
          TabIndex        =   34
          Top             =   435
          Width           =   1050
@@ -349,6 +349,7 @@ Begin VB.Form frmSSIntranetChart
          Height          =   315
          Left            =   3420
          TabIndex        =   16
+         ToolTipText     =   "Select Filter..."
          Top             =   360
          Width           =   315
       End
@@ -508,7 +509,7 @@ Begin VB.Form frmSSIntranetChart
             Strikethrough   =   0   'False
          EndProperty
          Height          =   195
-         Left            =   4530
+         Left            =   4485
          TabIndex        =   23
          Top             =   420
          Width           =   1050
@@ -687,7 +688,7 @@ Begin VB.Form frmSSIntranetChart
             Strikethrough   =   0   'False
          EndProperty
          Height          =   195
-         Left            =   4530
+         Left            =   4485
          TabIndex        =   26
          Top             =   420
          Width           =   1050
@@ -1562,7 +1563,7 @@ Private Function PopulateColumnYCombo(plngTableID As Long)
       If recColEdit!Deleted <> True And recColEdit!columntype <> giCOLUMNTYPE_SYSTEM Then
         ' Add the column to the combo
         ' Making sure it isn't ole, photo, wp or link...
-        If recColEdit!DataType = dtNUMERIC Or recColEdit!DataType = dtINTEGER Then  ' numerics ONLY for Y columns
+        If recColEdit!DataType = dtNUMERIC Or recColEdit!DataType = dtinteger Then  ' numerics ONLY for Y columns
 '        If recColEdit!DataType <> dtLONGVARCHAR And _
 '          recColEdit!DataType <> dtBINARY And _
 '          recColEdit!DataType <> dtVARBINARY And _
