@@ -45,14 +45,14 @@ Begin VB.Form frmWorkflowSetup
       TabCaption(0)   =   "&Web Site"
       TabPicture(0)   =   "frmWorkflowSetup.frx":000C
       Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "fraWebSiteLogin"
-      Tab(0).Control(1)=   "fraWebSite"
+      Tab(0).Control(0)=   "fraWebSite"
+      Tab(0).Control(1)=   "fraWebSiteLogin"
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "&Personnel Identification"
       TabPicture(1)   =   "frmWorkflowSetup.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraPersonnelTable"
-      Tab(1).Control(1)=   "fraDelegation"
+      Tab(1).Control(0)=   "fraDelegation"
+      Tab(1).Control(1)=   "fraPersonnelTable"
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "&Service"
       TabPicture(2)   =   "frmWorkflowSetup.frx":0044
@@ -1587,22 +1587,22 @@ Private Sub RefreshControls()
   
   
   cboMobLoginName.Enabled = (cboMobLoginName.ListCount > 1) And _
-      (Not mblnReadOnly)
+      (Not mblnReadOnly) And Application.MobileModule
     cboMobLoginName.BackColor = IIf(cboMobLoginName.Enabled, vbWindowBackground, vbButtonFace)
   lblMobLoginNameColumn.Enabled = cboMobLoginName.Enabled
   
   cboMobEMailColumn.Enabled = (cboMobEMailColumn.ListCount > 1) And _
-    (Not mblnReadOnly)
+    (Not mblnReadOnly) And Application.MobileModule
     cboMobEMailColumn.BackColor = IIf(cboMobEMailColumn.Enabled, vbWindowBackground, vbButtonFace)
   lblMobEmailAddresses.Enabled = cboMobEMailColumn.Enabled
   
   cboMobLeavingDateColumn.Enabled = (cboMobLeavingDateColumn.ListCount > 1) And _
-    (Not mblnReadOnly)
+    (Not mblnReadOnly) And Application.MobileModule
     cboMobLeavingDateColumn.BackColor = IIf(cboMobLeavingDateColumn.Enabled, vbWindowBackground, vbButtonFace)
   lblMobLeavingDateColumn.Enabled = cboMobLeavingDateColumn.Enabled
   
   cboMobUserActivated.Enabled = (cboMobUserActivated.ListCount > 1) And _
-    (Not mblnReadOnly)
+    (Not mblnReadOnly) And Application.MobileModule
     cboMobUserActivated.BackColor = IIf(cboMobUserActivated.Enabled, vbWindowBackground, vbButtonFace)
   lblMobUserActivated.Enabled = cboMobUserActivated.Enabled
     
