@@ -3472,7 +3472,7 @@ Private Sub cmdCancel_Click()
   
   ' Check if any changes have been made.
   If mfChanged Then
-    intAnswer = MsgBox("The chart definition has changed.  Save changes ?", vbQuestion + vbYesNoCancel + vbDefaultButton1, App.ProductName)
+    intAnswer = MsgBox("The link type definition has changed.  Save changes ?", vbQuestion + vbYesNoCancel + vbDefaultButton1, App.ProductName)
     If intAnswer = vbYes Then
       Call cmdOk_Click
       Exit Sub
