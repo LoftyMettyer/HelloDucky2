@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "12:39"
+            TextSave        =   "12:43"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -2967,6 +2967,7 @@ Private Sub RefreshQuickLinks(ByVal MenuType As UserMenuType)
   Dim iCount As Integer
   Dim sBandName As String
   Dim sProcName As String
+  Dim sCaption As String
   
   ' Menu specific stuff
   Select Case MenuType
@@ -3066,7 +3067,13 @@ Private Sub RefreshQuickLinks(ByVal MenuType As UserMenuType)
             sIconName = "BLANK"
         End Select
 
-        objFileTool.Caption = "&" & CStr(iCount) & " " & sType & rsTemp("name").Value
+        If MenuType = Favourites Then
+          sCaption = sType & rsTemp("name").Value
+        Else
+          sCaption = "&" & CStr(iCount) & " " & sType & rsTemp("name").Value
+        End If
+        
+        objFileTool.Caption = sCaption
         objFileTool.SetPicture 0, LoadResPicture(sIconName, 1), COL_GREY
       
       End With
