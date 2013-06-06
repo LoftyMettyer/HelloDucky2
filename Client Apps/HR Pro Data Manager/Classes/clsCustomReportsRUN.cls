@@ -2866,7 +2866,7 @@ Private Function PopulateGrid_InitForm() As Boolean
              
       ' store the length of the column heading in order to set the column width later on
       ReDim Preserve mlngColWidth(intColCounter)
-      mlngColWidth(intColCounter) = mfrmOutput.TextWidth(mrstCustomReportsOutput.Fields(iLoop).Name) + 200
+      mlngColWidth(intColCounter) = mfrmOutput.TextWidth(mrstCustomReportsOutput.Fields(iLoop).Name) + 350
 
     Next iLoop
   
