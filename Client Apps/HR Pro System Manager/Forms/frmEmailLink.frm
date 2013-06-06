@@ -143,6 +143,7 @@ Begin VB.Form frmEmailLink
       TabPicture(1)   =   "frmEmailLink.frx":1D90
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "frmContent"
+      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       Begin VB.Frame frmContent 
          Height          =   6240
@@ -1433,6 +1434,12 @@ End Sub
 
 Private Sub sstrvAvailable_DblClick()
   InsertColumn 1, txtContent(1).SelStart
+End Sub
+
+Private Sub sstrvAvailable_KeyUp(KeyCode As Integer, Shift As Integer)
+  If KeyCode = vbKeyReturn Then
+    InsertColumn 1, txtContent(1).SelStart
+  End If
 End Sub
 
 Private Sub txtAttachment_Change()
