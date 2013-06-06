@@ -122,7 +122,7 @@ Begin VB.Form frmNewMultipleUser
          Left            =   4530
          Picture         =   "frmNewMultipleUser.frx":0084
          TabIndex        =   10
-         Top             =   1125
+         Top             =   1110
          UseMaskColor    =   -1  'True
          Width           =   315
       End
@@ -236,7 +236,7 @@ Begin VB.Form frmNewMultipleUser
          Left            =   4530
          Picture         =   "frmNewMultipleUser.frx":0174
          TabIndex        =   19
-         Top             =   300
+         Top             =   285
          UseMaskColor    =   -1  'True
          Width           =   315
       End
@@ -644,7 +644,7 @@ Private Sub RefreshButtons()
       chkChangePassword.Value = vbChecked
       chkChangePassword.Enabled = True
     End If
-    cmdOK.Enabled = mlngSQLUserNameExprID > 0 And mlngPasswordExprID > 0
+    cmdOk.Enabled = mlngSQLUserNameExprID > 0 And mlngPasswordExprID > 0
   End If
   
   ' Windows Authentication  (Manual Username)
@@ -668,7 +668,7 @@ Private Sub RefreshButtons()
       
     chkChangePassword.Value = vbUnchecked
     chkChangePassword.Enabled = False
-    cmdOK.Enabled = mlngWindowsUserNameExprID > 0
+    cmdOk.Enabled = mlngWindowsUserNameExprID > 0
   End If
      
   ' Windows Authentication  (Auto map to username)
@@ -691,7 +691,7 @@ Private Sub RefreshButtons()
     txtWindowsUserName.Text = ""
     cmdWindowsUsername.Enabled = False
     
-    cmdOK.Enabled = True
+    cmdOk.Enabled = True
   End If
   
 End Sub
