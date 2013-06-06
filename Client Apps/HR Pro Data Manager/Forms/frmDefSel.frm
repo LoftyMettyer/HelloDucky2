@@ -336,6 +336,25 @@ Public AllowFavourites As Boolean
 Public SelectedUtilityType As UtilityType
 Public EnableNew As Boolean
 
+Private msSearchForText As String
+Private mlngSearchForUserID As Long
+
+Public Property Get SearchText() As String
+  SearchText = msSearchForText
+End Property
+
+Public Property Let SearchText(ByVal NewText As String)
+  txtSearchFor.Text = NewText
+End Property
+
+Public Property Get SearchUserID() As Long
+  SearchUserID = mlngSearchForUserID
+End Property
+
+Public Property Let SearchUserID(ByVal UserID As Long)
+  mlngSearchForUserID = UserID
+End Property
+
 Public Property Get CategoryID() As Long
   CategoryID = mlngTableID
 End Property
@@ -496,6 +515,8 @@ Private Sub cboOwner_Click()
 
   Dim sExtraFilter As String
 
+  mlngSearchForUserID = cboOwner.ItemData(cboOwner.ListIndex)
+
   If Not mblnScheduledJobs And txtSearchFor.Visible Then
     sExtraFilter = IIf(Len(mstrExtraWhereClause) > 0, "(" & mstrExtraWhereClause & ") AND ", "") & "(name LIKE '%" & Replace(txtSearchFor.Text, "'", "''") & "%')"
     GetSQL mutlUtilityType, sExtraFilter, False
@@ -508,13 +529,13 @@ Private Sub cboTables_Click()
   
   Dim sExtraFilter As String
   
-  If Not mblnScheduledJobs And txtSearchFor.Visible Then
+  If Not mblnScheduledJobs Then
     With cboTables
       If .ListIndex > -1 Then
         If mlngTableID <> .ItemData(.ListIndex) Then
           mlngTableID = .ItemData(.ListIndex)
-          sExtraFilter = IIf(Len(mstrExtraWhereClause) > 0, "(" & mstrExtraWhereClause & ") AND ", "") & "(name LIKE '%" & Replace(txtSearchFor.Text, "'", "''") & "%')"
-          GetSQL mutlUtilityType, sExtraFilter, False
+         ' sExtraFilter = IIf(Len(mstrExtraWhereClause) > 0, "(" & mstrExtraWhereClause & ") AND ", "") & "(name LIKE '%" & Replace(txtSearchFor.Text, "'", "''") & "%')"
+          GetSQL mutlUtilityType, mstrExtraWhereClause, False
           Call Populate_List
         End If
       End If
@@ -1039,7 +1060,7 @@ Public Sub Refresh_Controls()
   Dim iCount As Integer
   Dim lngTempIndex As Long
   Dim sType As String
-  Dim lngTYPE As UtilityType
+  Dim lngType As UtilityType
   Dim bSystemMgrDefined As Boolean
   
   If mblnLoading Then
@@ -1377,7 +1398,7 @@ Dim fAllColumns As Boolean
   strSQL = msRecordSource
 
   ' The tableID is also used for the categoryID
-  If mlngTableID >= 0 Then
+  If mlngTableID > 0 Then
     If mblnTableComboVisible Then
       strSQL = strSQL & _
         IIf(InStr(strSQL, " WHERE ") = 0, " WHERE ", " AND ") & _
@@ -1701,6 +1722,8 @@ Private Sub ShowControls()
   'SizeControls
 
   Dim lngOffset As Long
+  Dim lngUserID As Long
+  
   Const lngGap = 100
 
   On Error GoTo LocalErr
@@ -1825,8 +1848,7 @@ Private Sub ShowControls()
     lngOffset = lngOffset + .Height '+ lngGAP
   End With
   
-  fraBottomButtons.Height = lngOffset + 10
-   
+
   ' Table combo flag now used to show categories or tables
   lblTables.Visible = Not (mutlUtilityType = utlWorkflow Or mutlUtilityType = utlDocumentMapping Or mutlUtilityType = utlEmailAddress _
                         Or mutlUtilityType = utlLabelType Or mutlUtilityType = utlEmailGroup Or mblnScheduledJobs)
@@ -1846,9 +1868,16 @@ Private Sub ShowControls()
   End If
         
   ' Owners combo
+  lngUserID = mlngSearchForUserID
   cboOwner.Visible = lblTables.Visible
   GetObjectOwners cboOwner, msTypeCode
-        
+
+  If lngUserID > 0 Then
+    SetComboItem cboOwner, lngUserID
+  End If
+  
+  fraBottomButtons.Height = lngOffset + 10
+   
   txtSearchFor.Visible = lblTables.Visible
   txtDesc.Visible = Not mblnHideDesc
 
@@ -1864,7 +1893,6 @@ LocalErr:
   UI.UnlockWindow
 
 End Sub
-
 
 Private Sub SizeControls()
 
@@ -2396,6 +2424,12 @@ Public Sub GetSQL(lngUtilType As UtilityType, Optional psRecordSourceWhere As St
     strExtraWhereClause = strExtraWhereClause & IIf(strExtraWhereClause <> vbNullString, " AND ", "") & "(ISNULL(cat.categoryid,0) = " & mlngTableID & ")"
   End If
   
+  
+  ' Filter the name
+  If Len(txtSearchFor.Text) > 0 Then
+    strExtraWhereClause = strExtraWhereClause & IIf(strExtraWhereClause <> vbNullString, " AND ", "") & "(name LIKE '%" & Replace(txtSearchFor.Text, "'", "''") & "%')"
+  End If
+  
   ' Filter the user
   If cboOwner.ListIndex > 0 Then
     If cboOwner.ListIndex = 1 Then
@@ -2452,8 +2486,9 @@ Public Function ShowList(lngUtilType As UtilityType, Optional psRecordSourceWher
   mblnScheduledJobs = blnScheduledJobs
 
   GetSQL lngUtilType, mstrExtraWhereClause, blnScheduledJobs
-
   ShowControls
+  GetSQL lngUtilType, mstrExtraWhereClause, blnScheduledJobs
+
   ShowList = Populate_List
 
 End Function
@@ -2589,9 +2624,10 @@ Private Sub txtSearchFor_Change()
 
   Dim sExtraFilter As String
 
-  sExtraFilter = "(name LIKE '%" & Replace(txtSearchFor.Text, "'", "''") & "%')"
+  'sExtraFilter = "(name LIKE '%" & Replace(txtSearchFor.Text, "'", "''") & "%')"
+  msSearchForText = txtSearchFor.Text
 
-  GetSQL mutlUtilityType, sExtraFilter, False
+  GetSQL mutlUtilityType, mstrExtraWhereClause, False
   Populate_List
 
 End Sub

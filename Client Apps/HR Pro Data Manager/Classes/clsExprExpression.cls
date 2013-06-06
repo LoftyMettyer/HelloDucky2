@@ -498,6 +498,8 @@ Public Function SelectExpression(pfLockTable As Boolean, Optional plngOptions As
   Dim rsExpressions As Recordset
   Dim frmSelectExpr As frmDefSel
   Dim strSQL As String
+  Dim sSearchText As String
+  Dim lngSearchUserID As Long
 
   'fOK = (mlngBaseTableID > 0) Or (Not pfLockTable)
   fOK = (mlngBaseTableID > 0) Or (Not pfLockTable) Or (miExpressionType = giEXPR_RECORDINDEPENDANTCALC)
@@ -544,6 +546,8 @@ Public Function SelectExpression(pfLockTable As Boolean, Optional plngOptions As
         End If
         
         .EnableRun = False
+        .SearchText = sSearchText
+        .SearchUserID = lngSearchUserID
         
         Select Case ExpressionType
         Case giEXPR_RUNTIMEFILTER
@@ -632,7 +636,12 @@ Public Function SelectExpression(pfLockTable As Boolean, Optional plngOptions As
             rsExpressions.Close
             fOK = False
             fExit = True
+            
         End Select
+        
+        sSearchText = .SearchText
+        lngSearchUserID = .SearchUserID
+
       Loop
     End With
 

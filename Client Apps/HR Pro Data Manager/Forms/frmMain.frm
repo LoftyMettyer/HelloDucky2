@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "14:31"
+            TextSave        =   "11:49"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -2265,6 +2265,8 @@ Public Sub PickListClick()
   'Dim sSQL As String
   Dim frmPick As frmPicklists
   Dim frmSelection As frmDefSel
+  Dim sSearchText As String
+  Dim lngSearchUserID As Long
     
   Screen.MousePointer = vbHourglass
   fExit = False
@@ -2278,6 +2280,9 @@ Public Sub PickListClick()
       .EnableRun = False
       .TableComboEnabled = True
       .TableComboVisible = True
+      .SearchText = sSearchText
+      .SearchUserID = lngSearchUserID
+      
       
       If .ShowList(utlPicklist) Then
       
@@ -2314,6 +2319,10 @@ Public Sub PickListClick()
             fExit = True
         
         End Select
+      
+        sSearchText = .SearchText
+        lngSearchUserID = .SearchUserID
+      
       End If
     Loop
   End With
@@ -3695,6 +3704,8 @@ Public Sub RunUtility(ByRef UtilType As UtilityType, ByRef UtilityID As Long, By
   Dim bOk As Boolean
   Dim lngSelectedID As Long
   Dim lngUtilityType As UtilityType
+  Dim sSearchText As String
+  Dim lngSearchUserID As Long
    
   bOk = True
   fExit = False
@@ -3739,6 +3750,8 @@ Public Sub RunUtility(ByRef UtilType As UtilityType, ByRef UtilityID As Long, By
           .EnableRun = True
           .CategoryID = glngCurrentCategoryID
           .SelectedUtilityType = UtilType
+          .SearchText = sSearchText
+          .SearchUserID = lngSearchUserID
               
           If UtilType = utlWorkflow Then
             .Options = edtSelect
@@ -3823,6 +3836,9 @@ Public Sub RunUtility(ByRef UtilType As UtilityType, ByRef UtilityID As Long, By
                        
               .SelectedID = lngSelectedID
               fExit = gbCloseDefSelAfterRun Or bRunOnce
+            
+              sSearchText = .SearchText
+              lngSearchUserID = .SearchUserID
             
               ' Record the event
               If bOk Then UpdateUsage .SelectedUtilityType, .SelectedID, .Action
