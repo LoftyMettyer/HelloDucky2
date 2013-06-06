@@ -102,21 +102,10 @@ PRINT 'Step 1 - Create table rename function'
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 2 - Rename base user tables'
+PRINT 'Step 2 - Rename base system tables'
 
-	SET @NVarCommand = '';
-	SELECT @NVarCommand = @NVarCommand + 'EXECUTE dbo.spASRTableToView ''' + TableName + ''', ''tbuser_' + LOWER(TableName) + ''';'
-		FROM ASRSysTables;
-	EXECUTE sp_executesql @NVarCommand;
-
-	SET @NVarCommand = '';
-	SELECT @NVarCommand = @NVarCommand + 'EXECUTE dbo.spASRUpdateTableStructures ''' + TableName + ''';'
-		FROM ASRSysTables;
-	EXECUTE sp_executesql @NVarCommand;
-
-
-/* ------------------------------------------------------------- */
-PRINT 'Step 3 - Rename base system tables'
+	SET @NVarCommand = 'EXECUTE spASRTableToView ''ASRSysAuditTrail'', ''tbsys_audittrail'''
+	EXECUTE (@NVarCommand);
 
 	SET @NVarCommand = 'EXECUTE spASRTableToView ''ASRSysTables'', ''tbsys_tables'''
 	EXECUTE (@NVarCommand);
@@ -168,7 +157,7 @@ PRINT 'Step 3 - Rename base system tables'
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 4 - Drop existing system triggers'
+PRINT 'Step 3 - Drop existing system triggers'
 
 	SET @NVarCommand = '';
 	SELECT @NVarCommand = @NVarCommand + 'DROP TRIGGER ' +  o.name + ';' + CHAR(13)
@@ -176,6 +165,21 @@ PRINT 'Step 4 - Drop existing system triggers'
 		INNER JOIN tbsys_tables t ON t.TableName = OBJECT_NAME(o.parent_obj)
 		WHERE o.xtype = 'TR' AND (name = 'INS_' + t.TableName OR name = 'UPD_' + t.TableName OR name = 'DEL_' + t.TableName)
 	EXECUTE sp_executesql @NVarCommand;
+
+
+/* ------------------------------------------------------------- */
+PRINT 'Step 4 - Rename base user tables'
+
+	SET @NVarCommand = '';
+	SELECT @NVarCommand = @NVarCommand + 'EXECUTE dbo.spASRTableToView ''' + TableName + ''', ''tbuser_' + LOWER(TableName) + ''';'
+		FROM tbsys_tables;
+	EXECUTE sp_executesql @NVarCommand;
+
+	SET @NVarCommand = '';
+	SELECT @NVarCommand = @NVarCommand + 'EXECUTE dbo.spASRUpdateTableStructures ''' + TableName + ''';'
+		FROM tbsys_tables;
+	EXECUTE sp_executesql @NVarCommand;
+
 
 
 /* ------------------------------------------------------------- */
@@ -225,7 +229,20 @@ PRINT 'Step 7 - Drop all HR Pro defined object (schema binding)'
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 8 - Add new calculation procedures'
+PRINT 'Step 8 - Upgrade image data structures to varbinary(max)'
+
+	SET @NVarCommand = ''
+	SELECT @NVarCommand = @NVarCommand + 'ALTER TABLE dbo.[' + o.Name + '] ALTER COLUMN [' + c.ColumnName + '] varbinary(MAX);' 
+		FROM tbsys_columns c 
+		INNER JOIN tbsys_tables t ON c.tableID = t.TableID
+		INNER JOIN sys.sysobjects o ON 'tbuser_' + t.tablename = o.name AND o.xtype = 'U' 
+		INNER JOIN sys.syscolumns oc ON c.columnname = oc.name AND oc.id = o.id AND oc.type = 34
+		WHERE (c.datatype = -4 AND c.OLEType >= 2) OR (c.datatype = -3 AND c.OLEType >= 2)
+	EXECUTE sp_executesql @NVarCommand
+
+
+/* ------------------------------------------------------------- */
+PRINT 'Step 9 - Add new calculation procedures'
 
 	IF EXISTS (SELECT *
 		FROM dbo.sysobjects
@@ -252,6 +269,11 @@ PRINT 'Step 8 - Add new calculation procedures'
 		WHERE id = object_id(N'[dbo].[udfsys_initialsfromforenames]')
 			AND xtype in (N'FN', N'IF', N'TF'))
 		DROP FUNCTION [dbo].[udfsys_initialsfromforenames]
+	IF EXISTS (SELECT *
+		FROM dbo.sysobjects
+		WHERE id = object_id(N'[dbo].[udfsys_isbetween]')
+			AND xtype in (N'FN', N'IF', N'TF'))
+		DROP FUNCTION [dbo].[udfsys_isbetween]
 	IF EXISTS (SELECT *
 		FROM dbo.sysobjects
 		WHERE id = object_id(N'[dbo].[udfsys_isfieldempty]')
@@ -532,10 +554,30 @@ PRINT 'Step 8 - Add new calculation procedures'
 			
 			END
 		
-			RETURN @result
+			RETURN @result;
 		
 		END';
 	EXECUTE sp_executeSQL @sSPCode;
+
+
+	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_isbetween](
+			@column1 AS nvarchar(MAX),
+			@column2 AS nvarchar(MAX),
+			@column3 AS nvarchar(MAX))
+		RETURNS bit
+		WITH SCHEMABINDING
+		AS
+		BEGIN
+		
+			DECLARE @result bit = 0;
+
+			SELECT @result = CASE WHEN @column1 BETWEEN @column2 AND @column3 THEN 1 ELSE 0 END
+				
+			RETURN @result;
+			
+		END';
+	EXECUTE sp_executeSQL @sSPCode;
+
 
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_isfieldpopulated](
 			@inputcolumn as nvarchar(MAX))
@@ -843,7 +885,7 @@ PRINT 'Step 8 - Add new calculation procedures'
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 7 - Populate code generation tables'
+PRINT 'Step 10 - Populate code generation tables'
 
 	EXEC sp_executesql N'IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[tbstat_componentcode]'') AND type in (N''U''))
 		DROP TABLE [dbo].[tbstat_componentcode]'
@@ -914,7 +956,7 @@ PRINT 'Step 7 - Populate code generation tables'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''263f4cc8-7c8d-4c5d-bdea-9e4ced21f078'', N''[dbo].[udfsys_firstnamefromforenames]({0})'', 1, 0, 0, N''First Name from Forenames'', NULL, 0, 0, 21, 0)'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''f14ebf8d-98e6-4e36-a1e1-35efd0023c55'', N''CASE WHEN {0} THEN {1} ELSE {2} END'', 0, 0, 0, N''If... Then... Else...'', NULL, 0, 0, 4, 0)'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''5feedcc3-e731-46b0-b7fe-2027e1e9ded4'', N''[dbo].[udfsys_initialsfromforenames]({0},0)'', 1, 0, 0, N''Initials from Forenames'', NULL, 0, 0, 20, 0)'
-	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''7d539e37-6d9f-44b3-a694-7db9638a2502'', N''CASE WHEN {0} < {1} THEN 0 ELSE CASE WHEN {0} > {2} THEN 0 ELSE 1 END END'', 0, 0, 0, N''Is Between'', NULL, 0, 0, 38, 0)'
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''7d539e37-6d9f-44b3-a694-7db9638a2502'', N''dbo.[udfsys_isbetween]({0},{1},{2})'', 0, 0, 0, N''Is Between'', NULL, 0, 0, 38, 0)'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''9171430a-6a23-48cb-bd11-4b025eaaceaf'', N''CASE WHEN {0} < {1} THEN 0 ELSE CASE WHEN {0} > {2} THEN 0 ELSE 1 END END'', 3, 0, 0, N''Is Date In Range'', NULL, 0, 0, NULL, 0)'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''a9997816-add0-467f-999d-79ef30c2b713'', N''[dbo].[udfsys_isfieldempty]({0})'', 3, 0, 0, N''Is Field Empty'', NULL, 0, 0, 16, 0)'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''8caf9f74-dee4-4618-8d59-e292847f202a'', N''[dbo].[udfsys_isfieldpopulated]({0})'', 3, 0, 0, N''Is Field Populated'', NULL, 0, 0, 61, 0)'
@@ -926,7 +968,7 @@ PRINT 'Step 7 - Populate code generation tables'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''3e9cae1a-0948-481d-8d0b-9c13ca5d9373'', N''DATEADD(dd, -1, DATEADD(mm, 1, DATEADD(dd, 1 - DATEPART(dd, {0}), {0})))'', 4, 0, 0, N''Last Day of Month'', NULL, 0, 0, 56, 0)'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''bc2ce0fc-6e2c-43a2-86f9-0ed45cba129a'', N''DATEADD(dd, -1, DATEADD(yy, 1, DATEADD(dd, 1 - DATEPART(dy, {0}), {0})))'', 4, 0, 0, N''Last Day of Year'', NULL, 0, 0, 58, 0)'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''18babc7b-b84e-4ca9-9e10-c630bb004891'', N''LEN({0})'', 2, 0, 0, N''Length of Character Field'', NULL, 0, 0, 7, 0)'
-	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''bba7fff7-bd75-4953-abd1-2f70418bbb80'', N''[dbo].[udfsys_maternityexpectedreturndate](@pid)'', 4, 0, 0, N''Maternity Expected Return Date'', NULL, 0, 0, 64, 0)'
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''bba7fff7-bd75-4953-abd1-2f70418bbb80'', N''[dbo].[udfsys_maternityexpectedreturndate](@prm_ID)'', 4, 0, 0, N''Maternity Expected Return Date'', NULL, 0, 0, 64, 0)'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''5acc9ebe-af46-438e-9ebd-2741b42e26e0'', N''CASE WHEN {0} > {1} THEN {0} ELSE {1} END'', 1, 0, 0, N''Maximum'', NULL, 0, 0, 9, 0)'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''e03d8884-8835-425c-b268-1eec196917eb'', N''CASE WHEN {0} < {1} THEN {0} ELSE {1} END'', 1, 0, 0, N''Minimum'', NULL, 0, 0, 10, 0)'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''7d1376aa-5bdc-4844-9e5d-b3499b807639'', N''DATEPART(MM, {0})'', 2, 0, 0, N''Month of Date'', NULL, 0, 0, 33, 0)'
@@ -934,9 +976,9 @@ PRINT 'Step 7 - Populate code generation tables'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''d97bb954-d303-4eeb-90ce-1466287de905'', N''DATENAME(month, {0})'', 1, 0, 0, N''Name of Month'', NULL, 0, 0, 59, 0)'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''ccbcd03a-0c7e-47c7-b4bf-d6e8bd7963e8'', N''[dbo].[udfsys_nicedate]({0})'', 1, 0, 0, N''Nice Date'', NULL, 0, 0, 35, 0)'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''42a88b07-200f-4785-9c1f-e4b5a97a9001'', N''[dbo].[udfsys_nicetime]({0})'', 1, 0, 0, N''Nice Time'', NULL, 0, 0, 36, 0)'
-	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''e59b8c9c-31d1-494f-b9c3-ca0a6a6aef1e'', N'''', 2, 0, 0, N''Number of Working Days per Week'', NULL, 0, 0, 29, 0)'
-	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''84044568-fea7-48d5-ae8a-f8178b7ed927'', N''[dbo].[udfsys_parentalleaveentitlement](@pid)'', 2, 0, 0, N''Parental Leave Entitlement'', NULL, 0, 0, 62, 0)'
-	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''5278a126-c44e-41c5-9e7a-1c890c297d3f'', N''[dbo].[udfsys_parentalleavetaken](@pid)'', 2, 0, 0, N''Parental Leave Taken'', NULL, 0, 0, 63, 0)'
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''e59b8c9c-31d1-494f-b9c3-ca0a6a6aef1e'', N''(convert(float, len(replace(left({0}, 14), SPACE(1), SPACE(0)))) / 2)'', 2, 0, 0, N''Number of Working Days per Week'', NULL, 0, 0, 29, 0)'
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''84044568-fea7-48d5-ae8a-f8178b7ed927'', N''[dbo].[udfsys_parentalleaveentitlement](@prm_ID)'', 2, 0, 0, N''Parental Leave Entitlement'', NULL, 0, 0, 62, 0)'
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''5278a126-c44e-41c5-9e7a-1c890c297d3f'', N''[dbo].[udfsys_parentalleavetaken](@prm_ID)'', 2, 0, 0, N''Parental Leave Taken'', NULL, 0, 0, 63, 0)'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''ed3be9d9-28f1-4345-a8c8-ca9f0c18a3a2'', N''({0})'', 0, 0, 0, N''Parentheses'', NULL, 0, 0, 27, 1)'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''06e67c1b-c376-4fc9-a260-e9a12022791f'', N'''', 2, 0, 0, N''Remaining Months since Whole Years'', NULL, 0, 0, 19, 0)'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''b86c77e6-e393-499e-9114-95a201a316d4'', N''LTRIM(RTRIM({0}))'', 1, 0, 0, N''Remove Leading and Trailing Spaces'', NULL, 0, 0, 5, 0)'
@@ -962,7 +1004,7 @@ PRINT 'Step 7 - Populate code generation tables'
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 8 - Administration module stored procedures'
+PRINT 'Step 11 - Administration module stored procedures'
 
 	IF EXISTS (SELECT *
 		FROM dbo.sysobjects
