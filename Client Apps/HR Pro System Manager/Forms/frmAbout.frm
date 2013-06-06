@@ -97,7 +97,7 @@ Begin VB.Form frmAbout
    Begin VB.Label lblAdvancedConnectURL 
       AutoSize        =   -1  'True
       BackStyle       =   0  'Transparent
-      Caption         =   "Visit the customer website for the latest OpenHR news and events"
+      Caption         =   "Visit Advanced Connect for the latest OpenHR news and events"
       BeginProperty Font 
          Name            =   "Verdana"
          Size            =   8.25
@@ -114,7 +114,7 @@ Begin VB.Form frmAbout
       MousePointer    =   99  'Custom
       TabIndex        =   10
       Top             =   5490
-      Width           =   5655
+      Width           =   5430
    End
    Begin VB.Label lblURL 
       AutoSize        =   -1  'True
