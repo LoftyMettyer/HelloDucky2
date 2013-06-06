@@ -269,8 +269,7 @@ Private Sub cboAuditTable_Click()
     If TypeOf objctl Is ComboBox And Not objctl.Name = "cboAuditTable" Then
       With objctl
         .Clear
-        .AddItem "<None>"
-        .ItemData(.NewIndex) = 0
+        AddItemToComboBox objctl, "<None>", 0
       End With
     End If
   Next objctl
@@ -292,47 +291,36 @@ Private Sub cboAuditTable_Click()
           (!columntype <> giCOLUMNTYPE_SYSTEM) Then
         
           If !DataType = dtTIMESTAMP Then
-            cboAuditDate.AddItem !ColumnName
-            cboAuditDate.ItemData(cboAuditDate.NewIndex) = !ColumnID
+            AddItemToComboBox cboAuditDate, !ColumnName, !ColumnID
           End If
 
           If !DataType = dtVARCHAR Then
 
             If !Size >= 50 Then
-              cboUser.AddItem !ColumnName
-              cboUser.ItemData(cboUser.NewIndex) = !ColumnID
-              cboModule.AddItem !ColumnName
-              cboModule.ItemData(cboModule.NewIndex) = !ColumnID
+              AddItemToComboBox cboUser, !ColumnName, !ColumnID
+              AddItemToComboBox cboModule, !ColumnName, !ColumnID
             End If
 
             If !Size = 8 Then
-              cboTime.AddItem !ColumnName
-              cboTime.ItemData(cboTime.NewIndex) = !ColumnID
+              AddItemToComboBox cboTime, !ColumnName, !ColumnID
             End If
 
             If !Size >= 200 Then
-              cboTable.AddItem !ColumnName
-              cboTable.ItemData(cboTable.NewIndex) = !ColumnID
-              cboColumn.AddItem !ColumnName
-              cboColumn.ItemData(cboColumn.NewIndex) = !ColumnID
+              AddItemToComboBox cboTable, !ColumnName, !ColumnID
+              AddItemToComboBox cboColumn, !ColumnName, !ColumnID
             End If
   
             If !Size >= 255 Then
-              cboDescription.AddItem !ColumnName
-              cboDescription.ItemData(cboDescription.NewIndex) = !ColumnID
+              AddItemToComboBox cboDescription, !ColumnName, !ColumnID
             End If
   
             If !MultiLine = True Then
-              cboOldValue.AddItem !ColumnName
-              cboOldValue.ItemData(cboOldValue.NewIndex) = !ColumnID
-              cboNewValue.AddItem !ColumnName
-              cboNewValue.ItemData(cboNewValue.NewIndex) = !ColumnID
+              AddItemToComboBox cboOldValue, !ColumnName, !ColumnID
+              AddItemToComboBox cboNewValue, !ColumnName, !ColumnID
             End If
           
-          ElseIf !DataType = dtinteger Then
-          
-            cboID.AddItem !ColumnName
-            cboID.ItemData(cboID.NewIndex) = !ColumnID
+          ElseIf !DataType = dtINTEGER Then
+              AddItemToComboBox cboID, !ColumnName, !ColumnID
           
           End If
             
@@ -349,7 +337,7 @@ Private Sub cmdCancel_Click()
   UnLoad Me
 End Sub
 
-Private Sub cmdOK_Click()
+Private Sub cmdOk_Click()
 
   If SaveChanges Then
     Changed = False
@@ -471,8 +459,7 @@ Private Sub PopulateBaseTableCombos()
   Dim lngPostTable As Long
   
   cboAuditTable.Clear
-  cboAuditTable.AddItem "<None>"
-  cboAuditTable.ItemData(cboAuditTable.NewIndex) = 0
+  AddItemToComboBox cboAuditTable, "<None>", 0
   cboAuditTable.ListIndex = 0
 
   ' Add items to the combo for each table that has not been deleted,
@@ -485,10 +472,7 @@ Private Sub PopulateBaseTableCombos()
 
     Do While Not .EOF
       If Not !Deleted Then
-
-        cboAuditTable.AddItem !TableName
-        cboAuditTable.ItemData(cboAuditTable.NewIndex) = !TableID
-
+        AddItemToComboBox cboAuditTable, !TableName, !TableID
       End If
       .MoveNext
     Loop

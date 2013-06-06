@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "COA_Line.ocx"
+Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "coa_line.ocx"
 Begin VB.Form frmBankHolidaySetup 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Bank Holidays Setup"
@@ -184,7 +184,7 @@ Public Property Get Changed() As Boolean
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
   mfChanged = pblnChanged
-  cmdOK.Enabled = True
+  cmdOk.Enabled = True
 End Property
 
 Private Sub cboBHolDate_Change()
@@ -242,7 +242,7 @@ Private Sub Form_Load()
   
   'AE20080204 Fault #12829
   mfChanged = False
-  cmdOK.Enabled = False
+  cmdOk.Enabled = False
   Screen.MousePointer = vbDefault
 End Sub
 
@@ -270,12 +270,10 @@ Private Sub InitialiseBaseTableCombos()
   iBHolRegionTableListIndex = 0
   
   ' Clear the combos, and add '<None>' items.
-    cboBHolRegionTable.Clear
-    cboBHolRegionTable.AddItem "<None>"
-    cboBHolRegionTable.ItemData(cboBHolRegionTable.NewIndex) = 0
+  cboBHolRegionTable.Clear
+  AddItemToComboBox cboBHolRegionTable, "<None>", 0
     
-  ' Add items to the combo for each table that has not been deleted,
-  ' and is a child of the defined Personnel table.
+  ' Add items to the combo for each table that has not been deleted and is a child of the defined Personnel table.
   With recTabEdit
     .Index = "idxName"
     If Not (.BOF And .EOF) Then
@@ -284,22 +282,16 @@ Private Sub InitialiseBaseTableCombos()
     
     Do While Not .EOF
       If Not !Deleted Then
-        
-        cboBHolRegionTable.AddItem !TableName
-        cboBHolRegionTable.ItemData(cboBHolRegionTable.NewIndex) = !TableID
-        
-        If !TableID = mvar_lngBHolRegionTableID Then
-          iBHolRegionTableListIndex = cboBHolRegionTable.NewIndex
-        End If
+        AddItemToComboBox cboBHolRegionTable, !TableName, !TableID
       End If
       .MoveNext
     Loop
   End With
   
   ' Select the appropriate combo items.
-    'cboBHolTable.Enabled = True
-    cboBHolTable.Enabled = Not mblnReadOnly
-    cboBHolRegionTable.ListIndex = iBHolRegionTableListIndex
+  SetComboItem cboBHolRegionTable, mvar_lngBHolRegionTableID
+
+  cboBHolTable.Enabled = Not mblnReadOnly
 
 End Sub
 
@@ -344,8 +336,7 @@ Private Sub RefreshBHolRegionControls()
 
   ' Clear the current contents of the BHolRegion field combo
   cboBHolRegion.Clear
-  cboBHolRegion.AddItem "<None>"
-  cboBHolRegion.ItemData(cboBHolRegion.NewIndex) = 0
+  AddItemToComboBox cboBHolRegion, "<None>", 0
 
   With recColEdit
     .Index = "idxName"
@@ -363,11 +354,7 @@ Private Sub RefreshBHolRegionControls()
 
           ' Load varchar fields
           If !DataType = dtVARCHAR Then
-            cboBHolRegion.AddItem !ColumnName
-            cboBHolRegion.ItemData(cboBHolRegion.NewIndex) = !ColumnID
-            If !ColumnID = mvar_lngBHolRegionID Then
-              iBHolRegionListIndex = cboBHolRegion.NewIndex
-            End If
+            AddItemToComboBox cboBHolRegion, !ColumnName, !ColumnID
           End If
         End If
         .MoveNext
@@ -375,20 +362,12 @@ Private Sub RefreshBHolRegionControls()
     End If
   End With
 
-  ' Select the appropriate combo items.
-  cboBHolRegion.ListIndex = iBHolRegionListIndex
 
-  ' Now populate the BankHolidayTable combo with children of the table selected
-  ' in the BHolRegionTable combo
-  
-  ' Clear the current contents of the combo
+  ' Now populate the BankHolidayTable combo with children of the table selected in the BHolRegionTable combo
   cboBHolTable.Clear
-  cboBHolTable.AddItem "<None>"
-  cboBHolTable.ItemData(cboBHolTable.NewIndex) = 0
+  AddItemToComboBox cboBHolTable, "<None>", 0
   
-  ' Add the tables that are children of the table selected in the BHolRegionTable
-  ' combo
-  
+  ' Add the tables that are children of the table selected in the BHolRegionTable combo
   With recTabEdit
     .Index = "idxName"
     If Not (.BOF And .EOF) Then
@@ -401,12 +380,7 @@ Private Sub RefreshBHolRegionControls()
         recRelEdit.Seek "=", mvar_lngBHolRegionTableID, !TableID
         
         If Not recRelEdit.NoMatch Then
-          cboBHolTable.AddItem !TableName
-          cboBHolTable.ItemData(cboBHolTable.NewIndex) = !TableID
-        
-          If !TableID = mvar_lngBHolTableID Then
-            iBHolTableListIndex = cboBHolTable.NewIndex
-          End If
+          AddItemToComboBox cboBHolTable, !TableName, !TableID
         End If
         
       End If
@@ -415,18 +389,14 @@ Private Sub RefreshBHolRegionControls()
   End With
   
   ' Select the appropriate combo items.
-  cboBHolTable.ListIndex = iBHolTableListIndex
+  SetComboItem cboBHolRegion, mvar_lngBHolRegionID
+  SetComboItem cboBHolTable, mvar_lngBHolTableID
 
 End Sub
 
 Private Sub RefreshBHolControls()
   ' Refresh the BHol controls.
-  Dim iBHolDateListIndex As Integer
-  Dim iBHolDescriptionListIndex As Integer
   Dim objctl As Control
-
-  iBHolDateListIndex = 0
-  iBHolDescriptionListIndex = 0
 
   ' Clear the current contents of the combos.
   For Each objctl In Me
@@ -436,8 +406,7 @@ Private Sub RefreshBHolControls()
         
       With objctl
         .Clear
-        .AddItem "<None>"
-        .ItemData(.NewIndex) = 0
+        AddItemToComboBox objctl, "<None>", 0
       End With
     End If
   Next objctl
@@ -460,21 +429,12 @@ Private Sub RefreshBHolControls()
 
           ' Load date fields
           If !DataType = dtTIMESTAMP Then
-            cboBHolDate.AddItem !ColumnName
-            cboBHolDate.ItemData(cboBHolDate.NewIndex) = !ColumnID
-            If !ColumnID = mvar_lngBHolDateID Then
-              iBHolDateListIndex = cboBHolDate.NewIndex
-            End If
+            AddItemToComboBox cboBHolDate, !ColumnName, !ColumnID
           End If
           
           ' Load varchar fields
           If !DataType = dtVARCHAR Then
-            cboBHolDescription.AddItem !ColumnName
-            cboBHolDescription.ItemData(cboBHolDescription.NewIndex) = !ColumnID
-            If !ColumnID = mvar_lngBHolDescriptionID Then
-              iBHolDescriptionListIndex = cboBHolDescription.NewIndex
-            End If
-
+            AddItemToComboBox cboBHolDescription, !ColumnName, !ColumnID
           End If
         End If
 
@@ -484,13 +444,13 @@ Private Sub RefreshBHolControls()
   End With
 
   ' Select the appropriate combo items.
-  cboBHolDate.ListIndex = iBHolDateListIndex
-  cboBHolDescription.ListIndex = iBHolDescriptionListIndex
+  SetComboItem cboBHolDate, mvar_lngBHolDateID
+  SetComboItem cboBHolDescription, mvar_lngBHolDescriptionID
 
 End Sub
 
 
-Private Sub cmdOK_Click()
+Private Sub cmdOk_Click()
 
   'AE20071119 Fault #12607
   'If ValidateSetup Then
