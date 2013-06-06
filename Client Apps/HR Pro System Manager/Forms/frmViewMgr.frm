@@ -100,11 +100,10 @@ Begin VB.Form frmViewMgr
       Width           =   3000
       _ExtentX        =   5292
       _ExtentY        =   2646
-      _Version        =   65536
+      _Version        =   65538
       LabelEdit       =   1
       LineStyle       =   1
       Indentation     =   315
-      Sorted          =   1
       AutoSearch      =   0   'False
       HideSelection   =   0   'False
       PictureBackgroundUseMask=   0   'False
@@ -121,6 +120,7 @@ Begin VB.Form frmViewMgr
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
+      Sorted          =   1
    End
    Begin ComctlLib.StatusBar sbStatus 
       Align           =   2  'Align Bottom
@@ -189,7 +189,7 @@ Begin VB.Form frmViewMgr
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
          NumListImages   =   1
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmViewMgr.frx":C204
+            Picture         =   "frmViewMgr.frx":E5A8
             Key             =   "IMG_VIEW"
          EndProperty
       EndProperty
@@ -228,11 +228,11 @@ Begin VB.Form frmViewMgr
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
          NumListImages   =   2
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmViewMgr.frx":CA56
+            Picture         =   "frmViewMgr.frx":EDFA
             Key             =   "IMG_TABLE"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmViewMgr.frx":CFA8
+            Picture         =   "frmViewMgr.frx":F34C
             Key             =   "IMG_VIEW"
          EndProperty
       EndProperty
@@ -1251,8 +1251,8 @@ Private Sub DeleteViews()
   Dim sViewName As String
   Dim aLngViewID() As Long
   Dim sSQL As String
-  Dim rsModules As DAO.Recordset
-  Dim rsTemp As DAO.Recordset
+  Dim rsModules As dao.Recordset
+  Dim rsTemp As dao.Recordset
   Dim sModuleName As String
   Dim frmUse As frmUsage
   Dim fUsed As Boolean
@@ -1682,7 +1682,7 @@ Private Function lstColumns_Refresh() As Boolean
   Dim lngTableID As Long
   Dim sSQL As String
   Dim sMessage As String
-  Dim rsColumns As DAO.Recordset
+  Dim rsColumns As dao.Recordset
   
   sMessage = ""
   
@@ -1846,7 +1846,7 @@ Private Function AddViewColumns_Transaction(plngViewID As Long, plngViewTableID 
   Dim sNodeLabel As String
   Dim frmViewProperties As frmViewProp
   Dim nodX As SSNode
-  Dim rsColumns As DAO.Recordset
+  Dim rsColumns As dao.Recordset
   
   ' Begin the transaction of data to the local database.
   daoWS.BeginTrans
