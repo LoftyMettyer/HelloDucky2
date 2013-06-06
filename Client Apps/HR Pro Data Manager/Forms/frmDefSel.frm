@@ -1558,10 +1558,10 @@ Dim fAllColumns As Boolean
     SendMessageLong List2.hWnd, LB_SETHORIZONTALEXTENT, lngList2Max + TICKBOXWIDTH, 0
   End If
   
-  lngMax = lngMax + 60
-  List1.ColumnHeaders(1).Width = List1.Width - 60 ' lngMax
-  List1.ColumnHeaders(2).Width = 0
-  List1.Refresh
+'  lngMax = lngMax + 60
+'  List1.ColumnHeaders(1).Width = List1.Width - 60 ' lngMax
+'  List1.ColumnHeaders(2).Width = 0
+'  List1.Refresh
 
   ApplySystemPermissions
 
@@ -1959,7 +1959,9 @@ Private Sub SizeControls()
   ' Lists
   List1.Move 0, lngListTop, fraMain.Width + 20, lngOffset
   List2.Move 0, lngListTop, fraMain.Width + 20, lngOffset
-
+  
+  List1.ColumnHeaders(2).Width = 0
+  List1.ColumnHeaders(1).Width = List1.Width - 370
 
   fraTopButtons.Move fraMain.Left + fraMain.Width + lngGap, lngGap
   fraBottomButtons.Move fraTopButtons.Left, (fraMain.Top + fraMain.Height) - fraBottomButtons.Height
