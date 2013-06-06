@@ -2148,10 +2148,6 @@ PRINT 'Step - Administration module stored procedures'
 	END'
 
 
-
-
-
-
 /* ------------------------------------------------------------- */
 PRINT 'Step - Remove redundant procedures'
 
@@ -2232,6 +2228,14 @@ PRINT 'Step - System metadata indexing'
 	EXEC sp_executesql N'CREATE UNIQUE NONCLUSTERED INDEX [IDX_Transaction] ON [dbo].[tbsys_intransactiontrigger] ([tablefromid] ASC, [spid] ASC)'
 	EXEC sp_executesql N'CREATE UNIQUE NONCLUSTERED INDEX [IDX_SectionSettingKey] ON [dbo].[ASRSysSystemSettings] ([Section] ASC, [SettingKey] ASC)'
 	EXEC sp_executesql N'CREATE NONCLUSTERED INDEX [IDX_IDType] ON [dbo].[ASRSysWorkflowElements] ([Type] ASC, [ID] ASC)'
+
+	-- Clear up superfluous indexes
+	SET @NVarCommand = '';
+	SELECT @NVarCommand = @NVarCommand + 'DROP INDEX [' + name + '] ON dbo.[' + OBJECT_NAME(id) + '];'
+		FROM sys.sysindexes
+		WHERE name LIKE 'IDX_getfromdb_%';
+	EXECUTE sp_executeSQL @NVarCommand;
+
 
 /* ------------------------------------------------------------- */
 PRINT 'Step - New Shared Table Transfer Types for ASPP'
