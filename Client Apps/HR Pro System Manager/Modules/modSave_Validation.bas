@@ -631,7 +631,9 @@ Private Function CreateValidationStoredProcedure(pLngCurrentTableID As Long, _
         "        AND NOT dbo.[" & psCurrentTableName & "].[ID] = @piRecordID;" & vbNewLine & _
         "    IF LEN(@psInvalidityMessage) > 0 SET @pfResult = 0;" & vbNewLine
     Next
-   
+    
+  End If
+
   sSPCode = sSPCode & vbNewLine & vbNewLine & _
     "    IF LEN(@psInvalidityMessage) > 0" & vbNewLine & _
     "        SET @psInvalidityMessage = ISNULL(@psDescription,'') + CHAR(13)" & vbNewLine & _
