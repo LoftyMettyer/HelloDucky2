@@ -479,7 +479,7 @@ Public Function OpenProgress() As Boolean
     .lblTime.Visible = mblnTime
     .cmdCancel.Visible = mblnCancel
     ' NPG20091013 Fault HRPro-312
-    .FormEnableCloseButton (mblnCancel)
+    .FormEnableCloseButton (False)
     
     ' If the cancel button is invisible, then change the pointer to an hourglass
     If mblnCancel Then Screen.MousePointer = vbNormal Else Screen.MousePointer = vbHourglass
