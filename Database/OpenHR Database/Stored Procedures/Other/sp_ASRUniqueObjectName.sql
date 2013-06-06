@@ -4,6 +4,9 @@ CREATE PROCEDURE [dbo].[sp_ASRUniqueObjectName](
 		, @Type int)
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	DECLARE @NewObj 		as sysname
 		, @Count 			as integer
 		, @sUserName		as sysname
