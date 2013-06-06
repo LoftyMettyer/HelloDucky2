@@ -383,6 +383,15 @@ Private Function PasswordChange() As Boolean
               "Data Source=" & gsServerName & ";" & _
               "Old Password=" & strOldPassword & ";" & _
               "Password=" & strNewPassword & ";"
+              
+    Case 11 ' SQL Native Client 2012
+      sConn = "Provider=SQLNCLI11;Persist Security Info=False;DataTypeCompatibility=80;" & _
+              "Application Name=OpenHR Security Manager;" & _
+              "User ID=" & gsUserName & ";" & _
+              "Initial Catalog='';" & _
+              "Data Source=" & gsServerName & ";" & _
+              "Old Password=" & strOldPassword & ";" & _
+              "Password=" & strNewPassword & ";"
     End Select
     
     gADOCon.ConnectionString = sConn

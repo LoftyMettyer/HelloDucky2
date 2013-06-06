@@ -908,7 +908,7 @@ On Error GoTo SQLNCLI_Err
 
   rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE, sREGKEYSQLNCLI11, 0, KEY_READ, hKey) ' Open Registry Key
   If (rc = 0) Then
-    tmpKey = 10
+    tmpKey = 11
     rc = RegCloseKey(hKey) ' Close Registry Key
   End If
 

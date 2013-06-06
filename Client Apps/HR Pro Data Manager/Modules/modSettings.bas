@@ -854,7 +854,7 @@ On Error GoTo SQLNCLI_Err
 
   rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE, sREGKEYSQLNCLI11, 0, KEY_READ, hKey) ' Open Registry Key
   If (rc = 0) Then
-    tmpKey = 10
+    tmpKey = 11
     rc = RegCloseKey(hKey) ' Close Registry Key
   End If
 
@@ -879,8 +879,10 @@ Dim iVersion As Integer
 
   If iVersion = 9 Then
     GetSQLProviderString = "Provider=SQLNCLI;"
-  ElseIf iVersion = 10 Or iVersion = 11 Then
+  ElseIf iVersion = 10 Then
     GetSQLProviderString = "Provider=SQLNCLI10;"
+  ElseIf iVersion = 11 Then
+    GetSQLProviderString = "Provider=SQLNCLI11;"
   Else
     GetSQLProviderString = vbNullString
   End If
