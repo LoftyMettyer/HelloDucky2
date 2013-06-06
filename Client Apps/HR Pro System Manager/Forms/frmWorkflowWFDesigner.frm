@@ -3089,7 +3089,8 @@ Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
             End If
           End If
         End If
-      
+        'PG 28092012 HRPRO-2543 cancel the delete press otherwise the main menu fires the delete again as the del key is its shortcut
+        KeyCode = 0
       End If
     End If
     
