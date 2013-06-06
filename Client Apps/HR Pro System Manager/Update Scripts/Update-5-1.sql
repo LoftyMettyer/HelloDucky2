@@ -58,6 +58,52 @@ BEGIN
 	RETURN
 END
 
+/* ------------------------------------------------------------- */
+/* Step - Object triggers */
+/* ------------------------------------------------------------- */
+
+	IF  EXISTS (SELECT * FROM sys.triggers WHERE object_id = OBJECT_ID(N'[dbo].[DEL_ASRSysTables]'))
+		DROP TRIGGER [dbo].[DEL_ASRSysTables]
+
+	IF  EXISTS (SELECT * FROM sys.triggers WHERE object_id = OBJECT_ID(N'[dbo].[DEL_ASRSysColumns]'))
+		DROP TRIGGER [dbo].[DEL_ASRSysColumns]
+
+	IF  EXISTS (SELECT * FROM sys.triggers WHERE object_id = OBJECT_ID(N'[dbo].[DEL_ASRSysWorkflows]'))
+		DROP TRIGGER [dbo].[DEL_ASRSysWorkflows]
+
+	EXECUTE sp_executeSQL N'CREATE TRIGGER [dbo].[DEL_ASRSysColumns] ON [dbo].[ASRSysColumns]
+		INSTEAD OF DELETE
+		AS
+		BEGIN
+			SET NOCOUNT ON;
+
+			DELETE FROM [tbsys_columns] WHERE columnid IN (SELECT columnid FROM deleted);
+			DELETE FROM [tbsys_scriptedobjects] WHERE targetid IN (SELECT columnid FROM deleted) AND objecttype = 2;
+			
+		END'
+
+	EXECUTE sp_executeSQL N'CREATE TRIGGER [dbo].[DEL_ASRSysTables] ON [dbo].[ASRSysTables]
+		INSTEAD OF DELETE
+		AS
+		BEGIN
+			SET NOCOUNT ON;
+
+			DELETE FROM [tbsys_tables] WHERE tableid IN (SELECT tableid FROM deleted);
+			DELETE FROM [tbsys_scriptedobjects] WHERE targetid IN (SELECT tableid FROM deleted) AND objecttype = 1;
+
+		END'
+
+	EXECUTE sp_executeSQL N'CREATE TRIGGER [dbo].[DEL_ASRSysWorkflows] ON [dbo].[ASRSysWorkflows]
+		INSTEAD OF DELETE
+		AS
+		BEGIN
+			SET NOCOUNT ON;
+
+			DELETE FROM [tbsys_workflows] WHERE id IN (SELECT id FROM deleted);
+			DELETE FROM [tbsys_scriptedobjects] WHERE targetid IN (SELECT id FROM deleted) AND objecttype = 10;
+
+		END'
+
 
 /* ------------------------------------------------------------- */
 /* Step - Data Cleansing */
@@ -65,6 +111,10 @@ END
 
 	EXECUTE sp_executeSQL N'UPDATE ASRSysColumns SET lostFocusExprID = 0 WHERE (lostFocusExprID = - 1);';	
 	EXECUTE sp_executeSQL N'UPDATE ASRSysColumns SET dfltValueExprID = 0 WHERE (dfltValueExprID = - 1);';
+	DELETE FROM [tbsys_scriptedobjects] WHERE objecttype = 1 AND targetid NOT IN (SELECT tableid FROM [tbsys_tables])
+	DELETE FROM [tbsys_scriptedobjects] WHERE objecttype = 2 AND targetid NOT IN (SELECT columnid FROM [tbsys_columns])
+	DELETE FROM [tbsys_scriptedobjects] WHERE objecttype = 10 AND targetid NOT IN (SELECT id FROM [tbsys_workflows])
+
 
 
 /* ------------------------------------------------------------- */
@@ -175,10 +225,9 @@ PRINT 'Step - Object scripting'
 		IF EXISTS(SELECT [columnid] FROM dbo.[ASRSysColumns] WHERE tableid = @tableid AND columnname = @columnname)
 			RETURN;
 
-
 		SELECT @tablename = [tablename] FROM dbo.[ASRSysTables] WHERE tableid = @tableid;
 		SELECT @columnid = MAX(columnid) + 1 FROM dbo.[ASRSysColumns];
-			
+		
 		SET @defaultvalue = '''';		
 		SET @spinnerMinimum = 0;
 		SET @spinnerMaximum = 0;
