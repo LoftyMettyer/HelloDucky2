@@ -1284,15 +1284,15 @@ PRINT 'Step 1 - System procedures'
 
 	EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[sp_ASRAllTablePermissions] 
 	(
-		@psSQLLogin		varchar(200)
+	@psSQLLogin 		varchar(200)
 	)
 	AS
 	BEGIN
 
-		SET NOCOUNT ON;
+		SET NOCOUNT ON
 
 		/* Return parameters showing what permissions the current user has on all of the tables. */
-		DECLARE @iUserGroupID	int;
+		DECLARE @iUserGroupID	int
 
 		/* Initialise local variables. */
 		SELECT @iUserGroupID = usg.gid
@@ -1317,14 +1317,13 @@ PRINT 'Step 1 - System procedures'
 			INNER JOIN dbo.ASRSysChildViews2 v ON v.ChildViewID = CONVERT(integer,SUBSTRING(o.Name,9,PATINDEX ( ''%#%'' , o.Name) - 9))
 			WHERE Name LIKE ''ASRSYSCV%'';
 
-
 		SELECT o.name, p.action, bt.BaseTableID
 		FROM @SysProtects p
 		INNER JOIN sysobjects o ON p.id = o.id
 		LEFT OUTER JOIN @BaseTableIDs bt ON o.id = bt.id
 		WHERE p.protectType <> 206
 			AND p.action <> 193
-			AND (o.xtype = ''u'' or o.xtype = ''v'')
+			AND o.xtype = ''v''
 			AND (o.Name NOT LIKE ''ASRSYS%'' OR o.Name LIKE ''ASRSYSCV%'')
 		UNION
 		SELECT o.name, 193, bt.BaseTableID
@@ -1337,9 +1336,9 @@ PRINT 'Step 1 - System procedures'
 			AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0)))
 		INNER JOIN sysobjects o ON o.id = p.id
 		LEFT OUTER JOIN @BaseTableIDs bt ON o.id = bt.id
-		WHERE syscolumns.name = ''timestamp''
+		WHERE (syscolumns.name <> ''timestamp'' AND syscolumns.name <> ''ID'')
 			AND p.protectType IN (204, 205) 
-			AND (o.Name NOT LIKE ''ASRSYS%'' OR o.Name LIKE ''ASRSYSCV%'')
+			AND o.[xtype] = ''V''
 		ORDER BY o.name;
 
 	END'
