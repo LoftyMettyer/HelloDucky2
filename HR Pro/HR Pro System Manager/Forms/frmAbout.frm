@@ -247,7 +247,6 @@ End Sub
 
 Private Sub cmdTech_Click()
   frmTechSupport.Show vbModal
-
 End Sub
 
 Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
