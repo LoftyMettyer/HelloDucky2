@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Begin VB.Form frmDataTransfer 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Data Transfer Definition"
@@ -621,11 +621,11 @@ Public Property Get SelectedID() As Long
 End Property
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
 End Property
 
 Public Property Let Changed(blnChanged As Boolean)
-  cmdOk.Enabled = blnChanged
+  cmdOK.Enabled = blnChanged
 End Property
 
 Public Property Get FormPrint() As Boolean
@@ -2413,11 +2413,11 @@ If mlTransferID > 0 Then
     If (Not fBatchJobsOK) Then
       If Len(sBatchJobDetails_ScheduledForOtherUsers) > 0 Then
         COAMsgBox "This definition cannot be made hidden from the following user groups :" & vbCrLf & vbCrLf & sBatchJobScheduledUserGroups & vbCrLf & _
-               "as it is used in the following batch jobs which are scheduled to be run by these user groups :" & vbCrLf & vbCrLf & sBatchJobDetails_ScheduledForOtherUsers, _
+               "as it is used in the following " & IIf(gblnReportPackMode, "report packs", "batch jobs") & " which are scheduled to be run by these user groups :" & vbCrLf & vbCrLf & sBatchJobDetails_ScheduledForOtherUsers, _
                vbExclamation + vbOKOnly, "Data Transfer"
       Else
         COAMsgBox "This definition cannot be made hidden as it is used in the following" & vbCrLf & _
-               "batch jobs of which you are not the owner :" & vbCrLf & vbCrLf & sBatchJobDetails_NotOwner, vbExclamation + vbOKOnly _
+                IIf(gblnReportPackMode, "report packs", "batch jobs") & " of which you are not the owner :" & vbCrLf & vbCrLf & sBatchJobDetails_NotOwner, vbExclamation + vbOKOnly _
                , "Data Transfer"
       End If
 
@@ -2495,11 +2495,11 @@ Private Sub txtDesc_GotFocus()
     .SelStart = 0
     .SelLength = Len(.Text)
   End With
-  cmdOk.Default = False
+  cmdOK.Default = False
 End Sub
 
 Private Sub txtDesc_LostFocus()
-  cmdOk.Default = True
+  cmdOK.Default = True
 End Sub
 
 Private Sub txtName_Change()
