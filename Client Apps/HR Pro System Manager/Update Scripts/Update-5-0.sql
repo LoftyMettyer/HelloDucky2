@@ -3404,15 +3404,16 @@ PRINT 'Step 8 - New Mobile User Logins Table'
 				@fSaveForLater			bit;
 		
 			DECLARE stepsCursor CURSOR LOCAL FAST_FORWARD FOR 
-			SELECT E.type,
+			SELECT TOP 5 E.type,
 				S.instanceID,
 				E.ID,
 				S.ID
 			FROM ASRSysWorkflowInstanceSteps S
 			INNER JOIN ASRSysWorkflowElements E ON S.elementID = E.ID
 			WHERE S.status = 1
-				AND E.type <> 5; -- 5 = StoredData elements handled in the service
-		
+				AND E.type <> 5 -- 5 = StoredData elements handled in the service
+			ORDER BY s.ActivationDateTime;
+			
 			OPEN stepsCursor;
 			FETCH NEXT FROM stepsCursor INTO @iElementType, @iInstanceID, @iElementID, @iStepID;
 			WHILE (@@fetch_status = 0)
