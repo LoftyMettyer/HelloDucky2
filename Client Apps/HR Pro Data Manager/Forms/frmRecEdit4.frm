@@ -7790,13 +7790,13 @@ Private Function LoadControls(pobjScreen As clsScreen) As Boolean
               If mobjBorders Is Nothing Then
                 Set mobjBorders = New clsBorders
               End If
-              mobjBorders.SetBorder objNewControl.hwnd, ctTextBox, RGB(169, 177, 184), False
+              mobjBorders.SetBorder objNewControl.hwnd, ctTextBox, RGB(169, 177, 184)
 
         ElseIf TypeOf objNewControl Is GTMaskDate.GTMaskDate Then
               If mobjBorders Is Nothing Then
                 Set mobjBorders = New clsBorders
               End If
-              mobjBorders.SetBorder objNewControl.hwnd, ctTextBox, RGB(169, 177, 184), False
+              mobjBorders.SetBorder objNewControl.hwnd, ctTextBox, RGB(169, 177, 184)
 
         End If
 

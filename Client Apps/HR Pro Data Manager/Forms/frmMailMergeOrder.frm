@@ -104,6 +104,7 @@ Attribute VB_Exposed = False
 Option Explicit
 
 Private mfrmForm As Form
+Private mgrdReportOrder As SSDBGrid
 Private mblnNew As Boolean
 Private mblnUserCancelled As Boolean
 
@@ -117,6 +118,8 @@ Public Function Initialise(pblnNew As Boolean, pfrmForm As Form, Optional plngCo
   Dim plngExclusion As Long
   
   Set mfrmForm = pfrmForm
+  Set mgrdReportOrder = mfrmForm.grdReportOrder
+  
   mblnNew = pblnNew
   
   pintLoop = PopulateCombo(plngColExprID)
@@ -129,7 +132,7 @@ Public Function Initialise(pblnNew As Boolean, pfrmForm As Form, Optional plngCo
       Exit Function
     End If
      
-    If (mfrmForm.grdReportOrder.Rows = pintLoop And pintLoop > 0) Or (cboColumns.ListCount = 0) Then
+    If (mgrdReportOrder.Rows = pintLoop And pintLoop > 0) Or (cboColumns.ListCount = 0) Then
       COAMsgBox "You have selected all existing columns in the sort order." & vbCrLf & _
              "To add more sort order columns, you must add more columns to the definition.", vbExclamation + vbOKOnly, mfrmForm.Caption
       Initialise = False
@@ -141,9 +144,9 @@ Public Function Initialise(pblnNew As Boolean, pfrmForm As Form, Optional plngCo
     
   Else
   
-    mfrmForm.grdReportOrder.MoveFirst
-    Do Until mfrmForm.grdReportOrder.Columns("ColExprID").Value = plngColExprID
-      mfrmForm.grdReportOrder.MoveNext
+    mgrdReportOrder.MoveFirst
+    Do Until mgrdReportOrder.Columns("ColExprID").Value = plngColExprID
+      mgrdReportOrder.MoveNext
     Loop
       
   End If
@@ -171,7 +174,7 @@ Private Function IsntAlreadyAnOrderColumn(plngColExprID As Long) As Boolean
   Dim pvarbookmark As Variant
   Dim pintLoop As Integer
   
-  With mfrmForm.grdReportOrder
+  With mgrdReportOrder
     
     ' Store the old position so we can return it after we have looped thru the grid
     pvarOldPosition = .Bookmark
@@ -215,16 +218,16 @@ Private Sub cmdAction_Click(Index As Integer)
   If Index = 1 Then
     
     If mblnNew = True Then
-      mfrmForm.grdReportOrder.MoveLast
-      mfrmForm.grdReportOrder.AddItem _
+      mgrdReportOrder.MoveLast
+      mgrdReportOrder.AddItem _
         CStr(Me.cboColumns.ItemData(Me.cboColumns.ListIndex)) & vbTab & _
         Me.cboColumns.Text & vbTab & _
         IIf(Me.optAsc.Value, "Ascending", "Descending")
-        mfrmForm.grdReportOrder.MoveLast
-       mfrmForm.grdReportOrder.SelBookmarks.Add mfrmForm.grdReportOrder.Bookmark
+        mgrdReportOrder.MoveLast
+       mgrdReportOrder.SelBookmarks.Add mgrdReportOrder.Bookmark
     Else
     
-      With mfrmForm.grdReportOrder
+      With mgrdReportOrder
         plngRow = .AddItemRowIndex(.Bookmark)
  
         pstrRow = CStr(Me.cboColumns.ItemData(Me.cboColumns.ListIndex)) & vbTab & _
@@ -254,11 +257,13 @@ End Sub
 
 Private Function PopulateCombo(SelectedID As Long) As Integer
 
+  Dim ListView2 As ListView
   Dim lngColumnCount As Long
   Dim pintLoop As Integer
   Dim lngID As Long
   
-  With mfrmForm.ListView2
+  Set ListView2 = mfrmForm.ListView2
+  With ListView2
     
     pintLoop = 1
     lngColumnCount = 0

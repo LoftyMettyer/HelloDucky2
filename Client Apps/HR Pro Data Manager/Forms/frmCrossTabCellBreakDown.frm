@@ -218,10 +218,10 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
 
-Private mfrmParentForm As Form
+Private mfrmParentForm As frmCrossTabRun
 Private mlngReportMode As CrossTabType
 
-Public Sub Initialise(frmParent As Form)
+Public Sub Initialise(frmParent As frmCrossTabRun)
   Set mfrmParentForm = frmParent
   mlngReportMode = cttNormal
 End Sub

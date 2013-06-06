@@ -199,7 +199,7 @@ Private Sub SetBreaks(bBreak As Boolean, bPage As Boolean, BValue As Boolean, bS
 
 End Sub
 
-Public Function Initialise(sBaseTable As String, iCols As Integer, Optional blnEditing As Boolean, Optional pfrmForm As Form) As Boolean
+Public Function Initialise(sBaseTable As String, iCols As Integer, Optional blnEditing As Boolean, Optional pfrmForm As frmCustomReports) As Boolean
 
   ' Populate the combo box showing available columns then show the form
   Dim iLoop As Integer

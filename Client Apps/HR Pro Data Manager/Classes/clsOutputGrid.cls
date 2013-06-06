@@ -111,7 +111,7 @@ Public Sub Complete()
   mobjParent.ResetDefaultPrinter
 End Sub
 
-Public Function RecordProfilePage(pfrmRecProfile As Form, _
+Public Function RecordProfilePage(pfrmRecProfile As frmRecordProfilePreview, _
   piPageNumber As Integer, _
   pcolStyles As Collection) As Boolean
   

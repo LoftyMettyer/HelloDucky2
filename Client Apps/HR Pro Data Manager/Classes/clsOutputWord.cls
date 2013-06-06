@@ -47,7 +47,7 @@ Public Sub ClearUp()
   Set mwrdApp = Nothing
 End Sub
 
-Public Function RecordProfilePage(pfrmRecProfile As Form, _
+Public Function RecordProfilePage(pfrmRecProfile As frmRecordProfilePreview, _
   piPageNumber As Integer, _
   pcolStyles As Collection)
   ' Output the record profile page to Word.
