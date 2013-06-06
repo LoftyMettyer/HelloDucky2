@@ -15,7 +15,7 @@ Attribute VB_Ext_KEY = "SavedWithClassBuilder" ,"Yes"
 Attribute VB_Ext_KEY = "Top_Level" ,"Yes"
 Option Explicit
 
-Private Declare Function SetCursorPos Lib "user32" (ByVal X As Long, ByVal Y As Long) As Long
+Private Declare Function SetCursorPos Lib "user32" (ByVal x As Long, ByVal y As Long) As Long
 
 Private Type TEXTMETRIC
   tmHeight As Long
@@ -57,8 +57,8 @@ Private Type Rect
 End Type
 
 Private Type POINTAPI
-  X As Long
-  Y As Long
+  x As Long
+  y As Long
 End Type
 
 Private Type MINMAXINFO
@@ -147,23 +147,20 @@ Private Declare Function GetSystemMetricsAPI Lib "user32" Alias "GetSystemMetric
 Private Declare Function GetTextMetrics Lib "gdi32" Alias "GetTextMetricsA" (ByVal hDC As Long, lpMetrics As TEXTMETRIC) As Long
 Private Declare Function GetVersionEx Lib "kernel32" Alias "GetVersionExA" (lpVersionInformation As OSVERSIONINFO) As Long
 Private Declare Function GetComputerName Lib "kernel32" Alias "GetComputerNameA" (ByVal lpBuffer As String, nSize As Long) As Long
-Private Declare Function GetWindowLong Lib "user32" Alias "GetWindowLongA" (ByVal hWnd As Long, ByVal nIndex As Long) As Long
 Private Declare Function GetWindowRect Lib "user32" (ByVal hWnd As Long, lpRect As Rect) As Long
 Private Declare Sub keybd_event Lib "user32" (ByVal bVk As Byte, ByVal bScan As Byte, ByVal dwFlags As Long, ByVal dwExtraInfo As Long)
 Private Declare Function LockWindowUpdate Lib "user32" (ByVal hwndLock As Long) As Long
 Private Declare Function OemKeyScan Lib "user32" (ByVal wOemChar As Long) As Long
 Private Declare Function SendMessageLng Lib "user32" Alias "SendMessageA" _
-  (ByVal hWnd As Long, ByVal wMsg As Long, ByVal wParam As Long, LParam As Long) As Long
+  (ByVal hWnd As Long, ByVal wMsg As Long, ByVal wParam As Long, lParam As Long) As Long
 Private Declare Function SendMessageStr Lib "user32" Alias "SendMessageA" _
-  (ByVal hWnd As Long, ByVal wMsg As Long, ByVal wParam As Long, ByVal LParam As String) As Long
+  (ByVal hWnd As Long, ByVal wMsg As Long, ByVal wParam As Long, ByVal lParam As String) As Long
 Private Declare Function SetFocusAPI Lib "user32" Alias "SetFocus" (ByVal hWnd As Long) As Long
-Private Declare Function SetWindowLong Lib "user32" Alias "SetWindowLongA" (ByVal hWnd As Long, ByVal nIndex As Long, ByVal dwNewLong As Long) As Long
-Private Declare Function SetWindowPos Lib "user32" (ByVal hWnd As Long, ByVal hWndInsertAfter As Long, ByVal X As Long, ByVal Y As Long, ByVal cx As Long, ByVal cy As Long, ByVal wFlags As Long) As Long
+Private Declare Function SetWindowPos Lib "user32" (ByVal hWnd As Long, ByVal hWndInsertAfter As Long, ByVal x As Long, ByVal y As Long, ByVal cx As Long, ByVal cy As Long, ByVal wFlags As Long) As Long
 Private Declare Function SystemParametersInfo Lib "user32" Alias "SystemParametersInfoA" (ByVal uAction As Long, ByVal uParam As Long, lpvParam As Any, ByVal fuWinIni As Long) As Long
 Private Declare Function VkKeyScan Lib "user32" Alias "VkKeyScanA" (ByVal cChar As Byte) As Integer
 Private Declare Function WindowFromPoint Lib "user32" (ByVal xPoint As Long, ByVal yPoint As Long) As Long
 Private Declare Function GetLocaleInfo Lib "kernel32" Alias "GetLocaleInfoA" (ByVal locale As Long, ByVal LCType As Long, ByVal lpLCData As String, ByVal cchData As Long) As Long
-Private Declare Function GetWindow Lib "user32" (ByVal hWnd As Long, ByVal wCmd As Long) As Long
 
 
 Function GetSystemMeasurement() As String
@@ -623,8 +620,8 @@ Function GetMousePos(pLngMouseX As Long, pLngMouseY As Long) As Boolean
   Dim MousePos As POINTAPI
   
   GetCursorPos MousePos
-  pLngMouseX = MousePos.X * Screen.TwipsPerPixelX
-  pLngMouseY = MousePos.Y * Screen.TwipsPerPixelY
+  pLngMouseX = MousePos.x * Screen.TwipsPerPixelX
+  pLngMouseY = MousePos.y * Screen.TwipsPerPixelY
 
   GetMousePos = True
   Exit Function
@@ -840,8 +837,8 @@ Function GetControlAtPoint(pCtlThisControl As Control) As Control
     Call GetWindowRect(objParentControl.hWnd, WndRect)
     
     'Calculate current mouse position within the controls parent
-    iX = pt.X - (WndRect.Left + GetSystemMetrics(SM_CXFRAME))
-    iY = pt.Y - (WndRect.Top + GetSystemMetrics(SM_CYCAPTION) + GetSystemMetrics(SM_CYFRAME))
+    iX = pt.x - (WndRect.Left + GetSystemMetrics(SM_CXFRAME))
+    iY = pt.y - (WndRect.Top + GetSystemMetrics(SM_CYCAPTION) + GetSystemMetrics(SM_CYFRAME))
     
   Else
     'Set pointer to controls container
@@ -851,8 +848,8 @@ Function GetControlAtPoint(pCtlThisControl As Control) As Control
     Call GetWindowRect(objParentControl.hWnd, WndRect)
     
     'Calculate current mouse position within the controls container
-    iX = pt.X - (WndRect.Left + GetSystemMetrics(SM_CXBORDER))
-    iY = pt.Y - (WndRect.Top + GetSystemMetrics(SM_CYBORDER))
+    iX = pt.x - (WndRect.Left + GetSystemMetrics(SM_CXBORDER))
+    iY = pt.y - (WndRect.Top + GetSystemMetrics(SM_CYBORDER))
   End If
   
   'Attempt to find a visible child window at mouse position
@@ -870,8 +867,8 @@ Function GetControlAtPoint(pCtlThisControl As Control) As Control
     Call GetWindowRect(lngHWndFound, WndRect)
     
     'Calculate mouse position within the found window
-    iX = pt.X - (WndRect.Left + GetSystemMetrics(SM_CXBORDER))
-    iY = pt.Y - (WndRect.Top + GetSystemMetrics(SM_CYBORDER))
+    iX = pt.x - (WndRect.Left + GetSystemMetrics(SM_CXBORDER))
+    iY = pt.y - (WndRect.Top + GetSystemMetrics(SM_CYBORDER))
   
     'Attempt to find a visible child window at mouse position
     lngHWnd = ChildWindowFromPointEx(lngHWndFound, iX, iY, CWP_SKIPINVISIBLE)
@@ -1106,8 +1103,8 @@ Dim pt As POINTAPI
     ' Position the cursor. SetCursorPos uses screen
     ' coordinates (pixels).
     SetCursorPos _
-        pt.X + frm.ScaleX(ctl.Width / 2, frm.ScaleMode, vbPixels), _
-        pt.Y + frm.ScaleY(ctl.Height / 2, frm.ScaleMode, vbPixels)
+        pt.x + frm.ScaleX(ctl.Width / 2, frm.ScaleMode, vbPixels), _
+        pt.y + frm.ScaleY(ctl.Height / 2, frm.ScaleMode, vbPixels)
         
   Exit Sub
   
