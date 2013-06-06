@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Begin VB.Form frmWorkflowWFTabOrder 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Control Order"
@@ -102,7 +102,7 @@ Begin VB.Form frmWorkflowWFTabOrder
          Key             =   "Name"
          Object.Tag             =   ""
          Text            =   "Control"
-         Object.Width           =   4057
+         Object.Width           =   3881
       EndProperty
       BeginProperty ColumnHeader(2) {0713E8C7-850A-101B-AFC0-4210102A8DA7} 
          SubItemIndex    =   1
@@ -117,7 +117,7 @@ Begin VB.Form frmWorkflowWFTabOrder
          Key             =   "Order"
          Object.Tag             =   ""
          Text            =   "Order"
-         Object.Width           =   882
+         Object.Width           =   1059
       EndProperty
    End
    Begin ComctlLib.ImageList ImageList1 
