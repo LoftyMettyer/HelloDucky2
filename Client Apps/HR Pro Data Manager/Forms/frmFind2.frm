@@ -4470,6 +4470,8 @@ Public Sub SetCurrentRecord()
     End With
   End If
  
+  UpdateStatusBar
+
 End Sub
 
 Public Sub PrintGrid()
