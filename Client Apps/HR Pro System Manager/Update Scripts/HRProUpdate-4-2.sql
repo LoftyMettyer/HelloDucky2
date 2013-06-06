@@ -371,6 +371,17 @@ PRINT 'Step 4 of X - Add new formatting columns to ASRSysSSIntranetLinks'
 		EXEC sp_executesql N'UPDATE ASRSysSSIntranetLinks SET ConditionalFormatting_Colour_3 = '''''
 	END
 
+--------------------------------------------------------------------------------------------
+-- Separator Border Colour Column
+--------------------------------------------------------------------------------------------
+
+	IF NOT EXISTS(SELECT id FROM syscolumns
+	              WHERE  id = OBJECT_ID('ASRSysSSIntranetLinks', 'U') AND name = 'SeparatorColour')
+    BEGIN
+		EXEC sp_executesql N'ALTER TABLE ASRSysSSIntranetLinks ADD SeparatorColour varchar(MAX) NULL'
+		EXEC sp_executesql N'UPDATE ASRSysSSIntranetLinks SET SeparatorColour = '''''
+	END
+
 
 
 /* ------------------------------------------------------------- */
