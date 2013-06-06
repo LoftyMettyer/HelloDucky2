@@ -184,7 +184,7 @@ Public Function CreateEmailAddrStoredProcedure() As Boolean
 
   strSQL = vbNullString
   With recEmailAddrEdit
-    .index = "idxID"
+    .Index = "idxID"
 
     If Not (.BOF And .EOF) Then
       .MoveFirst
@@ -372,7 +372,7 @@ Public Function CreateEmailSendStoredProcedure(strProcName As String, lngMethod 
   
   'MH20090827 HRPRO-304
   sSQL = _
-       "    IF rtrim(isnull(@To,'')) = ''" & vbCrLf & _
+       "    IF rtrim(replace(isnull(@To,''),';','')) = ''" & vbCrLf & _
        "        RETURN" & vbCrLf & vbCrLf & _
        sSQL
   
