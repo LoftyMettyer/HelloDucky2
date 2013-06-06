@@ -15,14 +15,13 @@ Option Explicit
 
 Private mwrdApp As Word.Application
 Private mwrdDoc As Word.Document
-
 Private mxlApp As Excel.Application
 Private mxlWorkBook As Excel.Workbook
 Private mxlWorkSheet As Excel.Worksheet
-
 Private mobjOutputType As Object
 Private mcolStyles As Collection
 Private objOutput As clsOutputHTML
+Private mobjParent As clsOutputRun
 ' Data access class
 Private mclsData As clsDataAccess
 
@@ -1140,6 +1139,33 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
       End Select
     End If
   End If
+  
+  'EMAIL
+  If gblnReportPackMode And blnOutputEmail Then
+    'Check if file already exists...
+    Set mobjParent = New clsOutputRun
+    If Dir(strOutputFilename) <> vbNullString And strOutputFilename <> vbNullString Then
+      mstrErrorMessage = "Error sending email attachment : " & strOutputFilename
+      If mobjParent.SetOptions _
+        (False, lngOutputFormat, _
+        blnOutputScreen, _
+        blnOutputPrinter, _
+        strOutputPrinterName, _
+        blnOutputSave, _
+        lngOutputSaveExisting, _
+        blnOutputEmail, _
+        lngOutputEmailAddr, _
+        strOutputEmailSubject, _
+        strOutputEmailAttachAs, _
+        strOutputFilename, _
+        blnPreviewOnScreen) Then
+        mobjParent.SendEmail strOutputFilename
+      Else
+        COAMsgBox mstrErrorMessage, vbExclamation
+      End If
+    End If
+  End If
+  
   gblnReportPackMode = False
     
   CheckNotifications lBatchJobID
@@ -1150,6 +1176,7 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
   RunBatchJob = strNotes
   gblnBatchMode = False
 
+TidyAndExit:
   'Clean up and exit
   gobjProgress.CloseProgress
   Set rsBatchDetails = Nothing
