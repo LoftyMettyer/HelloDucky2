@@ -489,10 +489,10 @@ Private Function TableNew() As Boolean
     gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
 
     ' Add an index
-    sSQL = "IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[" & sTableName & "]')" & _
-          "AND name = N'IDX_ID')" & vbNewLine & _
-          "CREATE UNIQUE CLUSTERED INDEX [IDX_ID] ON [dbo].[" & sTableName & "] ([ID] ASC)"
-    gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
+'    sSQL = "IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[" & sTableName & "]')" & _
+'          "AND name = N'IDX_ID')" & vbNewLine & _
+'          "CREATE UNIQUE CLUSTERED INDEX [IDX_ID] ON [dbo].[" & sTableName & "] ([ID] ASC)"
+'    gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
 
     ' Close recordsets.
     rsColumns.Close
