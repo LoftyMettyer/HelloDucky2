@@ -1,8 +1,8 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.ocx"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
-Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~3.OCX"
+Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~2.OCX"
 Begin VB.MDIForm frmMain 
    AutoShowChildren=   0   'False
    BackColor       =   &H00F7EEE9&
@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "15:10"
+            TextSave        =   "08:16"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -2338,9 +2338,9 @@ Private Function DoDataTransfer(ByVal Action As EditOptions, ByRef SelectedID As
 
   Dim frmEdit As frmDataTransfer
   Dim objExecution As clsDataTransferRun
-  Dim bOK As Boolean
+  Dim bOk As Boolean
   
-  bOK = True
+  bOk = True
             
   Select Case Action
     Case edtAdd
@@ -2365,7 +2365,7 @@ Private Function DoDataTransfer(ByVal Action As EditOptions, ByRef SelectedID As
 
     Case edtSelect
       Set objExecution = New clsDataTransferRun
-      bOK = objExecution.ExecuteDataTransfer(SelectedID)
+      bOk = objExecution.ExecuteDataTransfer(SelectedID)
       Set objExecution = Nothing
     
     Case edtPrint
@@ -2379,7 +2379,7 @@ Private Function DoDataTransfer(ByVal Action As EditOptions, ByRef SelectedID As
 
   End Select
         
-  DoDataTransfer = bOK
+  DoDataTransfer = bOk
   
 End Function
 
@@ -2411,9 +2411,9 @@ Private Function DoGlobal(FormType As GlobalType, ByVal Action As EditOptions, B
  
   Dim frmEdit As frmGlobalFunctions
   Dim objGlobalRun As clsGlobalRun
-  Dim bOK As Boolean
+  Dim bOk As Boolean
 
-  bOK = True
+  bOk = True
 
   Select Case Action
   Case edtAdd
@@ -2440,7 +2440,7 @@ Private Function DoGlobal(FormType As GlobalType, ByVal Action As EditOptions, B
 
   Case edtSelect
     Set objGlobalRun = New clsGlobalRun
-    bOK = objGlobalRun.RunGlobal(SelectedID, FormType, "")
+    bOk = objGlobalRun.RunGlobal(SelectedID, FormType, "")
     Set objGlobalRun = Nothing
 
   Case edtPrint
@@ -2461,9 +2461,9 @@ Private Function DoImport(ByVal Action As EditOptions, ByRef SelectedID As Long,
 
   Dim frmEdit As frmImport
   Dim pobjImport As clsImportRUN
-  Dim bOK As Boolean
+  Dim bOk As Boolean
     
-  bOK = True
+  bOk = True
             
   Select Case Action
     Case edtAdd
@@ -2490,7 +2490,7 @@ Private Function DoImport(ByVal Action As EditOptions, ByRef SelectedID As Long,
     Case edtSelect
       Set pobjImport = New clsImportRUN
       pobjImport.ImportID = SelectedID
-      bOK = pobjImport.RunImport
+      bOk = pobjImport.RunImport
       Set pobjImport = Nothing
 
     Case edtPrint
@@ -2501,7 +2501,7 @@ Private Function DoImport(ByVal Action As EditOptions, ByRef SelectedID As Long,
       
   End Select
   
-  DoImport = bOK
+  DoImport = bOk
   
 End Function
 
@@ -2652,9 +2652,9 @@ Private Function DoExport(ByVal Action As EditOptions, ByRef SelectedID As Long,
   
   Dim frmEdit As frmExport
   Dim pobjExport As clsExportRUN
-  Dim bOK As Boolean
+  Dim bOk As Boolean
         
-  bOK = True
+  bOk = True
         
   Select Case Action
     Case edtAdd
@@ -2684,7 +2684,7 @@ Private Function DoExport(ByVal Action As EditOptions, ByRef SelectedID As Long,
 
       Set pobjExport = New clsExportRUN
       pobjExport.ExportID = SelectedID
-      bOK = pobjExport.RunExport
+      bOk = pobjExport.RunExport
       Set pobjExport = Nothing
 
     Case edtPrint
@@ -2698,20 +2698,20 @@ Private Function DoExport(ByVal Action As EditOptions, ByRef SelectedID As Long,
 
   End Select
   
-  DoExport = bOK
+  DoExport = bOk
   
 End Function
 
 Private Function DoBatchJob(ByVal Action As EditOptions, ByRef SelectedID As Long, FromCopy As Boolean, SelectedText As String) As Boolean
 
   Dim frmEdit As frmBatchJob
-  Dim bOK As Boolean
+  Dim bOk As Boolean
   Dim strNotes As String
   Dim objBatchJobRUN As clsBatchJobRUN
   Dim lngEventLogID As Long
     
   gblnReportPackMode = False
-  bOK = True
+  bOk = True
        
   Select Case Action
     Case edtAdd
@@ -2756,7 +2756,7 @@ Private Function DoBatchJob(ByVal Action As EditOptions, ByRef SelectedID As Lon
               
   End Select
             
-  DoBatchJob = bOK
+  DoBatchJob = bOk
   Set objBatchJobRUN = Nothing
 
   '# RH090300 To prevent toolbar locking after batch jobs
@@ -2773,9 +2773,9 @@ Private Function DoReportPack(ByVal Action As EditOptions, ByRef SelectedID As L
   Dim objBatchJobRUN As clsBatchJobRUN
   Dim lngEventLogID As Long
   Dim strNotes As String
-  Dim bOK As Boolean
+  Dim bOk As Boolean
     
-  bOK = True
+  bOk = True
   
   gblnReportPackMode = True
   
@@ -2831,7 +2831,7 @@ Private Function DoReportPack(ByVal Action As EditOptions, ByRef SelectedID As L
   End With
   
   Set objBatchJobRUN = Nothing
-  DoReportPack = bOK
+  DoReportPack = bOk
   
 End Function
 
@@ -3439,9 +3439,9 @@ Private Function DoCalendarReport(ByVal Action As EditOptions, ByRef SelectedID 
 
   Dim pobjCalendarReports As clsCalendarReportsRUN
   Dim frmEdit As frmCalendarReport
-  Dim bOK As Boolean
+  Dim bOk As Boolean
 
-  bOK = True
+  bOk = True
 
   Select Case Action
     Case edtAdd
@@ -3467,7 +3467,7 @@ Private Function DoCalendarReport(ByVal Action As EditOptions, ByRef SelectedID 
     Case edtSelect
       Set pobjCalendarReports = New clsCalendarReportsRUN
       pobjCalendarReports.CalendarReportID = SelectedID
-      bOK = pobjCalendarReports.RunCalendarReport("")
+      bOk = pobjCalendarReports.RunCalendarReport("")
       Set pobjCalendarReports = Nothing
 
     Case edtPrint
@@ -3481,17 +3481,17 @@ Private Function DoCalendarReport(ByVal Action As EditOptions, ByRef SelectedID 
   
   End Select
   
-  DoCalendarReport = bOK
+  DoCalendarReport = bOk
   
 End Function
 
 Private Function DoRecordProfile(ByVal Action As EditOptions, ByRef SelectedID As Long, FromCopy As Boolean) As Boolean
 
   Dim pobjRecordProfiles As clsRecordProfileRUN
-  Dim bOK As Boolean
+  Dim bOk As Boolean
   Dim frmEdit As frmRecordProfile
     
-  bOK = True
+  bOk = True
     
   Select Case Action
     Case edtAdd
@@ -3517,7 +3517,7 @@ Private Function DoRecordProfile(ByVal Action As EditOptions, ByRef SelectedID A
     Case edtSelect
       Set pobjRecordProfiles = New clsRecordProfileRUN
       pobjRecordProfiles.RecordProfileID = SelectedID
-      bOK = pobjRecordProfiles.RunRecordProfile
+      bOk = pobjRecordProfiles.RunRecordProfile
       Set pobjRecordProfiles = Nothing
 
     Case edtPrint
@@ -3531,7 +3531,7 @@ Private Function DoRecordProfile(ByVal Action As EditOptions, ByRef SelectedID A
   
   End Select
 
-  DoRecordProfile = bOK
+  DoRecordProfile = bOk
 
 End Function
 
@@ -3539,9 +3539,9 @@ Private Function DoCustomReport(ByVal Action As EditOptions, ByRef SelectedID As
 
   Dim pobjCustomReports As clsCustomReportsRUN
   Dim frmEdit As frmCustomReports
-  Dim bOK As Boolean
+  Dim bOk As Boolean
 
-  bOK = True
+  bOk = True
     
   Select Case Action
     Case edtAdd
@@ -3567,7 +3567,7 @@ Private Function DoCustomReport(ByVal Action As EditOptions, ByRef SelectedID As
     Case edtSelect
       Set pobjCustomReports = New clsCustomReportsRUN
       pobjCustomReports.CustomReportID = SelectedID
-      bOK = pobjCustomReports.RunCustomReport("")
+      bOk = pobjCustomReports.RunCustomReport("")
       Set pobjCustomReports = Nothing
 
     Case edtPrint
@@ -3581,7 +3581,7 @@ Private Function DoCustomReport(ByVal Action As EditOptions, ByRef SelectedID As
         
   End Select
 
-  DoCustomReport = bOK
+  DoCustomReport = bOk
 
 End Function
 
@@ -3590,9 +3590,9 @@ Private Function DoMatchReport(mrtMatchReportType As MatchReportType, ByVal Acti
   Dim frmEdit As frmMatchDef
   Dim frmRun As frmMatchRun
   Dim lngTYPE As UtilityType
-  Dim bOK As Boolean
+  Dim bOk As Boolean
 
-  bOK = True
+  bOk = True
 
   If mrtMatchReportType <> mrtNormal Then
     If Not ValidatePostParameters Then
@@ -3634,7 +3634,7 @@ Private Function DoMatchReport(mrtMatchReportType As MatchReportType, ByVal Acti
       Set frmRun = New frmMatchRun
       frmRun.MatchReportType = mrtMatchReportType
       frmRun.MatchReportID = SelectedID
-      bOK = frmRun.RunMatchReport
+      bOk = frmRun.RunMatchReport
       If frmRun.PreviewOnScreen Then
         frmRun.Show vbModal
       End If
@@ -3652,7 +3652,7 @@ Private Function DoMatchReport(mrtMatchReportType As MatchReportType, ByVal Acti
       
   End Select
 
-  DoMatchReport = bOK
+  DoMatchReport = bOk
 
 End Function
 
@@ -3667,44 +3667,53 @@ Public Sub RunUtility(ByRef UtilType As UtilityType, ByRef UtilityID As Long)
   Dim frmSelection As frmDefSel
   Dim fExit As Boolean
   Dim bRunOnce As Boolean
-  Dim bOK As Boolean
+  Dim bOk As Boolean
   Dim lngSelectedID As Long
    
-  bOK = True
+  bOk = True
   fExit = False
   bRunOnce = Not (UtilityID = 0)
+  glngCurrentCategoryID = -1 ' Default to <All>
 
   Select Case UtilType
    
     Case utlAbsenceBreakdown
-      bOK = DoStandardReport("AbsenceBreakdown")
-      If bOK Then UpdateUsage UtilType, 0, edtSelect
+      bOk = DoStandardReport("AbsenceBreakdown")
+      If bOk Then UpdateUsage UtilType, 0, edtSelect
 
     Case utlBradfordFactor
-      bOK = DoStandardReport("BradfordIndex")
-      If bOK Then UpdateUsage UtilType, 0, edtSelect
+      bOk = DoStandardReport("BradfordIndex")
+      If bOk Then UpdateUsage UtilType, 0, edtSelect
     
     Case utlTurnover
-      bOK = DoStandardReport("StabilityIndex")
-      If bOK Then UpdateUsage UtilType, 0, edtSelect
+      bOk = DoStandardReport("StabilityIndex")
+      If bOk Then UpdateUsage UtilType, 0, edtSelect
     
     Case utlStability
-      bOK = DoStandardReport("Turnover")
-      If bOK Then UpdateUsage UtilType, 0, edtSelect
+      bOk = DoStandardReport("Turnover")
+      If bOk Then UpdateUsage UtilType, 0, edtSelect
 
     Case Else
   
       Set frmSelection = New frmDefSel
       With frmSelection
       
-        .SelectedID = UtilityID
+        ' If browsing goto last known selected item
+        If UtilityID = 0 Then
+          .SelectedID = GetUserSetting("defsel_" & UtilType, "SelectedID", 0)
+          glngCurrentCategoryID = GetUserSetting("defsel_" & UtilType, "CategoryID", 0)
+        Else
+          .SelectedID = UtilityID
+          glngCurrentCategoryID = 0
+        End If
       
         ' Loop until the operation has been cancelled.
         Do While Not fExit
           .EnableRun = True
+          .CategoryID = glngCurrentCategoryID
               
           If .ShowList(UtilType) Then
-          
+
             .Action = edtSelect
           
             ' Running a specific utility or just browsing?
@@ -3712,34 +3721,37 @@ Public Sub RunUtility(ByRef UtilType As UtilityType, ByRef UtilityID As Long)
               .CustomShow vbModal
             End If
           
+            glngCurrentCategoryID = .CategoryID
+          
             If .Action = edtCancel Then
+              SaveUserSetting "defsel_" & UtilType, "SelectedID", .SelectedID
+              SaveUserSetting "defsel_" & UtilType, "CategoryID", .CategoryID
               fExit = True
             Else
                 
               lngSelectedID = .SelectedID
                 
-              '
               Select Case UtilType
                 Case utlCrossTab
-                  bOK = DoCrossTab(.Action, lngSelectedID, .FromCopy)
+                  bOk = DoCrossTab(.Action, lngSelectedID, .FromCopy)
                 
                 Case utlCustomReport
-                  bOK = DoCustomReport(.Action, lngSelectedID, .FromCopy)
+                  bOk = DoCustomReport(.Action, lngSelectedID, .FromCopy)
                 
                 Case utlCalendarReport
-                  bOK = DoCalendarReport(.Action, lngSelectedID, .FromCopy)
+                  bOk = DoCalendarReport(.Action, lngSelectedID, .FromCopy)
                               
                 Case utlRecordProfile
-                  bOK = DoRecordProfile(.Action, lngSelectedID, .FromCopy)
+                  bOk = DoRecordProfile(.Action, lngSelectedID, .FromCopy)
                
                 Case utlMatchReport
-                  bOK = DoMatchReport(mrtNormal, .Action, lngSelectedID, .FromCopy)
+                  bOk = DoMatchReport(mrtNormal, .Action, lngSelectedID, .FromCopy)
                 
                 Case utlCareer
-                  bOK = DoMatchReport(mrtCareer, .Action, lngSelectedID, .FromCopy)
+                  bOk = DoMatchReport(mrtCareer, .Action, lngSelectedID, .FromCopy)
                             
                 Case utlSuccession
-                  bOK = DoMatchReport(mrtSucession, .Action, lngSelectedID, .FromCopy)
+                  bOk = DoMatchReport(mrtSucession, .Action, lngSelectedID, .FromCopy)
           
                 Case utlLabel
                    DoEnvelope .Action, lngSelectedID, .FromCopy
@@ -3774,7 +3786,7 @@ Public Sub RunUtility(ByRef UtilType As UtilityType, ByRef UtilityID As Long)
               End Select
             
               ' Record the event
-              If bOK Then UpdateUsage UtilType, .SelectedID, .Action
+              If bOk Then UpdateUsage UtilType, .SelectedID, .Action
             
               .SelectedID = lngSelectedID
               fExit = gbCloseDefSelAfterRun Or bRunOnce
@@ -3793,9 +3805,9 @@ Private Function DoCrossTab(ByVal Action As EditOptions, ByRef SelectedID As Lon
 
   Dim frmDefinition As frmCrossTabDef
   Dim frmExecution As frmCrossTabRun
-  Dim bOK As Boolean
+  Dim bOk As Boolean
 
-  bOK = True
+  bOk = True
   
   Select Case Action
   Case edtAdd
@@ -3820,7 +3832,7 @@ Private Function DoCrossTab(ByVal Action As EditOptions, ByRef SelectedID As Lon
               
   Case edtSelect
     Set frmExecution = New frmCrossTabRun
-    bOK = frmExecution.ExecuteCrossTab(SelectedID)
+    bOk = frmExecution.ExecuteCrossTab(SelectedID)
     If frmExecution.PreviewOnScreen Then
       frmExecution.Show vbModal
     End If
@@ -3835,7 +3847,7 @@ Private Function DoCrossTab(ByVal Action As EditOptions, ByRef SelectedID As Lon
   
   End Select
   
-  DoCrossTab = bOK
+  DoCrossTab = bOk
   
 End Function
 
@@ -3844,9 +3856,9 @@ Private Function DoMailMerge(ByVal Action As EditOptions, ByRef SelectedID As Lo
   Dim frmDefinition As frmMailMerge
   Dim objExecution As clsMailMergeRun
   Dim frmSelection As frmDefSel
-  Dim bOK As Boolean
+  Dim bOk As Boolean
 
-  bOK = True
+  bOk = True
         
   Select Case Action
     Case edtAdd
@@ -3873,7 +3885,7 @@ Private Function DoMailMerge(ByVal Action As EditOptions, ByRef SelectedID As Lo
                
     Case edtSelect
       Set objExecution = New clsMailMergeRun
-      bOK = objExecution.ExecuteMailMerge(SelectedID)
+      bOk = objExecution.ExecuteMailMerge(SelectedID)
       Set objExecution = Nothing
     
     Case edtPrint
@@ -3888,7 +3900,7 @@ Private Function DoMailMerge(ByVal Action As EditOptions, ByRef SelectedID As Lo
     
   End Select
 
-  DoMailMerge = bOK
+  DoMailMerge = bOk
 
 End Function
 
@@ -4007,9 +4019,9 @@ Private Function DoEnvelope(ByVal Action As EditOptions, ByRef SelectedID As Lon
 
   Dim frmDefinition As frmMailMerge
   Dim objExecution As clsMailMergeRun
-  Dim bOK As Boolean
+  Dim bOk As Boolean
   
-  bOK = True
+  bOk = True
   
   Select Case Action
     Case edtAdd
@@ -4036,7 +4048,7 @@ Private Function DoEnvelope(ByVal Action As EditOptions, ByRef SelectedID As Lon
        
     Case edtSelect
       Set objExecution = New clsMailMergeRun
-      bOK = objExecution.ExecuteMailMerge(SelectedID)
+      bOk = objExecution.ExecuteMailMerge(SelectedID)
       Set objExecution = Nothing
   
     Case edtPrint
@@ -4051,7 +4063,7 @@ Private Function DoEnvelope(ByVal Action As EditOptions, ByRef SelectedID As Lon
 
   End Select
 
-  DoEnvelope = bOK
+  DoEnvelope = bOk
 
 End Function
 
@@ -4246,10 +4258,10 @@ Private Function DoStandardReport(strToolName As String) As Boolean
 
   Dim frmDef As frmConfigurationReports
   Dim bExit As Boolean
-  Dim bOK As Boolean
+  Dim bOk As Boolean
 
   bExit = False
-  bOK = True
+  bOk = True
   Set frmDef = New frmConfigurationReports
   
   With frmDef
@@ -4297,7 +4309,7 @@ Private Function DoStandardReport(strToolName As String) As Boolean
   Unload frmDef
   Set frmDef = Nothing
   
-  DoStandardReport = bOK
+  DoStandardReport = bOk
 
 End Function
 

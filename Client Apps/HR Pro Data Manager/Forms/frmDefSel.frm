@@ -267,7 +267,7 @@ Private mlngOptions As Long
 Private msSelectedText As String
 Private mlngSelectedID As Long
 Private mlngTableID As Long
-
+'
 Private mblnCaptionIsRun As Boolean
 Private mblnApplyDefAccess As Boolean
 Private mblnApplySystemPermissions As Boolean
@@ -281,13 +281,11 @@ Private msIDField As String
 Private msType As String
 Private msTypeCode As String
 Private msRecordSource As String
-'Private msIcon As String
 Private mutlUtilityType As UtilityType
 Private msTableIDColumnName As String
 Private msAccessTableName As String
 
 Private mbFromCopy As Boolean
-'Private mlCopyID As Long
 
 Private mblnHiddenDef As Boolean
 Private mblnReadOnlyAccess As Boolean
@@ -308,13 +306,13 @@ Private msSingularCaption As String
 
 Private malngSelectedIDs()
 
-'Private Sub EnsureSelectedVisible()
-'  If List1.ListItems.Count > 0 Then
-'    If Not IsEmpty(List1.SelectedItem) Then
-'      List1.SelectedItem.EnsureVisible
-'    End If
-'  End If
-'End Sub
+Public Property Get CategoryID() As Long
+  CategoryID = mlngTableID
+End Property
+
+Public Property Let CategoryID(ByVal lngNewValue As Long)
+  mlngTableID = lngNewValue
+End Property
 
 Public Property Get SelectedID() As Long
   SelectedID = mlngSelectedID
@@ -459,10 +457,13 @@ Private Sub cboTables_Click()
     If .ListIndex > -1 Then
       If mlngTableID <> .ItemData(.ListIndex) Then
         mlngTableID = .ItemData(.ListIndex)
+  '      mlngLastCategory = .ItemData(.ListIndex)
+        GetSQL mutlUtilityType, "", False
         Call Populate_List
       End If
     End If
   End With
+  
 End Sub
 
 Private Sub chkOnlyMine_Click()
@@ -504,8 +505,10 @@ Private Sub cmdCancel_Click()
         Set frmOutput = Nothing
       End If
     End If
+  Else
+    GetSelected
   End If
-  
+   
   lngAction = 0
   Unload Me
 
@@ -993,11 +996,11 @@ Private Sub List1_GotFocus()
   Refresh_Controls
 End Sub
 
-Private Sub Display_Button(Button As VB.CommandButton, ByVal BtnOpt As Long, ByVal x As Long, ByRef y As Long)
+Private Sub Display_Button(Button As VB.CommandButton, ByVal BtnOpt As Long, ByVal X As Long, ByRef Y As Long)
   If (Me.Options And BtnOpt) Then
-    Button.Move x, y
+    Button.Move X, Y
     Button.Visible = True
-    y = y + cmdNew.Height + ((UI.GetSystemMetrics(SM_CYFRAME) * Screen.TwipsPerPixelY) * 1.5)
+    Y = Y + cmdNew.Height + ((UI.GetSystemMetrics(SM_CYFRAME) * Screen.TwipsPerPixelY) * 1.5)
   Else
     Button.Visible = False
   End If
@@ -1152,20 +1155,9 @@ Public Sub Refresh_Controls()
     cmdNew.Default = mfEnableNew
   End If
   
-'If fOK Then
-'  ' Check for all columns now being selected or deselected
-'  fAllColumns = True
-'  For iCount = 1 To List2.ListCount - 1
-'    If Not List2.Selected(iCount) Then
-'      fAllColumns = False
-'      Exit For
-'    End If
-'  Next iCount
-'  ' Update the 'All' row in the listbox.
-'  List2.Selected(0) = fAllColumns
-'End If
+  ' Set to the last category
+  SetComboItem cboTables, mlngTableID
 
-  
   If Not mblnBatchPrompt Then
     If List1.ListItems.Count > 0 Then
       List1.ListItems(List1.SelectedItem.Index).Selected = True   'This highlights the current item!!!!!
@@ -1350,6 +1342,26 @@ Dim fAllColumns As Boolean
     
   strSQL = msRecordSource
 
+  ' The tableID is also used for the categoryID
+  If mlngTableID >= 0 Then
+    If mblnTableComboVisible Then
+      strSQL = strSQL & _
+        IIf(InStr(strSQL, " WHERE ") = 0, " WHERE ", " AND ") & _
+        CStr(mlngTableID) & " IN (" & msTableName & "." & msTableIDColumnName & ")"
+'    Else
+'
+'      strSQL = strSQL & _
+'        " INNER JOIN dbo.tbsys_objectcategories cat ON cat.objectid = " & msTableName & ".ID AND cat.objecttype = 2 "
+'
+'      ' Show only unassigned utilities
+'      If Not mlngTableID = 0 Then
+'        strSQL = strSQL & "AND cat.categoryid = " & mlngTableID
+'      End If
+'
+    End If
+  End If
+
+
   If mblnApplyDefAccess Then
     If OldAccessUtility(mutlUtilityType) Then
       If gfCurrentUserIsSysSecMgr Then
@@ -1396,16 +1408,6 @@ Dim fAllColumns As Boolean
           ")"
       End If
     End If
-  End If
-
-  If mlngTableID > 0 Then
-    'Changed as there are two tableid columns in match reports...
-    'strSQL = strSQL & _
-      IIf(InStr(strSQL, " WHERE ") = 0, " WHERE ", " AND ") & _
-      msTableIDColumnName & " = " & CStr(mlngTableID)
-    strSQL = strSQL & _
-      IIf(InStr(strSQL, " WHERE ") = 0, " WHERE ", " AND ") & _
-      CStr(mlngTableID) & " IN (" & msTableName & "." & msTableIDColumnName & ")"
   End If
 
   UI.LockWindow Me.hWnd
@@ -1690,7 +1692,7 @@ Private Function CanStillSeeDefinition(lngDefID As Long) As Boolean
 
 End Function
 
-Private Sub List1_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub List1_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
 
   If Button = vbRightButton Then
   
@@ -1714,7 +1716,6 @@ Private Sub List1_MouseUp(Button As Integer, Shift As Integer, x As Single, y As
   End If
   
 End Sub
-
 
 Private Sub ShowControls()
   'SizeControls
@@ -1845,17 +1846,24 @@ Private Sub ShowControls()
   End With
   
   fraBottomButtons.Height = lngOffset + 10
-  
-  'MH20020227 Not required?
-  '' Enable/disable the command controls as required.
-  'Refresh_Controls
-  
-  
-  lblTables.Visible = mblnTableComboVisible
-  cboTables.Visible = mblnTableComboVisible
+   
+  ' Table combo flag now used to show categories or tables
+  lblTables.Visible = True
+  cboTables.Visible = True
+    
   If mblnTableComboVisible Then
-    Call PopulateTables
+    PopulateTables
+  Else
+    lblTables.Caption = "Category : "
+    
+    cboTables.Clear
+    cboTables.AddItem "<All>"
+    cboTables.ItemData(cboTables.NewIndex) = -1
+    
+    GetObjectCategories cboTables, mutlUtilityType, 0, mlngTableID
+    
   End If
+  
   
   txtDesc.Visible = Not mblnHideDesc
   chkOnlyMine.Visible = mblnApplyDefAccess
@@ -1929,7 +1937,7 @@ Private Sub SizeControls()
 
   'cboTables (fraMain)
   lngListTop = 0
-  If mblnTableComboVisible Then
+  If cboTables.Visible Then
     lblTables.Move 0, 60
     cboTables.Move lblTables.Width + lngGap, 0, fraMain.Width - (lblTables.Width + lngGap)
     lngOffset = lngOffset - (cboTables.Height + lngGap)
@@ -2042,10 +2050,10 @@ Public Property Let EventLogIDs(ByVal strNewValue As String)
   mstrEventLogIDs = strNewValue
 End Property
 
-
-Public Function ShowList(lngUtilType As UtilityType, Optional msRecordSourceWhere As String, Optional blnScheduledJobs As Boolean) As Boolean
+Public Sub GetSQL(lngUtilType As UtilityType, Optional msRecordSourceWhere As String, Optional blnScheduledJobs As Boolean)
 
   Dim strExtraWhereClause As String
+  Dim sCategoryFilter As String
   'Dim intWhereClauses As Integer
 
   mblnApplyDefAccess = True
@@ -2056,6 +2064,7 @@ Public Function ShowList(lngUtilType As UtilityType, Optional msRecordSourceWher
  
   mutlUtilityType = lngUtilType
   msTableIDColumnName = "TableID"
+
 
   Select Case lngUtilType
   Case utlBatchJob
@@ -2171,8 +2180,8 @@ Public Function ShowList(lngUtilType As UtilityType, Optional msRecordSourceWher
     msSingularCaption = "Email Address"
     msTableName = "ASRSysEmailAddress"
     msIDField = "EmailID"
-    msRecordSource = "SELECT EmailID, Name FROM " & msTableName & _
-                     " WHERE Type = 0"
+    msRecordSource = "SELECT EmailID, Name FROM " & msTableName
+    strExtraWhereClause = "Type = 0"
     mutlUtilityType = utlEmailAddress
     mblnApplyDefAccess = False
     Me.HelpContextID = 1090
@@ -2380,16 +2389,12 @@ Public Function ShowList(lngUtilType As UtilityType, Optional msRecordSourceWher
 
   Me.Caption = msGeneralCaption
   msFieldName = "Name"
-  
-  'MH20030916 Removed this fix as it was causing problems with system permissions.
-  'Have now made changes in frmConfiguration which fixes fault 6370.
-  '''TM11092003 Fault 6370 - put this case in to avoid changing the Resource file Icon names.
-  ''Select Case msTypeCode
-  ''Case "SUCCESSIONPLANNING": msIcon = "SUCCESSION"
-  ''Case "CAREERPROGRESSION": msIcon = "CAREER"
-  ''Case Else:  msIcon = msTypeCode
-  ''End Select
-  'msIcon = msTypeCode
+   
+  ' Show only unassigned utilities
+  If mlngTableID > -1 Then
+    sCategoryFilter = " LEFT JOIN dbo.tbsys_objectcategories cat ON cat.objectid = " & msTableName & "." & msIDField & " AND cat.objecttype = " & CStr(mutlUtilityType)
+    strExtraWhereClause = "(ISNULL(cat.categoryid,0) = " & mlngTableID & ")"
+  End If
   
   If msRecordSource = vbNullString And OldAccessUtility(mutlUtilityType) Then
     msRecordSource = _
@@ -2406,6 +2411,7 @@ Public Function ShowList(lngUtilType As UtilityType, Optional msRecordSourceWher
         IIf(mblnApplyDefAccess, msTableName & ".userName, " & msAccessTableName & ".access, ", vbNullString) & _
         msTableName & "." & msIDField & _
       " FROM " & msTableName & _
+      sCategoryFilter & _
       IIf(mblnApplyDefAccess, " INNER JOIN " & msAccessTableName & " ON " & msTableName & "." & msIDField & " = " & msAccessTableName & ".ID" & _
         " AND " & msAccessTableName & ".groupname = '" & gsUserGroup & "'", vbNullString) & _
       IIf(strExtraWhereClause <> vbNullString, " WHERE " & strExtraWhereClause, "")
@@ -2414,6 +2420,12 @@ Public Function ShowList(lngUtilType As UtilityType, Optional msRecordSourceWher
   If msRecordSourceWhere <> vbNullString Then
     msRecordSource = msRecordSource & IIf(strExtraWhereClause <> vbNullString, " AND ", " WHERE ") & msRecordSourceWhere
   End If
+
+End Sub
+
+Public Function ShowList(lngUtilType As UtilityType, Optional msRecordSourceWhere As String, Optional blnScheduledJobs As Boolean) As Boolean
+
+  GetSQL lngUtilType, msRecordSourceWhere, blnScheduledJobs
     
   If mblnFirstLoad Then
     chkOnlyMine.Value = GetUserSetting("DefSel", "OnlyMine " & msTypeCode, 0)
