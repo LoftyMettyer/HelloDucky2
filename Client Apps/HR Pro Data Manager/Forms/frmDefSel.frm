@@ -3,7 +3,7 @@ Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
 Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.ocx"
 Begin VB.Form frmDefSel 
    Caption         =   "Select"
-   ClientHeight    =   7740
+   ClientHeight    =   7800
    ClientLeft      =   2715
    ClientTop       =   2535
    ClientWidth     =   6015
@@ -23,7 +23,7 @@ Begin VB.Form frmDefSel
    LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   7740
+   ScaleHeight     =   7800
    ScaleWidth      =   6015
    StartUpPosition =   1  'CenterOwner
    Begin MSComctlLib.ImageList imglistSmall 
@@ -35,38 +35,14 @@ Begin VB.Form frmDefSel
       MaskColor       =   12632256
       _Version        =   393216
    End
-   Begin VB.Frame fraSearch 
-      BorderStyle     =   0  'None
-      Height          =   1455
-      Left            =   90
-      TabIndex        =   18
-      Top             =   90
-      Width           =   5010
-      Begin VB.CommandButton cmdSearch 
-         Caption         =   "Find Now"
-         Height          =   375
-         Left            =   3150
-         TabIndex        =   20
-         Top             =   585
-         Width           =   1200
-      End
-      Begin VB.Label Label1 
-         Caption         =   "Search goes here..."
-         Height          =   555
-         Left            =   855
-         TabIndex        =   19
-         Top             =   540
-         Width           =   2715
-      End
-   End
    Begin VB.Frame fraTopButtons 
       BackColor       =   &H8000000C&
       BorderStyle     =   0  'None
       Caption         =   "Frame1"
       Height          =   3410
       Left            =   3240
-      TabIndex        =   15
-      Top             =   1860
+      TabIndex        =   14
+      Top             =   105
       Width           =   1215
       Begin VB.CommandButton cmdRefresh 
          Caption         =   "Re&fresh"
@@ -130,11 +106,28 @@ Begin VB.Form frmDefSel
       BackColor       =   &H8000000C&
       BorderStyle     =   0  'None
       Caption         =   "Frame1"
-      Height          =   5240
+      Height          =   6990
       Left            =   100
-      TabIndex        =   13
-      Top             =   1860
+      TabIndex        =   12
+      Top             =   105
       Width           =   3015
+      Begin VB.TextBox txtSearchFor 
+         Height          =   330
+         Left            =   810
+         TabIndex        =   20
+         Top             =   720
+         Width           =   2190
+      End
+      Begin VB.ComboBox cboOwner 
+         Enabled         =   0   'False
+         Height          =   315
+         Left            =   825
+         Sorted          =   -1  'True
+         Style           =   2  'Dropdown List
+         TabIndex        =   18
+         Top             =   360
+         Width           =   2175
+      End
       Begin VB.TextBox txtDesc 
          BackColor       =   &H8000000F&
          Height          =   1080
@@ -145,38 +138,38 @@ Begin VB.Form frmDefSel
          ScrollBars      =   2  'Vertical
          TabIndex        =   1
          TabStop         =   0   'False
-         Top             =   4155
+         Top             =   5865
          Width           =   3000
       End
       Begin VB.ComboBox cboTables 
          Enabled         =   0   'False
          Height          =   315
-         Left            =   600
+         Left            =   825
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
          TabIndex        =   0
          Top             =   0
          Visible         =   0   'False
-         Width           =   2400
+         Width           =   2175
       End
       Begin VB.ListBox List2 
-         Height          =   2985
+         Height          =   735
          Left            =   0
          Sorted          =   -1  'True
          Style           =   1  'Checkbox
-         TabIndex        =   17
-         Top             =   840
+         TabIndex        =   16
+         Top             =   2865
          Visible         =   0   'False
          Width           =   3015
       End
       Begin MSComctlLib.ListView List1 
-         Height          =   960
+         Height          =   825
          Left            =   0
-         TabIndex        =   21
-         Top             =   315
+         TabIndex        =   17
+         Top             =   1125
          Width           =   3000
          _ExtentX        =   5292
-         _ExtentY        =   1693
+         _ExtentY        =   1455
          View            =   3
          LabelEdit       =   1
          LabelWrap       =   -1  'True
@@ -201,15 +194,33 @@ Begin VB.Form frmDefSel
             Object.Width           =   6068
          EndProperty
       End
+      Begin VB.Label lblSearch 
+         BackStyle       =   0  'Transparent
+         Caption         =   "Search :"
+         Height          =   240
+         Left            =   0
+         TabIndex        =   21
+         Top             =   855
+         Width           =   735
+      End
+      Begin VB.Label lblOwner 
+         BackStyle       =   0  'Transparent
+         Caption         =   "Owner :"
+         Height          =   195
+         Left            =   0
+         TabIndex        =   19
+         Top             =   540
+         Width           =   690
+      End
       Begin VB.Label lblTables 
          AutoSize        =   -1  'True
          BackStyle       =   0  'Transparent
-         Caption         =   "Table:"
+         Caption         =   "Table :"
          Height          =   195
          Left            =   0
-         TabIndex        =   14
+         TabIndex        =   13
          Top             =   60
-         Width           =   540
+         Width           =   600
       End
    End
    Begin VB.Frame fraBottomButtons 
@@ -218,8 +229,8 @@ Begin VB.Form frmDefSel
       Caption         =   "Frame1"
       Height          =   1360
       Left            =   3240
-      TabIndex        =   16
-      Top             =   5760
+      TabIndex        =   15
+      Top             =   5715
       Width           =   1215
       Begin VB.CommandButton cmdNone 
          Caption         =   "N&one"
@@ -247,17 +258,9 @@ Begin VB.Form frmDefSel
          Width           =   1200
       End
    End
-   Begin VB.CheckBox chkOnlyMine 
-      Caption         =   "On&ly show definitions where owner is 'username'"
-      Height          =   405
-      Left            =   100
-      TabIndex        =   12
-      Top             =   7200
-      Width           =   4320
-   End
    Begin ActiveBarLibraryCtl.ActiveBar abDefSel 
-      Left            =   3120
-      Top             =   5475
+      Left            =   5055
+      Top             =   5790
       _ExtentX        =   847
       _ExtentY        =   847
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -289,7 +292,7 @@ Private mlngOptions As Long
 Private msSelectedText As String
 Private mlngSelectedID As Long
 Private mlngTableID As Long
-'
+
 Private mblnCaptionIsRun As Boolean
 Private mblnApplyDefAccess As Boolean
 Private mblnApplySystemPermissions As Boolean
@@ -330,7 +333,7 @@ Private malngSelectedIDs()
 Private mstrExtraWhereClause As String
 
 Public AllowFavourites As Boolean
-Public ShowSearch As Boolean
+Public SelectedUtilityType As UtilityType
 
 Public Property Get CategoryID() As Long
   CategoryID = mlngTableID
@@ -475,7 +478,7 @@ Private Sub Favourites(ByVal bAdd As Boolean)
   Dim sSQL As String
   Dim lngSelectedID As Integer
 
-  lngSelectedID = Val(List1.SelectedItem.Tag)
+  lngSelectedID = GetIDFromTag(List1.SelectedItem.Tag)
   
   If bAdd Then
     sSQL = "EXEC dbo.[spstat_addtofavourites] " & mutlUtilityType & "," & lngSelectedID
@@ -488,38 +491,29 @@ Private Sub Favourites(ByVal bAdd As Boolean)
 
 End Sub
 
+Private Sub cboOwner_Click()
+
+  If Not mblnScheduledJobs Then
+    GetSQL mutlUtilityType, mstrExtraWhereClause, False
+    Call Populate_List
+  End If
+
+End Sub
 
 Private Sub cboTables_Click()
   
-  With cboTables
-    If .ListIndex > -1 Then
-      If mlngTableID <> .ItemData(.ListIndex) Then
-        mlngTableID = .ItemData(.ListIndex)
-        GetSQL mutlUtilityType, mstrExtraWhereClause, False
-        Call Populate_List
+  If Not mblnScheduledJobs Then
+    With cboTables
+      If .ListIndex > -1 Then
+        If mlngTableID <> .ItemData(.ListIndex) Then
+          mlngTableID = .ItemData(.ListIndex)
+          GetSQL mutlUtilityType, mstrExtraWhereClause, False
+          Call Populate_List
+        End If
       End If
-    End If
-  End With
+    End With
+  End If
   
-End Sub
-
-Private Sub chkOnlyMine_Click()
-
-  mintOnlyMine = chkOnlyMine.Value
-
-  If Me.Visible = False Then
-    Exit Sub
-  End If
-
-  If Not IsEmpty(List1.SelectedItem) And (Not List1.SelectedItem Is Nothing) Then
-    mlngSelectedID = Val(List1.SelectedItem.Tag)
-    SelectedText = List1.SelectedItem.Text
-  Else
-    mlngSelectedID = 0
-  End If
-
-  Call Populate_List
-
 End Sub
 
 Private Sub cmdCancel_Click()
@@ -560,7 +554,7 @@ Private Sub cmdDelete_Click()
   Dim objExpression As clsExprExpression
   
   lngHighLightIndex = List1.SelectedItem.Index
-  lngSelectedID = Val(List1.SelectedItem.Tag)
+  lngSelectedID = GetIDFromTag(List1.SelectedItem.Tag)
   
   If CanStillSeeDefinition(lngSelectedID) = False Then
     Exit Sub
@@ -732,7 +726,6 @@ End Sub
 Private Sub cmdCopy_Click()
   
   ' same as edit except set FromCopy flag
-  'frmMain.Tag = List1.ListIndex
   lngAction = edtEdit
   GetSelected
   FromCopy = True
@@ -745,7 +738,6 @@ End Sub
 
 Private Sub cmdEdit_Click()
   ' Edit the selected item.
-  'frmMain.Tag = List1.ListIndex
   lngAction = edtEdit
   GetSelected
   FromCopy = False
@@ -785,9 +777,7 @@ End Sub
 
 Private Sub cmdProperties_Click()
 
-  'Dim varWhereUsed As Variant
-  'Dim intCount As Integer
-  'Dim strUsage As String
+  Dim lngUtilityType As UtilityType
   
   On Error GoTo Prop_ERROR
   
@@ -805,22 +795,11 @@ Private Sub cmdProperties_Click()
 
   With frmDefProp
 
+lngUtilityType = GetTypeFromTag(List1.SelectedItem.Tag)
+
     .Caption = msSingularCaption & " Properties"
     .UtilName = SelectedText
-    .PopulateUtil mutlUtilityType, mlngSelectedID
-
-    'With .List1
-    '  .Clear
-    '   Call datGeneral.CheckForUseage(msType, mlngSelectedID, strUsage)
-    '   If strUsage <> vbNullString Then
-    '    varWhereUsed = Split(strUsage, vbCrLf)
-    '    For intCount = LBound(varWhereUsed) To UBound(varWhereUsed)
-    '      If Trim(varWhereUsed(intCount)) <> vbNullString Then
-    '        .AddItem Trim(varWhereUsed(intCount))
-    '      End If
-    '    Next
-    '  End If
-    'End With
+    .PopulateUtil lngUtilityType, mlngSelectedID
 
     .CheckForUseage msType, mlngSelectedID
     
@@ -1065,7 +1044,7 @@ Public Sub Refresh_Controls()
     End If
   Else
     If List1.ListItems.Count > 0 And Not IsEmpty(List1.SelectedItem) Then
-      lngSelected = List1.SelectedItem.Tag
+      lngSelected = GetIDFromTag(List1.SelectedItem.Tag)
     End If
   End If
   
@@ -1108,7 +1087,15 @@ Public Sub Refresh_Controls()
         .Find msIDField & " = " & CStr(lngSelected)  'CStr(List1.ItemData(List1.ListIndex))
       
         If Not mblnHideDesc Then
-          txtDesc.Text = IIf(IsNull(.Fields("Description").Value), vbNullString, .Fields("Description").Value)
+          txtDesc.Text = vbNullString
+          
+          If mutlUtilityType = utlAll Then
+         '   txtDesc.Text = msSingularCaption & vbNewLine
+            txtDesc.Text = GetTypeFromTag(List1.SelectedItem.Tag) & vbNewLine
+          End If
+          
+          txtDesc.Text = txtDesc.Text & IIf(IsNull(.Fields("Description").Value), vbNullString, .Fields("Description").Value)
+          
         End If
   
         If mblnApplyDefAccess Then
@@ -1224,21 +1211,10 @@ Public Property Let SelectedText(ByVal sText As String)
 
 End Property
 
-Public Sub SetSelected(ByVal plngSelectedID As Long)
-
-
-
-
-End Sub
-
-
 Private Sub GetSelected()
   
   If lngAction > 0 And lngAction <> edtAdd Then
 
-' RH BUG 958 - If listbox is empty and none selected then crashed out
-
-'    If Not IsEmpty(List1.SelectedItem) Then
     mlngSelectedID = 0
     If mblnScheduledJobs Then
       If List2.ListIndex >= 0 Then
@@ -1246,7 +1222,9 @@ Private Sub GetSelected()
         SelectedText = List2.List(List2.ListIndex)
       End If
     ElseIf Not IsEmpty(List1.SelectedItem) And (Not List1.SelectedItem Is Nothing) Then
-      mlngSelectedID = Val(List1.SelectedItem.Tag)
+      mlngSelectedID = GetIDFromTag(List1.SelectedItem.Tag)
+      SelectedUtilityType = GetTypeFromTag(List1.SelectedItem.Tag)
+      
       SelectedText = List1.SelectedItem.Text
     End If
   End If
@@ -1257,7 +1235,6 @@ End Sub
 Public Property Let EnableRun(ByVal bEnable As Boolean)
   ' Change the caption on the cmdSelect control as appropriate.
   cmdSelect.Caption = IIf(bEnable, "&Run", "&Select")
-  'Me.abDefSel.Bands("bndDefSel").Tools("Select").Caption = cmdSelect.Caption
   mblnCaptionIsRun = bEnable
 End Property
 
@@ -1365,6 +1342,7 @@ Dim fAllColumns As Boolean
   Dim lngLen As Long
   Dim cmADO As ADODB.Command
   Dim pmADO As ADODB.Parameter
+  Dim sTag As String
   
   Const TICKBOXWIDTH = 20
   
@@ -1390,54 +1368,54 @@ Dim fAllColumns As Boolean
     End If
   End If
 
-
-  If mblnApplyDefAccess Then
-    If OldAccessUtility(mutlUtilityType) Then
-      If gfCurrentUserIsSysSecMgr Then
-        If chkOnlyMine.Value = vbChecked Then
-          strSQL = strSQL & _
-            IIf(InStr(strSQL, " WHERE ") = 0, " WHERE ", " AND ") & _
-            "(" & msTableName & ".userName = '" & datGeneral.UserNameForSQL & "'" & ")"
-        End If
-      Else
-        strSQL = strSQL & _
-          IIf(InStr(strSQL, " WHERE ") = 0, " WHERE ", " AND ") & _
-          "(" & msTableName & ".userName = '" & datGeneral.UserNameForSQL & "'"
-          
-        If Not (chkOnlyMine.Value = vbChecked) Then
-          strSQL = strSQL & _
-            " OR " & msTableName & ".access <> '" & ACCESS_HIDDEN & "'"
-        End If
-        
-        strSQL = strSQL & _
-          ")"
-      End If
-    Else
-      If gfCurrentUserIsSysSecMgr Then
-        'MH20030521 Fault 5726
-        'If chkOnlyMine Then
-        If chkOnlyMine.Value = vbChecked Then
-          strSQL = strSQL & _
-            IIf(InStr(strSQL, " WHERE ") = 0, " WHERE ", " AND ") & _
-            "(" & msTableName & ".userName = '" & datGeneral.UserNameForSQL & "'" & ")"
-        End If
-      Else
-        strSQL = strSQL & _
-          IIf(InStr(strSQL, " WHERE ") = 0, " WHERE ", " AND ") & _
-          "(" & msTableName & ".userName = '" & datGeneral.UserNameForSQL & "'"
-        
-        'MH20030521 Fault 5726
-        'If Not chkOnlyMine Then
-        If Not (chkOnlyMine.Value = vbChecked) Then
-          strSQL = strSQL & _
-            " OR " & msAccessTableName & ".access <> '" & ACCESS_HIDDEN & "'"
-        End If
-          
-        strSQL = strSQL & _
-          ")"
-      End If
-    End If
-  End If
+'
+'  If mblnApplyDefAccess Then
+'    If OldAccessUtility(mutlUtilityType) Then
+'      If gfCurrentUserIsSysSecMgr Then
+'        If chkOnlyMine.Value = vbChecked Then
+'          strSQL = strSQL & _
+'            IIf(InStr(strSQL, " WHERE ") = 0, " WHERE ", " AND ") & _
+'            "(" & msTableName & ".userName = '" & datGeneral.UserNameForSQL & "'" & ")"
+'        End If
+'      Else
+'        strSQL = strSQL & _
+'          IIf(InStr(strSQL, " WHERE ") = 0, " WHERE ", " AND ") & _
+'          "(" & msTableName & ".userName = '" & datGeneral.UserNameForSQL & "'"
+'
+'        If Not (chkOnlyMine.Value = vbChecked) Then
+'          strSQL = strSQL & _
+'            " OR " & msTableName & ".access <> '" & ACCESS_HIDDEN & "'"
+'        End If
+'
+'        strSQL = strSQL & _
+'          ")"
+'      End If
+'    Else
+'      If gfCurrentUserIsSysSecMgr Then
+'        'MH20030521 Fault 5726
+'        'If chkOnlyMine Then
+'        If chkOnlyMine.Value = vbChecked Then
+'          strSQL = strSQL & _
+'            IIf(InStr(strSQL, " WHERE ") = 0, " WHERE ", " AND ") & _
+'            "(" & msTableName & ".userName = '" & datGeneral.UserNameForSQL & "'" & ")"
+'        End If
+'      Else
+'        strSQL = strSQL & _
+'          IIf(InStr(strSQL, " WHERE ") = 0, " WHERE ", " AND ") & _
+'          "(" & msTableName & ".userName = '" & datGeneral.UserNameForSQL & "'"
+'
+'        'MH20030521 Fault 5726
+'        'If Not chkOnlyMine Then
+'        If Not (chkOnlyMine.Value = vbChecked) Then
+'          strSQL = strSQL & _
+'            " OR " & msAccessTableName & ".access <> '" & ACCESS_HIDDEN & "'"
+'        End If
+'
+'        strSQL = strSQL & _
+'          ")"
+'      End If
+'    End If
+'  End If
 
   UI.LockWindow Me.hWnd
 
@@ -1522,7 +1500,9 @@ Dim fAllColumns As Boolean
         Do While Not .EOF
                
           Set objListItem = List1.ListItems.Add(, , RemoveUnderScores(.Fields(msFieldName).Value))
-          objListItem.Tag = .Fields(msIDField)
+          sTag = .Fields("objecttype").Value & "-" & .Fields(msIDField).Value
+          objListItem.Tag = sTag
+          
           lngLen = Me.TextWidth(objListItem.Text)
           If lngMax < lngLen Then
             lngMax = lngLen
@@ -1895,17 +1875,13 @@ Private Sub ShowControls()
     GetObjectCategories cboTables, mutlUtilityType, 0, mlngTableID
     
   End If
-  
-  ' Display search options
-  fraSearch.Visible = ShowSearch
-  
-  
-  
-  
+        
+  ' Owners combo
+  cboOwner.Visible = lblTables.Visible
+  GetObjectOwners cboOwner, msTypeCode
+        
+  txtSearchFor.Visible = lblTables.Visible
   txtDesc.Visible = Not mblnHideDesc
-  chkOnlyMine.Visible = mblnApplyDefAccess
-  chkOnlyMine.Caption = "On&ly show definitions where owner is '" & _
-                        StrConv(gsUserName, vbProperCase) & "'"
 
   'Make frame background same colour as form
   fraMain.BackColor = Me.BackColor
@@ -1927,26 +1903,14 @@ Private Sub SizeControls()
   Dim lngOffset As Long
   Const lngGap = 100
   Dim blnCheckBoxVisible As Boolean
+  Dim lngYOffset As Long
   
-  If fraSearch.Visible Then
-    lngOffset = Me.ScaleHeight - (lngGap * 2) + fraSearch.Height
-  Else
-    lngOffset = Me.ScaleHeight - (lngGap * 2)
-  End If
+  lngOffset = Me.ScaleHeight - (lngGap * 2)
   
-  'chkOnlyMine (Outside of frame)
-  blnCheckBoxVisible = mblnApplyDefAccess
-  If blnCheckBoxVisible Then
-    chkOnlyMine.Move fraMain.Left, Me.ScaleHeight - (chkOnlyMine.Height + lngGap), Me.ScaleWidth
-    lngOffset = lngOffset - (chkOnlyMine.Height + lngGap)
-  End If
-
   'Move Frames
   fraMain.Move lngGap, lngGap, Me.ScaleWidth - (fraTopButtons.Width + (lngGap * 3)), lngOffset
-  fraTopButtons.Move fraMain.Left + fraMain.Width + lngGap, lngGap
-  fraBottomButtons.Move fraTopButtons.Left, (fraMain.Top + fraMain.Height) - fraBottomButtons.Height
-     
-  'txtDesc (fraMain)
+
+  ' Description
   If Not mblnHideDesc Then
     lngOffset = fraMain.Height - (txtDesc.Height)
     txtDesc.Move 0, lngOffset, fraMain.Width
@@ -1955,18 +1919,43 @@ Private Sub SizeControls()
     lngOffset = fraMain.Height
   End If
 
-  'cboTables (fraMain)
+  lngYOffset = IIf(mblnTableComboVisible, 900, 1000)
+
+  ' Categories / Tables dropdown
   lngListTop = 0
   If cboTables.Visible Then
     lblTables.Move 0, 60
-    cboTables.Move lblTables.Width + lngGap, 0, fraMain.Width - (lblTables.Width + lngGap)
+    cboTables.Move lngYOffset, 0, fraMain.Width - lngYOffset
     lngOffset = lngOffset - (cboTables.Height + lngGap)
     lngListTop = cboTables.Height + lngGap
   End If
 
-  'List1 (fraMain)
+  ' Owners dropdown
+  If cboOwner.Visible Then
+    lblOwner.Move 0, cboTables.Height + 150
+    cboOwner.Move lngYOffset, cboTables.Height + lngGap, cboTables.Width
+    lngOffset = lngOffset - (cboOwner.Height + lngGap)
+    lngListTop = lngListTop + cboOwner.Height + lngGap
+  End If
+
+  ' Find box
+  If txtSearchFor.Visible Then
+    lblSearch.Move 0, cboTables.Height + 570
+    txtSearchFor.Move lngYOffset, cboTables.Height + cboOwner.Height + (lngGap * 2), cboTables.Width, txtSearchFor.Height
+    lngOffset = lngOffset - (txtSearchFor.Height + lngGap)
+    lngListTop = lngListTop + txtSearchFor.Height + lngGap
+  End If
+
+
+  ' Lists
   List1.Move 0, lngListTop, fraMain.Width + 20, lngOffset
   List2.Move 0, lngListTop, fraMain.Width + 20, lngOffset
+
+
+  fraTopButtons.Move fraMain.Left + fraMain.Width + lngGap, lngGap
+  fraBottomButtons.Move fraTopButtons.Left, (fraMain.Top + fraMain.Height) - fraBottomButtons.Height
+
+
 
 End Sub
 
@@ -2074,6 +2063,7 @@ Public Sub GetSQL(lngUtilType As UtilityType, Optional psRecordSourceWhere As St
 
   Dim strExtraWhereClause As String
   Dim sCategoryFilter As String
+  Dim sUtilityType As String
   'Dim intWhereClauses As Integer
 
   mblnApplyDefAccess = True
@@ -2084,7 +2074,7 @@ Public Sub GetSQL(lngUtilType As UtilityType, Optional psRecordSourceWhere As St
  
   mutlUtilityType = lngUtilType
   msTableIDColumnName = "TableID"
-
+  sUtilityType = lngUtilType & " AS [objecttype]"
 
   Select Case lngUtilType
   
@@ -2096,9 +2086,9 @@ Public Sub GetSQL(lngUtilType As UtilityType, Optional psRecordSourceWhere As St
     msTableName = "ASRSysAllObjectNames"
     msIDField = "ID"
     mutlUtilityType = utlAll
-    msAccessTableName = ""
-    mblnHideDesc = True
-    mblnApplyDefAccess = False
+    msAccessTableName = "ASRSysAllObjectAccess"
+    mblnHideDesc = False
+    sUtilityType = msTableName & ".objectType"
   
   Case utlBatchJob
     msTypeCode = "BATCHJOBS"
@@ -2248,6 +2238,7 @@ Public Sub GetSQL(lngUtilType As UtilityType, Optional psRecordSourceWhere As St
     msIDField = "ExprID"
     mutlUtilityType = utlFilter
     Me.HelpContextID = 1093
+    
   Case UtlGlobalAdd, utlGlobalDelete, utlGlobalUpdate
   
     Select Case lngUtilType
@@ -2267,7 +2258,7 @@ Public Sub GetSQL(lngUtilType As UtilityType, Optional psRecordSourceWhere As St
     msSingularCaption = msType
     msTableName = "ASRSysGlobalFunctions"
     msIDField = "FunctionID"
-    psRecordSourceWhere = msTableName & ".Type = '" & Mid$(msTypeCode, 7, 1) & "'"
+    psRecordSourceWhere = psRecordSourceWhere & IIf(psRecordSourceWhere <> vbNullString, " AND ", "") & msTableName & ".Type = '" & Mid$(msTypeCode, 7, 1) & "'"
     msAccessTableName = "ASRSysGlobalAccess"
   
   Case utlImport
@@ -2328,7 +2319,7 @@ Public Sub GetSQL(lngUtilType As UtilityType, Optional psRecordSourceWhere As St
     msTableName = "ASRSysMailMergeName"
     msIDField = "MailMergeID"
     mutlUtilityType = utlMailMerge
-    psRecordSourceWhere = "ASRSysMailMergeName.IsLabel = 0"
+    psRecordSourceWhere = psRecordSourceWhere & IIf(psRecordSourceWhere <> vbNullString, " AND ", "") & "ASRSysMailMergeName.IsLabel = 0"
     msAccessTableName = "ASRSysMailMergeAccess"
     Me.HelpContextID = 1101
     
@@ -2340,7 +2331,7 @@ Public Sub GetSQL(lngUtilType As UtilityType, Optional psRecordSourceWhere As St
     msTableName = "ASRSysMailMergeName"
     msIDField = "MailMergeID"
     mutlUtilityType = utlLabel
-    psRecordSourceWhere = "ASRSysMailMergeName.IsLabel = 1"
+    psRecordSourceWhere = psRecordSourceWhere & IIf(psRecordSourceWhere <> vbNullString, " AND ", "") & "ASRSysMailMergeName.IsLabel = 1"
     msAccessTableName = "ASRSysMailMergeAccess"
     Me.HelpContextID = 1102
 
@@ -2428,11 +2419,20 @@ Public Sub GetSQL(lngUtilType As UtilityType, Optional psRecordSourceWhere As St
     strExtraWhereClause = strExtraWhereClause & IIf(strExtraWhereClause <> vbNullString, " AND ", "") & "(ISNULL(cat.categoryid,0) = " & mlngTableID & ")"
   End If
   
+  ' Filter the user
+  If cboOwner.ListIndex > 0 Then
+    If cboOwner.ListIndex = 1 Then
+      strExtraWhereClause = strExtraWhereClause & IIf(strExtraWhereClause <> vbNullString, " AND ", "") & "username = '" & gsUserName & "'"
+    Else
+      strExtraWhereClause = strExtraWhereClause & IIf(strExtraWhereClause <> vbNullString, " AND ", "") & "username = '" & cboOwner.Text & "'"
+    End If
+  End If
+  
   If msRecordSource = vbNullString And OldAccessUtility(mutlUtilityType) Then
     msRecordSource = _
         "SELECT Name, " & _
         IIf(mblnHideDesc, vbNullString, "Description, ") & _
-        IIf(mblnApplyDefAccess, "Username, Access, ", vbNullString) & msIDField & _
+        IIf(mblnApplyDefAccess, "Username, Access, ", vbNullString) & msIDField & "," & sUtilityType & _
       " FROM " & msTableName & _
       sCategoryFilter & _
       IIf(strExtraWhereClause <> vbNullString, " WHERE " & strExtraWhereClause, "")
@@ -2443,7 +2443,7 @@ Public Sub GetSQL(lngUtilType As UtilityType, Optional psRecordSourceWhere As St
       "SELECT " & msTableName & ".name," & _
         IIf(mblnHideDesc, vbNullString, msTableName & ".description, ") & _
         IIf(mblnApplyDefAccess, msTableName & ".userName, " & msAccessTableName & ".access, ", vbNullString) & _
-        msTableName & "." & msIDField & _
+        msTableName & "." & msIDField & "," & sUtilityType & _
       " FROM " & msTableName & _
       sCategoryFilter & _
       IIf(mblnApplyDefAccess, " INNER JOIN " & msAccessTableName & " ON " & msTableName & "." & msIDField & " = " & msAccessTableName & ".ID" & _
@@ -2455,7 +2455,7 @@ Public Sub GetSQL(lngUtilType As UtilityType, Optional psRecordSourceWhere As St
       "SELECT " & msTableName & ".name," & _
         IIf(mblnHideDesc, vbNullString, msTableName & ".description, ") & _
         IIf(mblnApplyDefAccess, msTableName & ".userName, " & msAccessTableName & ".access, ", vbNullString) & _
-        msTableName & "." & msIDField & _
+        msTableName & "." & msIDField & "," & sUtilityType & _
       " FROM " & msTableName & _
       sCategoryFilter & _
       IIf(strExtraWhereClause <> vbNullString, " WHERE " & strExtraWhereClause, "")
@@ -2471,15 +2471,9 @@ End Sub
 Public Function ShowList(lngUtilType As UtilityType, Optional psRecordSourceWhere As String, Optional blnScheduledJobs As Boolean) As Boolean
 
   mstrExtraWhereClause = psRecordSourceWhere
+  mblnScheduledJobs = blnScheduledJobs
 
   GetSQL lngUtilType, mstrExtraWhereClause, blnScheduledJobs
-    
-  If mblnFirstLoad Then
-    chkOnlyMine.Value = GetUserSetting("DefSel", "OnlyMine " & msTypeCode, 0)
-    mblnFirstLoad = False
-  Else
-    chkOnlyMine.Value = mintOnlyMine
-  End If
 
   ShowControls
   ShowList = Populate_List
@@ -2613,4 +2607,32 @@ Public Sub CustomShow(ByVal ShowMode As VBRUN.FormShowConstants)
 
 End Sub
 
+Private Sub txtSearchFor_Change()
+
+  Dim sExtraFilter As String
+
+  sExtraFilter = "(name LIKE '%" & txtSearchFor.Text & "%')"
+
+  GetSQL mutlUtilityType, sExtraFilter, False
+  Populate_List
+
+End Sub
+
+Private Function GetIDFromTag(ByVal Tag As String) As Long
+
+  Dim sValue As Long
+  
+  sValue = Mid(Tag, InStr(1, Tag, "-", vbTextCompare) + 1, 10)
+  GetIDFromTag = sValue
+
+End Function
+
+Private Function GetTypeFromTag(ByVal Tag As String) As UtilityType
+
+  Dim sValue As Long
+  
+  sValue = Mid(Tag, 1, InStr(1, Tag, "-", vbTextCompare) - 1)
+  GetTypeFromTag = sValue
+
+End Function
 

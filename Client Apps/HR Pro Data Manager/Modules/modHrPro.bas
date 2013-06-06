@@ -4507,3 +4507,54 @@ ErrorTrap:
   GoTo TidyUpAndExit
 
 End Sub
+
+
+Public Sub GetObjectOwners(ByRef theCombo As ComboBox, UtilityType As String)
+
+  On Error GoTo ErrorTrap
+
+  Dim rsTemp As ADODB.Recordset
+  Dim iListIndex As Integer
+       
+  theCombo.Clear
+       
+  ' Add <All>
+  theCombo.AddItem "<All>"
+  theCombo.ItemData(theCombo.NewIndex) = 0
+  
+  ' Add <Mine>
+  theCombo.AddItem "<Mine> (" + StrConv(gsUserName, vbProperCase) + ")"
+  theCombo.ItemData(theCombo.NewIndex) = 1
+  
+  iListIndex = theCombo.NewIndex
+       
+  Set rsTemp = gobjDataAccess.OpenRecordset("SELECT DISTINCT username FROM ASRSysAllObjectNames WHERE NOT NULLIF(username,'') = '' AND username <> '" & gsUserName & "' ORDER BY username" _
+      , adOpenForwardOnly, adLockReadOnly)
+  
+  If Not rsTemp.BOF And Not rsTemp.EOF Then
+    rsTemp.MoveFirst
+    Do While Not rsTemp.EOF
+      theCombo.AddItem rsTemp.Fields("username").Value
+      theCombo.ItemData(theCombo.NewIndex) = 2
+      
+      rsTemp.MoveNext
+    Loop
+  End If
+  
+  theCombo.Enabled = (theCombo.ListCount > 0)
+    
+  If GetUserSetting("DefSel", "OnlyMine " & UtilityType, 0) = 1 Then
+    SetComboItem theCombo, 1
+  Else
+    SetComboItem theCombo, 0
+  End If
+  
+TidyUpAndExit:
+  Set rsTemp = Nothing
+  Exit Sub
+  
+ErrorTrap:
+  GoTo TidyUpAndExit
+
+End Sub
+

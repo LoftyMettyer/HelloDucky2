@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "16:46"
+            TextSave        =   "15:50"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -3694,6 +3694,7 @@ Public Sub RunUtility(ByRef UtilType As UtilityType, ByRef UtilityID As Long, By
   Dim bRunOnce As Boolean
   Dim bOk As Boolean
   Dim lngSelectedID As Long
+  Dim lngUtilityType As UtilityType
    
   bOk = True
   fExit = False
@@ -3736,7 +3737,6 @@ Public Sub RunUtility(ByRef UtilType As UtilityType, ByRef UtilityID As Long, By
         Do While Not fExit
           .EnableRun = True
           .CategoryID = glngCurrentCategoryID
-          .ShowSearch = ShowSearch
               
           If UtilType = utlWorkflow Then
             .Options = edtSelect
@@ -3746,7 +3746,7 @@ Public Sub RunUtility(ByRef UtilType As UtilityType, ByRef UtilityID As Long, By
 
             .Action = edtSelect
             .AllowFavourites = True
-                      
+            
             ' Running a specific utility or just browsing?
             If UtilityID = 0 Or gbRecentDisplayDefSel Then
               .CustomShow vbModal
@@ -3762,7 +3762,7 @@ Public Sub RunUtility(ByRef UtilType As UtilityType, ByRef UtilityID As Long, By
                 
               lngSelectedID = .SelectedID
                 
-              Select Case UtilType
+              Select Case .SelectedUtilityType
                 Case utlCrossTab
                   bOk = DoCrossTab(.Action, lngSelectedID, .FromCopy)
                 
