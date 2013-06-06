@@ -1176,6 +1176,9 @@ Private Sub grdDelegates_DblClick()
       
     Next intCount
     
+    'MH20110406 HRPRO-1402
+    objEmail.SendImmediateEmails
+    
     If fOK Then
       mfCancelled = False
       Me.Hide
