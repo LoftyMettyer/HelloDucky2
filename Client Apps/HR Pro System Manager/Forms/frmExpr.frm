@@ -133,7 +133,7 @@ Begin VB.Form frmExpr
          HasFont         =   -1  'True
          HasMouseIcon    =   0   'False
          HasPictureBackground=   0   'False
-         ImageList       =   "(None)"
+         ImageList       =   "<None>"
          BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
             Name            =   "Verdana"
             Size            =   8.25
@@ -1381,7 +1381,7 @@ Private Sub sstrvComponents_AfterLabelEdit(Cancel As SSActiveTreeView.SSReturnBo
   mfLabelEditing = False
   
   ' RH - Fault 1909 - Restore the default button
-  cmdOK.Default = True
+  cmdOk.Default = True
   
   ' Validate the entered label.
   If Len(NewString) = 0 Then
@@ -1397,7 +1397,7 @@ End Sub
 Private Sub sstrvComponents_BeforeLabelEdit(Cancel As SSActiveTreeView.SSReturnBoolean)
   
   ' RH - Fault 1909 - Stop the default button
-  cmdOK.Default = False
+  cmdOk.Default = False
   
   ' Only allow sub-expression labels to be edited.
   If sstrvComponents.SelectedItem.key = ROOTKEY Then
@@ -1627,6 +1627,7 @@ Private Sub txtDescription_Change()
 
 End Sub
 
+
 Private Sub txtDescription_GotFocus()
   ' Select the entire contents of the textbox.
   UI.txtSelText
@@ -1767,7 +1768,7 @@ End Sub
 
 Private Function AddComponentNode(pobjComponent As CExprComponent, psParentNodeKey As String, pfExpanded As Boolean, pbFirstChild As Boolean) As String
   ' Populate the treeview with the given component's nodes.
-  Dim iLoop As Integer
+
   Dim sNodeKey As String
   Dim objNode As SSActiveTreeView.SSNode
   Dim objComponent As CExprComponent
@@ -1817,7 +1818,6 @@ End Function
 
 Private Function InsertComponentNode(pobjComponent As CExprComponent, psNodeKey As String, pfExpanded As Boolean, pbInsertBelow As Boolean) As String
   Dim objNode As SSActiveTreeView.SSNode
-  Dim iLoop As Integer
   Dim sNodeKey As String
   Dim objComponent As CExprComponent
   
@@ -1862,7 +1862,6 @@ Private Function InsertComponentNode(pobjComponent As CExprComponent, psNodeKey 
 End Function
 
 Private Sub RemoveComponentNode(psNodeKey As String)
-  Dim iLoop As Integer
   Dim objNode As SSActiveTreeView.SSNode
   
   Set objNode = sstrvComponents.Nodes(psNodeKey)
