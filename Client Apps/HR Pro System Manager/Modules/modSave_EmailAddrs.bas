@@ -317,7 +317,7 @@ Public Function CreateEmailSendStoredProcedure(strProcName As String, lngMethod 
         "    SET @Message8000 = Left(@Message,8000)" & vbCrLf & vbCrLf
     
     sSQL = sSQL & _
-        "    IF rtrim(@Subject8000) = '' SET @Subject8000 = char(9)" & vbCrLf & vbCrLf
+        "    IF rtrim(isnull(@Subject8000)) = '' SET @Subject8000 = char(9)" & vbCrLf & vbCrLf
     
     sSQL = sSQL & _
         "    EXEC @hResult = master..xp_sendmail " & vbCrLf & _
