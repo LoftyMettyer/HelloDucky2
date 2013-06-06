@@ -57,7 +57,6 @@ Begin VB.Form frmScrEdit
       TabPicture(1)   =   "frmScrEdit.frx":0028
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraHistoryScreensPage"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       Begin VB.Frame fraHistoryScreensPage 
          BackColor       =   &H8000000C&
@@ -142,17 +141,24 @@ Begin VB.Form frmScrEdit
             Top             =   1800
             Width           =   4550
             Begin VB.CommandButton cmdIconClear 
-               DisabledPicture =   "frmScrEdit.frx":0044
+               Caption         =   "O"
+               BeginProperty Font 
+                  Name            =   "Wingdings 2"
+                  Size            =   20.25
+                  Charset         =   2
+                  Weight          =   400
+                  Underline       =   0   'False
+                  Italic          =   0   'False
+                  Strikethrough   =   0   'False
+               EndProperty
                Height          =   315
                Left            =   3420
                MaskColor       =   &H000000FF&
-               Picture         =   "frmScrEdit.frx":0416
-               Style           =   1  'Graphical
                TabIndex        =   11
                ToolTipText     =   "Clear Path"
                Top             =   300
                UseMaskColor    =   -1  'True
-               Width           =   300
+               Width           =   330
             End
             Begin VB.TextBox txtIcon 
                BackColor       =   &H8000000F&
@@ -167,10 +173,9 @@ Begin VB.Form frmScrEdit
                Width           =   2910
             End
             Begin VB.CommandButton cmdIcon 
+               Caption         =   "..."
                Height          =   315
                Left            =   3105
-               Picture         =   "frmScrEdit.frx":07F1
-               Style           =   1  'Graphical
                TabIndex        =   10
                Top             =   300
                UseMaskColor    =   -1  'True
@@ -204,10 +209,9 @@ Begin VB.Form frmScrEdit
             Width           =   3185
          End
          Begin VB.CommandButton cmdOrder 
+            Caption         =   "..."
             Height          =   315
             Left            =   4185
-            Picture         =   "frmScrEdit.frx":093F
-            Style           =   1  'Graphical
             TabIndex        =   5
             Top             =   600
             UseMaskColor    =   -1  'True
@@ -1238,3 +1242,6 @@ If chkSSIntranet.value = vbChecked Then
       Set rsTemp = Nothing
     End If
 End Function
+
+
+

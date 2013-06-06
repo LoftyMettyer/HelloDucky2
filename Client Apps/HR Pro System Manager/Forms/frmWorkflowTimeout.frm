@@ -74,7 +74,7 @@ Begin VB.Form frmWorkflowTimeout
       _ExtentY        =   17277
       _Version        =   393216
       Style           =   1
-      Tab             =   1
+      Tab             =   2
       TabHeight       =   520
       TabCaption(0)   =   "&General"
       TabPicture(0)   =   "frmWorkflowTimeout.frx":000C
@@ -84,13 +84,13 @@ Begin VB.Form frmWorkflowTimeout
       Tab(0).ControlCount=   1
       TabCaption(1)   =   "Appea&rance"
       TabPicture(1)   =   "frmWorkflowTimeout.frx":0028
-      Tab(1).ControlEnabled=   -1  'True
+      Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "picTabContainer(1)"
       Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "&Data"
       TabPicture(2)   =   "frmWorkflowTimeout.frx":0044
-      Tab(2).ControlEnabled=   0   'False
+      Tab(2).ControlEnabled=   -1  'True
       Tab(2).Control(0)=   "picTabContainer(2)"
       Tab(2).Control(0).Enabled=   0   'False
       Tab(2).ControlCount=   1
@@ -99,7 +99,7 @@ Begin VB.Form frmWorkflowTimeout
          BorderStyle     =   0  'None
          Height          =   7300
          Index           =   2
-         Left            =   -74850
+         Left            =   150
          ScaleHeight     =   7305
          ScaleWidth      =   8400
          TabIndex        =   117
@@ -344,10 +344,9 @@ Begin VB.Form frmWorkflowTimeout
                Width           =   500
             End
             Begin VB.CommandButton cmdRecordIdentificationOrder 
+               Caption         =   "..."
                Height          =   315
                Left            =   2300
-               Picture         =   "frmWorkflowTimeout.frx":006C
-               Style           =   1  'Graphical
                TabIndex        =   131
                Top             =   2300
                UseMaskColor    =   -1  'True
@@ -365,10 +364,9 @@ Begin VB.Form frmWorkflowTimeout
                Width           =   500
             End
             Begin VB.CommandButton cmdRecordIdentificationFilter 
+               Caption         =   "..."
                Height          =   315
                Left            =   2300
-               Picture         =   "frmWorkflowTimeout.frx":01BA
-               Style           =   1  'Graphical
                TabIndex        =   134
                Top             =   2700
                UseMaskColor    =   -1  'True
@@ -594,10 +592,9 @@ Begin VB.Form frmWorkflowTimeout
                Width           =   1035
             End
             Begin VB.CommandButton cmdDefaultValueExpression 
+               Caption         =   "..."
                Height          =   315
                Left            =   6900
-               Picture         =   "frmWorkflowTimeout.frx":0308
-               Style           =   1  'Graphical
                TabIndex        =   162
                Top             =   700
                UseMaskColor    =   -1  'True
@@ -758,7 +755,7 @@ Begin VB.Form frmWorkflowTimeout
                   Italic          =   0   'False
                   Strikethrough   =   0   'False
                EndProperty
-               MouseIcon       =   "frmWorkflowTimeout.frx":0456
+               MouseIcon       =   "frmWorkflowTimeout.frx":006C
                MousePointer    =   0
             End
             Begin GTMaskDate.GTMaskDate dtDefaultValue 
@@ -868,10 +865,9 @@ Begin VB.Form frmWorkflowTimeout
                Top             =   1100
                Width           =   6495
                Begin VB.CommandButton cmdCaptionTypeExpression 
+                  Caption         =   "..."
                   Height          =   315
                   Left            =   5900
-                  Picture         =   "frmWorkflowTimeout.frx":0472
-                  Style           =   1  'Graphical
                   TabIndex        =   11
                   Top             =   700
                   UseMaskColor    =   -1  'True
@@ -952,10 +948,9 @@ Begin VB.Form frmWorkflowTimeout
                Width           =   4300
             End
             Begin VB.CommandButton cmdDescriptionExpression 
+               Caption         =   "..."
                Height          =   315
                Left            =   6100
-               Picture         =   "frmWorkflowTimeout.frx":05C0
-               Style           =   1  'Graphical
                TabIndex        =   14
                Top             =   2500
                UseMaskColor    =   -1  'True
@@ -1003,9 +998,9 @@ Begin VB.Form frmWorkflowTimeout
             Width           =   7400
             Begin VB.ComboBox cboWidthBehaviour 
                Height          =   315
-               ItemData        =   "frmWorkflowTimeout.frx":070E
+               ItemData        =   "frmWorkflowTimeout.frx":0088
                Left            =   1800
-               List            =   "frmWorkflowTimeout.frx":0718
+               List            =   "frmWorkflowTimeout.frx":0092
                Style           =   2  'Dropdown List
                TabIndex        =   38
                Top             =   2670
@@ -1014,9 +1009,9 @@ Begin VB.Form frmWorkflowTimeout
             End
             Begin VB.ComboBox cboHeightBehaviour 
                Height          =   315
-               ItemData        =   "frmWorkflowTimeout.frx":0729
+               ItemData        =   "frmWorkflowTimeout.frx":00A3
                Left            =   1800
-               List            =   "frmWorkflowTimeout.frx":0733
+               List            =   "frmWorkflowTimeout.frx":00AD
                Style           =   2  'Dropdown List
                TabIndex        =   34
                Top             =   2280
@@ -1025,9 +1020,9 @@ Begin VB.Form frmWorkflowTimeout
             End
             Begin VB.ComboBox cboHOffsetBehaviour 
                Height          =   315
-               ItemData        =   "frmWorkflowTimeout.frx":0744
+               ItemData        =   "frmWorkflowTimeout.frx":00BE
                Left            =   5295
-               List            =   "frmWorkflowTimeout.frx":074E
+               List            =   "frmWorkflowTimeout.frx":00C8
                Style           =   2  'Dropdown List
                TabIndex        =   32
                Top             =   1110
@@ -1036,9 +1031,9 @@ Begin VB.Form frmWorkflowTimeout
             End
             Begin VB.ComboBox cboVOffsetBehaviour 
                Height          =   315
-               ItemData        =   "frmWorkflowTimeout.frx":075F
+               ItemData        =   "frmWorkflowTimeout.frx":00D9
                Left            =   5295
-               List            =   "frmWorkflowTimeout.frx":0769
+               List            =   "frmWorkflowTimeout.frx":00E3
                Style           =   2  'Dropdown List
                TabIndex        =   28
                Top             =   720
@@ -1310,9 +1305,9 @@ Begin VB.Form frmWorkflowTimeout
             Width           =   8000
             Begin VB.ComboBox cboFollowOnFormsMessageType 
                Height          =   315
-               ItemData        =   "frmWorkflowTimeout.frx":077A
+               ItemData        =   "frmWorkflowTimeout.frx":00F4
                Left            =   2700
-               List            =   "frmWorkflowTimeout.frx":077C
+               List            =   "frmWorkflowTimeout.frx":00F6
                Style           =   2  'Dropdown List
                TabIndex        =   57
                Top             =   1840
@@ -1321,9 +1316,9 @@ Begin VB.Form frmWorkflowTimeout
             End
             Begin VB.ComboBox cboSavedForLaterMessageType 
                Height          =   315
-               ItemData        =   "frmWorkflowTimeout.frx":077E
+               ItemData        =   "frmWorkflowTimeout.frx":00F8
                Left            =   2700
-               List            =   "frmWorkflowTimeout.frx":0780
+               List            =   "frmWorkflowTimeout.frx":00FA
                Style           =   2  'Dropdown List
                TabIndex        =   54
                Top             =   1450
@@ -1332,9 +1327,9 @@ Begin VB.Form frmWorkflowTimeout
             End
             Begin VB.ComboBox cboCompletionMessageType 
                Height          =   315
-               ItemData        =   "frmWorkflowTimeout.frx":0782
+               ItemData        =   "frmWorkflowTimeout.frx":00FC
                Left            =   2700
-               List            =   "frmWorkflowTimeout.frx":0784
+               List            =   "frmWorkflowTimeout.frx":00FE
                Style           =   2  'Dropdown List
                TabIndex        =   51
                Top             =   1060
@@ -1342,30 +1337,27 @@ Begin VB.Form frmWorkflowTimeout
                Width           =   1875
             End
             Begin VB.CommandButton cmdFollowOnFormsMessage 
+               Caption         =   "..."
                Height          =   315
                Left            =   6105
-               Picture         =   "frmWorkflowTimeout.frx":0786
-               Style           =   1  'Graphical
                TabIndex        =   58
                Top             =   1840
                UseMaskColor    =   -1  'True
                Width           =   315
             End
             Begin VB.CommandButton cmdSavedForLaterMessage 
+               Caption         =   "..."
                Height          =   315
                Left            =   6105
-               Picture         =   "frmWorkflowTimeout.frx":08D4
-               Style           =   1  'Graphical
                TabIndex        =   55
                Top             =   1450
                UseMaskColor    =   -1  'True
                Width           =   315
             End
             Begin VB.CommandButton cmdCompletionMessage 
+               Caption         =   "..."
                Height          =   315
                Left            =   6105
-               Picture         =   "frmWorkflowTimeout.frx":0A22
-               Style           =   1  'Graphical
                TabIndex        =   52
                Top             =   1060
                UseMaskColor    =   -1  'True
@@ -1409,9 +1401,9 @@ Begin VB.Form frmWorkflowTimeout
             End
             Begin VB.ComboBox cboTimeoutPeriod 
                Height          =   315
-               ItemData        =   "frmWorkflowTimeout.frx":0B70
+               ItemData        =   "frmWorkflowTimeout.frx":0100
                Left            =   2715
-               List            =   "frmWorkflowTimeout.frx":0B80
+               List            =   "frmWorkflowTimeout.frx":0110
                Style           =   2  'Dropdown List
                TabIndex        =   44
                Top             =   300
@@ -1493,7 +1485,7 @@ Begin VB.Form frmWorkflowTimeout
          BorderStyle     =   0  'None
          Height          =   7300
          Index           =   1
-         Left            =   150
+         Left            =   -74850
          ScaleHeight     =   7305
          ScaleWidth      =   8400
          TabIndex        =   63
@@ -1509,10 +1501,9 @@ Begin VB.Form frmWorkflowTimeout
             Width           =   2900
             Begin VB.CommandButton cmdForegroundHighlightColour 
                Appearance      =   0  'Flat
+               Caption         =   "..."
                Height          =   315
                Left            =   2430
-               Picture         =   "frmWorkflowTimeout.frx":0BA8
-               Style           =   1  'Graphical
                TabIndex        =   94
                Top             =   1900
                UseMaskColor    =   -1  'True
@@ -1529,10 +1520,9 @@ Begin VB.Form frmWorkflowTimeout
             End
             Begin VB.CommandButton cmdForegroundOddColour 
                Appearance      =   0  'Flat
+               Caption         =   "..."
                Height          =   315
                Left            =   2430
-               Picture         =   "frmWorkflowTimeout.frx":0CF6
-               Style           =   1  'Graphical
                TabIndex        =   91
                Top             =   1500
                UseMaskColor    =   -1  'True
@@ -1549,10 +1539,9 @@ Begin VB.Form frmWorkflowTimeout
             End
             Begin VB.CommandButton cmdForegroundEvenColour 
                Appearance      =   0  'Flat
+               Caption         =   "..."
                Height          =   315
                Left            =   2430
-               Picture         =   "frmWorkflowTimeout.frx":0E44
-               Style           =   1  'Graphical
                TabIndex        =   88
                Top             =   1100
                UseMaskColor    =   -1  'True
@@ -1569,10 +1558,9 @@ Begin VB.Form frmWorkflowTimeout
             End
             Begin VB.CommandButton cmdForegroundColour 
                Appearance      =   0  'Flat
+               Caption         =   "..."
                Height          =   315
                Left            =   2430
-               Picture         =   "frmWorkflowTimeout.frx":0F92
-               Style           =   1  'Graphical
                TabIndex        =   85
                Top             =   700
                UseMaskColor    =   -1  'True
@@ -1588,10 +1576,9 @@ Begin VB.Form frmWorkflowTimeout
                Width           =   500
             End
             Begin VB.CommandButton cmdForegroundFont 
+               Caption         =   "..."
                Height          =   315
                Left            =   2430
-               Picture         =   "frmWorkflowTimeout.frx":10E0
-               Style           =   1  'Graphical
                TabIndex        =   82
                Top             =   300
                UseMaskColor    =   -1  'True
@@ -1672,9 +1659,9 @@ Begin VB.Form frmWorkflowTimeout
             End
             Begin VB.ComboBox cboAlignment 
                Height          =   315
-               ItemData        =   "frmWorkflowTimeout.frx":122E
+               ItemData        =   "frmWorkflowTimeout.frx":0138
                Left            =   5300
-               List            =   "frmWorkflowTimeout.frx":123E
+               List            =   "frmWorkflowTimeout.frx":0148
                Style           =   2  'Dropdown List
                TabIndex        =   67
                Top             =   300
@@ -1697,10 +1684,9 @@ Begin VB.Form frmWorkflowTimeout
             Top             =   1300
             Width           =   7400
             Begin VB.CommandButton cmdHeaderFont 
+               Caption         =   "..."
                Height          =   315
                Left            =   6100
-               Picture         =   "frmWorkflowTimeout.frx":1266
-               Style           =   1  'Graphical
                TabIndex        =   75
                Top             =   700
                UseMaskColor    =   -1  'True
@@ -1734,10 +1720,9 @@ Begin VB.Form frmWorkflowTimeout
             End
             Begin VB.CommandButton cmdHeaderBackgroundColour 
                Appearance      =   0  'Flat
+               Caption         =   "..."
                Height          =   315
                Left            =   6100
-               Picture         =   "frmWorkflowTimeout.frx":13B4
-               Style           =   1  'Graphical
                TabIndex        =   78
                Top             =   1100
                UseMaskColor    =   -1  'True
@@ -1796,17 +1781,24 @@ Begin VB.Form frmWorkflowTimeout
             Top             =   3000
             Width           =   4700
             Begin VB.CommandButton cmdPictureClear 
-               DisabledPicture =   "frmWorkflowTimeout.frx":1502
+               Caption         =   "O"
+               BeginProperty Font 
+                  Name            =   "Wingdings 2"
+                  Size            =   20.25
+                  Charset         =   2
+                  Weight          =   400
+                  Underline       =   0   'False
+                  Italic          =   0   'False
+                  Strikethrough   =   0   'False
+               EndProperty
                Height          =   315
                Left            =   2745
                MaskColor       =   &H000000FF&
-               Picture         =   "frmWorkflowTimeout.frx":18D4
-               Style           =   1  'Graphical
                TabIndex        =   113
                ToolTipText     =   "Clear Path"
                Top             =   2300
                UseMaskColor    =   -1  'True
-               Width           =   300
+               Width           =   330
             End
             Begin VB.TextBox txtPicture 
                BackColor       =   &H8000000F&
@@ -1820,14 +1812,13 @@ Begin VB.Form frmWorkflowTimeout
                Width           =   500
             End
             Begin VB.CommandButton cmdPictureSelect 
+               Caption         =   "..."
                Height          =   315
                Left            =   2430
-               Picture         =   "frmWorkflowTimeout.frx":1CAF
-               Style           =   1  'Graphical
                TabIndex        =   112
                ToolTipText     =   "Select Path"
                Top             =   2300
-               Width           =   300
+               Width           =   330
             End
             Begin VB.ComboBox cboPictureLocation 
                Height          =   315
@@ -1856,9 +1847,9 @@ Begin VB.Form frmWorkflowTimeout
             End
             Begin VB.ComboBox cboBackgroundStyle 
                Height          =   315
-               ItemData        =   "frmWorkflowTimeout.frx":1D27
+               ItemData        =   "frmWorkflowTimeout.frx":0170
                Left            =   1935
-               List            =   "frmWorkflowTimeout.frx":1D37
+               List            =   "frmWorkflowTimeout.frx":0180
                Style           =   2  'Dropdown List
                TabIndex        =   97
                Top             =   300
@@ -1875,10 +1866,9 @@ Begin VB.Form frmWorkflowTimeout
             End
             Begin VB.CommandButton cmdBackgroundColour 
                Appearance      =   0  'Flat
+               Caption         =   "..."
                Height          =   315
                Left            =   2430
-               Picture         =   "frmWorkflowTimeout.frx":1D5F
-               Style           =   1  'Graphical
                TabIndex        =   100
                Top             =   700
                UseMaskColor    =   -1  'True
@@ -1895,10 +1885,9 @@ Begin VB.Form frmWorkflowTimeout
             End
             Begin VB.CommandButton cmdBackgroundEvenColour 
                Appearance      =   0  'Flat
+               Caption         =   "..."
                Height          =   315
                Left            =   2430
-               Picture         =   "frmWorkflowTimeout.frx":1EAD
-               Style           =   1  'Graphical
                TabIndex        =   103
                Top             =   1100
                UseMaskColor    =   -1  'True
@@ -1915,10 +1904,9 @@ Begin VB.Form frmWorkflowTimeout
             End
             Begin VB.CommandButton cmdBackgroundOddColour 
                Appearance      =   0  'Flat
+               Caption         =   "..."
                Height          =   315
                Left            =   2430
-               Picture         =   "frmWorkflowTimeout.frx":1FFB
-               Style           =   1  'Graphical
                TabIndex        =   106
                Top             =   1500
                UseMaskColor    =   -1  'True
@@ -1935,10 +1923,9 @@ Begin VB.Form frmWorkflowTimeout
             End
             Begin VB.CommandButton cmdBackgroundHighlightColour 
                Appearance      =   0  'Flat
+               Caption         =   "..."
                Height          =   315
                Left            =   2430
-               Picture         =   "frmWorkflowTimeout.frx":2149
-               Style           =   1  'Graphical
                TabIndex        =   109
                Top             =   1900
                UseMaskColor    =   -1  'True
@@ -4320,7 +4307,7 @@ Private Sub RefreshScreen()
   
   fOKToSave = mfChanged And (Not mfReadOnly)
   
-  cmdOK.Enabled = fOKToSave
+  cmdOk.Enabled = fOKToSave
 
 End Sub
 
@@ -9845,13 +9832,13 @@ End Sub
 Private Sub txtControlValues_GotFocus()
   ' Disable the 'Default' property of the 'OK' button as the return key is
   ' used by this textbox.
-  cmdOK.Default = False
+  cmdOk.Default = False
 
 End Sub
 
 Private Sub txtControlValues_LostFocus()
   ' Enable the 'Default' property of the OK button.
-  cmdOK.Default = True
+  cmdOk.Default = True
 
 End Sub
 
@@ -9999,14 +9986,14 @@ End Sub
 Private Sub txtFileExtensions_GotFocus()
   ' Disable the 'Default' property of the 'OK' button as the return key is
   ' used by this textbox.
-  cmdOK.Default = False
+  cmdOk.Default = False
 
 End Sub
 
 
 Private Sub txtFileExtensions_LostFocus()
   ' Enable the 'Default' property of the OK button.
-  cmdOK.Default = True
+  cmdOk.Default = True
 
 End Sub
 
@@ -10133,3 +10120,6 @@ Private Sub cboMessage_refresh(piWhichMessage As WorkflowWebFormMessageType, _
   End If
   
 End Sub
+
+
+
