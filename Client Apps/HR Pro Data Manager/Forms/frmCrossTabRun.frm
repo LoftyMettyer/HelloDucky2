@@ -2547,8 +2547,7 @@ Private Sub PrepareForms()
 '  End With
 
   ' Get rid of the icon off the form
-  Me.Icon = Nothing
-  SetWindowLong Me.hWnd, GWL_EXSTYLE, WS_EX_WINDOWEDGE Or WS_EX_APPWINDOW Or WS_EX_DLGMODALFRAME
+  RemoveIcon Me
 
 Exit Sub
 
