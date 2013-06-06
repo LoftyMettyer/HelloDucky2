@@ -886,6 +886,19 @@ Private Function CreateBookings() As Boolean
     End If
   Next iLoop
   
+  ' Progress bar
+  With gobjProgress
+    .AVI = dbLoadUsers
+    .MainCaption = "Bulk Booking"
+    .NumberOfBars = 1
+    .Caption = "Training Booking"
+    .Time = False
+    .Cancel = True
+    .Bar1Caption = "Bulk Booking..."
+    .OpenProgress
+    .Bar1MaxValue = iBulkBookingCount
+  End With
+  
   If iBulkBookingCount > 0 Then
     ' Check that we are not over-booking a course.
     If fOK Then
@@ -910,8 +923,8 @@ Private Function CreateBookings() As Boolean
 '              sDelegateDescription = sDelegateDescription & ", " & _
 '                lvRecords.ListItems(iLoop).SubItems(iLoop2)
 '            Next iLoop2
-            
             fOK = CheckOverlappedBooking(CLng(mavSelectedRecords(1, iLoop)), sDelegateDescription)
+            gobjProgress.Visible = True
           End If
     
           If fOK Then
@@ -930,9 +943,11 @@ Private Function CreateBookings() As Boolean
               
             sErrorMsg = ""
             fOK = datGeneral.ExecuteSql(sSQL, sErrorMsg)
+            gobjProgress.UpdateProgress
 
             If Not fOK Then
               Screen.MousePointer = vbDefault
+              If gobjProgress.Visible Then gobjProgress.CloseProgress
               COAMsgBox "Unable to create booking record." & vbCrLf & vbCrLf & sErrorMsg, vbOKOnly + vbInformation, App.ProductName
               Screen.MousePointer = vbHourglass
               
@@ -956,6 +971,7 @@ Private Function CreateBookings() As Boolean
                   
                   If Not fOK Then
                     Screen.MousePointer = vbDefault
+                    gobjProgress.Visible = False
                     COAMsgBox "Unable to delete waiting list record." & vbCrLf & vbCrLf & sErrorMsg, vbOKOnly + vbInformation, App.ProductName
                     Screen.MousePointer = vbHourglass
                       
@@ -985,12 +1001,16 @@ Private Function CreateBookings() As Boolean
         ' JPD20011101 Fault 3466
         ' JPD20011101 Fault 3082
         ' JPD20021115 Fault 4754
+        If gobjProgress.Visible Then gobjProgress.CloseProgress
         COAMsgBox Trim(Str(iBookedCount)) & " booking" & IIf(iBookedCount = 1, "", "s") & " made successfully.", vbOKOnly & vbInformation, App.ProductName
       End If
     End If
   End If
   
 TidyUpAndExit:
+  
+  If gobjProgress.Visible Then gobjProgress.CloseProgress
+ 
   If fInTransaction Then
     If fOK Then
       gADOCon.CommitTrans
@@ -1068,10 +1088,12 @@ Private Function CheckOverlappedBooking(plngEmployeeID As Long, psDescription As
       Select Case .Parameters("result").Value
         Case 1    ' Overlapped booking (error).
           fOK = False
+          gobjProgress.Visible = False
           COAMsgBox "'" & psDescription & "'  is already booked on a course that overlaps with this course." & vbCrLf & _
             "Unable to make the booking.", vbOKOnly + vbInformation, App.ProductName
             
         Case 2    ' Overlapped booking (over-rideable by the user).
+          gobjProgress.Visible = False
           fOK = (COAMsgBox("'" & psDescription & "' is already booked on a course that overlaps with this course." & vbCrLf & _
             "Do you still want to make the booking ?", vbYesNo + vbQuestion, App.ProductName) = vbYes)
                   
