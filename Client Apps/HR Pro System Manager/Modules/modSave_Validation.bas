@@ -32,10 +32,10 @@ Public Function CreateValidationStoredProcedures(pfRefreshDatabase As Boolean) A
         'MH20011030 Fault 3002
         'If fOK And (!New Or !Changed Or pfRefreshDatabase Or (!TableName <> !OriginalTableName)) Then
         'If fOK And (!New Or !Changed Or pfRefreshDatabase Or (Application.ChangedTableName)) Then
-        If fOK And (!New Or !Changed Or pfRefreshDatabase Or Application.ChangedTableName Or Application.ChangedViewName) Then
+        'If fOK And (!New Or !Changed Or pfRefreshDatabase Or Application.ChangedTableName Or Application.ChangedViewName) Then
           ' Create the validation stored procedure.
-          fOK = CreateValidationStoredProcedure(!TableID, !TableName, !TableType, pfRefreshDatabase)
-        End If
+        fOK = CreateValidationStoredProcedure(!TableID, !TableName, !TableType, pfRefreshDatabase)
+        'End If
       End If
       
       If Not fOK Then
