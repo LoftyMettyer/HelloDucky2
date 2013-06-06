@@ -2,12 +2,12 @@ VERSION 5.00
 Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "timask6.ocx"
 Object = "{49CBFCC0-1337-11D2-9BBF-00A024695830}#1.0#0"; "tinumb6.ocx"
 Object = "{1C203F10-95AD-11D0-A84B-00A0247B735B}#1.0#0"; "SSTree.ocx"
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmExprComponent 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Expression Component"
-   ClientHeight    =   8850
+   ClientHeight    =   8835
    ClientLeft      =   45
    ClientTop       =   330
    ClientWidth     =   9930
@@ -27,7 +27,7 @@ Begin VB.Form frmExprComponent
    LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   8850
+   ScaleHeight     =   8835
    ScaleWidth      =   9930
    ShowInTaskbar   =   0   'False
    StartUpPosition =   1  'CenterOwner
@@ -46,7 +46,7 @@ Begin VB.Form frmExprComponent
          Left            =   60
          TabIndex        =   63
          Top             =   600
-         Width           =   1410
+         Width           =   2205
       End
       Begin VB.ListBox listCalcFilters 
          Height          =   255
@@ -362,10 +362,10 @@ Begin VB.Form frmExprComponent
          BackStyle       =   0  'Transparent
          Caption         =   "Value :"
          Height          =   195
-         Left            =   100
+         Left            =   105
          TabIndex        =   94
-         Top             =   710
-         Width           =   495
+         Top             =   705
+         Width           =   720
       End
       Begin VB.Label lblValType 
          BackStyle       =   0  'Transparent
@@ -374,7 +374,7 @@ Begin VB.Form frmExprComponent
          Left            =   105
          TabIndex        =   93
          Top             =   315
-         Width           =   465
+         Width           =   690
       End
    End
    Begin VB.Frame fraComponent 
@@ -425,7 +425,7 @@ Begin VB.Form frmExprComponent
             Caption         =   "Total"
             Height          =   255
             Index           =   2
-            Left            =   2400
+            Left            =   2565
             TabIndex        =   14
             Top             =   60
             Width           =   840
@@ -581,7 +581,7 @@ Begin VB.Form frmExprComponent
          Left            =   105
          TabIndex        =   91
          Top             =   675
-         Width           =   495
+         Width           =   630
       End
       Begin VB.Label lblFldField 
          AutoSize        =   -1  'True
@@ -591,7 +591,7 @@ Begin VB.Form frmExprComponent
          Left            =   105
          TabIndex        =   90
          Top             =   1065
-         Width           =   630
+         Width           =   675
       End
    End
    Begin VB.Frame fraComponent 
@@ -648,7 +648,7 @@ Begin VB.Form frmExprComponent
          Left            =   120
          TabIndex        =   29
          Top             =   585
-         Width           =   1455
+         Width           =   1605
       End
       Begin VB.ListBox listCalcCalculation 
          Height          =   255
@@ -671,7 +671,7 @@ Begin VB.Form frmExprComponent
       Begin VB.ComboBox cboTabValTable 
          Height          =   315
          ItemData        =   "frmComponent.frx":024A
-         Left            =   750
+         Left            =   960
          List            =   "frmComponent.frx":024C
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
@@ -682,7 +682,7 @@ Begin VB.Form frmExprComponent
       Begin VB.ComboBox cboTabValColumn 
          Height          =   315
          ItemData        =   "frmComponent.frx":024E
-         Left            =   750
+         Left            =   960
          List            =   "frmComponent.frx":0250
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
@@ -693,7 +693,7 @@ Begin VB.Form frmExprComponent
       Begin VB.ComboBox cboTabValValue 
          Height          =   315
          ItemData        =   "frmComponent.frx":0252
-         Left            =   750
+         Left            =   960
          List            =   "frmComponent.frx":0254
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
@@ -709,17 +709,17 @@ Begin VB.Form frmExprComponent
          TabIndex        =   106
          Top             =   1605
          Visible         =   0   'False
-         Width           =   1530
+         Width           =   1710
          WordWrap        =   -1  'True
       End
       Begin VB.Label lblTabValTable 
          BackStyle       =   0  'Transparent
          Caption         =   "Table :"
          Height          =   195
-         Left            =   100
+         Left            =   105
          TabIndex        =   83
-         Top             =   310
-         Width           =   495
+         Top             =   315
+         Width           =   735
       End
       Begin VB.Label lblTabValColumn 
          BackStyle       =   0  'Transparent
@@ -728,16 +728,16 @@ Begin VB.Form frmExprComponent
          Left            =   105
          TabIndex        =   82
          Top             =   705
-         Width           =   630
+         Width           =   870
       End
       Begin VB.Label lblTabValValue 
          BackStyle       =   0  'Transparent
          Caption         =   "Value :"
          Height          =   195
-         Left            =   100
+         Left            =   105
          TabIndex        =   81
          Top             =   1110
-         Width           =   495
+         Width           =   735
       End
    End
    Begin VB.Frame fraComponent 
@@ -766,7 +766,7 @@ Begin VB.Form frmExprComponent
          Left            =   100
          TabIndex        =   76
          Top             =   600
-         Width           =   1750
+         Width           =   2040
          Begin VB.ListBox lstCustParameters 
             Height          =   645
             Left            =   100
@@ -777,7 +777,7 @@ Begin VB.Form frmExprComponent
          Begin VB.ComboBox cboCustTable 
             Height          =   315
             ItemData        =   "frmComponent.frx":028D
-            Left            =   650
+            Left            =   930
             List            =   "frmComponent.frx":029D
             Style           =   2  'Dropdown List
             TabIndex        =   32
@@ -787,7 +787,7 @@ Begin VB.Form frmExprComponent
          Begin VB.ComboBox cboCustField 
             Height          =   315
             ItemData        =   "frmComponent.frx":02C4
-            Left            =   650
+            Left            =   930
             List            =   "frmComponent.frx":02D4
             Style           =   2  'Dropdown List
             TabIndex        =   33
@@ -799,10 +799,10 @@ Begin VB.Form frmExprComponent
             BackStyle       =   0  'Transparent
             Caption         =   "Table :"
             Height          =   195
-            Left            =   100
+            Left            =   105
             TabIndex        =   78
             Top             =   1260
-            Width           =   495
+            Width           =   705
          End
          Begin VB.Label lblCustField 
             AutoSize        =   -1  'True
@@ -812,7 +812,7 @@ Begin VB.Form frmExprComponent
             Left            =   105
             TabIndex        =   77
             Top             =   1665
-            Width           =   630
+            Width           =   840
          End
       End
       Begin VB.Label lblCustCalculation 
@@ -869,14 +869,14 @@ Begin VB.Form frmExprComponent
       Caption         =   "Prompted Value :"
       Height          =   4890
       Index           =   6
-      Left            =   0
+      Left            =   -30
       TabIndex        =   64
       Tag             =   "7"
-      Top             =   3795
+      Top             =   3855
       Width           =   6165
       Begin VB.TextBox txtPValPrompt 
          Height          =   315
-         Left            =   800
+         Left            =   1020
          MaxLength       =   40
          TabIndex        =   43
          Text            =   "Text1"
@@ -893,7 +893,7 @@ Begin VB.Form frmExprComponent
          Begin VB.ComboBox cboPValReturnType 
             Height          =   315
             ItemData        =   "frmComponent.frx":02FB
-            Left            =   120
+            Left            =   150
             List            =   "frmComponent.frx":030E
             Style           =   2  'Dropdown List
             TabIndex        =   44
@@ -1181,26 +1181,26 @@ Begin VB.Form frmExprComponent
       Begin VB.Frame fraPValTable 
          Caption         =   "Lookup Table Value :"
          Height          =   990
-         Left            =   135
+         Left            =   105
          TabIndex        =   66
-         Top             =   1350
+         Top             =   1380
          Width           =   2235
          Begin VB.ComboBox cboPValTable 
             Height          =   315
-            Left            =   720
+            Left            =   1035
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
             TabIndex        =   47
-            Top             =   240
+            Top             =   255
             Width           =   1000
          End
          Begin VB.ComboBox cboPValColumn 
             Height          =   315
-            Left            =   795
+            Left            =   1035
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
             TabIndex        =   48
-            Top             =   555
+            Top             =   615
             Width           =   1000
          End
          Begin VB.Label lblPValTable 
@@ -1210,8 +1210,8 @@ Begin VB.Form frmExprComponent
             Height          =   195
             Left            =   120
             TabIndex        =   68
-            Top             =   255
-            Width           =   495
+            Top             =   300
+            Width           =   690
          End
          Begin VB.Label lblPValColumn 
             AutoSize        =   -1  'True
@@ -1221,7 +1221,7 @@ Begin VB.Form frmExprComponent
             Left            =   105
             TabIndex        =   67
             Top             =   615
-            Width           =   630
+            Width           =   825
          End
       End
       Begin VB.Frame fraPValFormat 
@@ -1365,7 +1365,7 @@ Begin VB.Form frmExprComponent
          Left            =   105
          TabIndex        =   73
          Top             =   315
-         Width           =   615
+         Width           =   765
       End
    End
 End
@@ -4370,11 +4370,13 @@ Private Sub FormatPromptedValueFrame()
   Dim lngYCoordinate As Long
   
   Const lngCOLUMN1 = 200
-  Const lngCOLUMN2 = 900
+  'Const lngCOLUMN2 = 900 HRPRO-518
+  Const lngCOLUMN2 = 1100
   Const lngYFRAMEGAP = 50
   Const lngYGAP = 350
   Const lngXGAP = 200
-  Const lngCONTROLWIDTH = 3000
+  'Const lngCONTROLWIDTH = 3000 HRPRO-518
+  Const lngCONTROLWIDTH = 2800
   Const lngSPINNERWIDTH = 600
   Const lngDATECONTROLWIDTH = 1400
   
