@@ -2952,7 +2952,7 @@ BEGIN
 	EXEC sp_executesql @NVarCommand
 END
 
-	EXEC sp_executesql 'UPDATE tbsys_Workflows SET pictureid = NULL WHERE pictureid = 0';
+	EXEC sp_executesql N'UPDATE tbsys_Workflows SET pictureid = NULL WHERE pictureid = 0';
 
 
 
