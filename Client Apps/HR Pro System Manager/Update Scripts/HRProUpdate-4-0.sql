@@ -12878,7 +12878,7 @@ values('.NET Assembly', 'minimum version', '4.0.0')
 delete from asrsyssystemsettings
 where [Section] = 'outlook service' and [SettingKey] = 'minimum version'
 insert ASRSysSystemSettings([Section], [SettingKey], [SettingValue])
-values('outlook service', 'minimum version', '3.6.0')
+values('outlook service', 'minimum version', '4.0.0')
 
 delete from asrsyssystemsettings
 where [Section] = 'workflow service' and [SettingKey] = 'minimum version'
