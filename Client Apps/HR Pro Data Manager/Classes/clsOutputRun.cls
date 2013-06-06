@@ -185,7 +185,7 @@ Private Sub InitialiseStyles()
     .Bold = (GetUserSetting("Output", "TitleBold", "1") = "1")
     .Underline = (GetUserSetting("Output", "TitleUnderline", "1") = "1")
     .BackCol = Val(GetUserSetting("Output", "TitleBackcolour", vbWhite))
-    .ForeCol = Val(GetUserSetting("Output", "TitleForecolour", vbBlack))
+    .ForeCol = Val(GetUserSetting("Output", "TitleForecolour", GetColour("Midnight Blue")))
   End With
 
   mcolStyles.Add objStyle, objStyle.Name
@@ -197,8 +197,8 @@ Private Sub InitialiseStyles()
     .Gridlines = (GetUserSetting("Output", "HeadingGridLines", "1") = "1")
     .Bold = (GetUserSetting("Output", "HeadingBold", "1") = "1")
     .Underline = (GetUserSetting("Output", "HeadingUnderline", "0") = "1")
-    .BackCol = Val(GetUserSetting("Output", "HeadingBackcolour", GetColour("Violet")))
-    .ForeCol = Val(GetUserSetting("Output", "HeadingForecolour", vbWhite))
+    .BackCol = Val(GetUserSetting("Output", "HeadingBackcolour", GetColour("Dolphin Blue")))
+    .ForeCol = Val(GetUserSetting("Output", "HeadingForecolour", GetColour("Midnight Blue")))
     .CenterText = True
   End With
 
@@ -213,8 +213,8 @@ Private Sub InitialiseStyles()
     .Gridlines = (GetUserSetting("Output", "HeadingGridLines", "1") = "1")
     .Bold = (GetUserSetting("Output", "HeadingBold", "1") = "1")
     .Underline = (GetUserSetting("Output", "HeadingUnderline", "0") = "1")
-    .BackCol = Val(GetUserSetting("Output", "HeadingBackcolour", GetColour("Violet")))
-    .ForeCol = Val(GetUserSetting("Output", "HeadingForecolour", vbWhite))
+    .BackCol = Val(GetUserSetting("Output", "HeadingBackcolour", GetColour("Dolphin Blue")))
+    .ForeCol = Val(GetUserSetting("Output", "HeadingForecolour", GetColour("Midnight Blue")))
   End With
 
   mcolStyles.Add objStyle, objStyle.Name
@@ -228,8 +228,8 @@ Private Sub InitialiseStyles()
     .Gridlines = (GetUserSetting("Output", "DataGridLines", "1") = "1")
     .Bold = (GetUserSetting("Output", "DataBold", "0") = "1")
     .Underline = (GetUserSetting("Output", "DataUnderline", "0") = "1")
-    .BackCol = Val(GetUserSetting("Output", "DataBackcolour", GetColour("Light Yellow")))
-    .ForeCol = Val(GetUserSetting("Output", "DataForecolour", vbBlack))
+    .BackCol = Val(GetUserSetting("Output", "DataBackcolour", GetColour("Pale Grey")))
+    .ForeCol = Val(GetUserSetting("Output", "DataForecolour", GetColour("Midnight Blue")))
   End With
 
   mcolStyles.Add objStyle, objStyle.Name
