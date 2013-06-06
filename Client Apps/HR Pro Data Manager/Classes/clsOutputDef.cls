@@ -167,17 +167,15 @@ End Sub
 
 Private Sub CheckIfPreviewAvailable(Index As Integer)
   On Local Error Resume Next
-  
-  If gblnReportPackMode Or gblnBatchMode Then
-    mfrmParent.chkPreview.Enabled = IIf(Index = fmtDataOnly, True, False)
-    mfrmParent.chkPreview.Value = IIf(Index <> fmtDataOnly, vbUnchecked, vbChecked)
+    
+  If gblnReportPackMode Then
+    mfrmParent.chkPreview.Value = False
   Else
     mfrmParent.chkPreview.Enabled = IIf(Index <> fmtDataOnly, True, False)
     mfrmParent.chkPreview.Value = IIf(Index = fmtDataOnly, vbUnchecked, vbChecked)
   End If
 
 End Sub
-
 
 Private Sub EnableDestinations(blnScreen As Boolean, blnPrinter As Boolean, blnSave As Boolean, blnEmail As Boolean)
   
