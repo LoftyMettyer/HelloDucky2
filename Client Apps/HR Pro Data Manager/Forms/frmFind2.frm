@@ -144,6 +144,7 @@ Begin VB.Form frmFind2
          Left            =   1395
          TabIndex        =   8
          Top             =   315
+         Visible         =   0   'False
          Width           =   735
          _Version        =   65536
          _ExtentX        =   1296
