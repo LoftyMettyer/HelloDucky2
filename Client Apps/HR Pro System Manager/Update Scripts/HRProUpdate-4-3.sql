@@ -1786,6 +1786,9 @@ PRINT 'Step - Administration module stored procedures'
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRAccordPopulateTransactionData]') AND xtype = 'P')
 		DROP PROCEDURE [dbo].[spASRAccordPopulateTransactionData];
 
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRAccordSetLatestToType]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].[spASRAccordSetLatestToType];
+
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRDefragIndexes]') AND xtype = 'P')
 		DROP PROCEDURE [dbo].[spASRDefragIndexes];
 
@@ -1999,6 +2002,34 @@ PRINT 'Step - Administration module stored procedures'
                   UPDATE dbo.ASRSysAccordTransactionData SET [OldData] = @psOldValue
                         WHERE @piTransactionID = TransactionID and FieldID = @piColumnID;
       END'
+
+
+	EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[spASRAccordSetLatestToType] (
+			@piTransferType		integer ,
+			@piHRProRecordID	integer,
+			@piTransactionType	integer)
+	AS
+	BEGIN	
+
+		SET NOCOUNT ON;
+		
+		DECLARE @iTransactionID integer;
+
+		-- Get our transaction
+		SELECT TOP 1 @iTransactionID = TransactionID FROM ASRSysAccordTransactions
+			WHERE HRProRecordID = @piHRProRecordID AND TransferType = @piTransferType
+			ORDER BY CreatedDateTime DESC;
+
+		-- Force the transaction type
+		UPDATE dbo.[ASRSysAccordTransactions] SET TransactionType = @piTransactionType
+			WHERE TransactionID = @iTransactionID;
+
+		-- If new type then ensure that old data is blank
+		IF @piTransactionType = 0
+			UPDATE dbo.[ASRSysAccordTransactionData] SET [OldData] = '''' WHERE TransactionID = @iTransactionID;
+
+	END'
+
 
 
 
