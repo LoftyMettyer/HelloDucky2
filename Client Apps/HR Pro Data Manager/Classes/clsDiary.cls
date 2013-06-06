@@ -661,10 +661,10 @@ Private Sub PopulateByWeekView(dtStartDate As Date)
       With frmDiary.grdViewByWeek(intDay)
         If .Rows > 4 Then
           .ScrollBars = ssScrollBarsVertical
-          .Columns("EventTitle").Width = .Width - 1070    '2275
+          .Columns("EventTitle").Width = 2625 '.Width - 1070    '2275
         Else
           .ScrollBars = ssScrollBarsNone
-          .Columns("EventTitle").Width = .Width - 845 '2500
+          .Columns("EventTitle").Width = 2850 '.Width - 845 '2500
         End If
         
         .Columns("EventTime").Width = 600
