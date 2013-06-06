@@ -5369,7 +5369,7 @@ PRINT 'Step 12 - Auto Configuration'
 		EXECUTE dbo.spstat_setdefaultmodulesetting 'MODULE_MOBILE', 'Param_FieldsLeavingDate', @columnid, 'PType_ColumnID';
 
 		SET @columnid = 0;
-		EXECUTE dbo.spstat_scriptnewcolumn @columnid OUTPUT, @perstableid, 'Mobile_Workflow_Activated2', -7, 'Checkbox if the workflow mobile is activated for this user', 1, 0, 1, '5371A8DF-39BC-4A8E-875D-0DADE806F0BA';
+		EXECUTE dbo.spstat_scriptnewcolumn @columnid OUTPUT, @perstableid, 'Mobile_Workflow_Activated', -7, 'Checkbox if the workflow mobile is activated for this user', 1, 0, 1, '5371A8DF-39BC-4A8E-875D-0DADE806F0BA';
 		EXECUTE dbo.spstat_setdefaultmodulesetting 'MODULE_MOBILE', 'Param_MobileActivated', @columnid, 'PType_ColumnID';
 
 		SELECT @columnid = ISNULL([parametervalue],0) FROM dbo.[ASRSysModuleSetup] WHERE ModuleKey = 'MODULE_PERSONNEL' AND ParameterKey = 'Param_FieldsEmail' AND [ParameterType] = 'PType_ColumnID';
