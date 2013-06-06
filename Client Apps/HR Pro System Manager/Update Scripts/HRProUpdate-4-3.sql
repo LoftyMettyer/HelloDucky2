@@ -1772,6 +1772,12 @@ PRINT 'Step - Administration module stored procedures'
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spadmin_getcomponentcodedependancies]') AND xtype = 'P')
 		DROP PROCEDURE [dbo].[spadmin_getcomponentcodedependancies];
 
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spadmin_getdatabasesupportinfo]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].[spadmin_getdatabasesupportinfo];
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spadmin_getsystemsettings]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].[spadmin_getsystemsettings];
+
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spadmin_optimiserecordsave]') AND xtype = 'P')
 		DROP PROCEDURE [dbo].[spadmin_optimiserecordsave];
 
@@ -1814,6 +1820,25 @@ PRINT 'Step - Administration module stored procedures'
 			WHERE c.id = @componentid;
 	END';
 
+	EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[spadmin_getdatabasesupportinfo](@databasename varchar(255))
+	AS
+	BEGIN
+
+		SELECT ''Last Backup Date'' AS [action]
+			, COALESCE(Convert(varchar(12), MAX(T2.backup_finish_date), 101),''Not Yet Taken'') as actiondate
+			, COALESCE(Convert(varchar(12), MAX(T2.user_name), 101),''NA'') as username
+			FROM sys.sysdatabases T1
+				LEFT OUTER JOIN msdb.dbo.backupset T2 ON T2.database_name = T1.name
+			WHERE T1.Name = @databasename;
+		
+	END'
+
+	EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[spadmin_getsystemsettings]
+	AS
+	BEGIN
+		SELECT [section], [settingkey], [settingvalue] FROM dbo.[ASRSysSystemSettings]
+			ORDER BY [section], [settingkey];
+	END'
 
 	EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[spadmin_optimiserecordsave]
 	AS
