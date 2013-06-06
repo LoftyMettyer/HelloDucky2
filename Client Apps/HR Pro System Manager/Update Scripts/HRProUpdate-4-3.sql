@@ -1191,6 +1191,7 @@ PRINT 'Step 9 - Add new calculation procedures'
 		END';
 	EXECUTE sp_executeSQL @sSPCode;
 
+
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_statutoryredundancypay](
 			@startdate AS datetime,
 			@leavingdate AS datetime,
@@ -1462,7 +1463,32 @@ PRINT 'Step 11 - Administration module stored procedures'
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 12 - Remove redundant procedures'
+PRINT 'Step 12 - System stored procedures'
+
+	IF EXISTS (SELECT id FROM dbo.sysobjects
+		WHERE id = object_id(N'[dbo].[spsys_setsystemsetting]')	AND xtype = 'P')
+		DROP PROCEDURE [dbo].[spsys_setsystemsetting];
+
+	SET @sSPCode = 'CREATE PROCEDURE [dbo].[spsys_setsystemsetting](
+			@section AS nvarchar(255),
+			@settingkey AS nvarchar(255),
+			@settingvalue AS nvarchar(MAX))
+		AS
+		BEGIN
+			IF EXISTS(SELECT [SettingValue] FROM [asrsyssystemsettings] WHERE [Section] = @section AND [SettingKey] = @settingkey)
+				UPDATE ASRSysSystemSettings SET [SettingValue] = @settingvalue WHERE [Section] = @section AND [SettingKey] = @settingkey;
+			ELSE
+				INSERT ASRSysSystemSettings([Section], [SettingKey], [SettingValue]) VALUES (@section, @settingkey, @settingvalue);	
+		END';
+	EXECUTE sp_executeSQL @sSPCode;
+
+
+
+
+
+
+/* ------------------------------------------------------------- */
+PRINT 'Step 13 - Remove redundant procedures'
 
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRFn_RemainingMonthsSinceWholeYears]') AND xtype = 'P')
 		DROP PROCEDURE [dbo].[sp_ASRFn_RemainingMonthsSinceWholeYears];
@@ -1477,9 +1503,35 @@ PRINT 'Step 12 - Remove redundant procedures'
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 12 - Server settings'
+PRINT 'Step 14 - Server settings'
 
 	EXEC sp_dboption @DBName, 'recursive triggers', 'FALSE';
+
+
+/* ------------------------------------------------------------- */
+PRINT 'Step 14 - Convert to merged audit table'
+
+	-- Rename the base audit log
+	SET @NVarCommand = 'EXECUTE sp_rename [ASRSysAuditTrail], [tbsys_audittrail];'
+	EXECUTE sp_executesql @NVarCommand;
+
+	SET @NVarCommand = 'CREATE VIEW [ASRSysAuditTrail]
+		WITH SCHEMABINDING
+		AS SELECT
+			[id], [UserName], [DateTimeStamp], [RecordID], [RecordDesc], [OldValue], [NewValue]
+			[Tablename], [Columnname], [CMGExportDate],	[CMGCommitDate], [ColumnID], [Deleted]
+		FROM [dbo].[tbsys_audittrail];'
+	EXECUTE sp_executesql @NVarCommand;		
+
+	-- Remove old triggers 
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[INS_ASRSysAuditTrail]') AND xtype = 'TR')
+		DROP TRIGGER [dbo].[INS_ASRSysAuditTrail];
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[DEL_ASRSysAuditTrail]') AND xtype = 'TR')
+		DROP TRIGGER [dbo].[DEL_ASRSysAuditTrail];
+
+	-- Set as a non-integrated audit log
+	EXEC spsys_setsystemsetting 'integration', 'auditlog', 0;
 
 
 	
@@ -1530,40 +1582,14 @@ DEALLOCATE curObjects
 /* ------------------------------------------------------------- */
 PRINT 'Final Step - Updating Versions'
 
-delete from asrsyssystemsettings
-where [Section] = 'database' and [SettingKey] = 'version'
-insert ASRSysSystemSettings([Section], [SettingKey], [SettingValue])
-values('database', 'version', '4.3')
+	EXEC spsys_setsystemsetting 'database', 'version', '4.3';
+	EXEC spsys_setsystemsetting 'intranet', 'minimum version', '4.3.0';
+	EXEC spsys_setsystemsetting 'ssintranet', 'minimum version', '4.3.0';
+	EXEC spsys_setsystemsetting 'server dll', 'minimum version', '3.4.0';
+	EXEC spsys_setsystemsetting '.NET Assembly', 'minimum version', '4.2.0';
+	EXEC spsys_setsystemsetting 'outlook service', 'minimum version', '4.2.0';
+	EXEC spsys_setsystemsetting 'workflow service', 'minimum version', '4.2.0';
 
-delete from asrsyssystemsettings
-where [Section] = 'intranet' and [SettingKey] = 'minimum version'
-insert ASRSysSystemSettings([Section], [SettingKey], [SettingValue])
-values('intranet', 'minimum version', '4.3.0')
-
-delete from asrsyssystemsettings
-where [Section] = 'ssintranet' and [SettingKey] = 'minimum version'
-insert ASRSysSystemSettings([Section], [SettingKey], [SettingValue])
-values('ssintranet', 'minimum version', '4.3.0')
-
-delete from asrsyssystemsettings
-where [Section] = 'server dll' and [SettingKey] = 'minimum version'
-insert ASRSysSystemSettings([Section], [SettingKey], [SettingValue])
-values('server dll', 'minimum version', '3.4.0')
-
-delete from asrsyssystemsettings
-where [Section] = '.NET Assembly' and [SettingKey] = 'minimum version'
-insert ASRSysSystemSettings([Section], [SettingKey], [SettingValue])
-values('.NET Assembly', 'minimum version', '4.2.0')
-
-delete from asrsyssystemsettings
-where [Section] = 'outlook service' and [SettingKey] = 'minimum version'
-insert ASRSysSystemSettings([Section], [SettingKey], [SettingValue])
-values('outlook service', 'minimum version', '4.2.0')
-
-delete from asrsyssystemsettings
-where [Section] = 'workflow service' and [SettingKey] = 'minimum version'
-insert ASRSysSystemSettings([Section], [SettingKey], [SettingValue])
-values('workflow service', 'minimum version', '4.2.0')
 
 insert into asrsysauditaccess
 (DateTimeStamp, UserGroup, UserName, ComputerName, HRProModule, Action)
