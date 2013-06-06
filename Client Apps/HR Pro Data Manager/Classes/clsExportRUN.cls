@@ -1006,7 +1006,13 @@ Private Function GenerateSQLSelect() As Boolean
   '                                  This looks like its by design and not just a beta fault, but we can re-invetiagte when
   '                                  Micr*s*ft release the full product.
   ' Start off the select statement
-  If glngSQLVersion = 9 Then
+  
+  ' COWBOY ALERT REVISITED !!!!!!!
+  ' JDM - 20/7/2012 - JIRA xxxx - Congratulations to Microsoft - you have now reintroduced this with SQL 2012. Exactly the same issue
+  '                               as with SQL 2005, for some reason when using the SELECT... INTO it ignores the sort.
+  '                               Run the query analyser with display execution plan to find out for yourself.
+  '                               This doesn't affect 2008. I wonder what the next version of SQL will do?
+  If glngSQLVersion = 9 Or glngSQLVersion = 11 Then
     mstrSQLSelect = "SELECT TOP 1000000000000 "
   Else
     mstrSQLSelect = "SELECT "
