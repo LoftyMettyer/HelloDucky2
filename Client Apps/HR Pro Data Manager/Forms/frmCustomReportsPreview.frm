@@ -6,6 +6,15 @@ Begin VB.Form frmCustomReportsPreview
    ClientLeft      =   60
    ClientTop       =   345
    ClientWidth     =   9285
+   BeginProperty Font 
+      Name            =   "Verdana"
+      Size            =   9.75
+      Charset         =   0
+      Weight          =   400
+      Underline       =   0   'False
+      Italic          =   0   'False
+      Strikethrough   =   0   'False
+   EndProperty
    HelpContextID   =   1132
    Icon            =   "frmCustomReportsPreview.frx":0000
    LinkTopic       =   "Form1"
