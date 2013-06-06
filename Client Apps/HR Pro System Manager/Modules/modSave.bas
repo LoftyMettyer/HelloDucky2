@@ -535,7 +535,7 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
   
       SaveSystemSetting "Database", "RefreshStoredProcedures", 0
       SaveSystemSetting "Database", "UpdatingDateDependantColumns", 0
-      SaveSystemSetting "Database", "SystemLastSaveDate", Now
+      SaveSystemSetting "Database", "SystemLastSaveDate", Format(Now, "dd/mm/yyyy")
   
     End If
   
