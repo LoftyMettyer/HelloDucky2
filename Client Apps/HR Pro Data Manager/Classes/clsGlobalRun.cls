@@ -1432,7 +1432,7 @@ Private Sub UpdateRecordsOLD()
       'strSQL = "UPDATE " & mstrTableViews(iNextIndex) & " " & _
                "SET " & strUpdateColumns & " " & _
                "WHERE ID = " & CStr(mlngRecordIDs(lngRec))
-      strSQL = "IF EXISTS(SELECT ID FROM " & mstrTableViews(iNextIndex) & vbNewLine & _
+      strSQL = "SET NOCOUNT ON; IF EXISTS(SELECT ID FROM " & mstrTableViews(iNextIndex) & vbNewLine & _
                " WHERE ID = " & CStr(mlngRecordIDs(lngRec)) & ")" & vbNewLine & _
                "    UPDATE " & mstrTableViews(iNextIndex) & vbNewLine & _
                "    SET " & strUpdateColumns & vbNewLine & _
@@ -1441,6 +1441,9 @@ Private Sub UpdateRecordsOLD()
                "  RAISERROR('Record not found', 16, 1)"
 
       'JPD - 11/01/02 - Fault 3346
+      
+      'gADOCon.CursorLocation = adUseServer
+      
       blnUpdated = objDeadlock.UpdateTableRecordJustDoIt(strSQL)
       strRecordError = objDeadlock.ErrorString
       If objDeadlock.FatalError Then
@@ -1493,21 +1496,25 @@ Private Sub UpdateRecordsOLD()
     End If
 
 
-    gobjProgress.UpdateProgress gblnBatchMode
     strOutput = "Records Processed : " & CStr(mlngSuccessCount) & " successful" & _
                   IIf(mlngFailCount > 0, ", " & CStr(mlngFailCount) & " failed", "")
 
-    If gblnBatchMode Then
-      gobjProgress.Bar2RecordsCaption = strOutput
-    Else
-      gobjProgress.Bar1RecordsCaption = strOutput
-    End If
+ '   If (mlngSuccessCount + mlngFailCount) Mod 10 = 0 Then
+      gobjProgress.UpdateProgress gblnBatchMode
 
-    If gobjProgress.Cancelled Then
-      mblnUserCancelled = True
-      fOK = False
-      GoTo TidyUpAndExit
-    End If
+      If gblnBatchMode Then
+        gobjProgress.Bar2RecordsCaption = strOutput
+      Else
+        gobjProgress.Bar1RecordsCaption = strOutput
+      End If
+    
+      If gobjProgress.Cancelled Then
+        mblnUserCancelled = True
+        fOK = False
+        GoTo TidyUpAndExit
+      End If
+    
+  '  End If
 
   Next
 
