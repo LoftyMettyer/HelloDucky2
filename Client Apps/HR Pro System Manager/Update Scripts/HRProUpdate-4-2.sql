@@ -510,7 +510,6 @@ PRINT 'Step 5 - Modifying Workflow Data Structures'
 /* ------------------------------------------------------------- */
 PRINT 'Step 6 - Modifying Workflow Stored Procedures'
 
-
 	----------------------------------------------------------------------
 	-- spASRGetWorkflowItemValues
 	----------------------------------------------------------------------
@@ -533,7 +532,8 @@ PRINT 'Step 6 - Modifying Workflow Stored Procedures'
 				@piElementItemID	integer,
 				@piInstanceID	integer, 
 				@piLookupColumnIndex	integer OUTPUT, 
-				@piItemType	integer OUTPUT
+				@piItemType	integer OUTPUT, 
+				@psDefaultValue	varchar(8000) OUTPUT
 			)
 			AS
 			BEGIN
@@ -637,6 +637,8 @@ PRINT 'Step 6 - Modifying Workflow Stored Procedures'
 					END
 				END
 
+				SET @psDefaultValue = @sDefaultValue;
+
 				IF @iItemType = 15 -- OptionGroup
 				BEGIN
 					SELECT ASRSysWorkflowElementItemValues.value,
@@ -658,11 +660,7 @@ PRINT 'Step 6 - Modifying Workflow Stored Procedures'
 						ORDER BY [sequence];
 
 					SELECT [value],
-						'''' AS [ASRSysLookupFilterValue],
-						CASE
-							WHEN [value] = @sDefaultValue THEN 1
-							ELSE 0
-						END AS [ASRSysDefaultValueFlag]						
+						'''' AS [ASRSysLookupFilterValue]				
 					FROM @dropdownValues;
 				END
 				
@@ -808,29 +806,7 @@ PRINT 'Step 6 - Modifying Workflow Stored Procedures'
 							+ '' AS [ASRSysLookupFilterValue]'';
 					END;
 
-					SET @sSelectSQL = @sSelectSQL + '','';
-					
-					IF len(ltrim(rtrim(@sDefaultValue))) = 0 
-					BEGIN
-						SET @sSelectSQL = @sSelectSQL
-							+ '' 0 AS [ASRSysDefaultValueFlag]'';
-					END
-					ELSE
-					BEGIN
-						SET @sSelectSQL = @sSelectSQL
-							+ '' CASE''
-							+ ''   WHEN '' + @sTableName + ''.'' + @sColumnName + '' = ''
-							+ CASE
-								WHEN (@iDataType = 12) -- Character
-									OR (@iDataType = -1) -- WorkingPattern 
-									OR (@iDataType = 11) -- Date 
-									THEN '''''''' + REPLACE(@sDefaultValue, '''''''', '''''''''''') + ''''''''
-								ELSE @sDefaultValue 
-							END
-							+ ''   THEN 1''
-							+ ''   ELSE 0''
-							+ '' END AS [ASRSysDefaultValueFlag]'';
-					END;
+					SET @psDefaultValue = @sDefaultValue;
 
 					SET @sSelectSQL = @sSelectSQL
 						+ '' FROM '' + @sTableName 
@@ -845,7 +821,7 @@ PRINT 'Step 6 - Modifying Workflow Stored Procedures'
 			END;';
 
 	EXECUTE sp_executeSQL @sSPCode;
-
+	
 	----------------------------------------------------------------------
 	-- spASRGetWorkflowFormItems
 	----------------------------------------------------------------------
