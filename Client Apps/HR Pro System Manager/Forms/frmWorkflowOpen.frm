@@ -1660,6 +1660,8 @@ End Sub
 
 Private Sub Form_Resize()
   
+  On Error GoTo ErrorTrap
+  
   Const XGAP = 150
   Const XGAP_RIGHT = 250
   
@@ -1667,12 +1669,8 @@ Private Sub Form_Resize()
   Const YGAP_BOTTOM = 650
   
   'JPD 20070927 Fault 12501
-  'DisplayApplication
+  DisplayApplication
   
-'  If Me.WindowState = vbMinimized Then Exit Sub
-'  If Me.WindowState = vbMaximized And frmSysMgr.WindowState = 0 Then Exit Sub
-'  If frmSysMgr.WindowState = vbMinimized Then Exit Sub
-
   With fraDetails
     .Width = Me.Width - XGAP_RIGHT - cmdNew.Width - XGAP - .Left
     
@@ -1700,6 +1698,12 @@ Private Sub Form_Resize()
     
   ' Get rid of the icon off the form
   RemoveIcon Me
+    
+TidyUpAndExit:
+  Exit Sub
+
+ErrorTrap:
+  Exit Sub
     
 End Sub
 
