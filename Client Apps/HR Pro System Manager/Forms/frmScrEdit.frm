@@ -1,12 +1,11 @@
 VERSION 5.00
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Begin VB.Form frmScrEdit 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Properties"
-   ClientHeight    =   4065
+   ClientHeight    =   7185
    ClientLeft      =   2595
    ClientTop       =   1515
-   ClientWidth     =   5250
+   ClientWidth     =   9930
    BeginProperty Font 
       Name            =   "Verdana"
       Size            =   8.25
@@ -23,241 +22,232 @@ Begin VB.Form frmScrEdit
    LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   4065
-   ScaleWidth      =   5250
+   ScaleHeight     =   7185
+   ScaleWidth      =   9930
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
-   Begin TabDlg.SSTab SSTabScreenProperties 
-      Height          =   3350
-      Left            =   100
-      TabIndex        =   14
-      Top             =   100
-      Width           =   4995
-      _ExtentX        =   8811
-      _ExtentY        =   5900
-      _Version        =   393216
-      Style           =   1
-      Tabs            =   2
-      TabHeight       =   520
-      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-         Name            =   "Verdana"
-         Size            =   8.25
-         Charset         =   0
-         Weight          =   400
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      TabCaption(0)   =   "Defini&tion"
-      TabPicture(0)   =   "frmScrEdit.frx":000C
-      Tab(0).ControlEnabled=   -1  'True
-      Tab(0).Control(0)=   "fraDefinitionPage"
-      Tab(0).Control(0).Enabled=   0   'False
-      Tab(0).ControlCount=   1
-      TabCaption(1)   =   "&History Screens"
-      TabPicture(1)   =   "frmScrEdit.frx":0028
-      Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraHistoryScreensPage"
-      Tab(1).ControlCount=   1
-      Begin VB.Frame fraHistoryScreensPage 
-         BackColor       =   &H8000000C&
-         BorderStyle     =   0  'None
-         Enabled         =   0   'False
-         Height          =   2850
-         Left            =   -74950
+   Begin VB.Frame frmDefinition 
+      Caption         =   "Definition : "
+      Height          =   1950
+      Left            =   45
+      TabIndex        =   4
+      Top             =   90
+      Width           =   9780
+      Begin VB.TextBox txtDescription 
+         Height          =   1000
+         Left            =   1320
+         MaxLength       =   255
+         MultiLine       =   -1  'True
+         ScrollBars      =   2  'Vertical
          TabIndex        =   15
-         Top             =   325
-         Width           =   4900
-         Begin VB.CommandButton cmdDeselectAll 
-            Caption         =   "D&eselect All"
-            Height          =   400
-            Left            =   3600
-            TabIndex        =   20
-            Top             =   1450
-            Width           =   1200
-         End
-         Begin VB.CommandButton cmdSelectAll 
-            Caption         =   "Select &All"
-            Height          =   400
-            Left            =   3600
-            TabIndex        =   19
-            Top             =   850
-            Width           =   1200
-         End
-         Begin VB.CommandButton cmdSelectDeselect 
-            Caption         =   "&Sel/Deselect"
-            Height          =   400
-            Left            =   3600
-            TabIndex        =   18
-            Top             =   250
-            Width           =   1200
-         End
-         Begin VB.Frame fraHistoryScreens 
-            Caption         =   "History Screens :"
-            Height          =   2700
-            Left            =   150
-            TabIndex        =   16
-            Top             =   100
-            Width           =   3300
-            Begin VB.ListBox listHistoryScreens 
-               Height          =   2310
-               Left            =   150
-               Sorted          =   -1  'True
-               Style           =   1  'Checkbox
-               TabIndex        =   17
-               Top             =   250
-               Width           =   3000
-            End
-         End
+         Top             =   675
+         Width           =   3270
       End
-      Begin VB.Frame fraDefinitionPage 
-         BackColor       =   &H8000000C&
-         BorderStyle     =   0  'None
-         Height          =   2850
-         Left            =   50
-         TabIndex        =   0
-         Top             =   325
-         Width           =   4900
-         Begin VB.CheckBox chkSSIntranet 
-            Caption         =   "&Self-service Intranet Screen"
-            Height          =   315
-            Left            =   200
-            TabIndex        =   7
-            Top             =   1400
-            Width           =   2985
-         End
-         Begin VB.CheckBox chkQuickEntry 
-            Caption         =   "&Quick Access Screen"
-            Height          =   315
-            Left            =   200
-            TabIndex        =   6
-            Top             =   1000
-            Width           =   2385
-         End
-         Begin VB.Frame fraIcon 
-            Caption         =   "Icon :"
-            Height          =   1000
-            Left            =   210
-            TabIndex        =   8
-            Top             =   1800
-            Width           =   4550
-            Begin VB.CommandButton cmdIconClear 
-               Caption         =   "O"
-               Enabled         =   0   'False
-               BeginProperty Font 
-                  Name            =   "Wingdings 2"
-                  Size            =   20.25
-                  Charset         =   2
-                  Weight          =   400
-                  Underline       =   0   'False
-                  Italic          =   0   'False
-                  Strikethrough   =   0   'False
-               EndProperty
-               Height          =   315
-               Left            =   3420
-               MaskColor       =   &H000000FF&
-               TabIndex        =   11
-               ToolTipText     =   "Clear Path"
-               Top             =   300
-               UseMaskColor    =   -1  'True
-               Width           =   330
-            End
-            Begin VB.TextBox txtIcon 
-               BackColor       =   &H8000000F&
-               Enabled         =   0   'False
-               Height          =   315
-               Left            =   200
-               Locked          =   -1  'True
-               TabIndex        =   9
-               TabStop         =   0   'False
-               Text            =   "txtIcon"
-               Top             =   300
-               Width           =   2910
-            End
-            Begin VB.CommandButton cmdIcon 
-               Caption         =   "..."
-               Height          =   315
-               Left            =   3105
-               TabIndex        =   10
-               Top             =   300
-               UseMaskColor    =   -1  'True
-               Width           =   315
-            End
-            Begin VB.Image imgIcon 
-               Height          =   510
-               Left            =   3850
-               Top             =   300
-               Width           =   510
-            End
-         End
-         Begin VB.TextBox txtName 
-            Height          =   315
-            Left            =   1000
-            MaxLength       =   255
-            TabIndex        =   2
-            Text            =   "txtName"
-            Top             =   200
-            Width           =   3500
-         End
-         Begin VB.TextBox txtOrder 
-            BackColor       =   &H8000000F&
-            Enabled         =   0   'False
-            Height          =   315
-            Left            =   1000
-            Locked          =   -1  'True
-            TabIndex        =   4
-            TabStop         =   0   'False
-            Text            =   "txtOrder"
-            Top             =   600
-            Width           =   3185
-         End
-         Begin VB.CommandButton cmdOrder 
-            Caption         =   "..."
-            Height          =   315
-            Left            =   4185
-            TabIndex        =   5
-            Top             =   600
-            UseMaskColor    =   -1  'True
-            Width           =   315
-         End
-         Begin VB.Label lblName 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Name :"
-            Height          =   195
-            Left            =   200
-            TabIndex        =   1
-            Top             =   260
-            Width           =   510
-         End
-         Begin VB.Label lblOrder 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Order :"
-            Height          =   195
-            Left            =   200
-            TabIndex        =   3
-            Top             =   660
-            Width           =   525
-         End
+      Begin VB.CommandButton cmdIconClear 
+         Caption         =   "O"
+         Enabled         =   0   'False
+         BeginProperty Font 
+            Name            =   "Wingdings 2"
+            Size            =   20.25
+            Charset         =   2
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   315
+         Left            =   8895
+         MaskColor       =   &H000000FF&
+         TabIndex        =   12
+         ToolTipText     =   "Clear Path"
+         Top             =   675
+         UseMaskColor    =   -1  'True
+         Width           =   330
+      End
+      Begin VB.TextBox txtIcon 
+         BackColor       =   &H8000000F&
+         Enabled         =   0   'False
+         Height          =   315
+         Left            =   5670
+         Locked          =   -1  'True
+         TabIndex        =   11
+         TabStop         =   0   'False
+         Text            =   "txtIcon"
+         Top             =   675
+         Width           =   2910
+      End
+      Begin VB.CommandButton cmdIcon 
+         Caption         =   "..."
+         Height          =   315
+         Left            =   8580
+         TabIndex        =   10
+         Top             =   675
+         UseMaskColor    =   -1  'True
+         Width           =   315
+      End
+      Begin VB.CheckBox chkSSIntranet 
+         Caption         =   "&Self-service Intranet Screen"
+         Height          =   315
+         Left            =   5670
+         TabIndex        =   9
+         Top             =   1425
+         Width           =   2985
+      End
+      Begin VB.CheckBox chkQuickEntry 
+         Caption         =   "&Quick Access Screen"
+         Height          =   315
+         Left            =   5670
+         TabIndex        =   8
+         Top             =   1110
+         Width           =   2385
+      End
+      Begin VB.TextBox txtName 
+         Height          =   315
+         Left            =   1335
+         MaxLength       =   255
+         TabIndex        =   7
+         Text            =   "txtName"
+         Top             =   270
+         Width           =   3225
+      End
+      Begin VB.TextBox txtOrder 
+         BackColor       =   &H8000000F&
+         Enabled         =   0   'False
+         Height          =   315
+         Left            =   5655
+         Locked          =   -1  'True
+         TabIndex        =   6
+         TabStop         =   0   'False
+         Text            =   "txtOrder"
+         Top             =   270
+         Width           =   2910
+      End
+      Begin VB.CommandButton cmdOrder 
+         Caption         =   "..."
+         Height          =   315
+         Left            =   8580
+         TabIndex        =   5
+         Top             =   270
+         UseMaskColor    =   -1  'True
+         Width           =   315
+      End
+      Begin VB.Label lblIcon 
+         Caption         =   "Icon :"
+         Height          =   240
+         Left            =   4860
+         TabIndex        =   17
+         Top             =   720
+         Width           =   555
+      End
+      Begin VB.Label lblDescription 
+         BackStyle       =   0  'Transparent
+         Caption         =   "Description :"
+         Height          =   195
+         Left            =   135
+         TabIndex        =   16
+         Top             =   720
+         Width           =   1170
+      End
+      Begin VB.Image imgIcon 
+         Height          =   330
+         Left            =   9315
+         Top             =   675
+         Width           =   330
+      End
+      Begin VB.Label lblName 
+         AutoSize        =   -1  'True
+         BackStyle       =   0  'Transparent
+         Caption         =   "Name :"
+         Height          =   195
+         Left            =   135
+         TabIndex        =   14
+         Top             =   330
+         Width           =   510
+      End
+      Begin VB.Label lblOrder 
+         AutoSize        =   -1  'True
+         BackStyle       =   0  'Transparent
+         Caption         =   "Order :"
+         Height          =   195
+         Left            =   4860
+         TabIndex        =   13
+         Top             =   330
+         Width           =   615
+      End
+   End
+   Begin VB.Frame fraHistoryScreens 
+      Caption         =   "History Screens :"
+      Height          =   4455
+      Left            =   90
+      TabIndex        =   2
+      Top             =   2115
+      Width           =   9735
+      Begin VB.CommandButton cmdMoveDown 
+         Caption         =   "Move Down"
+         Height          =   420
+         Left            =   5625
+         TabIndex        =   22
+         Top             =   2835
+         Width           =   1185
+      End
+      Begin VB.CommandButton cmdMoveUp 
+         Caption         =   "Move Up"
+         Height          =   375
+         Left            =   5625
+         TabIndex        =   21
+         Top             =   2250
+         Width           =   1185
+      End
+      Begin VB.CommandButton cmdDeselectAll 
+         Caption         =   "D&eselect All"
+         Height          =   400
+         Left            =   5625
+         TabIndex        =   20
+         Top             =   1470
+         Width           =   1200
+      End
+      Begin VB.CommandButton cmdSelectAll 
+         Caption         =   "Select &All"
+         Height          =   400
+         Left            =   5625
+         TabIndex        =   19
+         Top             =   870
+         Width           =   1200
+      End
+      Begin VB.CommandButton cmdSelectDeselect 
+         Caption         =   "&Sel/Deselect"
+         Height          =   400
+         Left            =   5625
+         TabIndex        =   18
+         Top             =   270
+         Width           =   1200
+      End
+      Begin VB.ListBox listHistoryScreens 
+         Height          =   3210
+         Left            =   150
+         Sorted          =   -1  'True
+         Style           =   1  'Checkbox
+         TabIndex        =   3
+         Top             =   250
+         Width           =   5070
       End
    End
    Begin VB.CommandButton cmdCancel 
       Cancel          =   -1  'True
       Caption         =   "&Cancel"
       Height          =   400
-      Left            =   3900
-      TabIndex        =   13
-      Top             =   3550
+      Left            =   8625
+      TabIndex        =   1
+      Top             =   6660
       Width           =   1200
    End
    Begin VB.CommandButton cmdOk 
       Caption         =   "&OK"
       Default         =   -1  'True
       Height          =   400
-      Left            =   2640
-      TabIndex        =   12
-      Top             =   3550
+      Left            =   7365
+      TabIndex        =   0
+      Top             =   6660
       Width           =   1200
    End
 End
@@ -352,34 +342,6 @@ Public Property Let LockedTableId(pLngNewID As Long)
   
 End Property
 
-
-Private Sub cboTables_Click()
-
-'  If cboTables.ListIndex >= 0 Then
-'
-'    If cboTables.ItemData(cboTables.ListIndex) <> TableID Then
-'
-'      TableID = cboTables.ItemData(cboTables.ListIndex)
-'      OrderID = 0
-'      txtOrder.Text = vbNullString
-'
-'      ' Refresh the history screens listbox.
-'      listHistoryScreens_Refresh
-'    End If
-'
-'  End If
-
-End Sub
-
-Private Sub chkQuickEntry_Click()
-  RefreshCurrentTab
-  
-End Sub
-
-Private Sub chkSSIntranet_Click()
-  RefreshCurrentTab
-End Sub
-
 Private Sub cmdCancel_Click()
   blnCancelled = True
   
@@ -419,6 +381,22 @@ End Sub
 Private Sub cmdIconClear_Click()
   glngPictureID = frmPictSel.SelectedPicture
   imgIcon_Refresh
+End Sub
+
+Private Sub cmdMoveUp_Click()
+
+'  Dim iLoop As Integer
+'
+'  For iLoop = 0 To listHistoryScreens.ListCount - 1
+'    listHistoryScreens.Selected(iLoop) = False
+'
+'
+'  listHistoryScreens.Selected
+'
+'
+'
+'  Next iLoop
+
 End Sub
 
 Private Sub cmdOK_Click()
@@ -718,9 +696,7 @@ Private Sub Form_Activate()
   Dim fSSIntranet As Boolean
   
   If Loading Then
-    
-    SSTabScreenProperties.Tab = 0
-  
+ 
     If ScreenID > 0 Then
       
       With recScrEdit
@@ -753,15 +729,11 @@ Private Sub Form_Activate()
     End If
         
     ' Populate the combos, textboxes and listboxes.
-    cboTables_Refresh
     txtOrder_Refresh
     imgIcon_Refresh
     listHistoryScreens_Refresh
     
-    ' Initially set the current tab page to first tab page
-    SSTabScreenProperties.Tab = 0
     'Refresh current tab page
-    RefreshCurrentTab
     RefreshHistoryScreensTab
     'Set focus to column name textbox
     If txtName.Enabled Then
@@ -802,15 +774,7 @@ Private Sub Form_Load()
     End If
   Next
   Set objControl = Nothing
-  
-  ' Ensure the frames on each of the tab pages have the same
-  ' background colour as the tab pages themselves.
-  fraDefinitionPage.BackColor = SSTabScreenProperties.BackColor
-  fraHistoryScreensPage.BackColor = SSTabScreenProperties.BackColor
-  
-  ' Position the form.
-  UI.frmAtCenterOfParent Me, frmSysMgr
-
+   
 End Sub
 
 Private Function txtOrder_Refresh() As Boolean
@@ -847,46 +811,6 @@ Private Function imgIcon_Refresh() As Boolean
   End If
 End Function
 
-Private Function cboTables_Refresh() As Boolean
-
-'  With recTabEdit
-'
-'    .Index = "idxName"
-'
-'    If Not (.BOF And .EOF) Then
-'      .MoveFirst
-'    End If
-'
-'    Do While Not .EOF
-'
-'      If Not .Fields("deleted") Then
-'        cboTables.AddItem .Fields("tableName")
-'        cboTables.ItemData(cboTables.NewIndex) = .Fields("tableID")
-'
-'        If TableID = .Fields("tableID") Then
-'          cboTables.ListIndex = cboTables.NewIndex
-'        End If
-'
-'      End If
-'
-'      .MoveNext
-'
-'    Loop
-'
-'  End With
-'
-'  With cboTables
-'
-'    If .ListCount > 0 Then
-'      If .ListIndex < 0 Then
-'        .ListIndex = 0
-'      End If
-'    End If
-'
-'  End With
-
-End Function
-
 Private Sub Form_Resize()
   'JPD 20030908 Fault 5756
   DisplayApplication
@@ -897,20 +821,13 @@ Private Sub imgIcon_DblClick()
   cmdIcon_Click
 End Sub
 
-
 Private Sub listHistoryScreens_Click()
-
-  ' JDM - 21/08/02 - Fault 4284 - Not refreshing buttons
   RefreshHistoryScreensTab
-
 End Sub
 
 Private Sub listHistoryScreens_ItemCheck(Item As Integer)
-
   RefreshHistoryScreensTab
-
 End Sub
-
 
 Private Sub listHistoryScreens_KeyDown(KeyCode As Integer, Shift As Integer)
   If KeyCode = vbKeyEscape Then
@@ -918,27 +835,6 @@ Private Sub listHistoryScreens_KeyDown(KeyCode As Integer, Shift As Integer)
   End If
 End Sub
 
-Private Sub SSTabScreenProperties_Click(PreviousTab As Integer)
-  Dim fDefinitionPage As Boolean
-  Dim fHistoryScreensPage As Boolean
-  
-  ' Determine which tab is selected.
-  fDefinitionPage = (SSTabScreenProperties.Tab = 0)
-  fHistoryScreensPage = (SSTabScreenProperties.Tab = 1)
-  
-  ' Enable, and make visuble the selected tab.
-  fraDefinitionPage.Enabled = fDefinitionPage
-  fraDefinitionPage.Visible = fDefinitionPage
-  
-  fraHistoryScreensPage.Enabled = fHistoryScreensPage
-  fraHistoryScreensPage.Visible = fHistoryScreensPage
-
-  ' Refresh the current tab page
-  RefreshCurrentTab
-  
-  cmdDeselectAll.Enabled = AnySelected
-
-End Sub
 Private Sub RefreshDefinitionTab()
 
   If chkQuickEntry.value = vbChecked Then
@@ -964,11 +860,6 @@ Private Sub RefreshDefinitionTab()
   
   'JPD 20030909 Fault 6547
   If chkSSIntranet.value = vbChecked Then
-      'NPG20080124 Fault 12870
-      'Me.OrderID = 0
-      'txtOrder.Text = ""
-      
-      'NPG20080421 Fault 12982
     If IsParentScreen() = True Then
       Me.OrderID = 0
       txtOrder.Text = ""
@@ -980,15 +871,10 @@ Private Sub RefreshDefinitionTab()
     glngPictureID = 0
     imgIcon_Refresh
   End If
-  'NPG20080124 Fault 12870
-  ' cmdOrder.Enabled = (chkSSIntranet.Value = vbUnchecked)
+
   cmdIcon.Enabled = (chkSSIntranet.value = vbUnchecked)
   cmdIconClear.Enabled = (chkSSIntranet.value = vbUnchecked And Trim(txtIcon.Text) <> vbNullString)
-  
-  'JPD 20050111 Fault 9697
-  chkSSIntranet.Enabled = (chkQuickEntry.value = vbUnchecked) _
-    And (Application.SelfServiceIntranetModule)
-    
+  chkSSIntranet.Enabled = (chkQuickEntry.value = vbUnchecked) And (Application.SelfServiceIntranetModule)
   chkQuickEntry.Enabled = (chkSSIntranet.value = vbUnchecked)
   
 End Sub
@@ -1036,7 +922,6 @@ End Sub
 Private Sub txtOrder_GotFocus()
   cmdOrder.SetFocus
 End Sub
-
 
 Private Sub listHistoryScreens_Refresh()
   Dim sSQL As String
@@ -1114,24 +999,6 @@ ErrorTrap:
   Resume Exit_listHistoryScreens_Refresh
 
 End Sub
-Private Sub RefreshCurrentTab()
-  
-  'Refresh the controls on the active tab page
-  Select Case SSTabScreenProperties.Tab
-  
-    Case 0 ' Definition tab.
-      RefreshDefinitionTab
-      
-    Case 1 ' History Screens tab.
-      RefreshHistoryScreensTab
-      If listHistoryScreens.ListCount > 0 Then listHistoryScreens.ListIndex = 0
-  End Select
-  
-  Me.Refresh
-  
-End Sub
-
-
 
 Private Function SaveChanges() As Boolean
   ' Save the changes.
