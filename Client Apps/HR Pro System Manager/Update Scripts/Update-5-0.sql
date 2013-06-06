@@ -5942,37 +5942,6 @@ PRINT 'Step 9 - System procedures'
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRUpdateRecord]') AND xtype = 'P')
 		DROP PROCEDURE [dbo].[sp_ASRUpdateRecord];
 			
-	EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[sp_ASRDeleteRecord]
-(
-    @piResult integer OUTPUT,   /* Output variable to hold the result. */
-    @piTableID integer,			/* TableID being deleted from. */
-    @psRealSource sysname,		/* RealSource being deleted from. */
-    @piID integer				/* ID the record being deleted. */
-)
-AS
-BEGIN
-    SET NOCOUNT ON;
-    DECLARE @iTimestamp integer,
-			@sSQL		nvarchar(MAX);
-
-	-- Get status of amended record
-	EXEC dbo.sp_ASRRecordAmended @piResult OUTPUT,
-	    @piTableID,
-		@psRealSource,
-		@piID,
-		@iTimestamp;
-
-	-- If Ok run the delete statement
-    IF @piResult <> 3
-    BEGIN
-       SET @sSQL = ''DELETE '' +
-            '' FROM '' + @psRealSource +
-            '' WHERE id = '' + convert(varchar(MAX), @piID);
-       EXECUTE sp_executesql @sSQL;
-    END
-
-END'
-
 	EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[sp_ASRInsertNewRecord]
 	(
 		@piNewRecordID integer OUTPUT,   /* Output variable to hold the new record ID. */
@@ -6055,6 +6024,37 @@ BEGIN
     END
 END'
 
+	EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[sp_ASRDeleteRecord]
+(
+    @piResult integer OUTPUT,   /* Output variable to hold the result. */
+    @piTableID integer,			/* TableID being deleted from. */
+    @psRealSource sysname,		/* RealSource being deleted from. */
+    @piID integer				/* ID the record being deleted. */
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DECLARE @iTimestamp integer,
+			@sSQL		nvarchar(MAX);
+
+	-- Get status of amended record
+	EXEC dbo.sp_ASRRecordAmended @piResult OUTPUT,
+	    @piTableID,
+		@psRealSource,
+		@piID,
+		@iTimestamp;
+
+	-- If Ok run the delete statement
+    IF @piResult <> 3
+    BEGIN
+       SET @sSQL = ''DELETE '' +
+            '' FROM '' + @psRealSource +
+            '' WHERE id = '' + convert(varchar(MAX), @piID);
+       EXECUTE sp_executesql @sSQL;
+    END
+
+END'
+
 	EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[sp_ASRUpdateRecord]
 (
     @piResult integer OUTPUT,		/* Output variable to hold the result. */
@@ -6122,13 +6122,12 @@ PRINT 'Step 10 - Fusion Services (may be superseded by Fusion Installer)'
 	IF NOT EXISTS(SELECT * FROM sys.schemas where name = 'fusion')
 		EXECUTE sp_executesql N'CREATE SCHEMA [fusion];';
 
-	-- Should this run everytime or move into the system manager change platform code?
-	SET @NVarCommand = 'ALTER DATABASE [' + @DBName + '] SET ENABLE_BROKER WITH ROLLBACK IMMEDIATE';
-	EXEC sp_executeSQL @NVarCommand;
-
-	SET @NVarCommand = 'ALTER DATABASE [' + @DBName + '] SET NEW_BROKER';
-	EXEC sp_executeSQL @NVarCommand;
-
+	-- Enable the service broker
+	IF NOT EXISTS(SELECT is_broker_enabled FROM sys.databases WHERE is_broker_enabled  = 1 AND name = @DBName)
+	BEGIN
+		SET @NVarCommand = 'ALTER DATABASE [' + @DBName + '] SET NEW_BROKER';
+		EXEC sp_executeSQL @NVarCommand;
+	END
 
 	-- Configure the service broker
 	IF NOT EXISTS(SELECT name FROM sys.service_message_types WHERE name = 'TriggerFusionSend')
