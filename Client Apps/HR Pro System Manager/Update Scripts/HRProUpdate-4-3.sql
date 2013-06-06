@@ -1052,10 +1052,11 @@ PRINT 'Step 9 - Add new calculation procedures'
 			DECLARE @result varchar(MAX);
 			
 			SET @result = '''';
-			SELECT @result = CONVERT(nvarchar(2),DATEPART(day, @inputdate))
-				+ '' '' + DATENAME(month, @inputdate) 
-				+ '' '' + CONVERT(nvarchar(4),DATEPART(YYYY, @inputdate));
-		
+			SELECT @result = DATENAME(dw, @inputdate) + '', '' 
+				+ DATENAME(mm, @inputdate) + '' '' 
+				+ LTRIM(STR(DATEPART(dd, @inputdate))) 
+				+ '' '' + LTRIM(STR(DATEPART(yy, @inputdate)));
+
 			RETURN @result;
 			
 		END';
