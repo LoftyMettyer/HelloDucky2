@@ -196,8 +196,6 @@ Begin VB.Form frmWorkflowOpen
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   1
             Object.Width           =   9234
-            TextSave        =   ""
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -731,6 +729,10 @@ Private Sub cmdCopy_Click()
         recWorkflowElementItemEdit!HeightBehaviour = .Fields("HeightBehaviour")
         recWorkflowElementItemEdit!WidthBehaviour = .Fields("WidthBehaviour")
         recWorkflowElementItemEdit!PasswordType = .Fields("PasswordType")
+
+        recWorkflowElementItemEdit!LookupFilterColumnID = .Fields("LookupFilterColumnID")
+        recWorkflowElementItemEdit!LookupFilterOperator = .Fields("LookupFilterOperator")
+        recWorkflowElementItemEdit!LookupFilterValue = .Fields("LookupFilterValue")
 
         recWorkflowElementItemEdit.Update
 

@@ -201,10 +201,14 @@ Public Enum WFItemProperty
   WFITEMPROP_FOLLOWONFORMSMESSAGETYPE = 68
   WFITEMPROP_FOLLOWONFORMSMESSAGE = 69
   WFITEMPROP_FILEEXTENSIONS = 70
+  WFITEMPROP_LOOKUPFILTER = 71
+  WFITEMPROP_LOOKUPFILTERCOLUMN = 72
+  WFITEMPROP_LOOKUPFILTEROPERATOR = 73
+  WFITEMPROP_LOOKUPFILTERVALUE = 74
 End Enum
 ' NB. If you add any properties to this enum you'll need to increment the WFITEMPROPERTYCOUNT constant below
 ' This constant is (3 + <max value in the enum>)
-Public Const WFITEMPROPERTYCOUNT = 73
+Public Const WFITEMPROPERTYCOUNT = 77
 
 Public Const WORKFLOWWEBFORM_MINSIZE_FILEUPLOAD = 1
 Public Const WORKFLOWWEBFORM_MAXSIZE_FILEUPLOAD = 8000
@@ -2368,6 +2372,19 @@ Public Function WebFormItemHasProperty(piItemType As WorkflowWebFormItemTypes, _
     Case WFITEMPROP_FILEEXTENSIONS ' 70
       fHasProperty = (piItemType = giWFFORMITEM_INPUTVALUE_FILEUPLOAD)
   
+    Case WFITEMPROP_LOOKUPFILTER ' 71
+      fHasProperty = (piItemType = giWFFORMITEM_INPUTVALUE_LOOKUP)
+
+    Case WFITEMPROP_LOOKUPFILTERCOLUMN ' 72
+      fHasProperty = (piItemType = giWFFORMITEM_INPUTVALUE_LOOKUP)
+
+    Case WFITEMPROP_LOOKUPFILTEROPERATOR ' 73
+      fHasProperty = (piItemType = giWFFORMITEM_INPUTVALUE_LOOKUP)
+
+    Case WFITEMPROP_LOOKUPFILTERVALUE ' 74
+      fHasProperty = (piItemType = giWFFORMITEM_INPUTVALUE_LOOKUP)
+
+
   End Select
   
   WebFormItemHasProperty = fHasProperty
@@ -3660,7 +3677,7 @@ Private Function ReadWorkflowParameters() As Boolean
       If .NoMatch Then
         mvar_lngActivateDelegationColumn = 0
       Else
-        mvar_lngActivateDelegationColumn = IIf(IsNull(!parametervalue), 0, Val(!parametervalue))
+        mvar_lngActivateDelegationColumn = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
         mvar_sActivateDelegationColumn = GetColumnName(mvar_lngActivateDelegationColumn, True)
       End If
     
@@ -3669,7 +3686,7 @@ Private Function ReadWorkflowParameters() As Boolean
       If .NoMatch Then
         mvar_lngDelegationEmail = 0
       Else
-        mvar_lngDelegationEmail = IIf(IsNull(!parametervalue), 0, Val(!parametervalue))
+        mvar_lngDelegationEmail = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
       End If
     End If
     
@@ -3944,7 +3961,7 @@ Private Function CompactString(psSourceString As String) As String
     sNewString = ""
     sSubString = Left(sModifiedSourceString & "000", 3)
     sModifiedSourceString = Mid(sModifiedSourceString, 4)
-    iValue = Val("&H" & sSubString)
+    iValue = val("&H" & sSubString)
     
     ' Use our own base64 digit set.
     ' Base64 digit values 0-9 are represented as 0-9
