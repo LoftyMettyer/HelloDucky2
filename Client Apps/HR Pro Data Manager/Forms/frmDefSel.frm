@@ -115,7 +115,6 @@ Begin VB.Form frmDefSel
          Width           =   3000
       End
       Begin VB.ComboBox cboTables 
-         BackColor       =   &H8000000F&
          Enabled         =   0   'False
          Height          =   315
          Left            =   600
