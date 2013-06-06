@@ -363,7 +363,7 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
       gobjProgress.UpdateProgress False
       DoEvents
       fOK = SaveExpressions(pfRefreshDatabase)
-      objHRProEngine.Script.ScriptObjects
+      fOK = fOK And objHRProEngine.Script.ScriptObjects
       fOK = fOK And Not gobjProgress.Cancelled
     End If
      
@@ -401,14 +401,24 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
       fOK = fOK And Not gobjProgress.Cancelled
     End If
   
+    ' Create the Record Validation stored procedures.
+    If fOK Then
+      gobjProgress.ResetBar2
+      OutputCurrentProcess "Generating Record Validation"
+      gobjProgress.UpdateProgress False
+      DoEvents
+      fOK = CreateValidationStoredProcedures(pfRefreshDatabase)
+      fOK = fOK And Not gobjProgress.Cancelled
+    End If
+  
     ' Create the Column Calculation, Audit and Relationship Triggers.
     If fOK Then
       gobjProgress.ResetBar2
       OutputCurrentProcess "Generating Column Triggers"
       gobjProgress.UpdateProgress False
       DoEvents
-      objHRProEngine.Script.ScriptTriggers
-      fOK = SetTriggers(alngExpressions, pfRefreshDatabase)
+      fOK = objHRProEngine.Script.ScriptTriggers
+      fOK = fOK And SetTriggers(alngExpressions, pfRefreshDatabase)
       fOK = fOK And Not gobjProgress.Cancelled
     End If
   
@@ -419,16 +429,6 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
       gobjProgress.UpdateProgress False
       DoEvents
       fOK = SaveViews(pfRefreshDatabase)
-      fOK = fOK And Not gobjProgress.Cancelled
-    End If
-    
-    ' Create the Record Validation stored procedures.
-    If fOK Then
-      gobjProgress.ResetBar2
-      OutputCurrentProcess "Generating Record Validation"
-      gobjProgress.UpdateProgress False
-      DoEvents
-      fOK = CreateValidationStoredProcedures(pfRefreshDatabase)
       fOK = fOK And Not gobjProgress.Cancelled
     End If
      
@@ -451,7 +451,6 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
       fOK = fOK And Not gobjProgress.Cancelled
       ApplyProcessAdminToLogins
     End If
-         
      
     ' Save and check module specifics and configure any stored procedures.
     If fOK Then
