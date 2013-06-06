@@ -644,7 +644,7 @@ Public Sub Login()
   If Not IsVersion10 Then
     ' The version of SQL Server is below 2008
     Screen.MousePointer = vbNormal
-    MsgBox "You are running an uunsupported version of SQL Server." & vbNewLine & vbNewLine & _
+    MsgBox "You are running an unsupported version of SQL Server." & vbNewLine & vbNewLine & _
       "OpenHR requires SQL Server version 2008 or above.", _
       vbOKOnly, App.ProductName
     Exit Sub
