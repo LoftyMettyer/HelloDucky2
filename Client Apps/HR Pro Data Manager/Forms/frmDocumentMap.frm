@@ -1141,9 +1141,9 @@ Private Function CheckUniqueName(sName As String, lngCurrentID As Long) As Boole
   Dim rsTemp As Recordset
   
   sSQL = "SELECT * FROM ASRSysDocumentManagementTypes " & _
-         " WHERE UPPER(Name) = '" & UCase(Replace(sName, "'", "''")) & "'"
-'         " AND DocumentMapID = " & CStr(mlngDocumentMapID)
-'         " AND MatchReportID <> " & CStr(lngCurrentID)
+         " WHERE UPPER(Name) = '" & UCase(Replace(sName, "'", "''")) & "'" & _
+         " AND DocumentMapID <> " & CStr(lngCurrentID)
+  
   Set rsTemp = datGeneral.GetRecords(sSQL)
   
   If rsTemp.BOF And rsTemp.EOF Then
