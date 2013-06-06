@@ -291,6 +291,8 @@ Public Function GetSQL(lngBaseTableID As Long, strBaseTableName As String, lngRe
   Dim strTempVariable As String
   Dim strTempConvert As String
 
+  On Local Error GoTo LocalErr
+
 
   strSQLJoin = vbNullString
   strSQLDeclares = vbNullString
@@ -418,6 +420,12 @@ Public Function GetSQL(lngBaseTableID As Long, strBaseTableName As String, lngRe
   End If
 
   GetSQL = strOutput
+
+Exit Function
+
+LocalErr:
+  MsgBox "Error generating email content (" & Err.Description & ")", vbCritical
+  GetSQL = vbNullString
 
 End Function
 
