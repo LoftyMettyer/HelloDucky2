@@ -3,10 +3,10 @@ Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "COA_Line.ocx"
 Begin VB.Form frmWorkflowQueueDetails 
    Caption         =   "Workflow Queue Details"
-   ClientHeight    =   5490
+   ClientHeight    =   5430
    ClientLeft      =   60
    ClientTop       =   450
-   ClientWidth     =   8040
+   ClientWidth     =   8010
    BeginProperty Font 
       Name            =   "Verdana"
       Size            =   8.25
@@ -21,10 +21,8 @@ Begin VB.Form frmWorkflowQueueDetails
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
-   MaxButton       =   0   'False
-   MinButton       =   0   'False
-   ScaleHeight     =   5490
-   ScaleWidth      =   8040
+   ScaleHeight     =   5430
+   ScaleWidth      =   8010
    StartUpPosition =   1  'CenterOwner
    Begin VB.Frame fraDetails 
       Caption         =   "Details :"
@@ -294,9 +292,7 @@ Private Sub Form_Resize()
 
   Const GAPOVERBUTTONS = 100
   Const GAPUNDERBUTTONS = 620
-  
   Const YGAP = 260
-
   Const COLUMN1LABELLEFT = 200
   Const COLUMN1LABELWIDTH = 1900
   Const COLUMN2LABELWIDTH = 1100
@@ -305,42 +301,40 @@ Private Sub Form_Resize()
   DisplayApplication
 
   If mblnSizing Then Exit Sub
-
   mblnSizing = True
 
   Select Case miLinkType
     Case 0, 2
       ' Column, Date
       sngMinFormHeight = MINFORMHEIGHT
-
     Case 1
       ' Record
       fraDetails.Height = lblRecordDescription.Top _
         + lblRecordDescription.Height _
         + YGAP
-        
   End Select
 
-'  If Me.Height < sngMinFormHeight Then Me.Height = sngMinFormHeight
-'  If Me.Height > Screen.Height Then Me.Height = (Screen.Height - 200)
-
   If mfSizeable Then
-    fraDetails.Height = Me.Height _
-      - fraDetails.Top _
-      - cmdOK.Height _
-      - GAPOVERBUTTONS _
-      - GAPUNDERBUTTONS
-
-    grdColumnValues.Height = fraDetails.Height _
-      - grdColumnValues.Top _
-      - 200
+      If Me.Height - fraDetails.Top - cmdOK.Height - GAPOVERBUTTONS - GAPUNDERBUTTONS < 0 Then
+          Me.Height = Me.Height
+      Else
+          fraDetails.Height = Me.Height - fraDetails.Top - cmdOK.Height - GAPOVERBUTTONS - GAPUNDERBUTTONS
+      End If
+      
+      If fraDetails.Height - grdColumnValues.Top - 200 < 0 Then
+          fraDetails.Height = fraDetails.Height
+      Else
+          grdColumnValues.Height = fraDetails.Height - grdColumnValues.Top - 200
+      End If
+      
+      If Me.Width < MINFORMWIDTH Then
+          Me.Width = MINFORMWIDTH
+          Me.Refresh
+      Else
+          fraDetails.Width = Me.Width - 350
+          Me.Refresh
+      End If
   End If
-
-'  If Me.Width < MINFORMWIDTH Then Me.Width = MINFORMWIDTH
-'  If Me.Width > Screen.Width Then Me.Width = (Screen.Width - 200)
-
-  fraDetails.Width = Me.Width _
-    - 350
 
   lngColumn1Left = COLUMN1LABELLEFT
   lngColumn1DataLeft = COLUMN1LABELLEFT + COLUMN1LABELWIDTH
@@ -384,17 +378,11 @@ Private Sub Form_Resize()
   lblLinkTypeValue.Left = lblTableValue.Left
   lblLinkTypeValue.Width = lblTableValue.Width
 
-  cmdOK.Top = fraDetails.Top _
-    + fraDetails.Height _
-    + GAPOVERBUTTONS
-  cmdOK.Left = fraDetails.Left _
-    + fraDetails.Width _
-    - cmdOK.Width
+  cmdOK.Top = fraDetails.Top + fraDetails.Height + GAPOVERBUTTONS
+  cmdOK.Left = fraDetails.Left + fraDetails.Width - cmdOK.Width
 
   If Not mfSizeable Then
-    Me.Height = cmdOK.Top _
-      + cmdOK.Height _
-      + GAPUNDERBUTTONS
+    Me.Height = cmdOK.Top + cmdOK.Height + GAPUNDERBUTTONS
   End If
 
   mblnSizing = False
