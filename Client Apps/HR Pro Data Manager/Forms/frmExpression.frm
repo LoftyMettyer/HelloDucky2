@@ -131,11 +131,12 @@ Begin VB.Form frmExpression
          Width           =   6900
          _ExtentX        =   12171
          _ExtentY        =   7064
-         _Version        =   65538
+         _Version        =   65536
          NodeSelectionStyle=   2
          PictureAlignment=   0
          Style           =   6
          Indentation     =   315
+         LoadStyleRoot   =   1
          AutoSearch      =   0   'False
          HideSelection   =   0   'False
          PictureBackgroundUseMask=   0   'False
@@ -152,7 +153,6 @@ Begin VB.Form frmExpression
             Italic          =   0   'False
             Strikethrough   =   0   'False
          EndProperty
-         LoadStyleRoot   =   1
       End
    End
    Begin VB.Frame fraDefinition 
@@ -1406,6 +1406,13 @@ Private Sub Form_Initialize()
 End Sub
 
 Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
 
 ' JDM - 15/03/01 - Fault 1934 - Only do things if we have access
 If mfModifiable = False Then
