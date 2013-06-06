@@ -99,17 +99,8 @@ Begin VB.Form frmEmailAddr
       Top             =   1000
       Width           =   4780
       Begin VB.CommandButton cmdCalculated 
-         Caption         =   "O"
+         Caption         =   "..."
          Enabled         =   0   'False
-         BeginProperty Font 
-            Name            =   "Wingdings 2"
-            Size            =   20.25
-            Charset         =   2
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
          Height          =   315
          Left            =   4300
          TabIndex        =   10
