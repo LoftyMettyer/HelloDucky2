@@ -7,7 +7,7 @@ Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
 Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "COA_ColourPicker.ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Object = "{96E404DC-B217-4A2D-A891-C73A92A628CC}#1.0#0"; "COA_WorkingPattern.ocx"
-Object = "{C23509CC-CE4D-421B-BF7F-1F30679B1EF1}#1.0#0"; "COA_ColourSelector.ocx"
+Object = "{19400013-2704-42FE-AAA4-45D1A725A895}#1.0#0"; "COA_ColourSelector.ocx"
 Begin VB.Form frmColEdit 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Column Properties"
@@ -2225,7 +2225,7 @@ End Property
 
 Public Property Let Changed(pblnNewValue As Boolean)
   mblnChanged = pblnNewValue
-  cmdOk.Enabled = mblnChanged
+  cmdOK.Enabled = mblnChanged
 End Property
 
 Public Property Get Changed() As Boolean
@@ -2372,7 +2372,7 @@ Private Sub asrSize_Change()
         spnDefaultDisplayWidth.value = 10
       Case dtBIT
         spnDefaultDisplayWidth.value = 1
-      Case dtlongvarchar
+      Case dtLONGVARCHAR
         spnDefaultDisplayWidth.value = 14
       Case dtVARBINARY
         spnDefaultDisplayWidth.value = 255
@@ -3197,7 +3197,7 @@ Private Sub cmdCalculation_Click()
         .Initialise mobjColumn.TableID, mlngCalcExprID, giEXPR_COLUMNCALCULATION, giEXPRVALUE_LOGIC
       Case dtNUMERIC
         .Initialise mobjColumn.TableID, mlngCalcExprID, giEXPR_COLUMNCALCULATION, giEXPRVALUE_NUMERIC
-      Case dtlongvarchar
+      Case dtLONGVARCHAR
         .Initialise mobjColumn.TableID, mlngCalcExprID, giEXPR_COLUMNCALCULATION, giEXPRVALUE_CHARACTER
       Case Else
         .Initialise mobjColumn.TableID, mlngCalcExprID, giEXPR_COLUMNCALCULATION, giEXPRVALUE_UNDEFINED
@@ -3239,7 +3239,7 @@ Private Sub cmdCalculation_Click()
             Case dtBIT
               fDataTypeChanged = (.Fields("returntype").value <> giEXPRVALUE_LOGIC)
             'JDM - 13/09/01 - Fault 2364 - Error when cancelling on working pattern
-            Case dtlongvarchar
+            Case dtLONGVARCHAR
               fDataTypeChanged = (.Fields("returntype").value <> giEXPRVALUE_CHARACTER)
             Case Else
               MsgBox "Warning ! Unknown miDatatype !"
@@ -3262,7 +3262,7 @@ End Sub
 
 Private Sub cmdCancel_Click()
   Dim pintAnswer As Integer
-    If Changed = True And cmdOk.Enabled Then
+    If Changed = True And cmdOK.Enabled Then
       pintAnswer = MsgBox("You have made changes...do you wish to save these changes ?", vbQuestion + vbYesNoCancel, App.Title)
       If pintAnswer = vbYes Then
         Me.MousePointer = vbHourglass
@@ -3363,7 +3363,7 @@ Private Sub cmdDfltValueExpression_Click()
         .Initialise mobjColumn.TableID, mlngDfltValueExprID, giEXPR_DEFAULTVALUE, giEXPRVALUE_LOGIC
       Case dtNUMERIC
         .Initialise mobjColumn.TableID, mlngDfltValueExprID, giEXPR_DEFAULTVALUE, giEXPRVALUE_NUMERIC
-      Case dtlongvarchar
+      Case dtLONGVARCHAR
         .Initialise mobjColumn.TableID, mlngDfltValueExprID, giEXPR_DEFAULTVALUE, giEXPRVALUE_CHARACTER
       Case Else
         .Initialise mobjColumn.TableID, mlngDfltValueExprID, giEXPR_DEFAULTVALUE, giEXPRVALUE_UNDEFINED
@@ -4970,7 +4970,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
 
   If mfCancelled = True Then
     If UnloadMode <> vbFormCode Then
-      If Changed = True And cmdOk.Enabled Then
+      If Changed = True And cmdOK.Enabled Then
         pintAnswer = MsgBox("You have made changes...do you wish to save these changes ?", vbQuestion + vbYesNoCancel, App.Title)
         If pintAnswer = vbYes Then
           cmdOK_Click
@@ -5336,7 +5336,7 @@ Private Sub cboDataType_Click()
     End If
     
     'JPD20020325 Fault 2098. Force Working pattern controls to be uppercase.
-    If (miDataType = dtlongvarchar) Then
+    If (miDataType = dtLONGVARCHAR) Then
       cboCase.ListIndex = 1
     End If
 
@@ -5380,7 +5380,7 @@ Private Sub cboDataType_Click()
             fValidCalcExpr = (.ReturnType = giEXPRVALUE_LOGIC)
           Case dtNUMERIC
             fValidCalcExpr = (.ReturnType = giEXPRVALUE_NUMERIC)
-          Case dtlongvarchar
+          Case dtLONGVARCHAR
             fValidCalcExpr = (.ReturnType = giEXPRVALUE_CHARACTER)
           Case Else
             fValidCalcExpr = False
@@ -5424,7 +5424,7 @@ Private Sub cboDataType_Click()
             fValidDfltValueExpr = (.ReturnType = giEXPRVALUE_LOGIC)
           Case dtNUMERIC
             fValidDfltValueExpr = (.ReturnType = giEXPRVALUE_NUMERIC)
-          Case dtlongvarchar
+          Case dtLONGVARCHAR
             fValidDfltValueExpr = (.ReturnType = giEXPRVALUE_CHARACTER)
           Case Else
             fValidDfltValueExpr = False
@@ -5507,7 +5507,7 @@ Private Sub spnDefaultDisplayWidth_Refresh(piDataType As DataTypes)
       End If
       spnDefaultDisplayWidth.value = asrSize.value
     
-    Case dtlongvarchar:
+    Case dtLONGVARCHAR:
       spnDefaultDisplayWidth.MaximumValue = 14
       spnDefaultDisplayWidth.value = 14
       asrSize.value = 14
@@ -6194,7 +6194,7 @@ Private Sub cboControl_Refresh()
           .ItemData(.NewIndex) = giCTRL_COLOURPICKER
           
         ' Working Pattern.
-        Case dtlongvarchar
+        Case dtLONGVARCHAR
           .AddItem "Working Pattern"
           .ItemData(.NewIndex) = giCTRL_WORKINGPATTERN
           
@@ -6595,7 +6595,7 @@ Private Sub cboDataType_Initialize()
 '    .ItemData(.NewIndex) = dtGUID
     
     .AddItem "Working Pattern"
-    .ItemData(.NewIndex) = dtlongvarchar
+    .ItemData(.NewIndex) = dtLONGVARCHAR
     
   End With
 
@@ -6704,13 +6704,13 @@ End Sub
 Private Sub txtListValues_GotFocus()
   ' Disable the 'Default' property of the 'OK' button as the return key is
   ' used by this textbox.
-  cmdOk.Default = False
+  cmdOK.Default = False
   
 End Sub
 
 Private Sub txtListValues_LostFocus()
   ' Enable the 'Default' property of the OK button.
-  cmdOk.Default = True
+  cmdOK.Default = True
 
   ' Refresh the list of possible default values.
   cboDefault_Refresh
@@ -7436,7 +7436,7 @@ Private Function DefaultControl(pDatatype As DataTypes) As ControlTypes
     Case dtVARBINARY
       DefaultControl = giCTRL_PHOTO
     
-    Case dtlongvarchar
+    Case dtLONGVARCHAR
       DefaultControl = giCTRL_WORKINGPATTERN
     
     Case Else
