@@ -600,7 +600,7 @@ Begin VB.Form frmImport
                Left            =   -15
                TabIndex        =   47
                Top             =   195
-               Width           =   3225
+               Width           =   3330
             End
          End
          Begin VB.OptionButton optImportType 
