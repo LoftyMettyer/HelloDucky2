@@ -2488,7 +2488,7 @@ Public Sub GetSQL(lngUtilType As utilityType, Optional psRecordSourceWhere As St
       sCategoryFilter & _
       IIf(mblnApplyDefAccess, " INNER JOIN " & msAccessTableName & " ON " & msTableName & "." & msIDField & " = " & msAccessTableName & ".ID" & _
         " AND " & msAccessTableName & ".groupname = '" & gsUserGroup & "'" & _
-        " AND " & msAccessTableName & ".access <> '" & ACCESS_HIDDEN & "'", vbNullString) & _
+        " AND (" & msAccessTableName & ".access <> '" & ACCESS_HIDDEN & "' OR " & msTableName & ".userName = '" & gsUserName & "')", vbNullString) & _
       IIf(strExtraWhereClause <> vbNullString, " WHERE " & strExtraWhereClause, "")
   ElseIf Len(msRecordSource) = 0 Then
     
