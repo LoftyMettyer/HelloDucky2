@@ -3469,6 +3469,11 @@ Private Function ValidDestination() As Boolean
 
   If chkDestination(desEmail).Value = vbChecked Then
   
+    If txtFileName.Text = vbNullString Then
+      COAMsgBox "You must enter a file name.", vbExclamation, Caption
+      Exit Function
+    End If
+    
     Select Case mobjOutputDef.Format
     Case fmtWordDoc, fmtExcelWorksheet, fmtExcelchart, fmtExcelPivotTable
       If txtEMailAttachAs.Text Like "*.html" Then
@@ -3481,6 +3486,8 @@ Private Function ValidDestination() As Boolean
       COAMsgBox "You must select an email group.", vbExclamation, Caption
       Exit Function
     End If
+    
+    
 
     If datGeneral.GetEmailGroupName(Val(txtEmailGroup.Tag)) = vbNullString Then
       COAMsgBox "The email group has been deleted by another user.", vbExclamation, Caption
