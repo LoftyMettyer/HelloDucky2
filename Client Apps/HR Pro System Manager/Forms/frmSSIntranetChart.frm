@@ -2004,7 +2004,7 @@ Private Function MatchFilterToBaseTable() As Boolean
   If optChartType(0).value Or (Chart_TableID_2 = 0 And Chart_TableID_3 = 0) Then
     ' Single axis chart, so use tableID 1 (X-axis)
     plngBaseTableID = ChartTableID
-  ElseIf optChartType(1).value Or (chart_tableID3 = 0) Then
+  ElseIf optChartType(1).value Or (Chart_TableID_3 = 0) Then
     If IsChildOfTable(ChartTableID, Chart_TableID_2) Then
       plngBaseTableID = Chart_TableID_2
     Else
