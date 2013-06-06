@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.ocx"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.OCX"
 Begin VB.Form frmDefSel 
    Caption         =   "Select"
    ClientHeight    =   7800
@@ -2132,13 +2132,13 @@ Public Sub GetSQL(lngUtilType As UtilityType, Optional psRecordSourceWhere As St
       msGeneralCaption = "Scheduled Reports"
       msSingularCaption = "Scheduled Report"
       'Dynamically set HelpContextID
-      Me.HelpContextID = 1107
+      Me.HelpContextID = 1151
     Else
       msType = "Report Pack"
       msGeneralCaption = "Report Packs"
       msSingularCaption = "Report Pack"
       strExtraWhereClause = "(IsBatch = 0)"
-      Me.HelpContextID = 1084
+      Me.HelpContextID = 1151
     End If
     msTableName = "ASRSysBatchJobName"
     msIDField = "ID"
@@ -2507,7 +2507,7 @@ Private Function DynamicallyChangeHelpContextID() As Integer
         DynamicallyChangeHelpContextID = 1084
         
         Case utlReportPack
-        DynamicallyChangeHelpContextID = 1084 ' this will be changed when I find the helpfile code is written from the doc that stores the latest context IDs
+        DynamicallyChangeHelpContextID = 1151
         
         Case utlCrossTab
         DynamicallyChangeHelpContextID = 1087

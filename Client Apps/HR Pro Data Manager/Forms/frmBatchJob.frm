@@ -41,7 +41,7 @@ Begin VB.Form frmBatchJob
       _ExtentY        =   9895
       _Version        =   393216
       Style           =   1
-      Tab             =   2
+      Tab             =   1
       TabHeight       =   520
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmBatchJob.frx":000C
@@ -51,19 +51,18 @@ Begin VB.Form frmBatchJob
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "&Jobs"
       TabPicture(1)   =   "frmBatchJob.frx":0028
-      Tab(1).ControlEnabled=   0   'False
+      Tab(1).ControlEnabled=   -1  'True
       Tab(1).Control(0)=   "fraJobs"
+      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).Control(1)=   "Frame1"
+      Tab(1).Control(1).Enabled=   0   'False
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "O&utput"
       TabPicture(2)   =   "frmBatchJob.frx":0044
-      Tab(2).ControlEnabled=   -1  'True
-      Tab(2).Control(0)=   "Frame4"
-      Tab(2).Control(0).Enabled=   0   'False
+      Tab(2).ControlEnabled=   0   'False
+      Tab(2).Control(0)=   "Frame3"
       Tab(2).Control(1)=   "Frame2"
-      Tab(2).Control(1).Enabled=   0   'False
-      Tab(2).Control(2)=   "Frame3"
-      Tab(2).Control(2).Enabled=   0   'False
+      Tab(2).Control(2)=   "Frame4"
       Tab(2).ControlCount=   3
       Begin VB.Frame fraInfo 
          Height          =   2355
@@ -277,7 +276,7 @@ Begin VB.Form frmBatchJob
       Begin VB.Frame Frame3 
          Caption         =   "Output Format :"
          Height          =   3000
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   68
          Top             =   420
          Width           =   2265
@@ -313,7 +312,7 @@ Begin VB.Form frmBatchJob
       Begin VB.Frame Frame2 
          Caption         =   "Output Destination(s) :"
          Height          =   3000
-         Left            =   2515
+         Left            =   -72485
          TabIndex        =   61
          Top             =   420
          Width           =   7110
@@ -519,7 +518,7 @@ Begin VB.Form frmBatchJob
       Begin VB.Frame Frame1 
          Caption         =   "Email Notifications :"
          Height          =   1400
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   26
          Top             =   4080
          Width           =   9495
@@ -594,7 +593,7 @@ Begin VB.Form frmBatchJob
       End
       Begin VB.Frame fraJobs 
          Height          =   3600
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   18
          Top             =   420
          Width           =   9495
@@ -664,11 +663,15 @@ Begin VB.Form frmBatchJob
             GroupHeaders    =   0   'False
             Col.Count       =   5
             stylesets.count =   5
-            stylesets(0).Name=   "ssetSelected"
-            stylesets(0).ForeColor=   -2147483634
-            stylesets(0).BackColor=   -2147483635
-            stylesets(0).HasFont=   -1  'True
-            BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+            stylesets(0).Name=   "ssetHeaderDisabled"
+            stylesets(0).ForeColor=   -2147483631
+            stylesets(0).BackColor=   -2147483633
+            stylesets(0).Picture=   "frmBatchJob.frx":0098
+            stylesets(1).Name=   "ssetSelected"
+            stylesets(1).ForeColor=   -2147483634
+            stylesets(1).BackColor=   -2147483635
+            stylesets(1).HasFont=   -1  'True
+            BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
                Size            =   8.25
                Charset         =   0
@@ -677,10 +680,6 @@ Begin VB.Form frmBatchJob
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(0).Picture=   "frmBatchJob.frx":0098
-            stylesets(1).Name=   "ssetHeaderDisabled"
-            stylesets(1).ForeColor=   -2147483631
-            stylesets(1).BackColor=   -2147483633
             stylesets(1).Picture=   "frmBatchJob.frx":00B4
             stylesets(2).Name=   "ssetEnabled"
             stylesets(2).ForeColor=   -2147483640
@@ -1050,7 +1049,7 @@ Begin VB.Form frmBatchJob
       Begin VB.Frame Frame4 
          Caption         =   "Report Options :"
          Height          =   2020
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   69
          Top             =   3420
          Width           =   9470
@@ -1729,116 +1728,6 @@ Private Sub cmdTitlePageClear_Click()
   Changed = Not mblnLoading
 End Sub
 
-'Private Sub cmdTitlePageTemplatex_Click()
-'  Dim wrdApp As Word.Application
-'  Dim wrdDoc As Word.Document
-'  Dim strFormat As String
-'
-'  On Local Error GoTo LocalErr
-'
-'  'With CDialog
-'  With frmMain.CommonDialog1
-'    If Len(Trim(txtTitlePage.Text)) = 0 Then
-'      .InitDir = gsDocumentsPath
-'      .FileName = vbNullString
-'    Else
-'      .FileName = txtTitlePage.Text
-'    End If
-'
-'Dim Index As Integer
-'Index = 1
-'
-'    .CancelError = True
-'    Select Case Index
-'    Case 0
-'      .DialogTitle = Me.Caption & " Output Document"
-'      .Flags = cdlOFNExplorer + cdlOFNHideReadOnly + cdlOFNLongNames + cdlOFNOverwritePrompt
-'      InitialiseCommonDialogFormats frmMain.CommonDialog1, "Word", GetOfficeWordVersion, DirectionOutput
-'      .ShowSave
-'    Case 1
-'      'Word template
-'      .DialogTitle = Me.Caption & " Template"
-'      .Flags = cdlOFNExplorer + cdlOFNHideReadOnly + cdlOFNLongNames '+ cdlOFNCreatePrompt
-'      .Filter = "Word Template (*.dot;*.dotx;*.doc;*.docx)|*.dot;*.dotx;*.doc;*.docx"
-'      .ShowOpen
-'
-'    End Select
-'
-'    If Len(.FileName) > 256 Then
-'      COAMsgBox "Path and file name must not exceed 256 characters in length"
-'      Exit Sub
-'    End If
-'
-'    If .FileName <> "" Then
-'      If Dir(frmMain.CommonDialog1.FileName) = vbNullString And Index = 1 Then  'Only show for templates
-'        If COAMsgBox("Template file does not exist.  Create it now?", vbYesNo + vbQuestion, Me.Caption) = vbYes Then
-'
-'          On Error GoTo WordErr
-'
-'          txtTitlePage.Text = frmMain.CommonDialog1.FileName
-'          strFormat = GetOfficeSaveAsFormat(frmMain.CommonDialog1.FileName, GetOfficeWordVersion)
-'
-'          Screen.MousePointer = vbHourglass
-'          gobjProgress.Caption = "Creating Word Document"
-'          gobjProgress.MainCaption = Me.Caption
-'          gobjProgress.AVI = dbWord
-'          gobjProgress.NumberOfBars = 0
-'          gobjProgress.Cancel = False
-'          gobjProgress.OpenProgress
-'
-'          Set wrdApp = CreateObject("Word.Application")
-'          Set wrdDoc = wrdApp.Documents.Add
-'          wrdDoc.SaveAs frmMain.CommonDialog1.FileName, Val(strFormat)
-'          wrdDoc.Close False
-'          wrdApp.Quit False
-'
-'          Set wrdDoc = Nothing
-'          Set wrdApp = Nothing
-'
-'          gobjProgress.CloseProgress
-'          Screen.MousePointer = vbDefault
-'
-'        End If
-'      Else
-'        txtTitlePage.Text = frmMain.CommonDialog1.FileName
-'        cmdTitlePageClear.Enabled = Len(txtTitlePage.Text) <> 0
-'
-'      End If
-'    End If
-'
-'  End With
-'
-'Exit Sub
-'
-'LocalErr:
-'  If Err.Number <> 32755 Then   '32755 = Cancel was selected.
-'    On Local Error Resume Next
-'    wrdDoc.Close False
-'    wrdApp.Quit False
-'    Set wrdDoc = Nothing
-'    Set wrdApp = Nothing
-'
-'    gobjProgress.CloseProgress
-'    If Err.Number = 429 Then
-'      COAMsgBox "Error opening Word application"
-'    Else
-'      COAMsgBox "Error selecting file"
-'    End If
-'    txtTitlePage.Text = vbNullString
-'  End If
-'
-'Exit Sub
-'
-'WordErr:
-'  gobjProgress.CloseProgress
-'  Screen.MousePointer = vbDefault
-'  If Err.Number = 429 Then
-'    COAMsgBox "Error opening Word application", vbCritical, Me.Caption
-'  Else
-'    COAMsgBox "Error creating template file"
-'  End If
-'
-'End Sub
 Private Sub Form_Activate()
   'JPD 20031120 Fault 7512
   'If Not mblnDontDoActivateCheck Then
@@ -1847,11 +1736,6 @@ Private Sub Form_Activate()
     Changed = (mblnFromCopy Or mblnForceChanged)  'MH20040422 Fault 8495
     mblnAlreadyActivated = True
   End If
-  
-'''  If mlngBatchJobID > 0 And mblnDefinitionCreator Then
-'''    ForceDefinitionToBeHiddenIfNeeded
-'''    Me.grdColumns.MoveFirst
-'''  End If
   
 End Sub
 
@@ -1873,6 +1757,7 @@ Private Sub Form_Load()
   grdColumns.RowHeight = 239
   
   If IsReportPack Then
+    Me.HelpContextID = 1151
     'This will in effect remove the Pause Parameter column
     grdColumns.Columns(0).Width = (grdColumns.Width * 0.33) 'Job Type
     grdColumns.Columns(2).Width = (grdColumns.Width * 0.67) 'Job Name
@@ -3118,7 +3003,7 @@ Private Function SaveDefinition2() As Boolean
       sSQL = sSQL & "OutputScreen = " & IIf(chkDestination(desScreen).Value = vbChecked, "1", "0") & ", "
       'Printer Options
       sSQL = sSQL & IIf(chkDestination(desPrinter), (" OutputPrinterName = '" & Replace(cboPrinterName.Text, " '", "''") & "',"), (" OutputPrinterName = '', "))
-      sSQL = sSQL & "OutputFilename = '" & Replace(txtFilename.Text, "'", "''") & "',"
+      sSQL = sSQL & "OutputFilename = '" & Replace(txtFileName.Text, "'", "''") & "',"
       'outputSaveExisting
       If chkDestination(desSave).Value = vbChecked Then
         sSQL = sSQL & "OutputSaveExisting = " & cboSaveExisting.ItemData(cboSaveExisting.ListIndex) & ", "
@@ -3134,7 +3019,7 @@ Private Function SaveDefinition2() As Boolean
     sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmail = 1, "), ("OutputEmail = 0, "))
     sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmailAddr = " & txtEmailGroup.Tag & ", "), ("OutputEmailAddr = 0, "))
     sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmailSubject = '" & Replace(txtEmailSubject.Text, "'", "''") & "', "), ("OutputEmailSubject = '', "))
-    sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmailAttachAs = '" & Replace(txtEmailAttachAs.Text, "'", "''") & "'"), ("OutputEmailAttachAs = ''"))
+    sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmailAttachAs = '" & Replace(txtEMailAttachAs.Text, "'", "''") & "'"), ("OutputEmailAttachAs = ''"))
     
     'FINAL WHERE CLAUSE
     sSQL = sSQL & " WHERE ID = " & mlngBatchJobID
@@ -3220,9 +3105,9 @@ Private Function SaveDefinition2() As Boolean
           'outputEmailSubject
           sSQL = sSQL & IIf(chkDestination(desEmail), ("'" & Replace(txtEmailSubject.Text, "'", "''") & "', "), ("'', "))
           'outputFilename
-          sSQL = sSQL & "'" & Replace(txtFilename.Text, "'", "''") & "',"
+          sSQL = sSQL & "'" & Replace(txtFileName.Text, "'", "''") & "',"
           'outputEmailAttachAs
-          sSQL = sSQL & IIf(chkDestination(desEmail), ("'" & Replace(txtEmailAttachAs.Text, "'", "''") & "',"), ("'',"))
+          sSQL = sSQL & IIf(chkDestination(desEmail), ("'" & Replace(txtEMailAttachAs.Text, "'", "''") & "',"), ("'',"))
           'outputTitlePage
           sSQL = sSQL & "'" & Replace(txtTitlePage.Text, "'", "''") & "', "
           'outputReportPackTitle
@@ -3566,7 +3451,7 @@ Private Function ValidDestination() As Boolean
   ValidDestination = False
 
   If chkDestination(desSave).Value = vbChecked Then
-    If txtFilename.Text = vbNullString Then
+    If txtFileName.Text = vbNullString Then
       COAMsgBox "You must enter a file name.", vbExclamation, Caption
       Exit Function
     End If
@@ -3585,20 +3470,20 @@ Private Function ValidDestination() As Boolean
       Exit Function
     End If
 
-    If txtEmailAttachAs.Text = vbNullString Then
+    If txtEMailAttachAs.Text = vbNullString Then
       COAMsgBox "You must enter an email attachment file name.", vbExclamation, Caption
       Exit Function
     End If
     
-    If InStr(txtEmailAttachAs.Text, "/") Or _
-       InStr(txtEmailAttachAs.Text, ":") Or _
-       InStr(txtEmailAttachAs.Text, "?") Or _
-       InStr(txtEmailAttachAs.Text, Chr(34)) Or _
-       InStr(txtEmailAttachAs.Text, "<") Or _
-       InStr(txtEmailAttachAs.Text, ">") Or _
-       InStr(txtEmailAttachAs.Text, "|") Or _
-       InStr(txtEmailAttachAs.Text, "\") Or _
-       InStr(txtEmailAttachAs.Text, "*") Then
+    If InStr(txtEMailAttachAs.Text, "/") Or _
+       InStr(txtEMailAttachAs.Text, ":") Or _
+       InStr(txtEMailAttachAs.Text, "?") Or _
+       InStr(txtEMailAttachAs.Text, Chr(34)) Or _
+       InStr(txtEMailAttachAs.Text, "<") Or _
+       InStr(txtEMailAttachAs.Text, ">") Or _
+       InStr(txtEMailAttachAs.Text, "|") Or _
+       InStr(txtEMailAttachAs.Text, "\") Or _
+       InStr(txtEMailAttachAs.Text, "*") Then
           COAMsgBox "The email attachment file name cannot contain any of the following characters:" & vbCrLf & _
                  "/  :  ?  " & Chr(34) & "  <  >  |  \  *", vbExclamation, Caption
           Exit Function
