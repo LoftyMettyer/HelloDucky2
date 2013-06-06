@@ -1031,53 +1031,33 @@ Dim plngHelp As Long
 
 Select Case KeyCode
   Case vbKeyF1
-    AIRhelp = App.Path & "\HR Pro Data Manager Help\HR Pro Data Managersfsdf Help.exe"
+    AIRhelp = App.Path & "\HR Pro Data Manager Help\HR Pro Data Manager Help.exe"
     CommandLine = " -csh mapnumber " & CStr(Me.HelpContextID)
     
     plngHelp = ShellExecute(0&, vbNullString, AIRhelp, CommandLine, vbNullString, vbNormalNoFocus)
     
     If plngHelp <> 42 Then
       Select Case plngHelp
-        Case 0
-          ShellErrMessage = "The operating system is out of memory or resources."
-        Case 2
-          ShellErrMessage = "The specified file was not found"
-        Case 3
-          ShellErrMessage = "The specified path was not found."
-        Case 5
-          ShellErrMessage = "Windows 95 only: The operating system denied access to the specified file"
-        Case 8
-          ShellErrMessage = "Windows 95 only: There was not enough memory to complete the operation."
-        Case 10
-          ShellErrMessage = "Wrong Windows version"
-        Case 11
-          ShellErrMessage = "The .EXE file is invalid (non-Win32 .EXE or error in .EXE image)."
-        Case 12
-          ShellErrMessage = "Application was designed for a different operating system"
-        Case 13
-          ShellErrMessage = "Application was designed for MS-DOS 4.0"
-        Case 15
-          ShellErrMessage = "Attempt to load a real-mode program"
-        Case 16
-          ShellErrMessage = "Attempt to load a second instance of an application with non-readonly data segments"
-        Case 19
-          ShellErrMessage = "Attempt to load a compressed application file"
-        Case 20
-          ShellErrMessage = "Dynamic-link library (DLL) file failure"
-        Case 26
-          ShellErrMessage = "A sharing violation occurred."
-        Case 27
-          ShellErrMessage = "The filename association is incomplete or invalid."
-        Case 28
-          ShellErrMessage = "The DDE transaction could not be completed because the request timed out."
-        Case 29
-          ShellErrMessage = "The DDE transaction failed."
-        Case 30
-          ShellErrMessage = "The DDE transaction could not be completed because other DDE transactions were being processed."
-        Case 31
-          ShellErrMessage = "There is no application associated with the given filename extension."
-        Case 32
-          ShellErrMessage = "Windows 95 only: The specified dynamic-link library was not found."
+        Case 0: ShellErrMessage = "The operating system is out of memory or resources."
+        Case 2: ShellErrMessage = "The specified file was not found"
+        Case 3: ShellErrMessage = "The specified path was not found."
+        Case 5: ShellErrMessage = "Windows 95 only: The operating system denied access to the specified file"
+        Case 8: ShellErrMessage = "Windows 95 only: There was not enough memory to complete the operation."
+        Case 10: ShellErrMessage = "Wrong Windows version"
+        Case 11: ShellErrMessage = "The .EXE file is invalid (non-Win32 .EXE or error in .EXE image)."
+        Case 12: ShellErrMessage = "Application was designed for a different operating system"
+        Case 13: ShellErrMessage = "Application was designed for MS-DOS 4.0"
+        Case 15: ShellErrMessage = "Attempt to load a real-mode program"
+        Case 16: ShellErrMessage = "Attempt to load a second instance of an application with non-readonly data segments"
+        Case 19: ShellErrMessage = "Attempt to load a compressed application file"
+        Case 20: ShellErrMessage = "Dynamic-link library (DLL) file failure"
+        Case 26: ShellErrMessage = "A sharing violation occurred."
+        Case 27: ShellErrMessage = "The filename association is incomplete or invalid."
+        Case 28: ShellErrMessage = "The DDE transaction could not be completed because the request timed out."
+        Case 29: ShellErrMessage = "The DDE transaction failed."
+        Case 30: ShellErrMessage = "The DDE transaction could not be completed because other DDE transactions were being processed."
+        Case 31: ShellErrMessage = "There is no application associated with the given filename extension."
+        Case 32: ShellErrMessage = "Windows 95 only: The specified dynamic-link library was not found."
         Case Else
           ShellErrMessage = "Undocumented API Error occurred"
       End Select
