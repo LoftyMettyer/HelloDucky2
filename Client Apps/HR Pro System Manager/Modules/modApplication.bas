@@ -2128,6 +2128,7 @@ Public Sub EditMobileDesigner()
   Screen.MousePointer = vbHourglass
   
   Dim service As New MobileDesignerSerivce
+  
   service.InitialiseForVB6 (Environ("TEMP") & "\" & gsTempDatabaseName)
   Set service = Nothing
   
