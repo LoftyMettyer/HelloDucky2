@@ -1,10 +1,10 @@
 VERSION 5.00
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
-Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "coa_line.ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "COA_Line.ocx"
 Begin VB.Form frmPersonnelSetup 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Personnel"
-   ClientHeight    =   7965
+   ClientHeight    =   8340
    ClientLeft      =   45
    ClientTop       =   330
    ClientWidth     =   5880
@@ -23,18 +23,18 @@ Begin VB.Form frmPersonnelSetup
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   7965
+   ScaleHeight     =   8340
    ScaleWidth      =   5880
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin TabDlg.SSTab SSTab1 
-      Height          =   7230
+      Height          =   7590
       Left            =   105
       TabIndex        =   36
       Top             =   105
       Width           =   5670
       _ExtentX        =   10001
-      _ExtentY        =   12753
+      _ExtentY        =   13388
       _Version        =   393216
       Style           =   1
       TabHeight       =   520
@@ -47,14 +47,14 @@ Begin VB.Form frmPersonnelSetup
       TabCaption(1)   =   "C&areer Change"
       TabPicture(1)   =   "frmPersonnelSetup.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraWorkingPattern"
-      Tab(1).Control(1)=   "fraRegion"
+      Tab(1).Control(0)=   "fraRegion"
+      Tab(1).Control(1)=   "fraWorkingPattern"
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "&Hierarchy"
       TabPicture(2)   =   "frmPersonnelSetup.frx":0044
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraPostAllocationTable"
-      Tab(2).Control(1)=   "fraHierarchyTable"
+      Tab(2).Control(0)=   "fraHierarchyTable"
+      Tab(2).Control(1)=   "fraPostAllocationTable"
       Tab(2).ControlCount=   2
       Begin VB.Frame fraPostAllocationTable 
          Caption         =   "Post Allocation Table :"
@@ -348,7 +348,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Static Region"
             Height          =   255
             Left            =   150
-            TabIndex        =   16
+            TabIndex        =   15
             Top             =   360
             Value           =   -1  'True
             Width           =   1770
@@ -404,8 +404,8 @@ Begin VB.Form frmPersonnelSetup
       End
       Begin VB.Frame fraTableDefinition 
          Caption         =   "Personnel Records :"
-         Height          =   6690
-         Left            =   150
+         Height          =   7050
+         Left            =   120
          TabIndex        =   37
          Top             =   400
          Width           =   5400
@@ -413,7 +413,7 @@ Begin VB.Form frmPersonnelSetup
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   12
+            TabIndex        =   11
             Top             =   4935
             Width           =   2505
          End
@@ -422,7 +422,7 @@ Begin VB.Form frmPersonnelSetup
             Index           =   1
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   11
+            TabIndex        =   10
             Top             =   4540
             Width           =   2505
          End
@@ -430,7 +430,7 @@ Begin VB.Form frmPersonnelSetup
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   15
+            TabIndex        =   14
             Top             =   6135
             Width           =   2505
          End
@@ -438,7 +438,7 @@ Begin VB.Form frmPersonnelSetup
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   14
+            TabIndex        =   13
             Top             =   5730
             Width           =   2505
          End
@@ -446,7 +446,7 @@ Begin VB.Form frmPersonnelSetup
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   13
+            TabIndex        =   12
             Top             =   5325
             Width           =   2505
          End
@@ -455,7 +455,7 @@ Begin VB.Form frmPersonnelSetup
             Index           =   0
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   10
+            TabIndex        =   9
             Top             =   4140
             Width           =   2505
          End
@@ -519,24 +519,23 @@ Begin VB.Form frmPersonnelSetup
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   8
+            TabIndex        =   7
             Top             =   3340
             Width           =   2505
          End
-         Begin VB.ComboBox cboEmail 
+         Begin VB.ComboBox cboWorkEmail 
             Height          =   315
-            Left            =   2505
+            Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   7
-            Top             =   6810
-            Visible         =   0   'False
+            TabIndex        =   16
+            Top             =   6540
             Width           =   2505
          End
          Begin VB.ComboBox cboDateOfBirth 
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   9
+            TabIndex        =   8
             Top             =   3740
             Width           =   2505
          End
@@ -676,13 +675,12 @@ Begin VB.Form frmPersonnelSetup
          Begin VB.Label Label4 
             AutoSize        =   -1  'True
             BackStyle       =   0  'Transparent
-            Caption         =   "Email Column :"
-            Height          =   300
+            Caption         =   "Work Email Column :"
+            Height          =   195
             Left            =   195
             TabIndex        =   40
-            Top             =   6855
-            Visible         =   0   'False
-            Width           =   1035
+            Top             =   6585
+            Width           =   1830
          End
          Begin VB.Label lblDateOfBirth 
             AutoSize        =   -1  'True
@@ -702,7 +700,7 @@ Begin VB.Form frmPersonnelSetup
       Height          =   400
       Left            =   3315
       TabIndex        =   34
-      Top             =   7455
+      Top             =   7815
       Width           =   1200
    End
    Begin VB.CommandButton cmdCancel 
@@ -711,7 +709,7 @@ Begin VB.Form frmPersonnelSetup
       Height          =   400
       Left            =   4575
       TabIndex        =   35
-      Top             =   7455
+      Top             =   7815
       Width           =   1200
    End
 End
@@ -733,7 +731,7 @@ Private mvar_lngSurnameID As Long
 Private mvar_lngStartDateID As Long
 Private mvar_lngLeavingDateID As Long
 Private mvar_lngFullPartTimeID As Long
-'Private mvar_lngEmailID As Long
+Private mvar_lngWorkEmailID As Long
 Private mvar_lngDepartmentID As Long
 Private mvar_lngDateOfBirthID As Long
 Private mvar_lngLoginNameID As Long
@@ -1064,11 +1062,13 @@ Private Sub cboFullPartTime_Click()
   Changed = True
 End Sub
 
-'Private Sub cboEmail_Click()
-'  With cboEmail
-'    mvar_lngEmailID = .ItemData(.ListIndex)
-'  End With
-'End Sub
+Private Sub cboWorkEmail_Click()
+
+  With cboWorkEmail
+    mvar_lngWorkEmailID = .ItemData(.ListIndex)
+  End With
+  Changed = True
+End Sub
 
 Private Sub cboDepartment_Click()
 
@@ -1164,7 +1164,7 @@ Private Sub RefreshPersonnelColumnControls()
   Dim iStartDateListIndex As Integer
   Dim iLeavingDateListIndex As Integer
   Dim iFullPartTimeListIndex As Integer
-  'Dim iEmailListIndex As Integer
+  Dim iWorkEmailListIndex As Integer
   Dim iDepartmentListIndex As Integer
   Dim iWorkingPatternListIndex As Integer
   Dim iDateOfBirthListIndex As Integer
@@ -1181,7 +1181,7 @@ Private Sub RefreshPersonnelColumnControls()
   iStartDateListIndex = 0
   iLeavingDateListIndex = 0
   iFullPartTimeListIndex = 0
-  'iEmailListIndex = 0
+  iWorkEmailListIndex = 0
   iDepartmentListIndex = 0
   iWorkingPatternListIndex = 0
   iDateOfBirthListIndex = 0
@@ -1276,11 +1276,11 @@ Private Sub RefreshPersonnelColumnControls()
               iFullPartTimeListIndex = cboFullPartTime.NewIndex
             End If
             
-            'cboEmail.AddItem !ColumnName
-            'cboEmail.ItemData(cboEmail.NewIndex) = !ColumnID
-            'If !ColumnID = mvar_lngEmailID Then
-            '  iEmailListIndex = cboEmail.NewIndex
-            'End If
+            cboWorkEmail.AddItem !ColumnName
+            cboWorkEmail.ItemData(cboWorkEmail.NewIndex) = !ColumnID
+            If !ColumnID = mvar_lngWorkEmailID Then
+              iWorkEmailListIndex = cboWorkEmail.NewIndex
+            End If
             
             cboJobTitle.AddItem !ColumnName
             cboJobTitle.ItemData(cboJobTitle.NewIndex) = !ColumnID
@@ -1346,7 +1346,7 @@ Private Sub RefreshPersonnelColumnControls()
   cboStartDate.ListIndex = iStartDateListIndex
   cboLeavingDate.ListIndex = iLeavingDateListIndex
   cboFullPartTime.ListIndex = iFullPartTimeListIndex
-  'cboEmail.ListIndex = iEmailListIndex
+  cboWorkEmail.ListIndex = iWorkEmailListIndex
   cboDepartment.ListIndex = iDepartmentListIndex
   cboWorkingPattern.ListIndex = iWorkingPatternListIndex
   cboDateOfBirth.ListIndex = iDateOfBirthListIndex
@@ -2158,7 +2158,7 @@ Private Function SaveChanges() As Boolean
   SaveModuleSetting gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_STARTDATE, gsPARAMETERTYPE_COLUMNID, mvar_lngStartDateID
   SaveModuleSetting gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_LEAVINGDATE, gsPARAMETERTYPE_COLUMNID, mvar_lngLeavingDateID
   SaveModuleSetting gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_FULLPARTTIME, gsPARAMETERTYPE_COLUMNID, mvar_lngFullPartTimeID
-  'SaveModuleSetting gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_EMAIL, gsPARAMETERTYPE_COLUMNID, mvar_lngEmailID
+  SaveModuleSetting gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_WORKEMAIL, gsPARAMETERTYPE_COLUMNID, mvar_lngWorkEmailID
   SaveModuleSetting gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_DEPARTMENT, gsPARAMETERTYPE_COLUMNID, mvar_lngDepartmentID
   SaveModuleSetting gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_DATEOFBIRTH, gsPARAMETERTYPE_COLUMNID, mvar_lngDateOfBirthID
   SaveModuleSetting gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_LOGINNAME, gsPARAMETERTYPE_COLUMNID, mvar_lngLoginNameID
@@ -2186,6 +2186,9 @@ Private Function SaveChanges() As Boolean
   SaveModuleSetting gsMODULEKEY_WORKFLOW, gsPARAMETERKEY_LOGINNAME, gsPARAMETERTYPE_COLUMNID, mvar_lngLoginNameID
   SaveModuleSetting gsMODULEKEY_WORKFLOW, gsPARAMETERKEY_SECONDLOGINNAME, gsPARAMETERTYPE_COLUMNID, mvar_lngSecondLoginNameID
 
+  ' Update Mobile config
+  SaveModuleSetting gsMODULEKEY_MOBILE, gsPARAMETERKEY_WORKEMAIL, gsPARAMETERTYPE_COLUMNID, mvar_lngWorkEmailID
+    
   'AE20071119 Fault #12607
   SaveChanges = True
   Application.Changed = True
@@ -2386,7 +2389,7 @@ Private Sub ReadParameters()
   mvar_lngStartDateID = GetModuleSetting(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_STARTDATE, 0)
   mvar_lngLeavingDateID = GetModuleSetting(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_LEAVINGDATE, 0)
   mvar_lngFullPartTimeID = GetModuleSetting(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_FULLPARTTIME, 0)
-  'mvar_lngEmailID = GetModuleSetting(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_EMAIL, 0)
+  mvar_lngWorkEmailID = GetModuleSetting(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_WORKEMAIL, 0)
   mvar_lngDepartmentID = GetModuleSetting(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_DEPARTMENT, 0)
   mvar_lngDateOfBirthID = GetModuleSetting(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_DATEOFBIRTH, 0)
   
