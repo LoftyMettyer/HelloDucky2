@@ -571,7 +571,6 @@ Begin VB.Form frmRecEdit4
          NumTabs         =   1
          BeginProperty Tab1 {0713F341-850A-101B-AFC0-4210102A8DA7} 
             Caption         =   ""
-            Key             =   ""
             Object.Tag             =   ""
             ImageVarType    =   2
          EndProperty
@@ -601,7 +600,6 @@ Begin VB.Form frmRecEdit4
       BeginProperty Panels {0713E89E-850A-101B-AFC0-4210102A8DA7} 
          NumPanels       =   1
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -7605,7 +7603,7 @@ Private Function LoadControls(pobjScreen As clsScreen) As Boolean
         End If
 
         ' Photo type
-        If iControlType = ctlPhoto Then
+        If iControlType = ctlPhoto Or iControlType = ctlImage Then
           .BorderStyle = objScreenControl.BorderStyle
         End If
 
