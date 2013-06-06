@@ -913,7 +913,7 @@ PRINT 'Step - Menu & Category enhancements'
 
 		-- Custom Reports (recognised child tables)
 		INSERT tbsys_objectcategories ([objecttype], [objectid], [categoryid])
-			SELECT 2 AS [objectType], r.ID, cat.categoryid
+			SELECT DISTINCT TOP 1 2 AS [objectType], r.ID, cat.categoryid
 				FROM ASRSysCustomReportsName r
 				INNER JOIN ASRSysCustomReportsChildDetails c ON c.CustomReportID = r.ID
 				INNER JOIN @categorymatch cat ON cat.tableid = c.ChildTable
