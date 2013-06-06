@@ -11,20 +11,13 @@ Private mstrGetFieldAutoUpdateCode_INSERT As String
 Private mstrGetFieldAutoUpdateCode_UPDATE As String
 Private mstrGetFieldAutoUpdateCode_DELETE As String
 
-Private asCalcSelfCode() As SystemMgr.cStringBuilder
-Private asCalcParentCode() As New SystemMgr.cStringBuilder
-Private asCalcChildCode() As New SystemMgr.cStringBuilder
-
 Private sDeclareInsCols As SystemMgr.cStringBuilder
 Private sDeclareDelCols As SystemMgr.cStringBuilder
 Private sFetchInsCols As SystemMgr.cStringBuilder
 Private sFetchDelCols As SystemMgr.cStringBuilder
 Private sSelectInsCols As SystemMgr.cStringBuilder
-'Private sSelectInsCols2 As SystemMgr.cStringBuilder
 Private sSelectDelCols As SystemMgr.cStringBuilder
-'Private sSelectInsLargeCols As SystemMgr.cStringBuilder
-'Private sSelectInsLargeCols2 As SystemMgr.cStringBuilder
-'Private sSelectDelLargeCols As SystemMgr.cStringBuilder
+
 Private sConvertInsCols As String
 Private sConvertDelCols As String
 Private alngAuditColumns() As Long
@@ -51,8 +44,6 @@ Private sDeleteAccordCode As SystemMgr.cStringBuilder
 
 Private sDateDependentUpdateCode As SystemMgr.cStringBuilder
 Private sRelationshipCode As SystemMgr.cStringBuilder
-
-
 
 Public Function SetTriggers(palngExpressions() As Long, pfRefreshDatabase As Boolean) As Boolean
   ' Set the triggers that are required for calculated columns, audited columns
@@ -766,18 +757,6 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
   ' Now put them all together to make the trigger creation string.
   '
   If fOK Then
-'    sGetRecordDesc = _
-'      "        /* ------------------------------------- */" & vbNewLine & _
-'      "        /* Get Record Description */" & vbNewLine & _
-'      "        /* ------------------------------------- */" & vbNewLine & _
-'      "        IF EXISTS(SELECT Name FROM sysobjects WHERE type = 'P' AND name = 'sp_ASRExpr_" & Trim$(Str$(plngRecDescExprID)) & "')" & vbNewLine & _
-'      "        BEGIN" & vbNewLine & _
-'      "            EXEC @hResult = dbo.sp_ASRExpr_" & Trim$(Str$(plngRecDescExprID)) & " @recordDesc OUTPUT, @recordID" & vbNewLine & _
-'      "            IF @hResult <> 0 SET @recordDesc = ''" & vbNewLine & _
-'      "            SET @recordDesc = CONVERT(varchar(255), @recordDesc)" & vbNewLine & _
-'      "        END" & vbNewLine & _
-'      "        ELSE SET @recordDesc = ''" & vbNewLine & vbNewLine
-    
 
     'Run this function that creates 3 trigger strings (insert, update & delete)
     SetTableTriggers_AutoUpdateGetField pLngCurrentTableID, psTableName
@@ -789,16 +768,6 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
     strDiaryProcName = "spASRDiary_" & CStr(pLngCurrentTableID)
       
     ' Create the trigger header.
-'    sInsertTriggerSQL.Append "/* ------------------------------------- */" & vbNewLine & _
-'      "/* created trigger. */" & vbNewLine & _
-'      "/* ------------------------------------- */" & vbNewLine & _
-'      "CREATE TRIGGER INS_" & psTableName & " ON dbo." & psTableName & vbNewLine & _
-'      "FOR INSERT" & vbNewLine & _
-'      "AS" & vbNewLine & _
-'      "BEGIN" & vbNewLine & _
-'      "    SET NOCOUNT ON;" & vbNewLine & _
-'      "    --PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Start ([" & psTableName & "].[INS_" & psTableName & "]';" & vbNewLine & vbNewLine
-      
     sInsertTriggerSQL.Append _
       "    DECLARE @recordID int," & vbNewLine & _
       "        @TStamp int," & vbNewLine & _
@@ -844,10 +813,6 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
       "    SET @RecalculateRecordDesc = 1" & vbNewLine & _
       "    SET @iAccordManualSendType = -1" & vbNewLine & _
       "    SET @fValidRecord = 1" & vbNewLine & vbNewLine
-
-'    sInsertTriggerSQL.Append _
-'      "       -- Only fire this trigger when called from the _u02" & vbNewLine & _
-'      "       IF UPDATE([updflag]) RETURN;" & vbNewLine & vbNewLine
 
     sInsertTriggerSQL.Append _
       "    IF EXISTS(SELECT [SettingValue] FROM ASRSysSystemSettings WHERE [Section] = 'TMP_AccordRunningInBatch' AND [SettingKey] = @@SPID)" & vbNewLine & _
@@ -1025,22 +990,12 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
       "    WHERE [Section] = 'database' AND [SettingKey] = 'UpdateLoginColumnSPID' " & vbNewLine & _
       "    IF @lngUpdateLoginColumnSPID = @@SPID RETURN" & vbNewLine & vbNewLine & vbNewLine
     
-    'NPG20080715 Fault 13266
-    ' sUpdateTriggerSQL.Append _
-    '  "    SELECT @fUpdatingDateDependentColumns = SettingValue FROM ASRSysSystemSettings " & vbNewLine & _
-    '  "        WHERE [Section] = 'database' AND [SettingKey] = 'updatingdatedependantcolumns'" & vbNewLine & vbNewLine & _
-    '  "    SET @fValidRecord = 1" & vbNewLine & vbNewLine
-
     sUpdateTriggerSQL.Append _
       "    SELECT @fUpdatingDateDependentColumns = SettingValue FROM ASRSysSystemSettings " & vbNewLine & _
       "        WHERE [Section] = 'database' AND [SettingKey] = 'updatingdatedependantcolumns'" & vbNewLine & vbNewLine & _
       "    SET @fUpdatingDateDependentColumns = ISNULL(@fUpdatingDateDependentColumns, 0)" & vbNewLine & vbNewLine & _
       "    SET @fValidRecord = 1" & vbNewLine & vbNewLine
 
-'    sUpdateTriggerSQL.Append _
-'      "    -- Bypass trigger if the overnight job is running and this isn't the first trigger level." & vbNewLine & _
-'      "    IF @fUpdatingDateDependentColumns = 1 AND TRIGGER_NESTLEVEL() > 1 RETURN" & vbNewLine & vbNewLine
-'
     sUpdateTriggerSQL.Append _
       "    -- Payroll Export being manually run through Data Manager." & vbNewLine & _
       "    SET @iAccordManualSendType = (SELECT SettingValue FROM ASRSysSystemSettings WHERE [Section] = 'TMP_AccordTransferType' AND [SettingKey] = @@SPID);" & vbNewLine & _
@@ -1266,13 +1221,6 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
     ' the cursor that we used to loop through to get just the id of each record being
     ' inserted/updated/deleted.
     ' Here we are adding the required FETCH statements to the DELETE trigger.
-    'sDeleteTriggerSQL.Append _
-      "    /* Loop through the virtual 'deleted' table, getting the record ID of each deleted record. */" & vbNewLine & _
-      "    SET @cursDeletedRecords = CURSOR LOCAL FAST_FORWARD FOR SELECT id FROM deleted" & vbNewLine & _
-      "    OPEN @cursDeletedRecords" & vbNewLine & _
-      "    FETCH NEXT FROM @cursDeletedRecords INTO @recordID" & vbNewLine & _
-      "    WHILE (@@fetch_status = 0)" & vbNewLine & _
-      "    BEGIN" & vbNewLine
     sDeleteTriggerSQL.Append _
       "    /* Loop through the virtual 'deleted' table, getting the record ID of each deleted record. */" & vbNewLine & _
       "    SET @cursDeletedRecords = CURSOR LOCAL FAST_FORWARD READ_ONLY FOR SELECT deleted.id" & sSelectDelCols.ToString & " FROM deleted" & vbNewLine & _
@@ -1339,21 +1287,7 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
         End If
       End With
     End If
-    
-    ' Insert the Audit trigger code.
-'    If sDeleteAuditCode.Length = 0 Then
-'      sDeleteTriggerSQL.Append _
-'        "        /* ----------------------------------------- */" & vbNewLine & _
-'        "        /* No Audit triggers required. */" & vbNewLine & _
-'        "        /* ----------------------------------------- */" & vbNewLine & vbNewLine
-'    Else
-'      sDeleteTriggerSQL.Append _
-'        "        /* ----------------------- */" & vbNewLine & _
-'        "        /* Audit Triggers. */" & vbNewLine & _
-'        "        /* ----------------------- */" & vbNewLine & _
-'        sDeleteAuditCode.ToString
-'    End If
-               
+                  
     ' Email stuff
     sDeleteTriggerSQL.Append vbNewLine & _
       "        /* ----------------------- */" & vbNewLine & _
@@ -1416,93 +1350,12 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
         
     ' Insert the expression variable declaration code.
     sDeleteTriggerSQL.Append sExprDeclarationCode.ToString & vbNewLine
-'
-'    ' Insert the Parental Column Calculation trigger code.
-'    If Not fParentCalcs Then
-'      sDeleteTriggerSQL.Append _
-'        "        /* ---------------------------------------------------- */" & vbNewLine & _
-'        "        /* No Parental Column Calculations. */" & vbNewLine & _
-'        "        /* ---------------------------------------------------- */" & vbNewLine & vbNewLine
-'    Else
-'      sDeleteTriggerSQL.Append _
-'        "        /* ----------------------------------------------------------- */" & vbNewLine & _
-'        "        /* Parental Column Calculations. */" & vbNewLine & _
-'        "        /* ----------------------------------------------------------- */" & vbNewLine & _
-'        "        IF (@fUpdatingDateDependentColumns = 0)" & vbNewLine & _
-'        "        BEGIN" & vbNewLine
-'
-'      For iLoop = 1 To UBound(asCalcParentCode, 2)
-'        If asCalcParentCode(2, iLoop).Length <> 0 And _
-'          asCalcParentCode(3, iLoop).Length <> 0 Then
-'
-'          sDeleteTriggerSQL.Append _
-'            "            SET @changesMade = 0" & vbNewLine & vbNewLine & _
-'            asCalcParentCode(6, iLoop).ToString & vbNewLine & _
-'            asCalcParentCode(2, iLoop).ToString & vbNewLine & _
-'            "            /* Check if an update needs to be performed. */" & vbNewLine & _
-'            asCalcParentCode(4, iLoop).ToString & vbNewLine & _
-'            "            /* Update the parent record with the calculated values. */" & vbNewLine & _
-'            "            IF @changesMade = 1" & vbNewLine & _
-'            "            BEGIN" & vbNewLine & _
-'            "                UPDATE " & asCalcParentCode(1, iLoop).ToString & vbNewLine & _
-'            "                    SET " & asCalcParentCode(3, iLoop).ToString & vbNewLine & _
-'            "                    WHERE " & asCalcParentCode(1, iLoop).ToString & ".ID = @parentRecordID" & vbNewLine & _
-'            "            END" & vbNewLine & vbNewLine
-'        End If
-'      Next iLoop
-'
-'      sDeleteTriggerSQL.Append vbNewLine & _
-'        "        END" & vbNewLine
-'    End If
-'
-'    ' Insert the Child Column Calculation trigger code.
-'    If Not fChildCalcs Then
-'      sDeleteTriggerSQL.Append _
-'        "        /* ----------------------------------------------- */" & vbNewLine & _
-'        "        /* No Child Column Calculations. */" & vbNewLine & _
-'        "        /* ----------------------------------------------- */" & vbNewLine & vbNewLine
-'    Else
-'      sDeleteTriggerSQL.Append _
-'        "        /* ------------------------------------------------------ */" & vbNewLine & _
-'        "        /* Child Column Calculations. */" & vbNewLine & _
-'        "        /* ------------------------------------------------------ */" & vbNewLine & _
-'        "        IF (@fUpdatingDateDependentColumns = 0)" & vbNewLine & _
-'        "        BEGIN" & vbNewLine
-'
-'      For iLoop = 1 To UBound(asCalcChildCode, 2)
-'        If asCalcChildCode(2, iLoop).Length <> 0 And _
-'          asCalcChildCode(3, iLoop).Length <> 0 Then
-'
-'          sCursorName = asCalcChildCode(1, iLoop).ToString & "_cursor"
-'
-'          sDeleteTriggerSQL.Append _
-'            asCalcChildCode(2, iLoop).ToString & _
-'            "                /* Check if an update needs to be performed. */" & _
-'            asCalcChildCode(4, iLoop).ToString & vbNewLine & _
-'            "                /* Update the child record with the calculated values. */" & vbNewLine & _
-'            "                IF @changesMade = 1" & vbNewLine & _
-'            "                BEGIN" & vbNewLine & _
-'            "                    UPDATE " & asCalcChildCode(1, iLoop).ToString & vbNewLine & _
-'            "                    SET " & asCalcChildCode(3, iLoop).ToString & vbNewLine & _
-'            "                    WHERE " & asCalcChildCode(1, iLoop).ToString & ".ID = @childRecordID" & vbNewLine & _
-'            "                END" & vbNewLine & vbNewLine & _
-'            "                FETCH NEXT FROM " & sCursorName & " INTO @childRecordID" & vbNewLine & _
-'            "            END" & vbNewLine & _
-'            "            CLOSE " & sCursorName & vbNewLine & _
-'            "            DEALLOCATE " & sCursorName & vbNewLine & vbNewLine
-'        End If
-'      Next iLoop
-'
-'      sDeleteTriggerSQL.Append _
-'        "        END" & vbNewLine
-'    End If
 
     sDeleteTriggerSQL.Append vbNewLine & _
       "        /* ----------------------- */" & vbNewLine & _
       "        /* Diary Events. */" & vbNewLine & _
       "        /* ----------------------- */" & vbNewLine & _
       "        DELETE FROM ASRSysDiaryEvents WHERE RowID = @recordID AND TableID = " & CStr(pLngCurrentTableID)
-
 
     sDeleteTriggerSQL.Append vbNewLine & _
       "        /* ----------------------- */" & vbNewLine & _
@@ -1529,17 +1382,6 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
         "        --    EXEC " & gsSSP_PROCEDURENAME & " @recordID" & vbNewLine & _
         "        --END" & vbNewLine
 
-'      'MH20030613 Fake update of dependants table to refresh calcs...
-'      If strDependantsTableName <> vbNullString And lngPersonnelTableID > 0 Then
-'        sDeleteTriggerSQL.Append _
-'          "        /* -------------------------------------------- */" & vbNewLine & _
-'          "        /* Absence module - update the dependants table */" & vbNewLine & _
-'          "        /* -------------------------------------------- */" & vbNewLine & _
-'          "        UPDATE " & strDependantsTableName & _
-'                   " SET ID_" & CStr(lngPersonnelTableID) & " = ID_" & CStr(lngPersonnelTableID) & _
-'                   " WHERE ID_" & CStr(lngPersonnelTableID) & " = @parentRecordID"
-'      End If
-
     End If
 
     ' Insert the Payroll trigger code.
@@ -1557,42 +1399,11 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
     End If
 
 
-
-'TM14072004 It has been decide to remove the GetFieldFromDatabaseRecord - AutoUpdate funcionality
-'due to it not being optional, this code should still be valid for a further solution to the
-'problem.
-'    'Auto Update for GetFieldFromDatabaseRecord column calculations
-'    If Len(mstrGetFieldAutoUpdateCode_DELETE) = 0 Then
-'      sDeleteTriggerSQL.Append  vbNewLine & vbNewLine & _
-'        "        /* ----------------------------------------------------------------------------*/" & vbNewLine & _
-'        "        /* No AutoUpdate - Get Field From Database Record */" & vbNewLine & _
-'        "        /* ----------------------------------------------------------------------------*/" & vbNewLine
-'    Else
-'      sDeleteTriggerSQL.Append  vbNewLine & vbNewLine & _
-'        "        /* ----------------------------------------------------------------------------*/" & vbNewLine & _
-'        "        /* AutoUpdate - Get Field From Database Record */" & vbNewLine & _
-'        "        /* ----------------------------------------------------------------------------*/" & vbNewLine & _
-'        mstrGetFieldAutoUpdateCode_DELETE & vbNewLine & vbNewLine
-'    End If
-
-    ' JPD20020913 - instead of making multiple queries to the triggered table, and
-    ' the 'inserted' and 'deleted' tables, we now get all of the required information in
-    ' the cursor that we used to loop through to get just the id of each record being
-    ' inserted/updated/deleted.
-    ' Here we are adding the required FETCH statements to the DELETE trigger.
-    'sDeleteTriggerSQL.Append  vbNewLine & _
-      "        FETCH NEXT FROM @cursDeletedRecords INTO @recordID" & vbNewLine & _
-      "    END" & vbNewLine & _
-      "    CLOSE @cursDeletedRecords" & vbNewLine & _
-      "    DEALLOCATE @cursDeletedRecords" & vbNewLine & _
-      "END"
     sDeleteTriggerSQL.Append vbNewLine & _
       "        FETCH NEXT FROM @cursDeletedRecords INTO @recordID" & sFetchDelCols.ToString & vbNewLine & _
       "    END" & vbNewLine & _
       "    CLOSE @cursDeletedRecords" & vbNewLine & _
       "    DEALLOCATE @cursDeletedRecords" & vbNewLine
-'      "    --PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' End ([" & psTableName & "].[DEL_" & psTableName & "]';" & vbNewLine & vbNewLine & _
-'      "END"
 
     ' Add special functions
     sDeleteTriggerSQL.Append sDeleteSpecialFunctionsCode
@@ -2428,84 +2239,6 @@ Private Function SetTableTriggers_AutoUpdateGetField(pLngCurrentTableID As Long,
     
     bSearchAndReturnColumnDone = False
     
-'    sAUSQL = vbnullstring
-''    sAUSQL = sAUSQL & "/* Field Column expression object */"
-'    sAUSQL = sAUSQL & "SELECT parentComponentID " & vbNewLine
-'    sAUSQL = sAUSQL & "FROM ASRSysExpressions " & vbNewLine
-'    sAUSQL = sAUSQL & "WHERE parentComponentID > 0 "
-'    sAUSQL = sAUSQL & "  AND exprID IN " & vbNewLine
-''    sAUSQL = sAUSQL & "/* Field Column ID sub-query */"
-'    sAUSQL = sAUSQL & "         (SELECT exprID " & vbNewLine
-'    sAUSQL = sAUSQL & "          FROM ASRSysExprComponents " & vbNewLine
-'    sAUSQL = sAUSQL & "          WHERE fieldColumnID IN (SELECT columnID " & vbNewLine
-'    sAUSQL = sAUSQL & "                                  FROM ASRSysColumns " & vbNewLine
-'    sAUSQL = sAUSQL & "                                  WHERE tableID = " & plngCurrentTableID & " " & vbNewLine
-'    sAUSQL = sAUSQL & "                                  )" & vbNewLine
-'    sAUSQL = sAUSQL & "          ) " & vbNewLine
-'
-'    Set rsParentComp = rdoCon.OpenResultset(sAUSQL, _
-'        rdOpenForwardOnly, rdConcurReadOnly, rdExecDirect)
-'    With rsParentComp
-'      'Loop through the tables/columns that reference this lookup table.
-'      Do While Not .EOF
-'        If !ParentComponentID > 0 Then
-'          sParentCompList = sParentCompList & IIf(Len(sParentCompList) > 0, ", ", vbnullstring)
-'          sParentCompList = sParentCompList & !ParentComponentID
-'        End If
-'        .MoveNext
-'      Loop
-'      .Close
-'    End With
-'    Set rsParentComp = Nothing
-'
-'    If Len(sParentCompList) < 1 Then
-'      SetTableTriggers_AutoUpdateGetField = True
-'      GoTo TidyUpAndExit
-'    End If
-'
-''-------------------------------------------------------------------------------
-'
-'    sAUSQL = vbnullstring
-''    sAUSQL = sAUSQL & "/* Get Field From Database Record function component */"
-'    sAUSQL = sAUSQL & "SELECT exprID " & vbNewLine
-'    sAUSQL = sAUSQL & "FROM ASRSysExprComponents " & vbNewLine
-'    sAUSQL = sAUSQL & "WHERE functionID = 42 "
-'    sAUSQL = sAUSQL & "  AND componentID IN (" & sParentCompList & ") " & vbNewLine
-'
-'    Set rsParentExpr = rdoCon.OpenResultset(sAUSQL, _
-'        rdOpenForwardOnly, rdConcurReadOnly, rdExecDirect)
-'    With rsParentExpr
-'      'Loop through the tables/columns that reference this lookup table.
-'      Do While Not .EOF
-'        sParentExprList = sParentExprList & IIf(Len(sParentExprList) > 0, ", ", vbnullstring)
-'        sParentExprList = sParentExprList & !exprID
-'        .MoveNext
-'      Loop
-'      .Close
-'    End With
-'    Set rsParentExpr = Nothing
-'
-'    If Len(sParentExprList) < 1 Then
-'      SetTableTriggers_AutoUpdateGetField = True
-'      GoTo TidyUpAndExit
-'    End If
-'
-''-------------------------------------------------------------------------------
-'
-'    sAUSQL = vbnullstring
-''    sAUSQL = sAUSQL & "/* Get all the table.columns that use expressions that have a GFFDR function that reference columns in the current table */"
-'    sAUSQL = sAUSQL & " SELECT C.columnID, C.columnName, C.columntype, C.dataType, C.calcExprID, C.tableID, T.tableName " & vbNewLine
-'    sAUSQL = sAUSQL & " FROM ASRSysColumns C " & vbNewLine
-'    sAUSQL = sAUSQL & "      INNER JOIN ASRSysTables T " & vbNewLine
-'    sAUSQL = sAUSQL & "      ON C.tableID = T.tableID " & vbNewLine
-'    sAUSQL = sAUSQL & " WHERE C.calcExprID IN " & vbNewLine
-''    sAUSQL = sAUSQL & "           /* Root Expression that is directly above the GFFDR function */"
-'    sAUSQL = sAUSQL & "           (SELECT exprID " & vbNewLine
-'    sAUSQL = sAUSQL & "            FROM ASRSysExpressions " & vbNewLine
-'    sAUSQL = sAUSQL & "            WHERE parentComponentID = 0 " & vbNewLine
-'    sAUSQL = sAUSQL & "              AND exprID IN (" & sParentExprList & ") " & vbNewLine
-'    sAUSQL = sAUSQL & "            ) "
-    
     sAUSQL = vbNullString
     sAUSQL = sAUSQL & "/* Get all the table.columns that use expressions that have a GFFDR function that reference the current column */" & vbNewLine
     sAUSQL = sAUSQL & "SELECT DISTINCT C.columnID, C.columnName, C.columntype, C.dataType, C.calcExprID, C.tableID, T.tableName" & vbNewLine
@@ -3335,45 +3068,7 @@ Private Function SetTableTriggers_SpecialFunctions( _
         Exit For
       End If
     Next iLoop
-'
-'    If fDoneAbsenceTable Then
-'      sTableName = GetTableName(lngAbsenceTable)
-'
-'      sSSPSwitch1 = _
-'        "                DECLARE" & vbNewLine & _
-'        "                        @iSFPersonnelRecordID integer," & vbNewLine & _
-'        "                        @fSFSSPRunning bit," & vbNewLine & _
-'        "                        @iSFAbsenceRecordID integer" & vbNewLine & vbNewLine & _
-'        "                SELECT @iSFPersonnelRecordID = id" & IIf(fIsPersonnelTable, vbNullString, "_" & CStr(lngPersonnelTable)) & vbNewLine & _
-'        "                FROM inserted" & vbNewLine & _
-'        "                WHERE inserted.ID = @recordID" & vbNewLine & vbNewLine & _
-'        "                IF (@iSFPersonnelRecordID > 0) " & vbNewLine & _
-'        "                BEGIN" & vbNewLine & _
-'        "                        /* Check to avoid recurrent running of the SSP stored procedure. */" & vbNewLine & _
-'        "                        SELECT @fSFSSPRunning = sspRunning" & vbNewLine & _
-'        "                        FROM ASRSysSSPRunning" & vbNewLine & _
-'        "                        WHERE personnelRecordID = @iSFPersonnelRecordID" & vbNewLine & vbNewLine & _
-'        "                        IF @fSFSSPRunning IS null INSERT INTO ASRSysSSPRunning (personnelRecordID, sspRunning) VALUES(@iSFPersonnelRecordID, 1)" & vbNewLine & _
-'        "                        IF @fSFSSPRunning = 0 UPDATE ASRSysSSPRunning SET sspRunning = 1 WHERE personnelRecordID = @iSFPersonnelRecordID" & vbNewLine & _
-'        "                END" & vbNewLine & vbNewLine
-'
-'      sSSPSwitch2 = vbNewLine & _
-'        "                IF (@iSFPersonnelRecordID > 0)" & vbNewLine & _
-'        "                BEGIN" & vbNewLine & _
-'        "                        UPDATE ASRSysSSPRunning SET sspRunning = 0 WHERE personnelRecordID = @iSFPersonnelRecordID" & vbNewLine & vbNewLine & _
-'        "                        SELECT TOP 1 @iSFAbsenceRecordID = " & sTableName & ".ID" & vbNewLine & _
-'        "                        FROM " & sTableName & vbNewLine & _
-'        "                        WHERE ID_" & CStr(lngPersonnelTable) & " = @iSFPersonnelRecordID" & vbNewLine & vbNewLine & _
-'        "                        IF (@iSFAbsenceRecordID > 0) AND EXISTS(SELECT Name FROM sysobjects WHERE id = object_id('sp_ASR_AbsenceSSP') AND sysstat & 0xf = 4)" & vbNewLine & _
-'        "                        BEGIN" & vbNewLine & _
-'        "                                EXEC dbo.sp_ASR_AbsenceSSP @iSFAbsenceRecordID" & vbNewLine & _
-'        "                        END" & vbNewLine & _
-'        "                END" & vbNewLine & vbNewLine
-'    Else
-'      sSSPSwitch1 = vbNullString
-'      sSSPSwitch2 = vbNullString
-'    End If
-    
+
     sInsertSpecialFunctionsCode = vbNewLine & vbNewLine & _
       "    /* ------------------------------------------*/" & vbNewLine & _
       "    /* Special Functions                         */" & vbNewLine & _
@@ -3443,7 +3138,6 @@ On Error GoTo ErrorTrap
     sColumnName = GetColumnName(plngASRColumnID, True)
 
     sSelectInsCols.Append ", inserted." & sColumnName
-    'sSelectInsCols2.Append ",@insCol_" & Trim(Str(plngASRColumnID)) & "=" & sColumnName
     sSelectDelCols.Append ", deleted." & sColumnName
 
     sFetchInsCols.Append ", @insCol_" & Trim(Str(plngASRColumnID))
