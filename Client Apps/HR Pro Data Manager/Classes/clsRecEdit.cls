@@ -203,6 +203,9 @@ Public Function GetControls(plngScreenID As Long) As clsScreenControls
       objScreenControl.FontUnderline = IIf(IsNull(!FontUnderline), False, !FontUnderline)
       objScreenControl.PictureID = IIf(IsNull(!PictureID), 0, !PictureID)
       objScreenControl.DisplayType = IIf(IsNull(!DisplayType), 0, !DisplayType)
+      objScreenControl.NavigateTo = IIf(IsNull(!NavigateTo), "", !NavigateTo)
+      objScreenControl.NavigateIn = IIf(IsNull(!NavigateIn), enum_NavigateIn.URL, !NavigateIn)
+      objScreenControl.NavigateOnSave = IIf(IsNull(!NavigateOnSave), False, !NavigateOnSave)
       objScreenControl.TabIndex = !TabIndex
       objScreenControl.BorderStyle = IIf(IsNull(!BorderStyle), 0, !BorderStyle)
       objScreenControl.Alignment = IIf(IsNull(!Alignment), 0, !Alignment)

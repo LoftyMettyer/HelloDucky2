@@ -165,6 +165,12 @@ Public Enum OrientationTypes
   giVERTICAL = 1
 End Enum
 
+' Navigation execution types
+Public Enum NavigateIn
+  URL = 0
+  MenuBar = 1
+  Db = 2
+End Enum
 
 Public Property Get NextFormID() As Long
   ' Increment the formid

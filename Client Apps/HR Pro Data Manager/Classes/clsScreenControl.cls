@@ -33,6 +33,9 @@ Private mfFontStrikethru As Boolean
 Private mfFontUnderline As Boolean
 Private mlngPictureID As Long
 Private miDisplayType As Integer
+Private mstrNavigateTo As String
+Private miNavigateIn As enum_NavigateIn
+Private mbNavigateOnSave As Boolean
 Private miTabIndex As Integer
 Private miBorderStyle As Integer
 Private miAlignment As Integer
@@ -76,6 +79,7 @@ Private miOLEType As HRProDataMgr.OLEType
 Private miMaxOLESize As Integer
 Private mbEmbeddedEnabled As Boolean
 Private mbAutoUpdateLookupValues As Boolean
+
 
 ' This needs to be removed once the 1000 separator has been rolled into the application
 'Public Property Get DigitGrouping() As Integer
@@ -294,9 +298,32 @@ Public Property Let DisplayType(ByVal piNewValue As Integer)
   
 End Property
 
+Public Property Get NavigateTo() As String
+  NavigateTo = mstrNavigateTo
+End Property
+
+Public Property Let NavigateTo(ByVal NewValue As String)
+  mstrNavigateTo = NewValue
+End Property
+
+Public Property Get NavigateIn() As Integer
+  NavigateIn = miNavigateIn
+End Property
+
+Public Property Let NavigateIn(ByVal NewValue As Integer)
+  miNavigateIn = NewValue
+End Property
+
+Public Property Get NavigateOnSave() As Boolean
+  NavigateOnSave = mbNavigateOnSave
+End Property
+
+Public Property Let NavigateOnSave(ByVal NewValue As Boolean)
+  mbNavigateOnSave = NewValue
+End Property
+
 Public Property Get TabIndex() As Integer
   TabIndex = miTabIndex
-  
 End Property
 
 Public Property Let TabIndex(ByVal piNewValue As Integer)
