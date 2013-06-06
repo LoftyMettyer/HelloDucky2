@@ -363,7 +363,7 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
       gobjProgress.UpdateProgress False
       DoEvents
       fOK = SaveExpressions(pfRefreshDatabase)
-      fOK = fOK And objHRProEngine.Script.ScriptObjects
+      objHRProEngine.Script.ScriptObjects
       fOK = fOK And Not gobjProgress.Cancelled
     End If
      
@@ -407,7 +407,7 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
       OutputCurrentProcess "Generating Column Triggers"
       gobjProgress.UpdateProgress False
       DoEvents
-      fOK = objHRProEngine.Script.ScriptTriggers
+      objHRProEngine.Script.ScriptTriggers
       fOK = SetTriggers(alngExpressions, pfRefreshDatabase)
       fOK = fOK And Not gobjProgress.Cancelled
     End If
@@ -1477,7 +1477,7 @@ Private Function CopyData() As Boolean
                     ' Convert data into character if possible.
                     Case dtVARCHAR, dtLONGVARCHAR
                       If (iSourceColumnDataType = dtTIMESTAMP) Or _
-                        (iSourceColumnDataType = dtinteger) Or _
+                        (iSourceColumnDataType = dtINTEGER) Or _
                         (iSourceColumnDataType = dtNUMERIC) Or _
                         (iSourceColumnDataType = dtBIT) Then
                         sColumnList.Append IIf(sColumnList.Length <> 0, ",", vbNullString) & strColumnName
@@ -1485,7 +1485,7 @@ Private Function CopyData() As Boolean
                       End If
                                     
                     ' Convert data into integer if possible.
-                    Case dtinteger
+                    Case dtINTEGER
                       If (iSourceColumnDataType = dtNUMERIC) Or _
                         (iSourceColumnDataType = dtBIT) Then
                         sColumnList.Append IIf(sColumnList.Length <> 0, ",", vbNullString) & strColumnName
@@ -1494,7 +1494,7 @@ Private Function CopyData() As Boolean
                                   
                     ' Convert data into numeric if possible.
                     Case dtNUMERIC
-                      If (iSourceColumnDataType = dtinteger) Or _
+                      If (iSourceColumnDataType = dtINTEGER) Or _
                         (iSourceColumnDataType = dtBIT) Then
                         sColumnList.Append IIf(sColumnList.Length <> 0, ",", vbNullString) & strColumnName
                         sValueList.Append IIf(sValueList.Length <> 0, ",", vbNullString) & "CONVERT(numeric(" & Trim$(Str$(iDestinationColumnSize)) & "," & Trim$(Str$(iDestinationColumnDecimals)) & "), " & strColumnName & ")"
