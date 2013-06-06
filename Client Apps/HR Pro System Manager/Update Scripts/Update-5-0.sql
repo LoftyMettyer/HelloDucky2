@@ -3375,7 +3375,6 @@ PRINT 'Step 5 - New Shared Table Transfer Types for NFP'
 	END
 
 /* ------------------------------------------------------------- */
-
 PRINT 'Step 6 - Changes to Shared Table Transfer for RTI'
 	
 	-- Update existing columns for Employee transfer
@@ -5066,9 +5065,11 @@ PRINT 'Step 10 - Message Bus Integration'
 /* ------------------------------------------------------------- */
 PRINT 'Step 11 - System Calculations'
 
-	DELETE FROM tbstat_componentcode WHERE ID = 4 AND isoperator = 1
+	DELETE FROM dbo.[tbstat_componentcode] WHERE [ID] = 4 AND [isoperator] = 1;
 	INSERT [dbo].[tbstat_componentcode] ([id], [objectid], [code], [datatype], [name], [isoperator], [operatortype], [aftercode]) 
 		VALUES (4, 'a34f7387-91a1-40d6-b42f-f8032609cfd6', '/ NULLIF(', NULL, 'Divided by', 1, 0, ',0)');
+
+	UPDATE dbo.[tbstat_componentcode] SET [recordidrequired] = 1 WHERE [ID] = 43 AND [isoperator] = 0;
 
 
 
