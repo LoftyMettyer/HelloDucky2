@@ -741,7 +741,12 @@ Private Sub cboChild_Click()
   Else
     Me.txtChildFilter.Tag = 0
     Me.txtChildFilter.Text = vbNullString
+    'NHRD20100519 Jira 714
+    Me.txtChildOrder.Tag = 0
+    Me.txtChildOrder.Text = vbNullString
+    
     Me.spnMaxRecords.Value = 0
+    
     Me.Changed = True
   End If
   
