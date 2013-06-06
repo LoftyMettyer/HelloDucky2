@@ -35,7 +35,7 @@ Begin VB.Form frmEmailLink
       Picture         =   "frmEmailLink.frx":000C
       ScaleHeight     =   480
       ScaleWidth      =   480
-      TabIndex        =   31
+      TabIndex        =   32
       Top             =   6960
       Visible         =   0   'False
       Width           =   540
@@ -47,7 +47,7 @@ Begin VB.Form frmEmailLink
       Picture         =   "frmEmailLink.frx":08D6
       ScaleHeight     =   405
       ScaleWidth      =   465
-      TabIndex        =   30
+      TabIndex        =   31
       Top             =   6960
       Visible         =   0   'False
       Width           =   525
@@ -59,7 +59,7 @@ Begin VB.Form frmEmailLink
       Picture         =   "frmEmailLink.frx":11A0
       ScaleHeight     =   420
       ScaleWidth      =   480
-      TabIndex        =   29
+      TabIndex        =   30
       Top             =   6960
       Visible         =   0   'False
       Width           =   540
@@ -71,7 +71,7 @@ Begin VB.Form frmEmailLink
       Picture         =   "frmEmailLink.frx":1A6A
       ScaleHeight     =   480
       ScaleWidth      =   480
-      TabIndex        =   28
+      TabIndex        =   29
       Top             =   6960
       Visible         =   0   'False
       Width           =   540
@@ -90,7 +90,7 @@ Begin VB.Form frmEmailLink
       Caption         =   "&Cancel"
       Height          =   400
       Left            =   7950
-      TabIndex        =   26
+      TabIndex        =   27
       Top             =   6990
       Width           =   1200
    End
@@ -100,14 +100,14 @@ Begin VB.Form frmEmailLink
       Enabled         =   0   'False
       Height          =   400
       Left            =   6645
-      TabIndex        =   25
+      TabIndex        =   26
       Top             =   6990
       Width           =   1200
    End
    Begin TabDlg.SSTab SSTab1 
       Height          =   6735
       Left            =   45
-      TabIndex        =   27
+      TabIndex        =   28
       Top             =   45
       Width           =   9090
       _ExtentX        =   16034
@@ -130,13 +130,13 @@ Begin VB.Form frmEmailLink
       Tab(0).ControlEnabled=   -1  'True
       Tab(0).Control(0)=   "fraLinkTypeDetails(1)"
       Tab(0).Control(0).Enabled=   0   'False
-      Tab(0).Control(1)=   "frmDefinition(0)"
+      Tab(0).Control(1)=   "fraLinkTypeDetails(2)"
       Tab(0).Control(1).Enabled=   0   'False
-      Tab(0).Control(2)=   "frmDefinition(1)"
+      Tab(0).Control(2)=   "fraLinkTypeDetails(0)"
       Tab(0).Control(2).Enabled=   0   'False
-      Tab(0).Control(3)=   "fraLinkTypeDetails(2)"
+      Tab(0).Control(3)=   "frmDefinition(0)"
       Tab(0).Control(3).Enabled=   0   'False
-      Tab(0).Control(4)=   "fraLinkTypeDetails(0)"
+      Tab(0).Control(4)=   "frmDefinition(1)"
       Tab(0).Control(4).Enabled=   0   'False
       Tab(0).ControlCount=   5
       TabCaption(1)   =   "Co&ntent"
@@ -144,116 +144,6 @@ Begin VB.Form frmEmailLink
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "frmContent"
       Tab(1).ControlCount=   1
-      Begin VB.Frame fraLinkTypeDetails 
-         Caption         =   "Column Related Link :"
-         Height          =   4105
-         Index           =   0
-         Left            =   1720
-         TabIndex        =   12
-         Top             =   2495
-         Width           =   7200
-         Begin VB.ListBox lstColumnLinkColumns 
-            Height          =   3660
-            Left            =   200
-            Sorted          =   -1  'True
-            Style           =   1  'Checkbox
-            TabIndex        =   13
-            Top             =   300
-            Width           =   6825
-         End
-      End
-      Begin VB.Frame fraLinkTypeDetails 
-         Caption         =   "Date Related Link :"
-         Height          =   4105
-         Index           =   2
-         Left            =   1720
-         TabIndex        =   18
-         Top             =   2495
-         Visible         =   0   'False
-         Width           =   7200
-         Begin VB.CheckBox chkDateAmendments 
-            Caption         =   "Email recipients any data changes"
-            Height          =   240
-            Left            =   200
-            TabIndex        =   32
-            Top             =   1200
-            Value           =   1  'Checked
-            Width           =   4500
-         End
-         Begin VB.ComboBox cboDateLinkDirection 
-            BackColor       =   &H8000000F&
-            Enabled         =   0   'False
-            Height          =   315
-            ItemData        =   "frmEmailLink.frx":1DAC
-            Left            =   3480
-            List            =   "frmEmailLink.frx":1DBC
-            Style           =   2  'Dropdown List
-            TabIndex        =   24
-            Top             =   705
-            Width           =   1300
-         End
-         Begin VB.ComboBox cboDateLinkColumn 
-            Height          =   315
-            Left            =   1125
-            Style           =   2  'Dropdown List
-            TabIndex        =   20
-            Top             =   300
-            Width           =   5895
-         End
-         Begin VB.ComboBox cboDateLinkOffsetPeriod 
-            BackColor       =   &H8000000F&
-            Enabled         =   0   'False
-            Height          =   315
-            ItemData        =   "frmEmailLink.frx":1DDC
-            Left            =   2040
-            List            =   "frmEmailLink.frx":1DEC
-            Style           =   2  'Dropdown List
-            TabIndex        =   23
-            Top             =   705
-            Width           =   1300
-         End
-         Begin COASpinner.COA_Spinner spnDateLinkOffset 
-            Height          =   315
-            Left            =   1125
-            TabIndex        =   22
-            Top             =   705
-            Width           =   795
-            _ExtentX        =   1402
-            _ExtentY        =   556
-            BackColor       =   -2147483643
-            BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-               Name            =   "Verdana"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
-            MaximumValue    =   999
-            Text            =   "0"
-         End
-         Begin VB.Label lblDateLinkColumn 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Column :"
-            Height          =   195
-            Left            =   200
-            TabIndex        =   19
-            Top             =   360
-            Width           =   795
-         End
-         Begin VB.Label lblDateLinkOffset 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Offset :"
-            Height          =   195
-            Left            =   200
-            TabIndex        =   21
-            Top             =   760
-            Width           =   570
-         End
-      End
       Begin VB.Frame frmContent 
          Height          =   6240
          Left            =   -74880
@@ -272,11 +162,11 @@ Begin VB.Form frmEmailLink
             Width           =   6645
          End
          Begin VB.CommandButton cmdAttachmentClear 
-            DisabledPicture =   "frmEmailLink.frx":1E0C
+            DisabledPicture =   "frmEmailLink.frx":1DAC
             Height          =   315
             Left            =   8295
             MaskColor       =   &H000000FF&
-            Picture         =   "frmEmailLink.frx":2396
+            Picture         =   "frmEmailLink.frx":2336
             Style           =   1  'Graphical
             TabIndex        =   44
             Top             =   1900
@@ -462,7 +352,7 @@ Begin VB.Form frmEmailLink
          Begin VB.CommandButton cmdFilter 
             Height          =   315
             Left            =   8340
-            Picture         =   "frmEmailLink.frx":2920
+            Picture         =   "frmEmailLink.frx":28C0
             Style           =   1  'Graphical
             TabIndex        =   5
             Top             =   700
@@ -571,6 +461,116 @@ Begin VB.Form frmEmailLink
          End
       End
       Begin VB.Frame fraLinkTypeDetails 
+         Caption         =   "Column Related Link :"
+         Height          =   4105
+         Index           =   0
+         Left            =   1720
+         TabIndex        =   12
+         Top             =   2495
+         Width           =   7200
+         Begin VB.ListBox lstColumnLinkColumns 
+            Height          =   3660
+            Left            =   200
+            Sorted          =   -1  'True
+            Style           =   1  'Checkbox
+            TabIndex        =   13
+            Top             =   300
+            Width           =   6825
+         End
+      End
+      Begin VB.Frame fraLinkTypeDetails 
+         Caption         =   "Date Related Link :"
+         Height          =   4105
+         Index           =   2
+         Left            =   1720
+         TabIndex        =   18
+         Top             =   2495
+         Visible         =   0   'False
+         Width           =   7200
+         Begin VB.CheckBox chkDateAmendments 
+            Caption         =   "E&mail recipients any data changes"
+            Height          =   240
+            Left            =   200
+            TabIndex        =   25
+            Top             =   1200
+            Value           =   1  'Checked
+            Width           =   4500
+         End
+         Begin VB.ComboBox cboDateLinkDirection 
+            BackColor       =   &H8000000F&
+            Enabled         =   0   'False
+            Height          =   315
+            ItemData        =   "frmEmailLink.frx":2A0E
+            Left            =   3480
+            List            =   "frmEmailLink.frx":2A1E
+            Style           =   2  'Dropdown List
+            TabIndex        =   24
+            Top             =   705
+            Width           =   1300
+         End
+         Begin VB.ComboBox cboDateLinkColumn 
+            Height          =   315
+            Left            =   1125
+            Style           =   2  'Dropdown List
+            TabIndex        =   20
+            Top             =   300
+            Width           =   5895
+         End
+         Begin VB.ComboBox cboDateLinkOffsetPeriod 
+            BackColor       =   &H8000000F&
+            Enabled         =   0   'False
+            Height          =   315
+            ItemData        =   "frmEmailLink.frx":2A3E
+            Left            =   2040
+            List            =   "frmEmailLink.frx":2A4E
+            Style           =   2  'Dropdown List
+            TabIndex        =   23
+            Top             =   705
+            Width           =   1300
+         End
+         Begin COASpinner.COA_Spinner spnDateLinkOffset 
+            Height          =   315
+            Left            =   1125
+            TabIndex        =   22
+            Top             =   705
+            Width           =   795
+            _ExtentX        =   1402
+            _ExtentY        =   556
+            BackColor       =   -2147483643
+            BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+            MaximumValue    =   999
+            Text            =   "0"
+         End
+         Begin VB.Label lblDateLinkColumn 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Column :"
+            Height          =   195
+            Left            =   200
+            TabIndex        =   19
+            Top             =   360
+            Width           =   795
+         End
+         Begin VB.Label lblDateLinkOffset 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Offset :"
+            Height          =   195
+            Left            =   200
+            TabIndex        =   21
+            Top             =   760
+            Width           =   570
+         End
+      End
+      Begin VB.Frame fraLinkTypeDetails 
          Caption         =   "Record Related Link :"
          Height          =   4105
          Index           =   1
@@ -674,12 +674,12 @@ Private mcolRecipients() As Collection
 
 Public Property Let Changed(ByVal value As Boolean)
   If Not mblnLoading Then
-    cmdOk.Enabled = value
+    cmdOK.Enabled = value
   End If
 End Property
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
 End Property
 
 
@@ -1236,8 +1236,8 @@ Private Sub Form_Resize()
   lngTop = Me.ScaleHeight - (cmdCancel.Height + GAP)
   cmdCancel.Move lngLeft, lngTop
   
-  lngLeft = lngLeft - (cmdOk.Width + GAP)
-  cmdOk.Move lngLeft, lngTop
+  lngLeft = lngLeft - (cmdOK.Width + GAP)
+  cmdOK.Move lngLeft, lngTop
   
   lngWidth = Me.ScaleWidth - (GAP * 2)
   lngHeight = lngTop - (GAP * 2)
@@ -1387,11 +1387,11 @@ Private Sub txtContent_Change(index As Integer)
 End Sub
 
 Private Sub txtContent_GotFocus(index As Integer)
-  cmdOk.Default = False
+  cmdOK.Default = False
 End Sub
 
 Private Sub txtContent_LostFocus(index As Integer)
-  cmdOk.Default = True
+  cmdOK.Default = True
 End Sub
 
 Private Sub txtFilter_Change()
