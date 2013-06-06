@@ -127,52 +127,18 @@ Public Function DateFormat() As String
   
 End Function
 
-'Public Sub CloseConnection()
-'
-'  If Not gADOCon Is Nothing Then
-'    gADOCon.Close
-'    gADOCon.Cancel
-'    Set gADOCon = Nothing
-'  End If
-'
-'End Sub
-
-'Public Function Connect(sConnectString As String) As Boolean
-'  ' Connect to the database.
-'  On Error GoTo Err_Trap
-'
-'  Set gADOCon = New ADODB.Connection
-'  With gADOCon
-'    .ConnectionString = sConnectString
-'    .Provider = "SQLOLEDB"
-'    .CommandTimeout = 0
-'    .CursorLocation = adUseClient
-'    .Mode = adModeReadWrite
-'    .Open
-'  End With
-'
-'  Connect = True
-'
-'  Exit Function
-'
-'Err_Trap:
-'  Connect = False
-'  MsgBox Err.Description
-'
-'End Function
-
-Public Function GetAllRecords(piAuditType As audType, Optional psOrder As String) As Recordset
+Public Function GetAllRecords(piAuditType As audType, Optional psOrder As String, Optional psFilter As String, Optional piTop As Long) As Recordset
 
   Dim sSQL As String
   Dim rsTemp As Recordset
   
-  sSQL = "exec spstat_getaudittrail " & piAuditType & ", " & IIf(psOrder = "", "''", "'" & psOrder & "'")
+  sSQL = "exec spstat_getaudittrail " & piAuditType & ", " & IIf(psOrder = "", "''", "'" & psOrder & "'") & ", " & IIf(psFilter = "", "''", "'" & Replace(psFilter, "'", "''") & "'") & ", " & piTop
   Set rsTemp = New Recordset
   gADOCon.CursorLocation = adUseClient
   rsTemp.Open sSQL, gADOCon, adOpenDynamic, adLockReadOnly
   gADOCon.CursorLocation = adUseServer
   Set GetAllRecords = rsTemp
-    
+  
 End Function
 
 Public Function RemoveBrackets(sString As String) As String

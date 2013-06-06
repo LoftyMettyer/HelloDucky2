@@ -410,7 +410,7 @@ Private Function GetFieldName(strColumnDisplayName As String) As String
       If strColumnDisplayName = "User" Then
         GetFieldName = "Username"
       ElseIf strColumnDisplayName = "Date / Time" Then
-        GetFieldName = "Date / Time"
+        GetFieldName = "DateTimeStamp"
       ElseIf strColumnDisplayName = "Table" Then
         GetFieldName = "TableName"
       ElseIf strColumnDisplayName = "Column" Then
@@ -421,6 +421,8 @@ Private Function GetFieldName(strColumnDisplayName As String) As String
         GetFieldName = "NewValue"
       ElseIf strColumnDisplayName = "Record Description" Then
         GetFieldName = "RecordDesc"
+      Else
+        Debug.Assert False
       End If
       
     Case audPermissions
@@ -428,7 +430,7 @@ Private Function GetFieldName(strColumnDisplayName As String) As String
       If strColumnDisplayName = "User" Then
         GetFieldName = "Username"
       ElseIf strColumnDisplayName = "Date / Time" Then
-        GetFieldName = "Date / Time"
+        GetFieldName = "DateTimeStamp"
       ElseIf strColumnDisplayName = "User Group" Then
         GetFieldName = "GroupName"
       ElseIf strColumnDisplayName = "Table" Then
@@ -439,6 +441,10 @@ Private Function GetFieldName(strColumnDisplayName As String) As String
         GetFieldName = "Action"
       ElseIf strColumnDisplayName = "Permission" Then
         GetFieldName = "Permission"
+      ElseIf strColumnDisplayName = "View / Table" Then
+       GetFieldName = "viewTableName"
+      Else
+        Debug.Assert False
       End If
     
     Case audGroups
@@ -446,19 +452,21 @@ Private Function GetFieldName(strColumnDisplayName As String) As String
       If strColumnDisplayName = "User" Then
         GetFieldName = "Username"
       ElseIf strColumnDisplayName = "Date / Time" Then
-        GetFieldName = "Date / Time"
+        GetFieldName = "DateTimeStamp"
       ElseIf strColumnDisplayName = "User Group" Then
         GetFieldName = "GroupName"
       ElseIf strColumnDisplayName = "User Login" Then
         GetFieldName = "UserLogin"
       ElseIf strColumnDisplayName = "Action" Then
         GetFieldName = "Action"
+      Else
+        Debug.Assert False
       End If
   
     Case audAccess
 
       If strColumnDisplayName = "Date / Time" Then
-        GetFieldName = "Date / Time"
+        GetFieldName = "DateTimeStamp"
       ElseIf strColumnDisplayName = "User Group" Then
         GetFieldName = "UserGroup"
       ElseIf strColumnDisplayName = "User" Then
@@ -466,9 +474,11 @@ Private Function GetFieldName(strColumnDisplayName As String) As String
       ElseIf strColumnDisplayName = "Computer Name" Then
         GetFieldName = "ComputerName"
       ElseIf strColumnDisplayName = "Module" Then
-        GetFieldName = "Module"
+        GetFieldName = "HRProModule"
       ElseIf strColumnDisplayName = "Action" Then
         GetFieldName = "Action"
+      Else
+        Debug.Assert False
       End If
 
   End Select
@@ -832,7 +842,7 @@ End Sub
 Private Sub txtValue_LostFocus()
 
   cmdAddToList.Default = False
-  cmdOK.Default = False
+  cmdOk.Default = False
   
 End Sub
 
