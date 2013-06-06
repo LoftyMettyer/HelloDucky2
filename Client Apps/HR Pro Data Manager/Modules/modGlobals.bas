@@ -139,6 +139,8 @@ Public glngWindowWidth As Long
 Public gbWorkflowEnabled As Boolean           ' Is the Workflow module enabled
 Public gbWorkflowOutOfOfficeEnabled As Boolean ' Is the Workflow module enabled AND have the OutOfOffice parameters been configured
 
+Public gbVersion1Enabled As Boolean
+
 Public ASRDEVELOPMENT As Boolean
 
 
