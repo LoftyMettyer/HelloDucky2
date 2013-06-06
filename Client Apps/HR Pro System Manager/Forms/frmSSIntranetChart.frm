@@ -1129,7 +1129,7 @@ End Sub
 Private Sub RefreshControls()
   
   
-  cmdOk.Enabled = mfChanged
+  ' cmdOK.Enabled = mfChanged
   
 End Sub
 
