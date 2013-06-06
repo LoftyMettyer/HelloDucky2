@@ -75,7 +75,6 @@ Sub Main()
 
   'Instantiate public classes
   Set Application = New SystemMgr.Application
-  Set Database = New SystemMgr.Database
   Set ODBC = New SystemMgr.ODBC
 
   'Instantiate Progress Bar class
