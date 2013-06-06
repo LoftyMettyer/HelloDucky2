@@ -56,6 +56,8 @@ Private Const Xframe = 20
 Private Const YFrame = 20
 
 Public ControlLevel As Long
+Public MinimumWidth As Long
+Public MinimumHeight As Long
 
 Public Property Let WFItemType(New_Value As Integer)
   miWFItemType = New_Value
@@ -74,11 +76,11 @@ Public Property Get ClientTop() As Long
 End Property
 
 Public Property Get ClientHeight() As Long
-  ClientHeight = TabStrip1.ClientHeight + (YFrame * 2)
+  ClientHeight = TabStrip1.ClientHeight
 End Property
 
 Public Property Get ClientWidth() As Long
-  ClientWidth = TabStrip1.ClientWidth + (Xframe * 2)
+  ClientWidth = TabStrip1.ClientWidth
 End Property
 
 ' Return the control's hWnd.
