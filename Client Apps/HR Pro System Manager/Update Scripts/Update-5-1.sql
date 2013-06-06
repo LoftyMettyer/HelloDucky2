@@ -516,7 +516,7 @@ PRINT 'Step - Menu & Category enhancements'
 			[objecttype]	smallint, 
 			[objectid]		integer,
 			[categoryid]	integer)';
-		GRANT INSERT, UPDATE, SELECT, DELETE ON dbo.[tbsys_userusage] TO [ASRSysGroup];
+		GRANT INSERT, UPDATE, SELECT, DELETE ON dbo.[tbsys_objectcategories] TO [ASRSysGroup];
 	END
 
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spssys_getobjectcategories]') AND xtype = 'P')
