@@ -1,6 +1,6 @@
 VERSION 5.00
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
-Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "COA_Line.ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
+Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "coa_line.ocx"
 Begin VB.Form frmAbsenceSetup 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Absence Setup"
@@ -82,21 +82,21 @@ Begin VB.Form frmAbsenceSetup
       TabCaption(2)   =   "Calen&dar"
       TabPicture(2)   =   "frmAbsenceSetup.frx":0044
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraCalendarDef"
-      Tab(2).Control(1)=   "fraCalendarInclude"
+      Tab(2).Control(0)=   "fraCalendarInclude"
+      Tab(2).Control(1)=   "fraCalendarDef"
       Tab(2).ControlCount=   2
       TabCaption(3)   =   "&SSP"
       TabPicture(3)   =   "frmAbsenceSetup.frx":0060
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "fraWorkingDays"
-      Tab(3).Control(1)=   "fraSSPColumns"
+      Tab(3).Control(0)=   "fraSSPColumns"
+      Tab(3).Control(1)=   "fraWorkingDays"
       Tab(3).ControlCount=   2
       TabCaption(4)   =   "&Parental Leave"
       TabPicture(4)   =   "frmAbsenceSetup.frx":007C
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "Frame1"
+      Tab(4).Control(0)=   "Frame3"
       Tab(4).Control(1)=   "Frame2"
-      Tab(4).Control(2)=   "Frame3"
+      Tab(4).Control(2)=   "Frame1"
       Tab(4).ControlCount=   3
       Begin VB.Frame Frame3 
          Caption         =   "Personnel Records :"
@@ -1263,7 +1263,7 @@ Private Sub InitialiseBaseTableCombos()
   Dim iAbsenceTypeTableListIndex As Integer
   Dim intMonth As Integer
   Dim dtFirstOfDec As Date
-  
+  Dim lngNewIndex As Long
     
   iAbsenceTableListIndex = 0
   iDependantsTableListIndex = 0
@@ -1272,17 +1272,13 @@ Private Sub InitialiseBaseTableCombos()
   RefreshPersonnelControls
 
   ' Clear the combos, and add '<None>' items.
-    cboAbsenceTable.Clear
-    cboDependantsTable.Clear
-    cboAbsenceTypeTable.Clear
-    
-    cboAbsenceTable.AddItem "<None>"
-    cboDependantsTable.AddItem "<None>"
-    cboAbsenceTypeTable.AddItem "<None>"
-    
-    cboAbsenceTable.ItemData(cboAbsenceTable.NewIndex) = 0
-    cboDependantsTable.ItemData(cboDependantsTable.NewIndex) = 0
-    cboAbsenceTypeTable.ItemData(cboAbsenceTypeTable.NewIndex) = 0
+  cboAbsenceTable.Clear
+  cboDependantsTable.Clear
+  cboAbsenceTypeTable.Clear
+  
+  AddItemToComboBox cboAbsenceTable, "<None>", 0
+  AddItemToComboBox cboDependantsTable, "<None>", 0
+  AddItemToComboBox cboAbsenceTypeTable, "<None>", 0
     
   ' Add items to the combo for each table that has not been deleted,
   ' and is a child of the defined Personnel table.
@@ -1298,36 +1294,22 @@ Private Sub InitialiseBaseTableCombos()
         recRelEdit.Seek "=", mvar_lngPersonnelTableID, !TableID
         
         If Not recRelEdit.NoMatch Then
-          cboAbsenceTable.AddItem !TableName
-          cboAbsenceTable.ItemData(cboAbsenceTable.NewIndex) = !TableID
         
+          lngNewIndex = AddItemToComboBox(cboAbsenceTable, !TableName, !TableID)
           If !TableID = mvar_lngAbsenceTableID Then
-            iAbsenceTableListIndex = cboAbsenceTable.NewIndex
+            iAbsenceTableListIndex = lngNewIndex
           End If
         
-          
-          'If HasTypeOfColumn(!TableID, dtINTEGER) Then
-          '  If HasTypeOfColumn(!TableID, dtTIMESTAMP) Then
-          '    If HasTypeOfColumn(!TableID, dtBIT) Then
-                cboDependantsTable.AddItem !TableName
-                cboDependantsTable.ItemData(cboDependantsTable.NewIndex) = !TableID
-
-                If !TableID = mvar_lngDependantsTableID Then
-                  iDependantsTableListIndex = cboDependantsTable.NewIndex
-                End If
-
-          '    End If
-          '  End If
-          'End If
-
+          lngNewIndex = AddItemToComboBox(cboDependantsTable, !TableName, !TableID)
+          If !TableID = mvar_lngDependantsTableID Then
+            iDependantsTableListIndex = lngNewIndex
+          End If
 
         End If
-        
-        cboAbsenceTypeTable.AddItem !TableName
-        cboAbsenceTypeTable.ItemData(cboAbsenceTypeTable.NewIndex) = !TableID
-        
+       
+        lngNewIndex = AddItemToComboBox(cboAbsenceTypeTable, !TableName, !TableID)
         If !TableID = mvar_lngAbsenceTypeTableID Then
-          iAbsenceTypeTableListIndex = cboAbsenceTypeTable.NewIndex
+          iAbsenceTypeTableListIndex = lngNewIndex
         End If
       
       End If
@@ -1353,9 +1335,7 @@ Private Sub InitialiseBaseTableCombos()
   dtFirstOfDec = DateAdd("m", Month(Now) * -1, DateAdd("d", (Day(Now) - 1) * -1, Now))
   
   For intMonth = 1 To 12
-    'cboCalStartMonth.AddItem Format("01/" & Str(intMonth) & "/99", "mmmm")
-    cboCalStartMonth.AddItem Format(DateAdd("m", intMonth, dtFirstOfDec), "mmmm")
-    cboCalStartMonth.ItemData(cboCalStartMonth.NewIndex) = intMonth
+    AddItemToComboBox cboCalStartMonth, Format(DateAdd("m", intMonth, dtFirstOfDec), "mmmm"), intMonth
   Next intMonth
 
   ' Set January as default
@@ -1571,6 +1551,7 @@ Private Sub RefreshAbsenceControls()
   Dim iAbsenceSSPPaidDaysListIndex As Integer
   Dim iAbsenceChildNoListIndex As Integer
   Dim objctl As Control
+  Dim lngNewIndex As Long
 
   iAbsenceScreenListIndex = 0
   iAbsenceStartDateListIndex = 0
@@ -1604,11 +1585,9 @@ Private Sub RefreshAbsenceControls()
       objctl.Name = "cboParentalLeaveAbsType" Or _
       objctl.Name = "cboAbsChildNo") Then
 
-      With objctl
-        .Clear
-        .AddItem "<None>"
-        .ItemData(.NewIndex) = 0
-      End With
+      objctl.Clear
+      AddItemToComboBox objctl, "<None>", 0
+      
     End If
   Next objctl
   Set objctl = Nothing
@@ -1631,75 +1610,68 @@ Private Sub RefreshAbsenceControls()
 
           ' Only load date fields into the start/leaving date combos
           If !DataType = dtTIMESTAMP Then
-            cboStartDate.AddItem !ColumnName
-            cboStartDate.ItemData(cboStartDate.NewIndex) = !ColumnID
+          
+            lngNewIndex = AddItemToComboBox(cboStartDate, !ColumnName, !ColumnID)
             If !ColumnID = mvar_lngAbsenceStartDateID Then
-              iAbsenceStartDateListIndex = cboStartDate.NewIndex
+              iAbsenceStartDateListIndex = lngNewIndex
             End If
 
-            cboEndDate.AddItem !ColumnName
-            cboEndDate.ItemData(cboEndDate.NewIndex) = !ColumnID
+            lngNewIndex = AddItemToComboBox(cboEndDate, !ColumnName, !ColumnID)
             If !ColumnID = mvar_lngAbsenceEndDateID Then
-              iAbsenceEndDateListIndex = cboEndDate.NewIndex
+              iAbsenceEndDateListIndex = lngNewIndex
             End If
           End If
 
           ' Only load numeric calc columns into the Duration Combo
           If !DataType = dtNUMERIC And !columntype = 2 Then
             
-            cboAbsenceDuration.AddItem !ColumnName
-            cboAbsenceDuration.ItemData(cboAbsenceDuration.NewIndex) = !ColumnID
+            lngNewIndex = AddItemToComboBox(cboAbsenceDuration, !ColumnName, !ColumnID)
             If !ColumnID = mvar_lngAbsenceDurationID Then
-              iAbsenceDurationListIndex = cboAbsenceDuration.NewIndex
+              iAbsenceDurationListIndex = lngNewIndex
             End If
 
           End If
 
           ' Only load logic fields into the SSP Applies, Continuous Absence combo
           If !DataType = dtBIT Then
-            cboSSPApplies.AddItem !ColumnName
-            cboSSPApplies.ItemData(cboSSPApplies.NewIndex) = !ColumnID
+            
+            lngNewIndex = AddItemToComboBox(cboSSPApplies, !ColumnName, !ColumnID)
             If !ColumnID = mvar_lngAbsenceSSPAppliesID Then
-              iAbsenceSSPAppliesListIndex = cboSSPApplies.NewIndex
+              iAbsenceSSPAppliesListIndex = lngNewIndex
             End If
-
-            cboContinuous.AddItem !ColumnName
-            cboContinuous.ItemData(cboContinuous.NewIndex) = !ColumnID
+           
+            lngNewIndex = AddItemToComboBox(cboContinuous, !ColumnName, !ColumnID)
             If !ColumnID = mvar_lngAbsenceContinuousID Then
-             iAbsenceContinuousListIndex = cboContinuous.NewIndex
+             iAbsenceContinuousListIndex = lngNewIndex
             End If
 
           End If
 
           ' Only load numeric fields into the SSP Qualifying Days, Waiting Days & Paid Days combos.
           If !DataType = dtNUMERIC Then
-            cboSSPQualifyingDays.AddItem !ColumnName
-            cboSSPQualifyingDays.ItemData(cboSSPQualifyingDays.NewIndex) = !ColumnID
+            lngNewIndex = AddItemToComboBox(cboSSPQualifyingDays, !ColumnName, !ColumnID)
             If !ColumnID = mvar_lngAbsenceSSPQualifyingDaysID Then
-              iAbsenceSSPQualifyingDaysListIndex = cboSSPQualifyingDays.NewIndex
+              iAbsenceSSPQualifyingDaysListIndex = lngNewIndex
             End If
           
-            cboSSPWaitingDays.AddItem !ColumnName
-            cboSSPWaitingDays.ItemData(cboSSPWaitingDays.NewIndex) = !ColumnID
+            lngNewIndex = AddItemToComboBox(cboSSPWaitingDays, !ColumnName, !ColumnID)
             If !ColumnID = mvar_lngAbsenceSSPWaitingDaysID Then
-              iAbsenceSSPWaitingDaysListIndex = cboSSPWaitingDays.NewIndex
+              iAbsenceSSPWaitingDaysListIndex = lngNewIndex
             End If
-          
-            cboSSPPaidDays.AddItem !ColumnName
-            cboSSPPaidDays.ItemData(cboSSPPaidDays.NewIndex) = !ColumnID
+                     
+            lngNewIndex = AddItemToComboBox(cboSSPPaidDays, !ColumnName, !ColumnID)
             If !ColumnID = mvar_lngAbsenceSSPPaidDaysID Then
-              iAbsenceSSPPaidDaysListIndex = cboSSPPaidDays.NewIndex
+              iAbsenceSSPPaidDaysListIndex = lngNewIndex
             End If
           
           End If
           
           
           If !DataType = dtinteger Then
-          
-            cboAbsChildNo.AddItem !ColumnName
-            cboAbsChildNo.ItemData(cboAbsChildNo.NewIndex) = !ColumnID
+            
+            lngNewIndex = AddItemToComboBox(cboAbsChildNo, !ColumnName, !ColumnID)
             If !ColumnID = mvar_lngAbsenceChildNoID Then
-              iAbsenceChildNoListIndex = cboAbsChildNo.NewIndex
+              iAbsenceChildNoListIndex = lngNewIndex
             End If
 
           End If
@@ -1707,32 +1679,29 @@ Private Sub RefreshAbsenceControls()
           ' Load varchar fields
           If !DataType = dtVARCHAR Then
             If !Size = 2 Then
-              cboStartSession.AddItem !ColumnName
-              cboStartSession.ItemData(cboStartSession.NewIndex) = !ColumnID
+             
+              lngNewIndex = AddItemToComboBox(cboStartSession, !ColumnName, !ColumnID)
               If !ColumnID = mvar_lngAbsenceStartSessionID Then
-                iAbsenceStartSessionListIndex = cboStartSession.NewIndex
+                iAbsenceStartSessionListIndex = lngNewIndex
               End If
-            
-              cboEndSession.AddItem !ColumnName
-              cboEndSession.ItemData(cboEndSession.NewIndex) = !ColumnID
+                        
+              lngNewIndex = AddItemToComboBox(cboEndSession, !ColumnName, !ColumnID)
               If !ColumnID = mvar_lngAbsenceEndSessionID Then
-                iAbsenceEndSessionListIndex = cboEndSession.NewIndex
+                iAbsenceEndSessionListIndex = lngNewIndex
               End If
             
             End If
             
             If !Size = 6 Then
-              cboType.AddItem !ColumnName
-              cboType.ItemData(cboType.NewIndex) = !ColumnID
+              lngNewIndex = AddItemToComboBox(cboType, !ColumnName, !ColumnID)
               If !ColumnID = mvar_lngAbsenceTypeID Then
-                iAbsenceTypeListIndex = cboType.NewIndex
+                iAbsenceTypeListIndex = lngNewIndex
               End If
             End If
-            
-            cboReason.AddItem !ColumnName
-            cboReason.ItemData(cboReason.NewIndex) = !ColumnID
+                       
+            lngNewIndex = AddItemToComboBox(cboReason, !ColumnName, !ColumnID)
             If !ColumnID = mvar_lngAbsenceReasonID Then
-              iAbsenceReasonListIndex = cboReason.NewIndex
+              iAbsenceReasonListIndex = lngNewIndex
             End If
           
           End If
@@ -1746,20 +1715,16 @@ Private Sub RefreshAbsenceControls()
 
   ' Now do the absence screen combo
   cboAbsenceScreen.Clear
-  cboAbsenceScreen.AddItem "<None>"
-  cboAbsenceScreen.ItemData(cboAbsenceScreen.NewIndex) = 0
+  AddItemToComboBox cboAbsenceScreen, "<None>", 0
   
   With recScrEdit
     .Index = "idxName"
     .MoveFirst
     Do Until .EOF
-      If (!TableID = mvar_lngAbsenceTableID) _
-        And (!Deleted = False) Then
-        
-        cboAbsenceScreen.AddItem !Name
-        cboAbsenceScreen.ItemData(cboAbsenceScreen.NewIndex) = !ScreenID
+      If (!TableID = mvar_lngAbsenceTableID) And (!Deleted = False) Then
+        lngNewIndex = AddItemToComboBox(cboAbsenceScreen, !Name, !ScreenID)
         If !ScreenID = mvar_lngAbsenceScreenID Then
-          iAbsenceScreenListIndex = cboAbsenceScreen.NewIndex
+          iAbsenceScreenListIndex = lngNewIndex
         End If
       End If
       .MoveNext
@@ -1791,6 +1756,7 @@ Private Sub RefreshAbsencePersonnelControls()
   Dim iWorkingDaysListIndex As Integer
   Dim sAbsenceTableName As String
   Dim sPersonnelTableName As String
+  Dim lngNewIndex As Long
   Dim objctl As Control
   
   iWorkingDaysListIndex = 0
@@ -1802,17 +1768,13 @@ Private Sub RefreshAbsencePersonnelControls()
 
       With objctl
         .Clear
-        .AddItem "<None>"
-        .ItemData(.NewIndex) = 0
+        AddItemToComboBox objctl, "<None>", 0
       End With
     End If
   Next objctl
   Set objctl = Nothing
   
   ' Read the historic wpattern stuff
-  'ReadHistoricWP
-  
-  
   With recTabEdit
     .Index = "idxTableID"
     .Seek "=", mvar_lngAbsenceTableID 'mvar_lngHWorkingPatternTableID
@@ -1831,11 +1793,8 @@ Private Sub RefreshAbsencePersonnelControls()
   
   With recColEdit
     
-    ' RH 19/02/01 - Dont do the absence table...read which historic table
-    '               is being used from the module setup and use that
-    
+    ' Dont do the absence table...read which historic table is being used from the module setup and use that
     .Index = "idxName"
-'    .Seek ">=", mvar_lngHWorkingPatternTableID
     .Seek ">=", mvar_lngAbsenceTableID
 
     If Not .NoMatch Then
@@ -1853,10 +1812,9 @@ Private Sub RefreshAbsencePersonnelControls()
 
           ' Only load integer and working pattern fields into the combo
           If (!DataType = dtinteger) Or (!DataType = dtlongvarchar) Then
-            cboWorkingDaysField.AddItem sAbsenceTableName & "." & !ColumnName
-            cboWorkingDaysField.ItemData(cboWorkingDaysField.NewIndex) = !ColumnID
+            lngNewIndex = AddItemToComboBox(cboWorkingDaysField, !ColumnName, !ColumnID)
             If !ColumnID = mvar_lngAbsenceWorkingDaysID Then
-              iWorkingDaysListIndex = cboWorkingDaysField.NewIndex
+              iWorkingDaysListIndex = lngNewIndex
             End If
           End If
         End If
@@ -1880,12 +1838,10 @@ Private Sub RefreshAbsencePersonnelControls()
           (!columntype <> giCOLUMNTYPE_SYSTEM) Then
 
           ' Only load integer and working pattern fields into the start/leaving date combos
-'          If (!DataType = 4) Or (!ColumnType = giColumntype_WORKINGPATTERN) Then
           If (!DataType = dtinteger) Or (!DataType = dtlongvarchar) Then
-            cboWorkingDaysField.AddItem sPersonnelTableName & "." & !ColumnName
-            cboWorkingDaysField.ItemData(cboWorkingDaysField.NewIndex) = !ColumnID
+            lngNewIndex = AddItemToComboBox(cboWorkingDaysField, !ColumnName, !ColumnID)
             If !ColumnID = mvar_lngAbsenceWorkingDaysID Then
-              iWorkingDaysListIndex = cboWorkingDaysField.NewIndex
+              iWorkingDaysListIndex = lngNewIndex
             End If
           End If
         End If
@@ -1950,16 +1906,13 @@ Private Sub RefreshAbsenceTypeControls()
   Dim iAbsenceTypeCodeListIndex As Integer
   Dim iAbsenceTypeSSPApplicableListIndex As Integer
   Dim iAbsenceTypeCalendarCodeListIndex As Integer
-  'Dim iAbsenceTypeIncludeListIndex As Integer
-  'Dim iAbsenceTypeBradfordListIndex As Integer
   Dim objctl As Control
+  Dim lngNewIndex As Long
 
   iAbsenceTypeTypeListIndex = 0
   iAbsenceTypeCodeListIndex = 0
   iAbsenceTypeSSPApplicableListIndex = 0
   iAbsenceTypeCalendarCodeListIndex = 0
-  'iAbsenceTypeIncludeListIndex = 0
-  'iAbsenceTypeBradfordListIndex = 0
 
   ' Clear the current contents of the combos.
   For Each objctl In Me
@@ -1970,24 +1923,19 @@ Private Sub RefreshAbsenceTypeControls()
       objctl.Name = "cboAbsenceTypeCalendarCode" Or _
       objctl.Name = "cboParentalLeaveAbsType") Then
         
-'MH20030908 Fault 6888
-      'objCtl.Name = "cboAbsenceTypeBradford" Or _
-      'objCtl.Name = "cboAbsenceTypeInclude" Or
-        With objctl
-          .Clear
-          .AddItem "<None>"
-          .ItemData(.NewIndex) = 0
-        End With
-      End If
-    Next objctl
+      With objctl
+        .Clear
+        AddItemToComboBox objctl, "<None>", 0
+      End With
+    End If
+  Next objctl
 
   With recColEdit
     .Index = "idxName"
     .Seek ">=", mvar_lngAbsenceTypeTableID
 
     If Not .NoMatch Then
-      ' Add items to the combos for each column that has not been deleted,
-      ' or is a system or link column.
+      ' Add items to the combos for each column that has not been deleted, or is a system or link column.
       Do While Not .EOF
         If !TableID <> mvar_lngAbsenceTypeTableID Then
           Exit Do
@@ -1999,47 +1947,29 @@ Private Sub RefreshAbsenceTypeControls()
 
           ' Load Logic fields
           If !DataType = dtBIT Then
-            cboAbsenceTypeSSPApplicable.AddItem !ColumnName
-            cboAbsenceTypeSSPApplicable.ItemData(cboAbsenceTypeSSPApplicable.NewIndex) = !ColumnID
+            lngNewIndex = AddItemToComboBox(cboAbsenceTypeSSPApplicable, !ColumnName, !ColumnID)
             If !ColumnID = mvar_lngAbsenceTypeSSPID Then
-              iAbsenceTypeSSPApplicableListIndex = cboAbsenceTypeSSPApplicable.NewIndex
+              iAbsenceTypeSSPApplicableListIndex = lngNewIndex
             End If
-
-'MH20030908 Fault 6888
-'            cboAbsenceTypeInclude.AddItem !ColumnName
-'            cboAbsenceTypeInclude.ItemData(cboAbsenceTypeInclude.NewIndex) = !ColumnID
-'            If !ColumnID = mvar_lngAbsenceTypeIncludeID Then
-'              iAbsenceTypeIncludeListIndex = cboAbsenceTypeInclude.NewIndex
-'            End If
-'
-'            cboAbsenceTypeBradford.AddItem !ColumnName
-'            cboAbsenceTypeBradford.ItemData(cboAbsenceTypeBradford.NewIndex) = !ColumnID
-'            If !ColumnID = mvar_lngAbsenceTypeBradfordID Then
-'              iAbsenceTypeBradfordListIndex = cboAbsenceTypeBradford.NewIndex
-'            End If
-
           End If
           
           ' Load varchar fields
           If !DataType = dtVARCHAR Then
             If !Size = 6 Then
-              cboAbsenceTypeType.AddItem !ColumnName
-              cboAbsenceTypeType.ItemData(cboAbsenceTypeType.NewIndex) = !ColumnID
+              lngNewIndex = AddItemToComboBox(cboAbsenceTypeType, !ColumnName, !ColumnID)
               If !ColumnID = mvar_lngAbsenceTypeTypeID Then
-                iAbsenceTypeTypeListIndex = cboAbsenceTypeType.NewIndex
+                iAbsenceTypeTypeListIndex = lngNewIndex
               End If
             End If
             
-            cboAbsenceTypeCode.AddItem !ColumnName
-            cboAbsenceTypeCode.ItemData(cboAbsenceTypeCode.NewIndex) = !ColumnID
+            lngNewIndex = AddItemToComboBox(cboAbsenceTypeCode, !ColumnName, !ColumnID)
             If !ColumnID = mvar_lngAbsenceTypeCodeID Then
-              iAbsenceTypeCodeListIndex = cboAbsenceTypeCode.NewIndex
+              iAbsenceTypeCodeListIndex = lngNewIndex
             End If
 
-            cboAbsenceTypeCalendarCode.AddItem !ColumnName
-            cboAbsenceTypeCalendarCode.ItemData(cboAbsenceTypeCalendarCode.NewIndex) = !ColumnID
+            lngNewIndex = AddItemToComboBox(cboAbsenceTypeCalendarCode, !ColumnName, !ColumnID)
             If !ColumnID = mvar_lngAbsenceTypeCalCodeID Then
-              iAbsenceTypeCalendarCodeListIndex = cboAbsenceTypeCalendarCode.NewIndex
+              iAbsenceTypeCalendarCodeListIndex = lngNewIndex
             End If
           End If
         End If
@@ -2055,10 +1985,6 @@ Private Sub RefreshAbsenceTypeControls()
   cboAbsenceTypeSSPApplicable.ListIndex = iAbsenceTypeSSPApplicableListIndex
   cboAbsenceTypeCalendarCode.ListIndex = iAbsenceTypeCalendarCodeListIndex
 
-'MH20030908 Fault 6888
-  'cboAbsenceTypeInclude.ListIndex = iAbsenceTypeIncludeListIndex
-  'cboAbsenceTypeBradford.ListIndex = iAbsenceTypeBradfordListIndex
-
 End Sub
 
 
@@ -2072,9 +1998,6 @@ End Sub
 
 Private Sub cmdOK_Click()
 
-  'AE20071119 Fault #12607
-  'If ValidateSetup Then
-    'SaveChanges
   If SaveChanges Then
     Changed = False
     UnLoad Me
@@ -3286,6 +3209,7 @@ Private Sub RefreshAbsenceTypeValues()
   Dim strSQL As String
   Dim strAbsenceType As String
   Dim iListIndex As Integer
+  Dim lngNewIndex As Long
 
   On Error GoTo LocalErr
   
@@ -3305,9 +3229,10 @@ Private Sub RefreshAbsenceTypeValues()
   rsAbsenceTypes.Open strSQL, gADOCon, adOpenForwardOnly, adLockReadOnly
 
   Do While Not rsAbsenceTypes.EOF
-    cboParentalLeaveAbsType.AddItem rsAbsenceTypes.Fields(0).value
+    lngNewIndex = AddItemToComboBox(cboParentalLeaveAbsType, rsAbsenceTypes.Fields(0).value, 0)
+    
     If Trim(rsAbsenceTypes.Fields(0).value) = Trim(mvar_strAbsenceParentLeaveType) Then
-      iListIndex = cboParentalLeaveAbsType.NewIndex
+      iListIndex = lngNewIndex
     End If
     rsAbsenceTypes.MoveNext
   Loop
@@ -3333,6 +3258,7 @@ Private Sub RefreshDependantsControls()
   Dim iDependantsAdoptedDateListIndex As Integer
   Dim iDependantsDisabledListIndex As Integer
   Dim objctl As Control
+  Dim lngNewIndex As Long
 
   iDependantsChildNoListIndex = 0
   iDependantsDateOfBirthListIndex = 0
@@ -3349,8 +3275,7 @@ Private Sub RefreshDependantsControls()
 
       With objctl
         .Clear
-        .AddItem "<None>"
-        .ItemData(.NewIndex) = 0
+        AddItemToComboBox objctl, "<None>", 0
       End With
     End If
   Next objctl
@@ -3374,35 +3299,31 @@ Private Sub RefreshDependantsControls()
 
           If !DataType = dtinteger Then
             'Dependants Child No
-            cboDepChildNo.AddItem !ColumnName
-            cboDepChildNo.ItemData(cboDepChildNo.NewIndex) = !ColumnID
+            lngNewIndex = AddItemToComboBox(cboDepChildNo, !ColumnName, !ColumnID)
             If !ColumnID = mvar_lngDependantsChildNoID Then
-              iDependantsChildNoListIndex = cboDepChildNo.NewIndex
+              iDependantsChildNoListIndex = lngNewIndex
             End If
           End If
           
           If !DataType = dtTIMESTAMP Then
             'Dependants Date Of Birth
-            cboDepDateOfBirth.AddItem !ColumnName
-            cboDepDateOfBirth.ItemData(cboDepDateOfBirth.NewIndex) = !ColumnID
+            lngNewIndex = AddItemToComboBox(cboDepDateOfBirth, !ColumnName, !ColumnID)
             If !ColumnID = mvar_lngDependantsDateOfBirthID Then
-              iDependantsDateOfBirthListIndex = cboDepDateOfBirth.NewIndex
+              iDependantsDateOfBirthListIndex = lngNewIndex
             End If
 
             'Dependants Adopted Date
-            cboDepAdoptedDate.AddItem !ColumnName
-            cboDepAdoptedDate.ItemData(cboDepAdoptedDate.NewIndex) = !ColumnID
+            lngNewIndex = AddItemToComboBox(cboDepAdoptedDate, !ColumnName, !ColumnID)
             If !ColumnID = mvar_lngDependantsAdoptedDateID Then
-              iDependantsAdoptedDateListIndex = cboDepAdoptedDate.NewIndex
+              iDependantsAdoptedDateListIndex = lngNewIndex
             End If
           End If
 
           If !DataType = dtBIT Then
             'Dependants Disabled Column
-            cboDepDisabled.AddItem !ColumnName
-            cboDepDisabled.ItemData(cboDepDisabled.NewIndex) = !ColumnID
+            lngNewIndex = AddItemToComboBox(cboDepDisabled, !ColumnName, !ColumnID)
             If !ColumnID = mvar_lngDependantsDisabledID Then
-              iDependantsDisabledListIndex = cboDepDisabled.NewIndex
+              iDependantsDisabledListIndex = lngNewIndex
             End If
           End If
         
@@ -3427,14 +3348,11 @@ Private Sub RefreshPersonnelControls()
 
   ' Refresh the Personnel controls.
   Dim iRegionColumn As Integer
+  Dim lngNewIndex As Long
 
   iRegionColumn = 0
-  With cboParentalLeaveRegion
-    .Clear
-    .AddItem "<None>"
-    .ItemData(.NewIndex) = 0
-  End With
-  
+  cboParentalLeaveRegion.Clear
+  AddItemToComboBox cboParentalLeaveRegion, "<None>", 0
   
   With recColEdit
     .Index = "idxName"
@@ -3453,10 +3371,9 @@ Private Sub RefreshPersonnelControls()
           (!columntype <> giCOLUMNTYPE_SYSTEM) Then
 
           If !DataType = dtVARCHAR Then
-            cboParentalLeaveRegion.AddItem !ColumnName
-            cboParentalLeaveRegion.ItemData(cboParentalLeaveRegion.NewIndex) = !ColumnID
+            lngNewIndex = AddItemToComboBox(cboParentalLeaveRegion, !ColumnName, !ColumnID)
             If !ColumnID = mvar_lngAbsenceParentRegion Then
-              iRegionColumn = cboParentalLeaveRegion.NewIndex
+              iRegionColumn = lngNewIndex
             End If
           End If
         
