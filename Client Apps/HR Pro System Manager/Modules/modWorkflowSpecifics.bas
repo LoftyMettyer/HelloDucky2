@@ -1118,7 +1118,7 @@ Public Function CloneWorkflow(plngWorkflowID As Long, _
   
     recWorkflowEdit!ID = lngWorkflowID
     recWorkflowEdit!Changed = False
-    recWorkflowEdit!New = True
+    recWorkflowEdit!new = True
     recWorkflowEdit!Deleted = False
     recWorkflowEdit!Name = sWorkflowName
     recWorkflowEdit!Description = rsWorkflow.Fields("Description")
@@ -4998,12 +4998,14 @@ Public Function CreateSP_WorkflowCalculation() As Boolean
   Const strSPName As String = "spASRSysWorkflowCalculation"
   
   Dim strSQL As String
+  Dim objStoredProc As SystemMgr.cStringBuilder
   Dim iIndent As Integer
   Dim strCalcSP As String
   Dim fOK As Boolean
 
   On Error GoTo ErrorTrap
 
+  Set objStoredProc = New SystemMgr.cStringBuilder
   fOK = True
   iIndent = 1
   
@@ -5017,60 +5019,52 @@ Public Function CreateSP_WorkflowCalculation() As Boolean
       .MoveFirst
     End If
     
+    objStoredProc.TheString = vbNullString
+    
     Do While Not .EOF
+      
       If (Not !Deleted) _
         And (!Type = giEXPR_WORKFLOWCALCULATION) _
         And (!ParentComponentID = 0) Then
         
         strCalcSP = "[dbo].[sp_ASRExpr_" & CStr(!ExprID) & "]"
         
-        strSQL = strSQL & _
+        objStoredProc.Append _
           String(iIndent, vbTab) & "IF @piExprID = " & CStr(!ExprID) & vbNewLine & _
           String(iIndent, vbTab) & "BEGIN" & vbNewLine & _
-          String(iIndent + 1, vbTab) & "-- " & Trim(!Name) & vbNewLine & _
+          String(iIndent + 1, vbTab) & "-- " & Trim(.Fields("Name").value) & vbNewLine & _
           String(iIndent + 1, vbTab) & "SET @piResultType = " & CStr(!ReturnType) & vbNewLine & vbNewLine & _
-          String(iIndent + 1, vbTab) & "IF EXISTS (SELECT Name" & vbNewLine & _
-          String(iIndent + 2, vbTab) & "FROM sysobjects" & vbNewLine & _
-          String(iIndent + 2, vbTab) & "WHERE sysstat & 0xf = 4" & vbNewLine & _
-          String(iIndent + 3, vbTab) & "AND id = object_id('" & strCalcSP & "'))" & vbNewLine & _
+          String(iIndent + 1, vbTab) & "IF EXISTS (SELECT Name FROM sysobjects WHERE sysstat & 0xf = 4 AND id = object_id('" & strCalcSP & "'))" & vbNewLine & _
           String(iIndent + 1, vbTab) & "BEGIN" & vbNewLine
             
         Select Case !ReturnType
           Case giEXPRVALUE_NUMERIC  ' 2
-            strSQL = strSQL & _
-              String(iIndent + 2, vbTab) & "EXEC " & strCalcSP & " @pfltResult OUTPUT," & vbNewLine & _
-              String(iIndent + 3, vbTab) & "@piInstanceID," & vbNewLine & _
-              String(iIndent + 3, vbTab) & "@piTempElement" & vbNewLine & _
-              String(iIndent + 2, vbTab) & "IF @pfltResult IS null SET @pfltResult = 0" & vbNewLine
+            objStoredProc.Append _
+              String(iIndent + 2, vbTab) & "EXEC " & strCalcSP & " @pfltResult OUTPUT, @piInstanceID, @piTempElement;" & vbNewLine & _
+              String(iIndent + 2, vbTab) & "IF @pfltResult IS NULL SET @pfltResult = 0;" & vbNewLine
           
           Case giEXPRVALUE_LOGIC ' 3
-            strSQL = strSQL & _
-              String(iIndent + 2, vbTab) & "EXEC " & strCalcSP & " @pfResult OUTPUT," & vbNewLine & _
-              String(iIndent + 3, vbTab) & "@piInstanceID," & vbNewLine & _
-              String(iIndent + 3, vbTab) & "@piTempElement" & vbNewLine & _
-              String(iIndent + 2, vbTab) & "IF @pfResult IS null SET @pfResult = 0" & vbNewLine
+            objStoredProc.Append _
+              String(iIndent + 2, vbTab) & "EXEC " & strCalcSP & " @pfResult OUTPUT, @piInstanceID, @piTempElement" & vbNewLine & _
+              String(iIndent + 2, vbTab) & "IF @pfResult IS NULL SET @pfResult = 0;" & vbNewLine
           
           Case giEXPRVALUE_DATE ' 4
-            strSQL = strSQL & _
-              String(iIndent + 2, vbTab) & "EXEC " & strCalcSP & " @pdtResult OUTPUT," & vbNewLine & _
-              String(iIndent + 3, vbTab) & "@piInstanceID," & vbNewLine & _
-              String(iIndent + 3, vbTab) & "@piTempElement" & vbNewLine
+            objStoredProc.Append _
+              String(iIndent + 2, vbTab) & "EXEC " & strCalcSP & " @pdtResult OUTPUT, @piInstanceID, @piTempElement;" & vbNewLine
 
           Case Else ' giEXPRVALUE_CHARACTER 1
-            strSQL = strSQL & _
-              String(iIndent + 2, vbTab) & "EXEC " & strCalcSP & " @psResult OUTPUT," & vbNewLine & _
-              String(iIndent + 3, vbTab) & "@piInstanceID," & vbNewLine & _
-              String(iIndent + 3, vbTab) & "@piTempElement" & vbNewLine & _
-              String(iIndent + 2, vbTab) & "IF @psResult IS null SET @psResult = ''" & vbNewLine
+            objStoredProc.Append _
+              String(iIndent + 2, vbTab) & "EXEC " & strCalcSP & " @psResult OUTPUT, @piInstanceID, @piTempElement;" & vbNewLine & _
+              String(iIndent + 2, vbTab) & "IF @psResult IS NULL SET @psResult = '';" & vbNewLine
         End Select
         
-        strSQL = strSQL & _
+        objStoredProc.Append _
           String(iIndent + 1, vbTab) & "END" & vbNewLine & _
           String(iIndent + 1, vbTab) & "RETURN" & vbNewLine & _
           String(iIndent, vbTab) & "END" & vbNewLine
       
       End If
-      
+           
       .MoveNext
     Loop
   End With
@@ -5097,7 +5091,7 @@ Public Function CreateSP_WorkflowCalculation() As Boolean
     String(iIndent, vbTab) & "SET @psResult = '';" & vbNewLine & _
     String(iIndent, vbTab) & "SET @pfResult = 0;" & vbNewLine & _
     String(iIndent, vbTab) & "SET @pfltResult = 0;" & vbNewLine & vbNewLine & _
-    strSQL & _
+    objStoredProc.ToString & _
     "END"
   gADOCon.Execute strSQL, , adExecuteNoRecords
 

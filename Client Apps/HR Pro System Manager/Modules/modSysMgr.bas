@@ -5724,7 +5724,7 @@ ErrorTrap:
 
 End Function
 
-Public Sub OutputCurrentProcess2(strInput As String, Optional ByVal iMaxSteps As Integer)
+Public Sub OutputCurrentProcess2(strInput As String, Optional ByVal lngMaxSteps As Long)
 
   'Ignore any errors in here...
   On Local Error GoTo LocalErr
@@ -5735,8 +5735,8 @@ Public Sub OutputCurrentProcess2(strInput As String, Optional ByVal iMaxSteps As
     gobjProgress.Bar2Caption = strInput & " ..."
   End If
 
-  If iMaxSteps > 0 Then
-    gobjProgress.Bar2MaxValue = iMaxSteps
+  If lngMaxSteps > 0 Then
+    gobjProgress.Bar2MaxValue = lngMaxSteps
   End If
 
   strFileName = App.Path & "\savelog.txt"
