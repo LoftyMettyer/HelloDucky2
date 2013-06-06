@@ -143,9 +143,9 @@ Public Sub FormatClick(Index As Integer, Optional blnDataToScreen As Boolean = T
     EnableDestinations True, True, True, True
     'mfrmParent.CommonDialog1.Filter = gsOfficeFileFilter_Excel
     'mfrmParent.CommonDialog1.Filter = GetCommonDialogFormats("Excel", GetOfficeExcelVersion)
-    'InitialiseCommonDialogFormats mfrmParent.CommonDialog1, "Excel", GetOfficeWordVersion
-    'InitialiseCommonDialogFormats mfrmParent.CommonDialog1, "Excel", GetOfficeWordVersion
-    InitialiseCommonDialogFormats frmMain.CommonDialog1, "Excel", GetOfficeWordVersion
+    'InitialiseCommonDialogFormats mfrmParent.CommonDialog1, "Excel", GetOfficeExcelVersion
+    'InitialiseCommonDialogFormats mfrmParent.CommonDialog1, "Excel", GetOfficeExcelVersion
+    InitialiseCommonDialogFormats frmMain.CommonDialog1, "Excel", GetOfficeExcelVersion
 
   'SQL TABLE
   Case fmtSQLTable
