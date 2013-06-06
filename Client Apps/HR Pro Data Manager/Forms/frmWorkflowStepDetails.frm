@@ -1147,7 +1147,8 @@ End Function
 
 
 Public Function Initialise(plngInstanceStepID As Long, _
-  pfrmWorkflowLog As frmWorkflowLogDetails) As Boolean
+  pfrmWorkflowLog As frmWorkflowLogDetails, _
+  psElementType As String) As Boolean
   
   On Error GoTo ErrorTrap
   
@@ -1157,6 +1158,7 @@ Public Function Initialise(plngInstanceStepID As Long, _
   mlngWorkflowStepID = plngInstanceStepID
   Set mfrmWorkflowLog = pfrmWorkflowLog
   mfAdministrator = datGeneral.SystemPermission("WORKFLOW", "ADMINISTER")
+  mlngElementType = WorkflowElementTypeFromName(psElementType)
   
   ' Let user know we are doing something, and dont redraw the form until the controls
   ' have all been repositioned
@@ -1174,27 +1176,27 @@ Public Function Initialise(plngInstanceStepID As Long, _
     Me.Width = Maximum(masngFormDimensions(1, mlngElementType), MINFORM_WIDTH)
   End If
 
-  Dim sngMinFormHeight As Single
-  Select Case mlngElementType
-    Case elem_WebForm
-      sngMinFormHeight = MINHEIGHT_WEBFORM
-
-    Case elem_Email
-      sngMinFormHeight = MINHEIGHT_EMAIL
-
-    Case elem_StoredData
-      sngMinFormHeight = MINHEIGHT_STOREDDATA
-
-    Case elem_Decision
-      sngMinFormHeight = MINHEIGHT_DECISION
-
-    Case Else
-      sngMinFormHeight = fraButtons.Top _
-         + fraButtons.Height _
-         + GAPUNDERBUTTONS
-         
-  End Select
-  Hook Me.hWnd, MINFORM_WIDTH, CLng(sngMinFormHeight)
+'  Dim sngMinFormHeight As Single
+'  Select Case mlngElementType
+'    Case elem_WebForm
+'      sngMinFormHeight = MINHEIGHT_WEBFORM
+'
+'    Case elem_Email
+'      sngMinFormHeight = MINHEIGHT_EMAIL
+'
+'    Case elem_StoredData
+'      sngMinFormHeight = MINHEIGHT_STOREDDATA
+'
+'    Case elem_Decision
+'      sngMinFormHeight = MINHEIGHT_DECISION
+'
+'    Case Else
+'      sngMinFormHeight = fraButtons.Top _
+'         + fraButtons.Height _
+'         + GAPUNDERBUTTONS
+'
+'  End Select
+'  Hook Me.hWnd, MINFORM_WIDTH, CLng(sngMinFormHeight)
 
   If fOK Then Form_Resize
 
@@ -1756,7 +1758,9 @@ Private Sub Form_Load()
   Dim sngHeight As Single
   Dim iLoop As Integer
   Dim sTemp As String
-  
+  Dim sngMinFormHeight As Single
+  Dim fLockHeight As Boolean
+    
   RemoveIcon Me
   
   msngWebFormValueColumnWidth = grdWebFormEnteredValues.Columns("Value").Width
@@ -1769,6 +1773,36 @@ Private Sub Form_Load()
   sngHeight = GetPCSetting("WorkflowLogStepDetails", "Height", MINFORM_HEIGHT)
   sngWidth = GetPCSetting("WorkflowLogStepDetails", "Width", MINFORM_WIDTH)
 
+  fLockHeight = False
+  Select Case mlngElementType
+    Case elem_WebForm
+      sngMinFormHeight = MINHEIGHT_WEBFORM
+
+    Case elem_Email
+      sngMinFormHeight = MINHEIGHT_EMAIL
+
+    Case elem_StoredData
+      sngMinFormHeight = MINHEIGHT_STOREDDATA
+
+    Case elem_Decision
+      sngMinFormHeight = MINHEIGHT_DECISION
+
+    Case Else
+      sngMinFormHeight = fraDetails.Top _
+        + (2 * fraBasicDetails.Top) _
+        + fraBasicDetails.Height _
+        + GAPOVERBUTTONS _
+        + fraButtons.Height _
+        + GAPUNDERBUTTONS
+      fLockHeight = True
+
+  End Select
+  If fLockHeight Then
+    Hook Me.hWnd, MINFORM_WIDTH, CLng(sngMinFormHeight), , CLng(sngMinFormHeight)
+  Else
+    Hook Me.hWnd, MINFORM_WIDTH, CLng(sngMinFormHeight)
+  End If
+  
   ReDim masngFormDimensions(1, elem_Connector2)
   For iLoop = elem_Begin To elem_Connector2
     Select Case iLoop
@@ -1871,7 +1905,7 @@ Private Sub Form_Resize()
   If mblnSizing Then Exit Sub
 
   mblnSizing = True
-
+  
   Select Case mlngElementType
 
     Case elem_Decision
@@ -2140,4 +2174,9 @@ End Sub
 Private Sub Form_Unload(Cancel As Integer)
   Unhook Me.hWnd
 End Sub
+
+Private Sub fraBasicDetails_DragDrop(Source As Control, X As Single, Y As Single)
+
+End Sub
+
 
