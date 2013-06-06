@@ -20,7 +20,7 @@ Private sDeclareDelCols As HRProSystemMgr.cStringBuilder
 Private sFetchInsCols As HRProSystemMgr.cStringBuilder
 Private sFetchDelCols As HRProSystemMgr.cStringBuilder
 Private sSelectInsCols As HRProSystemMgr.cStringBuilder
-Private sSelectInsCols2 As HRProSystemMgr.cStringBuilder
+'Private sSelectInsCols2 As HRProSystemMgr.cStringBuilder
 Private sSelectDelCols As HRProSystemMgr.cStringBuilder
 'Private sSelectInsLargeCols As HRProSystemMgr.cStringBuilder
 'Private sSelectInsLargeCols2 As HRProSystemMgr.cStringBuilder
@@ -252,13 +252,13 @@ Private Function SetTableTriggers_GetStrings(pLngCurrentTableID As Long, _
   Set sFetchInsCols = New HRProSystemMgr.cStringBuilder
   Set sFetchDelCols = New HRProSystemMgr.cStringBuilder
   Set sSelectInsCols = New HRProSystemMgr.cStringBuilder
-  Set sSelectInsCols2 = New HRProSystemMgr.cStringBuilder
+'  Set sSelectInsCols2 = New HRProSystemMgr.cStringBuilder
   Set sSelectDelCols = New HRProSystemMgr.cStringBuilder
   
   sDeclareInsCols.TheString = "    DECLARE @sTempInsCol varchar(MAX)"
   sDeclareDelCols.TheString = "    DECLARE @sTempDelCol varchar(MAX)"
   sSelectInsCols.TheString = vbNullString
-  sSelectInsCols2.TheString = vbNullString
+ ' sSelectInsCols2.TheString = vbNullString
   sSelectDelCols.TheString = vbNullString
   sFetchInsCols.TheString = vbNullString
   sFetchDelCols.TheString = vbNullString
@@ -295,218 +295,36 @@ Private Function SetTableTriggers_GetStrings(pLngCurrentTableID As Long, _
   sInsertWorkflowCode.TheString = vbNullString
   sUpdateWorkflowCode.TheString = vbNullString
   sDeleteWorkflowCode.TheString = vbNullString
+   
+  sInsertAuditCode.TheString = vbNullString
+  sUpdateAuditCode.TheString = vbNullString
+  sDeleteAuditCode.TheString = vbNullString
   
-  If fOK Then
-  
-    sInsertAuditCode.TheString = vbNullString
-    sUpdateAuditCode.TheString = vbNullString
-    sDeleteAuditCode.TheString = vbNullString
+  ' Pointer will already be on the correct table (unless someone starts messing around in here...)
+  With recTabEdit
     
-    ' Pointer will already be on the correct table (unless someone starts messing around in here...)
-    With recTabEdit
-      
-      ' Table level audit insert stuff
-      If .Fields("AuditInsert").value = True Then
-        sInsertAuditCode.Append vbNewLine & vbTab & "/* Table level audit */" & _
-          vbNewLine & vbTab & "EXECUTE dbo.sp_ASRAuditTable " & pLngCurrentTableID & ", @recordID, @recordDesc, '* New Record *'" & vbNewLine
-      Else
-        sInsertAuditCode.TheString = vbNullString
-      End If
-    
-'      ' Table level email insert stuff
-'      If .Fields("EmailInsert").value > 0 Then
-'        strInsertEmailCode = vbNewLine & vbTab & "/* Table Level Email Insert */" & vbNewLine _
-'          & vbTab & "INSERT ASRSysEmailQueue(LinkID, TableID, RecordID, ColumnValue, DateDue, UserName, [Immediate],RecalculateRecordDesc,RecordDesc)" & vbNewLine _
-'          & vbTab & "  VALUES (" & .Fields("EmailInsert").value & "," & pLngCurrentTableID & ",@RecordID, 'Record Added',getDate(), " & _
-'          "CASE WHEN UPPER(LEFT(APP_NAME(), " & Len(gsWORKFLOWAPPLICATIONPREFIX) & ")) = '" & UCase(gsWORKFLOWAPPLICATIONPREFIX) & "' THEN '" & gsWORKFLOWAPPLICATIONPREFIX & "' ELSE ltrim(rtrim(SYSTEM_USER)) END," & _
-'          "1,1,@recordDesc)" & vbNewLine
-'      Else
-'        strInsertEmailCode = vbNullString
-'      End If
-    
-      ' Table level audit delete stuff
-      If .Fields("AuditDelete").value = True Then
-        sDeleteAuditCode.Append vbNewLine & vbTab & "/* Table level audit */" & _
-          vbNewLine & vbTab & "EXECUTE dbo.sp_ASRAuditTable " & pLngCurrentTableID & ", @recordID, @recordDesc, '* Deleted Record *'" & vbNewLine
-      Else
-        sDeleteAuditCode.TheString = vbNullString
-      End If
-    
-'      ' Table level email delete stuff
-'      If .Fields("EmailDelete").value > 0 Then
-'        strDeleteEmailCode = vbNewLine & vbTab & "/* Table Level Email Delete */" & vbNewLine _
-'          & vbTab & "INSERT ASRSysEmailQueue(LinkID, TableID, RecordID, ColumnValue, DateDue, UserName, [Immediate],RecalculateRecordDesc,RecordDesc)" & vbNewLine _
-'          & vbTab & "  VALUES (" & .Fields("EmailDelete").value & "," & pLngCurrentTableID & ",@RecordID, 'Record Deleted',getDate(), " & _
-'          "CASE WHEN UPPER(LEFT(APP_NAME(), " & Len(gsWORKFLOWAPPLICATIONPREFIX) & ")) = '" & UCase(gsWORKFLOWAPPLICATIONPREFIX) & "' THEN '" & gsWORKFLOWAPPLICATIONPREFIX & "' ELSE ltrim(rtrim(SYSTEM_USER)) END," & _
-'          "1,0,@recordDesc)" & vbNewLine
-'      Else
-'        strDeleteEmailCode = vbNullString
-'      End If
-    
-      ' Record based workflow links
-      sInsertWorkflowCode.Append WorkflowTableTriggerCode(pLngCurrentTableID, WFRELATEDRECORD_INSERT)
-      sUpdateWorkflowCode.Append WorkflowTableTriggerCode(pLngCurrentTableID, WFRELATEDRECORD_UPDATE)
-      sDeleteWorkflowCode.Append WorkflowTableTriggerCode(pLngCurrentTableID, WFRELATEDRECORD_DELETE)
-    End With
-    
-    ' Loop through the current table's columns, checking if any of them require auditing.
-    With recColEdit
-      .Index = "idxName"
-      .Seek ">=", pLngCurrentTableID
-      
-      If Not .NoMatch Then
-      
-        Do While Not .EOF
-          If !TableID <> pLngCurrentTableID Then
-            Exit Do
-          End If
-            
-          If (Not !Deleted) And !audit Then
-            ' Add the code for auditting changes to the audited columns.
-            
-            ' JPD20020913 - instead of making multiple queries to the triggered table, and
-            ' the 'inserted' and 'deleted' tables, we now get all of the required information in
-            ' the cursor that we used to loop through to get just the id of each record being
-            ' inserted/updated/deleted.
-            ' Here we are adding the audit columns to the SELECT statement that is used
-            ' to create the cursor, the FETCH statement that used to loop through the cursor,
-            ' and the DECLARE statements that are needed.
-            ' The audit check code is modified for the new implementation.
-            ' NB. an array of columns that have been added to the SELECT statement is used
-            ' to ensure that columns aren't added more than once. As well as audit columns,
-            ' we're also going to add email columns and calculated columns later on.
-            ' This change was driven by the performance degradation reported by
-            ' Islington.
-            
-            lngColumnID = .Fields("ColumnID").value
-            strColumnName = .Fields("ColumnName").value
-            strColumnID = Trim$(Str$(lngColumnID))
-            
-            ReDim Preserve alngAuditColumns(UBound(alngAuditColumns) + 1)
-            alngAuditColumns(UBound(alngAuditColumns)) = lngColumnID
-            
-            'JPD 20050516 Fault 9771
-            ' Large character columns are no longer selected as part of the cursor, and this can
-            ' lead to errors such as "Cannot create a worktable row larger than the allowable maximum"
-'            If (!DataType = dtVARCHAR) And (!Size > VARCHARTHRESHOLD) Then
-'              sSelectInsLargeCols.Append ",@insCol_" & strColumnID & "=inserted." & strColumnName
-'              sSelectInsLargeCols2.Append ",@insCol_" & strColumnID & "=" & strColumnName
-'              sSelectDelLargeCols.Append ",@delCol_" & strColumnID & "=deleted." & strColumnName
-'            Else
-              sSelectInsCols.Append ", inserted." & strColumnName
-              sSelectInsCols2.Append ",@insCol_" & strColumnID & "=" & strColumnName
-              sSelectDelCols.Append ", deleted." & strColumnName
-              
-              sFetchInsCols.Append ", @insCol_" & strColumnID
-              sFetchDelCols.Append ", @delCol_" & strColumnID
-'            End If
-            
-            
-            sDeclareInsCols.Append ", @insCol_" & strColumnID
-            sDeclareDelCols.Append ", @delCol_" & strColumnID
-            
-            Select Case !DataType
-
-              Case dtVARCHAR
-                sDeclareInsCols.Append " nvarchar(MAX)"
-                sDeclareDelCols.Append " nvarchar(MAX)"
-                sConvertInsCols = "ISNULL(CONVERT(varchar(MAX), @insCol_" & strColumnID & "), '')"
-                sConvertDelCols = "ISNULL(CONVERT(varchar(MAX), @delCol_" & strColumnID & "), '')"
-              
-              Case dtLONGVARCHAR
-                sDeclareInsCols.Append " varchar(14)"
-                sDeclareDelCols.Append " varchar(14)"
-                sConvertInsCols = "ISNULL(CONVERT(varchar(14), @insCol_" & strColumnID & "), '')"
-                sConvertDelCols = "ISNULL(CONVERT(varchar(14), @delCol_" & strColumnID & "), '')"
-              
-              Case dtINTEGER
-                sDeclareInsCols.Append " integer"
-                sDeclareDelCols.Append " integer"
-                sConvertInsCols = "ISNULL(CONVERT(varchar(255), @insCol_" & strColumnID & "), '')"
-                sConvertDelCols = "ISNULL(CONVERT(varchar(255), @delCol_" & strColumnID & "), '')"
-              
-              Case dtNUMERIC
-                sDeclareInsCols.Append " numeric(" & Trim(Str(!Size)) & ", " & Trim(Str(!Decimals)) & ")"
-                sDeclareDelCols.Append " numeric(" & Trim(Str(!Size)) & ", " & Trim(Str(!Decimals)) & ")"
-                sConvertInsCols = "ISNULL(CONVERT(varchar(255), @insCol_" & strColumnID & "), '')"
-                sConvertDelCols = "ISNULL(CONVERT(varchar(255), @delCol_" & strColumnID & "), '')"
-                            
-              ' RH - need to format dates like Oct 12 2000 instead of
-              '      Oct 12 2000 12:00
-              Case dtTIMESTAMP
-                sDeclareInsCols.Append " datetime"
-                sDeclareDelCols.Append " datetime"
-                sConvertInsCols = "ISNULL(CONVERT(varchar(255), LEFT(DATENAME(month, @insCol_" & strColumnID & "),3) + ' ' + CONVERT(varchar(255),DATEPART(day, @insCol_" & strColumnID & ")) + ' ' + CONVERT(varchar(255),DATEPART(year, @insCol_" & strColumnID & "))), '')"
-                sConvertDelCols = "ISNULL(CONVERT(varchar(255), LEFT(DATENAME(month, @delCol_" & strColumnID & "),3) + ' ' + CONVERT(varchar(255),DATEPART(day, @delCol_" & strColumnID & ")) + ' ' + CONVERT(varchar(255),DATEPART(year, @delCol_" & strColumnID & "))), '')"
-
-              ' RH - need to format logics as True/False instead of
-              '      1/0
-              Case dtBIT
-                sDeclareInsCols.Append " bit"
-                sDeclareDelCols.Append " bit"
-                sConvertInsCols = "ISNULL(CONVERT(varchar(1), CASE @insCol_" & strColumnID & " WHEN 1 THEN 'True' WHEN 0 THEN 'False' END), '')"
-                sConvertDelCols = "ISNULL(CONVERT(varchar(1), CASE @delCol_" & strColumnID & " WHEN 1 THEN 'True' WHEN 0 THEN 'False' END), '')"
-              
-              ' RH - photos and ole columns
-              Case dtVARBINARY, dtLONGVARBINARY
-                sDeclareInsCols.Append " varchar(255)"
-                sDeclareDelCols.Append " varchar(255)"
-                sConvertInsCols = "ISNULL(CONVERT(varchar(255), @insCol_" & strColumnID & "), '')"
-                sConvertDelCols = "ISNULL(CONVERT(varchar(255), @delCol_" & strColumnID & "), '')"
-              
-              Case Else
-                sDeclareInsCols.Append " varchar(max)"
-                sDeclareDelCols.Append " varchar(max)"
-                sConvertInsCols = "ISNULL(CONVERT(varchar(255), @insCol_" & strColumnID & "), '')"
-                sConvertDelCols = "ISNULL(CONVERT(varchar(255), @delCol_" & strColumnID & "), '')"
-            End Select
-            
-            sInsertAuditCode.Append vbNewLine & _
-              "            IF (@insCol_" & strColumnID & " <> @delCol_" & strColumnID & ") OR " & vbNewLine & _
-              "                (NOT @insCol_" & strColumnID & " IS null)" & vbNewLine & _
-              "            BEGIN" & vbNewLine & _
-              "                SET @sTempInsCol = " & sConvertInsCols & vbNewLine & _
-              "                EXEC dbo.sp_ASRAudit " & strColumnID & ", @recordID, @recordDesc, '* New Record *', @sTempInsCol" & vbNewLine & _
-              "            END" & vbNewLine
-            
-            sUpdateAuditCode.Append vbNewLine & _
-              "            IF (@insCol_" & strColumnID & " <> @delCol_" & strColumnID & ") OR " & vbNewLine & _
-              "                ((@insCol_" & strColumnID & " IS null) AND (NOT @delCol_" & strColumnID & " IS null)) OR " & vbNewLine & _
-              "                ((NOT @insCol_" & strColumnID & " IS null) AND (@delCol_" & strColumnID & " IS null))" & vbNewLine & _
-              "            BEGIN" & vbNewLine & _
-              "                SET @sTempInsCol = " & sConvertInsCols & vbNewLine & _
-              "                SET @sTempDelCol = " & sConvertDelCols & vbNewLine & _
-              "                EXEC dbo.sp_ASRAudit " & strColumnID & ", @recordID, @recordDesc, @sTempDelCol, @sTempInsCol" & vbNewLine & _
-              "            END" & vbNewLine
-
-            sDeleteAuditCode.Append vbNewLine & _
-              "            SET @sTempDelCol = " & sConvertDelCols & vbNewLine & _
-              "            EXEC dbo.sp_ASRAudit " & strColumnID & ", @recordID, @recordDesc, @sTempDelCol, '* Deleted Record *'" & vbNewLine
-          End If
-          
-          .MoveNext
-        Loop
-      End If
-    End With
-  
-    sAuditCode = "        IF EXISTS (SELECT Name FROM sysobjects WHERE type = 'P' AND name = 'sp_ASRAudit')" & vbNewLine & _
-      "        BEGIN" & vbNewLine
-        
-    If sInsertAuditCode.Length <> 0 Then
-      sInsertAuditCode.Insert 0, sAuditCode
-      sInsertAuditCode.Append "        END" & vbNewLine & vbNewLine
+    ' Table level audit insert stuff
+    If .Fields("AuditInsert").value = True Then
+      sInsertAuditCode.Append vbNewLine & vbTab & "/* Table level audit */" & _
+        vbNewLine & vbTab & "EXECUTE dbo.sp_ASRAuditTable " & pLngCurrentTableID & ", @recordID, @recordDesc, '* New Record *'" & vbNewLine
+    Else
+      sInsertAuditCode.TheString = vbNullString
     End If
+     
+    ' Table level audit delete stuff
+    If .Fields("AuditDelete").value = True Then
+      sDeleteAuditCode.Append vbNewLine & vbTab & "/* Table level audit */" & _
+        vbNewLine & vbTab & "EXECUTE dbo.sp_ASRAuditTable " & pLngCurrentTableID & ", @recordID, @recordDesc, '* Deleted Record *'" & vbNewLine
+    Else
+      sDeleteAuditCode.TheString = vbNullString
+    End If
+     
+    ' Record based workflow links
+    sInsertWorkflowCode.Append WorkflowTableTriggerCode(pLngCurrentTableID, WFRELATEDRECORD_INSERT)
+    sUpdateWorkflowCode.Append WorkflowTableTriggerCode(pLngCurrentTableID, WFRELATEDRECORD_UPDATE)
+    sDeleteWorkflowCode.Append WorkflowTableTriggerCode(pLngCurrentTableID, WFRELATEDRECORD_DELETE)
+  End With
     
-    If sUpdateAuditCode.Length <> 0 Then
-      sUpdateAuditCode.Insert 0, sAuditCode
-      sUpdateAuditCode.Append "        END" & vbNewLine & vbNewLine
-    End If
-        
-    If sDeleteAuditCode.Length <> 0 Then
-      sDeleteAuditCode.Insert 0, sAuditCode
-      sDeleteAuditCode.Append "        END" & vbNewLine & vbNewLine
-    End If
-  End If
   
   
   
@@ -521,7 +339,7 @@ Private Function SetTableTriggers_GetStrings(pLngCurrentTableID As Long, _
     ' Is in a separate sub routine because this one is getting too big for VB to compile.
     ' All parameters passed by reference!
     SetTableTriggers_AccordTransfer sInsertAccordCode, sUpdateAccordCode, sDeleteAccordCode, alngAuditColumns(), _
-      sSelectInsCols2, sSelectDelCols, _
+      sSelectInsCols, sSelectDelCols, _
       sFetchInsCols, sFetchDelCols, _
       sDeclareInsCols, sDeclareDelCols, _
       pLngCurrentTableID
@@ -536,14 +354,13 @@ Private Function SetTableTriggers_GetStrings(pLngCurrentTableID As Long, _
   ' Is in a separate sub routine because this one is getting too big for VB to compile.
   ' All parameters passed by reference!
   
-' JDM - Moved to .NET dll
-'  SetTableTriggers_SpecialFunctions _
-'    alngAuditColumns(), _
-'    sInsertSpecialFunctionsCode, _
-'    sUpdateSpecialFunctionsCode1, _
-'    sUpdateSpecialFunctionsCode2, _
-'    sDeleteSpecialFunctionsCode, _
-'    pLngCurrentTableID6
+  SetTableTriggers_SpecialFunctions _
+    alngAuditColumns(), _
+    sInsertSpecialFunctionsCode, _
+    sUpdateSpecialFunctionsCode1, _
+    sUpdateSpecialFunctionsCode2, _
+    sDeleteSpecialFunctionsCode, _
+    pLngCurrentTableID
 
   recTabEdit.Index = "idxTableID"
   recTabEdit.Seek "=", pLngCurrentTableID
@@ -552,1072 +369,7 @@ Private Function SetTableTriggers_GetStrings(pLngCurrentTableID As Long, _
 
   GetTriggerRelationshipCode pLngCurrentTableID
 
-
-
-  '
-  ' Create the trigger code required for handling the Calculated Columns that are dependent on
-  ' the columns in the given table, and also those Calculated Columns in the given table.
-  '
-  If fOK Then
-    sExprDeclarationCode.TheString = _
-      "        /* --------------------------------------------- */" & vbNewLine & _
-      "        /* Expression declaration code. */" & vbNewLine & _
-      "        /* --------------------------------------------- */" & vbNewLine
-      
-    ' Create arrays of the calc code for each parent/child of the current table.
-    ' Index 1 is the name of the table.
-    ' Index 2 is the calc code itself.
-    ' Index 3 is the update code itself.
-    ' Index 4 is the code for checking whether an update is required.
-    ' Index 5 is the parent table id selection code for inserts and updates.
-    ' Index 6 is the parent table id selection code for deletes.
-    ' Index 7 is the old parent table id selection code for updates.
-    ' Index 8 is the first column name for updates.
-    ReDim asCalcParentCode(8, 0)
-    ReDim asCalcChildCode(4, 0)
-    ' Create arrays of the calc code for the current table.
-    ' Index 1 is the calc code itself.
-    ' Index 2 is the update code itself.
-    ' Index 3 is the code for checking whether an update is required.
-    ReDim asCalcSelfCode(3)
-    Set asCalcSelfCode(1) = New HRProSystemMgr.cStringBuilder
-    Set asCalcSelfCode(2) = New HRProSystemMgr.cStringBuilder
-    Set asCalcSelfCode(3) = New HRProSystemMgr.cStringBuilder
-    
-    asCalcSelfCode(1).TheString = vbNullString
-    asCalcSelfCode(2).TheString = vbNullString
-    asCalcSelfCode(3).TheString = vbNullString
-
-    sDateDependentUpdateCode.TheString = vbNullString
-
-    ' Find the expressions that are dependent on the columns in the given table,
-    ' or used by the columns in the table itself.
-    'JPD 20040220 Fault 8111
-    sSQL = "SELECT DISTINCT ASRSysExpressions.exprID, ASRSysExpressions.returnType" & _
-      " FROM ASRSysExpressions" & _
-      " INNER JOIN ASRSysExprComponents ON ASRSysExpressions.exprID = ASRSysExprComponents.exprID" & _
-      " INNER JOIN ASRSysColumns ON ASRSysExprComponents.fieldColumnID = ASRSysColumns.columnID" & _
-      " WHERE (ASRSysColumns.tableID = " & Trim$(Str$(pLngCurrentTableID)) & _
-      " AND ASRSysExprComponents.type = " & Trim$(Str$(giCOMPONENT_FIELD)) & _
-      " AND ASRSysExprComponents.fieldPassBy = " & Trim$(Str$(giPASSBY_VALUE)) & _
-      " AND (ASRSysExpressions.type = " & Trim$(Str$(giEXPR_COLUMNCALCULATION)) & _
-      "   OR ASRSysExpressions.type = " & Trim$(Str$(giEXPR_STATICFILTER)) & "))" & _
-      " UNION" & _
-      " SELECT DISTINCT ASRSysExpressions.exprID, ASRSysExpressions.returnType" & _
-      " FROM ASRSysExpressions" & _
-      " INNER JOIN ASRSysColumns ON ASRSysExpressions.exprID = ASRSysColumns.calcExprID" & _
-      " WHERE (ASRSysColumns.tableID = " & Trim$(Str$(pLngCurrentTableID)) & _
-      " AND ASRSysColumns.columnType = " & Trim$(Str$(giCOLUMNTYPE_CALCULATED)) & ")" & _
-      " ORDER BY ASRSysExpressions.exprID"
-      
-      rsExpressions.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly, adCmdText
-  
-
-    ' Copy the information from the resultset into an array. We do this as we
-    ' may append more sets of expression information for those
-    ' expressions that use expressions that use fields in the current table.
-    ' And then we may append even more sets of expression information for those
-    ' expressions that use expressions that use expressions that use fields in
-    ' the current table. Etc., etc., etc.
-
-    ReDim avExpressions(2, 0)
-    
-    If Not rsExpressions.EOF Then
-      iIndex = 0
-  
-      Do While Not rsExpressions.EOF
-        iIndex = iIndex + 1
-        
-        'Increase the array size in chunks of 100 to improve performance.
-        If iIndex > UBound(avExpressions, 2) Then ReDim Preserve avExpressions(2, iIndex + 100)
-        
-        avExpressions(1, iIndex) = rsExpressions(0).value 'ExprID
-        avExpressions(2, iIndex) = rsExpressions(1).value 'ReturnType
-        rsExpressions.MoveNext
-      Loop
-    
-      ' Redimension the array to the correct size (as we've increased in chunks of 100 above).
-      ReDim Preserve avExpressions(2, iIndex)
-    End If
-    
-    rsExpressions.Close
-
-    iLoop = 1
-    Do While iLoop <= UBound(avExpressions, 2)
-      ' Create the code for declaring the variable that holds the result of the expression.
-      ' And also the code for assigning the variable a value if none is returned from
-      ' the expression.
-      lngExprID = avExpressions(1, iLoop)
-      sExprName = "expr" & Trim$(Str$(lngExprID))
-            
-      Select Case avExpressions(2, iLoop)
-        Case giEXPRVALUE_CHARACTER
-          sExprDeclarationCode.Append "        DECLARE @" & sExprName & " varchar(max)" & vbNewLine
-          sIfNullCode = "SET @" & sExprName & " = ''"
-        Case giEXPRVALUE_DATE
-          sExprDeclarationCode.Append "        DECLARE @" & sExprName & " datetime" & vbNewLine
-          sIfNullCode = "SET @" & sExprName & " = null"
-        Case giEXPRVALUE_NUMERIC
-          sExprDeclarationCode.Append "        DECLARE @" & sExprName & " float" & vbNewLine
-          sIfNullCode = "SET @" & sExprName & " = 0"
-        Case giEXPRVALUE_LOGIC
-          sExprDeclarationCode.Append "        DECLARE @" & sExprName & " bit" & vbNewLine
-          sIfNullCode = "SET @" & sExprName & " = 0"
-      End Select
-          
-      ' Check if the expression is date dependent.
-      fExprIsDateDependent = False
-      For iLoop2 = 1 To UBound(palngExpressions, 2)
-        If palngExpressions(1, iLoop2) = lngExprID Then
-          fExprIsDateDependent = True
-          Exit For
-        End If
-      Next iLoop2
-
-      ' Get any calculated columns that use the current expression.
-      sSQL = "SELECT ASRSysTables.tableID, ASRSysTables.tableName," & _
-        " ASRSysColumns.columnID, ASRSysColumns.columnName," & _
-        " ASRSysColumns.dataType, ASRSysColumns.size, ASRSysColumns.decimals, ASRSysColumns.convertcase, ASRSysColumns.CalculateIfEmpty, ASRSysColumns.Multiline" & _
-        " FROM ASRSysColumns " & _
-        " INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID" & _
-        " WHERE ASRSysColumns.calcExprID = " & Trim$(Str$(lngExprID)) & _
-        " AND ASRSysColumns.columnType = " & Trim$(Str$(giCOLUMNTYPE_CALCULATED))
-
-      rsCalcColumns.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly, adCmdText
-
-      ' Loop through the calculated columns that use the expression.
-      Do While Not rsCalcColumns.EOF
-        lngCalcTableID = rsCalcColumns(0).value   ' rsCalcColumns!TableID
-        sCalcTable = rsCalcColumns(1).value       ' rsCalcColumns!TableName
-        lngCalcColumnID = rsCalcColumns(2).value  ' rsCalcColumns!ColumnID
-        sCalcColumn = rsCalcColumns(3).value      ' rsCalcColumns!ColumnName
-        iCalcDataType = rsCalcColumns(4).value    ' rsCalcColumns!DataType
-        iCalcSize = rsCalcColumns(5).value        ' rsCalcColumns!Size
-        blnCalculateIfEmpty = rsCalcColumns(8).value        ' rsCalcColumns!CalculateIfEmpty
-        bIsMaxSize = IIf(IsNull(rsCalcColumns(9).value), False, rsCalcColumns(9).value)
-
-        ReDim Preserve alngColumns(UBound(alngColumns) + 1)
-        alngColumns(UBound(alngColumns)) = lngCalcColumnID
-        
-        Select Case iCalcDataType
-          Case dtVARCHAR
-            sExprDeclarationCode.Append "        DECLARE @col" & Trim$(Str$(lngCalcColumnID)) & " nvarchar(MAX)" & vbNewLine
-          Case dtLONGVARCHAR
-            sExprDeclarationCode.Append "        DECLARE @col" & Trim$(Str$(lngCalcColumnID)) & " varchar(14)" & vbNewLine
-          Case dtINTEGER
-            sExprDeclarationCode.Append "        DECLARE @col" & Trim$(Str$(lngCalcColumnID)) & " integer" & vbNewLine
-          Case dtNUMERIC
-            sExprDeclarationCode.Append "        DECLARE @col" & Trim$(Str$(lngCalcColumnID)) & " float" & vbNewLine
-          Case dtBIT
-            sExprDeclarationCode.Append "        DECLARE @col" & Trim$(Str$(lngCalcColumnID)) & " bit" & vbNewLine
-          Case dtTIMESTAMP
-            sExprDeclarationCode.Append "        DECLARE @col" & Trim$(Str$(lngCalcColumnID)) & " datetime" & vbNewLine
-        End Select
-        
-        ' Determine if the column that is dependent on the current table is in a parent table,
-        ' child table, or in the same table.
-        If lngCalcTableID = pLngCurrentTableID Then
-          iCalcRelationship = giCALCULATE_SELF
-        Else
-          With recRelEdit
-            .Index = "idxParentID"
-            .Seek "=", pLngCurrentTableID, lngCalcTableID
-            If Not .NoMatch Then
-              iCalcRelationship = giCALCULATE_CHILD
-            Else
-              .Seek "=", lngCalcTableID, pLngCurrentTableID
-              If Not .NoMatch Then
-                iCalcRelationship = giCALCULATE_PARENT
-              Else
-                iCalcRelationship = giCALCULATE_UNKNOWN
-              End If
-            End If
-          End With
-        End If
-        
-        ' Create the data type size conversion code.
-        With rsCalcColumns
-          Select Case !DataType
-            Case dtVARCHAR
-              If !MultiLine Then
-                sConvertCode = "CONVERT(nvarchar(MAX), "
-              Else
-                sConvertCode = "CONVERT(varchar(" & !Size & "), "
-              End If
-            Case dtLONGVARCHAR
-              sConvertCode = "CONVERT(varchar(14), "
-            Case dtINTEGER
-              sConvertCode = "CONVERT(int, "
-            Case dtNUMERIC
-              sConvertCode = "CONVERT(numeric(" & Trim$(Str$(iCalcSize)) & ", " & Trim(Str(!Decimals)) & "), "
-            Case Else
-              sConvertCode = vbNullString
-          End Select
-        End With
-
-        ' Create the code required for executing the stored procedure and
-        ' updating the required records with the result.
-        Select Case iCalcRelationship
-          ' The calculated column is in the current table.
-          Case giCALCULATE_SELF
-            sIndent = IIf(fExprIsDateDependent, vbNullString, "    ")
-            asCalcSelfCode(1).Append vbNewLine & _
-              IIf(fExprIsDateDependent, vbNullString, "        IF (@fUpdatingDateDependentColumns = 0)" & vbNewLine & "        BEGIN" & vbNewLine)
-
-            'NPG20080415 Sugg S000441
-            If blnCalculateIfEmpty = True Then
-              Select Case iCalcDataType
-                Case dtVARCHAR
-                  asCalcSelfCode(1).Append sIndent & "        EXEC [dbo].[sp_ASRFn_IsEmpty_1] @fResult OUTPUT, @inscol_" & Trim$(Str$(lngCalcColumnID)) & vbNewLine
-                Case dtLONGVARCHAR
-                  asCalcSelfCode(1).Append sIndent & "        EXEC [dbo].[sp_ASRFn_IsEmpty_1] @fResult OUTPUT, @inscol_" & Trim$(Str$(lngCalcColumnID)) & vbNewLine
-                Case dtINTEGER
-                  asCalcSelfCode(1).Append sIndent & "        EXEC [dbo].[sp_ASRFn_IsEmpty_2] @fResult OUTPUT, @inscol_" & Trim$(Str$(lngCalcColumnID)) & vbNewLine
-                Case dtNUMERIC
-                  asCalcSelfCode(1).Append sIndent & "        EXEC [dbo].[sp_ASRFn_IsEmpty_2] @fResult OUTPUT, @inscol_" & Trim$(Str$(lngCalcColumnID)) & vbNewLine
-                Case dtBIT
-                  asCalcSelfCode(1).Append sIndent & "        EXEC [dbo].[sp_ASRFn_IsEmpty_3] @fResult OUTPUT, @inscol_" & Trim$(Str$(lngCalcColumnID)) & vbNewLine
-                Case dtTIMESTAMP
-                  asCalcSelfCode(1).Append sIndent & "        EXEC [dbo].[sp_ASRFn_IsEmpty_4] @fResult OUTPUT, @inscol_" & Trim$(Str$(lngCalcColumnID)) & vbNewLine
-              End Select
-            
-              asCalcSelfCode(1).Append _
-                sIndent & "        IF @fResult = 1" & vbNewLine & _
-                sIndent & "        BEGIN" & vbNewLine
-                sIndent = sIndent & "    "
-            End If
-              
-              
-              
-            asCalcSelfCode(1).Append _
-              sIndent & "        EXEC @hResult = dbo.sp_ASRExpr_" & Trim$(Str$(lngExprID)) & " @" & sExprName & " OUTPUT, @recordID" & vbNewLine & _
-              sIndent & "        IF @hResult <> 0 " & sIfNullCode & vbNewLine
-                           
-'            'JPD 20050318 Fault 9926
-'            If iCalcDataType = dtNUMERIC Then
-'              dblMaxValue = 10 ^ (iCalcSize - rsCalcColumns!Decimals)
-'              asCalcSelfCode(1).Append _
-'                sIndent & "        IF @" & sExprName & " >= " & CStr(dblMaxValue) & " SET @col" & CStr(lngCalcColumnID) & " = 0" & vbNewLine & _
-'                sIndent & "        IF @" & sExprName & " <= -" & CStr(dblMaxValue) & " SET @col" & CStr(lngCalcColumnID) & " = 0" & vbNewLine & _
-'                sIndent & "        IF (@" & sExprName & " < " & CStr(dblMaxValue) & ") AND (@" & sExprName & " > -" & CStr(dblMaxValue) & ") SET @col" & CStr(lngCalcColumnID) & " = " & sConvertCode & "@" & sExprName & IIf(LenB(sConvertCode) <> 0, ")", vbNullString) & vbNewLine & _
-'                sIndent & "        IF convert(float, @inscol_" & CStr(lngCalcColumnID) & ") <> @col" & CStr(lngCalcColumnID) & " SET @changesMade = 1" & vbNewLine & _
-'                sIndent & "        SET @delcol_" & CStr(lngCalcColumnID) & " = @inscol_" & CStr(lngCalcColumnID) & vbNewLine & _
-'                sIndent & "        SET @inscol_" & CStr(lngCalcColumnID) & " = @col" & CStr(lngCalcColumnID) & vbNewLine
-'            Else
-'              asCalcSelfCode(1).Append _
-'                sIndent & "        SET @col" & CStr(lngCalcColumnID) & " = " & sConvertCode & "@" & sExprName & IIf(LenB(sConvertCode) <> 0, ")", vbNullString) & vbNewLine & _
-'                sIndent & "        IF @inscol_" & CStr(lngCalcColumnID) & " <> @col" & CStr(lngCalcColumnID) & " SET @changesMade = 1" & vbNewLine & _
-'                sIndent & "        SET @delcol_" & CStr(lngCalcColumnID) & " = @inscol_" & CStr(lngCalcColumnID) & vbNewLine & _
-'                sIndent & "        SET @inscol_" & CStr(lngCalcColumnID) & " = @col" & CStr(lngCalcColumnID) & vbNewLine
-'            End If
-            'JPD 20050318 Fault 9926
-            If iCalcDataType = dtNUMERIC Then
-              dblMaxValue = 10 ^ (iCalcSize - rsCalcColumns!Decimals)
-              asCalcSelfCode(1).Append _
-                sIndent & "        IF @" & sExprName & " >= " & Trim$(Str$(dblMaxValue)) & " SET @col" & Trim$(Str$(lngCalcColumnID)) & " = 0" & vbNewLine & _
-                sIndent & "        IF @" & sExprName & " <= -" & Trim$(Str$(dblMaxValue)) & " SET @col" & Trim$(Str$(lngCalcColumnID)) & " = 0" & vbNewLine & _
-                sIndent & "        IF (@" & sExprName & " < " & Trim$(Str$(dblMaxValue)) & ") AND (@" & sExprName & " > -" & Trim$(Str$(dblMaxValue)) & ") SET @col" & Trim$(Str$(lngCalcColumnID)) & " = " & sConvertCode & "@" & sExprName & IIf(LenB(sConvertCode) <> 0, ")", vbNullString) & vbNewLine & _
-                sIndent & "        IF convert(float, @inscol_" & Trim$(Str$(lngCalcColumnID)) & ") <> @col" & Trim$(Str$(lngCalcColumnID)) & " SET @changesMade = 1" & vbNewLine & _
-                sIndent & "        SET @inscol_" & Trim$(Str$(lngCalcColumnID)) & " = @col" & Trim$(Str$(lngCalcColumnID)) & vbNewLine
-
-            Else
-              asCalcSelfCode(1).Append _
-                sIndent & "        SET @col" & Trim$(Str$(lngCalcColumnID)) & " = " & sConvertCode & "@" & sExprName & IIf(LenB(sConvertCode) <> 0, ")", vbNullString) & vbNewLine & _
-                sIndent & "        IF @inscol_" & Trim$(Str$(lngCalcColumnID)) & " <> @col" & Trim$(Str$(lngCalcColumnID)) & " SET @changesMade = 1" & vbNewLine & _
-                sIndent & "        SET @inscol_" & Trim$(Str$(lngCalcColumnID)) & " = @col" & Trim$(Str$(lngCalcColumnID)) & vbNewLine
-            End If
-
-            
-            
-            
-            
-            'NPG20080415 Sugg S000441
-            If blnCalculateIfEmpty = True Then
-              sIndent = Left(sIndent, Len(sIndent) - 4)
-              asCalcSelfCode(1).Append _
-                sIndent & "        END" & vbNewLine & _
-                sIndent & "        ELSE" & vbNewLine & _
-                sIndent & "        BEGIN" & vbNewLine & _
-                sIndent & "          SET @col" & Trim$(Str$(lngCalcColumnID)) & " = @inscol_" & Trim$(Str$(lngCalcColumnID)) & vbNewLine & _
-                sIndent & "        END" & vbNewLine
-            End If
-            
-            
-            
-            If iCalcDataType = dtVARCHAR Then
-              Select Case rsCalcColumns!convertcase
-                Case 1 ' Convert to uppercase.
-                  asCalcSelfCode(1).Append _
-                    sIndent & "        SET @col" & Trim$(Str$(lngCalcColumnID)) & " = UPPER(@col" & Trim$(Str$(lngCalcColumnID)) & ")" & vbNewLine
-                Case 2 ' Convert to lowercase.
-                  asCalcSelfCode(1).Append _
-                    sIndent & "        SET @col" & Trim$(Str$(lngCalcColumnID)) & " = LOWER(@col" & Trim$(Str$(lngCalcColumnID)) & ")" & vbNewLine
-                Case 3 ' Convert to propercase.
-                  asCalcSelfCode(1).Append _
-                    sIndent & "        EXEC dbo.sp_ASRFn_ConvertToPropercase @col" & Trim$(Str$(lngCalcColumnID)) & " output, @col" & Trim$(Str$(lngCalcColumnID)) & vbNewLine
-              End Select
-            End If
-
-            'JPD20020325 Fault 2098
-            If iCalcDataType = dtLONGVARCHAR Then
-              asCalcSelfCode(1).Append _
-                sIndent & "        SET @col" & Trim$(Str$(lngCalcColumnID)) & " = RTRIM(UPPER(@col" & Trim$(Str$(lngCalcColumnID)) & "))" & vbNewLine
-            End If
-
-            asCalcSelfCode(1).Append _
-              IIf(fExprIsDateDependent, vbNullString, "        END" & vbNewLine)
-
-            asCalcSelfCode(2).Append IIf(asCalcSelfCode(2).Length <> 0, ", ", vbNullString) & _
-              sCalcColumn & " = " & "@col" & Trim$(Str$(lngCalcColumnID))
-            If fExprIsDateDependent Then
-              sDateDependentUpdateCode.Append IIf(sDateDependentUpdateCode.Length <> 0, ", ", vbNullString) & _
-                sCalcColumn & " = " & "@col" & Trim$(Str$(lngCalcColumnID))
-            End If
-
-            ' JPD20020913 - instead of making multiple queries to the triggered table, and
-            ' the 'inserted' and 'deleted' tables, we now get all of the required information in
-            ' the cursor that we used to loop through to get just the id of each record being
-            ' inserted/updated/deleted.
-            ' Here we are adding the calculated columns to the SELECT statement that is used
-            ' to create the cursor, the FETCH statement that used to loop through the cursor,
-            ' and the DECLARE statements that are needed.
-            ' The calculated column 'check if changed' code is modified for the new implementation.
-            ' NB. an array of columns that have been added to the SELECT statement is used
-            ' to ensure that columns aren't added more than once. Audit columns, email columns
-            ' and calculated columns all use this method.
-            ' This change was driven by the performance degradation reported by
-            ' Islington.
-            fColFound = False
-
-            ' Check if the column has already been declared and added to the select and fetch strings
-            For iLoop3 = 1 To UBound(alngAuditColumns)
-              If alngAuditColumns(iLoop3) = lngCalcColumnID Then
-                fColFound = True
-                Exit For
-              End If
-            Next iLoop3
-
-            If Not fColFound Then
-              ReDim Preserve alngAuditColumns(UBound(alngAuditColumns) + 1)
-              alngAuditColumns(UBound(alngAuditColumns)) = lngCalcColumnID
-            
-              'JPD 20050516 Fault 9771
-              ' Large character columns are no longer selected as part of the cursor, and this can
-              ' lead to errors such as "Cannot create a worktable row larger than the allowable maximum"
-'              If (iCalcDataType = dtVARCHAR) And (iCalcSize > VARCHARTHRESHOLD) Then
-'                sSelectInsLargeCols.Append ", @insCol_" & Trim$(Str$(lngCalcColumnID)) & "=inserted." & sCalcColumn
-'                sSelectInsLargeCols2.Append ", @insCol_" & Trim$(Str$(lngCalcColumnID)) & "=" & sCalcColumn
-'                sSelectDelLargeCols.Append ", @delCol_" & Trim$(Str$(lngCalcColumnID)) & "=deleted." & sCalcColumn
-'              Else
-                
-                sSelectInsCols.Append ", inserted." & sCalcColumn
-                sSelectDelCols.Append ", deleted." & sCalcColumn
-              
-                sFetchInsCols.Append ", @insCol_" & Trim$(Str$(lngCalcColumnID))
-                sFetchDelCols.Append ", @delCol_" & Trim$(Str$(lngCalcColumnID))
-'              End If
-              
-              sDeclareInsCols.Append ", @insCol_" & Trim$(Str$(lngCalcColumnID))
-              sDeclareDelCols.Append ", @delCol_" & Trim$(Str$(lngCalcColumnID))
-            End If
-
-            Select Case iCalcDataType
-              Case dtVARCHAR
-                If Not fColFound Then
-                  sDeclareInsCols.Append " nvarchar(max)"
-                  sDeclareDelCols.Append " nvarchar(max)"
-                End If
-                asCalcSelfCode(3).Append vbNewLine & _
-                  "        IF (@changesMade = 0)" & _
-                  IIf(fExprIsDateDependent, vbNullString, " AND (@fUpdatingDateDependentColumns = 0)") & vbNewLine & _
-                  "        BEGIN" & vbNewLine & _
-                  "            SET @oldCharValue = CONVERT(varchar(max), @delCol_" & Trim$(Str$(lngCalcColumnID)) & ")" & vbNewLine & _
-                  "            SET @newCharValue = CONVERT(varchar(max), @col" & Trim$(Str$(lngCalcColumnID)) & ")" & vbNewLine & _
-                  "            EXEC dbo.sp_ASRCaseSensitiveCompare @comparisonResult OUTPUT, @oldCharValue, @newCharValue" & vbNewLine & _
-                  "            IF @comparisonResult = 0 SET @changesMade = 1" & vbNewLine & _
-                  "        END" & vbNewLine
-              
-              Case dtLONGVARCHAR
-                If Not fColFound Then
-                  sDeclareInsCols.Append " varchar(14)"
-                  sDeclareDelCols.Append " varchar(14)"
-                End If
-                asCalcSelfCode(3).Append vbNewLine & _
-                  "        IF (@changesMade = 0)" & _
-                  IIf(fExprIsDateDependent, vbNullString, " AND (@fUpdatingDateDependentColumns = 0)") & vbNewLine & _
-                  "        BEGIN" & vbNewLine & _
-                  "            SET @oldCharValue = CONVERT(varchar(max), @delCol_" & Trim$(Str$(lngCalcColumnID)) & ")" & vbNewLine & _
-                  "            SET @newCharValue = CONVERT(varchar(max), @col" & Trim$(Str$(lngCalcColumnID)) & ")" & vbNewLine & _
-                  "            EXEC dbo.sp_ASRCaseSensitiveCompare @comparisonResult OUTPUT, @oldCharValue, @newCharValue" & vbNewLine & _
-                  "            IF @comparisonResult = 0 SET @changesMade = 1" & vbNewLine & _
-                  "        END" & vbNewLine
-              
-              Case dtINTEGER
-                If Not fColFound Then
-                  sDeclareInsCols.Append " integer"
-                  sDeclareDelCols.Append " integer"
-                End If
-                asCalcSelfCode(3).Append vbNewLine & _
-                  "        IF (@changesMade = 0)" & _
-                  IIf(fExprIsDateDependent, vbNullString, " AND (@fUpdatingDateDependentColumns = 0)") & vbNewLine & _
-                  "        BEGIN" & vbNewLine & _
-                  "            SET @oldNumValue = CONVERT(float, @delCol_" & Trim$(Str$(lngCalcColumnID)) & ")" & vbNewLine & _
-                  "            SET @newNumValue = CONVERT(float, @col" & Trim$(Str$(lngCalcColumnID)) & ")" & vbNewLine & _
-                  "            IF @oldNumValue <> @newNumValue SET @changesMade = 1" & vbNewLine & _
-                  "            IF (@oldNumValue IS NULL) AND (NOT @newNumValue IS NULL) SET @changesMade = 1" & vbNewLine & _
-                  "            IF (NOT @oldNumValue IS NULL) AND (@newNumValue IS NULL) SET @changesMade = 1" & vbNewLine & _
-                  "        END" & vbNewLine
-              
-              Case dtNUMERIC
-                If Not fColFound Then
-                  sDeclareInsCols.Append " numeric(" & Trim$(Str$(iCalcSize)) & ", " & Trim(Str(rsCalcColumns!Decimals)) & ")"
-                  sDeclareDelCols.Append " numeric(" & Trim$(Str$(iCalcSize)) & ", " & Trim(Str(rsCalcColumns!Decimals)) & ")"
-                End If
-                asCalcSelfCode(3).Append vbNewLine & _
-                  "        IF (@changesMade = 0)" & _
-                  IIf(fExprIsDateDependent, vbNullString, " AND (@fUpdatingDateDependentColumns = 0)") & vbNewLine & _
-                  "        BEGIN" & vbNewLine & _
-                  "            SET @oldNumValue = CONVERT(float, @delCol_" & Trim$(Str$(lngCalcColumnID)) & ")" & vbNewLine & _
-                  "            SET @newNumValue = CONVERT(float, @col" & Trim$(Str$(lngCalcColumnID)) & ")" & vbNewLine & _
-                  "            IF @oldNumValue <> @newNumValue SET @changesMade = 1" & vbNewLine & _
-                  "            IF (@oldNumValue IS NULL) AND (NOT @newNumValue IS NULL) SET @changesMade = 1" & vbNewLine & _
-                  "            IF (NOT @oldNumValue IS NULL) AND (@newNumValue IS NULL) SET @changesMade = 1" & vbNewLine & _
-                  "        END" & vbNewLine
-                                        
-              Case dtTIMESTAMP
-                If Not fColFound Then
-                  sDeclareInsCols.Append " datetime"
-                  sDeclareDelCols.Append " datetime"
-                End If
-                asCalcSelfCode(3).Append vbNewLine & _
-                  "        IF (@changesMade = 0)" & _
-                  IIf(fExprIsDateDependent, vbNullString, " AND (@fUpdatingDateDependentColumns = 0)") & vbNewLine & _
-                  "        BEGIN" & vbNewLine & _
-                  "            SET @oldDateValue = convert(datetime, convert(varchar(20), @delCol_" & Trim$(Str$(lngCalcColumnID)) & ", 101))" & vbNewLine & _
-                  "            SET @newDateValue = CONVERT(datetime, convert(varchar(20), @col" & Trim$(Str$(lngCalcColumnID)) & ", 101))" & vbNewLine & _
-                  "            IF @oldDateValue <> @newDateValue SET @changesMade = 1" & vbNewLine & _
-                  "            IF (@oldDateValue IS NULL) AND (NOT @newDateValue IS NULL) SET @changesMade = 1" & vbNewLine & _
-                  "            IF (NOT @oldDateValue IS NULL) AND (@newDateValue IS NULL) SET @changesMade = 1" & vbNewLine & _
-                  "        END" & vbNewLine
-            
-              Case dtBIT
-                If Not fColFound Then
-                  sDeclareInsCols.Append " bit"
-                  sDeclareDelCols.Append " bit"
-                End If
-                asCalcSelfCode(3).Append vbNewLine & _
-                  "        IF (@changesMade = 0)" & _
-                  IIf(fExprIsDateDependent, vbNullString, " AND (@fUpdatingDateDependentColumns = 0)") & vbNewLine & _
-                  "        BEGIN" & vbNewLine & _
-                  "            SET @oldLogicValue = @delCol_" & Trim$(Str$(lngCalcColumnID)) & vbNewLine & _
-                  "            SET @newLogicValue = @col" & Trim$(Str$(lngCalcColumnID)) & vbNewLine & _
-                  "            IF @oldLogicValue <> @newLogicValue SET @changesMade = 1" & vbNewLine & _
-                  "            IF (@oldLogicValue IS NULL) AND (NOT @newLogicValue IS NULL) SET @changesMade = 1" & vbNewLine & _
-                  "            IF (NOT @oldLogicValue IS NULL) AND (@newLogicValue IS NULL) SET @changesMade = 1" & vbNewLine & _
-                  "        END" & vbNewLine
-                          
-              Case dtVARBINARY, dtLONGVARBINARY
-                If Not fColFound Then
-                  sDeclareInsCols.Append " varchar(255)"
-                  sDeclareDelCols.Append " varchar(255)"
-                End If
-                asCalcSelfCode(3).Append vbNewLine & _
-                  "        IF (@changesMade = 0)" & _
-                  IIf(fExprIsDateDependent, vbNullString, " AND (@fUpdatingDateDependentColumns = 0)") & vbNewLine & _
-                  "        BEGIN" & vbNewLine & _
-                  "            SET @oldCharValue = CONVERT(varchar(max), @delCol_" & Trim$(Str$(lngCalcColumnID)) & ")" & vbNewLine & _
-                  "            SET @newCharValue = CONVERT(varchar(max), @col" & Trim$(Str$(lngCalcColumnID)) & ")" & vbNewLine & _
-                  "            EXEC dbo.sp_ASRCaseSensitiveCompare @comparisonResult OUTPUT, @oldCharValue, @newCharValue" & vbNewLine & _
-                  "            IF @comparisonResult = 0 SET @changesMade = 1" & vbNewLine & _
-                  "        END" & vbNewLine
-                          
-              Case Else
-                If Not fColFound Then
-                  sDeclareInsCols.Append " varchar(max)"
-                  sDeclareDelCols.Append " varchar(max)"
-                End If
-                asCalcSelfCode(3).Append vbNewLine & _
-                  "        IF (@changesMade = 0)" & _
-                  IIf(fExprIsDateDependent, vbNullString, " AND (@fUpdatingDateDependentColumns = 0)") & vbNewLine & _
-                  "        BEGIN" & vbNewLine & _
-                  "            SET @oldCharValue = CONVERT(varchar(max), @delCol_" & Trim$(Str$(lngCalcColumnID)) & ")" & vbNewLine & _
-                  "            SET @newCharValue = CONVERT(varchar(max), @col" & Trim$(Str$(lngCalcColumnID)) & ")" & vbNewLine & _
-                  "            EXEC dbo.sp_ASRCaseSensitiveCompare @comparisonResult OUTPUT, @oldCharValue, @newCharValue" & vbNewLine & _
-                  "            IF @comparisonResult = 0 SET @changesMade = 1" & vbNewLine & _
-                  "        END" & vbNewLine
-            End Select
-          
-          ' The calculated column is in a parent table of the current table.
-          Case giCALCULATE_PARENT
-            ' Get the appropriate array index for this table.
-            iArrayIndex = 0
-            For iLoop2 = 1 To UBound(asCalcParentCode, 2)
-              If asCalcParentCode(1, iLoop2).ToString = sCalcTable Then
-                iArrayIndex = iLoop2
-                Exit For
-              End If
-            Next iLoop2
-            
-            ' If the parent table is not yet in the array create a new entry.
-            If iArrayIndex = 0 Then
-              iArrayIndex = UBound(asCalcParentCode, 2) + 1
-              ReDim Preserve asCalcParentCode(8, iArrayIndex)
-              asCalcParentCode(1, iArrayIndex).TheString = sCalcTable
-              asCalcParentCode(2, iArrayIndex).TheString = vbNullString
-              asCalcParentCode(3, iArrayIndex).TheString = vbNullString
-              asCalcParentCode(4, iArrayIndex).TheString = vbNullString
-              asCalcParentCode(5, iArrayIndex).TheString = vbNullString
-              asCalcParentCode(6, iArrayIndex).TheString = vbNullString
-              asCalcParentCode(7, iArrayIndex).TheString = vbNullString
-              asCalcParentCode(8, iArrayIndex).TheString = vbNullString
-            End If
-            
-            asCalcParentCode(5, iArrayIndex).TheString = "            SET @parentRecordID = @insParentID_" & CStr(lngCalcTableID)
-            asCalcParentCode(6, iArrayIndex).TheString = "            SET @parentRecordID = @delParentID_" & CStr(lngCalcTableID)
-            asCalcParentCode(7, iArrayIndex).TheString = "            SET @oldParentRecordID = @delParentID_" & CStr(lngCalcTableID)
-            asCalcParentCode(8, iArrayIndex).TheString = sCalcColumn
-
-            asCalcParentCode(2, iArrayIndex).Append vbNewLine & _
-              "            EXEC @hResult = dbo.sp_ASRExpr_" & Trim$(Str$(lngExprID)) & " @" & sExprName & " OUTPUT, @parentRecordID" & vbNewLine & _
-              "            IF @hResult <> 0 " & sIfNullCode & vbNewLine
-
-            If iCalcDataType = dtNUMERIC Then
-              dblMaxValue = 10 ^ (iCalcSize - rsCalcColumns!Decimals)
-              asCalcParentCode(2, iArrayIndex).Append "            IF @" & sExprName & " >= " & Trim$(Str$(dblMaxValue)) & " SET @col" & Trim$(Str$(lngCalcColumnID)) & " = 0" & vbNewLine & _
-                "            IF @" & sExprName & " <= -" & Trim$(Str$(dblMaxValue)) & " SET @col" & Trim$(Str$(lngCalcColumnID)) & " = 0" & vbNewLine & _
-                "            IF (@" & sExprName & " < " & Trim$(Str$(dblMaxValue)) & ") AND (@" & sExprName & " > -" & Trim$(Str$(dblMaxValue)) & ") SET @col" & Trim$(Str$(lngCalcColumnID)) & " = " & sConvertCode & "@" & sExprName & IIf(LenB(sConvertCode) <> 0, ")", vbNullString) & vbNewLine
-            Else
-              asCalcParentCode(2, iArrayIndex).Append _
-                "            SET @col" & Trim$(Str$(lngCalcColumnID)) & " = " & sConvertCode & "@" & sExprName & IIf(LenB(sConvertCode) <> 0, ")", vbNullString) & vbNewLine
-            End If
-            
-            If iCalcDataType = dtVARCHAR Then
-              Select Case rsCalcColumns!convertcase
-                Case 1 ' Convert to uppercase.
-                  asCalcParentCode(2, iArrayIndex).Append _
-                    "            SET @col" & Trim$(Str$(lngCalcColumnID)) & " = UPPER(@col" & Trim$(Str$(lngCalcColumnID)) & ")" & vbNewLine
-                Case 2 ' Convert to lowercase.
-                  asCalcParentCode(2, iArrayIndex).Append _
-                    "            SET @col" & Trim$(Str$(lngCalcColumnID)) & " = LOWER(@col" & Trim$(Str$(lngCalcColumnID)) & ")" & vbNewLine
-                Case 3 ' Convert to propercase.
-                  asCalcParentCode(2, iArrayIndex).Append _
-                    "            EXEC dbo.sp_ASRFn_ConvertToPropercase @col" & Trim$(Str$(lngCalcColumnID)) & " output, @col" & Trim$(Str$(lngCalcColumnID)) & vbNewLine
-              End Select
-            End If
-
-            'JPD20020325 Fault 2098
-            If iCalcDataType = dtLONGVARCHAR Then
-              asCalcParentCode(2, iArrayIndex).Append _
-                "            SET @col" & Trim$(Str$(lngCalcColumnID)) & " = UPPER(@col" & Trim$(Str$(lngCalcColumnID)) & ")" & vbNewLine
-            End If
-            
-            asCalcParentCode(3, iArrayIndex).Append IIf(asCalcParentCode(3, iArrayIndex).Length <> 0, ", ", vbNullString) & _
-              sCalcColumn & " = " & "@col" & Trim$(Str$(lngCalcColumnID))
-            
-            Select Case iCalcDataType
-              Case dtVARCHAR, dtLONGVARCHAR
-                asCalcParentCode(4, iArrayIndex).Append vbNewLine & _
-                  "            IF @changesMade = 0" & vbNewLine & _
-                  "            BEGIN" & vbNewLine & _
-                  "                SELECT @oldCharValue = " & sCalcColumn & vbNewLine & _
-                  "                    FROM " & sCalcTable & vbNewLine & _
-                  "                    WHERE id = @parentRecordID" & vbNewLine & _
-                  "                SET @newCharValue = CONVERT(varchar(max), @col" & Trim$(Str$(lngCalcColumnID)) & ")" & vbNewLine & _
-                  "                EXEC dbo.sp_ASRCaseSensitiveCompare @comparisonResult OUTPUT, @oldCharValue, @newCharValue" & vbNewLine & _
-                  "                IF @comparisonResult = 0 SET @changesMade = 1" & vbNewLine & _
-                  "            END" & vbNewLine
-              Case dtINTEGER, dtNUMERIC
-                asCalcParentCode(4, iArrayIndex).Append vbNewLine & _
-                  "            IF @changesMade = 0" & vbNewLine & _
-                  "            BEGIN" & vbNewLine & _
-                  "                SELECT @oldNumValue = " & sCalcColumn & vbNewLine & _
-                  "                    FROM " & sCalcTable & vbNewLine & _
-                  "                    WHERE id = @parentRecordID" & vbNewLine & _
-                  "                SET @newNumValue = CONVERT(float, @col" & Trim$(Str$(lngCalcColumnID)) & ")" & vbNewLine & _
-                  "                IF @oldNumValue <> @newNumValue SET @changesMade = 1" & vbNewLine & _
-                  "                IF (@oldNumValue IS NULL) AND (NOT @newNumValue IS NULL) SET @changesMade = 1" & vbNewLine & _
-                  "                IF (NOT @oldNumValue IS NULL) AND (@newNumValue IS NULL) SET @changesMade = 1" & vbNewLine & _
-                  "            END" & vbNewLine
-              Case dtTIMESTAMP
-                asCalcParentCode(4, iArrayIndex).Append vbNewLine & _
-                  "            IF @changesMade = 0" & vbNewLine & _
-                  "            BEGIN" & vbNewLine & _
-                  "                SELECT @oldDateValue = convert(datetime, convert(varchar(20), " & sCalcColumn & ", 101))" & vbNewLine & _
-                  "                    FROM " & sCalcTable & vbNewLine & _
-                  "                    WHERE id = @parentRecordID" & vbNewLine & _
-                  "                SET @newDateValue = CONVERT(datetime, convert(varchar(20), @col" & Trim$(Str$(lngCalcColumnID)) & ", 101))" & vbNewLine & _
-                  "                IF @oldDateValue <> @newDateValue SET @changesMade = 1" & vbNewLine & _
-                  "                IF (@oldDateValue IS NULL) AND (NOT @newDateValue IS NULL) SET @changesMade = 1" & vbNewLine & _
-                  "                IF (NOT @oldDateValue IS NULL) AND (@newDateValue IS NULL) SET @changesMade = 1" & vbNewLine & _
-                  "            END" & vbNewLine
-              Case dtBIT
-                asCalcParentCode(4, iArrayIndex).Append vbNewLine & _
-                  "            IF @changesMade = 0" & vbNewLine & _
-                  "            BEGIN" & vbNewLine & _
-                  "                SELECT @oldLogicValue = " & sCalcColumn & vbNewLine & _
-                  "                    FROM " & sCalcTable & vbNewLine & _
-                  "                    WHERE id = @parentRecordID" & vbNewLine & _
-                  "                SET @newLogicValue = @col" & Trim$(Str$(lngCalcColumnID)) & vbNewLine & _
-                  "                IF @oldLogicValue <> @newLogicValue SET @changesMade = 1" & vbNewLine & _
-                  "                IF (@oldLogicValue IS NULL) AND (NOT @newLogicValue IS NULL) SET @changesMade = 1" & vbNewLine & _
-                  "                IF (NOT @oldLogicValue IS NULL) AND (@newLogicValue IS NULL) SET @changesMade = 1" & vbNewLine & _
-                  "            END" & vbNewLine
-            End Select
-  
-          ' The calculated column is in a child table of the current table.
-          Case giCALCULATE_CHILD
-            iArrayIndex = 0
-            For iLoop2 = 1 To UBound(asCalcChildCode, 2)
-              If asCalcChildCode(1, iLoop2).ToString = sCalcTable Then
-                iArrayIndex = iLoop2
-                Exit For
-              End If
-            Next iLoop2
-            ' If the parent table is not yet in the array create a new entry.
-            If iArrayIndex = 0 Then
-              iArrayIndex = UBound(asCalcChildCode, 2) + 1
-              ReDim Preserve asCalcChildCode(4, iArrayIndex)
-              asCalcChildCode(1, iArrayIndex).TheString = sCalcTable
-              asCalcChildCode(2, iArrayIndex).TheString = vbNullString
-              asCalcChildCode(3, iArrayIndex).TheString = vbNullString
-              asCalcChildCode(4, iArrayIndex).TheString = vbNullString
-            End If
-            
-            sCursorName = sCalcTable & "_cursor"
-            
-            If asCalcChildCode(2, iArrayIndex).Length = 0 Then
-              asCalcChildCode(2, iArrayIndex).Append "            DECLARE " & sCursorName & " CURSOR LOCAL FAST_FORWARD READ_ONLY FOR SELECT id FROM " & sCalcTable & " WHERE " & sCalcTable & ".ID_" & pLngCurrentTableID & " = @recordID" & vbNewLine & _
-                "            OPEN " & sCursorName & vbNewLine & _
-                "            FETCH NEXT FROM " & sCursorName & " INTO @childRecordID" & vbNewLine & _
-                "            WHILE (@@fetch_status = 0)" & vbNewLine & _
-                "            BEGIN" & vbNewLine & _
-                "                SET @changesMade = 0" & vbNewLine & vbNewLine
-            End If
-
-            asCalcChildCode(2, iArrayIndex).Append _
-              "                IF EXISTS (SELECT Name FROM sysobjects WHERE type = 'P' AND name = 'sp_ASRExpr_" & Trim$(Str$(lngExprID)) & "')" & vbNewLine & _
-              "                BEGIN" & vbNewLine & _
-              "                    EXEC @hResult = dbo.sp_ASRExpr_" & Trim$(Str$(lngExprID)) & " @" & sExprName & " OUTPUT, @childRecordID" & vbNewLine & _
-              "                    IF @hResult <> 0 " & sIfNullCode & vbNewLine & _
-              "                END" & vbNewLine & _
-              "                ELSE " & sIfNullCode & vbNewLine
-              
-            If iCalcDataType = dtNUMERIC Then
-              dblMaxValue = 10 ^ (iCalcSize - rsCalcColumns!Decimals)
-              asCalcChildCode(2, iArrayIndex).Append _
-                "                IF @" & sExprName & " >= " & Trim$(Str$(dblMaxValue)) & " SET @col" & Trim$(Str$(lngCalcColumnID)) & " = 0" & vbNewLine & _
-                "                IF @" & sExprName & " <= -" & Trim$(Str$(dblMaxValue)) & " SET @col" & Trim$(Str$(lngCalcColumnID)) & " = 0" & vbNewLine & _
-                "                IF (@" & sExprName & " < " & Trim$(Str$(dblMaxValue)) & ") AND (@" & sExprName & " > -" & Trim$(Str$(dblMaxValue)) & ") SET @col" & Trim$(Str$(lngCalcColumnID)) & " = " & sConvertCode & "@" & sExprName & IIf(LenB(sConvertCode) <> 0, ")", vbNullString) & vbNewLine & vbNewLine
-            Else
-              asCalcChildCode(2, iArrayIndex).Append _
-                "                SET @col" & Trim$(Str$(lngCalcColumnID)) & " = " & sConvertCode & "@" & sExprName & IIf(LenB(sConvertCode) <> 0, ")", vbNullString) & vbNewLine & vbNewLine
-            End If
-            
-            If iCalcDataType = dtVARCHAR Then
-              Select Case rsCalcColumns!convertcase
-                Case 1 ' Convert to uppercase.
-                  asCalcChildCode(2, iArrayIndex).Append _
-                    "            SET @col" & Trim$(Str$(lngCalcColumnID)) & " = UPPER(@col" & Trim$(Str$(lngCalcColumnID)) & ")" & vbNewLine
-                Case 2 ' Convert to lowercase.
-                  asCalcChildCode(2, iArrayIndex).Append _
-                    "            SET @col" & Trim$(Str$(lngCalcColumnID)) & " = LOWER(@col" & Trim$(Str$(lngCalcColumnID)) & ")" & vbNewLine
-                Case 3 ' Convert to propercase.
-                  asCalcChildCode(2, iArrayIndex).Append _
-                    "            EXEC dbo.sp_ASRFn_ConvertToPropercase @col" & Trim$(Str$(lngCalcColumnID)) & " output, @col" & Trim$(Str$(lngCalcColumnID)) & vbNewLine
-              End Select
-            End If
-
-            'JPD20020325 Fault 2098
-            If iCalcDataType = dtLONGVARCHAR Then
-              asCalcChildCode(2, iArrayIndex).Append _
-                "            SET @col" & Trim$(Str$(lngCalcColumnID)) & " = UPPER(@col" & Trim$(Str$(lngCalcColumnID)) & ")" & vbNewLine
-            End If
-            
-            asCalcChildCode(3, iArrayIndex).Append IIf(asCalcChildCode(3, iArrayIndex).Length <> 0, ", ", vbNullString) & _
-              sCalcColumn & " = " & "@col" & Trim$(Str$(lngCalcColumnID))
-            
-            ' NPG Fault 13476 (Added the IIF's to the following select statements)
-
-            Select Case iCalcDataType
-              Case dtVARCHAR, dtLONGVARCHAR
-                asCalcChildCode(4, iArrayIndex).Append vbNewLine & _
-                  "                IF @changesMade = 0" & vbNewLine & _
-                  "                BEGIN" & vbNewLine & _
-                  "                    SELECT @oldCharValue = " & sCalcColumn & vbNewLine & _
-                  "                        FROM " & sCalcTable & vbNewLine & _
-                  "                        WHERE id = @childRecordID" & vbNewLine & _
-                  IIf(blnCalculateIfEmpty, "                    EXEC [dbo].[sp_ASRFn_IsEmpty_1] @fResult OUTPUT, @oldCharValue" & vbNewLine, "") & _
-                  IIf(blnCalculateIfEmpty, "                    IF @fResult = 1" & vbNewLine, "") & _
-                  IIf(blnCalculateIfEmpty, "                    BEGIN" & vbNewLine, "") & _
-                  "                    SET @newCharValue = CONVERT(varchar(max), @col" & Trim$(Str$(lngCalcColumnID)) & ")" & vbNewLine & _
-                  "                    EXEC dbo.sp_ASRCaseSensitiveCompare @comparisonResult OUTPUT, @oldCharValue, @newCharValue" & vbNewLine & _
-                  "                    IF @comparisonResult = 0 SET @changesMade = 1" & vbNewLine & _
-                  IIf(blnCalculateIfEmpty, "                    END" & vbNewLine, "") & _
-                  "                END" & vbNewLine
-              Case dtINTEGER, dtNUMERIC
-                asCalcChildCode(4, iArrayIndex).Append vbNewLine & _
-                  "                IF @changesMade = 0" & vbNewLine & _
-                  "                BEGIN" & vbNewLine & _
-                  "                    SELECT @oldNumValue = " & sCalcColumn & vbNewLine & _
-                  "                        FROM " & sCalcTable & vbNewLine & _
-                  "                        WHERE id = @childRecordID" & vbNewLine & _
-                  IIf(blnCalculateIfEmpty, "                    EXEC [dbo].[sp_ASRFn_IsEmpty_2] @fResult OUTPUT, @oldNumValue" & vbNewLine, "") & _
-                  IIf(blnCalculateIfEmpty, "                    IF @fResult = 1" & vbNewLine, "") & _
-                  IIf(blnCalculateIfEmpty, "                    BEGIN" & vbNewLine, "") & _
-                  "                    SET @newNumValue = CONVERT(float, @col" & Trim$(Str$(lngCalcColumnID)) & ")" & vbNewLine & _
-                  "                    IF @oldNumValue <> @newNumValue SET @changesMade = 1" & vbNewLine & _
-                  "                    IF (@oldNumValue IS NULL) AND (NOT @newNumValue IS NULL) SET @changesMade = 1" & vbNewLine & _
-                  "                    IF (NOT @oldNumValue IS NULL) AND (@newNumValue IS NULL) SET @changesMade = 1" & vbNewLine & _
-                  IIf(blnCalculateIfEmpty, "                    END" & vbNewLine, "") & _
-                  "                END" & vbNewLine
-              Case dtTIMESTAMP
-                asCalcChildCode(4, iArrayIndex).Append vbNewLine & _
-                  "                IF @changesMade = 0" & vbNewLine & _
-                  "                BEGIN" & vbNewLine & _
-                  "                    SELECT @oldDateValue = convert(datetime, convert(varchar(20), " & sCalcColumn & ", 101))" & vbNewLine & _
-                  "                        FROM " & sCalcTable & vbNewLine & _
-                  "                        WHERE id = @childRecordID" & vbNewLine & _
-                  IIf(blnCalculateIfEmpty, "                    EXEC [dbo].[sp_ASRFn_IsEmpty_4] @fResult OUTPUT, @oldDateValue" & vbNewLine, "") & _
-                  IIf(blnCalculateIfEmpty, "                    IF @fResult = 1" & vbNewLine, "") & _
-                  IIf(blnCalculateIfEmpty, "                    BEGIN" & vbNewLine, "") & _
-                  "                    SET @newDateValue = CONVERT(datetime, convert(varchar(20), @col" & Trim$(Str$(lngCalcColumnID)) & ", 101))" & vbNewLine & _
-                  "                    IF @oldDateValue <> @newDateValue SET @changesMade = 1" & vbNewLine & _
-                  "                    IF (@oldDateValue IS NULL) AND (NOT @newDateValue IS NULL) SET @changesMade = 1" & vbNewLine & _
-                  "                    IF (NOT @oldDateValue IS NULL) AND (@newDateValue IS NULL) SET @changesMade = 1" & vbNewLine & _
-                  IIf(blnCalculateIfEmpty, "                    END" & vbNewLine, "") & _
-                  "                END" & vbNewLine
-              Case dtBIT
-                asCalcChildCode(4, iArrayIndex).Append vbNewLine & _
-                  "                IF @changesMade = 0" & vbNewLine & _
-                  "                BEGIN" & vbNewLine & _
-                  "                    SELECT @oldLogicValue = " & sCalcColumn & vbNewLine & _
-                  "                        FROM " & sCalcTable & vbNewLine & _
-                  "                        WHERE id = @childRecordID" & vbNewLine & _
-                  IIf(blnCalculateIfEmpty, "                    EXEC [dbo].[sp_ASRFn_IsEmpty_3] @fResult OUTPUT, @oldLogicValue" & vbNewLine, "") & _
-                  IIf(blnCalculateIfEmpty, "                    IF @fResult = 1" & vbNewLine, "") & _
-                  IIf(blnCalculateIfEmpty, "                    BEGIN" & vbNewLine, "") & _
-                  "                    SET @newLogicValue = @col" & Trim$(Str$(lngCalcColumnID)) & vbNewLine & _
-                  "                    IF @oldLogicValue <> @newLogicValue SET @changesMade = 1" & vbNewLine & _
-                  "                    IF (@oldLogicValue IS NULL) AND (NOT @newLogicValue IS NULL) SET @changesMade = 1" & vbNewLine & _
-                  "                    IF (NOT @oldLogicValue IS NULL) AND (@newLogicValue IS NULL) SET @changesMade = 1" & vbNewLine & _
-                  IIf(blnCalculateIfEmpty, "                    END" & vbNewLine, "") & _
-                  "                END" & vbNewLine
-            End Select
-                    
-        End Select
-      
-        rsCalcColumns.MoveNext
-      Loop
-      
-      rsCalcColumns.Close
-
-      ' Find the expressions that are dependent on the current expression.
-      'JPD 20040220 Fault 8111
-      sSQL = "SELECT DISTINCT ASRSysExpressions.exprID, ASRSysExpressions.returnType" & _
-        " FROM ASRSysExpressions" & _
-        " JOIN ASRSysExprComponents ON ASRSysExprComponents.exprID = ASRSysExpressions.exprID" & _
-        " WHERE (ASRSysExprComponents.calculationID = " & Trim$(Str$(lngExprID)) & _
-        "     AND ASRSysExprComponents.type = " & Trim$(Str$(giCOMPONENT_CALCULATION)) & ")" & _
-        "   OR (ASRSysExprComponents.filterID = " & Trim$(Str$(lngExprID)) & _
-        "     AND ASRSysExprComponents.type = " & Trim$(Str$(giCOMPONENT_FILTER)) & ")" & _
-        "   OR (ASRSysExprComponents.fieldSelectionFilter = " & Trim$(Str$(lngExprID)) & _
-        "     AND ASRSysExprComponents.type = " & Trim$(Str$(giCOMPONENT_FIELD)) & ")" & _
-        " UNION " & _
-        " SELECT a.exprID, a.returnType" & _
-        " FROM ASRSysExpressions a" & _
-        " JOIN ASRSysExprComponents b ON b.exprID = a.exprID" & _
-        " JOIN ASRSysExpressions c ON c.parentcomponentID = b.componentID" & _
-        " WHERE c.exprid = " & Trim$(Str$(lngExprID))
-        
-      rsExpressions.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly, adCmdText
-
-      ' Copy the information from the resultset into an array if the expression is
-      ' not already there (ie. already coded into the stored procedure).
-      iIndex = UBound(avExpressions, 2)
-      Do While Not rsExpressions.EOF
-'        iIndex = iIndex + 1
-
-        ' Check that the current expression is not already the array.
-        lngExprID = rsExpressions!ExprID
-        fExprDone = False
-        iIndex2 = 1
-        Do While iIndex2 <= UBound(avExpressions, 2)
-          If avExpressions(1, iIndex2) = lngExprID Then
-            fExprDone = True
-            Exit Do
-          End If
-          iIndex2 = iIndex2 + 1
-        Loop
-        
-        If Not fExprDone Then
-          iIndex = iIndex + 1
-          ReDim Preserve avExpressions(2, iIndex)
-          avExpressions(1, iIndex) = lngExprID
-          avExpressions(2, iIndex) = rsExpressions!ReturnType
-        End If
-        
-        rsExpressions.MoveNext
-      Loop
-      rsExpressions.Close
-      
-      iLoop = iLoop + 1
-    Loop
-  
-    With recColEdit
-      .Index = "idxName"
-      .Seek ">=", pLngCurrentTableID
-    
-      If Not .NoMatch Then
-        Do While Not .EOF
-          If !TableID <> pLngCurrentTableID Then
-            Exit Do
-          End If
-    
-          'JPD20020325 Fault 2098
-          'If (Not !deleted) And (!convertcase > 0) And (!DataType = dtVARCHAR) Then
-          'If (Not !deleted) And (((!convertcase > 0) And (!DataType = dtVARCHAR)) Or (!Trimming > 0 And !DataType = dtVARCHAR) Or (!DataType = dtLONGVARCHAR)) Then
-          strColumnID = Trim(Str(!ColumnID))
-
-          'JPD 20031016 Fault 7292
-          If (Not !Deleted) And _
-            (((!convertcase > 0) And (!DataType = dtVARCHAR)) Or _
-              (!Trimming > 0 And !DataType = dtVARCHAR) Or _
-              (!DataType = dtLONGVARCHAR) Or _
-              (!columntype = giCOLUMNTYPE_DATA) Or _
-              ((!columntype = giCOLUMNTYPE_DATA) And ((!ControlType = giCTRL_OPTIONGROUP) Or (!ControlType = giCTRL_COMBOBOX)))) Then
-            
-            ' Check if the required case conversion has already been done.
-            fFound = False
-            For iLoop = 1 To UBound(alngColumns)
-              If alngColumns(iLoop) = !ColumnID Then
-                fFound = True
-              End If
-            Next iLoop
-            
-            strColumnID = Trim(Str(!ColumnID))
-            strColumnName = !ColumnName
-            iControlType = !ControlType
-            
-            If Not fFound Then
-              
-              ' That column requires case conversion but is not calculated.
-              Select Case !DataType
-                Case dtVARCHAR
-                  sExprDeclarationCode.Append "        DECLARE @col" & strColumnID & " nvarchar(MAX)" & vbNewLine
-                Case dtLONGVARCHAR
-                  sExprDeclarationCode.Append "        DECLARE @col" & strColumnID & " varchar(14)" & vbNewLine
-                Case dtINTEGER
-                  sExprDeclarationCode.Append "        DECLARE @col" & strColumnID & " integer" & vbNewLine
-                Case dtNUMERIC
-                  sExprDeclarationCode.Append "        DECLARE @col" & strColumnID & " float" & vbNewLine
-                Case dtBIT
-                  sExprDeclarationCode.Append "        DECLARE @col" & strColumnID & " bit" & vbNewLine
-                Case dtTIMESTAMP
-                  sExprDeclarationCode.Append "        DECLARE @col" & strColumnID & " datetime" & vbNewLine
-              End Select
-    
-              If (Not !Deleted) And _
-                (((!convertcase > 0) And (!DataType = dtVARCHAR)) Or _
-                  (!Trimming > 0 And !DataType = dtVARCHAR) Or _
-                  (!DataType = dtLONGVARCHAR) Or _
-                  ((!columntype = giCOLUMNTYPE_DATA) And ((iControlType = giCTRL_OPTIONGROUP) Or (iControlType = giCTRL_COMBOBOX)))) Then
-    
-                asCalcSelfCode(1).Append vbNewLine & _
-                  "        IF (@fUpdatingDateDependentColumns = 0)" & vbNewLine & _
-                  "        BEGIN" & vbNewLine & _
-                  "            SELECT @col" & strColumnID & " = " & strColumnName & " FROM " & psTableName & " WHERE id = @recordID" & vbNewLine & _
-                  "            IF @col" & strColumnID & " IS null SET @col" & strColumnID & " = ''" & vbNewLine
-              
-                'JPD 20031016 Fault 7292
-                If ((!columntype = giCOLUMNTYPE_DATA) And ((iControlType = giCTRL_OPTIONGROUP) Or (iControlType = giCTRL_COMBOBOX))) Then
-                  recContValEdit.Index = "idxColumnID"
-                  recContValEdit.Seek ">=", !ColumnID
-                  
-                  If Not recContValEdit.NoMatch Then
-                    Do While Not recContValEdit.EOF
-                      If recContValEdit!ColumnID <> !ColumnID Then
-                        Exit Do
-                      End If
-                  
-                      ' Looks like this line in the trigger does nothing, but it does pick up on any trimming and case-conversion that is required.
-                      asCalcSelfCode(1).Append _
-                        "            IF LTRIM(RTRIM(@col" & strColumnID & ")) = '" & Trim(Replace(recContValEdit!value, "'", "''")) & "' SET @col" & strColumnID & " = '" & Replace(recContValEdit!value, "'", "''") & "'" & vbNewLine
-                  
-                      recContValEdit.MoveNext
-                    Loop
-                  End If
-                Else
-                  'JPD20020325 Fault 2098
-                  If (!DataType = dtVARCHAR) Then
-                    Select Case !convertcase
-                      Case 1 ' Convert to uppercase.
-                        asCalcSelfCode(1).Append _
-                          "    " & "        SET @col" & strColumnID & " = UPPER(@col" & strColumnID & ")" & vbNewLine
-                      Case 2 ' Convert to lowercase.
-                        asCalcSelfCode(1).Append _
-                          "    " & "        SET @col" & strColumnID & " = LOWER(@col" & strColumnID & ")" & vbNewLine
-                      Case 3 ' Convert to propercase.
-                        asCalcSelfCode(1).Append _
-                          "    " & "        EXEC dbo.sp_ASRFn_ConvertToPropercase @col" & strColumnID & " OUTPUT, @col" & strColumnID & vbNewLine
-                    End Select
-                
-                    ' Trimming
-                    Select Case !Trimming
-                      Case 1 ' Left & Right.
-                        asCalcSelfCode(1).Append _
-                          "    " & "        SET @col" & strColumnID & " = LTRIM(RTRIM(@col" & strColumnID & "))" & vbNewLine
-                      Case 2 ' Left Only
-                        asCalcSelfCode(1).Append _
-                          "    " & "        SET @col" & strColumnID & " = LTRIM(@col" & strColumnID & ")" & vbNewLine
-                      Case 3 ' Right Only
-                        asCalcSelfCode(1).Append _
-                          "    " & "        SET @col" & strColumnID & " = RTRIM(@col" & strColumnID & ")" & vbNewLine
-                    End Select
-    
-                  End If
-                  
-                  If (!DataType = dtLONGVARCHAR) Then
-                    asCalcSelfCode(1).Append _
-                      "    " & "        SET @col" & strColumnID & " = RTRIM(UPPER(@col" & strColumnID & "))" & vbNewLine
-                  End If
-                End If
-              
-                asCalcSelfCode(1).Append "        END" & vbNewLine
-      
-                asCalcSelfCode(2).Append IIf(LenB(asCalcSelfCode(2).ToString) <> 0, ", ", vbNullString) & _
-                  !ColumnName & " = " & "@col" & strColumnID
-      
-                asCalcSelfCode(3).Append vbNewLine & _
-                  "        IF (@changesMade = 0) AND (@fUpdatingDateDependentColumns = 0)" & vbNewLine & _
-                  "        BEGIN" & vbNewLine & _
-                  "            SELECT @oldCharValue = " & strColumnName & vbNewLine & _
-                  "                FROM " & psTableName & vbNewLine & _
-                  "                WHERE id = @recordID" & vbNewLine & _
-                  "            SET @newCharValue = CONVERT(varchar(max), @col" & strColumnID & ")" & vbNewLine & _
-                  "            EXEC dbo.sp_ASRCaseSensitiveCompare @comparisonResult OUTPUT, @oldCharValue, @newCharValue" & vbNewLine & _
-                  "            IF @comparisonResult = 0 SET @changesMade = 1" & vbNewLine & _
-                  "        END" & vbNewLine
-                
-                
-              'TM20060921 Fault 11516 - Added clause for Trimming = 'None' (0)
-              '                         and Case = 'No conversion'
-              ElseIf (Not !Deleted) And _
-                      (((!convertcase = 0) And (!DataType = dtVARCHAR)) Or _
-                        (!Trimming = 0 And !DataType = dtVARCHAR)) Then
-                   
-                
-                sAUSQL = "SELECT COUNT(ASRSysColumns.ColumnID) 'ReferenceCount' " & _
-                  "FROM ASRSysColumns " & _
-                  "WHERE ASRSysColumns.LookupTableID = " & pLngCurrentTableID & " " & _
-                  "  AND ASRSysColumns.AutoUpdateLookupValues = 1 "
-                rsAULookupColumns.Open sAUSQL, gADOCon, adOpenForwardOnly, adLockReadOnly
-                
-                If Not (rsAULookupColumns.BOF And rsAULookupColumns.EOF) Then
-                  If rsAULookupColumns!ReferenceCount > 0 Then
-                  
-                    asCalcSelfCode(1).Append vbNewLine & _
-                      "        IF (@fUpdatingDateDependentColumns = 0)" & vbNewLine & _
-                      "        BEGIN" & vbNewLine & _
-                      "            SELECT @col" & strColumnID & " = " & strColumnName & " FROM " & psTableName & " WHERE id = @recordID" & vbNewLine & _
-                      "            IF @col" & strColumnID & " IS null SET @col" & strColumnID & " = ''" & vbNewLine
-    
-                    asCalcSelfCode(1).Append "        END" & vbNewLine
-                    
-                  End If
-                End If
-                rsAULookupColumns.Close
-                Set rsAULookupColumns = Nothing
-
-              End If
-
-              'JPD 20050316 Fault 9910
-'''            Else
-'''              'TM22072004 - All working patterns need to be right trimmed.  This is expedient and really we should be forcing
-'''              'all WPs to be 14 chars in length.
-'''              If (!DataType = -1) And (!ControlType = giCTRL_WORKINGPATTERN) Then
-'''
-''''                asCalcSelfCode(1) = asCalcSelfCode(1) & vbNewLine & _
-'''                  "        IF (@fUpdatingDateDependentColumns = 0)" & vbNewLine & _
-'''                  "        BEGIN" & vbNewLine & _
-'''                  "            SELECT @col" & trim(str(!ColumnID)) & " = " & !ColumnName & " FROM " & psTableName & " WHERE id = @recordID" & vbNewLine & _
-'''                  "            IF @col" & trim(str(!ColumnID)) & " IS null SET @col" & trim(str(!ColumnID)) & " = ''" & vbNewLine
-'''
-'''                ' Trimming
-''''                Select Case !Trimming
-''''                  Case 3 ' Right Only
-'''                    asCalcSelfCode(1) = asCalcSelfCode(1) & _
-'''                      "    " & "        SET @col" & trim(str(!ColumnID)) & " = RTRIM(@col" & trim(str(!ColumnID)) & ")" & vbNewLine
-''''                End Select
-'''
-''''                asCalcSelfCode(1) = asCalcSelfCode(1) & _
-'''                  "        END" & vbNewLine
-'''
-'''              End If
-            
-            End If
-          
-'TM14072004 It has been decide to remove the GetFieldFromDatabaseRecord - AutoUpdate funcionality
-'due to it not being optional, this code should still be valid for a further solution to the
-'problem.
-'          Else
-'            'Need to declare column (with appropriate datatype) and initialise the column.
-'            If (!ColumnType <> giCOLUMNTYPE_SYSTEM) _
-'              And (!ColumnType <> giCOLUMNTYPE_LINK) Then
-'
-'              ' Check if the required case conversion has already been done.
-'              fFound = False
-'              For iLoop = 1 To UBound(alngColumns)
-'                If alngColumns(iLoop) = !ColumnID Then
-'                  fFound = True
-'                End If
-'              Next iLoop
-'
-'              sDeclareCode = vbNullString
-'              If Not fFound Then
-'
-'                ' That column requires case conversion but is not calculated.
-'                Select Case !DataType
-'                  Case dtVARCHAR
-'                    sDeclareCode = "        DECLARE @col" & trim(str(!ColumnID)) & " varchar(" & trim(str(!Size)) & ")" & vbNewLine
-'                  Case dtLONGVARCHAR
-'                    sDeclareCode = "        DECLARE @col" & trim(str(!ColumnID)) & " varchar(14)" & vbNewLine
-'                  Case dtINTEGER
-'                    sDeclareCode = "        DECLARE @col" & trim(str(!ColumnID)) & " integer" & vbNewLine
-'                  Case rdTypeNUMERIC
-'                    sDeclareCode = "        DECLARE @col" & trim(str(!ColumnID)) & " float" & vbNewLine
-'                  Case dtBIT
-'                    sDeclareCode = "        DECLARE @col" & trim(str(!ColumnID)) & " bit" & vbNewLine
-'                  Case dtTIMESTAMP
-'                    sDeclareCode = "        DECLARE @col" & trim(str(!ColumnID)) & " datetime" & vbNewLine
-'                End Select
-'
-'                sExprDeclarationCode = sExprDeclarationCode & sDeclareCode
-'
-'                sExtraSetCode = sExtraSetCode & "            SELECT @col" & trim(str(!ColumnID)) & " = " & !ColumnName & " FROM " & psTableName & " WHERE id = @recordID" & vbNewLine
-'
-'              End If
-'
-'            End If
-         
-          End If
-          
-          .MoveNext
-        Loop
-        
-        If LenB(sExtraSetCode) <> 0 Then
-        
-          sExprDeclarationCode.Append vbNewLine & vbNewLine & _
-            "        /* --------------------------------------------------------- */" & vbNewLine & _
-            "        /* Remaining column declaration code. */" & vbNewLine & _
-            "        /* --------------------------------------------------------- */" & vbNewLine & vbNewLine & _
-            sExtraSetCode & vbNewLine & vbNewLine
-        
-        End If
-        
-      End If
-    End With
-  End If
-  
+ 
   'MH19991110
   'This creates one stored procedure which can be called
   'for any/all of the three triggers
@@ -1682,13 +434,13 @@ Private Function SetTableTriggers_GetStrings(pLngCurrentTableID As Long, _
     'CreateEmailProcsForTable pLngCurrentTableID, psTableName, plngRecDescExprID, alngAuditColumns, sDeclareInsCols, sDeclareDelCols, sSelectInsCols, sSelectDelCols, sFetchInsCols, sFetchDelCols
     CreateEmailProcsForTable pLngCurrentTableID, psTableName, plngRecDescExprID, alngAuditColumns, _
       sDeclareInsCols, sDeclareDelCols, _
-      sSelectInsCols2, sSelectDelCols, _
+      sSelectInsCols, sSelectDelCols, _
       sFetchInsCols, sFetchDelCols
   
     ' Column/date based workflow links
     CreateWorkflowProcsForTable pLngCurrentTableID, psTableName, plngRecDescExprID, alngAuditColumns, _
       sDeclareInsCols, sDeclareDelCols, _
-      sSelectInsCols2, sSelectDelCols, _
+      sSelectInsCols, sSelectDelCols, _
       sFetchInsCols, sFetchDelCols
 
     sInsertWorkflowCode.Append WorkflowLinkTriggerCode_Insert
@@ -2029,27 +781,6 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
 '      "        END" & vbNewLine & _
 '      "        ELSE SET @recordDesc = ''" & vbNewLine & vbNewLine
     
-    fSelfCalcs = asCalcSelfCode(1).Length <> 0 And _
-       asCalcSelfCode(2).Length <> 0
-    
-    ' Check if we need to do the parent and child calculation code.
-    fParentCalcs = False
-    For iLoop = 1 To UBound(asCalcParentCode, 2)
-      If asCalcParentCode(2, iLoop).Length <> 0 And _
-        asCalcParentCode(3, iLoop).Length <> 0 Then
-        fParentCalcs = True
-        Exit For
-      End If
-    Next iLoop
-    
-    fChildCalcs = False
-    For iLoop = 1 To UBound(asCalcChildCode, 2)
-      If (asCalcChildCode(2, iLoop).Length <> 0) And _
-        (asCalcChildCode(3, iLoop).Length <> 0) Then
-        fChildCalcs = True
-        Exit For
-      End If
-    Next iLoop
 
     'Run this function that creates 3 trigger strings (insert, update & delete)
     SetTableTriggers_AutoUpdateGetField pLngCurrentTableID, psTableName
@@ -2058,7 +789,7 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
     ' Create the INSERT trigger creation string if required.
     '
     
-    strDiaryProcName = "dbo.spASRDiary_" & CStr(pLngCurrentTableID)
+    strDiaryProcName = "spASRDiary_" & CStr(pLngCurrentTableID)
       
     ' Create the trigger header.
 '    sInsertTriggerSQL.Append "/* ------------------------------------- */" & vbNewLine & _
@@ -2181,90 +912,6 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
 
     ' Insert the expression variable declaration code.
     sInsertTriggerSQL.Append sExprDeclarationCode.ToString & vbNewLine
-    
-    ' Insert the Self-referential Column Calculation trigger code.
-'    If Not fSelfCalcs Then
-'      sInsertTriggerSQL.Append _
-'        "        /* -------------------------------------------------------------- */" & vbNewLine & _
-'        "        /* No Self-referential Column Calculations. */" & vbNewLine & _
-'        "        /* -------------------------------------------------------------- */" & vbNewLine & vbNewLine
-'    Else
-'      sInsertTriggerSQL.Append _
-'        "        /* -------------------------------------------------------- */" & vbNewLine & _
-'        "        /* Self-referential Column Calculations. */" & vbNewLine & _
-'        "        /* -------------------------------------------------------- */" & vbNewLine & _
-'        "        SET @changesMade = 0" & vbNewLine & _
-'        asCalcSelfCode(1).ToString & vbNewLine & _
-'        "        /* Check if an update needs to be performed. */" & _
-'        asCalcSelfCode(3).ToString & vbNewLine & _
-'        "        /* Update the record with the calculated values. */" & vbNewLine & _
-'        "        IF @changesMade = 1" & vbNewLine & _
-'        "        BEGIN" & vbNewLine & _
-'        "            UPDATE " & psTableName & vbNewLine & _
-'        "                SET " & asCalcSelfCode(2).ToString & vbNewLine & _
-'        "                WHERE " & psTableName & ".ID = @recordID" & vbNewLine & _
-'        "        END" & vbNewLine & vbNewLine
-'    End If
-      
-'    ' Insert the Parental Column Calculation trigger code.
-'    If Not fParentCalcs Then
-'      sInsertTriggerSQL.Append _
-'        "        /* ---------------------------------------------------- */" & vbNewLine & _
-'        "        /* No Parental Column Calculations. */" & vbNewLine & _
-'        "        /* ---------------------------------------------------- */" & vbNewLine & vbNewLine
-'    Else
-'      sInsertTriggerSQL.Append _
-'        "        /* ----------------------------------------------------------- */" & vbNewLine & _
-'        "        /* Parental Column Calculations. */" & vbNewLine & _
-'        "        /* ----------------------------------------------------------- */" & vbNewLine & _
-'        "        IF (@fUpdatingDateDependentColumns = 0)" & vbNewLine & _
-'        "        BEGIN" & vbNewLine
-'
-'      For iLoop = 1 To UBound(asCalcParentCode, 2)
-'        If asCalcParentCode(2, iLoop).Length <> 0 And _
-'          asCalcParentCode(3, iLoop).Length <> 0 Then
-'
-'          sInsertTriggerSQL.Append _
-'            "            SET @changesMade = 0" & vbNewLine & vbNewLine & _
-'            asCalcParentCode(5, iLoop).ToString & vbNewLine & _
-'            "            IF @parentRecordID > 0" & vbNewLine & _
-'            "            BEGIN" & vbNewLine & _
-'            asCalcParentCode(2, iLoop).ToString & vbNewLine & _
-'            "            /* Check if an update needs to be performed. */" & vbNewLine & _
-'            asCalcParentCode(4, iLoop).ToString & vbNewLine & _
-'            "            /* Update the parent record with the calculated values. */" & vbNewLine & _
-'            "            IF @changesMade = 1" & vbNewLine & _
-'            "            BEGIN" & vbNewLine & _
-'            "                UPDATE " & asCalcParentCode(1, iLoop).ToString & vbNewLine & _
-'            "                    SET " & asCalcParentCode(3, iLoop).ToString & vbNewLine & _
-'            "                    WHERE " & asCalcParentCode(1, iLoop).ToString & ".ID = @parentRecordID" & vbNewLine & _
-'            "            END" & vbNewLine & _
-'            "        END" & vbNewLine & vbNewLine
-'        End If
-'      Next iLoop
-'
-'      sInsertTriggerSQL.Append _
-'        "        END" & vbNewLine
-'    End If
-
-    'JPD 20050131 Fault 8820
-'    sInsertTriggerSQL.Append _
-'      sInsertSpecialFunctionsCode
-'
-'    If sCalcDfltCode.Length = 0 Then
-'      sInsertTriggerSQL.Append _
-'        "        /* ------------------------------------------- */" & vbNewLine & _
-'        "        /* No Default Value Calculations. */" & vbNewLine & _
-'        "        /* ------------------------------------------- */" & vbNewLine & vbNewLine
-'    Else
-'      sInsertTriggerSQL.Append _
-'        "        /* ------------------------------------------- */" & vbNewLine & _
-'        "        /* Default Value Calculations. */" & vbNewLine & _
-'        "        /* ------------------------------------------- */" & vbNewLine & _
-'        sDfltExprDeclarationCode.ToString & vbNewLine & _
-'        sCalcDfltCode.ToString & vbNewLine & vbNewLine
-'    End If
-
 
     If pfIsAbsenceTable Then
       sInsertTriggerSQL.Append _
@@ -2386,7 +1033,7 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
       "        IF @fValidRecord = 1" & vbNewLine & _
       "        BEGIN" & vbNewLine & _
       "        IF EXISTS (SELECT Name FROM sysobjects WHERE type = 'P' AND name = 'spASROutlook_" & CStr(pLngCurrentTableID) & "')" & vbNewLine & _
-      "          EXEC spASROutlook_" & CStr(pLngCurrentTableID) & " @recordID" & vbNewLine & _
+      "          EXEC dbo.spASROutlook_" & CStr(pLngCurrentTableID) & " @recordID" & vbNewLine & _
       "        END" & vbNewLine
 
 
@@ -2444,20 +1091,13 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
     sInsertTriggerSQL.Append vbNewLine & _
       "        IF @fValidRecord = 1 FETCH NEXT FROM @cursInsertedRecords INTO @recordID, @TStamp, @recorddesc" & sFetchInsCols.ToString & sFetchDelCols.ToString & vbNewLine & _
       "    END" & vbNewLine & _
-      "    IF @fValidRecord = 1 CLOSE @cursInsertedRecords" & vbNewLine & _
-      "    DEALLOCATE @cursInsertedRecords" & vbNewLine & vbNewLine
+      "    IF @fValidRecord = 1 CLOSE @cursInsertedRecords;" & vbNewLine & _
+      "    DEALLOCATE @cursInsertedRecords;" & vbNewLine & vbNewLine
 '      "    --PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' End ([" & psTableName & "].[INS_" & psTableName & "]';" & vbNewLine & vbNewLine & _
 '      "END" & vbNewLine
-'
-'
-'    ' Remove the existing trigger if it exists.
-'    sSQL = "IF EXISTS" & _
-'      " (SELECT Name" & _
-'      "   FROM sysobjects" & _
-'      "   WHERE id = object_id('[INS_" & psTableName & "]')" & _
-'      "     AND objectproperty(id, N'IsTrigger') = 1)" & _
-'      " DROP TRIGGER [INS_" & psTableName & "]"
-'    gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
+
+    ' Add special functions
+    'sInsertTriggerSQL.Append sInsertSpecialFunctionsCode
 
     '************  DEBUG CODE  *****************
     If GetSystemSetting("development", "debug triggers", "0") = 1 Then
@@ -2467,32 +1107,7 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
     End If
     '*******************************************
     
-    ' Execute the INSERT trigger creation.
- '   gADOCon.Execute sInsertTriggerSQL.ToString, , adCmdText + adExecuteNoRecords
     
-    ' JPD20030110 Fault 4162
-    ' Ensure the HR Pro trigger fires before any custom triggers.
-    ' NB. Can only do this on SQL 2000 and above.
-'    If glngSQLVersion >= 8 Then
-'      sSQL = "EXEC dbo.sp_settriggerorder @triggername = '[INS_" & psTableName & "]', @order = 'LAST', @stmttype = 'INSERT'"
-'      gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
-'    End If
-    
-    '
-    ' Create the UPDATE trigger creation string if required.
-    '
-    ' Create the trigger header.
-'    sUpdateTriggerSQL.Append _
-'      "/* ------------------------------------- */" & vbNewLine & _
-'      "/* HR Pro created trigger. */" & vbNewLine & _
-'      "/* ------------------------------------- */" & vbNewLine & _
-'      "CREATE TRIGGER UPD_" & psTableName & " ON dbo." & psTableName & vbNewLine & _
-'      "FOR UPDATE" & vbNewLine & _
-'      "AS" & vbNewLine & _
-'      "BEGIN" & vbNewLine & _
-'      "    SET NOCOUNT ON" & vbNewLine & _
-'      "    --PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Start ([" & psTableName & "].[UPD_" & psTableName & "]';" & vbNewLine & vbNewLine
-
     sUpdateTriggerSQL.Append _
       "    DECLARE @recordID int," & vbNewLine & _
       "        @TStamp int," & vbNewLine & _
@@ -2577,10 +1192,10 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
       "    SET @fUpdatingDateDependentColumns = ISNULL(@fUpdatingDateDependentColumns, 0)" & vbNewLine & vbNewLine & _
       "    SET @fValidRecord = 1" & vbNewLine & vbNewLine
 
-    sUpdateTriggerSQL.Append _
-      "    -- Bypass trigger if the overnight job is running and this isn't the first trigger level." & vbNewLine & _
-      "    IF @fUpdatingDateDependentColumns = 1 AND TRIGGER_NESTLEVEL() > 1 RETURN" & vbNewLine & vbNewLine
-      
+'    sUpdateTriggerSQL.Append _
+'      "    -- Bypass trigger if the overnight job is running and this isn't the first trigger level." & vbNewLine & _
+'      "    IF @fUpdatingDateDependentColumns = 1 AND TRIGGER_NESTLEVEL() > 1 RETURN" & vbNewLine & vbNewLine
+'
     sUpdateTriggerSQL.Append _
       "    -- Payroll Export being manually run through Data Manager." & vbNewLine & _
       "    SET @iAccordManualSendType = (SELECT SettingValue FROM ASRSysSystemSettings WHERE [Section] = 'TMP_AccordTransferType' AND [SettingKey] = @@SPID);" & vbNewLine & _
@@ -2631,17 +1246,12 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
       "    BEGIN" & vbNewLine
     
 
-    'JPD 20050131 Fault 8820
-    sUpdateTriggerSQL.Append _
-      sUpdateSpecialFunctionsCode1
+    ' Add special functions
+    sUpdateTriggerSQL.Append sUpdateSpecialFunctionsCode1
    
     ' Insert the expression variable declaration code.
     sUpdateTriggerSQL.Append sExprDeclarationCode.ToString & vbNewLine
     
-    'JPD 20050131 Fault 8820
-    sUpdateTriggerSQL.Append _
-      sUpdateSpecialFunctionsCode2
-
     If pfIsAbsenceTable Then
       sUpdateTriggerSQL.Append _
         "        /* -------------------------------------------------------------------------------------------------------------------- */" & vbNewLine & _
@@ -2698,7 +1308,7 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
       "        IF @fValidRecord = 1" & vbNewLine & _
       "        BEGIN" & vbNewLine & _
       "          IF EXISTS (SELECT Name FROM sysobjects WHERE type = 'P' AND name = 'spASROutlook_" & CStr(pLngCurrentTableID) & "')" & vbNewLine & _
-      "            EXEC spASROutlook_" & CStr(pLngCurrentTableID) & " @recordID" & vbNewLine & _
+      "            EXEC dbo.spASROutlook_" & CStr(pLngCurrentTableID) & " @recordID" & vbNewLine & _
       "        END" & vbNewLine & vbNewLine
     
     
@@ -2737,51 +1347,18 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
         sUpdateAccordCode.ToString & _
         "        END" & vbNewLine & vbNewLine
     End If
-        
-    
-    '-------------------------------------------------------------------------------------------------------
-    
-    
-    'sUpdateTriggerSQL.Append _
-      "IF @@nestLevel = 1" & vbNewLine & _
-      "  DELETE FROM ASRSysTrigger WHERE login_time = @login_time" & vbNewLine & vbNewLine
-    
-    
-    'MH20070726
-    'sUpdateTriggerSQL.Append _
-      "END" & vbNewLine
 
-
-    
-    ' JPD20020913 - instead of making multiple queries to the triggered table, and
-    ' the 'inserted' and 'deleted' tables, we now get all of the required information in
-    ' the cursor that we used to loop through to get just the id of each record being
-    ' inserted/updated/deleted.
-    ' Here we are adding the required FETCH statements to the UPDATE trigger.
-    'sUpdateTriggerSQL.Append  vbNewLine & _
-      "        IF @fValidRecord = 1 FETCH NEXT FROM @cursInsertedRecords INTO @recordID" & vbNewLine & _
-      "    END" & vbNewLine & _
-      "    IF @fValidRecord = 1 CLOSE @cursInsertedRecords" & vbNewLine & _
-      "    DEALLOCATE @cursInsertedRecords" & vbNewLine & _
-      "END"
     sUpdateTriggerSQL.Append vbNewLine & _
       "        IF @fValidRecord = 1 FETCH NEXT FROM @cursInsertedRecords INTO @recordID, @TStamp, @recorddesc" & sFetchInsCols.ToString & sFetchDelCols.ToString & vbNewLine & _
       "    END" & vbNewLine & _
-      "    IF @fValidRecord = 1 CLOSE @cursInsertedRecords" & vbNewLine & _
-      "    DEALLOCATE @cursInsertedRecords" & vbNewLine
+      "    IF @fValidRecord = 1 CLOSE @cursInsertedRecords;" & vbNewLine & _
+      "    DEALLOCATE @cursInsertedRecords;" & vbNewLine
 '      "    --PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' End ([" & psTableName & "].[UPD_" & psTableName & "]';" & vbNewLine & vbNewLine & _
 '      "END" & vbNewLine
 
-'
-'    ' Remove the existing trigger if it exists.
-'    sSQL = "IF EXISTS" & _
-'      " (SELECT Name" & _
-'      "   FROM sysobjects" & _
-'      "   WHERE id = object_id('[UPD_" & psTableName & "]')" & _
-'      "     AND objectproperty(id, N'IsTrigger') = 1)" & _
-'      " DROP TRIGGER [UPD_" & psTableName & "]"
-'    gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
-    
+    ' Add special functions
+    sUpdateTriggerSQL.Append sUpdateSpecialFunctionsCode2
+
     '************  DEBUG CODE  *****************
     If GetSystemSetting("development", "debug triggers", "0") = 1 Then
       Open App.Path & "\trigger_" & psTableName & "_update.txt" For Append As #1
@@ -2790,32 +1367,6 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
     End If
     '*******************************************
 
-'    ' Execute the UPDATE trigger creation.
-'    gADOCon.Execute sUpdateTriggerSQL.ToString, , adCmdText + adExecuteNoRecords
-
-    ' JPD20030110 Fault 4162
-    ' Ensure the HR Pro trigger fires before any custom triggers.
-    ' NB. Can only do this on SQL 2000 and above.
-'    If glngSQLVersion >= 8 Then
-'      sSQL = "EXEC dbo.sp_settriggerorder @triggername = '[UPD_" & psTableName & "]', @order = 'LAST', @stmttype = 'UPDATE'"
-'      gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
-'    End If
-'
-    '
-    ' Create the DELETE trigger creation string if required.
-    '
-    ' Create the trigger header.
-'    sDeleteTriggerSQL.Append _
-'      "/* ------------------------------------- */" & vbNewLine & _
-'      "/* HR Pro created trigger. */" & vbNewLine & _
-'      "/* ------------------------------------- */" & vbNewLine & _
-'      "CREATE TRIGGER DEL_" & psTableName & " ON dbo." & psTableName & vbNewLine & _
-'      "FOR DELETE" & vbNewLine & _
-'      "AS" & vbNewLine & _
-'      "BEGIN" & vbNewLine & _
-'      "    SET NOCOUNT ON" & vbNewLine & _
-'      "    --PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Start ([" & psTableName & "].[DEL_" & psTableName & "]';" & vbNewLine & vbNewLine
-'
     sDeleteTriggerSQL.Append _
       "    DECLARE @recordID int," & vbNewLine & _
       "        @id int," & vbNewLine & _
@@ -2931,22 +1482,22 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
         If mbAccordAllowDelete Then
           sDeleteTriggerSQL.Append vbNewLine & _
             "        -- Prohibit delete if record has been transferred to Payroll" & vbNewLine & _
-            "        EXEC spASRAccordIsRecordInPayroll @recordID, " & rsAccordDetails.Fields("TransferTypeID").value & ", @hResult OUTPUT" & vbNewLine & _
+            "        EXEC dbo.spASRAccordIsRecordInPayroll @recordID, " & rsAccordDetails.Fields("TransferTypeID").value & ", @hResult OUTPUT" & vbNewLine & _
             "        IF @hResult <> 1" & vbNewLine & _
             "        BEGIN" & vbNewLine & _
-            "          EXEC spASRAccordDeleteTransactionsForRecord @recordID, " & rsAccordDetails.Fields("TransferTypeID").value & vbNewLine & _
+            "          EXEC dbo.spasRAccordDeleteTransactionsForRecord @recordID, " & rsAccordDetails.Fields("TransferTypeID").value & vbNewLine & _
             "        END" & vbNewLine & vbNewLine
         Else
           sDeleteTriggerSQL.Append vbNewLine & _
             "        -- Prohibit delete if record has been transferred to Payroll" & vbNewLine & _
-            "        EXEC spASRAccordIsRecordInPayroll @recordID, " & rsAccordDetails.Fields("TransferTypeID").value & ", @hResult OUTPUT" & vbNewLine & _
+            "        EXEC dbo.spASRAccordIsRecordInPayroll @recordID, " & rsAccordDetails.Fields("TransferTypeID").value & ", @hResult OUTPUT" & vbNewLine & _
             "        IF @hResult = 1" & vbNewLine & _
             "        BEGIN" & vbNewLine & _
             "          RAISERROR ('You cannot delete a record that has been transferred to payroll.',16,@hResult)" & vbNewLine & _
             "          ROLLBACK TRANSACTION" & vbNewLine & _
             "          RETURN" & vbNewLine & _
             "        END" & vbNewLine & _
-            "        ELSE EXEC spASRAccordDeleteTransactionsForRecord @recordID, " & rsAccordDetails.Fields("TransferTypeID").value & vbNewLine & vbNewLine
+            "        ELSE EXEC dbo.spASRAccordDeleteTransactionsForRecord @recordID, " & rsAccordDetails.Fields("TransferTypeID").value & vbNewLine & vbNewLine
         End If
       End If
     End If
@@ -3133,12 +1684,7 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
 '      sDeleteTriggerSQL.Append _
 '        "        END" & vbNewLine
 '    End If
-    
-    'JPD 20050131 Fault 8820
-    sDeleteTriggerSQL.Append _
-      sDeleteSpecialFunctionsCode
-    
-    
+
     sDeleteTriggerSQL.Append vbNewLine & _
       "        /* ----------------------- */" & vbNewLine & _
       "        /* Diary Events. */" & vbNewLine & _
@@ -3235,17 +1781,10 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
       "    DEALLOCATE @cursDeletedRecords" & vbNewLine
 '      "    --PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' End ([" & psTableName & "].[DEL_" & psTableName & "]';" & vbNewLine & vbNewLine & _
 '      "END"
-'
-'    ' Remove the existing trigger if it exists.
-'    sSQL = "IF EXISTS" & _
-'      " (SELECT Name" & _
-'      "   FROM sysobjects" & _
-'      "   WHERE id = object_id('[DEL_" & psTableName & "]')" & _
-'      "     AND objectproperty(id, N'IsTrigger') = 1)" & _
-'      " DROP TRIGGER [DEL_" & psTableName & "]"
-'    gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
-'
-'
+
+    ' Add special functions
+    sDeleteTriggerSQL.Append sDeleteSpecialFunctionsCode
+
     'MH20090630
     sDeleteTriggerSQL.TheString = RemoveDuplicateDeclares(sDeleteTriggerSQL.ToString)
     
@@ -3295,7 +1834,7 @@ End Function
 Private Function SetTableTriggers_AccordTransfer(ByRef sInsertAccordCode As HRProSystemMgr.cStringBuilder _
 , ByRef sUpdateAccordCode As HRProSystemMgr.cStringBuilder, ByRef sDeleteAccordCode As HRProSystemMgr.cStringBuilder _
 , ByRef alngAuditColumns() As Long _
-, ByRef sSelectInsCols2 As HRProSystemMgr.cStringBuilder, ByRef sSelectDelCols As HRProSystemMgr.cStringBuilder _
+, ByRef sSelectInsCols As HRProSystemMgr.cStringBuilder, ByRef sSelectDelCols As HRProSystemMgr.cStringBuilder _
 , ByRef sFetchInsCols As HRProSystemMgr.cStringBuilder, ByRef sFetchDelCols As HRProSystemMgr.cStringBuilder _
 , ByRef sDeclareInsCols As HRProSystemMgr.cStringBuilder, ByRef sDeclareDelCols As HRProSystemMgr.cStringBuilder _
 , ByVal pLngCurrentTableID As Long) As Boolean
@@ -3460,7 +1999,7 @@ Private Function SetTableTriggers_AccordTransfer(ByRef sInsertAccordCode As HRPr
                 sColumnName = GetColumnName(lngASRColumnID, True)
     
                 sSelectInsCols.Append ", inserted." & sColumnName
-                sSelectInsCols2.Append ",@insCol_" & sASRColumnID & "=" & sColumnName
+            '    sSelectInsCols2.Append ",@insCol_" & sASRColumnID & "=" & sColumnName
                 sSelectDelCols.Append ", deleted." & sColumnName
     
                 sFetchInsCols.Append ", @insCol_" & sASRColumnID
@@ -3884,7 +2423,7 @@ Private Function SetTableTriggers_AccordTransfer(ByRef sInsertAccordCode As HRPr
   
     sAccordProhibitFields.TheString = vbNewLine _
       & "          -- Prohibit update of key fields if record has been transferred to Payroll" & vbNewLine _
-      & "          EXEC spASRAccordIsRecordInPayroll @recordID, " & iTransferTypeID & ", @hResult OUTPUT" & vbNewLine _
+      & "          EXEC dbo.spASRAccordIsRecordInPayroll @recordID, " & iTransferTypeID & ", @hResult OUTPUT" & vbNewLine _
       & "          IF (@hResult = 1) AND (@fUpdatingDateDependentColumns = 0)" & vbNewLine _
       & "          BEGIN" & vbNewLine _
       & sAccordProhibitFields.ToString _
@@ -4806,148 +3345,15 @@ Private Function SetTableTriggers_SpecialFunctions( _
     sInsertUpdate.TheString = vbNullString
     sUpdateUpdate.TheString = vbNullString
     sDeleteUpdate.TheString = vbNullString
-       
+
     ReDim alngTables_Done(0)
-       
-    If LenB(sAbsenceStartDate) <> 0 Then
-'      AE20080423 Fault #13116
-'      sUpdateSelect.Append _
-'        IIf(sUpdateSelect.Length <> 0, "," & vbNewLine, vbNullString) & _
-'        "            @insSFStartDate = inserted." & sAbsenceStartDate & "," & vbNewLine & _
-'        "            @delSFStartDate = deleted." & sAbsenceStartDate
-      sUpdateSelect.Append _
-        IIf(sUpdateSelect.Length <> 0, "," & vbNewLine, vbNullString) & _
-        "            @insCol_" & Trim(Str(lngAbsenceStartDate)) & " = inserted." & sAbsenceStartDate & "," & vbNewLine & _
-        "            @delCol_" & Trim(Str(lngAbsenceStartDate)) & " = deleted." & sAbsenceStartDate
-        
-'      AE20080423 Fault #13116
-'      sUpdateUpdate.Append _
-'        IIf(sUpdateUpdate.Length <> 0, vbNewLine, vbNullString) & _
-'        "            IF @insSFStartDate <> @delSFStartDate SET @changesMade = 1" & vbNewLine & _
-'        "            IF (@insSFStartDate IS NULL) AND (NOT @delSFStartDate IS NULL) SET @changesMade = 1" & vbNewLine & _
-'        "            IF (NOT @insSFStartDate IS NULL) AND (@delSFStartDate IS NULL) SET @changesMade = 1" & vbNewLine
-
-      sUpdateUpdate.Append _
-        IIf(sUpdateUpdate.Length <> 0, vbNewLine, vbNullString) & _
-        "            IF @insCol_" & Trim(Str(lngAbsenceStartDate)) & " <> @delCol_" & Trim(Str(lngAbsenceStartDate)) & " SET @changesMade = 1" & vbNewLine & _
-        "            IF (@insCol_" & Trim(Str(lngAbsenceStartDate)) & " IS NULL) AND (NOT @delCol_" & Trim(Str(lngAbsenceStartDate)) & " IS NULL) SET @changesMade = 1" & vbNewLine & _
-        "            IF (NOT @insCol_" & Trim(Str(lngAbsenceStartDate)) & " IS NULL) AND (@delCol_" & Trim(Str(lngAbsenceStartDate)) & " IS NULL) SET @changesMade = 1" & vbNewLine
-        
-        SetTableTriggers_SpecialFunctions_AddColumn alngAuditColumns, lngAbsenceStartDate
-    End If
-    
-    If LenB(sAbsenceStartSession) <> 0 Then
-'      AE20080423 Fault #13116
-'      sUpdateSelect.Append _
-'        IIf(sUpdateSelect.Length <> 0, "," & vbNewLine, vbNullString) & _
-'        "            @insSFStartSession = inserted." & sAbsenceStartSession & "," & vbNewLine & _
-'        "            @delSFStartSession = deleted." & sAbsenceStartSession
-
-      sUpdateSelect.Append _
-        IIf(sUpdateSelect.Length <> 0, "," & vbNewLine, vbNullString) & _
-        "            @insCol_" & Trim(Str(lngAbsenceStartSession)) & " = inserted." & sAbsenceStartSession & "," & vbNewLine & _
-        "            @delCol_" & Trim(Str(lngAbsenceStartSession)) & " = deleted." & sAbsenceStartSession
-        
-'      AE20080423 Fault #13116
-'      sUpdateUpdate.Append _
-'        IIf(sUpdateUpdate.Length <> 0, vbNewLine, vbNullString) & _
-'        "            EXEC dbo.sp_ASRCaseSensitiveCompare @comparisonResult OUTPUT, @insSFStartSession, @delSFStartSession" & vbNewLine & _
-'        "            IF @comparisonResult = 0 SET @changesMade = 1" & vbNewLine
-
-      sUpdateUpdate.Append _
-        IIf(sUpdateUpdate.Length <> 0, vbNewLine, vbNullString) & _
-        "            EXEC dbo.sp_ASRCaseSensitiveCompare @comparisonResult OUTPUT, @insCol_" & Trim(Str(lngAbsenceStartSession)) & ", @delCol_" & Trim(Str(lngAbsenceStartSession)) & "" & vbNewLine & _
-        "            IF @comparisonResult = 0 SET @changesMade = 1" & vbNewLine
-    
-      SetTableTriggers_SpecialFunctions_AddColumn alngAuditColumns, lngAbsenceStartSession
-    End If
-        
-    If LenB(sAbsenceEndDate) <> 0 Then
-  '      AE20080423 Fault #13116
-'      sUpdateSelect.Append _
-'        IIf(sUpdateSelect.Length <> 0, "," & vbNewLine, vbNullString) & _
-'        "            @insSFEndDate = inserted." & sAbsenceEndDate & "," & vbNewLine & _
-'        "            @delSFEndDate = deleted." & sAbsenceEndDate
-
-      sUpdateSelect.Append _
-        IIf(sUpdateSelect.Length <> 0, "," & vbNewLine, vbNullString) & _
-        "            @insCol_" & Trim(Str(lngAbsenceEndDate)) & " = inserted." & sAbsenceEndDate & "," & vbNewLine & _
-        "            @delCol_" & Trim(Str(lngAbsenceEndDate)) & " = deleted." & sAbsenceEndDate
-
-'      AE20080423 Fault #13116
-'      sUpdateUpdate.Append _
-'        IIf(sUpdateUpdate.Length <> 0, vbNewLine, vbNullString) & _
-'        "            IF @insSFEndDate <> @delSFEndDate SET @changesMade = 1" & vbNewLine & _
-'        "            IF (@insSFEndDate IS NULL) AND (NOT @delSFEndDate IS NULL) SET @changesMade = 1" & vbNewLine & _
-'        "            IF (NOT @insSFEndDate IS NULL) AND (@delSFEndDate IS NULL) SET @changesMade = 1" & vbNewLine
-    
-      sUpdateUpdate.Append _
-        IIf(sUpdateUpdate.Length <> 0, vbNewLine, vbNullString) & _
-        "            IF @insCol_" & Trim(Str(lngAbsenceEndDate)) & " <> @delCol_" & Trim(Str(lngAbsenceEndDate)) & " SET @changesMade = 1" & vbNewLine & _
-        "            IF (@insCol_" & Trim(Str(lngAbsenceEndDate)) & " IS NULL) AND (NOT @delCol_" & Trim(Str(lngAbsenceEndDate)) & " IS NULL) SET @changesMade = 1" & vbNewLine & _
-        "            IF (NOT @insCol_" & Trim(Str(lngAbsenceEndDate)) & " IS NULL) AND (@delCol_" & Trim(Str(lngAbsenceEndDate)) & " IS NULL) SET @changesMade = 1" & vbNewLine
-    
-      SetTableTriggers_SpecialFunctions_AddColumn alngAuditColumns, lngAbsenceEndDate
-    End If
-    
-    If LenB(sAbsenceEndSession) <> 0 Then
-'      AE20080423 Fault #13116
-'      sUpdateSelect.Append _
-'        IIf(sUpdateSelect.Length <> 0, "," & vbNewLine, vbNullString) & _
-'        "            @insSFEndSession = inserted." & sAbsenceEndSession & "," & vbNewLine & _
-'        "            @delSFEndSession = deleted." & sAbsenceEndSession
-
-      sUpdateSelect.Append _
-        IIf(sUpdateSelect.Length <> 0, "," & vbNewLine, vbNullString) & _
-        "            @insCol_" & Trim(Str(lngAbsenceEndSession)) & " = inserted." & sAbsenceEndSession & "," & vbNewLine & _
-        "            @delCol_" & Trim(Str(lngAbsenceEndSession)) & " = deleted." & sAbsenceEndSession
-
-'      AE20080423 Fault #13116
-'      sUpdateUpdate.Append _
-'        IIf(sUpdateUpdate.Length <> 0, vbNewLine, vbNullString) & _
-'        "            EXEC dbo.sp_ASRCaseSensitiveCompare @comparisonResult OUTPUT, @insSFEndSession, @delSFEndSession" & vbNewLine & _
-'        "            IF @comparisonResult = 0 SET @changesMade = 1" & vbNewLine
-
-      sUpdateUpdate.Append _
-        IIf(sUpdateUpdate.Length <> 0, vbNewLine, vbNullString) & _
-        "            EXEC dbo.sp_ASRCaseSensitiveCompare @comparisonResult OUTPUT, @insCol_" & Trim(Str(lngAbsenceEndSession)) & ", @delCol_" & Trim(Str(lngAbsenceEndSession)) & "" & vbNewLine & _
-        "            IF @comparisonResult = 0 SET @changesMade = 1" & vbNewLine
-        
-      SetTableTriggers_SpecialFunctions_AddColumn alngAuditColumns, lngAbsenceEndSession
-    End If
-    
-    If LenB(sAbsenceType) <> 0 Then
-'      AE20080423 Fault #13116
-'      sUpdateSelect.Append _
-'        IIf(sUpdateSelect.Length <> 0, "," & vbNewLine, vbNullString) & _
-'        "            @insSFType = inserted." & sAbsenceType & "," & vbNewLine & _
-'        "            @delSFType = deleted." & sAbsenceType
-
-      sUpdateSelect.Append _
-        IIf(sUpdateSelect.Length <> 0, "," & vbNewLine, vbNullString) & _
-        "            @insCol_" & Trim(Str(lngAbsenceType)) & " = inserted." & sAbsenceType & "," & vbNewLine & _
-        "            @delCol_" & Trim(Str(lngAbsenceType)) & " = deleted." & sAbsenceType
-
-'      AE20080423 Fault #13116
-'      sUpdateUpdate.Append _
-'        IIf(sUpdateUpdate.Length <> 0, vbNewLine, vbNullString) & _
-'        "            EXEC dbo.sp_ASRCaseSensitiveCompare @comparisonResult OUTPUT, @insSFType, @delSFType" & vbNewLine & _
-'        "            IF @comparisonResult = 0 SET @changesMade = 1" & vbNewLine
-      
-      sUpdateUpdate.Append _
-        IIf(sUpdateUpdate.Length <> 0, vbNewLine, vbNullString) & _
-        "            EXEC dbo.sp_ASRCaseSensitiveCompare @comparisonResult OUTPUT, @insCol_" & Trim(Str(lngAbsenceType)) & ", @delCol_" & Trim(Str(lngAbsenceType)) & "" & vbNewLine & _
-        "            IF @comparisonResult = 0 SET @changesMade = 1" & vbNewLine
-    
-      SetTableTriggers_SpecialFunctions_AddColumn alngAuditColumns, lngAbsenceType
-    End If
 
     If sUpdateUpdate.Length <> 0 Then
       sUpdateUpdate.Insert 0, "SET @changesMade = 0" & vbNewLine & vbNewLine
       sUpdateUpdate.Append vbNewLine & _
         "            IF @changesMade = 1" & vbNewLine & _
         "            BEGIN" & vbNewLine
-        
+
       fTableDone = False
       For iCount = 1 To UBound(alngTables_AbsenceBetween2Dates)
         fFound = False
@@ -4978,32 +3384,28 @@ Private Function SetTableTriggers_SpecialFunctions( _
             fTableDone = True
             sTableName = GetTableName(alngTables_AbsenceBetween2Dates(iCount))
             sUpdateUpdate.Append _
-              "                UPDATE " & sTableName & vbNewLine & _
-              "                SET " & sTableName & "." & sColumnName & " = " & sTableName & "." & sColumnName & vbNewLine & _
-              "                WHERE " & sTableName & ".ID" & IIf(alngTables_AbsenceBetween2Dates(iCount) = lngPersonnelTable, vbNullString, "_" & CStr(lngPersonnelTable)) & " = " & vbNewLine & _
-              "                    (SELECT inserted.ID_" & CStr(lngPersonnelTable) & vbNewLine & _
-              "                    FROM inserted" & vbNewLine & _
-              "                    WHERE inserted.ID = @recordID)" & vbNewLine & _
-              "                OR " & sTableName & ".ID" & IIf(alngTables_AbsenceBetween2Dates(iCount) = lngPersonnelTable, vbNullString, "_" & CStr(lngPersonnelTable)) & " = " & vbNewLine & _
-              "                    (SELECT deleted.ID_" & CStr(lngPersonnelTable) & vbNewLine & _
-              "                    FROM deleted" & vbNewLine & _
-              "                    WHERE deleted.ID = @recordID)" & vbNewLine
+              "    UPDATE dbo." & sTableName & vbNewLine & _
+              "        SET " & sTableName & "." & sColumnName & " = " & sTableName & "." & sColumnName & vbNewLine & _
+              "        WHERE " & sTableName & ".ID" & IIf(alngTables_AbsenceBetween2Dates(iCount) = lngPersonnelTable, vbNullString, "_" & CStr(lngPersonnelTable)) & " IN " & vbNewLine & _
+              "            (SELECT inserted.ID_" & CStr(lngPersonnelTable) & vbNewLine & _
+              "            FROM inserted)" & vbNewLine & _
+              "        OR " & sTableName & ".ID" & IIf(alngTables_AbsenceBetween2Dates(iCount) = lngPersonnelTable, vbNullString, "_" & CStr(lngPersonnelTable)) & " IN " & vbNewLine & _
+              "            (SELECT deleted.ID_" & CStr(lngPersonnelTable) & vbNewLine & _
+              "            FROM deleted)" & vbNewLine
                 
             sInsertUpdate.Append _
-              "                UPDATE " & sTableName & vbNewLine & _
-              "                SET " & sTableName & "." & sColumnName & " = " & sTableName & "." & sColumnName & vbNewLine & _
-              "                WHERE " & sTableName & ".ID" & IIf(alngTables_AbsenceBetween2Dates(iCount) = lngPersonnelTable, vbNullString, "_" & CStr(lngPersonnelTable)) & " = " & vbNewLine & _
-              "                    (SELECT inserted.ID_" & CStr(lngPersonnelTable) & vbNewLine & _
-              "                    FROM inserted" & vbNewLine & _
-              "                    WHERE inserted.ID = @recordID)"
+              "    UPDATE dbo." & sTableName & vbNewLine & _
+              "        SET " & sTableName & "." & sColumnName & " = " & sTableName & "." & sColumnName & vbNewLine & _
+              "        WHERE " & sTableName & ".ID" & IIf(alngTables_AbsenceBetween2Dates(iCount) = lngPersonnelTable, vbNullString, "_" & CStr(lngPersonnelTable)) & " IN " & vbNewLine & _
+              "            (SELECT inserted.ID_" & CStr(lngPersonnelTable) & vbNewLine & _
+              "            FROM inserted)"
             
             sDeleteUpdate.Append _
-              "                UPDATE " & sTableName & vbNewLine & _
-              "                SET " & sTableName & "." & sColumnName & " = " & sTableName & "." & sColumnName & vbNewLine & _
-              "                WHERE " & sTableName & ".ID" & IIf(alngTables_AbsenceBetween2Dates(iCount) = lngPersonnelTable, vbNullString, "_" & CStr(lngPersonnelTable)) & " = " & vbNewLine & _
-              "                    (SELECT deleted.ID_" & CStr(lngPersonnelTable) & vbNewLine & _
-              "                    FROM deleted" & vbNewLine & _
-              "                    WHERE deleted.ID = @recordID)"
+              "    UPDATE dbo." & sTableName & vbNewLine & _
+              "        SET " & sTableName & "." & sColumnName & " = " & sTableName & "." & sColumnName & vbNewLine & _
+              "        WHERE " & sTableName & ".ID" & IIf(alngTables_AbsenceBetween2Dates(iCount) = lngPersonnelTable, vbNullString, "_" & CStr(lngPersonnelTable)) & " IN " & vbNewLine & _
+              "            (SELECT deleted.ID_" & CStr(lngPersonnelTable) & vbNewLine & _
+              "            FROM deleted)"
             
             ReDim Preserve alngTables_Done(UBound(alngTables_Done) + 1)
             alngTables_Done(UBound(alngTables_Done)) = alngTables_AbsenceBetween2Dates(iCount)
@@ -5011,7 +3413,7 @@ Private Function SetTableTriggers_SpecialFunctions( _
         End If
       Next iCount
         
-      sUpdateUpdate.Append "            END"
+  '    sUpdateUpdate.Append "            END"
         
       If Not fTableDone Then
         sUpdateUpdate.TheString = vbNullString
@@ -5029,270 +3431,114 @@ Private Function SetTableTriggers_SpecialFunctions( _
       sDeleteUpdate.ToString
   End If
   
-  If fIsBankHolRegionTable Then
-    ' Don't do anything. If required, this will be done by the lookup column 'autoUpdate' code.
-  End If
-  
-  If fIsBankHolTable Then
-    ' Need to update the personnel or region history records, only if the bHolDate
-    ' value has changed.
-    sInsertUpdate.TheString = vbNullString
-    sUpdateUpdate.TheString = vbNullString
-    sDeleteUpdate.TheString = vbNullString
-       
-    ReDim alngTables_Done(0)
-       
-    If LenB(sBHolDate) <> 0 And _
-      (lngStaticRegion > 0 Or lngHistRegion > 0) Then
-            
-'      AE20080423 Fault #13116
-'      sUpdateSelect.Append _
-'        IIf(sUpdateSelect.Length <> 0, "," & vbNewLine, vbNullString) & _
-'        "            @insSFBHolDate = inserted." & sBHolDate & "," & vbNewLine & _
-'        "            @delSFBHolDate = deleted." & sBHolDate
-
-      sUpdateSelect.Append _
-        IIf(sUpdateSelect.Length <> 0, "," & vbNewLine, vbNullString) & _
-        "            @insCol_" & Trim(Str(lngBHolDate)) & " = inserted." & sBHolDate & "," & vbNewLine & _
-        "            @insCol_" & Trim(Str(lngBHolDate)) & " = deleted." & sBHolDate
-
-'      AE20080423 Fault #13116
-'      sUpdateUpdate.Append _
-'        IIf(sUpdateUpdate.Length <> 0, vbNewLine, vbNullString) & _
-'        "            IF @insSFBHolDate <> @delSFBHolDate SET @changesMade = 1" & vbNewLine & _
-'        "            IF (@insSFBHolDate IS NULL) AND (NOT @delSFBHolDate IS NULL) SET @changesMade = 1" & vbNewLine & _
-'        "            IF (NOT @insSFBHolDate IS NULL) AND (@delSFBHolDate IS NULL) SET @changesMade = 1" & vbNewLine
-    
-      sUpdateUpdate.Append _
-        IIf(sUpdateUpdate.Length <> 0, vbNewLine, vbNullString) & _
-        "            IF @insCol_" & Trim(Str(lngBHolDate)) & " <> @delCol_" & Trim(Str(lngBHolDate)) & " SET @changesMade = 1" & vbNewLine & _
-        "            IF (@insCol_" & Trim(Str(lngBHolDate)) & " IS NULL) AND (NOT @delCol_" & Trim(Str(lngBHolDate)) & " IS NULL) SET @changesMade = 1" & vbNewLine & _
-        "            IF (NOT @insCol_" & Trim(Str(lngBHolDate)) & " IS NULL) AND (@delCol_" & Trim(Str(lngBHolDate)) & " IS NULL) SET @changesMade = 1" & vbNewLine
-        
-      SetTableTriggers_SpecialFunctions_AddColumn alngAuditColumns, lngBHolDate
-    End If
-  
-    If sUpdateUpdate.Length <> 0 Then
-      sUpdateUpdate.TheString = _
-        "            SET @changesMade = 0" & vbNewLine & vbNewLine & _
-        sUpdateUpdate.ToString & vbNewLine & _
-        "            IF @changesMade = 1" & vbNewLine & _
-        "            BEGIN" & vbNewLine
-
-      If (lngStaticRegion > 0) Then
-        lngTableID = lngPersonnelTable
-        sColumnName = sStaticRegion
-      Else
-        lngTableID = lngRegionTable
-        sColumnName = sHistRegion
-      End If
-      
-      If LenB(sColumnName) <> 0 Then
-        fTableDone = True
-        sTableName = GetTableName(lngTableID)
-   
-        sUpdateUpdate.Append _
-          "                UPDATE " & sTableName & vbNewLine & _
-          "                SET " & sTableName & "." & sColumnName & " = " & sTableName & "." & sColumnName & vbNewLine & _
-          "                WHERE " & sTableName & "." & sColumnName & " = " & vbNewLine & _
-          "                    (SELECT " & sBankHolRegionTable & "." & sBHolRegion & vbNewLine & _
-          "                    FROM " & sBankHolRegionTable & vbNewLine & _
-          "                    WHERE " & sBankHolRegionTable & ".ID = " & vbNewLine & _
-          "                        (SELECT inserted.id_" & CStr(lngBankHolRegionTable) & vbNewLine & _
-          "                        FROM inserted" & vbNewLine & _
-          "                        WHERE inserted.ID = @recordID))" & vbNewLine
-  
-        sInsertUpdate.Append _
-          "                UPDATE " & sTableName & vbNewLine & _
-          "                SET " & sTableName & "." & sColumnName & " = " & sTableName & "." & sColumnName & vbNewLine & _
-          "                WHERE " & sTableName & "." & sColumnName & " = " & vbNewLine & _
-          "                    (SELECT " & sBankHolRegionTable & "." & sBHolRegion & vbNewLine & _
-          "                    FROM " & sBankHolRegionTable & vbNewLine & _
-          "                    WHERE " & sBankHolRegionTable & ".ID = " & vbNewLine & _
-          "                        (SELECT inserted.id_" & CStr(lngBankHolRegionTable) & vbNewLine & _
-          "                        FROM inserted" & vbNewLine & _
-          "                        WHERE inserted.ID = @recordID))" & vbNewLine
-        
-        sDeleteUpdate.Append _
-          "                UPDATE " & sTableName & vbNewLine & _
-          "                SET " & sTableName & "." & sColumnName & " = " & sTableName & "." & sColumnName & vbNewLine & _
-          "                WHERE " & sTableName & "." & sColumnName & " = " & vbNewLine & _
-          "                    (SELECT " & sBankHolRegionTable & "." & sBHolRegion & vbNewLine & _
-          "                    FROM " & sBankHolRegionTable & vbNewLine & _
-          "                    WHERE " & sBankHolRegionTable & ".ID = " & vbNewLine & _
-          "                        (SELECT deleted.id_" & CStr(lngBankHolRegionTable) & vbNewLine & _
-          "                        FROM deleted" & vbNewLine & _
-          "                        WHERE deleted.ID = @recordID))" & vbNewLine
-      End If
-      
-      sUpdateUpdate.Append "            END"
-
-      If Not fTableDone Then
-        sUpdateUpdate.TheString = vbNullString
-      End If
-    End If
-
-    sInsertSpecialFunctionsCode = sInsertSpecialFunctionsCode & _
-      IIf(LenB(sInsertSpecialFunctionsCode) <> 0, vbNewLine & vbNewLine, vbNullString) & _
-      sInsertUpdate.ToString
-    sUpdateSpecialFunctionsCode2 = sUpdateSpecialFunctionsCode2 & _
-      IIf(LenB(sUpdateSpecialFunctionsCode2) <> 0, vbNewLine & vbNewLine, vbNullString) & _
-      sUpdateUpdate.ToString
-    sDeleteSpecialFunctionsCode = sDeleteSpecialFunctionsCode & _
-      IIf(LenB(sDeleteSpecialFunctionsCode) <> 0, vbNewLine & vbNewLine, vbNullString) & _
-      sDeleteUpdate.ToString
-  End If
-  
-  If fIsPersonnelTable Then
-    sInsertUpdate.TheString = vbNullString
-    sUpdateUpdate.TheString = vbNullString
-    sDeleteUpdate.TheString = vbNullString
-       
-    ReDim alngTables_Done(0)
-       
-    If LenB(sStaticRegion) <> 0 Then
-'      AE20080423 Fault #13116
-'      sUpdateSelect.Append _
-'        IIf(sUpdateSelect.Length <> 0, "," & vbNewLine, vbNullString) & _
-'        "            @insSFRegion = inserted." & sStaticRegion & "," & vbNewLine & _
-'        "            @delSFRegion = deleted." & sStaticRegion
-
-      sUpdateSelect.Append _
-        IIf(sUpdateSelect.Length <> 0, "," & vbNewLine, vbNullString) & _
-        "            @insCol_" & Trim(Str(lngStaticRegion)) & " = inserted." & sStaticRegion & "," & vbNewLine & _
-        "            @delCol_" & Trim(Str(lngStaticRegion)) & " = deleted." & sStaticRegion
-
-      'JPD 20050323 Fault 9934
-      'sUpdateUpdate = sUpdateUpdate & _
-        IIf(Len(sUpdateUpdate) > 0, vbNewLine, vbnullstring) & _
-        "            SET @changesMade = 1" & vbNewLine
-        
-'      AE20080423 Fault #13116
-'      sUpdateUpdate.Append _
-'        IIf(sUpdateUpdate.Length <> 0, vbNewLine, vbNullString) & _
-'        "            EXEC dbo.sp_ASRCaseSensitiveCompare @comparisonResult OUTPUT, @insSFRegion, @delSFRegion" & vbNewLine & _
-'        "            IF @comparisonResult = 0 SET @changesMade = 1" & vbNewLine
-      
-      sUpdateUpdate.Append _
-        IIf(sUpdateUpdate.Length <> 0, vbNewLine, vbNullString) & _
-        "            EXEC dbo.sp_ASRCaseSensitiveCompare @comparisonResult OUTPUT, @insCol_" & Trim(Str(lngStaticRegion)) & ", @delCol_" & Trim(Str(lngStaticRegion)) & "" & vbNewLine & _
-        "            IF @comparisonResult = 0 SET @changesMade = 1" & vbNewLine
-
-      SetTableTriggers_SpecialFunctions_AddColumn alngAuditColumns, lngStaticRegion
-    End If
-
-    If LenB(sStaticWP) <> 0 Then
-'      AE20080423 Fault #13116
-'      sUpdateSelect.Append _
-'        IIf(sUpdateSelect.Length <> 0, "," & vbNewLine, vbNullString) & _
-'        "            @insSFWP = rtrim(upper(inserted." & sStaticWP & "))," & vbNewLine & _
-'        "            @delSFWP = rtrim(upper(deleted." & sStaticWP & "))"
-
-      sUpdateSelect.Append _
-        IIf(sUpdateSelect.Length <> 0, "," & vbNewLine, vbNullString) & _
-        "            @insCol_" & Trim(Str(lngStaticWP)) & " = rtrim(upper(inserted." & sStaticWP & "))," & vbNewLine & _
-        "            @delCol_" & Trim(Str(lngStaticWP)) & " = rtrim(upper(deleted." & sStaticWP & "))"
-
-'      AE20080423 Fault #13116
-'      sUpdateUpdate.Append _
-'        IIf(sUpdateUpdate.Length <> 0, vbNewLine, vbNullString) & _
-'        "            EXEC dbo.sp_ASRCaseSensitiveCompare @comparisonResult OUTPUT, @insSFWP, @delSFWP" & vbNewLine & _
-'        "            IF @comparisonResult = 0 SET @changesMade = 1" & vbNewLine
-    
-      sUpdateUpdate.Append _
-        IIf(sUpdateUpdate.Length <> 0, vbNewLine, vbNullString) & _
-        "            EXEC dbo.sp_ASRCaseSensitiveCompare @comparisonResult OUTPUT, @insCol_" & Trim(Str(lngStaticWP)) & ", @delCol_" & Trim(Str(lngStaticWP)) & "" & vbNewLine & _
-        "            IF @comparisonResult = 0 SET @changesMade = 1" & vbNewLine
-    
-      SetTableTriggers_SpecialFunctions_AddColumn alngAuditColumns, lngStaticWP
-    End If
-
-    If sUpdateUpdate.Length <> 0 Then
-      sUpdateUpdate.TheString = _
-        "            SET @changesMade = 0" & vbNewLine & vbNewLine & _
-        sUpdateUpdate.ToString & vbNewLine & _
-        "            IF @changesMade = 1" & vbNewLine & _
-        "            BEGIN" & vbNewLine
-
-      fTableDone = False
-      For iCount2 = 1 To 3
-        Select Case iCount2
-          Case 1
-            alngTempArray = alngTables_AbsenceDuration
-          Case 2
-            alngTempArray = alngTables_AbsenceBetween2Dates
-          Case Else
-            alngTempArray = alngTables_WorkingDaysBetween2Dates
-        End Select
-        
-        For iCount = 1 To UBound(alngTempArray)
-          fFound = False
-          For iLoop = 1 To UBound(alngTables_Done)
-            If alngTables_Done(iLoop) = alngTempArray(iCount) Then
-              fFound = True
-              Exit For
-            End If
-          Next iLoop
-
-          If (Not fFound) And (alngTempArray(iCount) <> lngPersonnelTable) Then
-            ' Get the first non-system column in the table.
-            sColumnName = vbNullString
-  
-            sSQL = "SELECT columnName" & _
-              " FROM tmpColumns" & _
-              " WHERE tableID = " & Trim$(Str$(alngTempArray(iCount))) & _
-              " AND columnType <>" & Trim$(Str$(giCOLUMNTYPE_SYSTEM)) & _
-              " AND deleted = FALSE"
-            Set rsTemp = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
-            If Not rsTemp.EOF Then
-              sColumnName = rsTemp!ColumnName
-            End If
-            rsTemp.Close
-            Set rsTemp = Nothing
-  
-            If LenB(sColumnName) <> 0 Then
-              fTableDone = True
-              sTableName = GetTableName(alngTempArray(iCount))
-            
-              sUpdateUpdate.Append _
-                "                UPDATE " & sTableName & vbNewLine & _
-                "                SET " & sTableName & "." & sColumnName & " = " & sTableName & "." & sColumnName & vbNewLine & _
-                "                WHERE " & sTableName & ".ID_" & CStr(lngPersonnelTable) & " = @recordID" & vbNewLine
-
-              sInsertUpdate.Append _
-                "                UPDATE " & sTableName & vbNewLine & _
-                "                SET " & sTableName & "." & sColumnName & " = " & sTableName & "." & sColumnName & vbNewLine & _
-                "                WHERE " & sTableName & ".ID_" & CStr(lngPersonnelTable) & " = @recordID"
-
-              sDeleteUpdate.Append _
-                "                UPDATE " & sTableName & vbNewLine & _
-                "                SET " & sTableName & "." & sColumnName & " = " & sTableName & "." & sColumnName & vbNewLine & _
-                "                WHERE " & sTableName & ".ID_" & CStr(lngPersonnelTable) & " = @recordID"
-
-              ReDim Preserve alngTables_Done(UBound(alngTables_Done) + 1)
-              alngTables_Done(UBound(alngTables_Done)) = alngTempArray(iCount)
-            End If
-          End If
-        Next iCount
-      Next iCount2
-
-      sUpdateUpdate.Append "            END"
-
-      If Not fTableDone Then
-        sUpdateUpdate.TheString = vbNullString
-      End If
-    End If
-
-    sInsertSpecialFunctionsCode = sInsertSpecialFunctionsCode & _
-      IIf(LenB(sInsertSpecialFunctionsCode) <> 0, vbNewLine & vbNewLine, vbNullString) & _
-      sInsertUpdate.ToString
-    sUpdateSpecialFunctionsCode2 = sUpdateSpecialFunctionsCode2 & _
-      IIf(LenB(sUpdateSpecialFunctionsCode2) <> 0, vbNewLine & vbNewLine, vbNullString) & _
-      sUpdateUpdate.ToString
-    sDeleteSpecialFunctionsCode = sDeleteSpecialFunctionsCode & _
-      IIf(LenB(sDeleteSpecialFunctionsCode) <> 0, vbNewLine & vbNewLine, vbNullString) & _
-      sDeleteUpdate.ToString
-  End If
+'
+'  If fIsBankHolTable Then
+'    ' Need to update the personnel or region history records, only if the bHolDate
+'    ' value has changed.
+'    sInsertUpdate.TheString = vbNullString
+'    sUpdateUpdate.TheString = vbNullString
+'    sDeleteUpdate.TheString = vbNullString
+'
+'    ReDim alngTables_Done(0)
+''
+''    If LenB(sBHolDate) <> 0 And _
+''      (lngStaticRegion > 0 Or lngHistRegion > 0) Then
+''
+'''      AE20080423 Fault #13116
+'''      sUpdateSelect.Append _
+'''        IIf(sUpdateSelect.Length <> 0, "," & vbNewLine, vbNullString) & _
+'''        "            @insSFBHolDate = inserted." & sBHolDate & "," & vbNewLine & _
+'''        "            @delSFBHolDate = deleted." & sBHolDate
+''
+''      sUpdateSelect.Append _
+''        IIf(sUpdateSelect.Length <> 0, "," & vbNewLine, vbNullString) & _
+''        "            @insCol_" & Trim(Str(lngBHolDate)) & " = inserted." & sBHolDate & "," & vbNewLine & _
+''        "            @insCol_" & Trim(Str(lngBHolDate)) & " = deleted." & sBHolDate
+''
+'''      AE20080423 Fault #13116
+'''      sUpdateUpdate.Append _
+'''        IIf(sUpdateUpdate.Length <> 0, vbNewLine, vbNullString) & _
+'''        "            IF @insSFBHolDate <> @delSFBHolDate SET @changesMade = 1" & vbNewLine & _
+'''        "            IF (@insSFBHolDate IS NULL) AND (NOT @delSFBHolDate IS NULL) SET @changesMade = 1" & vbNewLine & _
+'''        "            IF (NOT @insSFBHolDate IS NULL) AND (@delSFBHolDate IS NULL) SET @changesMade = 1" & vbNewLine
+''
+''      sUpdateUpdate.Append _
+''        IIf(sUpdateUpdate.Length <> 0, vbNewLine, vbNullString) & _
+''        "            IF @insCol_" & Trim(Str(lngBHolDate)) & " <> @delCol_" & Trim(Str(lngBHolDate)) & " SET @changesMade = 1" & vbNewLine & _
+''        "            IF (@insCol_" & Trim(Str(lngBHolDate)) & " IS NULL) AND (NOT @delCol_" & Trim(Str(lngBHolDate)) & " IS NULL) SET @changesMade = 1" & vbNewLine & _
+''        "            IF (NOT @insCol_" & Trim(Str(lngBHolDate)) & " IS NULL) AND (@delCol_" & Trim(Str(lngBHolDate)) & " IS NULL) SET @changesMade = 1" & vbNewLine
+''
+''      SetTableTriggers_SpecialFunctions_AddColumn alngAuditColumns, lngBHolDate
+''    End If
+''
+''    If sUpdateUpdate.Length <> 0 Then
+''      sUpdateUpdate.TheString = _
+''        "            SET @changesMade = 0" & vbNewLine & vbNewLine & _
+''        sUpdateUpdate.ToString & vbNewLine & _
+''        "            IF @changesMade = 1" & vbNewLine & _
+''        "            BEGIN" & vbNewLine
+'
+'      If (lngStaticRegion > 0) Then
+'        lngTableID = lngPersonnelTable
+'        sColumnName = sStaticRegion
+'      Else
+'        lngTableID = lngRegionTable
+'        sColumnName = sHistRegion
+'      End If
+'
+'      If LenB(sColumnName) <> 0 Then
+'        fTableDone = True
+'        sTableName = GetTableName(lngTableID)
+'
+'        sUpdateUpdate.Append _
+'          "    UPDATE dbo." & sTableName & vbNewLine & _
+'          "        SET " & sTableName & "." & sColumnName & " = " & sTableName & "." & sColumnName & vbNewLine & _
+'          "        WHERE " & sTableName & "." & sColumnName & " = " & vbNewLine & _
+'          "            (SELECT " & sBankHolRegionTable & "." & sBHolRegion & vbNewLine & _
+'          "            FROM " & sBankHolRegionTable & vbNewLine & _
+'          "            WHERE " & sBankHolRegionTable & ".ID IN " & vbNewLine & _
+'          "                (SELECT inserted.id_" & CStr(lngBankHolRegionTable) & vbNewLine & _
+'          "                FROM inserted))" & vbNewLine
+'
+'        sInsertUpdate.Append _
+'          "    UPDATE dbo." & sTableName & vbNewLine & _
+'          "        SET " & sTableName & "." & sColumnName & " = " & sTableName & "." & sColumnName & vbNewLine & _
+'          "        WHERE " & sTableName & "." & sColumnName & " = " & vbNewLine & _
+'          "            (SELECT " & sBankHolRegionTable & "." & sBHolRegion & vbNewLine & _
+'          "            FROM " & sBankHolRegionTable & vbNewLine & _
+'          "            WHERE " & sBankHolRegionTable & ".ID IN " & vbNewLine & _
+'          "                (SELECT inserted.id_" & CStr(lngBankHolRegionTable) & vbNewLine & _
+'          "                FROM inserted))" & vbNewLine
+'
+'        sDeleteUpdate.Append _
+'          "    UPDATE dbo." & sTableName & vbNewLine & _
+'          "        SET " & sTableName & "." & sColumnName & " = " & sTableName & "." & sColumnName & vbNewLine & _
+'          "        WHERE " & sTableName & "." & sColumnName & " = " & vbNewLine & _
+'          "            (SELECT " & sBankHolRegionTable & "." & sBHolRegion & vbNewLine & _
+'          "            FROM " & sBankHolRegionTable & vbNewLine & _
+'          "            WHERE " & sBankHolRegionTable & ".ID IN " & vbNewLine & _
+'          "                (SELECT deleted.id_" & CStr(lngBankHolRegionTable) & vbNewLine & _
+'          "                FROM deleted))" & vbNewLine
+'      End If
+'
+''      sUpdateUpdate.Append "            END"
+'
+'      If Not fTableDone Then
+'        sUpdateUpdate.TheString = vbNullString
+'      End If
+''    End If
+'
+'    sInsertSpecialFunctionsCode = sInsertSpecialFunctionsCode & _
+'      IIf(LenB(sInsertSpecialFunctionsCode) <> 0, vbNewLine & vbNewLine, vbNullString) & _
+'      sInsertUpdate.ToString
+'    sUpdateSpecialFunctionsCode2 = sUpdateSpecialFunctionsCode2 & _
+'      IIf(LenB(sUpdateSpecialFunctionsCode2) <> 0, vbNewLine & vbNewLine, vbNullString) & _
+'      sUpdateUpdate.ToString
+'    sDeleteSpecialFunctionsCode = sDeleteSpecialFunctionsCode & _
+'      IIf(LenB(sDeleteSpecialFunctionsCode) <> 0, vbNewLine & vbNewLine, vbNullString) & _
+'      sDeleteUpdate.ToString
+'  End If
+ 
   
   'JPD 20050920 Fault 10366
   If fIsRegionTable Or fIsWorkingPatternTable Then
@@ -5301,122 +3547,6 @@ Private Function SetTableTriggers_SpecialFunctions( _
     sDeleteUpdate.TheString = vbNullString
 
     ReDim alngTables_Done(0)
-
-    If fIsRegionTable And (LenB(sHistRegion) <> 0) Then
-'      AE20080423 Fault #13116
-'      sUpdateSelect.Append _
-'        IIf(sUpdateSelect.Length <> 0, "," & vbNewLine, vbNullString) & _
-'        "            @insSFRegion = inserted." & sHistRegion & "," & vbNewLine & _
-'        "            @delSFRegion = deleted." & sHistRegion
-
-      sUpdateSelect.Append _
-        IIf(sUpdateSelect.Length <> 0, "," & vbNewLine, vbNullString) & _
-        "            @insCol_" & Trim(Str(lngHistRegion)) & " = inserted." & sHistRegion & "," & vbNewLine & _
-        "            @delCol_" & Trim(Str(lngHistRegion)) & " = deleted." & sHistRegion
-
-'      AE20080423 Fault #13116
-'      sUpdateUpdate.Append _
-'        IIf(sUpdateUpdate.Length <> 0, vbNewLine, vbNullString) & _
-'        "            EXEC dbo.sp_ASRCaseSensitiveCompare @comparisonResult OUTPUT, @insSFRegion, @delSFRegion" & vbNewLine & _
-'        "            IF @comparisonResult = 0 SET @changesMade = 1" & vbNewLine
-    
-      sUpdateUpdate.Append _
-        IIf(sUpdateUpdate.Length <> 0, vbNewLine, vbNullString) & _
-        "            EXEC dbo.sp_ASRCaseSensitiveCompare @comparisonResult OUTPUT, @insCol_" & Trim(Str(lngHistRegion)) & ", @delCol_" & Trim(Str(lngHistRegion)) & "" & vbNewLine & _
-        "            IF @comparisonResult = 0 SET @changesMade = 1" & vbNewLine
-    
-      SetTableTriggers_SpecialFunctions_AddColumn alngAuditColumns, lngHistRegion
-    End If
-
-    If fIsRegionTable And (LenB(sHistRegionDate) <> 0) Then
-'      AE20080423 Fault #13116
-'      sUpdateSelect.Append _
-'        IIf(sUpdateSelect.Length <> 0, "," & vbNewLine, vbNullString) & _
-'        "            @insSFRegionDate = inserted." & sHistRegionDate & "," & vbNewLine & _
-'        "            @delSFRegionDate = deleted." & sHistRegionDate
-
-      sUpdateSelect.Append _
-        IIf(sUpdateSelect.Length <> 0, "," & vbNewLine, vbNullString) & _
-        "            @insCol_" & Trim(Str(lngHistRegionDate)) & " = inserted." & sHistRegionDate & "," & vbNewLine & _
-        "            @delCol_" & Trim(Str(lngHistRegionDate)) & " = deleted." & sHistRegionDate
-      
-'      AE20080423 Fault #13116
-'      sUpdateUpdate.Append _
-'        IIf(sUpdateUpdate.Length <> 0, vbNewLine, vbNullString) & _
-'        "            IF @insSFRegionDate <> @delSFRegionDate SET @changesMade = 1" & vbNewLine & _
-'        "            IF (@insSFRegionDate IS NULL) AND (NOT @delSFRegionDate IS NULL) SET @changesMade = 1" & vbNewLine & _
-'        "            IF (NOT @insSFRegionDate IS NULL) AND (@delSFRegionDate IS NULL) SET @changesMade = 1" & vbNewLine
-    
-      sUpdateUpdate.Append _
-        IIf(sUpdateUpdate.Length <> 0, vbNewLine, vbNullString) & _
-        "            IF @insCol_" & Trim(Str(lngHistRegionDate)) & " <> @delCol_" & Trim(Str(lngHistRegionDate)) & " SET @changesMade = 1" & vbNewLine & _
-        "            IF (@insCol_" & Trim(Str(lngHistRegionDate)) & " IS NULL) AND (NOT @delCol_" & Trim(Str(lngHistRegionDate)) & " IS NULL) SET @changesMade = 1" & vbNewLine & _
-        "            IF (NOT @insCol_" & Trim(Str(lngHistRegionDate)) & " IS NULL) AND (@delCol_" & Trim(Str(lngHistRegionDate)) & " IS NULL) SET @changesMade = 1" & vbNewLine
-    
-      SetTableTriggers_SpecialFunctions_AddColumn alngAuditColumns, lngHistRegionDate
-    End If
-
-    If fIsWorkingPatternTable And (LenB(sHistWP) <> 0) Then
-'      AE20080423 Fault #13116
-'      sUpdateSelect.Append _
-'        IIf(sUpdateSelect.Length <> 0, "," & vbNewLine, vbNullString) & _
-'        "            @insSFWP = rtrim(upper(inserted." & sHistWP & "))," & vbNewLine & _
-'        "            @delSFWP = rtrim(upper(deleted." & sHistWP & "))"
-
-      sUpdateSelect.Append _
-        IIf(sUpdateSelect.Length <> 0, "," & vbNewLine, vbNullString) & _
-        "            @insCol_" & Trim(Str(lngHistWP)) & " = rtrim(upper(inserted." & sHistWP & "))," & vbNewLine & _
-        "            @delCol_" & Trim(Str(lngHistWP)) & " = rtrim(upper(deleted." & sHistWP & "))"
-      
-'      AE20080423 Fault #13116
-'      sUpdateUpdate.Append _
-'        IIf(sUpdateUpdate.Length <> 0, vbNewLine, vbNullString) & _
-'        "            EXEC dbo.sp_ASRCaseSensitiveCompare @comparisonResult OUTPUT, @insSFWP, @delSFWP" & vbNewLine & _
-'        "            IF @comparisonResult = 0 SET @changesMade = 1" & vbNewLine
-    
-      sUpdateUpdate.Append _
-        IIf(sUpdateUpdate.Length <> 0, vbNewLine, vbNullString) & _
-        "            EXEC dbo.sp_ASRCaseSensitiveCompare @comparisonResult OUTPUT, @insCol_" & Trim(Str(lngHistWP)) & ", @delCol_" & Trim(Str(lngHistWP)) & "" & vbNewLine & _
-        "            IF @comparisonResult = 0 SET @changesMade = 1" & vbNewLine
-        
-      SetTableTriggers_SpecialFunctions_AddColumn alngAuditColumns, lngHistWP
-    End If
-
-    If fIsWorkingPatternTable And (LenB(sHistWPDate) <> 0) Then
-'      AE20080423 Fault #13116
-'      sUpdateSelect.Append _
-'        IIf(sUpdateSelect.Length <> 0, "," & vbNewLine, vbNullString) & _
-'        "            @insSFWPDate = inserted." & sHistWPDate & "," & vbNewLine & _
-'        "            @delSFWPDate = deleted." & sHistWPDate
-
-      sUpdateSelect.Append _
-        IIf(sUpdateSelect.Length <> 0, "," & vbNewLine, vbNullString) & _
-        "            @insCol_" & Trim(Str(lngHistWPDate)) & " = inserted." & sHistWPDate & "," & vbNewLine & _
-        "            @delCol_" & Trim(Str(lngHistWPDate)) & " = deleted." & sHistWPDate
-      
-'      AE20080423 Fault #13116
-'      sUpdateUpdate.Append _
-'        IIf(sUpdateUpdate.Length <> 0, vbNewLine, vbNullString) & _
-'        "            IF @insSFWPDate <> @delSFWPDate SET @changesMade = 1" & vbNewLine & _
-'        "            IF (@insSFWPDate IS NULL) AND (NOT @delSFWPDate IS NULL) SET @changesMade = 1" & vbNewLine & _
-'        "            IF (NOT @insSFWPDate IS NULL) AND (@delSFWPDate IS NULL) SET @changesMade = 1" & vbNewLine
-    
-      sUpdateUpdate.Append _
-        IIf(sUpdateUpdate.Length <> 0, vbNewLine, vbNullString) & _
-        "            IF @insCol_" & Trim(Str(lngHistWPDate)) & " <> @delCol_" & Trim(Str(lngHistWPDate)) & " SET @changesMade = 1" & vbNewLine & _
-        "            IF (@insCol_" & Trim(Str(lngHistWPDate)) & " IS NULL) AND (NOT @delCol_" & Trim(Str(lngHistWPDate)) & " IS NULL) SET @changesMade = 1" & vbNewLine & _
-        "            IF (NOT @insCol_" & Trim(Str(lngHistWPDate)) & " IS NULL) AND (@delCol_" & Trim(Str(lngHistWPDate)) & " IS NULL) SET @changesMade = 1" & vbNewLine
-    
-      SetTableTriggers_SpecialFunctions_AddColumn alngAuditColumns, lngHistWPDate
-    End If
-
-    If sUpdateUpdate.Length <> 0 Then
-      'JPD 20060125 Fault 10546
-      'sUpdateUpdate.Insert 0, "            SET @changesMade = 0" & vbNewLine & vbNewLine
-      sUpdateUpdate.Insert 0, "            SET @changesMade = 1" & vbNewLine & vbNewLine
-      sUpdateUpdate.Append vbNewLine & _
-        "            IF @changesMade = 1" & vbNewLine & _
-        "            BEGIN" & vbNewLine
 
       fTableDone = False
       For iCount2 = 1 To 3
@@ -5461,32 +3591,28 @@ Private Function SetTableTriggers_SpecialFunctions( _
               sTableName = GetTableName(alngTempArray(iCount))
 
               sUpdateUpdate.Append _
-                "                UPDATE " & sTableName & vbNewLine & _
-                "                SET " & sTableName & "." & sColumnName & " = " & sTableName & "." & sColumnName & vbNewLine & _
-                "                WHERE " & sTableName & ".ID" & IIf(alngTempArray(iCount) = lngPersonnelTable, vbNullString, "_" & CStr(lngPersonnelTable)) & " = " & vbNewLine & _
-                "                    (SELECT inserted.ID_" & CStr(lngPersonnelTable) & vbNewLine & _
-                "                    FROM inserted" & vbNewLine & _
-                "                    WHERE inserted.ID = @recordID)" & vbNewLine & _
-                "                OR " & sTableName & ".ID" & IIf(alngTempArray(iCount) = lngPersonnelTable, vbNullString, "_" & CStr(lngPersonnelTable)) & " = " & vbNewLine & _
-                "                    (SELECT deleted.ID_" & CStr(lngPersonnelTable) & vbNewLine & _
-                "                    FROM deleted" & vbNewLine & _
-                "                    WHERE deleted.ID = @recordID)" & vbNewLine & vbNewLine
+                "    UPDATE dbo." & sTableName & vbNewLine & _
+                "        SET " & sTableName & "." & sColumnName & " = " & sTableName & "." & sColumnName & vbNewLine & _
+                "        WHERE " & sTableName & ".ID" & IIf(alngTempArray(iCount) = lngPersonnelTable, vbNullString, "_" & CStr(lngPersonnelTable)) & " IN " & vbNewLine & _
+                "            (SELECT inserted.ID_" & CStr(lngPersonnelTable) & vbNewLine & _
+                "            FROM inserted)" & vbNewLine & _
+                "        OR " & sTableName & ".ID" & IIf(alngTempArray(iCount) = lngPersonnelTable, vbNullString, "_" & CStr(lngPersonnelTable)) & " IN " & vbNewLine & _
+                "            (SELECT deleted.ID_" & CStr(lngPersonnelTable) & vbNewLine & _
+                "            FROM deleted)" & vbNewLine & vbNewLine
 
               sInsertUpdate.Append _
-                "                UPDATE " & sTableName & vbNewLine & _
-                "                SET " & sTableName & "." & sColumnName & " = " & sTableName & "." & sColumnName & vbNewLine & _
-                "                WHERE " & sTableName & ".ID" & IIf(alngTempArray(iCount) = lngPersonnelTable, vbNullString, "_" & CStr(lngPersonnelTable)) & " = " & vbNewLine & _
-                "                    (SELECT inserted.ID_" & CStr(lngPersonnelTable) & vbNewLine & _
-                "                    FROM inserted" & vbNewLine & _
-                "                    WHERE inserted.ID = @recordID)" & vbNewLine & vbNewLine
+                "    UPDATE dbo." & sTableName & vbNewLine & _
+                "        SET " & sTableName & "." & sColumnName & " = " & sTableName & "." & sColumnName & vbNewLine & _
+                "        WHERE " & sTableName & ".ID" & IIf(alngTempArray(iCount) = lngPersonnelTable, vbNullString, "_" & CStr(lngPersonnelTable)) & " IN " & vbNewLine & _
+                "            (SELECT inserted.ID_" & CStr(lngPersonnelTable) & vbNewLine & _
+                "            FROM inserted)" & vbNewLine & vbNewLine
 
               sDeleteUpdate.Append _
-                "                UPDATE " & sTableName & vbNewLine & _
-                "                SET " & sTableName & "." & sColumnName & " = " & sTableName & "." & sColumnName & vbNewLine & _
-                "                WHERE " & sTableName & ".ID" & IIf(alngTempArray(iCount) = lngPersonnelTable, vbNullString, "_" & CStr(lngPersonnelTable)) & " = " & vbNewLine & _
-                "                    (SELECT deleted.ID_" & CStr(lngPersonnelTable) & vbNewLine & _
-                "                    FROM deleted" & vbNewLine & _
-                "                    WHERE deleted.ID = @recordID)" & vbNewLine & vbNewLine
+                "    UPDATE dbo." & sTableName & vbNewLine & _
+                "        SET " & sTableName & "." & sColumnName & " = " & sTableName & "." & sColumnName & vbNewLine & _
+                "        WHERE " & sTableName & ".ID" & IIf(alngTempArray(iCount) = lngPersonnelTable, vbNullString, "_" & CStr(lngPersonnelTable)) & " IN " & vbNewLine & _
+                "            (SELECT deleted.ID_" & CStr(lngPersonnelTable) & vbNewLine & _
+                "            FROM deleted)" & vbNewLine & vbNewLine
 
               ReDim Preserve alngTables_Done(UBound(alngTables_Done) + 1)
               alngTables_Done(UBound(alngTables_Done)) = alngTempArray(iCount)
@@ -5495,12 +3621,12 @@ Private Function SetTableTriggers_SpecialFunctions( _
         Next iCount
       Next iCount2
 
-      sUpdateUpdate.Append "            END"
+'      sUpdateUpdate.Append "            END"
 
-      If Not fTableDone Then
-        sUpdateUpdate.TheString = vbNullString
-      End If
+    If Not fTableDone Then
+      sUpdateUpdate.TheString = vbNullString
     End If
+
 
     sInsertSpecialFunctionsCode = sInsertSpecialFunctionsCode & _
       IIf(LenB(sInsertSpecialFunctionsCode) <> 0, vbNewLine & vbNewLine, vbNullString) & _
@@ -5522,125 +3648,76 @@ Private Function SetTableTriggers_SpecialFunctions( _
         Exit For
       End If
     Next iLoop
-
-    If fDoneAbsenceTable Then
-      sTableName = GetTableName(lngAbsenceTable)
-      
-      sSSPSwitch1 = _
-        "                DECLARE" & vbNewLine & _
-        "                        @iSFPersonnelRecordID integer," & vbNewLine & _
-        "                        @fSFSSPRunning bit," & vbNewLine & _
-        "                        @iSFAbsenceRecordID integer" & vbNewLine & vbNewLine & _
-        "                SELECT @iSFPersonnelRecordID = id" & IIf(fIsPersonnelTable, vbNullString, "_" & CStr(lngPersonnelTable)) & vbNewLine & _
-        "                FROM inserted" & vbNewLine & _
-        "                WHERE inserted.ID = @recordID" & vbNewLine & vbNewLine & _
-        "                IF (@iSFPersonnelRecordID > 0) " & vbNewLine & _
-        "                BEGIN" & vbNewLine & _
-        "                        /* Check to avoid recurrent running of the SSP stored procedure. */" & vbNewLine & _
-        "                        SELECT @fSFSSPRunning = sspRunning" & vbNewLine & _
-        "                        FROM ASRSysSSPRunning" & vbNewLine & _
-        "                        WHERE personnelRecordID = @iSFPersonnelRecordID" & vbNewLine & vbNewLine & _
-        "                        IF @fSFSSPRunning IS null INSERT INTO ASRSysSSPRunning (personnelRecordID, sspRunning) VALUES(@iSFPersonnelRecordID, 1)" & vbNewLine & _
-        "                        IF @fSFSSPRunning = 0 UPDATE ASRSysSSPRunning SET sspRunning = 1 WHERE personnelRecordID = @iSFPersonnelRecordID" & vbNewLine & _
-        "                END" & vbNewLine & vbNewLine
-        
-      sSSPSwitch2 = vbNewLine & _
-        "                IF (@iSFPersonnelRecordID > 0)" & vbNewLine & _
-        "                BEGIN" & vbNewLine & _
-        "                        UPDATE ASRSysSSPRunning SET sspRunning = 0 WHERE personnelRecordID = @iSFPersonnelRecordID" & vbNewLine & vbNewLine & _
-        "                        SELECT TOP 1 @iSFAbsenceRecordID = " & sTableName & ".ID" & vbNewLine & _
-        "                        FROM " & sTableName & vbNewLine & _
-        "                        WHERE ID_" & CStr(lngPersonnelTable) & " = @iSFPersonnelRecordID" & vbNewLine & vbNewLine & _
-        "                        IF (@iSFAbsenceRecordID > 0) AND EXISTS(SELECT Name FROM sysobjects WHERE id = object_id('sp_ASR_AbsenceSSP') AND sysstat & 0xf = 4)" & vbNewLine & _
-        "                        BEGIN" & vbNewLine & _
-        "                                EXEC dbo.sp_ASR_AbsenceSSP @iSFAbsenceRecordID" & vbNewLine & _
-        "                        END" & vbNewLine & _
-        "                END" & vbNewLine & vbNewLine
-    Else
-      sSSPSwitch1 = vbNullString
-      sSSPSwitch2 = vbNullString
-    End If
+'
+'    If fDoneAbsenceTable Then
+'      sTableName = GetTableName(lngAbsenceTable)
+'
+'      sSSPSwitch1 = _
+'        "                DECLARE" & vbNewLine & _
+'        "                        @iSFPersonnelRecordID integer," & vbNewLine & _
+'        "                        @fSFSSPRunning bit," & vbNewLine & _
+'        "                        @iSFAbsenceRecordID integer" & vbNewLine & vbNewLine & _
+'        "                SELECT @iSFPersonnelRecordID = id" & IIf(fIsPersonnelTable, vbNullString, "_" & CStr(lngPersonnelTable)) & vbNewLine & _
+'        "                FROM inserted" & vbNewLine & _
+'        "                WHERE inserted.ID = @recordID" & vbNewLine & vbNewLine & _
+'        "                IF (@iSFPersonnelRecordID > 0) " & vbNewLine & _
+'        "                BEGIN" & vbNewLine & _
+'        "                        /* Check to avoid recurrent running of the SSP stored procedure. */" & vbNewLine & _
+'        "                        SELECT @fSFSSPRunning = sspRunning" & vbNewLine & _
+'        "                        FROM ASRSysSSPRunning" & vbNewLine & _
+'        "                        WHERE personnelRecordID = @iSFPersonnelRecordID" & vbNewLine & vbNewLine & _
+'        "                        IF @fSFSSPRunning IS null INSERT INTO ASRSysSSPRunning (personnelRecordID, sspRunning) VALUES(@iSFPersonnelRecordID, 1)" & vbNewLine & _
+'        "                        IF @fSFSSPRunning = 0 UPDATE ASRSysSSPRunning SET sspRunning = 1 WHERE personnelRecordID = @iSFPersonnelRecordID" & vbNewLine & _
+'        "                END" & vbNewLine & vbNewLine
+'
+'      sSSPSwitch2 = vbNewLine & _
+'        "                IF (@iSFPersonnelRecordID > 0)" & vbNewLine & _
+'        "                BEGIN" & vbNewLine & _
+'        "                        UPDATE ASRSysSSPRunning SET sspRunning = 0 WHERE personnelRecordID = @iSFPersonnelRecordID" & vbNewLine & vbNewLine & _
+'        "                        SELECT TOP 1 @iSFAbsenceRecordID = " & sTableName & ".ID" & vbNewLine & _
+'        "                        FROM " & sTableName & vbNewLine & _
+'        "                        WHERE ID_" & CStr(lngPersonnelTable) & " = @iSFPersonnelRecordID" & vbNewLine & vbNewLine & _
+'        "                        IF (@iSFAbsenceRecordID > 0) AND EXISTS(SELECT Name FROM sysobjects WHERE id = object_id('sp_ASR_AbsenceSSP') AND sysstat & 0xf = 4)" & vbNewLine & _
+'        "                        BEGIN" & vbNewLine & _
+'        "                                EXEC dbo.sp_ASR_AbsenceSSP @iSFAbsenceRecordID" & vbNewLine & _
+'        "                        END" & vbNewLine & _
+'        "                END" & vbNewLine & vbNewLine
+'    Else
+'      sSSPSwitch1 = vbNullString
+'      sSSPSwitch2 = vbNullString
+'    End If
     
-    sInsertSpecialFunctionsCode = _
-      "        /* ------------------------------------------*/" & vbNewLine & _
-      "        /* Special Functions                         */" & vbNewLine & _
-      "        /* ------------------------------------------*/" & vbNewLine & _
-      "        IF (@fUpdatingDateDependentColumns = 0)" & vbNewLine & _
-      "        BEGIN" & vbNewLine & _
+    sInsertSpecialFunctionsCode = vbNewLine & vbNewLine & _
+      "    /* ------------------------------------------*/" & vbNewLine & _
+      "    /* Special Functions                         */" & vbNewLine & _
+      "    /* ------------------------------------------*/" & vbNewLine & _
       sSSPSwitch1 & _
       sInsertSpecialFunctionsCode & vbNewLine & _
-      sSSPSwitch2 & _
-      "        END" & vbNewLine & vbNewLine
+      sSSPSwitch2 & vbNewLine & vbNewLine
 
-'     AE20080423 Fault #13116 - Improve performance by including in cursor fetch
-'    sUpdateSpecialFunctionsCode1 = _
-'      "        DECLARE" & vbNewLine & _
-'      "            @insSFStartDate datetime," & vbNewLine & _
-'      "            @delSFStartDate datetime," & vbNewLine & _
-'      "            @insSFEndDate datetime," & vbNewLine & _
-'      "            @delSFEndDate datetime," & vbNewLine & _
-'      "            @insSFStartSession varchar(max)," & vbNewLine & _
-'      "            @delSFStartSession varchar(max)," & vbNewLine & _
-'      "            @insSFEndSession varchar(max)," & vbNewLine & _
-'      "            @delSFEndSession varchar(max)," & vbNewLine & _
-'      "            @insSFType varchar(max)," & vbNewLine & _
-'      "            @delSFType varchar(max)," & vbNewLine & _
-'      "            @insSFBHolDate datetime," & vbNewLine & _
-'      "            @delSFBHolDate datetime," & vbNewLine & _
-'      "            @insSFRegion varchar(max)," & vbNewLine & _
-'      "            @delSFRegion varchar(max)," & vbNewLine & _
-'      "            @insSFWP varchar(max)," & vbNewLine & _
-'      "            @delSFWP varchar(max)," & vbNewLine & _
-'      "            @insSFRegionDate datetime," & vbNewLine & _
-'      "            @delSFRegionDate datetime," & vbNewLine & _
-'      "            @insSFWPDate datetime," & vbNewLine & _
-'      "            @delSFWPDate datetime" & vbNewLine & vbNewLine
-'
-'    sUpdateSpecialFunctionsCode1 = sUpdateSpecialFunctionsCode1 & _
-'      "        SELECT" & vbNewLine & _
-'      sUpdateSelect.ToString & vbNewLine & _
-'      "        FROM inserted" & vbNewLine & _
-'      "        INNER JOIN deleted ON inserted.id = deleted.id" & vbNewLine & _
-'      "        WHERE inserted.id = @recordID" & vbNewLine & vbNewLine
-    
-    sUpdateSpecialFunctionsCode2 = _
-      "        /* ------------------------------------------*/" & vbNewLine & _
-      "        /* Special Functions                         */" & vbNewLine & _
-      "        /* ------------------------------------------*/" & vbNewLine & _
-      "        IF (@fUpdatingDateDependentColumns = 0)" & vbNewLine & _
-      "        BEGIN" & vbNewLine & _
+    sUpdateSpecialFunctionsCode2 = vbNewLine & vbNewLine & _
+      "    /* ------------------------------------------*/" & vbNewLine & _
+      "    /* Special Functions                         */" & vbNewLine & _
+      "    /* ------------------------------------------*/" & vbNewLine & _
       sSSPSwitch1 & _
       sUpdateSpecialFunctionsCode2 & vbNewLine & _
-      sSSPSwitch2 & _
-      "        END" & vbNewLine & vbNewLine
+      sSSPSwitch2 & vbNewLine & vbNewLine
   
-    sDeleteSpecialFunctionsCode = _
-      "        /* ------------------------------------------*/" & vbNewLine & _
-      "        /* Special Functions                         */" & vbNewLine & _
-      "        /* ------------------------------------------*/" & vbNewLine & _
-      "        IF (@fUpdatingDateDependentColumns = 0)" & vbNewLine & _
-      "        BEGIN" & vbNewLine & _
+    sDeleteSpecialFunctionsCode = vbNewLine & vbNewLine & _
+      "    /* ------------------------------------------*/" & vbNewLine & _
+      "    /* Special Functions                         */" & vbNewLine & _
+      "    /* ------------------------------------------*/" & vbNewLine & _
       sSSPSwitch1 & _
       sDeleteSpecialFunctionsCode & vbNewLine & _
-      sSSPSwitch2 & _
-      "        END" & vbNewLine & vbNewLine
+      sSSPSwitch2 & vbNewLine & vbNewLine
       
-  Else
-  
-    sInsertSpecialFunctionsCode = _
-      "        /* ------------------------------------------*/" & vbNewLine & _
-      "        /* No Special Functions                      */" & vbNewLine & _
-      "        /* ------------------------------------------*/" & vbNewLine & vbNewLine
-    sUpdateSpecialFunctionsCode1 = vbNullString
-    sUpdateSpecialFunctionsCode2 = _
-      "        /* ------------------------------------------*/" & vbNewLine & _
-      "        /* No Special Functions                      */" & vbNewLine & _
-      "        /* ------------------------------------------*/" & vbNewLine & vbNewLine
-    sDeleteSpecialFunctionsCode = _
-      "        /* ------------------------------------------*/" & vbNewLine & _
-      "        /* No Special Functions                      */" & vbNewLine & _
-      "        /* ------------------------------------------*/" & vbNewLine & vbNewLine
   End If
+  
+
+  sInsertSpecialFunctionsCode = "/*" & sInsertSpecialFunctionsCode & "*/"
+  sUpdateSpecialFunctionsCode2 = "/*" & sUpdateSpecialFunctionsCode2 & "*/"
+  sDeleteSpecialFunctionsCode = "/*" & sDeleteSpecialFunctionsCode & "*/"
+
   
 TidyUpAndExit:
   SetTableTriggers_SpecialFunctions = bOK
@@ -5677,7 +3754,7 @@ On Error GoTo ErrorTrap
       Exit For
     End If
   Next iLoop
-    
+        
   If Not bColFound Then
     ReDim Preserve alngAuditColumns(UBound(alngAuditColumns) + 1)
     alngAuditColumns(UBound(alngAuditColumns)) = plngASRColumnID
@@ -5685,7 +3762,7 @@ On Error GoTo ErrorTrap
     sColumnName = GetColumnName(plngASRColumnID, True)
 
     sSelectInsCols.Append ", inserted." & sColumnName
-    sSelectInsCols2.Append ",@insCol_" & Trim(Str(plngASRColumnID)) & "=" & sColumnName
+    'sSelectInsCols2.Append ",@insCol_" & Trim(Str(plngASRColumnID)) & "=" & sColumnName
     sSelectDelCols.Append ", deleted." & sColumnName
 
     sFetchInsCols.Append ", @insCol_" & Trim(Str(plngASRColumnID))

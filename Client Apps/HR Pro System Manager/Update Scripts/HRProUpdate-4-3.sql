@@ -1648,7 +1648,8 @@ PRINT 'Step - Populate code generation tables'
 			[isuniquecode] [bit],
 			[performancerating] [integer] NULL,
 			[maketypesafe] bit NULL,
-			[casecount] [tinyint]
+			[casecount] [tinyint],
+			[dependsonbankholiday] bit NULL
 		) ON [PRIMARY]';
 
 	EXEC sp_executesql N'CREATE TABLE [dbo].[tbstat_componentdependancy](
@@ -1675,15 +1676,18 @@ PRINT 'Step - Populate code generation tables'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''6e51716a-4ac3-49dc-97a5-2bc417e38c2f'', N''+'', NULL, N''Plus'', NULL, 1, 0, 1)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''1acde45c-39a1-4a50-8526-aed3b8e6392b'', N''*'', NULL, N''Times by'', NULL, 1, 0, 3)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''a0aefbd0-b295-4598-9432-d4f653eca1ac'', N''*'', NULL, N''To the power of'', NULL, 1, 0, 15)';
-	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id], [performancerating]) VALUES (N''e6bd0161-786d-42a8-bdff-8400963e3e89'', N''[dbo].[udf_ASRFn_AbsenceBetweenTwoDates] ({0}, {1}, {2}, {3}, GETDATE())'', 2, N''Absence between Two Dates'', NULL, 0, 0, 47, 50)';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id], [performancerating], [dependsonbankholiday]) VALUES (N''e6bd0161-786d-42a8-bdff-8400963e3e89'', N''[dbo].[udf_ASRFn_AbsenceBetweenTwoDates] ({0}, {1}, {2}, {3}, GETDATE())'', 2, N''Absence between Two Dates'', NULL, 0, 0, 47, 50, 1)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentdependancy] ([id], [type], [modulekey], [parameterkey], [code]) VALUES (47, 1, ''MODULE_PERSONNEL'', ''Param_TablePersonnel'', '''')';
-	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id], [performancerating]) VALUES (N''a4776d94-8917-4f5b-ad36-f4104b04e3e0'', N''[dbo].[udf_ASRFn_AbsenceDuration]({0}, {1}, {2}, {3}, {4})'', 2, N''Absence Duration'', NULL, 0, 0, 30, 30)';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentdependancy] ([id], [type], [modulekey], [parameterkey], [code]) VALUES (47, 3, '''', ''1'', '' BETWEEN {0} AND {2} '')';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id], [performancerating], [dependsonbankholiday]) VALUES (N''a4776d94-8917-4f5b-ad36-f4104b04e3e0'', N''[dbo].[udf_ASRFn_AbsenceDuration]({0}, {1}, {2}, {3}, {4})'', 2, N''Absence Duration'', NULL, 0, 0, 30, 30, 1)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentdependancy] ([id], [type], [modulekey], [parameterkey], [code]) VALUES (30, 1, ''MODULE_PERSONNEL'', ''Param_TablePersonnel'', '''')';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentdependancy] ([id], [type], [modulekey], [parameterkey], [code]) VALUES (30, 3, '''', ''1'', '' BETWEEN {0} AND {2} '')';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''edfa5940-f5ba-47b5-bd93-8f19c35490b3'', N''DATEADD(DD, {1}, DATEADD(D, 0, DATEDIFF(D, 0, {0})))'', 4, N''Add Days to Date'', NULL, 0, 0, 44)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''51a4dc3e-41a4-4b1a-8df8-8d9a1baed196'', N''DATEADD(MM, {1}, DATEADD(D, 0, DATEDIFF(D, 0, {0})))'', 4, N''Add Months to Date'', NULL, 0, 0, 23)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''bc6a9215-696d-492c-8acb-95c99f440530'', N''DATEADD(YY, {1}, DATEADD(D, 0, DATEDIFF(D, 0, {0})))'', 4, N''Add Years to Date'', NULL, 0, 0, 24)';
-	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''078108bf-77b2-42a3-b426-42126337f397'', N''[dbo].[udf_ASRFn_BradfordFactor]({0}, {1}, {2}, {3})'', 2, N''Bradford Factor'', NULL, 0, 0, 73)';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id], [dependsonbankholiday]) VALUES (N''078108bf-77b2-42a3-b426-42126337f397'', N''[dbo].[udf_ASRFn_BradfordFactor]({0}, {1}, {2}, {3})'', 2, N''Bradford Factor'', NULL, 0, 0, 73, 1)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentdependancy] ([id], [type], [modulekey], [parameterkey], [code]) VALUES (73, 1, ''MODULE_PERSONNEL'', ''Param_TablePersonnel'', '''')';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentdependancy] ([id], [type], [modulekey], [parameterkey], [code]) VALUES (73, 3, '''', ''1'', '' BETWEEN {0} AND {1} '')';	
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''eb449e75-e061-4502-973b-5e3a3e39c2d2'', N''dbo.[udfsys_convertcharactertonumeric]({0})'', 2, N''Convert Character to Numeric'', NULL, 0, 0, 25)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''56b64c0d-84d9-4b15-9c9e-b1fdb42ea4d1'', N''dbo.[udfsys_convertcurrency]({0},{1},{2})'', 2, N''Convert Currency'', NULL, 0, 0, 51)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''88430aa0-f580-4157-8b2f-c73841cea211'', N''LTRIM(STR({0}, 20, convert(integer,{1})))'', 1, N''Convert Numeric to Character'', NULL, 0, 0, 3)';
@@ -1748,8 +1752,9 @@ PRINT 'Step - Populate code generation tables'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''fbccef52-27be-4ee4-8afa-d8228da2e952'', N''[dbo].[udfsys_wholemonthsbetweentwodates] ({0}, {1})'', 2, N''Whole Months between Two Dates'', NULL, 0, 0, 26)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''1b5082ad-36bb-4bf8-b859-22a1de8f8d2e'', N''[dbo].[udfsys_wholeyearsbetweentwodates] ({0}, {1})'', 2, N''Whole Years between Two Dates'', NULL, 0, 0, 54)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''97880cd2-c73d-4c7e-a4c4-971824b850e6'', N''[dbo].[udfsys_wholeyearsbetweentwodates] ({0}, GETDATE())'', 2, N''Whole Years until Current Date'', NULL, 0, 0, 18)';
-	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''f11ffb85-31bc-4b12-9b3d-e4464c868ca4'', N''[dbo].[udf_ASRFn_WorkingDaysBetweenTwoDates] ({0}, {1}, {2})'', 2, N''Working Days between Two Dates'', NULL, 0, 0, 46)';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id], [dependsonbankholiday]) VALUES (N''f11ffb85-31bc-4b12-9b3d-e4464c868ca4'', N''[dbo].[udf_ASRFn_WorkingDaysBetweenTwoDates] ({0}, {1}, {2})'', 2, N''Working Days between Two Dates'', NULL, 0, 0, 46, 1)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentdependancy] ([id], [type], [modulekey], [parameterkey], [code]) VALUES (46, 1, ''MODULE_PERSONNEL'', ''Param_TablePersonnel'', '''')';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentdependancy] ([id], [type], [modulekey], [parameterkey], [code]) VALUES (46, 3, '''', ''1'', '' BETWEEN {0} AND {1} '')';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''5c9a6256-ac11-456d-92fe-a5e2f5ba4c11'', N''DATEPART(YYYY, {0})'', 2, N''Year of Date'', NULL, 0, 0, 32)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''5b636d9f-7589-46d4-bd6a-0e23aef81a51'', N''NOT'', 0, N''Not'', NULL, 1, 180, 13)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id], [isgetfieldfromdb], [maketypesafe]) VALUES (N''5da8bb7e-f632-4ed0-b236-e042b88f3a1b'', N''[dbo].[udfsys_getfieldfromdatabaserecord] ({0}, {1}, {2})'', 0, N''Get field from database record'', NULL, 0, 0, 42, 1, 1)';
@@ -1789,6 +1794,7 @@ PRINT 'Step - Administration module stored procedures'
 			, ISNULL([overnightonly],0) AS [overnightonly]
 			, ISNULL([casecount],0) AS [casecount]
 			, ISNULL([maketypesafe],0) AS [maketypesafe]
+			, ISNULL([dependsonbankholiday], 0) AS [dependsonbankholiday]
 			FROM dbo.[tbstat_componentcode] WHERE [id] IS NOT NULL;
 	END';
 
