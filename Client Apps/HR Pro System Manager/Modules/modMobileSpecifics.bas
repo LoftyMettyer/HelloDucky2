@@ -347,6 +347,8 @@ sProcSQL = sProcSQL & "  IF @psMessage = ''" & vbNewLine & _
   sProcSQL = sProcSQL & _
     "  SELECT @sURL = ParameterValue FROM ASRSysModuleSetup WHERE ModuleKey = 'MODULE_WORKFLOW' AND ParameterKey = 'Param_URL';" & vbNewLine & _
     "  IF LEN(ISNULL(@sURL, '')) = 0 SET @psMessage = 'Unable to read Workflow URL parameter';" & vbNewLine & vbNewLine & _
+    "  SELECT @iCount = COUNT(*) FROM ASRSysSystemSettings WHERE [Section] = 'licence' AND [SettingKey] = 'mobile';" & vbNewLine & _
+    "  IF @iCount <= 0 SET @psMessage = 'Unable to register you, please contact your administrator (LIC0)';" & vbNewLine & vbNewLine & _
     "  IF @psMessage = '' and @iCount = 1" & vbNewLine & _
     "  BEGIN" & vbNewLine & _
     "    --GET CURRENT USERNAME" & vbNewLine & _
