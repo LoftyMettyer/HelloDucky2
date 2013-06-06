@@ -1245,13 +1245,12 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
       "    WHILE (@@fetch_status = 0) AND (@fValidRecord = 1)" & vbNewLine & _
       "    BEGIN" & vbNewLine
     
-
     ' Add special functions
     sUpdateTriggerSQL.Append sUpdateSpecialFunctionsCode1
    
     ' Insert the expression variable declaration code.
     sUpdateTriggerSQL.Append sExprDeclarationCode.ToString & vbNewLine
-    
+       
     If pfIsAbsenceTable Then
       sUpdateTriggerSQL.Append _
         "        /* -------------------------------------------------------------------------------------------------------------------- */" & vbNewLine & _
@@ -3712,12 +3711,6 @@ Private Function SetTableTriggers_SpecialFunctions( _
       sSSPSwitch2 & vbNewLine & vbNewLine
       
   End If
-  
-
-  sInsertSpecialFunctionsCode = "/*" & sInsertSpecialFunctionsCode & "*/"
-  sUpdateSpecialFunctionsCode2 = "/*" & sUpdateSpecialFunctionsCode2 & "*/"
-  sDeleteSpecialFunctionsCode = "/*" & sDeleteSpecialFunctionsCode & "*/"
-
   
 TidyUpAndExit:
   SetTableTriggers_SpecialFunctions = bOK
