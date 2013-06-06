@@ -1534,7 +1534,11 @@ Private Function GetRecordProfileTables() As Boolean
     
     If lngTempOrderID = 0 Then lngTempOrderID = datGeneral.GetDefaultOrder(!BaseTable)
     ' Use Override filter if there is one
-    If gblnReportPackMode Then lngFilterID = IIf(mlngOverrideFilterID <> 0, mlngOverrideFilterID, IIf(IsNull(!FilterID), 0, !FilterID))
+    If gblnReportPackMode Then
+      lngFilterID = IIf(mlngOverrideFilterID <> 0, mlngOverrideFilterID, IIf(IsNull(!FilterID), 0, !FilterID))
+    Else
+      lngFilterID = !FilterID
+    End If
     
     Set objTempTable = mobjDefinition.Add(!BaseTable, _
       datGeneral.GetTableName(!BaseTable), _
