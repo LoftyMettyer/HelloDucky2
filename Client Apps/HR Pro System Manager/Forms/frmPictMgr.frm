@@ -1,7 +1,7 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
 Begin VB.Form frmPictMgr 
    Caption         =   "Picture Library"
    ClientHeight    =   3255
@@ -825,7 +825,7 @@ Private Function NewPicture() As Boolean
   If fOK Then
     ' Add the new picture to the listview.
     Set objItem = ListView1.ListItems.Add(, sKey, sPictureName, ImageList2.ListImages(sKey).Index, ImageList1.ListImages(sKey).Index)
-    objItem.SubItems(1) = Choose(recPictEdit.Fields("PictureType"), "Bitmap", "Metafile", "Icon")
+    'objItem.SubItems(1) = Choose(recPictEdit.Fields("PictureType"), "Bitmap", "Metafile", "Icon")
     iHeight = Int(Me.ScaleY(ImageList2.ListImages(sKey).Picture.Height, vbHimetric, vbPixels))
     iWidth = Int(Me.ScaleX(ImageList2.ListImages(sKey).Picture.Width, vbHimetric, vbPixels))
     objItem.SubItems(2) = Trim(Str(iHeight))
