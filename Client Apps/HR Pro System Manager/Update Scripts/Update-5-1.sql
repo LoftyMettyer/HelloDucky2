@@ -656,7 +656,8 @@ PRINT 'Step - Report Packs'
 			[OutputTOC] [bit] NULL,
 			[OutputCoverSheet] [bit] NULL';
 		EXEC sp_executesql @NVarCommand;
-
+	  END
+	  
 	SELECT @iRecCount = count(id) FROM syscolumns WHERE id = (select id from sysobjects where name = 'ASRSysBatchJobName') and name = 'OverrideFilterID'
 	IF @iRecCount = 0
 	  BEGIN
