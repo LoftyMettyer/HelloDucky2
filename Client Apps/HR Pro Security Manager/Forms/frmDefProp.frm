@@ -14,7 +14,7 @@ Begin VB.Form frmDefProp
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1027
+   HelpContextID   =   8027
    Icon            =   "frmDefProp.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True

@@ -15,7 +15,7 @@ Begin VB.Form frmChangePassword
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1012
+   HelpContextID   =   8012
    Icon            =   "frmChangePassword.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
@@ -44,15 +44,6 @@ Begin VB.Form frmChangePassword
       Width           =   1200
    End
    Begin VB.Frame fraPassword 
-      BeginProperty Font 
-         Name            =   "Verdana"
-         Size            =   8.25
-         Charset         =   0
-         Weight          =   400
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
       Height          =   2745
       Left            =   90
       TabIndex        =   3

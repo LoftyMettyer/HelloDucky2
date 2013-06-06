@@ -18,7 +18,7 @@ Begin VB.Form frmExprPromptedValue
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1042
+   HelpContextID   =   8042
    Icon            =   "frmExprPromptedValue.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
@@ -48,9 +48,9 @@ Begin VB.Form frmExprPromptedValue
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      DropDown        =   "frmExprPromptedValue.frx":0091
-      Keys            =   "frmExprPromptedValue.frx":00AF
-      Spin            =   "frmExprPromptedValue.frx":00F9
+      DropDown        =   "frmExprPromptedValue.frx":127E
+      Keys            =   "frmExprPromptedValue.frx":129C
+      Spin            =   "frmExprPromptedValue.frx":12E6
       AlignHorizontal =   1
       AlignVertical   =   0
       Appearance      =   1
@@ -95,7 +95,7 @@ Begin VB.Form frmExprPromptedValue
       _Version        =   65536
       _ExtentX        =   2646
       _ExtentY        =   556
-      Caption         =   "frmExprPromptedValue.frx":0121
+      Caption         =   "frmExprPromptedValue.frx":130E
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Verdana"
          Size            =   8.25
@@ -105,7 +105,7 @@ Begin VB.Form frmExprPromptedValue
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      Keys            =   "frmExprPromptedValue.frx":0186
+      Keys            =   "frmExprPromptedValue.frx":1374
       AlignHorizontal =   0
       AlignVertical   =   0
       Appearance      =   1

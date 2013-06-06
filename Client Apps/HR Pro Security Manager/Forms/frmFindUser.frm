@@ -15,7 +15,7 @@ Begin VB.Form frmFindUser
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1064
+   HelpContextID   =   8064
    Icon            =   "frmFindUser.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
