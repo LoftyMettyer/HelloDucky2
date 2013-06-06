@@ -1057,7 +1057,9 @@ Private Function SaveModuleDefinitions() As Boolean
       "    sequence, " & _
       "    linksLinkText, " & _
       "    pageTitle, " & _
-      "    tableID)"
+      "    tableID, " & _
+      "    WFOutOfOffice" & _
+      ")"
     sSQL = sSQL & _
       " VALUES(" & _
       CStr(rsLinks!ViewID) & "," & _
@@ -1072,7 +1074,7 @@ Private Function SaveModuleDefinitions() As Boolean
       CStr(rsLinks!Sequence) & "," & _
       "'" & Replace(rsLinks!LinksLinkText, "'", "''") & "'," & _
       "'" & IIf(IsNull(rsLinks!PageTitle), vbNullString, Replace(IIf(IsNull(rsLinks!PageTitle), vbNullString, rsLinks!PageTitle), "'", "''")) & "'," & _
-      CStr(rsLinks!TableID) & _
+      CStr(rsLinks!TableID) & ", " & IIf(rsLinks!WFOutOfOffice, "1", "0") & _
       ")"
 
     gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
