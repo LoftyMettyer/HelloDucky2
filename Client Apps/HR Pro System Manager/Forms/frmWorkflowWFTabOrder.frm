@@ -1,9 +1,10 @@
 VERSION 5.00
 Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmWorkflowWFTabOrder 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Control Order"
-   ClientHeight    =   3225
+   ClientHeight    =   4245
    ClientLeft      =   45
    ClientTop       =   435
    ClientWidth     =   6570
@@ -23,17 +24,53 @@ Begin VB.Form frmWorkflowWFTabOrder
    LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   3225
+   ScaleHeight     =   4245
    ScaleWidth      =   6570
    ShowInTaskbar   =   0   'False
    StartUpPosition =   1  'CenterOwner
+   Begin VB.Frame Frame1 
+      Caption         =   "Page :"
+      Height          =   825
+      Left            =   150
+      TabIndex        =   5
+      Top             =   100
+      Width           =   5000
+      Begin VB.ComboBox cboPage 
+         Height          =   315
+         Left            =   1500
+         Style           =   2  'Dropdown List
+         TabIndex        =   7
+         Top             =   300
+         Width           =   3300
+      End
+      Begin COASpinner.COA_Spinner asrPage 
+         Height          =   315
+         Left            =   200
+         TabIndex        =   6
+         Top             =   300
+         Width           =   1000
+         _ExtentX        =   1773
+         _ExtentY        =   556
+         BackColor       =   -2147483643
+         BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+            Name            =   "Verdana"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         MaximumValue    =   99999
+      End
+   End
    Begin VB.CommandButton cmdOk 
       Caption         =   "&OK"
       Default         =   -1  'True
       Height          =   400
       Left            =   5280
       TabIndex        =   3
-      Top             =   2280
+      Top             =   3240
       Width           =   1200
    End
    Begin VB.CommandButton cmdCancel 
@@ -42,7 +79,7 @@ Begin VB.Form frmWorkflowWFTabOrder
       Height          =   400
       Left            =   5280
       TabIndex        =   4
-      Top             =   2760
+      Top             =   3720
       Width           =   1200
    End
    Begin VB.CommandButton cmdUp 
@@ -50,7 +87,7 @@ Begin VB.Form frmWorkflowWFTabOrder
       Height          =   400
       Left            =   5280
       TabIndex        =   1
-      Top             =   120
+      Top             =   1100
       UseMaskColor    =   -1  'True
       Width           =   1200
    End
@@ -59,18 +96,18 @@ Begin VB.Form frmWorkflowWFTabOrder
       Height          =   400
       Left            =   5280
       TabIndex        =   2
-      Top             =   600
+      Top             =   1680
       UseMaskColor    =   -1  'True
       Width           =   1200
    End
    Begin ComctlLib.ListView ListView1 
       Height          =   3000
       Index           =   0
-      Left            =   120
+      Left            =   150
       TabIndex        =   0
-      Top             =   120
+      Top             =   1100
       Visible         =   0   'False
-      Width           =   4995
+      Width           =   5000
       _ExtentX        =   8811
       _ExtentY        =   5292
       SortKey         =   2
@@ -123,7 +160,7 @@ Begin VB.Form frmWorkflowWFTabOrder
    End
    Begin ComctlLib.ImageList ImageList1 
       Left            =   5640
-      Top             =   1290
+      Top             =   2250
       _ExtentX        =   1005
       _ExtentY        =   1005
       BackColor       =   -2147483643
@@ -281,6 +318,99 @@ Public Property Get Loading() As Boolean
  
 End Property
 
+Private Sub asrPage_Change()
+  ' Display the required page information.
+  On Error GoTo ErrorTrap
+  
+  Dim iPageNo As Integer
+  Dim iListNo As Integer
+
+  ' Variables used for passing count and selected index to RefreshUpDown function.
+  Dim iListCount As Integer
+  Dim iSelectedIndex As Integer
+  
+  If Not mfLoading Then
+    ' Get the new page number.
+    iPageNo = val(asrPage.Text)
+    
+    If cboPage.ListIndex <> (iPageNo - 1) Then cboPage.ListIndex = (iPageNo - 1)
+    
+    If (iPageNo >= ListView1.LBound) And (iPageNo <= ListView1.UBound) Then
+      For iListNo = ListView1.LBound To ListView1.UBound
+        If iListNo = iPageNo Then
+          ListView1(iListNo).Visible = True
+          ListView1(iListNo).ZOrder 0
+        Else
+          ListView1(iListNo).Visible = False
+        End If
+      Next iListNo
+    
+      If ListView1(iPageNo).ListItems.Count > 0 Then
+        ListView1(iPageNo).SelectedItem = ListView1(iPageNo).ListItems(1)
+      End If
+    End If
+  End If
+
+  iListCount = Me.ListView1(iPageNo).ListItems.Count
+  
+  ' Validation for when there are no tab controls in the page.
+  If iListCount > 0 Then
+    iSelectedIndex = Me.ListView1(iPageNo).SelectedItem.Index
+  Else
+    iSelectedIndex = 0
+  End If
+  
+  ' Refreshes the enabled status of the cmdUp and cmdDown controls.
+  RefreshUpDown iListCount, iSelectedIndex
+
+TidyUpAndExit:
+  Exit Sub
+  
+ErrorTrap:
+  Resume TidyUpAndExit
+  
+End Sub
+
+
+Private Sub cboPage_Click()
+  On Error GoTo ErrorTrap
+  
+  Dim iPageNo As Integer
+
+  ' Variables used for passing count and selected index to RefreshUpDown function.
+  Dim iListCount As Integer
+  Dim iSelectedIndex As Integer
+
+  If Not mfLoading Then
+    With cboPage
+      If .ListCount > 0 And .ListIndex >= 0 Then
+        iPageNo = .ListIndex + 1
+        If (val(asrPage.Text) <> iPageNo) Then asrPage.Text = Trim(Str(iPageNo))
+      End If
+    End With
+  End If
+  
+  iListCount = Me.ListView1(iPageNo).ListItems.Count
+  
+  ' Validation for when there are no tab controls in the page.
+  If iListCount > 0 Then
+    iSelectedIndex = Me.ListView1(iPageNo).SelectedItem.Index
+  Else
+    iSelectedIndex = 0
+  End If
+  
+  ' Refreshes the enabled status of the cmdUp and cmdDown controls.
+  RefreshUpDown iListCount, iSelectedIndex
+  
+TidyUpAndExit:
+  Exit Sub
+  
+ErrorTrap:
+  Resume TidyUpAndExit
+  
+End Sub
+
+
 Private Sub cmdCancel_Click()
   On Error GoTo ErrorTrap
   
@@ -306,7 +436,7 @@ Private Sub cmdDown_Click()
   Dim iListCount As Integer
   Dim iSelectedIndex As Integer
   
-  iPageNo = 0
+  iPageNo = val(asrPage.Text)
   
   If (iPageNo >= ListView1.LBound) And (iPageNo <= ListView1.UBound) Then
     
@@ -344,7 +474,7 @@ ErrorTrap:
   
 End Sub
 
-Private Sub cmdOk_Click()
+Private Sub cmdOK_Click()
   
   ' Save the changes to the screen controls.
   On Error GoTo ErrorTrap
@@ -434,7 +564,7 @@ Private Sub cmdUp_Click()
   Dim iListCount As Integer
   Dim iSelectedIndex As Integer
   
-  iPageNo = 0
+  iPageNo = val(asrPage.Text)
   
   If iPageNo >= ListView1.LBound And iPageNo <= ListView1.UBound Then
   
@@ -478,26 +608,82 @@ Private Sub Form_Activate()
   
   Dim iPageCount As Integer
   Dim iCurrentPageNo As Integer
-  Dim objTab As ComctlLib.Tab
+  Dim objTab As MSComctlLib.Tab
 
   ' Variables used for passing count and selected index to RefreshUpDown function.
   Dim iListCount As Integer
   Dim iSelectedIndex As Integer
-  
+      
   If mfLoading Then
     If Not mfrmWebForm Is Nothing Then
     
-      iCurrentPageNo = 0
-      iPageCount = 1
-      GetPageControls 0
+      iCurrentPageNo = mfrmWebForm.PageNo
+      iPageCount = mfrmWebForm.tabPages.Tabs.Count
+
+      If iPageCount > 0 Then
+        ' Add backgournd controls first
+        DisplayBackgroundControl
+        ' Add items to the combo for each tab page.
+        For Each objTab In mfrmWebForm.tabPages.Tabs
+          With objTab
+          
+            cboPage.AddItem .Caption
+            cboPage.ItemData(cboPage.NewIndex) = val(.Tag) + 1
+            
+            If .Index > ListView1.UBound Then
+              Load ListView1(.Index)
+            End If
+            
+            GetPageControls .Index
+            
+          End With
+        Next objTab
       
+         ' Disassociate object variables.
+         Set objTab = Nothing
+         
+         With asrPage
+           .MinimumValue = 0
+           .MaximumValue = iPageCount
+         End With
+        
+         cboPage.ListIndex = iCurrentPageNo - 1
+         
+         If ListView1(iCurrentPageNo).ListItems.Count > 0 Then
+           ListView1(iCurrentPageNo).SelectedItem = ListView1(iCurrentPageNo).ListItems(1)
+         End If
+         
+      Else
+      
+        DisplayBackgroundControl
+      
+        ' Add an item to the combo for form itself.
+'        cboPage.AddItem "Background Controls"
+'        cboPage.ItemData(cboPage.NewIndex) = 0
+'
+'        GetPageControls 0
+'
+'        asrPage.MinimumValue = 0
+'        asrPage.MaximumValue = 0
+'
+'        cboPage.ListIndex = 0
+      End If
+
+    ' If the number of pages on the form is one then the combobox is disabled.
+    If iPageCount <= 1 Then cboPage.Enabled = False
+    
+      With asrPage
+        .Text = Trim(Str(iCurrentPageNo))
+        .Enabled = (cboPage.ListCount > 1)
+      End With
+    
       ListView1(iCurrentPageNo).Visible = True
       ListView1(iCurrentPageNo).ZOrder 0
       
     End If
-    
+      
     mfLoading = False
-  
+    
   End If
 
   ' Following line included to highlight the selected item.
@@ -525,7 +711,16 @@ ErrorTrap:
   Resume TidyUpAndExit
     
 End Sub
-
+Private Function DisplayBackgroundControl()
+' Add an item to the combo for form itself.
+cboPage.AddItem "Forms"
+cboPage.ItemData(cboPage.NewIndex) = 0
+GetPageControls 0
+asrPage.MinimumValue = 0
+asrPage.MaximumValue = 0
+cboPage.ListIndex = 0
+End Function
+        
 Private Sub Form_Initialize()
   mfLoading = True
 End Sub
@@ -801,7 +996,8 @@ Private Function GetPageControls(piPageNo As Integer) As Boolean
     
       iWFItemType = ctlControl.WFItemType
       
-      If (mfrmWebForm.WebFormControl_IsTabStop(iWFItemType)) Then
+      If (mfrmWebForm.GetControlPageNo(ctlControl) = piPageNo) And _
+        (mfrmWebForm.WebFormControl_IsTabStop(iWFItemType)) Then
       
         If (iWFItemType = giWFFORMITEM_DBFILE) _
           Or (iWFItemType = giWFFORMITEM_WFFILE) Then
@@ -980,3 +1176,26 @@ Private Function ControlTypeName(piWFItemType As WorkflowWebFormItemTypes) As St
   End Select
   
 End Function
+
+
+Private Function CurrentPageContainer(x As Single, y As Single) As Variant
+  ' Return the current page container.
+  Dim bSelectTab As Boolean
+  
+  bSelectTab = False
+  With mfrmWebForm
+    If .tabPages.Tabs.Count > 0 And .tabPages.Selected Then
+      If x > .tabPages.ClientLeft And x < .tabPages.ClientLeft + .tabPages.ClientWidth _
+        And y > .tabPages.ClientTop And y < .tabPages.ClientTop + .tabPages.ClientHeight Then
+          bSelectTab = True
+      End If
+    End If
+    
+    If bSelectTab Then
+      Set CurrentPageContainer = .objTabContainer(.tabPages.SelectedItem.Tag)
+    Else
+      Set CurrentPageContainer = Me
+    End If
+  End With
+End Function
+
