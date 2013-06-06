@@ -3,10 +3,10 @@ Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~2.OCX"
 Begin VB.Form frmLogin 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "HR Pro System Manager - Login"
-   ClientHeight    =   3120
+   ClientHeight    =   3375
    ClientLeft      =   1530
    ClientTop       =   2595
-   ClientWidth     =   5490
+   ClientWidth     =   5745
    BeginProperty Font 
       Name            =   "Verdana"
       Size            =   8.25
@@ -22,14 +22,14 @@ Begin VB.Form frmLogin
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   3120
-   ScaleWidth      =   5490
+   ScaleHeight     =   3375
+   ScaleWidth      =   5745
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin VB.CheckBox chkRecover 
       Caption         =   "Recover?"
       Height          =   195
-      Left            =   4020
+      Left            =   4560
       TabIndex        =   13
       Top             =   360
       Width           =   1215
@@ -39,51 +39,51 @@ Begin VB.Form frmLogin
       Height          =   210
       Left            =   75
       TabIndex        =   2
-      Top             =   1965
+      Top             =   2225
       Value           =   1  'Checked
       Width           =   3240
    End
    Begin VB.CommandButton cmdDetails 
       Caption         =   "&Details  >>"
       Height          =   400
-      Left            =   4185
+      Left            =   4445
       TabIndex        =   8
-      Top             =   2280
+      Top             =   2540
       Width           =   1200
    End
    Begin VB.CommandButton cmdOK 
       Caption         =   "&OK"
       Default         =   -1  'True
       Height          =   400
-      Left            =   4185
+      Left            =   4445
       TabIndex        =   5
-      Top             =   1125
+      Top             =   1385
       Width           =   1200
    End
    Begin VB.CommandButton cmdCancel 
       Cancel          =   -1  'True
       Caption         =   "&Cancel"
       Height          =   400
-      Left            =   4185
+      Left            =   4445
       TabIndex        =   6
-      Top             =   1680
+      Top             =   1940
       Width           =   1200
    End
    Begin VB.TextBox txtUID 
       Height          =   315
-      Left            =   1080
+      Left            =   1372
       TabIndex        =   0
-      Top             =   1125
+      Top             =   1385
       Width           =   3000
    End
    Begin VB.TextBox txtPWD 
       Height          =   315
       IMEMode         =   3  'DISABLE
-      Left            =   1080
+      Left            =   1372
       MaxLength       =   128
       PasswordChar    =   "*"
       TabIndex        =   1
-      Top             =   1530
+      Top             =   1790
       Width           =   3000
    End
    Begin VB.Timer Timer1 
@@ -94,17 +94,17 @@ Begin VB.Form frmLogin
    End
    Begin VB.TextBox txtDatabase 
       Height          =   315
-      Left            =   1080
+      Left            =   1372
       TabIndex        =   3
-      Top             =   2280
+      Top             =   2540
       Visible         =   0   'False
       Width           =   3000
    End
    Begin VB.TextBox txtServer 
       Height          =   315
-      Left            =   1080
+      Left            =   1372
       TabIndex        =   4
-      Top             =   2685
+      Top             =   2945
       Visible         =   0   'False
       Width           =   3000
    End
@@ -117,19 +117,20 @@ Begin VB.Form frmLogin
       _StockProps     =   0
    End
    Begin VB.Label lblDevelopmentMode 
-      Caption         =   "(Running in ASR Development mode)"
-      Height          =   255
-      Left            =   2205
+      AutoSize        =   -1  'True
+      Caption         =   "(Dev mode)"
+      Height          =   195
+      Left            =   4610
       TabIndex        =   14
       Top             =   75
-      Width           =   3285
+      Width           =   1035
    End
    Begin VB.Line lnTopWhiteLine 
       BorderColor     =   &H80000005&
-      X1              =   90
-      X2              =   5390
-      Y1              =   990
-      Y2              =   990
+      X1              =   120
+      X2              =   5670
+      Y1              =   1250
+      Y2              =   1250
    End
    Begin VB.Label lblVersion 
       AutoSize        =   -1  'True
@@ -138,16 +139,16 @@ Begin VB.Form frmLogin
       Height          =   195
       Left            =   105
       TabIndex        =   12
-      Top             =   690
+      Top             =   950
       Width           =   1395
    End
    Begin VB.Line lnTopGreyLine 
       BorderColor     =   &H80000010&
       BorderWidth     =   2
-      X1              =   90
-      X2              =   5390
-      Y1              =   990
-      Y2              =   990
+      X1              =   120
+      X2              =   5650
+      Y1              =   1250
+      Y2              =   1250
    End
    Begin VB.Label lblUser 
       AutoSize        =   -1  'True
@@ -156,7 +157,7 @@ Begin VB.Form frmLogin
       Height          =   195
       Left            =   90
       TabIndex        =   11
-      Top             =   1185
+      Top             =   1445
       Width           =   435
    End
    Begin VB.Label lblPassword 
@@ -166,7 +167,7 @@ Begin VB.Form frmLogin
       Height          =   195
       Left            =   90
       TabIndex        =   10
-      Top             =   1590
+      Top             =   1750
       Width           =   795
    End
    Begin VB.Label lblDatabase 
@@ -176,7 +177,7 @@ Begin VB.Form frmLogin
       Height          =   195
       Left            =   90
       TabIndex        =   9
-      Top             =   2340
+      Top             =   2600
       Visible         =   0   'False
       Width           =   1020
    End
@@ -187,16 +188,16 @@ Begin VB.Form frmLogin
       Height          =   195
       Left            =   90
       TabIndex        =   7
-      Top             =   2745
+      Top             =   3005
       Visible         =   0   'False
       Width           =   810
    End
    Begin VB.Image imgASRLogo 
-      Height          =   585
+      Height          =   900
       Left            =   105
       Picture         =   "frmLogin.frx":000C
       Top             =   60
-      Width           =   1770
+      Width           =   2805
    End
 End
 Attribute VB_Name = "frmLogin"
@@ -385,11 +386,11 @@ Private Sub Form_Load()
   lblVersion.Caption = "HR Pro System Manager - Version " & App.Major & "." & App.Minor & "." & App.Revision
 
   If ASRDEVELOPMENT Then
-    lblDevelopmentMode = "(Running in ASR Development mode)"
+    lblDevelopmentMode.Caption = "(Dev mode)"
     lblDevelopmentMode.Visible = True
     lblDevelopmentMode.Enabled = True
   Else
-    lblDevelopmentMode = ""
+    lblDevelopmentMode.Caption = ""
     lblDevelopmentMode.Visible = False
     lblDevelopmentMode.Enabled = False
   End If
