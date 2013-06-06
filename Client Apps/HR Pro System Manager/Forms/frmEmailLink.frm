@@ -22,6 +22,8 @@ Begin VB.Form frmEmailLink
    HelpContextID   =   1016
    Icon            =   "frmEmailLink.frx":0000
    LinkTopic       =   "Form2"
+   MaxButton       =   0   'False
+   MinButton       =   0   'False
    ScaleHeight     =   7500
    ScaleWidth      =   9270
    StartUpPosition =   2  'CenterScreen
