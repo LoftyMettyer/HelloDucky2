@@ -4,7 +4,7 @@ Version=1.0.0.4
 [COASD_Frame.ocx <0009>]
 Dest=$(WinSysPath)
 Date=20/09/2012
-Time=12:07
+Time=12:13
 Version=1.0.0.4
 CABFilename=COASD_Frame.CAB
 CABINFFile=COASD_Frame.INF
