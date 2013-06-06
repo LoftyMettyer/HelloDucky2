@@ -295,8 +295,8 @@ Private Sub OutputJobStatus()
     End If
   End If
   
-  
-  mstrStatusMessage = mstrType & " : '" & mstrFunctionName & "' " & mstrStatusMessage
+  'NHRD05072011 Added vbNewLine for this msg to tidy it up a bit as part of another messaging issue
+  mstrStatusMessage = mstrType & " : '" & mstrFunctionName & "' " & vbNewLine & mstrStatusMessage
   
   
   If Not gblnBatchMode Then
@@ -1246,12 +1246,17 @@ Private Sub InitialiseProgressBar()
       .Caption = mstrType
       .Time = False
       .Cancel = True
-      .Bar1Caption = mstrType & " : " & mstrFunctionName
+      'NHRD05072011 Jira HRPro-1574
+      '.Bar1Caption = mstrType & " : " & mstrFunctionName
+      .Bar1Caption = mstrType & " : " & Left(mstrFunctionName, 35) & "..."
+
       .Bar1RecordsCaption = "Records Processed "
       .OpenProgress
     Else
       .ResetBar2
-      .Bar2Caption = mstrType & " : " & mstrFunctionName
+      'NHRD05072011 Jira HRPro-1574
+      '.Bar2Caption = mstrType & " : " & mstrFunctionName
+      .Bar2Caption = mstrType & " : " & Left(mstrFunctionName, 35) & "..."
       .Bar2RecordsCaption = "Records Processed :"
     End If
   End With
