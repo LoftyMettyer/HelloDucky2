@@ -4,7 +4,7 @@ Most Recent Package=Dep File 1
 
 [Package|Dep File 1|Root]
 SubWizProgID=PDWizard.DepPkgSubWiz
-BuildFolder=C:\dev\HR Pro\HR Pro ActiveX\COA_ColourPicker
+BuildFolder=C:\DEV\HR Pro\HR Pro ActiveX\COA_ColourPicker
 Controls Design-Time Support=No
 
 [Package|Dep File 1|Configure DAO ISAMs]
@@ -17,27 +17,27 @@ ODBCDirect=
 [Package|Dep File 1|Files Found]
 
 [Package|Dep File 1|Files Released]
-MsStkPrp.dll=
 
 [Package|Dep File 1|Missing Dependency Information]
 
 [Package|Dep File 1|Out-of-Date Dependency Information]
 
 [Package|Dep File 1|Files Added]
-msstkprp.dll=This file is needed for usercontrol design-time support.
+C:\WINDOWS\system32\MsStkPrp.dll=This file is needed for usercontrol design-time support.
 
 [Package|Dep File 1|Files Removed]
-c:\winnt\system32\msstkprp.dll=
+c:\windows\system32\msstkprp.dll=
 
 [Package|Dep File 1|Files In Project]
-C:\dev\HR Pro\HR Pro ActiveX\COA_ColourPicker\COA_ColourPicker.ocx=Yes
+C:\DEV\HR Pro\HR Pro ActiveX\COA_ColourPicker\COA_ColourPicker.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\msvbvm60.dll=Yes
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEAUT32.DLL=Yes
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEPRO32.DLL=Yes
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ASYCFILT.DLL=Yes
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\STDOLE2.TLB=Yes
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCAT.DLL=Yes
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\msvbvm60.dll=Yes
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\objsafe.tlb=Yes
+C:\WINDOWS\system32\msstkprp.dll=No
 
 [Package|Dep File 1|Configure Registry Files]
 Applicable=
@@ -46,14 +46,13 @@ Applicable=
 Applicable=
 
 [Package|Dep File 1|Install Locations]
-C:\dev\HR Pro\HR Pro ActiveX\COA_ColourPicker\COA_ColourPicker.ocx=$(WinSysPath)
-C:\WINNT\system32\MSVBVM60.DLL=$(WinSysPathSysFile)
+C:\DEV\HR Pro\HR Pro ActiveX\COA_ColourPicker\COA_ColourPicker.ocx=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\msvbvm60.dll=$(WinSysPathSysFile)
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEAUT32.DLL=$(WinSysPathSysFile)
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEPRO32.DLL=$(WinSysPathSysFile)
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ASYCFILT.DLL=$(WinSysPathSysFile)
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\STDOLE2.TLB=$(WinSysPathSysFile)
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCAT.DLL=$(WinSysPathSysFile)
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\msvbvm60.dll=$(WinSysPathSysFile)
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\objsafe.tlb=$(WinSysPath)
 
 [Package|Dep File 1|Configure Shared Files]
@@ -64,9 +63,9 @@ DepCabFile=COA_ColourPicker.CAB
 DepCabRun=COA_ColourPicker.INF
 
 [Package|Dep File 1|Package]
-PackageFolder=C:\dev\HR Pro\HR Pro ActiveX\COA_ColourPicker
+PackageFolder=C:\DEV\HR Pro\HR Pro ActiveX\COA_ColourPicker
 ProjectFolder=C:\DEV\HR Pro\HR Pro ActiveX\COA_ColourPicker
 ServerSideCab=
-File1=C:\dev\HR Pro\HR Pro ActiveX\COA_ColourPicker\COA_ColourPicker.DEP
+File1=C:\DEV\HR Pro\HR Pro ActiveX\COA_ColourPicker\COA_ColourPicker.DEP
 Handler1=PDWizard.FolderDplySubWiz
 Handler2=PDWizard.WebPostDplySubWiz

@@ -19,7 +19,6 @@ ODBCDirect=
 [Package|Dep File 1|Files Released]
 
 [Package|Dep File 1|Missing Dependency Information]
-C:\Program Files\Codejock Software\ActiveX\Xtreme Skin Framework Bundle ActiveX v13.1.0\Bin\Codejock.SkinFramework.v13.1.0.ocx=
 
 [Package|Dep File 1|Out-of-Date Dependency Information]
 
@@ -46,7 +45,7 @@ C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCAT.DLL
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\objsafe.tlb=Yes
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\mscomctl.OCX=Yes
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\mscomct2.ocx=Yes
-C:\Program Files\Codejock Software\ActiveX\Xtreme Skin Framework Bundle ActiveX v13.1.0\Bin\Codejock.SkinFramework.v13.1.0.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\Codejock.SkinFramework.v13.1.0.ocx=Yes
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ComCt232.ocx=Yes
 C:\WINDOWS\system32\AUTPRX32.DLL=No
 C:\WINDOWS\system32\AUTMGR32.EXE=No
@@ -71,7 +70,7 @@ C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCAT.DLL
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\objsafe.tlb=$(WinSysPath)
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\mscomctl.OCX=$(WinSysPath)
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\mscomct2.ocx=$(WinSysPath)
-C:\Program Files\Codejock Software\ActiveX\Xtreme Skin Framework Bundle ActiveX v13.1.0\Bin\Codejock.SkinFramework.v13.1.0.ocx=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\Codejock.SkinFramework.v13.1.0.ocx=$(WinSysPath)
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ComCt232.ocx=$(WinSysPath)
 
 [Package|Dep File 1|Configure Shared Files]

@@ -1,10 +1,10 @@
 [Root]
-Most Recent Package=Internet Package 4
+Most Recent Package=Dep File 1
 
 
 [Package|Dep File 1|Root]
 SubWizProgID=PDWizard.DepPkgSubWiz
-BuildFolder=C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner
+BuildFolder=C:\DEV\HR Pro\HR Pro ActiveX\COA_Spinner
 Controls Design-Time Support=No
 
 [Package|Dep File 1|Configure DAO ISAMs]
@@ -19,27 +19,26 @@ ODBCDirect=
 [Package|Dep File 1|Files Released]
 
 [Package|Dep File 1|Missing Dependency Information]
-C:\WINNT\system32\objsafe.tlb=
 
 [Package|Dep File 1|Out-of-Date Dependency Information]
 
 [Package|Dep File 1|Files Added]
-C:\WINNT\system32\MsStkPrp.dll=This file is needed for usercontrol design-time support.
+C:\WINDOWS\system32\MsStkPrp.dll=This file is needed for usercontrol design-time support.
 
 [Package|Dep File 1|Files Removed]
-c:\winnt\system32\msstkprp.dll=
+c:\windows\system32\msstkprp.dll=
 
 [Package|Dep File 1|Files In Project]
-C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner\COA_Spinner.ocx=Yes
-C:\WINNT\system32\MSVBVM60.DLL=Yes
+C:\DEV\HR Pro\HR Pro ActiveX\COA_Spinner\COA_Spinner.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\msvbvm60.dll=Yes
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEAUT32.DLL=Yes
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEPRO32.DLL=Yes
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ASYCFILT.DLL=Yes
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\STDOLE2.TLB=Yes
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCAT.DLL=Yes
-C:\WINNT\system32\objsafe.tlb=Yes
-C:\WINNT\system32\COMCT232.OCX=Yes
-C:\WINNT\system32\MSSTKPRP.DLL=No
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\objsafe.tlb=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ComCt232.ocx=Yes
+C:\WINDOWS\system32\msstkprp.dll=No
 
 [Package|Dep File 1|Configure Registry Files]
 Applicable=
@@ -48,15 +47,15 @@ Applicable=
 Applicable=
 
 [Package|Dep File 1|Install Locations]
-C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner\COA_Spinner.ocx=$(AppPath)
-C:\WINNT\system32\MSVBVM60.DLL=$(WinSysPathSysFile)
+C:\DEV\HR Pro\HR Pro ActiveX\COA_Spinner\COA_Spinner.ocx=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\msvbvm60.dll=$(WinSysPathSysFile)
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEAUT32.DLL=$(WinSysPathSysFile)
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEPRO32.DLL=$(WinSysPathSysFile)
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ASYCFILT.DLL=$(WinSysPathSysFile)
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\STDOLE2.TLB=$(WinSysPathSysFile)
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCAT.DLL=$(WinSysPathSysFile)
-C:\WINNT\system32\objsafe.tlb=$(WinSysPath)
-C:\WINNT\system32\COMCT232.OCX=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\objsafe.tlb=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ComCt232.ocx=$(WinSysPath)
 
 [Package|Dep File 1|Configure Shared Files]
 Applicable=
@@ -66,493 +65,9 @@ DepCabFile=COA_Spinner.CAB
 DepCabRun=COA_Spinner.INF
 
 [Package|Dep File 1|Package]
-PackageFolder=C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner
-ProjectFolder=C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner
+PackageFolder=C:\DEV\HR Pro\HR Pro ActiveX\COA_Spinner
+ProjectFolder=C:\DEV\HR Pro\HR Pro ActiveX\COA_Spinner
 ServerSideCab=
-File1=C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner\COA_Spinner.DEP
+File1=C:\DEV\HR Pro\HR Pro ActiveX\COA_Spinner\COA_Spinner.DEP
 Handler1=PDWizard.FolderDplySubWiz
 Handler2=PDWizard.WebPostDplySubWiz
-
-
-[Package|Internet Package 1|Root]
-SubWizProgID=PDWizard.InetCABPkgSubWiz
-BuildFolder=C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner
-Controls Design-Time Support=No
-
-[Package|Internet Package 1|Configure DAO ISAMs]
-Applicable=No
-
-[Package|Internet Package 1|Configure DAO ODBC]
-JetWorkspace=
-ODBCDirect=
-
-[Package|Internet Package 1|Files Found]
-
-[Package|Internet Package 1|Files Released]
-
-[Package|Internet Package 1|Missing Dependency Information]
-C:\WINNT\system32\objsafe.tlb=
-
-[Package|Internet Package 1|Out-of-Date Dependency Information]
-
-[Package|Internet Package 1|Files Added]
-c:\winnt\system32\msstkprp.dll=This file is needed for usercontrol design-time support.
-
-[Package|Internet Package 1|Files Removed]
-c:\winnt\system32\msstkprp.dll=
-
-[Package|Internet Package 1|Files In Project]
-C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner\COA_Spinner.ocx=Yes
-C:\WINNT\system32\MSVBVM60.DLL=Yes
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEAUT32.DLL=Yes
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEPRO32.DLL=Yes
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ASYCFILT.DLL=Yes
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\STDOLE2.TLB=Yes
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCAT.DLL=Yes
-C:\WINNT\system32\objsafe.tlb=Yes
-C:\WINNT\system32\COMCT232.OCX=Yes
-C:\WINNT\system32\MSSTKPRP.DLL=No
-
-[Package|Internet Package 1|Configure Registry Files]
-Applicable=No
-
-[Package|Internet Package 1|Configure Remote Servers]
-Applicable=No
-
-[Package|Internet Package 1|Install Locations]
-C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner\COA_Spinner.ocx=$(AppPath)
-C:\WINNT\system32\MSVBVM60.DLL=$(WinSysPathSysFile)
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEAUT32.DLL=$(WinSysPathSysFile)
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEPRO32.DLL=$(WinSysPathSysFile)
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ASYCFILT.DLL=$(WinSysPathSysFile)
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\STDOLE2.TLB=$(WinSysPathSysFile)
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCAT.DLL=$(WinSysPathSysFile)
-C:\WINNT\system32\objsafe.tlb=$(WinSysPath)
-C:\WINNT\system32\COMCT232.OCX=$(WinSysPath)
-
-[Package|Internet Package 1|Configure Shared Files]
-Applicable=
-
-[Package|Internet Package 1|DepFile]
-DepCabFile=COA_Spinner.CAB
-DepCabRun=COA_Spinner.INF
-
-[Package|Internet Package 1|ComponentInfo]
-COA_Spinner.ocx=thiscab
-MSVBVM60.DLL=http://activex.microsoft.com/controls/vb6/VBRun60.cab
-OLEAUT32.DLL=http://activex.microsoft.com/controls/vb6/VBRun60.cab
-OLEPRO32.DLL=http://activex.microsoft.com/controls/vb6/VBRun60.cab
-ASYCFILT.DLL=http://activex.microsoft.com/controls/vb6/VBRun60.cab
-STDOLE2.TLB=http://activex.microsoft.com/controls/vb6/VBRun60.cab
-COMCAT.DLL=http://activex.microsoft.com/controls/vb6/VBRun60.cab
-objsafe.tlb=thiscab
-COMCT232.OCX=thiscab
-
-[Package|Internet Package 1|ObjectInfo]
-COA_Spinner=true;true
-
-[Package|Internet Package 1|Package]
-PackageFolder=C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner
-ProjectFolder=C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner
-ServerSideCab=C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner\COA_Spinner.CAB
-File1=C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner\COA_Spinner.CAB
-File2=C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner\COA_Spinner.HTM
-Handler1=PDWizard.WebPostDplySubWiz
-Handler2=PDWizard.FolderDplySubWiz
-
-
-[Package|Dep File 2|Root]
-SubWizProgID=PDWizard.DepPkgSubWiz
-BuildFolder=C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner
-Controls Design-Time Support=No
-
-[Package|Dep File 2|Configure DAO ISAMs]
-Applicable=No
-
-[Package|Dep File 2|Configure DAO ODBC]
-JetWorkspace=
-ODBCDirect=
-
-[Package|Dep File 2|Files Found]
-
-[Package|Dep File 2|Files Released]
-
-[Package|Dep File 2|Missing Dependency Information]
-C:\WINNT\system32\objsafe.tlb=
-
-[Package|Dep File 2|Out-of-Date Dependency Information]
-
-[Package|Dep File 2|Files Added]
-c:\winnt\system32\msstkprp.dll=This file is needed for usercontrol design-time support.
-
-[Package|Dep File 2|Files Removed]
-c:\winnt\system32\msstkprp.dll=
-
-[Package|Dep File 2|Files In Project]
-C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner\COA_Spinner.ocx=Yes
-C:\WINNT\system32\MSVBVM60.DLL=Yes
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEAUT32.DLL=Yes
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEPRO32.DLL=Yes
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ASYCFILT.DLL=Yes
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\STDOLE2.TLB=Yes
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCAT.DLL=Yes
-C:\WINNT\system32\objsafe.tlb=Yes
-C:\WINNT\system32\COMCT232.OCX=Yes
-C:\WINNT\system32\MSSTKPRP.DLL=No
-
-[Package|Dep File 2|Configure Registry Files]
-Applicable=No
-
-[Package|Dep File 2|Configure Remote Servers]
-Applicable=No
-
-[Package|Dep File 2|Install Locations]
-C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner\COA_Spinner.ocx=$(AppPath)
-C:\WINNT\system32\MSVBVM60.DLL=$(WinSysPathSysFile)
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEAUT32.DLL=$(WinSysPathSysFile)
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEPRO32.DLL=$(WinSysPathSysFile)
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ASYCFILT.DLL=$(WinSysPathSysFile)
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\STDOLE2.TLB=$(WinSysPathSysFile)
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCAT.DLL=$(WinSysPathSysFile)
-C:\WINNT\system32\objsafe.tlb=$(WinSysPath)
-C:\WINNT\system32\COMCT232.OCX=$(WinSysPath)
-
-[Package|Dep File 2|Configure Shared Files]
-Applicable=
-
-[Package|Dep File 2|DepFile]
-DepCabFile=COA_Spinner.CAB
-DepCabRun=COA_Spinner.INF
-
-[Package|Dep File 2|ComponentInfo]
-COA_Spinner.ocx=thiscab
-MSVBVM60.DLL=http://activex.microsoft.com/controls/vb6/VBRun60.cab
-OLEAUT32.DLL=http://activex.microsoft.com/controls/vb6/VBRun60.cab
-OLEPRO32.DLL=http://activex.microsoft.com/controls/vb6/VBRun60.cab
-ASYCFILT.DLL=http://activex.microsoft.com/controls/vb6/VBRun60.cab
-STDOLE2.TLB=http://activex.microsoft.com/controls/vb6/VBRun60.cab
-COMCAT.DLL=http://activex.microsoft.com/controls/vb6/VBRun60.cab
-objsafe.tlb=thiscab
-COMCT232.OCX=thiscab
-
-[Package|Dep File 2|ObjectInfo]
-COA_Spinner=true;true
-
-[Package|Dep File 2|Package]
-PackageFolder=C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner
-ProjectFolder=C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner
-ServerSideCab=
-File1=C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner\COA_Spinner.DEP
-Handler1=PDWizard.FolderDplySubWiz
-Handler2=PDWizard.WebPostDplySubWiz
-
-
-[Package|Internet Package 2|Root]
-SubWizProgID=PDWizard.InetCABPkgSubWiz
-BuildFolder=C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner
-Controls Design-Time Support=No
-
-[Package|Internet Package 2|Configure DAO ISAMs]
-Applicable=No
-
-[Package|Internet Package 2|Configure DAO ODBC]
-JetWorkspace=
-ODBCDirect=
-
-[Package|Internet Package 2|Files Found]
-
-[Package|Internet Package 2|Files Released]
-
-[Package|Internet Package 2|Missing Dependency Information]
-C:\WINNT\system32\objsafe.tlb=
-
-[Package|Internet Package 2|Out-of-Date Dependency Information]
-
-[Package|Internet Package 2|Files Added]
-c:\winnt\system32\msstkprp.dll=This file is needed for usercontrol design-time support.
-
-[Package|Internet Package 2|Files Removed]
-c:\winnt\system32\msstkprp.dll=
-
-[Package|Internet Package 2|Files In Project]
-C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner\COA_Spinner.ocx=Yes
-C:\WINNT\system32\MSVBVM60.DLL=Yes
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEAUT32.DLL=Yes
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEPRO32.DLL=Yes
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ASYCFILT.DLL=Yes
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\STDOLE2.TLB=Yes
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCAT.DLL=Yes
-C:\WINNT\system32\objsafe.tlb=Yes
-C:\WINNT\system32\COMCT232.OCX=Yes
-C:\WINNT\system32\MSSTKPRP.DLL=No
-
-[Package|Internet Package 2|Configure Registry Files]
-Applicable=No
-
-[Package|Internet Package 2|Configure Remote Servers]
-Applicable=No
-
-[Package|Internet Package 2|Install Locations]
-C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner\COA_Spinner.ocx=$(AppPath)
-C:\WINNT\system32\MSVBVM60.DLL=$(WinSysPathSysFile)
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEAUT32.DLL=$(WinSysPathSysFile)
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEPRO32.DLL=$(WinSysPathSysFile)
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ASYCFILT.DLL=$(WinSysPathSysFile)
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\STDOLE2.TLB=$(WinSysPathSysFile)
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCAT.DLL=$(WinSysPathSysFile)
-C:\WINNT\system32\objsafe.tlb=$(WinSysPath)
-C:\WINNT\system32\COMCT232.OCX=$(WinSysPath)
-
-[Package|Internet Package 2|Configure Shared Files]
-Applicable=
-
-[Package|Internet Package 2|DepFile]
-DepCabFile=COA_Spinner.CAB
-DepCabRun=COA_Spinner.INF
-
-[Package|Internet Package 2|ComponentInfo]
-COA_Spinner.ocx=thiscab
-MSVBVM60.DLL=http://activex.microsoft.com/controls/vb6/VBRun60.cab
-OLEAUT32.DLL=http://activex.microsoft.com/controls/vb6/VBRun60.cab
-OLEPRO32.DLL=http://activex.microsoft.com/controls/vb6/VBRun60.cab
-ASYCFILT.DLL=http://activex.microsoft.com/controls/vb6/VBRun60.cab
-STDOLE2.TLB=http://activex.microsoft.com/controls/vb6/VBRun60.cab
-COMCAT.DLL=http://activex.microsoft.com/controls/vb6/VBRun60.cab
-objsafe.tlb=thiscab
-COMCT232.OCX=thiscab
-
-[Package|Internet Package 2|ObjectInfo]
-COA_Spinner=true;true
-
-[Package|Internet Package 2|Package]
-PackageFolder=C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner
-ProjectFolder=C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner
-ServerSideCab=C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner\COA_Spinner.CAB
-File1=C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner\COA_Spinner.CAB
-File2=C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner\COA_Spinner.HTM
-Handler1=PDWizard.WebPostDplySubWiz
-Handler2=PDWizard.FolderDplySubWiz
-
-
-[Package|Internet Package 3|Root]
-SubWizProgID=PDWizard.InetCABPkgSubWiz
-BuildFolder=C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner\Package
-Controls Design-Time Support=No
-
-[Package|Internet Package 3|Configure DAO ISAMs]
-Applicable=No
-
-[Package|Internet Package 3|Configure DAO ODBC]
-JetWorkspace=
-ODBCDirect=
-
-[Package|Internet Package 3|Files Found]
-
-[Package|Internet Package 3|Files Released]
-
-[Package|Internet Package 3|Missing Dependency Information]
-
-[Package|Internet Package 3|Out-of-Date Dependency Information]
-
-[Package|Internet Package 3|Files Added]
-c:\winnt\system32\msstkprp.dll=This file is needed for usercontrol design-time support.
-
-[Package|Internet Package 3|Files Removed]
-c:\winnt\system32\msstkprp.dll=
-
-[Package|Internet Package 3|Files In Project]
-C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner\COA_Spinner.ocx=Yes
-C:\WINNT\system32\MSVBVM60.DLL=Yes
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEAUT32.DLL=Yes
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEPRO32.DLL=Yes
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ASYCFILT.DLL=Yes
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\STDOLE2.TLB=Yes
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCAT.DLL=Yes
-C:\WINNT\system32\objsafe.tlb=Yes
-C:\WINNT\system32\COMCT232.OCX=Yes
-C:\WINNT\system32\MSSTKPRP.DLL=No
-
-[Package|Internet Package 3|Configure Registry Files]
-Applicable=No
-
-[Package|Internet Package 3|Configure Remote Servers]
-Applicable=No
-
-[Package|Internet Package 3|Install Locations]
-
-[Package|Internet Package 3|Configure Shared Files]
-Applicable=
-
-[Package|Internet Package 3|ComponentInfo]
-COA_Spinner.ocx=thiscab
-MSVBVM60.DLL=http://activex.microsoft.com/controls/vb6/VBRun60.cab
-OLEAUT32.DLL=http://activex.microsoft.com/controls/vb6/VBRun60.cab
-OLEPRO32.DLL=http://activex.microsoft.com/controls/vb6/VBRun60.cab
-ASYCFILT.DLL=http://activex.microsoft.com/controls/vb6/VBRun60.cab
-STDOLE2.TLB=http://activex.microsoft.com/controls/vb6/VBRun60.cab
-COMCAT.DLL=http://activex.microsoft.com/controls/vb6/VBRun60.cab
-objsafe.tlb=thiscab
-COMCT232.OCX=thiscab
-
-[Package|Internet Package 3|ObjectInfo]
-COA_Spinner=true;true
-
-[Package|Internet Package 3|Package]
-PackageFolder=C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner\Package
-ProjectFolder=C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner
-ServerSideCab=C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner\Package\COA_Spinner.CAB
-File1=C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner\Package\COA_Spinner.CAB
-File2=C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner\Package\COA_Spinner.HTM
-Handler1=PDWizard.WebPostDplySubWiz
-Handler2=PDWizard.FolderDplySubWiz
-
-
-[Package|Dep File 3|Root]
-SubWizProgID=PDWizard.DepPkgSubWiz
-BuildFolder=C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner
-Controls Design-Time Support=No
-
-[Package|Dep File 3|Configure DAO ISAMs]
-Applicable=No
-
-[Package|Dep File 3|Configure DAO ODBC]
-JetWorkspace=
-ODBCDirect=
-
-[Package|Dep File 3|Files Found]
-
-[Package|Dep File 3|Files Released]
-
-[Package|Dep File 3|Missing Dependency Information]
-
-[Package|Dep File 3|Out-of-Date Dependency Information]
-
-[Package|Dep File 3|Files Added]
-C:\WINNT\system32\MsStkPrp.dll=This file is needed for usercontrol design-time support.
-
-[Package|Dep File 3|Files Removed]
-c:\winnt\system32\msstkprp.dll=
-c:\winnt\system32\msvbvm60.dll=
-c:\program files\microsoft visual studio\vb98\wizards\pdwizard\redist\oleaut32.dll=
-c:\program files\microsoft visual studio\vb98\wizards\pdwizard\redist\olepro32.dll=
-c:\program files\microsoft visual studio\vb98\wizards\pdwizard\redist\asycfilt.dll=
-c:\program files\microsoft visual studio\vb98\wizards\pdwizard\redist\stdole2.tlb=
-c:\program files\microsoft visual studio\vb98\wizards\pdwizard\redist\comcat.dll=
-
-[Package|Dep File 3|Files In Project]
-C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner\COA_Spinner.ocx=Yes
-C:\WINNT\system32\MSVBVM60.DLL=No
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEAUT32.DLL=No
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEPRO32.DLL=No
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ASYCFILT.DLL=No
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\STDOLE2.TLB=No
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCAT.DLL=No
-C:\WINNT\system32\objsafe.tlb=Yes
-C:\WINNT\system32\COMCT232.OCX=Yes
-C:\WINNT\system32\MSSTKPRP.DLL=No
-
-[Package|Dep File 3|Configure Registry Files]
-Applicable=
-
-[Package|Dep File 3|Configure Remote Servers]
-Applicable=
-
-[Package|Dep File 3|Install Locations]
-C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner\COA_Spinner.ocx=$(WinSysPath)
-C:\WINNT\system32\objsafe.tlb=$(WinSysPath)
-C:\WINNT\system32\COMCT232.OCX=$(WinSysPath)
-
-[Package|Dep File 3|Configure Shared Files]
-Applicable=
-
-[Package|Dep File 3|DepFile]
-DepCabFile=COA_Spinner.CAB
-DepCabRun=COA_Spinner.INF
-
-[Package|Dep File 3|Package]
-PackageFolder=C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner
-ProjectFolder=C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner
-ServerSideCab=
-File1=C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner\COA_Spinner.DEP
-Handler1=PDWizard.FolderDplySubWiz
-Handler2=PDWizard.WebPostDplySubWiz
-
-
-[Package|Internet Package 4|Root]
-SubWizProgID=PDWizard.InetCABPkgSubWiz
-BuildFolder=C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner
-Controls Design-Time Support=No
-
-[Package|Internet Package 4|Configure DAO ISAMs]
-Applicable=No
-
-[Package|Internet Package 4|Configure DAO ODBC]
-JetWorkspace=
-ODBCDirect=
-
-[Package|Internet Package 4|Files Found]
-
-[Package|Internet Package 4|Files Released]
-
-[Package|Internet Package 4|Missing Dependency Information]
-
-[Package|Internet Package 4|Out-of-Date Dependency Information]
-
-[Package|Internet Package 4|Files Added]
-c:\winnt\system32\msstkprp.dll=This file is needed for usercontrol design-time support.
-
-[Package|Internet Package 4|Files Removed]
-c:\winnt\system32\msstkprp.dll=
-c:\winnt\system32\msvbvm60.dll=
-c:\program files\microsoft visual studio\vb98\wizards\pdwizard\redist\oleaut32.dll=
-c:\program files\microsoft visual studio\vb98\wizards\pdwizard\redist\olepro32.dll=
-c:\program files\microsoft visual studio\vb98\wizards\pdwizard\redist\asycfilt.dll=
-c:\program files\microsoft visual studio\vb98\wizards\pdwizard\redist\stdole2.tlb=
-c:\program files\microsoft visual studio\vb98\wizards\pdwizard\redist\comcat.dll=
-
-[Package|Internet Package 4|Files In Project]
-C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner\COA_Spinner.ocx=Yes
-C:\WINNT\system32\MSVBVM60.DLL=No
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEAUT32.DLL=No
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEPRO32.DLL=No
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ASYCFILT.DLL=No
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\STDOLE2.TLB=No
-C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCAT.DLL=No
-C:\WINNT\system32\objsafe.tlb=Yes
-C:\WINNT\system32\COMCT232.OCX=Yes
-C:\WINNT\system32\MSSTKPRP.DLL=No
-
-[Package|Internet Package 4|Configure Registry Files]
-Applicable=No
-
-[Package|Internet Package 4|Configure Remote Servers]
-Applicable=No
-
-[Package|Internet Package 4|Install Locations]
-C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner\COA_Spinner.ocx=$(WinSysPath)
-C:\WINNT\system32\objsafe.tlb=$(WinSysPath)
-C:\WINNT\system32\COMCT232.OCX=$(WinSysPath)
-
-[Package|Internet Package 4|Configure Shared Files]
-Applicable=
-
-[Package|Internet Package 4|DepFile]
-DepCabFile=COA_Spinner.CAB
-DepCabRun=COA_Spinner.INF
-
-[Package|Internet Package 4|ComponentInfo]
-COA_Spinner.ocx=thiscab
-objsafe.tlb=thiscab
-COMCT232.OCX=thiscab
-
-[Package|Internet Package 4|ObjectInfo]
-COA_Spinner=true;true
-
-[Package|Internet Package 4|Package]
-PackageFolder=C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner
-ProjectFolder=C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner
-ServerSideCab=C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner\COA_Spinner.CAB
-File1=C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner\COA_Spinner.CAB
-File2=C:\dev\HR Pro\HR Pro ActiveX\COA_Spinner\COA_Spinner.HTM
-Handler1=PDWizard.WebPostDplySubWiz
-Handler2=PDWizard.FolderDplySubWiz

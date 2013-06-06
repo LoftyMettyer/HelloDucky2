@@ -4,7 +4,7 @@ Most Recent Package=Dep File 1
 
 [Package|Dep File 1|Root]
 SubWizProgID=PDWizard.DepPkgSubWiz
-BuildFolder=C:\dev\HR Pro\HR Pro ActiveX\COA_Licence
+BuildFolder=C:\DEV\HR Pro\HR Pro ActiveX\COA_Licence
 
 [Package|Dep File 1|Configure DAO ISAMs]
 Applicable=No
@@ -26,8 +26,8 @@ ODBCDirect=
 [Package|Dep File 1|Files Removed]
 
 [Package|Dep File 1|Files In Project]
-C:\dev\HR Pro\HR Pro ActiveX\COA_Licence\COA_Licence.dll=Yes
-C:\WINNT\system32\MSVBVM60.DLL=Yes
+C:\DEV\HR Pro\HR Pro ActiveX\COA_Licence\COA_Licence.dll=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\msvbvm60.dll=Yes
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEAUT32.DLL=Yes
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEPRO32.DLL=Yes
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ASYCFILT.DLL=Yes
@@ -41,8 +41,8 @@ Applicable=
 Applicable=
 
 [Package|Dep File 1|Install Locations]
-C:\dev\HR Pro\HR Pro ActiveX\COA_Licence\COA_Licence.dll=$(AppPath)
-C:\WINNT\system32\MSVBVM60.DLL=$(WinSysPathSysFile)
+C:\DEV\HR Pro\HR Pro ActiveX\COA_Licence\COA_Licence.dll=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\msvbvm60.dll=$(WinSysPathSysFile)
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEAUT32.DLL=$(WinSysPathSysFile)
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEPRO32.DLL=$(WinSysPathSysFile)
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ASYCFILT.DLL=$(WinSysPathSysFile)
@@ -57,9 +57,9 @@ DepCabFile=COA_Licence.CAB
 DepCabRun=COA_Licence.INF
 
 [Package|Dep File 1|Package]
-PackageFolder=C:\dev\HR Pro\HR Pro ActiveX\COA_Licence
-ProjectFolder=C:\dev\HR Pro\HR Pro ActiveX\COA_Licence
+PackageFolder=C:\DEV\HR Pro\HR Pro ActiveX\COA_Licence
+ProjectFolder=C:\DEV\HR Pro\HR Pro ActiveX\COA_Licence
 ServerSideCab=
-File1=C:\dev\HR Pro\HR Pro ActiveX\COA_Licence\COA_Licence.DEP
+File1=C:\DEV\HR Pro\HR Pro ActiveX\COA_Licence\COA_Licence.DEP
 Handler1=PDWizard.FolderDplySubWiz
 Handler2=PDWizard.WebPostDplySubWiz

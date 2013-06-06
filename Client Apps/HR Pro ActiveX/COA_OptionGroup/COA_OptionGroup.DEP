@@ -1,14 +1,14 @@
 [Version]
-Version=1.0.0.14
+Version=1.0.0.38
 
 [COA_OptionGroup.ocx <0009>]
-Dest=$(AppPath)
-Date=23/10/2009
-Time=15:07
-Version=1.0.0.14
+Dest=$(WinSysPath)
+Date=07/10/2010
+Time=15:20
+Version=1.0.0.38
 CABFilename=COA_OptionGroup.CAB
 CABINFFile=COA_OptionGroup.INF
-Uses1=MSVBVM60.DLL
+Uses1=msvbvm60.dll
 Uses2=OLEAUT32.DLL
 Uses3=OLEPRO32.DLL
 Uses4=ASYCFILT.DLL
@@ -16,16 +16,3 @@ Uses5=STDOLE2.TLB
 Uses6=COMCAT.DLL
 Uses7=objsafe.tlb
 Uses8=Codejock.Controls.v13.1.0.ocx
-Uses9=Codejock.CommandBars.v13.1.0.ocx
-
-[Codejock.Controls.v13.1.0.ocx <0009>]
-Dest=$(WinSysPath)
-Date=16/06/2009
-Time=11:35
-Version=13.1.0.0
-
-[Codejock.CommandBars.v13.1.0.ocx <0009>]
-Dest=$(WinSysPath)
-Date=16/06/2009
-Time=11:35
-Version=13.1.0.0
