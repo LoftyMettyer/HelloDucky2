@@ -1569,7 +1569,6 @@ Public Function GetTableIDFromTableViewName(ByVal psTableViewName As String) As 
 End Function
 
 Public Function RecordAmended(plngTableID As Long, _
-  psTableName As String, _
   psRealSource As String, _
   plngRecordID As Long, _
   plngTimestamp As Long) As Integer
@@ -1619,9 +1618,9 @@ Public Function RecordAmended(plngTableID As Long, _
         Set pmADO = .CreateParameter("resultCode", adInteger, adParamOutput)
         .Parameters.Append pmADO
             
-        Set pmADO = .CreateParameter("tableName", adLongVarChar, adParamInput, -1)
+        Set pmADO = .CreateParameter("tableID", adInteger, adParamInput)
         .Parameters.Append pmADO
-        pmADO.Value = psTableName
+        pmADO.Value = plngTableID
         
         Set pmADO = .CreateParameter("realSource", adLongVarChar, adParamInput, -1)
         .Parameters.Append pmADO
