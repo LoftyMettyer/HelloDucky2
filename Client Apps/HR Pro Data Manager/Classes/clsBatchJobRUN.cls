@@ -1599,19 +1599,24 @@ Public Sub CheckNotifications(lngBatchJobID As Long)
 
   If datGeneral.SystemPermission("EMAILGROUPS", "VIEW") Then
 
-    Set rsBatch = mclsData.OpenRecordset("SELECT Name, EmailFailed, EmailSuccess FROM AsrSysBatchJobName WHERE ID = " & CStr(lngBatchJobID), adOpenKeyset, adLockReadOnly)
+    Set rsBatch = mclsData.OpenRecordset("SELECT Name, EmailFailed, EmailSuccess, IsBatch FROM AsrSysBatchJobName WHERE ID = " & CStr(lngBatchJobID), adOpenKeyset, adLockReadOnly)
+  
+    gblnReportPackMode = Not rsBatch!isbatch
+    frmEmailSel.ReportPack = Not rsBatch!isbatch
 
     If Not mblnJobCancelled Then
       If fOK = False Then
         If rsBatch!EmailFailed > 0 Then
           Set frmSendEmail = New frmEmailSel
-          frmSendEmail.SendBatchNotification "OpenHR " & IIf(gblnReportPackMode, "Report Pack", "Batch Job") & " Failed: '" & rsBatch!Name & "'", mstrEventLogIDs, rsBatch!EmailFailed
+          'frmSendEmail.ReportPack = IIf(gblnReportPackMode, True, False)
+          frmSendEmail.SendBatchNotification "OpenHR " & IIf(frmEmailSel.ReportPack, "Report Pack", "Batch Job") & " Failed: '" & rsBatch!Name & "'", mstrEventLogIDs, rsBatch!EmailFailed
           Set frmSendEmail = Nothing
         End If
       Else
         If rsBatch!EmailSuccess > 0 Then
           Set frmSendEmail = New frmEmailSel
-          frmSendEmail.SendBatchNotification "OpenHR " & IIf(gblnReportPackMode, "Report Pack", "Batch Job") & " Succeeded: '" & rsBatch!Name & "'", mstrEventLogIDs, rsBatch!EmailSuccess
+          'frmSendEmail.ReportPack = IIf(gblnReportPackMode, True, False)
+          frmSendEmail.SendBatchNotification "OpenHR " & IIf(frmEmailSel.ReportPack, "Report Pack", "Batch Job") & " Succeeded: '" & rsBatch!Name & "'", mstrEventLogIDs, rsBatch!EmailSuccess
           Set frmSendEmail = Nothing
         End If
       End If
