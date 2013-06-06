@@ -3565,6 +3565,41 @@ PRINT 'Step 8 - New Mobile User Logins Table'
 	EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID]) VALUES (48, 1, 2, N''lblWelcome'', N''Enter your login details and sign in.'', N''Verdana'', 8.25, 0, 0, 340, 32, NULL, NULL, 0, 32, 70, 0, 0, NULL, NULL);';
 	EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID]) VALUES (49, 2, 2, N''lblWelcome'', N''Click on an ''''item'''' to start an action.'', N''Verdana'', 8.25, 0, 0, 340, 32, NULL, NULL, 0, 32, 70, 0, 0, NULL, NULL);';
 
+	DECLARE @maxid int, @signin int, @forgotlogin int, @newreg int,	@todolist int, @changepassword int, @signout int, @register int, @home int,	@ok int, @cancel int, @refresh int
+	
+	SELECT @maxid = MAX(PictureID) FROM dbo.ASRSysPictures
+		
+	SET @signin = null
+	SET @forgotlogin = null
+	SET @newreg = null
+	SET @todolist = null
+	SET @changepassword = null
+	SET @signout = null
+	SET @register = null
+	SET @home = null
+	SET @ok = null
+	SET @cancel = null
+	SET @refresh = null
+	
+	--TODO PG
+	--INSERT INTO [dbo].[ASRSysPictures] VALUES (-1, '', null, 1)
+
+	UPDATE tbsys_mobileformelements SET PictureID = @signin WHERE ID = 12
+	UPDATE tbsys_mobileformelements SET PictureID = @forgotlogin WHERE ID = 13
+	UPDATE tbsys_mobileformelements SET PictureID = @newreg WHERE ID = 14
+	UPDATE tbsys_mobileformelements SET PictureID = @todolist WHERE ID = 15
+	UPDATE tbsys_mobileformelements SET PictureID = @signout WHERE ID = 17
+	UPDATE tbsys_mobileformelements SET PictureID = @changepassword WHERE ID = 18
+	UPDATE tbsys_mobileformelements SET PictureID = @home WHERE ID = 27
+	UPDATE tbsys_mobileformelements SET PictureID = @register WHERE ID = 28
+	UPDATE tbsys_mobileformelements SET PictureID = @cancel WHERE ID = 35
+	UPDATE tbsys_mobileformelements SET PictureID = @ok WHERE ID = 36
+	UPDATE tbsys_mobileformelements SET PictureID = @cancel WHERE ID = 37
+	UPDATE tbsys_mobileformelements SET PictureID = @refresh WHERE ID = 38
+	UPDATE tbsys_mobileformelements SET PictureID = @cancel WHERE ID = 42
+	UPDATE tbsys_mobileformelements SET PictureID = @ok WHERE ID = 43
+	
+
 	IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[tbsys_mobilegroupworkflows]') AND type in (N'U'))
 	BEGIN
 		EXEC sp_executesql N'CREATE TABLE [dbo].[tbsys_mobilegroupworkflows](
