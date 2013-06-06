@@ -1,14 +1,14 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "coa_spinner.ocx"
 Begin VB.Form frmMatchDef 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Match Report Definition"
-   ClientHeight    =   6495
+   ClientHeight    =   6960
    ClientLeft      =   45
    ClientTop       =   330
    ClientWidth     =   9750
@@ -28,7 +28,7 @@ Begin VB.Form frmMatchDef
    LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   6495
+   ScaleHeight     =   6960
    ScaleWidth      =   9750
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
@@ -38,9 +38,9 @@ Begin VB.Form frmMatchDef
       Picture         =   "frmMatchDef.frx":000C
       ScaleHeight     =   450
       ScaleWidth      =   465
-      TabIndex        =   83
+      TabIndex        =   80
       TabStop         =   0   'False
-      Top             =   6060
+      Top             =   6510
       Visible         =   0   'False
       Width           =   525
    End
@@ -50,9 +50,9 @@ Begin VB.Form frmMatchDef
       Picture         =   "frmMatchDef.frx":0596
       ScaleHeight     =   435
       ScaleWidth      =   465
-      TabIndex        =   82
+      TabIndex        =   79
       TabStop         =   0   'False
-      Top             =   6075
+      Top             =   6525
       Visible         =   0   'False
       Width           =   525
    End
@@ -61,8 +61,8 @@ Begin VB.Form frmMatchDef
       Caption         =   "&Cancel"
       Height          =   400
       Left            =   8450
-      TabIndex        =   80
-      Top             =   6000
+      TabIndex        =   77
+      Top             =   6450
       Width           =   1200
    End
    Begin VB.CommandButton cmdOK 
@@ -70,18 +70,18 @@ Begin VB.Form frmMatchDef
       Default         =   -1  'True
       Height          =   400
       Left            =   7185
-      TabIndex        =   79
-      Top             =   6000
+      TabIndex        =   76
+      Top             =   6450
       Width           =   1200
    End
    Begin TabDlg.SSTab SSTab1 
-      Height          =   5805
-      Left            =   50
-      TabIndex        =   86
+      Height          =   6210
+      Left            =   45
+      TabIndex        =   83
       Top             =   90
       Width           =   9600
       _ExtentX        =   16933
-      _ExtentY        =   10239
+      _ExtentY        =   10954
       _Version        =   393216
       Style           =   1
       Tabs            =   5
@@ -99,40 +99,248 @@ Begin VB.Form frmMatchDef
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmMatchDef.frx":0E60
       Tab(0).ControlEnabled=   -1  'True
-      Tab(0).Control(0)=   "fraDefinition(0)"
+      Tab(0).Control(0)=   "fraDefinition(1)"
       Tab(0).Control(0).Enabled=   0   'False
-      Tab(0).Control(1)=   "fraDefinition(1)"
+      Tab(0).Control(1)=   "fraInformation"
       Tab(0).Control(1).Enabled=   0   'False
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Ta&bles"
       TabPicture(1)   =   "frmMatchDef.frx":0E7C
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraRelations"
+      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "Colu&mns"
       TabPicture(2)   =   "frmMatchDef.frx":0E98
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraFieldButtons"
+      Tab(2).Control(0)=   "fraFieldsSelected"
+      Tab(2).Control(0).Enabled=   0   'False
       Tab(2).Control(1)=   "fraFieldsAvailable"
-      Tab(2).Control(2)=   "fraFieldsSelected"
+      Tab(2).Control(1).Enabled=   0   'False
+      Tab(2).Control(2)=   "fraFieldButtons"
+      Tab(2).Control(2).Enabled=   0   'False
       Tab(2).ControlCount=   3
       TabCaption(3)   =   "&Sort Order"
       TabPicture(3)   =   "frmMatchDef.frx":0EB4
       Tab(3).ControlEnabled=   0   'False
       Tab(3).Control(0)=   "fraReportOrder"
+      Tab(3).Control(0).Enabled=   0   'False
       Tab(3).ControlCount=   1
       TabCaption(4)   =   "O&utput"
       TabPicture(4)   =   "frmMatchDef.frx":0ED0
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "fraOutputDestination"
+      Tab(4).Control(0)=   "fraReportOptions"
       Tab(4).Control(1)=   "fraOutputFormat"
-      Tab(4).Control(2)=   "fraReportOptions"
+      Tab(4).Control(2)=   "fraOutputDestination"
       Tab(4).ControlCount=   3
+      Begin VB.Frame fraInformation 
+         Height          =   2355
+         Left            =   120
+         TabIndex        =   104
+         Top             =   360
+         Width           =   9360
+         Begin VB.ComboBox cboCategory 
+            Height          =   315
+            Left            =   1620
+            Style           =   2  'Dropdown List
+            TabIndex        =   2
+            Top             =   720
+            Width           =   3090
+         End
+         Begin VB.TextBox txtDesc 
+            Height          =   1080
+            Left            =   1620
+            MaxLength       =   255
+            MultiLine       =   -1  'True
+            ScrollBars      =   2  'Vertical
+            TabIndex        =   3
+            Top             =   1110
+            Width           =   3090
+         End
+         Begin VB.TextBox txtName 
+            Height          =   315
+            Left            =   1620
+            MaxLength       =   50
+            TabIndex        =   1
+            Top             =   300
+            Width           =   3090
+         End
+         Begin VB.TextBox txtUserName 
+            BackColor       =   &H8000000F&
+            Enabled         =   0   'False
+            Height          =   315
+            Left            =   5850
+            MaxLength       =   30
+            TabIndex        =   4
+            Top             =   300
+            Width           =   3405
+         End
+         Begin SSDataWidgets_B.SSDBGrid grdAccess 
+            Height          =   1485
+            Left            =   5850
+            TabIndex        =   5
+            Top             =   705
+            Width           =   3405
+            ScrollBars      =   2
+            _Version        =   196617
+            DataMode        =   2
+            RecordSelectors =   0   'False
+            Col.Count       =   3
+            stylesets.count =   2
+            stylesets(0).Name=   "SysSecMgr"
+            stylesets(0).ForeColor=   -2147483631
+            stylesets(0).BackColor=   -2147483633
+            stylesets(0).HasFont=   -1  'True
+            BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+            stylesets(0).Picture=   "frmMatchDef.frx":0EEC
+            stylesets(1).Name=   "ReadOnly"
+            stylesets(1).ForeColor=   -2147483631
+            stylesets(1).BackColor=   -2147483633
+            stylesets(1).HasFont=   -1  'True
+            BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+            stylesets(1).Picture=   "frmMatchDef.frx":0F08
+            MultiLine       =   0   'False
+            AllowRowSizing  =   0   'False
+            AllowGroupSizing=   0   'False
+            AllowColumnSizing=   0   'False
+            AllowGroupMoving=   0   'False
+            AllowColumnMoving=   0
+            AllowGroupSwapping=   0   'False
+            AllowColumnSwapping=   0
+            AllowGroupShrinking=   0   'False
+            AllowColumnShrinking=   0   'False
+            AllowDragDrop   =   0   'False
+            SelectTypeCol   =   0
+            SelectTypeRow   =   0
+            BalloonHelp     =   0   'False
+            MaxSelectedRows =   0
+            ForeColorEven   =   0
+            BackColorEven   =   -2147483643
+            BackColorOdd    =   -2147483643
+            RowHeight       =   423
+            Columns.Count   =   3
+            Columns(0).Width=   2963
+            Columns(0).Caption=   "User Group"
+            Columns(0).Name =   "GroupName"
+            Columns(0).AllowSizing=   0   'False
+            Columns(0).DataField=   "Column 0"
+            Columns(0).DataType=   8
+            Columns(0).FieldLen=   256
+            Columns(0).Locked=   -1  'True
+            Columns(1).Width=   2566
+            Columns(1).Caption=   "Access"
+            Columns(1).Name =   "Access"
+            Columns(1).AllowSizing=   0   'False
+            Columns(1).DataField=   "Column 1"
+            Columns(1).DataType=   8
+            Columns(1).FieldLen=   256
+            Columns(1).Locked=   -1  'True
+            Columns(1).Style=   3
+            Columns(1).Row.Count=   3
+            Columns(1).Col.Count=   2
+            Columns(1).Row(0).Col(0)=   "Read / Write"
+            Columns(1).Row(1).Col(0)=   "Read Only"
+            Columns(1).Row(2).Col(0)=   "Hidden"
+            Columns(2).Width=   3200
+            Columns(2).Visible=   0   'False
+            Columns(2).Caption=   "SysSecMgr"
+            Columns(2).Name =   "SysSecMgr"
+            Columns(2).DataField=   "Column 2"
+            Columns(2).DataType=   8
+            Columns(2).FieldLen=   256
+            TabNavigation   =   1
+            _ExtentX        =   6006
+            _ExtentY        =   2619
+            _StockProps     =   79
+            BeginProperty PageFooterFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+            BeginProperty PageHeaderFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+         End
+         Begin VB.Label lblCategory 
+            Caption         =   "Category :"
+            Height          =   240
+            Left            =   240
+            TabIndex        =   109
+            Top             =   765
+            Width           =   1005
+         End
+         Begin VB.Label lblAccess 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Access :"
+            Height          =   195
+            Left            =   4995
+            TabIndex        =   108
+            Top             =   765
+            Width           =   825
+         End
+         Begin VB.Label lblDescription 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Description :"
+            Height          =   195
+            Left            =   240
+            TabIndex        =   107
+            Top             =   1155
+            Width           =   1080
+         End
+         Begin VB.Label lblName 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Name :"
+            Height          =   195
+            Left            =   240
+            TabIndex        =   106
+            Top             =   360
+            Width           =   690
+         End
+         Begin VB.Label lblOwner 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Owner :"
+            Height          =   195
+            Left            =   4995
+            TabIndex        =   105
+            Top             =   360
+            Width           =   810
+         End
+      End
       Begin VB.Frame fraOutputDestination 
          Caption         =   "Output Destination(s) :"
          Height          =   3990
          Left            =   -72240
-         TabIndex        =   87
+         TabIndex        =   84
          Top             =   1665
          Width           =   6675
          Begin VB.CheckBox chkPreview 
@@ -140,7 +348,7 @@ Begin VB.Form frmMatchDef
             Enabled         =   0   'False
             Height          =   195
             Left            =   150
-            TabIndex        =   100
+            TabIndex        =   97
             Top             =   400
             Width           =   3495
          End
@@ -150,7 +358,7 @@ Begin VB.Form frmMatchDef
             Height          =   195
             Index           =   3
             Left            =   150
-            TabIndex        =   99
+            TabIndex        =   96
             Top             =   2720
             Width           =   1605
          End
@@ -160,7 +368,7 @@ Begin VB.Form frmMatchDef
             Height          =   195
             Index           =   2
             Left            =   150
-            TabIndex        =   98
+            TabIndex        =   95
             Top             =   1820
             Width           =   1455
          End
@@ -169,7 +377,7 @@ Begin VB.Form frmMatchDef
             Height          =   195
             Index           =   1
             Left            =   150
-            TabIndex        =   97
+            TabIndex        =   94
             Top             =   1300
             Width           =   1605
          End
@@ -178,7 +386,7 @@ Begin VB.Form frmMatchDef
             Height          =   195
             Index           =   0
             Left            =   150
-            TabIndex        =   96
+            TabIndex        =   93
             Top             =   850
             Value           =   1  'Checked
             Width           =   3105
@@ -188,7 +396,7 @@ Begin VB.Form frmMatchDef
             Enabled         =   0   'False
             Height          =   315
             Left            =   6240
-            TabIndex        =   95
+            TabIndex        =   92
             Top             =   2660
             UseMaskColor    =   -1  'True
             Width           =   330
@@ -198,7 +406,7 @@ Begin VB.Form frmMatchDef
             Enabled         =   0   'False
             Height          =   315
             Left            =   6240
-            TabIndex        =   94
+            TabIndex        =   91
             Top             =   1760
             UseMaskColor    =   -1  'True
             Width           =   330
@@ -210,7 +418,7 @@ Begin VB.Form frmMatchDef
             Height          =   315
             Left            =   3360
             Locked          =   -1  'True
-            TabIndex        =   93
+            TabIndex        =   90
             TabStop         =   0   'False
             Tag             =   "0"
             Top             =   2660
@@ -221,7 +429,7 @@ Begin VB.Form frmMatchDef
             Enabled         =   0   'False
             Height          =   315
             Left            =   3360
-            TabIndex        =   92
+            TabIndex        =   89
             Top             =   3060
             Width           =   3180
          End
@@ -231,7 +439,7 @@ Begin VB.Form frmMatchDef
             Height          =   315
             Left            =   3360
             Style           =   2  'Dropdown List
-            TabIndex        =   91
+            TabIndex        =   88
             Top             =   2160
             Width           =   3180
          End
@@ -241,7 +449,7 @@ Begin VB.Form frmMatchDef
             Height          =   315
             Left            =   3360
             Style           =   2  'Dropdown List
-            TabIndex        =   90
+            TabIndex        =   87
             Top             =   1240
             Width           =   3180
          End
@@ -252,7 +460,7 @@ Begin VB.Form frmMatchDef
             Height          =   315
             Left            =   3360
             Locked          =   -1  'True
-            TabIndex        =   89
+            TabIndex        =   86
             TabStop         =   0   'False
             Tag             =   "0"
             Top             =   1760
@@ -264,7 +472,7 @@ Begin VB.Form frmMatchDef
             ForeColor       =   &H00000000&
             Height          =   315
             Left            =   3360
-            TabIndex        =   88
+            TabIndex        =   85
             Tag             =   "0"
             Top             =   3460
             Width           =   3180
@@ -275,7 +483,7 @@ Begin VB.Form frmMatchDef
             Enabled         =   0   'False
             Height          =   195
             Left            =   1800
-            TabIndex        =   106
+            TabIndex        =   103
             Top             =   1305
             Width           =   1455
          End
@@ -285,7 +493,7 @@ Begin VB.Form frmMatchDef
             Enabled         =   0   'False
             Height          =   195
             Left            =   1800
-            TabIndex        =   105
+            TabIndex        =   102
             Top             =   2220
             Width           =   1350
          End
@@ -296,7 +504,7 @@ Begin VB.Form frmMatchDef
             Height          =   195
             Index           =   0
             Left            =   1800
-            TabIndex        =   104
+            TabIndex        =   101
             Top             =   2715
             Width           =   1200
          End
@@ -307,7 +515,7 @@ Begin VB.Form frmMatchDef
             Height          =   195
             Index           =   1
             Left            =   1800
-            TabIndex        =   103
+            TabIndex        =   100
             Top             =   3120
             Width           =   1305
          End
@@ -317,7 +525,7 @@ Begin VB.Form frmMatchDef
             Enabled         =   0   'False
             Height          =   195
             Left            =   1800
-            TabIndex        =   102
+            TabIndex        =   99
             Top             =   1815
             Width           =   1050
          End
@@ -328,7 +536,7 @@ Begin VB.Form frmMatchDef
             Height          =   195
             Index           =   2
             Left            =   1800
-            TabIndex        =   101
+            TabIndex        =   98
             Top             =   3525
             Width           =   1065
          End
@@ -339,7 +547,7 @@ Begin VB.Form frmMatchDef
          Caption         =   "fraFieldButtons"
          Height          =   5300
          Left            =   -70900
-         TabIndex        =   85
+         TabIndex        =   82
          Top             =   360
          Width           =   1535
          Begin VB.CommandButton cmdRemoveAll 
@@ -347,7 +555,7 @@ Begin VB.Form frmMatchDef
             Enabled         =   0   'False
             Height          =   400
             Left            =   100
-            TabIndex        =   43
+            TabIndex        =   40
             Top             =   2535
             Width           =   1305
          End
@@ -355,7 +563,7 @@ Begin VB.Form frmMatchDef
             Caption         =   "Add A&ll"
             Height          =   400
             Left            =   100
-            TabIndex        =   41
+            TabIndex        =   38
             Top             =   1335
             Width           =   1305
          End
@@ -364,7 +572,7 @@ Begin VB.Form frmMatchDef
             Enabled         =   0   'False
             Height          =   400
             Left            =   100
-            TabIndex        =   45
+            TabIndex        =   42
             Top             =   3735
             Width           =   1305
          End
@@ -373,7 +581,7 @@ Begin VB.Form frmMatchDef
             Enabled         =   0   'False
             Height          =   400
             Left            =   100
-            TabIndex        =   44
+            TabIndex        =   41
             Top             =   3240
             Width           =   1305
          End
@@ -382,7 +590,7 @@ Begin VB.Form frmMatchDef
             Enabled         =   0   'False
             Height          =   400
             Left            =   100
-            TabIndex        =   42
+            TabIndex        =   39
             Top             =   2025
             Width           =   1305
          End
@@ -390,7 +598,7 @@ Begin VB.Form frmMatchDef
             Caption         =   "&Add"
             Height          =   400
             Left            =   100
-            TabIndex        =   40
+            TabIndex        =   37
             Top             =   840
             Width           =   1305
          End
@@ -399,7 +607,7 @@ Begin VB.Form frmMatchDef
          Caption         =   "Output Format :"
          Height          =   3990
          Left            =   -74880
-         TabIndex        =   71
+         TabIndex        =   68
          Top             =   1665
          Width           =   2500
          Begin VB.OptionButton optOutputFormat 
@@ -407,7 +615,7 @@ Begin VB.Form frmMatchDef
             Height          =   195
             Index           =   0
             Left            =   200
-            TabIndex        =   72
+            TabIndex        =   69
             Top             =   400
             Value           =   -1  'True
             Width           =   1900
@@ -417,7 +625,7 @@ Begin VB.Form frmMatchDef
             Height          =   195
             Index           =   1
             Left            =   200
-            TabIndex        =   73
+            TabIndex        =   70
             Top             =   800
             Width           =   1900
          End
@@ -426,7 +634,7 @@ Begin VB.Form frmMatchDef
             Height          =   195
             Index           =   2
             Left            =   200
-            TabIndex        =   74
+            TabIndex        =   71
             Top             =   1200
             Width           =   1900
          End
@@ -435,7 +643,7 @@ Begin VB.Form frmMatchDef
             Height          =   195
             Index           =   3
             Left            =   200
-            TabIndex        =   75
+            TabIndex        =   72
             Top             =   1600
             Width           =   1900
          End
@@ -444,7 +652,7 @@ Begin VB.Form frmMatchDef
             Height          =   195
             Index           =   4
             Left            =   200
-            TabIndex        =   76
+            TabIndex        =   73
             Top             =   2000
             Width           =   1900
          End
@@ -453,7 +661,7 @@ Begin VB.Form frmMatchDef
             Height          =   195
             Index           =   5
             Left            =   200
-            TabIndex        =   77
+            TabIndex        =   74
             Top             =   2400
             Width           =   1900
          End
@@ -462,7 +670,7 @@ Begin VB.Form frmMatchDef
             Height          =   195
             Index           =   6
             Left            =   200
-            TabIndex        =   78
+            TabIndex        =   75
             Top             =   2800
             Width           =   1900
          End
@@ -470,14 +678,14 @@ Begin VB.Form frmMatchDef
       Begin VB.Frame fraRelations 
          Height          =   5300
          Left            =   -74880
-         TabIndex        =   30
+         TabIndex        =   27
          Top             =   360
          Width           =   9350
          Begin VB.CommandButton cmdNewRelation 
             Caption         =   "&Add..."
             Height          =   400
             Left            =   7950
-            TabIndex        =   32
+            TabIndex        =   29
             Top             =   300
             Width           =   1200
          End
@@ -486,7 +694,7 @@ Begin VB.Form frmMatchDef
             Enabled         =   0   'False
             Height          =   400
             Left            =   7950
-            TabIndex        =   33
+            TabIndex        =   30
             Top             =   900
             Width           =   1200
          End
@@ -495,7 +703,7 @@ Begin VB.Form frmMatchDef
             Enabled         =   0   'False
             Height          =   400
             Left            =   7950
-            TabIndex        =   34
+            TabIndex        =   31
             Top             =   1500
             Width           =   1200
          End
@@ -504,14 +712,14 @@ Begin VB.Form frmMatchDef
             Enabled         =   0   'False
             Height          =   400
             Left            =   7950
-            TabIndex        =   35
+            TabIndex        =   32
             Top             =   2100
             Width           =   1200
          End
          Begin SSDataWidgets_B.SSDBGrid grdRelations 
             Height          =   4800
             Left            =   195
-            TabIndex        =   31
+            TabIndex        =   28
             Top             =   300
             Width           =   7425
             _Version        =   196617
@@ -610,14 +818,14 @@ Begin VB.Form frmMatchDef
          Caption         =   "Matched Records :"
          Height          =   1215
          Left            =   -74880
-         TabIndex        =   61
+         TabIndex        =   58
          Top             =   400
          Width           =   9315
          Begin VB.CheckBox chkEqualGrade 
             Caption         =   "Allow progress to e&qual grade"
             Height          =   195
             Left            =   6315
-            TabIndex        =   69
+            TabIndex        =   66
             Top             =   360
             Width           =   2925
          End
@@ -625,14 +833,14 @@ Begin VB.Form frmMatchDef
             Caption         =   "&Lowest Match Scores"
             Height          =   195
             Left            =   200
-            TabIndex        =   66
+            TabIndex        =   63
             Top             =   760
             Width           =   2160
          End
          Begin COASpinner.COA_Spinner spnMaxRecords 
             Height          =   315
             Left            =   4320
-            TabIndex        =   64
+            TabIndex        =   61
             Top             =   300
             Width           =   765
             _ExtentX        =   1349
@@ -653,7 +861,7 @@ Begin VB.Form frmMatchDef
          Begin COASpinner.COA_Spinner spnLimit 
             Height          =   315
             Left            =   4320
-            TabIndex        =   68
+            TabIndex        =   65
             Top             =   705
             Width           =   765
             _ExtentX        =   1349
@@ -676,7 +884,7 @@ Begin VB.Form frmMatchDef
             Caption         =   "Hi&ghest Match Scores"
             Height          =   195
             Left            =   200
-            TabIndex        =   62
+            TabIndex        =   59
             Top             =   360
             Value           =   -1  'True
             Width           =   2160
@@ -685,7 +893,7 @@ Begin VB.Form frmMatchDef
             Caption         =   "Restrict by reporti&ng structure"
             Height          =   195
             Left            =   6315
-            TabIndex        =   70
+            TabIndex        =   67
             Top             =   660
             Width           =   2940
          End
@@ -693,7 +901,7 @@ Begin VB.Form frmMatchDef
             Caption         =   "Minimum Score :"
             Height          =   195
             Left            =   2550
-            TabIndex        =   67
+            TabIndex        =   64
             Top             =   760
             Width           =   1800
          End
@@ -702,7 +910,7 @@ Begin VB.Form frmMatchDef
             Caption         =   "Matched Records :"
             Height          =   195
             Left            =   2550
-            TabIndex        =   63
+            TabIndex        =   60
             Top             =   360
             Width           =   1575
          End
@@ -711,7 +919,7 @@ Begin VB.Form frmMatchDef
             Caption         =   "(All Records)"
             Height          =   195
             Left            =   5115
-            TabIndex        =   65
+            TabIndex        =   62
             Top             =   360
             Width           =   1095
          End
@@ -720,7 +928,7 @@ Begin VB.Form frmMatchDef
          Caption         =   "Sort Order :"
          Height          =   5180
          Left            =   -74850
-         TabIndex        =   53
+         TabIndex        =   50
          Top             =   440
          Width           =   9315
          Begin VB.CommandButton cmdClearOrder 
@@ -728,7 +936,7 @@ Begin VB.Form frmMatchDef
             Enabled         =   0   'False
             Height          =   400
             Left            =   7920
-            TabIndex        =   58
+            TabIndex        =   55
             Top             =   1920
             Width           =   1200
          End
@@ -736,7 +944,7 @@ Begin VB.Form frmMatchDef
             Caption         =   "Move Do&wn"
             Height          =   400
             Left            =   7900
-            TabIndex        =   60
+            TabIndex        =   57
             Top             =   4515
             Width           =   1200
          End
@@ -744,7 +952,7 @@ Begin VB.Form frmMatchDef
             Caption         =   "Move U&p"
             Height          =   400
             Left            =   7900
-            TabIndex        =   59
+            TabIndex        =   56
             Top             =   3975
             Width           =   1200
          End
@@ -752,7 +960,7 @@ Begin VB.Form frmMatchDef
             Caption         =   "&Edit..."
             Height          =   400
             Left            =   7900
-            TabIndex        =   56
+            TabIndex        =   53
             Top             =   850
             Width           =   1200
          End
@@ -760,7 +968,7 @@ Begin VB.Form frmMatchDef
             Caption         =   "&Remove"
             Height          =   400
             Left            =   7900
-            TabIndex        =   57
+            TabIndex        =   54
             Top             =   1400
             Width           =   1200
          End
@@ -768,14 +976,14 @@ Begin VB.Form frmMatchDef
             Caption         =   "&Add..."
             Height          =   400
             Left            =   7900
-            TabIndex        =   55
+            TabIndex        =   52
             Top             =   300
             Width           =   1200
          End
          Begin SSDataWidgets_B.SSDBGrid grdReportOrder 
             Height          =   4620
             Left            =   195
-            TabIndex        =   54
+            TabIndex        =   51
             Top             =   300
             Width           =   7410
             _Version        =   196617
@@ -798,7 +1006,7 @@ Begin VB.Form frmMatchDef
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(0).Picture=   "frmMatchDef.frx":0EEC
+            stylesets(0).Picture=   "frmMatchDef.frx":0F24
             stylesets(1).Name=   "ssetActive"
             stylesets(1).ForeColor=   16777215
             stylesets(1).BackColor=   -2147483646
@@ -812,7 +1020,7 @@ Begin VB.Form frmMatchDef
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(1).Picture=   "frmMatchDef.frx":0F08
+            stylesets(1).Picture=   "frmMatchDef.frx":0F40
             MultiLine       =   0   'False
             AllowRowSizing  =   0   'False
             AllowGroupSizing=   0   'False
@@ -921,21 +1129,21 @@ Begin VB.Form frmMatchDef
          Caption         =   "Columns Available :"
          Height          =   5300
          Left            =   -74880
-         TabIndex        =   36
+         TabIndex        =   33
          Top             =   360
          Width           =   3615
          Begin VB.ComboBox cboTblAvailable 
             Height          =   315
             Left            =   200
             Style           =   2  'Dropdown List
-            TabIndex        =   37
+            TabIndex        =   34
             Top             =   300
             Width           =   3225
          End
          Begin ComctlLib.ListView ListView1 
             Height          =   4335
             Left            =   195
-            TabIndex        =   38
+            TabIndex        =   35
             Top             =   720
             Width           =   3225
             _ExtentX        =   5689
@@ -975,14 +1183,14 @@ Begin VB.Form frmMatchDef
          Caption         =   "Columns Selected :"
          Height          =   5300
          Left            =   -69100
-         TabIndex        =   39
+         TabIndex        =   36
          Top             =   360
          Width           =   3580
          Begin VB.CheckBox chkProp_IsNumeric 
             Caption         =   "chkProp_IsNumeric"
             Height          =   255
             Left            =   2760
-            TabIndex        =   84
+            TabIndex        =   81
             Top             =   4440
             Visible         =   0   'False
             Width           =   255
@@ -992,14 +1200,14 @@ Begin VB.Form frmMatchDef
             Enabled         =   0   'False
             Height          =   315
             Left            =   1170
-            TabIndex        =   48
+            TabIndex        =   45
             Top             =   3960
             Width           =   2250
          End
          Begin COASpinner.COA_Spinner spnSize 
             Height          =   315
             Left            =   1170
-            TabIndex        =   50
+            TabIndex        =   47
             Top             =   4395
             Width           =   1410
             _ExtentX        =   2487
@@ -1021,7 +1229,7 @@ Begin VB.Form frmMatchDef
          Begin ComctlLib.ListView ListView2 
             Height          =   3540
             Left            =   195
-            TabIndex        =   46
+            TabIndex        =   43
             Top             =   300
             Width           =   3225
             _ExtentX        =   5689
@@ -1059,7 +1267,7 @@ Begin VB.Form frmMatchDef
          Begin COASpinner.COA_Spinner spnDec 
             Height          =   315
             Left            =   1170
-            TabIndex        =   52
+            TabIndex        =   49
             Top             =   4785
             Width           =   1410
             _ExtentX        =   2487
@@ -1083,7 +1291,7 @@ Begin VB.Form frmMatchDef
             Caption         =   "Heading :"
             Height          =   195
             Left            =   195
-            TabIndex        =   47
+            TabIndex        =   44
             Top             =   4050
             Width           =   1260
          End
@@ -1092,7 +1300,7 @@ Begin VB.Form frmMatchDef
             Caption         =   "Size :"
             Height          =   195
             Left            =   195
-            TabIndex        =   49
+            TabIndex        =   46
             Top             =   4455
             Width           =   570
          End
@@ -1101,7 +1309,7 @@ Begin VB.Form frmMatchDef
             Caption         =   "Decimals :"
             Height          =   195
             Left            =   195
-            TabIndex        =   51
+            TabIndex        =   48
             Top             =   4845
             Width           =   1380
          End
@@ -1111,15 +1319,15 @@ Begin VB.Form frmMatchDef
          Height          =   3275
          Index           =   1
          Left            =   120
-         TabIndex        =   8
-         Top             =   2380
+         TabIndex        =   0
+         Top             =   2835
          Width           =   9360
          Begin VB.CheckBox chkPrintFilterHeader 
             Caption         =   "Display &title in the report header"
             Enabled         =   0   'False
             Height          =   240
             Left            =   5010
-            TabIndex        =   19
+            TabIndex        =   16
             Top             =   1520
             Width           =   3420
          End
@@ -1128,7 +1336,7 @@ Begin VB.Form frmMatchDef
             Caption         =   "Frame1"
             Height          =   1095
             Left            =   4990
-            TabIndex        =   81
+            TabIndex        =   78
             Top             =   2040
             Width           =   4275
             Begin VB.TextBox txtFilter 
@@ -1138,7 +1346,7 @@ Begin VB.Form frmMatchDef
                Index           =   1
                Left            =   1920
                Locked          =   -1  'True
-               TabIndex        =   28
+               TabIndex        =   25
                Top             =   720
                Width           =   1950
             End
@@ -1149,7 +1357,7 @@ Begin VB.Form frmMatchDef
                Index           =   1
                Left            =   1920
                Locked          =   -1  'True
-               TabIndex        =   25
+               TabIndex        =   22
                Top             =   345
                Width           =   1950
             End
@@ -1158,7 +1366,7 @@ Begin VB.Form frmMatchDef
                Height          =   195
                Index           =   1
                Left            =   900
-               TabIndex        =   27
+               TabIndex        =   24
                Top             =   785
                Width           =   840
             End
@@ -1167,7 +1375,7 @@ Begin VB.Form frmMatchDef
                Height          =   195
                Index           =   1
                Left            =   900
-               TabIndex        =   24
+               TabIndex        =   21
                Top             =   405
                Width           =   885
             End
@@ -1176,31 +1384,31 @@ Begin VB.Form frmMatchDef
                Height          =   195
                Index           =   1
                Left            =   900
-               TabIndex        =   23
+               TabIndex        =   20
                Top             =   25
                Value           =   -1  'True
                Width           =   540
             End
             Begin VB.CommandButton cmdPicklist 
                Caption         =   "..."
-               DisabledPicture =   "frmMatchDef.frx":0F24
+               DisabledPicture =   "frmMatchDef.frx":0F5C
                Enabled         =   0   'False
                Height          =   315
                Index           =   1
                Left            =   3870
-               TabIndex        =   26
+               TabIndex        =   23
                Top             =   345
                UseMaskColor    =   -1  'True
                Width           =   330
             End
             Begin VB.CommandButton cmdFilter 
                Caption         =   "..."
-               DisabledPicture =   "frmMatchDef.frx":1285
+               DisabledPicture =   "frmMatchDef.frx":12BD
                Enabled         =   0   'False
                Height          =   315
                Index           =   1
                Left            =   3870
-               TabIndex        =   29
+               TabIndex        =   26
                Top             =   720
                UseMaskColor    =   -1  'True
                Width           =   330
@@ -1211,7 +1419,7 @@ Begin VB.Form frmMatchDef
                Caption         =   "Records :"
                Height          =   195
                Left            =   0
-               TabIndex        =   22
+               TabIndex        =   19
                Top             =   30
                Width           =   690
             End
@@ -1221,7 +1429,7 @@ Begin VB.Form frmMatchDef
             Left            =   1635
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
-            TabIndex        =   21
+            TabIndex        =   18
             Top             =   1995
             Width           =   3000
          End
@@ -1231,7 +1439,7 @@ Begin VB.Form frmMatchDef
             Height          =   315
             Index           =   0
             Left            =   8885
-            TabIndex        =   18
+            TabIndex        =   15
             Top             =   1080
             UseMaskColor    =   -1  'True
             Width           =   330
@@ -1242,7 +1450,7 @@ Begin VB.Form frmMatchDef
             Height          =   315
             Index           =   0
             Left            =   8885
-            TabIndex        =   15
+            TabIndex        =   12
             Top             =   705
             UseMaskColor    =   -1  'True
             Width           =   330
@@ -1252,7 +1460,7 @@ Begin VB.Form frmMatchDef
             Left            =   1620
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
-            TabIndex        =   10
+            TabIndex        =   7
             Top             =   315
             Width           =   3000
          End
@@ -1261,7 +1469,7 @@ Begin VB.Form frmMatchDef
             Height          =   195
             Index           =   0
             Left            =   5910
-            TabIndex        =   12
+            TabIndex        =   9
             Top             =   365
             Value           =   -1  'True
             Width           =   540
@@ -1271,7 +1479,7 @@ Begin VB.Form frmMatchDef
             Height          =   195
             Index           =   0
             Left            =   5910
-            TabIndex        =   13
+            TabIndex        =   10
             Top             =   750
             Width           =   885
          End
@@ -1280,7 +1488,7 @@ Begin VB.Form frmMatchDef
             Height          =   195
             Index           =   0
             Left            =   5910
-            TabIndex        =   16
+            TabIndex        =   13
             Top             =   1120
             Width           =   840
          End
@@ -1291,7 +1499,7 @@ Begin VB.Form frmMatchDef
             Index           =   0
             Left            =   6930
             Locked          =   -1  'True
-            TabIndex        =   14
+            TabIndex        =   11
             Top             =   705
             Width           =   1950
          End
@@ -1302,7 +1510,7 @@ Begin VB.Form frmMatchDef
             Index           =   0
             Left            =   6930
             Locked          =   -1  'True
-            TabIndex        =   17
+            TabIndex        =   14
             Top             =   1080
             Width           =   1950
          End
@@ -1313,7 +1521,7 @@ Begin VB.Form frmMatchDef
             Height          =   195
             Index           =   1
             Left            =   240
-            TabIndex        =   20
+            TabIndex        =   17
             Top             =   2040
             Width           =   975
          End
@@ -1324,7 +1532,7 @@ Begin VB.Form frmMatchDef
             Height          =   195
             Index           =   3
             Left            =   5010
-            TabIndex        =   11
+            TabIndex        =   8
             Top             =   360
             Width           =   915
          End
@@ -1335,223 +1543,22 @@ Begin VB.Form frmMatchDef
             Height          =   195
             Index           =   0
             Left            =   240
-            TabIndex        =   9
+            TabIndex        =   6
             Top             =   360
             Width           =   885
-         End
-      End
-      Begin VB.Frame fraDefinition 
-         BeginProperty Font 
-            Name            =   "Verdana"
-            Size            =   6
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   1950
-         Index           =   0
-         Left            =   120
-         TabIndex        =   0
-         Top             =   400
-         Width           =   9360
-         Begin VB.TextBox txtUserName 
-            BackColor       =   &H8000000F&
-            Enabled         =   0   'False
-            Height          =   315
-            Left            =   5805
-            MaxLength       =   30
-            TabIndex        =   6
-            Top             =   315
-            Width           =   3405
-         End
-         Begin VB.TextBox txtName 
-            Height          =   315
-            Left            =   1620
-            MaxLength       =   50
-            TabIndex        =   2
-            Top             =   315
-            Width           =   3000
-         End
-         Begin VB.TextBox txtDesc 
-            Height          =   1080
-            Left            =   1620
-            MaxLength       =   255
-            MultiLine       =   -1  'True
-            ScrollBars      =   2  'Vertical
-            TabIndex        =   4
-            Top             =   705
-            Width           =   3000
-         End
-         Begin SSDataWidgets_B.SSDBGrid grdAccess 
-            Height          =   1080
-            Left            =   5805
-            TabIndex        =   107
-            Top             =   720
-            Width           =   3405
-            ScrollBars      =   2
-            _Version        =   196617
-            DataMode        =   2
-            RecordSelectors =   0   'False
-            Col.Count       =   3
-            stylesets.count =   2
-            stylesets(0).Name=   "SysSecMgr"
-            stylesets(0).ForeColor=   -2147483631
-            stylesets(0).BackColor=   -2147483633
-            stylesets(0).HasFont=   -1  'True
-            BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-               Name            =   "Verdana"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
-            stylesets(0).Picture=   "frmMatchDef.frx":15E6
-            stylesets(1).Name=   "ReadOnly"
-            stylesets(1).ForeColor=   -2147483631
-            stylesets(1).BackColor=   -2147483633
-            stylesets(1).HasFont=   -1  'True
-            BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-               Name            =   "Verdana"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
-            stylesets(1).Picture=   "frmMatchDef.frx":1602
-            MultiLine       =   0   'False
-            AllowRowSizing  =   0   'False
-            AllowGroupSizing=   0   'False
-            AllowColumnSizing=   0   'False
-            AllowGroupMoving=   0   'False
-            AllowColumnMoving=   0
-            AllowGroupSwapping=   0   'False
-            AllowColumnSwapping=   0
-            AllowGroupShrinking=   0   'False
-            AllowColumnShrinking=   0   'False
-            AllowDragDrop   =   0   'False
-            SelectTypeCol   =   0
-            SelectTypeRow   =   0
-            BalloonHelp     =   0   'False
-            MaxSelectedRows =   0
-            ForeColorEven   =   0
-            BackColorEven   =   -2147483643
-            BackColorOdd    =   -2147483643
-            RowHeight       =   423
-            Columns.Count   =   3
-            Columns(0).Width=   2963
-            Columns(0).Caption=   "User Group"
-            Columns(0).Name =   "GroupName"
-            Columns(0).AllowSizing=   0   'False
-            Columns(0).DataField=   "Column 0"
-            Columns(0).DataType=   8
-            Columns(0).FieldLen=   256
-            Columns(0).Locked=   -1  'True
-            Columns(1).Width=   2566
-            Columns(1).Caption=   "Access"
-            Columns(1).Name =   "Access"
-            Columns(1).AllowSizing=   0   'False
-            Columns(1).DataField=   "Column 1"
-            Columns(1).DataType=   8
-            Columns(1).FieldLen=   256
-            Columns(1).Locked=   -1  'True
-            Columns(1).Style=   3
-            Columns(1).Row.Count=   3
-            Columns(1).Col.Count=   2
-            Columns(1).Row(0).Col(0)=   "Read / Write"
-            Columns(1).Row(1).Col(0)=   "Read Only"
-            Columns(1).Row(2).Col(0)=   "Hidden"
-            Columns(2).Width=   3200
-            Columns(2).Visible=   0   'False
-            Columns(2).Caption=   "SysSecMgr"
-            Columns(2).Name =   "SysSecMgr"
-            Columns(2).DataField=   "Column 2"
-            Columns(2).DataType=   8
-            Columns(2).FieldLen=   256
-            TabNavigation   =   1
-            _ExtentX        =   6006
-            _ExtentY        =   1905
-            _StockProps     =   79
-            BeginProperty PageFooterFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-               Name            =   "Verdana"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
-            BeginProperty PageHeaderFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-               Name            =   "Verdana"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
-         End
-         Begin VB.Label Label1 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Owner :"
-            Height          =   195
-            Index           =   2
-            Left            =   5010
-            TabIndex        =   5
-            Top             =   360
-            Width           =   720
-         End
-         Begin VB.Label Label1 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Name :"
-            Height          =   195
-            Index           =   0
-            Left            =   225
-            TabIndex        =   1
-            Top             =   360
-            Width           =   690
-         End
-         Begin VB.Label Label1 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Description :"
-            Height          =   195
-            Index           =   1
-            Left            =   225
-            TabIndex        =   3
-            Top             =   750
-            Width           =   1125
-         End
-         Begin VB.Label Label1 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Access :"
-            Height          =   195
-            Index           =   3
-            Left            =   5010
-            TabIndex        =   7
-            Top             =   810
-            Width           =   780
          End
       End
    End
    Begin MSComDlg.CommonDialog CommonDialog1 
       Left            =   120
-      Top             =   6000
+      Top             =   6450
       _ExtentX        =   847
       _ExtentY        =   847
       _Version        =   393216
    End
    Begin ComctlLib.ImageList ImageList1 
       Left            =   690
-      Top             =   5955
+      Top             =   6405
       _ExtentX        =   1005
       _ExtentY        =   1005
       BackColor       =   -2147483643
@@ -1578,7 +1585,7 @@ Begin VB.Form frmMatchDef
    End
    Begin ActiveBarLibraryCtl.ActiveBar ActiveBar1 
       Left            =   2640
-      Top             =   6000
+      Top             =   6450
       _ExtentX        =   847
       _ExtentY        =   847
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -1679,6 +1686,9 @@ Public Function Initialise(bNew As Boolean, bCopy As Boolean, Optional plngMatch
     LoadTable2Combo
     
     PopulateTableAvailable , True
+    
+    GetObjectCategories cboCategory, utlMatchReport, 0, cboTable1.ItemData(cboTable1.ListIndex)
+    SetComboItem cboCategory, IIf(glngCurrentCategoryID = -1, 0, glngCurrentCategoryID)
     
     PopulateAccessGrid
     Changed = False
@@ -4673,6 +4683,16 @@ Private Function SaveDefinition() As Boolean
   Dim iDefExportTo As Integer
   Dim lngMatchRelationID As Long
   Dim lngCount As Long
+  Dim iUtilityType As UtilityType
+  
+  Select Case mlngMatchReportType
+    Case mrtNormal
+      iUtilityType = utlMatchReport
+    Case mrtSucession
+      iUtilityType = utlSuccession
+    Case mrtCareer
+      iUtilityType = utlCareer
+  End Select
   
   If mlngMatchReportID > 0 Then
 
@@ -4746,14 +4766,8 @@ Private Function SaveDefinition() As Boolean
     
     datData.ExecuteSql (sSQL)
     
-    Select Case mlngMatchReportType
-    Case mrtNormal
-      UtilUpdateLastSaved utlMatchReport, mlngMatchReportID
-    Case mrtSucession
-      UtilUpdateLastSaved utlSuccession, mlngMatchReportID
-    Case mrtCareer
-      UtilUpdateLastSaved utlCareer, mlngMatchReportID
-    End Select
+    UtilUpdateLastSaved iUtilityType, mlngMatchReportID
+
   Else
 
     sSQL = "INSERT ASRSYSMatchReportName (" & _
@@ -4824,17 +4838,14 @@ Private Function SaveDefinition() As Boolean
   
     mlngMatchReportID = InsertMatchReport(sSQL, "AsrSysMatchReportName", "MatchReportID")
     
-    Select Case mlngMatchReportType
-    Case mrtNormal
-      UtilCreated utlMatchReport, mlngMatchReportID
-    Case mrtSucession
-      UtilCreated utlSuccession, mlngMatchReportID
-    Case mrtCareer
-      UtilCreated utlCareer, mlngMatchReportID
-    End Select
+    UtilCreated iUtilityType, mlngMatchReportID
+  
   End If
   
+  
   SaveAccess
+  SaveObjectCategories cboCategory, iUtilityType, mlngMatchReportID
+  
   
   gADOCon.Execute "DELETE FROM ASRSysMatchReportDetails WHERE MatchReportID = " & CStr(mlngMatchReportID)
   gADOCon.Execute "DELETE FROM ASRSysMatchReportBreakdown WHERE MatchReportID = " & CStr(mlngMatchReportID)
@@ -5079,7 +5090,7 @@ Private Function RetrieveMatchReportDetails(plngMatchReportID As Long) As Boolea
   Dim lngRequiredExprID As Long
   Dim lngPreferredExprID As Long
   Dim lngMatchScoreExprID As Long
-  
+  Dim iUtilityType As UtilityType
   
   On Error GoTo Load_ERROR
   
@@ -5111,6 +5122,17 @@ Private Function RetrieveMatchReportDetails(plngMatchReportID As Long) As Boolea
   ' Set Base Table
 
   mblnLoading = True
+
+  Select Case mlngMatchReportType
+    Case mrtNormal
+      iUtilityType = utlMatchReport
+    Case mrtSucession
+      iUtilityType = utlSuccession
+    Case mrtCareer
+      iUtilityType = utlCareer
+  End Select
+ 
+  GetObjectCategories cboCategory, iUtilityType, plngMatchReportID
 
   LoadTable1Combo
   SetComboText cboTable1, datGeneral.GetTableName(rsDef!Table1ID)
@@ -7422,4 +7444,8 @@ Public Function CheckForDuplicateHeadings(colCols As Collection) As String
   Next
 
 End Function
+
+Private Sub cboCategory_Click()
+  Changed = True
+End Sub
 
