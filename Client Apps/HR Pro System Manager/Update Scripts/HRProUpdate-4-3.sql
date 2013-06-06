@@ -153,9 +153,10 @@ PRINT 'Step 4 - Create object tracking system'
 	    SET @NVarCommand = 'INSERT [tbsys_scriptedobjects] ([guid],[parentguid], [objecttype], [targetid], [ownerid], [effectivedate], [revision], [locked])
 								SELECT NEWID(), o.[guid], 10, w.ID, ''' + convert(nvarchar(64),@ownerGUID) + ''', ''01/01/1900'', 1, 0  FROM dbo.[ASRSysWorkflows] w
 									INNER JOIN ASRSysTables t ON t.TableID = w.basetable
-									INNER JOIN tbsys_scriptedobjects o ON t.tableid = o.targetid AND o.objecttype = 1';
+									INNER JOIN tbsys_scriptedobjects o ON t.tableid = o.targetid AND o.objecttype = 1
+								UNION SELECT NEWID(), NULL, 10, w.ID, ''' + convert(nvarchar(64),@ownerGUID) + ''', ''01/01/1900'', 1, 0  FROM dbo.[ASRSysWorkflows] w
+									WHERE w.basetable = 0';
 		EXECUTE sp_executesql @NVarCommand;
-
 		
 	END
 
