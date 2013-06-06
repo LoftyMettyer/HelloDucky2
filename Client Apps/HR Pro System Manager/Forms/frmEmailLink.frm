@@ -1,7 +1,7 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TabCtl32.Ocx"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmEmailLink 
@@ -1489,18 +1489,20 @@ End Sub
 
 
 'Private Sub AddNode(objParent As SSNode, strCode As String, intID As Integer, strPrefix As String, strText As String, strImage As String)
-Private Sub AddNode(objParent As Node, strCode As String, intID As Integer, strPrefix As String, strText As String, strImage As String)
+' NPG20100630 Fault HRPRO-1029
+'Private Sub AddNode(objParent As Node, strCode As String, intID As Integer, strPrefix As String, strText As String, strImage As String)
+Private Sub AddNode(objParent As Node, strCode As String, lngID As Long, strPrefix As String, strText As String, strImage As String)
 
   'Dim objNode As SSNode
   Dim objNode As Node
 
-  Set objNode = sstrvAvailable.Nodes.Add(objParent, tvwChild, strCode & CStr(intID), strText, strImage, strImage)
+  Set objNode = sstrvAvailable.Nodes.Add(objParent, tvwChild, strCode & CStr(lngID), strText, strImage, strImage)
   objNode.Tag = strPrefix & strText
   
   'MH20090804 Fault HRPRO-193 (also refer clsLinkContent)
   If strCode <> "E" Then
     'These need to be reversed like this so we can look up the key based on the text
-    mcolAvailableComponents.Add strCode & CStr(intID), objNode.Tag
+    mcolAvailableComponents.Add strCode & CStr(lngID), objNode.Tag
   End If
 
 End Sub
