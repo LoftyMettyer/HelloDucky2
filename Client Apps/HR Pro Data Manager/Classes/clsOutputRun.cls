@@ -47,8 +47,6 @@ Private mblnPivot As Boolean
 Private mblnUserCancelled As Boolean
 Private mblnIndicatorColumn As Boolean
 Private mblnUpdateProgress As Boolean
-Private mstrSequentialFileName As String
-
 
 Private Function ConvertToGrid(pstrArray() As String, pGrdTemp As SSDBGrid) As SSDBGrid
 
@@ -476,12 +474,6 @@ End Property
 Public Property Let HeaderCols(ByVal lngNewValue As Long)
   mlngHeaderCols = lngNewValue
 End Property
-
-Public Property Let SequentialFileName(ByVal strNewValue As String)
-  mstrSequentialFileName = strNewValue
-End Property
-
-
 
 Public Function DataGrid(objNewValue As SSDBGrid)
 
@@ -930,9 +922,9 @@ Public Function SetOptions( _
         .txtEmailGroup.Text = datGeneral.GetEmailGroupName(lngEmailAddr)
         .txtEmailGroup.Tag = lngEmailAddr
         .txtEmailSubject.Text = strEmailSubject
-        .txtEMailAttachAs.Text = strEmailAttachAs
+        .txtEmailAttachAs.Text = strEmailAttachAs
       End If
-      .txtFileName.Text = strFileName
+      .txtFilename.Text = strFileName
       .ShowFormats mblnData, mblnCSV, mblnHTML, mblnWord, mblnExcel, mblnChart, mblnPivot
       .PageRange = mblnPageRange
       .Show vbModal
@@ -951,12 +943,12 @@ Public Function SetOptions( _
       blnEmail = (.chkDestination(desEmail).Value = vbChecked)
       lngEmailAddr = Val(.txtEmailGroup.Tag)
       strEmailSubject = .txtEmailSubject.Text
-      strEmailAttachAs = .txtEMailAttachAs.Text
-      strFileName = .txtFileName.Text
+      strEmailAttachAs = .txtEmailAttachAs.Text
+      strFileName = .txtFilename.Text
 
       mlngEmailGroupID = .txtEmailGroup.Tag
       mstrEmailSubject = .txtEmailSubject.Text
-      mstrEmailAttachAs = .txtEMailAttachAs.Text
+      mstrEmailAttachAs = .txtEmailAttachAs.Text
 
       If .cboSaveExisting.ListIndex <> -1 Then
         lngSaveExisting = .cboSaveExisting.ItemData(.cboSaveExisting.ListIndex)
