@@ -1,8 +1,8 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
 Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "timask6.ocx"
+Object = "{49CBFCC0-1337-11D2-9BBF-00A024695830}#1.0#0"; "tinumb6.ocx"
 Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
-Object = "{604A59D5-2409-101D-97D5-46626B63EF2D}#1.0#0"; "TDBNumbr.ocx"
 Object = "{4A4AA691-3E6F-11D2-822F-00104B9E07A1}#3.0#0"; "ssdw3bo.ocx"
 Begin VB.Form frmFind2 
    Caption         =   "Find"
@@ -138,67 +138,18 @@ Begin VB.Form frmFind2
          Text            =   ""
          Value           =   ""
       End
-      Begin TDBNumberCtrl.TDBNumber TDBNumber1 
-         Height          =   315
+      Begin TDBNumber6Ctl.TDBNumber TDBNumber1 
+         Height          =   300
          Index           =   0
-         Left            =   1500
+         Left            =   1395
          TabIndex        =   8
-         Top             =   615
-         Visible         =   0   'False
-         Width           =   1500
-         _ExtentX        =   2646
-         _ExtentY        =   556
-         _Version        =   65537
-         AlignHorizontal =   1
-         ClipMode        =   0
-         ErrorBeep       =   0   'False
-         ReadOnly        =   0   'False
-         HighlightText   =   -1  'True
-         ZeroAllowed     =   -1  'True
-         MinusColor      =   0
-         MaxValue        =   99999999
-         MinValue        =   -99999999
-         Value           =   0
-         SelStart        =   0
-         SelLength       =   0
-         KeyClear        =   "{F2}"
-         KeyNext         =   ""
-         KeyPopup        =   "{SPACE}"
-         KeyPrevious     =   ""
-         KeyThreeZero    =   ""
-         SepDecimal      =   "."
-         SepThousand     =   ","
-         Text            =   ""
-         Format          =   "########; -########"
-         DisplayFormat   =   "########0; -########0"
-         Appearance      =   1
-         BackColor       =   -2147483633
-         Enabled         =   0   'False
-         ForeColor       =   -2147483640
-         BorderStyle     =   1
-         MarginBottom    =   1
-         MarginLeft      =   1
-         MarginRight     =   1
-         MarginTop       =   1
-         DropdownButton  =   0   'False
-         SpinButton      =   0   'False
-         Caption         =   ""
-         CaptionAlignment=   3
-         CaptionColor    =   0
-         CaptionWidth    =   0
-         CaptionPosition =   0
-         CaptionSpacing  =   0
-         BeginProperty CaptionFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-            Name            =   "Tahoma"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         SpinAutowrap    =   0   'False
-         _StockProps     =   4
+         Top             =   315
+         Width           =   735
+         _Version        =   65536
+         _ExtentX        =   1296
+         _ExtentY        =   529
+         Calculator      =   "frmFind2.frx":00A3
+         Caption         =   "frmFind2.frx":00C3
          BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
             Name            =   "Verdana"
             Size            =   8.25
@@ -208,8 +159,43 @@ Begin VB.Form frmFind2
             Italic          =   0   'False
             Strikethrough   =   0   'False
          EndProperty
-         MouseIcon       =   "frmFind2.frx":00A3
+         DropDown        =   "frmFind2.frx":0129
+         Keys            =   "frmFind2.frx":0147
+         Spin            =   "frmFind2.frx":0191
+         AlignHorizontal =   1
+         AlignVertical   =   0
+         Appearance      =   1
+         BackColor       =   -2147483633
+         BorderStyle     =   1
+         BtnPositioning  =   0
+         ClipMode        =   0
+         ClearAction     =   0
+         DecimalPoint    =   ","
+         DisplayFormat   =   "########0; -########0"
+         EditMode        =   0
+         Enabled         =   0
+         ErrorBeep       =   0
+         ForeColor       =   -2147483640
+         Format          =   "########; -########"
+         HighlightText   =   0
+         MarginBottom    =   1
+         MarginLeft      =   1
+         MarginRight     =   1
+         MarginTop       =   1
+         MaxValue        =   99999
+         MinValue        =   -99999
          MousePointer    =   0
+         MoveOnLRKey     =   0
+         NegativeColor   =   255
+         OLEDragMode     =   0
+         OLEDropMode     =   0
+         ReadOnly        =   0
+         Separator       =   "."
+         ShowContextMenu =   -1
+         ValueVT         =   5
+         Value           =   0
+         MaxValueVT      =   1329790981
+         MinValueVT      =   1668218885
       End
       Begin VB.Label Label1 
          AutoSize        =   -1  'True
@@ -317,7 +303,7 @@ Begin VB.Form frmFind2
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      Bands           =   "frmFind2.frx":00BF
+      Bands           =   "frmFind2.frx":01B9
    End
 End
 Attribute VB_Name = "frmFind2"
@@ -1337,6 +1323,8 @@ Private Sub SetupSummary()
               Next iCount
             End If
             
+            .DecimalPoint = UI.GetSystemDecimalSeparator
+            .Separator = UI.GetSystemThousandSeparator
             .DisplayFormat = sFormat
             .Format = sFormat
 
@@ -1666,18 +1654,20 @@ Private Function LoadSummaryDetails()
         sField = .Tag
         
         If sField <> "0" Then
+          
           If TypeOf ctlTemp Is CheckBox Then
             If IsNull(mrsParentData.Fields(sField)) Then
               .Value = 0
             Else
               .Value = IIf(mrsParentData.Fields(sField), 1, 0)
             End If
+          
+          ElseIf TypeOf ctlTemp Is TDBNumber6Ctl.TDBNumber Then
+            .Value = IsNullCheck(mrsParentData.Fields(sField), 0)
+          
           Else
-            If IsNull(mrsParentData.Fields(sField)) Then
-              .Text = ""
-            Else
-              .Text = mrsParentData.Fields(sField)
-            End If
+            .Text = IsNullCheck(mrsParentData.Fields(sField), "")
+          
           End If
         Else
           .BackColor = COL_GREY
@@ -4910,3 +4900,15 @@ Private Function GetRecCount(strSQL As String) As Long
   Set rsTemp = Nothing
 
 End Function
+
+' Wrapper for the isnulls
+Private Function IsNullCheck(ByRef objValue As ADODB.Field, ByRef objDefault As Variant) As Variant
+
+  If IsNull(objValue) Then
+    IsNullCheck = objDefault
+  Else
+    IsNullCheck = objValue
+  End If
+
+End Function
+
