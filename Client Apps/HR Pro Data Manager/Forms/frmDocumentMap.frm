@@ -3,7 +3,7 @@ Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "Codejock.Controls.v13
 Begin VB.Form frmDocumentMap 
    BorderStyle     =   1  'Fixed Single
    Caption         =   "Document Management Type"
-   ClientHeight    =   7605
+   ClientHeight    =   7815
    ClientLeft      =   45
    ClientTop       =   345
    ClientWidth     =   10755
@@ -21,19 +21,19 @@ Begin VB.Form frmDocumentMap
    LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   7605
+   ScaleHeight     =   7815
    ScaleWidth      =   10755
    ShowInTaskbar   =   0   'False
    StartUpPosition =   1  'CenterOwner
    Begin XtremeSuiteControls.TabControl TabControl1 
-      Height          =   6945
+      Height          =   7125
       Left            =   90
       TabIndex        =   2
       Top             =   45
       Width           =   10545
       _Version        =   851969
       _ExtentX        =   18600
-      _ExtentY        =   12250
+      _ExtentY        =   12568
       _StockProps     =   68
       ItemCount       =   2
       Item(0).Caption =   "Definition"
@@ -82,19 +82,19 @@ Begin VB.Form frmDocumentMap
          End
       End
       Begin VB.Frame fraDestination 
-         Caption         =   "Destination : "
-         Height          =   2715
+         Caption         =   "Record Identification : "
+         Height          =   2850
          Left            =   90
          TabIndex        =   18
          Top             =   4095
          Width           =   10335
          Begin VB.ComboBox cboParent2Table 
             Height          =   315
-            Left            =   7065
+            Left            =   1845
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
             TabIndex        =   40
-            Top             =   1080
+            Top             =   2295
             Width           =   3090
          End
          Begin VB.ComboBox cboParent2Keyfield 
@@ -103,34 +103,34 @@ Begin VB.Form frmDocumentMap
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
             TabIndex        =   39
-            Top             =   1485
+            Top             =   2295
             Width           =   3090
          End
          Begin VB.ComboBox cboTargetCategory 
             Height          =   315
-            Left            =   1845
+            Left            =   7065
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
             TabIndex        =   38
-            Top             =   1485
+            Top             =   675
             Width           =   3090
          End
          Begin VB.ComboBox cboTargetType 
             Height          =   315
-            Left            =   1845
+            Left            =   7065
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
             TabIndex        =   37
-            Top             =   1890
+            Top             =   1080
             Width           =   3090
          End
          Begin VB.ComboBox cboTargetGUID 
             Height          =   315
-            Left            =   1845
+            Left            =   7065
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
             TabIndex        =   36
-            Top             =   2295
+            Top             =   1485
             Width           =   3090
          End
          Begin VB.ComboBox cboParent1Keyfield 
@@ -139,25 +139,25 @@ Begin VB.Form frmDocumentMap
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
             TabIndex        =   28
-            Top             =   675
+            Top             =   1890
             Width           =   3090
          End
          Begin VB.ComboBox cboParent1Table 
             Height          =   315
-            Left            =   7065
+            Left            =   1845
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
             TabIndex        =   27
-            Top             =   270
+            Top             =   1890
             Width           =   3090
          End
          Begin VB.ComboBox cboTargetKeyField 
             Height          =   315
-            Left            =   1845
+            Left            =   7065
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
             TabIndex        =   21
-            Top             =   1080
+            Top             =   270
             Width           =   3090
          End
          Begin VB.ComboBox cboTargetColumn 
@@ -181,9 +181,9 @@ Begin VB.Form frmDocumentMap
          Begin VB.Label lblParent2Table 
             Caption         =   "Parent 2 Table :"
             Height          =   195
-            Left            =   5310
+            Left            =   225
             TabIndex        =   42
-            Top             =   1125
+            Top             =   2340
             Width           =   1725
          End
          Begin VB.Label lblParent2Keyfield 
@@ -191,31 +191,31 @@ Begin VB.Form frmDocumentMap
             Height          =   375
             Left            =   5310
             TabIndex        =   41
-            Top             =   1530
+            Top             =   2340
             Width           =   1815
          End
          Begin VB.Label lblDestinationGUID 
             Caption         =   "Unique ID :"
             Height          =   195
-            Left            =   225
+            Left            =   5310
             TabIndex        =   35
-            Top             =   2340
+            Top             =   1530
             Width           =   1140
          End
          Begin VB.Label lblDestinationType 
             Caption         =   "Type : "
             Height          =   240
-            Left            =   225
+            Left            =   5310
             TabIndex        =   34
-            Top             =   1935
+            Top             =   1125
             Width           =   1095
          End
          Begin VB.Label lblDestinationCategory 
             Caption         =   "Category :"
             Height          =   285
-            Left            =   225
+            Left            =   5310
             TabIndex        =   33
-            Top             =   1530
+            Top             =   720
             Width           =   1410
          End
          Begin VB.Label lblParent1Keyfield 
@@ -223,15 +223,15 @@ Begin VB.Form frmDocumentMap
             Height          =   375
             Left            =   5310
             TabIndex        =   26
-            Top             =   720
+            Top             =   1935
             Width           =   1815
          End
          Begin VB.Label lblParent1Table 
             Caption         =   "Parent 1 Table :"
             Height          =   195
-            Left            =   5310
+            Left            =   225
             TabIndex        =   25
-            Top             =   315
+            Top             =   1935
             Width           =   1725
          End
          Begin VB.Label lblTargetTable 
@@ -243,7 +243,7 @@ Begin VB.Form frmDocumentMap
             Width           =   1365
          End
          Begin VB.Label lblTargetColumn 
-            Caption         =   "Column : "
+            Caption         =   "Document URL : "
             Height          =   330
             Left            =   225
             TabIndex        =   23
@@ -253,14 +253,14 @@ Begin VB.Form frmDocumentMap
          Begin VB.Label lblTargetKeyfield 
             Caption         =   "Key Field :"
             Height          =   240
-            Left            =   225
+            Left            =   5310
             TabIndex        =   22
-            Top             =   1125
+            Top             =   315
             Width           =   1230
          End
       End
       Begin VB.Frame fraClassification 
-         Caption         =   "Classification : "
+         Caption         =   "Document Description : "
          Height          =   1410
          Left            =   90
          TabIndex        =   13
@@ -285,21 +285,21 @@ Begin VB.Form frmDocumentMap
             Width           =   3090
          End
          Begin VB.Label Label2 
-            Caption         =   "Type :"
+            Caption         =   "Type Value :"
             Height          =   285
-            Left            =   315
+            Left            =   270
             TabIndex        =   17
             Top             =   810
-            Width           =   915
+            Width           =   1185
          End
          Begin VB.Label Label1 
-            Caption         =   "Category :"
+            Caption         =   "Category Value :"
             Height          =   285
             Index           =   0
             Left            =   270
             TabIndex        =   16
             Top             =   420
-            Width           =   1095
+            Width           =   1500
          End
       End
       Begin VB.Frame fraDefinition 
@@ -413,7 +413,7 @@ Begin VB.Form frmDocumentMap
       Height          =   375
       Left            =   9450
       TabIndex        =   1
-      Top             =   7065
+      Top             =   7290
       Width           =   1200
       _Version        =   851969
       _ExtentX        =   2117
@@ -426,7 +426,7 @@ Begin VB.Form frmDocumentMap
       Height          =   375
       Left            =   8190
       TabIndex        =   0
-      Top             =   7065
+      Top             =   7290
       Width           =   1200
       _Version        =   851969
       _ExtentX        =   2117
@@ -566,14 +566,54 @@ Private Sub RefreshHeaderText()
   
     'If cboTypes.Text = "<None>" Then
   
-    sHeader = "<<category='" & cboCategories.Text & "'; type='" & cboTypes.Text & "'" & vbNewLine
+    sHeader = "~~@[DOC_SECTION:" & cboCategories.Text & "]~~@[DOC_TYPE:" & cboTypes.Text & "]" & vbNewLine
     sHeader = sHeader & ";wordmergefield{{" & datGeneral.GetColumnName(GetComboItem(cboTargetKeyField), True) & "}}>>"
     
     txtHeader.Text = sHeader
     
+    
+'
+'~~!:~~@[$TABLE:COMPLETE_FILES]
+'~~@[DOC_SECTION:REVIEWS]
+'~~@[DOC_TYPE:Amendment to Terms of Employment]
+'~~@[STAFF_NO:"Personnel_Records_Staff_Number"]
+'~~@[SURNAME:"Personnel_Records_Surname"]
+'~~@[FORENAME:"Calculation_First_Forename"]
+'~~@[DOC_DATE:04/03/2010]~~
+'
+'This breaks down as follows (example):
+'
+'TABLE:      This is a fixed value of 'COMPLETE FILES'
+'DOC_SECTION:    This is the document category as selected
+'DOC_TYPE:   This is the document type as selected
+'STAFF_NO:   Acquired from the Personnel Module Setup
+'SURNAME:    Acquired from the Personnel Module Setup
+'FORENAME:   Acquired from the Personnel Module Setup
+'DOC_DATE:   Set to System Date
+'
+'
+    
+    
   End If
 
 End Sub
+
+Private Function ValidateDefinition() As Boolean
+  
+  Dim bOK As Boolean
+  
+  bOK = True
+   
+'  If Len(txtName.Text) = 0 Then
+'    TabControl1.TabIndex = 0
+'    MsgBox "You must give this definition a name.", vbExclamation, Me.Caption
+'    txtName.SetFocus
+'    Exit Function
+'  End If
+   
+  ValidateDefinition = bOK
+  
+End Function
 
 
 Private Function SaveDefinition() As Boolean
@@ -584,7 +624,7 @@ Private Function SaveDefinition() As Boolean
   
   bOK = True
   RefreshHeaderText
-  
+ 
   If mlngDocumentMapID > 0 Then
     sSQL = "UPDATE dbo.[" & SQLTableDef & "] SET " _
               & "[Name] = '" & Replace(txtName.Text, "'", "''") & "', " _
@@ -804,6 +844,10 @@ End Sub
 Private Sub cmdOK_Click()
 
   Dim fOK As Boolean
+  
+  If Not ValidateDefinition Then
+    Exit Sub
+  End If
   
   Screen.MousePointer = vbHourglass
     
