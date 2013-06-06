@@ -2118,6 +2118,133 @@ PRINT 'Step - Audit Log Updates'
 		EXEC spsys_setsystemsetting 'desktopsetting', 'bitmapid', @newDesktopImageID;	
 		EXEC spsys_setsystemsetting 'desktopsetting', 'bitmaplocation', 2;	
 	END
+ 
+/* ------------------------------------------------------------- */
+/* Step - Indexing updates (HRPRO-2291) */
+/* ------------------------------------------------------------- */
+PRINT 'Step - Indexing Updates'
+
+	DECLARE @sql nvarchar(max)
+
+	--(1) too many udf_tab indexes, delete all then let SM add correct ones
+	DECLARE @tablename nvarchar(500), @indexname nvarchar(500)
+	DECLARE c CURSOR FOR 
+	SELECT o.name AS tablename, i.name AS indexname FROM sys.indexes i
+	INNER JOIN sys.objects o ON o.object_id = i.object_id
+	WHERE i.name LIKE 'IDX_udf%'
+
+	OPEN c
+	WHILE (1=1)
+	BEGIN
+		  FETCH NEXT FROM c INTO @tablename, @indexname
+		  IF @@FETCH_STATUS < 0 BREAK
+	      
+		  SET @sql = N'DROP INDEX [' + @indexname + '] ON [dbo].[' + @tablename + '];'
+		EXEC sp_executesql @sql;
+	END
+	CLOSE c
+	DEALLOCATE c
+
+	--(2) udates to defraging index sp
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRDefragIndexes]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].[spASRDefragIndexes];
+		
+	EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[spASRDefragIndexes]
+	AS
+	BEGIN
+		  SET NOCOUNT ON;
+		  DECLARE @objectid int;
+		  DECLARE @indexid int;
+		  DECLARE @partitioncount bigint;
+		  DECLARE @schemaname nvarchar(130); 
+		  DECLARE @objectname nvarchar(130); 
+		  DECLARE @indexname nvarchar(130); 
+		  DECLARE @partitionnum bigint;
+		  DECLARE @frag float;
+		  DECLARE @command nvarchar(4000); 
+
+		  SELECT object_id AS objectid, index_id AS indexid, partition_number AS partitionnum, avg_fragmentation_in_percent AS frag
+		  INTO #work_to_do
+		  FROM sys.dm_db_index_physical_stats(DB_ID(),NULL, NULL , NULL, N''LIMITED'')
+		  WHERE avg_fragmentation_in_percent > 10.0 -- Allow limited fragmentation
+		  AND index_id > 0 -- Ignore heaps
+
+		  DECLARE partitions CURSOR FOR SELECT * FROM #work_to_do;
+		  OPEN partitions;
+		  WHILE (1=1)
+		  BEGIN
+				FETCH NEXT FROM partitions INTO @objectid, @indexid, @partitionnum, @frag;
+				IF @@FETCH_STATUS < 0 BREAK;
+	          
+				SELECT @objectname = QUOTENAME(o.name), @schemaname = QUOTENAME(s.name)
+				FROM sys.objects AS o
+				JOIN sys.schemas as s ON s.schema_id = o.schema_id
+				WHERE o.object_id = @objectid;
+	          
+				SELECT @indexname = QUOTENAME(name)
+				FROM sys.indexes
+				WHERE  object_id = @objectid AND index_id = @indexid;
+	          
+				SELECT @partitioncount = count(*)
+				FROM sys.partitions
+				WHERE object_id = @objectid AND index_id = @indexid;
+
+				IF @frag < 30.0
+					  SET @command = N''ALTER INDEX '' + @indexname + N'' ON '' + @schemaname + N''.'' + @objectname + N'' REORGANIZE'';
+				IF @frag >= 30.0
+					  SET @command = N''ALTER INDEX '' + @indexname + N'' ON '' + @schemaname + N''.'' + @objectname + N'' REBUILD'';
+				IF @partitioncount > 1
+					  SET @command = @command + N'' PARTITION='' + CAST(@partitionnum AS nvarchar(10));
+				EXECUTE sp_executeSQL @command;
+		  END
+		  CLOSE partitions;
+		  DEALLOCATE partitions;
+
+		  DROP TABLE #work_to_do;
+	END';
+	
+	--(3) & (4) add primary key and indexes on accord table
+	IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ASRSysAccordTransactions]') AND name = N'PK_ASRSysAccordTransactions')
+		EXEC sp_executesql N'ALTER TABLE dbo.ASRSysAccordTransactions ADD CONSTRAINT PK_ASRSysAccordTransactions PRIMARY KEY CLUSTERED (TransactionID) WITH( STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]';
+
+	IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ASRSysAccordTransactions]') AND name = N'IDX_CreatedDateTime_Archived')
+		EXEC sp_executesql N'CREATE NONCLUSTERED INDEX [IDX_CreatedDateTime_Archived] ON [dbo].[ASRSysAccordTransactions] ([CreatedDateTime] ASC, [Archived] ASC)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]';
+
+	--(5) delete primary key indexes from views
+	DECLARE @table nvarchar(256)
+	DECLARE c CURSOR FOR SELECT TableName FROM dbo.tbsys_tables
+	OPEN c
+	FETCH NEXT FROM c INTO @table
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		  IF EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[' + @table + ']') AND name = N'IDX_ID')
+		  BEGIN
+				SET @sql = N'DROP INDEX [IDX_ID] ON [dbo].[' + @table + '] WITH ( ONLINE = OFF );'
+				EXEC sp_executesql @sql;
+		  END
+		  FETCH NEXT FROM c INTO @table 
+	END
+	CLOSE c
+	DEALLOCATE c
+
+	--(6) add audit primary keys and indexes
+	IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ASRSysAuditAccess]') AND name = N'PK_ASRSysAuditAccess')
+		EXEC sp_executesql N'ALTER TABLE dbo.ASRSysAuditAccess ADD CONSTRAINT PK_ASRSysAuditAccess PRIMARY KEY CLUSTERED (ID) WITH( STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]';
+
+	IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ASRSysAuditAccess]') AND name = N'IDX_DateTimeStamp')
+		EXEC sp_executesql N'CREATE NONCLUSTERED INDEX IDX_DateTimeStamp ON dbo.ASRSysAuditAccess (DateTimeStamp) WITH( STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]';
+
+	IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ASRSysAuditGroup]') AND name = N'PK_ASRSysAuditGroup')
+		EXEC sp_executesql N'ALTER TABLE dbo.ASRSysAuditGroup ADD CONSTRAINT PK_ASRSysAuditGroup PRIMARY KEY CLUSTERED (ID) WITH( STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]';
+
+	IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ASRSysAuditGroup]') AND name = N'IDX_DateTimeStamp')
+		EXEC sp_executesql N'CREATE NONCLUSTERED INDEX IDX_DateTimeStamp ON dbo.ASRSysAuditGroup (DateTimeStamp) WITH( STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]';
+
+	IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ASRSysAuditPermissions]') AND name = N'PK_ASRSysAuditPermissions')
+		EXEC sp_executesql N'ALTER TABLE dbo.ASRSysAuditPermissions ADD CONSTRAINT PK_ASRSysAuditPermissions PRIMARY KEY CLUSTERED (ID) WITH( STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]';
+
+	IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ASRSysAuditPermissions]') AND name = N'IDX_DateTimeStamp')
+		EXEC sp_executesql N'CREATE NONCLUSTERED INDEX IDX_DateTimeStamp ON dbo.ASRSysAuditPermissions (DateTimeStamp) WITH( STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]';
 
 /* ------------------------------------------------------------- */
 /* Step - Workflow Updates */
