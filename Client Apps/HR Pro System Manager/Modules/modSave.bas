@@ -1633,7 +1633,7 @@ Private Function CreateOLEStoredProcedure() As Boolean
             "/* ------------------------------------------------ */" & vbNewLine & _
             "CREATE PROCEDURE " & strProcedureName & "(" & vbNewLine _
             & "  @piID int," & vbNewLine _
-            & "  @pimgUploadFile image)" & vbNewLine & "AS" & vbNewLine & "BEGIN" & vbNewLine _
+            & "  @pimgUploadFile varbinary(MAX))" & vbNewLine & "AS" & vbNewLine & "BEGIN" & vbNewLine _
             & "  UPDATE " & GetTableName(.Fields("TableID").value) & " SET " _
             & .Fields("ColumnName").value & "= @pimgUploadFile" _
             & " WHERE id =@piID" & vbNewLine _
