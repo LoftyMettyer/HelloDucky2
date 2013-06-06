@@ -42,7 +42,7 @@ Begin VB.UserControl COA_Navigation
       NoFolders       =   0   'False
       Transparent     =   0   'False
       ViewID          =   "{0057D0E0-3573-11CF-AE69-08002B2E1262}"
-      Location        =   "http:///"
+      Location        =   ""
    End
    Begin VB.PictureBox picHidden 
       Appearance      =   0  'Flat
@@ -142,6 +142,7 @@ Private mbEnabled As Boolean
 Private miControlLevel As Integer
 Private mForeColor As OLE_COLOR
 Private mbNavigateOnSave As Boolean
+Private mBackColor As OLE_COLOR
 
 Private Sub IObjectSafety_GetInterfaceSafetyOptions(ByVal riid As Long, _
                                                     pdwSupportedOptions As Long, _
@@ -298,6 +299,7 @@ Public Sub RefreshControls()
   lblHyperlink.ForeColor = mForeColor
   lblHyperlink.Enabled = mbEnabled
   lblHyperlink.Visible = (miDisplayType = enum_DisplayType.Hyperlink)
+  lblHyperlink.BackColor = mBackColor
 
   ' Hidden control properties
   picHidden.Top = 0
@@ -328,6 +330,8 @@ Public Sub RefreshControls()
       WebBrowser1.Navigate mstrNavigateTo
     End If
   End If
+
+  UserControl.BackColor = mBackColor
 
 End Sub
 
@@ -406,6 +410,7 @@ Private Sub UserControl_ReadProperties(PropBag As PropertyBag)
   UserControl.Font.Strikethrough = PropBag.ReadProperty("FontStrikethrough", UserControl.Ambient.Font.Strikethrough)
   UserControl.Font.Underline = PropBag.ReadProperty("FontUnderline", UserControl.Ambient.Font.Underline)
   mForeColor = PropBag.ReadProperty("ForeColor", UserControl.Ambient.ForeColor)
+  mBackColor = PropBag.ReadProperty("BackColor", UserControl.Ambient.BackColor)
 
   RefreshControls
 End Sub
@@ -427,6 +432,7 @@ Private Sub UserControl_WriteProperties(PropBag As PropertyBag)
   Call PropBag.WriteProperty("FontStrikethrough", lblHyperlink.Font.Strikethrough)
   Call PropBag.WriteProperty("FontUnderline", lblHyperlink.Font.Underline)
   Call PropBag.WriteProperty("ForeColor", mForeColor)
+  Call PropBag.WriteProperty("BackColor", mBackColor)
   Call PropBag.WriteProperty("NavigateOnSave", NavigateOnSave)
 
 End Sub
@@ -599,11 +605,12 @@ Public Property Let Enabled(ByVal NewValue As Boolean)
 End Property
 
 Public Property Get BackColor() As OLE_COLOR
-  BackColor = UserControl.BackColor
+  BackColor = mBackColor
 End Property
 
 Public Property Let BackColor(ByVal NewColor As OLE_COLOR)
-  UserControl.BackColor = NewColor
+  mBackColor = NewColor
+  RefreshControls
 End Property
 
 Public Sub ExecutePostSave()
