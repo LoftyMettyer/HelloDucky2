@@ -2175,7 +2175,7 @@ Private Sub cmdAddButtonLink_Click()
       "", _
       False, False, _
       0, 0, _
-      False, 1, False, False, 0, 0, 0, 0, 0, 0, sAllWFHiddenGroups, _
+      True, 1, False, False, 0, 0, 0, 0, 0, 0, sAllWFHiddenGroups, _
       mcolSSITableViews
       
     .Show vbModal
