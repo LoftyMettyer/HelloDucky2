@@ -1711,7 +1711,7 @@ Private Sub RefreshControls()
   lblHRProUtilityMessage.Caption = sUtilityMessage
   
   ' Disable the OK button as required.
-  cmdOK.Enabled = mfChanged
+  cmdOk.Enabled = mfChanged
   
 
 End Sub
@@ -2137,10 +2137,26 @@ Private Sub cboChartType_Click()
 End Sub
 
 Private Sub cboColumns_Click()
+  Dim piColumnDataType As Integer
+  Dim lngColumnID As Long
 
   mfChanged = True
 
   miChartColumnID = cboColumns.ItemData(cboColumns.ListIndex)
+  
+  lngColumnID = cboColumns.ItemData(cboColumns.ListIndex)
+  
+  piColumnDataType = GetColumnDataType(lngColumnID)
+  
+  ' Disable 'total' option if not numeric or integer
+  If piColumnDataType <> dtINTEGER And piColumnDataType <> dtNUMERIC Then
+    optAggregateType(0).value = True
+    optAggregateType(1).Enabled = False
+    optAggregateType(1).ForeColor = vbButtonFace
+  Else
+    optAggregateType(1).Enabled = True
+    optAggregateType(1).ForeColor = vbWindowBackground
+  End If
   
   RefreshControls
 End Sub
