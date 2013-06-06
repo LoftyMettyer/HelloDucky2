@@ -226,7 +226,7 @@ PRINT 'Step 4 - Create object tracking system'
 
 	IF OBJECT_ID('tbsys_scriptedchanges', N'U') IS NULL	
 	BEGIN
-		EXECUTE sp_executeSQL N'CREATE TABLE tbsys_scriptedchanges ([id] uniqueidentifier, [order] integer, [file] nvarchar(MAX), [uploaddate] datetime, [runtype] integer, [lastrundate] datetime, [runonce] bit, [runinversion] nvarchar(10));'
+		EXECUTE sp_executeSQL N'CREATE TABLE tbsys_scriptedchanges ([id] uniqueidentifier, [sequence] integer, [file] nvarchar(MAX), [uploaddate] datetime, [runtype] integer, [lastrundate] datetime, [runonce] bit, [runinversion] nvarchar(10), [description] nvarchar(MAX));'
 	END
 
 	-- Generate apply scripts procedure
@@ -243,20 +243,20 @@ PRINT 'Step 4 - Create object tracking system'
 		SET NOCOUNT ON;
 
 		DECLARE @NVarCommand nvarchar(MAX);
-		DECLARE @changes table(id uniqueidentifier, [file] nvarchar(MAX), [order] integer);
+		DECLARE @changes table(id uniqueidentifier, [file] nvarchar(MAX), [sequence] integer);
 		
 		-- Collate hotfixes
 		INSERT @changes
-			SELECT [id], [file], [order]
+			SELECT [id], [file], [sequence]
 				FROM dbo.[tbsys_scriptedchanges]
 				WHERE (runtype = @runtype) AND ([runonce] = 0 OR ([runonce] = 1 AND [lastrundate] IS NULL))
-				ORDER BY [order];
+				ORDER BY [sequence];
 
 		-- Build hotixes and apply
 		SET @NVarCommand = '''';
 		SELECT @NVarCommand = @NVarCommand + [file]
 			FROM @changes
-			ORDER BY [order];
+			ORDER BY [sequence];
 		EXECUTE sp_executeSQL @NVarCommand;
 
 		-- Mark the hotfixes as complete
@@ -267,16 +267,12 @@ PRINT 'Step 4 - Create object tracking system'
 	END'
 
 	EXEC sp_executesql N'CREATE PROCEDURE dbo.spASRUploadScript
-	(@runtype integer, @script nvarchar(MAX), @runonce bit, @runinversion nvarchar(10))
+	(@runtype integer, @script nvarchar(MAX), @runonce bit, @runinversion nvarchar(10), @sequence integer, @description nvarchar(MAX))
 	AS
 	BEGIN
 
-		DECLARE @iMax integer;
-
-		SELECT @iMax = MAX([order]) FROM tbsys_scriptedchanges;
-
-		INSERT tbsys_scriptedchanges ([order], [file], [uploaddate], [runtype], [runonce], [runinversion])
-			VALUES (@iMax, @script, GETDATE(), @runtype, @runonce, @runinversion)
+		INSERT tbsys_scriptedchanges ([sequence], [file], [uploaddate], [runtype], [runonce], [runinversion], [description])
+			VALUES (@sequence, @script, GETDATE(), @runtype, @runonce, @runinversion, @description)
 		
 	END'
 
@@ -1500,12 +1496,11 @@ PRINT 'Step 12 - System stored procedures'
 	EXECUTE sp_executeSQL @sSPCode;
 
 
-
-
-
-
 /* ------------------------------------------------------------- */
 PRINT 'Step 13 - Remove redundant procedures'
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRAudit]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].[sp_ASRAudit];
 
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRFn_RemainingMonthsSinceWholeYears]') AND xtype = 'P')
 		DROP PROCEDURE [dbo].[sp_ASRFn_RemainingMonthsSinceWholeYears];
@@ -1515,7 +1510,6 @@ PRINT 'Step 13 - Remove redundant procedures'
 
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRFn_WeekdaysFromStartAndEndDates]') AND xtype = 'P')
 		DROP PROCEDURE [dbo].[sp_ASRFn_WeekdaysFromStartAndEndDates];
-
 
 
 
