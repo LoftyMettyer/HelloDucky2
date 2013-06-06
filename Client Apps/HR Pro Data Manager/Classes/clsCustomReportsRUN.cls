@@ -790,13 +790,12 @@ Public Function RunCustomReport(pstrPicklistFilterIDs As String) As Boolean
   
   If fOK Then fOK = CheckRecordSet
   If fOK Then fOK = PopulateGrid
-  'If fOK Then fOK = InitialiseOutPutFormWithDefaults
 
   If fOK Then
-    If gblnBatchMode Or Not mblnPreviewOnScreen Then
+    If gblnBatchMode Or Not mblnPreviewOnScreen Or Not mblnOutputScreen Then
       fOK = OutputReport(False)
     
-    ElseIf mblnPreviewOnScreen Then
+    ElseIf mblnPreviewOnScreen Or mblnOutputScreen Then
       Screen.MousePointer = vbDefault
       mfrmOutput.BaseTable = mstrCustomReportsBaseTableName
       mfrmOutput.Parent = Me
@@ -805,6 +804,8 @@ Public Function RunCustomReport(pstrPicklistFilterIDs As String) As Boolean
       mfrmOutput.Show vbModal
     End If
   End If
+  
+  
 
   Set mfrmOutput = Nothing
     
@@ -982,9 +983,10 @@ Private Function GetCustomReportDefinition() As Boolean
     mlngCustomReportsParent2AllRecords = IIf(IsNull(!parent2AllRecords), 0, !parent2AllRecords)
     mlngCustomReportsParent2PickListID = IIf(IsNull(!parent2picklist), 0, !parent2picklist)
     mbDefinitionOwner = (LCase(Trim(gsUserName)) = LCase(Trim(!UserName)))
+    mblnPreviewOnScreen = IIf(lblnReportPackMode, mblnPreviewOnScreen, !OutputPreview)
+    mblnOutputScreen = IIf(lblnReportPackMode, mblnOutputScreen, !OutputScreen)
     'Override OutputOption vars of the Report Pack owning these Jobs
     mlngOutputFormat = IIf(lblnReportPackMode, mlngOutputFormat, !OutputFormat)
-    mblnOutputScreen = IIf(lblnReportPackMode, mblnOutputScreen, !OutputScreen)
     mblnOutputPrinter = IIf(lblnReportPackMode, mblnOutputPrinter, !OutputPrinter)
     mstrOutputPrinterName = IIf(lblnReportPackMode, mstrOutputPrinterName, !OutputPrinterName)
     mblnOutputSave = IIf(lblnReportPackMode, mblnOutputSave, !OutputSave)
@@ -994,7 +996,6 @@ Private Function GetCustomReportDefinition() As Boolean
     mstrOutputEmailSubject = IIf(lblnReportPackMode, mstrOutputEmailSubject, !OutputEmailSubject)
     mstrOutputEmailAttachAs = IIf(lblnReportPackMode, mstrOutputEmailAttachAs, !OutputEmailAttachAs)
     mstrOutputFileName = IIf(lblnReportPackMode, mstrOutputFileName, !OutputFilename)
-    mblnPreviewOnScreen = IIf(lblnReportPackMode, mblnPreviewOnScreen, !OutputPreview)
   End With
   
   strSQL = "SELECT C.ChildTable, C.ChildFilter, C.ChildMaxRecords, T.TableName, C.ChildOrder " & _
@@ -5935,7 +5936,7 @@ Public Sub SetOutputParameters( _
           lngOutputEmailAddr As Long, _
           strOutputEmailSubject As String, _
           strOutputEmailAttachAs As String, _
-          strOutputFileName As String, _
+          strOutputFilename As String, _
           blnPreviewOnScreen As Boolean, _
           blnPrintFilterHeader As Boolean, _
           Optional strOutputTitlePage As String, _
@@ -5954,7 +5955,7 @@ Public Sub SetOutputParameters( _
   mlngOutputEmailAddr = lngOutputEmailAddr
   mstrOutputEmailSubject = strOutputEmailSubject
   mstrOutputEmailAttachAs = strOutputEmailAttachAs
-  mstrOutputFileName = strOutputFileName
+  mstrOutputFileName = strOutputFilename
   mblnCustomReportsPrintFilterHeader = blnPrintFilterHeader
   mblnPreviewOnScreen = (blnPreviewOnScreen Or (mlngOutputFormat = fmtDataOnly And mblnOutputScreen))
   mstrOutputTitlePage = IIf(IsMissing(strOutputTitlePage), giEXPRVALUE_CHARACTER, strOutputTitlePage)
