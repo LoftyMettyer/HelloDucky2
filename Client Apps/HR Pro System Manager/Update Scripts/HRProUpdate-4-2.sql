@@ -456,7 +456,17 @@ PRINT 'Step 4 - Add new formatting columns to ASRSysSSIntranetLinks'
 		EXEC sp_executesql N'UPDATE ASRSysSSIntranetLinks SET Chart_ColourID = 0'
 	END
 	
+--------------------------------------------------------------------------------------------
+-- Display Values as Percentages (for Charts)
+--------------------------------------------------------------------------------------------
 	
+	IF NOT EXISTS(SELECT id FROM syscolumns
+	              WHERE  id = OBJECT_ID('ASRSysSSIntranetLinks', 'U') AND name = 'Chart_ShowPercentages')
+    BEGIN
+		EXEC sp_executesql N'ALTER TABLE ASRSysSSIntranetLinks ADD Chart_ShowPercentages bit NULL'
+		EXEC sp_executesql N'UPDATE ASRSysSSIntranetLinks SET Chart_ShowPercentages = 0'
+	END
+
 		
 /* ------------------------------------------------------------- */
 PRINT 'Step 5 - Modifying Workflow Data Structures'
