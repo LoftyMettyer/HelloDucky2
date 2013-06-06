@@ -1,6 +1,6 @@
 Type=Control
-Reference=*\G{00020430-0000-0000-C000-000000000046}#2.0#0#..\..\..\..\Windows\system32\stdole2.tlb#OLE
-Reference=*\G{C67830E0-D11D-11CF-BD80-00AA00575603}#1.0#0#..\..\..\..\Windows\system32\objsafe.tlb#VB IObjectSafety Interface
+Reference=*\G{00020430-0000-0000-C000-000000000046}#2.0#0#..\..\..\..\WINDOWS\system32\stdole2.tlb#OLE
+Reference=*\G{C67830E0-D11D-11CF-BD80-00AA00575603}#1.0#0#..\..\..\..\WINDOWS\system32\objsafe.tlb#VB IObjectSafety Interface
 Form=frmColorPalette.frm
 Form=frmTip.frm
 Module=Common; Common.bas
@@ -19,7 +19,7 @@ CompatibleEXE32="COA_ColourPicker.ocx"
 VersionCompatible32="1"
 MajorVer=1
 MinorVer=0
-RevisionVer=4
+RevisionVer=6
 AutoIncrementVer=1
 ServerSupportFiles=0
 VersionCompanyName="Advanced Business Solutions Ltd"
