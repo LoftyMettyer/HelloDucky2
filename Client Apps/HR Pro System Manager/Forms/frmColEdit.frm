@@ -1062,7 +1062,7 @@ Begin VB.Form frmColEdit
             Top             =   1095
             Width           =   7815
             Begin VB.CheckBox chkUse1000Separator 
-               Caption         =   "&Use 1000 separator (,)"
+               Caption         =   "&Use 1000 separator"
                Height          =   255
                Left            =   4215
                TabIndex        =   42
