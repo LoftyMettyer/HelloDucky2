@@ -1,7 +1,7 @@
 Attribute VB_Name = "modSave_EmailLinks"
 Option Explicit
 
-Public glngExpressionTableIDForDeleteTrigger As Boolean
+Public glngExpressionTableIDForDeleteTrigger As Long
 
 Private rsEmailLinks As ADODB.Recordset
 Private rsEmailRecipients As ADODB.Recordset
@@ -252,7 +252,7 @@ Private Function ApplyFilter(lngFilterID As Long, lngTableID As Long, strTableNa
       objExpr.ConstructExpression
       fOK = objExpr.RuntimeFilterCode(strFilter, False)
       
-      glngExpressionTableIDForDeleteTrigger = False
+      glngExpressionTableIDForDeleteTrigger = 0
 
       strFilter = Replace(strFilter, vbNewLine, " ")
       If Trim(strFilter) <> vbNullString Then
