@@ -94,13 +94,17 @@ Public Function SetTriggers(palngExpressions() As Long, pfRefreshDatabase As Boo
         ' Create the triggers.
         strTableName = "tbuser_" + .Fields("TableName").value
 
-        OutputCurrentProcess2 strTableName, lngRecordCount
+        OutputCurrentProcess2 .Fields("TableName").value, lngRecordCount
         gobjProgress.UpdateProgress2
 
         fOK = SetTableTriggers_GetStrings(lngTableID, _
           strTableName, _
           IIf((IsNull(!RecordDescExprID)) Or (!RecordDescExprID < 0), 0, !RecordDescExprID), _
           palngExpressions, pfRefreshDatabase)
+
+        ' Johnny told me to do this... Was getting a bit confused with the record selectors in workflow.
+        .Index = "idxTableID"
+        .Seek "=", lngTableID
 
         If fOK Then
           fOK = SetTableTriggers_CreateTriggers(lngTableID, _
@@ -426,7 +430,7 @@ Private Function SetTableTriggers_GetStrings(pLngCurrentTableID As Long, _
                 sConvertInsCols = "ISNULL(CONVERT(varchar(14), @insCol_" & strColumnID & "), '')"
                 sConvertDelCols = "ISNULL(CONVERT(varchar(14), @delCol_" & strColumnID & "), '')"
               
-              Case dtINTEGER
+              Case dtinteger
                 sDeclareInsCols.Append " integer"
                 sDeclareDelCols.Append " integer"
                 sConvertInsCols = "ISNULL(CONVERT(varchar(255), @insCol_" & strColumnID & "), '')"
@@ -710,7 +714,7 @@ Private Function SetTableTriggers_GetStrings(pLngCurrentTableID As Long, _
             sExprDeclarationCode.Append "        DECLARE @col" & Trim$(Str$(lngCalcColumnID)) & " nvarchar(MAX)" & vbNewLine
           Case dtLONGVARCHAR
             sExprDeclarationCode.Append "        DECLARE @col" & Trim$(Str$(lngCalcColumnID)) & " varchar(14)" & vbNewLine
-          Case dtINTEGER
+          Case dtinteger
             sExprDeclarationCode.Append "        DECLARE @col" & Trim$(Str$(lngCalcColumnID)) & " integer" & vbNewLine
           Case dtNUMERIC
             sExprDeclarationCode.Append "        DECLARE @col" & Trim$(Str$(lngCalcColumnID)) & " float" & vbNewLine
@@ -752,7 +756,7 @@ Private Function SetTableTriggers_GetStrings(pLngCurrentTableID As Long, _
               End If
             Case dtLONGVARCHAR
               sConvertCode = "CONVERT(varchar(14), "
-            Case dtINTEGER
+            Case dtinteger
               sConvertCode = "CONVERT(int, "
             Case dtNUMERIC
               sConvertCode = "CONVERT(numeric(" & Trim$(Str$(iCalcSize)) & ", " & Trim(Str(!Decimals)) & "), "
@@ -777,7 +781,7 @@ Private Function SetTableTriggers_GetStrings(pLngCurrentTableID As Long, _
                   asCalcSelfCode(1).Append sIndent & "        EXEC [dbo].[sp_ASRFn_IsEmpty_1] @fResult OUTPUT, @inscol_" & Trim$(Str$(lngCalcColumnID)) & vbNewLine
                 Case dtLONGVARCHAR
                   asCalcSelfCode(1).Append sIndent & "        EXEC [dbo].[sp_ASRFn_IsEmpty_1] @fResult OUTPUT, @inscol_" & Trim$(Str$(lngCalcColumnID)) & vbNewLine
-                Case dtINTEGER
+                Case dtinteger
                   asCalcSelfCode(1).Append sIndent & "        EXEC [dbo].[sp_ASRFn_IsEmpty_2] @fResult OUTPUT, @inscol_" & Trim$(Str$(lngCalcColumnID)) & vbNewLine
                 Case dtNUMERIC
                   asCalcSelfCode(1).Append sIndent & "        EXEC [dbo].[sp_ASRFn_IsEmpty_2] @fResult OUTPUT, @inscol_" & Trim$(Str$(lngCalcColumnID)) & vbNewLine
@@ -958,7 +962,7 @@ Private Function SetTableTriggers_GetStrings(pLngCurrentTableID As Long, _
                   "            IF @comparisonResult = 0 SET @changesMade = 1" & vbNewLine & _
                   "        END" & vbNewLine
               
-              Case dtINTEGER
+              Case dtinteger
                 If Not fColFound Then
                   sDeclareInsCols.Append " integer"
                   sDeclareDelCols.Append " integer"
@@ -1154,7 +1158,7 @@ Private Function SetTableTriggers_GetStrings(pLngCurrentTableID As Long, _
                   "                EXEC dbo.sp_ASRCaseSensitiveCompare @comparisonResult OUTPUT, @oldCharValue, @newCharValue" & vbNewLine & _
                   "                IF @comparisonResult = 0 SET @changesMade = 1" & vbNewLine & _
                   "            END" & vbNewLine
-              Case dtINTEGER, dtNUMERIC
+              Case dtinteger, dtNUMERIC
                 asCalcParentCode(4, iArrayIndex).Append vbNewLine & _
                   "            IF @changesMade = 0" & vbNewLine & _
                   "            BEGIN" & vbNewLine & _
@@ -1282,7 +1286,7 @@ Private Function SetTableTriggers_GetStrings(pLngCurrentTableID As Long, _
                   "                    IF @comparisonResult = 0 SET @changesMade = 1" & vbNewLine & _
                   IIf(blnCalculateIfEmpty, "                    END" & vbNewLine, "") & _
                   "                END" & vbNewLine
-              Case dtINTEGER, dtNUMERIC
+              Case dtinteger, dtNUMERIC
                 asCalcChildCode(4, iArrayIndex).Append vbNewLine & _
                   "                IF @changesMade = 0" & vbNewLine & _
                   "                BEGIN" & vbNewLine & _
@@ -1434,7 +1438,7 @@ Private Function SetTableTriggers_GetStrings(pLngCurrentTableID As Long, _
                   sExprDeclarationCode.Append "        DECLARE @col" & strColumnID & " nvarchar(MAX)" & vbNewLine
                 Case dtLONGVARCHAR
                   sExprDeclarationCode.Append "        DECLARE @col" & strColumnID & " varchar(14)" & vbNewLine
-                Case dtINTEGER
+                Case dtinteger
                   sExprDeclarationCode.Append "        DECLARE @col" & strColumnID & " integer" & vbNewLine
                 Case dtNUMERIC
                   sExprDeclarationCode.Append "        DECLARE @col" & strColumnID & " float" & vbNewLine
@@ -1803,7 +1807,7 @@ Private Function SetTableTriggers_GetStrings(pLngCurrentTableID As Long, _
             sDefaultConvertCode = "CONVERT(varchar(14), "
             sDfltOldVar = "@oldCharValue"
           
-          Case dtINTEGER
+          Case dtinteger
             sDefaultDeclareCode = "        DECLARE @" & sExprName & "_" & sDfltColumnID & " float" & vbNewLine
             sDefaultIfNullCode = "SET @" & sExprName & "_" & sDfltColumnID & " = 0"
             sDefaultConvertCode = "CONVERT(int, "
@@ -1909,7 +1913,7 @@ Private Function SetTableTriggers_GetStrings(pLngCurrentTableID As Long, _
             sDefaultConvertCode = "CONVERT(varchar(14), "
             sDfltOldVar = "@oldCharValue"
     
-          Case dtINTEGER
+          Case dtinteger
             sDefaultDeclareCode = "        DECLARE @" & sDfltValue & "_" & sDfltColumnID & " float" & vbNewLine
             sDefaultConvertCode = "CONVERT(int, "
             sDfltOldVar = "@oldNumValue"
@@ -1946,7 +1950,7 @@ Private Function SetTableTriggers_GetStrings(pLngCurrentTableID As Long, _
           Case dtTIMESTAMP
             sCalcDfltCode.Append _
               "            SET @" & sDfltValue & "_" & sDfltColumnID & " = '" & Replace(!DefaultValue, "'", "''") & "'" & vbNewLine
-          Case dtINTEGER
+          Case dtinteger
             sCalcDfltCode.Append _
               "            SET @" & sDfltValue & "_" & sDfltColumnID & " = " & Trim(Str(val(!DefaultValue))) & vbNewLine
           Case dtNUMERIC
@@ -3809,7 +3813,7 @@ Private Function SetTableTriggers_AccordTransfer(ByRef sInsertAccordCode As HRPr
                   sConvertInsCols = "ISNULL(CONVERT(varchar(255), @insCol_" & sASRColumnID & "), '')"
                   sConvertDelCols = "ISNULL(CONVERT(varchar(255), @delCol_" & sASRColumnID & "), '')"
     
-                Case dtINTEGER
+                Case dtinteger
                   If Not bColFound Then
                     sDeclareInsCols.Append " integer"
                     sDeclareDelCols.Append " integer"
@@ -3874,7 +3878,7 @@ Private Function SetTableTriggers_AccordTransfer(ByRef sInsertAccordCode As HRPr
                   Do While Not rsAssociatedColumns.EOF
                     ' AE20080616 Fault #13168
                     Select Case GetColumnDataType(lngASRColumnID)
-                    Case dtINTEGER, dtNUMERIC, dtBIT
+                    Case dtinteger, dtNUMERIC, dtBIT
                       strCurrentUpdate.Append _
                         " ISNULL(@insCol_" & rsAssociatedColumns.Fields(0).value & ",0) <> ISNULL(@delCol_" & rsAssociatedColumns.Fields(0).value & ",0)"
                     Case Else
@@ -3898,7 +3902,7 @@ Private Function SetTableTriggers_AccordTransfer(ByRef sInsertAccordCode As HRPr
               Else
                 ' AE20080616 Fault #13168
                 Select Case GetColumnDataType(lngASRColumnID)
-                Case dtINTEGER, dtNUMERIC, dtBIT
+                Case dtinteger, dtNUMERIC, dtBIT
                   strCurrentUpdate.Append vbNewLine & _
                     IIf(Not !AlwaysTransfer And !GroupBy = 0, Space$(14) & "IF ISNULL(@insCol_" & sASRColumnID & ",0) <> ISNULL(@delCol_" & sASRColumnID & ",0) OR @bAccordSendAllFields = 1 OR @bAccordResend = 1" & vbNewLine & Space$(14) & _
                       "BEGIN" & vbNewLine, vbNullString)
@@ -3944,7 +3948,7 @@ Private Function SetTableTriggers_AccordTransfer(ByRef sInsertAccordCode As HRPr
  
               ' AE20080616 Fault #13168
               Select Case GetColumnDataType(lngASRColumnID)
-              Case dtINTEGER, dtNUMERIC, dtBIT
+              Case dtinteger, dtNUMERIC, dtBIT
                 sHasChangedCode.Append IIf(sHasChangedCode.Length <> 0, " OR ", vbNullString) & _
                   "ISNULL(@insCol_" & sASRColumnID & ",0) <> ISNULL(@delCol_" & sASRColumnID & ",0)"
               Case Else
@@ -3968,7 +3972,7 @@ Private Function SetTableTriggers_AccordTransfer(ByRef sInsertAccordCode As HRPr
                 Case dtBINARY
                 Case dtLONGVARCHAR
                 Case dtNUMERIC
-                Case dtINTEGER
+                Case dtinteger
                 Case dtVARCHAR
                 Case dtTIMESTAMP
                   strColumnName = "ISNULL(CONVERT(varchar(255),DATEPART(year, [" & strColumnName _
@@ -4295,7 +4299,7 @@ Private Function SetTableTriggers_AutoUpdate(pLngCurrentTableID As Long, psTable
            "           END " & vbNewLine & _
            "        END " & vbNewLine & vbNewLine
           
-        Case dtINTEGER, dtNUMERIC
+        Case dtinteger, dtNUMERIC
            sAULookupCode.Append "        IF (@fUpdatingDateDependentColumns = 0)" & vbNewLine & _
            "        BEGIN" & vbNewLine & _
            "           SELECT @col" & Trim(Str(!LookupColumnID)) & " = " & !LookupColumnName & " FROM " & psTableName & " WHERE id = @recordID" & vbNewLine & _
@@ -4633,7 +4637,7 @@ Private Function SetTableTriggers_AutoUpdateGetField(pLngCurrentTableID As Long,
                 sTemp = sTemp & "           BEGIN " & vbNewLine
                 mstrGetFieldAutoUpdateCode_UPDATE = mstrGetFieldAutoUpdateCode_UPDATE & sTemp
               
-            Case dtINTEGER, dtNUMERIC
+            Case dtinteger, dtNUMERIC
                 sTemp = "           SELECT @oldNumValue = [" & sSearchFieldColumnName & "] " & vbNewLine
                 sTemp = sTemp & "           FROM Deleted " & vbNewLine
                 sTemp = sTemp & "           WHERE id = @recordID " & vbNewLine
@@ -4723,7 +4727,7 @@ Private Function SetTableTriggers_AutoUpdateGetField(pLngCurrentTableID As Long,
                 sTemp = sTemp & "           BEGIN " & vbNewLine
                 mstrGetFieldAutoUpdateCode_UPDATE = mstrGetFieldAutoUpdateCode_UPDATE & sTemp
               
-            Case dtINTEGER, dtNUMERIC
+            Case dtinteger, dtNUMERIC
                 sTemp = "           SELECT @oldNumValue = [" & sReturnFieldColumnName & "] " & vbNewLine
                 sTemp = sTemp & "           FROM Deleted " & vbNewLine
                 sTemp = sTemp & "           WHERE id = @recordID " & vbNewLine
@@ -4780,7 +4784,7 @@ Private Function SetTableTriggers_AutoUpdateGetField(pLngCurrentTableID As Long,
                 sTemp = "             SET @newCharValue = CONVERT(varchar(max), @col" & lngSearchFieldColumnID & ") " & vbNewLine & vbNewLine
                 mstrGetFieldAutoUpdateCode_UPDATE = mstrGetFieldAutoUpdateCode_UPDATE & sTemp
               
-            Case dtINTEGER, dtNUMERIC
+            Case dtinteger, dtNUMERIC
                 sTemp = "             SELECT @oldNumValue = [" & sSearchFieldColumnName & "] " & vbNewLine
                 sTemp = sTemp & "             FROM Deleted " & vbNewLine
                 sTemp = sTemp & "             WHERE id = @recordID " & vbNewLine
@@ -6035,7 +6039,7 @@ On Error GoTo ErrorTrap
         sDeclareDelCols.Append " varchar(14)"
       End If
   
-    Case dtINTEGER
+    Case dtinteger
       If Not bColFound Then
         sDeclareInsCols.Append " integer"
         sDeclareDelCols.Append " integer"
@@ -6093,7 +6097,7 @@ Private Function GetSPVariable(dt As SQLDataType, bNew As Boolean) As String
   Select Case dt
   Case dtVARCHAR, dtLONGVARCHAR
     GetSPVariable = IIf(bNew, "@newCharValue", "@oldCharValue")
-  Case dtINTEGER, dtNUMERIC
+  Case dtinteger, dtNUMERIC
     GetSPVariable = IIf(bNew, "@newNumValue", "@oldNumValue")
   Case dtBIT
     GetSPVariable = IIf(bNew, "@newLogicValue", "@oldLogicValue")
