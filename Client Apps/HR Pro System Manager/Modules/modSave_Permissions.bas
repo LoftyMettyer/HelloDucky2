@@ -46,7 +46,7 @@ Public Function ReadPermissions(ByRef psErrMsg As String) As Boolean
     If Not .EOF And Not .BOF Then
       While fOK And (Not .EOF)
         
-        sGroupName = Trim(.Fields(0).Value) 'Trim(!Name)
+        sGroupName = Trim(.Fields(0).value) 'Trim(!Name)
       
         OutputCurrentProcess2 sGroupName
         gobjProgress.UpdateProgress2
@@ -185,9 +185,9 @@ Private Function SetupTablesCollection(pobjGroup As clsSecurityGroup) As Boolean
     Do While Not rsInfo1.EOF
       lngNextIndex = lngNextIndex + 1
       If lngNextIndex > UBound(avChildViews, 2) Then ReDim Preserve avChildViews(3, lngNextIndex + 100)
-      avChildViews(1, lngNextIndex) = rsInfo1(0).Value
-      avChildViews(2, lngNextIndex) = rsInfo1(1).Value
-      avChildViews(3, lngNextIndex) = IIf(IsNull(rsInfo1(2).Value), 0, rsInfo1(2).Value)
+      avChildViews(1, lngNextIndex) = rsInfo1(0).value
+      avChildViews(2, lngNextIndex) = rsInfo1(1).value
+      avChildViews(3, lngNextIndex) = IIf(IsNull(rsInfo1(2).value), 0, rsInfo1(2).value)
       rsInfo1.MoveNext
     Loop
     ReDim Preserve avChildViews(3, lngNextIndex)
@@ -200,11 +200,11 @@ Private Function SetupTablesCollection(pobjGroup As clsSecurityGroup) As Boolean
   
   Do While Not rsTables.EOF
     Set objColumns = New clsSecurityColumns
-    pobjGroup.Tables.Add objColumns, rsTables(1).Value, rsTables(2).Value
+    pobjGroup.Tables.Add objColumns, rsTables(1).value, rsTables(2).value
     Set objColumns = Nothing
     
-    With pobjGroup.Tables(rsTables(1).Value)
-      .SelectPrivilege = IIf(fSysSecManager, giPRIVILEGES_ALLGRANTED, IIf(rsTables(2).Value = iTabLookup, giPRIVILEGES_ALLGRANTED, giPRIVILEGES_NONEGRANTED))
+    With pobjGroup.Tables(rsTables(1).value)
+      .SelectPrivilege = IIf(fSysSecManager, giPRIVILEGES_ALLGRANTED, IIf(rsTables(2).value = iTabLookup, giPRIVILEGES_ALLGRANTED, giPRIVILEGES_NONEGRANTED))
       .UpdatePrivilege = IIf(fSysSecManager, giPRIVILEGES_ALLGRANTED, giPRIVILEGES_NONEGRANTED)
       .InsertPrivilege = IIf(fSysSecManager, True, False)
       .DeletePrivilege = IIf(fSysSecManager, True, False)
@@ -221,7 +221,7 @@ Private Function SetupTablesCollection(pobjGroup As clsSecurityGroup) As Boolean
   Do While Not rsViews.EOF
     Set objColumns = New clsSecurityColumns
     
-    sTableViewName = rsViews(0).Value  ' ViewName
+    sTableViewName = rsViews(0).value  ' ViewName
     pobjGroup.Views.Add objColumns, sTableViewName, 0
     Set objColumns = Nothing
 
@@ -250,8 +250,8 @@ Private Function SetupTablesCollection(pobjGroup As clsSecurityGroup) As Boolean
     Do While Not rsPermissions.EOF
       Set objTableView = Nothing
 
-      sPermissionName = UCase(rsPermissions.Fields(0).Value)   ' Name
-      iAction = rsPermissions.Fields(1).Value                   ' Action
+      sPermissionName = UCase(rsPermissions.Fields(0).value)   ' Name
+      iAction = rsPermissions.Fields(1).value                   ' Action
 
       If sLastRealSource <> sPermissionName Then
         sRealSourceList.Append IIf(sRealSourceList.Length <> 0, ", '", "'") & sPermissionName & "'"
@@ -265,7 +265,7 @@ Private Function SetupTablesCollection(pobjGroup As clsSecurityGroup) As Boolean
           fChildView = True
           ' Determine which table the child view is for.
           iTemp = InStr(sPermissionName, "#")
-          lngChildViewID = Val(Mid$(sPermissionName, 9, iTemp - 9))
+          lngChildViewID = val(Mid$(sPermissionName, 9, iTemp - 9))
         End If
         
         If fChildView Then
@@ -323,13 +323,13 @@ Private Function SetupTablesCollection(pobjGroup As clsSecurityGroup) As Boolean
 
   Do While Not rsInfo2.EOF
     
-    strColumnName = rsInfo2.Fields(0).Value
-    iTableType = rsInfo2.Fields(3).Value
+    strColumnName = rsInfo2.Fields(0).value
+    iTableType = rsInfo2.Fields(3).value
 
     If iTableType <> iTabView Then
-      Set objColumns = pobjGroup.Tables(rsInfo2.Fields(2).Value).Columns
+      Set objColumns = pobjGroup.Tables(rsInfo2.Fields(2).value).Columns
     Else
-      Set objColumns = pobjGroup.Views(rsInfo2.Fields(2).Value).Columns
+      Set objColumns = pobjGroup.Views(rsInfo2.Fields(2).value).Columns
     End If
     
     ' Add the column object to the collection.
@@ -337,7 +337,7 @@ Private Function SetupTablesCollection(pobjGroup As clsSecurityGroup) As Boolean
     
     ' Set the security column properties
     objColumn.Name = strColumnName
-    objColumn.ColumnID = rsInfo2.Fields(1).Value
+    objColumn.ColumnID = rsInfo2.Fields(1).value
     objColumn.SelectPrivilege = fSysSecManager Or (iTableType = iTabLookup)
     objColumn.UpdatePrivilege = fSysSecManager
     
@@ -357,7 +357,7 @@ Private Function SetupTablesCollection(pobjGroup As clsSecurityGroup) As Boolean
       " FROM sysusers" & _
       " WHERE name = '" & pobjGroup.Name & "'"
     rsInfo3.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly, adCmdText
-    lngRoleID = rsInfo3.Fields(0).Value
+    lngRoleID = rsInfo3.Fields(0).value
     rsInfo3.Close
         
     sSQL = "EXEC dbo.[spASRGetAllTableAndViewColumnPermissionsForGroup] " & lngRoleID
@@ -367,17 +367,17 @@ Private Function SetupTablesCollection(pobjGroup As clsSecurityGroup) As Boolean
       ' Get the current column's table/view name.
       Set objTableView = Nothing
 
-      strObjectName = UCase(rsInfo4.Fields(0).Value)
-      strColumnName = rsInfo4.Fields(1).Value
-      iSelect = rsInfo4.Fields(2).Value
-      iUpdate = rsInfo4.Fields(3).Value
+      strObjectName = UCase(rsInfo4.Fields(0).value)
+      strColumnName = rsInfo4.Fields(1).value
+      iSelect = rsInfo4.Fields(2).value
+      iUpdate = rsInfo4.Fields(3).value
 
       fChildView = False
       If Left$(strObjectName, 8) = "ASRSYSCV" Then
         fChildView = True
         ' Determine which table the child view is for.
         iTemp = InStr(strObjectName, "#")
-        lngChildViewID = Val(Mid$(strObjectName, 9, iTemp - 9))
+        lngChildViewID = val(Mid$(strObjectName, 9, iTemp - 9))
       End If
 
       If fChildView Then
@@ -684,6 +684,9 @@ Private Function ApplyPermissions_NonChildTables() As Boolean
   Dim sSelectGrant As String
   Dim sUpdateGrant As String
   
+  Dim objSourcePermissions As clsSecurityTable
+  
+  
   fOK = True
 
   ' Get the set of top-level and lookup tables.
@@ -701,7 +704,7 @@ Private Function ApplyPermissions_NonChildTables() As Boolean
       With objGroup
         sGroupName = "[" & .Name & "]"
       
-        sTableName = rsTables.Fields(0).Value
+        sTableName = rsTables.Fields(0).value
 
         If objGroup.SecurityManager Or _
           objGroup.SystemManager Then
@@ -709,7 +712,8 @@ Private Function ApplyPermissions_NonChildTables() As Boolean
           sSQL = "GRANT DELETE, INSERT, SELECT, UPDATE ON " & sTableName & " TO " & sGroupName
           gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
         Else
-          
+
+          Set objSourcePermissions = Nothing
           If (Not rsTables!New) Or (rsTables!copySecurityTableID > 0) Then
             ' Initialise the Table Column permissions command strings.
             sSelectGrant = vbNullString
@@ -723,8 +727,14 @@ Private Function ApplyPermissions_NonChildTables() As Boolean
               lngOriginalTableID = rsTables!TableID
               sOriginalTableName = rsTables!OriginalTableName
             End If
-              
-            With .Tables.Item(sOriginalTableName)
+
+            Set objSourcePermissions = .Tables.Item(sOriginalTableName)
+          End If
+
+
+          If Not objSourcePermissions Is Nothing Then
+            
+            With objSourcePermissions
    
               If .SelectPrivilege = giPRIVILEGES_SOMEGRANTED Or .UpdatePrivilege = giPRIVILEGES_SOMEGRANTED Then
    
@@ -744,9 +754,9 @@ Private Function ApplyPermissions_NonChildTables() As Boolean
                   ''''strOriginalColumnName = UCase(Trim(rsColumns.Fields(2).Value))
                   
                   
-                  strColumnName = UCase(Trim(rsColumns.Fields(0).Value))
+                  strColumnName = UCase(Trim(rsColumns.Fields(0).value))
                 
-                  If rsColumns.Fields(3).Value Then   ' Is new column
+                  If rsColumns.Fields(3).value Then   ' Is new column
   
                     ' Build string of columns that are allowed
                     If .SelectPrivilege = giPRIVILEGES_SOMEGRANTED Then
@@ -759,7 +769,7 @@ Private Function ApplyPermissions_NonChildTables() As Boolean
                   
                   Else
                     'MH20060712 Fault 11313
-                    strOriginalColumnName = UCase(Trim(rsColumns.Fields(2).Value))
+                    strOriginalColumnName = UCase(Trim(rsColumns.Fields(2).value))
 
                     ' Build string of columns that are revoked based on what they had before
                     If .Columns.Item(strOriginalColumnName).SelectPrivilege Or .TableType = iTabLookup Then
@@ -942,8 +952,8 @@ Private Function ApplyPermissions_UserViews() As Boolean
   
               Do While Not rsColumns.EOF
               
-                strOriginalColumnName = UCase(Trim(IIf(IsNull(rsColumns.Fields(2).Value), "", rsColumns.Fields(2).Value)))
-                strColumnName = UCase(Trim(rsColumns.Fields(0).Value))
+                strOriginalColumnName = UCase(Trim(IIf(IsNull(rsColumns.Fields(2).value), "", rsColumns.Fields(2).value)))
+                strColumnName = UCase(Trim(rsColumns.Fields(0).value))
               
                 If Not .Columns.IsValid(strOriginalColumnName) Then
                   
@@ -1134,7 +1144,7 @@ Private Function ApplyPermissions_ChildTables2() As Boolean
     
   With rsInfo1
     Do While (Not .EOF)
-      sSQL = "DROP VIEW " & .Fields(0).Value
+      sSQL = "DROP VIEW " & .Fields(0).value
       gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
       .MoveNext
     Loop
@@ -1179,10 +1189,10 @@ Private Function ApplyPermissions_ChildTables2() As Boolean
     Do While Not rsChildren.EOF
       iNextIndex = iNextIndex + 1
       If iNextIndex > UBound(avChildTables, 2) Then ReDim Preserve avChildTables(2, iNextIndex + 100)
-      avChildTables(1, iNextIndex) = rsChildren.Fields(0).Value
-      avChildTables(2, iNextIndex) = LongestRouteToTopLevel(rsChildren.Fields(0).Value)
+      avChildTables(1, iNextIndex) = rsChildren.Fields(0).value
+      avChildTables(2, iNextIndex) = LongestRouteToTopLevel(rsChildren.Fields(0).value)
       
-      sRelatedChildTables = sRelatedChildTables & "," & Trim(Str(rsChildren.Fields(0).Value))
+      sRelatedChildTables = sRelatedChildTables & "," & Trim(Str(rsChildren.Fields(0).value))
       
       If iMaxRouteLength < avChildTables(2, iNextIndex) Then
         iMaxRouteLength = CInt(avChildTables(2, iNextIndex))
@@ -1219,7 +1229,7 @@ Private Function ApplyPermissions_ChildTables2() As Boolean
   With rsChildren
     Do While (Not .EOF)
       If LenB(sSysSecRoles) <> 0 Then
-        sSQL = "GRANT DELETE, INSERT, SELECT, UPDATE ON " & .Fields(0).Value & " TO " & sSysSecRoles
+        sSQL = "GRANT DELETE, INSERT, SELECT, UPDATE ON " & .Fields(0).value & " TO " & sSysSecRoles
         sAllSQLCommands = sAllSQLCommands & vbNewLine & sSQL
         gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
       End If
@@ -1404,7 +1414,7 @@ Private Function ApplyPermissions_ChildTables2() As Boolean
                   sTemp = Left("ASRSysCV" & Trim$(Str$(lngParentViewID)) & "#" & Replace(rsParents!TableName, " ", "_") & "#" & Replace(objGroup.Name, " ", "_"), 255)
                   sSQL = "SELECT COUNT(Name) AS result FROM sysobjects WHERE name = '" & sTemp & "' AND xtype = 'V'"
                   rsInfo2.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly
-                  If rsInfo2.Fields(0).Value = 0 Then
+                  If rsInfo2.Fields(0).value = 0 Then
                     lngParentViewID = 0
                   End If
                   
@@ -1455,19 +1465,19 @@ Private Function ApplyPermissions_ChildTables2() As Boolean
             
                 Set pmADO = .CreateParameter("TableID", adInteger, adParamInput)
                 .Parameters.Append pmADO
-                pmADO.Value = rsTables!TableID
+                pmADO.value = rsTables!TableID
             
                 Set pmADO = .CreateParameter("JoinType", adInteger, adParamInput)
                 .Parameters.Append pmADO
-                pmADO.Value = iParentJoinType
+                pmADO.value = iParentJoinType
                 
                 Set pmADO = .CreateParameter("Name", adVarChar, adParamInput, 256)
                 .Parameters.Append pmADO
-                pmADO.Value = objGroup.Name
+                pmADO.value = objGroup.Name
             
                 .Execute
             
-                lngViewID = IIf(IsNull(.Parameters(0).Value), vbNullString, .Parameters(0).Value)
+                lngViewID = IIf(IsNull(.Parameters(0).value), vbNullString, .Parameters(0).value)
               End With
               Set cmdChildView = Nothing
       
@@ -1563,10 +1573,10 @@ Private Function ApplyPermissions_ChildTables2() As Boolean
                       
                       Do While Not rsColumns.EOF
                       
-                        sColumnName = rsColumns.Fields(0).Value
-                        sOriginalColumnName = Trim(UCase(IIf(IsNull(rsColumns.Fields(1).Value), "", rsColumns.Fields(1).Value)))
+                        sColumnName = rsColumns.Fields(0).value
+                        sOriginalColumnName = Trim(UCase(IIf(IsNull(rsColumns.Fields(1).value), "", rsColumns.Fields(1).value)))
                       
-                        If rsColumns.Fields(2).Value Then ' Is New
+                        If rsColumns.Fields(2).value Then ' Is New
   
                           ' Build string of columns that are allowed
                           If .SelectPrivilege = giPRIVILEGES_SOMEGRANTED Then
@@ -1635,7 +1645,7 @@ Private Function ApplyPermissions_ChildTables2() As Boolean
                       Set rsColumns = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
 
                       Do While Not rsColumns.EOF
-                        sColumnName = rsColumns.Fields(0).Value
+                        sColumnName = rsColumns.Fields(0).value
                         sUpdateGrant = sUpdateGrant & IIf(LenB(sUpdateGrant) <> 0, ",", vbNullString) & sColumnName
 
                         rsColumns.MoveNext
@@ -1735,7 +1745,7 @@ Private Function ApplyPermissions_ChildTables2() As Boolean
 
   With rsInfo3
     Do While (Not .EOF)
-      sSQL = "DROP VIEW " & .Fields(0).Value
+      sSQL = "DROP VIEW " & .Fields(0).value
       gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
 
       .MoveNext
@@ -1805,7 +1815,7 @@ Private Function LongestRouteToTopLevel(plngTableID As Long) As Integer
   Set rsParents = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
   With rsParents
     Do While (Not .EOF)
-      iParentsLongestRoute = LongestRouteToTopLevel(.Fields(0).Value)
+      iParentsLongestRoute = LongestRouteToTopLevel(.Fields(0).value)
       
       If (iParentsLongestRoute + 1) > iLongestRoute Then
         iLongestRoute = (iParentsLongestRoute + 1)
@@ -1892,20 +1902,20 @@ Public Function ApplyDatabaseOwnership() As Boolean
   
   Do While Not rsTemp1.EOF
 
-    strXType = UCase$(Trim$(rsTemp1.Fields(1).Value))
+    strXType = UCase$(Trim$(rsTemp1.Fields(1).value))
     lngNextIndex = lngNextIndex + 1
     If lngNextIndex > UBound(astrCommands) Then ReDim Preserve astrCommands(lngNextIndex + 1000)
 
     If strXType = "P" Or strXType = "PC" Or strXType = "FN" Or strXType = "FS" Then
-      astrCommands(lngNextIndex) = "GRANT EXEC ON [" & rsTemp1(0).Value & "] TO [ASRSysGroup]"
+      astrCommands(lngNextIndex) = "GRANT EXEC ON [" & rsTemp1(0).value & "] TO [ASRSysGroup]"
     Else
       If strXType = "TF" Or strXType = "IF" Then
-        astrCommands(lngNextIndex) = "GRANT SELECT ON [" & rsTemp1(0).Value & "] TO [ASRSysGroup]"
+        astrCommands(lngNextIndex) = "GRANT SELECT ON [" & rsTemp1(0).value & "] TO [ASRSysGroup]"
       Else
-        If InStr(1, Join(astrRevokedTables, ","), rsTemp1(0).Value) Then
-          astrCommands(lngNextIndex) = "REVOKE SELECT,INSERT,UPDATE,DELETE ON [" & rsTemp1(0).Value & "] TO [ASRSysGroup]"
+        If InStr(1, Join(astrRevokedTables, ","), rsTemp1(0).value) Then
+          astrCommands(lngNextIndex) = "REVOKE SELECT,INSERT,UPDATE,DELETE ON [" & rsTemp1(0).value & "] TO [ASRSysGroup]"
         Else
-          astrCommands(lngNextIndex) = "GRANT SELECT,INSERT,UPDATE,DELETE ON [" & rsTemp1(0).Value & "] TO [ASRSysGroup]"
+          astrCommands(lngNextIndex) = "GRANT SELECT,INSERT,UPDATE,DELETE ON [" & rsTemp1(0).value & "] TO [ASRSysGroup]"
         End If
       End If
     End If
