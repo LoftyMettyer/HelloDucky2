@@ -4652,49 +4652,15 @@ End Sub
 
 Public Function GetSelectedIDs() As String
 
-  Dim arrayBookmarks() As Variant
-  Dim nTotalSelRows As Variant
+  Dim strSelectedRecords As String
   Dim intCount As Integer
   Dim objTemp As Variant
   
-  'Workout how many records have been selected
-  nTotalSelRows = ssOleDBGridFindColumns.SelBookmarks.Count
   
-  'Redimension the arrays to the count of the bookmarks
-  ReDim arrayBookmarks(nTotalSelRows)
-
-  'Populate the array with bookmark indeces
-  'These will have their bookmarks stored in .SelBookmarks.item(iIndex)
-  Dim strSelectedRecords As String
-  
-  'Redimension the arrays to the count of the bookmarks
-  ReDim arrayBookmarks(nTotalSelRows)
-  'ReDim arrayDelRecordIDs(nTotalSelRows)
-
-  'Populate the array with bookmark indeces
-  'These will have their bookmarks stored in .SelBookmarks.item(iIndex)
-  
-  ssOleDBGridFindColumns.Redraw = False
-  
-'''  For intCount = 1 To nTotalSelRows
-'''    arrayBookmarks(intCount) = ssOleDBGridFindColumns.SelBookmarks.Item(intCount - 1)
-'''  Next intCount
-'''
-'''  'Now need to populate an array with all the IDs that we are going to delete
-'''  strSelectedRecords = vbNullString
-'''  For intCount = 1 To nTotalSelRows
-'''    ssOleDBGridFindColumns.Bookmark = arrayBookmarks(intCount)
-'''    CurrentBookMark = ssOleDBGridFindColumns.Bookmark
-'''    strSelectedRecords = strSelectedRecords & _
-'''        IIf(strSelectedRecords <> vbNullString, ",", "") & _
-'''        SelectedRecordID
-'''
-'''  Next intCount
-
-
   strSelectedRecords = vbNullString
   With ssOleDBGridFindColumns
     objTemp = .Bookmark
+    .Redraw = False
     For intCount = 0 To .SelBookmarks.Count - 1
       'strSelectedRecords = strSelectedRecords & _
           IIf(strSelectedRecords <> vbNullString, ",", "") & _
@@ -4705,9 +4671,8 @@ Public Function GetSelectedIDs() As String
           .Columns("ID").Text
     Next
     .Bookmark = objTemp
+    .Redraw = True
   End With
-  
-  ssOleDBGridFindColumns.Redraw = True
   
   GetSelectedIDs = strSelectedRecords
 
