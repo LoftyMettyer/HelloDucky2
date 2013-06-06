@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "08:52"
+            TextSave        =   "09:24"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -3699,7 +3699,7 @@ Public Sub RunUtility(ByRef UtilType As UtilityType, ByRef UtilityID As Long)
       With frmSelection
       
         ' If browsing goto last known selected item
-        If UtilityID = 0 Then
+        If UtilityID = 0 And gbRememberDefSelID Then
           .SelectedID = GetUserSetting("defsel_" & UtilType, "SelectedID", 0)
           glngCurrentCategoryID = GetUserSetting("defsel_" & UtilType, "CategoryID", 0)
         Else

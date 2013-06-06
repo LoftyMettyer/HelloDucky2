@@ -727,6 +727,7 @@ Private Sub CheckRegistrySettings()
   ' Load the default settings for DefSel
   gbCloseDefSelAfterRun = CBool(GetUserSetting("DefSel", "CloseAfterRun", False))
   gbRecentDisplayDefSel = CBool(GetUserSetting("DefSel", "RecentDisplayDefSel", False))
+  gbRememberDefSelID = CBool(GetUserSetting("DefSel", "RememberLastID", True))
    
   Exit Sub
   

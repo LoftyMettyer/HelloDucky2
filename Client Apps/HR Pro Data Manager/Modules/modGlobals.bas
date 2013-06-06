@@ -110,6 +110,7 @@ Public gbReadToolbarDefaults As Boolean
 Public gbCloseDefSelAfterRun As Boolean
 Public gbRecentDisplayDefSel As Boolean
 Public glngCurrentCategoryID As Long
+Public gbRememberDefSelID As Boolean
 
 Public giWeekdayStart As VbDayOfWeek
 
