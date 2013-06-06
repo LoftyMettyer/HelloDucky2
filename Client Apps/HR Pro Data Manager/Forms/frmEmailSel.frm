@@ -237,204 +237,9 @@ Public Sub Initialise(lngTableID As Long, lngRecordID As Long, strRecordDetails 
   chkIncRecDesc.Value = IIf(CBool(GetUserSetting("Email", "IncludeRecDesc", True)), vbChecked, vbUnchecked)
   
   'Refresh the buttons
-  RefreshButtons
+  'RefreshButtons
 
 End Sub
-
-Private Function GetTableDetails() As Long
-  
-  Dim rsTemp As Recordset
-  Dim strSQL As String
-  
-  strSQL = "SELECT DefaultEmailID " & _
-           " FROM ASRSysTables " & _
-           " WHERE tableID = " & CStr(mlngTableID)
-  Set rsTemp = mdatData.OpenRecordset(strSQL, adOpenForwardOnly, adLockReadOnly)
-
-  mlngDefaultEmailID = 0
-  If Not rsTemp.BOF And Not rsTemp.EOF Then
-    mlngDefaultEmailID = rsTemp!DefaultEmailID
-  End If
-
-  rsTemp.Close
-  Set rsTemp = Nothing
-
-End Function
-
-Private Sub cmdCancel_Click()
-  Unload Me
-End Sub
-
-Function MAPISignon() As Integer
-  'Begin a MAPI session
-  Screen.MousePointer = 11
-  On Error Resume Next
-  MAPISignon = True
-  If MAPISession1.SessionID = 0 Then
-    'No session currently exists
-    MAPISession1.DownLoadMail = False
-    MAPISession1.SignOn
-    If Err > 0 Then
-      If Err <> 32001 And Err <> 32003 Then
-        'MH20020820 Fault 4317
-        'MsgBox Error$, 48, "Mail Error"
-        MsgBox "Email not configured correctly." & vbCrLf & _
-               IIf(Err.Description <> vbNullString, "(" & Trim(Err.Description) & ")", ""), _
-               vbExclamation, "Mail Error"
-      End If
-      MAPISignon = False
-    Else
-      MAPIMessages1.SessionID = MAPISession1.SessionID
-    End If
-  End If
-  Screen.MousePointer = 0
-End Function
-
-Function MAPIsignoff() As Integer
-  'End a MAPI session
-  Screen.MousePointer = 11
-  On Error Resume Next
-  MAPIsignoff = True
-  If MAPISession1.SessionID <> 0 Then
-    'Session currently exists
-    MAPISession1.SignOff
-    If Err > 0 Then
-      MsgBox Error$, 48, "Mail Error"
-      MAPIsignoff = False
-    Else
-      MAPIMessages1.SessionID = 0
-    End If
-  End If
-  Screen.MousePointer = 0
-End Function
-
-Private Sub cmdOK_Click()
-  
-  On Error GoTo ErrorTrap
-  gobjErrorStack.PushStack "frmEmailSel.cmdOK_Click()"
-
-  ' depending on type of email run a different compose message function
-  Select Case miSendType
-    Case giEMAILSEND_EVENTLOG
-      SendEventLog
-    Case giEMAILSEND_RECORDEDIT
-      SendRecord
-  End Select
-
-TidyUpAndExit:
-  gobjErrorStack.PopStack
-  Exit Sub
-ErrorTrap:
-  gobjErrorStack.HandleError
-  
-End Sub
-
-Public Function SendRecord() As Boolean
-
-  Dim intCol As Integer
-  Dim intRow As Integer
-  Dim intSendType As Integer
-  Dim lngEmailID As Long
-  Dim strEmailAddr As String
-  Dim blnToRecipient As Boolean
-  Dim fOK As Boolean
-
-  Dim strArray() As String
-  Dim lngIndex As Long
-
-  On Error GoTo LocalErr
-
-  Screen.MousePointer = vbHourglass
-  
-  blnToRecipient = False
-  fOK = True
-  
-  'Log onto Mail server if not already logged onto it
-  MAPISignon
-  If MAPISession1.SessionID <> 0 Then
-    With MAPIMessages1
-      .Compose
-
-      ssGrdRecipients.MoveFirst
-      For intRow = 1 To ssGrdRecipients.Rows
-        For intCol = 0 To 2
-          If ssGrdRecipients.Columns(intCol).Value <> 0 Then
-            
-            Select Case intCol
-              Case 0: intSendType = mapToList
-              Case 1: intSendType = mapCcList
-              Case 2: intSendType = mapBccList
-              Case Else: intSendType = 0
-            End Select
-
-            If intSendType <> 0 Then
-              lngEmailID = Val(ssGrdRecipients.Columns(4).Value)
-              strEmailAddr = GetEmailAddress(lngEmailID, mlngRecordID)
-
-              If Trim(strEmailAddr) <> vbNullString Then
-                
-                strArray = Split(Trim(strEmailAddr), ";")
-                
-                For lngIndex = LBound(strArray) To UBound(strArray)
-                  .RecipIndex = .RecipCount
-                  '.RecipDisplayName = ssGrdRecipients.Columns(3).Value
-                  .RecipAddress = Trim(strArray(lngIndex))
-                  .RecipType = intSendType
-                  .ResolveName
-                  If intSendType = mapToList Then
-                    blnToRecipient = True
-                  End If
-                Next
-              
-              Else
-                MsgBox "Unable to use Email address " & _
-                       "<" & ssGrdRecipients.Columns(3).Value & ">" & _
-                       " for this record as it is empty", vbExclamation
-                fOK = False
-              End If
-            End If
-
-            Exit For
-          End If
-        Next
-
-        ssGrdRecipients.MoveNext
-      Next
-
-      If fOK = False Then
-        Exit Function
-      End If
-
-      If .RecipCount = 0 Then
-        MsgBox "Please select recipient(s) to email", vbExclamation
-        Exit Function
-      ElseIf blnToRecipient = False Then
-        MsgBox "Please select a recipient from the TO column", vbExclamation
-        Exit Function
-      End If
-      
-      Me.Hide
-
-      If chkIncRecDesc Then
-        .MsgNoteText = mstrRecordDetails & vbCrLf & vbCrLf
-      End If
-
-      .Send True
-      Screen.MousePointer = vbDefault
-
-    End With
-
-  End If
-  MAPIsignoff
-  Unload Me
-
-LocalErr:
-  If Err > 0 Then
-    MsgBox "Error sending email (" & Err.Description & ")", vbExclamation + vbOKOnly, "Send Mail Message"
-  End If
-  Unload Me
-
-End Function
 
 Public Sub SetupEventLogSend(pstrEventIDs As String)
 
@@ -455,7 +260,7 @@ Public Sub SetupEventLogSend(pstrEventIDs As String)
   Dim strEmailGroup As String
           
   strEmailGroup = vbNullString
-  strEmailGroup = strEmailGroup & "SELECT [ASRSysEmailGroupName].[Name] AS 'Name'," & vbCrLf
+  strEmailGroup = strEmailGroup & "SELECT DELETEME, [ASRSysEmailGroupName].[Name] AS 'Name'," & vbCrLf
   strEmailGroup = strEmailGroup & "       '0' + char(9) +" & vbCrLf
   strEmailGroup = strEmailGroup & "       '0' + char(9) +" & vbCrLf
   strEmailGroup = strEmailGroup & "       '0' + char(9) +" & vbCrLf
@@ -501,7 +306,7 @@ Public Sub SetupEventLogSend(pstrEventIDs As String)
   chkIncRecDesc.Visible = False
 
   ' Refresh the buttons
-  RefreshButtons
+  'RefreshButtons
 
 TidyUpAndExit:
   Set rsEmailGroup = Nothing
@@ -510,231 +315,291 @@ TidyUpAndExit:
   
 ErrorTrap:
   gobjErrorStack.HandleError
-  GoTo TidyUpAndExit
+  Resume TidyUpAndExit
   
 End Sub
 
-Private Function SendEventLog()
 
-  ' Sends event log entry(ies)
-  On Error GoTo ErrorTrap
-  gobjErrorStack.PushStack "frmEmailSel.SendEventLog()"
+Private Function GetTableDetails() As Long
+  
+  Dim rsTemp As Recordset
+  Dim strSQL As String
+  
+  strSQL = "SELECT DefaultEmailID " & _
+           " FROM ASRSysTables " & _
+           " WHERE tableID = " & CStr(mlngTableID)
+  Set rsTemp = mdatData.OpenRecordset(strSQL, adOpenForwardOnly, adLockReadOnly)
 
-  Dim blnToRecipient As Boolean
-  Dim fOK As Boolean
-  Dim intRow As Integer
-  Dim intCol As Integer
-  Dim intSendType As Integer
-  Dim colRecipients As clsEmailRecipients
-  Dim objRecipient As clsEmailRecipient
-  Dim strEventDetails As String
-  
-  Dim strArray() As String
-  Dim lngIndex As Long
-  
-  Dim pvarbookmark As Variant
-  
-  Screen.MousePointer = vbHourglass
-  
-  blnToRecipient = False
-  fOK = True
-  
-  strEventDetails = GetEventDetails(mstrEventLogIDs)
-  If Trim(strEventDetails) = vbNullString Then
-    MsgBox "The selected Event Log record(s) have been deleted by another User.", vbOKOnly + vbExclamation, "Event Log"
-    GoTo TidyUpAndExit
+  mlngDefaultEmailID = 0
+  If Not rsTemp.BOF And Not rsTemp.EOF Then
+    mlngDefaultEmailID = rsTemp!DefaultEmailID
   End If
 
-  'Log onto Mail server if not already logged onto it
-  MAPISignon
-  If MAPISession1.SessionID <> 0 Then
-    With MAPIMessages1
-      .Compose
-      
-      ssGrdRecipients.Redraw = False
-      ssGrdRecipients.Refresh
-      ssGrdRecipients.MoveFirst
-      
-      For intRow = 0 To ssGrdRecipients.Rows - 1 Step 1
-        
-        For intCol = 0 To 2
-          If ssGrdRecipients.Columns(intCol).Value <> 0 Then
-          
-            Select Case intCol
-              Case 0: intSendType = mapToList
-              Case 1: intSendType = mapCcList
-              Case 2: intSendType = mapBccList
-              Case Else: intSendType = 0
-            End Select
-
-            If intSendType <> 0 Then
-           
-              If (ssGrdRecipients.Columns(5).Value = 1) Then
-                              
-                Set colRecipients = New clsEmailRecipients
-                colRecipients.Populate_Collection CStr(ssGrdRecipients.Columns(4).Value)
-                
-                For Each objRecipient In colRecipients.Collection
-                  If (Trim(objRecipient.FixedEmail) <> vbNullString) Then
-
-                    strArray = Split(Trim(objRecipient.FixedEmail), ";")
-
-                    For lngIndex = LBound(strArray) To UBound(strArray)
-                      .RecipIndex = .RecipCount
-                      .RecipAddress = Trim(strArray(lngIndex))
-                      .RecipType = intSendType
-                      .ResolveName
-                      If intSendType = mapToList Then
-                        blnToRecipient = True
-                      End If
-                    Next
-
-                  End If
-                Next objRecipient
-                
-              Else
-              
-                If (Trim(ssGrdRecipients.Columns(4).Value) <> vbNullString) Then
-                  .RecipIndex = .RecipCount
-                  .RecipAddress = Trim(ssGrdRecipients.Columns(4).Value)
-                  .RecipType = intSendType
-                  .ResolveName
-                  If intSendType = mapToList Then
-                    blnToRecipient = True
-                  End If
-                End If
-              End If
-              
-            End If
-
-            Exit For
-          End If
-        Next intCol
-        
-        ssGrdRecipients.MoveNext
-      Next intRow
-      
-      ssGrdRecipients.Redraw = True
-      
-      .MsgSubject = GetSystemSetting("Licence", "Customer Name", "<<Unknown Customer>>") & " - HR Pro Event Log"
-      
-      ' Send the message
-      .MsgNoteText = GetEventDetails(mstrEventLogIDs)
-      
-      On Error Resume Next
-      .Send True
-      On Error GoTo ErrorTrap
-      
-    End With
-  End If
-  MAPIsignoff
-  
-  SendEventLog = True
-
-TidyUpAndExit:
-  Screen.MousePointer = vbDefault
-  ssGrdRecipients.Redraw = True
-  Set colRecipients = Nothing
-  Set objRecipient = Nothing
-  gobjErrorStack.PopStack
-  Exit Function
-
-ErrorTrap:
-  SendEventLog = False
-  ssGrdRecipients.Redraw = True
-  MsgBox "Error sending email (" & Err.Description & ")", vbExclamation + vbOKOnly, "Send Mail Message"
-  GoTo TidyUpAndExit
+  rsTemp.Close
+  Set rsTemp = Nothing
 
 End Function
 
-'Public Function SendBatchNotification(strEmailSubject As String, strEventIDs As String, lngEmailGroupID As Long) As Boolean
-'
-'  Dim rsEmail As Recordset
-'  Dim strSQL As String
-'
-'  Dim strAddress() As String
-'  Dim lngCount As Long
-'
-'  On Error GoTo LocalErr
-'
-'  Screen.MousePointer = vbHourglass
-'
-'  frmEmailSel.MAPISignon
-'  If frmEmailSel.MAPISession1.SessionID <> 0 Then
-'    With frmEmailSel.MAPIMessages1
-'      strSQL = "SELECT ASRSysEmailGroupItems.*," & _
-'               " ASRSysEmailAddress.Name as 'AddrName', ASRSysEmailAddress.Fixed as 'AddrFixed'" & _
-'               " FROM ASRSysEmailGroupItems" & _
-'               " JOIN ASRSysEmailAddress ON ASRSysEmailGroupItems.EmailDefID = ASRSysEmailAddress.EmailID" & _
-'               " WHERE EmailGroupID = " & CStr(lngEmailGroupID) & _
-'               " ORDER BY AddrName"
-'      Set rsEmail = datGeneral.GetReadOnlyRecords(strSQL)
-'
-'      If rsEmail.BOF And rsEmail.EOF Then
-'        If Not gblnBatchJobsOnly Then
-'          MsgBox "Error retrieving email recipient(s)", vbExclamation, "Batch Job Notification"
-'        End If
-'        SendBatchNotification = False
-'        Exit Function
-'      End If
-'
-'      .Compose
-'
-'      Do While Not rsEmail.EOF
-'        strAddress = Split(rsEmail!AddrFixed, ";")
-'
-'        For lngCount = 0 To UBound(strAddress)
-'          If Trim(strAddress(lngCount)) <> vbNullString Then
-'            .RecipIndex = .RecipCount
-'            .RecipAddress = Trim(strAddress(lngCount))
-'            .RecipType = mapToList
-'            .ResolveName
-'          End If
-'        Next
-'
-'        rsEmail.MoveNext
-'      Loop
-'
-'      rsEmail.Close
-'      Set rsEmail = Nothing
-'
-'      .MsgSubject = strEmailSubject
-'      .MsgNoteText = GetEventDetails(strEventIDs)
-'      .Send False
-'    End With
-'  End If
-'  frmEmailSel.MAPIsignoff
-'
-'  Set frmEmailSel = Nothing
-'  SendBatchNotification = True
-'
-'Exit Function
-'
-'LocalErr:
-'  If Not gblnBatchJobsOnly Then
-'    If gobjProgress.Visible Then
-'      gobjProgress.Visible = False
-'    End If
-'    MsgBox "Error sending email" & _
-'      IIf(Err.Description <> vbNullString, " (" & Err.Description & ")", vbNullString), vbExclamation, "Batch Job Notification"
-'  End If
+Private Sub cmdCancel_Click()
+  Unload Me
+End Sub
+
+'Function MAPISignon() As Integer
+'  'Begin a MAPI session
+'  Screen.MousePointer = 11
 '  On Error Resume Next
-'  frmEmailSel.MAPIsignoff
-'  Set frmEmailSel = Nothing
-'  SendBatchNotification = False
+'  MAPISignon = True
+'  If MAPISession1.SessionID = 0 Then
+'    'No session currently exists
+'    MAPISession1.DownLoadMail = False
+'    MAPISession1.SignOn
+'    If Err > 0 Then
+'      If Err <> 32001 And Err <> 32003 Then
+'        'MH20020820 Fault 4317
+'        'MsgBox Error$, 48, "Mail Error"
+'        MsgBox "Email not configured correctly." & vbCrLf & _
+'               IIf(Err.Description <> vbNullString, "(" & Trim(Err.Description) & ")", ""), _
+'               vbExclamation, "Mail Error"
+'      End If
+'      MAPISignon = False
+'    Else
+'      MAPIMessages1.SessionID = MAPISession1.SessionID
+'    End If
+'  End If
+'  Screen.MousePointer = 0
+'End Function
 '
+'Function MAPIsignoff() As Integer
+'  'End a MAPI session
+'  Screen.MousePointer = 11
+'  On Error Resume Next
+'  MAPIsignoff = True
+'  If MAPISession1.SessionID <> 0 Then
+'    'Session currently exists
+'    MAPISession1.SignOff
+'    If Err > 0 Then
+'      MsgBox Error$, 48, "Mail Error"
+'      MAPIsignoff = False
+'    Else
+'      MAPIMessages1.SessionID = 0
+'    End If
+'  End If
+'  Screen.MousePointer = 0
 'End Function
 
+Private Sub cmdOK_Click()
+  
+  On Error GoTo ErrorTrap
+  gobjErrorStack.PushStack "frmEmailSel.cmdOK_Click()"
 
-Public Function SendBatchNotification(strEmailSubject As String, strEventIDs As String, lngEmailGroupID As Long) As Boolean
+  ' depending on type of email run a different compose message function
+  Select Case miSendType
+    Case giEMAILSEND_EVENTLOG
+      SendEventLog
+    Case giEMAILSEND_RECORDEDIT
+      SendRecord
+  End Select
 
+TidyUpAndExit:
+  gobjErrorStack.PopStack
+  Exit Sub
+ErrorTrap:
+  gobjErrorStack.HandleError
+  
+End Sub
+
+
+Private Function SendRecord() As Boolean
+
+  Dim objOutputEmail As clsOutputEMail
+  
+  Dim strTo As String
+  Dim strCC As String
+  Dim strBCC As String
+  Dim strSubject As String
+  Dim strMsgText As String
+  Dim strAttachment As String
+  Dim blnPause As Boolean
+  Dim strError As String
+  
+  Dim intCol As Integer
+  Dim intRow As Integer
+  Dim lngEmailID As Long
+  Dim strEmailAddr As String
+  
+  On Error GoTo LocalErr
+
+  Screen.MousePointer = vbHourglass
+  
+  strTo = vbNullString
+  strCC = vbNullString
+  strBCC = vbNullString
+  
+  ssGrdRecipients.Redraw = False
+  ssGrdRecipients.Refresh
+  
+  ssGrdRecipients.MoveFirst
+  For intRow = 1 To ssGrdRecipients.Rows
+    For intCol = 0 To 2
+      If ssGrdRecipients.Columns(intCol).Value <> 0 Then
+
+        lngEmailID = Val(ssGrdRecipients.Columns(4).Value)
+        strEmailAddr = GetEmailAddress(lngEmailID, mlngRecordID)
+
+        If Trim(strEmailAddr) <> vbNullString Then
+          Select Case intCol
+            Case 0: strTo = strTo & IIf(strTo <> "", ";", "") & strEmailAddr
+            Case 1: strCC = strCC & IIf(strCC <> "", ";", "") & strEmailAddr
+            Case 2: strBCC = strBCC & IIf(strBCC <> "", ";", "") & strEmailAddr
+          End Select
+        Else
+          strError = "Unable to use Email address <" & ssGrdRecipients.Columns(3).Value & "> for this record as it is empty"
+          Exit For
+        End If
+
+      End If
+    Next
+
+    ssGrdRecipients.MoveNext
+  Next
+
+  If strError = vbNullString Then
+    strMsgText = IIf(chkIncRecDesc.Value = vbChecked, mstrRecordDetails & vbCrLf & vbCrLf, "")
+    
+    Set objOutputEmail = New clsOutputEMail
+    strError = objOutputEmail.SendEmailFromClient(strTo, strCC, strBCC, strSubject, strMsgText, strAttachment, True)
+    Set objOutputEmail = Nothing
+  End If
+  
+TidyAndExit:
+  Screen.MousePointer = vbDefault
+  
+  If strError <> vbNullString Then
+    ssGrdRecipients.Redraw = True
+    MsgBox strError, vbExclamation + vbOKOnly, "Send Mail Message"
+  Else
+    Unload Me
+  End If
+
+Exit Function
+
+LocalErr:
+  strError = "Error sending email (" & Err.Description & ")"
+  Resume TidyAndExit
+
+End Function
+
+Private Function SendEventLog() As Boolean
+
+  Dim objOutputEmail As clsOutputEMail
+  Dim colRecipients As clsEmailRecipients
+  Dim objRecipient As clsEmailRecipient
+
+  Dim strTo As String
+  Dim strCC As String
+  Dim strBCC As String
+  Dim strSubject As String
+  Dim strMsgText As String
+  Dim strAttachment As String
+  Dim blnPause As Boolean
+  Dim strError As String
+  
+  Dim intCol As Integer
+  Dim intRow As Integer
+  Dim lngEmailID As Long
+  Dim strEmailAddr As String
+  
+  On Error GoTo LocalErr
+
+  Screen.MousePointer = vbHourglass
+  
+  strTo = vbNullString
+  strCC = vbNullString
+  strBCC = vbNullString
+  
+  ssGrdRecipients.Redraw = False
+  ssGrdRecipients.Refresh
+  
+  ssGrdRecipients.MoveFirst
+  For intRow = 1 To ssGrdRecipients.Rows
+    For intCol = 0 To 2
+      If ssGrdRecipients.Columns(intCol).Value <> 0 Then
+
+        If (ssGrdRecipients.Columns(5).Value = 1) Then
+          Set colRecipients = New clsEmailRecipients
+          colRecipients.Populate_Collection CStr(ssGrdRecipients.Columns(4).Value)
+
+          strEmailAddr = vbNullString
+          For Each objRecipient In colRecipients.Collection
+            strEmailAddr = strEmailAddr & IIf(strEmailAddr <> "", ";", "") & Trim(objRecipient.FixedEmail)
+          Next objRecipient
+
+          Set objRecipient = Nothing
+          Set colRecipients = Nothing
+
+        ElseIf (Trim(ssGrdRecipients.Columns(4).Value) <> vbNullString) Then
+          strEmailAddr = ssGrdRecipients.Columns(4).Value
+        
+        End If
+        
+      End If
+        
+      If Trim(strEmailAddr) <> vbNullString Then
+        Select Case intCol
+          Case 0: strTo = strTo & IIf(strTo <> "", ";", "") & strEmailAddr
+          Case 1: strCC = strCC & IIf(strCC <> "", ";", "") & strEmailAddr
+          Case 2: strBCC = strBCC & IIf(strBCC <> "", ";", "") & strEmailAddr
+        End Select
+      End If
+
+    Next
+
+    ssGrdRecipients.MoveNext
+  Next
+
+  If strError = vbNullString Then
+
+    strSubject = GetSystemSetting("Licence", "Customer Name", "<<Unknown Customer>>") & " - HR Pro Event Log"
+    strMsgText = GetEventDetails(mstrEventLogIDs)
+    If Trim(strMsgText) = vbNullString Then
+      MsgBox "The selected Event Log record(s) have been deleted by another User.", vbOKOnly + vbExclamation, "Event Log"
+      GoTo TidyAndExit
+    End If
+
+    Set objOutputEmail = New clsOutputEMail
+    strError = objOutputEmail.SendEmailFromClient(strTo, strCC, strBCC, strSubject, strMsgText, strAttachment, blnPause)
+    Set objOutputEmail = Nothing
+  End If
+
+TidyAndExit:
+  Screen.MousePointer = vbDefault
+  
+  If strError <> vbNullString Then
+    ssGrdRecipients.Redraw = True
+    MsgBox strError, vbExclamation + vbOKOnly, "Send Mail Message"
+  Else
+    Unload Me
+  End If
+
+Exit Function
+
+LocalErr:
+  strError = "Error sending email (" & Err.Description & ")"
+  Resume TidyAndExit
+
+End Function
+
+
+Public Function SendBatchNotification(strSubject As String, strEventIDs As String, lngEmailGroupID As Long) As Boolean
+
+  Dim objOutputEmail As clsOutputEMail
   Dim rsEmail As Recordset
   Dim strSQL As String
   
   Dim strTo As String
-  'Dim strErrors As String
+  Dim strMsgText As String
+  
   Dim lngCount As Long
-
   Dim adoCmd As ADODB.Command
   Dim strErrors As String
   
@@ -767,34 +632,12 @@ Public Function SendBatchNotification(strEmailSubject As String, strEventIDs As 
 
   rsEmail.Close
   Set rsEmail = Nothing
-  
-  
-  gADOCon.Errors.Clear
-  Set adoCmd = New ADODB.Command
-  adoCmd.ActiveConnection = gADOCon
-  
-  
-  gADOCon.Errors.Clear
-  'adoCmd.CommandText = "exec master..xp_sendmail " & _
-                       "@recipients='" & strTo & "', " & _
-                       "@subject='" & Replace(strEmailSubject, "'", "''") & "', " & _
-                       "@message='" & Left(Replace(GetEventDetails(strEventIDs), "'", "''"), 7000) & "'"
-  adoCmd.CommandText = "exec spASRSendMail 0, " & _
-                       "'" & Replace(strTo, "'", "''") & "', '', '', " & _
-                       "'" & Replace(strEmailSubject, "'", "''") & "', " & _
-                       "'" & Left(Replace(GetEventDetails(strEventIDs), "'", "''"), 7000) & "', ''"
-  adoCmd.Execute
-  
-'    strErrors = vbNullString
-'    For lngCount = 0 To gADOCon.Errors.Count - 1
-'      If Trim(gADOCon.Errors(lngCount).Description) <> vbNullString Then
-'
-'        If UCase(gADOCon.Errors(lngCount).Description) <> "MAIL SENT." Then
-'          strErrors = strErrors & gADOCon.Errors(lngCount).Description & vbCrLf
-'        End If
-'
-'      End If
-'    Next
+
+
+  strMsgText = GetEventDetails(strEventIDs)
+  Set objOutputEmail = New clsOutputEMail
+  objOutputEmail.SendEmailFromServer strTo, "", "", strSubject, strMsgText, ""
+  Set objOutputEmail = Nothing
 
 
   SendBatchNotification = True
@@ -810,8 +653,8 @@ LocalErr:
       IIf(Err.Description <> vbNullString, " (" & Err.Description & ")", vbNullString), vbExclamation, "Batch Job Notification"
   End If
   On Error Resume Next
-  frmEmailSel.MAPIsignoff
-  Set frmEmailSel = Nothing
+  'frmEmailSel.MAPIsignoff
+  'Set frmEmailSel = Nothing
   SendBatchNotification = False
 
 End Function
@@ -977,9 +820,6 @@ Private Function GetEventDetails(pstrEventIDs As String) As String
       strMessage = strMessage & "Details: " & vbCrLf & vbCrLf
       strMessage = strMessage & NO_DETAILS & vbCrLf
     
-    Else
-          
-          
     End If
   
   End If
@@ -996,53 +836,22 @@ ErrorTrap:
   
 End Function
 
-Public Function SendEmail(strRecipient As String, strSubject As String, strMessage As String, blnErrorMessage As Boolean, Optional blnPause As Boolean = False) As Boolean
 
-  Dim intCol As Integer
-  Dim intRow As Integer
-  Dim intSendType As Integer
-  Dim lngEmailID As Long
-  Dim strEmailAddr As String
-  Dim blnToRecipient As Boolean
-  Dim fOK As Boolean
-
-  On Error GoTo LocalErr
-
-  Screen.MousePointer = vbHourglass
-
-  blnToRecipient = False
-  fOK = True
-
-  'Log onto Mail server if not already logged onto it
-  MAPISignon
-  If MAPISession1.SessionID <> 0 Then
-    With MAPIMessages1
-      .Compose
-      .RecipIndex = .RecipCount
-      .RecipAddress = strRecipient
-      .RecipType = mapToList
-      .ResolveName
-      .MsgSubject = strSubject
-      .MsgNoteText = strMessage
-      .Send blnPause
-    End With
-  End If
-  MAPIsignoff
-  SendEmail = True
-
-TidyUpAndExit:
-  Exit Function
-
-LocalErr:
-  If Err.Number > 0 And blnErrorMessage Then
-    MsgBox "Error sending email (" & Err.Description & ")", vbExclamation + vbOKOnly, "Send Mail Message"
-  End If
+Public Function SendEmail(strTo As String, strSubject As String, strMsgText As String, blnErrorMessage As Boolean, Optional blnPause As Boolean = False) As Boolean
   
-  Unload Me
-  SendEmail = False
-  GoTo TidyUpAndExit
+  Dim objOutputEmail As clsOutputEMail
+  Dim strError As String
+  
+  Set objOutputEmail = New clsOutputEMail
+  strError = objOutputEmail.SendEmailFromClient(strTo, "", "", strSubject, strMsgText, "", blnPause)
+  Set objOutputEmail = Nothing
+  
+  If strError <> "" And blnErrorMessage Then
+    MsgBox "Error sending email (" & strError & ")", vbExclamation + vbOKOnly, "Send Mail Message"
+  End If
 
 End Function
+
 
 Private Sub Form_Activate()
     Select Case miSendType
@@ -1055,54 +864,27 @@ Private Sub Form_Activate()
     End Select
 End Sub
 
+
 Private Sub Form_Resize()
   'JPD 20030908 Fault 5756
   DisplayApplication
 End Sub
 
 
-Private Sub ssGrdRecipients_Click()
-
-  RefreshButtons
-
-End Sub
-
-Private Sub RefreshButtons()
-  ' Refresh the buttons
-
-End Sub
-
-Public Function ResendEmailQueueEntry(strTo As String, strcc As String, strBCC As String, strSubject As String, strAttachment As String, strMsgText As String) As Boolean
-
-  Dim adoCmd As ADODB.Command
-  
-  On Error GoTo LocalErr
-
-  Set adoCmd = New ADODB.Command
-  adoCmd.ActiveConnection = gADOCon
-  
-  gADOCon.Errors.Clear
-  adoCmd.CommandText = "exec spASRSendMail 0, " & _
-                       "'" & Replace(strTo, "'", "''") & "', " & _
-                       "'" & Replace(strcc, "'", "''") & "', " & _
-                       "'" & Replace(strBCC, "'", "''") & "', " & _
-                       "'" & Replace(strSubject, "'", "''") & "', " & _
-                       "'" & Left(Replace(strMsgText, "'", "''"), 7000) & "', " & _
-                       "'" & Replace(strAttachment, "'", "''") & "'"
-  adoCmd.Execute
-  
-  MsgBox "Message resent.", vbInformation, "Email Queue"
-  ResendEmailQueueEntry = True
-
-Exit Function
-
-LocalErr:
-  MsgBox "Error sending email" & _
-    IIf(Err.Description <> vbNullString, " (" & Err.Description & ")", vbNullString), vbExclamation, "Email Queue"
-  On Error Resume Next
-  ResendEmailQueueEntry = False
-
-End Function
-
-
-
+'Public Function ResendEmailQueueEntry(strTo As String, strCC As String, strBCC As String, strSubject As String, strMsgText As String, strAttachment As String) As Boolean
+'
+'  Dim strError As String
+'
+'  strError = SendEmailFromServer(strTo, strCC, strBCC, strSubject, strMsgText, strAttachment)
+'
+'  If strError = vbNullString Then
+'    MsgBox "Message resent.", vbInformation, "Email Queue"
+'    ResendEmailQueueEntry = True
+'  Else
+'    MsgBox "Error sending email" & _
+'      IIf(Err.Description <> vbNullString, " (" & Err.Description & ")", vbNullString), vbExclamation, "Email Queue"
+'    ResendEmailQueueEntry = False
+'  End If
+'
+'End Function
+'

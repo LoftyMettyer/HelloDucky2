@@ -857,18 +857,31 @@ Private Sub GetWorkBook(strWorkbook As String, strWorksheet As String)
   Dim lngCount As Long
   Dim lngOriginalFormat As Long
 
-  If mblnApplyStyles Then
-    If mstrXLTemplate <> "" And Dir(mstrXLTemplate) <> "" Then
+  If mblnApplyStyles And mstrXLTemplate <> "" And Dir(mstrXLTemplate) <> "" Then
     
-      If Not IsFileCompatibleWithExcelVersion(mstrXLTemplate) Then
-        mstrErrorMessage = "Your User Configuration Output Options are set to use a template file which is not compatible with your version of Microsoft Office."
-        Exit Sub
-      End If
-
-      Set mxlTemplateBook = mxlApp.Workbooks.Open(mstrXLTemplate, ReadOnly:=True)
-      Set mxlTemplateSheet = mxlTemplateBook.ActiveSheet
+    If Not IsFileCompatibleWithExcelVersion(mstrXLTemplate) Then
+      mstrErrorMessage = "Your User Configuration Output Options are set to use a template file which is not compatible with your version of Microsoft Office."
+      Exit Sub
     End If
+
+    Set mxlTemplateBook = mxlApp.Workbooks.Open(mstrXLTemplate, ReadOnly:=True)
+    
+    
+    'Save a temp template in the format of the output...
+    If mstrFileName <> vbNullString Then
+      strFormat = GetOfficeSaveAsFormat(mstrFileName, GetOfficeExcelVersion)
+      If strFormat <> "" Then
+        strTempFile = mobjParent.GetTempFileName("")
+        mxlTemplateBook.SaveAs strTempFile, Val(strFormat)
+        mxlTemplateBook.Close
+        Set mxlTemplateBook = mxlApp.Workbooks.Open(strTempFile, ReadOnly:=True)
+      End If
+    End If
+    
+    Set mxlTemplateSheet = mxlTemplateBook.ActiveSheet
+  
   End If
+
 
   mstrSheetMode = strWorksheet
   Select Case strWorkbook
@@ -1590,6 +1603,7 @@ Public Sub Complete()
   Dim objWorksheet As Excel.Worksheet
   Dim strFormat As String
   Dim blnOffice2007 As Boolean
+  Dim strTempFile As String
 
   On Local Error GoTo LocalErr
   
@@ -1599,6 +1613,29 @@ Public Sub Complete()
   
   
   mxlFirstSheet.Activate
+
+
+  'EMAIL
+  If mblnEmail Then
+    mstrErrorMessage = "Error sending email"
+
+    strFormat = GetOfficeSaveAsFormat(mobjParent.EmailAttachAs, GetOfficeExcelVersion)
+    If strFormat = "" Then
+      mstrErrorMessage = "This definition is set to email an attachment in a file format which is not compatible with your version of Microsoft Office."
+      GoTo TidyAndExit
+    End If
+
+    strTempFile = mobjParent.GetTempFileName(mobjParent.EmailAttachAs)
+    mxlWorkBook.SaveAs strTempFile, Val(strFormat)
+    mxlWorkBook.Close
+    mobjParent.SendEmail strTempFile
+    Set mxlWorkBook = mxlApp.Workbooks.Open(strTempFile)
+
+    'If Dir(strTempFile) <> vbNullString Then
+    '  Kill strTempFile
+    'End If
+
+  End If
 
 
   'SAVE
@@ -1612,25 +1649,6 @@ Public Sub Complete()
     End If
     mxlWorkBook.SaveAs mstrFileName, Val(strFormat)
 
-  End If
-
-
-  'EMAIL
-  If mblnEmail Then
-    mstrErrorMessage = "Error sending email"
-    
-    If Not mblnSave Then
-      strFormat = GetOfficeSaveAsFormat(mobjParent.EmailAttachAs, GetOfficeExcelVersion)
-      If strFormat = "" Then
-        mstrErrorMessage = "This definition is set to email an attachment in a file format which is not compatible with your version of Microsoft Office."
-        GoTo TidyAndExit
-      End If
-      
-      mstrFileName = mobjParent.GetTempFileName(mstrFileName)
-      mxlWorkBook.SaveAs mstrFileName, Val(strFormat)
-    End If
-    
-    mobjParent.SendEmail mstrFileName
   End If
 
 

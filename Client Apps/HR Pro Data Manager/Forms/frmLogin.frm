@@ -883,7 +883,7 @@ Public Sub Login()
   Dim sMsg As String
   Dim sSQL As String
   Dim rsUser As Recordset
-  Dim strBatchEmail As String
+  'Dim strBatchEmail As String
   Dim strADOError As String
   Dim strUserName As String
   Dim iCount As Integer
@@ -1238,13 +1238,12 @@ LoginError:
       If LenB(sMsg) <> 0 Then
         
         If gblnBatchJobsOnly Then
-          strBatchEmail = GetPCSetting("BatchLogon", "Email", vbNullString)
-          If strBatchEmail <> vbNullString Then
-            frmEmailSel.SendEmail _
-              strBatchEmail, "HR Pro Batch Logon Failure", sMsg, False
-            Unload frmEmailSel
-            Set frmEmailSel = Nothing
-          End If
+            'frmEmailSel.SendEmail _
+            '  strBatchEmail, "HR Pro Batch Logon Failure", sMsg, False
+            'Unload frmEmailSel
+            'Set frmEmailSel = Nothing
+            SendBatchLogonFailure sMsg
+          'End If
         Else
           MsgBox sMsg, vbExclamation, Me.Caption
         End If
@@ -1422,3 +1421,16 @@ Private Sub txtUID_KeyPress(KeyAscii As Integer)
 End Sub
 
 
+Private Sub SendBatchLogonFailure(strMsgText As String)
+
+  Dim objOutputEmail As clsOutputEMail
+  Dim strTo As String
+
+  strTo = GetPCSetting("BatchLogon", "Email", vbNullString)
+  If strTo <> vbNullString Then
+    Set objOutputEmail = New clsOutputEMail
+    objOutputEmail.SendEmailFromClient strTo, "", "", "HR Pro Batch Logon Failure", strMsgText, "", False
+    Set objOutputEmail = Nothing
+  End If
+
+End Sub

@@ -313,10 +313,12 @@ End Sub
 
 Private Sub cmdEmail_Click()
 
-  Dim frmSendEmail As frmEmailSel
+  'Dim frmSendEmail As frmEmailSel
+  Dim objOutputEmail As clsOutputEMail
   Dim strMsgText As String
-
-
+  Dim strError As String
+  
+  
   If GetSystemSetting("email", "method", 1) = 0 Then
     MsgBox "Unable to resend this message as server side emails are currently disabled." & vbCrLf & _
            "Please contact your system administrator.", vbCritical, Me.Caption
@@ -332,9 +334,20 @@ Private Sub cmdEmail_Click()
     " at " & Format(Now, "hh:nn") & _
     " by " & gsUserName
 
-  Set frmSendEmail = New frmEmailSel
-  frmSendEmail.ResendEmailQueueEntry txtTO.Text, txtCC.Text, txtBCC.Text, txtSubject.Text, txtAttachment.Text, strMsgText
-  Set frmSendEmail = Nothing
+  'Set frmSendEmail = New frmEmailSel
+  'frmSendEmail.ResendEmailQueueEntry txtTO.Text, txtCC.Text, txtBCC.Text, txtSubject.Text, txtAttachment.Text, strMsgText
+  'Set frmSendEmail = Nothing
+
+  Set objOutputEmail = New clsOutputEMail
+  strError = objOutputEmail.SendEmailFromServer(txtTO.Text, txtCC.Text, txtBCC.Text, txtSubject.Text, strMsgText, txtAttachment.Text)
+  Set objOutputEmail = Nothing
+
+  If strError = vbNullString Then
+    MsgBox "Message resent.", vbInformation, "Email Queue"
+  Else
+    MsgBox "Error sending email" & _
+      IIf(Err.Description <> vbNullString, " (" & Err.Description & ")", vbNullString), vbExclamation, "Email Queue"
+  End If
 
 End Sub
 
