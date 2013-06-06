@@ -1,7 +1,7 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
 Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
 Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~2.OCX"
 Begin VB.MDIForm frmMain 
    AutoShowChildren=   0   'False
@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "15:31"
+            TextSave        =   "17:05"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -455,6 +455,10 @@ Private Sub abMain_BandOpen(ByVal Band As ActiveBarLibraryCtl.Band)
           
 End Sub
 
+
+Private Sub abMain_MenuItemEnter(ByVal Tool As ActiveBarLibraryCtl.Tool)
+  DoEvents
+End Sub
 
 Private Sub abMain_PreCustomizeMenu(ByVal Cancel As ActiveBarLibraryCtl.ReturnBool)
   ' Do not let the user modify the layout.
