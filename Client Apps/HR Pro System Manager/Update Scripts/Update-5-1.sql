@@ -719,10 +719,11 @@ PRINT 'Step - Menu & Category enhancements'
 	BEGIN
 		SET NOCOUNT ON;
 
-		SELECT TOP 10 o.[objectType], f.[objectid], o.[Name]
+		SELECT o.[objectType], f.[objectid], o.[Name]
 			FROM tbsys_userfavourites f
 			INNER JOIN ASRSysAllobjectNames o ON o.[objectType] = f.[objecttype] AND o.[ID] = f.objectid
 			WHERE [username] = SYSTEM_USER
+			ORDER BY o.[Name]
 
 	END';
 	GRANT EXECUTE ON dbo.[spstat_getfavourites] TO [ASRSysGroup];
