@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.ocx"
 Begin VB.Form frmDefSel 
    Caption         =   "Select"
    ClientHeight    =   7740
@@ -20,6 +20,7 @@ Begin VB.Form frmDefSel
    Icon            =   "frmDefSel.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
+   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   7740
@@ -195,7 +196,7 @@ Begin VB.Form frmDefSel
          BeginProperty ColumnHeader(2) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
             SubItemIndex    =   1
             Text            =   "sortkey"
-            Object.Width           =   2540
+            Object.Width           =   6068
          EndProperty
       End
       Begin VB.Label lblTables 
@@ -1569,7 +1570,8 @@ Dim fAllColumns As Boolean
   End If
   
   lngMax = lngMax + 60
-  List1.ColumnHeaders(1).Width = lngMax
+  List1.ColumnHeaders(1).Width = List1.Width - 60 ' lngMax
+  List1.ColumnHeaders(2).Width = 0
   List1.Refresh
 
   ApplySystemPermissions
