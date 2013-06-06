@@ -66,7 +66,7 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
   pfRefreshDatabase = (pfRefreshDatabase Or gfRefreshStoredProcedures)
   
   'RH 02/10/00 - BUG 1044 - Disable the X button whilst saving
-  EnableCloseButton frmSysMgr.hWnd, False
+  EnableCloseButton frmSysMgr.hwnd, False
   
   'RH 21/08/00 - BUG 788. Disable all mdi forms while we save changes - this
   '              prevents users from col editing etc whilst saving ! a good idea
@@ -765,7 +765,7 @@ TidyUpAndExit:
   Next iCount
   
   'RH 02/10/00 - BUG 1044 - Enable the X button as finished/aborted saving
-  EnableCloseButton frmSysMgr.hWnd, True
+  EnableCloseButton frmSysMgr.hwnd, True
 
   OutputCurrentProcess "End of save process"
 
@@ -960,7 +960,7 @@ Private Function SaveModuleDefinitions() As Boolean
       "ConditionalFormatting_Style_1, ConditionalFormatting_Colour_1, ConditionalFormatting_Operator_2, ConditionalFormatting_Value_2, " & _
       "ConditionalFormatting_Style_2, ConditionalFormatting_Colour_2, ConditionalFormatting_Operator_3, ConditionalFormatting_Value_3, " & _
       "ConditionalFormatting_Style_3, ConditionalFormatting_Colour_3, SeparatorColour, InitialDisplayMode, Chart_TableID_2, Chart_ColumnID_2, " & _
-      "Chart_TableID_3, Chart_ColumnID_3, Chart_SortOrderID)" & _
+      "Chart_TableID_3, Chart_ColumnID_3, Chart_SortOrderID, Chart_SortDirection)" & _
       " VALUES(" & _
       CStr(rsLinks!LinkType) & "," & _
       CStr(rsLinks!linkOrder) & "," & _
@@ -1019,7 +1019,7 @@ Private Function SaveModuleDefinitions() As Boolean
       "'" & Replace(IIf(IsNull(rsLinks!SeparatorColour), "", rsLinks!SeparatorColour), "'", "''") & "'," & CStr(IIf(IsNull(rsLinks!InitialDisplayMode), 0, rsLinks!InitialDisplayMode)) & "," & _
       CStr(IIf(IsNull(rsLinks!Chart_TableID_2), 0, rsLinks!Chart_TableID_2)) & "," & CStr(IIf(IsNull(rsLinks!Chart_ColumnID_2), 0, rsLinks!Chart_ColumnID_2)) & "," & _
       CStr(IIf(IsNull(rsLinks!Chart_TableID_3), 0, rsLinks!Chart_TableID_3)) & "," & CStr(IIf(IsNull(rsLinks!Chart_ColumnID_3), 0, rsLinks!Chart_ColumnID_3)) & "," & _
-      CStr(IIf(IsNull(rsLinks!Chart_SortOrderID), 0, rsLinks!Chart_SortOrderID)) & _
+      CStr(IIf(IsNull(rsLinks!Chart_SortOrderID), 0, rsLinks!Chart_SortOrderID)) & "," & CStr(IIf(IsNull(rsLinks!Chart_SortDirection), 0, rsLinks!Chart_SortDirection)) & _
       ")"
 
     gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
