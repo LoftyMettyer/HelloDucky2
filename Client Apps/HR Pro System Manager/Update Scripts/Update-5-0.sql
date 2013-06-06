@@ -3341,6 +3341,8 @@ PRINT 'Step 10 - Message Bus Integration'
 			[LastGeneratedXml] [varchar](max) NULL);';
 
 
+
+
 	DECLARE	@perstableid integer,
 			@columnid integer;
 
@@ -3353,14 +3355,13 @@ PRINT 'Step 10 - Message Bus Integration'
 			[FilterID] [int] NULL,
 			[ASRBaseTableID] [int] NULL,
 			[IsVisible] [bit] NULL,
-			[ForceAsUpdate] [bit] NULL,
-		 CONSTRAINT [PK_FusionTypeID] PRIMARY KEY NONCLUSTERED ([FusionTypeID] ASC));';
+			[Version] numeric(5,2)
+		    CONSTRAINT [PK_FusionTypeID] PRIMARY KEY NONCLUSTERED ([FusionTypeID] ASC));';
 
 		SELECT @perstableid = [parametervalue] FROM dbo.[ASRSysModuleSetup] WHERE ModuleKey = 'MODULE_PERSONNEL' AND ParameterKey = 'Param_TablePersonnel'
 			AND [ParameterType] = 'PType_TableID';
 
-		INSERT [dbo].[ASRSysFusionTypes] ([FusionTypeID], [FusionType], [ASRBaseTableID], [FilterID], [IsVisible]) VALUES (1, 'staffchange', @perstableid, 0, 1);
-		INSERT [dbo].[ASRSysFusionTypes] ([FusionTypeID], [FusionType], [ASRBaseTableID], [FilterID], [IsVisible]) VALUES (2, 'staffpicturechange', @perstableid, 0, 1);
+		INSERT [dbo].[ASRSysFusionTypes] ([FusionTypeID], [FusionType], [ASRBaseTableID], [FilterID], [IsVisible], [Version]) VALUES (1, 'Staff Change', @perstableid, 0, 1, 1);
 
 	END
 
@@ -3381,6 +3382,7 @@ PRINT 'Step 10 - Message Bus Integration'
 		EXECUTE sp_executesql N'CREATE TABLE [dbo].[ASRSysFusionFieldDefinitions](
 			[NodeKey] [varchar](255) NOT NULL,
 			[FusionTypeID] [int] NOT NULL,
+			[DataType] [tinyint] NOT NULL,
 			[Mandatory] [bit] NOT NULL,
 			[Description] [char](40) NOT NULL,
 			[AlwaysTransfer] [bit] NULL,
@@ -3398,23 +3400,51 @@ PRINT 'Step 10 - Message Bus Integration'
 			[IsDepartmentCode] [bit] NULL,
 			[IsDepartmentName] [bit] NULL,
 			[IsFusionCode] [bit] NULL,
-			[GroupBy] [int] NULL,
 			[PreventModify] [bit] NULL);';
 
-		SELECT @columnid = ISNULL([parametervalue],0) FROM dbo.[ASRSysModuleSetup] WHERE ModuleKey = 'MODULE_PERSONNEL' AND ParameterKey = 'Param_FieldsSurname' AND [ParameterType] = 'PType_ColumnID';
-		INSERT [dbo].[ASRSysFusionFieldDefinitions] ([FusionTypeID], [NodeKey], [ASRMapType], [ASRTableID], [ASRColumnID], [Mandatory], [Description], [ASRExprID], [ASRValue]) VALUES (1,'SURNAME', 1, @perstableid, @columnid, 1, 'Surname Description',0,'')
+		INSERT [dbo].[ASRSysFusionFieldDefinitions] ([FusionTypeID], [DataType], [NodeKey], [ASRMapType], [ASRTableID], [ASRColumnID], [Mandatory], [Description], [ASRExprID], [ASRValue]) VALUES (1,12,'TITLE', 0, 0, 0, 1, 'Title',0,'')
 
 		SELECT @columnid = ISNULL([parametervalue],0) FROM dbo.[ASRSysModuleSetup] WHERE ModuleKey = 'MODULE_PERSONNEL' AND ParameterKey = 'Param_FieldsForename' AND [ParameterType] = 'PType_ColumnID';
-		INSERT [dbo].[ASRSysFusionFieldDefinitions] ([FusionTypeID], [NodeKey], [ASRMapType], [ASRTableID], [ASRColumnID], [Mandatory], [Description], [ASRExprID], [ASRValue]) VALUES (1,'FORENAME', 1, @perstableid, @columnid, 1, 'Forename Description',0,'')
+		INSERT [dbo].[ASRSysFusionFieldDefinitions] ([FusionTypeID], [DataType], [NodeKey], [ASRMapType], [ASRTableID], [ASRColumnID], [Mandatory], [Description], [ASRExprID], [ASRValue]) VALUES (1,12,'FORENAMES', 0, @perstableid, @columnid, 1, 'Forenames',0,'')
+
+		SELECT @columnid = ISNULL([parametervalue],0) FROM dbo.[ASRSysModuleSetup] WHERE ModuleKey = 'MODULE_PERSONNEL' AND ParameterKey = 'Param_FieldsSurname' AND [ParameterType] = 'PType_ColumnID';
+		INSERT [dbo].[ASRSysFusionFieldDefinitions] ([FusionTypeID], [DataType], [NodeKey], [ASRMapType], [ASRTableID], [ASRColumnID], [Mandatory], [Description], [ASRExprID], [ASRValue]) VALUES (1,12,'SURNAME', 0, @perstableid, @columnid, 1, 'Surname',0,'')
+
+		SELECT @columnid = ISNULL([parametervalue],0) FROM dbo.[ASRSysModuleSetup] WHERE ModuleKey = 'MODULE_PERSONNEL' AND ParameterKey = 'Param_FieldsSSIWelcome' AND [ParameterType] = 'PType_ColumnID';
+		INSERT [dbo].[ASRSysFusionFieldDefinitions] ([FusionTypeID], [DataType], [NodeKey], [ASRMapType], [ASRTableID], [ASRColumnID], [Mandatory], [Description], [ASRExprID], [ASRValue]) VALUES (1,12,'PREFERREDNAME', 0, @perstableid, @columnid, 1, 'Preferred Name',0,'')
 
 		SELECT @columnid = ISNULL([parametervalue],0) FROM dbo.[ASRSysModuleSetup] WHERE ModuleKey = 'MODULE_PERSONNEL' AND ParameterKey = 'Param_FieldsDateOfBirth' AND [ParameterType] = 'PType_ColumnID';
-		INSERT [dbo].[ASRSysFusionFieldDefinitions] ([FusionTypeID], [NodeKey], [ASRMapType], [ASRTableID], [ASRColumnID], [Mandatory], [Description], [ASRExprID], [ASRValue]) VALUES (1,'DATEOFBIRTH', 1, @perstableid, @columnid, 1, 'Date of Birth Description',0,'')
+		INSERT [dbo].[ASRSysFusionFieldDefinitions] ([FusionTypeID], [DataType], [NodeKey], [ASRMapType], [ASRTableID], [ASRColumnID], [Mandatory], [Description], [ASRExprID], [ASRValue]) VALUES (1,11,'DOB', 0, @perstableid, @columnid, 1, 'Date of Birth',0,'')
 
-		SELECT @columnid = ISNULL([parametervalue],0) FROM dbo.[ASRSysModuleSetup] WHERE ModuleKey = 'MODULE_PERSONNEL' AND ParameterKey = 'Param_FieldsDepartment' AND [ParameterType] = 'PType_ColumnID';
-		INSERT [dbo].[ASRSysFusionFieldDefinitions] ([FusionTypeID], [NodeKey], [ASRMapType], [ASRTableID], [ASRColumnID], [Mandatory], [Description], [ASRExprID], [ASRValue]) VALUES (1,'DEPARTMENT', 1, @perstableid, @columnid, 1, 'Department Description',0,'')
+		INSERT [dbo].[ASRSysFusionFieldDefinitions] ([FusionTypeID], [DataType], [NodeKey], [ASRMapType], [ASRTableID], [ASRColumnID], [Mandatory], [Description], [ASRExprID], [ASRValue]) VALUES (1,12,'EMPLOYEETYPE', 0, 0, 0, 1, 'Employee Type',0,'')
+		INSERT [dbo].[ASRSysFusionFieldDefinitions] ([FusionTypeID], [DataType], [NodeKey], [ASRMapType], [ASRTableID], [ASRColumnID], [Mandatory], [Description], [ASRExprID], [ASRValue]) VALUES (1,12,'EMPLOYEESTATUS', 0, 0, 0, 1, 'Employee Status',0,'')
+		INSERT [dbo].[ASRSysFusionFieldDefinitions] ([FusionTypeID], [DataType], [NodeKey], [ASRMapType], [ASRTableID], [ASRColumnID], [Mandatory], [Description], [ASRExprID], [ASRValue]) VALUES (1,12,'HOMEPHONENUMBER', 0, 0, 0, 1, 'Home Phone Number',0,'')
+		INSERT [dbo].[ASRSysFusionFieldDefinitions] ([FusionTypeID], [DataType], [NodeKey], [ASRMapType], [ASRTableID], [ASRColumnID], [Mandatory], [Description], [ASRExprID], [ASRValue]) VALUES (1,12,'WORKMOBILE', 0, 0, 0, 1, 'Work Mobile',0,'')
+		INSERT [dbo].[ASRSysFusionFieldDefinitions] ([FusionTypeID], [DataType], [NodeKey], [ASRMapType], [ASRTableID], [ASRColumnID], [Mandatory], [Description], [ASRExprID], [ASRValue]) VALUES (1,12,'PERSONALMOBILE', 0, 0, 0, 1, 'Personal Mobile',0,'')
+		INSERT [dbo].[ASRSysFusionFieldDefinitions] ([FusionTypeID], [DataType], [NodeKey], [ASRMapType], [ASRTableID], [ASRColumnID], [Mandatory], [Description], [ASRExprID], [ASRValue]) VALUES (1,12,'EMAIL', 0, 0, 0, 1, 'Email',0,'')
+		INSERT [dbo].[ASRSysFusionFieldDefinitions] ([FusionTypeID], [DataType], [NodeKey], [ASRMapType], [ASRTableID], [ASRColumnID], [Mandatory], [Description], [ASRExprID], [ASRValue]) VALUES (1,12,'PERSONALEMAIL', 0, 0, 0, 1, 'Personal Email',0,'')
+		INSERT [dbo].[ASRSysFusionFieldDefinitions] ([FusionTypeID], [DataType], [NodeKey], [ASRMapType], [ASRTableID], [ASRColumnID], [Mandatory], [Description], [ASRExprID], [ASRValue]) VALUES (1,12,'ADDRESSLINE1', 0, 0, 0, 1, 'Address Line 1',0,'')
+		INSERT [dbo].[ASRSysFusionFieldDefinitions] ([FusionTypeID], [DataType], [NodeKey], [ASRMapType], [ASRTableID], [ASRColumnID], [Mandatory], [Description], [ASRExprID], [ASRValue]) VALUES (1,12,'ADDRESSLINE2', 0, 0, 0, 1, 'Address Line 2',0,'')
+		INSERT [dbo].[ASRSysFusionFieldDefinitions] ([FusionTypeID], [DataType], [NodeKey], [ASRMapType], [ASRTableID], [ASRColumnID], [Mandatory], [Description], [ASRExprID], [ASRValue]) VALUES (1,12,'ADDRESSLINE3', 0, 0, 0, 1, 'Address Line 3',0,'')
+		INSERT [dbo].[ASRSysFusionFieldDefinitions] ([FusionTypeID], [DataType], [NodeKey], [ASRMapType], [ASRTableID], [ASRColumnID], [Mandatory], [Description], [ASRExprID], [ASRValue]) VALUES (1,12,'ADDRESSLINE4', 0, 0, 0, 1, 'Address Line 4',0,'')
+		INSERT [dbo].[ASRSysFusionFieldDefinitions] ([FusionTypeID], [DataType], [NodeKey], [ASRMapType], [ASRTableID], [ASRColumnID], [Mandatory], [Description], [ASRExprID], [ASRValue]) VALUES (1,12,'ADDRESSLINE5', 0, 0, 0, 1, 'Address Line 5',0,'')
+		INSERT [dbo].[ASRSysFusionFieldDefinitions] ([FusionTypeID], [DataType], [NodeKey], [ASRMapType], [ASRTableID], [ASRColumnID], [Mandatory], [Description], [ASRExprID], [ASRValue]) VALUES (1,12,'POSTCODE', 0, 0, 0, 1, 'Postcode',0,'')
+		INSERT [dbo].[ASRSysFusionFieldDefinitions] ([FusionTypeID], [DataType], [NodeKey], [ASRMapType], [ASRTableID], [ASRColumnID], [Mandatory], [Description], [ASRExprID], [ASRValue]) VALUES (1,12,'GENDER', 0, 0, 0, 1, 'Gender',0,'')
 
 		SELECT @columnid = ISNULL([parametervalue],0) FROM dbo.[ASRSysModuleSetup] WHERE ModuleKey = 'MODULE_PERSONNEL' AND ParameterKey = 'Param_FieldsStartDate' AND [ParameterType] = 'PType_ColumnID';
-		INSERT [dbo].[ASRSysFusionFieldDefinitions] ([FusionTypeID], [NodeKey], [ASRMapType], [ASRTableID], [ASRColumnID], [Mandatory], [Description], [ASRExprID], [ASRValue]) VALUES (1,'STARTDATE', 1, @perstableid, @columnid, 1, 'Start Date Description',0,'')
+		INSERT [dbo].[ASRSysFusionFieldDefinitions] ([FusionTypeID], [DataType], [NodeKey], [ASRMapType], [ASRTableID], [ASRColumnID], [Mandatory], [Description], [ASRExprID], [ASRValue]) VALUES (1,11,'STARTDATE', 0, @perstableid, @columnid, 1, 'Start Date',0,'')
+
+		SELECT @columnid = ISNULL([parametervalue],0) FROM dbo.[ASRSysModuleSetup] WHERE ModuleKey = 'MODULE_PERSONNEL' AND ParameterKey = 'Param_FieldsLeavingDate' AND [ParameterType] = 'PType_ColumnID';
+		INSERT [dbo].[ASRSysFusionFieldDefinitions] ([FusionTypeID], [DataType], [NodeKey], [ASRMapType], [ASRTableID], [ASRColumnID], [Mandatory], [Description], [ASRExprID], [ASRValue]) VALUES (1,11,'LEAVINGDATE', 0, @perstableid, @columnid, 1, 'Leaving Date',0,'')
+
+		INSERT [dbo].[ASRSysFusionFieldDefinitions] ([FusionTypeID], [DataType], [NodeKey], [ASRMapType], [ASRTableID], [ASRColumnID], [Mandatory], [Description], [ASRExprID], [ASRValue]) VALUES (1,12,'LEAVINGREASON', 0, 0, 0, 1, 'Leaving Reason',0,'')
+		INSERT [dbo].[ASRSysFusionFieldDefinitions] ([FusionTypeID], [DataType], [NodeKey], [ASRMapType], [ASRTableID], [ASRColumnID], [Mandatory], [Description], [ASRExprID], [ASRValue]) VALUES (1,12,'COMPANYNAME', 0, 0, 0, 1, 'Company Name',0,'')
+
+		SELECT @columnid = ISNULL([parametervalue],0) FROM dbo.[ASRSysModuleSetup] WHERE ModuleKey = 'MODULE_PERSONNEL' AND ParameterKey = 'Param_FieldsJobTitle' AND [ParameterType] = 'PType_ColumnID';
+		INSERT [dbo].[ASRSysFusionFieldDefinitions] ([FusionTypeID], [DataType], [NodeKey], [ASRMapType], [ASRTableID], [ASRColumnID], [Mandatory], [Description], [ASRExprID], [ASRValue]) VALUES (1,12,'jobtitle', 0, @perstableid, @columnid, 1, 'Job Title',0,'')
+
+		SELECT @columnid = ISNULL([parametervalue],0) FROM dbo.[ASRSysModuleSetup] WHERE ModuleKey = 'MODULE_PERSONNEL' AND ParameterKey = 'Param_FieldsManagerStaffNo' AND [ParameterType] = 'PType_ColumnID';
+		INSERT [dbo].[ASRSysFusionFieldDefinitions] ([FusionTypeID], [DataType], [NodeKey], [ASRMapType], [ASRTableID], [ASRColumnID], [Mandatory], [Description], [ASRExprID], [ASRValue]) VALUES (1,12,'MANAGERREF', 0, @perstableid, @columnid, 1, 'Manager',0,'')
 
 	END
 
