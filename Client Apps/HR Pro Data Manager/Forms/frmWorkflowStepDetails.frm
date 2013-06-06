@@ -656,7 +656,7 @@ Option Explicit
 
 Private Const SCROLLBAR_WIDTH = 250
 Private Const MINFORM_WIDTH = 13000
-Private Const MINFORM_HEIGHT = 1600
+Private Const MINFORM_HEIGHT = 2700
 Private Const GAPOVERBUTTONS = 80
 Private Const GAPUNDERBUTTONS = 620
 
@@ -1174,8 +1174,8 @@ Public Function Initialise(plngInstanceStepID As Long, _
   If (mlngElementType >= LBound(masngFormDimensions, 2)) _
     And (mlngElementType <= UBound(masngFormDimensions, 2)) Then
   
-    Me.Height = masngFormDimensions(0, mlngElementType)
-    Me.Width = masngFormDimensions(1, mlngElementType)
+    Me.Height = Maximum(masngFormDimensions(0, mlngElementType), MINFORM_HEIGHT)
+    Me.Width = Maximum(masngFormDimensions(1, mlngElementType), MINFORM_WIDTH)
   End If
 
   Dim sngMinFormHeight As Single
