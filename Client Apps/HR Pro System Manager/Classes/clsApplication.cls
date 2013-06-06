@@ -72,6 +72,7 @@ Public Enum ControlTypes
   giCTRL_WORKINGPATTERN = 2 ^ 12
   giCTRL_LINE = 2 ^ 13
   giCTRL_NAVIGATION = 2 ^ 14
+  giCTRL_COLOURPICKER = 2 ^ 15
 End Enum
 
 Public Enum PropertyConstants
@@ -2066,10 +2067,10 @@ Private Sub ActivateModules()
 
 
   'MH20040301
-  glngAMStartTime = Val(Replace(GetSystemSetting("Outlook", "AMStartTime", 900), ":", ""))
-  glngAMEndTime = Val(Replace(GetSystemSetting("Outlook", "AMEndTime", 1230), ":", ""))
-  glngPMStartTime = Val(Replace(GetSystemSetting("Outlook", "PMStartTime", 1330), ":", ""))
-  glngPMEndTime = Val(Replace(GetSystemSetting("Outlook", "PMEndTime", 1700), ":", ""))
+  glngAMStartTime = val(Replace(GetSystemSetting("Outlook", "AMStartTime", 900), ":", ""))
+  glngAMEndTime = val(Replace(GetSystemSetting("Outlook", "AMEndTime", 1230), ":", ""))
+  glngPMStartTime = val(Replace(GetSystemSetting("Outlook", "PMStartTime", 1330), ":", ""))
+  glngPMEndTime = val(Replace(GetSystemSetting("Outlook", "PMEndTime", 1700), ":", ""))
 
   gfSSIntranetModule = IsModuleEnabled(modIntranet)
   
