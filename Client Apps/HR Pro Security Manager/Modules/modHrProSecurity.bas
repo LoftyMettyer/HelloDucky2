@@ -219,7 +219,7 @@ Public Function ValidNameChar(ByVal piAsciiCode As Integer, ByVal piPosition As 
   On Error GoTo ErrorTrap
 
   ' Space character is valid in SQL Server 7.0 but not 6.5.
-  If piAsciiCode = Asc(" ") Then
+  If piAsciiCode = Asc(" ") And (Not IsVersion7) Then
     ' Substitute underscores for spaces.
     If piPosition <> 0 Then
       piAsciiCode = Asc("_")
@@ -234,7 +234,7 @@ Public Function ValidNameChar(ByVal piAsciiCode As Integer, ByVal piPosition As 
       (piAsciiCode >= Asc("0") And piAsciiCode <= Asc("9") And piPosition <> 0) Or _
       (piAsciiCode >= Asc("A") And piAsciiCode <= Asc("Z")) Or _
       (piAsciiCode >= Asc("a") And piAsciiCode <= Asc("z")) Or _
-      (piAsciiCode = Asc(" ") And piPosition <> 0)) Then
+      (piAsciiCode = Asc(" ") And IsVersion7 And piPosition <> 0)) Then
       piAsciiCode = 0
     End If
   End If
@@ -247,6 +247,23 @@ ErrorTrap:
   Err = False
 
 End Function
+
+'@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+'@@
+'@@ Function  : IsVersion7()
+'@@
+'@@ Desc      : Sees if the sql version we are talking to is version 7
+'@@
+'@@ Returns   : True if it is, and false otherwise
+'@@
+'@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+'@@ Changes   :
+'@@ 28/07/98    RJB   Created
+Public Function IsVersion7() As Boolean
+  IsVersion7 = (glngSQLVersion >= 7)
+  
+End Function
+
 
 Public Sub AuditPermission(ByVal sGroupName As String, ByVal sViewTableName As String, sAction As String, _
     sPermission As String, Optional ByVal sColumnName As String)
