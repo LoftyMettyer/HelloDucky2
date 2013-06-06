@@ -2458,8 +2458,16 @@ Private Function GenerateSQLWhere(pstrEventKey As String, _
   If mstrPicklistFilterIDs <> vbNullString Then
     mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & _
       mstrBaseTableRealSource & ".ID IN (" & mstrPicklistFilterIDs & ")"
-  End If
   
+  ElseIf mlngCalendarReportsPickListID > 0 Then
+    mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & _
+      mstrBaseTableRealSource & ".ID IN (" & mstrSQLIDs & ")"
+  
+  ElseIf mlngCalendarReportsFilterID > 0 Then
+    mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & _
+      mstrBaseTableRealSource & ".ID IN (" & mstrSQLIDs & ")"
+  
+  End If
   
   
   
