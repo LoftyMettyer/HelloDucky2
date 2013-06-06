@@ -85,6 +85,20 @@ END
 /* ------------------------------------------------------------- */
 
 
+/* ------------------------------------------------------------- */
+/* Step - Updating User SEttings with data/columns for Omit spacer DEV */
+/* ------------------------------------------------------------- */
+	IF NOT EXISTS(SELECT * FROM ASRSysUserSettings where section = 'Output')
+	BEGIN
+		INSERT ASRSysUserSettings ([UserName],[Section],[SettingKey],[SettingValue])
+			VALUES ('HRPro','Output','RowSpacer','1');
+		INSERT ASRSysUserSettings ([UserName],[Section],[SettingKey],[SettingValue])
+			VALUES ('Admin','Output','RowSpacer','1');	
+		INSERT ASRSysUserSettings ([UserName],[Section],[SettingKey],[SettingValue])
+			VALUES ('HRPro','Output','ColSpacer','1');
+		INSERT ASRSysUserSettings ([UserName],[Section],[SettingKey],[SettingValue])
+			VALUES ('Admin','Output','ColSpacer','1');				
+	END		
 	----------------------------------------------------------------------
 	-- spASRSubmitWorkflowStep
 	----------------------------------------------------------------------
