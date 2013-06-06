@@ -1863,7 +1863,7 @@ Public Function StoredProcedureCode(Optional strBaseTable As String) As String
             Set rsTemp = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
             With rsTemp
               If Not (.BOF And .EOF) Then
-                lngElementID = !id
+                lngElementID = !ID
                 iElementType = !Type
               End If
               
@@ -2058,7 +2058,7 @@ Public Function StoredProcedureCode(Optional strBaseTable As String) As String
           Set rsTemp = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
           With rsTemp
             If Not (.BOF And .EOF) Then
-              lngElementID = !id
+              lngElementID = !ID
               iElementType = !Type
             End If
     
@@ -2337,7 +2337,7 @@ TidyUpAndExit:
   Exit Function
   
 ErrorTrap:
-  sProcCode = ""
+  sProcCode.TheString = ""
   Resume TidyUpAndExit
 
 End Function
@@ -2486,7 +2486,7 @@ Public Function RuntimeCode(psRuntimeCode As String, _
           Set rsTemp = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
           With rsTemp
             If Not (.BOF And .EOF) Then
-              lngElementID = !id
+              lngElementID = !ID
               iElementType = !Type
             End If
             
