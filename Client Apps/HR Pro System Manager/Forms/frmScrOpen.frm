@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Begin VB.Form frmScrOpen 
    Caption         =   "Screen Manager"
@@ -747,6 +747,9 @@ Private Function CopyScreen() As Boolean
         recCtrlEdit!BorderStyle = .Fields("BorderStyle")
         recCtrlEdit!Alignment = .Fields("Alignment")
         recCtrlEdit!ReadOnly = .Fields("ReadOnly")      'NPG20071023
+        recCtrlEdit!NavigateTo = .Fields("NavigateTo")
+        recCtrlEdit!NavigateIn = .Fields("NavigateIn")
+        recCtrlEdit!NavigateOnSave = .Fields("NavigateOnSave")
 
         recCtrlEdit.Update
               
