@@ -33,8 +33,10 @@ Private mblnScreen As Boolean
 Private mblnPrinter As Boolean
 Private mstrPrinterName As String
 Private mblnSave As Boolean
+Private mlngSaveFileFormat As Long
 Private mlngSaveExisting As Long
 Private mblnEmail As Boolean
+Private mlngEmailFileFormat As Long
 Private mstrFileName As String
 Private mblnSizeColumnsIndependently As Boolean
 Private mblnApplyStyles As Boolean
@@ -725,6 +727,14 @@ Public Property Let Save(blnSave As Boolean)
   mblnSave = blnSave
 End Property
 
+Public Property Let SaveFileFormat(lngSaveFileFormat As Long)
+  mlngSaveFileFormat = lngSaveFileFormat
+End Property
+
+Public Property Get SaveFileFormat() As Long
+  SaveFileFormat = mlngSaveFileFormat
+End Property
+
 Public Property Let SaveExisting(lngSaveExisting As Long)
   mlngSaveExisting = lngSaveExisting
 End Property
@@ -737,6 +747,14 @@ Public Property Let Email(blnEmail As Boolean)
   mblnEmail = blnEmail
 End Property
 
+Public Property Let EmailFileFormat(lngEmailFileFormat As Long)
+  mlngEmailFileFormat = lngEmailFileFormat
+End Property
+
+Public Property Get EmailFileFormat() As Long
+  EmailFileFormat = mlngEmailFileFormat
+End Property
+
 Public Property Let FileName(strFileName As String)
   mstrFileName = strFileName
 End Property
@@ -746,6 +764,7 @@ Private Function CreateExcelApplication() As Boolean
   On Local Error GoTo LocalErr
 
   Set mxlApp = CreateObject("Excel.Application")
+  mxlApp.DisplayAlerts = False
   
   If GetSystemSetting("Output", "ExcelVisible", "0") = "1" Then
     mxlApp.Visible = True
@@ -845,6 +864,7 @@ Private Sub GetWorkBook(strWorkbook As String, strWorksheet As String)
   mstrSheetMode = strWorksheet
   Select Case strWorkbook
   Case "New"
+    'Create new workbook and ensure only 1 worksheet
     Set mxlWorkBook = mxlApp.Workbooks.Add
     For lngCount = 1 To mxlWorkBook.Sheets.Count - 1
       mxlWorkBook.Sheets(1).Delete
@@ -1529,9 +1549,10 @@ End Sub
 
 Public Sub Complete()
 
-  Dim blnOffice2007 As Boolean
   Dim objChart As Excel.Chart
   Dim objWorksheet As Excel.Worksheet
+  Dim strFormat As String
+  Dim blnOffice2007 As Boolean
 
   On Local Error GoTo LocalErr
   
@@ -1540,7 +1561,6 @@ Public Sub Complete()
   End If
   
   
-  blnOffice2007 = (Val(mxlApp.Version) >= 12)
   mxlFirstSheet.Activate
 
 
@@ -1548,11 +1568,18 @@ Public Sub Complete()
   If mblnSave Then
     mstrErrorMessage = "Error saving file <" & mstrFileName & ">"
     
+    strFormat = mobjParent.GetOfficeFormat(mlngSaveFileFormat, giOfficeVersion_Excel)
+    If strFormat = "" Then
+      mstrErrorMessage = "This definition is set to save to a file format which is not compatible with your version of Microsoft Office."
+      GoTo TidyAndExit
+    End If
+    
+    blnOffice2007 = (Val(giOfficeVersion_Excel) >= 12)
     If blnOffice2007 Then
       If mxlWorkBook.FullName <> mstrFileName Then
-        mxlWorkBook.SaveAs mstrFileName, giOfficeSaveVersion_Excel
+        mxlWorkBook.SaveAs mstrFileName, Val(strFormat)
       Else
-        mxlWorkBook.SaveAs mxlWorkBook.FullName, FileFormat:=giOfficeSaveVersion_Excel
+        mxlWorkBook.SaveAs mxlWorkBook.FullName, FileFormat:=Val(strFormat)
       End If
     Else
       If mxlWorkBook.FullName <> mstrFileName Then
@@ -1561,7 +1588,7 @@ Public Sub Complete()
         mxlWorkBook.Save
       End If
     End If
-  
+
   End If
 
 
@@ -1570,11 +1597,11 @@ Public Sub Complete()
     mstrErrorMessage = "Error sending email"
     If Not mblnSave Then
       mstrFileName = mobjParent.GetTempFileName(mstrFileName)
-      If blnOffice2007 Then
-        mxlWorkBook.SaveAs mstrFileName, FileFormat:=giOfficeSaveVersion_Excel
-      Else
+      'If blnOffice2007 Then
+      '  mxlWorkBook.SaveAs mstrFileName, FileFormat:=mlngEmailFileFormat
+      'Else
         mxlWorkBook.SaveAs mstrFileName
-      End If
+      'End If
     End If
     mobjParent.SendEmail mstrFileName
   End If
@@ -1751,3 +1778,6 @@ Private Function SetSheetName(objObject As Object, ByVal strSheetName As String)
   SetSheetName = True
 
 End Function
+
+
+
