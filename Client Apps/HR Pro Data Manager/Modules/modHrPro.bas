@@ -4469,7 +4469,7 @@ Public Function SaveObjectCategories(ByRef theCombo As ComboBox, UtilityType As 
   bOk = True
   iSelectedID = GetComboItem(theCombo)
   
-  gobjDataAccess.ExecuteSql "EXEC dbo.spssys_saveobjectcategories " & CStr(UtilityType) & ", " & CStr(UtilityID) & ", " & CStr(iSelectedID)
+  gobjDataAccess.ExecuteSql "EXEC dbo.spsys_saveobjectcategories " & CStr(UtilityType) & ", " & CStr(UtilityID) & ", " & CStr(iSelectedID)
   
 TidyUpAndExit:
   SaveObjectCategories = bOk
@@ -4493,7 +4493,7 @@ Public Sub GetObjectCategories(ByRef theCombo As ComboBox, UtilityType As Utilit
   theCombo.ItemData(theCombo.NewIndex) = 0
   iListIndex = theCombo.NewIndex
      
-  Set rsTemp = gobjDataAccess.OpenRecordset("EXEC dbo.spssys_getobjectcategories " & CStr(UtilityType) & ", " & CStr(UtilityID) & ", " & CStr(TableID) _
+  Set rsTemp = gobjDataAccess.OpenRecordset("EXEC dbo.spsys_getobjectcategories " & CStr(UtilityType) & ", " & CStr(UtilityID) & ", " & CStr(TableID) _
       , adOpenForwardOnly, adLockReadOnly)
   
   If Not rsTemp.BOF And Not rsTemp.EOF Then
