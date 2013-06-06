@@ -678,9 +678,6 @@ PRINT 'Step 11 - Add new calculation procedures'
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsys_firstnamefromforenames]')AND xtype in (N'FN', N'IF', N'TF'))
 		DROP FUNCTION [dbo].[udfsys_firstnamefromforenames];
 
-	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsys_getfieldfromdatabaserecord]') AND xtype in (N'FN', N'IF', N'TF'))
-		DROP FUNCTION [dbo].[udfsys_getfieldfromdatabaserecord];
-
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsys_getfunctionparametertype]') AND xtype in (N'FN', N'IF', N'TF'))
 		DROP FUNCTION [dbo].[udfsys_getfunctionparametertype];
 		
@@ -1056,21 +1053,6 @@ PRINT 'Step 11 - Add new calculation procedures'
 		RETURN @result;
 
 	END'
-	EXECUTE sp_executeSQL @sSPCode;
-
-	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_getfieldfromdatabaserecord](
-			@searchcolumn AS nvarchar(255),
-			@searchexpression AS nvarchar(MAX),
-			@returnfield AS nvarchar(255))
-		RETURNS nvarchar(MAX)
-		WITH SCHEMABINDING
-		AS
-		BEGIN
-		
-			DECLARE @result nvarchar(MAX);
-			RETURN @result;
-		
-		END';
 	EXECUTE sp_executeSQL @sSPCode;
 
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_getuniquecode](
@@ -1658,7 +1640,9 @@ PRINT 'Step 12 - Populate code generation tables'
 			[isoperator] [bit] NULL,
 			[operatortype] [tinyint] NULL,
 			[rownumberrequired] [bit] NULL,
-			[calculatepostaudit] [bit] NULL
+			[calculatepostaudit] [bit] NULL,
+			[isgetfieldfromdb] [bit],
+			[isuniquecode] [bit]
 		) ON [PRIMARY]';
 
 	EXEC sp_executesql N'CREATE TABLE [dbo].[tbstat_componentdependancy](
@@ -1752,7 +1736,7 @@ PRINT 'Step 12 - Populate code generation tables'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''2bf404b7-970e-4fdb-9977-00d516a6cc84'', N''[dbo].[udfsys_statutoryredundancypay]({0}, {1}, {2}, {3}, {4})'', 2, N''Statutory Redundancy Pay'', NULL, 0, 0, 41)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''1cce61bf-ee36-4779-83b9-233885440437'', N''(DATEADD(D, 0, DATEDIFF(D, 0, GETDATE())))'', 4, N''System Date'', NULL, 0, 0, 1)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''1b77e32f-756b-4e97-94d2-f0b053b0baca'', N''CONVERT(varchar,GETDATE(),8)'', 1, N''System Time'', NULL, 0, 0, 15)';
-	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id], [rownumberrequired]) VALUES (N''a8974869-0964-40e9-bbbf-4ac6157bf07f'', N''[dbo].[udfsys_getuniquecode] ({0}, {1}, {2})'', 0, N''Unique Code'', NULL, 0, 0, 43, 1)';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id], [rownumberrequired], [isuniquecode]) VALUES (N''a8974869-0964-40e9-bbbf-4ac6157bf07f'', N''[dbo].[udfsys_getuniquecode] ({0}, {1}, {2})'', 0, N''Unique Code'', NULL, 0, 0, 43, 1, 1)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentdependancy] ([id], [type], [modulekey], [parameterkey], [code]) VALUES (43, 2, '''', '''', ''@rownumber'')';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''09e7dfb0-3bc2-4db5-a596-9639eb3e77b5'', N''[dbo].[udfsys_weekdaysbetweentwodates] ({0}, {1})'', 2, N''Weekdays between Two Dates'', NULL, 0, 0, 22)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''fbccef52-27be-4ee4-8afa-d8228da2e952'', N''[dbo].[udfsys_wholemonthsbetweentwodates] ({0}, {1})'', 2, N''Whole Months between Two Dates'', NULL, 0, 0, 26)';
@@ -1762,7 +1746,7 @@ PRINT 'Step 12 - Populate code generation tables'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentdependancy] ([id], [type], [modulekey], [parameterkey], [code]) VALUES (46, 1, ''MODULE_PERSONNEL'', ''Param_TablePersonnel'', '''')';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''5c9a6256-ac11-456d-92fe-a5e2f5ba4c11'', N''DATEPART(YYYY, {0})'', 2, N''Year of Date'', NULL, 0, 0, 32)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''5b636d9f-7589-46d4-bd6a-0e23aef81a51'', N''NOT'', 0, N''Not'', NULL, 1, 180, 13)';
-	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''5da8bb7e-f632-4ed0-b236-e042b88f3a1b'', N''[dbo].[udfsys_getfieldfromdatabaserecord] ({0}, {1}, {2})'', 0, N''Get field from database record'', NULL, 0, 0, 42)';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id], [isgetfieldfromdb]) VALUES (N''5da8bb7e-f632-4ed0-b236-e042b88f3a1b'', N''[dbo].[udfsys_getfieldfromdatabaserecord] ({0}, {1}, {2})'', 0, N''Get field from database record'', NULL, 0, 0, 42, 1)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''a40b59a0-3b3c-4348-9e6b-dd56a8dbab86'', N''[dbo].[udfsys_isnivalid]({0})'', 3, N''Is Valid NI Number'', NULL, 0, 0, 75)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''5b2c16e0-489a-4061-a0eb-eb94d5f2ee6f'', N''[dbo].[udfsys_isvalidpayrollcharacterset]({0}, {1})'', 3, N''Is Valid Payroll Character Set'', NULL, 0, 0, 76)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''84b11964-4b8b-46e4-b340-f3d5598a82fe'', N''REPLACE({0}, {1}, {2})'', 1, N''Replace Characters In A String'', NULL, 0, 0, 77)';
@@ -1783,9 +1767,11 @@ PRINT 'Step 13 - Administration module stored procedures'
 	BEGIN
 		SELECT [id], [code], [name], ISNULL([datatype],0) AS [returntype]
 			, [precode], [aftercode], [isoperator], [operatortype], [aftercode] 
-			, ISNULL([rownumberrequired], 0) AS [rownumberrequired]
+			, ISNULL([rownumberrequired],0) AS [rownumberrequired]
 			, ISNULL([CalculatePostAudit],0) AS [calculatepostaudit]
-			FROM tbstat_componentcode WHERE [id] IS NOT NULL;
+			, ISNULL([isgetfieldfromdb],0) AS [isgetfieldfromdb]
+			, ISNULL([isuniquecode],0) AS [isuniquecode]
+			FROM dbo.[tbstat_componentcode] WHERE [id] IS NOT NULL;
 	END';
 
 	EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[spadmin_getcomponentcodedependancies]
@@ -1865,9 +1851,6 @@ PRINT 'Step 18 - System Functions'
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spadmin_generateuniquecodes]') AND xtype = 'P')
 		DROP PROCEDURE dbo.[spadmin_generateuniquecodes]
 
-	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spadmin_generategetfields]') AND xtype = 'P')
-		DROP PROCEDURE dbo.[spadmin_generategetfields]
-
 	IF NOT EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[tbsys_uniquecodes]') AND xtype = 'U')
 		EXECUTE sp_executesql N'EXECUTE sp_rename [ASRSysUniqueCodes], [tbsys_uniquecodes];';
 
@@ -1899,20 +1882,6 @@ PRINT 'Step 18 - System Functions'
 
 		END'
 
-	EXECUTE sp_executesql N'CREATE PROCEDURE dbo.[spadmin_generategetfields]
-		AS
-		BEGIN
-
-			EXEC sp_executesql N''IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''''[dbo].[ASRSysGetFieldFromDatabaseRecord]'''') AND type in (N''''V''''))
-				DROP VIEW [dbo].[ASRSysGetFieldFromDatabaseRecord]'';
-
-			EXEC sp_executesql N''CREATE VIEW dbo.[ASRSysGetFieldFromDatabaseRecord] AS SELECT '''' AS [searchcolumnid]
-				,'''' AS [returnfieldid]
-				, '''' AS [lookupkey], '''' AS [returnvalue]'';
-		
-		END'
-
-	EXECUTE sp_executesql N'spadmin_generategetfields';
 	EXECUTE sp_executesql N'spadmin_generateuniquecodes';
 	
 /* ------------------------------------------------------------- */
