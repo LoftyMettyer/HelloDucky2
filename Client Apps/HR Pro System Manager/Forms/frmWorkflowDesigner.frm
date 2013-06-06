@@ -11141,7 +11141,7 @@ Private Sub cmdCancel_Click()
 
 End Sub
 
-Private Sub cmdOk_Click()
+Private Sub cmdOK_Click()
  If SaveWorkflow Then
    UnLoad Me
  End If
@@ -13021,6 +13021,7 @@ Public Function LoadElementsAndLinks() As Boolean
   Dim iControlValueSequence As Integer
   Dim sControlValueList As String
   Dim sTemp As String
+  Dim lngArraySize As Long
   
   Set objMisc = New Misc
   
@@ -13219,6 +13220,7 @@ Public Function LoadElementsAndLinks() As Boolean
                 End If
               
                 ReDim Preserve asItems(WFITEMPROPERTYCOUNT, UBound(asItems, 2) + 1)
+                lngArraySize = UBound(asItems, 2)
           
                 Select Case recWorkflowElementItemEdit.Fields("itemType")
                   Case giWFFORMITEM_BUTTON
@@ -13249,79 +13251,79 @@ Public Function LoadElementsAndLinks() As Boolean
                     sDescription = "<unknown>"
                 End Select
                 
-                asItems(0, UBound(asItems, 2)) = recWorkflowElementItemEdit.Fields("ID").value
+                asItems(0, lngArraySize) = recWorkflowElementItemEdit.Fields("ID").value
                 'JPD 20060919 Fault 11355
-                'asItems(1, UBound(asItems, 2)) = recWorkflowElementItemEdit.Fields("Identifier").Value
-                asItems(1, UBound(asItems, 2)) = sDescription
-                asItems(2, UBound(asItems, 2)) = recWorkflowElementItemEdit.Fields("itemType").value
-                asItems(3, UBound(asItems, 2)) = recWorkflowElementItemEdit.Fields("caption").value
-                asItems(4, UBound(asItems, 2)) = recWorkflowElementItemEdit.Fields("DBColumnID").value
-                asItems(5, UBound(asItems, 2)) = recWorkflowElementItemEdit.Fields("DBRecord").value
-                asItems(6, UBound(asItems, 2)) = recWorkflowElementItemEdit.Fields("InputType").value
-                asItems(7, UBound(asItems, 2)) = recWorkflowElementItemEdit.Fields("InputSize").value
-                asItems(8, UBound(asItems, 2)) = recWorkflowElementItemEdit.Fields("InputDecimals").value
-                asItems(9, UBound(asItems, 2)) = recWorkflowElementItemEdit.Fields("Identifier").value
+                'asItems(1, lngArraySize) = recWorkflowElementItemEdit.Fields("Identifier").Value
+                asItems(1, lngArraySize) = sDescription
+                asItems(2, lngArraySize) = recWorkflowElementItemEdit.Fields("itemType").value
+                asItems(3, lngArraySize) = recWorkflowElementItemEdit.Fields("caption").value
+                asItems(4, lngArraySize) = recWorkflowElementItemEdit.Fields("DBColumnID").value
+                asItems(5, lngArraySize) = recWorkflowElementItemEdit.Fields("DBRecord").value
+                asItems(6, lngArraySize) = recWorkflowElementItemEdit.Fields("InputType").value
+                asItems(7, lngArraySize) = recWorkflowElementItemEdit.Fields("InputSize").value
+                asItems(8, lngArraySize) = recWorkflowElementItemEdit.Fields("InputDecimals").value
+                asItems(9, lngArraySize) = recWorkflowElementItemEdit.Fields("Identifier").value
                 
-                If CInt(asItems(6, UBound(asItems, 2))) = giEXPRVALUE_DATE Then
+                If CInt(asItems(6, lngArraySize)) = giEXPRVALUE_DATE Then
                   If Len(IIf(IsNull(recWorkflowElementItemEdit.Fields("InputDefault").value), "", recWorkflowElementItemEdit.Fields("InputDefault").value)) = 0 Then
-                    asItems(10, UBound(asItems, 2)) = ""
+                    asItems(10, lngArraySize) = ""
                   Else
-                    asItems(10, UBound(asItems, 2)) = objMisc.ConvertSQLDateToLocale(recWorkflowElementItemEdit.Fields("InputDefault").value)
+                    asItems(10, lngArraySize) = objMisc.ConvertSQLDateToLocale(recWorkflowElementItemEdit.Fields("InputDefault").value)
                   End If
-                ElseIf CInt(asItems(6, UBound(asItems, 2))) = giEXPRVALUE_NUMERIC Then
+                ElseIf CInt(asItems(6, lngArraySize)) = giEXPRVALUE_NUMERIC Then
                   If Len(IIf(IsNull(recWorkflowElementItemEdit.Fields("InputDefault").value), "", recWorkflowElementItemEdit.Fields("InputDefault").value)) = 0 Then
-                    asItems(10, UBound(asItems, 2)) = "0"
+                    asItems(10, lngArraySize) = "0"
                   Else
-                    asItems(10, UBound(asItems, 2)) = UI.ConvertNumberForDisplay(recWorkflowElementItemEdit.Fields("InputDefault").value)
+                    asItems(10, lngArraySize) = UI.ConvertNumberForDisplay(recWorkflowElementItemEdit.Fields("InputDefault").value)
                   End If
                 Else
-                  asItems(10, UBound(asItems, 2)) = recWorkflowElementItemEdit.Fields("InputDefault").value
+                  asItems(10, lngArraySize) = recWorkflowElementItemEdit.Fields("InputDefault").value
                 End If
                 
-                asItems(11, UBound(asItems, 2)) = recWorkflowElementItemEdit.Fields("WFFormIdentifier").value
-                asItems(12, UBound(asItems, 2)) = recWorkflowElementItemEdit.Fields("WFValueIdentifier").value
+                asItems(11, lngArraySize) = recWorkflowElementItemEdit.Fields("WFFormIdentifier").value
+                asItems(12, lngArraySize) = recWorkflowElementItemEdit.Fields("WFValueIdentifier").value
                 
                 If (wfElement.ElementType = elem_Email) Then
-                  asItems(13, UBound(asItems, 2)) = IIf(IsNull(recWorkflowElementItemEdit.Fields("RecSelWebFormIdentifier").value), "", recWorkflowElementItemEdit.Fields("RecSelWebFormIdentifier").value)
-                  asItems(14, UBound(asItems, 2)) = IIf(IsNull(recWorkflowElementItemEdit.Fields("RecSelIdentifier").value), "", recWorkflowElementItemEdit.Fields("RecSelIdentifier").value)
+                  asItems(13, lngArraySize) = IIf(IsNull(recWorkflowElementItemEdit.Fields("RecSelWebFormIdentifier").value), "", recWorkflowElementItemEdit.Fields("RecSelWebFormIdentifier").value)
+                  asItems(14, lngArraySize) = IIf(IsNull(recWorkflowElementItemEdit.Fields("RecSelIdentifier").value), "", recWorkflowElementItemEdit.Fields("RecSelIdentifier").value)
                 End If
                 
                 If (wfElement.ElementType = elem_WebForm) Then
-                  asItems(13, UBound(asItems, 2)) = recWorkflowElementItemEdit.Fields("LeftCoord").value
-                  asItems(14, UBound(asItems, 2)) = recWorkflowElementItemEdit.Fields("TopCoord").value
-                  asItems(15, UBound(asItems, 2)) = recWorkflowElementItemEdit.Fields("Width").value
-                  asItems(16, UBound(asItems, 2)) = recWorkflowElementItemEdit.Fields("Height").value
-                  asItems(17, UBound(asItems, 2)) = recWorkflowElementItemEdit.Fields("BackColor").value
-                  asItems(18, UBound(asItems, 2)) = recWorkflowElementItemEdit.Fields("ForeColor").value
-                  asItems(19, UBound(asItems, 2)) = recWorkflowElementItemEdit.Fields("FontName").value
-                  asItems(20, UBound(asItems, 2)) = recWorkflowElementItemEdit.Fields("FontSize").value
-                  asItems(21, UBound(asItems, 2)) = recWorkflowElementItemEdit.Fields("FontBold").value
-                  asItems(22, UBound(asItems, 2)) = recWorkflowElementItemEdit.Fields("FontItalic").value
-                  asItems(23, UBound(asItems, 2)) = recWorkflowElementItemEdit.Fields("FontStrikeThru").value
-                  asItems(24, UBound(asItems, 2)) = recWorkflowElementItemEdit.Fields("FontUnderline").value
-                  asItems(25, UBound(asItems, 2)) = recWorkflowElementItemEdit.Fields("PictureID").value
-                  asItems(26, UBound(asItems, 2)) = CStr(IIf(recWorkflowElementItemEdit.Fields("PictureBorder").value, vbFixedSingle, vbBSNone))
-                  asItems(27, UBound(asItems, 2)) = recWorkflowElementItemEdit.Fields("Alignment").value
-                  asItems(28, UBound(asItems, 2)) = recWorkflowElementItemEdit.Fields("ZOrder").value
-                  asItems(29, UBound(asItems, 2)) = recWorkflowElementItemEdit.Fields("TabIndex").value
-                  asItems(30, UBound(asItems, 2)) = recWorkflowElementItemEdit.Fields("BackStyle").value
-                  asItems(31, UBound(asItems, 2)) = recWorkflowElementItemEdit.Fields("BackColorEven").value
-                  asItems(32, UBound(asItems, 2)) = recWorkflowElementItemEdit.Fields("BackColorOdd").value
-                  asItems(33, UBound(asItems, 2)) = recWorkflowElementItemEdit.Fields("ColumnHeaders").value
-                  asItems(34, UBound(asItems, 2)) = recWorkflowElementItemEdit.Fields("ForeColorEven").value
-                  asItems(35, UBound(asItems, 2)) = recWorkflowElementItemEdit.Fields("ForeColorOdd").value
-                  asItems(36, UBound(asItems, 2)) = recWorkflowElementItemEdit.Fields("HeaderBackColor").value
-                  asItems(37, UBound(asItems, 2)) = recWorkflowElementItemEdit.Fields("HeadFontName").value
-                  asItems(38, UBound(asItems, 2)) = recWorkflowElementItemEdit.Fields("HeadFontSize").value
-                  asItems(39, UBound(asItems, 2)) = recWorkflowElementItemEdit.Fields("HeadFontBold").value
-                  asItems(40, UBound(asItems, 2)) = recWorkflowElementItemEdit.Fields("HeadFontItalic").value
-                  asItems(41, UBound(asItems, 2)) = recWorkflowElementItemEdit.Fields("HeadFontStrikeThru").value
-                  asItems(42, UBound(asItems, 2)) = recWorkflowElementItemEdit.Fields("HeadFontUnderline").value
-                  asItems(43, UBound(asItems, 2)) = recWorkflowElementItemEdit.Fields("HeadLines").value
-                  asItems(44, UBound(asItems, 2)) = recWorkflowElementItemEdit.Fields("TableID").value
-                  asItems(45, UBound(asItems, 2)) = IIf(IsNull(recWorkflowElementItemEdit.Fields("ForeColorHighlight").value), vbHighlightText, recWorkflowElementItemEdit.Fields("ForeColorHighlight").value)
-                  asItems(46, UBound(asItems, 2)) = IIf(IsNull(recWorkflowElementItemEdit.Fields("BackColorHighlight").value), vbHighlight, recWorkflowElementItemEdit.Fields("BackColorHighlight").value)
-                  asItems(47, UBound(asItems, 2)) = vbNullString
+                  asItems(13, lngArraySize) = recWorkflowElementItemEdit.Fields("LeftCoord").value
+                  asItems(14, lngArraySize) = recWorkflowElementItemEdit.Fields("TopCoord").value
+                  asItems(15, lngArraySize) = recWorkflowElementItemEdit.Fields("Width").value
+                  asItems(16, lngArraySize) = recWorkflowElementItemEdit.Fields("Height").value
+                  asItems(17, lngArraySize) = recWorkflowElementItemEdit.Fields("BackColor").value
+                  asItems(18, lngArraySize) = recWorkflowElementItemEdit.Fields("ForeColor").value
+                  asItems(19, lngArraySize) = recWorkflowElementItemEdit.Fields("FontName").value
+                  asItems(20, lngArraySize) = recWorkflowElementItemEdit.Fields("FontSize").value
+                  asItems(21, lngArraySize) = recWorkflowElementItemEdit.Fields("FontBold").value
+                  asItems(22, lngArraySize) = recWorkflowElementItemEdit.Fields("FontItalic").value
+                  asItems(23, lngArraySize) = recWorkflowElementItemEdit.Fields("FontStrikeThru").value
+                  asItems(24, lngArraySize) = recWorkflowElementItemEdit.Fields("FontUnderline").value
+                  asItems(25, lngArraySize) = recWorkflowElementItemEdit.Fields("PictureID").value
+                  asItems(26, lngArraySize) = CStr(IIf(recWorkflowElementItemEdit.Fields("PictureBorder").value, vbFixedSingle, vbBSNone))
+                  asItems(27, lngArraySize) = recWorkflowElementItemEdit.Fields("Alignment").value
+                  asItems(28, lngArraySize) = recWorkflowElementItemEdit.Fields("ZOrder").value
+                  asItems(29, lngArraySize) = recWorkflowElementItemEdit.Fields("TabIndex").value
+                  asItems(30, lngArraySize) = recWorkflowElementItemEdit.Fields("BackStyle").value
+                  asItems(31, lngArraySize) = recWorkflowElementItemEdit.Fields("BackColorEven").value
+                  asItems(32, lngArraySize) = recWorkflowElementItemEdit.Fields("BackColorOdd").value
+                  asItems(33, lngArraySize) = recWorkflowElementItemEdit.Fields("ColumnHeaders").value
+                  asItems(34, lngArraySize) = recWorkflowElementItemEdit.Fields("ForeColorEven").value
+                  asItems(35, lngArraySize) = recWorkflowElementItemEdit.Fields("ForeColorOdd").value
+                  asItems(36, lngArraySize) = recWorkflowElementItemEdit.Fields("HeaderBackColor").value
+                  asItems(37, lngArraySize) = recWorkflowElementItemEdit.Fields("HeadFontName").value
+                  asItems(38, lngArraySize) = recWorkflowElementItemEdit.Fields("HeadFontSize").value
+                  asItems(39, lngArraySize) = recWorkflowElementItemEdit.Fields("HeadFontBold").value
+                  asItems(40, lngArraySize) = recWorkflowElementItemEdit.Fields("HeadFontItalic").value
+                  asItems(41, lngArraySize) = recWorkflowElementItemEdit.Fields("HeadFontStrikeThru").value
+                  asItems(42, lngArraySize) = recWorkflowElementItemEdit.Fields("HeadFontUnderline").value
+                  asItems(43, lngArraySize) = recWorkflowElementItemEdit.Fields("HeadLines").value
+                  asItems(44, lngArraySize) = recWorkflowElementItemEdit.Fields("TableID").value
+                  asItems(45, lngArraySize) = IIf(IsNull(recWorkflowElementItemEdit.Fields("ForeColorHighlight").value), vbHighlightText, recWorkflowElementItemEdit.Fields("ForeColorHighlight").value)
+                  asItems(46, lngArraySize) = IIf(IsNull(recWorkflowElementItemEdit.Fields("BackColorHighlight").value), vbHighlight, recWorkflowElementItemEdit.Fields("BackColorHighlight").value)
+                  asItems(47, lngArraySize) = vbNullString
                   
                   If (recWorkflowElementItemEdit.Fields("itemType") = giWFFORMITEM_INPUTVALUE_DROPDOWN) Or _
                     (recWorkflowElementItemEdit.Fields("itemType") = giWFFORMITEM_INPUTVALUE_OPTIONGROUP) Then
@@ -13329,11 +13331,11 @@ Public Function LoadElementsAndLinks() As Boolean
                     sControlValueList = vbNullString
                     
                     recWorkflowElementItemValuesEdit.Index = "idxItemID"
-                    recWorkflowElementItemValuesEdit.Seek ">=", asItems(0, UBound(asItems, 2))
+                    recWorkflowElementItemValuesEdit.Seek ">=", asItems(0, lngArraySize)
 
                     If Not recWorkflowElementItemValuesEdit.NoMatch Then
                       Do While Not recWorkflowElementItemValuesEdit.EOF
-                        If recWorkflowElementItemValuesEdit.Fields("itemID") <> asItems(0, UBound(asItems, 2)) Then
+                        If recWorkflowElementItemValuesEdit.Fields("itemID") <> asItems(0, lngArraySize) Then
                           Exit Do
                         End If
 
@@ -13344,42 +13346,42 @@ Public Function LoadElementsAndLinks() As Boolean
                     End If
                     
                     If Len(sControlValueList) > 0 Then
-                      asItems(47, UBound(asItems, 2)) = Left(sControlValueList, Len(sControlValueList) - 1)
+                      asItems(47, lngArraySize) = Left(sControlValueList, Len(sControlValueList) - 1)
                     End If
                   End If
                   
-                  asItems(48, UBound(asItems, 2)) = IIf(IsNull(recWorkflowElementItemEdit.Fields("LookupTableID").value), 0, recWorkflowElementItemEdit.Fields("LookupTableID").value)
-                  asItems(49, UBound(asItems, 2)) = IIf(IsNull(recWorkflowElementItemEdit.Fields("LookupColumnID").value), vbHighlightText, recWorkflowElementItemEdit.Fields("LookupColumnID").value)
-                  asItems(50, UBound(asItems, 2)) = IIf(IsNull(recWorkflowElementItemEdit.Fields("RecordTableID").value), vbHighlightText, recWorkflowElementItemEdit.Fields("RecordTableID").value)
-                  asItems(51, UBound(asItems, 2)) = IIf(IsNull(recWorkflowElementItemEdit.Fields("Orientation").value), 0, recWorkflowElementItemEdit.Fields("Orientation").value)
-                  asItems(52, UBound(asItems, 2)) = IIf(IsNull(recWorkflowElementItemEdit.Fields("RecordOrderID").value), 0, recWorkflowElementItemEdit.Fields("RecordOrderID").value)
-                  asItems(53, UBound(asItems, 2)) = IIf(IsNull(recWorkflowElementItemEdit.Fields("RecordFilterID").value), 0, recWorkflowElementItemEdit.Fields("RecordFilterID").value)
-                  asItems(54, UBound(asItems, 2)) = IIf(IsNull(recWorkflowElementItemEdit.Fields("behaviour").value), WORKFLOWBUTTONACTION_SUBMIT, recWorkflowElementItemEdit.Fields("behaviour").value)
-                  asItems(55, UBound(asItems, 2)) = IIf(IsNull(recWorkflowElementItemEdit.Fields("mandatory").value), False, recWorkflowElementItemEdit.Fields("mandatory").value)
-                  asItems(57, UBound(asItems, 2)) = IIf(IsNull(recWorkflowElementItemEdit.Fields("captionType").value), giWFDATAVALUE_FIXED, recWorkflowElementItemEdit.Fields("captionType").value)
-                  asItems(58, UBound(asItems, 2)) = IIf(IsNull(recWorkflowElementItemEdit.Fields("defaultValueType").value), giWFDATAVALUE_FIXED, recWorkflowElementItemEdit.Fields("defaultValueType").value)
-                  asItems(59, UBound(asItems, 2)) = IIf(IsNull(recWorkflowElementItemEdit.Fields("VerticalOffsetBehaviour").value), 0, recWorkflowElementItemEdit.Fields("VerticalOffsetBehaviour").value)
-                  asItems(60, UBound(asItems, 2)) = IIf(IsNull(recWorkflowElementItemEdit.Fields("HorizontalOffsetBehaviour").value), 0, recWorkflowElementItemEdit.Fields("HorizontalOffsetBehaviour").value)
-                  asItems(61, UBound(asItems, 2)) = IIf(IsNull(recWorkflowElementItemEdit.Fields("VerticalOffset").value), 0, recWorkflowElementItemEdit.Fields("VerticalOffset").value)
-                  asItems(62, UBound(asItems, 2)) = IIf(IsNull(recWorkflowElementItemEdit.Fields("HorizontalOffset").value), 0, recWorkflowElementItemEdit.Fields("HorizontalOffset").value)
-                  asItems(63, UBound(asItems, 2)) = IIf(IsNull(recWorkflowElementItemEdit.Fields("HeightBehaviour").value), 0, recWorkflowElementItemEdit.Fields("HeightBehaviour").value)
-                  asItems(64, UBound(asItems, 2)) = IIf(IsNull(recWorkflowElementItemEdit.Fields("WidthBehaviour").value), 0, recWorkflowElementItemEdit.Fields("WidthBehaviour").value)
-                  asItems(65, UBound(asItems, 2)) = IIf(IsNull(recWorkflowElementItemEdit.Fields("PasswordType").value), False, recWorkflowElementItemEdit.Fields("PasswordType").value)
-                  asItems(66, UBound(asItems, 2)) = vbNullString
-                  asItems(67, UBound(asItems, 2)) = IIf(IsNull(recWorkflowElementItemEdit.Fields("LookupFilterColumnID").value), 0, recWorkflowElementItemEdit.Fields("LookupFilterColumnID").value)
-                  asItems(68, UBound(asItems, 2)) = IIf(IsNull(recWorkflowElementItemEdit.Fields("LookupFilterOperator").value), 0, recWorkflowElementItemEdit.Fields("LookupFilterOperator").value)
-                  asItems(69, UBound(asItems, 2)) = IIf(IsNull(recWorkflowElementItemEdit.Fields("LookupFilterValue").value), "", recWorkflowElementItemEdit.Fields("LookupFilterValue").value)
+                  asItems(48, lngArraySize) = IIf(IsNull(recWorkflowElementItemEdit.Fields("LookupTableID").value), 0, recWorkflowElementItemEdit.Fields("LookupTableID").value)
+                  asItems(49, lngArraySize) = IIf(IsNull(recWorkflowElementItemEdit.Fields("LookupColumnID").value), vbHighlightText, recWorkflowElementItemEdit.Fields("LookupColumnID").value)
+                  asItems(50, lngArraySize) = IIf(IsNull(recWorkflowElementItemEdit.Fields("RecordTableID").value), vbHighlightText, recWorkflowElementItemEdit.Fields("RecordTableID").value)
+                  asItems(51, lngArraySize) = IIf(IsNull(recWorkflowElementItemEdit.Fields("Orientation").value), 0, recWorkflowElementItemEdit.Fields("Orientation").value)
+                  asItems(52, lngArraySize) = IIf(IsNull(recWorkflowElementItemEdit.Fields("RecordOrderID").value), 0, recWorkflowElementItemEdit.Fields("RecordOrderID").value)
+                  asItems(53, lngArraySize) = IIf(IsNull(recWorkflowElementItemEdit.Fields("RecordFilterID").value), 0, recWorkflowElementItemEdit.Fields("RecordFilterID").value)
+                  asItems(54, lngArraySize) = IIf(IsNull(recWorkflowElementItemEdit.Fields("behaviour").value), WORKFLOWBUTTONACTION_SUBMIT, recWorkflowElementItemEdit.Fields("behaviour").value)
+                  asItems(55, lngArraySize) = IIf(IsNull(recWorkflowElementItemEdit.Fields("mandatory").value), False, recWorkflowElementItemEdit.Fields("mandatory").value)
+                  asItems(57, lngArraySize) = IIf(IsNull(recWorkflowElementItemEdit.Fields("captionType").value), giWFDATAVALUE_FIXED, recWorkflowElementItemEdit.Fields("captionType").value)
+                  asItems(58, lngArraySize) = IIf(IsNull(recWorkflowElementItemEdit.Fields("defaultValueType").value), giWFDATAVALUE_FIXED, recWorkflowElementItemEdit.Fields("defaultValueType").value)
+                  asItems(59, lngArraySize) = IIf(IsNull(recWorkflowElementItemEdit.Fields("VerticalOffsetBehaviour").value), 0, recWorkflowElementItemEdit.Fields("VerticalOffsetBehaviour").value)
+                  asItems(60, lngArraySize) = IIf(IsNull(recWorkflowElementItemEdit.Fields("HorizontalOffsetBehaviour").value), 0, recWorkflowElementItemEdit.Fields("HorizontalOffsetBehaviour").value)
+                  asItems(61, lngArraySize) = IIf(IsNull(recWorkflowElementItemEdit.Fields("VerticalOffset").value), 0, recWorkflowElementItemEdit.Fields("VerticalOffset").value)
+                  asItems(62, lngArraySize) = IIf(IsNull(recWorkflowElementItemEdit.Fields("HorizontalOffset").value), 0, recWorkflowElementItemEdit.Fields("HorizontalOffset").value)
+                  asItems(63, lngArraySize) = IIf(IsNull(recWorkflowElementItemEdit.Fields("HeightBehaviour").value), 0, recWorkflowElementItemEdit.Fields("HeightBehaviour").value)
+                  asItems(64, lngArraySize) = IIf(IsNull(recWorkflowElementItemEdit.Fields("WidthBehaviour").value), 0, recWorkflowElementItemEdit.Fields("WidthBehaviour").value)
+                  asItems(65, lngArraySize) = IIf(IsNull(recWorkflowElementItemEdit.Fields("PasswordType").value), False, recWorkflowElementItemEdit.Fields("PasswordType").value)
+                  asItems(66, lngArraySize) = vbNullString
+                  asItems(67, lngArraySize) = IIf(IsNull(recWorkflowElementItemEdit.Fields("LookupFilterColumnID").value), 0, recWorkflowElementItemEdit.Fields("LookupFilterColumnID").value)
+                  asItems(68, lngArraySize) = IIf(IsNull(recWorkflowElementItemEdit.Fields("LookupFilterOperator").value), 0, recWorkflowElementItemEdit.Fields("LookupFilterOperator").value)
+                  asItems(69, lngArraySize) = IIf(IsNull(recWorkflowElementItemEdit.Fields("LookupFilterValue").value), "", recWorkflowElementItemEdit.Fields("LookupFilterValue").value)
 
                   If (recWorkflowElementItemEdit.Fields("itemType") = giWFFORMITEM_INPUTVALUE_FILEUPLOAD) Then
 
                     sControlValueList = vbNullString
 
                     recWorkflowElementItemValuesEdit.Index = "idxItemID"
-                    recWorkflowElementItemValuesEdit.Seek ">=", asItems(0, UBound(asItems, 2))
+                    recWorkflowElementItemValuesEdit.Seek ">=", asItems(0, lngArraySize)
 
                     If Not recWorkflowElementItemValuesEdit.NoMatch Then
                       Do While Not recWorkflowElementItemValuesEdit.EOF
-                        If recWorkflowElementItemValuesEdit.Fields("itemID") <> asItems(0, UBound(asItems, 2)) Then
+                        If recWorkflowElementItemValuesEdit.Fields("itemID") <> asItems(0, lngArraySize) Then
                           Exit Do
                         End If
 
@@ -13390,12 +13392,12 @@ Public Function LoadElementsAndLinks() As Boolean
                     End If
 
                     If Len(sControlValueList) > 0 Then
-                      asItems(66, UBound(asItems, 2)) = Left(sControlValueList, Len(sControlValueList) - 1)
+                      asItems(66, lngArraySize) = Left(sControlValueList, Len(sControlValueList) - 1)
                     End If
                   End If
                 End If
                 
-                asItems(56, UBound(asItems, 2)) = IIf(IsNull(recWorkflowElementItemEdit.Fields("calcID").value), 0, recWorkflowElementItemEdit.Fields("calcID").value)
+                asItems(56, lngArraySize) = IIf(IsNull(recWorkflowElementItemEdit.Fields("calcID").value), 0, recWorkflowElementItemEdit.Fields("calcID").value)
                 
                 recWorkflowElementItemEdit.MoveNext
               Loop
