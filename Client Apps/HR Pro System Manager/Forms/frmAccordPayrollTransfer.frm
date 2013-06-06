@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmAccordPayrollTransfer 
@@ -82,6 +82,7 @@ Begin VB.Form frmAccordPayrollTransfer
       TabPicture(0)   =   "frmAccordPayrollTransfer.frx":000C
       Tab(0).ControlEnabled=   0   'False
       Tab(0).Control(0)=   "fraTransferDefinition"
+      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).ControlCount=   1
       TabCaption(1)   =   "&Settings"
       TabPicture(1)   =   "frmAccordPayrollTransfer.frx":0028
@@ -278,14 +279,6 @@ Begin VB.Form frmAccordPayrollTransfer
          TabIndex        =   20
          Top             =   1800
          Width           =   8340
-         Begin VB.ComboBox cboStatusForUtilities 
-            Height          =   315
-            Left            =   5850
-            Style           =   2  'Dropdown List
-            TabIndex        =   37
-            Top             =   340
-            Width           =   2100
-         End
          Begin VB.CheckBox chkAllowStatusChange 
             Caption         =   "&Allow status change"
             Height          =   345
@@ -309,14 +302,6 @@ Begin VB.Form frmAccordPayrollTransfer
             TabIndex        =   12
             Top             =   340
             Width           =   2100
-         End
-         Begin VB.Label lblDefaultStatusForUtilis 
-            Caption         =   "Status for Utilities :"
-            Height          =   285
-            Left            =   4005
-            TabIndex        =   38
-            Top             =   405
-            Width           =   1725
          End
          Begin VB.Label lblDefaultStatus 
             Caption         =   "Default Status : "
@@ -707,7 +692,7 @@ Private Sub RefreshButtons()
     cmdFilter.Enabled = (SelectedComboItem(cboTransferTables) > 0)
     
     ' Options tab
-    asrArchivePeriod.Enabled = (optPurgePeriod(1).Value = True)
+    asrArchivePeriod.Enabled = (optPurgePeriod(1).value = True)
     asrArchivePeriod.BackColor = IIf(asrArchivePeriod.Enabled And Not mbReadOnly, vbWhite, vbButtonFace)
     cboArchivePeriod.Enabled = (asrArchivePeriod.Enabled)
     cboArchivePeriod.BackColor = IIf(asrArchivePeriod.Enabled And Not mbReadOnly, vbWhite, vbButtonFace)
@@ -779,7 +764,7 @@ Private Sub cboTransferType_Click()
   'Set the filter information
   txtFilter.Tag = mavarTransferFilterIDs(cboTransferType.ListIndex)
   txtFilter.Text = GetExpressionName(txtFilter.Tag)
-  chkSendAsUpdate.Value = IIf(mabvarTransferForceUpdate(cboTransferType.ListIndex) = True, vbChecked, vbUnchecked)
+  chkSendAsUpdate.value = IIf(mabvarTransferForceUpdate(cboTransferType.ListIndex) = True, vbChecked, vbUnchecked)
   
   Changed = True
   RefreshButtons
@@ -806,7 +791,7 @@ Changed = True
 End Sub
 
 Private Sub chkSendAsUpdate_Click()
-  mabvarTransferForceUpdate(cboTransferType.ListIndex) = IIf(chkSendAsUpdate.Value = vbChecked, 1, 0)
+  mabvarTransferForceUpdate(cboTransferType.ListIndex) = IIf(chkSendAsUpdate.value = vbChecked, 1, 0)
   Changed = True
 End Sub
 
@@ -873,7 +858,7 @@ Private Sub cmdEdit_Click()
     .TableID = Val(ctlGrid.Columns("ASRTableID").Text)
     .ColumnID = Val(ctlGrid.Columns("ASRColumnID").Text)
     .ExprID = Val(ctlGrid.Columns("ASRExprID").Text)
-    .Value = ctlGrid.Columns("ASRValue").Text
+    .value = ctlGrid.Columns("ASRValue").Text
     .IsKeyField = ctlGrid.Columns("IsKeyField").Text
     .IsCompanyCode = ctlGrid.Columns("IsCompanyCode").Text
     .IsEmployeeCode = ctlGrid.Columns("IsEmployeeCode").Text
@@ -904,11 +889,11 @@ Private Sub cmdEdit_Click()
     
     If Not .Cancelled Then
 
-      strMapToDescription = MapToDescription(.MapType, .ColumnID, .ExprID, .Value)
+      strMapToDescription = MapToDescription(.MapType, .ColumnID, .ExprID, .value)
 
       strAddString = .Description & vbTab & strMapToDescription _
           & vbTab & CStr(.MapType) & vbTab & .TableID & vbTab & .ColumnID _
-          & vbTab & .ExprID & vbTab & .Value & vbTab & strMandatory & vbTab & strTransferFieldID _
+          & vbTab & .ExprID & vbTab & .value & vbTab & strMandatory & vbTab & strTransferFieldID _
           & vbTab & strIsCompanyCode & vbTab & strIsEmployeeCode _
           & vbTab & .Direction & vbTab & .IsKeyField & vbTab & .AlwaysTransferField & vbTab & .ConvertData _
           & vbTab & strIsEmployeeName & vbTab & strIsDepartmentCode & vbTab & strIsDepartmentName & vbTab & strIsPayrollCode _
@@ -1021,7 +1006,7 @@ Private Sub cmdNone_Click()
     strMandatory = ctlGrid.Columns("Mandatory").Text
     strTransferFieldID = ctlGrid.Columns("TransferFieldID").Text
     
-    strMapToDescription = MapToDescription(.MapType, .ColumnID, .ExprID, .Value)
+    strMapToDescription = MapToDescription(.MapType, .ColumnID, .ExprID, .value)
 
     strAddString = .Description & vbTab & strMapToDescription _
         & vbTab & "" & vbTab & "" & vbTab & "" _
@@ -1115,7 +1100,7 @@ Private Function SaveChanges() As Boolean
       .Edit
     End If
     !ParameterType = gsPARAMETERTYPE_OTHER
-    !parametervalue = IIf(optPurgePeriod.Item(0).Value = True, 0, 1)
+    !parametervalue = IIf(optPurgePeriod.Item(0).value = True, 0, 1)
     .Update
 
 
@@ -1129,7 +1114,7 @@ Private Function SaveChanges() As Boolean
       .Edit
     End If
     !ParameterType = gsPARAMETERTYPE_OTHER
-    !parametervalue = asrArchivePeriod.Value
+    !parametervalue = asrArchivePeriod.value
     .Update
 
     ' Save the purge type.
@@ -1163,20 +1148,6 @@ Private Function SaveChanges() As Boolean
     .Update
     
     
-    ' Save the default status for utilities.
-    .Seek "=", gsMODULEKEY_ACCORD, gsPARAMETERKEY_STATUSFORUTILITIES
-    If .NoMatch Then
-      .AddNew
-      !moduleKey = gsMODULEKEY_ACCORD
-      !parameterkey = gsPARAMETERKEY_STATUSFORUTILITIES
-    Else
-      .Edit
-    End If
-    !ParameterType = gsPARAMETERTYPE_OTHER
-    !parametervalue = SelectedComboItem(cboStatusForUtilities)
-    .Update
-        
-    
     ' Save delete prohibit
     .Seek "=", gsMODULEKEY_ACCORD, gsPARAMETERKEY_ALLOWDELETE
     If .NoMatch Then
@@ -1187,7 +1158,7 @@ Private Function SaveChanges() As Boolean
       .Edit
     End If
     !ParameterType = gsPARAMETERTYPE_OTHER
-    !parametervalue = chkAllowDelete.Value
+    !parametervalue = chkAllowDelete.value
     .Update
     
     ' Save allow status change
@@ -1200,7 +1171,7 @@ Private Function SaveChanges() As Boolean
       .Edit
     End If
     !ParameterType = gsPARAMETERTYPE_OTHER
-    !parametervalue = chkAllowStatusChange.Value
+    !parametervalue = chkAllowStatusChange.value
     .Update
   
   End With
@@ -1239,9 +1210,9 @@ Private Function SaveChanges() As Boolean
       sSQL = "INSERT INTO tmpAccordTransferFieldDefinitions" & _
         " (TransferFieldID, TransferTypeID, Mandatory, Description, ASRMapType, ASRTableID, ASRColumnID, ASRExprID, ASRValue, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer, ConvertData, IsEmployeeName, IsDepartmentCode, IsDepartmentName, IsPayrollCode, GroupBy, PreventModify)" & _
         " VALUES (" & _
-        .Columns("TransferFieldID").Value & "," & _
+        .Columns("TransferFieldID").value & "," & _
         iTransferType & "," & _
-        IIf(.Columns("Mandatory").Value = True, "1", "0") & "," & _
+        IIf(.Columns("Mandatory").value = True, "1", "0") & "," & _
         "'" & Replace(.Columns("Description").Text, "'", "''") & "'," & _
         IIf(Len(.Columns("ASRMapType").Text) = 0, "null", .Columns("ASRMapType").Text) & "," & _
         IIf(Len(.Columns("ASRTableID").Text) = 0, "null", .Columns("ASRTableID").Text) & "," & _
@@ -1439,10 +1410,10 @@ Private Sub grdTransferDetails_RowLoaded(Index As Integer, ByVal Bookmark As Var
 End Sub
 
 Private Sub optPurgePeriod_Click(Index As Integer)
-  asrArchivePeriod.Enabled = optPurgePeriod(1).Value = True
+  asrArchivePeriod.Enabled = optPurgePeriod(1).value = True
   asrArchivePeriod.BackColor = IIf(asrArchivePeriod.Enabled And Not mbReadOnly, vbWhite, vbButtonFace)
   
-  cboArchivePeriod.Enabled = optPurgePeriod(1).Value = True
+  cboArchivePeriod.Enabled = optPurgePeriod(1).value = True
   cboArchivePeriod.BackColor = IIf(cboArchivePeriod.Enabled And Not mbReadOnly, vbWhite, vbButtonFace)
     
   Changed = True
@@ -1621,13 +1592,12 @@ Private Sub PopulateFields()
   txtServer.Text = mstrServer
 
   ' Options Tab
-  optPurgePeriod(miPurgeType).Value = True
+  optPurgePeriod(miPurgeType).value = True
   asrArchivePeriod.Text = miPurgePeriod
   SetComboItem cboArchivePeriod, mlngPurgePeriodType
   SetComboItem cboStatus, miDefaultStatus
-  SetComboItem cboStatusForUtilities, miStatusForUtilities
-  chkAllowDelete.Value = IIf(mbAllowDeletions = True, vbChecked, vbUnchecked)
-  chkAllowStatusChange.Value = IIf(mbAllowStatusChange = True, vbChecked, vbUnchecked)
+  chkAllowDelete.value = IIf(mbAllowDeletions = True, vbChecked, vbUnchecked)
+  chkAllowStatusChange.value = IIf(mbAllowStatusChange = True, vbChecked, vbUnchecked)
 
 End Sub
 
@@ -1659,8 +1629,8 @@ Private Sub PopulateColumnsCombo(ByRef cboTemp As ComboBox, plngTableID As Long,
         End If
 
         If (Not !Deleted) And _
-          (!ColumnType <> giCOLUMNTYPE_LINK) And _
-          (!ColumnType <> giCOLUMNTYPE_SYSTEM) Then
+          (!columnType <> giCOLUMNTYPE_LINK) And _
+          (!columnType <> giCOLUMNTYPE_SYSTEM) Then
 
             cboTemp.AddItem !ColumnName
             cboTemp.ItemData(cboTemp.NewIndex) = !ColumnID
@@ -1886,21 +1856,6 @@ Private Sub PopulateStaticCombos()
   
   End With
 
-  
-  ' The status's for when running utlities
-  With cboStatusForUtilities
- 
-    .AddItem "Pending"
-    .ItemData(.NewIndex) = ACCORD_STATUS_PENDING
-
-    .AddItem "Blocked"
-    .ItemData(.NewIndex) = ACCORD_STATUS_BLOCKED
-  
-    .ListIndex = 0
-  
-  End With
-
-
 End Sub
 
 Private Sub EnableDisableTabControls()
@@ -2014,7 +1969,7 @@ Private Sub ClearItem(lngrow2 As Long)
     strMandatory = ctlGrid.Columns("Mandatory").Text
     strTransferFieldID = ctlGrid.Columns("TransferFieldID").Text
     
-    strMapToDescription = MapToDescription(.MapType, .ColumnID, .ExprID, .Value)
+    strMapToDescription = MapToDescription(.MapType, .ColumnID, .ExprID, .value)
 
     strAddString = .Description & vbTab & strMapToDescription _
         & vbTab & "" & vbTab & "" & vbTab & "" _
