@@ -469,8 +469,8 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
       If fOK Then
         OutputCurrentProcess2 "Configuring Procedures", 2
         fOK = ConfigureModuleSpecifics
-        
         fOK = fOK And gobjHRProEngine.Script.ScriptFunctions
+        fOK = fOK And gobjHRProEngine.Script.ScriptIndexes
         fOK = fOK And Not gobjProgress.Cancelled
         gobjProgress.UpdateProgress2
       End If
