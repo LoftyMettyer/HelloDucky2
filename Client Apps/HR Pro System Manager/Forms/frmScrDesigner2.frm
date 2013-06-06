@@ -306,7 +306,6 @@ Begin VB.Form frmScrDesigner2
          NumTabs         =   1
          BeginProperty Tab1 {0713F341-850A-101B-AFC0-4210102A8DA7} 
             Caption         =   ""
-            Key             =   ""
             Object.Tag             =   ""
             ImageVarType    =   2
          EndProperty
@@ -4166,6 +4165,33 @@ Private Function AlignY(pLngY As Long) As Long
   
 End Function
 
+' Validates the screen
+Private Function ValidateScreen() As Boolean
+
+  Dim bOK As Boolean
+  Dim ctlControl As Control
+  Dim bControlsFound As Boolean
+  
+  bOK = True
+  bControlsFound = False
+    
+  ' Save each screen control.
+  For Each ctlControl In Me.Controls
+    If IsScreenControl(ctlControl) Then
+      bControlsFound = True
+      Exit For
+    End If
+  Next ctlControl
+  
+  If Not bControlsFound Then
+    MsgBox "You cannot save a screen with no controls.", vbExclamation, Me.Caption
+    bOK = False
+  End If
+  
+  ValidateScreen = bOK
+
+End Function
+
 Private Function SaveScreen() As Boolean
   ' Save the screen to the local database.
   On Error GoTo ErrorTrap
@@ -4174,7 +4200,9 @@ Private Function SaveScreen() As Boolean
   Dim iPageNo As Integer
   Dim iCount As Integer
   
-  fOK = True
+  If Not ValidateScreen Then
+    Exit Function
+  End If
   
   Screen.MousePointer = vbHourglass
   
