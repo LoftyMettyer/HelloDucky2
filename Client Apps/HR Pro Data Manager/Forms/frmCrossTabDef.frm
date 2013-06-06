@@ -82,9 +82,9 @@ Begin VB.Form frmCrossTabDef
       TabCaption(1)   =   "Colu&mns"
       TabPicture(1)   =   "frmCrossTabDef.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraColumns(0)"
+      Tab(1).Control(0)=   "fraColumns(1)"
       Tab(1).Control(0).Enabled=   0   'False
-      Tab(1).Control(1)=   "fraColumns(1)"
+      Tab(1).Control(1)=   "fraColumns(0)"
       Tab(1).Control(1).Enabled=   0   'False
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "O&utput"
@@ -169,28 +169,28 @@ Begin VB.Form frmCrossTabDef
             Width           =   2880
          End
          Begin VB.CommandButton cmdFilename 
+            Caption         =   "..."
             DisabledPicture =   "frmCrossTabDef.frx":0060
             Enabled         =   0   'False
             Height          =   315
             Left            =   6150
             Picture         =   "frmCrossTabDef.frx":03C1
-            Style           =   1  'Graphical
             TabIndex        =   69
             Top             =   1760
             UseMaskColor    =   -1  'True
-            Width           =   345
+            Width           =   330
          End
          Begin VB.CommandButton cmdEmailGroup 
+            Caption         =   "..."
             DisabledPicture =   "frmCrossTabDef.frx":0722
             Enabled         =   0   'False
             Height          =   315
             Left            =   6150
             Picture         =   "frmCrossTabDef.frx":0A83
-            Style           =   1  'Graphical
             TabIndex        =   75
             Top             =   2660
             UseMaskColor    =   -1  'True
-            Width           =   345
+            Width           =   330
          End
          Begin VB.CheckBox chkDestination 
             Caption         =   "Displa&y output on screen"
@@ -449,7 +449,7 @@ Begin VB.Form frmCrossTabDef
             Width           =   2910
          End
          Begin VB.CommandButton cmdPicklist 
-Caption = "..."
+            Caption         =   "..."
             Enabled         =   0   'False
             Height          =   315
             Left            =   8685
@@ -459,7 +459,7 @@ Caption = "..."
             Width           =   330
          End
          Begin VB.CommandButton cmdFilter 
-Caption = "..."
+            Caption         =   "..."
             Enabled         =   0   'False
             Height          =   315
             Left            =   8685
@@ -551,7 +551,7 @@ Caption = "..."
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(0).Picture=   "frmCrossTabDef.frx":1B68
+            stylesets(0).Picture=   "frmCrossTabDef.frx":0DE4
             stylesets(1).Name=   "ReadOnly"
             stylesets(1).ForeColor=   -2147483631
             stylesets(1).BackColor=   -2147483633
@@ -565,7 +565,7 @@ Caption = "..."
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(1).Picture=   "frmCrossTabDef.frx":1B84
+            stylesets(1).Picture=   "frmCrossTabDef.frx":0E00
             MultiLine       =   0   'False
             AllowRowSizing  =   0   'False
             AllowGroupSizing=   0   'False
@@ -710,9 +710,9 @@ Caption = "..."
          End
          Begin VB.ComboBox cboType 
             Height          =   315
-            ItemData        =   "frmCrossTabDef.frx":1BA0
+            ItemData        =   "frmCrossTabDef.frx":0E1C
             Left            =   1620
-            List            =   "frmCrossTabDef.frx":1BA2
+            List            =   "frmCrossTabDef.frx":0E1E
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
             TabIndex        =   43
@@ -869,7 +869,7 @@ Caption = "..."
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            MouseIcon       =   "frmCrossTabDef.frx":1BA4
+            MouseIcon       =   "frmCrossTabDef.frx":0E20
             MousePointer    =   0
          End
          Begin TDBNumberCtrl.TDBNumber mskHorizontalRange 
@@ -941,7 +941,7 @@ Caption = "..."
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            MouseIcon       =   "frmCrossTabDef.frx":1BC0
+            MouseIcon       =   "frmCrossTabDef.frx":0E3C
             MousePointer    =   0
          End
          Begin TDBNumberCtrl.TDBNumber mskHorizontalRange 
@@ -1013,7 +1013,7 @@ Caption = "..."
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            MouseIcon       =   "frmCrossTabDef.frx":1BDC
+            MouseIcon       =   "frmCrossTabDef.frx":0E58
             MousePointer    =   0
          End
          Begin TDBNumberCtrl.TDBNumber mskVerticalRange 
@@ -1085,7 +1085,7 @@ Caption = "..."
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            MouseIcon       =   "frmCrossTabDef.frx":1BF8
+            MouseIcon       =   "frmCrossTabDef.frx":0E74
             MousePointer    =   0
          End
          Begin TDBNumberCtrl.TDBNumber mskVerticalRange 
@@ -1157,7 +1157,7 @@ Caption = "..."
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            MouseIcon       =   "frmCrossTabDef.frx":1C14
+            MouseIcon       =   "frmCrossTabDef.frx":0E90
             MousePointer    =   0
          End
          Begin TDBNumberCtrl.TDBNumber mskVerticalRange 
@@ -1229,7 +1229,7 @@ Caption = "..."
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            MouseIcon       =   "frmCrossTabDef.frx":1C30
+            MouseIcon       =   "frmCrossTabDef.frx":0EAC
             MousePointer    =   0
          End
          Begin TDBNumberCtrl.TDBNumber mskPageBreakRange 
@@ -1301,7 +1301,7 @@ Caption = "..."
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            MouseIcon       =   "frmCrossTabDef.frx":1C4C
+            MouseIcon       =   "frmCrossTabDef.frx":0EC8
             MousePointer    =   0
          End
          Begin TDBNumberCtrl.TDBNumber mskPageBreakRange 
@@ -1373,7 +1373,7 @@ Caption = "..."
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            MouseIcon       =   "frmCrossTabDef.frx":1C68
+            MouseIcon       =   "frmCrossTabDef.frx":0EE4
             MousePointer    =   0
          End
          Begin TDBNumberCtrl.TDBNumber mskPageBreakRange 
@@ -1445,7 +1445,7 @@ Caption = "..."
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            MouseIcon       =   "frmCrossTabDef.frx":1C84
+            MouseIcon       =   "frmCrossTabDef.frx":0F00
             MousePointer    =   0
          End
          Begin VB.Label Label1 
@@ -1865,11 +1865,11 @@ End Function
 
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 
 Public Property Let Changed(blnChanged As Boolean)
-  cmdOK.Enabled = blnChanged
+  cmdOk.Enabled = blnChanged
 End Property
 
 Public Property Get SelectedID() As Long
@@ -2023,12 +2023,12 @@ End Sub
 
 Private Sub chkPercentage_Click()
   
-  chkPercentageOfPage.Enabled = _
+  chkPercentageofPage.Enabled = _
     (chkPercentage.Value = vbChecked And _
      Val(cboPageBreakCol.Tag) > 0)
   
-  If chkPercentageOfPage.Enabled = False Then
-    chkPercentageOfPage.Value = vbUnchecked
+  If chkPercentageofPage.Enabled = False Then
+    chkPercentageofPage.Value = vbUnchecked
   End If
 
   Me.Changed = True
@@ -2225,7 +2225,7 @@ Private Sub txtDesc_Change()
 End Sub
 
 Private Sub txtDesc_LostFocus()
-  cmdOK.Default = True
+  cmdOk.Default = True
 End Sub
 
 Private Sub txtEmailGroup_Change()
@@ -2254,7 +2254,7 @@ End Sub
 
 Private Sub txtDesc_GotFocus()
   txt_GotFocus txtDesc
-  cmdOK.Default = False
+  cmdOk.Default = False
 End Sub
 
 Private Sub cboBaseTable_Click()
@@ -2658,7 +2658,7 @@ Private Sub RetreiveDefinition()
   SetComboItem cboType, rsTemp!IntersectionType
 
   chkPercentage = Abs(rsTemp!Percentage)
-  chkPercentageOfPage = Abs(rsTemp!PercentageofPage)
+  chkPercentageofPage = Abs(rsTemp!PercentageofPage)
   chkSuppressZeros = Abs(rsTemp!SuppressZeros)
   
   If Not IsNull(rsTemp!ThousandSeparators) Then
@@ -2856,7 +2856,7 @@ Private Sub SaveDefinition()
   strType = CStr(cboType.ItemData(cboType.ListIndex))
   strIntersectionColID = CStr(cboIntersectionCol.ItemData(cboIntersectionCol.ListIndex))
   strPercentage = CStr(Abs(chkPercentage <> 0))
-  strPercentageofPage = CStr(Abs(chkPercentageOfPage <> 0))
+  strPercentageofPage = CStr(Abs(chkPercentageofPage <> 0))
   strSuppressZeros = CStr(Abs(chkSuppressZeros <> 0))
   strThousandSeparators = CStr(Abs(chkThousandSeparators.Value <> vbUnchecked))
     
