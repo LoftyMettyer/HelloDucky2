@@ -536,23 +536,26 @@ PRINT 'Step - Add abstraction layer to user defined tables'
 				EXECUTE sp_executesql @sqlCommand;
 
 				-- Read the security for the base table
-				INSERT @permissions
-					EXEC sp_helprotect @name = @newname, @grantorname = ''dbo'';
-		 
-				-- Apply the permissions onto the view
-				SELECT @sqlApplyPermissions = @sqlApplyPermissions + p.protecttype + '' '' + p.[action] + '' ON '' +  @oldname +
-					CASE p.[column]
-						WHEN ''.'' THEN ''''
-						WHEN ''(All+New)'' THEN ''''
-						ELSE ''('' + p.[column] + '')''
-					END
-					+ '' TO ['' + p.[grantee] + + ''];'' + CHAR(13) FROM @permissions p;
-				EXECUTE sp_executesql @sqlApplyPermissions;
+				IF EXISTS(SELECT * FROM sys.sysprotects WHERE OBJECT_ID('''' + @oldname + '''') = id)
+				BEGIN
 
-				-- Revoke existing permissions on the base table
-				SELECT @sqlRevokePermissions = @sqlRevokePermissions + ''REVOKE SELECT, UPDATE, DELETE, INSERT ON '' + p.[object] + '' TO ['' + p.[grantee] + ''];'' + CHAR(13)
-					FROM @permissions p
-				EXECUTE sp_executesql @sqlRevokePermissions;
+					INSERT @permissions	EXEC sp_helprotect @name = @newname, @grantorname = ''dbo'';
+			 
+					-- Apply the permissions onto the view
+					SELECT @sqlApplyPermissions = @sqlApplyPermissions + p.protecttype + '' '' + p.[action] + '' ON '' +  @oldname +
+						CASE p.[column]
+							WHEN ''.'' THEN ''''
+							WHEN ''(All+New)'' THEN ''''
+							ELSE ''('' + p.[column] + '')''
+						END
+						+ '' TO ['' + p.[grantee] + + ''];'' + CHAR(13) FROM @permissions p;
+					EXECUTE sp_executesql @sqlApplyPermissions;
+
+					-- Revoke existing permissions on the base table
+					SELECT @sqlRevokePermissions = @sqlRevokePermissions + ''REVOKE SELECT, UPDATE, DELETE, INSERT ON '' + p.[object] + '' TO ['' + p.[grantee] + ''];'' + CHAR(13)
+						FROM @permissions p
+					EXECUTE sp_executesql @sqlRevokePermissions;
+				END
 
 				-- Add new columns on the base table
 				SET @sqlCommand = ''ALTER TABLE '' + @newname + '' ADD [updflag] integer;'';
