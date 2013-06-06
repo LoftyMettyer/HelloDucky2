@@ -920,5 +920,3 @@ Dim hIconSmall As Long
    
 End Sub
 
-
-
