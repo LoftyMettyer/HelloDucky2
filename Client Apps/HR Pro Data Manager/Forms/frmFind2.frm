@@ -404,6 +404,10 @@ Private Const dblHISTORYFORM_MINHEIGHT = 5000
 Private Const dblCOORD_XGAP = 150
 Private Const dblCOORD_YGAP = 150
 
+Private mstrSelectedRecords As String
+Private mblnRefreshing As Boolean
+
+
   
 Public Property Get AddFromWaitingListVisible() As Boolean
   AddFromWaitingListVisible = mfAddFromWaitingListVisible
@@ -1540,10 +1544,15 @@ Public Sub UpdateSummaryWindow()
   Dim lParent As Long
   Dim frmForm As Form
 
+  
   SetFormCaption Me, mfrmParent.FindCaption
 
   ' Get an updated recordset.
   GetFindRecords
+  
+  If mblnRefreshing Then
+    Exit Sub
+  End If
   
   
   ' JPD20021206 Fault 4843 - Get a handle on the parent recordset again
@@ -4656,16 +4665,15 @@ Public Sub UtilityClick(lngUtilType As UtilityType)
   Dim frmSelection As frmDefSel
   Dim blnExit As Boolean
   Dim blnOK As Boolean
-  Dim strSelectedRecords As String
   Dim iFirstRow As Integer
   
   Dim varBookmark As Variant
 
-  strSelectedRecords = GetSelectedIDs
+  mstrSelectedRecords = GetSelectedIDs
   ' iFirstRow = ssOleDBGridFindColumns.FirstRow
   varBookmark = ssOleDBGridFindColumns.Bookmark
   
-  If strSelectedRecords <> vbNullString Then
+  If mstrSelectedRecords <> vbNullString Then
     If mfrmParent.SaveChanges(False) Then
       If Not Database.Validation Then
         Exit Sub
@@ -4700,28 +4708,28 @@ Public Sub UtilityClick(lngUtilType As UtilityType)
                   Case utlCustomReport
                     Set objCustomReportRun = New clsCustomReportsRUN
                     objCustomReportRun.CustomReportID = .SelectedID
-                    objCustomReportRun.RunCustomReport strSelectedRecords
+                    objCustomReportRun.RunCustomReport mstrSelectedRecords
                     Set objCustomReportRun = Nothing
                   
                   Case utlCalendarReport
                     Set objCalendarReport = New clsCalendarReportsRUN
                     objCalendarReport.CalendarReportID = .SelectedID
-                    objCalendarReport.RunCalendarReport strSelectedRecords
+                    objCalendarReport.RunCalendarReport mstrSelectedRecords
                     Set objCalendarReport = Nothing
                   
                   Case utlGlobalUpdate
                     Set objGlobalRun = New clsGlobalRun
-                    objGlobalRun.RunGlobal .SelectedID, glUpdate, strSelectedRecords
+                    objGlobalRun.RunGlobal .SelectedID, glUpdate, mstrSelectedRecords
                     Set objGlobalRun = Nothing
                   
                   Case utlMailMerge
                     Set objMailMergeRun = New clsMailMergeRun
-                    objMailMergeRun.ExecuteMailMerge .SelectedID, strSelectedRecords
+                    objMailMergeRun.ExecuteMailMerge .SelectedID, mstrSelectedRecords
                     Set objMailMergeRun = Nothing
                   
                   Case utlDataTransfer
                     Set objDataTransferRun = New clsDataTransferRun
-                    objDataTransferRun.ExecuteDataTransfer .SelectedID, strSelectedRecords
+                    objDataTransferRun.ExecuteDataTransfer .SelectedID, mstrSelectedRecords
                     Set objDataTransferRun = Nothing
                   
                   End Select
@@ -4736,8 +4744,14 @@ Public Sub UtilityClick(lngUtilType As UtilityType)
           Loop
         End With
       
+        mblnRefreshing = True
         frmMain.RefreshRecordEditScreens
+        mblnRefreshing = False
         'frmMain.RefreshMainForm Me
+
+        If mstrSelectedRecords <> vbNullString Then
+          ReinstateSelectedRows mstrSelectedRecords
+        End If
         
         '.UpdateAll
       End With
@@ -4746,19 +4760,7 @@ Public Sub UtilityClick(lngUtilType As UtilityType)
       frmMain.EnableMenu Me
     End If
     
-    'NPG20100812 - Reinstate the selected items in the grid
-    ' Remmed out cos it slows the find window down big style - review during 4.2
-'    If strSelectedRecords <> vbNullString Then
-'      ReinstateSelectedRows (strSelectedRecords)
-'      ssOleDBGridFindColumns.FirstRow = iFirstRow
-'      ssOleDBGridFindColumns.Bookmark = varBookmark
-      
-  'StatusBar1.Panels(1).Text = ssOleDBGridFindColumns.Rows & " Record" & IIf(ssOleDBGridFindColumns.Rows = 1, "", "s") & _
-        IIf(ssOleDBGridFindColumns.SelBookmarks.Count > 1, " - " & ssOleDBGridFindColumns.SelBookmarks.Count & " Selected", "")
-'  UpdateStatusBar
-
-'    End If
-    
+  
   End If
 
 
@@ -4785,6 +4787,8 @@ Public Function ReinstateSelectedRows(pstrSelectedRecords As String)
   Dim nTotalSelRows As Variant
   Dim intCount As Integer
   Dim iGridLoop As Integer
+  'Dim varFirstRow As Variant
+  'Dim blnFirstRow As Boolean
     
   If pstrSelectedRecords = vbNullString Then Exit Function
   
@@ -4797,27 +4801,33 @@ Public Function ReinstateSelectedRows(pstrSelectedRecords As String)
   
   .Redraw = False
   
-  arrayBookmarks = Split(pstrSelectedRecords, ",")
-  
-  ' clear the grid's bookmarks
   .SelBookmarks.RemoveAll
   
-  For intCount = 0 To UBound(arrayBookmarks)
+  'For intCount = 0 To UBound(arrayBookmarks)
     
     ' match record id stored in array to the "ID" column of the grid, then
     ' add the bookmark to selbookmarks if found.
     
+    'Set varFirstRow = Nothing
+    
     .MoveFirst
-            
+    'blnFirstRow = False
+    pstrSelectedRecords = "," & pstrSelectedRecords & ","
     For iGridLoop = 1 To RecordCount
-      If .Columns("ID").Value = arrayBookmarks(intCount) Then
-        nTotalSelRows = .Bookmark
+      nTotalSelRows = .Bookmark 'GetBookmark(iGridLoop)
+      If InStr(pstrSelectedRecords, "," & CStr(.Columns("ID").Value) & ",") > 0 Then
         .SelBookmarks.Add nTotalSelRows
+        'If Not blnFirstRow Then
+        '  varFirstRow = .FirstRow
+        '  blnFirstRow = True
+        'End If
       End If
       .MoveNext
     Next
 
-  Next
+  If .SelBookmarks.Count > 0 Then
+    .Bookmark = .SelBookmarks(0)
+  End If
     
   .Redraw = True
   
