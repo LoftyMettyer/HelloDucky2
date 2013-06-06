@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{604A59D5-2409-101D-97D5-46626B63EF2D}#1.0#0"; "TDBNumbr.ocx"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
@@ -42,7 +42,7 @@ Begin VB.Form frmWorkflowTimeout
       BorderStyle     =   0  'None
       Height          =   400
       Left            =   6195
-      TabIndex        =   59
+      TabIndex        =   62
       Top             =   10005
       Width           =   2600
       Begin VB.CommandButton cmdOk 
@@ -50,7 +50,7 @@ Begin VB.Form frmWorkflowTimeout
          Default         =   -1  'True
          Height          =   400
          Left            =   0
-         TabIndex        =   60
+         TabIndex        =   63
          Top             =   0
          Width           =   1200
       End
@@ -59,7 +59,7 @@ Begin VB.Form frmWorkflowTimeout
          Caption         =   "&Cancel"
          Height          =   400
          Left            =   1400
-         TabIndex        =   61
+         TabIndex        =   64
          Top             =   0
          Width           =   1200
       End
@@ -67,7 +67,7 @@ Begin VB.Form frmWorkflowTimeout
    Begin TabDlg.SSTab ssTabStrip 
       Height          =   9800
       Left            =   105
-      TabIndex        =   62
+      TabIndex        =   65
       Top             =   105
       Width           =   8700
       _ExtentX        =   15346
@@ -101,7 +101,7 @@ Begin VB.Form frmWorkflowTimeout
          Left            =   -74850
          ScaleHeight     =   9210
          ScaleWidth      =   8400
-         TabIndex        =   117
+         TabIndex        =   120
          TabStop         =   0   'False
          Top             =   400
          Width           =   8400
@@ -109,7 +109,7 @@ Begin VB.Form frmWorkflowTimeout
             Caption         =   "Validation :"
             Height          =   2535
             Left            =   120
-            TabIndex        =   173
+            TabIndex        =   176
             Top             =   4200
             Width           =   5500
             Begin VB.TextBox txtFileExtensions 
@@ -117,7 +117,7 @@ Begin VB.Form frmWorkflowTimeout
                Left            =   4320
                MultiLine       =   -1  'True
                ScrollBars      =   2  'Vertical
-               TabIndex        =   181
+               TabIndex        =   184
                Top             =   2040
                Width           =   975
             End
@@ -126,7 +126,7 @@ Begin VB.Form frmWorkflowTimeout
                Enabled         =   0   'False
                Height          =   400
                Left            =   1500
-               TabIndex        =   176
+               TabIndex        =   179
                Top             =   1605
                Width           =   1200
             End
@@ -135,7 +135,7 @@ Begin VB.Form frmWorkflowTimeout
                Enabled         =   0   'False
                Height          =   400
                Left            =   4100
-               TabIndex        =   178
+               TabIndex        =   181
                Top             =   1605
                Width           =   1200
             End
@@ -144,7 +144,7 @@ Begin VB.Form frmWorkflowTimeout
                Enabled         =   0   'False
                Height          =   400
                Left            =   200
-               TabIndex        =   175
+               TabIndex        =   178
                Top             =   1605
                Width           =   1200
             End
@@ -153,7 +153,7 @@ Begin VB.Form frmWorkflowTimeout
                Enabled         =   0   'False
                Height          =   400
                Left            =   2800
-               TabIndex        =   177
+               TabIndex        =   180
                Top             =   1605
                Width           =   1200
             End
@@ -161,14 +161,14 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "&Mandatory"
                Height          =   195
                Left            =   200
-               TabIndex        =   179
+               TabIndex        =   182
                Top             =   2160
                Width           =   1410
             End
             Begin SSDataWidgets_B.SSDBGrid grdValidation 
                Height          =   1140
                Left            =   200
-               TabIndex        =   174
+               TabIndex        =   177
                Top             =   360
                Width           =   5100
                _Version        =   196617
@@ -262,7 +262,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "File Extensions :"
                Height          =   195
                Left            =   3000
-               TabIndex        =   180
+               TabIndex        =   183
                Top             =   2160
                Width           =   1170
             End
@@ -279,7 +279,7 @@ Begin VB.Form frmWorkflowTimeout
                EndProperty
                Height          =   555
                Left            =   3000
-               TabIndex        =   183
+               TabIndex        =   186
                Top             =   1920
                Width           =   1410
             End
@@ -288,7 +288,7 @@ Begin VB.Form frmWorkflowTimeout
             Caption         =   "Record Identification :"
             Height          =   3200
             Left            =   0
-            TabIndex        =   118
+            TabIndex        =   121
             Top             =   0
             Width           =   2800
             Begin VB.ComboBox cboRecordIdentificationRecordSelector 
@@ -298,7 +298,7 @@ Begin VB.Form frmWorkflowTimeout
                List            =   "frmWorkflowTimeout.frx":0062
                Sorted          =   -1  'True
                Style           =   2  'Dropdown List
-               TabIndex        =   126
+               TabIndex        =   129
                Top             =   1500
                Width           =   500
             End
@@ -309,7 +309,7 @@ Begin VB.Form frmWorkflowTimeout
                List            =   "frmWorkflowTimeout.frx":0066
                Sorted          =   -1  'True
                Style           =   2  'Dropdown List
-               TabIndex        =   124
+               TabIndex        =   127
                Top             =   1100
                Width           =   500
             End
@@ -320,7 +320,7 @@ Begin VB.Form frmWorkflowTimeout
                List            =   "frmWorkflowTimeout.frx":006A
                Sorted          =   -1  'True
                Style           =   2  'Dropdown List
-               TabIndex        =   122
+               TabIndex        =   125
                Top             =   700
                Width           =   500
             End
@@ -329,7 +329,7 @@ Begin VB.Form frmWorkflowTimeout
                Left            =   1800
                Sorted          =   -1  'True
                Style           =   2  'Dropdown List
-               TabIndex        =   120
+               TabIndex        =   123
                Top             =   300
                Width           =   500
             End
@@ -338,7 +338,7 @@ Begin VB.Form frmWorkflowTimeout
                Left            =   1800
                Sorted          =   -1  'True
                Style           =   2  'Dropdown List
-               TabIndex        =   128
+               TabIndex        =   131
                Top             =   1900
                Width           =   500
             End
@@ -346,7 +346,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "..."
                Height          =   315
                Left            =   2300
-               TabIndex        =   131
+               TabIndex        =   134
                Top             =   2300
                UseMaskColor    =   -1  'True
                Width           =   315
@@ -357,7 +357,7 @@ Begin VB.Form frmWorkflowTimeout
                Height          =   315
                Left            =   1800
                Locked          =   -1  'True
-               TabIndex        =   130
+               TabIndex        =   133
                TabStop         =   0   'False
                Top             =   2300
                Width           =   500
@@ -366,7 +366,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "..."
                Height          =   315
                Left            =   2300
-               TabIndex        =   134
+               TabIndex        =   137
                Top             =   2700
                UseMaskColor    =   -1  'True
                Width           =   315
@@ -377,7 +377,7 @@ Begin VB.Form frmWorkflowTimeout
                Height          =   315
                Left            =   1800
                Locked          =   -1  'True
-               TabIndex        =   133
+               TabIndex        =   136
                TabStop         =   0   'False
                Top             =   2700
                Width           =   500
@@ -386,7 +386,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "Record Selector :"
                Height          =   195
                Left            =   195
-               TabIndex        =   125
+               TabIndex        =   128
                Top             =   1560
                Width           =   1515
             End
@@ -394,7 +394,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "Element :"
                Height          =   195
                Left            =   200
-               TabIndex        =   123
+               TabIndex        =   126
                Top             =   1160
                Width           =   840
             End
@@ -402,7 +402,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "Record :"
                Height          =   195
                Left            =   195
-               TabIndex        =   121
+               TabIndex        =   124
                Top             =   765
                Width           =   930
             End
@@ -410,7 +410,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "Table :"
                Height          =   195
                Left            =   195
-               TabIndex        =   119
+               TabIndex        =   122
                Top             =   360
                Width           =   810
             End
@@ -418,7 +418,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "Record Table :"
                Height          =   195
                Left            =   195
-               TabIndex        =   127
+               TabIndex        =   130
                Top             =   1965
                Width           =   1320
             End
@@ -426,7 +426,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "Filter :"
                Height          =   195
                Left            =   195
-               TabIndex        =   132
+               TabIndex        =   135
                Top             =   2760
                Width           =   735
             End
@@ -434,7 +434,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "Order :"
                Height          =   195
                Left            =   195
-               TabIndex        =   129
+               TabIndex        =   132
                Top             =   2355
                Width           =   795
             End
@@ -443,7 +443,7 @@ Begin VB.Form frmWorkflowTimeout
             Caption         =   "Control Values : "
             Height          =   855
             Left            =   0
-            TabIndex        =   140
+            TabIndex        =   143
             Top             =   3240
             Width           =   1500
             Begin VB.TextBox txtControlValues 
@@ -451,7 +451,7 @@ Begin VB.Form frmWorkflowTimeout
                Left            =   200
                MultiLine       =   -1  'True
                ScrollBars      =   2  'Vertical
-               TabIndex        =   141
+               TabIndex        =   144
                Top             =   300
                Width           =   500
             End
@@ -460,7 +460,7 @@ Begin VB.Form frmWorkflowTimeout
             Caption         =   "Lookup :"
             Height          =   3160
             Left            =   2880
-            TabIndex        =   142
+            TabIndex        =   145
             Top             =   900
             Width           =   5265
             Begin VB.TextBox txtLookupOrder 
@@ -469,7 +469,7 @@ Begin VB.Form frmWorkflowTimeout
                Height          =   315
                Left            =   1800
                Locked          =   -1  'True
-               TabIndex        =   148
+               TabIndex        =   151
                TabStop         =   0   'False
                Top             =   1100
                Width           =   500
@@ -478,7 +478,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "..."
                Height          =   315
                Left            =   2295
-               TabIndex        =   149
+               TabIndex        =   152
                Top             =   1100
                UseMaskColor    =   -1  'True
                Width           =   315
@@ -487,7 +487,7 @@ Begin VB.Form frmWorkflowTimeout
                Height          =   315
                Left            =   1800
                Style           =   2  'Dropdown List
-               TabIndex        =   152
+               TabIndex        =   155
                Top             =   1860
                Width           =   2000
             End
@@ -495,7 +495,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "&Filter Lookup Values"
                Height          =   255
                Left            =   200
-               TabIndex        =   150
+               TabIndex        =   153
                Top             =   1560
                Width           =   3555
             End
@@ -504,7 +504,7 @@ Begin VB.Form frmWorkflowTimeout
                Left            =   1800
                Sorted          =   -1  'True
                Style           =   2  'Dropdown List
-               TabIndex        =   156
+               TabIndex        =   159
                Top             =   2670
                Width           =   2000
             End
@@ -512,7 +512,7 @@ Begin VB.Form frmWorkflowTimeout
                Height          =   315
                Left            =   1800
                Style           =   2  'Dropdown List
-               TabIndex        =   154
+               TabIndex        =   157
                Top             =   2265
                Width           =   2000
             End
@@ -520,7 +520,7 @@ Begin VB.Form frmWorkflowTimeout
                Height          =   315
                Left            =   1800
                Style           =   2  'Dropdown List
-               TabIndex        =   144
+               TabIndex        =   147
                Top             =   300
                Width           =   500
             End
@@ -528,7 +528,7 @@ Begin VB.Form frmWorkflowTimeout
                Height          =   315
                Left            =   1800
                Style           =   2  'Dropdown List
-               TabIndex        =   146
+               TabIndex        =   149
                Top             =   700
                Width           =   500
             End
@@ -536,7 +536,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "Order :"
                Height          =   195
                Left            =   200
-               TabIndex        =   147
+               TabIndex        =   150
                Top             =   1160
                Width           =   795
             End
@@ -544,7 +544,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "Filter Column :"
                Height          =   285
                Left            =   200
-               TabIndex        =   151
+               TabIndex        =   154
                Top             =   1920
                Width           =   1395
             End
@@ -552,7 +552,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "Filter Value :"
                Height          =   270
                Left            =   200
-               TabIndex        =   155
+               TabIndex        =   158
                Top             =   2715
                Width           =   1260
             End
@@ -560,7 +560,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "Filter Operator :"
                Height          =   270
                Left            =   200
-               TabIndex        =   153
+               TabIndex        =   156
                Top             =   2325
                Width           =   1425
             End
@@ -570,7 +570,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "Table :"
                Height          =   195
                Left            =   200
-               TabIndex        =   143
+               TabIndex        =   146
                Top             =   360
                Width           =   495
             End
@@ -580,7 +580,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "Column :"
                Height          =   195
                Left            =   200
-               TabIndex        =   145
+               TabIndex        =   148
                Top             =   760
                Width           =   630
             End
@@ -589,13 +589,13 @@ Begin VB.Form frmWorkflowTimeout
             Caption         =   "Size :"
             Height          =   855
             Left            =   2900
-            TabIndex        =   135
+            TabIndex        =   138
             Top             =   0
             Width           =   5000
             Begin COASpinner.COA_Spinner spnSize 
                Height          =   315
                Left            =   840
-               TabIndex        =   137
+               TabIndex        =   140
                Top             =   300
                Width           =   1500
                _ExtentX        =   2646
@@ -617,7 +617,7 @@ Begin VB.Form frmWorkflowTimeout
             Begin COASpinner.COA_Spinner spnDecimals 
                Height          =   315
                Left            =   3480
-               TabIndex        =   139
+               TabIndex        =   142
                Top             =   300
                Width           =   1410
                _ExtentX        =   2487
@@ -640,7 +640,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "Size :"
                Height          =   195
                Left            =   200
-               TabIndex        =   136
+               TabIndex        =   139
                Top             =   360
                Width           =   390
             End
@@ -648,7 +648,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "Decimals :"
                Height          =   195
                Left            =   2505
-               TabIndex        =   138
+               TabIndex        =   141
                Top             =   360
                Width           =   990
             End
@@ -657,13 +657,13 @@ Begin VB.Form frmWorkflowTimeout
             Caption         =   "Default Value :"
             Height          =   2100
             Left            =   120
-            TabIndex        =   157
+            TabIndex        =   160
             Top             =   6960
             Width           =   7815
             Begin VB.TextBox txtDefaultValue 
                Height          =   315
                Left            =   1485
-               TabIndex        =   162
+               TabIndex        =   165
                Top             =   300
                Width           =   5730
             End
@@ -671,7 +671,7 @@ Begin VB.Form frmWorkflowTimeout
                Height          =   315
                Left            =   2835
                Style           =   2  'Dropdown List
-               TabIndex        =   168
+               TabIndex        =   171
                Top             =   1500
                Width           =   1035
             End
@@ -679,7 +679,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "..."
                Height          =   315
                Left            =   6900
-               TabIndex        =   172
+               TabIndex        =   175
                Top             =   700
                UseMaskColor    =   -1  'True
                Width           =   315
@@ -689,7 +689,7 @@ Begin VB.Form frmWorkflowTimeout
                Enabled         =   0   'False
                Height          =   315
                Left            =   1470
-               TabIndex        =   171
+               TabIndex        =   174
                Top             =   700
                Width           =   5430
             End
@@ -698,7 +698,7 @@ Begin VB.Form frmWorkflowTimeout
                Height          =   195
                Index           =   0
                Left            =   200
-               TabIndex        =   160
+               TabIndex        =   163
                Top             =   360
                Value           =   -1  'True
                Width           =   930
@@ -708,7 +708,7 @@ Begin VB.Form frmWorkflowTimeout
                Height          =   195
                Index           =   3
                Left            =   200
-               TabIndex        =   161
+               TabIndex        =   164
                Top             =   760
                Width           =   1320
             End
@@ -717,7 +717,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "Frame1"
                Height          =   195
                Left            =   200
-               TabIndex        =   163
+               TabIndex        =   166
                Top             =   1160
                Width           =   2000
                Begin VB.OptionButton optDefaultValue 
@@ -725,7 +725,7 @@ Begin VB.Form frmWorkflowTimeout
                   Height          =   195
                   Index           =   1
                   Left            =   1130
-                  TabIndex        =   165
+                  TabIndex        =   168
                   Top             =   0
                   Value           =   -1  'True
                   Width           =   855
@@ -735,7 +735,7 @@ Begin VB.Form frmWorkflowTimeout
                   Height          =   195
                   Index           =   0
                   Left            =   0
-                  TabIndex        =   164
+                  TabIndex        =   167
                   Top             =   0
                   Width           =   810
                End
@@ -743,7 +743,7 @@ Begin VB.Form frmWorkflowTimeout
             Begin COAWorkingPattern.COA_WorkingPattern wpDefaultValue 
                Height          =   765
                Left            =   4020
-               TabIndex        =   169
+               TabIndex        =   172
                Top             =   1100
                Width           =   1830
                _ExtentX        =   3228
@@ -752,7 +752,7 @@ Begin VB.Form frmWorkflowTimeout
             Begin COASpinner.COA_Spinner spnDefaultValue 
                Height          =   315
                Left            =   1695
-               TabIndex        =   167
+               TabIndex        =   170
                Top             =   1500
                Width           =   1500
                _ExtentX        =   2646
@@ -773,7 +773,7 @@ Begin VB.Form frmWorkflowTimeout
             Begin TDBNumberCtrl.TDBNumber numDefaultValue 
                Height          =   315
                Left            =   5900
-               TabIndex        =   170
+               TabIndex        =   173
                Top             =   1500
                Visible         =   0   'False
                Width           =   1500
@@ -845,7 +845,7 @@ Begin VB.Form frmWorkflowTimeout
             Begin GTMaskDate.GTMaskDate dtDefaultValue 
                Height          =   315
                Left            =   200
-               TabIndex        =   166
+               TabIndex        =   169
                Top             =   1500
                Width           =   1500
                _Version        =   65537
@@ -908,7 +908,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "Calculation :"
                Height          =   195
                Left            =   195
-               TabIndex        =   159
+               TabIndex        =   162
                Top             =   600
                Width           =   1065
             End
@@ -916,7 +916,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "Value :"
                Height          =   195
                Left            =   195
-               TabIndex        =   158
+               TabIndex        =   161
                Top             =   195
                Width           =   495
             End
@@ -938,7 +938,7 @@ Begin VB.Form frmWorkflowTimeout
             Caption         =   "Hotspot :"
             Height          =   1095
             Left            =   1200
-            TabIndex        =   184
+            TabIndex        =   59
             Top             =   3360
             Width           =   6615
             Begin VB.ComboBox cboHotSpotIdentifier 
@@ -947,7 +947,7 @@ Begin VB.Form frmWorkflowTimeout
                Left            =   3360
                List            =   "frmWorkflowTimeout.frx":0092
                Style           =   2  'Dropdown List
-               TabIndex        =   185
+               TabIndex        =   61
                Top             =   360
                Visible         =   0   'False
                Width           =   2895
@@ -957,7 +957,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "Hotspot Identifier : "
                Height          =   195
                Left            =   360
-               TabIndex        =   186
+               TabIndex        =   60
                Top             =   480
                Visible         =   0   'False
                Width           =   1680
@@ -1601,7 +1601,7 @@ Begin VB.Form frmWorkflowTimeout
          Left            =   -74850
          ScaleHeight     =   7305
          ScaleWidth      =   8400
-         TabIndex        =   63
+         TabIndex        =   66
          TabStop         =   0   'False
          Top             =   400
          Width           =   8400
@@ -1609,7 +1609,7 @@ Begin VB.Form frmWorkflowTimeout
             Caption         =   "Foreground :"
             Height          =   2400
             Left            =   0
-            TabIndex        =   79
+            TabIndex        =   82
             Top             =   3000
             Width           =   2900
             Begin VB.CommandButton cmdForegroundHighlightColour 
@@ -1617,7 +1617,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "..."
                Height          =   315
                Left            =   2430
-               TabIndex        =   94
+               TabIndex        =   97
                Top             =   1900
                UseMaskColor    =   -1  'True
                Width           =   315
@@ -1627,7 +1627,7 @@ Begin VB.Form frmWorkflowTimeout
                Enabled         =   0   'False
                Height          =   315
                Left            =   1935
-               TabIndex        =   93
+               TabIndex        =   96
                Top             =   1900
                Width           =   500
             End
@@ -1636,7 +1636,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "..."
                Height          =   315
                Left            =   2430
-               TabIndex        =   91
+               TabIndex        =   94
                Top             =   1500
                UseMaskColor    =   -1  'True
                Width           =   315
@@ -1646,7 +1646,7 @@ Begin VB.Form frmWorkflowTimeout
                Enabled         =   0   'False
                Height          =   315
                Left            =   1935
-               TabIndex        =   90
+               TabIndex        =   93
                Top             =   1500
                Width           =   500
             End
@@ -1655,7 +1655,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "..."
                Height          =   315
                Left            =   2430
-               TabIndex        =   88
+               TabIndex        =   91
                Top             =   1100
                UseMaskColor    =   -1  'True
                Width           =   315
@@ -1665,7 +1665,7 @@ Begin VB.Form frmWorkflowTimeout
                Enabled         =   0   'False
                Height          =   315
                Left            =   1935
-               TabIndex        =   87
+               TabIndex        =   90
                Top             =   1100
                Width           =   500
             End
@@ -1674,7 +1674,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "..."
                Height          =   315
                Left            =   2430
-               TabIndex        =   85
+               TabIndex        =   88
                Top             =   700
                UseMaskColor    =   -1  'True
                Width           =   315
@@ -1684,7 +1684,7 @@ Begin VB.Form frmWorkflowTimeout
                Enabled         =   0   'False
                Height          =   315
                Left            =   1935
-               TabIndex        =   84
+               TabIndex        =   87
                Top             =   700
                Width           =   500
             End
@@ -1692,7 +1692,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "..."
                Height          =   315
                Left            =   2430
-               TabIndex        =   82
+               TabIndex        =   85
                Top             =   300
                UseMaskColor    =   -1  'True
                Width           =   315
@@ -1702,7 +1702,7 @@ Begin VB.Form frmWorkflowTimeout
                Enabled         =   0   'False
                Height          =   315
                Left            =   1935
-               TabIndex        =   81
+               TabIndex        =   84
                Top             =   300
                Width           =   500
             End
@@ -1710,7 +1710,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "Highlighted Colour :"
                Height          =   195
                Left            =   195
-               TabIndex        =   92
+               TabIndex        =   95
                Top             =   1965
                Width           =   1725
             End
@@ -1718,7 +1718,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "Odd Row Colour :"
                Height          =   195
                Left            =   195
-               TabIndex        =   89
+               TabIndex        =   92
                Top             =   1560
                Width           =   1590
             End
@@ -1726,7 +1726,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "Even Row Colour :"
                Height          =   195
                Left            =   195
-               TabIndex        =   86
+               TabIndex        =   89
                Top             =   1155
                Width           =   1635
             End
@@ -1734,7 +1734,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "Colour :"
                Height          =   195
                Left            =   195
-               TabIndex        =   83
+               TabIndex        =   86
                Top             =   765
                Width           =   705
             End
@@ -1742,7 +1742,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "Font :"
                Height          =   195
                Left            =   195
-               TabIndex        =   80
+               TabIndex        =   83
                Top             =   360
                Width           =   570
             End
@@ -1751,14 +1751,14 @@ Begin VB.Form frmWorkflowTimeout
             Caption         =   "Options :"
             Height          =   1225
             Left            =   0
-            TabIndex        =   64
+            TabIndex        =   67
             Top             =   0
             Width           =   7400
             Begin VB.CheckBox chkPasswordType 
                Caption         =   "Hide &Text"
                Height          =   195
                Left            =   200
-               TabIndex        =   68
+               TabIndex        =   71
                Top             =   760
                Width           =   1230
             End
@@ -1766,7 +1766,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "&Border"
                Height          =   195
                Left            =   200
-               TabIndex        =   65
+               TabIndex        =   68
                Top             =   360
                Width           =   1725
             End
@@ -1776,7 +1776,7 @@ Begin VB.Form frmWorkflowTimeout
                Left            =   5300
                List            =   "frmWorkflowTimeout.frx":0163
                Style           =   2  'Dropdown List
-               TabIndex        =   67
+               TabIndex        =   70
                Top             =   300
                Width           =   1725
             End
@@ -1784,7 +1784,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "Alignment :"
                Height          =   195
                Left            =   3705
-               TabIndex        =   66
+               TabIndex        =   69
                Top             =   360
                Width           =   1215
             End
@@ -1793,14 +1793,14 @@ Begin VB.Form frmWorkflowTimeout
             Caption         =   "Header :"
             Height          =   1625
             Left            =   0
-            TabIndex        =   69
+            TabIndex        =   72
             Top             =   1300
             Width           =   7400
             Begin VB.CommandButton cmdHeaderFont 
                Caption         =   "..."
                Height          =   315
                Left            =   6100
-               TabIndex        =   75
+               TabIndex        =   78
                Top             =   700
                UseMaskColor    =   -1  'True
                Width           =   315
@@ -1810,7 +1810,7 @@ Begin VB.Form frmWorkflowTimeout
                Enabled         =   0   'False
                Height          =   315
                Left            =   2025
-               TabIndex        =   74
+               TabIndex        =   77
                Top             =   700
                Width           =   4080
             End
@@ -1818,7 +1818,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "Column &Headers"
                Height          =   195
                Left            =   200
-               TabIndex        =   70
+               TabIndex        =   73
                Top             =   360
                Width           =   1860
             End
@@ -1827,7 +1827,7 @@ Begin VB.Form frmWorkflowTimeout
                Enabled         =   0   'False
                Height          =   315
                Left            =   2025
-               TabIndex        =   77
+               TabIndex        =   80
                Top             =   1100
                Width           =   4080
             End
@@ -1836,7 +1836,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "..."
                Height          =   315
                Left            =   6100
-               TabIndex        =   78
+               TabIndex        =   81
                Top             =   1100
                UseMaskColor    =   -1  'True
                Width           =   315
@@ -1844,7 +1844,7 @@ Begin VB.Form frmWorkflowTimeout
             Begin COASpinner.COA_Spinner spnHeaderLines 
                Height          =   315
                Left            =   5300
-               TabIndex        =   72
+               TabIndex        =   75
                Top             =   300
                Width           =   1065
                _ExtentX        =   1879
@@ -1865,7 +1865,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "Header Lines :"
                Height          =   195
                Left            =   3705
-               TabIndex        =   71
+               TabIndex        =   74
                Top             =   360
                Width           =   1395
             End
@@ -1873,7 +1873,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "Font :"
                Height          =   195
                Left            =   195
-               TabIndex        =   73
+               TabIndex        =   76
                Top             =   765
                Width           =   660
             End
@@ -1881,7 +1881,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "Background Colour :"
                Height          =   195
                Left            =   195
-               TabIndex        =   76
+               TabIndex        =   79
                Top             =   1155
                Width           =   1815
             End
@@ -1890,7 +1890,7 @@ Begin VB.Form frmWorkflowTimeout
             Caption         =   "Background :"
             Height          =   4000
             Left            =   3050
-            TabIndex        =   95
+            TabIndex        =   98
             Top             =   3000
             Width           =   4700
             Begin VB.CommandButton cmdPictureClear 
@@ -1907,7 +1907,7 @@ Begin VB.Form frmWorkflowTimeout
                Height          =   315
                Left            =   2745
                MaskColor       =   &H000000FF&
-               TabIndex        =   113
+               TabIndex        =   116
                ToolTipText     =   "Clear Path"
                Top             =   2300
                UseMaskColor    =   -1  'True
@@ -1919,7 +1919,7 @@ Begin VB.Form frmWorkflowTimeout
                Height          =   315
                Left            =   1935
                Locked          =   -1  'True
-               TabIndex        =   111
+               TabIndex        =   114
                TabStop         =   0   'False
                Top             =   2300
                Width           =   500
@@ -1928,7 +1928,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "..."
                Height          =   315
                Left            =   2430
-               TabIndex        =   112
+               TabIndex        =   115
                ToolTipText     =   "Select Path"
                Top             =   2300
                Width           =   330
@@ -1937,7 +1937,7 @@ Begin VB.Form frmWorkflowTimeout
                Height          =   315
                Left            =   1935
                Style           =   2  'Dropdown List
-               TabIndex        =   116
+               TabIndex        =   119
                Top             =   2700
                Width           =   500
             End
@@ -1946,7 +1946,7 @@ Begin VB.Form frmWorkflowTimeout
                Left            =   3090
                ScaleHeight     =   1410
                ScaleWidth      =   1410
-               TabIndex        =   114
+               TabIndex        =   117
                TabStop         =   0   'False
                Top             =   2300
                Width           =   1470
@@ -1964,7 +1964,7 @@ Begin VB.Form frmWorkflowTimeout
                Left            =   1935
                List            =   "frmWorkflowTimeout.frx":019B
                Style           =   2  'Dropdown List
-               TabIndex        =   97
+               TabIndex        =   100
                Top             =   300
                Width           =   1500
             End
@@ -1973,7 +1973,7 @@ Begin VB.Form frmWorkflowTimeout
                Enabled         =   0   'False
                Height          =   315
                Left            =   1935
-               TabIndex        =   99
+               TabIndex        =   102
                Top             =   700
                Width           =   500
             End
@@ -1982,7 +1982,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "..."
                Height          =   315
                Left            =   2430
-               TabIndex        =   100
+               TabIndex        =   103
                Top             =   700
                UseMaskColor    =   -1  'True
                Width           =   315
@@ -1992,7 +1992,7 @@ Begin VB.Form frmWorkflowTimeout
                Enabled         =   0   'False
                Height          =   315
                Left            =   1935
-               TabIndex        =   102
+               TabIndex        =   105
                Top             =   1100
                Width           =   500
             End
@@ -2001,7 +2001,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "..."
                Height          =   315
                Left            =   2430
-               TabIndex        =   103
+               TabIndex        =   106
                Top             =   1100
                UseMaskColor    =   -1  'True
                Width           =   315
@@ -2011,7 +2011,7 @@ Begin VB.Form frmWorkflowTimeout
                Enabled         =   0   'False
                Height          =   315
                Left            =   1935
-               TabIndex        =   105
+               TabIndex        =   108
                Top             =   1500
                Width           =   500
             End
@@ -2020,7 +2020,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "..."
                Height          =   315
                Left            =   2430
-               TabIndex        =   106
+               TabIndex        =   109
                Top             =   1500
                UseMaskColor    =   -1  'True
                Width           =   315
@@ -2030,7 +2030,7 @@ Begin VB.Form frmWorkflowTimeout
                Enabled         =   0   'False
                Height          =   315
                Left            =   1935
-               TabIndex        =   108
+               TabIndex        =   111
                Top             =   1900
                Width           =   500
             End
@@ -2039,7 +2039,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "..."
                Height          =   315
                Left            =   2430
-               TabIndex        =   109
+               TabIndex        =   112
                Top             =   1900
                UseMaskColor    =   -1  'True
                Width           =   315
@@ -2048,7 +2048,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "Picture : "
                Height          =   195
                Left            =   195
-               TabIndex        =   110
+               TabIndex        =   113
                Top             =   2355
                Width           =   825
             End
@@ -2056,7 +2056,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "Location : "
                Height          =   195
                Left            =   195
-               TabIndex        =   115
+               TabIndex        =   118
                Top             =   2760
                Width           =   930
             End
@@ -2064,7 +2064,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "Style :"
                Height          =   195
                Left            =   195
-               TabIndex        =   96
+               TabIndex        =   99
                Top             =   360
                Width           =   990
             End
@@ -2072,7 +2072,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "Colour :"
                Height          =   195
                Left            =   195
-               TabIndex        =   98
+               TabIndex        =   101
                Top             =   765
                Width           =   750
             End
@@ -2080,7 +2080,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "Even Row Colour :"
                Height          =   195
                Left            =   195
-               TabIndex        =   101
+               TabIndex        =   104
                Top             =   1155
                Width           =   1635
             End
@@ -2088,7 +2088,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "Odd Row Colour :"
                Height          =   195
                Left            =   195
-               TabIndex        =   104
+               TabIndex        =   107
                Top             =   1560
                Width           =   1635
             End
@@ -2096,7 +2096,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "Highlighted Colour :"
                Height          =   195
                Left            =   195
-               TabIndex        =   107
+               TabIndex        =   110
                Top             =   1965
                Width           =   1725
             End
@@ -2116,7 +2116,7 @@ Begin VB.Form frmWorkflowTimeout
       Caption         =   "<Size Tester>"
       Height          =   255
       Left            =   840
-      TabIndex        =   182
+      TabIndex        =   185
       Top             =   10005
       Visible         =   0   'False
       Width           =   1305
@@ -4880,7 +4880,7 @@ Private Sub RefreshScreen()
   
   fOKToSave = mfChanged And (Not mfReadOnly)
   
-  cmdOK.Enabled = fOKToSave
+  cmdOk.Enabled = fOKToSave
 
 End Sub
 
@@ -8185,7 +8185,7 @@ Private Function FormatScreen_Frame_HotSpot() As Boolean
 
 
   ' Format the frame
-  With fraHotSpot
+  With fraHotspot
     If fFrameNeeded Then
       .Height = sngCurrentControlTop + YGAP_CONTROL_FRAME
       .Top = msngCurrentFrameTop
@@ -10873,13 +10873,13 @@ End Sub
 Private Sub txtControlValues_GotFocus()
   ' Disable the 'Default' property of the 'OK' button as the return key is
   ' used by this textbox.
-  cmdOK.Default = False
+  cmdOk.Default = False
 
 End Sub
 
 Private Sub txtControlValues_LostFocus()
   ' Enable the 'Default' property of the OK button.
-  cmdOK.Default = True
+  cmdOk.Default = True
 
 End Sub
 
@@ -11027,14 +11027,14 @@ End Sub
 Private Sub txtFileExtensions_GotFocus()
   ' Disable the 'Default' property of the 'OK' button as the return key is
   ' used by this textbox.
-  cmdOK.Default = False
+  cmdOk.Default = False
 
 End Sub
 
 
 Private Sub txtFileExtensions_LostFocus()
   ' Enable the 'Default' property of the OK button.
-  cmdOK.Default = True
+  cmdOk.Default = True
 
 End Sub
 
