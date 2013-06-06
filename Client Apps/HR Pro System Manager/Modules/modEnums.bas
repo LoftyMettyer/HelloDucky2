@@ -327,6 +327,25 @@ Public Enum AccordTransactionStatus
   ACCORD_STATUS_BLOCKED = 30
 End Enum
 
+'NHRD Prototype Fusion Enum **********************
+Public Enum FusionTransactionStatus
+  FUSION_STATUS_PENDING = 1
+  FUSION_STATUS_PENDING_CHANGED = 2
+  FUSION_STATUS_SUCCESS = 10
+  FUSION_STATUS_SUCCESS_WARNINGS = 11
+  FUSION_STATUS_FAILURE_UNKNOWN = 20
+  FUSION_STATUS_FAILURE_RESOLVED = 21
+  FUSION_STATUS_BLOCKED = 30
+End Enum
+
+'Mapping types used for Fusion Transfer
+Public Enum FusionMapType
+  FUSION_MAPTYPE_COLUMN = 0
+  FUSION_MAPTYPE_EXPRESSION = 1
+  FUSION_MAPTYPE_VALUE = 2
+End Enum
+'NHRD Prototype Fusion Enum **********************
+
 Public Enum PasswordChangeReason
   giPasswordChange_None = 0
   giPasswordChange_MinLength = 1
@@ -682,6 +701,8 @@ Public Enum enum_Module
   modAccordPayroll = 512
   modWorkflow = 1024
   modVersion1 = 2048
+  modFusion = 4096
+  
 End Enum
 
 'System metrics constants
