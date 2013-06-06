@@ -3,7 +3,7 @@ Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
 Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "timask6.ocx"
 Object = "{49CBFCC0-1337-11D2-9BBF-00A024695830}#1.0#0"; "tinumb6.ocx"
 Object = "{E2D000D0-2DA1-11D2-B358-00104B59D73D}#1.0#0"; "titext6.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
 Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "Codejock.Controls.v13.1.0.ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
@@ -118,7 +118,7 @@ Begin VB.Form frmRecEdit4
          ErrorBeep       =   0
          ForeColor       =   -2147483640
          Format          =   "&&&&&&&&&&"
-         HighlightText   =   0
+         HighlightText   =   2
          IMEMode         =   0
          IMEStatus       =   0
          LookupMode      =   0
@@ -388,15 +388,15 @@ Begin VB.Form frmRecEdit4
          EndProperty
       End
       Begin COAOptionGroup.COA_OptionGroup OptionGroup1 
-         Height          =   720
+         Height          =   645
          Index           =   0
          Left            =   2115
          TabIndex        =   10
          Top             =   240
          Visible         =   0   'False
-         Width           =   1170
-         _ExtentX        =   2064
-         _ExtentY        =   1270
+         Width           =   1320
+         _ExtentX        =   2328
+         _ExtentY        =   1138
       End
       Begin VB.CommandButton Command1 
          Caption         =   "Command1"
@@ -570,6 +570,7 @@ Begin VB.Form frmRecEdit4
       BeginProperty Tabs {0713E432-850A-101B-AFC0-4210102A8DA7} 
          NumTabs         =   1
          BeginProperty Tab1 {0713F341-850A-101B-AFC0-4210102A8DA7} 
+            Caption         =   ""
             Key             =   ""
             Object.Tag             =   ""
             ImageVarType    =   2
