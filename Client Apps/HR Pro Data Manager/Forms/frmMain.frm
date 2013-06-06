@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
 Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~2.OCX"
 Begin VB.MDIForm frmMain 
@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "11:56"
+            TextSave        =   "16:48"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -1358,6 +1358,7 @@ Public Sub RefreshRecordMenu(pfrmCallingForm As Form, Optional ByVal pfUnLoad As
   gobjErrorStack.PushStack "frmMain.RefreshRecordMenu(pfrmCallingForm,pfUnLoad)", Array(pfrmCallingForm, pfUnLoad)
   ' Refresh the Record menu options.
   
+  Dim ActiveBar1 As ActiveBar
   Dim fNewRecordEnabled As Boolean
   Dim fCopyRecordEnabled As Boolean
   Dim fEditRecordEnabled As Boolean
@@ -1920,7 +1921,8 @@ Public Sub RefreshRecordMenu(pfrmCallingForm As Form, Optional ByVal pfUnLoad As
   End With
   
   ' Now do the same for the toolbar on the recedit screen
-  With pfrmCallingForm.ActiveBar1
+  Set ActiveBar1 = pfrmCallingForm.ActiveBar1
+  With ActiveBar1
     .Tools("NewRecord").Enabled = fNewRecordEnabled
     .Tools("CopyRecord").Enabled = fCopyRecordEnabled
     .Tools("SaveRecord").Enabled = fSaveRecordEnabled
