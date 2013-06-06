@@ -491,7 +491,7 @@ Private Function OvernightJob3() As Boolean
     "    DELETE FROM ASRSYSSystemSettings WHERE [Section] = 'database' and [SettingKey] = 'updatingdatedependantcolumns'" & vbNewLine & vbNewLine & _
     "    INSERT ASRSYSSystemSettings([Section],[SettingKey],[SettingValue])" & vbNewLine & _
     "    VALUES('database','updatingdatedependantcolumns',0)" & vbNewLine & vbNewLine & _
-    "    exec sp_dboption @sDBName, 'recursive triggers', 'TRUE'" & vbNewLine & vbNewLine & _
+    "    EXEC sp_dboption @sDBName, 'recursive triggers', 'FALSE'" & vbNewLine & vbNewLine & _
     "END"
     
   gADOCon.Execute strSQL, , adExecuteNoRecords

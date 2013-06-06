@@ -396,6 +396,8 @@ Public Function Activate() As Boolean
       'Create temparary tables
       If CreateTempTables() Then
       
+        CreateQueryDefs
+      
         ActivateModules
         
         'Load system manager form
@@ -461,6 +463,10 @@ Private Function CreateTempDb() As Boolean
     
     'Create new temp ASR database
     Set daoDb = daoWS.CreateDatabase(strTempPath & "\" & gsTempDatabaseName, dbLangGeneral)
+  
+    ' Allow access via external DLLs
+    daoDb.Close
+    Set daoDb = daoWS.OpenDatabase(strTempPath & "\" & gsTempDatabaseName, False)
   
   End If
   
@@ -2359,4 +2365,180 @@ Private Sub LoadShowWhichColumns()
   gpropShowColumns_ViewMgr.Add "Description", GetSystemSetting("ShowColumn_ViewMan", "Description", True)
 
 End Sub
+
+' Create the query defs on the temp Access DB for the new Phoenix engine to work.
+Private Function CreateQueryDefs() As Boolean
+
+  On Error GoTo ErrorTrap
+
+  Dim sSQL As String
+  Dim bOK As Boolean
+
+  bOK = True
+
+  ' spadmin_gettables
+  sSQL = "SELECT t.tableid AS ID" & _
+      ", t.tablename AS name" & _
+      ", 1 AS type" & _
+      ", '' AS description" & _
+      ", 0 AS isremoteview" & _
+      ", t.[tabletype]" & _
+      ", t.[RecordDescExprID] AS recorddescriptionid" & _
+      ", t.[AuditInsert] AS auditinsert" & _
+      ", t.[AuditDelete] AS auditdelete" & _
+      ", t.[DefaultEmailID] AS defaultemailid" & _
+      ", t.[DefaultOrderID] AS defaultorderid" & _
+      ", IIF(t.[deleted]=-1, 8 , IIF(t.[new]=-1,4 ,IIF(t.[changed]=-1,16, 2))) AS [state]" & _
+      " FROM tmpTables t;"
+  daoDb.CreateQueryDef "spadmin_gettables", sSQL
+
+  ' spadmin_getcolumns
+  sSQL = "SELECT c.columnid as [ID]" & _
+      ", c.columnname as [name]" & _
+      ", 2 as [type]" & _
+      ", '' AS [description]" & _
+      ", c.[calcExprID] AS [calcid]" & _
+      ", c.[datatype] as [datatype]" & _
+      ", c.[size], [decimals]" & _
+      ", c.[audit], [mandatory], [multiline] " & _
+      ", c.[dfltvalueexprid] as [defaultcalcid]" & _
+      ", c.[convertcase] as [case]" & _
+      ", c.[readOnly] as [isreadonly]" & _
+      ", c.[Alignment], c.[trimming], c.[calculateifempty]" & _
+      ", IIF(c.[deleted]=-1, 8 , IIF(c.[new]=-1,4 ,IIF(c.[changed]=-1,16, 2))) AS [state]" & _
+      " FROM tmpColumns c WHERE c.tableid = @parentid" & _
+      " AND c.[ColumnName] NOT LIKE 'ID%'" & _
+      " ORDER BY c.[columnname];"
+  daoDb.CreateQueryDef "spadmin_getcolumns", sSQL
+
+  ' spadmin_getrelations
+  sSQL = "SELECT r.ParentID AS [parentid], r.ChildID AS [childid], t.TableName AS [name], 0 AS [relationship]" & _
+    " FROM tmpRelations r" & _
+    " INNER JOIN tmpTables t ON r.ChildID = t.TableID" & _
+    " WHERE r.ParentID = @tableid" & _
+    " UNION" & _
+    " SELECT r.ParentID AS [parentid], r.ChildID AS [childid], t.TableName AS [name], 1 AS [relationship]" & _
+    " FROM tmpRelations r" & _
+    "  INNER JOIN tmpTables t ON r.ParentID = t.TableID" & _
+    " WHERE r.ChildID = @tableid;"
+  daoDb.CreateQueryDef "spadmin_getrelations", sSQL
+
+  ' spadmin_getviews
+  sSQL = "SELECT v.[viewid] AS [id], v.[viewname] AS [name], viewdescription AS [description], v.[viewtableid] AS [tableid], v.[expressionid] AS [filterid]" & _
+    " FROM tmpviews v" & _
+    " WHERE v.viewtableid=@parentid" & _
+    " ORDER BY v.[viewname];"
+  daoDb.CreateQueryDef "spadmin_getviews", sSQL
+
+  'spadmin_getviewitems
+  sSQL = "SELECT [viewid] AS [id], [ColumnID] from tmpviewcolumns" & _
+    " WHERE InView = true And ViewID = @viewid;"
+  daoDb.CreateQueryDef "spadmin_getviewitems", sSQL
+
+  ' spadmin_getexpressions
+  sSQL = "SELECT [exprid] as [ID]" & _
+    " , [Name]" & _
+    " , [Type]" & _
+    " , [Description] " & _
+    " , [ReturnType] " & _
+    " , [ReturnSize] AS [size]" & _
+    " , [ReturnDecimals] as [decimals]" & _
+    " , IIF([deleted]=-1, 8 , IIF([new]=-1,4 ,IIF([changed]=-1,16, 2))) AS [state]" & _
+    " FROM tmpExpressions" & _
+    " WHERE tableid = @parentid AND ParentComponentID = 0"
+  daoDb.CreateQueryDef "spadmin_getexpressions", sSQL
+
+  ' spadmin_getcomponent_base
+  sSQL = "SELECT c.componentid AS [componentid], c.[type] AS [subtype], e.[Name] AS [name]" & _
+      " , 1 AS [level], 1 AS [sequence]" & _
+      " , e.ReturnType AS [returntype], e.ReturnSize AS [returnsize], e.ReturnDecimals AS [returndecimals]" & _
+      " , IIF(ISNULL(c.FieldPassBy),1,c.FieldPassBy)-1 AS [iscolumnbyreference]" & _
+      " , IIF(ISNULL(c.FunctionID),0,c.FunctionID) AS [functionid]" & _
+      " , IIF(ISNULL(c.OperatorID),0,c.OperatorID) AS [operatorid]" & _
+      " , IIF(ISNULL(c.fieldtableid),0,c.fieldtableid) AS [tableid]" & _
+      " , IIF(ISNULL(c.FieldColumnID),0,c.FieldColumnID) AS [columnid]" & _
+      " , IIF(ISNULL(c.FieldSelectionRecord),0,c.FieldSelectionRecord) AS [columnaggregiatetype]" & _
+      " , IIF(ISNULL(c.FieldSelectionOrderID),0,c.FieldSelectionOrderID) AS [columnorderid]" & _
+      " , IIF(ISNULL(c.[FieldSelectionFilter]),0,c.FieldSelectionFilter) AS [columnfilterid]" & _
+      " , IIF(ISNULL(c.[CalculationID]),0,c.CalculationID) AS [calculationid]" & _
+      " , IIF(ISNULL(c.[ValueType]),0,c.ValueType) AS [valuetype]" & _
+      " , IIF(ISNULL(c.[ValueCharacter]),'',c.ValueCharacter) AS [valuestring]" & _
+      " , IIF(ISNULL(c.[ValueNumeric]),0,c.ValueNumeric) AS [valuenumeric]" & _
+      " , IIF(ISNULL(c.[ValueLogic]),0,c.ValueLogic) AS [valuelogic]" & _
+      " , IIF(ISNULL(c.[ValueDate]),0,c.ValueDate) AS [valuedate]" & _
+      " , IIF(ISNULL(c.[LookupTableID]),0,c.LookupTableID) AS [LookupTableID]" & _
+      " , IIF(ISNULL(c.[LookupColumnID]),0,c.LookupColumnID) AS [LookupColumnID]" & _
+      " FROM tmpExpressions e" & _
+      " INNER JOIN tmpComponents c ON c.exprID = e.exprID" & _
+      " WHERE c.exprid = @expressionid" & _
+      " ORDER BY c.componentid ASC;"
+  daoDb.CreateQueryDef "spadmin_getcomponent_base", sSQL
+
+  ' spadmin_getcomponent_function
+  sSQL = "SELECT DISTINCT e.ExprID AS [componentid], 9 AS [subtype], e.Name AS [name]" & _
+      " , 1 AS [level]" & _
+      " , e.[exprid] AS [sequence]" & _
+      " , e.ReturnType AS [returntype]" & _
+      " , e.ReturnSize AS [returnsize], e.ReturnDecimals AS [returndecimals]" & _
+      " , p.[FunctionID] AS [functionid] , 0 AS [operatorid], 0 AS [tableid], 0 AS [columnid]" & _
+      " , 0 AS [iscolumnbyreference]" & _
+      " , 0 AS [columnaggregiatetype],0 AS [columnorderid]" & _
+      " , 0 AS [columnfilterid], 0 AS [calculationid]" & _
+      " , 0 AS [valuetype], '' AS [valuestring], 0 AS [valuenumeric], 0 AS [valuelogic], c.[ValueDate]" & _
+      " , 0 AS [lookuptableid], 0 AS [lookupcolumnid]" & _
+      " FROM ((tmpExpressions e" & _
+      "  INNER JOIN tmpComponents c ON c.exprID = e.exprID)" & _
+      "  INNER JOIN tmpComponents p ON p.componentid = e.ParentComponentID)" & _
+      " WHERE e.ParentComponentID = @expressionid" & _
+      " ORDER BY e.[ExprID] ASC;"
+  daoDb.CreateQueryDef "spadmin_getcomponent_function", sSQL
+
+  ' spadmin_getcomponent_calculation
+  sSQL = "SELECT c.exprid AS [componentid], 9 AS [subtype], e.[Name] AS [name]" & _
+      " , 1 AS [level], 1 AS [sequence]" & _
+      " , e.ReturnType AS [returntype], e.ReturnSize AS [returnsize], e.ReturnDecimals AS [returndecimals]" & _
+      " , IIF(ISNULL(c.FunctionID),0,c.FunctionID) AS [functionid]" & _
+      " , IIF(ISNULL(c.OperatorID),0,c.OperatorID) AS [operatorid]" & _
+      " , IIF(ISNULL(c.fieldtableid),0,c.fieldtableid) AS [tableid]" & _
+      " , IIF(ISNULL(c.FieldColumnID),0,c.FieldColumnID) AS [columnid]" & _
+      " , IIF(ISNULL(c.FieldPassBy),1,c.FieldPassBy)-1 AS [iscolumnbyreference]" & _
+      " , IIF(ISNULL(c.FieldSelectionRecord),0,c.FieldSelectionRecord) AS [columnaggregiatetype]" & _
+      " , IIF(ISNULL(c.FieldSelectionOrderID),0,c.FieldSelectionOrderID) AS [columnorderid]" & _
+      " , IIF(ISNULL(c.[FieldSelectionFilter]),0,c.FieldSelectionFilter) AS [columnfilterid]" & _
+      " , IIF(ISNULL(c.[CalculationID]),0,c.CalculationID) AS [calculationid]" & _
+      " , IIF(ISNULL(c.[ValueType]),0,c.ValueType) AS [valuetype]" & _
+      " , IIF(ISNULL(c.[ValueCharacter]),'',c.ValueCharacter) AS [valuestring]" & _
+      " , IIF(ISNULL(c.[ValueNumeric]),0,c.ValueNumeric) AS [valuenumeric]" & _
+      " , IIF(ISNULL(c.[ValueLogic]),0,c.ValueLogic) AS [valuelogic]" & _
+      " , IIF(ISNULL(c.[ValueDate]),0,c.ValueDate) AS [valuedate]" & _
+      " , IIF(ISNULL(c.[LookupTableID]),0) AS [lookuptableid]" & _
+      " , IIF(ISNULL(c.[LookupColumnID]),0) AS [lookupcolumnid]" & _
+      " FROM tmpExpressions e" & _
+      " INNER JOIN tmpComponents c ON c.CalculationID = e.exprID" & _
+      " WHERE c.ComponentID = @expressionid" & _
+      " ORDER BY c.componentid ASC;"
+  daoDb.CreateQueryDef "spadmin_getcomponent_calculation", sSQL
+
+  ' spadmin_getorder
+  sSQL = "SELECT OrderID, Name, TableID, Type FROM tmpOrders" & _
+      " WHERE [TableID] = @tableid;"
+  daoDb.CreateQueryDef "spadmin_getorders", sSQL
+
+  ' spadmin_getorderitems
+  sSQL = "SELECT [OrderID], [ColumnID], [Type], [Sequence], [Ascending] FROM tmpOrderItems" & _
+      " WHERE [OrderID] = @orderid;"
+  daoDb.CreateQueryDef "spadmin_getorderitems", sSQL
+
+
+
+TidyUpAndExit:
+  CreateQueryDefs = bOK
+  Exit Function
+  
+ErrorTrap:
+  bOK = False
+  MsgBox "Error creating spadmin functions on the TempDB"
+  Resume TidyUpAndExit
+
+End Function
 

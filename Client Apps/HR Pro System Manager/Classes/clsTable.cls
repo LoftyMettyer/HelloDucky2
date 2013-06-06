@@ -48,6 +48,7 @@ Private mcolOutlookLinks As Collection
 Private mcolWorkflowTriggeredLinks As Collection
 Private mcolTableValidations As Collection
 Private mbIsRemoteView As Boolean
+Private mbLocked As Boolean
 
 Public Property Get PermissionsPrompted() As Boolean
     PermissionsPrompted = mbPermissionsPrompted
@@ -1833,7 +1834,7 @@ Public Function CloneTable(pavCloneRegister As Variant, pfCopyData As Boolean, p
             recCtrlEdit!TabIndex = .Fields("TabIndex")
             recCtrlEdit!BorderStyle = .Fields("BorderStyle")
             recCtrlEdit!Alignment = .Fields("Alignment")
-            recCtrlEdit!ReadOnly = .Fields("ReadOnly")      'NPG20071023
+            recCtrlEdit!readonly = .Fields("ReadOnly")      'NPG20071023
           
             recCtrlEdit.Update
             
@@ -2408,6 +2409,8 @@ Public Function ReadTable() As Boolean
       gsTableName = !TableName
       giTableType = !TableType
       
+      mbLocked = !Locked
+      
       If Not IsNull(!LastUpdated) Then
         gDatUpdated = !LastUpdated
       End If
@@ -2591,7 +2594,8 @@ Public Function WriteTable() As Boolean
     
     If fNewTable Then
       'Get new table id
-      TableID = Database.UniqueColumnValue("tmpTables", "tableID")
+'      TableID = Database.UniqueColumnValue("tmpTables", "tableID")
+      TableID = Database.GetNextObjectIdentitySeed("ASRSysTables")
       
       'Add a record for new table
       fOK = (TableID > 0)
@@ -5283,4 +5287,8 @@ End Property
 
 Public Property Let IsRemoteView(pbNewValue As Boolean)
   mbIsRemoteView = pbNewValue
+End Property
+
+Public Property Get Locked() As Boolean
+  Locked = mbLocked
 End Property

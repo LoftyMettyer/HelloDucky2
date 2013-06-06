@@ -1,7 +1,7 @@
 VERSION 5.00
-Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "timask6.ocx"
+Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "TIMASK6.OCX"
 Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmOutlookCalendarLink 
    BorderStyle     =   3  'Fixed Dialog
@@ -866,6 +866,11 @@ Private mblnCancelled As Boolean
 Private mblnReadOnly As Boolean
 Private mfColumnDrag As Boolean
 Private mblnLoading As Boolean
+Private mbLocked As Boolean
+
+Public Property Let Locked(ByRef bValue As Boolean)
+  mbLocked = bValue
+End Property
 
 Public Property Get OutlookLink() As clsOutlookLink
   Set OutlookLink = mobjOutlookLink
@@ -1073,7 +1078,8 @@ Private Sub Form_Load()
 
   mblnCancelled = True
   mblnReadOnly = (Application.AccessMode <> accFull And _
-                  Application.AccessMode <> accSupportMode)
+                  Application.AccessMode <> accSupportMode) Or _
+                  mbLocked
 
   If SSTab1.Tab = 0 Then
     SSTab1_Click 0
@@ -1721,7 +1727,7 @@ Private Sub ListView1_GotFocus()
 End Sub
 
 Private Sub ListView1_LostFocus()
-  cmdOk.Default = True
+  cmdOK.Default = True
 End Sub
 
 Private Sub ListView2_GotFocus()
@@ -1729,7 +1735,7 @@ Private Sub ListView2_GotFocus()
 End Sub
 
 Private Sub ListView2_LostFocus()
-  cmdOk.Default = True
+  cmdOK.Default = True
 End Sub
 
 Private Function CopyToSelected(bAll As Boolean)
@@ -1979,12 +1985,12 @@ End Sub
 
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
 End Property
 
 Public Property Let Changed(ByVal blnNewValue As Boolean)
   If Not mblnLoading Then
-    cmdOk.Enabled = blnNewValue And Not mblnReadOnly
+    cmdOK.Enabled = blnNewValue And Not mblnReadOnly
   End If
 End Property
 
@@ -2311,11 +2317,11 @@ Private Sub txtBody_GotFocus()
     .SelStart = 0
     .SelLength = Len(.Text)
   End With
-  cmdOk.Default = False
+  cmdOK.Default = False
 End Sub
 
 Private Sub txtBody_LostFocus()
-  cmdOk.Default = True
+  cmdOK.Default = True
 End Sub
 
 

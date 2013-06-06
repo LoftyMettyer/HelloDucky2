@@ -196,6 +196,7 @@ Begin VB.Form frmWorkflowOpen
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   1
             Object.Width           =   9234
+            TextSave        =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -1429,7 +1430,7 @@ Public Function RefreshWorkflows() As Boolean
   ' Column 1 = workflow ID
   ' Column 2 = description
   ' Column 3 = enabled
-  ReDim mavWorkflowInfo(3, 0)
+  ReDim mavWorkflowInfo(4, 0)
   
   lngWorkflowID = WorkflowID
 
@@ -1437,7 +1438,7 @@ Public Function RefreshWorkflows() As Boolean
 
   ' Define the selection string which determines
   ' what objects are displayed on the selection form.
-  sSQL = "SELECT name, ID, description, enabled" & _
+  sSQL = "SELECT name, ID, description, enabled, locked" & _
     " FROM tmpWorkflows" & _
     " WHERE deleted = FALSE"
   
@@ -1465,10 +1466,11 @@ Public Function RefreshWorkflows() As Boolean
       Set objListItem = lstItems.ListItems.Add(, , !Name)
       objListItem.Tag = !id
       
-      ReDim Preserve mavWorkflowInfo(3, UBound(mavWorkflowInfo, 2) + 1)
+      ReDim Preserve mavWorkflowInfo(4, UBound(mavWorkflowInfo, 2) + 1)
       mavWorkflowInfo(1, UBound(mavWorkflowInfo, 2)) = !id
       mavWorkflowInfo(2, UBound(mavWorkflowInfo, 2)) = !Description
       mavWorkflowInfo(3, UBound(mavWorkflowInfo, 2)) = !Enabled
+      mavWorkflowInfo(4, UBound(mavWorkflowInfo, 2)) = !Locked
       
       If !id = lngWorkflowID Then
         iSelectedWorkflow = lstItems.ListItems.Count
@@ -1529,30 +1531,34 @@ Public Property Let WorkflowID(plngWorkflowID As Long)
 End Property
 Private Sub RefreshControls()
   Dim fSelectionMade As Boolean
+  Dim bLocked As Boolean
   Dim iLoop As Integer
   Dim sDescription As String
   
   fSelectionMade = (Not (lstItems.SelectedItem Is Nothing))
-
-  ' Enable/disable controls depending on the state of other.
-  cmdNew.Enabled = Not mblnReadOnly
-  cmdModify.Enabled = fSelectionMade
-  cmdCopy.Enabled = fSelectionMade And Not mblnReadOnly
-  cmdDelete.Enabled = fSelectionMade And Not mblnReadOnly
-  cmdProperties.Enabled = fSelectionMade
-  cmdPrint.Enabled = fSelectionMade
-  
+ 
   ' Refresh the 'description' textbox.
   sDescription = ""
   If fSelectionMade Then
     For iLoop = 1 To UBound(mavWorkflowInfo, 2)
       If CLng(mavWorkflowInfo(1, iLoop)) = CLng(lstItems.SelectedItem.Tag) Then
         sDescription = CStr(mavWorkflowInfo(2, iLoop))
+        bLocked = mavWorkflowInfo(4, iLoop)
         mblnWorkflowEnabled = CBool(mavWorkflowInfo(3, iLoop))
         Exit For
       End If
     Next
   End If
+  
+  ' Enable/disable controls depending on the state of other.
+  cmdNew.Enabled = Not mblnReadOnly
+  cmdModify.Caption = IIf(bLocked, "&View...", "&Edit...")
+  cmdModify.Enabled = fSelectionMade
+  cmdCopy.Enabled = fSelectionMade And Not mblnReadOnly
+  cmdDelete.Enabled = fSelectionMade And Not mblnReadOnly
+  cmdProperties.Enabled = fSelectionMade
+  cmdPrint.Enabled = fSelectionMade
+  
   txtDesc.Text = sDescription
 
   ' Refresh the menu
@@ -1616,37 +1622,10 @@ End Sub
 
 
 Private Sub Form_Load()
-'  Dim sAppName  As String
-'  Dim sSection  As String
-  
-'  Dim lngTop As Long
-'  Dim lngLeft As Long
-'  Dim lngWidth As Long
-'  Dim lngHeight As Long
-'
   
   ' Clear the menu shortcuts. This needs to be done so that some shortcut keys
   ' (eg. DEL) will function normally in textboxes instead of triggering menu options.
   frmSysMgr.ClearMenuShortcuts
-  
-'  ' Initialise form properties from registry settings.
-'  With Me
-'    sAppName = App.ProductName
-'    sSection = .Name
-'
-'    .WindowState = GetPCSetting(Me.Name, "State", Me.WindowState)
-'
-'    lngTop = GetPCSetting(sSection, "Top", (Screen.Height - .Height) / 2)
-'
-'    ' JDM - 06/12/01 - Fault 3258 - Was saving negative values to the registry
-'    lngTop = IIf(lngTop < 0, (Screen.Height - .Height) / 2, lngTop)
-'    lngLeft = GetPCSetting(sSection, "Left", (Screen.Width - .Width) / 2)
-'    lngHeight = GetPCSetting(sSection, "Height", .Height)
-'    lngWidth = GetPCSetting(sSection, "Width", .Width)
-'
-'    .Move lngLeft, lngTop, lngWidth, lngHeight
-'
-'  End With
   
   mblnReadOnly = (Application.AccessMode <> accFull And _
                   Application.AccessMode <> accSupportMode)

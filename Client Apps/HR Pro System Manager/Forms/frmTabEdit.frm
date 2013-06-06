@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Begin VB.Form frmTabEdit 
    BorderStyle     =   3  'Fixed Dialog
@@ -50,60 +50,49 @@ Begin VB.Form frmTabEdit
       _Version        =   393216
       Style           =   1
       Tabs            =   7
-      Tab             =   1
+      Tab             =   2
       TabsPerRow      =   7
       TabHeight       =   520
       TabCaption(0)   =   "De&finition"
       TabPicture(0)   =   "frmTabEdit.frx":000C
       Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "lblRecordDescription"
-      Tab(0).Control(1)=   "lblOrder"
-      Tab(0).Control(2)=   "lblTableName"
-      Tab(0).Control(3)=   "lblEmail"
-      Tab(0).Control(4)=   "cmdRecordDescription"
-      Tab(0).Control(5)=   "txtRecordDescription"
+      Tab(0).Control(0)=   "txtEmail"
+      Tab(0).Control(0).Enabled=   0   'False
+      Tab(0).Control(1)=   "cmdEmail"
+      Tab(0).Control(2)=   "txtTableName"
+      Tab(0).Control(3)=   "fraTableType"
+      Tab(0).Control(4)=   "cmdOrder"
+      Tab(0).Control(5)=   "txtOrder"
       Tab(0).Control(5).Enabled=   0   'False
-      Tab(0).Control(6)=   "txtOrder"
+      Tab(0).Control(6)=   "txtRecordDescription"
       Tab(0).Control(6).Enabled=   0   'False
-      Tab(0).Control(7)=   "cmdOrder"
-      Tab(0).Control(8)=   "fraTableType"
-      Tab(0).Control(9)=   "txtTableName"
-      Tab(0).Control(10)=   "cmdEmail"
-      Tab(0).Control(11)=   "txtEmail"
-      Tab(0).Control(11).Enabled=   0   'False
+      Tab(0).Control(7)=   "cmdRecordDescription"
+      Tab(0).Control(8)=   "lblEmail"
+      Tab(0).Control(9)=   "lblTableName"
+      Tab(0).Control(10)=   "lblOrder"
+      Tab(0).Control(11)=   "lblRecordDescription"
       Tab(0).ControlCount=   12
       TabCaption(1)   =   "Su&mmary"
       TabPicture(1)   =   "frmTabEdit.frx":0028
-      Tab(1).ControlEnabled=   -1  'True
+      Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "lblParentTable"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).Control(1)=   "fraColumns"
-      Tab(1).Control(1).Enabled=   0   'False
       Tab(1).Control(2)=   "cmdInsert"
-      Tab(1).Control(2).Enabled=   0   'False
       Tab(1).Control(3)=   "cmdDown"
-      Tab(1).Control(3).Enabled=   0   'False
       Tab(1).Control(4)=   "cmdUp"
-      Tab(1).Control(4).Enabled=   0   'False
       Tab(1).Control(5)=   "cmdRemove"
-      Tab(1).Control(5).Enabled=   0   'False
       Tab(1).Control(6)=   "cmdAdd"
-      Tab(1).Control(6).Enabled=   0   'False
       Tab(1).Control(7)=   "fraSummaryFields"
-      Tab(1).Control(7).Enabled=   0   'False
       Tab(1).Control(8)=   "cmdInsertBreak"
-      Tab(1).Control(8).Enabled=   0   'False
       Tab(1).Control(9)=   "cboParentTable"
-      Tab(1).Control(9).Enabled=   0   'False
       Tab(1).Control(10)=   "cmdColumnBreak"
-      Tab(1).Control(10).Enabled=   0   'False
       Tab(1).Control(11)=   "chkManualColumnBreak"
-      Tab(1).Control(11).Enabled=   0   'False
       Tab(1).ControlCount=   12
       TabCaption(2)   =   "Ema&il Links"
       TabPicture(2)   =   "frmTabEdit.frx":0044
-      Tab(2).ControlEnabled=   0   'False
+      Tab(2).ControlEnabled=   -1  'True
       Tab(2).Control(0)=   "fraEmail"
+      Tab(2).Control(0).Enabled=   0   'False
       Tab(2).ControlCount=   1
       TabCaption(3)   =   "Calendar Lin&ks"
       TabPicture(3)   =   "frmTabEdit.frx":0060
@@ -245,7 +234,7 @@ Begin VB.Form frmTabEdit
       Begin VB.Frame fraEmail 
          Caption         =   "Email Links :"
          Height          =   4150
-         Left            =   -74800
+         Left            =   200
          TabIndex        =   30
          Top             =   400
          Width           =   7560
@@ -706,7 +695,7 @@ Begin VB.Form frmTabEdit
       Begin VB.CheckBox chkManualColumnBreak 
          Caption         =   "Manual column br&eaks"
          Height          =   240
-         Left            =   5025
+         Left            =   -69975
          TabIndex        =   18
          Top             =   645
          Width           =   2385
@@ -715,7 +704,7 @@ Begin VB.Form frmTabEdit
          Caption         =   "Colum&n Break >"
          Enabled         =   0   'False
          Height          =   360
-         Left            =   3150
+         Left            =   -71850
          TabIndex        =   25
          Top             =   3090
          Width           =   1630
@@ -742,7 +731,7 @@ Begin VB.Form frmTabEdit
       End
       Begin VB.ComboBox cboParentTable 
          Height          =   315
-         Left            =   1500
+         Left            =   -73500
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
          TabIndex        =   17
@@ -752,7 +741,7 @@ Begin VB.Form frmTabEdit
       Begin VB.CommandButton cmdInsertBreak 
          Caption         =   "&Break >"
          Height          =   360
-         Left            =   3150
+         Left            =   -71850
          TabIndex        =   24
          Top             =   2655
          Width           =   1630
@@ -760,7 +749,7 @@ Begin VB.Form frmTabEdit
       Begin VB.Frame fraSummaryFields 
          Caption         =   "Summary Columns :"
          Height          =   3500
-         Left            =   5025
+         Left            =   -69975
          TabIndex        =   28
          Top             =   1000
          Width           =   2745
@@ -776,7 +765,7 @@ Begin VB.Form frmTabEdit
       Begin VB.CommandButton cmdAdd 
          Caption         =   "&Add  >"
          Height          =   360
-         Left            =   3150
+         Left            =   -71850
          TabIndex        =   21
          Top             =   1110
          Width           =   1630
@@ -784,7 +773,7 @@ Begin VB.Form frmTabEdit
       Begin VB.CommandButton cmdRemove 
          Caption         =   "&Remove  <"
          Height          =   360
-         Left            =   3150
+         Left            =   -71850
          TabIndex        =   23
          Top             =   1980
          Width           =   1630
@@ -792,7 +781,7 @@ Begin VB.Form frmTabEdit
       Begin VB.CommandButton cmdUp 
          Caption         =   "Move Up"
          Height          =   360
-         Left            =   3150
+         Left            =   -71850
          TabIndex        =   26
          Top             =   3675
          UseMaskColor    =   -1  'True
@@ -801,7 +790,7 @@ Begin VB.Form frmTabEdit
       Begin VB.CommandButton cmdDown 
          Caption         =   "Move Down"
          Height          =   360
-         Left            =   3150
+         Left            =   -71850
          Picture         =   "frmTabEdit.frx":00D0
          TabIndex        =   27
          Top             =   4110
@@ -811,7 +800,7 @@ Begin VB.Form frmTabEdit
       Begin VB.CommandButton cmdInsert 
          Caption         =   "&Insert  >"
          Height          =   360
-         Left            =   3150
+         Left            =   -71850
          TabIndex        =   22
          Top             =   1545
          Width           =   1630
@@ -819,7 +808,7 @@ Begin VB.Form frmTabEdit
       Begin VB.Frame fraColumns 
          Caption         =   "Columns :"
          Height          =   3500
-         Left            =   200
+         Left            =   -74800
          TabIndex        =   19
          Top             =   1000
          Width           =   2790
@@ -931,7 +920,7 @@ Begin VB.Form frmTabEdit
          BackStyle       =   0  'Transparent
          Caption         =   "Parent Table :"
          Height          =   195
-         Left            =   200
+         Left            =   -74800
          TabIndex        =   16
          Top             =   660
          Width           =   1245
@@ -1187,7 +1176,7 @@ Public Property Set Table(pObjTable As Object)
     mlngEmailID = 0
     mbManualColumnBreaks = False
   Else
-    Me.Caption = "'" & mobjTable.TableName & "' Table Properties"
+    Me.Caption = "'" & mobjTable.TableName & "' Table Properties" + IIf(mobjTable.Locked, " (Locked)", "")
     txtTableName.Text = mobjTable.TableName
     optTableType(mobjTable.TableType - 1).value = True
     mlngOrderID = mobjTable.PrimaryOrderID
@@ -1366,7 +1355,7 @@ Private Sub cmdCancel_Click()
   
   mblnUnloadForm = True
   If lngResponse = vbYes Then
-    cmdOK_Click
+    cmdOk_Click
   ElseIf lngResponse = vbNo Then
     gfCancelled = True
     UnLoad Me
@@ -1597,7 +1586,7 @@ Private Sub cmdInsertBreak_Click()
 End Sub
 
 
-Private Sub cmdOK_Click()
+Private Sub cmdOk_Click()
   ' Save the changes and unload the form.
   On Error GoTo ErrorTrap
   
@@ -2341,7 +2330,8 @@ Private Sub Form_Load()
   ssGrdWorkflowLinks.RowHeight = GRIDROWHEIGHT
   
   mblnReadOnly = (Application.AccessMode <> accFull And _
-                  Application.AccessMode <> accSupportMode)
+                  Application.AccessMode <> accSupportMode) Or _
+                  mobjTable.Locked
   
   If mblnReadOnly Then
     ControlsDisableAll Me
@@ -3490,6 +3480,7 @@ Private Sub OutlookLink(blnNew As Boolean)
     End With
   
     'frmOutlook.TableID = mobjTable.TableID
+    frmOutlook.Locked = mobjTable.Locked
     frmOutlook.OutlookLink = objNewLink
     frmOutlook.OutlookLink.Destinations = objNewLink.Destinations
     frmOutlook.OutlookLink.LinkColumns = objNewLink.LinkColumns
@@ -3585,6 +3576,7 @@ Private Sub WorkflowLink(blnNew As Boolean)
 
   iOriginalLinkType = frmLink.WorkflowLink.LinkType
 
+  frmLink.Locked = mobjTable.Locked
   If frmLink.PopulateControls Then
     frmLink.Show vbModal
   End If
@@ -3808,7 +3800,7 @@ Private Sub GetTableStats()
       lblStatsRows.Caption = "Rows : 0"
       lblDataSize.Caption = "Table Size : 0"
     Else
-      sSQL = "exec sp_spaceused '" & strOriginalName & "'"
+      sSQL = "exec sp_spaceused 'tbuser_" & strOriginalName & "'"
       rsDetails.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly
     
       With rsDetails
@@ -4043,6 +4035,7 @@ Private Sub cmdEmailLinkProperties_Click()
   Set objNewLink = mvarEmailLinks.Item("ID" & ssGrdEmailLinks.Columns(3).value)
   lngOldLinkID = objNewLink.LinkID
   
+  frmEmail.Locked = mobjTable.Locked
   Load frmEmail   'Required!
   frmEmail.TableID = mobjTable.TableID
   frmEmail.EmailLink = objNewLink
@@ -4343,6 +4336,7 @@ Private Sub TableValidation(blnNew As Boolean)
     End If
   End With
 
+  frmValidation.Locked = mobjTable.Locked
   frmValidation.ValidationObject = objValidation
 
   If frmValidation.PopulateControls Then

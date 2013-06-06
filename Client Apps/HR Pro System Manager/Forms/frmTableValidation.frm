@@ -158,6 +158,11 @@ Private mbReadOnly As Boolean
 Private mbLoading As Boolean
 Private objValidationObject As clsTableValidation
 Private miValidationType As ValidationType
+Private mbLocked As Boolean
+
+Public Property Let Locked(ByRef bValue As Boolean)
+  mbLocked = bValue
+End Property
 
 Public Property Get ValidationObject() As clsTableValidation
   Set ValidationObject = objValidationObject
@@ -217,7 +222,8 @@ Private Sub Form_Load()
   miValidationType = VALIDATION_OVERLAP
   mbCancelled = True
   mbReadOnly = (Application.AccessMode <> accFull And _
-                  Application.AccessMode <> accSupportMode)
+                  Application.AccessMode <> accSupportMode) Or _
+                  mbLocked
 
 End Sub
 

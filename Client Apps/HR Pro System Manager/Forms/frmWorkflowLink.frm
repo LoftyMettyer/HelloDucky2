@@ -358,6 +358,7 @@ Private mobjWorkflowLink As clsWorkflowTriggeredLink
 Private mblnCancelled As Boolean
 Private mblnReadOnly As Boolean
 Private mblnLoading As Boolean
+Private mbLocked As Boolean
 
 Private miLinkType As WorkflowTriggerLinkType
 
@@ -370,6 +371,9 @@ Public Property Get Cancelled() As Boolean
   Cancelled = mblnCancelled
 End Property
 
+Public Property Let Locked(ByRef bValue As Boolean)
+  mbLocked = bValue
+End Property
 
 Private Sub cboWorkflow_refresh()
   
@@ -891,7 +895,8 @@ Private Sub Form_Load()
   
   mblnCancelled = True
   mblnReadOnly = (Application.AccessMode <> accFull And _
-                  Application.AccessMode <> accSupportMode)
+                  Application.AccessMode <> accSupportMode) Or _
+                  mbLocked
 
   UI.FormatGTDateControl cboEffectiveDate
 

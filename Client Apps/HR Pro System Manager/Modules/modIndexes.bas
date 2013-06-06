@@ -13,20 +13,20 @@ Private Function CreateIndex(ByVal psTableName As String, pstrIndexName As Strin
   If glngSQLVersion = 9 Then
     sSQL = "IF EXISTS" & _
       " (SELECT Name" & _
-      " FROM sys.indexes WHERE object_id = object_id(N'" & psTableName & "')" & _
+      " FROM sys.indexes WHERE object_id = object_id(N'tbuser_" & psTableName & "')" & _
       " AND name = N'" & pstrIndexName & "')" & _
-      " DROP INDEX [" & pstrIndexName & "] ON " & psTableName
+      " DROP INDEX [" & pstrIndexName & "] ON tbuser_" & psTableName
   Else
     sSQL = "IF EXISTS" & _
       " (SELECT Name" & _
-      " FROM sysindexes WHERE id = object_id(N'" & psTableName & "')" & _
+      " FROM sysindexes WHERE id = object_id(N'tbuser_" & psTableName & "')" & _
       " AND name = N'" & pstrIndexName & "')" & _
-      " DROP INDEX [" & psTableName & "].[" & pstrIndexName & "]"
+      " DROP INDEX [tbuser_" & psTableName & "].[" & pstrIndexName & "]"
   End If
   gADOCon.Execute sSQL, , adExecuteNoRecords
 
   sSQL = "CREATE " & IIf(bClustered, "CLUSTERED", "NONCLUSTERED") & _
-    " INDEX [" & pstrIndexName & "] ON [" & psTableName & "]" _
+    " INDEX [" & pstrIndexName & "] ON [tbuser_" & psTableName & "]" _
     & "(" & pstrFields & " Asc)" _
     & " WITH FILLFACTOR = " & iFillFactor
   gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
@@ -52,15 +52,15 @@ Private Function CreatePrimaryIndex(ByVal psTableName As String, bClustered As B
   Set rstExisting = New ADODB.Recordset
 
   sSQL = "SELECT name FROM SysObjects WHERE xtype='PK'" & _
-    " AND parent_obj = (SELECT ID FROM SysObjects WHERE xtype='U' AND Name = '" & psTableName & "')"
+    " AND parent_obj = (SELECT ID FROM SysObjects WHERE xtype='U' AND Name = 'tbuser_" & psTableName & "')"
   rstExisting.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly
     
   If Not (rstExisting.EOF And rstExisting.BOF) Then
-    sSQL = "ALTER TABLE [" & psTableName & "] DROP CONSTRAINT [" & rstExisting.Fields(0).Value & "]"
+    sSQL = "ALTER TABLE [tbuser_" & psTableName & "] DROP CONSTRAINT [" & rstExisting.Fields(0).value & "]"
     gADOCon.Execute sSQL, , adExecuteNoRecords
   End If
     
-  sSQL = "ALTER TABLE [" & psTableName & "] ADD PRIMARY KEY " & IIf(bClustered, "CLUSTERED", "NONCLUSTERED") & " (ID)"
+  sSQL = "ALTER TABLE [tbuser_" & psTableName & "] ADD PRIMARY KEY " & IIf(bClustered, "CLUSTERED", "NONCLUSTERED") & " (ID)"
   gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
 
 
@@ -87,8 +87,8 @@ Public Function CreateChildTableForeignKeys() As Boolean
     If Not (.EOF And .BOF) Then
       .MoveFirst
       Do While Not .EOF
-        sTableName = GetTableName(.Fields("ChildID").Value)
-        bOK = CreateIndex(sTableName, "FK_" & .Fields("ParentID").Value, "ID_" & .Fields("ParentID").Value, False, 80)
+        sTableName = GetTableName(.Fields("ChildID").value)
+        bOK = CreateIndex(sTableName, "FK_" & .Fields("ParentID").value, "ID_" & .Fields("ParentID").value, False, 80)
         .MoveNext
       Loop
     End If
@@ -180,8 +180,8 @@ Public Function CreatePrimaryKeysForTables() As Boolean
       .MoveFirst
       Do While Not .EOF
         ' AE20080303 Fault #12966
-        If Not CBool(.Fields("Deleted").Value) Then
-          sTableName = .Fields("TableName").Value
+        If Not CBool(.Fields("Deleted").value) Then
+          sTableName = .Fields("TableName").value
           bOK = CreatePrimaryIndex(sTableName, True)
         End If
         .MoveNext

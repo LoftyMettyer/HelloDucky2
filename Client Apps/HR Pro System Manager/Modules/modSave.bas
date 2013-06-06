@@ -6,6 +6,9 @@ Private mfrmUse As frmUsage
 Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
   On Error GoTo ErrorTrap
   
+ ' Dim objPhoenix As New Phoenix.SysMgr
+  
+  
   Dim fOK As Boolean
   Dim fInTransaction As Boolean
   Dim sErrMsg As String
@@ -114,13 +117,13 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
     End If
     
   End If
-
+    
   'JDM - 19/02/02 - Fault 3504 - Moved the quick checks before calling the support mode, or checking for other users
   If fOK Then
     DoEvents
-    OutputCurrentProcess "Initialising Save Turbo"
+    OutputCurrentProcess "Initialising Save Injector"
     OutputCurrentProcess2 "Orders", 4
-    
+       
     fOK = QuickChecks_1
     gobjProgress.UpdateProgress2
     fOK = fOK And Not gobjProgress.Cancelled
@@ -201,16 +204,29 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
     ' Begin transactions of data from local to remote databases.
     gADOCon.BeginTrans
     fInTransaction = True
-     
+                 
+    ' Apply any post save hotfixes
+    If fOK Then
+      fOK = ApplyHotfixes(False)
+    End If
+         
     ' Tidy up existing temporary tables/procedures/udfs
     If fOK Then
       gobjProgress.ResetBar2
-      OutputCurrentProcess "Compacting Database"
+      OutputCurrentProcess "Preparing Database"
       gobjProgress.UpdateProgress False
       DoEvents
+      
+      ' Cleanup
       fOK = CleanupDatabase
+
+      ' Schema Binding Prep
+      fOK = fOK And DropViews
+      fOK = fOK And DropHierarchySpecifics
+      
       fOK = fOK And Not gobjProgress.Cancelled
     End If
+      
     
     'MH20010227 Messageboxes are now produced within 'SaveTables' etc.
     If fOK Then
@@ -219,29 +235,42 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
       gobjProgress.UpdateProgress False
       DoEvents
       fOK = SaveTables(pfRefreshDatabase, mfrmUse)
+      
+      ' Initialise the .NET engine
+      'Set objPhoenix.CommitDB = gADOCon
+      'Set objPhoenix.MetadataDB = daoDb
+'      fOK = objPhoenix.Initialise
+'      objPhoenix.Options.RefreshObjects = True
+      
+'      fOK = fOK And objPhoenix.Script.DropViews
+ '     fOK = fOK And objPhoenix.Script.DropTableViews
+  '    fOK = fOK And objPhoenix.Script.ScriptTables
+   '   fOK = fOK And objPhoenix.Script.ScriptTableViews
       fOK = fOK And Not gobjProgress.Cancelled
     End If
-      
+
+
     ' Generate indexes
     If fOK Then
       gobjProgress.ResetBar2
       OutputCurrentProcess "Generate Indexes"
       gobjProgress.UpdateProgress False
       DoEvents
-      
+
       OutputCurrentProcess2 "Primary keys", 2
       fOK = CreatePrimaryKeysForTables
       gobjProgress.UpdateProgress2
-      
+
       OutputCurrentProcess2 "Foreign keys"
       fOK = fOK And CreateChildTableForeignKeys
       fOK = fOK And Not gobjProgress.Cancelled
-      
+
       If fOK Then
         fOK = CreateHierarchyIndexes
       End If
-        
+
     End If
+      
       
     'Create Payroll lookup column calculations
     If gbAccordPayrollModule Then
@@ -384,6 +413,7 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
       gobjProgress.UpdateProgress False
       DoEvents
       fOK = SaveExpressions(pfRefreshDatabase)
+      'fOK = fOK And objPhoenix.Script.ScriptObjects
       fOK = fOK And Not gobjProgress.Cancelled
     End If
      
@@ -427,6 +457,7 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
       OutputCurrentProcess "Generating Column Triggers"
       gobjProgress.UpdateProgress False
       DoEvents
+      'fOK = objPhoenix.Script.ScriptTriggers
       fOK = SetTriggers(alngExpressions, pfRefreshDatabase)
       fOK = fOK And Not gobjProgress.Cancelled
     End If
@@ -438,6 +469,7 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
       gobjProgress.UpdateProgress False
       DoEvents
       fOK = SaveViews(pfRefreshDatabase)
+'      fOK = fOK And objPhoenix.Script.ScriptViews
       fOK = fOK And Not gobjProgress.Cancelled
     End If
     
@@ -479,10 +511,9 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
       DoEvents
       fOK = ApplyPermissions
       fOK = fOK And Not gobjProgress.Cancelled
-      
       ApplyProcessAdminToLogins
-      
     End If
+         
      
     ' Save and check module specifics and configure any stored procedures.
     If fOK Then
@@ -668,6 +699,11 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
       SaveSystemSetting "Platform", "ServerName", IIf(GetServerName() = vbNullString, gsServerName, GetServerName())
     End If
   
+    ' Apply any post save hotfixes
+    If fOK Then
+      fOK = ApplyHotfixes(True)
+    End If
+  
     If fOK Then
       gobjProgress.UpdateProgress False
       DoEvents
@@ -681,12 +717,19 @@ TidyUpAndExit:
   
   If fOK Then
     
+'    objPhoenix.ErrorLog.OutputToFile ("c:\dev\errorssysmgr.txt")
+    
     AuditAccess "Save", "System"
     
     ' Commit transactions
     OutputCurrentProcess "Committing changes to the server"
+    
+    ' Close the .NET databases
+    'objPhoenix.CommitDB.CommitTrans
+   ' objPhoenix.MetadataDB.Close
+    
     gADOCon.CommitTrans
-  
+   
     ' Apply databsae ownership as required.
     gobjProgress.ResetBar2
     OutputCurrentProcess "Applying Database Ownership"
@@ -706,6 +749,10 @@ TidyUpAndExit:
       Application.AccessMode = accLimited
       frmSysMgr.SetCaption
     End If
+
+    ' Kill the phoenix engine
+'    objPhoenix.CloseSafely
+ '   Set objPhoenix = Nothing
 
     '16/08/2001 MH Fault 2691
     gfRefreshStoredProcedures = False
@@ -734,6 +781,7 @@ TidyUpAndExit:
       gobjProgress.Visible = True
 
       Screen.MousePointer = vbHourglass
+   '   objPhoenix.CommitDB.RollbackTrans
       gADOCon.RollbackTrans
       Screen.MousePointer = vbDefault
     End If
@@ -1508,7 +1556,7 @@ Private Function CopyData() As Boolean
                     ' Convert data into character if possible.
                     Case dtVARCHAR, dtLONGVARCHAR
                       If (iSourceColumnDataType = dtTIMESTAMP) Or _
-                        (iSourceColumnDataType = dtinteger) Or _
+                        (iSourceColumnDataType = dtINTEGER) Or _
                         (iSourceColumnDataType = dtNUMERIC) Or _
                         (iSourceColumnDataType = dtBIT) Then
                         sColumnList.Append IIf(sColumnList.Length <> 0, ",", vbNullString) & strColumnName
@@ -1516,7 +1564,7 @@ Private Function CopyData() As Boolean
                       End If
                                     
                     ' Convert data into integer if possible.
-                    Case dtinteger
+                    Case dtINTEGER
                       If (iSourceColumnDataType = dtNUMERIC) Or _
                         (iSourceColumnDataType = dtBIT) Then
                         sColumnList.Append IIf(sColumnList.Length <> 0, ",", vbNullString) & strColumnName
@@ -1525,7 +1573,7 @@ Private Function CopyData() As Boolean
                                   
                     ' Convert data into numeric if possible.
                     Case dtNUMERIC
-                      If (iSourceColumnDataType = dtinteger) Or _
+                      If (iSourceColumnDataType = dtINTEGER) Or _
                         (iSourceColumnDataType = dtBIT) Then
                         sColumnList.Append IIf(sColumnList.Length <> 0, ",", vbNullString) & strColumnName
                         sValueList.Append IIf(sValueList.Length <> 0, ",", vbNullString) & "CONVERT(numeric(" & Trim$(Str$(iDestinationColumnSize)) & "," & Trim$(Str$(iDestinationColumnDecimals)) & "), " & strColumnName & ")"
@@ -2036,3 +2084,40 @@ Private Function UpdateLockCheck() As Boolean
   Set rsTemp = Nothing
 End Function
 
+Private Function ApplyHotfixes(ByRef IsPostSave As Boolean) As Boolean
+
+  On Error GoTo ErrorTrap
+
+  Dim cmdHotfixes As New ADODB.Command
+  Dim pmADO As ADODB.Parameter
+  Dim bOK As Boolean
+
+  bOK = True
+
+  With cmdHotfixes
+    .CommandText = "spASRApplyScripts"
+    .CommandType = adCmdStoredProc
+    .CommandTimeout = 0
+    Set .ActiveConnection = gADOCon
+    
+    Set pmADO = .CreateParameter("ispostsave", adBoolean, adParamInput)
+    pmADO.value = IsPostSave
+    .Parameters.Append pmADO
+    
+    .Execute
+  End With
+
+TidyUpAndExit:
+  Set cmdHotfixes = Nothing
+  ApplyHotfixes = bOK
+  Exit Function
+
+ErrorTrap:
+  bOK = False
+  GoTo TidyUpAndExit
+
+
+
+
+
+End Function
