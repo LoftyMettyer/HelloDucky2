@@ -79,6 +79,7 @@ Begin VB.Form frmNewGroup
          _Version        =   196617
          DataMode        =   2
          RecordSelectors =   0   'False
+         Col.Count       =   3
          stylesets.count =   2
          stylesets(0).Name=   "ActiveCheckbox"
          stylesets(0).BackColor=   -2147483635
@@ -369,6 +370,9 @@ Public Sub Initialise(piAction As groupAction)
       .AddItem "Data Transfer" & _
         vbTab & AccessDescription(ACCESS_HIDDEN) & _
         vbTab & utlDataTransfer
+      .AddItem "Document Types" & _
+        vbTab & AccessDescription(ACCESS_HIDDEN) & _
+        vbTab & utlVersion1
       .AddItem "Envelopes & Labels" & _
         vbTab & AccessDescription(ACCESS_HIDDEN) & _
         vbTab & utlLabel

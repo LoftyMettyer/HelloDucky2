@@ -28,6 +28,7 @@ Public Enum UtilityType
   utlSuccession = 23
   utlCareer = 24
   utlWorkflow = 25
+  utlVersion1 = 26
 End Enum
 
 
