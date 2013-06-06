@@ -719,6 +719,8 @@ Sub Main()
   gbAllowOutput_Word = IIf(giOfficeVersion_Word > 0, True, False)
   gbAllowOutput_Excel = IIf(giOfficeVersion_Excel > 0, True, False)
 
+  ' If we get problems, just in case...
+  gbDisableCodeJock = (InStr(LCase(Command$), "/skin=false") > 0)
 
   If App.StartMode = vbSModeAutomation Then
     'If started via OLE automation, return control back to client application
