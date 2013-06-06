@@ -222,6 +222,10 @@ Dim strUtilityName As String
   fOK = True
   Screen.MousePointer = vbHourglass
 
+  If frmBreakDown Is Nothing Then
+    Set frmBreakDown = New frmMatchRunBreakDown
+  End If
+
   'If Not ValidatePostParameters Then
   '  Exit Sub
   'End If
@@ -1752,8 +1756,11 @@ Private Function GetMatchReportDefinition() As Boolean
   End With
 
   If Not gblnBatchMode Then
-    frmMatchRunBreakDown.lblTable1Name.Caption = mstrTable1Name
-    frmMatchRunBreakDown.lblTable2Name.Caption = mstrTable2Name
+    If frmBreakDown Is Nothing Then
+      Set frmBreakDown = New frmMatchRunBreakDown
+    End If
+    frmBreakDown.lblTable1Name.Caption = mstrTable1Name
+    frmBreakDown.lblTable2Name.Caption = mstrTable2Name
   End If
 
   GetMatchReportDefinition = IsRecordSelectionValid
@@ -1934,6 +1941,9 @@ Public Function PopulateGridBreakdown(lngTableID As Long) As Boolean
   
   Set objRelation = mcolRelations("T" & CStr(lngTableID))
   
+  If frmBreakDown Is Nothing Then
+    Set frmBreakDown = New frmMatchRunBreakDown
+  End If
   frmBreakDown.grdBreakdown.Redraw = False
 
   PopulateGridBreakdown = False
@@ -2278,6 +2288,10 @@ Private Sub Form_Load()
   
   Hook Me.hWnd, 9405, 6990
   
+  If frmBreakDown Is Nothing Then
+    Set frmBreakDown = New frmMatchRunBreakDown
+  End If
+  
   Set frmOutput = New frmOutputOptions
   frmOutput.PageRange = False
   ReDim mastrUDFsRequired(0)
@@ -2315,7 +2329,9 @@ Private Function InitialiseFormBreakdown()
 
   Dim objRelation As clsMatchRelation
 
-  Set frmBreakDown = New frmMatchRunBreakDown
+  If frmBreakDown Is Nothing Then
+    Set frmBreakDown = New frmMatchRunBreakDown
+  End If
   frmBreakDown.Caption = Me.Caption & " Breakdown"
   frmBreakDown.HelpContextID = Me.HelpContextID
 
@@ -2359,6 +2375,10 @@ End Function
 
 
 Private Sub Form_Unload(Cancel As Integer)
+  Unload frmBreakDown
+  Set frmBreakDown = Nothing
+  
+  Unload frmOutput
   Set frmOutput = Nothing
   
   Unhook Me.hWnd

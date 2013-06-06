@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "12:45"
+            TextSave        =   "17:13"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -1100,23 +1100,28 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
     
     '<Minimise The Active Form>
     Case "Minimise"
-      frmMain.ActiveForm.WindowState = vbMinimized
-      frmMain.RefreshMainForm frmMain.ActiveForm
+      If Not frmMain.ActiveForm Is Nothing Then
+        frmMain.ActiveForm.WindowState = vbMinimized
+        frmMain.RefreshMainForm frmMain.ActiveForm
+      End If
 
     '<Restore The Minimised window>
     Case "Restore"
-      frmMain.ActiveForm.WindowState = vbNormal
-      frmMain.RefreshMainForm frmMain.ActiveForm
+      If Not frmMain.ActiveForm Is Nothing Then
+        frmMain.ActiveForm.WindowState = vbNormal
+        frmMain.RefreshMainForm frmMain.ActiveForm
+      End If
     
     '<Close The Active Form>
     Case "CloseWindow"
       ' JPD20020926 Fault 4440
-      If (TypeOf frmMain.ActiveForm Is frmFind2) Then
-        frmMain.ActiveForm.Cancelling = True
+      If Not frmMain.ActiveForm Is Nothing Then
+        If (TypeOf frmMain.ActiveForm Is frmFind2) Then
+          frmMain.ActiveForm.Cancelling = True
+        End If
+        Unload frmMain.ActiveForm
+        frmMain.RefreshMainForm frmMain
       End If
-      
-      Unload frmMain.ActiveForm
-      frmMain.RefreshMainForm frmMain
       
     ' <ADMINISTRATION> menu.
     
