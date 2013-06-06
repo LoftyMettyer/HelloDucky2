@@ -809,7 +809,7 @@ Public Enum OLEType
   OLE_EMBEDDED = 2
 End Enum
 
-Public Enum ValidationType
+Public Enum enum_ValidationType
   VALIDATION_MANDATORY = 0
   VALIDATION_UNIQUE = 1
   VALIDATION_DUPLICATE = 2
@@ -817,7 +817,7 @@ Public Enum ValidationType
   VALIDATION_CUSTOM = 4
 End Enum
 
-Public Enum Severity
+Public Enum enum_Severity
   Severity_Warning = 0
   SEVERITY_FAILURE = 1
   SEVERITY_INFORMATION = 2

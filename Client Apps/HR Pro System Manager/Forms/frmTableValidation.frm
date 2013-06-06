@@ -157,7 +157,7 @@ Private mbCancelled As Boolean
 Private mbReadOnly As Boolean
 Private mbLoading As Boolean
 Private objValidationObject As clsTableValidation
-Private miValidationType As ValidationType
+Private miValidationType As enum_ValidationType
 Private mbLocked As Boolean
 
 Public Property Let Locked(ByRef bValue As Boolean)
