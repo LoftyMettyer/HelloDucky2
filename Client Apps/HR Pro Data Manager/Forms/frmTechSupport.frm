@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Object = "{20C62CAE-15DA-101B-B9A8-444553540000}#1.1#0"; "MSMAPI32.OCX"
 Begin VB.Form frmTechSupport 
    BorderStyle     =   3  'Fixed Dialog
@@ -7,7 +7,7 @@ Begin VB.Form frmTechSupport
    ClientHeight    =   2640
    ClientLeft      =   45
    ClientTop       =   330
-   ClientWidth     =   4620
+   ClientWidth     =   4815
    BeginProperty Font 
       Name            =   "Verdana"
       Size            =   8.25
@@ -26,7 +26,7 @@ Begin VB.Form frmTechSupport
    MinButton       =   0   'False
    MouseIcon       =   "frmTechSupport.frx":000C
    ScaleHeight     =   2640
-   ScaleWidth      =   4620
+   ScaleWidth      =   4815
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin VB.Frame Frame1 
@@ -35,7 +35,7 @@ Begin VB.Form frmTechSupport
       Left            =   120
       TabIndex        =   1
       Top             =   100
-      Width           =   4380
+      Width           =   4580
       Begin VB.Label lblTitle 
          AutoSize        =   -1  'True
          BackStyle       =   0  'Transparent
@@ -178,7 +178,7 @@ Begin VB.Form frmTechSupport
       Caption         =   "&OK"
       Default         =   -1  'True
       Height          =   400
-      Left            =   3300
+      Left            =   3500
       TabIndex        =   0
       Top             =   2150
       Width           =   1200

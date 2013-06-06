@@ -116,7 +116,6 @@ Begin VB.Form frmEmailLink
       _Version        =   393216
       Style           =   1
       Tabs            =   2
-      Tab             =   1
       TabHeight       =   520
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Verdana"
@@ -129,22 +128,27 @@ Begin VB.Form frmEmailLink
       EndProperty
       TabCaption(0)   =   "De&finition"
       TabPicture(0)   =   "frmEmailLink.frx":1D74
-      Tab(0).ControlEnabled=   0   'False
+      Tab(0).ControlEnabled=   -1  'True
       Tab(0).Control(0)=   "fraLinkTypeDetails(1)"
+      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).Control(1)=   "fraLinkTypeDetails(2)"
+      Tab(0).Control(1).Enabled=   0   'False
       Tab(0).Control(2)=   "fraLinkTypeDetails(0)"
+      Tab(0).Control(2).Enabled=   0   'False
       Tab(0).Control(3)=   "frmDefinition(0)"
+      Tab(0).Control(3).Enabled=   0   'False
       Tab(0).Control(4)=   "frmDefinition(1)"
+      Tab(0).Control(4).Enabled=   0   'False
       Tab(0).ControlCount=   5
       TabCaption(1)   =   "Co&ntent"
       TabPicture(1)   =   "frmEmailLink.frx":1D90
-      Tab(1).ControlEnabled=   -1  'True
+      Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "frmContent"
       Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       Begin VB.Frame frmContent 
          Height          =   6240
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   33
          Top             =   360
          Visible         =   0   'False
@@ -302,7 +306,7 @@ Begin VB.Form frmEmailLink
          Caption         =   "Link Type :"
          Height          =   4105
          Index           =   1
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   8
          Top             =   2495
          Width           =   1480
@@ -340,7 +344,7 @@ Begin VB.Form frmEmailLink
       Begin VB.Frame frmDefinition 
          Height          =   2075
          Index           =   0
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   0
          Top             =   360
          Width           =   8800
@@ -468,7 +472,7 @@ Begin VB.Form frmEmailLink
          Caption         =   "Column Related Link :"
          Height          =   4105
          Index           =   0
-         Left            =   -73280
+         Left            =   1720
          TabIndex        =   12
          Top             =   2495
          Width           =   7200
@@ -486,7 +490,7 @@ Begin VB.Form frmEmailLink
          Caption         =   "Date Related Link :"
          Height          =   4105
          Index           =   2
-         Left            =   -73280
+         Left            =   1720
          TabIndex        =   18
          Top             =   2495
          Visible         =   0   'False
@@ -578,7 +582,7 @@ Begin VB.Form frmEmailLink
          Caption         =   "Record Related Link :"
          Height          =   4105
          Index           =   1
-         Left            =   -73280
+         Left            =   1720
          TabIndex        =   14
          Top             =   2495
          Visible         =   0   'False
@@ -680,12 +684,12 @@ Private mcolRecipients() As Collection
 
 Public Property Let Changed(ByVal value As Boolean)
   If Not mblnLoading Then
-    cmdOk.Enabled = value
+    cmdOK.Enabled = value
   End If
 End Property
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
 End Property
 
 
@@ -1163,7 +1167,7 @@ Private Sub cmdOK_Click()
   End With
 
   'Prompt to rebuild if this is a date related link
-  If optLinkType(2).value = False Then
+  If optLinkType(2).value = True Then
     Application.ChangedEmailLink = True
   End If
   Me.Hide
@@ -1256,8 +1260,8 @@ Private Sub Form_Resize()
   lngTop = Me.ScaleHeight - (cmdCancel.Height + GAP)
   cmdCancel.Move lngLeft, lngTop
 
-  lngLeft = lngLeft - (cmdOk.Width + GAP)
-  cmdOk.Move lngLeft, lngTop
+  lngLeft = lngLeft - (cmdOK.Width + GAP)
+  cmdOK.Move lngLeft, lngTop
 
   lngWidth = Me.ScaleWidth - (GAP * 2)
   lngHeight = lngTop - (GAP * 2)
@@ -1416,11 +1420,11 @@ Private Sub txtContent_Change(Index As Integer)
 End Sub
 
 Private Sub txtContent_GotFocus(Index As Integer)
-  cmdOk.Default = False
+  cmdOK.Default = False
 End Sub
 
 Private Sub txtContent_LostFocus(Index As Integer)
-  cmdOk.Default = True
+  cmdOK.Default = True
 End Sub
 
 Private Sub txtFilter_Change()
