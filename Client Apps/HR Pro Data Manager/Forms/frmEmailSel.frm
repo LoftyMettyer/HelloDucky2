@@ -78,6 +78,7 @@ Begin VB.Form frmEmailSel
       ForeColorEven   =   0
       BackColorOdd    =   16777215
       RowHeight       =   423
+      ExtraHeight     =   79
       Columns.Count   =   6
       Columns(0).Width=   661
       Columns(0).Caption=   "To"
@@ -86,14 +87,14 @@ Begin VB.Form frmEmailSel
       Columns(0).DataType=   8
       Columns(0).FieldLen=   256
       Columns(0).Style=   2
-      Columns(1).Width=   661
+      Columns(1).Width=   741
       Columns(1).Caption=   "Cc"
       Columns(1).Name =   "CC"
       Columns(1).DataField=   "Column 1"
       Columns(1).DataType=   8
       Columns(1).FieldLen=   256
       Columns(1).Style=   2
-      Columns(2).Width=   661
+      Columns(2).Width=   767
       Columns(2).Caption=   "Bcc"
       Columns(2).Name =   "BCC"
       Columns(2).DataField=   "Column 2"
