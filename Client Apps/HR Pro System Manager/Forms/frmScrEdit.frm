@@ -30,14 +30,14 @@ Begin VB.Form frmScrEdit
       Caption         =   "Definition : "
       Height          =   2310
       Left            =   45
-      TabIndex        =   4
+      TabIndex        =   18
       Top             =   90
       Width           =   9375
       Begin VB.ComboBox cboCategory 
          Height          =   315
          Left            =   1335
          Style           =   2  'Dropdown List
-         TabIndex        =   23
+         TabIndex        =   3
          Top             =   675
          Width           =   3270
       End
@@ -47,7 +47,7 @@ Begin VB.Form frmScrEdit
          MaxLength       =   255
          MultiLine       =   -1  'True
          ScrollBars      =   2  'Vertical
-         TabIndex        =   15
+         TabIndex        =   4
          Top             =   1125
          Width           =   3270
       End
@@ -66,7 +66,7 @@ Begin VB.Form frmScrEdit
          Height          =   315
          Left            =   8895
          MaskColor       =   &H000000FF&
-         TabIndex        =   12
+         TabIndex        =   7
          ToolTipText     =   "Clear Path"
          Top             =   675
          UseMaskColor    =   -1  'True
@@ -78,7 +78,7 @@ Begin VB.Form frmScrEdit
          Height          =   315
          Left            =   5670
          Locked          =   -1  'True
-         TabIndex        =   11
+         TabIndex        =   20
          TabStop         =   0   'False
          Text            =   "txtIcon"
          Top             =   675
@@ -88,7 +88,7 @@ Begin VB.Form frmScrEdit
          Caption         =   "..."
          Height          =   315
          Left            =   8580
-         TabIndex        =   10
+         TabIndex        =   6
          Top             =   675
          UseMaskColor    =   -1  'True
          Width           =   315
@@ -113,7 +113,7 @@ Begin VB.Form frmScrEdit
          Height          =   315
          Left            =   1335
          MaxLength       =   255
-         TabIndex        =   7
+         TabIndex        =   2
          Text            =   "txtName"
          Top             =   270
          Width           =   3270
@@ -124,7 +124,7 @@ Begin VB.Form frmScrEdit
          Height          =   315
          Left            =   5655
          Locked          =   -1  'True
-         TabIndex        =   6
+         TabIndex        =   19
          TabStop         =   0   'False
          Text            =   "txtOrder"
          Top             =   270
@@ -143,7 +143,7 @@ Begin VB.Form frmScrEdit
          Caption         =   "Category :"
          Height          =   240
          Left            =   135
-         TabIndex        =   24
+         TabIndex        =   25
          Top             =   755
          Width           =   1005
       End
@@ -151,7 +151,7 @@ Begin VB.Form frmScrEdit
          Caption         =   "Icon :"
          Height          =   240
          Left            =   4860
-         TabIndex        =   17
+         TabIndex        =   24
          Top             =   720
          Width           =   555
       End
@@ -160,7 +160,7 @@ Begin VB.Form frmScrEdit
          Caption         =   "Description :"
          Height          =   195
          Left            =   135
-         TabIndex        =   16
+         TabIndex        =   23
          Top             =   1170
          Width           =   1170
       End
@@ -170,7 +170,7 @@ Begin VB.Form frmScrEdit
          Caption         =   "Name :"
          Height          =   195
          Left            =   135
-         TabIndex        =   14
+         TabIndex        =   22
          Top             =   330
          Width           =   510
       End
@@ -180,7 +180,7 @@ Begin VB.Form frmScrEdit
          Caption         =   "Order :"
          Height          =   195
          Left            =   4860
-         TabIndex        =   13
+         TabIndex        =   21
          Top             =   330
          Width           =   615
       End
@@ -189,14 +189,14 @@ Begin VB.Form frmScrEdit
       Caption         =   "History Screens :"
       Height          =   3690
       Left            =   90
-      TabIndex        =   2
+      TabIndex        =   17
       Top             =   2520
       Width           =   9330
       Begin VB.CheckBox chkGroupByCategory 
          Caption         =   "&Group screens by category"
          Height          =   285
          Left            =   135
-         TabIndex        =   25
+         TabIndex        =   16
          Top             =   3240
          Width           =   2805
       End
@@ -205,7 +205,7 @@ Begin VB.Form frmScrEdit
          Enabled         =   0   'False
          Height          =   420
          Left            =   7965
-         TabIndex        =   22
+         TabIndex        =   15
          Top             =   2610
          Visible         =   0   'False
          Width           =   1185
@@ -215,7 +215,7 @@ Begin VB.Form frmScrEdit
          Enabled         =   0   'False
          Height          =   375
          Left            =   7965
-         TabIndex        =   21
+         TabIndex        =   14
          Top             =   2070
          Visible         =   0   'False
          Width           =   1185
@@ -224,7 +224,7 @@ Begin VB.Form frmScrEdit
          Caption         =   "D&eselect All"
          Height          =   400
          Left            =   7965
-         TabIndex        =   20
+         TabIndex        =   13
          Top             =   1470
          Width           =   1200
       End
@@ -232,7 +232,7 @@ Begin VB.Form frmScrEdit
          Caption         =   "Select &All"
          Height          =   400
          Left            =   7965
-         TabIndex        =   19
+         TabIndex        =   12
          Top             =   915
          Width           =   1200
       End
@@ -240,7 +240,7 @@ Begin VB.Form frmScrEdit
          Caption         =   "&Sel/Deselect"
          Height          =   400
          Left            =   7965
-         TabIndex        =   18
+         TabIndex        =   11
          Top             =   360
          Width           =   1200
       End
@@ -249,7 +249,7 @@ Begin VB.Form frmScrEdit
          Left            =   150
          Sorted          =   -1  'True
          Style           =   1  'Checkbox
-         TabIndex        =   3
+         TabIndex        =   10
          Top             =   345
          Width           =   7680
       End
