@@ -1130,31 +1130,48 @@ PRINT 'Step - Add new calculation procedures'
 	EXECUTE sp_executeSQL @sSPCode;
 
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_propercase](
-		@text as varchar(MAX))
+		@psInput as varchar(MAX))
 	RETURNS varchar(MAX)
 	WITH SCHEMABINDING
 	AS
 	BEGIN
 	
-		DECLARE @reset bit,
-				@result varchar(MAX),
-				@i integer,
-				@c char(1);
+		DECLARE @Index	integer,
+				@Char	char(1),
+				@Result varchar(MAX);
 
-		SET @i = 1;
-		SET @result = '''';
-		SET @reset = 1;
-	      
-		WHILE (@i <= LEN(@text))
-			SELECT @c= SUBSTRING(@text,@i,1)
-				, @result = @result + CASE WHEN @reset=1 THEN UPPER(@c) 
-										   ELSE LOWER(@c) END
-				, @reset = CASE WHEN @c LIKE ''[a-zA-Z]'' THEN 0
-								ELSE 1
-								END
-				, @i = @i + 1;
+		SET @Result = LOWER(@psInput);
+		SET @Index = 1;
+		SET @Result = STUFF(@Result, 1, 1,UPPER(SUBSTRING(@psInput,1,1)));
 
-		RETURN @result + SPACE(DATALENGTH(@text) - LEN(@result));
+		WHILE @Index <= LEN(@psInput)
+		BEGIN
+
+			SET @Char = SUBSTRING(@psInput, @Index, 1);
+
+			IF @Char IN (''m'',''M'','' '', '';'', '':'', ''!'', ''?'', '','', ''.'', ''_'', ''-'', ''/'', ''&'','''''''',''('',char(9))
+			BEGIN
+				IF @Index + 1 <= LEN(@psInput)
+				BEGIN
+					IF @Char = '''' AND UPPER(SUBSTRING(@psInput, @Index + 1, 1)) != ''S''
+						SET @Result = STUFF(@Result, @Index + 1, 1,UPPER(SUBSTRING(@psInput, @Index + 1, 1)));
+					ELSE IF UPPER(@Char) != ''M''
+						SET @Result = STUFF(@Result, @Index + 1, 1,UPPER(SUBSTRING(@psInput, @Index + 1, 1)));
+
+					-- Catch the McName
+					IF UPPER(@Char) = ''M'' AND UPPER(SUBSTRING(@psInput, @Index + 1, 1)) = ''C'' AND UPPER(SUBSTRING(@psInput, @Index - 1, 1)) = ''''
+					BEGIN
+						SET @Result = STUFF(@Result, @Index + 1, 1,LOWER(SUBSTRING(@psInput, @Index + 1, 1)));
+						SET @Result = STUFF(@Result, @Index + 2, 1,UPPER(SUBSTRING(@psInput, @Index + 2, 1)));
+						SET @Index = @Index + 1;
+					END
+				END
+			END
+
+		SET @Index = @Index + 1;
+		END
+
+		RETURN @Result;
 		
 	END';
 	EXECUTE sp_executeSQL @sSPCode;
