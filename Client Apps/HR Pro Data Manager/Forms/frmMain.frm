@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "09:19"
+            TextSave        =   "12:20"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -950,7 +950,7 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
     ' <Global Functions - Add>
     Case "GlobalAdd"
       If SaveCurrentRecordEditScreen Then
-        BrowseUtility UtlGlobalAdd
+        BrowseUtility utlGlobalAdd
       
         ' RH - Note : this sub causes the enabling history menu bug
         RefreshRecordEditScreens
@@ -3097,7 +3097,7 @@ Private Sub RefreshQuickLinks(ByVal MenuType As UserMenuType)
             sType = "Data Transfer : "
             bEnabled = datGeneral.SystemPermission("DATATRANSFER", "RUN")
           
-          Case UtlGlobalAdd
+          Case utlGlobalAdd
             sIconName = "GlobalAdd"
             sIconBandName = "mnuUtilities"
             sType = "Global Add : "
@@ -3738,6 +3738,7 @@ Public Sub RunUtility(ByRef UtilType As UtilityType, ByRef UtilityID As Long, By
           .EnableNew = Not (UtilType = utlAll)
           .EnableRun = True
           .CategoryID = glngCurrentCategoryID
+          .SelectedUtilityType = UtilType
               
           If UtilType = utlWorkflow Then
             .Options = edtSelect
@@ -3791,7 +3792,7 @@ Public Sub RunUtility(ByRef UtilType As UtilityType, ByRef UtilityID As Long, By
                 Case utlMailMerge
                    DoMailMerge .Action, lngSelectedID, .FromCopy
                 
-                Case UtlGlobalAdd
+                Case utlGlobalAdd
                   DoGlobal glAdd, .Action, lngSelectedID, .FromCopy
                 
                 Case utlGlobalUpdate
