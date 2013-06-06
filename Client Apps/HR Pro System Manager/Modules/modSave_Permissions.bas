@@ -496,12 +496,6 @@ Public Function CreateViewValidationStoredProcedure(pLngCurrentTableID As Long, 
   If fCreateSP And (Not pfRefreshDatabase) Then
     If Not pfNewTable Then
       ' Check if there are any new or deleted views on this table.
-      'JPD 20041012 Fault 9265
-      'sSQL = "SELECT COUNT(*) AS recCount" & _
-        " FROM tmpViews" & _
-        " WHERE viewTableID = " & trim(str(plngCurrentTableID)) & _
-        " AND (new = TRUE" & _
-        " AND deleted = TRUE)"
       sSQL = "SELECT COUNT(*) AS recCount" & _
         " FROM tmpViews" & _
         " WHERE viewTableID = " & Trim$(Str$(pLngCurrentTableID)) & _
@@ -513,8 +507,6 @@ Public Function CreateViewValidationStoredProcedure(pLngCurrentTableID As Long, 
     End If
   End If
 
-  'MH20020809
-  'If fCreateSP Then
   If fCreateSP Or Application.ChangedViewName Then
     For Each objGroup In gObjGroups.Collection
       With objGroup
@@ -522,14 +514,6 @@ Public Function CreateViewValidationStoredProcedure(pLngCurrentTableID As Long, 
       ' Create the stored procedure creation string if the table is a top level table.
         sSPName = "[" & gsVIEWVALIDATIONSPPREFIX & Trim$(Str$(pLngCurrentTableID)) & "_" & .Name & "]"
     
-'        ' Drop any existing stored procedure.
-'        sSQL = "IF EXISTS" & _
-'          " (SELECT Name" & _
-'          "   FROM sysobjects" & _
-'          "   WHERE id = object_id('" & sSPName & "')" & _
-'          "     AND sysstat & 0xf = 4)" & _
-'          " DROP PROCEDURE " & sSPName
-'        gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
         DropProcedure sSPName
             
         sSPCode = "/* ----------------------------------------------------------------------------------------------- */" & vbNewLine & _
@@ -615,8 +599,6 @@ TidyUpAndExit:
 
 ErrorTrap:
   fOK = False
-  'MsgBox ODBC.FormatError(Err.Description), _
-    vbOKOnly + vbExclamation, Application.Name
   OutputError "Error creating view validation stored procedure"
   Err = False
  
