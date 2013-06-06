@@ -1,7 +1,7 @@
 VERSION 5.00
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "coa_spinner.ocx"
 Begin VB.Form frmAccordPayrollTransfer 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Payroll Integration"
@@ -725,7 +725,7 @@ Private Sub cboTransferTables_Click()
     If mavarTransferBaseTableIDs(2, cboTransferType.ListIndex) > 0 Then
     
       If MsgBox("Changing the base table will reset all the columns for this transfer type." & vbCrLf _
-        & "Are you sure you want to continue?", vbYesNo + vbQuestion, "Payroll Setup") = vbYes Then
+        & "Are you sure you want to continue?", vbYesNo + vbQuestion, "Payroll Configuration") = vbYes Then
         
         PopulateTransferDetails cboTransferType.ListIndex, True
         mavarTransferBaseTableIDs(2, cboTransferType.ListIndex) = SelectedComboItem(cboTransferTables)
@@ -1029,7 +1029,7 @@ Private Sub cmdNone_Click()
 
 End Sub
 
-Private Sub cmdOk_Click()
+Private Sub cmdOK_Click()
 
   'AE20071119 Fault #12607
   'If ValidateSetup Then

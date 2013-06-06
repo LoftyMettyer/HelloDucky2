@@ -3282,7 +3282,7 @@ Public Function RelationIsUsed(pLngChildTableID As Long, pfrmUsage As frmUsage) 
         Case Else
           sModuleName = "<Unknown>"
       End Select
-      mfrmUse.AddToList (sModuleName & " module setup")
+      mfrmUse.AddToList (sModuleName & " Configuration")
       rsModules.MoveNext
     Loop
   End If
@@ -3974,16 +3974,16 @@ Public Function TableIsUsed(pfrmUsage As frmUsage) As Boolean
       If rsModules!moduleKey = gsMODULEKEY_TRAININGBOOKING And (Not bTR) Then
           bTR = True
           sModuleName = "Training Booking"
-          mfrmUse.AddToList (sModuleName & " module setup")
+          mfrmUse.AddToList (sModuleName & " Configuration")
       ElseIf ((rsModules!moduleKey = gsMODULEKEY_PERSONNEL) Or (rsModules!moduleKey = gsMODULEKEY_HIERARCHY)) And (Not bPE) Then
           bPE = True
           sModuleName = "Personnel"
-          mfrmUse.AddToList (sModuleName & " module setup")
+          mfrmUse.AddToList (sModuleName & " Configuration")
       ElseIf (rsModules!moduleKey = gsMODULEKEY_WORKFLOW) And (Not bWF) Then
         If Application.WorkflowModule Then
           bWF = True
           sModuleName = "Workflow"
-          mfrmUse.AddToList (sModuleName & " module setup")
+          mfrmUse.AddToList (sModuleName & " Configuration")
         End If
       ElseIf rsModules!moduleKey = gsMODULEKEY_ABSENCE Then
           
@@ -3995,36 +3995,36 @@ Public Function TableIsUsed(pfrmUsage As frmUsage) As Boolean
             sModuleName = "Bank Holiday"
             If Not bBA Then
               bBA = True
-              mfrmUse.AddToList (sModuleName & " module setup")
+              mfrmUse.AddToList (sModuleName & " Configuration")
             End If
           Else
             sModuleName = "Absence"
             If Not bAB Then
               bAB = True
-              mfrmUse.AddToList (sModuleName & " module setup")
+              mfrmUse.AddToList (sModuleName & " Configuration")
             End If
           End If
           
       ElseIf rsModules!moduleKey = gsMODULEKEY_CURRENCY And (Not bCU) Then
           bCU = True
           sModuleName = "Currency"
-          mfrmUse.AddToList (sModuleName & " module setup")
+          mfrmUse.AddToList (sModuleName & " Configuration")
       ElseIf rsModules!moduleKey = gsMODULEKEY_POST And (Not bPO) Then
           bPO = True
           sModuleName = "Post"
-          mfrmUse.AddToList (sModuleName & " module setup")
+          mfrmUse.AddToList (sModuleName & " Configuration")
       ElseIf rsModules!moduleKey = gsMODULEKEY_MATERNITY And (Not bMA) Then
           bMA = True
           sModuleName = "Maternity"
-          mfrmUse.AddToList (sModuleName & " module setup")
+          mfrmUse.AddToList (sModuleName & " Configuration")
       ElseIf rsModules!moduleKey = gsMODULEKEY_AUDIT And (Not bAu) Then
           bAu = True
           sModuleName = "Audit"
-          mfrmUse.AddToList (sModuleName & " module setup")
+          mfrmUse.AddToList (sModuleName & " Configuration")
       ElseIf rsModules!moduleKey = gsMODULEKEY_SSINTRANET And (Not bSS) Then
           bSS = True
           sModuleName = "Self Service Intranet"
-          mfrmUse.AddToList (sModuleName & " module setup")
+          mfrmUse.AddToList (sModuleName & " Configuration")
       End If
       
       rsModules.MoveNext
@@ -4552,7 +4552,7 @@ Public Function TableIsUsed(pfrmUsage As frmUsage) As Boolean
           Case 4  ' Database Value
             mfrmUse.AddToList ("Self Service Intranet Database Value : " & rsDAOTemp.Fields("text"))
           Case Else
-            mfrmUse.AddToList ("Self Service Intranet Module Setup : " & rsDAOTemp.Fields("text"))
+            mfrmUse.AddToList ("Self Service Intranet Configuration : " & rsDAOTemp.Fields("text"))
           End Select
         rsDAOTemp.MoveNext
       Loop

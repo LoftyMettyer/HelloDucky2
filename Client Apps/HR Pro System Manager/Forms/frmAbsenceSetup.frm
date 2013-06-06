@@ -82,21 +82,21 @@ Begin VB.Form frmAbsenceSetup
       TabCaption(2)   =   "Calen&dar"
       TabPicture(2)   =   "frmAbsenceSetup.frx":0044
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraCalendarDef"
-      Tab(2).Control(1)=   "fraCalendarInclude"
+      Tab(2).Control(0)=   "fraCalendarInclude"
+      Tab(2).Control(1)=   "fraCalendarDef"
       Tab(2).ControlCount=   2
       TabCaption(3)   =   "&SSP"
       TabPicture(3)   =   "frmAbsenceSetup.frx":0060
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "fraWorkingDays"
-      Tab(3).Control(1)=   "fraSSPColumns"
+      Tab(3).Control(0)=   "fraSSPColumns"
+      Tab(3).Control(1)=   "fraWorkingDays"
       Tab(3).ControlCount=   2
       TabCaption(4)   =   "&Parental Leave"
       TabPicture(4)   =   "frmAbsenceSetup.frx":007C
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "Frame1"
+      Tab(4).Control(0)=   "Frame3"
       Tab(4).Control(1)=   "Frame2"
-      Tab(4).Control(2)=   "Frame3"
+      Tab(4).Control(2)=   "Frame1"
       Tab(4).ControlCount=   3
       Begin VB.Frame Frame3 
          Caption         =   "Personnel Records :"
@@ -2161,7 +2161,7 @@ Private Function ValidateSetup() As Boolean
   
 ValidateError:
   
-  MsgBox "Error validating the module setup." & vbCrLf & _
+  MsgBox "Error validating the setup." & vbCrLf & _
          Err.Description, vbExclamation + vbOKOnly, App.Title
   ValidateSetup = False
 

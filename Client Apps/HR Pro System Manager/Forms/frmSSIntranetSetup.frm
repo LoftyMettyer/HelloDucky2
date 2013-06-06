@@ -4730,7 +4730,7 @@ Private Function ValidateSetup() As Boolean
   Exit Function
   
 ValidateError:
-  MsgBox "Error validating the module setup." & vbCrLf & _
+  MsgBox "Error validating the setup." & vbCrLf & _
          Err.Description, vbExclamation + vbOKOnly, App.Title
   ValidateSetup = False
 

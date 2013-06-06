@@ -621,7 +621,7 @@ Private Sub ssGrdScreens_KeyDown(KeyCode As Integer, Shift As Integer)
   
 End Sub
 
-Private Sub ssGrdScreens_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub ssGrdScreens_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
 '  Dim lXMouse As Long
 '  Dim lYMouse As Long
 '
@@ -1075,7 +1075,7 @@ Private Function DeleteScreen() As Boolean
             Case Else
               sModuleName = "<Unknown>"
           End Select
-          frmUse.AddToList (sModuleName & " module setup")
+          frmUse.AddToList (sModuleName & " Configuration")
           rsInfo.MoveNext
         Loop
       End If

@@ -408,7 +408,7 @@ Private Sub RefreshControls()
   End If
   
   ' Disable the OK button as required.
-  cmdOK.Enabled = mfChanged And fValid
+  cmdOk.Enabled = mfChanged And fValid
     
 End Sub
 
@@ -822,7 +822,7 @@ Private Function ValidateTableView() As Boolean
   
   If TableViewExistsInCollection(Me.TableID, Me.ViewID) Then
     fValid = False
-    MsgBox "The selected table and view have already been added to the Self-service Intranet Module Setup." & _
+    MsgBox "The selected table and view have already been added to the Self-service Intranet Setup." & _
       vbNewLine & vbNewLine & "Please select a different table and view.", vbOKOnly + vbExclamation, Application.Name
     If cboView.Enabled Then
       cboView.SetFocus
