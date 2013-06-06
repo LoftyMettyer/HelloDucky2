@@ -63,6 +63,7 @@ Public Const gsMODULEKEY_MOBILE = "MODULE_MOBILE"
 Public Const gsPARAMETERKEY_UNIQUEEMAILCOLUMN = "Param_UniqueEmailColumn"
 Public Const gsPARAMETERKEY_MOBILELOGIN = "Param_LoginName"
 ' Public Const gsPARAMETERKEY_LEAVINGDATE = "Param_FieldsLeavingDate"
+Public Const gsPARAMETERKEY_MOBILEACTIVATED = "Param_MobileActivated"
 
 Public Const gsMOBILEAPPLICATIONPREFIX = "OpenHR MOBILE"
 
