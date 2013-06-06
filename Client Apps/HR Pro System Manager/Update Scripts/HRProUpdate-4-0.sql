@@ -12880,7 +12880,14 @@ END
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 13 of X - Updating System Permissions Icons'
+PRINT 'Step 13 of X - Expression amendments'
+
+	SELECT @NVarCommand = 'UPDATE [dbo].[ASRSysFunctions] SET [spName] = ''sp_ASRFn_ConvertToProperCase'' WHERE [FunctionID] = 12;'
+	EXEC sp_executesql @NVarCommand
+
+
+/* ------------------------------------------------------------- */
+PRINT 'Step 14 of X - Updating System Permissions Icons'
 
 /* Updating System Permissions Icon for Module Access */
 SELECT @iRecCount = count(*)
