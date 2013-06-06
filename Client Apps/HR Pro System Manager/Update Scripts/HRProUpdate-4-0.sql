@@ -5765,7 +5765,7 @@ PRINT 'Step 10 of X - Multiline Character Modifications'
 		
 				IF @iAction = 1
 				BEGIN
-					EXEC [dbo].[spASRSubmitWorkflowStep] @iInstanceID, @iElementID, '''', '''', @sForms OUTPUT, @fSaveForLater OUTPUT;
+					EXEC [dbo].[spASRSubmitWorkflowStep] @iInstanceID, @iElementID, '''', @sForms OUTPUT, @fSaveForLater OUTPUT;
 				END
 		
 				IF @iAction = 2
@@ -9651,7 +9651,6 @@ PRINT 'Step 10 of X - Multiline Character Modifications'
 						EXEC [dbo].[spASRSubmitWorkflowStep] 
 							@piInstanceID, 
 							@iElementID, 
-							'''', 
 							'''', 
 							@sForms OUTPUT, 
 							@fSaveForLater OUTPUT;
