@@ -232,6 +232,7 @@ Public Function GetControls(plngScreenID As Long) As clsScreenControls
       objScreenControl.ColumnAlignment = IIf(IsNull(!ColAlignment), 0, !ColAlignment)
       objScreenControl.GotFocusExprID = IIf(IsNull(!GotFocusExprID), 0, !GotFocusExprID)
       objScreenControl.ReadOnly = IIf(IsNull(!ReadOnly), False, !ReadOnly)
+      objScreenControl.ScreenReadOnly = IIf(IsNull(!ScreenReadOnly), False, !ScreenReadOnly)
       objScreenControl.StatusBarMessage = IIf(IsNull(!StatusBarMessage), "", !StatusBarMessage)
       objScreenControl.ErrorMessage = IIf(IsNull(!ErrorMessage), "", !ErrorMessage)
       objScreenControl.LinkTableID = IIf(IsNull(!LinkTableID), 0, !LinkTableID)
