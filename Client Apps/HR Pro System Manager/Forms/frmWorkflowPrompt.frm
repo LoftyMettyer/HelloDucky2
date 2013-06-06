@@ -17,6 +17,7 @@ Begin VB.Form frmWorkflowPrompt
    EndProperty
    HelpContextID   =   5054
    Icon            =   "frmWorkflowPrompt.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
@@ -111,7 +112,7 @@ Public Property Let OutboundFlowCode(piNewValue As Integer)
   
   For Each optTemp In optChoice
     If (optTemp.Index > 0) _
-      And Val(optTemp.Tag) = miOutboundFlowCode Then
+      And val(optTemp.Tag) = miOutboundFlowCode Then
       
       optTemp.value = True
       Exit For
@@ -137,6 +138,15 @@ Private Sub cmdOK_Click()
   ' Unload the form.
   UnLoad Me
 
+End Sub
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
 End Sub
 
 Private Sub Form_Load()
@@ -177,10 +187,10 @@ Public Property Let OutboundFlowInfo(pavInfo As Variant)
     sngLastTop = sngLastTop + 360
   Next iLoop
   
-  cmdOk.Top = sngLastTop + 180
-  cmdCancel.Top = cmdOk.Top
+  cmdOK.Top = sngLastTop + 180
+  cmdCancel.Top = cmdOK.Top
   
-  Me.Height = cmdOk.Top + cmdOk.Height + 600
+  Me.Height = cmdOK.Top + cmdOK.Height + 600
   
   miOutboundFlowCode = CInt(optChoice(1).Tag)
   

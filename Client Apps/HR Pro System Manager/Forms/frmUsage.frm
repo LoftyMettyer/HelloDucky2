@@ -262,7 +262,7 @@ Private Sub FormatButtons()
   End With
     
   ' OK
-  With cmdOk
+  With cmdOK
     .Top = 0
     .Left = (iVisibleButtonCount * (BUTTONWIDTH + BUTTON_OFFSET))
     .Height = BUTTONHEIGHT
@@ -525,6 +525,15 @@ Private Sub cmdYes_Click()
   miChoice = vbYes
   UnLoad Me
 
+End Sub
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
 End Sub
 
 Private Sub Form_Load()

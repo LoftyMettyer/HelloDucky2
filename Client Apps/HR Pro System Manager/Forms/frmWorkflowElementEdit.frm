@@ -18,6 +18,7 @@ Begin VB.Form frmWorkflowElementEdit
    EndProperty
    HelpContextID   =   5055
    Icon            =   "frmWorkflowElementEdit.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -1775,7 +1776,7 @@ Private Sub RefreshScreen()
   
   End Select
   
-  cmdOk.Enabled = mfChanged
+  cmdOK.Enabled = mfChanged
 
 End Sub
 
@@ -1846,7 +1847,7 @@ Private Function SecondaryRecordRequired() As Boolean
   Dim iAction As DataAction
   Dim fRequired As Boolean
   Dim lngTableID As Long
-  Dim rsInfo As dao.Recordset
+  Dim rsInfo As DAO.Recordset
   Dim sSQL As String
   Dim iParentCount As Integer
   
@@ -2338,8 +2339,8 @@ Private Sub RefreshExpressionNames()
     For iLoop = 0 To (.Rows - 1)
       .Bookmark = .AddItemBookmark(iLoop)
       
-      If Val(.Columns("ItemType").Text) = giWFEMAILITEM_CALCULATION Then
-        lngCalcID = Val(.Columns("CalculationID").Text)
+      If val(.Columns("ItemType").Text) = giWFEMAILITEM_CALCULATION Then
+        lngCalcID = val(.Columns("CalculationID").Text)
         sDescription = "Calculation - "
         sTemp = GetExpressionName(lngCalcID)
         
@@ -2477,7 +2478,7 @@ Private Sub cmdCopyItem_Click()
       True, _
       ssgrdItems.Columns("DBWebForm").Text, _
       ssgrdItems.Columns("DBRecordSelector").Text, _
-      Val(ssgrdItems.Columns("CalculationID").Text), _
+      val(ssgrdItems.Columns("CalculationID").Text), _
       False, _
       ""
 
@@ -2712,7 +2713,7 @@ Private Sub cmdDataEdit_Click()
       CLng(IIf(Len(ssgrdColumns.Columns("DBColumnID").Text) = 0, "0", ssgrdColumns.Columns("DBColumnID").Text)), _
       CInt(IIf(Len(ssgrdColumns.Columns("DBRecord").Text) = 0, "0", ssgrdColumns.Columns("DBRecord").Text)), _
       False, _
-      Val(ssgrdColumns.Columns("CalculationID").Text)
+      val(ssgrdColumns.Columns("CalculationID").Text)
 
     .Show vbModal
 
@@ -2860,7 +2861,7 @@ Private Sub cmdEditItem_Click()
       False, _
       ssgrdItems.Columns("DBWebForm").Text, _
       ssgrdItems.Columns("DBRecordSelector").Text, _
-      Val(ssgrdItems.Columns("CalculationID").Text), _
+      val(ssgrdItems.Columns("CalculationID").Text), _
       False, _
       ""
 
@@ -3311,7 +3312,7 @@ Private Sub cboDataRecord_Refresh(piIndex As Integer)
   Dim iLoop2 As Integer
   Dim lngLoop As Long
   Dim sSQL As String
-  Dim rsTables As dao.Recordset
+  Dim rsTables As DAO.Recordset
   Dim lngTableID As Long
   Dim fTableIsInRecSel As Boolean
   Dim fParentTableIsInRecSel As Boolean
@@ -4597,6 +4598,15 @@ Private Sub cboEmailRecord_Refresh()
 End Sub
 
 
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
 
 Private Sub Form_Load()
   Dim fraTemp As Frame

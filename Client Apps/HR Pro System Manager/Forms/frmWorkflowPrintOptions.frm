@@ -17,6 +17,7 @@ Begin VB.Form frmWorkflowPrintOptions
    EndProperty
    HelpContextID   =   5068
    Icon            =   "frmWorkflowPrintOptions.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -75,7 +76,7 @@ Private mfPrintOverview As Boolean
 Private Sub RefreshButtons()
   mfPrintDetails = (chkPrintDetails.value = vbChecked)
   mfPrintOverview = (chkPrintOverview.value = vbChecked)
-  cmdOk.Enabled = mfPrintDetails Or mfPrintOverview
+  cmdOK.Enabled = mfPrintDetails Or mfPrintOverview
   
 End Sub
 
@@ -118,6 +119,15 @@ Private Sub cmdOK_Click()
 
 End Sub
 
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
 
 Private Sub Form_Load()
   mfCancelled = True

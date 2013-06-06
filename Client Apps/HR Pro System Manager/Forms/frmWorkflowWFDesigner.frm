@@ -607,7 +607,7 @@ Private Function WorkflowExpressionsChanged() As Boolean
   ' Return TRUE if any of the Workflow expressions have been modified or created.
   Dim fExpressionsChanged As Boolean
   Dim sSQL As String
-  Dim rsTemp As dao.Recordset
+  Dim rsTemp As DAO.Recordset
   Dim fFound As Boolean
   Dim iLoop As Integer
   Dim iLoop2 As Integer
@@ -694,7 +694,7 @@ End Function
 Private Sub RememberOriginalExpressions()
   ' Read all of the Workflows original expressions.
   Dim sSQL As String
-  Dim rsTemp As dao.Recordset
+  Dim rsTemp As DAO.Recordset
   Dim objExpression As CExpression
 
   ReDim maobjOriginalExpressions(0)
@@ -730,7 +730,7 @@ Private Sub RestoreOriginalExpressions()
   Dim iLoop As Integer
   Dim fChanged As Boolean
   Dim sOriginalExprIDs As String
-  Dim rsTemp As dao.Recordset
+  Dim rsTemp As DAO.Recordset
 
   sOriginalExprIDs = "0"
 
@@ -961,7 +961,7 @@ Public Function UpdateIdentifiers(pfElement As Boolean, _
   Dim frmUsage As frmUsage
   Dim asMessages() As String
   Dim sSQL As String
-  Dim rsTemp As dao.Recordset
+  Dim rsTemp As DAO.Recordset
   Dim objExpr As CExpression
   Dim objComp As CExprComponent
   Dim lngExprID As Long
@@ -2089,7 +2089,7 @@ Private Function DropControl(pVarPageContainer As Variant, pCtlSource As Control
         
         'Find the definition for the column being dropped
         With frmWorkflowWFToolbox.trvColumns.SelectedItem
-          lngColumnID = Val(Mid(.key, 2))
+          lngColumnID = val(Mid(.key, 2))
         End With
           
         With recColEdit
@@ -2863,7 +2863,7 @@ Public Property Let GridY(plngGridSize As Long)
 End Property
 
 Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
-  ' Process key strokes.
+' Process key strokes.
   On Error GoTo ErrorTrap
   
   Dim sngXMove As Single
@@ -2878,6 +2878,13 @@ Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
   mbKeyMoving = False
   mbKeyStretching = False
 
+  Select Case KeyCode
+    Case vbKeyF1
+      If ShowAirHelp(Me.HelpContextID) Then
+        KeyCode = 0
+      End If
+  End Select
+  
   'TODO - Right Click Menu
   ' F4 needs to bring up properties dialog
   If KeyCode = vbKeyF4 Then
@@ -3752,7 +3759,7 @@ Private Function ReadColumnControlValues(plngColumnID As Long) As Variant
   Dim avValues As Variant
   Dim asResults() As String
   Dim sSQL As String
-  Dim rsControlValues As dao.Recordset
+  Dim rsControlValues As DAO.Recordset
   
   ' Pull the column control values from the database.
   sSQL = "SELECT value" & _
@@ -3916,7 +3923,7 @@ Private Function CopyControlProperties(pCtlSource As VB.Control, _
                       fRootIdentifierFound = True
                     End If
                   
-                    iSuffix = Val(Mid(ctlControl.WFIdentifier, Len(sIdentifier) + 1))
+                    iSuffix = val(Mid(ctlControl.WFIdentifier, Len(sIdentifier) + 1))
                   
                     If iSuffix > iMaxSuffix Then
                       iMaxSuffix = iSuffix
@@ -4345,7 +4352,7 @@ Private Function DeleteControl(pctlControl As VB.Control) As Boolean
   fOK = True
   
   ' Get the index of the given control.
-  iIndex = Val(pctlControl.Tag)
+  iIndex = val(pctlControl.Tag)
   
   ' Do not delete the control array dummy (index = 0).
   If pctlControl.Index = 0 Then
@@ -5538,7 +5545,7 @@ Private Function SaveWebFormItems(pwfElement As COAWF_Webform) As Boolean
           'Input Return Type
           iSQLDataType = GetColumnDataType(.LookupColumnID)
           Select Case iSQLDataType
-          Case dtVARCHAR, dtLONGVARCHAR
+          Case dtVARCHAR, dtlongvarchar
             asItems(6, iNewIndex) = giEXPRVALUE_CHARACTER
           Case dtTIMESTAMP
             asItems(6, iNewIndex) = giEXPRVALUE_DATE
@@ -5546,7 +5553,7 @@ Private Function SaveWebFormItems(pwfElement As COAWF_Webform) As Boolean
             asItems(6, iNewIndex) = giEXPRVALUE_OLE
           Case dtVARBINARY
             asItems(6, iNewIndex) = giEXPRVALUE_PHOTO
-          Case dtINTEGER, dtNUMERIC
+          Case dtinteger, dtNUMERIC
             asItems(6, iNewIndex) = giEXPRVALUE_NUMERIC
           Case dtBIT
             asItems(6, iNewIndex) = giEXPRVALUE_LOGIC

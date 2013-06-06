@@ -263,7 +263,7 @@ Begin VB.Form frmWorkflowDesigner
       MousePointer    =   1
       Appearance      =   0
       Arrows          =   65536
-      Orientation     =   1245185
+      Orientation     =   1179649
    End
    Begin MSComCtl2.FlatScrollBar scrollVertical 
       Height          =   3375
@@ -276,7 +276,7 @@ Begin VB.Form frmWorkflowDesigner
       _Version        =   393216
       MousePointer    =   1
       Appearance      =   0
-      Orientation     =   1245184
+      Orientation     =   1179648
    End
    Begin ActiveBarLibraryCtl.ActiveBar abMenu 
       Left            =   120
@@ -894,7 +894,7 @@ End Sub
 Private Sub RememberOriginalExpressions()
   ' Read all of the Workflows original expressions.
   Dim sSQL As String
-  Dim rsTemp As dao.Recordset
+  Dim rsTemp As DAO.Recordset
   Dim objExpression As CExpression
   
   ReDim maobjOriginalExpressions(0)
@@ -928,7 +928,7 @@ Private Sub RestoreOriginalExpressions()
   Dim objExpression As CExpression
   Dim iLoop As Integer
   Dim sOriginalExprIDs As String
-  Dim rsTemp As dao.Recordset
+  Dim rsTemp As DAO.Recordset
   Dim aWFAllElements() As VB.Control
   
   ReDim aWFAllElements(0)
@@ -985,7 +985,7 @@ Public Function WorkflowExpressionsChanged() As Boolean
   ' Return TRUE if any of the Workflow expressions have been modified or created.
   Dim fExpressionsChanged As Boolean
   Dim sSQL As String
-  Dim rsTemp As dao.Recordset
+  Dim rsTemp As DAO.Recordset
   Dim fFound As Boolean
   Dim iLoop As Integer
   Dim iLoop2 As Integer
@@ -4482,7 +4482,7 @@ Private Sub ValidateElement_WebForm(pwfElement As VB.Control, _
       '------------------------------------------------------------
       Case giWFFORMITEM_IMAGE
         ' 13. WebForm element items (Image) must have a valid picture.
-        fValid13 = (Val(asElementItems(25, iLoop2)) > 0)
+        fValid13 = (val(asElementItems(25, iLoop2)) > 0)
         If fValid13 Then
           ' Picture defined - does it still exist?
           With recPictEdit
@@ -5095,7 +5095,7 @@ Private Sub ValidateElement_StoredData(pwfElement As VB.Control, _
   Dim avColumns() As Variant
   Dim iTableType As Integer
   Dim sSQL As String
-  Dim rsInfo As dao.Recordset
+  Dim rsInfo As DAO.Recordset
   Dim iParentCount As Integer
   Dim sMessagePrefix As String
   Dim sMessagePrefix2 As String
@@ -5688,8 +5688,8 @@ Private Sub ValidateElement_StoredData(pwfElement As VB.Control, _
       Else
         If !Deleted _
           Or (!TableID <> pwfElement.DataTableID) _
-          Or (!columnType = giCOLUMNTYPE_LINK) _
-          Or (!columnType = giCOLUMNTYPE_SYSTEM) Then
+          Or (!columntype = giCOLUMNTYPE_LINK) _
+          Or (!columntype = giCOLUMNTYPE_SYSTEM) Then
           fValid11 = False
         Else
           iColumnDataType = !DataType
@@ -5746,7 +5746,7 @@ Private Sub ValidateElement_StoredData(pwfElement As VB.Control, _
                   sFormatString = sFormatString & "0"
                 Next iLoop6
               End If
-              fValid12 = (sValue = Format(CStr(Val(sValue)), sFormatString))
+              fValid12 = (sValue = Format(CStr(val(sValue)), sFormatString))
               'fValid12 = (sValue = CStr(Val(sValue)))
               If fValid12 Then
                 ' Check the size is valid.
@@ -5768,7 +5768,7 @@ Private Sub ValidateElement_StoredData(pwfElement As VB.Control, _
               End If
               
             Case sqlInteger 'Integer
-              fValid12 = (sValue = CStr(Val(sValue)))
+              fValid12 = (sValue = CStr(val(sValue)))
               If fValid12 Then
                 ' Check it's a valid integer
                 fValid12 = (sValue = CStr(CInt(sValue)))
@@ -5824,8 +5824,8 @@ Private Sub ValidateElement_StoredData(pwfElement As VB.Control, _
                 fValid13 = False
               Else
                 If !Deleted _
-                  Or (!columnType = giCOLUMNTYPE_LINK) _
-                  Or (!columnType = giCOLUMNTYPE_SYSTEM) Then
+                  Or (!columntype = giCOLUMNTYPE_LINK) _
+                  Or (!columntype = giCOLUMNTYPE_SYSTEM) Then
                   
                   fValid13 = False
                 Else
@@ -6327,8 +6327,8 @@ Private Sub ValidateElement_StoredData(pwfElement As VB.Control, _
                                 If Not (!Deleted _
                                   Or (!DataType = dtLONGVARBINARY) _
                                   Or (!DataType = dtVARBINARY) _
-                                  Or (!columnType = giCOLUMNTYPE_LINK) _
-                                  Or (!columnType = giCOLUMNTYPE_SYSTEM)) Then
+                                  Or (!columntype = giCOLUMNTYPE_LINK) _
+                                  Or (!columntype = giCOLUMNTYPE_SYSTEM)) Then
                                   
                                   iDBColumnDataType = !DataType
                                   iDBColumnSize = !Size
@@ -6756,7 +6756,7 @@ Private Function GetUniqueIdentifier(pwfElement As VB.Control) As String
           fRootIdentifierFound = True
         End If
         
-        iSuffix = Val(Mid(wfElement.Identifier, Len(sIdentifierRoot) + 1))
+        iSuffix = val(Mid(wfElement.Identifier, Len(sIdentifierRoot) + 1))
         
         If iSuffix > iMaxSuffix Then
           iMaxSuffix = iSuffix
@@ -8693,7 +8693,7 @@ Public Sub UpdateIdentifiers(pwfBaseElement As VB.Control, _
   Dim sTemp As String
   Dim sSubMessage1 As String
   Dim sSQL As String
-  Dim rsTemp As dao.Recordset
+  Dim rsTemp As DAO.Recordset
   Dim objExpr As CExpression
   Dim objComp As CExprComponent
   Dim lngExprID As Long
@@ -11184,6 +11184,13 @@ Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
   
   fCtrlPressed = ((Shift And vbCtrlMask) > 0)
   
+  Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+  End Select
+  
   If KeyCode = vbKeyF4 Then
     EditMenu "ID_WorkflowProperties"
     bHandled = True
@@ -11439,7 +11446,7 @@ Private Sub Form_Load()
     End If
   End If
   
-  cmdOk.Enabled = IsNew
+  cmdOK.Enabled = IsNew
   
   scrollVertical.SmallChange = SMALLSCROLL
   scrollHorizontal.SmallChange = SMALLSCROLL
@@ -12137,17 +12144,17 @@ Private Function SaveElementsAndLinks() As Boolean
             .Fields("DBColumnID") = asItems(4, iLoop)
             .Fields("DBRecord") = asItems(5, iLoop)
             
-            .Fields("InputType") = Val(asItems(6, iLoop))
-            .Fields("InputSize") = Val(asItems(7, iLoop))
-            .Fields("InputDecimals") = Val(asItems(8, iLoop))
+            .Fields("InputType") = val(asItems(6, iLoop))
+            .Fields("InputSize") = val(asItems(7, iLoop))
+            .Fields("InputDecimals") = val(asItems(8, iLoop))
           
-            If Val(asItems(6, iLoop)) = giEXPRVALUE_DATE Then
+            If val(asItems(6, iLoop)) = giEXPRVALUE_DATE Then
               If Len(asItems(10, iLoop)) > 0 Then
                 .Fields("InputDefault") = objMisc.ConvertLocaleDateToSQL(asItems(10, iLoop))
               Else
                 .Fields("InputDefault") = ""
               End If
-            ElseIf Val(asItems(6, iLoop)) = giEXPRVALUE_NUMERIC Then
+            ElseIf val(asItems(6, iLoop)) = giEXPRVALUE_NUMERIC Then
               If Len(asItems(10, iLoop)) > 0 Then
                 .Fields("InputDefault") = UI.ConvertNumberForSQL(asItems(10, iLoop))
               Else
@@ -12218,22 +12225,22 @@ Private Function SaveElementsAndLinks() As Boolean
                 
               End If
               
-              .Fields("LookupTableID") = Val(asItems(48, iLoop))
-              .Fields("LookupColumnID") = Val(asItems(49, iLoop))
-              .Fields("RecordTableID") = Val(asItems(50, iLoop))
-              .Fields("Orientation") = Val(asItems(51, iLoop))
-              .Fields("RecordOrderID") = Val(asItems(52, iLoop))
-              .Fields("RecordFilterID") = Val(asItems(53, iLoop))
-              .Fields("Behaviour") = Val(asItems(54, iLoop))
+              .Fields("LookupTableID") = val(asItems(48, iLoop))
+              .Fields("LookupColumnID") = val(asItems(49, iLoop))
+              .Fields("RecordTableID") = val(asItems(50, iLoop))
+              .Fields("Orientation") = val(asItems(51, iLoop))
+              .Fields("RecordOrderID") = val(asItems(52, iLoop))
+              .Fields("RecordFilterID") = val(asItems(53, iLoop))
+              .Fields("Behaviour") = val(asItems(54, iLoop))
               .Fields("Mandatory") = asItems(55, iLoop)
-              .Fields("CaptionType") = Val(asItems(57, iLoop))
-              .Fields("DefaultValueType") = Val(asItems(58, iLoop))
-              .Fields("VerticalOffsetBehaviour") = Val(asItems(59, iLoop))
-              .Fields("HorizontalOffsetBehaviour") = Val(asItems(60, iLoop))
-              .Fields("VerticalOffset") = Val(asItems(61, iLoop))
-              .Fields("HorizontalOffset") = Val(asItems(62, iLoop))
-              .Fields("HeightBehaviour") = Val(asItems(63, iLoop))
-              .Fields("WidthBehaviour") = Val(asItems(64, iLoop))
+              .Fields("CaptionType") = val(asItems(57, iLoop))
+              .Fields("DefaultValueType") = val(asItems(58, iLoop))
+              .Fields("VerticalOffsetBehaviour") = val(asItems(59, iLoop))
+              .Fields("HorizontalOffsetBehaviour") = val(asItems(60, iLoop))
+              .Fields("VerticalOffset") = val(asItems(61, iLoop))
+              .Fields("HorizontalOffset") = val(asItems(62, iLoop))
+              .Fields("HeightBehaviour") = val(asItems(63, iLoop))
+              .Fields("WidthBehaviour") = val(asItems(64, iLoop))
               .Fields("PasswordType") = asItems(65, iLoop)
             
               If (recWorkflowElementItemEdit.Fields("itemType") = giWFFORMITEM_INPUTVALUE_FILEUPLOAD) Then
@@ -12251,7 +12258,7 @@ Private Function SaveElementsAndLinks() As Boolean
               End If
             End If
             
-            .Fields("CalcID") = Val(asItems(56, iLoop))
+            .Fields("CalcID") = val(asItems(56, iLoop))
             
             .Update
           End With
@@ -12276,16 +12283,16 @@ Private Function SaveElementsAndLinks() As Boolean
             If IsNull(avColumns(8, iLoop)) Then
               .Fields("DBColumnID") = 0
             Else
-              .Fields("DBColumnID") = Val(avColumns(8, iLoop))
+              .Fields("DBColumnID") = val(avColumns(8, iLoop))
             End If
             
             If IsNull(avColumns(9, iLoop)) Then
               .Fields("DBRecord") = 0
             Else
-              .Fields("DBRecord") = Val(avColumns(9, iLoop))
+              .Fields("DBRecord") = val(avColumns(9, iLoop))
             End If
             
-            .Fields("CalcID") = Val(avColumns(10, iLoop))
+            .Fields("CalcID") = val(avColumns(10, iLoop))
       
             .Update
           End With
@@ -13657,7 +13664,7 @@ Public Property Let IsChanged(pfNewValue As Boolean)
   ' Set the 'workflow changed' flag.
   
   mfChanged = pfNewValue
-  cmdOk.Enabled = mfChanged
+  cmdOK.Enabled = mfChanged
   
   ' Menu may be dependent on the status of the screen.
   'frmSysMgr.RefreshMenu
@@ -14559,7 +14566,7 @@ Private Sub LocateInitiatorOrTriggeredRecord()
   Dim asValidations() As String
   Dim alElementExprID() As Long
   Dim sMessage As String
-  Dim rsTemp As dao.Recordset
+  Dim rsTemp As DAO.Recordset
   Dim objComp As CExprComponent
   
   Dim lngExprID As Long
@@ -14862,7 +14869,7 @@ Private Sub LocateElement(psElementIdentifier As String, Optional psItemIdentifi
   Dim avColumns() As Variant
   Dim asValidations() As String
   Dim alElementExprID() As Long
-  Dim rsTemp As dao.Recordset
+  Dim rsTemp As DAO.Recordset
   Dim objComp As CExprComponent
   Dim lngExprID As Long
   Dim fLocateItems As Boolean

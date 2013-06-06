@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Begin VB.Form frmWorkflowOpen 
    Caption         =   "Workflow Manager"
    ClientHeight    =   6285
@@ -333,18 +333,18 @@ Private Sub cmdCopy_Click()
   Dim lngID As Long
   Dim sSQL As String
   Dim sWorkflowName As String
-  Dim rsWorkflow As dao.Recordset
-  Dim rsElements As dao.Recordset
-  Dim rsLinks As dao.Recordset
-  Dim rsElementItems As dao.Recordset
-  Dim rsElementItemValues As dao.Recordset
-  Dim rsElementColumns As dao.Recordset
-  Dim rsElementValidations As dao.Recordset
+  Dim rsWorkflow As DAO.Recordset
+  Dim rsElements As DAO.Recordset
+  Dim rsLinks As DAO.Recordset
+  Dim rsElementItems As DAO.Recordset
+  Dim rsElementItemValues As DAO.Recordset
+  Dim rsElementColumns As DAO.Recordset
+  Dim rsElementValidations As DAO.Recordset
   Dim alngElementIDs() As Long
   Dim iLoop As Integer
   Dim sSQL2 As String
-  Dim rsFilters As dao.Recordset
-  Dim rsExpressions As dao.Recordset
+  Dim rsFilters As DAO.Recordset
+  Dim rsExpressions As DAO.Recordset
   Dim objSourceExpr As CExpression
   Dim objNewExpr As CExpression
   Dim avCloneRegister() As Variant
@@ -945,7 +945,7 @@ Private Sub cmdDelete_Click()
   Dim fOK As Boolean
   Dim sSQL As String
   Dim rsInfo As New ADODB.Recordset
-  Dim rsLocalInfo As dao.Recordset
+  Dim rsLocalInfo As DAO.Recordset
   Dim iRecCount As Integer
   Dim objExpression As CExpression
   Dim sMsg As String
@@ -1414,7 +1414,7 @@ Public Function RefreshWorkflows() As Boolean
 
   Dim fOK As Boolean
   Dim sSQL As String
-  Dim rsRecords As dao.Recordset
+  Dim rsRecords As DAO.Recordset
   Dim objListItem As ListItem
   Dim lngMaxTextWidth As Long
   Dim lngTextWidth As Long
@@ -1584,6 +1584,13 @@ Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
   'TM20020102 Fault 2879
   Dim bHandled As Boolean
   
+  Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+  End Select
+
   bHandled = frmSysMgr.tbMain.OnKeyDown(KeyCode, Shift)
   If bHandled Then
     KeyCode = 0
@@ -1686,7 +1693,7 @@ Private Sub Form_Resize()
     cmdDelete.Left = cmdNew.Left
     cmdProperties.Left = cmdNew.Left
     cmdPrint.Left = cmdNew.Left
-    cmdOk.Left = cmdNew.Left
+    cmdOK.Left = cmdNew.Left
   End With
   
   With lstItems
@@ -1694,7 +1701,7 @@ Private Sub Form_Resize()
     txtDesc.Top = .Top + .Height + YGAP
   End With
     
-  cmdOk.Top = Me.Height - YGAP_BOTTOM - sbScrOpen.Height - YGAP - cmdOk.Height
+  cmdOK.Top = Me.Height - YGAP_BOTTOM - sbScrOpen.Height - YGAP - cmdOK.Height
     
   ' Get rid of the icon off the form
   RemoveIcon Me

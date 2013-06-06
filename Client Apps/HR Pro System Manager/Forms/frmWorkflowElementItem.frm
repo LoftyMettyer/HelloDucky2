@@ -17,6 +17,7 @@ Begin VB.Form frmWorkflowElementItem
    EndProperty
    HelpContextID   =   5056
    Icon            =   "frmWorkflowElementItem.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -766,7 +767,7 @@ Private Sub RefreshScreen()
       fEnableOK = fEnableOK And (Len(msAttachmentFile) > 0)
   End Select
   
-  cmdOk.Enabled = fEnableOK
+  cmdOK.Enabled = fEnableOK
   
 End Sub
 
@@ -1234,6 +1235,15 @@ Private Sub cmdOK_Click()
 
 End Sub
 
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
+
 Private Sub Form_Load()
   
   fraOKCancel.BorderStyle = vbBSNone
@@ -1356,8 +1366,8 @@ Private Sub cboDBValueColumn_Refresh()
         ' OLE or Photo type columns.
         If (!TableID = lngTableID) And _
           (!Deleted = False) And _
-          (!columnType <> giCOLUMNTYPE_LINK) And _
-          (!columnType <> giCOLUMNTYPE_SYSTEM) Then
+          (!columntype <> giCOLUMNTYPE_LINK) And _
+          (!columntype <> giCOLUMNTYPE_SYSTEM) Then
                           
           If mfAttachmentSelection Then
             fColumnOK = ((!DataType = rdTypeLONGVARBINARY) _
@@ -1852,7 +1862,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
   If UnloadMode <> vbFormCode Then
 
     'Check if any changes have been made.
-    If mfChanged And cmdOk.Enabled Then
+    If mfChanged And cmdOK.Enabled Then
       iAnswer = MsgBox("You have changed the definition. Save changes ?", vbQuestion + vbYesNoCancel + vbDefaultButton1, App.ProductName)
       If iAnswer = vbYes Then
         Call cmdOK_Click

@@ -20,6 +20,7 @@ Begin VB.Form frmWorkflowSetup
    EndProperty
    HelpContextID   =   5070
    Icon            =   "frmWorkflowSetup.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -42,14 +43,14 @@ Begin VB.Form frmWorkflowSetup
       TabCaption(0)   =   "&Web Site"
       TabPicture(0)   =   "frmWorkflowSetup.frx":000C
       Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "fraWebSite"
-      Tab(0).Control(1)=   "fraWebSiteLogin"
+      Tab(0).Control(0)=   "fraWebSiteLogin"
+      Tab(0).Control(1)=   "fraWebSite"
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "&Personnel Identification"
       TabPicture(1)   =   "frmWorkflowSetup.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraPersonnelTable"
-      Tab(1).Control(1)=   "fraDelegation"
+      Tab(1).Control(0)=   "fraDelegation"
+      Tab(1).Control(1)=   "fraPersonnelTable"
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "&Service"
       TabPicture(2)   =   "frmWorkflowSetup.frx":0044
@@ -440,7 +441,7 @@ Public Property Get Changed() As Boolean
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
   mfChanged = pblnChanged
-  If Not mbLoading Then cmdOk.Enabled = True
+  If Not mbLoading Then cmdOK.Enabled = True
 End Property
 Private Sub RefreshServiceSuspended()
 
@@ -611,7 +612,7 @@ End Function
 
 Private Sub cmdCancel_Click()
   Dim pintAnswer As Integer
-    If Changed = True And cmdOk.Enabled Then
+    If Changed = True And cmdOK.Enabled Then
       pintAnswer = MsgBox("You have made changes...do you wish to save these changes ?", vbQuestion + vbYesNoCancel, App.Title)
       If pintAnswer = vbYes Then
         'AE20071108 Fault #12551
@@ -686,7 +687,7 @@ End Sub
 
 Private Sub cmdOK_Click()
   Dim fSaveOK As Boolean
-  Dim rsWorkflows As dao.Recordset
+  Dim rsWorkflows As DAO.Recordset
   Dim sSQL As String
   Dim sURL As String
   Dim sTemp As String
@@ -970,13 +971,22 @@ End Function
 
 
 
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
+
 Private Sub Form_Load()
   Const GRIDROWHEIGHT = 239
   
   grdEmailAddressColumns.RowHeight = GRIDROWHEIGHT
   
   mbLoading = True
-  cmdOk.Enabled = False
+  cmdOK.Enabled = False
   
   ' Position the form in the same place it was last time.
   Me.Top = GetPCSetting(Me.Name, "Top", (Screen.Height - Me.Height) / 2)
@@ -1009,7 +1019,7 @@ End Sub
 Private Sub cboPersonnelTable_Refresh()
   ' Populate the tables combo.
   Dim sSQL As String
-  Dim rsTables As dao.Recordset
+  Dim rsTables As DAO.Recordset
   Dim iDefaultItem As Integer
    
   cboPersonnelTable.Clear
@@ -1320,7 +1330,7 @@ Private Sub RefreshControls()
   chkCopyDelegateEmail.Enabled = (Not mblnReadOnly)
   
   ' Disable the OK button as required.
-  cmdOk.Enabled = mfChanged
+  cmdOK.Enabled = mfChanged
   
 End Sub
 
@@ -1332,7 +1342,7 @@ Private Sub RefreshPersonnelColumnControls()
   Dim iLoginColumnListIndex As Integer
   Dim iSecondLoginColumnListIndex As Integer
   Dim iDelegationActivatedListIndex As Integer
-  Dim objCtl As Control
+  Dim objctl As Control
 
   iLoginColumnListIndex = 0
   iSecondLoginColumnListIndex = 0
@@ -1341,18 +1351,18 @@ Private Sub RefreshPersonnelColumnControls()
   UI.LockWindow Me.hWnd
   
   ' Clear the current contents of the combos.
-  For Each objCtl In Me
-    If (TypeOf objCtl Is ComboBox) And _
-      ((objCtl.Name = "cboDelegationActivatedColumn") Or _
-      (objCtl.Name = "cboLoginName")) Then
+  For Each objctl In Me
+    If (TypeOf objctl Is ComboBox) And _
+      ((objctl.Name = "cboDelegationActivatedColumn") Or _
+      (objctl.Name = "cboLoginName")) Then
 
-      With objCtl
+      With objctl
         .Clear
         .AddItem "<None>"
         .ItemData(.NewIndex) = 0
       End With
     End If
-  Next objCtl
+  Next objctl
 
   With recColEdit
     .Index = "idxName"
@@ -1367,8 +1377,8 @@ Private Sub RefreshPersonnelColumnControls()
         End If
 
         If (Not !Deleted) And _
-          (!columnType <> giCOLUMNTYPE_LINK) And _
-          (!columnType <> giCOLUMNTYPE_SYSTEM) Then
+          (!columntype <> giCOLUMNTYPE_LINK) And _
+          (!columntype <> giCOLUMNTYPE_SYSTEM) Then
 
           If !DataType = dtVARCHAR Then
             If !ColumnID <> mlngSecondLoginColumnID Then
