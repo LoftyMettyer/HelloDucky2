@@ -98,8 +98,10 @@ Public Function Activate() As Boolean
   
   'Does the user have permission to run report packs ?
   If datGeneral.SystemPermission("REPORTPACKS", "RUN") = True Then
-    frmSplash.Visible = False
-    CheckScheduledReportPacks
+    gblnReportPackMode = True
+      frmSplash.Visible = False
+      CheckScheduledReportPacks
+    gblnReportPackMode = False
   End If
 
   ' Are any workflow steps pending for the current user to action?
@@ -321,6 +323,7 @@ Public Sub CheckScheduledReportPacks()
   Dim dblTimeOut As Double
 
   Set frmPrompt = New frmDefSel
+  'gblnReportPackMode = True
   Screen.MousePointer = vbDefault
   
   Do
