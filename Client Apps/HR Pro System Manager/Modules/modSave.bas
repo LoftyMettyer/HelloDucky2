@@ -660,7 +660,9 @@ TidyUpAndExit:
   
   OutputCurrentProcess vbNullString
   
-  gobjHRProEngine.ErrorLog.OutputToFile (App.Path + "\HRProEngine.log")
+  If Not gobjHRProEngine.ErrorLog Is Nothing Then
+    gobjHRProEngine.ErrorLog.OutputToFile (App.Path + "\HRProEngine.log")
+  End If
   
   If fOK Then
     
