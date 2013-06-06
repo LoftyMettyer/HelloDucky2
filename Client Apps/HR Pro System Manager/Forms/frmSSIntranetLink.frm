@@ -1,7 +1,7 @@
 VERSION 5.00
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{65E121D4-0C60-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCHRT20.OCX"
+Object = "{65E121D4-0C60-11D2-A9FC-0000F8754DA1}#2.0#0"; "mschrt20.ocx"
 Begin VB.Form frmSSIntranetLink 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Self-service Intranet Link"
@@ -926,10 +926,10 @@ Private miChartTableID As Long
 Private miChartColumnID As Long
 Private miChartAggregateType As Integer
 Private miElementType As Integer
-Private msCombinedHiddenGroups As String
 Private mblnReadOnly As Boolean
 
 Private mcolSSITableViews As clsSSITableViews
+Private mcolGroups As Collection
 
 Public Property Let Cancelled(ByVal bCancel As Boolean)
   mblnCancelled = bCancel
@@ -1360,10 +1360,11 @@ Public Sub Initialize(piType As SSINTRANETLINKTYPES, _
                       pfChartShowLegend As Boolean, piChartType As Integer, pfChartShowGrid As Boolean, _
                       pfChartStackSeries As Boolean, plngChartViewID As Long, miChartTableID As Long, _
                       plngChartColumnID As Long, plngChartFilterID As Long, piChartAggregateType As Integer, _
-                      pfChartShowValues As Boolean, psCombinedHiddenGroups As String, _
+                      pfChartShowValues As Boolean, pcolGroups As Collection, _
                       ByRef pcolSSITableViews As clsSSITableViews)
   
   Set mcolSSITableViews = pcolSSITableViews
+  Set mcolGroups = pcolGroups
   
   mfLoading = True
   
@@ -1372,7 +1373,6 @@ Public Sub Initialize(piType As SSINTRANETLINKTYPES, _
   mlngTableID = plngTableID
   mlngViewID = plngViewID
   msTableViewName = psTableViewName
-  msCombinedHiddenGroups = psCombinedHiddenGroups
   
   FormatScreen
   
@@ -1727,7 +1727,7 @@ Private Sub RefreshControls()
   lblHRProUtilityMessage.Caption = sUtilityMessage
   
   ' Disable the OK button as required.
-  cmdOk.Enabled = mfChanged
+  cmdOK.Enabled = mfChanged
   
 
 End Sub
@@ -2023,20 +2023,18 @@ Private Function ValidateLink() As Boolean
 
   ' Only one Pending Workflow Steps per security group...
   If fValid Then
-    If optLink(SSINTLINKPWFSTEPS).value And Len(msCombinedHiddenGroups) > 0 Then
+    If optLink(SSINTLINKPWFSTEPS).value Then
       ' loop through the chosen security groups and check they're in the combined string
       
       psDuplicateGroups = ""
-      pSelectedGroup = ""
       
       With grdAccess
-        For iLoop = 0 To (.Rows - 1)
+        For iLoop = 1 To (.Rows - 1)  ' exclude item 0 as it's the '(All Groups)' item.
           .Bookmark = .AddItemBookmark(iLoop)
           If .Columns("Access").value Then
-            pSelectedGroup = vbTab & .Columns("GroupName").Text & vbTab
-            If InStr(msCombinedHiddenGroups, pSelectedGroup) = 0 Then
+            If mcolGroups(.Columns("GroupName").Text).Allow = False Then
               fValid = False
-              psDuplicateGroups = psDuplicateGroups & vbCrLf & Replace(pSelectedGroup, vbTab, "")
+              psDuplicateGroups = psDuplicateGroups & vbCrLf & .Columns("GroupName").Text
             End If
           End If
         Next iLoop
