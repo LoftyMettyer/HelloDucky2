@@ -35,6 +35,7 @@ End Enum
 
 ' Utility Types
 Public Enum UtilityType
+  utlAll = -1
   utlBatchJob = 0
   utlCrossTab = 1
   utlCustomReport = 2
@@ -67,6 +68,9 @@ Public Enum UtilityType
   utlReportPack = 29
   utlTurnover = 30
   utlStability = 31
+  utlScreen = 32
+  utlTable = 33
+  utlColumn = 34
 End Enum
 
 ' Screen Types
