@@ -178,10 +178,8 @@ Private Sub InitialiseStyles()
   Set objStyle = New clsOutputStyle
   With objStyle
     .Name = "Title"
-    .OmitSpacerCol = (GetUserSetting("Output", "ColSpacer", "0") = "1")
-    .OmitSpacerRow = (GetUserSetting("Output", "RowSpacer", "0") = "1")
-    .StartCol = IIf(.OmitSpacerCol, 2, 3)
-    .StartRow = IIf(.OmitSpacerRow, 1, 2)
+    .StartCol = Val(GetUserSetting("Output", "TitleCol", "3"))
+    .StartRow = Val(GetUserSetting("Output", "TitleRow", "2"))
     .Gridlines = (GetUserSetting("Output", "TitleGridLines", "0") = "1")
     .Bold = (GetUserSetting("Output", "TitleBold", "1") = "1")
     .Underline = (GetUserSetting("Output", "TitleUnderline", "1") = "1")
@@ -204,7 +202,6 @@ Private Sub InitialiseStyles()
 
   mcolStyles.Add objStyle, objStyle.Name
   
-  
   Set objStyle = New clsOutputStyle
   With objStyle
     .Name = "HeadingCols"
@@ -219,7 +216,6 @@ Private Sub InitialiseStyles()
 
   mcolStyles.Add objStyle, objStyle.Name
 
-
   Set objStyle = New clsOutputStyle
   With objStyle
     .Name = "Data"
@@ -233,7 +229,6 @@ Private Sub InitialiseStyles()
   End With
 
   mcolStyles.Add objStyle, objStyle.Name
-
 
   Set objStyle = Nothing
 
