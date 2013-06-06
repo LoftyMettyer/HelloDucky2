@@ -245,6 +245,10 @@ Public Sub CheckPendingWorkflowSteps(pfFromMenu As Boolean)
               If alngSelectedSteps(lngCount) = CLng(avPendingForms(2, lngCount2)) Then
                 ' Launch IE with the required web form.
                 OpenWebForm CLng(avPendingForms(0, lngCount2)), CLng(avPendingForms(1, lngCount2))
+                
+                ' NPG20120430 Fault HRPRO-2197
+                Sleep 1000
+                
                 Exit For
               End If
             Next lngCount2
