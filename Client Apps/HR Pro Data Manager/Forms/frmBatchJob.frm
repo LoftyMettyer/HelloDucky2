@@ -41,26 +41,23 @@ Begin VB.Form frmBatchJob
       _ExtentY        =   9895
       _Version        =   393216
       Style           =   1
+      Tab             =   2
       TabHeight       =   520
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmBatchJob.frx":000C
-      Tab(0).ControlEnabled=   -1  'True
+      Tab(0).ControlEnabled=   0   'False
       Tab(0).Control(0)=   "fraScheduling"
-      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).Control(1)=   "fraInfo"
-      Tab(0).Control(1).Enabled=   0   'False
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "&Jobs"
       TabPicture(1)   =   "frmBatchJob.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraJobs"
-      Tab(1).Control(0).Enabled=   0   'False
-      Tab(1).Control(1)=   "Frame1"
-      Tab(1).Control(1).Enabled=   0   'False
+      Tab(1).Control(0)=   "Frame1"
+      Tab(1).Control(1)=   "fraJobs"
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "O&utput"
       TabPicture(2)   =   "frmBatchJob.frx":0044
-      Tab(2).ControlEnabled=   0   'False
+      Tab(2).ControlEnabled=   -1  'True
       Tab(2).Control(0)=   "Frame4"
       Tab(2).Control(0).Enabled=   0   'False
       Tab(2).Control(1)=   "Frame2"
@@ -71,7 +68,7 @@ Begin VB.Form frmBatchJob
       Begin VB.Frame Frame3 
          Caption         =   "Output Format :"
          Height          =   3200
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   70
          Top             =   2280
          Width           =   2265
@@ -82,6 +79,7 @@ Begin VB.Form frmBatchJob
             Left            =   200
             TabIndex        =   44
             Top             =   405
+            Value           =   -1  'True
             Width           =   1900
          End
          Begin VB.OptionButton optOutputFormat 
@@ -97,7 +95,7 @@ Begin VB.Form frmBatchJob
       Begin VB.Frame Frame2 
          Caption         =   "Output Destination(s) :"
          Height          =   3200
-         Left            =   -72480
+         Left            =   2520
          TabIndex        =   63
          Top             =   2280
          Width           =   7110
@@ -107,7 +105,7 @@ Begin VB.Form frmBatchJob
             Left            =   3660
             TabIndex        =   46
             TabStop         =   0   'False
-            Top             =   405
+            Top             =   165
             Visible         =   0   'False
             Width           =   1185
          End
@@ -117,7 +115,8 @@ Begin VB.Form frmBatchJob
             Index           =   0
             Left            =   240
             TabIndex        =   47
-            Top             =   380
+            Top             =   135
+            Visible         =   0   'False
             Width           =   2625
          End
          Begin VB.CheckBox chkDestination 
@@ -126,7 +125,7 @@ Begin VB.Form frmBatchJob
             Index           =   3
             Left            =   240
             TabIndex        =   54
-            Top             =   1995
+            Top             =   1755
             Width           =   1515
          End
          Begin VB.CheckBox chkDestination 
@@ -135,7 +134,7 @@ Begin VB.Form frmBatchJob
             Index           =   2
             Left            =   240
             TabIndex        =   50
-            Top             =   1215
+            Top             =   975
             Width           =   1455
          End
          Begin VB.CheckBox chkDestination 
@@ -144,7 +143,7 @@ Begin VB.Form frmBatchJob
             Index           =   1
             Left            =   240
             TabIndex        =   48
-            Top             =   750
+            Top             =   510
             Width           =   1620
          End
          Begin VB.CommandButton cmdEmailGroup 
@@ -153,7 +152,7 @@ Begin VB.Form frmBatchJob
             Height          =   315
             Left            =   6550
             TabIndex        =   56
-            Top             =   1935
+            Top             =   1695
             UseMaskColor    =   -1  'True
             Width           =   330
          End
@@ -163,7 +162,7 @@ Begin VB.Form frmBatchJob
             Height          =   315
             Left            =   6550
             TabIndex        =   52
-            Top             =   1155
+            Top             =   915
             UseMaskColor    =   -1  'True
             Width           =   330
          End
@@ -177,7 +176,7 @@ Begin VB.Form frmBatchJob
             TabIndex        =   55
             TabStop         =   0   'False
             Tag             =   "0"
-            Top             =   1950
+            Top             =   1710
             Width           =   2900
          End
          Begin VB.TextBox txtEmailSubject 
@@ -186,7 +185,7 @@ Begin VB.Form frmBatchJob
             Height          =   315
             Left            =   3660
             TabIndex        =   57
-            Top             =   2355
+            Top             =   2115
             Width           =   3240
          End
          Begin VB.ComboBox cboSaveExisting 
@@ -196,7 +195,7 @@ Begin VB.Form frmBatchJob
             Left            =   3660
             Style           =   2  'Dropdown List
             TabIndex        =   53
-            Top             =   1560
+            Top             =   1320
             Width           =   3240
          End
          Begin VB.ComboBox cboPrinterName 
@@ -206,7 +205,7 @@ Begin VB.Form frmBatchJob
             Left            =   3660
             Style           =   2  'Dropdown List
             TabIndex        =   49
-            Top             =   750
+            Top             =   510
             Width           =   3240
          End
          Begin VB.TextBox txtFileName 
@@ -219,7 +218,7 @@ Begin VB.Form frmBatchJob
             TabIndex        =   51
             TabStop         =   0   'False
             Tag             =   "0"
-            Top             =   1155
+            Top             =   915
             Width           =   2900
          End
          Begin VB.TextBox txtEMailAttachAs 
@@ -230,7 +229,7 @@ Begin VB.Form frmBatchJob
             Left            =   3660
             TabIndex        =   58
             Tag             =   "0"
-            Top             =   2760
+            Top             =   2520
             Width           =   3240
          End
          Begin VB.Label Label4 
@@ -240,7 +239,7 @@ Begin VB.Form frmBatchJob
             Height          =   195
             Left            =   2190
             TabIndex        =   69
-            Top             =   750
+            Top             =   510
             Width           =   1410
          End
          Begin VB.Label Label3 
@@ -250,7 +249,7 @@ Begin VB.Form frmBatchJob
             Height          =   195
             Left            =   2190
             TabIndex        =   68
-            Top             =   1620
+            Top             =   1380
             Width           =   1350
          End
          Begin VB.Label lblEmail 
@@ -261,7 +260,7 @@ Begin VB.Form frmBatchJob
             Index           =   5
             Left            =   2190
             TabIndex        =   67
-            Top             =   1995
+            Top             =   1755
             Width           =   1200
          End
          Begin VB.Label lblEmail 
@@ -272,7 +271,7 @@ Begin VB.Form frmBatchJob
             Index           =   4
             Left            =   2190
             TabIndex        =   66
-            Top             =   2400
+            Top             =   2160
             Width           =   1305
          End
          Begin VB.Label Label2 
@@ -282,7 +281,7 @@ Begin VB.Form frmBatchJob
             Height          =   195
             Left            =   2190
             TabIndex        =   65
-            Top             =   1215
+            Top             =   975
             Width           =   1095
          End
          Begin VB.Label lblEmail 
@@ -293,7 +292,7 @@ Begin VB.Form frmBatchJob
             Index           =   3
             Left            =   2190
             TabIndex        =   64
-            Top             =   2805
+            Top             =   2565
             Width           =   1065
          End
       End
@@ -445,11 +444,15 @@ Begin VB.Form frmBatchJob
             GroupHeaders    =   0   'False
             Col.Count       =   5
             stylesets.count =   5
-            stylesets(0).Name=   "ssetSelected"
-            stylesets(0).ForeColor=   -2147483634
-            stylesets(0).BackColor=   -2147483635
-            stylesets(0).HasFont=   -1  'True
-            BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+            stylesets(0).Name=   "ssetHeaderDisabled"
+            stylesets(0).ForeColor=   -2147483631
+            stylesets(0).BackColor=   -2147483633
+            stylesets(0).Picture=   "frmBatchJob.frx":0060
+            stylesets(1).Name=   "ssetSelected"
+            stylesets(1).ForeColor=   -2147483634
+            stylesets(1).BackColor=   -2147483635
+            stylesets(1).HasFont=   -1  'True
+            BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
                Size            =   8.25
                Charset         =   0
@@ -458,10 +461,6 @@ Begin VB.Form frmBatchJob
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(0).Picture=   "frmBatchJob.frx":0060
-            stylesets(1).Name=   "ssetHeaderDisabled"
-            stylesets(1).ForeColor=   -2147483631
-            stylesets(1).BackColor=   -2147483633
             stylesets(1).Picture=   "frmBatchJob.frx":007C
             stylesets(2).Name=   "ssetEnabled"
             stylesets(2).ForeColor=   -2147483640
@@ -569,7 +568,7 @@ Begin VB.Form frmBatchJob
       End
       Begin VB.Frame fraInfo 
          Height          =   1950
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   0
          Top             =   420
          Width           =   9525
@@ -768,7 +767,7 @@ Begin VB.Form frmBatchJob
       Begin VB.Frame fraScheduling 
          Caption         =   "Scheduling :"
          Height          =   3050
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   8
          Top             =   2445
          Width           =   9525
@@ -1029,7 +1028,7 @@ Begin VB.Form frmBatchJob
       Begin VB.Frame Frame4 
          Caption         =   "Report Options :"
          Height          =   1800
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   71
          Top             =   420
          Width           =   9470
@@ -1243,10 +1242,10 @@ Private Sub RefreshColumnsGrid()
 End Sub
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
-  cmdOk.Enabled = pblnChanged
+  cmdOK.Enabled = pblnChanged
 End Property
 
 Private Function JobUtilityType(psJobType As String) As UtilityType
@@ -2035,13 +2034,14 @@ Private Function RetrieveBatchJobDetails() As Boolean
   End If
 
   If IsReportPack Then
-    txtTitlePage.Text = prstTemp!outputTitlePage
+    txtTitlePage.Text = prstTemp!OutputTitlePage
     txtReportPackTitle.Text = prstTemp!OutputReportPackTitle
     txtOverrideFilter.Text = prstTemp!OutputOverrideFilter
     chkForceCoverSheet.Value = IIf(prstTemp!OutputCoverSheet, vbChecked, vbUnchecked)
     chkTOC.Value = IIf(prstTemp!OutputTOC, vbChecked, vbUnchecked)
-      
+    optOutputFormat(prstTemp!OutputFormat).Value = True
     mobjOutputDef.PopulateOutputControls prstTemp
+    
   End If
     
   If mblnReadOnly Then
@@ -4082,21 +4082,11 @@ Public Sub PrintDef(lBatchJobID As Long)
   
     With objPrintDef
       If .PrintStart(False) Then
-        .PrintHeader "Batch Job : " & rsTemp!Name
-    
-        .PrintNormal "Description : " & rsTemp!Description
+        .PrintHeader "" & IIf(gblnReportPackMode, "Report Pack : ", "Batch Job : ") & rsTemp!Name
+        .PrintNormal "Description : " & IIf(rsTemp!Description <> vbNullString, rsTemp!Description, "N/A")
         .PrintNormal
-    
         .PrintNormal "Owner : " & rsTemp!UserName
-        
-        '.PrintNormal "Access : " & AccessDescription(rsTemp!Access)
-        'Select Case rsTemp!Access
-        '  Case "RW": .PrintNormal "Access : Read / Write"
-        '  Case "RO": .PrintNormal "Access : Read only"
-        '  Case "HD": .PrintNormal "Access : Hidden"
-        'End Select
         .PrintNormal
-        
         .PrintNormal "Scheduled : " & IIf(rsTemp!scheduled = True, "Yes", "No")
         
         If rsTemp!scheduled = True Then
@@ -4114,23 +4104,17 @@ Public Sub PrintDef(lBatchJobID As Long)
           sTemp = vbNullString
           
           .PrintNormal
-            
           .PrintNormal "Start Date : " & Format(rsTemp!StartDate, DateFormat)
           .PrintNormal "End Date : " & IIf(IsDate(rsTemp!EndDate) And rsTemp!EndDate <> "00:00:00", Format(rsTemp!EndDate, DateFormat), "")
-          
           .PrintNormal
-          
           .PrintNormal "Run Indefinitely : " & IIf(rsTemp!Indefinitely = True, "Yes", "No")
           .PrintNormal "Include Weekends : " & IIf(rsTemp!Weekends = True, "Yes", "No")
           .PrintNormal "Skip Missed Days : " & IIf(rsTemp!RunOnce = True, "Yes", "No")
-          
           .PrintNormal
-          
           .PrintNormal "User Group : " & rsTemp!RoleToPrompt
-    
          End If
           
-        ' Access section --------------------------------------------------------
+        ' Access section
         PopulateAccessGrid
         .PrintTitle "Access"
         For iLoop = 1 To (grdAccess.Rows - 1)
@@ -4138,18 +4122,69 @@ Public Sub PrintDef(lBatchJobID As Long)
           .PrintNormal grdAccess.Columns("GroupName").CellValue(varBookmark) & " : " & grdAccess.Columns("Access").CellValue(varBookmark)
         Next iLoop
         
+        ' Output Options
+        .PrintTitle "Output Options"
+        
+        .PrintNormal "Title Page Template: " & rsTemp!OutputTitlePage
+        .PrintNormal "Report Pack Title : " & rsTemp!OutputReportPackTitle
+        
+        .PrintNormal " "
+        
+        .PrintNormal "Override Filter : " & rsTemp!OutputOverrideFilter
+        .PrintNormal "Print Table Of Contents : " & rsTemp!OutputTOC
+        .PrintNormal "Force Cover Sheet : " & rsTemp!OutputCoverSheet
+        
+        .PrintNormal " "
+        
+        Select Case rsTemp!OutputFormat
+          Case fmtExcelWorksheet
+            .PrintNormal "Output Format : Excel Worksheet"
+          Case fmtWordDoc
+            .PrintNormal "Output Format : Word Document"
+          Case fmtHTML
+            .PrintNormal "Output Format : HTML"
+        End Select
+        
+        .PrintNormal " "
+        
+        If rsTemp!OutputPrinter Then
+          .PrintNormal "Output Destination : Send to printer"
+          .PrintNormal "Printer Location : " & rsTemp!OutputPrinterName
+          .PrintNormal "File Name : " & rsTemp!OutputFilename
+          .PrintNormal " "
+        End If
+        
+
+        
+        If rsTemp!OutputSave Then
+          .PrintNormal "Output Destination : Save to file"
+          
+          Select Case rsTemp!OutputSaveExisting
+            Case 0: .PrintNormal "If Existing File : Overwrite"
+            Case 1: .PrintNormal "If Existing File : Do not overwrite"
+            Case 2: .PrintNormal "If Existing File : Add sequential number to name"
+            Case 3: .PrintNormal "If Existing File : Append to file"
+          End Select
+          .PrintNormal " "
+        End If
+        
+        If rsTemp!OutputEmail Then
+          txtEmailGroup.Text = datGeneral.GetEmailGroupName(rsTemp!OutputEmailAddr)
+          .PrintNormal "Output Destination : Send to email"
+          .PrintNormal "Email Group : " & IIf(txtEmailGroup.Text = "", "N/A", txtEmailGroup.Text)
+          .PrintNormal "Email Subject : " & rsTemp!OutputEmailSubject
+          .PrintNormal "Email Attach As : " & rsTemp!OutputEmailAttachAs
+        End If
+      
       ' Now do the individual jobs
-    
       .PrintTitle "Jobs"
       
       Set rsColumns = datGeneral.GetRecords("SELECT * " & _
                                             "FROM ASRSysBatchJobDetails WHERE BatchJobNameID = " & mlngBatchJobID & _
                                             "ORDER BY JobOrder")
-      
         .PrintBold "Job Type" & vbTab & "Job Name"
     
         Do While Not rsColumns.EOF
-          
           If Not JobTypeRequiresDef(rsColumns!JobType) Then
             .PrintNonBold rsColumns!JobType & vbTab & _
                           rsColumns!Parameter
@@ -4157,19 +4192,18 @@ Public Sub PrintDef(lBatchJobID As Long)
             .PrintNonBold rsColumns!JobType & vbTab & _
                           GetJobName(rsColumns!JobType, rsColumns!JobID)
           End If
-
           rsColumns.MoveNext
-        
         Loop
         
-        '---------
-        
         .PrintEnd
-        .PrintConfirm "Batch Job : " & rsTemp!Name, "Batch Job Definition"
+        
+        If gblnReportPackMode Then
+          .PrintConfirm "Report Packs : " & rsTemp!Name, "Report Pack Definition"
+        Else
+          .PrintConfirm "Batch Job : " & rsTemp!Name, "Batch Job Definition"
+        End If
       End If
-  
     End With
-  
   End If
   
   Set rsTemp = Nothing
@@ -4179,12 +4213,11 @@ Public Sub PrintDef(lBatchJobID As Long)
 Exit Sub
 
 LocalErr:
-  COAMsgBox "Printing batch job definition failed" & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Print Definition"
+  COAMsgBox "Printing " & IIf(gblnReportPackMode, "Report Pack : ", "Batch Job : ") & "definition failed" & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Print Definition"
 
 End Sub
 
 Private Function CheckIfScrollBarRequired()
-
   With grdColumns
 
     If .Rows > 11 Then
