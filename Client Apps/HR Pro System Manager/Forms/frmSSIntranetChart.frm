@@ -955,7 +955,7 @@ Private Sub cboTableX_Click()
   ' Set top item if not loading.
   If Not mfLoading Then
     SetComboItemOrTopItem cboColumnX, ChartColumnID
-    SetComboItemOrTopItem cboTableY, Chart_TableID_3
+    SetComboItemOrTopItem cboTableY, IIf(optChartType(0).value, ChartTableID, Chart_TableID_3)
     SetComboItemOrTopItem cboColumnY, Chart_ColumnID_3
     SetComboItemOrTopItem cboColumnZ, Chart_ColumnID_2
     SetComboItemOrTopItem cboTableZ, Chart_TableID_2
@@ -1189,7 +1189,7 @@ End Sub
 Private Sub RefreshControls()
   
   ChangeChartType
-  cmdOk.Enabled = mfChanged
+  cmdOK.Enabled = mfChanged
   
   ' Disable the Y column if aggregate is set to 'Count'
   cboColumnY.Enabled = (cboAggregateType.Text <> "Count")
@@ -1441,7 +1441,7 @@ Public Sub Initialize(plngChartViewID As Long, _
   txtFilter.Enabled = False
   txtFilter.BackColor = vbButtonFace
   
-  cmdOk.Enabled = (miChartTableID = 0)
+  cmdOK.Enabled = (miChartTableID = 0)
    
   mfLoading = False
   
