@@ -171,12 +171,12 @@ Public Property Get Cancelled() As Boolean
 End Property
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
 End Property
 
 Public Property Let Changed(ByVal NewValue As Boolean)
   If Not mbLoading Then
-    cmdOk.Enabled = NewValue And Not mbReadOnly
+    cmdOK.Enabled = NewValue And Not mbReadOnly
   End If
 End Property
 
@@ -303,11 +303,11 @@ Public Function PopulateControls() As Boolean
   cboOverlapColumnEndSession.Clear
   cboOverlapColumnType.Clear
  
-  PopulateComboWithColumns cboOverlapColumnStartDate, lngTableID, False, dtTIMESTAMP, True
-  PopulateComboWithColumns cboOverlapColumnStartSession, lngTableID, True, dtVARCHAR, False
-  PopulateComboWithColumns cboOverlapColumnEndDate, lngTableID, False, dtTIMESTAMP, False
-  PopulateComboWithColumns cboOverlapColumnEndSession, lngTableID, True, dtVARCHAR, False
-  PopulateComboWithColumns cboOverlapColumnType, lngTableID, True, dtVARCHAR, False
+  PopulateComboWithColumns cboOverlapColumnStartDate, lngTableID, False, dtTIMESTAMP, True, objValidationObject.EventStartdateColumnID
+  PopulateComboWithColumns cboOverlapColumnStartSession, lngTableID, True, dtVARCHAR, False, -1
+  PopulateComboWithColumns cboOverlapColumnEndDate, lngTableID, False, dtTIMESTAMP, False, -1
+  PopulateComboWithColumns cboOverlapColumnEndSession, lngTableID, True, dtVARCHAR, False, -1
+  PopulateComboWithColumns cboOverlapColumnType, lngTableID, True, dtVARCHAR, False, -1
   
   SetComboItem cboOverlapColumnStartDate, objValidationObject.EventStartdateColumnID
   SetComboItem cboOverlapColumnStartSession, objValidationObject.EventStartSessionColumnID
@@ -328,7 +328,7 @@ ErrorTrap:
 End Function
 
 
-Private Sub PopulateComboWithColumns(ByRef cboTemp As ComboBox, ByVal plngTableID As Long, ByVal AllowNone As Boolean, ByVal DataType As DataTypes, IsMandatory As Boolean)
+Private Sub PopulateComboWithColumns(ByRef cboTemp As ComboBox, ByVal plngTableID As Long, ByVal AllowNone As Boolean, ByVal DataType As DataTypes, IsMandatory As Boolean, ByVal plngAddCurrent As Long)
 
   If AllowNone Then
     With cboTemp
@@ -349,7 +349,7 @@ Private Sub PopulateComboWithColumns(ByRef cboTemp As ComboBox, ByVal plngTableI
           Exit Do
         End If
 
-        If (Not !Deleted) And (!DataType = DataType) And (!Mandatory = IsMandatory Or Not IsMandatory) Then
+        If (Not !Deleted) And (!DataType = DataType) And (!Mandatory = IsMandatory Or Not IsMandatory Or plngAddCurrent = !ColumnID) Then
 
           cboTemp.AddItem (!ColumnName)
           cboTemp.ItemData(cboTemp.NewIndex) = !ColumnID
