@@ -78,7 +78,7 @@ Begin VB.Form frmLicence
       Begin VB.TextBox txtSSI 
          Height          =   315
          Left            =   4000
-         MaxLength       =   4
+         MaxLength       =   3
          TabIndex        =   12
          Top             =   1500
          Width           =   900
