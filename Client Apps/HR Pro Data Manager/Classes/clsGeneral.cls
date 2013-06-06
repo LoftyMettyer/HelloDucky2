@@ -6059,7 +6059,9 @@ Public Function ConvertNumberForSQL(ByVal strInput As String) As String
   'Get a number in the correct format for a SQL string
   '(e.g. on french systems replace decimal comma for a decimal point)
   'ConvertNumberForSQL = Replace(strInput, UI.GetSystemDecimalSeparator, ".")
-  ConvertNumberForSQL = Trim(Replace(Replace(strInput, UI.GetSystemDecimalSeparator, "."), UI.GetSystemThousandSeparator, ""))
+  ConvertNumberForSQL = Trim(Replace(strInput, UI.GetSystemThousandSeparator, ""))
+  ConvertNumberForSQL = Replace(ConvertNumberForSQL, UI.GetSystemDecimalSeparator, ".")
+  
 End Function
 
 Public Function ConvertNumberForDisplay(ByVal strInput As String) As String
