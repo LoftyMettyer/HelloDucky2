@@ -333,9 +333,17 @@ Private Sub cmdOK_Click()
     If Len(Trim(txtLength.Text)) > 0 Then
       If IsNumeric(txtLength.Text) Then
         If Val(txtLength.Text) = "0" Then
-          MsgBox "The Length value must be greater than 0.", vbExclamation, Me.Caption
+          MsgBox "The Length value must be greater than 0 characters.", vbExclamation, Me.Caption
           Exit Sub
         End If
+        
+        ' JIRA - 604 - Don't let the user go nuts with this figure
+        If Val(txtLength.Text) > VARCHAR_MAX_Size Then
+          MsgBox "The Length value cannot exceed " & VARCHAR_MAX_Size & " characters.", vbExclamation, Me.Caption
+          txtLength.Text = VARCHAR_MAX_Size
+          Exit Sub
+        End If
+        
       Else
         MsgBox "The Length value must be numeric.", vbExclamation, Me.Caption
         Exit Sub
