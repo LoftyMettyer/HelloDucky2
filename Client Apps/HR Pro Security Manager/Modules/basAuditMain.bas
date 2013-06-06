@@ -166,7 +166,7 @@ Public Function GetAllRecords(piAuditType As audType, Optional psOrder As String
   Dim sSQL As String
   Dim rsTemp As Recordset
   
-  sSQL = "exec sp_ASRGetAuditTrail " & piAuditType & ", " & IIf(psOrder = "", "''", "'" & psOrder & "'")
+  sSQL = "exec spstat_getaudittrail " & piAuditType & ", " & IIf(psOrder = "", "''", "'" & psOrder & "'")
   Set rsTemp = New Recordset
   gADOCon.CursorLocation = adUseClient
   rsTemp.Open sSQL, gADOCon, adOpenDynamic, adLockReadOnly

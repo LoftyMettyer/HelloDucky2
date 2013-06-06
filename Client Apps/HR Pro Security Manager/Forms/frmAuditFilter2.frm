@@ -389,7 +389,7 @@ Public Function Initialise(iAuditType As audType, myarray() As Variant) As Boole
         .ItemData(.NewIndex) = sqlVarchar
         .AddItem "Computer Name"
         .ItemData(.NewIndex) = sqlVarchar
-        .AddItem "HR Pro Module"
+        .AddItem "Module"
         .ItemData(.NewIndex) = sqlVarchar
         .AddItem "Action"
         .ItemData(.NewIndex) = sqlVarchar
@@ -465,8 +465,8 @@ Private Function GetFieldName(strColumnDisplayName As String) As String
         GetFieldName = "Username"
       ElseIf strColumnDisplayName = "Computer Name" Then
         GetFieldName = "ComputerName"
-      ElseIf strColumnDisplayName = "HR Pro Module" Then
-        GetFieldName = "HRProModule"
+      ElseIf strColumnDisplayName = "Module" Then
+        GetFieldName = "Module"
       ElseIf strColumnDisplayName = "Action" Then
         GetFieldName = "Action"
       End If
