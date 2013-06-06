@@ -2929,6 +2929,11 @@ Private Sub Form_KeyUp(KeyCode As Integer, Shift As Integer)
      Next iCount
   End If
 
+  ' Ensure that the container controls are docked correctly
+  If TabPages.Selected Then
+    DockPagesToTabStrip
+  End If
+
   Dim bHandled As Boolean
   
   bHandled = frmSysMgr.tbMain.OnKeyUp(KeyCode, Shift)
@@ -8385,7 +8390,7 @@ ErrorTrap:
   
 End Function
 
-Private Sub DockPagesToTabStrip()
+Public Sub DockPagesToTabStrip()
 
   Dim ctlPictureBox As PictureBox
 
@@ -8396,12 +8401,7 @@ Private Sub DockPagesToTabStrip()
       ' Position and size the picture box containers of the tabstrip.
       ctlPictureBox.Move TabPages.Left + TabPages.ClientLeft, TabPages.Top + TabPages.ClientTop, _
         TabPages.ClientWidth, TabPages.ClientHeight
-    
-'      ' Set the 'transparency'
-'      If Me.Picture.Width > 0 Then
-'        ctlPictureBox.PaintPicture Me.Picture, 0, 0, ctlPictureBox.Width, ctlPictureBox.Height, ctlPictureBox.Left, ctlPictureBox.Top, ctlPictureBox.Width, ctlPictureBox.Height
-'      End If
-  
+     
     End If
   
   Next ctlPictureBox
@@ -8471,7 +8471,7 @@ Private Sub objTabContainer_MouseUp(Index As Integer, Button As Integer, Shift A
 End Sub
 
 
-Private Sub tabPages_Click()
+Public Sub tabPages_Click()
 
   Dim iOldPage As Integer
   Dim ctlPictureBox As PictureBox

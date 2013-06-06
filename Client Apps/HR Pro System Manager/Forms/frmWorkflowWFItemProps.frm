@@ -1,8 +1,8 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "COA_ColourPicker.ocx"
+Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "coa_colourpicker.ocx"
 Begin VB.Form frmWorkflowWFItemProps 
    Caption         =   "Control Properties"
    ClientHeight    =   5070
@@ -479,7 +479,7 @@ Private mactlSelectedControls() As VB.Control
 Private miCurrentRowFormat As Integer
 
 ' Functions to display/tile the background image
-Private Declare Function BitBlt Lib "gdi32" (ByVal hDestDC As Long, ByVal X As Long, ByVal Y As Long, ByVal nWidth As Long, ByVal nHeight As Long, ByVal hSrcDC As Long, ByVal xSrc As Long, ByVal ySrc As Long, ByVal dwRop As Long) As Long
+Private Declare Function BitBlt Lib "gdi32" (ByVal hDestDC As Long, ByVal x As Long, ByVal y As Long, ByVal nWidth As Long, ByVal nHeight As Long, ByVal hSrcDC As Long, ByVal xSrc As Long, ByVal ySrc As Long, ByVal dwRop As Long) As Long
 Private Declare Function CreateCompatibleDC Lib "gdi32" (ByVal lDC As Long) As Long
 Private Declare Function DeleteDC Lib "gdi32" (ByVal lDC As Long) As Long
 Private Declare Function SelectObject Lib "gdi32" (ByVal lDC As Long, ByVal hObject As Long) As Long
@@ -1179,7 +1179,7 @@ Private Sub SetLookupColumnID(plngColumnID As Long)
       " WHERE " & GetColumnName(mlngLookupColumnID)
       
     Select Case iDataType
-      Case dtNUMERIC, dtinteger
+      Case dtNUMERIC, dtINTEGER
         If Len(msDefault_LookupValue) = 0 Then
           sSQL = sSQL & _
             " = 0"
@@ -2822,11 +2822,11 @@ Public Function RefreshProperties(Optional pfStayOnSameLine As Boolean) As Boole
               If avProperties(WFITEMPROP_HEADLINES, 1) Then
                 If WebFormItemHasProperty(iControlType, WFITEMPROP_HEADLINES) Then
                   If (fPassedOnce) And (Not avProperties(WFITEMPROP_HEADLINES, 2)) Then
-                    If mlngHeadlines <> .HeadLines Then
+                    If mlngHeadlines <> .Headlines Then
                       avProperties(WFITEMPROP_HEADLINES, 2) = True
                     End If
                   Else
-                    mlngHeadlines = .HeadLines
+                    mlngHeadlines = .Headlines
                   End If
                 Else
                   avProperties(WFITEMPROP_HEADLINES, 1) = False
@@ -3923,10 +3923,10 @@ Private Function UpdateControls(piProperty As WFItemProperty) As Boolean
               .ColumnHeaders = mfColumnHeaders
 
             Case WFITEMPROP_HEADLINES
-              If (.HeadLines <> mlngHeadlines) Then
+              If (.Headlines <> mlngHeadlines) Then
                 fChangeMade = True
               End If
-              .HeadLines = mlngHeadlines
+              .Headlines = mlngHeadlines
 
             Case WFITEMPROP_HEADFONT
               Set objFont = New StdFont
@@ -4074,13 +4074,18 @@ Private Function UpdateControls(piProperty As WFItemProperty) As Boolean
 
         ' Refresh the selection markers
         For iCount = 1 To mfrmWebForm.ASRSelectionMarkers.Count - 1
-         With mfrmWebForm.ASRSelectionMarkers(iCount)
-           If .Visible Then
-             .Move .AttachedObject.Left - .MarkerSize, .AttachedObject.Top - .MarkerSize, .AttachedObject.Width + (.MarkerSize * 2), .AttachedObject.Height + (.MarkerSize * 2)
-             .RefreshSelectionMarkers True
-           End If
-         End With
+          With mfrmWebForm.ASRSelectionMarkers(iCount)
+            If .Visible Then
+              .Move .AttachedObject.Left - .MarkerSize, .AttachedObject.Top - .MarkerSize, .AttachedObject.Width + (.MarkerSize * 2), .AttachedObject.Height + (.MarkerSize * 2)
+              .RefreshSelectionMarkers True
+            End If
+          End With
         Next iCount
+
+        ' If tab page is selected then force a refresh.
+        If mfrmWebForm.tabPages.Selected Then
+          mfrmWebForm.DockPagesToTabStrip
+        End If
 
         If Not fOK Then
           Exit For
