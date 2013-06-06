@@ -17,10 +17,6 @@ Private miStackLevel As Integer
 Private mastrCallStack() As String
 Private mbEnabled As Boolean
 
-' API calls
-Private Declare Function GetComputerNameAPI Lib "kernel32" Alias "GetComputerNameA" _
-    (ByVal lpBuffer As String, nSize As Long) As Long
-
 Public Function PopStack()
 
   'Remove the latest function/procedure from the stack array
