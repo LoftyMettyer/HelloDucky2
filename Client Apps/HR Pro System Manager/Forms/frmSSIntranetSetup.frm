@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TabCtl32.Ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Begin VB.Form frmSSIntranetSetup 
    BorderStyle     =   3  'Fixed Dialog
@@ -2026,7 +2026,7 @@ Private Sub RefreshControls()
 
   End Select
 
-  cmdOK.Enabled = mfChanged
+  cmdOk.Enabled = mfChanged
   cmdPreview.Enabled = (cboSecurityGroup.Text <> "(All Groups)")
 
 End Sub
@@ -2568,7 +2568,7 @@ Private Sub cmdAddButtonLink_Click()
         & vbTab & .cboChartType.ItemData(.cboChartType.ListIndex) & vbTab & IIf(.chkDottedGridlines.value = 0, "0", "1") _
         & vbTab & IIf(.chkStackSeries.value = 0, "0", "1") & vbTab & "0" & vbTab & .ChartTableID & vbTab & .ChartColumnID _
         & vbTab & .ChartFilterID & vbTab & .ChartAggregateType & vbTab & IIf(.chkShowValues.value = 0, "0", "1") _
-        & vbTab & .chkFormatting.value & vbTab & .spnDBValueDecimals.value & vbTab & .chkDBVaUseThousandSeparator.value _
+        & vbTab & IIf(.UseFormatting = 0, "0", "1") & vbTab & .spnDBValueDecimals.value & vbTab & .chkDBVaUseThousandSeparator.value _
         & vbTab & .txtDBValuePrefix.Text & vbTab & .txtDBValueSuffix.Text _
         & vbTab & .chkConditionalFormatting.value _
         & vbTab & .ConditionalFormatting_Operator_1 & vbTab & .ConditionalFormatting_Value_1 & vbTab & .ConditionalFormatting_Style_1 & vbTab & .ConditionalFormatting_Colour_1 _
