@@ -419,7 +419,7 @@ Public Sub CreateEmailProcsForTable(lngTableID As Long, _
                   alngAuditColumns, sDeclareInsCols, sDeclareDelCols, _
                   sSelectInsCols, sSelectDelCols, sFetchInsCols, sFetchDelCols)
 
-            strCheckColumns = IIf(strCheckColumns <> vbNullString, strCheckColumns & " OR (@startingtrigger = 1 AND @startingtriggertable = " & lngTableID & ")", "")
+            strCheckColumns = IIf(strCheckColumns <> vbNullString, strCheckColumns & " AND @startingtrigger IN (1, 2)", "")
           End If
           
           
@@ -977,10 +977,10 @@ Private Function GetSQLForImmediateEmails(lngLinkID As Long, _
         Select Case GetColumnDataType(lngColumnID)
         Case dtNUMERIC, dtINTEGER, dtBIT
           strCheckColumns = IIf(strCheckColumns <> vbNullString, strCheckColumns & vbNewLine & "             OR ", "") & _
-                "isnull(@insCol_" & CStr(lngColumnID) & ",0) <> isnull(@delCol_" & CStr(lngColumnID) & ",0)"
+                "ISNULL(@insCol_" & CStr(lngColumnID) & ",0) <> ISNULL(@delCol_" & CStr(lngColumnID) & ",0)"
         Case Else
           strCheckColumns = IIf(strCheckColumns <> vbNullString, strCheckColumns & vbNewLine & "             OR ", "") & _
-                "isnull(@insCol_" & CStr(lngColumnID) & ",'') <> isnull(@delCol_" & CStr(lngColumnID) & ",'')"
+                "ISNULL(@insCol_" & CStr(lngColumnID) & ",'') <> ISNULL(@delCol_" & CStr(lngColumnID) & ",'')"
         End Select
           
         AddColumnToTrigger _
