@@ -1008,7 +1008,7 @@ PRINT 'Step 11 - Add new calculation procedures'
 	EXECUTE sp_executeSQL @sSPCode;
 
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_getuniquecode](
-			@prefix AS nvarchar(255),
+			@prefix AS varchar(255),
 			@rootvalue as integer,
 			@rowoffset AS integer)
 		RETURNS [nvarchar](255)
@@ -1017,10 +1017,8 @@ PRINT 'Step 11 - Add new calculation procedures'
 		
 			DECLARE @result nvarchar(255);
 
-			SELECT @result = [maxcodesuffix] + @rowoffset
+			SELECT @result = convert(integer, [maxcodesuffix]) + @rowoffset
 				FROM tbsys_uniquecodes WHERE [codeprefix] = @prefix;
-
-			SELECT @result = convert(nvarchar(255),@rowoffset);
 			
 			RETURN @result;
 		
