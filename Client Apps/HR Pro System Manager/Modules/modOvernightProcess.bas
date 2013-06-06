@@ -163,228 +163,103 @@ Private Function OvernightJob2(palngExpressions As Variant) As Boolean
 
   fOK = True
   sExprList = ""
+  sSQL = ""
 
   DropExistingJobStep (strOvernightSP)
 
-  ' Get the expressions that use time dependent functions.
-  sSQL = "SELECT ASRSysExpressions.exprID, ASRSysExpressions.parentComponentID" & _
-    " FROM ASRSysExpressions" & _
-    " INNER JOIN ASRSysExprComponents" & _
-    "   ON ASRSysExpressions.exprID = ASRSysExprComponents.exprID" & _
-    " INNER JOIN ASRSysFunctions" & _
-    "   ON ASRSysExprComponents.functionID = ASRSysFunctions.functionID" & _
-    " WHERE ASRSysFunctions.timeDependent = 1"
-
-  'JPD 20051121 If columns that use special functions aren't being updated automatically
-  ' make sure they are as part of the overnight job.
-  ' Special function are Absence Duration, Absence Between Two Dates, and Working Days Between Two Dates
-  If gbDisableSpecialFunctionAutoUpdate Then
-    sSQL = sSQL & _
-      "   OR ASRSysFunctions.functionID IN (30, 46, 47, 73)"
-  End If
-  
+  ' Get tables to update
+  sSQL = "SELECT TableName FROM ASRSysTables"
   rsInfo.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly
     
+  sSQL = ""
   With rsInfo
     Do While Not .EOF
-      iIndex = UBound(palngExpressions, 2) + 1
-      ReDim Preserve palngExpressions(2, iIndex)
-      palngExpressions(1, iIndex) = !ExprID
-      palngExpressions(2, iIndex) = !ParentComponentID
+      
+      sSQL = sSQL & _
+        "EXEC [spASRSysOvernightTableUpdate] " & _
+          "'tbuser_" & Replace(!TableName, "'", "''") & "', 'updflag', 100" & vbNewLine
+      
       .MoveNext
+     
+      
     Loop
   End With
   rsInfo.Close
-  
-  iLoop = 1
-  Do While iLoop <= UBound(palngExpressions, 2)
-    If palngExpressions(2, iLoop) > 0 Then
-      ' The expression is a sub-expression. Get the parent expression info.
-      sSQL = "SELECT ASRSysExpressions.exprID, ASRSysExpressions.parentComponentID" & _
-        " FROM ASRSysExpressions" & _
-        " INNER JOIN ASRSysExprComponents" & _
-        "   ON ASRSysExpressions.exprID = ASRSysExprComponents.exprID" & _
-        " WHERE ASRSysExprComponents.componentID = " & Trim(Str(palngExpressions(2, iLoop)))
-        
-      rsInfo.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly
-      With rsInfo
-        If Not (.EOF And .BOF) Then
-          iIndex = UBound(palngExpressions, 2) + 1
-          ReDim Preserve palngExpressions(2, iIndex)
-          palngExpressions(1, iIndex) = !ExprID
-          palngExpressions(2, iIndex) = !ParentComponentID
-        End If
-      End With
-      rsInfo.Close
 
-    Else
-      ' The expression is a top-level expression. Save its id and find any other
-      ' expressions that use it.
-      sExprList = sExprList & IIf(Len(sExprList) > 0, ",", "") & Trim(Str(palngExpressions(1, iLoop)))
-      
-      'JPD 20040220 Fault 8111
-      sSQL = "SELECT ASRSysExpressions.exprID, ASRSysExpressions.parentComponentID" & _
-        " FROM ASRSysExpressions" & _
-        " INNER JOIN ASRSysExprComponents" & _
-        "   ON ASRSysExpressions.exprID = ASRSysExprComponents.exprID" & _
-        " WHERE (ASRSysExprComponents.calculationID = " & Trim(Str(palngExpressions(1, iLoop))) & ")" & _
-        "   OR (ASRSysExprComponents.filterID = " & Trim(Str(palngExpressions(1, iLoop))) & ")" & _
-        "   OR ((ASRSysExprComponents.fieldSelectionFilter = " & Trim(Str(palngExpressions(1, iLoop))) & ")" & _
-        "     AND (ASRSysExprComponents.type = " & CStr(giCOMPONENT_FIELD) & "))"
 
-      rsInfo.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly
-      With rsInfo
-        Do While Not .EOF
-          iIndex = UBound(palngExpressions, 2) + 1
-          ReDim Preserve palngExpressions(2, iIndex)
-          palngExpressions(1, iIndex) = !ExprID
-          palngExpressions(2, iIndex) = !ParentComponentID
-          .MoveNext
-        Loop
-      End With
-      rsInfo.Close
-    End If
-    
-    iLoop = iLoop + 1
-  Loop
-  
-  If Len(sExprList) > 0 Then
-    ' We now have a list of all time-dependent expressions.
-    ' Get the list of time dependent columns.
-    lngLastTable = 0
-    
-    sSQL = "SELECT ASRSysColumns.columnName, ASRSysColumns.tableID, ASRSysTables.tableName" & _
-      " FROM ASRSysColumns" & _
-      " INNER JOIN ASRSysTables ON ASRSysColumns.tableID = ASRSysTables.tableID" & _
-      " WHERE ASRSysColumns.columnType = " & Trim(Str(giCOLUMNTYPE_CALCULATED)) & _
-      " AND ASRSysColumns.calcExprID IN (" & sExprList & ")" & _
-      " ORDER BY ASRSysColumns.tableID"
-  
-    rsInfo.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly
-    ' AE20080408 Fault #13072
-    ' sSQL = "DELETE FROM ASRSysOvernightProgress" & vbNewLine & vbNewLine
-    
-    sSQL = "-- Create the progress table if it doesn't already exist" & vbNewLine & _
-           "IF OBJECT_ID('ASRSysOvernightProgress', N'U') IS NOT NULL" & vbNewLine & _
-           "    DELETE FROM ASRSysOvernightProgress" & vbNewLine & vbNewLine
-    With rsInfo
-      Do While Not .EOF
-        If lngLastTable <> !TableID Then
-          lngLastTable = !TableID
-          
-          ' AE20080213 Fault #12726 - changed to do in batches of 2000 IDs
-          ' adding checkpoint to commit after each batch
-          '
-          ' JPD20020913 - reverted to the old method of updating all records
-          ' in a table 'en masse', rather then record by record.
-          ' This change was driven by the performance degradation reported by
-          ' Islington.
-'          sSQL = sSQL & _
-'            " UPDATE " & Replace(!TableName, "'", "''") & _
-'            " SET " & Replace(!ColumnName, "'", "''") & _
-'            " = " & Replace(!ColumnName, "'", "''") & vbNewLine
+  ' Payroll archiving functions
+  If IsModuleEnabled(modAccordPayroll) Then
 
-          sSQL = sSQL & _
-            "EXEC [spASRSysOvernightTableUpdate] " & _
-              "'" & Replace(!TableName, "'", "''") & "', '" & Replace(!ColumnName, "'", "''") & "', 100" & vbNewLine
-
-          'sSQL = sSQL & vbNewline & _
-            "  --" & Replace(!TableName, "'", "''") & vbNewline & _
-            "  DECLARE HRProCursor CURSOR" & vbNewline & _
-            "  FOR select ID from " & Replace(!TableName, "'", "''") & vbNewline & vbNewline & _
-            "  OPEN HRProCursor" & vbNewline & _
-            "  FETCH NEXT FROM HRProCursor INTO @ID" & vbNewline & _
-            "  WHILE @@FETCH_STATUS = 0" & vbNewline & _
-            "  BEGIN" & vbNewline & _
-            "    UPDATE " & Replace(!TableName, "'", "''") & _
-                 " SET " & Replace(!ColumnName, "'", "''") & _
-                 " = " & Replace(!ColumnName, "'", "''") & " WHERE ID = @ID" & vbNewline & _
-            "    FETCH NEXT FROM HRProCursor INTO @ID" & vbNewline & _
-            "  END" & vbNewline & vbNewline & _
-            "  CLOSE HRProCursor" & vbNewline & _
-            "  DEALLOCATE HRProCursor" & vbNewline & vbNewline
-        End If
-        
-        .MoveNext
-      Loop
-    
-    End With
-    rsInfo.Close
-
-    ' Payroll archiving functions
-    If IsModuleEnabled(modAccordPayroll) Then
-
-      ' Get the archive options
-      With recModuleSetup
+    ' Get the archive options
+    With recModuleSetup
+      .Seek "=", gsMODULEKEY_ACCORD, gsPARAMETERKEY_PURGEOPTION
+      If .NoMatch Then
         .Seek "=", gsMODULEKEY_ACCORD, gsPARAMETERKEY_PURGEOPTION
         If .NoMatch Then
-          .Seek "=", gsMODULEKEY_ACCORD, gsPARAMETERKEY_PURGEOPTION
-          If .NoMatch Then
-            bArchive = False
-          Else
-            bArchive = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, 0, !parametervalue)
-          End If
+          bArchive = False
         Else
           bArchive = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, 0, !parametervalue)
         End If
-      
-        ' Get the purge period.
+      Else
+        bArchive = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, 0, !parametervalue)
+      End If
+    
+      ' Get the purge period.
+      .Seek "=", gsMODULEKEY_ACCORD, gsPARAMETERKEY_PURGEOPTIONPERIOD
+      If .NoMatch Then
         .Seek "=", gsMODULEKEY_ACCORD, gsPARAMETERKEY_PURGEOPTIONPERIOD
         If .NoMatch Then
-          .Seek "=", gsMODULEKEY_ACCORD, gsPARAMETERKEY_PURGEOPTIONPERIOD
-          If .NoMatch Then
-            iArchivePeriod = 0
-          Else
-            iArchivePeriod = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, 0, !parametervalue)
-          End If
+          iArchivePeriod = 0
         Else
           iArchivePeriod = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, 0, !parametervalue)
         End If
+      Else
+        iArchivePeriod = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, 0, !parametervalue)
+      End If
 
-        ' Get the purge type.
+      ' Get the purge type.
+      .Seek "=", gsMODULEKEY_ACCORD, gsPARAMETERKEY_PURGEOPTIONPERIODTYPE
+      If .NoMatch Then
         .Seek "=", gsMODULEKEY_ACCORD, gsPARAMETERKEY_PURGEOPTIONPERIODTYPE
         If .NoMatch Then
-          .Seek "=", gsMODULEKEY_ACCORD, gsPARAMETERKEY_PURGEOPTIONPERIODTYPE
-          If .NoMatch Then
-            iArchivePeriodType = 0
-          Else
-            iArchivePeriodType = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, 0, !parametervalue)
-          End If
+          iArchivePeriodType = 0
         Else
           iArchivePeriodType = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, 0, !parametervalue)
         End If
-
-      End With
- 
-      ' Do we need to add the purge trigger code?
-      If bArchive Then
-      
-        sSQL = sSQL & vbNewLine & "-- Payroll archiving" & vbNewLine
-      
-        Select Case iArchivePeriodType
-          ' Days
-          Case 0
-            sSQL = sSQL & "UPDATE ASRSysAccordTransactions SET Archived = 1 " _
-              & "WHERE [CreatedDateTime] < DATEADD(dd,-" & Trim$(Str$(iArchivePeriod)) & ",getdate())" & vbNewLine
-          
-          ' Weeks
-          Case 1
-            sSQL = sSQL & "UPDATE ASRSysAccordTransactions SET Archived = 1 " _
-              & "WHERE [CreatedDateTime] < DATEADD(wk,-" & Trim$(Str$(iArchivePeriod)) & ",getdate())" & vbNewLine
-          
-          'Months
-          Case 2
-            sSQL = sSQL & "UPDATE ASRSysAccordTransactions SET Archived = 1 " _
-              & "WHERE [CreatedDateTime] < DATEADD(mm,-" & Trim$(Str$(iArchivePeriod)) & ",getdate())" & vbNewLine
-          
-          ' Years
-          Case 3
-            sSQL = sSQL & "UPDATE ASRSysAccordTransactions SET Archived = 1 " & vbNewLine _
-              & "WHERE [CreatedDateTime] < DATEADD(yy,-" & Trim$(Str$(iArchivePeriod)) & ",getdate())" & vbNewLine
-        
-        End Select
-          
+      Else
+        iArchivePeriodType = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, 0, !parametervalue)
       End If
+
+    End With
+
+    ' Do we need to add the purge trigger code?
+    If bArchive Then
+    
+      sSQL = sSQL & vbNewLine & "-- Payroll archiving" & vbNewLine
+    
+      Select Case iArchivePeriodType
+        ' Days
+        Case 0
+          sSQL = sSQL & "UPDATE ASRSysAccordTransactions SET Archived = 1 " _
+            & "WHERE [CreatedDateTime] < DATEADD(dd,-" & Trim$(Str$(iArchivePeriod)) & ",getdate())" & vbNewLine
+        
+        ' Weeks
+        Case 1
+          sSQL = sSQL & "UPDATE ASRSysAccordTransactions SET Archived = 1 " _
+            & "WHERE [CreatedDateTime] < DATEADD(wk,-" & Trim$(Str$(iArchivePeriod)) & ",getdate())" & vbNewLine
+        
+        'Months
+        Case 2
+          sSQL = sSQL & "UPDATE ASRSysAccordTransactions SET Archived = 1 " _
+            & "WHERE [CreatedDateTime] < DATEADD(mm,-" & Trim$(Str$(iArchivePeriod)) & ",getdate())" & vbNewLine
+        
+        ' Years
+        Case 3
+          sSQL = sSQL & "UPDATE ASRSysAccordTransactions SET Archived = 1 " & vbNewLine _
+            & "WHERE [CreatedDateTime] < DATEADD(yy,-" & Trim$(Str$(iArchivePeriod)) & ",getdate())" & vbNewLine
+      
+      End Select
+        
     End If
 
 
