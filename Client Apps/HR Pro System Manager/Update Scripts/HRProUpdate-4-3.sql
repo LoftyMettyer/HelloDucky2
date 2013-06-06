@@ -521,6 +521,13 @@ PRINT 'Step 8 - Add abstraction layer to user defined tables'
 				-- Rename the original object
 				EXECUTE sp_rename @oldname, @newname;
 
+				-- Add new columns
+				SET @sqlCommand = ''ALTER TABLE '' + @newname + '' ADD [updflag] integer;'';
+				EXECUTE sp_executesql @sqlCommand;
+
+				SET @sqlCommand = ''ALTER TABLE dbo.['' + @newname + ''] ADD [_description] nvarchar(MAX);'';
+				EXECUTE sp_executesql @sqlCommand;
+				
 				-- Build list of columns for the view (exclude some). Needed because select * does not allow indexing
 				SELECT @columnnames = @columnnames + ''['' + syscolumns.name + ''], ''  
 					FROM sysobjects 
