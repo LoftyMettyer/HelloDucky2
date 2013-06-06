@@ -72,12 +72,10 @@ END
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsys_divide]') AND xtype = 'FN')
 		DROP FUNCTION [dbo].[udfsys_divide];
 
-	---- Clear old component expressions
---	DELETE FROM tbstat_componentcode WHERE id IN (16, 61, 25, 4) AND isoperator = 0
-	DELETE FROM tbstat_componentcode WHERE id IN (16, 61, 25) AND isoperator = 0	
+	-- Clear old component expressions
+	DELETE FROM tbstat_componentcode WHERE id IN (16, 61, 25, 4, 27) AND isoperator = 0
 	DELETE FROM tbstat_componentcode WHERE id IN (4) AND isoperator = 1
 	DELETE FROM tbstat_componentdependancy WHERE id IN (16, 61, 25)
-
 
 	-- Is Field Empty
 	INSERT [dbo].[tbstat_componentcode] ([id], [code], [datatype], [name], [isoperator], [operatortype], [casecount])
@@ -93,14 +91,18 @@ END
 	INSERT [dbo].[tbstat_componentcode] ([id], [code], [datatype], [name], [isoperator], [operatortype], [casecount])
 		VALUES (25, 'dbo.udfstat_convertcharactertonumeric({0})', 2, 'Convert Character to Numeric', 0, 0, 0);		
 
-	---- If... Then... Else
-	--INSERT [dbo].[tbstat_componentcode] ([id], [code], [datatype], [name], [isoperator], [operatortype], [casecount])
-	--	VALUES (4, 'CASE WHEN {0} THEN {1} ELSE {2} END', 0, 'If... Then... Else...', 0, 0, 1);		
+	-- If... Then... Else
+	INSERT [dbo].[tbstat_componentcode] ([id], [code], [datatype], [name], [isoperator], [operatortype], [casecount])
+		VALUES (4, 'CASE WHEN {0} THEN {1} ELSE {2} END', 0, 'If... Then... Else...', 0, 0, 1);		
+
+	-- Parentheses
+	INSERT [dbo].[tbstat_componentcode] ([id], [code], [datatype], [name], [isoperator], [operatortype], [casecount], [maketypesafe])
+		VALUES (27, '({0})', 0, 'Parentheses', 0, 0, 0, 1);
 
 	-- Divided By
 	INSERT [dbo].[tbstat_componentcode] ([id], [precode], [code], [aftercode], [name], [isoperator], [operatortype], [casecount])
 		VALUES (4, 'dbo.udfstat_divideby(', ',', ')', 'Divided by', 1, 0, 0);		
-	
+
 
 /* ------------------------------------------------------------- */
 /* Step - Object triggers */
