@@ -640,6 +640,9 @@ PRINT 'Step 9 - Add new calculation procedures'
 		
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsys_username]') AND xtype in (N'FN', N'IF', N'TF'))
 		DROP FUNCTION [dbo].[udfsys_username];
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsys_weekdaysbetweentwodates]') AND xtype in (N'FN', N'IF', N'TF'))
+		DROP FUNCTION [dbo].[udfsys_weekdaysbetweentwodates];
 		
 	IF EXISTS (SELECT *	FROM dbo.sysobjects WHERE id = object_id(N'[dbo].[udfsys_wholemonthsbetweentwodates]') AND xtype in (N'FN', N'IF', N'TF'))
 		DROP FUNCTION [dbo].[udfsys_wholemonthsbetweentwodates];
@@ -650,6 +653,30 @@ PRINT 'Step 9 - Add new calculation procedures'
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsys_workingdaysbetweentwodates]') AND xtype in (N'FN', N'IF', N'TF'))
 		DROP FUNCTION [dbo].[udfsys_workingdaysbetweentwodates];
 	
+
+	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_weekdaysbetweentwodates](
+			@datefrom AS datetime,
+			@dateto AS datetime)
+		RETURNS integer
+		WITH SCHEMABINDING
+		AS
+		BEGIN
+		
+			DECLARE @result integer;
+
+			SELECT @result = CASE 
+				WHEN DATEDIFF (day, @datefrom, @dateto) <= 0 then 0
+				ELSE DATEDIFF(day, @datefrom, @dateto + 1) 
+					- (2 * (DATEDIFF(day, @datefrom - (DATEPART(dw, @datefrom) -1),
+						@dateto	- (DATEPART(dw, @dateto) - 1)) / 7))
+					- CASE WHEN DATEPART(dw, @datefrom) = 1 THEN 1 ELSE 0 END
+					- CASE WHEN DATEPART(dw, @dateto) = 7 THEN 1 ELSE 0	END
+					END;
+					
+			RETURN @result;
+			
+		END';
+	EXECUTE sp_executeSQL @sSPCode;
 
 
 
@@ -1482,13 +1509,13 @@ PRINT 'Step 10 - Populate code generation tables'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentdependancy] ([id], [modulekey], [parameterkey]) VALUES (73, ''MODULE_PERSONNEL'', ''Param_TablePersonnel'')';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''eb449e75-e061-4502-973b-5e3a3e39c2d2'', N''dbo.[udfsys_convertcharactertonumeric]({0})'', 2, 0, 0, N''Convert Character to Numeric'', NULL, 0, 0, 25, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''56b64c0d-84d9-4b15-9c9e-b1fdb42ea4d1'', N''dbo.[udfsys_convertcurrency]({0},{1},{2})'', 2, 0, 0, N''Convert Currency'', NULL, 0, 0, 51, 0)';
-	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''88430aa0-f580-4157-8b2f-c73841cea211'', N''CONVERT(nvarchar(MAX), LEFT({0},{1}))'', 1, 0, 0, N''Convert Numeric to Character'', NULL, 0, 0, 3, 0)';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''88430aa0-f580-4157-8b2f-c73841cea211'', N''LTRIM(STR({0}, 20, {1})'', 1, 0, 0, N''Convert Numeric to Character'', NULL, 0, 0, 3, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''98e87fe4-bb86-4382-bf53-40fa1275d677'', N''LOWER({0})'', 1, 0, 0, N''Convert to Lowercase'', NULL, 0, 0, 8, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''9e055f03-efe9-4c47-a528-85cd3c57c12a'', N''[dbo].[udfsys_propercase]({0})'', 1, 0, 0, N''Convert to Proper Case'', NULL, 0, 0, 12, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''59a5f6dd-8284-45a2-a68e-01e9f6d2e13e'', N''UPPER({0})'', 1, 0, 0, N''Convert to Uppercase'', NULL, 0, 0, 2, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''302dbbe5-d900-4547-8090-5de3dd3a4970'', N''SYSTEM_USER'', 1, 0, 0, N''Current User'', NULL, 0, 0, 17, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''8a4abce8-984e-4d4f-b1ca-aaef09e1c08d'', N''DATEPART(day, {0})'', 2, 0, 0, N''Day of Date'', NULL, 0, 0, 34, 0)';
-	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''b41669c9-59d7-449f-be4f-6d4c6b809db9'', N''DATEPART(weekday, {0})+1'', 2, 0, 0, N''Day of the Week'', NULL, 0, 0, 28, 0)';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''b41669c9-59d7-449f-be4f-6d4c6b809db9'', N''DATEPART(weekday, {0})'', 2, 0, 0, N''Day of the Week'', NULL, 0, 0, 28, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''24884a1c-fc85-4bba-8752-cb594c4607f2'', N''DATEDIFF(dd,{0}, {1})+1'', 2, 0, 0, N''Days between Two Dates'', NULL, 0, 0, 45, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''25033092-aa37-406d-ba0e-7b59b81c9b69'', N'''', 3, 0, 0, N''Does Record Exist'', NULL, 0, 0, 74, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''a774b4f7-5792-41c5-99fb-301af38f0e68'', N''LEFT({0}, {1})'', 1, 0, 0, N''Extract Characters from the Left'', NULL, 0, 0, 6, 0)';
@@ -1538,7 +1565,7 @@ PRINT 'Step 10 - Populate code generation tables'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''1cce61bf-ee36-4779-83b9-233885440437'', N''(DATEADD(D, 0, DATEDIFF(D, 0, GETDATE())))'', 4, 0, 0, N''System Date'', NULL, 0, 0, 1, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''1b77e32f-756b-4e97-94d2-f0b053b0baca'', N''CONVERT(varchar,GETDATE(),8)'', 1, 0, 0, N''System Time'', NULL, 0, 0, 15, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''a8974869-0964-40e9-bbbf-4ac6157bf07f'', N''[dbo].[udfsys_getuniquecode] ({0})'', 0, 0, 0, N''Unique Code'', NULL, 0, 0, 43, 0)';
-	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''09e7dfb0-3bc2-4db5-a596-9639eb3e77b5'', N''DATEDIFF (WW, {0}, {1}) - 1'', 2, 0, 0, N''Weekdays between Two Dates'', NULL, 0, 0, 22, 0)';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''09e7dfb0-3bc2-4db5-a596-9639eb3e77b5'', N''[dbo].[udfsys_weekdaysbetweentwodates] ({0}, {1})'', 2, 0, 0, N''Weekdays between Two Dates'', NULL, 0, 0, 22, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''fbccef52-27be-4ee4-8afa-d8228da2e952'', N''[dbo].[udfsys_wholemonthsbetweentwodates] ({0}, {1})'', 2, 0, 0, N''Whole Months between Two Dates'', NULL, 0, 0, 26, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''1b5082ad-36bb-4bf8-b859-22a1de8f8d2e'', N''[dbo].[udfsys_wholeyearsbetweentwodates] ({0}, {1})'', 2, 0, 0, N''Whole Years between Two Dates'', NULL, 0, 0, 54, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''97880cd2-c73d-4c7e-a4c4-971824b850e6'', N''[dbo].[udfsys_wholeyearsbetweentwodates] ({0}, GETDATE())'', 2, 0, 0, N''Whole Years until Current Date'', NULL, 0, 0, 18, 0)';
