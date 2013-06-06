@@ -642,7 +642,7 @@ Private Function WorkflowExpressionsChanged() As Boolean
   ' Return TRUE if any of the Workflow expressions have been modified or created.
   Dim fExpressionsChanged As Boolean
   Dim sSQL As String
-  Dim rsTemp As dao.Recordset
+  Dim rsTemp As DAO.Recordset
   Dim fFound As Boolean
   Dim iLoop As Integer
   Dim iLoop2 As Integer
@@ -729,7 +729,7 @@ End Function
 Private Sub RememberOriginalExpressions()
   ' Read all of the Workflows original expressions.
   Dim sSQL As String
-  Dim rsTemp As dao.Recordset
+  Dim rsTemp As DAO.Recordset
   Dim objExpression As CExpression
 
   ReDim maobjOriginalExpressions(0)
@@ -765,7 +765,7 @@ Private Sub RestoreOriginalExpressions()
   Dim iLoop As Integer
   Dim fChanged As Boolean
   Dim sOriginalExprIDs As String
-  Dim rsTemp As dao.Recordset
+  Dim rsTemp As DAO.Recordset
 
   sOriginalExprIDs = "0"
 
@@ -999,7 +999,7 @@ Public Function UpdateIdentifiers(pfElement As Boolean, _
   Dim frmUsage As frmUsage
   Dim asMessages() As String
   Dim sSQL As String
-  Dim rsTemp As dao.Recordset
+  Dim rsTemp As DAO.Recordset
   Dim objExpr As CExpression
   Dim objComp As CExprComponent
   Dim lngExprID As Long
@@ -1031,13 +1031,13 @@ Public Function UpdateIdentifiers(pfElement As Boolean, _
               fItemOK = True
       
               Select Case iSQLDataType
-                Case dtVARCHAR, dtlongvarchar
+                Case dtVARCHAR, dtLONGVARCHAR
                   fItemOK = (plngNewParameter = dtVARCHAR) _
-                    Or (plngNewParameter = dtlongvarchar)
+                    Or (plngNewParameter = dtLONGVARCHAR)
                 Case dtTIMESTAMP
                     fItemOK = (plngNewParameter = dtTIMESTAMP)
-                Case dtinteger, dtNUMERIC
-                  fItemOK = (plngNewParameter = dtinteger) _
+                Case dtINTEGER, dtNUMERIC
+                  fItemOK = (plngNewParameter = dtINTEGER) _
                     Or (plngNewParameter = dtNUMERIC)
                 Case Else
                   fItemOK = False
@@ -3918,7 +3918,7 @@ Private Function ReadColumnControlValues(plngColumnID As Long) As Variant
   Dim avValues As Variant
   Dim asResults() As String
   Dim sSQL As String
-  Dim rsControlValues As dao.Recordset
+  Dim rsControlValues As DAO.Recordset
   
   ' Pull the column control values from the database.
   sSQL = "SELECT value" & _
@@ -5716,7 +5716,7 @@ Private Function SaveWebFormItems(pwfElement As COAWF_Webform) As Boolean
           'Input Return Type
           iSQLDataType = GetColumnDataType(.LookupColumnID)
           Select Case iSQLDataType
-          Case dtVARCHAR, dtlongvarchar
+          Case dtVARCHAR, dtLONGVARCHAR
             asItems(6, iNewIndex) = giEXPRVALUE_CHARACTER
           Case dtTIMESTAMP
             asItems(6, iNewIndex) = giEXPRVALUE_DATE
@@ -5724,7 +5724,7 @@ Private Function SaveWebFormItems(pwfElement As COAWF_Webform) As Boolean
             asItems(6, iNewIndex) = giEXPRVALUE_OLE
           Case dtVARBINARY
             asItems(6, iNewIndex) = giEXPRVALUE_PHOTO
-          Case dtinteger, dtNUMERIC
+          Case dtINTEGER, dtNUMERIC
             asItems(6, iNewIndex) = giEXPRVALUE_NUMERIC
           Case dtBIT
             asItems(6, iNewIndex) = giEXPRVALUE_LOGIC
