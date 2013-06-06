@@ -6819,31 +6819,31 @@ Private Sub PrintOffPageConnector(piLinkIndex As Integer, _
   Printer.Font.Italic = False
   
   ' Print the link arrow (if required)
-  If pfNeedsArrow Then
-    ASRWFLink1(0).EndDirection = pArrowDirection
-    
-    sngXArrowOffset = 0
-    sngYArrowOffset = 0
-    
-    Select Case pArrowDirection
-      Case lineDirection_Down
-        sngXArrowOffset = -(ScaleX(ASRWFLink1(0).ArrowPicture.Width, vbHimetric, vbTwips) / 2)
-        sngYArrowOffset = picOffPage.Height
-      Case lineDirection_Left
-        sngXArrowOffset = -ScaleX(ASRWFLink1(0).ArrowPicture.Width, vbHimetric, vbTwips)
-        sngYArrowOffset = -(ScaleY(ASRWFLink1(0).ArrowPicture.Height, vbHimetric, vbTwips) / 2)
-      Case lineDirection_Right
-        sngXArrowOffset = picOffPage.Width
-        sngYArrowOffset = -(ScaleY(ASRWFLink1(0).ArrowPicture.Height, vbHimetric, vbTwips) / 2)
-      Case Else
-        sngXArrowOffset = -(ScaleX(ASRWFLink1(0).ArrowPicture.Width, vbHimetric, vbTwips) / 2)
-        sngYArrowOffset = -ScaleY(ASRWFLink1(0).ArrowPicture.Height, vbHimetric, vbTwips)
-    End Select
-    
-    Printer.PaintPicture ASRWFLink1(0).ArrowPicture, _
-      pSngX + sngXArrowOffset, _
-      pSngY + sngYArrowOffset
-  End If
+'  If pfNeedsArrow Then
+'    ASRWFLink1(0).EndDirection = pArrowDirection
+'
+'    sngXArrowOffset = 0
+'    sngYArrowOffset = 0
+'
+'    Select Case pArrowDirection
+'      Case lineDirection_Down
+'        sngXArrowOffset = -(ScaleX(ASRWFLink1(0).ArrowPicture.Width, vbHimetric, vbTwips) / 2)
+'        sngYArrowOffset = picOffPage.Height
+'      Case lineDirection_Left
+'        sngXArrowOffset = -ScaleX(ASRWFLink1(0).ArrowPicture.Width, vbHimetric, vbTwips)
+'        sngYArrowOffset = -(ScaleY(ASRWFLink1(0).ArrowPicture.Height, vbHimetric, vbTwips) / 2)
+'      Case lineDirection_Right
+'        sngXArrowOffset = picOffPage.Width
+'        sngYArrowOffset = -(ScaleY(ASRWFLink1(0).ArrowPicture.Height, vbHimetric, vbTwips) / 2)
+'      Case Else
+'        sngXArrowOffset = -(ScaleX(ASRWFLink1(0).ArrowPicture.Width, vbHimetric, vbTwips) / 2)
+'        sngYArrowOffset = -ScaleY(ASRWFLink1(0).ArrowPicture.Height, vbHimetric, vbTwips)
+'    End Select
+'
+'    Printer.PaintPicture ASRWFLink1(0).ArrowPicture, _
+'      pSngX + sngXArrowOffset, _
+'      pSngY + sngYArrowOffset
+'  End If
 
   ' Print the offpage caption.
   rctDraw.Left = pSngX - sngOffPageXOffset + ((picOffPage.Width - Printer.TextWidth(sOffPageCharacter)) / 2)
@@ -7151,7 +7151,7 @@ TidyUpAndExit:
 ErrorTrap:
   MsgBox "Unable to print the workflow." & vbCr & vbCr & _
     Err.Description, vbExclamation + vbOKOnly, App.ProductName
-  Resume 'TidyUpAndExit
+  Resume TidyUpAndExit
 
 End Sub
 
@@ -7603,12 +7603,12 @@ Private Sub PrintWorkflowElementOverview(pwfElement As VB.Control)
         End If
       Next iLoop
     
-      If Not fLastArrowDone Then
-        ' Print the link arrow.
-        Printer.PaintPicture wfLink.ArrowPicture, _
-          sngXOffset + wfLink.ArrowHorizontalPosition, _
-          sngYOffset + wfLink.ArrowVerticalPosition
-      End If
+'      If Not fLastArrowDone Then
+'        ' Print the link arrow.
+'        Printer.PaintPicture wfLink.ArrowPicture, _
+'          sngXOffset + wfLink.ArrowHorizontalPosition, _
+'          sngYOffset + wfLink.ArrowVerticalPosition
+'      End If
     End If
   Next wfLink
   Set wfLink = Nothing
@@ -11098,7 +11098,7 @@ Private Sub cmdCancel_Click()
 
 End Sub
 
-Private Sub cmdOk_Click()
+Private Sub cmdOK_Click()
  If SaveWorkflow Then
    UnLoad Me
  End If
@@ -11424,7 +11424,7 @@ Private Sub Form_Load()
     End If
   End If
   
-  cmdOK.Enabled = IsNew
+  cmdOk.Enabled = IsNew
   
   scrollVertical.SmallChange = SMALLSCROLL
   scrollHorizontal.SmallChange = SMALLSCROLL
@@ -13690,7 +13690,7 @@ Public Property Let IsChanged(pfNewValue As Boolean)
   ' Set the 'workflow changed' flag.
   
   mfChanged = pfNewValue
-  cmdOK.Enabled = mfChanged
+  cmdOk.Enabled = mfChanged
   
   ' Menu may be dependent on the status of the screen.
   'frmSysMgr.RefreshMenu
