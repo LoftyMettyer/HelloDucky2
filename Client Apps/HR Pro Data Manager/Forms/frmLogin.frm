@@ -1280,7 +1280,7 @@ Public Sub CheckCommandLine()
   Dim strServerName As String
 
   blnPassword = False
-  mlngTimeOut = 60
+  mlngTimeOut = 600
 
   If Command$ <> vbNullString Then
     'Read command line into array
