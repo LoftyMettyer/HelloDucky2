@@ -3,7 +3,7 @@ Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
 Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{1C203F10-95AD-11D0-A84B-00A0247B735B}#1.0#0"; "SSTree.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.OCX"
 Begin VB.Form frmGroupMaint1 
    BackColor       =   &H80000004&
    Caption         =   "Group Permissions"
@@ -109,7 +109,7 @@ Begin VB.Form frmGroupMaint1
       Width           =   4000
       _ExtentX        =   7038
       _ExtentY        =   2302
-      _Version        =   65536
+      _Version        =   65538
       LabelEdit       =   1
       LineType        =   0
       Indentation     =   570
@@ -246,11 +246,10 @@ Begin VB.Form frmGroupMaint1
       Width           =   2000
       _ExtentX        =   3519
       _ExtentY        =   3519
-      _Version        =   65536
+      _Version        =   65538
       LabelEdit       =   1
       Indentation     =   345
       OLEDropMode     =   1
-      Sorted          =   1
       AutoSearch      =   0   'False
       HideSelection   =   0   'False
       PictureBackgroundUseMask=   0   'False
@@ -267,6 +266,7 @@ Begin VB.Form frmGroupMaint1
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
+      Sorted          =   1
    End
    Begin ComctlLib.StatusBar sbStatus 
       Align           =   2  'Align Bottom
@@ -463,51 +463,51 @@ Begin VB.Form frmGroupMaint1
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
          NumListImages   =   12
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmGroupMaint1.frx":25E0E
+            Picture         =   "frmGroupMaint1.frx":28886
             Key             =   "SYSTEM"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmGroupMaint1.frx":26360
+            Picture         =   "frmGroupMaint1.frx":28DD8
             Key             =   "GROUP"
          EndProperty
          BeginProperty ListImage3 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmGroupMaint1.frx":268B2
+            Picture         =   "frmGroupMaint1.frx":2932A
             Key             =   "GROUP_ORPHAN"
          EndProperty
          BeginProperty ListImage4 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmGroupMaint1.frx":26E04
+            Picture         =   "frmGroupMaint1.frx":2987C
             Key             =   "CLOSEDFOLDER"
          EndProperty
          BeginProperty ListImage5 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmGroupMaint1.frx":27356
+            Picture         =   "frmGroupMaint1.frx":29DCE
             Key             =   "VIEW"
          EndProperty
          BeginProperty ListImage6 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmGroupMaint1.frx":278A8
+            Picture         =   "frmGroupMaint1.frx":2A320
             Key             =   "TOPLEVELTABLE"
          EndProperty
          BeginProperty ListImage7 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmGroupMaint1.frx":27DFA
+            Picture         =   "frmGroupMaint1.frx":2A872
             Key             =   "CHILDTABLE"
          EndProperty
          BeginProperty ListImage8 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmGroupMaint1.frx":2834C
+            Picture         =   "frmGroupMaint1.frx":2ADC4
             Key             =   "LOOKUPTABLE"
          EndProperty
          BeginProperty ListImage9 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmGroupMaint1.frx":2889E
+            Picture         =   "frmGroupMaint1.frx":2B316
             Key             =   "OPENFOLDER"
          EndProperty
          BeginProperty ListImage10 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmGroupMaint1.frx":28DF0
+            Picture         =   "frmGroupMaint1.frx":2B868
             Key             =   "USER"
          EndProperty
          BeginProperty ListImage11 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmGroupMaint1.frx":29342
+            Picture         =   "frmGroupMaint1.frx":2BDBA
             Key             =   "USER_ORPHAN"
          EndProperty
          BeginProperty ListImage12 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmGroupMaint1.frx":29894
+            Picture         =   "frmGroupMaint1.frx":2C30C
             Key             =   "USER_SQL"
          EndProperty
       EndProperty

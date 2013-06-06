@@ -81,7 +81,6 @@ Begin VB.Form frmOrder
       TabPicture(1)   =   "frmOrder.frx":0E7C
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraPageContainer(1)"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       Begin VB.Frame fraPageContainer 
          BackColor       =   &H80000010&
@@ -341,7 +340,7 @@ Begin VB.Form frmOrder
             Key             =   "IMG_DOWN"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmOrder.frx":1D8C
+            Picture         =   "frmOrder.frx":1D02
             Key             =   "IMG_UP"
          EndProperty
       EndProperty
@@ -360,15 +359,15 @@ Begin VB.Form frmOrder
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
          NumListImages   =   3
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmOrder.frx":216F
+            Picture         =   "frmOrder.frx":2054
             Key             =   "IMG_COLUMN"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmOrder.frx":253B
+            Picture         =   "frmOrder.frx":25A6
             Key             =   "IMG_TABLE"
          EndProperty
          BeginProperty ListImage3 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmOrder.frx":28EC
+            Picture         =   "frmOrder.frx":2AF8
             Key             =   "IMG_CALC"
          EndProperty
       EndProperty
