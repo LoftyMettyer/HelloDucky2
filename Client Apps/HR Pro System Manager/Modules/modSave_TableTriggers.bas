@@ -547,13 +547,15 @@ Private Function SetTableTriggers_GetStrings(pLngCurrentTableID As Long, _
   ' --------------------------------
   ' Is in a separate sub routine because this one is getting too big for VB to compile.
   ' All parameters passed by reference!
-  SetTableTriggers_SpecialFunctions _
-    alngAuditColumns(), _
-    sInsertSpecialFunctionsCode, _
-    sUpdateSpecialFunctionsCode1, _
-    sUpdateSpecialFunctionsCode2, _
-    sDeleteSpecialFunctionsCode, _
-    pLngCurrentTableID
+  
+' JDM - Moved to .NET dll
+'  SetTableTriggers_SpecialFunctions _
+'    alngAuditColumns(), _
+'    sInsertSpecialFunctionsCode, _
+'    sUpdateSpecialFunctionsCode1, _
+'    sUpdateSpecialFunctionsCode2, _
+'    sDeleteSpecialFunctionsCode, _
+'    pLngCurrentTableID6
 
   recTabEdit.Index = "idxTableID"
   recTabEdit.Seek "=", pLngCurrentTableID
@@ -2319,21 +2321,21 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
         "        /* -------------------------------------------------------------------------------------------------------------------- */" & vbNewLine & _
         "        /* Absence module - run the SSP calculation for all related absence records. */" & vbNewLine & _
         "        /* -------------------------------------------------------------------------------------------------------------------- */" & vbNewLine & _
-        "        IF EXISTS(SELECT Name FROM sysobjects WHERE id = object_id('" & gsSSP_PROCEDURENAME & "') AND sysstat & 0xf = 4)" & vbNewLine & _
-        "        BEGIN" & vbNewLine & _
-        "            EXEC " & gsSSP_PROCEDURENAME & " @recordID" & vbNewLine & _
-        "        END" & vbNewLine
+        "        --IF EXISTS(SELECT Name FROM sysobjects WHERE id = object_id('" & gsSSP_PROCEDURENAME & "') AND sysstat & 0xf = 4)" & vbNewLine & _
+        "        --BEGIN" & vbNewLine & _
+        "        --    EXEC " & gsSSP_PROCEDURENAME & " @recordID" & vbNewLine & _
+        "        --END" & vbNewLine
 
-      'MH20030613 Fake update of dependants table to refresh calcs...
-      If strDependantsTableName <> vbNullString And lngPersonnelTableID > 0 Then
-        sInsertTriggerSQL.Append _
-          "        /* -------------------------------------------- */" & vbNewLine & _
-          "        /* Absence module - update the dependants table */" & vbNewLine & _
-          "        /* -------------------------------------------- */" & vbNewLine & _
-          "        UPDATE " & strDependantsTableName & _
-                   " SET ID_" & CStr(lngPersonnelTableID) & " = ID_" & CStr(lngPersonnelTableID) & _
-                   " WHERE ID_" & CStr(lngPersonnelTableID) & " = @parentRecordID"
-      End If
+'      'MH20030613 Fake update of dependants table to refresh calcs...
+'      If strDependantsTableName <> vbNullString And lngPersonnelTableID > 0 Then
+'        sInsertTriggerSQL.Append _
+'          "        /* -------------------------------------------- */" & vbNewLine & _
+'          "        /* Absence module - update the dependants table */" & vbNewLine & _
+'          "        /* -------------------------------------------- */" & vbNewLine & _
+'          "        UPDATE " & strDependantsTableName & _
+'                   " SET ID_" & CStr(lngPersonnelTableID) & " = ID_" & CStr(lngPersonnelTableID) & _
+'                   " WHERE ID_" & CStr(lngPersonnelTableID) & " = @parentRecordID"
+'      End If
 
     End If
     
@@ -2875,11 +2877,11 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
         "        /* -------------------------------------------------------------------------------------------------------------------- */" & vbNewLine & _
         "        /* Absence module - run the SSP calculation for all related absence records. */" & vbNewLine & _
         "        /* -------------------------------------------------------------------------------------------------------------------- */" & vbNewLine & _
-        "        IF (@fUpdatingDateDependentColumns = 0)" & vbNewLine & _
-        "        BEGIN" & vbNewLine & _
-        "            IF EXISTS(SELECT Name FROM sysobjects WHERE id = object_id('" & gsSSP_PROCEDURENAME & "') AND sysstat & 0xf = 4)" & vbNewLine & _
-        "                EXEC " & gsSSP_PROCEDURENAME & " @recordID" & vbNewLine & _
-        "        END" & vbNewLine
+        "        --IF (@fUpdatingDateDependentColumns = 0)" & vbNewLine & _
+        "        --BEGIN" & vbNewLine & _
+        "        --    IF EXISTS(SELECT Name FROM sysobjects WHERE id = object_id('" & gsSSP_PROCEDURENAME & "') AND sysstat & 0xf = 4)" & vbNewLine & _
+        "        --        EXEC " & gsSSP_PROCEDURENAME & " @recordID" & vbNewLine & _
+        "        --END" & vbNewLine
     
       'MH20030613 Fake update of dependants table to refresh calcs...
       If strDependantsTableName <> vbNullString And lngPersonnelTableID > 0 Then
@@ -2890,16 +2892,16 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
           "        UPDATE " & strDependantsTableName & _
                    " SET ID_" & CStr(lngPersonnelTableID) & " = ID_" & CStr(lngPersonnelTableID) & _
                    " WHERE ID_" & CStr(lngPersonnelTableID) & " = @parentRecordID"
-        sUpdateTriggerSQL.Append _
-          "        /* -------------------------------------------- */" & vbNewLine & _
-          "        /* Absence module - update the dependants table */" & vbNewLine & _
-          "        /* -------------------------------------------- */" & vbNewLine & _
-          "        IF @iTriggerLevel <= " & CStr(miTriggerRecursionLevel) & vbNewLine & _
-          "        BEGIN" & vbNewLine & _
-          "          UPDATE " & strDependantsTableName & _
-                     " SET ID_" & CStr(lngPersonnelTableID) & " = ID_" & CStr(lngPersonnelTableID) & _
-                     " WHERE ID_" & CStr(lngPersonnelTableID) & " = @parentRecordID" & vbNewLine & _
-          "        END" & vbNewLine
+'        sUpdateTriggerSQL.Append _
+'          "        /* -------------------------------------------- */" & vbNewLine & _
+'          "        /* Absence module - update the dependants table */" & vbNewLine & _
+'          "        /* -------------------------------------------- */" & vbNewLine & _
+'          "        IF @iTriggerLevel <= " & CStr(miTriggerRecursionLevel) & vbNewLine & _
+'          "        BEGIN" & vbNewLine & _
+'          "          UPDATE " & strDependantsTableName & _
+'                     " SET ID_" & CStr(lngPersonnelTableID) & " = ID_" & CStr(lngPersonnelTableID) & _
+'                     " WHERE ID_" & CStr(lngPersonnelTableID) & " = @parentRecordID" & vbNewLine & _
+'          "        END" & vbNewLine
       End If
     End If
     
@@ -3486,21 +3488,21 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
         "        /* -------------------------------------------------------------------------------------------------------------------- */" & vbNewLine & _
         "        /* Absence module - run the SSP calculation for all related absence records. */" & vbNewLine & _
         "        /* -------------------------------------------------------------------------------------------------------------------- */" & vbNewLine & _
-        "        IF EXISTS(SELECT Name FROM sysobjects WHERE id = object_id('" & gsSSP_PROCEDURENAME & "') AND sysstat & 0xf = 4)" & vbNewLine & _
-        "        BEGIN" & vbNewLine & _
-        "            EXEC " & gsSSP_PROCEDURENAME & " @recordID" & vbNewLine & _
-        "        END" & vbNewLine
+        "        --IF EXISTS(SELECT Name FROM sysobjects WHERE id = object_id('" & gsSSP_PROCEDURENAME & "') AND sysstat & 0xf = 4)" & vbNewLine & _
+        "        --BEGIN" & vbNewLine & _
+        "        --    EXEC " & gsSSP_PROCEDURENAME & " @recordID" & vbNewLine & _
+        "        --END" & vbNewLine
 
-      'MH20030613 Fake update of dependants table to refresh calcs...
-      If strDependantsTableName <> vbNullString And lngPersonnelTableID > 0 Then
-        sDeleteTriggerSQL.Append _
-          "        /* -------------------------------------------- */" & vbNewLine & _
-          "        /* Absence module - update the dependants table */" & vbNewLine & _
-          "        /* -------------------------------------------- */" & vbNewLine & _
-          "        UPDATE " & strDependantsTableName & _
-                   " SET ID_" & CStr(lngPersonnelTableID) & " = ID_" & CStr(lngPersonnelTableID) & _
-                   " WHERE ID_" & CStr(lngPersonnelTableID) & " = @parentRecordID"
-      End If
+'      'MH20030613 Fake update of dependants table to refresh calcs...
+'      If strDependantsTableName <> vbNullString And lngPersonnelTableID > 0 Then
+'        sDeleteTriggerSQL.Append _
+'          "        /* -------------------------------------------- */" & vbNewLine & _
+'          "        /* Absence module - update the dependants table */" & vbNewLine & _
+'          "        /* -------------------------------------------- */" & vbNewLine & _
+'          "        UPDATE " & strDependantsTableName & _
+'                   " SET ID_" & CStr(lngPersonnelTableID) & " = ID_" & CStr(lngPersonnelTableID) & _
+'                   " WHERE ID_" & CStr(lngPersonnelTableID) & " = @parentRecordID"
+'      End If
 
     End If
 
