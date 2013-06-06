@@ -1966,21 +1966,19 @@ ElseIf optChartType(1).value Then ' If Two-Table chart
   ' Has column 2 been selected - this may be blank if the table has no numeric columns and a numeric
   ' aggregate has been selected.
   If cboColumnY.ListIndex < 0 Then
-    If cboAggregateType <> "Count" Then
-      fValid = False
-      MsgBox "No Y-Axis Column has been selected.", vbOKOnly + vbExclamation, Application.Name
-      cboColumnY.SetFocus
-    Else
+'    If cboAggregateType <> "Count" Then
+'      fValid = False
+'      MsgBox "No Y-Axis Column has been selected.", vbOKOnly + vbExclamation, Application.Name
+'      ' cboColumnY.SetFocus
+'    Else
       If MsgBox("No numeric columns have been found for the Y-Axis" & vbCrLf & "The chart will be saved as a one-table chart.", vbOKCancel + vbQuestion, Me.Caption) = vbOK Then
         fValid = True
       Else
         fValid = False
       End If
           
-    End If
+    'End If
   End If
-ElseIf optChartType(2).value Then ' If Three-Table chart
-  
   
 End If
 
