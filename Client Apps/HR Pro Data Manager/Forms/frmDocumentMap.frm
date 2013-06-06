@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "Codejock.Controls.v13.1.0.ocx"
+Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "CODEJO~1.OCX"
 Begin VB.Form frmDocumentMap 
    BorderStyle     =   1  'Fixed Single
    Caption         =   "Document Management Type"
@@ -891,6 +891,8 @@ End Function
 
 Private Sub Form_Load()
 
+  IsV1ModuleSetupValid True
+
   ' Get rid of the icon off the form
   RemoveIcon Me
 
@@ -905,6 +907,8 @@ Private Sub PopulateCategoriesCombo()
   Dim rsCategories As ADODB.Recordset
   Dim sTableName As String
   Dim sColumnName As String
+  
+  If Not IsV1ModuleSetupValid(False) Then Exit Sub
   
   sTableName = mclsGeneral.GetTableName(Val(GetModuleParameter(MODULEKEY_DOCMANAGEMENT, PARAMETERKEY_DOCMAN_CATEGORYTABLE)))
   sColumnName = mclsGeneral.GetColumnName(Val(GetModuleParameter(MODULEKEY_DOCMANAGEMENT, PARAMETERKEY_DOCMAN_CATEGORYCOLUMN)))
@@ -938,6 +942,8 @@ Private Sub PopulateTypesCombo()
   Dim sTableName As String
   Dim sColumnName As String
   Dim sSolumnCategoryName As String
+  
+  If Not IsV1ModuleSetupValid(False) Then Exit Sub
   
   sTableName = mclsGeneral.GetTableName(Val(GetModuleParameter(MODULEKEY_DOCMANAGEMENT, PARAMETERKEY_DOCMAN_TYPETABLE)))
   sColumnName = mclsGeneral.GetColumnName(Val(GetModuleParameter(MODULEKEY_DOCMANAGEMENT, PARAMETERKEY_DOCMAN_TYPECOLUMN)))
