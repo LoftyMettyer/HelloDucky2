@@ -2535,6 +2535,18 @@ Private Function CreateQueryDefs() As Boolean
       " FROM tmpModuleSetup;"
   daoDb.CreateQueryDef "spadmin_getmodulesetup", sSQL
 
+  ' spadmin_getvalidations
+  sSQL = "SELECT 1 AS [ValidationType], * FROM tmpColumns WHERE [Duplicate] = -1 AND tableid = @tableid " & _
+         "UNION " & _
+         "SELECT 2 AS [ValidationType], * FROM tmpColumns WHERE [UniqueCheckType] = -1 AND tableid = @tableid " & _
+         "UNION " & _
+         "SELECT 3 AS [ValidationType], * FROM tmpColumns WHERE [ChildUniqueCheck] = -2 AND tableid = @tableid " & _
+         "UNION " & _
+         "SELECT 4 AS [ValidationType], * FROM tmpColumns WHERE [Mandatory] = -1 AND tableid = @tableid"
+  daoDb.CreateQueryDef "spadmin_getvalidations", sSQL
+
+
+
 TidyUpAndExit:
   CreateQueryDefs = bOK
   Exit Function
