@@ -469,7 +469,7 @@ Public Sub CreateEmailProcsForTable(lngTableID As Long, _
             If !RecordUpdate Then
                 '"          IF @iTriggerLevel = 1" & vbCrLf &
               gstrUpdateEmailCode = gstrUpdateEmailCode & _
-                "          IF @iTriggerLevel = 1 AND (@changesMade = 1 OR @fUpdatingDateDependentColumns = 0)" & vbCrLf & _
+                "          IF (@changesMade = 1 OR @fUpdatingDateDependentColumns = 0)" & vbCrLf & _
                 "          BEGIN" & vbCrLf & _
                 strInsertUpdateOne & vbCrLf & _
                 "          END"
