@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "16:07"
+            TextSave        =   "16:11"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -2794,7 +2794,7 @@ Private Function DoReportPack(ByVal Action As EditOptions, ByRef SelectedID As L
 
       Select Case objBatchJobRUN.JobStatus
         Case elsSuccessful
-          COAMsgBox "Report Packs : '" & SelectedText & "' Completed successfully.", vbInformation + vbOKOnly, "Report Packs"
+          COAMsgBox "Report Packs : '" & SelectedText & "' Completed successfully." & IIf(strNotes = "", "", vbCrLf & strNotes), vbInformation + vbOKOnly, "Report Packs"
         Case elsCancelled
           COAMsgBox "Report Packs : '" & SelectedText & "' Cancelled by user.", vbExclamation + vbOKOnly, "Report Packs"
         Case Else

@@ -715,6 +715,10 @@ Public Property Let ErrorString(ByVal sErrorString As String)
   mstrErrorString = sErrorString
 End Property
 
+Public Property Get NoRecords() As Boolean
+  NoRecords = mblnNoRecords
+End Property
+
 Private Sub Class_Initialize()
   
   ' Purpose : Sets references to other classes and redimensions arrays
