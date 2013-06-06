@@ -2105,3 +2105,17 @@ Public Function AddItemToListbox(ByRef TheListbox As ListBox, ItemText As String
 
 End Function
 
+' Disable/enable all open forms
+Public Sub EnableOpenForms(ByVal pbEnabled As Boolean)
+ 
+ Dim lngCount As Long
+ 
+  ' Disable control while we save changes
+  EnableCloseButton frmSysMgr.hWnd, pbEnabled
+  For lngCount = 0 To (Forms.Count - 1)
+      Forms(lngCount).Enabled = pbEnabled
+  Next lngCount
+
+End Sub
+
+

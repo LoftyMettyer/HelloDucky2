@@ -10,12 +10,13 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
   Dim fInTransaction As Boolean
   Dim sErrMsg As String
   Dim alngExpressions() As Long
-  Dim iCount As Integer
   Dim bFailed As Boolean
   Dim bLockedOK As Boolean
   
   fInTransaction = False
   bFailed = False
+  fOK = True
+  
   ReDim alngExpressions(2, 0)
 
   OutputCurrentProcess "Start of save process", True
@@ -24,15 +25,9 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
     pfRefreshDatabase = False
   End If
   pfRefreshDatabase = (pfRefreshDatabase Or gfRefreshStoredProcedures)
-  
-  
+   
   ' Disable control while we save changes
-  EnableCloseButton frmSysMgr.hWnd, False
-  For iCount = 0 To (Forms.Count - 1)
-      Forms(iCount).Enabled = False
-  Next iCount
-
-  fOK = True
+  EnableOpenForms False
   
   If fOK Then
     
@@ -765,10 +760,7 @@ TidyUpAndExit:
   gobjProgress.CloseProgress
   
   'Re-enable all controls
-  For iCount = 0 To Forms.Count - 1
-      Forms(iCount).Enabled = True
-  Next iCount
-  EnableCloseButton frmSysMgr.hWnd, True
+  EnableOpenForms True
 
   OutputCurrentProcess "End of save process"
   Exit Function
