@@ -21,7 +21,6 @@ Private miReturnType As Integer
 ' Class handling variables.
 Private mobjBaseComponent As CExprComponent
 
-
 Public Sub ColumnsUsedInThisComponent(ByRef pvColumns As Variant)
   ' Return an array of the columns used this expression.
   Dim objCalcExpr As CExpression
@@ -36,9 +35,6 @@ Public Sub ColumnsUsedInThisComponent(ByRef pvColumns As Variant)
   Set objCalcExpr = Nothing
   
 End Sub
-
-
-
 
 Public Sub ExpressionsUsedInThisComponent(ByRef palngExpressions As Variant)
   ' Return an array of the expressions used this expression.
@@ -72,10 +68,6 @@ Public Sub ExpressionsUsedInThisComponent(ByRef palngExpressions As Variant)
   
 End Sub
 
-
-
-
-
 Public Function ContainsExpression(plngExprID As Long) As Boolean
   ' Retrun TRUE if the current expression (or any of its sub expressions)
   ' contains the given expression. This ensures no cyclic expressions get created.
@@ -101,11 +93,6 @@ ErrorTrap:
   Resume TidyUpAndExit
     
 End Function
-
-
-
-
-
 
 Public Property Get BaseComponent() As CExprComponent
   ' Return the component's base component object.
@@ -134,7 +121,7 @@ Public Function PrintComponent(piLevel As Integer) As Boolean
   Printer.CurrentY = Printer.CurrentY + giPRINT_YSPACE
   Printer.Print "Filter : " & ComponentDescription
   
-  CheckEndOfPage2 = glngBottom
+  CheckEndOfPage2 glngBottom
   
 TidyUpAndExit:
   PrintComponent = fOK
@@ -233,7 +220,7 @@ TidyUpAndExit:
   Exit Function
 
 ErrorTrap:
-  sProcCode = ""
+  sProcCode.TheString = ""
   Err = False
   Resume TidyUpAndExit
 
