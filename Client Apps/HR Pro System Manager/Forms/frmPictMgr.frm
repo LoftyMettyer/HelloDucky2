@@ -1,7 +1,7 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Begin VB.Form frmPictMgr 
    Caption         =   "Picture Manager"
    ClientHeight    =   3255
@@ -355,6 +355,13 @@ Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
   'TM20020102 Fault 2879
   Dim bHandled As Boolean
   
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+
   bHandled = frmSysMgr.tbMain.OnKeyDown(KeyCode, Shift)
   If bHandled Then
     KeyCode = 0
@@ -471,7 +478,7 @@ Private Sub ListView1_AfterLabelEdit(Cancel As Integer, psNewString As String)
   
   sKey = ListView1.SelectedItem.key
   
-  fOK = EditPicture_Transaction(Val(Mid(sKey, 2)), psNewString)
+  fOK = EditPicture_Transaction(val(Mid(sKey, 2)), psNewString)
   
   If fOK Then
     ListView1.SelectedItem.Text = psNewString
@@ -664,7 +671,7 @@ Private Function EditPicture() As Boolean
     
     ' Locate the relevant database record.
     recPictEdit.Index = "idxID"
-    recPictEdit.Seek "=", Val(Mid(sKey, 2))
+    recPictEdit.Seek "=", val(Mid(sKey, 2))
     
     If Not recPictEdit.NoMatch Then
       
@@ -681,7 +688,7 @@ Private Function EditPicture() As Boolean
         fOK = Not .Cancelled
         
         If fOK Then
-          fOK = EditPicture_Transaction(Val(Mid(sKey, 2)), .PictureName)
+          fOK = EditPicture_Transaction(val(Mid(sKey, 2)), .PictureName)
         End If
         
         If fOK Then
@@ -1028,7 +1035,7 @@ Private Function DeletePictures() As Boolean
     
       With recPictEdit
         .Index = "idxID"
-        .Seek "=", Val(Mid(ListView1.ListItems(iLoop).key, 2))
+        .Seek "=", val(Mid(ListView1.ListItems(iLoop).key, 2))
     
         If Not .NoMatch Then
           If Not fDeleteAll Then
@@ -1045,7 +1052,7 @@ Private Function DeletePictures() As Boolean
           
           ' Remove the picture from the database and the listview..
           If fConfirmed Then
-            fOK = DeletePicture_Transaction(Val(Mid(ListView1.ListItems(iLoop).key, 2)))
+            fOK = DeletePicture_Transaction(val(Mid(ListView1.ListItems(iLoop).key, 2)))
             
             If fOK Then
               ListView1.ListItems.Remove ListView1.ListItems(iLoop).key
@@ -1098,7 +1105,7 @@ Private Function PictureIsUsed(glngPictureID As Long) As Boolean
   
   Dim fUsed As Boolean
   Dim sSQL As String
-  Dim rsScreens As dao.Recordset
+  Dim rsScreens As DAO.Recordset
   Dim sPictureName As String
   Dim sScreenName As String
   Dim sTableName As String

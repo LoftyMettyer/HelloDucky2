@@ -18,6 +18,7 @@ Begin VB.Form frmCurrencySetup
    EndProperty
    HelpContextID   =   5042
    Icon            =   "frmCurrencySetup.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -156,7 +157,7 @@ Public Property Get Changed() As Boolean
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
   mfChanged = pblnChanged
-  If Not mbLoading Then cmdOk.Enabled = True
+  If Not mbLoading Then cmdOK.Enabled = True
 End Property
 
 Private Sub cboCConvDecimal_Click()
@@ -198,6 +199,15 @@ Private Sub cboCConvValue_Click()
   Changed = True
 End Sub
 
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
+
 Private Sub Form_Load()
   
   mbLoading = True
@@ -216,7 +226,7 @@ Private Sub Form_Load()
   ' Initialise all controls with the current settings, or defaults.
   InitialiseBaseTableCombos
   
-  cmdOk.Enabled = False
+  cmdOK.Enabled = False
   Changed = False
   mbLoading = False
   Screen.MousePointer = vbDefault
@@ -320,8 +330,8 @@ Private Sub RefreshCConvControls()
         End If
 
         If (Not !Deleted) And _
-          (!columnType <> giCOLUMNTYPE_LINK) And _
-          (!columnType <> giCOLUMNTYPE_SYSTEM) Then
+          (!columntype <> giCOLUMNTYPE_LINK) And _
+          (!columntype <> giCOLUMNTYPE_SYSTEM) Then
 
           ' Load varchar fields into the name combo.
           If !DataType = dtVARCHAR Then
@@ -344,7 +354,7 @@ Private Sub RefreshCConvControls()
           End If
           
           ' Load varchar fields into the name combo.
-          If !DataType = dtINTEGER Then
+          If !DataType = dtinteger Then
             cboCConvDecimal.AddItem !ColumnName
             cboCConvDecimal.ItemData(cboCConvDecimal.NewIndex) = !ColumnID
             If !ColumnID = mvar_lngCConvDecimalColumnID Then

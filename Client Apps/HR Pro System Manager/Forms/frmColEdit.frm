@@ -1,6 +1,6 @@
 VERSION 5.00
-Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "TIMASK6.OCX"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
+Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "timask6.ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{604A59D5-2409-101D-97D5-46626B63EF2D}#1.0#0"; "TDBNumbr.ocx"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
@@ -24,6 +24,7 @@ Begin VB.Form frmColEdit
    EndProperty
    HelpContextID   =   5007
    Icon            =   "frmColEdit.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -2208,7 +2209,7 @@ End Property
 
 Public Property Let Changed(pblnNewValue As Boolean)
   mblnChanged = pblnNewValue
-  cmdOk.Enabled = mblnChanged
+  cmdOK.Enabled = mblnChanged
 End Property
 
 Public Property Get Changed() As Boolean
@@ -2351,11 +2352,11 @@ Private Sub asrSize_Change()
     Select Case miDataType
       Case dtNUMERIC, dtVARCHAR
         spnDefaultDisplayWidth.value = asrSize.value
-      Case dtINTEGER, dtTIMESTAMP
+      Case dtinteger, dtTIMESTAMP
         spnDefaultDisplayWidth.value = 10
       Case dtBIT
         spnDefaultDisplayWidth.value = 1
-      Case dtLONGVARCHAR
+      Case dtlongvarchar
         spnDefaultDisplayWidth.value = 14
       Case dtVARBINARY
         spnDefaultDisplayWidth.value = 255
@@ -3174,13 +3175,13 @@ Private Sub cmdCalculation_Click()
         .Initialise mobjColumn.TableID, mlngCalcExprID, giEXPR_COLUMNCALCULATION, giEXPRVALUE_OLE
       Case dtVARBINARY
         .Initialise mobjColumn.TableID, mlngCalcExprID, giEXPR_COLUMNCALCULATION, giEXPRVALUE_PHOTO
-      Case dtINTEGER
+      Case dtinteger
         .Initialise mobjColumn.TableID, mlngCalcExprID, giEXPR_COLUMNCALCULATION, giEXPRVALUE_NUMERIC
       Case dtBIT
         .Initialise mobjColumn.TableID, mlngCalcExprID, giEXPR_COLUMNCALCULATION, giEXPRVALUE_LOGIC
       Case dtNUMERIC
         .Initialise mobjColumn.TableID, mlngCalcExprID, giEXPR_COLUMNCALCULATION, giEXPRVALUE_NUMERIC
-      Case dtLONGVARCHAR
+      Case dtlongvarchar
         .Initialise mobjColumn.TableID, mlngCalcExprID, giEXPR_COLUMNCALCULATION, giEXPRVALUE_CHARACTER
       Case Else
         .Initialise mobjColumn.TableID, mlngCalcExprID, giEXPR_COLUMNCALCULATION, giEXPRVALUE_UNDEFINED
@@ -3213,7 +3214,7 @@ Private Sub cmdCalculation_Click()
         ' changed the datatype of the calculation.
         If mlngCalcExprID > 0 Then
           Select Case miDataType
-            Case dtNUMERIC, dtINTEGER
+            Case dtNUMERIC, dtinteger
               fDataTypeChanged = (.Fields("returntype").value <> giEXPRVALUE_NUMERIC)
             Case dtVARCHAR
               fDataTypeChanged = (.Fields("returntype").value <> giEXPRVALUE_CHARACTER)
@@ -3222,7 +3223,7 @@ Private Sub cmdCalculation_Click()
             Case dtBIT
               fDataTypeChanged = (.Fields("returntype").value <> giEXPRVALUE_LOGIC)
             'JDM - 13/09/01 - Fault 2364 - Error when cancelling on working pattern
-            Case dtLONGVARCHAR
+            Case dtlongvarchar
               fDataTypeChanged = (.Fields("returntype").value <> giEXPRVALUE_CHARACTER)
             Case Else
               MsgBox "Warning ! Unknown miDatatype !"
@@ -3245,7 +3246,7 @@ End Sub
 
 Private Sub cmdCancel_Click()
   Dim pintAnswer As Integer
-    If Changed = True And cmdOk.Enabled Then
+    If Changed = True And cmdOK.Enabled Then
       pintAnswer = MsgBox("You have made changes...do you wish to save these changes ?", vbQuestion + vbYesNoCancel, App.Title)
       If pintAnswer = vbYes Then
         Me.MousePointer = vbHourglass
@@ -3278,13 +3279,13 @@ Private Sub cmdDfltValueExpression_Click()
         .Initialise mobjColumn.TableID, mlngDfltValueExprID, giEXPR_DEFAULTVALUE, giEXPRVALUE_OLE
       Case dtVARBINARY
         .Initialise mobjColumn.TableID, mlngDfltValueExprID, giEXPR_DEFAULTVALUE, giEXPRVALUE_PHOTO
-      Case dtINTEGER
+      Case dtinteger
         .Initialise mobjColumn.TableID, mlngDfltValueExprID, giEXPR_DEFAULTVALUE, giEXPRVALUE_NUMERIC
       Case dtBIT
         .Initialise mobjColumn.TableID, mlngDfltValueExprID, giEXPR_DEFAULTVALUE, giEXPRVALUE_LOGIC
       Case dtNUMERIC
         .Initialise mobjColumn.TableID, mlngDfltValueExprID, giEXPR_DEFAULTVALUE, giEXPRVALUE_NUMERIC
-      Case dtLONGVARCHAR
+      Case dtlongvarchar
         .Initialise mobjColumn.TableID, mlngDfltValueExprID, giEXPR_DEFAULTVALUE, giEXPRVALUE_CHARACTER
       Case Else
         .Initialise mobjColumn.TableID, mlngDfltValueExprID, giEXPR_DEFAULTVALUE, giEXPRVALUE_UNDEFINED
@@ -3576,10 +3577,10 @@ Private Sub cmdOK_Click()
     Dim vNull As Variant
     'Dim vValidatedDate As Variant
     Dim vScreenList As Variant
-    Dim rsScreens As dao.Recordset
-    Dim rsOrders As dao.Recordset
+    Dim rsScreens As DAO.Recordset
+    Dim rsOrders As DAO.Recordset
     'Dim rsExpressions As dao.Recordset
-    Dim rsOtherColumns As dao.Recordset
+    Dim rsOtherColumns As DAO.Recordset
     'Dim objEmailLink As clsEmailLink
     Dim strKey As String
     Dim fOneSelected As Boolean
@@ -3593,8 +3594,8 @@ Private Sub cmdOK_Click()
     Dim sOtherCols() As String
     Dim objOtherCol As HRProSystemMgr.Column
     
-    Dim rsChangedViews As dao.Recordset   'MH20010320
-    Dim rsChangedExprs As dao.Recordset
+    Dim rsChangedViews As DAO.Recordset   'MH20010320
+    Dim rsChangedExprs As DAO.Recordset
     Dim iCount As Integer
     Dim iChangeStatus As Integer
     Dim sChangeStatus As String
@@ -3811,7 +3812,7 @@ Private Sub cmdOK_Click()
   '''        End If
   '''      End If
     
-      Case dtINTEGER
+      Case dtinteger
         dblMaxValue = (2 ^ 31) - 1
         If TDBDefaultNumber.value > dblMaxValue Then
           MsgBox "The default value exceeds the maximum of " & CStr(dblMaxValue) & " allowed for an integer column.", vbExclamation, Application.Name
@@ -4284,7 +4285,7 @@ Private Sub cmdOK_Click()
       .Properties("multiLine") = (miDataType = dtVARCHAR And chkMultiLine.value = vbChecked)
       
       .Properties("blankIfZero") = IIf((miControlType = giCTRL_TEXTBOX) And _
-        (miDataType = dtNUMERIC Or miDataType = dtINTEGER), _
+        (miDataType = dtNUMERIC Or miDataType = dtinteger), _
         (chkZeroBlank.value = vbChecked), False)
       
       
@@ -4308,7 +4309,7 @@ Private Sub cmdOK_Click()
               Else
                 sDefault = ""
               End If
-            ElseIf ((miDataType = dtINTEGER) Or (miDataType = dtNUMERIC)) Then
+            ElseIf ((miDataType = dtinteger) Or (miDataType = dtNUMERIC)) Then
               sDefault = Trim(Str(TDBDefaultNumber.value))
             Else
               sDefault = Trim(txtDefault.Text)
@@ -4470,7 +4471,7 @@ Private Sub cmdOK_Click()
         & " ,Alignment = " & Str(miAlignment) _
         & " ,MultiLine = " & IIf(chkMultiLine.value = vbChecked, "1", "0") _
         & " ,BlankIfZero = " & IIf(IIf((miControlType <> giCTRL_TEXTBOX) Or _
-          (miDataType <> dtNUMERIC And miDataType <> dtINTEGER), _
+          (miDataType <> dtNUMERIC And miDataType <> dtinteger), _
           (chkZeroBlank.value = vbChecked), False), "1", "0") _
         & " ,Use1000Separator = " & IIf(chkUse1000Separator.value = vbChecked, "1", "0") _
         & " WHERE LookupColumnID = " & Str(mobjColumn.ColumnID) & " and ColumnType = " & Str(giCOLUMNTYPE_LOOKUP))
@@ -4727,6 +4728,15 @@ Private Sub Form_Initialize()
 
 End Sub
 
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
+
 Private Sub Form_Load()
   Dim lngCXBorder As Long
   
@@ -4874,7 +4884,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
 
   If mfCancelled = True Then
     If UnloadMode <> vbFormCode Then
-      If Changed = True And cmdOk.Enabled Then
+      If Changed = True And cmdOK.Enabled Then
         pintAnswer = MsgBox("You have made changes...do you wish to save these changes ?", vbQuestion + vbYesNoCancel, App.Title)
         If pintAnswer = vbYes Then
           cmdOK_Click
@@ -5232,7 +5242,7 @@ Private Sub cboDataType_Click()
     ' If data type is numeric or integer, default to right justification, otherwise
     ' reset to default of left justification.
     If (miDataType = dtNUMERIC) Or _
-      (miDataType = dtINTEGER) Then
+      (miDataType = dtinteger) Then
       'JPD20010727
       cboTextAlignment.ListIndex = 2
     Else
@@ -5240,7 +5250,7 @@ Private Sub cboDataType_Click()
     End If
     
     'JPD20020325 Fault 2098. Force Working pattern controls to be uppercase.
-    If (miDataType = dtLONGVARCHAR) Then
+    If (miDataType = dtlongvarchar) Then
       cboCase.ListIndex = 1
     End If
 
@@ -5278,13 +5288,13 @@ Private Sub cboDataType_Click()
             fValidCalcExpr = (.ReturnType = giEXPRVALUE_OLE)
           Case dtVARBINARY
             fValidCalcExpr = (.ReturnType = giEXPRVALUE_PHOTO)
-          Case dtINTEGER
+          Case dtinteger
             fValidCalcExpr = (.ReturnType = giEXPRVALUE_NUMERIC)
           Case dtBIT
             fValidCalcExpr = (.ReturnType = giEXPRVALUE_LOGIC)
           Case dtNUMERIC
             fValidCalcExpr = (.ReturnType = giEXPRVALUE_NUMERIC)
-          Case dtLONGVARCHAR
+          Case dtlongvarchar
             fValidCalcExpr = (.ReturnType = giEXPRVALUE_CHARACTER)
           Case Else
             fValidCalcExpr = False
@@ -5322,13 +5332,13 @@ Private Sub cboDataType_Click()
             fValidDfltValueExpr = (.ReturnType = giEXPRVALUE_OLE)
           Case dtVARBINARY
             fValidDfltValueExpr = (.ReturnType = giEXPRVALUE_PHOTO)
-          Case dtINTEGER
+          Case dtinteger
             fValidDfltValueExpr = (.ReturnType = giEXPRVALUE_NUMERIC)
           Case dtBIT
             fValidDfltValueExpr = (.ReturnType = giEXPRVALUE_LOGIC)
           Case dtNUMERIC
             fValidDfltValueExpr = (.ReturnType = giEXPRVALUE_NUMERIC)
-          Case dtLONGVARCHAR
+          Case dtlongvarchar
             fValidDfltValueExpr = (.ReturnType = giEXPRVALUE_CHARACTER)
           Case Else
             fValidDfltValueExpr = False
@@ -5400,7 +5410,7 @@ Private Sub spnDefaultDisplayWidth_Refresh(piDataType As DataTypes)
       spnDefaultDisplayWidth.MaximumValue = 1
       spnDefaultDisplayWidth.value = 1
     
-    Case dtINTEGER:
+    Case dtinteger:
       spnDefaultDisplayWidth.MaximumValue = 10
       spnDefaultDisplayWidth.value = 10
     
@@ -5411,7 +5421,7 @@ Private Sub spnDefaultDisplayWidth_Refresh(piDataType As DataTypes)
       End If
       spnDefaultDisplayWidth.value = asrSize.value
     
-    Case dtLONGVARCHAR:
+    Case dtlongvarchar:
       spnDefaultDisplayWidth.MaximumValue = 14
       spnDefaultDisplayWidth.value = 14
       asrSize.value = 14
@@ -5498,7 +5508,7 @@ Private Sub ReadColumnProperties()
   Dim dtEffectiveDate As Date
   Dim fCheckLeavingDate As Boolean
   Dim iUniqueCheckType As Integer
-  Dim rsInfo As dao.Recordset
+  Dim rsInfo As DAO.Recordset
   Dim sSQL As String
   
   Dim sBeforeAfter As String
@@ -5662,7 +5672,7 @@ Private Sub ReadColumnProperties()
       Set objMisc = New Misc
       ASRDate1.Text = IIf(Len(msDefault) > 0, objMisc.ConvertSQLDateToLocale(msDefault), "")
       Set objMisc = Nothing
-    ElseIf miDataType = dtINTEGER Then
+    ElseIf miDataType = dtinteger Then
       TDBDefaultNumber.Format = "##########"
       TDBDefaultNumber.DisplayFormat = TDBDefaultNumber.Format
       TDBDefaultNumber.MaxValue = 2147483647#
@@ -6087,14 +6097,14 @@ Private Sub cboControl_Refresh()
           .ItemData(.NewIndex) = giCTRL_PHOTO
           
         ' Integer.
-        Case dtINTEGER
+        Case dtinteger
           .AddItem "Spinner"
           .ItemData(.NewIndex) = giCTRL_SPINNER
           .AddItem "Text Box"
           .ItemData(.NewIndex) = giCTRL_TEXTBOX
           
         ' Working Pattern.
-        Case dtLONGVARCHAR
+        Case dtlongvarchar
           .AddItem "Working Pattern"
           .ItemData(.NewIndex) = giCTRL_WORKINGPATTERN
           
@@ -6225,7 +6235,7 @@ Private Sub cboDefault_Refresh()
           
           If Not IsNull(vValue) Then
             Select Case miDataType
-              Case dtNUMERIC, dtINTEGER
+              Case dtNUMERIC, dtinteger
                 cboDefault.AddItem Trim(Str(vValue))
                 If vValue = val(sDefaultValue) Then
                   iSelection = cboDefault.NewIndex
@@ -6434,7 +6444,7 @@ End Sub
 Private Sub cboLinkTables_Initialize()
   ' Populate the link tables combo.
   Dim sSQL As String
-  Dim rsParents As dao.Recordset
+  Dim rsParents As DAO.Recordset
   
   ' Clear the combo.
   cboLinkTables.Clear
@@ -6480,7 +6490,7 @@ Private Sub cboDataType_Initialize()
     .ItemData(.NewIndex) = dtLONGVARBINARY
     
     .AddItem "Integer"
-    .ItemData(.NewIndex) = dtINTEGER
+    .ItemData(.NewIndex) = dtinteger
     
     .AddItem "Logic"
     .ItemData(.NewIndex) = dtBIT
@@ -6495,7 +6505,7 @@ Private Sub cboDataType_Initialize()
 '    .ItemData(.NewIndex) = dtGUID
     
     .AddItem "Working Pattern"
-    .ItemData(.NewIndex) = dtLONGVARCHAR
+    .ItemData(.NewIndex) = dtlongvarchar
     
   End With
 
@@ -6604,13 +6614,13 @@ End Sub
 Private Sub txtListValues_GotFocus()
   ' Disable the 'Default' property of the 'OK' button as the return key is
   ' used by this textbox.
-  cmdOk.Default = False
+  cmdOK.Default = False
   
 End Sub
 
 Private Sub txtListValues_LostFocus()
   ' Enable the 'Default' property of the OK button.
-  cmdOk.Default = True
+  cmdOK.Default = True
 
   ' Refresh the list of possible default values.
   cboDefault_Refresh
@@ -6880,12 +6890,12 @@ Private Sub RefreshOptionsTab()
     (miDataType = dtVARCHAR) And _
     Not mblnReadOnly
   chkZeroBlank.Enabled = (miControlType = giCTRL_TEXTBOX) And _
-    (miDataType = dtNUMERIC Or miDataType = dtINTEGER) And _
+    (miDataType = dtNUMERIC Or miDataType = dtinteger) And _
     Not mblnReadOnly
   
   'JPD 20031017 Fault 7294
   If (miControlType <> giCTRL_TEXTBOX) Or _
-    (miDataType <> dtNUMERIC And miDataType <> dtINTEGER) Then
+    (miDataType <> dtNUMERIC And miDataType <> dtinteger) Then
     If (miColumnType <> giCOLUMNTYPE_LOOKUP) Then
       chkZeroBlank.value = vbUnchecked
     End If
@@ -6951,7 +6961,7 @@ Private Sub RefreshOptionsTab()
   
   'MH20030911 Fault 6125
   'chkUse1000Separator.Enabled = (miDataType = dtNUMERIC) And asrSize.Value > 3
-  fEnable1000Sep = (((miDataType = dtNUMERIC) And asrSize.value > 3) Or miDataType = dtINTEGER) And (Not miColumnType = giCOLUMNTYPE_LOOKUP)
+  fEnable1000Sep = (((miDataType = dtNUMERIC) And asrSize.value > 3) Or miDataType = dtinteger) And (Not miColumnType = giCOLUMNTYPE_LOOKUP)
   chkUse1000Separator.Enabled = fEnable1000Sep
   If Not fEnable1000Sep And (Not miColumnType = giCOLUMNTYPE_LOOKUP) Then
     chkUse1000Separator.value = vbUnchecked
@@ -7002,7 +7012,7 @@ Private Sub RefreshOptionsTab()
       If miDataType = dtTIMESTAMP Then
         ASRDate1.Visible = True
         dblControlBottom = ASRDate1.Top + ASRDate1.Height
-      ElseIf miDataType = dtINTEGER Then
+      ElseIf miDataType = dtinteger Then
         TDBDefaultNumber.Visible = True
         dblOldIntValue = TDBDefaultNumber.value
         TDBDefaultNumber.Format = "##########"
@@ -7326,7 +7336,7 @@ Private Function DefaultControl(pDatatype As DataTypes) As ControlTypes
     Case dtVARBINARY
       DefaultControl = giCTRL_PHOTO
     
-    Case dtLONGVARCHAR
+    Case dtlongvarchar
       DefaultControl = giCTRL_WORKINGPATTERN
     
     Case Else
@@ -7647,7 +7657,7 @@ Private Function AfdToggleControlStatus(pfValue As Boolean)
 End Function
 
 Private Sub FieldMappingInitialiseCombos()
-  Dim rsColumns As dao.Recordset
+  Dim rsColumns As DAO.Recordset
   Dim sSQL As String
   Dim objControl As Control
   
@@ -7730,7 +7740,7 @@ Private Function cboLinkViews_Initialize()
 
   ' Populate the link tables combo.
   Dim sSQL As String
-  Dim rsLinkViews As dao.Recordset
+  Dim rsLinkViews As DAO.Recordset
   
   ' Clear the combo.
   With cboLinkViews
@@ -7946,7 +7956,7 @@ Public Sub PrintDefinition()
             strTemp = "Multi-line : " & IIf(chkMultiLine.value = vbChecked, "Yes", "No")
             iCount = iCount + 1
           End If
-          If (miControlType = giCTRL_TEXTBOX) And (miDataType = dtNUMERIC Or miDataType = dtINTEGER) Then
+          If (miControlType = giCTRL_TEXTBOX) And (miDataType = dtNUMERIC Or miDataType = dtinteger) Then
             strTemp = strTemp & IIf(Len(strTemp) > 0, vbTab, "") & _
               "Blank if zero : " & IIf(chkZeroBlank.value = vbChecked, "Yes", "No")
           End If
@@ -7989,7 +7999,7 @@ Public Sub PrintDefinition()
                 Else
                   strDefaultValue = "<None>"
                 End If
-              ElseIf (miDataType = dtINTEGER) Or (miDataType = dtNUMERIC) Then
+              ElseIf (miDataType = dtinteger) Or (miDataType = dtNUMERIC) Then
                 strDefaultValue = TDBDefaultNumber.value
               Else
                 strDefaultValue = txtDefault.Text
@@ -8262,7 +8272,7 @@ Public Sub CopyDefinitionToClipboard()
     If (miControlType = giCTRL_TEXTBOX) And (miDataType = dtVARCHAR) Then
       strClipboardText = strClipboardText & vbCrLf & "Multi-line : " & IIf(chkMultiLine.value = vbChecked, "Yes", "No") & vbCrLf
     End If
-    If (miControlType = giCTRL_TEXTBOX) And (miDataType = dtNUMERIC Or miDataType = dtINTEGER) Then
+    If (miControlType = giCTRL_TEXTBOX) And (miDataType = dtNUMERIC Or miDataType = dtinteger) Then
       strClipboardText = strClipboardText & "Blank if zero : " & IIf(chkZeroBlank.value = vbChecked, "Yes", "No") & vbCrLf
     End If
     If (miDataType = dtVARCHAR) And (miControlType = giCTRL_TEXTBOX) Then
@@ -8289,7 +8299,7 @@ Public Sub CopyDefinitionToClipboard()
           Else
             strDefaultValue = "<None>"
           End If
-        ElseIf (miDataType = dtINTEGER) Or (miDataType = dtNUMERIC) Then
+        ElseIf (miDataType = dtinteger) Or (miDataType = dtNUMERIC) Then
           strDefaultValue = TDBDefaultNumber.value
         Else
           strDefaultValue = txtDefault.Text
@@ -8514,7 +8524,7 @@ Private Sub chkLookupFilter_Click()
 End Sub
 
 Private Sub cboLookupFilterValue_Refresh()
-  Dim rsColumns As dao.Recordset
+  Dim rsColumns As DAO.Recordset
   Dim sSQL As String
   'Dim objControl As Control
 

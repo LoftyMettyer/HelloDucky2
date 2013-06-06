@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "Codejock.SkinFramework.v13.1.0.ocx"
+Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~2.OCX"
 Begin VB.Form frmLogin 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "HR Pro System Manager - Login"
@@ -470,6 +470,14 @@ Private Sub Form_Activate()
 End Sub
 
 Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+
   If ((Shift And vbShiftMask) > 0) Then
     mfReRunScript = True
   End If
@@ -620,7 +628,7 @@ Public Sub Login()
   rsSQLInfo.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly
   With rsSQLInfo
     If Not (.BOF And .EOF) Then
-      glngSQLVersion = Val(.Fields(0).value)
+      glngSQLVersion = val(.Fields(0).value)
       gstrSQLFullVersion = CStr(.Fields(0).value)
     End If
     .Close

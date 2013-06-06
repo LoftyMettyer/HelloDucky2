@@ -18,6 +18,7 @@ Begin VB.Form frmCMGEdit
    EndProperty
    HelpContextID   =   5083
    Icon            =   "frmCMGEdit.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -151,6 +152,19 @@ Private Sub chkExportItem_Click()
     Me.spnMaxSize.Enabled = Me.chkExportItem.value
     mblnUserChanged = True
   End If
+End Sub
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
+
+Private Sub Form_Load()
+
 End Sub
 
 Private Sub spnMaxSize_Change()

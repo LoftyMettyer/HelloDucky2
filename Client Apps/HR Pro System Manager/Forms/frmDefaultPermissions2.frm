@@ -17,6 +17,7 @@ Begin VB.Form frmDefaultPermissions2
    EndProperty
    HelpContextID   =   5044
    Icon            =   "frmDefaultPermissions2.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -210,7 +211,7 @@ Public Sub SetType(ByVal sNewValue As String, ByVal sTableType As CopySecurityTy
     
     fraPermissions.Top = 150
     
-    cmdOk.Top = 4440
+    cmdOK.Top = 4440
     cmdCancel.Top = 4440
     
   End If
@@ -385,6 +386,15 @@ Private Sub cmdOK_Click()
   
   miChoice = vbOK
   UnLoad Me
+End Sub
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
 End Sub
 
 Private Sub Form_Load()

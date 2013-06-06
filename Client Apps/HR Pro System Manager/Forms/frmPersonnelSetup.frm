@@ -19,6 +19,7 @@ Begin VB.Form frmPersonnelSetup
    EndProperty
    HelpContextID   =   5020
    Icon            =   "frmPersonnelSetup.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
@@ -46,14 +47,14 @@ Begin VB.Form frmPersonnelSetup
       TabCaption(1)   =   "C&areer Change"
       TabPicture(1)   =   "frmPersonnelSetup.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraRegion"
-      Tab(1).Control(1)=   "fraWorkingPattern"
+      Tab(1).Control(0)=   "fraWorkingPattern"
+      Tab(1).Control(1)=   "fraRegion"
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "&Hierarchy"
       TabPicture(2)   =   "frmPersonnelSetup.frx":0044
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraHierarchyTable"
-      Tab(2).Control(1)=   "fraPostAllocationTable"
+      Tab(2).Control(0)=   "fraPostAllocationTable"
+      Tab(2).Control(1)=   "fraHierarchyTable"
       Tab(2).ControlCount=   2
       Begin VB.Frame fraPostAllocationTable 
          Caption         =   "Post Allocation Table :"
@@ -773,7 +774,7 @@ Public Property Get Changed() As Boolean
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
   mfChanged = pblnChanged
-  If Not mbLoading Then cmdOk.Enabled = True
+  If Not mbLoading Then cmdOK.Enabled = True
 End Property
 
 Private Sub cboGrade_Click()
@@ -869,6 +870,15 @@ Private Sub cboPostAllocationTable_Click()
 End Sub
 
 
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
+
 Private Sub Form_Load()
 
   Screen.MousePointer = vbHourglass
@@ -877,7 +887,7 @@ Private Sub Form_Load()
   SSTab1.Tab = 0
     
   mbLoading = True
-  cmdOk.Enabled = False
+  cmdOK.Enabled = False
   'Changed = False
   
   ' Only display the Hierarchy tab if UDFs are enabled.
@@ -1163,7 +1173,7 @@ Private Sub RefreshPersonnelColumnControls()
   Dim iManagerStaffNoListIndex As Integer
   Dim iJobTitleListIndex As Integer
   Dim iSSIWelcomeListIndex As Integer
-  Dim objCtl As Control
+  Dim objctl As Control
   
   iEmployeeNumberListIndex = 0
   iForenameListIndex = 0
@@ -1183,19 +1193,19 @@ Private Sub RefreshPersonnelColumnControls()
   UI.LockWindow Me.hWnd
   
   ' Clear the current contents of the combos.
-  For Each objCtl In Me
-    If (TypeOf objCtl Is ComboBox) And _
-      (objCtl.Name <> "cboPersonnelTable") And _
-      (objCtl.Name <> "cboLoginName") And _
-      (objCtl.Container.Name <> "fraHierarchyTable" And _
-      (objCtl.Container.Name <> "fraPostAllocationTable")) Then
-      With objCtl
+  For Each objctl In Me
+    If (TypeOf objctl Is ComboBox) And _
+      (objctl.Name <> "cboPersonnelTable") And _
+      (objctl.Name <> "cboLoginName") And _
+      (objctl.Container.Name <> "fraHierarchyTable" And _
+      (objctl.Container.Name <> "fraPostAllocationTable")) Then
+      With objctl
         .Clear
         .AddItem "<None>"
         .ItemData(.NewIndex) = 0
       End With
     End If
-  Next objCtl
+  Next objctl
   
   With recColEdit
     .Index = "idxName"
@@ -1210,8 +1220,8 @@ Private Sub RefreshPersonnelColumnControls()
         End If
         
         If (Not !Deleted) And _
-          (!columnType <> giCOLUMNTYPE_LINK) And _
-          (!columnType <> giCOLUMNTYPE_SYSTEM) Then
+          (!columntype <> giCOLUMNTYPE_LINK) And _
+          (!columntype <> giCOLUMNTYPE_SYSTEM) Then
           
           ' Only load date fields into the start/leaving date and dateOfBirth combos
           If !DataType = dtTIMESTAMP Then
@@ -1305,7 +1315,7 @@ Private Sub RefreshPersonnelColumnControls()
           End If
 
           ' Load working pattern fields
-          If !DataType = dtLONGVARCHAR Then
+          If !DataType = dtlongvarchar Then
             cboWorkingPattern.AddItem !ColumnName
             cboWorkingPattern.ItemData(cboWorkingPattern.NewIndex) = !ColumnID
             If !ColumnID = mvar_lngWorkingPatternID Then
@@ -1315,7 +1325,7 @@ Private Sub RefreshPersonnelColumnControls()
 
           If !DataType = dtVARCHAR Or _
                   !DataType = dtNUMERIC Or _
-                  !DataType = dtINTEGER Then
+                  !DataType = dtinteger Then
             cboManagerStaffNo.AddItem !ColumnName
             cboManagerStaffNo.ItemData(cboManagerStaffNo.NewIndex) = !ColumnID
             If !ColumnID = mvar_lngManagerStaffNoID Then
@@ -1386,8 +1396,8 @@ Private Sub RefreshLoginColumnControls()
         End If
         
         If (Not !Deleted) And _
-          (!columnType <> giCOLUMNTYPE_LINK) And _
-          (!columnType <> giCOLUMNTYPE_SYSTEM) And _
+          (!columntype <> giCOLUMNTYPE_LINK) And _
+          (!columntype <> giCOLUMNTYPE_SYSTEM) And _
           (!DataType = dtVARCHAR) Then
           
           ' Load varchar fields
@@ -1514,8 +1524,8 @@ Private Sub RefreshHistoricRegionColumnControls()
         End If
         
         If (Not !Deleted) And _
-          (!columnType <> giCOLUMNTYPE_LINK) And _
-          (!columnType <> giCOLUMNTYPE_SYSTEM) Then
+          (!columntype <> giCOLUMNTYPE_LINK) And _
+          (!columntype <> giCOLUMNTYPE_SYSTEM) Then
           
           If !DataType = dtVARCHAR Then
             cboRegionField.AddItem !ColumnName
@@ -1575,10 +1585,10 @@ Private Sub RefreshHistoricWorkingPatternColumnControls()
         End If
         
         If (Not !Deleted) And _
-          (!columnType <> giCOLUMNTYPE_LINK) And _
-          (!columnType <> giCOLUMNTYPE_SYSTEM) Then
+          (!columntype <> giCOLUMNTYPE_LINK) And _
+          (!columntype <> giCOLUMNTYPE_SYSTEM) Then
           
-          If !DataType = dtLONGVARCHAR Then
+          If !DataType = dtlongvarchar Then
             cboWorkingPatternField.AddItem !ColumnName
             cboWorkingPatternField.ItemData(cboWorkingPatternField.NewIndex) = !ColumnID
             If !ColumnID = mvar_lngHWorkingPatternFieldID Then
@@ -1654,7 +1664,7 @@ Private Function ValidateSetup() As Boolean
   
   Dim fSpecialFunctionUsed As Boolean
   Dim sSQL As String
-  Dim rsCheck As dao.Recordset
+  Dim rsCheck As DAO.Recordset
   Dim objComp As CExprComponent
   Dim lngExprID As Long
   Dim objExpr As CExpression
@@ -2219,13 +2229,13 @@ Private Sub RefreshHierarchyControls()
         End If
         
         If (Not !Deleted) And _
-          (!columnType <> giCOLUMNTYPE_LINK) And _
-          (!columnType <> giCOLUMNTYPE_SYSTEM) Then
+          (!columntype <> giCOLUMNTYPE_LINK) And _
+          (!columntype <> giCOLUMNTYPE_SYSTEM) Then
 
           ' Load varchar fields
           If (!DataType = dtVARCHAR) Or _
             (!DataType = dtNUMERIC) Or _
-            (!DataType = dtINTEGER) Then
+            (!DataType = dtinteger) Then
             cboHierarchyIdentifyingColumn.AddItem !ColumnName
             cboHierarchyIdentifyingColumn.ItemData(cboHierarchyIdentifyingColumn.NewIndex) = !ColumnID
             
@@ -2330,8 +2340,8 @@ Private Sub RefreshPostAllocationControls()
         End If
         
         If (Not !Deleted) And _
-          (!columnType <> giCOLUMNTYPE_LINK) And _
-          (!columnType <> giCOLUMNTYPE_SYSTEM) Then
+          (!columntype <> giCOLUMNTYPE_LINK) And _
+          (!columntype <> giCOLUMNTYPE_SYSTEM) Then
 
           ' Load date fields
           If !DataType = dtTIMESTAMP Then

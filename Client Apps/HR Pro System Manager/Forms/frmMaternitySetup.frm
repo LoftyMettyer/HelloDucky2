@@ -18,6 +18,7 @@ Begin VB.Form frmMaternitySetup
    EndProperty
    HelpContextID   =   5047
    Icon            =   "frmMaternitySetup.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -306,8 +307,8 @@ Private Sub cboMaternityTable_Click()
           End If
   
           If (Not !Deleted) And _
-            (!columnType <> giCOLUMNTYPE_LINK) And _
-            (!columnType <> giCOLUMNTYPE_SYSTEM) Then
+            (!columntype <> giCOLUMNTYPE_LINK) And _
+            (!columntype <> giCOLUMNTYPE_SYSTEM) Then
 
             If !DataType = dtTIMESTAMP Then
               cboEWCDate.AddItem !ColumnName
@@ -409,7 +410,7 @@ Private Function ValidateSetup() As Boolean
 
   Dim fSpecialFunctionUsed As Boolean
   Dim sSQL As String
-  Dim rsCheck As dao.Recordset
+  Dim rsCheck As DAO.Recordset
   Dim objComp As CExprComponent
   Dim lngExprID As Long
   Dim objExpr As CExpression
@@ -544,6 +545,15 @@ Private Function GetComboItem(cboTemp As ComboBox) As Long
   End If
 End Function
 
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
+
 Private Sub Form_Load()
 
   mbLoading = True
@@ -630,5 +640,5 @@ End Sub
 
 
 Private Sub RefreshControls()
-If Not mbLoading Then cmdOk.Enabled = mfChanged
+If Not mbLoading Then cmdOK.Enabled = mfChanged
 End Sub

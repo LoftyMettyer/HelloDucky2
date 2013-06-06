@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Begin VB.Form frmChangedPlatform 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Platform Change Details"
@@ -18,6 +18,7 @@ Begin VB.Form frmChangedPlatform
    EndProperty
    HelpContextID   =   5079
    Icon            =   "frmChangedPlatform.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -306,7 +307,7 @@ Private Sub FormatButtons()
   End With
     
   ' OK
-  With cmdOk
+  With cmdOK
     .Top = 0
     .Left = (iVisibleButtonCount * (BUTTONWIDTH + BUTTON_OFFSET))
     .Height = BUTTONHEIGHT
@@ -600,6 +601,15 @@ Private Sub cmdYes_Click()
   miChoice = vbYes
   UnLoad Me
   
+End Sub
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
 End Sub
 
 Private Sub Form_Load()

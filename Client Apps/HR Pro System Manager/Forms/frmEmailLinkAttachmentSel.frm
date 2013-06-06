@@ -17,6 +17,7 @@ Begin VB.Form frmEmailLinkAttachmentSel
    EndProperty
    HelpContextID   =   5017
    Icon            =   "frmEmailLinkAttachmentSel.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
@@ -103,6 +104,15 @@ End Property
 Public Property Let Cancelled(ByVal blnNewValue As Boolean)
   mblnCancelled = blnNewValue
 End Property
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
 
 Private Sub Form_Load()
   mblnCancelled = True  'Cancelled unless click ok

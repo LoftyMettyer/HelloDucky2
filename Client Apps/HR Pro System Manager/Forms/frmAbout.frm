@@ -18,6 +18,7 @@ Begin VB.Form frmAbout
    EndProperty
    HelpContextID   =   5001
    Icon            =   "frmAbout.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form2"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -214,6 +215,15 @@ Private Sub cmdTech_Click()
 
 End Sub
 
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
+
 Private Sub Form_Load()
   On Error GoTo ErrorTrap
   
@@ -242,11 +252,11 @@ Private Sub Form_Load()
   sngMaxX = IIf(lblSql.Left + lblSql.Width > sngMaxX, lblSql.Left + lblSql.Width, sngMaxX)
   sngMaxX = IIf(lblCopyRight.Left + lblCopyRight.Width > sngMaxX, lblCopyRight.Left + lblCopyRight.Width, sngMaxX)
   
-  cmdOk.Left = sngMaxX + 250
-  cmdSysInfo.Left = cmdOk.Left
-  cmdTech.Left = cmdOk.Left
+  cmdOK.Left = sngMaxX + 250
+  cmdSysInfo.Left = cmdOK.Left
+  cmdTech.Left = cmdOK.Left
   
-  Me.Width = cmdOk.Left + cmdOk.Width + 200
+  Me.Width = cmdOK.Left + cmdOK.Width + 200
 TidyUpAndExit:
   Exit Sub
 

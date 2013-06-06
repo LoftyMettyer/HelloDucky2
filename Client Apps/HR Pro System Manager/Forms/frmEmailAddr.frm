@@ -17,6 +17,7 @@ Begin VB.Form frmEmailAddr
    EndProperty
    HelpContextID   =   5015
    Icon            =   "frmEmailAddr.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -214,7 +215,7 @@ Private Sub cmdCalculated_Click()
   Dim objExpr As CExpression
   Dim lngExprID As Long
   
-  lngExprID = Val(txtCalculated.Tag)
+  lngExprID = val(txtCalculated.Tag)
   
   ' Instantiate an expression object.
   Set objExpr = New CExpression
@@ -257,7 +258,7 @@ Private Sub cmdCancel_Click()
   mblnCancelled = True
 
   If mblnCancelled Then
-    If mfChanged And cmdOk.Enabled Then
+    If mfChanged And cmdOK.Enabled Then
       
       pintAnswer = MsgBox("You have made changes...do you wish to save these changes ?", vbQuestion + vbYesNoCancel, App.Title)
         
@@ -280,6 +281,15 @@ Private Sub Form_Activate()
 
   mblnLoading = False
 
+End Sub
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
 End Sub
 
 Private Sub Form_Load()
@@ -560,7 +570,7 @@ Private Function ValidEmail() As Boolean
     'End If
 
   ElseIf optCalculated.value = True Then
-    If Val(txtCalculated.Tag) < 1 Then
+    If val(txtCalculated.Tag) < 1 Then
       MsgBox "Please select an email calculation.", vbOKOnly + vbExclamation, Application.Name
       cmdCalculated.SetFocus
       Exit Function
@@ -621,7 +631,7 @@ Private Function SaveEmail() As Boolean
       .EmailType = 2
       .Fixed = vbNullString
       .ColumnID = 0
-      .ExpressionID = Val(txtCalculated.Tag)
+      .ExpressionID = val(txtCalculated.Tag)
 
     End If
 

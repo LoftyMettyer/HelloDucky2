@@ -17,6 +17,7 @@ Begin VB.Form frmChangePassword
    EndProperty
    HelpContextID   =   5006
    Icon            =   "frmChangePassword.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -220,7 +221,7 @@ Public Property Let ForceChange(ByVal bNewValue As Boolean)
     Me.txtNewPWRetype.Top = 1515
     Me.Label1(3).Top = 1575
     Me.cmdCancel.Top = 2235
-    Me.cmdOk.Top = 2235
+    Me.cmdOK.Top = 2235
     Me.fraPassword.Height = 2030
     Me.Height = 3150
   End If
@@ -252,6 +253,15 @@ Public Property Let Reason(ByVal iReasonCode As PasswordChangeReason)
   End Select
   
 End Property
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
 
 Private Sub Form_Load()
   txtUserName = gsUserName

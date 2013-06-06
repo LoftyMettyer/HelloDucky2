@@ -1,7 +1,7 @@
 VERSION 5.00
 Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "timask6.ocx"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "COA_ColourPicker.ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmConfiguration 
@@ -22,6 +22,7 @@ Begin VB.Form frmConfiguration
    EndProperty
    HelpContextID   =   5009
    Icon            =   "frmConfiguration.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -96,27 +97,27 @@ Begin VB.Form frmConfiguration
       TabCaption(2)   =   "&Display"
       TabPicture(2)   =   "frmConfiguration.frx":0044
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "frmExpressions"
+      Tab(2).Control(0)=   "frmBackgrounds"
       Tab(2).Control(0).Enabled=   0   'False
       Tab(2).Control(1)=   "fraGeneral"
       Tab(2).Control(1).Enabled=   0   'False
-      Tab(2).Control(2)=   "frmBackgrounds"
+      Tab(2).Control(2)=   "frmExpressions"
       Tab(2).Control(2).Enabled=   0   'False
       Tab(2).ControlCount=   3
       TabCaption(3)   =   "Dev"
       TabPicture(3)   =   "frmConfiguration.frx":0060
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "frmDeveloperAFD"
-      Tab(3).Control(1)=   "fraQuickAddress"
+      Tab(3).Control(0)=   "fraQuickAddress"
+      Tab(3).Control(1)=   "frmDeveloperAFD"
       Tab(3).ControlCount=   2
       TabCaption(4)   =   "&Advanced"
       TabPicture(4)   =   "frmConfiguration.frx":007C
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "fraAdvancedSettings"
+      Tab(4).Control(0)=   "fraTime"
       Tab(4).Control(0).Enabled=   0   'False
       Tab(4).Control(1)=   "fraOutlookCalendar"
       Tab(4).Control(1).Enabled=   0   'False
-      Tab(4).Control(2)=   "fraTime"
+      Tab(4).Control(2)=   "fraAdvancedSettings"
       Tab(4).Control(2).Enabled=   0   'False
       Tab(4).ControlCount=   3
       Begin VB.Frame fraAdvancedSettings 
@@ -1488,7 +1489,7 @@ End Sub
 Private Sub cmdCancel_Click()
 'UnLoad Me
 Dim pintAnswer As Integer
-If Changed = True Or cmdOk.Enabled Then
+If Changed = True Or cmdOK.Enabled Then
   pintAnswer = MsgBox("You have made changes...do you wish to save these changes ?", vbQuestion + vbYesNoCancel, App.Title)
   If pintAnswer = vbYes Then
     'AE20071108 Fault #12551
@@ -1842,6 +1843,15 @@ Private Function ValidateEmailMethod(lngMethod As Long) As Boolean
 
 End Function
 
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
 
 Private Sub Form_Load()
 
@@ -2348,7 +2358,7 @@ End Sub
 Private Function IsValidTime(strInput As String) As Boolean
   IsValidTime = False
   If strInput Like "??" & mstrTimeSeparator & "??" Then
-    IsValidTime = (Val(Left(strInput, 2)) < 24 And Val(Right(strInput, 2)) < 60)
+    IsValidTime = (val(Left(strInput, 2)) < 24 And val(Right(strInput, 2)) < 60)
   End If
 End Function
 
@@ -2573,6 +2583,6 @@ End Property
 
 Private Property Let Changed(ByVal fNewValue As Boolean)
   mfChanged = fNewValue
-  cmdOk.Enabled = mfChanged
+  cmdOK.Enabled = mfChanged
 End Property
 

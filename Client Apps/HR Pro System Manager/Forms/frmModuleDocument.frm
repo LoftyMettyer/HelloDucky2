@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Begin VB.Form frmModuleDocument 
    BorderStyle     =   1  'Fixed Single
@@ -18,6 +18,7 @@ Begin VB.Form frmModuleDocument
       Strikethrough   =   0   'False
    EndProperty
    Icon            =   "frmModuleDocument.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
@@ -48,19 +49,19 @@ Begin VB.Form frmModuleDocument
       TabCaption(1)   =   "Mail Merge"
       TabPicture(1)   =   "frmModuleDocument.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "cboCategory"
+      Tab(1).Control(0)=   "lblTransferTable"
       Tab(1).Control(0).Enabled=   0   'False
-      Tab(1).Control(1)=   "cboTables"
+      Tab(1).Control(1)=   "lblColumnName"
       Tab(1).Control(1).Enabled=   0   'False
-      Tab(1).Control(2)=   "cmdEdit"
+      Tab(1).Control(2)=   "grdTransferDetails(0)"
       Tab(1).Control(2).Enabled=   0   'False
       Tab(1).Control(3)=   "cmdDelete"
       Tab(1).Control(3).Enabled=   0   'False
-      Tab(1).Control(4)=   "grdTransferDetails(0)"
+      Tab(1).Control(4)=   "cmdEdit"
       Tab(1).Control(4).Enabled=   0   'False
-      Tab(1).Control(5)=   "lblColumnName"
+      Tab(1).Control(5)=   "cboTables"
       Tab(1).Control(5).Enabled=   0   'False
-      Tab(1).Control(6)=   "lblTransferTable"
+      Tab(1).Control(6)=   "cboCategory"
       Tab(1).Control(6).Enabled=   0   'False
       Tab(1).ControlCount=   7
       Begin VB.ComboBox cboCategory 
@@ -625,7 +626,7 @@ Private Sub InitialiseCombos()
 End Sub
 
 Private Sub RefreshButtons()
-  cmdOk.Enabled = mbChanged
+  cmdOK.Enabled = mbChanged
 End Sub
 
 Private Sub RetrieveDefinition()
@@ -637,6 +638,15 @@ Private Sub RetrieveDefinition()
   SetComboItem cboTypeCategoryColumn, GetModuleSetting(gsMODULEKEY_DOCMANAGEMENT, gsPARAMETERKEY_DOCMAN_TYPECATEGORYCOLUMN, 0)
   SetComboItem cboTypeColumn, GetModuleSetting(gsMODULEKEY_DOCMANAGEMENT, gsPARAMETERKEY_DOCMAN_TYPECOLUMN, 0)
 
+End Sub
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
 End Sub
 
 Private Sub Form_Load()
