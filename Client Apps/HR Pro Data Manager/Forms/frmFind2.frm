@@ -447,6 +447,8 @@ Public Sub ResizeFindColumns()
     If .VisibleRows > .Rows Then
       .MoveFirst
       SetCurrentRecord
+    Else
+      UpdateStatusBar
     End If
     
     'Check if the number of rows in the recordset is more than can be displayed in the grid.
