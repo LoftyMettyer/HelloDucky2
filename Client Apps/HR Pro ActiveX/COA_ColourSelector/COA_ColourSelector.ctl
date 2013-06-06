@@ -394,6 +394,7 @@ End Sub
 
 
 Private Sub UserControl_Resize()
+  If UserControl.Width < MinimumWidth Then UserControl.Width = MinimumWidth
   cmdSelect.Left = UserControl.Width - cmdSelect.Width
   lblColour.Width = cmdSelect.Left
 End Sub
