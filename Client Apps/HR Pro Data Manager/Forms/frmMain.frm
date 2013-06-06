@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "15:29"
+            TextSave        =   "15:31"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -475,6 +475,8 @@ End Sub
 
 Private Sub MDIForm_Load()
   
+  DebugOutput "MDIForm_Load", "LoadSkin"
+  
   ' Load the CodeJock Styles
   Call LoadSkin(Me, Me.SkinFramework1)
   
@@ -486,6 +488,8 @@ Private Sub MDIForm_Load()
     Exit Sub
   End If
 
+  DebugOutput "MDIForm_Load", "Set abMain"
+  
   With abMain
     .MenuFontStyle = 1
     .Font.Name = "Verdana"
@@ -506,6 +510,8 @@ Private Sub MDIForm_Load()
 
   Me.Caption = "HR Pro Data Manager - " & gsDatabaseName
 
+  DebugOutput "MDIForm_Load", "EnableTools"
+  
   EnableTools
     
   gblnDiaryConstCheck = CBool(GetUserSetting("Diary", "ConstantCheck", True))
@@ -516,11 +522,15 @@ Private Sub MDIForm_Load()
   
   'TM20020828 Fault 1432
   'TM20020911 Fault 4401
+  
+  
   gblnStartupPrinter = (InStr(LCase(Command$), "/printer=false") > 0)
   If Not gblnStartupPrinter Then
     'JPD 20081205 - You can have Printers.Count > 0 but still no valid printers (honestly!)
     ' So need to have proper error trapping, on top of the Printers.Count check.
     On Error GoTo PrinterErrorTrap
+    
+    DebugOutput "MDIForm_Load", "SetPrinterAsDefault"
     
     If Printers.Count > 0 Then
       gstrDefaultPrinterName = Printer.DeviceName
@@ -542,6 +552,8 @@ PrinterErrorTrap:
   'Printing options
   gbPrinterPrompt = GetPCSetting("Printer", "Prompt", True)
   gbPrinterConfirm = GetPCSetting("Printer", "Confirm", False)
+  
+  DebugOutput "MDIForm_Load", "GetScreens"
   
   ' Get the list of screens with which to populate the menu.
   GetScreens

@@ -49,20 +49,31 @@ Public Function Activate() As Boolean
   On Error GoTo ErrorTrap
   
   Dim blnAccessToDiary As Boolean
-    
+  
+  
+  DebugOutput "Application.Activate", "Check LoggedIn"
+  
   If Not LoggedIn Then
     Login
   End If
   
+  DebugOutput "Application.Activate", "Load frmStyle"
+  
   Dim frmStyle As New frmHiddenStyle
   Load frmStyle
+  
+  DebugOutput "Application.Activate", "SetupTablesCollection"
   
   ' Setup the collection of Tables.
   SetupTablesCollection
 
+  DebugOutput "Application.Activate", "InitialiseModules"
+  
   ' Get the module specifics.
   InitialiseModules
 
+  DebugOutput "Application.Activate", "CheckOvernightJob"
+  
   'If LoggedIn Then
   If LoggedIn And Not gblnBatchJobsOnly Then
     
@@ -78,6 +89,8 @@ Public Function Activate() As Boolean
     Activate = True
   End If
 
+  DebugOutput "Application.Activate", "CheckScheduledBatchJobs"
+  
   'Does the user have permission to run batch jobs ?
   If datGeneral.SystemPermission("BATCHJOBS", "RUN") = True Then
     frmSplash.Visible = False
@@ -87,9 +100,13 @@ Public Function Activate() As Boolean
   ' Are any workflow steps pending for the current user to action?
   If gbWorkflowEnabled Then
     frmSplash.Visible = False
+    DebugOutput "Application.Activate", "CheckWorkflowOutOfOffice"
     CheckWorkflowOutOfOffice
+    DebugOutput "Application.Activate", "CheckPendingWorkflowSteps"
     CheckPendingWorkflowSteps False
   End If
+  
+  DebugOutput "Application.Activate", "CheckDiary"
   
   blnAccessToDiary = datGeneral.SystemPermission("DIARY", "MANUALEVENTS")
   
@@ -132,6 +149,8 @@ Public Function Activate() As Boolean
 '    gsOfficeTemplateFilter_Excel = GetSystemSetting("output", "template filter excel", "Excel Template (*.xls;*.xlt)|*.xls;*.xlt")
 '  End If
   
+  DebugOutput "Application.Activate", "Unload frmStyle"
+  
   'Unload the styling form BEFORE the Main MDI is loaded
   'otherwise Unloading the style form will remove the styles
   'from the MDI too...?!?!?
@@ -163,15 +182,21 @@ End Function
 Public Function Login() As Boolean
   On Error GoTo ErrorTrap
   
+  DebugOutput "Application.Login", "LoggedIn"
+  
   If LoggedIn Then
     Logout
   End If
+  
+  DebugOutput "Application.Login", "Load frmLogin"
   
   If Not LoggedIn Then
     
     Load frmLogin
     LoggedIn = frmLogin.OK
 
+    DebugOutput "Application.Login", "Show frmLogin"
+    
     If Not LoggedIn And Not gblnBatchJobsOnly Then
       frmLogin.Show vbModal
       LoggedIn = frmLogin.OK
@@ -186,11 +211,15 @@ Public Function Login() As Boolean
 
   End If
   
+  DebugOutput "Application.Login", "Audit Login"
+  
   Login = LoggedIn
   If Login Then Call AuditAccess(iLOGIN, "Data")
   Exit Function
   
 ErrorTrap:
+  DebugOutput "Application.Login", "Error"
+
   Login = False
   Err = False
   
