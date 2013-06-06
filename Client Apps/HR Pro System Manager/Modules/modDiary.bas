@@ -59,23 +59,23 @@ Public Function GetSQLForRecordDescription(lngRecordDescExprID As Long) As Strin
   'and within the diary stored procedures
 
   GetSQLForRecordDescription = _
-    "    /* ---------------------- */" & vbCrLf & _
-    "    /* Get Record Description */" & vbCrLf & _
-    "    /* ---------------------- */" & vbCrLf & _
-    "    DECLARE @recordDesc char(255)," & vbCrLf & _
-    "            @oldValue varchar(255)," & vbCrLf & _
-    "            @newValue varchar(255)" & vbCrLf & vbCrLf & _
-    "    /* Evaluate the inserted record's description (if it is defined). */" & vbCrLf & _
-    "    IF EXISTS (SELECT *" & vbCrLf & _
-    "        FROM sysobjects" & vbCrLf & _
-    "        WHERE type = 'P'" & vbCrLf & _
-    "        AND name = 'sp_ASRExpr_" & Trim(Str(lngRecordDescExprID)) & "')" & vbCrLf & _
-    "    BEGIN" & vbCrLf & _
-    "        EXEC @hResult = sp_ASRExpr_" & Trim(Str(lngRecordDescExprID)) & " @recordDesc OUTPUT, @recordID" & vbCrLf & _
-    "        IF @hResult <> 0 SET @recordDesc = ''" & vbCrLf & _
-    "        SET @recordDesc = CONVERT(varchar(255), @recordDesc)" & vbCrLf & _
-    "    END" & vbCrLf & _
-    "    ELSE SET @recordDesc = ''" & vbCrLf & vbCrLf
+    "    /* ---------------------- */" & vbNewLine & _
+    "    /* Get Record Description */" & vbNewLine & _
+    "    /* ---------------------- */" & vbNewLine & _
+    "    DECLARE @recordDesc char(255)," & vbNewLine & _
+    "            @oldValue varchar(255)," & vbNewLine & _
+    "            @newValue varchar(255)" & vbNewLine & vbNewLine & _
+    "    /* Evaluate the inserted record's description (if it is defined). */" & vbNewLine & _
+    "    IF EXISTS (SELECT *" & vbNewLine & _
+    "        FROM sysobjects" & vbNewLine & _
+    "        WHERE type = 'P'" & vbNewLine & _
+    "        AND name = 'sp_ASRExpr_" & Trim(Str(lngRecordDescExprID)) & "')" & vbNewLine & _
+    "    BEGIN" & vbNewLine & _
+    "        EXEC @hResult = sp_ASRExpr_" & Trim(Str(lngRecordDescExprID)) & " @recordDesc OUTPUT, @recordID" & vbNewLine & _
+    "        IF @hResult <> 0 SET @recordDesc = ''" & vbNewLine & _
+    "        SET @recordDesc = CONVERT(varchar(255), @recordDesc)" & vbNewLine & _
+    "    END" & vbNewLine & _
+    "    ELSE SET @recordDesc = ''" & vbNewLine & vbNewLine
     
 End Function
 
@@ -147,17 +147,17 @@ Public Function CreateDiaryProcsForTable(pLngCurrentTableID As Long, sCurrentTab
 
             If Not .EOF Then
               sInsertDiaryCode = sInsertDiaryCode & _
-                "    /* " & recColEdit!ColumnName & " triggers */" & vbCrLf & _
-                "    SELECT @oldDateValue = " & recColEdit!ColumnName & " FROM " & sCurrentTable & vbCrLf & _
-                "    WHERE @recordid = ID" & vbCrLf & vbCrLf
+                "    /* " & recColEdit!ColumnName & " triggers */" & vbNewLine & _
+                "    SELECT @oldDateValue = " & recColEdit!ColumnName & " FROM " & sCurrentTable & vbNewLine & _
+                "    WHERE @recordid = ID" & vbNewLine & vbNewLine
               
               
               Do While Not .EOF
 
                 sInsertDiaryCode = sInsertDiaryCode & _
-                  "    SET @Done = 0" & vbCrLf & _
-                  "    IF (NOT @oldDateValue IS NULL)" & vbCrLf & _
-                  "    BEGIN" & vbCrLf & vbCrLf
+                  "    SET @Done = 0" & vbNewLine & _
+                  "    IF (NOT @oldDateValue IS NULL)" & vbNewLine & _
+                  "    BEGIN" & vbNewLine & vbNewLine
 
                 'Select Case .rdoColumns("Period").Value
                 'Case 0: sDiaryPeriod = "day"
@@ -169,29 +169,29 @@ Public Function CreateDiaryProcsForTable(pLngCurrentTableID As Long, sCurrentTab
                 sDiaryPeriod = TimePeriod(.Fields("Period").value)
 
                 sInsertDiaryCode = sInsertDiaryCode & _
-                  "      SELECT @NewDateValue = DATEADD(" & sDiaryPeriod & ", " & .Fields("Offset").value & ", @oldDateValue)" & vbCrLf & _
-                  "      SELECT @DiaryComment = CONVERT(varchar(255), RTRIM(@recordDesc) + ': " & Replace(.Fields("Comment").value, "'", "''") & "')" & vbCrLf
+                  "      SELECT @NewDateValue = DATEADD(" & sDiaryPeriod & ", " & .Fields("Offset").value & ", @oldDateValue)" & vbNewLine & _
+                  "      SELECT @DiaryComment = CONVERT(varchar(255), RTRIM(@recordDesc) + ': " & Replace(.Fields("Comment").value, "'", "''") & "')" & vbNewLine
 
                 sInsertDiaryCode = sInsertDiaryCode & _
-                  "      IF DateDiff(day, '" & Replace(Format(.Fields("EffectiveDate"), "mm/dd/yyyy"), UI.GetSystemDateSeparator, "/") & "', @newDateValue) >= 0 AND DateDiff(day, '12/31/2999', @newDateValue) <= 0" & vbCrLf & _
-                  "      BEGIN" & vbCrLf
+                  "      IF DateDiff(day, '" & Replace(Format(.Fields("EffectiveDate"), "mm/dd/yyyy"), UI.GetSystemDateSeparator, "/") & "', @newDateValue) >= 0 AND DateDiff(day, '12/31/2999', @newDateValue) <= 0" & vbNewLine & _
+                  "      BEGIN" & vbNewLine
                 
                 'sInsertDiaryCode = sInsertDiaryCode & _
-                  "      IF DateDiff(day, '" & Format(.rdoColumns("EffectiveDate"), "mm/dd/yyyy") & "', @newDateValue) >= 0" & vbCrLf & _
-                  "      BEGIN" & vbCrLf
+                  "      IF DateDiff(day, '" & Format(.rdoColumns("EffectiveDate"), "mm/dd/yyyy") & "', @newDateValue) >= 0" & vbnewline & _
+                  "      BEGIN" & vbnewline
 
-                  '"      IF DateDiff(day, @oldestDateAllowed, @newDateValue) >= 0" & vbCrLf & _
+                  '"      IF DateDiff(day, @oldestDateAllowed, @newDateValue) >= 0" & vbnewline & _
 
                 sInsertDiaryCode = sInsertDiaryCode & _
-                  "        IF (DateDiff(day, @purgeDate, @newDateValue) >= 0) OR @purgeDate IS NULL" & vbCrLf & _
-                  "        BEGIN" & vbCrLf
+                  "        IF (DateDiff(day, @purgeDate, @newDateValue) >= 0) OR @purgeDate IS NULL" & vbNewLine & _
+                  "        BEGIN" & vbNewLine
 
 
                 If strSQLLeavingDate <> vbNullString And Abs(.Fields("CheckLeavingDate")) > 0 Then
                   blnLeavingDate = True
                   sInsertDiaryCode = sInsertDiaryCode & _
-                    "          IF (DateDiff(day, @EmployeeLeavingDate, @newDateValue) <= 0) OR @EmployeeLeavingDate IS NULL" & vbCrLf & _
-                    "          BEGIN" & vbCrLf
+                    "          IF (DateDiff(day, @EmployeeLeavingDate, @newDateValue) <= 0) OR @EmployeeLeavingDate IS NULL" & vbNewLine & _
+                    "          BEGIN" & vbNewLine
                 End If
 
 
@@ -210,8 +210,8 @@ Public Function CreateDiaryProcsForTable(pLngCurrentTableID As Long, sCurrentTab
                   
                   If strLinkFilter <> vbNullString Then
                     sInsertDiaryCode = sInsertDiaryCode & _
-                      "            IF " & strLinkFilter & vbCrLf & _
-                      "            BEGIN" & vbCrLf
+                      "            IF " & strLinkFilter & vbNewLine & _
+                      "            BEGIN" & vbNewLine
                   End If
                 Else
                   strLinkFilter = vbNullString
@@ -221,55 +221,55 @@ Public Function CreateDiaryProcsForTable(pLngCurrentTableID As Long, sCurrentTab
                 'Only alarm if required and event is in the future
                 If Abs(.Fields("Reminder")) > 0 Then
                   sInsertDiaryCode = sInsertDiaryCode & _
-                    "              /* If prior to today don't alarm */" & vbCrLf & _
+                    "              /* If prior to today don't alarm */" & vbNewLine & _
                     "              SELECT @Alarm = CASE WHEN " & _
                                    "(datediff(day,getdate(),@newDateValue) >= 0) " & _
-                                   "THEN 1 ELSE 0 END" & vbCrLf & vbCrLf
+                                   "THEN 1 ELSE 0 END" & vbNewLine & vbNewLine
                 Else
                   sInsertDiaryCode = sInsertDiaryCode & _
-                    "              /* This event is never alarmed */" & vbCrLf & _
-                    "              SELECT @Alarm = 0" & vbCrLf & vbCrLf
+                    "              /* This event is never alarmed */" & vbNewLine & _
+                    "              SELECT @Alarm = 0" & vbNewLine & vbNewLine
                 End If
                 
                 
                 sInsertDiaryCode = sInsertDiaryCode & _
-                  "             SET @Done = 1" & vbCrLf & vbCrLf
+                  "             SET @Done = 1" & vbNewLine & vbNewLine
 
                 sInsertDiaryCode = sInsertDiaryCode & _
-                  "             IF EXISTS(SELECT * FROM ASRSysDiaryEvents" & vbCrLf & _
-                  "             WHERE LinkID = " & CStr(lngLinkID) & " AND RowID = @recordID)" & vbCrLf
+                  "             IF EXISTS(SELECT * FROM ASRSysDiaryEvents" & vbNewLine & _
+                  "             WHERE LinkID = " & CStr(lngLinkID) & " AND RowID = @recordID)" & vbNewLine
                 
                 sInsertDiaryCode = sInsertDiaryCode & _
-                  "              UPDATE ASRSysDiaryEvents SET " & vbCrLf & _
-                  "                EventTitle = @DiaryComment," & vbCrLf & _
-                  "                EventDate = @NewDateValue," & vbCrLf & _
-                  "                ColumnValue = @oldDateValue," & vbCrLf
+                  "              UPDATE ASRSysDiaryEvents SET " & vbNewLine & _
+                  "                EventTitle = @DiaryComment," & vbNewLine & _
+                  "                EventDate = @NewDateValue," & vbNewLine & _
+                  "                ColumnValue = @oldDateValue," & vbNewLine
 
 
                 'MH20060210 Fault 10651
                 If Abs(.Fields("Reminder")) > 0 Then
                   sInsertDiaryCode = sInsertDiaryCode & _
-                    "                Alarm = CASE WHEN @Alarm = 1 THEN 1 ELSE Alarm END" & vbCrLf
+                    "                Alarm = CASE WHEN @Alarm = 1 THEN 1 ELSE Alarm END" & vbNewLine
                 Else
                   sInsertDiaryCode = sInsertDiaryCode & _
-                    "                Alarm = 0" & vbCrLf
+                    "                Alarm = 0" & vbNewLine
                 End If
 
 
                 sInsertDiaryCode = sInsertDiaryCode & _
-                  "              WHERE LinkID = " & CStr(lngLinkID) & vbCrLf & _
-                  "                AND RowID = @recordID" & vbCrLf
+                  "              WHERE LinkID = " & CStr(lngLinkID) & vbNewLine & _
+                  "                AND RowID = @recordID" & vbNewLine
                 
                 sInsertDiaryCode = sInsertDiaryCode & _
-                  "             ELSE" & vbCrLf
+                  "             ELSE" & vbNewLine
 
                 sInsertDiaryCode = sInsertDiaryCode & _
-                  "              INSERT INTO ASRSysDiaryEvents" & vbCrLf & _
+                  "              INSERT INTO ASRSysDiaryEvents" & vbNewLine & _
                   "                (LinkID, TableID, ColumnID, RowID, EventTitle, EventDate, " & _
-                                   "ColumnValue, Alarm, UserName, Access)" & vbCrLf
+                                   "ColumnValue, Alarm, UserName, Access)" & vbNewLine
 
                 sInsertDiaryCode = sInsertDiaryCode & _
-                  "              VALUES" & vbCrLf & _
+                  "              VALUES" & vbNewLine & _
                   "               (" & CStr(lngLinkID) & ", " & _
                                   CStr(pLngCurrentTableID) & ", " & _
                                   CStr(lngColumnID) & ", " & _
@@ -278,28 +278,28 @@ Public Function CreateDiaryProcsForTable(pLngCurrentTableID As Long, sCurrentTab
                                   "@NewDateValue, " & _
                                   "@oldDateValue, " & _
                                   "@Alarm, " & _
-                                  "'System', '" & ACCESS_READONLY & "')" & vbCrLf & vbCrLf
+                                  "'System', '" & ACCESS_READONLY & "')" & vbNewLine & vbNewLine
 
 
                 If strLinkFilter <> vbNullString Then
                   sInsertDiaryCode = sInsertDiaryCode & _
-                    "          END" & vbCrLf
+                    "          END" & vbNewLine
                 End If
 
                 If strSQLLeavingDate <> vbNullString And Abs(.Fields("CheckLeavingDate")) > 0 Then
                   sInsertDiaryCode = sInsertDiaryCode & _
-                    "        END" & vbCrLf
+                    "        END" & vbNewLine
                 End If
 
                 sInsertDiaryCode = sInsertDiaryCode & _
-                  "        END" & vbCrLf & _
-                  "      END" & vbCrLf & _
-                  "    END" & vbCrLf
+                  "        END" & vbNewLine & _
+                  "      END" & vbNewLine & _
+                  "    END" & vbNewLine
 
                 sInsertDiaryCode = sInsertDiaryCode & _
-                  "    IF @Done = 0" & vbCrLf & _
-                  "      DELETE FROM ASRSysDiaryEvents" & vbCrLf & _
-                  "      WHERE LinkID = " & CStr(lngLinkID) & " AND RowID = @recordID" & vbCrLf & vbCrLf
+                  "    IF @Done = 0" & vbNewLine & _
+                  "      DELETE FROM ASRSysDiaryEvents" & vbNewLine & _
+                  "      WHERE LinkID = " & CStr(lngLinkID) & " AND RowID = @recordID" & vbNewLine & vbNewLine
 
                 .MoveNext   'Next Diary Link
               Loop
@@ -343,15 +343,15 @@ Public Function CreateDiaryProcsForTable(pLngCurrentTableID As Long, sCurrentTab
         & "          @NewDateValue datetime," & vbNewLine _
         & "          @Alarm int," & vbNewLine _
         & "          @purgeDate datetime," & vbNewLine _
-        & "          @Done bit" & vbCrLf & vbNewLine
+        & "          @Done bit" & vbNewLine & vbNewLine
 
     sSQL = sSQL & _
-      "  EXEC [dbo].[sp_ASRPurgeDate] @purgedate OUTPUT, 'DIARYSYS'" & vbCrLf & vbCrLf & _
-      GetSQLForRecordDescription(lngRecordDescExprID) & vbCrLf & vbCrLf
+      "  EXEC [dbo].[sp_ASRPurgeDate] @purgedate OUTPUT, 'DIARYSYS'" & vbNewLine & vbNewLine & _
+      GetSQLForRecordDescription(lngRecordDescExprID) & vbNewLine & vbNewLine
 
     If blnLeavingDate Then
       sSQL = sSQL & _
-        "  DECLARE @EmployeeLeavingDate datetime" & vbCrLf & _
+        "  DECLARE @EmployeeLeavingDate datetime" & vbNewLine & _
         strSQLLeavingDate
     End If
 
@@ -387,7 +387,7 @@ Private Function GetSQLFilter(lngFilterID As Long, sCurrentTable As String) As S
     objExpr.ConstructExpression
     fOK = objExpr.RuntimeFilterCode(strFilterRunTimeCode, False)
 
-    strFilterRunTimeCode = Replace(strFilterRunTimeCode, vbCrLf, " ")
+    strFilterRunTimeCode = Replace(strFilterRunTimeCode, vbNewLine, " ")
       
     GetSQLFilter = "@recordID IN " & _
           "(" & strFilterRunTimeCode & ")"
@@ -490,9 +490,9 @@ Private Function GetSQLForLeavingDate(lngCurrentTable As Long, strCurrentTable A
               If blnChildOfPers Then
                 GetSQLForLeavingDate = GetSQLForLeavingDate & _
                     "(SELECT [ID_" & CStr(lngPersonnelTableID) & "]" & _
-                    " FROM [" & strCurrentTable & "] WHERE ID = @recordid)" & vbCrLf & vbCrLf
+                    " FROM [" & strCurrentTable & "] WHERE ID = @recordid)" & vbNewLine & vbNewLine
               Else
-                GetSQLForLeavingDate = GetSQLForLeavingDate & "@recordid" & vbCrLf & vbCrLf
+                GetSQLForLeavingDate = GetSQLForLeavingDate & "@recordid" & vbNewLine & vbNewLine
               End If
 
             End If
@@ -589,9 +589,9 @@ Public Function DiaryRebuild() As Boolean
         If (Not !Deleted) Then
           If TableHasDiaryLinks(!TableID) Then
             If strSQL <> vbNullString Then
-              strSQL = strSQL & "UNION" & vbCrLf
+              strSQL = strSQL & "UNION" & vbNewLine
             End If
-            strSQL = strSQL & "SELECT ID, " & CStr(!TableID) & " as 'TableID', '" & !TableName & "' as 'TableName' FROM [" & !TableName & "]" & vbCrLf
+            strSQL = strSQL & "SELECT ID, " & CStr(!TableID) & " as 'TableID', '" & !TableName & "' as 'TableName' FROM [" & !TableName & "]" & vbNewLine
           End If
         End If
         
