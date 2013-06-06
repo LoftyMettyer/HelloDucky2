@@ -4274,7 +4274,7 @@ Private Sub cmdOK_Click()
       .Properties("MaxOLESizeEnabled") = (chkEnableOLEMaxSize.value = vbChecked)
       .Properties("MaxOLESize") = asrMaxOLESize.value
       
-      .Properties("multiLine") = IIf((miControlType = giCTRL_TEXTBOX) And _
+      .Properties("multiLine") = IIf((miControlType = giCTRL_TEXTBOX Or miControlType = giCTRL_NAVIGATION) And _
         (miDataType = dtVARCHAR), _
         (chkMultiLine.value = vbChecked), False)
       .Properties("blankIfZero") = IIf((miControlType = giCTRL_TEXTBOX) And _
@@ -5447,6 +5447,7 @@ Private Sub cboControl_Click()
       
     ' Refresh Control tab page.
     RefreshControlTab
+    RefreshOptionsTab
 
     ' JDM - 29/03/01 - Fault 1824 - Refresh the defaults
     cboDefault_Refresh
@@ -6880,6 +6881,9 @@ Private Sub RefreshOptionsTab()
     (miDataType <> dtVARCHAR) Then
     If (miColumnType <> giCOLUMNTYPE_LOOKUP) Then
       chkMultiLine.value = vbUnchecked
+    End If
+    If (miControlType = giCTRL_NAVIGATION) Then
+      chkMultiLine.value = vbChecked
     End If
   End If
   
