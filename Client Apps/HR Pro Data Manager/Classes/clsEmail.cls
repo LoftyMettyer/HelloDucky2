@@ -31,6 +31,7 @@ Public Sub SendImmediateEmails()
     .ConnectionTimeout = 60
     .CursorLocation = adUseServer
     .Mode = adModeReadWrite
+    .Properties("Application Name") = "Immediate Emails"
     .Properties("Packet Size") = 32767
     .Open
   End With
