@@ -47,9 +47,9 @@ BEGIN
 	RETURN
 END
 
--- Only allow script to be run on SQL2005 or above
+-- Only allow script to be run on or above SQL2005
 SELECT @iSQLVersion = convert(float,substring(@@version,charindex('-',@@version)+2,2))
-IF (@iSQLVersion <> 9 AND @iSQLVersion <> 10)
+IF (@iSQLVersion < 9)
 BEGIN
 	RAISERROR('The SQL Server is incompatible with this version of HR Pro', 16, 1)
 	RETURN

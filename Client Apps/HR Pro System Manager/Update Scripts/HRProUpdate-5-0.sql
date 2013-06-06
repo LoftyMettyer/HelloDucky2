@@ -46,7 +46,7 @@ END
 
 -- Only allow script to be run on SQL2008 or above
 SELECT @iSQLVersion = convert(float,substring(@@version,charindex('-',@@version)+2,2))
-IF (@iSQLVersion < 9)
+IF (@iSQLVersion < 10)
 BEGIN
 	RAISERROR('The SQL Server is incompatible with this version of OpenHR', 16, 1)
 	RETURN
