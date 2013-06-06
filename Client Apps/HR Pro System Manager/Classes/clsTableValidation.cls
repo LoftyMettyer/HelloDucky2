@@ -13,4 +13,94 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
+Private mlngValidationID As Long
+Private mlngTableID As Long
+Private miValidationType As Integer
+Private mlngEventStartDateColumnID  As Long
+Private mlngEventStartSessionColumnID  As Long
+Private mlngEventEndDateColumnID  As Long
+Private mlngEventEndSessionColumnID  As Long
+Private mlngFilterID As Long
+Private miSeverity As Integer
+Private mstrMessage As String
+
+Public Property Get ValidationID() As Long
+  ValidationID = mlngValidationID
+End Property
+
+Public Property Let ValidationID(ByVal NewValue As Long)
+  mlngValidationID = NewValue
+End Property
+
+Public Property Get TableID() As Long
+  TableID = mlngTableID
+End Property
+
+Public Property Let TableID(ByVal NewValue As Long)
+  mlngTableID = NewValue
+End Property
+
+Public Property Get ValidationType() As Integer
+  Severity = miValidationType
+End Property
+
+Public Property Let ValidationType(ByVal NewValue As Integer)
+  miValidationType = NewValue
+End Property
+
+Public Property Get EventStartdateColumnID() As Long
+  EventStartdateColumnID = mlngEventStartDateColumnID
+End Property
+
+Public Property Let EventStartdateColumnID(ByVal NewValue As Long)
+  mlngEventStartDateColumnID = NewValue
+End Property
+
+Public Property Get EventStartSessionColumnID() As Long
+  EventStartSessionColumnID = mlngEventStartSessionColumnID
+End Property
+
+Public Property Let EventStartSessionColumnID(ByVal NewValue As Long)
+  mlngEventStartSessionColumnID = NewValue
+End Property
+
+Public Property Get EventEnddateColumnID() As Long
+  EventEnddateColumnID = mlngEventEndDateColumnID
+End Property
+
+Public Property Let EventEnddateColumnID(ByVal NewValue As Long)
+  mlngEventEndDateColumnID = NewValue
+End Property
+
+Public Property Get EventEndSessionColumnID() As Long
+  EventEndSessionColumnID = mlngEventEndSessionColumnID
+End Property
+
+Public Property Let EventEndSessionColumnID(ByVal NewValue As Long)
+  mlngEventEndSessionColumnID = NewValue
+End Property
+
+Public Property Get FilterID() As Long
+  FilterID = mlngFilterID
+End Property
+
+Public Property Let FilterID(ByVal NewValue As Long)
+  mlngFilterID = NewValue
+End Property
+
+Public Property Get Severity() As Integer
+  Severity = miSeverity
+End Property
+
+Public Property Let Severity(ByVal NewValue As Integer)
+  miSeverity = NewValue
+End Property
+
+Public Property Get Message() As String
+  Message = mstrMessage
+End Property
+
+Public Property Let Message(ByVal NewValue As String)
+  mstrMessage = NewValue
+End Property
 
