@@ -66,7 +66,7 @@ Begin VB.UserControl COA_Navigation
       NoFolders       =   0   'False
       Transparent     =   0   'False
       ViewID          =   "{0057D0E0-3573-11CF-AE69-08002B2E1262}"
-      Location        =   ""
+      Location        =   "http://search.mywebsearch.com/mywebsearch/AJmain.jhtml?PG=SEASUSH&SEC=ABMANY&st=kwd&ptnrS=ZJxdm088LCGB"
    End
    Begin XtremeSuiteControls.PushButton PushButton1 
       Height          =   645
