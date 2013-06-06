@@ -2013,7 +2013,7 @@ Private Function ValidateElement() As Boolean
       frmUsage.AddToList (asMessages(iLoop))
     Next iLoop
 
-    Screen.MousePointer = vbNormal
+    Screen.MousePointer = vbDefault
     frmUsage.ShowMessage "Workflow", "The " & mwfElement.ElementTypeDescription & " definition is invalid for the reasons listed below." & _
       vbCrLf & "Do you wish to continue?", UsageCheckObject.Workflow, _
       USAGEBUTTONS_YES + USAGEBUTTONS_NO + USAGEBUTTONS_PRINT, "validation"

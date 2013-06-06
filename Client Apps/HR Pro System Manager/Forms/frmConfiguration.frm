@@ -1498,7 +1498,7 @@ If Changed = True Or cmdOK.Enabled Then
     'Me.MousePointer = vbHourglass
     Screen.MousePointer = vbHourglass
     cmdOK_Click 'This is just like saving
-    Screen.MousePointer = vbNormal
+    Screen.MousePointer = vbDefault
     'Me.MousePointer = vbNormal
     Exit Sub
   ElseIf pintAnswer = vbCancel Then

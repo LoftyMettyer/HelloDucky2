@@ -183,7 +183,7 @@ Public Function Initialise(iForceReason As PasswordChangeReason, lMinimumLength 
   If iForceReason > 0 Then
     ForceChange = True
     Reason = iForceReason
-    Screen.MousePointer = vbNormal
+    Screen.MousePointer = vbDefault
   Else
     ForceChange = False
   End If

@@ -101,7 +101,7 @@ Sub Main()
       
       'Unload splash screen
       UnLoad frmSplash
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
 
     End If
   End If
@@ -1117,7 +1117,7 @@ End Function
 '        mfrmUse.ResetList
 '        If objTable.TableIsUsed(mfrmUse) Then
 '          gobjProgress.Visible = False
-'          Screen.MousePointer = vbNormal
+'          Screen.MousePointer = vbDefault
 '          Select Case !TableType
 '            Case TableTypes.iTabParent
 '              mfrmUse.ShowMessage !TableName & " Table", "The table cannot be deleted as the table is used by the following:", UsageCheckObject.Table
@@ -1367,7 +1367,7 @@ End Function
 '        mfrmUse.ResetList
 '        If objOrder.OrderIsUsed(mfrmUse) Then
 '          gobjProgress.Visible = False
-'          Screen.MousePointer = vbNormal
+'          Screen.MousePointer = vbDefault
 '          mfrmUse.ShowMessage !Name & " Order", "The order cannot be deleted as the order is used by the following:", UsageCheckObject.Order
 '          fOK = False
 '        End If
@@ -1423,7 +1423,7 @@ End Function
 '        mfrmUse.ResetList
 '        If objEmailAddr.EmailIsUsed(mfrmUse) Then
 '          gobjProgress.Visible = False
-'          Screen.MousePointer = vbNormal
+'          Screen.MousePointer = vbDefault
 '          mfrmUse.ShowMessage !Name & " Email", "The email cannot be deleted as the email is used by the following:", UsageCheckObject.Email
 '          fOK = False
 '        End If

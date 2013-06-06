@@ -22,7 +22,7 @@ Public Function SaveEmailAddrs(mfrmUse As frmUsage) As Boolean
         mfrmUse.ResetList
         If objEmailAddr.EmailIsUsed(mfrmUse) Then
           gobjProgress.Visible = False
-          Screen.MousePointer = vbNormal
+          Screen.MousePointer = vbDefault
           mfrmUse.ShowMessage !Name & " Email", "The email cannot be deleted as the email is used by the following:", UsageCheckObject.Email
           fOK = False
         End If

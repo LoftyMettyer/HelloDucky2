@@ -408,7 +408,7 @@ Private Function DeleteOutlookFolder() As Boolean
     Set mfrmUse = New frmUsage
     mfrmUse.ResetList
     If FolderIsUsed(mfrmUse) Then
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
       mfrmUse.ShowMessage Me.Name & " Folder", "The Folder cannot be deleted as the Folder is used by the following:", UsageCheckObject.OutlookFolder
       fOK = False
     End If

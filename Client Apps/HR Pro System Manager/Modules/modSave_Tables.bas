@@ -32,7 +32,7 @@ Public Function SaveTables(pfRefreshDatabase As Boolean, mfrmUse As frmUsage) ',
         mfrmUse.ResetList
         If objTable.TableIsUsed(mfrmUse) Then
           gobjProgress.Visible = False
-          Screen.MousePointer = vbNormal
+          Screen.MousePointer = vbDefault
           Select Case !TableType
             Case TableTypes.iTabParent
               mfrmUse.ShowMessage !TableName & " Table", "The table cannot be deleted as the table is used by the following:", UsageCheckObject.Table
@@ -887,7 +887,7 @@ Private Function TableSave(mfrmUse As frmUsage) As Boolean
             mfrmUse.ResetList
             If objColumn.ColumnIsUsed(mfrmUse) Then
               gobjProgress.Visible = False
-              Screen.MousePointer = vbNormal
+              Screen.MousePointer = vbDefault
               mfrmUse.ShowMessage GetTableName(!TableID) & "." & !ColumnName & " Column", "The column cannot be deleted as the column is used by the following:", UsageCheckObject.Column
               fOK = False
             End If

@@ -515,7 +515,7 @@ Private Sub cmdCancel_Click()
 '        Screen.MousePointer = vbHourglass
 '        cmdOK_Click 'This is just like saving
 '        'Me.MousePointer = vbNormal
-'        Screen.MousePointer = vbNormal
+'        Screen.MousePointer = vbDefault
 '        Exit Sub
 '      ElseIf pintAnswer = vbCancel Then
 '        Exit Sub
@@ -615,7 +615,7 @@ Private Function SaveChanges() As Boolean
   SaveChanges = True
   Application.Changed = True
   
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   
 End Function
 

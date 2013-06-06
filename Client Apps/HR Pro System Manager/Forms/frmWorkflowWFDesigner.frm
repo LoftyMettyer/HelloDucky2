@@ -1170,7 +1170,7 @@ Public Function UpdateIdentifiers(pfElement As Boolean, _
       frmUsage.AddToList asMessages(iLoop)
     Next iLoop
 
-    Screen.MousePointer = vbNormal
+    Screen.MousePointer = vbDefault
 
     frmUsage.Width = (3 * Screen.Width / 4)
 
@@ -1639,7 +1639,7 @@ Private Function ValidateWebForm() As Boolean
       frmUsage.AddToList (asMessages(iLoop))
     Next iLoop
     
-    Screen.MousePointer = vbNormal
+    Screen.MousePointer = vbDefault
     frmUsage.ShowMessage "Workflow", "The Web Form definition is invalid for the reasons listed below." & _
       vbCrLf & "Do you wish to continue?", UsageCheckObject.Workflow, _
       USAGEBUTTONS_YES + USAGEBUTTONS_NO + USAGEBUTTONS_PRINT, "validation"
@@ -3489,7 +3489,7 @@ TidyUpAndExit:
   Set VarPageContainer = Nothing
   
   ' Reset the screen mousepointer.
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   Exit Sub
   
 ErrorTrap:
@@ -3725,7 +3725,7 @@ Private Function DeleteSelectedControls(Optional pbIsCutting As Boolean) As Bool
         ' Close progress bar
         gobjProgress.CloseProgress
 
-        Screen.MousePointer = vbNormal
+        Screen.MousePointer = vbDefault
     
         frmUsage.Width = (3 * Screen.Width / 4)
     
@@ -4812,7 +4812,7 @@ ExitSaveWebForm:
   End If
   
   gobjProgress.CloseProgress
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   SaveWebForm = fOK
   Exit Function
 
@@ -4921,7 +4921,7 @@ Private Function SelectAllControls() As Boolean
 TidyUpAndExit:
 
   'Reset the mousepointer
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   
   ' Disassociate object variables.
   Set ctlControl = Nothing
@@ -7084,7 +7084,7 @@ Public Function LoadWebFormItems() As Boolean
         frmUsage.AddToList (asMessages(iLoop))
       Next iLoop
     
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
       frmUsage.ShowMessage "Workflow '" & Trim(mfrmCallingForm.WorkflowName) & "'", "The following web form items are invalid, and will need reviewing:", _
         UsageCheckObject.Workflow, _
         USAGEBUTTONS_PRINT + USAGEBUTTONS_OK, "validation"
@@ -7103,7 +7103,7 @@ TidyUpAndExit:
   UI.UnlockWindow
     
   ' Reset the screen mousepointer.
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   
   LoadWebFormItems = fLoadOk
   Exit Function
@@ -7246,7 +7246,7 @@ TidyUpAndExit:
   End If
 
   ' Reset the screen moousepointer.
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   mfChanged = mfForcedChanged
   
   LoadWebForm = fLoadOk

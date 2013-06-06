@@ -1401,7 +1401,7 @@ Private Sub DeleteViews()
       Set rsTemp = Nothing
       
       If fUsed Then
-        Screen.MousePointer = vbNormal
+        Screen.MousePointer = vbDefault
         frmUse.ShowMessage sViewName & " View", "The view cannot be deleted as it is used by the following:", UsageCheckObject.View
       Else
         fOK = DeleteView_Transaction(lngViewID)

@@ -23,7 +23,7 @@ Public Function SaveOrders(mfrmUse As frmUsage) As Boolean
         mfrmUse.ResetList
         If objOrder.OrderIsUsed(mfrmUse) Then
           gobjProgress.Visible = False
-          Screen.MousePointer = vbNormal
+          Screen.MousePointer = vbDefault
           mfrmUse.ShowMessage !Name & " Order", "The order cannot be deleted as the order is used by the following:", UsageCheckObject.Order
           fOK = False
         End If

@@ -2017,7 +2017,7 @@ Private Function UpdateLockCheck() As Boolean
                        "Machine :  " & rsTemp!HostName & vbNewLine & _
                        "Type :  " & rsTemp!Description
   
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
       
       'Database is locked
       MsgBox "Unable to update '" & gsDatabaseName & "' as the database has been locked." & _

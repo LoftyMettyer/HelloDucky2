@@ -210,7 +210,7 @@ Public Function DeleteTable() As Boolean
     Set mfrmUse = New frmUsage
     mfrmUse.ResetList
     If TableIsUsed(mfrmUse) Then
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
       Select Case Me.TableType
         Case TableTypes.iTabParent
           mfrmUse.ShowMessage Me.TableName & " Table", "The table cannot be deleted as the table is used by the following:", UsageCheckObject.Table
@@ -270,7 +270,7 @@ Public Function DeleteTable() As Boolean
               Set mfrmUse = New frmUsage
               mfrmUse.ResetList
               If RelationIsUsed(gLngTableID, mfrmUse) Then
-                Screen.MousePointer = vbNormal
+                Screen.MousePointer = vbDefault
                 mfrmUse.ShowMessage Me.TableName & " - " & GetTableName(gLngTableID) & " Relationship", "The relationship cannot be deleted as the relationship is used by the following:", UsageCheckObject.Relationship
                 fOK = False
               End If
@@ -3009,7 +3009,7 @@ Public Function DeleteRelation(ByVal plngRelatedTableID As Long) As Boolean
   Set mfrmUse = New frmUsage
   mfrmUse.ResetList
   If RelationIsUsed(plngRelatedTableID, mfrmUse) Then
-    Screen.MousePointer = vbNormal
+    Screen.MousePointer = vbDefault
     mfrmUse.ShowMessage Me.TableName & " - " & GetTableName(plngRelatedTableID) & " Relationship", "The relationship cannot be deleted as the relationship is used by the following:", UsageCheckObject.Relationship
     fOK = False
   End If
@@ -4761,7 +4761,7 @@ Public Function CloneTable_Transaction(pfCopyData As Boolean, pfCopySecurity As 
   End If
   
 TidyUpAndExit:
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
     
   Set rsParents = Nothing
   Set rsColumns = Nothing

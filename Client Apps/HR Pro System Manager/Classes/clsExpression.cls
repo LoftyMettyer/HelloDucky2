@@ -1807,7 +1807,7 @@ Public Function DeleteExpression(Optional pfUsageChecks As Variant) As Boolean
     End If
     
     If fShowMsg Then
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
       mfrmUse.ShowMessage Me.Name & " " & Me.ExpressionTypeName, "The " & Me.ExpressionTypeName & " cannot be deleted as the " & Me.ExpressionTypeName & " is used by the following:", intObjectType
       fDeleteOK = False
     Else
@@ -4862,7 +4862,7 @@ Public Function ShowExpressionUsage() As Boolean
     blnIsUsed = ExpressionIsUsed(mlngExpressionID)
     
     If blnIsUsed Then
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
       mfrmUse.ShowMessage Me.Name & " " & Me.ExpressionTypeName, "The return type of this " & LCase(Me.ExpressionTypeName) & " cannot be modified as it is used by the following:", Calculation
     End If
     

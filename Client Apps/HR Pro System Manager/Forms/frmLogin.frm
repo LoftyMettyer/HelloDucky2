@@ -548,7 +548,7 @@ Public Sub Login()
     sConnect = sConnect & "Server={" & txtServer.Text & "};"
     gsServerName = txtServer.Text
   Else
-    Screen.MousePointer = vbNormal
+    Screen.MousePointer = vbDefault
     MsgBox "Please enter the name of the server on which the OpenHR database is located.", _
       vbExclamation + vbOKOnly, App.ProductName
     Exit Sub
@@ -558,7 +558,7 @@ Public Sub Login()
   If Len(gsUserName) > 0 Then
     sConnect = sConnect & "UID=" & gsUserName
   Else
-    Screen.MousePointer = vbNormal
+    Screen.MousePointer = vbDefault
     MsgBox "Please enter a user name.", _
       vbExclamation + vbOKOnly, App.ProductName
     Exit Sub
@@ -571,7 +571,7 @@ Public Sub Login()
   If Len(txtDatabase.Text) > 0 Then
     sConnect = sConnect & "Database=" & txtDatabase.Text & ";"
   Else
-    Screen.MousePointer = vbNormal
+    Screen.MousePointer = vbDefault
     MsgBox "Please enter the name of the OpenHR database.", _
       vbExclamation + vbOKOnly, App.ProductName
     Exit Sub
@@ -580,7 +580,7 @@ Public Sub Login()
   'Windows Authentication
   If gbUseWindowsAuthentication Then
     If Not objNET.MakeDSN(txtServer.Text, txtDatabase.Text) Then
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
       gobjProgress.CloseProgress
       MsgBox "Error creating System DSN entry for HRPro." & vbNewLine & vbNewLine _
              & "Please contact your system administrator.", _
@@ -643,7 +643,7 @@ Public Sub Login()
 
   If Not IsVersion10 Then
     ' The version of SQL Server is below 2008
-    Screen.MousePointer = vbNormal
+    Screen.MousePointer = vbDefault
     MsgBox "You are running an unsupported version of SQL Server." & vbNewLine & vbNewLine & _
       "OpenHR requires SQL Server version 2008 or above.", _
       vbOKOnly, App.ProductName
@@ -654,7 +654,7 @@ Public Sub Login()
   gbCanUseWindowsAuthentication = IIf(glngSQLVersion < 9, False, True)
   
   If Not gbCanUseWindowsAuthentication And gbUseWindowsAuthentication Then
-    Screen.MousePointer = vbNormal
+    Screen.MousePointer = vbDefault
     gobjProgress.CloseProgress
     MsgBox "Windows authenticated users are not supported on your SQL Server" & vbNewLine & vbNewLine & _
       "OpenHR requires SQL Server version 2005 or above.", _
@@ -683,7 +683,7 @@ Public Sub Login()
 
   ' Only allow sql login if server is configured this way (see comments above)
   If giSQLServerAuthenticationType = iWINDOWSONLY And Not gbUseWindowsAuthentication Then
-    Screen.MousePointer = vbNormal
+    Screen.MousePointer = vbDefault
     MsgBox "Your server is configured for Windows Only security." & vbNewLine & "Please see your system administrator." _
     , vbInformation, App.ProductName
     Exit Sub
@@ -750,7 +750,7 @@ TryUsingGroupSecurity:
   If Not (LCase(gsUserName) = "sa" Or gbUseWindowsAuthentication) And glngSQLVersion < 9 Then
   
     'JDM - 04/12/01 - Fault 3257 - Nice pretty hourglass is now off
-    Screen.MousePointer = vbNormal
+    Screen.MousePointer = vbDefault
     CheckPassword
     Screen.MousePointer = vbHourglass
 '  Else
@@ -895,7 +895,7 @@ NoFramework:
   MsgBox "The System Framework is not installed." & vbNewLine & vbNewLine & _
     "Contact your System Administrator to install the latest System Framework" & vbNewLine & vbNewLine _
     , vbExclamation + vbOKOnly, Application.Name
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
 
 End Sub
 
@@ -1442,7 +1442,7 @@ Private Sub CheckApplicationAccess()
     Application.AccessMode = accSystemReadOnly
   Else
     Application.AccessMode = accNone
-    Screen.MousePointer = vbNormal
+    Screen.MousePointer = vbDefault
     MsgBox "You do not have permission to run the System Manager." & vbNewLine & vbNewLine & _
            "Please contact your security administrator.", vbOKOnly + vbExclamation, App.ProductName
     Exit Sub
@@ -1467,7 +1467,7 @@ Private Sub CheckApplicationAccess()
                        "Machine :  " & rsTemp!HostName & vbNewLine & _
                        "Type :  " & rsTemp!Description
   
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
       
       'If rsTemp!Priority = lckReadWrite Or LCase(gsUserName) = "sa" Then
       If rsTemp!Priority = lckReadWrite Or _

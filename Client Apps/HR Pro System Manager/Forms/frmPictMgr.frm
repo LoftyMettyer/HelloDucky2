@@ -328,14 +328,14 @@ Private Sub Form_Activate()
     If fExit Then
       gobjProgress.CloseProgress
       UnLoad Me
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
     Else
       PopulateListView
       Me.Loading = False
       RefreshListView
 '      Set WaitWindow = Nothing
       If gobjProgress.Visible = True Then gobjProgress.CloseProgress
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
       Me.SetFocus
     End If
   End If
@@ -768,7 +768,7 @@ Private Sub PopulateListView()
   ' Unlock the frmPicMgr form to show the updated listview.
   UI.UnlockWindow
   ' Reset the mousepointer.
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   
   ' Ensure the selected item is visible.
   If Not ListView1.SelectedItem Is Nothing Then
@@ -1069,7 +1069,7 @@ Private Function DeletePictures() As Boolean
   ' Unlock the frmPicMgr form to show the updated listview.
   UI.UnlockWindow
   ' Reset the mousepointer.
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   
   ' Select the next picture.
   If Not ListView1.SelectedItem Is Nothing Then
@@ -1319,7 +1319,7 @@ Public Function DeletePicture_Transaction(plngPictureID As Long) As Boolean
     Set mfrmUse = New frmUsage
     mfrmUse.ResetList
     If PictureIsUsed(.Fields("pictureID")) Then
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
       mfrmUse.ShowMessage !Name & " Picture", "The picture cannot be deleted as the picture is used by the following:", UsageCheckObject.Picture
       fOK = False
     End If

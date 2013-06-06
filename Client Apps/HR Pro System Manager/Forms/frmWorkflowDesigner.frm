@@ -1443,7 +1443,7 @@ Private Function CanDeleteElementsAndLinks() As Boolean
       frmUsage.AddToList CStr(mavValidationMessages(0, iLoop)), mavValidationMessages(1, iLoop)
     Next iLoop
 
-    Screen.MousePointer = vbNormal
+    Screen.MousePointer = vbDefault
 
     frmUsage.Width = (3 * Screen.Width / 4)
 
@@ -9710,7 +9710,7 @@ Public Sub UpdateIdentifiers(pwfBaseElement As VB.Control, _
         frmUsage.AddToList asMessages(iLoop)
       Next iLoop
   
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
   
       frmUsage.Width = (3 * Screen.Width / 4)
   
@@ -11613,7 +11613,7 @@ ExitSaveWorkflow:
   End If
 
   gobjProgress.CloseProgress
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   SaveWorkflow = fOK
   Exit Function
 
@@ -11904,7 +11904,7 @@ Public Function ValidateWorkflow(pfSaving As Boolean, _
         frmUsage.AddToList CStr(mavValidationMessages(0, iLoop)), mavValidationMessages(1, iLoop)
       Next iLoop
   
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
       
       frmUsage.Width = (3 * Screen.Width / 4)
       frmUsage.Height = (Me.ScaleHeight / 2)
@@ -12961,7 +12961,7 @@ TidyUpAndExit:
 '''  Me.Left = Int((Forms(0).ScaleWidth - Me.Width) / 2)
 
   ' Reset the screen mousepointer.
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
 
   LoadWorkflow = fLoadOk
   Exit Function
@@ -13633,7 +13633,7 @@ TidyUpAndExit:
   UI.UnlockWindow
 
   ' Reset the screen moousepointer.
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
 
   LoadElementsAndLinks = fLoadOk
   Exit Function
@@ -14568,7 +14568,7 @@ Private Sub MoveToItem(pctlItem As VB.Control)
       scrollHorizontal.value = -picDefinition.Left / mdblHorizontalScrollRatio
     End If
   
-    Screen.MousePointer = vbNormal
+    Screen.MousePointer = vbDefault
   End If
   
 End Sub

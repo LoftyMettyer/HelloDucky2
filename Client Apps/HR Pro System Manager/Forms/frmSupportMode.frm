@@ -316,7 +316,7 @@ Private Sub Form_Load()
   Set mobjSupport = New COALicence.clsSupport
   lblOutputKey.Caption = mobjSupport.GetSupportString2
 
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
 
 End Sub
 

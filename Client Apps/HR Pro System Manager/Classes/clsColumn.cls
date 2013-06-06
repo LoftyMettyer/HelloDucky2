@@ -171,7 +171,7 @@ Public Function DeleteColumn() As Boolean
     Set mfrmUse = New frmUsage
     mfrmUse.ResetList
     If ColumnIsUsed(mfrmUse) Then
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
       mfrmUse.ShowMessage GetTableName(Me.TableID) & "." & Me.Properties("ColumnName").value & " Column", "The column cannot be deleted as the column is used by the following:", UsageCheckObject.Column
       fOK = False
     End If
