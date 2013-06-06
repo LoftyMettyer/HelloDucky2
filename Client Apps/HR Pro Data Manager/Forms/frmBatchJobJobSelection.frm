@@ -172,12 +172,12 @@ Private Sub Form_Load()
       .AddItem "Career Progression"
       .AddItem "Cross Tab"
       .AddItem "Custom Report"
-      .AddItem "Envelopes & Labels"
-      .AddItem "Mail Merge"
       .AddItem "Match Report"
       .AddItem "Record Profile"
       .AddItem "Succession Planning"
       
+      If Not gblnReportPackMode Then .AddItem "Envelopes & Labels"
+      If Not gblnReportPackMode Then .AddItem "Mail Merge"
       If Not gblnReportPackMode Then .AddItem "-- Pause --"
       If Not gblnReportPackMode Then .AddItem "Data Transfer"
       If Not gblnReportPackMode Then .AddItem "Export"
@@ -447,15 +447,6 @@ Private Function ValidateCommands() As Boolean
     COAMsgBox "You must select a job type.", vbExclamation + vbOKOnly, IIf(gblnReportPackMode, "Report Pack", "Batch Job") & " Validation"
     Exit Function
   End If
-  
-'  'NHRD27102004 Fault 8240
-'  If (cboJobType.Text Like "*Pause*") Then
-'    If COAMsgBox("You have included -- Pause -- in the Batch Job this will require user interaction at run time." & vbCrLf & vbCrLf & "Continue?", vbExclamation + vbYesNo, "Batch Job Validation") = vbNo Then
-'      Exit Function
-'    Else
-'      'Continue
-'    End If
-'  End If
   
   If JobTypeRequiresDef(cboJobType.Text) Then
     If cboJobName.ListIndex < 0 Then
