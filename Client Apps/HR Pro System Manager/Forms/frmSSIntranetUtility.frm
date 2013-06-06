@@ -1,6 +1,7 @@
 VERSION 5.00
 Begin VB.Form frmSSIntranetUtility 
    BorderStyle     =   3  'Fixed Dialog
+   Caption         =   "Self-service Intranet Chart Utility"
    ClientHeight    =   2355
    ClientLeft      =   45
    ClientTop       =   375
