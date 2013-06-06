@@ -2526,7 +2526,7 @@ Public Function ShowList(lngUtilType As UtilityType, Optional msRecordSourceWher
 
   Case utlDocumentMapping
     msTypeCode = "VERSION1"
-    msType = "Document Types"
+    msType = "Document Type"
     msGeneralCaption = "Document Types"
     msSingularCaption = "Document Type"
     msTableName = "ASRSysDocumentManagementTypes"

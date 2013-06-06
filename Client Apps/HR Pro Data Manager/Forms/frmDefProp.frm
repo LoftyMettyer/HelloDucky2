@@ -389,7 +389,7 @@ Private Sub DrawControls(utlType As UtilityType)
   End If
   
   
-  cmdOk.Top = cmdOk.Top - lngOffset
+  cmdOK.Top = cmdOK.Top - lngOffset
   Me.Height = Me.Height - lngOffset
 
   ' Leave form size at its default if we are using as a change type form
@@ -1533,12 +1533,12 @@ Public Function CheckForUseage(psType As String, plngItemID As Long) As Boolean
         " WHERE ASRSysMailMergeName.PickListID = " & CStr(plngItemID))
     End If
 
-  Case "DOCUMENT MAPPING"
+  Case "DOCUMENT TYPE"
     Call GetNameWhereUsed( _
       "SELECT DISTINCT Name, MailMergeID" & _
       ", Username, '" & ACCESS_READONLY & "' as Access " & _
       "FROM dbo.[ASRSysMailMergeName] " & _
-      "WHERE [DocumentMapID] = " & CStr(plngItemID) & " ORDER BY [Name]", True)
+      "WHERE [DocumentMapID] = " & CStr(plngItemID) & " ORDER BY [Name]", False)
 
   Case Else
     List1.AddItem "<Error Checking Usage>"    'Do not allow delete if not recognised
