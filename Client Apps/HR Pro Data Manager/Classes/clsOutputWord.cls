@@ -35,6 +35,7 @@ Private mlngHeaderCols As Long
 Private mblnApplyStyles As Boolean
 
 Private mstrWrdTemplate As String
+Private mstrPackTemplate As String
 Private mblnWrdWordGridlines As Boolean
 Private mblnWrdAutoFitCols As Boolean
 Private mblnWrdLandscape As Boolean
@@ -505,6 +506,7 @@ End Function
 
 
 Private Sub Class_Initialize()
+  mstrPackTemplate = GetUserSetting("Output", "PackTemplate", "")
   mstrWrdTemplate = GetUserSetting("Output", "WordTemplate", "")
   mblnWrdAutoFitCols = (GetUserSetting("Output", "AutoFitCols", "1") = "1")
   mblnWrdLandscape = (GetUserSetting("Output", "Landscape", "1") = "1")
@@ -571,7 +573,6 @@ End Function
 
 
 Public Function GetFile(objParent As clsOutputRun, colStyles As Collection) As Boolean
-
   Dim strTempFileName As String
   Dim lngFound As Long
   Dim lngCount As Long
@@ -588,48 +589,43 @@ Public Function GetFile(objParent As clsOutputRun, colStyles As Collection) As B
     mstrFileName = objParent.GetTempFileName(mstrFileName)
   End If
   
-  
   'Check if file already exists...
   If Dir(mstrFileName) <> vbNullString And mstrFileName <> vbNullString Then
 
     Select Case mlngSaveExisting
-    Case 0  'Overwrite
-      If Not objParent.KillFile(mstrFileName) Then
-        GetFile = False
-        Exit Function
-      End If
-      GetNewDocument
-
-    Case 1  'Do not overwrite (fail)
-      mwrdApp.Quit
-      Set mwrdApp = Nothing
-      mstrErrorMessage = "File already exists."
-
-    Case 2  'Add Sequential number to file
-      mstrFileName = mobjParent.GetSequentialNumberedFile(mstrFileName)
-      GetNewDocument
-
-    Case 3  'Append to existing file
-      'Start at the bottom of the document
-
-      If Not IsFileCompatibleWithWordVersion(mstrFileName) Then
-        mstrErrorMessage = "This definition is set to append to a file which is not compatible with your version of Microsoft Office."
-        GetFile = False
-        Exit Function
-      End If
-
-      Set mwrdDoc = mwrdApp.Documents.Open(mstrFileName)
-      mwrdApp.Selection.EndKey Unit:=wdStory
-      mwrdApp.Selection.InsertBreak Type:=wdPageBreak
-
-    Case 4  'Create new worksheet within existing workbook...
-      'N/A (EXCEL ONLY)
-
+      Case 0  'Overwrite
+        If Not objParent.KillFile(mstrFileName) Then
+          GetFile = False
+          Exit Function
+        End If
+        GetNewDocument
+  
+      Case 1  'Do not overwrite (fail)
+        mwrdApp.Quit
+        Set mwrdApp = Nothing
+        mstrErrorMessage = "File already exists."
+  
+      Case 2  'Add Sequential number to file
+        mstrFileName = mobjParent.GetSequentialNumberedFile(mstrFileName)
+        GetNewDocument
+  
+      Case 3  'Append to existing file
+        'Start at the bottom of the document
+        If Not IsFileCompatibleWithWordVersion(mstrFileName) Then
+          mstrErrorMessage = "This definition is set to append to a file which is not compatible with your version of Microsoft Office."
+          GetFile = False
+          Exit Function
+        End If
+  
+        Set mwrdDoc = mwrdApp.Documents.Open(mstrFileName)
+        mwrdApp.Selection.EndKey Unit:=wdStory
+        mwrdApp.Selection.InsertBreak Type:=wdPageBreak
+  
+      Case 4  'Create new worksheet within existing workbook...
+        'N/A (EXCEL ONLY)
     End Select
-
   Else
     GetNewDocument
-
   End If
 
   GetFile = (mstrErrorMessage = vbNullString)
@@ -692,8 +688,6 @@ Private Sub GetNewDocument()
       Set mwrdFooterTable = mwrdDoc.Tables.Add(Range:=.Selection.Range, NumRows:=1, NumColumns:=2)
 
       .Selection.TypeText Text:="Created on "
-      '.Selection.Fields.Add .Selection.Range, Type:=wdFieldDate,
-      'Selection.Fields.Add Range:=Selection.Range, Type:=wdFieldEmpty, Text:=
       'NHRD20102004 Fault 7771 Made the footer 24 clock 'HH' = 24 hours clock: 'hh' = 12 hour clock
       .Selection.Fields.Add Range:=.Selection.Range, Type:=wdFieldDate, _
           Text:="CREATEDATE \@ ""dd/MM/yyyy at HH:mm"" ", PreserveFormatting:=True
@@ -727,7 +721,7 @@ LocalErr:
 End Sub
 
 
-Public Sub AddPage(strDefTitle As String, mstrSheetName As String, colStyles As Collection)
+Public Sub AddPage(strDefTitle As String, mstrSheetName As String, colStyles As Collection, Optional mblnCoverSheet As Boolean)
 
   Const strBookMark As String = "ASRSysTitleStart"
   Dim objRange As Word.Range
@@ -742,15 +736,16 @@ Public Sub AddPage(strDefTitle As String, mstrSheetName As String, colStyles As 
     'Remember the current setting to restore them later...
     Set objStyle = GetCurrentStyle(mwrdDoc.ActiveWindow.Selection)
     
-    
     'If its the first page then add the definition title...
     mlngPageCount = mlngPageCount + 1
     If mlngPageCount = 1 Then
-      .ParagraphFormat.Alignment = wdAlignParagraphCenter
-      .TypeText strDefTitle
-      .TypeParagraph
-      .ParagraphFormat.Alignment = wdAlignParagraphLeft
-      .TypeParagraph
+      If Not gblnReportPackMode Then
+        .ParagraphFormat.Alignment = wdAlignParagraphCenter
+        .TypeText strDefTitle
+        .TypeParagraph
+        .ParagraphFormat.Alignment = wdAlignParagraphLeft
+        .TypeParagraph
+      End If
     Else
       mwrdApp.Selection.InsertBreak Type:=wdPageBreak
     End If
@@ -763,18 +758,38 @@ Public Sub AddPage(strDefTitle As String, mstrSheetName As String, colStyles As 
     
     'Move to the begining of the title, then highlight to end of document (minus one line)
     .GoTo What:=wdGoToBookmark, Name:=strBookMark
-    .EndKey Unit:=wdStory, Extend:=wdExtend
-    '.MoveUp Unit:=wdLine, Count:=1, Extend:=wdExtend
-
-    'Apply the "title" style to this range
-    ApplyStylesToRange mwrdApp.Selection.Range, colStyles("Title"), True
     
+    If gblnReportPackMode Then
+
+      'mwrdApp.Visible = True
+      
+      If mblnCoverSheet Then
+        .TypeParagraph: .TypeParagraph: .TypeParagraph: .TypeParagraph
+        .TypeParagraph: .TypeParagraph: .TypeParagraph: .TypeParagraph
+        .ParagraphFormat.Style = wdStyleHeading1
+        .ParagraphFormat.Alignment = wdAlignParagraphCenter
+        .TypeText gobjProgress.Bar2Caption
+        .TypeParagraph: .TypeParagraph
+        .ParagraphFormat.Alignment = wdAlignParagraphCenter
+        .TypeText gobjProgress.Bar1Caption
+        .TypeParagraph
+        .EndKey
+        .ParagraphFormat.Alignment = wdAlignParagraphLeft
+        .InsertBreak Type:=wdSectionNewPage
+      Else
+        .ParagraphFormat.Style = wdStyleHeading1
+        .TypeText gobjProgress.Bar2Caption
+        .TypeParagraph: .TypeParagraph
+      End If
+    Else
+      .EndKey Unit:=wdStory, Extend:=wdExtend
+      'Apply the "title" style to this range
+      ApplyStylesToRange mwrdApp.Selection.Range, colStyles("Title"), True
+    End If
     'Now move to the end of the document, store the formatting, ready for the data...
     .EndKey Unit:=wdStory
     ApplyStylesToRange mwrdApp.Selection.Range, objStyle, False
-
   End With
-
 Exit Sub
 
 LocalErr:
@@ -987,14 +1002,8 @@ End Sub
 Private Sub ApplyStyle(colStyles As Collection)
 
   Dim objTemp As clsOutputStyle
-  'Dim objRange As Object
-  'Dim lngBorder As Long
-  'Dim lngCol As Long
-  'Dim lngRow As Long
-  
   
   For Each objTemp In colStyles
-    
     'Must do it row by row otherwise other cells get included in the formatting...
     'For lngRow = objTemp.StartRow To objTemp.EndRow
     '  Set objRange = mwrdDoc.Range(mwrdTable.Cell(lngRow + 1, objTemp.StartCol + 1).Range.Start, mwrdTable.Cell(lngRow + 1, objTemp.EndCol + 1).Range.End)
@@ -1041,7 +1050,11 @@ Private Sub ApplyStylesToRange(objRange As Object, objStyle As clsOutputStyle, b
     If objStyle.Name = "Heading" Then
       .Rows.HeadingFormat = True
     End If
-  
+    
+    If gblnReportPackMode And objStyle.Name = "Title" Then
+      .Style = wdStyleHeading1
+    End If
+    
   End With
 
 End Sub
@@ -1089,7 +1102,6 @@ Public Sub Complete()
     Exit Sub
   End If
   
-  
   'EMAIL
   If mblnEmail Then
     mstrErrorMessage = "Error sending email"
@@ -1106,13 +1118,7 @@ Public Sub Complete()
     mwrdDoc.Close
     mobjParent.SendEmail strTempFile
     Set mwrdDoc = mwrdApp.Documents.Open(strTempFile)
-
-'    If Dir(strTempFile) <> vbNullString Then
-'      Kill strTempFile
-'    End If
-
   End If
-  
   
   'SAVE
   If mblnSave Then
@@ -1189,43 +1195,6 @@ LocalErr:
 
 End Sub
 
-
-'Private Sub GetWidthFirstCol(wrdDoc As Word.Document)
-'
-'  Const strBookMark As String = "TableStart"
-'  Dim lngCount As Long
-'
-'  With wrdDoc.ActiveWindow.Selection.End
-'
-'    '.Font.Size = 8
-'    .Bookmarks.Add Range:=.Range, Name:=strBookMark
-'
-'    For lngCount = 0 To UBound(mvarHeadings(VER))
-'      .TypeText Trim(mvarHeadings(VER)(lngCount))
-'      .TypeParagraph
-'    Next
-'
-'    'go to start of table highlight to end of document
-'    .GoTo What:=wdGoToBookmark, Name:=strBookMark
-'    .Bookmarks.Item(strBookMark).Delete
-'    .EndKey Unit:=wdStory, Extend:=wdExtend
-'
-'    .ConvertToTable _
-'      NumRows:=UBound(mvarHeadings(VER)) + 1, _
-'      NumColumns:=1, _
-'      Format:=wdTableFormatNone, _
-'      ApplyFont:=False, _
-'      ApplyColor:=False, _
-'      AutoFit:=False
-'
-'    .Cells.AutoFit
-'    mlngFirstColWidth = .Columns(1).Width + 2
-'    .Tables(1).Delete
-'
-'  End With
-'
-'End Sub
-
 Public Property Let HeaderRows(ByVal lngNewValue As Long)
   mlngHeaderRows = lngNewValue
 End Property
@@ -1245,19 +1214,3 @@ End Property
 Public Property Get ErrorMessage() As String
   ErrorMessage = mstrErrorMessage
 End Property
-
-'Public Property Let SaveFileFormat(lngSaveFileFormat As Long)
-'  mlngSaveFileFormat = lngSaveFileFormat
-'End Property
-'
-'Public Property Get SaveFileFormat() As Long
-'  SaveFileFormat = mlngSaveFileFormat
-'End Property
-'
-'Public Property Let EmailFileFormat(lngEmailFileFormat As Long)
-'  mlngEmailFileFormat = lngEmailFileFormat
-'End Property
-'
-'Public Property Get EmailFileFormat() As Long
-'  EmailFileFormat = mlngEmailFileFormat
-'End Property
