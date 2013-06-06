@@ -2257,7 +2257,8 @@ Private Function ConfigureCategories() As Boolean
     sSQL = sSQL & "    SELECT c.ID, c.[" & sCategoryColumnName & "] AS [category_name]" & vbNewLine & _
               "        , CASE ISNULL(s.categoryid,0) WHEN 0 THEN 0 ELSE 1 END   AS [selected]" & vbNewLine & _
               "        FROM dbo.[" & sCategoryTableName & "] c" & vbNewLine & _
-              "            LEFT JOIN tbsys_objectcategories s ON s.CategoryID = c.ID AND s.objecttype = @utilityType AND s.objectid = @UtilityID;" & vbNewLine
+              "            LEFT JOIN tbsys_objectcategories s ON s.CategoryID = c.ID AND s.objecttype = @utilityType AND s.objectid = @UtilityID" & vbNewLine & _
+              "        ORDER BY c.[" & sCategoryColumnName & "];" & vbNewLine
   Else
     sSQL = sSQL & "    SELECT 0 AS ID, '' AS [category_name], 0 AS [selected] WHERE 1=2;" & vbNewLine
   End If
