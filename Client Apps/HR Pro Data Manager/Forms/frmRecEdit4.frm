@@ -3,7 +3,7 @@ Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
 Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "timask6.ocx"
 Object = "{49CBFCC0-1337-11D2-9BBF-00A024695830}#1.0#0"; "tinumb6.ocx"
 Object = "{E2D000D0-2DA1-11D2-B358-00104B59D73D}#1.0#0"; "titext6.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
 Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "CODEJO~1.OCX"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
@@ -627,7 +627,6 @@ Begin VB.Form frmRecEdit4
          NumTabs         =   1
          BeginProperty Tab1 {0713F341-850A-101B-AFC0-4210102A8DA7} 
             Caption         =   ""
-            Key             =   ""
             Object.Tag             =   ""
             ImageVarType    =   2
          EndProperty
@@ -657,7 +656,6 @@ Begin VB.Form frmRecEdit4
       BeginProperty Panels {0713E89E-850A-101B-AFC0-4210102A8DA7} 
          NumPanels       =   1
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -820,7 +818,7 @@ Public Function SaveFromChild() As Boolean
   fOK = True
   
   ' JPD20030206 Fault 5027
-  If mrsRecords.State <> adStateClosed Then
+  If IsRecordsetOkay Then
     If mrsRecords.EditMode = adEditAdd Then
       mfDataChanged = True
       fOK = SaveChanges(False, False, True)
@@ -828,7 +826,7 @@ Public Function SaveFromChild() As Boolean
         ' Save changes cancelled, or invalid. Do not deactivate the form.
         If Me.Visible And Me.Enabled Then
           Me.SetFocus
-          frmMain.RefreshMainForm Me, False
+          RefreshMainForm Me, False
         End If
       Else
         fOK = SaveAscendants
@@ -1020,7 +1018,7 @@ Public Sub AddNewCopyOf()
   FocusFirstControl
   
   ' Refresh the main menu.
-  frmMain.RefreshMainForm Me
+  RefreshMainForm Me
   
 End Sub
 
@@ -1258,7 +1256,7 @@ Private Sub ActiveBar1_Click(ByVal pTool As ActiveBarLibraryCtl.Tool)
   
 '  ' JPD20021126 Fault 4676
 '  If mrsRecords.State = adStateClosed Then
-'    frmMain.RefreshMainForm Me, True
+'    RefreshMainForm Me, True
 '    ' DoEvents is not enough. Refresh the screen with an API call.
 '    UI.RedrawScreen frmMain.hWnd
 '  End If
@@ -1386,7 +1384,7 @@ Private Sub ColourSelector1_Click(Index As Integer)
     If .BackColor <> ColourPicker1.Color Then
       .BackColor = ColourPicker1.Color
       mfDataChanged = True
-      frmMain.RefreshMainForm Me
+      RefreshMainForm Me
     End If
   End With
 
@@ -1457,7 +1455,7 @@ Private Sub Form_Deactivate()
       intErrorLine = 30
       fOK = SaveChanges(False, False, True)
       intErrorLine = 40
-      frmMain.RefreshMainForm Screen.ActiveForm, False
+      RefreshMainForm Screen.ActiveForm, False
       intErrorLine = 50
     End If
   End If
@@ -1497,7 +1495,7 @@ Private Sub Form_Deactivate()
 '    ControlSetFocus frmNewForm.ActiveControl
 '
 '    ' Set up the menus and toolbars
-'    frmMain.RefreshMainForm frmNewForm
+'    RefreshMainForm frmNewForm
   End If
   
   intErrorLine = 80
@@ -1512,25 +1510,7 @@ LocalErr:
 
 End Sub
 
-Private Sub GTMaskDate1_AfterUpdate(Index As Integer)
-  Debug.Print "GTMaskDate1_AfterUpdate"
-End Sub
-
-Private Sub GTMaskDate1_BeforeLostFocus(Index As Integer, Cancel As Boolean)
-  Debug.Print "GTMaskDate1_BeforeLostFocus"
-End Sub
-
-Private Sub GTMaskDate1_BeforeUpdate(Index As Integer, NewValue As Variant, Cancel As Boolean)
-  Debug.Print "GTMaskDate1_BeforeUpdate"
-End Sub
-
-Private Sub GTMaskDate1_CalClick(Index As Integer)
-  Debug.Print "GTMaskDate1_CalClick"
-End Sub
-
 Private Sub GTMaskDate1_Change(Index As Integer)
-  
-Debug.Print "GTMaskDate1_Change"
   
   On Error GoTo Err_Trap
 
@@ -1599,7 +1579,7 @@ Debug.Print "GTMaskDate1_Change"
        'Set the 'changed' flag if required.
       If Not mfDataChanged Then
         mfDataChanged = (GTMaskDate1(Index).Text <> IIf(IsNull(mrsRecords(sThisControlsColumnName)), "", mrsRecords(sThisControlsColumnName)))
-        frmMain.RefreshMainForm Me
+        RefreshMainForm Me
       End If
     End If
   End If
@@ -1609,59 +1589,13 @@ Debug.Print "GTMaskDate1_Change"
 Err_Trap:
   If Err.Number = 440 Then
     mfDataChanged = True
-    frmMain.RefreshMainForm Me
+    RefreshMainForm Me
   End If
 
 End Sub
 
-Private Sub GTMaskDate1_Click(Index As Integer)
-  Debug.Print "GTMaskDate1_Click"
-End Sub
-
-Private Sub GTMaskDate1_CloseUp(Index As Integer)
-  Debug.Print "GTMaskDate1_CloseUp"
-End Sub
-
-Private Sub GTMaskDate1_DataError(Index As Integer, ByVal ErrorType As Integer, ByVal ErrorText As String)
-  Debug.Print "GTMaskDate1_DataError"
-End Sub
-
-Private Sub GTMaskDate1_DataRead(Index As Integer, NewValue As Variant, DataChanged As Boolean)
-  Debug.Print "GTMaskDate1_DataRead"
-End Sub
-
-Private Sub GTMaskDate1_DblClick(Index As Integer)
-  Debug.Print "GTMaskDate1_DblClick"
-End Sub
-
-Private Sub GTMaskDate1_DragDrop(Index As Integer, Source As Control, x As Single, y As Single)
-  Debug.Print "GTMaskDate1_DragDrop"
-End Sub
-
-Private Sub GTMaskDate1_DragOver(Index As Integer, Source As Control, x As Single, y As Single, State As Integer)
-  Debug.Print "GTMaskDate1_DragOver"
-End Sub
-
-Private Sub GTMaskDate1_DropDown(Index As Integer)
-  Debug.Print "GTMaskDate1_DropDown"
-End Sub
-
-Private Sub GTMaskDate1_EllipsesClick(Index As Integer)
-  Debug.Print "GTMaskDate1_EllipsesClick"
-End Sub
-
-Private Sub GTMaskDate1_Error(Index As Integer, Number As Integer, Description As String, Scode As Long, Source As String, HelpFile As String, HelpContext As Long, CancelDisplay As Boolean)
-  Debug.Print "GTMaskDate1_Error"
-End Sub
-
-Private Sub GTMaskDate1_FormatCalCaption(Index As Integer, ByVal DateValue As Date, Text As String)
-  Debug.Print "GTMaskDate1_FormatCalCaption"
-End Sub
-
 Private Sub GTMaskDate1_GotFocus(Index As Integer)
   
-  Debug.Print "GTMaskDate1_GotFocus"
-
   ' Run the column's 'GotFocus' Expression.
   GotFocusCheck GTMaskDate1(Index)
   
@@ -1683,22 +1617,8 @@ Private Sub GTMaskDate1_GotFocus(Index As Integer)
 
 End Sub
 
-Private Sub GTMaskDate1_InvalidChar(Index As Integer, ByVal Char As String, ByVal Position As Integer)
-  Debug.Print "GTMaskDate1_InvalidChar"
-End Sub
-
-Private Sub GTMaskDate1_KeyDown(Index As Integer, KeyCode As Integer, Shift As Integer)
-  Debug.Print "GTMaskDate1_KeyDown"
-End Sub
-
-Private Sub GTMaskDate1_KeyPress(Index As Integer, KeyAscii As Integer)
-  Debug.Print "GTMaskDate1_KeyPress"
-End Sub
-
 Private Sub GTMaskDate1_KeyUp(Index As Integer, KeyCode As Integer, Shift As Integer)
 
-  Debug.Print "GTMaskDate1_KeyUp"
-  
   If KeyCode = vbKeyF2 Then
     GTMaskDate1(Index).DateValue = Date
   End If
@@ -1706,8 +1626,6 @@ Private Sub GTMaskDate1_KeyUp(Index As Integer, KeyCode As Integer, Shift As Int
 End Sub
 
 Private Sub GTMaskDate1_LostFocus(Index As Integer)
-  
-  Debug.Print "GTMaskDate1_LostFocus"
   
   ' RH 05/03/01 - To try and keep consistency with the date control.
   '               Bit of a pain in recedit as have to ignore lostfocuscheck
@@ -1755,40 +1673,7 @@ Private Sub GTMaskDate1_LostFocus(Index As Integer)
 
 End Sub
 
-Private Sub GTMaskDate1_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
-  Debug.Print "GTMaskDate1_MouseDown"
-End Sub
-
-Private Sub GTMaskDate1_MouseMove(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
-  Debug.Print "GTMaskDate1_MouseMove"
-End Sub
-
-Private Sub GTMaskDate1_MouseUp(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
-  Debug.Print "GTMaskDate1_MouseUp"
-End Sub
-
-Private Sub GTMaskDate1_OnValidate(Index As Integer, ByVal Text As String, Valid As Integer)
-  Debug.Print "GTMaskDate1_OnValidate"
-End Sub
-
-Private Sub GTMaskDate1_SpinClick(Index As Integer, ByVal Direction As Integer)
-  Debug.Print "GTMaskDate1_SpinClick"
-End Sub
-
-Private Sub GTMaskDate1_StatusBarUpdate(Index As Integer, ByVal Restore As Boolean, DisplayText As String, Cancel As Boolean)
-  Debug.Print "GTMaskDate1_StatusBarUpdate"
-End Sub
-
-Private Sub GTMaskDate1_ToolTipBegin(Index As Integer, Cancel As Boolean)
-  Debug.Print "GTMaskDate1_ToolTipBegin"
-End Sub
-
-Private Sub GTMaskDate1_ToolTipEnd(Index As Integer)
-  Debug.Print "GTMaskDate1_ToolTipEnd"
-End Sub
-
 Private Sub GTMaskDate1_Validate(Index As Integer, Cancel As Boolean)
-  Debug.Print "GTMaskDate1_Validate"
   
   ' Run the column's 'LostFocus' Expression.
   Cancel = Not LostFocusCheck(GTMaskDate1(Index))
@@ -2020,7 +1905,7 @@ Private Sub ASRUserImage1_Click(Index As Integer)
       mfDataChanged = fDataChanged
     End If
   
-    frmMain.RefreshMainForm Me
+    RefreshMainForm Me
   
   End If
 
@@ -2121,7 +2006,7 @@ Private Sub ASRWorkingPattern1_Click(Index As Integer)
     ' Set the 'changed' flag if required.
     If Not mfDataChanged Then
       mfDataChanged = (ASRWorkingPattern1(Index).Value <> IIf(IsNull(mrsRecords(sThisControlsColumnName)), "", mrsRecords(sThisControlsColumnName) & vbNullString))
-      frmMain.RefreshMainForm Me
+      RefreshMainForm Me
     End If
   End If
 
@@ -2183,7 +2068,7 @@ Private Sub Check1_Click(Index As Integer)
     ' Set the 'changed' flag if required.
     If Not mfDataChanged Then
       mfDataChanged = (Check1(Index).Value <> IIf(IsNull(mrsRecords(sThisControlsColumnName)), "", mrsRecords(sThisControlsColumnName) & vbNullString))
-      frmMain.RefreshMainForm Me
+      RefreshMainForm Me
     End If
   End If
 
@@ -2192,7 +2077,7 @@ Private Sub Check1_Click(Index As Integer)
 Err_Trap:
   If Err.Number = 440 Then
     mfDataChanged = True
-    frmMain.RefreshMainForm Me
+    RefreshMainForm Me
   End If
 
 End Sub
@@ -2249,7 +2134,7 @@ Private Sub Combo1_Click(Index As Integer)
     ' Set the 'changed' flag if required.
     If Not mfDataChanged Then
       mfDataChanged = (Combo1(Index).Text <> mrsRecords(sThisControlsColumnName) & vbNullString)
-      frmMain.RefreshMainForm Me
+      RefreshMainForm Me
     End If
   End If
 
@@ -2303,7 +2188,7 @@ Private Sub Combo1_KeyUp(Index As Integer, KeyCode As Integer, Shift As Integer)
     ' Set the 'changed' flag if required.
     If Not mfDataChanged Then
       mfDataChanged = (Combo1(Index).Text <> mrsRecords(sThisControlsColumnName) & vbNullString)
-      frmMain.RefreshMainForm Me
+      RefreshMainForm Me
     End If
   End If
   
@@ -2445,7 +2330,7 @@ Private Sub Command1_Click(Index As Integer)
             Next
             
             mfDataChanged = True
-            frmMain.RefreshMainForm Me
+            RefreshMainForm Me
           Else
             COAMsgBox "The selected link record has been deleted.", vbExclamation, "Security"
           End If
@@ -2905,7 +2790,7 @@ Private Sub ctlNewLookup1_Change(Index As Integer)
     ' Set the 'changed' flag if required.
     If Not mfDataChanged Then
       mfDataChanged = (ctlNewLookup1(Index).Text <> IIf(IsNull(mrsRecords(sThisControlsColumnName)), 0, mrsRecords(sThisControlsColumnName)))
-      frmMain.RefreshMainForm Me
+      RefreshMainForm Me
     End If
   End If
 
@@ -3376,7 +3261,7 @@ Private Sub RePopulateLookupControl(pctlLookupControl As COA_Lookup)
               pctlLookupControl.Text = .LookupValue
 
               mfDataChanged = True
-              frmMain.RefreshMainForm Me
+              RefreshMainForm Me
             End If
           End If
         End With
@@ -3514,11 +3399,7 @@ Private Sub Form_Activate()
 
   DoEvents
   
-  If mrsRecords Is Nothing Then
-    Exit Sub
-  End If
-  
-  If mrsRecords.State = adStateClosed Then
+  If Not IsRecordsetOkay Then
     Exit Sub
   End If
   
@@ -3550,8 +3431,8 @@ Private Sub Form_Activate()
   
   ' Set up the menus and toolbars
   ' JPD20021209 Fault 4863
-  'frmMain.RefreshMainForm Me
-  frmMain.RefreshMainForm Screen.ActiveForm
+  'RefreshMainForm Me
+  RefreshMainForm Screen.ActiveForm
   
   ' Refresh any navigation controls because Version One has some teething troubles
   For Each objControl In Me.Controls
@@ -3682,7 +3563,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
         Me.SetFocus
       End If
       intErrorLine = 130
-      frmMain.RefreshMainForm Me
+      RefreshMainForm Me
       intErrorLine = 140
     End If
     
@@ -3897,17 +3778,16 @@ Private Sub Form_Unload(Cancel As Integer)
 '  If mrsRecords.State <> adStateClosed Then
 '    mrsRecords.Close
 '  End If
-  If mrsRecords.State <> adStateClosed Then
+  If IsRecordsetOkay Then
     If mrsRecords.EditMode <> adEditNone Then
       mrsRecords.CancelUpdate
     End If
     mrsRecords.Close
   End If
-
   Set mrsRecords = Nothing
 
 
-  frmMain.RefreshMainForm Me, True
+  RefreshMainForm Me, True
   
   'Release internal classes
   Set ODBC = Nothing
@@ -3918,7 +3798,7 @@ Private Sub Form_Unload(Cancel As Integer)
   For Each fTemp In Forms
     If fTemp.hWnd = lngParentHWnd Then
       fTemp.SetFocus
-      frmMain.RefreshMainForm fTemp
+      RefreshMainForm fTemp
       Exit For
     End If
   Next
@@ -4289,7 +4169,7 @@ ExitLoadScreen:
     
     ' Refresh the toolbar.
     '''LOFTY-Performance-Be more conservative calling the refresh function
-    frmMain.RefreshMainForm Me
+    RefreshMainForm Me
 
     ' NPG20090907 Fault HRPRO-324
     ' iToolBarHeight = 90   ' Old toolbar was 16px high, which equated to 90 'somethings'
@@ -4399,7 +4279,9 @@ Public Sub UpdateControls(Optional pfNoWarnings As Boolean)
 
   ' Do not update the controls if we are unloading the form.
   If mfUnloading Then Exit Sub
-  If mrsRecords.State = adStateClosed Then Exit Sub
+  If Not IsRecordsetOkay Then
+    Exit Sub
+  End If
 
   Screen.MousePointer = vbHourglass
   'UI.LockWindow Me.hwnd
@@ -4962,7 +4844,7 @@ Public Function Update(Optional pfDeactivating As Variant) As Boolean
   ReDim asColumns(2, 0)
 
   'MH20040212 Faults 8078 & 8079
-  If mrsRecords.State = adStateClosed Then
+  If Not IsRecordsetOkay Then
     Exit Function
   End If
 
@@ -5478,7 +5360,7 @@ Public Function Update(Optional pfDeactivating As Variant) As Boolean
     End If
   
     'MH20040212 Faults 8078 & 8079
-    If mrsRecords.State <> adStateClosed Then
+    If IsRecordsetOkay Then
       ' Need to relocate to the current record, as the 'UpdateParentWindow' call
       ' may have put us back on the first history record.
       If mrsRecords.EditMode <> adEditAdd Then
@@ -5507,12 +5389,12 @@ ExitUpdate:
   End If
 
   'If Not frmMain Is Nothing Then
-    frmMain.RefreshMainForm Me
+    RefreshMainForm Me
 
     'MH20040218 Fault 8080
     If Not (gcoTablePrivileges Is Nothing) Then
       ' JPD20021206 Fault 4854
-      frmMain.RefreshMainForm Screen.ActiveForm
+      RefreshMainForm Screen.ActiveForm
       frmMain.CheckForNonactiveForms Screen.ActiveForm
     Else
       frmMain.CheckForNonactiveForms Screen.ActiveForm
@@ -5666,7 +5548,7 @@ Private Sub AmendedRecord2(pfShowMessage As Boolean, piChangeReason As Integer)
     
   ' Refresh the menu.
   Screen.MousePointer = vbDefault
-  frmMain.RefreshMainForm Me
+  RefreshMainForm Me
 
 End Sub
 
@@ -6252,7 +6134,7 @@ Public Sub CancelCourse()
       '  End If
       'End If
       
-      frmMain.RefreshMainForm Me
+      RefreshMainForm Me
     End If
   End If
   
@@ -6329,7 +6211,7 @@ Public Function Find() As Boolean
   End If
   
   'MH20040223 Fault 8126
-  If mrsRecords.State = adStateClosed Then
+  If Not IsRecordsetOkay Then
     Exit Function
   End If
 
@@ -6424,19 +6306,24 @@ Public Sub MoveNext()
     End If
     
     ' Move to the next record.
-    With mrsRecords
-      If (Not .EOF) Then .MoveNext
-      If .EOF Then
-        If Not RefreshRecordset Then
-          Exit Sub
+    If IsRecordsetOkay Then
+      With mrsRecords
+        If (Not .EOF) Then
+          .MoveNext
         End If
-          
-        ' There are records in the refreshed recordset. Move to the last record.
-        If .EditMode <> adEditAdd Then
-          .MoveLast
+        
+        If .EOF Then
+          If Not RefreshRecordset Then
+            Exit Sub
+          End If
+            
+          ' There are records in the refreshed recordset. Move to the last record.
+          If .EditMode <> adEditAdd Then
+            .MoveLast
+          End If
         End If
-      End If
-    End With
+      End With
+    End If
   
     ' JPD 21/02/2001 Moved the UpdateParentWindow call before the
     ' UpdateChildren call as the summary fields that are updated in
@@ -6447,19 +6334,21 @@ Public Sub MoveNext()
     UpdateChildren
 
     ' JPD20021126 Fault 4676
-    If mrsRecords.State = adStateClosed Then
-      Exit Sub
+    
+    If IsRecordsetOkay Then
+    
+      UpdateFindWindow
+  '    UpdateParentWindow
+  
+      ' Highlight the currently selected control
+      FocusCurrentControl
+  
+      DoEvents
+      If Me.Visible Then Me.SetFocus
+      RefreshMainForm Me
+      
     End If
-
-    UpdateFindWindow
-'    UpdateParentWindow
-
-    ' Highlight the currently selected control
-    FocusCurrentControl
-
-    DoEvents
-    If Me.Visible Then Me.SetFocus
-    frmMain.RefreshMainForm Me
+  
   End If
     
 End Sub
@@ -6478,65 +6367,65 @@ Public Sub UpdateChildren(Optional pvCallingFormID As Variant)
     mfrmSummary.UpdateSummaryWindow
   End If
 
-  ' JPD20021126 Fault 4676
-  If mrsRecords.State = adStateClosed Then
-    Exit Sub
-  End If
+  If IsRecordsetOkay Then
 
-  ' See if we have any screens that hang off this screen.
-  For Each frmTemp In Forms
-    With frmTemp
-      If .Name = "frmRecEdit4" Then
-        If (.ParentFormID = mlngFormID) Then
-          fGoodChildForm = IsMissing(pvCallingFormID)
-          If Not fGoodChildForm Then
-            fGoodChildForm = (.FormID <> CLng(pvCallingFormID))
-          End If
-          
-          If fGoodChildForm Then
-            ' See if the parent is disabled or in edit mode.
-            ' If it is then disable the child.
-            If mrsRecords.State = adStateClosed Then
-              .Enabled = False
-            Else
-              ' JPD20021209 Fault 4863
-              If (Me.Enabled = False) Then 'Or (Not mrsRecords.EditMode = adEditNone) Then
+    ' See if we have any screens that hang off this screen.
+    For Each frmTemp In Forms
+      With frmTemp
+        If .Name = "frmRecEdit4" Then
+          If (.ParentFormID = mlngFormID) Then
+            fGoodChildForm = IsMissing(pvCallingFormID)
+            If Not fGoodChildForm Then
+              fGoodChildForm = (.FormID <> CLng(pvCallingFormID))
+            End If
+            
+            If fGoodChildForm Then
+              ' See if the parent is disabled or in edit mode.
+              ' If it is then disable the child.
+              If mrsRecords.State = adStateClosed Then
                 .Enabled = False
               Else
-                .Enabled = True
-              End If
+                ' JPD20021209 Fault 4863
+                If (Me.Enabled = False) Then 'Or (Not mrsRecords.EditMode = adEditNone) Then
+                  .Enabled = False
+                Else
+                  .Enabled = True
+                End If
+                
+                .UpdateChildRecords
+                .ClearEmbeddedStreams
               
-              .UpdateChildRecords
-              .ClearEmbeddedStreams
-            
-              ' JPD20021126 Fault 4676
-              If mrsRecords.State = adStateClosed Then
-                Exit Sub
+                ' JPD20021126 Fault 4676
+                If Not IsRecordsetOkay Then
+                  Exit Sub
+                End If
+              
+                ' JPD20021104 Fault 4692
+                EnableActiveBar .ActiveBar1, False
               End If
-            
-              ' JPD20021104 Fault 4692
-              EnableActiveBar .ActiveBar1, False
             End If
           End If
-        End If
-
-      'MH20010824 Fault 2449
-      ElseIf .Name = "frmFind2" Then
-        If (.ParentFormID = mlngFormID) Then
-          .UpdateSummaryWindow
-        
-          ' JPD20021126 Fault 4676
-          If mrsRecords.State = adStateClosed Then
-            Exit Sub
+  
+        'MH20010824 Fault 2449
+        ElseIf .Name = "frmFind2" Then
+          If (.ParentFormID = mlngFormID) Then
+            .UpdateSummaryWindow
+          
+            ' JPD20021126 Fault 4676
+            If Not IsRecordsetOkay Then
+              Exit Sub
+            End If
+          
+            ' JPD20021104 Fault 4692
+            EnableActiveBar .ActiveBar1, False
           End If
-        
-          ' JPD20021104 Fault 4692
-          EnableActiveBar .ActiveBar1, False
+  
         End If
+      End With
+    Next frmTemp
 
-      End If
-    End With
-  Next frmTemp
+  End If
+
   Set frmTemp = Nothing
 
   Exit Sub
@@ -6561,7 +6450,7 @@ Public Sub UpdateChildRecords()
   GetRecords
 
   If frmMain.ActiveForm Is Me Then
-    frmMain.RefreshMainForm Me
+    RefreshMainForm Me
   End If
 
   'TM20020107 Fault 1379
@@ -6576,7 +6465,7 @@ Public Sub UpdateChildRecords()
 '    GetRecords
 '  End If
 
-  If mrsRecords.State <> adStateClosed Then
+  If IsRecordsetOkay Then
     ' Check if the refreshed recordset is still empty.
     If mrsRecords.BOF And mrsRecords.EOF Then
       ' Create a new record if permitted.
@@ -6641,19 +6530,21 @@ Public Sub MoveLast()
     End If
     
     ' Move to the last record.
-    With mrsRecords
-      If (Not .EOF) Then .MoveLast
-      If .EOF Then
-        If Not RefreshRecordset Then
-          Exit Sub
+    If IsRecordsetOkay Then
+      With mrsRecords
+        If (Not .EOF) Then .MoveLast
+        If .EOF Then
+          If Not RefreshRecordset Then
+            Exit Sub
+          End If
+            
+          ' There are records in the refreshed recordset. Move to the last record.
+          If .EditMode <> adEditAdd Then
+            .MoveLast
+          End If
         End If
-          
-        ' There are records in the refreshed recordset. Move to the last record.
-        If .EditMode <> adEditAdd Then
-          .MoveLast
-        End If
-      End If
-    End With
+      End With
+    End If
   
     ' JPD 21/02/2001 Moved the UpdateParentWindow call before the
     ' UpdateChildren call as the summary fields that are updated in
@@ -6664,7 +6555,7 @@ Public Sub MoveLast()
     UpdateChildren
     
     ' JPD20021126 Fault 4676
-    If mrsRecords.State = adStateClosed Then
+    If Not IsRecordsetOkay Then
       Exit Sub
     End If
         
@@ -6674,7 +6565,7 @@ Public Sub MoveLast()
     ' Highlight the currently selected control
     FocusCurrentControl
     
-    frmMain.RefreshMainForm Me
+    RefreshMainForm Me
   End If
 
 End Sub
@@ -6689,19 +6580,21 @@ Public Sub MoveFirst()
     End If
     
     ' Move to the first record.
-    With mrsRecords
-      If (Not .BOF) Then .MoveFirst
-      If .BOF Then
-        If Not RefreshRecordset Then
-          Exit Sub
+    If IsRecordsetOkay Then
+      With mrsRecords
+        If (Not .BOF) Then .MoveFirst
+        If .BOF Then
+          If Not RefreshRecordset Then
+            Exit Sub
+          End If
+          
+          ' There are records in the refreshed recordset. Move to the first record.
+          If .EditMode <> adEditAdd Then
+            .MoveFirst
+          End If
         End If
-        
-        ' There are records in the refreshed recordset. Move to the first record.
-        If .EditMode <> adEditAdd Then
-          .MoveFirst
-        End If
-      End If
-    End With
+      End With
+    End If
   
     ' JPD 21/02/2001 Moved the UpdateParentWindow call before the
     ' UpdateChildren call as the summary fields that are updated in
@@ -6712,17 +6605,15 @@ Public Sub MoveFirst()
     UpdateChildren
     
     ' JPD20021126 Fault 4676
-    If mrsRecords.State = adStateClosed Then
-      Exit Sub
-    End If
-    
-    UpdateFindWindow
-'    UpdateParentWindow
-
-    ' Highlight the currently selected control
-    FocusCurrentControl
+    If IsRecordsetOkay Then
+      UpdateFindWindow
+  '    UpdateParentWindow
   
-    frmMain.RefreshMainForm Me
+      ' Highlight the currently selected control
+      FocusCurrentControl
+    
+      RefreshMainForm Me
+    End If
   End If
         
 End Sub
@@ -6742,22 +6633,24 @@ Public Sub MovePrevious()
     
     
     ' Move to the previous record.
-    With mrsRecords
-      If Not fAdding Then
-        If (Not .BOF) Then .MovePrevious
-      End If
+    If IsRecordsetOkay Then
+      With mrsRecords
+        If Not fAdding Then
+          If (Not .BOF) Then .MovePrevious
+        End If
+        
+        If .BOF Then
+          If Not RefreshRecordset Then
+            Exit Sub
+          End If
+            
+          ' There are records in the refreshed recordset. Move to the first record.
+          If .EditMode <> adEditAdd Then
+            .MoveFirst
+          End If
+        End If
+      End With
       
-      If .BOF Then
-        If Not RefreshRecordset Then
-          Exit Sub
-        End If
-          
-        ' There are records in the refreshed recordset. Move to the first record.
-        If .EditMode <> adEditAdd Then
-          .MoveFirst
-        End If
-      End If
-    End With
   
     
     ' JPD 21/02/2001 Moved the UpdateParentWindow call before the
@@ -6769,7 +6662,7 @@ Public Sub MovePrevious()
     UpdateChildren
     
     ' JPD20021126 Fault 4676
-    If mrsRecords.State = adStateClosed Then
+    If Not IsRecordsetOkay Then
       Exit Sub
     End If
     
@@ -6779,7 +6672,7 @@ Public Sub MovePrevious()
     ' Highlight the currently selected control
     FocusCurrentControl
   
-    frmMain.RefreshMainForm Me
+    RefreshMainForm Me
   End If
   
 
@@ -6834,7 +6727,7 @@ Public Sub AddNew()
   FocusFirstControl
 
   ' Refresh the main menu.
-  frmMain.RefreshMainForm Me
+  RefreshMainForm Me
 
 End Sub
 Public Function SaveChanges(Optional pfUpdateControls As Variant, _
@@ -6930,7 +6823,7 @@ Public Function SaveChanges(Optional pfUpdateControls As Variant, _
        
     'If Not mfCancelled Then
     If Not mfCancelled And Not mfUnloading Then
-      frmMain.RefreshMainForm Me
+      RefreshMainForm Me
     End If
   Else
     Database.Validation = True
@@ -6956,7 +6849,7 @@ Public Function RecordChanged(Optional pfUpdateControls As Variant, _
   If IsMissing(pfCancelUpdate) Then pfCancelUpdate = True
   
   'JPD 20031009 Fault 7080
-  If mrsRecords.State = adStateClosed Then
+  If Not IsRecordsetOkay Then
     RecordChanged = False
   Else
     If (mrsRecords.BOF And mrsRecords.EOF) Then
@@ -9509,7 +9402,7 @@ Private Sub OLE1_Click(Index As Integer)
       mfDataChanged = fDataChanged
     End If
     
-    frmMain.RefreshMainForm Me
+    RefreshMainForm Me
   End If
 
   Exit Sub
@@ -9653,7 +9546,7 @@ Private Sub OptionGroup1_Click(Index As Integer)
     If Not mfDataChanged Then
       mfDataChanged = (OptionGroup1(Index).Value <> IIf(IsNull(mrsRecords(sThisControlsColumnName)), "", mrsRecords(sThisControlsColumnName) & vbNullString))
 
-      frmMain.RefreshMainForm Me
+      RefreshMainForm Me
     End If
   End If
 
@@ -9663,7 +9556,7 @@ Err_Trap:
   If Err.Number = 440 Then
     mfDataChanged = True
 
-    frmMain.RefreshMainForm Me
+    RefreshMainForm Me
   End If
 
 End Sub
@@ -9755,7 +9648,7 @@ Private Sub Spinner1_Change(Index As Integer)
     If Not mfDataChanged Then
       mfDataChanged = (Spinner1(Index).Text <> IIf(IsNull(mrsRecords(sThisControlsColumnName)), "", mrsRecords(sThisControlsColumnName) & vbNullString))
 
-      frmMain.RefreshMainForm Me
+      RefreshMainForm Me
     End If
   End If
 
@@ -9765,7 +9658,7 @@ Err_Trap:
   If Err.Number = 440 Then
     mfDataChanged = True
 
-    frmMain.RefreshMainForm Me
+    RefreshMainForm Me
   End If
   
 End Sub
@@ -9923,7 +9816,7 @@ Private Sub TDBMask1_Change(Index As Integer)
     ' Set the 'changed' flag if required.
     If Not mfDataChanged Then
       mfDataChanged = (TDBMask1(Index).Value <> IIf(IsNull(mrsRecords(sThisControlsColumnName)), "", mrsRecords(sThisControlsColumnName) & vbNullString))
-      frmMain.RefreshMainForm Me
+      RefreshMainForm Me
     End If
   End If
 
@@ -9933,7 +9826,7 @@ Err_Trap:
   If Err.Number = 440 Then
     mfDataChanged = True
 
-    frmMain.RefreshMainForm Me
+    RefreshMainForm Me
   End If
 
 End Sub
@@ -10079,7 +9972,7 @@ Public Sub Requery(pfReset As Boolean, Optional pvCallingFormID As Variant)
 '    UpdateParentWindow pvCallingFormID
 
     ' Refresh the menu.
-    frmMain.RefreshMainForm Me
+    RefreshMainForm Me
   End If
   
   Screen.MousePointer = vbDefault
@@ -10205,7 +10098,7 @@ Public Sub SelectOrder()
       Set frmDefSel = Nothing
   
       ' Refresh the main menu.
-      frmMain.RefreshMainForm Me
+      RefreshMainForm Me
     End If
   End If
 
@@ -10262,7 +10155,7 @@ Public Sub ClearFilter()
   End If
   
   ' Refresh the main menu.
-  frmMain.RefreshMainForm Me
+  RefreshMainForm Me
   
 End Sub
 
@@ -10380,7 +10273,7 @@ Public Sub SelectFilter()
       Unload frmRecordFilter
       
       ' Refresh the main menu.
-      frmMain.RefreshMainForm Me
+      RefreshMainForm Me
     End If
   End If
   
@@ -10520,7 +10413,7 @@ Public Sub DeleteRecord(Optional pfPrompt As Variant, Optional pfFromFind As Boo
     'JPD 20030905 Fault 5184
     If (Not pfFromFind) Then
       UpdateAll
-      frmMain.RefreshMainForm Me
+      RefreshMainForm Me
     End If
     objEmail.SendImmediateEmails  'MH20100325 HRPRO-828
   End If
@@ -10957,7 +10850,7 @@ Private Sub TDBNumber2_Change(Index As Integer)
     If Not mfDataChanged Then
       mfDataChanged = (TDBNumber2(Index).Value <> IIf(IsNull(mrsRecords(sThisControlsColumnName)), "", mrsRecords(sThisControlsColumnName) & vbNullString))
 
-      frmMain.RefreshMainForm Me
+      RefreshMainForm Me
     End If
   End If
 
@@ -10967,7 +10860,7 @@ Err_Trap:
   If Err.Number = 440 Then
     mfDataChanged = True
 
-    frmMain.RefreshMainForm Me
+    RefreshMainForm Me
   End If
 
 End Sub
@@ -11032,7 +10925,7 @@ Private Sub TDBText1_Change(Index As Integer)
     If Not mfDataChanged Then
       mfDataChanged = (TDBText1(Index).Text <> IIf(IsNull(mrsRecords(sThisControlsColumnName)), "", mrsRecords(sThisControlsColumnName) & vbNullString))
 
-      frmMain.RefreshMainForm Me
+      RefreshMainForm Me
     End If
   End If
 
@@ -11046,7 +10939,7 @@ Err_Trap:
   If Err.Number = 440 Then
     mfDataChanged = True
 
-    frmMain.RefreshMainForm Me
+    RefreshMainForm Me
   End If
 
   If mlngUpdatedMultiLineControl = Index Then
@@ -11137,7 +11030,7 @@ Private Sub Text1_Change(Index As Integer)
     If Not mfDataChanged Then
       mfDataChanged = (Text1(Index).Text <> IIf(IsNull(mrsRecords(sThisControlsColumnName)), "", mrsRecords(sThisControlsColumnName) & vbNullString))
 
-      frmMain.RefreshMainForm Me
+      RefreshMainForm Me
     End If
   End If
 
@@ -11147,7 +11040,7 @@ Err_Trap:
   If Err.Number = 440 Then
     mfDataChanged = True
 
-    frmMain.RefreshMainForm Me
+    RefreshMainForm Me
   End If
 
 End Sub
@@ -11397,10 +11290,8 @@ Public Sub MailMergeClick()
     Loop
   End With
 
-  frmMain.RefreshRecordEditScreens
-
-  frmMain.RefreshMainForm Me
-
+  RefreshRecordEditScreens
+  RefreshMainForm Me
 
 End Sub
 
@@ -11561,9 +11452,8 @@ Public Sub DataTransferClick()
     Loop
   End With
 
-  frmMain.RefreshRecordEditScreens
-
-  frmMain.RefreshMainForm Me
+  RefreshRecordEditScreens
+  RefreshMainForm Me
 
 End Sub
 
@@ -11754,9 +11644,8 @@ Public Sub LabelsClick()
     Loop
   End With
 
-  frmMain.RefreshRecordEditScreens
-
-  frmMain.RefreshMainForm Me
+  RefreshRecordEditScreens
+  RefreshMainForm Me
 
 End Sub
 
@@ -11865,8 +11754,8 @@ Public Sub MatchReportClick(mrtMatchReportType As MatchReportType)
   Unload frmSelection
   Set frmSelection = Nothing
 
-  frmMain.RefreshRecordEditScreens
-  frmMain.RefreshMainForm Me
+  RefreshRecordEditScreens
+  RefreshMainForm Me
 
 End Sub
 
@@ -11918,8 +11807,8 @@ Public Sub RecordProfileClick()
     Loop
   End With
 
-  frmMain.RefreshRecordEditScreens
-  frmMain.RefreshMainForm Me
+  RefreshRecordEditScreens
+  RefreshMainForm Me
 
 End Sub
 
@@ -11972,8 +11861,8 @@ Public Sub CalendarReportClick()
     Loop
   End With
 
-  frmMain.RefreshRecordEditScreens
-  frmMain.RefreshMainForm Me
+  RefreshRecordEditScreens
+  RefreshMainForm Me
 
 End Sub
 
@@ -12330,3 +12219,22 @@ ErrorTrap:
 
 End Sub
 
+
+Private Sub RefreshMainForm(pfrmCallingForm As Form, Optional ByVal pfUnLoad As Boolean)
+  If frmMain.Visible Then
+    frmMain.RefreshMainForm Me, pfUnLoad
+  End If
+End Sub
+
+Private Sub RefreshRecordEditScreens()
+  If frmMain.Visible Then
+    frmMain.RefreshRecordEditScreens
+  End If
+End Sub
+
+Private Function IsRecordsetOkay() As Boolean
+  IsRecordsetOkay = False
+  If Not mrsRecords Is Nothing Then
+    IsRecordsetOkay = (mrsRecords.State <> adStateClosed)
+  End If
+End Function
