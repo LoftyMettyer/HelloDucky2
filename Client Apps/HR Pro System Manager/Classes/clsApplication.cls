@@ -604,6 +604,12 @@ Public Function CreateTempTables() As Boolean
       " INTO tmpOrderItems FROM ASRSysOrderItems IN " & sSource
     daoDb.Execute sSQL
        
+'NHRD Was going to use tmpDocumentManagementTypes for usage checks but other checks refer directly to the db
+'    'Create the local Document Types table.
+'    sSQL = "SELECT ASRSysDocumentManagementTypes.*" & _
+'      " INTO tmpDocumentManagementTypes FROM ASRSysDocumentManagementTypes IN " & sSource
+'    daoDb.Execute sSQL
+
 '    ' Create the local OrderItems table.
 '    sSQL = "SELECT ASRSysDocumentManagementCategories.*" & _
 '      " INTO tmpDocumentManagementCategories FROM ASRSysDocumentManagementCategories IN " & sSource
@@ -613,7 +619,6 @@ Public Function CreateTempTables() As Boolean
 '    sSQL = "SELECT ASRSysDocumentManagementHeaderInfo.*" & _
 '      " INTO tmpDocumentManagementHeaderInfo FROM ASRSysDocumentManagementHeaderInfo IN " & sSource
 '    daoDb.Execute sSQL
-
     
     'MH20000727 Added Email Tables
     ' Create the local Email Address table.
