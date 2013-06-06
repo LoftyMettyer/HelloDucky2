@@ -206,7 +206,7 @@ End Property
 
 
 
-Public Function WriteComponent()
+Public Function WriteComponent() As Boolean
   ' Write the component definition to the component recordset.
   On Error GoTo ErrorTrap
   
