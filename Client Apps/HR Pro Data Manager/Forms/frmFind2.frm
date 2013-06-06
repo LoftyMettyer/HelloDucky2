@@ -47,6 +47,7 @@ Begin VB.Form frmFind2
             Object.Width           =   10689
             Text            =   "x Records"
             TextSave        =   "x Records"
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -2392,8 +2393,9 @@ Private Function ConfigureGrid() As Boolean
   End If
 
   ' RH 13/10/00 - BUG 1121 - Only resize the window if its not min/max.
-  StatusBar1.Panels(1).Text = ssOleDBGridFindColumns.Rows & " Record" & IIf(ssOleDBGridFindColumns.Rows = 1, "", "s") & _
+  'StatusBar1.Panels(1).Text = ssOleDBGridFindColumns.Rows & " Record" & IIf(ssOleDBGridFindColumns.Rows = 1, "", "s") & _
         IIf(ssOleDBGridFindColumns.SelBookmarks.Count > 1, " - " & ssOleDBGridFindColumns.SelBookmarks.Count & " Selected", "")
+  UpdateStatusBar
   
   
   'Setting the form to disabled here stops the find window getting focus
@@ -3712,10 +3714,19 @@ Private Sub ssOleDBGridFindColumns_Click()
   '  End If
   
   ' RH 13/10/00 - BUG 1121 - Only resize the window if its not min/max.
-  StatusBar1.Panels(1).Text = ssOleDBGridFindColumns.Rows & " Record" & IIf(ssOleDBGridFindColumns.Rows = 1, "", "s") & _
+  'StatusBar1.Panels(1).Text = ssOleDBGridFindColumns.Rows & " Record" & IIf(ssOleDBGridFindColumns.Rows = 1, "", "s") & _
         IIf(ssOleDBGridFindColumns.SelBookmarks.Count > 1, " - " & ssOleDBGridFindColumns.SelBookmarks.Count & " Selected", "")
+  UpdateStatusBar
   
 End Sub
+
+Private Sub UpdateStatusBar()
+  StatusBar1.Panels(1).Text = ssOleDBGridFindColumns.Rows & " Record" & IIf(ssOleDBGridFindColumns.Rows = 1, "", "s") & _
+        IIf(ssOleDBGridFindColumns.SelBookmarks.Count > 1, " - " & ssOleDBGridFindColumns.SelBookmarks.Count & " Selected", "")
+End Sub
+
+
+
 
 Private Sub ssOleDBGridFindColumns_PrintError(ByVal PrintError As Long, Response As Integer)
     
@@ -4727,9 +4738,10 @@ Public Sub UtilityClick(lngUtilType As UtilityType)
 '      ssOleDBGridFindColumns.FirstRow = iFirstRow
 '      ssOleDBGridFindColumns.Bookmark = varBookmark
       
-  StatusBar1.Panels(1).Text = ssOleDBGridFindColumns.Rows & " Record" & IIf(ssOleDBGridFindColumns.Rows = 1, "", "s") & _
+  'StatusBar1.Panels(1).Text = ssOleDBGridFindColumns.Rows & " Record" & IIf(ssOleDBGridFindColumns.Rows = 1, "", "s") & _
         IIf(ssOleDBGridFindColumns.SelBookmarks.Count > 1, " - " & ssOleDBGridFindColumns.SelBookmarks.Count & " Selected", "")
-      
+  UpdateStatusBar
+
 '    End If
     
   End If
