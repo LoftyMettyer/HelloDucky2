@@ -6090,7 +6090,7 @@ Public Function LoadTabPage(piPageNumber As Integer) As Boolean
   Dim iRecordCount As Integer
   Dim iCount As Integer
   Dim iOriginalPageNumber As Integer
-  
+    
   iNextIndex = 1
   fLoadOk = True
 
@@ -6136,175 +6136,175 @@ Public Function LoadTabPage(piPageNumber As Integer) As Boolean
         ' Add controls to the form for each control defined in the database.
         Do While Not .EOF             ' Indent 04 - start
         
-          If .Fields("screenID") <> gLngScreenID Then
+          If .Fields("screenID").value <> gLngScreenID Then
             Exit Do
           End If
             
           ' Only Load controls for selected page
-          If .Fields("pageNo") = iOriginalPageNumber Then
+          If .Fields("pageNo").value = iOriginalPageNumber Then
               
             ' Get the control's type.
-            iCtrlType = IIf(IsNull(.Fields("controlType")), giCTRL_TEXTBOX, .Fields("controlType"))
+            iCtrlType = IIf(IsNull(.Fields("controlType").value), giCTRL_TEXTBOX, .Fields("controlType").value)
               
             ' Create the new control.
             Set ctlControl = AddControl(iCtrlType)
       
             If Not ctlControl Is Nothing Then             ' Indent 05 - start
-                        
+
               ' Set the page container of the page that contains the control.
-              iPageNo = IIf(IsNull(.Fields("pageNo")), 0, .Fields("pageNo"))
+              iPageNo = IIf(IsNull(.Fields("pageNo").value), 0, .Fields("pageNo").value)
               If iPageNo = 0 Then
                 Set ctlControl.Container = Me
               Else
                 Set ctlControl.Container = picPageContainer(iOriginalPageNumber)
               End If
-  
+
               ' Set the control's level in the z-order.
-              ctlControl.ControlLevel = .Fields("controlLevel")
-              
+              ctlControl.ControlLevel = .Fields("controlLevel").value
+
               ' Set the control's size.
-              ctlControl.Top = IIf(IsNull(.Fields("topCoord")), 0, .Fields("topCoord"))
-              ctlControl.Left = IIf(IsNull(.Fields("leftCoord")), 0, .Fields("leftCoord"))
-              
+              ctlControl.Top = IIf(IsNull(.Fields("topCoord").value), 0, .Fields("topCoord").value)
+              ctlControl.Left = IIf(IsNull(.Fields("leftCoord").value), 0, .Fields("leftCoord").value)
+
               ' Set the control's dimensions.
-              ctlControl.Height = IIf(IsNull(.Fields("height")), 0, .Fields("height"))
-              ctlControl.Width = IIf(IsNull(.Fields("width")), 0, .Fields("width"))
-                
+              ctlControl.Height = IIf(IsNull(.Fields("height").value), 0, .Fields("height").value)
+              ctlControl.Width = IIf(IsNull(.Fields("width").value), 0, .Fields("width").value)
+
               ' Set the controls tab index.
               ctlControl.TabIndex = iNextIndex
-              If (Not IsNull(.Fields("tabIndex"))) And _
+              If (Not IsNull(.Fields("tabIndex").value)) And _
                 (ScreenControl_IsTabStop(iCtrlType)) Then
                 iNextIndex = iNextIndex + 1
               End If
-            
+
               ' Set the control's column and table IDs.
-              lngTableID = IIf(IsNull(.Fields("tableID")), 0, .Fields("tableID"))
-              ctlControl.ColumnID = IIf(IsNull(.Fields("columnID")), 0, .Fields("columnID"))
-  
+              lngTableID = IIf(IsNull(.Fields("tableID").value), 0, .Fields("tableID").value)
+              ctlControl.ColumnID = IIf(IsNull(.Fields("columnID").value), 0, .Fields("columnID").value)
+
               ' Give the control a tooltip if it is associated with a column.
               With recColEdit
                 .Index = "idxColumnID"
                 .Seek "=", ctlControl.ColumnID
-                
+
                 If Not .NoMatch Then
-                  sColumnName = .Fields("columnName")
-                
+                  sColumnName = .Fields("columnName").value
+
                   With recTabEdit
                     .Index = "idxTableID"
                     .Seek "=", lngTableID
-                    
+
                     If Not .NoMatch Then
-                      sTableName = .Fields("tableName")
+                      sTableName = .Fields("tableName").value
                       ctlControl.ToolTipText = sTableName & "." & sColumnName
                     End If
-                    
+
                   End With
                 End If
               End With
-  
+
               ' Set the controls caption.
               If (ScreenControl_HasCaption(iCtrlType)) Then
-                ctlControl.Caption = IIf(IsNull(.Fields("caption")), "", .Fields("caption") & vbNullString)
+                ctlControl.Caption = IIf(IsNull(.Fields("caption").value), "", .Fields("caption").value & vbNullString)
               End If
-              
+
               If (ScreenControl_HasText(iCtrlType)) Then
                 ctlControl.Caption = ctlControl.ToolTipText
                 If iCtrlType = giCTRL_OLE Then
                   ctlControl.ButtonCaption = OLEType(ctlControl.ColumnID)
                 End If
               End If
-              
+
               ' Set the BackColor and ForeColor properties.
               If ScreenControl_HasBackColor(iCtrlType) Then
-                ctlControl.BackColor = IIf(IsNull(.Fields("backColor")), Me.BackColor, .Fields("backColor"))
+                ctlControl.BackColor = IIf(IsNull(.Fields("backColor").value), Me.BackColor, .Fields("backColor").value)
               End If
-              
+
               If ScreenControl_HasForeColor(iCtrlType) Then
-                ctlControl.ForeColor = IIf(IsNull(.Fields("foreColor")), Me.ForeColor, .Fields("foreColor"))
+                ctlControl.ForeColor = IIf(IsNull(.Fields("foreColor").value), Me.ForeColor, .Fields("foreColor").value)
               End If
-                          
+
               ' Font properties.
               If ScreenControl_HasFont(iCtrlType) Then
                 Set objFont = New StdFont
-                objFont.Name = IIf(IsNull(.Fields("fontName")), "Verdana", .Fields("fontName"))
-                objFont.Size = IIf(IsNull(.Fields("fontSize")), 8, .Fields("fontSize"))
-                objFont.Bold = IIf(IsNull(.Fields("fontBold")), False, .Fields("fontBold"))
-                objFont.Italic = IIf(IsNull(.Fields("fontItalic")), False, .Fields("fontItalic"))
-                objFont.Strikethrough = IIf(IsNull(.Fields("fontStrikeThru")), False, .Fields("fontStrikeThru"))
-                objFont.Underline = IIf(IsNull(.Fields("fontUnderline")), False, .Fields("fontUnderline"))
+                objFont.Name = IIf(IsNull(.Fields("fontName").value), "Verdana", .Fields("fontName").value)
+                objFont.Size = IIf(IsNull(.Fields("fontSize").value), 8, .Fields("fontSize").value)
+                objFont.Bold = IIf(IsNull(.Fields("fontBold").value), False, .Fields("fontBold").value)
+                objFont.Italic = IIf(IsNull(.Fields("fontItalic").value), False, .Fields("fontItalic").value)
+                objFont.Strikethrough = IIf(IsNull(.Fields("fontStrikeThru").value), False, .Fields("fontStrikeThru").value)
+                objFont.Underline = IIf(IsNull(.Fields("fontUnderline").value), False, .Fields("fontUnderline").value)
                 Set ctlControl.Font = objFont
                 Set objFont = Nothing
               End If
-              
+
               ' Set the BorderStyle property.
               If ScreenControl_HasBorderStyle(iCtrlType) Then
-                ctlControl.BorderStyle = IIf(IsNull(.Fields("borderStyle")), vbFixedSingle, .Fields("borderStyle"))
+                ctlControl.BorderStyle = IIf(IsNull(.Fields("borderStyle").value), vbFixedSingle, .Fields("borderStyle").value)
               End If
-              
-                            
+
+
               'NPG20071023
               ' Set the ReadOnly property.
               If ScreenControl_HasReadOnly(iCtrlType) Then
-                ctlControl.Read_Only = IIf(IsNull(.Fields("readOnly")), False, .Fields("readOnly"))
+                ctlControl.Read_Only = IIf(IsNull(.Fields("readOnly").value), False, .Fields("readOnly").value)
               End If
-              
+
 
               ' Set the Alignment property.
               If ScreenControl_HasAlignment(iCtrlType) Then
-                If Not IsNull(.Fields("alignment")) Then
-                  ctlControl.Alignment = .Fields("alignment")
+                If Not IsNull(.Fields("alignment").value) Then
+                  ctlControl.Alignment = .Fields("alignment").value
                 End If
               End If
-    
+
               ' Set the Orientation property.
               If ScreenControl_HasOrientation(iCtrlType) Then
-                If Not IsNull(.Fields("alignment")) Then
-                  ctlControl.Alignment = .Fields("alignment")
-                  
+                If Not IsNull(.Fields("alignment").value) Then
+                  ctlControl.Alignment = .Fields("alignment").value
+
                   ' Height/Width required to be set again after alignment property...
                   ' Bug in the line control..only happens in ScrDsgnr, not in the
                   ' test project !
                   If iCtrlType = giCTRL_LINE Then
-                    ctlControl.Height = IIf(IsNull(.Fields("height")), 0, .Fields("height"))
-                    ctlControl.Width = IIf(IsNull(.Fields("width")), 0, .Fields("width"))
+                    ctlControl.Height = IIf(IsNull(.Fields("height").value), 0, .Fields("height").value)
+                    ctlControl.Width = IIf(IsNull(.Fields("width").value), 0, .Fields("width").value)
                   End If
-                
+
                 End If
               End If
-    
+
               ' Set the Picture property.
               If ScreenControl_HasPicture(iCtrlType) Then
-                ctlControl.PictureID = IIf(IsNull(.Fields("pictureID")), 0, .Fields("pictureID"))
+                ctlControl.PictureID = IIf(IsNull(.Fields("pictureID").value), 0, .Fields("pictureID").value)
                 If ctlControl.PictureID > 0 Then
-                    
+
                   recPictEdit.Index = "idxID"
                   recPictEdit.Seek "=", ctlControl.PictureID
-                      
+
                   If Not recPictEdit.NoMatch Then
                     sFileName = ReadPicture
                     ctlControl.Picture = sFileName
                     Kill sFileName
                   End If
-                  
+
                 End If
               End If
-            
+
               ' Set the control's Options property.
               If ScreenControl_HasOptions(iCtrlType) Then
                 recColEdit.Index = "idxColumnID"
-                recColEdit.Seek "=", .Fields("columnID")
-                    
+                recColEdit.Seek "=", .Fields("columnID").value
+
                 If Not recColEdit.NoMatch Then
                   'ctlControl.Options = ReadColumnControlValues(recColEdit.Fields("columnID"))
-                  ctlControl.SetOptions ReadColumnControlValues(recColEdit.Fields("columnID"))
+                  ctlControl.SetOptions ReadColumnControlValues(recColEdit.Fields("columnID").value)
                 End If
               End If
-    
+
               ' Set the controls Display type properties
               If ScreenControl_HasDisplayType(iCtrlType) Then
-                ctlControl.DisplayType = IIf(IsNull(.Fields("DisplayType")), NavigationDisplayType.Button, .Fields("DisplayType"))
+                ctlControl.DisplayType = IIf(IsNull(.Fields("DisplayType").value), NavigationDisplayType.Button, .Fields("DisplayType").value)
               End If
-    
+
               ' Set the controls navigate properties
               If ScreenControl_HasNavigation(iCtrlType) Then
                 ctlControl.ColumnName = GetColumnName(ctlControl.ColumnID, False)
@@ -6312,8 +6312,8 @@ Public Function LoadTabPage(piPageNumber As Integer) As Boolean
                 ctlControl.NavigateIn = IIf(IsNull(.Fields("NavigateIn").value), NavigateIn.URL, .Fields("NavigateIn").value)
                 ctlControl.NavigateOnSave = IIf(IsNull(.Fields("NavigateOnSave").value), vbNo, .Fields("NavigateOnSave").value)
               End If
-  
-  
+
+
             'TM20010914 Fault 1753
             'The ActiveBar control does mot have the visible property, so to avoid err
             'we only check the visible property of other controls.
@@ -6321,10 +6321,10 @@ Public Function LoadTabPage(piPageNumber As Integer) As Boolean
                 ctlControl.Visible = True
               End If
             End If       ' Indent 05 - end
-            
+
             ' Disassociate object variables.
             Set ctlControl = Nothing
-            
+
           End If
           
           .MoveNext
