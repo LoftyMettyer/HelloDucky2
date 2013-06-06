@@ -1902,7 +1902,8 @@ Private Sub Form_Resize()
 
     Select Case mlngElementType
       Case elem_WebForm
-        grdWebFormEnteredValues.Height = fraSpecificDetails(mlngElementType).Height _
+      
+        grdWebFormEnteredValues.Height = Maximum(fraSpecificDetails(mlngElementType).Height, MINHEIGHT_WEBFORM) _
           - grdWebFormEnteredValues.Top _
           - 100
         
