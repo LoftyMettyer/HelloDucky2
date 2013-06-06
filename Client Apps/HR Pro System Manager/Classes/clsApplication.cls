@@ -2529,7 +2529,11 @@ Private Function CreateQueryDefs() As Boolean
       " WHERE [OrderID] = @orderid;"
   daoDb.CreateQueryDef "spadmin_getorderitems", sSQL
 
-
+  ' spadmin_getmodulesetup
+  sSQL = "SELECT [ModuleKey], [ParameterKey], [ParameterValue] AS [value]" & _
+      ",IIF([ParameterType] = ""PType_ColumnID"" , 2, IIF([ParameterType] = ""PType_TableID"", 1, IIF([ParameterType] = ""PType_ScreenID"" , 14, 0))) As SubType" & _
+      " FROM tmpModuleSetup;"
+  daoDb.CreateQueryDef "spadmin_getmodulesetup", sSQL
 
 TidyUpAndExit:
   CreateQueryDefs = bOK
