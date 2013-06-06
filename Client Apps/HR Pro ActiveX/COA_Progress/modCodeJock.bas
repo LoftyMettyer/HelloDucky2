@@ -50,6 +50,8 @@ Public Sub LoadSkin( _
     .ExcludeModule "ws2_32.dll"
     .ExcludeModule "ws2help.dll"
     .ExcludeModule "netapi32.dll"
+    .ExcludeModule "MobileDesigner.dll"
+    .ExcludeModule "MobileDesigner.tlb"
 
     'Loads the skin
     If Trim(sStylePath) = vbNullString Then
