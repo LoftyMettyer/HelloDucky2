@@ -2,9 +2,9 @@ VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
 Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmRecordProfile 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Record Profile Definition"
@@ -114,6 +114,7 @@ Begin VB.Form frmRecordProfile
       TabPicture(1)   =   "frmRecordProfile.frx":11BC
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraRelatedTables"
+      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "Colu&mns"
       TabPicture(2)   =   "frmRecordProfile.frx":11D8
@@ -134,11 +135,8 @@ Begin VB.Form frmRecordProfile
       TabPicture(3)   =   "frmRecordProfile.frx":11F4
       Tab(3).ControlEnabled=   0   'False
       Tab(3).Control(0)=   "fraOutputFormat"
-      Tab(3).Control(0).Enabled=   0   'False
       Tab(3).Control(1)=   "fraReportOptions"
-      Tab(3).Control(1).Enabled=   0   'False
       Tab(3).Control(2)=   "fraOutputDestination"
-      Tab(3).Control(2).Enabled=   0   'False
       Tab(3).ControlCount=   3
       Begin VB.Frame fraInformation 
          Height          =   1950
@@ -1082,7 +1080,7 @@ Begin VB.Form frmRecordProfile
             TabIndex        =   29
             Top             =   300
             Width           =   7410
-            ScrollBars      =   2
+            ScrollBars      =   3
             _Version        =   196617
             DataMode        =   2
             RecordSelectors =   0   'False
@@ -2830,11 +2828,11 @@ End Property
 
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 
 Public Property Let Changed(ByVal pblnChanged As Boolean)
-  cmdOK.Enabled = pblnChanged
+  cmdOk.Enabled = pblnChanged
 End Property
 
 
@@ -5983,7 +5981,7 @@ End Sub
 
 Private Sub ListView1_LostFocus()
   'JPD 20030912 Fault 5781
-  cmdOK.Default = True
+  cmdOk.Default = True
 
 End Sub
 
@@ -6124,7 +6122,7 @@ End Sub
 
 Private Sub ListView2_LostFocus()
   'JPD 20030912 Fault 5781
-  cmdOK.Default = True
+  cmdOk.Default = True
 
 End Sub
 
@@ -6388,13 +6386,13 @@ Private Sub txtDesc_GotFocus()
     .SelLength = Len(.Text)
   End With
   
-  cmdOK.Default = False
+  cmdOk.Default = False
 
 End Sub
 
 
 Private Sub txtDesc_LostFocus()
-  cmdOK.Default = True
+  cmdOk.Default = True
 
 End Sub
 
