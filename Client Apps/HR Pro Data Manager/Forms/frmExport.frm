@@ -34,7 +34,7 @@ Begin VB.Form frmExport
       Caption         =   "&Cancel"
       Height          =   400
       Left            =   8325
-      TabIndex        =   119
+      TabIndex        =   116
       Top             =   5310
       Width           =   1200
    End
@@ -42,14 +42,14 @@ Begin VB.Form frmExport
       Caption         =   "&OK"
       Height          =   400
       Left            =   7050
-      TabIndex        =   118
+      TabIndex        =   115
       Top             =   5310
       Width           =   1200
    End
    Begin TabDlg.SSTab SSTab1 
       Height          =   5130
       Left            =   45
-      TabIndex        =   120
+      TabIndex        =   117
       Top             =   45
       Width           =   9480
       _ExtentX        =   16722
@@ -80,8 +80,11 @@ Begin VB.Form frmExport
       TabPicture(1)   =   "frmExport.frx":0028
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraParent1"
+      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).Control(1)=   "fraParent2"
+      Tab(1).Control(1).Enabled=   0   'False
       Tab(1).Control(2)=   "fraChild"
+      Tab(1).Control(2).Enabled=   0   'False
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "Colu&mns"
       TabPicture(2)   =   "frmExport.frx":0044
@@ -97,475 +100,74 @@ Begin VB.Form frmExport
       TabCaption(4)   =   "O&ptions"
       TabPicture(4)   =   "frmExport.frx":007C
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "fraDateOptions"
-      Tab(4).Control(1)=   "fraHeaderOptions"
+      Tab(4).Control(0)=   "fraHeaderOptions"
+      Tab(4).Control(1)=   "fraDateOptions"
       Tab(4).ControlCount=   2
       TabCaption(5)   =   "O&utput"
       TabPicture(5)   =   "frmExport.frx":0098
       Tab(5).ControlEnabled=   0   'False
-      Tab(5).Control(0)=   "fraDelimFile"
-      Tab(5).Control(1)=   "fraCMGFile"
-      Tab(5).Control(2)=   "fraOutputDestination"
-      Tab(5).Control(3)=   "fraOutputType"
+      Tab(5).Control(0)=   "fraOutputType"
+      Tab(5).Control(1)=   "fraOutputDestination"
+      Tab(5).Control(2)=   "fraCMGFile"
+      Tab(5).Control(3)=   "fraDelimFile"
       Tab(5).ControlCount=   4
-      Begin VB.Frame fraOutputType 
-         Caption         =   "Output Format :"
-         Height          =   3135
-         Left            =   -74850
-         TabIndex        =   85
-         Top             =   405
-         Width           =   2400
-         Begin VB.OptionButton optOutputFormat 
-            Caption         =   "E&xcel Worksheet"
-            Height          =   195
-            Index           =   4
-            Left            =   200
-            TabIndex        =   88
-            Top             =   1200
-            Width           =   1920
-         End
-         Begin VB.OptionButton optOutputFormat 
-            Caption         =   "F&ixed Length File"
-            Height          =   195
-            Index           =   7
-            Left            =   200
-            TabIndex        =   87
-            Top             =   800
-            Width           =   1965
-         End
-         Begin VB.OptionButton optOutputFormat 
-            Caption         =   "De&limited File"
-            Height          =   195
-            Index           =   1
-            Left            =   200
-            TabIndex        =   86
-            Top             =   400
-            Width           =   1470
-         End
-         Begin VB.OptionButton optOutputFormat 
-            Caption         =   "CM&G File"
-            Height          =   195
-            Index           =   8
-            Left            =   200
-            TabIndex        =   89
-            Top             =   1600
-            Visible         =   0   'False
-            Width           =   1200
-         End
-         Begin VB.OptionButton optOutputFormat 
-            Caption         =   "SQL &Table"
-            Height          =   195
-            Index           =   99
-            Left            =   200
-            TabIndex        =   90
-            Top             =   2000
-            Visible         =   0   'False
-            Width           =   1200
-         End
-      End
-      Begin VB.Frame fraOutputDestination 
-         Caption         =   "Output Destination(s) :"
-         Height          =   3135
-         Left            =   -72345
-         TabIndex        =   91
-         Top             =   405
-         Width           =   6675
-         Begin VB.TextBox txtEmailAttachAs 
-            BackColor       =   &H8000000F&
-            Enabled         =   0   'False
-            ForeColor       =   &H00000000&
+      Begin VB.Frame fraInformation 
+         Height          =   2355
+         Left            =   150
+         TabIndex        =   118
+         Top             =   400
+         Width           =   9180
+         Begin VB.ComboBox cboCategory 
             Height          =   315
-            Left            =   3360
-            TabIndex        =   105
-            Tag             =   "0"
-            Top             =   2145
-            Width           =   3135
-         End
-         Begin VB.TextBox txtFilename 
-            BackColor       =   &H8000000F&
-            Enabled         =   0   'False
-            ForeColor       =   &H00000000&
-            Height          =   315
-            Left            =   3360
-            Locked          =   -1  'True
-            TabIndex        =   94
-            TabStop         =   0   'False
-            Tag             =   "0"
-            Top             =   315
-            Width           =   2835
-         End
-         Begin VB.ComboBox cboSaveExisting 
-            BackColor       =   &H8000000F&
-            Enabled         =   0   'False
-            Height          =   315
-            Left            =   3360
+            Left            =   1395
             Style           =   2  'Dropdown List
-            TabIndex        =   97
+            TabIndex        =   2
             Top             =   720
-            Width           =   3135
+            Width           =   3090
          End
-         Begin VB.TextBox txtEmailSubject 
+         Begin VB.TextBox txtDesc 
+            Height          =   1080
+            Left            =   1395
+            MaxLength       =   255
+            MultiLine       =   -1  'True
+            ScrollBars      =   2  'Vertical
+            TabIndex        =   3
+            Top             =   1110
+            Width           =   3090
+         End
+         Begin VB.TextBox txtName 
+            Height          =   315
+            Left            =   1395
+            MaxLength       =   50
+            TabIndex        =   1
+            Top             =   300
+            Width           =   3090
+         End
+         Begin VB.TextBox txtUserName 
             BackColor       =   &H8000000F&
             Enabled         =   0   'False
             Height          =   315
-            Left            =   3360
-            TabIndex        =   103
-            Top             =   1740
-            Width           =   3135
-         End
-         Begin VB.TextBox txtEmailGroup 
-            BackColor       =   &H8000000F&
-            Enabled         =   0   'False
-            ForeColor       =   &H00000000&
-            Height          =   315
-            Left            =   3360
-            Locked          =   -1  'True
-            TabIndex        =   100
-            TabStop         =   0   'False
-            Tag             =   "0"
-            Top             =   1335
-            Width           =   2835
-         End
-         Begin VB.CommandButton cmdFilename 
-            Caption         =   "..."
-            Enabled         =   0   'False
-            Height          =   315
-            Left            =   6195
-            TabIndex        =   95
-            Top             =   315
-            UseMaskColor    =   -1  'True
-            Width           =   330
-         End
-         Begin VB.CommandButton cmdEmailGroup 
-            Caption         =   "..."
-            Enabled         =   0   'False
-            Height          =   315
-            Left            =   6195
-            TabIndex        =   101
-            Top             =   1335
-            UseMaskColor    =   -1  'True
-            Width           =   330
-         End
-         Begin VB.CheckBox chkDestination 
-            Caption         =   "Save to &file"
-            Enabled         =   0   'False
-            Height          =   195
-            Index           =   2
-            Left            =   240
-            TabIndex        =   92
-            Top             =   375
-            Width           =   1455
-         End
-         Begin VB.CheckBox chkDestination 
-            Caption         =   "Send as &email"
-            Enabled         =   0   'False
-            Height          =   195
-            Index           =   3
-            Left            =   240
-            TabIndex        =   98
-            Top             =   1395
-            Width           =   1515
-         End
-         Begin VB.Label lblEmail 
-            AutoSize        =   -1  'True
-            Caption         =   "Attach as :"
-            Enabled         =   0   'False
-            Height          =   195
-            Index           =   2
-            Left            =   1935
-            TabIndex        =   104
-            Top             =   2205
-            Width           =   1155
-         End
-         Begin VB.Label lblFileName 
-            AutoSize        =   -1  'True
-            Caption         =   "File name :"
-            Enabled         =   0   'False
-            Height          =   195
-            Left            =   1935
-            TabIndex        =   93
-            Top             =   375
-            Width           =   1140
-         End
-         Begin VB.Label lblEmail 
-            AutoSize        =   -1  'True
-            Caption         =   "Email subject :"
-            Enabled         =   0   'False
-            Height          =   195
-            Index           =   1
-            Left            =   1935
-            TabIndex        =   102
-            Top             =   1800
-            Width           =   1305
-         End
-         Begin VB.Label lblEmail 
-            AutoSize        =   -1  'True
-            Caption         =   "Email group :"
-            Enabled         =   0   'False
-            Height          =   195
-            Index           =   0
-            Left            =   1935
-            TabIndex        =   99
-            Top             =   1395
-            Width           =   1245
-         End
-         Begin VB.Label lblSave 
-            AutoSize        =   -1  'True
-            Caption         =   "If existing file :"
-            Enabled         =   0   'False
-            Height          =   195
-            Left            =   1935
-            TabIndex        =   96
-            Top             =   780
-            Width           =   1350
-         End
-      End
-      Begin VB.Frame fraHeaderOptions 
-         Caption         =   "Header && Footer :"
-         Height          =   2085
-         Left            =   -74850
-         TabIndex        =   67
-         Top             =   405
-         Width           =   9180
-         Begin VB.CheckBox chkForceHeader 
-            Caption         =   "&Force header if no records"
-            Height          =   195
-            Left            =   5520
-            TabIndex        =   76
-            Top             =   360
-            Width           =   3375
-         End
-         Begin VB.ComboBox cboFooterOptions 
-            Height          =   315
-            ItemData        =   "frmExport.frx":00B4
-            Left            =   1995
-            List            =   "frmExport.frx":00C1
-            Style           =   2  'Dropdown List
-            TabIndex        =   73
-            Top             =   1100
-            Width           =   1995
-         End
-         Begin VB.TextBox txtCustomFooter 
-            Height          =   315
-            Left            =   1995
-            MaxLength       =   255
-            TabIndex        =   75
-            Top             =   1500
-            Width           =   3120
-         End
-         Begin VB.TextBox txtCustomHeader 
-            Height          =   315
-            Left            =   1995
-            MaxLength       =   255
-            TabIndex        =   71
-            Top             =   700
-            Width           =   3120
-         End
-         Begin VB.ComboBox cboHeaderOptions 
-            Height          =   315
-            ItemData        =   "frmExport.frx":00ED
-            Left            =   1995
-            List            =   "frmExport.frx":00FA
-            Style           =   2  'Dropdown List
-            TabIndex        =   69
+            Left            =   5625
+            MaxLength       =   30
+            TabIndex        =   4
             Top             =   300
-            Width           =   1995
+            Width           =   3405
          End
-         Begin VB.CheckBox chkOmitHeader 
-            Caption         =   "Omit header when &appending to file"
-            Height          =   195
-            Left            =   5520
-            TabIndex        =   77
-            Top             =   660
-            Width           =   3495
-         End
-         Begin VB.Label lblFooterLine 
-            AutoSize        =   -1  'True
-            Caption         =   "Footer Line :"
-            Height          =   195
-            Left            =   195
-            TabIndex        =   72
-            Top             =   1155
-            Width           =   915
-         End
-         Begin VB.Label lblHeaderLine 
-            AutoSize        =   -1  'True
-            Caption         =   "Header Line :"
-            Height          =   195
-            Left            =   195
-            TabIndex        =   68
-            Top             =   360
-            Width           =   960
-         End
-         Begin VB.Label Label1 
-            AutoSize        =   -1  'True
-            Caption         =   "Custom Header :"
-            Height          =   195
-            Left            =   195
-            TabIndex        =   70
-            Top             =   760
-            Width           =   1215
-         End
-         Begin VB.Label Label2 
-            AutoSize        =   -1  'True
-            Caption         =   "Custom Footer :"
-            Height          =   195
-            Left            =   195
-            TabIndex        =   74
-            Top             =   1560
-            Width           =   1170
-         End
-      End
-      Begin VB.Frame fraDateOptions 
-         Caption         =   "Date Format :"
-         Height          =   2450
-         Left            =   -74850
-         TabIndex        =   78
-         Top             =   2520
-         Width           =   9180
-         Begin VB.ComboBox cboDateFormat 
-            Height          =   315
-            ItemData        =   "frmExport.frx":0126
-            Left            =   2000
-            List            =   "frmExport.frx":0136
-            Style           =   2  'Dropdown List
-            TabIndex        =   80
-            Top             =   300
-            Width           =   2000
-         End
-         Begin VB.ComboBox cboDateSeparator 
-            Height          =   315
-            ItemData        =   "frmExport.frx":014E
-            Left            =   2000
-            List            =   "frmExport.frx":015E
-            Style           =   2  'Dropdown List
-            TabIndex        =   82
-            Top             =   700
-            Width           =   2000
-         End
-         Begin VB.ComboBox cboDateYearDigits 
-            Height          =   315
-            ItemData        =   "frmExport.frx":0173
-            Left            =   1995
-            List            =   "frmExport.frx":017D
-            Style           =   2  'Dropdown List
-            TabIndex        =   84
-            Top             =   1100
-            Width           =   1000
-         End
-         Begin VB.Label lblDateFormat 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Regional :"
-            Height          =   195
-            Left            =   200
-            TabIndex        =   79
-            Top             =   360
-            Width           =   720
-         End
-         Begin VB.Label lblDateSeparator 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Separator :"
-            Height          =   195
-            Left            =   200
-            TabIndex        =   81
-            Top             =   760
-            Width           =   825
-         End
-         Begin VB.Label lblDateYearDigits 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Year Digits :"
-            Height          =   195
-            Left            =   200
-            TabIndex        =   83
-            Top             =   1160
-            Width           =   870
-         End
-      End
-      Begin VB.Frame fraColumns 
-         Caption         =   "Columns :"
-         Height          =   4560
-         Left            =   -74850
-         TabIndex        =   50
-         Top             =   405
-         Width           =   9180
-         Begin VB.CommandButton cmdAddAllColumns 
-            Caption         =   "Add A&ll..."
-            Height          =   400
-            Left            =   7800
-            TabIndex        =   53
-            Top             =   800
-            Width           =   1200
-         End
-         Begin VB.CommandButton cmdMoveUp 
-            Caption         =   "Move U&p"
-            Enabled         =   0   'False
-            Height          =   400
-            Left            =   7800
-            TabIndex        =   57
-            Top             =   3460
-            Width           =   1200
-         End
-         Begin VB.CommandButton cmdMoveDown 
-            Caption         =   "Move Do&wn"
-            Enabled         =   0   'False
-            Height          =   400
-            Left            =   7800
-            TabIndex        =   58
-            Top             =   3960
-            Width           =   1200
-         End
-         Begin VB.CommandButton cmdClearColumn 
-            Caption         =   "Remo&ve All"
-            Enabled         =   0   'False
-            Height          =   400
-            Left            =   7800
-            TabIndex        =   56
-            Top             =   2300
-            Width           =   1200
-         End
-         Begin VB.CommandButton cmdDeleteColumn 
-            Caption         =   "&Remove"
-            Enabled         =   0   'False
-            Height          =   400
-            Left            =   7800
-            TabIndex        =   55
-            Top             =   1800
-            Width           =   1200
-         End
-         Begin VB.CommandButton cmdEditColumn 
-            Caption         =   "&Edit..."
-            Enabled         =   0   'False
-            Height          =   400
-            Left            =   7800
-            TabIndex        =   54
-            Top             =   1300
-            Width           =   1200
-         End
-         Begin VB.CommandButton cmdNewColumn 
-            Caption         =   "&Add..."
-            Height          =   400
-            Left            =   7800
-            TabIndex        =   52
-            Top             =   315
-            Width           =   1200
-         End
-         Begin SSDataWidgets_B.SSDBGrid grdColumns 
-            Height          =   4065
-            Left            =   195
-            TabIndex        =   51
-            Top             =   300
-            Width           =   7545
+         Begin SSDataWidgets_B.SSDBGrid grdAccess 
+            Height          =   1485
+            Left            =   5625
+            TabIndex        =   5
+            Top             =   705
+            Width           =   3405
+            ScrollBars      =   2
             _Version        =   196617
             DataMode        =   2
             RecordSelectors =   0   'False
-            Col.Count       =   11
-            stylesets.count =   5
-            stylesets(0).Name=   "ssetSelected"
-            stylesets(0).ForeColor=   -2147483634
-            stylesets(0).BackColor=   -2147483635
+            Col.Count       =   3
+            stylesets.count =   2
+            stylesets(0).Name=   "SysSecMgr"
+            stylesets(0).ForeColor=   -2147483631
+            stylesets(0).BackColor=   -2147483633
             stylesets(0).HasFont=   -1  'True
             BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -576,8 +178,8 @@ Begin VB.Form frmExport
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(0).Picture=   "frmExport.frx":0187
-            stylesets(1).Name=   "ssetHeaderDisabled"
+            stylesets(0).Picture=   "frmExport.frx":00B4
+            stylesets(1).Name=   "ReadOnly"
             stylesets(1).ForeColor=   -2147483631
             stylesets(1).BackColor=   -2147483633
             stylesets(1).HasFont=   -1  'True
@@ -590,7 +192,611 @@ Begin VB.Form frmExport
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(1).Picture=   "frmExport.frx":01A3
+            stylesets(1).Picture=   "frmExport.frx":00D0
+            MultiLine       =   0   'False
+            AllowRowSizing  =   0   'False
+            AllowGroupSizing=   0   'False
+            AllowColumnSizing=   0   'False
+            AllowGroupMoving=   0   'False
+            AllowColumnMoving=   0
+            AllowGroupSwapping=   0   'False
+            AllowColumnSwapping=   0
+            AllowGroupShrinking=   0   'False
+            AllowColumnShrinking=   0   'False
+            AllowDragDrop   =   0   'False
+            SelectTypeCol   =   0
+            SelectTypeRow   =   0
+            BalloonHelp     =   0   'False
+            MaxSelectedRows =   0
+            ForeColorEven   =   0
+            BackColorEven   =   -2147483643
+            BackColorOdd    =   -2147483643
+            RowHeight       =   423
+            Columns.Count   =   3
+            Columns(0).Width=   2963
+            Columns(0).Caption=   "User Group"
+            Columns(0).Name =   "GroupName"
+            Columns(0).AllowSizing=   0   'False
+            Columns(0).DataField=   "Column 0"
+            Columns(0).DataType=   8
+            Columns(0).FieldLen=   256
+            Columns(0).Locked=   -1  'True
+            Columns(1).Width=   2566
+            Columns(1).Caption=   "Access"
+            Columns(1).Name =   "Access"
+            Columns(1).AllowSizing=   0   'False
+            Columns(1).DataField=   "Column 1"
+            Columns(1).DataType=   8
+            Columns(1).FieldLen=   256
+            Columns(1).Locked=   -1  'True
+            Columns(1).Style=   3
+            Columns(1).Row.Count=   3
+            Columns(1).Col.Count=   2
+            Columns(1).Row(0).Col(0)=   "Read / Write"
+            Columns(1).Row(1).Col(0)=   "Read Only"
+            Columns(1).Row(2).Col(0)=   "Hidden"
+            Columns(2).Width=   3200
+            Columns(2).Visible=   0   'False
+            Columns(2).Caption=   "SysSecMgr"
+            Columns(2).Name =   "SysSecMgr"
+            Columns(2).DataField=   "Column 2"
+            Columns(2).DataType=   8
+            Columns(2).FieldLen=   256
+            TabNavigation   =   1
+            _ExtentX        =   6006
+            _ExtentY        =   2619
+            _StockProps     =   79
+            BeginProperty PageFooterFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+            BeginProperty PageHeaderFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+         End
+         Begin VB.Label lblCategory 
+            Caption         =   "Category :"
+            Height          =   240
+            Left            =   195
+            TabIndex        =   123
+            Top             =   765
+            Width           =   1005
+         End
+         Begin VB.Label lblAccess 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Access :"
+            Height          =   195
+            Left            =   4770
+            TabIndex        =   122
+            Top             =   765
+            Width           =   825
+         End
+         Begin VB.Label lblDescription 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Description :"
+            Height          =   195
+            Left            =   195
+            TabIndex        =   121
+            Top             =   1155
+            Width           =   1080
+         End
+         Begin VB.Label lblName 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Name :"
+            Height          =   195
+            Left            =   195
+            TabIndex        =   120
+            Top             =   360
+            Width           =   690
+         End
+         Begin VB.Label lblOwner 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Owner :"
+            Height          =   195
+            Left            =   4770
+            TabIndex        =   119
+            Top             =   360
+            Width           =   810
+         End
+      End
+      Begin VB.Frame fraOutputType 
+         Caption         =   "Output Format :"
+         Height          =   3135
+         Left            =   -74850
+         TabIndex        =   82
+         Top             =   405
+         Width           =   2400
+         Begin VB.OptionButton optOutputFormat 
+            Caption         =   "E&xcel Worksheet"
+            Height          =   195
+            Index           =   4
+            Left            =   200
+            TabIndex        =   85
+            Top             =   1200
+            Width           =   1920
+         End
+         Begin VB.OptionButton optOutputFormat 
+            Caption         =   "F&ixed Length File"
+            Height          =   195
+            Index           =   7
+            Left            =   200
+            TabIndex        =   84
+            Top             =   800
+            Width           =   1965
+         End
+         Begin VB.OptionButton optOutputFormat 
+            Caption         =   "De&limited File"
+            Height          =   195
+            Index           =   1
+            Left            =   200
+            TabIndex        =   83
+            Top             =   400
+            Width           =   1470
+         End
+         Begin VB.OptionButton optOutputFormat 
+            Caption         =   "CM&G File"
+            Height          =   195
+            Index           =   8
+            Left            =   200
+            TabIndex        =   86
+            Top             =   1600
+            Visible         =   0   'False
+            Width           =   1200
+         End
+         Begin VB.OptionButton optOutputFormat 
+            Caption         =   "SQL &Table"
+            Height          =   195
+            Index           =   99
+            Left            =   200
+            TabIndex        =   87
+            Top             =   2000
+            Visible         =   0   'False
+            Width           =   1200
+         End
+      End
+      Begin VB.Frame fraOutputDestination 
+         Caption         =   "Output Destination(s) :"
+         Height          =   3135
+         Left            =   -72345
+         TabIndex        =   88
+         Top             =   405
+         Width           =   6675
+         Begin VB.TextBox txtEmailAttachAs 
+            BackColor       =   &H8000000F&
+            Enabled         =   0   'False
+            ForeColor       =   &H00000000&
+            Height          =   315
+            Left            =   3360
+            TabIndex        =   102
+            Tag             =   "0"
+            Top             =   2145
+            Width           =   3135
+         End
+         Begin VB.TextBox txtFilename 
+            BackColor       =   &H8000000F&
+            Enabled         =   0   'False
+            ForeColor       =   &H00000000&
+            Height          =   315
+            Left            =   3360
+            Locked          =   -1  'True
+            TabIndex        =   91
+            TabStop         =   0   'False
+            Tag             =   "0"
+            Top             =   315
+            Width           =   2835
+         End
+         Begin VB.ComboBox cboSaveExisting 
+            BackColor       =   &H8000000F&
+            Enabled         =   0   'False
+            Height          =   315
+            Left            =   3360
+            Style           =   2  'Dropdown List
+            TabIndex        =   94
+            Top             =   720
+            Width           =   3135
+         End
+         Begin VB.TextBox txtEmailSubject 
+            BackColor       =   &H8000000F&
+            Enabled         =   0   'False
+            Height          =   315
+            Left            =   3360
+            TabIndex        =   100
+            Top             =   1740
+            Width           =   3135
+         End
+         Begin VB.TextBox txtEmailGroup 
+            BackColor       =   &H8000000F&
+            Enabled         =   0   'False
+            ForeColor       =   &H00000000&
+            Height          =   315
+            Left            =   3360
+            Locked          =   -1  'True
+            TabIndex        =   97
+            TabStop         =   0   'False
+            Tag             =   "0"
+            Top             =   1335
+            Width           =   2835
+         End
+         Begin VB.CommandButton cmdFilename 
+            Caption         =   "..."
+            Enabled         =   0   'False
+            Height          =   315
+            Left            =   6195
+            TabIndex        =   92
+            Top             =   315
+            UseMaskColor    =   -1  'True
+            Width           =   330
+         End
+         Begin VB.CommandButton cmdEmailGroup 
+            Caption         =   "..."
+            Enabled         =   0   'False
+            Height          =   315
+            Left            =   6195
+            TabIndex        =   98
+            Top             =   1335
+            UseMaskColor    =   -1  'True
+            Width           =   330
+         End
+         Begin VB.CheckBox chkDestination 
+            Caption         =   "Save to &file"
+            Enabled         =   0   'False
+            Height          =   195
+            Index           =   2
+            Left            =   240
+            TabIndex        =   89
+            Top             =   375
+            Width           =   1455
+         End
+         Begin VB.CheckBox chkDestination 
+            Caption         =   "Send as &email"
+            Enabled         =   0   'False
+            Height          =   195
+            Index           =   3
+            Left            =   240
+            TabIndex        =   95
+            Top             =   1395
+            Width           =   1515
+         End
+         Begin VB.Label lblEmail 
+            AutoSize        =   -1  'True
+            Caption         =   "Attach as :"
+            Enabled         =   0   'False
+            Height          =   195
+            Index           =   2
+            Left            =   1935
+            TabIndex        =   101
+            Top             =   2205
+            Width           =   1155
+         End
+         Begin VB.Label lblFileName 
+            AutoSize        =   -1  'True
+            Caption         =   "File name :"
+            Enabled         =   0   'False
+            Height          =   195
+            Left            =   1935
+            TabIndex        =   90
+            Top             =   375
+            Width           =   1140
+         End
+         Begin VB.Label lblEmail 
+            AutoSize        =   -1  'True
+            Caption         =   "Email subject :"
+            Enabled         =   0   'False
+            Height          =   195
+            Index           =   1
+            Left            =   1935
+            TabIndex        =   99
+            Top             =   1800
+            Width           =   1305
+         End
+         Begin VB.Label lblEmail 
+            AutoSize        =   -1  'True
+            Caption         =   "Email group :"
+            Enabled         =   0   'False
+            Height          =   195
+            Index           =   0
+            Left            =   1935
+            TabIndex        =   96
+            Top             =   1395
+            Width           =   1245
+         End
+         Begin VB.Label lblSave 
+            AutoSize        =   -1  'True
+            Caption         =   "If existing file :"
+            Enabled         =   0   'False
+            Height          =   195
+            Left            =   1935
+            TabIndex        =   93
+            Top             =   780
+            Width           =   1350
+         End
+      End
+      Begin VB.Frame fraHeaderOptions 
+         Caption         =   "Header && Footer :"
+         Height          =   2085
+         Left            =   -74850
+         TabIndex        =   64
+         Top             =   405
+         Width           =   9180
+         Begin VB.CheckBox chkForceHeader 
+            Caption         =   "&Force header if no records"
+            Height          =   195
+            Left            =   5520
+            TabIndex        =   73
+            Top             =   360
+            Width           =   3375
+         End
+         Begin VB.ComboBox cboFooterOptions 
+            Height          =   315
+            ItemData        =   "frmExport.frx":00EC
+            Left            =   1995
+            List            =   "frmExport.frx":00F9
+            Style           =   2  'Dropdown List
+            TabIndex        =   70
+            Top             =   1100
+            Width           =   1995
+         End
+         Begin VB.TextBox txtCustomFooter 
+            Height          =   315
+            Left            =   1995
+            MaxLength       =   255
+            TabIndex        =   72
+            Top             =   1500
+            Width           =   3120
+         End
+         Begin VB.TextBox txtCustomHeader 
+            Height          =   315
+            Left            =   1995
+            MaxLength       =   255
+            TabIndex        =   68
+            Top             =   700
+            Width           =   3120
+         End
+         Begin VB.ComboBox cboHeaderOptions 
+            Height          =   315
+            ItemData        =   "frmExport.frx":0125
+            Left            =   1995
+            List            =   "frmExport.frx":0132
+            Style           =   2  'Dropdown List
+            TabIndex        =   66
+            Top             =   300
+            Width           =   1995
+         End
+         Begin VB.CheckBox chkOmitHeader 
+            Caption         =   "Omit header when &appending to file"
+            Height          =   195
+            Left            =   5520
+            TabIndex        =   74
+            Top             =   660
+            Width           =   3495
+         End
+         Begin VB.Label lblFooterLine 
+            AutoSize        =   -1  'True
+            Caption         =   "Footer Line :"
+            Height          =   195
+            Left            =   195
+            TabIndex        =   69
+            Top             =   1155
+            Width           =   915
+         End
+         Begin VB.Label lblHeaderLine 
+            AutoSize        =   -1  'True
+            Caption         =   "Header Line :"
+            Height          =   195
+            Left            =   195
+            TabIndex        =   65
+            Top             =   360
+            Width           =   960
+         End
+         Begin VB.Label Label1 
+            AutoSize        =   -1  'True
+            Caption         =   "Custom Header :"
+            Height          =   195
+            Left            =   195
+            TabIndex        =   67
+            Top             =   760
+            Width           =   1215
+         End
+         Begin VB.Label Label2 
+            AutoSize        =   -1  'True
+            Caption         =   "Custom Footer :"
+            Height          =   195
+            Left            =   195
+            TabIndex        =   71
+            Top             =   1560
+            Width           =   1170
+         End
+      End
+      Begin VB.Frame fraDateOptions 
+         Caption         =   "Date Format :"
+         Height          =   2450
+         Left            =   -74850
+         TabIndex        =   75
+         Top             =   2520
+         Width           =   9180
+         Begin VB.ComboBox cboDateFormat 
+            Height          =   315
+            ItemData        =   "frmExport.frx":015E
+            Left            =   2000
+            List            =   "frmExport.frx":016E
+            Style           =   2  'Dropdown List
+            TabIndex        =   77
+            Top             =   300
+            Width           =   2000
+         End
+         Begin VB.ComboBox cboDateSeparator 
+            Height          =   315
+            ItemData        =   "frmExport.frx":0186
+            Left            =   2000
+            List            =   "frmExport.frx":0196
+            Style           =   2  'Dropdown List
+            TabIndex        =   79
+            Top             =   700
+            Width           =   2000
+         End
+         Begin VB.ComboBox cboDateYearDigits 
+            Height          =   315
+            ItemData        =   "frmExport.frx":01AB
+            Left            =   1995
+            List            =   "frmExport.frx":01B5
+            Style           =   2  'Dropdown List
+            TabIndex        =   81
+            Top             =   1100
+            Width           =   1000
+         End
+         Begin VB.Label lblDateFormat 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Regional :"
+            Height          =   195
+            Left            =   200
+            TabIndex        =   76
+            Top             =   360
+            Width           =   720
+         End
+         Begin VB.Label lblDateSeparator 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Separator :"
+            Height          =   195
+            Left            =   200
+            TabIndex        =   78
+            Top             =   760
+            Width           =   825
+         End
+         Begin VB.Label lblDateYearDigits 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Year Digits :"
+            Height          =   195
+            Left            =   200
+            TabIndex        =   80
+            Top             =   1160
+            Width           =   870
+         End
+      End
+      Begin VB.Frame fraColumns 
+         Caption         =   "Columns :"
+         Height          =   4560
+         Left            =   -74850
+         TabIndex        =   47
+         Top             =   405
+         Width           =   9180
+         Begin VB.CommandButton cmdAddAllColumns 
+            Caption         =   "Add A&ll..."
+            Height          =   400
+            Left            =   7800
+            TabIndex        =   50
+            Top             =   800
+            Width           =   1200
+         End
+         Begin VB.CommandButton cmdMoveUp 
+            Caption         =   "Move U&p"
+            Enabled         =   0   'False
+            Height          =   400
+            Left            =   7800
+            TabIndex        =   54
+            Top             =   3460
+            Width           =   1200
+         End
+         Begin VB.CommandButton cmdMoveDown 
+            Caption         =   "Move Do&wn"
+            Enabled         =   0   'False
+            Height          =   400
+            Left            =   7800
+            TabIndex        =   55
+            Top             =   3960
+            Width           =   1200
+         End
+         Begin VB.CommandButton cmdClearColumn 
+            Caption         =   "Remo&ve All"
+            Enabled         =   0   'False
+            Height          =   400
+            Left            =   7800
+            TabIndex        =   53
+            Top             =   2300
+            Width           =   1200
+         End
+         Begin VB.CommandButton cmdDeleteColumn 
+            Caption         =   "&Remove"
+            Enabled         =   0   'False
+            Height          =   400
+            Left            =   7800
+            TabIndex        =   52
+            Top             =   1800
+            Width           =   1200
+         End
+         Begin VB.CommandButton cmdEditColumn 
+            Caption         =   "&Edit..."
+            Enabled         =   0   'False
+            Height          =   400
+            Left            =   7800
+            TabIndex        =   51
+            Top             =   1300
+            Width           =   1200
+         End
+         Begin VB.CommandButton cmdNewColumn 
+            Caption         =   "&Add..."
+            Height          =   400
+            Left            =   7800
+            TabIndex        =   49
+            Top             =   315
+            Width           =   1200
+         End
+         Begin SSDataWidgets_B.SSDBGrid grdColumns 
+            Height          =   4065
+            Left            =   195
+            TabIndex        =   48
+            Top             =   300
+            Width           =   7545
+            _Version        =   196617
+            DataMode        =   2
+            RecordSelectors =   0   'False
+            Col.Count       =   11
+            stylesets.count =   5
+            stylesets(0).Name=   "ssetHeaderDisabled"
+            stylesets(0).ForeColor=   -2147483631
+            stylesets(0).BackColor=   -2147483633
+            stylesets(0).HasFont=   -1  'True
+            BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+            stylesets(0).Picture=   "frmExport.frx":01BF
+            stylesets(1).Name=   "ssetSelected"
+            stylesets(1).ForeColor=   -2147483634
+            stylesets(1).BackColor=   -2147483635
+            stylesets(1).HasFont=   -1  'True
+            BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+            stylesets(1).Picture=   "frmExport.frx":01DB
             stylesets(2).Name=   "ssetEnabled"
             stylesets(2).ForeColor=   -2147483640
             stylesets(2).BackColor=   -2147483643
@@ -604,7 +810,7 @@ Begin VB.Form frmExport
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(2).Picture=   "frmExport.frx":01BF
+            stylesets(2).Picture=   "frmExport.frx":01F7
             stylesets(3).Name=   "ssetHeaderEnabled"
             stylesets(3).ForeColor=   -2147483630
             stylesets(3).BackColor=   -2147483633
@@ -618,7 +824,7 @@ Begin VB.Form frmExport
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(3).Picture=   "frmExport.frx":01DB
+            stylesets(3).Picture=   "frmExport.frx":0213
             stylesets(4).Name=   "ssetDisabled"
             stylesets(4).ForeColor=   -2147483631
             stylesets(4).BackColor=   -2147483633
@@ -632,7 +838,7 @@ Begin VB.Form frmExport
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(4).Picture=   "frmExport.frx":01F7
+            stylesets(4).Picture=   "frmExport.frx":022F
             CheckBox3D      =   0   'False
             AllowUpdate     =   0   'False
             MultiLine       =   0   'False
@@ -763,7 +969,7 @@ Begin VB.Form frmExport
          Caption         =   "Child :"
          Height          =   1240
          Left            =   -74850
-         TabIndex        =   41
+         TabIndex        =   38
          Top             =   3720
          Width           =   9180
          Begin VB.CommandButton cmdChildFilter 
@@ -771,7 +977,7 @@ Begin VB.Form frmExport
             Enabled         =   0   'False
             Height          =   315
             Left            =   8700
-            TabIndex        =   46
+            TabIndex        =   43
             Top             =   300
             UseMaskColor    =   -1  'True
             Width           =   330
@@ -780,7 +986,7 @@ Begin VB.Form frmExport
             Height          =   315
             Left            =   1000
             Style           =   2  'Dropdown List
-            TabIndex        =   43
+            TabIndex        =   40
             Top             =   300
             Width           =   3000
          End
@@ -790,7 +996,7 @@ Begin VB.Form frmExport
             Height          =   315
             Left            =   5800
             Locked          =   -1  'True
-            TabIndex        =   45
+            TabIndex        =   42
             TabStop         =   0   'False
             Tag             =   "0"
             Top             =   300
@@ -799,7 +1005,7 @@ Begin VB.Form frmExport
          Begin COASpinner.COA_Spinner spnMaxRecords 
             Height          =   315
             Left            =   5800
-            TabIndex        =   48
+            TabIndex        =   45
             Top             =   700
             Width           =   1000
             _ExtentX        =   1746
@@ -825,7 +1031,7 @@ Begin VB.Form frmExport
             Enabled         =   0   'False
             Height          =   195
             Left            =   7005
-            TabIndex        =   49
+            TabIndex        =   46
             Top             =   765
             Width           =   1275
          End
@@ -836,7 +1042,7 @@ Begin VB.Form frmExport
             Enabled         =   0   'False
             Height          =   195
             Left            =   4860
-            TabIndex        =   47
+            TabIndex        =   44
             Top             =   765
             Width           =   870
          End
@@ -846,7 +1052,7 @@ Begin VB.Form frmExport
             Caption         =   "Table :"
             Height          =   195
             Left            =   180
-            TabIndex        =   42
+            TabIndex        =   39
             Top             =   360
             Width           =   495
          End
@@ -857,7 +1063,7 @@ Begin VB.Form frmExport
             Enabled         =   0   'False
             Height          =   195
             Left            =   4860
-            TabIndex        =   44
+            TabIndex        =   41
             Top             =   360
             Width           =   735
          End
@@ -866,14 +1072,14 @@ Begin VB.Form frmExport
          Caption         =   "Parent 2 :"
          Height          =   1600
          Left            =   -74850
-         TabIndex        =   30
+         TabIndex        =   27
          Top             =   2060
          Width           =   9180
          Begin VB.OptionButton optParent2Filter 
             Caption         =   "Filter"
             Height          =   195
             Left            =   5715
-            TabIndex        =   38
+            TabIndex        =   35
             Top             =   1160
             Width           =   840
          End
@@ -881,7 +1087,7 @@ Begin VB.Form frmExport
             Caption         =   "Picklist"
             Height          =   195
             Left            =   5715
-            TabIndex        =   35
+            TabIndex        =   32
             Top             =   760
             Width           =   930
          End
@@ -889,7 +1095,7 @@ Begin VB.Form frmExport
             Caption         =   "All"
             Height          =   195
             Left            =   5715
-            TabIndex        =   34
+            TabIndex        =   31
             Top             =   360
             Value           =   -1  'True
             Width           =   630
@@ -900,7 +1106,7 @@ Begin VB.Form frmExport
             Height          =   315
             Left            =   6700
             Locked          =   -1  'True
-            TabIndex        =   36
+            TabIndex        =   33
             Tag             =   "0"
             Top             =   700
             Width           =   2000
@@ -910,7 +1116,7 @@ Begin VB.Form frmExport
             Enabled         =   0   'False
             Height          =   315
             Left            =   8700
-            TabIndex        =   37
+            TabIndex        =   34
             Top             =   700
             UseMaskColor    =   -1  'True
             Width           =   330
@@ -920,7 +1126,7 @@ Begin VB.Form frmExport
             Enabled         =   0   'False
             Height          =   315
             Left            =   8700
-            TabIndex        =   40
+            TabIndex        =   37
             Top             =   1100
             UseMaskColor    =   -1  'True
             Width           =   330
@@ -931,7 +1137,7 @@ Begin VB.Form frmExport
             Height          =   315
             Left            =   6700
             Locked          =   -1  'True
-            TabIndex        =   39
+            TabIndex        =   36
             TabStop         =   0   'False
             Tag             =   "0"
             Top             =   1100
@@ -943,7 +1149,7 @@ Begin VB.Form frmExport
             Height          =   315
             Left            =   1000
             Locked          =   -1  'True
-            TabIndex        =   32
+            TabIndex        =   29
             TabStop         =   0   'False
             Tag             =   "0"
             Top             =   300
@@ -955,7 +1161,7 @@ Begin VB.Form frmExport
             Caption         =   "Records :"
             Height          =   195
             Left            =   4860
-            TabIndex        =   33
+            TabIndex        =   30
             Top             =   360
             Width           =   915
          End
@@ -965,7 +1171,7 @@ Begin VB.Form frmExport
             Caption         =   "Table :"
             Height          =   195
             Left            =   200
-            TabIndex        =   31
+            TabIndex        =   28
             Top             =   360
             Width           =   495
          End
@@ -974,7 +1180,7 @@ Begin VB.Form frmExport
          Caption         =   "Parent 1 :"
          Height          =   1600
          Left            =   -74850
-         TabIndex        =   19
+         TabIndex        =   16
          Top             =   400
          Width           =   9180
          Begin VB.CommandButton cmdParent1Picklist 
@@ -982,7 +1188,7 @@ Begin VB.Form frmExport
             Enabled         =   0   'False
             Height          =   315
             Left            =   8700
-            TabIndex        =   26
+            TabIndex        =   23
             Top             =   700
             UseMaskColor    =   -1  'True
             Width           =   330
@@ -993,7 +1199,7 @@ Begin VB.Form frmExport
             Height          =   315
             Left            =   6700
             Locked          =   -1  'True
-            TabIndex        =   25
+            TabIndex        =   22
             Tag             =   "0"
             Top             =   700
             Width           =   2000
@@ -1002,7 +1208,7 @@ Begin VB.Form frmExport
             Caption         =   "All"
             Height          =   195
             Left            =   5715
-            TabIndex        =   23
+            TabIndex        =   20
             Top             =   360
             Value           =   -1  'True
             Width           =   585
@@ -1011,7 +1217,7 @@ Begin VB.Form frmExport
             Caption         =   "Picklist"
             Height          =   195
             Left            =   5715
-            TabIndex        =   24
+            TabIndex        =   21
             Top             =   760
             Width           =   885
          End
@@ -1019,7 +1225,7 @@ Begin VB.Form frmExport
             Caption         =   "Filter"
             Height          =   195
             Left            =   5715
-            TabIndex        =   27
+            TabIndex        =   24
             Top             =   1160
             Width           =   795
          End
@@ -1028,7 +1234,7 @@ Begin VB.Form frmExport
             Enabled         =   0   'False
             Height          =   315
             Left            =   8700
-            TabIndex        =   29
+            TabIndex        =   26
             Top             =   1100
             UseMaskColor    =   -1  'True
             Width           =   330
@@ -1039,7 +1245,7 @@ Begin VB.Form frmExport
             Height          =   315
             Left            =   6700
             Locked          =   -1  'True
-            TabIndex        =   28
+            TabIndex        =   25
             TabStop         =   0   'False
             Tag             =   "0"
             Top             =   1100
@@ -1051,7 +1257,7 @@ Begin VB.Form frmExport
             Height          =   315
             Left            =   1000
             Locked          =   -1  'True
-            TabIndex        =   21
+            TabIndex        =   18
             TabStop         =   0   'False
             Tag             =   "0"
             Top             =   300
@@ -1064,7 +1270,7 @@ Begin VB.Form frmExport
             Enabled         =   0   'False
             Height          =   195
             Left            =   4860
-            TabIndex        =   22
+            TabIndex        =   19
             Top             =   360
             Width           =   915
          End
@@ -1074,7 +1280,7 @@ Begin VB.Form frmExport
             Caption         =   "Table :"
             Height          =   195
             Left            =   200
-            TabIndex        =   20
+            TabIndex        =   17
             Top             =   360
             Width           =   495
          End
@@ -1083,7 +1289,7 @@ Begin VB.Form frmExport
          Caption         =   "Sort Order :"
          Height          =   4560
          Left            =   -74850
-         TabIndex        =   59
+         TabIndex        =   56
          Top             =   405
          Width           =   9180
          Begin VB.CommandButton cmdSortMoveDown 
@@ -1091,7 +1297,7 @@ Begin VB.Form frmExport
             Enabled         =   0   'False
             Height          =   400
             Left            =   7800
-            TabIndex        =   66
+            TabIndex        =   63
             Top             =   3960
             Width           =   1200
          End
@@ -1100,7 +1306,7 @@ Begin VB.Form frmExport
             Enabled         =   0   'False
             Height          =   400
             Left            =   7800
-            TabIndex        =   65
+            TabIndex        =   62
             Top             =   3460
             Width           =   1200
          End
@@ -1108,7 +1314,7 @@ Begin VB.Form frmExport
             Caption         =   "&Add..."
             Height          =   400
             Left            =   7800
-            TabIndex        =   61
+            TabIndex        =   58
             Top             =   300
             Width           =   1200
          End
@@ -1117,7 +1323,7 @@ Begin VB.Form frmExport
             Enabled         =   0   'False
             Height          =   400
             Left            =   7800
-            TabIndex        =   62
+            TabIndex        =   59
             Top             =   800
             Width           =   1200
          End
@@ -1126,7 +1332,7 @@ Begin VB.Form frmExport
             Enabled         =   0   'False
             Height          =   400
             Left            =   7800
-            TabIndex        =   63
+            TabIndex        =   60
             Top             =   1300
             Width           =   1200
          End
@@ -1135,14 +1341,14 @@ Begin VB.Form frmExport
             Enabled         =   0   'False
             Height          =   400
             Left            =   7800
-            TabIndex        =   64
+            TabIndex        =   61
             Top             =   1800
             Width           =   1200
          End
          Begin SSDataWidgets_B.SSDBGrid grdExportOrder 
             Height          =   4065
             Left            =   195
-            TabIndex        =   60
+            TabIndex        =   57
             Top             =   300
             Width           =   7395
             _Version        =   196617
@@ -1151,7 +1357,7 @@ Begin VB.Form frmExport
             Col.Count       =   3
             stylesets.count =   2
             stylesets(0).Name=   "ssetDormant"
-            stylesets(0).Picture=   "frmExport.frx":0213
+            stylesets(0).Picture=   "frmExport.frx":024B
             stylesets(1).Name=   "ssetActive"
             stylesets(1).ForeColor=   -2147483634
             stylesets(1).BackColor=   -2147483635
@@ -1165,7 +1371,7 @@ Begin VB.Form frmExport
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(1).Picture=   "frmExport.frx":022F
+            stylesets(1).Picture=   "frmExport.frx":0267
             AllowUpdate     =   0   'False
             AllowRowSizing  =   0   'False
             AllowGroupSizing=   0   'False
@@ -1232,206 +1438,19 @@ Begin VB.Form frmExport
             EndProperty
          End
       End
-      Begin VB.Frame fraInformation 
-         Height          =   1950
-         Left            =   150
-         TabIndex        =   0
-         Top             =   400
-         Width           =   9180
-         Begin VB.TextBox txtDesc 
-            Height          =   1080
-            Left            =   1395
-            MaxLength       =   255
-            MultiLine       =   -1  'True
-            ScrollBars      =   2  'Vertical
-            TabIndex        =   4
-            Top             =   700
-            Width           =   3000
-         End
-         Begin VB.TextBox txtName 
-            Height          =   315
-            Left            =   1395
-            MaxLength       =   50
-            TabIndex        =   2
-            Top             =   300
-            Width           =   3000
-         End
-         Begin VB.TextBox txtUserName 
-            BackColor       =   &H8000000F&
-            Enabled         =   0   'False
-            Height          =   315
-            Left            =   5625
-            MaxLength       =   30
-            TabIndex        =   6
-            Top             =   300
-            Width           =   3405
-         End
-         Begin SSDataWidgets_B.SSDBGrid grdAccess 
-            Height          =   1080
-            Left            =   5625
-            TabIndex        =   121
-            Top             =   720
-            Width           =   3405
-            ScrollBars      =   2
-            _Version        =   196617
-            DataMode        =   2
-            RecordSelectors =   0   'False
-            Col.Count       =   3
-            stylesets.count =   2
-            stylesets(0).Name=   "SysSecMgr"
-            stylesets(0).ForeColor=   -2147483631
-            stylesets(0).BackColor=   -2147483633
-            stylesets(0).HasFont=   -1  'True
-            BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-               Name            =   "Verdana"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
-            stylesets(0).Picture=   "frmExport.frx":024B
-            stylesets(1).Name=   "ReadOnly"
-            stylesets(1).ForeColor=   -2147483631
-            stylesets(1).BackColor=   -2147483633
-            stylesets(1).HasFont=   -1  'True
-            BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-               Name            =   "Verdana"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
-            stylesets(1).Picture=   "frmExport.frx":0267
-            MultiLine       =   0   'False
-            AllowRowSizing  =   0   'False
-            AllowGroupSizing=   0   'False
-            AllowColumnSizing=   0   'False
-            AllowGroupMoving=   0   'False
-            AllowColumnMoving=   0
-            AllowGroupSwapping=   0   'False
-            AllowColumnSwapping=   0
-            AllowGroupShrinking=   0   'False
-            AllowColumnShrinking=   0   'False
-            AllowDragDrop   =   0   'False
-            SelectTypeCol   =   0
-            SelectTypeRow   =   0
-            BalloonHelp     =   0   'False
-            MaxSelectedRows =   0
-            ForeColorEven   =   0
-            BackColorEven   =   -2147483643
-            BackColorOdd    =   -2147483643
-            RowHeight       =   423
-            Columns.Count   =   3
-            Columns(0).Width=   2963
-            Columns(0).Caption=   "User Group"
-            Columns(0).Name =   "GroupName"
-            Columns(0).AllowSizing=   0   'False
-            Columns(0).DataField=   "Column 0"
-            Columns(0).DataType=   8
-            Columns(0).FieldLen=   256
-            Columns(0).Locked=   -1  'True
-            Columns(1).Width=   2566
-            Columns(1).Caption=   "Access"
-            Columns(1).Name =   "Access"
-            Columns(1).AllowSizing=   0   'False
-            Columns(1).DataField=   "Column 1"
-            Columns(1).DataType=   8
-            Columns(1).FieldLen=   256
-            Columns(1).Locked=   -1  'True
-            Columns(1).Style=   3
-            Columns(1).Row.Count=   3
-            Columns(1).Col.Count=   2
-            Columns(1).Row(0).Col(0)=   "Read / Write"
-            Columns(1).Row(1).Col(0)=   "Read Only"
-            Columns(1).Row(2).Col(0)=   "Hidden"
-            Columns(2).Width=   3200
-            Columns(2).Visible=   0   'False
-            Columns(2).Caption=   "SysSecMgr"
-            Columns(2).Name =   "SysSecMgr"
-            Columns(2).DataField=   "Column 2"
-            Columns(2).DataType=   8
-            Columns(2).FieldLen=   256
-            TabNavigation   =   1
-            _ExtentX        =   6006
-            _ExtentY        =   1905
-            _StockProps     =   79
-            BeginProperty PageFooterFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-               Name            =   "Verdana"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
-            BeginProperty PageHeaderFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-               Name            =   "Verdana"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
-         End
-         Begin VB.Label lblAccess 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Access :"
-            Height          =   195
-            Left            =   4770
-            TabIndex        =   7
-            Top             =   765
-            Width           =   780
-         End
-         Begin VB.Label lblDescription 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Description :"
-            Height          =   195
-            Left            =   200
-            TabIndex        =   3
-            Top             =   760
-            Width           =   900
-         End
-         Begin VB.Label lblName 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Name :"
-            Height          =   195
-            Left            =   200
-            TabIndex        =   1
-            Top             =   360
-            Width           =   510
-         End
-         Begin VB.Label lblOwner 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Owner :"
-            Height          =   195
-            Left            =   4770
-            TabIndex        =   5
-            Top             =   360
-            Width           =   900
-         End
-      End
       Begin VB.Frame fraBase 
          Caption         =   "Data :"
-         Height          =   2565
+         Height          =   2115
          Left            =   150
-         TabIndex        =   8
-         Top             =   2400
+         TabIndex        =   0
+         Top             =   2850
          Width           =   9180
          Begin VB.CommandButton cmdBaseFilter 
             Caption         =   "..."
             Enabled         =   0   'False
             Height          =   315
             Left            =   8685
-            TabIndex        =   18
+            TabIndex        =   15
             Top             =   1100
             UseMaskColor    =   -1  'True
             Width           =   330
@@ -1441,7 +1460,7 @@ Begin VB.Form frmExport
             Enabled         =   0   'False
             Height          =   315
             Left            =   8685
-            TabIndex        =   15
+            TabIndex        =   12
             Top             =   700
             UseMaskColor    =   -1  'True
             Width           =   330
@@ -1452,7 +1471,7 @@ Begin VB.Form frmExport
             Height          =   315
             Left            =   6700
             Locked          =   -1  'True
-            TabIndex        =   14
+            TabIndex        =   11
             Tag             =   "0"
             Top             =   700
             Width           =   2000
@@ -1463,7 +1482,7 @@ Begin VB.Form frmExport
             Height          =   315
             Left            =   6700
             Locked          =   -1  'True
-            TabIndex        =   17
+            TabIndex        =   14
             Tag             =   "0"
             Top             =   1100
             Width           =   2000
@@ -1472,7 +1491,7 @@ Begin VB.Form frmExport
             Height          =   315
             Left            =   1395
             Style           =   2  'Dropdown List
-            TabIndex        =   10
+            TabIndex        =   7
             Top             =   300
             Width           =   3000
          End
@@ -1480,7 +1499,7 @@ Begin VB.Form frmExport
             Caption         =   "&All"
             Height          =   195
             Left            =   5715
-            TabIndex        =   12
+            TabIndex        =   9
             Top             =   360
             Value           =   -1  'True
             Width           =   585
@@ -1489,7 +1508,7 @@ Begin VB.Form frmExport
             Caption         =   "&Picklist"
             Height          =   195
             Left            =   5715
-            TabIndex        =   13
+            TabIndex        =   10
             Top             =   760
             Width           =   885
          End
@@ -1497,7 +1516,7 @@ Begin VB.Form frmExport
             Caption         =   "&Filter"
             Height          =   195
             Left            =   5715
-            TabIndex        =   16
+            TabIndex        =   13
             Top             =   1160
             Width           =   800
          End
@@ -1507,7 +1526,7 @@ Begin VB.Form frmExport
             Caption         =   "Records :"
             Height          =   195
             Left            =   4770
-            TabIndex        =   11
+            TabIndex        =   8
             Top             =   360
             Width           =   960
          End
@@ -1517,7 +1536,7 @@ Begin VB.Form frmExport
             Caption         =   "Base Table :"
             Height          =   195
             Left            =   195
-            TabIndex        =   9
+            TabIndex        =   6
             Top             =   360
             Width           =   1155
          End
@@ -1526,14 +1545,14 @@ Begin VB.Form frmExport
          Caption         =   "CMG Options :"
          Height          =   1410
          Left            =   -74850
-         TabIndex        =   112
+         TabIndex        =   109
          Top             =   3580
          Width           =   9180
          Begin VB.CheckBox chkUpdateAuditPointer 
             Caption         =   "Commit &after run"
             Height          =   195
             Left            =   5500
-            TabIndex        =   117
+            TabIndex        =   114
             Top             =   360
             Width           =   2055
          End
@@ -1541,7 +1560,7 @@ Begin VB.Form frmExport
             Height          =   315
             Left            =   1995
             MaxLength       =   10
-            TabIndex        =   116
+            TabIndex        =   113
             Top             =   700
             Width           =   1000
          End
@@ -1549,7 +1568,7 @@ Begin VB.Form frmExport
             Height          =   315
             Left            =   2000
             Style           =   2  'Dropdown List
-            TabIndex        =   114
+            TabIndex        =   111
             Top             =   300
             Width           =   3000
          End
@@ -1557,7 +1576,7 @@ Begin VB.Form frmExport
             Caption         =   "File Export Code :"
             Height          =   195
             Left            =   195
-            TabIndex        =   115
+            TabIndex        =   112
             Top             =   765
             Width           =   1605
          End
@@ -1565,7 +1584,7 @@ Begin VB.Form frmExport
             Caption         =   "Record Identifier :"
             Height          =   195
             Left            =   195
-            TabIndex        =   113
+            TabIndex        =   110
             Top             =   360
             Width           =   1635
          End
@@ -1574,7 +1593,7 @@ Begin VB.Form frmExport
          Caption         =   "Delimited File Options :"
          Height          =   1410
          Left            =   -74850
-         TabIndex        =   106
+         TabIndex        =   103
          Top             =   3570
          Width           =   9180
          Begin VB.TextBox txtDelimiter 
@@ -1583,7 +1602,7 @@ Begin VB.Form frmExport
             Height          =   315
             Left            =   3945
             MaxLength       =   1
-            TabIndex        =   110
+            TabIndex        =   107
             Top             =   300
             Width           =   345
          End
@@ -1592,7 +1611,7 @@ Begin VB.Form frmExport
             Caption         =   "Enclose in &quotes"
             Height          =   195
             Left            =   300
-            TabIndex        =   111
+            TabIndex        =   108
             Top             =   795
             Width           =   1875
          End
@@ -1602,7 +1621,7 @@ Begin VB.Form frmExport
             Left            =   1980
             List            =   "frmExport.frx":0290
             Style           =   2  'Dropdown List
-            TabIndex        =   108
+            TabIndex        =   105
             Top             =   300
             Width           =   1095
          End
@@ -1612,7 +1631,7 @@ Begin VB.Form frmExport
             Caption         =   "Other :"
             Height          =   195
             Left            =   3255
-            TabIndex        =   109
+            TabIndex        =   106
             Top             =   360
             Width           =   525
          End
@@ -1621,7 +1640,7 @@ Begin VB.Form frmExport
             Caption         =   "Delimiter :"
             Height          =   195
             Left            =   345
-            TabIndex        =   107
+            TabIndex        =   104
             Top             =   360
             Width           =   915
          End
@@ -1648,7 +1667,6 @@ Private mobjOutputDef As clsOutputDef
 
 ' Long to hold current Export ID
 Private mlngExportID As Long
-'Private mblnEnableSQLTable As Boolean
 
 ' Variables to hold current (or previously) selected table details
 Private mstrBaseTable As String
@@ -1784,6 +1802,10 @@ Public Function Initialise(pblnNew As Boolean, pblnCopy As Boolean, Optional pln
         
     'Load All Possible Base Tables into combo
     LoadBaseCombo
+
+    ' Set the categories combo
+    GetObjectCategories cboCategory, utlExport, 0, cboBaseTable.ItemData(cboBaseTable.ListIndex)
+    SetComboItem cboCategory, IIf(glngCurrentCategoryID = -1, 0, glngCurrentCategoryID)
 
     UpdateDependantFields
     
@@ -4903,6 +4925,7 @@ Private Function SaveDefinition() As Boolean
   End If
 
   SaveAccess
+  SaveObjectCategories cboCategory, utlExport, mlngExportID
 
   ' Now save the column details
   
@@ -5222,7 +5245,7 @@ Private Function RetrieveExportDetails(plngExportID As Long) As Boolean
     txtUserName = StrConv(rsTemp!UserName, vbProperCase)
     mblnDefinitionCreator = (LCase$(rsTemp!UserName) = LCase$(gsUserName))
   End If
-  
+   
   mblnReadOnly = Not datGeneral.SystemPermission("EXPORT", "EDIT")
   If (Not mblnReadOnly) And (Not mblnDefinitionCreator) Then
     mblnReadOnly = (CurrentUserAccess(utlExport, plngExportID) = ACCESS_READONLY)
@@ -5238,8 +5261,11 @@ Private Function RetrieveExportDetails(plngExportID As Long) As Boolean
   LoadBaseCombo
   SetComboText cboBaseTable, datGeneral.GetTableName(rsTemp!BaseTable)
   mstrBaseTable = cboBaseTable.Text
+  
+  ' Set the categories combo
+  GetObjectCategories cboCategory, utlExport, mlngExportID
+  
   UpdateDependantFields
-  'mblnLoading = False
   
   ' Set Base Table Record Select Options
   If rsTemp!AllRecords Then optBaseAllRecords.Value = True
@@ -7097,4 +7123,8 @@ Private Function GetConvertCaseText(ByVal iConvertCase As Integer) As String
         GetConvertCaseText = ""
   End Select
 End Function
+
+Private Sub cboCategory_Click()
+  Changed = True
+End Sub
 
