@@ -158,15 +158,16 @@ Private Function SendEmailFromClientUsingMAPI(strTo As String, strCC As String, 
   
   
   If objMapiSession.SessionID = 0 Then
-    objMapiSession.DownLoadMail = False
+    'objMapiSession.DownLoadMail = False
     objMapiSession.SignOn
     objMapiMessages.SessionID = objMapiSession.SessionID
   End If
     
     
   With objMapiMessages
+    .AddressResolveUI = True
     .Compose
-    
+
     For lngRecipType = 1 To 3
     
       Select Case lngRecipType
@@ -180,12 +181,10 @@ Private Function SendEmailFromClientUsingMAPI(strTo As String, strCC As String, 
         For lngIndex = LBound(strArray) To UBound(strArray)
           If Trim(strArray(lngIndex)) <> vbNullString Then
             .RecipIndex = .RecipCount
-            .RecipAddress = Trim(strArray(lngIndex))
             .RecipType = lngRecipType
+            .RecipDisplayName = Trim(strArray(lngIndex))
+            .RecipAddress = "smtp:" & Trim(strArray(lngIndex))
             '.ResolveName
-            'If intSendType = mapToList Then
-            '  blnToRecipient = True
-            'End If
           End If
         Next
       End If
@@ -193,16 +192,17 @@ Private Function SendEmailFromClientUsingMAPI(strTo As String, strCC As String, 
     Next
 
     .MsgSubject = strSubject
-    .MsgNoteText = strMsgText
+    .MsgNoteText = strMsgText & " "
 
     If (Trim(strAttachment) <> vbNullString) Then
       strArray = Split(strAttachment, ";")
       For lngIndex = LBound(strArray) To UBound(strArray)
         If Trim(strArray(lngIndex)) <> vbNullString Then
-          .AttachmentPosition = lngIndex
-          .AttachmentType = 0
-          .AttachmentPathName = strAttachment
-          '.AttachmentName = mstrEmailAttachAs
+          .AttachmentIndex = lngIndex
+          .AttachmentPathName = Trim(strArray(lngIndex))
+          '.AttachmentName = FileOnlyFromFullPath(Trim(strArray(lngIndex)))
+          '.AttachmentPosition = lngIndex
+          '.AttachmentType = 0
         End If
       Next
     End If
@@ -222,22 +222,29 @@ TidyAndExit:
 Exit Function
 
 LocalErr:
-  If Err.Number = 32001 Or Err = 32003 Then
-    Resume Next
-  
-  ElseIf Err.Number = 48389 Then
+  If blnShowMessage = False Then
     'Simple MAPI is no longer supported in Microsoft Outlook 2007. It is still supported by Exchange Server 2003.
     'http://msdn.microsoft.com/en-us/library/cc815424.aspx
     blnShowMessage = True
+    Resume 0
+
+  ElseIf Err.Number = 32001 Or Err = 32003 Then
     Resume Next
   
   Else
-    strError = "Error sending email" & vbCrLf & Err.Description & " (MAPI)"
+    strError = "Error sending email " & vbCrLf & Err.Description & " (MAPI)"
     GoTo TidyAndExit
   
   End If
 
 End Function
+
+
+'Private Function FileOnlyFromFullPath(strFullFileName As String)
+'  Dim strArray() As String
+'  strArray = Split(strFullFileName, "\")
+'  FileOnlyFromFullPath = strArray(UBound(strArray))
+'End Function
 
 
 Public Function SendEmailFromServer(strTo As String, strCC As String, strBCC As String, strSubject As String, strMsgText As String, strAttachment As String) As String
@@ -274,4 +281,5 @@ LocalErr:
   GoTo TidyAndExit
 
 End Function
+
 
