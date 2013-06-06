@@ -34,12 +34,20 @@ Begin VB.Form frmSSIntranetLink
       TabIndex        =   61
       Top             =   8310
       Width           =   6300
+      Begin VB.CheckBox chkShowValues 
+         Caption         =   "S&how Values"
+         Height          =   210
+         Left            =   195
+         TabIndex        =   71
+         Top             =   2040
+         Width           =   1665
+      End
       Begin VB.CommandButton cmdChartData 
          Caption         =   "Data..."
          Height          =   375
-         Left            =   210
+         Left            =   180
          TabIndex        =   68
-         Top             =   2100
+         Top             =   2355
          Width           =   1200
       End
       Begin MSChart20Lib.MSChart MSChart1 
@@ -96,7 +104,7 @@ Begin VB.Form frmSSIntranetLink
    End
    Begin VB.Frame fraLinkSeparator 
       Caption         =   "Separator :"
-      Height          =   1170
+      Height          =   1875
       Left            =   2880
       TabIndex        =   55
       Top             =   7440
@@ -143,6 +151,16 @@ Begin VB.Form frmSSIntranetLink
          TabIndex        =   59
          Top             =   690
          Width           =   2040
+      End
+      Begin VB.Label lblNoOptions 
+         AutoSize        =   -1  'True
+         Caption         =   "There are no configurable options for this link type"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   69
+         Top             =   1110
+         Visible         =   0   'False
+         Width           =   4350
       End
       Begin VB.Label lblIcon 
          Caption         =   "Icon :"
@@ -380,11 +398,20 @@ Begin VB.Form frmSSIntranetLink
    End
    Begin VB.Frame fraLinkType 
       Caption         =   "Link Type :"
-      Height          =   3315
+      Height          =   3645
       Left            =   150
       TabIndex        =   9
       Top             =   1920
       Width           =   2500
+      Begin VB.OptionButton optLink 
+         Caption         =   "Pending &Workflows"
+         Height          =   195
+         Index           =   7
+         Left            =   195
+         TabIndex        =   70
+         Top             =   2775
+         Width           =   2235
+      End
       Begin VB.OptionButton optLink 
          Caption         =   "&Chart"
          Height          =   315
@@ -406,10 +433,10 @@ Begin VB.Form frmSSIntranetLink
       Begin VB.OptionButton optLink 
          Caption         =   "&On-screen Document Display"
          Height          =   450
-         Index           =   7
+         Index           =   8
          Left            =   200
          TabIndex        =   15
-         Top             =   2670
+         Top             =   3000
          Visible         =   0   'False
          Width           =   2235
       End
@@ -462,7 +489,7 @@ Begin VB.Form frmSSIntranetLink
    End
    Begin VB.Frame fraHRProScreenLink 
       Caption         =   "HR Pro Screen :"
-      Height          =   2220
+      Height          =   3645
       Left            =   2880
       TabIndex        =   16
       Top             =   1920
@@ -749,7 +776,8 @@ Public Enum SSINTRANETSCREENTYPES
   'NPG Dashboard
   SSINTLINKSEPARATOR = 5
   SSINTLINKCHART = 6
-  SSINTLINKSCREEN_DOCUMENT = 7
+  SSINTLINKPWFSTEPS = 7
+  SSINTLINKSCREEN_DOCUMENT = 8
 End Enum
 
 Private mblnCancelled As Boolean
@@ -803,15 +831,15 @@ Private Sub FormatScreen()
       fraLink.Caption = "On-screen Document Display :"
   End Select
   
-  ' Prompt only required for Button Links.
-  lblPrompt.Visible = (miLinkType = SSINTLINK_BUTTON)
-  txtPrompt.Visible = lblPrompt.Visible
-  
-  ' Reposition the Text controls if required.
-  If (miLinkType <> SSINTLINK_BUTTON) Then
-    lblText.Top = lblPrompt.Top
-    txtText.Top = txtPrompt.Top
-  End If
+'  ' Prompt only required for Button Links.
+'  lblPrompt.Visible = (miLinkType = SSINTLINK_BUTTON)
+'  txtPrompt.Visible = lblPrompt.Visible
+'
+'  ' Reposition the Text controls if required.
+'  If (miLinkType <> SSINTLINK_BUTTON) Then
+'    lblText.Top = lblPrompt.Top
+'    txtText.Top = txtPrompt.Top
+'  End If
   
   cboTableView.Top = txtText.Top + txtText.Height + GAPBETWEENTEXTBOXES
   lblTableView.Top = cboTableView.Top + (lblText.Top - txtText.Top)
@@ -848,7 +876,7 @@ Private Sub FormatScreen()
       fraLinkSeparator.Left = .Left
       
       fraChartLink.Top = .Top
-      ' fraChartLink.Height = .Height
+      fraChartLink.Height = .Height
       fraChartLink.Left = .Left
     End With
   End If
@@ -1203,7 +1231,7 @@ Public Sub Initialize(piType As SSINTRANETLINKTYPES, _
                       pfDisplayDocumentHyperlink As Boolean, _
                       piElement_Type As Integer, piSeparatorOrientation As Integer, plngPictureID As Long, _
                       pfChartShowLegend, piChartType, pfChartShowGrid, pfChartStackSeries, plngChartViewID, miChartTableID, _
-                      plngChartColumnID, plngChartFilterID, piChartAggregateType, _
+                      plngChartColumnID, plngChartFilterID, piChartAggregateType, pfChartShowValues, _
                       ByRef pcolSSITableViews As clsSSITableViews)
   
   Set mcolSSITableViews = pcolSSITableViews
@@ -1256,23 +1284,13 @@ Public Sub Initialize(piType As SSINTRANETLINKTYPES, _
   If piElement_Type = 1 Then
     optLink(SSINTLINKSEPARATOR).value = True
     chkNewColumn.value = IIf(piSeparatorOrientation > 0, 1, 0)
-    
-    If miLinkType = SSINTLINK_HYPERTEXT Then
-      ' Disable the icon and new column options for hypertext link separators...
-      chkNewColumn.Visible = False
-      lblIcon.Visible = False
-      txtIcon.Visible = False
-      cmdIcon.Visible = False
-      cmdIconClear.Visible = False
-      imgIcon.Visible = False
-      fraLinkSeparator.Height = 820
-    End If
-  End If
-  
-  If piElement_Type = 2 Then
+  ElseIf piElement_Type = 2 Then
     optLink(SSINTLINKCHART).value = True
+  ElseIf piElement_Type = 3 Then
+    optLink(SSINTLINKPWFSTEPS).value = True
   End If
   
+
   
   GetHRProTables
   GetHRProUtilityTypes
@@ -1315,6 +1333,7 @@ Public Sub Initialize(piType As SSINTRANETLINKTYPES, _
   ChartShowLegend = pfChartShowLegend
   ChartShowGridlines = pfChartShowGrid
   ChartStackSeries = pfChartStackSeries
+  ChartShowValues = pfChartShowValues
   
   PopulateAccessGrid psHiddenGroups
 
@@ -1338,8 +1357,9 @@ Private Sub RefreshControls()
   fraEmailLink.Visible = optLink(SSINTLINKSCREEN_EMAIL).value
   fraApplicationLink.Visible = optLink(SSINTLINKSCREEN_APPLICATION).value
   fraDocument.Visible = optLink(SSINTLINKSCREEN_DOCUMENT).value
-  fraLinkSeparator.Visible = optLink(SSINTLINKSEPARATOR).value
+  fraLinkSeparator.Visible = (optLink(SSINTLINKSEPARATOR).value Or optLink(SSINTLINKPWFSTEPS).value)
   fraChartLink.Visible = optLink(SSINTLINKCHART).value
+  
   
   ' Disable the HR Pro screen controls as required.
   cboHRProTable.Enabled = (optLink(SSINTLINKSCREEN_HRPRO).value) And (cboHRProTable.ListCount > 0)
@@ -1442,28 +1462,49 @@ Private Sub RefreshControls()
   End If
   
   ' NPG Dashboard
-  If optLink(SSINTLINKSEPARATOR).value Or optLink(SSINTLINKCHART) Then
+  If optLink(SSINTLINKSEPARATOR).value Or optLink(SSINTLINKCHART) _
+      Or optLink(SSINTLINKPWFSTEPS).value Then
     txtPrompt.Enabled = False
     txtPrompt.BackColor = vbButtonFace
+    
+    If optLink(SSINTLINKPWFSTEPS).value Then
+      txtText.Enabled = False
+      txtText.BackColor = vbButtonFace
+    End If
         
     If optLink(SSINTLINKSEPARATOR).value Then txtPrompt.Text = "<SEPARATOR>"
     If optLink(SSINTLINKCHART).value Then txtPrompt.Text = "<CHART>"
+    If optLink(SSINTLINKPWFSTEPS).value Then txtPrompt.Text = "<PENDING WORKFLOWS>"
     
     If optLink(SSINTLINKCHART).value Then
       MSChart1.RowCount = 1
     End If
-    
-    ' set the chart type
-    If ChartType > 0 Then
-      ' loop through combo and set charttype to stored entry
-    End If
-    
-  Else  ' chart
+  Else
     txtPrompt.Enabled = True
     txtPrompt.BackColor = vbWindowBackground
-    
-    
   End If
+  
+  If (optLink(SSINTLINKSEPARATOR).value And miLinkType = SSINTLINK_HYPERTEXT) Or optLink(SSINTLINKPWFSTEPS).value Then
+    ' Disable the icon and new column options for hypertext link separators...
+    chkNewColumn.Visible = False
+    lblIcon.Visible = False
+    txtIcon.Visible = False
+    cmdIcon.Visible = False
+    cmdIconClear.Visible = False
+    imgIcon.Visible = False
+    lblNoOptions.Visible = True
+    lblNoOptions.Top = 345
+    
+    If optLink(SSINTLINKPWFSTEPS).value Then
+      fraLinkSeparator.Caption = "Pending Workflow Steps :"
+    Else
+      fraLinkSeparator.Caption = "Separator :"
+    End If
+  Else
+    lblNoOptions.Visible = False
+    lblNoOptions.Top = 345
+  End If
+  
   
   mblnRefreshing = True
   GetStartModes
@@ -1472,7 +1513,7 @@ Private Sub RefreshControls()
   lblHRProUtilityMessage.Caption = sUtilityMessage
   
   ' Disable the OK button as required.
-  cmdOk.Enabled = mfChanged
+  cmdOK.Enabled = mfChanged
   
 
 End Sub
@@ -1534,6 +1575,8 @@ End Sub
 
 Private Sub RefreshChart()
   
+  Dim numSeries As Integer, iCount As Integer
+  
   ' Set the chart type from the combo
   MSChart1.ChartType = cboChartType.ItemData(cboChartType.ListIndex)
 
@@ -1580,10 +1623,22 @@ Private Sub RefreshChart()
   
   ' Stack Series
   MSChart1.Stacking = chkStackSeries
-
-
-
-
+  
+  
+  ' Show Values
+  With MSChart1
+  numSeries = .Plot.SeriesCollection.Count
+    For iCount = 1 To numSeries
+      .Plot.SeriesCollection(iCount).DataPoints(-1).EdgePen.VtColor.Set 0, 0, 0
+      
+      If chkShowValues Then
+        .Plot.SeriesCollection.Item(iCount).DataPoints.Item(-1).DataPointLabel.LocationType = VtChLabelLocationTypeAbovePoint
+      Else
+        .Plot.SeriesCollection.Item(iCount).DataPoints.Item(-1).DataPointLabel.LocationType = VtChLabelLocationTypeNone
+      End If
+    Next iCount
+  
+  End With
 End Sub
 
 
@@ -1605,7 +1660,7 @@ Private Function ValidateLink() As Boolean
   
   ' Check that text has been entered
   If fValid Then
-    If (Len(txtText.Text) = 0) Then
+    If (Len(txtText.Text) = 0) And Not optLink(SSINTLINKPWFSTEPS).value Then
       fValid = False
       MsgBox "No text has been entered.", vbOKOnly + vbExclamation, Application.Name
       txtText.SetFocus
@@ -1765,6 +1820,14 @@ Private Sub chkStackSeries_Click()
   RefreshChart
   RefreshControls
 End Sub
+
+Private Sub chkShowValues_Click()
+  mfChanged = True
+  ' refresh the chart
+  RefreshChart
+  RefreshControls
+End Sub
+
 
 Private Sub cmdChartData_Click()
   
@@ -2170,11 +2233,13 @@ Private Sub optLink_Click(Index As Integer)
   GetHRProUtilityTypes
   UtilityType = CStr(utlCalendarReport)
   
-  'dash
+  'dashboard
   If optLink(SSINTLINKSEPARATOR).value Then
     ElementType = 1
   ElseIf optLink(SSINTLINKCHART).value Then
     ElementType = 2
+  ElseIf optLink(SSINTLINKPWFSTEPS).value Then
+    ElementType = 3
   Else
     ElementType = 0
   End If
@@ -2678,6 +2743,14 @@ End Property
 
 Public Property Let ChartStackSeries(ByVal pfNewValue As Boolean)
   chkStackSeries.value = IIf(pfNewValue, vbChecked, vbUnchecked)
+End Property
+
+Public Property Get ChartShowValues() As Boolean
+  ChartShowValues = chkShowValues.value
+End Property
+
+Public Property Let ChartShowValues(ByVal pfNewValue As Boolean)
+  chkShowValues.value = IIf(pfNewValue, vbChecked, vbUnchecked)
 End Property
 
 
