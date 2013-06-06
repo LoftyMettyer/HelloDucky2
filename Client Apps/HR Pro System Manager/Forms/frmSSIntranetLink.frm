@@ -788,7 +788,7 @@ Begin VB.Form frmSSIntranetLink
       Top             =   1920
       Width           =   2500
       Begin VB.OptionButton optLink 
-         Caption         =   "Today's Events"
+         Caption         =   "&Today's Events"
          Height          =   195
          Index           =   9
          Left            =   195
