@@ -30,6 +30,161 @@ Begin VB.Form frmSSIntranetLink
    ScaleWidth      =   9360
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
+   Begin VB.Frame fraChartLink 
+      Caption         =   "Chart :"
+      Height          =   5160
+      Left            =   2880
+      TabIndex        =   64
+      Top             =   6375
+      Width           =   6300
+      Begin VB.CheckBox chkShowPercentages 
+         Caption         =   "Show Values as Perce&nt"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   72
+         Top             =   2730
+         Width           =   2355
+      End
+      Begin VB.CheckBox chkPrimaryDisplay 
+         Caption         =   "D&isplay Data Grid First"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   71
+         Top             =   2385
+         Width           =   2235
+      End
+      Begin VB.CommandButton cmdChartData 
+         Caption         =   "..."
+         Height          =   315
+         Left            =   5715
+         TabIndex        =   74
+         ToolTipText     =   "Select Chart Data"
+         Top             =   3315
+         Width           =   315
+      End
+      Begin VB.TextBox txtChartDescription 
+         Enabled         =   0   'False
+         Height          =   330
+         Left            =   1935
+         TabIndex        =   73
+         Top             =   3315
+         Width           =   3780
+      End
+      Begin VB.CommandButton cmdChartReportClear 
+         Caption         =   "O"
+         BeginProperty Font 
+            Name            =   "Wingdings 2"
+            Size            =   20.25
+            Charset         =   2
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   315
+         Left            =   5715
+         MaskColor       =   &H000000FF&
+         TabIndex        =   77
+         ToolTipText     =   "Clear Drill Down Utility"
+         Top             =   3705
+         UseMaskColor    =   -1  'True
+         Width           =   330
+      End
+      Begin VB.CommandButton cmdChartReport 
+         Caption         =   "..."
+         Height          =   315
+         Left            =   5385
+         TabIndex        =   76
+         ToolTipText     =   "Select Drill Down Utility"
+         Top             =   3705
+         Width           =   315
+      End
+      Begin VB.TextBox txtChartUtility 
+         Enabled         =   0   'False
+         Height          =   330
+         Left            =   1935
+         TabIndex        =   75
+         Top             =   3705
+         Width           =   3450
+      End
+      Begin MSChart20Lib.MSChart MSChart1 
+         Height          =   2505
+         Left            =   2730
+         OleObjectBlob   =   "frmSSIntranetLink.frx":000C
+         TabIndex        =   78
+         Top             =   555
+         Width           =   3330
+      End
+      Begin VB.CheckBox chkShowValues 
+         Caption         =   "Show &Values"
+         Height          =   210
+         Left            =   210
+         TabIndex        =   69
+         Top             =   1695
+         Width           =   1665
+      End
+      Begin VB.CheckBox chkStackSeries 
+         Caption         =   "S&tack Series"
+         Height          =   210
+         Left            =   210
+         TabIndex        =   70
+         Top             =   2040
+         Width           =   1665
+      End
+      Begin VB.CheckBox chkDottedGridlines 
+         Caption         =   "Dotted &Gridlines"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   68
+         Top             =   1350
+         Width           =   1980
+      End
+      Begin VB.CheckBox chkShowLegend 
+         Caption         =   "Show &Legend"
+         Height          =   240
+         Left            =   210
+         TabIndex        =   67
+         Top             =   990
+         Width           =   1710
+      End
+      Begin VB.ComboBox cboChartType 
+         Height          =   315
+         ItemData        =   "frmSSIntranetLink.frx":24FC
+         Left            =   210
+         List            =   "frmSSIntranetLink.frx":24FE
+         Style           =   2  'Dropdown List
+         TabIndex        =   66
+         Top             =   555
+         Width           =   2205
+      End
+      Begin VB.Label lblChartData 
+         AutoSize        =   -1  'True
+         Caption         =   "Chart Data :"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   123
+         Top             =   3360
+         Width           =   1080
+      End
+      Begin VB.Label lblUtility 
+         AutoSize        =   -1  'True
+         Caption         =   "Drill down utility :"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   122
+         Top             =   3750
+         Width           =   1515
+      End
+      Begin VB.Label lblChartyType 
+         AutoSize        =   -1  'True
+         Caption         =   "Chart Type :"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   65
+         Top             =   300
+         Width           =   1095
+      End
+   End
    Begin VB.Frame fraDBValue 
       Caption         =   "Database Value :"
       Height          =   6060
@@ -182,9 +337,9 @@ Begin VB.Form frmSSIntranetLink
       Begin VB.ComboBox cboDBValCFStyle 
          Height          =   315
          Index           =   0
-         ItemData        =   "frmSSIntranetLink.frx":000C
+         ItemData        =   "frmSSIntranetLink.frx":2500
          Left            =   3660
-         List            =   "frmSSIntranetLink.frx":000E
+         List            =   "frmSSIntranetLink.frx":2502
          Style           =   2  'Dropdown List
          TabIndex        =   103
          Top             =   3915
@@ -591,161 +746,6 @@ Begin VB.Form frmSSIntranetLink
          Stretch         =   -1  'True
          Top             =   330
          Width           =   510
-      End
-   End
-   Begin VB.Frame fraChartLink 
-      Caption         =   "Chart :"
-      Height          =   5160
-      Left            =   2880
-      TabIndex        =   64
-      Top             =   6375
-      Width           =   6300
-      Begin VB.CheckBox chkShowPercentages 
-         Caption         =   "Show Values as Percent"
-         Height          =   195
-         Left            =   210
-         TabIndex        =   72
-         Top             =   2730
-         Width           =   2355
-      End
-      Begin VB.CheckBox chkPrimaryDisplay 
-         Caption         =   "D&isplay Data Grid First"
-         Height          =   195
-         Left            =   210
-         TabIndex        =   71
-         Top             =   2385
-         Width           =   2235
-      End
-      Begin VB.CommandButton cmdChartData 
-         Caption         =   "..."
-         Height          =   315
-         Left            =   5715
-         TabIndex        =   74
-         ToolTipText     =   "Select Chart Data"
-         Top             =   3315
-         Width           =   315
-      End
-      Begin VB.TextBox txtChartDescription 
-         Enabled         =   0   'False
-         Height          =   330
-         Left            =   1935
-         TabIndex        =   73
-         Top             =   3315
-         Width           =   3780
-      End
-      Begin VB.CommandButton cmdChartReportClear 
-         Caption         =   "O"
-         BeginProperty Font 
-            Name            =   "Wingdings 2"
-            Size            =   20.25
-            Charset         =   2
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   315
-         Left            =   5715
-         MaskColor       =   &H000000FF&
-         TabIndex        =   77
-         ToolTipText     =   "Clear Drill Down Utility"
-         Top             =   3705
-         UseMaskColor    =   -1  'True
-         Width           =   330
-      End
-      Begin VB.CommandButton cmdChartReport 
-         Caption         =   "..."
-         Height          =   315
-         Left            =   5385
-         TabIndex        =   76
-         ToolTipText     =   "Select Drill Down Utility"
-         Top             =   3705
-         Width           =   315
-      End
-      Begin VB.TextBox txtChartUtility 
-         Enabled         =   0   'False
-         Height          =   330
-         Left            =   1935
-         TabIndex        =   75
-         Top             =   3705
-         Width           =   3450
-      End
-      Begin MSChart20Lib.MSChart MSChart1 
-         Height          =   2505
-         Left            =   2730
-         OleObjectBlob   =   "frmSSIntranetLink.frx":0010
-         TabIndex        =   78
-         Top             =   555
-         Width           =   3330
-      End
-      Begin VB.CheckBox chkShowValues 
-         Caption         =   "Show &Values"
-         Height          =   210
-         Left            =   210
-         TabIndex        =   69
-         Top             =   1695
-         Width           =   1665
-      End
-      Begin VB.CheckBox chkStackSeries 
-         Caption         =   "S&tack Series"
-         Height          =   210
-         Left            =   210
-         TabIndex        =   70
-         Top             =   2040
-         Width           =   1665
-      End
-      Begin VB.CheckBox chkDottedGridlines 
-         Caption         =   "Dotted &Gridlines"
-         Height          =   195
-         Left            =   210
-         TabIndex        =   68
-         Top             =   1350
-         Width           =   1980
-      End
-      Begin VB.CheckBox chkShowLegend 
-         Caption         =   "Show &Legend"
-         Height          =   240
-         Left            =   210
-         TabIndex        =   67
-         Top             =   990
-         Width           =   1710
-      End
-      Begin VB.ComboBox cboChartType 
-         Height          =   315
-         ItemData        =   "frmSSIntranetLink.frx":2500
-         Left            =   210
-         List            =   "frmSSIntranetLink.frx":2502
-         Style           =   2  'Dropdown List
-         TabIndex        =   66
-         Top             =   555
-         Width           =   2205
-      End
-      Begin VB.Label lblChartData 
-         AutoSize        =   -1  'True
-         Caption         =   "Chart Data :"
-         Height          =   195
-         Left            =   210
-         TabIndex        =   123
-         Top             =   3360
-         Width           =   1080
-      End
-      Begin VB.Label lblUtility 
-         AutoSize        =   -1  'True
-         Caption         =   "Drill down utility :"
-         Height          =   195
-         Left            =   210
-         TabIndex        =   122
-         Top             =   3750
-         Width           =   1515
-      End
-      Begin VB.Label lblChartyType 
-         AutoSize        =   -1  'True
-         Caption         =   "Chart Type :"
-         Height          =   195
-         Left            =   210
-         TabIndex        =   65
-         Top             =   300
-         Width           =   1095
       End
    End
    Begin VB.Frame fraURLLink 
@@ -2241,12 +2241,12 @@ Private Sub RefreshControls()
           miLinkType = SSINTLINK_DROPDOWNLIST Then
     ' Disable the icon and new column options for hypertext link separators...
     chkNewColumn.Visible = False
-    ' lblIcon.Visible = False
-    ' txtIcon.Visible = False
-    'cmdIcon.Visible = False
-    'cmdIconClear.Visible = False
-    'cmdIconClear.Enabled = False
-    'imgIcon.Visible = False
+    lblIcon.Visible = False
+    txtIcon.Visible = False
+    cmdIcon.Visible = False
+    cmdIconClear.Visible = False
+    cmdIconClear.Enabled = False
+    imgIcon.Visible = False
     lblNoOptions.Visible = True
     lblNoOptions.Top = 345
     lblSeparatorColour.Visible = False
@@ -2254,7 +2254,6 @@ Private Sub RefreshControls()
     cmdSeparatorColPick.Visible = False
     chkSeparatorUseFormatting.Visible = False
     Line4.Visible = False
-    
   ElseIf (optLink(SSINTLINKSEPARATOR).value And miLinkType <> SSINTLINK_HYPERTEXT) Then
     ' Enable the icon and new column options for dashboard link separators...
     chkNewColumn.Visible = True
