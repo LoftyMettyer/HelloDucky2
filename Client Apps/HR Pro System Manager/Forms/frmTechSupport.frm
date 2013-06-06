@@ -163,7 +163,7 @@ Option Explicit
 
 
 Private Sub cmdOK_Click()
-  Unload Me
+  UnLoad Me
 End Sub
 
 
@@ -174,7 +174,7 @@ Private Sub Form_Load()
   navEmail.Caption = GetSystemSetting("Support", "Email", "")
   navEmail.NavigateTo = "mailto:" & navEmail.Caption
   
-  navSupport.Caption = "http://" & GetSystemSetting("Support", "Webpage", "")
+  navSupport.Caption = GetSystemSetting("Support", "Webpage", "")
   navSupport.NavigateTo = navSupport.Caption
 
 End Sub
@@ -187,7 +187,7 @@ End Sub
 
 Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
   If KeyCode = vbKeyEscape Then
-    Unload Me
+    UnLoad Me
   End If
 End Sub
 
