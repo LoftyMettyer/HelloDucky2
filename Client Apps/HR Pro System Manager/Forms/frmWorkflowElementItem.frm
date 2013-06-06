@@ -421,18 +421,6 @@ Private mfInitializing As Boolean
 Private msInitializeMessage As String
 Private mfAttachmentSelection As Boolean
 
-Public Enum WorkflowEmailItemTypes
-  ' Numbering out of sequence as we started using the WorkflowWebFormItemTypes
-  ' enum for this, which included differenty items. Sorry.
-  giWFEMAILITEM_UNKNOWN = -1
-  giWFEMAILITEM_DBVALUE = 1
-  giWFEMAILITEM_LABEL = 2
-  giWFEMAILITEM_WFVALUE = 4
-  giWFEMAILITEM_FORMATCODE = 12 ' NB. Only used in emails.
-  giWFEMAILITEM_CALCULATION = 16
-  giWFEMAILITEM_FILEATTACHMENT = 18 ' NB. Only used in emails.
-End Enum
-
 Public Property Let Changed(ByVal pfNewValue As Boolean)
   If Not mfLoading Then
     mfChanged = pfNewValue
@@ -767,7 +755,7 @@ Private Sub RefreshScreen()
       fEnableOK = fEnableOK And (Len(msAttachmentFile) > 0)
   End Select
   
-  cmdOK.Enabled = fEnableOK
+  cmdOk.Enabled = fEnableOK
   
 End Sub
 
@@ -1862,7 +1850,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
   If UnloadMode <> vbFormCode Then
 
     'Check if any changes have been made.
-    If mfChanged And cmdOK.Enabled Then
+    If mfChanged And cmdOk.Enabled Then
       iAnswer = MsgBox("You have changed the definition. Save changes ?", vbQuestion + vbYesNoCancel + vbDefaultButton1, App.ProductName)
       If iAnswer = vbYes Then
         Call cmdOK_Click

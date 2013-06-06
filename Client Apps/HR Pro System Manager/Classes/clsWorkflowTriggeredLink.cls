@@ -32,19 +32,6 @@ Private mfNew As Boolean
 Private mfChanged As Boolean
 Private mfDeleted As Boolean
 
-Public Enum WorkflowTriggerLinkType
-  WORKFLOWTRIGGERLINKTYPE_COLUMN = 0
-  WORKFLOWTRIGGERLINKTYPE_RECORD = 1
-  WORKFLOWTRIGGERLINKTYPE_DATE = 2
-End Enum
-
-Public Enum WorkflowTriggerOffsetPeriod
-  WORKFLOWTRIGGERLINKOFFESTPERIOD_DAY = 0
-  WORKFLOWTRIGGERLINKOFFESTPERIOD_WEEK = 1
-  WORKFLOWTRIGGERLINKOFFESTPERIOD_MONTH = 2
-  WORKFLOWTRIGGERLINKOFFESTPERIOD_YEAR = 3
-End Enum
-
 Public Property Get Deleted() As Boolean
   Deleted = mfDeleted
   

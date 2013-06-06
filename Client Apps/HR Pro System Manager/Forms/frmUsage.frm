@@ -143,16 +143,6 @@ Private miButtons As Integer
 Private msMode As String
 Private mlngSelection As Long
 
-Public Enum UsageButtonOptions
-  USAGEBUTTONS_OK = 2 ^ 0
-  USAGEBUTTONS_YES = 2 ^ 1
-  USAGEBUTTONS_NO = 2 ^ 2
-  USAGEBUTTONS_PRINT = 2 ^ 3
-  USAGEBUTTONS_SELECT = 2 ^ 4
-  USAGEBUTTONS_FIX = 2 ^ 5
-  USAGEBUTTONS_COPY = 2 ^ 6
-End Enum
-
 Private mlngMaxTextLength As Long
 
 Public Property Get Selection() As Long

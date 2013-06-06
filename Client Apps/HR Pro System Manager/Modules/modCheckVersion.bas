@@ -10,12 +10,6 @@ Dim mstrOldServerName As String      ' Using @@SERVERNAME
 
 Public gfDatabaseServerChanged As Boolean
 
-Public Enum HotfixType
-  BEFORELOAD = 0
-  BEFORESAVE = 1
-  AFTERSAVE = 2
-End Enum
-
 Public Function CheckVersion(sConnect As String, fReRunScript As Boolean, bIsSQLSystemAdmin As Boolean) As Boolean
   ' Check that the database version is the right one for this application's version.
   ' If everything matches then return TRUE.

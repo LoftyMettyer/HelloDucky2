@@ -81,18 +81,6 @@ Public Const WS_EX_DLGMODALFRAME As Long = &H1
 Public Const GWL_EXSTYLE As Long = (-20)
 Public Const GWL_STYLE As Long = (-16)
 
-'Background type constants
-Public Enum BackgroundLocationTypes
-  giLOCATION_TOPLEFT = 0
-  giLOCATION_TOPRIGHT = 1
-  giLOCATION_CENTRE = 2
-  giLOCATION_LEFTTILE = 3
-  giLOCATION_RIGHTTILE = 4
-  giLOCATION_TOPTILE = 5
-  giLOCATION_BOTTOMTILE = 6
-  giLOCATION_TILE = 7
-End Enum
-
 ' Globals for the desktop settings
 Public glngDesktopBitmapID As Long
 Public glngDesktopBitmapLocation As BackgroundLocationTypes
@@ -118,17 +106,6 @@ Public giCMGEXportRecordIDSize As Integer
 Public giCMGExportFieldCodeSize As Integer
 Public giCMGExportOutputColumnSize As Integer
 Public giCMGExportLastChangeDateSize As Integer
-
-Public Enum ExpressionColour
-  EXPRESSIONBUILDER_COLOUROFF = 1
-  EXPRESSIONBUILDER_COLOURON = 2
-End Enum
-
-Public Enum ExpressionSaveView
-  EXPRESSIONBUILDER_NODESMINIMIZE = 1
-  EXPRESSIONBUILDER_NODESEXPAND = 2
-  EXPRESSIONBUILDER_NODESTOPLEVEL = 3
-End Enum
 
 Public glngExpressionViewColours As ExpressionColour
 Public glngExpressionViewNodes As ExpressionSaveView
@@ -158,16 +135,6 @@ Public gbQAddressEnabled As Boolean
 Public gbAccordPayrollModule As Boolean
 Public gbOpenPayModule As Boolean
 
-Public Enum AccordTransactionStatus
-  ACCORD_STATUS_PENDING = 1
-  ACCORD_STATUS_PENDING_CHANGED = 2
-  ACCORD_STATUS_SUCCESS = 10
-  ACCORD_STATUS_SUCCESS_WARNINGS = 11
-  ACCORD_STATUS_FAILURE_UNKNOWN = 20
-  ACCORD_STATUS_FAILURE_RESOLVED = 21
-  ACCORD_STATUS_BLOCKED = 30
-End Enum
-
 ' Advanced database settings to control the recursion levels in the database
 Public Const giDefaultRecursionLevel = 8
 Public gbManualRecursionLevel As Boolean
@@ -175,16 +142,6 @@ Public giManualRecursionLevel As Integer
 
 Public gbDisableSpecialFunctionAutoUpdate As Boolean
 Public gbReorganiseIndexesInOvernightJob As Boolean
-
-Public Enum PasswordChangeReason
-  giPasswordChange_None = 0
-  giPasswordChange_MinLength = 1
-  giPasswordChange_Expired = 2
-  giPasswordChange_AdminRequested = 3
-  giPasswordChange_LastChangeUnknown = 4
-  giPasswordChange_ComplexitySettings = 5
-End Enum
-
 
 Private Function LC_FormatDateTimeMessage(plngSeconds As Long) As String
 

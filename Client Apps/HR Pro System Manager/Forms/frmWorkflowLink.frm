@@ -362,11 +362,6 @@ Private mbLocked As Boolean
 
 Private miLinkType As WorkflowTriggerLinkType
 
-Public Enum WFTriggerRelatedRecord
-  WFRELATEDRECORD_INSERT = 0
-  WFRELATEDRECORD_UPDATE = 1
-  WFRELATEDRECORD_DELETE = 2
-End Enum
 Public Property Get Cancelled() As Boolean
   Cancelled = mblnCancelled
 End Property

@@ -38,12 +38,6 @@ Private mblnIsOK As Boolean
 
 Private miTabsOnPage As Integer
 
-Public Enum PrintFontFormat
-  pffNormal = 0
-  pffBold = 1
-  pffNonBold = 2
-End Enum
-
 Private mintMarginTop As Integer
 Private mintMarginBottom As Integer
 Private mintMarginLeft As Integer

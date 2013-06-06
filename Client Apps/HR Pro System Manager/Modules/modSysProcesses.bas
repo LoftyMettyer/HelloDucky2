@@ -3,14 +3,6 @@ Option Explicit
 
 Public glngProcessMethod As SystemMgr.ProcessAdminConfig
 
-Public Enum ProcessAdminConfig
-  iPROCESSADMIN_DISABLED = 0
-  iPROCESSADMIN_SERVICEACCOUNT = 1
-  iPROCESSADMIN_SQLACCOUNT = 2
-  iPROCESSADMIN_EVERYONE = 3
-End Enum
-    
-
 Public Function CurrentUsersPopulate(grdTemp As SSDBGrid, Optional strUsersToLogOut As String) As Boolean
 
   Dim rsUsers As New ADODB.Recordset
