@@ -3542,6 +3542,11 @@ PRINT 'Step 7 - New Mobile User Logins Table'
 		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID]) VALUES (47, 5, 2, N''lblInstruction'', N''Click on a ''''to do'''' item to view the details and complete your action.'', N''Verdana'', 8.25, 0, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL);';	
 	END
 	
+	UPDATE tbsys_mobileformelements
+	SET Caption = Caption + ':'
+	WHERE ID IN (7,9,11,19,21,23,25,29,31,33,40)
+	AND Caption NOT LIKE '%:'
+	
 
 	IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[tbsys_mobilegroupworkflows]') AND type in (N'U'))
 	BEGIN
