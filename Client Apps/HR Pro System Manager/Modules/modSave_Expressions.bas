@@ -54,7 +54,7 @@ Public Function SaveExpressions(pfRefreshDatabase As Boolean) As Boolean
 
         End If
         
-        If fSave Then
+        If fSave Or !Type = giEXPR_STATICFILTER Then
           If .Fields("ParentComponentID").value = 0 Then
             OutputCurrentProcess2 .Fields("Name").value
           End If
@@ -252,8 +252,27 @@ Private Function ExpressionNew() As Boolean
         iType = recExprEdit.Fields("type").value
 
         Select Case iType
-          Case giEXPR_COLUMNCALCULATION, _
-            giEXPR_STATICFILTER, _
+        
+          ' Not for columns anymore, just for Accord stuff
+          Case giEXPR_COLUMNCALCULATION
+            If ColumnExpressionIsUsed(lngExprID) Then
+            
+              Set objExpression = New CExpression
+              objExpression.ExpressionID = lngExprID
+              
+              fOK = True
+              fOK = objExpression.CreateStoredProcedure
+              
+              If Not fOK Then
+                fNewExpr = False
+                
+                OutputError "Expression : " & objExpression.Name & vbNewLine & vbNewLine & _
+                  "Error creating stored procedure."
+              End If
+            
+            End If
+        
+          Case giEXPR_STATICFILTER, _
             giEXPR_RECORDVALIDATION, _
             giEXPR_RECORDDESCRIPTION, _
             giEXPR_OUTLOOKFOLDER, _
@@ -396,4 +415,38 @@ ErrorTrap:
   
   Resume ExitNewExpr
   
+End Function
+
+Private Function ColumnExpressionIsUsed(plngExprID As Long) As Boolean
+
+  Dim fUsed As Boolean
+  Dim rsTemp As dao.Recordset
+  Dim sSQL As String
+  
+  fUsed = False
+  
+  ' Accord calculations
+  sSQL = "SELECT TransferFieldID" & _
+    " FROM tmpAccordTransferFieldDefinitions" & _
+    " WHERE ASRExprID = " & CStr(plngExprID)
+  Set rsTemp = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
+  With rsTemp
+    fUsed = Not (.BOF And .EOF)
+  End With
+  Set rsTemp = Nothing
+  
+  ' Email content
+  If Not fUsed Then
+    sSQL = "SELECT ID" & _
+      " FROM tmpLinkContent" & _
+      " WHERE FieldCode = 'E' AND FieldID = " & CStr(plngExprID)
+    Set rsTemp = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
+    With rsTemp
+      fUsed = Not (.BOF And .EOF)
+    End With
+    Set rsTemp = Nothing
+  End If
+  
+  ColumnExpressionIsUsed = fUsed
+
 End Function
