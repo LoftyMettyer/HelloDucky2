@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TabCtl32.Ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Begin VB.Form frmSSIntranetSetup 
    BorderStyle     =   3  'Fixed Dialog
@@ -865,7 +865,7 @@ Begin VB.Form frmSSIntranetSetup
             DataMode        =   2
             RecordSelectors =   0   'False
             GroupHeaders    =   0   'False
-            Col.Count       =   45
+            Col.Count       =   46
             stylesets.count =   2
             stylesets(0).Name=   "ssEnabled"
             stylesets(0).ForeColor=   0
@@ -917,7 +917,7 @@ Begin VB.Form frmSSIntranetSetup
             BackColorOdd    =   -2147483643
             RowHeight       =   423
             ExtraHeight     =   265
-            Columns.Count   =   45
+            Columns.Count   =   46
             Columns(0).Width=   6324
             Columns(0).Caption=   "Prompt"
             Columns(0).Name =   "Prompt"
@@ -1234,6 +1234,13 @@ Begin VB.Form frmSSIntranetSetup
             Columns(44).DataField=   "Column 44"
             Columns(44).DataType=   8
             Columns(44).FieldLen=   256
+            Columns(45).Width=   3200
+            Columns(45).Visible=   0   'False
+            Columns(45).Caption=   "SeparatorColour"
+            Columns(45).Name=   "SeparatorColour"
+            Columns(45).DataField=   "Column 45"
+            Columns(45).DataType=   8
+            Columns(45).FieldLen=   256
             TabNavigation   =   1
             _ExtentX        =   11324
             _ExtentY        =   6324
@@ -1889,7 +1896,7 @@ Private Sub RefreshControls()
 
   End Select
 
-  cmdOK.Enabled = mfChanged
+  cmdOk.Enabled = mfChanged
 
 End Sub
 
@@ -1988,6 +1995,7 @@ Private Sub SaveLinkParameters(piLinkType As SSINTRANETLINKTYPES)
   Dim sConditionalFormatting_Value_3 As String
   Dim sConditionalFormatting_Style_3 As String
   Dim sConditionalFormatting_Colour_3 As String
+  Dim sSeparatorColour As String
   Dim iRed As Integer
   Dim iGreen As Integer
   Dim iBlue As Integer
@@ -2054,14 +2062,14 @@ Private Sub SaveLinkParameters(piLinkType As SSINTRANETLINKTYPES)
               sChartType = .Columns("ChartType").CellText(varBookmark)
               fChartShowGrid = .Columns("ChartShowGrid").CellText(varBookmark)
               fChartStackSeries = .Columns("ChartStackSeries").CellText(varBookmark)
-              sChartViewID = val(.Columns("ChartViewID").CellText(varBookmark))
-              sChartTableID = val(.Columns("ChartTableID").CellText(varBookmark))
-              sChartColumnID = val(.Columns("ChartColumnID").CellText(varBookmark))
-              sChartFilterID = val(.Columns("ChartFilterID").CellText(varBookmark))
-              sChartAggregateType = val(.Columns("ChartAggregateType").CellText(varBookmark))
-              fChartShowValues = val(.Columns("ChartShowValues").CellText(varBookmark))
+              sChartViewID = Val(.Columns("ChartViewID").CellText(varBookmark))
+              sChartTableID = Val(.Columns("ChartTableID").CellText(varBookmark))
+              sChartColumnID = Val(.Columns("ChartColumnID").CellText(varBookmark))
+              sChartFilterID = Val(.Columns("ChartFilterID").CellText(varBookmark))
+              sChartAggregateType = Val(.Columns("ChartAggregateType").CellText(varBookmark))
+              fChartShowValues = Val(.Columns("ChartShowValues").CellText(varBookmark))
               fUseFormatting = .Columns("UseFormatting").CellText(varBookmark)
-              iFormatting_DecimalPlaces = val(.Columns("Formatting_DecimalPlaces").CellText(varBookmark))
+              iFormatting_DecimalPlaces = Val(.Columns("Formatting_DecimalPlaces").CellText(varBookmark))
               fFormatting_Use1000Separator = .Columns("Formatting_Use1000Separator").CellText(varBookmark)
               sFormatting_Prefix = .Columns("Formatting_Prefix").CellText(varBookmark)
               sFormatting_Suffix = .Columns("Formatting_Suffix").CellText(varBookmark)
@@ -2078,6 +2086,7 @@ Private Sub SaveLinkParameters(piLinkType As SSINTRANETLINKTYPES)
               sConditionalFormatting_Value_3 = .Columns("ConditionalFormatting_Value_3").CellText(varBookmark)
               sConditionalFormatting_Style_3 = .Columns("ConditionalFormatting_Style_3").CellText(varBookmark)
               sConditionalFormatting_Colour_3 = .Columns("ConditionalFormatting_Colour_3").CellText(varBookmark)
+              sSeparatorColour = .Columns("SeparatorColour").CellText(varBookmark)
                           
             Case SSINTLINK_DROPDOWNLIST
               sPrompt = ""
@@ -2147,6 +2156,8 @@ Private Sub SaveLinkParameters(piLinkType As SSINTRANETLINKTYPES)
           sConditionalFormatting_Value_3 = IIf(sConditionalFormatting_Value_3 = "''", "''", "'" & Replace(sConditionalFormatting_Value_3, "'", "''") & "'")
           sConditionalFormatting_Style_3 = IIf(sConditionalFormatting_Style_3 = "''", "''", "'" & Replace(sConditionalFormatting_Style_3, "'", "''") & "'")
           sConditionalFormatting_Colour_3 = IIf(sConditionalFormatting_Colour_3 = "''", "''", "'" & Replace(sConditionalFormatting_Colour_3, "'", "''") & "'")
+          
+          sSeparatorColour = IIf(sSeparatorColour = "''", "''", "'" & Replace(sSeparatorColour, "'", "''") & "'")
                         
           'NPG20080211 Fault 12873
            sSQL = "INSERT INTO tmpSSIntranetLinks" & _
@@ -2159,7 +2170,7 @@ Private Sub SaveLinkParameters(piLinkType As SSINTRANETLINKTYPES)
             "[UseConditionalFormatting],[ConditionalFormatting_Operator_1],[ConditionalFormatting_Value_1],[ConditionalFormatting_Style_1]," & _
             "[ConditionalFormatting_Colour_1],[ConditionalFormatting_Operator_2],[ConditionalFormatting_Value_2],[ConditionalFormatting_Style_2]," & _
             "[ConditionalFormatting_Colour_2],[ConditionalFormatting_Operator_3],[ConditionalFormatting_Value_3],[ConditionalFormatting_Style_3]," & _
-            "[ConditionalFormatting_Colour_3])" & _
+            "[ConditionalFormatting_Colour_3],[SeparatorColour])" & _
             " SELECT " & _
             CStr(piLinkType) & "," & CStr(iLoop) & "," & "'" & Replace(sPrompt, "'", "''") & "'," & _
             "'" & Replace(sText, "'", "''") & "'," & sScreenID & "," & "'" & Replace(sPageTitle, "'", "''") & "'," & _
@@ -2186,7 +2197,8 @@ Private Sub SaveLinkParameters(piLinkType As SSINTRANETLINKTYPES)
             IIf(fUseConditionalFormatting, "1", "0") & "," & _
             sConditionalFormatting_Operator_1 & "," & sConditionalFormatting_Value_1 & "," & sConditionalFormatting_Style_1 & "," & sConditionalFormatting_Colour_1 & "," & _
             sConditionalFormatting_Operator_2 & "," & sConditionalFormatting_Value_2 & "," & sConditionalFormatting_Style_2 & "," & sConditionalFormatting_Colour_2 & "," & _
-            sConditionalFormatting_Operator_3 & "," & sConditionalFormatting_Value_3 & "," & sConditionalFormatting_Style_3 & "," & sConditionalFormatting_Colour_3
+            sConditionalFormatting_Operator_3 & "," & sConditionalFormatting_Value_3 & "," & sConditionalFormatting_Style_3 & "," & sConditionalFormatting_Colour_3 & "," & _
+            sSeparatorColour
 
           daoDb.Execute sSQL, dbFailOnError
         
@@ -2358,7 +2370,7 @@ Private Sub cmdAddButtonLink_Click()
       False, False, _
       0, 0, _
       True, 1, False, False, 0, 0, 0, 0, 0, 0, mcolGroups, _
-      False, 0, False, "", "", 0, "", "", "", "", "", "", "", "", "", "", "", "", _
+      False, 0, False, "", "", 0, "", "", "", "", "", "", "", "", "", "", "", "", "", _
       mcolSSITableViews
       
     .Show vbModal
@@ -2378,7 +2390,8 @@ Private Sub cmdAddButtonLink_Click()
         & vbTab & .chkConditionalFormatting.value _
         & vbTab & .cboDBValCFOperator(0).Text & vbTab & .txtDBValCFValue(0).Text & vbTab & .cboDBValCFStyle(0).Text & vbTab & .txtDBValCFColour(0).Text _
         & vbTab & .cboDBValCFOperator(0).Text & vbTab & .txtDBValCFValue(0).Text & vbTab & .cboDBValCFStyle(0).Text & vbTab & .txtDBValCFColour(0).Text _
-        & vbTab & .cboDBValCFOperator(0).Text & vbTab & .txtDBValCFValue(0).Text & vbTab & .cboDBValCFStyle(0).Text & vbTab & .txtDBValCFColour(0).Text
+        & vbTab & .cboDBValCFOperator(0).Text & vbTab & .txtDBValCFValue(0).Text & vbTab & .cboDBValCFStyle(0).Text & vbTab & .txtDBValCFColour(0).Text _
+        & vbTab & .txtSeparatorColour.Text
 
       For iLoop = 0 To cboButtonLinkView.ListCount - 1
         If cboButtonLinkView.List(iLoop) = .TableViewName Then
@@ -2447,7 +2460,7 @@ Private Sub cmdAddDropdownListLink_Click()
       False, False, _
       0, 0, _
       False, 0, False, False, 0, 0, 0, 0, 0, 0, mcolGroups, _
-      False, 0, False, "", "", 0, "", "", "", "", "", "", "", "", "", "", "", "", _
+      False, 0, False, "", "", 0, "", "", "", "", "", "", "", "", "", "", "", "", "", _
       mcolSSITableViews
       
     .Show vbModal
@@ -2533,7 +2546,7 @@ Private Sub cmdAddHyperTextLink_Click()
       False, False, _
       0, 0, _
       False, 0, False, False, 0, 0, 0, 0, 0, 0, mcolGroups, _
-      False, 0, False, "", "", 0, "", "", "", "", "", "", "", "", "", "", "", "", _
+      False, 0, False, "", "", 0, "", "", "", "", "", "", "", "", "", "", "", "", "", _
       mcolSSITableViews
       
     .Show vbModal
@@ -2630,7 +2643,7 @@ Private Sub cmdAddDocument_Click()
       False, False, _
       0, 0, _
       False, 0, False, False, 0, 0, 0, 0, 0, 0, mcolGroups, _
-      False, 0, False, "", "", 0, "", "", "", "", "", "", "", "", "", "", "", "", _
+      False, 0, False, "", "", 0, "", "", "", "", "", "", "", "", "", "", "", "", "", _
       mcolSSITableViews
       
     .Show vbModal
@@ -2915,12 +2928,12 @@ Private Sub cmdCopyButtonLink_Click()
       ctlSourceGrid.Columns("HiddenGroups").Text, cboButtonLinkView.List(cboButtonLinkView.ListIndex), _
       ctlSourceGrid.Columns("NewWindow").Text, ctlSourceGrid.Columns("EMailAddress").Text, ctlSourceGrid.Columns("EMailSubject").Text, _
       ctlSourceGrid.Columns("AppFilePath").Text, ctlSourceGrid.Columns("AppParameters").Text, "", False, _
-      ctlSourceGrid.Columns("Element_Type").value, val(ctlSourceGrid.Columns("SeparatorOrientation").Text), val(ctlSourceGrid.Columns("PictureID").Text), _
-      ctlSourceGrid.Columns("ChartShowLegend").value, val(ctlSourceGrid.Columns("ChartType").Text), _
+      ctlSourceGrid.Columns("Element_Type").value, Val(ctlSourceGrid.Columns("SeparatorOrientation").Text), Val(ctlSourceGrid.Columns("PictureID").Text), _
+      ctlSourceGrid.Columns("ChartShowLegend").value, Val(ctlSourceGrid.Columns("ChartType").Text), _
       ctlSourceGrid.Columns("ChartShowGrid").value, ctlSourceGrid.Columns("ChartStackSeries").value, _
-      val(ctlSourceGrid.Columns("ChartViewID").Text), val(ctlSourceGrid.Columns("ChartTableID").Text), _
-      val(ctlSourceGrid.Columns("ChartColumnID").Text), val(ctlSourceGrid.Columns("ChartFilterID").Text), _
-      val(ctlSourceGrid.Columns("ChartAggregateType").Text), ctlSourceGrid.Columns("ChartShowValues").value, mcolGroups, _
+      Val(ctlSourceGrid.Columns("ChartViewID").Text), Val(ctlSourceGrid.Columns("ChartTableID").Text), _
+      Val(ctlSourceGrid.Columns("ChartColumnID").Text), Val(ctlSourceGrid.Columns("ChartFilterID").Text), _
+      Val(ctlSourceGrid.Columns("ChartAggregateType").Text), ctlSourceGrid.Columns("ChartShowValues").value, mcolGroups, _
       ctlSourceGrid.Columns("UseFormatting").Text, _
       ctlSourceGrid.Columns("Formatting_DecimalPlaces").Text, ctlSourceGrid.Columns("Formatting_Use1000Separator").Text, _
       ctlSourceGrid.Columns("Formatting_Prefix").Text, ctlSourceGrid.Columns("Formatting_Suffix").Text, _
@@ -2928,7 +2941,7 @@ Private Sub cmdCopyButtonLink_Click()
       ctlSourceGrid.Columns("ConditionalFormatting_Operator_1").Text, ctlSourceGrid.Columns("ConditionalFormatting_Value_1").Text, ctlSourceGrid.Columns("ConditionalFormatting_Style_1").Text, ctlSourceGrid.Columns("ConditionalFormatting_Colour_1").Text, _
       ctlSourceGrid.Columns("ConditionalFormatting_Operator_2").Text, ctlSourceGrid.Columns("ConditionalFormatting_Value_2").Text, ctlSourceGrid.Columns("ConditionalFormatting_Style_2").Text, ctlSourceGrid.Columns("ConditionalFormatting_Colour_2").Text, _
       ctlSourceGrid.Columns("ConditionalFormatting_Operator_3").Text, ctlSourceGrid.Columns("ConditionalFormatting_Value_3").Text, ctlSourceGrid.Columns("ConditionalFormatting_Style_3").Text, ctlSourceGrid.Columns("ConditionalFormatting_Colour_3").Text, _
-      mcolSSITableViews
+      ctlSourceGrid.Columns("SeparatorColour").Text, mcolSSITableViews
     .Show vbModal
 
     If Not .Cancelled Then
@@ -3058,7 +3071,7 @@ Private Sub cmdCopyDropdownListLink_Click()
       False, False, _
       0, 0, _
       False, 0, False, False, 0, 0, 0, 0, 0, 0, mcolGroups, _
-      False, 0, False, "", "", 0, "", "", "", "", "", "", "", "", "", "", "", "", _
+      False, 0, False, "", "", 0, "", "", "", "", "", "", "", "", "", "", "", "", "", _
       mcolSSITableViews
     
     .Show vbModal
@@ -3176,10 +3189,10 @@ Private Sub cmdCopyHypertextLink_Click()
       ctlSourceGrid.Columns("AppFilePath").Text, _
       ctlSourceGrid.Columns("AppParameters").Text, _
       "", False, _
-      ctlSourceGrid.Columns("Element_Type").value, val(ctlSourceGrid.Columns("SeparatorOrientation").Text), _
-      val(ctlSourceGrid.Columns("PictureID").Text), _
+      ctlSourceGrid.Columns("Element_Type").value, Val(ctlSourceGrid.Columns("SeparatorOrientation").Text), _
+      Val(ctlSourceGrid.Columns("PictureID").Text), _
       False, 0, False, False, 0, 0, 0, 0, 0, 0, mcolGroups, _
-      False, 0, False, "", "", 0, "", "", "", "", "", "", "", "", "", "", "", "", _
+      False, 0, False, "", "", 0, "", "", "", "", "", "", "", "", "", "", "", "", "", _
       mcolSSITableViews
     
     .Show vbModal
@@ -3299,7 +3312,7 @@ Private Sub cmdCopyDocument_Click()
       ctlSourceGrid.Columns("DisplayDocumentHyperlink").value, _
       False, 0, 0, _
       False, 0, False, False, 0, 0, 0, 0, 0, 0, mcolGroups, _
-      False, 0, False, "", "", 0, "", "", "", "", "", "", "", "", "", "", "", "", _
+      False, 0, False, "", "", 0, "", "", "", "", "", "", "", "", "", "", "", "", "", _
       mcolSSITableViews
       
     .Show vbModal
@@ -3416,10 +3429,10 @@ Private Sub cmdEditButtonLink_Click()
       ctlSourceGrid.Columns("HiddenGroups").Text, cboButtonLinkView.List(cboButtonLinkView.ListIndex), _
       ctlSourceGrid.Columns("NewWindow").Text, ctlSourceGrid.Columns("EMailAddress").Text, ctlSourceGrid.Columns("EMailSubject").Text, _
       ctlSourceGrid.Columns("AppFilePath").Text, ctlSourceGrid.Columns("AppParameters").Text, _
-      "", False, ctlSourceGrid.Columns("Element_Type").value, val(ctlSourceGrid.Columns("SeparatorOrientation").Text), val(ctlSourceGrid.Columns("PictureID").Text), _
-      ctlSourceGrid.Columns("ChartShowLegend").Text, val(ctlSourceGrid.Columns("ChartType").Text), ctlSourceGrid.Columns("ChartShowGrid").Text, _
-      ctlSourceGrid.Columns("ChartStackSeries").Text, val(ctlSourceGrid.Columns("ChartviewID").Text), val(ctlSourceGrid.Columns("ChartTableID").Text), _
-      val(ctlSourceGrid.Columns("ChartColumnID").Text), val(ctlSourceGrid.Columns("ChartFilterID").Text), val(ctlSourceGrid.Columns("ChartAggregateType").Text), _
+      "", False, ctlSourceGrid.Columns("Element_Type").value, Val(ctlSourceGrid.Columns("SeparatorOrientation").Text), Val(ctlSourceGrid.Columns("PictureID").Text), _
+      ctlSourceGrid.Columns("ChartShowLegend").Text, Val(ctlSourceGrid.Columns("ChartType").Text), ctlSourceGrid.Columns("ChartShowGrid").Text, _
+      ctlSourceGrid.Columns("ChartStackSeries").Text, Val(ctlSourceGrid.Columns("ChartviewID").Text), Val(ctlSourceGrid.Columns("ChartTableID").Text), _
+      Val(ctlSourceGrid.Columns("ChartColumnID").Text), Val(ctlSourceGrid.Columns("ChartFilterID").Text), Val(ctlSourceGrid.Columns("ChartAggregateType").Text), _
       ctlSourceGrid.Columns("ChartShowValues").Text, mcolGroups, _
       ctlSourceGrid.Columns("UseFormatting").Text, _
       ctlSourceGrid.Columns("Formatting_DecimalPlaces").Text, ctlSourceGrid.Columns("Formatting_Use1000Separator").Text, _
@@ -3428,7 +3441,7 @@ Private Sub cmdEditButtonLink_Click()
       ctlSourceGrid.Columns("ConditionalFormatting_Operator_1").Text, ctlSourceGrid.Columns("ConditionalFormatting_Value_1").Text, ctlSourceGrid.Columns("ConditionalFormatting_Style_1").Text, ctlSourceGrid.Columns("ConditionalFormatting_Colour_1").Text, _
       ctlSourceGrid.Columns("ConditionalFormatting_Operator_2").Text, ctlSourceGrid.Columns("ConditionalFormatting_Value_2").Text, ctlSourceGrid.Columns("ConditionalFormatting_Style_2").Text, ctlSourceGrid.Columns("ConditionalFormatting_Colour_2").Text, _
       ctlSourceGrid.Columns("ConditionalFormatting_Operator_3").Text, ctlSourceGrid.Columns("ConditionalFormatting_Value_3").Text, ctlSourceGrid.Columns("ConditionalFormatting_Style_3").Text, ctlSourceGrid.Columns("ConditionalFormatting_Colour_3").Text, _
-      mcolSSITableViews
+      ctlSourceGrid.Columns("SeparatorColour").Text, mcolSSITableViews
     .Show vbModal
 
     If Not .Cancelled Then
@@ -3447,7 +3460,8 @@ Private Sub cmdEditButtonLink_Click()
         & vbTab & .Formatting_Prefix & vbTab & .Formatting_Suffix & vbTab & IIf(.UseConditionalFormatting = 0, "0", "1") _
         & vbTab & .ConditionalFormatting_Operator_1 & vbTab & .ConditionalFormatting_Value_1 & vbTab & .ConditionalFormatting_Style_1 & vbTab & .ConditionalFormatting_Colour_1 _
         & vbTab & .ConditionalFormatting_Operator_2 & vbTab & .ConditionalFormatting_Value_2 & vbTab & .ConditionalFormatting_Style_2 & vbTab & .ConditionalFormatting_Colour_2 _
-        & vbTab & .ConditionalFormatting_Operator_3 & vbTab & .ConditionalFormatting_Value_3 & vbTab & .ConditionalFormatting_Style_3 & vbTab & .ConditionalFormatting_Colour_3
+        & vbTab & .ConditionalFormatting_Operator_3 & vbTab & .ConditionalFormatting_Value_3 & vbTab & .ConditionalFormatting_Style_3 & vbTab & .ConditionalFormatting_Colour_3 _
+        & vbTab & .SeparatorBorderColour
 
       ctlSourceGrid.RemoveItem lngRow
       
@@ -3554,7 +3568,7 @@ Private Sub cmdEditDropdownListLink_Click()
       False, False, _
       0, 0, _
       False, 0, False, False, 0, 0, 0, 0, 0, 0, mcolGroups, _
-      False, 0, False, "", "", 0, "", "", "", "", "", "", "", "", "", "", "", "", _
+      False, 0, False, "", "", 0, "", "", "", "", "", "", "", "", "", "", "", "", "", _
       mcolSSITableViews
     
     .Show vbModal
@@ -3675,10 +3689,10 @@ Private Sub cmdEditHypertextLink_Click()
       ctlSourceGrid.Columns("AppFilePath").Text, _
       ctlSourceGrid.Columns("AppParameters").Text, _
       "", False, _
-      ctlSourceGrid.Columns("Element_Type").value, val(ctlSourceGrid.Columns("SeparatorOrientation").Text), _
-      val(ctlSourceGrid.Columns("PictureID").Text), _
+      ctlSourceGrid.Columns("Element_Type").value, Val(ctlSourceGrid.Columns("SeparatorOrientation").Text), _
+      Val(ctlSourceGrid.Columns("PictureID").Text), _
       False, 0, False, False, 0, 0, 0, 0, 0, 0, mcolGroups, _
-      False, 0, False, "", "", 0, "", "", "", "", "", "", "", "", "", "", "", "", _
+      False, 0, False, "", "", 0, "", "", "", "", "", "", "", "", "", "", "", "", "", _
       mcolSSITableViews
     
     .Show vbModal
@@ -3803,7 +3817,7 @@ Private Sub cmdEditDocument_Click()
       ctlSourceGrid.Columns("DisplayDocumentHyperlink").Text, _
       False, 0, 0, _
       False, 0, False, False, 0, 0, 0, 0, 0, 0, mcolGroups, _
-      False, 0, False, "", "", 0, "", "", "", "", "", "", "", "", "", "", "", "", _
+      False, 0, False, "", "", 0, "", "", "", "", "", "", "", "", "", "", "", "", "", _
       mcolSSITableViews
           
     .Show vbModal
@@ -4795,7 +4809,8 @@ Private Sub ReadParameters()
             vbTab & IIf(IsNull(rsLinks!UseConditionalFormatting), "0", IIf(rsLinks!UseConditionalFormatting, "1", "0")) & _
             vbTab & rsLinks!ConditionalFormatting_Operator_1 & vbTab & rsLinks!ConditionalFormatting_Value_1 & vbTab & rsLinks!ConditionalFormatting_Style_1 & vbTab & rsLinks!ConditionalFormatting_Colour_1 & _
             vbTab & rsLinks!ConditionalFormatting_Operator_2 & vbTab & rsLinks!ConditionalFormatting_Value_2 & vbTab & rsLinks!ConditionalFormatting_Style_2 & vbTab & rsLinks!ConditionalFormatting_Colour_2 & _
-            vbTab & rsLinks!ConditionalFormatting_Operator_3 & vbTab & rsLinks!ConditionalFormatting_Value_3 & vbTab & rsLinks!ConditionalFormatting_Style_3 & vbTab & rsLinks!ConditionalFormatting_Colour_3
+            vbTab & rsLinks!ConditionalFormatting_Operator_3 & vbTab & rsLinks!ConditionalFormatting_Value_3 & vbTab & rsLinks!ConditionalFormatting_Style_3 & vbTab & rsLinks!ConditionalFormatting_Colour_3 & _
+            vbTab & rsLinks!SeparatorColour
        End If
           
       Case SSINTLINK_DROPDOWNLIST
@@ -4862,7 +4877,7 @@ Private Sub ReadParameters()
                 
       sSQL = "SELECT *" & _
         " FROM tmpSSIHiddenGroups" & _
-        " WHERE linkID = " & CStr(rsLinks!id)
+        " WHERE linkID = " & CStr(rsLinks!ID)
       Set rsHiddenGroups = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
       While Not rsHiddenGroups.EOF
         sHiddenGroups = sHiddenGroups & rsHiddenGroups!GroupName & vbTab
