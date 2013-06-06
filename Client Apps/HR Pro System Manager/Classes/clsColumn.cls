@@ -302,6 +302,7 @@ Public Function ColumnIsUsed(pfrmUsage As frmUsage) As Boolean
   '   Summary Field definitions.
   '   Module definitions.
   '   Global Update/Add definitions.
+  '   Chart Definitions.
   
   On Error GoTo ErrorTrap
   
@@ -1425,7 +1426,10 @@ Public Function ColumnIsUsed(pfrmUsage As frmUsage) As Boolean
       "   tmpSSIntranetLinks.Element_Type," & _
       "   tmpSSIntranetLinks.text" & _
       " FROM tmpSSIntranetLinks" & _
-      " WHERE tmpSSIntranetLinks.Chart_columnID = " & Trim(Str(gLngColumnID))
+      " WHERE tmpSSIntranetLinks.Chart_columnID = " & Trim(Str(gLngColumnID)) & _
+      " OR tmpSSIntranetLinks.Chart_ColumnID_2 = " & Trim(Str(gLngColumnID)) & _
+      " OR tmpSSIntranetLinks.Chart_ColumnID_3 = " & Trim(Str(gLngColumnID)) & _
+      " OR tmpSSIntranetLinks.Chart_ColourID = " & Trim(Str(gLngColumnID))
   
     Set rsDAOTemp = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
     If Not (rsDAOTemp.BOF And rsDAOTemp.EOF) Then

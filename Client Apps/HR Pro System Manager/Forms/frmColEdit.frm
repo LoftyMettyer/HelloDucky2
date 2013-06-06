@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "timask6.ocx"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TabCtl32.Ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{604A59D5-2409-101D-97D5-46626B63EF2D}#1.0#0"; "TDBNumbr.ocx"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
@@ -2225,7 +2225,7 @@ End Property
 
 Public Property Let Changed(pblnNewValue As Boolean)
   mblnChanged = pblnNewValue
-  cmdOK.Enabled = mblnChanged
+  cmdOk.Enabled = mblnChanged
 End Property
 
 Public Property Get Changed() As Boolean
@@ -3262,7 +3262,7 @@ End Sub
 
 Private Sub cmdCancel_Click()
   Dim pintAnswer As Integer
-    If Changed = True And cmdOK.Enabled Then
+    If Changed = True And cmdOk.Enabled Then
       pintAnswer = MsgBox("You have made changes...do you wish to save these changes ?", vbQuestion + vbYesNoCancel, App.Title)
       If pintAnswer = vbYes Then
         Me.MousePointer = vbHourglass
@@ -3665,6 +3665,8 @@ Private Sub cmdOK_Click()
     Dim fAllSelected As Boolean
     Dim lngParentTableID As Long
     
+    Dim rsDAOTemp As DAO.Recordset
+    
     'Dim sOtherColumnID As String
     'Dim sTableID As String
     Dim iNewIndex As Integer
@@ -3678,7 +3680,8 @@ Private Sub cmdOK_Click()
     Dim iChangeStatus As Integer
     Dim sChangeStatus As String
       
-
+    Dim psColourUsage As String
+    
     ' Get the column name.
     sColumnName = Trim(txtColumnName.Text)
     
@@ -4148,6 +4151,36 @@ Private Sub cmdOK_Click()
     If mobjColumn.ColumnID > 0 Then
       ' Validate any change of controlType.
       If mobjColumn.Properties("controlType") <> miControlType Then
+        
+        ' Check if this Integer column is a ColourPicker control type. If it is check if used in any charts
+        ' and bounce if it is.
+        If mobjColumn.Properties("dataType") = dtinteger And mobjColumn.Properties("controlType") = 2 ^ 15 Then
+            ' Check that it is not used in SSI Charting.
+            sSQL = "SELECT DISTINCT tmpSSIntranetLinks.ID," & _
+              "   tmpSSIntranetLinks.Element_Type," & _
+              "   tmpSSIntranetLinks.text" & _
+              " FROM tmpSSIntranetLinks" & _
+              " WHERE tmpSSIntranetLinks.Chart_ColourID = " & Trim(Str(mobjColumn.ColumnID))
+          
+            Set rsDAOTemp = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
+            If Not (rsDAOTemp.BOF And rsDAOTemp.EOF) Then
+              psColourUsage = "The control type cannot be changed as the column is used in" & vbCrLf & _
+                              "the following :" & vbCrLf & vbCrLf
+              Do Until rsDAOTemp.EOF
+                    psColourUsage = psColourUsage & "Self Service Intranet Chart : " & rsDAOTemp.Fields("text") & vbCrLf
+                rsDAOTemp.MoveNext
+              Loop
+              
+              MsgBox psColourUsage, vbOKOnly + vbExclamation, Application.Name
+              'Close temporary recordset
+              rsDAOTemp.Close
+              Exit Sub
+            Else
+              'Close temporary recordset
+              rsDAOTemp.Close
+            End If
+        End If
+      
         ReDim sScreens(0)
         ReDim lngScreenIDs(0)
         ' Check if the control is used in any screens.
@@ -4970,7 +5003,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
 
   If mfCancelled = True Then
     If UnloadMode <> vbFormCode Then
-      If Changed = True And cmdOK.Enabled Then
+      If Changed = True And cmdOk.Enabled Then
         pintAnswer = MsgBox("You have made changes...do you wish to save these changes ?", vbQuestion + vbYesNoCancel, App.Title)
         If pintAnswer = vbYes Then
           cmdOK_Click
@@ -6704,13 +6737,13 @@ End Sub
 Private Sub txtListValues_GotFocus()
   ' Disable the 'Default' property of the 'OK' button as the return key is
   ' used by this textbox.
-  cmdOK.Default = False
+  cmdOk.Default = False
   
 End Sub
 
 Private Sub txtListValues_LostFocus()
   ' Enable the 'Default' property of the OK button.
-  cmdOK.Default = True
+  cmdOk.Default = True
 
   ' Refresh the list of possible default values.
   cboDefault_Refresh

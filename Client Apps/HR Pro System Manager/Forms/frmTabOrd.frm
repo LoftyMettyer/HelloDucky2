@@ -169,7 +169,7 @@ Begin VB.Form frmTabOrd
       MaskColor       =   12632256
       _Version        =   327682
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
-         NumListImages   =   14
+         NumListImages   =   15
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
             Picture         =   "frmTabOrd.frx":0286
             Key             =   "IMG_CHECK"
@@ -225,6 +225,10 @@ Begin VB.Form frmTabOrd
          BeginProperty ListImage14 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
             Picture         =   "frmTabOrd.frx":45B0
             Key             =   "IMG_WORKINGPATTERN"
+         EndProperty
+         BeginProperty ListImage15 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
+            Picture         =   "frmTabOrd.frx":4B02
+            Key             =   "IMG_COLOURPICKER"
          EndProperty
       EndProperty
    End
@@ -489,6 +493,8 @@ Private Sub cmdOK_Click()
           Set ctlControl = gFrmScreen.ASRCustomDummyWP(iIndex)
         Case giCTRL_NAVIGATION
           Set ctlControl = gFrmScreen.ASRDummyNavigation(iIndex)
+        Case giCTRL_COLOURPICKER
+          Set ctlControl = gFrmScreen.ASRColourSelector(iIndex)
         Case Else
           Set ctlControl = Nothing
       End Select
@@ -1095,6 +1101,8 @@ Private Function ImageKey(piType As Long) As String
       ImageKey = "IMG_WORKINGPATTERN"
     Case giCTRL_NAVIGATION
       ImageKey = "IMG_NAVIGATION"
+    Case giCTRL_COLOURPICKER
+      ImageKey = "IMG_COLOURPICKER"
     Case Else
       ImageKey = "IMG_UNKNOWN"
   End Select
@@ -1136,6 +1144,8 @@ Private Function ControlTypeName(piType As Long) As String
       ControlTypeName = "Working Pattern"
     Case giCTRL_NAVIGATION
       ControlTypeName = "Navigation Control"
+    Case giCTRL_COLOURPICKER
+      ControlTypeName = "Colour Picker"
     Case Else
       ControlTypeName = "Unknown"
   End Select

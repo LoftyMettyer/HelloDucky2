@@ -1274,7 +1274,7 @@ Private Function DropControl(pVarPageContainer As Variant, pCtlSource As Control
               ' RH 15/09/00 - BUG 940. Do not drop an autolabel for checkboxes
               '                        Position label below 'top' of control
               
-                Case giCTRL_COMBOBOX, giCTRL_SPINNER, giCTRL_TEXTBOX
+                Case giCTRL_COMBOBOX, giCTRL_SPINNER, giCTRL_TEXTBOX, giCTRL_COLOURPICKER
   
                   AutoLabel pVarPageContainer, pSngX, pSngY + 75, sColumnName
                   
@@ -5280,7 +5280,7 @@ Public Function IsScreenControl(pctlControl As VB.Control) As Boolean
   
   sName = pctlControl.Name
   fIsScreenControl = False
-  
+   
   If sName = "asrDummyLabel" Or _
     sName = "asrDummyTextBox" Or _
     sName = "asrDummyPhoto" Or _
@@ -5402,6 +5402,7 @@ Public Function ScreenControl_IsTabStop(piControlType As Long) As Boolean
     (piControlType = giCTRL_LINK) Or _
     (piControlType = giCTRL_WORKINGPATTERN) Or _
     (piControlType = giCTRL_NAVIGATION) Or _
+    (piControlType = giCTRL_COLOURPICKER) Or _
     (piControlType = giCTRL_TEXTBOX)
 
 End Function
@@ -6238,7 +6239,7 @@ Public Function LoadTabPage(piPageNumber As Integer) As Boolean
             
           ' Only Load controls for selected page
           If .Fields("pageNo").value = iOriginalPageNumber Then
-              
+                           
             ' Get the control's type.
             iCtrlType = IIf(IsNull(.Fields("controlType").value), giCTRL_TEXTBOX, .Fields("controlType").value)
               
