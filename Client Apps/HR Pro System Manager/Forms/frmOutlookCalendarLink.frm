@@ -110,7 +110,7 @@ Begin VB.Form frmOutlookCalendarLink
          Strikethrough   =   0   'False
       EndProperty
       TabCaption(0)   =   "De&finition"
-      TabPicture(0)   =   "frmOutlookCalendarLink.frx":0C18
+      TabPicture(0)   =   "frmOutlookCalendarLink.frx":0E60
       Tab(0).ControlEnabled=   -1  'True
       Tab(0).Control(0)=   "fraDateRange"
       Tab(0).Control(0).Enabled=   0   'False
@@ -124,20 +124,16 @@ Begin VB.Form frmOutlookCalendarLink
       Tab(0).Control(4).Enabled=   0   'False
       Tab(0).ControlCount=   5
       TabCaption(1)   =   "Colu&mns"
-      TabPicture(1)   =   "frmOutlookCalendarLink.frx":0C34
+      TabPicture(1)   =   "frmOutlookCalendarLink.frx":0E7C
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraColumns(2)"
-      Tab(1).Control(0).Enabled=   0   'False
+      Tab(1).Control(0)=   "fraColumns(0)"
       Tab(1).Control(1)=   "fraColumns(1)"
-      Tab(1).Control(1).Enabled=   0   'False
-      Tab(1).Control(2)=   "fraColumns(0)"
-      Tab(1).Control(2).Enabled=   0   'False
+      Tab(1).Control(2)=   "fraColumns(2)"
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "Co&ntent"
-      TabPicture(2)   =   "frmOutlookCalendarLink.frx":0C50
+      TabPicture(2)   =   "frmOutlookCalendarLink.frx":0E98
       Tab(2).ControlEnabled=   0   'False
       Tab(2).Control(0)=   "fraContent"
-      Tab(2).Control(0).Enabled=   0   'False
       Tab(2).ControlCount=   1
       Begin VB.Frame fraLinkDetails 
          Caption         =   "Link Details :"
@@ -148,9 +144,9 @@ Begin VB.Form frmOutlookCalendarLink
          Width           =   4500
          Begin VB.ComboBox cboBusyStatus 
             Height          =   315
-            ItemData        =   "frmOutlookCalendarLink.frx":0C6C
+            ItemData        =   "frmOutlookCalendarLink.frx":0EB4
             Left            =   1170
-            List            =   "frmOutlookCalendarLink.frx":0C7C
+            List            =   "frmOutlookCalendarLink.frx":0EC4
             Style           =   2  'Dropdown List
             TabIndex        =   7
             Top             =   1040
@@ -220,9 +216,9 @@ Begin VB.Form frmOutlookCalendarLink
          Width           =   4500
          Begin VB.ListBox lstDestinations 
             Height          =   1860
-            ItemData        =   "frmOutlookCalendarLink.frx":0CA6
+            ItemData        =   "frmOutlookCalendarLink.frx":0EEE
             Left            =   200
-            List            =   "frmOutlookCalendarLink.frx":0CA8
+            List            =   "frmOutlookCalendarLink.frx":0EF0
             Style           =   1  'Checkbox
             TabIndex        =   9
             Top             =   300
@@ -246,9 +242,9 @@ Begin VB.Form frmOutlookCalendarLink
          Width           =   4620
          Begin VB.ComboBox cboOffsetPeriod 
             Height          =   315
-            ItemData        =   "frmOutlookCalendarLink.frx":0CAA
+            ItemData        =   "frmOutlookCalendarLink.frx":0EF2
             Left            =   3200
-            List            =   "frmOutlookCalendarLink.frx":0CBA
+            List            =   "frmOutlookCalendarLink.frx":0F02
             Style           =   2  'Dropdown List
             TabIndex        =   32
             Top             =   240
@@ -598,7 +594,7 @@ Begin VB.Form frmOutlookCalendarLink
             _Version        =   65536
             _ExtentX        =   3413
             _ExtentY        =   556
-            Caption         =   "frmOutlookCalendarLink.frx":0CDC
+            Caption         =   "frmOutlookCalendarLink.frx":0F24
             BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
                Size            =   8.25
@@ -608,7 +604,7 @@ Begin VB.Form frmOutlookCalendarLink
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            Keys            =   "frmOutlookCalendarLink.frx":0D41
+            Keys            =   "frmOutlookCalendarLink.frx":0F89
             AlignHorizontal =   0
             AlignVertical   =   0
             Appearance      =   1
@@ -654,7 +650,7 @@ Begin VB.Form frmOutlookCalendarLink
             _Version        =   65536
             _ExtentX        =   3413
             _ExtentY        =   556
-            Caption         =   "frmOutlookCalendarLink.frx":0D83
+            Caption         =   "frmOutlookCalendarLink.frx":0FCB
             BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
                Size            =   8.25
@@ -664,7 +660,7 @@ Begin VB.Form frmOutlookCalendarLink
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            Keys            =   "frmOutlookCalendarLink.frx":0DE8
+            Keys            =   "frmOutlookCalendarLink.frx":1030
             AlignHorizontal =   0
             AlignVertical   =   0
             Appearance      =   1
@@ -848,11 +844,11 @@ Begin VB.Form frmOutlookCalendarLink
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
          NumListImages   =   2
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmOutlookCalendarLink.frx":0E2A
+            Picture         =   "frmOutlookCalendarLink.frx":1072
             Key             =   "IMG_TABLE"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmOutlookCalendarLink.frx":117C
+            Picture         =   "frmOutlookCalendarLink.frx":13C4
             Key             =   "IMG_CALC"
          EndProperty
       EndProperty
@@ -1725,7 +1721,7 @@ Private Sub ListView1_GotFocus()
 End Sub
 
 Private Sub ListView1_LostFocus()
-  cmdOK.Default = True
+  cmdOk.Default = True
 End Sub
 
 Private Sub ListView2_GotFocus()
@@ -1733,7 +1729,7 @@ Private Sub ListView2_GotFocus()
 End Sub
 
 Private Sub ListView2_LostFocus()
-  cmdOK.Default = True
+  cmdOk.Default = True
 End Sub
 
 Private Function CopyToSelected(bAll As Boolean)
@@ -1983,12 +1979,12 @@ End Sub
 
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 
 Public Property Let Changed(ByVal blnNewValue As Boolean)
   If Not mblnLoading Then
-    cmdOK.Enabled = blnNewValue And Not mblnReadOnly
+    cmdOk.Enabled = blnNewValue And Not mblnReadOnly
   End If
 End Property
 
@@ -2315,11 +2311,11 @@ Private Sub txtBody_GotFocus()
     .SelStart = 0
     .SelLength = Len(.Text)
   End With
-  cmdOK.Default = False
+  cmdOk.Default = False
 End Sub
 
 Private Sub txtBody_LostFocus()
-  cmdOK.Default = True
+  cmdOk.Default = True
 End Sub
 
 

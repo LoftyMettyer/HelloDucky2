@@ -69,7 +69,7 @@ Begin VB.Form frmEmailLink
       AutoSize        =   -1  'True
       Height          =   540
       Left            =   720
-      Picture         =   "frmEmailLink.frx":14E2
+      Picture         =   "frmEmailLink.frx":172A
       ScaleHeight     =   480
       ScaleWidth      =   480
       TabIndex        =   43
@@ -116,6 +116,7 @@ Begin VB.Form frmEmailLink
       _Version        =   393216
       Style           =   1
       Tabs            =   2
+      Tab             =   1
       TabHeight       =   520
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Verdana"
@@ -127,28 +128,23 @@ Begin VB.Form frmEmailLink
          Strikethrough   =   0   'False
       EndProperty
       TabCaption(0)   =   "De&finition"
-      TabPicture(0)   =   "frmEmailLink.frx":17EC
-      Tab(0).ControlEnabled=   -1  'True
-      Tab(0).Control(0)=   "fraLinkTypeDetails(1)"
-      Tab(0).Control(0).Enabled=   0   'False
-      Tab(0).Control(1)=   "fraLinkTypeDetails(2)"
-      Tab(0).Control(1).Enabled=   0   'False
+      TabPicture(0)   =   "frmEmailLink.frx":1A34
+      Tab(0).ControlEnabled=   0   'False
+      Tab(0).Control(0)=   "frmDefinition(1)"
+      Tab(0).Control(1)=   "frmDefinition(0)"
       Tab(0).Control(2)=   "fraLinkTypeDetails(0)"
-      Tab(0).Control(2).Enabled=   0   'False
-      Tab(0).Control(3)=   "frmDefinition(0)"
-      Tab(0).Control(3).Enabled=   0   'False
-      Tab(0).Control(4)=   "frmDefinition(1)"
-      Tab(0).Control(4).Enabled=   0   'False
+      Tab(0).Control(3)=   "fraLinkTypeDetails(2)"
+      Tab(0).Control(4)=   "fraLinkTypeDetails(1)"
       Tab(0).ControlCount=   5
       TabCaption(1)   =   "Co&ntent"
-      TabPicture(1)   =   "frmEmailLink.frx":1808
-      Tab(1).ControlEnabled=   0   'False
+      TabPicture(1)   =   "frmEmailLink.frx":1A50
+      Tab(1).ControlEnabled=   -1  'True
       Tab(1).Control(0)=   "frmContent"
       Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       Begin VB.Frame frmContent 
          Height          =   6240
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   14
          Top             =   360
          Visible         =   0   'False
@@ -306,7 +302,7 @@ Begin VB.Form frmEmailLink
          Caption         =   "Link Type :"
          Height          =   4105
          Index           =   1
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   8
          Top             =   2495
          Width           =   1480
@@ -344,7 +340,7 @@ Begin VB.Form frmEmailLink
       Begin VB.Frame frmDefinition 
          Height          =   2075
          Index           =   0
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   0
          Top             =   360
          Width           =   8800
@@ -472,7 +468,7 @@ Begin VB.Form frmEmailLink
          Caption         =   "Column Related Link :"
          Height          =   4105
          Index           =   0
-         Left            =   1720
+         Left            =   -73280
          TabIndex        =   12
          Top             =   2495
          Width           =   7200
@@ -489,7 +485,7 @@ Begin VB.Form frmEmailLink
          Caption         =   "Date Related Link :"
          Height          =   4105
          Index           =   2
-         Left            =   1720
+         Left            =   -73280
          TabIndex        =   35
          Top             =   2495
          Visible         =   0   'False
@@ -507,9 +503,9 @@ Begin VB.Form frmEmailLink
             BackColor       =   &H8000000F&
             Enabled         =   0   'False
             Height          =   315
-            ItemData        =   "frmEmailLink.frx":1824
+            ItemData        =   "frmEmailLink.frx":1A6C
             Left            =   3480
-            List            =   "frmEmailLink.frx":1834
+            List            =   "frmEmailLink.frx":1A7C
             Style           =   2  'Dropdown List
             TabIndex        =   41
             Top             =   705
@@ -527,9 +523,9 @@ Begin VB.Form frmEmailLink
             BackColor       =   &H8000000F&
             Enabled         =   0   'False
             Height          =   315
-            ItemData        =   "frmEmailLink.frx":1854
+            ItemData        =   "frmEmailLink.frx":1A9C
             Left            =   2040
-            List            =   "frmEmailLink.frx":1864
+            List            =   "frmEmailLink.frx":1AAC
             Style           =   2  'Dropdown List
             TabIndex        =   40
             Top             =   705
@@ -581,7 +577,7 @@ Begin VB.Form frmEmailLink
          Caption         =   "Record Related Link :"
          Height          =   4105
          Index           =   1
-         Left            =   1720
+         Left            =   -73280
          TabIndex        =   31
          Top             =   2495
          Visible         =   0   'False
@@ -629,19 +625,19 @@ Begin VB.Form frmEmailLink
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
          NumListImages   =   4
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmEmailLink.frx":1884
+            Picture         =   "frmEmailLink.frx":1ACC
             Key             =   "IMG_TABLE"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmEmailLink.frx":1BD6
+            Picture         =   "frmEmailLink.frx":1E1E
             Key             =   "IMG_CALC"
          EndProperty
          BeginProperty ListImage3 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmEmailLink.frx":2128
+            Picture         =   "frmEmailLink.frx":2370
             Key             =   "IMG_CUSTOM"
          EndProperty
          BeginProperty ListImage4 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmEmailLink.frx":267A
+            Picture         =   "frmEmailLink.frx":28C2
             Key             =   "IMG_NO"
          EndProperty
       EndProperty
