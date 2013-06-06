@@ -968,11 +968,11 @@ Private Function GetCustomReportDefinition() As Boolean
     mlngCustomReportsAllRecords = !AllRecords
     'if basetable is personnel and ReportPack Override filter exists use that swap
     If mlngCustomReportsBaseTable = glngPersonnelTableID And gblnReportPackMode Then
-      mlngCustomReportsFilterID = mlngOverrideFilterID
-      mlngCustomReportsPickListID = 0
+      mlngCustomReportsFilterID = IIf(mlngOverrideFilterID <> 0, mlngOverrideFilterID, IIf(IsNull(!Filter), 0, !Filter))
+      mlngCustomReportsPickListID = IIf(mlngOverrideFilterID <> 0, 0, IIf(IsNull(!Picklist), 0, !Picklist))
     Else
       mlngCustomReportsFilterID = !Filter
-      mlngCustomReportsPickListID = !picklist
+      mlngCustomReportsPickListID = !Picklist
     End If
     mlngCustomReportsParent1Table = !parent1table
     mstrCustomReportsParent1TableName = datGeneral.GetTableName(mlngCustomReportsParent1Table)
