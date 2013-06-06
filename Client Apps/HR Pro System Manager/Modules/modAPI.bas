@@ -45,4 +45,8 @@ Public Declare Function GetTempPath Lib "kernel32" Alias "GetTempPathA" (ByVal n
 Public Declare Sub CopyMemory Lib "kernel32" Alias "RtlMoveMemory" (Destination As Any, Source As Any, ByVal Length As Long)
 Public Declare Function StringFromGUID2 Lib "ole32.dll" (rguid As udtGUID, ByVal lpstrClsId As Long, ByVal cbMax As Long) As Long
 
+Public Declare Function GetWindowRect Lib "user32" (ByVal hWnd As Long, lpRect As Rect) As Long
+Public Declare Function ClipCursorRect Lib "user32" Alias "ClipCursor" (lpRect As Rect) As Long
+Public Declare Function ClipCursorClear Lib "user32" Alias "ClipCursor" (ByVal lpRect As Long) As Long
+Public Declare Function SetCursorPos Lib "user32" (ByVal X As Long, ByVal Y As Long) As Long
 
