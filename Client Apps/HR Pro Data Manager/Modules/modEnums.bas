@@ -1,5 +1,31 @@
 Attribute VB_Name = "modEnums"
 
+' Microsoft Word Output Types
+Public Enum WordOutputType
+  wdFormatDocument = 0
+  wdFormatDOSText = 4
+  wdFormatDOSTextLineBreaks = 5
+  wdFormatEncodedText = 7
+  wdFormatFilteredHTML = 10
+  wdFormatHTML = 8
+  wdFormatRTF = 6
+  wdFormatTemplate = 1
+  wdFormatText = 2
+  wdFormatTextLineBreaks = 3
+  wdFormatUnicodeText = 7
+  wdFormatWebArchive = 9
+  wdFormatXML = 11
+  wdFormatDocument97 = 0
+  wdFormatDocumentDefault = 16
+  wdFormatPDF = 17
+  wdFormatTemplate97 = 1
+  wdFormatXMLDocument = 12
+  wdFormatXMLDocumentMacroEnabled = 13
+  wdFormatXMLTemplate = 14
+  wdFormatXMLTemplateMacroEnabled = 15
+  wdFormatXPS = 18
+End Enum
+
 ' Utility Types
 Public Enum UtilityType
   utlBatchJob = 0
