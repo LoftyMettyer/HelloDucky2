@@ -93,6 +93,7 @@ Begin VB.Form frmColEdit
       TabPicture(3)   =   "frmColEdit.frx":0060
       Tab(3).ControlEnabled=   0   'False
       Tab(3).Control(0)=   "fraValidationPage"
+      Tab(3).Control(0).Enabled=   0   'False
       Tab(3).ControlCount=   1
       TabCaption(4)   =   "Diar&y Links"
       TabPicture(4)   =   "frmColEdit.frx":007C
@@ -1349,6 +1350,7 @@ Begin VB.Form frmColEdit
             Begin VB.TextBox txtErrorMessage 
                Height          =   315
                Left            =   1665
+               MaxLength       =   255
                TabIndex        =   64
                Top             =   700
                Width           =   5715

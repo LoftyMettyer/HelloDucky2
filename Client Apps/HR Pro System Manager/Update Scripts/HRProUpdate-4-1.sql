@@ -1881,6 +1881,11 @@ PRINT 'Step 6 - Shared Table Integration'
 	END
 
 
+/* ------------------------------------------------------------- */
+PRINT 'Step 7 - Validation Messages'
+
+	EXECUTE spASRResizeColumn 'ASRSysColumns','errorMessage','MAX';
+
 
 /* ------------------------------------------------------------- */
 /* ------------------------------------------------------------- */
