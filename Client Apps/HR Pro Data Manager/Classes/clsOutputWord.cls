@@ -612,7 +612,7 @@ Public Function GetFile(objParent As clsOutputRun, colStyles As Collection) As B
     Case 3  'Append to existing file
       'Start at the bottom of the document
 
-      If IsFileCompatibleWithOfficeVersion(mstrFileName, GetOfficeWordVersion) Then
+      If IsFileCompatibleWithWordVersion(mstrFileName) Then
         mstrErrorMessage = "This definition is set to append to a file which is not compatible with your version of Microsoft Office."
         GetFile = False
         Exit Sub
@@ -655,7 +655,7 @@ Private Sub GetNewDocument()
   If mstrWrdTemplate <> "" And Dir(mstrWrdTemplate) <> "" Then
     'Set mwrdDoc = mwrdApp.Documents.Open(mstrWrdTemplate, ReadOnly:=True)
 
-    If IsFileCompatibleWithOfficeVersion(mstrWrdTemplate, GetOfficeWordVersion) Then
+    If IsFileCompatibleWithWordVersion(mstrWrdTemplate) Then
       mstrErrorMessage = "Your User Configuration Output Options are set to use a template file which is not compatible with your version of Microsoft Office."
       Exit Sub
     End If
