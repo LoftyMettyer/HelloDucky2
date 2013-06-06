@@ -36,6 +36,7 @@ Begin VB.Form frmScrEdit
       Begin VB.ComboBox cboCategory 
          Height          =   315
          Left            =   1335
+         Style           =   2  'Dropdown List
          TabIndex        =   23
          Top             =   675
          Width           =   3270
@@ -206,6 +207,7 @@ Begin VB.Form frmScrEdit
          Left            =   7965
          TabIndex        =   22
          Top             =   2610
+         Visible         =   0   'False
          Width           =   1185
       End
       Begin VB.CommandButton cmdMoveUp 
@@ -215,6 +217,7 @@ Begin VB.Form frmScrEdit
          Left            =   7965
          TabIndex        =   21
          Top             =   2070
+         Visible         =   0   'False
          Width           =   1185
       End
       Begin VB.CommandButton cmdDeselectAll 
@@ -392,12 +395,15 @@ Private Sub cmdIcon_Click()
     glngPictureID = frmPictSel.SelectedPicture
   End If
   
+  imgIcon_Refresh
+  
   Set frmPictSel = Nothing
   
 End Sub
 
 Private Sub cmdIconClear_Click()
   glngPictureID = frmPictSel.SelectedPicture
+  imgIcon_Refresh
 End Sub
 
 Private Sub cmdMoveDown_Click()
@@ -772,6 +778,7 @@ Private Sub Form_Activate()
     ' Populate the combos, textboxes and listboxes.
     txtOrder_Refresh
     listHistoryScreens_Refresh
+    imgIcon_Refresh
     
     'Refresh current tab page
     RefreshHistoryScreensTab
@@ -1164,5 +1171,19 @@ If chkSSIntranet.value = vbChecked Then
     End If
 End Function
 
-
+Private Function imgIcon_Refresh() As Boolean
+  Dim strFileName As String
+  
+  If PictureID > 0 Then
+    With recPictEdit
+      .Index = "idxID"
+      .Seek "=", PictureID
+      If Not .NoMatch Then
+        txtIcon.Text = .Fields("Name")
+      End If
+    End With
+  Else
+    txtIcon.Text = vbNullString
+  End If
+End Function
 
