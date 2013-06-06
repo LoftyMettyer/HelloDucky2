@@ -2458,6 +2458,7 @@ Private Function CreateQueryDefs() As Boolean
       " , IIF(ISNULL(c.fieldtableid),0,c.fieldtableid) AS [tableid]" & _
       " , IIF(ISNULL(c.FieldColumnID),0,c.FieldColumnID) AS [columnid]" & _
       " , IIF(ISNULL(c.FieldSelectionRecord),0,c.FieldSelectionRecord) AS [columnaggregiatetype]" & _
+      " , IIF(ISNULL(c.FieldSelectionLine),0,c.FieldSelectionLine) AS [specificline]" & _
       " , IIF(ISNULL(c.FieldSelectionOrderID),0,c.FieldSelectionOrderID) AS [columnorderid]" & _
       " , IIF(ISNULL(c.[FieldSelectionFilter]),0,c.FieldSelectionFilter) AS [columnfilterid]" & _
       " , IIF(ISNULL(c.[CalculationID]),0,c.CalculationID) AS [calculationid]" & _
@@ -2479,6 +2480,7 @@ Private Function CreateQueryDefs() As Boolean
   sSQL = "SELECT e.ExprID AS componentid, 9 AS subtype, e.name, 1 AS [level], e.[exprid] AS sequence, e.returntype" & _
       " , e.ReturnSize AS returnsize, e.ReturnDecimals AS returndecimals, c.[FunctionID] AS functionid, 0 AS operatorid" & _
       " , 0 AS [tableid], 0 AS columnid, 0 AS iscolumnbyreference, 0 AS columnaggregiatetype, 0 AS columnorderid, 0 AS columnfilterid" & _
+      " , 0 AS [specificline]" & _
       " , 0 AS calculationid, 0 AS valuetype, '' AS valuestring, 0 AS valuenumeric, 0 AS valuelogic, c.[ValueDate], 0 AS lookuptableid, 0 AS lookupcolumnid" & _
       " , IIF(e.type=1 AND e.returnType=3,1,0) AS isevaluated" & _
       " FROM tmpComponents AS c" & _
@@ -2497,6 +2499,7 @@ Private Function CreateQueryDefs() As Boolean
       " , IIF(ISNULL(c.FieldColumnID),0,c.FieldColumnID) AS [columnid]" & _
       " , IIF(ISNULL(c.FieldPassBy),1,c.FieldPassBy)-1 AS [iscolumnbyreference]" & _
       " , IIF(ISNULL(c.FieldSelectionRecord),0,c.FieldSelectionRecord) AS [columnaggregiatetype]" & _
+      " , IIF(ISNULL(c.FieldSelectionLine),0,c.FieldSelectionLine) AS [specificline]" & _
       " , IIF(ISNULL(c.FieldSelectionOrderID),0,c.FieldSelectionOrderID) AS [columnorderid]" & _
       " , IIF(ISNULL(c.[FieldSelectionFilter]),0,c.FieldSelectionFilter) AS [columnfilterid]" & _
       " , IIF(ISNULL(c.[CalculationID]),0,c.CalculationID) AS [calculationid]" & _
