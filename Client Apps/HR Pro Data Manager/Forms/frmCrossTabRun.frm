@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.ocx"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.OCX"
 Begin VB.Form frmCrossTabRun 
    Caption         =   "Cross Tabs"
    ClientHeight    =   7455
@@ -380,6 +380,7 @@ Private msAbsenceBreakdownTypes As String
 Private mblnIncludeNewStarters As Boolean
 Private mlngHorColID As Long
 Private mblnPreviewOnScreen As Boolean
+
 Private mlngOutputFormat As Long
 Private mblnOutputScreen As Boolean
 Private mblnOutputPrinter As Boolean
@@ -392,6 +393,14 @@ Private mstrOutputEmailSubject As String
 Private mstrOutputEmailAttachAs As String
 Private mstrOutputFileName As String
 Private mblnChkPicklistFilter As String
+
+'New Default Output Variables
+Private mstrOutputTitlePage As String
+Private mstrOutputReportPackTitle As String
+Private mstrOutputOverrideFilter As String
+Private mblnOutputTOC As Boolean
+Private mblnOutputCoverSheet As Boolean
+Private mlngOverrideFilterID As Long
 
 ' Array holding the User Defined functions that are needed for this report
 Private mastrUDFsRequired() As String
@@ -609,10 +618,10 @@ Private Sub chkPercentage_Click()
   If mblnLoading Then Exit Sub
   
   blnEnabled = (chkPercentage.Value = vbChecked And cboPageBreak.Enabled = True)
-  chkPercentageofPage.Enabled = blnEnabled
+  chkPercentageOfPage.Enabled = blnEnabled
   If Not blnEnabled Then
     mblnLoading = True
-    chkPercentageofPage.Value = vbUnchecked
+    chkPercentageOfPage.Value = vbUnchecked
     mblnLoading = False
   End If
 
@@ -625,7 +634,7 @@ End Sub
 Private Sub chkPercentageOfPage_Click()
   If mblnLoading Then Exit Sub
   PopulateGrid
-  chkPercentageofPage.SetFocus
+  chkPercentageOfPage.SetFocus
 End Sub
 
 Private Sub chkSuppressZeros_Click()
@@ -1040,6 +1049,9 @@ Public Sub RetreiveDefinition(lngCrossTabID As Long)
 
   Dim rsCrossTabDefinition As Recordset
   Dim strSQL As String
+  Dim lblnReportPackMode As Boolean
+  
+  lblnReportPackMode = gblnReportPackMode
   
   strSQL = "SELECT ASRSysCrossTab.*, " & _
            "'TableName' = ASRSysTables.TableName, " & _
@@ -1059,15 +1071,15 @@ Public Sub RetreiveDefinition(lngCrossTabID As Long)
     Exit Sub
   End If
 
-
   With rsCrossTabDefinition
     'NHRD09042002 Fault 3322 - Code Added
     mblnChkPicklistFilter = !PrintFilterHeader
-    mlngFilterID = !FilterID
     mlngPicklistID = !PicklistID
-    
     mlngBaseTableID = !TableID
     mstrBaseTable = !TableName
+    
+    mlngFilterID = IIf(gblnReportPackMode And mlngBaseTableID = glngPersonnelTableID, mlngOverrideFilterID, !FilterID)
+    
     mlngRecordDescExprID = !RecordDescExprID
     mstrCrossTabName = !Name
     
@@ -1085,7 +1097,6 @@ Public Sub RetreiveDefinition(lngCrossTabID As Long)
     mlngColDataType(HOR) = datGeneral.GetDataType(mlngBaseTableID, mlngColID(HOR))
     mstrFormat(HOR) = GetFormat(mlngColID(HOR))
     
-    
     mlngColID(VER) = !VerticalColID
     mdblMin(VER) = Val(!VerticalStart)
     mdblMax(VER) = Val(!VerticalStop)
@@ -1093,7 +1104,6 @@ Public Sub RetreiveDefinition(lngCrossTabID As Long)
     mstrColName(VER) = datGeneral.GetColumnName(mlngColID(VER))
     mlngColDataType(VER) = datGeneral.GetDataType(mlngBaseTableID, mlngColID(VER))
     mstrFormat(VER) = GetFormat(mlngColID(VER))
-    
     
     mlngColID(PGB) = !PageBreakColID
     mblnPageBreak = (mlngColID(PGB) > 0)
@@ -1106,42 +1116,44 @@ Public Sub RetreiveDefinition(lngCrossTabID As Long)
       mdblStep(PGB) = Val(!PageBreakStep)
     End If
     
-    
     mblnIntersection = (!IntersectionColID > 0)
     If mblnIntersection Then
       mlngColID(INS) = !IntersectionColID
       mstrColName(INS) = !IntersectionColName
-      'mstrIntersectionMask = String$(20, "#") & "0." & _
-                             String$(CLng(!IntersectionDecimals), "0")
-'      mstrIntersectionMask = String$(20, "#") & "0"
       mstrIntersectionMask = GetFormat(!IntersectionColID)
       
       mlngIntersectionDecimals = !IntersectionDecimals
-      'If CLng(mlngIntersectionDecimals) > 0 Then
-        'mstrIntersectionMask = mstrIntersectionMask & _
-            UI.GetSystemDecimalSeparator & String$(CLng(!IntersectionDecimals), "0")
-      '  mstrIntersectionMask = mstrIntersectionMask & _
-            "." & String$(CLng(mlngIntersectionDecimals), "0")
-      'End If
     End If
     
     mstrPicklistFilter = GetPicklistFilterSelect(!PicklistID, !FilterID)
     
+'    mlngOutputFormat = !OutputFormat
+'    mblnOutputScreen = !OutputScreen
+'    mblnOutputPrinter = !OutputPrinter
+'    mstrOutputPrinterName = !OutputPrinterName
+'    mblnOutputSave = !OutputSave
+'    mlngOutputSaveExisting = !OutputSaveExisting
+'    mblnOutputEmail = !OutputEmail
+'    mlngOutputEmailAddr = !OutputEmailAddr
+'    mstrOutputEmailSubject = !OutputEmailSubject
+'    mstrOutputEmailAttachAs = IIf(IsNull(!OutputEmailAttachAs), vbNullString, !OutputEmailAttachAs)
+'    mstrOutputFileName = !OutputFilename
+    'mblnPreviewOnScreen = (!OutputPreview Or (mlngOutputFormat = fmtDataOnly And mblnOutputScreen))
     
-    mlngOutputFormat = !OutputFormat
-    mblnOutputScreen = !OutputScreen
-    mblnOutputPrinter = !OutputPrinter
-    mstrOutputPrinterName = !OutputPrinterName
-    mblnOutputSave = !OutputSave
-    mlngOutputSaveExisting = !OutputSaveExisting
-    mblnOutputEmail = !OutputEmail
-    mlngOutputEmailAddr = !OutputEmailAddr
-    mstrOutputEmailSubject = !OutputEmailSubject
-    mstrOutputEmailAttachAs = IIf(IsNull(!OutputEmailAttachAs), vbNullString, !OutputEmailAttachAs)
-    mstrOutputFileName = !OutputFilename
-
-    mblnPreviewOnScreen = (!OutputPreview Or (mlngOutputFormat = fmtDataOnly And mblnOutputScreen))
-    
+    'Change Output Options to Report Pack owning these Jobs if in Report Pack mode
+    mblnPreviewOnScreen = IIf(lblnReportPackMode, False, !OutputPreview Or (mlngOutputFormat = fmtDataOnly And mblnOutputScreen))
+    mblnOutputScreen = IIf(lblnReportPackMode, False, !OutputScreen)
+    mlngOutputFormat = IIf(lblnReportPackMode, mlngOutputFormat, !OutputFormat)
+    mblnOutputPrinter = IIf(lblnReportPackMode, mblnOutputPrinter, !OutputPrinter)
+    mstrOutputPrinterName = IIf(lblnReportPackMode, mstrOutputPrinterName, !OutputPrinterName)
+    mblnOutputSave = IIf(lblnReportPackMode, mblnOutputSave, !OutputSave)
+    mlngOutputSaveExisting = IIf(lblnReportPackMode, mlngOutputSaveExisting, !OutputSaveExisting)
+    mblnOutputEmail = IIf(lblnReportPackMode, mblnOutputEmail, !OutputEmail)
+    mlngOutputEmailAddr = IIf(lblnReportPackMode, mlngOutputEmailAddr, !OutputEmailAddr)
+    mstrOutputEmailSubject = IIf(lblnReportPackMode, mstrOutputEmailSubject, !OutputEmailSubject)
+    mstrOutputEmailAttachAs = IIf(lblnReportPackMode, mstrOutputEmailAttachAs, !OutputEmailAttachAs)
+    mstrOutputFileName = IIf(lblnReportPackMode, mstrOutputFileName, !OutputFilename)
+    mlngOverrideFilterID = IIf(lblnReportPackMode, mlngOverrideFilterID, 0)
     
     If fOK = False Then
       Exit Sub
@@ -1669,7 +1681,7 @@ Private Sub TurnoverBuildDataArrays()
   Const STAFF As Integer = 0
   Const LEAVERS As Integer = 1
   Const TURNOVER As Integer = 2
-  Const lngTYPE As Long = 0
+  Const lngType As Long = 0
   
   Dim dblThisIntersectionVal As Double
   Dim strTempValue As String
@@ -1692,11 +1704,11 @@ Private Sub TurnoverBuildDataArrays()
   lngNumRows = UBound(mvarHeadings(1))
   lngNumPages = IIf(mblnPageBreak, UBound(mvarHeadings(PGB)), 0)
   
-  ReDim mdblDataArray(lngNumCols, lngNumRows, lngNumPages, lngTYPE) As Double
-  ReDim mdblHorTotal(lngNumCols, lngNumPages, lngTYPE) As Double
-  ReDim mdblVerTotal(lngNumCols, lngNumRows, lngTYPE) As Double
-  ReDim mdblPgbTotal(lngNumCols, lngNumRows + 1, lngTYPE) As Double
-  ReDim mdblPageTotal(lngNumPages, lngTYPE) As Double
+  ReDim mdblDataArray(lngNumCols, lngNumRows, lngNumPages, lngType) As Double
+  ReDim mdblHorTotal(lngNumCols, lngNumPages, lngType) As Double
+  ReDim mdblVerTotal(lngNumCols, lngNumRows, lngType) As Double
+  ReDim mdblPgbTotal(lngNumCols, lngNumRows + 1, lngType) As Double
+  ReDim mdblPageTotal(lngNumPages, lngType) As Double
 
   With rsCrossTabData
   
@@ -1730,41 +1742,41 @@ Private Sub TurnoverBuildDataArrays()
     '(add 1 if employeed at end of report else add 0.5 if leaving between start and end dates)
       dblTempValue = IIf(blnAtStart, 0.5, 0) + IIf(Not blnLeaver, 0.5, 0)
       
-      mdblDataArray(STAFF, lngRow, lngPage, lngTYPE) = mdblDataArray(STAFF, lngRow, lngPage, lngTYPE) + dblTempValue
-      mdblHorTotal(STAFF, lngPage, lngTYPE) = mdblHorTotal(STAFF, lngPage, lngTYPE) + dblTempValue
-      mdblVerTotal(STAFF, lngRow, lngTYPE) = mdblVerTotal(STAFF, lngRow, lngTYPE) + dblTempValue
-      mdblPgbTotal(STAFF, lngRow, lngTYPE) = mdblPgbTotal(STAFF, lngRow, lngTYPE) + dblTempValue
-      mdblPgbTotal(STAFF, lngNumRows + 1, lngTYPE) = mdblPgbTotal(STAFF, lngNumRows + 1, lngTYPE) + dblTempValue
+      mdblDataArray(STAFF, lngRow, lngPage, lngType) = mdblDataArray(STAFF, lngRow, lngPage, lngType) + dblTempValue
+      mdblHorTotal(STAFF, lngPage, lngType) = mdblHorTotal(STAFF, lngPage, lngType) + dblTempValue
+      mdblVerTotal(STAFF, lngRow, lngType) = mdblVerTotal(STAFF, lngRow, lngType) + dblTempValue
+      mdblPgbTotal(STAFF, lngRow, lngType) = mdblPgbTotal(STAFF, lngRow, lngType) + dblTempValue
+      mdblPgbTotal(STAFF, lngNumRows + 1, lngType) = mdblPgbTotal(STAFF, lngNumRows + 1, lngType) + dblTempValue
       
     'Leavers
       If blnLeaver And (blnAtStart Or mblnIncludeNewStarters) Then
-        mdblDataArray(LEAVERS, lngRow, lngPage, lngTYPE) = mdblDataArray(LEAVERS, lngRow, lngPage, lngTYPE) + 1
-        mdblHorTotal(LEAVERS, lngPage, lngTYPE) = mdblHorTotal(LEAVERS, lngPage, lngTYPE) + 1
-        mdblVerTotal(LEAVERS, lngRow, lngTYPE) = mdblVerTotal(LEAVERS, lngRow, lngTYPE) + 1
-        mdblPgbTotal(LEAVERS, lngRow, lngTYPE) = mdblPgbTotal(LEAVERS, lngRow, lngTYPE) + 1
-        mdblPgbTotal(LEAVERS, lngNumRows + 1, lngTYPE) = mdblPgbTotal(LEAVERS, lngNumRows + 1, lngTYPE) + 1
+        mdblDataArray(LEAVERS, lngRow, lngPage, lngType) = mdblDataArray(LEAVERS, lngRow, lngPage, lngType) + 1
+        mdblHorTotal(LEAVERS, lngPage, lngType) = mdblHorTotal(LEAVERS, lngPage, lngType) + 1
+        mdblVerTotal(LEAVERS, lngRow, lngType) = mdblVerTotal(LEAVERS, lngRow, lngType) + 1
+        mdblPgbTotal(LEAVERS, lngRow, lngType) = mdblPgbTotal(LEAVERS, lngRow, lngType) + 1
+        mdblPgbTotal(LEAVERS, lngNumRows + 1, lngType) = mdblPgbTotal(LEAVERS, lngNumRows + 1, lngType) + 1
       End If
 
     'Turnover (Turnover = Staff / Leavers)
-      If mdblDataArray(STAFF, lngRow, lngPage, lngTYPE) > 0 Then
-        mdblDataArray(TURNOVER, lngRow, lngPage, lngTYPE) = _
-          mdblDataArray(LEAVERS, lngRow, lngPage, lngTYPE) / mdblDataArray(STAFF, lngRow, lngPage, lngTYPE)
+      If mdblDataArray(STAFF, lngRow, lngPage, lngType) > 0 Then
+        mdblDataArray(TURNOVER, lngRow, lngPage, lngType) = _
+          mdblDataArray(LEAVERS, lngRow, lngPage, lngType) / mdblDataArray(STAFF, lngRow, lngPage, lngType)
       End If
-      If mdblHorTotal(STAFF, lngPage, lngTYPE) > 0 Then
-        mdblHorTotal(TURNOVER, lngPage, lngTYPE) = _
-          mdblHorTotal(LEAVERS, lngPage, lngTYPE) / mdblHorTotal(STAFF, lngPage, lngTYPE)
+      If mdblHorTotal(STAFF, lngPage, lngType) > 0 Then
+        mdblHorTotal(TURNOVER, lngPage, lngType) = _
+          mdblHorTotal(LEAVERS, lngPage, lngType) / mdblHorTotal(STAFF, lngPage, lngType)
       End If
-      If mdblVerTotal(STAFF, lngRow, lngTYPE) > 0 Then
-        mdblVerTotal(TURNOVER, lngRow, lngTYPE) = _
-          mdblVerTotal(LEAVERS, lngRow, lngTYPE) / mdblVerTotal(STAFF, lngRow, lngTYPE)
+      If mdblVerTotal(STAFF, lngRow, lngType) > 0 Then
+        mdblVerTotal(TURNOVER, lngRow, lngType) = _
+          mdblVerTotal(LEAVERS, lngRow, lngType) / mdblVerTotal(STAFF, lngRow, lngType)
       End If
-      If mdblPgbTotal(STAFF, lngRow, lngTYPE) > 0 Then
-        mdblPgbTotal(TURNOVER, lngRow, lngTYPE) = _
-          mdblPgbTotal(LEAVERS, lngRow, lngTYPE) / mdblPgbTotal(STAFF, lngRow, lngTYPE)
+      If mdblPgbTotal(STAFF, lngRow, lngType) > 0 Then
+        mdblPgbTotal(TURNOVER, lngRow, lngType) = _
+          mdblPgbTotal(LEAVERS, lngRow, lngType) / mdblPgbTotal(STAFF, lngRow, lngType)
       End If
-      If mdblPgbTotal(STAFF, lngNumRows + 1, lngTYPE) > 0 Then
-        mdblPgbTotal(TURNOVER, lngNumRows + 1, lngTYPE) = _
-          mdblPgbTotal(LEAVERS, lngNumRows + 1, lngTYPE) / mdblPgbTotal(STAFF, lngNumRows + 1, lngTYPE)
+      If mdblPgbTotal(STAFF, lngNumRows + 1, lngType) > 0 Then
+        mdblPgbTotal(TURNOVER, lngNumRows + 1, lngType) = _
+          mdblPgbTotal(LEAVERS, lngNumRows + 1, lngType) / mdblPgbTotal(STAFF, lngNumRows + 1, lngType)
       End If
 
       .MoveNext
@@ -1789,7 +1801,7 @@ Private Sub StabilityBuildDataArrays()
   Const ONEYEARAGO As Integer = 0
   Const ONEYEARSERVICE As Integer = 1
   Const STABILITY As Integer = 2
-  Const lngTYPE As Long = 0
+  Const lngType As Long = 0
   
   Dim dblThisIntersectionVal As Double
   Dim strTempValue As String
@@ -1810,11 +1822,11 @@ Private Sub StabilityBuildDataArrays()
   lngNumRows = UBound(mvarHeadings(1))
   lngNumPages = IIf(mblnPageBreak, UBound(mvarHeadings(PGB)), 0)
   
-  ReDim mdblDataArray(lngNumCols, lngNumRows, lngNumPages, lngTYPE) As Double
-  ReDim mdblHorTotal(lngNumCols, lngNumPages, lngTYPE) As Double
-  ReDim mdblVerTotal(lngNumCols, lngNumRows, lngTYPE) As Double
-  ReDim mdblPgbTotal(lngNumCols, lngNumRows + 1, lngTYPE) As Double
-  ReDim mdblPageTotal(lngNumPages, lngTYPE) As Double
+  ReDim mdblDataArray(lngNumCols, lngNumRows, lngNumPages, lngType) As Double
+  ReDim mdblHorTotal(lngNumCols, lngNumPages, lngType) As Double
+  ReDim mdblVerTotal(lngNumCols, lngNumRows, lngType) As Double
+  ReDim mdblPgbTotal(lngNumCols, lngNumRows + 1, lngType) As Double
+  ReDim mdblPageTotal(lngNumPages, lngType) As Double
 
   With rsCrossTabData
   
@@ -1836,44 +1848,44 @@ Private Sub StabilityBuildDataArrays()
     
     'Number of Staff column a year ago
     '(add 1 if employeed at end of report else add 0.5 if leaving between start and end dates)
-      mdblDataArray(ONEYEARAGO, lngRow, lngPage, lngTYPE) = mdblDataArray(ONEYEARAGO, lngRow, lngPage, lngTYPE) + 1
-      mdblHorTotal(ONEYEARAGO, lngPage, lngTYPE) = mdblHorTotal(ONEYEARAGO, lngPage, lngTYPE) + 1
-      mdblVerTotal(ONEYEARAGO, lngRow, lngTYPE) = mdblVerTotal(ONEYEARAGO, lngRow, lngTYPE) + 1
-      mdblPgbTotal(ONEYEARAGO, lngRow, lngTYPE) = mdblPgbTotal(ONEYEARAGO, lngRow, lngTYPE) + 1
-      mdblPgbTotal(ONEYEARAGO, lngNumRows + 1, lngTYPE) = mdblPgbTotal(ONEYEARAGO, lngNumRows + 1, lngTYPE) + 1
+      mdblDataArray(ONEYEARAGO, lngRow, lngPage, lngType) = mdblDataArray(ONEYEARAGO, lngRow, lngPage, lngType) + 1
+      mdblHorTotal(ONEYEARAGO, lngPage, lngType) = mdblHorTotal(ONEYEARAGO, lngPage, lngType) + 1
+      mdblVerTotal(ONEYEARAGO, lngRow, lngType) = mdblVerTotal(ONEYEARAGO, lngRow, lngType) + 1
+      mdblPgbTotal(ONEYEARAGO, lngRow, lngType) = mdblPgbTotal(ONEYEARAGO, lngRow, lngType) + 1
+      mdblPgbTotal(ONEYEARAGO, lngNumRows + 1, lngType) = mdblPgbTotal(ONEYEARAGO, lngNumRows + 1, lngType) + 1
       
     'Leavers
-      mdblDataArray(ONEYEARSERVICE, lngRow, lngPage, lngTYPE) = mdblDataArray(ONEYEARSERVICE, lngRow, lngPage, lngTYPE) + _
+      mdblDataArray(ONEYEARSERVICE, lngRow, lngPage, lngType) = mdblDataArray(ONEYEARSERVICE, lngRow, lngPage, lngType) + _
           IIf(blnLeaver, 0, 1)
-      mdblHorTotal(ONEYEARSERVICE, lngPage, lngTYPE) = mdblHorTotal(ONEYEARSERVICE, lngPage, lngTYPE) + _
+      mdblHorTotal(ONEYEARSERVICE, lngPage, lngType) = mdblHorTotal(ONEYEARSERVICE, lngPage, lngType) + _
           IIf(blnLeaver, 0, 1)
-      mdblVerTotal(ONEYEARSERVICE, lngRow, lngTYPE) = mdblVerTotal(ONEYEARSERVICE, lngRow, lngTYPE) + _
+      mdblVerTotal(ONEYEARSERVICE, lngRow, lngType) = mdblVerTotal(ONEYEARSERVICE, lngRow, lngType) + _
           IIf(blnLeaver, 0, 1)
-      mdblPgbTotal(ONEYEARSERVICE, lngRow, lngTYPE) = mdblPgbTotal(ONEYEARSERVICE, lngRow, lngTYPE) + _
+      mdblPgbTotal(ONEYEARSERVICE, lngRow, lngType) = mdblPgbTotal(ONEYEARSERVICE, lngRow, lngType) + _
           IIf(blnLeaver, 0, 1)
-      mdblPgbTotal(ONEYEARSERVICE, lngNumRows + 1, lngTYPE) = mdblPgbTotal(ONEYEARSERVICE, lngNumRows + 1, lngTYPE) + _
+      mdblPgbTotal(ONEYEARSERVICE, lngNumRows + 1, lngType) = mdblPgbTotal(ONEYEARSERVICE, lngNumRows + 1, lngType) + _
           IIf(blnLeaver, 0, 1)
 
     'Turnover (Turnover = Staff / Leavers)
-      If mdblDataArray(ONEYEARAGO, lngRow, lngPage, lngTYPE) > 0 Then
-        mdblDataArray(STABILITY, lngRow, lngPage, lngTYPE) = _
-          (mdblDataArray(ONEYEARSERVICE, lngRow, lngPage, lngTYPE) / mdblDataArray(ONEYEARAGO, lngRow, lngPage, lngTYPE))
+      If mdblDataArray(ONEYEARAGO, lngRow, lngPage, lngType) > 0 Then
+        mdblDataArray(STABILITY, lngRow, lngPage, lngType) = _
+          (mdblDataArray(ONEYEARSERVICE, lngRow, lngPage, lngType) / mdblDataArray(ONEYEARAGO, lngRow, lngPage, lngType))
       End If
-      If mdblHorTotal(ONEYEARAGO, lngPage, lngTYPE) > 0 Then
-        mdblHorTotal(STABILITY, lngPage, lngTYPE) = _
-          (mdblHorTotal(ONEYEARSERVICE, lngPage, lngTYPE) / mdblHorTotal(ONEYEARAGO, lngPage, lngTYPE))
+      If mdblHorTotal(ONEYEARAGO, lngPage, lngType) > 0 Then
+        mdblHorTotal(STABILITY, lngPage, lngType) = _
+          (mdblHorTotal(ONEYEARSERVICE, lngPage, lngType) / mdblHorTotal(ONEYEARAGO, lngPage, lngType))
       End If
-      If mdblVerTotal(ONEYEARAGO, lngRow, lngTYPE) > 0 Then
-        mdblVerTotal(STABILITY, lngRow, lngTYPE) = _
-          (mdblVerTotal(ONEYEARSERVICE, lngRow, lngTYPE) / mdblVerTotal(ONEYEARAGO, lngRow, lngTYPE))
+      If mdblVerTotal(ONEYEARAGO, lngRow, lngType) > 0 Then
+        mdblVerTotal(STABILITY, lngRow, lngType) = _
+          (mdblVerTotal(ONEYEARSERVICE, lngRow, lngType) / mdblVerTotal(ONEYEARAGO, lngRow, lngType))
       End If
-      If mdblPgbTotal(ONEYEARAGO, lngRow, lngTYPE) > 0 Then
-        mdblPgbTotal(STABILITY, lngRow, lngTYPE) = _
-          (mdblPgbTotal(ONEYEARSERVICE, lngRow, lngTYPE) / mdblPgbTotal(ONEYEARAGO, lngRow, lngTYPE))
+      If mdblPgbTotal(ONEYEARAGO, lngRow, lngType) > 0 Then
+        mdblPgbTotal(STABILITY, lngRow, lngType) = _
+          (mdblPgbTotal(ONEYEARSERVICE, lngRow, lngType) / mdblPgbTotal(ONEYEARAGO, lngRow, lngType))
       End If
-      If mdblPgbTotal(ONEYEARAGO, lngNumRows + 1, lngTYPE) > 0 Then
-        mdblPgbTotal(STABILITY, lngNumRows + 1, lngTYPE) = _
-          (mdblPgbTotal(ONEYEARSERVICE, lngNumRows + 1, lngTYPE) / mdblPgbTotal(ONEYEARAGO, lngNumRows + 1, lngTYPE))
+      If mdblPgbTotal(ONEYEARAGO, lngNumRows + 1, lngType) > 0 Then
+        mdblPgbTotal(STABILITY, lngNumRows + 1, lngType) = _
+          (mdblPgbTotal(ONEYEARSERVICE, lngNumRows + 1, lngType) / mdblPgbTotal(ONEYEARAGO, lngNumRows + 1, lngType))
       End If
 
       .MoveNext
@@ -1893,18 +1905,18 @@ LocalErr:
 End Sub
 
 
-Private Function GetPercentageFactor(lngPage As Long, lngTYPE As Long)
+Private Function GetPercentageFactor(lngPage As Long, lngType As Long)
 
   'mdblPercentageFactor will be used in FORMATCELL, if required
   mdblPercentageFactor = 0
   If chkPercentage.Value = vbChecked Then
-    If chkPercentageofPage = vbChecked Then
-      If mdblPageTotal(lngPage, lngTYPE) > 0 Then
-        mdblPercentageFactor = 1 / mdblPageTotal(lngPage, lngTYPE)
+    If chkPercentageOfPage = vbChecked Then
+      If mdblPageTotal(lngPage, lngType) > 0 Then
+        mdblPercentageFactor = 1 / mdblPageTotal(lngPage, lngType)
       End If
     Else
-      If mdblGrandTotal(lngTYPE) > 0 Then
-        mdblPercentageFactor = 1 / mdblGrandTotal(lngTYPE)
+      If mdblGrandTotal(lngType) > 0 Then
+        mdblPercentageFactor = 1 / mdblGrandTotal(lngType)
       End If
     End If
   End If
@@ -1930,7 +1942,7 @@ Public Sub BuildOutputStrings(lngSinglePage As Long)
   Dim lngCol As Long
   Dim lngRow As Long
   Dim lngPage As Long
-  Dim lngTYPE As Long
+  Dim lngType As Long
   Dim lngPointer As Long
   
   Dim sngAverage As Single
@@ -1945,13 +1957,13 @@ Public Sub BuildOutputStrings(lngSinglePage As Long)
 
   ' JDM - 22/06/01 - Fault 2476 - Display totals instead
   If mlngCrossTabType <> cttAbsenceBreakdown Then
-    lngTYPE = cboType.ItemData(cboType.ListIndex)
+    lngType = cboType.ItemData(cboType.ListIndex)
   Else
-    lngTYPE = TYPETOTAL
+    lngType = TYPETOTAL
   End If
   
   'mdblPercentageFactor will be used in FORMATCELL, if required
-  Call GetPercentageFactor(lngSinglePage, lngTYPE)
+  Call GetPercentageFactor(lngSinglePage, lngType)
   
   ReDim mstrOutput(lngNumRows + 2)
   
@@ -1978,11 +1990,11 @@ Public Sub BuildOutputStrings(lngSinglePage As Long)
 
         For lngRow = 0 To lngNumRows
           mstrOutput(lngRow + 1) = mstrOutput(lngRow + 1) & _
-              FormatCell(mdblDataArray(lngCol, lngRow, lngPage, lngTYPE), lngCol) & strTempDelim
+              FormatCell(mdblDataArray(lngCol, lngRow, lngPage, lngType), lngCol) & strTempDelim
         Next
 
         mstrOutput(lngNumRows + 2) = mstrOutput(lngNumRows + 2) & _
-          FormatCell(mdblHorTotal(lngCol, lngPage, lngTYPE), lngCol) & strTempDelim
+          FormatCell(mdblHorTotal(lngCol, lngPage, lngType), lngCol) & strTempDelim
       Next
     Next
     
@@ -1994,7 +2006,7 @@ Public Sub BuildOutputStrings(lngSinglePage As Long)
         
         For lngRow = 0 To lngNumRows + 1
           mstrOutput(lngRow + 1) = mstrOutput(lngRow + 1) & strDelim & _
-              FormatCell(mdblPgbTotal(lngCol, lngRow, lngTYPE), lngCol)
+              FormatCell(mdblPgbTotal(lngCol, lngRow, lngType), lngCol)
         Next
       Next
     End If
@@ -2004,7 +2016,7 @@ Public Sub BuildOutputStrings(lngSinglePage As Long)
     For lngCol = 0 To lngNumCols
       mstrOutput(0) = mstrOutput(0) & Trim(mvarHeadings(0)(lngCol)) & IIf(lngCol <> lngNumCols, strDelim, "")
       For lngRow = 0 To lngNumRows
-        mstrOutput(lngRow + 1) = mstrOutput(lngRow + 1) & FormatCell(mdblDataArray(lngCol, lngRow, lngSinglePage, lngTYPE)) & IIf(lngCol <> lngNumCols, strDelim, "")
+        mstrOutput(lngRow + 1) = mstrOutput(lngRow + 1) & FormatCell(mdblDataArray(lngCol, lngRow, lngSinglePage, lngType)) & IIf(lngCol <> lngNumCols, strDelim, "")
       Next
       
         ' JDM - 10/09/2003 - Fault 7048 - Make the average column not total up.
@@ -2012,7 +2024,7 @@ Public Sub BuildOutputStrings(lngSinglePage As Long)
           sngAverage = mdblHorTotal(lngCol - 1, lngSinglePage, TYPETOTAL) / mdblHorTotal(lngCol, lngSinglePage, TYPECOUNT)
           mstrOutput(lngNumRows + 2) = mstrOutput(lngNumRows + 2) & FormatCell(sngAverage) & IIf(lngCol <> lngNumCols, strDelim, "")
         Else
-          mstrOutput(lngNumRows + 2) = mstrOutput(lngNumRows + 2) & FormatCell(mdblHorTotal(lngCol, lngSinglePage, lngTYPE)) & IIf(lngCol <> lngNumCols, strDelim, "")
+          mstrOutput(lngNumRows + 2) = mstrOutput(lngNumRows + 2) & FormatCell(mdblHorTotal(lngCol, lngSinglePage, lngType)) & IIf(lngCol <> lngNumCols, strDelim, "")
         End If
     Next
 
@@ -2022,10 +2034,10 @@ Public Sub BuildOutputStrings(lngSinglePage As Long)
       mstrOutput(0) = mstrOutput(0) & strDelim & cboType.Text
       For lngRow = 0 To lngNumRows
         mstrOutput(lngRow + 1) = mstrOutput(lngRow + 1) & strDelim & _
-                                   FormatCell(mdblVerTotal(lngRow, lngSinglePage, lngTYPE))
+                                   FormatCell(mdblVerTotal(lngRow, lngSinglePage, lngType))
       Next
       mstrOutput(lngNumRows + 2) = mstrOutput(lngNumRows + 2) & strDelim & _
-                                   FormatCell(mdblPageTotal(lngSinglePage, lngTYPE))
+                                   FormatCell(mdblPageTotal(lngSinglePage, lngType))
     End If
   End If
 
@@ -2341,7 +2353,7 @@ Private Sub Form_Load()
 
 End Sub
 
-Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub Form_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
   If Screen.MousePointer <> vbDefault Then
     Screen.MousePointer = vbDefault
   End If
@@ -2403,7 +2415,7 @@ Private Sub Form_Resize()
     'fraIntersection.Visible = False
     Me.lblColumn.Visible = False
     Me.chkPercentage.Visible = False
-    Me.chkPercentageofPage.Visible = False
+    Me.chkPercentageOfPage.Visible = False
     Me.lblType.Top = Me.lblColumn.Top
     Me.chkSuppressZeros.Top = Me.lblColumn.Top
     Me.txtIntersectionCol.Text = mstrCrossTabName
@@ -2483,8 +2495,8 @@ Private Sub PrepareForms()
   
   
   chkPercentage.Value = IIf(mblnShowPercentage, vbChecked, vbUnchecked)
-  chkPercentageofPage.Value = IIf(mblnPercentageofPage, vbChecked, vbUnchecked)
-  chkPercentageofPage.Enabled = (mblnPageBreak = True And mblnShowPercentage = True)
+  chkPercentageOfPage.Value = IIf(mblnPercentageofPage, vbChecked, vbUnchecked)
+  chkPercentageOfPage.Enabled = (mblnPageBreak = True And mblnShowPercentage = True)
   chkSuppressZeros.Value = IIf(mblnSuppressZeros, vbChecked, vbUnchecked)
   chkThousandSeparators.Value = IIf(mbThousandSeparators, vbChecked, vbUnchecked)
 
@@ -2895,7 +2907,7 @@ Private Sub SSDBGrid1_KeyDown(KeyCode As Integer, Shift As Integer)
 End Sub
 
 
-Private Sub SSDBGrid1_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub SSDBGrid1_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
   ' JPD 26/7/00
   Screen.MousePointer = vbArrow
 
@@ -3761,6 +3773,11 @@ Private Sub AbsenceBreakdownRetreiveDefinition(lngPersonnelID As Long)
   mstrBaseTable = datGeneral.GetTableName(mlngBaseTableID)
   mlngRecordDescExprID = datGeneral.GetRecDescExprID(mlngBaseTableID)
   
+'If mlngCalendarReportsBaseTable = glngPersonnelTableID And gblnReportPackMode Then
+'  mlngCalendarReportsFilterID = mlngOverrideFilterID
+'Else
+'  mlngCalendarReportsFilterID = !Filter
+'End If
   
   
   ' Load the appropraite records
@@ -3922,7 +3939,6 @@ Private Sub GetSQL2(strCol() As String)
     End If
     
     Set objColumnPrivileges = Nothing
-    
     
     If lngCount <= UBound(mlngColDataType) Then
     blnCharColumn = (Val(mlngColDataType(lngCount)) = sqlVarChar)
@@ -4395,7 +4411,7 @@ Private Function OutputReport(blnPrompt As Boolean) As Boolean
   Dim lngNumRows As Long
   Dim lngCol As Integer
   Dim lngRow As Integer
-  Dim lngTYPE As Long
+  Dim lngType As Long
   Dim lngGroupNum As Long
   Dim blnThousandSep As Boolean
   
@@ -4426,11 +4442,26 @@ Private Function OutputReport(blnPrompt As Boolean) As Boolean
   End If
 
   If objOutput.SetOptions _
-      (blnPrompt, mlngOutputFormat, mblnOutputScreen, _
-      mblnOutputPrinter, mstrOutputPrinterName, _
-      mblnOutputSave, mlngOutputSaveExisting, _
-      mblnOutputEmail, mlngOutputEmailAddr, mstrOutputEmailSubject, _
-      mstrOutputEmailAttachAs, mstrOutputFileName) Then
+      (blnPrompt, _
+      mlngOutputFormat, _
+      mblnOutputScreen, _
+      mblnOutputPrinter, _
+      mstrOutputPrinterName, _
+      mblnOutputSave, _
+      mlngOutputSaveExisting, _
+      mblnOutputEmail, _
+      mlngOutputEmailAddr, _
+      mstrOutputEmailSubject, _
+      mstrOutputEmailAttachAs, _
+      mstrOutputFileName, _
+      False, _
+      mblnPreviewOnScreen, _
+      mstrOutputTitlePage, _
+      mstrOutputReportPackTitle, _
+      mstrOutputOverrideFilter, _
+      mblnOutputTOC, _
+      mblnOutputCoverSheet, _
+      mlngOverrideFilterID) Then
 
     If Not gblnBatchMode Then
       If mlngCrossTabType = cttNormal Then
@@ -4815,6 +4846,37 @@ Public Sub SetTurnoverParameters( _
 End Sub
 
 
+'Public Sub SetOutputParameters( _
+'          lngOutputFormat As Long, _
+'          blnOutputScreen As Boolean, _
+'          blnOutputPrinter As Boolean, _
+'          strOutputPrinterName As String, _
+'          blnOutputSave As Boolean, _
+'          lngOutputSaveExisting As Long, _
+'          blnOutputEmail As Boolean, _
+'          lngOutputEmailAddr As Long, _
+'          strOutputEmailSubject As String, _
+'          strOutputEmailAttachAs As String, _
+'          strOutputFilename As String, _
+'          blnPreviewOnScreen As Boolean, _
+'          blnChkPicklistFilter As Boolean)
+'
+'  mlngOutputFormat = lngOutputFormat
+'  mblnOutputScreen = blnOutputScreen
+'  mblnOutputPrinter = blnOutputPrinter
+'  mstrOutputPrinterName = strOutputPrinterName
+'  mblnOutputSave = blnOutputSave
+'  mlngOutputSaveExisting = lngOutputSaveExisting
+'  mblnOutputEmail = blnOutputEmail
+'  mlngOutputEmailAddr = lngOutputEmailAddr
+'  mstrOutputEmailSubject = strOutputEmailSubject
+'  mstrOutputEmailAttachAs = strOutputEmailAttachAs
+'  mstrOutputFileName = strOutputFilename
+'  mblnPreviewOnScreen = blnPreviewOnScreen
+'  mblnChkPicklistFilter = blnChkPicklistFilter
+'
+'End Sub
+
 Public Sub SetOutputParameters( _
           lngOutputFormat As Long, _
           blnOutputScreen As Boolean, _
@@ -4828,7 +4890,13 @@ Public Sub SetOutputParameters( _
           strOutputEmailAttachAs As String, _
           strOutputFilename As String, _
           blnPreviewOnScreen As Boolean, _
-          blnChkPicklistFilter As Boolean)
+          blnChkPicklistFilter As Boolean, _
+          Optional strOutputTitlePage As String, _
+          Optional strOutputReportPackTitle As String, _
+          Optional strOutputOverrideFilter As String, _
+          Optional blnOutputTOC As Boolean, _
+          Optional blnOutputCoverSheet As Boolean, _
+          Optional lngOverrideFilterID As Long)
 
   mlngOutputFormat = lngOutputFormat
   mblnOutputScreen = blnOutputScreen
@@ -4841,10 +4909,16 @@ Public Sub SetOutputParameters( _
   mstrOutputEmailSubject = strOutputEmailSubject
   mstrOutputEmailAttachAs = strOutputEmailAttachAs
   mstrOutputFileName = strOutputFilename
-  mblnPreviewOnScreen = blnPreviewOnScreen
   mblnChkPicklistFilter = blnChkPicklistFilter
-
+  mblnPreviewOnScreen = (blnPreviewOnScreen Or (mlngOutputFormat = fmtDataOnly And mblnOutputScreen))
+  mstrOutputTitlePage = IIf(IsMissing(strOutputTitlePage), giEXPRVALUE_CHARACTER, strOutputTitlePage)
+  mstrOutputReportPackTitle = IIf(IsMissing(strOutputReportPackTitle), giEXPRVALUE_CHARACTER, strOutputReportPackTitle)
+  mstrOutputOverrideFilter = IIf(IsMissing(strOutputOverrideFilter), giEXPRVALUE_CHARACTER, strOutputOverrideFilter)
+  mblnOutputTOC = IIf(IsMissing(blnOutputTOC), giEXPRVALUE_CHARACTER, blnOutputTOC)
+  mblnOutputCoverSheet = IIf(IsMissing(blnOutputCoverSheet), giEXPRVALUE_CHARACTER, blnOutputCoverSheet)
+  mlngOverrideFilterID = IIf(IsMissing(lngOverrideFilterID), giEXPRVALUE_CHARACTER, lngOverrideFilterID)
 End Sub
+
 
 
 Private Function FormatDateSQL(dtTemp As Date) As String

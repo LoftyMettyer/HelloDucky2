@@ -810,13 +810,19 @@ Private mblnOutputPrinter As Boolean
 Private mstrOutputPrinterName As String
 Private mblnOutputSave As Boolean
 Private mlngOutputSaveExisting As Long
-'Private mlngOutputSaveFormat As Long
 Private mblnOutputEmail As Boolean
 Private mlngOutputEmailAddr As Long
 Private mstrOutputEmailSubject As String
 Private mstrOutputEmailAttachAs As String
-'Private mlngOutputEmailFileFormat As Long
 Private mstrOutputFileName As String
+Private mstrOutputTitlePage As String
+Private mstrOutputReportPackTitle As String
+Private mstrOutputOverrideFilter As String
+Private mblnOutputTOC As Boolean
+Private mblnOutputCoverSheet As Boolean
+Private mlngOverrideFilterID As Long
+  
+Private mblnChkPicklistFilter As Boolean 'might not need
 
 Private mobjOutput As clsOutputRun
 
@@ -1427,6 +1433,12 @@ ErrorTrap:
 
 End Function
 
+
+Public Property Let OverrideFilterID(plngOverrideFilterID As Long)
+  mlngOverrideFilterID = plngOverrideFilterID
+End Property
+
+
 Public Property Let OutputFormat(plngOutputFormat As Long)
   mlngOutputFormat = plngOutputFormat
 End Property
@@ -1438,6 +1450,8 @@ End Property
 Public Property Let OutputPrinter(pblnOutputPrinter As Boolean)
   mblnOutputPrinter = pblnOutputPrinter
 End Property
+
+
 
 Public Property Let OutputPrinterName(pstrOutputPrinterName As String)
   mstrOutputPrinterName = pstrOutputPrinterName
@@ -5934,11 +5948,26 @@ Public Function OutputReport(blnPrompt As Boolean) As Boolean
   mobjOutput.ShowFormats True, False, True, True, True, False, False
     
   If mobjOutput.SetOptions _
-      (blnPrompt, mlngOutputFormat, mblnOutputScreen, _
-      mblnOutputPrinter, mstrOutputPrinterName, _
-      mblnOutputSave, mlngOutputSaveExisting, _
-      mblnOutputEmail, mlngOutputEmailAddr, mstrOutputEmailSubject, _
-      mstrOutputEmailAttachAs, mstrOutputFileName) Then
+      (blnPrompt, _
+      mlngOutputFormat, _
+      mblnOutputScreen, _
+      mblnOutputPrinter, _
+      mstrOutputPrinterName, _
+      mblnOutputSave, _
+      mlngOutputSaveExisting, _
+      mblnOutputEmail, _
+      mlngOutputEmailAddr, _
+      mstrOutputEmailSubject, _
+      mstrOutputEmailAttachAs, _
+      mstrOutputFileName, _
+      False, _
+      False, _
+      mstrOutputTitlePage, _
+      mstrOutputReportPackTitle, _
+      mstrOutputOverrideFilter, _
+      mblnOutputTOC, _
+      mblnOutputCoverSheet, _
+      mlngOverrideFilterID) Then
 
     If mobjOutput.GetFile Then
     

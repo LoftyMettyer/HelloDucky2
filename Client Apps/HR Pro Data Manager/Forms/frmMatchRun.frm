@@ -168,19 +168,27 @@ Private mcolSQLMatchScore As Collection
 
 Private mblnPreviewOnScreen As Boolean
 
+'New Default Output Variables
 Private mlngOutputFormat As Long
 Private mblnOutputScreen As Boolean
 Private mblnOutputPrinter As Boolean
 Private mstrOutputPrinterName As String
 Private mblnOutputSave As Boolean
 Private mlngOutputSaveExisting As Long
-'Private mlngOutputSaveFormat As Long
+'Private mlngOutputSaveFormat As Long ' May need in future
 Private mblnOutputEmail As Boolean
 Private mlngOutputEmailAddr As Long
 Private mstrOutputEmailSubject As String
 Private mstrOutputEmailAttachAs As String
-'Private mlngOutputEmailFileFormat As Long
+'Private mlngOutputEmailFileFormat As Long ' May need in future
 Private mstrOutputFileName As String
+Private mblnChkPicklistFilter As Boolean 'might not need
+Private mstrOutputTitlePage As String
+Private mstrOutputReportPackTitle As String
+Private mstrOutputOverrideFilter As String
+Private mblnOutputTOC As Boolean
+Private mblnOutputCoverSheet As Boolean
+Private mlngOverrideFilterID As Long
 
 ' Array holding the User Defined functions that are needed for this report
 Private mastrUDFsRequired() As String
@@ -225,14 +233,9 @@ Dim strUtilityName As String
   If frmBreakDown Is Nothing Then
     Set frmBreakDown = New frmMatchRunBreakDown
   End If
-
-  'If Not ValidatePostParameters Then
-  '  Exit Sub
-  'End If
   
   If fOK Then fOK = GetMatchReportDefinition
-  
-  ' NPG20090929 Fault HRPro-372
+
   strUtilityName = "Match Report"
 
   Select Case mlngMatchReportType
@@ -1666,6 +1669,9 @@ Private Function GetMatchReportDefinition() As Boolean
 
   Dim rsTemp_Definition As Recordset
   Dim strSQL As String
+  Dim lblnReportPackMode As Boolean
+  
+  lblnReportPackMode = gblnReportPackMode
   
   strSQL = "SELECT ASRSYSMatchReportName.*, " & _
            "a.TableName as 'Table1Name', " & _
@@ -1703,6 +1709,10 @@ Private Function GetMatchReportDefinition() As Boolean
     mlngTable1AllRecords = !Table1AllRecords
     mlngTable1PickListID = !Table1Picklist
     mlngTable1FilterID = !Table1Filter
+    ' Override filter if in Report pack mode
+    If mlngTable1ID = glngPersonnelTableID And gblnReportPackMode Then
+      mlngTable1FilterID = mlngOverrideFilterID
+    End If
     
     If Not TablePermission(!Table1ID) Then
       mstrErrorMessage = "You do not have permission to read the '" & !Table1Name & "' table either directly or through any views."
@@ -1728,31 +1738,34 @@ Private Function GetMatchReportDefinition() As Boolean
       mlngTable2PickListID = !Table2Picklist
       mlngTable2FilterID = !Table2Filter
     
+      If mlngTable2ID = glngPersonnelTableID And gblnReportPackMode Then
+        mlngTable2FilterID = mlngOverrideFilterID
+      End If
+
       If Not TablePermission(!Table2ID) Then
         mstrErrorMessage = "You do not have permission to read the '" & !Table2Name & "' table either directly or through any views."
         GetMatchReportDefinition = False
         Exit Function
       End If
-
     End If
 
-    mlngOutputFormat = !OutputFormat
-    mblnOutputScreen = !OutputScreen
-    mblnOutputPrinter = !OutputPrinter
-    mstrOutputPrinterName = !OutputPrinterName
-    mblnOutputSave = !OutputSave
-    mlngOutputSaveExisting = !OutputSaveExisting
-    'mlngOutputSaveFormat = !OutputSaveFormat
-    mblnOutputEmail = !OutputEmail
-    mlngOutputEmailAddr = !OutputEmailAddr
-    mstrOutputEmailSubject = !OutputEmailSubject
-    mstrOutputEmailAttachAs = IIf(IsNull(!OutputEmailAttachAs), vbNullString, !OutputEmailAttachAs)
-    'mlngOutputEmailFileFormat = !OutputEmailFileFormat
-    mstrOutputFileName = !OutputFilename
-
-    mblnPreviewOnScreen = (!OutputPreview Or (mlngOutputFormat = fmtDataOnly And mblnOutputScreen))
-    
     mbDefinitionOwner = (LCase(Trim(gsUserName)) = LCase(Trim(!UserName)))
+    
+    'Change Output Options to Report Pack owning these Jobs if in Report Pack mode
+    mblnPreviewOnScreen = IIf(lblnReportPackMode, mblnPreviewOnScreen, !OutputPreview)
+    mblnOutputScreen = IIf(lblnReportPackMode, mblnOutputScreen, !OutputScreen)
+    mlngOutputFormat = IIf(lblnReportPackMode, mlngOutputFormat, !OutputFormat)
+    mblnOutputPrinter = IIf(lblnReportPackMode, mblnOutputPrinter, !OutputPrinter)
+    mstrOutputPrinterName = IIf(lblnReportPackMode, mstrOutputPrinterName, !OutputPrinterName)
+    mblnOutputSave = IIf(lblnReportPackMode, mblnOutputSave, !OutputSave)
+    mlngOutputSaveExisting = IIf(lblnReportPackMode, mlngOutputSaveExisting, !OutputSaveExisting)
+    mblnOutputEmail = IIf(lblnReportPackMode, mblnOutputEmail, !OutputEmail)
+    mlngOutputEmailAddr = IIf(lblnReportPackMode, mlngOutputEmailAddr, !OutputEmailAddr)
+    mstrOutputEmailSubject = IIf(lblnReportPackMode, mstrOutputEmailSubject, !OutputEmailSubject)
+    mstrOutputEmailAttachAs = IIf(lblnReportPackMode, mstrOutputEmailAttachAs, !OutputEmailAttachAs)
+    mstrOutputFileName = IIf(lblnReportPackMode, mstrOutputFileName, !OutputFilename)
+    mlngOverrideFilterID = IIf(lblnReportPackMode, mlngOverrideFilterID, 0)
+    
   End With
 
   If Not gblnBatchMode Then
@@ -1845,11 +1858,11 @@ Private Function IsRecordSelectionValid() As Boolean
 End Function
 
 
-Private Sub AddToJoinArray(lngTYPE As Long, lngTableID As Long)
+Private Sub AddToJoinArray(lngType As Long, lngTableID As Long)
 
   Dim lngIndex As Integer
 
-  If lngTYPE = 0 Then   'Table
+  If lngType = 0 Then   'Table
     If lngTableID = mlngTable1ID Or _
        lngTableID = mlngTable2ID Then
           Exit Sub
@@ -1857,7 +1870,7 @@ Private Sub AddToJoinArray(lngTYPE As Long, lngTableID As Long)
   End If
 
   For lngIndex = 1 To UBound(mlngTableViews, 2)
-    If mlngTableViews(1, lngIndex) = lngTYPE And _
+    If mlngTableViews(1, lngIndex) = lngType And _
       mlngTableViews(2, lngIndex) = lngTableID Then
       Exit Sub
     End If
@@ -1870,7 +1883,7 @@ Private Sub AddToJoinArray(lngTYPE As Long, lngTableID As Long)
   'Only get here if not already in array
   lngIndex = UBound(mlngTableViews, 2) + 1
   ReDim Preserve mlngTableViews(2, lngIndex)
-  mlngTableViews(1, lngIndex) = lngTYPE
+  mlngTableViews(1, lngIndex) = lngType
   mlngTableViews(2, lngIndex) = lngTableID
 
 End Sub
@@ -2426,12 +2439,34 @@ Private Function OutputReport(blnPrompt As Boolean) As Boolean
 
   Set objOutput = New clsOutputRun
 
-  If objOutput.SetOptions(blnPrompt, mlngOutputFormat, mblnOutputScreen, _
-      mblnOutputPrinter, mstrOutputPrinterName, _
-      mblnOutputSave, mlngOutputSaveExisting, _
-      mblnOutputEmail, mlngOutputEmailAddr, mstrOutputEmailSubject, _
-      mstrOutputEmailAttachAs, mstrOutputFileName) Then
+'  If objOutput.SetOptions(blnPrompt, mlngOutputFormat, mblnOutputScreen, _
+'      mblnOutputPrinter, mstrOutputPrinterName, _
+'      mblnOutputSave, mlngOutputSaveExisting, _
+'      mblnOutputEmail, mlngOutputEmailAddr, mstrOutputEmailSubject, _
+'      mstrOutputEmailAttachAs, mstrOutputFileName) Then
 
+  If objOutput.SetOptions _
+      (blnPrompt, _
+      mlngOutputFormat, _
+      mblnOutputScreen, _
+      mblnOutputPrinter, _
+      mstrOutputPrinterName, _
+      mblnOutputSave, _
+      mlngOutputSaveExisting, _
+      mblnOutputEmail, _
+      mlngOutputEmailAddr, _
+      mstrOutputEmailSubject, _
+      mstrOutputEmailAttachAs, _
+      mstrOutputFileName, _
+      False, _
+      mblnPreviewOnScreen, _
+      mstrOutputTitlePage, _
+      mstrOutputReportPackTitle, _
+      mstrOutputOverrideFilter, _
+      mblnOutputTOC, _
+      mblnOutputCoverSheet, _
+      mlngOverrideFilterID) Then
+      
     objOutput.PageTitles = False
 
     If Not gblnBatchMode Then
@@ -2901,5 +2936,46 @@ Private Function CheckModuleSetupPermissions() As Boolean
   CheckModuleSetupPermissions = True
 
 End Function
+Public Sub SetOutputParameters( _
+          lngOutputFormat As Long, _
+          blnOutputScreen As Boolean, _
+          blnOutputPrinter As Boolean, _
+          strOutputPrinterName As String, _
+          blnOutputSave As Boolean, _
+          lngOutputSaveExisting As Long, _
+          blnOutputEmail As Boolean, _
+          lngOutputEmailAddr As Long, _
+          strOutputEmailSubject As String, _
+          strOutputEmailAttachAs As String, _
+          strOutputFilename As String, _
+          blnPreviewOnScreen As Boolean, _
+          blnChkPicklistFilter As Boolean, _
+          Optional strOutputTitlePage As String, _
+          Optional strOutputReportPackTitle As String, _
+          Optional strOutputOverrideFilter As String, _
+          Optional blnOutputTOC As Boolean, _
+          Optional blnOutputCoverSheet As Boolean, _
+          Optional lngOverrideFilterID As Long)
+
+  mlngOutputFormat = lngOutputFormat
+  mblnOutputScreen = blnOutputScreen
+  mblnOutputPrinter = blnOutputPrinter
+  mstrOutputPrinterName = strOutputPrinterName
+  mblnOutputSave = blnOutputSave
+  mlngOutputSaveExisting = lngOutputSaveExisting
+  mblnOutputEmail = blnOutputEmail
+  mlngOutputEmailAddr = lngOutputEmailAddr
+  mstrOutputEmailSubject = strOutputEmailSubject
+  mstrOutputEmailAttachAs = strOutputEmailAttachAs
+  mstrOutputFileName = strOutputFilename
+  mblnChkPicklistFilter = blnChkPicklistFilter
+  mblnPreviewOnScreen = (blnPreviewOnScreen Or (mlngOutputFormat = fmtDataOnly And mblnOutputScreen))
+  mstrOutputTitlePage = IIf(IsMissing(strOutputTitlePage), giEXPRVALUE_CHARACTER, strOutputTitlePage)
+  mstrOutputReportPackTitle = IIf(IsMissing(strOutputReportPackTitle), giEXPRVALUE_CHARACTER, strOutputReportPackTitle)
+  mstrOutputOverrideFilter = IIf(IsMissing(strOutputOverrideFilter), giEXPRVALUE_CHARACTER, strOutputOverrideFilter)
+  mblnOutputTOC = IIf(IsMissing(blnOutputTOC), giEXPRVALUE_CHARACTER, blnOutputTOC)
+  mblnOutputCoverSheet = IIf(IsMissing(blnOutputCoverSheet), giEXPRVALUE_CHARACTER, blnOutputCoverSheet)
+  mlngOverrideFilterID = IIf(IsMissing(lngOverrideFilterID), giEXPRVALUE_CHARACTER, lngOverrideFilterID)
+End Sub
 
 

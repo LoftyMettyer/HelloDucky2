@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.ocx"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.OCX"
 Begin VB.Form frmDefSel 
    Caption         =   "Select"
    ClientHeight    =   7800
@@ -826,8 +826,13 @@ Private Sub cmdProperties_Click()
   Load frmDefProp
 
   With frmDefProp
-
-    lngUtilityType = GetTypeFromTag(List1.SelectedItem.Tag)
+  
+    If List1.SelectedItem Is Nothing Then
+      lngUtilityType = GetTypeFromTag(List2.Tag)
+    Else
+      lngUtilityType = GetTypeFromTag(List1.SelectedItem.Tag)
+    End If
+    
     msSingularCaption = IIf(mutlUtilityType = utlAll, GetBatchJobType(lngUtilityType), msSingularCaption)
 
     .Caption = msSingularCaption & " Properties"
@@ -1435,6 +1440,7 @@ Dim fAllColumns As Boolean
                 List2.AddItem .Fields(msFieldName).Value
                 List2.ItemData(List2.NewIndex) = .Fields(msIDField).Value
                 List2.Selected(List2.NewIndex) = True
+                List2.Tag = .Fields("objecttype").Value & "-" & .Fields(msIDField).Value
               
                 If lngList2Max < TextWidth(.Fields(msFieldName).Value) Then
                   lngList2Max = TextWidth(.Fields(msFieldName).Value)

@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCT2.OCX"
+Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomct2.ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmRecordProfilePreview 
    Caption         =   "Record Profile"
@@ -101,7 +101,7 @@ Begin VB.Form frmRecordProfilePreview
       _ExtentY        =   2566
       _Version        =   393216
       Appearance      =   0
-      Orientation     =   1572864
+      Orientation     =   1179648
    End
    Begin MSComCtl2.FlatScrollBar scrollHorizontal 
       Height          =   255
@@ -114,7 +114,7 @@ Begin VB.Form frmRecordProfilePreview
       _Version        =   393216
       Appearance      =   0
       Arrows          =   65536
-      Orientation     =   1572865
+      Orientation     =   1179649
    End
    Begin VB.PictureBox picContainer 
       Height          =   1455
@@ -313,19 +313,25 @@ Private msRecordProfileName As String
 Private mrsResults As ADODB.Recordset
 Private malngEmptyTableCaptions() As Long
 
+'New Default Output Variables
 Private mlngOutputFormat As Long
 Private mblnOutputScreen As Boolean
 Private mblnOutputPrinter As Boolean
 Private mstrOutputPrinterName As String
 Private mblnOutputSave As Boolean
 Private mlngOutputSaveExisting As Long
-'Private mlngOutputSaveFormat As Long
 Private mblnOutputEmail As Boolean
 Private mlngOutputEmailAddr As Long
 Private mstrOutputEmailSubject As String
 Private mstrOutputEmailAttachAs As String
-'Private mlngOutputEmailFileFormat As Long
 Private mstrOutputFileName As String
+Private mblnPreviewOnScreen As Boolean
+Private mstrOutputTitlePage As String
+Private mstrOutputReportPackTitle As String
+Private mstrOutputOverrideFilter As String
+Private mblnOutputTOC As Boolean
+Private mblnOutputCoverSheet As Boolean
+Private mlngOverrideFilterID As Long
 
 Private mblnIndentRelatedTables As Boolean
 Private mblnSuppressEmptyRelatedTableTitles As Boolean
@@ -1521,14 +1527,34 @@ Public Function OutputReport(pfPrompt As Boolean) As Boolean
 
   objOutput.ShowFormats True, False, True, True, True, False, False
 
-  If objOutput.SetOptions _
-    (pfPrompt, mlngOutputFormat, mblnOutputScreen, _
-    mblnOutputPrinter, mstrOutputPrinterName, _
-    mblnOutputSave, mlngOutputSaveExisting, _
-    mblnOutputEmail, mlngOutputEmailAddr, mstrOutputEmailSubject, _
-    mstrOutputEmailAttachAs, mstrOutputFileName) Then
+'  If objOutput.SetOptions _
+'    (pfPrompt, mlngOutputFormat, mblnOutputScreen, _
+'    mblnOutputPrinter, mstrOutputPrinterName, _
+'    mblnOutputSave, mlngOutputSaveExisting, _
+'    mblnOutputEmail, mlngOutputEmailAddr, mstrOutputEmailSubject, _
+'    mstrOutputEmailAttachAs, mstrOutputFileName) Then
 
-'''    objOutput.SizeColumnsIndependently = False
+  If objOutput.SetOptions _
+      (pfPrompt, _
+      mlngOutputFormat, _
+      mblnOutputScreen, _
+      mblnOutputPrinter, _
+      mstrOutputPrinterName, _
+      mblnOutputSave, _
+      mlngOutputSaveExisting, _
+      mblnOutputEmail, _
+      mlngOutputEmailAddr, _
+      mstrOutputEmailSubject, _
+      mstrOutputEmailAttachAs, _
+      mstrOutputFileName, _
+      False, _
+      mblnPreviewOnScreen, _
+      mstrOutputTitlePage, _
+      mstrOutputReportPackTitle, _
+      mstrOutputOverrideFilter, _
+      mblnOutputTOC, _
+      mblnOutputCoverSheet, _
+      mlngOverrideFilterID) Then
     
     If objOutput.GetFile Then
 

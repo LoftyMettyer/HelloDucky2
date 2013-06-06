@@ -384,7 +384,9 @@ End Function
   
 Public Function AddPage(strDefTitle As String, Optional mstrSheetName As String, Optional mblnOutputCoverSheet As Boolean)
   On Local Error Resume Next
-  mobjOutputType.AddPage strDefTitle, mstrSheetName, mcolStyles, mblnOutputCoverSheet
+  
+  mobjOutputType.AddPage strDefTitle, mstrSheetName, mcolStyles
+  
 End Function
 
 Public Property Let SizeColumnsIndependently(ByVal blnNewValue As Boolean)
@@ -392,13 +394,6 @@ Public Property Let SizeColumnsIndependently(ByVal blnNewValue As Boolean)
 End Property
 
 Public Function DataArray(strArray() As String)
-  
-  'If UBound(strArray, 2) < 1 Then
-  '  mstrErrorMessage = "No data to output."
-  '  Exit Function
-  'End If
-
-
   'Not all classes support all properties so catch any errors...
   On Local Error Resume Next
   
@@ -837,13 +832,14 @@ Public Function SetOptions( _
     strEmailSubject As String, _
     strEmailAttachAs As String, _
     strFileName As String, _
-    Optional blnPrintFilterHeader, _
+    Optional blnCustomReportsPrintFilterHeader As Boolean, _
     Optional blnPreviewOnScreen As Boolean, _
     Optional strOutputTitlePage As String, _
     Optional strOutputReportPackTitle As String, _
     Optional strOutputOverrideFilter As String, _
     Optional blnOutputTOC As Boolean, _
-    Optional blnOutputCoverSheet As Boolean) As Boolean
+    Optional blnOutputCoverSheet As Boolean, _
+    Optional lngOverrideFilterID As Long) As Boolean
 
   Dim objColumn As clsColumn
   Dim blnCancelled As Boolean
@@ -884,17 +880,13 @@ Public Function SetOptions( _
         .txtEmailGroup.Text = datGeneral.GetEmailGroupName(lngEmailAddr)
         .txtEmailGroup.Tag = lngEmailAddr
         .txtEmailSubject.Text = strEmailSubject
-        .txtEMailAttachAs.Text = strEmailAttachAs
-        '.txtEmailAttachAs.Tag = lngEmailFileFormat
+        .txtEmailAttachAs.Text = strEmailAttachAs
       End If
       .txtFilename.Text = strFileName
-      '.txtFileName.Tag = lngSaveFileFormat
-
       .ShowFormats mblnData, mblnCSV, mblnHTML, mblnWord, mblnExcel, mblnChart, mblnPivot
       .PageRange = mblnPageRange
       .Show vbModal
       If .Cancelled Then
-        'mstrErrorMessage = "Cancelled by user"
         mblnUserCancelled = True
         SetOptions = False
         Exit Function
@@ -909,50 +901,32 @@ Public Function SetOptions( _
       blnEmail = (.chkDestination(desEmail).Value = vbChecked)
       lngEmailAddr = Val(.txtEmailGroup.Tag)
       strEmailSubject = .txtEmailSubject.Text
-      strEmailAttachAs = .txtEMailAttachAs.Text
+      strEmailAttachAs = .txtEmailAttachAs.Text
       strFileName = .txtFilename.Text
 
-      'lngSaveFileFormat = Val(.txtFilename.Tag)
-      'lngEmailFileFormat = Val(.txtEmailAttachAs.Tag)
-      'If InStr(.txtEmailAttachAs.Tag, "|") > 0 Then
-      '  strEmailFileExtension = Split(.txtEmailAttachAs.Tag, "|")(1)
-      'End If
-
-      'If .cboEmailAddr.ListIndex <> -1 Then
-        mlngEmailGroupID = .txtEmailGroup.Tag
-        mstrEmailSubject = .txtEmailSubject.Text
-        mstrEmailAttachAs = .txtEMailAttachAs.Text
-      'End If
-
+      mlngEmailGroupID = .txtEmailGroup.Tag
+      mstrEmailSubject = .txtEmailSubject.Text
+      mstrEmailAttachAs = .txtEmailAttachAs.Text
 
       If .cboSaveExisting.ListIndex <> -1 Then
         lngSaveExisting = .cboSaveExisting.ItemData(.cboSaveExisting.ListIndex)
       End If
 
-
       Select Case mlngFormat
-      Case fmtCSV, fmtFixedLengthFile
-        CheckEmailAttachment "csv"
-        
-      Case fmtHTML
-        CheckEmailAttachment "htm"
-        
-      Case fmtWordDoc
-        CheckEmailAttachment strEmailFileExtension
-        
-      Case fmtExcelWorksheet, fmtExcelChart, fmtExcelPivotTable
-        CheckEmailAttachment strEmailFileExtension
-        
+        Case fmtCSV, fmtFixedLengthFile
+          CheckEmailAttachment "csv"
+        Case fmtHTML
+          CheckEmailAttachment "htm"
+        Case fmtWordDoc
+          CheckEmailAttachment strEmailFileExtension
+        Case fmtExcelWorksheet, fmtExcelChart, fmtExcelPivotTable
+          CheckEmailAttachment strEmailFileExtension
       End Select
 
-
       blnCancelled = mfrmOutput.Cancelled
-
     End With
   End If
 
-
-  'MH20040209 Fault 8024
   If Not ValidPrinter(strPrinterName) Then
     mstrErrorMessage = _
         "This definition is set to output to printer " & strPrinterName & _
@@ -961,50 +935,46 @@ Public Function SetOptions( _
     Exit Function
   End If
 
-
-
   mlngFormat = lngFormat
+  
+  If gblnReportPackMode Then
+    'Default should be excel if not set
+    mlngFormat = IIf(mlngFormat = 0, fmtExcelWorksheet, mlngFormat)
+  Else
+    mlngFormat = lngFormat
+  End If
+  
   Select Case mlngFormat
-  Case fmtDataOnly
-    If Not blnPrinter And Not blnSave And Not blnEmail Then
-      mstrErrorMessage = "Invalid output destination for batch mode." & vbCrLf & _
-                         "You must select a different output format or additional output destination."
-      SetOptions = False
-      Exit Function
-    End If
-    Set mobjOutputType = New clsOutputGrid
-
-  Case fmtCSV, fmtFixedLengthFile
-    Set mobjOutputType = New clsOutputCSV
-    
-  Case fmtHTML
-    Set mobjOutputType = New clsOutputHTML
-
-  Case fmtWordDoc
-    Set mobjOutputType = New clsOutputWord
-
-  Case fmtExcelWorksheet
-    Set mobjOutputType = New clsOutputExcel
-
-  Case fmtExcelChart
-    Set mobjOutputType = New clsOutputExcel
-    mobjOutputType.Chart = True
-
-  Case fmtExcelPivotTable
-    Set mobjOutputType = New clsOutputExcel
-    mobjOutputType.PivotTable = True
-
+    Case fmtDataOnly
+      If Not blnPrinter And Not blnSave And Not blnEmail Then
+        mstrErrorMessage = "Invalid output destination for batch mode." & vbCrLf & _
+                           "You must select a different output format or additional output destination."
+        SetOptions = False
+        Exit Function
+      End If
+      Set mobjOutputType = New clsOutputGrid
+    Case fmtCSV, fmtFixedLengthFile
+      Set mobjOutputType = New clsOutputCSV
+    Case fmtHTML
+      Set mobjOutputType = New clsOutputHTML
+    Case fmtWordDoc
+      Set mobjOutputType = New clsOutputWord
+    Case fmtExcelWorksheet
+      Set mobjOutputType = New clsOutputExcel
+    Case fmtExcelChart
+      Set mobjOutputType = New clsOutputExcel
+      mobjOutputType.Chart = True
+    Case fmtExcelPivotTable
+      Set mobjOutputType = New clsOutputExcel
+      mobjOutputType.PivotTable = True
   End Select
-
 
   mobjOutputType.Parent = Me
   mobjOutputType.Screen = blnScreen
   mobjOutputType.DestPrinter = blnPrinter
   mobjOutputType.Save = blnSave
-  'mobjOutputType.SaveFileFormat = lngSaveFileFormat
   mobjOutputType.SaveExisting = lngSaveExisting
   mobjOutputType.Email = blnEmail
-  'mobjOutputType.EmailFileFormat = lngEmailFileFormat
   mobjOutputType.FileName = strFileName
 
   mblnPrintData = (mlngFormat = fmtDataOnly And blnPrinter)
