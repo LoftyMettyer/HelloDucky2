@@ -2150,13 +2150,13 @@ Public Sub GetSQL(lngUtilType As utilityType, Optional psRecordSourceWhere As St
       msGeneralCaption = "Scheduled Reports"
       msSingularCaption = "Scheduled Report"
       'Dynamically set HelpContextID
-      Me.HelpContextID = 1151
+      Me.HelpContextID = 5036
     Else
       msType = "Report Pack"
       msGeneralCaption = "Report Packs"
       msSingularCaption = "Report Pack"
       strExtraWhereClause = "(IsBatch = 0)"
-      Me.HelpContextID = 1151
+      Me.HelpContextID = 5036
     End If
     msTableName = "ASRSysBatchJobName"
     msIDField = "ID"
@@ -2532,7 +2532,7 @@ Private Function DynamicallyChangeHelpContextID() As Integer
         DynamicallyChangeHelpContextID = 1084
         
         Case utlReportPack
-        DynamicallyChangeHelpContextID = 1151
+        DynamicallyChangeHelpContextID = 5036
         
         Case utlCrossTab
         DynamicallyChangeHelpContextID = 1087
