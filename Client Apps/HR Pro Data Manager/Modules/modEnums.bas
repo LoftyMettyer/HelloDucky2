@@ -26,6 +26,13 @@ Public Enum WordOutputType
   wdFormatXPS = 18
 End Enum
 
+' Microsoft Excel output types
+Public Enum ExcelOutputType
+  xlHtml = 44
+  xlOpenXMLWorkbook = 51
+  xlExcel8 = 56
+End Enum
+
 ' Utility Types
 Public Enum UtilityType
   utlBatchJob = 0
