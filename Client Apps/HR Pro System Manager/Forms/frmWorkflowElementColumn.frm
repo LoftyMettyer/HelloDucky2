@@ -1,7 +1,7 @@
 VERSION 5.00
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Object = "{604A59D5-2409-101D-97D5-46626B63EF2D}#1.0#0"; "TDBNumbr.ocx"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmWorkflowElementColumn 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Workflow Element Column"
@@ -37,7 +37,7 @@ Begin VB.Form frmWorkflowElementColumn
       Top             =   4440
       Width           =   3990
       Begin VB.CommandButton cmdCalcCalculation 
-Caption = "..."
+         Caption         =   "..."
          Height          =   315
          Left            =   3480
          TabIndex        =   36
@@ -93,9 +93,9 @@ Caption = "..."
       End
       Begin VB.ComboBox cboDBValueRecord 
          Height          =   315
-         ItemData        =   "frmWorkflowElementColumn.frx":015A
+         ItemData        =   "frmWorkflowElementColumn.frx":000C
          Left            =   1725
-         List            =   "frmWorkflowElementColumn.frx":015C
+         List            =   "frmWorkflowElementColumn.frx":000E
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
          TabIndex        =   26
@@ -104,9 +104,9 @@ Caption = "..."
       End
       Begin VB.ComboBox cboDBValueWebForm 
          Height          =   315
-         ItemData        =   "frmWorkflowElementColumn.frx":015E
+         ItemData        =   "frmWorkflowElementColumn.frx":0010
          Left            =   1725
-         List            =   "frmWorkflowElementColumn.frx":0160
+         List            =   "frmWorkflowElementColumn.frx":0012
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
          TabIndex        =   28
@@ -115,9 +115,9 @@ Caption = "..."
       End
       Begin VB.ComboBox cboDBValueRecordSelector 
          Height          =   315
-         ItemData        =   "frmWorkflowElementColumn.frx":0162
+         ItemData        =   "frmWorkflowElementColumn.frx":0014
          Left            =   1725
-         List            =   "frmWorkflowElementColumn.frx":0164
+         List            =   "frmWorkflowElementColumn.frx":0016
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
          TabIndex        =   30
@@ -332,7 +332,7 @@ Caption = "..."
             Italic          =   0   'False
             Strikethrough   =   0   'False
          EndProperty
-         MouseIcon       =   "frmWorkflowElementColumn.frx":0166
+         MouseIcon       =   "frmWorkflowElementColumn.frx":0018
          MousePointer    =   0
       End
       Begin COASpinner.COA_Spinner asrSpinnerValue 
@@ -1471,7 +1471,7 @@ Private Sub RefreshScreen()
   
   fEnableOK = fEnableOK And (cboColumns.Enabled)
   
-  cmdOK.Enabled = fEnableOK
+  cmdOk.Enabled = fEnableOK
   
 End Sub
 
@@ -1635,7 +1635,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
   If UnloadMode <> vbFormCode Then
 
     'Check if any changes have been made.
-    If mfChanged And cmdOK.Enabled Then
+    If mfChanged And cmdOk.Enabled Then
       iAnswer = MsgBox("You have changed the definition. Save changes ?", vbQuestion + vbYesNoCancel + vbDefaultButton1, App.ProductName)
       If iAnswer = vbYes Then
         Call cmdOK_Click
@@ -2146,6 +2146,10 @@ Private Sub cboDBValueRecordSelector_Refresh()
 
         Set wfTemp = Nothing
       Next lngLoop
+    End If
+
+    If iElementType <> elem_WebForm Then
+      msWFValueIdentifier = ""
     End If
 
     iIndex = -1
