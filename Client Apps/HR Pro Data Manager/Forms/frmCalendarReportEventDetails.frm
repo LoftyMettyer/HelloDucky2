@@ -2,7 +2,7 @@ VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{96E404DC-B217-4A2D-A891-C73A92A628CC}#1.0#0"; "COA_WorkingPattern.ocx"
-Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.0#0"; "COA_Line.ocx"
+Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "COA_Line.ocx"
 Begin VB.Form frmCalendarReportEventDetails 
    BorderStyle     =   3  'Fixed Dialog
    ClientHeight    =   6285
@@ -82,7 +82,7 @@ Begin VB.Form frmCalendarReportEventDetails
       Begin COAWorkingPattern.COA_WorkingPattern ASRWorkingPattern1 
          Height          =   765
          Left            =   1995
-         TabIndex        =   21
+         TabIndex        =   19
          TabStop         =   0   'False
          Top             =   4260
          Width           =   1830
@@ -95,7 +95,7 @@ Begin VB.Form frmCalendarReportEventDetails
          ForeColor       =   &H8000000D&
          Height          =   195
          Left            =   2000
-         TabIndex        =   18
+         TabIndex        =   16
          Top             =   2355
          Width           =   2600
       End
@@ -105,7 +105,7 @@ Begin VB.Form frmCalendarReportEventDetails
          ForeColor       =   &H00000000&
          Height          =   195
          Left            =   195
-         TabIndex        =   24
+         TabIndex        =   22
          Top             =   4260
          Width           =   1590
       End
@@ -115,7 +115,7 @@ Begin VB.Form frmCalendarReportEventDetails
          ForeColor       =   &H8000000D&
          Height          =   195
          Left            =   2000
-         TabIndex        =   23
+         TabIndex        =   21
          Top             =   3855
          Width           =   2600
       End
@@ -125,7 +125,7 @@ Begin VB.Form frmCalendarReportEventDetails
          ForeColor       =   &H00000000&
          Height          =   195
          Left            =   195
-         TabIndex        =   22
+         TabIndex        =   20
          Top             =   3855
          Width           =   1245
       End
@@ -135,7 +135,7 @@ Begin VB.Form frmCalendarReportEventDetails
          ForeColor       =   &H00000000&
          Height          =   195
          Left            =   195
-         TabIndex        =   20
+         TabIndex        =   18
          Top             =   2655
          Width           =   1665
       End
@@ -145,7 +145,7 @@ Begin VB.Form frmCalendarReportEventDetails
          ForeColor       =   &H8000000D&
          Height          =   195
          Left            =   2000
-         TabIndex        =   19
+         TabIndex        =   17
          Top             =   2655
          Width           =   2600
       End
@@ -155,7 +155,7 @@ Begin VB.Form frmCalendarReportEventDetails
          ForeColor       =   &H00000000&
          Height          =   195
          Left            =   195
-         TabIndex        =   17
+         TabIndex        =   15
          Top             =   2355
          Width           =   1665
       End
@@ -165,7 +165,7 @@ Begin VB.Form frmCalendarReportEventDetails
          ForeColor       =   &H8000000D&
          Height          =   195
          Left            =   1995
-         TabIndex        =   16
+         TabIndex        =   14
          Top             =   600
          Width           =   2600
       End
@@ -175,7 +175,7 @@ Begin VB.Form frmCalendarReportEventDetails
          ForeColor       =   &H00000000&
          Height          =   195
          Left            =   195
-         TabIndex        =   15
+         TabIndex        =   13
          Top             =   600
          Width           =   1250
       End
@@ -185,7 +185,7 @@ Begin VB.Form frmCalendarReportEventDetails
          ForeColor       =   &H8000000D&
          Height          =   195
          Left            =   2000
-         TabIndex        =   14
+         TabIndex        =   12
          Top             =   300
          Width           =   2600
       End
@@ -195,7 +195,7 @@ Begin VB.Form frmCalendarReportEventDetails
          ForeColor       =   &H00000000&
          Height          =   195
          Left            =   195
-         TabIndex        =   13
+         TabIndex        =   11
          Top             =   300
          Width           =   1250
       End
@@ -205,7 +205,7 @@ Begin VB.Form frmCalendarReportEventDetails
          ForeColor       =   &H00000000&
          Height          =   195
          Left            =   195
-         TabIndex        =   11
+         TabIndex        =   9
          Top             =   1155
          Width           =   1250
       End
@@ -215,7 +215,7 @@ Begin VB.Form frmCalendarReportEventDetails
          ForeColor       =   &H00000000&
          Height          =   195
          Left            =   200
-         TabIndex        =   10
+         TabIndex        =   8
          Top             =   1455
          Width           =   1250
       End
@@ -225,49 +225,31 @@ Begin VB.Form frmCalendarReportEventDetails
          ForeColor       =   &H00000000&
          Height          =   195
          Left            =   195
-         TabIndex        =   9
+         TabIndex        =   7
          Top             =   3255
          Width           =   1470
       End
       Begin VB.Label lblStartDate 
+         AutoSize        =   -1  'True
          BackStyle       =   0  'Transparent
          Caption         =   "<>"
          ForeColor       =   &H8000000D&
          Height          =   195
-         Left            =   2000
-         TabIndex        =   8
+         Left            =   1995
+         TabIndex        =   6
          Top             =   1155
-         Width           =   840
-      End
-      Begin VB.Label lblStartSession 
-         BackStyle       =   0  'Transparent
-         Caption         =   "<>"
-         ForeColor       =   &H8000000D&
-         Height          =   195
-         Left            =   2880
-         TabIndex        =   7
-         Top             =   1155
-         Width           =   480
+         Width           =   270
       End
       Begin VB.Label lblEndDate 
+         AutoSize        =   -1  'True
          BackStyle       =   0  'Transparent
          Caption         =   "<>"
          ForeColor       =   &H8000000D&
          Height          =   195
-         Left            =   2000
-         TabIndex        =   6
-         Top             =   1455
-         Width           =   840
-      End
-      Begin VB.Label lblEndSession 
-         BackStyle       =   0  'Transparent
-         Caption         =   "<>"
-         ForeColor       =   &H8000000D&
-         Height          =   195
-         Left            =   2880
+         Left            =   1995
          TabIndex        =   5
          Top             =   1455
-         Width           =   480
+         Width           =   270
       End
       Begin VB.Label lblCalendarCode 
          BackStyle       =   0  'Transparent
@@ -303,7 +285,7 @@ Begin VB.Form frmCalendarReportEventDetails
    Begin SSDataWidgets_B.SSDBGrid grdDetails 
       Height          =   855
       Left            =   1680
-      TabIndex        =   12
+      TabIndex        =   10
       TabStop         =   0   'False
       Top             =   3240
       Visible         =   0   'False
@@ -596,8 +578,8 @@ Private Function ReformatScreen() As Boolean
     
   End If
   
-  cmdOK.Top = fraDetails.Top + fraDetails.Height + 120
-  Me.Height = cmdOK.Top + cmdOK.Height + 120 + 780
+  cmdOk.Top = fraDetails.Top + fraDetails.Height + 120
+  Me.Height = cmdOk.Top + cmdOk.Height + 120 + 780
   
   ASRWorkingPattern1.Enabled = False
   
@@ -651,10 +633,15 @@ Private Sub UpdateLabels()
   lblEventName = Replace(grdDetails.Columns("EventName").Text, "&", "&&")
   lblBaseDesc = Replace(grdDetails.Columns("BaseDescription").Text, "&", "&&")
   '------------------------------------------------------------------------------
-  lblStartDate.Caption = IIf(grdDetails.Columns("StartDate").Text = "", "<None>", Format(grdDetails.Columns("StartDate").Text, DateFormat))
-  lblStartSession.Caption = grdDetails.Columns("StartSession").Text
-  lblEndDate.Caption = IIf(grdDetails.Columns("EndDate").Text = "", "<None>", Format(grdDetails.Columns("EndDate").Text, DateFormat))
-  lblEndSession.Caption = grdDetails.Columns("EndSession").Text
+  'lblStartDate.Caption = IIf(grdDetails.Columns("StartDate").Text = "", "<None>", Format(grdDetails.Columns("StartDate").Text, DateFormat))
+  'lblStartSession.Caption = grdDetails.Columns("StartSession").Text
+  'lblEndDate.Caption = IIf(grdDetails.Columns("EndDate").Text = "", "<None>", Format(grdDetails.Columns("EndDate").Text, DateFormat))
+  'lblEndSession.Caption = grdDetails.Columns("EndSession").Text
+  
+  lblStartDate.Caption = IIf(grdDetails.Columns("StartDate").Text = "", "<None>", Format(grdDetails.Columns("StartDate").Text, DateFormat)) & _
+                         " " & grdDetails.Columns("StartSession").Text
+  lblEndDate.Caption = IIf(grdDetails.Columns("EndDate").Text = "", "<None>", Format(grdDetails.Columns("EndDate").Text, DateFormat)) & _
+                        " " & grdDetails.Columns("EndSession").Text
   lblDuration.Caption = IIf(IsNull(grdDetails.Columns("Duration").Text), "", grdDetails.Columns("Duration").Text)
   '------------------------------------------------------------------------------
   
