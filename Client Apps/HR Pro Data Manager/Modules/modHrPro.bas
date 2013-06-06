@@ -320,7 +320,7 @@ Public Function CheckVersion(psServerName As String) As Boolean
 
   ' If fOK and fVersionOK are true then the application and databases versions match.
 TidyUpAndExit:
-  If Not fOK Then
+  If Not fOK And Not ASRDEVELOPMENT Then
     fVersionOK = False
     Screen.MousePointer = vbDefault
   End If
