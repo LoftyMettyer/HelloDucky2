@@ -183,18 +183,20 @@ Begin VB.Form frmScrEditOpts
          Begin VB.TextBox txtHeight 
             Height          =   315
             Left            =   1125
+            MaxLength       =   4
             TabIndex        =   8
-            Text            =   "Text1"
+            Text            =   "Text"
             Top             =   700
-            Width           =   1095
+            Width           =   495
          End
          Begin VB.TextBox txtWidth 
             Height          =   315
             Left            =   1125
+            MaxLength       =   4
             TabIndex        =   7
-            Text            =   "Text1"
+            Text            =   "Text"
             Top             =   200
-            Width           =   1095
+            Width           =   495
          End
          Begin VB.Label lblWidth 
             BackStyle       =   0  'Transparent
@@ -430,8 +432,8 @@ Dim ErrorString As String
   ' Update the screen designer with the edit option changes.
   'On Error GoTo ErrorTrap
   ' Update the screen manager's grid size properties.
-  If (val(txtWidth.Text) > 9999) Or (val(txtHeight.Text) > 50000) Then
-    ErrorString = "The Width or Height you have specified is too large." & vbCrLf & "A figure lower than 5000 is more practical for the screen designer."
+  If (val(txtWidth.Text) > 9999) Or (val(txtHeight.Text) > 9999) Then
+    'ErrorString = "The Width or Height you have specified is too large." & vbCrLf & "A figure lower than 5000 is more practical for the screen designer."
     ErrorString = "Value too high."
     MsgBox ErrorString, vbExclamation + vbOKOnly, "HR Pro"
     mblnOK = False
