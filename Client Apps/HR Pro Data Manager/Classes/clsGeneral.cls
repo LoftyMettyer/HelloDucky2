@@ -3164,6 +3164,11 @@ Public Function SystemPermission(psCategoryKey As String, psPermissionKey As Str
   
   On Error GoTo SettingNotFound
   
+  If gfCurrentUserIsSysSecMgr Then
+    SystemPermission = True
+    GoTo TidyUpAndExit
+  End If
+  
   ' If value is not found error is raised and stored procedure fires
   If gcolSystemPermissions.Item(psCategoryKey & "," & psPermissionKey) Then
     SystemPermission = gcolSystemPermissions.Item(psCategoryKey & "," & psPermissionKey)
