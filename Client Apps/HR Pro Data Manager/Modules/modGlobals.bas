@@ -96,7 +96,7 @@ Public glngDesktopBitmapID As Long
 Public glngDesktopBitmapLocation As BackgroundLocationTypes
 Public glngDeskTopColour As Long
 
-
+Public gbActivateJobServer As Boolean       ' Allow the Data Manager to run the job seeker
 
 Public gbAccordEnabled As Boolean           ' Is the Payroll Transfer module enabled
 Public gbCMGEnabled As Boolean              ' Is the CMG module enabled
