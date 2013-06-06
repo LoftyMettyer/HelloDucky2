@@ -25,6 +25,10 @@ Attribute cmdTitlePageTemplate.VB_VarHelpID = -1
 'Private mlngFileFormats As Collection
 'Private mlngFileFormatsDefault As Long
 
+Public Property Get Format() As OutputFormats
+  Format = mlngFormat
+End Property
+
 Public Sub PopulateOutputControls(rsTemp As Recordset)
 
   With mfrmParent
@@ -614,6 +618,15 @@ Public Function ValidDestination() As Boolean
   End If
 
   If mfrmParent.chkDestination(desEmail).Value = vbChecked Then
+  
+    Select Case mlngFormat
+    Case fmtWordDoc, fmtExcelWorksheet, fmtExcelchart, fmtExcelPivotTable
+      If mfrmParent.txtEMailAttachAs.Text Like "*.html" Then
+        COAMsgBox "You cannot email html output from word or excel.", vbExclamation, mfrmParent.Caption
+        Exit Function
+      End If
+    End Select
+  
     If Val(mfrmParent.txtEmailGroup.Tag) = 0 Then
       COAMsgBox "You must select an email group.", vbExclamation, mfrmParent.Caption
       Exit Function
