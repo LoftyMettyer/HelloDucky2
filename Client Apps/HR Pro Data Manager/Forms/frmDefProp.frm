@@ -363,7 +363,7 @@ Private Sub DrawControls(utlType As UtilityType)
   blnRecCount = False
   
   blnUsage = True '(utlType <> utlBatchJob)
-  If utlType = utlBatchJob Then
+  If utlType = utlBatchJob Or utlType = utlReportPack Then
     Me.Frame2.Caption = "Job Details :"
   End If
 
