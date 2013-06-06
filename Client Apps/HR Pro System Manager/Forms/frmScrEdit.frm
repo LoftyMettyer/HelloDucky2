@@ -2,7 +2,7 @@ VERSION 5.00
 Begin VB.Form frmScrEdit 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Properties"
-   ClientHeight    =   6360
+   ClientHeight    =   6915
    ClientLeft      =   2595
    ClientTop       =   1515
    ClientWidth     =   9510
@@ -22,17 +22,24 @@ Begin VB.Form frmScrEdit
    LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   6360
+   ScaleHeight     =   6915
    ScaleWidth      =   9510
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin VB.Frame frmDefinition 
       Caption         =   "Definition : "
-      Height          =   1950
+      Height          =   2310
       Left            =   45
       TabIndex        =   4
       Top             =   90
       Width           =   9375
+      Begin VB.ComboBox cboCategory 
+         Height          =   315
+         Left            =   1335
+         TabIndex        =   23
+         Top             =   675
+         Width           =   3270
+      End
       Begin VB.TextBox txtDescription 
          Height          =   1000
          Left            =   1320
@@ -40,7 +47,7 @@ Begin VB.Form frmScrEdit
          MultiLine       =   -1  'True
          ScrollBars      =   2  'Vertical
          TabIndex        =   15
-         Top             =   675
+         Top             =   1125
          Width           =   3270
       End
       Begin VB.CommandButton cmdIconClear 
@@ -108,7 +115,7 @@ Begin VB.Form frmScrEdit
          TabIndex        =   7
          Text            =   "txtName"
          Top             =   270
-         Width           =   3225
+         Width           =   3270
       End
       Begin VB.TextBox txtOrder 
          BackColor       =   &H8000000F&
@@ -131,6 +138,14 @@ Begin VB.Form frmScrEdit
          UseMaskColor    =   -1  'True
          Width           =   315
       End
+      Begin VB.Label lblCategory 
+         Caption         =   "Category :"
+         Height          =   240
+         Left            =   135
+         TabIndex        =   24
+         Top             =   755
+         Width           =   1005
+      End
       Begin VB.Label lblIcon 
          Caption         =   "Icon :"
          Height          =   240
@@ -145,7 +160,7 @@ Begin VB.Form frmScrEdit
          Height          =   195
          Left            =   135
          TabIndex        =   16
-         Top             =   720
+         Top             =   1170
          Width           =   1170
       End
       Begin VB.Label lblName 
@@ -171,25 +186,33 @@ Begin VB.Form frmScrEdit
    End
    Begin VB.Frame fraHistoryScreens 
       Caption         =   "History Screens :"
-      Height          =   3600
+      Height          =   3690
       Left            =   90
       TabIndex        =   2
-      Top             =   2115
+      Top             =   2520
       Width           =   9330
+      Begin VB.CheckBox chkGroupByCategory 
+         Caption         =   "&Group screens by category"
+         Height          =   285
+         Left            =   135
+         TabIndex        =   25
+         Top             =   3240
+         Width           =   2805
+      End
       Begin VB.CommandButton cmdMoveDown 
-         Caption         =   "Move Down"
+         Caption         =   "Move &Down"
          Height          =   420
          Left            =   7965
          TabIndex        =   22
-         Top             =   2745
+         Top             =   2610
          Width           =   1185
       End
       Begin VB.CommandButton cmdMoveUp 
-         Caption         =   "Move Up"
+         Caption         =   "Move &Up"
          Height          =   375
          Left            =   7965
          TabIndex        =   21
-         Top             =   2160
+         Top             =   2070
          Width           =   1185
       End
       Begin VB.CommandButton cmdDeselectAll 
@@ -205,7 +228,7 @@ Begin VB.Form frmScrEdit
          Height          =   400
          Left            =   7965
          TabIndex        =   19
-         Top             =   870
+         Top             =   915
          Width           =   1200
       End
       Begin VB.CommandButton cmdSelectDeselect 
@@ -213,16 +236,16 @@ Begin VB.Form frmScrEdit
          Height          =   400
          Left            =   7965
          TabIndex        =   18
-         Top             =   270
+         Top             =   360
          Width           =   1200
       End
       Begin VB.ListBox listHistoryScreens 
-         Height          =   3210
+         Height          =   2760
          Left            =   150
          Sorted          =   -1  'True
          Style           =   1  'Checkbox
          TabIndex        =   3
-         Top             =   250
+         Top             =   345
          Width           =   7680
       End
    End
@@ -232,7 +255,7 @@ Begin VB.Form frmScrEdit
       Height          =   400
       Left            =   8220
       TabIndex        =   1
-      Top             =   5805
+      Top             =   6345
       Width           =   1200
    End
    Begin VB.CommandButton cmdOk 
@@ -241,7 +264,7 @@ Begin VB.Form frmScrEdit
       Height          =   400
       Left            =   6960
       TabIndex        =   0
-      Top             =   5805
+      Top             =   6345
       Width           =   1200
    End
 End
@@ -911,11 +934,18 @@ End Sub
 
 Private Sub RefreshHistoryScreensTab()
   Dim iLoop As Integer
+  Dim bIndented As Boolean
   
   ' Enable the history screens listbox only if there are items.
   With listHistoryScreens
     If .ListCount > 0 Then
       .Enabled = (chkSSIntranet.value = vbUnchecked)
+    
+      If .ItemData(.ListIndex) Then
+        
+      Else
+      
+      End If
     
       If .Selected(.ListIndex) Then
         cmdSelectDeselect.Caption = "&Deselect"
@@ -992,7 +1022,8 @@ Private Sub listHistoryScreens_Refresh()
           ' TM110701 - Fault 540. Do not populate the list with Quick Entry screens.
           If Not recScrEdit!Deleted And Not recScrEdit!QuickEntry Then
             listHistoryScreens.AddItem recScrEdit!Name
-            listHistoryScreens.ItemData(listHistoryScreens.NewIndex) = recScrEdit!ScreenID
+            listHistoryScreens.ItemData(listHistoryScreens.NewIndex) = recScrEdit!ScreenID & _
+              "-" & IIf(IsNull(recScrEdit.Fields("indent").value), 0, recScrEdit.Fields("indent").value)
           
             ' Select the new item if is already a history screen of the current screen.
             recHistScrEdit.Seek "=", ScreenID, recScrEdit!ScreenID
