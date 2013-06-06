@@ -2032,7 +2032,6 @@ Private Sub ActivateModules()
 
   ' Version 1 Module
   gfVersion1Module = IsModuleEnabled(modVersion1)
-  gfVersion1Module = True
 
   ' Postcode Integration modules
   gbAFDEnabled = IsModuleEnabled(modAFD)

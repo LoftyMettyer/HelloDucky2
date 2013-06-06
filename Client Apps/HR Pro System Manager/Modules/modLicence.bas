@@ -13,8 +13,7 @@ Public Enum Module
   modQAddress = 256
   modAccordPayroll = 512
   modWorkflow = 1024
-  modOpenPay = 2048
-  modVersion1 = 4096
+  modVersion1 = 2048
 End Enum
 
 
