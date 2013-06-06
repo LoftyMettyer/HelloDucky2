@@ -46,7 +46,6 @@ Private sInsertWorkflowCode As HRProSystemMgr.cStringBuilder
 Private sUpdateWorkflowCode As HRProSystemMgr.cStringBuilder
 Private sDeleteWorkflowCode As HRProSystemMgr.cStringBuilder
 
-Private sInsertAccordCode As HRProSystemMgr.cStringBuilder
 Private sUpdateAccordCode As HRProSystemMgr.cStringBuilder
 Private sDeleteAccordCode As HRProSystemMgr.cStringBuilder
 
@@ -288,7 +287,6 @@ Private Function SetTableTriggers_GetStrings(pLngCurrentTableID As Long, _
   Set sUpdateWorkflowCode = New HRProSystemMgr.cStringBuilder
   Set sDeleteWorkflowCode = New HRProSystemMgr.cStringBuilder
   
-  Set sInsertAccordCode = New HRProSystemMgr.cStringBuilder
   Set sUpdateAccordCode = New HRProSystemMgr.cStringBuilder
   Set sDeleteAccordCode = New HRProSystemMgr.cStringBuilder
   
@@ -332,13 +330,12 @@ Private Function SetTableTriggers_GetStrings(pLngCurrentTableID As Long, _
   ' --------------------------------
   If gbAccordPayrollModule Then
     
-    Set sInsertAccordCode = New HRProSystemMgr.cStringBuilder
     Set sUpdateAccordCode = New HRProSystemMgr.cStringBuilder
     Set sDeleteAccordCode = New HRProSystemMgr.cStringBuilder
 
     ' Is in a separate sub routine because this one is getting too big for VB to compile.
     ' All parameters passed by reference!
-    SetTableTriggers_AccordTransfer sInsertAccordCode, sUpdateAccordCode, sDeleteAccordCode, alngAuditColumns(), _
+    SetTableTriggers_AccordTransfer sUpdateAccordCode, sDeleteAccordCode, alngAuditColumns(), _
       sSelectInsCols, sSelectDelCols, _
       sFetchInsCols, sFetchDelCols, _
       sDeclareInsCols, sDeclareDelCols, _
@@ -829,7 +826,6 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
 
     sInsertTriggerSQL.Append _
       "        @cursInsertedRecords cursor," & vbNewLine & _
-      "        @iTriggerLevel integer," & vbNewLine & _
       "        @parent1TableID integer," & vbNewLine & _
       "        @parent1RecordID integer," & vbNewLine & _
       "        @parent2TableID integer," & vbNewLine & _
@@ -876,31 +872,6 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
     sInsertTriggerSQL.Append sDeclareInsCols.ToString & vbNewLine & vbNewLine & _
       sDeclareDelCols.ToString & vbNewLine & vbNewLine
   
-'    sInsertTriggerSQL.Append _
-'      "    /* ---------------------------------------------------------------------------------------------------------------------------- */" & vbNewLine & _
-'      "    /* Check that we are not exceeding the maximum number of nested trigger levels. */" & vbNewLine & _
-'      "    /* ---------------------------------------------------------------------------------------------------------------------------- */" & vbNewLine & _
-'      "    SELECT @iTriggerLevel = TRIGGER_NESTLEVEL()" & vbNewLine & _
-'      "    IF @iTriggerLevel = " & miTriggerRecursionLevel & " RETURN" & vbNewLine & _
-'      "    IF @@nestLevel >= 30 RETURN" & vbNewLine & vbNewLine
-
-
-    'sInsertTriggerSQL.Append _
-    '  "    SELECT @login_time = login_time FROM master..sysprocesses WHERE spid = @@spid" & vbNewLine & vbNewLine
-
-
-    ' JPD20020913 - instead of making multiple queries to the triggered table, and
-    ' the 'inserted' and 'deleted' tables, we now get all of the required information in
-    ' the cursor that we used to loop through to get just the id of each record being
-    ' inserted/updated/deleted.
-    ' Here we are adding the required FETCH statements to the INSERT trigger.
-    'sInsertTriggerSQL.Append _
-      "    /* Loop through the virtual 'inserted' table, getting the record ID of each inserted record. */" & vbNewLine & _
-      "    SET @cursInsertedRecords = CURSOR LOCAL FAST_FORWARD FOR SELECT id FROM inserted" & vbNewLine & _
-      "    OPEN @cursInsertedRecords" & vbNewLine & _
-      "    FETCH NEXT FROM @cursInsertedRecords INTO @recordID" & vbNewLine & _
-      "    WHILE (@@fetch_status = 0) AND (@fValidRecord = 1)" & vbNewLine & _
-      "    BEGIN" & vbNewLine
     sInsertTriggerSQL.Append _
       "    /* Loop through the virtual 'inserted' table, getting the record ID of each inserted record. */" & vbNewLine & _
       "    SET @cursInsertedRecords = CURSOR LOCAL FAST_FORWARD READ_ONLY FOR SELECT inserted.id, convert(int,inserted.timestamp), inserted.[_description]" & sSelectInsCols.ToString & sSelectDelCols.ToString & " FROM inserted" & vbNewLine & _
@@ -923,77 +894,7 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
         "        --    EXEC " & gsSSP_PROCEDURENAME & " @recordID" & vbNewLine & _
         "        --END" & vbNewLine
 
-'      'MH20030613 Fake update of dependants table to refresh calcs...
-'      If strDependantsTableName <> vbNullString And lngPersonnelTableID > 0 Then
-'        sInsertTriggerSQL.Append _
-'          "        /* -------------------------------------------- */" & vbNewLine & _
-'          "        /* Absence module - update the dependants table */" & vbNewLine & _
-'          "        /* -------------------------------------------- */" & vbNewLine & _
-'          "        UPDATE " & strDependantsTableName & _
-'                   " SET ID_" & CStr(lngPersonnelTableID) & " = ID_" & CStr(lngPersonnelTableID) & _
-'                   " WHERE ID_" & CStr(lngPersonnelTableID) & " = @parentRecordID"
-'      End If
-
     End If
-    
-'    sInsertTriggerSQL.Append vbNewLine & _
-'      "        /* ------------------------------- */" & vbNewLine & _
-'      "        /* Validate the record. */" & vbNewLine & _
-'      "        /* ------------------------------- */" & vbNewLine & _
-'      "        EXEC dbo." & gsVALIDATIONSPPREFIX & Trim$(Str$(pLngCurrentTableID)) & " @fValidRecord OUTPUT, @iValidationSeverity OUTPUT, @sInvalidityMessage OUTPUT, @recordID" & vbNewLine & _
-'      "        IF @fValidRecord = 0" & vbNewLine & _
-'      "        BEGIN" & vbNewLine & _
-'      "            RAISERROR(@sInvalidityMessage, 16, 1);" & vbNewLine & _
-'      "            IF @iValidationSeverity = 0 ROLLBACK;" & vbNewLine & _
-'      "        END" & vbNewLine & vbNewLine & vbNewLine
-'
-'
-    
-    'MH20070726
-    'sInsertTriggerSQL.Append _
-      "IF EXISTS(SELECT * FROM ASRSysTrigger WHERE TableID = " & CStr(pLngCurrentTableID) & " AND RecordID = @RecordID AND login_time = @login_time AND [TimeStamp] = @TStamp)" & vbNewLine & _
-      "BEGIN" & vbNewLine & vbNewLine
-    
-'    If sSelectInsCols2.Length > 0 Then
-'      sInsertTriggerSQL.Append _
-'        "        SELECT " & Mid(sSelectInsCols2.ToString, 2) & vbNewLine & _
-'        "        FROM [" & psTableName & "]" & vbNewLine & _
-'        "        WHERE id = @recordID" & vbNewLine & vbNewLine
-'    End If
-'
-'    If sSelectInsLargeCols2.Length > 0 Then
-'      sInsertTriggerSQL.Append _
-'        "        SELECT " & Mid(sSelectInsLargeCols2.ToString, 2) & vbNewLine & _
-'        "        FROM inserted" & vbNewLine & _
-'        "        WHERE id = @recordID" & vbNewLine & vbNewLine
-'    End If
-'
-    
-    
-'    '-------------------------------------------------------------------------------------------------------
-'    'MH20020529 Fault 3918
-'    'NEED TO GET RECORD DESCRIPTION AGAIN IN CASE THAT HAS CHANGED!
-'    sInsertTriggerSQL.Append vbNewLine & _
-'      sGetRecordDesc
-'
-'
-'    ' Insert the Audit trigger code.
-'    If sInsertAuditCode.Length = 0 Then
-'      sInsertTriggerSQL.Append _
-'        "        /* ----------------------------------------- */" & vbNewLine & _
-'        "        /* No Audit triggers required. */" & vbNewLine & _
-'        "        /* ----------------------------------------- */" & vbNewLine & vbNewLine
-'    Else
-'      sInsertTriggerSQL.Append _
-'        "        /* ----------------------- */" & vbNewLine & _
-'        "        /* Audit Triggers. */" & vbNewLine & _
-'        "        /* ----------------------- */" & vbNewLine & _
-'        "        IF @fValidRecord = 1" & vbNewLine & _
-'        "        BEGIN" & vbNewLine & _
-'        sInsertAuditCode.ToString & vbNewLine & vbNewLine & _
-'        "        END" & vbNewLine
-'    End If
-'
     
     sInsertTriggerSQL.Append vbNewLine & _
       "        /* ----------------------- */" & vbNewLine & _
@@ -1055,32 +956,7 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
         sInsertWorkflowCode.ToString & vbNewLine & _
         "        END" & vbNewLine
     End If
-    
-    
-    ' Insert the Payroll trigger code.
-    If sInsertAccordCode.Length = 0 Then
-      sInsertTriggerSQL.Append vbNewLine & vbNewLine & _
-        "        /* ----------------------------------------- */" & vbNewLine & _
-        "        /* No Payroll triggers required. */" & vbNewLine & _
-        "        /* ----------------------------------------- */" & vbNewLine & vbNewLine
-    Else
-      sInsertTriggerSQL.Append vbNewLine & vbNewLine & _
-        "        /* ----------------------- */" & vbNewLine & _
-        "        /* Payroll Triggers. */" & vbNewLine & _
-        "        /* ----------------------- */" & vbNewLine & _
-        "        IF @fValidRecord = 1" & vbNewLine & _
-        "        BEGIN" & vbNewLine & _
-        sInsertAccordCode.ToString & _
-        "        END" & vbNewLine & vbNewLine
-    End If
-    
-   
-    ' Insert the Payroll trigger tidy up code .
-    If sInsertAccordCode.Length <> 0 Then
-      sInsertTriggerSQL.Append vbNewLine & vbNewLine & _
-        Space$(10) & "EXEC dbo.spASRAccordPurgeTemp @iTriggerLevel, @recordID" & vbNewLine & vbNewLine
-    End If
-    
+       
 
    ' JPD20020913 - instead of making multiple queries to the triggered table, and
     ' the 'inserted' and 'deleted' tables, we now get all of the required information in
@@ -1138,7 +1014,6 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
       "        @sInvalidityMessage varchar(max)," & vbNewLine & _
       "        @iValidationSeverity integer," & vbNewLine & _
       "        @cursInsertedRecords cursor," & vbNewLine & _
-      "        @iTriggerLevel integer," & vbNewLine & _
       "        @parent1TableID integer," & vbNewLine & _
       "        @parent1RecordID integer," & vbNewLine & _
       "        @parent2TableID integer," & vbNewLine & _
@@ -1213,20 +1088,6 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
       "    IF @iAccordManualSendType IS NULL" & vbNewLine & "    BEGIN" & vbNewLine & _
       "      SET @iAccordManualSendType = -1" & vbNewLine & "      SET @bAccordBypassFilter = 0" & vbNewLine & "    END" & vbNewLine & _
       "    ELSE SET @fUpdatingDateDependentColumns = 1" & vbNewLine & vbNewLine
-
-'    sUpdateTriggerSQL.Append _
-'      "    /* ---------------------------------------------------------------------------------------------------------------------------- */" & vbNewLine & _
-'      "    /* Check that we are not exceeding the maximum number of nested trigger levels. */" & vbNewLine & _
-'      "    /* ---------------------------------------------------------------------------------------------------------------------------- */" & vbNewLine & _
-'      "    SELECT @iTriggerLevel = TRIGGER_NESTLEVEL()" & vbNewLine & _
-'      "    IF @@nestLevel >= 30 RETURN" & vbNewLine & vbNewLine
-
-      '"    IF @iTriggerLevel = " & miTriggerRecursionLevel & " RETURN" & vbNewLine & _
-
-    'sUpdateTriggerSQL.Append _
-    '  "    SELECT @login_time = login_time FROM master..sysprocesses WHERE spid = @@spid" & vbNewLine & vbNewLine
-
-
 
     ' JPD20020913 - instead of making multiple queries to the triggered table, and
     ' the 'inserted' and 'deleted' tables, we now get all of the required information in
@@ -1384,7 +1245,6 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
       "        @iAccordBatchID integer," & vbNewLine & _
       "        @fUpdatingDateDependentColumns bit," & vbNewLine & _
       "        @cursDeletedRecords cursor," & vbNewLine & _
-      "        @iTriggerLevel integer," & vbNewLine & _
       "        @parent1TableID integer," & vbNewLine & _
       "        @parent1RecordID integer," & vbNewLine & _
       "        @parent2TableID integer," & vbNewLine & _
@@ -1426,15 +1286,7 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
     'NPG20080715 Fault 13266
     sDeleteTriggerSQL.Append _
       "    SET @fUpdatingDateDependentColumns = ISNULL(@fUpdatingDateDependentColumns, 0)" & vbNewLine & vbNewLine
-'
-'    sDeleteTriggerSQL.Append _
-'      "    /* ---------------------------------------------------------------------------------------------------------------------------- */" & vbNewLine & _
-'      "    /* Check that we are not exceeding the maximum number of nested trigger levels. */" & vbNewLine & _
-'      "    /* ---------------------------------------------------------------------------------------------------------------------------- */" & vbNewLine & _
-'      "    SELECT @iTriggerLevel = TRIGGER_NESTLEVEL()" & vbNewLine & _
-'      "    IF @iTriggerLevel = " & miTriggerRecursionLevel & " RETURN" & vbNewLine & _
-'      "    IF @@nestLevel >= 30 RETURN" & vbNewLine & vbNewLine
-'
+
     sDeleteTriggerSQL.Append _
       "    IF EXISTS(SELECT [SettingValue] FROM ASRSysSystemSettings WHERE [Section] = 'TMP_AccordRunningInBatch' AND [SettingKey] = @@SPID)" & vbNewLine & _
       "    BEGIN" & vbNewLine & _
@@ -1830,8 +1682,7 @@ ErrorTrap:
 End Function
 
 
-Private Function SetTableTriggers_AccordTransfer(ByRef sInsertAccordCode As HRProSystemMgr.cStringBuilder _
-, ByRef sUpdateAccordCode As HRProSystemMgr.cStringBuilder, ByRef sDeleteAccordCode As HRProSystemMgr.cStringBuilder _
+Private Function SetTableTriggers_AccordTransfer(ByRef sUpdateAccordCode As HRProSystemMgr.cStringBuilder, ByRef sDeleteAccordCode As HRProSystemMgr.cStringBuilder _
 , ByRef alngAuditColumns() As Long _
 , ByRef sSelectInsCols As HRProSystemMgr.cStringBuilder, ByRef sSelectDelCols As HRProSystemMgr.cStringBuilder _
 , ByRef sFetchInsCols As HRProSystemMgr.cStringBuilder, ByRef sFetchDelCols As HRProSystemMgr.cStringBuilder _
@@ -1928,7 +1779,6 @@ Private Function SetTableTriggers_AccordTransfer(ByRef sInsertAccordCode As HRPr
   
   ReDim avAccordProhibitFields(0, 1)
   bOK = True
-  sInsertAccordCode.TheString = vbNullString
   sUpdateAccordCode.TheString = vbNullString
   sDeleteAccordCode.TheString = vbNullString
 
@@ -2351,13 +2201,7 @@ Private Function SetTableTriggers_AccordTransfer(ByRef sInsertAccordCode As HRPr
     Else
       sAccordFilter = vbNullString
     End If
-    
-    If strCurrentInsert.Length <> 0 Then
-      sInsertAccordCode.Append vbNewLine & sAccordFilter & _
-        Space$(12) & "EXEC dbo.spASRAccordPopulateTransaction @iAccordTransactionID OUTPUT," & Str$(lngTransferType) & ", " & aiTransferTypes(1, iTransferTypeLoop) & " , @iAccordDefaultStatus, @recordID, @iTriggerLevel, @bAccordSendAllFields OUTPUT" & _
-        strCurrentInsert.ToString & vbNewLine & vbNewLine
-    End If
-    
+       
     If strCurrentUpdate.Length <> 0 Then
           
       sHasChangedCode.Append IIf(sHasChangedCode.Length <> 0, " OR ", vbNullString) & " @bAccordResend = 1"
@@ -2366,7 +2210,7 @@ Private Function SetTableTriggers_AccordTransfer(ByRef sInsertAccordCode As HRPr
         sAccordFilter & Space$(10) & "EXEC dbo.spASRAccordNeedToSendAll " & Str$(lngTransferType) & ", @recordID, @bAccordResend OUTPUT" & vbNewLine & _
         IIf(sHasChangedCode.Length <> 0, Space$(12) & "IF (" & sHasChangedCode.ToString & ")" & vbNewLine & _
         Space$(12) & "BEGIN" & vbNewLine, vbNullString) & vbNewLine & _
-        Space$(14) & "EXEC dbo.spASRAccordPopulateTransaction @iAccordTransactionID OUTPUT," & Str$(lngTransferType) & ", 1 , @iAccordDefaultStatus, @recordID, @iTriggerLevel, @bAccordSendAllFields OUTPUT" & _
+        Space$(14) & "EXEC dbo.spASRAccordPopulateTransaction @iAccordTransactionID OUTPUT," & Str$(lngTransferType) & ", 1 , @iAccordDefaultStatus, @recordID, 1, @bAccordSendAllFields OUTPUT" & _
         strCurrentUpdate.ToString & vbNewLine & _
         Space$(12) & IIf(sHasChangedCode.Length <> 0, "END", vbNullString) & vbNewLine
     End If
@@ -2374,14 +2218,13 @@ Private Function SetTableTriggers_AccordTransfer(ByRef sInsertAccordCode As HRPr
     If strCurrentDelete.Length <> 0 Then
       
       sDeleteAccordCode.Append vbNewLine & _
-        Space$(10) & "EXEC dbo.spASRAccordPopulateTransaction @iAccordTransactionID OUTPUT," & Str$(lngTransferType) & ",2, @iAccordDefaultStatus, @recordID, @iTriggerLevel, @bAccordSendAllFields OUTPUT" & vbNewLine & _
+        Space$(10) & "EXEC dbo.spASRAccordPopulateTransaction @iAccordTransactionID OUTPUT," & Str$(lngTransferType) & ",2, @iAccordDefaultStatus, @recordID, 1, @bAccordSendAllFields OUTPUT" & vbNewLine & _
         Space$(10) & "IF @bAccordSendAllFields = 1" & vbNewLine & Space$(10) & "BEGIN" & vbNewLine & _
         strCurrentDelete.ToString & vbNewLine & Space$(10) & "END" & vbNewLine
 
     End If
    
     If lngFilterID > 0 Then
-      sInsertAccordCode.Append vbNewLine & Space$(10) & "END"
       sUpdateAccordCode.Append vbNewLine & Space$(10) & "END"
     End If
    
@@ -2437,15 +2280,12 @@ Private Function SetTableTriggers_AccordTransfer(ByRef sInsertAccordCode As HRPr
     Space$(10) & "DECLARE @bAccordSendAllFields as bit" & vbNewLine & _
     Space$(10) & "DECLARE @intDefaultAccordStatus as int" & vbNewLine & _
     Space$(10) & "DECLARE @intDefaultAccordType as int" & vbNewLine
-
-  sInsertAccordCode.TheString = sAccordDeclaration & sInsertAccordCode.ToString & vbNewLine
-'    Space$ (10) & "EXEC dbo.spASRAccordPurgeTemp @iTriggerLevel, @recordID" & vbNewLine & vbNewLine
   
   sUpdateAccordCode.TheString = sAccordDeclaration & sAccordProhibitFields.ToString & sUpdateAccordCode.ToString & vbNewLine & _
-    Space$(10) & "EXEC dbo.spASRAccordPurgeTemp @iTriggerLevel, @recordID" & vbNewLine & vbNewLine
+    Space$(10) & "EXEC dbo.spASRAccordPurgeTemp 1, @recordID" & vbNewLine & vbNewLine
   
   sDeleteAccordCode.TheString = sAccordDeclaration & sDeleteAccordCode.ToString & vbNewLine & _
-    Space$(10) & "EXEC dbo.spASRAccordPurgeTemp @iTriggerLevel, @recordID" & vbNewLine & vbNewLine
+    Space$(10) & "EXEC dbo.spASRAccordPurgeTemp 1, @recordID" & vbNewLine & vbNewLine
 
 
 TidyUpAndExit:
