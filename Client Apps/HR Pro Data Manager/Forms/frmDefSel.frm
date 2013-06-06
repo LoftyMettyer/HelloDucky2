@@ -306,7 +306,7 @@ Private msIDField As String
 Private msType As String
 Private msTypeCode As String
 Private msRecordSource As String
-Private mutlUtilityType As UtilityType
+Private mutlUtilityType As utilityType
 Private msTableIDColumnName As String
 Private msAccessTableName As String
 
@@ -333,7 +333,7 @@ Private malngSelectedIDs()
 Private mstrExtraWhereClause As String
 
 Public AllowFavourites As Boolean
-Public SelectedUtilityType As UtilityType
+Public SelectedUtilityType As utilityType
 Public EnableNew As Boolean
 
 Private msSearchForText As String
@@ -497,7 +497,7 @@ Private Sub Favourites(ByVal bAdd As Boolean)
 
   Dim sSQL As String
   Dim lngSelectedID As Integer
-  Dim lngUtilityType As UtilityType
+  Dim lngUtilityType As utilityType
 
   lngSelectedID = GetIDFromTag(List1.SelectedItem.Tag)
   lngUtilityType = GetTypeFromTag(List1.SelectedItem.Tag)
@@ -555,7 +555,7 @@ Private Sub cmdCancel_Click()
       'If not batch logon then show event log with only selected jobs
       If Not gblnBatchJobsOnly And mstrEventLogIDs <> vbNullString Then
         Set frmOutput = New frmEventLog
-        frmOutput.FilterIDs = mstrEventLogIDs
+        frmOutput.FilterIDs mstrEventLogIDs, mutlUtilityType
         frmOutput.Caption = msGeneralCaption & " Event Log"
         
         Me.Hide
@@ -581,7 +581,7 @@ Private Sub cmdDelete_Click()
   Dim rsTemp As ADODB.Recordset
   Dim objExpression As clsExprExpression
   Dim sType As String
-  Dim lngUtilityType As UtilityType
+  Dim lngUtilityType As utilityType
   
   lngHighLightIndex = List1.SelectedItem.Index
   lngSelectedID = GetIDFromTag(List1.SelectedItem.Tag)
@@ -809,7 +809,7 @@ End Sub
 
 Private Sub cmdProperties_Click()
 
-  Dim lngUtilityType As UtilityType
+  Dim lngUtilityType As utilityType
   
   On Error GoTo Prop_ERROR
   
@@ -1066,7 +1066,7 @@ Public Sub Refresh_Controls()
   Dim iCount As Integer
   Dim lngTempIndex As Long
   Dim sType As String
-  Dim lngTYPE As UtilityType
+  Dim lngTYPE As utilityType
   Dim bSystemMgrDefined As Boolean
   
   If mblnLoading Then
@@ -1298,7 +1298,7 @@ Private Function CheckForUseage(sDefType As String, lItemID As Long) As Boolean
   ' Check if the given record is used.
   Dim sMsg As String
   Dim intCount As Integer
-  Dim lngUtilityType As UtilityType
+  Dim lngUtilityType As utilityType
 
   Load frmDefProp
   
@@ -2070,7 +2070,7 @@ Public Property Let EventLogIDs(ByVal strNewValue As String)
   mstrEventLogIDs = strNewValue
 End Property
 
-Public Sub GetSQL(lngUtilType As UtilityType, Optional psRecordSourceWhere As String, Optional blnScheduledJobs As Boolean)
+Public Sub GetSQL(lngUtilType As utilityType, Optional psRecordSourceWhere As String, Optional blnScheduledJobs As Boolean)
 
   Dim strExtraWhereClause As String
   Dim sCategoryFilter As String
@@ -2512,7 +2512,7 @@ Public Sub GetSQL(lngUtilType As UtilityType, Optional psRecordSourceWhere As St
 
 End Sub
 
-Public Function ShowList(lngUtilType As UtilityType, Optional psRecordSourceWhere As String, Optional blnScheduledJobs As Boolean) As Boolean
+Public Function ShowList(lngUtilType As utilityType, Optional psRecordSourceWhere As String, Optional blnScheduledJobs As Boolean) As Boolean
 
   mstrExtraWhereClause = psRecordSourceWhere
   mblnScheduledJobs = blnScheduledJobs
@@ -2674,7 +2674,7 @@ Private Function GetIDFromTag(ByVal Tag As String) As Long
 
 End Function
 
-Private Function GetTypeFromTag(ByVal Tag As String) As UtilityType
+Private Function GetTypeFromTag(ByVal Tag As String) As utilityType
 
   Dim sValue As Long
   
@@ -2683,9 +2683,9 @@ Private Function GetTypeFromTag(ByVal Tag As String) As UtilityType
 
 End Function
 
-Private Function GetTypeCode(ByVal UtilityType As UtilityType) As String
+Private Function GetTypeCode(ByVal utilityType As utilityType) As String
 
-  Select Case UtilityType
+  Select Case utilityType
     
     Case utlAll
       GetTypeCode = "ALL"
