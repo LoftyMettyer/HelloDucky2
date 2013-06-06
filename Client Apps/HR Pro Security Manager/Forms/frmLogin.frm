@@ -1,12 +1,12 @@
 VERSION 5.00
-Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~2.OCX"
+Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~3.OCX"
 Begin VB.Form frmLogin 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "OpenHR Security Manager - Login"
    ClientHeight    =   3675
    ClientLeft      =   1530
    ClientTop       =   3285
-   ClientWidth     =   6360
+   ClientWidth     =   6405
    BeginProperty Font 
       Name            =   "Verdana"
       Size            =   8.25
@@ -23,7 +23,7 @@ Begin VB.Form frmLogin
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   3675
-   ScaleWidth      =   6360
+   ScaleWidth      =   6405
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin VB.CheckBox chkUseWindowsAuthentication 
