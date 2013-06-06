@@ -521,7 +521,7 @@ PRINT 'Step - Menu & Category enhancements'
 
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spssys_getobjectcategories]') AND xtype = 'P')
 		DROP PROCEDURE [dbo].[spssys_getobjectcategories];
-	EXECUTE sp_executesql N'CREATE PROCEDURE dbo.[spssys_getobjectcategories](@utilityType as integer, @UtilityID as integer)
+	EXECUTE sp_executesql N'CREATE PROCEDURE dbo.[spssys_getobjectcategories](@utilityType as integer, @UtilityID as integer, @TableID as integer)
 		AS
 		BEGIN
 
@@ -541,15 +541,15 @@ PRINT 'Step - Menu & Category enhancements'
 
 			DELETE FROM dbo.tbsys_objectcategories
 				WHERE [objecttype] = @utilityType AND [objectid] = @UtilityID;
-					
-			INSERT dbo.tbsys_objectcategories([objecttype], [objectid], [categoryid])
-				VALUES (@utilityType, @UtilityID, @CategoryID);
+			
+			IF @CategoryID > 0
+			BEGIN
+				INSERT dbo.tbsys_objectcategories([objecttype], [objectid], [categoryid])
+					VALUES (@utilityType, @UtilityID, @CategoryID);
+			END
 
 		END'
 	GRANT EXECUTE ON dbo.[spssys_saveobjectcategories] TO [ASRSysGroup];
-
-
-
 
 
 	-- Generate, configure and populate the categories table
