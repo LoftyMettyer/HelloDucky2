@@ -1884,10 +1884,10 @@ Public Function ApplyDatabaseOwnership() As Boolean
   astrRevokedTables(5) = "ASRSysAuditGroup"
   astrRevokedTables(6) = "ASRSysAuditPermissions"
   astrRevokedTables(7) = "ASRSysAuditTrail"
-  'NHRD Prototype Fusion Code
-  astrRevokedTables(0) = "ASRSysFusionTransactionData"
-  astrRevokedTables(1) = "ASRSysFusionTransactions"
-  astrRevokedTables(2) = "ASRSysFusionTransactionWarnings"
+  'NHRD Prototype Fusion Code  ' This can be deleted when it is confirmed its not needed
+'  astrRevokedTables(0) = "ASRSysFusionTransactionData"
+'  astrRevokedTables(1) = "ASRSysFusionTransactions"
+'  astrRevokedTables(2) = "ASRSysFusionTransactionWarnings"
 
   Set rsTemp1 = New ADODB.Recordset
   Set rsTemp2 = New ADODB.Recordset

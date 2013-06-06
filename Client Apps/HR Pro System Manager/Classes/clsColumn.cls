@@ -302,7 +302,7 @@ Public Function ColumnIsUsed(pfrmUsage As frmUsage) As Boolean
   Dim rsModules As DAO.Recordset
   Dim rsAccord As DAO.Recordset
 'NHRD Prototype Fusion Code***********************************************************
-  Dim rsFusion As DAO.Recordset
+  'Dim rsFusion As DAO.Recordset ' This can be deleted when it is confirmed its not needed
   Dim rsValidations As DAO.Recordset
   Dim sColumnName As String
   Dim sTableName As String
@@ -820,23 +820,24 @@ Public Function ColumnIsUsed(pfrmUsage As frmUsage) As Boolean
   End If
 
 'NHRD Prototype Fusion Code***********************************************************
-  If gbFusionModule Then
-    sSQL = "SELECT rtrim(t.FusionType) + ' - ' + f.Description AS Description" & _
-           " FROM tmpFusionFieldDefinitions f " & _
-           " INNER JOIN tmpFusionTypes t ON t.FusionTypeID = f.FusionTypeID" & _
-           " WHERE ASRColumnID = " & Me.ColumnID & " AND ASRMapType = 0"
-    Set rsFusion = daoDb.OpenRecordset(sSQL)
-    With rsFusion
-      If Not (.EOF And .BOF) Then
-        fUsed = True
-        Do Until .EOF
-          mfrmUse.AddToList "Fusion Configuration : " & Trim(!Description)
-          .MoveNext
-        Loop
-      End If
-      .Close
-    End With
-  End If
+' This can be deleted when it is confirmed its not needed
+'  If gbFusionModule Then
+'    sSQL = "SELECT rtrim(t.FusionType) + ' - ' + f.Description AS Description" & _
+'           " FROM tmpFusionFieldDefinitions f " & _
+'           " INNER JOIN tmpFusionTypes t ON t.FusionTypeID = f.FusionTypeID" & _
+'           " WHERE ASRColumnID = " & Me.ColumnID & " AND ASRMapType = 0"
+'    Set rsFusion = daoDb.OpenRecordset(sSQL)
+'    With rsFusion
+'      If Not (.EOF And .BOF) Then
+'        fUsed = True
+'        Do Until .EOF
+'          mfrmUse.AddToList "Fusion Configuration : " & Trim(!Description)
+'          .MoveNext
+'        Loop
+'      End If
+'      .Close
+'    End With
+'  End If
 'NHRD Prototype Fusion Code***********************************************************
   
   'TM20011003 Fault 2191 - 1

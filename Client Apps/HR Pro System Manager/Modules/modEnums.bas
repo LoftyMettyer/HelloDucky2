@@ -327,7 +327,6 @@ Public Enum AccordTransactionStatus
   ACCORD_STATUS_BLOCKED = 30
 End Enum
 
-'NHRD Prototype Fusion Enum **********************
 Public Enum FusionTransactionStatus
   FUSION_STATUS_PENDING = 1
   FUSION_STATUS_PENDING_CHANGED = 2
@@ -344,7 +343,6 @@ Public Enum FusionMapType
   FUSION_MAPTYPE_EXPRESSION = 1
   FUSION_MAPTYPE_VALUE = 2
 End Enum
-'NHRD Prototype Fusion Enum **********************
 
 Public Enum PasswordChangeReason
   giPasswordChange_None = 0
@@ -703,7 +701,7 @@ Public Enum enum_Module
   modWorkflow = 1024
   modVersion1 = 2048
   modMobile = 4096
-  modFusion = 8192
+  'modFusion = 8192
 End Enum
 
 'System metrics constants

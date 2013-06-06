@@ -385,20 +385,20 @@ Public Function CreateTempTables() As Boolean
       " INTO tmpAccordTransferTypes FROM ASRSysAccordTransferTypes IN " & sSource
     daoDb.Execute sSQL
   
-      ' Create the local Fusion Field Definition table.
-    sSQL = "SELECT ASRSysFusionFieldDefinitions.*" & _
-      " INTO tmpFusionFieldDefinitions FROM ASRSysFusionFieldDefinitions IN " & sSource
-    daoDb.Execute sSQL
-  
-    ' Create the local Fusion Mapping table.
-    sSQL = "SELECT ASRSysFusionFieldMappings.*" & _
-      " INTO tmpFusionFieldMappings FROM ASRSysFusionFieldMappings IN " & sSource
-    daoDb.Execute sSQL
-  
-    ' Create the local Fusion Transfer Type table.
-    sSQL = "SELECT ASRSysFusionTypes.*" & _
-      " INTO tmpFusionTypes FROM ASRSysFusionTypes IN " & sSource
-    daoDb.Execute sSQL
+'      ' Create the local Fusion Field Definition table.
+'    sSQL = "SELECT ASRSysFusionFieldDefinitions.*" & _
+'      " INTO tmpFusionFieldDefinitions FROM ASRSysFusionFieldDefinitions IN " & sSource
+'    daoDb.Execute sSQL
+'
+'    ' Create the local Fusion Mapping table.
+'    sSQL = "SELECT ASRSysFusionFieldMappings.*" & _
+'      " INTO tmpFusionFieldMappings FROM ASRSysFusionFieldMappings IN " & sSource
+'    daoDb.Execute sSQL
+'
+'    ' Create the local Fusion Transfer Type table.
+'    sSQL = "SELECT ASRSysFusionTypes.*" & _
+'      " INTO tmpFusionTypes FROM ASRSysFusionTypes IN " & sSource
+'    daoDb.Execute sSQL
     
     'TM20020211 Fault 3487
     ' Create the local mail merge table.
@@ -1501,10 +1501,10 @@ Public Function DropTempTables() As Boolean
   daoDb.Execute "DROP TABLE tmpAccordTransferFieldMappings"
   daoDb.Execute "DROP TABLE tmpAccordTransferTypes"
 
-  ' Fusion Tables
-  daoDb.Execute "DROP TABLE tmpFusionFieldDefinitions"
-  daoDb.Execute "DROP TABLE tmpFusionFieldMappings"
-  daoDb.Execute "DROP TABLE tmpFusionTypes"
+'  ' Fusion Tables
+'  daoDb.Execute "DROP TABLE tmpFusionFieldDefinitions"
+'  daoDb.Execute "DROP TABLE tmpFusionFieldMappings"
+'  daoDb.Execute "DROP TABLE tmpFusionTypes"
 
   ' Mobile Navigation Tables
   daoDb.Execute "DROP TABLE tmpGroups"
@@ -1734,8 +1734,8 @@ Public Sub ActivateModules()
   ' Payroll Module
   gbAccordPayrollModule = IsModuleEnabled(modAccordPayroll)
 
-  ' Fusion Module
-  gbFusionModule = IsModuleEnabled(modFusion)
+'  ' Fusion Module
+'  gbFusionModule = IsModuleEnabled(modFusion)
 
   ' Version 1 Module
   gfVersion1Module = IsModuleEnabled(modVersion1)
