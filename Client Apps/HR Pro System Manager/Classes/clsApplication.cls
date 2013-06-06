@@ -2447,7 +2447,7 @@ Private Function CreateQueryDefs() As Boolean
     " , [ReturnDecimals] as [decimals]" & _
     " , IIF([deleted]=-1, 8 , IIF([new]=-1,4 ,IIF([changed]=-1,16, 2))) AS [state]" & _
     " FROM tmpExpressions" & _
-    " WHERE tableid = @parentid AND ParentComponentID = 0"
+    " WHERE tableid = @parentid AND ParentComponentID = 0 AND type < 10"
   daoDb.CreateQueryDef "spadmin_getexpressions", sSQL
 
   ' spadmin_getcomponent_base
