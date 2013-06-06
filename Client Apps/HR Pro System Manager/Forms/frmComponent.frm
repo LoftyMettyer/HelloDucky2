@@ -2989,11 +2989,21 @@ Private Sub ssTreeFuncFunction_Initialize()
           'Case "sp_asrfn_absenceduration", _
                "sp_asrfn_absencebetweentwodates", _
                "sp_asrfn_workingdaysbetweentwodates"
-          Case 30, 46, 47, 73
+          Case 30, 46, 47
             If (mlngPersonnelTableID > 0) _
               And (fWorkflowExpression _
                 Or mobjComponent.ParentExpression.BaseTableID = mlngPersonnelTableID _
                 Or IsChildOfTable(mlngPersonnelTableID, mobjComponent.ParentExpression.BaseTableID)) Then
+              
+              ssTreeFuncFunction.Nodes.Add sCategory, tvwChild, CStr(objFunctionDef.id), sDisplayName
+            End If
+    
+          'Case "sp_asrfn_BradfordFactor"
+          'NHRD19072011 JIRA HR PRO 1584
+          Case 73
+            If (mlngPersonnelTableID > 0) _
+              And (fWorkflowExpression _
+                Or mobjComponent.ParentExpression.BaseTableID = mlngPersonnelTableID) Then
               
               ssTreeFuncFunction.Nodes.Add sCategory, tvwChild, CStr(objFunctionDef.id), sDisplayName
             End If
