@@ -69,7 +69,7 @@ Begin VB.Form frmEmailLink
       AutoSize        =   -1  'True
       Height          =   540
       Left            =   720
-      Picture         =   "frmEmailLink.frx":1A6A
+      Picture         =   "frmEmailLink.frx":14E2
       ScaleHeight     =   480
       ScaleWidth      =   480
       TabIndex        =   43
@@ -127,7 +127,7 @@ Begin VB.Form frmEmailLink
          Strikethrough   =   0   'False
       EndProperty
       TabCaption(0)   =   "De&finition"
-      TabPicture(0)   =   "frmEmailLink.frx":1D74
+      TabPicture(0)   =   "frmEmailLink.frx":17EC
       Tab(0).ControlEnabled=   -1  'True
       Tab(0).Control(0)=   "fraLinkTypeDetails(1)"
       Tab(0).Control(0).Enabled=   0   'False
@@ -141,7 +141,7 @@ Begin VB.Form frmEmailLink
       Tab(0).Control(4).Enabled=   0   'False
       Tab(0).ControlCount=   5
       TabCaption(1)   =   "Co&ntent"
-      TabPicture(1)   =   "frmEmailLink.frx":1D90
+      TabPicture(1)   =   "frmEmailLink.frx":1808
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "frmContent"
       Tab(1).Control(0).Enabled=   0   'False
@@ -507,9 +507,9 @@ Begin VB.Form frmEmailLink
             BackColor       =   &H8000000F&
             Enabled         =   0   'False
             Height          =   315
-            ItemData        =   "frmEmailLink.frx":1DAC
+            ItemData        =   "frmEmailLink.frx":1824
             Left            =   3480
-            List            =   "frmEmailLink.frx":1DBC
+            List            =   "frmEmailLink.frx":1834
             Style           =   2  'Dropdown List
             TabIndex        =   41
             Top             =   705
@@ -527,9 +527,9 @@ Begin VB.Form frmEmailLink
             BackColor       =   &H8000000F&
             Enabled         =   0   'False
             Height          =   315
-            ItemData        =   "frmEmailLink.frx":1DDC
+            ItemData        =   "frmEmailLink.frx":1854
             Left            =   2040
-            List            =   "frmEmailLink.frx":1DEC
+            List            =   "frmEmailLink.frx":1864
             Style           =   2  'Dropdown List
             TabIndex        =   40
             Top             =   705
@@ -629,19 +629,19 @@ Begin VB.Form frmEmailLink
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
          NumListImages   =   4
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmEmailLink.frx":1E0C
+            Picture         =   "frmEmailLink.frx":1884
             Key             =   "IMG_TABLE"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmEmailLink.frx":235E
+            Picture         =   "frmEmailLink.frx":1BD6
             Key             =   "IMG_CALC"
          EndProperty
          BeginProperty ListImage3 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmEmailLink.frx":28B0
+            Picture         =   "frmEmailLink.frx":2128
             Key             =   "IMG_CUSTOM"
          EndProperty
          BeginProperty ListImage4 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmEmailLink.frx":2E02
+            Picture         =   "frmEmailLink.frx":267A
             Key             =   "IMG_NO"
          EndProperty
       EndProperty
@@ -1024,7 +1024,7 @@ ErrorTrap:
 
 End Sub
 
-Private Sub cmdOK_Click()
+Private Sub cmdOk_Click()
   
   Dim strErrorText As String
   Dim intIndex As Integer
@@ -1259,7 +1259,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
       pintAnswer = MsgBox("You have changed the current definition. Save changes ?", vbQuestion + vbYesNoCancel, App.Title)
       
       If pintAnswer = vbYes Then
-        cmdOK_Click
+        cmdOk_Click
         Cancel = True   'MH20021105 Fault 4694
         Exit Sub
       ElseIf pintAnswer = vbCancel Then
