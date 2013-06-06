@@ -49,10 +49,6 @@ Private Declare Function SetMenuItemInfo Lib "user32" Alias _
     "SetMenuItemInfoA" (ByVal hMenu As Long, ByVal un As Long, _
     ByVal bool As Boolean, lpcMenuItemInfo As MENUITEMINFO) As Long
 
-Private Declare Function SendMessage Lib "user32" Alias _
-    "SendMessageA" (ByVal hWnd As Long, ByVal wMsg As Long, _
-    ByVal wParam As Long, lParam As Any) As Long
-
 Private Declare Function IsWindow Lib "user32" _
     (ByVal hWnd As Long) As Long
     

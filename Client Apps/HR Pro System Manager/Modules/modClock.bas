@@ -8,7 +8,6 @@ Option Explicit
   
   Private Declare Function QueryPerformanceCounter Lib "kernel32" (lpPerformanceCount As LARGE_INTEGER) As Long
   Private Declare Function QueryPerformanceFrequency Lib "kernel32" (lpFrequency As LARGE_INTEGER) As Long
-  Private Declare Sub CopyMemory Lib "kernel32.dll" Alias "RtlMoveMemory" (Destination As Any, Source As Any, ByVal Length As Long)
 
   Dim T As Long, liFrequency As LARGE_INTEGER, liStart As LARGE_INTEGER, liStop As LARGE_INTEGER
   Dim cuFrequency As Currency, cuStart As Currency, cuStop As Currency
