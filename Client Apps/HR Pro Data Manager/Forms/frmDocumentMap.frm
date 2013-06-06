@@ -18,6 +18,7 @@ Begin VB.Form frmDocumentMap
    EndProperty
    Icon            =   "frmDocumentMap.frx":0000
    LinkTopic       =   "Form1"
+   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   7815
@@ -475,6 +476,15 @@ Private Sub RetreiveDefinition()
   End If
 
   mblnReadOnly = Not datGeneral.SystemPermission("VERSION1", "EDIT")
+
+  ' Set the access type
+  Select Case rsTemp!Access
+  Case "RW"
+    optReadWrite = True
+  Case "RO"
+    optReadOnly = True
+    mblnReadOnly = ((mblnReadOnly Or Not mblnDefinitionCreator) And Not gfCurrentUserIsSysSecMgr)
+  End Select
     
   SetComboItem cboCategories, IIf(IsNull(rsTemp.Fields("CategoryRecordID").Value), 0, rsTemp.Fields("CategoryRecordID").Value)
   SetComboItem cboTypes, IIf(IsNull(rsTemp.Fields("TypeRecordID").Value), 0, rsTemp.Fields("TypeRecordID").Value)
@@ -490,6 +500,10 @@ Private Sub RetreiveDefinition()
 
   SetComboItem cboParent2Table, IIf(IsNull(rsTemp.Fields("Parent2TableID").Value), 0, rsTemp.Fields("Parent2TableID").Value)
   SetComboItem cboParent2Keyfield, IIf(IsNull(rsTemp.Fields("Parent2KeyFieldColumnID").Value), 0, rsTemp.Fields("Parent2KeyFieldColumnID").Value)
+
+  ' Tidy Up
+  rsTemp.Close
+  Set rsTemp = Nothing
 
 End Sub
 
