@@ -2018,8 +2018,8 @@ Private Sub SQLCodeCreate()
       IIf(mstrSQLWhere <> vbNullString, " AND ", vbNullString) & _
       mstrSQLFrom & ".ID IN (" & strPicklistFilterSelect & ")"
   End If
-  
-  
+    
+    
   If mstrSQLWhere <> vbNullString Then
     mstrSQLWhere = " WHERE " & mstrSQLWhere
   End If
@@ -2182,7 +2182,8 @@ Private Sub SQLAddColumn(sColumnList As String, lngTableID As Long, sTableName A
 
               mstrWhereIDs = mstrWhereIDs & _
                 IIf(mstrWhereIDs <> vbNullString, " OR ", vbNullString) & _
-                sBaseIDColumn & " IN (SELECT ID FROM " & sSource & ")"
+                sBaseIDColumn & " IN (SELECT ID FROM " & sSource & ")" & _
+                " OR (ISNULL(" & sBaseIDColumn & ", 0) = 0)"
 
             End If
           End If
