@@ -701,7 +701,11 @@ Private Sub Form_Load()
   ' Position and size form controls
   fraColumns.Left = 0
   imgTitleBar.Move 20, 10, 16 * Screen.TwipsPerPixelX, 16 * Screen.TwipsPerPixelY
-  lblTitleBar.Move 340, 30, 720, 195
+  
+  'NPG20091029 Fault HRPRO-531
+  imgTitleBar.Visible = False
+  lblTitleBar.Move 20, 30, 720, 195
+  
   fraTable.Left = 0
   trvColumns.Left = 0
   fraSplit.Left = 0
