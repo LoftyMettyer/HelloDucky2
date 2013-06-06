@@ -660,7 +660,7 @@ Public Enum ProcessAdminConfig
   iPROCESSADMIN_EVERYONE = 3
 End Enum
 
-Public Enum EmailType
+Public Enum enum_EmailType
   LinkRecord = 0
   LinkColumn = 1
   LinkOffset = 2
@@ -668,7 +668,7 @@ Public Enum EmailType
   LinkRebuild = 4
 End Enum
 
-Public Enum Module
+Public Enum enum_Module
   modPersonnel = 1
   modRecruitment = 2
   modAbsence = 4

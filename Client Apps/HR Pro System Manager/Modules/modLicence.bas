@@ -9,12 +9,9 @@ Public Function GetLicenceKey()
   'a single new key and save it away so that next time
   'it can just get the new key from asrsyssystemsettings
 
-
   Dim objLicence As COALicence.clsOldLicence
   Dim rsTemp As New ADODB.Recordset
-  'Dim rsTemp As Recordset
   Dim strOutput As String
-
 
   strOutput = GetSystemSetting("Licence", "Key", vbNullString)
 
@@ -55,8 +52,7 @@ Public Function GetLicenceKey()
 
 End Function
 
-
-Public Function IsModuleEnabled(lngModuleCode As Module) As Boolean
+Public Function IsModuleEnabled(lngModuleCode As enum_Module) As Boolean
 
   Dim objLicence As COALicence.clsLicence2
 
@@ -66,7 +62,6 @@ Public Function IsModuleEnabled(lngModuleCode As Module) As Boolean
   Set objLicence = Nothing
 
 End Function
-
 
 Public Function GetLicencedUsers() As Long
 
