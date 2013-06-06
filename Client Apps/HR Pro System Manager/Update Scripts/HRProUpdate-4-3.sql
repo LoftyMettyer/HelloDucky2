@@ -280,7 +280,7 @@ PRINT 'Step 4 - Create object tracking system'
 /* ------------------------------------------------------------- */
 PRINT 'Step 4 - Upgrade image data structures to varbinary(max)'
 
-	-- User defined types
+	-- User defined tables
 	SET @NVarCommand = ''
 	SELECT @NVarCommand = @NVarCommand + 'ALTER TABLE dbo.[' + o.Name + '] ALTER COLUMN [' + c.ColumnName + '] varbinary(MAX);' 
 		FROM ASRSysColumns c 
@@ -293,6 +293,8 @@ PRINT 'Step 4 - Upgrade image data structures to varbinary(max)'
 	-- System tables
 	EXEC sp_executesql N'ALTER TABLE dbo.[ASRSysPictures] ALTER COLUMN [Picture] varbinary(MAX);';
 	EXEC sp_executesql N'ALTER TABLE dbo.[ASRSysPermissionCategories] ALTER COLUMN [Picture] varbinary(MAX);';
+	EXEC sp_executesql N'ALTER TABLE dbo.[ASRSysWorkflowInstanceValues] ALTER COLUMN [FileUpload_File] varbinary(MAX);';
+	EXEC sp_executesql N'ALTER TABLE dbo.[ASRSysWorkflowInstanceValues] ALTER COLUMN [TempFileUpload_File] varbinary(MAX);';
 
 
 /* ------------------------------------------------------------- */
