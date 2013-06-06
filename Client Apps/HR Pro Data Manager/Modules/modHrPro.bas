@@ -2310,7 +2310,7 @@ Public Sub SetupTablesCollection()
   With rsTables
     Do While Not .EOF
       Set objTableView = gcoTablePrivileges.Add(!TableName, !TableID, !TableType, !DefaultOrderID, _
-        !RecordDescExprID, True, 0, "")
+        !RecordDescExprID, True, 0, "", !IsRemoteView)
 
       objTableView.RealSource = !TableName
 
@@ -2325,7 +2325,7 @@ Public Sub SetupTablesCollection()
   With rsViews
     Do While Not .EOF
       Set objTableView = gcoTablePrivileges.Add(!TableName, !TableID, !TableType, !DefaultOrderID, _
-        !RecordDescExprID, False, !ViewID, !ViewName)
+        !RecordDescExprID, False, !ViewID, !ViewName, False)
 
       objTableView.RealSource = !ViewName
 

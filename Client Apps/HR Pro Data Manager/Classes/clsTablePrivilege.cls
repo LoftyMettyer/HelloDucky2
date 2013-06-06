@@ -31,6 +31,7 @@ Private mfUpdate As Boolean
 Private mfInsert As Boolean
 Private mfDelete As Boolean
 Private mfHideFromMenu As Boolean
+Private mbIsRemoteView As Boolean
 
 Public Property Get AllowSelect() As Boolean
    AllowSelect = mfSelect
@@ -169,4 +170,12 @@ End Property
 
 Public Property Let HideFromMenu(ByVal pfNewValue As Boolean)
    mfHideFromMenu = pfNewValue
+End Property
+
+Public Property Get IsRemoteView() As Boolean
+   IsRemoteView = mbIsRemoteView
+End Property
+
+Public Property Let IsRemoteView(ByVal pbNewValue As Boolean)
+   mbIsRemoteView = pbNewValue
 End Property

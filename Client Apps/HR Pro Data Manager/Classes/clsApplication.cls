@@ -123,12 +123,12 @@ Public Function Activate() As Boolean
   
   End With
 
-  If gblnDiaryStartUpCheck = True And blnAccessToDiary Then
-    'gobjDiary.GetPassedAlarms
-    '1=Past Events,3=List View
-    gobjDiary.ShowAlarmedEvents 1, 3
-    Set gobjDiary = Nothing
-  End If
+'  If gblnDiaryStartUpCheck = True And blnAccessToDiary Then
+'    'gobjDiary.GetPassedAlarms
+'    '1=Past Events,3=List View
+'    gobjDiary.ShowAlarmedEvents 1, 3
+'    Set gobjDiary = Nothing
+'  End If
 
   'Diary and mail merge stuff
   frmMain.tmrDiary.Enabled = (gblnDiaryConstCheck And blnAccessToDiary)
