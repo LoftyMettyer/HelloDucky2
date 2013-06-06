@@ -85,6 +85,7 @@ Begin VB.Form frmColEdit
       TabPicture(1)   =   "frmColEdit.frx":0028
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraControlPage"
+      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "Opt&ions"
       TabPicture(2)   =   "frmColEdit.frx":0044
@@ -96,6 +97,7 @@ Begin VB.Form frmColEdit
       TabPicture(3)   =   "frmColEdit.frx":0060
       Tab(3).ControlEnabled=   0   'False
       Tab(3).Control(0)=   "fraValidationPage"
+      Tab(3).Control(0).Enabled=   0   'False
       Tab(3).ControlCount=   1
       TabCaption(4)   =   "Diar&y Links"
       TabPicture(4)   =   "frmColEdit.frx":007C
@@ -1189,42 +1191,42 @@ Begin VB.Form frmColEdit
                Begin VB.Label lblMaskKey2 
                   AutoSize        =   -1  'True
                   BackStyle       =   0  'Transparent
-                  Caption         =   "a - Lower case"
+                  Caption         =   "a - Lowercase"
                   Height          =   195
-                  Left            =   200
+                  Left            =   195
                   TabIndex        =   145
-                  Top             =   480
-                  Width           =   1050
+                  Top             =   495
+                  Width           =   1200
                End
                Begin VB.Label lblMaskKey4 
                   AutoSize        =   -1  'True
                   BackStyle       =   0  'Transparent
-                  Caption         =   "s - Lower case or space"
+                  Caption         =   "s - Lowercase or space"
                   Height          =   195
-                  Left            =   2300
+                  Left            =   2295
                   TabIndex        =   144
                   Top             =   495
-                  Width           =   2040
+                  Width           =   1980
                End
                Begin VB.Label lblMaskKey3 
                   AutoSize        =   -1  'True
                   BackStyle       =   0  'Transparent
-                  Caption         =   "S - Upper case or space"
+                  Caption         =   "S - Uppercase or space"
                   Height          =   195
-                  Left            =   2300
+                  Left            =   2295
                   TabIndex        =   143
                   Top             =   240
-                  Width           =   2070
+                  Width           =   2010
                End
                Begin VB.Label lblMaskKey1 
                   AutoSize        =   -1  'True
                   BackStyle       =   0  'Transparent
-                  Caption         =   "A - Upper case"
+                  Caption         =   "A - Uppercase"
                   Height          =   195
-                  Left            =   200
+                  Left            =   195
                   TabIndex        =   142
                   Top             =   240
-                  Width           =   1065
+                  Width           =   1215
                End
             End
             Begin VB.TextBox txtMask 
