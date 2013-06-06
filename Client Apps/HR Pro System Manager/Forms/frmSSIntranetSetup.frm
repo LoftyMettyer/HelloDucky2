@@ -874,7 +874,7 @@ Begin VB.Form frmSSIntranetSetup
             DataMode        =   2
             RecordSelectors =   0   'False
             GroupHeaders    =   0   'False
-            Col.Count       =   54
+            Col.Count       =   55
             stylesets.count =   2
             stylesets(0).Name=   "ssEnabled"
             stylesets(0).ForeColor=   0
@@ -926,7 +926,7 @@ Begin VB.Form frmSSIntranetSetup
             BackColorOdd    =   -2147483643
             RowHeight       =   423
             ExtraHeight     =   265
-            Columns.Count   =   54
+            Columns.Count   =   55
             Columns(0).Width=   4392
             Columns(0).Caption=   "Prompt"
             Columns(0).Name =   "Prompt"
@@ -1306,6 +1306,13 @@ Begin VB.Form frmSSIntranetSetup
             Columns(53).DataField=   "Column 53"
             Columns(53).DataType=   8
             Columns(53).FieldLen=   256
+            Columns(54).Width=   3200
+            Columns(54).Visible=   0   'False
+            Columns(54).Caption=   "ChartShowPercentages"
+            Columns(54).Name=   "ChartShowPercentages"
+            Columns(54).DataField=   "Column 54"
+            Columns(54).DataType=   8
+            Columns(54).FieldLen=   256
             TabNavigation   =   1
             _ExtentX        =   11324
             _ExtentY        =   6324
@@ -1961,7 +1968,7 @@ Private Sub RefreshControls()
 
   End Select
 
-  cmdOK.Enabled = mfChanged
+  cmdOk.Enabled = mfChanged
   cmdPreview.Enabled = (cboSecurityGroup.Text <> "(All Groups)")
 
 End Sub
@@ -2038,6 +2045,7 @@ Private Sub SaveLinkParameters(piLinkType As SSINTRANETLINKTYPES)
   Dim fChartShowGrid As Boolean
   Dim fChartStackSeries As Boolean
   Dim sChartViewID As String
+  Dim fChartShowPercentages As Boolean
   Dim sChartTableID As String
   Dim sChartColumnID As String
   Dim sChartFilterID As String
@@ -2169,6 +2177,7 @@ Private Sub SaveLinkParameters(piLinkType As SSINTRANETLINKTYPES)
               sChart_SortOrderID = .Columns("Chart_SortOrderID").CellText(varBookMark)
               sChart_SortDirection = .Columns("Chart_SortDirection").CellText(varBookMark)
               sChart_ColourID = .Columns("Chart_ColourID").CellText(varBookMark)
+              fChartShowPercentages = .Columns("ChartShowPercentages").CellText(varBookMark)
                           
             Case SSINTLINK_DROPDOWNLIST
               sPrompt = ""
@@ -2273,7 +2282,7 @@ Private Sub SaveLinkParameters(piLinkType As SSINTRANETLINKTYPES)
             "[ConditionalFormatting_Colour_1],[ConditionalFormatting_Operator_2],[ConditionalFormatting_Value_2],[ConditionalFormatting_Style_2]," & _
             "[ConditionalFormatting_Colour_2],[ConditionalFormatting_Operator_3],[ConditionalFormatting_Value_3],[ConditionalFormatting_Style_3]," & _
             "[ConditionalFormatting_Colour_3],[SeparatorColour],[InitialDisplayMode],[Chart_TableID_2] ,[Chart_ColumnID_2],[Chart_TableID_3]," & _
-            "[Chart_ColumnID_3],[Chart_SortOrderID],[Chart_SortDirection],[Chart_ColourID])" & _
+            "[Chart_ColumnID_3],[Chart_SortOrderID],[Chart_SortDirection],[Chart_ColourID],[Chart_ShowPercentages])" & _
             " SELECT " & _
             CStr(piLinkType) & "," & CStr(iLoop) & "," & "'" & Replace(sPrompt, "'", "''") & "'," & _
             "'" & Replace(sText, "'", "''") & "'," & sScreenID & "," & "'" & Replace(sPageTitle, "'", "''") & "'," & _
@@ -2302,7 +2311,8 @@ Private Sub SaveLinkParameters(piLinkType As SSINTRANETLINKTYPES)
             sConditionalFormatting_Operator_2 & "," & sConditionalFormatting_Value_2 & "," & sConditionalFormatting_Style_2 & "," & sConditionalFormatting_Colour_2 & "," & _
             sConditionalFormatting_Operator_3 & "," & sConditionalFormatting_Value_3 & "," & sConditionalFormatting_Style_3 & "," & sConditionalFormatting_Colour_3 & "," & _
             sSeparatorColour & "," & CStr(iInitialDisplayMode) & "," & sChart_TableID_2 & "," & sChart_ColumnID_2 & "," & sChart_TableID_3 & "," & sChart_ColumnID_3 & "," & _
-            sChart_SortOrderID & "," & sChart_SortDirection & "," & sChart_ColourID
+            sChart_SortOrderID & "," & sChart_SortDirection & "," & sChart_ColourID & "," & _
+            IIf(fChartShowPercentages, "1", "0")
 
           daoDb.Execute sSQL, dbFailOnError
         
@@ -2484,7 +2494,7 @@ Private Sub cmdAddButtonLink_Click()
       False, False, _
       0, 0, _
       True, 1, False, False, 0, 0, 0, 0, 0, 0, mcolGroups, _
-      False, 0, False, "", "", 0, "", "", "", "", "", "", "", "", "", "", "", "", "", _
+      False, 0, False, "", "", 0, "", "", "", "", "", "", "", "", "", "", "", "", "", False, _
       mcolSSITableViews
       
     .Show vbModal
@@ -2506,7 +2516,7 @@ Private Sub cmdAddButtonLink_Click()
         & vbTab & .ConditionalFormatting_Operator_2 & vbTab & .ConditionalFormatting_Value_2 & vbTab & .ConditionalFormatting_Style_2 & vbTab & .ConditionalFormatting_Colour_2 _
         & vbTab & .ConditionalFormatting_Operator_3 & vbTab & .ConditionalFormatting_Value_3 & vbTab & .ConditionalFormatting_Style_3 & vbTab & .ConditionalFormatting_Colour_3 _
         & vbTab & .SeparatorBorderColour & vbTab & .InitialDisplayMode & vbTab & .Chart_TableID_2 & vbTab & .Chart_ColumnID_2 & vbTab & .Chart_TableID_3 _
-        & vbTab & .Chart_ColumnID_3 & vbTab & .Chart_SortOrderID & vbTab & .Chart_SortDirection & vbTab & .Chart_ColourID
+        & vbTab & .Chart_ColumnID_3 & vbTab & .Chart_SortOrderID & vbTab & .Chart_SortDirection & vbTab & .Chart_ColourID & vbTab & .ChartShowPercentages
 
       For iLoop = 0 To cboButtonLinkView.ListCount - 1
         If cboButtonLinkView.List(iLoop) = .TableViewName Then
@@ -2575,7 +2585,7 @@ Private Sub cmdAddDropdownListLink_Click()
       False, False, _
       0, 0, _
       False, 0, False, False, 0, 0, 0, 0, 0, 0, mcolGroups, _
-      False, 0, False, "", "", 0, "", "", "", "", "", "", "", "", "", "", "", "", "", _
+      False, 0, False, "", "", 0, "", "", "", "", "", "", "", "", "", "", "", "", "", False, _
       mcolSSITableViews
       
     .Show vbModal
@@ -2661,7 +2671,7 @@ Private Sub cmdAddHyperTextLink_Click()
       False, False, _
       0, 0, _
       False, 0, False, False, 0, 0, 0, 0, 0, 0, mcolGroups, _
-      False, 0, False, "", "", 0, "", "", "", "", "", "", "", "", "", "", "", "", "", _
+      False, 0, False, "", "", 0, "", "", "", "", "", "", "", "", "", "", "", "", "", False, _
       mcolSSITableViews
       
     .Show vbModal
@@ -2758,7 +2768,7 @@ Private Sub cmdAddDocument_Click()
       False, False, _
       0, 0, _
       False, 0, False, False, 0, 0, 0, 0, 0, 0, mcolGroups, _
-      False, 0, False, "", "", 0, "", "", "", "", "", "", "", "", "", "", "", "", "", _
+      False, 0, False, "", "", 0, "", "", "", "", "", "", "", "", "", "", "", "", "", False, _
       mcolSSITableViews
       
     .Show vbModal
@@ -3041,7 +3051,8 @@ Private Sub cmdCopyButtonLink_Click()
     .Chart_SortOrderID = ctlSourceGrid.Columns("Chart_SortOrderID").Text
     .Chart_SortDirection = ctlSourceGrid.Columns("Chart_SortDirection").Text
     .Chart_ColourID = ctlSourceGrid.Columns("Chart_ColourID").Text
-
+    .ChartShowPercentages = ctlSourceGrid.Columns("ChartShowPercentages").Text
+    
     .Initialize SSINTLINK_BUTTON, _
       ctlSourceGrid.Columns("Prompt").Text, ctlSourceGrid.Columns("ButtonText").Text, _
       ctlSourceGrid.Columns("HRProScreenID").Text, ctlSourceGrid.Columns("PageTitle").Text, _
@@ -3064,7 +3075,7 @@ Private Sub cmdCopyButtonLink_Click()
       ctlSourceGrid.Columns("ConditionalFormatting_Operator_1").Text, ctlSourceGrid.Columns("ConditionalFormatting_Value_1").Text, ctlSourceGrid.Columns("ConditionalFormatting_Style_1").Text, ctlSourceGrid.Columns("ConditionalFormatting_Colour_1").Text, _
       ctlSourceGrid.Columns("ConditionalFormatting_Operator_2").Text, ctlSourceGrid.Columns("ConditionalFormatting_Value_2").Text, ctlSourceGrid.Columns("ConditionalFormatting_Style_2").Text, ctlSourceGrid.Columns("ConditionalFormatting_Colour_2").Text, _
       ctlSourceGrid.Columns("ConditionalFormatting_Operator_3").Text, ctlSourceGrid.Columns("ConditionalFormatting_Value_3").Text, ctlSourceGrid.Columns("ConditionalFormatting_Style_3").Text, ctlSourceGrid.Columns("ConditionalFormatting_Colour_3").Text, _
-      ctlSourceGrid.Columns("SeparatorColour").Text, mcolSSITableViews
+      ctlSourceGrid.Columns("SeparatorColour").Text, ctlSourceGrid.Columns("ChartShowPercentages").Text, mcolSSITableViews
     .Show vbModal
 
     If Not .Cancelled Then
@@ -3187,7 +3198,7 @@ Private Sub cmdCopyDropdownListLink_Click()
       False, False, _
       0, 0, _
       False, 0, False, False, 0, 0, 0, 0, 0, 0, mcolGroups, _
-      False, 0, False, "", "", 0, "", "", "", "", "", "", "", "", "", "", "", "", "", _
+      False, 0, False, "", "", 0, "", "", "", "", "", "", "", "", "", "", "", "", "", False, _
       mcolSSITableViews
     
     .Show vbModal
@@ -3308,7 +3319,7 @@ Private Sub cmdCopyHypertextLink_Click()
       ctlSourceGrid.Columns("Element_Type").value, val(ctlSourceGrid.Columns("SeparatorOrientation").Text), _
       val(ctlSourceGrid.Columns("PictureID").Text), _
       False, 0, False, False, 0, 0, 0, 0, 0, 0, mcolGroups, _
-      False, 0, False, "", "", 0, "", "", "", "", "", "", "", "", "", "", "", "", "", _
+      False, 0, False, "", "", 0, "", "", "", "", "", "", "", "", "", "", "", "", "", False, _
       mcolSSITableViews
     
     .Show vbModal
@@ -3428,7 +3439,7 @@ Private Sub cmdCopyDocument_Click()
       ctlSourceGrid.Columns("DisplayDocumentHyperlink").value, _
       False, 0, 0, _
       False, 0, False, False, 0, 0, 0, 0, 0, 0, mcolGroups, _
-      False, 0, False, "", "", 0, "", "", "", "", "", "", "", "", "", "", "", "", "", _
+      False, 0, False, "", "", 0, "", "", "", "", "", "", "", "", "", "", "", "", "", False, _
       mcolSSITableViews
       
     .Show vbModal
@@ -3543,6 +3554,8 @@ Private Sub cmdEditButtonLink_Click()
     .Chart_SortOrderID = IIf(ctlSourceGrid.Columns("Chart_SortOrderID").Text = vbNullString, 0, val(ctlSourceGrid.Columns("Chart_SortOrderID").Text))
     .Chart_SortDirection = IIf(ctlSourceGrid.Columns("Chart_SortDirection").Text = vbNullString, 0, val(ctlSourceGrid.Columns("Chart_SortDirection").Text))
     .Chart_ColourID = IIf(ctlSourceGrid.Columns("Chart_ColourID").Text = vbNullString, 0, val(ctlSourceGrid.Columns("Chart_ColourID").Text))
+    ' .ChartShowPercentages = IIf(ctlSourceGrid.Columns("ChartShowPercentages").Text = vbNullString, 0, val(ctlSourceGrid.Columns("ChartShowPercentages").Text))
+    
     .Initialize SSINTLINK_BUTTON, _
       ctlSourceGrid.Columns("Prompt").Text, ctlSourceGrid.Columns("ButtonText").Text, _
       ctlSourceGrid.Columns("HRProScreenID").Text, ctlSourceGrid.Columns("PageTitle").Text, _
@@ -3564,7 +3577,7 @@ Private Sub cmdEditButtonLink_Click()
       ctlSourceGrid.Columns("ConditionalFormatting_Operator_1").Text, ctlSourceGrid.Columns("ConditionalFormatting_Value_1").Text, ctlSourceGrid.Columns("ConditionalFormatting_Style_1").Text, ctlSourceGrid.Columns("ConditionalFormatting_Colour_1").Text, _
       ctlSourceGrid.Columns("ConditionalFormatting_Operator_2").Text, ctlSourceGrid.Columns("ConditionalFormatting_Value_2").Text, ctlSourceGrid.Columns("ConditionalFormatting_Style_2").Text, ctlSourceGrid.Columns("ConditionalFormatting_Colour_2").Text, _
       ctlSourceGrid.Columns("ConditionalFormatting_Operator_3").Text, ctlSourceGrid.Columns("ConditionalFormatting_Value_3").Text, ctlSourceGrid.Columns("ConditionalFormatting_Style_3").Text, ctlSourceGrid.Columns("ConditionalFormatting_Colour_3").Text, _
-      ctlSourceGrid.Columns("SeparatorColour").Text, mcolSSITableViews
+      ctlSourceGrid.Columns("SeparatorColour").Text, ctlSourceGrid.Columns("ChartShowPercentages").Text, mcolSSITableViews
     .Show vbModal
 
     If Not .Cancelled Then
@@ -3585,7 +3598,7 @@ Private Sub cmdEditButtonLink_Click()
         & vbTab & .ConditionalFormatting_Operator_2 & vbTab & .ConditionalFormatting_Value_2 & vbTab & .ConditionalFormatting_Style_2 & vbTab & .ConditionalFormatting_Colour_2 _
         & vbTab & .ConditionalFormatting_Operator_3 & vbTab & .ConditionalFormatting_Value_3 & vbTab & .ConditionalFormatting_Style_3 & vbTab & .ConditionalFormatting_Colour_3 _
         & vbTab & .SeparatorBorderColour & vbTab & .InitialDisplayMode & vbTab & .Chart_TableID_2 & vbTab & .Chart_ColumnID_2 & vbTab & .Chart_TableID_3 _
-        & vbTab & .Chart_ColumnID_3 & vbTab & .Chart_SortOrderID & vbTab & .Chart_SortDirection & vbTab & .Chart_ColourID
+        & vbTab & .Chart_ColumnID_3 & vbTab & .Chart_SortOrderID & vbTab & .Chart_SortDirection & vbTab & .Chart_ColourID & vbTab & IIf(.chkShowPercentages = 0, "0", "1")
 
       ctlSourceGrid.RemoveItem lngRow
       
@@ -3692,7 +3705,7 @@ Private Sub cmdEditDropdownListLink_Click()
       False, False, _
       0, 0, _
       False, 0, False, False, 0, 0, 0, 0, 0, 0, mcolGroups, _
-      False, 0, False, "", "", 0, "", "", "", "", "", "", "", "", "", "", "", "", "", _
+      False, 0, False, "", "", 0, "", "", "", "", "", "", "", "", "", "", "", "", "", False, _
       mcolSSITableViews
     
     .Show vbModal
@@ -3816,7 +3829,7 @@ Private Sub cmdEditHypertextLink_Click()
       ctlSourceGrid.Columns("Element_Type").value, val(ctlSourceGrid.Columns("SeparatorOrientation").Text), _
       val(ctlSourceGrid.Columns("PictureID").Text), _
       False, 0, False, False, 0, 0, 0, 0, 0, 0, mcolGroups, _
-      False, 0, False, "", "", 0, "", "", "", "", "", "", "", "", "", "", "", "", "", _
+      False, 0, False, "", "", 0, "", "", "", "", "", "", "", "", "", "", "", "", "", False, _
       mcolSSITableViews
     
     .Show vbModal
@@ -3941,7 +3954,7 @@ Private Sub cmdEditDocument_Click()
       ctlSourceGrid.Columns("DisplayDocumentHyperlink").Text, _
       False, 0, 0, _
       False, 0, False, False, 0, 0, 0, 0, 0, 0, mcolGroups, _
-      False, 0, False, "", "", 0, "", "", "", "", "", "", "", "", "", "", "", "", "", _
+      False, 0, False, "", "", 0, "", "", "", "", "", "", "", "", "", "", "", "", "", False, _
       mcolSSITableViews
           
     .Show vbModal
@@ -4931,7 +4944,8 @@ Private Sub ReadParameters()
             vbTab & rsLinks!ConditionalFormatting_Operator_2 & vbTab & rsLinks!ConditionalFormatting_Value_2 & vbTab & rsLinks!ConditionalFormatting_Style_2 & vbTab & rsLinks!ConditionalFormatting_Colour_2 & _
             vbTab & rsLinks!ConditionalFormatting_Operator_3 & vbTab & rsLinks!ConditionalFormatting_Value_3 & vbTab & rsLinks!ConditionalFormatting_Style_3 & vbTab & rsLinks!ConditionalFormatting_Colour_3 & _
             vbTab & rsLinks!SeparatorColour & vbTab & CStr(rsLinks!InitialDisplayMode) & vbTab & CStr(rsLinks!Chart_TableID_2) & vbTab & CStr(rsLinks!Chart_ColumnID_2) & _
-            vbTab & CStr(rsLinks!Chart_TableID_3) & vbTab & CStr(rsLinks!Chart_ColumnID_3) & vbTab & CStr(rsLinks!Chart_SortOrderID & vbTab & CStr(rsLinks!Chart_SortDirection)) & vbTab & CStr(rsLinks!Chart_ColourID)
+            vbTab & CStr(rsLinks!Chart_TableID_3) & vbTab & CStr(rsLinks!Chart_ColumnID_3) & vbTab & CStr(rsLinks!Chart_SortOrderID & vbTab & CStr(rsLinks!Chart_SortDirection)) & vbTab & CStr(rsLinks!Chart_ColourID) & _
+            vbTab & IIf(IsNull(rsLinks!Chart_ShowPercentages), "0", IIf(rsLinks!Chart_ShowPercentages, "1", "0"))
        End If
           
       Case SSINTLINK_DROPDOWNLIST
