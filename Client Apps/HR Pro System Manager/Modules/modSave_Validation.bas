@@ -700,7 +700,7 @@ Private Function CreateValidationStoredProcedure(pLngCurrentTableID As Long, _
   aryOverlapParentJoins = GetOverlapParentJoins(pLngCurrentTableID)
   For iCounter = LBound(aryOverlapColumns, 2) To UBound(aryOverlapColumns, 2) - 1
     sSPCode = sSPCode & vbNewLine & _
-        "    SELECT TOP 1 @psInvalidityMessage = @psInvalidityMessage + char(13) + '''Start_Date '' to ''End_Date'' overlaps with another record.'" & vbNewLine & _
+        "    SELECT TOP 1 @psInvalidityMessage = @psInvalidityMessage + char(13) + '" & aryOverlapColumns(5, iCounter) & "'" & vbNewLine & _
         "    FROM dbo.[" & psCurrentTableName & "]" & vbNewLine
             
     If UBound(aryOverlapParentJoins) > 0 Then
