@@ -5627,8 +5627,7 @@ Public Function EnableControl(ctl As Control, blnEnabled As Boolean)
     ctl.BackColorEven = IIf(blnEnabled, vbWindowBackground, vbButtonFace)   'SSDBGrid
     ctl.BackColorOdd = IIf(blnEnabled, vbWindowBackground, vbButtonFace)   'SSDBGrid
 
-  ElseIf TypeOf ctl Is CommandButton Or _
-         TypeOf ctl Is SSCommand Then
+  ElseIf TypeOf ctl Is CommandButton Then
     'Disable all CommandButtons except cancel...
 
     If ctl.Cancel = False Then
@@ -5637,7 +5636,7 @@ Public Function EnableControl(ctl As Control, blnEnabled As Boolean)
       ctl.Enabled = True
     End If
 
-  ElseIf (TypeOf ctl Is SSCheck) Or (TypeOf ctl Is CheckBox) Or (TypeOf ctl Is OptionButton) Then
+  ElseIf (TypeOf ctl Is CheckBox) Or (TypeOf ctl Is OptionButton) Then
 
     ctl.ForeColor = IIf(blnEnabled, vbWindowText, vbApplicationWorkspace)
     ctl.BackColor = vbButtonFace
