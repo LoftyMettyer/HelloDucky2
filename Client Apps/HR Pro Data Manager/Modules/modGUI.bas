@@ -24,36 +24,6 @@ Public Sub FillComboWithFonts(objControl As ComboBox)
 
 End Sub
 
-' Textwidth function causes overflow on larger pieces of data. This wrapper should handle it.
-Public Function BigTextWidth(ByRef sInString As Variant, ByVal MaximumSize As Single) As Long
-  
-  On Error GoTo ErrorTrap
-  
-  Dim lngTextWidth As Single
-   
-  If Len(sInString) > 500 Then
-    lngTextWidth = Printer.TextWidth(Left(sInString, 500)) + _
-          BigTextWidth(Right(sInString, Len(sInString) - 500), 0)
-  Else
-    lngTextWidth = Printer.TextWidth(sInString)
-  End If
-  
-  If MaximumSize > 0 Then
-    BigTextWidth = Minimum(lngTextWidth, MaximumSize)
-  Else
-    BigTextWidth = lngTextWidth
-  End If
-  
-TidyUpAndExit:
-  Exit Function
-  
-ErrorTrap:
-  BigTextWidth = Len(sInString) * 100
-  GoTo TidyUpAndExit
- 
-  
-End Function
-
 
 
 
