@@ -83,19 +83,16 @@ Begin VB.Form frmColEdit
       TabPicture(1)   =   "frmColEdit.frx":0028
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraControlPage"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "Opt&ions"
       TabPicture(2)   =   "frmColEdit.frx":0044
       Tab(2).ControlEnabled=   0   'False
       Tab(2).Control(0)=   "fraOptionsPage"
-      Tab(2).Control(0).Enabled=   0   'False
       Tab(2).ControlCount=   1
       TabCaption(3)   =   "Valida&tion"
       TabPicture(3)   =   "frmColEdit.frx":0060
       Tab(3).ControlEnabled=   0   'False
       Tab(3).Control(0)=   "fraValidationPage"
-      Tab(3).Control(0).Enabled=   0   'False
       Tab(3).ControlCount=   1
       TabCaption(4)   =   "Diar&y Links"
       TabPicture(4)   =   "frmColEdit.frx":007C
@@ -6645,7 +6642,7 @@ Private Sub RefreshDefinitionTab()
     If asrSize.value > 15 Then asrSize.value = 15
     asrSize.MaximumValue = 15
   Else
-    asrSize.Enabled = Not bUnlimitedSize
+    asrSize.Enabled = Not bUnlimitedSize And Not miColumnType = giCOLUMNTYPE_LOOKUP
     asrDecimals.Enabled = Not bUnlimitedSize
     spnDefaultDisplayWidth.Enabled = Not bUnlimitedSize
 
