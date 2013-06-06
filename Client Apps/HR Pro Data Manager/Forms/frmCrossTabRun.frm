@@ -649,7 +649,7 @@ End Sub
 
 Private Sub Form_Activate()
   If Me.Visible And Me.Enabled Then
-    cmdOK.SetFocus
+    cmdOk.SetFocus
   End If
 End Sub
 
@@ -2339,10 +2339,10 @@ Private Sub Form_Resize()
 
   
   'Position the command buttons...
-  lngTop = Me.ScaleHeight - (cmdOK.Height + lngGap)
+  lngTop = Me.ScaleHeight - (cmdOk.Height + lngGap)
   
-  lngLeft = Me.ScaleWidth - (cmdOK.Width + lngGap)
-  cmdOK.Move lngLeft, lngTop
+  lngLeft = Me.ScaleWidth - (cmdOk.Width + lngGap)
+  cmdOk.Move lngLeft, lngTop
 
   lngLeft = lngLeft - (cmdOutput.Width + lngGap)
   cmdOutput.Move lngLeft, lngTop
@@ -3807,6 +3807,11 @@ Public Sub SizeBreakdownColumns()
     End If
 
     For intCount = .Cols - 1 To 1 Step -1
+    
+      If mlngCrossTabType = cttStability Or cttTurnover Then
+        .Columns(intCount).Width = 1400
+      End If
+      
       lngWidth = lngWidth - .Columns(intCount).Width
     Next
     .Columns(0).Width = lngWidth
