@@ -163,7 +163,7 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
     ' Tidy up existing temporary tables/procedures/udfs
     If fOK Then
       gobjProgress.ResetBar2
-      OutputCurrentProcess "Preparing Database"
+      OutputCurrentProcess "Initialising .NET System Framework"
       gobjProgress.UpdateProgress False
       DoEvents
       
@@ -182,7 +182,7 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
     If fOK Then
       Set gobjHRProEngine.CommitDB = gADOCon
       Set gobjHRProEngine.MetadataDB = daoDb
-      fOK = gobjHRProEngine.Initialise
+      fOK = gobjHRProEngine.PopulateObjects
       gobjHRProEngine.Options.RefreshObjects = True
     End If
     
@@ -661,7 +661,12 @@ TidyUpAndExit:
   OutputCurrentProcess vbNullString
   
   If Not gobjHRProEngine.ErrorLog Is Nothing Then
-    gobjHRProEngine.ErrorLog.OutputToFile (App.Path + "\HRProEngine.log")
+    gobjHRProEngine.ErrorLog.OutputToFile (App.Path + "\HRProSystemFramework.log")
+    If gobjHRProEngine.ErrorLog.ErrorCount > 0 Then
+      gobjProgress.Visible = False
+      gobjHRProEngine.ErrorLog.Show
+      fOK = Not gobjHRProEngine.ErrorLog.IsCatastrophic
+    End If
   End If
   
   If fOK Then
