@@ -55,6 +55,7 @@ Public gADOCon As ADODB.Connection
 Public daoWS As dao.Workspace
 Public daoDb As dao.Database
 Public recTabEdit As dao.Recordset
+Public recTableValidationEdit As dao.Recordset
 Public recSummaryEdit As dao.Recordset
 Public recColEdit As dao.Recordset
 Public recDiaryEdit As dao.Recordset
