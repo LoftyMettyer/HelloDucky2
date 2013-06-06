@@ -3737,7 +3737,7 @@ Public Property Get IsLoading() As Boolean
   IsLoading = mbIsLoading
 End Property
 
-Private Sub ssOleDBGridFindColumns_ColResize(ByVal ColIndex As Integer, Cancel As Integer)
+Private Sub ssOleDBGridFindColumns_ColResize(ByVal colIndex As Integer, Cancel As Integer)
 
   Dim dblSizeAmendment As Double
 
@@ -3746,14 +3746,14 @@ Private Sub ssOleDBGridFindColumns_ColResize(ByVal ColIndex As Integer, Cancel A
     .Redraw = False
 
     'Find last visible column
-    If .Columns(ColIndex + 1).Visible Then
-      dblSizeAmendment = .Columns(ColIndex).Width - .ResizeWidth
-      .Columns(ColIndex + 1).Width = .Columns(ColIndex + 1).Width + dblSizeAmendment
-      SaveUserSetting "FindOrder" + LTrim(Str(mlngOrderID)), .Columns(ColIndex + 1).Name, .Columns(ColIndex + 1).Width
+    If .Columns(colIndex + 1).Visible Then
+      dblSizeAmendment = .Columns(colIndex).Width - .ResizeWidth
+      .Columns(colIndex + 1).Width = .Columns(colIndex + 1).Width + dblSizeAmendment
+      SaveUserSetting "FindOrder" + LTrim(Str(mlngOrderID)), .Columns(colIndex + 1).Name, .Columns(colIndex + 1).Width
     End If
 
     'Save the resized column width
-    SaveUserSetting "FindOrder" + LTrim(Str(mlngOrderID)), .Columns(ColIndex).Name, .ResizeWidth
+    SaveUserSetting "FindOrder" + LTrim(Str(mlngOrderID)), .Columns(colIndex).Name, .ResizeWidth
 
     .Redraw = True
 
