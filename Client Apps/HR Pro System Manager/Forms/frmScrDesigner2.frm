@@ -74,7 +74,7 @@ Begin VB.Form frmScrDesigner2
       FontStrikethrough=   0   'False
       FontUnderline   =   -1  'True
       ForeColor       =   -2147483630
-      ExecuteOnSave   =   -1  'True
+      NavigateOnSave  =   0   'False
    End
    Begin VB.PictureBox picFormIcon 
       Height          =   285
@@ -1147,25 +1147,21 @@ Private Function DropControl(pVarPageContainer As Variant, pCtlSource As Control
               Set ctlControl.Container = pVarPageContainer
               ctlControl.Left = AlignX(CLng(pSngX))
               ctlControl.Top = AlignY(CLng(pSngY))
-              ctlControl.ColumnID = .Fields("columnID")
+              ctlControl.ColumnID = .Fields("columnID").value
                             
               ' Give the control a tooltip.
               sColumnName = .Fields("columnName")
               With recTabEdit
                 .Index = "idxTableID"
-                .Seek "=", recColEdit.Fields("TableId")
+                .Seek "=", recColEdit.Fields("TableId").value
                     
                 If Not .NoMatch Then
-                  sTableName = .Fields("tableName")
+                  sTableName = .Fields("tableName").value
                   ctlControl.ToolTipText = sTableName & "." & sColumnName
                 End If
               End With
               
-              ' Initialise the navigation properties
-              If ScreenControl_HasNavigation(iControlType) Then
-                ctlControl.ColumnName = GetColumnName(ctlControl.ColumnID, False)
-              End If
-              
+             
               ' Initialise the new control's font and forecolour.
               If ScreenControl_HasFont(iControlType) Then
                 Set objFont = New StdFont
@@ -1182,7 +1178,7 @@ Private Function DropControl(pVarPageContainer As Variant, pCtlSource As Control
               End If
               
               If ScreenControl_HasCaption(iControlType) Then
-                ctlControl.Caption = objMisc.StrReplace(.Fields("columnName"), "_", " ", False) & vbNullString
+                ctlControl.Caption = objMisc.StrReplace(.Fields("columnName").value, "_", " ", False) & vbNullString
               End If
               
               If ScreenControl_HasText(iControlType) Then
@@ -1193,6 +1189,14 @@ Private Function DropControl(pVarPageContainer As Variant, pCtlSource As Control
                   ctlControl.ButtonCaption = OLEType(ctlControl.ColumnID)
 '                  ctlControl.Caption = ctlControl.Caption & gsOLEDISPLAYTYPE_CONTENTS
                 End If
+              End If
+              
+              ' Initialise the navigation properties
+              If ScreenControl_HasNavigation(iControlType) Then
+                ctlControl.ColumnName = GetColumnName(ctlControl.ColumnID, False)
+                ctlControl.DisplayType = NavigationDisplayType.Hyperlink
+                ctlControl.Caption = "Navigate To..."
+                ctlControl.NavigateTo = ctlControl.NavigateTo
               End If
               
               ' JIRA-539 Below piece of code looks strange, but for some reason without it, the background of some controls
@@ -1331,6 +1335,12 @@ Private Function DropControl(pVarPageContainer As Variant, pCtlSource As Control
               
               If ScreenControl_HasForeColor(iControlType) Then
                 .ForeColor = gDfltForeColour
+              End If
+              
+              If ScreenControl_HasNavigation(iControlType) Then
+                .DisplayType = NavigationDisplayType.Hyperlink
+                .NavigateTo = "about:blank"
+                sCaption = "Navigate To..."
               End If
               
               If ScreenControl_HasCaption(iControlType) Then
@@ -6297,9 +6307,10 @@ Public Function LoadTabPage(piPageNumber As Integer) As Boolean
     
               ' Set the controls navigate properties
               If ScreenControl_HasNavigation(iCtrlType) Then
-                ctlControl.NavigateTo = IIf(IsNull(.Fields("NavigateTo")), "", .Fields("NavigateTo"))
-                ctlControl.NavigateIn = IIf(IsNull(.Fields("NavigateIn")), NavigateIn.URL, .Fields("NavigateIn"))
-                ctlControl.NavigateOnSave = IIf(IsNull(.Fields("NavigateOnSave")), vbNo, .Fields("NavigateOnSave"))
+                ctlControl.ColumnName = GetColumnName(ctlControl.ColumnID, False)
+                ctlControl.NavigateTo = IIf(IsNull(.Fields("NavigateTo").value), vbNullString, .Fields("NavigateTo").value)
+                ctlControl.NavigateIn = IIf(IsNull(.Fields("NavigateIn").value), NavigateIn.URL, .Fields("NavigateIn").value)
+                ctlControl.NavigateOnSave = IIf(IsNull(.Fields("NavigateOnSave").value), vbNo, .Fields("NavigateOnSave").value)
               End If
   
   
