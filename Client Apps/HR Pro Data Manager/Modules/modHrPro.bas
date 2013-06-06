@@ -1981,7 +1981,7 @@ Public Sub SetCaption(Control As Object, ByRef Caption As String)
 '  End If
 
   On Error Resume Next
-  
+
   'Attempt to set the Caption property
   Control.Caption = Caption
   If Err Then
