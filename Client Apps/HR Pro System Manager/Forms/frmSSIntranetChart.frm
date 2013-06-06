@@ -306,7 +306,7 @@ Private Sub cboColumns_Click()
   piColumnDataType = GetColumnDataType(lngColumnID)
   
   ' Disable 'total' option if not numeric or integer
-  If piColumnDataType <> dtINTEGER And piColumnDataType <> dtNUMERIC Then
+  If piColumnDataType <> dtinteger And piColumnDataType <> dtNUMERIC Then
     optAggregateType(0).value = True
     optAggregateType(1).Enabled = False
     optAggregateType(1).ForeColor = vbButtonFace
@@ -579,10 +579,16 @@ Private Function PopulateColumnsCombo(plngTableID As Long) As Boolean
       End If
 
       ' Don't add deleted or system columns
-      If recColEdit!Deleted <> True And recColEdit!columnType <> giCOLUMNTYPE_SYSTEM Then
+      If recColEdit!Deleted <> True And recColEdit!columntype <> giCOLUMNTYPE_SYSTEM Then
         ' Add the column to the combo
-        cboColumns.AddItem recColEdit.Fields("ColumnName")
-        cboColumns.ItemData(cboColumns.NewIndex) = recColEdit.Fields("ColumnID")
+        ' Making sure it isn't ole, photo, wp or link...
+        If recColEdit!DataType <> dtlongvarchar And _
+          recColEdit!DataType <> dtBINARY And _
+          recColEdit!DataType <> dtVARBINARY And _
+          recColEdit!DataType <> dtLONGVARBINARY Then
+            cboColumns.AddItem recColEdit.Fields("ColumnName")
+            cboColumns.ItemData(cboColumns.NewIndex) = recColEdit.Fields("ColumnID")
+        End If
       End If
 
       recColEdit.MoveNext
