@@ -1799,7 +1799,7 @@ Private Sub ResizeGridColumns(pctlGrid As SSDBGrid)
     .MoveFirst
     
     For iColumn = 0 To .Columns.Count - 1 Step 1
-      lngTextWidth = Me.TextWidth(.Columns(iColumn).Caption)
+      lngTextWidth = TextWidth(.Columns(iColumn).Caption)
 
       If .Columns(iColumn).Visible Then
         iLastVisibleColumn = iColumn
@@ -1807,8 +1807,8 @@ Private Sub ResizeGridColumns(pctlGrid As SSDBGrid)
         For iRow = 0 To .Rows - 1 Step 1
           varBookmark = .AddItemBookmark(iRow)
 
-          If Me.TextWidth(Trim(.Columns(iColumn).CellText(varBookmark))) > lngTextWidth Then
-            lngTextWidth = Me.TextWidth(Trim(.Columns(iColumn).CellText(varBookmark)))
+          If TextWidth(Trim(.Columns(iColumn).CellText(varBookmark))) > lngTextWidth Then
+            lngTextWidth = TextWidth(Trim(.Columns(iColumn).CellText(varBookmark)))
           End If
         Next iRow
 

@@ -4195,7 +4195,7 @@ Private Function CopyControlProperties(pCtlSource As VB.Control, _
     End If
         
     If WebFormItemHasProperty(iControlType, WFITEMPROP_HEADLINES) Then
-      .HeadLines = pCtlSource.HeadLines
+      .Headlines = pCtlSource.Headlines
     End If
         
     If WebFormItemHasProperty(iControlType, WFITEMPROP_TABLEID) Then
@@ -5031,7 +5031,7 @@ Public Function AutoSizeControl(pctlControl As VB.Control) As Boolean
             If .Fields("size") > 0 Then
               If .Fields("datatype") = dtVARCHAR Then
                 If .Fields("Multiline") Then
-                  pctlControl.Width = Me.TextWidth(String(8000, "W")) + (2 * XFrame)
+                  pctlControl.Width = TextWidth(String(8000, "W")) + (2 * XFrame)
                 Else
                   If Len(.Fields("Mask")) > 0 Then
                     fLiteral = False
@@ -5039,24 +5039,24 @@ Public Function AutoSizeControl(pctlControl As VB.Control) As Boolean
                     
                     For iLoop = 1 To Len(sMask)
                       If fLiteral Then
-                        sngWidth = sngWidth + Me.TextWidth(String(1, Mid(sMask, iLoop, 1)))
+                        sngWidth = sngWidth + TextWidth(String(1, Mid(sMask, iLoop, 1)))
                         fLiteral = False
                       Else
                         Select Case Mid(sMask, iLoop, 1)
                           Case "A"
-                            sngWidth = sngWidth + Me.TextWidth(String(1, "W"))
+                            sngWidth = sngWidth + TextWidth(String(1, "W"))
                           Case "a"
-                            sngWidth = sngWidth + Me.TextWidth(String(1, "w"))
+                            sngWidth = sngWidth + TextWidth(String(1, "w"))
                           Case "9"
-                            sngWidth = sngWidth + Me.TextWidth(String(1, "8"))
+                            sngWidth = sngWidth + TextWidth(String(1, "8"))
                           Case "#"
-                            sngWidth = sngWidth + Me.TextWidth(String(1, "8"))
+                            sngWidth = sngWidth + TextWidth(String(1, "8"))
                           Case "B"
-                            sngWidth = sngWidth + Me.TextWidth(String(1, "0"))
+                            sngWidth = sngWidth + TextWidth(String(1, "0"))
                           Case "\"
                             fLiteral = True
                           Case Else
-                            sngWidth = sngWidth + Me.TextWidth(String(1, Mid(sMask, iLoop, 1)))
+                            sngWidth = sngWidth + TextWidth(String(1, Mid(sMask, iLoop, 1)))
                         End Select
                       End If
                     Next iLoop
@@ -5078,7 +5078,7 @@ Public Function AutoSizeControl(pctlControl As VB.Control) As Boolean
   Select Case iType
     ' Set the control to have the minimum width and height for labels.
     Case giWFFORMITEM_LABEL
-      lngMinWidth = Me.TextWidth(pctlControl.Caption)
+      lngMinWidth = TextWidth(pctlControl.Caption)
       lngMinWidth = IIf(lngMinWidth < 255, 255, lngMinWidth)
       pctlControl.Width = lngMinWidth
       lngMinHeight = Me.TextHeight(pctlControl.Caption)
@@ -5092,7 +5092,7 @@ Public Function AutoSizeControl(pctlControl As VB.Control) As Boolean
                 
     ' Set the control to have the minimum width and height for check boxes.
     Case giWFFORMITEM_INPUTVALUE_LOGIC
-      'lngMinWidth = 360 + Me.TextWidth("W" & pctlControl.Caption)
+      'lngMinWidth = 360 + TextWidth("W" & pctlControl.Caption)
       'pctlControl.Width = lngMinWidth
       'lngMinHeight = UI.GetCharHeight(Me.hDC)
       'If lngMinHeight < 285 Then lngMinHeight = 285
@@ -6025,7 +6025,7 @@ Private Function SaveWebFormItems(pwfElement As COAWF_Webform) As Boolean
         End If
         
         If WebFormItemHasProperty(iWFItemType, WFITEMPROP_HEADLINES) Then
-          asItems(43, iNewIndex) = .HeadLines
+          asItems(43, iNewIndex) = .Headlines
         Else
           asItems(43, iNewIndex) = 0
         End If
@@ -6412,7 +6412,7 @@ Private Function AutoLabel(pVarPageContainer As Variant, pSngX As Single, pSngY 
       With ctlControl
 
         Set .Container = pVarPageContainer
-        .Left = AlignX((CLng(pSngX) - Me.TextWidth(sCaption + Space(5))))
+        .Left = AlignX((CLng(pSngX) - TextWidth(sCaption + Space(5))))
         If .Left < 0 Then
           .Left = CLng(pSngX)
           .Top = AlignY((CLng(pSngY) - (Me.TextHeight(sCaption) + 20)))
@@ -6999,7 +6999,7 @@ Public Function LoadWebFormItems() As Boolean
         End If
 
         If WebFormItemHasProperty(iWFItemType, WFITEMPROP_HEADLINES) Then
-          ctlControl.HeadLines = asItems(43, iLoop)
+          ctlControl.Headlines = asItems(43, iLoop)
         End If
         
         If WebFormItemHasProperty(iWFItemType, WFITEMPROP_TABLEID) Then

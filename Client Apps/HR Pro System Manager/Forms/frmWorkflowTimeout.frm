@@ -1,12 +1,12 @@
 VERSION 5.00
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{604A59D5-2409-101D-97D5-46626B63EF2D}#1.0#0"; "TDBNumbr.ocx"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
-Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "COA_ColourPicker.ocx"
+Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "coa_colourpicker.ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
-Object = "{96E404DC-B217-4A2D-A891-C73A92A628CC}#1.0#0"; "COA_WorkingPattern.ocx"
+Object = "{96E404DC-B217-4A2D-A891-C73A92A628CC}#1.0#0"; "coa_workingpattern.ocx"
 Begin VB.Form frmWorkflowTimeout 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Web Form Item Properties"
@@ -2270,7 +2270,7 @@ Private Sub ResizeGridColumns(pctlGrid As SSDBGrid)
     .MoveFirst
     
     For iColumn = 0 To .Columns.Count - 1 Step 1
-      lngTextWidth = Me.TextWidth(.Columns(iColumn).Caption)
+      lngTextWidth = TextWidth(.Columns(iColumn).Caption)
 
       If .Columns(iColumn).Visible Then
         iLastVisibleColumn = iColumn
@@ -2278,8 +2278,8 @@ Private Sub ResizeGridColumns(pctlGrid As SSDBGrid)
         For iRow = 0 To .Rows - 1 Step 1
           varBookmark = .AddItemBookmark(iRow)
 
-          If Me.TextWidth(Trim(.Columns(iColumn).CellText(varBookmark))) > lngTextWidth Then
-            lngTextWidth = Me.TextWidth(Trim(.Columns(iColumn).CellText(varBookmark)))
+          If TextWidth(Trim(.Columns(iColumn).CellText(varBookmark))) > lngTextWidth Then
+            lngTextWidth = TextWidth(Trim(.Columns(iColumn).CellText(varBookmark)))
           End If
         Next iRow
 
@@ -2435,7 +2435,7 @@ Private Sub cboDefaultValue_refresh(ByVal psCurrentValue As String)
               " WHERE " & sLookupColumnName
 
             Select Case iDataType
-              Case dtNUMERIC, dtinteger
+              Case dtNUMERIC, dtINTEGER
                 sSQL = sSQL & _
                   " = " & UI.ConvertNumberForSQL(val(psCurrentValue))
               Case dtTIMESTAMP
@@ -2463,7 +2463,7 @@ Private Sub cboDefaultValue_refresh(ByVal psCurrentValue As String)
 
             If Not IsNull(vValue) Then
               Select Case iDataType
-                Case dtNUMERIC, dtinteger
+                Case dtNUMERIC, dtINTEGER
                   .AddItem UI.ConvertNumberForDisplay(Trim(Str(vValue)))
 
                 Case dtTIMESTAMP
@@ -2578,7 +2578,7 @@ Private Sub cboRecordIdentificationElement_refresh(ByVal psCurrentElement As Str
   Dim wfTemp As VB.Control
   Dim asItems() As String
   Dim sSQL As String
-  Dim rsTables As dao.Recordset
+  Dim rsTables As DAO.Recordset
   Dim fDone As Boolean
   Dim fFound As Boolean
   
@@ -2740,7 +2740,7 @@ Private Sub cboRecordIdentificationRecordSelector_refresh(ByVal psCurrentRecSel 
   Dim wfTemp As VB.Control
   Dim asItems() As String
   Dim sSQL As String
-  Dim rsTables As dao.Recordset
+  Dim rsTables As DAO.Recordset
   Dim fDone As Boolean
   Dim fFound As Boolean
   Dim fNeeded As Boolean
@@ -2994,7 +2994,7 @@ Private Sub cboRecordIdentificationRecord_refresh(ByVal piCurrentRecord As Workf
   Dim asItems() As String
   Dim sTableIDs As String
   Dim sSQL As String
-  Dim rsTables As dao.Recordset
+  Dim rsTables As DAO.Recordset
   Dim sValidTableIDs As String
   
   iIndex = -1
@@ -3210,7 +3210,7 @@ Private Sub cboRecordIdentificationRecordTable_refresh(ByVal plngCurrentRecordTa
   ' Populate the combo and select the current or default value.
   Dim iRecord As WorkflowRecordSelectorTypes
   Dim sSQL As String
-  Dim rsTables As dao.Recordset
+  Dim rsTables As DAO.Recordset
   Dim lngLoop As Long
   Dim iLoop As Integer
   Dim iLoop2 As Integer
@@ -3359,7 +3359,7 @@ End Sub
 Private Sub cboRecordIdentificationTable_refresh(ByVal pLngCurrentTableID As Long)
   ' Populate the combo and select the current or default value.
   Dim sSQL As String
-  Dim rsTables As dao.Recordset
+  Dim rsTables As DAO.Recordset
   Dim iLoop As Integer
   Dim iIndex As Integer
   Dim iDefaultIndex As Integer
@@ -3420,7 +3420,7 @@ End Sub
 Private Sub cboLookupTable_refresh(ByVal pLngCurrentTableID As Long)
   ' Populate the combo and select the current or default value.
   Dim sSQL As String
-  Dim rsTables As dao.Recordset
+  Dim rsTables As DAO.Recordset
   Dim iLoop As Integer
   Dim iIndex As Integer
   Dim iDefaultIndex As Integer
@@ -3583,10 +3583,10 @@ Private Sub cboLookupFilterValue_Refresh(ByVal psCurrentValue As String)
 
           Case giWFFORMITEM_INPUTVALUE_CHAR
             fItemOK = (lngLookupFilterColumnType = dtVARCHAR) _
-              Or (lngLookupFilterColumnType = dtlongvarchar)
+              Or (lngLookupFilterColumnType = dtLONGVARCHAR)
           
           Case giWFFORMITEM_INPUTVALUE_NUMERIC
-            fItemOK = (lngLookupFilterColumnType = dtinteger) _
+            fItemOK = (lngLookupFilterColumnType = dtINTEGER) _
               Or (lngLookupFilterColumnType = dtNUMERIC)
 
           Case giWFFORMITEM_INPUTVALUE_LOGIC
@@ -3597,31 +3597,31 @@ Private Sub cboLookupFilterValue_Refresh(ByVal psCurrentValue As String)
 
           Case giWFFORMITEM_INPUTVALUE_DROPDOWN
             fItemOK = (lngLookupFilterColumnType = dtVARCHAR) _
-              Or (lngLookupFilterColumnType = dtlongvarchar)
+              Or (lngLookupFilterColumnType = dtLONGVARCHAR)
 
           Case giWFFORMITEM_INPUTVALUE_LOOKUP
             Select Case GetColumnDataType(CLng(asItems(49, iLoop)))
-              Case dtlongvarchar
+              Case dtLONGVARCHAR
                 fItemOK = (lngLookupFilterColumnType = dtVARCHAR) _
-                  Or (lngLookupFilterColumnType = dtlongvarchar)
+                  Or (lngLookupFilterColumnType = dtLONGVARCHAR)
               Case dtNUMERIC
-                fItemOK = (lngLookupFilterColumnType = dtinteger) _
+                fItemOK = (lngLookupFilterColumnType = dtINTEGER) _
                   Or (lngLookupFilterColumnType = dtNUMERIC)
-              Case dtinteger
-                fItemOK = (lngLookupFilterColumnType = dtinteger) _
+              Case dtINTEGER
+                fItemOK = (lngLookupFilterColumnType = dtINTEGER) _
                   Or (lngLookupFilterColumnType = dtNUMERIC)
               Case dtTIMESTAMP
                 fItemOK = (lngLookupFilterColumnType = dtTIMESTAMP)
               Case dtVARCHAR
                 fItemOK = (lngLookupFilterColumnType = dtVARCHAR) _
-                  Or (lngLookupFilterColumnType = dtlongvarchar)
+                  Or (lngLookupFilterColumnType = dtLONGVARCHAR)
               Case Else
                 fItemOK = False
             End Select
 
           Case giWFFORMITEM_INPUTVALUE_OPTIONGROUP
             fItemOK = (lngLookupFilterColumnType = dtVARCHAR) _
-              Or (lngLookupFilterColumnType = dtlongvarchar)
+              Or (lngLookupFilterColumnType = dtLONGVARCHAR)
 
           Case Else
             fItemOK = False
@@ -4570,7 +4570,7 @@ Private Sub RefreshDefaultValueControls()
           Case dtTIMESTAMP
             iExprType = giEXPRVALUE_DATE
 
-          Case dtinteger
+          Case dtINTEGER
             iExprType = giEXPRVALUE_NUMERIC
 
           Case dtBIT
@@ -4579,7 +4579,7 @@ Private Sub RefreshDefaultValueControls()
           Case dtNUMERIC
             iExprType = giEXPRVALUE_NUMERIC
 
-          Case dtlongvarchar
+          Case dtLONGVARCHAR
             iExprType = giEXPRVALUE_CHARACTER
         End Select
       
@@ -4741,7 +4741,7 @@ Private Sub RefreshScreen()
   
   fOKToSave = mfChanged And (Not mfReadOnly)
   
-  cmdOk.Enabled = fOKToSave
+  cmdOK.Enabled = fOKToSave
 
 End Sub
 
@@ -5089,7 +5089,7 @@ Private Sub SaveProperties()
   ' Header frame
   '--------------------------------------------------
   If WebFormItemHasProperty(miItemType, WFITEMPROP_HEADLINES) Then
-    varControl.HeadLines = spnHeaderLines.value
+    varControl.Headlines = spnHeaderLines.value
   End If
 
   If WebFormItemHasProperty(miItemType, WFITEMPROP_COLUMNHEADERS) Then
@@ -6302,7 +6302,7 @@ Private Sub cmdDefaultValueExpression_Click()
           Case dtTIMESTAMP
             iExprType = giEXPRVALUE_DATE
           
-          Case dtinteger
+          Case dtINTEGER
             iExprType = giEXPRVALUE_NUMERIC
  
           Case dtBIT
@@ -6311,7 +6311,7 @@ Private Sub cmdDefaultValueExpression_Click()
           Case dtNUMERIC
             iExprType = giEXPRVALUE_NUMERIC
 
-          Case dtlongvarchar
+          Case dtLONGVARCHAR
             iExprType = giEXPRVALUE_CHARACTER
         End Select
       Else
@@ -8110,7 +8110,7 @@ Private Function FormatScreen_Frame_Header() As Boolean
       If miItemType = giWFFORMITEM_FORM Then
         .value = 0 ' Not available for forms
       Else
-        .value = mctlSelectedControl.HeadLines
+        .value = mctlSelectedControl.Headlines
       End If
     End With
   Else
@@ -9987,7 +9987,7 @@ Private Function FormatScreen_Frame_RecordIdentification() As Boolean
   Dim fFrameNeeded As Boolean
   Dim sngCurrentControlTop As Single
   Dim sSQL As String
-  Dim rsTables As dao.Recordset
+  Dim rsTables As DAO.Recordset
   Dim alngValidTables() As Long
   Dim fFound As Boolean
   Dim lngLoop As Long
@@ -10547,13 +10547,13 @@ End Sub
 Private Sub txtControlValues_GotFocus()
   ' Disable the 'Default' property of the 'OK' button as the return key is
   ' used by this textbox.
-  cmdOk.Default = False
+  cmdOK.Default = False
 
 End Sub
 
 Private Sub txtControlValues_LostFocus()
   ' Enable the 'Default' property of the OK button.
-  cmdOk.Default = True
+  cmdOK.Default = True
 
 End Sub
 
@@ -10701,14 +10701,14 @@ End Sub
 Private Sub txtFileExtensions_GotFocus()
   ' Disable the 'Default' property of the 'OK' button as the return key is
   ' used by this textbox.
-  cmdOk.Default = False
+  cmdOK.Default = False
 
 End Sub
 
 
 Private Sub txtFileExtensions_LostFocus()
   ' Enable the 'Default' property of the OK button.
-  cmdOk.Default = True
+  cmdOK.Default = True
 
 End Sub
 
