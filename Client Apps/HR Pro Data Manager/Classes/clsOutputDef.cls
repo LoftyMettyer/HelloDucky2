@@ -18,8 +18,8 @@ Attribute mfrmParent.VB_VarHelpID = -1
 Private mlngFormat As OutputFormats
 Private WithEvents cmdEmailGroup As CommandButton
 Attribute cmdEmailGroup.VB_VarHelpID = -1
-Private WithEvents cmdFileName As CommandButton
-Attribute cmdFileName.VB_VarHelpID = -1
+Private WithEvents cmdFilename As CommandButton
+Attribute cmdFilename.VB_VarHelpID = -1
 Private WithEvents cmdTitlePageTemplate As CommandButton
 Attribute cmdTitlePageTemplate.VB_VarHelpID = -1
 'Private mlngFileFormats As Collection
@@ -44,8 +44,8 @@ Public Sub PopulateOutputControls(rsTemp As Recordset)
     
     .chkDestination(desSave).Value = IIf(rsTemp!OutputSave, vbChecked, vbUnchecked)
     If .chkDestination(desSave).Value Then
-      .txtFileName.Text = rsTemp!OutputFilename
-      .txtFileName.SelLength = Len(.txtFileName.Text)
+      .txtFilename.Text = rsTemp!OutputFilename
+      .txtFilename.SelLength = Len(.txtFilename.Text)
       '.txtFilename.Tag = rsTemp!OutputSaveFormat
       SetComboItem .cboSaveExisting, rsTemp!OutputSaveExisting
     End If
@@ -55,7 +55,7 @@ Public Sub PopulateOutputControls(rsTemp As Recordset)
       .txtEmailGroup.Text = datGeneral.GetEmailGroupName(rsTemp!OutputEmailAddr)
       .txtEmailGroup.Tag = rsTemp!OutputEmailAddr
       .txtEmailSubject.Text = rsTemp!OutputEmailSubject
-      .txtEMailAttachAs.Text = IIf(IsNull(rsTemp!OutputEmailAttachAs), vbNullString, rsTemp!OutputEmailAttachAs)
+      .txtEmailAttachAs.Text = IIf(IsNull(rsTemp!OutputEmailAttachAs), vbNullString, rsTemp!OutputEmailAttachAs)
       '.txtEmailAttachAs.Tag = rsTemp!OutputEmailFileFormat
     End If
 
@@ -87,7 +87,7 @@ Public Property Let ParentForm(ByVal frmNewValue As Form)
   
   Set mfrmParent = frmNewValue
   Set cmdEmailGroup = mfrmParent.cmdEmailGroup
-  Set cmdFileName = mfrmParent.cmdFileName
+  Set cmdFilename = mfrmParent.cmdFilename
   
   If mfrmParent.Name = "frmBatchJob" Then Set cmdTitlePageTemplate = mfrmParent.cmdTitlePageTemplate
   
@@ -146,8 +146,8 @@ Public Sub FormatClick(Index As Integer, Optional blnDataToScreen As Boolean = T
   Case fmtExcelWorksheet, fmtExcelchart, fmtExcelPivotTable
     EnableDestinations True, True, True, True
     If gblnReportPackMode Then
-      mfrmParent.chkTOC.Enabled = False
-      mfrmParent.chkTOC.Value = False
+      mfrmParent.chkTOC.Enabled = True
+      'mfrmParent.chkTOC.Value = False
       mfrmParent.chkRetainPivot.Enabled = True
       mfrmParent.chkRetainPivot.Value = vbUnchecked
       mfrmParent.txtTitlePage = vbNullString
@@ -162,8 +162,8 @@ Public Sub FormatClick(Index As Integer, Optional blnDataToScreen As Boolean = T
 
   'In case the output format has changed, ensure
   'the extension of the output file name is correct
-  If mfrmParent.txtFileName.Text <> vbNullString Then
-    mfrmParent.txtFileName.Text = Left(mfrmParent.txtFileName.Text, InStrRev(mfrmParent.txtFileName.Text, ".")) & _
+  If mfrmParent.txtFilename.Text <> vbNullString Then
+    mfrmParent.txtFilename.Text = Left(mfrmParent.txtFilename.Text, InStrRev(mfrmParent.txtFilename.Text, ".")) & _
       Right(Split(frmMain.CommonDialog1.Filter, ".")(1), 3)
   End If
 
@@ -177,11 +177,11 @@ Private Sub CheckIfPreviewAvailable(Index As Integer)
   On Local Error Resume Next
   
   If gblnReportPackMode Or gblnBatchMode Then
-    mfrmParent.chkPreview.Enabled = IIf(Index <> fmtDataOnly, True, False)
-    mfrmParent.chkPreview.Value = IIf(Index = fmtDataOnly, vbUnchecked, vbChecked)
-  Else
     mfrmParent.chkPreview.Enabled = IIf(Index = fmtDataOnly, True, False)
     mfrmParent.chkPreview.Value = IIf(Index <> fmtDataOnly, vbUnchecked, vbChecked)
+  Else
+    mfrmParent.chkPreview.Enabled = IIf(Index <> fmtDataOnly, True, False)
+    mfrmParent.chkPreview.Value = IIf(Index = fmtDataOnly, vbUnchecked, vbChecked)
   End If
 
 End Sub
@@ -284,9 +284,9 @@ Public Sub DestinationClick(Index As Integer)
       .lblSave.Enabled = blnSave
       .lblSaveAs.Enabled = blnSave
       .lblFileName.Enabled = blnSave
-      .cmdFileName.Enabled = blnSave
+      .cmdFilename.Enabled = blnSave
       If Not blnSave Then
-        .txtFileName.Text = vbNullString
+        .txtFilename.Text = vbNullString
       End If
       EnableCombo .cboSaveExisting, blnSave
       EnableCombo .cboSaveAs, blnSave
@@ -300,24 +300,24 @@ Public Sub DestinationClick(Index As Integer)
       .cmdEmailGroup.Enabled = blnEmail
       .txtEmailSubject.Enabled = blnEmail
       .txtEmailSubject.BackColor = IIf(blnEmail, vbWindowBackground, vbButtonFace)
-      .txtEMailAttachAs.Enabled = blnEmail
-      .txtEMailAttachAs.BackColor = IIf(blnEmail, vbWindowBackground, vbButtonFace)
+      .txtEmailAttachAs.Enabled = blnEmail
+      .txtEmailAttachAs.BackColor = IIf(blnEmail, vbWindowBackground, vbButtonFace)
       'EnableCombo .cboEmailFileFormat, blnEmail
       
       If blnEmail Then
         .txtEmailGroup.Text = "<None>"
         .txtEmailSubject.Text = Trim(.txtName.Text)
-        If (.txtFileName.Text <> vbNullString) Then
-          .txtEMailAttachAs.Text = FileFromFullPath(.txtFileName.Text)
+        If (.txtFilename.Text <> vbNullString) Then
+          .txtEmailAttachAs.Text = FileFromFullPath(.txtFilename.Text)
         ElseIf Trim(.txtName.Text) <> vbNullString Then
-          .txtEMailAttachAs.Text = Trim(.txtName.Text) & "." & Choose(mlngFormat, "csv", "htm", "doc", "xls", "xls", "xls")
+          .txtEmailAttachAs.Text = Trim(.txtName.Text) & "." & Choose(mlngFormat, "csv", "htm", "doc", "xls", "xls", "xls")
         End If
       Else
         .txtEmailGroup.Text = vbNullString
         .txtEmailGroup.Tag = 0
         .txtEmailSubject.Text = vbNullString
-        .txtEMailAttachAs.Text = vbNullString
-        .txtEMailAttachAs.Tag = 0
+        .txtEmailAttachAs.Text = vbNullString
+        .txtEmailAttachAs.Tag = 0
       End If
 
     End Select
@@ -465,7 +465,7 @@ Public Sub ReadDefFromRecset(rsDef As Recordset)
   
     .chkDestination(desSave).Value = IIf(rsDef!OutputSave, vbChecked, vbUnchecked)
     If rsDef!OutputSave Then
-      .txtFileName.Text = rsDef!OutputFilename
+      .txtFilename.Text = rsDef!OutputFilename
       '.txtFilename.Tag = rsDef!OutputSaveFormat
       SetComboItem .cboSaveExisting, rsDef!OutputSaveExisting
     End If
@@ -475,7 +475,7 @@ Public Sub ReadDefFromRecset(rsDef As Recordset)
       .txtEmailGroup.Text = datGeneral.GetEmailGroupName(rsDef!OutputEmailAddr)
       .txtEmailGroup.Tag = rsDef!OutputEmailAddr
       .txtEmailSubject.Text = rsDef!OutputEmailSubject
-      .txtEMailAttachAs.Text = IIf(IsNull(rsDef!OutputEmailAttachAs), vbNullString, rsDef!OutputEmailAttachAs)
+      .txtEmailAttachAs.Text = IIf(IsNull(rsDef!OutputEmailAttachAs), vbNullString, rsDef!OutputEmailAttachAs)
       '.txtEmailAttachAs.Tag = IIf(IsNull(rsDef!OutputEmailFileFormat), vbNullString, rsDef!OutputEmailFileFormat)
     End If
   End With
@@ -494,8 +494,8 @@ End Sub
 Private Sub cmdFileName_Click()
 
   Dim cd1 As CommonDialog
-  Dim txtFileName As TextBox
-  Dim txtEMailAttachAs As TextBox
+  Dim txtFilename As TextBox
+  Dim txtEmailAttachAs As TextBox
   Dim blnEmail As Boolean
   Dim lngIndex As Long
   Dim blnExtensionsDiffer As Boolean
@@ -503,13 +503,13 @@ Private Sub cmdFileName_Click()
   On Local Error GoTo LocalErr
   
   Set cd1 = frmMain.CommonDialog1
-  Set txtFileName = mfrmParent.txtFileName
-  Set txtEMailAttachAs = mfrmParent.txtEMailAttachAs
+  Set txtFilename = mfrmParent.txtFilename
+  Set txtEmailAttachAs = mfrmParent.txtEmailAttachAs
   blnEmail = (mfrmParent.chkDestination(desEmail).Value = vbChecked)
     
   With cd1
-    .FileName = txtFileName.Text
-    If txtFileName.Text = vbNullString Then
+    .FileName = txtFilename.Text
+    If txtFilename.Text = vbNullString Then
       .InitDir = gsDocumentsPath
     End If
 
@@ -528,17 +528,17 @@ Private Sub cmdFileName_Click()
       Else
         If gblnReportPackMode Then
           ' Interrogate and remove wrong template file from Title Page textbox
-          blnExtensionsDiffer = (Mid(mfrmParent.txtFileName, InStrRev(mfrmParent.txtFileName, ".") + 1)) <> (Mid(mfrmParent.txtTitlePage, InStrRev(mfrmParent.txtTitlePage, ".") + 1))
+          blnExtensionsDiffer = (Mid(mfrmParent.txtFilename, InStrRev(mfrmParent.txtFilename, ".") + 1)) <> (Mid(mfrmParent.txtTitlePage, InStrRev(mfrmParent.txtTitlePage, ".") + 1))
           If blnExtensionsDiffer Then mfrmParent.txtTitlePage = ""
         End If
         
-        txtFileName.Text = vbNullString   'activates the change event
-        txtFileName.Text = .FileName
-        txtFileName.SelStart = Len(txtFileName.Text)
+        txtFilename.Text = vbNullString   'activates the change event
+        txtFilename.Text = .FileName
+        txtFilename.SelStart = Len(txtFilename.Text)
         
         If blnEmail Then
-          If Trim(txtEMailAttachAs.Text) = vbNullString Then
-            txtEMailAttachAs.Text = FileFromFullPath(.FileName)
+          If Trim(txtEmailAttachAs.Text) = vbNullString Then
+            txtEmailAttachAs.Text = FileFromFullPath(.FileName)
           End If
         End If
       End If
@@ -560,9 +560,9 @@ Private Sub SetSaveAsType()
   Dim strExtension As String
   Dim iCount As Integer
  
-  If mfrmParent.txtFileName.Text <> vbNullString Then
+  If mfrmParent.txtFilename.Text <> vbNullString Then
 
-    aryFileBits = Split(mfrmParent.txtFileName.Text, ".")
+    aryFileBits = Split(mfrmParent.txtFilename.Text, ".")
     strExtension = UCase(aryFileBits(UBound(aryFileBits)))
 
     aryFileBits = Split(frmMain.CommonDialog1.Filter, "(*.")
@@ -587,7 +587,7 @@ Public Function ValidDestination() As Boolean
   ValidDestination = False
 
   If mfrmParent.chkDestination(desSave).Value = vbChecked Then
-    If mfrmParent.txtFileName.Text = vbNullString Then
+    If mfrmParent.txtFilename.Text = vbNullString Then
       COAMsgBox "You must enter a file name.", vbExclamation, mfrmParent.Caption
       Exit Function
     End If
@@ -606,20 +606,20 @@ Public Function ValidDestination() As Boolean
       Exit Function
     End If
 
-    If mfrmParent.txtEMailAttachAs.Text = vbNullString Then
+    If mfrmParent.txtEmailAttachAs.Text = vbNullString Then
       COAMsgBox "You must enter an email attachment file name.", vbExclamation, mfrmParent.Caption
       Exit Function
     End If
     
-    If InStr(mfrmParent.txtEMailAttachAs.Text, "/") Or _
-       InStr(mfrmParent.txtEMailAttachAs.Text, ":") Or _
-       InStr(mfrmParent.txtEMailAttachAs.Text, "?") Or _
-       InStr(mfrmParent.txtEMailAttachAs.Text, Chr(34)) Or _
-       InStr(mfrmParent.txtEMailAttachAs.Text, "<") Or _
-       InStr(mfrmParent.txtEMailAttachAs.Text, ">") Or _
-       InStr(mfrmParent.txtEMailAttachAs.Text, "|") Or _
-       InStr(mfrmParent.txtEMailAttachAs.Text, "\") Or _
-       InStr(mfrmParent.txtEMailAttachAs.Text, "*") Then
+    If InStr(mfrmParent.txtEmailAttachAs.Text, "/") Or _
+       InStr(mfrmParent.txtEmailAttachAs.Text, ":") Or _
+       InStr(mfrmParent.txtEmailAttachAs.Text, "?") Or _
+       InStr(mfrmParent.txtEmailAttachAs.Text, Chr(34)) Or _
+       InStr(mfrmParent.txtEmailAttachAs.Text, "<") Or _
+       InStr(mfrmParent.txtEmailAttachAs.Text, ">") Or _
+       InStr(mfrmParent.txtEmailAttachAs.Text, "|") Or _
+       InStr(mfrmParent.txtEmailAttachAs.Text, "\") Or _
+       InStr(mfrmParent.txtEmailAttachAs.Text, "*") Then
           COAMsgBox "The email attachment file name cannot contain any of the following characters:" & vbCrLf & _
                  "/  :  ?  " & Chr(34) & "  <  >  |  \  *", vbExclamation, mfrmParent.Caption
           Exit Function
@@ -737,7 +737,7 @@ End Sub
 Private Sub cmdTitlePageTemplate_Click()
 
   Dim cd1 As CommonDialog
-  Dim txtFileName As TextBox
+  Dim txtFilename As TextBox
   Dim txtReportTitle As TextBox
   
   Dim lngIndex As Long
@@ -746,7 +746,7 @@ Private Sub cmdTitlePageTemplate_Click()
   On Local Error GoTo LocalErr
   
   Set cd1 = frmMain.CommonDialog1
-  Set txtFileName = mfrmParent.txtTitlePage
+  Set txtFilename = mfrmParent.txtTitlePage
   Set txtReportTitle = mfrmParent.txtReportPackTitle
   'lngIndex = fmtExcelWorksheet 'default to Excel
  
@@ -779,10 +779,10 @@ Private Sub cmdTitlePageTemplate_Click()
       If Len(.FileName) > 255 Then
         COAMsgBox "Path and file name must not exceed 255 characters in length", vbExclamation, mfrmParent.Caption
       Else
-        txtFileName.Text = vbNullString   'activates the change event
-        txtFileName.Text = .FileName
-        txtFileName.SelStart = Len(txtFileName.Text)
-        mfrmParent.cmdTitlePageClear.Enabled = txtFileName.SelStart <> 0
+        txtFilename.Text = vbNullString   'activates the change event
+        txtFilename.Text = .FileName
+        txtFilename.SelStart = Len(txtFilename.Text)
+        mfrmParent.cmdTitlePageClear.Enabled = txtFilename.SelStart <> 0
         
         If txtReportTitle.Text = vbNullString Then
           txtReportTitle.Text = FileFromFullPath(.FileName)
