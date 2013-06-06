@@ -1873,7 +1873,7 @@ PRINT 'Step 17 - Trigger functionality'
 		[nestlevel]   [integer] NOT NULL,
 		[actiontype]  [tinyint] NOT NULL)'
 
-	EXEC spsys_setsystemsetting 'advanceddatabasesetting', 'globalupdatebatchsize', 50;
+	EXEC spsys_setsystemsetting 'advanceddatabasesetting', 'globalupdatebatchsize', 1;
 
 /* ------------------------------------------------------------- */
 PRINT 'Step 18 - System Functions'
