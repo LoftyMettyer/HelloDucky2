@@ -4358,7 +4358,8 @@ PRINT 'Step 8 - New Mobile User Logins Table'
 							@iElementID, 
 							'''', 
 							@sForms OUTPUT, 
-							@fSaveForLater OUTPUT;
+							@fSaveForLater OUTPUT,
+							0;
 					END
 		
 					FETCH NEXT FROM immediateSubmitCursor INTO @iElementID, @iElementType;
@@ -4883,7 +4884,8 @@ PRINT 'Step 8 - New Mobile User Logins Table'
 									@iElementID, 
 									'''', 
 									@sForms OUTPUT, 
-									@fSaveForLater OUTPUT;
+									@fSaveForLater OUTPUT,
+									0;
 							END
 				
 							FETCH NEXT FROM immediateSubmitCursor INTO @iElementID, @iElementType;
@@ -4938,7 +4940,7 @@ PRINT 'Step 8 - New Mobile User Logins Table'
 						userName = @sActualLoginName
 					WHERE ASRSysWorkflowInstanceSteps.ID IN (SELECT stepID FROM @succeedingSteps)
 				
-				END';
+				END;';
 
 	EXECUTE sp_executeSQL @sSPCode;
 
