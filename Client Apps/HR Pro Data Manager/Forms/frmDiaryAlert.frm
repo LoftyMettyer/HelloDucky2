@@ -235,3 +235,8 @@ Private Sub EnableSystemMenuItem(hWnd As Long, Item As Long, _
     
 End Sub
 
+Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
+  If mlngResponse = 0 Then
+    mlngResponse = vbNo
+  End If
+End Sub
