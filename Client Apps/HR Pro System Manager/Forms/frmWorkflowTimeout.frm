@@ -1,12 +1,12 @@
 VERSION 5.00
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{96E404DC-B217-4A2D-A891-C73A92A628CC}#1.0#0"; "COA_WorkingPattern.ocx"
 Object = "{604A59D5-2409-101D-97D5-46626B63EF2D}#1.0#0"; "TDBNumbr.ocx"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
 Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "COA_ColourPicker.ocx"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
+Object = "{96E404DC-B217-4A2D-A891-C73A92A628CC}#1.0#0"; "COA_WorkingPattern.ocx"
 Begin VB.Form frmWorkflowTimeout 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Web Form Item Properties"
@@ -74,16 +74,17 @@ Begin VB.Form frmWorkflowTimeout
       _ExtentY        =   17277
       _Version        =   393216
       Style           =   1
+      Tab             =   1
       TabHeight       =   520
       TabCaption(0)   =   "&General"
       TabPicture(0)   =   "frmWorkflowTimeout.frx":000C
-      Tab(0).ControlEnabled=   -1  'True
+      Tab(0).ControlEnabled=   0   'False
       Tab(0).Control(0)=   "picTabContainer(0)"
       Tab(0).Control(0).Enabled=   0   'False
       Tab(0).ControlCount=   1
       TabCaption(1)   =   "Appea&rance"
       TabPicture(1)   =   "frmWorkflowTimeout.frx":0028
-      Tab(1).ControlEnabled=   0   'False
+      Tab(1).ControlEnabled=   -1  'True
       Tab(1).Control(0)=   "picTabContainer(1)"
       Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
@@ -845,7 +846,7 @@ Begin VB.Form frmWorkflowTimeout
          BorderStyle     =   0  'None
          Height          =   9300
          Index           =   0
-         Left            =   150
+         Left            =   -74850
          ScaleHeight     =   9300
          ScaleWidth      =   8400
          TabIndex        =   0
@@ -1492,7 +1493,7 @@ Begin VB.Form frmWorkflowTimeout
          BorderStyle     =   0  'None
          Height          =   7300
          Index           =   1
-         Left            =   -74850
+         Left            =   150
          ScaleHeight     =   7305
          ScaleWidth      =   8400
          TabIndex        =   63
@@ -1799,7 +1800,7 @@ Begin VB.Form frmWorkflowTimeout
                Height          =   315
                Left            =   2745
                MaskColor       =   &H000000FF&
-               Picture         =   "frmWorkflowTimeout.frx":1A8C
+               Picture         =   "frmWorkflowTimeout.frx":18D4
                Style           =   1  'Graphical
                TabIndex        =   113
                ToolTipText     =   "Clear Path"
@@ -1821,7 +1822,7 @@ Begin VB.Form frmWorkflowTimeout
             Begin VB.CommandButton cmdPictureSelect 
                Height          =   315
                Left            =   2430
-               Picture         =   "frmWorkflowTimeout.frx":2016
+               Picture         =   "frmWorkflowTimeout.frx":1CAF
                Style           =   1  'Graphical
                TabIndex        =   112
                ToolTipText     =   "Select Path"
@@ -1855,9 +1856,9 @@ Begin VB.Form frmWorkflowTimeout
             End
             Begin VB.ComboBox cboBackgroundStyle 
                Height          =   315
-               ItemData        =   "frmWorkflowTimeout.frx":208E
+               ItemData        =   "frmWorkflowTimeout.frx":1D27
                Left            =   1935
-               List            =   "frmWorkflowTimeout.frx":209E
+               List            =   "frmWorkflowTimeout.frx":1D37
                Style           =   2  'Dropdown List
                TabIndex        =   97
                Top             =   300
@@ -1876,7 +1877,7 @@ Begin VB.Form frmWorkflowTimeout
                Appearance      =   0  'Flat
                Height          =   315
                Left            =   2430
-               Picture         =   "frmWorkflowTimeout.frx":20C6
+               Picture         =   "frmWorkflowTimeout.frx":1D5F
                Style           =   1  'Graphical
                TabIndex        =   100
                Top             =   700
@@ -1896,7 +1897,7 @@ Begin VB.Form frmWorkflowTimeout
                Appearance      =   0  'Flat
                Height          =   315
                Left            =   2430
-               Picture         =   "frmWorkflowTimeout.frx":2214
+               Picture         =   "frmWorkflowTimeout.frx":1EAD
                Style           =   1  'Graphical
                TabIndex        =   103
                Top             =   1100
@@ -1916,7 +1917,7 @@ Begin VB.Form frmWorkflowTimeout
                Appearance      =   0  'Flat
                Height          =   315
                Left            =   2430
-               Picture         =   "frmWorkflowTimeout.frx":2362
+               Picture         =   "frmWorkflowTimeout.frx":1FFB
                Style           =   1  'Graphical
                TabIndex        =   106
                Top             =   1500
@@ -1936,7 +1937,7 @@ Begin VB.Form frmWorkflowTimeout
                Appearance      =   0  'Flat
                Height          =   315
                Left            =   2430
-               Picture         =   "frmWorkflowTimeout.frx":24B0
+               Picture         =   "frmWorkflowTimeout.frx":2149
                Style           =   1  'Graphical
                TabIndex        =   109
                Top             =   1900
@@ -4319,7 +4320,7 @@ Private Sub RefreshScreen()
   
   fOKToSave = mfChanged And (Not mfReadOnly)
   
-  cmdOk.Enabled = fOKToSave
+  cmdOK.Enabled = fOKToSave
 
 End Sub
 
@@ -9844,13 +9845,13 @@ End Sub
 Private Sub txtControlValues_GotFocus()
   ' Disable the 'Default' property of the 'OK' button as the return key is
   ' used by this textbox.
-  cmdOk.Default = False
+  cmdOK.Default = False
 
 End Sub
 
 Private Sub txtControlValues_LostFocus()
   ' Enable the 'Default' property of the OK button.
-  cmdOk.Default = True
+  cmdOK.Default = True
 
 End Sub
 
@@ -9998,14 +9999,14 @@ End Sub
 Private Sub txtFileExtensions_GotFocus()
   ' Disable the 'Default' property of the 'OK' button as the return key is
   ' used by this textbox.
-  cmdOk.Default = False
+  cmdOK.Default = False
 
 End Sub
 
 
 Private Sub txtFileExtensions_LostFocus()
   ' Enable the 'Default' property of the OK button.
-  cmdOk.Default = True
+  cmdOK.Default = True
 
 End Sub
 
