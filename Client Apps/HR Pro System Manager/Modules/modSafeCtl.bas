@@ -15,9 +15,9 @@ Public Const E_NOINTERFACE = &H80004002
 Public Const E_FAIL = &H80004005
 Public Const MAX_GUIDLEN = 40
 
-Public Declare Sub CopyMemory Lib "kernel32" Alias "RtlMoveMemory" (pDest As Any, pSource As Any, ByVal ByteLen As Long)
+Public Declare Sub CopyMemory Lib "kernel32" Alias "RtlMoveMemory" (pDest As udtGUID, pSource As Long, ByVal ByteLen As Long)
 Private Declare Function CoCreateGuid Lib "ole32.dll" (tGUIDStructure As udtGUID) As Long
-Public Declare Function StringFromGUID2 Lib "ole32.dll" (rguid As Any, ByVal lpstrClsId As Long, ByVal cbMax As Long) As Long
+Public Declare Function StringFromGUID2 Lib "ole32.dll" (rguid As udtGUID, ByVal lpstrClsId As Long, ByVal cbMax As Long) As Long
 
 Public Type udtGUID
     Data1 As Long
