@@ -663,6 +663,7 @@ Private Const GAPUNDERBUTTONS = 620
 Private Const MINHEIGHT_EMAIL = 4800
 Private Const MINHEIGHT_WEBFORM = 3900
 Private Const MINHEIGHT_STOREDDATA = 4500
+Private Const MINHEIGHT_DECISION = 3400
 
 Private Const COLUMN1LABELLEFT = 120
 Private Const COLUMN1LABELWIDTH = 1320
@@ -1189,10 +1190,14 @@ Public Function Initialise(plngInstanceStepID As Long, _
     Case elem_StoredData
       sngMinFormHeight = MINHEIGHT_STOREDDATA
 
+    Case elem_Decision
+      sngMinFormHeight = MINHEIGHT_DECISION
+
     Case Else
       sngMinFormHeight = fraButtons.Top _
          + fraButtons.Height _
          + GAPUNDERBUTTONS
+         
   End Select
   Hook Me.hWnd, MINFORM_WIDTH, CLng(sngMinFormHeight)
 
@@ -1763,9 +1768,6 @@ Private Sub Form_Load()
   ' Retrieve the size of the form when last viewed
   sngHeight = GetPCSetting("WorkflowLogStepDetails", "Height", MINFORM_HEIGHT)
   sngWidth = GetPCSetting("WorkflowLogStepDetails", "Width", MINFORM_WIDTH)
-
-'  Me.Height = sngHeight
-'  Me.Width = sngWidth
 
   ReDim masngFormDimensions(1, elem_Connector2)
   For iLoop = elem_Begin To elem_Connector2
