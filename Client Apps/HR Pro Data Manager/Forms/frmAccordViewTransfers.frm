@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Begin VB.Form frmAccordViewTransfers 
    Caption         =   "Payroll Transfers"
@@ -397,7 +397,7 @@ Private Sub RefreshGrid()
   
   ' Filter on the current record
   If miViewMode = iCURRENT_RECORD Then
-    strSQL = strSQL & IIf(InStr(strSQL, "WHERE") > 0, " AND ", " WHERE ") & "HRProRecordID = " & mlngCurrentRecordID
+    strSQL = strSQL & IIf(InStr(strSQL, "WHERE") > 0, " AND ", " WHERE ") & "(HRProRecordID = " & mlngCurrentRecordID & " AND TransferType = " & miTransferType & ")"
   End If
   
   ' Orderificationalize the list (George Bushism #1)
@@ -457,6 +457,9 @@ grdTransferDetails.AddItem objString.ToString
     Me.grdTransferDetails.Columns("Date").Width = (Me.grdTransferDetails.Columns("Date").Width + 900.23)
     'Not Current REcord view so remove Archive column
     Me.grdTransferDetails.Columns("Archived").Visible = False
+  Else
+    SetComboItem cboTransfer, CLng(miTransferType)
+    EnableControl cboTransfer, False
   End If
 
   ' Select first line

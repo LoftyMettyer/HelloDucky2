@@ -11904,6 +11904,7 @@ Public Sub AccordClick()
   Dim sSQL As String
   Dim rsTemp As New ADODB.Recordset
   Dim bFound As Boolean
+  Dim lngTransferTypeID As Long
 
   If Not SaveChanges Then
     Exit Sub
@@ -11914,9 +11915,13 @@ Public Sub AccordClick()
     Exit Sub
   Else
   
-    sSQL = "SELECT ASRBaseTableID FROM ASRSysAccordTransferTypes WHERE ASRBaseTableID = " & datGeneral.GetTableIDFromTableViewName(msTableViewName)
+    sSQL = "SELECT [ASRBaseTableID], [TransferTypeID] FROM ASRSysAccordTransferTypes WHERE ASRBaseTableID = " & datGeneral.GetTableIDFromTableViewName(msTableViewName)
     rsTemp.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly
-    bFound = Not (rsTemp.BOF And rsTemp.EOF)
+    If Not (rsTemp.BOF And rsTemp.EOF) Then
+      bFound = True
+      lngTransferTypeID = rsTemp.Fields("TransferTypeID").Value
+    End If
+    
     rsTemp.Close
     Set rsTemp = Nothing
     
@@ -11924,6 +11929,7 @@ Public Sub AccordClick()
       frmAccordViewTransfers.ConnectionType = ACCORD_LOCAL
       frmAccordViewTransfers.ViewMode = iCURRENT_RECORD
       frmAccordViewTransfers.CurrentRecordID = mlngRecordID
+      frmAccordViewTransfers.TransferType = lngTransferTypeID
       frmAccordViewTransfers.Initialise
       frmAccordViewTransfers.Show vbModal
       Set frmAccordViewTransfers = Nothing
@@ -11931,9 +11937,8 @@ Public Sub AccordClick()
       COAMsgBox "Payroll transactions can only be viewed for defined transfer types.", vbInformation + vbOKOnly, App.Title
       Exit Sub
     End If
-  End If
   
-
+  End If
   
 End Sub
 
