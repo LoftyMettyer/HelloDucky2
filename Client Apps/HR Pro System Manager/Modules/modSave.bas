@@ -160,7 +160,7 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
                  
     ' Apply any post save hotfixes
     If fOK Then
-      fOK = ApplyHotfixes(False)
+      fOK = ApplyHotfixes(BEFORESAVE)
     End If
          
     ' Tidy up existing temporary tables/procedures/udfs
@@ -641,7 +641,7 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
   
     ' Apply any post save hotfixes
     If fOK Then
-      fOK = ApplyHotfixes(True)
+      fOK = ApplyHotfixes(AFTERSAVE)
     End If
   
     If fOK Then
@@ -825,9 +825,9 @@ Private Function SaveModuleDefinitions() As Boolean
   Dim fOK As Boolean
   Dim rsModules As New ADODB.Recordset
   Dim rsRelatedColumns As New ADODB.Recordset
-  Dim rsLinks As DAO.Recordset
-  Dim rsAccord As DAO.Recordset
-  Dim rsData As DAO.Recordset
+  Dim rsLinks As dao.Recordset
+  Dim rsAccord As dao.Recordset
+  Dim rsData As dao.Recordset
   Dim sSQL As String
   Dim alngLinkIDs() As Long
   Dim rsMaxLinkID As New ADODB.Recordset
@@ -1340,7 +1340,7 @@ Private Function CopyData() As Boolean
   Dim sColumnList As HRProSystemMgr.cStringBuilder
   Dim sSourceTableName As String
   Dim sDestinationTableName As String
-  Dim rsTableName As DAO.Recordset
+  Dim rsTableName As dao.Recordset
   Dim rsColumnTypes As New ADODB.Recordset
   Dim rsCommonColumns As New ADODB.Recordset
   Dim strColumnName As String
@@ -1481,7 +1481,7 @@ Private Function CopyData() As Boolean
                     ' Convert data into character if possible.
                     Case dtVARCHAR, dtLONGVARCHAR
                       If (iSourceColumnDataType = dtTIMESTAMP) Or _
-                        (iSourceColumnDataType = dtINTEGER) Or _
+                        (iSourceColumnDataType = dtinteger) Or _
                         (iSourceColumnDataType = dtNUMERIC) Or _
                         (iSourceColumnDataType = dtBIT) Then
                         sColumnList.Append IIf(sColumnList.Length <> 0, ",", vbNullString) & strColumnName
@@ -1489,7 +1489,7 @@ Private Function CopyData() As Boolean
                       End If
                                     
                     ' Convert data into integer if possible.
-                    Case dtINTEGER
+                    Case dtinteger
                       If (iSourceColumnDataType = dtNUMERIC) Or _
                         (iSourceColumnDataType = dtBIT) Then
                         sColumnList.Append IIf(sColumnList.Length <> 0, ",", vbNullString) & strColumnName
@@ -1498,7 +1498,7 @@ Private Function CopyData() As Boolean
                                   
                     ' Convert data into numeric if possible.
                     Case dtNUMERIC
-                      If (iSourceColumnDataType = dtINTEGER) Or _
+                      If (iSourceColumnDataType = dtinteger) Or _
                         (iSourceColumnDataType = dtBIT) Then
                         sColumnList.Append IIf(sColumnList.Length <> 0, ",", vbNullString) & strColumnName
                         sValueList.Append IIf(sValueList.Length <> 0, ",", vbNullString) & "CONVERT(numeric(" & Trim$(Str$(iDestinationColumnSize)) & "," & Trim$(Str$(iDestinationColumnDecimals)) & "), " & strColumnName & ")"
@@ -2009,40 +2009,3 @@ Private Function UpdateLockCheck() As Boolean
   Set rsTemp = Nothing
 End Function
 
-Private Function ApplyHotfixes(ByRef IsPostSave As Boolean) As Boolean
-
-  On Error GoTo ErrorTrap
-
-  Dim cmdHotfixes As New ADODB.Command
-  Dim pmADO As ADODB.Parameter
-  Dim bOK As Boolean
-
-  bOK = True
-
-  With cmdHotfixes
-    .CommandText = "spASRApplyScripts"
-    .CommandType = adCmdStoredProc
-    .CommandTimeout = 0
-    Set .ActiveConnection = gADOCon
-    
-    Set pmADO = .CreateParameter("ispostsave", adBoolean, adParamInput)
-    pmADO.value = IsPostSave
-    .Parameters.Append pmADO
-    
-    .Execute
-  End With
-
-TidyUpAndExit:
-  Set cmdHotfixes = Nothing
-  ApplyHotfixes = bOK
-  Exit Function
-
-ErrorTrap:
-  bOK = False
-  GoTo TidyUpAndExit
-
-
-
-
-
-End Function

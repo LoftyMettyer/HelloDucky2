@@ -220,45 +220,47 @@ PRINT 'Step 4 - Create object tracking system'
 	END
 
 	-- Modification history table
+	EXEC sp_executesql N'IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[tbsys_scriptedchanges]'') AND type in (N''U''))
+		DROP TABLE [dbo].[tbsys_scriptedchanges]'
+
 	IF OBJECT_ID('tbsys_scriptedchanges', N'U') IS NULL	
 	BEGIN
-		EXECUTE sp_executeSQL N'CREATE TABLE tbsys_scriptedchanges ([id] uniqueidentifier, [order] integer, [file] nvarchar(MAX), [uploaddate] datetime, [ispostsave] bit, [lastrundate] datetime, [runonce] bit, [runinversion] nvarchar(10));'
+		EXECUTE sp_executeSQL N'CREATE TABLE tbsys_scriptedchanges ([id] uniqueidentifier, [order] integer, [file] nvarchar(MAX), [uploaddate] datetime, [runtype] integer, [lastrundate] datetime, [runonce] bit, [runinversion] nvarchar(10));'
 	END
 
 	-- Generate apply scripts procedure
-	IF OBJECT_ID('spASRApplyScripts', N'P') IS NULL	
+	IF EXISTS (SELECT id FROM dbo.sysobjects WHERE id = object_id(N'[dbo].[spASRApplyScripts]') AND xtype ='P')
+		DROP PROCEDURE [dbo].spASRApplyScripts
+
+	EXEC sp_executesql N'CREATE PROCEDURE dbo.[spASRApplyScripts] (@runtype integer)
+	AS
 	BEGIN
-		EXEC sp_executesql N'CREATE PROCEDURE dbo.[spASRApplyScripts] (@ispostsave bit)
-		AS
-		BEGIN
-			
-			SET NOCOUNT ON;
+		
+		SET NOCOUNT ON;
 
-			DECLARE @NVarCommand nvarchar(MAX);
-			DECLARE @changes table(id uniqueidentifier, [file] nvarchar(MAX), [order] integer);
-			
-			-- Collate hotfixes
-			INSERT @changes
-				SELECT [id], [file], [order]
-					FROM dbo.[tbsys_scriptedchanges]
-					WHERE (ispostsave = @ispostsave) AND ([runonce] = 0 OR ([runonce] = 1 AND [lastrundate] IS NULL))
-					ORDER BY [order];
-
-			-- Build hotixes and apply
-			SET @NVarCommand = '''';
-			SELECT @NVarCommand = @NVarCommand + [file]
-				FROM @changes
+		DECLARE @NVarCommand nvarchar(MAX);
+		DECLARE @changes table(id uniqueidentifier, [file] nvarchar(MAX), [order] integer);
+		
+		-- Collate hotfixes
+		INSERT @changes
+			SELECT [id], [file], [order]
+				FROM dbo.[tbsys_scriptedchanges]
+				WHERE (runtype = @runtype) AND ([runonce] = 0 OR ([runonce] = 1 AND [lastrundate] IS NULL))
 				ORDER BY [order];
-			EXECUTE sp_executeSQL @NVarCommand;
 
-			-- Mark the hotfixes as complete
-			UPDATE [tbsys_scriptedchanges]
-				SET [lastrundate] = GETDATE()
-				FROM @changes c WHERE c.id = [tbsys_scriptedchanges].id;
+		-- Build hotixes and apply
+		SET @NVarCommand = '''';
+		SELECT @NVarCommand = @NVarCommand + [file]
+			FROM @changes
+			ORDER BY [order];
+		EXECUTE sp_executeSQL @NVarCommand;
 
-		END'
-	END
+		-- Mark the hotfixes as complete
+		UPDATE [tbsys_scriptedchanges]
+			SET [lastrundate] = GETDATE()
+			FROM @changes c WHERE c.id = [tbsys_scriptedchanges].id;
 
+	END'
 
 
 /* ------------------------------------------------------------- */
@@ -326,9 +328,18 @@ PRINT 'Step 4 - Create views on metadata tables'
 			END
 
 
-			-- Generate triggers on the base table to update the scripted view
-			SET @NVarCommand = ''CREATE TRIGGER INS_'' + @newname +'' ON [dbo].['' + @newname + '']
-				AFTER INSERT
+			SET @columnnames = ''''
+			SELECT @columnnames = @columnnames + ''['' + syscolumns.name + ''], ''  
+				FROM sysobjects 
+				INNER JOIN syscolumns ON sysobjects.id = syscolumns.id
+				WHERE sysobjects.xtype=''U''
+					AND sysobjects.id =  OBJECT_ID(@newname)
+					AND NOT (syscolumns.name = ''lastupdated'' OR syscolumns.name = ''lastupdatedby'')
+			ORDER BY sysobjects.name,syscolumns.colid
+
+			-- Generate triggers on the the scripted view
+			SET @NVarCommand = ''CREATE TRIGGER INS_'' + @oldname +'' ON [dbo].['' + @oldname + '']
+				INSTEAD OF INSERT
 				AS
 				BEGIN
 
@@ -341,6 +352,10 @@ PRINT 'Step 4 - Create views on metadata tables'
 						INSERT dbo.[tbsys_scriptedobjects] ([guid], [objecttype], [targetid], [ownerid], [effectivedate], [revision], [locked], [lastupdated])
 							SELECT NEWID(), '' + convert(nvarchar(2),@ObjectType) + '', ['' + @IDName + ''], dbo.[udfsys_getownerid](), ''''01/01/1900'''',1,0, GETDATE()
 								FROM inserted;
+								
+						INSERT dbo.['' + @newname + '' ] ('' + SUBSTRING(@columnnames,0,LEN(@columnnames)) + '') 
+							SELECT '' + SUBSTRING(@columnnames,0,LEN(@columnnames)) + '' FROM inserted;
+								
 					END
 
 				END'';
@@ -356,6 +371,7 @@ PRINT 'Step 4 - Create views on metadata tables'
 					DELETE FROM ['' + @newname + ''] WHERE '' + @IDName + '' IN (SELECT '' + @IDName + '' FROM deleted);
 				END''
 			EXECUTE sp_executesql @NVarCommand;
+
 
 			-- Grant permissions on this view
 			SET @NVarCommand = ''GRANT SELECT, INSERT, UPDATE, DELETE ON '' + @oldname + '' TO [ASRSysAdmins];'';
