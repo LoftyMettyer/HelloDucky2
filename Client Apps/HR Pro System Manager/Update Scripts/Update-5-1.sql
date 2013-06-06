@@ -118,6 +118,8 @@ END
 		DROP VIEW [dbo].[ASRSysAllobjectNames]
 	EXEC sp_executesql N'CREATE VIEW dbo.[ASRSysAllObjectNames]
 	AS
+		SELECT 9 AS [objectType], MailMergeID AS ID, Name FROM ASRSysMailMergeName
+		UNION		
 		SELECT 2 AS [objectType], ID, Name FROM ASRSysCustomReportsName
 		UNION
 		SELECT 1 AS [objectType], CrossTabID AS ID, Name FROM ASRSysCrossTab
