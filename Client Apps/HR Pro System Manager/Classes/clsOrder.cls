@@ -555,13 +555,13 @@ Public Function OrderIsUsed(pfrmUsage As frmUsage) As Boolean
 
   ' Find any saved workflows that use this order as a record selector order.
   ReDim asWorkflowUsage(3, 0)
-  sSQL = _
-    "SELECT tmpWorkflows.name," & _
+  sSQL = "SELECT tmpWorkflows.name," & _
     "  tmpWorkflowElements.caption," & _
+    "  tmpWorkflowElementItems.ItemType," & _
     "  tmpWorkflowElementItems.identifier" & _
     " FROM tmpWorkflowElementItems, tmpWorkflowElements, tmpWorkflows" & _
     " WHERE tmpWorkflows.deleted = FALSE" & _
-    "  AND tmpWorkflowElementItems.recordOrderID = " & CStr(mlngOrderID) & _
+    "  AND (tmpWorkflowElementItems.recordOrderID = " & CStr(mlngOrderID) & " OR tmpWorkflowElementItems.LookupOrderID = " & CStr(mlngOrderID) & ")" & _
     "  AND tmpWorkflowElementItems.elementID = tmpWorkflowElements.ID" & _
     "  AND tmpWorkflowElements.workflowID = tmpWorkflows.ID"
   Set rsCheck = daoDb.OpenRecordset(sSQL, _
@@ -569,7 +569,7 @@ Public Function OrderIsUsed(pfrmUsage As frmUsage) As Boolean
   If Not (rsCheck.BOF And rsCheck.EOF) Then
     fUsed = True
     Do Until rsCheck.EOF
-      mfrmUse.AddToList "Workflow : " & rsCheck!Name & " ('" & rsCheck!Caption & "' web form, '" & rsCheck!Identifier & "' record selector) : Record order"
+      mfrmUse.AddToList "Workflow : " & rsCheck!Name & " ('" & rsCheck!Caption & "' web form, '" & rsCheck!Identifier & "' " & IIf(rsCheck("ItemType") = 14, "lookup", "record selector") & ") : Record order"
       
       ReDim Preserve asWorkflowUsage(3, UBound(asWorkflowUsage, 2) + 1)
       asWorkflowUsage(0, UBound(asWorkflowUsage, 2)) = UCase(Trim(rsCheck!Name))
@@ -592,8 +592,8 @@ Public Function OrderIsUsed(pfrmUsage As frmUsage) As Boolean
           Case elem_WebForm
             asItems = wfTempElement.Items
             For iLoop2 = 1 To UBound(asItems, 2)
-              If (asItems(2, iLoop2) = giWFFORMITEM_INPUTVALUE_GRID) _
-                And (CLng(asItems(52, iLoop2)) = mlngOrderID) Then
+              If ((asItems(2, iLoop2) = giWFFORMITEM_INPUTVALUE_GRID) And (CLng(asItems(52, iLoop2)) = mlngOrderID)) Or _
+              ((asItems(2, iLoop2) = giWFFORMITEM_INPUTVALUE_LOOKUP) And (CLng(asItems(80, iLoop2)) = mlngOrderID)) Then
     
                 fUsed = True
                 
@@ -609,7 +609,7 @@ Public Function OrderIsUsed(pfrmUsage As frmUsage) As Boolean
                 Next iLoop3
                 
                 If Not fFound Then
-                  mfrmUse.AddToList "Workflow : " & GetWorkflowName(mlngUtilityID) & " ('" & wfTempElement.Caption & "' web form, '" & asItems(9, iLoop2) & "' record selector) : Record order"
+                  mfrmUse.AddToList "Workflow : " & GetWorkflowName(mlngUtilityID) & " ('" & wfTempElement.Caption & "' web form, '" & asItems(9, iLoop2) & "' " & IIf(asItems(2, iLoop2) = 14, "lookup", "record selector") & ") : Record order"
                 End If
               End If
             Next iLoop2

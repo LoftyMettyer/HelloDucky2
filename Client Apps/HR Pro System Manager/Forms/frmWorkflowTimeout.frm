@@ -1,12 +1,12 @@
 VERSION 5.00
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{604A59D5-2409-101D-97D5-46626B63EF2D}#1.0#0"; "TDBNumbr.ocx"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
-Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "coa_colourpicker.ocx"
+Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "COA_ColourPicker.ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
-Object = "{96E404DC-B217-4A2D-A891-C73A92A628CC}#1.0#0"; "coa_workingpattern.ocx"
+Object = "{96E404DC-B217-4A2D-A891-C73A92A628CC}#1.0#0"; "COA_WorkingPattern.ocx"
 Begin VB.Form frmWorkflowTimeout 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Web Form Item Properties"
@@ -27,7 +27,6 @@ Begin VB.Form frmWorkflowTimeout
    Icon            =   "frmWorkflowTimeout.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
-   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   10560
@@ -111,7 +110,7 @@ Begin VB.Form frmWorkflowTimeout
             Caption         =   "Validation :"
             Height          =   2535
             Left            =   120
-            TabIndex        =   170
+            TabIndex        =   173
             Top             =   4200
             Width           =   5500
             Begin VB.TextBox txtFileExtensions 
@@ -119,7 +118,7 @@ Begin VB.Form frmWorkflowTimeout
                Left            =   4320
                MultiLine       =   -1  'True
                ScrollBars      =   2  'Vertical
-               TabIndex        =   178
+               TabIndex        =   181
                Top             =   2040
                Width           =   975
             End
@@ -128,7 +127,7 @@ Begin VB.Form frmWorkflowTimeout
                Enabled         =   0   'False
                Height          =   400
                Left            =   1500
-               TabIndex        =   173
+               TabIndex        =   176
                Top             =   1605
                Width           =   1200
             End
@@ -137,7 +136,7 @@ Begin VB.Form frmWorkflowTimeout
                Enabled         =   0   'False
                Height          =   400
                Left            =   4100
-               TabIndex        =   175
+               TabIndex        =   178
                Top             =   1605
                Width           =   1200
             End
@@ -146,7 +145,7 @@ Begin VB.Form frmWorkflowTimeout
                Enabled         =   0   'False
                Height          =   400
                Left            =   200
-               TabIndex        =   172
+               TabIndex        =   175
                Top             =   1605
                Width           =   1200
             End
@@ -155,7 +154,7 @@ Begin VB.Form frmWorkflowTimeout
                Enabled         =   0   'False
                Height          =   400
                Left            =   2800
-               TabIndex        =   174
+               TabIndex        =   177
                Top             =   1605
                Width           =   1200
             End
@@ -163,14 +162,14 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "&Mandatory"
                Height          =   195
                Left            =   200
-               TabIndex        =   176
+               TabIndex        =   179
                Top             =   2160
                Width           =   1410
             End
             Begin SSDataWidgets_B.SSDBGrid grdValidation 
                Height          =   1140
                Left            =   200
-               TabIndex        =   171
+               TabIndex        =   174
                Top             =   360
                Width           =   5100
                _Version        =   196617
@@ -264,7 +263,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "File Extensions :"
                Height          =   195
                Left            =   3000
-               TabIndex        =   177
+               TabIndex        =   180
                Top             =   2160
                Width           =   1170
             End
@@ -281,7 +280,7 @@ Begin VB.Form frmWorkflowTimeout
                EndProperty
                Height          =   555
                Left            =   3000
-               TabIndex        =   180
+               TabIndex        =   183
                Top             =   1920
                Width           =   1410
             End
@@ -460,42 +459,62 @@ Begin VB.Form frmWorkflowTimeout
          End
          Begin VB.Frame fraLookup 
             Caption         =   "Lookup :"
-            Height          =   3120
-            Left            =   2900
+            Height          =   3160
+            Left            =   2880
             TabIndex        =   142
             Top             =   900
             Width           =   5265
+            Begin VB.TextBox txtLookupOrder 
+               BackColor       =   &H8000000F&
+               Enabled         =   0   'False
+               Height          =   315
+               Left            =   1800
+               Locked          =   -1  'True
+               TabIndex        =   148
+               TabStop         =   0   'False
+               Top             =   1100
+               Width           =   500
+            End
+            Begin VB.CommandButton cmdLookupOrder 
+               Caption         =   "..."
+               Height          =   315
+               Left            =   2295
+               TabIndex        =   149
+               Top             =   1100
+               UseMaskColor    =   -1  'True
+               Width           =   315
+            End
             Begin VB.ComboBox cboLookupFilterColumn 
                Height          =   315
-               Left            =   1680
+               Left            =   1800
                Style           =   2  'Dropdown List
-               TabIndex        =   149
-               Top             =   1380
+               TabIndex        =   152
+               Top             =   1860
                Width           =   2000
             End
             Begin VB.CheckBox chkLookupFilter 
                Caption         =   "&Filter Lookup Values"
                Height          =   255
-               Left            =   120
-               TabIndex        =   147
-               Top             =   1080
+               Left            =   200
+               TabIndex        =   150
+               Top             =   1560
                Width           =   3555
             End
             Begin VB.ComboBox cboLookupFilterValue 
                Height          =   315
-               Left            =   1680
+               Left            =   1800
                Sorted          =   -1  'True
                Style           =   2  'Dropdown List
-               TabIndex        =   153
-               Top             =   2190
+               TabIndex        =   156
+               Top             =   2670
                Width           =   2000
             End
             Begin VB.ComboBox cboLookupFilterOperator 
                Height          =   315
-               Left            =   1680
+               Left            =   1800
                Style           =   2  'Dropdown List
-               TabIndex        =   151
-               Top             =   1785
+               TabIndex        =   154
+               Top             =   2265
                Width           =   2000
             End
             Begin VB.ComboBox cboLookupTable 
@@ -514,28 +533,36 @@ Begin VB.Form frmWorkflowTimeout
                Top             =   700
                Width           =   500
             End
+            Begin VB.Label lblLookupOrder 
+               Caption         =   "Order :"
+               Height          =   195
+               Left            =   200
+               TabIndex        =   147
+               Top             =   1160
+               Width           =   795
+            End
             Begin VB.Label lblLookupFilterColumn 
                Caption         =   "Filter Column :"
                Height          =   285
-               Left            =   120
-               TabIndex        =   148
-               Top             =   1440
+               Left            =   200
+               TabIndex        =   151
+               Top             =   1920
                Width           =   1395
             End
             Begin VB.Label lblLookupFilterValue 
                Caption         =   "Filter Value :"
                Height          =   270
-               Left            =   120
-               TabIndex        =   152
-               Top             =   2235
+               Left            =   200
+               TabIndex        =   155
+               Top             =   2715
                Width           =   1260
             End
             Begin VB.Label lblLookupFilterOperator 
                Caption         =   "Filter Operator :"
                Height          =   270
-               Left            =   120
-               TabIndex        =   150
-               Top             =   1845
+               Left            =   200
+               TabIndex        =   153
+               Top             =   2325
                Width           =   1425
             End
             Begin VB.Label lblLookupTable 
@@ -631,13 +658,13 @@ Begin VB.Form frmWorkflowTimeout
             Caption         =   "Default Value :"
             Height          =   2100
             Left            =   120
-            TabIndex        =   154
+            TabIndex        =   157
             Top             =   6960
             Width           =   7815
             Begin VB.TextBox txtDefaultValue 
                Height          =   315
                Left            =   1485
-               TabIndex        =   159
+               TabIndex        =   162
                Top             =   300
                Width           =   5730
             End
@@ -645,7 +672,7 @@ Begin VB.Form frmWorkflowTimeout
                Height          =   315
                Left            =   2835
                Style           =   2  'Dropdown List
-               TabIndex        =   165
+               TabIndex        =   168
                Top             =   1500
                Width           =   1035
             End
@@ -653,7 +680,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "..."
                Height          =   315
                Left            =   6900
-               TabIndex        =   169
+               TabIndex        =   172
                Top             =   700
                UseMaskColor    =   -1  'True
                Width           =   315
@@ -663,7 +690,7 @@ Begin VB.Form frmWorkflowTimeout
                Enabled         =   0   'False
                Height          =   315
                Left            =   1470
-               TabIndex        =   168
+               TabIndex        =   171
                Top             =   700
                Width           =   5430
             End
@@ -672,7 +699,7 @@ Begin VB.Form frmWorkflowTimeout
                Height          =   195
                Index           =   0
                Left            =   200
-               TabIndex        =   157
+               TabIndex        =   160
                Top             =   360
                Value           =   -1  'True
                Width           =   930
@@ -682,7 +709,7 @@ Begin VB.Form frmWorkflowTimeout
                Height          =   195
                Index           =   3
                Left            =   200
-               TabIndex        =   158
+               TabIndex        =   161
                Top             =   760
                Width           =   1320
             End
@@ -691,7 +718,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "Frame1"
                Height          =   195
                Left            =   200
-               TabIndex        =   160
+               TabIndex        =   163
                Top             =   1160
                Width           =   2000
                Begin VB.OptionButton optDefaultValue 
@@ -699,7 +726,7 @@ Begin VB.Form frmWorkflowTimeout
                   Height          =   195
                   Index           =   1
                   Left            =   1130
-                  TabIndex        =   162
+                  TabIndex        =   165
                   Top             =   0
                   Value           =   -1  'True
                   Width           =   855
@@ -709,7 +736,7 @@ Begin VB.Form frmWorkflowTimeout
                   Height          =   195
                   Index           =   0
                   Left            =   0
-                  TabIndex        =   161
+                  TabIndex        =   164
                   Top             =   0
                   Width           =   810
                End
@@ -717,7 +744,7 @@ Begin VB.Form frmWorkflowTimeout
             Begin COAWorkingPattern.COA_WorkingPattern wpDefaultValue 
                Height          =   765
                Left            =   4020
-               TabIndex        =   166
+               TabIndex        =   169
                Top             =   1100
                Width           =   1830
                _ExtentX        =   3228
@@ -726,7 +753,7 @@ Begin VB.Form frmWorkflowTimeout
             Begin COASpinner.COA_Spinner spnDefaultValue 
                Height          =   315
                Left            =   1695
-               TabIndex        =   164
+               TabIndex        =   167
                Top             =   1500
                Width           =   1500
                _ExtentX        =   2646
@@ -747,7 +774,7 @@ Begin VB.Form frmWorkflowTimeout
             Begin TDBNumberCtrl.TDBNumber numDefaultValue 
                Height          =   315
                Left            =   5900
-               TabIndex        =   167
+               TabIndex        =   170
                Top             =   1500
                Visible         =   0   'False
                Width           =   1500
@@ -819,7 +846,7 @@ Begin VB.Form frmWorkflowTimeout
             Begin GTMaskDate.GTMaskDate dtDefaultValue 
                Height          =   315
                Left            =   200
-               TabIndex        =   163
+               TabIndex        =   166
                Top             =   1500
                Width           =   1500
                _Version        =   65537
@@ -882,7 +909,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "Calculation :"
                Height          =   195
                Left            =   195
-               TabIndex        =   156
+               TabIndex        =   159
                Top             =   600
                Width           =   1065
             End
@@ -890,7 +917,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "Value :"
                Height          =   195
                Left            =   195
-               TabIndex        =   155
+               TabIndex        =   158
                Top             =   195
                Width           =   495
             End
@@ -2061,7 +2088,7 @@ Begin VB.Form frmWorkflowTimeout
       Caption         =   "<Size Tester>"
       Height          =   255
       Left            =   840
-      TabIndex        =   179
+      TabIndex        =   182
       Top             =   10005
       Visible         =   0   'False
       Width           =   1305
@@ -2187,6 +2214,7 @@ Private miItemType As WorkflowWebFormItemTypes
 '   LOOKUP FRAME
     ' LookupTable - held in the control
     ' LookupColumn - held in the control
+    Private mlngLookupOrderID As Long
     ' LookupFilterColumn - held in the control
     ' LookupFilterOperator - held in the control
     ' LookupFilterValue - held in the control
@@ -5309,6 +5337,10 @@ Private Sub SaveProperties()
     End If
   End If
 
+  If WebFormItemHasProperty(miItemType, WFITEMPROP_LOOKUPORDER) Then
+    varControl.LookupOrderID = mlngLookupOrderID
+  End If
+
   If WebFormItemHasProperty(miItemType, WFITEMPROP_LOOKUPFILTERCOLUMN) Then
     If cboLookupFilterColumn.ListCount > 0 Then
       varControl.LookupFilterColumn = cboLookupFilterColumn.ItemData(cboLookupFilterColumn.ListIndex)
@@ -5814,45 +5846,16 @@ Private Sub cboLookupFilterColumn_Click()
   
   cboLookupFilterOperator_Refresh lngOperator
   cboLookupFilterValue_Refresh sValue
-
+  
   Changed = True
-
 End Sub
-
 
 Private Sub cboLookupFilterOperator_Click()
   Changed = True
-
 End Sub
-
 
 Private Sub cboLookupFilterValue_Click()
   Changed = True
-
-End Sub
-
-
-Private Sub cboLookupTable_Click()
-  Dim lngCurrentColumnID As Long
-  
-  If cboLookupColumn.ListCount > 0 Then
-    lngCurrentColumnID = cboLookupColumn.ItemData(cboLookupColumn.ListIndex)
-  Else
-    lngCurrentColumnID = 0
-  End If
-  
-  cboLookupColumn_refresh lngCurrentColumnID
-  
-  If cboLookupFilterColumn.ListCount > 0 Then
-    lngCurrentColumnID = cboLookupFilterColumn.ItemData(cboLookupFilterColumn.ListIndex)
-  Else
-    lngCurrentColumnID = 0
-  End If
-  
-  cboLookupFilterColumn_Refresh lngCurrentColumnID
-  
-  Changed = True
-  
 End Sub
 
 Private Sub cboHOffsetBehaviour_Click()
@@ -5939,10 +5942,8 @@ Private Sub cboRecordIdentificationRecordSelector_Click()
 
 End Sub
 
-
 Private Sub cboRecordIdentificationRecordTable_Click()
   Changed = True
-
 End Sub
 
 Private Sub cboRecordIdentificationTable_Click()
@@ -5975,6 +5976,38 @@ Private Sub cboRecordIdentificationTable_Click()
 
 End Sub
 
+Private Sub cboLookupTable_Click()
+  Dim lngTableID As Long
+  Dim lngCurrentColumnID As Long
+  
+  If cboLookupColumn.ListCount > 0 Then
+    lngCurrentColumnID = cboLookupColumn.ItemData(cboLookupColumn.ListIndex)
+  Else
+    lngCurrentColumnID = 0
+  End If
+  
+  cboLookupColumn_refresh lngCurrentColumnID
+  
+  If cboLookupFilterColumn.ListCount > 0 Then
+    lngCurrentColumnID = cboLookupFilterColumn.ItemData(cboLookupFilterColumn.ListIndex)
+  Else
+    lngCurrentColumnID = 0
+  End If
+  
+  cboLookupFilterColumn_Refresh lngCurrentColumnID
+  
+  If cboLookupTable.ListCount > 0 Then
+    lngTableID = cboLookupTable.ItemData(cboLookupTable.ListIndex)
+  End If
+  
+  If Not CheckOrder(mlngLookupOrderID, lngTableID) Then
+    mlngLookupOrderID = 0
+    txtLookupOrder.Text = ""
+  End If
+  
+  Changed = True
+  
+End Sub
 
 Private Sub cboTimeoutPeriod_Click()
   If Not mfReadOnly Then
@@ -6768,6 +6801,7 @@ Private Sub cmdRecordIdentificationFilter_Click()
   
 End Sub
 
+
 Private Sub cmdRecordIdentificationOrder_Click()
   ' Display the Order selection form.
   Dim objOrder As Order
@@ -6807,6 +6841,50 @@ Private Sub cmdRecordIdentificationOrder_Click()
   txtRecordIdentificationOrder.Text = GetOrderName(mlngRecordIdentificationOrderID)
   
   If lngOriginalID <> mlngRecordIdentificationOrderID Then
+    Changed = True
+  End If
+  
+End Sub
+
+Private Sub cmdLookupOrder_Click()
+  ' Display the Order selection form.
+  Dim objOrder As Order
+  Dim lngTableID As Long
+  Dim lngOriginalID As Long
+  
+  lngOriginalID = mlngLookupOrderID
+  
+  If cboLookupTable.ListCount > 0 Then
+    lngTableID = cboLookupTable.ItemData(cboLookupTable.ListIndex)
+  End If
+  
+  If lngTableID > 0 Then
+    Set objOrder = New Order
+    With objOrder
+      .OrderID = mlngLookupOrderID
+      .TableID = lngTableID
+      .OrderType = giORDERTYPE_DYNAMIC
+      
+      .UtilityID = mfrmCallingForm.CallingForm.WorkflowID
+      .AllWorkflowElements = maWFAllElements
+  
+      If .SelectOrder(mfReadOnly) Then
+        mlngLookupOrderID = .OrderID
+      Else
+        If Not CheckOrder(mlngLookupOrderID, lngTableID) Then
+          mlngLookupOrderID = 0
+        End If
+      End If
+    End With
+  
+    Set objOrder = Nothing
+  Else
+    mlngLookupOrderID = 0
+  End If
+  
+  txtLookupOrder.Text = GetOrderName(mlngLookupOrderID)
+  
+  If lngOriginalID <> mlngLookupOrderID Then
     Changed = True
   End If
   
@@ -9829,6 +9907,51 @@ Private Function FormatScreen_Frame_Lookup() As Boolean
   Else
     lblLookupColumn.Visible = False
     cboLookupColumn.Visible = False
+  End If
+  
+  ' Format the Order controls if required.
+  If WebFormItemHasProperty(miItemType, WFITEMPROP_LOOKUPORDER) Then
+    fFrameNeeded = True
+
+    With lblLookupOrder
+      .Top = sngCurrentControlTop + YGAP_CONTROL_LABEL
+      .Left = X_COLUMN1
+      .Visible = True
+    End With
+
+    With txtLookupOrder
+      .Top = sngCurrentControlTop
+      .Left = X_COLUMN2
+      .Width = msngFrameWidth _
+        - .Left _
+        - X_COLUMN1 _
+        - cmdLookupOrder.Width
+      .Visible = True
+    End With
+
+    With cmdLookupOrder
+      .Top = sngCurrentControlTop
+      .Left = msngFrameWidth _
+        - .Width _
+        - X_COLUMN1
+      .Visible = True
+      .Enabled = True
+
+      If miItemType = giWFFORMITEM_FORM Then
+        ' Not available for form items.
+        mlngLookupOrderID = 0
+      Else
+        mlngLookupOrderID = mctlSelectedControl.LookupOrderID
+      End If
+      txtLookupOrder.Text = GetOrderName(mlngLookupOrderID)
+    End With
+
+    sngCurrentControlTop = sngCurrentControlTop _
+      + YGAP_CONTROL_CONTROL
+  Else
+    lblLookupOrder.Visible = False
+    txtLookupOrder.Visible = False
+    cmdLookupOrder.Visible = False
   End If
   
   ' Format the LookupFilter controls if required.
