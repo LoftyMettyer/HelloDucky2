@@ -292,7 +292,7 @@ Private Sub asrPage_Change()
   If Not gfLoading Then
   
     ' Get the new page number.
-    iPageNo = Val(asrPage.Text)
+    iPageNo = val(asrPage.Text)
     
     If cboPage.ListIndex <> (iPageNo - 1) Then cboPage.ListIndex = (iPageNo - 1)
     
@@ -348,7 +348,7 @@ Private Sub cboPage_Click()
     With cboPage
       If .ListCount > 0 And .ListIndex >= 0 Then
         iPageNo = .ListIndex + 1
-        If (Val(asrPage.Text) <> iPageNo) Then asrPage.Text = Trim(Str(iPageNo))
+        If (val(asrPage.Text) <> iPageNo) Then asrPage.Text = Trim(Str(iPageNo))
       End If
     End With
   End If
@@ -398,7 +398,7 @@ Private Sub cmdDown_Click()
   Dim iListCount As Integer
   Dim iSelectedIndex As Integer
   
-  iPageNo = Val(asrPage.Text)
+  iPageNo = val(asrPage.Text)
   
   If (iPageNo >= ListView1.LBound) And (iPageNo <= ListView1.UBound) Then
     
@@ -459,9 +459,9 @@ Private Sub cmdOK_Click()
       
       sKey = Mid(objItem.key, 3)
       
-      iControlType = Val(Left(sKey, InStr(1, sKey, "_") - 1))
+      iControlType = val(Left(sKey, InStr(1, sKey, "_") - 1))
       sKey = Mid(sKey, InStr(1, sKey, "_") + 1)
-      iIndex = Val(sKey)
+      iIndex = val(sKey)
       
       ' Get the control object
       Select Case iControlType
@@ -487,6 +487,8 @@ Private Sub cmdOK_Click()
           Set ctlControl = gFrmScreen.asrDummyLabel(iIndex)
         Case giCTRL_WORKINGPATTERN
           Set ctlControl = gFrmScreen.ASRCustomDummyWP(iIndex)
+        Case giCTRL_NAVIGATION
+          Set ctlControl = gFrmScreen.ASRDummyNavigation(iIndex)
         Case Else
           Set ctlControl = Nothing
       End Select
@@ -525,7 +527,7 @@ Private Sub cmdUp_Click()
   Dim iListCount As Integer
   Dim iSelectedIndex As Integer
   
-  iPageNo = Val(asrPage.Text)
+  iPageNo = val(asrPage.Text)
   
   If iPageNo >= ListView1.LBound And iPageNo <= ListView1.UBound Then
   
@@ -587,7 +589,7 @@ Private Sub Form_Activate()
           With objTab
           
             cboPage.AddItem .Caption
-            cboPage.ItemData(cboPage.NewIndex) = Val(.Tag)
+            cboPage.ItemData(cboPage.NewIndex) = val(.Tag)
             
             If .Index > ListView1.UBound Then
               Load ListView1(.Index)
@@ -921,6 +923,7 @@ Private Function GetPageControls(piPageNo As Integer) As Boolean
   Dim sImageKey As String
   Dim ctlControl As VB.Control
   Dim objItem As ComctlLib.ListItem
+  Dim bAdd As Boolean
   
   UI.LockWindow Me.hWnd
     
@@ -943,27 +946,39 @@ Private Function GetPageControls(piPageNo As Integer) As Boolean
       If (gFrmScreen.GetControlPageNo(ctlControl) = piPageNo) And _
         (gFrmScreen.ScreenControl_IsTabStop(iControlType)) Then
       
-        sName = ctlControl.ToolTipText
+        bAdd = True
+      
+        If iControlType = giCTRL_NAVIGATION Then
+          If ctlControl.DisplayType = NavigationDisplayType.Hidden Then
+            bAdd = False
+          Else
+            sName = ctlControl.Caption
+          End If
+        Else
+          sName = ctlControl.ToolTipText
+        End If
   
         ' Get the imageList icon for the given control.
-        sIcon = "IMG_UNKNOWN"
-        sImageKey = ImageKey(iControlType)
-        For iLoop = 1 To ImageList1.ListImages.Count
-          If ImageList1.ListImages(iLoop).key = sImageKey Then
-            sIcon = sImageKey
-            Exit For
-          End If
-        Next iLoop
-          
-        ' Add the current control to the list view.
-        Set objItem = ListView1(piPageNo).ListItems.Add(, "C_" & _
-          Trim(Str(iControlType)) & "_" & _
-          Trim(Str(ctlControl.Index)), _
-          sName, sIcon, sIcon)
-        With objItem
-          .SubItems(1) = ControlTypeName(iControlType)
-          .SubItems(2) = Right(Space(6) & ctlControl.TabIndex, 6)
-        End With
+        If bAdd Then
+          sIcon = "IMG_UNKNOWN"
+          sImageKey = ImageKey(iControlType)
+          For iLoop = 1 To ImageList1.ListImages.Count
+            If ImageList1.ListImages(iLoop).key = sImageKey Then
+              sIcon = sImageKey
+              Exit For
+            End If
+          Next iLoop
+            
+          ' Add the current control to the list view.
+          Set objItem = ListView1(piPageNo).ListItems.Add(, "C_" & _
+            Trim(Str(iControlType)) & "_" & _
+            Trim(Str(ctlControl.Index)), _
+            sName, sIcon, sIcon)
+          With objItem
+            .SubItems(1) = ControlTypeName(iControlType)
+            .SubItems(2) = Right(Space(6) & ctlControl.TabIndex, 6)
+          End With
+        End If
         
       End If
     End If
