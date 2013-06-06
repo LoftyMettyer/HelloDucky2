@@ -731,8 +731,7 @@ Public Sub AddPage(strDefTitle As String, mstrSheetName As String, colStyles As 
   On Local Error GoTo LocalErr
 
   mwrdDoc.Bookmarks.Add strBookMark
-
-'mwrdApp.Visible = True
+  'mwrdApp.Visible = True
 
   With mwrdDoc.ActiveWindow.Selection
     
@@ -771,15 +770,20 @@ Public Sub AddPage(strDefTitle As String, mstrSheetName As String, colStyles As 
         .TypeText gobjProgress.Bar2Caption
         .TypeParagraph: .TypeParagraph
         .ParagraphFormat.Alignment = wdAlignParagraphCenter
-        .TypeText gobjProgress.Bar1Caption
-        .TypeParagraph
+        '.TypeText gobjProgress.Bar1Caption ' Job x of x text
+        '.TypeParagraph
         .EndKey
         .ParagraphFormat.Alignment = wdAlignParagraphLeft
         .InsertBreak Type:=wdSectionNewPage
       Else
-        .ParagraphFormat.Style = wdStyleHeading1
-        .TypeText gobjProgress.Bar2Caption
-        .TypeParagraph: .TypeParagraph
+        'If mlngPageCount = 1 Then
+          .TypeParagraph: .TypeParagraph
+          .MoveUp Unit:=wdLine, Count:=2
+          .ParagraphFormat.Style = wdStyleHeading1
+          .TypeText gobjProgress.Bar2Caption
+          '.TypeText gobjProgress.Bar1Caption ' Job x of x text
+          .TypeParagraph: .TypeParagraph
+        'End If
       End If
     Else
       .EndKey Unit:=wdStory, Extend:=wdExtend
@@ -1159,6 +1163,8 @@ Public Sub Complete()
     strCurrentPrinter = mwrdApp.ActivePrinter
     mwrdApp.ActivePrinter = mstrPrinterName
     mwrdDoc.PrintOut
+    'mwrdDoc.SaveAs2 mwrdDoc.FullName
+   'mstrFileName = mwrdDoc.FullName
     mwrdApp.ActivePrinter = strCurrentPrinter
   
   End If
@@ -1166,6 +1172,7 @@ Public Sub Complete()
   
   'SCREEN
   If mblnScreen Then
+  
     mstrErrorMessage = "Error displaying Word"
     mwrdApp.Selection.HomeKey Unit:=wdStory
     mwrdApp.Visible = True

@@ -31,7 +31,7 @@ Private mlngHeaderCols As Long
 Private mblnApplyStyles As Boolean
 
 'Private mstrHTMLTemplate As String
-
+Private mstrHTMLOutputTOC As String
 Private mstrHTMLOutput As String
 Private mastrHTMLOutput() As String
 Private mlngPageCount As Long
@@ -353,11 +353,15 @@ Public Function GetFile(objParent As clsOutputRun, colSytles As Collection) As B
   
   On Local Error GoTo LocalErr
     
-  
   strHTMLOutput = ""
   ReDim mastrHTMLOutput(0)
   blnAppending = False
-
+  
+  If gstrHTMLOutputTOC = vbNullString Then
+    gstrHTMLOutputTOC = "<HTML><BODY><CENTER><FONT face=Verdana size=2>"
+    gstrHTMLOutputTOC = gstrHTMLOutputTOC & "<a id=" & "'" & "top" & "'" & "><h3>Table Of Contents</h3></a>"
+  End If
+  
   'Just in case we are emailing but not saving...
   If Not mblnSave Then
     If mblnEmail Then
@@ -366,15 +370,13 @@ Public Function GetFile(objParent As clsOutputRun, colSytles As Collection) As B
         objParent.KillFile mstrFileName
       End If
     End If
-  
   Else
-    
     If gblnReportPackMode And mlngSaveExisting = 0 And gobjProgress.Bar1Value > 0 Then
         'reset write mode to append in order that the previous report job doesnt get overwritten
         mlngSaveExisting = 3
     End If
   
-  'Check if file already exists...
+    'Check if file already exists...
     If Dir(mstrFileName) <> vbNullString And mstrFileName <> vbNullString Then
   
       Select Case mlngSaveExisting
@@ -408,31 +410,16 @@ Public Function GetFile(objParent As clsOutputRun, colSytles As Collection) As B
 
   End If
 
-'  If mstrHTMLTemplate <> vbNullString Then
-'    If Dir(mstrHTMLTemplate) <> vbNullString Then
-'      Open mstrHTMLTemplate For Input As #2
-'
-'      blnFound = False
-'      Do While Not blnFound And Not EOF(2)
-'        Input #2, strLineInput
-'        blnFound = (LCase(strLineInput) = "<hrprodata>")
-'        If Not blnFound Then
-'          mstrHTMLOutput = mstrHTMLOutput & strLineInput
-'        End If
-'      Loop
-'    End If
-'
-'  Else
-    If Not blnAppending Then
-      strHTMLOutput = strHTMLOutput & _
-          "<HTML><BODY>"
-    End If
-    strHTMLOutput = strHTMLOutput & _
-        "<FONT face=Verdana size=2>"
+  If Not blnAppending Then
+    strHTMLOutput = strHTMLOutput & "<HTML><BODY>"
+  End If
+  
+  strHTMLOutput = strHTMLOutput & "<FONT face=Verdana size=2>"
 
 '  End If
   ReDim Preserve mastrHTMLOutput(UBound(mastrHTMLOutput) + 1)
   mastrHTMLOutput(UBound(mastrHTMLOutput)) = strHTMLOutput
+  
 
 
   GetFile = (mstrErrorMessage = vbNullString)
@@ -460,8 +447,9 @@ Public Sub AddPage(strDefTitle As String, mstrSheetName As String, colStyles As 
   If mlngPageCount = 1 Then
     mstrDefTitle = strDefTitle
     strTitle = HTMLText("SPAN", strDefTitle, colStyles("Title"))
+    
     strHTMLOutput = strHTMLOutput & _
-        "<CENTER>" & strTitle & "</CENTER>"
+        "<CENTER><a name=" & "'" & strDefTitle & "'" & ">" & strTitle & "</a></CENTER>"
   Else
     strHTMLOutput = strHTMLOutput & "<HR>" & vbCrLf
   End If
@@ -531,22 +519,12 @@ Public Sub DataArray(strArray() As String, colColumns As Collection, colStyles A
       "<CENTER><TABLE border=1 cellspacing=0 cellpadding=1" & _
       " bordercolordark=" & HexColour(colStyles("Data").BackCol) & _
       " bordercolorlight=000000>" & vbNewLine
-
-  'strOutput = vbNullString
-  'lngGridCol = 0
-  'For Each objColumn In colColumns
-  '  strOutput = strOutput & _
-  '      HTMLText("TD", objColumn.Heading, colStyles("Heading"))
-  '  lngGridCol = lngGridCol + 1
-  'Next
-  'mstrHTMLOutput = mstrHTMLOutput & "<TR>" & strOutput & "</TR>" & vbCrLf
   
   For lngGridRow = 0 To UBound(strArray, 2)
     strOutput.TheString = vbNullString
     For lngGridCol = 0 To UBound(strArray, 1)
       strOutput.Append _
           CheckHTMLText("TD", strArray(lngGridCol, lngGridRow), lngGridCol, lngGridRow, colStyles, colMerges, colColumns)
-    
     Next
     
     If gobjProgress.Visible And gobjProgress.Cancelled Then
@@ -767,20 +745,16 @@ Public Sub Complete()
 
   blnOK = True
 
-'  If mstrHTMLTemplate <> vbNullString Then
-'    If Dir(mstrHTMLTemplate) <> vbNullString Then
-'      Do While Not EOF(2)
-'        Input #2, strLineInput
-'        mstrHTMLOutput = mstrHTMLOutput & strLineInput
-'      Loop
-'    End If
-'
-'  Else
-    strHTMLOutput = strHTMLOutput & _
-        "</CENTER><BR><HR>" & vbCrLf & _
-        "Created on " & Format(Now, DateFormat & " hh:nn") & " by " & gsUserName & vbCrLf & _
-        "</FONT></BODY></HTML>"
-'  End If
+  'Table of Contents HTML
+  gstrHTMLOutputTOC = gstrHTMLOutputTOC & "<a href=" & "'#" & ""
+  gstrHTMLOutputTOC = gstrHTMLOutputTOC & mstrDefTitle & "'>" & mstrDefTitle & "</a><BR>"
+  
+  'Job HTNML
+  strHTMLOutput = strHTMLOutput & _
+    "<a href=#top>Go to top</a>" & _
+    "</CENTER><BR><HR>" & vbCrLf & _
+    "Created on " & Format(Now, DateFormat & " hh:nn") & " by " & gsUserName & vbCrLf & _
+    "</FONT></BODY></HTML>"
   
   ReDim Preserve mastrHTMLOutput(UBound(mastrHTMLOutput) + 1)
   mastrHTMLOutput(UBound(mastrHTMLOutput)) = strHTMLOutput
