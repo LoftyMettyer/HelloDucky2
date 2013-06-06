@@ -1064,7 +1064,7 @@ ErrorTrap:
   
 End Function
 
-Private Function ImageKey(piType As Integer) As String
+Private Function ImageKey(piType As Long) As String
   ' Return the image key for the given control type.
   On Error GoTo ErrorTrap
   
@@ -1107,7 +1107,7 @@ ErrorTrap:
   Resume TidyUpAndExit
   
 End Function
-Private Function ControlTypeName(piType As Integer) As String
+Private Function ControlTypeName(piType As Long) As String
   ' Return the control type name for the given control type.
   Select Case piType
     Case giCTRL_CHECKBOX
