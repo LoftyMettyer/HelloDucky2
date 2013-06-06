@@ -674,12 +674,12 @@ Private mcolRecipients() As Collection
 
 Public Property Let Changed(ByVal value As Boolean)
   If Not mblnLoading Then
-    cmdOK.Enabled = value
+    cmdOk.Enabled = value
   End If
 End Property
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 
 
@@ -1236,8 +1236,8 @@ Private Sub Form_Resize()
   lngTop = Me.ScaleHeight - (cmdCancel.Height + GAP)
   cmdCancel.Move lngLeft, lngTop
   
-  lngLeft = lngLeft - (cmdOK.Width + GAP)
-  cmdOK.Move lngLeft, lngTop
+  lngLeft = lngLeft - (cmdOk.Width + GAP)
+  cmdOk.Move lngLeft, lngTop
   
   lngWidth = Me.ScaleWidth - (GAP * 2)
   lngHeight = lngTop - (GAP * 2)
@@ -1387,11 +1387,11 @@ Private Sub txtContent_Change(index As Integer)
 End Sub
 
 Private Sub txtContent_GotFocus(index As Integer)
-  cmdOK.Default = False
+  cmdOk.Default = False
 End Sub
 
 Private Sub txtContent_LostFocus(index As Integer)
-  cmdOK.Default = True
+  cmdOk.Default = True
 End Sub
 
 Private Sub txtFilter_Change()
@@ -1649,7 +1649,9 @@ Private Sub sstrvAvailable_DragOver(Source As Control, x As Single, y As Single,
   ' X = Special/Custom/Function
   ' Z = Heading (no action)
   
-  sstrvAvailable.SelectedItem = sstrvAvailable.HitTest(x, y)
+  If sstrvAvailable.SelectedItem Is Nothing Then
+    sstrvAvailable.SelectedItem = sstrvAvailable.HitTest(x, y)
+  End If
   
   If Not (sstrvAvailable.SelectedItem Is Nothing) Then
     Select Case Left(sstrvAvailable.SelectedItem.key, 1)
@@ -1672,7 +1674,7 @@ End Sub
 Private Sub txtContent_DragOver(index As Integer, Source As Control, x As Single, y As Single, State As Integer)
   If TypeOf Source Is TreeView Then
     
-    sstrvAvailable.SelectedItem = sstrvAvailable.HitTest(x, y)
+    'sstrvAvailable.SelectedItem = sstrvAvailable.HitTest(x, y)
     ' txtContent.SelectedItem = txtContent.HitTest(x, y)
     
     If Not (sstrvAvailable.SelectedItem Is Nothing) Then
@@ -1712,24 +1714,27 @@ End Sub
 Private Sub InsertColumn(index As Integer, lngStart As Long)
   Dim lngStartMergePoint As Long
   Dim lngEndMergePoint As Long
+  Dim strNodeText As String
 
-  If sstrvAvailable.SelectedItem.Tag = vbNullString Then
-    Exit Sub
+  strNodeText = ""
+  If Not sstrvAvailable.SelectedItem Is Nothing Then
+    strNodeText = sstrvAvailable.SelectedItem.Tag
   End If
-
-
-  If lngStart > 0 Then
-    lngStartMergePoint = InStr(lngStart, txtContent(index).Text, strDelimStart)
-    lngEndMergePoint = InStr(lngStart, txtContent(index).Text, strDelimStop)
-    If (lngStartMergePoint = 0 And lngEndMergePoint > 0) Or _
-        (lngStartMergePoint > lngEndMergePoint) Then
-      lngStart = lngEndMergePoint
+  
+  If strNodeText <> "" Then
+    If lngStart > 0 Then
+      lngStartMergePoint = InStr(lngStart, txtContent(index).Text, strDelimStart)
+      lngEndMergePoint = InStr(lngStart, txtContent(index).Text, strDelimStop)
+      If (lngStartMergePoint = 0 And lngEndMergePoint > 0) Or _
+          (lngStartMergePoint > lngEndMergePoint) Then
+        lngStart = lngEndMergePoint
+      End If
     End If
-  End If
 
-  txtContent(index).SelStart = lngStart
-  txtContent(index).SelLength = 0
-  txtContent(index).SelText = strDelimStart & sstrvAvailable.SelectedItem.Tag & strDelimStop
+    txtContent(index).SelStart = lngStart
+    txtContent(index).SelLength = 0
+    txtContent(index).SelText = strDelimStart & strNodeText & strDelimStop
+  End If
 
 End Sub
 
