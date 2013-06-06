@@ -2822,53 +2822,44 @@ Public Function Group_Delete()
   For iLoop = 1 To UBound(asSelectedGroups)
     
     sCurrentGroupName = asSelectedGroups(iLoop)
-  
-      ' Check that the current group is not the public group
-      If IsVersion7 Then
         
-        ' Check for fixed roles if we are running on sql 7
-        sSQL = "sp_helpdbfixedrole"
-        rsRoles.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly
-        With rsRoles
-          Do While Not .EOF
-            If rsRoles.Fields("DbFixedRole").Value = sCurrentGroupName Then
-              MsgBox "You cannot delete the system user group '" & sCurrentGroupName & "'.", vbInformation + vbOKOnly, App.Title
-              Exit Function
-            End If
-            .MoveNext
-          Loop
-          .Close
-        End With
-        
-        ' RH 08/11/00 - BUG 1311 - Do not let a user group be deleted if its used in any
-        '                          batch jobs
-        'TM20011107 Fault 3107 - Order the items in the recordset.
-        rsRoles.Open "SELECT AsrSysBatchJobName.Name, ASRSysBatchJobName.username FROM AsrSysBatchJobName WHERE RoleToPrompt = '" & sCurrentGroupName & "' ORDER BY AsrSysBatchJobName.Name", gADOCon, adOpenForwardOnly, adLockReadOnly
-        sBatchJobs = vbNullString
-        Do While Not rsRoles.EOF
-          sBatchJobs = sBatchJobs & SetStringLength(rsRoles!Name, 50) & vbTab & rsRoles!UserName & vbNewLine
-          rsRoles.MoveNext
+      ' Check for fixed roles
+      sSQL = "sp_helpdbfixedrole"
+      rsRoles.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly
+      With rsRoles
+        Do While Not .EOF
+          If rsRoles.Fields("DbFixedRole").Value = sCurrentGroupName Then
+            MsgBox "You cannot delete the system user group '" & sCurrentGroupName & "'.", vbInformation + vbOKOnly, App.Title
+            Exit Function
+          End If
+          .MoveNext
         Loop
-        rsRoles.Close
-        
-        If sBatchJobs <> vbNullString Then
-          sBatchJobs = "Cannot delete the user group '" & sCurrentGroupName & "'." & vbNewLine & "It is used as a schedule prompt in the following batch job(s) : " & vbNewLine & vbNewLine & _
-                       "Batch Job" & vbTab & vbTab & vbTab & vbTab & "Owner" & vbNewLine & _
-                       "======" & vbTab & vbTab & vbTab & "=====" & vbNewLine & vbNewLine & sBatchJobs
-          MsgBox sBatchJobs, vbExclamation + vbOKOnly, App.Title
-          Exit Function
-        End If
-        
-        If (sCurrentGroupName = "public") Then
-          MsgBox "You cannot delete the system user group 'public'.", vbInformation + vbOKOnly, App.Title
-          Exit Function
-        End If
-      Else
-        If sCurrentGroupName = "public" Then
-          MsgBox "You cannot delete the system user group 'public'.", vbInformation + vbOKOnly, App.Title
-          Exit Function
-        End If
+        .Close
+      End With
+      
+      ' RH 08/11/00 - BUG 1311 - Do not let a user group be deleted if its used in any batch jobs
+      ' TM20011107 Fault 3107 - Order the items in the recordset.
+      rsRoles.Open "SELECT AsrSysBatchJobName.Name, ASRSysBatchJobName.username FROM AsrSysBatchJobName WHERE RoleToPrompt = '" & sCurrentGroupName & "' ORDER BY AsrSysBatchJobName.Name", gADOCon, adOpenForwardOnly, adLockReadOnly
+      sBatchJobs = vbNullString
+      Do While Not rsRoles.EOF
+        sBatchJobs = sBatchJobs & SetStringLength(rsRoles!Name, 50) & vbTab & rsRoles!UserName & vbNewLine
+        rsRoles.MoveNext
+      Loop
+      rsRoles.Close
+      
+      If sBatchJobs <> vbNullString Then
+        sBatchJobs = "Cannot delete the user group '" & sCurrentGroupName & "'." & vbNewLine & "It is used as a schedule prompt in the following batch job(s) : " & vbNewLine & vbNewLine & _
+                     "Batch Job" & vbTab & vbTab & vbTab & vbTab & "Owner" & vbNewLine & _
+                     "======" & vbTab & vbTab & vbTab & "=====" & vbNewLine & vbNewLine & sBatchJobs
+        MsgBox sBatchJobs, vbExclamation + vbOKOnly, App.Title
+        Exit Function
       End If
+      
+      If (sCurrentGroupName = "public") Then
+        MsgBox "You cannot delete the system user group 'public'.", vbInformation + vbOKOnly, App.Title
+        Exit Function
+      End If
+
 
   Next iLoop
 
@@ -2937,31 +2928,6 @@ Public Function Group_Delete()
           InitialiseUsersCollection gObjGroups(sCurrentGroupName)
         End If
   
-        ' Move any users to the 'public' group.
-        If Not IsVersion7 Then
-          For Each objUser In gObjGroups(sCurrentGroupName).Users
-            If (Not objUser.DeleteUser) And (objUser.MovedUserTo = vbNullString) Then
-              ' Move any users to the 'public' group.
-              MoveUserToNewGroup objUser.Login, "public", sCurrentGroupName
-              fMovedUsers = True
-            End If
-          Next
-        End If
-
-'        ' See if the group exists in SQL Server
-'        If gObjGroups(sCurrentGroupName).NewGroup Then
-'          ' The group has not yet been added to sql server so just remove the item from the tree
-'          ' and the security groups collection
-'          gObjGroups.Remove (sCurrentGroupName)
-'          trvConsole.Nodes.Remove "GP_" & sCurrentGroupName
-'        Else
-'          ' The group does exist in sql server so mark it for deletion and remove it from the tree
-'          With gObjGroups(sCurrentGroupName)
-'            .DeleteGroup = True
-'            .Changed = True
-'          End With
-'          trvConsole.Nodes.Remove "GP_" & sCurrentGroupName
-'        End If
         Call DeleteGroup(sCurrentGroupName)
         trvConsole.Nodes.Remove "GP_" & sCurrentGroupName
 
