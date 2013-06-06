@@ -318,7 +318,6 @@ Begin VB.Form frmScrDesigner2
          NumTabs         =   1
          BeginProperty Tab1 {0713F341-850A-101B-AFC0-4210102A8DA7} 
             Caption         =   ""
-            Key             =   ""
             Object.Tag             =   ""
             ImageVarType    =   2
          EndProperty
@@ -2193,12 +2192,7 @@ Private Sub AutoFormatScreen()
           Else
             .ToolTipText = sTableName & "." & sColumnName
           End If
-        
-          ' Initialise the navigation properties
-          If ScreenControl_HasNavigation(iControlType) Then
-            ctlControl.ColumnName = GetColumnName(ctlControl.ColumnID, False)
-          End If
-              
+                     
           ' Initialise the new control's font and forecolour.
           If ScreenControl_HasFont(iControlType) Then
             Set objFont = New StdFont
@@ -2225,7 +2219,14 @@ Private Sub AutoFormatScreen()
               .Caption = .Caption & gsOLEDISPLAYTYPE_CONTENTS
             End If
           End If
-          
+                    
+          ' Initialise the navigation properties
+          If ScreenControl_HasNavigation(iControlType) Then
+            ctlControl.ColumnName = GetColumnName(ctlControl.ColumnID, False)
+            ctlControl.DisplayType = NavigationDisplayType.Hyperlink
+            ctlControl.Caption = "Navigate To..."
+            ctlControl.NavigateTo = ctlControl.NavigateTo
+          End If
           
           If ScreenControl_HasOptions(iControlType) Then
 '            .Options = ReadColumnControlValues(rsColumns!ColumnID)
