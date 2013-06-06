@@ -218,13 +218,17 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
       'blnOutputRetainCharts = !OutputRetainCharts
     End With
   End If
-'1
+
+  Dim title As String
   If strOutputReportPackTitle = vbNullString Then
-    gstrHTMLOutputTOC = "<HTML><BODY><CENTER><FONT face=Verdana size=2>"
-    gstrHTMLOutputTOC = gstrHTMLOutputTOC & "<a id=" & "'" & "top" & "'" & "><h2>" & sBatchJobName & "</h2></a>"
+    title = sBatchJobName
   Else
-    gstrHTMLOutputTOC = "<HTML><BODY><CENTER><FONT face=Verdana size=2>"
-    gstrHTMLOutputTOC = gstrHTMLOutputTOC & "<a id=" & "'" & "top" & "'" & "><h2>" & strOutputReportPackTitle & "</h2></a>"
+    title = strOutputReportPackTitle
+  End If
+
+  gstrHTMLOutputTOC = "<HTML><BODY><CENTER><FONT face=Verdana size=2><a id=" & "'" & "top" & "'" & "><h2>" & title & "</h2></a>"
+  If blnOutputTOC Then
+    gstrHTMLOutputTOC = gstrHTMLOutputTOC & "<h3>Table Of Contents</h3>"
   End If
 
   'This should never happen, but just in case...
@@ -1121,15 +1125,14 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
     If gblnReportPackMode And fOK And Not blnOutputTOC Then
       Select Case lngOutputFormat
         Case fmtHTML
-          If strOutputReportPackTitle = vbNullString Then strOutputReportPackTitle = sBatchJobName
           
           If strOutputFilename = vbNullString Then
             strNotes = "No file name has been specified in the Report Pack definition."
             fOK = False
             blnOutputEmail = False
           Else
-            gstrHTMLOutputTOC = "<HTML><BODY><CENTER><FONT face=Verdana size=2>"
-            gstrHTMLOutputTOC = gstrHTMLOutputTOC & "<a id=" & "'" & "top" & "'" & "><h2>" & strOutputReportPackTitle & "</h2></a>"
+            If strOutputReportPackTitle = vbNullString Then strOutputReportPackTitle = sBatchJobName
+            gstrHTMLOutputTOC = "<HTML><BODY><CENTER><FONT face=Verdana size=2><a id=" & "'" & "top" & "'" & "><h2>" & strOutputReportPackTitle & "</h2></a>"
           
             FileNum = FreeFile()
             LineCount = 1
