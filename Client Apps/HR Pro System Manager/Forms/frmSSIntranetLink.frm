@@ -2081,12 +2081,13 @@ Public Sub Initialize(piType As SSINTRANETLINKTYPES, _
 
   mfChanged = False
   
-  mfLoading = False
+  
   
   If pfCopy Then mfChanged = True
   
   RefreshControls
   
+  mfLoading = False
 End Sub
 
 Private Sub RefreshControls()
@@ -3026,10 +3027,13 @@ End Function
 
 
 Private Sub cboChartType_Click()
-  mfChanged = True
+ 
   ' Display new chart details
   RefreshChart
-  If Not mfLoading Then RefreshControls
+  If Not mfLoading Then
+    mfChanged = True
+    RefreshControls
+  End If
 End Sub
 
 Private Sub cboColumns_Click()
@@ -3096,7 +3100,7 @@ End Sub
 
 Private Sub cboParents_Click()
 
-  mfChanged = True
+  
 
   miChartTableID = cboParents.ItemData(cboParents.ListIndex)
   PopulateColumnsCombo (miChartTableID)
@@ -3118,7 +3122,10 @@ Private Sub cboParents_Click()
   End With
   
   
-  If Not mfLoading Then RefreshControls
+  If Not mfLoading Then
+    mfChanged = True
+    RefreshControls
+  End If
 End Sub
 
 Private Sub chkConditionalFormatting_Click()
@@ -3440,16 +3447,19 @@ Private Sub cboHRProTable_Click()
 End Sub
 
 Private Sub cboHRProUtility_Click()
-  mfChanged = True
-  If Not mfLoading Then RefreshControls
+  If Not mfLoading Then
+    mfChanged = True
+    RefreshControls
+  End If
 End Sub
 
 Private Sub cboHRProUtilityType_Click()
   If cboHRProUtilityType.ListIndex >= 0 Then
     GetHRProUtilities cboHRProUtilityType.ItemData(cboHRProUtilityType.ListIndex)
-    
-    mfChanged = True
-    If Not mfLoading Then RefreshControls
+    If Not mfLoading Then
+      mfChanged = True
+      RefreshControls
+    End If
   End If
 End Sub
 
@@ -3486,8 +3496,10 @@ Private Sub cboTableView_Click()
     
   End If
   
-  mfChanged = True
-  If Not mfLoading Then RefreshControls
+  If Not mfLoading Then
+    mfChanged = True
+    RefreshControls
+  End If
 
 End Sub
 
@@ -3841,11 +3853,11 @@ Private Sub optLink_Click(Index As Integer)
     SetComboItem cboHRProUtility, 0  ' cboHRProUtility.ListIndex = -1
   End If
   
-  mfChanged = True
- ' mfChanged = False
-  
-  If Not mfLoading Then RefreshControls
-
+  If Not mfLoading Then
+    mfChanged = True
+  ' mfChanged = False
+     RefreshControls
+  End If
 End Sub
 
 Private Sub txtDBValCFValue1_LostFocus()
@@ -4011,8 +4023,11 @@ End Sub
 
 Private Sub txtPrompt_Change()
 '  If optLink(SSINTLINKSEPARATOR).value Then txtLinkSeparator.Text = Prompt  'keep them in sync
-  mfChanged = True
-  If Not mfLoading Then RefreshControls
+  
+  If Not mfLoading Then
+    mfChanged = True
+    RefreshControls
+  End If
 End Sub
 
 Private Sub txtPrompt_GotFocus()
@@ -4021,8 +4036,11 @@ End Sub
 
 Private Sub txtText_Change()
   'txtLinkSeparator.Text = Text
-  mfChanged = True
-  If Not mfLoading Then RefreshControls
+  
+  If Not mfLoading Then
+    mfChanged = True
+    RefreshControls
+  End If
 End Sub
 
 Private Sub txtText_GotFocus()
