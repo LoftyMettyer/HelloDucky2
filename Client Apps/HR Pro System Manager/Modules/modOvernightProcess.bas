@@ -18,7 +18,7 @@ Public Function CreateOvernightProcess(palngExpressions As Variant, pfRefreshDat
   
   If Application.ChangedOvernightJobSchedule Then
     'Make sure that we run the script for the overnight job Schedule
-    strFileName = "OvernightJob.sql"
+    strFileName = "HRProOvernightJob.sql"
     strScriptPath = App.Path & "\Update Scripts\" & strFileName
     
     RunOvernightScript strScriptPath
@@ -594,7 +594,7 @@ Private Function OvernightJob5() As Boolean
     "        -- Defragment indexes" & vbNewLine & _
     "        EXEC dbo.spASRDefragIndexes 100;" & vbNewLine & vbNewLine & _
     "        -- Update statistics" & vbNewLine & _
-    "        EXEC sp_executeSQL spASRUpdateStatistics;" & vbNewLine & _
+    "        EXEC sp_executeSQL spASRUpdateStatistics;" & vbNewLine & vbNewLine & _
     "        -- Optimise the record save for single record" & vbNewLine & _
     "        EXEC sp_executeSQL spadmin_optimiserecordsave;" & vbNewLine & _
     "    END" & vbNewLine
