@@ -4224,7 +4224,7 @@ Public Function GetOfficeSaveAsFormat(strFileName As String, intOfficeVersion As
     strExtension = Mid(strFileName, InStrRev(strFileName, ".") + 1)
   
     sSQL = "SELECT " & IIf(intOfficeVersion < 12, "Office2003", "Office2007") & _
-           " FROM ASRSysFileFormats WHERE Extension = '" & strExtension & "' AND Destination = '" & IIf(app = oaWord, "WORD", "EXCEL") & "'" & _
+           " FROM ASRSysFileFormats WHERE Extension = '" & strExtension & "' AND Destination LIKE '" & IIf(app = oaWord, "WORD", "EXCEL") & "%'" & _
            " ORDER BY ID"
     Set rsTemp = datGeneral.GetReadOnlyRecords(sSQL)
     GetOfficeSaveAsFormat = IIf(IsNull(rsTemp(0).Value), "", rsTemp(0).Value)
