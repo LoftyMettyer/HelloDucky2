@@ -1,8 +1,8 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
-Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~2.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.ocx"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
+Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "Codejock.SkinFramework.v13.1.0.ocx"
 Begin VB.MDIForm frmMain 
    AutoShowChildren=   0   'False
    BackColor       =   &H00F7EEE9&
@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "12:06"
+            TextSave        =   "12:05"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -4140,6 +4140,8 @@ Private Sub EnableTools()
     .Tools("Filters").Enabled = MenuEnabled("FILTERS")
     .Tools("EmailGroups").Enabled = MenuEnabled("EMAILGROUPS")
     .Tools("ID_LabelTemplates").Enabled = MenuEnabled("LABELDEFINITION")
+    .Tools("ID_DocumentTypes").Visible = gbVersion1Enabled
+    .Tools("ID_DocumentTypes").Enabled = MenuEnabled("VERSION1")
 
     'JPD 20030912 Fault 6961 & Fault 6962
     '.Tools("EventLog").Enabled = datGeneral.SystemPermission("CONFIGURATION", "USER")
