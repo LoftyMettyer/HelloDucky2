@@ -77,15 +77,15 @@ Begin VB.Form frmMailMerge
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmMailMerge.frx":08D6
       Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "fraDefinition(1)"
-      Tab(0).Control(1)=   "fraDefinition(0)"
+      Tab(0).Control(0)=   "fraDefinition(0)"
+      Tab(0).Control(1)=   "fraDefinition(1)"
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Colu&mns"
       TabPicture(1)   =   "frmMailMerge.frx":08F2
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraColumns(0)"
+      Tab(1).Control(0)=   "fraColumns(2)"
       Tab(1).Control(1)=   "fraColumns(1)"
-      Tab(1).Control(2)=   "fraColumns(2)"
+      Tab(1).Control(2)=   "fraColumns(0)"
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "&Sort Order"
       TabPicture(2)   =   "frmMailMerge.frx":090E
@@ -283,13 +283,13 @@ Begin VB.Form frmMailMerge
             RecordSelectors =   0   'False
             Col.Count       =   3
             stylesets.count =   5
-            stylesets(0).Name=   "ssetHeaderDisabled"
-            stylesets(0).ForeColor=   -2147483631
-            stylesets(0).BackColor=   -2147483633
+            stylesets(0).Name=   "ssetSelected"
+            stylesets(0).ForeColor=   -2147483634
+            stylesets(0).BackColor=   -2147483635
             stylesets(0).Picture=   "frmMailMerge.frx":0D1F
-            stylesets(1).Name=   "ssetSelected"
-            stylesets(1).ForeColor=   -2147483634
-            stylesets(1).BackColor=   -2147483635
+            stylesets(1).Name=   "ssetHeaderDisabled"
+            stylesets(1).ForeColor=   -2147483631
+            stylesets(1).BackColor=   -2147483633
             stylesets(1).Picture=   "frmMailMerge.frx":0D3B
             stylesets(2).Name=   "ssetEnabled"
             stylesets(2).ForeColor=   -2147483640
@@ -1677,11 +1677,11 @@ Public Property Let Cancelled(ByVal bCancel As Boolean)
 End Property
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
 End Property
 
 Public Property Let Changed(blnChanged As Boolean)
-  cmdOk.Enabled = blnChanged
+  cmdOK.Enabled = blnChanged
 End Property
 
 Private Function IsDefinitionCreator(lngID As Long) As Boolean
@@ -3022,9 +3022,9 @@ Private Sub optAllRecords_Click()
 End Sub
 
 Private Sub optOutputFormat_Click(Index As Integer)
-  FraOutput(0).Visible = (Index = 0)
-  FraOutput(1).Visible = (Index = 1)
-  FraOutput(2).Visible = (Index = 2)
+  fraOutput(0).Visible = (Index = 0)
+  fraOutput(1).Visible = (Index = 1)
+  fraOutput(2).Visible = (Index = 2)
   Me.Changed = True
 End Sub
 
@@ -3343,7 +3343,7 @@ Private Sub ListView1_GotFocus()
 End Sub
 
 Private Sub ListView1_LostFocus()
-  cmdOk.Default = True
+  cmdOK.Default = True
 End Sub
 
 Private Sub ListView2_GotFocus()
@@ -3351,7 +3351,7 @@ Private Sub ListView2_GotFocus()
 End Sub
 
 Private Sub ListView2_LostFocus()
-  cmdOk.Default = True
+  cmdOK.Default = True
 End Sub
 
 Private Function CopyToSelected(bAll As Boolean)
@@ -3814,11 +3814,11 @@ Private Sub txtDesc_GotFocus()
     .SelStart = 0
     .SelLength = Len(.Text)
   End With
-  cmdOk.Default = False
+  cmdOK.Default = False
 End Sub
 
 Private Sub txtDesc_LostFocus()
-  cmdOk.Default = True
+  cmdOK.Default = True
 End Sub
 
 Private Sub txtEmailAttachmentName_Change()
@@ -4293,7 +4293,7 @@ Private Function SaveDefinition() As Boolean
 
   Dim strOutput As String
   Dim strOutputScreen As String
-  Dim strOutputPrint As String
+  Dim strOutputPrinter As String
   Dim strOutputPrinterName As String
   Dim strOutputSave As String
   Dim strOutputFilename As String
@@ -4328,7 +4328,7 @@ Private Function SaveDefinition() As Boolean
   If optOutputFormat(2).Value = True Then        'Document Management
     strOutput = "2"
     strOutputScreen = IIf(chkDocManScreen.Value = vbChecked, "1", "0")
-    strOutputPrint = "1"
+    strOutputPrinter = "1"
     strOutputPrinterName = IIf(cboDocManEngine.Text <> "<Default Printer>", "'" & Replace(cboDocManEngine.Text, "'", "''") & "'", "''")
     strOutputSave = "0"
     strOutputFilename = "''"
@@ -4342,7 +4342,7 @@ Private Function SaveDefinition() As Boolean
   ElseIf optOutputFormat(1).Value = True Then    'Email
     strOutput = "1"
     strOutputScreen = "0"
-    strOutputPrint = "0"
+    strOutputPrinter = "0"
     strOutputPrinterName = "''"
     strOutputSave = "0"
     strOutputFilename = "''"
@@ -4356,7 +4356,7 @@ Private Function SaveDefinition() As Boolean
   Else                                          'Word Document
     strOutput = "0"
     strOutputScreen = IIf(chkDestination(0).Value = vbChecked, "1", "0")
-    strOutputPrint = IIf(chkDestination(1).Value = vbChecked, "1", "0")
+    strOutputPrinter = IIf(chkDestination(1).Value = vbChecked, "1", "0")
     strOutputPrinterName = IIf(cboPrinterName.Text <> "<Default Printer>", "'" & Replace(cboPrinterName.Text, "'", "''") & "'", "''")
     strOutputSave = IIf(chkDestination(2).Value = vbChecked, "1", "0")
     strOutputFilename = "'" & Replace(txtFilename(0).Text, "'", "''") & "'"
@@ -4441,7 +4441,7 @@ Private Function SaveDefinition() As Boolean
              "LabelTypeID = " & Str(mlngLabelTypeID) & ", " & _
              "OutputFormat = " & strOutput & ", " & _
              "OutputScreen = " & strOutputScreen & ", " & _
-             "OutputPrinter = " & strOutputPrint & ", " & _
+             "OutputPrinter = " & strOutputPrinter & ", " & _
              "OutputPrinterName = " & strOutputPrinterName & ", " & _
              "OutputSave = " & strOutputSave & ", " & _
              "OutputFilename = " & strOutputFilename & ", " & _
@@ -4478,7 +4478,7 @@ Private Function SaveDefinition() As Boolean
                 strUserName & ", " & strIsLabel & ", " & CStr(mlngLabelTypeID) & ", " & _
                 strTemplate & ", " & strSuppressBlanks & ", " & strPauseBeforeMerge & ", " & _
                 strOutput & ", " & strOutputScreen & ", " & _
-                strOutputPrint & ", " & strOutputPrinterName & ", " & _
+                strOutputPrinter & ", " & strOutputPrinterName & ", " & _
                 strOutputSave & ", " & strOutputFilename & ", " & _
                 strEmailAddrID & ", " & strEmailSubject & ", " & _
                 strEmailAttachment & ", " & strEmailAttachmentName & ", " & _
