@@ -480,7 +480,7 @@ Private Sub SQLGetMergeDefinition()
     mlngEmailAddrCalc = 0
     mstrEmailAddr = vbNullString
         
-    If mstrDefTemplateFormat = vbNullString Then
+    If Not mbIsLabel And mstrDefTemplateFormat = vbNullString Then
       mstrStatusMessage = "This definition is set to use a template file which is not compatible with your version of Microsoft Office."
       fOK = False
       GoTo TidyAndExit
@@ -493,9 +493,9 @@ Private Sub SQLGetMergeDefinition()
         'mstrDefDocFileFormat = GetOfficeSaveAsFormat(mstrDefDocFile, GetOfficeWordVersion)
         mblnOutputScreen = !OutputScreen
         mblnOutputPrinter = !OutputPrinter
-        mstrOutputPrinterName = !OutputPrinterName
+        mstrOutputPrinterName = IIf(IsNull(!OutputPrinterName), "", !OutputPrinterName)
         mblnOutputSave = !OutputSave
-        mstrOutputFileName = !OutputFilename
+        mstrOutputFileName = IIf(IsNull(!OutputFilename), "", !OutputFilename)
         mstrOutputFileFormat = GetOfficeSaveAsFormat(mstrOutputFileName, GetOfficeWordVersion)
         
         If Trim(mstrOutputFileName) <> "" And Trim(mstrOutputFileFormat) = "" Then
