@@ -1117,13 +1117,14 @@ Private Function PopulateAggregateCombo(piAggregateType As Integer) As Boolean
   cboAggregateType.ItemData(cboAggregateType.NewIndex) = 0
   cboAggregateType.AddItem "Total"
   cboAggregateType.ItemData(cboAggregateType.NewIndex) = 1
-'  cboAggregateType.AddItem "Average"
-'  cboAggregateType.ItemData(cboAggregateType.NewIndex) = 2
-'  cboAggregateType.AddItem "Minimum"
-'  cboAggregateType.ItemData(cboAggregateType.NewIndex) = 3
-'  cboAggregateType.AddItem "Maximum"
-'  cboAggregateType.ItemData(cboAggregateType.NewIndex) = 4
-  
+  If cboColumns(0) <> vbNullString And cboColumns(1) <> vbNullString And cboColumns(2) <> vbNullString Then
+    cboAggregateType.AddItem "Average"
+    cboAggregateType.ItemData(cboAggregateType.NewIndex) = 2
+    cboAggregateType.AddItem "Minimum"
+    cboAggregateType.ItemData(cboAggregateType.NewIndex) = 3
+    cboAggregateType.AddItem "Maximum"
+    cboAggregateType.ItemData(cboAggregateType.NewIndex) = 4
+  End If
   ' Set the correct item as default
   For i = 0 To cboAggregateType.ListCount - 1
     If cboAggregateType.ItemData(i) = ChartAggregateType Then
