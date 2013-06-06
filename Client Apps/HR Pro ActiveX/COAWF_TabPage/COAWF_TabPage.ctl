@@ -50,30 +50,35 @@ Public Event DblClick()
 
 Private gfSelected As Boolean
 Private miWFItemType As Integer
+Private miCurrentTab As Integer
+
+Private Const Xframe = 20
+Private Const YFrame = 20
 
 Public ControlLevel As Long
 
 Public Property Let WFItemType(New_Value As Integer)
   miWFItemType = New_Value
 End Property
+
 Public Property Get WFItemType() As Integer
   WFItemType = 21
 End Property
 
 Public Property Get ClientLeft() As Long
-  ClientLeft = 100 ' UserControl.ClientLeft
+  ClientLeft = TabStrip1.ClientLeft
 End Property
 
 Public Property Get ClientTop() As Long
-  ClientTop = 100 'UserControl.ClientTop
+  ClientTop = TabStrip1.ClientTop
 End Property
 
 Public Property Get ClientHeight() As Long
-  ClientHeight = 100 'UserControl.ClientHeight
+  ClientHeight = TabStrip1.ClientHeight + (YFrame * 2)
 End Property
 
 Public Property Get ClientWidth() As Long
-  ClientWidth = 100 'UserControl.ClientWidth
+  ClientWidth = TabStrip1.ClientWidth + (Xframe * 2)
 End Property
 
 ' Return the control's hWnd.
@@ -107,20 +112,26 @@ Public Function Tabs() As Tabs
   Set Tabs = TabStrip1.Tabs
 End Function
 
-Private Sub objContainer_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
-  RaiseEvent MouseDown(Button, Shift, x, y)
-End Sub
-
-Private Sub objContainer_MouseMove(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
-  RaiseEvent MouseMove(Button, Shift, x, y)
-End Sub
-
-Private Sub objContainer_MouseUp(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
-  RaiseEvent MouseUp(Button, Shift, x, y)
-End Sub
-
 Private Sub TabStrip1_Click()
-  RaiseEvent Click
+  
+  If TabStrip1.SelectedItem.Index <> miCurrentTab Then
+    RaiseEvent Click
+  End If
+
+  miCurrentTab = TabStrip1.SelectedItem.Index
+
+End Sub
+
+Private Sub TabStrip1_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
+  
+'  If TabStrip1.SelectedItem.Index <> miCurrentTab Then
+'    RaiseEvent Click
+'  Else
+    RaiseEvent MouseDown(Button, Shift, x, y)
+'  End If
+'
+'  miCurrentTab = TabStrip1.SelectedItem.Index
+  
 End Sub
 
 Private Sub UserControl_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
@@ -164,30 +175,18 @@ Private Function TabPages_Resize() As Boolean
   On Error GoTo ErrorTrap
   
   Dim fOK As Boolean
-  Dim ctlPictureBox As PictureBox
-  Dim Xframe As Long
-  Dim YFrame As Long
-  
-  Xframe = 20
-  YFrame = 20
   
   ' Position and size the tabstrip to fill the form's client area.
   TabStrip1.Move Xframe, YFrame, UserControl.ScaleWidth - (Xframe * 2), UserControl.ScaleHeight - (YFrame * 2)
   
-'  ' Position and size the picture box containers of the tabstrip.
-'  For Each ctlPictureBox In objContainer
-'    ctlPictureBox.Move TabStrip1.ClientLeft, TabStrip1.ClientTop, TabStrip1.ClientWidth, TabStrip1.ClientHeight
-'  Next ctlPictureBox
-
   fOK = True
   
 TidyUpAndExit:
-  ' Disassociate object variales.
-  Set ctlPictureBox = Nothing
   TabPages_Resize = fOK
   Exit Function
 
 ErrorTrap:
+  fOK = False
   Resume TidyUpAndExit
   
 End Function
@@ -213,5 +212,28 @@ Public Function GetCaptions() As String
   GetCaptions = sCaptions
 
 End Function
+
+Public Property Get Caption() As String
+  Caption = GetCaptions
+End Property
+
+Public Property Let Caption(ByVal NewValue As String)
+
+  Dim objTab As MSComctlLib.Tab
+  Dim sCaption As String
+  Dim aryCaptions() As String
+  Dim lngCount As Long
+  
+  On Error GoTo ErrorTrap
+  
+  aryCaptions = Split(NewValue, ";")
+  
+  For lngCount = LBound(aryCaptions) To UBound(aryCaptions)
+    TabStrip1.Tabs(lngCount + 1).Caption = aryCaptions(lngCount)
+  Next
+
+ErrorTrap:
+
+End Property
 
 
