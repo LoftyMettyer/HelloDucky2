@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Begin VB.Form frmDefSel 
    Caption         =   "Select"
    ClientHeight    =   6465
@@ -1772,7 +1772,7 @@ Public Function ShowOrders(strSQL As String, lngOrderID As Long) As Boolean
   
   'NHRD04092003 Fault 6273, 5911
   msTypeCode = "ORDERS"
-  mblnApplySystemPermissions = True
+  mblnApplySystemPermissions = Not gfCurrentUserIsSysSecMgr
   
   msGeneralCaption = "Orders"
   msSingularCaption = "Order"
@@ -2279,7 +2279,7 @@ Public Function ShowList(lngUtilType As UtilityType, Optional msRecordSourceWher
   'Dim intWhereClauses As Integer
 
   mblnApplyDefAccess = True
-  mblnApplySystemPermissions = True
+  mblnApplySystemPermissions = Not gfCurrentUserIsSysSecMgr
   strExtraWhereClause = vbNullString
   msRecordSource = vbNullString
   mblnScheduledJobs = blnScheduledJobs
