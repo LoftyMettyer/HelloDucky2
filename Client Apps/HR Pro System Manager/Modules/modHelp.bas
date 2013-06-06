@@ -9,12 +9,11 @@ Public Function ShowAirHelp(lngHelpContextID As Long) As Boolean
   
   On Local Error GoTo LocalErr
 
-  strAirHelpFile = Environ("programfiles") & "\COA Solutions\HR Pro Help\" & App.EXEName & " Help\" & App.EXEName & " Help.exe"
+  strAirHelpFile = Environ("programfiles") & "\Advanced\HR Pro Help\" & App.EXEName & " Help\" & App.EXEName & " Help.exe"
   If Dir(strAirHelpFile) = vbNullString Then
-    strAirHelpFile = "C:\Program Files (x86)\COA Solutions\HR Pro Help\" & App.EXEName & " Help\" & App.EXEName & " Help.exe"
-    
+    strAirHelpFile = "C:\Program Files (x86)\Advanced\HR Pro Help\" & App.EXEName & " Help\" & App.EXEName & " Help.exe"
     If Dir(strAirHelpFile) = vbNullString Then
-      strAirHelpFile = "C:\Program Files\COA Solutions\HR Pro Help\" & App.EXEName & " Help\" & App.EXEName & " Help.exe"
+      strAirHelpFile = "C:\Program Files\Advanced\HR Pro Help\" & App.EXEName & " Help\" & App.EXEName & " Help.exe"
     End If
   End If
   
