@@ -53,9 +53,9 @@ Begin VB.Form frmWorkflowSetup
       TabCaption(1)   =   "&Personnel Identification"
       TabPicture(1)   =   "frmWorkflowSetup.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraPersonnelTable"
+      Tab(1).Control(0)=   "fraDelegation"
       Tab(1).Control(0).Enabled=   0   'False
-      Tab(1).Control(1)=   "fraDelegation"
+      Tab(1).Control(1)=   "fraPersonnelTable"
       Tab(1).Control(1).Enabled=   0   'False
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "&Service"
@@ -66,9 +66,9 @@ Begin VB.Form frmWorkflowSetup
       TabCaption(3)   =   "&Mobile Specifics"
       TabPicture(3)   =   "frmWorkflowSetup.frx":0060
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "Frame1"
+      Tab(3).Control(0)=   "fraMobileKey"
       Tab(3).Control(0).Enabled=   0   'False
-      Tab(3).Control(1)=   "fraMobileKey"
+      Tab(3).Control(1)=   "Frame1"
       Tab(3).Control(1).Enabled=   0   'False
       Tab(3).ControlCount=   2
       Begin VB.Frame fraMobileKey 
@@ -1375,10 +1375,14 @@ Private Sub ReadParameters()
   mlngLoginColumnID = GetModuleSetting(gsMODULEKEY_WORKFLOW, gsPARAMETERKEY_LOGINNAME, 0)
   mlngSecondLoginColumnID = GetModuleSetting(gsMODULEKEY_WORKFLOW, gsPARAMETERKEY_SECONDLOGINNAME, 0)
 
+
+  ' --------------------------------------------
+  ' Read the Mobile Configuration parameters
+  ' --------------------------------------------
   mlngMobPersonnelTableID = GetModuleSetting(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_PERSONNELTABLE, 0)
   mlngMobLoginColumnID = GetModuleSetting(gsMODULEKEY_MOBILE, gsPARAMETERKEY_LOGINNAME, 0)
-  ' mlngMobEmailColumnID = GetModuleSetting(gsMODULEKEY_MOBILE, gsPARAMETERKEY_UNIQUEEMAILCOLUMN, 0)
-  mlngWorkEmailColumnID = GetModuleSetting(gsMODULEKEY_MOBILE, gsPARAMETERKEY_WORKEMAIL, 0)
+  ' mlngWorkEmailColumnID = GetModuleSetting(gsMODULEKEY_MOBILE, gsPARAMETERKEY_WORKEMAIL, 0)
+  mlngWorkEmailColumnID = GetModuleSetting(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_WORKEMAIL, 0)
   mlngMobLeavingDateColumnID = GetModuleSetting(gsMODULEKEY_MOBILE, gsPARAMETERKEY_LEAVINGDATE, 0)
   mlngMobActivatedColumnID = GetModuleSetting(gsMODULEKEY_MOBILE, gsPARAMETERKEY_MOBILEACTIVATED, 0)
 
