@@ -851,8 +851,9 @@ Private Function SaveModuleDefinitions() As Boolean
   Dim fOK As Boolean
   Dim rsModules As New ADODB.Recordset
   Dim rsRelatedColumns As New ADODB.Recordset
-  Dim rsLinks As dao.Recordset
-  Dim rsAccord As dao.Recordset
+  Dim rsLinks As DAO.Recordset
+  Dim rsAccord As DAO.Recordset
+  Dim rsData As DAO.Recordset
   Dim sSQL As String
   Dim alngLinkIDs() As Long
   Dim rsMaxLinkID As New ADODB.Recordset
@@ -1169,6 +1170,60 @@ Private Function SaveModuleDefinitions() As Boolean
   Wend
   rsAccord.Close
 
+
+
+'
+'
+'
+'  ' Document Management
+'  gADOCon.Execute "DELETE FROM ASRSysDocumentManagementCategories", , adCmdText + adExecuteNoRecords
+'
+'  sSQL = "SELECT * FROM tmpDocumentManagementCategories"
+'  Set rsData = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
+'
+'  While Not rsData.EOF
+'
+'    sSQL = "INSERT INTO ASRSysDocumentManagementCategories" & _
+'      " (CategoryID, Category, TableID)" & _
+'      " VALUES (" & _
+'      CStr(rsData!CategoryID) & "," & _
+'      "'" & CStr(rsData!Category) & "'," & _
+'      rsData!TableID & ")"
+'    gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
+'
+'    rsData.MoveNext
+'  Wend
+'  rsData.Close
+'
+'
+'  gADOCon.Execute "DELETE FROM ASRSysDocumentManagementHeaderInfo", , adCmdText + adExecuteNoRecords
+'
+'  sSQL = "SELECT * FROM tmpDocumentManagementHeaderInfo"
+'  Set rsData = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
+'
+'  While Not rsData.EOF
+'
+'    sSQL = "INSERT INTO ASRSysDocumentManagementHeaderInfo" & _
+'      " (CategoryID, Heading, ColumnID, Value, Type)" & _
+'      " VALUES (" & _
+'      CStr(rsData!CategoryID) & "," & _
+'      "'" & CStr(rsData!Heading) & "', " & _
+'      rsData!ColumnID & ", " & _
+'      rsData!value & ", " & _
+'      rsData!Type & ")"
+'
+'    gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
+'
+'    rsData.MoveNext
+'  Wend
+'  rsData.Close
+'
+
+
+
+
+
+
 TidyUpAndExit:
   Set rsAccord = Nothing
   Set rsMaxLinkID = Nothing
@@ -1282,7 +1337,7 @@ Private Function CopyData() As Boolean
   Dim sColumnList As HRProSystemMgr.cStringBuilder
   Dim sSourceTableName As String
   Dim sDestinationTableName As String
-  Dim rsTableName As dao.Recordset
+  Dim rsTableName As DAO.Recordset
   Dim rsColumnTypes As New ADODB.Recordset
   Dim rsCommonColumns As New ADODB.Recordset
   Dim strColumnName As String
