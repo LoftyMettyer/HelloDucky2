@@ -350,9 +350,6 @@ Public Sub Initialise(piAction As groupAction)
       .AddItem "Batch Job" & _
         vbTab & AccessDescription(ACCESS_HIDDEN) & _
         vbTab & utlBatchJob
-      .AddItem "Report Pack" & _
-        vbTab & AccessDescription(ACCESS_HIDDEN) & _
-        vbTab & utlReportPack
       .AddItem "Calendar Report" & _
         vbTab & AccessDescription(ACCESS_HIDDEN) & _
         vbTab & utlCalendarReport
@@ -395,6 +392,9 @@ Public Sub Initialise(piAction As groupAction)
       .AddItem "Record Profile" & _
         vbTab & AccessDescription(ACCESS_HIDDEN) & _
         vbTab & utlRecordProfile
+      .AddItem "Report Pack" & _
+        vbTab & AccessDescription(ACCESS_HIDDEN) & _
+        vbTab & utlReportPack
       .AddItem "Succession Planning" & _
         vbTab & AccessDescription(ACCESS_HIDDEN) & _
         vbTab & utlSuccession
