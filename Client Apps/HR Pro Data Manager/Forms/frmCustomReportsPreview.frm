@@ -291,11 +291,12 @@ Attribute VB_Exposed = False
 Option Explicit
 
 Private mobjParent As clsCustomReportsRUN
-Private CustomReportPrint As clsPrintGrid
 Private mstrErrorString As String
-'Private gblnBatchMode As Boolean
 Private mblnReportHasSummaryInfo As Boolean
 Private mstrBaseTable As String
+
+Private Const dblFORM_MINWIDTH = 9400
+Private Const dblFORM_MINHEIGHT = 7000
 
 Public Property Let BaseTable(sBaseTable As String)
   mstrBaseTable = sBaseTable
@@ -322,10 +323,10 @@ Private Sub cmdOutput_Click()
 End Sub
 
 Private Sub Form_Load()
-  Me.Height = GetPCSetting("CustomReportPreview", "Height", 6990)
-  Me.Width = GetPCSetting("CustomReportPreview", "Width", 9405)
+  Me.Height = GetPCSetting("CustomReportPreview", "Height", dblFORM_MINHEIGHT)
+  Me.Width = GetPCSetting("CustomReportPreview", "Width", dblFORM_MINWIDTH)
     
-  Hook Me.hWnd, 9405, 6990
+  Hook Me.hWnd, dblFORM_MINWIDTH, dblFORM_MINHEIGHT
 End Sub
 
 Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
@@ -342,11 +343,6 @@ Private Sub Form_Resize()
 
   If Me.WindowState = vbMinimized Then Exit Sub
   
-'  If Me.Height > Screen.Height Then Me.Height = 6990
-'  If Me.Width > Screen.Width Then Me.Width = 9405
-'  If Me.Height < 6990 Then Me.Height = 6990
-'  If Me.Width < 9405 Then Me.Width = 9405
-  
   cmdClose.Top = Me.ScaleHeight - (cmdClose.Height + lngGap)
   cmdClose.Left = Me.ScaleWidth - (cmdClose.Width + lngGap)
   cmdOutput.Top = cmdClose.Top
@@ -355,18 +351,9 @@ Private Sub Form_Resize()
   Me.grdOutput.Move lngGap, lngGap, Me.ScaleWidth - (lngGap * 2), cmdClose.Top - (lngGap * 2)
 
   ' Get rid of the icon off the form
-  Me.Icon = Nothing
-  SetWindowLong Me.hWnd, GWL_EXSTYLE, WS_EX_WINDOWEDGE Or WS_EX_APPWINDOW Or WS_EX_DLGMODALFRAME
+  RemoveIcon Me
 
 End Sub
-
-'Private Sub grdOutput_PrintInitialize(ByVal ssPrintInfo As SSDataWidgets_B.ssPrintInfo)
-'  Call CustomReportPrint.PrintInitialise(ssPrintInfo)
-'End Sub
-'
-'Private Sub SSDBGrid_Selected_PrintInitialize(ByVal ssPrintInfo As SSDataWidgets_B.ssPrintInfo)
-'  Call CustomReportPrint.PrintInitialise(ssPrintInfo)
-'End Sub
 
 Public Property Let Parent(ByVal objNewValue As clsCustomReportsRUN)
   Set mobjParent = objNewValue
