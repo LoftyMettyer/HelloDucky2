@@ -1757,7 +1757,7 @@ Private Function ConfigureModuleSpecifics() As Boolean
   modMobileSpecifics.DropMobileObjects
   If Application.MobileModule Then
     OutputCurrentProcess2 "Mobile"
-    fOK = modMobileSpecifics.ConfigureWorkflowSpecifics
+    fOK = modMobileSpecifics.ConfigureMobileSpecifics
   End If
   
 
