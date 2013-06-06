@@ -673,6 +673,16 @@ PRINT 'Step - Report Packs'
 
 		EXECUTE sp_executeSQL N'UPDATE AsrSysBatchJobName SET IsBatch = 1;';	
 	  END 
+	  
+	SELECT @iRecCount = count(id) FROM syscolumns WHERE id = (select id from sysobjects where name = 'ASRSysBatchJobName') and name = 'outputretaincharts'
+		IF @iRecCount = 0
+		BEGIN
+			SELECT @NVarCommand = 'ALTER TABLE [dbo].[ASRSysBatchJobName] ADD
+				[OutputRetainCharts] [bit] NULL';
+			EXEC sp_executesql @NVarCommand;
+			
+			EXECUTE sp_executeSQL N'UPDATE AsrSysBatchJobName SET OutputRetainCharts = 0;';	
+		END 	  	  
 	  	  
 	-- Insert the system permissions for Report Packs and new picture too
 	IF NOT EXISTS(SELECT * FROM dbo.[ASRSysPermissionCategories] WHERE [categoryID] = 44)
