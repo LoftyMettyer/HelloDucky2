@@ -679,6 +679,11 @@ TidyUpAndExit:
       gobjHRProEngine.ErrorLog.Show
       fOK = Not gobjHRProEngine.ErrorLog.IsCatastrophic
     End If
+    
+    If ASRDEVELOPMENT Then
+      gobjHRProEngine.TuningLog.OutputToFile (App.Path + "\HRProSystemFrameworkTuning.log")
+    End If
+    
   End If
   
   If fOK Then
