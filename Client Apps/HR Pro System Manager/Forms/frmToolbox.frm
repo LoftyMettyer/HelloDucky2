@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Begin VB.Form frmToolbox 
    Caption         =   "Toolbox"
    ClientHeight    =   7860
@@ -359,21 +359,12 @@ Begin VB.Form frmToolbox
          AutoSize        =   -1  'True
          BackColor       =   &H80000002&
          Caption         =   "Columns"
-         BeginProperty Font 
-            Name            =   "MS Sans Serif"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   700
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
          ForeColor       =   &H80000009&
          Height          =   195
          Left            =   420
          TabIndex        =   6
          Top             =   45
-         Width           =   720
+         Width           =   1245
       End
       Begin VB.Image imgTitleBar 
          Height          =   255
@@ -704,7 +695,7 @@ Private Sub Form_Load()
   
   'NPG20091029 Fault HRPRO-531
   imgTitleBar.Visible = False
-  lblTitleBar.Move 20, 30, 720, 195
+  lblTitleBar.Move 20, 30, 820, 195
   
   fraTable.Left = 0
   trvColumns.Left = 0
