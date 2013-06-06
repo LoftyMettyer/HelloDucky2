@@ -101,28 +101,28 @@ Begin VB.Form frmCustomReports
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmCustomReports.frx":1CB4
       Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "fraBase"
-      Tab(0).Control(1)=   "fraInformation"
+      Tab(0).Control(0)=   "fraInformation"
+      Tab(0).Control(1)=   "fraBase"
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Related Ta&bles"
       TabPicture(1)   =   "frmCustomReports.frx":1CD0
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraParent1"
+      Tab(1).Control(0)=   "fraChild"
       Tab(1).Control(1)=   "fraParent2"
-      Tab(1).Control(2)=   "fraChild"
+      Tab(1).Control(2)=   "fraParent1"
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "Colu&mns"
       TabPicture(2)   =   "frmCustomReports.frx":1CEC
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraFieldsAvailable"
+      Tab(2).Control(0)=   "fraButtons"
       Tab(2).Control(1)=   "fraFieldsSelected"
-      Tab(2).Control(2)=   "fraButtons"
+      Tab(2).Control(2)=   "fraFieldsAvailable"
       Tab(2).ControlCount=   3
       TabCaption(3)   =   "&Sort Order"
       TabPicture(3)   =   "frmCustomReports.frx":1D08
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "fraRepetition"
-      Tab(3).Control(1)=   "fraReportOrder"
+      Tab(3).Control(0)=   "fraReportOrder"
+      Tab(3).Control(1)=   "fraRepetition"
       Tab(3).ControlCount=   2
       TabCaption(4)   =   "O&utput"
       TabPicture(4)   =   "frmCustomReports.frx":1D24
@@ -204,9 +204,9 @@ Begin VB.Form frmCustomReports
             HeadLines       =   2
             Col.Count       =   7
             stylesets.count =   6
-            stylesets(0).Name=   "ssetHeaderDisabled"
-            stylesets(0).ForeColor=   -2147483631
-            stylesets(0).BackColor=   -2147483633
+            stylesets(0).Name=   "ssetSelected"
+            stylesets(0).ForeColor=   -2147483634
+            stylesets(0).BackColor=   -2147483635
             stylesets(0).HasFont=   -1  'True
             BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -218,9 +218,9 @@ Begin VB.Form frmCustomReports
                Strikethrough   =   0   'False
             EndProperty
             stylesets(0).Picture=   "frmCustomReports.frx":1D40
-            stylesets(1).Name=   "ssetSelected"
-            stylesets(1).ForeColor=   -2147483634
-            stylesets(1).BackColor=   -2147483635
+            stylesets(1).Name=   "ssetHeaderDisabled"
+            stylesets(1).ForeColor=   -2147483631
+            stylesets(1).BackColor=   -2147483633
             stylesets(1).HasFont=   -1  'True
             BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -717,9 +717,9 @@ Begin VB.Form frmCustomReports
             RecordSelectors =   0   'False
             Col.Count       =   7
             stylesets.count =   5
-            stylesets(0).Name=   "ssetHeaderDisabled"
-            stylesets(0).ForeColor=   -2147483631
-            stylesets(0).BackColor=   -2147483633
+            stylesets(0).Name=   "ssetSelected"
+            stylesets(0).ForeColor=   -2147483634
+            stylesets(0).BackColor=   -2147483635
             stylesets(0).HasFont=   -1  'True
             BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -731,9 +731,9 @@ Begin VB.Form frmCustomReports
                Strikethrough   =   0   'False
             EndProperty
             stylesets(0).Picture=   "frmCustomReports.frx":2B6C
-            stylesets(1).Name=   "ssetSelected"
-            stylesets(1).ForeColor=   -2147483634
-            stylesets(1).BackColor=   -2147483635
+            stylesets(1).Name=   "ssetHeaderDisabled"
+            stylesets(1).ForeColor=   -2147483631
+            stylesets(1).BackColor=   -2147483633
             stylesets(1).HasFont=   -1  'True
             BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -970,9 +970,9 @@ Begin VB.Form frmCustomReports
             GroupHeadLines  =   0
             Col.Count       =   3
             stylesets.count =   5
-            stylesets(0).Name=   "ssetHeaderDisabled"
-            stylesets(0).ForeColor=   -2147483631
-            stylesets(0).BackColor=   -2147483633
+            stylesets(0).Name=   "ssetSelected"
+            stylesets(0).ForeColor=   -2147483634
+            stylesets(0).BackColor=   -2147483635
             stylesets(0).HasFont=   -1  'True
             BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -984,9 +984,9 @@ Begin VB.Form frmCustomReports
                Strikethrough   =   0   'False
             EndProperty
             stylesets(0).Picture=   "frmCustomReports.frx":2BF8
-            stylesets(1).Name=   "ssetSelected"
-            stylesets(1).ForeColor=   -2147483634
-            stylesets(1).BackColor=   -2147483635
+            stylesets(1).Name=   "ssetHeaderDisabled"
+            stylesets(1).ForeColor=   -2147483631
+            stylesets(1).BackColor=   -2147483633
             stylesets(1).HasFont=   -1  'True
             BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -2015,10 +2015,10 @@ Private mblnGridChangeRecursive As Boolean
 
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
-  cmdOk.Enabled = (pblnChanged) And (Not mblnReadOnly)
+  cmdOK.Enabled = (pblnChanged) And (Not mblnReadOnly)
 End Property
 
 
@@ -4269,7 +4269,7 @@ Private Sub ListView1_GotFocus()
 End Sub
 
 Private Sub ListView1_LostFocus()
-  cmdOk.Default = True
+  cmdOK.Default = True
 End Sub
 
 Private Sub ListView2_GotFocus()
@@ -4277,7 +4277,7 @@ Private Sub ListView2_GotFocus()
 End Sub
 
 Private Sub ListView2_LostFocus()
-  cmdOk.Default = True
+  cmdOK.Default = True
 End Sub
 
 Private Sub optBaseAllRecords_Click()
@@ -5837,13 +5837,13 @@ Private Sub txtDesc_GotFocus()
     .SelLength = Len(.Text)
   End With
   
-  cmdOk.Default = False
+  cmdOK.Default = False
   
 End Sub
 
 Private Sub txtDesc_LostFocus()
 
-  cmdOk.Default = True
+  cmdOK.Default = True
 
 End Sub
 
@@ -6139,28 +6139,28 @@ Private Function SaveDefinition() As Boolean
     If chkDestination(desSave).Value = vbChecked Then
       sSQL = sSQL & _
         "OutputSave = 1, " & _
-        "OutputSaveFormat = " & Val(txtFilename.Tag) & ", " & _
         "OutputSaveExisting = " & cboSaveExisting.ItemData(cboSaveExisting.ListIndex) & ", "
+        '"OutputSaveFormat = " & Val(txtFilename.Tag) & ", " &
     Else
       sSQL = sSQL & _
         "OutputSave = 0, " & _
-        "OutputSaveFormat = 0, " & _
         "OutputSaveExisting = 0, "
+        '"OutputSaveFormat = 0, " &
     End If
         
     If chkDestination(desEmail).Value = vbChecked Then
       sSQL = sSQL & _
           "OutputEmail = 1, " & _
           "OutputEmailAddr = " & txtEmailGroup.Tag & ", " & _
-          "OutputEmailSubject = '" & Replace(txtEMailSubject.Text, "'", "''") & "', " & _
-          "OutputEmailAttachAs = '" & Replace(txtEmailAttachAs.Text, "'", "''") & "', " & _
+          "OutputEmailSubject = '" & Replace(txtEmailSubject.Text, "'", "''") & "', " & _
+          "OutputEmailAttachAs = '" & Replace(txtEmailAttachAs.Text, "'", "''") & "', " '& _
           "OutputEmailFileFormat = " & CStr(Val(txtEmailAttachAs.Tag)) & ", "
     Else
       sSQL = sSQL & _
           "OutputEmail = 0, " & _
           "OutputEmailAddr = 0, " & _
           "OutputEmailSubject = '', " & _
-          "OutputEmailAttachAs = '', " & _
+          "OutputEmailAttachAs = '', " '& _
           "OutputEmailFileFormat = 0,"
     End If
     
@@ -6202,8 +6202,8 @@ Private Function SaveDefinition() As Boolean
            "UserName," & _
            "Parent1AllRecords, Parent1Picklist, Parent2AllRecords, Parent2Picklist, IgnoreZeros, " & _
            "OutputPreview, OutputFormat, OutputScreen, OutputPrinter, " & _
-           "OutputPrinterName, OutputSave, OutputSaveFormat, OutputSaveExisting, OutputEmail, " & _
-           "OutputEmailAddr, OutputEmailSubject, OutputEmailAttachAs, OutputEmailFileFormat, OutputFileName " & _
+           "OutputPrinterName, OutputSave, OutputSaveExisting, OutputEmail, " & _
+           "OutputEmailAddr, OutputEmailSubject, OutputEmailAttachAs, OutputFileName " & _
            ") "
     
            '"DefaultOutput, DefaultExportTo, DefaultSave, DefaultSaveAs, DefaultCloseApp, " & _
@@ -6262,21 +6262,21 @@ Private Function SaveDefinition() As Boolean
     End If
     
     If chkDestination(desSave).Value = vbChecked Then
-      sSQL = sSQL & "1, " & CStr(Val(txtFilename.Tag)) & ", " & _
+      sSQL = sSQL & "1, " & _
         cboSaveExisting.ItemData(cboSaveExisting.ListIndex) & ", "    'OutputSave, OutputSaveFormat, OutputSaveExisting
     Else
-      sSQL = sSQL & "0, 0, 0, "                                       'OutputSave, OutputSaveFormat, OutputSaveExisting
+      sSQL = sSQL & "0, 0, "                                       'OutputSave, OutputSaveFormat, OutputSaveExisting
     End If
 
 
     If chkDestination(desEmail).Value = vbChecked Then
       sSQL = sSQL & "1, " & _
           txtEmailGroup.Tag & ", " & _
-          "'" & Replace(txtEMailSubject.Text, "'", "''") & "', " & _
-          "'" & Replace(txtEmailAttachAs.Text, "'", "''") & "', " & _
+          "'" & Replace(txtEmailSubject.Text, "'", "''") & "', " & _
+          "'" & Replace(txtEmailAttachAs.Text, "'", "''") & "', " '& _
           CStr(Val(txtEmailAttachAs.Tag)) & ", "      'OutputEmail, OutputEmailAddr, OutputEmailSubject, OutputEmailFileFormat
     Else
-      sSQL = sSQL & "0, 0, '', '', 0, "   'OutputEmail, OutputEmailAddr, OutputEmailSubject, OutputEmailFileFormat
+      sSQL = sSQL & "0, 0, '', '', "  '0, "   'OutputEmail, OutputEmailAddr, OutputEmailSubject, OutputEmailFileFormat
     End If
 
     sSQL = sSQL & _
@@ -9220,7 +9220,7 @@ Public Sub PrintDef(lCustomReportID As Long)
         If chkDestination(3).Value = vbChecked Then
           .PrintNormal "Output Destination : Send to email"
           .PrintNormal "Email Group : " & txtEmailGroup.Text
-          .PrintNormal "Email Subject : " & txtEMailSubject.Text
+          .PrintNormal "Email Subject : " & txtEmailSubject.Text
           .PrintNormal "Email Attach As : " & txtEmailAttachAs.Text
         End If
         

@@ -44,7 +44,7 @@ Public Sub PopulateOutputControls(rsTemp As Recordset)
     If .chkDestination(desSave).Value Then
       .txtFilename.Text = rsTemp!OutputFilename
       .txtFilename.SelLength = Len(.txtFilename.Text)
-      .txtFilename.Tag = rsTemp!OutputSaveFormat
+      '.txtFilename.Tag = rsTemp!OutputSaveFormat
       SetComboItem .cboSaveExisting, rsTemp!OutputSaveExisting
     End If
     
@@ -52,9 +52,9 @@ Public Sub PopulateOutputControls(rsTemp As Recordset)
     If rsTemp!OutputEmail Then
       .txtEmailGroup.Text = datGeneral.GetEmailGroupName(rsTemp!OutputEmailAddr)
       .txtEmailGroup.Tag = rsTemp!OutputEmailAddr
-      .txtEMailSubject.Text = rsTemp!OutputEmailSubject
+      .txtEmailSubject.Text = rsTemp!OutputEmailSubject
       .txtEmailAttachAs.Text = IIf(IsNull(rsTemp!OutputEmailAttachAs), vbNullString, rsTemp!OutputEmailAttachAs)
-      .txtEmailAttachAs.Tag = rsTemp!OutputEmailFileFormat
+      '.txtEmailAttachAs.Tag = rsTemp!OutputEmailFileFormat
     End If
 
   End With
@@ -282,15 +282,15 @@ Public Sub DestinationClick(Index As Integer)
       .lblEmail(2).Enabled = blnEmail
       .lblEmail(3).Enabled = blnEmail
       .cmdEmailGroup.Enabled = blnEmail
-      .txtEMailSubject.Enabled = blnEmail
-      .txtEMailSubject.BackColor = IIf(blnEmail, vbWindowBackground, vbButtonFace)
+      .txtEmailSubject.Enabled = blnEmail
+      .txtEmailSubject.BackColor = IIf(blnEmail, vbWindowBackground, vbButtonFace)
       .txtEmailAttachAs.Enabled = blnEmail
       .txtEmailAttachAs.BackColor = IIf(blnEmail, vbWindowBackground, vbButtonFace)
-      EnableCombo .cboEmailFileFormat, blnEmail
+      'EnableCombo .cboEmailFileFormat, blnEmail
       
       If blnEmail Then
         .txtEmailGroup.Text = "<None>"
-        .txtEMailSubject.Text = Trim(.txtName.Text)
+        .txtEmailSubject.Text = Trim(.txtName.Text)
         If (.txtFilename.Text <> vbNullString) Then
           .txtEmailAttachAs.Text = FileFromFullPath(.txtFilename.Text)
         ElseIf Trim(.txtName.Text) <> vbNullString Then
@@ -299,7 +299,7 @@ Public Sub DestinationClick(Index As Integer)
       Else
         .txtEmailGroup.Text = vbNullString
         .txtEmailGroup.Tag = 0
-        .txtEMailSubject.Text = vbNullString
+        .txtEmailSubject.Text = vbNullString
         .txtEmailAttachAs.Text = vbNullString
         .txtEmailAttachAs.Tag = 0
       End If
@@ -443,7 +443,7 @@ Public Sub ReadDefFromRecset(rsDef As Recordset)
     .chkDestination(desSave).Value = IIf(rsDef!OutputSave, vbChecked, vbUnchecked)
     If rsDef!OutputSave Then
       .txtFilename.Text = rsDef!OutputFilename
-      .txtFilename.Tag = rsDef!OutputSaveFormat
+      '.txtFilename.Tag = rsDef!OutputSaveFormat
       SetComboItem .cboSaveExisting, rsDef!OutputSaveExisting
     End If
 
@@ -451,9 +451,9 @@ Public Sub ReadDefFromRecset(rsDef As Recordset)
     If rsDef!OutputEmail Then
       .txtEmailGroup.Text = datGeneral.GetEmailGroupName(rsDef!OutputEmailAddr)
       .txtEmailGroup.Tag = rsDef!OutputEmailAddr
-      .txtEMailSubject.Text = rsDef!OutputEmailSubject
+      .txtEmailSubject.Text = rsDef!OutputEmailSubject
       .txtEmailAttachAs.Text = IIf(IsNull(rsDef!OutputEmailAttachAs), vbNullString, rsDef!OutputEmailAttachAs)
-      .txtEmailAttachAs.Tag = IIf(IsNull(rsDef!OutputEmailFileFormat), vbNullString, rsDef!OutputEmailFileFormat)
+      '.txtEmailAttachAs.Tag = IIf(IsNull(rsDef!OutputEmailFileFormat), vbNullString, rsDef!OutputEmailFileFormat)
     End If
   End With
 

@@ -67,12 +67,12 @@ Private mbOmitHeader As Boolean                     ' Omit header if appending t
 Private mlngOutputFormat As Long
 Private mblnOutputSave As Boolean
 Private mlngOutputSaveExisting As Long
-Private mlngOutputSaveFormat As Long
+'Private mlngOutputSaveFormat As Long
 Private mblnOutputEmail As Boolean
 Private mlngOutputEmailAddr As Long
 Private mstrOutputEmailSubject As String
 Private mstrOutputEmailAttachAs As String
-Private mlngOutputEmailFileFormat As Long
+'Private mlngOutputEmailFileFormat As Long
 Private mstrOutputFilename As String
 
 Private mlngExportParent1AllRecords As Long
@@ -639,12 +639,12 @@ Private Function GetExportDefinition() As Boolean
     mlngOutputFormat = !OutputFormat
     mblnOutputSave = !OutputSave
     mlngOutputSaveExisting = !OutputSaveExisting
-    mlngOutputSaveFormat = !OutputSaveFormat
+    'mlngOutputSaveFormat = !OutputSaveFormat
     mblnOutputEmail = !OutputEmail
     mlngOutputEmailAddr = !OutputEmailAddr
     mstrOutputEmailSubject = !OutputEmailSubject
     mstrOutputEmailAttachAs = IIf(IsNull(!OutputEmailAttachAs), vbNullString, !OutputEmailAttachAs)
-    mlngOutputEmailFileFormat = !OutputEmailFileFormat
+    'mlngOutputEmailFileFormat = !OutputEmailFileFormat
     mstrOutputFilename = !OutputFilename
    
 '    'If mstrExportOutputType = "S" Then
@@ -3342,9 +3342,9 @@ Private Function SendArrayToOutputOptions()
   If objOutput.SetOptions _
       (False, mlngOutputFormat, False, _
       False, vbNullString, _
-      mblnOutputSave, mlngOutputSaveExisting, mlngOutputSaveFormat, _
+      mblnOutputSave, mlngOutputSaveExisting, _
       mblnOutputEmail, mlngOutputEmailAddr, mstrOutputEmailSubject, _
-      mstrOutputEmailAttachAs, mlngOutputEmailFileFormat, mstrOutputFilename) Then
+      mstrOutputEmailAttachAs, mstrOutputFilename) Then
 
     'If mbForceHeader Or Not (Dir(mstrOutputFilename) <> vbNullString And mbOmitHeader) Then
     '  objOutput.FileHeader

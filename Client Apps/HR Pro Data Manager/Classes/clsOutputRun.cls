@@ -808,12 +808,10 @@ Public Function SetOptions( _
     strPrinterName As String, _
     blnSave As Boolean, _
     lngSaveExisting As Long, _
-    lngSaveFileFormat As Long, _
     blnEmail As Boolean, _
     lngEmailAddr As Long, _
     strEmailSubject As String, _
     strEmailAttachAs As String, _
-    lngEmailFileFormat As Long, _
     strFileName As String) As Boolean
   
   
@@ -859,10 +857,10 @@ Public Function SetOptions( _
         .txtEmailGroup.Tag = lngEmailAddr
         .txtEMailSubject.Text = strEmailSubject
         .txtEmailAttachAs.Text = strEmailAttachAs
-        .txtEmailAttachAs.Tag = lngEmailFileFormat
+        '.txtEmailAttachAs.Tag = lngEmailFileFormat
       End If
-      .txtFilename.Text = strFileName
-      .txtFilename.Tag = lngSaveFileFormat
+      .txtFileName.Text = strFileName
+      '.txtFileName.Tag = lngSaveFileFormat
 
       .ShowFormats mblnData, mblnCSV, mblnHTML, mblnWord, mblnExcel, mblnChart, mblnPivot
       .PageRange = mblnPageRange
@@ -884,13 +882,13 @@ Public Function SetOptions( _
       lngEmailAddr = Val(.txtEmailGroup.Tag)
       strEmailSubject = .txtEMailSubject.Text
       strEmailAttachAs = .txtEmailAttachAs.Text
-      strFileName = .txtFilename.Text
+      strFileName = .txtFileName.Text
 
-      lngSaveFileFormat = Val(.txtFilename.Tag)
-      lngEmailFileFormat = Val(.txtEmailAttachAs.Tag)
-      If InStr(.txtEmailAttachAs.Tag, "|") > 0 Then
-        strEmailFileExtension = Split(.txtEmailAttachAs.Tag, "|")(1)
-      End If
+      'lngSaveFileFormat = Val(.txtFilename.Tag)
+      'lngEmailFileFormat = Val(.txtEmailAttachAs.Tag)
+      'If InStr(.txtEmailAttachAs.Tag, "|") > 0 Then
+      '  strEmailFileExtension = Split(.txtEmailAttachAs.Tag, "|")(1)
+      'End If
 
       'If .cboEmailAddr.ListIndex <> -1 Then
         mlngEmailGroupID = .txtEmailGroup.Tag
@@ -975,10 +973,10 @@ Public Function SetOptions( _
   mobjOutputType.Screen = blnScreen
   mobjOutputType.DestPrinter = blnPrinter
   mobjOutputType.Save = blnSave
-  mobjOutputType.SaveFileFormat = lngSaveFileFormat
+  'mobjOutputType.SaveFileFormat = lngSaveFileFormat
   mobjOutputType.SaveExisting = lngSaveExisting
   mobjOutputType.Email = blnEmail
-  mobjOutputType.EmailFileFormat = lngEmailFileFormat
+  'mobjOutputType.EmailFileFormat = lngEmailFileFormat
   mobjOutputType.FileName = strFileName
 
   mblnPrintData = (mlngFormat = fmtDataOnly And blnPrinter)

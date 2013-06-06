@@ -318,12 +318,12 @@ Private mblnOutputPrinter As Boolean
 Private mstrOutputPrinterName As String
 Private mblnOutputSave As Boolean
 Private mlngOutputSaveExisting As Long
-Private mlngOutputSaveFormat As Long
+'Private mlngOutputSaveFormat As Long
 Private mblnOutputEmail As Boolean
 Private mlngOutputEmailAddr As Long
 Private mstrOutputEmailSubject As String
 Private mstrOutputEmailAttachAs As String
-Private mlngOutputEmailFileFormat As Long
+'Private mlngOutputEmailFileFormat As Long
 Private mstrOutputFilename As String
 
 Private mblnIndentRelatedTables As Boolean
@@ -414,9 +414,9 @@ Public Property Let OutputSaveExisting(plngOutputSaveExisting As Long)
   mlngOutputSaveExisting = plngOutputSaveExisting
 End Property
 
-Public Property Let OutputSaveFormat(plngOutputSaveFormat As Long)
-  mlngOutputSaveFormat = plngOutputSaveFormat
-End Property
+'Public Property Let OutputSaveFormat(plngOutputSaveFormat As Long)
+'  mlngOutputSaveFormat = plngOutputSaveFormat
+'End Property
 
 
 
@@ -494,9 +494,9 @@ Public Property Let OutputEmailAttachAs(pstrOutputEmailAttachAs As String)
   mstrOutputEmailAttachAs = pstrOutputEmailAttachAs
 End Property
 
-Public Property Let OutputEmailFileFormat(plngOutputEmailFileFormat As Long)
-  mlngOutputEmailFileFormat = plngOutputEmailFileFormat
-End Property
+'Public Property Let OutputEmailFileFormat(plngOutputEmailFileFormat As Long)
+'  mlngOutputEmailFileFormat = plngOutputEmailFileFormat
+'End Property
 
 
 Public Property Let OutputFilename(pstrOutputFilename As String)
@@ -1523,9 +1523,9 @@ Public Function OutputReport(pfPrompt As Boolean) As Boolean
   If objOutput.SetOptions _
     (pfPrompt, mlngOutputFormat, mblnOutputScreen, _
     mblnOutputPrinter, mstrOutputPrinterName, _
-    mblnOutputSave, mlngOutputSaveExisting, mlngOutputSaveFormat, _
+    mblnOutputSave, mlngOutputSaveExisting, _
     mblnOutputEmail, mlngOutputEmailAddr, mstrOutputEmailSubject, _
-    mstrOutputEmailAttachAs, mlngOutputEmailFileFormat, mstrOutputFilename) Then
+    mstrOutputEmailAttachAs, mstrOutputFilename) Then
 
 '''    objOutput.SizeColumnsIndependently = False
     
