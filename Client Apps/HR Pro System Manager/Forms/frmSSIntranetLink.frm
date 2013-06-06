@@ -1,7 +1,6 @@
 VERSION 5.00
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{0BA686C6-F7D3-101A-993E-0000C0EF6F5E}#2.0#0"; "THREED20.OCX"
 Begin VB.Form frmSSIntranetLink 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Self-service Intranet Link"
@@ -85,16 +84,13 @@ Begin VB.Form frmSSIntranetLink
          Top             =   300
          Width           =   4515
       End
-      Begin Threed.SSCheck chkNewWindow 
+      Begin VB.CheckBox chkNewWindow 
+         Caption         =   "&Display in new window"
          Height          =   330
          Left            =   1575
          TabIndex        =   34
          Top             =   690
          Width           =   2685
-         _ExtentX        =   4736
-         _ExtentY        =   582
-         _Version        =   131074
-         Caption         =   "&Display in new window"
       End
       Begin VB.Label lblURL 
          Caption         =   "URL :"
@@ -120,16 +116,13 @@ Begin VB.Form frmSSIntranetLink
          Top             =   300
          Width           =   7365
       End
-      Begin Threed.SSCheck chkDisplayDocumentHyperlink 
+      Begin VB.CheckBox chkDisplayDocumentHyperlink 
+         Caption         =   "Displa&y hyperlink to document"
          Height          =   330
          Left            =   1395
          TabIndex        =   49
          Top             =   690
          Width           =   3720
-         _ExtentX        =   6562
-         _ExtentY        =   582
-         _Version        =   131074
-         Caption         =   "Displa&y hyperlink to document"
       End
       Begin VB.Label lblDocumentFilePath 
          AutoSize        =   -1  'True
@@ -1196,7 +1189,7 @@ Private Sub RefreshControls()
   lblHRProUtilityMessage.Caption = sUtilityMessage
   
   ' Disable the OK button as required.
-  cmdOK.Enabled = mfChanged
+  cmdOk.Enabled = mfChanged
   
 End Sub
 
@@ -1437,7 +1430,7 @@ Private Sub cboTableView_Click()
 
 End Sub
 
-Private Sub chkDisplayDocumentHyperlink_Click(value As Integer)
+Private Sub chkDisplayDocumentHyperlink_Click()
 
   Dim fValid As Boolean
   
@@ -1456,7 +1449,7 @@ Private Sub chkDisplayDocumentHyperlink_Click(value As Integer)
 
 End Sub
 
-Private Sub chkNewWindow_Click(value As Integer)
+Private Sub chkNewWindow_Click()
 
   Dim fValid As Boolean
   
@@ -1823,7 +1816,7 @@ Public Property Get NewWindow() As Boolean
 End Property
 
 Public Property Let NewWindow(ByVal pfNewValue As Boolean)
-  chkNewWindow.value = pfNewValue
+  chkNewWindow.value = IIf(pfNewValue, vbChecked, vbUnchecked)
 End Property
 
 Public Property Get HiddenGroups() As String
@@ -1957,7 +1950,7 @@ Public Property Let DocumentFilePath(ByVal psNewValue As String)
 End Property
 
 Public Property Let DisplayDocumentHyperlink(ByVal pbNewValue As Boolean)
-  chkDisplayDocumentHyperlink.value = IIf(optLink(SSINTLINKSCREEN_DOCUMENT).value, pbNewValue, False)
+  chkDisplayDocumentHyperlink.value = IIf(optLink(SSINTLINKSCREEN_DOCUMENT).value, IIf(pbNewValue, vbChecked, vbUnchecked), vbUnchecked)
 End Property
 
 Private Sub txtURL_GotFocus()
