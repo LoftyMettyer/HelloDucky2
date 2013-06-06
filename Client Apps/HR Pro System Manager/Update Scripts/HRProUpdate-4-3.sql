@@ -426,7 +426,6 @@ PRINT 'Step 5 - Create views on metadata tables'
 	EXEC dbo.spASRConvertTableToView 'ASRSysWorkflows', 'tbsys_workflows', 'id', 10;
 	--EXEC dbo.spASRConvertTableToView 'ASRSysScreens', 'tbsys_screens', 'screenid', 14;
 
-
 /* ------------------------------------------------------------- */
 PRINT 'Step 6 - Drop existing system triggers'
 
@@ -909,13 +908,18 @@ PRINT 'Step 11 - Add new calculation procedures'
 	EXECUTE sp_executeSQL @sSPCode;
 
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_getuniquecode](
-			@prefix AS nvarchar(255))
+			@prefix AS nvarchar(255),
+			@rootvalue as integer,
+			@rowoffset AS integer)
 		RETURNS [nvarchar](255)
-		WITH SCHEMABINDING
 		AS
 		BEGIN
 		
 			DECLARE @result nvarchar(255);
+
+			SELECT @result = [maxcodesuffix] + @rowoffset
+				FROM ASRSysUniqueCodes WHERE [codeprefix] = @prefix;
+			
 			RETURN @result;
 		
 		END';
@@ -1292,35 +1296,6 @@ PRINT 'Step 11 - Add new calculation procedures'
 		END';
 	EXECUTE sp_executeSQL @sSPCode;
 
-	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_uniquecode](
-			@prefix AS nvarchar(max),
-			@coderoot AS numeric(10,2))
-		RETURNS numeric(10,0)
-		WITH SCHEMABINDING
-		AS
-		BEGIN
-		
-			DECLARE @result numeric(10,0);
-		
-			SET @result = 0;
-		
-			--SELECT @result = [maxcodesuffix] 
-			--	FROM [dbo].[tb_uniquecodes]
-			--	WHERE [codeprefix] = @prefix;
-		
-			-- Update existing value 
-			/*
-			You can''t run an execute or an update in a UDF, so will have to create an extended
-			stored procedure which should be able to do it. Otherwise tack something into the end
-			of the update trigger on the base table that calls this function. (code stub already in
-			the admin module.
-			*/
-		
-			RETURN @result;
-		
-		END';
-	EXECUTE sp_executeSQL @sSPCode;
-
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_username]
 			(@userid as integer)
 		RETURNS varchar(255)
@@ -1475,13 +1450,16 @@ PRINT 'Step 10 - Populate code generation tables'
 			[isoperator] [bit] NULL,
 			[operatortype] [tinyint] NULL,
 			[id] [int] NULL,
-			[bypassvalidation] [bit] NULL
+			[bypassvalidation] [bit] NULL,
+			[rownumberrequired] [bit] NULL
 		) ON [PRIMARY]';
 
 	EXEC sp_executesql N'CREATE TABLE [dbo].[tbstat_componentdependancy](
-			[id] [int] NULL,
-			[modulekey] [nvarchar](50),
-			[parameterkey] [nvarchar](50)
+			[id] [integer] NOT NULL,
+			[type] [integer] NOT NULL,
+			[modulekey] [nvarchar](50) NOT NULL,
+			[parameterkey] [nvarchar](50) NOT NULL,
+			[code] nvarchar(MAX) NOT NULL
 		) ON [PRIMARY]';
 
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''4ec6c760-2157-492d-9161-24aa7c8a7b35'', N''AND'', NULL, 0, 0, N''And'', NULL, 1, 178, 5, 0)';
@@ -1510,14 +1488,14 @@ PRINT 'Step 10 - Populate code generation tables'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''1acde45c-39a1-4a50-8526-aed3b8e6392b'', N''*'', NULL, 0, 0, N''Times by'', NULL, 1, 0, 3, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''a0aefbd0-b295-4598-9432-d4f653eca1ac'', N''*'', NULL, 0, 0, N''To the power of'', NULL, 1, 0, 15, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''e6bd0161-786d-42a8-bdff-8400963e3e89'', N''[dbo].[udf_ASRFn_AbsenceBetweenTwoDates] ({0}, {1}, {2}, {3}, GETDATE())'', 2, 0, 0, N''Absence between Two Dates'', NULL, 0, 0, 47, 0)';
-	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentdependancy] ([id], [modulekey], [parameterkey]) VALUES (47, ''MODULE_PERSONNEL'', ''Param_TablePersonnel'')';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentdependancy] ([id], [type], [modulekey], [parameterkey], [code]) VALUES (47, 1, ''MODULE_PERSONNEL'', ''Param_TablePersonnel'', '''')';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''a4776d94-8917-4f5b-ad36-f4104b04e3e0'', N''[dbo].[udf_ASRFn_AbsenceDuration]({0}, {1}, {2}, {3}, {4})'', 2, 0, 0, N''Absence Duration'', NULL, 0, 0, 30, 0)';
-	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentdependancy] ([id], [modulekey], [parameterkey]) VALUES (30, ''MODULE_PERSONNEL'', ''Param_TablePersonnel'')';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentdependancy] ([id], [type], [modulekey], [parameterkey], [code]) VALUES (30, 1, ''MODULE_PERSONNEL'', ''Param_TablePersonnel'', '''')';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''edfa5940-f5ba-47b5-bd93-8f19c35490b3'', N''DATEADD(DD, {1}, DATEADD(D, 0, DATEDIFF(D, 0, {0})))'', 4, 0, 0, N''Add Days to Date'', NULL, 0, 0, 44, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''51a4dc3e-41a4-4b1a-8df8-8d9a1baed196'', N''DATEADD(MM, {1}, DATEADD(D, 0, DATEDIFF(D, 0, {0})))'', 4, 0, 0, N''Add Months to Date'', NULL, 0, 0, 23, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''bc6a9215-696d-492c-8acb-95c99f440530'', N''DATEADD(YY, {1}, DATEADD(D, 0, DATEDIFF(D, 0, {0})))'', 4, 0, 0, N''Add Years to Date'', NULL, 0, 0, 24, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''078108bf-77b2-42a3-b426-42126337f397'', N''[dbo].[udf_ASRFn_BradfordFactor]({0}, {1}, {2}, {3})'', 2, 0, 0, N''Bradford Factor'', NULL, 0, 0, 73, 0)';
-	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentdependancy] ([id], [modulekey], [parameterkey]) VALUES (73, ''MODULE_PERSONNEL'', ''Param_TablePersonnel'')';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentdependancy] ([id], [type], [modulekey], [parameterkey], [code]) VALUES (73, 1, ''MODULE_PERSONNEL'', ''Param_TablePersonnel'', '''')';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''eb449e75-e061-4502-973b-5e3a3e39c2d2'', N''dbo.[udfsys_convertcharactertonumeric]({0})'', 2, 0, 0, N''Convert Character to Numeric'', NULL, 0, 0, 25, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''56b64c0d-84d9-4b15-9c9e-b1fdb42ea4d1'', N''dbo.[udfsys_convertcurrency]({0},{1},{2})'', 2, 0, 0, N''Convert Currency'', NULL, 0, 0, 51, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''88430aa0-f580-4157-8b2f-c73841cea211'', N''LTRIM(STR({0}, 20, {1}))'', 1, 0, 0, N''Convert Numeric to Character'', NULL, 0, 0, 3, 0)';
@@ -1575,13 +1553,14 @@ PRINT 'Step 10 - Populate code generation tables'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''2bf404b7-970e-4fdb-9977-00d516a6cc84'', N''[dbo].[udfsys_statutoryredundancypay]({0}, {1}, {2}, {3}, {4})'', 2, 0, 0, N''Statutory Redundancy Pay'', NULL, 0, 0, 41, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''1cce61bf-ee36-4779-83b9-233885440437'', N''(DATEADD(D, 0, DATEDIFF(D, 0, GETDATE())))'', 4, 0, 0, N''System Date'', NULL, 0, 0, 1, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''1b77e32f-756b-4e97-94d2-f0b053b0baca'', N''CONVERT(varchar,GETDATE(),8)'', 1, 0, 0, N''System Time'', NULL, 0, 0, 15, 0)';
-	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''a8974869-0964-40e9-bbbf-4ac6157bf07f'', N''[dbo].[udfsys_getuniquecode] ({0})'', 0, 0, 0, N''Unique Code'', NULL, 0, 0, 43, 0)';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation], [rownumberrequired]) VALUES (N''a8974869-0964-40e9-bbbf-4ac6157bf07f'', N''[dbo].[udfsys_getuniquecode] ({0}, {1}, {2})'', 0, 0, 0, N''Unique Code'', NULL, 0, 0, 43, 0, 1)';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentdependancy] ([id], [type], [modulekey], [parameterkey], [code]) VALUES (43, 2, '''', '''', ''@rownumber'')';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''09e7dfb0-3bc2-4db5-a596-9639eb3e77b5'', N''[dbo].[udfsys_weekdaysbetweentwodates] ({0}, {1})'', 2, 0, 0, N''Weekdays between Two Dates'', NULL, 0, 0, 22, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''fbccef52-27be-4ee4-8afa-d8228da2e952'', N''[dbo].[udfsys_wholemonthsbetweentwodates] ({0}, {1})'', 2, 0, 0, N''Whole Months between Two Dates'', NULL, 0, 0, 26, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''1b5082ad-36bb-4bf8-b859-22a1de8f8d2e'', N''[dbo].[udfsys_wholeyearsbetweentwodates] ({0}, {1})'', 2, 0, 0, N''Whole Years between Two Dates'', NULL, 0, 0, 54, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''97880cd2-c73d-4c7e-a4c4-971824b850e6'', N''[dbo].[udfsys_wholeyearsbetweentwodates] ({0}, GETDATE())'', 2, 0, 0, N''Whole Years until Current Date'', NULL, 0, 0, 18, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''f11ffb85-31bc-4b12-9b3d-e4464c868ca4'', N''[dbo].[udf_ASRFn_WorkingDaysBetweenTwoDates] ({0}, {1}, {2})'', 2, 0, 0, N''Working Days between Two Dates'', NULL, 0, 0, 46, 0)';
-	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentdependancy] ([id], [modulekey], [parameterkey]) VALUES (46, ''MODULE_PERSONNEL'', ''Param_TablePersonnel'')';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentdependancy] ([id], [type], [modulekey], [parameterkey], [code]) VALUES (46, 1, ''MODULE_PERSONNEL'', ''Param_TablePersonnel'', '''')';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''5c9a6256-ac11-456d-92fe-a5e2f5ba4c11'', N''DATEPART(YYYY, {0})'', 2, 0, 0, N''Year of Date'', NULL, 0, 0, 32, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''5b636d9f-7589-46d4-bd6a-0e23aef81a51'', N''NOT'', 0, 0, 0, N''Not'', NULL, 1, 180, 13, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''5da8bb7e-f632-4ed0-b236-e042b88f3a1b'', N''[dbo].[udfsys_getfieldfromdatabaserecord] ({0}, {1}, {2})'', 0, 0, 0, N''Get field from database record'', NULL, 0, 0, 42, 0)';
@@ -1600,22 +1579,21 @@ PRINT 'Step 11 - Administration module stored procedures'
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spadmin_getcomponentcodedependancies]') AND xtype = 'P')
 		DROP PROCEDURE [dbo].[spadmin_getcomponentcodedependancies]
 
-	SET @sSPCode = 'CREATE PROCEDURE [dbo].[spadmin_getcomponentcode]
+	EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[spadmin_getcomponentcode]
 	AS
 	BEGIN
 		SELECT [id], [code], [name], ISNULL([datatype],0) AS [returntype]
 			, [appendwildcard], [splitintocase]
 			, [aftercode], [isoperator], [operatortype], [aftercode] 
-			, [bypassvalidation]
+			, [bypassvalidation], ISNULL([rownumberrequired], 0) AS [rownumberrequired]
 			FROM tbstat_componentcode WHERE [id] IS NOT NULL;
-	END'
-	EXECUTE sp_executeSQL @sSPCode;
+	END';
 
-	SET @sSPCode = 'CREATE PROCEDURE [dbo].[spadmin_getcomponentcodedependancies]
+	EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[spadmin_getcomponentcodedependancies]
 		(@componentid integer)
 	AS
 	BEGIN
-		SELECT c.modulekey, c.parameterkey, m.parametervalue AS value,
+		SELECT c.type, c.modulekey, c.parameterkey, m.parametervalue AS value,
 				CASE m.parametertype
    					WHEN ''PType_ColumnID'' THEN 2
 					WHEN ''PType_EmailID'' THEN 18
@@ -1623,20 +1601,20 @@ PRINT 'Step 11 - Administration module stored procedures'
 					WHEN ''PType_Other'' THEN 0
 					WHEN ''PType_ScreenID'' THEN 14
 					WHEN ''PType_TableID'' THEN 1
-				END AS [settingtype]
+				END AS [settingtype],
+				c.[code] AS [code]
 			FROM tbstat_componentdependancy c 
-			INNER JOIN ASRSysModulesetup m on m.modulekey = c.modulekey AND m.parameterkey = c.parameterkey
+			LEFT JOIN ASRSysModulesetup m on m.modulekey = c.modulekey AND m.parameterkey = c.parameterkey
 			WHERE c.id = @componentid;
-	END'
-	EXECUTE sp_executeSQL @sSPCode;
+	END';
 
 
 /* ------------------------------------------------------------- */
 PRINT 'Step 12 - System stored procedures'
 
-	IF EXISTS (SELECT id FROM dbo.sysobjects
-		WHERE id = object_id(N'[dbo].[spsys_setsystemsetting]')	AND xtype = 'P')
+	IF EXISTS (SELECT id FROM dbo.sysobjects WHERE id = object_id(N'[dbo].[spsys_setsystemsetting]')	AND xtype = 'P')
 		DROP PROCEDURE [dbo].[spsys_setsystemsetting];
+
 
 	SET @sSPCode = 'CREATE PROCEDURE [dbo].[spsys_setsystemsetting](
 			@section AS nvarchar(255),
@@ -1685,13 +1663,13 @@ PRINT 'Step 13 - Remove redundant procedures'
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 14 - Server settings'
+PRINT 'Step 15 - Server settings'
 
 	EXEC sp_dboption @DBName, 'recursive triggers', 'FALSE';
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 14 - Convert audit table to view'
+PRINT 'Step 16 - Convert audit table to view'
 
 	-- Rename the base audit log
 	IF NOT EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[tbsys_audittrail]') AND xtype = 'U')
@@ -1700,6 +1678,7 @@ PRINT 'Step 14 - Convert audit table to view'
 		EXEC spsys_setsystemsetting 'integration', 'auditlog', 0;
 	END
 
+	SET @sSPCode = '';
 	IF EXISTS(SELECT dbo.[udfsys_getmodulesetting]('MODULE_AUDIT','Param_AuditTable'))
 	BEGIN
 		SELECT @sSPCode = 'IF EXISTS(SELECT * FROM dbo.sysobjects WHERE id = object_id(N''' + [tablename] + ''', ''V''))
@@ -1709,7 +1688,7 @@ PRINT 'Step 14 - Convert audit table to view'
 		
 		SELECT @sSPCode = 'CREATE VIEW dbo.[' + [tablename] + '] AS SELECT * FROM dbo.[tbuser_' + [tablename] + ']' FROM dbo.[tbsys_tables]
 			WHERE tableid = dbo.[udfsys_getmodulesetting]('MODULE_AUDIT','Param_AuditTable');
-		EXECUTE sp_executesql @sSPCode;
+	--	EXECUTE sp_executesql @sSPCode;
 
 	END
 
@@ -1756,9 +1735,9 @@ PRINT 'Step 14 - Convert audit table to view'
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 15 - Trigger functionality'
+PRINT 'Step 17 - Trigger functionality'
 
-	IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[tbsys_intransactiontrigger]') AND type in (N'U'))
+	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[tbsys_intransactiontrigger]') AND type in (N'U'))
 	DROP TABLE [dbo].[tbsys_intransactiontrigger]
 
 	EXEC sp_executesql N'CREATE TABLE [dbo].[tbsys_intransactiontrigger](
@@ -1767,7 +1746,44 @@ PRINT 'Step 15 - Trigger functionality'
 		[actiontype] [tinyint] NULL)'
 
 
+/* ------------------------------------------------------------- */
+PRINT 'Step 18 - Unique code function'
 
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spadmin_generateuniquecodes]') AND xtype = 'P')
+		DROP PROCEDURE dbo.[spadmin_generateuniquecodes]
+
+	IF NOT EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[tbsys_uniquecodes]') AND xtype = 'U')
+		EXECUTE sp_executesql N'EXECUTE sp_rename [ASRSysUniqueCodes], [tbsys_uniquecodes];';
+
+	EXECUTE sp_executesql N'CREATE PROCEDURE dbo.[spadmin_generateuniquecodes]
+		AS
+		BEGIN
+			DECLARE @sSQL nvarchar(MAX);
+
+			SET @sSQL = '''';
+
+			SELECT @sSQL = ISNULL(@sSQL, '''') +
+					+ '' UNION SELECT '''''' + c2.ValueCharacter + '''''' AS [codeprefix], ''
+					+ '' MAX(['' + cl.columnname + '']) AS [maxcodesuffix], 1 AS [isbound] FROM dbo.[tbuser_'' +  t.tablename + '']''
+				FROM ASRSysExprComponents c
+					INNER JOIN ASRSysExpressions e ON c.ComponentID = e.ParentComponentID
+					INNER JOIN ASRSysExprComponents c2 ON e.ExprID = c2.ExprID AND c2.ValueCharacter IS NOT NULL
+					INNER JOIN ASRSysExpressions p ON p.ExprID = c.ExprID
+					INNER JOIN ASRSysColumns cl ON cl.calcexprid = ISNULL(dbo.udf_ASRRootExpressionID(p.ParentComponentID), p.exprid)
+					INNER JOIN ASRSysTables t ON cl.tableid = t.tableid
+				WHERE c.FunctionID = 43;
+
+				SET @sSQL = ''CREATE VIEW dbo.[ASRSysUniqueCodes] AS SELECT ''
+					+ SUBSTRING(@ssql,15,DATALENGTH(@ssql));
+
+				EXEC sp_executesql N''IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''''[dbo].[ASRSysUniqueCodes]'''') AND type in (N''''V''''))
+					DROP VIEW [dbo].[ASRSysUniqueCodes]'';
+
+				EXEC sp_executesql @sSQL;
+
+		END'
+
+		EXEC sp_executesql N'spadmin_generateuniquecodes';
 	
 /* ------------------------------------------------------------- */
 /* ------------------------------------------------------------- */
