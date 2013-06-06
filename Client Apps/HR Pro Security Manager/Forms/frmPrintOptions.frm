@@ -16,7 +16,7 @@ Begin VB.Form frmPrintOptions
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1032
+   HelpContextID   =   8032
    Icon            =   "frmPrintOptions.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True

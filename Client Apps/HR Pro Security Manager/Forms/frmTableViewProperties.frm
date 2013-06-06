@@ -15,7 +15,7 @@ Begin VB.Form frmTableViewProperties
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1020
+   HelpContextID   =   8020
    Icon            =   "frmTableViewProperties.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
@@ -239,7 +239,7 @@ Private Sub RefreshControls()
 
   ' The OK command control is only enabled if the check boxes are either
   ' checked or unchecked (not greyed).
-  cmdOK.Enabled = (chkSelect.Value <> vbGrayed) Or _
+  cmdOk.Enabled = (chkSelect.Value <> vbGrayed) Or _
     (chkUpdate.Value <> vbGrayed) Or _
     (chkInsert.Value <> vbGrayed) Or _
     (chkDelete.Value <> vbGrayed) Or _
@@ -511,14 +511,14 @@ End Property
 Public Property Let MultiParentChildren(ByVal pfMultiParentChildren As Boolean)
   If Not pfMultiParentChildren Then
     fraRelatedToParents.Visible = False
-    cmdOK.Top = IIf(mbSelectionEnabled, fraSelection.Top + fraSelection.Height + 150, fraPermissions.Top + fraPermissions.Height + 150)
-    cmdCancel.Top = cmdOK.Top
+    cmdOk.Top = IIf(mbSelectionEnabled, fraSelection.Top + fraSelection.Height + 150, fraPermissions.Top + fraPermissions.Height + 150)
+    cmdCancel.Top = cmdOk.Top
   Else
-    cmdOK.Top = fraRelatedToParents.Top + fraRelatedToParents.Height + 150
-    cmdCancel.Top = cmdOK.Top
+    cmdOk.Top = fraRelatedToParents.Top + fraRelatedToParents.Height + 150
+    cmdCancel.Top = cmdOk.Top
   End If
   
-  Me.Height = cmdOK.Top + cmdOK.Height + 600
+  Me.Height = cmdOk.Top + cmdOk.Height + 600
   
 End Property
 
@@ -536,9 +536,9 @@ Public Property Let LookupTableStatus(ByVal piStatus As Integer)
       'frmSelection.Top = fraRelatedToParents.Top
       fraSelection.Visible = True
       fraSelection.Top = IIf(mbRelatedEnabled, fraRelatedToParents.Top + fraRelatedToParents.Height + 150, fraRelatedToParents.Top)
-      cmdOK.Top = fraSelection.Top + fraSelection.Height + 150
-      cmdCancel.Top = cmdOK.Top
-      Me.Height = cmdOK.Top + cmdOK.Height + 600
+      cmdOk.Top = fraSelection.Top + fraSelection.Height + 150
+      cmdCancel.Top = cmdOk.Top
+      Me.Height = cmdOk.Top + cmdOk.Height + 600
       mbSelectionEnabled = True
     Case Else
 '      cmdOK.Top = fraPermissions.Top + fraPermissions.Height + 150
@@ -574,7 +574,7 @@ Dim iCount As Integer
     End If
   Next iCount
   
-  cmdOK.Enabled = False
+  cmdOk.Enabled = False
 End Sub
 
 Private Sub Form_Load()

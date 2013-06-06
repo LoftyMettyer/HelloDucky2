@@ -15,7 +15,7 @@ Begin VB.Form frmSendMessage
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1034
+   HelpContextID   =   8034
    Icon            =   "frmSendMessage.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True

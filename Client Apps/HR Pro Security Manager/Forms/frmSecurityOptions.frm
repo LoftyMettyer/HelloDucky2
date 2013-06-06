@@ -17,7 +17,7 @@ Begin VB.Form frmSecurityOptions
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1036
+   HelpContextID   =   8036
    Icon            =   "frmSecurityOptions.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
@@ -67,9 +67,9 @@ Begin VB.Form frmSecurityOptions
       TabCaption(1)   =   "&Advanced"
       TabPicture(1)   =   "frmSecurityOptions.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraOrphanedAccounts"
+      Tab(1).Control(0)=   "frmWindowsAuth"
       Tab(1).Control(0).Enabled=   0   'False
-      Tab(1).Control(1)=   "frmWindowsAuth"
+      Tab(1).Control(1)=   "fraOrphanedAccounts"
       Tab(1).Control(1).Enabled=   0   'False
       Tab(1).ControlCount=   2
       Begin VB.Frame frmWindowsAuth 
@@ -340,7 +340,7 @@ Private mblnReadOnly As Boolean
 
 Public Property Let Changed(pblnNewValue As Boolean)
   mblnChanged = pblnNewValue
-  cmdOK.Enabled = pblnNewValue
+  cmdOk.Enabled = pblnNewValue
 End Property
 
 

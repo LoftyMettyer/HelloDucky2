@@ -16,7 +16,7 @@ Begin VB.Form frmNewGroup
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1014
+   HelpContextID   =   8014
    Icon            =   "frmNewGroup.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
@@ -308,10 +308,10 @@ Public Sub Initialise(piAction As groupAction)
   fAccessFrameVisible = (piAction = GROUPACTION_NEW)
   fraAccess.Visible = fAccessFrameVisible
   
-  cmdOK.Top = IIf(fAccessFrameVisible, fraAccess.Top + fraAccess.Height, txtGroupName.Top + txtGroupName.Height) + GAPABOVEBUTTONS
-  cmdCancel.Top = cmdOK.Top
+  cmdOk.Top = IIf(fAccessFrameVisible, fraAccess.Top + fraAccess.Height, txtGroupName.Top + txtGroupName.Height) + GAPABOVEBUTTONS
+  cmdCancel.Top = cmdOk.Top
   
-  Me.Height = cmdOK.Top + cmdOK.Height + GAPUNDERBUTTONS
+  Me.Height = cmdOk.Top + cmdOk.Height + GAPUNDERBUTTONS
   
   If fAccessFrameVisible Then
     ' Populate the group combo.

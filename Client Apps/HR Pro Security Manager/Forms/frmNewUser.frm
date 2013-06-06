@@ -15,7 +15,7 @@ Begin VB.Form frmNewUser
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1015
+   HelpContextID   =   8015
    Icon            =   "frmNewUser.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
@@ -532,11 +532,11 @@ Private Sub RefreshButtons()
   Select Case miLoginType
  
     Case iUSERTYPE_TRUSTEDUSER
-      cmdOK.Enabled = (Len(txtUserLogin.Text) > 0)
+      cmdOk.Enabled = (Len(txtUserLogin.Text) > 0)
       cmdGetWindowsLogins.Enabled = (cboDomain.Text <> "")
     
     Case iUSERTYPE_SQLLOGIN
-      cmdOK.Enabled = (Len(cboUserLogin.Text) > 0)
+      cmdOk.Enabled = (Len(cboUserLogin.Text) > 0)
     
   End Select
 
