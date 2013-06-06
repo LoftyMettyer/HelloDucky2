@@ -6819,6 +6819,21 @@ PRINT 'Step 13 - Additional Mobile Configuration'
 
 	EXECUTE sp_executeSQL @sSPCode;
 
+
+/* ------------------------------------------------------------- */
+/* Create Mobile Licensing SP.           */
+/* ------------------------------------------------------------- */
+PRINT 'Step 14 - Legacy Data Cleansing'
+
+	-- Orphaned order objects
+	EXECUTE sp_executeSQL N'DELETE FROM ASRSysOrderItems
+		WHERE OrderID NOT IN (SELECT OrderID FROM ASRSysOrders);';
+
+
+
+
+
+
 /* ------------------------------------------------------------- */
 /* Update the database version flag in the ASRSysSettings table. */
 /* Dont Set the flag to refresh the stored procedures            */
