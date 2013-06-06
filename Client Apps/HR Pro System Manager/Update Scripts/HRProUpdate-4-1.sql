@@ -444,8 +444,45 @@ PRINT 'Step 1 - Modifying Workflow procedures'
 	EXECUTE sp_executeSQL @sSPCode;
 
 
+/* ------------------------------------------------------------- */
+PRINT 'Step 2 - Version 1 Integration Modifications'
 
 
+	-- Create document management map table
+	IF OBJECT_ID('ASRSysDocumentMapping', N'U') IS NULL	
+	BEGIN
+		EXEC sp_executesql N'CREATE TABLE [dbo].[ASRSysDocumentMapping]
+                    ( [DocumentMapID]			integer			NOT NULL IDENTITY(1,1)
+                    , [Name]					nvarchar(255)
+                    , [Description]				nvarchar(MAX)
+                    , [Access]					varchar(2)
+                    , [Username]				varchar(50)
+                    , [CategoryRecordID]		integer
+                    , [TypeRecordID]			integer                    
+                    , [TargetTableID]			integer
+                    , [TargetKeyFieldColumnID]	integer
+                    , [TargetColumnID]			integer
+                    , [ParentTableID]			integer
+                    , [ParentKeyFieldColumnID]	integer
+                    , [ManualHeader]			bit
+                    , [HeaderText]				nvarchar(MAX))
+               ON [PRIMARY]'
+	END	
+
+	-- Add columns to ASRSysMailMergeName
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysMailMergeName', 'U') AND name = 'OutputPrinterName')
+    BEGIN
+		EXEC sp_executesql N'ALTER TABLE ASRSysMailMergeName
+								 ADD [OutputPrinterName] nvarchar(255), [DocumentMapID] integer';
+	END
+
+
+	-- Add columns to ASRSysControls
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysControls', 'U') AND name = 'NavigateTo')
+    BEGIN
+		EXEC sp_executesql N'ALTER TABLE ASRSysControls
+								ADD [NavigateTo] nvarchar(MAX), [NavigateIn] tinyint, [NavigateOnSave] bit';
+	END	
 
 
 
