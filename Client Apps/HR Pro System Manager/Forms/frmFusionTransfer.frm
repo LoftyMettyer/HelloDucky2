@@ -1,7 +1,6 @@
 VERSION 5.00
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "coa_spinner.ocx"
 Begin VB.Form frmFusionTransfer 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Fusion Integration"
@@ -34,7 +33,7 @@ Begin VB.Form frmFusionTransfer
       Enabled         =   0   'False
       Height          =   400
       Left            =   7575
-      TabIndex        =   36
+      TabIndex        =   16
       Top             =   6105
       Width           =   1200
    End
@@ -44,7 +43,7 @@ Begin VB.Form frmFusionTransfer
       Enabled         =   0   'False
       Height          =   400
       Left            =   6255
-      TabIndex        =   15
+      TabIndex        =   8
       Top             =   5385
       Width           =   1200
    End
@@ -53,7 +52,7 @@ Begin VB.Form frmFusionTransfer
       Caption         =   "&Cancel"
       Height          =   400
       Left            =   7540
-      TabIndex        =   16
+      TabIndex        =   9
       Top             =   5385
       Width           =   1200
    End
@@ -88,34 +87,24 @@ Begin VB.Form frmFusionTransfer
       TabPicture(1)   =   "frmFusionTransfer.frx":0028
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraDefaults"
-      Tab(1).Control(1)=   "fraArchive"
-      Tab(1).ControlCount=   2
+      Tab(1).ControlCount=   1
       TabCaption(2)   =   "&Login Parameters"
       TabPicture(2)   =   "frmFusionTransfer.frx":0044
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraLogonDetails"
-      Tab(2).ControlCount=   1
+      Tab(2).ControlCount=   0
       Begin VB.Frame fraFusionDefinition 
          Caption         =   "Definition : "
          Height          =   4605
          Left            =   135
-         TabIndex        =   17
+         TabIndex        =   10
          Top             =   405
          Width           =   8340
-         Begin VB.CheckBox chkSendAsUpdate 
-            Caption         =   "Force transaction to be sent as &update"
-            Height          =   285
-            Left            =   4410
-            TabIndex        =   4
-            Top             =   675
-            Width           =   3615
-         End
          Begin VB.CommandButton cmdDelete 
             Caption         =   "Cle&ar"
             Enabled         =   0   'False
             Height          =   400
             Left            =   6930
-            TabIndex        =   7
+            TabIndex        =   6
             Top             =   1665
             Width           =   1200
          End
@@ -134,7 +123,7 @@ Begin VB.Form frmFusionTransfer
             Height          =   315
             Left            =   5085
             Locked          =   -1  'True
-            TabIndex        =   34
+            TabIndex        =   14
             TabStop         =   0   'False
             Top             =   270
             Width           =   2685
@@ -162,7 +151,7 @@ Begin VB.Form frmFusionTransfer
             Enabled         =   0   'False
             Height          =   400
             Left            =   6930
-            TabIndex        =   6
+            TabIndex        =   5
             Top             =   1170
             Width           =   1200
          End
@@ -170,14 +159,14 @@ Begin VB.Form frmFusionTransfer
             Height          =   3255
             Index           =   0
             Left            =   180
-            TabIndex        =   5
+            TabIndex        =   4
             Top             =   1170
             Width           =   6510
+            ScrollBars      =   2
             _Version        =   196617
             DataMode        =   2
             RecordSelectors =   0   'False
             GroupHeaders    =   0   'False
-            Col.Count       =   21
             stylesets.count =   2
             stylesets(0).Name=   "KeyField"
             stylesets(0).BackColor=   14024703
@@ -227,7 +216,7 @@ Begin VB.Form frmFusionTransfer
             BackColorEven   =   -2147483643
             BackColorOdd    =   -2147483643
             RowHeight       =   423
-            Columns.Count   =   21
+            Columns.Count   =   22
             Columns(0).Width=   5292
             Columns(0).Caption=   "Fusion Field"
             Columns(0).Name =   "Description"
@@ -373,6 +362,13 @@ Begin VB.Form frmFusionTransfer
             Columns(20).DataField=   "Column 20"
             Columns(20).DataType=   8
             Columns(20).FieldLen=   256
+            Columns(21).Width=   3200
+            Columns(21).Visible=   0   'False
+            Columns(21).Caption=   "Datatype"
+            Columns(21).Name=   "Datatype"
+            Columns(21).DataField=   "Column 21"
+            Columns(21).DataType=   8
+            Columns(21).FieldLen=   256
             TabNavigation   =   1
             _ExtentX        =   11483
             _ExtentY        =   5741
@@ -400,7 +396,7 @@ Begin VB.Form frmFusionTransfer
             Caption         =   "Filter : "
             Height          =   240
             Left            =   4410
-            TabIndex        =   35
+            TabIndex        =   15
             Top             =   315
             Width           =   555
          End
@@ -408,7 +404,7 @@ Begin VB.Form frmFusionTransfer
             Caption         =   "Type :"
             Height          =   285
             Left            =   225
-            TabIndex        =   19
+            TabIndex        =   12
             Top             =   315
             Width           =   555
          End
@@ -416,224 +412,25 @@ Begin VB.Form frmFusionTransfer
             Caption         =   "Table : "
             Height          =   285
             Left            =   225
-            TabIndex        =   18
+            TabIndex        =   11
             Top             =   720
             Width           =   600
          End
       End
-      Begin VB.Frame fraLogonDetails 
-         BeginProperty Font 
-            Name            =   "MS Sans Serif"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   4335
-         Left            =   -74775
-         TabIndex        =   23
-         Top             =   405
-         Width           =   8250
-         Begin VB.CommandButton cmdTestLogon 
-            Caption         =   "&Test Login"
-            BeginProperty Font 
-               Name            =   "MS Sans Serif"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
-            Height          =   400
-            Left            =   3285
-            TabIndex        =   28
-            Top             =   2160
-            Width           =   1200
-         End
-         Begin VB.TextBox txtDatabase 
-            Height          =   285
-            Left            =   1845
-            TabIndex        =   27
-            Top             =   1260
-            Width           =   2625
-         End
-         Begin VB.TextBox txtServer 
-            Height          =   285
-            Left            =   1845
-            TabIndex        =   26
-            Top             =   1710
-            Width           =   2625
-         End
-         Begin VB.TextBox txtPassword 
-            Height          =   285
-            IMEMode         =   3  'DISABLE
-            Left            =   1845
-            PasswordChar    =   "*"
-            TabIndex        =   25
-            Text            =   "accordlogin"
-            Top             =   810
-            Width           =   2625
-         End
-         Begin VB.TextBox txtLogin 
-            Height          =   285
-            Left            =   1845
-            TabIndex        =   24
-            Text            =   "accordlogin"
-            Top             =   360
-            Width           =   2625
-         End
-         Begin VB.Label lblPhaseWarning 
-            Caption         =   "Hidden Tab --- Ready for Phase 2/3/4"
-            BeginProperty Font 
-               Name            =   "Verdana"
-               Size            =   24
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
-            ForeColor       =   &H000000FF&
-            Height          =   1185
-            Left            =   1350
-            TabIndex        =   33
-            Top             =   2970
-            Width           =   4875
-         End
-         Begin VB.Label lblServer 
-            Caption         =   "Server :"
-            Height          =   240
-            Left            =   225
-            TabIndex        =   32
-            Top             =   1755
-            Width           =   1050
-         End
-         Begin VB.Label lblDatabase 
-            Caption         =   "Database :"
-            Height          =   240
-            Left            =   225
-            TabIndex        =   31
-            Top             =   1305
-            Width           =   1095
-         End
-         Begin VB.Label lblPassword 
-            Caption         =   "Password :"
-            Height          =   240
-            Left            =   225
-            TabIndex        =   30
-            Top             =   855
-            Width           =   1455
-         End
-         Begin VB.Label lblLogin 
-            Caption         =   "Login :"
-            Height          =   240
-            Left            =   225
-            TabIndex        =   29
-            Top             =   405
-            Width           =   1320
-         End
-      End
-      Begin VB.Frame fraArchive 
-         Caption         =   "Archive Period : "
-         Height          =   1230
-         Left            =   -74865
-         TabIndex        =   22
-         Top             =   405
-         Width           =   8340
-         Begin VB.OptionButton optPurgePeriod 
-            Caption         =   "Do &not automatically archive the fusion table"
-            Height          =   240
-            Index           =   0
-            Left            =   225
-            TabIndex        =   8
-            Top             =   315
-            Value           =   -1  'True
-            Width           =   4335
-         End
-         Begin VB.OptionButton optPurgePeriod 
-            Caption         =   "Arc&hive all entries older than : "
-            Height          =   240
-            Index           =   1
-            Left            =   225
-            TabIndex        =   9
-            Top             =   720
-            Width           =   2985
-         End
-         Begin VB.ComboBox cboArchivePeriod 
-            Enabled         =   0   'False
-            Height          =   315
-            ItemData        =   "frmFusionTransfer.frx":009C
-            Left            =   4005
-            List            =   "frmFusionTransfer.frx":00A3
-            Style           =   2  'Dropdown List
-            TabIndex        =   11
-            Top             =   675
-            Width           =   1275
-         End
-         Begin COASpinner.COA_Spinner asrArchivePeriod 
-            Height          =   315
-            Left            =   3285
-            TabIndex        =   10
-            Top             =   675
-            Width           =   645
-            _ExtentX        =   1138
-            _ExtentY        =   556
-            BackColor       =   -2147483643
-            BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-               Name            =   "Verdana"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
-            Enabled         =   0   'False
-            MaximumValue    =   9999
-            Text            =   "1"
-         End
-      End
       Begin VB.Frame fraDefaults 
          Caption         =   "Options : "
-         Height          =   1740
+         Height          =   840
          Left            =   -74865
-         TabIndex        =   20
-         Top             =   1800
+         TabIndex        =   13
+         Top             =   495
          Width           =   8340
-         Begin VB.CheckBox chkAllowStatusChange 
-            Caption         =   "&Allow status change"
-            Height          =   345
-            Left            =   255
-            TabIndex        =   14
-            Top             =   1140
-            Width           =   3165
-         End
          Begin VB.CheckBox chkAllowDelete 
-            Caption         =   "Allo&w deletion of Fusion records"
+            Caption         =   "Allo&w deletion of transfered records"
             Height          =   285
             Left            =   255
-            TabIndex        =   13
-            Top             =   840
+            TabIndex        =   7
+            Top             =   345
             Width           =   3600
-         End
-         Begin VB.ComboBox cboStatus 
-            Height          =   315
-            Left            =   1665
-            Style           =   2  'Dropdown List
-            TabIndex        =   12
-            Top             =   340
-            Width           =   2100
-         End
-         Begin VB.Label lblDefaultStatus 
-            Caption         =   "Default Status : "
-            Height          =   240
-            Left            =   270
-            TabIndex        =   21
-            Top             =   405
-            Width           =   1365
          End
       End
    End
@@ -654,23 +451,13 @@ Private mbChanged As Boolean
 
 Private miFusionTypesAmount As Integer
 
-Private mstrLoginName As String
-Private mstrPassword As String
-Private mstrDatabase As String
-Private mstrServer As String
-Private miPurgeType As Integer
-Private miPurgePeriod As Integer
-Private mlngPurgePeriodType As Long
-
 Private mavarFusionBaseTableIDs() As Variant
 Private mavarFusionFilterIDs() As Long
-Private mabvarFusionForceUpdate() As Boolean
 Private mstrFusionTypesVisible As String
+Private mdblFusionVersions() As Double
 
-Private miDefaultStatus As FusionTransactionStatus
 Private miStatusForUtilities As FusionTransactionStatus
 Private mbAllowDeletions As Boolean
-Private mbAllowStatusChange As Boolean
 
 Private mfChanged As Boolean
 Private mfCancelled As Boolean
@@ -681,36 +468,18 @@ Public Property Get Changed() As Boolean
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
   mfChanged = pblnChanged
-  cmdOk.Enabled = True
+  cmdOK.Enabled = True
 End Property
 Private Sub RefreshButtons()
   
   If Not mbLoading Then
-    cmdOk.Enabled = mfChanged And Not mbReadOnly
+    cmdOK.Enabled = mfChanged And Not mbReadOnly
     cmdEdit.Enabled = (cboFusionTables <> "<None>")
     cmdDelete.Enabled = (cboFusionTables <> "<None>") And (Not mbReadOnly)
     cmdNone.Enabled = (SelectedComboItem(cboFusionTables) > 0) And Not mbReadOnly
     cmdFilter.Enabled = (SelectedComboItem(cboFusionTables) > 0)
-    
-    ' Options tab
-    asrArchivePeriod.Enabled = (optPurgePeriod(1).value = True)
-    asrArchivePeriod.BackColor = IIf(asrArchivePeriod.Enabled And Not mbReadOnly, vbWhite, vbButtonFace)
-    cboArchivePeriod.Enabled = (asrArchivePeriod.Enabled)
-    cboArchivePeriod.BackColor = IIf(asrArchivePeriod.Enabled And Not mbReadOnly, vbWhite, vbButtonFace)
   End If
 
-End Sub
-
-Private Sub asrArchivePeriod_Change()
-  Changed = True
-End Sub
-
-Private Sub cboArchivePeriod_Change()
-  Changed = True
-End Sub
-
-Private Sub cboStatus_Change()
-  Changed = True
 End Sub
 
 Private Sub cboStatusForUtilities_Click()
@@ -765,7 +534,6 @@ Private Sub cboFusionType_Click()
   'Set the filter information
   txtFilter.Tag = mavarFusionFilterIDs(cboFusionType.ListIndex)
   txtFilter.Text = GetExpressionName(txtFilter.Tag)
-  chkSendAsUpdate.value = IIf(mabvarFusionForceUpdate(cboFusionType.ListIndex) = True, vbChecked, vbUnchecked)
   
   Changed = True
   RefreshButtons
@@ -789,11 +557,6 @@ End Sub
 
 Private Sub chkAllowStatusChange_Click()
 Changed = True
-End Sub
-
-Private Sub chkSendAsUpdate_Click()
-  mabvarFusionForceUpdate(cboFusionType.ListIndex) = IIf(chkSendAsUpdate.value = vbChecked, 1, 0)
-  Changed = True
 End Sub
 
 Private Sub cmdCancel_Click()
@@ -867,8 +630,8 @@ Private Sub cmdEdit_Click()
     .IsFusionCode = ctlGrid.Columns("IsFusionCode").Text
     .IsEmployeeName = ctlGrid.Columns("IsEmployeeName").Text
     .IsDepartmentName = ctlGrid.Columns("IsDepartmentName").Text
-    .Group = CLng(ctlGrid.Columns("Group").Text)
     .PreventModify = ctlGrid.Columns("PreventModify").Text
+    .DataType = ctlGrid.Columns("DataType").Text
     
     '.Direction = ctlGrid.Columns("Direction").Text
     .AlwaysTransferFieldID = ctlGrid.Columns("AlwaysTransfer").Text
@@ -898,7 +661,7 @@ Private Sub cmdEdit_Click()
           & vbTab & strIsCompanyCode & vbTab & strIsEmployeeCode _
           & vbTab & .Direction & vbTab & .IsKeyField & vbTab & .AlwaysTransferFieldID & vbTab & .ConvertData _
           & vbTab & strIsEmployeeName & vbTab & strIsDepartmentCode & vbTab & strIsDepartmentName & vbTab & strIsFusionCode _
-          & vbTab & .Group & vbTab & .PreventModify
+          & vbTab & .Group & vbTab & .PreventModify & vbTab & .DataType
           
       ctlGrid.RemoveItem lngRow
       ctlGrid.AddItem strAddString, lngRow
@@ -1073,81 +836,10 @@ Private Function SaveChanges() As Boolean
 
   With recModuleSetup
     .Index = "idxModuleParameter"
-      
-    ' Save the Login name.
-    .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_LOGINDETAILS
-    If .NoMatch Then
-      .AddNew
-      !moduleKey = gsMODULEKEY_FUSION
-      !parameterkey = gsPARAMETERKEY_LOGINDETAILS
-    Else
-      .Edit
-    End If
-    !ParameterType = gsPARAMETERTYPE_ENCYPTED
-    !parametervalue = EncryptLogonDetails(mstrLoginName, mstrPassword, mstrDatabase, mstrServer)
-    .Update
-
-' -------------
-' PURGE OPTIONS
-' -------------
-
-    ' Save the purge options.
-    .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_PURGEOPTION
-    If .NoMatch Then
-      .AddNew
-      !moduleKey = gsMODULEKEY_FUSION
-      !parameterkey = gsPARAMETERKEY_FUSION_PURGEOPTION
-    Else
-      .Edit
-    End If
-    !ParameterType = gsPARAMETERTYPE_OTHER
-    !parametervalue = IIf(optPurgePeriod.Item(0).value = True, 0, 1)
-    .Update
-
-
-    ' Save the purge period.
-    .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_PURGEOPTIONPERIOD
-    If .NoMatch Then
-      .AddNew
-      !moduleKey = gsMODULEKEY_FUSION
-      !parameterkey = gsPARAMETERKEY_FUSION_PURGEOPTIONPERIOD
-    Else
-      .Edit
-    End If
-    !ParameterType = gsPARAMETERTYPE_OTHER
-    !parametervalue = asrArchivePeriod.value
-    .Update
-
-    ' Save the purge type.
-    .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_PURGEOPTIONPERIODTYPE
-    If .NoMatch Then
-      .AddNew
-      !moduleKey = gsMODULEKEY_FUSION
-      !parameterkey = gsPARAMETERKEY_FUSION_PURGEOPTIONPERIODTYPE
-    Else
-      .Edit
-    End If
-    !ParameterType = gsPARAMETERTYPE_OTHER
-    !parametervalue = SelectedComboItem(cboArchivePeriod)
-    .Update
 
 ' -------------
 ' Misc Options
 ' -------------
-
-    ' Save the purge type.
-    .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_DEFAULTSTATUS
-    If .NoMatch Then
-      .AddNew
-      !moduleKey = gsMODULEKEY_FUSION
-      !parameterkey = gsPARAMETERKEY_FUSION_DEFAULTSTATUS
-    Else
-      .Edit
-    End If
-    !ParameterType = gsPARAMETERTYPE_OTHER
-    !parametervalue = SelectedComboItem(cboStatus)
-    .Update
-    
     
     ' Save delete prohibit
     .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_ALLOWDELETE
@@ -1161,19 +853,6 @@ Private Function SaveChanges() As Boolean
     !ParameterType = gsPARAMETERTYPE_OTHER
     !parametervalue = chkAllowDelete.value
     .Update
-    
-    ' Save allow status change
-    .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_ALLOWSTATUSCHANGE
-    If .NoMatch Then
-      .AddNew
-      !moduleKey = gsMODULEKEY_FUSION
-      !parameterkey = gsPARAMETERKEY_FUSION_ALLOWSTATUSCHANGE
-    Else
-      .Edit
-    End If
-    !ParameterType = gsPARAMETERTYPE_OTHER
-    !parametervalue = chkAllowStatusChange.value
-    .Update
   
   End With
 
@@ -1186,13 +865,12 @@ Private Function SaveChanges() As Boolean
 
   For iLoop = LBound(mavarFusionBaseTableIDs, 2) To UBound(mavarFusionBaseTableIDs, 2) - 1
     sSQL = "INSERT INTO tmpFusionTypes" & _
-      " (IsVisible, FusionType, FusionTypeID, ASRBaseTableID, FilterID, ForceAsUpdate)" & _
+      " (IsVisible, FusionType, FusionTypeID, ASRBaseTableID, FilterID)" & _
       " VALUES (1, " & _
       "'" & CStr(mavarFusionBaseTableIDs(0, iLoop)) & "'," & _
       CStr(mavarFusionBaseTableIDs(1, iLoop)) & "," & _
       CStr(mavarFusionBaseTableIDs(2, iLoop)) & "," & _
-      CStr(mavarFusionFilterIDs(iLoop)) & "," & _
-      CStr(mabvarFusionForceUpdate(iLoop)) & ")"
+      CStr(mavarFusionFilterIDs(iLoop)) & ")"
 
     daoDb.Execute sSQL, dbFailOnError
   Next iLoop
@@ -1209,7 +887,7 @@ Private Function SaveChanges() As Boolean
       For iLoop = 0 To (.Rows - 1)
   
       sSQL = "INSERT INTO tmpFusionFieldDefinitions" & _
-        " (NodeKey, FusionTypeID, Mandatory, Description, ASRMapType, ASRTableID, ASRColumnID, ASRExprID, ASRValue, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer, ConvertData, IsEmployeeName, IsDepartmentCode, IsDepartmentName, IsFusionCode, GroupBy, PreventModify)" & _
+        " (NodeKey, FusionTypeID, Mandatory, Description, ASRMapType, ASRTableID, ASRColumnID, ASRExprID, ASRValue, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer, ConvertData, IsEmployeeName, IsDepartmentCode, IsDepartmentName, IsFusionCode, DataType, PreventModify)" & _
         " VALUES ('" & _
         .Columns("FusionFieldID").value & "' ," & _
         iFusionType & "," & _
@@ -1230,7 +908,7 @@ Private Function SaveChanges() As Boolean
         IIf(.Columns("IsDepartmentCode").Text = True, "1", "0") & "," & _
         IIf(.Columns("IsDepartmentName").Text = True, "1", "0") & "," & _
         IIf(.Columns("IsFusionCode").Text = True, "1", "0") & ", " & _
-        .Columns("Group").Text & ", " & _
+        .Columns("DataType").Text & ", " & _
         IIf(.Columns("PreventModify").Text = True, "1", "0") & ")"
       
         daoDb.Execute sSQL, dbFailOnError
@@ -1246,65 +924,6 @@ Private Function SaveChanges() As Boolean
   Screen.MousePointer = vbDefault
 
 End Function
-
-Private Sub cmdTestLogon_Click()
-
-  Dim objTestConn As ADODB.Connection
-  Dim sConnect As String
-  
-  On Error GoTo LocalErr
-  
-  If Trim(txtLogin.Text) = vbNullString Then
-    MsgBox "You must enter a user name", vbInformation, "Fusion Login"
-    Exit Sub
-  End If
-  
-  If Trim(txtDatabase.Text) = vbNullString Then
-    MsgBox "You must enter a Database name", vbInformation, "Fusion Login"
-    Exit Sub
-  End If
-  
-  If Trim(txtServer.Text) = vbNullString Then
-    MsgBox "You must enter a server name", vbInformation, "Fusion Login"
-    Exit Sub
-  End If
-  
-  Screen.MousePointer = vbHourglass
-  
-  sConnect = "Driver=SQL Server;" & _
-             "Server=" & txtServer.Text & ";" & _
-             "UID=" & txtLogin.Text & ";" & _
-             "PWD=" & txtPassword.Text & ";" & _
-             "Database=" & txtDatabase.Text & ";"
-
-  Set objTestConn = New ADODB.Connection
-  With objTestConn
-    .ConnectionString = sConnect
-    .Provider = "SQLOLEDB"
-    .CommandTimeout = 10
-    .ConnectionTimeout = 30
-    .CursorLocation = adUseServer
-    .Mode = adModeReadWrite
-    .Properties("Packet Size") = 32767
-    .Open
-    .Close
-  End With
-  
-  Set objTestConn = Nothing
-  
-  Screen.MousePointer = vbDefault
-  MsgBox "Test completed successfully", vbInformation, "Fusion Login"
-
-Exit Sub
-
-LocalErr:
-  Screen.MousePointer = vbDefault
-  MsgBox "Error during Fusion Login test" & vbCrLf & _
-         ADOConError(objTestConn), vbInformation, "Fusion Login"
-
-End Sub
-
-
 
 Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
 Select Case KeyCode
@@ -1346,7 +965,6 @@ Private Sub Form_Load()
   tabOptions.TabVisible(2) = False
 
   PopulateBaseTables
-  PopulateStaticCombos
   ReadParameters
   PopulateFusionTransferTypes
   
@@ -1363,7 +981,7 @@ Private Sub Form_Load()
   
   mfChanged = False
   cmdDelete.Enabled = Not mbReadOnly
-  cmdOk.Enabled = False
+  cmdOK.Enabled = False
 
   Screen.MousePointer = vbDefault
 
@@ -1371,7 +989,7 @@ End Sub
 
 Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
   If Changed Then
-    Select Case MsgBox("Apply module changes ?", vbYesNoCancel + vbQuestion, Me.Caption)
+    Select Case MsgBox("Apply changes ?", vbYesNoCancel + vbQuestion, Me.Caption)
       Case vbCancel
         Cancel = True
       Case vbYes
@@ -1404,63 +1022,23 @@ Private Sub grdFusionDetails_RowLoaded(Index As Integer, ByVal Bookmark As Varia
   Dim iCount As Integer
   Dim strType As String
 
-  If grdFusionDetails(Index).Columns("Mandatory").Text = "True" Then
-    strType = "Mandatory"
-  End If
-
-  If grdFusionDetails(Index).Columns("IsKeyField").Text = "True" Then
-    strType = "Mandatory"
-  End If
-
-  If strType <> "" Then
-    For iCount = 0 To grdFusionDetails(Index).Columns.Count - 1
-      grdFusionDetails(Index).Columns(iCount).CellStyleSet strType
-    Next iCount
-  End If
-End Sub
-
-Private Sub optPurgePeriod_Click(Index As Integer)
-  asrArchivePeriod.Enabled = optPurgePeriod(1).value = True
-  asrArchivePeriod.BackColor = IIf(asrArchivePeriod.Enabled And Not mbReadOnly, vbWhite, vbButtonFace)
-  
-  cboArchivePeriod.Enabled = optPurgePeriod(1).value = True
-  cboArchivePeriod.BackColor = IIf(cboArchivePeriod.Enabled And Not mbReadOnly, vbWhite, vbButtonFace)
-    
-  Changed = True
+'  If grdFusionDetails(Index).Columns("Mandatory").Text = "True" Then
+'    strType = "Mandatory"
+'  End If
+'
+'  If grdFusionDetails(Index).Columns("IsKeyField").Text = "True" Then
+'    strType = "Mandatory"
+'  End If
+'
+'  If strType <> "" Then
+'    For iCount = 0 To grdFusionDetails(Index).Columns.Count - 1
+'      grdFusionDetails(Index).Columns(iCount).CellStyleSet strType
+'    Next iCount
+'  End If
 End Sub
 
 Private Sub tabOptions_Click(PreviousTab As Integer)
   EnableDisableTabControls
-End Sub
-
-Private Sub txtDatabase_Change()
-  mstrDatabase = txtDatabase.Text
-
-  Changed = True
-  RefreshButtons
-End Sub
-
-Private Sub txtLogin_Change()
-  mstrLoginName = txtLogin.Text
-  
-  Changed = True
-  RefreshButtons
-End Sub
-
-Private Sub txtPassword_Change()
-  mstrPassword = txtPassword.Text
-  
-  Changed = True
-  RefreshButtons
-  
-End Sub
-
-Private Sub txtServer_Change()
-  mstrServer = txtServer.Text
-
-  Changed = True
-  RefreshButtons
-
 End Sub
 
 Private Sub ReadParameters()
@@ -1471,96 +1049,9 @@ Private Sub ReadParameters()
   With recModuleSetup
     .Index = "idxModuleParameter"
       
-    ' Get the Login Name.
-    .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_LOGINDETAILS
-    If .NoMatch Then
-      ' Get the Personnel module Personnel table ID.
-      .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_LOGINDETAILS
-      If .NoMatch Then
-        strEncypted = ""
-      Else
-        strEncypted = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, 0, !parametervalue)
-      End If
-    Else
-      strEncypted = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, 0, !parametervalue)
-    End If
-
-    DecryptLogonDetails strEncypted, mstrLoginName, mstrPassword, mstrDatabase, mstrServer
-
-' -------------
-' PURGE OPTIONS
-' -------------
-  
-    ' Get the purge details
-    .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_PURGEOPTION
-    If .NoMatch Then
-      .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_PURGEOPTION
-      If .NoMatch Then
-        miPurgeType = 0
-      Else
-        miPurgeType = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, 0, !parametervalue)
-      End If
-    Else
-      miPurgeType = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, 0, !parametervalue)
-    End If
-  
-    ' Get the purge period.
-    .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_PURGEOPTIONPERIOD
-    If .NoMatch Then
-      .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_PURGEOPTIONPERIOD
-      If .NoMatch Then
-        miPurgePeriod = 0
-      Else
-        miPurgePeriod = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, 0, !parametervalue)
-      End If
-    Else
-      miPurgePeriod = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, 0, !parametervalue)
-    End If
-
-    ' Get the purge type.
-    .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_PURGEOPTIONPERIODTYPE
-    If .NoMatch Then
-      .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_PURGEOPTIONPERIODTYPE
-      If .NoMatch Then
-        mlngPurgePeriodType = 0
-      Else
-        mlngPurgePeriodType = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, 0, !parametervalue)
-      End If
-    Else
-      mlngPurgePeriodType = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, 0, !parametervalue)
-    End If
-  
 ' -------------
 ' MISC OPTIONS
 ' -------------
-    
-    ' Get the default status
-    .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_DEFAULTSTATUS
-    If .NoMatch Then
-      .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_DEFAULTSTATUS
-      If .NoMatch Then
-        miDefaultStatus = 0
-      Else
-        miDefaultStatus = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, 0, !parametervalue)
-      End If
-    Else
-      miDefaultStatus = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, 0, !parametervalue)
-    End If
-  
-  
-    ' Get the default status for utilities
-    .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_STATUSFORUTILITIES
-    If .NoMatch Then
-      .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_STATUSFORUTILITIES
-      If .NoMatch Then
-        miStatusForUtilities = 0
-      Else
-        miStatusForUtilities = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, 0, !parametervalue)
-      End If
-    Else
-      miStatusForUtilities = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, 0, !parametervalue)
-    End If
-  
   
     ' Get allow deletions
     .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_ALLOWDELETE
@@ -1575,39 +1066,14 @@ Private Sub ReadParameters()
       mbAllowDeletions = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, False, !parametervalue)
     End If
     
-    ' Get allow change status
-    .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_ALLOWSTATUSCHANGE
-    If .NoMatch Then
-      .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_ALLOWSTATUSCHANGE
-      If .NoMatch Then
-        mbAllowStatusChange = False
-      Else
-        mbAllowStatusChange = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, False, !parametervalue)
-      End If
-    Else
-      mbAllowStatusChange = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, False, !parametervalue)
-    End If
-  
   End With
 
 End Sub
 
 Private Sub PopulateFields()
 
-  ' Login Details
-  
-  txtLogin.Text = mstrLoginName
-  txtPassword.Text = mstrPassword
-  txtDatabase.Text = mstrDatabase
-  txtServer.Text = mstrServer
-
   ' Options Tab
-  optPurgePeriod(miPurgeType).value = True
-  asrArchivePeriod.Text = miPurgePeriod
-  SetComboItem cboArchivePeriod, mlngPurgePeriodType
-  SetComboItem cboStatus, miDefaultStatus
   chkAllowDelete.value = IIf(mbAllowDeletions = True, vbChecked, vbUnchecked)
-  chkAllowStatusChange.value = IIf(mbAllowStatusChange = True, vbChecked, vbUnchecked)
 
 End Sub
 
@@ -1626,7 +1092,7 @@ Private Sub PopulateFusionTransferTypes()
   Dim rsFusionTypes As DAO.Recordset
   Dim sSQL As String
 
-  sSQL = "SELECT FusionType, FusionTypeID, FilterID, ASRBaseTableID, ForceAsUpdate FROM tmpFusionTypes" _
+  sSQL = "SELECT FusionType, FusionTypeID, FilterID, ASRBaseTableID FROM tmpFusionTypes" _
       & " WHERE IsVisible = true" _
       & " ORDER BY FusionTypeID"
   Set rsFusionTypes = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
@@ -1644,10 +1110,6 @@ Private Sub PopulateFusionTransferTypes()
       ' Filter information
       mavarFusionFilterIDs(UBound(mavarFusionFilterIDs)) = !FilterID
       ReDim Preserve mavarFusionFilterIDs(UBound(mavarFusionFilterIDs) + 1)
-           
-      ' Force as update
-      mabvarFusionForceUpdate(UBound(mabvarFusionForceUpdate)) = !ForceAsUpdate
-      ReDim Preserve mabvarFusionForceUpdate(UBound(mabvarFusionForceUpdate) + 1)
            
       ' Remember the visible types
       mstrFusionTypesVisible = mstrFusionTypesVisible & IIf(LenB(mstrFusionTypesVisible) <> 0, ",", "") & Trim(!FusionTypeID)
@@ -1706,25 +1168,6 @@ Private Function MapToDescription(piMapType As SystemMgr.FusionMapType _
   
 End Function
 
-Private Function ADOConError(objTestConn As ADODB.Connection) As String
-
-  Dim strErrorDesc As String
-  Dim lngCount As Long
-
-  strErrorDesc = vbNullString
-  If Not objTestConn Is Nothing Then
-    If Not objTestConn.Errors Is Nothing Then
-      For lngCount = 0 To objTestConn.Errors.Count - 1
-        strErrorDesc = objTestConn.Errors(lngCount).Description
-      Next
-      strErrorDesc = Mid(strErrorDesc, InStrRev(strErrorDesc, "]") + 1)
-    End If
-  End If
-
-  ADOConError = strErrorDesc
-
-End Function
-
 Private Sub PopulateFusionTransferDetails(ByVal plngFusionGrid As Long, pbReset As Boolean)
 
   Dim sSQL As String
@@ -1780,16 +1223,16 @@ Private Sub PopulateFusionTransferDetails(ByVal plngFusionGrid As Long, pbReset 
     strAddString = strAddString _
         & vbTab & rsDefinition!Mandatory & vbTab & rsDefinition!NodeKey _
         & vbTab & rsDefinition!IsCompanyCode & vbTab & rsDefinition!IsEmployeeCode _
-        & vbTab & rsDefinition!Direction & vbTab & rsDefinition!IsKeyField _
+        & vbTab & "" _
         & vbTab & rsDefinition!AlwaysTransfer _
         & vbTab & IIf(IsNull(rsDefinition!ConvertData), False, rsDefinition!ConvertData) _
         & vbTab & IIf(IsNull(rsDefinition!IsEmployeeName), False, rsDefinition!IsEmployeeName) _
         & vbTab & IIf(IsNull(rsDefinition!IsDepartmentCode), False, rsDefinition!IsDepartmentCode) _
         & vbTab & IIf(IsNull(rsDefinition!IsDepartmentName), False, rsDefinition!IsDepartmentName) _
         & vbTab & IIf(IsNull(rsDefinition!IsFusionCode), False, rsDefinition!IsFusionCode) _
-        & vbTab & IIf(IsNull(rsDefinition!GroupBy), 0, rsDefinition!GroupBy) _
-        & vbTab & IIf(IsNull(rsDefinition!PreventModify), False, rsDefinition!PreventModify)
-         
+        & vbTab & 0 & vbTab & 0 & vbTab & 0 _
+        & vbTab & IIf(IsNull(rsDefinition!DataType), 0, rsDefinition!DataType)
+        
     grdFusionDetails(plngFusionGrid).AddItem strAddString
     rsDefinition.MoveNext
     
@@ -1809,34 +1252,15 @@ Private Function GetComboItem(cboTemp As ComboBox) As Long
   End If
 End Function
 
-Private Sub PopulateStaticCombos()
-
-  ' The status's
-  With cboStatus
- 
-    .AddItem "Pending"
-    .ItemData(.NewIndex) = FUSION_STATUS_PENDING
-
-    .AddItem "Blocked"
-    .ItemData(.NewIndex) = FUSION_STATUS_BLOCKED
-  
-    .ListIndex = 0
-  
-  End With
-
-End Sub
-
 Private Sub EnableDisableTabControls()
 
-  cmdOk.Enabled = Not mbReadOnly And mfChanged
+  cmdOK.Enabled = Not mbReadOnly And mfChanged
   cmdNone.Enabled = (tabOptions.Tab = 0) And Not mbReadOnly
   cmdEdit.Caption = IIf(mbReadOnly, "&View...", "&Edit...")
   cmdFilter.Enabled = (tabOptions.Tab = 0) And Not mbReadOnly
 
   fraFusionDefinition.Enabled = (tabOptions.Tab = 0)
-  fraArchive.Enabled = (tabOptions.Tab = 1) And Not mbReadOnly
   fraDefaults.Enabled = (tabOptions.Tab = 1) And Not mbReadOnly
-  fraLogonDetails.Enabled = (tabOptions.Tab = 2) And Not mbReadOnly
 
   RefreshButtons
 

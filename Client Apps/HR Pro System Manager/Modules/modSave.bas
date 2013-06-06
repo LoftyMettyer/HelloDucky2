@@ -246,39 +246,6 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
       gobjProgress.UpdateProgress False
     End If
 
-'NHRD Prototype Fusion Code***********************************************************
-'    'Create Fusion lookup column calculations
-'    If gbFusionModule Then
-'      If fOK Then
-'        DoEvents
-'        OutputCurrentProcess "Fusion Integration"
-'        gobjProgress.UpdateProgress False
-'        OutputCurrentProcess2 "Generating And Fusion Calculations ...", 3
-'        fOK = CreateFusionExpressionSPs(pfRefreshDatabase)
-'        gobjProgress.UpdateProgress2
-'        fOK = fOK And Not gobjProgress.Cancelled
-'      End If
-'
-'      'Create Fusion purge trigger
-'      If fOK Then
-'        OutputCurrentProcess2 "Generating Fusion Purge Trigger ..."
-'        fOK = CreateFusionTransferTriggers(pfRefreshDatabase)
-'        gobjProgress.UpdateProgress2
-'        fOK = fOK And Not gobjProgress.Cancelled
-'      End If
-'      ' Generate stored procedures for the manual export
-'      If fOK Then
-'        OutputCurrentProcess2 "Generating Fusion Transfer Procedures ..."
-'        fOK = CreateFusionTransferSPs(pfRefreshDatabase)
-'        gobjProgress.UpdateProgress2
-'        fOK = fOK And Not gobjProgress.Cancelled
-'      End If
-'
-'    Else
-'      gobjProgress.UpdateProgress False
-'    End If
-'NHRD Prototype Fusion Code***********************************************************
-
     ' Save all Relation definitons (MsgBoxErr Done)
     If fOK Then
       gobjProgress.ResetBar2
@@ -876,6 +843,7 @@ Private Function SaveModuleDefinitions() As Boolean
   Dim rsRelatedColumns As New ADODB.Recordset
   Dim rsLinks As DAO.Recordset
   Dim rsAccord As DAO.Recordset
+  Dim rsFusion As DAO.Recordset
   Dim rsData As DAO.Recordset
   Dim sSQL As String
   Dim alngLinkIDs() As Long
@@ -1224,53 +1192,91 @@ Private Function SaveModuleDefinitions() As Boolean
 
 
 
-'
-'
-'
-'  ' Document Management
-'  gADOCon.Execute "DELETE FROM ASRSysDocumentManagementCategories", , adCmdText + adExecuteNoRecords
-'
-'  sSQL = "SELECT * FROM tmpDocumentManagementCategories"
-'  Set rsData = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
-'
-'  While Not rsData.EOF
-'
-'    sSQL = "INSERT INTO ASRSysDocumentManagementCategories" & _
-'      " (CategoryID, Category, TableID)" & _
-'      " VALUES (" & _
-'      CStr(rsData!CategoryID) & "," & _
-'      "'" & CStr(rsData!Category) & "'," & _
-'      rsData!TableID & ")"
-'    gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
-'
-'    rsData.MoveNext
-'  Wend
-'  rsData.Close
-'
-'
-'  gADOCon.Execute "DELETE FROM ASRSysDocumentManagementHeaderInfo", , adCmdText + adExecuteNoRecords
-'
-'  sSQL = "SELECT * FROM tmpDocumentManagementHeaderInfo"
-'  Set rsData = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
-'
-'  While Not rsData.EOF
-'
-'    sSQL = "INSERT INTO ASRSysDocumentManagementHeaderInfo" & _
-'      " (CategoryID, Heading, ColumnID, Value, Type)" & _
-'      " VALUES (" & _
-'      CStr(rsData!CategoryID) & "," & _
-'      "'" & CStr(rsData!Heading) & "', " & _
-'      rsData!ColumnID & ", " & _
-'      rsData!value & ", " & _
-'      rsData!Type & ")"
-'
-'    gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
-'
-'    rsData.MoveNext
-'  Wend
-'  rsData.Close
-'
 
+  ' Store the Fusion Transfer Types
+  gADOCon.Execute "DELETE FROM ASRSysFusionTypes", , adCmdText + adExecuteNoRecords
+  
+  sSQL = "SELECT * FROM tmpFusionTypes"
+  Set rsFusion = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
+  
+  While Not rsFusion.EOF
+    
+    sSQL = "INSERT INTO ASRSysFusionTypes" & _
+      " (FusionTypeID, FusionType, FilterID, ASRBaseTableID, IsVisible, Version)" & _
+      " VALUES (" & _
+      CStr(rsFusion!FusionTypeID) & "," & _
+      "'" & CStr(rsFusion!FusionType) & "'," & _
+      CStr(rsFusion!FilterID) & "," & _
+      CStr(rsFusion!ASRBaseTableID) & "," & _
+      IIf(rsFusion!IsVisible, "1", "0") & "," & _
+      "1" & ")"
+    
+    gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
+
+    rsFusion.MoveNext
+  Wend
+  rsFusion.Close
+
+  ' Store the Payroll mappings
+  gADOCon.Execute "DELETE FROM ASRSysFusionFieldDefinitions", , adCmdText + adExecuteNoRecords
+  
+  sSQL = "SELECT * FROM tmpFusionFieldDefinitions"
+  Set rsFusion = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
+  
+  While Not rsFusion.EOF
+    
+    sSQL = "INSERT INTO ASRSysFusionFieldDefinitions" & _
+      " (FusionTypeID, Nodekey, Mandatory, Description, ASRMapType, ASRTableID, ASRColumnID, ASRExprID, ASRValue, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer, ConvertData" & _
+      ", IsEmployeeName, IsDepartmentCode, IsDepartmentName, PreventModify, DataType) " & _
+      " VALUES (" & _
+      CStr(rsFusion!FusionTypeID) & ",'" & _
+      CStr(rsFusion!NodeKey) & "'," & _
+      IIf(rsFusion!Mandatory, "1", "0") & "," & _
+      "'" & Replace(rsFusion!Description, "'", "''") & "'," & _
+      IIf(IsNull(rsFusion!ASRMapType), "null", rsFusion!ASRMapType) & "," & _
+      IIf(IsNull(rsFusion!ASRTableID), "null", rsFusion!ASRTableID) & "," & _
+      IIf(IsNull(rsFusion!ASRColumnID), "null", rsFusion!ASRColumnID) & "," & _
+      IIf(IsNull(rsFusion!ASRExprID), "null", rsFusion!ASRExprID) & "," & _
+      "'" & Replace(IIf(IsNull(rsFusion!ASRValue), vbNullString, rsFusion!ASRValue), "'", "''") & "'," & _
+      IIf(rsFusion!IsCompanyCode, "1", "0") & "," & _
+      IIf(rsFusion!IsEmployeeCode, "1", "0") & "," & _
+      CStr(rsFusion!Direction) & "," & _
+      IIf(rsFusion!IsKeyField, "1", "0") & "," & _
+      IIf(rsFusion!AlwaysTransfer, "1", "0") & "," & _
+      IIf(rsFusion!ConvertData, "1", "0") & "," & _
+      IIf(rsFusion!IsEmployeeName, "1", "0") & "," & _
+      IIf(rsFusion!IsDepartmentCode, "1", "0") & _
+      "" & _
+      ",0, 0" & _
+      IIf(rsFusion!PreventModify, "1", "0") & "," & CStr(rsFusion!DataType) & ")"
+
+    gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
+
+    rsFusion.MoveNext
+  Wend
+  rsFusion.Close
+
+  ' Store the Payroll Column Value Mappings
+  gADOCon.Execute "DELETE FROM ASRSysFusionFieldMappings", , adCmdText + adExecuteNoRecords
+  
+  sSQL = "SELECT * FROM tmpFusionFieldMappings"
+  Set rsFusion = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
+
+  While Not rsFusion.EOF
+
+    sSQL = "INSERT INTO ASRSysFusionFieldMappings" & _
+      " (TransferID, FieldID, HRProValue, FusionValue)" & _
+      " VALUES (" & _
+      CStr(rsFusion!TransferID) & "," & _
+      CStr(rsFusion!FieldID) & "," & _
+      "'" & rsFusion!HRProValue & "'," & _
+      "'" & rsFusion!FusionValue & "')"
+      
+    gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
+
+    rsFusion.MoveNext
+  Wend
+  rsFusion.Close
 
 
 
@@ -1278,6 +1284,7 @@ Private Function SaveModuleDefinitions() As Boolean
 
 TidyUpAndExit:
   Set rsAccord = Nothing
+  Set rsFusion = Nothing
   Set rsMaxLinkID = Nothing
   Set rsModules = Nothing
   Set rsRelatedColumns = Nothing

@@ -1,6 +1,5 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "coa_spinner.ocx"
 Begin VB.Form frmFusionComponent 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Fusion Field"
@@ -18,8 +17,10 @@ Begin VB.Form frmFusionComponent
       Strikethrough   =   0   'False
    EndProperty
    HelpContextID   =   5059
+   Icon            =   "frmFusionComponent.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
+   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   5505
@@ -30,24 +31,15 @@ Begin VB.Form frmFusionComponent
       Caption         =   "Definition : "
       Height          =   795
       Left            =   135
-      TabIndex        =   24
+      TabIndex        =   20
       Top             =   135
       Width           =   6650
-      Begin VB.CheckBox chkKeyField 
-         Caption         =   "Key Field"
-         Enabled         =   0   'False
-         Height          =   240
-         Left            =   5085
-         TabIndex        =   2
-         Top             =   315
-         Width           =   1230
-      End
       Begin VB.ComboBox cboFusionField 
          BackColor       =   &H8000000F&
          Height          =   315
-         ItemData        =   "frmFusionComponent.frx":0000
+         ItemData        =   "frmFusionComponent.frx":000C
          Left            =   1530
-         List            =   "frmFusionComponent.frx":0002
+         List            =   "frmFusionComponent.frx":000E
          Style           =   2  'Dropdown List
          TabIndex        =   1
          Top             =   270
@@ -57,7 +49,7 @@ Begin VB.Form frmFusionComponent
          Caption         =   "Fusion Field : "
          Height          =   240
          Left            =   180
-         TabIndex        =   25
+         TabIndex        =   21
          Top             =   315
          Width           =   1320
       End
@@ -67,7 +59,7 @@ Begin VB.Form frmFusionComponent
       Caption         =   "&Cancel"
       Height          =   405
       Left            =   5580
-      TabIndex        =   20
+      TabIndex        =   16
       Top             =   4980
       Width           =   1200
    End
@@ -77,7 +69,7 @@ Begin VB.Form frmFusionComponent
       Enabled         =   0   'False
       Height          =   405
       Left            =   4275
-      TabIndex        =   19
+      TabIndex        =   15
       Top             =   4980
       Width           =   1200
    End
@@ -93,7 +85,7 @@ Begin VB.Form frmFusionComponent
          Height          =   315
          Index           =   0
          Left            =   165
-         TabIndex        =   3
+         TabIndex        =   2
          Tag             =   "COMP_FIELD"
          Top             =   300
          Value           =   -1  'True
@@ -104,7 +96,7 @@ Begin VB.Form frmFusionComponent
          Height          =   315
          Index           =   1
          Left            =   165
-         TabIndex        =   4
+         TabIndex        =   3
          Tag             =   "COMP_OPERATOR"
          Top             =   650
          Width           =   1590
@@ -114,7 +106,7 @@ Begin VB.Form frmFusionComponent
          Height          =   315
          Index           =   2
          Left            =   165
-         TabIndex        =   5
+         TabIndex        =   4
          Tag             =   "COMP_VALUE"
          Top             =   990
          Width           =   1110
@@ -125,7 +117,7 @@ Begin VB.Form frmFusionComponent
       Height          =   3930
       Index           =   0
       Left            =   2115
-      TabIndex        =   16
+      TabIndex        =   12
       Tag             =   "1"
       Top             =   960
       Width           =   4665
@@ -133,52 +125,15 @@ Begin VB.Form frmFusionComponent
          Caption         =   "&Prevent data updates once in Fusion"
          Height          =   255
          Left            =   180
-         TabIndex        =   11
-         Top             =   3165
+         TabIndex        =   9
+         Top             =   2895
          Width           =   3660
-      End
-      Begin COASpinner.COA_Spinner spnGroup 
-         Height          =   315
-         Left            =   1875
-         TabIndex        =   13
-         Top             =   3495
-         Width           =   705
-         _ExtentX        =   1244
-         _ExtentY        =   556
-         BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-            Name            =   "Verdana"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Enabled         =   0   'False
-         MaximumValue    =   99999
-         Text            =   "0"
-      End
-      Begin VB.CheckBox chkGroupBy 
-         Caption         =   "&Group Number"
-         Height          =   225
-         Left            =   180
-         TabIndex        =   12
-         Top             =   3525
-         Width           =   2550
-      End
-      Begin VB.CheckBox chkAlwaysFusion 
-         Caption         =   "Al&ways Fusion"
-         Height          =   240
-         Left            =   180
-         TabIndex        =   10
-         Top             =   2835
-         Width           =   4380
       End
       Begin VB.CheckBox chkConvertData 
          Caption         =   "Convert &Data"
          Height          =   285
          Left            =   180
-         TabIndex        =   8
+         TabIndex        =   7
          Top             =   1125
          Width           =   1500
       End
@@ -186,7 +141,7 @@ Begin VB.Form frmFusionComponent
          Height          =   315
          Left            =   990
          Style           =   2  'Dropdown List
-         TabIndex        =   6
+         TabIndex        =   5
          Top             =   285
          Width           =   3525
       End
@@ -194,14 +149,14 @@ Begin VB.Form frmFusionComponent
          Height          =   315
          Left            =   990
          Style           =   2  'Dropdown List
-         TabIndex        =   7
+         TabIndex        =   6
          Top             =   705
          Width           =   3525
       End
       Begin SSDataWidgets_B.SSDBGrid grdColumnMapping 
          Height          =   1260
          Left            =   900
-         TabIndex        =   9
+         TabIndex        =   8
          Top             =   1440
          Width           =   3585
          ScrollBars      =   2
@@ -272,7 +227,7 @@ Begin VB.Form frmFusionComponent
          Caption         =   "Column :"
          Height          =   285
          Left            =   135
-         TabIndex        =   23
+         TabIndex        =   19
          Top             =   765
          Width           =   870
       End
@@ -280,7 +235,7 @@ Begin VB.Form frmFusionComponent
          Caption         =   "Table : "
          Height          =   240
          Left            =   135
-         TabIndex        =   22
+         TabIndex        =   18
          Top             =   360
          Width           =   690
       End
@@ -290,7 +245,7 @@ Begin VB.Form frmFusionComponent
       Height          =   3930
       Index           =   1
       Left            =   2115
-      TabIndex        =   17
+      TabIndex        =   13
       Tag             =   "1"
       Top             =   960
       Width           =   4665
@@ -298,7 +253,7 @@ Begin VB.Form frmFusionComponent
          Caption         =   "..."
          Height          =   315
          Left            =   4110
-         TabIndex        =   14
+         TabIndex        =   10
          Top             =   380
          UseMaskColor    =   -1  'True
          Width           =   315
@@ -308,7 +263,7 @@ Begin VB.Form frmFusionComponent
          Enabled         =   0   'False
          Height          =   315
          Left            =   240
-         TabIndex        =   21
+         TabIndex        =   17
          Top             =   380
          Width           =   3885
       End
@@ -318,14 +273,14 @@ Begin VB.Form frmFusionComponent
       Height          =   3930
       Index           =   2
       Left            =   2115
-      TabIndex        =   18
+      TabIndex        =   14
       Tag             =   "1"
       Top             =   960
       Width           =   4665
       Begin VB.TextBox txtText 
          Height          =   285
          Left            =   225
-         TabIndex        =   15
+         TabIndex        =   11
          Top             =   380
          Width           =   4155
       End
@@ -363,9 +318,10 @@ Private mbConvertData As Boolean
 Private mbUndefined As Boolean
 Private mbForceAlwaysFusion As Boolean
 Private mbPreventModify As Boolean
+Private miDataType As DataTypes
 
 Public Property Let Changed(pbNewValue As Boolean)
-  cmdOk.Enabled = pbNewValue And Not mbLoading
+  cmdOK.Enabled = pbNewValue And Not mbLoading
 End Property
 
 Public Property Let NodeKey(ByVal psNewValue As String)
@@ -382,6 +338,14 @@ End Property
 
 Public Property Get ConvertData() As Boolean
   ConvertData = mbConvertData
+End Property
+
+Public Property Let DataType(ByVal piNewValue As DataTypes)
+  miDataType = piNewValue
+End Property
+
+Public Property Get DataType() As DataTypes
+  DataType = miDataType
 End Property
 
 Public Property Let AlwaysTransferFieldID(ByVal pbNewValue As Boolean)
@@ -493,11 +457,6 @@ Private Sub cboFldTable_Click()
   
 End Sub
 
-Private Sub chkAlwaysFusion_Click()
-  mbAlwaysTransferField = chkAlwaysFusion.value
-  Me.Changed = True
-End Sub
-
 Private Sub chkConvertData_Click()
   mbConvertData = (chkConvertData.value = vbChecked)
   grdColumnMapping.Enabled = mbConvertData And Not mbReadOnly
@@ -507,16 +466,6 @@ Private Sub chkConvertData_Click()
   grdColumnMapping.AllowAddNew = grdColumnMapping.Enabled
   grdColumnMapping.Refresh
  
-  Me.Changed = True
-End Sub
-
-Private Sub chkGroupBy_Click()
-  mbGroup = (chkGroupBy.value = vbChecked)
-  If Not mbGroup Then
-    spnGroup.value = 0
-  End If
-  spnGroup.Enabled = mbGroup And Not mbReadOnly
-
   Me.Changed = True
 End Sub
 
@@ -606,28 +555,21 @@ Private Sub Form_Load()
   
   End Select
   
-  chkKeyField.value = IIf(mbIsKeyField, vbChecked, vbUnchecked)
-  chkAlwaysFusion.Enabled = Not (mbIsKeyField Or mbReadOnly Or mbForceAlwaysFusion)
-  chkAlwaysFusion.value = IIf(mbAlwaysTransferField, vbChecked, vbUnchecked)
   chkConvertData.value = IIf(mbConvertData, vbChecked, vbUnchecked)
   chkPreventModify.value = IIf(mbPreventModify, vbChecked, vbUnchecked)
-  
-  spnGroup.Enabled = False
-  chkGroupBy.value = IIf(mlngGroup > 0, vbChecked, vbUnchecked)
-  spnGroup.value = mlngGroup
   
   optComponentType(1).Enabled = IIf(mbIsKeyField, False, True) And Not mbReadOnly
   optComponentType(2).Enabled = IIf(mbIsEmployeeCode, False, True) And Not mbReadOnly
    
   mbLoading = False
-  cmdOk.Enabled = mbUndefined And Not mbReadOnly
+  cmdOK.Enabled = mbUndefined And Not mbReadOnly
 
 End Sub
 
 Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
 
   ' If the user cancels or tries to close the form
-  If UnloadMode <> vbFormCode And cmdOk.Enabled Then
+  If UnloadMode <> vbFormCode And cmdOK.Enabled Then
     Select Case MsgBox("Apply changes ?", vbYesNoCancel + vbQuestion, Me.Caption)
       Case vbCancel
         Cancel = True
@@ -659,11 +601,6 @@ Private Sub optComponentType_Click(Index As Integer)
   miMapType = Index
   Me.Changed = True
   
-End Sub
-
-Private Sub spnGroup_Change()
-  mlngGroup = spnGroup.value
-  Me.Changed = True
 End Sub
 
 Private Sub txtText_Change()
@@ -773,11 +710,7 @@ Private Sub cboFldColumn_Refresh()
         ' Add each column name to the lookup columns combo.
         ' NB. We only want to add certain types of column. There's not use in
         ' looking up OLE values.
-        If (.Fields("columnType") <> giCOLUMNTYPE_SYSTEM) And _
-          (.Fields("columnType") <> giCOLUMNTYPE_LINK) And _
-          (Not .Fields("deleted")) And _
-          (.Fields("dataType") <> dtLONGVARBINARY) And _
-          (.Fields("dataType") <> dtVARBINARY) Then
+        If (.Fields("DataType") = miDataType) Then
           
           lngNewIndex = AddItemToComboBox(cboFldColumn, .Fields("columnName").value, .Fields("columnID").value)
      
