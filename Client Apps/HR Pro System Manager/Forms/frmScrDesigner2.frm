@@ -1,10 +1,8 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{A48C54F8-25F4-4F50-9112-A9A3B0DBAD63}#1.0#0"; "COA_Label.ocx"
 Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.0#0"; "COA_Line.ocx"
-Object = "{58F88252-94BB-43CE-9EF9-C971F73B93D4}#1.0#0"; "COASD_Selection.ocx"
-Object = "{714061F3-25A6-4821-B196-7D15DCCDE00E}#1.0#0"; "COASD_SelectionBox.ocx"
 Object = "{98B2556E-F719-4726-9028-5F2EAB345800}#1.0#0"; "COASD_Checkbox.ocx"
 Object = "{3EBC9263-7DE3-4E87-8721-81ACE59CD84E}#1.0#0"; "COASD_Combo.ocx"
 Object = "{3CCEDCBE-4766-494F-84C9-95993D77BD56}#1.0#0"; "COASD_Command.ocx"
@@ -12,6 +10,8 @@ Object = "{FFAE31F9-C18D-4C20-AAF7-74C1356185D9}#1.0#0"; "COASD_Frame.ocx"
 Object = "{5F165695-EDF2-40E1-BD8E-8D2E6325BDCF}#1.0#0"; "COASD_Image.ocx"
 Object = "{32648AC7-4D67-4E6A-A546-1B7783115C22}#1.0#0"; "COASD_OLE.ocx"
 Object = "{CE18FF03-F3BF-4C4F-81DC-192ED1E1B91F}#1.0#0"; "COASD_OptionGroup.ocx"
+Object = "{58F88252-94BB-43CE-9EF9-C971F73B93D4}#1.0#0"; "COASD_Selection.ocx"
+Object = "{714061F3-25A6-4821-B196-7D15DCCDE00E}#1.0#0"; "COASD_SelectionBox.ocx"
 Object = "{0BE8C79E-5090-4700-B420-B767D1E19561}#1.0#0"; "COASD_Spinner.ocx"
 Object = "{93EA589D-C793-4EE4-BE53-52A646038BAF}#1.0#0"; "COASD_WorkingPattern.ocx"
 Begin VB.Form frmScrDesigner2 
@@ -560,292 +560,292 @@ Private Sub abScreen_PreCustomizeMenu(ByVal Cancel As ActiveBarLibraryCtl.Return
 
 End Sub
 
-Private Sub asrDummyCheckBox_DragDrop(Index As Integer, Source As Control, X As Single, Y As Single)
+Private Sub asrDummyCheckBox_DragDrop(Index As Integer, Source As Control, x As Single, y As Single)
   ' Drop a control onto the screen.
-  ScreenControl_DragDrop asrDummyCheckBox(Index), Source, X, Y
+  ScreenControl_DragDrop asrDummyCheckBox(Index), Source, x, y
 
 End Sub
 
-Private Sub asrDummyCheckBox_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummyCheckBox_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Select the control.
-  ScreenControl_MouseDown asrDummyCheckBox(Index), Button, Shift, X, Y
+  ScreenControl_MouseDown asrDummyCheckBox(Index), Button, Shift, x, y
   
 End Sub
 
-Private Sub asrDummyCheckBox_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummyCheckBox_MouseMove(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the control.
-  ScreenControl_MouseMove asrDummyCheckBox(Index), Button, X, Y
+  ScreenControl_MouseMove asrDummyCheckBox(Index), Button, x, y
   
 End Sub
 
-Private Sub asrDummyCheckBox_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummyCheckBox_MouseUp(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the selected controls.
-  ScreenControl_MouseUp asrDummyCheckBox(Index), Button, Shift, X, Y
+  ScreenControl_MouseUp asrDummyCheckBox(Index), Button, Shift, x, y
 
 End Sub
 
-Private Sub asrDummyCombo_DragDrop(Index As Integer, Source As Control, X As Single, Y As Single)
+Private Sub asrDummyCombo_DragDrop(Index As Integer, Source As Control, x As Single, y As Single)
   ' Drop a control onto the screen.
-  ScreenControl_DragDrop asrDummyCombo(Index), Source, X, Y
+  ScreenControl_DragDrop asrDummyCombo(Index), Source, x, y
 
 End Sub
 
-Private Sub asrDummyCombo_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummyCombo_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Select the control.
-  ScreenControl_MouseDown asrDummyCombo(Index), Button, Shift, X, Y
+  ScreenControl_MouseDown asrDummyCombo(Index), Button, Shift, x, y
 
 End Sub
 
-Private Sub asrDummyCombo_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummyCombo_MouseMove(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the control.
-  ScreenControl_MouseMove asrDummyCombo(Index), Button, X, Y
+  ScreenControl_MouseMove asrDummyCombo(Index), Button, x, y
 
 End Sub
 
-Private Sub asrDummyCombo_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummyCombo_MouseUp(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the selected controls.
-  ScreenControl_MouseUp asrDummyCombo(Index), Button, Shift, X, Y
+  ScreenControl_MouseUp asrDummyCombo(Index), Button, Shift, x, y
 
 End Sub
 
-Private Sub asrDummyFrame_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummyFrame_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   
   ' Select the control.
-  ScreenControl_MouseDown asrDummyFrame(Index), Button, Shift, X, Y
+  ScreenControl_MouseDown asrDummyFrame(Index), Button, Shift, x, y
   'Form_MouseDown Button, Shift, X + asrDummyFrame(Index).Left, Y + asrDummyFrame(Index).Top
 
 End Sub
 
-Private Sub asrDummyFrame_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummyFrame_MouseMove(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   
   ' Move the control.
-  ScreenControl_MouseMove asrDummyFrame(Index), Button, X, Y
+  ScreenControl_MouseMove asrDummyFrame(Index), Button, x, y
   'Form_MouseMove Button, Shift, X + asrDummyFrame(Index).Left, Y + asrDummyFrame(Index).Top
 
 End Sub
 
-Private Sub asrDummyFrame_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummyFrame_MouseUp(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   
   ' Move the selected controls.
-  ScreenControl_MouseUp asrDummyFrame(Index), Button, Shift, X, Y
+  ScreenControl_MouseUp asrDummyFrame(Index), Button, Shift, x, y
   'Form_MouseUp Button, Shift, X + asrDummyFrame(Index).Left, Y + asrDummyFrame(Index).Top
 
 End Sub
 
-Private Sub asrDummyImage_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummyImage_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Select the control.
-  ScreenControl_MouseDown asrDummyImage(Index), Button, Shift, X, Y
+  ScreenControl_MouseDown asrDummyImage(Index), Button, Shift, x, y
   
 End Sub
 
-Private Sub asrDummyImage_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummyImage_MouseMove(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the control.
-  ScreenControl_MouseMove asrDummyImage(Index), Button, X, Y
+  ScreenControl_MouseMove asrDummyImage(Index), Button, x, y
 
 End Sub
 
-Private Sub asrDummyImage_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummyImage_MouseUp(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the selected controls.
-  ScreenControl_MouseUp asrDummyImage(Index), Button, Shift, X, Y
+  ScreenControl_MouseUp asrDummyImage(Index), Button, Shift, x, y
 
 End Sub
 
-Private Sub asrDummyLabel_DragDrop(Index As Integer, Source As Control, X As Single, Y As Single)
+Private Sub asrDummyLabel_DragDrop(Index As Integer, Source As Control, x As Single, y As Single)
   ' Drop a control onto the screen.
-  ScreenControl_DragDrop asrDummyLabel(Index), Source, X, Y
+  ScreenControl_DragDrop asrDummyLabel(Index), Source, x, y
   
 End Sub
 
-Private Sub asrDummyLabel_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummyLabel_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Select the control.
-  ScreenControl_MouseDown asrDummyLabel(Index), Button, Shift, X, Y
+  ScreenControl_MouseDown asrDummyLabel(Index), Button, Shift, x, y
 
 End Sub
 
-Private Sub asrDummyLabel_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummyLabel_MouseMove(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the control.
-  ScreenControl_MouseMove asrDummyLabel(Index), Button, X, Y
+  ScreenControl_MouseMove asrDummyLabel(Index), Button, x, y
 
 End Sub
 
-Private Sub asrDummyLabel_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummyLabel_MouseUp(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the selected controls.
-  ScreenControl_MouseUp asrDummyLabel(Index), Button, Shift, X, Y
+  ScreenControl_MouseUp asrDummyLabel(Index), Button, Shift, x, y
         
 End Sub
 
-Private Sub asrDummyLink_DragDrop(Index As Integer, Source As Control, X As Single, Y As Single)
+Private Sub asrDummyLink_DragDrop(Index As Integer, Source As Control, x As Single, y As Single)
   ' Drop a control onto the screen.
-  ScreenControl_DragDrop asrDummyLink(Index), Source, X, Y
+  ScreenControl_DragDrop asrDummyLink(Index), Source, x, y
 
 End Sub
 
-Private Sub asrDummyLink_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummyLink_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Select the control.
-  ScreenControl_MouseDown asrDummyLink(Index), Button, Shift, X, Y
+  ScreenControl_MouseDown asrDummyLink(Index), Button, Shift, x, y
 
 End Sub
 
-Private Sub asrDummyLink_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummyLink_MouseMove(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the control.
-  ScreenControl_MouseMove asrDummyLink(Index), Button, X, Y
+  ScreenControl_MouseMove asrDummyLink(Index), Button, x, y
 
 End Sub
 
-Private Sub asrDummyLink_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummyLink_MouseUp(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the selected controls.
-  ScreenControl_MouseUp asrDummyLink(Index), Button, Shift, X, Y
+  ScreenControl_MouseUp asrDummyLink(Index), Button, Shift, x, y
 
 End Sub
 
-Private Sub asrDummyOLEContents_DragDrop(Index As Integer, Source As Control, X As Single, Y As Single)
+Private Sub asrDummyOLEContents_DragDrop(Index As Integer, Source As Control, x As Single, y As Single)
   ' Drop a control onto the screen.
-  ScreenControl_DragDrop asrDummyOLEContents(Index), Source, X, Y
+  ScreenControl_DragDrop asrDummyOLEContents(Index), Source, x, y
 
 End Sub
 
-Private Sub asrDummyOLEContents_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummyOLEContents_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Select the control.
-  ScreenControl_MouseDown asrDummyOLEContents(Index), Button, Shift, X, Y
+  ScreenControl_MouseDown asrDummyOLEContents(Index), Button, Shift, x, y
   
 End Sub
 
-Private Sub asrDummyOLEContents_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummyOLEContents_MouseMove(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the control.
-  ScreenControl_MouseMove asrDummyOLEContents(Index), Button, X, Y
+  ScreenControl_MouseMove asrDummyOLEContents(Index), Button, x, y
 
 End Sub
 
-Private Sub asrDummyOLEContents_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummyOLEContents_MouseUp(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the selected controls.
-  ScreenControl_MouseUp asrDummyOLEContents(Index), Button, Shift, X, Y
+  ScreenControl_MouseUp asrDummyOLEContents(Index), Button, Shift, x, y
 
 End Sub
 
-Private Sub ASRDummyOptions_DragDrop(Index As Integer, Source As Control, X As Single, Y As Single)
+Private Sub ASRDummyOptions_DragDrop(Index As Integer, Source As Control, x As Single, y As Single)
   ' Drop a control onto the screen.
-  ScreenControl_DragDrop ASRDummyOptions(Index), Source, X, Y
+  ScreenControl_DragDrop ASRDummyOptions(Index), Source, x, y
 
 End Sub
 
-Private Sub ASRDummyOptions_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub ASRDummyOptions_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Select the control.
-  ScreenControl_MouseDown ASRDummyOptions(Index), Button, Shift, X, Y
+  ScreenControl_MouseDown ASRDummyOptions(Index), Button, Shift, x, y
 
 End Sub
 
-Private Sub ASRDummyOptions_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub ASRDummyOptions_MouseMove(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the control.
-  ScreenControl_MouseMove ASRDummyOptions(Index), Button, X, Y
+  ScreenControl_MouseMove ASRDummyOptions(Index), Button, x, y
 
 End Sub
 
-Private Sub ASRDummyOptions_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub ASRDummyOptions_MouseUp(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the selected controls.
-  ScreenControl_MouseUp ASRDummyOptions(Index), Button, Shift, X, Y
+  ScreenControl_MouseUp ASRDummyOptions(Index), Button, Shift, x, y
 
 End Sub
 
 
 
-Private Sub asrDummyPhoto_DragDrop(Index As Integer, Source As Control, X As Single, Y As Single)
+Private Sub asrDummyPhoto_DragDrop(Index As Integer, Source As Control, x As Single, y As Single)
   ' Drop a control onto the screen.
-  ScreenControl_DragDrop asrDummyPhoto(Index), Source, X, Y
+  ScreenControl_DragDrop asrDummyPhoto(Index), Source, x, y
 
 End Sub
 
-Private Sub asrDummyPhoto_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummyPhoto_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Select the control.
-  ScreenControl_MouseDown asrDummyPhoto(Index), Button, Shift, X, Y
+  ScreenControl_MouseDown asrDummyPhoto(Index), Button, Shift, x, y
 
 End Sub
 
-Private Sub asrDummyPhoto_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummyPhoto_MouseMove(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the control.
-  ScreenControl_MouseMove asrDummyPhoto(Index), Button, X, Y
+  ScreenControl_MouseMove asrDummyPhoto(Index), Button, x, y
 
 End Sub
 
-Private Sub asrDummyPhoto_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummyPhoto_MouseUp(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the selected controls.
-  ScreenControl_MouseUp asrDummyPhoto(Index), Button, Shift, X, Y
+  ScreenControl_MouseUp asrDummyPhoto(Index), Button, Shift, x, y
 
 End Sub
 
-Private Sub asrDummySpinner_DragDrop(Index As Integer, Source As Control, X As Single, Y As Single)
+Private Sub asrDummySpinner_DragDrop(Index As Integer, Source As Control, x As Single, y As Single)
   ' Drop a control onto the screen.
-  ScreenControl_DragDrop asrDummySpinner(Index), Source, X, Y
+  ScreenControl_DragDrop asrDummySpinner(Index), Source, x, y
 
 End Sub
 
-Private Sub asrDummySpinner_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummySpinner_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Select the control.
-  ScreenControl_MouseDown asrDummySpinner(Index), Button, Shift, X, Y
+  ScreenControl_MouseDown asrDummySpinner(Index), Button, Shift, x, y
 
 End Sub
 
-Private Sub asrDummySpinner_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummySpinner_MouseMove(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the control.
-  ScreenControl_MouseMove asrDummySpinner(Index), Button, X, Y
+  ScreenControl_MouseMove asrDummySpinner(Index), Button, x, y
 
 End Sub
 
-Private Sub asrDummySpinner_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummySpinner_MouseUp(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the selected controls.
-  ScreenControl_MouseUp asrDummySpinner(Index), Button, Shift, X, Y
+  ScreenControl_MouseUp asrDummySpinner(Index), Button, Shift, x, y
 
 End Sub
 
-Private Sub asrDummyTextBox_DragDrop(Index As Integer, Source As Control, X As Single, Y As Single)
+Private Sub asrDummyTextBox_DragDrop(Index As Integer, Source As Control, x As Single, y As Single)
   ' Drop a control onto the screen.
-  ScreenControl_DragDrop asrDummyTextBox(Index), Source, X, Y
+  ScreenControl_DragDrop asrDummyTextBox(Index), Source, x, y
   
 End Sub
 
-Private Sub asrDummyTextBox_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummyTextBox_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   
   ' Select the control.
-  ScreenControl_MouseDown asrDummyTextBox(Index), Button, Shift, X, Y
+  ScreenControl_MouseDown asrDummyTextBox(Index), Button, Shift, x, y
 
 End Sub
 
-Private Sub asrDummyTextBox_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummyTextBox_MouseMove(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the control.
-  ScreenControl_MouseMove asrDummyTextBox(Index), Button, X, Y
+  ScreenControl_MouseMove asrDummyTextBox(Index), Button, x, y
 
 End Sub
 
-Private Sub asrDummyTextBox_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub asrDummyTextBox_MouseUp(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the selected controls.
-  ScreenControl_MouseUp asrDummyTextBox(Index), Button, Shift, X, Y
+  ScreenControl_MouseUp asrDummyTextBox(Index), Button, Shift, x, y
 
 End Sub
 
-Private Sub ASRCustomDummyWP_DragDrop(Index As Integer, Source As Control, X As Single, Y As Single)
+Private Sub ASRCustomDummyWP_DragDrop(Index As Integer, Source As Control, x As Single, y As Single)
   ' Drop a control onto the screen.
-  ScreenControl_DragDrop ASRCustomDummyWP(Index), Source, X, Y
+  ScreenControl_DragDrop ASRCustomDummyWP(Index), Source, x, y
 
 End Sub
 
-Private Sub ASRCustomDummyWP_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub ASRCustomDummyWP_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Select the control.
-  ScreenControl_MouseDown ASRCustomDummyWP(Index), Button, Shift, X, Y
+  ScreenControl_MouseDown ASRCustomDummyWP(Index), Button, Shift, x, y
   
 End Sub
 
-Private Sub ASRCustomDummyWP_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub ASRCustomDummyWP_MouseMove(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the control.
-  ScreenControl_MouseMove ASRCustomDummyWP(Index), Button, X, Y
+  ScreenControl_MouseMove ASRCustomDummyWP(Index), Button, x, y
   
 End Sub
 
-Private Sub ASRCustomDummyWP_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub ASRCustomDummyWP_MouseUp(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the selected controls.
-  ScreenControl_MouseUp ASRCustomDummyWP(Index), Button, Shift, X, Y
+  ScreenControl_MouseUp ASRCustomDummyWP(Index), Button, Shift, x, y
 
 End Sub
 
-Private Sub ASRSelectionMarkers_Stretch(Index As Integer, Direction As String, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub ASRSelectionMarkers_Stretch(Index As Integer, Direction As String, Button As Integer, Shift As Integer, x As Single, y As Single)
 
   Dim iCount As Integer
   Dim lngHeight As Long
@@ -878,65 +878,65 @@ Private Sub ASRSelectionMarkers_Stretch(Index As Integer, Direction As String, B
           Case "TopLeft"
             bCanStretch = Not .HasLockedHeight Or Not .HasLockedWidth
             If bCanStretch Then
-              lngHeight = IIf(.Original_Height - Y > .AttachedObject.MinimumHeight, .Original_Height - Y, .AttachedObject.Height)
-              lngTop = IIf(.Original_Height - Y > .AttachedObject.MinimumHeight, .Original_Top + Y, .AttachedObject.Top)
-              lngLeft = IIf(.Original_Width - X > .AttachedObject.MinimumWidth, .Original_Left + X, .AttachedObject.Left)
-              lngWidth = IIf(.Original_Width - X > .AttachedObject.MinimumWidth, .Original_Width - X, .AttachedObject.Width)
+              lngHeight = IIf(.Original_Height - y > .AttachedObject.MinimumHeight, .Original_Height - y, .AttachedObject.Height)
+              lngTop = IIf(.Original_Height - y > .AttachedObject.MinimumHeight, .Original_Top + y, .AttachedObject.Top)
+              lngLeft = IIf(.Original_Width - x > .AttachedObject.MinimumWidth, .Original_Left + x, .AttachedObject.Left)
+              lngWidth = IIf(.Original_Width - x > .AttachedObject.MinimumWidth, .Original_Width - x, .AttachedObject.Width)
             End If
       
           ' Stretch North
           Case "TopCentre"
-            bCanStretch = Not .HasLockedHeight And .Original_Height - Y > .AttachedObject.MinimumHeight
+            bCanStretch = Not .HasLockedHeight And .Original_Height - y > .AttachedObject.MinimumHeight
             If bCanStretch Then
-              lngTop = .Original_Top + Y
-              lngHeight = .Original_Height - Y
+              lngTop = .Original_Top + y
+              lngHeight = .Original_Height - y
             End If
 
           ' Stretch North East
           Case "TopRight"
-            If Not .HasLockedHeight And (.Original_Height - Y > .AttachedObject.MinimumHeight) Then
-              lngTop = .Original_Top + Y
-              lngHeight = .Original_Height - Y
+            If Not .HasLockedHeight And (.Original_Height - y > .AttachedObject.MinimumHeight) Then
+              lngTop = .Original_Top + y
+              lngHeight = .Original_Height - y
             End If
             
             If Not .HasLockedWidth Then
               lngLeft = .AttachedObject.Left
-              lngWidth = .Original_Width + X
+              lngWidth = .Original_Width + x
               bCanStretch = IIf(lngWidth = .AttachedObject.Width, False, True)
             End If
 
           Case "CentreLeft"
-            bCanStretch = (.Original_Width - X > .AttachedObject.MinimumWidth And Not .HasLockedWidth)
+            bCanStretch = (.Original_Width - x > .AttachedObject.MinimumWidth And Not .HasLockedWidth)
             If bCanStretch Then
-              lngLeft = .Original_Left + X
-              lngWidth = .Original_Width - X
+              lngLeft = .Original_Left + x
+              lngWidth = .Original_Width - x
             End If
           
           Case "CentreRight"
-            lngWidth = .Original_Width + X
+            lngWidth = .Original_Width + x
             bCanStretch = IIf(lngWidth = .AttachedObject.Width And Not .HasLockedWidth, False, True)
 
           Case "BottomLeft"
-            If .Original_Width - X > .AttachedObject.MinimumWidth And Not .HasLockedWidth Then
+            If .Original_Width - x > .AttachedObject.MinimumWidth And Not .HasLockedWidth Then
               '.AttachedObject.Move .Original_Left + X, .AttachedObject.Top, .Original_Width - X, .Original_Height + Y
-              lngLeft = .Original_Left + X
-              lngWidth = .Original_Width - X
+              lngLeft = .Original_Left + x
+              lngWidth = .Original_Width - x
             End If
-            lngHeight = .Original_Height + Y
+            lngHeight = .Original_Height + y
             'bCanStretch = IIf(lngWidth = .AttachedObject.Width And lngHeight = .AttachedObject.Height, False, True)
             bCanStretch = IIf(IsWithin(lngWidth, .AttachedObject.Width, iGridSize) And IsWithin(lngHeight, .AttachedObject.Height, iGridSize), False, Not .HasLockedWidth)
           
           Case "BottomCentre"
-            lngHeight = .Original_Height + Y
+            lngHeight = .Original_Height + y
             bCanStretch = IIf(IsWithin(lngHeight, .AttachedObject.Height, iGridSize), False, Not .HasLockedHeight)
 
           Case "BottomRight"
             If Not .HasLockedWidth Then
-              lngWidth = .Original_Width + X
+              lngWidth = .Original_Width + x
             End If
                         
             If Not .HasLockedHeight Then
-              lngHeight = .Original_Height + Y
+              lngHeight = .Original_Height + y
             End If
             
             bCanStretch = IIf(IsWithin(lngWidth, .AttachedObject.Width, iGridSize) And IsWithin(lngHeight, .AttachedObject.Height, iGridSize), False, True)
@@ -963,7 +963,7 @@ CannotStretch:
 
 End Sub
 
-Private Sub ASRSelectionMarkers_StretchEnd(Index As Integer, Direction As String, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub ASRSelectionMarkers_StretchEnd(Index As Integer, Direction As String, Button As Integer, Shift As Integer, x As Single, y As Single)
 
   Dim iCount As Integer
   
@@ -981,7 +981,7 @@ Private Sub ASRSelectionMarkers_StretchEnd(Index As Integer, Direction As String
  
 End Sub
 
-Private Sub ASRSelectionMarkers_StretchStart(Index As Integer, Direction As String, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub ASRSelectionMarkers_StretchStart(Index As Integer, Direction As String, Button As Integer, Shift As Integer, x As Single, y As Single)
 
   Dim iCount As Integer
   
@@ -995,8 +995,8 @@ Private Sub ASRSelectionMarkers_StretchStart(Index As Integer, Direction As Stri
   Next iCount
 
   ' Store original x,y coordinates
-  mlngXOffset = X
-  mlngYOffset = Y
+  mlngXOffset = x
+  mlngYOffset = y
 
 End Sub
 
@@ -1321,12 +1321,12 @@ ErrorTrap:
   
 End Function
 
-Private Sub Form_DragDrop(Source As Control, X As Single, Y As Single)
+Private Sub Form_DragDrop(Source As Control, x As Single, y As Single)
   ' Drop a control onto the screen.
   On Error GoTo ErrorTrap
   
   If CurrentPageContainer Is Me Then
-    If Not DropControl(Me, Source, X, Y) Then
+    If Not DropControl(Me, Source, x, y) Then
       MsgBox "Unable to drop the control." & vbCr & vbCr & _
         Err.Description, vbExclamation + vbOKOnly, App.ProductName
     End If
@@ -1784,7 +1784,8 @@ Public Sub EditMenu(ByVal psMenuOption As String)
       ' also the frmScrOpen screen list if it is loaded.
       recScrEdit.Index = "idxScreenID"
       recScrEdit.Seek "=", gLngScreenID
-      Me.Caption = "Screen Manager - " & recScrEdit.Fields("name") & vbNullString
+      
+      SetFormCaption Me, "Screen Manager - " & recScrEdit.Fields("name") & vbNullString
   
       For iLoop = 1 To Forms.Count - 1
         If Forms(iLoop).Name = "frmScrOpen" Then
@@ -2252,15 +2253,15 @@ ErrorTrap:
 End Sub
 
 
-Private Sub Form_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub Form_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
   On Error GoTo ErrorTrap
   
   Dim fOK As Boolean
   Dim VarPageContainer As Variant
 
   ' Used to work out where to paste controls
-  mlngMouseX = X
-  mlngMouseY = Y
+  mlngMouseX = x
+  mlngMouseY = y
 
   ' Only handle left button presses here.
   If Button <> vbLeftButton Then
@@ -2278,8 +2279,8 @@ Private Sub Form_MouseDown(Button As Integer, Shift As Integer, X As Single, Y A
   If fOK Then
     ' Start the multi-selection frame.
     gfMultiSelecting = True
-    gLngMultiSelectionXStart = X
-    gLngMultiSelectionYStart = Y
+    gLngMultiSelectionXStart = x
+    gLngMultiSelectionYStart = y
       
     Set VarPageContainer = CurrentPageContainer
     
@@ -2308,7 +2309,7 @@ ErrorTrap:
 End Sub
 
 
-Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub Form_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Position and size the multi-selection lines as required.
   On Error GoTo ErrorTrap
   
@@ -2322,20 +2323,20 @@ Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y A
   If gfMultiSelecting Then
 
     ' Calculate the cordinates of the multi-selection area.
-    If X < gLngMultiSelectionXStart Then
-      lngLeft = X
+    If x < gLngMultiSelectionXStart Then
+      lngLeft = x
       lngRight = gLngMultiSelectionXStart
     Else
       lngLeft = gLngMultiSelectionXStart
-      lngRight = X
+      lngRight = x
     End If
       
-    If Y < gLngMultiSelectionYStart Then
-      lngTop = Y
+    If y < gLngMultiSelectionYStart Then
+      lngTop = y
       lngBottom = gLngMultiSelectionYStart
     Else
       lngTop = gLngMultiSelectionYStart
-      lngBottom = Y
+      lngBottom = y
     End If
 
     ' Limit the multi-selection area to the form or tab page area.
@@ -2373,7 +2374,7 @@ ErrorTrap:
 
 End Sub
 
-Private Sub Form_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub Form_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Select control that lie within the multi-selection area.
   On Error GoTo ErrorTrap
   
@@ -2698,24 +2699,24 @@ ErrorTrap:
 
 End Sub
 
-Private Sub asrDummyFrame_DragDrop(Index As Integer, Source As Control, X As Single, Y As Single)
+Private Sub asrDummyFrame_DragDrop(Index As Integer, Source As Control, x As Single, y As Single)
   ' Drop a control onto the screen.
-  ScreenControl_DragDrop asrDummyFrame(Index), Source, X, Y
+  ScreenControl_DragDrop asrDummyFrame(Index), Source, x, y
   
 End Sub
 
-Private Sub asrDummyImage_DragDrop(Index As Integer, Source As Control, X As Single, Y As Single)
+Private Sub asrDummyImage_DragDrop(Index As Integer, Source As Control, x As Single, y As Single)
   ' Drop a control onto the screen.
-  ScreenControl_DragDrop asrDummyImage(Index), Source, X, Y
+  ScreenControl_DragDrop asrDummyImage(Index), Source, x, y
   
 End Sub
 
 
-Private Sub picPageContainer_DragDrop(Index As Integer, Source As Control, X As Single, Y As Single)
+Private Sub picPageContainer_DragDrop(Index As Integer, Source As Control, x As Single, y As Single)
   ' Drop a control onto the screen.
   On Error GoTo ErrorTrap
   
-  If Not DropControl(picPageContainer(Index), Source, X, Y) Then
+  If Not DropControl(picPageContainer(Index), Source, x, y) Then
     MsgBox "Unable to drop the control." & vbCr & vbCr & _
       Err.Description, vbExclamation + vbOKOnly, App.ProductName
   End If
@@ -2729,19 +2730,19 @@ ErrorTrap:
 
 End Sub
 
-Private Sub picPageContainer_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub picPageContainer_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Pass the MouseDown event to the parent form.
-  Form_MouseDown Button, Shift, X, Y
+  Form_MouseDown Button, Shift, x, y
 End Sub
 
-Private Sub picPageContainer_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub picPageContainer_MouseMove(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Pass the MouseMove event to the parent form.
-  Form_MouseMove Button, Shift, X, Y
+  Form_MouseMove Button, Shift, x, y
 End Sub
 
-Private Sub picPageContainer_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub picPageContainer_MouseUp(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Pass the MouseUp event to the parent form.
-  Form_MouseUp Button, Shift, X, Y
+  Form_MouseUp Button, Shift, x, y
 End Sub
 
 Private Function DeleteSelectedControls(Optional pbIsCutting As Boolean) As Boolean
@@ -2987,7 +2988,8 @@ Private Function LoadScreen() As Boolean
       gfChangedScreen = False
       
       ' Set the screen caption and size.
-      Me.Caption = "Screen Manager - " & IIf(IsNull(.Fields("name")), "unnamed", .Fields("name")) & vbNullString
+      SetFormCaption Me, "Screen Manager - " & IIf(IsNull(.Fields("name")), "unnamed", .Fields("name")) & vbNullString
+      
       Me.Height = IIf(IsNull(.Fields("height")), gLngDFLTSCREENHEIGHT, .Fields("height") + 450) + IIf(UI.GetOSVersion = 6, 240, 0)
       Me.Width = IIf(IsNull(.Fields("width")), gLngDFLTSCREENWIDTH, .Fields("width") + IIf(UI.GetOSVersion = 6, 240, 0))
            
@@ -5604,7 +5606,7 @@ ErrorTrap:
   
 End Function
 
-Private Function ScreenControl_MouseUp(pctlControl As VB.Control, piButton As Integer, piShift As Integer, X As Single, Y As Single) As Boolean
+Private Function ScreenControl_MouseUp(pctlControl As VB.Control, piButton As Integer, piShift As Integer, x As Single, y As Single) As Boolean
   ' Actually move the selected controls to the positions of their movement frames.
   On Error GoTo ErrorTrap
   
@@ -5829,27 +5831,27 @@ ErrorTrap:
 End Function
 
 
-Private Sub ASRDummyLine_DragDrop(Index As Integer, Source As Control, X As Single, Y As Single)
+Private Sub ASRDummyLine_DragDrop(Index As Integer, Source As Control, x As Single, y As Single)
   ' Drop a control onto the screen.
-  ScreenControl_DragDrop ASRDummyLine(Index), Source, X, Y
+  ScreenControl_DragDrop ASRDummyLine(Index), Source, x, y
   
 End Sub
 
-Private Sub ASRDummyLine_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub ASRDummyLine_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Select the control.
-  ScreenControl_MouseDown ASRDummyLine(Index), Button, Shift, X, Y
+  ScreenControl_MouseDown ASRDummyLine(Index), Button, Shift, x, y
 
 End Sub
 
-Private Sub ASRDummyLine_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub ASRDummyLine_MouseMove(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the control.
-  ScreenControl_MouseMove ASRDummyLine(Index), Button, X, Y
+  ScreenControl_MouseMove ASRDummyLine(Index), Button, x, y
 
 End Sub
 
-Private Sub ASRDummyLine_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub ASRDummyLine_MouseUp(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Move the selected controls.
-  ScreenControl_MouseUp ASRDummyLine(Index), Button, Shift, X, Y
+  ScreenControl_MouseUp ASRDummyLine(Index), Button, Shift, x, y
 
 End Sub
 
