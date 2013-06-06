@@ -220,7 +220,7 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
           If datGeneral.SystemPermission("STANDARDREPORTS", "RUN_BF") Then
             If gfAbsenceEnabled Then
               Set pobjBradfordFactor = New clsCustomReportsRUN
-              fOK = pobjBradfordFactor.RunBradfordReport(0)
+              fOK = pobjBradfordFactor.RunBradfordReport("")
               strNotes = pobjBradfordFactor.ErrorString
               mblnJobCancelled = pobjBradfordFactor.UserCancelled
             Else
@@ -256,7 +256,7 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
           ' No previous jobs in the batch have been cancelled so run this
           
           If datGeneral.SystemPermission("CALENDARREPORTS", "RUN") Then
-            fOK = pobjCalendarReportRUN.RunCalendarReport
+            fOK = pobjCalendarReportRUN.RunCalendarReport("")
             strNotes = pobjCalendarReportRUN.ErrorString
             mblnJobCancelled = pobjCalendarReportRUN.UserCancelled
           Else
@@ -313,7 +313,7 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
           
           'MH20011107 Check permissions...
           If datGeneral.SystemPermission("CUSTOMREPORTS", "RUN") Then
-            fOK = pobjReportRUN.RunCustomReport
+            fOK = pobjReportRUN.RunCustomReport("")
             strNotes = pobjReportRUN.ErrorString
             mblnJobCancelled = pobjReportRUN.UserCancelled
           Else
@@ -428,7 +428,7 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
           'MH20011107 Check permissions...
           If datGeneral.SystemPermission("GLOBALADD", "RUN") Then
             'fOK = pobjGlobalAdd.RunGlobalAddUpdate(rsBatchDetails.Fields("JobID"), True, glAdd)
-            fOK = pobjGlobalAdd.RunGlobal(rsBatchDetails.Fields("JobID"), glAdd)
+            fOK = pobjGlobalAdd.RunGlobal(rsBatchDetails.Fields("JobID"), glAdd, "")
             strNotes = pobjGlobalAdd.ErrorString
             mblnJobCancelled = pobjGlobalAdd.UserCancelled
           Else
@@ -458,7 +458,7 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
           'MH20011107 Check permissions...
           If datGeneral.SystemPermission("GLOBALDELETE", "RUN") Then
             'fOK = pobjGlobalDelete.RunGlobalDelete(rsBatchDetails.Fields("JobID"), True)
-            fOK = pobjGlobalDelete.RunGlobal(rsBatchDetails.Fields("JobID"), glDelete)
+            fOK = pobjGlobalDelete.RunGlobal(rsBatchDetails.Fields("JobID"), glDelete, "")
             strNotes = pobjGlobalDelete.ErrorString
             mblnJobCancelled = pobjGlobalDelete.UserCancelled
           Else
@@ -488,7 +488,7 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
           'MH20011107 Check permissions...
           If datGeneral.SystemPermission("GLOBALUPDATE", "RUN") Then
             'fOK = pobjGlobalUpdate.RunGlobalAddUpdate(rsBatchDetails.Fields("JobID"), True, glUpdate)
-            fOK = pobjGlobalUpdate.RunGlobal(rsBatchDetails.Fields("JobID"), glUpdate)
+            fOK = pobjGlobalUpdate.RunGlobal(rsBatchDetails.Fields("JobID"), glUpdate, "")
             strNotes = pobjGlobalUpdate.ErrorString
             mblnJobCancelled = pobjGlobalUpdate.UserCancelled
           Else

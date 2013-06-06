@@ -28,6 +28,7 @@ Private mstrCalendarReportsBaseTableName As String
 Private mlngCalendarReportsAllRecords As Long
 Private mlngCalendarReportsPickListID As Long
 Private mlngCalendarReportsFilterID As Long
+Private mstrPicklistFilterIDs As String
 
 Private mlngDescription1 As Long
 Private mstrDescription1 As String
@@ -142,7 +143,7 @@ Private mlngEventViewColumn As Long
 'Private gblnBatchMode As Boolean
 
 'Runnning report for single record only!
-Private mlngSingleRecordID As Long
+'Private mlngSingleRecordID As Long
 
 'Has the user cancelled the report ?
 Private mblnUserCancelled As Boolean
@@ -737,7 +738,8 @@ Private Sub Class_Terminate()
   
 End Sub
 
-Public Function RunCalendarReport(Optional plngRecordID As Long) As Boolean
+'Public Function RunCalendarReport(Optional plngRecordID As Long) As Boolean
+Public Function RunCalendarReport(pstrPicklistFilterIDs As String) As Boolean
 
   ' Purpose : This function is called from frmDefsel and Batch Jobs.
   '           It is the main function which runs the report.
@@ -750,7 +752,8 @@ Public Function RunCalendarReport(Optional plngRecordID As Long) As Boolean
   
   Screen.MousePointer = vbHourglass
   
-  mlngSingleRecordID = plngRecordID
+  'mlngSingleRecordID = plngRecordID
+  mstrPicklistFilterIDs = pstrPicklistFilterIDs
   
   If fOK Then fOK = GetCalendarReportDefinition
   
@@ -1338,8 +1341,10 @@ Private Function GetCalendarReportDefinition() As Boolean
 
     mblnPreviewOnScreen = (!OutputPreview Or (mlngOutputFormat = fmtDataOnly And mblnOutputScreen))
 
-    If mlngSingleRecordID > 0 Then
-      mstrSQLIDs = CStr(mlngSingleRecordID)
+    'If mlngSingleRecordID > 0 Then
+    '  mstrSQLIDs = CStr(mlngSingleRecordID)
+    If mstrPicklistFilterIDs <> vbNullString Then
+      mstrSQLIDs = mstrPicklistFilterIDs
     
     ElseIf mlngCalendarReportsPickListID > 0 Then
       Set rsIDs = mclsData.OpenRecordset("EXEC sp_ASRGetPickListRecords " & mlngCalendarReportsPickListID, adOpenForwardOnly, adLockReadOnly)
@@ -2433,23 +2438,30 @@ Private Function GenerateSQLWhere(pstrEventKey As String, _
     End If
         
   End If
-'*******************************************************************************
-  If mlngSingleRecordID > 0 Then
+''*******************************************************************************
+'  If mlngSingleRecordID > 0 Then
+'    mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & _
+'      mstrBaseTableRealSource & ".ID IN (" & mstrSQLIDs & ") "
+'
+'  ' Now if we are using a picklist, add a where clause for that
+'  'Get List of IDs from Picklist
+'  ElseIf mlngCalendarReportsPickListID > 0 Then
+'    mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & _
+'      mstrBaseTableRealSource & ".ID IN (" & mstrSQLIDs & ")"
+'
+'
+'  ElseIf mlngCalendarReportsFilterID > 0 Then
+'    mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & _
+'      mstrBaseTableRealSource & ".ID IN (" & mstrSQLIDs & ")"
+'
+'  End If
+  If mstrPicklistFilterIDs <> vbNullString Then
     mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & _
-    mstrBaseTableRealSource & ".ID IN (" & mstrSQLIDs & ") "
-    
-  ' Now if we are using a picklist, add a where clause for that
-  'Get List of IDs from Picklist
-  ElseIf mlngCalendarReportsPickListID > 0 Then
-    mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & _
-    mstrBaseTableRealSource & ".ID IN (" & mstrSQLIDs & ")"
-    
-    
-  ElseIf mlngCalendarReportsFilterID > 0 Then
-      mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & _
-        mstrBaseTableRealSource & ".ID IN (" & mstrSQLIDs & ")"
-      
+      mstrBaseTableRealSource & ".ID IN (" & mstrPicklistFilterIDs & ")"
   End If
+  
+  
+  
   
   'TM03032004 Fault 8183
   mstrSQLBaseData = mstrSQLBaseData & mstrSQLWhere
@@ -2616,7 +2628,8 @@ Private Function InitialisePreview() As Boolean
     .ReportStartDate = mdtStartDate
     .ReportEndDate = mdtEndDate
   
-    If mblnCustomReportsPrintFilterHeader And (mlngSingleRecordID < 1) Then
+    'If mblnCustomReportsPrintFilterHeader And (mlngSingleRecordID < 1) Then
+    If mblnCustomReportsPrintFilterHeader And (mstrPicklistFilterIDs = vbNullString) Then
       If (mlngCalendarReportsFilterID > 0) Then
         .CalendarReportName = mstrCalendarReportsName & " (Base Table filter : " & datGeneral.GetFilterName(mlngCalendarReportsFilterID) & ")"
       ElseIf (mlngCalendarReportsPickListID > 0) Then

@@ -11746,7 +11746,7 @@ Public Sub CalendarReportClick()
         Case edtSelect
           Set objCalendarReport = New clsCalendarReportsRUN
           objCalendarReport.CalendarReportID = .SelectedID
-          objCalendarReport.RunCalendarReport mlngRecordID
+          objCalendarReport.RunCalendarReport CStr(mlngRecordID)
           Set objCalendarReport = Nothing
           blnExit = gbCloseDefSelAfterRun
         

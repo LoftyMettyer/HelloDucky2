@@ -386,6 +386,10 @@ Private mfCancelBookingVisible As Boolean
 Private mfTransferVisible As Boolean
 Private mfBulkBookingVisible As Boolean
 
+Private mfCustomReportExists As Boolean
+Private mfCalendarReportExists As Boolean
+Private mfGlobalUpdateExists As Boolean
+
 Private mfBusy As Boolean
 
 Private mavFindColumns() As Variant        ' Find columns details
@@ -1820,7 +1824,19 @@ Private Sub FormatControls()
       Set objTableView = Nothing
     End If
   End If
+  
+  strSQL = "SELECT COUNT(*) FROM ASRSysCustomReportsName " & _
+           "WHERE baseTable = " & CStr(mobjTableView.TableID)
+  mfCustomReportExists = (GetRecCount(strSQL) > 0)
 
+  strSQL = "SELECT COUNT(*) FROM ASRSysCalendarReports " & _
+           "WHERE baseTable = " & CStr(mobjTableView.TableID)
+  mfCalendarReportExists = (GetRecCount(strSQL) > 0)
+
+  strSQL = "SELECT COUNT(*) FROM ASRSysGlobalFunctions " & _
+           "WHERE TableID = " & CStr(mobjTableView.TableID) & " AND Type = 'U'"
+  mfGlobalUpdateExists = (GetRecCount(strSQL) > 0)
+  
   Exit Sub
 
 ErrorTrap:
@@ -1835,6 +1851,18 @@ ErrorTrap:
   End Select
   
 End Sub
+
+Public Property Get CustomReportExists() As Boolean
+  CustomReportExists = mfCustomReportExists
+End Property
+
+Public Property Get CalendarReportExists() As Boolean
+  CalendarReportExists = mfCalendarReportExists
+End Property
+
+Public Property Get GlobalUpdateExists() As Boolean
+  GlobalUpdateExists = mfGlobalUpdateExists
+End Property
 
 
 Private Function ConfigureOrdersCombo() As Boolean
@@ -1949,6 +1977,15 @@ Private Sub ActiveBar1_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
     Case "ID_Print"
       PrintGrid
       
+    Case "CustomReports"
+      UtilityClick utlCustomReport
+      
+    Case "CalendarReports"
+      UtilityClick utlCalendarReport
+      
+    Case "GlobalUpdate"
+      UtilityClick utlGlobalUpdate
+    
   End Select
 
 End Sub
@@ -4502,3 +4539,171 @@ Private Sub GridSetFocus()
 
 End Sub
 
+
+Public Function GetSelectedIDs() As String
+
+  Dim arrayBookmarks() As Variant
+  Dim nTotalSelRows As Variant
+  Dim intCount As Integer
+  
+  'Workout how many records have been selected
+  nTotalSelRows = ssOleDBGridFindColumns.SelBookmarks.Count
+  
+  'Redimension the arrays to the count of the bookmarks
+  ReDim arrayBookmarks(nTotalSelRows)
+
+  'Populate the array with bookmark indeces
+  'These will have their bookmarks stored in .SelBookmarks.item(iIndex)
+  Dim strSelectedRecords As String
+  
+  'Redimension the arrays to the count of the bookmarks
+  ReDim arrayBookmarks(nTotalSelRows)
+  'ReDim arrayDelRecordIDs(nTotalSelRows)
+
+  'Populate the array with bookmark indeces
+  'These will have their bookmarks stored in .SelBookmarks.item(iIndex)
+  
+  ssOleDBGridFindColumns.Redraw = False
+  
+  For intCount = 1 To nTotalSelRows
+    arrayBookmarks(intCount) = ssOleDBGridFindColumns.SelBookmarks.Item(intCount - 1)
+  Next intCount
+  
+  'Now need to populate an array with all the IDs that we are going to delete
+  strSelectedRecords = vbNullString
+  For intCount = 1 To nTotalSelRows Step 1
+    ssOleDBGridFindColumns.Bookmark = arrayBookmarks(intCount)
+    CurrentBookMark = ssOleDBGridFindColumns.Bookmark
+    strSelectedRecords = strSelectedRecords & _
+        IIf(strSelectedRecords <> vbNullString, ",", "") & _
+        SelectedRecordID
+  Next intCount
+
+  ssOleDBGridFindColumns.Redraw = True
+  
+  GetSelectedIDs = strSelectedRecords
+
+End Function
+
+
+Public Sub UtilityClick(lngUtilType As UtilityType)
+  
+  Dim objCustomReportRun As clsCustomReportsRUN
+  Dim objCalendarReport As clsCalendarReportsRUN
+  Dim objGlobalRun As clsGlobalRun
+  
+  Dim frmSelection As frmDefSel
+  Dim blnExit As Boolean
+  Dim blnOK As Boolean
+  Dim strSelectedRecords As String
+
+  strSelectedRecords = GetSelectedIDs
+  If strSelectedRecords <> vbNullString Then
+    If mfrmParent.SaveChanges(False) Then
+      If Not Database.Validation Then
+        Exit Sub
+      End If
+  
+      mfBusy = True
+      frmMain.DisableMenu
+      UI.LockWindow Me.hWnd
+
+      With mfrmParent
+        
+        Set frmSelection = New frmDefSel
+        blnExit = False
+        
+        With frmSelection
+          Do While Not blnExit
+            
+            .TableComboEnabled = False
+            .TableComboVisible = True
+            .TableID = mobjTableView.TableID
+            .Options = edtSelect
+            .EnableRun = True
+      
+            If .ShowList(lngUtilType) Then
+      
+              .CustomShow vbModal
+              
+              Select Case .Action
+                Case edtSelect
+                
+                  Select Case lngUtilType
+                  Case utlCustomReport
+                    Set objCustomReportRun = New clsCustomReportsRUN
+                    objCustomReportRun.CustomReportID = .SelectedID
+                    objCustomReportRun.RunCustomReport strSelectedRecords
+                    Set objCustomReportRun = Nothing
+                  
+                  Case utlCalendarReport
+                    Set objCalendarReport = New clsCalendarReportsRUN
+                    objCalendarReport.CalendarReportID = .SelectedID
+                    objCalendarReport.RunCalendarReport strSelectedRecords
+                    Set objCalendarReport = Nothing
+                  
+                  Case utlGlobalUpdate
+                    Set objGlobalRun = New clsGlobalRun
+                    objGlobalRun.RunGlobal .SelectedID, glUpdate, strSelectedRecords
+                    Set objGlobalRun = Nothing
+                  
+                  End Select
+                
+                  blnExit = gbCloseDefSelAfterRun
+                Case edtCancel
+                  blnExit = True  'cancel
+              End Select
+            
+            End If
+          
+          Loop
+        End With
+      
+        frmMain.RefreshRecordEditScreens
+        frmMain.RefreshMainForm Me
+        
+        .UpdateAll
+      End With
+
+      UI.UnlockWindow
+      frmMain.EnableMenu Me
+    End If
+  End If
+
+
+
+  With ssOleDBGridFindColumns
+    If .Rows > 0 Then
+      If .Enabled And .Visible Then
+        .SetFocus
+      End If
+    Else
+      cmbOrdersSetFocus
+    End If
+  End With
+
+  If Me.Visible Then
+    frmMain.RefreshMainForm Me
+  End If
+
+  mfBusy = False
+
+End Sub
+
+
+Private Function GetRecCount(strSQL As String) As Long
+
+  Dim rsTemp As ADODB.Recordset
+
+  GetRecCount = 0
+
+  Set rsTemp = New ADODB.Recordset
+  rsTemp.Open strSQL, gADOCon, adOpenForwardOnly, adLockReadOnly
+  If Not rsTemp.BOF And Not rsTemp.EOF Then
+    GetRecCount = Val(rsTemp(0).Value)
+  End If
+  
+  rsTemp.Close
+  Set rsTemp = Nothing
+
+End Function
