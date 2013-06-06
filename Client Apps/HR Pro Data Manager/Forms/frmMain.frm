@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "13:00"
+            TextSave        =   "18:18"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -3686,11 +3686,11 @@ Public Sub RunUtility(ByRef UtilType As UtilityType, ByRef UtilityID As Long)
       If bOk Then UpdateUsage UtilType, 0, edtSelect
     
     Case utlTurnover
-      bOk = DoStandardReport("StabilityIndex")
+      bOk = DoStandardReport("Turnover")
       If bOk Then UpdateUsage UtilType, 0, edtSelect
     
     Case utlStability
-      bOk = DoStandardReport("Turnover")
+      bOk = DoStandardReport("StabilityIndex")
       If bOk Then UpdateUsage UtilType, 0, edtSelect
 
     Case Else
