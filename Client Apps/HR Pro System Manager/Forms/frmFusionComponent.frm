@@ -127,6 +127,7 @@ Begin VB.Form frmFusionComponent
          Left            =   180
          TabIndex        =   9
          Top             =   2895
+         Visible         =   0   'False
          Width           =   3660
       End
       Begin VB.CheckBox chkConvertData 
@@ -470,8 +471,8 @@ Private Sub chkConvertData_Click()
 End Sub
 
 Private Sub chkPreventModify_Click()
-  mbPreventModify = chkPreventModify.value
-  Me.Changed = True
+  'mbPreventModify = chkPreventModify.value
+  'Me.Changed = True
 End Sub
 
 Private Sub cmdCancel_Click()
@@ -556,7 +557,7 @@ Private Sub Form_Load()
   End Select
   
   chkConvertData.value = IIf(mbConvertData, vbChecked, vbUnchecked)
-  chkPreventModify.value = IIf(mbPreventModify, vbChecked, vbUnchecked)
+  'chkPreventModify.value = IIf(mbPreventModify, vbChecked, vbUnchecked)
   
   optComponentType(1).Enabled = IIf(mbIsKeyField, False, True) And Not mbReadOnly
   optComponentType(2).Enabled = IIf(mbIsEmployeeCode, False, True) And Not mbReadOnly
