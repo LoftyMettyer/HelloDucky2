@@ -173,7 +173,7 @@ Begin VB.Form frmDefSel
          View            =   3
          LabelEdit       =   1
          LabelWrap       =   -1  'True
-         HideSelection   =   -1  'True
+         HideSelection   =   0   'False
          HideColumnHeaders=   -1  'True
          _Version        =   393217
          SmallIcons      =   "imglistSmall"
@@ -534,7 +534,6 @@ Private Sub cboTables_Click()
       If .ListIndex > -1 Then
         If mlngTableID <> .ItemData(.ListIndex) Then
           mlngTableID = .ItemData(.ListIndex)
-         ' sExtraFilter = IIf(Len(mstrExtraWhereClause) > 0, "(" & mstrExtraWhereClause & ") AND ", "") & "(name LIKE '%" & Replace(txtSearchFor.Text, "'", "''") & "%')"
           GetSQL mutlUtilityType, mstrExtraWhereClause, False
           Call Populate_List
         End If
@@ -548,7 +547,6 @@ Private Sub cmdCancel_Click()
   ' Cancel the selection form.
 
   Dim frmOutput As frmEventLog
-
 
   If mblnScheduledJobs Then
     If mutlUtilityType = utlBatchJob Then
@@ -889,7 +887,6 @@ Private Sub cmdSelect_Click()
 End Sub
 
 
-
 Private Sub Form_Activate()
    
   Screen.MousePointer = vbDefault
@@ -906,8 +903,6 @@ Private Sub Form_Activate()
 
   'MH20020227 Not Required?
   Refresh_Controls
-
-  'EnsureSelectedVisible
 
 End Sub
 
@@ -1498,7 +1493,7 @@ Dim fAllColumns As Boolean
             lngMax = lngLen
           End If
 
-          If .Fields(msIDField).Value = mlngSelectedID Then ' And .Fields("objecttype").Value = SelectedUtilityType Then
+          If .Fields(msIDField).Value = mlngSelectedID And .Fields("objecttype").Value = SelectedUtilityType Then
             Set List1.SelectedItem = objListItem
           End If
 
@@ -2624,9 +2619,7 @@ Private Sub txtSearchFor_Change()
 
   Dim sExtraFilter As String
 
-  'sExtraFilter = "(name LIKE '%" & Replace(txtSearchFor.Text, "'", "''") & "%')"
   msSearchForText = txtSearchFor.Text
-
   GetSQL mutlUtilityType, mstrExtraWhereClause, False
   Populate_List
 
