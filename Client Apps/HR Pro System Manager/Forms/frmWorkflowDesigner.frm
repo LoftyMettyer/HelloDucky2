@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomct2.ocx"
+Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCT2.OCX"
 Object = "{714061F3-25A6-4821-B196-7D15DCCDE00E}#1.0#0"; "COASD_SelectionBox.ocx"
 Object = "{F3C5146D-8FDA-4D29-8E41-0C27C803C808}#1.0#0"; "COAWF_BeginEnd.ocx"
 Object = "{08EDC6C1-0A62-485F-8917-8D9FB93DB156}#1.0#0"; "COAWF_Decision.ocx"
@@ -263,7 +263,7 @@ Begin VB.Form frmWorkflowDesigner
       MousePointer    =   1
       Appearance      =   0
       Arrows          =   65536
-      Orientation     =   1179649
+      Orientation     =   1245185
    End
    Begin MSComCtl2.FlatScrollBar scrollVertical 
       Height          =   3375
@@ -276,7 +276,7 @@ Begin VB.Form frmWorkflowDesigner
       _Version        =   393216
       MousePointer    =   1
       Appearance      =   0
-      Orientation     =   1179648
+      Orientation     =   1245184
    End
    Begin ActiveBarLibraryCtl.ActiveBar abMenu 
       Left            =   120
@@ -11465,7 +11465,7 @@ Private Sub Form_Load()
     End If
   End If
   
-  cmdOk.Enabled = IsNew
+  cmdOK.Enabled = IsNew
   
   scrollVertical.SmallChange = SMALLSCROLL
   scrollHorizontal.SmallChange = SMALLSCROLL
@@ -13363,9 +13363,9 @@ Public Function LoadElementsAndLinks() As Boolean
                   asItems(64, UBound(asItems, 2)) = IIf(IsNull(recWorkflowElementItemEdit.Fields("WidthBehaviour").value), 0, recWorkflowElementItemEdit.Fields("WidthBehaviour").value)
                   asItems(65, UBound(asItems, 2)) = IIf(IsNull(recWorkflowElementItemEdit.Fields("PasswordType").value), False, recWorkflowElementItemEdit.Fields("PasswordType").value)
                   asItems(66, UBound(asItems, 2)) = vbNullString
-                  asItems(67, UBound(asItems, 2)) = IIf(IsNull(recWorkflowElementItemEdit.Fields("LookupFilterColumnID").value), False, recWorkflowElementItemEdit.Fields("LookupFilterColumnID").value)
-                  asItems(68, UBound(asItems, 2)) = IIf(IsNull(recWorkflowElementItemEdit.Fields("LookupFilterOperator").value), False, recWorkflowElementItemEdit.Fields("LookupFilterOperator").value)
-                  asItems(69, UBound(asItems, 2)) = IIf(IsNull(recWorkflowElementItemEdit.Fields("LookupFilterValue").value), False, recWorkflowElementItemEdit.Fields("LookupFilterValue").value)
+                  asItems(67, UBound(asItems, 2)) = IIf(IsNull(recWorkflowElementItemEdit.Fields("LookupFilterColumnID").value), 0, recWorkflowElementItemEdit.Fields("LookupFilterColumnID").value)
+                  asItems(68, UBound(asItems, 2)) = IIf(IsNull(recWorkflowElementItemEdit.Fields("LookupFilterOperator").value), 0, recWorkflowElementItemEdit.Fields("LookupFilterOperator").value)
+                  asItems(69, UBound(asItems, 2)) = IIf(IsNull(recWorkflowElementItemEdit.Fields("LookupFilterValue").value), "", recWorkflowElementItemEdit.Fields("LookupFilterValue").value)
 
                   If (recWorkflowElementItemEdit.Fields("itemType") = giWFFORMITEM_INPUTVALUE_FILEUPLOAD) Then
 
@@ -13693,7 +13693,7 @@ Public Property Let IsChanged(pfNewValue As Boolean)
   ' Set the 'workflow changed' flag.
   
   mfChanged = pfNewValue
-  cmdOk.Enabled = mfChanged
+  cmdOK.Enabled = mfChanged
   
   ' Menu may be dependent on the status of the screen.
   'frmSysMgr.RefreshMenu
