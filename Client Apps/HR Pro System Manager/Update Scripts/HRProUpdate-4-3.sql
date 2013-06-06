@@ -565,6 +565,9 @@ PRINT 'Step 9 - Add new calculation procedures'
 		
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsys_convertcharactertonumeric]') AND xtype in (N'FN', N'IF', N'TF'))
 		DROP FUNCTION [dbo].[udfsys_convertcharactertonumeric];
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsys_convertcurrency]') AND xtype in (N'FN', N'IF', N'TF'))
+		DROP FUNCTION [dbo].[udfsys_convertcurrency];
 		
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsys_firstnamefromforenames]')AND xtype in (N'FN', N'IF', N'TF'))
 		DROP FUNCTION [dbo].[udfsys_firstnamefromforenames];
@@ -770,6 +773,29 @@ PRINT 'Step 9 - Add new calculation procedures'
 	END';
 	EXECUTE sp_executeSQL @sSPCode;
 
+
+	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_convertcurrency]
+	(
+		@currency numeric(38,8),
+		@from varchar(10),
+		@to varchar(10)
+	)
+	RETURNS numeric(38,8)
+	WITH SCHEMABINDING
+	AS
+	BEGIN
+
+		DECLARE @result numeric(38,8);
+
+		SELECT @result = 0;
+
+		RETURN @result;
+
+	END'
+	EXECUTE sp_executeSQL @sSPCode;
+
+
+
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_firstnamefromforenames] 
 		(
 			@forenames nvarchar(max)
@@ -949,9 +975,8 @@ PRINT 'Step 9 - Add new calculation procedures'
 					WHEN @inputcolumn IS NULL THEN 1
 					ELSE
 						CASE
-		--					WHEN LEN(convert(nvarchar(1),@inputcolumn)) = 0 THEN 1
 							WHEN DATALENGTH(@inputcolumn) = 0 THEN 1
-							ELSE 1
+							ELSE 0
 						END
 					END);
 		
@@ -1456,7 +1481,7 @@ PRINT 'Step 10 - Populate code generation tables'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''078108bf-77b2-42a3-b426-42126337f397'', N''[dbo].[udf_ASRFn_BradfordFactor]({0}, {1}, {2}, {3})'', 2, 0, 0, N''Bradford Factor'', NULL, 0, 0, 73, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentdependancy] ([id], [modulekey], [parameterkey]) VALUES (73, ''MODULE_PERSONNEL'', ''Param_TablePersonnel'')';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''eb449e75-e061-4502-973b-5e3a3e39c2d2'', N''dbo.[udfsys_convertcharactertonumeric]({0})'', 2, 0, 0, N''Convert Character to Numeric'', NULL, 0, 0, 25, 0)';
-	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''56b64c0d-84d9-4b15-9c9e-b1fdb42ea4d1'', N'''', 2, 0, 0, N''Convert Currency'', NULL, 0, 0, 51, 0)';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''56b64c0d-84d9-4b15-9c9e-b1fdb42ea4d1'', N''dbo.[udfsys_convertcurrency]({0},{1},{2})'', 2, 0, 0, N''Convert Currency'', NULL, 0, 0, 51, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''88430aa0-f580-4157-8b2f-c73841cea211'', N''CONVERT(nvarchar(MAX), LEFT({0},{1}))'', 1, 0, 0, N''Convert Numeric to Character'', NULL, 0, 0, 3, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''98e87fe4-bb86-4382-bf53-40fa1275d677'', N''LOWER({0})'', 1, 0, 0, N''Convert to Lowercase'', NULL, 0, 0, 8, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''9e055f03-efe9-4c47-a528-85cd3c57c12a'', N''[dbo].[udfsys_propercase]({0})'', 1, 0, 0, N''Convert to Proper Case'', NULL, 0, 0, 12, 0)';
