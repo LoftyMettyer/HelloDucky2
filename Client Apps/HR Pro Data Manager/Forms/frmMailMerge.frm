@@ -2,8 +2,8 @@ VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
 Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmMailMerge 
    BorderStyle     =   3  'Fixed Dialog
@@ -77,15 +77,15 @@ Begin VB.Form frmMailMerge
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmMailMerge.frx":08D6
       Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "fraDefinition(1)"
-      Tab(0).Control(1)=   "fraDefinition(0)"
+      Tab(0).Control(0)=   "fraDefinition(0)"
+      Tab(0).Control(1)=   "fraDefinition(1)"
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Colu&mns"
       TabPicture(1)   =   "frmMailMerge.frx":08F2
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraColumns(2)"
+      Tab(1).Control(0)=   "fraColumns(0)"
       Tab(1).Control(1)=   "fraColumns(1)"
-      Tab(1).Control(2)=   "fraColumns(0)"
+      Tab(1).Control(2)=   "fraColumns(2)"
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "&Sort Order"
       TabPicture(2)   =   "frmMailMerge.frx":090E
@@ -95,11 +95,11 @@ Begin VB.Form frmMailMerge
       TabCaption(3)   =   "Ou&tput"
       TabPicture(3)   =   "frmMailMerge.frx":092A
       Tab(3).ControlEnabled=   -1  'True
-      Tab(3).Control(0)=   "fraOutput(1)"
+      Tab(3).Control(0)=   "fraOutput(2)"
       Tab(3).Control(0).Enabled=   0   'False
-      Tab(3).Control(1)=   "fraOutput(0)"
+      Tab(3).Control(1)=   "fraOutput(1)"
       Tab(3).Control(1).Enabled=   0   'False
-      Tab(3).Control(2)=   "fraOutput(2)"
+      Tab(3).Control(2)=   "fraOutput(0)"
       Tab(3).Control(2).Enabled=   0   'False
       Tab(3).Control(3)=   "fraOutputOptions"
       Tab(3).Control(3).Enabled=   0   'False
@@ -283,13 +283,13 @@ Begin VB.Form frmMailMerge
             RecordSelectors =   0   'False
             Col.Count       =   3
             stylesets.count =   5
-            stylesets(0).Name=   "ssetSelected"
-            stylesets(0).ForeColor=   -2147483634
-            stylesets(0).BackColor=   -2147483635
+            stylesets(0).Name=   "ssetHeaderDisabled"
+            stylesets(0).ForeColor=   -2147483631
+            stylesets(0).BackColor=   -2147483633
             stylesets(0).Picture=   "frmMailMerge.frx":0D1F
-            stylesets(1).Name=   "ssetHeaderDisabled"
-            stylesets(1).ForeColor=   -2147483631
-            stylesets(1).BackColor=   -2147483633
+            stylesets(1).Name=   "ssetSelected"
+            stylesets(1).ForeColor=   -2147483634
+            stylesets(1).BackColor=   -2147483635
             stylesets(1).Picture=   "frmMailMerge.frx":0D3B
             stylesets(2).Name=   "ssetEnabled"
             stylesets(2).ForeColor=   -2147483640
@@ -1070,77 +1070,6 @@ Begin VB.Form frmMailMerge
          End
       End
       Begin VB.Frame fraOutput 
-         Caption         =   "Document Management :"
-         Height          =   3330
-         Index           =   2
-         Left            =   2985
-         TabIndex        =   74
-         Top             =   1440
-         Width           =   6735
-         Begin VB.CheckBox chkDocManManualHeader 
-            Caption         =   "Manual document &header"
-            Height          =   195
-            Left            =   225
-            TabIndex        =   80
-            Top             =   1170
-            Width           =   3255
-         End
-         Begin VB.CheckBox chkDocManScreen 
-            Caption         =   "Displa&y output on screen"
-            Height          =   195
-            Left            =   225
-            TabIndex        =   81
-            Top             =   1485
-            Width           =   2685
-         End
-         Begin VB.TextBox txtDocumentMap 
-            BackColor       =   &H8000000F&
-            Enabled         =   0   'False
-            Height          =   315
-            Left            =   1890
-            Locked          =   -1  'True
-            TabIndex        =   78
-            Text            =   "<None>"
-            Top             =   720
-            Width           =   4355
-         End
-         Begin VB.CommandButton cmdDocumentMap 
-            Caption         =   "..."
-            DisabledPicture =   "frmMailMerge.frx":0DE3
-            Height          =   315
-            Left            =   6240
-            TabIndex        =   79
-            Top             =   720
-            UseMaskColor    =   -1  'True
-            Width           =   315
-         End
-         Begin VB.ComboBox cboDocManEngine 
-            Height          =   315
-            Left            =   1885
-            Style           =   2  'Dropdown List
-            TabIndex        =   76
-            Top             =   315
-            Width           =   4690
-         End
-         Begin VB.Label lblDocumentMap 
-            Caption         =   "Document Type : "
-            Height          =   285
-            Left            =   225
-            TabIndex        =   77
-            Top             =   765
-            Width           =   1545
-         End
-         Begin VB.Label lblDocManEngine 
-            AutoSize        =   -1  'True
-            Caption         =   "Engine :"
-            Height          =   195
-            Left            =   225
-            TabIndex        =   75
-            Top             =   360
-            Width           =   840
-         End
-      End
-      Begin VB.Frame fraOutput 
          Caption         =   "Word Document :"
          Height          =   3330
          Index           =   0
@@ -1260,9 +1189,9 @@ Begin VB.Form frmMailMerge
          End
          Begin VB.ComboBox cboEMailField 
             Height          =   315
-            ItemData        =   "frmMailMerge.frx":1144
+            ItemData        =   "frmMailMerge.frx":0DE3
             Left            =   1875
-            List            =   "frmMailMerge.frx":1146
+            List            =   "frmMailMerge.frx":0DE5
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
             TabIndex        =   68
@@ -1307,6 +1236,77 @@ Begin VB.Form frmMailMerge
             TabIndex        =   67
             Top             =   375
             Width           =   1410
+         End
+      End
+      Begin VB.Frame fraOutput 
+         Caption         =   "Document Management :"
+         Height          =   3330
+         Index           =   2
+         Left            =   2985
+         TabIndex        =   74
+         Top             =   1440
+         Width           =   6735
+         Begin VB.CheckBox chkDocManManualHeader 
+            Caption         =   "Manual document &header"
+            Height          =   195
+            Left            =   225
+            TabIndex        =   80
+            Top             =   1170
+            Width           =   3255
+         End
+         Begin VB.CheckBox chkDocManScreen 
+            Caption         =   "Displa&y output on screen"
+            Height          =   195
+            Left            =   225
+            TabIndex        =   81
+            Top             =   1485
+            Width           =   2685
+         End
+         Begin VB.TextBox txtDocumentMap 
+            BackColor       =   &H8000000F&
+            Enabled         =   0   'False
+            Height          =   315
+            Left            =   1890
+            Locked          =   -1  'True
+            TabIndex        =   78
+            Text            =   "<None>"
+            Top             =   720
+            Width           =   4355
+         End
+         Begin VB.CommandButton cmdDocumentMap 
+            Caption         =   "..."
+            DisabledPicture =   "frmMailMerge.frx":0DE7
+            Height          =   315
+            Left            =   6240
+            TabIndex        =   79
+            Top             =   720
+            UseMaskColor    =   -1  'True
+            Width           =   315
+         End
+         Begin VB.ComboBox cboDocManEngine 
+            Height          =   315
+            Left            =   1885
+            Style           =   2  'Dropdown List
+            TabIndex        =   76
+            Top             =   315
+            Width           =   4690
+         End
+         Begin VB.Label lblDocumentMap 
+            Caption         =   "Document Type : "
+            Height          =   285
+            Left            =   225
+            TabIndex        =   77
+            Top             =   765
+            Width           =   1545
+         End
+         Begin VB.Label lblDocManEngine 
+            AutoSize        =   -1  'True
+            Caption         =   "Engine :"
+            Height          =   195
+            Left            =   225
+            TabIndex        =   75
+            Top             =   360
+            Width           =   840
          End
       End
    End
@@ -5895,7 +5895,7 @@ Public Sub PrintDef(lMailMergeID As Long)
 
             If chkDestination(2).Value = vbChecked Then
               .PrintNormal "Output Destination : Save to file"
-              .PrintNormal "File Name : " & txtFilename(1).Text
+              .PrintNormal "File Name : " & txtFilename(0).Text
               '.PrintNormal "File Options : " & cboSaveExisting.List(cboSaveExisting.ListIndex)
             End If
 
