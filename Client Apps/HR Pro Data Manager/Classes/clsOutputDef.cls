@@ -105,43 +105,45 @@ Public Sub FormatClick(Index As Integer, Optional blnDataToScreen As Boolean = T
   Select Case mlngFormat
     Case fmtDataOnly
       EnableDestinations blnDataToScreen, True, False, False
-    
+      EnableTitlePageTemplate False
+      
     Case fmtCSV, fmtCMGFile
       EnableDestinations False, False, True, True
-      frmMain.CommonDialog1.Filter = "Comma Separated Values (*.csv)|*.csv|Text (*.txt)|*.txt|All Files|*.*"
+      EnableTitlePageTemplate False
     
     Case fmtFixedLengthFile
       EnableDestinations False, False, True, True
-      frmMain.CommonDialog1.Filter = "Text (*.txt)|*.txt|All Files|*.*"
+      EnableTitlePageTemplate False
     
     Case fmtHTML
       EnableDestinations True, False, True, True
+      EnableTitlePageTemplate False
       If gblnReportPackMode Then EnableReportPackOutputs True, False, False, True
-      frmMain.CommonDialog1.Filter = "HTML Document (*.htm)|*.htm"
     
     Case fmtWordDoc
       EnableDestinations True, True, True, True
+      EnableTitlePageTemplate True
       If gblnReportPackMode Then EnableReportPackOutputs True, False, True, True
-      InitialiseCommonDialogFormats frmMain.CommonDialog1, "Word", GetOfficeWordVersion, DirectionOutput
     
     Case fmtExcelWorksheet, fmtExcelchart, fmtExcelPivotTable
       EnableDestinations True, True, True, True
+      EnableTitlePageTemplate True
       If gblnReportPackMode Then EnableReportPackOutputs True, True, False, True
-      InitialiseCommonDialogFormats frmMain.CommonDialog1, "Excel", GetOfficeExcelVersion, DirectionOutput
     
     Case fmtSQLTable
       EnableDestinations False, False, False, False
   End Select
 
-  'In case the output format has changed, ensure
-  'the extension of the output file name is correct
-  If mfrmParent.txtFileName.Text <> vbNullString Then
-    mfrmParent.txtFileName.Text = Left(mfrmParent.txtFileName.Text, InStrRev(mfrmParent.txtFileName.Text, ".")) & _
-      Right(Split(frmMain.CommonDialog1.Filter, ".")(1), 3)
-  End If
-
   'Need to check if we can allow "Add new Worksheet" option
   PopulateCombos False, True, False
+End Sub
+
+Private Sub EnableTitlePageTemplate(enable As Boolean)
+
+  If Not cmdTitlePageTemplate Is Nothing Then
+    cmdTitlePageTemplate.Enabled = enable
+  End If
+  
 End Sub
 
 Private Sub EnableReportPackOutputs(blnTOC As Boolean, blnRetainPivot As Boolean, blnForceCover As Boolean, blnBlankTitle As Boolean)
@@ -499,6 +501,23 @@ Private Sub cmdFileName_Click()
   blnEmail = (mfrmParent.chkDestination(desEmail).Value = vbChecked)
     
   With cd1
+  
+    Select Case mlngFormat
+      Case fmtCSV, fmtCMGFile
+        .Filter = "Comma Separated Values (*.csv)|*.csv|Text (*.txt)|*.txt|All Files|*.*"
+      Case fmtFixedLengthFile
+        .Filter = "Text (*.txt)|*.txt|All Files|*.*"
+      Case fmtHTML
+        .Filter = "HTML Document (*.htm)|*.htm"
+      Case fmtWordDoc
+        InitialiseCommonDialogFormats cd1, "Word", GetOfficeWordVersion, DirectionOutput
+      Case fmtExcelWorksheet, fmtExcelchart, fmtExcelPivotTable
+        InitialiseCommonDialogFormats cd1, "Excel", GetOfficeExcelVersion, DirectionOutput
+      Case Else
+        Debug.Assert False
+    End Select
+  
+  
     .FileName = txtFileName.Text
     If txtFileName.Text = vbNullString Then
       .InitDir = gsDocumentsPath
@@ -744,6 +763,14 @@ Private Sub cmdTitlePageTemplate_Click()
   'lngIndex = fmtExcelWorksheet 'default to Excel
  
   With cd1
+    Select Case mlngFormat
+      Case fmtWordDoc
+        .Filter = "Word Template (*.dot;*.dotx;*.doc;*.docx)|*.dot;*.dotx;*.doc;*.docx"
+      Case fmtExcelWorksheet
+        .Filter = "Excel Template (*.xlt;*.xltx;*.xls;*.xlsx)|*.xlt;*.xltx;*.xls;*.xlsx"
+      Case Else
+        Debug.Assert False
+    End Select
 
     .FileName = vbNullString ' txtFilename.Text
     'If txtFilename.Text = vbNullString Then
@@ -752,21 +779,9 @@ Private Sub cmdTitlePageTemplate_Click()
 
     .CancelError = True
     .DialogTitle = "Report Pack Output Template"
-    
-    Select Case lngIndex
-      Case fmtExcelWorksheet
-        InitialiseCommonDialogFormats cd1, "ExcelTemplate", GetOfficeExcelVersion, DirectionInput
-        .Filter = "Excel Template (*.xlt;*.xltx;*.xls;*.xlsx)|*.xlt;*.xltx;*.xls;*.xlsx"
-      Case fmtWordDoc
-        InitialiseCommonDialogFormats cd1, "WordTemplate", GetOfficeWordVersion, DirectionInput
-        .Filter = "Word Template (*.dot;*.dotx;*.doc;*.docx)|*.dot;*.dotx;*.doc;*.docx"
-      Case fmtHTML
-        InitialiseCommonDialogFormats cd1, "WordTemplate", GetOfficeWordVersion, DirectionInput
-        .Filter = "HTML Template (*.dot;*.dotx;*.doc;*.docx)|*.dot;*.dotx;*.doc;*.docx"
-    End Select
     .Flags = cdlOFNExplorer + cdlOFNHideReadOnly + cdlOFNLongNames
     
-    .ShowSave
+    .ShowOpen
 
     If .FileName <> vbNullString Then
       If Len(.FileName) > 255 Then
