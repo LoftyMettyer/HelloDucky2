@@ -578,8 +578,8 @@ Private Function ReformatScreen() As Boolean
     
   End If
   
-  cmdOk.Top = fraDetails.Top + fraDetails.Height + 120
-  Me.Height = cmdOk.Top + cmdOk.Height + 120 + 780
+  cmdOK.Top = fraDetails.Top + fraDetails.Height + 120
+  Me.Height = cmdOK.Top + cmdOK.Height + 120 + 780
   
   ASRWorkingPattern1.Enabled = False
   
@@ -713,9 +713,14 @@ Private Sub cmdOK_Click()
   Unload Me
 End Sub
 
-
-
-
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
 
 Private Sub Form_Resize()
   'JPD 20030908 Fault 5756

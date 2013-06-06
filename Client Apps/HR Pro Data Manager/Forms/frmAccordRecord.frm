@@ -540,14 +540,19 @@ End Sub
 
 Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
   
-  If KeyCode = vbKeyEscape Then
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+  Case vbKeyEscape
     Unload Me
-  End If
- 
+End Select
+
 End Sub
 
 Private Sub RefreshButtons()
-  cmdOK.Enabled = mbChanged
+  cmdOk.Enabled = mbChanged
 End Sub
 
 Private Function SaveChanges() As Boolean

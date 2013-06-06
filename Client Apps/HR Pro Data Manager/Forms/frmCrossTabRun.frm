@@ -609,10 +609,10 @@ Private Sub chkPercentage_Click()
   If mblnLoading Then Exit Sub
   
   blnEnabled = (chkPercentage.Value = vbChecked And cboPageBreak.Enabled = True)
-  chkPercentageofPage.Enabled = blnEnabled
+  chkPercentageOfPage.Enabled = blnEnabled
   If Not blnEnabled Then
     mblnLoading = True
-    chkPercentageofPage.Value = vbUnchecked
+    chkPercentageOfPage.Value = vbUnchecked
     mblnLoading = False
   End If
 
@@ -625,7 +625,7 @@ End Sub
 Private Sub chkPercentageOfPage_Click()
   If mblnLoading Then Exit Sub
   PopulateGrid
-  chkPercentageofPage.SetFocus
+  chkPercentageOfPage.SetFocus
 End Sub
 
 Private Sub chkSuppressZeros_Click()
@@ -1898,7 +1898,7 @@ Private Function GetPercentageFactor(lngPage As Long, lngTYPE As Long)
   'mdblPercentageFactor will be used in FORMATCELL, if required
   mdblPercentageFactor = 0
   If chkPercentage.Value = vbChecked Then
-    If chkPercentageofPage = vbChecked Then
+    If chkPercentageOfPage = vbChecked Then
       If mdblPageTotal(lngPage, lngTYPE) > 0 Then
         mdblPercentageFactor = 1 / mdblPageTotal(lngPage, lngTYPE)
       End If
@@ -2310,6 +2310,15 @@ LocalErr:
 End Function
 
 
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
+
 Private Sub Form_Load()
 
   Set frmBreakDown = New frmCrossTabCellBreakDown
@@ -2394,7 +2403,7 @@ Private Sub Form_Resize()
     'fraIntersection.Visible = False
     Me.lblColumn.Visible = False
     Me.chkPercentage.Visible = False
-    Me.chkPercentageofPage.Visible = False
+    Me.chkPercentageOfPage.Visible = False
     Me.lblType.Top = Me.lblColumn.Top
     Me.chkSuppressZeros.Top = Me.lblColumn.Top
     Me.txtIntersectionCol.Text = mstrCrossTabName
@@ -2474,8 +2483,8 @@ Private Sub PrepareForms()
   
   
   chkPercentage.Value = IIf(mblnShowPercentage, vbChecked, vbUnchecked)
-  chkPercentageofPage.Value = IIf(mblnPercentageofPage, vbChecked, vbUnchecked)
-  chkPercentageofPage.Enabled = (mblnPageBreak = True And mblnShowPercentage = True)
+  chkPercentageOfPage.Value = IIf(mblnPercentageofPage, vbChecked, vbUnchecked)
+  chkPercentageOfPage.Enabled = (mblnPageBreak = True And mblnShowPercentage = True)
   chkSuppressZeros.Value = IIf(mblnSuppressZeros, vbChecked, vbUnchecked)
   chkThousandSeparators.Value = IIf(mbThousandSeparators, vbChecked, vbUnchecked)
 

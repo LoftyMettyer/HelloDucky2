@@ -770,6 +770,15 @@ Private Sub cmdSelect_Click()
   grdCourses_DblClick
 End Sub
 
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
+
 Private Sub Form_Load()
   Hook Me.hWnd, dblFORM_MINWIDTH, dblFORM_MINHEIGHT
   RemoveIcon Me

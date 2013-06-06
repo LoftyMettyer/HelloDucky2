@@ -860,12 +860,17 @@ Private Sub grdTransferDetails_RowColChange(ByVal LastRow As Variant, ByVal Last
 End Sub
 
 Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
-  
-  If KeyCode = vbKeyEscape Then
+
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+  Case vbKeyEscape
     Unload Me
-  ElseIf KeyCode = vbKeyF5 Then
+  Case KeyCode = vbKeyF5
     RefreshGrid
-  End If
+End Select
  
 End Sub
 
