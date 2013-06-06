@@ -6148,6 +6148,32 @@ PRINT 'Step 10 - Fusion Services (may be superseded by Fusion Installer)'
 	IF NOT EXISTS(SELECT * FROM sys.schemas where name = 'fusion')
 		EXECUTE sp_executesql N'CREATE SCHEMA [fusion];';
 
+	-- Should this run everytime or move into the system manager change platform code?
+	SET @NVarCommand = 'ALTER DATABASE ' + @DBName + ' SET ENABLE_BROKER WITH ROLLBACK IMMEDIATE';
+	EXEC sp_executeSQL @NVarCommand;
+
+	SET @NVarCommand = 'ALTER DATABASE ' + @DBName + ' SET NEW_BROKER';
+	EXEC sp_executeSQL @NVarCommand;
+
+
+	-- Configure the service broker
+	IF NOT EXISTS(SELECT name FROM sys.service_message_types WHERE name = 'TriggerFusionSend')
+		EXECUTE sp_executesql N'CREATE MESSAGE TYPE TriggerFusionSend VALIDATION = NONE;';
+
+	IF NOT EXISTS(SELECT name FROM sys.service_contracts WHERE name = 'TriggerFusionContract')
+		EXECUTE sp_executesql N'CREATE CONTRACT TriggerFusionContract (TriggerFusionSend SENT BY INITIATOR);';
+
+	IF NOT EXISTS(SELECT name FROM sys.service_queues WHERE name = 'qFusion')
+		EXECUTE sp_executesql N'CREATE QUEUE fusion.qFusion WITH STATUS = ON;';
+
+	IF NOT EXISTS(SELECT name FROM sys.services WHERE name = 'FusionApplicationService')
+		EXECUTE sp_executesql N'CREATE SERVICE FusionApplicationService ON QUEUE fusion.qFusion (TriggerFusionContract);';
+
+	IF NOT EXISTS(SELECT name FROM sys.services WHERE name = 'FusionConnectorService')
+		EXECUTE sp_executesql N'CREATE SERVICE FusionConnectorService ON QUEUE fusion.qFusion (TriggerFusionContract);';
+
+
+	-- Create fusion core tables
 	IF NOT EXISTS(SELECT * FROM sys.sysobjects where name = 'IdTranslation' AND xtype = 'U')
 		EXECUTE sp_executesql N'CREATE TABLE [fusion].[IdTranslation](
 			[TranslationName] [varchar](50) NOT NULL,
@@ -6591,9 +6617,9 @@ PRINT 'Step 10 - Fusion Services (may be superseded by Fusion Installer)'
 		SET @DialogHandle = NEWID();
 
 		BEGIN DIALOG @DialogHandle 
-			FROM SERVICE MessageApplicationService 
-			TO SERVICE ''MessageConnectorService''
-			ON CONTRACT TriggerMessageContract
+			FROM SERVICE FusionApplicationService 
+			TO SERVICE ''FusionConnectorService''
+			ON CONTRACT TriggerFusionContract
 			WITH ENCRYPTION = OFF;
 		
 		DECLARE @msg varchar(max);
@@ -6604,7 +6630,7 @@ PRINT 'Step 10 - Fusion Services (may be superseded by Fusion Installer)'
 						FOR XML PATH(''SendMessage''));	
 		
 		SEND ON CONVERSATION @DialogHandle
-			MESSAGE TYPE TriggerMessageSend (@msg);
+			MESSAGE TYPE TriggerFusionSend (@msg);
 	 
 		END CONVERSATION @DialogHandle;
 
