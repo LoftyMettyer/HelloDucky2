@@ -1178,6 +1178,7 @@ Private Function PictureIsUsed(glngPictureID As Long) As Boolean
     mfrmUse.AddToList ("HR Pro Background Image")
   End If
 
+  
   ' Check that it is not used as a background picture on a workflow web form.
   sSQL = "SELECT DISTINCT tmpWorkflowElements.workflowID," & _
     "   tmpWorkflowElements.identifier" & _
@@ -1204,32 +1205,34 @@ Private Function PictureIsUsed(glngPictureID As Long) As Boolean
   'Close temporary recordset
   rsScreens.Close
       
-  ' Check that it is not used as a picture on a workflow web form.
-  sSQL = "SELECT DISTINCT tmpWorkflowElements.workflowID," & _
-    "   tmpWorkflowElements.identifier" & _
-    " FROM tmpWorkflowElementItems" & _
-    " INNER JOIN tmpWorkflowElements ON tmpWorkflowElementItems.elementID = tmpWorkflowElements.id" & _
-    " WHERE tmpWorkflowElementItems.pictureID = " & Trim(Str(glngPictureID))
-
-  Set rsScreens = daoDb.OpenRecordset(sSQL, _
-    dbOpenForwardOnly, dbReadOnly)
-  If Not (rsScreens.BOF And rsScreens.EOF) Then
-    Do Until rsScreens.EOF
-      recWorkflowEdit.Index = "idxWorkflowID"
-      recWorkflowEdit.Seek "=", rsScreens.Fields("workflowID")
-          
-      If Not recWorkflowEdit.NoMatch Then
-        If recWorkflowEdit.Fields("deleted").value = False Then
-          fUsed = True
-          mfrmUse.AddToList ("Workflow : " & recWorkflowEdit.Fields("name").value & " <'" & rsScreens.Fields("identifier") & "' web form picture>")
+  If Application.WorkflowModule Then
+    ' Check that it is not used as a picture on a workflow web form.
+    sSQL = "SELECT DISTINCT tmpWorkflowElements.workflowID," & _
+      "   tmpWorkflowElements.identifier" & _
+      " FROM tmpWorkflowElementItems" & _
+      " INNER JOIN tmpWorkflowElements ON tmpWorkflowElementItems.elementID = tmpWorkflowElements.id" & _
+      " WHERE tmpWorkflowElementItems.pictureID = " & Trim(Str(glngPictureID))
+  
+    Set rsScreens = daoDb.OpenRecordset(sSQL, _
+      dbOpenForwardOnly, dbReadOnly)
+    If Not (rsScreens.BOF And rsScreens.EOF) Then
+      Do Until rsScreens.EOF
+        recWorkflowEdit.Index = "idxWorkflowID"
+        recWorkflowEdit.Seek "=", rsScreens.Fields("workflowID")
+            
+        If Not recWorkflowEdit.NoMatch Then
+          If recWorkflowEdit.Fields("deleted").value = False Then
+            fUsed = True
+            mfrmUse.AddToList ("Workflow : " & recWorkflowEdit.Fields("name").value & " <'" & rsScreens.Fields("identifier") & "' web form picture>")
+          End If
         End If
-      End If
-      
-      rsScreens.MoveNext
-    Loop
+        
+        rsScreens.MoveNext
+      Loop
+    End If
+    'Close temporary recordset
+    rsScreens.Close
   End If
-  'Close temporary recordset
-  rsScreens.Close
       
 TidyUpAndExit:
   ' Disassociate object variables.
