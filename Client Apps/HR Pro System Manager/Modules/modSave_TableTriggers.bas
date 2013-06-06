@@ -2010,6 +2010,9 @@ Private Function SetTableTriggers_SpecialFunctions( _
   Dim lngTableID As Long
   Dim sTemp As String
   
+  Dim lngCategoryTable As Long
+  Dim bIsCategoryTable As Boolean
+  
   Dim lngAbsenceStartDate As Long
   Dim lngAbsenceStartSession As Long
   Dim lngAbsenceEndDate As Long
@@ -2141,6 +2144,11 @@ Private Function SetTableTriggers_SpecialFunctions( _
   lngWorkingPatternTable = CLng(sTemp)
   fIsWorkingPatternTable = (pLngCurrentTableID = lngWorkingPatternTable)
 
+  sTemp = ReadModuleParameter(gsMODULEKEY_CATEGORY, gsPARAMETERKEY_CATEGORYTABLE)
+  If sTemp = vbNullString Then sTemp = "0"
+  lngCategoryTable = CLng(sTemp)
+  bIsCategoryTable = (pLngCurrentTableID = lngCategoryTable)
+
   sTemp = ReadModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCESTARTDATE)
   If sTemp = vbNullString Then sTemp = "0"
   lngAbsenceStartDate = CLng(sTemp)
@@ -2192,6 +2200,7 @@ Private Function SetTableTriggers_SpecialFunctions( _
   sTemp = ReadModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_HWORKINGPATTERNDATE)
   If sTemp = vbNullString Then sTemp = "0"
   lngHistWPDate = CLng(sTemp)
+    
   
   If lngAbsenceStartDate > 0 Then
     sAbsenceStartDate = GetColumnName(lngAbsenceStartDate, True)
@@ -2237,6 +2246,15 @@ Private Function SetTableTriggers_SpecialFunctions( _
   End If
 
   sUpdateSelect.TheString = vbNullString
+  
+  ' Delete category
+  If bIsCategoryTable Then
+  
+    ' code to do.
+   
+  End If
+  
+  
   
   If fIsAbsenceTable Then
     ' Need to update the associated parent record, only if the startDate, startSession, endDate, endSession
@@ -2435,6 +2453,7 @@ Private Function SetTableTriggers_SpecialFunctions( _
       IIf(LenB(sDeleteSpecialFunctionsCode) <> 0, vbNewLine & vbNewLine, vbNullString) & _
       sDeleteUpdate.ToString
   End If
+
 
   If LenB(sUpdateSpecialFunctionsCode2) <> 0 Then
   
