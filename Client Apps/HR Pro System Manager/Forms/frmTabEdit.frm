@@ -1,6 +1,6 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Begin VB.Form frmTabEdit 
    BorderStyle     =   3  'Fixed Dialog
@@ -83,18 +83,18 @@ Begin VB.Form frmTabEdit
       TabCaption(1)   =   "Su&mmary"
       TabPicture(1)   =   "frmTabEdit.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "chkManualColumnBreak"
-      Tab(1).Control(1)=   "cmdColumnBreak"
-      Tab(1).Control(2)=   "cboParentTable"
-      Tab(1).Control(3)=   "cmdInsertBreak"
-      Tab(1).Control(4)=   "fraSummaryFields"
-      Tab(1).Control(5)=   "cmdAdd"
-      Tab(1).Control(6)=   "cmdRemove"
-      Tab(1).Control(7)=   "cmdUp"
-      Tab(1).Control(8)=   "cmdDown"
-      Tab(1).Control(9)=   "cmdInsert"
-      Tab(1).Control(10)=   "fraColumns"
-      Tab(1).Control(11)=   "lblParentTable"
+      Tab(1).Control(0)=   "lblParentTable"
+      Tab(1).Control(1)=   "fraColumns"
+      Tab(1).Control(2)=   "cmdInsert"
+      Tab(1).Control(3)=   "cmdDown"
+      Tab(1).Control(4)=   "cmdUp"
+      Tab(1).Control(5)=   "cmdRemove"
+      Tab(1).Control(6)=   "cmdAdd"
+      Tab(1).Control(7)=   "fraSummaryFields"
+      Tab(1).Control(8)=   "cmdInsertBreak"
+      Tab(1).Control(9)=   "cboParentTable"
+      Tab(1).Control(10)=   "cmdColumnBreak"
+      Tab(1).Control(11)=   "chkManualColumnBreak"
       Tab(1).ControlCount=   12
       TabCaption(2)   =   "Ema&il Links"
       TabPicture(2)   =   "frmTabEdit.frx":0044
@@ -114,13 +114,14 @@ Begin VB.Form frmTabEdit
       TabCaption(5)   =   "Audi&t"
       TabPicture(5)   =   "frmTabEdit.frx":0098
       Tab(5).ControlEnabled=   0   'False
-      Tab(5).Control(0)=   "fraTableStats"
-      Tab(5).Control(1)=   "fraAudit"
+      Tab(5).Control(0)=   "fraAudit"
+      Tab(5).Control(1)=   "fraTableStats"
       Tab(5).ControlCount=   2
       TabCaption(6)   =   "&Validation"
       TabPicture(6)   =   "frmTabEdit.frx":00B4
       Tab(6).ControlEnabled=   0   'False
       Tab(6).Control(0)=   "fraTableValidations"
+      Tab(6).Control(0).Enabled=   0   'False
       Tab(6).ControlCount=   1
       Begin VB.Frame fraTableValidations 
          Caption         =   "Overlapping Column Validations :"
@@ -1037,11 +1038,11 @@ Private mblnEmailSortByActivation As Boolean
 Private mblnEmailSortDesc As Boolean
 
 Private Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
 End Property
 
 Private Property Let Changed(ByVal blnNewValue As Boolean)
-  cmdOk.Enabled = blnNewValue
+  cmdOK.Enabled = blnNewValue
 End Property
 
 
@@ -2430,7 +2431,7 @@ Private Sub ssGrdEmailLinks_HeadClick(ByVal ColIndex As Integer)
 
 End Sub
 
-Private Sub ssGrdTableValidations_Click()
+Private Sub ssGrdTableValidations_DblClick()
   If cmdTableValidationEdit.Enabled Then
     TableValidation False
   End If
