@@ -163,9 +163,8 @@ Begin VB.Form frmAccordViewTransfers
       Top             =   1200
       Width           =   10950
       _Version        =   196617
-      DataMode        =   2
+      DataMode        =   1
       RecordSelectors =   0   'False
-      Col.Count       =   9
       AllowUpdate     =   0   'False
       MultiLine       =   0   'False
       AllowRowSizing  =   0   'False
@@ -322,13 +321,13 @@ Private mstrOrderBy As String
 Private mstrOrderOrder As String
 Private mintSortColumnIndex As Integer
 Private mlngCurrentRecordID As Long
-
+Private mrsRecords As Recordset
 Private mbVisibleBlocking As Boolean
 Private mbEnableBlocking As Boolean
-
+Private msDateFormat As String
 Private miViewMode As AccordViewMode
 
-Const MaxTop = 10000
+Const MaxTop = 100000
 
 Public Property Let ConnectionType(ByVal piNewValue As DataMgr.AccordConnection)
   miConnectionType = piNewValue
@@ -347,29 +346,121 @@ Public Property Let ToDate(ByVal pdValue As Date)
   mdToDate = pdValue
 End Property
 
+Private Sub grdTransferDetails_UnboundPositionData(StartLocation As Variant, ByVal NumberOfRowsToMove As Long, NewLocation As Variant)
+
+  If IsNull(StartLocation) Then
+    If NumberOfRowsToMove = 0 Then
+      Exit Sub
+    ElseIf NumberOfRowsToMove < 0 Then
+      mrsRecords.MoveLast
+    Else
+      mrsRecords.MoveFirst
+    End If
+  Else
+    mrsRecords.Bookmark = StartLocation
+  End If
+  
+  mrsRecords.Move NumberOfRowsToMove
+  NewLocation = mrsRecords.Bookmark
+  
+End Sub
+
+Private Sub grdTransferDetails_UnboundReadData(ByVal RowBuf As SSDataWidgets_B.ssRowBuffer, StartLocation As Variant, ByVal ReadPriorRows As Boolean)
+
+ ' Read the required data from the recordset to the grid.
+  Dim iRowIndex As Integer
+  Dim iFieldIndex As Integer
+  Dim iRowsRead As Integer
+
+  iRowsRead = 0
+    
+  ' This is required as recordset not set when this sub is first run
+  If mrsRecords Is Nothing Then Exit Sub
+  
+  ' Do nothing if there are no records to display
+  If mrsRecords.RecordCount < 1 Then Exit Sub
+
+  If IsNull(StartLocation) Or (StartLocation = 0) Then
+    If ReadPriorRows Then
+      If Not mrsRecords.EOF Then
+        mrsRecords.MoveLast
+      End If
+    Else
+      If Not mrsRecords.BOF Then
+        mrsRecords.MoveFirst
+      End If
+    End If
+  Else
+    mrsRecords.Bookmark = StartLocation
+    If ReadPriorRows Then
+      mrsRecords.MovePrevious
+    Else
+      mrsRecords.MoveNext
+    End If
+  End If
+  
+  ' Read from the row buffer into the grid.
+  For iRowIndex = 0 To (RowBuf.RowCount - 1)
+    ' Do nothing if the begining of end of the recordset is Met.
+    If mrsRecords.BOF Or mrsRecords.EOF Then Exit For
+  
+    ' Optimize the data read based on the ReadType.
+    Select Case RowBuf.ReadType
+      Case 0
+        For iFieldIndex = 0 To (mrsRecords.Fields.Count - 1)
+          Select Case mrsRecords.Fields(iFieldIndex).Name
+            Case "ID"
+              RowBuf.Value(iRowIndex, iFieldIndex) = CStr(mrsRecords.Fields("ID"))
+            Case "TransferType"
+              RowBuf.Value(iRowIndex, iFieldIndex) = GetComboText(cboTransfer, mrsRecords.Fields("TransferType").Value)
+            Case "Status"
+              RowBuf.Value(iRowIndex, iFieldIndex) = GetComboText(cboStatus, mrsRecords.Fields("Status").Value)
+            Case "TransActionType"
+              Select Case mrsRecords.Fields("TransActionType").Value
+              Case 0
+                RowBuf.Value(iRowIndex, iFieldIndex) = "New"
+              Case 1
+                RowBuf.Value(iRowIndex, iFieldIndex) = "Update"
+              Case 2
+                RowBuf.Value(iRowIndex, iFieldIndex) = "Delete"
+              End Select
+            Case "CreatedDateTime"
+              RowBuf.Value(iRowIndex, iFieldIndex) = Format(mrsRecords.Fields("CreatedDateTime").Value, msDateFormat)
+            Case "Archived"
+              RowBuf.Value(iRowIndex, iFieldIndex) = IIf(mrsRecords.Fields("Archived").Value = True, "Yes", "No")
+            Case Else
+              RowBuf.Value(iRowIndex, iFieldIndex) = mrsRecords(iFieldIndex)
+          End Select
+        Next iFieldIndex
+        RowBuf.Bookmark(iRowIndex) = mrsRecords.Bookmark
+      Case 1
+        RowBuf.Bookmark(iRowIndex) = mrsRecords.Bookmark
+    End Select
+    
+    If ReadPriorRows Then
+      mrsRecords.MovePrevious
+    Else
+      mrsRecords.MoveNext
+    End If
+  
+    iRowsRead = iRowsRead + 1
+  Next iRowIndex
+  
+  RowBuf.RowCount = iRowsRead
+  
+End Sub
+
 Private Sub RefreshGrid()
 
   Dim strSQL As String
-  Dim rsTransfers As Recordset
-  Dim strAddString As String
-  Dim strStatus As String
-  Dim strTransfer As String
-  Dim strStatusBarText As String
-  Dim lngRecordCount As Long
-  Dim objString As DataMgr.clsStringBuilder
-  Dim sDateFormat As String
-   
-  Set objString = New DataMgr.clsStringBuilder
-  sDateFormat = UI.GetSystemDateFormat
-   
-  ' Clear the existing data
-  grdTransferDetails.RemoveAll
-  lngRecordCount = 0
+  Dim mp As Variant
   
-  strSQL = "SELECT TOP " & MaxTop & " TransferType, TransActionType, CompanyCode, EmployeeCode, CreatedDateTime" _
-          & " , CreatedUser, Status, TransactionID, Archived" _
+  mp = Screen.MousePointer
+  Screen.MousePointer = vbHourglass
+  
+  strSQL = "SELECT TOP " & MaxTop & " TransferType, CompanyCode, EmployeeCode, TransActionType, Status, TransactionID, CreatedUser, CreatedDateTime, Archived" _
           & " FROM ASRSysAccordTransactions" _
-  
+
   ' Filter on the transfer
   If cboTransfer.Text <> "<All>" Then
     strSQL = strSQL & IIf(InStr(strSQL, "WHERE") > 0, " AND ", " WHERE ") & "TransferType = " & CStr(cboTransfer.ItemData(cboTransfer.ListIndex))
@@ -405,75 +496,58 @@ Private Sub RefreshGrid()
   ' Orderificationalize the list (George Bushism #1)
   strSQL = strSQL & " ORDER BY " & mstrOrderBy & " " & mstrOrderOrder
    
-  Set rsTransfers = OpenAccordRecordset(miConnectionType, strSQL, adOpenForwardOnly, adLockReadOnly)
-  With rsTransfers
-    While Not .EOF
-
-      lngRecordCount = lngRecordCount + 1
-      strTransfer = GetComboText(cboTransfer, .Fields("TransferType").Value)
-      strStatus = GetComboText(cboStatus, .Fields("Status").Value)
-'
-'      strAddString = strTransfer & vbTab & .Fields("CompanyCode") & vbTab & .Fields("EmployeeCode") & vbTab
-objString.TheString = strTransfer & vbTab & .Fields("CompanyCode") & vbTab & .Fields("EmployeeCode") & vbTab
-'
-      Select Case .Fields("TransActionType").Value
-        Case 0
-'          strAddString = strAddString & "New"
-objString.Append "New"
-        Case 1
-'          strAddString = strAddString & "Update"
-objString.Append "Update"
-        Case 2
-'          strAddString = strAddString & "Delete"
-objString.Append "Delete"
-
-      End Select
-'
-'      strAddString = strAddString & vbTab & strStatus _
-'          & vbTab & .Fields("TransactionID").Value _
-'          & vbTab & .Fields("CreatedUser").Value _
-'          & vbTab & Format(.Fields("CreatedDateTime").Value, UI.GetSystemDateFormat)
-objString.Append vbTab & strStatus _
-          & vbTab & .Fields("TransactionID").Value _
-          & vbTab & .Fields("CreatedUser").Value _
-          & vbTab & Format(.Fields("CreatedDateTime").Value, sDateFormat)
-
-'      'NHRD13092006 Fault 10065
-      If miViewMode = iCURRENT_RECORD Then
-'        strAddString = strAddString & vbTab & IIf(.Fields("Archived").Value = 1, "Yes", "No")
-objString.Append vbTab & IIf(.Fields("Archived").Value = 1, "Yes", "No")
-      End If
-'
-'      grdTransferDetails.AddItem strAddString
-      grdTransferDetails.AddItem objString.ToString
-'
-      .MoveNext
-    Wend
-  End With
-  
-  Set objString = Nothing
+  If Not mrsRecords Is Nothing Then
+    If mrsRecords.State <> 0 Then
+      mrsRecords.Close
+    End If
+    Set mrsRecords = Nothing
+  End If
+    
+  Set mrsRecords = OpenAccordRecordset(miConnectionType, strSQL, adOpenStatic, adLockReadOnly)
   
    'NHRD13092006 Fault 10065
   If miViewMode <> iCURRENT_RECORD Then
     'Resize the column width to fit into grid space provided
     Me.grdTransferDetails.Columns("Date").Width = (Me.grdTransferDetails.Columns("Date").Width + 900.23)
-    'Not Current REcord view so remove Archive column
+    'Not Current Record view so remove Archive column
     Me.grdTransferDetails.Columns("Archived").Visible = False
   Else
     SetComboItem cboTransfer, CLng(miTransferType)
     EnableControl cboTransfer, False
   End If
 
-  ' Select first line
-  If Me.grdTransferDetails.Rows > 0 Then
-    Me.grdTransferDetails.MoveFirst
-    Me.grdTransferDetails.SelBookmarks.Add Me.grdTransferDetails.Bookmark
+  With grdTransferDetails
+    .Redraw = False
+    .Rebind
+    .Rows = IIf(mrsRecords.RecordCount = -1, 0, mrsRecords.RecordCount)
+    .Redraw = True
+  End With
+
+  If grdTransferDetails.Rows > 0 Then
+    grdTransferDetails.MoveFirst
+    grdTransferDetails.SelBookmarks.Add grdTransferDetails.Bookmark
   End If
 
+  RefreshStatusBar
+  RefreshButtons
+  
+  If mrsRecords.RecordCount = MaxTop Then
+    Screen.MousePointer = vbDefault
+    gobjProgress.CloseProgress
+    MsgBox "The search results have been limited to " & Format$(MaxTop, "#,###") & " records.", vbInformation, App.Title
+  End If
+
+  Screen.MousePointer = mp
+
+End Sub
+
+Private Sub RefreshStatusBar()
+
   ' Status bar text
+  Dim strStatusBarText As String
   strStatusBarText = ""
-  strStatusBarText = strStatusBarText & " " & lngRecordCount & " Record" & IIf(lngRecordCount > 1 Or lngRecordCount = 0, "s", "")
-  If lngRecordCount > 1 Then
+  strStatusBarText = strStatusBarText & " " & mrsRecords.RecordCount & " Record" & IIf(mrsRecords.RecordCount > 1 Or mrsRecords.RecordCount = 0, "s", "")
+  If mrsRecords.RecordCount > 1 Then
     
     strStatusBarText = strStatusBarText & " sorted by "
     
@@ -502,18 +576,7 @@ objString.Append vbTab & IIf(.Fields("Archived").Value = 1, "Yes", "No")
   End If
   
   StatusBar1.SimpleText = strStatusBarText
-
-  rsTransfers.Close
-  Set rsTransfers = Nothing
-
-  RefreshButtons
-
-  If lngRecordCount = MaxTop Then
-    Screen.MousePointer = vbDefault
-    gobjProgress.CloseProgress
-    MsgBox "The search results have been limited to " & Format$(MaxTop, "#,###") & " records.", vbInformation, App.Title
-  End If
-
+  
 End Sub
 
 Public Function Initialise()
@@ -522,6 +585,7 @@ Public Function Initialise()
    
   mbVisibleBlocking = Not (miViewMode = iARCHIVE_ALL)
   mbEnableBlocking = datGeneral.SystemPermission("ACCORD", "BLOCK")
+  msDateFormat = UI.GetSystemDateFormat
   
   Select Case miViewMode
     Case iLIVE_ALL
@@ -657,6 +721,8 @@ End Sub
 
 Private Sub Form_Unload(Cancel As Integer)
   Unhook Me.hWnd
+  
+  Set mrsRecords = Nothing
 End Sub
 
 Private Sub grdTransferDetails_Click()
@@ -1010,4 +1076,5 @@ ErrorTrap:
   gobjErrorStack.HandleError
   
 End Sub
+
 
