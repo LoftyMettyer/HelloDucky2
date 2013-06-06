@@ -505,32 +505,36 @@ Private Function ValidateDefinition() As Boolean
   If Len(txtName.Text) = 0 Then
     strErrorMessage = strErrorMessage & "You must give this definition a name." & vbNewLine
   End If
-  
+    
+  ' Category type
+  If GetComboItem(cboCategories) = 0 Then
+    strErrorMessage = strErrorMessage & "Category value must be specified." & vbNewLine
+  End If
   
   ' Target table
   If GetComboItem(cboTargetTable) = 0 Then
-    strErrorMessage = strErrorMessage & "Target table must be specified" & vbNewLine
+    strErrorMessage = strErrorMessage & "Target table must be specified." & vbNewLine
   End If
   
   ' Target column
   If GetComboItem(cboTargetColumn) = 0 Then
-    strErrorMessage = strErrorMessage & "Target column must be specified" & vbNewLine
+    strErrorMessage = strErrorMessage & "Target column must be specified." & vbNewLine
   End If
   
   ' Target keyfield
   If GetComboItem(cboTargetKeyField) = 0 Then
-    strErrorMessage = strErrorMessage & "Target keyfield column must be specified" & vbNewLine
+    strErrorMessage = strErrorMessage & "Target keyfield column must be specified." & vbNewLine
   End If
    
    
   ' Keyfield of parent 1
   If Me.cboParent1Table.Enabled Then
     If GetComboItem(cboParent1Table) = 0 Then
-      strErrorMessage = strErrorMessage & "Parent 1 table must be specified" & vbNewLine
+      strErrorMessage = strErrorMessage & "Parent 1 table must be specified." & vbNewLine
     End If
      
     If GetComboItem(cboParent1Keyfield) = 0 Then
-      strErrorMessage = strErrorMessage & "Parent 1 keyfield column must be specified" & vbNewLine
+      strErrorMessage = strErrorMessage & "Parent 1 keyfield column must be specified." & vbNewLine
     End If
   End If
    
@@ -538,11 +542,11 @@ Private Function ValidateDefinition() As Boolean
   ' Keyfield of parent 2
   If Me.cboParent2Table.Enabled Then
     If GetComboItem(cboParent2Table) = 0 Then
-      strErrorMessage = strErrorMessage & "Parent 2 table must be specified" & vbNewLine
+      strErrorMessage = strErrorMessage & "Parent 2 table must be specified." & vbNewLine
     End If
      
     If GetComboItem(cboParent2Keyfield) = 0 Then
-      strErrorMessage = strErrorMessage & "Parent 2 keyfield column must be specified" & vbNewLine
+      strErrorMessage = strErrorMessage & "Parent 2 keyfield column must be specified." & vbNewLine
     End If
   End If
    
