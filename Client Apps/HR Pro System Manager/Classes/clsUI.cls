@@ -540,13 +540,13 @@ Function txtSelText() As String
       End With
     End If
   
-    If TypeOf Screen.ActiveForm.ActiveControl Is MaskEdBox Then
-      With Screen.ActiveForm.ActiveControl
-        .SelStart = 0
-        .SelLength = Len(.FormattedText)
-        txtSelText = .SelText
-      End With
-    End If
+'    If TypeOf Screen.ActiveForm.ActiveControl Is MaskEdBox Then
+'      With Screen.ActiveForm.ActiveControl
+'        .SelStart = 0
+'        .SelLength = Len(.FormattedText)
+'        txtSelText = .SelText
+'      End With
+'    End If
   
   End If
 
