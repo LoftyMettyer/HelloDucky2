@@ -47,7 +47,6 @@ Begin VB.Form frmFind2
             Object.Width           =   10689
             Text            =   "x Records"
             TextSave        =   "x Records"
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
