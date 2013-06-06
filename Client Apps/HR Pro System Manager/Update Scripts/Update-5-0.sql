@@ -6006,6 +6006,7 @@ EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[sp_ASRRecordAmended]
     @piID integer,				/* ID the record being updated. */
     @piTimestamp integer		/* Original timestamp of the record being updated. */
 )
+WITH EXECUTE AS ''dbo''
 AS
 BEGIN
     /* Check if the given record has been deleted or changed by another user. */
@@ -6067,55 +6068,16 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    /* Run the given SQL UPDATE string. */
-    /* Check if the given record has been deleted or changed first. */
-    /* Return 0 if the record was OK to update. */
-    /* Return 1 if the record has been amended AND is still in the given table/view. */
-    /* Return 2 if the record has been amended AND is no longer in the given table/view. */
-    /* Return 3 if the record has been deleted from the table. */
-    DECLARE @iCurrentTimestamp integer,
-        @sSQL nvarchar(MAX),
-        @psTableName sysname,
-        @iCount integer;
-    SET @piResult = 0;
+	-- Get status of amended record
+	EXEC dbo.sp_ASRRecordAmended @piResult OUTPUT,
+	    @piTableID,
+		@psRealSource,
+		@piID,
+		@piTimestamp;
 
-	SELECT @psTableName = TableName FROM dbo.tbsys_tables WHERE TableID = @piTableID; 
-
-    /* Check that the record has not been updated by another user since it was last checked. */
-    SET @sSQL = ''SELECT @iCurrentTimestamp = convert(integer, timestamp)'' +
-            '' FROM '' + @psTableName +
-            '' WHERE id = '' + convert(varchar(MAX), @piID);
-    EXECUTE sp_executesql @sSQL, N''@iCurrentTimestamp int OUTPUT'', @iCurrentTimestamp OUTPUT;
-    
-    IF @iCurrentTimestamp IS null
-    BEGIN
-        /* Record deleted. */
-        SET @piResult = 3;
-    END
-    ELSE
-    BEGIN
-        IF (@iCurrentTimestamp <> @piTimestamp) AND (NOT @piTimestamp IS null)
-        BEGIN
-            /* Record changed. Check if it is in the given realsource. */
-           SET @sSQL = ''SELECT @piResult = COUNT(id)'' +
-             '' FROM '' + @psRealSource +
-             '' WHERE id = '' + convert(varchar(255), @piID);
-           EXECUTE sp_executesql @sSQL, N''@piResult int OUTPUT'', @iCount OUTPUT;
-           IF @iCount > 0
-           BEGIN
-               SET @piResult = 1;
-           END
-           ELSE
-           BEGIN
-               SET @piResult = 2;
-           END
-        END
-        ELSE
-        BEGIN
-            -- Run the given SQL UPDATE string.
-            EXECUTE sp_executeSQL @psUpdateString;
-        END
-    END
+    -- Run the given SQL UPDATE string.   
+    IF @piResult = 0
+		EXECUTE sp_executeSQL @psUpdateString;
 
 END'
 
