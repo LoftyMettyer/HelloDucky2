@@ -3805,7 +3805,9 @@ Private Sub Form_Load()
   SSTab1_Click 0
   
   PopulateColourCombos
-
+  
+  CallingForm = Me
+  
   With cboTextType
     .Clear
     .AddItem "Title"
