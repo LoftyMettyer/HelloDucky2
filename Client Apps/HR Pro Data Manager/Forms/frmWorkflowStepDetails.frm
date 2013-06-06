@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.0#0"; "COA_Line.ocx"
+Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "COA_Line.ocx"
 Begin VB.Form frmWorkflowStepDetails 
    Caption         =   "Workflow Step Details"
    ClientHeight    =   8700
@@ -86,6 +86,7 @@ Begin VB.Form frmWorkflowStepDetails
          Left            =   100
          TabIndex        =   38
          Top             =   5720
+         Visible         =   0   'False
          Width           =   7550
          Begin VB.TextBox txtStoredDataMessage 
             BackColor       =   &H8000000F&
@@ -199,6 +200,7 @@ Begin VB.Form frmWorkflowStepDetails
          Left            =   100
          TabIndex        =   32
          Top             =   4030
+         Visible         =   0   'False
          Width           =   7550
          Begin VB.TextBox txtWebFormMessage 
             BackColor       =   &H8000000F&
@@ -331,6 +333,7 @@ Begin VB.Form frmWorkflowStepDetails
          Left            =   100
          TabIndex        =   23
          Top             =   1960
+         Visible         =   0   'False
          Width           =   7550
          Begin VB.TextBox txtEmailCCValue 
             BackColor       =   &H8000000F&
@@ -432,6 +435,7 @@ Begin VB.Form frmWorkflowStepDetails
          Left            =   100
          TabIndex        =   20
          Top             =   1410
+         Visible         =   0   'False
          Width           =   7550
          Begin COALine.COA_Line linDecision 
             Height          =   30
@@ -1866,19 +1870,11 @@ Private Sub Form_Resize()
   mblnSizing = True
 
   Select Case mlngElementType
-'    Case elem_WebForm
-'      sngMinFormHeight = MINHEIGHT_WEBFORM
-'
-'    Case elem_Email
-'      sngMinFormHeight = MINHEIGHT_EMAIL
 
     Case elem_Decision
       fraDetails.Height = (2 * fraBasicDetails.Top) _
         + fraBasicDetails.Height _
         + fraSpecificDetails(4).Height
-
-'    Case elem_StoredData
-'      sngMinFormHeight = MINHEIGHT_STOREDDATA
 
     Case Else
       ' elem_Begin, elem_Terminator, elem_SummingJunction
@@ -1887,10 +1883,6 @@ Private Sub Form_Resize()
         + fraBasicDetails.Height
   End Select
 
-'  If Me.Height < sngMinFormHeight Then Me.Height = sngMinFormHeight
-'  If Me.Height > Screen.Height Then Me.Height = (Screen.Height - 200)
-'  If Me.Width < MINFORMWIDTH Then Me.Width = MINFORMWIDTH
-'  If Me.Width > Screen.Width Then Me.Width = (Screen.Width - 200)
 
   If mfSizeable Then
     fraDetails.Height = Me.Height _
@@ -1907,10 +1899,10 @@ Private Sub Form_Resize()
 
     Select Case mlngElementType
       Case elem_WebForm
-'        grdWebFormEnteredValues.Height = fraSpecificDetails(mlngElementType).Height _
-'          - grdWebFormEnteredValues.Top _
-'          - 100
-        grdWebFormEnteredValues.Height = 1500
+        grdWebFormEnteredValues.Height = fraSpecificDetails(mlngElementType).Height _
+          - grdWebFormEnteredValues.Top _
+          - 100
+        
         txtWebFormMessage.Height = grdWebFormEnteredValues.Height
 
       Case elem_Email
