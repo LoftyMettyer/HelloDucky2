@@ -1941,7 +1941,8 @@ Public Function ApplyDatabaseOwnership() As Boolean
     " FROM sysobjects" & _
     " INNER JOIN sysusers ON sysobjects.uid = sysusers.uid" & _
     " LEFT JOIN #tmpProtects ON sysobjects.id = #tmpProtects.id" & _
-    " WHERE (((sysobjects.xtype IN ('p','pc')) AND (sysobjects.name LIKE 'sp_asr%' OR sysobjects.name LIKE 'spasr%') AND sysobjects.id NOT IN (SELECT id FROM #tmpProtects))" & _
+    " WHERE (((sysobjects.xtype IN ('p','pc')) AND (sysobjects.name LIKE 'sp_asr%' OR sysobjects.name LIKE 'spasr%' OR sysobjects.name LIKE 'spstat%' OR sysobjects.name LIKE 'spsys%')" & _
+    "    AND sysobjects.id NOT IN (SELECT id FROM #tmpProtects))" & _
     "    OR ((sysobjects.xtype = 'u') AND (sysobjects.name LIKE 'asrsys%'))" & _
     "    OR ((sysobjects.xtype IN ('fn','tf','if','fs')) " & _
     "AND (sysobjects.name LIKE 'udf_ASR%' OR sysobjects.name LIKE 'udfASR%')))" & _
