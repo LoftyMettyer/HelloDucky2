@@ -375,7 +375,7 @@ sProcSQL = sProcSQL & "  IF @psMessage = ''" & vbNewLine & _
     "          BEGIN" & vbNewLine & _
     "            IF CHARINDEX('\', @sUserName) = 0" & vbNewLine & _
     "            BEGIN" & vbNewLine & _
-    "            SET @sMessage = 'Thank you for registering for OpenHR Mobile Workflow access.' + CHAR(13) + CHAR(10)" & vbNewLine & _
+    "            SET @sMessage = 'Thank you for registering for OpenHR Mobile access.' + CHAR(13) + CHAR(10)" & vbNewLine & _
     "              + CHAR(13) + CHAR(10) + 'Your username is : ' + @sUserName + CHAR(13) + CHAR(10)" & vbNewLine & _
     "              + 'If you don''t know your password, contact your system administrator.' + CHAR(13) + CHAR(10)" & vbNewLine & _
     "              + CHAR(13) + CHAR(10) + 'Click the following link to activate your registration: ' + CHAR(13) + CHAR(10)" & vbNewLine & _
@@ -383,7 +383,7 @@ sProcSQL = sProcSQL & "  IF @psMessage = ''" & vbNewLine & _
     "            END" & vbNewLine & _
     "            ELSE" & vbNewLine & _
     "            BEGIN" & vbNewLine & _
-    "            SET @sMessage = 'Thank you for registering for OpenHR Mobile Workflow access.' + CHAR(13) + CHAR(10)" & vbNewLine & _
+    "            SET @sMessage = 'Thank you for registering for OpenHR Mobile access.' + CHAR(13) + CHAR(10)" & vbNewLine & _
     "              + CHAR(13) + CHAR(10) + 'You can use your windows username and password to log in, after you''ve clicked the following link to activate your registration: ' + CHAR(13) + CHAR(10)" & vbNewLine & _
     "               + CHAR(13) + CHAR(10) + @psActivationURL;" & vbNewLine & _
     "            END" & vbNewLine
@@ -392,7 +392,7 @@ sProcSQL = sProcSQL & "  IF @psMessage = ''" & vbNewLine & _
     "          END" & vbNewLine & _
     "          ELSE" & vbNewLine & _
     "          BEGIN" & vbNewLine & _
-    "            SET @sMessage = 'Thank you for registering for OpenHR Mobile Workflow access.' + CHAR(13) + CHAR(10)" & vbNewLine & _
+    "            SET @sMessage = 'Thank you for registering for OpenHR Mobile access.' + CHAR(13) + CHAR(10)" & vbNewLine & _
     "              + CHAR(13) + CHAR(10) + 'Your username has not yet been set by your administrator,'" & vbNewLine & _
     "              + CHAR(13) + CHAR(10) + 'however you can still click the following link to activate your registration: ' + CHAR(13) + CHAR(10)" & vbNewLine & _
     "               + CHAR(13) + CHAR(10) + @psActivationURL;" & vbNewLine & _
