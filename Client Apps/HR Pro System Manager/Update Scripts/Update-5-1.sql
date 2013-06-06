@@ -114,16 +114,20 @@ END
 	END';
 	GRANT EXECUTE ON dbo.[spstat_updateobjectusage] TO [ASRSysGroup];
 
-	IF EXISTS (SELECT * FROM sys.views WHERE object_id = object_ID(N'[dbo].[ASRSysAllobjectNames]'))
+	IF EXISTS (SELECT * FROM sys.views WHERE object_id = object_ID(N'[dbo].[ASRSysAllObjectNames]'))
 		DROP VIEW [dbo].[ASRSysAllobjectNames]
-	EXEC sp_executesql N'CREATE VIEW ASRSysAllobjectNames
+	EXEC sp_executesql N'CREATE VIEW dbo.[ASRSysAllObjectNames]
 	AS
 		SELECT 2 AS [objectType], ID, Name FROM ASRSysCustomReportsName
 		UNION
 		SELECT 1 AS [objectType], CrossTabID AS ID, Name FROM ASRSysCrossTab
 		UNION		
-		SELECT 14 AS [objectType], MatchReportID AS ID, Name FROM ASRSysMatchReportName
+		SELECT 14 AS [objectType], MatchReportID AS ID, Name FROM ASRSysMatchReportName WHERE [matchreporttype] = 0
 		UNION
+		SELECT 23 AS [objectType], MatchReportID AS ID, ''Succession Planning'' AS Name FROM ASRSysMatchReportName WHERE [matchreporttype] = 1
+		UNION		
+		SELECT 24 AS [objectType], MatchReportID AS ID, ''Career Progression'' AS Name FROM ASRSysMatchReportName WHERE [matchreporttype] = 2
+		UNION		
 		SELECT 15 AS [objectType], 0 AS ID, ''Absence Breakdown''
 		UNION
 		SELECT 16 AS [objectType], 0 AS ID, ''Bradford Factor''
@@ -131,10 +135,6 @@ END
 		SELECT 17 AS [objectType], ID AS ID, Name FROM ASRSysCalendarReports
 		UNION		
 		SELECT 20 AS [objectType], RecordProfileID AS ID, Name FROM ASRSysRecordProfileName
-		UNION
-		SELECT 23 AS [objectType], 0 AS ID, ''Succession Planning''
-		UNION
-		SELECT 24 AS [objectType], 0 AS ID, ''Career Progression''
 		UNION
 		SELECT 30 AS [objectType], 0 AS ID, ''Turnover''
 		UNION
