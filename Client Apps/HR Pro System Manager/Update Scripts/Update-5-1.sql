@@ -729,6 +729,10 @@ PRINT 'Step - Menu & Category enhancements'
 	BEGIN
 		EXECUTE dbo.spstat_scriptnewcolumn @namecolumnid OUTPUT, @categorytableid, 'ID', 4, 'ID', 0, 0, 1, 'DB0F209B-A0C0-4B8B-9044-8519EB94C718', 1;
 		EXECUTE dbo.spstat_scriptnewcolumn @namecolumnid OUTPUT, @categorytableid, 'Category_Name', 12, 'Category name', 50, 0, 1, 'CF24AEC1-28C3-4A44-A56C-B4363C275785', 0;
+
+		-- Column specific details
+		UPDATE dbo.tbsys_columns SET uniquecheck = 1, mandatory = 1, uniquechecktype = -1 WHERE columnID = @namecolumnid AND tableID = @categorytableid
+
 		EXECUTE dbo.spstat_scriptnewprimaryorder @categorytableid, 'Category_Name';
 		EXECUTE spstat_scriptnewprimaryscreen @categorytableid, 'Category';
 		
