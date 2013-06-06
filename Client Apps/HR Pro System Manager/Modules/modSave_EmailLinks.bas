@@ -496,7 +496,8 @@ Public Sub CreateEmailProcsForTable(lngTableID As Long, _
       "            DECLARE @sColumnValue varchar(max)" & vbNewLine & _
       "            DECLARE @username varchar(max)" & vbNewLine & vbNewLine & _
       "            SELECT @username = CASE WHEN UPPER(LEFT(APP_NAME(), " & Len(gsWORKFLOWAPPLICATIONPREFIX) & ")) = '" & UCase(gsWORKFLOWAPPLICATIONPREFIX) & "' THEN '" & gsWORKFLOWAPPLICATIONPREFIX & "' ELSE rtrim(system_user) END" & vbNewLine & _
-      "            EXEC sp_ASRPurgeDate @purgedate OUTPUT, 'EMAIL'" & vbNewLine & vbNewLine
+      "            EXEC sp_ASRPurgeDate @purgedate OUTPUT, 'EMAIL'" & vbNewLine & vbNewLine & _
+      "            UPDATE ASRSysEmailQueue SET RecordDesc = @recordDesc WHERE RecordID = @recordID AND TableID = " & CStr(lngTableID) & vbNewLine & vbNewLine
 
   gstrInsertEmailCode = IIf(gstrInsertEmailCode <> vbNullString, strTemp & gstrInsertEmailCode, vbNullString)
   gstrUpdateEmailCode = IIf(gstrUpdateEmailCode <> vbNullString, strTemp & gstrUpdateEmailCode, vbNullString)
@@ -528,8 +529,8 @@ Public Sub CreateEmailProcsForTable(lngTableID As Long, _
       "BEGIN" & vbNewLine & vbNewLine & _
       "  DECLARE @hResult bit" & vbNewLine & _
       "  DECLARE @dateValue datetime" & vbNewLine & _
-      strTemp & vbNewLine & vbNewLine & vbNewLine & _
       GetSQLForRecordDescription(lngRecordDescExprID) & vbCrLf & vbCrLf & _
+      strTemp & vbNewLine & vbNewLine & vbNewLine & _
       "  DELETE FROM ASRSysEmailQueue WHERE Immediate = 0 AND DateSent IS NULL AND recordID = @recordID AND TableID = " & CStr(lngTableID) & vbNewLine & vbNewLine & _
       strRebuildAll & vbNewLine & _
       "END"
@@ -710,7 +711,7 @@ Private Function GetSQLEmailContent(lngTableID As Long, strTableName As String, 
   'Dim blnFoundToRecipient As Boolean
 
   
-  On Local Error Resume Next
+  On Local Error GoTo LocalErr  'Resume Next
 
 
   '@To, @Cc, @Bcc
