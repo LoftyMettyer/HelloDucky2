@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.ocx"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.OCX"
 Begin VB.Form frmDefSel 
    Caption         =   "Select"
    ClientHeight    =   7800
@@ -844,7 +844,6 @@ Private Sub cmdProperties_Click()
     ' RH return the pointer to norma
     Screen.MousePointer = vbDefault
     
-    'DynamicallyChangeHelpContextID
     .HelpContextID = DynamicallyChangeHelpContextID
     
     .Show vbModal
@@ -2506,6 +2505,9 @@ Private Function DynamicallyChangeHelpContextID() As Integer
     Select Case mutlUtilityType
         Case utlBatchJob
         DynamicallyChangeHelpContextID = 1084
+        
+        Case utlReportPack
+        DynamicallyChangeHelpContextID = 1084 ' this will be changed when I find the helpfile code is written from the doc that stores the latest context IDs
         
         Case utlCrossTab
         DynamicallyChangeHelpContextID = 1087
