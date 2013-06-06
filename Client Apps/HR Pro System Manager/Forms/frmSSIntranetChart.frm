@@ -1,23 +1,23 @@
 VERSION 5.00
 Begin VB.Form frmSSIntranetChart 
    BorderStyle     =   3  'Fixed Dialog
-   Caption         =   "Self-service Intranet Chart"
-   ClientHeight    =   6210
+   Caption         =   " "
+   ClientHeight    =   9705
    ClientLeft      =   45
    ClientTop       =   375
-   ClientWidth     =   7230
+   ClientWidth     =   4740
    HelpContextID   =   5086
    Icon            =   "frmSSIntranetChart.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   6210
-   ScaleWidth      =   7230
+   ScaleHeight     =   9705
+   ScaleWidth      =   4740
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
-   Begin VB.Frame fraChartMultiAxes 
-      Caption         =   "Multi-axis Data :"
+   Begin VB.Frame fraAggregate 
+      Caption         =   "Aggregate"
       BeginProperty Font 
          Name            =   "Verdana"
          Size            =   8.25
@@ -27,123 +27,11 @@ Begin VB.Form frmSSIntranetChart
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      Height          =   2625
+      Height          =   1125
       Left            =   165
-      TabIndex        =   15
-      Top             =   1725
-      Width           =   6870
-      Begin VB.ComboBox cboAggregateType 
-         BeginProperty Font 
-            Name            =   "Verdana"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   315
-         Index           =   2
-         Left            =   5205
-         Style           =   2  'Dropdown List
-         TabIndex        =   22
-         Top             =   1575
-         Width           =   1440
-      End
-      Begin VB.ComboBox cboParents 
-         BeginProperty Font 
-            Name            =   "Verdana"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   315
-         Index           =   1
-         Left            =   1170
-         Sorted          =   -1  'True
-         Style           =   2  'Dropdown List
-         TabIndex        =   21
-         Top             =   375
-         Width           =   2670
-      End
-      Begin VB.ComboBox cboColumns 
-         BeginProperty Font 
-            Name            =   "Verdana"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   315
-         Index           =   1
-         Left            =   1170
-         Sorted          =   -1  'True
-         Style           =   2  'Dropdown List
-         TabIndex        =   20
-         Top             =   750
-         Width           =   2670
-      End
-      Begin VB.ComboBox cboParents 
-         BeginProperty Font 
-            Name            =   "Verdana"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   315
-         Index           =   2
-         Left            =   1170
-         Sorted          =   -1  'True
-         Style           =   2  'Dropdown List
-         TabIndex        =   19
-         Top             =   1575
-         Width           =   2670
-      End
-      Begin VB.ComboBox cboColumns 
-         BeginProperty Font 
-            Name            =   "Verdana"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   315
-         Index           =   2
-         Left            =   1170
-         Sorted          =   -1  'True
-         Style           =   2  'Dropdown List
-         TabIndex        =   18
-         Top             =   1995
-         Width           =   2670
-      End
-      Begin VB.ComboBox cboSortOrder 
-         BeginProperty Font 
-            Name            =   "Verdana"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   315
-         Index           =   1
-         Left            =   5205
-         Style           =   2  'Dropdown List
-         TabIndex        =   17
-         Top             =   750
-         Width           =   1440
-      End
+      TabIndex        =   28
+      Top             =   6225
+      Width           =   4380
       Begin VB.ComboBox cboSortOrder 
          BeginProperty Font 
             Name            =   "Verdana"
@@ -156,33 +44,16 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   315
          Index           =   2
-         Left            =   5205
+         ItemData        =   "frmSSIntranetChart.frx":000C
+         Left            =   1425
+         List            =   "frmSSIntranetChart.frx":0016
          Style           =   2  'Dropdown List
-         TabIndex        =   16
-         Top             =   1995
-         Width           =   1440
-      End
-      Begin VB.Label lblIntersectionHeader 
-         AutoSize        =   -1  'True
-         Caption         =   "Intersection Data :"
-         BeginProperty Font 
-            Name            =   "Verdana"
-            Size            =   9
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   210
-         Left            =   210
          TabIndex        =   30
-         Top             =   1260
-         Width           =   1785
+         Top             =   645
+         Width           =   1890
       End
-      Begin VB.Label lblIntersectionTable 
-         AutoSize        =   -1  'True
-         Caption         =   "Table :"
+      Begin VB.CheckBox chkSortAggregate 
+         Caption         =   "Sort by Aggregate"
          BeginProperty Font 
             Name            =   "Verdana"
             Size            =   8.25
@@ -195,8 +66,117 @@ Begin VB.Form frmSSIntranetChart
          Height          =   195
          Left            =   210
          TabIndex        =   29
-         Top             =   1635
-         Width           =   600
+         Top             =   345
+         Width           =   1875
+      End
+      Begin VB.Label Label5 
+         AutoSize        =   -1  'True
+         Caption         =   "Sort Order :"
+         BeginProperty Font 
+            Name            =   "Verdana"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   195
+         Left            =   210
+         TabIndex        =   33
+         Top             =   690
+         Width           =   1050
+      End
+   End
+   Begin VB.Frame fraInt_Data 
+      Caption         =   "Intersection Data :"
+      BeginProperty Font 
+         Name            =   "Verdana"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      Height          =   1680
+      Left            =   165
+      TabIndex        =   23
+      Top             =   4080
+      Width           =   4380
+      Begin VB.ComboBox cboAggregateType 
+         BeginProperty Font 
+            Name            =   "Verdana"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   315
+         Index           =   0
+         Left            =   1425
+         Style           =   2  'Dropdown List
+         TabIndex        =   31
+         Top             =   1125
+         Width           =   1890
+      End
+      Begin VB.ComboBox cboColumns 
+         BeginProperty Font 
+            Name            =   "Verdana"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   315
+         Index           =   2
+         Left            =   1425
+         Sorted          =   -1  'True
+         Style           =   2  'Dropdown List
+         TabIndex        =   25
+         Top             =   750
+         Width           =   2670
+      End
+      Begin VB.ComboBox cboParents 
+         BeginProperty Font 
+            Name            =   "Verdana"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   315
+         Index           =   2
+         Left            =   1425
+         Sorted          =   -1  'True
+         Style           =   2  'Dropdown List
+         TabIndex        =   24
+         Top             =   375
+         Width           =   2670
+      End
+      Begin VB.Label lblAggregateType 
+         AutoSize        =   -1  'True
+         Caption         =   "Aggregate :"
+         BeginProperty Font 
+            Name            =   "Verdana"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   195
+         Left            =   210
+         TabIndex        =   32
+         Top             =   1185
+         Width           =   1020
       End
       Begin VB.Label lblIntersectionColumn 
          AutoSize        =   -1  'True
@@ -212,13 +192,13 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   195
          Left            =   210
-         TabIndex        =   28
-         Top             =   2025
+         TabIndex        =   27
+         Top             =   810
          Width           =   795
       End
-      Begin VB.Label lblIntersectionAggregate 
+      Begin VB.Label lblIntersectionTable 
          AutoSize        =   -1  'True
-         Caption         =   "Aggregate :"
+         Caption         =   "Table :"
          BeginProperty Font 
             Name            =   "Verdana"
             Size            =   8.25
@@ -229,28 +209,102 @@ Begin VB.Form frmSSIntranetChart
             Strikethrough   =   0   'False
          EndProperty
          Height          =   195
-         Left            =   3945
-         TabIndex        =   27
-         Top             =   1635
-         Width           =   1020
-      End
-      Begin VB.Label lblIntersectionSortOrder 
-         AutoSize        =   -1  'True
-         Caption         =   "Sort Order :"
-         BeginProperty Font 
-            Name            =   "Verdana"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   195
-         Left            =   3945
+         Left            =   210
          TabIndex        =   26
-         Top             =   2025
-         Width           =   1050
+         Top             =   420
+         Width           =   600
+      End
+   End
+   Begin VB.ComboBox cboChartType 
+      BeginProperty Font 
+         Name            =   "Verdana"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      Height          =   315
+      ItemData        =   "frmSSIntranetChart.frx":0031
+      Left            =   1590
+      List            =   "frmSSIntranetChart.frx":003B
+      Style           =   2  'Dropdown List
+      TabIndex        =   22
+      Top             =   255
+      Width           =   2670
+   End
+   Begin VB.Frame fraVer_Data 
+      Caption         =   "Vertical Data :"
+      BeginProperty Font 
+         Name            =   "Verdana"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      Height          =   1680
+      Left            =   165
+      TabIndex        =   13
+      Top             =   2565
+      Width           =   4380
+      Begin VB.ComboBox cboParents 
+         BeginProperty Font 
+            Name            =   "Verdana"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   315
+         Index           =   1
+         Left            =   1425
+         Sorted          =   -1  'True
+         Style           =   2  'Dropdown List
+         TabIndex        =   16
+         Top             =   375
+         Width           =   2670
+      End
+      Begin VB.ComboBox cboColumns 
+         BeginProperty Font 
+            Name            =   "Verdana"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   315
+         Index           =   1
+         Left            =   1425
+         Sorted          =   -1  'True
+         Style           =   2  'Dropdown List
+         TabIndex        =   15
+         Top             =   750
+         Width           =   2670
+      End
+      Begin VB.ComboBox cboSortOrder 
+         BeginProperty Font 
+            Name            =   "Verdana"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   315
+         Index           =   1
+         Left            =   1410
+         Style           =   2  'Dropdown List
+         TabIndex        =   14
+         Top             =   1125
+         Width           =   1890
       End
       Begin VB.Label Label4 
          AutoSize        =   -1  'True
@@ -266,8 +320,8 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   195
          Left            =   210
-         TabIndex        =   25
-         Top             =   405
+         TabIndex        =   19
+         Top             =   420
          Width           =   600
       End
       Begin VB.Label Label3 
@@ -284,8 +338,8 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   195
          Left            =   210
-         TabIndex        =   24
-         Top             =   795
+         TabIndex        =   18
+         Top             =   810
          Width           =   795
       End
       Begin VB.Label Label1 
@@ -301,9 +355,9 @@ Begin VB.Form frmSSIntranetChart
             Strikethrough   =   0   'False
          EndProperty
          Height          =   195
-         Left            =   3945
-         TabIndex        =   23
-         Top             =   795
+         Left            =   210
+         TabIndex        =   17
+         Top             =   1185
          Width           =   1050
       End
    End
@@ -320,9 +374,9 @@ Begin VB.Form frmSSIntranetChart
       EndProperty
       Height          =   915
       Left            =   165
-      TabIndex        =   11
-      Top             =   4455
-      Width           =   6870
+      TabIndex        =   9
+      Top             =   7935
+      Width           =   4380
       Begin VB.CommandButton cmdFilter 
          Caption         =   "..."
          BeginProperty Font 
@@ -335,8 +389,8 @@ Begin VB.Form frmSSIntranetChart
             Strikethrough   =   0   'False
          EndProperty
          Height          =   315
-         Left            =   5235
-         TabIndex        =   14
+         Left            =   3420
+         TabIndex        =   12
          Top             =   360
          Width           =   315
       End
@@ -351,10 +405,10 @@ Begin VB.Form frmSSIntranetChart
             Strikethrough   =   0   'False
          EndProperty
          Height          =   330
-         Left            =   1170
-         TabIndex        =   13
+         Left            =   1425
+         TabIndex        =   11
          Top             =   360
-         Width           =   4065
+         Width           =   1995
       End
       Begin VB.CommandButton cmdFilterClear 
          Caption         =   "O"
@@ -368,9 +422,9 @@ Begin VB.Form frmSSIntranetChart
             Strikethrough   =   0   'False
          EndProperty
          Height          =   315
-         Left            =   5565
+         Left            =   3750
          MaskColor       =   &H000000FF&
-         TabIndex        =   12
+         TabIndex        =   10
          ToolTipText     =   "Clear Path"
          Top             =   360
          UseMaskColor    =   -1  'True
@@ -390,7 +444,7 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   195
          Left            =   210
-         TabIndex        =   31
+         TabIndex        =   20
          Top             =   405
          Width           =   555
       End
@@ -407,13 +461,13 @@ Begin VB.Form frmSSIntranetChart
          Strikethrough   =   0   'False
       EndProperty
       Height          =   400
-      Left            =   4515
-      TabIndex        =   2
-      Top             =   5565
+      Left            =   2040
+      TabIndex        =   1
+      Top             =   9045
       Width           =   1200
    End
-   Begin VB.Frame fraSSIChart 
-      Caption         =   "Single-axis / Horizontal Data :"
+   Begin VB.Frame fraHor_Data 
+      Caption         =   "Horizontal Data :"
       BeginProperty Font 
          Name            =   "Verdana"
          Size            =   8.25
@@ -423,11 +477,11 @@ Begin VB.Form frmSSIntranetChart
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      Height          =   1395
+      Height          =   1680
       Left            =   165
-      TabIndex        =   3
-      Top             =   210
-      Width           =   6870
+      TabIndex        =   2
+      Top             =   795
+      Width           =   4380
       Begin VB.ComboBox cboParents 
          BeginProperty Font 
             Name            =   "Verdana"
@@ -440,10 +494,10 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   315
          Index           =   0
-         Left            =   1155
+         Left            =   1425
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
-         TabIndex        =   10
+         TabIndex        =   8
          Top             =   375
          Width           =   2670
       End
@@ -459,29 +513,11 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   315
          Index           =   0
-         Left            =   5205
+         Left            =   1425
          Style           =   2  'Dropdown List
-         TabIndex        =   9
-         Top             =   750
-         Width           =   1440
-      End
-      Begin VB.ComboBox cboAggregateType 
-         BeginProperty Font 
-            Name            =   "Verdana"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   315
-         Index           =   0
-         Left            =   5205
-         Style           =   2  'Dropdown List
-         TabIndex        =   1
-         Top             =   375
-         Width           =   1440
+         TabIndex        =   7
+         Top             =   1125
+         Width           =   1890
       End
       Begin VB.ComboBox cboColumns 
          BeginProperty Font 
@@ -495,7 +531,7 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   315
          Index           =   0
-         Left            =   1170
+         Left            =   1425
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
          TabIndex        =   0
@@ -515,28 +551,10 @@ Begin VB.Form frmSSIntranetChart
             Strikethrough   =   0   'False
          EndProperty
          Height          =   195
-         Left            =   3975
-         TabIndex        =   8
-         Top             =   810
+         Left            =   210
+         TabIndex        =   6
+         Top             =   1185
          Width           =   1050
-      End
-      Begin VB.Label lblAggregateType 
-         AutoSize        =   -1  'True
-         Caption         =   "Aggregate :"
-         BeginProperty Font 
-            Name            =   "Verdana"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   195
-         Left            =   3975
-         TabIndex        =   7
-         Top             =   420
-         Width           =   1020
       End
       Begin VB.Label lblColumn 
          AutoSize        =   -1  'True
@@ -552,7 +570,7 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   195
          Left            =   210
-         TabIndex        =   6
+         TabIndex        =   5
          Top             =   810
          Width           =   795
       End
@@ -570,7 +588,7 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   195
          Left            =   210
-         TabIndex        =   5
+         TabIndex        =   4
          Top             =   420
          Width           =   600
       End
@@ -587,10 +605,28 @@ Begin VB.Form frmSSIntranetChart
          Strikethrough   =   0   'False
       EndProperty
       Height          =   400
-      Left            =   5805
-      TabIndex        =   4
-      Top             =   5565
+      Left            =   3330
+      TabIndex        =   3
+      Top             =   9045
       Width           =   1200
+   End
+   Begin VB.Label Label2 
+      AutoSize        =   -1  'True
+      Caption         =   "Chart Type :"
+      BeginProperty Font 
+         Name            =   "Verdana"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      Height          =   195
+      Left            =   210
+      TabIndex        =   21
+      Top             =   285
+      Width           =   1095
    End
 End
 Attribute VB_Name = "frmSSIntranetChart"
@@ -639,10 +675,41 @@ Private Sub cboAggregateType_Click(Index As Integer)
  End If
 End Sub
 
+Private Sub cboChartType_Click()
+  
+  If cboChartType = "Single Axis Chart" Then
+    'hide the vertical frame
+    Me.fraInt_Data.Height = 915
+    Me.lblAggregateType.Top = 405
+    Me.cboAggregateType(0).Top = 360
+
+    Me.Height = 6935
+    fraVer_Data.Visible = False
+    fraInt_Data.Top = fraHor_Data.Top + fraHor_Data.Height + 90
+  Else
+    Me.fraInt_Data.Height = 1680
+    Me.lblAggregateType.Top = 1185
+    Me.cboAggregateType(0).Top = 1125
+    
+    ' display the vertical frame
+    Me.Height = 9500
+    fraVer_Data.Visible = True
+    fraVer_Data.Top = fraHor_Data.Top + fraHor_Data.Height + 90
+    fraInt_Data.Top = fraVer_Data.Top + fraVer_Data.Height + 90
+  End If
+  
+  fraAggregate.Top = fraInt_Data.Top + fraInt_Data.Height + 90
+  fraChartFilter.Top = fraAggregate.Top + fraAggregate.Height + 90
+  cmdOk.Top = fraChartFilter.Top + fraChartFilter.Height + 190
+  cmdCancel.Top = cmdOk.Top
+  
+  EnableDisableCombos
+
+End Sub
+
 Private Sub cboColumns_Click(Index As Integer)
   Dim piColumnDataType As Integer
   Dim lngColumnID As Long
-  Dim piIndex As Integer
   
   mfChanged = True
   
@@ -661,35 +728,58 @@ Private Sub cboColumns_Click(Index As Integer)
     lngColumnID = cboColumns(0).ItemData(cboColumns(0).ListIndex)
   End If
 
-  piIndex = IIf(Index = 1, 2, Index)
-  fOK = PopulateAggregateCombo(0, piIndex)
+  fOK = PopulateAggregateCombo(0, Index)
   
   ' Disable relevant controls
   ' i.e. if no vertical table/column disable intersection stuff
   ' if intersection selected, disable horizontal aggregate
   
-  EnableDisableCombos
+'  EnableDisableCombos
   
   RefreshControls
 End Sub
 
 Private Sub EnableDisableCombos()
   
-  ' Disable 'Intersection' section
-  lblIntersectionHeader.Enabled = Not (cboColumns(1) = vbNullString)
-  lblIntersectionTable.Enabled = Not (cboColumns(1) = vbNullString)
-  cboParents(2).Enabled = Not (cboColumns(1) = vbNullString)
-  lblIntersectionAggregate.Enabled = Not (cboColumns(1) = vbNullString)
-  cboAggregateType(2).Enabled = Not (cboColumns(1) = vbNullString)
-  lblIntersectionColumn.Enabled = Not (cboColumns(1) = vbNullString)
-  cboColumns(2).Enabled = Not (cboColumns(1) = vbNullString)
-  lblIntersectionSortOrder.Enabled = Not (cboColumns(1) = vbNullString)
-  cboSortOrder(2).Enabled = Not (cboColumns(1) = vbNullString)
+  lblIntersectionTable.Visible = (cboChartType.ListIndex = 1)
+  cboParents(2).Visible = (cboChartType.ListIndex = 1)
+  lblIntersectionColumn.Visible = (cboChartType.ListIndex = 1)
+  cboColumns(2).Visible = (cboChartType.ListIndex = 1)
   
-  lblAggregateType.Enabled = (cboColumns(1) = vbNullString)
-  cboAggregateType(0).Enabled = (cboColumns(1) = vbNullString)
+
   
   
+  ' display the horizontal data in the intersection section for display purposes
+  If cboChartType = "Single Axis Chart" Then
+
+'    cboParents(1).Clear
+'    cboParents(1).AddItem cboParents(0).Text
+'    cboParents(1).ListIndex = 0
+'
+'    cboColumns(1).Clear
+'    cboColumns(1).AddItem cboColumns(0).Text
+'    cboColumns(1).ListIndex = 0
+'
+'    cboParents(2).Clear
+'    cboParents(2).AddItem cboParents(0).Text
+'    cboParents(2).ListIndex = 0
+'
+'    cboColumns(2).Clear
+'    cboColumns(2).AddItem cboColumns(0).Text
+'    cboColumns(2).ListIndex = 0
+
+  Else
+'    If Chart_ColumnID_2 = 0 Then
+'      cboParents(1).Clear
+'      cboColumns(1).Clear
+'      cboAggregateType(0).Clear
+'    End If
+'    If Chart_ColumnID_3 = 0 Then
+'      cboParents(2).Clear
+'      cboColumns(2).Clear
+'      cboAggregateType(0).Clear
+'    End If
+  End If
 
 End Sub
 
@@ -748,7 +838,7 @@ Private Sub cboParents_Click(Index As Integer)
   
   cboSortOrder(Index).ListIndex = 0
   
-  EnableDisableCombos
+'  EnableDisableCombos
   
   ChartTableID = IIf(cboParents(0) <> vbNullString, cboParents(0).ItemData(cboParents(0).ListIndex), 0)
   Chart_TableID_2 = IIf(cboParents(1) <> vbNullString, cboParents(1).ItemData(cboParents(1).ListIndex), 0)
@@ -766,18 +856,33 @@ End Sub
 Public Function PopulateSortCombos(plngSortOrderID As Long)
   ' cheeky
   Dim pstrBinaryString As String
-  pstrBinaryString = DecToBin(plngSortOrderID, 3)
+  pstrBinaryString = DecToBin(plngSortOrderID, 4)
   
-  For jnCount = 1 To 3
-    If Mid(pstrBinaryString, jnCount, 1) = "0" Then
-      ' Ascending
-      cboSortOrder(jnCount - 1).ListIndex = IIf(cboParents(jnCount - 1) <> vbNullString, 1, -1)
-    Else
-      ' Descending
-      cboSortOrder(jnCount - 1).ListIndex = IIf(cboParents(jnCount - 1) <> vbNullString, 2, -1)
-    End If
-  Next
+  ' Horizontal Sort Combo
+  If Mid(pstrBinaryString, 1, 1) = "0" Then ' Ascending
+    cboSortOrder(0).ListIndex = IIf(cboParents(0) <> vbNullString, 1, -1)
+  Else ' Descending
+    cboSortOrder(0).ListIndex = IIf(cboParents(0) <> vbNullString, 2, -1)
+  End If
       
+  ' Vertical Sort Combo
+  If Mid(pstrBinaryString, 2, 1) = "0" Then ' Ascending
+    cboSortOrder(1).ListIndex = IIf(cboParents(1) <> vbNullString, 1, -1)
+  Else ' Descending
+    cboSortOrder(1).ListIndex = IIf(cboParents(1) <> vbNullString, 2, -1)
+  End If
+      
+  ' Aggregate sort tick box
+  chkSortAggregate.value = val(Mid(pstrBinaryString, 3, 1))
+      
+  ' Aggregate Sort Combo
+  If Mid(pstrBinaryString, 4, 1) = "0" Then ' Ascending
+    cboSortOrder(2).ListIndex = 1
+  Else ' Descending
+    cboSortOrder(2).ListIndex = 2
+  End If
+  
+  
 End Function
 
 Private Function DecToBin(DeciValue As Long, Optional NoOfBits As Integer = 8) As String
@@ -806,6 +911,7 @@ Dim BinaryToDec As Integer
 
   pstrBinaryString = IIf(cboSortOrder(0) = "Descending", "1", "0")
   pstrBinaryString = pstrBinaryString & IIf(cboSortOrder(1) = "Descending", "1", "0")
+  pstrBinaryString = pstrBinaryString & IIf(chkSortAggregate, "1", "0")
   pstrBinaryString = pstrBinaryString & IIf(cboSortOrder(2) = "Descending", "1", "0")
   
   Do
@@ -819,6 +925,13 @@ End Function
 Private Sub cboSortOrder_Click(Index As Integer)
   mfChanged = True
   Chart_SortOrderID = ConvertCombosToDecimal
+  RefreshControls
+End Sub
+
+Private Sub chkSortAggregate_Click()
+  cboSortOrder(2).Enabled = chkSortAggregate
+  Chart_SortOrderID = ConvertCombosToDecimal
+  mfChanged = True
   RefreshControls
 End Sub
 
@@ -859,7 +972,8 @@ End Sub
 
 Private Sub RefreshControls()
   
-  cmdOK.Enabled = mfChanged
+  
+  cmdOk.Enabled = mfChanged
   
 End Sub
 
@@ -1008,17 +1122,20 @@ Public Sub Initialize(plngChartViewID As Long, _
 End Sub
 
 Private Sub cmdOK_Click()
+
+  If cboChartType = "Multi Axis Chart" And (cboColumns(0) = vbNullString Or cboColumns(1) = vbNullString Or cboColumns(2) = vbNullString) Then
+    MsgBox "Please populate all required columns before trying to save.", vbExclamation + vbOKOnly, "Chart Data"
+    Exit Sub
+  End If
+
+
   Cancelled = False
   Me.Hide
 End Sub
 
 Private Sub Form_Load()
   mfLoading = True
-  If Chart_ColumnID_3 > 0 Then
-    fOK = PopulateAggregateCombo(miChartAggregateType, 2)
-  Else
-    fOK = PopulateAggregateCombo(miChartAggregateType, 0)
-  End If
+  fOK = PopulateAggregateCombo(miChartAggregateType, 0)
   
   PopulateParentsCombo (miChartTableID) ' populate and set default value - Horizontal
   fOK = PopulateColumnsCombo(miChartTableID, 0, ChartColumnID)
@@ -1046,7 +1163,16 @@ Private Sub Form_Load()
   
   PopulateSortCombos (Chart_SortOrderID)
   
-  EnableDisableCombos
+'  EnableDisableCombos
+  
+  If Chart_ColumnID_2 > 0 Then
+    cboChartType.ListIndex = 1 ' set to multi axis chart
+  Else
+    cboChartType.ListIndex = 0 ' set to single axis chart
+  End If
+  
+    cboSortOrder(2).Enabled = chkSortAggregate
+
   
   mfLoading = False
   
@@ -1278,8 +1404,8 @@ Private Function PopulateIntersectionCombo(plngDefaultID As Long) As Boolean
     Next
   End If
   
-  cboParents(2).Enabled = (cboParents(2).ListCount > 1)
-  cboParents(2).BackColor = IIf(cboParents(2).Enabled, vbWindowBackground, vbButtonFace)
+'  cboParents(2).Enabled = (cboParents(2).ListCount > 1)
+'  cboParents(2).BackColor = IIf(cboParents(2).Enabled, vbWindowBackground, vbButtonFace)
   
 TidyUpAndExit:
   Exit Function
@@ -1356,32 +1482,32 @@ Private Function PopulateAggregateCombo(piAggregateType As Integer, Index As Int
   
   If Index = 1 Then Exit Function ' no aggregates on the horizontal column
 
-  cboAggregateType(Index).Clear
-  cboAggregateType(Index).AddItem "Count"
-  cboAggregateType(Index).ItemData(cboAggregateType(Index).NewIndex) = 0
+  cboAggregateType(0).Clear
+  cboAggregateType(0).AddItem "Count"
+  cboAggregateType(0).ItemData(cboAggregateType(0).NewIndex) = 0
     
   piColumnDataType = IIf(Index = 0, GetColumnDataType(mlngChartColumnID), GetColumnDataType(mlngChart_ColumnID_3))
   
-  If piColumnDataType = dtinteger Or piColumnDataType = dtnumeric Then
-    cboAggregateType(Index).AddItem "Total"
-    cboAggregateType(Index).ItemData(cboAggregateType(Index).NewIndex) = 1
-    cboAggregateType(Index).AddItem "Average"
-    cboAggregateType(Index).ItemData(cboAggregateType(Index).NewIndex) = 2
-    cboAggregateType(Index).AddItem "Minimum"
-    cboAggregateType(Index).ItemData(cboAggregateType(Index).NewIndex) = 3
-    cboAggregateType(Index).AddItem "Maximum"
-    cboAggregateType(Index).ItemData(cboAggregateType(Index).NewIndex) = 4
+  If piColumnDataType = dtinteger Or piColumnDataType = dtNUMERIC Then
+    cboAggregateType(0).AddItem "Total"
+    cboAggregateType(0).ItemData(cboAggregateType(0).NewIndex) = 1
+    cboAggregateType(0).AddItem "Average"
+    cboAggregateType(0).ItemData(cboAggregateType(0).NewIndex) = 2
+    cboAggregateType(0).AddItem "Minimum"
+    cboAggregateType(0).ItemData(cboAggregateType(0).NewIndex) = 3
+    cboAggregateType(0).AddItem "Maximum"
+    cboAggregateType(0).ItemData(cboAggregateType(0).NewIndex) = 4
   End If
   
   ' Set the correct item as default
-  For i = 0 To cboAggregateType(Index).ListCount - 1
-    If cboAggregateType(Index).ItemData(i) = ChartAggregateType Then
-      cboAggregateType(Index).ListIndex = i
+  For i = 0 To cboAggregateType(0).ListCount - 1
+    If cboAggregateType(0).ItemData(i) = ChartAggregateType Then
+      cboAggregateType(0).ListIndex = i
       Exit For
     End If
   Next
 
-  If cboAggregateType(Index).ListIndex < 0 Then cboAggregateType(Index).ListIndex = 0
+  If cboAggregateType(0).ListIndex < 0 Then cboAggregateType(0).ListIndex = 0
   
 End Function
 
