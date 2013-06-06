@@ -422,6 +422,8 @@ Public Sub CreateEmailProcsForTable(lngTableID As Long, _
                 Select Case GetColumnDataType(lngColumnID)
                 Case dtNUMERIC, dtINTEGER, dtBIT
                   strInsCol = "isnull(@insCol_" & CStr(lngColumnID) & ",0)"
+                Case dtTIMESTAMP
+                  strInsCol = "@insCol_" & CStr(lngColumnID)
                 Case Else
                   strInsCol = "isnull(@insCol_" & CStr(lngColumnID) & ",'')"
                 End Select
