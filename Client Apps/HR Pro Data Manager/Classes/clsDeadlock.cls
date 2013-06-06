@@ -710,7 +710,7 @@ Public Function UpdateTableRecordJustDoIt(psUpdateSQL As String) As Boolean
   fUpdatedOK = True
   iRetryCount = 0
   
-  gADOCon.CommandTimeout = 60
+'  gADOCon.CommandTimeout = 60
   fDeadlock = True
   Do While fDeadlock
     fDeadlock = False
