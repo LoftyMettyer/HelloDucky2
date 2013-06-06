@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "Codejock.SkinFramework.v13.1.0.ocx"
 Begin VB.MDIForm frmSysMgr 
    AutoShowChildren=   0   'False
@@ -148,7 +148,7 @@ Public Sub SetBackground(ByRef mbIsLoading As Boolean)
 
   ' Load the desired picture from the database
   If glngDesktopBitmapID > 0 Then
-    recPictEdit.index = "idxID"
+    recPictEdit.Index = "idxID"
     recPictEdit.Seek "=", glngDesktopBitmapID
     If Not recPictEdit.NoMatch Then
       sFileName = ReadPicture
