@@ -77,14 +77,13 @@ END
 				[groupscreens] bit;';
 
 	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysScreens', 'U') AND name = 'description')
-		EXEC sp_executesql N'ALTER TABLE ASRSysScreens ADD
-				[description] nvarchar(MAX);';
+		EXEC sp_executesql N'ALTER TABLE ASRSysScreens ADD [description] nvarchar(MAX);';
 
 	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysHistoryScreens', 'U') AND name = 'order')
-		EXEC sp_executesql N'ALTER TABLE ASRSysHistoryScreens ADD
-				[order] smallint;';
-
-
+	BEGIN
+		EXEC sp_executesql N'ALTER TABLE ASRSysHistoryScreens ADD [order] smallint;';
+		EXEC sp_executesql N'UPDATE ASRSysHistoryScreens SET [order] = 0;';
+	END
 
 
 
@@ -612,6 +611,7 @@ PRINT 'Step - Menu & Category enhancements'
 			INSERT dbo.tbuser_Object_Categories_Table ([Category_Name]) VALUES ('Parental Leave')
 			INSERT dbo.tbuser_Object_Categories_Table ([Category_Name]) VALUES ('General')
 			INSERT dbo.tbuser_Object_Categories_Table ([Category_Name]) VALUES ('Recruitment')
+			INSERT dbo.tbuser_Object_Categories_Table ([Category_Name]) VALUES ('Post')
 		END
 		
 	END
