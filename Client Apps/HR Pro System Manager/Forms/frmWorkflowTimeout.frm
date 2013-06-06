@@ -4741,7 +4741,7 @@ Private Sub RefreshScreen()
   
   fOKToSave = mfChanged And (Not mfReadOnly)
   
-  cmdOK.Enabled = fOKToSave
+  cmdOk.Enabled = fOKToSave
 
 End Sub
 
@@ -5582,7 +5582,60 @@ Private Function ValidateProperties() As Boolean
   Dim fInvalidValidationMessage As Boolean
   Dim varBookmark As Variant
   Dim fCalcDefault As Boolean
+  Dim fValid As Boolean
   
+  '-----------------------------------------------------------------------
+  ' First do the validation that CANNOT be overridden.
+  '-----------------------------------------------------------------------
+  ReDim asMessages(0)
+  
+  ' Ensure that lookup filtering is fully defined if required.
+  fValid = True
+  
+  If WebFormItemHasProperty(miItemType, WFITEMPROP_LOOKUPFILTER) Then
+    If chkLookupFilter.value = vbChecked Then
+      If (cboLookupFilterColumn.ListCount = 0) _
+        Or (cboLookupFilterOperator.ListCount = 0) _
+        Or (cboLookupFilterValue.ListCount = 0) Then
+        
+        fValid = False
+      End If
+      
+      If fValid Then
+        fValid = (cboLookupFilterColumn.ListIndex > 0) _
+          And (cboLookupFilterOperator.ItemData(cboLookupFilterOperator.ListIndex) > 0) _
+          And (cboLookupFilterValue.ListIndex > 0)
+      End If
+    End If
+  End If
+  
+  If Not fValid Then
+    ReDim Preserve asMessages(UBound(asMessages) + 1)
+    asMessages(UBound(asMessages)) = "Lookup filter details incomplete."
+  End If
+  
+  If (UBound(asMessages) > 0) Then
+    Set frmUsage = New frmUsage
+    frmUsage.ResetList
+
+    For iLoop = 1 To UBound(asMessages)
+      frmUsage.AddToList (asMessages(iLoop))
+    Next iLoop
+
+    Screen.MousePointer = vbNormal
+    frmUsage.ShowMessage "Workflow", "The " & GetWebFormItemTypeName(CInt(miItemType)) & " definition is invalid for the reasons listed below.", UsageCheckObject.Workflow, _
+      USAGEBUTTONS_OK, "validation"
+
+    UnLoad frmUsage
+    Set frmUsage = Nothing
+    
+    ValidateProperties = False
+    Exit Function
+  End If
+  
+  '-----------------------------------------------------------------------
+  ' Now do the validation that CAN be overridden.
+  '-----------------------------------------------------------------------
   fContinue = True
   ReDim asMessages(0)
   
@@ -10494,13 +10547,13 @@ End Sub
 Private Sub txtControlValues_GotFocus()
   ' Disable the 'Default' property of the 'OK' button as the return key is
   ' used by this textbox.
-  cmdOK.Default = False
+  cmdOk.Default = False
 
 End Sub
 
 Private Sub txtControlValues_LostFocus()
   ' Enable the 'Default' property of the OK button.
-  cmdOK.Default = True
+  cmdOk.Default = True
 
 End Sub
 
@@ -10648,14 +10701,14 @@ End Sub
 Private Sub txtFileExtensions_GotFocus()
   ' Disable the 'Default' property of the 'OK' button as the return key is
   ' used by this textbox.
-  cmdOK.Default = False
+  cmdOk.Default = False
 
 End Sub
 
 
 Private Sub txtFileExtensions_LostFocus()
   ' Enable the 'Default' property of the OK button.
-  cmdOK.Default = True
+  cmdOk.Default = True
 
 End Sub
 
