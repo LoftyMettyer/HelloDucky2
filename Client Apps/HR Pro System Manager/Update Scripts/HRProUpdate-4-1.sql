@@ -992,6 +992,7 @@ PRINT 'Step 1 - Modifying Workflow procedures'
 /* ------------------------------------------------------------- */
 PRINT 'Step 2 - Version 1 Integration Modifications'
 
+
 	-- Create document management map table
 	IF OBJECT_ID('ASRSysDocumentManagementTypes', N'U') IS NULL	
 	BEGIN
@@ -1008,6 +1009,7 @@ PRINT 'Step 2 - Version 1 Integration Modifications'
                     , [TargetColumnID]			integer
                     , [TargetCategoryColumnID]	integer
                     , [TargetTypeColumnID]		integer
+                    , [TargetGUIDColumnID]		integer                    
                     , [Parent1TableID]			integer
                     , [Parent1KeyFieldColumnID]	integer
                     , [Parent2TableID]			integer
