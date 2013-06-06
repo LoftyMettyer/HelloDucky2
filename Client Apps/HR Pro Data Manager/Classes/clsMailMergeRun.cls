@@ -1357,7 +1357,7 @@ Private Sub WrdSetMergeOptions()
         .DataSource.LastRecord = wdDefaultLastRecord
         
         Set objTemp = wrdDocTemplate.MailMerge
-        objTemp.MailFormat = 0   'wdMailFormatPlainText
+        objTemp.MailFormat = GetSystemSetting("Mail Merge", "Email Format", 1)
       End If
     Else
       'If destination = printer then send to new document
