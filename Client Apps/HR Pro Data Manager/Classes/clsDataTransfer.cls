@@ -58,13 +58,15 @@ Private mstrToTableName As String
 
 Private mlngFilterID As Long
 Private mlngPicklistID As Long
-Private mlngSingleRecordID As Long
+'Private mlngSingleRecordID As Long
 
 Private mbDefinitionOwner As Boolean
 Private mbLoggingDTSuccess As Boolean
 
 ' Array holding the User Defined functions that are needed for this report
 Private mastrUDFsRequired() As String
+
+Private mstrPicklistFilterIDs As String
 
 Private Function IsRecordSelectionValid() As Boolean
 
@@ -145,7 +147,8 @@ Private Function Progress() As Boolean
   
 End Function
 
-Public Function ExecuteDataTransfer(lngSelectedID As Long, Optional lngRecordID As Long) As Boolean
+'Public Function ExecuteDataTransfer(lngSelectedID As Long, Optional lngRecordID As Long) As Boolean
+Public Function ExecuteDataTransfer(lngSelectedID As Long, Optional strRecordIDs As String) As Boolean
 
   Dim strMBText As String
   Dim intMBButtons As Integer
@@ -156,7 +159,8 @@ Public Function ExecuteDataTransfer(lngSelectedID As Long, Optional lngRecordID 
   ReDim mastrUDFsRequired(0)
 
   mlngSelectedID = lngSelectedID
-  mlngSingleRecordID = lngRecordID
+  'mlngSingleRecordID = lngRecordID
+  mstrPicklistFilterIDs = strRecordIDs
   
   fOK = True
   Screen.MousePointer = vbHourglass
@@ -256,9 +260,12 @@ Private Sub OutputJobStatus()
     mstrStatusMessage = mstrStatusMessage & vbCrLf & vbCrLf & _
       Records(mlngSuccessCount) & " successfully transferred."
 
-    If mlngFailCount > 0 And Not mlngSingleRecordID > 0 Then
-      mstrStatusMessage = mstrStatusMessage & vbCrLf & vbCrLf & _
-        Records(mlngFailCount) & " failed during transfer."
+    'If mlngFailCount > 0 And Not mlngSingleRecordID > 0 Then
+    If mlngFailCount > 0 Then
+      'If mstrPicklistFilterIDs = "" Or InStr(mstrPicklistFilterIDs, ",") > 0 Then
+        mstrStatusMessage = mstrStatusMessage & vbCrLf & vbCrLf & _
+          Records(mlngFailCount) & " failed during transfer."
+      'End If
     End If
   End If
 
@@ -1011,7 +1018,8 @@ Private Sub ProcessRecords()
       
       ElseIf strRecordError <> vbNullString Then
         
-        If mlngSingleRecordID > 0 Then
+        'If mlngSingleRecordID > 0 Then
+        If mstrPicklistFilterIDs <> "" And InStr(mstrPicklistFilterIDs, ",") = 0 Then
           mstrStatusMessage = strRecordError
         End If
         
@@ -1274,9 +1282,13 @@ Private Function GetPicklistFilterSelect() As String
 
   GetPicklistFilterSelect = vbNullString
 
-  If mlngSingleRecordID > 0 Then
-    GetPicklistFilterSelect = CStr(mlngSingleRecordID)
+  'If mlngSingleRecordID > 0 Then
+  '  GetPicklistFilterSelect = CStr(mlngSingleRecordID)
   
+  If mstrPicklistFilterIDs <> "" Then
+    GetPicklistFilterSelect = mstrPicklistFilterIDs
+
+
   ElseIf mlngPicklistID > 0 Then
     
     mstrStatusMessage = IsPicklistValid(mlngPicklistID)

@@ -11170,7 +11170,7 @@ Public Sub MailMergeClick()
         Select Case .Action
         Case edtSelect
           Set objExecution = New clsMailMergeRun
-          objExecution.ExecuteMailMerge .SelectedID, mlngRecordID
+          objExecution.ExecuteMailMerge .SelectedID, CStr(mlngRecordID)
           Set objExecution = Nothing
           blnExit = gbCloseDefSelAfterRun
 
@@ -11334,7 +11334,7 @@ Public Sub DataTransferClick()
         Select Case .Action
           Case edtSelect
             Set objExecution = New clsDataTransferRun
-            objExecution.ExecuteDataTransfer .SelectedID, mlngRecordID
+            objExecution.ExecuteDataTransfer .SelectedID, CStr(mlngRecordID)
             Set objExecution = Nothing
             blnExit = gbCloseDefSelAfterRun
   
@@ -11527,7 +11527,7 @@ Public Sub LabelsClick()
         Select Case .Action
         Case edtSelect
           Set objExecution = New clsMailMergeRun
-          objExecution.ExecuteMailMerge .SelectedID, mlngRecordID
+          objExecution.ExecuteMailMerge .SelectedID, CStr(mlngRecordID)
           Set objExecution = Nothing
           blnExit = gbCloseDefSelAfterRun
 

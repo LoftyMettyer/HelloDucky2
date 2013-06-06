@@ -1986,6 +1986,12 @@ Private Sub ActiveBar1_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
     Case "GlobalUpdate"
       UtilityClick utlGlobalUpdate
     
+    Case "MailMerge"
+      UtilityClick utlMailMerge
+    
+    Case "DataTransfer"
+      UtilityClick utlDataTransfer
+  
   End Select
 
 End Sub
@@ -4597,6 +4603,8 @@ Public Sub UtilityClick(lngUtilType As UtilityType)
   Dim objCustomReportRun As clsCustomReportsRUN
   Dim objCalendarReport As clsCalendarReportsRUN
   Dim objGlobalRun As clsGlobalRun
+  Dim objMailMergeRun As clsMailMergeRun
+  Dim objDataTransferRun As clsDataTransferRun
   
   Dim frmSelection As frmDefSel
   Dim blnExit As Boolean
@@ -4658,6 +4666,16 @@ Public Sub UtilityClick(lngUtilType As UtilityType)
                     Set objGlobalRun = New clsGlobalRun
                     objGlobalRun.RunGlobal .SelectedID, glUpdate, strSelectedRecords
                     Set objGlobalRun = Nothing
+                  
+                  Case utlMailMerge
+                    Set objMailMergeRun = New clsMailMergeRun
+                    objMailMergeRun.ExecuteMailMerge .SelectedID, strSelectedRecords
+                    Set objMailMergeRun = Nothing
+                  
+                  Case utlDataTransfer
+                    Set objDataTransferRun = New clsDataTransferRun
+                    objDataTransferRun.ExecuteDataTransfer .SelectedID, strSelectedRecords
+                    Set objDataTransferRun = Nothing
                   
                   End Select
                 
