@@ -13,7 +13,7 @@ Begin VB.MDIForm frmSysMgr
    HelpContextID   =   5066
    Icon            =   "frmSysMgr.frx":0000
    LinkTopic       =   "MDIForm1"
-   MouseIcon       =   "frmSysMgr.frx":058A
+   MouseIcon       =   "frmSysMgr.frx":038A
    NegotiateToolbars=   0   'False
    StartUpPosition =   2  'CenterScreen
    WindowState     =   2  'Maximized
@@ -37,6 +37,7 @@ Begin VB.MDIForm frmSysMgr
       BeginProperty Panels {0713E89E-850A-101B-AFC0-4210102A8DA7} 
          NumPanels       =   1
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -98,7 +99,7 @@ Begin VB.MDIForm frmSysMgr
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      Bands           =   "frmSysMgr.frx":0914
+      Bands           =   "frmSysMgr.frx":0714
    End
 End
 Attribute VB_Name = "frmSysMgr"

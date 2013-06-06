@@ -41,7 +41,7 @@ Begin VB.Form frmSplash
       _Version        =   65536
       _ExtentX        =   2143
       _ExtentY        =   873
-      Caption         =   "frmSplash.frx":31D2
+      Caption         =   "frmSplash.frx":038A
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Verdana"
          Size            =   8.25
@@ -51,7 +51,7 @@ Begin VB.Form frmSplash
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      Keys            =   "frmSplash.frx":3238
+      Keys            =   "frmSplash.frx":03F0
       AlignHorizontal =   0
       AlignVertical   =   0
       Appearance      =   1
@@ -98,8 +98,8 @@ Begin VB.Form frmSplash
       _Version        =   65536
       _ExtentX        =   2143
       _ExtentY        =   873
-      Calculator      =   "frmSplash.frx":327A
-      Caption         =   "frmSplash.frx":329A
+      Calculator      =   "frmSplash.frx":0432
+      Caption         =   "frmSplash.frx":0452
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Verdana"
          Size            =   8.25
@@ -109,9 +109,9 @@ Begin VB.Form frmSplash
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      DropDown        =   "frmSplash.frx":3300
-      Keys            =   "frmSplash.frx":331E
-      Spin            =   "frmSplash.frx":3368
+      DropDown        =   "frmSplash.frx":04B8
+      Keys            =   "frmSplash.frx":04D6
+      Spin            =   "frmSplash.frx":0520
       AlignHorizontal =   1
       AlignVertical   =   0
       Appearance      =   1
@@ -150,7 +150,7 @@ Begin VB.Form frmSplash
    Begin VB.Image Image2 
       Height          =   2820
       Left            =   0
-      Picture         =   "frmSplash.frx":3390
+      Picture         =   "frmSplash.frx":0548
       Top             =   0
       Width           =   6150
    End
