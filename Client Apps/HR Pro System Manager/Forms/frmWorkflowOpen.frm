@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Begin VB.Form frmWorkflowOpen 
    Caption         =   "Workflow Manager"
    ClientHeight    =   6285
@@ -1154,6 +1154,7 @@ Private Sub cmdNew_Click()
   'Define a progress bar
   With gobjProgress
     .Caption = "Workflow Designer"
+    .AVI = dbWorkflow
     .NumberOfBars = 1
     .Bar1Value = 1
     .Bar1MaxValue = 2
