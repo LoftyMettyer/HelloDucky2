@@ -149,148 +149,6 @@ Begin VB.Form frmDiary
    End
    Begin VB.Frame fraViewType 
       BorderStyle     =   0  'None
-      Caption         =   "View List"
-      BeginProperty Font 
-         Name            =   "Verdana"
-         Size            =   8.25
-         Charset         =   0
-         Weight          =   400
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      Height          =   4875
-      Index           =   3
-      Left            =   0
-      TabIndex        =   3
-      Top             =   0
-      Width           =   8970
-      Begin SSDataWidgets_B.SSDBGrid grdViewByList 
-         Height          =   4575
-         Left            =   120
-         TabIndex        =   8
-         TabStop         =   0   'False
-         Top             =   240
-         Width           =   8820
-         ScrollBars      =   2
-         _Version        =   196617
-         DataMode        =   1
-         BeginProperty HeadFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-            Name            =   "Verdana"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         RecordSelectors =   0   'False
-         ColumnHeaders   =   0   'False
-         stylesets.count =   1
-         stylesets(0).Name=   "Alarm"
-         stylesets(0).ForeColor=   -2147483643
-         stylesets(0).BackColor=   14811135
-         stylesets(0).HasFont=   -1  'True
-         BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-            Name            =   "Verdana"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         stylesets(0).Picture=   "frmDiary.frx":05A6
-         stylesets(0).AlignmentPicture=   0
-         stylesets(0).PictureMetaWidth=   28
-         stylesets(0).PictureMetaHeight=   28
-         DividerType     =   0
-         AllowUpdate     =   0   'False
-         MultiLine       =   0   'False
-         AllowRowSizing  =   0   'False
-         AllowGroupSizing=   0   'False
-         AllowColumnSizing=   0   'False
-         AllowGroupMoving=   0   'False
-         AllowColumnMoving=   0
-         AllowGroupSwapping=   0   'False
-         AllowColumnSwapping=   0
-         AllowGroupShrinking=   0   'False
-         AllowColumnShrinking=   0   'False
-         AllowDragDrop   =   0   'False
-         SelectTypeCol   =   0
-         SelectTypeRow   =   3
-         SelectByCell    =   -1  'True
-         BalloonHelp     =   0   'False
-         CellNavigation  =   1
-         MaxSelectedRows =   0
-         ForeColorEven   =   -2147483640
-         BackColorEven   =   -2147483624
-         BackColorOdd    =   -2147483624
-         RowHeight       =   423
-         Columns.Count   =   4
-         Columns(0).Width=   3200
-         Columns(0).Visible=   0   'False
-         Columns(0).Caption=   "DiaryEventID"
-         Columns(0).Name =   "DiaryEventID"
-         Columns(0).DataField=   "Column 0"
-         Columns(0).DataType=   8
-         Columns(0).FieldLen=   256
-         Columns(0).Style=   4
-         Columns(0).StyleSet=   "Alarm"
-         Columns(1).Width=   529
-         Columns(1).Caption=   "Alarm"
-         Columns(1).Name =   "Alarm"
-         Columns(1).DataField=   "Column 1"
-         Columns(1).DataType=   8
-         Columns(1).FieldLen=   256
-         Columns(2).Width=   3360
-         Columns(2).Caption=   "Date / Time"
-         Columns(2).Name =   "Date"
-         Columns(2).DataField=   "Column 2"
-         Columns(2).DataType=   8
-         Columns(2).FieldLen=   256
-         Columns(3).Width=   10583
-         Columns(3).Caption=   "Title"
-         Columns(3).Name =   "Title"
-         Columns(3).DataField=   "Column 3"
-         Columns(3).DataType=   8
-         Columns(3).FieldLen=   256
-         TabNavigation   =   1
-         _ExtentX        =   15557
-         _ExtentY        =   8070
-         _StockProps     =   79
-         BackColor       =   -2147483624
-         BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-            Name            =   "Verdana"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         BeginProperty PageFooterFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-            Name            =   "Verdana"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         BeginProperty PageHeaderFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-            Name            =   "Verdana"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-      End
-   End
-   Begin VB.Frame fraViewType 
-      BorderStyle     =   0  'None
       Caption         =   "View By Day"
       BeginProperty Font 
          Name            =   "Verdana"
@@ -313,7 +171,7 @@ Begin VB.Form frmDiary
          TabIndex        =   9
          TabStop         =   0   'False
          Top             =   600
-         Width           =   7845
+         Width           =   8820
          ScrollBars      =   2
          _Version        =   196617
          DataMode        =   2
@@ -328,10 +186,9 @@ Begin VB.Form frmDiary
          EndProperty
          RecordSelectors =   0   'False
          ColumnHeaders   =   0   'False
-         Col.Count       =   4
          stylesets.count =   1
          stylesets(0).Name=   "Alarm"
-         stylesets(0).BackColor=   14811135
+         stylesets(0).BackColor=   16184819
          stylesets(0).HasFont=   -1  'True
          BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
             Name            =   "Verdana"
@@ -342,7 +199,7 @@ Begin VB.Form frmDiary
             Italic          =   0   'False
             Strikethrough   =   0   'False
          EndProperty
-         stylesets(0).Picture=   "frmDiary.frx":0995
+         stylesets(0).Picture=   "frmDiary.frx":05A6
          stylesets(0).AlignmentPicture=   0
          stylesets(0).PictureMetaWidth=   28
          stylesets(0).PictureMetaHeight=   28
@@ -364,8 +221,8 @@ Begin VB.Form frmDiary
          BalloonHelp     =   0   'False
          MaxSelectedRows =   0
          ForeColorEven   =   -2147483640
-         BackColorEven   =   -2147483624
-         BackColorOdd    =   -2147483624
+         BackColorEven   =   16184819
+         BackColorOdd    =   16184819
          RowHeight       =   423
          Columns.Count   =   4
          Columns(0).Width=   3200
@@ -397,10 +254,10 @@ Begin VB.Form frmDiary
          Columns(3).DataType=   8
          Columns(3).FieldLen=   256
          TabNavigation   =   1
-         _ExtentX        =   13838
+         _ExtentX        =   15557
          _ExtentY        =   7232
          _StockProps     =   79
-         BackColor       =   -2147483624
+         BackColor       =   16184819
          BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
             Name            =   "Verdana"
             Size            =   8.25
@@ -489,10 +346,9 @@ Begin VB.Form frmDiary
          EndProperty
          RecordSelectors =   0   'False
          ColumnHeaders   =   0   'False
-         Col.Count       =   4
          stylesets.count =   1
          stylesets(0).Name=   "Alarm"
-         stylesets(0).BackColor=   14811135
+         stylesets(0).BackColor=   16184819
          stylesets(0).HasFont=   -1  'True
          BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
             Name            =   "Verdana"
@@ -503,7 +359,7 @@ Begin VB.Form frmDiary
             Italic          =   0   'False
             Strikethrough   =   0   'False
          EndProperty
-         stylesets(0).Picture=   "frmDiary.frx":0D84
+         stylesets(0).Picture=   "frmDiary.frx":0995
          stylesets(0).AlignmentPicture=   0
          stylesets(0).PictureMetaWidth=   28
          stylesets(0).PictureMetaHeight=   28
@@ -525,8 +381,8 @@ Begin VB.Form frmDiary
          BalloonHelp     =   0   'False
          MaxSelectedRows =   0
          ForeColorEven   =   -2147483640
-         BackColorEven   =   -2147483624
-         BackColorOdd    =   -2147483624
+         BackColorEven   =   16184819
+         BackColorOdd    =   16184819
          RowHeight       =   423
          Columns.Count   =   4
          Columns(0).Width=   3200
@@ -561,7 +417,7 @@ Begin VB.Form frmDiary
          _ExtentX        =   5900
          _ExtentY        =   1720
          _StockProps     =   79
-         BackColor       =   -2147483624
+         BackColor       =   16184819
          BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
             Name            =   "Verdana"
             Size            =   8.25
@@ -612,10 +468,9 @@ Begin VB.Form frmDiary
          EndProperty
          RecordSelectors =   0   'False
          ColumnHeaders   =   0   'False
-         Col.Count       =   4
          stylesets.count =   1
          stylesets(0).Name=   "Alarm"
-         stylesets(0).BackColor=   14811135
+         stylesets(0).BackColor=   16184819
          stylesets(0).HasFont=   -1  'True
          BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
             Name            =   "Verdana"
@@ -626,7 +481,7 @@ Begin VB.Form frmDiary
             Italic          =   0   'False
             Strikethrough   =   0   'False
          EndProperty
-         stylesets(0).Picture=   "frmDiary.frx":1173
+         stylesets(0).Picture=   "frmDiary.frx":0D84
          stylesets(0).AlignmentPicture=   0
          stylesets(0).PictureMetaWidth=   28
          stylesets(0).PictureMetaHeight=   28
@@ -648,8 +503,8 @@ Begin VB.Form frmDiary
          BalloonHelp     =   0   'False
          MaxSelectedRows =   0
          ForeColorEven   =   -2147483640
-         BackColorEven   =   -2147483624
-         BackColorOdd    =   -2147483624
+         BackColorEven   =   16184819
+         BackColorOdd    =   16184819
          RowHeight       =   423
          Columns.Count   =   4
          Columns(0).Width=   3200
@@ -684,7 +539,7 @@ Begin VB.Form frmDiary
          _ExtentX        =   5900
          _ExtentY        =   1720
          _StockProps     =   79
-         BackColor       =   -2147483624
+         BackColor       =   16184819
          BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
             Name            =   "Verdana"
             Size            =   8.25
@@ -735,10 +590,9 @@ Begin VB.Form frmDiary
          EndProperty
          RecordSelectors =   0   'False
          ColumnHeaders   =   0   'False
-         Col.Count       =   4
          stylesets.count =   1
          stylesets(0).Name=   "Alarm"
-         stylesets(0).BackColor=   14811135
+         stylesets(0).BackColor=   16184819
          stylesets(0).HasFont=   -1  'True
          BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
             Name            =   "Verdana"
@@ -749,7 +603,7 @@ Begin VB.Form frmDiary
             Italic          =   0   'False
             Strikethrough   =   0   'False
          EndProperty
-         stylesets(0).Picture=   "frmDiary.frx":1562
+         stylesets(0).Picture=   "frmDiary.frx":1173
          stylesets(0).AlignmentPicture=   0
          stylesets(0).PictureMetaWidth=   28
          stylesets(0).PictureMetaHeight=   28
@@ -771,8 +625,8 @@ Begin VB.Form frmDiary
          BalloonHelp     =   0   'False
          MaxSelectedRows =   0
          ForeColorEven   =   -2147483640
-         BackColorEven   =   -2147483624
-         BackColorOdd    =   -2147483624
+         BackColorEven   =   16184819
+         BackColorOdd    =   16184819
          RowHeight       =   423
          Columns.Count   =   4
          Columns(0).Width=   3200
@@ -807,7 +661,7 @@ Begin VB.Form frmDiary
          _ExtentX        =   5900
          _ExtentY        =   1720
          _StockProps     =   79
-         BackColor       =   -2147483624
+         BackColor       =   16184819
          BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
             Name            =   "Verdana"
             Size            =   8.25
@@ -858,10 +712,9 @@ Begin VB.Form frmDiary
          EndProperty
          RecordSelectors =   0   'False
          ColumnHeaders   =   0   'False
-         Col.Count       =   4
          stylesets.count =   1
          stylesets(0).Name=   "Alarm"
-         stylesets(0).BackColor=   14811135
+         stylesets(0).BackColor=   16184819
          stylesets(0).HasFont=   -1  'True
          BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
             Name            =   "Verdana"
@@ -872,7 +725,7 @@ Begin VB.Form frmDiary
             Italic          =   0   'False
             Strikethrough   =   0   'False
          EndProperty
-         stylesets(0).Picture=   "frmDiary.frx":1951
+         stylesets(0).Picture=   "frmDiary.frx":1562
          stylesets(0).AlignmentPicture=   0
          stylesets(0).PictureMetaWidth=   28
          stylesets(0).PictureMetaHeight=   28
@@ -894,8 +747,8 @@ Begin VB.Form frmDiary
          BalloonHelp     =   0   'False
          MaxSelectedRows =   0
          ForeColorEven   =   -2147483640
-         BackColorEven   =   -2147483624
-         BackColorOdd    =   -2147483624
+         BackColorEven   =   16184819
+         BackColorOdd    =   16184819
          RowHeight       =   423
          Columns.Count   =   4
          Columns(0).Width=   3200
@@ -930,7 +783,7 @@ Begin VB.Form frmDiary
          _ExtentX        =   5900
          _ExtentY        =   1720
          _StockProps     =   79
-         BackColor       =   -2147483624
+         BackColor       =   16184819
          BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
             Name            =   "Verdana"
             Size            =   8.25
@@ -981,10 +834,9 @@ Begin VB.Form frmDiary
          EndProperty
          RecordSelectors =   0   'False
          ColumnHeaders   =   0   'False
-         Col.Count       =   4
          stylesets.count =   1
          stylesets(0).Name=   "Alarm"
-         stylesets(0).BackColor=   14811135
+         stylesets(0).BackColor=   16184819
          stylesets(0).HasFont=   -1  'True
          BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
             Name            =   "Verdana"
@@ -995,7 +847,7 @@ Begin VB.Form frmDiary
             Italic          =   0   'False
             Strikethrough   =   0   'False
          EndProperty
-         stylesets(0).Picture=   "frmDiary.frx":1D40
+         stylesets(0).Picture=   "frmDiary.frx":1951
          stylesets(0).AlignmentPicture=   0
          stylesets(0).PictureMetaWidth=   28
          stylesets(0).PictureMetaHeight=   28
@@ -1017,8 +869,8 @@ Begin VB.Form frmDiary
          BalloonHelp     =   0   'False
          MaxSelectedRows =   0
          ForeColorEven   =   -2147483640
-         BackColorEven   =   -2147483624
-         BackColorOdd    =   -2147483624
+         BackColorEven   =   16184819
+         BackColorOdd    =   16184819
          RowHeight       =   423
          Columns.Count   =   4
          Columns(0).Width=   3200
@@ -1053,7 +905,7 @@ Begin VB.Form frmDiary
          _ExtentX        =   5900
          _ExtentY        =   1720
          _StockProps     =   79
-         BackColor       =   -2147483624
+         BackColor       =   16184819
          BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
             Name            =   "Verdana"
             Size            =   8.25
@@ -1104,10 +956,9 @@ Begin VB.Form frmDiary
          EndProperty
          RecordSelectors =   0   'False
          ColumnHeaders   =   0   'False
-         Col.Count       =   4
          stylesets.count =   1
          stylesets(0).Name=   "Alarm"
-         stylesets(0).BackColor=   14811135
+         stylesets(0).BackColor=   16184819
          stylesets(0).HasFont=   -1  'True
          BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
             Name            =   "Verdana"
@@ -1118,7 +969,7 @@ Begin VB.Form frmDiary
             Italic          =   0   'False
             Strikethrough   =   0   'False
          EndProperty
-         stylesets(0).Picture=   "frmDiary.frx":212F
+         stylesets(0).Picture=   "frmDiary.frx":1D40
          stylesets(0).AlignmentPicture=   0
          stylesets(0).PictureMetaWidth=   28
          stylesets(0).PictureMetaHeight=   28
@@ -1140,8 +991,8 @@ Begin VB.Form frmDiary
          BalloonHelp     =   0   'False
          MaxSelectedRows =   0
          ForeColorEven   =   -2147483640
-         BackColorEven   =   -2147483624
-         BackColorOdd    =   -2147483624
+         BackColorEven   =   16184819
+         BackColorOdd    =   16184819
          RowHeight       =   423
          Columns.Count   =   4
          Columns(0).Width=   3200
@@ -1176,7 +1027,7 @@ Begin VB.Form frmDiary
          _ExtentX        =   5900
          _ExtentY        =   1720
          _StockProps     =   79
-         BackColor       =   -2147483624
+         BackColor       =   16184819
          BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
             Name            =   "Verdana"
             Size            =   8.25
@@ -1227,10 +1078,9 @@ Begin VB.Form frmDiary
          EndProperty
          RecordSelectors =   0   'False
          ColumnHeaders   =   0   'False
-         Col.Count       =   4
          stylesets.count =   1
          stylesets(0).Name=   "Alarm"
-         stylesets(0).BackColor=   14811135
+         stylesets(0).BackColor=   16184819
          stylesets(0).HasFont=   -1  'True
          BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
             Name            =   "Verdana"
@@ -1241,7 +1091,7 @@ Begin VB.Form frmDiary
             Italic          =   0   'False
             Strikethrough   =   0   'False
          EndProperty
-         stylesets(0).Picture=   "frmDiary.frx":251E
+         stylesets(0).Picture=   "frmDiary.frx":212F
          stylesets(0).AlignmentPicture=   0
          stylesets(0).PictureMetaWidth=   28
          stylesets(0).PictureMetaHeight=   28
@@ -1263,8 +1113,8 @@ Begin VB.Form frmDiary
          BalloonHelp     =   0   'False
          MaxSelectedRows =   0
          ForeColorEven   =   -2147483640
-         BackColorEven   =   -2147483624
-         BackColorOdd    =   -2147483624
+         BackColorEven   =   16184819
+         BackColorOdd    =   16184819
          RowHeight       =   423
          Columns.Count   =   4
          Columns(0).Width=   3200
@@ -1299,7 +1149,7 @@ Begin VB.Form frmDiary
          _ExtentX        =   5900
          _ExtentY        =   1720
          _StockProps     =   79
-         BackColor       =   -2147483624
+         BackColor       =   16184819
          BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
             Name            =   "Verdana"
             Size            =   8.25
@@ -1534,8 +1384,8 @@ Begin VB.Form frmDiary
          _ExtentX        =   15505
          _ExtentY        =   7964
          _Version        =   393216
-         ForeColor       =   -2147483630
-         BackColor       =   -2147483624
+         ForeColor       =   6697779
+         BackColor       =   16184819
          Appearance      =   1
          BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
             Name            =   "Verdana"
@@ -1549,15 +1399,157 @@ Begin VB.Form frmDiary
          MaxSelCount     =   60
          MonthColumns    =   3
          MonthRows       =   2
-         MonthBackColor  =   -2147483624
+         MonthBackColor  =   16184819
          ScrollRate      =   1
-         StartOfWeek     =   76939265
-         TitleBackColor  =   8388608
-         TitleForeColor  =   -2147483639
+         StartOfWeek     =   51576833
+         TitleBackColor  =   6697779
+         TitleForeColor  =   15988214
          TrailingForeColor=   -2147483643
          CurrentDate     =   36526
          MaxDate         =   401768
          MinDate         =   2
+      End
+   End
+   Begin VB.Frame fraViewType 
+      BorderStyle     =   0  'None
+      Caption         =   "View List"
+      BeginProperty Font 
+         Name            =   "Verdana"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      Height          =   4875
+      Index           =   3
+      Left            =   0
+      TabIndex        =   3
+      Top             =   0
+      Width           =   8970
+      Begin SSDataWidgets_B.SSDBGrid grdViewByList 
+         Height          =   4575
+         Left            =   120
+         TabIndex        =   8
+         TabStop         =   0   'False
+         Top             =   240
+         Width           =   8820
+         ScrollBars      =   2
+         _Version        =   196617
+         DataMode        =   1
+         BeginProperty HeadFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+            Name            =   "Verdana"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         RecordSelectors =   0   'False
+         ColumnHeaders   =   0   'False
+         stylesets.count =   1
+         stylesets(0).Name=   "Alarm"
+         stylesets(0).ForeColor=   -2147483643
+         stylesets(0).BackColor=   14811135
+         stylesets(0).HasFont=   -1  'True
+         BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+            Name            =   "Verdana"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         stylesets(0).Picture=   "frmDiary.frx":251E
+         stylesets(0).AlignmentPicture=   0
+         stylesets(0).PictureMetaWidth=   28
+         stylesets(0).PictureMetaHeight=   28
+         DividerType     =   0
+         AllowUpdate     =   0   'False
+         MultiLine       =   0   'False
+         AllowRowSizing  =   0   'False
+         AllowGroupSizing=   0   'False
+         AllowColumnSizing=   0   'False
+         AllowGroupMoving=   0   'False
+         AllowColumnMoving=   0
+         AllowGroupSwapping=   0   'False
+         AllowColumnSwapping=   0
+         AllowGroupShrinking=   0   'False
+         AllowColumnShrinking=   0   'False
+         AllowDragDrop   =   0   'False
+         SelectTypeCol   =   0
+         SelectTypeRow   =   3
+         SelectByCell    =   -1  'True
+         BalloonHelp     =   0   'False
+         CellNavigation  =   1
+         MaxSelectedRows =   0
+         ForeColorEven   =   -2147483640
+         BackColorEven   =   16184819
+         BackColorOdd    =   16184819
+         RowHeight       =   423
+         Columns.Count   =   4
+         Columns(0).Width=   3200
+         Columns(0).Visible=   0   'False
+         Columns(0).Caption=   "DiaryEventID"
+         Columns(0).Name =   "DiaryEventID"
+         Columns(0).DataField=   "Column 0"
+         Columns(0).DataType=   8
+         Columns(0).FieldLen=   256
+         Columns(0).Style=   4
+         Columns(0).StyleSet=   "Alarm"
+         Columns(1).Width=   529
+         Columns(1).Caption=   "Alarm"
+         Columns(1).Name =   "Alarm"
+         Columns(1).DataField=   "Column 1"
+         Columns(1).DataType=   8
+         Columns(1).FieldLen=   256
+         Columns(2).Width=   3360
+         Columns(2).Caption=   "Date / Time"
+         Columns(2).Name =   "Date"
+         Columns(2).DataField=   "Column 2"
+         Columns(2).DataType=   8
+         Columns(2).FieldLen=   256
+         Columns(3).Width=   10583
+         Columns(3).Caption=   "Title"
+         Columns(3).Name =   "Title"
+         Columns(3).DataField=   "Column 3"
+         Columns(3).DataType=   8
+         Columns(3).FieldLen=   256
+         TabNavigation   =   1
+         _ExtentX        =   15557
+         _ExtentY        =   8070
+         _StockProps     =   79
+         BackColor       =   16184819
+         BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+            Name            =   "Verdana"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         BeginProperty PageFooterFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+            Name            =   "Verdana"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         BeginProperty PageHeaderFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+            Name            =   "Verdana"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
       End
    End
    Begin ActiveBarLibraryCtl.ActiveBar ActiveBar1 
