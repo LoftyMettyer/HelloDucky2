@@ -1118,7 +1118,6 @@ Private Function GetColCreateString(ByVal psColumnName As String, ByVal plngData
 
 End Function
 
-
 Private Function CreateInsertStoredProcedure(plngTableID As Long, psTableName As String) As Boolean
   ' Create the insert stored procedure for the given table.
   On Error GoTo ErrorTrap
@@ -1146,29 +1145,13 @@ Private Function CreateInsertStoredProcedure(plngTableID As Long, psTableName As
     "AS" & vbNewLine & _
     "BEGIN" & vbNewLine & _
     "    SET NOCOUNT ON;" & vbNewLine & vbNewLine & _
-    "    DECLARE @ErrorMessage nvarchar(4000)," & vbNewLine & _
-    "        @ErrorSeverity integer," & vbNewLine & _
-    "        @ErrorState integer," & vbNewLine & _
-    "        @IsRemoteView bit;" & vbNewLine & vbNewLine
-
-  sSPCode = sSPCode & _
     "    /* Run the given SQL INSERT string. */" & vbNewLine & _
-    "    BEGIN TRY" & vbNewLine & _
-    "        EXECUTE sp_executeSQL @psInsertString;" & vbNewLine & vbNewLine & _
-    "        /* Get the ID of the inserted record." & vbNewLine & _
-    "        NB. We do not use @@IDENTITY as the insertion that we have just performed may have triggered" & vbNewLine & _
-    "        other insertions (eg. into the Audit Trail table. The @@IDENTITY variable would then be the last IDENTITY value" & vbNewLine & _
-    "        entered in the Audit Trail table.*/" & vbNewLine & _
-    "        SELECT @piNewRecordID = MAX(id) FROM " & psTableName & ";" & vbNewLine & vbNewLine & _
-    "    END TRY" & vbNewLine & _
-    "    BEGIN CATCH" & vbNewLine & _
-    "        SELECT @IsRemoteView = ISNULL([isremoteview],0) FROM ASRSysTables WHERE [TableID] = " & plngTableID & ";" & vbNewLine & _
-    "        IF @IsRemoteView = 0" & vbNewLine & _
-    "        BEGIN" & vbNewLine & _
-    "            SELECT @ErrorMessage = ERROR_MESSAGE(), @ErrorSeverity = ERROR_SEVERITY(), @ErrorState = ERROR_STATE();" & vbNewLine & _
-    "            RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState);" & vbNewLine & _
-    "        END" & vbNewLine & _
-    "    END CATCH" & vbNewLine & _
+    "    EXECUTE (@psInsertString);" & vbNewLine & vbNewLine & _
+    "    /* Get the ID of the inserted record." & vbNewLine & _
+    "    NB. We do not use @@IDENTITY as the insertion that we have just performed may have triggered" & vbNewLine & _
+    "    other insertions (eg. into the Audit Trail table. The @@IDENTITY variable would then be the last IDENTITY value" & vbNewLine & _
+    "    entered in the Audit Trail table.*/" & vbNewLine & _
+    "    SELECT @piNewRecordID = MAX(id) FROM " & psTableName & ";" & vbNewLine & vbNewLine & _
     "END"
 
   gADOCon.Execute sSPCode, , adCmdText + adExecuteNoRecords
@@ -1229,11 +1212,7 @@ Private Function CreateIntInsertStoredProcedure(plngTableID As Long, psTableName
     vbTab & vbTab & "@iIndex2" & vbTab & vbTab & "integer," & vbNewLine & _
     vbTab & vbTab & "@iIndex3" & vbTab & vbTab & "integer," & vbNewLine & _
     vbTab & vbTab & "@sColumnID" & vbTab & vbTab & "varchar(255)," & vbNewLine & _
-    vbTab & vbTab & "@sValue" & vbTab & vbTab & "varchar(MAX)," & vbNewLine & _
-    vbTab & vbTab & "@ErrorMessage" & vbTab & vbTab & "nvarchar(4000)," & vbNewLine & _
-    vbTab & vbTab & "@ErrorSeverity" & vbTab & vbTab & "integer," & vbNewLine & _
-    vbTab & vbTab & "@ErrorState" & vbTab & vbTab & "integer," & vbNewLine & _
-    vbTab & vbTab & "@IsRemoteView" & vbTab & vbTab & "bit," & vbNewLine
+    vbTab & vbTab & "@sValue" & vbTab & vbTab & "varchar(MAX)," & vbNewLine
     
   sSPCode.Append _
     vbTab & vbTab & "@sColumnList" & vbTab & vbTab & "varchar(MAX)," & vbNewLine & _
@@ -1335,26 +1314,16 @@ Private Function CreateIntInsertStoredProcedure(plngTableID As Long, psTableName
     vbTab & "ELSE" & vbNewLine & _
     vbTab & "BEGIN" & vbNewLine & _
     vbTab & vbTab & "SET @sInsertString = @sColumnList + ')' + ' VALUES(' + @sValueList + ')';" & vbNewLine & _
-    vbTab & "END" & vbNewLine & vbNewLine
-
-  sSPCode.Append _
+    vbTab & "END" & vbNewLine & vbNewLine & _
     vbTab & "-- Run the constructed SQL INSERT string." & vbNewLine & _
-    vbTab & "BEGIN TRY" & vbNewLine & _
-    vbTab & "    EXECUTE sp_executeSQL @sInsertString;" & vbNewLine & vbNewLine & _
-    vbTab & "    /* Get the ID of the inserted record." & vbNewLine & _
-    vbTab & "    NB. We do not use @@IDENTITY as the insertion that we have just performed may have triggered" & vbNewLine & _
-    vbTab & "    other insertions (eg. into the Audit Trail table). The @@IDENTITY variable would then be the last IDENTITY value" & vbNewLine & _
-    vbTab & "    entered in the Audit Trail table.*/" & vbNewLine & _
-    vbTab & "    SELECT @piNewRecordID = MAX(id) FROM " & psTableName & ";" & vbNewLine & _
-    vbTab & "END TRY" & vbNewLine & _
-    vbTab & "BEGIN CATCH" & vbNewLine & _
-    vbTab & "    SELECT @IsRemoteView = ISNULL([isremoteview],0) FROM ASRSysTables WHERE [TableID] = " & plngTableID & ";" & vbNewLine & _
-    vbTab & "    IF @IsRemoteView = 0" & vbNewLine & _
-    vbTab & "    BEGIN" & vbNewLine & _
-    vbTab & "        SELECT @ErrorMessage = ERROR_MESSAGE(), @ErrorSeverity = ERROR_SEVERITY(), @ErrorState = ERROR_STATE();" & vbNewLine & _
-    vbTab & "        RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState);" & vbNewLine & _
-    vbTab & "    END" & vbNewLine & _
-    vbTab & "END CATCH" & vbNewLine & _
+    vbTab & "EXECUTE sp_executeSQL @sInsertString;" & vbNewLine & vbNewLine
+    
+  sSPCode.Append _
+    vbTab & "/* Get the ID of the inserted record." & vbNewLine & _
+    vbTab & "NB. We do not use @@IDENTITY as the insertion that we have just performed may have triggered" & vbNewLine & _
+    vbTab & "other insertions (eg. into the Audit Trail table). The @@IDENTITY variable would then be the last IDENTITY value" & vbNewLine & _
+    vbTab & "entered in the Audit Trail table.*/" & vbNewLine & _
+    vbTab & "SELECT @piNewRecordID = MAX(id) FROM " & psTableName & ";" & vbNewLine & _
     "END"
 
   gADOCon.Execute sSPCode.ToString, , adCmdText + adExecuteNoRecords
@@ -1414,11 +1383,7 @@ Private Function CreateUpdateStoredProcedure(plngTableID As Long, psTableName As
   sSPCode.Append _
     "    DECLARE @iCurrentTimestamp integer," & vbNewLine & _
     "        @sSQL nvarchar(MAX)," & vbNewLine & _
-    "        @iCount integer," & vbNewLine & _
-    "        @ErrorMessage nvarchar(4000)," & vbNewLine & _
-    "        @ErrorSeverity integer," & vbNewLine & _
-    "        @ErrorState integer," & vbNewLine & _
-    "        @IsRemoteView bit;" & vbNewLine & vbNewLine & _
+    "        @iCount integer;" & vbNewLine & _
     "    SET @piResult = 0;" & vbNewLine & vbNewLine & _
     "    /* Check that the record has not been updated by another user since it was last checked. */" & vbNewLine & _
     "    SELECT @iCurrentTimestamp = convert(integer, timestamp)" & vbNewLine & _
@@ -1454,17 +1419,7 @@ Private Function CreateUpdateStoredProcedure(plngTableID As Long, psTableName As
     "        ELSE" & vbNewLine & _
     "        BEGIN" & vbNewLine & _
     "            -- Run the given SQL UPDATE string." & vbNewLine & _
-    "            BEGIN TRY" & vbNewLine & _
-    "                EXECUTE sp_executeSQL @psUpdateString;" & vbNewLine & _
-    "            END TRY" & vbNewLine & _
-    "            BEGIN CATCH" & vbNewLine & _
-    "               SELECT @IsRemoteView = ISNULL([isremoteview],0) FROM ASRSysTables WHERE [TableID] = " & plngTableID & ";" & vbNewLine & _
-    "               IF @IsRemoteView = 0" & vbNewLine & _
-    "               BEGIN" & vbNewLine & _
-    "                   SELECT @ErrorMessage = ERROR_MESSAGE(), @ErrorSeverity = ERROR_SEVERITY(), @ErrorState = ERROR_STATE();" & vbNewLine & _
-    "                   RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState);" & vbNewLine & _
-    "               END" & vbNewLine & _
-    "            END CATCH" & vbNewLine & _
+    "            EXECUTE sp_executeSQL @psUpdateString;" & vbNewLine & _
     "        END" & vbNewLine & _
     "    END" & vbNewLine & vbNewLine & _
     "END"
@@ -1540,12 +1495,7 @@ Private Function CreateIntUpdateStoredProcedure(plngTableID As Long, psTableName
     vbTab & vbTab & "@iDataType" & vbTab & vbTab & "integer," & vbNewLine & _
     vbTab & vbTab & "@sColumnName" & vbTab & vbTab & "varchar(255)," & vbNewLine & _
     vbTab & vbTab & "@sMask" & vbTab & vbTab & vbTab & "varchar(MAX)," & vbNewLine & _
-    vbTab & vbTab & "@iOLEType" & vbTab & vbTab & "integer," & vbNewLine & _
-    vbTab & vbTab & "@piNewRecordID" & vbTab & vbTab & "integer," & vbNewLine & _
-    vbTab & vbTab & "@ErrorMessage" & vbTab & vbTab & "nvarchar(4000)," & vbNewLine & _
-    vbTab & vbTab & "@ErrorSeverity" & vbTab & vbTab & "integer," & vbNewLine & _
-    vbTab & vbTab & "@ErrorState" & vbTab & vbTab & "integer," & vbNewLine & _
-    vbTab & vbTab & "@IsRemoteView" & vbTab & vbTab & "bit;" & vbNewLine & vbNewLine
+    vbTab & vbTab & "@iOLEType" & vbTab & vbTab & "integer;" & vbNewLine & vbNewLine
         
   sSPCode.Append _
     vbTab & "-- Clean the input string parameters." & vbNewLine & _
@@ -1634,25 +1584,10 @@ Private Function CreateIntUpdateStoredProcedure(plngTableID As Long, psTableName
     vbTab & vbTab & vbTab & vbTab & "SET @psUpdateDef = SUBSTRING(@psUpdateDef, @iIndex2+1, LEN(@psUpdateDef) - @iIndex2);" & vbNewLine & _
     vbTab & vbTab & vbTab & "END" & vbNewLine & vbNewLine & _
     vbTab & vbTab & vbTab & "SET @sUpdateString = @sUpdateString + ' WHERE id = ' + convert(varchar(255), @piID);" & vbNewLine & vbNewLine
-
+   
   sSPCode.Append _
     vbTab & vbTab & vbTab & "-- Run the constructed SQL UPDATE string." & vbNewLine & _
-    vbTab & vbTab & vbTab & "BEGIN TRY" & vbNewLine & _
-    vbTab & vbTab & vbTab & "    EXECUTE sp_executeSQL @sUpdateString;" & vbNewLine & vbNewLine & _
-    vbTab & vbTab & vbTab & "    /* Get the ID of the inserted record." & vbNewLine & _
-    vbTab & vbTab & vbTab & "    NB. We do not use @@IDENTITY as the insertion that we have just performed may have triggered" & vbNewLine & _
-    vbTab & vbTab & vbTab & "    other insertions (eg. into the Audit Trail table). The @@IDENTITY variable would then be the last IDENTITY value" & vbNewLine & _
-    vbTab & vbTab & vbTab & "    entered in the Audit Trail table.*/" & vbNewLine & _
-    vbTab & vbTab & vbTab & "    SELECT @piNewRecordID = MAX(id) FROM " & psTableName & ";" & vbNewLine & _
-    vbTab & vbTab & vbTab & "END TRY" & vbNewLine & _
-    vbTab & vbTab & vbTab & "BEGIN CATCH" & vbNewLine & _
-    vbTab & vbTab & vbTab & "    SELECT @IsRemoteView = ISNULL([isremoteview],0) FROM ASRSysTables WHERE [TableID] = " & plngTableID & ";" & vbNewLine & _
-    vbTab & vbTab & vbTab & "    IF @IsRemoteView = 0" & vbNewLine & _
-    vbTab & vbTab & vbTab & "    BEGIN" & vbNewLine & _
-    vbTab & vbTab & vbTab & "        SELECT @ErrorMessage = ERROR_MESSAGE(), @ErrorSeverity = ERROR_SEVERITY(), @ErrorState = ERROR_STATE();" & vbNewLine & _
-    vbTab & vbTab & vbTab & "        RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState);" & vbNewLine & _
-    vbTab & vbTab & vbTab & "    END" & vbNewLine & _
-    vbTab & vbTab & vbTab & "END CATCH" & vbNewLine & _
+    vbTab & vbTab & vbTab & "EXEC sp_executeSQL @sUpdateString;" & vbNewLine & _
     vbTab & vbTab & "END" & vbNewLine & _
     vbTab & "END" & vbNewLine & _
     "END"
@@ -1668,7 +1603,6 @@ ErrorTrap:
   Resume TidyUpAndExit
   
 End Function
-
 
 
 Private Function CreateDeleteStoredProcedure(plngTableID As Long, psTableName As String) As Boolean
@@ -1708,11 +1642,7 @@ Private Function CreateDeleteStoredProcedure(plngTableID As Long, psTableName As
     
   sSPCode = sSPCode & _
     "    DECLARE @sSQL nvarchar(MAX)," & vbNewLine & _
-    "        @iCount integer," & vbNewLine & _
-    "        @ErrorMessage nvarchar(4000)," & vbNewLine & _
-    "        @ErrorSeverity integer," & vbNewLine & _
-    "        @ErrorState integer," & vbNewLine & _
-    "        @IsRemoteView bit;" & vbNewLine & vbNewLine & _
+    "        @iCount integer;" & vbNewLine & _
     "    SET @piResult = 0;" & vbNewLine & vbNewLine & _
     "    /* Check that the record has not been updated by another user since it was last checked. */" & vbNewLine & _
     "    SELECT @iCount = COUNT(id)" & vbNewLine & _
@@ -1738,18 +1668,8 @@ Private Function CreateDeleteStoredProcedure(plngTableID As Long, psTableName As
     "        BEGIN" & vbNewLine & _
     "            SET @sSQL = 'DELETE ' +" & vbNewLine & _
     "                ' FROM ' + @psRealSource +" & vbNewLine & _
-    "                ' WHERE id = ' + convert(varchar(MAX), @piID);" & vbNewLine & vbNewLine & _
-    "            BEGIN TRY" & vbNewLine & _
-    "                EXECUTE sp_executeSQL @sSQL;" & vbNewLine & _
-    "            END TRY" & vbNewLine & _
-    "            BEGIN CATCH" & vbNewLine & _
-    "               SELECT @IsRemoteView = ISNULL([isremoteview],0) FROM ASRSysTables WHERE [TableID] = " & plngTableID & ";" & vbNewLine & _
-    "               IF @IsRemoteView = 0" & vbNewLine & _
-    "               BEGIN" & vbNewLine & _
-    "                   SELECT @ErrorMessage = ERROR_MESSAGE(), @ErrorSeverity = ERROR_SEVERITY(), @ErrorState = ERROR_STATE();" & vbNewLine & _
-    "                   RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState);" & vbNewLine & _
-    "               END" & vbNewLine & _
-    "            END CATCH" & vbNewLine & _
+    "                ' WHERE id = ' + convert(varchar(MAX), @piID);" & vbNewLine & _
+    "            EXECUTE sp_executesql @sSQL;" & vbNewLine & _
     "        END" & vbNewLine & _
     "        ELSE" & vbNewLine & _
     "        BEGIN" & vbNewLine & _
@@ -1757,8 +1677,6 @@ Private Function CreateDeleteStoredProcedure(plngTableID As Long, psTableName As
     "        END" & vbNewLine & _
     "    END" & vbNewLine & vbNewLine & _
     "END"
-
-
 
   gADOCon.Execute sSPCode, , adCmdText + adExecuteNoRecords
   
@@ -1812,11 +1730,7 @@ Private Function CreateRecordAmendedStoredProcedure(plngTableID As Long, psTable
   sSPCode = sSPCode & _
     "    DECLARE @iCurrentTimestamp integer," & vbNewLine & _
     "        @sSQL nvarchar(MAX)," & vbNewLine & _
-    "        @iCount integer," & vbNewLine & _
-    "        @ErrorMessage nvarchar(4000)," & vbNewLine & _
-    "        @ErrorSeverity integer," & vbNewLine & _
-    "        @ErrorState integer," & vbNewLine & _
-    "        @IsRemoteView bit;" & vbNewLine & vbNewLine & _
+    "        @iCount integer;" & vbNewLine & _
     "    SET @piResult = 0;" & vbNewLine & vbNewLine & _
     "    /* Check that the record has not been updated by another user since it was last checked. */" & vbNewLine & _
     "    SELECT @iCurrentTimestamp = convert(integer, timestamp)" & vbNewLine & _
