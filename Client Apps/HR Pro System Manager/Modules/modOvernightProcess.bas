@@ -143,7 +143,6 @@ Private Function OvernightJob1() As Boolean
 
 End Function
 
-
 Private Function OvernightJob2(palngExpressions As Variant) As Boolean
   ' Create the scheduled job for refreshing date dependent columns.
   Dim fOK As Boolean
@@ -586,18 +585,20 @@ Private Function OvernightJob5() As Boolean
     "BEGIN" & vbNewLine & _
     "    DECLARE @iCount int;" & vbNewLine & vbNewLine
     
-  If gbReorganiseIndexesInOvernightJob Then
-    strSQL = strSQL & "    EXEC [dbo].[spASRGetCurrentUsers]" & vbNewLine & _
-      "    IF @@ROWCOUNT = 0" & vbNewLine & _
-      "    BEGIN" & vbNewLine & _
-      "        -- Tidy up temporary objects" & vbNewLine & _
-      "        EXEC spASRDropTempObjects" & vbNewLine & vbNewLine & _
-      "        -- Defragment indexes" & vbNewLine & _
-      "        EXEC dbo.spASRDefragIndexes 100" & vbNewLine & vbNewLine & _
-      "        -- Update statistics" & vbNewLine & _
-      "        EXEC dbo.spASRUpdateStatistics" & vbNewLine & _
-      "    END" & vbNewLine
-  End If
+'  If gbReorganiseIndexesInOvernightJob Then
+  strSQL = strSQL & "    EXEC [dbo].[spASRGetCurrentUsers]" & vbNewLine & _
+    "    IF @@ROWCOUNT = 0" & vbNewLine & _
+    "    BEGIN" & vbNewLine & _
+    "        -- Tidy up temporary objects" & vbNewLine & _
+    "        EXEC sp_executeSQL spASRDropTempObjects;" & vbNewLine & vbNewLine & _
+    "        -- Defragment indexes" & vbNewLine & _
+    "        EXEC dbo.spASRDefragIndexes 100;" & vbNewLine & vbNewLine & _
+    "        -- Update statistics" & vbNewLine & _
+    "        EXEC sp_executeSQL spASRUpdateStatistics;" & vbNewLine & _
+    "        -- Optimise the record save for single record" & vbNewLine & _
+    "        EXEC sp_executeSQL spadmin_optimiserecordsave;" & vbNewLine & _
+    "    END" & vbNewLine
+ ' End If
   
   strSQL = strSQL & "END"
   
@@ -606,7 +607,5 @@ Private Function OvernightJob5() As Boolean
   OvernightJob5 = True
 
 End Function
-
-
 
 

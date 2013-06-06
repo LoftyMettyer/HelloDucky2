@@ -52,7 +52,7 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
       .MainCaption = "Saving Changes"
       .NumberOfBars = 2
       .Bar1Value = 0
-      .Bar1MaxValue = 30
+      .Bar1MaxValue = 31
       .Bar2Value = 0
       .Bar1Caption = "Updating the server database..."
       .Time = False
@@ -473,12 +473,20 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
         fOK = fOK And gobjHRProEngine.Script.ScriptFunctions
         fOK = fOK And Not gobjProgress.Cancelled
         gobjProgress.UpdateProgress2
-        
-        
-        
       End If
       
     End If
+   
+    ' Save top record of each user table to try and make the first record save a little quicker
+    If fOK Then
+      gobjProgress.ResetBar2
+      OutputCurrentProcess "Enabling System Cache"
+      gobjProgress.UpdateProgress False
+      DoEvents
+      fOK = RunRecordSaveOptimiser
+      fOK = fOK And Not gobjProgress.Cancelled
+    End If
+  
   
     ' Reset the 'refresh stored procedures' flag.
     If fOK Then
@@ -2002,3 +2010,28 @@ Private Function UpdateLockCheck() As Boolean
   Set rsTemp = Nothing
 End Function
 
+Private Function RunRecordSaveOptimiser() As Boolean
+
+  Dim strSQL As String
+  Dim bOK As Boolean
+
+  On Error GoTo ErrorTrap
+
+  bOK = True
+  strSQL = "IF EXISTS" & _
+    " (SELECT Name" & _
+    "   FROM sysobjects" & _
+    "   WHERE id = object_id('spadmin_optimiserecordsave')" & _
+    "     AND sysstat & 0xf = 4)" & _
+    " EXECUTE sp_executeSQL spadmin_optimiserecordsave;"
+    
+  gADOCon.Execute strSQL, , adExecuteNoRecords
+
+  RunRecordSaveOptimiser = bOK
+Exit Function
+
+ErrorTrap:
+  OutputError "Error Removing overnight process"
+  RunRecordSaveOptimiser = False
+
+End Function
