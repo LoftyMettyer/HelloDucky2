@@ -1452,6 +1452,31 @@ PRINT 'Step 9 - Integration Services'
 		END
 
 
+	IF EXISTS (SELECT *
+		FROM dbo.sysobjects
+		WHERE id = object_id(N'[dbo].[spASRExecuteWithCommit]')
+			AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+		DROP PROCEDURE [dbo].[spASRExecuteWithCommit];
+	SET @sSPCode = 'CREATE PROCEDURE [dbo].[spASRExecuteWithCommit](@statement nvarchar(MAX))
+	AS
+	BEGIN
+
+		BEGIN TRY
+			COMMIT
+			EXECUTE sp_executesql @statement;
+		END TRY
+
+		BEGIN CATCH
+			SELECT ERROR_NUMBER() AS ErrorNumber;
+		END CATCH
+
+	END';
+
+	EXECUTE sp_executeSQL @sSPCode;
+
+
+
+
 /* ------------------------------------------------------------- */
 PRINT 'Step X - '
 
