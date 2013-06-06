@@ -447,6 +447,7 @@ Public Enum WorkflowWebFormItemTypes
   giWFFORMITEM_FILEATTACHMENT = 18
   giWFFORMITEM_DBFILE = 19
   giWFFORMITEM_WFFILE = 20
+  giWFFORMITEM_PAGETAB = 21
 End Enum
 
 Public Enum WorkflowInstanceStatus
