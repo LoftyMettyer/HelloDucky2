@@ -1,10 +1,10 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "coa_spinner.ocx"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmMatchDef 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Match Report Definition"
@@ -112,9 +112,9 @@ Begin VB.Form frmMatchDef
       TabCaption(2)   =   "Colu&mns"
       TabPicture(2)   =   "frmMatchDef.frx":0E98
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraFieldButtons"
+      Tab(2).Control(0)=   "fraFieldsSelected"
       Tab(2).Control(1)=   "fraFieldsAvailable"
-      Tab(2).Control(2)=   "fraFieldsSelected"
+      Tab(2).Control(2)=   "fraFieldButtons"
       Tab(2).ControlCount=   3
       TabCaption(3)   =   "&Sort Order"
       TabPicture(3)   =   "frmMatchDef.frx":0EB4
@@ -343,6 +343,7 @@ Begin VB.Form frmMatchDef
          Width           =   6675
          Begin VB.CheckBox chkPreview 
             Caption         =   "P&review on screen"
+            Enabled         =   0   'False
             Height          =   195
             Left            =   150
             TabIndex        =   97
@@ -1777,10 +1778,10 @@ End Sub
 
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
-  cmdOK.Enabled = pblnChanged
+  cmdOk.Enabled = pblnChanged
 End Property
 
 Public Property Get Cancelled() As Boolean
@@ -2974,7 +2975,7 @@ Private Sub ListView1_GotFocus()
 End Sub
 
 Private Sub ListView1_LostFocus()
-  cmdOK.Default = True
+  cmdOk.Default = True
 End Sub
 
 Private Sub ListView2_GotFocus()
@@ -2982,7 +2983,7 @@ Private Sub ListView2_GotFocus()
 End Sub
 
 Private Sub ListView2_LostFocus()
-  cmdOK.Default = True
+  cmdOk.Default = True
 End Sub
 
 Private Sub optAllRecords_Click(Index As Integer)
@@ -4522,13 +4523,13 @@ Private Sub txtDesc_GotFocus()
     .SelLength = Len(.Text)
   End With
   
-  cmdOK.Default = False
+  cmdOk.Default = False
   
 End Sub
 
 Private Sub txtDesc_LostFocus()
 
-  cmdOK.Default = True
+  cmdOk.Default = True
 
 End Sub
 

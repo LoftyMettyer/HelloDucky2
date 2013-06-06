@@ -1,9 +1,9 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "coa_spinner.ocx"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmCalendarReport 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Calendar Report Definition"
@@ -70,9 +70,9 @@ Begin VB.Form frmCalendarReport
       TabCaption(2)   =   "Report Detai&ls"
       TabPicture(2)   =   "frmCalendarReport.frx":0044
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraReportStart"
+      Tab(2).Control(0)=   "fraDisplayOptions"
       Tab(2).Control(1)=   "fraReportEnd"
-      Tab(2).Control(2)=   "fraDisplayOptions"
+      Tab(2).Control(2)=   "fraReportStart"
       Tab(2).ControlCount=   3
       TabCaption(3)   =   "&Sort Order"
       TabPicture(3)   =   "frmCalendarReport.frx":0060
@@ -299,6 +299,7 @@ Begin VB.Form frmCalendarReport
          Width           =   6555
          Begin VB.CheckBox chkPreview 
             Caption         =   "P&review on screen"
+            Enabled         =   0   'False
             Height          =   195
             Left            =   150
             TabIndex        =   60
