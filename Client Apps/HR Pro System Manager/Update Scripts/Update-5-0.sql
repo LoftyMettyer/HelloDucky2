@@ -4212,11 +4212,11 @@ PRINT 'Step 8 - New Mobile User Logins Table'
 			HomeItemFontStrikeout bit NULL
 			
 		EXEC sp_executesql N'UPDATE dbo.tbsys_mobileformlayout SET 
-			TodoTitleFontUnderline = 0,
+			TodoTitleFontUnderline = 1,
 			TodoTitleFontStrikeout = 0,
 			TodoDescFontUnderline = 0,
 			TodoDescFontStrikeout = 0,
-			HomeItemFontUnderline = 0,
+			HomeItemFontUnderline = 1,
 			HomeItemFontStrikeout = 0';
 	END
 	
