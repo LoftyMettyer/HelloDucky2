@@ -896,21 +896,21 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
 
     End If
         
-    If LenB(gstrInsertEmailCode) = 0 Then
-      sInsertTriggerSQL.Append _
-        "        /* ----------------------------------------- */" & vbNewLine & _
-        "        /* No Email triggers required.               */" & vbNewLine & _
-        "        /* ----------------------------------------- */" & vbNewLine & vbNewLine
-    Else
-      sInsertTriggerSQL.Append vbNewLine & _
-        "        /* ----------------------- */" & vbNewLine & _
-        "        /* Email Triggers. */" & vbNewLine & _
-        "        /* ----------------------- */" & vbNewLine & _
-        "        IF @fValidRecord = 1" & vbNewLine & _
-        "        BEGIN" & vbNewLine & _
-        gstrInsertEmailCode & vbNewLine & _
-        "        END" & vbNewLine
-    End If
+'    If LenB(gstrInsertEmailCode) = 0 Then
+'      sInsertTriggerSQL.Append _
+'        "        /* ----------------------------------------- */" & vbNewLine & _
+'        "        /* No Email triggers required.               */" & vbNewLine & _
+'        "        /* ----------------------------------------- */" & vbNewLine & vbNewLine
+'    Else
+'      sInsertTriggerSQL.Append vbNewLine & _
+'        "        /* ----------------------- */" & vbNewLine & _
+'        "        /* Email Triggers. */" & vbNewLine & _
+'        "        /* ----------------------- */" & vbNewLine & _
+'        "        IF @fValidRecord = 1" & vbNewLine & _
+'        "        BEGIN" & vbNewLine & _
+'        gstrInsertEmailCode & vbNewLine & _
+'        "        END" & vbNewLine
+'    End If
 
 
     'MH20040331

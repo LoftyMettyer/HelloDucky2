@@ -23,7 +23,7 @@ Public glngEmailDateFormat As Long
 Public gstrEmailAttachmentPath As String
 Public gstrEmailTestAddr As String
 
-Public gstrInsertEmailCode As String
+'Public gstrInsertEmailCode As String
 Public gstrUpdateEmailCode As String
 Public gstrDeleteEmailCode As String
 
@@ -232,8 +232,8 @@ Public Function CloseEmailRecordsets()
 
 End Function
 
-
-Private Function ApplyFilter(lngFilterID As Long, lngTableID As Long, strTableName As String, dtEffectiveDate As Date, strSQL As String) As String
+Private Function ApplyFilter(lngFilterID As Long, lngTableID As Long, strTableName As String, dtEffectiveDate As Date _
+                            , strSQL As String, bRecordInsert As Boolean, bRecordUpdate As Boolean) As String
 
   Dim fOK As Boolean
   Dim objExpr As CExpression
@@ -263,12 +263,17 @@ Private Function ApplyFilter(lngFilterID As Long, lngTableID As Long, strTableNa
     Set objExpr = Nothing
   End If
   
-  
   If Not IsNull(dtEffectiveDate) Then
     strFilter = "DateDiff(day, '" & Replace(Format(dtEffectiveDate, "mm/dd/yyyy"), UI.GetSystemDateSeparator, "/") & "', @emailDate) >= 0" & _
       IIf(strFilter <> vbNullString, vbNewLine & "              AND " & strFilter, "")
   End If
 
+  ' Record Type
+  If bRecordInsert And Not bRecordUpdate Then
+    strFilter = strFilter & IIf(Len(strFilter) > 0, " AND ", "") & "@startingtrigger = 1"
+  ElseIf Not bRecordInsert And bRecordUpdate Then
+    strFilter = strFilter & IIf(Len(strFilter) > 0, " AND ", "") & "@startingtrigger = 2"
+  End If
 
   If strFilter <> vbNullString Then
     strSQL = _
@@ -324,7 +329,7 @@ Public Sub CreateEmailProcsForTable(lngTableID As Long, _
   On Error GoTo LocalErr
 
   strRebuildAll = vbNullString
-  gstrInsertEmailCode = vbNullString
+'  gstrInsertEmailCode = vbNullString
   gstrUpdateEmailCode = vbNullString
   gstrDeleteEmailCode = vbNullString
 
@@ -404,7 +409,7 @@ Public Sub CreateEmailProcsForTable(lngTableID As Long, _
                     GetInsertCommand(!Type, lngLinkID, lngTableID, True, False, "null", strDelCol, True)
                 strDeleteOne = _
                   "                    SELECT @emailDate = getDate()" & vbNewLine & _
-                  ApplyFilter(!FilterID, lngTableID, "deleted", !EffectiveDate, strDeleteOne)
+                  ApplyFilter(!FilterID, lngTableID, "deleted", !EffectiveDate, strDeleteOne, False, False)
               End If
 
             Else              'Column Related
@@ -427,12 +432,12 @@ Public Sub CreateEmailProcsForTable(lngTableID As Long, _
             End If
 
             strInsertUpdateOne = _
-              "            DELETE FROM ASRSysEmailQueue WHERE DateSent IS NULL AND recordID = @recordID AND LinkID = " & CStr(lngLinkID) & vbNewLine & _
+              "            DELETE FROM dbo.ASRSysEmailQueue WHERE DateSent IS NULL AND recordID = @recordID AND LinkID = " & CStr(lngLinkID) & vbNewLine & _
               GetInsertCommand(!Type, lngLinkID, lngTableID, True, True, strColumn, strInsCol, False)
             
             strInsertUpdateOne = _
-              "                    SELECT @emailDate = getDate()" & vbNewLine & _
-              ApplyFilter(!FilterID, lngTableID, sCurrentTable, !EffectiveDate, strInsertUpdateOne)
+              "                    SELECT @emailDate = GETDATE();" & vbNewLine & _
+              ApplyFilter(!FilterID, lngTableID, sCurrentTable, !EffectiveDate, strInsertUpdateOne, !RecordInsert, !RecordUpdate)
             
             
             strCheckColumns = GetSQLForImmediateEmails(lngLinkID, _
@@ -457,18 +462,13 @@ Public Sub CreateEmailProcsForTable(lngTableID As Long, _
 
 
           If !Type <> 1 Then
-            gstrInsertEmailCode = gstrInsertEmailCode & strInsertUpdateOne
+'            gstrInsertEmailCode = gstrInsertEmailCode & strInsertUpdateOne
             gstrUpdateEmailCode = gstrUpdateEmailCode & strInsertUpdateOne
           
           Else  'Record Related
             
-            If !RecordInsert Then
-              gstrInsertEmailCode = gstrInsertEmailCode & strInsertUpdateOne
-            End If
-            
-            If !RecordUpdate Then
-                '"          IF @iTriggerLevel = 1" & vbCrLf &
-              gstrUpdateEmailCode = gstrUpdateEmailCode & _
+            If !RecordUpdate Or !RecordInsert Then
+              gstrUpdateEmailCode = gstrUpdateEmailCode & vbNewLine & _
                 "          IF (@changesMade = 1 OR @fUpdatingDateDependentColumns = 0)" & vbCrLf & _
                 "          BEGIN" & vbCrLf & _
                 strInsertUpdateOne & vbCrLf & _
@@ -499,12 +499,10 @@ Public Sub CreateEmailProcsForTable(lngTableID As Long, _
       "            DECLARE @purgeDate datetime" & vbNewLine & _
       "            DECLARE @LastSent varchar(max)" & vbNewLine & _
       "            DECLARE @sColumnValue varchar(max)" & vbNewLine & _
-      "            DECLARE @username varchar(max)" & vbNewLine & vbNewLine & _
-      "            SELECT @username = CASE WHEN UPPER(LEFT(APP_NAME(), " & Len(gsWORKFLOWAPPLICATIONPREFIX) & ")) = '" & UCase(gsWORKFLOWAPPLICATIONPREFIX) & "' THEN '" & gsWORKFLOWAPPLICATIONPREFIX & "' ELSE rtrim(system_user) END" & vbNewLine & _
       "            EXEC sp_ASRPurgeDate @purgedate OUTPUT, 'EMAIL'" & vbNewLine & vbNewLine & _
-      "            UPDATE ASRSysEmailQueue SET RecordDesc = @recordDesc WHERE RecordID = @recordID AND TableID = " & CStr(lngTableID) & vbNewLine & vbNewLine
+      "            UPDATE dbo.ASRSysEmailQueue SET RecordDesc = @recordDesc WHERE RecordID = @recordID AND TableID = " & CStr(lngTableID) & vbNewLine & vbNewLine
 
-  gstrInsertEmailCode = IIf(gstrInsertEmailCode <> vbNullString, strTemp & gstrInsertEmailCode, vbNullString)
+ ' gstrInsertEmailCode = IIf(gstrInsertEmailCode <> vbNullString, strTemp & gstrInsertEmailCode, vbNullString)
   gstrUpdateEmailCode = IIf(gstrUpdateEmailCode <> vbNullString, strTemp & gstrUpdateEmailCode, vbNullString)
   
   
@@ -536,7 +534,7 @@ Public Sub CreateEmailProcsForTable(lngTableID As Long, _
       "  DECLARE @dateValue datetime" & vbNewLine & _
       GetSQLForRecordDescription(lngRecordDescExprID) & vbCrLf & vbCrLf & _
       strTemp & vbNewLine & vbNewLine & vbNewLine & _
-      "  DELETE FROM ASRSysEmailQueue WHERE Immediate = 0 AND DateSent IS NULL AND recordID = @recordID AND TableID = " & CStr(lngTableID) & vbNewLine & vbNewLine & _
+      "  DELETE FROM dbo.ASRSysEmailQueue WHERE Immediate = 0 AND DateSent IS NULL AND recordID = @recordID AND TableID = " & CStr(lngTableID) & vbNewLine & vbNewLine & _
       strRebuildAll & vbNewLine & _
       "END"
     
@@ -831,14 +829,14 @@ Private Function CreateEmailProcedure(lngTableID As Long, strTableName As String
   
   strSQL = _
     GetSQLEmailContent(lngTableID, strTableName, 0, lngLinkID, lngSubjectID, lngBodyID, strAttachment) & vbNewLine & _
-    "  UPDATE ASRSysEmailQueue SET RepTo = @To, RepCC = @CC, RepBCC = @BCC, Subject = @Subject, Msgtext = @Message, Attachment = @Attachment" & vbNewLine & _
+    "  UPDATE dbo.ASRSysEmailQueue SET RepTo = @To, RepCC = @CC, RepBCC = @BCC, Subject = @Subject, Msgtext = @Message, Attachment = @Attachment" & vbNewLine & _
     "  WHERE QueueID = @QueueID" & vbNewLine & vbNewLine
     
   strSQL = _
-    ApplyFilter(lngFilterID, lngTableID, strTableName, dtEffectiveDate, strSQL) & vbNewLine & _
+    ApplyFilter(lngFilterID, lngTableID, strTableName, dtEffectiveDate, strSQL, False, False) & vbNewLine & _
     "  ELSE" & vbNewLine & _
     "  BEGIN" & vbNewLine & _
-    "    DELETE FROM ASRSysEmailQueue WHERE QueueID = @QueueID" & vbNewLine & _
+    "    DELETE FROM dbo.ASRSysEmailQueue WHERE QueueID = @QueueID" & vbNewLine & _
     "    SET @hResult = 1" & vbNewLine & _
     "  END"
 
@@ -903,7 +901,7 @@ Private Function GetSQLForRebuild(lngLinkID As Long, lngTableID As Long, sCurren
     GetInsertCommand(LinkRebuild, lngLinkID, lngTableID, False, True, CStr(lngDateColumnID), strDateValue, False) & vbNewLine & _
     "                END" & vbNewLine
 
-  strOutput = ApplyFilter(lngFilterID, lngTableID, sCurrentTable, dtEffectiveDate, strOutput)
+  strOutput = ApplyFilter(lngFilterID, lngTableID, sCurrentTable, dtEffectiveDate, strOutput, False, False)
   
   
   strOutput = _
@@ -942,10 +940,10 @@ Private Function GetSQLForOffsetEmail(lngLinkID As Long, lngTableID As Long, sCu
     "                END" & vbNewLine
   
   strOutput = _
-      "            DELETE FROM ASRSysEmailQueue WHERE DateSent IS NULL AND recordID = @recordID AND LinkID = " & CStr(lngLinkID) & vbNewLine & _
+      "            DELETE FROM dbo.ASRSysEmailQueue WHERE DateSent IS NULL AND recordID = @recordID AND LinkID = " & CStr(lngLinkID) & vbNewLine & _
       "            SELECT @emailDate   = " & ApplyOffset(strInsVar, lngPeriod, lngOffset) & vbNewLine & _
       GetLastSent(lngLinkID) & _
-      ApplyFilter(lngFilterID, lngTableID, sCurrentTable, dtEffectiveDate, strOutput)
+      ApplyFilter(lngFilterID, lngTableID, sCurrentTable, dtEffectiveDate, strOutput, False, False)
 
   GetSQLForOffsetEmail = strOutput
 
@@ -968,7 +966,7 @@ End Function
 
 Private Function GetLastSent(lngLinkID As Long) As String
   GetLastSent = _
-    "            SELECT @LastSent     = (SELECT TOP 1 [ColumnValue] FROM ASRSysEmailQueue " & vbNewLine & _
+    "            SELECT @LastSent     = (SELECT TOP 1 [ColumnValue] FROM dbo.ASRSysEmailQueue " & vbNewLine & _
     "                                    WHERE recordid = @recordid AND LinkID = " & CStr(lngLinkID) & vbNewLine & _
     "                                    ORDER BY DateSent DESC)" & vbNewLine
 End Function
@@ -1102,7 +1100,7 @@ Private Function GetInsertCommand(intType As EmailType, lngLinkID As Long, lngTa
 
   strOutput = _
     "                    " & _
-    "INSERT ASRSysEmailQueue" & _
+    "INSERT dbo.ASRSysEmailQueue" & _
     "(LinkID" & _
     ",TableID" & _
     ",RecordID" & _
