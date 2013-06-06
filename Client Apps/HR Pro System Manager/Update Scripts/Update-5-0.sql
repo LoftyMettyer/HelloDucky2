@@ -4190,7 +4190,37 @@ PRINT 'Step 8 - New Mobile User Logins Table'
 		TodoDescForeColor int NULL,
 		HomeItemForeColor int NULL
 	END
-		
+	
+	IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'TodoTitleFontUnderline' and Object_ID = Object_ID(N'tbsys_mobileformlayout')) 
+	BEGIN
+		ALTER TABLE dbo.tbsys_mobileformlayout ADD
+			TodoTitleFontUnderline bit NULL,
+			TodoTitleFontStrikeout bit NULL,
+			TodoDescFontUnderline bit NULL,
+			TodoDescFontStrikeout bit NULL,
+			HomeItemFontUnderline bit NULL,
+			HomeItemFontStrikeout bit NULL
+			
+		EXEC sp_executesql N'UPDATE dbo.tbsys_mobileformlayout SET 
+			TodoTitleFontUnderline = 0,
+			TodoTitleFontStrikeout = 0,
+			TodoDescFontUnderline = 0,
+			TodoDescFontStrikeout = 0,
+			HomeItemFontUnderline = 0,
+			HomeItemFontStrikeout = 0';
+	END
+	
+	IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'FontUnderline' and Object_ID = Object_ID(N'tbsys_mobileformelements')) 
+	BEGIN
+		ALTER TABLE dbo.tbsys_mobileformelements ADD
+		FontUnderline bit NULL,
+		FontStrikeout bit NULL
+				
+		EXEC sp_executesql N'UPDATE dbo.tbsys_mobileformelements SET 
+			FontUnderline = 0,
+			FontStrikeout = 0';
+	END
+	
 	----------------------------------------------------------------------
 	-- spASRMobileInstantiateWorkflow Stored Procedure
 	----------------------------------------------------------------------
