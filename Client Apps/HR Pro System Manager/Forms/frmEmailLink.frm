@@ -35,7 +35,7 @@ Begin VB.Form frmEmailLink
       Picture         =   "frmEmailLink.frx":000C
       ScaleHeight     =   480
       ScaleWidth      =   480
-      TabIndex        =   32
+      TabIndex        =   46
       Top             =   6960
       Visible         =   0   'False
       Width           =   540
@@ -47,7 +47,7 @@ Begin VB.Form frmEmailLink
       Picture         =   "frmEmailLink.frx":08D6
       ScaleHeight     =   405
       ScaleWidth      =   465
-      TabIndex        =   31
+      TabIndex        =   45
       Top             =   6960
       Visible         =   0   'False
       Width           =   525
@@ -59,7 +59,7 @@ Begin VB.Form frmEmailLink
       Picture         =   "frmEmailLink.frx":11A0
       ScaleHeight     =   420
       ScaleWidth      =   480
-      TabIndex        =   30
+      TabIndex        =   44
       Top             =   6960
       Visible         =   0   'False
       Width           =   540
@@ -71,7 +71,7 @@ Begin VB.Form frmEmailLink
       Picture         =   "frmEmailLink.frx":1A6A
       ScaleHeight     =   480
       ScaleWidth      =   480
-      TabIndex        =   29
+      TabIndex        =   43
       Top             =   6960
       Visible         =   0   'False
       Width           =   540
@@ -90,7 +90,7 @@ Begin VB.Form frmEmailLink
       Caption         =   "&Cancel"
       Height          =   400
       Left            =   7950
-      TabIndex        =   27
+      TabIndex        =   29
       Top             =   6990
       Width           =   1200
    End
@@ -100,14 +100,14 @@ Begin VB.Form frmEmailLink
       Enabled         =   0   'False
       Height          =   400
       Left            =   6645
-      TabIndex        =   26
+      TabIndex        =   28
       Top             =   6990
       Width           =   1200
    End
    Begin TabDlg.SSTab SSTab1 
       Height          =   6735
       Left            =   45
-      TabIndex        =   28
+      TabIndex        =   30
       Top             =   45
       Width           =   9090
       _ExtentX        =   16034
@@ -143,12 +143,11 @@ Begin VB.Form frmEmailLink
       TabPicture(1)   =   "frmEmailLink.frx":1D90
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "frmContent"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       Begin VB.Frame frmContent 
          Height          =   6240
          Left            =   -74880
-         TabIndex        =   33
+         TabIndex        =   14
          Top             =   360
          Visible         =   0   'False
          Width           =   8800
@@ -158,7 +157,7 @@ Begin VB.Form frmEmailLink
             Height          =   315
             Left            =   1680
             Locked          =   -1  'True
-            TabIndex        =   45
+            TabIndex        =   24
             Top             =   1900
             Width           =   6645
          End
@@ -176,7 +175,7 @@ Begin VB.Form frmEmailLink
             Height          =   315
             Left            =   8295
             MaskColor       =   &H000000FF&
-            TabIndex        =   44
+            TabIndex        =   25
             Top             =   1900
             UseMaskColor    =   -1  'True
             Width           =   330
@@ -187,7 +186,7 @@ Begin VB.Form frmEmailLink
             Left            =   3000
             MultiLine       =   -1  'True
             ScrollBars      =   2  'Vertical
-            TabIndex        =   43
+            TabIndex        =   27
             Top             =   2350
             Width           =   5595
          End
@@ -195,7 +194,7 @@ Begin VB.Form frmEmailLink
             Height          =   315
             Index           =   0
             Left            =   1680
-            TabIndex        =   42
+            TabIndex        =   22
             Top             =   1500
             Width           =   6930
          End
@@ -205,7 +204,7 @@ Begin VB.Form frmEmailLink
             Index           =   0
             Left            =   1680
             Locked          =   -1  'True
-            TabIndex        =   41
+            TabIndex        =   16
             Top             =   300
             Width           =   6930
          End
@@ -215,7 +214,7 @@ Begin VB.Form frmEmailLink
             Index           =   1
             Left            =   1680
             Locked          =   -1  'True
-            TabIndex        =   40
+            TabIndex        =   18
             Top             =   700
             Width           =   6930
          End
@@ -225,7 +224,7 @@ Begin VB.Form frmEmailLink
             Index           =   2
             Left            =   1680
             Locked          =   -1  'True
-            TabIndex        =   39
+            TabIndex        =   20
             Top             =   1100
             Width           =   6930
          End
@@ -234,7 +233,7 @@ Begin VB.Form frmEmailLink
             Height          =   315
             Index           =   0
             Left            =   200
-            TabIndex        =   38
+            TabIndex        =   15
             Top             =   300
             Width           =   1305
          End
@@ -243,7 +242,7 @@ Begin VB.Form frmEmailLink
             Height          =   315
             Index           =   1
             Left            =   200
-            TabIndex        =   37
+            TabIndex        =   17
             Top             =   700
             Width           =   1305
          End
@@ -252,7 +251,7 @@ Begin VB.Form frmEmailLink
             Height          =   315
             Index           =   2
             Left            =   200
-            TabIndex        =   36
+            TabIndex        =   19
             Top             =   1100
             Width           =   1305
          End
@@ -260,14 +259,14 @@ Begin VB.Form frmEmailLink
             Caption         =   "Attachment..."
             Height          =   315
             Left            =   200
-            TabIndex        =   35
+            TabIndex        =   23
             Top             =   1900
             Width           =   1305
          End
          Begin ComctlLib.TreeView sstrvAvailable 
             Height          =   3720
             Left            =   180
-            TabIndex        =   34
+            TabIndex        =   26
             Top             =   2350
             Width           =   2685
             _ExtentX        =   4736
@@ -296,7 +295,7 @@ Begin VB.Form frmEmailLink
             Height          =   195
             Index           =   0
             Left            =   195
-            TabIndex        =   46
+            TabIndex        =   21
             Top             =   1560
             Width           =   645
          End
@@ -376,7 +375,7 @@ Begin VB.Form frmEmailLink
          End
          Begin GTMaskDate.GTMaskDate cboEffectiveDate 
             Height          =   315
-            Left            =   1800
+            Left            =   1785
             TabIndex        =   7
             Top             =   1095
             Width           =   1440
@@ -477,7 +476,7 @@ Begin VB.Form frmEmailLink
          Width           =   7200
          Begin VB.ListBox lstColumnLinkColumns 
             Height          =   3660
-            Left            =   200
+            Left            =   195
             Sorted          =   -1  'True
             Style           =   1  'Checkbox
             TabIndex        =   13
@@ -490,7 +489,7 @@ Begin VB.Form frmEmailLink
          Height          =   4105
          Index           =   2
          Left            =   1720
-         TabIndex        =   18
+         TabIndex        =   35
          Top             =   2495
          Visible         =   0   'False
          Width           =   7200
@@ -498,7 +497,7 @@ Begin VB.Form frmEmailLink
             Caption         =   "E&mail recipients any data changes"
             Height          =   240
             Left            =   200
-            TabIndex        =   25
+            TabIndex        =   42
             Top             =   1200
             Value           =   1  'Checked
             Width           =   4500
@@ -511,7 +510,7 @@ Begin VB.Form frmEmailLink
             Left            =   3480
             List            =   "frmEmailLink.frx":1DBC
             Style           =   2  'Dropdown List
-            TabIndex        =   24
+            TabIndex        =   41
             Top             =   705
             Width           =   1300
          End
@@ -519,7 +518,7 @@ Begin VB.Form frmEmailLink
             Height          =   315
             Left            =   1125
             Style           =   2  'Dropdown List
-            TabIndex        =   20
+            TabIndex        =   37
             Top             =   300
             Width           =   5895
          End
@@ -531,14 +530,14 @@ Begin VB.Form frmEmailLink
             Left            =   2040
             List            =   "frmEmailLink.frx":1DEC
             Style           =   2  'Dropdown List
-            TabIndex        =   23
+            TabIndex        =   40
             Top             =   705
             Width           =   1300
          End
          Begin COASpinner.COA_Spinner spnDateLinkOffset 
             Height          =   315
             Left            =   1125
-            TabIndex        =   22
+            TabIndex        =   39
             Top             =   705
             Width           =   795
             _ExtentX        =   1402
@@ -562,7 +561,7 @@ Begin VB.Form frmEmailLink
             Caption         =   "Column :"
             Height          =   195
             Left            =   200
-            TabIndex        =   19
+            TabIndex        =   36
             Top             =   360
             Width           =   795
          End
@@ -572,7 +571,7 @@ Begin VB.Form frmEmailLink
             Caption         =   "Offset :"
             Height          =   195
             Left            =   200
-            TabIndex        =   21
+            TabIndex        =   38
             Top             =   760
             Width           =   570
          End
@@ -582,7 +581,7 @@ Begin VB.Form frmEmailLink
          Height          =   4105
          Index           =   1
          Left            =   1720
-         TabIndex        =   14
+         TabIndex        =   31
          Top             =   2495
          Visible         =   0   'False
          Width           =   7200
@@ -591,7 +590,7 @@ Begin VB.Form frmEmailLink
             Height          =   240
             Index           =   1
             Left            =   200
-            TabIndex        =   16
+            TabIndex        =   33
             Top             =   760
             Width           =   1980
          End
@@ -600,7 +599,7 @@ Begin VB.Form frmEmailLink
             Height          =   240
             Index           =   0
             Left            =   200
-            TabIndex        =   15
+            TabIndex        =   32
             Top             =   360
             Width           =   1980
          End
@@ -609,7 +608,7 @@ Begin VB.Form frmEmailLink
             Height          =   240
             Index           =   2
             Left            =   200
-            TabIndex        =   17
+            TabIndex        =   34
             Top             =   1160
             Width           =   1980
          End

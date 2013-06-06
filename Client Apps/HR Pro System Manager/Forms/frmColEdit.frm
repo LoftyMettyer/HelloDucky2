@@ -8347,23 +8347,23 @@ Public Sub CopyDefinitionToClipboard()
     End If
   End If
   
-  ' Email Links Tab
-  strClipboardText = strClipboardText & vbCrLf & "Email Links" & vbCrLf
-  strClipboardText = strClipboardText & "-----------" & vbCrLf
-  
-  If ssGrdEmailLinks.Rows > 0 Then
-    
-    strClipboardText = strClipboardText & vbCrLf & "Title" & vbTab & "Offset" & vbTab & "Subject" & vbCrLf
-    
-    ssGrdEmailLinks.MoveFirst
-    For iCount = 1 To ssGrdEmailLinks.Rows
-      strClipboardText = strClipboardText & ssGrdEmailLinks.Columns(0).value & vbTab _
-          & ssGrdEmailLinks.Columns(1).value & vbTab & ssGrdEmailLinks.Columns(2).value & vbCrLf
-      ssGrdDiaryLinks.MoveNext
-    Next iCount
-  Else
-    strClipboardText = strClipboardText & vbCrLf & "<None>" & vbCrLf
-  End If
+'  ' Email Links Tab
+'  strClipboardText = strClipboardText & vbCrLf & "Email Links" & vbCrLf
+'  strClipboardText = strClipboardText & "-----------" & vbCrLf
+'
+'  If ssGrdEmailLinks.Rows > 0 Then
+'
+'    strClipboardText = strClipboardText & vbCrLf & "Title" & vbTab & "Offset" & vbTab & "Subject" & vbCrLf
+'
+'    ssGrdEmailLinks.MoveFirst
+'    For iCount = 1 To ssGrdEmailLinks.Rows
+'      strClipboardText = strClipboardText & ssGrdEmailLinks.Columns(0).value & vbTab _
+'          & ssGrdEmailLinks.Columns(1).value & vbTab & ssGrdEmailLinks.Columns(2).value & vbCrLf
+'      ssGrdDiaryLinks.MoveNext
+'    Next iCount
+'  Else
+'    strClipboardText = strClipboardText & vbCrLf & "<None>" & vbCrLf
+'  End If
   
   ' AFD Postcode
   If gbAFDEnabled Then
