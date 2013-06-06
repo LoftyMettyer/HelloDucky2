@@ -83,14 +83,14 @@ Begin VB.Form frmCrossTabDef
       TabCaption(1)   =   "Colu&mns"
       TabPicture(1)   =   "frmCrossTabDef.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraColumns(0)"
-      Tab(1).Control(1)=   "fraColumns(1)"
+      Tab(1).Control(0)=   "fraColumns(1)"
+      Tab(1).Control(1)=   "fraColumns(0)"
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "O&utput"
       TabPicture(2)   =   "frmCrossTabDef.frx":0044
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraOutputFormat"
-      Tab(2).Control(1)=   "fraOutputDestination"
+      Tab(2).Control(0)=   "fraOutputDestination"
+      Tab(2).Control(1)=   "fraOutputFormat"
       Tab(2).ControlCount=   2
       Begin VB.Frame fraInformation 
          Height          =   2355
@@ -2947,7 +2947,7 @@ Private Sub SaveDefinition()
           "OutputEmail = 1, " & _
           "OutputEmailAddr = " & txtEmailGroup.Tag & ", " & _
           "OutputEmailSubject = '" & Replace(txtEmailSubject.Text, "'", "''") & "', " & _
-          "OutputEmailAttachAs = '" & Replace(txtEMailAttachAs.Text, "'", "''") & "', "
+          "OutputEmailAttachAs = '" & Replace(txtEmailAttachAs.Text, "'", "''") & "', "
     Else
       strSQL = strSQL & _
           "OutputEmail = 0, " & _
@@ -2957,7 +2957,7 @@ Private Sub SaveDefinition()
     End If
     
     strSQL = strSQL & _
-        "OutputFilename = '" & Replace(txtFileName.Text, "'", "''") & "'"
+        "OutputFilename = '" & Replace(txtFilename.Text, "'", "''") & "'"
                
 
     strSQL = strSQL & _
@@ -3014,13 +3014,13 @@ Private Sub SaveDefinition()
       strSQL = strSQL & "1, " & _
           txtEmailGroup.Tag & ", " & _
           "'" & Replace(txtEmailSubject.Text, "'", "''") & "', " & _
-          "'" & Replace(txtEMailAttachAs.Text, "'", "''") & "', "
+          "'" & Replace(txtEmailAttachAs.Text, "'", "''") & "', "
     Else
       strSQL = strSQL & "0, 0, '', '', "
     End If
 
     strSQL = strSQL & _
-        "'" & Replace(txtFileName.Text, "'", "''") & "')"
+        "'" & Replace(txtFilename.Text, "'", "''") & "')"
   
     
     ' RH 04/09/00 - Use the new util def stored procedure
@@ -3954,7 +3954,7 @@ Public Sub PrintDef(lCrossTabID As Long)
         
         If chkDestination(2).Value = vbChecked Then
           .PrintNormal "Output Destination : Save to file"
-          .PrintNormal "File Name : " & txtFileName.Text
+          .PrintNormal "File Name : " & txtFilename.Text
           .PrintNormal "File Options : " & cboSaveExisting.List(cboSaveExisting.ListIndex)
         End If
         
@@ -3962,7 +3962,7 @@ Public Sub PrintDef(lCrossTabID As Long)
           .PrintNormal "Output Destination : Send to email"
           .PrintNormal "Email Group : " & txtEmailGroup.Text
           .PrintNormal "Email Subject : " & txtEmailSubject.Text
-          .PrintNormal "Email Attach As : " & txtEMailAttachAs.Text
+          .PrintNormal "Email Attach As : " & txtEmailAttachAs.Text
         End If
         
         .PrintEnd
@@ -4009,4 +4009,6 @@ Private Sub chkDestination_Click(Index As Integer)
   Changed = True
 End Sub
 
-
+Private Sub cboCategory_Click()
+  Changed = True
+End Sub
