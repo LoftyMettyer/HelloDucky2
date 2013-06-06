@@ -91,6 +91,9 @@ Private mBackcolour As OLE_COLOR
 
 Private mlngLookupTableID As Long
 Private mlngLookupColumnID As Long
+Private mlngLookupFilterColumn As Long
+Private miLookupFilterOperator As Integer
+Private msLookupFilterValue As String
 
 Private mfMandatory As Boolean
 
@@ -449,5 +452,33 @@ Public Property Let Read_Only(blnValue As Boolean)
     .BackColor = IIf(blnValue, vbButtonFace, mBackcolour)
     .ForeColor = IIf(blnValue, vbGrayText, mForecolour)
   End With
+  
+End Property
+
+Public Property Get LookupFilterColumn() As Long
+  LookupFilterColumn = mlngLookupFilterColumn
+End Property
+
+Public Property Let LookupFilterColumn(ByVal plngNewValue As Long)
+  mlngLookupFilterColumn = plngNewValue
+End Property
+
+Public Property Get LookupFilterOperator() As Integer
+  LookupFilterOperator = miLookupFilterOperator
+
+End Property
+
+Public Property Let LookupFilterOperator(ByVal piNewValue As Integer)
+  miLookupFilterOperator = piNewValue
+  
+End Property
+
+Public Property Get LookupFilterValue() As String
+  LookupFilterValue = msLookupFilterValue
+
+End Property
+
+Public Property Let LookupFilterValue(ByVal psNewValue As String)
+  msLookupFilterValue = psNewValue
   
 End Property
