@@ -1,7 +1,7 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "coa_spinner.ocx"
 Begin VB.Form frmBatchJob 
@@ -24,7 +24,6 @@ Begin VB.Form frmBatchJob
    Icon            =   "frmBatchJob.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
-   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   6345
@@ -34,423 +33,106 @@ Begin VB.Form frmBatchJob
    Begin TabDlg.SSTab SSTab1 
       Height          =   5610
       Left            =   45
-      TabIndex        =   61
+      TabIndex        =   57
       Top             =   45
       Width           =   9800
       _ExtentX        =   17277
       _ExtentY        =   9895
       _Version        =   393216
       Style           =   1
-      Tab             =   2
       TabHeight       =   520
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmBatchJob.frx":000C
-      Tab(0).ControlEnabled=   0   'False
+      Tab(0).ControlEnabled=   -1  'True
       Tab(0).Control(0)=   "fraScheduling"
+      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).Control(1)=   "fraInfo"
+      Tab(0).Control(1).Enabled=   0   'False
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "&Jobs"
       TabPicture(1)   =   "frmBatchJob.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "Frame1"
-      Tab(1).Control(1)=   "fraJobs"
+      Tab(1).Control(0)=   "fraJobs"
+      Tab(1).Control(1)=   "Frame1"
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "O&utput"
       TabPicture(2)   =   "frmBatchJob.frx":0044
-      Tab(2).ControlEnabled=   -1  'True
+      Tab(2).ControlEnabled=   0   'False
       Tab(2).Control(0)=   "Frame4"
-      Tab(2).Control(0).Enabled=   0   'False
       Tab(2).Control(1)=   "Frame2"
-      Tab(2).Control(1).Enabled=   0   'False
       Tab(2).Control(2)=   "Frame3"
-      Tab(2).Control(2).Enabled=   0   'False
       Tab(2).ControlCount=   3
-      Begin VB.Frame Frame3 
-         Caption         =   "Output Format :"
-         Height          =   3200
+      Begin VB.Frame fraInfo 
+         Height          =   2355
          Left            =   150
-         TabIndex        =   70
-         Top             =   2280
-         Width           =   2265
-         Begin VB.OptionButton optOutputFormat 
-            Caption         =   "&Word Document"
-            Height          =   195
-            Index           =   3
-            Left            =   200
-            TabIndex        =   44
-            Top             =   405
-            Value           =   -1  'True
-            Width           =   1900
+         TabIndex        =   71
+         Top             =   450
+         Width           =   9525
+         Begin VB.TextBox txtUserName 
+            BackColor       =   &H8000000F&
+            Enabled         =   0   'False
+            Height          =   315
+            Left            =   5940
+            MaxLength       =   30
+            TabIndex        =   4
+            Top             =   300
+            Width           =   3405
          End
-         Begin VB.OptionButton optOutputFormat 
-            Caption         =   "E&xcel Worksheet"
-            Height          =   195
-            Index           =   4
-            Left            =   200
-            TabIndex        =   45
+         Begin VB.TextBox txtName 
+            Height          =   315
+            Left            =   1440
+            MaxLength       =   50
+            TabIndex        =   1
+            Top             =   300
+            Width           =   3090
+         End
+         Begin VB.TextBox txtDesc 
+            Height          =   1080
+            Left            =   1440
+            MaxLength       =   255
+            MultiLine       =   -1  'True
+            ScrollBars      =   2  'Vertical
+            TabIndex        =   3
+            Top             =   1110
+            Width           =   3090
+         End
+         Begin VB.ComboBox cboCategory 
+            Height          =   315
+            Left            =   1440
+            Style           =   2  'Dropdown List
+            TabIndex        =   2
             Top             =   720
-            Width           =   1900
+            Width           =   3090
          End
-      End
-      Begin VB.Frame Frame2 
-         Caption         =   "Output Destination(s) :"
-         Height          =   3200
-         Left            =   2520
-         TabIndex        =   63
-         Top             =   2280
-         Width           =   7110
-         Begin VB.CheckBox chkPreview 
-            Caption         =   "Preview"
-            Height          =   195
-            Left            =   3660
-            TabIndex        =   46
-            TabStop         =   0   'False
-            Top             =   165
-            Visible         =   0   'False
-            Width           =   1185
-         End
-         Begin VB.CheckBox chkDestination 
-            Caption         =   "Displa&y output on screen"
-            Height          =   195
-            Index           =   0
-            Left            =   240
-            TabIndex        =   47
-            Top             =   135
-            Visible         =   0   'False
-            Width           =   2625
-         End
-         Begin VB.CheckBox chkDestination 
-            Caption         =   "Send as &email"
-            Height          =   195
-            Index           =   3
-            Left            =   240
-            TabIndex        =   54
-            Top             =   1755
-            Width           =   1515
-         End
-         Begin VB.CheckBox chkDestination 
-            Caption         =   "Save to &file"
-            Height          =   195
-            Index           =   2
-            Left            =   240
-            TabIndex        =   50
-            Top             =   975
-            Width           =   1455
-         End
-         Begin VB.CheckBox chkDestination 
-            Caption         =   "Send to &printer"
-            Height          =   195
-            Index           =   1
-            Left            =   240
-            TabIndex        =   48
-            Top             =   510
-            Width           =   1620
-         End
-         Begin VB.CommandButton cmdEmailGroup 
-            Caption         =   "..."
-            Enabled         =   0   'False
-            Height          =   315
-            Left            =   6550
-            TabIndex        =   56
-            Top             =   1695
-            UseMaskColor    =   -1  'True
-            Width           =   330
-         End
-         Begin VB.CommandButton cmdFileName 
-            Caption         =   "..."
-            Enabled         =   0   'False
-            Height          =   315
-            Left            =   6550
-            TabIndex        =   52
-            Top             =   915
-            UseMaskColor    =   -1  'True
-            Width           =   330
-         End
-         Begin VB.TextBox txtEmailGroup 
-            BackColor       =   &H8000000F&
-            Enabled         =   0   'False
-            ForeColor       =   &H00000000&
-            Height          =   315
-            Left            =   3660
-            Locked          =   -1  'True
-            TabIndex        =   55
-            TabStop         =   0   'False
-            Tag             =   "0"
-            Top             =   1710
-            Width           =   2900
-         End
-         Begin VB.TextBox txtEmailSubject 
-            BackColor       =   &H8000000F&
-            Enabled         =   0   'False
-            Height          =   315
-            Left            =   3660
-            TabIndex        =   57
-            Top             =   2115
-            Width           =   3240
-         End
-         Begin VB.ComboBox cboSaveExisting 
-            BackColor       =   &H8000000F&
-            Enabled         =   0   'False
-            Height          =   315
-            Left            =   3660
-            Style           =   2  'Dropdown List
-            TabIndex        =   53
-            Top             =   1320
-            Width           =   3240
-         End
-         Begin VB.ComboBox cboPrinterName 
-            BackColor       =   &H8000000F&
-            Enabled         =   0   'False
-            Height          =   315
-            Left            =   3660
-            Style           =   2  'Dropdown List
-            TabIndex        =   49
-            Top             =   510
-            Width           =   3240
-         End
-         Begin VB.TextBox txtFileName 
-            BackColor       =   &H8000000F&
-            Enabled         =   0   'False
-            ForeColor       =   &H00000000&
-            Height          =   315
-            Left            =   3660
-            Locked          =   -1  'True
-            TabIndex        =   51
-            TabStop         =   0   'False
-            Tag             =   "0"
-            Top             =   915
-            Width           =   2900
-         End
-         Begin VB.TextBox txtEMailAttachAs 
-            BackColor       =   &H8000000F&
-            Enabled         =   0   'False
-            ForeColor       =   &H00000000&
-            Height          =   315
-            Left            =   3660
-            TabIndex        =   58
-            Tag             =   "0"
-            Top             =   2520
-            Width           =   3240
-         End
-         Begin VB.Label Label4 
-            AutoSize        =   -1  'True
-            Caption         =   "Printer location :"
-            Enabled         =   0   'False
-            Height          =   195
-            Left            =   2190
-            TabIndex        =   69
-            Top             =   510
-            Width           =   1410
-         End
-         Begin VB.Label Label3 
-            AutoSize        =   -1  'True
-            Caption         =   "If existing file :"
-            Enabled         =   0   'False
-            Height          =   195
-            Left            =   2190
-            TabIndex        =   68
-            Top             =   1380
-            Width           =   1350
-         End
-         Begin VB.Label lblEmail 
-            AutoSize        =   -1  'True
-            Caption         =   "Email group :"
-            Enabled         =   0   'False
-            Height          =   195
-            Index           =   5
-            Left            =   2190
-            TabIndex        =   67
-            Top             =   1755
-            Width           =   1200
-         End
-         Begin VB.Label lblEmail 
-            AutoSize        =   -1  'True
-            Caption         =   "Email subject :"
-            Enabled         =   0   'False
-            Height          =   195
-            Index           =   4
-            Left            =   2190
-            TabIndex        =   66
-            Top             =   2160
-            Width           =   1305
-         End
-         Begin VB.Label Label2 
-            AutoSize        =   -1  'True
-            Caption         =   "File name :"
-            Enabled         =   0   'False
-            Height          =   195
-            Left            =   2190
-            TabIndex        =   65
-            Top             =   975
-            Width           =   1095
-         End
-         Begin VB.Label lblEmail 
-            AutoSize        =   -1  'True
-            Caption         =   "Attach as :"
-            Enabled         =   0   'False
-            Height          =   195
-            Index           =   3
-            Left            =   2190
-            TabIndex        =   64
-            Top             =   2565
-            Width           =   1065
-         End
-      End
-      Begin VB.Frame Frame1 
-         Caption         =   "Email Notifications :"
-         Height          =   1400
-         Left            =   -74850
-         TabIndex        =   30
-         Top             =   4080
-         Width           =   9495
-         Begin VB.TextBox txtEmailNotifyGroup 
-            BackColor       =   &H8000000F&
-            Enabled         =   0   'False
-            ForeColor       =   &H00000000&
-            Height          =   315
-            Index           =   0
-            Left            =   4335
-            Locked          =   -1  'True
-            TabIndex        =   32
-            TabStop         =   0   'False
-            Tag             =   "0"
-            Top             =   300
-            Width           =   3900
-         End
-         Begin VB.CheckBox chkEmail 
-            Caption         =   "Send an email if the batch job &fails"
-            Height          =   255
-            Index           =   0
-            Left            =   240
-            TabIndex        =   31
-            Top             =   360
-            Width           =   3390
-         End
-         Begin VB.CommandButton cmdEmailNotifyGroup 
-            Caption         =   "..."
-            Enabled         =   0   'False
-            Height          =   315
-            Index           =   0
-            Left            =   8250
-            TabIndex        =   33
-            Top             =   300
-            UseMaskColor    =   -1  'True
-            Width           =   330
-         End
-         Begin VB.CheckBox chkEmail 
-            Caption         =   "Send an email if the ba&tch job is successful"
-            Height          =   255
-            Index           =   1
-            Left            =   240
-            TabIndex        =   34
-            Top             =   760
-            Width           =   4035
-         End
-         Begin VB.TextBox txtEmailNotifyGroup 
-            BackColor       =   &H8000000F&
-            Enabled         =   0   'False
-            ForeColor       =   &H00000000&
-            Height          =   315
-            Index           =   1
-            Left            =   4335
-            Locked          =   -1  'True
-            TabIndex        =   35
-            TabStop         =   0   'False
-            Tag             =   "0"
-            Top             =   700
-            Width           =   3900
-         End
-         Begin VB.CommandButton cmdEmailNotifyGroup 
-            Caption         =   "..."
-            Enabled         =   0   'False
-            Height          =   315
-            Index           =   1
-            Left            =   8250
-            TabIndex        =   36
-            Top             =   700
-            UseMaskColor    =   -1  'True
-            Width           =   330
-         End
-      End
-      Begin VB.Frame fraJobs 
-         Height          =   3600
-         Left            =   -74850
-         TabIndex        =   22
-         Top             =   420
-         Width           =   9495
-         Begin VB.CommandButton cmdClearAll 
-            Caption         =   "Re&move All"
-            Enabled         =   0   'False
-            Height          =   400
-            Left            =   8130
-            TabIndex        =   27
-            Top             =   1860
-            Width           =   1200
-         End
-         Begin VB.CommandButton cmdNew 
-            Caption         =   "&Add..."
-            Height          =   400
-            Left            =   8130
-            TabIndex        =   24
-            Top             =   285
-            Width           =   1200
-         End
-         Begin VB.CommandButton cmdEdit 
-            Caption         =   "&Edit..."
-            Enabled         =   0   'False
-            Height          =   400
-            Left            =   8130
-            TabIndex        =   25
-            Top             =   795
-            Width           =   1200
-         End
-         Begin VB.CommandButton cmdDelete 
-            Caption         =   "&Remove"
-            Enabled         =   0   'False
-            Height          =   400
-            Left            =   8130
-            TabIndex        =   26
-            Top             =   1320
-            Width           =   1200
-         End
-         Begin VB.CommandButton cmdMoveDown 
-            Caption         =   "Mo&ve Down"
-            Enabled         =   0   'False
-            Height          =   400
-            Left            =   8130
-            TabIndex        =   29
-            Top             =   2925
-            Width           =   1200
-         End
-         Begin VB.CommandButton cmdMoveUp 
-            Caption         =   "Move &Up"
-            Enabled         =   0   'False
-            Height          =   400
-            Left            =   8130
-            TabIndex        =   28
-            Top             =   2385
-            Width           =   1200
-         End
-         Begin SSDataWidgets_B.SSDBGrid grdColumns 
-            Height          =   3045
-            Left            =   180
-            TabIndex        =   23
-            Top             =   285
-            Width           =   7830
+         Begin SSDataWidgets_B.SSDBGrid grdAccess 
+            Height          =   1485
+            Left            =   5940
+            TabIndex        =   77
+            Top             =   720
+            Width           =   3405
             ScrollBars      =   2
             _Version        =   196617
             DataMode        =   2
             RecordSelectors =   0   'False
-            GroupHeaders    =   0   'False
-            Col.Count       =   5
-            stylesets.count =   5
-            stylesets(0).Name=   "ssetHeaderDisabled"
+            Col.Count       =   4
+            stylesets.count =   2
+            stylesets(0).Name=   "SysSecMgr"
             stylesets(0).ForeColor=   -2147483631
             stylesets(0).BackColor=   -2147483633
+            stylesets(0).HasFont=   -1  'True
+            BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
             stylesets(0).Picture=   "frmBatchJob.frx":0060
-            stylesets(1).Name=   "ssetSelected"
-            stylesets(1).ForeColor=   -2147483634
-            stylesets(1).BackColor=   -2147483635
+            stylesets(1).Name=   "ReadOnly"
+            stylesets(1).ForeColor=   -2147483631
+            stylesets(1).BackColor=   -2147483633
             stylesets(1).HasFont=   -1  'True
             BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -462,18 +144,542 @@ Begin VB.Form frmBatchJob
                Strikethrough   =   0   'False
             EndProperty
             stylesets(1).Picture=   "frmBatchJob.frx":007C
+            MultiLine       =   0   'False
+            AllowRowSizing  =   0   'False
+            AllowGroupSizing=   0   'False
+            AllowColumnSizing=   0   'False
+            AllowGroupMoving=   0   'False
+            AllowColumnMoving=   0
+            AllowGroupSwapping=   0   'False
+            AllowColumnSwapping=   0
+            AllowGroupShrinking=   0   'False
+            AllowColumnShrinking=   0   'False
+            AllowDragDrop   =   0   'False
+            SelectTypeCol   =   0
+            SelectTypeRow   =   0
+            BalloonHelp     =   0   'False
+            MaxSelectedRows =   0
+            ForeColorEven   =   0
+            BackColorEven   =   -2147483643
+            BackColorOdd    =   -2147483643
+            RowHeight       =   423
+            Columns.Count   =   4
+            Columns(0).Width=   2963
+            Columns(0).Caption=   "User Group"
+            Columns(0).Name =   "GroupName"
+            Columns(0).AllowSizing=   0   'False
+            Columns(0).DataField=   "Column 0"
+            Columns(0).DataType=   8
+            Columns(0).FieldLen=   256
+            Columns(0).Locked=   -1  'True
+            Columns(1).Width=   2566
+            Columns(1).Caption=   "Access"
+            Columns(1).Name =   "Access"
+            Columns(1).AllowSizing=   0   'False
+            Columns(1).DataField=   "Column 1"
+            Columns(1).DataType=   8
+            Columns(1).FieldLen=   256
+            Columns(1).Locked=   -1  'True
+            Columns(1).Style=   3
+            Columns(1).Row.Count=   3
+            Columns(1).Col.Count=   2
+            Columns(1).Row(0).Col(0)=   "Read / Write"
+            Columns(1).Row(1).Col(0)=   "Read Only"
+            Columns(1).Row(2).Col(0)=   "Hidden"
+            Columns(2).Width=   3200
+            Columns(2).Visible=   0   'False
+            Columns(2).Caption=   "SysSecMgr"
+            Columns(2).Name =   "SysSecMgr"
+            Columns(2).DataField=   "Column 2"
+            Columns(2).DataType=   8
+            Columns(2).FieldLen=   256
+            Columns(3).Width=   3200
+            Columns(3).Caption=   "ForcedAccess"
+            Columns(3).Name =   "ForcedAccess"
+            Columns(3).DataField=   "Column 3"
+            Columns(3).DataType=   8
+            Columns(3).FieldLen=   256
+            TabNavigation   =   1
+            _ExtentX        =   6006
+            _ExtentY        =   2619
+            _StockProps     =   79
+            BeginProperty PageFooterFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+            BeginProperty PageHeaderFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+         End
+         Begin VB.Label lblOwner 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Owner :"
+            Height          =   195
+            Left            =   5085
+            TabIndex        =   76
+            Top             =   360
+            Width           =   810
+         End
+         Begin VB.Label lblName 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Name :"
+            Height          =   195
+            Left            =   240
+            TabIndex        =   75
+            Top             =   360
+            Width           =   690
+         End
+         Begin VB.Label lblDescription 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Description :"
+            Height          =   195
+            Left            =   240
+            TabIndex        =   74
+            Top             =   1155
+            Width           =   1080
+         End
+         Begin VB.Label lblAccess 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Access :"
+            Height          =   195
+            Left            =   5085
+            TabIndex        =   73
+            Top             =   765
+            Width           =   825
+         End
+         Begin VB.Label lblCategory 
+            Caption         =   "Category :"
+            Height          =   240
+            Left            =   240
+            TabIndex        =   72
+            Top             =   765
+            Width           =   1005
+         End
+      End
+      Begin VB.Frame Frame3 
+         Caption         =   "Output Format :"
+         Height          =   3200
+         Left            =   -74850
+         TabIndex        =   65
+         Top             =   2280
+         Width           =   2265
+         Begin VB.OptionButton optOutputFormat 
+            Caption         =   "&Word Document"
+            Height          =   195
+            Index           =   3
+            Left            =   200
+            TabIndex        =   40
+            Top             =   405
+            Value           =   -1  'True
+            Width           =   1900
+         End
+         Begin VB.OptionButton optOutputFormat 
+            Caption         =   "E&xcel Worksheet"
+            Height          =   195
+            Index           =   4
+            Left            =   200
+            TabIndex        =   41
+            Top             =   720
+            Width           =   1900
+         End
+      End
+      Begin VB.Frame Frame2 
+         Caption         =   "Output Destination(s) :"
+         Height          =   3200
+         Left            =   -72480
+         TabIndex        =   58
+         Top             =   2280
+         Width           =   7110
+         Begin VB.CheckBox chkPreview 
+            Caption         =   "Preview"
+            Height          =   195
+            Left            =   3660
+            TabIndex        =   42
+            TabStop         =   0   'False
+            Top             =   165
+            Visible         =   0   'False
+            Width           =   1185
+         End
+         Begin VB.CheckBox chkDestination 
+            Caption         =   "Displa&y output on screen"
+            Height          =   195
+            Index           =   0
+            Left            =   240
+            TabIndex        =   43
+            Top             =   135
+            Visible         =   0   'False
+            Width           =   2625
+         End
+         Begin VB.CheckBox chkDestination 
+            Caption         =   "Send as &email"
+            Height          =   195
+            Index           =   3
+            Left            =   240
+            TabIndex        =   50
+            Top             =   1755
+            Width           =   1515
+         End
+         Begin VB.CheckBox chkDestination 
+            Caption         =   "Save to &file"
+            Height          =   195
+            Index           =   2
+            Left            =   240
+            TabIndex        =   46
+            Top             =   975
+            Width           =   1455
+         End
+         Begin VB.CheckBox chkDestination 
+            Caption         =   "Send to &printer"
+            Height          =   195
+            Index           =   1
+            Left            =   240
+            TabIndex        =   44
+            Top             =   510
+            Width           =   1620
+         End
+         Begin VB.CommandButton cmdEmailGroup 
+            Caption         =   "..."
+            Enabled         =   0   'False
+            Height          =   315
+            Left            =   6550
+            TabIndex        =   52
+            Top             =   1695
+            UseMaskColor    =   -1  'True
+            Width           =   330
+         End
+         Begin VB.CommandButton cmdFileName 
+            Caption         =   "..."
+            Enabled         =   0   'False
+            Height          =   315
+            Left            =   6550
+            TabIndex        =   48
+            Top             =   915
+            UseMaskColor    =   -1  'True
+            Width           =   330
+         End
+         Begin VB.TextBox txtEmailGroup 
+            BackColor       =   &H8000000F&
+            Enabled         =   0   'False
+            ForeColor       =   &H00000000&
+            Height          =   315
+            Left            =   3660
+            Locked          =   -1  'True
+            TabIndex        =   51
+            TabStop         =   0   'False
+            Tag             =   "0"
+            Top             =   1710
+            Width           =   2900
+         End
+         Begin VB.TextBox txtEmailSubject 
+            BackColor       =   &H8000000F&
+            Enabled         =   0   'False
+            Height          =   315
+            Left            =   3660
+            TabIndex        =   53
+            Top             =   2115
+            Width           =   3240
+         End
+         Begin VB.ComboBox cboSaveExisting 
+            BackColor       =   &H8000000F&
+            Enabled         =   0   'False
+            Height          =   315
+            Left            =   3660
+            Style           =   2  'Dropdown List
+            TabIndex        =   49
+            Top             =   1320
+            Width           =   3240
+         End
+         Begin VB.ComboBox cboPrinterName 
+            BackColor       =   &H8000000F&
+            Enabled         =   0   'False
+            Height          =   315
+            Left            =   3660
+            Style           =   2  'Dropdown List
+            TabIndex        =   45
+            Top             =   510
+            Width           =   3240
+         End
+         Begin VB.TextBox txtFileName 
+            BackColor       =   &H8000000F&
+            Enabled         =   0   'False
+            ForeColor       =   &H00000000&
+            Height          =   315
+            Left            =   3660
+            Locked          =   -1  'True
+            TabIndex        =   47
+            TabStop         =   0   'False
+            Tag             =   "0"
+            Top             =   915
+            Width           =   2900
+         End
+         Begin VB.TextBox txtEMailAttachAs 
+            BackColor       =   &H8000000F&
+            Enabled         =   0   'False
+            ForeColor       =   &H00000000&
+            Height          =   315
+            Left            =   3660
+            TabIndex        =   54
+            Tag             =   "0"
+            Top             =   2520
+            Width           =   3240
+         End
+         Begin VB.Label Label4 
+            AutoSize        =   -1  'True
+            Caption         =   "Printer location :"
+            Enabled         =   0   'False
+            Height          =   195
+            Left            =   2190
+            TabIndex        =   64
+            Top             =   510
+            Width           =   1410
+         End
+         Begin VB.Label Label3 
+            AutoSize        =   -1  'True
+            Caption         =   "If existing file :"
+            Enabled         =   0   'False
+            Height          =   195
+            Left            =   2190
+            TabIndex        =   63
+            Top             =   1380
+            Width           =   1350
+         End
+         Begin VB.Label lblEmail 
+            AutoSize        =   -1  'True
+            Caption         =   "Email group :"
+            Enabled         =   0   'False
+            Height          =   195
+            Index           =   5
+            Left            =   2190
+            TabIndex        =   62
+            Top             =   1755
+            Width           =   1200
+         End
+         Begin VB.Label lblEmail 
+            AutoSize        =   -1  'True
+            Caption         =   "Email subject :"
+            Enabled         =   0   'False
+            Height          =   195
+            Index           =   4
+            Left            =   2190
+            TabIndex        =   61
+            Top             =   2160
+            Width           =   1305
+         End
+         Begin VB.Label Label2 
+            AutoSize        =   -1  'True
+            Caption         =   "File name :"
+            Enabled         =   0   'False
+            Height          =   195
+            Left            =   2190
+            TabIndex        =   60
+            Top             =   975
+            Width           =   1095
+         End
+         Begin VB.Label lblEmail 
+            AutoSize        =   -1  'True
+            Caption         =   "Attach as :"
+            Enabled         =   0   'False
+            Height          =   195
+            Index           =   3
+            Left            =   2190
+            TabIndex        =   59
+            Top             =   2565
+            Width           =   1065
+         End
+      End
+      Begin VB.Frame Frame1 
+         Caption         =   "Email Notifications :"
+         Height          =   1400
+         Left            =   -74850
+         TabIndex        =   26
+         Top             =   4080
+         Width           =   9495
+         Begin VB.TextBox txtEmailNotifyGroup 
+            BackColor       =   &H8000000F&
+            Enabled         =   0   'False
+            ForeColor       =   &H00000000&
+            Height          =   315
+            Index           =   0
+            Left            =   4335
+            Locked          =   -1  'True
+            TabIndex        =   28
+            TabStop         =   0   'False
+            Tag             =   "0"
+            Top             =   300
+            Width           =   3900
+         End
+         Begin VB.CheckBox chkEmail 
+            Caption         =   "Send an email if the batch job &fails"
+            Height          =   255
+            Index           =   0
+            Left            =   240
+            TabIndex        =   27
+            Top             =   360
+            Width           =   3390
+         End
+         Begin VB.CommandButton cmdEmailNotifyGroup 
+            Caption         =   "..."
+            Enabled         =   0   'False
+            Height          =   315
+            Index           =   0
+            Left            =   8250
+            TabIndex        =   29
+            Top             =   300
+            UseMaskColor    =   -1  'True
+            Width           =   330
+         End
+         Begin VB.CheckBox chkEmail 
+            Caption         =   "Send an email if the ba&tch job is successful"
+            Height          =   255
+            Index           =   1
+            Left            =   240
+            TabIndex        =   30
+            Top             =   760
+            Width           =   4035
+         End
+         Begin VB.TextBox txtEmailNotifyGroup 
+            BackColor       =   &H8000000F&
+            Enabled         =   0   'False
+            ForeColor       =   &H00000000&
+            Height          =   315
+            Index           =   1
+            Left            =   4335
+            Locked          =   -1  'True
+            TabIndex        =   31
+            TabStop         =   0   'False
+            Tag             =   "0"
+            Top             =   700
+            Width           =   3900
+         End
+         Begin VB.CommandButton cmdEmailNotifyGroup 
+            Caption         =   "..."
+            Enabled         =   0   'False
+            Height          =   315
+            Index           =   1
+            Left            =   8250
+            TabIndex        =   32
+            Top             =   700
+            UseMaskColor    =   -1  'True
+            Width           =   330
+         End
+      End
+      Begin VB.Frame fraJobs 
+         Height          =   3600
+         Left            =   -74850
+         TabIndex        =   18
+         Top             =   420
+         Width           =   9495
+         Begin VB.CommandButton cmdClearAll 
+            Caption         =   "Re&move All"
+            Enabled         =   0   'False
+            Height          =   400
+            Left            =   8130
+            TabIndex        =   23
+            Top             =   1860
+            Width           =   1200
+         End
+         Begin VB.CommandButton cmdNew 
+            Caption         =   "&Add..."
+            Height          =   400
+            Left            =   8130
+            TabIndex        =   20
+            Top             =   285
+            Width           =   1200
+         End
+         Begin VB.CommandButton cmdEdit 
+            Caption         =   "&Edit..."
+            Enabled         =   0   'False
+            Height          =   400
+            Left            =   8130
+            TabIndex        =   21
+            Top             =   795
+            Width           =   1200
+         End
+         Begin VB.CommandButton cmdDelete 
+            Caption         =   "&Remove"
+            Enabled         =   0   'False
+            Height          =   400
+            Left            =   8130
+            TabIndex        =   22
+            Top             =   1320
+            Width           =   1200
+         End
+         Begin VB.CommandButton cmdMoveDown 
+            Caption         =   "Mo&ve Down"
+            Enabled         =   0   'False
+            Height          =   400
+            Left            =   8130
+            TabIndex        =   25
+            Top             =   2925
+            Width           =   1200
+         End
+         Begin VB.CommandButton cmdMoveUp 
+            Caption         =   "Move &Up"
+            Enabled         =   0   'False
+            Height          =   400
+            Left            =   8130
+            TabIndex        =   24
+            Top             =   2385
+            Width           =   1200
+         End
+         Begin SSDataWidgets_B.SSDBGrid grdColumns 
+            Height          =   3045
+            Left            =   180
+            TabIndex        =   19
+            Top             =   285
+            Width           =   7830
+            ScrollBars      =   2
+            _Version        =   196617
+            DataMode        =   2
+            RecordSelectors =   0   'False
+            GroupHeaders    =   0   'False
+            Col.Count       =   5
+            stylesets.count =   5
+            stylesets(0).Name=   "ssetSelected"
+            stylesets(0).ForeColor=   -2147483634
+            stylesets(0).BackColor=   -2147483635
+            stylesets(0).HasFont=   -1  'True
+            BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+            stylesets(0).Picture=   "frmBatchJob.frx":0098
+            stylesets(1).Name=   "ssetHeaderDisabled"
+            stylesets(1).ForeColor=   -2147483631
+            stylesets(1).BackColor=   -2147483633
+            stylesets(1).Picture=   "frmBatchJob.frx":00B4
             stylesets(2).Name=   "ssetEnabled"
             stylesets(2).ForeColor=   -2147483640
             stylesets(2).BackColor=   -2147483643
-            stylesets(2).Picture=   "frmBatchJob.frx":0098
+            stylesets(2).Picture=   "frmBatchJob.frx":00D0
             stylesets(3).Name=   "ssetHeaderEnabled"
             stylesets(3).ForeColor=   -2147483630
             stylesets(3).BackColor=   -2147483633
-            stylesets(3).Picture=   "frmBatchJob.frx":00B4
+            stylesets(3).Picture=   "frmBatchJob.frx":00EC
             stylesets(4).Name=   "ssetDisabled"
             stylesets(4).ForeColor=   -2147483631
             stylesets(4).BackColor=   -2147483633
-            stylesets(4).Picture=   "frmBatchJob.frx":00D0
+            stylesets(4).Picture=   "frmBatchJob.frx":0108
             AllowUpdate     =   0   'False
             MultiLine       =   0   'False
             AllowRowSizing  =   0   'False
@@ -566,215 +772,17 @@ Begin VB.Form frmBatchJob
             EndProperty
          End
       End
-      Begin VB.Frame fraInfo 
-         Height          =   1950
-         Left            =   -74850
-         TabIndex        =   0
-         Top             =   420
-         Width           =   9525
-         Begin VB.TextBox txtDesc 
-            Height          =   1080
-            Left            =   1620
-            MaxLength       =   255
-            MultiLine       =   -1  'True
-            ScrollBars      =   2  'Vertical
-            TabIndex        =   4
-            Top             =   720
-            Width           =   3000
-         End
-         Begin VB.TextBox txtName 
-            Height          =   315
-            Left            =   1620
-            MaxLength       =   50
-            TabIndex        =   2
-            Top             =   315
-            Width           =   3000
-         End
-         Begin VB.TextBox txtUserName 
-            BackColor       =   &H8000000F&
-            Enabled         =   0   'False
-            Height          =   315
-            Left            =   5940
-            MaxLength       =   30
-            TabIndex        =   6
-            TabStop         =   0   'False
-            Top             =   315
-            Width           =   3405
-         End
-         Begin SSDataWidgets_B.SSDBGrid grdAccess 
-            Height          =   1080
-            Left            =   5940
-            TabIndex        =   62
-            Top             =   765
-            Width           =   3405
-            ScrollBars      =   2
-            _Version        =   196617
-            DataMode        =   2
-            RecordSelectors =   0   'False
-            Col.Count       =   4
-            stylesets.count =   2
-            stylesets(0).Name=   "SysSecMgr"
-            stylesets(0).ForeColor=   -2147483631
-            stylesets(0).BackColor=   -2147483633
-            stylesets(0).HasFont=   -1  'True
-            BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-               Name            =   "Verdana"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
-            stylesets(0).Picture=   "frmBatchJob.frx":00EC
-            stylesets(1).Name=   "ReadOnly"
-            stylesets(1).ForeColor=   -2147483631
-            stylesets(1).BackColor=   -2147483633
-            stylesets(1).HasFont=   -1  'True
-            BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-               Name            =   "Verdana"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
-            stylesets(1).Picture=   "frmBatchJob.frx":0108
-            MultiLine       =   0   'False
-            AllowRowSizing  =   0   'False
-            AllowGroupSizing=   0   'False
-            AllowColumnSizing=   0   'False
-            AllowGroupMoving=   0   'False
-            AllowColumnMoving=   0
-            AllowGroupSwapping=   0   'False
-            AllowColumnSwapping=   0
-            AllowGroupShrinking=   0   'False
-            AllowColumnShrinking=   0   'False
-            AllowDragDrop   =   0   'False
-            SelectTypeCol   =   0
-            SelectTypeRow   =   0
-            BalloonHelp     =   0   'False
-            MaxSelectedRows =   0
-            ForeColorEven   =   0
-            BackColorEven   =   -2147483643
-            BackColorOdd    =   -2147483643
-            RowHeight       =   423
-            Columns.Count   =   4
-            Columns(0).Width=   2963
-            Columns(0).Caption=   "User Group"
-            Columns(0).Name =   "GroupName"
-            Columns(0).AllowSizing=   0   'False
-            Columns(0).DataField=   "Column 0"
-            Columns(0).DataType=   8
-            Columns(0).FieldLen=   256
-            Columns(0).Locked=   -1  'True
-            Columns(1).Width=   2566
-            Columns(1).Caption=   "Access"
-            Columns(1).Name =   "Access"
-            Columns(1).AllowSizing=   0   'False
-            Columns(1).DataField=   "Column 1"
-            Columns(1).DataType=   8
-            Columns(1).FieldLen=   256
-            Columns(1).Locked=   -1  'True
-            Columns(1).Style=   3
-            Columns(1).Row.Count=   3
-            Columns(1).Col.Count=   2
-            Columns(1).Row(0).Col(0)=   "Read / Write"
-            Columns(1).Row(1).Col(0)=   "Read Only"
-            Columns(1).Row(2).Col(0)=   "Hidden"
-            Columns(2).Width=   3200
-            Columns(2).Visible=   0   'False
-            Columns(2).Caption=   "SysSecMgr"
-            Columns(2).Name =   "SysSecMgr"
-            Columns(2).DataField=   "Column 2"
-            Columns(2).DataType=   8
-            Columns(2).FieldLen=   256
-            Columns(3).Width=   3200
-            Columns(3).Caption=   "ForcedAccess"
-            Columns(3).Name =   "ForcedAccess"
-            Columns(3).DataField=   "Column 3"
-            Columns(3).DataType=   8
-            Columns(3).FieldLen=   256
-            TabNavigation   =   1
-            _ExtentX        =   6006
-            _ExtentY        =   1905
-            _StockProps     =   79
-            BeginProperty PageFooterFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-               Name            =   "Verdana"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
-            BeginProperty PageHeaderFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-               Name            =   "Verdana"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
-         End
-         Begin VB.Label Label1 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Access :"
-            Height          =   195
-            Index           =   3
-            Left            =   5100
-            TabIndex        =   7
-            Top             =   765
-            Width           =   735
-         End
-         Begin VB.Label Label1 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Description :"
-            Height          =   195
-            Index           =   1
-            Left            =   225
-            TabIndex        =   3
-            Top             =   750
-            Width           =   1095
-         End
-         Begin VB.Label Label1 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Name :"
-            Height          =   195
-            Index           =   0
-            Left            =   225
-            TabIndex        =   1
-            Top             =   360
-            Width           =   630
-         End
-         Begin VB.Label Label1 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Owner :"
-            Height          =   195
-            Index           =   2
-            Left            =   5100
-            TabIndex        =   5
-            Top             =   360
-            Width           =   720
-         End
-      End
       Begin VB.Frame fraScheduling 
          Caption         =   "Scheduling :"
-         Height          =   3050
-         Left            =   -74850
-         TabIndex        =   8
-         Top             =   2445
+         Height          =   2595
+         Left            =   150
+         TabIndex        =   0
+         Top             =   2895
          Width           =   9525
          Begin GTMaskDate.GTMaskDate cboStartDate 
             Height          =   315
             Left            =   1815
-            TabIndex        =   14
+            TabIndex        =   10
             Top             =   1050
             Width           =   1305
             _Version        =   65537
@@ -843,7 +851,7 @@ Begin VB.Form frmBatchJob
             List            =   "frmBatchJob.frx":0126
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
-            TabIndex        =   18
+            TabIndex        =   14
             Top             =   1845
             Width           =   2115
          End
@@ -855,7 +863,7 @@ Begin VB.Form frmBatchJob
             Left            =   2595
             List            =   "frmBatchJob.frx":0138
             Style           =   2  'Dropdown List
-            TabIndex        =   12
+            TabIndex        =   8
             Top             =   640
             Width           =   1335
          End
@@ -864,7 +872,7 @@ Begin VB.Form frmBatchJob
             Enabled         =   0   'False
             Height          =   195
             Left            =   5100
-            TabIndex        =   21
+            TabIndex        =   17
             Top             =   1245
             Width           =   2160
          End
@@ -872,7 +880,7 @@ Begin VB.Form frmBatchJob
             Caption         =   "&Schedule"
             Height          =   315
             Left            =   200
-            TabIndex        =   9
+            TabIndex        =   5
             Top             =   300
             Width           =   1100
          End
@@ -881,7 +889,7 @@ Begin VB.Form frmBatchJob
             Enabled         =   0   'False
             Height          =   195
             Left            =   5100
-            TabIndex        =   20
+            TabIndex        =   16
             Top             =   930
             Width           =   2160
          End
@@ -890,14 +898,14 @@ Begin VB.Form frmBatchJob
             Enabled         =   0   'False
             Height          =   195
             Left            =   5100
-            TabIndex        =   19
+            TabIndex        =   15
             Top             =   630
             Width           =   2160
          End
          Begin COASpinner.COA_Spinner spnFrequency 
             Height          =   315
             Left            =   1815
-            TabIndex        =   11
+            TabIndex        =   7
             Top             =   645
             Width           =   630
             _ExtentX        =   1111
@@ -920,7 +928,7 @@ Begin VB.Form frmBatchJob
          Begin GTMaskDate.GTMaskDate cboEndDate 
             Height          =   315
             Left            =   1815
-            TabIndex        =   16
+            TabIndex        =   12
             Top             =   1440
             Width           =   1305
             _Version        =   65537
@@ -987,7 +995,7 @@ Begin VB.Form frmBatchJob
             Enabled         =   0   'False
             Height          =   195
             Left            =   450
-            TabIndex        =   17
+            TabIndex        =   13
             Top             =   1905
             Width           =   1110
          End
@@ -998,7 +1006,7 @@ Begin VB.Form frmBatchJob
             Enabled         =   0   'False
             Height          =   195
             Left            =   450
-            TabIndex        =   10
+            TabIndex        =   6
             Top             =   705
             Width           =   675
          End
@@ -1009,7 +1017,7 @@ Begin VB.Form frmBatchJob
             Enabled         =   0   'False
             Height          =   195
             Left            =   450
-            TabIndex        =   15
+            TabIndex        =   11
             Top             =   1500
             Width           =   915
          End
@@ -1020,7 +1028,7 @@ Begin VB.Form frmBatchJob
             Enabled         =   0   'False
             Height          =   195
             Left            =   450
-            TabIndex        =   13
+            TabIndex        =   9
             Top             =   1095
             Width           =   1020
          End
@@ -1028,15 +1036,15 @@ Begin VB.Form frmBatchJob
       Begin VB.Frame Frame4 
          Caption         =   "Report Options :"
          Height          =   1800
-         Left            =   150
-         TabIndex        =   71
+         Left            =   -74850
+         TabIndex        =   66
          Top             =   420
          Width           =   9470
          Begin VB.CommandButton cmdTitlePageTemplate 
             Caption         =   "..."
             Height          =   315
             Left            =   8500
-            TabIndex        =   38
+            TabIndex        =   34
             Top             =   360
             UseMaskColor    =   -1  'True
             Width           =   330
@@ -1045,7 +1053,7 @@ Begin VB.Form frmBatchJob
             Caption         =   "Force co&ver sheet on individual reports"
             Height          =   255
             Left            =   5280
-            TabIndex        =   43
+            TabIndex        =   39
             Top             =   1440
             Width           =   3975
          End
@@ -1053,7 +1061,7 @@ Begin VB.Form frmBatchJob
             Caption         =   "P&rint table of contents"
             Height          =   255
             Left            =   2750
-            TabIndex        =   42
+            TabIndex        =   38
             Top             =   1440
             Width           =   2295
          End
@@ -1061,7 +1069,7 @@ Begin VB.Form frmBatchJob
             ForeColor       =   &H00000000&
             Height          =   315
             Left            =   2750
-            TabIndex        =   37
+            TabIndex        =   33
             TabStop         =   0   'False
             Tag             =   "0"
             Top             =   360
@@ -1071,7 +1079,7 @@ Begin VB.Form frmBatchJob
             ForeColor       =   &H00000000&
             Height          =   315
             Left            =   2750
-            TabIndex        =   39
+            TabIndex        =   35
             TabStop         =   0   'False
             Tag             =   "0"
             Top             =   720
@@ -1081,7 +1089,7 @@ Begin VB.Form frmBatchJob
             Caption         =   "..."
             Height          =   315
             Left            =   8500
-            TabIndex        =   41
+            TabIndex        =   37
             Top             =   1080
             UseMaskColor    =   -1  'True
             Width           =   330
@@ -1090,7 +1098,7 @@ Begin VB.Form frmBatchJob
             ForeColor       =   &H00000000&
             Height          =   315
             Left            =   2750
-            TabIndex        =   40
+            TabIndex        =   36
             TabStop         =   0   'False
             Tag             =   "0"
             Text            =   "<None>"
@@ -1102,7 +1110,7 @@ Begin VB.Form frmBatchJob
             ForeColor       =   &H00000000&
             Height          =   315
             Left            =   2750
-            TabIndex        =   75
+            TabIndex        =   70
             TabStop         =   0   'False
             Tag             =   "1"
             Text            =   "Personnel_Records"
@@ -1115,7 +1123,7 @@ Begin VB.Form frmBatchJob
             Caption         =   "Title Page Template :"
             Height          =   195
             Left            =   195
-            TabIndex        =   74
+            TabIndex        =   69
             Top             =   420
             Width           =   1830
          End
@@ -1124,7 +1132,7 @@ Begin VB.Form frmBatchJob
             Caption         =   "Report Pack Title :"
             Height          =   195
             Left            =   195
-            TabIndex        =   73
+            TabIndex        =   68
             Top             =   780
             Width           =   1590
          End
@@ -1133,7 +1141,7 @@ Begin VB.Form frmBatchJob
             Caption         =   "Personnel Override Filter :"
             Height          =   195
             Left            =   195
-            TabIndex        =   72
+            TabIndex        =   67
             Top             =   1140
             Width           =   2265
          End
@@ -1143,7 +1151,7 @@ Begin VB.Form frmBatchJob
       Caption         =   "&OK"
       Height          =   400
       Left            =   7320
-      TabIndex        =   59
+      TabIndex        =   55
       Top             =   5800
       Width           =   1200
    End
@@ -1152,7 +1160,7 @@ Begin VB.Form frmBatchJob
       Caption         =   "&Cancel"
       Height          =   400
       Left            =   8645
-      TabIndex        =   60
+      TabIndex        =   56
       Top             =   5800
       Width           =   1200
    End
@@ -1242,10 +1250,10 @@ Private Sub RefreshColumnsGrid()
 End Sub
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
-  cmdOK.Enabled = pblnChanged
+  cmdOk.Enabled = pblnChanged
 End Property
 
 Private Function JobUtilityType(psJobType As String) As UtilityType
@@ -1669,8 +1677,12 @@ End Sub
 Public Function Initialise(pblnNew As Boolean, pblnCopy As Boolean, Optional plngBatchJobID As Long) As Boolean
   
   Set mclsData = New DataMgr.clsDataAccess           'Instantiate class
+  Dim iUtilityType As UtilityType
   
   Screen.MousePointer = vbHourglass
+  
+  iUtilityType = IIf(IsReportPack, utlReportPack, utlBatchJob)
+
   
   Select Case gblnReportPackMode
     Case True
@@ -1686,6 +1698,10 @@ Public Function Initialise(pblnNew As Boolean, pblnCopy As Boolean, Optional pln
   If pblnNew Then                                  'If this is a new definition
     mlngBatchJobID = 0                             'Set ID to 0 to indicate new record
     PopulateAccessGrid
+    
+    GetObjectCategories cboCategory, iUtilityType, 0, 0
+    SetComboItem cboCategory, IIf(glngCurrentCategoryID = -1, 0, glngCurrentCategoryID)
+    
     ClearForNew                                    'Clear fields ready for new entry
     Changed = False
     mblnDefinitionCreator = True
@@ -1962,8 +1978,11 @@ Private Function RetrieveBatchJobDetails() As Boolean
   Dim sRoleToPrompt As String
   Dim fJobOK As Boolean
   Dim sMessage As String
+  Dim iUtilityType As UtilityType
   
   On Error GoTo Load_ERROR
+  
+  iUtilityType = IIf(IsReportPack, utlReportPack, utlBatchJob)
   
   Set prstTemp = datGeneral.GetRecords( _
       "SELECT ASRSysBatchJobName.*, " & _
@@ -1997,6 +2016,8 @@ Private Function RetrieveBatchJobDetails() As Boolean
     txtUserName.Text = StrConv(prstTemp!UserName, vbProperCase)
     mblnDefinitionCreator = (LCase(prstTemp!UserName) = LCase(gsUserName))
   End If
+  
+  GetObjectCategories cboCategory, iUtilityType, mlngBatchJobID
   
   mblnReadOnly = Not datGeneral.SystemPermission("BATCHJOBS", "EDIT")
   If (Not mblnReadOnly) And (Not mblnDefinitionCreator) Then
@@ -2608,6 +2629,7 @@ Private Function SaveDefinition() As Boolean
   Dim pstrPeriod As String
   Dim pintLoop As Integer
   Dim pvarbookmark As Variant
+  Dim iUtilityType As UtilityType
 
   On Error GoTo Err_Trap
   
@@ -2622,6 +2644,8 @@ Private Function SaveDefinition() As Boolean
   ElseIf cboPeriod.Text = "Year(s)" Then
     pstrPeriod = pstrPeriod & "'Y'"
   End If
+
+  iUtilityType = IIf(IsReportPack, utlReportPack, utlBatchJob)
 
   If mlngBatchJobID > 0 Then                       'Editing an existing batch job
 
@@ -2669,7 +2693,7 @@ Private Function SaveDefinition() As Boolean
           
      mclsData.ExecuteSql (sSQL)
   
-    Call UtilUpdateLastSaved(utlBatchJob, mlngBatchJobID)
+    Call UtilUpdateLastSaved(iUtilityType, mlngBatchJobID)
    
   
   Else
@@ -2728,11 +2752,12 @@ Private Function SaveDefinition() As Boolean
       Exit Function
     End If
 
-    Call UtilCreated(utlBatchJob, mlngBatchJobID)
+    Call UtilCreated(iUtilityType, mlngBatchJobID)
     
   End If
 
   SaveAccess
+  SaveObjectCategories cboCategory, iUtilityType, mlngBatchJobID
 
   ' Now save the column details
 
@@ -2859,7 +2884,7 @@ Private Function SaveDefinition2() As Boolean
       sSQL = sSQL & "OutputScreen = " & IIf(chkDestination(desScreen).Value = vbChecked, "1", "0") & ", "
       'Printer Options
       sSQL = sSQL & IIf(chkDestination(desPrinter), (" OutputPrinterName = '" & Replace(cboPrinterName.Text, " '", "''") & "',"), (" OutputPrinterName = '', "))
-      sSQL = sSQL & "OutputFilename = '" & Replace(txtFilename.Text, "'", "''") & "',"
+      sSQL = sSQL & "OutputFilename = '" & Replace(txtFileName.Text, "'", "''") & "',"
       'outputSaveExisting
       If chkDestination(desSave).Value = vbChecked Then
         sSQL = sSQL & "OutputSaveExisting = " & cboSaveExisting.ItemData(cboSaveExisting.ListIndex) & ", "
@@ -2875,7 +2900,7 @@ Private Function SaveDefinition2() As Boolean
     sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmail = 1, "), ("OutputEmail = 0, "))
     sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmailAddr = " & txtEmailGroup.Tag & ", "), ("OutputEmailAddr = 0, "))
     sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmailSubject = '" & Replace(txtEmailSubject.Text, "'", "''") & "', "), ("OutputEmailSubject = '', "))
-    sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmailAttachAs = '" & Replace(txtEmailAttachAs.Text, "'", "''") & "'"), ("OutputEmailAttachAs = ''"))
+    sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmailAttachAs = '" & Replace(txtEMailAttachAs.Text, "'", "''") & "'"), ("OutputEmailAttachAs = ''"))
     
     
     'FINAL WHERE CLAUSE
@@ -2962,9 +2987,9 @@ Private Function SaveDefinition2() As Boolean
           'outputEmailSubject
           sSQL = sSQL & IIf(chkDestination(desEmail), ("'" & Replace(txtEmailSubject.Text, "'", "''") & "', "), ("'', "))
           'outputFilename
-          sSQL = sSQL & "'" & Replace(txtFilename.Text, "'", "''") & "',"
+          sSQL = sSQL & "'" & Replace(txtFileName.Text, "'", "''") & "',"
           'outputEmailAttachAs
-          sSQL = sSQL & IIf(chkDestination(desEmail), ("'" & Replace(txtEmailAttachAs.Text, "'", "''") & "',"), ("'',"))
+          sSQL = sSQL & IIf(chkDestination(desEmail), ("'" & Replace(txtEMailAttachAs.Text, "'", "''") & "',"), ("'',"))
           'outputTitlePage
           sSQL = sSQL & "'" & Replace(txtTitlePage.Text, "'", "''") & "', "
           'outputReportPackTitle
@@ -2994,6 +3019,7 @@ Private Function SaveDefinition2() As Boolean
   End If
 
   SaveAccess
+  SaveObjectCategories cboCategory, utlReportPack, mlngBatchJobID
 
   ' Now save the column details
 
@@ -4256,3 +4282,8 @@ End Sub
 Private Sub txtTitlePage_Change()
  Changed = True
 End Sub
+
+Private Sub cboCategory_Click()
+  Changed = True
+End Sub
+
