@@ -15,7 +15,7 @@ Begin VB.Form frmAuditOrder
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1009
+   HelpContextID   =   8009
    Icon            =   "frmAuditOrder.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True

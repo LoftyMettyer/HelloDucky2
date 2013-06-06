@@ -16,7 +16,7 @@ Begin VB.Form frmAuditFilter2
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1007
+   HelpContextID   =   8007
    Icon            =   "frmAuditFilter2.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
@@ -822,7 +822,7 @@ End Sub
 Private Sub txtValue_LostFocus()
 
   cmdAddToList.Default = False
-  cmdOK.Default = False
+  cmdOk.Default = False
   
 End Sub
 
