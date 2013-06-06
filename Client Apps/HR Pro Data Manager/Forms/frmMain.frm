@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "13:37"
+            TextSave        =   "16:55"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -180,6 +180,8 @@ Dim pic As StdPicture, hMemDC As Long, pHeight As Long, pWidth As Long
 Dim mfMenuDisabled As Boolean
 
 Private mstrLastAlarmCheck As String
+
+Public BypassDefsel_ID As Long
 
 'Private mblnLoggingOff As Boolean
 
@@ -668,7 +670,7 @@ Private Sub MDIForm_QueryUnload(Cancel As Integer, UnloadMode As Integer)
 
 End Sub
 
-Private Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
+Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
   ' Perform the selected menu option action.
   Dim lPos As Long
   Dim lForms As Long
@@ -3712,6 +3714,7 @@ Public Sub MailMergeClick()
       If .ShowList(utlMailMerge) Then
         
         .Show vbModal
+        
         Select Case .Action
         Case edtAdd
           Set frmDefinition = New frmMailMerge
