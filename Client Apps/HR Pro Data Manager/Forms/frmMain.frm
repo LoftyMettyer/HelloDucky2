@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "11:00"
+            TextSave        =   "17:05"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -473,8 +473,9 @@ Private Sub MDIForm_Activate()
 
   ' NPG20091007 Fault HR Pro-416
   ' set the new multi-size icons for taskbar, application, and alt-tab
-  SetIcon Me.hWnd, "TASKBAR", True
-
+  'SetIcon Me.hWnd, "TASKBAR", True
+  SetIcon Me.hWnd, "!ABS", True
+  
 End Sub
 
 Private Sub MDIForm_Load()
