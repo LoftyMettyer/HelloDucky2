@@ -950,7 +950,7 @@ Public Function RuntimeCode(psRuntimeCode As String, _
       If fOK Then
         
         'MH20100324
-        If gblnExpressionForDeleteTrigger Then
+        If glngExpressionTableIDForDeleteTrigger = mlngTableID Then
           sTableName = "deleted"
         Else
           sTableName = !TableName
