@@ -5,7 +5,7 @@ Begin VB.Form frmAuditOrder
    ClientHeight    =   7830
    ClientLeft      =   45
    ClientTop       =   330
-   ClientWidth     =   14460
+   ClientWidth     =   14610
    BeginProperty Font 
       Name            =   "Verdana"
       Size            =   8.25
@@ -22,7 +22,7 @@ Begin VB.Form frmAuditOrder
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   7830
-   ScaleWidth      =   14460
+   ScaleWidth      =   14610
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin VB.Frame fraAccess 
@@ -31,11 +31,11 @@ Begin VB.Form frmAuditOrder
       Left            =   165
       TabIndex        =   69
       Top             =   4455
-      Width           =   4600
+      Width           =   4800
       Begin VB.ComboBox cboType 
          Height          =   315
          Index           =   24
-         Left            =   1800
+         Left            =   2000
          Style           =   2  'Dropdown List
          TabIndex        =   80
          Top             =   2700
@@ -44,7 +44,7 @@ Begin VB.Form frmAuditOrder
       Begin VB.ComboBox cboOrder 
          Height          =   315
          Index           =   24
-         Left            =   3300
+         Left            =   3500
          Style           =   2  'Dropdown List
          TabIndex        =   81
          Top             =   2700
@@ -53,7 +53,7 @@ Begin VB.Form frmAuditOrder
       Begin VB.ComboBox cboType 
          Height          =   315
          Index           =   19
-         Left            =   1800
+         Left            =   2000
          Style           =   2  'Dropdown List
          TabIndex        =   70
          Top             =   705
@@ -62,7 +62,7 @@ Begin VB.Form frmAuditOrder
       Begin VB.ComboBox cboType 
          Height          =   315
          Index           =   20
-         Left            =   1800
+         Left            =   2000
          Style           =   2  'Dropdown List
          TabIndex        =   72
          Top             =   1095
@@ -71,7 +71,7 @@ Begin VB.Form frmAuditOrder
       Begin VB.ComboBox cboType 
          Height          =   315
          Index           =   21
-         Left            =   1800
+         Left            =   2000
          Style           =   2  'Dropdown List
          TabIndex        =   74
          Top             =   1500
@@ -80,7 +80,7 @@ Begin VB.Form frmAuditOrder
       Begin VB.ComboBox cboType 
          Height          =   315
          Index           =   22
-         Left            =   1800
+         Left            =   2000
          Style           =   2  'Dropdown List
          TabIndex        =   76
          Top             =   1905
@@ -89,7 +89,7 @@ Begin VB.Form frmAuditOrder
       Begin VB.ComboBox cboType 
          Height          =   315
          Index           =   23
-         Left            =   1800
+         Left            =   2000
          Style           =   2  'Dropdown List
          TabIndex        =   78
          Top             =   2295
@@ -98,7 +98,7 @@ Begin VB.Form frmAuditOrder
       Begin VB.ComboBox cboOrder 
          Height          =   315
          Index           =   19
-         Left            =   3300
+         Left            =   3500
          Style           =   2  'Dropdown List
          TabIndex        =   71
          Top             =   705
@@ -107,7 +107,7 @@ Begin VB.Form frmAuditOrder
       Begin VB.ComboBox cboOrder 
          Height          =   315
          Index           =   20
-         Left            =   3300
+         Left            =   3500
          Style           =   2  'Dropdown List
          TabIndex        =   73
          Top             =   1095
@@ -116,7 +116,7 @@ Begin VB.Form frmAuditOrder
       Begin VB.ComboBox cboOrder 
          Height          =   315
          Index           =   21
-         Left            =   3300
+         Left            =   3500
          Style           =   2  'Dropdown List
          TabIndex        =   75
          Top             =   1500
@@ -125,7 +125,7 @@ Begin VB.Form frmAuditOrder
       Begin VB.ComboBox cboOrder 
          Height          =   315
          Index           =   22
-         Left            =   3300
+         Left            =   3500
          Style           =   2  'Dropdown List
          TabIndex        =   77
          Top             =   1905
@@ -134,7 +134,7 @@ Begin VB.Form frmAuditOrder
       Begin VB.ComboBox cboOrder 
          Height          =   315
          Index           =   23
-         Left            =   3300
+         Left            =   3500
          Style           =   2  'Dropdown List
          TabIndex        =   79
          Top             =   2295
@@ -218,7 +218,7 @@ Begin VB.Form frmAuditOrder
          Caption         =   "Asc/Desc :"
          Height          =   195
          Index           =   3
-         Left            =   1800
+         Left            =   2000
          TabIndex        =   83
          Top             =   360
          Width           =   765
@@ -229,7 +229,7 @@ Begin VB.Form frmAuditOrder
          Caption         =   "Order :"
          Height          =   195
          Index           =   0
-         Left            =   3300
+         Left            =   3500
          TabIndex        =   82
          Top             =   360
          Width           =   525
@@ -238,14 +238,14 @@ Begin VB.Form frmAuditOrder
    Begin VB.Frame fraGroups 
       Caption         =   "Audit Log Columns :"
       Height          =   2800
-      Left            =   9700
+      Left            =   9850
       TabIndex        =   57
       Top             =   100
-      Width           =   4600
+      Width           =   4800
       Begin VB.ComboBox cboOrder 
          Height          =   315
          Index           =   18
-         Left            =   3300
+         Left            =   3500
          Style           =   2  'Dropdown List
          TabIndex        =   37
          Top             =   2300
@@ -254,7 +254,7 @@ Begin VB.Form frmAuditOrder
       Begin VB.ComboBox cboOrder 
          Height          =   315
          Index           =   17
-         Left            =   3300
+         Left            =   3500
          Style           =   2  'Dropdown List
          TabIndex        =   35
          Top             =   1900
@@ -263,7 +263,7 @@ Begin VB.Form frmAuditOrder
       Begin VB.ComboBox cboOrder 
          Height          =   315
          Index           =   16
-         Left            =   3300
+         Left            =   3500
          Style           =   2  'Dropdown List
          TabIndex        =   33
          Top             =   1500
@@ -272,7 +272,7 @@ Begin VB.Form frmAuditOrder
       Begin VB.ComboBox cboOrder 
          Height          =   315
          Index           =   15
-         Left            =   3300
+         Left            =   3500
          Style           =   2  'Dropdown List
          TabIndex        =   31
          Top             =   1100
@@ -281,7 +281,7 @@ Begin VB.Form frmAuditOrder
       Begin VB.ComboBox cboOrder 
          Height          =   315
          Index           =   14
-         Left            =   3300
+         Left            =   3500
          Style           =   2  'Dropdown List
          TabIndex        =   29
          Top             =   700
@@ -290,7 +290,7 @@ Begin VB.Form frmAuditOrder
       Begin VB.ComboBox cboType 
          Height          =   315
          Index           =   18
-         Left            =   1800
+         Left            =   2000
          Style           =   2  'Dropdown List
          TabIndex        =   36
          Top             =   2300
@@ -299,7 +299,7 @@ Begin VB.Form frmAuditOrder
       Begin VB.ComboBox cboType 
          Height          =   315
          Index           =   17
-         Left            =   1800
+         Left            =   2000
          Style           =   2  'Dropdown List
          TabIndex        =   34
          Top             =   1900
@@ -308,7 +308,7 @@ Begin VB.Form frmAuditOrder
       Begin VB.ComboBox cboType 
          Height          =   315
          Index           =   16
-         Left            =   1800
+         Left            =   2000
          Style           =   2  'Dropdown List
          TabIndex        =   32
          Top             =   1500
@@ -317,7 +317,7 @@ Begin VB.Form frmAuditOrder
       Begin VB.ComboBox cboType 
          Height          =   315
          Index           =   15
-         Left            =   1800
+         Left            =   2000
          Style           =   2  'Dropdown List
          TabIndex        =   30
          Top             =   1100
@@ -326,7 +326,7 @@ Begin VB.Form frmAuditOrder
       Begin VB.ComboBox cboType 
          Height          =   315
          Index           =   14
-         Left            =   1800
+         Left            =   2000
          Style           =   2  'Dropdown List
          TabIndex        =   28
          Top             =   700
@@ -338,7 +338,7 @@ Begin VB.Form frmAuditOrder
          Caption         =   "Order :"
          Height          =   195
          Index           =   2
-         Left            =   3300
+         Left            =   3500
          TabIndex        =   64
          Top             =   360
          Width           =   525
@@ -349,7 +349,7 @@ Begin VB.Form frmAuditOrder
          Caption         =   "Asc/Desc :"
          Height          =   195
          Index           =   1
-         Left            =   1800
+         Left            =   2000
          TabIndex        =   63
          Top             =   360
          Width           =   765
@@ -418,14 +418,14 @@ Begin VB.Form frmAuditOrder
    Begin VB.Frame fraPermissions 
       Caption         =   "Audit Log Columns :"
       Height          =   3600
-      Left            =   4900
+      Left            =   5050
       TabIndex        =   48
       Top             =   100
-      Width           =   4600
+      Width           =   4800
       Begin VB.ComboBox cboOrder 
          Height          =   315
          Index           =   11
-         Left            =   3300
+         Left            =   3500
          Style           =   2  'Dropdown List
          TabIndex        =   23
          Top             =   2300
@@ -434,7 +434,7 @@ Begin VB.Form frmAuditOrder
       Begin VB.ComboBox cboType 
          Height          =   315
          Index           =   11
-         Left            =   1800
+         Left            =   2000
          Style           =   2  'Dropdown List
          TabIndex        =   22
          Top             =   2300
@@ -443,16 +443,16 @@ Begin VB.Form frmAuditOrder
       Begin VB.ComboBox cboType 
          Height          =   315
          Index           =   7
-         Left            =   1800
+         Left            =   2000
          Style           =   2  'Dropdown List
          TabIndex        =   14
-         Top             =   700
-         Width           =   1400
+         Top             =   705
+         Width           =   1395
       End
       Begin VB.ComboBox cboType 
          Height          =   315
          Index           =   8
-         Left            =   1800
+         Left            =   2000
          Style           =   2  'Dropdown List
          TabIndex        =   16
          Top             =   1100
@@ -461,7 +461,7 @@ Begin VB.Form frmAuditOrder
       Begin VB.ComboBox cboType 
          Height          =   315
          Index           =   9
-         Left            =   1800
+         Left            =   2000
          Style           =   2  'Dropdown List
          TabIndex        =   18
          Top             =   1500
@@ -470,7 +470,7 @@ Begin VB.Form frmAuditOrder
       Begin VB.ComboBox cboType 
          Height          =   315
          Index           =   10
-         Left            =   1800
+         Left            =   2000
          Style           =   2  'Dropdown List
          TabIndex        =   20
          Top             =   1900
@@ -479,7 +479,7 @@ Begin VB.Form frmAuditOrder
       Begin VB.ComboBox cboType 
          Height          =   315
          Index           =   12
-         Left            =   1800
+         Left            =   2000
          Style           =   2  'Dropdown List
          TabIndex        =   24
          Top             =   2700
@@ -488,7 +488,7 @@ Begin VB.Form frmAuditOrder
       Begin VB.ComboBox cboType 
          Height          =   315
          Index           =   13
-         Left            =   1800
+         Left            =   2000
          Style           =   2  'Dropdown List
          TabIndex        =   26
          Top             =   3100
@@ -497,7 +497,7 @@ Begin VB.Form frmAuditOrder
       Begin VB.ComboBox cboOrder 
          Height          =   315
          Index           =   7
-         Left            =   3300
+         Left            =   3500
          Style           =   2  'Dropdown List
          TabIndex        =   15
          Top             =   700
@@ -506,7 +506,7 @@ Begin VB.Form frmAuditOrder
       Begin VB.ComboBox cboOrder 
          Height          =   315
          Index           =   8
-         Left            =   3300
+         Left            =   3500
          Style           =   2  'Dropdown List
          TabIndex        =   17
          Top             =   1100
@@ -515,7 +515,7 @@ Begin VB.Form frmAuditOrder
       Begin VB.ComboBox cboOrder 
          Height          =   315
          Index           =   9
-         Left            =   3300
+         Left            =   3500
          Style           =   2  'Dropdown List
          TabIndex        =   19
          Top             =   1500
@@ -524,7 +524,7 @@ Begin VB.Form frmAuditOrder
       Begin VB.ComboBox cboOrder 
          Height          =   315
          Index           =   10
-         Left            =   3300
+         Left            =   3500
          Style           =   2  'Dropdown List
          TabIndex        =   21
          Top             =   1900
@@ -533,7 +533,7 @@ Begin VB.Form frmAuditOrder
       Begin VB.ComboBox cboOrder 
          Height          =   315
          Index           =   12
-         Left            =   3300
+         Left            =   3500
          Style           =   2  'Dropdown List
          TabIndex        =   25
          Top             =   2700
@@ -542,7 +542,7 @@ Begin VB.Form frmAuditOrder
       Begin VB.ComboBox cboOrder 
          Height          =   315
          Index           =   13
-         Left            =   3300
+         Left            =   3500
          Style           =   2  'Dropdown List
          TabIndex        =   27
          Top             =   3100
@@ -638,7 +638,7 @@ Begin VB.Form frmAuditOrder
          Caption         =   "Asc/Desc :"
          Height          =   195
          Index           =   10
-         Left            =   1800
+         Left            =   2000
          TabIndex        =   50
          Top             =   360
          Width           =   765
@@ -649,7 +649,7 @@ Begin VB.Form frmAuditOrder
          Caption         =   "Order :"
          Height          =   195
          Index           =   9
-         Left            =   3300
+         Left            =   3500
          TabIndex        =   49
          Top             =   360
          Width           =   525
@@ -668,7 +668,7 @@ Begin VB.Form frmAuditOrder
       Default         =   -1  'True
       Enabled         =   0   'False
       Height          =   400
-      Left            =   2200
+      Left            =   2400
       TabIndex        =   39
       Top             =   3850
       Width           =   1200
@@ -677,7 +677,7 @@ Begin VB.Form frmAuditOrder
       Cancel          =   -1  'True
       Caption         =   "&Cancel"
       Height          =   400
-      Left            =   3550
+      Left            =   3750
       TabIndex        =   40
       Top             =   3850
       Width           =   1200
@@ -688,11 +688,11 @@ Begin VB.Form frmAuditOrder
       Left            =   150
       TabIndex        =   41
       Top             =   100
-      Width           =   4600
+      Width           =   4800
       Begin VB.ComboBox cboOrder 
          Height          =   315
          Index           =   6
-         Left            =   3390
+         Left            =   3530
          Style           =   2  'Dropdown List
          TabIndex        =   13
          Top             =   3100
@@ -705,12 +705,12 @@ Begin VB.Form frmAuditOrder
          Style           =   2  'Dropdown List
          TabIndex        =   12
          Top             =   3100
-         Width           =   1260
+         Width           =   1395
       End
       Begin VB.ComboBox cboOrder 
          Height          =   315
          Index           =   5
-         Left            =   3390
+         Left            =   3530
          Style           =   2  'Dropdown List
          TabIndex        =   11
          Top             =   2700
@@ -719,7 +719,7 @@ Begin VB.Form frmAuditOrder
       Begin VB.ComboBox cboOrder 
          Height          =   315
          Index           =   4
-         Left            =   3390
+         Left            =   3530
          Style           =   2  'Dropdown List
          TabIndex        =   9
          Top             =   2300
@@ -728,7 +728,7 @@ Begin VB.Form frmAuditOrder
       Begin VB.ComboBox cboOrder 
          Height          =   315
          Index           =   3
-         Left            =   3390
+         Left            =   3530
          Style           =   2  'Dropdown List
          TabIndex        =   7
          Top             =   1900
@@ -737,7 +737,7 @@ Begin VB.Form frmAuditOrder
       Begin VB.ComboBox cboOrder 
          Height          =   315
          Index           =   2
-         Left            =   3390
+         Left            =   3530
          Style           =   2  'Dropdown List
          TabIndex        =   5
          Top             =   1500
@@ -746,7 +746,7 @@ Begin VB.Form frmAuditOrder
       Begin VB.ComboBox cboOrder 
          Height          =   315
          Index           =   1
-         Left            =   3390
+         Left            =   3530
          Style           =   2  'Dropdown List
          TabIndex        =   3
          Top             =   1100
@@ -755,7 +755,7 @@ Begin VB.Form frmAuditOrder
       Begin VB.ComboBox cboOrder 
          Height          =   315
          Index           =   0
-         Left            =   3390
+         Left            =   3530
          Style           =   2  'Dropdown List
          TabIndex        =   1
          Top             =   700
@@ -768,7 +768,7 @@ Begin VB.Form frmAuditOrder
          Style           =   2  'Dropdown List
          TabIndex        =   10
          Top             =   2700
-         Width           =   1260
+         Width           =   1395
       End
       Begin VB.ComboBox cboType 
          Height          =   315
@@ -777,7 +777,7 @@ Begin VB.Form frmAuditOrder
          Style           =   2  'Dropdown List
          TabIndex        =   8
          Top             =   2300
-         Width           =   1260
+         Width           =   1395
       End
       Begin VB.ComboBox cboType 
          Height          =   315
@@ -786,7 +786,7 @@ Begin VB.Form frmAuditOrder
          Style           =   2  'Dropdown List
          TabIndex        =   6
          Top             =   1900
-         Width           =   1260
+         Width           =   1395
       End
       Begin VB.ComboBox cboType 
          Height          =   315
@@ -795,7 +795,7 @@ Begin VB.Form frmAuditOrder
          Style           =   2  'Dropdown List
          TabIndex        =   4
          Top             =   1500
-         Width           =   1260
+         Width           =   1395
       End
       Begin VB.ComboBox cboType 
          Height          =   315
@@ -804,7 +804,7 @@ Begin VB.Form frmAuditOrder
          Style           =   2  'Dropdown List
          TabIndex        =   2
          Top             =   1100
-         Width           =   1260
+         Width           =   1395
       End
       Begin VB.ComboBox cboType 
          Height          =   315
@@ -813,7 +813,7 @@ Begin VB.Form frmAuditOrder
          Style           =   2  'Dropdown List
          TabIndex        =   0
          Top             =   700
-         Width           =   1260
+         Width           =   1395
       End
       Begin VB.Label lblTitle 
          AutoSize        =   -1  'True
@@ -832,7 +832,7 @@ Begin VB.Form frmAuditOrder
          Caption         =   "Order :"
          Height          =   195
          Index           =   8
-         Left            =   3390
+         Left            =   3530
          TabIndex        =   67
          Top             =   360
          Width           =   705
@@ -944,7 +944,7 @@ Public Sub Initialise(AuditType As audType)
   Const iFRAMETOP = 100
   Const iFRAMELEFT = 150
   Const iYGAP = 200
-  Const iFORMWIDTH = 5000
+  Const iFORMWIDTH = 5200
     
   With fraRecords
     .Top = iFRAMETOP
@@ -995,7 +995,7 @@ Public Sub Initialise(AuditType As audType)
   End With
   
   cmdCancel.Top = dblCurrentHeight + iYGAP
-  cmdOK.Top = cmdCancel.Top
+  cmdOk.Top = cmdCancel.Top
   cmdClear.Top = cmdCancel.Top
   
   Me.Height = cmdCancel.Top + cmdCancel.Height + iYGAP + UI.CaptionHeight + (2 * UI.YFrame)
@@ -1349,7 +1349,7 @@ End Sub
 
 Private Sub RefreshButton()
 
-  cmdOK.Enabled = mfChanged
+  cmdOk.Enabled = mfChanged
   
   If fraRecords.Visible Then
   

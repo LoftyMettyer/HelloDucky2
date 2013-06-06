@@ -61,7 +61,7 @@ Public Function SaveViews(pfRefreshDatabase As Boolean) As Boolean
                         .Seek "=", CLng(alngTempColumns(iCount))
   
                         If Not .NoMatch Then
-                          If .Fields("changed").Value Then
+                          If .Fields("changed").value Then
                             fChanged = True
                             Exit For
                           End If
@@ -108,17 +108,17 @@ Private Function ViewDelete() As Boolean
   
   ' Delete the view info from the ASRSysViews table on the server.
   sSQL = "DELETE FROM ASRSysViews " & _
-          "WHERE ViewID = " & recViewEdit.Fields("ViewID").Value
+          "WHERE ViewID = " & recViewEdit.Fields("ViewID").value
   gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
   
   ' Delete the columns from the ASRSysViewColumns table on the server.
   sSQL = "DELETE FROM ASRSysViewColumns " & _
-          "WHERE ViewID = " & recViewEdit.Fields("ViewID").Value
+          "WHERE ViewID = " & recViewEdit.Fields("ViewID").value
   gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
   
   ' Delete the view screens from the ASRSysViewScreens table on the server.
   sSQL = "DELETE FROM ASRSysViewScreens " & _
-          "WHERE ViewID = " & recViewEdit.Fields("ViewID").Value
+          "WHERE ViewID = " & recViewEdit.Fields("ViewID").value
   gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
   
   ' Drop the view from the table on the server.
@@ -132,9 +132,9 @@ Private Function ViewDelete() As Boolean
   sSQL = "IF EXISTS " & _
           "(SELECT Name " & _
           "FROM sysobjects " & _
-          "WHERE id = object_id('dbo." & recViewEdit.Fields("viewname").Value & "') " & _
+          "WHERE id = object_id('dbo." & recViewEdit.Fields("viewname").value & "') " & _
           "AND sysstat & 0xf = 2) " & _
-          "DROP VIEW dbo." & recViewEdit.Fields("viewname").Value
+          "DROP VIEW dbo." & recViewEdit.Fields("viewname").value
   gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
   
 TidyUpAndExit:
@@ -178,30 +178,30 @@ Private Function ViewNew() As Boolean
     recViewEdit.Fields("ExpressionID") & ")"
   sSQL = "INSERT INTO ASRSysViews" & _
     " (viewID, viewName, viewDescription, viewTableID, viewSQL, expressionID)" & _
-    "VALUES (" & recViewEdit.Fields("ViewID").Value & ", " & _
-    "'" & recViewEdit.Fields("ViewName").Value & "', " & _
-    "'" & recViewEdit.Fields("ViewDescription").Value & "', " & _
-    recViewEdit.Fields("ViewTableID").Value & ", " & _
-    "'" & recViewEdit.Fields("ViewSQL").Value & "', " & _
-    recViewEdit.Fields("ExpressionID").Value & ")"
+    "VALUES (" & recViewEdit.Fields("ViewID").value & ", " & _
+    "'" & recViewEdit.Fields("ViewName").value & "', " & _
+    "'" & recViewEdit.Fields("ViewDescription").value & "', " & _
+    recViewEdit.Fields("ViewTableID").value & ", " & _
+    "'" & recViewEdit.Fields("ViewSQL").value & "', " & _
+    recViewEdit.Fields("ExpressionID").value & ")"
   gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
   
   ' Insert the columns into the ASRSysViewColumns table on the server.
   With recViewColEdit
     .Index = "idxViewID"
-    .Seek "=", recViewEdit.Fields("ViewID").Value
+    .Seek "=", recViewEdit.Fields("ViewID").value
     If Not .NoMatch Then
       Do While Not .EOF
         
-        If .Fields("viewID").Value <> recViewEdit.Fields("ViewID").Value Then
+        If .Fields("viewID").value <> recViewEdit.Fields("ViewID").value Then
           Exit Do
         End If
       
         sSQL = "INSERT INTO ASRSysViewColumns" & _
           " (viewID, columnID, inView)" & _
-          " VALUES (" & .Fields("ViewID").Value & ", " & _
+          " VALUES (" & .Fields("ViewID").value & ", " & _
           .Fields("ColumnID") & ", " & _
-          IIf(.Fields("InView").Value, 1, 0) & ")"
+          IIf(.Fields("InView").value, 1, 0) & ")"
         gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
         
         .MoveNext
@@ -212,18 +212,18 @@ Private Function ViewNew() As Boolean
   ' Insert the view screens into the ASRSysViewScreens table on the server.
   With recViewScreens
     .Index = "idxViewID"
-    .Seek "=", recViewEdit.Fields("ViewID").Value
+    .Seek "=", recViewEdit.Fields("ViewID").value
     If Not .NoMatch Then
       Do While Not .EOF
         
-        If .Fields("viewID").Value <> recViewEdit.Fields("ViewID").Value Then
+        If .Fields("viewID").value <> recViewEdit.Fields("ViewID").value Then
           Exit Do
         End If
       
         sSQL = "INSERT INTO ASRSysViewScreens" & _
           " (screenID, viewID)" & _
-          " VALUES (" & .Fields("ScreenID").Value & ", " & _
-          .Fields("ViewID").Value & ") "
+          " VALUES (" & .Fields("ScreenID").value & ", " & _
+          .Fields("ViewID").value & ") "
         gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
         
         .MoveNext
@@ -236,8 +236,8 @@ Private Function ViewNew() As Boolean
   ' Now get the table name
   With recTabEdit
     .Index = "idxTableID"
-    .Seek "=", recViewEdit.Fields("ViewTableID").Value
-    sTable = Trim(recTabEdit.Fields("TableName").Value)
+    .Seek "=", recViewEdit.Fields("ViewTableID").value
+    sTable = Trim(recTabEdit.Fields("TableName").value)
   End With
   
   ' First get the non-system and non-link columns.
@@ -248,13 +248,13 @@ Private Function ViewNew() As Boolean
     " AND tmpColumns.columnType <> " & Trim$(Str$(giCOLUMNTYPE_SYSTEM)) & _
     " AND tmpColumns.columnType <> " & Trim$(Str$(giCOLUMNTYPE_LINK)) & _
     " AND tmpViewColumns.InView = TRUE" & _
-    " AND tmpViewColumns.ViewID = " & recViewEdit.Fields("ViewID").Value & ")" & _
+    " AND tmpViewColumns.ViewID = " & recViewEdit.Fields("ViewID").value & ")" & _
     " ORDER BY tmpColumns.ColumnName"
   Set rsColumns = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
   sColumns = vbNullString
   With rsColumns
     While Not .EOF
-      sColumns = sColumns & IIf(LenB(sColumns) <> 0, ", ", vbNullString) & sTable & "." & Trim(.Fields("ColumnName").Value) & vbNewLine
+      sColumns = sColumns & IIf(LenB(sColumns) <> 0, ", ", vbNullString) & sTable & "." & Trim(.Fields("ColumnName").value) & vbNewLine
       iNonSystemColumnsCount = iNonSystemColumnsCount + 1
       .MoveNext
     Wend
@@ -265,8 +265,11 @@ Private Function ViewNew() As Boolean
   fOK = (iNonSystemColumnsCount > 0)
   
   If Not fOK Then
-    MsgBox "At least one column must be included in the '" & recViewEdit!ViewName & "' view.", _
+    'MsgBox "At least one column must be included in the '" & recViewEdit!ViewName & "' view.", _
       vbCritical + vbOKOnly, App.Title
+    fOK = False
+    OutputError "At least one column must be included in the '" & recViewEdit!ViewName & "' view."
+    GoTo TidyUpAndExit
   Else
   
     ' Add System and Link columns.
@@ -280,7 +283,7 @@ Private Function ViewNew() As Boolean
     Set rsColumns = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
     With rsColumns
       While Not .EOF
-        sColumns = sColumns & IIf(LenB(sColumns) <> 0, ", ", vbNullString) & sTable & "." & Trim(.Fields("ColumnName").Value) & vbNewLine
+        sColumns = sColumns & IIf(LenB(sColumns) <> 0, ", ", vbNullString) & sTable & "." & Trim(.Fields("ColumnName").value) & vbNewLine
         .MoveNext
       Wend
     End With
@@ -296,7 +299,7 @@ Private Function ViewNew() As Boolean
     Set objExpr = Nothing
   
     ' Now create the view
-    sSQL = "CREATE VIEW dbo." & recViewEdit.Fields("ViewName").Value & vbNewLine & _
+    sSQL = "CREATE VIEW dbo." & recViewEdit.Fields("ViewName").value & vbNewLine & _
       "AS" & vbNewLine & _
       "    SELECT " & sColumns & vbNewLine & _
       "    FROM " & sTable & vbNewLine & _
@@ -344,36 +347,36 @@ Private Function ViewSave() As Boolean
     " ExpressionID = " & recViewEdit.Fields("ExpressionID") & _
     " WHERE ViewID = " & recViewEdit.Fields("ViewID")
   sSQL = "UPDATE ASRSysViews" & _
-    " SET ViewDescription = '" & Replace(recViewEdit.Fields("ViewDescription").Value, "'", "''") & "'," & _
-    " ViewName = '" & recViewEdit.Fields("ViewName").Value & "'," & _
-    " ExpressionID = " & recViewEdit.Fields("ExpressionID").Value & _
-    " WHERE ViewID = " & recViewEdit.Fields("ViewID").Value
+    " SET ViewDescription = '" & Replace(recViewEdit.Fields("ViewDescription").value, "'", "''") & "'," & _
+    " ViewName = '" & recViewEdit.Fields("ViewName").value & "'," & _
+    " ExpressionID = " & recViewEdit.Fields("ExpressionID").value & _
+    " WHERE ViewID = " & recViewEdit.Fields("ViewID").value
   gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
   
   ' Update the columns in the ASRSysViewColumns table on the server.
   With recViewColEdit
     .Index = "idxViewID"
-    .Seek "=", recViewEdit.Fields("ViewID").Value
+    .Seek "=", recViewEdit.Fields("ViewID").value
     
     If Not .NoMatch Then
       Do While Not .EOF
       
-        If .Fields("viewID").Value <> recViewEdit.Fields("ViewID").Value Then
+        If .Fields("viewID").value <> recViewEdit.Fields("ViewID").value Then
           Exit Do
         End If
       
-        If .Fields("changed").Value Then
+        If .Fields("changed").value Then
           sSQL = "UPDATE ASRSysViewColumns" & _
-            " SET inView=" & IIf(.Fields("InView").Value, 1, 0) & _
-            " WHERE viewID=" & recViewEdit.Fields("ViewID").Value & _
-            " AND columnID=" & .Fields("columnID").Value
+            " SET inView=" & IIf(.Fields("InView").value, 1, 0) & _
+            " WHERE viewID=" & recViewEdit.Fields("ViewID").value & _
+            " AND columnID=" & .Fields("columnID").value
           gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
-        ElseIf .Fields("new").Value Then
+        ElseIf .Fields("new").value Then
           sSQL = "INSERT INTO ASRSysViewColumns" & _
             " (viewID, columnID, inView)" & _
-            " VALUES (" & .Fields("ViewID").Value & ", " & _
-            .Fields("ColumnID").Value & ", " & _
-            IIf(.Fields("InView").Value, 1, 0) & ")"
+            " VALUES (" & .Fields("ViewID").value & ", " & _
+            .Fields("ColumnID").value & ", " & _
+            IIf(.Fields("InView").value, 1, 0) & ")"
           gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
         End If
         
@@ -385,24 +388,24 @@ Private Function ViewSave() As Boolean
   ' Decide what to do with the view screens.
   With recViewScreens
     .Index = "idxViewID"
-    .Seek "=", recViewEdit.Fields("ViewID").Value
+    .Seek "=", recViewEdit.Fields("ViewID").value
     If Not .NoMatch Then
       Do While Not .EOF
-        If .Fields("viewID").Value <> recViewEdit.Fields("ViewID").Value Then
+        If .Fields("viewID").value <> recViewEdit.Fields("ViewID").value Then
           Exit Do
         End If
       
         ' Decide if they are new or should be deleted
-        If .Fields("deleted").Value Then
+        If .Fields("deleted").value Then
           sSQL = "DELETE FROM ASRSysViewScreens " & _
                   "WHERE ScreenID = " & .Fields("ScreenID") & " " & _
                   "AND ViewID = " & .Fields("ViewID")
           gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
-        ElseIf .Fields("new").Value Then
+        ElseIf .Fields("new").value Then
           sSQL = "INSERT INTO ASRSysViewScreens" & _
             " (screenID, viewID)" & _
-            " VALUES (" & .Fields("ScreenID").Value & ", " & _
-            .Fields("ViewID").Value & ") "
+            " VALUES (" & .Fields("ScreenID").value & ", " & _
+            .Fields("ViewID").value & ") "
           gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
         End If
         .MoveNext
@@ -413,8 +416,8 @@ Private Function ViewSave() As Boolean
   ' Now get the table name
   With recTabEdit
     .Index = "idxTableID"
-    .Seek "=", recViewEdit.Fields("ViewTableID").Value
-    sTable = Trim(recTabEdit.Fields("TableName").Value)
+    .Seek "=", recViewEdit.Fields("ViewTableID").value
+    sTable = Trim(recTabEdit.Fields("TableName").value)
   End With
   
   ' Recreate the view in SQL Server
@@ -427,13 +430,13 @@ Private Function ViewSave() As Boolean
     " AND tmpColumns.columnType <> " & Trim$(Str$(giCOLUMNTYPE_SYSTEM)) & _
     " AND tmpColumns.columnType <> " & Trim$(Str$(giCOLUMNTYPE_LINK)) & _
     " AND tmpViewColumns.InView = TRUE" & _
-    " AND tmpViewColumns.ViewID = " & recViewEdit.Fields("ViewID").Value & ")" & _
+    " AND tmpViewColumns.ViewID = " & recViewEdit.Fields("ViewID").value & ")" & _
     " ORDER BY tmpColumns.ColumnName"
   Set rsColumns = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
   sColumns = vbNullString
   With rsColumns
     While Not .EOF
-      sColumns = sColumns & IIf(LenB(sColumns) = 0, vbNullString, ", ") & sTable & "." & Trim(.Fields("ColumnName").Value) & vbNewLine
+      sColumns = sColumns & IIf(LenB(sColumns) = 0, vbNullString, ", ") & sTable & "." & Trim(.Fields("ColumnName").value) & vbNewLine
       iNonSystemColumnsCount = iNonSystemColumnsCount + 1
       .MoveNext
     Wend
@@ -458,7 +461,7 @@ Private Function ViewSave() As Boolean
     Set rsColumns = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
     With rsColumns
       While Not .EOF
-        sColumns = sColumns & IIf(LenB(sColumns) <> 0, ", ", vbNullString) & sTable & "." & Trim(.Fields("ColumnName").Value) & vbNewLine
+        sColumns = sColumns & IIf(LenB(sColumns) <> 0, ", ", vbNullString) & sTable & "." & Trim(.Fields("ColumnName").value) & vbNewLine
         .MoveNext
       Wend
     End With
@@ -473,9 +476,9 @@ Private Function ViewSave() As Boolean
       sSQL = "IF EXISTS " & _
               "(SELECT Name " & _
               "FROM sysobjects " & _
-              "WHERE id = object_id('dbo." & recViewEdit.Fields("OriginalViewName").Value & "') " & _
+              "WHERE id = object_id('dbo." & recViewEdit.Fields("OriginalViewName").value & "') " & _
               "AND sysstat & 0xf = 2) " & _
-              "DROP VIEW dbo." & recViewEdit.Fields("OriginalViewName").Value
+              "DROP VIEW dbo." & recViewEdit.Fields("OriginalViewName").value
       gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
       
       ' Get the 'where clause' code from the expression.
@@ -486,7 +489,7 @@ Private Function ViewSave() As Boolean
   
       If fOK Then
         ' Now create the view
-        sSQL = "CREATE VIEW dbo." & recViewEdit.Fields("ViewName").Value & vbNewLine & _
+        sSQL = "CREATE VIEW dbo." & recViewEdit.Fields("ViewName").value & vbNewLine & _
           "AS" & vbNewLine & _
           "    SELECT " & sColumns & vbNewLine & _
           "    FROM " & sTable & vbNewLine & _
