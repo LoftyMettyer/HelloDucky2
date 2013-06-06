@@ -201,15 +201,14 @@ Public Function RunRecordProfile(Optional plngRecordID As Long) As Boolean
     mblnUserCancelled = mfrmOutput.UserCancelled
 
     If Not mblnUserCancelled Then
-      If gblnBatchMode Or gblnReportPackMode Then
+      If gblnBatchMode Or gblnReportPackMode Or Not mblnPreviewOnScreen Then
         fOK = mfrmOutput.ShowResults
         If fOK Then
           fOK = mfrmOutput.OutputReport(False)
         End If
         If Not fOK Then msErrorString = mfrmOutput.ErrorMessage
-        gobjProgress.UpdateProgress True
         
-      ElseIf mblnOutputScreen Or mblnPreviewOnScreen Then
+      ElseIf mblnPreviewOnScreen Then
         fOK = mfrmOutput.ShowResults
         If Not fOK Then msErrorString = mfrmOutput.ErrorMessage
         
@@ -1496,8 +1495,8 @@ Private Function GetRecordProfileTables() As Boolean
     mbDefinitionOwner = (LCase(Trim(gsUserName)) = LCase(Trim(!UserName)))
     
     'Change Output Options to Report Pack owning these Jobs if in Report Pack mode
-    mblnPreviewOnScreen = IIf(lblnReportPackMode, False, !OutputPreview Or (mlngOutputFormat = fmtDataOnly And mblnOutputScreen))
-    mblnOutputScreen = IIf(lblnReportPackMode, False, (IIf(IsNull(!OutputScreen), False, !OutputScreen)))
+    mblnPreviewOnScreen = IIf(lblnReportPackMode, mblnPreviewOnScreen, (IIf(IsNull(!OutputPreview), False, !OutputPreview)))
+    mblnOutputScreen = IIf(lblnReportPackMode, mblnOutputScreen, (IIf(IsNull(!OutputScreen), False, !OutputScreen)))
     mlngOutputFormat = IIf(lblnReportPackMode, mlngOutputFormat, (IIf(IsNull(!OutputFormat), 0, !OutputFormat)))
     mblnOutputPrinter = IIf(lblnReportPackMode, mblnOutputPrinter, IIf(IsNull(!OutputPrinter), False, !OutputPrinter))
     mstrOutputPrinterName = IIf(lblnReportPackMode, mstrOutputPrinterName, IIf(IsNull(!OutputPrinterName), "", !OutputPrinterName))
@@ -1512,6 +1511,8 @@ Private Function GetRecordProfileTables() As Boolean
     mblnOutputRetainPivotOrChart = IIf(lblnReportPackMode, mblnOutputRetainPivotOrChart, 0)
     mblnOutputCoverSheet = IIf(lblnReportPackMode, mblnOutputCoverSheet, 0)
     mblnOutputTOC = IIf(lblnReportPackMode, mblnOutputTOC, 0)
+    
+    mblnPreviewOnScreen = (mblnPreviewOnScreen Or (mlngOutputFormat = fmtDataOnly And mblnOutputScreen))
     
     mblnIndentRelatedTables = IIf(IsNull(!IndentRelatedTables), False, !IndentRelatedTables)
     mblnSuppressEmptyRelatedTableTitles = IIf(IsNull(!SuppressEmptyRelatedTableTitles), False, !SuppressEmptyRelatedTableTitles)
@@ -1652,9 +1653,9 @@ GetRecordProfileTables_ERROR:
 End Function
 
 
-Public Property Get PreviewOnScreen() As Boolean
-  PreviewOnScreen = ((msErrorString = vbNullString And mblnPreviewOnScreen) And Not gblnBatchMode)
-End Property
+'Public Property Get PreviewOnScreen() As Boolean
+'  PreviewOnScreen = ((msErrorString = vbNullString And mblnPreviewOnScreen) And Not gblnBatchMode)
+'End Property
 
 Private Function IsRecordSelectionValid() As Boolean
   ' Check all of the record selection parameters are still valid.
