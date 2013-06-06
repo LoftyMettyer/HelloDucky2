@@ -379,7 +379,7 @@ Private Function DoTransfer() As Boolean
   DoEvents
 
   ' Batch Jobs
-  Progress "Transferring Batch Jobs..."
+  Progress "Transferring Batch Jobs and Report Packs..."
   strCommand = "UPDATE ASRSysBatchJobName SET Username = '" & strTo & "'"
   If Not blnAll Then strCommand = strCommand & " WHERE Username = '" & strFrom & "'"
   
