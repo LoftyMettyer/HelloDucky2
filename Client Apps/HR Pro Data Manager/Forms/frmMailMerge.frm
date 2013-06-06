@@ -1,8 +1,8 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmMailMerge 
@@ -1109,7 +1109,7 @@ Begin VB.Form frmMailMerge
             Top             =   315
             Width           =   3000
          End
-         Begin VB.Label Label4 
+         Begin VB.Label lblDocumentMap 
             Caption         =   "Document Type : "
             Height          =   285
             Left            =   225
@@ -3061,6 +3061,11 @@ Private Sub OutputClick(pOutputType As OutputType)
   ' Do we prompt where to start labels
   chkPromptForPrintStart.Enabled = Not (pOutputType = Email) And Not (pOutputType = Document) And mbIsLabel
   
+  ' Is the document mapping stuff displayed
+  cmdDocumentMap.Visible = (pOutputType = Version1)
+  txtDocumentMap.Visible = (pOutputType = Version1)
+  lblDocumentMap.Visible = (pOutputType = Version1)
+  
   Me.Changed = True
 
 Exit Sub
@@ -3992,6 +3997,14 @@ Private Function ValidateDefinition()
     End If
   End If
   
+  ' Document management validation
+  If Val(txtDocumentMap.Tag) = 0 And cboOutput.ItemData(cboOutput.ListIndex) = OutputType.Version1 Then
+    WarningMsgbox "No document management type is defined."
+    SSTab1.Tab = 3
+    cmdDocumentMap.SetFocus
+    Exit Function
+  End If
+    
   On Error Resume Next
   
   If Not mbIsLabel Then
@@ -4331,7 +4344,7 @@ Private Function SaveDefinition() As Boolean
   strEmailAttachmentName = "''"
   strEmailAddrID = "0"
   strEmailSubject = "''"
-
+  strDocumentMapID = "0"
   
 '  If optDocument = True Then
 '    strOutput = "0"     'Document
