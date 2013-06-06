@@ -2029,9 +2029,9 @@ PRINT 'Step 3 - Office Output Formats'
 	--EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(905,''Word'',''XPS format (*.xps)''                   ,''xps'',  null,18,0)'
 
 	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(911,''WordTemplate'',''Word 97-2003 Document (*.doc)'',''doc'',     0, 0,0)'
-	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(912,''WordTemplate'',''Word 97-2003 Template (*.dot)'',''dot'',     0, 0,1)'
+	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(912,''WordTemplate'',''Word 97-2003 Template (*.dot)'',''dot'',     0, 1,1)'
 	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(913,''WordTemplate'',''Word Document (*.docx)''       ,''docx'', null, 0,0)'
-	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(914,''WordTemplate'',''Word Template (*.dotx)''       ,''dotx'', null, 0,0)'
+	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(914,''WordTemplate'',''Word Template (*.dotx)''       ,''dotx'', null, 14,0)'
 
 	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(921,''Excel'',''Excel 97-2003 Workbook (*.xls)'',''xls'', -4143,56,1)'
 	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(922,''Excel'',''Excel Workbook (*.xlsx)''       ,''xlsx'', null,51,0)'
