@@ -83,18 +83,18 @@ Begin VB.Form frmTabEdit
       TabCaption(1)   =   "Su&mmary"
       TabPicture(1)   =   "frmTabEdit.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "chkManualColumnBreak"
-      Tab(1).Control(1)=   "cmdColumnBreak"
-      Tab(1).Control(2)=   "cboParentTable"
-      Tab(1).Control(3)=   "cmdInsertBreak"
-      Tab(1).Control(4)=   "fraSummaryFields"
-      Tab(1).Control(5)=   "cmdAdd"
-      Tab(1).Control(6)=   "cmdRemove"
-      Tab(1).Control(7)=   "cmdUp"
-      Tab(1).Control(8)=   "cmdDown"
-      Tab(1).Control(9)=   "cmdInsert"
-      Tab(1).Control(10)=   "fraColumns"
-      Tab(1).Control(11)=   "lblParentTable"
+      Tab(1).Control(0)=   "lblParentTable"
+      Tab(1).Control(1)=   "fraColumns"
+      Tab(1).Control(2)=   "cmdInsert"
+      Tab(1).Control(3)=   "cmdDown"
+      Tab(1).Control(4)=   "cmdUp"
+      Tab(1).Control(5)=   "cmdRemove"
+      Tab(1).Control(6)=   "cmdAdd"
+      Tab(1).Control(7)=   "fraSummaryFields"
+      Tab(1).Control(8)=   "cmdInsertBreak"
+      Tab(1).Control(9)=   "cboParentTable"
+      Tab(1).Control(10)=   "cmdColumnBreak"
+      Tab(1).Control(11)=   "chkManualColumnBreak"
       Tab(1).ControlCount=   12
       TabCaption(2)   =   "Ema&il Links"
       TabPicture(2)   =   "frmTabEdit.frx":0044
@@ -114,16 +114,13 @@ Begin VB.Form frmTabEdit
       TabCaption(5)   =   "Audi&t"
       TabPicture(5)   =   "frmTabEdit.frx":0098
       Tab(5).ControlEnabled=   0   'False
-      Tab(5).Control(0)=   "fraTableStats"
-      Tab(5).Control(0).Enabled=   0   'False
-      Tab(5).Control(1)=   "fraAudit"
-      Tab(5).Control(1).Enabled=   0   'False
+      Tab(5).Control(0)=   "fraAudit"
+      Tab(5).Control(1)=   "fraTableStats"
       Tab(5).ControlCount=   2
       TabCaption(6)   =   "&Validation"
       TabPicture(6)   =   "frmTabEdit.frx":00B4
       Tab(6).ControlEnabled=   0   'False
       Tab(6).Control(0)=   "fraTableValidations"
-      Tab(6).Control(0).Enabled=   0   'False
       Tab(6).ControlCount=   1
       Begin VB.Frame fraTableValidations 
          Caption         =   "Overlapping Column Validations :"
@@ -1040,11 +1037,11 @@ Private mblnEmailSortByActivation As Boolean
 Private mblnEmailSortDesc As Boolean
 
 Private Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 
 Private Property Let Changed(ByVal blnNewValue As Boolean)
-  cmdOK.Enabled = blnNewValue
+  cmdOk.Enabled = blnNewValue
 End Property
 
 
@@ -3028,6 +3025,24 @@ Public Sub PrintDefinition()
           End If
         End If
   
+  
+        ' Table validation stuff
+        .PrintTitle "Validations"
+        If ssGrdTableValidations.Rows > 0 Then
+          .TabsOnPage = 1
+  
+          .PrintBold "Description"
+  
+          ssGrdTableValidations.MoveFirst
+          For iCount = 1 To ssGrdTableValidations.Rows
+            .PrintNonBold ssGrdTableValidations.Columns(1).value
+            ssGrdTableValidations.MoveNext
+          Next iCount
+        Else
+          .PrintNonBold "<None>"
+        End If
+  
+  
         ' Print the footer
         .PrintEnd       ' this adds the correct footer
       End If
@@ -3252,6 +3267,22 @@ Public Sub CopyDefinitionToClipboard()
       strClipboardText = strClipboardText & "<None>" & vbCrLf
     End If
   End If
+
+  ' Table validation stuff
+  strClipboardText = strClipboardText & vbCrLf & "Validations" & vbCrLf
+  strClipboardText = strClipboardText & "---------------" & vbCrLf & vbCrLf
+  If ssGrdTableValidations.Rows > 0 Then
+    strClipboardText = strClipboardText & "Description" & vbCrLf
+
+    ssGrdTableValidations.MoveFirst
+    For iCount = 1 To ssGrdTableValidations.Rows
+      strClipboardText = strClipboardText & ssGrdTableValidations.Columns(1).value
+      ssGrdTableValidations.MoveNext
+    Next iCount
+  Else
+    strClipboardText = strClipboardText & "<None>" & vbCrLf
+  End If
+
 
   ' Put the info in the clipboard
   Clipboard.Clear
