@@ -1,7 +1,7 @@
 VERSION 5.00
 Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmEmailLink 
@@ -130,11 +130,11 @@ Begin VB.Form frmEmailLink
       TabCaption(0)   =   "De&finition"
       TabPicture(0)   =   "frmEmailLink.frx":1A34
       Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "frmDefinition(1)"
-      Tab(0).Control(1)=   "frmDefinition(0)"
+      Tab(0).Control(0)=   "fraLinkTypeDetails(1)"
+      Tab(0).Control(1)=   "fraLinkTypeDetails(2)"
       Tab(0).Control(2)=   "fraLinkTypeDetails(0)"
-      Tab(0).Control(3)=   "fraLinkTypeDetails(2)"
-      Tab(0).Control(4)=   "fraLinkTypeDetails(1)"
+      Tab(0).Control(3)=   "frmDefinition(0)"
+      Tab(0).Control(4)=   "frmDefinition(1)"
       Tab(0).ControlCount=   5
       TabCaption(1)   =   "Co&ntent"
       TabPicture(1)   =   "frmEmailLink.frx":1A50
@@ -677,15 +677,20 @@ Private mcolAvailableComponents As Collection
 Private mcolRecipients() As Collection
 
 Private mlngSelectedID As Long
+Private mbLocked As Boolean
+
+Public Property Let Locked(ByRef bValue As Boolean)
+  mbLocked = bValue
+End Property
 
 Public Property Let Changed(ByVal value As Boolean)
   If Not mblnLoading Then
-    cmdOk.Enabled = value
+    cmdOK.Enabled = value
   End If
 End Property
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
 End Property
 
 
@@ -1220,9 +1225,9 @@ Private Sub Form_Load()
   Set mcolRecipients(1) = New Collection
   Set mcolRecipients(2) = New Collection
 
-
   mblnReadOnly = (Application.AccessMode <> accFull And _
-                  Application.AccessMode <> accSupportMode)
+                  Application.AccessMode <> accSupportMode) Or _
+                  mbLocked
 
   'JPD 20041115 Fault 8970
   UI.FormatGTDateControl cboEffectiveDate
@@ -1291,8 +1296,8 @@ Private Sub Form_Resize()
   lngTop = Me.ScaleHeight - (cmdCancel.Height + GAP)
   cmdCancel.Move lngLeft, lngTop
 
-  lngLeft = lngLeft - (cmdOk.Width + GAP)
-  cmdOk.Move lngLeft, lngTop
+  lngLeft = lngLeft - (cmdOK.Width + GAP)
+  cmdOK.Move lngLeft, lngTop
 
   lngWidth = Me.ScaleWidth - (GAP * 2)
   lngHeight = lngTop - (GAP * 2)
@@ -1457,11 +1462,11 @@ Private Sub txtContent_Change(Index As Integer)
 End Sub
 
 Private Sub txtContent_GotFocus(Index As Integer)
-  cmdOk.Default = False
+  cmdOK.Default = False
 End Sub
 
 Private Sub txtContent_LostFocus(Index As Integer)
-  cmdOk.Default = True
+  cmdOK.Default = True
 End Sub
 
 Private Sub txtFilter_Change()
