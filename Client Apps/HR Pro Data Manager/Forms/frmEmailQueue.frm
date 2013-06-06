@@ -775,7 +775,7 @@ Private Function RefreshGrid() As Boolean
   With cboTitle
     If .ListIndex > 0 Then
       strWhere = IIf(strWhere <> "", strWhere & " AND ", "") & _
-          "isnull(w.name+' (Workflow)',l.Title) = '" & Replace(.Text, "'", "''") & "'"
+          "isnull(w.name+' (Workflow)', isnull(l.Title, CASE WHEN q.UserName = 'OpenHR Mobile' THEN q.Subject ELSE '' END)) = '" & Replace(.Text, "'", "''") & "'"
     End If
   End With
   
@@ -804,7 +804,7 @@ Private Function RefreshGrid() As Boolean
 
 
   pstrSQL = _
-        "SELECT isnull(w.name+' (Workflow)',isnull(l.Title,CASE WHEN q.UserName = 'OpenHR  Mobile' THEN q.Subject ELSE '' END)) as [QueueTitle]" & _
+        "SELECT isnull(w.name+' (Workflow)',isnull(l.Title,CASE WHEN q.UserName = 'OpenHR Mobile' THEN q.Subject ELSE '' END)) as [QueueTitle]" & _
         "     , isnull(q.RecordDesc,'') as [RecDesc]" & _
         "     , isnull(t.TableName,'') as [TableName]" & _
         "     , case when q.WorkflowInstanceID > 0 or q.columnID IS NULL then '' else isnull(c.ColumnName,'<Multiple Columns>') end as [ColumnName]" & _
