@@ -1,0 +1,23 @@
+[Version]
+Version=1.0.0.2
+
+[COA_Line.ocx <0009>]
+Dest=$(AppPath)
+Date=16/10/2009
+Time=10:46
+Version=1.0.0.2
+CABFilename=COA_Line.CAB
+CABINFFile=COA_Line.INF
+Uses1=MSVBVM60.DLL
+Uses2=OLEAUT32.DLL
+Uses3=OLEPRO32.DLL
+Uses4=ASYCFILT.DLL
+Uses5=STDOLE2.TLB
+Uses6=COMCAT.DLL
+Uses7=objsafe.tlb
+
+[objsafe.tlb <0009>]
+Dest=$(WinSysPath)
+Date=09/01/2009
+Time=12:07
+Version=0.0.0.0
