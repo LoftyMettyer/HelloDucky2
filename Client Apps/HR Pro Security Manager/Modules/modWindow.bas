@@ -140,11 +140,11 @@ End Sub
 
 
 ' Textwidth function causes overflow on larger pieces of data. This wrapper should handle it.
-Public Function BigTextWidth(ByRef sInString As Variant, ByVal MaximumSize As Single) As Long
+Public Function BigTextWidth(ByRef sInString As Variant, ByVal MaximumSize As Long) As Long
   
   On Error GoTo ErrorTrap
   
-  Dim lngTextWidth As Single
+  Dim lngTextWidth As Long
    
   If Len(sInString) > 500 Then
     lngTextWidth = Printer.TextWidth(Left(sInString, 500)) + _
