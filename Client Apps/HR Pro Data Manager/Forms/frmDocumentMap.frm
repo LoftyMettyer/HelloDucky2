@@ -216,7 +216,9 @@ Begin VB.Form frmDocumentMap
          Width           =   10335
          Begin VB.ComboBox cboTypes 
             Height          =   315
+            ItemData        =   "frmDocumentMap.frx":000C
             Left            =   1845
+            List            =   "frmDocumentMap.frx":000E
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
             TabIndex        =   7
@@ -402,14 +404,14 @@ Private mbChanged As Boolean
 Private mlngLabelDefinitionID As Long
 Private mlngDocumentDefinitionID As Long
 
-
-
-'Private datData As HRProDataMgr.clsDataAccess
-
 Private mdatData As HRProDataMgr.clsDataAccess
 Private mclsGeneral As HRProDataMgr.clsGeneral
 
 Private Const SQLTableDef = "ASRSysDocumentManagementTypes"
+
+Public Property Let Changed(mbChanged As Boolean)
+  cmdOK.Enabled = mbChanged
+End Property
 
 Public Property Get Cancelled() As Boolean
   Cancelled = mblnCancelled
@@ -514,6 +516,8 @@ Public Function Initialise(bNew As Boolean, bCopy As Boolean, Optional lngDocume
     mbChanged = False
   End If
   
+  cmdOK.Enabled = mbChanged
+  
 End Function
 
 Private Function GetDefinition() As ADODB.Recordset
@@ -599,6 +603,16 @@ Private Function ValidateDefinition() As Boolean
   If Len(txtName.Text) = 0 Then
     strErrorMessage = strErrorMessage & "You must give this definition a name." & vbNewLine
   End If
+    
+' Check the name is unique
+If Not CheckUniqueName(Trim(txtName.Text), mlngDocumentMapID) Then
+  'tabImport.Tab = 0
+  COAMsgBox "A Document Type definition called '" & Trim(txtName.Text) & "' already exists.", vbExclamation, Me.Caption
+  txtName.SelStart = 0
+  txtName.SelLength = Len(txtName.Text)
+  ValidateDefinition = False
+  Exit Function
+End If
     
   ' Category type
   If GetComboItem(cboCategories) = 0 Then
@@ -711,6 +725,19 @@ End Function
 
 Private Sub cboCategories_Click()
   PopulateTypesCombo
+  Changed = True
+End Sub
+
+Private Sub cboParent1Keyfield_Change()
+  Changed = True
+End Sub
+
+Private Sub cboParent1Keyfield_Click()
+  Changed = True
+End Sub
+
+Private Sub cboParent1Table_Change()
+  Changed = True
 End Sub
 
 Private Sub cboParent1Table_Click()
@@ -731,7 +758,17 @@ Private Sub cboParent1Table_Click()
     Loop
     rsCols.Close
   End If
+  
+  Changed = True
+  
+End Sub
 
+Private Sub cboParent2Keyfield_Change()
+  Changed = True
+End Sub
+
+Private Sub cboParent2Table_Change()
+  Changed = True
 End Sub
 
 Private Sub cboParent2Table_Click()
@@ -755,12 +792,16 @@ Private Sub cboParent2Table_Click()
 
 End Sub
 
+Private Sub cboTargetCategory_Click()
+  Changed = True
+End Sub
+
 Private Sub cboTargetColumn_Click()
-  mbChanged = True
+  Changed = True
 End Sub
 
 Private Sub cboTargetKeyField_Click()
-  mbChanged = True
+  Changed = True
 End Sub
 
 Private Sub cboTargetTable_Click()
@@ -881,6 +922,8 @@ Private Sub cboTargetTable_Click()
   EnableControl lblParent2Keyfield, (iParents > 1)
   EnableControl cboParent2Keyfield, (iParents > 1)
 
+  Changed = True
+
   Set rsParents = Nothing
   Set rsTables = Nothing
   Set rsCols = Nothing
@@ -888,8 +931,16 @@ Private Sub cboTargetTable_Click()
 
 End Sub
 
+Private Sub cboTargetType_Click()
+  Changed = True
+End Sub
+
+Private Sub cboTypes_Change()
+  Changed = True
+End Sub
+
 Private Sub cboTypes_Click()
-  mbChanged = True
+  Changed = True
 End Sub
 
 Private Sub cmdCancel_Click()
@@ -1000,8 +1051,20 @@ Private Sub Form_Load()
 
 End Sub
 
+Private Sub optReadOnly_Click()
+  Changed = True
+End Sub
+
+Private Sub optReadWrite_Click()
+  Changed = True
+End Sub
+
+Private Sub txtDesc_Change()
+  Changed = True
+End Sub
+
 Private Sub txtName_Change()
-  mbChanged = True
+  Changed = True
 End Sub
 
 Private Sub PopulateCategoriesCombo()
@@ -1071,4 +1134,42 @@ Private Sub PopulateTypesCombo()
 
   Set rsTypes = Nothing
 
+End Sub
+Private Function CheckUniqueName(sName As String, lngCurrentID As Long) As Boolean
+
+  Dim sSQL As String
+  Dim rsTemp As Recordset
+  
+  sSQL = "SELECT * FROM ASRSysDocumentManagementTypes " & _
+         " WHERE UPPER(Name) = '" & UCase(Replace(sName, "'", "''")) & "'"
+'         " AND DocumentMapID = " & CStr(mlngDocumentMapID)
+'         " AND MatchReportID <> " & CStr(lngCurrentID)
+  Set rsTemp = datGeneral.GetRecords(sSQL)
+  
+  If rsTemp.BOF And rsTemp.EOF Then
+    CheckUniqueName = True
+  Else
+    CheckUniqueName = False
+  End If
+  
+  Set rsTemp = Nothing
+
+End Function
+
+
+'
+'Private mlngDocumentMapID As Long
+'Private mblnCancelled As Boolean
+'Private mblnReadOnly As Boolean
+'Private mblnFromCopy As Boolean
+'Private mblnDefinitionCreator As Boolean
+'Private mbChanged As Boolean
+'Private mlngLabelDefinitionID As Long
+'Private mlngDocumentDefinitionID As Long
+''Private datData As HRProDataMgr.clsDataAccess
+'Private mdatData As HRProDataMgr.clsDataAccess
+'Private mclsGeneral As HRProDataMgr.clsGeneral
+
+Private Sub txtUserName_Change()
+  Changed = True
 End Sub
