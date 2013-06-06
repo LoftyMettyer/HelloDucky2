@@ -2431,6 +2431,9 @@ Public Function Initialise(bNew As Boolean, bCopy As Boolean, Optional plngCusto
     
     'Load All Possible Base Tables into combo
     LoadBaseCombo
+  
+  ' Set the categories combo
+    GetObjectCategories cboCategory, utlCustomReport, 0, cboBaseTable.ItemData(cboBaseTable.ListIndex)
 
     UpdateDependantFields
     
@@ -6183,7 +6186,7 @@ Private Function SaveDefinition() As Boolean
           "OutputEmail = 1, " & _
           "OutputEmailAddr = " & txtEmailGroup.Tag & ", " & _
           "OutputEmailSubject = '" & Replace(txtEmailSubject.Text, "'", "''") & "', " & _
-          "OutputEmailAttachAs = '" & Replace(txtEmailAttachAs.Text, "'", "''") & "', " '& _
+          "OutputEmailAttachAs = '" & Replace(txtEMailAttachAs.Text, "'", "''") & "', " '& _
           "OutputEmailFileFormat = " & CStr(Val(txtEmailAttachAs.Tag)) & ", "
     Else
       sSQL = sSQL & _
@@ -6195,7 +6198,7 @@ Private Function SaveDefinition() As Boolean
     End If
     
     sSQL = sSQL & _
-        "OutputFilename = '" & Replace(txtFilename.Text, "'", "''") & "', "
+        "OutputFilename = '" & Replace(txtFileName.Text, "'", "''") & "', "
     
     If chkIgnoreZeros.Value = vbChecked Then
       sSQL = sSQL & _
@@ -6303,14 +6306,14 @@ Private Function SaveDefinition() As Boolean
       sSQL = sSQL & "1, " & _
           txtEmailGroup.Tag & ", " & _
           "'" & Replace(txtEmailSubject.Text, "'", "''") & "', " & _
-          "'" & Replace(txtEmailAttachAs.Text, "'", "''") & "', " '& _
+          "'" & Replace(txtEMailAttachAs.Text, "'", "''") & "', " '& _
           CStr(Val(txtEmailAttachAs.Tag)) & ", "      'OutputEmail, OutputEmailAddr, OutputEmailSubject, OutputEmailFileFormat
     Else
       sSQL = sSQL & "0, 0, '', '', "  '0, "   'OutputEmail, OutputEmailAddr, OutputEmailSubject, OutputEmailFileFormat
     End If
 
     sSQL = sSQL & _
-        "'" & Replace(txtFilename.Text, "'", "''") & "'"  'OutputFilename
+        "'" & Replace(txtFileName.Text, "'", "''") & "'"  'OutputFilename
         
     sSQL = sSQL & ")"
 
@@ -9248,7 +9251,7 @@ Public Sub PrintDef(lCustomReportID As Long)
         
         If chkDestination(2).Value = vbChecked Then
           .PrintNormal "Output Destination : Save to file"
-          .PrintNormal "File Name : " & txtFilename.Text
+          .PrintNormal "File Name : " & txtFileName.Text
           .PrintNormal "File Options : " & cboSaveExisting.List(cboSaveExisting.ListIndex)
         End If
         
@@ -9256,7 +9259,7 @@ Public Sub PrintDef(lCustomReportID As Long)
           .PrintNormal "Output Destination : Send to email"
           .PrintNormal "Email Group : " & txtEmailGroup.Text
           .PrintNormal "Email Subject : " & txtEmailSubject.Text
-          .PrintNormal "Email Attach As : " & txtEmailAttachAs.Text
+          .PrintNormal "Email Attach As : " & txtEMailAttachAs.Text
         End If
         
         .PrintEnd

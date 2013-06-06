@@ -4481,14 +4481,19 @@ bOk = False
 
 End Function
 
-Public Sub GetObjectCategories(ByRef theCombo As ComboBox, UtilityType As UtilityType, UtilityID As Long)
+Public Sub GetObjectCategories(ByRef theCombo As ComboBox, UtilityType As UtilityType, UtilityID As Long, Optional TableID As Long)
 
   On Error GoTo ErrorTrap
 
   Dim rsTemp As ADODB.Recordset
   Dim iListIndex As Integer
   
-  Set rsTemp = gobjDataAccess.OpenRecordset("EXEC dbo.spssys_getobjectcategories " & CStr(UtilityType) & ", " & CStr(UtilityID) _
+  ' Add <none>
+  theCombo.AddItem "<None>"
+  theCombo.ItemData(theCombo.NewIndex) = 0
+  iListIndex = theCombo.NewIndex
+     
+  Set rsTemp = gobjDataAccess.OpenRecordset("EXEC dbo.spssys_getobjectcategories " & CStr(UtilityType) & ", " & CStr(UtilityID) & ", " & CStr(TableID) _
       , adOpenForwardOnly, adLockReadOnly)
   
   If Not rsTemp.BOF And Not rsTemp.EOF Then
@@ -4505,7 +4510,7 @@ Public Sub GetObjectCategories(ByRef theCombo As ComboBox, UtilityType As Utilit
   End If
   
   theCombo.Enabled = (theCombo.ListCount > 0)
-  
+    
   If iListIndex > -1 Then
     theCombo.ListIndex = iListIndex
   End If
