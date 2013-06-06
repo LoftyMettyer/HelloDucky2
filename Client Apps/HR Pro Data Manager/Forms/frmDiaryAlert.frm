@@ -5,7 +5,7 @@ Begin VB.Form frmDiaryAlert
    ClientHeight    =   1425
    ClientLeft      =   45
    ClientTop       =   435
-   ClientWidth     =   5430
+   ClientWidth     =   6390
    BeginProperty Font 
       Name            =   "Verdana"
       Size            =   8.25
@@ -22,14 +22,14 @@ Begin VB.Form frmDiaryAlert
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   1425
-   ScaleWidth      =   5430
+   ScaleWidth      =   6390
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin VB.CommandButton cmdNo 
       Cancel          =   -1  'True
       Caption         =   "&No"
       Height          =   350
-      Left            =   2700
+      Left            =   3330
       TabIndex        =   2
       Top             =   880
       Width           =   1120
@@ -38,18 +38,18 @@ Begin VB.Form frmDiaryAlert
       Caption         =   "&Yes"
       Default         =   -1  'True
       Height          =   350
-      Left            =   1460
+      Left            =   2085
       TabIndex        =   1
       Top             =   880
       Width           =   1120
    End
    Begin VB.Label lblMessage 
       Caption         =   "There are alarmed events prior to the current date and time. Would you like to view these now?"
-      Height          =   495
+      Height          =   540
       Left            =   960
       TabIndex        =   0
       Top             =   240
-      Width           =   4455
+      Width           =   5310
    End
    Begin VB.Image imgIcon 
       Height          =   480
