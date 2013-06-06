@@ -427,7 +427,7 @@ PRINT 'Step 4 of X - Add new formatting columns to ASRSysSSIntranetLinks'
 	END		
 
 --------------------------------------------------------------------------------------------
--- Sort Order column for Charts
+-- Sort Order columns for Charts
 --------------------------------------------------------------------------------------------
 
 	IF NOT EXISTS(SELECT id FROM syscolumns
@@ -437,7 +437,13 @@ PRINT 'Step 4 of X - Add new formatting columns to ASRSysSSIntranetLinks'
 		EXEC sp_executesql N'UPDATE ASRSysSSIntranetLinks SET Chart_SortOrderID = 0'
 	END
 	
-
+	IF NOT EXISTS(SELECT id FROM syscolumns
+	              WHERE  id = OBJECT_ID('ASRSysSSIntranetLinks', 'U') AND name = 'Chart_SortDirection')
+    BEGIN
+		EXEC sp_executesql N'ALTER TABLE ASRSysSSIntranetLinks ADD Chart_SortDirection int NULL'
+		EXEC sp_executesql N'UPDATE ASRSysSSIntranetLinks SET Chart_SortDirection = 0'
+	END
+	
 	
 /* ------------------------------------------------------------- */
 PRINT 'Step 5 of X - Modifying Workflow Data Structures'
