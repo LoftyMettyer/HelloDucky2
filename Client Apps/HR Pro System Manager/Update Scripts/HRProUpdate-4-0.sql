@@ -9674,6 +9674,11 @@ PRINT 'Step 10 of X - Multiline Character Modifications'
 			END						
 		
 			/* Return a list of the workflow form elements that may need to be displayed to the initiator straight away */
+			DECLARE @succeedingSteps table(stepID int)
+			
+			INSERT INTO @succeedingSteps 
+				(stepID) VALUES (-1)
+		
 			DECLARE formsCursor CURSOR LOCAL FAST_FORWARD FOR 
 			SELECT ASRSysWorkflowInstanceSteps.ID,
 				ASRSysWorkflowInstanceSteps.elementID
@@ -9690,17 +9695,19 @@ PRINT 'Step 10 of X - Multiline Character Modifications'
 			BEGIN
 				SET @psFormElements = @psFormElements + convert(varchar(MAX), @iElementID) + char(9);
 		
-				/* Change the step''s status to be 2 (pending user input). */
-				UPDATE [dbo].[ASRSysWorkflowInstanceSteps]
-				SET ASRSysWorkflowInstanceSteps.status = 2, 
-					userName = @sActualLoginName
-				WHERE ASRSysWorkflowInstanceSteps.ID = @iStepID;
+				INSERT INTO @succeedingSteps 
+				(stepID) VALUES (@iStepID)
 		
 				FETCH NEXT FROM formsCursor INTO @iStepID, @iElementID;
 			END
 		
 			CLOSE formsCursor;
 			DEALLOCATE formsCursor;
+		
+			UPDATE [dbo].[ASRSysWorkflowInstanceSteps]
+			SET ASRSysWorkflowInstanceSteps.status = 2, 
+				userName = @sActualLoginName
+			WHERE ASRSysWorkflowInstanceSteps.ID IN (SELECT stepID FROM @succeedingSteps)
 		
 		END';
 
