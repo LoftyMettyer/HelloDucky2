@@ -348,7 +348,7 @@ Private Sub InitialiseProgressBar()
   
   With gobjProgress
     '.AviFile = App.Path & "\videos\word.avi"
-    .AVI = dbWord
+    .AVI = IIf(mbIsLabel, dbEMail, dbWord)
     .MainCaption = IIf(mbIsLabel, "Envelopes & Labels", "Mail Merge")
     If Not gblnBatchMode Then
       .NumberOfBars = 1

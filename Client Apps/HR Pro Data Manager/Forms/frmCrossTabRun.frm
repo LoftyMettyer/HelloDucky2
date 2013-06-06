@@ -789,6 +789,7 @@ Dim strUtilityAction As String
   
   With gobjProgress
     '.AviFile = App.Path & "\videos\crosstab.avi"
+      .AVI = dbCrossTab
       Select Case mlngCrossTabType
         Case cttNormal
           strUtilityAction = "Cross Tab"
@@ -803,7 +804,6 @@ Dim strUtilityAction As String
       End Select
       
     If Not gblnBatchMode Then
-      .AVI = dbCrossTab
       .CloseProgress
       .NumberOfBars = 1
       .Caption = Me.Caption
@@ -4316,7 +4316,7 @@ Private Function CheckIfGotRecDescs(Optional strWhere As String)
   If rsTemp.Fields(0).Value > 0 Then
 
     'gobjProgress.AviFile = App.Path & "\videos\crosstab.avi"
-    gobjProgress.AVI = dbText
+    gobjProgress.AVI = dbCrossTab
     gobjProgress.MainCaption = "Cross Tab"
     gobjProgress.Bar1Caption = "Getting record descriptions..."
     gobjProgress.Bar1MaxValue = rsTemp.Fields(0).Value
