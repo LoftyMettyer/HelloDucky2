@@ -74,11 +74,10 @@ Begin VB.Form frmWorkflowTimeout
       _ExtentY        =   17277
       _Version        =   393216
       Style           =   1
-      Tab             =   2
       TabHeight       =   520
       TabCaption(0)   =   "&General"
       TabPicture(0)   =   "frmWorkflowTimeout.frx":000C
-      Tab(0).ControlEnabled=   0   'False
+      Tab(0).ControlEnabled=   -1  'True
       Tab(0).Control(0)=   "picTabContainer(0)"
       Tab(0).Control(0).Enabled=   0   'False
       Tab(0).ControlCount=   1
@@ -90,7 +89,7 @@ Begin VB.Form frmWorkflowTimeout
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "&Data"
       TabPicture(2)   =   "frmWorkflowTimeout.frx":0044
-      Tab(2).ControlEnabled=   -1  'True
+      Tab(2).ControlEnabled=   0   'False
       Tab(2).Control(0)=   "picTabContainer(2)"
       Tab(2).Control(0).Enabled=   0   'False
       Tab(2).ControlCount=   1
@@ -99,7 +98,7 @@ Begin VB.Form frmWorkflowTimeout
          BorderStyle     =   0  'None
          Height          =   7300
          Index           =   2
-         Left            =   150
+         Left            =   -74850
          ScaleHeight     =   7305
          ScaleWidth      =   8400
          TabIndex        =   117
@@ -843,7 +842,7 @@ Begin VB.Form frmWorkflowTimeout
          BorderStyle     =   0  'None
          Height          =   9300
          Index           =   0
-         Left            =   -74850
+         Left            =   150
          ScaleHeight     =   9300
          ScaleWidth      =   8400
          TabIndex        =   0
@@ -2034,7 +2033,7 @@ Private maWFAllElements() As VB.Control
 
 ' Form formatting variables
 Private Const YGAP_TAB_FRAME = 400
-Private Const YGAP_FRAME_CONTROL = 300
+Private Const YGAP_FRAME_CONTROL = 350
 Private Const YGAP_CONTROL_LABEL = 60
 Private Const YGAP_CONTROL_CONTROL = 400
 Private Const YGAP_CONTROL_FRAME = 125
