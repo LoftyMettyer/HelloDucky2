@@ -328,14 +328,13 @@ Private Function InitialisePreview() As Boolean
     .OutputPrinterName = mstrOutputPrinterName
     .OutputSave = mblnOutputSave
     .OutputSaveExisting = mlngOutputSaveExisting
-    '.OutputSaveFormat = mlngOutputSaveFormat
     .OutputEmail = mblnOutputEmail
     .OutputEmailAddr = mlngOutputEmailAddr
     .OutputEmailSubject = mstrOutputEmailSubject
     .OutputEmailAttachAs = mstrOutputEmailAttachAs
-    '.OutputEmailFileFormat = mlngOutputEmailFileFormat
     .OutputFilename = mstrOutputFileName
-    
+    .OutputCoverSheet = mblnOutputCoverSheet
+    .OutputTOC = mblnOutputTOC
     .IndentRelatedTables = mblnIndentRelatedTables
     .SuppressEmptyRelatedTableTitles = mblnSuppressEmptyRelatedTableTitles
     .SuppressTableRelationshipTitles = mblnSuppressTableRelationshipTitles

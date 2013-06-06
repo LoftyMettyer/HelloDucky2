@@ -230,6 +230,22 @@ Private Sub InitialiseStyles()
 
   mcolStyles.Add objStyle, objStyle.Name
 
+'  'New StyleSet for Report Pack
+'  Set objStyle = New clsOutputStyle
+'  With objStyle
+'    .Name = "Heading2"
+'    .StartCol = Val(GetUserSetting("Output", "TitleCol", "3"))
+'    .StartRow = Val(GetUserSetting("Output", "TitleRow", "2"))
+'    .Gridlines = (GetUserSetting("Output", "TitleGridLines", "0") = "1")
+'    .Bold = (GetUserSetting("Output", "TitleBold", "1") = "1")
+'    .Underline = (GetUserSetting("Output", "TitleUnderline", "1") = "1")
+'    .BackCol = Val(GetUserSetting("Output", "TitleBackcolour", vbWhite))
+'    .ForeCol = Val(GetUserSetting("Output", "TitleForecolour", GetColour("Midnight Blue")))
+'  End With
+'
+'  mcolStyles.Add objStyle, objStyle.Name
+
+
   Set objStyle = Nothing
 
 End Sub
@@ -910,7 +926,7 @@ Public Function SetOptions( _
         .txtEmailSubject.Text = strEmailSubject
         .txtEMailAttachAs.Text = strEmailAttachAs
       End If
-      .txtFilename.Text = strFileName
+      .txtFileName.Text = strFileName
       .ShowFormats mblnData, mblnCSV, mblnHTML, mblnWord, mblnExcel, mblnChart, mblnPivot
       .PageRange = mblnPageRange
       .Show vbModal
@@ -930,7 +946,7 @@ Public Function SetOptions( _
       lngEmailAddr = Val(.txtEmailGroup.Tag)
       strEmailSubject = .txtEmailSubject.Text
       strEmailAttachAs = .txtEMailAttachAs.Text
-      strFileName = .txtFilename.Text
+      strFileName = .txtFileName.Text
 
       mlngEmailGroupID = .txtEmailGroup.Tag
       mstrEmailSubject = .txtEmailSubject.Text

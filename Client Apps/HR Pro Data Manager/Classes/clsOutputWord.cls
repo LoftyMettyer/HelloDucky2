@@ -397,7 +397,7 @@ Public Function RecordProfilePage(pfrmRecProfile As frmRecordProfilePreview, _
 
           ' Convert the text into a table.
           mwrdDoc.ActiveWindow.Selection.GoTo What:=wdGoToBookmark, Name:=strBookMark
-          mwrdDoc.ActiveWindow.Selection.EndKey Unit:=wdStory, Extend:=wdExtend
+          mwrdDoc.ActiveWindow.Selection.EndKey unit:=wdStory, Extend:=wdExtend
 
           Set mwrdTable = mwrdDoc.ActiveWindow.Selection.ConvertToTable _
             (Separator:=wdSeparateByTabs, _
@@ -471,7 +471,7 @@ Public Function RecordProfilePage(pfrmRecProfile As frmRecordProfilePreview, _
             pcolStyles.Remove pcolStyles.Count
           Loop
 
-          mwrdApp.Selection.EndKey Unit:=wdStory
+          mwrdApp.Selection.EndKey unit:=wdStory
 
           mwrdDoc.ActiveWindow.Selection.TypeParagraph
 
@@ -624,7 +624,7 @@ Public Function GetFile(objParent As clsOutputRun, colStyles As Collection) As B
         End If
   
         Set mwrdDoc = mwrdApp.Documents.Open(mstrFileName)
-        mwrdApp.Selection.EndKey Unit:=wdStory
+        mwrdApp.Selection.EndKey unit:=wdStory
         mwrdApp.Selection.InsertBreak Type:=wdPageBreak
   
       Case 4  'Create new worksheet within existing workbook...
@@ -674,7 +674,7 @@ Private Sub GetNewDocument()
     End If
 
     Set mwrdDoc = mwrdApp.Documents.Add(strTempFile)
-    mwrdApp.Selection.EndKey Unit:=wdStory
+    mwrdApp.Selection.EndKey unit:=wdStory
   Else
     Set mwrdDoc = mwrdApp.Documents.Add
     mwrdDoc.PageSetup.Orientation = IIf(mblnWrdLandscape, wdOrientLandscape, wdOrientPortrait)
@@ -693,7 +693,7 @@ Private Sub GetNewDocument()
       .Selection.Fields.Add Range:=.Selection.Range, Type:=wdFieldDate, _
           Text:="CREATEDATE \@ ""dd/MM/yyyy at HH:mm"" ", PreserveFormatting:=True
       .Selection.TypeText Text:=" by " & gsUserName
-      .Selection.MoveRight Unit:=wdCell
+      .Selection.MoveRight unit:=wdCell
   
       .Selection.ParagraphFormat.Alignment = wdAlignParagraphRight
       .Selection.TypeText Text:="Page "
@@ -723,7 +723,6 @@ End Sub
 
 
 Public Sub AddPage(strDefTitle As String, mstrSheetName As String, colStyles As Collection, Optional mblnCoverSheet As Boolean)
-
   Const strBookMark As String = "ASRSysTitleStart"
   Dim objRange As Word.Range
   Dim objStyle As clsOutputStyle
@@ -734,74 +733,140 @@ Public Sub AddPage(strDefTitle As String, mstrSheetName As String, colStyles As 
   'mwrdApp.Visible = True
 
   With mwrdDoc.ActiveWindow.Selection
-    
     'Remember the current setting to restore them later...
     Set objStyle = GetCurrentStyle(mwrdDoc.ActiveWindow.Selection)
-    
-    'If its the first page then add the definition title...
-     mlngPageCount = mlngPageCount + 1
-    If mlngPageCount = 1 Then
-      If Not gblnReportPackMode Then
-        .TypeText strDefTitle
-        .HomeKey Unit:=wdLine, Extend:=wdExtend
-        ApplyStylesToRange mwrdApp.Selection.Range, colStyles("Title"), True
-        .ParagraphFormat.Alignment = wdAlignParagraphCenter
-        .EndKey
-        .TypeParagraph
-        .Style = mwrdDoc.Styles("Normal")
-        .TypeParagraph
-      End If
-    Else
-      mwrdApp.Selection.InsertBreak Type:=wdPageBreak
-    End If
-
-    If mstrSheetName <> vbNullString And mobjParent.PageTitles Then
-      .TypeText mstrSheetName
-      .HomeKey Unit:=wdLine, Extend:=wdExtend
-      ApplyStylesToRange mwrdApp.Selection.Range, colStyles("Title"), True
-      .EndKey
-      .TypeParagraph
-      .Style = mwrdDoc.Styles("Normal")
-      .TypeParagraph
-    End If
-    
-    'Move to the begining of the title, then highlight to end of document (minus one line)
-    .GoTo What:=wdGoToBookmark, Name:=strBookMark
-    
+      
     If gblnReportPackMode Then
-      If mblnCoverSheet Then
-        .TypeParagraph: .TypeParagraph: .TypeParagraph: .TypeParagraph
-        .TypeParagraph: .TypeParagraph: .TypeParagraph: .TypeParagraph
-        .TypeText gobjProgress.Bar2Caption
-        .HomeKey Unit:=wdLine, Extend:=wdExtend
+      'If its the first page then add the definition title...
+       mlngPageCount = mlngPageCount + 1
+      If mlngPageCount = 1 Then
+          .TypeText strDefTitle
+          .HomeKey unit:=wdLine, Extend:=wdExtend
+          ApplyStylesToRange mwrdApp.Selection.Range, colStyles("Title"), True
+          .ParagraphFormat.Alignment = wdAlignParagraphCenter
+          .EndKey
+          .TypeParagraph
+          
+          If mblnCoverSheet Then mwrdApp.Selection.InsertBreak Type:=wdPageBreak
+'            .TypeText strDefTitle
+'            .HomeKey unit:=wdLine, Extend:=wdExtend
+'            ApplyStylesToRange mwrdApp.Selection.Range, colStyles("data"), True
+'          End If
+          
+          .Style = mwrdDoc.Styles("Normal")
+          .TypeParagraph
+      Else
+        mwrdApp.Selection.InsertBreak Type:=wdPageBreak
+      End If
+      
+      If mstrSheetName <> vbNullString And mobjParent.PageTitles Then
+        .TypeText mstrSheetName
+        .HomeKey unit:=wdLine, Extend:=wdExtend
         ApplyStylesToRange mwrdApp.Selection.Range, colStyles("Title"), True
-        .ParagraphFormat.Alignment = wdAlignParagraphCenter
         .EndKey
         .TypeParagraph
         .Style = mwrdDoc.Styles("Normal")
-        .InsertBreak Type:=wdSectionNewPage
-        
-      Else
-        .TypeParagraph: .TypeParagraph
-        .MoveUp Unit:=wdLine, Count:=2
-        .TypeText gobjProgress.Bar2Caption
-        .HomeKey Unit:=wdLine, Extend:=wdExtend
-        ApplyStylesToRange mwrdApp.Selection.Range, colStyles("Title"), True
-        .ParagraphFormat.Alignment = wdAlignParagraphCenter
-        .EndKey
-        .MoveDown Unit:=wdLine
-        .Style = mwrdDoc.Styles("Normal")
+        .TypeParagraph
       End If
-    Else
-'      .EndKey unit:=wdStory, Extend:=wdExtend
- '     ApplyStylesToRange mwrdApp.Selection.Range, colStyles("Title"), True
-  '    .ParagraphFormat.Alignment = wdAlignParagraphCenter
+      'Move to the begining of the title, then highlight to end of document (minus one line)
+      .GoTo What:=wdGoToBookmark, Name:=strBookMark
       .EndKey
+      'Now move to the end of the document, store the formatting, ready for the data...
+      .EndKey unit:=wdStory
+      ApplyStylesToRange mwrdApp.Selection.Range, objStyle, False
+                  
+'              'If its the first page then add the definition title...
+'               mlngPageCount = mlngPageCount + 1
+'              If mlngPageCount = 1 Then
+'                If mstrSheetName <> vbNullString And mobjParent.PageTitles Then
+'                  .TypeText strDefTitle
+'                  .HomeKey unit:=wdLine, Extend:=wdExtend
+'                  ApplyStylesToRange mwrdApp.Selection.Range, colStyles("Title"), True
+'                  .ParagraphFormat.Alignment = wdAlignParagraphCenter
+'                  .EndKey
+'                  .TypeParagraph
+'                  .Style = mwrdDoc.Styles("Normal")
+'                  .TypeParagraph
+'
+'                  .TypeText mstrSheetName
+'                  .HomeKey unit:=wdLine, Extend:=wdExtend
+'                  ApplyStylesToRange mwrdApp.Selection.Range, colStyles("Heading"), True
+'                  .ParagraphFormat.Alignment = wdAlignParagraphLeft
+'                  .EndKey
+'                  .TypeParagraph
+'                  .Style = mwrdDoc.Styles("Normal")
+'                  .TypeParagraph
+'                End If
+'              Else
+'                If mstrSheetName <> vbNullString And mobjParent.PageTitles Then
+'                  .EndKey unit:=wdStory
+'                  .TypeParagraph
+'                  .TypeText mstrSheetName
+'                  .HomeKey unit:=wdLine, Extend:=wdExtend
+'                  ApplyStylesToRange mwrdApp.Selection.Range, colStyles("Heading"), True
+'                  .ParagraphFormat.Alignment = wdAlignParagraphLeft
+'                  .EndKey
+'                  .TypeParagraph
+'                  .Style = mwrdDoc.Styles("Normal")
+'                  .TypeParagraph
+'                End If
+'              End If
+'
+'              'Move to the begining of the title, then highlight to end of document (minus one line)
+'              '.GoTo What:=wdGoToBookmark, Name:=strBookMark
+'
+'                If mblnCoverSheet Then
+'                  '.TypeParagraph: .TypeParagraph: .TypeParagraph: .TypeParagraph
+'                  .TypeText gobjProgress.Bar2Caption
+'                  '.TypeParagraph
+'                  '.MoveDown unit:=wdLine
+'                  .HomeKey unit:=wdLine, Extend:=wdExtend
+'                  ApplyStylesToRange mwrdApp.Selection.Range, colStyles("Title"), True
+'                  '.ParagraphFormat.Alignment = wdAlignParagraphCenter
+'                  .EndKey
+'                  .TypeParagraph
+'                  .Style = mwrdDoc.Styles("Normal")
+'                  .InsertBreak Type:=wdSectionNewPage
+'              End If
+'              'Now move to the end of the document, store the formatting, ready for the data...
+'              '.EndKey unit:=wdStory
+'              'ApplyStylesToRange mwrdApp.Selection.Range, objStyle, False
+    Else
+      'If its the first page then add the definition title...
+       mlngPageCount = mlngPageCount + 1
+      If mlngPageCount = 1 Then
+          .TypeText strDefTitle
+          .HomeKey unit:=wdLine, Extend:=wdExtend
+          ApplyStylesToRange mwrdApp.Selection.Range, colStyles("Title"), True
+          .ParagraphFormat.Alignment = wdAlignParagraphCenter
+          .EndKey
+          .TypeParagraph
+          .Style = mwrdDoc.Styles("Normal")
+          .TypeParagraph
+      Else
+        mwrdApp.Selection.InsertBreak Type:=wdPageBreak
+      End If
+      
+      If mstrSheetName <> vbNullString And mobjParent.PageTitles Then
+        .TypeText mstrSheetName
+        .HomeKey unit:=wdLine, Extend:=wdExtend
+        ApplyStylesToRange mwrdApp.Selection.Range, colStyles("Title"), True
+        .EndKey
+        .TypeParagraph
+        .Style = mwrdDoc.Styles("Normal")
+        .TypeParagraph
+      End If
+      'Move to the begining of the title, then highlight to end of document (minus one line)
+      .GoTo What:=wdGoToBookmark, Name:=strBookMark
+      .EndKey
+      'Now move to the end of the document, store the formatting, ready for the data...
+      .EndKey unit:=wdStory
+      ApplyStylesToRange mwrdApp.Selection.Range, objStyle, False
     End If
-    'Now move to the end of the document, store the formatting, ready for the data...
-    .EndKey Unit:=wdStory
-    ApplyStylesToRange mwrdApp.Selection.Range, objStyle, False
-  End With
+EndOf:
+
+End With
+
 Exit Sub
 
 LocalErr:
@@ -872,7 +937,7 @@ Public Sub DataArray(strArray() As String, colColumns As Collection, colStyles A
   Next
 
   mwrdDoc.ActiveWindow.Selection.GoTo What:=wdGoToBookmark, Name:=strBookMark
-  mwrdDoc.ActiveWindow.Selection.EndKey Unit:=wdStory, Extend:=wdExtend
+  mwrdDoc.ActiveWindow.Selection.EndKey unit:=wdStory, Extend:=wdExtend
 
   'convert selected text into a table
   Set mwrdTable = mwrdDoc.ActiveWindow.Selection.ConvertToTable _
@@ -953,7 +1018,7 @@ Public Sub DataArray(strArray() As String, colColumns As Collection, colStyles A
   '  mwrdApp.Selection.Cells.DistributeWidth
   'End With
 
-  mwrdApp.Selection.EndKey Unit:=wdStory
+  mwrdApp.Selection.EndKey unit:=wdStory
   mwrdDoc.ActiveWindow.Selection.TypeParagraph
 
 Exit Sub
@@ -1055,15 +1120,27 @@ Private Sub ApplyStylesToRange(objRange As Object, objStyle As clsOutputStyle, b
       .Shading.BackgroundPatternColor = objStyle.BackCol
       .Font.Color = objStyle.ForeCol
     End If
-
+    
     If objStyle.Name = "Heading" Then
       .Rows.HeadingFormat = True
     End If
     
-    If gblnReportPackMode And objStyle.Name = "Title" Then
-      .Style = wdStyleHeading1
+    If gblnReportPackMode Then
+      If objStyle.Name = "Title" Then
+        .Style = wdStyleHeading1
+      End If
+
+'      If objStyle.Name = "Heading2" Then
+'        .Style = wdStyleHeading2
+'        .Shading.BackgroundPatternColorIndex = GetWordColourIndex(objStyle.BackCol)
+'      End If
+
+      If objStyle.Name = "Data" Then
+        .Style = wdStyleNormal
+      End If
+    Else
+
     End If
-    
   End With
 
 End Sub
@@ -1179,7 +1256,7 @@ Public Sub Complete()
   If mblnScreen Then
   
     mstrErrorMessage = "Error displaying Word"
-    mwrdApp.Selection.HomeKey Unit:=wdStory
+    mwrdApp.Selection.HomeKey unit:=wdStory
     mwrdApp.Visible = True
     mwrdApp.WindowState = wdWindowStateMaximize
     mwrdApp.Activate
