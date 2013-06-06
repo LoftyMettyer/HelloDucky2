@@ -206,8 +206,12 @@ End If
 
   gobjEventLog.GetBatchRunID
   gobjEventLog.BatchJobID = lBatchJobID
-  gobjEventLog.BatchJobName = sBatchJobName
   
+  If gblnReportPackMode Then
+    gobjEventLog.ReportPackName = sBatchJobName
+  Else
+    gobjEventLog.BatchJobName = sBatchJobName
+  End If
   mstrEventLogIDs = vbNullString
     
   'Loop thru the individual jobs, running them in turn

@@ -16,6 +16,7 @@ Option Explicit
 Private mclsData As New clsDataAccess
 Private mlngEventLogID As Long
 Private mstrBatchName As String
+Private mstrReportPackName As String
 Private mlngBatchRunID As Long
 Private mlngBatchJobID As Long
 'Private gblnBatchMode As Boolean
@@ -30,7 +31,11 @@ Public Property Let BatchJobName(ByVal pstrBatchJobName As String)
   ' allocated automatically. Process is complete hidden from the utilities.
   mstrBatchName = pstrBatchJobName
 End Property
-
+Public Property Let ReportPackName(ByVal pstrReportPackName As String)
+  ' When the Report Pack name is passed into the class module, the BatchRunID is
+  ' allocated automatically. Process is complete hidden from the utilities.
+  mstrReportPackName = pstrReportPackName
+End Property
 Public Property Let BatchJobID(plngBatchJobID As Long)
   mlngBatchJobID = plngBatchJobID
 End Property
@@ -61,14 +66,15 @@ Public Function AddHeader(udtType As EventLog_Type, _
 
   Dim fInTransaction As Boolean
   Dim lngTimeOut As Long
-  
+  Dim strSQL As String
+   
   lngTimeOut = Timer + 5
   
   mlngEventLogID = 0
   fInTransaction = False
   
   ' If we are in batchmode, is everything ok ?
-  If (mlngBatchRunID = -1) And (mstrBatchName <> vbNullString) And (mlngBatchJobID > 0) Then
+  If (mlngBatchRunID = -1) And (mstrBatchName <> vbNullString Or mstrReportPackName <> vbNullString) And (mlngBatchJobID > 0) Then
     AddHeader = False
     Exit Function
   End If
@@ -79,33 +85,36 @@ Public Function AddHeader(udtType As EventLog_Type, _
   ' Start a transaction
   gADOCon.BeginTrans
   fInTransaction = True
-
+  ' BatchName stores will have to store Pack Name too for ease of code re-use
+  mstrBatchName = IIf(mstrBatchName = "", mstrReportPackName, mstrBatchName)
+  ' Build the sql
+  strSQL = "INSERT INTO AsrSysEventLog (" & _
+                    "DateTime," & _
+                    "Type," & _
+                    "Name," & _
+                    "Status," & _
+                    "Username," & _
+                    "Mode," & _
+                    "BatchName," & _
+                    "SuccessCount," & _
+                    "FailCount," & _
+                    "ReportPack, " & _
+                    "BatchRunID," & _
+                    "BatchJobID) " & _
+                    "VALUES(" & _
+                    "GETDATE()," & _
+                     udtType & "," & _
+                    "'" & Replace(strName, "'", "''") & "'," & _
+                    elsPending & "," & _
+                    "'" & datGeneral.UserNameForSQL & "'," & _
+                    IIf(mstrBatchName = vbNullString, 0, 1) & "," & _
+                    "'" & Replace(mstrBatchName, "'", "''") & "'," & _
+                    "NULL," & _
+                    "NULL," & IIf(mstrReportPackName <> vbNullString, 1, 0) & "," & _
+                    IIf(mlngBatchRunID > 0, mlngBatchRunID, "NULL") & "," & _
+                    IIf(mlngBatchJobID > 0, mlngBatchJobID, "NULL") & ")"
   ' Do the insert
-  gADOCon.Execute "INSERT INTO AsrSysEventLog (" & _
-                  "DateTime," & _
-                  "Type," & _
-                  "Name," & _
-                  "Status," & _
-                  "Username," & _
-                  "Mode," & _
-                  "BatchName," & _
-                  "SuccessCount," & _
-                  "FailCount," & _
-                  "BatchRunID," & _
-                  "BatchJobID) " & _
-                  "VALUES(" & _
-                  "GETDATE()," & _
-                   udtType & "," & _
-                  "'" & Replace(strName, "'", "''") & "'," & _
-                  elsPending & "," & _
-                  "'" & datGeneral.UserNameForSQL & "'," & _
-                  IIf(mstrBatchName = vbNullString, 0, 1) & "," & _
-                  "'" & Replace(mstrBatchName, "'", "''") & "'," & _
-                  "NULL," & _
-                  "NULL," & _
-                  IIf(mlngBatchRunID > 0, mlngBatchRunID, "NULL") & "," & _
-                  IIf(mlngBatchJobID > 0, mlngBatchJobID, "NULL") & ")"
-
+  gADOCon.Execute strSQL
   ' Retrieve the id just added
   Set prstRowAdded = gADOCon.Execute("SELECT MAX(ID) FROM AsrSysEventLog")
 

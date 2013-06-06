@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "COA_Line.ocx"
+Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "coa_line.ocx"
 Begin VB.Form frmEventLogDetails 
    Caption         =   "Event Log Details"
    ClientHeight    =   4695
@@ -1080,7 +1080,15 @@ Private Function DoHeaderInfo(plngKey As Long) As Boolean
     
     lblName.Caption = Replace(.Fields("Name"), "&", "&&")
     
-    lblMode.Caption = IIf(.Fields("Mode").Value, "Batch", "Manual")
+    Select Case .Fields("ReportPack")
+      Case True
+        lblMode.Caption = "Pack"
+        lblBatchJobNameLabel.Caption = "Report Pack Name :"
+        lblAllJobsLabel.Caption = "All Reports in Pack :"
+      Case False
+        lblMode.Caption = IIf(.Fields("Mode").Value, "Batch", "Manual")
+    End Select
+    
     
     lblStartTime.Caption = Format(.Fields("DateTime"), DateFormat & " hh:mm:ss")
     lblEndTime.Caption = Format(.Fields("EndTime"), DateFormat & " hh:mm:ss")
@@ -1104,8 +1112,12 @@ Private Function DoHeaderInfo(plngKey As Long) As Boolean
     
     mlngBatchRunID = IIf(IsNull(.Fields("BatchRunID")), 0, .Fields("BatchRunID"))
         
-    If .Fields("Mode") = 0 Then
-      mblnBatch = False
+    If .Fields("Mode").Value = False Then
+      If .Fields("ReportPack").Value Then
+        mblnBatch = True
+      Else
+        mblnBatch = False
+      End If
     Else
       mblnBatch = True
       lblBatchJobName.Caption = Replace(.Fields("BatchName"), "&", "&&")
