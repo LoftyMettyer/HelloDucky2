@@ -101,11 +101,19 @@ PRINT 'Step 1 - Create table rename function'
 	EXECUTE sp_executesql @NVarCommand;
 
 
+/* ------------------------------------------------------------- */
+PRINT 'Step 2 - Drop existing system triggers'
 
+	SET @NVarCommand = '';
+	SELECT @NVarCommand = @NVarCommand + 'DROP TRIGGER ' +  o.name + ';' + CHAR(13)
+		FROM sys.sysobjects o
+		INNER JOIN tbsys_tables t ON t.TableName = OBJECT_NAME(o.parent_obj)
+		WHERE o.xtype = 'TR' AND (name = 'INS_' + t.TableName OR name = 'UPD_' + t.TableName OR name = 'DEL_' + t.TableName)
+	EXECUTE sp_executesql @NVarCommand;
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 2 - Rename base user tables'
+PRINT 'Step 3 - Rename base user tables'
 
 	SET @NVarCommand = '';
 	SELECT @NVarCommand = @NVarCommand + 'EXECUTE dbo.spASRTableToView ''' + TableName + ''', ''tbuser_' + LOWER(TableName) + ''';'
@@ -119,7 +127,7 @@ PRINT 'Step 2 - Rename base user tables'
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 3 - Rename base system tables'
+PRINT 'Step 4 - Rename base system tables'
 
 	SET @NVarCommand = 'EXECUTE spASRTableToView ''ASRSysTables'', ''tbsys_tables'''
 	EXECUTE (@NVarCommand);
@@ -899,6 +907,26 @@ PRINT 'Step 7 - Populate code generation tables'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''5da8bb7e-f632-4ed0-b236-e042b88f3a1b'', N''[dbo].[udfsys_getfieldfromdatabaserecord] ({0}, {1}, {2})'', 0, 0, 0, N''Get field from database record'', NULL, 0, 0, 42, 0)'
 
 
+/* ------------------------------------------------------------- */
+PRINT 'Step 8 - Administration module stored procedures'
+
+	IF EXISTS (SELECT *
+		FROM dbo.sysobjects
+		WHERE id = object_id(N'[dbo].[spadmin_getcomponentcode]')
+			AND xtype = 'P')
+		DROP PROCEDURE [dbo].[spadmin_getcomponentcode]
+
+
+	SET @sSPCode = 'CREATE PROCEDURE [dbo].[spadmin_getcomponentcode]
+	AS
+	BEGIN
+		SELECT [id], [code], [name], ISNULL([datatype],0) AS [returntype]
+			, [appendwildcard], [splitintocase]
+			, [aftercode], [isoperator], [operatortype], [aftercode]
+			, [bypassvalidation]
+		FROM tbstat_componentcode WHERE [id] IS NOT NULL;
+	END'
+	EXECUTE sp_executeSQL @sSPCode;
 
 	
 /* ------------------------------------------------------------- */
