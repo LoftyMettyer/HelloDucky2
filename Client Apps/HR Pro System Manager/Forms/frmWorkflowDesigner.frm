@@ -234,8 +234,8 @@ Begin VB.Form frmWorkflowDesigner
             Top             =   1800
             Visible         =   0   'False
             Width           =   120
-            _ExtentX        =   212
-            _ExtentY        =   212
+            _ExtentX        =   26
+            _ExtentY        =   26
          End
          Begin COASDSelectionBox.COASD_SelectionBox asrboxMultiSelection 
             Height          =   570
@@ -2546,9 +2546,16 @@ Private Sub ValidateElement(pwfElement As VB.Control, _
     ' 2. Cannot have any cyclic flows without a web form (ie. user action) in them.
     '------------------------------------------------------------
     ' Get the elements that immediately precede the given element.
-    ReDim aWFPrecedingElements(1)
-    Set aWFPrecedingElements(UBound(aWFPrecedingElements)) = pwfElement
-    fValid2 = CycliclyValid(pwfElement, aWFPrecedingElements)
+    If pwfElement.ElementType = elem_Email Or pwfElement.ElementType = elem_Decision _
+      Or pwfElement.ElementType = elem_StoredData Or pwfElement.ElementType = elem_SummingJunction _
+      Or pwfElement.ElementType = elem_Or Or pwfElement.ElementType = elem_Connector1 _
+      Or pwfElement.ElementType = elem_Connector2 Then
+        ReDim aWFPrecedingElements(1)
+        Set aWFPrecedingElements(UBound(aWFPrecedingElements)) = pwfElement
+        fValid2 = CycliclyValid(pwfElement, aWFPrecedingElements)
+    Else
+      fValid2 = True
+    End If
     
     '------------------------------------------------------------
     ' Add the required validation messages to the array.
@@ -11690,6 +11697,20 @@ Public Function ValidateWorkflow(pfSaving As Boolean, _
   Dim fLinkOK As Boolean
   Dim sSQL As String
   Dim rsInfo As New ADODB.Recordset
+       
+  ' Punch up a progress bar
+  With gobjProgress
+    .Caption = "Workflow Designer"
+    .NumberOfBars = 1
+    .Bar1Value = 1
+    .Bar1MaxValue = 5
+    .Bar1Caption = "Validating workflow..."
+    .AVI = dbWorkflow
+    .MainCaption = "Workflow Designer"
+    .Cancel = False
+    .Time = False
+    .OpenProgress
+  End With
     
   sMessage = ""
   iTerminatorCount = 0
@@ -11938,6 +11959,9 @@ Public Function ValidateWorkflow(pfSaving As Boolean, _
         mfFixableValidationFailures = False
       End If
       
+      ' Hide the progress bar
+      gobjProgress.CloseProgress
+      
       If pfSaving Then
         frmUsage.ShowMessage "Workflow '" & Trim(msWorkflowName) & "'", "The Workflow definition is invalid for the reasons listed below." & _
           vbCrLf & "Saving the definition will force the workflow to be disabled." & _
@@ -11950,6 +11974,7 @@ Public Function ValidateWorkflow(pfSaving As Boolean, _
           mfWorkflowEnabled = False
         End If
       Else
+           
         frmUsage.ShowMessage "Workflow '" & Trim(msWorkflowName) & "'", "The Workflow definition is invalid for the reasons listed below.", _
           UsageCheckObject.Workflow, _
           IIf(mfFixableValidationFailures, USAGEBUTTONS_FIX, 0) + USAGEBUTTONS_PRINT + USAGEBUTTONS_OK + USAGEBUTTONS_SELECT, "validation"
@@ -11989,6 +12014,7 @@ Public Function ValidateWorkflow(pfSaving As Boolean, _
       Set frmUsage = Nothing
     End If
   End If
+  
   
 TidyUpAndExit:
   Screen.MousePointer = vbDefault
@@ -14026,7 +14052,7 @@ Private Function CycliclyValid(pwfElement As VB.Control, paWFPrecedingElements A
           If fCyclic And (iWebFormCount = 0) Then
             fValid = False
           End If
-        Else
+        ElseIf iWebFormCount = 0 Then
           ReDim Preserve paWFPrecedingElements(UBound(paWFPrecedingElements) + 1)
           Set paWFPrecedingElements(UBound(paWFPrecedingElements)) = mcolwfElements(CStr(wfLink.StartElementIndex))
 
@@ -14042,6 +14068,8 @@ Private Function CycliclyValid(pwfElement As VB.Control, paWFPrecedingElements A
           End If
 
           ReDim Preserve paWFPrecedingElements(UBound(paWFPrecedingElements) - 1)
+        Else
+          fValid = True
         End If
       End If
     End If
