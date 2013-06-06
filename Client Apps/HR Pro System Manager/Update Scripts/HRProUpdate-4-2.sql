@@ -179,7 +179,7 @@ PRINT 'Step 2 of X - Create New IsValidPayrollCharacterSet function'
 			
 			SET @result = 1;
 			SET @Index = 1;
-			WHILE (@Index <= len(@input) AND @result = 1)
+			WHILE (@Index <= datalength(@input) AND @result = 1)
 			BEGIN
 				IF charindex(substring(@input,@Index,1),@ValidCharacters) = 0
 					SET @result = 0;
