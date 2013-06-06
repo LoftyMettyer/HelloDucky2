@@ -402,14 +402,6 @@ Private Function PasswordChange() As Boolean
     Dim sConn As String
     Select Case GetSQLNCLIVersion
     Case 9 ' SQL Native Client 2005
-        ' AE20090624 Fault #13689
-'      sConn = "Provider=SQLNCLI;Persist Security Info=True;DataTypeCompatibility=80;APP=OpenHR Security Manager;" & _
-'              "User ID=" & gsUserName & ";" & _
-'              "Initial Catalog=" & gsDatabaseName & ";" & _
-'              "Data Source=" & gsServerName & ";" & _
-'              "Old Password=" & strOldPassword & ";" & _
-'              "Password=" & strNewPassword & ";"
-
       sConn = "Provider=SQLNCLI;Persist Security Info=False;DataTypeCompatibility=80;" & _
               "Application Name=OpenHR Security Manager;" & _
               "User ID=" & gsUserName & ";" & _
@@ -418,16 +410,7 @@ Private Function PasswordChange() As Boolean
               "Old Password=" & strOldPassword & ";" & _
               "Password=" & strNewPassword & ";"
               
-    Case 10 ' SQL Native Client 2008
-    
-      ' AE20090624 Fault #13689
-'      sConn = "Provider=SQLNCLI10;Persist Security Info=True;DataTypeCompatibility=80;APP=OpenHR Security Manager;" & _
-'              "User ID=" & gsUserName & ";" & _
-'              "Initial Catalog=" & gsDatabaseName & ";" & _
-'              "Data Source=" & gsServerName & ";" & _
-'              "Old Password=" & strOldPassword & ";" & _
-'              "Password=" & strNewPassword & ";"
-
+    Case 10 ' SQL Native Client 2008 / 2012
       sConn = "Provider=SQLNCLI10;Persist Security Info=False;DataTypeCompatibility=80;" & _
               "Application Name=OpenHR Security Manager;" & _
               "User ID=" & gsUserName & ";" & _
