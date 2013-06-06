@@ -663,8 +663,8 @@ Public Function RecordProfilePage(pfrmRecProfile As frmRecordProfilePreview, _
   
   'Put title in after autofit...
   With pcolStyles("Title")
-    .StartCol = Val(GetUserSetting("Output", "TitleCol", "3"))
-    .StartRow = IIf(mlngAppendStartRow > 0, mlngAppendStartRow, Val(GetUserSetting("Output", "TitleRow", "2")))
+    .StartCol = IIf((GetUserSetting("Output", "ColSpacer", 1)), "1", "2")
+    .StartRow = IIf((GetUserSetting("Output", "RowSpacer", 1)), "1", "2")
     .EndCol = .StartCol
     .EndRow = .StartRow
   End With
@@ -702,10 +702,10 @@ Private Sub Class_Initialize()
   mblnXLExcelHeaders = (GetUserSetting("Output", "ExcelHeaders", "0") = "1")
   mblnXLAutoFitCols = (GetUserSetting("Output", "AutoFitCols", "1") = "1")
   mblnXLLandscape = (GetUserSetting("Output", "Landscape", "1") = "1")
-
-  mlngDataStartRow = Val(GetUserSetting("Output", "DataRow", "4"))
+   
+  mlngDataStartRow = Val(GetUserSetting("Output", "DataRow", "5"))
   mlngDataStartCol = Val(GetUserSetting("Output", "DataCol", "2"))
-  
+ 
   mblnSizeColumnsIndependently = False
   mblnApplyStyles = True
 
@@ -1422,8 +1422,8 @@ Private Sub ApplyCellOptions(lngColCount As Long, colStyles As Collection, blnGr
     End If
 
     With colStyles("Title")
-      .StartCol = Val(GetUserSetting("Output", "TitleCol", "3"))
-      .StartRow = IIf(mlngAppendStartRow > 0, mlngAppendStartRow, Val(GetUserSetting("Output", "TitleRow", "2")))
+      .StartCol = IIf(.OmitSpacerCol, 2, 3)
+      .StartRow = IIf(.OmitSpacerRow, 1, 2)
       .EndCol = .StartCol
       .EndRow = .StartRow
     End With
@@ -1480,12 +1480,13 @@ Private Sub ApplyStyle(lngNumCols As Long, lngNumRows As Long, colStyles As Coll
   lngRow = mlngDataCurrentRow
 
   With colStyles("Title")
-    .StartCol = Val(GetUserSetting("Output", "TitleCol", "3"))
-    .StartRow = IIf(mlngAppendStartRow > 0, mlngAppendStartRow, Val(GetUserSetting("Output", "TitleRow", "2")))
+    .StartCol = IIf(.OmitSpacerCol, 2, 3)
+    .StartRow = IIf(.OmitSpacerRow, 1, 2)
+    '.StartCol = IIf((GetUserSetting("Output", "ColSpacer", 1)), "1", "2")
+    '.StartRow = IIf((GetUserSetting("Output", "RowSpacer", 1)), "1", "2")
     .EndCol = .StartCol
     .EndRow = .StartRow
   End With
-  
   
   With colStyles("Heading")
     .StartCol = 0
@@ -1493,7 +1494,6 @@ Private Sub ApplyStyle(lngNumCols As Long, lngNumRows As Long, colStyles As Coll
     .EndCol = lngNumCols
     .EndRow = mlngHeaderRows - 1
   End With
-  
   
   If mlngHeaderCols > 0 Then
     With colStyles("HeadingCols")
@@ -1505,12 +1505,11 @@ Private Sub ApplyStyle(lngNumCols As Long, lngNumRows As Long, colStyles As Coll
   End If
 
   With colStyles("Data")
-    .StartCol = mlngHeaderCols
-    .StartRow = mlngHeaderRows
+    .StartCol = 0
+    .StartRow = 0
     .EndCol = lngNumCols
     .EndRow = lngNumRows
   End With
-
 
   For Each objStyle In colStyles
     If objStyle.Name <> "Title" Then
