@@ -1906,6 +1906,7 @@ Public Sub Initialize(piType As SSINTRANETLINKTYPES, _
     optLink(SSINTLINKPWFSTEPS).Enabled = False
     optLink(SSINTLINKCHART).Enabled = False
     optLink(SSINTLINKDB_VALUE).Enabled = False
+    optLink(SSINTLINKTODAYS_EVENTS).Enabled = False
     ' fault HRPRO-907 - disable separators for all but dashboard and hypertext links
     If miLinkType <> SSINTLINK_HYPERTEXT Then optLink(SSINTLINKSEPARATOR).Enabled = False
   End If
@@ -2246,8 +2247,8 @@ Private Sub RefreshControls()
     'cmdIconClear.Visible = False
     'cmdIconClear.Enabled = False
     'imgIcon.Visible = False
-    'lblNoOptions.Visible = True
-    'lblNoOptions.Top = 345
+    lblNoOptions.Visible = True
+    lblNoOptions.Top = 345
     lblSeparatorColour.Visible = False
     txtSeparatorColour.Visible = False
     cmdSeparatorColPick.Visible = False
@@ -2257,15 +2258,15 @@ Private Sub RefreshControls()
   ElseIf (optLink(SSINTLINKSEPARATOR).value And miLinkType <> SSINTLINK_HYPERTEXT) Then
     ' Enable the icon and new column options for dashboard link separators...
     chkNewColumn.Visible = True
-    'lblIcon.Visible = True
-    'txtIcon.Visible = True
-    'cmdIcon.Visible = True
-    'cmdIconClear.Visible = True
-    'cmdIconClear.Enabled = txtIcon.Text <> ""
+    lblIcon.Visible = True
+    txtIcon.Visible = True
+    cmdIcon.Visible = True
+    cmdIconClear.Visible = True
+    cmdIconClear.Enabled = txtIcon.Text <> ""
     'cmdFilterClear.Enabled = txtFilter.Text <> ""
-    'imgIcon.Visible = True
-    'lblNoOptions.Visible = False
-    'lblNoOptions.Top = 345
+    imgIcon.Visible = True
+    lblNoOptions.Visible = False
+    lblNoOptions.Top = 345
     lblSeparatorColour.Visible = True
     txtSeparatorColour.Visible = True
     cmdSeparatorColPick.Visible = True
@@ -2288,8 +2289,8 @@ Private Sub RefreshControls()
     chkSeparatorUseFormatting.Visible = False
     Line4.Visible = False
   Else
-    'lblNoOptions.Visible = False
-    'lblNoOptions.Top = 345
+    lblNoOptions.Visible = False
+    lblNoOptions.Top = 345
     cmdIconClear.Enabled = txtIcon.Text <> ""
     cmdFilterClear.Enabled = txtFilter.Text <> ""
   End If
@@ -2333,7 +2334,7 @@ Private Sub RefreshControls()
   lblHRProUtilityMessage.Caption = sUtilityMessage
   
   ' Disable the OK button as required.
-  cmdOK.Enabled = mfChanged
+  cmdOk.Enabled = mfChanged
   
 
 End Sub
