@@ -638,11 +638,11 @@ End Property
 
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 
 Public Property Let Changed(blnChanged As Boolean)
-  cmdOK.Enabled = blnChanged
+  cmdOk.Enabled = blnChanged
 End Property
 
 
@@ -1575,7 +1575,7 @@ Private Sub cmdPicklist_Click()
 
   Set frmSelection = New frmDefSel
   With frmSelection
-  
+    .SelectedUtilityType = utlPicklist
     .TableID = cboTables.ItemData(cboTables.ListIndex)
     .TableComboVisible = True
     .TableComboEnabled = False
@@ -2695,11 +2695,11 @@ Private Sub txtDesc_GotFocus()
     .SelStart = 0
     .SelLength = Len(.Text)
   End With
-  cmdOK.Default = False
+  cmdOk.Default = False
 End Sub
 
 Private Sub txtDesc_LostFocus()
-  cmdOK.Default = True
+  cmdOk.Default = True
 End Sub
 
 Private Sub txtName_Change()
@@ -2756,8 +2756,8 @@ Private Sub FormatForm()
       cmdCancel.Move lngLeft, lngTop
 
       'Command OK
-      lngLeft = lngLeft - (cmdOK.Width + GAP)
-      cmdOK.Move lngLeft, lngTop
+      lngLeft = lngLeft - (cmdOk.Width + GAP)
+      cmdOk.Move lngLeft, lngTop
     End With
 
     SSTab1.Visible = False

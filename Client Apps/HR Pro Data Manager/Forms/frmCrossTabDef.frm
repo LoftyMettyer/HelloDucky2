@@ -2,7 +2,7 @@ VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{604A59D5-2409-101D-97D5-46626B63EF2D}#1.0#0"; "TDBNumbr.ocx"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Begin VB.Form frmCrossTabDef 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Cross Tab Definition"
@@ -60,7 +60,6 @@ Begin VB.Form frmCrossTabDef
       _ExtentY        =   8837
       _Version        =   393216
       Style           =   1
-      Tab             =   2
       TabsPerRow      =   5
       TabHeight       =   520
       OLEDropMode     =   1
@@ -75,9 +74,11 @@ Begin VB.Form frmCrossTabDef
       EndProperty
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmCrossTabDef.frx":000C
-      Tab(0).ControlEnabled=   0   'False
+      Tab(0).ControlEnabled=   -1  'True
       Tab(0).Control(0)=   "fraDefinition(1)"
+      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).Control(1)=   "fraInformation"
+      Tab(0).Control(1).Enabled=   0   'False
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Colu&mns"
       TabPicture(1)   =   "frmCrossTabDef.frx":0028
@@ -87,15 +88,13 @@ Begin VB.Form frmCrossTabDef
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "O&utput"
       TabPicture(2)   =   "frmCrossTabDef.frx":0044
-      Tab(2).ControlEnabled=   -1  'True
-      Tab(2).Control(0)=   "fraOutputFormat"
-      Tab(2).Control(0).Enabled=   0   'False
-      Tab(2).Control(1)=   "fraOutputDestination"
-      Tab(2).Control(1).Enabled=   0   'False
+      Tab(2).ControlEnabled=   0   'False
+      Tab(2).Control(0)=   "fraOutputDestination"
+      Tab(2).Control(1)=   "fraOutputFormat"
       Tab(2).ControlCount=   2
       Begin VB.Frame fraInformation 
          Height          =   2355
-         Left            =   -74865
+         Left            =   135
          TabIndex        =   76
          Top             =   405
          Width           =   9180
@@ -300,7 +299,7 @@ Begin VB.Form frmCrossTabDef
       Begin VB.Frame fraOutputDestination 
          Caption         =   "Output Destination(s) :"
          Height          =   4440
-         Left            =   2745
+         Left            =   -72255
          TabIndex        =   56
          Top             =   405
          Width           =   6600
@@ -508,7 +507,7 @@ Begin VB.Form frmCrossTabDef
       Begin VB.Frame fraOutputFormat 
          Caption         =   "Output Format :"
          Height          =   4440
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   48
          Top             =   405
          Width           =   2500
@@ -581,7 +580,7 @@ Begin VB.Form frmCrossTabDef
          Caption         =   "Data :"
          Height          =   2015
          Index           =   1
-         Left            =   -74865
+         Left            =   135
          TabIndex        =   0
          Top             =   2835
          Width           =   9200
@@ -2036,12 +2035,12 @@ End Sub
 
 Private Sub chkPercentage_Click()
   
-  chkPercentageofPage.Enabled = _
+  chkPercentageOfPage.Enabled = _
     (chkPercentage.Value = vbChecked And _
      Val(cboPageBreakCol.Tag) > 0)
   
-  If chkPercentageofPage.Enabled = False Then
-    chkPercentageofPage.Value = vbUnchecked
+  If chkPercentageOfPage.Enabled = False Then
+    chkPercentageOfPage.Value = vbUnchecked
   End If
 
   Me.Changed = True
@@ -2391,7 +2390,7 @@ Private Sub cmdPicklist_Click()
   'sSQL = "TableID = " & cboBaseTable.ItemData(cboBaseTable.ListIndex)
 
   With frmDefSel
-      
+    .SelectedUtilityType = utlPicklist
     .TableID = cboBaseTable.ItemData(cboBaseTable.ListIndex)
     .TableComboVisible = True
     .TableComboEnabled = False
@@ -2683,7 +2682,7 @@ Private Sub RetreiveDefinition()
   SetComboItem cboType, rsTemp!IntersectionType
 
   chkPercentage = Abs(rsTemp!Percentage)
-  chkPercentageofPage = Abs(rsTemp!PercentageofPage)
+  chkPercentageOfPage = Abs(rsTemp!PercentageofPage)
   chkSuppressZeros = Abs(rsTemp!SuppressZeros)
   
   If Not IsNull(rsTemp!ThousandSeparators) Then
@@ -2881,7 +2880,7 @@ Private Sub SaveDefinition()
   strType = CStr(cboType.ItemData(cboType.ListIndex))
   strIntersectionColID = CStr(cboIntersectionCol.ItemData(cboIntersectionCol.ListIndex))
   strPercentage = CStr(Abs(chkPercentage <> 0))
-  strPercentageofPage = CStr(Abs(chkPercentageofPage <> 0))
+  strPercentageofPage = CStr(Abs(chkPercentageOfPage <> 0))
   strSuppressZeros = CStr(Abs(chkSuppressZeros <> 0))
   strThousandSeparators = CStr(Abs(chkThousandSeparators.Value <> vbUnchecked))
     
