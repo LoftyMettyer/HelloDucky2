@@ -2208,7 +2208,7 @@ End Property
 
 Public Property Let Changed(pblnNewValue As Boolean)
   mblnChanged = pblnNewValue
-  cmdOK.Enabled = mblnChanged
+  cmdOk.Enabled = mblnChanged
 End Property
 
 Public Property Get Changed() As Boolean
@@ -2813,7 +2813,7 @@ Private Sub chkMultiLine_Click()
   End If
 
   spnDefaultDisplayWidth.Text = asrSize.Text
-  txtDefault.MaxLength = IIf(chkMultiLine.value = vbChecked, 8000, val(asrSize.Text))
+  txtDefault.MaxLength = Minimum(IIf(chkMultiLine.value = vbChecked, 8000, val(asrSize.Text)), 8000)
 
   If Not mfLoading Then Changed = True
 End Sub
@@ -3245,7 +3245,7 @@ End Sub
 
 Private Sub cmdCancel_Click()
   Dim pintAnswer As Integer
-    If Changed = True And cmdOK.Enabled Then
+    If Changed = True And cmdOk.Enabled Then
       pintAnswer = MsgBox("You have made changes...do you wish to save these changes ?", vbQuestion + vbYesNoCancel, App.Title)
       If pintAnswer = vbYes Then
         Me.MousePointer = vbHourglass
@@ -4870,7 +4870,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
 
   If mfCancelled = True Then
     If UnloadMode <> vbFormCode Then
-      If Changed = True And cmdOK.Enabled Then
+      If Changed = True And cmdOk.Enabled Then
         pintAnswer = MsgBox("You have made changes...do you wish to save these changes ?", vbQuestion + vbYesNoCancel, App.Title)
         If pintAnswer = vbYes Then
           cmdOK_Click
@@ -5448,6 +5448,10 @@ Private Sub cboControl_Click()
   If Not mfReading Then
     ' Get the current control type.
     miControlType = cboControl.ItemData(cboControl.ListIndex)
+      
+    If miControlType = giCTRL_TEXTBOX Then
+      chkMultiLine.value = vbUnchecked
+    End If
       
     ' Refresh Control tab page.
     RefreshControlTab
@@ -6596,13 +6600,13 @@ End Sub
 Private Sub txtListValues_GotFocus()
   ' Disable the 'Default' property of the 'OK' button as the return key is
   ' used by this textbox.
-  cmdOK.Default = False
+  cmdOk.Default = False
   
 End Sub
 
 Private Sub txtListValues_LostFocus()
   ' Enable the 'Default' property of the OK button.
-  cmdOK.Default = True
+  cmdOk.Default = True
 
   ' Refresh the list of possible default values.
   cboDefault_Refresh
