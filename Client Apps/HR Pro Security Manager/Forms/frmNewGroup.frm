@@ -370,9 +370,9 @@ Public Sub Initialise(piAction As groupAction)
       .AddItem "Data Transfer" & _
         vbTab & AccessDescription(ACCESS_HIDDEN) & _
         vbTab & utlDataTransfer
-      .AddItem "Document Types" & _
-        vbTab & AccessDescription(ACCESS_HIDDEN) & _
-        vbTab & utlVersion1
+'      .AddItem "Document Types" & _
+'        vbTab & AccessDescription(ACCESS_HIDDEN) & _
+'        vbTab & utlVersion1
       .AddItem "Envelopes & Labels" & _
         vbTab & AccessDescription(ACCESS_HIDDEN) & _
         vbTab & utlLabel
