@@ -2761,6 +2761,14 @@ PRINT 'Step 6 - Changes to Shared Table Transfer for RTI'
 /* ------------------------------------------------------------- */
 PRINT 'Step 7 - New Mobile User Logins Table'
 
+	IF NOT EXISTS (SELECT * FROM sys.views WHERE object_id = OBJECT_ID(N'[dbo].[ASRSysGroups]'))
+	BEGIN
+		EXEC sp_executesql N'CREATE VIEW [dbo].[ASRSysGroups] AS
+			SELECT uid AS ID, name AS Name
+			FROM sys.sysusers
+			WHERE (gid = uid) AND (gid > 0) AND (NOT (name LIKE ''ASRSys%'')) AND (NOT (name LIKE ''db[_]%''));'
+	END
+	
 	IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[tbsys_mobilelogins]') AND type in (N'U'))
 	BEGIN
 		EXEC sp_executesql N'CREATE TABLE [dbo].[tbsys_mobilelogins](
