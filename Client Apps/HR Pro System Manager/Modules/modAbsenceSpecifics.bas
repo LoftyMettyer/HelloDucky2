@@ -2129,6 +2129,7 @@ Private Function CreateSSPStoredProcedure() As Boolean
     sProcSQL = sProcSQL & vbNewLine & _
       "    /* Refresh the SSP fields in the Absence records for the Personnel record that is the parent of the given Absence record ID. */" & vbNewLine & vbNewLine & _
       "    /* Personnel record variables. */" & vbNewLine & _
+      "    SET NOCOUNT ON;" & vbNewLine & vbNewLine & _
       "    DECLARE @iPersonnelRecordID integer," & vbNewLine & _
       "        @iWorkingDaysPerWeek integer," & vbNewLine & _
       "        @sWorkingPattern varchar(14)," & vbNewLine & _
@@ -2297,6 +2298,7 @@ Private Function CreateSSPStoredProcedure() As Boolean
     sProcSQL = sProcSQL & _
       "    END" & vbNewLine
     
+    ' JDM-2010-06-14 - JIRA 1005 - Yup, another fix only a few days later... :-)
     ' NPG20100609 Fault HRPRO-725
     sProcSQL = sProcSQL & vbNewLine & _
       "    IF @fOK = 1" & vbNewLine & _
@@ -2304,10 +2306,8 @@ Private Function CreateSSPStoredProcedure() As Boolean
       "        SET @iConsecutiveRecords = 0" & vbNewLine & _
       "        SET @dtLastWholeEndDate = null" & vbNewLine & vbNewLine & _
       "        /* Get count of absence records */" & vbNewLine & vbNewLine & _
-      "       SELECT Absence.id" & vbNewLine & _
-      "       FROM Absence" & vbNewLine & _
-      "       WHERE Absence.id_1 = @iPersonnelRecordID" & vbNewLine & vbNewLine & _
-      "       SET @iAbsenceRecordCount = @@ROWCOUNT" & vbNewLine & vbNewLine & _
+      "        SELECT @iAbsenceRecordCount = COUNT(id) FROM " & mvar_sAbsenceTableName & vbNewLine & _
+      "            WHERE id_" & Trim(Str(mvar_lngPersonnelTableID)) & " = @iPersonnelRecordID;" & vbNewLine & vbNewLine & _
       "        /* Create a cursor of the absence records for the current person. */" & vbNewLine & _
       "        SET @cursAbsenceRecords = CURSOR LOCAL FAST_FORWARD FOR" & vbNewLine & _
       "            SELECT " & mvar_sAbsenceTableName & ".id," & vbNewLine & _
