@@ -81,24 +81,24 @@ Dim mbInsert As Boolean
 Public Event Change() 'MappingInfo=txtText,txtText,-1,Change
 Public Event NewEntry()
 Public Event Click()
+Public Event KeyDown(KeyCode As Integer, Shift As Integer)
 
 Private Sub UserControl_KeyDown(KeyCode As Integer, Shift As Integer)
 
-'  'If user presses <Space> when control has focus, drop the lookup down
   If KeyCode = vbKeySpace Then
     ShowDropdown 1, 0, 0, 0
+    KeyCode = 0
   End If
 
-  ' Stop re-firing
-  KeyCode = 0
+  RaiseEvent KeyDown(KeyCode, Shift)
 
 End Sub
 
-Private Sub cmdDrop_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
-  ShowDropdown Button, Shift, x, y
+Private Sub cmdDrop_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+  ShowDropdown Button, Shift, X, Y
 End Sub
 
-Private Sub ShowDropdown(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub ShowDropdown(Button As Integer, Shift As Integer, X As Single, Y As Single)
   
   Dim lpContainer As RECT
   Dim lpForm As RECT
@@ -282,7 +282,7 @@ Private Sub txtText_GotFocus()
 
 End Sub
 
-Private Sub txtText_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub txtText_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
 
   'To prevent the mouse icon from turning into an I-bar, and causing user to
   'think they should be able to type into the control
