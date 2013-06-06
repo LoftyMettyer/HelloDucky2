@@ -4060,10 +4060,11 @@ Public Function TableIsUsed(pfrmUsage As frmUsage) As Boolean
   ' ### We now need to check every single util/report/tool to see if the Table is used.
   
   ' NHRD09112010 JIRA HRPRO-1083
+  ' NHRD07012011 JIRA HRPRO-1083 - had to change search value from parent to [TargetTableID]
   ' Check if the column is used in any Document Types
   sSQL = "SELECT DISTINCT DocumentMapID, Name " & _
           "FROM ASRSysDocumentManagementTypes " & _
-          "WHERE ASRSysDocumentManagementTypes.[Parent1TableID] = " & gLngTableID
+          "WHERE ASRSysDocumentManagementTypes.[TargetTableID] = " & gLngTableID
 
   Set rsUtilsDocTypes = New ADODB.Recordset
   
