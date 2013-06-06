@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.OCX"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
 Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~2.OCX"
 Begin VB.MDIForm frmMain 
@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "16:48"
+            TextSave        =   "10:17"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -162,7 +162,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
 ' Windows API call used to control textbox
-Private Declare Function SendMessage Lib "user32" Alias "SendMessageA" (ByVal hwnd As Long, ByVal wMsg As Long, ByVal wParam As Long, lParam As Any) As Long
+Private Declare Function SendMessage Lib "user32" Alias "SendMessageA" (ByVal hWnd As Long, ByVal wMsg As Long, ByVal wParam As Long, lParam As Any) As Long
 '
 ' Edit Control Messages
 '
@@ -427,7 +427,7 @@ Private Sub abMain_BandOpen(ByVal Band As ActiveBarLibraryCtl.Band)
             If frmForm.Visible Then
               lCount = lCount + 1
               lWindowCount = lWindowCount + 1
-              Set objTool = Band.Tools.Add(frmForm.hwnd, "WList" & lWindowCount)
+              Set objTool = Band.Tools.Add(frmForm.hWnd, "WList" & lWindowCount)
               
               ' RH 09/10/00 - BUG, limit the chars in the Window Menu to 100
               'objTool.Caption = "&" & lWindowCount & "  " & frmForm.Caption
@@ -438,7 +438,7 @@ Private Sub abMain_BandOpen(ByVal Band As ActiveBarLibraryCtl.Band)
                 bNoSeparator = True
               End If
                         
-              If Me.ActiveForm.hwnd = frmForm.hwnd Then
+              If Me.ActiveForm.hWnd = frmForm.hWnd Then
                 objTool.Checked = True
               End If
             End If
@@ -474,7 +474,7 @@ Private Sub MDIForm_Activate()
   ' NPG20091007 Fault HR Pro-416
   ' set the new multi-size icons for taskbar, application, and alt-tab
   'SetIcon Me.hWnd, "TASKBAR", True
-  SetIcon Me.hwnd, "!ABS", True
+  SetIcon Me.hWnd, "!ABS", True
   
 End Sub
 
@@ -575,7 +575,7 @@ PrinterErrorTrap:
 Private Sub EditPerform(EditFunction As Integer)
 
    If TypeOf Screen.ActiveControl Is TextBox Then
-      Call SendMessage(Screen.ActiveControl.hwnd, EditFunction, 0, 0&)
+      Call SendMessage(Screen.ActiveControl.hWnd, EditFunction, 0, 0&)
    End If
    
 End Sub
@@ -587,7 +587,7 @@ Public Sub RefreshEditMenu()
     If Not Screen.ActiveControl Is Nothing Then
       If TypeOf Screen.ActiveControl Is TextBox Then
         ' Determine if last edit can be undone
-        .Tools("Undo").Enabled = SendMessage(Screen.ActiveControl.hwnd, EM_CANUNDO, 0, 0&)
+        .Tools("Undo").Enabled = SendMessage(Screen.ActiveControl.hWnd, EM_CANUNDO, 0, 0&)
         ' See if there's anything to cut, copy,
         ' or delete
         .Tools("Cut").Enabled = Screen.ActiveControl.SelLength
@@ -714,7 +714,7 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
   ' Check if the clicked tool is in the window list.
   If Left(Tool.Name, 5) = "WList" Then
     For lForms = 0 To Forms.Count - 1
-      If Forms(lForms).hwnd = Tool.ToolID Then
+      If Forms(lForms).hWnd = Tool.ToolID Then
         If Forms(lForms).Visible Then
           If Forms(lForms).Enabled Then
             ' Set focus onto the selected form.

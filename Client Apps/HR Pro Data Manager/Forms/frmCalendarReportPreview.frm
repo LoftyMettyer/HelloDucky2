@@ -72,11 +72,11 @@ Begin VB.Form frmCalendarReportPreview
          Width           =   405
       End
       Begin VB.CommandButton cmdLastMonth 
-         DisabledPicture =   "frmCalendarReportPreview.frx":0EFA
+         DisabledPicture =   "frmCalendarReportPreview.frx":0F99
          Enabled         =   0   'False
          Height          =   315
          Left            =   4275
-         Picture         =   "frmCalendarReportPreview.frx":12C0
+         Picture         =   "frmCalendarReportPreview.frx":135F
          Style           =   1  'Graphical
          TabIndex        =   8
          ToolTipText     =   "Last Month"
@@ -84,11 +84,11 @@ Begin VB.Form frmCalendarReportPreview
          Width           =   405
       End
       Begin VB.CommandButton cmdNextMonth 
-         DisabledPicture =   "frmCalendarReportPreview.frx":1604
+         DisabledPicture =   "frmCalendarReportPreview.frx":174C
          Enabled         =   0   'False
          Height          =   315
          Left            =   3915
-         Picture         =   "frmCalendarReportPreview.frx":19B7
+         Picture         =   "frmCalendarReportPreview.frx":1AFF
          Style           =   1  'Graphical
          TabIndex        =   7
          ToolTipText     =   "Next Month"
@@ -96,11 +96,11 @@ Begin VB.Form frmCalendarReportPreview
          Width           =   285
       End
       Begin VB.CommandButton cmdPrevMonth 
-         DisabledPicture =   "frmCalendarReportPreview.frx":1CFB
+         DisabledPicture =   "frmCalendarReportPreview.frx":1EBA
          Enabled         =   0   'False
          Height          =   315
          Left            =   480
-         Picture         =   "frmCalendarReportPreview.frx":20AA
+         Picture         =   "frmCalendarReportPreview.frx":2269
          Style           =   1  'Graphical
          TabIndex        =   3
          ToolTipText     =   "Previous Month"
@@ -572,7 +572,7 @@ Begin VB.Form frmCalendarReportPreview
       AllowGroupShrinking=   0   'False
       AllowDragDrop   =   0   'False
       SelectTypeCol   =   0
-      PictureRecordSelectors=   "frmCalendarReportPreview.frx":23EE
+      PictureRecordSelectors=   "frmCalendarReportPreview.frx":261D
       BalloonHelp     =   0   'False
       RowNavigation   =   1
       MaxSelectedRows =   0
