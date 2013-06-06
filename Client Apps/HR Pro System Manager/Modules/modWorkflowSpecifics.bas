@@ -4737,9 +4737,18 @@ Private Sub CreateWorkflowProcsForLink(lngTableID As Long, _
         End If
 
       Case WORKFLOWTRIGGERLINKTYPE_DATE
+'        strTriggerCode = _
+'          String(iIndent, vbTab) & "IF (DateDiff(day, @dtWFLinkDate, getdate()) >= 0) OR" & vbNewLine & _
+'          String(iIndent, vbTab) & vbTab & "(@sWFLastSent IS NOT NULL)" & vbNewLine & _
+'          String(iIndent, vbTab) & "BEGIN" & vbNewLine & _
+'          sImmediate & vbNewLine & _
+'          String(iIndent, vbTab) & "END" & vbNewLine & _
+'          String(iIndent, vbTab) & "ELSE" & vbNewLine & _
+'          String(iIndent, vbTab) & "BEGIN" & vbNewLine & _
+'          strRebuildTemp & vbNewLine & _
+'          String(iIndent, vbTab) & "END" & vbNewLine
         strTriggerCode = _
-          String(iIndent, vbTab) & "IF (DateDiff(day, @dtWFLinkDate, getdate()) >= 0) OR" & vbNewLine & _
-          String(iIndent, vbTab) & vbTab & "(@sWFLastSent IS NOT NULL)" & vbNewLine & _
+          String(iIndent, vbTab) & "IF (DateDiff(day, @dtWFLinkDate, getdate()) >= 0)" & vbNewLine & _
           String(iIndent, vbTab) & "BEGIN" & vbNewLine & _
           sImmediate & vbNewLine & _
           String(iIndent, vbTab) & "END" & vbNewLine & _
@@ -4758,8 +4767,15 @@ Private Sub CreateWorkflowProcsForLink(lngTableID As Long, _
           String(iIndent + 1, vbTab) & "ORDER BY ASRSysWorkflowQueue.dateInitiated DESC" & vbNewLine & vbNewLine & _
           String(iIndent + 1, vbTab) & "IF ((DateDiff(day, @dtWFPurgeDate, @dtWFLinkDate) >= 0 OR @dtWFPurgeDate IS NULL)" & vbNewLine
         
+'        strTriggerCode = strTemp & _
+'          String(iIndent + 2, vbTab) & "OR (@sWFLastSent IS NOT NULL)) " & vbNewLine & _
+'          IIf(sEffectiveDate <> vbNullString, _
+'            String(iIndent + 2, vbTab) & "AND (DateDiff(day, '" & sEffectiveDate & "', @dtWFLinkDate) >= 0)", "") & vbNewLine & _
+'          String(iIndent + 1, vbTab) & "BEGIN" & vbNewLine & _
+'          strTriggerCode & vbNewLine & _
+'          String(iIndent + 1, vbTab) & "END" & vbNewLine
         strTriggerCode = strTemp & _
-          String(iIndent + 2, vbTab) & "OR (@sWFLastSent IS NOT NULL)) " & vbNewLine & _
+          String(iIndent + 2, vbTab) & ") " & vbNewLine & _
           IIf(sEffectiveDate <> vbNullString, _
             String(iIndent + 2, vbTab) & "AND (DateDiff(day, '" & sEffectiveDate & "', @dtWFLinkDate) >= 0)", "") & vbNewLine & _
           String(iIndent + 1, vbTab) & "BEGIN" & vbNewLine & _
