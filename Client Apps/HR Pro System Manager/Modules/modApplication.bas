@@ -2124,18 +2124,19 @@ End Sub
 Public Sub EditMobileDesigner()
 
   On Error GoTo ErrorTrap
-
-  Dim bOK As Boolean
-
+  
+  Screen.MousePointer = vbHourglass
+  
   Dim service As New MobileDesignerSerivce
-  service.InitialiseForVB6 ("C:\Users\paul.glynn\AppData\Local\Temp\" & gsTempDatabaseName)
+  service.InitialiseForVB6 (Environ("TEMP") & "\" & gsTempDatabaseName)
   Set service = Nothing
+  
+  Screen.MousePointer = vbDefault
   
   Dim frm As New DesignerForm
   frm.ShowDialog
-  'frm.ShowChild (frmSysMgr.hWnd)
   
+  Exit Sub
 ErrorTrap:
-  bOK = False
-
+  MsgBox "An error occurred while showing the mobile desigtner." & vbCrLf & "(" & Err.Number & " - " & Err.Description & ")", vbExclamation + vbOKOnly, Application.Name
 End Sub
