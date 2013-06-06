@@ -1196,11 +1196,11 @@ PRINT 'Step 4 - Overlapping dates functionality'
 
 	IF EXISTS (SELECT *
 		FROM dbo.sysobjects
-		WHERE id = object_id(N'[dbo].[udfDateOverlap]')
+		WHERE id = object_id(N'[dbo].[udfASRDateOverlap]')
 			AND OBJECTPROPERTY(id, N'IsScalarFunction ') = 1)
-		DROP FUNCTION [dbo].[udfDateOverlap];
+		DROP FUNCTION [dbo].[udfASRDateOverlap];
 
-	SET @sSPCode = 'CREATE FUNCTION dbo.[udfDateOverlap]()
+	SET @sSPCode = 'CREATE FUNCTION dbo.[udfASRDateOverlap]()
 		RETURNS bit
 		AS
 		BEGIN
@@ -1210,7 +1210,7 @@ PRINT 'Step 4 - Overlapping dates functionality'
 	EXECUTE sp_executeSQL @sSPCode;
 
 
-	SET @sSPCode = 'ALTER FUNCTION dbo.[udfDateOverlap](
+	SET @sSPCode = 'ALTER FUNCTION dbo.[udfASRDateOverlap](
 		@pdStartDate1		datetime,
 		@psStartSession1	nvarchar(2),
 		@pdEndDate1			datetime,
