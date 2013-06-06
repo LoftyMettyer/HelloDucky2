@@ -364,9 +364,10 @@ Public Property Let Enabled(ByVal NewEnabled As Boolean)
   UserControl.Enabled() = NewEnabled
   If Not NewEnabled Then
     For Each ctlTemp In UserControl.Controls
-        If TypeOf ctlTemp Is OptionButton Then
-            ctlTemp.Enabled = False
-        End If
+      If TypeOf ctlTemp Is XtremeSuiteControls.RadioButton Or _
+        TypeOf ctlTemp Is XtremeSuiteControls.GroupBox Then
+          ctlTemp.Enabled = False
+      End If
     Next
   End If
   
