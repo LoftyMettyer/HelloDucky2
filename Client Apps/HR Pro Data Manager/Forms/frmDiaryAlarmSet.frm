@@ -95,9 +95,11 @@ End Sub
 Private Sub Form_Load()
 
   Dim stlSQL As String
-  Dim intAlarmedCount As Integer
-  Dim intNonAlarmedCount As Integer
-  
+  'Dim intAlarmedCount As Integer
+  'Dim intNonAlarmedCount As Integer JIRA HR Pro 1139
+  Dim intAlarmedCount As Long
+  Dim intNonAlarmedCount As Long
+    
   intAlarmedCount = gobjDiary.GetAlarmCount(1)
   intNonAlarmedCount = gobjDiary.GetAlarmCount(0)
 
