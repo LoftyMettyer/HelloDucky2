@@ -6777,7 +6777,7 @@ PRINT 'Step 13 - Additional Mobile Configuration'
 	----------------------------------------------------------------------
 	-- spASRSysGenMobileLicence
 	----------------------------------------------------------------------
-DECLARE @sSPCode nvarchar(MAX);
+
 	IF EXISTS (SELECT *
 		FROM dbo.sysobjects
 		WHERE id = object_id(N'[dbo].[spASRSysGenMobileLicence]')
