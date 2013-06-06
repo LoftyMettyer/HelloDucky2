@@ -685,6 +685,11 @@ PRINT 'Step 9 - Add new calculation procedures'
 			AND xtype in (N'FN', N'IF', N'TF'))
 		DROP FUNCTION [dbo].[udfsys_justdate];
 
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsys_isnivalid]') AND xtype in (N'FN', N'IF', N'TF'))
+		DROP FUNCTION [dbo].[udfsys_isnivalid];
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsys_isvalidpayrollcharacterset]') AND xtype in (N'FN', N'IF', N'TF'))
+		DROP FUNCTION [dbo].[udfsys_isvalidpayrollcharacterset];
+
 
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_wholemonthsbetweentwodates] 
 		(
@@ -1304,6 +1309,100 @@ PRINT 'Step 9 - Add new calculation procedures'
 		END';
 	EXECUTE sp_executeSQL @sSPCode;
 
+	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_isnivalid](
+			@input AS nvarchar(MAX))
+		RETURNS bit
+		WITH SCHEMABINDING
+		AS
+		BEGIN
+		
+			DECLARE @result bit;
+			
+			DECLARE @ValidPrefixes varchar(MAX);
+			DECLARE @ValidSuffixes varchar(MAX);
+			DECLARE @Prefix varchar(MAX);
+			DECLARE @Suffix varchar(MAX);
+			DECLARE @Numerics varchar(MAX);
+
+			SET @result = 1;
+			IF ISNULL(@input,'''') = '''' RETURN 0
+
+			SET @ValidPrefixes = 
+				''/AA/AB/AE/AH/AK/AL/AM/AP/AR/AS/AT/AW/AX/AY/AZ'' +
+				''/BA/BB/BE/BH/BK/BL/BM/BT'' +
+				''/CA/CB/CE/CH/CK/CL/CR'' +
+				''/EA/EB/EE/EH/EK/EL/EM/EP/ER/ES/ET/EW/EX/EY/EZ'' +
+				''/GY'' +
+				''/HA/HB/HE/HH/HK/HL/HM/HP/HR/HS/HT/HW/HX/HY/HZ'' +
+				''/JA/JB/JC/JE/JG/JH/JJ/JK/JL/JM/JN/JP/JR/JS/JT/JW/JX/JY/JZ'' +
+				''/KA/KB/KE/KH/KK/KL/KM/KP/KR/KS/KT/KW/KX/KY/KZ'' +
+				''/LA/LB/LE/LH/LK/LL/LM/LP/LR/LS/LT/LW/LX/LY/LZ'' +
+				''/MA/MW/MX'' +
+				''/NA/NB/NE/NH/NL/NM/NP/NR/NS/NW/NX/NY/NZ'' +
+				''/OA/OB/OE/OH/OK/OL/OM/OP/OR/OS/OX'' +
+				''/PA/PB/PC/PE/PG/PH/PJ/PK/PL/PM/PN/PP/PR/PS/PT/PW/PX/PY'' +
+				''/RA/RB/RE/RH/RK/RM/RP/RR/RS/RT/RW/RX/RY/RZ'' +
+				''/SA/SB/SC/SE/SG/SH/SJ/SK/SL/SM/SN/SP/SR/SS/ST/SW/SX/SY/SZ'' +
+				''/TA/TB/TE/TH/TK/TL/TM/TP/TR/TS/TT/TW/TX/TY/TZ'' +
+				''/WA/WB/WE/WK/WL/WM/WP'' +
+				''/YA/YB/YE/YH/YK/YL/YM/YP/YR/YS/YT/YW/YX/YY/YZ'' +
+				''/ZA/ZB/ZE/ZH/ZK/ZL/ZM/ZP/ZR/ZS/ZT/ZW/ZX/ZY/'';
+
+			SET @ValidSuffixes = ''/ /A/B/C/D/'';
+
+			SET @Prefix = ''/''+left(@input+''  '',2)+''/''
+			SET @Suffix = ''/''+substring(@input+'' '',9,1)+''/''
+			SET @Numerics = SUBSTRING(@input,3,6)
+
+			IF charindex(@Prefix,@ValidPrefixes) = 0 OR charindex(@Suffix,@ValidSuffixes) = 0 OR ISNUMERIC(@Numerics) = 0
+				SET @result = 0;
+				
+			RETURN @result;
+			
+		END';
+	EXECUTE sp_executeSQL @sSPCode;
+
+
+	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_isvalidpayrollcharacterset](
+			@input AS nvarchar(MAX),
+			@charset varchar(1))
+		RETURNS bit
+		WITH SCHEMABINDING
+		AS
+		BEGIN
+		
+			DECLARE @result bit;
+
+			--Charset A - typically Address
+			--Charset C - typically Forename
+			--Charset D - typically Surname
+
+			DECLARE @ValidCharacters varchar(MAX);
+			DECLARE @Index int;
+
+
+			IF      @Charset = ''A'' SET @ValidCharacters = ''abcdefghijhklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-''''0123456789,&/(). =!"%&*;<>+:?''
+			ELSE IF @Charset = ''B'' SET @ValidCharacters = ''abcdefghijhklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ''
+			ELSE IF @Charset = ''C'' SET @ValidCharacters = ''abcdefghijhklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-''''''
+			ELSE IF @Charset = ''D'' SET @ValidCharacters = ''abcdefghijhklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-''''0123456789,&/(). ''
+			ELSE IF @Charset = ''G'' SET @ValidCharacters = ''abcdefghijhklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-''''0123456789,&/(). =!"%&*;<>+:?''
+			ELSE IF @Charset = ''H'' SET @ValidCharacters = ''abcdefghijhklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-''''. ''
+			
+			SET @result = 1;
+			SET @Index = 1;
+			WHILE (@Index <= datalength(@input) AND @result = 1)
+			BEGIN
+				IF charindex(substring(@input,@Index,1),@ValidCharacters) = 0
+					SET @result = 0;
+				SET @Index = @Index + 1;
+			END	
+
+			RETURN @result;
+
+		END'
+	EXECUTE sp_executeSQL @sSPCode;
+
+
 
 /* ------------------------------------------------------------- */
 PRINT 'Step 10 - Populate code generation tables'
@@ -1366,7 +1465,7 @@ PRINT 'Step 10 - Populate code generation tables'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''51a4dc3e-41a4-4b1a-8df8-8d9a1baed196'', N''DATEADD(MM, {1}, DATEADD(D, 0, DATEDIFF(D, 0, {0})))'', 4, 0, 0, N''Add Months to Date'', NULL, 0, 0, 23, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''bc6a9215-696d-492c-8acb-95c99f440530'', N''DATEADD(YY, {1}, DATEADD(D, 0, DATEDIFF(D, 0, {0})))'', 4, 0, 0, N''Add Years to Date'', NULL, 0, 0, 24, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''078108bf-77b2-42a3-b426-42126337f397'', N''[dbo].[udf_ASRFn_BradfordFactor]({0}, {1}, {2}, {3})'', 2, 0, 0, N''Bradford Factor'', NULL, 0, 0, 73, 0)';
-	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentdependancy] ([id], [modulekey], [parameterkey]) VALUES (30, ''MODULE_PERSONNEL'', ''Param_TablePersonnel'')';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentdependancy] ([id], [modulekey], [parameterkey]) VALUES (73, ''MODULE_PERSONNEL'', ''Param_TablePersonnel'')';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''eb449e75-e061-4502-973b-5e3a3e39c2d2'', N''CONVERT(NUMERIC(38,8), {0})'', 2, 0, 0, N''Convert Character to Numeric'', NULL, 0, 0, 25, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''56b64c0d-84d9-4b15-9c9e-b1fdb42ea4d1'', N'''', 2, 0, 0, N''Convert Currency'', NULL, 0, 0, 51, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''88430aa0-f580-4157-8b2f-c73841cea211'', N''CONVERT(nvarchar(MAX), LEFT({0},{1}))'', 1, 0, 0, N''Convert Numeric to Character'', NULL, 0, 0, 3, 0)';
@@ -1433,6 +1532,10 @@ PRINT 'Step 10 - Populate code generation tables'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''5c9a6256-ac11-456d-92fe-a5e2f5ba4c11'', N''DATEPART(YYYY, {0})'', 2, 0, 0, N''Year of Date'', NULL, 0, 0, 32, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''5b636d9f-7589-46d4-bd6a-0e23aef81a51'', N''NOT'', 0, 0, 0, N''Not'', NULL, 1, 180, 13, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''5da8bb7e-f632-4ed0-b236-e042b88f3a1b'', N''[dbo].[udfsys_getfieldfromdatabaserecord] ({0}, {1}, {2})'', 0, 0, 0, N''Get field from database record'', NULL, 0, 0, 42, 0)';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''a40b59a0-3b3c-4348-9e6b-dd56a8dbab86'', N''[dbo].[udfsys_isnivalid]({0})'', 3, 0, 0, N''Is Valid NI Number'', NULL, 0, 0, 75, 0)';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''5b2c16e0-489a-4061-a0eb-eb94d5f2ee6f'', N''[dbo].[udfsys_isvalidpayrollcharacterset]({0}, {1})'', 3, 0, 0, N''Is Valid Payroll Character Set'', NULL, 0, 0, 76, 0)';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''84b11964-4b8b-46e4-b340-f3d5598a82fe'', N''REPLACE({0}, {1}, {2})'', 1, 0, 0, N''Replace Characters In A String'', NULL, 0, 0, 77, 0)';
+
 
 
 /* ------------------------------------------------------------- */
