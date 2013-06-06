@@ -2334,7 +2334,7 @@ Private Sub RefreshControls()
     cmdIconClear.Enabled = txtIcon.Text <> ""
     imgIcon.Visible = True
     chkNewColumn.Visible = (miLinkType = SSINTLINK_BUTTON)
-    lblNoOptions.Visible = (miLinkType = SSINTLINK_BUTTON)
+    lblNoOptions.Visible = False
     lblNoOptions.Top = 345
     lblSeparatorColour.Visible = (miLinkType = SSINTLINK_BUTTON)
     txtSeparatorColour.Visible = (miLinkType = SSINTLINK_BUTTON)
