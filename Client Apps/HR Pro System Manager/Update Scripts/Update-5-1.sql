@@ -908,23 +908,29 @@ PRINT 'Step - Menu & Category enhancements'
 	END
 
 
-
 /* ------------------------------------------------------------- */
 /* Step - Management Packs */
 /* ------------------------------------------------------------- */
 
+	IF NOT EXISTS(SELECT ID FROM syscolumns	WHERE ID = (SELECT ID FROM sysobjects where [name] = 'ASRSysFileFormats') AND [name] = 'Direction')
+	BEGIN
+		EXEC sp_executesql N'ALTER TABLE dbo.[ASRSysFileFormats] ADD [Direction] tinyint NULL;';
+		EXEC sp_executesql N'DELETE FROM ASRSysFileFormats WHERE ID > 922;';
+		EXEC sp_executesql N'UPDATE ASRSysFileFormats SET [direction] = 2;';
+	END
+
 	IF NOT EXISTS(SELECT * FROM ASRSysFileFormats where ID = 923)
 	BEGIN
-		INSERT ASRSysFileFormats (ID, Destination, [Description], Extension, Office2003, Office2007, [Default])
-			VALUES (923, 'Word', 'PDF (*.pdf)', 'pdf', NULL, 17, 0);
-		INSERT ASRSysFileFormats (ID, Destination, [Description], Extension, Office2003, Office2007, [Default])
-			VALUES (924, 'Word', 'Rich Text Format (*.rtf)', 'rtf', NULL, 6, 0);
-		INSERT ASRSysFileFormats (ID, Destination, [Description], Extension, Office2003, Office2007, [Default])
-			VALUES (925, 'Word', 'Plain Text (*.txt)', 'txt', NULL, 2, 0);
-		INSERT ASRSysFileFormats (ID, Destination, [Description], Extension, Office2003, Office2007, [Default])
-			VALUES (926, 'Word', 'Web Page (*.html)', 'html', NULL, 8, 0);		
-		INSERT ASRSysFileFormats (ID, Destination, [Description], Extension, Office2003, Office2007, [Default])
-			VALUES (927, 'Excel', 'Web Page (*.html)', 'html', NULL, 44, 0);
+		EXEC sp_executesql N'INSERT ASRSysFileFormats (ID, Destination, [Description], Extension, Office2003, Office2007, [Default], [Direction])
+			VALUES (923, ''Word'', ''PDF (*.pdf)'', ''pdf'', NULL, 17, 0, 1);'
+		EXEC sp_executesql N'INSERT ASRSysFileFormats (ID, Destination, [Description], Extension, Office2003, Office2007, [Default], [Direction])
+			VALUES (924, ''Word'', ''Rich Text Format (*.rtf)'', ''rtf'', NULL, 6, 0, 1);'
+		EXEC sp_executesql N'INSERT ASRSysFileFormats (ID, Destination, [Description], Extension, Office2003, Office2007, [Default], [Direction])
+			VALUES (925, ''Word'', ''Plain Text (*.txt)'', ''txt'', NULL, 2, 0, 1);'
+		EXEC sp_executesql N'INSERT ASRSysFileFormats (ID, Destination, [Description], Extension, Office2003, Office2007, [Default], [Direction])
+			VALUES (926, ''Word'', ''Web Page (*.html)'', ''html'', NULL, 8, 0, 1);		'
+		EXEC sp_executesql N'INSERT ASRSysFileFormats (ID, Destination, [Description], Extension, Office2003, Office2007, [Default], [Direction])
+			VALUES (927, ''Excel'', ''Web Page (*.html)'', ''html'', NULL, 44, 0, 1);'
 	END
 
 
