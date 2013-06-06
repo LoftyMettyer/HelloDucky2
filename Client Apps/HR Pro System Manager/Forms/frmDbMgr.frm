@@ -126,14 +126,12 @@ Begin VB.Form frmDbMgr
          NumPanels       =   2
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   2
-            TextSave        =   ""
             Key             =   ""
             Object.Tag             =   ""
          EndProperty
          BeginProperty Panel2 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   1
             Object.Width           =   9393
-            TextSave        =   ""
             Key             =   ""
             Object.Tag             =   ""
          EndProperty
@@ -581,10 +579,21 @@ Private Sub abDbMgr_Click(ByVal pTool As ActiveBarLibraryCtl.Tool)
 '  End Select
   
   Select Case pTool.Name
-  Case "ID_LargeIcons", "ID_SmallIcons", "ID_List", "ID_Details"
+  Case "ID_LargeIcons"
+    ChangeView lvwIcon
+    
+  Case "ID_SmallIcons"
+    ChangeView lvwSmallIcon
+    
+  Case "ID_List"
+    ChangeView lvwList
+    
+  Case "ID_Details"
     ChangeView lvwReport
+    
   Case Else
     EditMenu pTool.Name
+    
   End Select
 
 End Sub
