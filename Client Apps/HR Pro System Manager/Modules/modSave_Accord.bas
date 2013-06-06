@@ -162,10 +162,20 @@ Public Function CreateAccordTransferTriggers(pfRefreshDatabase As Boolean) As Bo
         & Space$(4) & "BEGIN" & vbNewLine & strUpdateTrigger & vbNewLine _
         & Space$(8) & "FETCH NEXT FROM @cursInsertedRecords INTO @recordID, @iTransferType, @iStatus" & vbNewLine _
         & Space$(4) & "END" & vbNewLine _
-        & "CLOSE @cursInsertedRecords" & vbNewLine _
-        & "DEALLOCATE @cursInsertedRecords" & vbNewLine & vbNewLine _
-        & "IF @@nestLevel = 1 EXECUTE spASRAccordPurgeTemp 1,0" & vbNewLine _
+        & "    CLOSE @cursInsertedRecords" & vbNewLine _
+        & "    DEALLOCATE @cursInsertedRecords" & vbNewLine & vbNewLine
+        
+      strUpdateTrigger = strUpdateTrigger _
+        & "    IF @@nestLevel = 1 EXECUTE dbo.spASRAccordPurgeTemp 1,0" & vbNewLine & vbNewLine _
+        & "    -- Clear the old data for new transactions" & vbNewLine _
+        & "    DECLARE @ids TABLE(id integer);" & vbNewLine _
+        & "    INSERT @ids" & vbNewLine _
+        & "        SELECT [transactionid] FROM inserted" & vbNewLine _
+        & "        WHERE [TransactionType] = 0;" & vbNewLine & vbNewLine _
+        & "    UPDATE dbo.[ASRSysAccordTransactionData] SET [olddata] = ''" & vbNewLine _
+        & "        WHERE [transactionid] IN (SELECT id FROM @ids);" & vbNewLine _
         & "END"
+    
     gADOCon.Execute strUpdateTrigger, , adCmdText + adExecuteNoRecords
   End If
   
