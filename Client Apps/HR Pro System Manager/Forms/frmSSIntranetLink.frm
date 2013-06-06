@@ -925,6 +925,7 @@ Private miChartTableID As Long
 Private miChartColumnID As Long
 Private miChartAggregateType As Integer
 Private miElementType As Integer
+Private msCombinedHiddenGroups As String
 
 Private mblnReadOnly As Boolean
 
@@ -1348,21 +1349,18 @@ Public Sub Initialize(piType As SSINTRANETLINKTYPES, _
                       plngTableID As Long, _
                       psStartMode As String, _
                       plngViewID As Long, _
-                      psUtilityType As String, _
-                      psUtilityID As String, _
-                      pfCopy As Boolean, _
-                      psHiddenGroups As String, _
+                      psUtilityType As String, psUtilityID As String, _
+                      pfCopy As Boolean, psHiddenGroups As String, _
                       psTableViewName As String, _
                       pfNewWindow As Boolean, _
-                      psEMailAddress As String, _
-                      psEMailSubject As String, _
-                      psAppFilePath As String, _
-                      psAppParameters As String, _
-                      psDocumentFilePath As String, _
-                      pfDisplayDocumentHyperlink As Boolean, _
+                      psEMailAddress As String, psEMailSubject As String, _
+                      psAppFilePath As String, psAppParameters As String, _
+                      psDocumentFilePath As String, pfDisplayDocumentHyperlink As Boolean, _
                       piElement_Type As Integer, piSeparatorOrientation As Integer, plngPictureID As Long, _
-                      pfChartShowLegend, piChartType, pfChartShowGrid, pfChartStackSeries, plngChartViewID, miChartTableID, _
-                      plngChartColumnID, plngChartFilterID, piChartAggregateType, pfChartShowValues, _
+                      pfChartShowLegend As Boolean, piChartType As Integer, pfChartShowGrid As Boolean, _
+                      pfChartStackSeries As Boolean, plngChartViewID As Long, miChartTableID As Long, _
+                      plngChartColumnID As Long, plngChartFilterID As Long, piChartAggregateType As Integer, _
+                      pfChartShowValues As Boolean, psCombinedHiddenGroups As String, _
                       ByRef pcolSSITableViews As clsSSITableViews)
   
   Set mcolSSITableViews = pcolSSITableViews
@@ -1372,6 +1370,7 @@ Public Sub Initialize(piType As SSINTRANETLINKTYPES, _
   mlngTableID = plngTableID
   mlngViewID = plngViewID
   msTableViewName = psTableViewName
+  msCombinedHiddenGroups = psCombinedHiddenGroups
   
   FormatScreen
   
@@ -1712,7 +1711,7 @@ Private Sub RefreshControls()
   lblHRProUtilityMessage.Caption = sUtilityMessage
   
   ' Disable the OK button as required.
-  cmdOk.Enabled = mfChanged
+  cmdOK.Enabled = mfChanged
   
 
 End Sub
@@ -1850,6 +1849,9 @@ Private Function ValidateLink() As Boolean
 
   ' Return FALSE if the link definition is invalid.
   Dim fValid As Boolean
+  Dim iLoop As Integer
+  Dim pSelectedGroup As String
+  Dim psDuplicateGroups As String
   
   fValid = True
   
@@ -1974,6 +1976,38 @@ Private Function ValidateLink() As Boolean
     End If
   End If
 
+  ' Only one Pending Workflow Steps per security group...
+  If fValid Then
+    If optLink(SSINTLINKPWFSTEPS).value Then
+      
+      ' loop through the chosen security groups and check they're in the combined string
+      
+      psDuplicateGroups = ""
+      pSelectedGroup = ""
+      
+      With grdAccess
+        For iLoop = 1 To (.Rows - 1)
+          .Bookmark = .AddItemBookmark(iLoop)
+          If .Columns("Access").value Then
+            pSelectedGroup = vbTab & .Columns("GroupName").Text & vbTab
+            If InStr(msCombinedHiddenGroups, pSelectedGroup) = 0 Then
+              fValid = False
+              psDuplicateGroups = psDuplicateGroups & vbCrLf & Replace(pSelectedGroup, vbTab, "")
+            End If
+          End If
+        Next iLoop
+      .MoveFirst
+      End With
+      
+      If Not fValid Then
+        MsgBox "'Pending Workflows' can only be defined once per user group." & vbCrLf & _
+                "It has already been defined for the following groups:" & vbCrLf & _
+                psDuplicateGroups, vbOKOnly + vbExclamation, Application.Name
+        grdAccess.SetFocus
+      End If
+      
+    End If
+  End If
 
   ValidateLink = fValid
   

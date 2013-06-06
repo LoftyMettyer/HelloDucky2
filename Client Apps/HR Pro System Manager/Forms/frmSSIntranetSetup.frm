@@ -55,13 +55,13 @@ Begin VB.Form frmSSIntranetSetup
       _Version        =   393216
       Style           =   1
       Tabs            =   5
+      Tab             =   2
       TabsPerRow      =   5
       TabHeight       =   520
       TabCaption(0)   =   "&General"
       TabPicture(0)   =   "frmSSIntranetSetup.frx":000C
-      Tab(0).ControlEnabled=   -1  'True
+      Tab(0).ControlEnabled=   0   'False
       Tab(0).Control(0)=   "fraViews"
-      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).ControlCount=   1
       TabCaption(1)   =   "&Hypertext Links"
       TabPicture(1)   =   "frmSSIntranetSetup.frx":0028
@@ -70,7 +70,7 @@ Begin VB.Form frmSSIntranetSetup
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "Dash&board"
       TabPicture(2)   =   "frmSSIntranetSetup.frx":0044
-      Tab(2).ControlEnabled=   0   'False
+      Tab(2).ControlEnabled=   -1  'True
       Tab(2).Control(0)=   "fraButtonLinks"
       Tab(2).Control(0).Enabled=   0   'False
       Tab(2).ControlCount=   1
@@ -573,7 +573,7 @@ Begin VB.Form frmSSIntranetSetup
       Begin VB.Frame fraViews 
          Caption         =   "Tables (Views) :"
          Height          =   4935
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   52
          Top             =   400
          Width           =   8120
@@ -789,7 +789,7 @@ Begin VB.Form frmSSIntranetSetup
          Caption         =   "Dashboard Links :"
          Enabled         =   0   'False
          Height          =   4935
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   48
          Top             =   405
          Width           =   8120
@@ -874,14 +874,14 @@ Begin VB.Form frmSSIntranetSetup
                Name            =   "Verdana"
                Size            =   8.25
                Charset         =   0
-               Weight          =   400
+               Weight          =   700
                Underline       =   0   'False
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
             stylesets(0).Picture=   "frmSSIntranetSetup.frx":0098
             stylesets(1).Name=   "ssDisabled"
-            stylesets(1).ForeColor=   12632256
+            stylesets(1).ForeColor=   0
             stylesets(1).BackColor=   16777215
             stylesets(1).HasFont=   -1  'True
             BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -1148,7 +1148,7 @@ Begin VB.Form frmSSIntranetSetup
             Width           =   1245
          End
          Begin VB.Label lblSecurityGroup 
-            Caption         =   "Security Group :"
+            Caption         =   "User Group :"
             Height          =   195
             Left            =   195
             TabIndex        =   55
@@ -2143,12 +2143,15 @@ Private Sub cmdAddButtonLink_Click()
   Dim ctlCurrentGrid As SSDBGrid
   Dim ctlSourceGrid As SSDBGrid
   Dim iLoop As Integer
-
+  Dim sAllWFHiddenGroups As String
+  
   Set ctlSourceGrid = CurrentLinkGrid(SSINTLINK_BUTTON)
   If ctlSourceGrid Is Nothing Then
     Exit Sub
   End If
-
+  
+  sAllWFHiddenGroups = getHiddenGroups(ctlSourceGrid)
+  
   With frmLink
     .Initialize SSINTLINK_BUTTON, _
       "", _
@@ -2172,7 +2175,7 @@ Private Sub cmdAddButtonLink_Click()
       "", _
       False, False, _
       0, 0, _
-      False, 1, False, False, 0, 0, 0, 0, 0, 0, _
+      False, 1, False, False, 0, 0, 0, 0, 0, 0, sAllWFHiddenGroups, _
       mcolSSITableViews
       
     .Show vbModal
@@ -2269,7 +2272,7 @@ Private Sub cmdAddDropdownListLink_Click()
       "", _
       False, False, _
       0, 0, _
-      False, 0, False, False, 0, 0, 0, 0, 0, 0, _
+      False, 0, False, False, 0, 0, 0, 0, 0, 0, "", _
       mcolSSITableViews
       
     .Show vbModal
@@ -2354,7 +2357,7 @@ Private Sub cmdAddHyperTextLink_Click()
       "", _
       False, False, _
       0, 0, _
-      False, 0, False, False, 0, 0, 0, 0, 0, 0, _
+      False, 0, False, False, 0, 0, 0, 0, 0, 0, "", _
       mcolSSITableViews
       
     .Show vbModal
@@ -2450,7 +2453,7 @@ Private Sub cmdAddDocument_Click()
       "", _
       False, False, _
       0, 0, _
-      False, 0, False, False, 0, 0, 0, 0, 0, 0, _
+      False, 0, False, False, 0, 0, 0, 0, 0, 0, "", _
       mcolSSITableViews
       
     .Show vbModal
@@ -2747,7 +2750,7 @@ Private Sub cmdCopyButtonLink_Click()
       Val(ctlSourceGrid.Columns("ChartColumnID").Text), _
       Val(ctlSourceGrid.Columns("ChartFilterID").Text), _
       Val(ctlSourceGrid.Columns("ChartAggregateType").Text), _
-      ctlSourceGrid.Columns("ChartShowValues").value, mcolSSITableViews
+      ctlSourceGrid.Columns("ChartShowValues").value, "", mcolSSITableViews
     .Show vbModal
 
     If Not .Cancelled Then
@@ -2876,7 +2879,7 @@ Private Sub cmdCopyDropdownListLink_Click()
       "", _
       False, False, _
       0, 0, _
-      False, 0, False, False, 0, 0, 0, 0, 0, 0, _
+      False, 0, False, False, 0, 0, 0, 0, 0, 0, "", _
       mcolSSITableViews
     
     .Show vbModal
@@ -2996,7 +2999,7 @@ Private Sub cmdCopyHypertextLink_Click()
       "", False, _
       ctlSourceGrid.Columns("Element_Type").value, Val(ctlSourceGrid.Columns("SeparatorOrientation").Text), _
       Val(ctlSourceGrid.Columns("PictureID").Text), _
-      False, 0, False, False, 0, 0, 0, 0, 0, 0, _
+      False, 0, False, False, 0, 0, 0, 0, 0, 0, "", _
       mcolSSITableViews
     
     .Show vbModal
@@ -3115,7 +3118,7 @@ Private Sub cmdCopyDocument_Click()
       ctlSourceGrid.Columns("DocumentFilePath").Text, _
       ctlSourceGrid.Columns("DisplayDocumentHyperlink").value, _
       False, 0, 0, _
-      False, 0, False, False, 0, 0, 0, 0, 0, 0, _
+      False, 0, False, False, 0, 0, 0, 0, 0, 0, "", _
       mcolSSITableViews
       
     .Show vbModal
@@ -3201,7 +3204,8 @@ Private Sub cmdEditButtonLink_Click()
   Dim sViews As String
   Dim lngOriginalTableID As Long
   Dim lngOriginalViewID As Long
-  
+  Dim sAllWFHiddenGroups As String
+      
   sViews = SelectedViews
   
   Set ctlSourceGrid = CurrentLinkGrid(SSINTLINK_BUTTON)
@@ -3214,6 +3218,11 @@ Private Sub cmdEditButtonLink_Click()
 
   lngOriginalTableID = GetTableIDFromCollection(mcolSSITableViews, cboButtonLinkView.List(cboButtonLinkView.ListIndex))
   lngOriginalViewID = GetViewIDFromCollection(mcolSSITableViews, cboButtonLinkView.List(cboButtonLinkView.ListIndex))
+  
+  ' If pending workflow steps get the visibility details for all other wf steps...
+  If sAllWFHiddenGroups = getHiddenGroups(ctlSourceGrid) = 3 Then
+    sAllWFHiddenGroups = getHiddenGroups(ctlSourceGrid)
+  End If
   
   With frmLink
     .Initialize SSINTLINK_BUTTON, _
@@ -3237,7 +3246,7 @@ Private Sub cmdEditButtonLink_Click()
       ctlSourceGrid.Columns("ChartShowLegend").Text, Val(ctlSourceGrid.Columns("ChartType").Text), ctlSourceGrid.Columns("ChartShowGrid").Text, _
       ctlSourceGrid.Columns("ChartStackSeries").Text, Val(ctlSourceGrid.Columns("ChartviewID").Text), Val(ctlSourceGrid.Columns("ChartTableID").Text), _
       Val(ctlSourceGrid.Columns("ChartColumnID").Text), Val(ctlSourceGrid.Columns("ChartFilterID").Text), Val(ctlSourceGrid.Columns("ChartAggregateType").Text), _
-      ctlSourceGrid.Columns("ChartShowValues").Text, mcolSSITableViews
+      ctlSourceGrid.Columns("ChartShowValues").Text, sAllWFHiddenGroups, mcolSSITableViews
     .Show vbModal
 
     If Not .Cancelled Then
@@ -3371,7 +3380,7 @@ Private Sub cmdEditDropdownListLink_Click()
       "", _
       False, False, _
       0, 0, _
-      False, 0, False, False, 0, 0, 0, 0, 0, 0, _
+      False, 0, False, False, 0, 0, 0, 0, 0, 0, "", _
       mcolSSITableViews
     
     .Show vbModal
@@ -3494,7 +3503,7 @@ Private Sub cmdEditHypertextLink_Click()
       "", False, _
       ctlSourceGrid.Columns("Element_Type").value, Val(ctlSourceGrid.Columns("SeparatorOrientation").Text), _
       Val(ctlSourceGrid.Columns("PictureID").Text), _
-      False, 0, False, False, 0, 0, 0, 0, 0, 0, _
+      False, 0, False, False, 0, 0, 0, 0, 0, 0, "", _
       mcolSSITableViews
     
     .Show vbModal
@@ -3618,7 +3627,7 @@ Private Sub cmdEditDocument_Click()
       ctlSourceGrid.Columns("DocumentFilePath").Text, _
       ctlSourceGrid.Columns("DisplayDocumentHyperlink").Text, _
       False, 0, 0, _
-      False, 0, False, False, 0, 0, 0, 0, 0, 0, _
+      False, 0, False, False, 0, 0, 0, 0, 0, 0, "", _
       mcolSSITableViews
           
     .Show vbModal
@@ -3924,6 +3933,7 @@ End Sub
 '
 'End Sub
 
+
 Private Sub cmdMoveButtonLinkDown_Click()
   
   Dim ctlGrid As SSDBGrid
@@ -4208,6 +4218,40 @@ Private Sub cmdOK_Click()
     UnLoad Me
   End If
 End Sub
+
+Private Function getHiddenGroups(ctlSourceGrid As SSDBGrid) As String
+  Dim iLoop As Integer
+  Dim jLoop As Integer
+  Dim sHiddenGroups As String
+  Dim aHiddenGroups As Variant
+  Dim varBookmark As Variant
+  Dim sCombinedHiddenGroups As String
+  
+  sCombinedHiddenGroups = vbTab & ""
+  For iLoop = 1 To ctlSourceGrid.Rows - 1
+        
+    varBookmark = ctlSourceGrid.AddItemBookmark(iLoop)
+    sHiddenGroups = ctlSourceGrid.Columns("HiddenGroups").CellText(varBookmark)
+    
+    If ctlSourceGrid.Columns("Element_Type").CellText(varBookmark) = 3 Then
+    
+      aHiddenGroups = Split(sHiddenGroups, vbTab)
+  
+      For jLoop = 1 To UBound(aHiddenGroups)
+        If InStr(sCombinedHiddenGroups, vbTab + aHiddenGroups(jLoop) + vbTab) = 0 Then
+          sCombinedHiddenGroups = sCombinedHiddenGroups & vbTab & aHiddenGroups(jLoop)
+        End If
+      Next
+      
+    End If
+    
+  Next
+  
+  sCombinedHiddenGroups = sCombinedHiddenGroups & vbTab
+  
+  getHiddenGroups = sCombinedHiddenGroups
+End Function
+
 
 Private Function ValidateSetup() As Boolean
   On Error GoTo ValidateError
@@ -4672,7 +4716,7 @@ Private Sub ReadParameters()
                 
       sSQL = "SELECT *" & _
         " FROM tmpSSIHiddenGroups" & _
-        " WHERE linkID = " & CStr(rsLinks!id)
+        " WHERE linkID = " & CStr(rsLinks!ID)
       Set rsHiddenGroups = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
       While Not rsHiddenGroups.EOF
         sHiddenGroups = sHiddenGroups & rsHiddenGroups!GroupName & vbTab
