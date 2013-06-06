@@ -52,7 +52,6 @@ Begin VB.Form frmGlobalFunctions
       TabPicture(1)   =   "frmGlobalFunctions.frx":0028
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraColumns"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       Begin VB.Frame fraColumns 
          Enabled         =   0   'False
@@ -2337,6 +2336,8 @@ Private Function RetreiveDefinition() As Boolean
   Dim iCount As Integer
   Dim iCount2 As Integer
   
+  Dim strTemp As String
+  
   Dim fAlreadyNotified As Boolean
   
   On Error GoTo LocalErr
@@ -2438,21 +2439,21 @@ Private Function RetreiveDefinition() As Boolean
             If datGeneral.DoesColumnUseSeparators(rsTemp!ColumnID) Then
   
               ' Thousand separators
-
+              strTemp = Replace(rsTemp!Value, UI.GetSystemThousandSeparator, "")
       
               ' Decimals
               'IIf(iCount <> (InStr(1, rsTemp!Value, ".") - 1), ",", "") &
               strValue = ""
               iCount2 = 1
-              If InStr(1, rsTemp!Value, ".") > 0 Then
-                For iCount = InStr(1, rsTemp!Value, ".") - 1 To 1 Step -1
-                  strValue = IIf(iCount2 Mod 3 = 0 And iCount > 1, ",", "") & Mid(rsTemp!Value, iCount, 1) & strValue
+              If InStr(1, strTemp, ".") > 0 Then
+                For iCount = InStr(1, strTemp, ".") - 1 To 1 Step -1
+                  strValue = IIf(iCount2 Mod 3 = 0 And iCount > 1, ",", "") & Mid(strTemp, iCount, 1) & strValue
                   iCount2 = iCount2 + 1
                 Next iCount
-                strValue = strValue & "." & Right(rsTemp!Value, Len(rsTemp!Value) - InStr(1, rsTemp!Value, "."))
+                strValue = strValue & "." & Right(strTemp, Len(strTemp) - InStr(1, strTemp, "."))
               Else
-                For iCount = Len(rsTemp!Value) To 1 Step -1
-                  strValue = IIf(iCount2 Mod 3 = 0 And iCount > 1, ",", "") & Mid(rsTemp!Value, iCount, 1) & strValue
+                For iCount = Len(strTemp) To 1 Step -1
+                  strValue = IIf(iCount2 Mod 3 = 0 And iCount > 1, ",", "") & Mid(strTemp, iCount, 1) & strValue
                   iCount2 = iCount2 + 1
                 Next iCount
               End If
