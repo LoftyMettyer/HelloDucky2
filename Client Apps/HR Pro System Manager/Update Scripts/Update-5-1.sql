@@ -63,6 +63,134 @@ END
 	EXECUTE sp_executeSQL N'UPDATE ASRSysColumns SET lostFocusExprID = 0 WHERE (lostFocusExprID = - 1);';	
 	EXECUTE sp_executeSQL N'UPDATE ASRSysColumns SET dfltValueExprID = 0 WHERE (dfltValueExprID = - 1);';
 
+/* ------------------------------------------------------------- */
+/* Step - Menu Enhancements */
+/* ------------------------------------------------------------- */
+
+
+
+	IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = object_ID(N'tbsys_userusage') AND type in (N'U'))
+	BEGIN
+		EXEC sp_executesql N'CREATE TABLE [tbsys_userusage](
+			[objecttype]	smallint, 
+			[objectid]	integer,
+			[username]	varchar(255),
+			[lastrun]	datetime,
+			[runcount]	integer)';
+		GRANT INSERT, UPDATE, SELECT, DELETE ON dbo.[tbsys_userusage] TO [ASRSysGroup];
+	END
+
+	IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = object_ID(N'tbsys_userfavourites') AND type in (N'U'))
+	BEGIN
+		EXEC sp_executesql N'CREATE TABLE [tbsys_userfavourites](
+			[username]		varchar(255),
+			[objecttype]	smallint, 
+			[objectid]		integer,
+			[dateset]		datetime)';
+		GRANT INSERT, UPDATE, SELECT, DELETE ON dbo.[tbsys_userfavourites] TO [ASRSysGroup];
+	END
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spstat_updateobjectusage]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].[spstat_updateobjectusage];
+	EXEC sp_executesql N'CREATE PROCEDURE dbo.[spstat_updateobjectusage](@objecttype integer, @objectid integer)
+	AS	
+	BEGIN
+
+		DECLARE @sUsername varchar(255)
+		
+		SET @sUsername = SYSTEM_USER;
+
+		IF NOT EXISTS(SELECT [objectid] FROM dbo.[tbsys_userusage] WHERE [objecttype] = @objecttype AND [objectid] = @objectID AND [username] = @sUsername)
+		BEGIN
+			INSERT tbsys_userusage (objecttype, objectid, username, lastrun, runcount)
+				VALUES (@objecttype, @objectID, @sUsername , GETDATE(), 1)
+		END
+		ELSE
+		BEGIN
+			UPDATE dbo.[tbsys_userusage] SET [lastrun] = GETDATE(), [runcount] = [runcount] + 1
+				WHERE [objecttype] = @objecttype AND [objectid] = @objectID AND [username] = @sUsername
+		END
+
+	END';
+	GRANT EXECUTE ON dbo.[spstat_updateobjectusage] TO [ASRSysGroup];
+
+	IF EXISTS (SELECT * FROM sys.views WHERE object_id = object_ID(N'[dbo].[ASRSysAllobjectNames]'))
+		DROP VIEW [dbo].[ASRSysAllobjectNames]
+	EXEC sp_executesql N'CREATE VIEW ASRSysAllobjectNames
+	AS
+		SELECT 2 AS [objectType], ID, Name FROM ASRSysCustomReportsName
+		UNION
+		SELECT 1 AS [objectType], CrossTabID AS ID, Name FROM ASRSysCrossTab
+		UNION		
+		SELECT 14 AS [objectType], MatchReportID AS ID, Name FROM ASRSysMatchReportName
+		UNION
+		SELECT 15 AS [objectType], 0 AS ID, ''Absence Breakdown''
+		UNION
+		SELECT 16 AS [objectType], 0 AS ID, ''Bradford Factor''
+		UNION		
+		SELECT 17 AS [objectType], ID AS ID, Name FROM ASRSysCalendarReports
+		UNION		
+		SELECT 20 AS [objectType], RecordProfileID AS ID, Name FROM ASRSysRecordProfileName
+		UNION
+		SELECT 23 AS [objectType], 0 AS ID, ''Succession Planning''
+		UNION
+		SELECT 24 AS [objectType], 0 AS ID, ''Career Progression''
+		UNION
+		SELECT 30 AS [objectType], 0 AS ID, ''Turnover''
+		UNION
+		SELECT 31 AS [objectType], 0 AS ID, ''Stability Index''';
+	GRANT SELECT ON dbo.[ASRSysAllobjectNames] TO [ASRSysGroup];
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spstat_recentlyrunobjects]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].[spstat_recentlyrunobjects];
+	EXEC sp_executesql N'CREATE PROCEDURE dbo.[spstat_recentlyrunobjects]
+	AS
+	BEGIN
+
+		SELECT TOP 10 ROW_NUMBER() OVER (ORDER BY [lastrun] DESC) AS ID, u.[objectid], o.[Name], o.[objectType]
+			FROM tbsys_userusage u
+			INNER JOIN ASRSysAllobjectNames o ON o.[objectType] = u.objecttype AND o.[ID] = u.objectid
+			WHERE [username] = SYSTEM_USER
+			ORDER BY u.[lastrun] DESC
+
+	END';
+	GRANT EXECUTE ON dbo.[spstat_recentlyrunobjects] TO [ASRSysGroup];
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spstat_getfavourites]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].[spstat_getfavourites];
+	EXEC sp_executesql N'CREATE PROCEDURE dbo.[spstat_getfavourites]
+	AS
+	BEGIN
+
+		SELECT TOP 10 o.[objectType], f.[objectid], o.[Name]
+			FROM tbsys_userfavourites f
+			INNER JOIN ASRSysAllobjectNames o ON o.[objectType] = f.[objecttype] AND o.[ID] = f.objectid
+			WHERE [username] = SYSTEM_USER
+
+	END';
+	GRANT EXECUTE ON dbo.[spstat_getfavourites] TO [ASRSysGroup];
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spstat_addtofavourites]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].[spstat_addtofavourites];
+	EXEC sp_executesql N'CREATE PROCEDURE dbo.[spstat_addtofavourites](@objecttype integer, @objectid integer, @count tinyint OUTPUT)
+		AS
+		BEGIN
+
+			DECLARE @now datetime;
+			SET @now = GETDATE();
+			
+			IF NOT EXISTS(SELECT [username] FROM dbo.tbsys_userfavourites 
+								WHERE [username] = SYSTEM_USER AND @objectid = [objectid] AND @objecttype = [objecttype])
+			BEGIN
+				INSERT dbo.tbsys_userfavourites (username, objecttype, objectid, dateset)
+					VALUES (SYSTEM_USER, @objecttype, @objectid, @now);
+			END
+
+			SELECT @count = COUNT(*) FROM dbo.tbsys_userfavourites WHERE [username] = SYSTEM_USER;
+
+		END';
+	GRANT EXECUTE ON dbo.[spstat_addtofavourites] TO [ASRSysGroup];
+
 
 /* ------------------------------------------------------------- */
 /* Step - Management Packs */
