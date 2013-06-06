@@ -41,7 +41,7 @@ where [Section] = 'database' and [SettingKey] = 'version'
 /* Exit if the database is not previous or current version . */
 /* NB. We allow the script to run even if the database is the new version, as the flags set at the end of the script */
 /* may need to be run if we issue corrected versions of the applications without updating the database verion number. */
-IF (@sDBVersion <> '3.7') and (@sDBVersion <> '4.0')
+IF (@sDBVersion <> '3.7') and (@sDBVersion <> '3.8') and (@sDBVersion <> '4.0')
 BEGIN
 	RAISERROR('The current database version is incompatible with this update script', 16, 1)
 	RETURN
