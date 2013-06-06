@@ -189,7 +189,7 @@ Begin VB.Form frmViewMgr
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
          NumListImages   =   1
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmViewMgr.frx":E5A8
+            Picture         =   "frmViewMgr.frx":ECDC
             Key             =   "IMG_VIEW"
          EndProperty
       EndProperty
@@ -228,11 +228,11 @@ Begin VB.Form frmViewMgr
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
          NumListImages   =   2
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmViewMgr.frx":EDFA
+            Picture         =   "frmViewMgr.frx":F52E
             Key             =   "IMG_TABLE"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmViewMgr.frx":F34C
+            Picture         =   "frmViewMgr.frx":FA80
             Key             =   "IMG_VIEW"
          EndProperty
       EndProperty
