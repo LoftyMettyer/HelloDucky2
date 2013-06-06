@@ -175,8 +175,8 @@ Public Function RecordProfilePage(pfrmRecProfile As frmRecordProfilePreview, _
   ' as we need to translate the picture's width into the number of characters
   ' that fit into that width.
   iOriginalScaleMode = pfrmRecProfile.ScaleMode
-  'With mxlWorkBook.ActiveSheet.Cells(1, 1)
-  With mxlWorkBook.Worksheets(1).Cells(1, 1)
+  With mxlWorkBook.ActiveSheet.Cells(1, 1)
+  'With mxlWorkBook.Worksheets(1).Cells(1, 1)
     .Font.Bold = pcolStyles("Data").Bold
     pfrmRecProfile.lblColumnSizingLabel.Font.Name = .Font.Name
     pfrmRecProfile.lblColumnSizingLabel.Font.Size = .Font.Size
@@ -213,12 +213,11 @@ Public Function RecordProfilePage(pfrmRecProfile As frmRecordProfilePreview, _
         'mxlWorkBook.Worksheets(1).Cells(lngXLRow, lngXLCol).FormulaR1C1 = ctlTemp.Caption
         mxlWorkBook.ActiveSheet.Cells(lngXLRow, lngXLCol).FormulaR1C1 = ctlTemp.Caption
         
-        'mxlWorkBook.ActiveSheet.Cells(lngXLRow, lngXLCol).FormulaR1C1 = ctlTemp.Caption
-        
         lngMaxXLRow = IIf(lngMaxXLRow < lngXLRow, lngXLRow, lngMaxXLRow)
         lngMaxXLCol = IIf(lngMaxXLCol < lngXLCol, lngXLCol, lngMaxXLCol)
         
-        Set objRange = mxlWorkBook.Worksheets(1).Cells(lngXLRow, lngXLCol)
+        'Set objRange = mxlWorkBook.Worksheets(1).Cells(lngXLRow, lngXLCol)
+        Set objRange = mxlWorkBook.ActiveSheet.Cells(lngXLRow, lngXLCol)
         ApplyStyleToRange objRange, pcolStyles("Title")
 
     
@@ -283,8 +282,8 @@ Public Function RecordProfilePage(pfrmRecProfile As frmRecordProfilePreview, _
               If (ctlTemp.Groups.Count > 0) And (ctlTemp.GroupHeaders) Then
                 If (iLastGroup <> ctlTemp.Columns(iLoop).Group) Then
                   ' Send the group header to the Excel document.
-                  mxlWorkBook.Worksheets(1).Cells(lngXLRow, lngXLCol).FormulaR1C1 = ctlTemp.Groups(ctlTemp.Columns(iLoop).Group).Caption
-  
+                  'mxlWorkBook.Worksheets(1).Cells(lngXLRow, lngXLCol).FormulaR1C1 = ctlTemp.Groups(ctlTemp.Columns(iLoop).Group).Caption
+                  mxlWorkBook.ActiveSheet.Cells(lngXLRow, lngXLCol).FormulaR1C1 = ctlTemp.Groups(ctlTemp.Columns(iLoop).Group).Caption
                   ' Remember if the group heading cells need to be merged.
                   If iGroupStart < iTemp - 1 Then
                     Set objMerge = New clsOutputStyle
@@ -327,7 +326,8 @@ Public Function RecordProfilePage(pfrmRecProfile As frmRecordProfilePreview, _
               End If
               
               ' Send the column header to the Excel document.
-              mxlWorkBook.Worksheets(1).Cells(lngXLRow + IIf((ctlTemp.Groups.Count > 0) And (ctlTemp.GroupHeaders), 1, 0), lngXLCol).FormulaR1C1 = ctlTemp.Columns(iLoop).Caption
+              'mxlWorkBook.Worksheets(1).Cells(lngXLRow + IIf((ctlTemp.Groups.Count > 0) And (ctlTemp.GroupHeaders), 1, 0), lngXLCol).FormulaR1C1 = ctlTemp.Columns(iLoop).Caption
+              mxlWorkBook.ActiveSheet.Cells(lngXLRow + IIf((ctlTemp.Groups.Count > 0) And (ctlTemp.GroupHeaders), 1, 0), lngXLCol).FormulaR1C1 = ctlTemp.Columns(iLoop).Caption
               iTemp = iTemp + 1
             End If
             
