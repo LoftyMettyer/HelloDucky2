@@ -771,7 +771,7 @@ Private Function CreateExcelApplication() As Boolean
   Else
     mxlApp.DisplayAlerts = False
   End If
-  
+    
   CreateExcelApplication = True
 
 Exit Function
@@ -1545,8 +1545,11 @@ Public Sub Complete()
     Exit Sub
   End If
   
-  
+'  If gblnReportPackMode Then
+'    mxlWorkBook.Sheets(1).Activate
+'  Else
   mxlFirstSheet.Activate
+'  End If
 
   'SAVE
   If mblnSave Then
