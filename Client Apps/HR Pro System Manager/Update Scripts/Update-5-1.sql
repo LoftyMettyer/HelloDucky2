@@ -20,6 +20,14 @@ DECLARE @newDesktopImageID	integer,
 		@picname			varchar(255),
 		@oldDesktopImageID	integer;
 
+DECLARE @categorymatch TABLE(tableid integer, categoryid integer);
+DECLARE @bCategoriesProcessed bit,
+		@configID integer,
+		@recruitmentID integer,
+		@salaryID integer,
+		@generalID integer,
+		@absenceID integer;
+		
 DECLARE @tableid	integer,
 		@categoryid	integer,
 		@nextid		integer;
@@ -749,6 +757,138 @@ PRINT 'Step - Menu & Category enhancements'
 			INSERT dbo.tbuser_Object_Categories_Table ([Category_Name]) VALUES ('Post')
 		END
 		
+	END
+
+	-- Populate catageories from existing definitions
+	IF NOT EXISTS(SELECT [SettingValue] FROM ASRSysSystemSettings WHERE [Section] = 'upgrade' and [SettingKey] = 'categoriesprocessed' AND [SettingValue] = 1)
+	BEGIN
+		
+		-- Generic categories
+		SELECT @configID = ID FROM tbuser_Object_Categories_Table WHERE [Category_Name] = 'Configuration'
+		SELECT @recruitmentID = ID FROM tbuser_Object_Categories_Table WHERE [Category_Name] = 'Recruitment'
+		SELECT @absenceID = ID FROM tbuser_Object_Categories_Table WHERE [Category_Name] = 'Absence'
+		SELECT @salaryID = ID FROM tbuser_Object_Categories_Table WHERE [Category_Name] = 'Salary'
+		SELECT @generalID = ID FROM tbuser_Object_Categories_Table WHERE [Category_Name] = 'General'
+
+		-- Build category match lookup
+		INSERT @categorymatch
+			SELECT ParameterValue AS TableID, ID AS categoryid FROM tbuser_Object_Categories_Table
+				INNER JOIN ASRSysModuleSetup ON ModuleKey = 'MODULE_PERSONNEL' AND [ParameterType] = 'PType_TableID'
+				WHERE [Category_Name] = 'Personnel'
+			UNION
+			SELECT ParameterValue AS TableID, ID AS categoryid FROM tbuser_Object_Categories_Table
+				INNER JOIN ASRSysModuleSetup ON ModuleKey IN ('MODULE_ABSENCE', 'MODULE_MATERNITY') AND [ParameterType] = 'PType_TableID'
+				WHERE [Category_Name] = 'Absence'
+			UNION
+			SELECT ParameterValue AS TableID, ID AS categoryid FROM tbuser_Object_Categories_Table
+				INNER JOIN ASRSysModuleSetup ON ModuleKey = 'MODULE_TRAININGBOOKING' AND [ParameterType] = 'PType_TableID' AND ParameterKey <> 'Param_EmployeeTable'
+				WHERE [Category_Name] = 'Learning & Development'
+			UNION
+			SELECT ParameterValue AS TableID, ID AS categoryid FROM tbuser_Object_Categories_Table
+				INNER JOIN ASRSysModuleSetup ON ModuleKey = 'MODULE_POST' AND [ParameterType] = 'PType_TableID'
+				WHERE [Category_Name] = 'Post'
+			UNION
+				SELECT TableID, @configID AS categoryid FROM tbsys_tables t WHERE t.TableType = 3
+			UNION	
+				SELECT TableID, @recruitmentID AS categoryid FROM ASRSysTables WHERE (tablename LIKE '%vacanc%' OR tablename LIKE '%applicant%') AND tabletype <> 3
+			UNION	
+				SELECT TableID, @absenceID AS categoryid FROM ASRSysTables WHERE (tablename LIKE '%absence%' OR tablename LIKE '%holiday%') AND tabletype <> 3
+			UNION	
+				SELECT TableID, @salaryID AS categoryid FROM ASRSysTables WHERE (tablename LIKE '%salary%' OR tablename LIKE '%deduct%' OR tablename LIKE '%allowance%' )   AND tabletype <> 3
+			UNION
+				SELECT TableID, @recruitmentID FROM ASRSysTables WHERE tablename LIKE '%applica%' AND tabletype <> 3
+
+		
+		-- Globals Deletes/Updates
+		INSERT tbsys_objectcategories ([objecttype], [objectid], [categoryid])
+			SELECT CASE [type] 
+					WHEN 'D' THEN 6
+					WHEN 'U' THEN 7
+				END	AS [objectType], [FunctionID] AS ID, cat.categoryid
+				FROM ASRSysGlobalFunctions g
+					INNER JOIN @categorymatch cat ON cat.tableid = g.TableID
+				WHERE [type] IN ('D', 'U')
+
+		-- Global Adds
+		INSERT tbsys_objectcategories ([objecttype], [objectid], [categoryid])
+			SELECT 5 AS [objectType], [FunctionID] AS ID, cat.categoryid
+				FROM ASRSysGlobalFunctions g
+					INNER JOIN @categorymatch cat ON cat.tableid = g.ChildTableID
+				WHERE [type] = 'A'
+
+		-- Data Transfers
+		INSERT tbsys_objectcategories ([objecttype], [objectid], [categoryid])
+			SELECT 3 AS [objectType], [DataTransferID] AS ID, cat.categoryid
+				FROM ASRSysDataTransferName d
+					INNER JOIN @categorymatch cat ON cat.tableid = d.FromTableID
+
+		-- Record Profile
+		INSERT tbsys_objectcategories ([objecttype], [objectid], [categoryid])
+			SELECT 20 AS [objectType], r.[RecordProfileID] AS ID, cat.categoryid
+				FROM ASRSysRecordProfileName r
+					INNER JOIN @categorymatch cat ON cat.tableid = r.BaseTable
+
+		-- Match Reports / Succession / Career
+		INSERT tbsys_objectcategories ([objecttype], [objectid], [categoryid])
+			SELECT CASE [MatchReportType] 
+					WHEN 0 THEN 14 
+					WHEN 1 THEN 23
+					WHEN 2 THEN 24 
+				END	AS [objectType], r.[MatchReportID] AS ID, cat.categoryid
+				FROM ASRSysMatchReportName r
+					INNER JOIN @categorymatch cat ON cat.tableid = r.Table1ID
+
+		-- Cross Tabs
+		INSERT tbsys_objectcategories ([objecttype], [objectid], [categoryid])
+			SELECT 1 AS [objectType], c.CrossTabID AS ID, cat.categoryid
+				FROM ASRSysCrossTab c
+					INNER JOIN @categorymatch cat ON cat.tableid = c.TableID
+
+		-- Imports
+		INSERT tbsys_objectcategories ([objecttype], [objectid], [categoryid])
+			SELECT 8 AS [objectType], i.ID AS ID, cat.categoryid
+				FROM ASRSysImportName i
+					INNER JOIN @categorymatch cat ON cat.tableid = i.BaseTable
+		
+		-- Mail Merge / Envelopes
+		INSERT tbsys_objectcategories ([objecttype], [objectid], [categoryid])
+			SELECT CASE [IsLabel] 
+					WHEN 0 THEN 9
+					WHEN 1 THEN 18
+				END	AS [objectType],  MailMergeID AS ID, cat.categoryid
+				FROM ASRSysMailMergeName m
+					INNER JOIN @categorymatch cat ON cat.tableid = m.TableID
+
+		-- Custom Reports (recognised child tables)
+		INSERT tbsys_objectcategories ([objecttype], [objectid], [categoryid])
+			SELECT 2 AS [objectType], r.ID, cat.categoryid
+				FROM ASRSysCustomReportsName r
+				INNER JOIN ASRSysCustomReportsChildDetails c ON c.CustomReportID = r.ID
+				INNER JOIN @categorymatch cat ON cat.tableid = c.ChildTable
+
+		-- Custom Reports (unrecognised child tables - revert to base table)
+		INSERT tbsys_objectcategories ([objecttype], [objectid], [categoryid])
+			SELECT 2 AS [objectType], r.id AS ID, cat.categoryid
+				FROM ASRSysCustomReportsName r
+					INNER JOIN @categorymatch cat ON cat.tableid = r.BaseTable
+				WHERE r.ID NOT IN( SELECT objectid FROM tbsys_objectcategories WHERE [objectType] = 2)
+
+		-- Calendar reports
+		INSERT tbsys_objectcategories ([objecttype], [objectid], [categoryid])
+			SELECT 17 AS [objectType], c.ID AS ID, cat.categoryid
+				FROM ASRSysCalendarReports c
+					INNER JOIN @categorymatch cat ON cat.tableid = c.BaseTable
+
+		-- Exports 
+		INSERT tbsys_objectcategories ([objecttype], [objectid], [categoryid])
+			SELECT 4 AS [objectType], e.id AS ID, cat.categoryid
+				FROM ASRSysExportName e
+					INNER JOIN @categorymatch cat ON cat.tableid = e.BaseTable
+				WHERE e.ID NOT IN( SELECT objectid FROM tbsys_objectcategories WHERE [objectType] = 4)
+
+		-- Flag so we don't process again
+		EXEC dbo.spsys_setsystemsetting 'upgrade', 'categoriesprocessed', 1;
+
 	END
 
 
