@@ -21,7 +21,8 @@ DECLARE @newDesktopImageID	integer,
 		@oldDesktopImageID	integer;
 
 DECLARE @tableid	integer,
-		@categoryid	integer
+		@categoryid	integer,
+		@nextid		integer;
 
 DECLARE @sSPCode nvarchar(max)
 
@@ -72,7 +73,8 @@ END
 		DROP FUNCTION [dbo].[udfsys_divide];
 
 	---- Clear old component expressions
-	DELETE FROM tbstat_componentcode WHERE id IN (16, 61, 25) AND isoperator = 0
+--	DELETE FROM tbstat_componentcode WHERE id IN (16, 61, 25, 4) AND isoperator = 0
+	DELETE FROM tbstat_componentcode WHERE id IN (16, 61, 25) AND isoperator = 0	
 	DELETE FROM tbstat_componentcode WHERE id IN (4) AND isoperator = 1
 	DELETE FROM tbstat_componentdependancy WHERE id IN (16, 61, 25)
 
@@ -91,11 +93,14 @@ END
 	INSERT [dbo].[tbstat_componentcode] ([id], [code], [datatype], [name], [isoperator], [operatortype], [casecount])
 		VALUES (25, 'dbo.udfstat_convertcharactertonumeric({0})', 2, 'Convert Character to Numeric', 0, 0, 0);		
 
+	---- If... Then... Else
+	--INSERT [dbo].[tbstat_componentcode] ([id], [code], [datatype], [name], [isoperator], [operatortype], [casecount])
+	--	VALUES (4, 'CASE WHEN {0} THEN {1} ELSE {2} END', 0, 'If... Then... Else...', 0, 0, 1);		
+
 	-- Divided By
 	INSERT [dbo].[tbstat_componentcode] ([id], [precode], [code], [aftercode], [name], [isoperator], [operatortype], [casecount])
 		VALUES (4, 'dbo.udfstat_divideby(', ',', ')', 'Divided by', 1, 0, 0);		
-
-
+	
 
 /* ------------------------------------------------------------- */
 /* Step - Object triggers */
@@ -153,6 +158,9 @@ END
 	DELETE FROM [tbsys_scriptedobjects] WHERE objecttype = 1 AND targetid NOT IN (SELECT tableid FROM [tbsys_tables])
 	DELETE FROM [tbsys_scriptedobjects] WHERE objecttype = 2 AND targetid NOT IN (SELECT columnid FROM [tbsys_columns])
 	DELETE FROM [tbsys_scriptedobjects] WHERE objecttype = 10 AND targetid NOT IN (SELECT id FROM [tbsys_workflows])
+
+	SELECT @nextid = MAX([columnid]) + 1 FROM dbo.[ASRSysColumns];
+	UPDATE tbsys_systemobjects SET [nextid] = @nextid + 1 WHERE [viewname] = 'ASRSysColumns'
 
 
 
@@ -265,7 +273,7 @@ PRINT 'Step - Object scripting'
 			RETURN;
 
 		SELECT @tablename = [tablename] FROM dbo.[ASRSysTables] WHERE tableid = @tableid;
-		SELECT @columnid = MAX(columnid) + 1 FROM dbo.[ASRSysColumns];
+		EXEC dbo.spASRGetNextObjectIdentitySeed ''ASRSysColumns'', @columnid OUTPUT;
 		
 		SET @defaultvalue = '''';		
 		SET @spinnerMinimum = 0;
@@ -448,7 +456,7 @@ PRINT 'Step - Object scripting'
 
 			IF @newtableID > 0 RETURN;
 
-			SELECT @newtableID = MAX(tableID) + 1 FROM dbo.[tbsys_tables];
+			EXEC dbo.spASRGetNextObjectIdentitySeed ''ASRSysTables'', @newtableID OUTPUT;
 
 			-- System objects update
 			INSERT dbo.[tbsys_scriptedobjects] ([guid], [objecttype], [targetid], [ownerid], [effectivedate], [revision], [locked], [lastupdated])
