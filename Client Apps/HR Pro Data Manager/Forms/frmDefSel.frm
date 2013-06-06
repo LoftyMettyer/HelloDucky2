@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Begin VB.Form frmDefSel 
    Caption         =   "Select"
    ClientHeight    =   6465
@@ -381,201 +381,6 @@ Public Property Let TableID(ByVal lngNewValue As Long)
 End Property
 
 
-'Private Sub DrawControls()
-'
-'  Dim lngButtonLeft As Long
-'  Dim lngHighestBottomButton As Long
-'  Dim lngOffsetY As Long
-'  Const lngGAPY = 100
-'
-'  lngOffsetY = cboTables.Top
-'  cboTables.Visible = mblnTableComboVisible
-'  If mblnTableComboVisible Then
-'    lngOffsetY = lngOffsetY + cboTables.Height + lngGAPY
-'    Call PopulateTables
-'  End If
-'
-'  lngButtonLeft = Me.ScaleWidth - (cmdNew.Width + lngGAPY)
-'
-'  'List1.Top = lngOffsetY
-'  List1.Move lngGAPY, lngOffsetY, lngButtonLeft - (lngGAPY * 2)
-'
-'
-'  ' Display the 'new' command control as required.
-'  With cmdNew
-'    If (mlngOptions And edtAdd) Then
-'      .Visible = True
-'      '.Top = lngOffsetY
-'      .Move lngButtonLeft, lngOffsetY
-'      lngOffsetY = lngOffsetY + .Height + lngGAPY
-'    Else
-'      .Visible = False
-'    End If
-'  End With
-'
-'  ' Display the 'edit' command control as required.
-'  With cmdEdit
-'    If (mlngOptions And edtEdit) Then
-'      .Visible = True
-'      '.Top = lngOffsetY
-'      .Move lngButtonLeft, lngOffsetY
-'      lngOffsetY = lngOffsetY + .Height + lngGAPY
-'    Else
-'      .Visible = False
-'    End If
-'  End With
-'
-'  ' Display the 'copy' command control as required.
-'  With cmdCopy
-'    If (mlngOptions And edtCopy) Then
-'      .Visible = True
-'      '.Top = lngOffsetY
-'      .Move lngButtonLeft, lngOffsetY
-'      lngOffsetY = lngOffsetY + .Height + lngGAPY
-'    Else
-'      .Visible = False
-'    End If
-'  End With
-'
-'  ' Display the 'delete' command control as required.
-'  With cmdDelete
-'    If (mlngOptions And edtDelete) Then
-'      .Visible = True
-'      '.Top = lngOffsetY
-'      .Move lngButtonLeft, lngOffsetY
-'      lngOffsetY = lngOffsetY + .Height + lngGAPY
-'    Else
-'      .Visible = False
-'    End If
-'  End With
-'
-'  ' Display the 'print' command control as required.
-'  With cmdPrint
-'    If (mlngOptions And edtPrint) Then
-'      .Visible = True
-'      '.Top = lngOffsetY
-'      .Move lngButtonLeft, lngOffsetY
-'      lngOffsetY = lngOffsetY + .Height + lngGAPY
-'    Else
-'      .Visible = False
-'    End If
-'  End With
-'
-'
-'  ' Display the 'properties' command control as required.
-'  With cmdProperties
-'    If (mlngOptions And edtProperties) Then
-'      .Visible = True
-'      '.Top = lngOffsetY
-'      .Move lngButtonLeft, lngOffsetY
-'      lngOffsetY = lngOffsetY + .Height + lngGAPY
-'    Else
-'      .Visible = False
-'    End If
-'  End With
-'
-'
-'  lngHighestBottomButton = lngOffsetY
-'
-'  ' Reset the lngOffsetY variable as the following command controls are positioned from the
-'  ' bottom upwards.
-'  lngOffsetY = List1.Top + List1.Height
-'
-'  If Not mblnHideDesc Then
-'    'txtDesc.Top = lngOffsetY + lngGAPY
-'    txtDesc.Move lngGAPY, lngOffsetY + lngGAPY, List1.Width
-'    lngOffsetY = txtDesc.Top + txtDesc.Height
-'  End If
-'
-'  ''--- The following lines of code are for the
-'  ''--- Only show my definitions check box !
-'  If Not mblnApplyDefAccess Then
-'    chkOnlyMine.Top = lngOffsetY + lngGAPY
-'    'Me.Height = (chkOnlyMine.Top + chkOnlyMine.Height) + lngGAPY + (Me.Height - Me.ScaleHeight)
-'  Else
-'    chkOnlyMine.Visible = False
-'    'Me.Height = lngOffsetY + lngGAPY + (Me.Height - Me.ScaleHeight)
-'  End If
-'
-'  lngOffsetY = lngOffsetY - cmdCancel.Height
-'
-'  ' Display the 'cancel' command control.
-'  With cmdCancel
-'    .Visible = True
-'    '.Top = lngOffsetY
-'    .Move lngButtonLeft, lngOffsetY
-'    lngOffsetY = lngOffsetY - .Height - lngGAPY
-'  End With
-'
-'  ' Display the 'none' command control as required.
-'  With cmdNone
-'    If (mlngOptions And edtDeselect) Then
-'      '.Top = lngOffsetY
-'      .Move lngButtonLeft, lngOffsetY
-'      lngOffsetY = lngOffsetY - .Height - lngGAPY
-'      .Visible = True
-'    Else
-'      .Visible = False
-'    End If
-'  End With
-'
-'  ' Display the 'select' command control as required.
-'  With cmdSelect
-'    If (mlngOptions And edtSelect) Then
-'      '.Top = lngOffsetY
-'      .Move lngButtonLeft, lngOffsetY
-'      lngOffsetY = lngOffsetY - .Height - lngGAPY
-'      .Visible = True
-'      cmdCancel.Caption = "&Cancel"
-'    Else
-'      .Visible = False
-'      cmdCancel.Caption = "&OK"
-'    End If
-'  End With
-'
-'  ' JPD 6/6/00 Check if any of the buttons are overlapped.
-'  If lngHighestBottomButton > (lngOffsetY + cmdCancel.Height + lngGAPY) Then
-'    lngOffsetY = lngHighestBottomButton
-'
-'    ' Display the 'select' command control as required.
-'    With cmdSelect
-'      If (mlngOptions And edtSelect) Then
-'        .Top = lngOffsetY
-'        lngOffsetY = lngOffsetY + .Height + lngGAPY
-'      End If
-'    End With
-'
-'    ' Display the 'none' command control as required.
-'    With cmdNone
-'      If (mlngOptions And edtDeselect) Then
-'        .Top = lngOffsetY
-'        lngOffsetY = lngOffsetY + .Height + lngGAPY
-'      End If
-'    End With
-'
-'    ' Display the 'cancel' command control.
-'    With cmdCancel
-'      .Top = lngOffsetY
-'      lngOffsetY = lngOffsetY + .Height + lngGAPY
-'    End With
-'
-'    ' Resize the form.
-'    Me.Height = lngOffsetY + (Me.Height - Me.ScaleHeight)
-'
-'    ' Resize the listbox, and reposition the description box as required.
-'    If Not mblnHideDesc Then
-'      txtDesc.Top = lngOffsetY - txtDesc.Height - lngGAPY
-'      List1.Height = txtDesc.Top - List1.Top - lngGAPY
-'    Else
-'      List1.Height = lngOffsetY - List1.Top
-'    End If
-'  End If
-'
-'  ' Enable/disable the command controls as required.
-'  Refresh_Controls
-'
-'End Sub
-
 Private Sub abDefSel_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
 
   Select Case Tool.Name
@@ -670,20 +475,6 @@ Private Sub cmdCancel_Click()
 End Sub
 
 Private Sub cmdDelete_Click()
-
-'  'Check to see if this is somebody else's read only definition
-'  With mrsRecords
-'    .MoveFirst
-'    .Find msIDField & " = " & CStr(List1.ItemData(List1.ListIndex))
-'
-'    If Trim$(.Fields("Username").Value) <> gsUserName And _
-'             .Fields("Access").Value = "RO" Then
-'      COAMsgBox "You do not have access to delete this definition", vbExclamation
-'              'StrConv(Trim$(.Fields("Username").Value), vbProperCase)
-'      Exit Sub
-'    End If
-'
-'  End With
   
   Dim lngHighLightIndex As Long
   Dim lngSelectedID As Long
@@ -1165,11 +956,11 @@ Private Sub List1_GotFocus()
   Refresh_Controls
 End Sub
 
-Private Sub Display_Button(Button As VB.CommandButton, ByVal BtnOpt As Long, ByVal X As Long, ByRef Y As Long)
+Private Sub Display_Button(Button As VB.CommandButton, ByVal BtnOpt As Long, ByVal x As Long, ByRef y As Long)
   If (Me.Options And BtnOpt) Then
-    Button.Move X, Y
+    Button.Move x, y
     Button.Visible = True
-    Y = Y + cmdNew.Height + ((UI.GetSystemMetrics(SM_CYFRAME) * Screen.TwipsPerPixelY) * 1.5)
+    y = y + cmdNew.Height + ((UI.GetSystemMetrics(SM_CYFRAME) * Screen.TwipsPerPixelY) * 1.5)
   Else
     Button.Visible = False
   End If
@@ -1386,27 +1177,6 @@ Private Sub GetSelected()
 
 End Sub
 
-'Public Sub RefreshListBox()
-'
-'    Dim rsList As New Recordset
-'
-'
-'    With List1
-'        .Clear
-'        Set rsList = datGeneral.GetRecords(msRecordSource)
-'        Do While Not rsList.EOF
-'            .AddItem rsList.Fields(msFieldName)
-'            .ItemData(.NewIndex) = rsList.Fields(msIDField)
-'            rsList.MoveNext
-'        Loop
-'        rsList.Close
-'        Set rsList = Nothing
-'        If .ListCount > 0 Then
-'            .ListIndex = .ListCount - 1
-'        End If
-'    End With
-'
-'End Sub
 
 Public Property Let EnableRun(ByVal bEnable As Boolean)
   ' Change the caption on the cmdSelect control as appropriate.
@@ -1815,41 +1585,6 @@ Private Sub PopulateTables()
     mlngTableID = lngTableID
     SetComboItem cboTables, mlngTableID
   End If
-  
-'  ' Populate the Tables combo.
-'  Dim iIndex As Integer
-'  Dim sSQL As String
-'  Dim rsTables As ADODB.Recordset
-'
-'
-'  cboTables.Clear
-'  iIndex = 0
-'
-'  sSQL = "SELECT tableName, tableID" & _
-'         " FROM ASRSysTables" & _
-'         " ORDER BY tableName"
-'  Set rsTables = datGeneral.GetRecords(sSQL)
-'  With rsTables
-'    Do While Not .EOF
-'      cboTables.AddItem !TableName
-'      cboTables.ItemData(cboTables.NewIndex) = !TableID
-'      If !TableID = mlngTableID Then
-'        cboTables.ListIndex = cboTables.NewIndex
-'      End If
-'      .MoveNext
-'    Loop
-'
-'    .Close
-'
-'    Set rsTables = Nothing
-'
-'    If cboTables.ListCount < 1 Then
-'      TableComboEnabled = False
-'    ElseIf cboTables.ListIndex < 0 Then
-'      cboTables.ListIndex = 0
-'    End If
-'
-'  End With
 
 End Sub
 
@@ -1910,35 +1645,7 @@ Private Function CanStillSeeDefinition(lngDefID As Long) As Boolean
 
 End Function
 
-
-'MH20020527 Fault 3546
-'Now try and "CheckListViewColWidth" during Populate_List
-'as this should help performance (i.e. not loop though list again!)
-'
-'Private Sub CheckListViewColWidth(lstvw As ListView)
-'
-'  Dim objItem As ListItem
-'  Dim lngMax As Long
-'  Dim lngLen As Long
-'
-'  lngMax = 0
-'
-'  For Each objItem In lstvw.ListItems
-'
-'    lngLen = Me.TextWidth(objItem.Text)
-'    If lngMax < lngLen Then
-'      lngMax = lngLen
-'    End If
-'
-'  Next objItem
-'
-'  lngMax = lngMax + 60
-'  lstvw.ColumnHeaders(1).Width = lngMax
-'  lstvw.Refresh
-'
-'End Sub
-
-Private Sub List1_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub List1_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
 
   If Button = vbRightButton Then
   
@@ -2311,11 +2018,6 @@ Public Function ShowList(lngUtilType As UtilityType, Optional msRecordSourceWher
     
     If blnScheduledJobs Then
       msType = "Scheduled Batch Jobs"
-      'msRecordSource = "SELECT DISTINCT ASRSysBatchJobName.*" & _
-        " FROM ASRSysBatchJobName" & _
-        " LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID" & _
-        " WHERE (Scheduled = 1) AND (GETDATE() >= StartDate) " & _
-        "   AND (RoleToPrompt = '" & gsUserGroup & "')"
       strExtraWhereClause = "(Scheduled = 1) AND (GETDATE() >= StartDate) " & _
                             "AND (GETDATE() <= dateadd(d,1,EndDate) or EndDate is null) " & _
                             "AND (RoleToPrompt = '" & gsUserGroup & "')"
@@ -2606,6 +2308,20 @@ Public Function ShowList(lngUtilType As UtilityType, Optional msRecordSourceWher
       Me.HelpContextID = 1106
     End If
   
+  Case utlMobileGroups
+    msTypeCode = "MOBILEGROUP"
+    msIDField = "UID"
+    msTableName = "sysusers"
+    mblnApplyDefAccess = False
+    mutlUtilityType = utlMobileGroups
+    msType = "Mobile Groups"
+    msGeneralCaption = "Mobile Groups"
+    msSingularCaption = "Mobile Group"
+      
+    msRecordSource = "SELECT UID, name, '' AS description" & _
+      " FROM " & msTableName & _
+      " WHERE issqlrole = 1"
+    Me.HelpContextID = 1106
   
   End Select
 
@@ -2622,40 +2338,25 @@ Public Function ShowList(lngUtilType As UtilityType, Optional msRecordSourceWher
   ''End Select
   'msIcon = msTypeCode
   
-  'MH20041111 Fault 9352
-  'If msRecordSource = vbNullString Then
-    If msRecordSource = vbNullString And OldAccessUtility(mutlUtilityType) Then
-      msRecordSource = _
-          "SELECT Name, " & _
-          IIf(mblnHideDesc, vbNullString, "Description, ") & _
-          IIf(mblnApplyDefAccess, "Username, Access, ", vbNullString) & msIDField & _
-        " FROM " & msTableName & IIf(strExtraWhereClause <> vbNullString, " WHERE " & strExtraWhereClause, "")
-    'Else
-    ElseIf msAccessTableName <> vbNullString Then
-      
-      'MH20040107 Fault 5627 - Ignore ASRSysGroup
-      'msRecordSource = _
-        "SELECT " & msTableName & ".name," & _
-          IIf(mblnHideDesc, vbNullString, msTableName & ".description, ") & _
-          IIf(mblnApplyDefAccess, msTableName & ".userName, " & msAccessTableName & ".access, ", vbNullString) & _
-          msTableName & "." & msIDField & _
-        " FROM " & msTableName & _
-        IIf(mblnApplyDefAccess, " INNER JOIN " & msAccessTableName & " ON " & msTableName & "." & msIDField & " = " & msAccessTableName & ".ID" & _
-          " INNER JOIN sysusers b ON " & msAccessTableName & ".groupname = b.name" & _
-          " INNER JOIN sysusers a ON ( b.uid = a.gid" & _
-          "   AND a.Name = current_user)", vbNullString) & _
-        IIf(strExtraWhereClause <> vbNullString, " WHERE " & strExtraWhereClause, "")
-      msRecordSource = _
-        "SELECT " & msTableName & ".name," & _
-          IIf(mblnHideDesc, vbNullString, msTableName & ".description, ") & _
-          IIf(mblnApplyDefAccess, msTableName & ".userName, " & msAccessTableName & ".access, ", vbNullString) & _
-          msTableName & "." & msIDField & _
-        " FROM " & msTableName & _
-        IIf(mblnApplyDefAccess, " INNER JOIN " & msAccessTableName & " ON " & msTableName & "." & msIDField & " = " & msAccessTableName & ".ID" & _
-          " AND " & msAccessTableName & ".groupname = '" & gsUserGroup & "'", vbNullString) & _
-        IIf(strExtraWhereClause <> vbNullString, " WHERE " & strExtraWhereClause, "")
-    End If
-  'End If
+  If msRecordSource = vbNullString And OldAccessUtility(mutlUtilityType) Then
+    msRecordSource = _
+        "SELECT Name, " & _
+        IIf(mblnHideDesc, vbNullString, "Description, ") & _
+        IIf(mblnApplyDefAccess, "Username, Access, ", vbNullString) & msIDField & _
+      " FROM " & msTableName & IIf(strExtraWhereClause <> vbNullString, " WHERE " & strExtraWhereClause, "")
+
+  ElseIf msAccessTableName <> vbNullString Then
+    
+    msRecordSource = _
+      "SELECT " & msTableName & ".name," & _
+        IIf(mblnHideDesc, vbNullString, msTableName & ".description, ") & _
+        IIf(mblnApplyDefAccess, msTableName & ".userName, " & msAccessTableName & ".access, ", vbNullString) & _
+        msTableName & "." & msIDField & _
+      " FROM " & msTableName & _
+      IIf(mblnApplyDefAccess, " INNER JOIN " & msAccessTableName & " ON " & msTableName & "." & msIDField & " = " & msAccessTableName & ".ID" & _
+        " AND " & msAccessTableName & ".groupname = '" & gsUserGroup & "'", vbNullString) & _
+      IIf(strExtraWhereClause <> vbNullString, " WHERE " & strExtraWhereClause, "")
+  End If
 
   If msRecordSourceWhere <> vbNullString Then
     msRecordSource = msRecordSource & IIf(strExtraWhereClause <> vbNullString, " AND ", " WHERE ") & msRecordSourceWhere
@@ -2797,7 +2498,5 @@ Public Sub CustomShow(ByVal ShowMode As VBRUN.FormShowConstants)
   End If
 
 End Sub
-
-
 
 
