@@ -788,6 +788,15 @@ Begin VB.Form frmSSIntranetLink
       Top             =   1920
       Width           =   2500
       Begin VB.OptionButton optLink 
+         Caption         =   "Today's Events"
+         Height          =   195
+         Index           =   9
+         Left            =   195
+         TabIndex        =   130
+         Top             =   3480
+         Width           =   2235
+      End
+      Begin VB.OptionButton optLink 
          Caption         =   "&Database Value"
          Height          =   450
          Index           =   7
@@ -826,10 +835,10 @@ Begin VB.Form frmSSIntranetLink
       Begin VB.OptionButton optLink 
          Caption         =   "&On-screen Document Display"
          Height          =   450
-         Index           =   9
+         Index           =   10
          Left            =   200
          TabIndex        =   19
-         Top             =   3360
+         Top             =   3705
          Visible         =   0   'False
          Width           =   2235
       End
@@ -1365,7 +1374,8 @@ Public Enum SSINTRANETSCREENTYPES
   SSINTLINKCHART = 6
   SSINTLINKDB_VALUE = 7
   SSINTLINKPWFSTEPS = 8
-  SSINTLINKSCREEN_DOCUMENT = 9
+  SSINTLINKTODAYS_EVENTS = 9
+  SSINTLINKSCREEN_DOCUMENT = 10
 End Enum
 
 Private mblnCancelled As Boolean
@@ -1911,6 +1921,8 @@ Public Sub Initialize(piType As SSINTRANETLINKTYPES, _
     optLink(SSINTLINKPWFSTEPS).value = True
   ElseIf piElement_Type = 4 Then
     optLink(SSINTLINKDB_VALUE).value = True
+  ElseIf piElement_Type = 5 Then
+    optLink(SSINTLINKTODAYS_EVENTS).value = True
   End If
  
 
@@ -2037,7 +2049,7 @@ Private Sub RefreshControls()
   fraEmailLink.Visible = optLink(SSINTLINKSCREEN_EMAIL).value
   fraApplicationLink.Visible = optLink(SSINTLINKSCREEN_APPLICATION).value
   fraDocument.Visible = optLink(SSINTLINKSCREEN_DOCUMENT).value
-  fraLinkSeparator.Visible = (optLink(SSINTLINKSEPARATOR).value Or optLink(SSINTLINKPWFSTEPS).value)
+  fraLinkSeparator.Visible = (optLink(SSINTLINKSEPARATOR).value Or optLink(SSINTLINKPWFSTEPS).value Or optLink(SSINTLINKTODAYS_EVENTS).value)
   fraChartLink.Visible = optLink(SSINTLINKCHART).value
   fraDBValue.Visible = optLink(SSINTLINKDB_VALUE).value
       
@@ -2147,11 +2159,11 @@ Private Sub RefreshControls()
   txtIcon.BackColor = vbButtonFace
   
   If optLink(SSINTLINKSEPARATOR).value Or optLink(SSINTLINKCHART) _
-      Or optLink(SSINTLINKPWFSTEPS).value Or optLink(SSINTLINKDB_VALUE).value Then
+      Or optLink(SSINTLINKPWFSTEPS).value Or optLink(SSINTLINKDB_VALUE).value Or optLink(SSINTLINKTODAYS_EVENTS).value Then
     txtPrompt.Enabled = False
     txtPrompt.BackColor = vbButtonFace
     
-    If optLink(SSINTLINKPWFSTEPS).value Then
+    If optLink(SSINTLINKPWFSTEPS).value Or optLink(SSINTLINKTODAYS_EVENTS).value Then
       txtText.Enabled = False
       txtText.BackColor = vbButtonFace
     Else
@@ -2163,6 +2175,7 @@ Private Sub RefreshControls()
     If optLink(SSINTLINKCHART).value Then txtPrompt.Text = "<CHART>"
     If optLink(SSINTLINKPWFSTEPS).value Then txtPrompt.Text = "<PENDING WORKFLOWS>"
     If optLink(SSINTLINKDB_VALUE).value Then txtPrompt.Text = "<DATABASE VALUE>"
+    If optLink(SSINTLINKTODAYS_EVENTS).value Then txtPrompt.Text = "<TODAYS EVENTS>"
     
     If optLink(SSINTLINKCHART).value Then
       MSChart1.RowCount = 1
@@ -2258,6 +2271,22 @@ Private Sub RefreshControls()
     cmdSeparatorColPick.Visible = True
     chkSeparatorUseFormatting.Visible = True
     Line4.Visible = True
+  ElseIf optLink(SSINTLINKTODAYS_EVENTS).value Then
+    ' Disable the icon and new column options for hypertext link separators...
+    chkNewColumn.Visible = False
+    lblIcon.Visible = False
+    txtIcon.Visible = False
+    cmdIcon.Visible = False
+    cmdIconClear.Visible = False
+    cmdIconClear.Enabled = False
+    imgIcon.Visible = False
+    lblNoOptions.Visible = True
+    lblNoOptions.Top = 345
+    lblSeparatorColour.Visible = False
+    txtSeparatorColour.Visible = False
+    cmdSeparatorColPick.Visible = False
+    chkSeparatorUseFormatting.Visible = False
+    Line4.Visible = False
   Else
     'lblNoOptions.Visible = False
     'lblNoOptions.Top = 345
@@ -2265,8 +2294,12 @@ Private Sub RefreshControls()
     cmdFilterClear.Enabled = txtFilter.Text <> ""
   End If
   
+  
+  
   If optLink(SSINTLINKPWFSTEPS).value Then
     fraLinkSeparator.Caption = "Pending Workflow Steps :"
+  ElseIf optLink(SSINTLINKTODAYS_EVENTS).value Then
+    fraLinkSeparator.Caption = "Today's Events :"
   Else
     fraLinkSeparator.Caption = "Separator :"
   End If
@@ -2589,7 +2622,7 @@ Private Function ValidateLink() As Boolean
   
   ' Check that text has been entered
   If fValid Then
-    If (Len(txtText.Text) = 0) And Not optLink(SSINTLINKPWFSTEPS).value And Not optLink(SSINTLINKSEPARATOR).value Then
+    If (Len(txtText.Text) = 0) And Not optLink(SSINTLINKPWFSTEPS).value And Not optLink(SSINTLINKSEPARATOR).value And Not optLink(SSINTLINKTODAYS_EVENTS).value Then
       fValid = False
       MsgBox "No text has been entered.", vbOKOnly + vbExclamation, Application.Name
       txtText.SetFocus
@@ -3693,6 +3726,8 @@ Private Sub optLink_Click(Index As Integer)
     ElementType = 3
   ElseIf optLink(SSINTLINKDB_VALUE).value Then
     ElementType = 4
+  ElseIf optLink(SSINTLINKTODAYS_EVENTS).value Then
+    ElementType = 5
   Else
     ElementType = 0
   End If

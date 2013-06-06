@@ -1968,7 +1968,7 @@ Private Sub RefreshControls()
 
   End Select
 
-  cmdOk.Enabled = mfChanged
+  cmdOK.Enabled = mfChanged
   cmdPreview.Enabled = (cboSecurityGroup.Text <> "(All Groups)")
 
 End Sub
@@ -6096,6 +6096,10 @@ Private Function GeneratePreviewHTML() As String
             Print #intFileNo, "</font></td ><td align='center' width='200px' nowrap='nowrap'><font face='Verdana' color='gray' style='font-size: 10pt; font-weight:bold; font-style: italic'>"
             Print #intFileNo, "sample data"
             Print #intFileNo, "</font></td></tr>"
+        
+          Case "5"  ' Today's events
+            Print #intFileNo, "<tr style='height:151px'><td colspan='3' style='text-align:center'><font face='Verdana' color='#333366' style='font-size: 10pt; font-weight:bold;'>"
+            Print #intFileNo, "Today's Events</font></td></tr>"
         
           Case Else
             ' uh oh.
