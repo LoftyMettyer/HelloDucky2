@@ -1551,7 +1551,7 @@ Begin VB.Form frmDiary
          MonthRows       =   2
          MonthBackColor  =   -2147483624
          ScrollRate      =   1
-         StartOfWeek     =   65732609
+         StartOfWeek     =   120324097
          TitleBackColor  =   8388608
          TitleForeColor  =   -2147483639
          TrailingForeColor=   -2147483643
