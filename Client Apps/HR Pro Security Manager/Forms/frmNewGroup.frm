@@ -6,7 +6,7 @@ Begin VB.Form frmNewGroup
    ClientHeight    =   4830
    ClientLeft      =   45
    ClientTop       =   390
-   ClientWidth     =   5055
+   ClientWidth     =   5385
    BeginProperty Font 
       Name            =   "Verdana"
       Size            =   8.25
@@ -23,13 +23,13 @@ Begin VB.Form frmNewGroup
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   4830
-   ScaleWidth      =   5055
+   ScaleWidth      =   5385
    ShowInTaskbar   =   0   'False
    StartUpPosition =   1  'CenterOwner
    Begin VB.CommandButton cmdCancel 
       Caption         =   "&Cancel"
       Height          =   400
-      Left            =   3675
+      Left            =   4035
       TabIndex        =   8
       Top             =   4285
       Width           =   1200
@@ -37,10 +37,10 @@ Begin VB.Form frmNewGroup
    Begin VB.Frame fraAccess 
       Caption         =   "Existing Report / Utility Access :"
       Height          =   3400
-      Left            =   200
+      Left            =   150
       TabIndex        =   2
       Top             =   700
-      Width           =   4700
+      Width           =   5100
       Begin VB.OptionButton optAccess 
          Caption         =   "Copy access from existing user group"
          Height          =   315
@@ -58,7 +58,7 @@ Begin VB.Form frmNewGroup
          Left            =   200
          TabIndex        =   5
          Top             =   1100
-         Width           =   4275
+         Width           =   4725
       End
       Begin VB.ComboBox cboUserGroups 
          Height          =   315
@@ -67,19 +67,18 @@ Begin VB.Form frmNewGroup
          Style           =   2  'Dropdown List
          TabIndex        =   4
          Top             =   705
-         Width           =   4005
+         Width           =   4455
       End
       Begin SSDataWidgets_B.SSDBGrid grdAccess 
          Height          =   1695
-         Left            =   500
+         Left            =   495
          TabIndex        =   6
          Top             =   1500
-         Width           =   4000
+         Width           =   4455
          ScrollBars      =   2
          _Version        =   196617
          DataMode        =   2
          RecordSelectors =   0   'False
-         Col.Count       =   3
          stylesets.count =   2
          stylesets(0).Name=   "ActiveCheckbox"
          stylesets(0).BackColor=   -2147483635
@@ -128,7 +127,7 @@ Begin VB.Form frmNewGroup
          BackColorOdd    =   -2147483643
          RowHeight       =   423
          Columns.Count   =   3
-         Columns(0).Width=   4286
+         Columns(0).Width=   4630
          Columns(0).Caption=   "Report / Utility"
          Columns(0).Name =   "ReportUtility"
          Columns(0).AllowSizing=   0   'False
@@ -136,7 +135,7 @@ Begin VB.Form frmNewGroup
          Columns(0).DataType=   8
          Columns(0).FieldLen=   256
          Columns(0).Locked=   -1  'True
-         Columns(1).Width=   2302
+         Columns(1).Width=   2752
          Columns(1).Caption=   "Access"
          Columns(1).Name =   "DefaultAccess"
          Columns(1).DataField=   "Column 1"
@@ -157,7 +156,7 @@ Begin VB.Form frmNewGroup
          Columns(2).DataType=   8
          Columns(2).FieldLen=   256
          TabNavigation   =   1
-         _ExtentX        =   7056
+         _ExtentX        =   7858
          _ExtentY        =   2990
          _StockProps     =   79
          BeginProperty PageFooterFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -186,13 +185,13 @@ Begin VB.Form frmNewGroup
       MaxLength       =   30
       TabIndex        =   1
       Top             =   200
-      Width           =   3765
+      Width           =   4305
    End
    Begin VB.CommandButton cmdOK 
       Caption         =   "&OK"
       Default         =   -1  'True
       Height          =   400
-      Left            =   2415
+      Left            =   2775
       TabIndex        =   7
       Top             =   4285
       Width           =   1200
