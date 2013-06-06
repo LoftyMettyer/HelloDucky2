@@ -4380,7 +4380,7 @@ Public Sub UpdateUsage(ByRef lngTYPE As UtilityType, ByRef lngUtilityID As Long,
   Dim cmdUsage As New ADODB.Command
   Dim pmADO As ADODB.Parameter
 
-  If lngAction = edtSelect Then
+  If lngAction <> edtPrint Then
 
     Set cmdUsage = New ADODB.Command
     With cmdUsage
@@ -4397,11 +4397,16 @@ Public Sub UpdateUsage(ByRef lngTYPE As UtilityType, ByRef lngUtilityID As Long,
       .Parameters.Append pmADO
       pmADO.Value = lngUtilityID
   
+      Set pmADO = .CreateParameter("lastaction", adInteger, adParamInput, 50)
+      .Parameters.Append pmADO
+      pmADO.Value = lngAction
+  
       .Execute
   
     End With
-  
+    
   End If
+  
   Set cmdUsage = Nothing
 
 End Sub
