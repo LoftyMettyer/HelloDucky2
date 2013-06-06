@@ -1618,7 +1618,13 @@ Private Function ValidateWebForm() As Boolean
                 asMessages(UBound(asMessages)) = "Input value - " & .WFIdentifier & " has no lookup column defined."
               End If
             End If
-        
+          Case giWFFORMITEM_IMAGE
+            ' Check image specified
+            If .PictureID = 0 Then
+                ReDim Preserve asMessages(UBound(asMessages) + 1)
+                asMessages(UBound(asMessages)) = "Image - Invalid picture."
+            End If
+          
         End Select
       
         If WebFormItemHasProperty(iWFItemType, WFITEMPROP_DEFAULTVALUE_EXPRID) Then
