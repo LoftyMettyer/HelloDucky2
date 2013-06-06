@@ -3088,6 +3088,39 @@ PRINT 'Step 9 - Misc stored procedures'
 /* ------------------------------------------------------------- */
 
 	----------------------------------------------------------------------
+	-- sp_ASRFn_AuditFieldLastChangeDate
+	----------------------------------------------------------------------
+
+	IF EXISTS (SELECT *
+		FROM dbo.sysobjects
+		WHERE id = object_id(N'[dbo].[sp_ASRFn_AuditFieldLastChangeDate]')
+			AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+		DROP PROCEDURE [dbo].[sp_ASRFn_AuditFieldLastChangeDate];
+
+	SET @sSPCode = 'CREATE PROCEDURE [dbo].[sp_ASRFn_AuditFieldLastChangeDate]
+		AS
+		BEGIN
+			DECLARE @iDummy integer;
+		END';
+	EXECUTE sp_executeSQL @sSPCode;
+
+	SET @sSPCode = 'ALTER PROCEDURE [dbo].[sp_ASRFn_AuditFieldLastChangeDate]
+		(
+			@Result		datetime OUTPUT,
+			@ColumnID	integer,
+			@RecordID	integer
+		)
+		AS
+		BEGIN
+			SET @Result = (SELECT TOP 1 DateTimeStamp FROM [dbo].[ASRSysAuditTrail]
+					WHERE ColumnID = @ColumnID And @RecordID = RecordID
+					ORDER BY DateTimeStamp DESC);
+		END';
+
+	EXECUTE sp_executeSQL @sSPCode;
+
+
+	----------------------------------------------------------------------
 	-- spASRGetSetting
 	----------------------------------------------------------------------
 
