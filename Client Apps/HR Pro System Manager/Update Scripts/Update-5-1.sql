@@ -163,7 +163,7 @@ END
 		BEGIN		
 			DELETE FROM dbo.tbsys_userusage WHERE [username] = SYSTEM_USER;
 		END';
-	GRANT EXECUTE ON dbo.[spstat_clearfavourites] TO [ASRSysGroup];
+	GRANT EXECUTE ON dbo.[spstat_clearrecentusage] TO [ASRSysGroup];
 
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spstat_getfavourites]') AND xtype = 'P')
 		DROP PROCEDURE [dbo].[spstat_getfavourites];
@@ -197,6 +197,16 @@ END
 
 		END';
 	GRANT EXECUTE ON dbo.[spstat_addtofavourites] TO [ASRSysGroup];
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spstat_removefromfavourites]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].[spstat_removefromfavourites];
+	EXEC sp_executesql N'CREATE PROCEDURE dbo.[spstat_removefromfavourites](@objecttype integer, @objectid integer)
+		AS
+		BEGIN
+			DELETE FROM dbo.tbsys_userfavourites
+				WHERE [username] = SYSTEM_USER AND @objectid = [objectid] AND @objecttype = [objecttype]
+		END';
+	GRANT EXECUTE ON dbo.[spstat_removefromfavourites] TO [ASRSysGroup];
 
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spstat_clearfavourites]') AND xtype = 'P')
 		DROP PROCEDURE [dbo].[spstat_clearfavourites];
