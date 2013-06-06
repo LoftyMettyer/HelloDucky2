@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
 Begin VB.Form frmWorkflowOpen 
    Caption         =   "Workflow Designer"
    ClientHeight    =   6285
@@ -196,6 +196,7 @@ Begin VB.Form frmWorkflowOpen
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   1
             Object.Width           =   9234
+            TextSave        =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -394,6 +395,7 @@ Private Sub cmdCopy_Click()
     recWorkflowEdit!Deleted = False
     recWorkflowEdit!Name = sWorkflowName
     recWorkflowEdit!Description = .Fields("description")
+    recWorkflowEdit!PictureID = .Fields("PictureID")
     recWorkflowEdit!Enabled = False
     recWorkflowEdit!InitiationType = IIf(IsNull(.Fields("InitiationType")), WORKFLOWINITIATIONTYPE_MANUAL, .Fields("InitiationType"))
     recWorkflowEdit!BaseTable = IIf(IsNull(.Fields("BaseTable")), 0, .Fields("BaseTable"))
@@ -1676,7 +1678,7 @@ Private Sub Form_Resize()
     cmdDelete.Left = cmdNew.Left
     cmdProperties.Left = cmdNew.Left
     cmdPrint.Left = cmdNew.Left
-    cmdOk.Left = cmdNew.Left
+    cmdOK.Left = cmdNew.Left
   End With
   
   With lstItems
@@ -1684,7 +1686,7 @@ Private Sub Form_Resize()
     txtDesc.Top = .Top + .Height + YGAP
   End With
     
-  cmdOk.Top = Me.Height - YGAP_BOTTOM - sbScrOpen.Height - YGAP - cmdOk.Height
+  cmdOK.Top = Me.Height - YGAP_BOTTOM - sbScrOpen.Height - YGAP - cmdOK.Height
     
   ' Get rid of the icon off the form
   RemoveIcon Me
