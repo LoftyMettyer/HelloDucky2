@@ -1,6 +1,8 @@
 Attribute VB_Name = "modSave_EmailLinks"
 Option Explicit
 
+Public gblnExpressionForDeleteTrigger As Boolean
+
 Private rsEmailLinks As ADODB.Recordset
 Private rsEmailRecipients As ADODB.Recordset
 Private rsEmailColumns As ADODB.Recordset
@@ -231,7 +233,7 @@ Public Function CloseEmailRecordsets()
 End Function
 
 
-Private Function ApplyFilter(lngFilterID As Long, dtEffectiveDate As Date, strSQL As String) As String
+Private Function ApplyFilter(lngFilterID As Long, strTableName As String, dtEffectiveDate As Date, strSQL As String) As String
 
   Dim fOK As Boolean
   Dim objExpr As CExpression
@@ -242,10 +244,16 @@ Private Function ApplyFilter(lngFilterID As Long, dtEffectiveDate As Date, strSQ
     Set objExpr = New CExpression
     With objExpr
   
+      'MH20100324
+      'Don't like this fix but also didn't like the idea of changing the expression builder too much... :o(
+      gblnExpressionForDeleteTrigger = (strTableName = "deleted")
+  
       objExpr.ExpressionID = lngFilterID
       objExpr.ConstructExpression
       fOK = objExpr.RuntimeFilterCode(strFilter, False)
-  
+      
+      gblnExpressionForDeleteTrigger = False
+
       strFilter = Replace(strFilter, vbNewLine, " ")
       If Trim(strFilter) <> vbNullString Then
         strFilter = "@recordID IN (" & strFilter & ")"
@@ -401,7 +409,7 @@ Public Sub CreateEmailProcsForTable(lngTableID As Long, _
                     GetInsertCommand(!Type, lngLinkID, lngTableID, True, False, "null", strDelCol, True)
                 strDeleteOne = _
                   "                    SELECT @emailDate = getDate()" & vbNewLine & _
-                  ApplyFilter(!FilterID, !EffectiveDate, strDeleteOne)
+                  ApplyFilter(!FilterID, "deleted", !EffectiveDate, strDeleteOne)
               End If
 
             Else              'Column Related
@@ -427,7 +435,7 @@ Public Sub CreateEmailProcsForTable(lngTableID As Long, _
             
             strInsertUpdateOne = _
               "                    SELECT @emailDate = getDate()" & vbNewLine & _
-              ApplyFilter(!FilterID, !EffectiveDate, strInsertUpdateOne)
+              ApplyFilter(!FilterID, sCurrentTable, !EffectiveDate, strInsertUpdateOne)
             
             
             strCheckColumns = GetSQLForImmediateEmails(lngLinkID, _
@@ -795,7 +803,7 @@ Private Function CreateEmailProcedure(lngTableID As Long, strTableName As String
     "  WHERE QueueID = @QueueID" & vbNewLine & vbNewLine
     
   strSQL = _
-    ApplyFilter(lngFilterID, dtEffectiveDate, strSQL) & vbNewLine & _
+    ApplyFilter(lngFilterID, strTableName, dtEffectiveDate, strSQL) & vbNewLine & _
     "  ELSE" & vbNewLine & _
     "  BEGIN" & vbNewLine & _
     "    DELETE FROM ASRSysEmailQueue WHERE QueueID = @QueueID" & vbNewLine & _
@@ -863,7 +871,7 @@ Private Function GetSQLForRebuild(lngLinkID As Long, lngTableID As Long, sCurren
     GetInsertCommand(LinkRebuild, lngLinkID, lngTableID, False, True, CStr(lngDateColumnID), strDateValue, False) & vbNewLine & _
     "                END" & vbNewLine
 
-  strOutput = ApplyFilter(lngFilterID, dtEffectiveDate, strOutput)
+  strOutput = ApplyFilter(lngFilterID, sCurrentTable, dtEffectiveDate, strOutput)
   
   
   strOutput = _
@@ -905,7 +913,7 @@ Private Function GetSQLForOffsetEmail(lngLinkID As Long, lngTableID As Long, sCu
       "            DELETE FROM ASRSysEmailQueue WHERE DateSent IS NULL AND recordID = @recordID AND LinkID = " & CStr(lngLinkID) & vbNewLine & _
       "            SELECT @emailDate   = " & ApplyOffset(strInsVar, lngPeriod, lngOffset) & vbNewLine & _
       GetLastSent(lngLinkID) & _
-      ApplyFilter(lngFilterID, dtEffectiveDate, strOutput)
+      ApplyFilter(lngFilterID, sCurrentTable, dtEffectiveDate, strOutput)
 
   GetSQLForOffsetEmail = strOutput
 

@@ -948,8 +948,14 @@ Public Function RuntimeCode(psRuntimeCode As String, _
       
       fOK = Not .NoMatch
       If fOK Then
-        sTableName = !TableName
-      
+        
+        'MH20100324
+        If gblnExpressionForDeleteTrigger Then
+          sTableName = "deleted"
+        Else
+          sTableName = !TableName
+        End If
+
         ' Get the name of the expressions parent table.
         ' ie. the table of the column this is being calculated.
         .Seek "=", mobjBaseComponent.ParentExpression.BaseTableID
