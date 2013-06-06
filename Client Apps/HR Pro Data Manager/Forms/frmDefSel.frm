@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Begin VB.Form frmDefSel 
    Caption         =   "Select"
    ClientHeight    =   6465
@@ -1045,7 +1045,7 @@ End Sub
 
 Private Sub Form_Load()
 
-  Hook Me.hwnd, Me.Width, Me.Height
+  Hook Me.hWnd, Me.Width, Me.Height
   
   mblnLoading = False
   If mlngOptions = 0 Then
@@ -1094,7 +1094,7 @@ Private Sub Form_Resize()
 End Sub
 
 Private Sub Form_Unload(Cancel As Integer)
-Unhook Me.hwnd
+Unhook Me.hWnd
 End Sub
 
 'Private Sub List1_Click()
@@ -1196,7 +1196,7 @@ Public Sub Refresh_Controls()
   'JPD 20070814 Fault 12430
   If lngSelected = 0 And List2.List(0) = "<All>" Then
     fNewValue = List2.Selected(0)
-    UI.LockWindow Me.hwnd
+    UI.LockWindow Me.hWnd
     For iCount = 1 To List2.ListCount - 1
       ' Update all rows in the listbox.
       List2.Selected(iCount) = fNewValue
@@ -1580,7 +1580,7 @@ Dim fAllColumns As Boolean
       CStr(mlngTableID) & " IN (" & msTableName & "." & msTableIDColumnName & ")"
   End If
 
-  UI.LockWindow Me.hwnd
+  UI.LockWindow Me.hWnd
 
   strSQL = strSQL & " ORDER BY " & msTableName & ".name"
   Set mrsRecords = datGeneral.GetReadOnlyRecords(strSQL)
@@ -1715,7 +1715,7 @@ Dim fAllColumns As Boolean
     'If ScaleMode = vbTwips Then
       lngList2Max = lngList2Max / Screen.TwipsPerPixelX  ' if twips change to pixels
     'End If
-    SendMessageLong List2.hwnd, LB_SETHORIZONTALEXTENT, lngList2Max + TICKBOXWIDTH, 0
+    SendMessageLong List2.hWnd, LB_SETHORIZONTALEXTENT, lngList2Max + TICKBOXWIDTH, 0
   End If
   
   lngMax = lngMax + 60
@@ -1961,7 +1961,7 @@ Private Sub ShowControls()
 
   lngOffset = 0
   
-  UI.LockWindow Me.hwnd
+  UI.LockWindow Me.hWnd
   
   'cmdNew (fraTopButtons)
   With cmdNew
