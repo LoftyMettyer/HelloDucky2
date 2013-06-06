@@ -629,6 +629,8 @@ BEGIN
 		VALUES (160,44,'View', 30, 'VIEW');
 	INSERT dbo.[ASRSysPermissionItems] ([ItemID], [CategoryID], [Description], [ListOrder], [ItemKey])
 		VALUES (161,44,'Delete', 40, 'DELETE');
+	INSERT dbo.[ASRSysPermissionItems] ([ItemID], [CategoryID], [Description], [ListOrder], [ItemKey])
+		VALUES (162,44,'Run', 40, 'RUN');		
 END
 -- Need to get a picture ID for this bit of code
 ---- Update the system permission image for Document Management
