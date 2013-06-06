@@ -77,7 +77,7 @@ Begin VB.Form frmAbout
    Begin VB.Label lblURL 
       AutoSize        =   -1  'True
       BackStyle       =   0  'Transparent
-      Caption         =   "http://www.advancedcomputersoftware.com"
+      Caption         =   "http://www.advancedcomputersoftware.com/abs"
       BeginProperty Font 
          Name            =   "Verdana"
          Size            =   8.25
@@ -94,7 +94,7 @@ Begin VB.Form frmAbout
       MousePointer    =   99  'Custom
       TabIndex        =   10
       Top             =   1515
-      Width           =   3810
+      Width           =   4185
    End
    Begin VB.Label lblDatabase 
       AutoSize        =   -1  'True
