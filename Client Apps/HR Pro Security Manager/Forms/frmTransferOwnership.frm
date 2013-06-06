@@ -582,6 +582,11 @@ Private Function BuildReportSQL(sUserName As String) As String
   sSQL = sSQL & "From ASRSysLabelTypes " & vbCrLf
   sSQL = sSQL & sWhere
 
+  sSQL = sSQL & "Union " & vbCrLf
+  sSQL = sSQL & "SELECT  DocumentMapID, 'DOCUMENT TYPE' AS Type, Name, Username " & vbCrLf
+  sSQL = sSQL & "From ASRSysDocumentMapping " & vbCrLf
+  sSQL = sSQL & sWhere
+
   sSQL = sSQL & "ORDER BY Type, Name " & vbCrLf
 
   BuildReportSQL = sSQL

@@ -353,7 +353,7 @@ Private Function DoTransfer() As Boolean
     .Caption = "Ownership Transfer..."
     .MainCaption = "Utility Ownership"
     .NumberOfBars = 1
-    .Bar1MaxValue = 14
+    .Bar1MaxValue = 15
     .Time = False
     .Cancel = True
     .OpenProgress
@@ -412,6 +412,14 @@ Private Function DoTransfer() As Boolean
   ' Data Transfer
   Progress "Transferring Data Transfers..."
   strCommand = "UPDATE ASRSysDataTransferName SET Username = '" & strTo & "'"
+  If Not blnAll Then strCommand = strCommand & " WHERE Username = '" & strFrom & "'"
+  
+  gADOCon.Execute strCommand
+  DoEvents
+  
+  ' Document Types
+  Progress "Transferring Document Types..."
+  strCommand = "UPDATE ASRSysDocumentMapping SET Username = '" & strTo & "'"
   If Not blnAll Then strCommand = strCommand & " WHERE Username = '" & strFrom & "'"
   
   gADOCon.Execute strCommand
