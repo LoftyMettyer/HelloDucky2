@@ -695,7 +695,7 @@ Private masEmailAddresses() As String
 Private masActionedUserNames() As String
 Private masActionedDelegatedEmailAddresses() As String
 
-Private masngFormDimensions() As Single
+Private masngFormDimensions() As Long
 
 Public Enum WorkflowWebFormItemTypes
   giWFFORMITEM_UNKNOWN = -1
