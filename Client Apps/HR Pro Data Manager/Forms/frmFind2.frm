@@ -3901,12 +3901,10 @@ End Function
 
 Private Sub ssOleDBGridFindColumns_KeyDown(KeyCode As Integer, Shift As Integer)
   If KeyCode = vbKeyDelete Then
-    DeleteRecord
-    
-'TM20020606 Fault 3956
-'    ssOleDBGridFindColumns.SetFocus
+    If ActiveBar1.Bands(0).Tools("DeleteFind").Enabled Then
+      DeleteRecord
+    End If
   End If
-  
 End Sub
 
 Private Sub ssOleDBGridFindColumns_KeyPress(KeyAscii As Integer)
