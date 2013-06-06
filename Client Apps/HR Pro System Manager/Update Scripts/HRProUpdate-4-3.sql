@@ -1640,13 +1640,14 @@ PRINT 'Step - Populate code generation tables'
 			[operatortype] [tinyint] NULL,
 			[recordidrequired] [bit] NULL,
 			[overnightonly] [bit] NULL,
-			[calculatepostaudit] [bit] NULL,
+			[istimedependant] [bit] NOT NULL DEFAULT 0,
+			[calculatepostaudit] [bit] NOT NULL DEFAULT 0,
 			[isgetfieldfromdb] [bit],
 			[isuniquecode] [bit],
-			[performancerating] [integer] NULL,
-			[maketypesafe] bit NULL,
+			[performancerating] [integer] NOT NULL DEFAULT 0,
+			[maketypesafe] bit NOT NULL DEFAULT 0,
 			[casecount] [tinyint],
-			[dependsonbankholiday] bit NULL
+			[dependsonbankholiday] bit NOT NULL DEFAULT 0
 		) ON [PRIMARY]';
 
 	EXEC sp_executesql N'CREATE TABLE [dbo].[tbstat_componentdependancy](
@@ -1741,7 +1742,7 @@ PRINT 'Step - Populate code generation tables'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''cfa37a8b-4d7b-4abc-ae80-7866219e4469'', N''[dbo].[udfsys_servicelength]({0}, {1}, ''''M'''')'', 2, N''Service Months'', NULL, 0, 0, 40)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''81847039-a90d-476c-88a5-c5e447d77701'', N''[dbo].[udfsys_servicelength]({0}, {1}, ''''Y'''')'', 2, N''Service Years'', NULL, 0, 0, 39)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''2bf404b7-970e-4fdb-9977-00d516a6cc84'', N''[dbo].[udfsys_statutoryredundancypay]({0}, {1}, {2}, {3}, {4})'', 2, N''Statutory Redundancy Pay'', NULL, 0, 0, 41)';
-	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''1cce61bf-ee36-4779-83b9-233885440437'', N''(DATEADD(D, 0, DATEDIFF(D, 0, GETDATE())))'', 4, N''System Date'', NULL, 0, 0, 1)';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id], [istimedependant]) VALUES (N''1cce61bf-ee36-4779-83b9-233885440437'', N''(DATEADD(D, 0, DATEDIFF(D, 0, GETDATE())))'', 4, N''System Date'', NULL, 0, 0, 1, 1)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''1b77e32f-756b-4e97-94d2-f0b053b0baca'', N''CONVERT(varchar,GETDATE(),8)'', 1, N''System Time'', NULL, 0, 0, 15)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id], [maketypesafe], [isuniquecode]) VALUES (N''a8974869-0964-40e9-bbbf-4ac6157bf07f'', N''[dbo].[udfstat_getuniquecode] ({0}, {1}, @prm_ID)'', 0, N''Unique Code'', NULL, 0, 0, 43, 1, 1)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''09e7dfb0-3bc2-4db5-a596-9639eb3e77b5'', N''[dbo].[udfsys_weekdaysbetweentwodates] ({0}, {1})'', 2, N''Weekdays between Two Dates'', NULL, 0, 0, 22)';
@@ -1909,6 +1910,7 @@ PRINT 'Step - Administration module stored procedures'
 			, ISNULL([recordidrequired],0) AS [recordidrequired]			
 			, ISNULL([CalculatePostAudit],0) AS [calculatepostaudit]
 			, ISNULL([isgetfieldfromdb],0) AS [isgetfieldfromdb]
+			, ISNULL([istimedependant],0) AS [istimedependant]
 			, ISNULL([isuniquecode], 0) AS [isuniquecode]
 			, ISNULL([performancerating],1) AS [performancerating]
 			, ISNULL([overnightonly],0) AS [overnightonly]
@@ -2205,6 +2207,7 @@ PRINT 'Step - Trigger functionality'
 
 	EXEC spsys_setsystemsetting 'advanceddatabasesetting', 'globalupdatebatchsize', 1;
 	EXEC spsys_setsystemsetting 'advanceddatabasesetting', 'deadlockretrycount', 10;
+	EXEC spsys_setsystemsetting 'overnight', 'refreshalltables', 1;
 
 /* ------------------------------------------------------------- */
 PRINT 'Step - System metadata indexing'
