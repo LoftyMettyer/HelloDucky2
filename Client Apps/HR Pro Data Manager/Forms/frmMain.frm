@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "09:24"
+            TextSave        =   "10:26"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -3704,7 +3704,7 @@ Public Sub RunUtility(ByRef UtilType As UtilityType, ByRef UtilityID As Long)
           glngCurrentCategoryID = GetUserSetting("defsel_" & UtilType, "CategoryID", 0)
         Else
           .SelectedID = UtilityID
-          glngCurrentCategoryID = 0
+          glngCurrentCategoryID = -1
         End If
       
         ' Loop until the operation has been cancelled.
