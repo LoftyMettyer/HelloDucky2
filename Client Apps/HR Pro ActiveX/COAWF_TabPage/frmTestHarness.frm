@@ -10,7 +10,7 @@ Begin VB.Form frmTestHarness
    ScaleHeight     =   3030
    ScaleWidth      =   4560
    StartUpPosition =   3  'Windows Default
-   Begin COAWFTabPage.COASD_TabPage COASD_TabPage1 
+   Begin COAWFTabPage.COAWF_TabPage objTabPages 
       Height          =   1500
       Left            =   630
       TabIndex        =   1
