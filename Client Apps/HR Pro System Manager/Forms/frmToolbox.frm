@@ -683,6 +683,13 @@ Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
 'NHRD Checked in by NHRD: Code inserted by JPD28112006 Fault 11228
   Dim bHandled As Boolean
   
+  Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+  End Select
+
   bHandled = frmSysMgr.tbMain.OnKeyDown(KeyCode, Shift)
   If bHandled Then
     KeyCode = 0

@@ -17,6 +17,7 @@ Begin VB.Form frmSSIntranetLinkSeparator
    EndProperty
    HelpContextID   =   5087
    Icon            =   "frmSSIIntranetLinkSeparator.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -180,7 +181,7 @@ Private Sub RefreshControls()
   If mblnRefreshing Then Exit Sub
  
   ' Disable the OK button as required.
-  cmdOk.Enabled = True
+  cmdOK.Enabled = True
   
 End Sub
 
@@ -190,6 +191,16 @@ End Property
 Public Property Let Text(ByVal psNewValue As String)
   txtLinkSeparator.Text = psNewValue
 End Property
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+
+End Sub
 
 Private Sub Form_Load()
 

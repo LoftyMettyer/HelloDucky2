@@ -17,6 +17,7 @@ Begin VB.Form frmSupportMode
    EndProperty
    HelpContextID   =   5048
    Icon            =   "frmSupportMode.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -288,6 +289,10 @@ End Sub
 
 Private Sub cmdCancel_Click()
   Me.Hide
+End Sub
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+
 End Sub
 
 Private Sub Form_Load()

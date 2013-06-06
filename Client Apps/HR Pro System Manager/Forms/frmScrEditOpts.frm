@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "COA_ColourPicker.ocx"
 Begin VB.Form frmScrEditOpts 
    BorderStyle     =   3  'Fixed Dialog
@@ -20,6 +20,7 @@ Begin VB.Form frmScrEditOpts
    EndProperty
    HelpContextID   =   5029
    Icon            =   "frmScrEditOpts.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -353,6 +354,16 @@ Private Sub cmdOK_Click()
 End Sub
 
 
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+
+End Sub
+
 Private Sub Form_Load()
 
   Set gObjFont = New StdFont
@@ -415,8 +426,8 @@ Private Function SaveChanges()
   ' Update the screen designer with the edit option changes.
   
   ' Update the screen manager's grid size properties.
-  gFrmScreen.GridX = Val(txtWidth.Text)
-  gFrmScreen.GridY = Val(txtHeight.Text)
+  gFrmScreen.GridX = val(txtWidth.Text)
+  gFrmScreen.GridY = val(txtHeight.Text)
   
   ' Update the screen manager's align to grid property.
   gFrmScreen.AlignToGrid = IIf(chkAlignToGrid.value = vbChecked, True, False)

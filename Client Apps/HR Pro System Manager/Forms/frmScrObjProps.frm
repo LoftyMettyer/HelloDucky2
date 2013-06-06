@@ -1,6 +1,6 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "COA_ColourPicker.ocx"
 Begin VB.Form frmScrObjProps 
@@ -329,14 +329,12 @@ Public Property Let ScreenCount(piNewValue As Integer)
 End Property
 
 Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
-'  Dim bHandled As Boolean
-'
-'  bHandled = frmSysMgr.tbMain.OnKeyDown(KeyCode, Shift)
-'  If bHandled Then
-'    KeyCode = 0
-'    Shift = 0
-'  End If
-
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
 End Sub
 
 Private Sub Form_Load()
@@ -428,7 +426,7 @@ Private Sub ssGridProperties_BeforeRowColChange(Cancel As Integer)
   ' Note that fault 10175 occurred because the ComboDropDown event fires BEFORE the rowColChange event.
   ' The BeforeRowColChange event fires BEFORE the ComboDropDown event, so we'll refresh the column properties here if we need to.
   ' Note that we only call RowColChange if we need to, otherwise infinite looping occurs!
-  If miCurrentRowFormat <> Val(ssGridProperties.Columns(2).CellText(ssGridProperties.Bookmark)) Then
+  If miCurrentRowFormat <> val(ssGridProperties.Columns(2).CellText(ssGridProperties.Bookmark)) Then
     ssGridProperties_RowColChange 0, 0
   End If
 
@@ -439,7 +437,7 @@ Private Sub ssGridProperties_Change()
   ' RH 08/08/00 - FAULT 55 - Captions now update in real time (ie, as you
   '                          type them into the properties window.
   
-  If Val(ssGridProperties.Columns(2).CellText(ssGridProperties.Bookmark)) = giPROPID_CAPTION Then
+  If val(ssGridProperties.Columns(2).CellText(ssGridProperties.Bookmark)) = giPROPID_CAPTION Then
     gsCaption = ssGridProperties.ActiveCell.Text
     UpdateControls giPROPID_CAPTION
   End If
@@ -467,7 +465,7 @@ Private Sub ssGridProperties_BeforeUpdate(Cancel As Integer)
   Dim sNewValue As String
 
   ' Read the new property value from the grid.
-  iPropertyTag = Val(ssGridProperties.Columns(2).CellText(ssGridProperties.Bookmark))
+  iPropertyTag = val(ssGridProperties.Columns(2).CellText(ssGridProperties.Bookmark))
   sNewValue = ssGridProperties.ActiveCell.Text
   fUpdateControls = True
   
@@ -497,7 +495,7 @@ Private Sub ssGridProperties_BeforeUpdate(Cancel As Integer)
         
     Case giPROPID_HEIGHT
       If ValidIntegerString(sNewValue) Then
-        gLngHeight = Val(sNewValue)
+        gLngHeight = val(sNewValue)
       Else
         ssGridProperties.ActiveCell.Text = Trim(Str(gLngHeight))
         fUpdateControls = False
@@ -505,7 +503,7 @@ Private Sub ssGridProperties_BeforeUpdate(Cancel As Integer)
       
     Case giPROPID_LEFT
       If ValidIntegerString(sNewValue) Then
-        gLngLeft = Val(sNewValue)
+        gLngLeft = val(sNewValue)
       Else
         ssGridProperties.ActiveCell.Text = Trim(Str(gLngLeft))
         fUpdateControls = False
@@ -515,7 +513,7 @@ Private Sub ssGridProperties_BeforeUpdate(Cancel As Integer)
         
     Case giPROPID_TOP
       If ValidIntegerString(sNewValue) Then
-        gLngTop = Val(sNewValue)
+        gLngTop = val(sNewValue)
       Else
         ssGridProperties.ActiveCell.Text = Trim(Str(gLngTop))
         fUpdateControls = False
@@ -523,7 +521,7 @@ Private Sub ssGridProperties_BeforeUpdate(Cancel As Integer)
         
     Case giPROPID_WIDTH
       If ValidIntegerString(sNewValue) Then
-        gLngWidth = Val(sNewValue)
+        gLngWidth = val(sNewValue)
       Else
         ssGridProperties.ActiveCell.Text = Trim(Str(gLngWidth))
         fUpdateControls = False
@@ -531,7 +529,7 @@ Private Sub ssGridProperties_BeforeUpdate(Cancel As Integer)
       
     Case giPROPID_TABNUMBER
       If ValidIntegerString(sNewValue) Then
-        glngTabNumber = Val(sNewValue)
+        glngTabNumber = val(sNewValue)
         
         'MH20060915 Fault 11422
         UpdateControls giPROPID_TABNUMBER
@@ -562,7 +560,7 @@ Private Sub ssGridProperties_BtnClick()
 
   Dim iPropertyTag As Integer
   
-  iPropertyTag = Val(ssGridProperties.Columns(2).CellText(ssGridProperties.Bookmark))
+  iPropertyTag = val(ssGridProperties.Columns(2).CellText(ssGridProperties.Bookmark))
   
   ' Display the form required for changing the current property.
   ' Read the new property value from the form into a global variable.
@@ -682,7 +680,7 @@ Private Sub ssGridProperties_ComboCloseUp()
   Dim iPropertyTag As Integer
   Dim sNewValue As String
   
-  iPropertyTag = Val(ssGridProperties.Columns(2).CellText(ssGridProperties.Bookmark))
+  iPropertyTag = val(ssGridProperties.Columns(2).CellText(ssGridProperties.Bookmark))
   sNewValue = ssGridProperties.ActiveCell.Text
   
   ' Read the new property value from the grid.
@@ -765,7 +763,7 @@ Private Sub ssGridProperties_DblClick()
   ' Debug.Print "ssGridProperties_DblClick"
   
   
-  iPropertyTag = Val(ssGridProperties.Columns(2).CellText(ssGridProperties.Bookmark))
+  iPropertyTag = val(ssGridProperties.Columns(2).CellText(ssGridProperties.Bookmark))
   
   ' Read the new property value from the grid.
   Select Case iPropertyTag
@@ -865,7 +863,7 @@ Private Sub ssGridProperties_KeyPress(KeyAscii As Integer)
 '      .ActiveCell.SelLength = Len(.ActiveCell.Text)
 '    End With
    
-   If Val(ssGridProperties.Columns(2).CellText(ssGridProperties.Bookmark)) = giPROPID_CAPTION Then
+   If val(ssGridProperties.Columns(2).CellText(ssGridProperties.Bookmark)) = giPROPID_CAPTION Then
       With ssGridProperties
         .ActiveCell.SelStart = Len(.ActiveCell.Text)
       End With
@@ -894,7 +892,7 @@ Private Sub ssGridProperties_MouseUp(Button As Integer, Shift As Integer, X As S
   '              a control
   
   Dim iPropertyTag As Integer
-  iPropertyTag = Val(ssGridProperties.Columns(2).CellText(ssGridProperties.Bookmark))
+  iPropertyTag = val(ssGridProperties.Columns(2).CellText(ssGridProperties.Bookmark))
   
   Select Case iPropertyTag
     Case giPROPID_CAPTION, giPROPID_HEIGHT, giPROPID_LEFT, giPROPID_TOP, giPROPID_WIDTH, giPROPID_TABNUMBER, giPROPID_NAVIGATETO
@@ -932,9 +930,9 @@ Private Sub ssGridProperties_RowColChange(ByVal LastRow As Variant, ByVal LastCo
       End If
     Next iLoop
 
-    miCurrentRowFormat = Val(.Columns(2).CellText(.Bookmark))
+    miCurrentRowFormat = val(.Columns(2).CellText(.Bookmark))
     
-    Select Case Val(.Columns(2).CellText(.Bookmark))
+    Select Case val(.Columns(2).CellText(.Bookmark))
       Case giPROPID_ALIGNMENT
         .Columns(1).Locked = True
         .Columns(1).DataType = vbString
@@ -1056,7 +1054,7 @@ Private Sub ssGridProperties_RowColChange(ByVal LastRow As Variant, ByVal LastCo
     End If
 
 '   If Val(.Columns(2).CellText(.Bookmark)) <> giPROPID_CAPTION Then
-   If Val(.Columns(2).CellText(.Bookmark)) = giPROPID_CAPTION Then
+   If val(.Columns(2).CellText(.Bookmark)) = giPROPID_CAPTION Then
       With ssGridProperties
         '.ActiveCell.SelStart = 0
         .ActiveCell.SelStart = Len(.ActiveCell.Text)
@@ -2134,7 +2132,7 @@ Private Function ValidIntegerString(psString As String) As Boolean
   Dim sStringOfValue As String
   
   psString = Trim(psString)
-  lngValueOfString = Val(psString)
+  lngValueOfString = val(psString)
   sStringOfValue = Trim(Str(lngValueOfString))
   
   fValid = (psString = sStringOfValue)

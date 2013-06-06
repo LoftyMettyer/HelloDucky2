@@ -17,6 +17,7 @@ Begin VB.Form frmRelate
    EndProperty
    HelpContextID   =   5025
    Icon            =   "frmRelate.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -112,7 +113,7 @@ Private Function ParentCount(pLngChildTableID As Long, plngExcludedTableID As Lo
   ' Loop through the parent tables.
   For iLoop = 1 To lstRelations.Count
     ' Do not bother with the excluded table.
-    If Val(lstRelations(iLoop).Tag) <> plngExcludedTableID Then
+    If val(lstRelations(iLoop).Tag) <> plngExcludedTableID Then
       ' Loop through the possible children of the parent table.
       ' ie. loop through the items in the listview associated with the parent table.
       For iListPtr = 0 To (lstRelations(iLoop).ListCount - 1)
@@ -121,7 +122,7 @@ Private Function ParentCount(pLngChildTableID As Long, plngExcludedTableID As Lo
           ' Check if the node is selected (ie. the table is selected as a child of the parent).
           If lstRelations(iLoop).Selected(iListPtr) Then
             iParentCount = iParentCount + 1
-            pLngParentTableID = Val(lstRelations(iLoop).Tag)
+            pLngParentTableID = val(lstRelations(iLoop).Tag)
           End If
               
           Exit For
@@ -418,6 +419,15 @@ Private Sub Form_Initialize()
 
 End Sub
 
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
+
 Private Sub Form_Load()
   Screen.MousePointer = vbHourglass
  
@@ -589,7 +599,7 @@ Private Sub lstRelations_ItemCheck(Index As Integer, Item As Integer)
     sParentTableName = cboParents.List(cboParents.ListIndex)
     
     ' Get the count of the selected table's parent.
-    iParentCount = ParentCount(lngSelectedTableID, Val(lstRelations(Index).Tag), lngParentTableID)
+    iParentCount = ParentCount(lngSelectedTableID, val(lstRelations(Index).Tag), lngParentTableID)
 
     ' Check if the selected table already has 2 parents.
     fOK = (iParentCount < MAXPARENTS)
@@ -663,7 +673,7 @@ Private Sub lstRelations_ItemCheck(Index As Integer, Item As Integer)
       ' and the new parent table has more than one parent.
     
       ' Get the new parent's number of parents.
-      iGrandParentCount = ParentCount(Val(lstRelations(Index).Tag), 0, lngTemp)
+      iGrandParentCount = ParentCount(val(lstRelations(Index).Tag), 0, lngTemp)
     
       fOK = (iGrandParentCount < MAXPARENTS)
 

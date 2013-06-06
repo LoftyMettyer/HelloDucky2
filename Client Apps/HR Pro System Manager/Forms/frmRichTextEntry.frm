@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{3B7C8863-D78F-101B-B9B5-04021C009402}#1.2#0"; "richtx32.ocx"
+Object = "{3B7C8863-D78F-101B-B9B5-04021C009402}#1.2#0"; "RICHTX32.OCX"
 Begin VB.Form frmRichTextEntry 
    Caption         =   "Message"
    ClientHeight    =   3705
@@ -17,6 +17,7 @@ Begin VB.Form frmRichTextEntry
    EndProperty
    HelpContextID   =   5081
    Icon            =   "frmRichTextEntry.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -49,7 +50,6 @@ Begin VB.Form frmRichTextEntry
          _ExtentY        =   4419
          _Version        =   393217
          BorderStyle     =   0
-         Enabled         =   -1  'True
          ScrollBars      =   2
          MaxLength       =   200
          AutoVerbMenu    =   -1  'True
@@ -156,7 +156,7 @@ Private Sub RefreshScreen()
   
   fOKToSave = mfChanged And (Not mfReadOnly)
   
-  cmdOk.Enabled = fOKToSave
+  cmdOK.Enabled = fOKToSave
 
 End Sub
 
@@ -309,7 +309,7 @@ Private Sub ParseMessage(pctlRichTextbox As RichTextBox)
         asText(iTextIndex) = asText(iTextIndex) & vbNewLine
       ElseIf (Mid(sRTFCodeToDo, 1, 2) = "\'") Then
         fFound = False
-        sDeniedChar = Chr(Val("&H" & Mid(sRTFCodeToDo, 3)))
+        sDeniedChar = Chr(val("&H" & Mid(sRTFCodeToDo, 3)))
         For iLoop = 1 To UBound(asDeniedCharacters)
           If sDeniedChar = asDeniedCharacters(iLoop) Then
             fFound = True
@@ -524,7 +524,7 @@ Private Sub DeconstructMessage(psRichText As String, _
         asText(iTextIndex) = asText(iTextIndex) & vbNewLine
       ElseIf (Mid(sRTFCodeToDo, 1, 2) = "\'") Then
         fFound = False
-        sDeniedChar = Chr(Val("&H" & Mid(sRTFCodeToDo, 3)))
+        sDeniedChar = Chr(val("&H" & Mid(sRTFCodeToDo, 3)))
         For iLoop = 1 To UBound(asDeniedCharacters)
           If sDeniedChar = asDeniedCharacters(iLoop) Then
             fFound = True
@@ -650,6 +650,15 @@ Private Sub cmdSelectText_Click()
   
 End Sub
 
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
+
 Private Sub Form_Load()
   
   Hook Me.hWnd, MIN_FORM_WIDTH, MIN_FORM_HEIGHT
@@ -681,7 +690,7 @@ Private Sub ResizeForm()
     .Left = Me.ScaleWidth - .Width - cmdSelectText.Left
   End With
   
-  With cmdOk
+  With cmdOK
     .Top = cmdCancel.Top
     .Left = cmdCancel.Left - .Width - 200
   End With

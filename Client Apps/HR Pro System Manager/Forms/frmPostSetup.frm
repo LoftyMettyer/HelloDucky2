@@ -17,6 +17,7 @@ Begin VB.Form frmPostSetup
    EndProperty
    HelpContextID   =   5045
    Icon            =   "frmPostSetup.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
@@ -188,7 +189,7 @@ Public Property Get Changed() As Boolean
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
   mfChanged = pblnChanged
-  If Not mbLoading Then cmdOk.Enabled = True
+  If Not mbLoading Then cmdOK.Enabled = True
 End Property
 
 Private Sub cboJobTitle_Click()
@@ -242,8 +243,8 @@ Private Function SaveChanges() As Boolean
   SaveParam gsPARAMETERKEY_POSTTABLE, gsPARAMETERTYPE_TABLEID, GetComboItem(cboPostTable)
   SaveParam gsPARAMETERKEY_POSTJOBTITLECOLUMN, gsPARAMETERTYPE_COLUMNID, GetComboItem(cboJobTitle)
   SaveParam gsPARAMETERKEY_POSTGRADECOLUMN, gsPARAMETERTYPE_COLUMNID, GetComboItem(cboGrade)
-  SaveParam gsPARAMETERKEY_GRADETABLE, gsPARAMETERTYPE_TABLEID, Val(txtGradeTable.Tag)
-  SaveParam gsPARAMETERKEY_GRADECOLUMN, gsPARAMETERTYPE_COLUMNID, Val(txtGradeColumn.Tag)
+  SaveParam gsPARAMETERKEY_GRADETABLE, gsPARAMETERTYPE_TABLEID, val(txtGradeTable.Tag)
+  SaveParam gsPARAMETERKEY_GRADECOLUMN, gsPARAMETERTYPE_COLUMNID, val(txtGradeColumn.Tag)
   SaveParam gsPARAMETERKEY_NUMLEVELCOLUMN, gsPARAMETERTYPE_COLUMNID, GetComboItem(cboHeirarchy)
   
   SaveChanges = True
@@ -280,12 +281,21 @@ Private Function GetComboItem(cboTemp As ComboBox) As Long
   End If
 End Function
 
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
+
 Private Sub Form_Load()
   Screen.MousePointer = vbHourglass
   
   mbLoading = True
   Changed = False
-  cmdOk.Enabled = False
+  cmdOK.Enabled = False
   mblnReadOnly = (Application.AccessMode <> accFull And _
                   Application.AccessMode <> accSupportMode)
 
@@ -407,7 +417,7 @@ Private Sub cboPostTable_Click()
           End If
 
           If (Not !Deleted) And _
-            (!columnType = giCOLUMNTYPE_LOOKUP) Then
+            (!columntype = giCOLUMNTYPE_LOOKUP) Then
   
             cboGrade.AddItem !ColumnName
             cboGrade.ItemData(cboGrade.NewIndex) = !ColumnID
@@ -511,15 +521,15 @@ Private Sub cboGrade_Click()
 
         
         If (Not !Deleted) And _
-          (!columnType <> giCOLUMNTYPE_LINK) And _
-          (!columnType <> giCOLUMNTYPE_SYSTEM) Then
+          (!columntype <> giCOLUMNTYPE_LINK) And _
+          (!columntype <> giCOLUMNTYPE_SYSTEM) Then
 
           If !ColumnID = lngGradeColumn Then
             txtGradeColumn.Text = !ColumnName
             txtGradeColumn.Tag = lngGradeColumn
           End If
 
-          If !DataType = dtNUMERIC Or !DataType = dtINTEGER Then
+          If !DataType = dtNUMERIC Or !DataType = dtinteger Then
             cboHeirarchy.AddItem !ColumnName
             cboHeirarchy.ItemData(cboHeirarchy.NewIndex) = !ColumnID
           End If
@@ -562,7 +572,7 @@ Private Function HasLookupColumn(lngTableID As Long) As Boolean
           Exit Do
         End If
 
-        If (Not !Deleted) And (!columnType = giCOLUMNTYPE_LOOKUP) Then
+        If (Not !Deleted) And (!columntype = giCOLUMNTYPE_LOOKUP) Then
           HasLookupColumn = True
           Exit Function
         End If

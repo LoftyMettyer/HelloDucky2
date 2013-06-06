@@ -17,6 +17,7 @@ Begin VB.Form frmPrintOptions
       Strikethrough   =   0   'False
    EndProperty
    Icon            =   "frmPrintOptions.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -437,15 +438,15 @@ Private Sub cmdPrint_Click()
   mblnHeadingsOnEveryPage = (chkHeadingsEveryPage = vbChecked)
   
   If UI.GetSystemMeasurement = "us" Then
-    mintMarginTop = Val(txtMargin(0).Text)
-    mintMarginBottom = Val(txtMargin(1).Text)
-    mintMarginLeft = Val(txtMargin(2).Text)
-    mintMarginRight = Val(txtMargin(3).Text)
+    mintMarginTop = val(txtMargin(0).Text)
+    mintMarginBottom = val(txtMargin(1).Text)
+    mintMarginLeft = val(txtMargin(2).Text)
+    mintMarginRight = val(txtMargin(3).Text)
   Else
-    mintMarginTop = Val(txtMargin(0).Text) * 10
-    mintMarginBottom = Val(txtMargin(1).Text) * 10
-    mintMarginLeft = Val(txtMargin(2).Text) * 10
-    mintMarginRight = Val(txtMargin(3).Text) * 10
+    mintMarginTop = val(txtMargin(0).Text) * 10
+    mintMarginBottom = val(txtMargin(1).Text) * 10
+    mintMarginLeft = val(txtMargin(2).Text) * 10
+    mintMarginRight = val(txtMargin(3).Text) * 10
   End If
   
   '******************************************************************************
@@ -531,6 +532,15 @@ Private Sub ShowOrientationPreview(pfPortrait As Boolean)
   
 End Sub
 
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
 
 Private Sub Form_Load()
 
@@ -642,8 +652,8 @@ Private Sub txtMargin_LostFocus(Index As Integer)
   
     If IsNumeric(txtMargin(Index).Text) Then
     
-      If Val(txtMargin(Index).Text) > 5 Then txtMargin(Index).Text = 5
-      If Val(txtMargin(Index).Text) < 0.5 Then txtMargin(Index).Text = 0.5
+      If val(txtMargin(Index).Text) > 5 Then txtMargin(Index).Text = 5
+      If val(txtMargin(Index).Text) < 0.5 Then txtMargin(Index).Text = 0.5
       GoTo TidyUpAndExit
       
     ElseIf txtMargin(Index).Text = "" Then
@@ -664,8 +674,8 @@ Private Sub txtMargin_LostFocus(Index As Integer)
   
     If IsNumeric(txtMargin(Index).Text) Then
     
-      If Val(txtMargin(Index).Text) > 10 Then txtMargin(Index).Text = 10
-      If Val(txtMargin(Index).Text) < 1 Then txtMargin(Index).Text = 1
+      If val(txtMargin(Index).Text) > 10 Then txtMargin(Index).Text = 10
+      If val(txtMargin(Index).Text) < 1 Then txtMargin(Index).Text = 1
       GoTo TidyUpAndExit
       
     ElseIf txtMargin(Index).Text = "" Then

@@ -151,10 +151,14 @@ Private Sub cmdYesNoCancel_Yes_Click()
 End Sub
 
 Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
-  If ((Shift And vbShiftMask) > 0) Then
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+  Case ((Shift And vbShiftMask) > 0)
     mfRefreshDatabase = True
-  End If
-
+End Select
 End Sub
 
 Private Sub Form_KeyUp(KeyCode As Integer, Shift As Integer)

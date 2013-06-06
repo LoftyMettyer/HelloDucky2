@@ -56,7 +56,7 @@ Begin VB.Form frmScrDesigner2
       DisplayType     =   1
       NavigateIn      =   0
       NavigateTo      =   ""
-      InScreenDesigner=   -1  'True
+      InScreenDesigner=   0   'False
       ColumnID        =   0
       ColumnName      =   ""
       Selected        =   0   'False
@@ -1654,6 +1654,13 @@ Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
   mbKeyMoving = False
   mbKeyStretching = False
 
+  Select Case KeyCode
+    Case vbKeyF1
+      If ShowAirHelp(Me.HelpContextID) Then
+        KeyCode = 0
+      End If
+  End Select
+  
   ' JDM - 22/08/02 - Fault 4267 - F4 needs to bring up properties dialog
   If KeyCode = vbKeyF4 Then
     EditMenu "ID_ScreenDesignerScreenProperties"
@@ -1992,7 +1999,7 @@ Private Sub AutoFormatScreen()
   Dim objFont As StdFont
   Dim ctlControl As VB.Control
   Dim ctlLabelControl As COA_Label
-  Dim rsColumns As dao.Recordset
+  Dim rsColumns As DAO.Recordset
   'Dim WaitWindow As WaitMessage.MessageWindow
 '  Dim WaitWindow As NewWaitMsg.clsNewWaitMsg
   
@@ -3185,7 +3192,7 @@ Private Function ReadColumnControlValues(plngColumnID As Long) As Variant
   Dim avValues As Variant
   Dim asResults() As String
   Dim sSQL As String
-  Dim rsControlValues As dao.Recordset
+  Dim rsControlValues As DAO.Recordset
   
   ' Pull the column control values from the database.
   sSQL = "SELECT value" & _

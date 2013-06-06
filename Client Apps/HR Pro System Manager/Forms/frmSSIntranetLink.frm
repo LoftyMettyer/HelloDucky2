@@ -1,7 +1,7 @@
 VERSION 5.00
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{65E121D4-0C60-11D2-A9FC-0000F8754DA1}#2.0#0"; "mschrt20.ocx"
+Object = "{65E121D4-0C60-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCHRT20.OCX"
 Begin VB.Form frmSSIntranetLink 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Self-service Intranet Link"
@@ -20,6 +20,7 @@ Begin VB.Form frmSSIntranetLink
    EndProperty
    HelpContextID   =   5041
    Icon            =   "frmSSIntranetLink.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
@@ -1732,7 +1733,7 @@ Private Sub RefreshControls()
   lblHRProUtilityMessage.Caption = sUtilityMessage
   
   ' Disable the OK button as required.
-  cmdOk.Enabled = mfChanged
+  cmdOK.Enabled = mfChanged
   
 
 End Sub
@@ -2253,6 +2254,16 @@ Private Sub cmdFilterClear_Click()
   mfChanged = True
     
   RefreshControls
+End Sub
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+
 End Sub
 
 Private Sub optAggregateType_Click(Index As Integer)

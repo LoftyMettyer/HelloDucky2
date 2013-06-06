@@ -673,6 +673,15 @@ Private Sub Form_Initialize()
 
 End Sub
 
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
+
 Private Sub Form_Load()
   ' Clear the menu shortcuts. This needs to be done so that some shortcut keys
   ' (eg. DEL) will function normally in textboxes instead of triggering menu options.

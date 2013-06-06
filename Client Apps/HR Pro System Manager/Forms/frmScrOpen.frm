@@ -318,6 +318,13 @@ Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
   'TM20020102 Fault 2879
   Dim bHandled As Boolean
   
+  Select Case KeyCode
+    Case vbKeyF1
+      If ShowAirHelp(Me.HelpContextID) Then
+        KeyCode = 0
+      End If
+  End Select
+  
   bHandled = frmSysMgr.tbMain.OnKeyDown(KeyCode, Shift)
   If bHandled Then
     KeyCode = 0
@@ -474,7 +481,7 @@ Public Sub RefreshScreens()
   Dim lngColumnWidth As Long
   Dim sSQL As String
   Dim frmScreen As frmScrDesigner2
-  Dim rsScreens As dao.Recordset
+  Dim rsScreens As DAO.Recordset
   
   lngScreenID = ScreenID
 
@@ -637,10 +644,10 @@ Private Function CopyScreen() As Boolean
   Dim lngScreenID As Long
   Dim sSQL As String
   Dim sScreenName As String
-  Dim rsScreen As dao.Recordset
-  Dim rsControls As dao.Recordset
-  Dim rsPageCaptions As dao.Recordset
-  Dim rsHistoryScreens As dao.Recordset
+  Dim rsScreen As DAO.Recordset
+  Dim rsControls As DAO.Recordset
+  Dim rsPageCaptions As DAO.Recordset
+  Dim rsHistoryScreens As DAO.Recordset
   
   fOK = True
       
@@ -982,7 +989,7 @@ Private Function DeleteScreen() As Boolean
   
   Dim fOK As Boolean
   Dim sSQL As String
-  Dim rsInfo As dao.Recordset
+  Dim rsInfo As DAO.Recordset
   Dim sModuleName As String
   Dim frmUse As frmUsage
   
@@ -1228,7 +1235,7 @@ Public Sub LoadTableCombo()
   Dim lngColumnWidth As Long
   Dim sSQL As String
   Dim frmScreen As frmScrDesigner2
-  Dim rsScreens As dao.Recordset
+  Dim rsScreens As DAO.Recordset
   
   lngScreenID = ScreenID
 

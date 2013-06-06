@@ -18,6 +18,7 @@ Begin VB.Form frmScrEdit
    EndProperty
    HelpContextID   =   5028
    Icon            =   "frmScrEdit.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -429,7 +430,7 @@ Private Sub cmdOK_Click()
   Dim frmForm2 As Form
   Dim fFound As Boolean
   Dim sSQL As String
-  Dim rsTemp As dao.Recordset
+  Dim rsTemp As DAO.Recordset
   
   ' Check that a table has been selected.
   fOK = (TableID > 0)
@@ -487,7 +488,7 @@ Private Sub cmdOK_Click()
             If (!TableID <> TableID) Then
               Exit Do
             End If
-            If (!columnType = giCOLUMNTYPE_LINK) Then
+            If (!columntype = giCOLUMNTYPE_LINK) Then
               bHasLink = True
             End If
             .MoveNext
@@ -778,9 +779,16 @@ Private Sub Form_Initialize()
 End Sub
 
 Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
-  If KeyCode = vbKeyEscape Then
+  
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+  Case KeyCode = vbKeyEscape
     UnLoad Me
-  End If
+End Select
+  
 End Sub
 
 Private Sub Form_Load()
@@ -1229,7 +1237,7 @@ End Function
 Private Function IsParentScreen() As Boolean
 'NPG20080421 Fault 12982
 Dim sSQL As String
-Dim rsTemp As dao.Recordset
+Dim rsTemp As DAO.Recordset
 If chkSSIntranet.value = vbChecked Then
       sSQL = "SELECT Count(*) as Result" & _
         " FROM tmpTables" & _
