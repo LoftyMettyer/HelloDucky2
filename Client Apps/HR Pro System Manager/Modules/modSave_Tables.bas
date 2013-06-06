@@ -279,7 +279,7 @@ Private Function TableNew() As Boolean
              "recordDescExprID, " & _
              "DefaultEmailID, " & _
              "AuditInsert, AuditDelete, " & _
-             "ManualSummaryColumnBreaks) " & _
+             "ManualSummaryColumnBreaks, IsRemoteView) " & _
            "VALUES (" & _
              lngTableID & ", '" & _
              sTableName & "', " & _
@@ -290,7 +290,7 @@ Private Function TableNew() As Boolean
              IIf(IsNull(recTabEdit!DefaultEmailID), 0, recTabEdit!DefaultEmailID) & ", " & _
              IIf(recTabEdit!AuditInsert = True, 1, 0) & ", " & _
              IIf(recTabEdit!AuditDelete = True, 1, 0) & ", " & _
-             IIf(recTabEdit!ManualSummaryColumnBreaks, 1, 0) & ")"
+             IIf(recTabEdit!ManualSummaryColumnBreaks, 1, 0) & "," & IIf(recTabEdit!IsRemoteView, 1, 0) & ")"
 
 '             IIf(IsNull(recTabEdit!EmailInsert), 0, recTabEdit!EmailInsert) & ", " & _
              IIf(IsNull(recTabEdit!EmailDelete), 0, recTabEdit!EmailDelete) & ", " & _
