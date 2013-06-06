@@ -6669,7 +6669,7 @@ PRINT 'Step 12 - Auto Configuration'
 
 		SET @columnid = 0;
 		EXECUTE dbo.spstat_scriptnewcolumn @columnid OUTPUT, @perstableid, 'Mobile_Workflow_Activated', -7, 'Checkbox if the workflow mobile is activated for this user', 1, 0, 1, '5371A8DF-39BC-4A8E-875D-0DADE806F0BA';
-		EXECUTE dbo.spstat_setdefaultmodulesetting 'MODULE_MOBILE', 'Param_MobileActivated', @columnid, 'PType_ColumnID';
+		--EXECUTE dbo.spstat_setdefaultmodulesetting 'MODULE_MOBILE', 'Param_MobileActivated', @columnid, 'PType_ColumnID';
 
 	END
 
