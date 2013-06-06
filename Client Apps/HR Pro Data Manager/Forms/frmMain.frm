@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "11:13"
+            TextSave        =   "12:13"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -824,14 +824,24 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
     
     ' <Mail Merge>
     Case "MailMergeRec"
-      ActiveForm.MailMergeClick
-
+      If TypeOf ActiveForm Is frmRecEdit4 Then
+        ActiveForm.MailMergeClick
+      ElseIf TypeOf ActiveForm Is frmFind2 Then
+        ActiveForm.UtilityClick utlMailMerge
+      End If
+    
     ' <Envelopes & Labels>
     Case "LabelsRec"
       ActiveForm.LabelsClick
     
     Case "DataTransferRec"
-      ActiveForm.DataTransferClick
+      If TypeOf ActiveForm Is frmRecEdit4 Then
+        ActiveForm.DataTransferClick
+      ElseIf TypeOf ActiveForm Is frmFind2 Then
+        ActiveForm.UtilityClick utlDataTransfer
+      End If
+        
+    
     Case "Email"
       ActiveForm.EmailClick
 
@@ -870,7 +880,11 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
     
     ' <Calendar Report>
     Case "CalendarReportRec"
-      ActiveForm.CalendarReportClick
+      If TypeOf ActiveForm Is frmRecEdit4 Then
+        ActiveForm.CalendarReportClick
+      ElseIf TypeOf ActiveForm Is frmFind2 Then
+        ActiveForm.UtilityClick utlCalendarReport
+      End If
     
     ' <REPORTS> menu.
     
@@ -1834,7 +1848,9 @@ Public Sub RefreshRecordMenu(pfrmCallingForm As Form, Optional ByVal pfUnLoad As
       If objTool.Visible Then fSomeVisible = True
     Next objTool
     .Tools("mnuRecordReports").Enabled = fSomeEnabled
-    .Tools("mnuRecordReports").Visible = fSomeVisible
+    ' NPG20100826 Fault 1091 - effectively rem out the Reports menu for find windows for now.
+    ' .Tools("mnuRecordReports").Visible = fSomeVisible
+    .Tools("mnuRecordReports").Visible = fSomeVisible And Not TypeOf pfrmCallingForm Is frmFind2
     
     fSomeVisible = False
     fSomeEnabled = False
@@ -1843,7 +1859,9 @@ Public Sub RefreshRecordMenu(pfrmCallingForm As Form, Optional ByVal pfUnLoad As
       If objTool.Visible Then fSomeVisible = True
     Next objTool
     .Tools("mnuRecordUtilities").Enabled = fSomeEnabled
-    .Tools("mnuRecordUtilities").Visible = fSomeVisible
+    ' NPG20100826 Fault 1091 - effectively rem out the utils menu for find windows for now.
+    ' .Tools("mnuRecordUtilities").Visible = fSomeVisible
+    .Tools("mnuRecordUtilities").Visible = fSomeVisible And Not TypeOf pfrmCallingForm Is frmFind2
     
     fSomeVisible = False
     fSomeEnabled = False
@@ -1959,6 +1977,21 @@ Public Sub RefreshRecordMenu(pfrmCallingForm As Form, Optional ByVal pfUnLoad As
       .Tools("CalendarReportRec").Visible = fCalendarReportExists And .Tools("CalendarReportRec").Visible
       .Tools("CalendarReportRec").Enabled = MenuEnabled("CALENDARREPORTS") And Not fAddingNewRecord And fSelectionMade
       
+      ' NPG20100826 Fault HRPRO-1091 - Added functionality to display custom reports & global update to the record menu
+      '                                 but disabled for now as there's no code yet in recedit4 and if we added the code
+      '                                 QA then wanted icons on recedit4 for them, which was deemed to much for v4.2
+      '.Tools("CustomReportsRec").Visible = fCustomReportExists And .Tools("CustomReportsRec").Visible
+      '.Tools("CustomReportsRec").Enabled = MenuEnabled("CUSTOMREPORTS") And Not fAddingNewRecord And fSelectionMade
+            
+      '.Bands(0).Tools("GlobalUpdate").Visible = fGlobalUpdateExists And (.Bands(0).Tools("GlobalUpdate").Visible)
+      '.Bands(0).Tools("GlobalUpdate").Enabled = MenuEnabled("GLOBALUPDATE") And Not fAddingNewRecord And fSelectionMade
+            
+      .Tools("CustomReportsRec").Visible = False
+      .Tools("CustomReportsRec").Enabled = False
+                  
+      .Tools("GlobalUpdate").Visible = False
+      .Tools("GlobalUpdate").Enabled = False
+            
       ' Only enable the absence reports dropdown if we are licensed
       .Bands(0).Tools("AbsenceCalendar").Visible = fAbsenceReportsEnabled And .Bands(0).Tools("AbsenceCalendar").Visible
       .Bands(0).Tools("AbsenceBreakdownRec").Visible = fAbsenceReportsEnabled And .Bands(0).Tools("AbsenceBreakdownRec").Visible
@@ -2024,21 +2057,21 @@ Public Sub RefreshRecordMenu(pfrmCallingForm As Form, Optional ByVal pfUnLoad As
       .Bands(0).Tools("ID_Print").Enabled = True
       
       .Bands(0).Tools("CustomReports").Visible = fCustomReportExists And (.Bands(0).Tools("CustomReports").Visible)
-      .Bands(0).Tools("CustomReports").Enabled = MenuEnabled("CUSTOMREPORTS") And Not fAddingNewRecord And (fSelectionMade Or TypeOf pfrmCallingForm Is frmRecEdit4)
+      .Bands(0).Tools("CustomReports").Enabled = MenuEnabled("CUSTOMREPORTS") And Not fAddingNewRecord And fSelectionMade
       
       .Bands(0).Tools("CalendarReports").Visible = fCalendarReportExists And (.Bands(0).Tools("CalendarReports").Visible)
-      .Bands(0).Tools("CalendarReports").Enabled = MenuEnabled("CALENDARREPORTS") And Not fAddingNewRecord And (fSelectionMade Or TypeOf pfrmCallingForm Is frmRecEdit4)
+      .Bands(0).Tools("CalendarReports").Enabled = MenuEnabled("CALENDARREPORTS") And Not fAddingNewRecord And fSelectionMade
       .Bands(0).Tools("CalendarReports").BeginGroup = Not fCustomReportExists
       
       .Bands(0).Tools("GlobalUpdate").Visible = fGlobalUpdateExists And (.Bands(0).Tools("GlobalUpdate").Visible)
-      .Bands(0).Tools("GlobalUpdate").Enabled = MenuEnabled("GLOBALUPDATE") And Not fAddingNewRecord And (fSelectionMade Or TypeOf pfrmCallingForm Is frmRecEdit4)
+      .Bands(0).Tools("GlobalUpdate").Enabled = MenuEnabled("GLOBALUPDATE") And Not fAddingNewRecord And fSelectionMade
       '.Bands(0).Tools("GlobalUpdate").BeginGroup = (Not fCustomReportExists And Not fCalendarReportExists)
 
       .Bands(0).Tools("DataTransfer").Visible = fDataTransferExists And (.Bands(0).Tools("DataTransfer").Visible)
-      .Bands(0).Tools("DataTransfer").Enabled = MenuEnabled("DATATRANSFER") And Not fAddingNewRecord And (fSelectionMade Or TypeOf pfrmCallingForm Is frmRecEdit4)
+      .Bands(0).Tools("DataTransfer").Enabled = MenuEnabled("DATATRANSFER") And Not fAddingNewRecord And fSelectionMade
 
       .Bands(0).Tools("MailMerge").Visible = fMailMergeExists And (.Bands(0).Tools("MailMerge").Visible)
-      .Bands(0).Tools("MailMerge").Enabled = MenuEnabled("MAILMERGE") And Not fAddingNewRecord And (fSelectionMade Or TypeOf pfrmCallingForm Is frmRecEdit4)
+      .Bands(0).Tools("MailMerge").Enabled = MenuEnabled("MAILMERGE") And Not fAddingNewRecord And fSelectionMade
 
       ' Recalculate the new utility/report group separators
       strGroupType = ""
