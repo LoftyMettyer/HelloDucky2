@@ -1,8 +1,8 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.ocx"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
-Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~3.OCX"
+Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~2.OCX"
 Begin VB.MDIForm frmMain 
    AutoShowChildren=   0   'False
    BackColor       =   &H00F7EEE9&
@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "08:59"
+            TextSave        =   "16:11"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -408,6 +408,13 @@ Private Sub abMain_BandOpen(ByVal Band As ActiveBarLibraryCtl.Band)
   End If
   
   Select Case Band.Name
+    
+    Case "bndRecentReports"
+      RefreshRecentlyUsed
+
+    Case "bndFavourites"
+      RefreshFavourites
+    
     Case "mnuWindow"
       bNoSeparator = False
       With Band.Tools
@@ -699,6 +706,8 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
   Dim iUsers As Integer
   Dim strVersionFilename As String
   Dim plngHelp As Long
+  Dim iUtilityType As UtilityType
+  Dim iUtilityID As Integer
   
   ' JPD20020926 Fault 4431
   If Screen.MousePointer = vbHourglass And Not gbJustRunIt Then Exit Sub
@@ -871,7 +880,8 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
     
     ' <Cross Tabulations>
     Case "CrossTab"
-      CrossTabClick
+      'RunUtility utlCrossTab, 0
+       CrossTabClick
     
     ' <Crystal Reports"
     Case "CrystalReports"
@@ -1281,6 +1291,16 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
     Case Else
       ' It must be a screen of some kind so decide what type it is.
       Select Case Left(Tool.Name, 2)
+                
+        Case "RC" ' Recently used
+   '     "RC" & rsTemp("ObjectType").Value & ":" & rsTemp("ID").Value)
+          
+          iUtilityType = Val(Right(Tool.Name, Len(Tool.Name) - 2))
+          iUtilityID = Val(Right(Tool.Name, Len(Tool.Name) - 2))
+          
+                
+        Case "FV" ' Favourite
+        
         
         Case "QE" ' Quick Entry Screen.
           EditForm_Load Val(Right(Tool.Name, Len(Tool.Name) - 2)), screenQuickEntry
@@ -2418,12 +2438,12 @@ Public Sub GlobalClick(FormType As GlobalType)
   Dim frmSelection As frmDefSel
   Dim objGlobalRun As clsGlobalRun
   Dim blnOK As Boolean
-  Dim lngTYPE As Long
+  Dim lngType As Long
 
   Screen.MousePointer = vbHourglass
     
   'sType = Choose(FormType, "ADD", "UPDATE", "DELETE")
-  lngTYPE = Choose(FormType, UtlGlobalAdd, utlGlobalUpdate, utlGlobalDelete)
+  lngType = Choose(FormType, UtlGlobalAdd, utlGlobalUpdate, utlGlobalDelete)
 
   fExit = False
   Set frmSelection = New frmDefSel
@@ -2433,7 +2453,7 @@ Public Sub GlobalClick(FormType As GlobalType)
     Do While Not fExit
       .EnableRun = True
 
-      If .ShowList(lngTYPE) Then
+      If .ShowList(lngType) Then
         .CustomShow vbModal
 
         Select Case .Action
@@ -3121,6 +3141,10 @@ Public Sub RefreshMainForm(pfrmCallingForm As Form, Optional ByVal pfUnLoad As B
       ' Refresh the Edit menu options.
       RefreshEditMenu
         
+      ' Refresh personalised menus
+      RefreshRecentlyUsed
+      RefreshFavourites
+        
       ' Refresh the Record menu options.
       RefreshRecordMenu pfrmCallingForm, pfUnLoad
       
@@ -3146,6 +3170,107 @@ Public Sub RefreshMainForm(pfrmCallingForm As Form, Optional ByVal pfUnLoad As B
   DoEvents
 
 End Sub
+
+Public Sub RefreshRecentlyUsed()
+
+  Dim rsTemp As ADODB.Recordset
+  Dim objFileTool As ActiveBarLibraryCtl.Tool
+  Dim sIconName As String
+  Dim sUtilityName As String
+  Dim sType As String
+  Dim iCount As Integer
+
+  ' Clear existing
+  abMain.Bands("bndRecentReports").Tools.RemoveAll
+  iCount = 0
+
+  Set rsTemp = New ADODB.Recordset
+  rsTemp.Open "EXEC dbo.spstat_recentlyrunobjects", gADOCon, adOpenForwardOnly, adLockReadOnly
+  If Not rsTemp.BOF And Not rsTemp.EOF Then
+    rsTemp.MoveFirst
+    Do While Not rsTemp.EOF
+
+      sType = ""
+      iCount = iCount + 1
+
+      With abMain
+        Set objFileTool = .Bands("bndRecentReports").Tools.Add(.Tools.Count + 1, "RC" & rsTemp("ObjectType").Value & ":" & rsTemp("ID").Value)
+        
+        Select Case rsTemp("ObjectType").Value
+          Case utlCustomReport
+            sIconName = "CUSTOMREPORTS"
+            sType = "Custom Report : "
+          Case utlCrossTab
+            sIconName = "CROSSTABS"
+            sType = "Cross Tab : "
+          Case utlMatchReport
+            sIconName = "MATCHREPORTS"
+            sType = "Match Report : "
+          Case utlAbsenceBreakdown
+            sIconName = "ABSENCEBREAKDOWN"
+            sType = "Standard Report : "
+          Case utlBradfordFactor
+            sIconName = "BRADFORDFACTOR"
+          Case utlCalendarReport
+            sIconName = "CALENDARREPORTS"
+            sType = "Calendar Report :"
+          Case utlRecordProfile
+            sIconName = "RECORDPROFILE"
+            sType = "Record Profile : "
+          Case utlSuccession
+            sIconName = "SUCCESSION"
+            sType = "Standard Report : "
+          Case utlCareer
+            sIconName = "CAREER"
+            sType = "Standard Report : "
+          Case utlMailMerge
+            sIconName = "MAILMERGE"
+            sType = "Mail Merge : "
+          Case utlReportPack
+            sIconName = "BLANK"
+            sType = "Report Park : "
+          Case Else
+            sIconName = "BLANK"
+        End Select
+
+        objFileTool.Caption = "&" & CStr(iCount) & " " & sType & rsTemp("name").Value
+        objFileTool.SetPicture 0, LoadResPicture(sIconName, 1), COL_GREY
+      
+   '     .Bands("bndRecentReports").Tools.Insert 0, objFileTool
+      
+      End With
+
+      rsTemp.MoveNext
+    Loop
+  Else
+  
+    Set objFileTool = abMain.Tools.Add(abMain.Tools.Count + 1, "RC_None")
+    objFileTool.Caption = "<None>"
+    objFileTool.Enabled = False
+    abMain.Bands("bndRecentReports").Tools.Insert 0, objFileTool
+  
+  End If
+  
+  rsTemp.Close
+  Set rsTemp = Nothing
+
+End Sub
+
+Public Sub RefreshFavourites()
+
+  Dim objFileTool As ActiveBarLibraryCtl.Tool
+
+  With abMain
+    .Bands("bndFavourites").Tools.RemoveAll
+  
+    Set objFileTool = .Tools.Add(.Tools.Count + 1, "RC_None")
+    objFileTool.Caption = "<None>"
+    objFileTool.Enabled = False
+    .Bands("bndFavourites").Tools.Insert 0, objFileTool
+  End With
+
+End Sub
+
 Public Sub RefreshHistoryMenu(pfrmCallingForm As Form, Optional ByVal pfUnLoad As Boolean)
   ' Enable/disable the history menu with the appropriate values.
   Dim fHistoryEnabled As Boolean
@@ -3610,10 +3735,10 @@ Public Sub RecordProfileClick()
     ' Loop until the picklist operation has been cancelled.
     Do While Not fExit
       .EnableRun = True
-      
+
       If .ShowList(utlRecordProfile) Then
         
-        .Show vbModal
+        .CustomShow vbModal
         Select Case .Action
           Case edtAdd
             Set frmEdit = New frmRecordProfile
@@ -3762,7 +3887,7 @@ Public Sub MatchReportClick(mrtMatchReportType As MatchReportType)
   Dim frmSelection As frmDefSel
   Dim frmEdit As frmMatchDef
   Dim frmRun As frmMatchRun
-  Dim lngTYPE As UtilityType
+  Dim lngType As UtilityType
 
 
   If mrtMatchReportType <> mrtNormal Then
@@ -3783,12 +3908,12 @@ Public Sub MatchReportClick(mrtMatchReportType As MatchReportType)
       .EnableRun = True
 
       Select Case mrtMatchReportType
-      Case mrtNormal: lngTYPE = utlMatchReport
-      Case mrtSucession: lngTYPE = utlSuccession
-      Case mrtCareer: lngTYPE = utlCareer
+      Case mrtNormal: lngType = utlMatchReport
+      Case mrtSucession: lngType = utlSuccession
+      Case mrtCareer: lngType = utlCareer
       End Select
 
-      If .ShowList(lngTYPE, "MatchReportType = " & CStr(mrtMatchReportType)) Then
+      If .ShowList(lngType, "MatchReportType = " & CStr(mrtMatchReportType)) Then
 
         .CustomShow vbModal
         Select Case .Action
@@ -3848,28 +3973,25 @@ Public Sub MatchReportClick(mrtMatchReportType As MatchReportType)
 
 End Sub
 
-
-'Public Sub CareerSuccessionClick(lngMatchReportType As MatchReportType)
+'Public Sub RunUtility(ByRef UtilType As UtilityType, ByRef UtilityID As Integer)
 '
-'  Dim frmRun As frmMatchRun
+'  Dim frmSelection As frmDefSel
+'  Set frmSelection = New frmDefSel
 '
-'  Set frmRun = New frmMatchRun
+'  With frmSelection
+'    If .ShowList(UtilType) Then
+'      Select Case UtilType
+'        Case utlCrossTab
+'          CrossTabClick
 '
-'  If lngMatchReportType = mrtSucession Then
-'    frmRun.SetPostReport mrtSucession, glngSuccessionDef, gblnSuccessionAllowEqual, gblnSuccessionRestrict, gblnSuccessionLevels
-'  Else
-'    frmRun.SetPostReport mrtCareer, glngCareerDef, gblnCareerAllowEqual, gblnCareerRestrict, gblnCareerLevels
-'  End If
 '
-'  frmRun.RunMatchReport False
-'  If frmRun.PreviewOnScreen Then
-'    frmRun.Show vbModal
-'  End If
-'  Set frmRun = Nothing
+'      End Select
+'    End If
+'  End With
 '
 'End Sub
 
-Public Sub CrossTabClick()
+Public Sub CrossTabClick() 'ByRef UtilityID As Integer
 
   Dim frmDefinition As frmCrossTabDef
   Dim frmExecution As frmCrossTabRun
@@ -4433,6 +4555,7 @@ Private Sub StandardReportClick(strToolName As String)
 
     Select Case strToolName
       Case "AbsenceBreakdown", "AbsenceBreakdownCfg"
+        .ReportType = utlAbsenceBreakdown
         If ValidateAbsenceParameters_BreakdownReport Then
           .ShowControls "Absence Breakdown"
         Else
@@ -4440,6 +4563,7 @@ Private Sub StandardReportClick(strToolName As String)
         End If
     
       Case "BradfordIndex", "BradfordIndexCfg"
+        .ReportType = utlBradfordFactor
         If ValidateAbsenceParameters_BreakdownReport Then
           .ShowControls "Bradford Factor"
         Else
@@ -4447,9 +4571,11 @@ Private Sub StandardReportClick(strToolName As String)
         End If
       
       Case "StabilityIndex", "StabilityIndexCfg"
+        .ReportType = utlStability
         .ShowControls "Stability"
     
       Case "Turnover", "TurnoverCfg"
+        .ReportType = utlTurnover
         .ShowControls "Turnover"
     End Select
 
@@ -4677,7 +4803,7 @@ Private Sub DocumentTypesClick()
            
       If .ShowList(utlDocumentMapping) Then
         
-        .Show vbModal
+        .CustomShow vbModal
         Select Case .Action
         Case edtAdd
           Set frmDefinition = New frmDocumentMap
