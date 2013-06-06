@@ -728,6 +728,9 @@ PRINT 'Step 11 - Add new calculation procedures'
 	
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsys_remainingmonthssincewholeyears]') AND xtype in (N'FN', N'IF', N'TF'))
 		DROP FUNCTION [dbo].[udfsys_remainingmonthssincewholeyears];
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsys_roundtonearestnumber]') AND xtype in (N'FN', N'IF', N'TF'))
+		DROP FUNCTION [dbo].[udfsys_roundtonearestnumber];
 		
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsys_roundtostartofnearestmonth]') AND xtype in (N'FN', N'IF', N'TF'))
 		DROP FUNCTION [dbo].[udfsys_roundtostartofnearestmonth];
@@ -1323,6 +1326,32 @@ PRINT 'Step 11 - Add new calculation procedures'
 	END';
 	EXECUTE sp_executeSQL @sSPCode;
 
+	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_roundtonearestnumber] (
+		@pfNumberToRound 	float,
+		@pfNearestNumber	float)
+	RETURNS float
+	AS
+	BEGIN
+
+		DECLARE @pfRemainder float,
+				@pfReturn	 float;
+
+		SET @pfReturn = 0;
+		IF @pfNearestNumber <= 0 RETURN 0
+
+		SET @pfRemainder = @pfNumberToRound - (FLOOR(@pfNumberToRound / @pfNearestNumber) * @pfNearestNumber);
+
+		IF ((@pfNumberToRound < 0) AND (@pfRemainder <= (@pfNearestNumber / 2.0)))
+			OR ((@pfNumberToRound >= 0) AND (@pfRemainder < (@pfNearestNumber / 2.0)))
+				SET @pfReturn = @pfNumberToRound - @pfRemainder;
+			ELSE
+				SET @pfReturn = @pfNumberToRound + @pfNearestNumber - @pfRemainder;
+
+		RETURN @pfReturn;
+
+	END';
+	EXECUTE sp_executeSQL @sSPCode;
+
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_roundtostartofnearestmonth]
 		(@pdtDate 	datetime)
 	RETURNS datetime
@@ -1728,7 +1757,7 @@ PRINT 'Step 12 - Populate code generation tables'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''b86c77e6-e393-499e-9114-95a201a316d4'', N''LTRIM(RTRIM({0}))'', 1, N''Remove Leading and Trailing Spaces'', NULL, 0, 0, 5)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''5c2244b5-ee8b-4f80-bc9e-defb9ba10b36'', N''[dbo].[udfsys_roundtostartofnearestmonth]({0})'', 4, N''Round Date to Start of Nearest Month'', NULL, 0, 0, 37)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''07e1acb6-6943-4a92-956f-5df24aa2f3d2'', N''FLOOR({0})'', 2, N''Round Down to Nearest Whole Number'', NULL, 0, 0, 31)';
-	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''6c8c5ca0-ae52-46fc-9289-06e989c32d6d'', N''ROUND({0} / {1}, 0) * {1}'', 2, N''Round to Nearest Number'', NULL, 0, 0, 49)';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''6c8c5ca0-ae52-46fc-9289-06e989c32d6d'', N''dbo.[udfsys_roundtonearestnumber]({0}, {1})'', 2, N''Round to Nearest Number'', NULL, 0, 0, 49)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''49161588-d050-4f0b-a0cd-3d9d6393f5f3'', N''CEILING({0})'', 2, N''Round Up to Nearest Whole Number'', NULL, 0, 0, 48)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''022a1f4c-b15b-411a-a49f-08ec4c3497e4'', N''CHARINDEX ({1}, {0}, 0) '', 1, N''Search for Character String'', NULL, 0, 0, 11)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''cfa37a8b-4d7b-4abc-ae80-7866219e4469'', N''[dbo].[udfsys_servicelength]({0}, {1}, ''''M'''')'', 2, N''Service Months'', NULL, 0, 0, 40)';
@@ -1840,10 +1869,10 @@ PRINT 'Step 17 - Trigger functionality'
 	DROP TABLE [dbo].[tbsys_intransactiontrigger]
 
 	EXEC sp_executesql N'CREATE TABLE [dbo].[tbsys_intransactiontrigger](
-		[spid] [integer] NOT NULL,
+		[spid]        [integer] NOT NULL,
 		[tablefromid] [integer] NOT NULL,
-		[actiontype] [tinyint] NULL)'
-
+		[nestlevel]   [integer] NOT NULL,
+		[actiontype]  [tinyint] NOT NULL)'
 
 /* ------------------------------------------------------------- */
 PRINT 'Step 18 - System Functions'
