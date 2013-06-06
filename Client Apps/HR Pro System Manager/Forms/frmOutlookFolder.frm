@@ -220,7 +220,7 @@ Public Sub Initialise(ByVal objNewValue As clsOutlookFolder, blnCopy As Boolean)
       Changed = False
     End If
 
-    If .FixedPath <> vbNullString And TreeView1.SelectedItem Is Nothing Then
+    If .FixedPath <> vbNullString And Treeview1.SelectedItem Is Nothing Then
       MsgBox "This definition is set to output to outlook folder '" & .FixedPath & _
        "' which you do not currently have access to.", vbExclamation, Me.Caption
     End If
@@ -243,25 +243,31 @@ Public Sub PopulateTreeView()
   Screen.MousePointer = vbHourglass
 
   lblDisabledTreeView.BackColor = vbWindowBackground
-  TreeView1.Visible = False
-  TreeView1.Nodes.Clear
-  TreeView1.Sorted = True
+  Treeview1.Visible = False
+  Treeview1.Nodes.Clear
+  Treeview1.Sorted = True
 
-  'If IsCalendarArrayPopulated Then
-  '  For lngIndex = 0 To UBound(gstrOutlookCalendarsArray)
-  '    AddCalendarToTreeView gstrOutlookCalendarsArray(lngIndex)
-  '  Next
-  'Else
-    Set olApp = New Outlook.Application
-    Set olNameSpace = olApp.GetNamespace("MAPI")
-    For Each objFolder In olNameSpace.Folders
-      ProcessFolder objFolder
-    Next
-    Set olNameSpace = Nothing
-    Set olApp = Nothing
-  'End If
 
-  TreeView1.Visible = (optFixed.value = True)
+  Set olApp = New Outlook.Application
+  Set olNameSpace = olApp.GetNamespace("MAPI")
+  For Each objFolder In olNameSpace.Folders
+    ProcessFolder objFolder
+  Next
+  Set olNameSpace = Nothing
+  Set olApp = Nothing
+
+
+  'Dim iCount As Integer
+  'Dim objNode As SSNode
+  'For iCount = 0 To 30
+  '    Set objNode = Treeview1.Nodes.Add(, , , "hello" & iCount, "", "")
+  '    objNode.Tag = Replace("\\" & objNode.FullPath, "\ ", "\")
+  '    objNode.Sorted = True
+  '    objNode.Expanded = True
+  'Next iCount
+
+
+  Treeview1.Visible = (optFixed.value = True)
   lblDisabledTreeView.BackColor = vbButtonFace
   Screen.MousePointer = vbDefault
 
@@ -285,9 +291,9 @@ Private Sub ProcessFolder(objParentFolder As MAPIFolder, Optional objParentNode 
 
     strIcon = IIf(objParentFolder.DefaultItemType = 1, "CALENDAR", "OPENFLDR")
     If objParentNode Is Nothing Then
-      Set objNode = TreeView1.Nodes.Add(, , , " " & objParentFolder.Name, strIcon, strIcon)
+      Set objNode = Treeview1.Nodes.Add(, , , " " & objParentFolder.Name, strIcon, strIcon)
     Else
-      Set objNode = TreeView1.Nodes.Add(objParentNode, tvwChild, , " " & objParentFolder.Name, strIcon, strIcon)
+      Set objNode = Treeview1.Nodes.Add(objParentNode, tvwChild, , " " & objParentFolder.Name, strIcon, strIcon)
     End If
 
     For Each objFolder In objParentFolder.Folders
@@ -405,16 +411,22 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
 
 End Sub
 
+Private Sub Form_Resize()
+
+  Treeview1.Refresh
+
+End Sub
+
 Private Sub optCalculated_Click()
   'chkShowAll.Enabled = False
-  TreeView1.Visible = False
+  Treeview1.Visible = False
   cmdCalc.Enabled = True
   Changed = True
 End Sub
 
 Private Sub optFixed_Click()
   'chkShowAll.Enabled = True
-  TreeView1.Visible = True
+  Treeview1.Visible = True
   txtCalc.Tag = 0
   txtCalc.Text = vbNullString
   cmdCalc.Enabled = False
@@ -469,8 +481,8 @@ Private Sub Form_Load()
     txtName.Enabled = False
     optFixed.Enabled = False
     optCalculated.Enabled = False
-    TreeView1.BackColor = vbButtonFace
-    TreeView1.ForeColor = vbApplicationWorkspace
+    Treeview1.BackColor = vbButtonFace
+    Treeview1.ForeColor = vbApplicationWorkspace
   End If
 
 End Sub
@@ -512,7 +524,7 @@ Private Function ValidDefinition() As Boolean
 
 
   If optFixed.value = True Then
-    If TreeView1.SelectedItem Is Nothing Then
+    If Treeview1.SelectedItem Is Nothing Then
       MsgBox "You must select an outlook folder.", vbExclamation, Me.Caption
       Exit Function
     End If
@@ -545,7 +557,7 @@ Private Function SaveDefinition() As Boolean
     If optFixed.value = True Then
       .TableID = 0
       .FolderType = 0
-      .FixedPath = TreeView1.SelectedItem.Tag
+      .FixedPath = Treeview1.SelectedItem.Tag
       .CalcExprID = 0
     Else
       .TableID = mlngTableID
