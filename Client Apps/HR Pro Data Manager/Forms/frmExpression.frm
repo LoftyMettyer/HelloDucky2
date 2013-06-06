@@ -131,19 +131,18 @@ Begin VB.Form frmExpression
          Width           =   6900
          _ExtentX        =   12171
          _ExtentY        =   7064
-         _Version        =   65536
+         _Version        =   65538
          NodeSelectionStyle=   2
          PictureAlignment=   0
          Style           =   6
          Indentation     =   315
-         LoadStyleRoot   =   1
          AutoSearch      =   0   'False
          HideSelection   =   0   'False
          PictureBackgroundUseMask=   0   'False
          HasFont         =   -1  'True
          HasMouseIcon    =   0   'False
          HasPictureBackground=   0   'False
-         ImageList       =   "(None)"
+         ImageList       =   "<None>"
          BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
             Name            =   "Verdana"
             Size            =   8.25
@@ -153,6 +152,7 @@ Begin VB.Form frmExpression
             Italic          =   0   'False
             Strikethrough   =   0   'False
          EndProperty
+         LoadStyleRoot   =   1
       End
    End
    Begin VB.Frame fraDefinition 
@@ -368,11 +368,11 @@ Private Function AccessState(lngExprID As Long) As String
 End Function
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 
 Public Property Let Changed(blnChanged As Boolean)
-  cmdOK.Enabled = blnChanged
+  cmdOk.Enabled = blnChanged
 End Property
 
 Private Sub RemoveComponentNode(psNodeKey As String)
@@ -753,7 +753,7 @@ Private Sub cmdOK_Click()
   '                been deleted by another user before the current
   '                expression has been saved.
   If CheckForDeletedCalcs Then
-    If CheckExpression Then
+    If CheckExpression(True) Then
         
         'Only allow change of return type if expression is not used anywhere
         If Not mobjExpression.ExpressionID = 0 Then
@@ -949,7 +949,7 @@ ErrorTrap:
 End Sub
 
 
-Private Function CheckExpression() As Boolean
+Private Function CheckExpression(pfFullValidation As Boolean) As Boolean
   ' Check that the expression information is valid.
   On Error GoTo ErrorTrap
 
@@ -986,7 +986,7 @@ Private Function CheckExpression() As Boolean
   If fValid Then
     mobjExpression.ResetConstructedFlag True
     mobjExpression.ConstructExpression
-    iValidityCode = mobjExpression.ValidateExpression(True)
+    iValidityCode = mobjExpression.ValidateExpression(True, , pfFullValidation)
   
     fValid = (iValidityCode = giEXPRVALIDATION_NOERRORS)
 
@@ -1324,7 +1324,7 @@ Private Sub cmdTest_Click()
 
   ReDim mvarUDFsRequired(0)
 
-  If CheckExpression = True Then
+  If CheckExpression(False) = True Then
     
     
     'MH20010122 Change this to Validating = false
@@ -2043,7 +2043,7 @@ Private Sub sstrvComponents_AfterLabelEdit(Cancel As SSActiveTreeView.SSReturnBo
   mfLabelEditing = False
   
   ' RH - Fault 1909 - Put the default button back on
-  cmdOK.Default = True
+  cmdOk.Default = True
   
   ' Validate the entered label.
   If Len(NewString) = 0 Then
@@ -2077,7 +2077,7 @@ Private Sub sstrvComponents_BeforeLabelEdit(Cancel As SSActiveTreeView.SSReturnB
   CreateUndoView (giUNDO_RENAME)
   
   ' RH - Fault 1909 - Remove the default button
-  cmdOK.Default = False
+  cmdOk.Default = False
   
   ' Only allow sub-expression labels to be edited.
   If sstrvComponents.SelectedItem.Key = ROOTKEY Then
@@ -2312,12 +2312,12 @@ End Sub
 Private Sub txtDescription_GotFocus()
   ' Select the entire contents of the textbox.
   UI.txtSelText
-  cmdOK.Default = False
+  cmdOk.Default = False
 
 End Sub
 
 Private Sub txtDescription_LostFocus()
-  cmdOK.Default = True
+  cmdOk.Default = True
 End Sub
 
 Private Sub txtExpressionName_Change()
