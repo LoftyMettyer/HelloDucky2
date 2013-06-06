@@ -47,6 +47,7 @@ Private mcolEmailLinks As Collection
 Private mcolOutlookLinks As Collection
 Private mcolWorkflowTriggeredLinks As Collection
 Private mcolTableValidations As Collection
+Private mbIsRemoteView As Boolean
 
 Public Property Get PermissionsPrompted() As Boolean
     PermissionsPrompted = mbPermissionsPrompted
@@ -5254,10 +5255,7 @@ ErrorTrap:
 End Function
 
 Public Property Get IsRemoteView() As Boolean
-  If sTableName = "Payslips" Then
-  Else
-    IsRemoteView = gsTableName
-  End If
+  IsRemoteView = mbIsRemoteView
 End Property
 
 Public Property Let IsRemoteView(pbNewValue As Boolean)
