@@ -1856,7 +1856,7 @@ Private Sub SaveLinkParameters(piLinkType As SSINTRANETLINKTYPES)
               sChartColumnID = Val(.Columns("ChartColumnID").CellText(varBookmark))
               sChartFilterID = Val(.Columns("ChartFilterID").CellText(varBookmark))
               sChartAggregateType = Val(.Columns("ChartAggregateType").CellText(varBookmark))
-              fChartShowValues = .Columns("ChartShowValues").CellText(varBookmark)
+              fChartShowValues = Val(.Columns("ChartShowValues").CellText(varBookmark))
               
              
             Case SSINTLINK_DROPDOWNLIST
@@ -2134,6 +2134,9 @@ Private Sub cmdAddButtonLink_Click()
         & vbTab & .cboChartType.ItemData(.cboChartType.ListIndex) _
         & vbTab & IIf(.chkDottedGridlines.value = 0, "0", "1") _
         & vbTab & IIf(.chkStackSeries.value = 0, "0", "1") _
+        & vbTab & "0" _
+        & vbTab & .ChartTableID & vbTab & .ChartColumnID _
+        & vbTab & .ChartFilterID & vbTab & .ChartAggregateType _
         & vbTab & IIf(.chkShowValues.value = 0, "0", "1")
 
       For iLoop = 0 To cboButtonLinkView.ListCount - 1
@@ -3195,11 +3198,9 @@ Private Sub cmdEditButtonLink_Click()
         & vbTab & 0 _
         & vbTab & .ChartTableID _
         & vbTab & .ChartColumnID _
-        & vbTab & 0 _
+        & vbTab & .ChartFilterID _
         & vbTab & .ChartAggregateType & vbTab & IIf(.chkShowValues = 0, "0", "1")
-        
-        ' above is missing viewid and filterid in that order. (the 0's)
-        
+                
       ctlSourceGrid.RemoveItem lngRow
       
       For iLoop = 0 To cboButtonLinkView.ListCount - 1

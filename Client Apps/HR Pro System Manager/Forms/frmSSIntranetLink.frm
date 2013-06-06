@@ -39,7 +39,7 @@ Begin VB.Form frmSSIntranetLink
          Height          =   210
          Left            =   195
          TabIndex        =   71
-         Top             =   2040
+         Top             =   1695
          Width           =   1665
       End
       Begin VB.CommandButton cmdChartData 
@@ -63,7 +63,7 @@ Begin VB.Form frmSSIntranetLink
          Height          =   210
          Left            =   195
          TabIndex        =   66
-         Top             =   1695
+         Top             =   2040
          Width           =   1665
       End
       Begin VB.CheckBox chkDottedGridlines 
@@ -145,7 +145,7 @@ Begin VB.Form frmSSIntranetLink
          Width           =   330
       End
       Begin VB.CheckBox chkNewColumn 
-         Caption         =   "&Begin new column"
+         Caption         =   "Column &break"
          Height          =   255
          Left            =   1050
          TabIndex        =   59
@@ -910,17 +910,17 @@ Private Sub SetChartTypes()
     .AddItem "2D Bar"
     .ItemData(.NewIndex) = 1
     
-    .AddItem "3D Line"
-    .ItemData(.NewIndex) = 2
+'    .AddItem "3D Line"
+'    .ItemData(.NewIndex) = 2
         
-    .AddItem "2D Line"
-    .ItemData(.NewIndex) = 3
+'    .AddItem "2D Line"
+'    .ItemData(.NewIndex) = 3
         
     .AddItem "3D Area"
     .ItemData(.NewIndex) = 4
         
-    .AddItem "2D Area"
-    .ItemData(.NewIndex) = 5
+'    .AddItem "2D Area"
+'    .ItemData(.NewIndex) = 5
         
     .AddItem "3D Step"
     .ItemData(.NewIndex) = 6
@@ -931,8 +931,8 @@ Private Sub SetChartTypes()
     .AddItem "2D Pie"
     .ItemData(.NewIndex) = 14
         
-    .AddItem "2D XY"
-    .ItemData(.NewIndex) = 16
+'    .AddItem "2D XY"
+'    .ItemData(.NewIndex) = 16
         
     .ListIndex = iDefaultItem
   End With
@@ -1277,6 +1277,11 @@ Public Sub Initialize(piType As SSINTRANETLINKTYPES, _
     
     optLink(SSINTLINKSCREEN_UTILITY).value = True
     
+    ' disable the irrelevant options
+    optLink(SSINTLINKPWFSTEPS).Enabled = False
+    optLink(SSINTLINKCHART).Enabled = False
+    
+    
   ElseIf miLinkType = SSINTLINK_DOCUMENT Then
     optLink(SSINTLINKSCREEN_DOCUMENT).value = True
   End If
@@ -1359,8 +1364,7 @@ Private Sub RefreshControls()
   fraDocument.Visible = optLink(SSINTLINKSCREEN_DOCUMENT).value
   fraLinkSeparator.Visible = (optLink(SSINTLINKSEPARATOR).value Or optLink(SSINTLINKPWFSTEPS).value)
   fraChartLink.Visible = optLink(SSINTLINKCHART).value
-  
-  
+      
   ' Disable the HR Pro screen controls as required.
   cboHRProTable.Enabled = (optLink(SSINTLINKSCREEN_HRPRO).value) And (cboHRProTable.ListCount > 0)
   cboHRProTable.BackColor = IIf(cboHRProTable.Enabled, vbWindowBackground, vbButtonFace)
@@ -1506,6 +1510,30 @@ Private Sub RefreshControls()
   End If
   
   
+  If optLink(SSINTLINKCHART).value And cboChartType.ListIndex >= 0 Then
+  
+    chkStackSeries.Visible = False
+    chkDottedGridlines.Enabled = True
+    
+    Select Case cboChartType.ItemData(cboChartType.ListIndex)
+      Case 0  '3D Bar
+        
+      Case 1  '2D Bar
+            
+      Case 4  '3D Area
+        
+      Case 6  '3D Step
+    
+      Case 7  '2D Step
+        
+      Case 14 '2D Pie
+        ' disable dotted gridlines option
+        chkDottedGridlines.value = 0
+        chkDottedGridlines.Enabled = False
+    End Select
+  
+  End If
+  
   mblnRefreshing = True
   GetStartModes
   mblnRefreshing = False
@@ -1513,7 +1541,7 @@ Private Sub RefreshControls()
   lblHRProUtilityMessage.Caption = sUtilityMessage
   
   ' Disable the OK button as required.
-  cmdOK.Enabled = mfChanged
+  cmdOk.Enabled = mfChanged
   
 
 End Sub
@@ -1791,6 +1819,7 @@ Private Sub cboChartType_Click()
   mfChanged = True
   ' Display new chart details
   RefreshChart
+  RefreshControls
 End Sub
 
 Private Sub chkDottedGridlines_Click()
@@ -1835,7 +1864,7 @@ Private Sub cmdChartData_Click()
   Dim frmSSIChart As New frmSSIntranetChart
 
   With frmSSIChart
-    .Initialize 1, ChartTableID, ChartColumnID, 1, ChartAggregateType
+    .Initialize 1, ChartTableID, ChartColumnID, ChartFilterID, ChartAggregateType
     
     .Show vbModal
     
@@ -1844,6 +1873,7 @@ Private Sub cmdChartData_Click()
       ChartTableID = .cboParents.ItemData(.cboParents.ListIndex)
       ChartColumnID = .cboColumns.ItemData(.cboColumns.ListIndex)
       ChartAggregateType = IIf(.optAggregateType(0).value, 0, 1)
+      ChartFilterID = .txtFilter.Tag
       
       mfChanged = True
       
@@ -2015,6 +2045,11 @@ Private Sub cmdIcon_Click()
   If frmPictSel.SelectedPicture > 0 Then
     glngPictureID = frmPictSel.SelectedPicture
     imgIcon_Refresh
+  End If
+  
+  If frmPictSel.Cancelled = False Then
+    mfChanged = True
+    RefreshControls
   End If
   
   Set frmPictSel = Nothing
