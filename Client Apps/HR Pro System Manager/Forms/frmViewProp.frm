@@ -185,7 +185,7 @@ Private Function SaveChanges() As Boolean
           .Fields("GrantDelete") = frmPermissions.GrantDelete
         End If
 
-        glngViewID = Database.UniqueColumnValue("tmpViews", "ViewID")
+        glngViewID = UniqueColumnValue("tmpViews", "ViewID")
         !ViewID = glngViewID
         .Fields("New") = True
         .Fields("Deleted") = False
@@ -339,10 +339,10 @@ Public Property Let ViewID(plngViewID As Long)
       mstrCopyFromViewName = IIf(IsNull(.Fields("OriginalViewName")), "", .Fields("OriginalViewName"))
 
       If gblnCopy Then
-        Dim varBookmark As Variant
+        Dim varBookMark As Variant
         Dim iCounter As Integer, fGoodName As Boolean
         
-        varBookmark = recViewEdit.Bookmark
+        varBookMark = recViewEdit.Bookmark
        
         ' Create a new table name.
         tmpViewName = "Copy_of_" & sViewName
@@ -371,7 +371,7 @@ Public Property Let ViewID(plngViewID As Long)
               End If
             End If
         Loop
-        recViewEdit.Bookmark = varBookmark
+        recViewEdit.Bookmark = varBookMark
       End If
       
       sDescription = Trim(.Fields("ViewDescription"))
@@ -485,7 +485,7 @@ Private Sub cmdCancel_Click()
   
 End Sub
 
-Private Sub cmdOK_Click()
+Private Sub cmdOk_Click()
   ' Validate and save the View properties.
   On Error GoTo ErrorTrap
   
@@ -544,7 +544,7 @@ Private Sub cmdOK_Click()
 
   If fOK Then
     ' Ensure that the table name is not a keyword.
-    fOK = Not Database.IsKeyword(sViewName)
+    fOK = Not IsKeyword(sViewName)
     If Not fOK Then
       MsgBox "'" & sViewName & "' cannot be used as a view name" & _
         vbCr & "as it is a reserved word.", _
@@ -839,7 +839,7 @@ Private Sub txtViewName_Change()
   Dim iSelLen As Integer
   
   'JPD 20090102 Fault 13484
-  sValidatedName = Database.ValidateName(txtViewName.Text)
+  sValidatedName = ValidateName(txtViewName.Text)
   
   If sValidatedName <> txtViewName.Text Then
     iSelStart = txtViewName.SelStart
@@ -861,7 +861,7 @@ End Sub
 
 Private Sub txtViewName_KeyPress(KeyAscii As Integer)
   ' Validate the character entered.
-  KeyAscii = Database.ValidNameChar(KeyAscii, txtViewName.SelStart)
+  KeyAscii = ValidNameChar(KeyAscii, txtViewName.SelStart)
 End Sub
 
 

@@ -1605,7 +1605,7 @@ Private Sub cmdOk_Click()
   mblnTableViewExists = False
 
   ' Format the table name.
-  sName = Trim(Database.FormatName(txtTableName.Text))
+  sName = Trim(FormatName(txtTableName.Text))
   If Len(sName) < 1 Then
     MsgBox "You must enter a table name.", _
       vbOKOnly + vbExclamation, Application.Name
@@ -1650,7 +1650,7 @@ Private Sub cmdOk_Click()
     End With
   
     ' Ensure that the table name is not a keyword.
-    If Database.IsKeyword(sName) Then
+    If IsKeyword(sName) Then
       MsgBox "'" & sName & "' cannot be used as a table name" & _
         vbCr & "as it is a reserved word.", _
         vbOKOnly + vbExclamation, Application.Name
@@ -2356,7 +2356,7 @@ Private Sub Form_Load()
   ssTabTableProperties.TabVisible(iTABLEPROPERTYTTAB_WORKFLOWLINKS) = Application.WorkflowModule
 
   ' Set the maximum table name length.
-  txtTableName.MaxLength = Database.MaxTableNameLength
+  txtTableName.MaxLength = MaxTableNameLength
   
   ' Position the form.
   UI.frmAtCenterOfParent Me, frmSysMgr
@@ -2526,7 +2526,7 @@ Private Sub txtTableName_Change()
   Dim iSelLen As Integer
   
   'JPD 20090102 Fault 13484
-  sValidatedName = Database.ValidateName(txtTableName.Text)
+  sValidatedName = ValidateName(txtTableName.Text)
   
   If sValidatedName <> txtTableName.Text Then
     iSelStart = txtTableName.SelStart
@@ -2554,7 +2554,7 @@ End Sub
 Private Sub txtTableName_KeyPress(KeyAscii As Integer)
 
   ' Validate the character entered.
-  KeyAscii = Database.ValidNameChar(KeyAscii, txtTableName.SelStart)
+  KeyAscii = ValidNameChar(KeyAscii, txtTableName.SelStart)
   
 End Sub
 
@@ -2874,13 +2874,13 @@ Public Sub PrintDefinition()
                 (Not !columntype = giCOLUMNTYPE_SYSTEM) Then
       
                   ' Size
-                  If Database.ColumnHasSize(.Fields("DataType").value) Then
+                  If ColumnHasSize(.Fields("DataType").value) Then
                     If .Fields("Size").value = VARCHAR_MAX_Size Then
                       strSize = vbNullString
                     Else
                       strSize = Trim(Str(.Fields("Size").value))
                     End If
-                    If Database.ColumnHasScale(.Fields("DataType").value) Then
+                    If ColumnHasScale(.Fields("DataType").value) Then
                       strDecimals = Trim(Str(.Fields("Decimals").value))
                     Else
                       strDecimals = ""
@@ -2922,7 +2922,7 @@ Public Sub PrintDefinition()
                   End Select
       
                   ' Data type
-                  strDataType = Database.GetDataDesc(.Fields("DataType").value)
+                  strDataType = GetDataDesc(.Fields("DataType").value)
                   
                   If Len(strSize) > 0 Then
                     If Len(strDecimals) > 0 Then
@@ -3138,9 +3138,9 @@ Public Sub CopyDefinitionToClipboard()
           (Not !columntype = giCOLUMNTYPE_SYSTEM) Then
     
             ' Size
-            If Database.ColumnHasSize(.Fields("DataType").value) Then
+            If ColumnHasSize(.Fields("DataType").value) Then
               strSize = Trim(Str(.Fields("Size").value))
-              If Database.ColumnHasScale(.Fields("DataType").value) Then
+              If ColumnHasScale(.Fields("DataType").value) Then
                 strDecimals = Trim(Str(.Fields("Decimals").value))
               Else
                 strDecimals = ""
@@ -3182,7 +3182,7 @@ Public Sub CopyDefinitionToClipboard()
             End Select
           
             ' Data type
-            strDataType = Database.GetDataDesc(.Fields("DataType").value)
+            strDataType = GetDataDesc(.Fields("DataType").value)
           
             If iColumns = 0 Then
               strClipboardText = strClipboardText & "Column Name" & vbTab & "Data Type" & vbTab & "Control" & vbTab & "Type" & vbTab & "Size" & vbCrLf
@@ -3645,7 +3645,7 @@ Private Function GetNewLinkID()
 
   Set objNewLink = New clsOutlookLink
 
-  lngNewID = Database.UniqueColumnValue("tmpOutlookLinks", "LinkID")
+  lngNewID = UniqueColumnValue("tmpOutlookLinks", "LinkID")
 
   Do While lngNewID < 99999
     Set objNewLink = mobjTable.OutlookLinks("ID" & lngNewID)
@@ -3665,7 +3665,7 @@ Private Function GetNewWorkflowLinkID() As Long
   
   On Local Error GoTo LocalErr
   
-  lngNewID = Database.UniqueColumnValue("tmpWorkflowTriggeredLinks", "LinkID")
+  lngNewID = UniqueColumnValue("tmpWorkflowTriggeredLinks", "LinkID")
 
   Do While lngNewID < 99999
     Set objNewLink = mobjTable.WorkflowTriggeredLinks("ID" & lngNewID)
@@ -3685,7 +3685,7 @@ Private Function GetNewTableValidationID() As Long
   
   On Local Error GoTo LocalErr
   
-  lngNewID = Database.UniqueColumnValue("tmpTableValidations", "ValidationID")
+  lngNewID = UniqueColumnValue("tmpTableValidations", "ValidationID")
 
   Do While lngNewID < 99999
     Set objNewValidation = mobjTable.TableValidations("ID" & lngNewID)

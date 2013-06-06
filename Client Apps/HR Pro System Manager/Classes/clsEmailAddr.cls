@@ -645,7 +645,7 @@ Public Function WriteEmail() As Boolean
 
     If (IsNew And Not IsChanged) Then
       'Get new Email id
-'      EmailID = Database.UniqueColumnValue("tmpEmailAddresses", "EmailID")
+'      EmailID = UniqueColumnValue("tmpEmailAddresses", "EmailID")
       EmailID = GetUniqueID("emailaddress", "tmpEmailAddresses", "emailID")
 
       'Add a record for new Email
@@ -832,9 +832,9 @@ Public Function EmailIsUsed(pfrmUsage As frmUsage) As Boolean
 
   Dim fUsed As Boolean
   Dim sSQL As String
-  Dim rsDAOCheck As dao.Recordset
+  Dim rsDAOCheck As DAO.Recordset
   Dim adoRes As New ADODB.Recordset
-  Dim rsModules As dao.Recordset
+  Dim rsModules As DAO.Recordset
   Dim sMessage As String
   Dim bWF As Boolean
   Dim sModuleName As String

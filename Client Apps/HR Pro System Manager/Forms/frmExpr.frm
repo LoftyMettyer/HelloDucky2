@@ -1,7 +1,7 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
-Object = "{1C203F10-95AD-11D0-A84B-00A0247B735B}#1.0#0"; "SSTree.ocx"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
+Object = "{1C203F10-95AD-11D0-A84B-00A0247B735B}#1.0#0"; "sstree.ocx"
 Begin VB.Form frmExpr 
    Caption         =   "Expression Definition"
    ClientHeight    =   5955
@@ -123,11 +123,10 @@ Begin VB.Form frmExpr
          Width           =   6900
          _ExtentX        =   12171
          _ExtentY        =   6218
-         _Version        =   65536
+         _Version        =   65538
          NodeSelectionStyle=   2
          Style           =   6
          Indentation     =   315
-         LoadStyleRoot   =   1
          AutoSearch      =   0   'False
          HideSelection   =   0   'False
          PictureBackgroundUseMask=   0   'False
@@ -144,6 +143,7 @@ Begin VB.Form frmExpr
             Italic          =   0   'False
             Strikethrough   =   0   'False
          EndProperty
+         LoadStyleRoot   =   1
       End
    End
    Begin VB.Frame fraDefinition 
@@ -401,7 +401,7 @@ Private Sub cmdCancel_Click()
     ' JDM - 22/08/01 - Fault 2714 - Changed the cancel message to be consistent.
     intAnswer = MsgBox("You have changed the current definition. Save changes ?", vbQuestion + vbYesNoCancel + vbDefaultButton1, App.ProductName)
     If intAnswer = vbYes Then
-        Call cmdOK_Click
+        Call cmdOk_Click
         Exit Sub
     ElseIf intAnswer = vbCancel Then
         Exit Sub
@@ -480,7 +480,7 @@ Private Sub cmdModifyComponent_Click()
   
 End Sub
 
-Private Sub cmdOK_Click()
+Private Sub cmdOk_Click()
   ' If no changes have been made to the expression, treat the OK command as AccessCodes Cancel command.
   If CheckChanged Then
     ' Check expression
@@ -959,7 +959,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
         If CheckChanged Then
             intAnswer = MsgBox("You have changed the current definition. Save changes ?", vbQuestion + vbYesNoCancel + vbDefaultButton1, App.ProductName)
             If intAnswer = vbYes Then
-                Call cmdOK_Click
+                Call cmdOk_Click
                 If Me.Cancelled = True Then Cancel = 1
             ElseIf intAnswer = vbNo Then
                 Me.Cancelled = True
@@ -1474,7 +1474,7 @@ Private Sub sstrvComponents_KeyPress(KeyAscii As Integer)
   
     For Each objOperatorDef In gobjOperatorDefs
       If InStr(objOperatorDef.ShortcutKeys, UCase(Chr(KeyAscii))) > 0 Then
-        IID = objOperatorDef.id
+        IID = objOperatorDef.ID
         iComponentType = giCOMPONENT_OPERATOR
         fFound = True
         Exit For
@@ -1485,7 +1485,7 @@ Private Sub sstrvComponents_KeyPress(KeyAscii As Integer)
     If Not fFound Then
       For Each objFunctionDef In gobjFunctionDefs
         If InStr(objFunctionDef.ShortcutKeys, UCase(Chr(KeyAscii))) > 0 Then
-          IID = objFunctionDef.id
+          IID = objFunctionDef.ID
           iComponentType = giCOMPONENT_FUNCTION
           fFound = True
           Exit For
@@ -1639,7 +1639,7 @@ Private Sub txtExpressionName_Change()
   Dim iSelLen As Integer
   
   'JPD 20090102 Fault 13484
-  sValidatedName = Database.ValidateName(txtExpressionName.Text)
+  sValidatedName = ValidateName(txtExpressionName.Text)
   
   If sValidatedName <> txtExpressionName.Text Then
     iSelStart = txtExpressionName.SelStart
@@ -1951,7 +1951,7 @@ End Function
 
 Private Sub txtExpressionName_KeyPress(KeyAscii As Integer)
   ' Validate the character entered.
-  KeyAscii = Database.ValidNameChar(KeyAscii, txtExpressionName.SelStart)
+  KeyAscii = ValidNameChar(KeyAscii, txtExpressionName.SelStart)
 
 End Sub
 

@@ -386,9 +386,9 @@ Private Function SaveChanges() As Boolean
         End If
       Else
         ' Create and initialise a new Workflow record if required.
-        WorkflowID = Database.UniqueColumnValue("tmpWorkflows", "ID")
+        WorkflowID = UniqueColumnValue("tmpWorkflows", "ID")
         .AddNew
-        !id = WorkflowID
+        !ID = WorkflowID
         !Name = Trim(txtName.Text)
         !Description = Trim(txtDescription.Text)
         
@@ -464,7 +464,7 @@ Private Sub cmdCancel_Click()
 End Sub
 
 
-Private Sub cmdOK_Click()
+Private Sub cmdOk_Click()
   ' Validate and save the changes.
   On Error GoTo ErrorTrap
 
@@ -488,7 +488,7 @@ Private Sub cmdOK_Click()
             Exit Do
           End If
 
-          fOK = (!id = WorkflowID)
+          fOK = (!ID = WorkflowID)
           If Not fOK Then
             MsgBox "A workflow named '" & Trim(txtName.Text) & "' already exists!", vbOKOnly + vbExclamation, Application.Name
             txtName.SetFocus
@@ -612,7 +612,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
     If mfChanged Then
       iAnswer = MsgBox("You have changed the definition. Save changes ?", vbQuestion + vbYesNoCancel + vbDefaultButton1, App.ProductName)
       If iAnswer = vbYes Then
-        Call cmdOK_Click
+        Call cmdOk_Click
         If Me.Cancelled Then Cancel = 1
       ElseIf iAnswer = vbNo Then
         Me.Cancelled = True

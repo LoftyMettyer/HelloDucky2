@@ -171,10 +171,10 @@ Public Function WriteDetail(lngContentID As Long) As Boolean
 
   With recLinkContentEdit
 
-    lngID = Database.UniqueColumnValue("tmpLinkContent", "ID")
+    lngID = UniqueColumnValue("tmpLinkContent", "ID")
 
     .AddNew
-    !id = lngID
+    !ID = lngID
     !ContentID = lngContentID
     !Sequence = mlngSequence
     !FixedText = mstrFixedText

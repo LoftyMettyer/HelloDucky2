@@ -158,7 +158,7 @@ Public Function WriteSummaryField() As Boolean
   
   fOK = True
   
-  lngNewID = Database.UniqueColumnValue("tmpSummary", "ID")
+  lngNewID = UniqueColumnValue("tmpSummary", "ID")
   gLngID = lngNewID
   
   With recSummaryEdit

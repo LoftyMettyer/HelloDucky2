@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Begin VB.Form frmScrEdit 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Properties"
@@ -1163,7 +1163,7 @@ Private Function SaveChanges() As Boolean
       End If
     Else
       ' Create and initialise a new screen record if required.
-      Me.ScreenID = Database.UniqueColumnValue("tmpScreens", "screenID")
+      Me.ScreenID = UniqueColumnValue("tmpScreens", "screenID")
       .AddNew
       !ScreenID = Me.ScreenID
       !TableID = TableID
@@ -1199,7 +1199,7 @@ Private Function SaveChanges() As Boolean
     If listHistoryScreens.Selected(iIndex) Then
       With recHistScrEdit
         .AddNew
-        !id = Database.UniqueColumnValue("tmpHistoryScreens", "ID")
+        !ID = UniqueColumnValue("tmpHistoryScreens", "ID")
         !parentScreenID = ScreenID
         !historyScreenID = listHistoryScreens.ItemData(iIndex)
         .Update

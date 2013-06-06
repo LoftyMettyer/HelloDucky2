@@ -111,7 +111,7 @@ Private Sub cmdCancel_Click()
   UnLoad Me
 End Sub
 
-Private Sub cmdOK_Click()
+Private Sub cmdOk_Click()
 
   If Trim(mstrPath) <> vbNullString Then
     mblnCancelled = False
@@ -141,7 +141,7 @@ Private Function trvAttachmentDir_Populate() As Boolean
   
   On Error GoTo LocalErr
   
-  Set objServerNode = trvAttachmentDir.Nodes.Add(, , , UCase(Database.ServerName), "IMG_SERVER", "IMG_SERVER")
+  Set objServerNode = trvAttachmentDir.Nodes.Add(, , , UCase(gsServerName), "IMG_SERVER", "IMG_SERVER")
   objServerNode.Expanded = True
 
   'JDM - 10/12/2004 - Faults 2936/6253/9226 - Limit selection to just local drives
@@ -239,7 +239,7 @@ Private Sub trvAttachmentDir_DblClick()
   If Not (trvAttachmentDir.SelectedItem Is Nothing) Then
     'Check that the server name is not highlighted !
     If Not (trvAttachmentDir.SelectedItem.Parent Is Nothing) Then
-      cmdOK_Click
+      cmdOk_Click
     End If
   End If
 End Sub

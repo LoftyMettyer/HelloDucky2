@@ -316,7 +316,7 @@ Public Function WriteComponent() As Boolean
 
 
   'MH20010712
-  'lngNewID = Database.UniqueColumnValue("tmpComponents", "componentID")
+  'lngNewID = UniqueColumnValue("tmpComponents", "componentID")
   lngNewID = GetUniqueID("ExprComponents", "tmpComponents", "componentID")
   
   
@@ -434,7 +434,7 @@ Public Function RootExpressionID() As Long
   Dim fOK As Boolean
   Dim sSQL As String
   Dim objComp As CExprComponent
-  Dim rsExpressions As dao.Recordset
+  Dim rsExpressions As DAO.Recordset
   
   sSQL = "SELECT tmpExpressions.parentComponentID, tmpExpressions.exprID" & _
     " FROM tmpExpressions, tmpComponents" & _

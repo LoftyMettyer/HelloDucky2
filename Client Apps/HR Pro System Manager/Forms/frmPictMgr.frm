@@ -803,7 +803,7 @@ Private Function NewPicture() As Boolean
   fOK = (Len(sFileName) > 0)
   If fOK Then
     sPictureName = JustFileName(sFileName)
-    lngNewID = Database.UniqueColumnValue("tmpPictures", "pictureID")
+    lngNewID = UniqueColumnValue("tmpPictures", "pictureID")
     sKey = "I" & lngNewID
     
     ' Add the new picture to the small imagelist.

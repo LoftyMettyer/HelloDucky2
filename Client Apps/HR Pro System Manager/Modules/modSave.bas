@@ -1028,7 +1028,7 @@ Private Function SaveModuleDefinitions() As Boolean
     rsMaxLinkID.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly, adCmdText
 
     ReDim Preserve alngLinkIDs(2, UBound(alngLinkIDs, 2) + 1)
-    alngLinkIDs(1, UBound(alngLinkIDs, 2)) = rsLinks!id
+    alngLinkIDs(1, UBound(alngLinkIDs, 2)) = rsLinks!ID
     alngLinkIDs(2, UBound(alngLinkIDs, 2)) = rsMaxLinkID!result
     rsMaxLinkID.Close
     
@@ -1407,7 +1407,7 @@ Private Function CopyData() As Boolean
         
         If fOK Then
           ' Copy the source table into a temporary table.
-          sTempCopy = Database.GetTempTableName("Tmp_" & sSourceTableName)
+          sTempCopy = GetTempTableName("Tmp_" & sSourceTableName)
           fOK = Not (sTempCopy = vbNullString)
         End If
           

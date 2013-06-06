@@ -440,7 +440,7 @@ Public Function WriteEMailLink() As Boolean
   With recEmailLinksEdit
 
     If mlngLinkID = 0 Then
-      mlngLinkID = Database.UniqueColumnValue("tmpEmailLinks", "LinkID")
+      mlngLinkID = UniqueColumnValue("tmpEmailLinks", "LinkID")
     End If
 
     .AddNew
@@ -644,7 +644,7 @@ Public Function GetNewLinkID(mvarEmailLinks As Collection) As Long
 
   Set objNewLink = New clsEmailLink
 
-  lngNewID = Database.UniqueColumnValue("tmpEmailLinks", "LinkID")
+  lngNewID = UniqueColumnValue("tmpEmailLinks", "LinkID")
 
   
   If Not mvarEmailLinks Is Nothing Then

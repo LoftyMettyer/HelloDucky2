@@ -1942,8 +1942,8 @@ Public Function WriteColumn() As Boolean
     
     If (IsNew And Not IsChanged) Then
       ' Get a new column ID value.
-      'ColumnID = Database.UniqueColumnValue("tmpColumns", "columnID")
-      ColumnID = Database.GetNextObjectIdentitySeed("ASRSysColumns")
+      'ColumnID = UniqueColumnValue("tmpColumns", "columnID")
+      ColumnID = GetNextObjectIdentitySeed("ASRSysColumns")
       
       ' Add a new record for the Column.
       fOK = (ColumnID > 0)

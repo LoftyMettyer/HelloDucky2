@@ -283,7 +283,7 @@ Public Function WriteFolder() As Boolean
   With recOutlookFolders
 
     If mlngFolderID = 0 Then
-      mlngFolderID = Database.UniqueColumnValue("tmpOutlookFolders", "FolderID")
+      mlngFolderID = UniqueColumnValue("tmpOutlookFolders", "FolderID")
       .AddNew
     Else
       FindFolder

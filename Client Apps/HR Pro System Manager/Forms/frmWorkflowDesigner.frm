@@ -12029,7 +12029,7 @@ Private Function SaveElementsAndLinks() As Boolean
         If lngElementID >= 0 Then
           .Fields("ID") = lngElementID
         Else
-          .Fields("ID") = Database.UniqueColumnValue("tmpWorkflowElements", "ID")
+          .Fields("ID") = UniqueColumnValue("tmpWorkflowElements", "ID")
         End If
 
         .Fields("workflowID") = mlngWorkflowID
@@ -12134,7 +12134,7 @@ Private Function SaveElementsAndLinks() As Boolean
           With recWorkflowElementItemEdit
             .AddNew
       
-            .Fields("ID") = Database.UniqueColumnValue("tmpWorkflowElementItems", "ID")
+            .Fields("ID") = UniqueColumnValue("tmpWorkflowElementItems", "ID")
             .Fields("elementID") = lngElementID
             
             lngItemID = .Fields("ID")
@@ -12277,7 +12277,7 @@ Private Function SaveElementsAndLinks() As Boolean
           With recWorkflowElementColumnEdit
             .AddNew
       
-            .Fields("ID") = Database.UniqueColumnValue("tmpWorkflowElementColumns", "ID")
+            .Fields("ID") = UniqueColumnValue("tmpWorkflowElementColumns", "ID")
             .Fields("elementID") = lngElementID
             .Fields("columnID") = avColumns(3, iLoop)
             .Fields("valueType") = avColumns(4, iLoop)
@@ -12311,7 +12311,7 @@ Private Function SaveElementsAndLinks() As Boolean
           With recWorkflowElementValidationEdit
             .AddNew
 
-            .Fields("ID") = Database.UniqueColumnValue("tmpWorkflowElementValidations", "ID")
+            .Fields("ID") = UniqueColumnValue("tmpWorkflowElementValidations", "ID")
             .Fields("elementID") = lngElementID
             .Fields("exprID") = CLng(asValidations(1, iLoop))
             .Fields("type") = CInt(asValidations(2, iLoop))
@@ -12354,7 +12354,7 @@ Private Function SaveElementsAndLinks() As Boolean
       With recWorkflowLinkEdit
         .AddNew
 
-        .Fields("ID") = Database.UniqueColumnValue("tmpWorkflowLinks", "ID")
+        .Fields("ID") = UniqueColumnValue("tmpWorkflowLinks", "ID")
         
         .Fields("workflowID") = mlngWorkflowID
         .Fields("startOutboundFlowCode") = wfLink.StartOutboundFlowCode

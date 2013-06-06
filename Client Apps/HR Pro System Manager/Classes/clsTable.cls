@@ -1042,7 +1042,7 @@ Public Function CloneTable(pavCloneRegister As Variant, pfCopyData As Boolean, p
       Do While (Not .EOF) And fOK
         ' Instantiate the original Summary Field object.
         Set objSourceSummary = New cSummaryField
-        objSourceSummary.id = .Fields("ID")
+        objSourceSummary.ID = .Fields("ID")
         Set objNewSummary = objSourceSummary.CloneSummaryField
            
         fOK = Not objNewSummary Is Nothing
@@ -1717,7 +1717,7 @@ Public Function CloneTable(pavCloneRegister As Variant, pfCopyData As Boolean, p
           End With
         Loop
         ' Get a unique ID for the new record.
-        lngScreenID = Database.UniqueColumnValue("tmpScreens", "screenID")
+        lngScreenID = UniqueColumnValue("tmpScreens", "screenID")
         
         ' Add a new record in the database for the copied screen definition.
         recScrEdit.AddNew
@@ -1890,7 +1890,7 @@ Public Function CloneTable(pavCloneRegister As Variant, pfCopyData As Boolean, p
             ' Add a new record in the database for the copied history screen definition.
             recHistScrEdit.AddNew
             
-            recHistScrEdit!id = Database.UniqueColumnValue("tmpHistoryScreens", "ID")
+            recHistScrEdit!ID = UniqueColumnValue("tmpHistoryScreens", "ID")
             recHistScrEdit!parentScreenID = lngScreenID
             recHistScrEdit!historyScreenID = lngHistoryScreenID
           
@@ -1957,7 +1957,7 @@ Public Function CloneTable(pavCloneRegister As Variant, pfCopyData As Boolean, p
           End With
         Loop
         ' Get a unique ID for the new record.
-        lngViewID = Database.UniqueColumnValue("tmpViews", "ViewID")
+        lngViewID = UniqueColumnValue("tmpViews", "ViewID")
         
         ' Add a new record in the database for the copied view definition.
         recViewEdit.AddNew
@@ -2512,7 +2512,7 @@ Public Function ReadSummaryFields() As Boolean
         End If
         
         Set objSummaryField = New cSummaryField
-        objSummaryField.id = !id
+        objSummaryField.ID = !ID
         If objSummaryField.ReadSummaryField Then
           gobjSummaryFields.Add objSummaryField
         End If
@@ -2594,8 +2594,8 @@ Public Function WriteTable() As Boolean
     
     If fNewTable Then
       'Get new table id
-'      TableID = Database.UniqueColumnValue("tmpTables", "tableID")
-      TableID = Database.GetNextObjectIdentitySeed("ASRSysTables")
+'      TableID = UniqueColumnValue("tmpTables", "tableID")
+      TableID = GetNextObjectIdentitySeed("ASRSysTables")
       
       'Add a record for new table
       fOK = (TableID > 0)

@@ -184,11 +184,11 @@ Public Property Let ColumnEndTime(ByVal lngNewValue As Long)
   mlngColumnEndTime = lngNewValue
 End Property
 
-Public Property Get Content() As String
-  Content = mstrContent
+Public Property Get content() As String
+  content = mstrContent
 End Property
 
-Public Property Let Content(ByVal strNewValue As String)
+Public Property Let content(ByVal strNewValue As String)
   mstrContent = strNewValue
 End Property
 
@@ -232,7 +232,7 @@ Public Function WriteLink() As Boolean
   With recOutlookLinks
 
     If mlngLinkID = 0 Then
-      mlngLinkID = Database.UniqueColumnValue("tmpOutlookLinks", "linkID")
+      mlngLinkID = UniqueColumnValue("tmpOutlookLinks", "linkID")
     End If
 
     .AddNew
@@ -254,7 +254,7 @@ Public Function WriteLink() As Boolean
     !ReminderPeriod = mlngReminderPeriod
 
     !Subject = mlngSubject
-    !Content = mstrContent
+    !content = mstrContent
 
     !New = mfNew
     !Changed = mfChanged
@@ -384,7 +384,7 @@ Public Function ReadLink() As Boolean
     mstrFixedEndTime = !FixedEndTime
     mlngColumnStartTime = !ColumnStartTime
     mlngColumnEndTime = !ColumnEndTime
-    mstrContent = IIf(IsNull(!Content), vbNullString, !Content)
+    mstrContent = IIf(IsNull(!content), vbNullString, !content)
     mblnReminder = !Reminder
     mlngReminderOffset = !ReminderOffset
     mlngReminderPeriod = !ReminderPeriod
@@ -511,7 +511,7 @@ Public Function CloneOutlookLink(pavCloneRegister As Variant) As clsOutlookLink
       .TimeRange = Me.TimeRange
       .FixedStartTime = Me.FixedStartTime
       .FixedEndTime = Me.FixedEndTime
-      .Content = Me.Content
+      .content = Me.content
       .Reminder = Me.Reminder
       .ReminderOffset = Me.ReminderOffset
       .ReminderPeriod = Me.ReminderPeriod

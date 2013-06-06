@@ -31,9 +31,9 @@ Public Property Get ColumnID() As Long
   
 End Property
 
-Public Property Let ColumnID(ByVal plngNewValue As Long)
+Public Property Let ColumnID(ByVal pLngNewValue As Long)
   ' Set the Column ID property.
-  gLngColumnID = plngNewValue
+  gLngColumnID = pLngNewValue
 
 End Property
 
@@ -43,9 +43,9 @@ Public Property Get DiaryLinkId() As Long
 
 End Property
 
-Public Property Let DiaryLinkId(ByVal plngNewValue As Long)
+Public Property Let DiaryLinkId(ByVal pLngNewValue As Long)
   ' Set the Diary Link ID property.
-  gLngDiaryLinkID = plngNewValue
+  gLngDiaryLinkID = pLngNewValue
 
 End Property
 
@@ -143,7 +143,7 @@ Public Function WriteDiaryLink() As Boolean
   
   fOK = True
   
-  lngNewID = Database.UniqueColumnValue("tmpDiary", "diaryID")
+  lngNewID = UniqueColumnValue("tmpDiary", "diaryID")
   gLngDiaryLinkID = lngNewID
   
   With recDiaryEdit

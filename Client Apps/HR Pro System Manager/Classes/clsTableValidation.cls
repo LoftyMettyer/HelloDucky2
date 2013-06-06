@@ -180,7 +180,7 @@ Public Function WriteValidation() As Boolean
 
   With recTableValidationEdit
     If mlngValidationID = 0 Then
-      mlngValidationID = Database.UniqueColumnValue("tmpTableValidations", "ValidationID")
+      mlngValidationID = UniqueColumnValue("tmpTableValidations", "ValidationID")
     End If
   
     .AddNew

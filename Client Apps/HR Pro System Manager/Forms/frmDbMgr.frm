@@ -1507,7 +1507,7 @@ Private Function AddDetailsToListItem(pListView As ComctlLib.ListView) As Boolea
     '******************************************************************************
     '   Datatype
     '******************************************************************************
-    objItem.SubItems(iOrder) = Database.GetDataDesc(!DataType)
+    objItem.SubItems(iOrder) = GetDataDesc(!DataType)
     iCount = iCount + 1
     malngColumnDataWidths(iCount) = IIf(malngColumnDataWidths(iCount) < Len(objItem.SubItems(iOrder)), Len(objItem.SubItems(iOrder)), malngColumnDataWidths(iCount))
     iOrder = iOrder + 1
@@ -1552,7 +1552,7 @@ Private Function AddDetailsToListItem(pListView As ComctlLib.ListView) As Boolea
     '******************************************************************************
     '   Size & Decimals
     '******************************************************************************
-    If Database.ColumnHasSize(!DataType) Then
+    If ColumnHasSize(!DataType) Then
     
       If !MultiLine Then
         objItem.SubItems(iOrder) = vbNullString
@@ -1564,7 +1564,7 @@ Private Function AddDetailsToListItem(pListView As ComctlLib.ListView) As Boolea
       malngColumnDataWidths(iCount) = IIf(malngColumnDataWidths(iCount) < Len(objItem.SubItems(iOrder)), Len(objItem.SubItems(iOrder)), malngColumnDataWidths(iCount))
       iOrder = iOrder + 1
 
-      If Database.ColumnHasScale(!DataType) Then
+      If ColumnHasScale(!DataType) Then
         objItem.SubItems(iOrder) = PackOutString(Trim(Str(!Decimals)))
         iCount = iCount + 1
         malngColumnDataWidths(iCount) = IIf(malngColumnDataWidths(iCount) < Len(objItem.SubItems(iOrder)), Len(objItem.SubItems(iOrder)), malngColumnDataWidths(iCount))

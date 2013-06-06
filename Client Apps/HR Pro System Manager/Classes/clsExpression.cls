@@ -2310,7 +2310,7 @@ Public Function WriteExpression() As Boolean
       'Replace the select max from access table with new method....
       'check the SQL database directly (incase anybody in Data Manager
       'has created a new expression.
-      '''mlngExpressionID = Database.UniqueColumnValue("tmpExpressions", "exprID")
+      '''mlngExpressionID = UniqueColumnValue("tmpExpressions", "exprID")
       mlngExpressionID = GetUniqueID("Expressions", "tmpExpressions", "exprID")
 
       ' Add a record for new expression.

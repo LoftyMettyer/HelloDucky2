@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Begin VB.Form frmWorkflowOpen 
    Caption         =   "Workflow Manager"
    ClientHeight    =   6285
@@ -197,6 +197,7 @@ Begin VB.Form frmWorkflowOpen
             AutoSize        =   1
             Object.Width           =   9234
             TextSave        =   ""
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -384,12 +385,12 @@ Private Sub cmdCopy_Click()
     Loop
 
     ' Get a unique ID for the new record.
-    lngWorkflowID = Database.UniqueColumnValue("tmpWorkflows", "ID")
+    lngWorkflowID = UniqueColumnValue("tmpWorkflows", "ID")
 
     ' Add a new record in the database for the copied screen definition.
     recWorkflowEdit.AddNew
 
-    recWorkflowEdit!id = lngWorkflowID
+    recWorkflowEdit!ID = lngWorkflowID
     recWorkflowEdit!Changed = False
     recWorkflowEdit!New = True
     recWorkflowEdit!Deleted = False
@@ -507,13 +508,13 @@ Private Sub cmdCopy_Click()
         ' Add a new record in the database for the copied screen control definition.
         recWorkflowElementEdit.AddNew
 
-        lngID = Database.UniqueColumnValue("tmpWorkflowElements", "ID")
-        recWorkflowElementEdit!id = lngID
+        lngID = UniqueColumnValue("tmpWorkflowElements", "ID")
+        recWorkflowElementEdit!ID = lngID
 
         recWorkflowElementEdit!WorkflowID = lngWorkflowID
         recWorkflowElementEdit!Type = .Fields("Type")
         recWorkflowElementEdit!Caption = .Fields("Caption")
-        recWorkflowElementEdit!connectionPairID = .Fields("connectionPairID")
+        recWorkflowElementEdit!ConnectionPairID = .Fields("connectionPairID")
         recWorkflowElementEdit!LeftCoord = .Fields("leftCoord")
         recWorkflowElementEdit!TopCoord = .Fields("topCoord")
         recWorkflowElementEdit!Identifier = .Fields("Identifier")
@@ -556,23 +557,23 @@ Private Sub cmdCopy_Click()
         recWorkflowElementEdit!WebFormBGColor = .Fields("WebFormBGColor")
         recWorkflowElementEdit!WebFormBGImageID = .Fields("WebFormBGImageID")
         recWorkflowElementEdit!WebFormBGImageLocation = .Fields("WebFormBGImageLocation")
-        recWorkflowElementEdit!webFormDefaultFontName = .Fields("webFormDefaultFontName")
-        recWorkflowElementEdit!webFormDefaultFontSize = .Fields("webFormDefaultFontSize")
-        recWorkflowElementEdit!webFormDefaultFontBold = .Fields("webFormDefaultFontBold")
-        recWorkflowElementEdit!webFormDefaultFontItalic = .Fields("webFormDefaultFontItalic")
-        recWorkflowElementEdit!webFormDefaultFontStrikeThru = .Fields("webFormDefaultFontStrikeThru")
-        recWorkflowElementEdit!webFormDefaultFontUnderline = .Fields("webFormDefaultFontUnderline")
+        recWorkflowElementEdit!WebFormDefaultFontName = .Fields("webFormDefaultFontName")
+        recWorkflowElementEdit!WebFormDefaultFontSize = .Fields("webFormDefaultFontSize")
+        recWorkflowElementEdit!WebFormDefaultFontBold = .Fields("webFormDefaultFontBold")
+        recWorkflowElementEdit!WebFormDefaultFontItalic = .Fields("webFormDefaultFontItalic")
+        recWorkflowElementEdit!WebFormDefaultFontStrikeThru = .Fields("webFormDefaultFontStrikeThru")
+        recWorkflowElementEdit!WebFormDefaultFontUnderline = .Fields("webFormDefaultFontUnderline")
         recWorkflowElementEdit!WebFormWidth = .Fields("WebFormWidth")
         recWorkflowElementEdit!WebFormHeight = .Fields("WebFormHeight")
-        recWorkflowElementEdit!recSelWebFormIdentifier = .Fields("recSelWebFormIdentifier")
-        recWorkflowElementEdit!recSelIdentifier = .Fields("recSelIdentifier")
+        recWorkflowElementEdit!RecSelWebFormIdentifier = .Fields("recSelWebFormIdentifier")
+        recWorkflowElementEdit!RecSelIdentifier = .Fields("recSelIdentifier")
         
         recWorkflowElementEdit!SecondaryDataRecord = .Fields("SecondaryDataRecord")
-        recWorkflowElementEdit!secondaryRecSelWebFormIdentifier = .Fields("secondaryRecSelWebFormIdentifier")
-        recWorkflowElementEdit!secondaryRecSelIdentifier = .Fields("secondaryRecSelIdentifier")
+        recWorkflowElementEdit!SecondaryRecSelWebFormIdentifier = .Fields("secondaryRecSelWebFormIdentifier")
+        recWorkflowElementEdit!SecondaryRecSelIdentifier = .Fields("secondaryRecSelIdentifier")
         
         recWorkflowElementEdit!DataRecordTable = .Fields("DataRecordTable")
-        recWorkflowElementEdit!secondaryDataRecordTable = .Fields("secondaryDataRecordTable")
+        recWorkflowElementEdit!SecondaryDataRecordTable = .Fields("secondaryDataRecordTable")
         
         'JPD 20060908 Fault 11482
         recWorkflowElementEdit!EMailSubject = .Fields("EmailSubject")
@@ -630,8 +631,8 @@ Private Sub cmdCopy_Click()
         ' Add a new record in the database for the copied element item definition.
         recWorkflowElementItemEdit.AddNew
 
-        lngID = Database.UniqueColumnValue("tmpWorkflowElementItems", "ID")
-        recWorkflowElementItemEdit!id = lngID
+        lngID = UniqueColumnValue("tmpWorkflowElementItems", "ID")
+        recWorkflowElementItemEdit!ID = lngID
        
         For iLoop = 1 To UBound(alngElementIDs, 2)
           If alngElementIDs(0, iLoop) = .Fields("ElementID") Then
@@ -641,7 +642,7 @@ Private Sub cmdCopy_Click()
         Next iLoop
         
         recWorkflowElementItemEdit!Caption = .Fields("Caption")
-        recWorkflowElementItemEdit!dbColumnID = .Fields("DBColumnID")
+        recWorkflowElementItemEdit!DBColumnID = .Fields("DBColumnID")
         recWorkflowElementItemEdit!DBRecord = .Fields("DBRecord")
         recWorkflowElementItemEdit!Identifier = .Fields("Identifier")
         recWorkflowElementItemEdit!InputType = .Fields("InputType")
@@ -682,10 +683,10 @@ Private Sub cmdCopy_Click()
         recWorkflowElementItemEdit!HeadFontItalic = .Fields("HeadFontItalic")
         recWorkflowElementItemEdit!HeadFontStrikeThru = .Fields("HeadFontStrikeThru")
         recWorkflowElementItemEdit!HeadFontUnderline = .Fields("HeadFontUnderline")
-        recWorkflowElementItemEdit!HeadLines = .Fields("Headlines")
+        recWorkflowElementItemEdit!Headlines = .Fields("Headlines")
         recWorkflowElementItemEdit!TableID = .Fields("TableID")
-        recWorkflowElementItemEdit!recSelWebFormIdentifier = .Fields("recSelWebFormIdentifier")
-        recWorkflowElementItemEdit!recSelIdentifier = .Fields("recSelIdentifier")
+        recWorkflowElementItemEdit!RecSelWebFormIdentifier = .Fields("recSelWebFormIdentifier")
+        recWorkflowElementItemEdit!RecSelIdentifier = .Fields("recSelIdentifier")
 
         recWorkflowElementItemEdit!ForeColorHighlight = .Fields("ForeColorHighlight")
         recWorkflowElementItemEdit!BackColorHighlight = .Fields("BackColorHighlight")
@@ -781,8 +782,8 @@ Private Sub cmdCopy_Click()
         ' Add a new record in the database for the copied element column definition.
         recWorkflowElementColumnEdit.AddNew
 
-        lngID = Database.UniqueColumnValue("tmpWorkflowElementColumns", "ID")
-        recWorkflowElementColumnEdit!id = lngID
+        lngID = UniqueColumnValue("tmpWorkflowElementColumns", "ID")
+        recWorkflowElementColumnEdit!ID = lngID
        
         For iLoop = 1 To UBound(alngElementIDs, 2)
           If alngElementIDs(0, iLoop) = .Fields("ElementID") Then
@@ -797,7 +798,7 @@ Private Sub cmdCopy_Click()
         recWorkflowElementColumnEdit!WFFormIdentifier = .Fields("WFFormIdentifier")
         recWorkflowElementColumnEdit!WFValueIdentifier = .Fields("WFValueIdentifier")
 
-        recWorkflowElementColumnEdit!dbColumnID = .Fields("DBColumnID")
+        recWorkflowElementColumnEdit!DBColumnID = .Fields("DBColumnID")
         recWorkflowElementColumnEdit!DBRecord = .Fields("DBRecord")
         recWorkflowElementColumnEdit!CalcID = .Fields("CalcID")
         
@@ -831,8 +832,8 @@ Private Sub cmdCopy_Click()
         ' Add a new record in the database for the copied element validation definition.
         recWorkflowElementValidationEdit.AddNew
 
-        lngID = Database.UniqueColumnValue("tmpWorkflowElementValidations", "ID")
-        recWorkflowElementValidationEdit!id = lngID
+        lngID = UniqueColumnValue("tmpWorkflowElementValidations", "ID")
+        recWorkflowElementValidationEdit!ID = lngID
 
         For iLoop = 1 To UBound(alngElementIDs, 2)
           If alngElementIDs(0, iLoop) = .Fields("ElementID") Then
@@ -874,8 +875,8 @@ Private Sub cmdCopy_Click()
         ' Add a new record in the database for the copied link definition.
         recWorkflowLinkEdit.AddNew
 
-        lngID = Database.UniqueColumnValue("tmpWorkflowLinks", "ID")
-        recWorkflowLinkEdit!id = lngID
+        lngID = UniqueColumnValue("tmpWorkflowLinks", "ID")
+        recWorkflowLinkEdit!ID = lngID
 
         recWorkflowLinkEdit!WorkflowID = lngWorkflowID
         recWorkflowLinkEdit!StartOutboundFlowCode = .Fields("StartOutboundFlowCode")
@@ -1215,7 +1216,7 @@ ErrorTrap:
   
 End Sub
 
-Private Sub cmdOK_Click()
+Private Sub cmdOk_Click()
   UnLoad Me
   
 End Sub
@@ -1464,15 +1465,15 @@ Public Function RefreshWorkflows() As Boolean
     Do While Not .EOF
 
       Set objListItem = lstItems.ListItems.Add(, , !Name)
-      objListItem.Tag = !id
+      objListItem.Tag = !ID
       
       ReDim Preserve mavWorkflowInfo(4, UBound(mavWorkflowInfo, 2) + 1)
-      mavWorkflowInfo(1, UBound(mavWorkflowInfo, 2)) = !id
+      mavWorkflowInfo(1, UBound(mavWorkflowInfo, 2)) = !ID
       mavWorkflowInfo(2, UBound(mavWorkflowInfo, 2)) = !Description
       mavWorkflowInfo(3, UBound(mavWorkflowInfo, 2)) = !Enabled
       mavWorkflowInfo(4, UBound(mavWorkflowInfo, 2)) = !Locked
       
-      If !id = lngWorkflowID Then
+      If !ID = lngWorkflowID Then
         iSelectedWorkflow = lstItems.ListItems.Count
       End If
       
