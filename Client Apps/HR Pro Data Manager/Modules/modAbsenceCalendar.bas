@@ -903,7 +903,7 @@ Public Sub AbsCal_GetFirstAndLastViewedDates()
     sDateFormat = Replace(sDateFormat, "yy", frmAbsenceCalendar.lblCurrentYear.Caption)
   End If
   
-  sDateFormat = Replace(sDateFormat, "mm", frmAbsenceCalendar.cboStartMonth.ItemData(frmAbsenceCalendar.cboStartMonth.ListIndex))
+  sDateFormat = Replace(sDateFormat, "mm", frmAbsenceCalendar.cboStartMonth.ListIndex + 1)
   
   sDateFormat = Replace(sDateFormat, "dd", "01")
     
