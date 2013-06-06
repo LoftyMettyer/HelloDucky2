@@ -1,9 +1,9 @@
 VERSION 5.00
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "coa_colourpicker.ocx"
+Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "COA_ColourPicker.ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
-Object = "{65E121D4-0C60-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCHRT20.OCX"
+Object = "{65E121D4-0C60-11D2-A9FC-0000F8754DA1}#2.0#0"; "mschrt20.ocx"
 Begin VB.Form frmSSIntranetLink 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Self-service Intranet Link"
@@ -24,7 +24,6 @@ Begin VB.Form frmSSIntranetLink
    Icon            =   "frmSSIntranetLink.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
-   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   12660
@@ -33,7 +32,7 @@ Begin VB.Form frmSSIntranetLink
    StartUpPosition =   2  'CenterScreen
    Begin VB.Frame fraLinkSeparator 
       Caption         =   "Separator :"
-      Height          =   2610
+      Height          =   4170
       Left            =   2880
       TabIndex        =   55
       Top             =   5250
@@ -110,6 +109,18 @@ Begin VB.Form frmSSIntranetLink
          Top             =   690
          Width           =   2040
       End
+      Begin VB.Label lblDiaryWarning 
+         AutoSize        =   -1  'True
+         Caption         =   "lblDiaryWarningText"
+         ForeColor       =   &H000000FF&
+         Height          =   195
+         Left            =   300
+         TabIndex        =   135
+         Top             =   2655
+         Visible         =   0   'False
+         Width           =   5775
+         WordWrap        =   -1  'True
+      End
       Begin VB.Label lblSeparatorColour 
          AutoSize        =   -1  'True
          Caption         =   "Separator border colour :"
@@ -128,13 +139,13 @@ Begin VB.Form frmSSIntranetLink
       End
       Begin VB.Label lblNoOptions 
          AutoSize        =   -1  'True
-         Caption         =   "There are no configurable options for this link type"
+         Caption         =   "There are no configurable options for this link type."
          Height          =   195
          Left            =   285
          TabIndex        =   82
          Top             =   2190
          Visible         =   0   'False
-         Width           =   4350
+         Width           =   4410
       End
       Begin VB.Label lblIcon 
          Caption         =   "Icon :"
@@ -2200,6 +2211,7 @@ Private Sub RefreshControls()
   
   If optLink(SSINTLINKSEPARATOR).value Or optLink(SSINTLINKCHART) _
       Or optLink(SSINTLINKPWFSTEPS).value Or optLink(SSINTLINKDB_VALUE).value Or optLink(SSINTLINKTODAYS_EVENTS).value Then
+        
     txtPrompt.Enabled = False
     txtPrompt.BackColor = vbButtonFace
     
@@ -2311,6 +2323,14 @@ Private Sub RefreshControls()
     cmdSeparatorColPick.Visible = False
     chkSeparatorUseFormatting.Visible = False
     Line4.Visible = False
+    lblDiaryWarning.Visible = (optLink(SSINTLINKTODAYS_EVENTS))
+    lblDiaryWarning.Caption = "The following items will appear for all users in the selected visibility groups :" & vbCrLf & vbCrLf & _
+    "   Manual Diary Events" & vbCrLf & _
+    "   System Diary Events" & vbCrLf & _
+    "   Outlook Calendar Links" & vbCrLf & _
+    "   Attendance Status (Workflow Out of Office)"
+    lblDiaryWarning.Top = 745
+    
   ElseIf optLink(SSINTLINKSEPARATOR).value Then
     ' Enable the icon and new column options for dashboard link separators...
     lblIcon.Visible = True
@@ -2322,6 +2342,7 @@ Private Sub RefreshControls()
     chkNewColumn.Visible = (miLinkType = SSINTLINK_BUTTON)
     lblNoOptions.Visible = False
     lblNoOptions.Top = 345
+    lblDiaryWarning.Visible = False
     lblSeparatorColour.Visible = (miLinkType = SSINTLINK_BUTTON)
     txtSeparatorColour.Visible = (miLinkType = SSINTLINK_BUTTON)
     cmdSeparatorColPick.Visible = (miLinkType = SSINTLINK_BUTTON)
@@ -2330,6 +2351,7 @@ Private Sub RefreshControls()
   Else
     lblNoOptions.Visible = False
     lblNoOptions.Top = 345
+    lblDiaryWarning.Visible = False
     cmdIconClear.Enabled = txtIcon.Text <> ""
     cmdFilterClear.Enabled = txtFilter.Text <> ""
   End If
@@ -2373,7 +2395,7 @@ Private Sub RefreshControls()
   lblHRProUtilityMessage.Caption = sUtilityMessage
   
   ' Disable the OK button as required.
-  cmdOk.Enabled = mfChanged
+  cmdOK.Enabled = mfChanged
   
 
 End Sub
@@ -2631,17 +2653,17 @@ Private Sub RefreshChart()
   MSChart1.Legend.Location.LocationType = VtChLocationTypeRight
                      
   ' Set X Y coordinates for bottom left corner
-  MSChart1.Legend.Location.Rect.Min.X = MSChart1.Width - 60
-  MSChart1.Legend.Location.Rect.Min.Y = 0
+  MSChart1.Legend.Location.Rect.Min.x = MSChart1.Width - 60
+  MSChart1.Legend.Location.Rect.Min.y = 0
   ' Set X Y coordinates for top right corner
-  MSChart1.Legend.Location.Rect.Max.X = MSChart1.Width
-  MSChart1.Legend.Location.Rect.Max.Y = MSChart1.Height
+  MSChart1.Legend.Location.Rect.Max.x = MSChart1.Width
+  MSChart1.Legend.Location.Rect.Max.y = MSChart1.Height
                  
-  MSChart1.Plot.LocationRect.Min.X = 0
-  MSChart1.Plot.LocationRect.Min.Y = 0
+  MSChart1.Plot.LocationRect.Min.x = 0
+  MSChart1.Plot.LocationRect.Min.y = 0
   '1200 twips
-  MSChart1.Plot.LocationRect.Max.X = MSChart1.Width - 1000
-  MSChart1.Plot.LocationRect.Max.Y = MSChart1.Height
+  MSChart1.Plot.LocationRect.Max.x = MSChart1.Width - 1000
+  MSChart1.Plot.LocationRect.Max.y = MSChart1.Height
   
 End Sub
 
