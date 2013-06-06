@@ -283,3 +283,8 @@ Public Const giEXPRVALUE_BYREF_OFFSET = 100
 Public Const gsSSP_PROCEDURENAME = "spsys_absencessp"
 Public Const gsWorkingDaysBetween2Dates_PROCEDURENAME = "sp_ASRFn_WorkingDaysBetweenTwoDates"
 
+' Pictures
+Public Const ChunkSize = 2 ^ 14
+
+
+
