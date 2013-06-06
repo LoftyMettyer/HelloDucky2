@@ -598,7 +598,7 @@ Public Sub Login()
   ' Clear any existing database connection.
   On Error GoTo NoFramework
   Set gADOCon = Nothing
-  Set gobjHRProEngine = New HRProEngine.SysMgr
+  Set gobjHRProEngine = New SystemFramework.SysMgr
   gobjHRProEngine.Initialise
   On Error GoTo ErrorTrap
   
