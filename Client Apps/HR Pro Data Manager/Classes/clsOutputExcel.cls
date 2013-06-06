@@ -1201,40 +1201,8 @@ Private Sub CreatePivotTable(lngMaxRows As Long, lngMaxCols As Long, strHor As S
 
   mxlApp.DisplayAlerts = True
   
-'EXCEL 97
-'    ActiveSheet.PivotTableWizard SourceType:=xlDatabase, SourceData:= _
-'        "Personnel_Records!R5C2:R20C10", TableDestination:="", TableName:= _
-'        "PivotTable1"
-'    ActiveSheet.PivotTables("PivotTable1").AddFields RowFields:="Forenames", _
-'        ColumnFields:="Surname"
-'    ActiveSheet.PivotTables("PivotTable1").PivotFields("Copy of abs dur"). _
-'        Orientation = xlDataField
-
-'EXCEL 2000
-'    ActiveWorkbook.PivotCaches.Add(SourceType:=xlDatabase, SourceData:= _
-'        "'<Blank>'!R8C2:R11C9").CreatePivotTable TableDestination:=Range("B17"), _
-'        TableName:="PivotTable1"
-'    ActiveSheet.PivotTables("PivotTable1").SmallGrid = False
-'    ActiveSheet.PivotTables("PivotTable1").AddFields RowFields:="Department'", _
-'        ColumnFields:="Forenames"
-'    ActiveSheet.PivotTables("PivotTable1").PivotFields("include_salary_column"). _
-'        Orientation = xlDataField
-
-'EXCEL XP
-'  mxlWorkBook.PivotCaches.Add(SourceType:=xlDatabase, SourceData:= _
-'      mxlWorkSheet.Range(mxlWorkSheet.Cells(mlngDataCurrentRow, mlngDataStartCol), mxlWorkSheet.Cells(lngMaxRows, lngMaxCols))).CreatePivotTable TableDestination:="", TableName:= _
-'      "PivotTable1"
-  
-'Excel 2010
-'    ActiveWorkbook.PivotCaches.Create(SourceType:=xlDatabase, SourceData:= _
-'        "Data Personnel_Records!R5C2:R59C11", Version:=xlPivotTableVersion14). _
-'        CreatePivotTable TableDestination:="Personnel_Records!R5C2", TableName:= _
-'        "PivotTable1", DefaultVersion:=xlPivotTableVersion14
-
-
   Set xlData = mxlWorkSheet.Range(mxlWorkSheet.Cells(mlngDataCurrentRow, mlngDataStartCol), mxlWorkSheet.Cells(lngMaxRows, lngMaxCols))
   strSheetName = Mid(mxlWorkSheet.Name, 6)
-  'SetSheetName mxlWorkSheet, "Data " & mxlWorkSheet.Name
   Set xlDataSheet = mxlWorkSheet
 
   GetWorksheet strSheetName
@@ -1242,7 +1210,7 @@ Private Sub CreatePivotTable(lngMaxRows As Long, lngMaxCols As Long, strHor As S
     Set mxlFirstSheet = mxlWorkSheet
   End If
 
-  xlDataSheet.Visible = xlSheetHidden
+  xlDataSheet.Visible = IIf(gblnReportPackMode, xlSheetVisible, xlSheetHidden)
   Set xlStart = mxlWorkSheet.Cells(mlngDataCurrentRow, mlngDataStartCol)
 
   mxlApp.DisplayAlerts = False
