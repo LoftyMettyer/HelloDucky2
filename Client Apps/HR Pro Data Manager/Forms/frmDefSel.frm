@@ -2101,7 +2101,7 @@ Public Sub GetSQL(lngUtilType As utilityType, Optional psRecordSourceWhere As St
     mblnHideDesc = False
     sUtilityType = msTableName & ".objectType"
     strExtraWhereClause = "ASRSysAllObjectAccess.objecttype = ASRSysAllObjectNames.objecttype"
-    Me.HelpContextID = 1152
+    Me.HelpContextID = 5200
   
   Case utlOrder
     msTypeCode = "ORDER"
