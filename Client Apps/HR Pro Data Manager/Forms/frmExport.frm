@@ -57,6 +57,7 @@ Begin VB.Form frmExport
       _Version        =   393216
       Style           =   1
       Tabs            =   6
+      Tab             =   2
       TabsPerRow      =   6
       TabHeight       =   520
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -70,25 +71,20 @@ Begin VB.Form frmExport
       EndProperty
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmExport.frx":000C
-      Tab(0).ControlEnabled=   -1  'True
-      Tab(0).Control(0)=   "fraBase"
-      Tab(0).Control(0).Enabled=   0   'False
-      Tab(0).Control(1)=   "fraInformation"
-      Tab(0).Control(1).Enabled=   0   'False
+      Tab(0).ControlEnabled=   0   'False
+      Tab(0).Control(0)=   "fraInformation"
+      Tab(0).Control(1)=   "fraBase"
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Related &Tables"
       TabPicture(1)   =   "frmExport.frx":0028
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraParent1"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).Control(1)=   "fraParent2"
-      Tab(1).Control(1).Enabled=   0   'False
       Tab(1).Control(2)=   "fraChild"
-      Tab(1).Control(2).Enabled=   0   'False
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "Colu&mns"
       TabPicture(2)   =   "frmExport.frx":0044
-      Tab(2).ControlEnabled=   0   'False
+      Tab(2).ControlEnabled=   -1  'True
       Tab(2).Control(0)=   "fraColumns"
       Tab(2).Control(0).Enabled=   0   'False
       Tab(2).ControlCount=   1
@@ -96,27 +92,20 @@ Begin VB.Form frmExport
       TabPicture(3)   =   "frmExport.frx":0060
       Tab(3).ControlEnabled=   0   'False
       Tab(3).Control(0)=   "fraExportOrder"
-      Tab(3).Control(0).Enabled=   0   'False
       Tab(3).ControlCount=   1
       TabCaption(4)   =   "O&ptions"
       TabPicture(4)   =   "frmExport.frx":007C
       Tab(4).ControlEnabled=   0   'False
       Tab(4).Control(0)=   "fraDateOptions"
-      Tab(4).Control(0).Enabled=   0   'False
       Tab(4).Control(1)=   "fraHeaderOptions"
-      Tab(4).Control(1).Enabled=   0   'False
       Tab(4).ControlCount=   2
       TabCaption(5)   =   "O&utput"
       TabPicture(5)   =   "frmExport.frx":0098
       Tab(5).ControlEnabled=   0   'False
       Tab(5).Control(0)=   "fraDelimFile"
-      Tab(5).Control(0).Enabled=   0   'False
       Tab(5).Control(1)=   "fraCMGFile"
-      Tab(5).Control(1).Enabled=   0   'False
       Tab(5).Control(2)=   "fraOutputDestination"
-      Tab(5).Control(2).Enabled=   0   'False
       Tab(5).Control(3)=   "fraOutputType"
-      Tab(5).Control(3).Enabled=   0   'False
       Tab(5).ControlCount=   4
       Begin VB.Frame fraOutputType 
          Caption         =   "Output Format :"
@@ -497,7 +486,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraColumns 
          Caption         =   "Columns :"
          Height          =   4560
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   50
          Top             =   405
          Width           =   9180
@@ -1244,7 +1233,7 @@ Begin VB.Form frmExport
       End
       Begin VB.Frame fraInformation 
          Height          =   1950
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   0
          Top             =   400
          Width           =   9180
@@ -1432,7 +1421,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraBase 
          Caption         =   "Data :"
          Height          =   2565
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   8
          Top             =   2400
          Width           =   9180
@@ -1711,7 +1700,7 @@ Public Property Let FormPrint(ByVal bPrint As Boolean)
 End Property
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
 End Property
 Private Sub ForceAccess(Optional pvAccess As Variant)
   Dim iLoop As Integer
@@ -1751,7 +1740,7 @@ End Sub
 
 
 Public Property Let Changed(ByVal pblnChanged As Boolean)
-  cmdOk.Enabled = pblnChanged
+  cmdOK.Enabled = pblnChanged
 End Property
 
 Public Property Get SelectedID() As Long
@@ -3668,11 +3657,40 @@ Private Function IsUsedInSortOrder(plngColExprID As Long) As Boolean
   Dim pvarbookmark As Variant
   Dim pintLoop As Integer
   Dim pintPrevRow As Integer
+  Dim lngColumnCount As Long
+  Dim pvarRestoreBookmark As Variant
 
+
+  IsUsedInSortOrder = False
+  
+  
+  'Check if this column exists more than once in the columns list
+  pintLoop = 0
+  lngColumnCount = 0
+  With grdColumns
+    pvarRestoreBookmark = .Bookmark
+    .MoveFirst
+    Do Until pintLoop = .Rows
+      pvarbookmark = .GetBookmark(pintLoop)
+      If .Columns("Type").CellText(pvarbookmark) = "C" And _
+         .Columns("ColExprID").CellText(pvarbookmark) = plngColExprID Then
+        lngColumnCount = lngColumnCount + 1
+        If lngColumnCount > 1 Then
+          .Bookmark = pvarRestoreBookmark
+          Exit Function
+        End If
+      End If
+      pintLoop = pintLoop + 1
+    Loop
+    .Bookmark = pvarRestoreBookmark
+  End With
+  
+  
+  
   With grdExportOrder
   
     pintPrevRow = .AddItemRowIndex(.Bookmark)
-    
+    pintLoop = 0
     .MoveFirst
       Do Until pintLoop = .Rows
         pvarbookmark = .GetBookmark(pintLoop)
@@ -3687,8 +3705,6 @@ Private Function IsUsedInSortOrder(plngColExprID As Long) As Boolean
       Loop
   End With
 
-  IsUsedInSortOrder = False
-  
 End Function
 
 Private Sub RemoveFromSortOrder(plngColExprID As Long)
