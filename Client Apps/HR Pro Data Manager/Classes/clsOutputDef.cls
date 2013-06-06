@@ -118,16 +118,19 @@ Public Sub FormatClick(Index As Integer, Optional blnDataToScreen As Boolean = T
     Case fmtHTML
       EnableDestinations True, False, True, True
       EnableTitlePageTemplate False
+      EnableReportPackTitle True
       If gblnReportPackMode Then EnableReportPackOutputs True, False, False, True
     
     Case fmtWordDoc
       EnableDestinations True, True, True, True
       EnableTitlePageTemplate True
+      EnableReportPackTitle True
       If gblnReportPackMode Then EnableReportPackOutputs True, False, True, True
     
     Case fmtExcelWorksheet, fmtExcelchart, fmtExcelPivotTable
       EnableDestinations True, True, True, True
       EnableTitlePageTemplate True
+      EnableReportPackTitle False
       If gblnReportPackMode Then EnableReportPackOutputs False, True, False, True
     
     Case fmtSQLTable
@@ -144,6 +147,15 @@ Private Sub EnableTitlePageTemplate(enable As Boolean)
     cmdTitlePageTemplate.Enabled = enable
   End If
   
+End Sub
+
+Private Sub EnableReportPackTitle(enable As Boolean)
+  On Error Resume Next
+  EnableControl mfrmParent.txtReportPackTitle, enable
+  Select Case mlngFormat
+  Case fmtExcelWorksheet, fmtExcelchart, fmtExcelPivotTable
+    mfrmParent.txtReportPackTitle.Text = ""
+  End Select
 End Sub
 
 Private Sub EnableReportPackOutputs(blnTOC As Boolean, blnRetainPivot As Boolean, blnForceCover As Boolean, blnBlankTitle As Boolean)
