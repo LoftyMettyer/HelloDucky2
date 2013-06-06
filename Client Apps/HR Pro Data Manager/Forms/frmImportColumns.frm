@@ -18,13 +18,54 @@ Begin VB.Form frmImportColumns
    HelpContextID   =   1044
    Icon            =   "frmImportColumns.frx":0000
    LinkTopic       =   "Form1"
-   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   3060
    ScaleWidth      =   5400
    ShowInTaskbar   =   0   'False
    StartUpPosition =   1  'CenterOwner
+   Begin VB.Frame fraType 
+      Height          =   2295
+      Left            =   120
+      TabIndex        =   0
+      Top             =   120
+      Width           =   1260
+      Begin VB.OptionButton optTable 
+         Caption         =   "Colu&mn"
+         Height          =   195
+         Left            =   150
+         TabIndex        =   1
+         Top             =   360
+         Value           =   -1  'True
+         Width           =   990
+      End
+      Begin VB.OptionButton optFiller 
+         Caption         =   "&Filler"
+         Height          =   195
+         Left            =   150
+         TabIndex        =   2
+         Top             =   760
+         Width           =   735
+      End
+   End
+   Begin VB.CommandButton cmdOk 
+      Caption         =   "&OK"
+      Default         =   -1  'True
+      Height          =   400
+      Left            =   2835
+      TabIndex        =   12
+      Top             =   2520
+      Width           =   1200
+   End
+   Begin VB.CommandButton cmdCancel 
+      Cancel          =   -1  'True
+      Caption         =   "&Cancel"
+      Height          =   400
+      Left            =   4080
+      TabIndex        =   13
+      Top             =   2520
+      Width           =   1200
+   End
    Begin VB.Frame fraField 
       Height          =   2295
       Left            =   1500
@@ -37,7 +78,7 @@ Begin VB.Form frmImportColumns
          Left            =   210
          TabIndex        =   11
          Top             =   1875
-         Width           =   3510
+         Width           =   3465
       End
       Begin VB.TextBox txtLength 
          BackColor       =   &H8000000F&
@@ -90,7 +131,7 @@ Begin VB.Form frmImportColumns
          Left            =   195
          TabIndex        =   8
          Top             =   1155
-         Width           =   390
+         Width           =   570
       End
       Begin VB.Label lblTitle 
          AutoSize        =   -1  'True
@@ -98,10 +139,10 @@ Begin VB.Form frmImportColumns
          Caption         =   "Table :"
          Height          =   195
          Index           =   0
-         Left            =   200
+         Left            =   195
          TabIndex        =   4
          Top             =   360
-         Width           =   495
+         Width           =   675
       End
       Begin VB.Label lblTitle 
          AutoSize        =   -1  'True
@@ -109,53 +150,11 @@ Begin VB.Form frmImportColumns
          Caption         =   "Column :"
          Height          =   195
          Index           =   1
-         Left            =   200
+         Left            =   195
          TabIndex        =   6
-         Top             =   760
-         Width           =   630
+         Top             =   765
+         Width           =   810
       End
-   End
-   Begin VB.Frame fraType 
-      Height          =   2295
-      Left            =   120
-      TabIndex        =   0
-      Top             =   120
-      Width           =   1260
-      Begin VB.OptionButton optTable 
-         Caption         =   "Colu&mn"
-         Height          =   195
-         Left            =   150
-         TabIndex        =   1
-         Top             =   360
-         Value           =   -1  'True
-         Width           =   990
-      End
-      Begin VB.OptionButton optFiller 
-         Caption         =   "&Filler"
-         Height          =   195
-         Left            =   150
-         TabIndex        =   2
-         Top             =   760
-         Width           =   735
-      End
-   End
-   Begin VB.CommandButton cmdOk 
-      Caption         =   "&OK"
-      Default         =   -1  'True
-      Height          =   400
-      Left            =   2835
-      TabIndex        =   12
-      Top             =   2520
-      Width           =   1200
-   End
-   Begin VB.CommandButton cmdCancel 
-      Cancel          =   -1  'True
-      Caption         =   "&Cancel"
-      Height          =   400
-      Left            =   4080
-      TabIndex        =   13
-      Top             =   2520
-      Width           =   1200
    End
 End
 Attribute VB_Name = "frmImportColumns"
