@@ -3,7 +3,7 @@ Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmFusionComponent 
    BorderStyle     =   3  'Fixed Dialog
-   Caption         =   "Payroll Transfer Field"
+   Caption         =   "Fusion Field"
    ClientHeight    =   5505
    ClientLeft      =   45
    ClientTop       =   435
@@ -18,7 +18,6 @@ Begin VB.Form frmFusionComponent
       Strikethrough   =   0   'False
    EndProperty
    HelpContextID   =   5059
-   Icon            =   "frmFusionComponent.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
@@ -43,18 +42,19 @@ Begin VB.Form frmFusionComponent
          Top             =   315
          Width           =   1230
       End
-      Begin VB.ComboBox cboTransferField 
+      Begin VB.ComboBox cboFusionField 
          BackColor       =   &H8000000F&
-         Enabled         =   0   'False
          Height          =   315
+         ItemData        =   "frmFusionComponent.frx":0000
          Left            =   1530
+         List            =   "frmFusionComponent.frx":0002
          Style           =   2  'Dropdown List
          TabIndex        =   1
          Top             =   270
          Width           =   3120
       End
-      Begin VB.Label lblTransferField 
-         Caption         =   "Transfer Field : "
+      Begin VB.Label lblFusionField 
+         Caption         =   "Fusion Field : "
          Height          =   240
          Left            =   180
          TabIndex        =   25
@@ -130,7 +130,7 @@ Begin VB.Form frmFusionComponent
       Top             =   960
       Width           =   4665
       Begin VB.CheckBox chkPreventModify 
-         Caption         =   "&Prevent data updates once in Payroll"
+         Caption         =   "&Prevent data updates once in Fusion"
          Height          =   255
          Left            =   180
          TabIndex        =   11
@@ -166,8 +166,8 @@ Begin VB.Form frmFusionComponent
          Top             =   3525
          Width           =   2550
       End
-      Begin VB.CheckBox chkAlwaysTransfer 
-         Caption         =   "Al&ways Transfer"
+      Begin VB.CheckBox chkAlwaysFusion 
+         Caption         =   "Al&ways Fusion"
          Height          =   240
          Left            =   180
          TabIndex        =   10
@@ -184,9 +184,7 @@ Begin VB.Form frmFusionComponent
       End
       Begin VB.ComboBox cboFldTable 
          Height          =   315
-         ItemData        =   "frmFusionComponent.frx":000C
          Left            =   990
-         List            =   "frmFusionComponent.frx":000E
          Style           =   2  'Dropdown List
          TabIndex        =   6
          Top             =   285
@@ -210,7 +208,6 @@ Begin VB.Form frmFusionComponent
          _Version        =   196617
          DataMode        =   2
          RecordSelectors =   0   'False
-         Col.Count       =   2
          AllowDelete     =   -1  'True
          MultiLine       =   0   'False
          RowSelectionStyle=   2
@@ -234,7 +231,6 @@ Begin VB.Form frmFusionComponent
          BackColorEven   =   -2147483643
          BackColorOdd    =   -2147483643
          RowHeight       =   423
-         ExtraHeight     =   79
          Columns.Count   =   2
          Columns(0).Width=   3625
          Columns(0).Caption=   "OpenHR Value"
@@ -243,8 +239,8 @@ Begin VB.Form frmFusionComponent
          Columns(0).DataType=   8
          Columns(0).FieldLen=   256
          Columns(1).Width=   2117
-         Columns(1).Caption=   "Payroll Value"
-         Columns(1).Name =   "AccordValue"
+         Columns(1).Caption=   "Fusion Value"
+         Columns(1).Name =   "FusionValue"
          Columns(1).DataField=   "Column 1"
          Columns(1).DataType=   8
          Columns(1).FieldLen=   256
@@ -301,7 +297,6 @@ Begin VB.Form frmFusionComponent
          Caption         =   "..."
          Height          =   315
          Left            =   4110
-         Picture         =   "frmFusionComponent.frx":0010
          TabIndex        =   14
          Top             =   380
          UseMaskColor    =   -1  'True
@@ -345,10 +340,10 @@ Option Explicit
 Private mbReadOnly As Boolean
 Private mbLoading As Boolean
 
-Private mlngTransferID As Long
-Private mlngTransferFieldID As Long
+Private mlngFusionID As Long
+Private mlngFusionFieldID As Long
 
-Private miMapType As SystemMgr.AccordMapType
+Private miMapType As SystemMgr.FusionMapType
 Private mlngBaseTableID As Long
 Private mlngTableID As Long
 Private mlngColumnID As Long
@@ -365,19 +360,19 @@ Private mbGroup As Boolean
 Private mlngGroup As Long
 Private mbConvertData As Boolean
 Private mbUndefined As Boolean
-Private mbForceAlwaysTransfer As Boolean
+Private mbForceAlwaysFusion As Boolean
 Private mbPreventModify As Boolean
 
 Public Property Let Changed(pbNewValue As Boolean)
   cmdOK.Enabled = pbNewValue And Not mbLoading
 End Property
 
-Public Property Let TransferFieldID(ByVal plngNewValue As Long)
-  mlngTransferFieldID = plngNewValue
+Public Property Let FusionFieldID(ByVal plngNewValue As Long)
+  mlngFusionFieldID = plngNewValue
 End Property
 
-Public Property Let TransferID(ByVal plngNewValue As Long)
-  mlngTransferID = plngNewValue
+Public Property Let FusionTransferID(ByVal plngNewValue As Long)
+  mlngFusionID = plngNewValue
 End Property
 
 Public Property Let ConvertData(ByVal pbNewValue As Boolean)
@@ -388,12 +383,12 @@ Public Property Get ConvertData() As Boolean
   ConvertData = mbConvertData
 End Property
 
-Public Property Let AlwaysTransferField(ByVal pbNewValue As Boolean)
+Public Property Let AlwaysTransferFieldID(ByVal pbNewValue As Boolean)
   mbAlwaysTransferField = pbNewValue
 End Property
 
-Public Property Get AlwaysTransferField() As Boolean
-  AlwaysTransferField = mbAlwaysTransferField
+Public Property Get AlwaysTransferFieldID() As Boolean
+  AlwaysTransferFieldID = mbAlwaysTransferField
 End Property
 
 Public Property Let PreventModify(ByVal pbNewValue As Boolean)
@@ -497,8 +492,12 @@ Private Sub cboFldTable_Click()
   
 End Sub
 
-Private Sub chkAlwaysTransfer_Click()
-  mbAlwaysTransferField = chkAlwaysTransfer.value
+Private Sub cboFusionField_Change()
+
+End Sub
+
+Private Sub chkAlwaysFusion_Click()
+  mbAlwaysTransferField = chkAlwaysFusion.value
   Me.Changed = True
 End Sub
 
@@ -577,11 +576,11 @@ Private Sub Form_Load()
   grdColumnMapping.RowHeight = GRIDROWHEIGHT
 
   mbReadOnly = (Application.AccessMode <> accFull And Application.AccessMode <> accSupportMode)
-  mbUndefined = (miMapType = MAPTYPE_COLUMN And mlngColumnID = 0)
+  mbUndefined = (miMapType = FUSION_MAPTYPE_COLUMN And mlngColumnID = 0)
   mbLoading = True
-  cboTransferField.Clear
-  cboTransferField.AddItem mstrDescription
-  cboTransferField.Text = mstrDescription
+  cboFusionField.Clear
+  cboFusionField.AddItem mstrDescription
+  cboFusionField.Text = mstrDescription
   
   ControlsDisableAll Me, Not mbReadOnly
   ControlsDisableAll fraDefinition, False
@@ -596,23 +595,23 @@ Private Sub Form_Load()
   optComponentType_Click (miMapType)
   
   Select Case miMapType
-    Case MAPTYPE_COLUMN
+    Case FUSION_MAPTYPE_COLUMN
       If mlngColumnID > 0 Then
         SetComboItem cboFldColumn, mlngColumnID
       End If
   
-    Case MAPTYPE_EXPRESSION
+    Case FUSION_MAPTYPE_EXPRESSION
       txtCalculation.Text = ""
       GetCalculationExpressionDetails
   
-    Case MAPTYPE_VALUE
+    Case FUSION_MAPTYPE_VALUE
       txtText.Text = mstrValue
   
   End Select
   
   chkKeyField.value = IIf(mbIsKeyField, vbChecked, vbUnchecked)
-  chkAlwaysTransfer.Enabled = Not (mbIsKeyField Or mbReadOnly Or mbForceAlwaysTransfer)
-  chkAlwaysTransfer.value = IIf(mbAlwaysTransferField, vbChecked, vbUnchecked)
+  chkAlwaysFusion.Enabled = Not (mbIsKeyField Or mbReadOnly Or mbForceAlwaysFusion)
+  chkAlwaysFusion.value = IIf(mbAlwaysTransferField, vbChecked, vbUnchecked)
   chkConvertData.value = IIf(mbConvertData, vbChecked, vbUnchecked)
   chkPreventModify.value = IIf(mbPreventModify, vbChecked, vbUnchecked)
   
@@ -883,7 +882,7 @@ Private Function GetComboItem(cboTemp As ComboBox) As Long
   End If
 End Function
 
-' Load the mapping values for this transfer field
+' Load the mapping values for this fusion field
 Private Sub LoadMappings()
 
   Dim sSQL As String
@@ -891,9 +890,9 @@ Private Sub LoadMappings()
   Dim rsDefinition As DAO.Recordset
 
   sSQL = "SELECT *" & _
-    " FROM tmpAccordTransferFieldMappings" & _
-    " WHERE TransferID = " & CStr(mlngTransferID) & _
-    " AND FieldID = " & CStr(mlngTransferFieldID) & _
+    " FROM tmpFusionFieldMappings" & _
+    " WHERE FusionID = " & CStr(mlngFusionID) & _
+    " AND FieldID = " & CStr(mlngFusionFieldID) & _
     " ORDER BY HRProValue"
     
   Set rsDefinition = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
@@ -901,7 +900,7 @@ Private Sub LoadMappings()
   grdColumnMapping.RemoveAll
 
   While Not rsDefinition.EOF
-    strAddString = IIf(IsNull(rsDefinition!HRProValue), "", rsDefinition!HRProValue) & vbTab & rsDefinition!AccordValue
+    strAddString = IIf(IsNull(rsDefinition!HRProValue), "", rsDefinition!HRProValue) & vbTab & rsDefinition!FusionValue
     grdColumnMapping.AddItem strAddString
     rsDefinition.MoveNext
   Wend
@@ -917,9 +916,9 @@ Private Sub SaveMappings()
   Dim sSQL As String
   Dim varBookMark As Variant
 
-  daoDb.Execute "DELETE FROM tmpAccordTransferFieldMappings" & _
-                  " WHERE TransferID = " & CStr(mlngTransferID) & _
-                  " AND FieldID = " & CStr(mlngTransferFieldID), dbFailOnError
+  daoDb.Execute "DELETE FROM tmpFusionFieldMappings" & _
+                  " WHERE FusionID = " & CStr(mlngFusionID) & _
+                  " AND FieldID = " & CStr(mlngFusionFieldID), dbFailOnError
   
   UI.LockWindow grdColumnMapping.hWnd
   
@@ -927,15 +926,15 @@ Private Sub SaveMappings()
     For iLoop = 0 To .Rows - 1
       .Bookmark = .AddItemBookmark(iLoop)
   
-      If Not (Len(.Columns("HRProValue").value) = 0 And Len(.Columns("AccordValue").value) = 0) Then
+      If Not (Len(.Columns("HRProValue").value) = 0 And Len(.Columns("FusionValue").value) = 0) Then
   
-        sSQL = "INSERT INTO tmpAccordTransferFieldMappings" & _
-          " (TransferID, FieldID, HRProValue, AccordValue)" & _
+        sSQL = "INSERT INTO tmpFusionFieldMappings" & _
+          " (FusionID, FieldID, HRProValue, FusionValue)" & _
           " VALUES (" & _
-          CStr(mlngTransferID) & "," & _
-          CStr(mlngTransferFieldID) & "," & _
+          CStr(mlngFusionID) & "," & _
+          CStr(mlngFusionFieldID) & "," & _
           "'" & Replace(IIf(Len(.Columns("HRProValue").value) = 0, "", .Columns("HRProValue").value), "'", "''") & "'," & _
-          "'" & Replace(IIf(Len(.Columns("AccordValue").value) = 0, "", .Columns("AccordValue").value), "'", "''") & "')"
+          "'" & Replace(IIf(Len(.Columns("FusionValue").value) = 0, "", .Columns("FusionValue").value), "'", "''") & "')"
   
         daoDb.Execute sSQL, dbFailOnError
       End If
@@ -974,19 +973,19 @@ Private Function Validate() As Boolean
 End Function
 
 Public Property Let IsDepartmentCode(ByVal pbNewValue As Boolean)
-  mbForceAlwaysTransfer = IIf(pbNewValue, True, mbForceAlwaysTransfer)
+  mbForceAlwaysFusion = IIf(pbNewValue, True, mbForceAlwaysFusion)
 End Property
 
 Public Property Let IsDepartmentName(ByVal pbNewValue As Boolean)
-  mbForceAlwaysTransfer = IIf(pbNewValue, True, mbForceAlwaysTransfer)
+  mbForceAlwaysFusion = IIf(pbNewValue, True, mbForceAlwaysFusion)
 End Property
 
-Public Property Let IsPayrollCode(ByVal pbNewValue As Boolean)
-  mbForceAlwaysTransfer = IIf(pbNewValue, True, mbForceAlwaysTransfer)
+Public Property Let IsFusionCode(ByVal pbNewValue As Boolean)
+  mbForceAlwaysFusion = IIf(pbNewValue, True, mbForceAlwaysFusion)
 End Property
 
 Public Property Let IsEmployeeName(ByVal pbNewValue As Boolean)
-  mbForceAlwaysTransfer = IIf(pbNewValue, True, mbForceAlwaysTransfer)
+  mbForceAlwaysFusion = IIf(pbNewValue, True, mbForceAlwaysFusion)
 End Property
 
 Public Property Let Group(ByVal plngNewValue As Long)
