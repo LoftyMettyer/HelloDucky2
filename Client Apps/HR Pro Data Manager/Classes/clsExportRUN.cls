@@ -696,7 +696,7 @@ Private Function GetExportDefinition() As Boolean
   End With
   
   
-  If mlngOutputFormat = fmtExcelWorksheet Then
+  If mlngOutputFormat = fmtExcelWorksheet And Not gblnBatchMode Then
     gobjProgress.AVI = dbExcel
   End If
   
