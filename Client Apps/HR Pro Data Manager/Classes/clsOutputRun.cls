@@ -382,9 +382,9 @@ Public Function GetFile()
   GetFile = mobjOutputType.GetFile(Me, mcolStyles)
 End Function
   
-Public Function AddPage(strDefTitle As String, Optional mstrSheetName As String)
+Public Function AddPage(strDefTitle As String, Optional mstrSheetName As String, Optional mblnOutputCoverSheet As Boolean)
   On Local Error Resume Next
-  mobjOutputType.AddPage strDefTitle, mstrSheetName, mcolStyles
+  mobjOutputType.AddPage strDefTitle, mstrSheetName, mcolStyles, mblnOutputCoverSheet
 End Function
 
 Public Property Let SizeColumnsIndependently(ByVal blnNewValue As Boolean)
@@ -884,7 +884,7 @@ Public Function SetOptions( _
         .txtEmailGroup.Text = datGeneral.GetEmailGroupName(lngEmailAddr)
         .txtEmailGroup.Tag = lngEmailAddr
         .txtEmailSubject.Text = strEmailSubject
-        .txtEmailAttachAs.Text = strEmailAttachAs
+        .txtEMailAttachAs.Text = strEmailAttachAs
         '.txtEmailAttachAs.Tag = lngEmailFileFormat
       End If
       .txtFilename.Text = strFileName
@@ -909,7 +909,7 @@ Public Function SetOptions( _
       blnEmail = (.chkDestination(desEmail).Value = vbChecked)
       lngEmailAddr = Val(.txtEmailGroup.Tag)
       strEmailSubject = .txtEmailSubject.Text
-      strEmailAttachAs = .txtEmailAttachAs.Text
+      strEmailAttachAs = .txtEMailAttachAs.Text
       strFileName = .txtFilename.Text
 
       'lngSaveFileFormat = Val(.txtFilename.Tag)
@@ -921,7 +921,7 @@ Public Function SetOptions( _
       'If .cboEmailAddr.ListIndex <> -1 Then
         mlngEmailGroupID = .txtEmailGroup.Tag
         mstrEmailSubject = .txtEmailSubject.Text
-        mstrEmailAttachAs = .txtEmailAttachAs.Text
+        mstrEmailAttachAs = .txtEMailAttachAs.Text
       'End If
 
 
