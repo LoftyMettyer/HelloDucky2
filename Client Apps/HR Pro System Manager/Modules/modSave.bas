@@ -363,7 +363,7 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
       gobjProgress.UpdateProgress False
       DoEvents
       fOK = SaveExpressions(pfRefreshDatabase)
-      fOK = fOK And objHRProEngine.Script.ScriptObjects
+      objHRProEngine.Script.ScriptObjects
       fOK = fOK And Not gobjProgress.Cancelled
     End If
      
