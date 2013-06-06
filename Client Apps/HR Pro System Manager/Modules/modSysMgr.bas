@@ -441,6 +441,21 @@ Public Enum OLEType
   OLE_EMBEDDED = 2
 End Enum
 
+Public Enum ValidationType
+  VALIDATION_MANDATORY = 0
+  VALIDATION_UNIQUE = 1
+  VALIDATION_DUPLICATE = 2
+  VALIDATION_OVERLAP = 3
+  VALIDATION_CUSTOM = 4
+End Enum
+
+Public Enum Severity
+  SEVERITY_FAILURE = 0
+  SEVERITY_WARNING = 1
+  SEVERITY_INFORMATION = 2
+End Enum
+
+
 'Public Enum TriggerType
 '  Delete_Trigger = 0
 '  Insert_Trigger = 1
