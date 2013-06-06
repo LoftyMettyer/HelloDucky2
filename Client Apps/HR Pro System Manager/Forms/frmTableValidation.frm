@@ -185,7 +185,6 @@ Private Sub cboOverlapColumnEndDate_Click()
 End Sub
 
 Private Sub cboOverlapColumnEndSession_Click()
-  txtOverlapMessage.Text = GenerateMessage
   Me.Changed = True
 End Sub
 
@@ -195,7 +194,6 @@ Private Sub cboOverlapColumnStartDate_Click()
 End Sub
 
 Private Sub cboOverlapColumnStartSession_Click()
-  txtOverlapMessage.Text = GenerateMessage
   Me.Changed = True
 End Sub
 
