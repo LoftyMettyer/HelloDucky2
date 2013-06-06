@@ -64,7 +64,6 @@ Begin VB.Form frmColEdit
       _Version        =   393216
       Style           =   1
       Tabs            =   8
-      Tab             =   2
       TabsPerRow      =   8
       TabHeight       =   520
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -78,8 +77,9 @@ Begin VB.Form frmColEdit
       EndProperty
       TabCaption(0)   =   "De&finition"
       TabPicture(0)   =   "frmColEdit.frx":000C
-      Tab(0).ControlEnabled=   0   'False
+      Tab(0).ControlEnabled=   -1  'True
       Tab(0).Control(0)=   "fraDefinitionPage"
+      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).ControlCount=   1
       TabCaption(1)   =   "&Screen Control "
       TabPicture(1)   =   "frmColEdit.frx":0028
@@ -88,7 +88,7 @@ Begin VB.Form frmColEdit
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "Opt&ions"
       TabPicture(2)   =   "frmColEdit.frx":0044
-      Tab(2).ControlEnabled=   -1  'True
+      Tab(2).ControlEnabled=   0   'False
       Tab(2).Control(0)=   "fraOptionsPage"
       Tab(2).Control(0).Enabled=   0   'False
       Tab(2).ControlCount=   1
@@ -680,7 +680,7 @@ Begin VB.Form frmColEdit
          BorderStyle     =   0  'None
          Enabled         =   0   'False
          Height          =   5350
-         Left            =   50
+         Left            =   -74950
          TabIndex        =   90
          Top             =   320
          Visible         =   0   'False
@@ -1733,7 +1733,7 @@ Begin VB.Form frmColEdit
          BackColor       =   &H8000000C&
          BorderStyle     =   0  'None
          Height          =   5550
-         Left            =   -74955
+         Left            =   45
          TabIndex        =   99
          Top             =   315
          Width           =   8205
@@ -8615,11 +8615,17 @@ Private Sub cboLookupFilterColumn_Refresh()
           ' Add each column name to the lookup columns combo.
           ' NB. We only want to add certain types of column. There's not use in
           ' looking up OLE or logic values.
-          If (.Fields("columnType") <> giCOLUMNTYPE_SYSTEM) And _
+          'If (.Fields("columnType") <> giCOLUMNTYPE_SYSTEM) And _
             (.Fields("columnType") <> giCOLUMNTYPE_LINK) And _
             (Not .Fields("deleted")) And _
             (.Fields("dataType") <> dtLONGVARBINARY) And _
             (.Fields("dataType") <> dtVARBINARY) Then
+          If (.Fields("columnType") <> giCOLUMNTYPE_SYSTEM) And _
+            (.Fields("columnType") <> giCOLUMNTYPE_LINK) And _
+            (Not .Fields("deleted")) And _
+            (.Fields("dataType") <> dtLONGVARBINARY) And _
+            (.Fields("dataType") <> dtVARBINARY) And _
+            (.Fields("controlType") <> ControlTypes.giCTRL_COLOURPICKER) Then
             
             cboLookupFilterColumn.AddItem .Fields("columnName")
             cboLookupFilterColumn.ItemData(cboLookupFilterColumn.NewIndex) = .Fields("columnID")
