@@ -1,11 +1,11 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Begin VB.Form frmToolbox 
    Caption         =   "Toolbox"
-   ClientHeight    =   7860
+   ClientHeight    =   8490
    ClientLeft      =   375
    ClientTop       =   2205
-   ClientWidth     =   3345
+   ClientWidth     =   3945
    BeginProperty Font 
       Name            =   "Verdana"
       Size            =   8.25
@@ -19,16 +19,26 @@ Begin VB.Form frmToolbox
    Icon            =   "frmToolbox.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
-   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MDIChild        =   -1  'True
-   ScaleHeight     =   7860
-   ScaleWidth      =   3345
+   ScaleHeight     =   8490
+   ScaleWidth      =   3945
    Visible         =   0   'False
-   Begin VB.PictureBox picDragIcon_ColumnDrag 
+   Begin VB.PictureBox PicDragIcon_Navigation 
       Height          =   300
       Left            =   3000
       Picture         =   "frmToolbox.frx":000C
+      ScaleHeight     =   240
+      ScaleWidth      =   240
+      TabIndex        =   35
+      Top             =   7800
+      Visible         =   0   'False
+      Width           =   300
+   End
+   Begin VB.PictureBox picDragIcon_ColumnDrag 
+      Height          =   300
+      Left            =   3000
+      Picture         =   "frmToolbox.frx":0396
       ScaleHeight     =   240
       ScaleWidth      =   240
       TabIndex        =   34
@@ -39,7 +49,7 @@ Begin VB.Form frmToolbox
    Begin VB.PictureBox picDragIcon_PageTab 
       Height          =   300
       Left            =   3000
-      Picture         =   "frmToolbox.frx":0316
+      Picture         =   "frmToolbox.frx":06A0
       ScaleHeight     =   240
       ScaleWidth      =   240
       TabIndex        =   33
@@ -50,7 +60,7 @@ Begin VB.Form frmToolbox
    Begin VB.PictureBox picDragIcon_Frame 
       Height          =   300
       Left            =   3000
-      Picture         =   "frmToolbox.frx":08A0
+      Picture         =   "frmToolbox.frx":0C2A
       ScaleHeight     =   240
       ScaleWidth      =   240
       TabIndex        =   31
@@ -61,7 +71,7 @@ Begin VB.Form frmToolbox
    Begin VB.PictureBox picDragIcon_Date 
       Height          =   300
       Left            =   3000
-      Picture         =   "frmToolbox.frx":09EA
+      Picture         =   "frmToolbox.frx":0D74
       ScaleHeight     =   240
       ScaleWidth      =   240
       TabIndex        =   30
@@ -72,7 +82,7 @@ Begin VB.Form frmToolbox
    Begin VB.PictureBox picDragIcon_Textbox 
       Height          =   300
       Left            =   3000
-      Picture         =   "frmToolbox.frx":0F74
+      Picture         =   "frmToolbox.frx":12FE
       ScaleHeight     =   240
       ScaleWidth      =   240
       TabIndex        =   29
@@ -83,7 +93,7 @@ Begin VB.Form frmToolbox
    Begin VB.PictureBox picDragIcon_CheckBox 
       Height          =   300
       Left            =   3000
-      Picture         =   "frmToolbox.frx":14FE
+      Picture         =   "frmToolbox.frx":1888
       ScaleHeight     =   240
       ScaleWidth      =   240
       TabIndex        =   28
@@ -94,7 +104,7 @@ Begin VB.Form frmToolbox
    Begin VB.PictureBox picDragIcon_Button 
       Height          =   300
       Left            =   3000
-      Picture         =   "frmToolbox.frx":1A88
+      Picture         =   "frmToolbox.frx":1E12
       ScaleHeight     =   240
       ScaleWidth      =   240
       TabIndex        =   27
@@ -105,7 +115,7 @@ Begin VB.Form frmToolbox
    Begin VB.PictureBox picDragIcon_Image 
       Height          =   300
       Left            =   3000
-      Picture         =   "frmToolbox.frx":1E12
+      Picture         =   "frmToolbox.frx":219C
       ScaleHeight     =   240
       ScaleWidth      =   240
       TabIndex        =   26
@@ -116,7 +126,7 @@ Begin VB.Form frmToolbox
    Begin VB.PictureBox picDragIcon_Numeric 
       Height          =   300
       Left            =   3000
-      Picture         =   "frmToolbox.frx":239C
+      Picture         =   "frmToolbox.frx":2726
       ScaleHeight     =   240
       ScaleWidth      =   240
       TabIndex        =   25
@@ -127,7 +137,7 @@ Begin VB.Form frmToolbox
    Begin VB.PictureBox picDragIcon_Grid 
       Height          =   300
       Left            =   3000
-      Picture         =   "frmToolbox.frx":2926
+      Picture         =   "frmToolbox.frx":2CB0
       ScaleHeight     =   240
       ScaleWidth      =   240
       TabIndex        =   24
@@ -138,7 +148,7 @@ Begin VB.Form frmToolbox
    Begin VB.PictureBox picDragIcon_Label 
       Height          =   300
       Left            =   3000
-      Picture         =   "frmToolbox.frx":2EB0
+      Picture         =   "frmToolbox.frx":323A
       ScaleHeight     =   240
       ScaleWidth      =   240
       TabIndex        =   23
@@ -149,7 +159,7 @@ Begin VB.Form frmToolbox
    Begin VB.PictureBox picDragIcon_Line 
       Height          =   300
       Left            =   3000
-      Picture         =   "frmToolbox.frx":343A
+      Picture         =   "frmToolbox.frx":37C4
       ScaleHeight     =   240
       ScaleWidth      =   240
       TabIndex        =   22
@@ -160,7 +170,7 @@ Begin VB.Form frmToolbox
    Begin VB.PictureBox picDragIcon_Column 
       Height          =   300
       Left            =   3000
-      Picture         =   "frmToolbox.frx":37C4
+      Picture         =   "frmToolbox.frx":3B4E
       ScaleHeight     =   240
       ScaleWidth      =   240
       TabIndex        =   21
@@ -171,7 +181,7 @@ Begin VB.Form frmToolbox
    Begin VB.PictureBox picDragIcon_ComboBox 
       Height          =   300
       Left            =   3000
-      Picture         =   "frmToolbox.frx":3D4E
+      Picture         =   "frmToolbox.frx":40D8
       ScaleHeight     =   240
       ScaleWidth      =   240
       TabIndex        =   20
@@ -182,7 +192,7 @@ Begin VB.Form frmToolbox
    Begin VB.PictureBox picDragIcon_WorkingPattern 
       Height          =   300
       Left            =   3000
-      Picture         =   "frmToolbox.frx":42D8
+      Picture         =   "frmToolbox.frx":4662
       ScaleHeight     =   240
       ScaleWidth      =   240
       TabIndex        =   19
@@ -193,7 +203,7 @@ Begin VB.Form frmToolbox
    Begin VB.PictureBox picDragIcon_WebForm 
       Height          =   300
       Left            =   3000
-      Picture         =   "frmToolbox.frx":4662
+      Picture         =   "frmToolbox.frx":49EC
       ScaleHeight     =   240
       ScaleWidth      =   240
       TabIndex        =   18
@@ -204,7 +214,7 @@ Begin VB.Form frmToolbox
    Begin VB.PictureBox picDragIcon_Link 
       Height          =   300
       Left            =   3000
-      Picture         =   "frmToolbox.frx":4F64
+      Picture         =   "frmToolbox.frx":52EE
       ScaleHeight     =   240
       ScaleWidth      =   240
       TabIndex        =   17
@@ -215,7 +225,7 @@ Begin VB.Form frmToolbox
    Begin VB.PictureBox picDragIcon_Lookup 
       Height          =   300
       Left            =   3000
-      Picture         =   "frmToolbox.frx":54EE
+      Picture         =   "frmToolbox.frx":5878
       ScaleHeight     =   240
       ScaleWidth      =   240
       TabIndex        =   16
@@ -226,7 +236,7 @@ Begin VB.Form frmToolbox
    Begin VB.PictureBox picDragIcon_Photo 
       Height          =   300
       Left            =   3000
-      Picture         =   "frmToolbox.frx":5A78
+      Picture         =   "frmToolbox.frx":5E02
       ScaleHeight     =   240
       ScaleWidth      =   240
       TabIndex        =   15
@@ -237,7 +247,7 @@ Begin VB.Form frmToolbox
    Begin VB.PictureBox picDragIcon_OLE 
       Height          =   300
       Left            =   3000
-      Picture         =   "frmToolbox.frx":6002
+      Picture         =   "frmToolbox.frx":638C
       ScaleHeight     =   240
       ScaleWidth      =   240
       TabIndex        =   14
@@ -248,7 +258,7 @@ Begin VB.Form frmToolbox
    Begin VB.PictureBox picDragIcon_Radio 
       Height          =   300
       Left            =   3000
-      Picture         =   "frmToolbox.frx":658C
+      Picture         =   "frmToolbox.frx":6916
       ScaleHeight     =   240
       ScaleWidth      =   240
       TabIndex        =   13
@@ -259,7 +269,7 @@ Begin VB.Form frmToolbox
    Begin VB.PictureBox picDragIcon_Spinner 
       Height          =   300
       Left            =   3000
-      Picture         =   "frmToolbox.frx":6B16
+      Picture         =   "frmToolbox.frx":6EA0
       ScaleHeight     =   240
       ScaleWidth      =   240
       TabIndex        =   12
@@ -270,7 +280,7 @@ Begin VB.Form frmToolbox
    Begin VB.PictureBox picDragIcon_WorkFlow 
       Height          =   300
       Left            =   3000
-      Picture         =   "frmToolbox.frx":70A0
+      Picture         =   "frmToolbox.frx":742A
       ScaleHeight     =   240
       ScaleWidth      =   240
       TabIndex        =   11
@@ -281,7 +291,7 @@ Begin VB.Form frmToolbox
    Begin VB.PictureBox picDragIcon_Properties 
       Height          =   300
       Left            =   3000
-      Picture         =   "frmToolbox.frx":762A
+      Picture         =   "frmToolbox.frx":79B4
       ScaleHeight     =   240
       ScaleWidth      =   240
       TabIndex        =   10
@@ -292,7 +302,7 @@ Begin VB.Form frmToolbox
    Begin VB.PictureBox picDragIcon_Table 
       Height          =   300
       Left            =   3000
-      Picture         =   "frmToolbox.frx":7BB4
+      Picture         =   "frmToolbox.frx":7F3E
       ScaleHeight     =   240
       ScaleWidth      =   240
       TabIndex        =   9
@@ -303,7 +313,7 @@ Begin VB.Form frmToolbox
    Begin VB.PictureBox picDragIcon_ToolBox 
       Height          =   300
       Left            =   3000
-      Picture         =   "frmToolbox.frx":813E
+      Picture         =   "frmToolbox.frx":84C8
       ScaleHeight     =   240
       ScaleWidth      =   240
       TabIndex        =   8
@@ -322,7 +332,7 @@ Begin VB.Form frmToolbox
       Width           =   2940
    End
    Begin ComctlLib.TreeView trvStandardControls 
-      DragIcon        =   "frmToolbox.frx":86C8
+      DragIcon        =   "frmToolbox.frx":8A52
       Height          =   1890
       Left            =   0
       TabIndex        =   0
@@ -369,7 +379,7 @@ Begin VB.Form frmToolbox
       Begin VB.Image imgTitleBar 
          Height          =   255
          Left            =   45
-         Picture         =   "frmToolbox.frx":89D2
+         Picture         =   "frmToolbox.frx":8D5C
          Stretch         =   -1  'True
          Top             =   10
          Width           =   255
@@ -404,7 +414,7 @@ Begin VB.Form frmToolbox
       End
    End
    Begin ComctlLib.TreeView trvColumns 
-      DragIcon        =   "frmToolbox.frx":8D8E
+      DragIcon        =   "frmToolbox.frx":9118
       Height          =   2055
       Left            =   0
       TabIndex        =   1
@@ -430,8 +440,8 @@ Begin VB.Form frmToolbox
    End
    Begin VB.Label Label1 
       BackColor       =   &H00FFFFFF&
-      Caption         =   $"frmToolbox.frx":9318
-      Height          =   1710
+      Caption         =   $"frmToolbox.frx":96A2
+      Height          =   2670
       Left            =   60
       TabIndex        =   32
       Top             =   5430
@@ -450,107 +460,107 @@ Begin VB.Form frmToolbox
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
          NumListImages   =   26
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":9409
+            Picture         =   "frmToolbox.frx":9793
             Key             =   "IMG_TABLE"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":995B
+            Picture         =   "frmToolbox.frx":9CE5
             Key             =   "IMG_NAVIGATION"
          EndProperty
          BeginProperty ListImage3 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":9CAD
+            Picture         =   "frmToolbox.frx":A037
             Key             =   "IMG_BUTTON"
          EndProperty
          BeginProperty ListImage4 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":A1FF
+            Picture         =   "frmToolbox.frx":A589
             Key             =   "IMG_WORKINGPATTERN"
          EndProperty
          BeginProperty ListImage5 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":A751
+            Picture         =   "frmToolbox.frx":AADB
             Key             =   "IMG_WEBFORM"
          EndProperty
          BeginProperty ListImage6 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":AAA3
+            Picture         =   "frmToolbox.frx":AE2D
             Key             =   ""
          EndProperty
          BeginProperty ListImage7 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":ADF5
+            Picture         =   "frmToolbox.frx":B17F
             Key             =   "IMG_GRID"
          EndProperty
          BeginProperty ListImage8 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":B347
+            Picture         =   "frmToolbox.frx":B6D1
             Key             =   "IMG_COLUMN"
          EndProperty
          BeginProperty ListImage9 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":B899
+            Picture         =   "frmToolbox.frx":BC23
             Key             =   "IMG_COMBOBOX"
          EndProperty
          BeginProperty ListImage10 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":BDEB
+            Picture         =   "frmToolbox.frx":C175
             Key             =   "IMG_DATE"
          EndProperty
          BeginProperty ListImage11 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":C33D
+            Picture         =   "frmToolbox.frx":C6C7
             Key             =   "IMG_LINE"
          EndProperty
          BeginProperty ListImage12 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":C88F
+            Picture         =   "frmToolbox.frx":CC19
             Key             =   "IMG_IMAGE"
          EndProperty
          BeginProperty ListImage13 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":CDE1
+            Picture         =   "frmToolbox.frx":D16B
             Key             =   "IMG_FRAME"
          EndProperty
          BeginProperty ListImage14 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":D333
+            Picture         =   "frmToolbox.frx":D6BD
             Key             =   "IMG_LABEL"
          EndProperty
          BeginProperty ListImage15 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":D885
+            Picture         =   "frmToolbox.frx":DC0F
             Key             =   "IMG_LINK"
          EndProperty
          BeginProperty ListImage16 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":DDD7
+            Picture         =   "frmToolbox.frx":E161
             Key             =   "IMG_CHECKBOX"
          EndProperty
          BeginProperty ListImage17 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":E329
+            Picture         =   "frmToolbox.frx":E6B3
             Key             =   "IMG_LOOKUP"
          EndProperty
          BeginProperty ListImage18 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":E87B
+            Picture         =   "frmToolbox.frx":EC05
             Key             =   "IMG_NUMERIC"
          EndProperty
          BeginProperty ListImage19 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":EDCD
+            Picture         =   "frmToolbox.frx":F157
             Key             =   "IMG_OLE"
          EndProperty
          BeginProperty ListImage20 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":F31F
+            Picture         =   "frmToolbox.frx":F6A9
             Key             =   "IMG_PHOTO"
          EndProperty
          BeginProperty ListImage21 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":F871
+            Picture         =   "frmToolbox.frx":FBFB
             Key             =   "IMG_PROPERTIES"
          EndProperty
          BeginProperty ListImage22 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":FDC3
+            Picture         =   "frmToolbox.frx":1014D
             Key             =   "IMG_RADIO"
          EndProperty
          BeginProperty ListImage23 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":10315
+            Picture         =   "frmToolbox.frx":1069F
             Key             =   "IMG_SPINNER"
          EndProperty
          BeginProperty ListImage24 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":10867
+            Picture         =   "frmToolbox.frx":10BF1
             Key             =   "IMG_TEXTBOX"
          EndProperty
          BeginProperty ListImage25 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":10DB9
+            Picture         =   "frmToolbox.frx":11143
             Key             =   "IMG_TOOLBOX"
          EndProperty
          BeginProperty ListImage26 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":1130B
+            Picture         =   "frmToolbox.frx":11695
             Key             =   "IMG_WORKFLOW"
          EndProperty
       EndProperty
@@ -568,31 +578,31 @@ Begin VB.Form frmToolbox
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
          NumListImages   =   7
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":1185D
+            Picture         =   "frmToolbox.frx":11BE7
             Key             =   "IMG_LABEL"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":11DAF
+            Picture         =   "frmToolbox.frx":12139
             Key             =   "IMG_NAVIGATION"
          EndProperty
          BeginProperty ListImage3 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":12101
+            Picture         =   "frmToolbox.frx":1248B
             Key             =   "IMG_IMAGE"
          EndProperty
          BeginProperty ListImage4 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":12653
+            Picture         =   "frmToolbox.frx":129DD
             Key             =   "IMG_PAGETAB"
          EndProperty
          BeginProperty ListImage5 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":12BA5
+            Picture         =   "frmToolbox.frx":12F2F
             Key             =   "IMG_FRAME"
          EndProperty
          BeginProperty ListImage6 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":130F7
+            Picture         =   "frmToolbox.frx":13481
             Key             =   "IMG_TOOLS"
          EndProperty
          BeginProperty ListImage7 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":13649
+            Picture         =   "frmToolbox.frx":139D3
             Key             =   "IMG_LINE"
          EndProperty
       EndProperty
@@ -798,7 +808,7 @@ Private Sub RefreshColumnsTreeView()
   ' Populate the treeview of database column controls.
   Dim objTable As HRProSystemMgr.Table
   Dim objNode As ComctlLib.Node
-  Dim rsColumns As dao.Recordset
+  Dim rsColumns As DAO.Recordset
   Dim fPopulated As Boolean
   Dim sSQL As String
   Dim sIconKey As String
@@ -1126,6 +1136,8 @@ Private Sub trvColumns_MouseDown(piButton As Integer, piShift As Integer, pSngX 
                 trvColumns.DragIcon = picDragIcon_PageTab.Picture
             Case "IMG_FILEUPLOAD"
                 'trvColumns.DragIcon = picDragIcon_FileUpload.Picture
+            Case "IMG_NAVIGATION"
+                trvStandardControls.DragIcon = PicDragIcon_Navigation
             Case Else
                 trvColumns.DragIcon = picDragIcon_ColumnDrag.Picture
         End Select
@@ -1249,6 +1261,8 @@ Private Sub trvStandardControls_MouseDown(piButton As Integer, piShift As Intege
               trvStandardControls.DragIcon = picDragIcon_PageTab.Picture
           Case "IMG_FILEUPLOAD"
               ' trvStandardControls.DragIcon = picDragIcon_FileUpload.Picture
+          Case "IMG_NAVIGATION"
+              trvStandardControls.DragIcon = PicDragIcon_Navigation
           Case Else
               trvStandardControls.DragIcon = picDragIcon_ColumnDrag.Picture
       End Select
