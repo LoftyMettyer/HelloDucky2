@@ -1627,6 +1627,7 @@ Public Function InitColumnProps() As Boolean
   Me.Properties("calcExprID") = 0
   Me.Properties("gotFocusExprID") = 0
   Me.Properties("lostFocusExprID") = 0
+  Me.Properties("locked") = 0
   
   gsControlValues = vbNullString
   
