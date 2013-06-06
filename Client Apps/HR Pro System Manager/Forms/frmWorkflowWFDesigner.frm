@@ -3658,9 +3658,8 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
       Case vbNo
         mfChanged = False
         mblnDisplayScrOpen = True
-    
-        ' Restore the original expression definitions
-        RestoreOriginalExpressions
+        ' Restore the original expression definitions - if they've been changed NHRD Jira HRPRO-1990 Added the IF mfExpressionsChanged part
+        If mfExpressionsChanged Then RestoreOriginalExpressions
     End Select
   End If
 
