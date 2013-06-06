@@ -93,7 +93,6 @@ Begin VB.Form frmColEdit
       TabPicture(3)   =   "frmColEdit.frx":0060
       Tab(3).ControlEnabled=   0   'False
       Tab(3).Control(0)=   "fraValidationPage"
-      Tab(3).Control(0).Enabled=   0   'False
       Tab(3).ControlCount=   1
       TabCaption(4)   =   "Diar&y Links"
       TabPicture(4)   =   "frmColEdit.frx":007C
@@ -2804,7 +2803,7 @@ Private Sub chkMultiLine_Click()
 '    End If
 '  End If
 
-  If miDataType = dtVARCHAR Then
+  If miDataType = dtVARCHAR And Not miColumnType = giCOLUMNTYPE_LOOKUP Then
     If chkMultiLine.value = vbChecked Then
       asrSize.Text = VARCHAR_MAX_Size
     Else
