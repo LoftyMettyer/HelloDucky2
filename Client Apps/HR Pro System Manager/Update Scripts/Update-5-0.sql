@@ -3375,8 +3375,27 @@ PRINT 'Step 6 - Changes to Shared Table Transfer for RTI'
 		EXEC sp_executesql @NVarCommand
 	END
 
+
 /* ------------------------------------------------------------- */
-PRINT 'Step 7 - New Mobile User Logins Table'
+PRINT 'Step 7 - Modify Workflow Table - Add PictureID Column '
+
+/* ASRSysWorkflowElements - Add new Attachment_DBColumnID column */
+SELECT @iRecCount = COUNT(id) FROM syscolumns
+WHERE id = OBJECT_ID('tbsys_Workflows', 'U')
+AND name = 'PictureID'
+
+IF @iRecCount = 0
+BEGIN
+	SELECT @NVarCommand = 'ALTER TABLE tbsys_Workflows ADD 
+						PictureID [int] NULL'
+	EXEC sp_executesql @NVarCommand
+END
+
+	EXEC sp_executesql N'UPDATE tbsys_Workflows SET pictureid = NULL WHERE pictureid = 0';
+
+
+/* ------------------------------------------------------------- */
+PRINT 'Step 8 - New Mobile User Logins Table'
 
 	IF NOT EXISTS (SELECT * FROM sys.views WHERE object_id = OBJECT_ID(N'[dbo].[ASRSysGroups]'))
 	BEGIN
@@ -3553,26 +3572,6 @@ PRINT 'Step 7 - New Mobile User Logins Table'
 		 CONSTRAINT [PK_tbsys_mobilegroupworkflows] PRIMARY KEY CLUSTERED ([UserGroupID] ASC, [WorkflowID] ASC));';
 	END
 		
-
-
-/* ------------------------------------------------------------- */
-PRINT 'Step 8 - Modify Workflow Table - Add PictureID Column '
-
-/* ASRSysWorkflowElements - Add new Attachment_DBColumnID column */
-SELECT @iRecCount = COUNT(id) FROM syscolumns
-WHERE id = OBJECT_ID('tbsys_Workflows', 'U')
-AND name = 'PictureID'
-
-IF @iRecCount = 0
-BEGIN
-	SELECT @NVarCommand = 'ALTER TABLE tbsys_Workflows ADD 
-						PictureID [int] NULL'
-	EXEC sp_executesql @NVarCommand
-END
-
-	EXEC sp_executesql N'UPDATE tbsys_Workflows SET pictureid = NULL WHERE pictureid = 0';
-
-
 
 /* ------------------------------------------------------------- */
 PRINT 'Step 9 - System procedures'
