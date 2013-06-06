@@ -820,6 +820,7 @@ Private mstrOutputReportPackTitle As String
 Private mstrOutputOverrideFilter As String
 Private mblnOutputTOC As Boolean
 Private mblnOutputCoverSheet As Boolean
+Private mblnOutputRetainPivotOrChart As Boolean
 Private mlngOverrideFilterID As Long
   
 Private mblnChkPicklistFilter As Boolean 'might not need
@@ -5967,7 +5968,8 @@ Public Function OutputReport(blnPrompt As Boolean) As Boolean
       mstrOutputOverrideFilter, _
       mblnOutputTOC, _
       mblnOutputCoverSheet, _
-      mlngOverrideFilterID) Then
+      mlngOverrideFilterID, _
+      mblnOutputRetainPivotOrChart) Then
 
     If mobjOutput.GetFile Then
     
@@ -5981,7 +5983,7 @@ Public Function OutputReport(blnPrompt As Boolean) As Boolean
         With gobjProgress
           
         Select Case mlngOutputFormat
-          Case fmtExcelChart, fmtExcelPivotTable, fmtExcelWorksheet
+          Case fmtExcelchart, fmtExcelPivotTable, fmtExcelWorksheet
             '.AviFile = App.Path & "\videos\excel.avi"
             .AVI = dbExcel
             .MainCaption = "Output to Excel"
@@ -6016,9 +6018,9 @@ Public Function OutputReport(blnPrompt As Boolean) As Boolean
       'send an array to the output classes for the legend
       'TM 07/06/06 Fault 10816
       If mobjOutput.Format = fmtExcelWorksheet Or mobjOutput.Format = fmtDataOnly Then
-        mobjOutput.AddPage mstrCalendarReportName & " - Key", "Key"
+        mobjOutput.AddPage mstrCalendarReportName & " - Key", "Key", False
       Else
-        mobjOutput.AddPage mstrCalendarReportName, "Key"
+        mobjOutput.AddPage mstrCalendarReportName, "Key", mblnOutputCoverSheet
       End If
       OutputArray_GetLegendArray
       mobjOutput.DataArrayToGrid mstrLegend(), grdOutput
@@ -6080,7 +6082,7 @@ Public Function OutputReport(blnPrompt As Boolean) As Boolean
         mintFirstDayOfMonth_Output = Weekday(mdtVisibleStartDate_Output, vbSunday)
 '***
 
-        mobjOutput.AddPage mstrCalendarReportName & " - " & MonthName(mlngMonth_Output) & " " & mlngYear_Output, MonthName(mlngMonth_Output) & " " & mlngYear_Output
+        mobjOutput.AddPage mstrCalendarReportName & " - " & MonthName(mlngMonth_Output) & " " & mlngYear_Output, MonthName(mlngMonth_Output) & " " & mlngYear_Output, mblnOutputCoverSheet
   
         OutputArray_GetArray
   
@@ -6327,8 +6329,8 @@ Private Sub Form_Load()
 
 End Sub
 
-Private Sub Form_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
-  If (y >= Me.picPrint.Top) And (y <= (Me.picPrint.Top + Me.picPrint.Height)) Then
+Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
+  If (Y >= Me.picPrint.Top) And (Y <= (Me.picPrint.Top + Me.picPrint.Height)) Then
   
   Else
     

@@ -55,6 +55,7 @@ Private mstrOutputOverrideFilter As String
 Private mblnOutputTOC As Boolean
 Private mblnOutputCoverSheet As Boolean
 Private mlngOverrideFilterID As Long
+Private mblnOutputRetainPivotOrChart As Boolean
           
 Private mlngPicklistFilterID As Long
 Private mstrPicklistFilterType As String
@@ -793,10 +794,10 @@ Public Function RunCustomReport(pstrPicklistFilterIDs As String) As Boolean
 
   If fOK Then
     'If gblnBatchMode Or gblnReportPackMode Then
-    If gblnBatchMode Or gblnReportPackMode Or Not mblnPreviewOnScreen Then
+    If gblnBatchMode Or gblnReportPackMode Or Not mblnOutputScreen Then
       fOK = OutputReport(False)
     'ElseIf mblnPreviewOnScreen Or mblnOutputScreen Then
-    ElseIf mblnPreviewOnScreen Then
+    ElseIf mblnOutputScreen Then
       Screen.MousePointer = vbDefault
       mfrmOutput.BaseTable = mstrCustomReportsBaseTableName
       mfrmOutput.Parent = Me
@@ -1000,6 +1001,7 @@ Private Function GetCustomReportDefinition() As Boolean
     mstrOutputEmailAttachAs = IIf(lblnReportPackMode, mstrOutputEmailAttachAs, !OutputEmailAttachAs)
     mstrOutputFileName = IIf(lblnReportPackMode, mstrOutputFileName, !OutputFilename)
     mlngOverrideFilterID = IIf(lblnReportPackMode, mlngOverrideFilterID, 0)
+    mblnOutputRetainPivotOrChart = IIf(lblnReportPackMode, mblnOutputRetainPivotOrChart, 0)
   End With
   
   strSQL = "SELECT C.ChildTable, C.ChildFilter, C.ChildMaxRecords, T.TableName, C.ChildOrder " & _
@@ -5081,7 +5083,8 @@ Public Function OutputReport(blnPrompt As Boolean) As Boolean
       mstrOutputOverrideFilter, _
       mblnOutputTOC, _
       mblnOutputCoverSheet, _
-      mlngOverrideFilterID) Then
+      mlngOverrideFilterID, _
+      mblnOutputRetainPivotOrChart) Then
 
     If Not gblnBatchMode Then
       If mbIsBradfordIndexReport Then
@@ -5091,7 +5094,7 @@ Public Function OutputReport(blnPrompt As Boolean) As Boolean
       End If
     End If
 
-    objOutput.IndicatorColumn = (mlngOutputFormat = fmtExcelChart Or mlngOutputFormat = fmtExcelPivotTable Or gblnReportPackMode) And Not mblnCustomReportsSummaryReport
+    objOutput.IndicatorColumn = (mlngOutputFormat = fmtExcelchart Or mlngOutputFormat = fmtExcelPivotTable Or gblnReportPackMode) And Not mblnCustomReportsSummaryReport
     objOutput.SizeColumnsIndependently = True
     If objOutput.GetFile Then
 
@@ -5190,7 +5193,7 @@ Public Function OutputReport(blnPrompt As Boolean) As Boolean
               
               'add a new page to the output class pass it the section of the grid.
               If mfrmOutput.grdBreak.Rows > 0 Then
-                objOutput.AddPage Replace(mfrmOutput.grdOutput.Caption, "&&", "&"), sBreakValue
+                objOutput.AddPage Replace(mfrmOutput.grdOutput.Caption, "&&", "&"), sBreakValue, mblnOutputCoverSheet
                 objOutput.DataGrid mfrmOutput.grdBreak
               End If
               
@@ -5203,7 +5206,7 @@ Public Function OutputReport(blnPrompt As Boolean) As Boolean
               sBreakValue = mvarPageBreak(iRow)
 
               'add a new page to the output class pass it the section of the grid.
-              objOutput.AddPage Replace(mfrmOutput.grdOutput.Caption, "&&", "&"), sBreakValue
+              objOutput.AddPage Replace(mfrmOutput.grdOutput.Caption, "&&", "&"), sBreakValue, mblnOutputCoverSheet
               objOutput.DataGrid mfrmOutput.grdBreak
               
               blnBreakCheck = True
@@ -5909,7 +5912,8 @@ Public Sub SetOutputParameters( _
           Optional strOutputOverrideFilter As String, _
           Optional blnOutputTOC As Boolean, _
           Optional blnOutputCoverSheet As Boolean, _
-          Optional lngOverrideFilterID As Long)
+          Optional lngOverrideFilterID As Long, _
+          Optional blnOutputRetainPivotOrChart As Boolean)
 
   mlngOutputFormat = lngOutputFormat
   mblnOutputScreen = blnOutputScreen
@@ -5930,6 +5934,7 @@ Public Sub SetOutputParameters( _
   mblnOutputTOC = IIf(IsMissing(blnOutputTOC), giEXPRVALUE_CHARACTER, blnOutputTOC)
   mblnOutputCoverSheet = IIf(IsMissing(blnOutputCoverSheet), giEXPRVALUE_CHARACTER, blnOutputCoverSheet)
   mlngOverrideFilterID = IIf(IsMissing(lngOverrideFilterID), giEXPRVALUE_NUMERIC, lngOverrideFilterID)
+  mblnOutputRetainPivotOrChart = IIf(IsMissing(blnOutputRetainPivotOrChart), giEXPRVALUE_CHARACTER, blnOutputRetainPivotOrChart)
 End Sub
 
 

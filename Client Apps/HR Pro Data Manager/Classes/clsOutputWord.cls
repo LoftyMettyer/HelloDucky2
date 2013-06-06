@@ -589,10 +589,11 @@ Public Function GetFile(objParent As clsOutputRun, colStyles As Collection) As B
     mstrFileName = objParent.GetTempFileName(mstrFileName)
   End If
   
-'  If gblnReportPackMode Then
-'    mstrFileName = mstrPackTemplate
-'    mlngSaveExisting = 3
-'  End If
+  If gblnReportPackMode And mlngSaveExisting = 0 And gobjProgress.Bar1Value > 0 Then
+      'reset write mode to append in order that the previous report job doesnt get overwritten
+      mlngSaveExisting = 3
+  End If
+  'mwrdApp.Visible = True
   
   'Check if file already exists...
   If Dir(mstrFileName) <> vbNullString And mstrFileName <> vbNullString Then

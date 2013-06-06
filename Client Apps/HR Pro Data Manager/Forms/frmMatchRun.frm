@@ -189,6 +189,7 @@ Private mstrOutputOverrideFilter As String
 Private mblnOutputTOC As Boolean
 Private mblnOutputCoverSheet As Boolean
 Private mlngOverrideFilterID As Long
+Private mblnOutputRetainPivotOrChart As Boolean
 
 ' Array holding the User Defined functions that are needed for this report
 Private mastrUDFsRequired() As String
@@ -1765,6 +1766,7 @@ Private Function GetMatchReportDefinition() As Boolean
     mstrOutputEmailAttachAs = IIf(lblnReportPackMode, mstrOutputEmailAttachAs, !OutputEmailAttachAs)
     mstrOutputFileName = IIf(lblnReportPackMode, mstrOutputFileName, !OutputFilename)
     mlngOverrideFilterID = IIf(lblnReportPackMode, mlngOverrideFilterID, 0)
+    mblnOutputRetainPivotOrChart = IIf(lblnReportPackMode, mblnOutputRetainPivotOrChart, 0)
     
   End With
 
@@ -2465,7 +2467,8 @@ Private Function OutputReport(blnPrompt As Boolean) As Boolean
       mstrOutputOverrideFilter, _
       mblnOutputTOC, _
       mblnOutputCoverSheet, _
-      mlngOverrideFilterID) Then
+      mlngOverrideFilterID, _
+      mblnOutputRetainPivotOrChart) Then
       
     objOutput.PageTitles = False
 
@@ -2475,7 +2478,7 @@ Private Function OutputReport(blnPrompt As Boolean) As Boolean
 
     objOutput.SizeColumnsIndependently = True
     If objOutput.GetFile Then
-      objOutput.AddPage mstrName & mstrRecordSelectionName, mstrTable1Name
+      objOutput.AddPage mstrName & mstrRecordSelectionName, mstrTable1Name, mblnOutputCoverSheet
   
       For Each objColumn In mcolColDetails
         'Ignore hidden columns
@@ -2955,7 +2958,8 @@ Public Sub SetOutputParameters( _
           Optional strOutputOverrideFilter As String, _
           Optional blnOutputTOC As Boolean, _
           Optional blnOutputCoverSheet As Boolean, _
-          Optional lngOverrideFilterID As Long)
+          Optional lngOverrideFilterID As Long, _
+          Optional blnOutputRetainPivotOrChart As Boolean)
 
   mlngOutputFormat = lngOutputFormat
   mblnOutputScreen = blnOutputScreen
@@ -2976,6 +2980,7 @@ Public Sub SetOutputParameters( _
   mblnOutputTOC = IIf(IsMissing(blnOutputTOC), giEXPRVALUE_CHARACTER, blnOutputTOC)
   mblnOutputCoverSheet = IIf(IsMissing(blnOutputCoverSheet), giEXPRVALUE_CHARACTER, blnOutputCoverSheet)
   mlngOverrideFilterID = IIf(IsMissing(lngOverrideFilterID), giEXPRVALUE_CHARACTER, lngOverrideFilterID)
+  mblnOutputRetainPivotOrChart = IIf(IsMissing(blnOutputRetainPivotOrChart), giEXPRVALUE_CHARACTER, blnOutputRetainPivotOrChart)
 End Sub
 
 

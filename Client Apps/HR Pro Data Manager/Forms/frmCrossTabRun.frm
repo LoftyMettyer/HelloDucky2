@@ -401,6 +401,7 @@ Private mstrOutputOverrideFilter As String
 Private mblnOutputTOC As Boolean
 Private mblnOutputCoverSheet As Boolean
 Private mlngOverrideFilterID As Long
+Private mblnOutputRetainPivotOrChart As Boolean
 
 ' Array holding the User Defined functions that are needed for this report
 Private mastrUDFsRequired() As String
@@ -1154,6 +1155,7 @@ Public Sub RetreiveDefinition(lngCrossTabID As Long)
     mstrOutputEmailAttachAs = IIf(lblnReportPackMode, mstrOutputEmailAttachAs, !OutputEmailAttachAs)
     mstrOutputFileName = IIf(lblnReportPackMode, mstrOutputFileName, !OutputFilename)
     mlngOverrideFilterID = IIf(lblnReportPackMode, mlngOverrideFilterID, 0)
+    mblnOutputRetainPivotOrChart = IIf(lblnReportPackMode, mblnOutputRetainPivotOrChart, 0)
     
     If fOK = False Then
       Exit Sub
@@ -2353,7 +2355,7 @@ Private Sub Form_Load()
 
 End Sub
 
-Private Sub Form_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
   If Screen.MousePointer <> vbDefault Then
     Screen.MousePointer = vbDefault
   End If
@@ -2907,7 +2909,7 @@ Private Sub SSDBGrid1_KeyDown(KeyCode As Integer, Shift As Integer)
 End Sub
 
 
-Private Sub SSDBGrid1_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub SSDBGrid1_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
   ' JPD 26/7/00
   Screen.MousePointer = vbArrow
 
@@ -4461,7 +4463,8 @@ Private Function OutputReport(blnPrompt As Boolean) As Boolean
       mstrOutputOverrideFilter, _
       mblnOutputTOC, _
       mblnOutputCoverSheet, _
-      mlngOverrideFilterID) Then
+      mlngOverrideFilterID, _
+      mblnOutputRetainPivotOrChart) Then
 
     If Not gblnBatchMode Then
       If mlngCrossTabType = cttNormal Then
@@ -4523,7 +4526,7 @@ Private Function OutputReport(blnPrompt As Boolean) As Boolean
               If strPageValue <> .Fields("Page Break").Value Then
 
                 If strPageValue <> vbNullString Then
-                  objOutput.AddPage Replace(SSDBGrid1.Caption, "&&", "&"), strPageValue
+                  objOutput.AddPage Replace(SSDBGrid1.Caption, "&&", "&"), strPageValue, mblnOutputCoverSheet
                   objOutput.DataArray strOutput
                 End If
                 strPageValue = .Fields("Page Break").Value
@@ -4555,7 +4558,7 @@ Private Function OutputReport(blnPrompt As Boolean) As Boolean
           Loop
         End With
 
-        objOutput.AddPage Replace(SSDBGrid1.Caption, "&&", "&"), IIf(strPageValue <> vbNullString, strPageValue, mstrCrossTabName)
+        objOutput.AddPage Replace(SSDBGrid1.Caption, "&&", "&"), IIf(strPageValue <> vbNullString, strPageValue, mstrCrossTabName), mblnOutputCoverSheet
         objOutput.DataArray strOutput
 
       Else
@@ -4594,7 +4597,7 @@ Private Function OutputReport(blnPrompt As Boolean) As Boolean
             lngColumn0Width = SSDBGrid1.Columns(0).Width
             For lngPage = 0 To UBound(mvarHeadings(PGB))
               If lngSelectedPage = -1 Or lngSelectedPage = lngPage Then
-                objOutput.AddPage Replace(SSDBGrid1.Caption, "&&", "&"), CStr(mvarHeadings(PGB)(lngPage))
+                objOutput.AddPage Replace(SSDBGrid1.Caption, "&&", "&"), CStr(mvarHeadings(PGB)(lngPage)), mblnOutputCoverSheet
                 BuildOutputStrings lngPage
                 OutputGrid
 
@@ -4624,7 +4627,7 @@ Private Function OutputReport(blnPrompt As Boolean) As Boolean
             End If
             SSDBGrid1.Redraw = True
           Else
-            objOutput.AddPage Replace(SSDBGrid1.Caption, "&&", "&"), mstrCrossTabName
+            objOutput.AddPage Replace(SSDBGrid1.Caption, "&&", "&"), mstrCrossTabName, mblnOutputCoverSheet
             objOutput.DataGrid SSDBGrid1
           End If
     
@@ -4659,7 +4662,7 @@ Private Function OutputReport(blnPrompt As Boolean) As Boolean
             End If
           Next
     
-          objOutput.AddPage Replace(SSDBGrid1.Caption, "&&", "&"), mstrCrossTabName    'CStr(mvarHeadings(PGB)(lngPage))
+          objOutput.AddPage Replace(SSDBGrid1.Caption, "&&", "&"), mstrCrossTabName, mblnOutputCoverSheet   'CStr(mvarHeadings(PGB)(lngPage))
           objOutput.DataGrid SSDBGrid1
           gobjProgress.UpdateProgress gblnBatchMode
     
@@ -4896,7 +4899,8 @@ Public Sub SetOutputParameters( _
           Optional strOutputOverrideFilter As String, _
           Optional blnOutputTOC As Boolean, _
           Optional blnOutputCoverSheet As Boolean, _
-          Optional lngOverrideFilterID As Long)
+          Optional lngOverrideFilterID As Long, _
+          Optional blnOutputRetainPivotOrChart As Boolean)
 
   mlngOutputFormat = lngOutputFormat
   mblnOutputScreen = blnOutputScreen
@@ -4917,6 +4921,7 @@ Public Sub SetOutputParameters( _
   mblnOutputTOC = IIf(IsMissing(blnOutputTOC), giEXPRVALUE_CHARACTER, blnOutputTOC)
   mblnOutputCoverSheet = IIf(IsMissing(blnOutputCoverSheet), giEXPRVALUE_CHARACTER, blnOutputCoverSheet)
   mlngOverrideFilterID = IIf(IsMissing(lngOverrideFilterID), giEXPRVALUE_CHARACTER, lngOverrideFilterID)
+  mblnOutputRetainPivotOrChart = IIf(IsMissing(blnOutputRetainPivotOrChart), giEXPRVALUE_CHARACTER, blnOutputRetainPivotOrChart)
 End Sub
 
 
