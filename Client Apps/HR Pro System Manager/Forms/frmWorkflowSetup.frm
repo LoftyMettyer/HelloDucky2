@@ -28,6 +28,7 @@ Begin VB.Form frmWorkflowSetup
    ScaleHeight     =   6495
    ScaleWidth      =   7095
    ShowInTaskbar   =   0   'False
+   StartUpPosition =   2  'CenterScreen
    Begin TabDlg.SSTab ssTabStrip 
       Height          =   5660
       Left            =   150
@@ -51,7 +52,9 @@ Begin VB.Form frmWorkflowSetup
       TabPicture(1)   =   "frmWorkflowSetup.frx":0028
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraPersonnelTable"
+      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).Control(1)=   "fraDelegation"
+      Tab(1).Control(1).Enabled=   0   'False
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "&Service"
       TabPicture(2)   =   "frmWorkflowSetup.frx":0044
