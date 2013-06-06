@@ -122,11 +122,11 @@ END
 		UNION
 		SELECT 1 AS [objectType], CrossTabID AS ID, Name FROM ASRSysCrossTab
 		UNION		
-		SELECT 14 AS [objectType], MatchReportID AS ID, Name FROM ASRSysMatchReportName WHERE [matchreporttype] = 0
-		UNION
-		SELECT 23 AS [objectType], MatchReportID AS ID, ''Succession Planning'' AS Name FROM ASRSysMatchReportName WHERE [matchreporttype] = 1
-		UNION		
-		SELECT 24 AS [objectType], MatchReportID AS ID, ''Career Progression'' AS Name FROM ASRSysMatchReportName WHERE [matchreporttype] = 2
+		SELECT CASE [MatchReportType] 
+				WHEN 0 THEN 14 
+				WHEN 1 THEN 23
+				WHEN 2 THEN 24 
+			END	AS [objectType], MatchReportID AS ID, Name FROM ASRSysMatchReportName
 		UNION		
 		SELECT 15 AS [objectType], 0 AS ID, ''Absence Breakdown''
 		UNION
