@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Begin VB.Form frmEmailQueue 
    Caption         =   "Email Queue"
@@ -804,7 +804,7 @@ Private Function RefreshGrid() As Boolean
 
 
   pstrSQL = _
-        "SELECT isnull(w.name+' (Workflow)',isnull(l.Title,'')) as [QueueTitle]" & _
+        "SELECT isnull(w.name+' (Workflow)',isnull(l.Title,CASE WHEN q.UserName = 'OpenHR  Mobile' THEN q.Subject ELSE '' END)) as [QueueTitle]" & _
         "     , isnull(q.RecordDesc,'') as [RecDesc]" & _
         "     , isnull(t.TableName,'') as [TableName]" & _
         "     , case when q.WorkflowInstanceID > 0 or q.columnID IS NULL then '' else isnull(c.ColumnName,'<Multiple Columns>') end as [ColumnName]" & _
@@ -1090,7 +1090,7 @@ Private Sub PopulateCombos()
   Dim strSQL As String
   
 
-  strSQL = "SELECT DISTINCT isnull(w.name+' (Workflow)',isnull(l.Title,'')) " & _
+  strSQL = "SELECT DISTINCT isnull(w.name+' (Workflow)',isnull(l.Title,CASE WHEN q.UserName = 'OpenHR  Mobile' THEN q.Subject ELSE '' END)) " & _
         "FROM ASRSysEmailQueue q " & _
         "LEFT OUTER JOIN ASRSysEmailLinks l ON q.LinkID = l.LinkID " & _
         "LEFT OUTER JOIN ASRSysWorkflowInstances wi ON q.workflowInstanceID = wi.ID " & _
