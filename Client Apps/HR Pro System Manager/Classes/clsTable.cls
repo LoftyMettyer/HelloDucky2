@@ -876,13 +876,8 @@ Public Function CloneTable(pavCloneRegister As Variant, pfCopyData As Boolean, p
       
         ' Instantiate the original column object.
         Set objSourceColumn = New Column
-        objSourceColumn.ColumnID = .Fields("columnID")
+        objSourceColumn.ColumnID = .Fields("columnID").value
         objSourceColumn.TableID = gLngTableID
-
-'objSourceColumn.ReadColumn
-'If objSourceColumn.Properties("linktableid").Value > 0 Then
-'  Stop
-'End If
 
         ' Instruct the original column object to clone itself.
         Set objNewColumn = objSourceColumn.CloneColumn(False)
@@ -893,36 +888,36 @@ Public Function CloneTable(pavCloneRegister As Variant, pfCopyData As Boolean, p
             ' Copy properties from the original column to the copy.
             .TableID = objNewTable.TableID
             ' Reset expression IDs. These will be done later when the expression are copied.
-            .Properties("calcExprID") = 0
-            .Properties("gotFocusExprID") = 0
-            .Properties("dfltValueExprID") = 0  'MH20060613
-            .Properties("lostFocusExprID") = 0
+            .Properties("calcExprID").value = 0
+            .Properties("gotFocusExprID").value = 0
+            .Properties("dfltValueExprID").value = 0  'MH20060613
+            .Properties("lostFocusExprID").value = 0
             
             ' Update the link table if the column is a link column.
-            If .Properties("columnType") = giCOLUMNTYPE_LINK Then
+            If .Properties("columnType").value = giCOLUMNTYPE_LINK Then
               For iIndex = 1 To UBound(pavCloneRegister, 2)
                 If pavCloneRegister(1, iIndex) = "TABLE" And _
-                  pavCloneRegister(2, iIndex) = .Properties("linkTableID") Then
-                  .Properties("linkTableID") = pavCloneRegister(3, iIndex)
+                  pavCloneRegister(2, iIndex) = .Properties("linkTableID").value Then
+                  .Properties("linkTableID").value = pavCloneRegister(3, iIndex)
                   Exit For
                 End If
               Next iIndex
 
               For iIndex = 1 To UBound(pavCloneRegister, 2)
                 If pavCloneRegister(1, iIndex) = "VIEW" And _
-                  pavCloneRegister(2, iIndex) = .Properties("linkViewID") Then
-                  .Properties("linkViewID") = pavCloneRegister(3, iIndex)
+                  pavCloneRegister(2, iIndex) = .Properties("linkViewID").value Then
+                  .Properties("linkViewID").value = pavCloneRegister(3, iIndex)
                   Exit For
                 End If
               Next iIndex
             End If
 
             'JPD20010730
-            If .Properties("uniqueCheckType") > 0 Then
+            If .Properties("uniqueCheckType").value > 0 Then
               For iIndex = 1 To UBound(pavCloneRegister, 2)
                 If pavCloneRegister(1, iIndex) = "TABLE" And _
-                  pavCloneRegister(2, iIndex) = .Properties("uniqueCheckType") Then
-                  .Properties("uniqueCheckType") = pavCloneRegister(3, iIndex)
+                  pavCloneRegister(2, iIndex) = .Properties("uniqueCheckType").value Then
+                  .Properties("uniqueCheckType").value = pavCloneRegister(3, iIndex)
                   Exit For
                 End If
               Next iIndex
@@ -974,7 +969,7 @@ Public Function CloneTable(pavCloneRegister As Variant, pfCopyData As Boolean, p
       
         ' Instantiate the original order object.
         Set objSourceOrder = New Order
-        objSourceOrder.OrderID = .Fields("orderID")
+        objSourceOrder.OrderID = .Fields("orderID").value
         ' Instruct the original order object to clone itself.
         Set objNewOrder = objSourceOrder.CloneOrder(pavCloneRegister)
                
@@ -1540,22 +1535,22 @@ Public Function CloneTable(pavCloneRegister As Variant, pfCopyData As Boolean, p
           End If
 
           If pavCloneRegister(1, iIndex) = "EXPRESSION" And _
-            pavCloneRegister(2, iIndex) = .Fields("lostFocusExprID") Then
+            pavCloneRegister(2, iIndex) = .Fields("lostFocusExprID").value Then
             lngLostFocusExprID = pavCloneRegister(3, iIndex)
           End If
           If pavCloneRegister(1, iIndex) = "COLUMN" And _
-            pavCloneRegister(2, iIndex) = .Fields("lookupFilterValueID") Then
+            pavCloneRegister(2, iIndex) = .Fields("lookupFilterValueID").value Then
             lngLookupFilterValueID = pavCloneRegister(3, iIndex)
           End If
         
           
 'MH20060613
           If (lngColumnID > 0) And _
-            ((.Fields("calcExprID") = 0) Or (lngCalcExprID > 0)) And _
-            ((.Fields("gotFocusExprID") = 0) Or (lngGotFocusExprID > 0)) And _
-            ((.Fields("dfltValueExprID") = 0) Or (lngDfltValueExprID > 0)) And _
-            ((.Fields("lostFocusExprID") = 0) Or (lngLostFocusExprID > 0)) And _
-            ((.Fields("lookupFilterValueID") = 0) Or (lngLookupFilterValueID > 0)) Then
+            ((.Fields("calcExprID").value = 0) Or (lngCalcExprID > 0)) And _
+            ((.Fields("gotFocusExprID").value = 0) Or (lngGotFocusExprID > 0)) And _
+            ((.Fields("dfltValueExprID").value = 0) Or (lngDfltValueExprID > 0)) And _
+            ((.Fields("lostFocusExprID").value = 0) Or (lngLostFocusExprID > 0)) And _
+            ((.Fields("lookupFilterValueID").value = 0) Or (lngLookupFilterValueID > 0)) Then
             Exit For
           End If
         Next iIndex
@@ -1567,11 +1562,11 @@ Public Function CloneTable(pavCloneRegister As Variant, pfCopyData As Boolean, p
           fOK = .ReadColumn
           
           If fOK Then
-            .Properties("calcExprID") = lngCalcExprID
-            .Properties("gotFocusExprID") = lngGotFocusExprID
-            .Properties("dfltValueExprID") = lngDfltValueExprID 'MH20060613
-            .Properties("lostFocusExprID") = lngLostFocusExprID
-            .Properties("lookupFilterValueID") = lngLookupFilterValueID
+            .Properties("calcExprID").value = lngCalcExprID
+            .Properties("gotFocusExprID").value = lngGotFocusExprID
+            .Properties("dfltValueExprID").value = lngDfltValueExprID 'MH20060613
+            .Properties("lostFocusExprID").value = lngLostFocusExprID
+            .Properties("lookupFilterValueID").value = lngLookupFilterValueID
             fOK = .WriteColumn
           End If
         End With
@@ -2788,35 +2783,35 @@ Public Function AddIDColumn(pLngParentTableID As Long) As Boolean
   With IDColumn
     .TableID = TableID
     .InitColumnProps
-    .Properties("new") = True
-    .Properties("columnName") = IIf(pLngParentTableID = TableID, "ID", "ID_" & pLngParentTableID)
-    .Properties("dataType") = dtINTEGER
-    .Properties("size") = 0
-    .Properties("decimals") = 0
-    .Properties("columnType") = giCOLUMNTYPE_SYSTEM
-    .Properties("Afdenabled") = False
-    .Properties("Afdindividual") = False
-    .Properties("Afdforename") = 0
-    .Properties("Afdsurname") = 0
-    .Properties("Afdinitial") = 0
-    .Properties("Afdtelephone") = 0
-    .Properties("Afdaddress") = 0
-    .Properties("Afdproperty") = 0
-    .Properties("Afdstreet") = 0
-    .Properties("Afdlocality") = 0
-    .Properties("Afdtown") = 0
-    .Properties("Afdcounty") = 0
-    .Properties("QAddressEnabled") = False
-    .Properties("QAindividual") = False
-    .Properties("QAaddress") = 0
-    .Properties("QAproperty") = 0
-    .Properties("QAstreet") = 0
-    .Properties("QAlocality") = 0
-    .Properties("QAtown") = 0
-    .Properties("QAcounty") = 0
+    .Properties("new").value = True
+    .Properties("columnName").value = IIf(pLngParentTableID = TableID, "ID", "ID_" & pLngParentTableID)
+    .Properties("dataType").value = dtINTEGER
+    .Properties("size").value = 0
+    .Properties("decimals").value = 0
+    .Properties("columnType").value = giCOLUMNTYPE_SYSTEM
+    .Properties("Afdenabled").value = False
+    .Properties("Afdindividual").value = False
+    .Properties("Afdforename").value = 0
+    .Properties("Afdsurname").value = 0
+    .Properties("Afdinitial").value = 0
+    .Properties("Afdtelephone").value = 0
+    .Properties("Afdaddress").value = 0
+    .Properties("Afdproperty").value = 0
+    .Properties("Afdstreet").value = 0
+    .Properties("Afdlocality").value = 0
+    .Properties("Afdtown").value = 0
+    .Properties("Afdcounty").value = 0
+    .Properties("QAddressEnabled").value = False
+    .Properties("QAindividual").value = False
+    .Properties("QAaddress").value = 0
+    .Properties("QAproperty").value = 0
+    .Properties("QAstreet").value = 0
+    .Properties("QAlocality").value = 0
+    .Properties("QAtown").value = 0
+    .Properties("QAcounty").value = 0
     
     recColEdit.Index = "idxName"
-    recColEdit.Seek "=", TableID, .Properties("columnName"), False
+    recColEdit.Seek "=", TableID, .Properties("columnName").value, False
     
     If recColEdit.NoMatch Then
       fAddOk = .WriteColumn
