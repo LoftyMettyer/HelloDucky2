@@ -726,6 +726,7 @@ Private mlngChart_SortOrderID As Long
 Private miChart_SortDirection As Integer
 Private mlngChart_ColourID As Long
 Private iLoop As Integer
+Private miFilterTableID As Long
 
 Public Property Let Cancelled(ByVal bCancel As Boolean)
   mblnCancelled = bCancel
@@ -897,6 +898,9 @@ Private Sub cboTableX_Click()
     SetComboItemOrTopItem cboColumnY, Chart_ColumnID_3
     SetComboItemOrTopItem cboColumnZ, Chart_ColumnID_2
     SetComboItemOrTopItem cboTableZ, Chart_TableID_2
+    
+    ' clear the filter box as the tables have changed
+    ClearFilter
   End If
   
 
@@ -1008,6 +1012,7 @@ Private Sub cboTableY_Click()
     SetComboItemOrTopItem cboColumnY, Chart_ColumnID_3
     SetComboItemOrTopItem cboTableZ, Chart_TableID_2
     SetComboItemOrTopItem cboColumnZ, Chart_ColumnID_2
+    
   End If
   
   mfChanged = True
@@ -1028,6 +1033,11 @@ Private Sub cboTableZ_Click()
   ' Set top item if not loading.
   If Not mfLoading Then
     SetComboItemOrTopItem cboColumnZ, Chart_ColumnID_2
+  End If
+
+  ' If filter tag doesn't match any tables, clear it
+  If Not mfLoading And miFilterTableID <> cboTableX.ItemData(cboTableX.ListIndex) And miFilterTableID <> cboTableY.ItemData(cboTableY.ListIndex) And miFilterTableID <> cboTableZ.ItemData(cboTableZ.ListIndex) Then
+    ClearFilter
   End If
 
 
@@ -1058,12 +1068,7 @@ End Sub
 'End Sub
 
 Private Sub cmdFilterClear_Click()
-  txtFilter.Text = vbNullString
-  txtFilter.Tag = 0
-  mlngChartFilterID = 0
-  cmdFilterClear.Enabled = False
-  mfChanged = True
-  RefreshControls
+  ClearFilter
 End Sub
 
 Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
@@ -1095,7 +1100,7 @@ End Sub
 Private Sub RefreshControls()
   
   
-  cmdOK.Enabled = mfChanged
+  cmdOk.Enabled = mfChanged
   
 End Sub
 
@@ -1122,19 +1127,21 @@ Private Sub cmdFilter_Click()
   If ChartTableID = 0 Then Exit Sub
   
   If Chart_TableID_2 = 0 And Chart_TableID_3 = 0 Then
+    ' Single axis chart, so use tableID 1 (X-axis)
     mlngTableID = ChartTableID
   Else
+    ' IsChildOfTable(Parent, Child)
     If IsChildOfTable(Chart_TableID_3, Chart_TableID_2) Then
-      If IsChildOfTable(Chart_TableID_3, ChartTableID) Then
-        mlngTableID = ChartTableID
-      Else
-        mlngTableID = Chart_TableID_3
-      End If
-    Else
       If IsChildOfTable(Chart_TableID_2, ChartTableID) Then
         mlngTableID = ChartTableID
       Else
         mlngTableID = Chart_TableID_2
+      End If
+    Else
+      If IsChildOfTable(Chart_TableID_3, ChartTableID) Then
+        mlngTableID = ChartTableID
+      Else
+        mlngTableID = Chart_TableID_3
       End If
     End If
   End If
@@ -1154,7 +1161,7 @@ Private Sub cmdFilter_Click()
       cmdFilterClear.Enabled = True
       mlngChartFilterID = .ExpressionID
       mfChanged = True
-      
+      miFilterTableID = mlngTableID
       
     Else
       ' Check in case the original expression has been deleted.
@@ -1162,6 +1169,7 @@ Private Sub cmdFilter_Click()
       If txtFilter.Text = vbNullString Then
         txtFilter.Tag = 0
         cmdFilterClear.Enabled = False
+        miFilterTableID = 0
       End If
     End If
 
@@ -1296,7 +1304,7 @@ Public Sub Initialize(plngChartViewID As Long, _
   SetSortCombos plngChart_SortOrderID
   
   ' Filter frame
-  txtFilter.Tag = mlngChartFilterID
+  txtFilter.Tag = plngChartFilterID
   txtFilter.Text = GetExpressionName(txtFilter.Tag)
   If txtFilter.Text = "" Then
     cmdFilterClear.Enabled = False
@@ -1430,6 +1438,16 @@ Private Function PopulateTableXCombo()
   End With
 
 End Function
+
+Private Sub ClearFilter()
+  txtFilter.Text = vbNullString
+  txtFilter.Tag = 0
+  mlngChartFilterID = 0
+  miFilterTableID = 0
+  cmdFilterClear.Enabled = False
+  mfChanged = True
+  RefreshControls
+End Sub
 
 
 Private Function PopulateColumnXCombo(plngTableID As Long)

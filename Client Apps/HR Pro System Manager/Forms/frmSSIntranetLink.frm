@@ -352,11 +352,11 @@ Begin VB.Form frmSSIntranetLink
       End
       Begin VB.Label lblDBValueSample 
          Caption         =   "12345.21"
-         Height          =   255
+         Height          =   510
          Left            =   3660
          TabIndex        =   107
          Top             =   5340
-         Width           =   1050
+         Width           =   2430
       End
       Begin VB.Label lblDBValuePreview 
          AutoSize        =   -1  'True
@@ -1367,7 +1367,7 @@ Public Enum SSINTRANETSCREENTYPES
   SSINTLINKSCREEN_APPLICATION = 4
   'NPG Dashboard
   SSINTLINKSEPARATOR = 5
-  ssintlinkchart = 6
+  SSINTLINKCHART = 6
   SSINTLINKDB_VALUE = 7
   SSINTLINKPWFSTEPS = 8
   SSINTLINKSCREEN_DOCUMENT = 9
@@ -1889,8 +1889,6 @@ Public Sub Initialize(piType As SSINTRANETLINKTYPES, _
     Len(psAppFilePath) = 0 Then
     
     optLink(SSINTLINKSCREEN_UTILITY).value = True
-    
-  
   End If
   
   If miLinkType = SSINTLINK_DOCUMENT Then
@@ -1900,7 +1898,7 @@ Public Sub Initialize(piType As SSINTRANETLINKTYPES, _
   If miLinkType <> SSINTLINK_BUTTON Then
     ' disable the irrelevant options
     optLink(SSINTLINKPWFSTEPS).Enabled = False
-    optLink(ssintlinkchart).Enabled = False
+    optLink(SSINTLINKCHART).Enabled = False
     optLink(SSINTLINKDB_VALUE).Enabled = False
     ' fault HRPRO-907 - disable separators for all but dashboard and hypertext links
     If miLinkType <> SSINTLINK_HYPERTEXT Then optLink(SSINTLINKSEPARATOR).Enabled = False
@@ -1912,7 +1910,7 @@ Public Sub Initialize(piType As SSINTRANETLINKTYPES, _
     optLink(SSINTLINKSEPARATOR).value = True
     chkNewColumn.value = IIf(piSeparatorOrientation > 0, 1, 0)
   ElseIf piElement_Type = 2 Then
-    optLink(ssintlinkchart).value = True
+    optLink(SSINTLINKCHART).value = True
   ElseIf piElement_Type = 3 Then
     optLink(SSINTLINKPWFSTEPS).value = True
   ElseIf piElement_Type = 4 Then
@@ -1922,7 +1920,10 @@ Public Sub Initialize(piType As SSINTRANETLINKTYPES, _
 
   
   GetHRProTables
-  GetHRProUtilityTypes
+  
+  If optLink(SSINTLINKSCREEN_UTILITY).value Then
+    GetHRProUtilityTypes
+  End If
   
   If psUtilityType = "" Then
     cboHRProUtilityType.ListIndex = -1
@@ -1984,6 +1985,7 @@ Public Sub Initialize(piType As SSINTRANETLINKTYPES, _
   
   txtChartDescription = Chart_Description
   txtChartUtility = Chart_Utility_Description
+  cmdChartReportClear.Enabled = (Len(txtChartUtility.Text) > 0)
   
   UseFormatting = pfUseFormatting
   Formatting_DecimalPlaces = piFormatting_DecimalPlaces
@@ -2040,7 +2042,7 @@ Private Sub RefreshControls()
   fraApplicationLink.Visible = optLink(SSINTLINKSCREEN_APPLICATION).value
   fraDocument.Visible = optLink(SSINTLINKSCREEN_DOCUMENT).value
   fraLinkSeparator.Visible = (optLink(SSINTLINKSEPARATOR).value Or optLink(SSINTLINKPWFSTEPS).value)
-  fraChartLink.Visible = optLink(ssintlinkchart).value
+  fraChartLink.Visible = optLink(SSINTLINKCHART).value
   fraDBValue.Visible = optLink(SSINTLINKDB_VALUE).value
       
   ' Disable the HR Pro screen controls as required.
@@ -2067,7 +2069,7 @@ Private Sub RefreshControls()
   lblStartMode.Enabled = cboHRProTable.Enabled
   
   ' Disable the UTILITY controls as required.
-  If Not optLink(SSINTLINKSCREEN_UTILITY).value And Not optLink(ssintlinkchart).value Then
+  If Not optLink(SSINTLINKSCREEN_UTILITY).value And Not optLink(SSINTLINKCHART).value Then
     cboHRProUtilityType.Clear
     cboHRProUtility.Clear
   Else
@@ -2149,7 +2151,7 @@ Private Sub RefreshControls()
   txtIcon.BackColor = vbButtonFace
 
   
-  If optLink(SSINTLINKSEPARATOR).value Or optLink(ssintlinkchart) _
+  If optLink(SSINTLINKSEPARATOR).value Or optLink(SSINTLINKCHART) _
       Or optLink(SSINTLINKPWFSTEPS).value Or optLink(SSINTLINKDB_VALUE).value Then
     txtPrompt.Enabled = False
     txtPrompt.BackColor = vbButtonFace
@@ -2163,11 +2165,11 @@ Private Sub RefreshControls()
     End If
         
     If optLink(SSINTLINKSEPARATOR).value Then txtPrompt.Text = "<SEPARATOR>"
-    If optLink(ssintlinkchart).value Then txtPrompt.Text = "<CHART>"
+    If optLink(SSINTLINKCHART).value Then txtPrompt.Text = "<CHART>"
     If optLink(SSINTLINKPWFSTEPS).value Then txtPrompt.Text = "<PENDING WORKFLOWS>"
     If optLink(SSINTLINKDB_VALUE).value Then txtPrompt.Text = "<DATABASE VALUE>"
     
-    If optLink(ssintlinkchart).value Then
+    If optLink(SSINTLINKCHART).value Then
       MSChart1.RowCount = 1
     End If
     
@@ -2207,6 +2209,9 @@ Private Sub RefreshControls()
     lblCFHeader2.Enabled = chkConditionalFormatting
     lblCFHeader3.Enabled = chkConditionalFormatting
     lblCFHeader4.Enabled = chkConditionalFormatting
+        
+  cmdChartReportClear.Enabled = (Len(txtChartUtility.Text) > 0)
+        
         
   Else
     ' NPG20100427 Fault HRPRO-888
@@ -2266,7 +2271,7 @@ Private Sub RefreshControls()
     fraLinkSeparator.Caption = "Separator :"
   End If
   
-  If optLink(ssintlinkchart).value And cboChartType.ListIndex >= 0 Then
+  If optLink(SSINTLINKCHART).value And cboChartType.ListIndex >= 0 Then
     
     Select Case cboChartType.ItemData(cboChartType.ListIndex)
       Case 0  '3D Bar
@@ -2674,7 +2679,7 @@ Private Function ValidateLink() As Boolean
   End If
 
   If fValid Then
-    If optLink(ssintlinkchart).value And _
+    If optLink(SSINTLINKCHART).value And _
       ChartColumnID = 0 Then
       fValid = False
       MsgBox "Please define chart data using the 'Data' button.", vbOKOnly + vbExclamation, Application.Name
@@ -2898,6 +2903,7 @@ Private Sub cboColumns_Click()
     optAggregateType(1).ForeColor = vbWindowBackground
   End If
   
+  If optLink(SSINTLINKDB_VALUE).value Then
   ' Clear out the formatting options - fault HRPRO-1145
   chkConditionalFormatting.value = 0
   chkFormatting.value = 0
@@ -2907,9 +2913,11 @@ Private Sub cboColumns_Click()
   txtDBValueSuffix.Text = vbNullString
   chkConditionalFormatting.value = 0
   For jniCount = 0 To 2
-    cboDBValCFOperator(jniCount).ListIndex = 0
+    If cboDBValCFOperator(jniCount).ListCount > 0 Then
+      cboDBValCFOperator(jniCount).ListIndex = 0
+    End If
   Next
-  
+  End If
   RefreshControls
 End Sub
 
@@ -3000,7 +3008,8 @@ Private Sub cmdChartReport_Click()
       UtilityID = .UtilityID
       
       txtChartUtility = Chart_Utility_Description
-      
+      cmdChartReportClear.Enabled = (Len(txtChartUtility.Text) > 0)
+
       mfChanged = True
       
       RefreshControls
@@ -3619,7 +3628,7 @@ Private Sub optLink_Click(Index As Integer)
   'dashboard
   If optLink(SSINTLINKSEPARATOR).value Then
     ElementType = 1
-  ElseIf optLink(ssintlinkchart).value Then
+  ElseIf optLink(SSINTLINKCHART).value Then
     ElementType = 2
   ElseIf optLink(SSINTLINKPWFSTEPS).value Then
     ElementType = 3
@@ -3942,7 +3951,7 @@ End Property
 Public Property Get UtilityType() As String
 
   If (cboHRProUtility.ListIndex < 0) Or _
-    ((Not optLink(SSINTLINKSCREEN_UTILITY).value) And (Not optLink(ssintlinkchart).value)) Then
+    ((Not optLink(SSINTLINKSCREEN_UTILITY).value) And (Not optLink(SSINTLINKCHART).value)) Then
     UtilityType = ""
   Else
     UtilityType = CStr(cboHRProUtilityType.ItemData(cboHRProUtilityType.ListIndex))
@@ -3953,7 +3962,7 @@ End Property
 Public Property Get UtilityID() As String
 
   If (cboHRProUtility.ListIndex < 0) Or _
-    ((Not optLink(SSINTLINKSCREEN_UTILITY).value) And (Not optLink(ssintlinkchart).value)) Then
+    ((Not optLink(SSINTLINKSCREEN_UTILITY).value) And (Not optLink(SSINTLINKCHART).value)) Then
     
     UtilityID = ""
   Else
@@ -4088,7 +4097,7 @@ Public Property Let UtilityID(ByVal psNewValue As String)
 
   Dim iLoop As Integer
   
-  If ((optLink(SSINTLINKSCREEN_UTILITY).value) Or (optLink(ssintlinkchart).value)) And _
+  If ((optLink(SSINTLINKSCREEN_UTILITY).value) Or (optLink(SSINTLINKCHART).value)) And _
     (Len(psNewValue) > 0) Then
 
     For iLoop = 0 To cboHRProUtility.ListCount - 1
@@ -4106,7 +4115,7 @@ Public Property Let UtilityType(ByVal psNewValue As String)
 
   Dim iLoop As Integer
 
-  If ((optLink(SSINTLINKSCREEN_UTILITY).value) Or (optLink(ssintlinkchart).value)) And _
+  If ((optLink(SSINTLINKSCREEN_UTILITY).value) Or (optLink(SSINTLINKCHART).value)) And _
     (Len(psNewValue) > 0) Then
 
     For iLoop = 0 To cboHRProUtilityType.ListCount - 1
@@ -4163,7 +4172,7 @@ Public Property Let ChartType(ByVal piNewValue As Integer)
   
   Dim iLoop As Integer
 
-  If (optLink(ssintlinkchart).value) And piNewValue > 0 Then
+  If (optLink(SSINTLINKCHART).value) And piNewValue > 0 Then
 
     For iLoop = 0 To cboChartType.ListCount - 1
       If cboChartType.ItemData(iLoop) = piNewValue Then

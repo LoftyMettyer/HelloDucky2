@@ -101,6 +101,11 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+Option Explicit
+
+Private mblnCancelled As Boolean
+Private mblnRefreshing As Boolean
+Private mfChanged As Boolean
 
 Public Sub Initialize(psUtilityType As String, psUtilityID As String)
   
@@ -183,6 +188,8 @@ End Sub
 
 
 Private Function ValidateLink() As Boolean
+  Dim fValid As Boolean
+
       If cboHRProUtility.ListIndex < 0 Then
         fValid = False
         MsgBox "No " & cboHRProUtilityType.List(cboHRProUtilityType.ListIndex) & " has been selected.", vbOKOnly + vbExclamation, Application.Name
