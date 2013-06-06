@@ -571,6 +571,11 @@ PRINT 'Step - Add abstraction layer to user defined tables'
 		FROM ASRSysTables;
 	EXECUTE sp_executesql @NVarCommand;
 
+/* ------------------------------------------------------------- */
+PRINT 'Step - Column sizing'
+
+	EXECUTE spASRResizeColumn 'ASRSysEmailLinks','Title','255';
+
 
 /* ------------------------------------------------------------- */
 PRINT 'Step - Add new calculation procedures'
