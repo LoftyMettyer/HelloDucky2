@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmSecurityOptions 
    BorderStyle     =   3  'Fixed Dialog
@@ -122,7 +122,7 @@ Begin VB.Form frmSecurityOptions
             Width           =   4500
          End
          Begin VB.Label lblBypassWarning 
-            Caption         =   $"frmSecurityOptions.frx":00F1
+            Caption         =   $"frmSecurityOptions.frx":00F0
             ForeColor       =   &H000000FF&
             Height          =   900
             Left            =   465
@@ -341,7 +341,7 @@ Private mblnReadOnly As Boolean
 
 Public Property Let Changed(pblnNewValue As Boolean)
   mblnChanged = pblnNewValue
-  cmdOK.Enabled = pblnNewValue
+  cmdOk.Enabled = pblnNewValue
 End Property
 
 
