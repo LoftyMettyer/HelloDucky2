@@ -2395,6 +2395,12 @@ Private Function ApplyChanges_ChildTablePermissions() As Boolean
   Dim strColumnName As String
   Dim fSomeUpdatable As Boolean
 
+  Dim blnRemoveFix1082 As Boolean
+  
+  blnRemoveFix1082 = (GetSystemSetting("Remove Fix", "1082", "0") = "1")
+  
+  
+  
   sRelatedChildTables = "0"
 
   fOK = True
@@ -2757,40 +2763,85 @@ Private Function ApplyChanges_ChildTablePermissions() As Boolean
       
                   ' Create the view name.
                   sViewName = Left("ASRSysCV" & Trim(Str(lngViewID)) & "#" & Replace(sTableName, " ", "_") & "#" & Replace(objGroup.Name, " ", "_"), 255)
-      
-                  ' Create the view
-                  sSQL = "CREATE VIEW dbo." & sViewName & vbNewLine & _
-                    "AS" & vbNewLine & _
-                    "        SELECT " & sTableName & ".*" & vbNewLine & _
-                    "        FROM " & sTableName & vbNewLine & _
-                    "        WHERE " & vbNewLine & _
-                    "                (" & vbNewLine & _
-                    "                        " & _
-                    sTableName & ".ID_" & Trim(Str(avParents(3, 1))) & " IN (SELECT id FROM " & avParents(4, 1) & ")" & vbNewLine
-      
-                  lngLastParentID = avParents(3, 1)
+
+
+                  'MH20110119 HRPRO-1082
+                  If blnRemoveFix1082 Then
+                    ' Create the view
+                    sSQL = "CREATE VIEW dbo." & sViewName & vbNewLine & _
+                      "AS" & vbNewLine & _
+                      "        SELECT " & sTableName & ".*" & vbNewLine & _
+                      "        FROM " & sTableName & vbNewLine & _
+                      "        WHERE " & vbNewLine & _
+                      "                (" & vbNewLine & _
+                      "                        " & _
+                      sTableName & ".ID_" & Trim(Str(avParents(3, 1))) & " IN (SELECT id FROM " & avParents(4, 1) & ")" & vbNewLine
+  
+                    lngLastParentID = avParents(3, 1)
+  
+                    For iLoop = 2 To UBound(avParents, 2)
+                      If lngLastParentID <> avParents(3, iLoop) Then
+                        lngLastParentID = avParents(3, iLoop)
+  
+                        sSQL = sSQL & _
+                          "                )" & vbNewLine & _
+                          "                " & IIf(iParentJoinType = 1, "AND", "OR") & vbNewLine & _
+                          "                (" & vbNewLine
+                      Else
+                        sSQL = sSQL & _
+                          "                        OR" & vbNewLine
+                      End If
+  
+                      sSQL = sSQL & "                        " & _
+                        sTableName & ".ID_" & Trim(Str(avParents(3, iLoop))) & " IN (SELECT id FROM " & avParents(4, iLoop) & ")" & vbNewLine
+                    Next iLoop
+  
+                    sSQL = sSQL & "                )"
+  
+                    gADOCon.Execute sSQL, , adExecuteNoRecords
+
                   
-                  For iLoop = 2 To UBound(avParents, 2)
-                    If lngLastParentID <> avParents(3, iLoop) Then
-                      lngLastParentID = avParents(3, iLoop)
-      
-                      sSQL = sSQL & _
-                        "                )" & vbNewLine & _
-                        "                " & IIf(iParentJoinType = 1, "AND", "OR") & vbNewLine & _
-                        "                (" & vbNewLine
-                    Else
-                      sSQL = sSQL & _
-                        "                        OR" & vbNewLine
-                    End If
+                  Else
+              
+                    ' Create the view
+                    sSQL = "CREATE VIEW dbo." & sViewName & vbNewLine & _
+                      "AS" & vbNewLine & _
+                      "        SELECT " & sTableName & ".*" & vbNewLine & _
+                      "        FROM " & sTableName & vbNewLine & _
+                      "        WHERE (" & vbNewLine & _
+                      "                        " & _
+                      sTableName & ".ID_" & Trim$(Str$(avParents(3, 1))) & " IN (SELECT id FROM " & avParents(4, 1) & vbNewLine
+                    
+                    lngLastParentID = avParents(3, 1)
+                                 
+                    For iLoop = 2 To UBound(avParents, 2)
+                      
+                      If lngLastParentID <> avParents(3, iLoop) Then
+                        lngLastParentID = avParents(3, iLoop)
+        
+                        sSQL = sSQL & _
+                          "                ))" & vbNewLine & _
+                          "                " & IIf(iParentJoinType = 1, "AND", "OR") & vbNewLine & _
+                          "                (" & vbNewLine & _
+                          "                        " & _
+                          sTableName & ".ID_" & Trim$(Str$(avParents(3, iLoop))) & " IN ("
+                      Else
+                        sSQL = sSQL & _
+                          "                            UNION" & vbNewLine
+                      End If
+        
+                      sSQL = sSQL & "                            SELECT id FROM " & avParents(4, iLoop) & vbNewLine
+                    Next iLoop
+        
+                    sSQL = sSQL & "                ))"
+                      
+                    gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
     
-                    sSQL = sSQL & "                        " & _
-                      sTableName & ".ID_" & Trim(Str(avParents(3, iLoop))) & " IN (SELECT id FROM " & avParents(4, iLoop) & ")" & vbNewLine
-                  Next iLoop
-    
-                  sSQL = sSQL & "                )"
-      
-                  gADOCon.Execute sSQL, , adExecuteNoRecords
-    
+                  End If
+                  
+                  
+                  
+                  
                   If LenB(sSysSecRoles) <> 0 Then
                     sSQL = "GRANT DELETE, INSERT, SELECT, UPDATE ON " & sViewName & " TO " & sSysSecRoles
                     gADOCon.Execute sSQL, , adExecuteNoRecords
