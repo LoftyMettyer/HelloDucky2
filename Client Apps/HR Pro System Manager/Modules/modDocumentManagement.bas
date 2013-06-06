@@ -147,7 +147,14 @@ Public Function CreateLinkDocumentSP() As Boolean
   
     sSQL = sSQL & _
               "    PRINT @sExecuteSQL;" & vbNewLine & _
-              "    EXECUTE sp_executeSQL @sExecuteSQL;" & vbNewLine
+              "    EXECUTE sp_executeSQL @sExecuteSQL;" & vbNewLine & vbNewLine
+  
+    sSQL = sSQL & _
+              "    -- Post processing customisation" & vbNewLine & _
+              "    IF EXISTS(SELECT Name FROM sysobjects WHERE id = object_id('spASRLinkDocument_PostProcess') AND sysstat & 0xf = 4)" & vbNewLine & _
+              "    BEGIN" & vbNewLine & _
+              "        EXEC spASRLinkDocument_PostProcess @DocumentCategory, @DocumentType, @Parent1Key, @Parent2Key, @Key, @DocumentGuid, @ToDelete, @Link;" & vbNewLine & _
+              "    END" & vbNewLine & vbNewLine
   
     sSQL = sSQL & "END"
     
