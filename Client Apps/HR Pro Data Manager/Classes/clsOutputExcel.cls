@@ -875,7 +875,7 @@ Private Sub GetWorkBook(strWorkbook As String, strWorksheet As String)
   Case "New"
     'Create new workbook and ensure only 1 worksheet
     
-    If GetOfficeExcelVersion >= 12 Then
+    If GetOfficeExcelVersion >= 12 And mstrXLTemplate <> vbNullString Then
       'Make sure the new workbook is in the same format as the template
       'otherwise we won't be able to copy sheets into the new workbook.
       lngOriginalFormat = mxlApp.DefaultSaveFormat
