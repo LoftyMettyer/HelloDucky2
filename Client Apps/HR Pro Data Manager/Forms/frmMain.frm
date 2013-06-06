@@ -1,8 +1,8 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.ocx"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.OCX"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
-Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~2.OCX"
+Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~3.OCX"
 Begin VB.MDIForm frmMain 
    AutoShowChildren=   0   'False
    BackColor       =   &H00F7EEE9&
@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "10:00"
+            TextSave        =   "17:48"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -179,7 +179,7 @@ Private mbChanging As Boolean
 Private mblnLogOff As Boolean
 
 ' Functions to tile the background image
-Private Declare Function BitBlt Lib "gdi32" (ByVal hDestDC As Long, ByVal x As Long, ByVal y As Long, ByVal nWidth As Long, ByVal nHeight As Long, ByVal hSrcDC As Long, ByVal xSrc As Long, ByVal ySrc As Long, ByVal dwRop As Long) As Long
+Private Declare Function BitBlt Lib "gdi32" (ByVal hDestDC As Long, ByVal X As Long, ByVal Y As Long, ByVal nWidth As Long, ByVal nHeight As Long, ByVal hSrcDC As Long, ByVal xSrc As Long, ByVal ySrc As Long, ByVal dwRop As Long) As Long
 Private Declare Function CreateCompatibleDC Lib "gdi32" (ByVal lDC As Long) As Long
 Private Declare Function DeleteDC Lib "gdi32" (ByVal lDC As Long) As Long
 Private Declare Function SelectObject Lib "gdi32" (ByVal lDC As Long, ByVal hObject As Long) As Long
@@ -283,7 +283,7 @@ End Sub
 
 Public Sub SetBackground(ByRef mbIsLoading As Boolean)
 
-  Dim x, y, hMemDC, pHeight, pWidth As Long
+  Dim X, Y, hMemDC, pHeight, pWidth As Long
   Dim pic As StdPicture
   Dim sFileName As String
 
@@ -326,24 +326,24 @@ Public Sub SetBackground(ByRef mbIsLoading As Boolean)
 
       ' Tiled backdrop
       If glngDesktopBitmapLocation = giLOCATION_TILE Then
-        For x = 0 To Me.ScaleWidth Step pWidth
-          For y = 0 To Me.ScaleHeight Step pHeight
-            BitBlt picWork.hDC, x \ Screen.TwipsPerPixelX, y \ Screen.TwipsPerPixelX, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
+        For X = 0 To Me.ScaleWidth Step pWidth
+          For Y = 0 To Me.ScaleHeight Step pHeight
+            BitBlt picWork.hDC, X \ Screen.TwipsPerPixelX, Y \ Screen.TwipsPerPixelX, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
           Next
         Next
       End If
 
       ' Tiled down the lefthand side
       If glngDesktopBitmapLocation = giLOCATION_LEFTTILE Then
-        For y = 0 To Me.ScaleHeight Step pHeight
-          BitBlt picWork.hDC, 0, y \ Screen.TwipsPerPixelX, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
+        For Y = 0 To Me.ScaleHeight Step pHeight
+          BitBlt picWork.hDC, 0, Y \ Screen.TwipsPerPixelX, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
         Next
       End If
 
       ' Tiled down the righthand side
       If glngDesktopBitmapLocation = giLOCATION_RIGHTTILE Then
-        For y = 0 To Me.ScaleHeight Step pHeight
-          BitBlt picWork.hDC, (Me.ScaleWidth - pWidth) \ Screen.TwipsPerPixelX, y \ Screen.TwipsPerPixelX, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
+        For Y = 0 To Me.ScaleHeight Step pHeight
+          BitBlt picWork.hDC, (Me.ScaleWidth - pWidth) \ Screen.TwipsPerPixelX, Y \ Screen.TwipsPerPixelX, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
         Next
       End If
 
@@ -359,22 +359,22 @@ Public Sub SetBackground(ByRef mbIsLoading As Boolean)
 
       ' Centred on the backdrop
       If glngDesktopBitmapLocation = giLOCATION_CENTRE Then
-        x = (ScaleWidth - pWidth) \ 2: x = x \ Screen.TwipsPerPixelX
-        y = (ScaleHeight - pHeight) \ 2: y = y \ Screen.TwipsPerPixelY
-        BitBlt picWork.hDC, x, y, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
+        X = (ScaleWidth - pWidth) \ 2: X = X \ Screen.TwipsPerPixelX
+        Y = (ScaleHeight - pHeight) \ 2: Y = Y \ Screen.TwipsPerPixelY
+        BitBlt picWork.hDC, X, Y, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
       End If
 
       ' Tiled across the top
       If glngDesktopBitmapLocation = giLOCATION_TOPTILE Then
-        For x = 0 To Me.ScaleWidth Step pWidth
-          BitBlt picWork.hDC, x \ Screen.TwipsPerPixelX, 0, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
+        For X = 0 To Me.ScaleWidth Step pWidth
+          BitBlt picWork.hDC, X \ Screen.TwipsPerPixelX, 0, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
         Next
       End If
 
       'Tiled across the bottom
       If glngDesktopBitmapLocation = giLOCATION_BOTTOMTILE Then
-        For x = 0 To Me.ScaleWidth Step pWidth
-          BitBlt picWork.hDC, x \ Screen.TwipsPerPixelX, (Me.ScaleHeight - pHeight) \ Screen.TwipsPerPixelX, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
+        For X = 0 To Me.ScaleWidth Step pWidth
+          BitBlt picWork.hDC, X \ Screen.TwipsPerPixelX, (Me.ScaleHeight - pHeight) \ Screen.TwipsPerPixelX, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
         Next
       End If
 
@@ -1336,7 +1336,42 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
   End If
 
 End Sub
-      
+'Private Sub GetFilter(ctlSource As Control, ctlTarget As Control)
+'  ' Allow the user to select/create/modify a filter for the Data Transfer.
+'  Dim fOK As Boolean
+'  Dim objExpression As clsExprExpression
+'
+'  ' Instantiate a new expression object.
+'  Set objExpression = New clsExprExpression
+'
+'  With objExpression
+'    ' Initialise the expression object.
+'    If TypeOf ctlSource Is TextBox Then
+'      fOK = .Initialise(ctlSource.Tag, Val(ctlTarget.Tag), giEXPR_RUNTIMEFILTER, giEXPRVALUE_LOGIC)
+'    ElseIf TypeOf ctlSource Is ComboBox Then
+'      fOK = .Initialise(ctlSource.ItemData(ctlSource.ListIndex), Val(ctlTarget.Tag), giEXPR_RUNTIMEFILTER, giEXPRVALUE_LOGIC)
+'    End If
+'
+'    If fOK Then
+'      ' Instruct the expression object to display the expression selection/creation/modification form.
+'      If .SelectExpression(True) = True Then
+'        ' Read the selected expression info.
+'        ctlTarget.Text = IIf(Len(.Name) = 0, "<None>", .Name)
+'        ctlTarget.Tag = .ExpressionID
+'
+'        Changed = True
+'      End If
+'    End If
+'
+'    End With
+'
+'
+'  Set objExpression = Nothing
+'
+'  ForceDefinitionToBeHiddenIfNeeded
+'
+'End Sub
+
 Public Function LogOff()
       
   'If mblnLoggingOff = False Then
@@ -2413,12 +2448,12 @@ Public Sub GlobalClick(FormType As GlobalType)
   Dim frmSelection As frmDefSel
   Dim objGlobalRun As clsGlobalRun
   Dim blnOK As Boolean
-  Dim lngType As Long
+  Dim lngTYPE As Long
 
   Screen.MousePointer = vbHourglass
     
   'sType = Choose(FormType, "ADD", "UPDATE", "DELETE")
-  lngType = Choose(FormType, UtlGlobalAdd, utlGlobalUpdate, utlGlobalDelete)
+  lngTYPE = Choose(FormType, UtlGlobalAdd, utlGlobalUpdate, utlGlobalDelete)
 
   fExit = False
   Set frmSelection = New frmDefSel
@@ -2428,7 +2463,7 @@ Public Sub GlobalClick(FormType As GlobalType)
     Do While Not fExit
       .EnableRun = True
 
-      If .ShowList(lngType) Then
+      If .ShowList(lngTYPE) Then
         .CustomShow vbModal
 
         Select Case .Action
@@ -2917,7 +2952,7 @@ Private Sub BatchJobsClick(ByRef UtilityID As Integer)
 End Sub
 
 
-Private Sub ReportPackClick(ByRef UtilityID As Integer)
+Private Sub ReportPackClick(ByRef UtilityID As Long)
   Dim fExit As Boolean
   Dim frmSelection As frmDefSel
   Dim frmEdit As frmBatchJob
@@ -2927,13 +2962,15 @@ Private Sub ReportPackClick(ByRef UtilityID As Integer)
   Set frmSelection = New frmDefSel
   fExit = False
   
+  gblnReportPackMode = True
+  
   With frmSelection
     Do While Not fExit
       
       .EnableRun = True
       
       If .ShowList(utlReportPack) Then
-      
+        
         .CustomShow vbModal
         DoEvents
         
@@ -3734,7 +3771,7 @@ Private Function DoMatchReport(mrtMatchReportType As MatchReportType, ByVal Acti
   
   Dim frmEdit As frmMatchDef
   Dim frmRun As frmMatchRun
-  Dim lngType As UtilityType
+  Dim lngTYPE As UtilityType
   Dim bOK As Boolean
 
   bOK = True
@@ -3747,9 +3784,9 @@ Private Function DoMatchReport(mrtMatchReportType As MatchReportType, ByVal Acti
 
 
   Select Case mrtMatchReportType
-    Case mrtNormal: lngType = utlMatchReport
-    Case mrtSucession: lngType = utlSuccession
-    Case mrtCareer: lngType = utlCareer
+    Case mrtNormal: lngTYPE = utlMatchReport
+    Case mrtSucession: lngTYPE = utlSuccession
+    Case mrtCareer: lngTYPE = utlCareer
   End Select
 
   Select Case Action
@@ -3885,11 +3922,11 @@ Public Sub RunUtility(ByRef UtilType As UtilityType, ByRef UtilityID As Long)
                 Case utlMailMerge
                    DoMailMerge .Action, .SelectedID, .FromCopy
         
-                Case utlBatchJob, utlReportPack
+                Case utlBatchJob
                '   BatchJobsClick UtilityID
         
                 Case utlReportPack
-              '    ReportPackClick UtilityID
+                  ReportPackClick UtilityID
         
               End Select
             
