@@ -92,30 +92,65 @@
     <Import Include="SystemFramework.Things" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\HCMErrors.vb" />
-    <Compile Include="Classes\HCMOptions.vb" />
-    <Compile Include="Classes\HCMTuningReport.vb" />
-    <Compile Include="Classes\Modifications.vb" />
-    <Compile Include="COM Interface\Interfaces.vb" />
+    <Compile Include="Enums\Connection\LoginType.vb" />
+    <Compile Include="Enums\Connection\DbType.vb" />
+    <Compile Include="Enums\Connection\MetadataProvider.vb" />
+    <Compile Include="Enums\Connection\Provider.vb" />
+    <Compile Include="Interfaces\ICommitDB.vb" />
+    <Compile Include="Interfaces\IConnection.vb" />
+    <Compile Include="Interfaces\IErrors.vb" />
+    <Compile Include="Interfaces\IForm.vb" />
+    <Compile Include="Interfaces\IModifications.vb" />
+    <Compile Include="Interfaces\IObject.vb" />
+    <Compile Include="Interfaces\IOptions.vb" />
+    <Compile Include="Interfaces\ISystemManager.vb" />
+    <Compile Include="Interfaces\ITable.vb" />
+    <Compile Include="Things\Collections\Errors.vb" />
+    <Compile Include="Things\Scripting\Option.vb" />
+    <Compile Include="Things\Scripting\TuningReport.vb" />
+    <Compile Include="Things\Scripting\Modifications.vb" />
     <Compile Include="Connectivity\AccessDB.vb" />
     <Compile Include="Connectivity\ADOClassic.vb" />
-    <Compile Include="Connectivity\Login.vb" />
-    <Compile Include="Connectivity\Enums.vb" />
+    <Compile Include="Structures\Login.vb" />
     <Compile Include="Connectivity\Parameter.vb" />
     <Compile Include="Connectivity\Parameters.vb" />
     <Compile Include="Connectivity\SQL.vb" />
     <Compile Include="Database Scripting\Beautify.vb" />
-    <Compile Include="Database Scripting\CodeElement.vb" />
+    <Compile Include="Enums\CaseReturnType.vb" />
+    <Compile Include="Enums\Errors\Section.vb" />
+    <Compile Include="Enums\Errors\Severity.vb" />
+    <Compile Include="Structures\Error.vb" />
+    <Compile Include="Structures\CodeElement.vb" />
     <Compile Include="Database Scripting\Consts.vb" />
-    <Compile Include="Database Scripting\Enums.vb" />
-    <Compile Include="Database Scripting\GeneratedUDF.vb" />
+    <Compile Include="Structures\GeneratedUDF.vb" />
     <Compile Include="Database Scripting\LinesOfCode.vb" />
     <Compile Include="Database Scripting\Script.vb" />
     <Compile Include="Database Scripting\DatabaseMetadata.vb" />
+    <Compile Include="Database Scripting\ScriptedMetadata.vb" />
     <Compile Include="Database Scripting\ScriptFunctions.vb" />
-    <Compile Include="Database Scripting\Structures.vb" />
     <Compile Include="Database Scripting\TriggeredUpdate.vb" />
     <Compile Include="Database Scripting\Tuning.vb" />
+    <Compile Include="Enums\AccordPurgeType.vb" />
+    <Compile Include="Enums\CaseType.vb" />
+    <Compile Include="Enums\ColumnRowSelection.vb" />
+    <Compile Include="Enums\ColumnTypes.vb" />
+    <Compile Include="Enums\ComponentTypes.vb" />
+    <Compile Include="Enums\ComponentValueTypes.vb" />
+    <Compile Include="Enums\DateOffsetType.vb" />
+    <Compile Include="Enums\AlignType.vb" />
+    <Compile Include="Enums\EmailLinkType.vb" />
+    <Compile Include="Enums\ExpressionType.vb" />
+    <Compile Include="Enums\OleType.vb" />
+    <Compile Include="Enums\OperatorSubType.vb" />
+    <Compile Include="Enums\Order.vb" />
+    <Compile Include="Enums\RelationshipType.vb" />
+    <Compile Include="Enums\SettingType.vb" />
+    <Compile Include="Enums\TableType.vb" />
+    <Compile Include="Enums\TriggerType.vb" />
+    <Compile Include="Enums\TrimType.vb" />
+    <Compile Include="Enums\UniqueCheckScope.vb" />
+    <Compile Include="Enums\ValidationSeverity.vb" />
+    <Compile Include="Enums\ValidationType.vb" />
     <Compile Include="Forms\ErrorLog.Designer.vb">
       <DependentUpon>ErrorLog.vb</DependentUpon>
     </Compile>
@@ -129,7 +164,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Globals.vb" />
-    <Compile Include="HCM.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -151,38 +185,31 @@
     <Compile Include="Forms\DataSource.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Object Types\Core\Base.vb" />
-    <Compile Include="Object Types\Core\Extensions.vb" />
-    <Compile Include="Object Types\Datasource.vb" />
-    <Compile Include="Object Types\DependencyCollection.vb" />
-    <Compile Include="Object Types\FusionMessage.vb" />
-    <Compile Include="Object Types\GlobalModify.vb" />
-    <Compile Include="Object Types\GlobalModifyItem.vb" />
-    <Compile Include="Object Types\Index.vb" />
-    <Compile Include="Object Types\Mask.vb" />
-    <Compile Include="Object Types\SettingCollection.vb" />
-    <Compile Include="Object Types\TableOrderFilter.vb" />
-    <Compile Include="Object Types\TableOrder.vb" />
-    <Compile Include="Object Types\TableOrderItem.vb" />
-    <Compile Include="Object Types\Validation.vb" />
-    <Compile Include="Object Types\View.vb" />
+    <Compile Include="Things\Core\Base.vb" />
+    <Compile Include="Things\Core\Extensions.vb" />
+    <Compile Include="Things\Collections\ExpressionDependencies.vb" />
+    <Compile Include="Things\Scripting\FusionMessage.vb" />
+    <Compile Include="Things\Scripting\Index.vb" />
+    <Compile Include="Things\Components\Mask.vb" />
+    <Compile Include="Things\Collections\SettingCollection.vb" />
+    <Compile Include="Things\Scripting\TableOrderFilter.vb" />
+    <Compile Include="Things\Scripting\TableOrder.vb" />
+    <Compile Include="Things\Scripting\TableOrderItem.vb" />
+    <Compile Include="Things\Scripting\Validation.vb" />
+    <Compile Include="Things\Scripting\View.vb" />
     <Compile Include="PopulateObjects.vb" />
-    <Compile Include="Object Types\CodeLibrary.vb" />
-    <Compile Include="Object Types\Column.vb" />
-    <Compile Include="Object Types\Component.vb" />
-    <Compile Include="Object Types\DiaryLink.vb" />
-    <Compile Include="Object Types\EmailLink.vb" />
-    <Compile Include="Object Types\Enums.vb" />
-    <Compile Include="Object Types\Expression.vb" />
-    <Compile Include="Object Types\RecordDescription.vb" />
-    <Compile Include="Object Types\Relation.vb" />
-    <Compile Include="Object Types\Screen.vb" />
-    <Compile Include="Object Types\Setting.vb" />
-    <Compile Include="Object Types\Table.vb" />
-    <Compile Include="Object Types\Workflow.vb" />
-    <Compile Include="Object Types\WorkflowElement.vb" />
-    <Compile Include="Object Types\WorkflowElementColumn.vb" />
-    <Compile Include="Object Types\WorkflowElementItem.vb" />
+    <Compile Include="Things\Scripting\CodeLibrary.vb" />
+    <Compile Include="Things\Components\Column.vb" />
+    <Compile Include="Things\Components\Component.vb" />
+    <Compile Include="Things\Components\DiaryLink.vb" />
+    <Compile Include="Things\Components\EmailLink.vb" />
+    <Compile Include="Things\Components\Expression.vb" />
+    <Compile Include="Things\Scripting\RecordDescription.vb" />
+    <Compile Include="Things\Scripting\Relation.vb" />
+    <Compile Include="Things\Scripting\Setting.vb" />
+    <Compile Include="Things\Components\Table.vb" />
+    <Compile Include="Structures\ChildRowDetails.vb" />
+    <Compile Include="Structures\Dependency.vb" />
     <Compile Include="SysMgr.vb" />
   </ItemGroup>
   <ItemGroup>
@@ -242,7 +269,9 @@
     <None Include="Resources\mobsync.15.ico" />
     <None Include="Resources\Error48.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Classes\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

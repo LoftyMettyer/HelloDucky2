@@ -1,4 +1,6 @@
 ﻿Imports System.Runtime.InteropServices
+Imports SystemFramework.Enums
+Imports SystemFramework.Structures
 
 Namespace ScriptDB
 

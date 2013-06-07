@@ -1,4 +1,7 @@
-﻿Namespace ScriptDB
+﻿Imports SystemFramework.Enums
+Imports SystemFramework.Enums.Errors
+
+Namespace ScriptDB
 
   Public Module ScriptFunctions
 
@@ -205,7 +208,7 @@
         bOk = CommitDb.ScriptStatement(sSql, True)
 
       Catch ex As Exception
-        ErrorLog.Add(ErrorHandler.Section.Triggers, sObjectName, ErrorHandler.Severity.Error, ex.Message, sSql)
+        ErrorLog.Add(Section.Triggers, sObjectName, Severity.Error, ex.Message, sSql)
         bOk = False
       End Try
 

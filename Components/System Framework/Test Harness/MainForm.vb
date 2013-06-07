@@ -405,30 +405,30 @@ Public Class MainForm
 
     Dim objPhoenix As New SystemFramework.SysMgr
 
-    Dim objError As SystemFramework.ErrorHandler.Error
+    Dim objError As SystemFramework.Structures.Error
 
     objPhoenix.Initialise()
 
-    objError = New SystemFramework.ErrorHandler.Error
+    objError = New SystemFramework.Structures.Error
     objError.DateTime = Now
     objError.Detail = "my detail"
-    objError.Severity = SystemFramework.ErrorHandler.Severity.Error
+    objError.Severity = SystemFramework.Enums.Errors.Severity.Error
     objError.Message = "the error message"
     objPhoenix.ReturnErrorLog.Add(objError)
 
 
-    objError = New SystemFramework.ErrorHandler.Error
+    objError = New SystemFramework.Structures.Error
     objError.DateTime = Now
     objError.Detail = "my wanring detail"
-    objError.Severity = SystemFramework.ErrorHandler.Severity.Warning
+    objError.Severity = SystemFramework.Enums.Errors.Severity.Warning
     objError.Message = "the warning message"
     objPhoenix.ReturnErrorLog.Add(objError)
 
 
-    objError = New SystemFramework.ErrorHandler.Error
+    objError = New SystemFramework.Structures.Error
     objError.DateTime = Now
     objError.Detail = "my wanring detail123234"
-    objError.Severity = SystemFramework.ErrorHandler.Severity.Warning
+    objError.Severity = SystemFramework.Enums.Errors.Severity.Warning
     objError.Message = "the warning message"
     objPhoenix.ReturnErrorLog.Add(objError)
 

@@ -103,7 +103,7 @@ Public Class SysMgr
 
   End Function
 
-  Public ReadOnly Property ReturnTuningLog As Tuning.Report Implements ISystemManager.TuningLog
+  Public ReadOnly Property ReturnTuningLog As TuningReport Implements ISystemManager.TuningLog
     Get
       Return TuningLog
     End Get
@@ -115,7 +115,7 @@ Public Class SysMgr
     End Get
   End Property
 
-  Public ReadOnly Property ReturnErrorLog As ErrorHandler.Errors Implements ISystemManager.ErrorLog
+  Public ReadOnly Property ReturnErrorLog As Collections.Errors Implements ISystemManager.ErrorLog
     Get
       Return ErrorLog
     End Get
@@ -131,7 +131,7 @@ Public Class SysMgr
     End Get
   End Property
 
-  Public ReadOnly Property Options As HCMOptions Implements ISystemManager.Options
+  Public ReadOnly Property Options As [Option] Implements ISystemManager.Options
     Get
       Return Globals.Options
     End Get

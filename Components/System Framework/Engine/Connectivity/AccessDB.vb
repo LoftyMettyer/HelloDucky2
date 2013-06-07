@@ -1,4 +1,7 @@
-﻿Namespace Connectivity
+﻿Imports SystemFramework.Enums.Errors
+Imports SystemFramework.Enums
+
+Namespace Connectivity
   Public Class AccessDb
     Implements IConnection
 
@@ -30,14 +33,14 @@
             sqlParms = objCommand.Parameters
             For Each objParameter In parms
 
-              Select Case objParameter.DBType
-                Case DBType.Integer
+              Select Case objParameter.DbType
+                Case Connection.DbType.Integer
                   sqlParms.AddWithValue(objParameter.Name, CInt(objParameter.Value))
 
-                Case DBType.String
+                Case Connection.DbType.String
                   sqlParms.AddWithValue(objParameter.Name, objParameter.Value.ToString)
 
-                Case DBType.GUID
+                Case Connection.DbType.Guid
                   If objParameter.Value Is Nothing OrElse CType(objParameter.Value, Guid) = Guid.Empty Then
                     sqlParms.AddWithValue(objParameter.Name, DBNull.Value)
                   Else
@@ -56,7 +59,7 @@
         objAdapter.Fill(dsDataSet)
 
       Catch ex As Exception
-        ErrorLog.Add(ErrorHandler.Section.LoadingData, "ExecuteQuery", ErrorHandler.Severity.Error, ex.Message, ex.InnerException.ToString)
+        ErrorLog.Add(Section.LoadingData, "ExecuteQuery", Severity.Error, ex.Message, ex.InnerException.ToString)
         Return Nothing
 
       Finally
@@ -68,21 +71,21 @@
     End Function
 
     Public Sub Close() Implements IConnection.Close
-      DB.Close()
+      Db.Close()
       NativeObject.Close()
 
-      DB.Dispose()
+      Db.Dispose()
 
-      DB = Nothing
+      Db = Nothing
       NativeObject = Nothing
 
     End Sub
 
-    Public Property Login As Login Implements IConnection.Login
+    Public Property Login As Structures.Login Implements IConnection.Login
       Get
         Return Nothing
       End Get
-      Set(ByVal value As Login)
+      Set(ByVal value As Structures.Login)
 
       End Set
     End Property

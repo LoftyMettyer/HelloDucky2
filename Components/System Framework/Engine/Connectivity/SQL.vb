@@ -1,18 +1,20 @@
 ﻿Imports System.Data.SqlClient
+Imports SystemFramework.Enums.Errors
+Imports SystemFramework.Enums
 
 Namespace Connectivity
 
   Public Class Sql
     Implements IConnection
 
-    Private _mobjLogin As Login
+    Private _mobjLogin As Structures.Login
     Private _mConn As New SqlConnection
 
-    Public Property Login As Login Implements IConnection.Login
+    Public Property Login As Structures.Login Implements IConnection.Login
       Get
         Return _mobjLogin
       End Get
-      Set(ByVal value As Login)
+      Set(ByVal value As Structures.Login)
         _mobjLogin = value
       End Set
     End Property
@@ -39,7 +41,7 @@ Namespace Connectivity
         _mConn.Open()
 
       Catch ex As Exception
-        ErrorLog.Add(ErrorHandler.Section.LoadingData, String.Empty, ErrorHandler.Severity.Error, ex.Message, sConnection)
+        ErrorLog.Add(Section.LoadingData, String.Empty, Severity.Error, ex.Message, sConnection)
 
       End Try
 
@@ -67,13 +69,13 @@ Namespace Connectivity
         For Each objParameter In parms
 
           Select Case objParameter.DBType
-            Case DBType.Integer
+            Case Connection.DbType.Integer
               sqlParms.AddWithValue(objParameter.Name, CInt(objParameter.Value))
 
-            Case DBType.String
+            Case Connection.DbType.String
               sqlParms.AddWithValue(objParameter.Name, objParameter.Value.ToString)
 
-            Case DBType.GUID
+            Case Connection.DbType.Guid
               If objParameter.Value Is Nothing OrElse CType(objParameter.Value, Guid) = Guid.Empty Then
                 sqlParms.AddWithValue(objParameter.Name, DBNull.Value)
               Else

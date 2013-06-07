@@ -1,4 +1,6 @@
-﻿
+﻿Imports SystemFramework.Enums
+Imports SystemFramework.Enums.Errors
+
 Namespace Connectivity
   Public Class AdoClassic
     Implements IConnection
@@ -8,7 +10,7 @@ Namespace Connectivity
 
 #Region "IConnection interface"
 
-    Public Sub Close() Implements ComInterfaces.IConnection.Close
+    Public Sub Close() Implements IConnection.Close
       DB.Close()
       'NativeObject.Close()
     End Sub
@@ -60,11 +62,10 @@ Namespace Connectivity
           If parms IsNot Nothing Then
 
             For Each objParameter In parms
-
               Select Case objParameter.DbType
-                Case Connectivity.DbType.Integer
+                Case Connection.DbType.Integer
                   .Parameters(objParameter.Name).Value = CInt(objParameter.Value.ToString)
-                Case Connectivity.DbType.String
+                Case Connection.DbType.String
                   .Parameters(objParameter.Name).Value = objParameter.Value.ToString
               End Select
             Next
@@ -79,36 +80,36 @@ Namespace Connectivity
         Return dsDataSet
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(SystemFramework.ErrorHandler.Section.LoadingData, "ExecuteQuery", SystemFramework.ErrorHandler.Severity.Error, ex.Message, ex.InnerException.ToString)
+        ErrorLog.Add(Section.LoadingData, "ExecuteQuery", Severity.Error, ex.Message, ex.InnerException.ToString)
         Return Nothing
 
       End Try
 
     End Function
 
-    Public Property Login As Login Implements ComInterfaces.IConnection.Login
+    Public Property Login As Structures.Login Implements IConnection.Login
       Get
         Return Nothing
       End Get
-      Set(ByVal value As Login)
+      Set(ByVal value As Structures.Login)
 
       End Set
     End Property
 
-    Public Sub Open() Implements ComInterfaces.IConnection.Open
+    Public Sub Open() Implements IConnection.Open
     End Sub
 
-    Public Function ScriptStatement(ByVal statement As String, ByRef isCritical As Boolean) As Boolean Implements ComInterfaces.IConnection.ScriptStatement
+    Public Function ScriptStatement(ByVal statement As String, ByRef isCritical As Boolean) As Boolean Implements IConnection.ScriptStatement
 
       Dim bOk As Boolean = True
-      Dim iSeverity As ErrorHandler.Severity
+      Dim iSeverity As Severity
 
       Try
         NativeObject.Execute(statement)
 
       Catch ex As Exception
-        iSeverity = CType(IIf(isCritical = True, ErrorHandler.Severity.Error, ErrorHandler.Severity.Warning), ErrorHandler.Severity)
-        ErrorLog.Add(ErrorHandler.Section.General, "ADOClassic.ScriptStatement", iSeverity, ex.Message, statement)
+        iSeverity = CType(IIf(isCritical = True, Severity.Error, Severity.Warning), Severity)
+        ErrorLog.Add(Section.General, "ADOClassic.ScriptStatement", iSeverity, ex.Message, statement)
         bOk = False
       End Try
 

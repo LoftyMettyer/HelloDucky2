@@ -1,4 +1,5 @@
 ﻿Imports System.Runtime.InteropServices
+Imports SystemFramework.Enums
 
 Namespace Connectivity
 
@@ -11,7 +12,7 @@ Namespace Connectivity
       Dim param As New Parameter
 
       param.Name = [name]
-      param.DBType = DBType.Integer
+      param.DbType = Connection.DbType.Integer
       param.Value = [value]
       Items.Add(param)
 
@@ -22,7 +23,7 @@ Namespace Connectivity
       Dim param As New Parameter
 
       param.Name = name
-      param.DBType = DBType.String
+      param.DbType = Connection.DbType.String
 
       If value Is Nothing Then
         value = ""

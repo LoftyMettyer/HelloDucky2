@@ -2,6 +2,9 @@
 Imports System.Text
 Imports SystemFramework.Things
 Imports System.Text.RegularExpressions
+Imports SystemFramework.Enums
+Imports SystemFramework.Enums.Errors
+Imports SystemFramework.Structures
 
 Namespace ScriptDB
 
@@ -39,7 +42,7 @@ Namespace ScriptDB
         CommitDb.ScriptStatement(sql, True)
 
       Catch ex As Exception
-        ErrorLog.Add(ErrorHandler.Section.UdFs, name, ErrorHandler.Severity.Error, ex.Message, sql)
+        ErrorLog.Add(Section.UdFs, name, Severity.Error, ex.Message, sql)
         Return False
       End Try
 
@@ -84,7 +87,7 @@ Namespace ScriptDB
         Next
 
       Catch ex As Exception
-        ErrorLog.Add(ErrorHandler.Section.Views, "DropViews", ErrorHandler.Severity.Error, ex.Message, vbNullString)
+        ErrorLog.Add(Section.Views, "DropViews", Severity.Error, ex.Message, vbNullString)
         bOk = False
 
       End Try
@@ -104,7 +107,7 @@ Namespace ScriptDB
         Next
 
       Catch ex As Exception
-        ErrorLog.Add(ErrorHandler.Section.Views, objTable.Name, ErrorHandler.Severity.Error, ex.Message, vbNullString)
+        ErrorLog.Add(Section.Views, objTable.Name, Severity.Error, ex.Message, vbNullString)
         bOk = False
 
       End Try
@@ -187,7 +190,7 @@ Namespace ScriptDB
         Next
 
       Catch ex As Exception
-        ErrorLog.Add(ErrorHandler.Section.TableAndColumns, "Views", ErrorHandler.Severity.Error, ex.Message, sSql)
+        ErrorLog.Add(Section.TableAndColumns, "Views", Severity.Error, ex.Message, sSql)
         bOk = False
 
       End Try
@@ -246,7 +249,7 @@ Namespace ScriptDB
         Next
 
       Catch ex As Exception
-        ErrorLog.Add(ErrorHandler.Section.Views, sViewName, ErrorHandler.Severity.Error, ex.Message, sDefinitionSql)
+        ErrorLog.Add(Section.Views, sViewName, Severity.Error, ex.Message, sDefinitionSql)
         bOk = False
 
       End Try
@@ -292,7 +295,7 @@ Namespace ScriptDB
         Next
 
       Catch ex As Exception
-        ErrorLog.Add(ErrorHandler.Section.Views, "Views", ErrorHandler.Severity.Error, ex.Message, sDefinition.ToString)
+        ErrorLog.Add(Section.Views, "Views", Severity.Error, ex.Message, sDefinition.ToString)
         bOk = False
       End Try
 
@@ -851,7 +854,7 @@ Namespace ScriptDB
         Next
 
       Catch ex As Exception
-        ErrorLog.Add(ErrorHandler.Section.Triggers, "Error generating trigger", ErrorHandler.Severity.Error, ex.Message, sSql)
+        ErrorLog.Add(Section.Triggers, "Error generating trigger", Severity.Error, ex.Message, sSql)
         bOk = False
 
       Finally
@@ -998,7 +1001,7 @@ Namespace ScriptDB
         End If
 
       Catch ex As Exception
-        ErrorLog.Add(ErrorHandler.Section.UdFs, sTriggerName, ErrorHandler.Severity.Error, ex.Message, sSql)
+        ErrorLog.Add(Section.UdFs, sTriggerName, Severity.Error, ex.Message, sSql)
 
       End Try
 
@@ -1106,7 +1109,7 @@ Namespace ScriptDB
                   column.Calculation.GenerateCodeForColumn()
 
                   If column.Calculation.ReturnType <> column.ComponentReturnType Then
-                    ErrorLog.Add(ErrorHandler.Section.UdFs, column.Name, ErrorHandler.Severity.Error _
+                    ErrorLog.Add(Section.UdFs, column.Name, Severity.Error _
                       , String.Format("Incorrect return type on {0}", column.Name) _
                       , String.Format("The calculation selected on {0}.{1} is not the same type as its column. Please reselect the correct calculation for this column" & vbNewLine & _
                                 "This could result in further errors in the save process or conversion failure error messages when saving records on this table or associated tables" _
@@ -1115,7 +1118,7 @@ Namespace ScriptDB
 
                   ' Trap for error 1753 (some system may have duff metadata that's built up over the years
                   If column.Calculation.Components.Count = 0 Then
-                    ErrorLog.Add(ErrorHandler.Section.UdFs, column.Name, ErrorHandler.Severity.Warning _
+                    ErrorLog.Add(Section.UdFs, column.Name, Severity.Warning _
                       , String.Format("Invalid expression on {0}", column.Name) _
                       , String.Format("The calculation on {0}.{1} has no components and is invalid. You will need to redefine this calculation.", column.Table.Name, column.Name))
                     column.Calculation.IsValid = False
@@ -1130,7 +1133,7 @@ Namespace ScriptDB
                 column.DefaultCalculation = table.Expressions.GetById(column.DefaultCalcId)
 
                 If column.DefaultCalculation Is Nothing Then
-                  ErrorLog.Add(ErrorHandler.Section.UdFs, "", ErrorHandler.Severity.Warning _
+                  ErrorLog.Add(Section.UdFs, "", Severity.Warning _
                   , String.Format("Default calculation for {0}.{1} not found.", column.Table.Name, column.Name) _
                     , "This is likely to be caused by copying a table and a calculation reference is still attached to the original column. In the associated calculation try re-selecting any calculations.")
                 Else
@@ -1233,7 +1236,7 @@ Namespace ScriptDB
         Next
 
       Catch ex As Exception
-        ErrorLog.Add(ErrorHandler.Section.UdFs, String.Empty, ErrorHandler.Severity.Error, ex.Message, vbNullString)
+        ErrorLog.Add(Section.UdFs, String.Empty, Severity.Error, ex.Message, vbNullString)
         Return False
 
       End Try
@@ -1332,7 +1335,7 @@ Namespace ScriptDB
         Next
 
       Catch ex As Exception
-        ErrorLog.Add(ErrorHandler.Section.UdFs, "Index", ErrorHandler.Severity.Error, ex.Message, vbNullString)
+        ErrorLog.Add(Section.UdFs, "Index", Severity.Error, ex.Message, vbNullString)
         bOk = False
       End Try
 
@@ -1584,7 +1587,7 @@ Namespace ScriptDB
 
 
       Catch ex As Exception
-        ErrorLog.Add(ErrorHandler.Section.Triggers, "Overnight Job", ErrorHandler.Severity.Error, ex.Message, vbNullString)
+        ErrorLog.Add(Section.Triggers, "Overnight Job", Severity.Error, ex.Message, vbNullString)
         bOk = False
 
       End Try

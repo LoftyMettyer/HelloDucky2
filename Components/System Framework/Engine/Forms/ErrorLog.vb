@@ -1,11 +1,13 @@
 ﻿Imports System.Windows.Forms
+Imports SystemFramework.Enums.Errors
+
 Namespace Forms
 
   Public Class ErrorLog
 
     Public Abort As Boolean
     Private Const MlngInitialHeight As Integer = 160
-    Private _errorSeverity As ErrorHandler.Severity = ErrorHandler.Severity.Warning
+    Private _errorSeverity As Severity = Enums.Errors.Severity.Warning
 
     Private Sub ErrorLog_Load(ByVal sender As System.Object, ByVal e As EventArgs) Handles MyBase.Load
 
@@ -16,18 +18,18 @@ Namespace Forms
       linkEmail.Links.Add(0, linkEmail.Text.Length, linkEmail.Text)
       LinkWeb.Links.Add(0, LinkWeb.Text.Length, LinkWeb.Text)
 
-      For Each objError As ErrorHandler.Error In Globals.ErrorLog
+      For Each objError As Structures.Error In Globals.ErrorLog
         Dim objListViewItem = lvwErrors.Items.Add(objError.Message)
         objListViewItem.ImageIndex = objError.Severity
         objListViewItem.SubItems.Add(objError.Detail)
 
-        If objError.Severity = ErrorHandler.Severity.Error Then
-          _errorSeverity = ErrorHandler.Severity.Error
+        If objError.Severity = Enums.Errors.Severity.Error Then
+          _errorSeverity = Enums.Errors.Severity.Error
         End If
       Next
 
       Select Case _errorSeverity
-        Case ErrorHandler.Severity.Warning
+        Case Enums.Errors.Severity.Warning
           PictureBox1.Image = imagelist48.Images("warning")
           TextBox2.Text = "Warnings were encountered by the .NET framework. The system can continue saving, but some calculations may not function correctly. Please contact support for assistance."
 
@@ -57,7 +59,7 @@ Namespace Forms
     End Sub
 
     Private Sub butContinue_Click(ByVal sender As System.Object, ByVal e As EventArgs) Handles butContinue.Click
-      If _errorSeverity = ErrorHandler.Severity.Error Then
+      If _errorSeverity = Enums.Errors.Severity.Error Then
         If MsgBox("System integrity is compromised. Are you sure you want to continue?", MsgBoxStyle.YesNo Or MsgBoxStyle.Question, "System Framework") = MsgBoxResult.Yes Then
           Close()
         End If
