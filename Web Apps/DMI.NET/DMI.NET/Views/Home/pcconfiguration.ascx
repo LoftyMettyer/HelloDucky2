@@ -4,7 +4,8 @@
 <script type="text/javascript">
 
     function pcconfiguration_window_onload() {
-
+				
+    		$("#workframe").attr("data-framesource", "PCCONFIGURATION");
         var frmMenu = OpenHR.getForm("menuframe", "frmMenuInfo");
 
         // Get menu to refresh the menu.
