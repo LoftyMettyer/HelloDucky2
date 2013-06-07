@@ -52,7 +52,7 @@ Namespace Things
         sValue = _mdecValueNumeric.ToString.Replace(",", ".")
 
         ' JIRA-1976 - SQL interprets values as integer if no decimal place - causes problems with divisions.
-        If sValue.IndexOf(".") = -1 Then
+        If sValue.IndexOf(".", StringComparison.Ordinal) = -1 Then
           sValue = String.Format("{0}.0", sValue)
         End If
 
@@ -175,15 +175,15 @@ Namespace Things
 
     Public Function Clone() As Component
 
-      Dim objClone As New Component
+      Dim objClone As Component
 
       ' Clone component properties (shallow clone)
       objClone = CType(MemberwiseClone(), Component)
 
       ' Clone the child nodes (deep clone)
       objClone.Components = New Collection(Of Component)
-      For Each objComponent As Component In Me.Components
-        objClone.Components.Add(CType(objComponent.Clone, Component))
+      For Each objComponent As Component In Components
+        objClone.Components.Add(objComponent.Clone)
       Next
 
       Return objClone
@@ -195,7 +195,7 @@ Namespace Things
 
       ' Clone the child nodes
       For Each objComponent As Component In Components
-        objClone.Add(CType(objComponent.Clone, Component))
+        objClone.Add(objComponent.Clone)
       Next
 
       Return objClone

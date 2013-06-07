@@ -11,36 +11,34 @@ Namespace ErrorHandler
 
     Public Overloads Sub Add(ByVal section As Section, ByVal objectName As String, ByVal severity As Severity, ByVal message As String, ByVal detail As String)
 
-      Dim item As [Error]
+      Dim thisItem As [Error]
 
-      item.Section = section
-      item.ObjectName = objectName
-      item.Severity = severity
-      item.Message = message
-      item.Detail = Detail
-      item.User = Globals.Login.UserName
-      item.DateTime = Now
+      thisItem.Section = section
+      thisItem.ObjectName = objectName
+      thisItem.Severity = severity
+      thisItem.Message = message
+      thisItem.Detail = detail
+      thisItem.User = Login.UserName
+      thisItem.DateTime = Now
 
-      If Not Items.Any(Function(e) e.Section = item.Section AndAlso
-            e.ObjectName = item.ObjectName AndAlso
-            e.Section = item.Section AndAlso
-            e.Message = item.Message AndAlso
-            e.Detail = item.Detail AndAlso
-            e.User = item.User) Then
-        Add(item)
+      If Not Items.Any(Function(e) e.Section = thisItem.Section AndAlso
+            e.ObjectName = thisItem.ObjectName AndAlso
+            e.Section = thisItem.Section AndAlso
+            e.Message = thisItem.Message AndAlso
+            e.Detail = thisItem.Detail AndAlso
+            e.User = thisItem.User) Then
+        Add(thisItem)
       End If
 
     End Sub
 
     Public Function DetailedReport() As String
 
-      Dim message As String = vbNullString
+      'For Each thisItem As [Error] In Items
+      '  message += String.Format("{1}{0}{1}{2}{1}", thisItem.Message, vbNewLine, thisItem.Detail)
+      'Next
 
-      For Each item As [Error] In Me.Items
-        message += String.Format("{1}{0}{1}{2}{1}", item.Message, vbNewLine, item.Detail)
-      Next
-
-      Return message
+      Return Items.Aggregate(vbNullString, Function(current, thisItem) current + String.Format("{1}{0}{1}{2}{1}", thisItem.Message, vbNewLine, thisItem.Detail))
 
     End Function
 
@@ -48,11 +46,11 @@ Namespace ErrorHandler
 
       Dim message As String = vbNullString
 
-      For Each item As [Error] In Items
+      For Each thisItem As [Error] In Items
 
-        Select Case item.Severity
+        Select Case thisItem.Severity
           Case Severity.Error
-            message += String.Format("{0} - {1}", item.ObjectName, item.Message)
+            message += String.Format("{0} - {1}", thisItem.ObjectName, thisItem.Message)
 
           Case Severity.Warning
             'sMessage = sMessage & String.Format("{1}{1}{1}{1}{0}{1}{2}{1}", objError.Message, vbNewLine, objError.Detail)

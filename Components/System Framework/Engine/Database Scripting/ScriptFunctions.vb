@@ -63,21 +63,6 @@
 
     End Function
 
-    Public Function UniqueCodeViews() As Boolean
-
-      Dim bOk As Boolean = True
-
-      Try
-        bOk = True
-
-      Catch ex As Exception
-        bOk = False
-      End Try
-
-      Return bOk
-
-    End Function
-
     Public Function GetFieldFromDatabases(functionDataType As ComponentValueTypes) As Boolean
 
       Dim bOk As Boolean
@@ -90,7 +75,7 @@
       Dim objPart3 As Component
       Dim objTable1 As Table
       Dim objTable2 As Table
-      Dim objIndex As New Index
+      Dim objIndex As Index
       Dim sSearchExpression As String
       Dim objColumn As Column
       Dim bFound As Boolean

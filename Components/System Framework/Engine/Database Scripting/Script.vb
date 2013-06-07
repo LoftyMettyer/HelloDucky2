@@ -356,7 +356,7 @@ Namespace ScriptDB
       Dim aryAllWriteableColumns As ArrayList
       Dim aryAllWriteableFormatted As ArrayList
 
-      Dim aryColumns As New ArrayList
+      Dim aryColumns As ArrayList
 
       Dim aryAuditUpdates As ArrayList
       Dim aryAuditInserts As ArrayList
@@ -388,15 +388,12 @@ Namespace ScriptDB
           sSqlParentColumns = String.Empty
           sSqlParentColumnsDelete = String.Empty
           sSqlChildColumns = String.Empty
-          sValidation = String.Empty
 
           sSqlCodeAuditInsert = String.Empty
           sSqlCodeAuditUpdate = String.Empty
           sSqlCodeAuditDelete = String.Empty
           sSqlCodeAudit = String.Empty
           sSqlPostAuditCalcs = String.Empty
-          sSqlSpecialUpdate = String.Empty
-          sQlInsteadOfInsertColumns = String.Empty
 
           ' Build in indexes
           objAuditIndex = New Index
@@ -416,26 +413,6 @@ Namespace ScriptDB
 
           ' Build fusion messages
           sSqlFusionCode = SpecialTrigger_Fusion(objTable)
-          'If objTable.FusionMessages.Count > 0 Then
-          '  sSQLFusionCode = "    -- Send fusion message(s) to service broker" & vbNewLine & _
-          '    "    DECLARE MessageCursor CURSOR LOCAL FAST_FORWARD FOR SELECT [ID] FROM inserted;" & vbNewLine & _
-          '    "    OPEN MessageCursor;" & vbNewLine & vbNewLine & _
-          '    "    FETCH NEXT FROM MessageCursor INTO @LocalId;" & vbNewLine & _
-          '    "    WHILE @@FETCH_STATUS = 0" & vbNewLine & _
-          '    "    BEGIN" & vbNewLine
-
-          '  For Each objMessage In objTable.FusionMessages
-          '    sSQLFusionCode = sSQLFusionCode & _
-          '      String.Format("        EXEC fusion.[spSendMessageCheckContext] @MessageType='{0}', @LocalId=@LocalId", objMessage.Name) & vbNewLine
-          '    bBypassValidation = bBypassValidation Or objMessage.ByPassValidation
-          '  Next
-
-          '  sSQLFusionCode = sSQLFusionCode & _
-          '    "        FETCH NEXT FROM MessageCursor INTO @LocalId;" & vbNewLine & _
-          '    "    END" & vbNewLine & _
-          '    "    CLOSE MessageCursor;" & vbNewLine & _
-          '    "    DEALLOCATE MessageCursor;"
-          'End If
 
           ' Add any relationship columns
           For Each objRelation In objTable.Relations
@@ -589,15 +566,15 @@ Namespace ScriptDB
                     sAuditDataBase = String.Format(" CONVERT(varchar(255), base.[{0}], 105)", objColumn.Name)
                 End Select
 
-                aryAuditInserts.Add(String.Format("        SELECT base.ID, '* New Record *', {0}, {4}, '{3}', '{6}', {1}, base.[_description]" & vbNewLine & _
+                aryAuditInserts.Add(String.Format("        SELECT base.ID, '* New Record *', {0}, {4}, '{3}', '{5}', {1}, base.[_description]" & vbNewLine & _
                   "            FROM inserted i" & vbNewLine & _
                   "            INNER JOIN dbo.[{2}] base ON i.[id] = base.[id] AND NOT ISNULL({0},'') = ''" _
-                  , sAuditDataInsert, objColumn.Id, objColumn.Table.PhysicalName, objColumn.Table.Name, CInt(objColumn.Table.Id), objColumn.SafeReturnType, objColumn.Name))
+                  , sAuditDataInsert, objColumn.Id, objColumn.Table.PhysicalName, objColumn.Table.Name, CInt(objColumn.Table.Id), objColumn.Name))
 
-                aryAuditUpdates.Add(String.Format("        SELECT d.ID, {7}, {0}, {4}, '{3}', '{6}', {1}, base.[_description]" & vbNewLine & _
+                aryAuditUpdates.Add(String.Format("        SELECT d.ID, {6}, {0}, {4}, '{3}', '{5}', {1}, base.[_description]" & vbNewLine & _
                   "            FROM deleted d" & vbNewLine & _
-                  "            INNER JOIN dbo.[{2}] base ON d.[id] = base.[id] AND NOT ISNULL({0},'') = ISNULL({7},'')" _
-                  , sAuditDataBase, objColumn.Id, objColumn.Table.PhysicalName, objColumn.Table.Name, CInt(objColumn.Table.Id), objColumn.SafeReturnType, objColumn.Name, sAuditDataDelete))
+                  "            INNER JOIN dbo.[{2}] base ON d.[id] = base.[id] AND NOT ISNULL({0},'') = ISNULL({6},'')" _
+                  , sAuditDataBase, objColumn.Id, objColumn.Table.PhysicalName, objColumn.Table.Name, CInt(objColumn.Table.Id), objColumn.Name, sAuditDataDelete))
 
                 aryAuditDeletes.Add(String.Format("        SELECT d.ID, {0}, ' * Deleted Record *', {3}, '{2}', '{4}', {1}, d.[_description]" & vbNewLine & _
                   "            FROM deleted d WHERE {0} IS NOT NULL" _
@@ -869,7 +846,7 @@ Namespace ScriptDB
           ' -------------------
           ' AFTER DELETE
           ' -------------------
-          DropTrigger("dbo", objTable, TriggerType.AfterDelete, existingTriggers)
+          DropTrigger(objTable, TriggerType.AfterDelete, existingTriggers)
 
         Next
 
@@ -885,9 +862,9 @@ Namespace ScriptDB
 
     End Function
 
-    Private Sub DropTrigger(ByVal [Role] As String, ByVal table As Table, ByVal triggerType As TriggerType, ByVal existingTriggers As IDictionary(Of String, ScriptedMetadata))
+    Private Sub DropTrigger(ByVal table As Table, ByVal triggerType As TriggerType, ByVal existingTriggers As IDictionary(Of String, ScriptedMetadata))
 
-      Dim sSql As String = String.Empty
+      Dim sSql As String 
       Dim sTriggerName As String = String.Empty
 
       Try
@@ -930,7 +907,8 @@ Namespace ScriptDB
 
 
 
-    Private Function ScriptTrigger(ByVal role As String, ByVal table As Table, ByVal triggerType As TriggerType, ByVal bodyCode As String, ByVal existingTriggers As IDictionary(Of String, ScriptedMetadata)) As Boolean
+    Private Sub ScriptTrigger(ByVal role As String, ByVal table As Table, ByVal triggerType As TriggerType, ByVal bodyCode As String _
+                                   , ByVal existingTriggers As IDictionary(Of String, ScriptedMetadata))
 
       Dim sSql As String = String.Empty
       Dim sTriggerType As String = String.Empty
@@ -1021,13 +999,10 @@ Namespace ScriptDB
 
       Catch ex As Exception
         ErrorLog.Add(ErrorHandler.Section.UdFs, sTriggerName, ErrorHandler.Severity.Error, ex.Message, sSql)
-        Return False
 
       End Try
 
-      Return True
-
-    End Function
+    End Sub
 
 #End Region
 
@@ -1039,7 +1014,6 @@ Namespace ScriptDB
 
       Try
         bOk = ConvertCurrency()
-        bOk = bOk And UniqueCodeViews()
 
         bOk = bOk And GetFieldFromDatabases(ComponentValueTypes.Date)
         bOk = bOk And GetFieldFromDatabases(ComponentValueTypes.Numeric)
@@ -1059,7 +1033,7 @@ Namespace ScriptDB
 
       If sql1 = sql2 Then Return True
 
-      Dim removeComments = "^--.*$"
+      Const removeComments As String = "^--.*$"
 
       sql1 = Regex.Replace(sql1, removeComments, "", RegexOptions.Multiline).Trim
 
@@ -1217,7 +1191,7 @@ Namespace ScriptDB
                   .ExpressionType = ExpressionType.ColumnDefault
                   .AssociatedColumn = column
                   .GenerateCodeForColumn()
-                  Globals.TuningLog.Expressions.Add(column)
+                  TuningLog.Expressions.Add(column)
 
                   If .IsValid Then
                     functions.Add(.Udf)
@@ -1605,7 +1579,7 @@ Namespace ScriptDB
             sSqlOvernightJob & vbNewLine & _
             "END"
 
-        bOk = CommitDb.ScriptStatement(SqlDropProcedure("dbo", sObjectName), True)
+        CommitDb.ScriptStatement(SqlDropProcedure("dbo", sObjectName), True)
         bOk = CommitDb.ScriptStatement(sSqlOvernightJob, True)
 
 

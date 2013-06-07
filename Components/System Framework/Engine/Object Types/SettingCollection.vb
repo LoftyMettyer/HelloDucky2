@@ -5,10 +5,10 @@
 
     Public Function Setting(ByVal [module] As String, ByVal parameter As String) As Setting
 
-      Dim item = Items.FirstOrDefault(Function(s) s.Module.ToLower = [module].ToLower AndAlso s.Parameter.ToLower = parameter.ToLower)
+      Dim getItem = Items.FirstOrDefault(Function(s) s.Module.ToLower = [module].ToLower AndAlso s.Parameter.ToLower = parameter.ToLower)
 
-      If item IsNot Nothing Then
-        Return item
+      If getItem IsNot Nothing Then
+        Return getItem
       Else
         Return New Setting
       End If

@@ -132,7 +132,7 @@ Namespace Things
       Declarations.Add(String.Format("@Result {0}", DataTypeSyntax))
 
       ' Add the ID for the record if required
-      If RequiresRecordId Or Me.ExpressionType = ScriptDB.ExpressionType.ColumnDefault Then
+      If RequiresRecordId Or ExpressionType = ScriptDB.ExpressionType.ColumnDefault Then
         aryParameters1.Add("@prm_ID integer")
         aryParameters2.Add("base.ID")
         aryParameters3.Add("@prm_ID")
@@ -244,7 +244,7 @@ Namespace Things
             .Name = String.Format("[{0}].[{1}{2}.{3}]", SchemaName, ScriptDB.Consts.DefaultValueUdf, AssociatedColumn.Table.Name, AssociatedColumn.Name)
             .SelectCode = ScriptDB.Beautify.CleanWhitespace(_linesOfCode.Statement)
             .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters2.ToArray))
-            .Code = String.Format("{11}CREATE FUNCTION {0}({1})" & vbNewLine & _
+            .Code = String.Format("{10}CREATE FUNCTION {0}({1})" & vbNewLine & _
                            "RETURNS {2}" & vbNewLine & _
                            "{3}" & vbNewLine & _
                            "AS" & vbNewLine & "BEGIN" & vbNewLine & _
@@ -253,19 +253,19 @@ Namespace Things
                            "    -- Execute calculation code" & vbNewLine & _
                            "    SELECT @Result = {6}" & vbNewLine & _
                            "                 {7}{8}{9}" & vbNewLine & _
-                           "    RETURN {13};" & vbNewLine & _
+                           "    RETURN {11};" & vbNewLine & _
                            "END" _
                           , .Name, String.Join(", ", aryParameters1.ToArray()) _
-                          , Me.AssociatedColumn.DataTypeSyntax, sOptions, .Declarations, .Prerequisites, .SelectCode.Trim, .FromCode, .JoinCode, .WhereCode _
-                          , Me.AssociatedColumn.SafeReturnType, .BoilerPlate, .Comments, ResultWrapper("@Result"))
+                          , AssociatedColumn.DataTypeSyntax, sOptions, .Declarations, .Prerequisites, .SelectCode.Trim, .FromCode, .JoinCode, .WhereCode _
+                          , .BoilerPlate, ResultWrapper("@Result"))
 
 
             ' Wrapper for calculations with associated columns
           Case ScriptDB.ExpressionType.ColumnCalculation
-            .Name = String.Format("[{0}].[{1}{2}.{3}]", Me.SchemaName, ScriptDB.Consts.CalculationUdf, AssociatedColumn.Table.Name, AssociatedColumn.Name)
+            .Name = String.Format("[{0}].[{1}{2}.{3}]", SchemaName, ScriptDB.Consts.CalculationUdf, AssociatedColumn.Table.Name, AssociatedColumn.Name)
             .SelectCode = _linesOfCode.Statement
             .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters2.ToArray))
-            .Code = String.Format("{11}CREATE FUNCTION {0}({1})" & vbNewLine & _
+            .Code = String.Format("{10}CREATE FUNCTION {0}({1})" & vbNewLine & _
                            "RETURNS {2}" & vbNewLine & _
                            "{3}" & vbNewLine & _
                            "AS" & vbNewLine & "BEGIN" & vbNewLine & _
@@ -274,21 +274,21 @@ Namespace Things
                            "    -- Execute calculation code" & vbNewLine & _
                            "    SELECT @Result = {6}" & vbNewLine & _
                            "                 {7}{8}{9}" & vbNewLine & _
-                           "    RETURN {13};" & vbNewLine & _
+                           "    RETURN {11};" & vbNewLine & _
                            "END" _
                           , .Name, String.Join(", ", aryParameters1.ToArray()) _
                           , AssociatedColumn.DataTypeSyntax, sOptions, .Declarations, .Prerequisites, .SelectCode.Trim, .FromCode, .JoinCode, .WhereCode _
-                          , Me.AssociatedColumn.SafeReturnType, .BoilerPlate, .Comments, ResultWrapper("@Result"))
+                          , .BoilerPlate, ResultWrapper("@Result"))
 
             ' Wrapper for when this function is used as a filter in an expression
           Case ScriptDB.ExpressionType.ColumnFilter
-            .Name = String.Format("[{0}].[{1}{2}.{3}]", Me.SchemaName, ScriptDB.Consts.CalculationUdf, Me.AssociatedColumn.Table.Name, Me.AssociatedColumn.Name)
+            .Name = String.Format("[{0}].[{1}{2}.{3}]", SchemaName, ScriptDB.Consts.CalculationUdf, AssociatedColumn.Table.Name, AssociatedColumn.Name)
             .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters2.ToArray))
             .SelectCode = _linesOfCode.Statement
 
             ' Wrapper for when expression is used as a filter in a view
           Case ScriptDB.ExpressionType.Mask
-            .Name = String.Format("[{0}].[{1}{2}]", Me.SchemaName, ScriptDB.Consts.MaskUdf, Me.BaseExpression.Id)
+            .Name = String.Format("[{0}].[{1}{2}]", SchemaName, ScriptDB.Consts.MaskUdf, BaseExpression.Id)
             .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters1.ToArray))
             .SelectCode = _linesOfCode.Statement
 
@@ -296,17 +296,16 @@ Namespace Things
                       "RETURNS bit" & vbNewLine & _
                       "--WITH SCHEMABINDING" & vbNewLine & _
                       "AS" & vbNewLine & "BEGIN" & vbNewLine & vbNewLine & _
-                      "{4}" & vbNewLine & vbNewLine & _
-                      "{5}" & vbNewLine & vbNewLine & _
+                      "{1}" & vbNewLine & vbNewLine & _
+                      "{2}" & vbNewLine & vbNewLine & _
                       "    -- Execute calculation code" & vbNewLine & _
-                      "    SELECT @Result = {6}" & vbNewLine & _
-                      "                 {7}" & vbNewLine & _
-                      "                 {8}" & vbNewLine & _
-                      "                 {9}" & vbNewLine & _
+                      "    SELECT @Result = {3}" & vbNewLine & _
+                      "                 {4}" & vbNewLine & _
+                      "                 {5}" & vbNewLine & _
+                      "                 {6}" & vbNewLine & _
                       "    RETURN ISNULL(@Result, 0);" & vbNewLine & _
                       "END" _
-                      , .Name, String.Join(", ", aryParameters1.ToArray()) _
-                      , "", "", .Declarations, .Prerequisites, .SelectCode.Trim, .FromCode, .JoinCode, .WhereCode)
+                      , .Name, .Declarations, .Prerequisites, .SelectCode.Trim, .FromCode, .JoinCode, .WhereCode)
 
           Case ScriptDB.ExpressionType.ReferencedColumn
             .Name = String.Format("[{0}].[{1}{2}.{3}]", SchemaName, ScriptDB.Consts.CalculationUdf, AssociatedColumn.Table.Name, AssociatedColumn.Name)
@@ -320,19 +319,19 @@ Namespace Things
 
             .Code = String.Format("CREATE FUNCTION {0}({1})" & vbNewLine & _
                            "RETURNS nvarchar(MAX)" & vbNewLine & _
-                           "{3}" & vbNewLine & _
+                           "{2}" & vbNewLine & _
                            "AS" & vbNewLine & "BEGIN" & vbNewLine & vbNewLine & _
+                           "{3}" & vbNewLine & vbNewLine & _
                            "{4}" & vbNewLine & vbNewLine & _
-                           "{5}" & vbNewLine & vbNewLine & _
                            "    -- Execute calculation code" & vbNewLine & _
-                           "    SELECT @Result = {6}" & vbNewLine & _
+                           "    SELECT @Result = {5}" & vbNewLine & _
+                           "                 {6}" & vbNewLine & _
                            "                 {7}" & vbNewLine & _
                            "                 {8}" & vbNewLine & _
-                           "                 {9}" & vbNewLine & _
                            "    RETURN ISNULL(@Result, '');" & vbNewLine & _
                            "END" _
                           , .Name, String.Join(", ", aryParameters1.ToArray()) _
-                          , "", sOptions, .Declarations, .Prerequisites, .SelectCode.Trim, .FromCode, .JoinCode, .WhereCode)
+                          , sOptions, .Declarations, .Prerequisites, .SelectCode.Trim, .FromCode, .JoinCode, .WhereCode)
 
             ' Should never be called, but just in case...
           Case Else
@@ -344,28 +343,28 @@ Namespace Things
 
     End Sub
 
-    Private Sub SQLCode_AddCodeLevel(ByVal [Components] As ICollection(Of Component), ByVal [CodeCluster] As ScriptDB.LinesOfCode)
+    Private Sub SQLCode_AddCodeLevel(ByVal [addComponents] As IEnumerable(Of Component), ByVal codeCluster As ScriptDB.LinesOfCode)
 
       Dim objComponent As Component
 
       Dim lineOfCode As ScriptDB.CodeElement
       Dim objCalculation As Expression
 
-      For Each objComponent In [Components]
+      For Each objComponent In [addComponents]
 
         Select Case objComponent.SubType
 
           ' A table relationship
           Case ScriptDB.ComponentTypes.Relation
-            SQLCode_AddRelation([CodeCluster], objComponent)
+            SQLCode_AddRelation([codeCluster], objComponent)
 
             ' Column component
           Case ScriptDB.ComponentTypes.Column
-            SQLCode_AddColumn([CodeCluster], objComponent)
+            SQLCode_AddColumn([codeCluster], objComponent)
 
             ' Operator component
           Case ScriptDB.ComponentTypes.Operator
-            SQLCode_AddOperator(objComponent, [CodeCluster])
+            SQLCode_AddOperator(objComponent, [codeCluster])
 
             ' Value component
           Case ScriptDB.ComponentTypes.Value, ScriptDB.ComponentTypes.TableValue
@@ -389,33 +388,33 @@ Namespace Things
 
             End Select
 
-            [CodeCluster].Add(lineOfCode)
+            [codeCluster].Add(lineOfCode)
 
 
             ' Function component
           Case ScriptDB.ComponentTypes.Function
-            SQLCode_AddFunction(objComponent, [CodeCluster])
+            SQLCode_AddFunction(objComponent, [codeCluster])
 
             ' Calculated columns are sucked into this expressions
           Case ScriptDB.ComponentTypes.ConvertedCalculatedColumn
-            SQLCode_AddParameter(objComponent, [CodeCluster], True)
+            SQLCode_AddParameter(objComponent, [codeCluster], True)
 
             ' An expression or a parameter
           Case ScriptDB.ComponentTypes.Expression
-            SQLCode_AddParameter(objComponent, [CodeCluster], False)
+            SQLCode_AddParameter(objComponent, [codeCluster], False)
 
             ' Calculation 
           Case ScriptDB.ComponentTypes.Calculation
 
             If Not objComponent.BaseExpression.BaseTable.Expressions.GetById(objComponent.CalculationId) Is Nothing Then
 
-              objCalculation = CType(objComponent.BaseExpression.BaseTable.Expressions.GetById(objComponent.CalculationId).Clone, Expression)
+              objCalculation = objComponent.BaseExpression.BaseTable.Expressions.GetById(objComponent.CalculationId).Clone
 
               'objCalculation.StartOfPartNumbers = 0
               objCalculation.BaseExpression = objComponent.BaseExpression
               objComponent.Components = objCalculation.CloneComponents
               objComponent.ReturnType = objCalculation.ReturnType
-              SQLCode_AddParameter(objComponent, [CodeCluster], False)
+              SQLCode_AddParameter(objComponent, [codeCluster], False)
 
             Else
               ErrorLog.Add(ErrorHandler.Section.General, AssociatedColumn.Name, ErrorHandler.Severity.Error, _
@@ -430,13 +429,13 @@ Namespace Things
 
             If Not objComponent.BaseExpression.BaseTable.Expressions.GetById(objComponent.FilterId) Is Nothing Then
 
-              objCalculation = CType(objComponent.BaseExpression.BaseTable.Expressions.GetById(objComponent.FilterId).Clone, Expression)
+              objCalculation = objComponent.BaseExpression.BaseTable.Expressions.GetById(objComponent.FilterId).Clone
 
               'objCalculation.StartOfPartNumbers = 0
               objCalculation.BaseExpression = objComponent.BaseExpression
               objComponent.Components = objCalculation.CloneComponents
               objComponent.ReturnType = ScriptDB.ComponentValueTypes.Logic
-              SQLCode_AddParameter(objComponent, [CodeCluster], False)
+              SQLCode_AddParameter(objComponent, [codeCluster], False)
 
             Else
               ErrorLog.Add(ErrorHandler.Section.General, AssociatedColumn.Name, ErrorHandler.Severity.Error, _
@@ -487,14 +486,13 @@ Namespace Things
       Dim sWhereCode As String
 
       Dim iPartNumber As Integer
-      Dim bIsSummaryColumn As Boolean
       Dim sColumnName As String
 
       Dim lineOfCode As ScriptDB.CodeElement
 
       lineOfCode.CodeType = ScriptDB.ComponentTypes.Column
 
-      objThisColumn = CType(Dependencies.Columns.FirstOrDefault(Function(o) o.Id = component.ColumnId), Column)
+      objThisColumn = Dependencies.Columns.FirstOrDefault(Function(o) o.Id = component.ColumnId)
       objThisColumn.Tuning.Usage += 1
 
       ' Is this column referencing the column that this udf is attaching itself to? (i.e. recursion)
@@ -567,7 +565,6 @@ Namespace Things
         Else
 
           RequiresRecordId = True
-          bIsSummaryColumn = False
           IsComplex = True
 
           objRelation = BaseTable.GetRelation(objThisColumn.Table.Id)
@@ -950,7 +947,7 @@ Namespace Things
 
     Public Overloads Function Clone() As Expression
 
-      Dim objClone As New Expression
+      Dim objClone As Expression
 
       ' Clone component properties (shallow clone)
       objClone = CType(MemberwiseClone(), Expression)

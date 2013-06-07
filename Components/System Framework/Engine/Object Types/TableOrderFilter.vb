@@ -106,9 +106,9 @@
             If Not objOrderItem.Column Is Nothing And objOrderItem.Column.Table Is Table Then
               Select Case objOrderItem.Ascending
                 Case Order.Ascending
-                  aryOrderBy.Add(String.Format("base.[{1}] {2}", objOrderItem.Column.Table.Name, objOrderItem.Column.Name, If(bReverseOrder, "DESC", "ASC")))
+                  aryOrderBy.Add(String.Format("base.[{0}] {1}", objOrderItem.Column.Name, If(bReverseOrder, "DESC", "ASC")))
                 Case Else
-                  aryOrderBy.Add(String.Format("base.[{1}] {2}", objOrderItem.Column.Table.Name, objOrderItem.Column.Name, If(bReverseOrder, "ASC", "DESC")))
+                  aryOrderBy.Add(String.Format("base.[{0}] {1}", objOrderItem.Column.Name, If(bReverseOrder, "ASC", "DESC")))
               End Select
               objIndex.Columns.AddIfNew(objOrderItem.Column)
             End If
@@ -162,8 +162,8 @@
           .Code = String.Format("CREATE FUNCTION dbo.[{0}]({1})" & vbNewLine & _
              "RETURNS @results TABLE({2})" & vbNewLine & _
              "AS" & vbNewLine & "BEGIN" & vbNewLine & _
+             "{9}" & vbNewLine & vbNewLine & _
              "{10}" & vbNewLine & vbNewLine & _
-             "{11}" & vbNewLine & vbNewLine & _
              "WITH base AS (" & vbNewLine & _
              "    SELECT {3}, [rownumber] = ROW_NUMBER() OVER ({7})" & vbNewLine & _
              "    FROM {4} base" & vbNewLine & _
@@ -171,12 +171,12 @@
              "    {6})" & vbNewLine & _
              "INSERT @Results SELECT {3}" & vbNewLine & _
              "        FROM base" & vbNewLine & _
-             "        WHERE [rownumber] = {9}" & vbNewLine & _
+             "        WHERE [rownumber] = {8}" & vbNewLine & _
              "    RETURN;" & vbNewLine & _
              "END" _
             , Name, String.Join(", ", aryParameters.ToArray()) _
             , String.Join(", ", aryReturnDefintion.ToArray()), String.Join(", ", aryColumnList.ToArray()) _
-            , Table.Name, String.Join(vbNewLine, aryJoins.ToArray()), .WhereCode, .OrderCode, sRowSelection _
+            , Table.Name, String.Join(vbNewLine, aryJoins.ToArray()), .WhereCode, .OrderCode _
             , RowDetails.RowNumber, .Declarations, .Prerequisites)
 
         Else

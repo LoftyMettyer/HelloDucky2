@@ -45,11 +45,6 @@
       End Get
     End Property
 
-    'Public Function TuningReport() As String
-    '  Dim sReport As String = vbNullString
-    '  Return sReport
-    'End Function
-
   End Class
 
 End Namespace

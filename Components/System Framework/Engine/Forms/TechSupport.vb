@@ -3,11 +3,11 @@
 
 #Region "COMInterfaces.iForm"
 
-  Public Sub Show1() Implements COMInterfaces.IForm.Show
+  Public Sub Show1() Implements IForm.Show
     Show()
   End Sub
 
-  Public Sub ShowDialog1() Implements COMInterfaces.IForm.ShowDialog
+  Public Sub ShowDialog1() Implements IForm.ShowDialog
     ShowDialog()
   End Sub
 
@@ -16,7 +16,7 @@
   Private Sub TechSupport_Load(ByVal sender As System.Object, ByVal e As EventArgs) Handles MyBase.Load
 
     Try
-      lblTelephone.Text = "Telephone : " & Globals.SystemSettings.Setting("support", "telephone no").Value
+      lblTelephone.Text = "Telephone : " & SystemSettings.Setting("support", "telephone no").Value
       linkEmail.Text = SystemSettings.Setting("support", "email").Value
       LinkWeb.Text = SystemSettings.Setting("support", "webpage").Value
 
