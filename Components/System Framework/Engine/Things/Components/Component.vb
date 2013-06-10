@@ -76,7 +76,7 @@ Public Class Component
 
   End Sub
 
-  Public Sub ConvertToExpression(ByRef Level As Long, ByRef recursion As Collection(Of Base))
+  Public Sub ConvertToExpression(ByRef recursionLevel As Long, ByRef recursion As Collection(Of Base))
 
     Dim objExpression As Expression
     Dim objColumn As Column
@@ -86,8 +86,8 @@ Public Class Component
 
     Try
 
-      Level = Level + 1
-      lngThisLevel = Level
+      recursionLevel = recursionLevel + 1
+      lngThisLevel = recursionLevel
 
       If SubType = ComponentTypes.Calculation Then
 
@@ -108,7 +108,7 @@ Public Class Component
 
         For Each objComponent As Component In Components
           DepthCharge = DepthCharge + 1
-          objComponent.ConvertToExpression(Level, recursion)
+          objComponent.ConvertToExpression(recursionLevel, recursion)
           DepthCharge = DepthCharge - 1
         Next
 
@@ -116,7 +116,7 @@ Public Class Component
 
         For Each objComponent As Component In Components
           DepthCharge = DepthCharge + 1
-          objComponent.ConvertToExpression(Level, recursion)
+          objComponent.ConvertToExpression(recursionLevel, recursion)
           DepthCharge = DepthCharge - 1
         Next
 
@@ -144,11 +144,11 @@ Public Class Component
               For Each objComponent As Component In Components
                 objComponent._convertSubComponents = bConvertsSubComponents
                 DepthCharge = DepthCharge + 1
-                objComponent.ConvertToExpression(Level, recursion)
+                objComponent.ConvertToExpression(recursionLevel, recursion)
                 DepthCharge = DepthCharge - 1
               Next
 
-              If lngThisLevel < Level Then
+              If lngThisLevel < recursionLevel Then
                 recursion.Remove(objColumn)
               End If
 
