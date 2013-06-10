@@ -116,8 +116,8 @@
 		Else
 			If Not Request.Cookies("Login") Is Nothing Then
 				Response.Write("    sUserName = '" & Server.HtmlEncode(Request.Cookies("Login")("User")) & "' ;" & vbCrLf)
-				Response.Write("    sDatabase = '" & Server.HtmlEncode(Request.Cookies("Login")("Database")) & "' ;" & vbCrLf)
-				Response.Write("    sServer = '" & Server.HtmlEncode(Request.Cookies("Login")("Server")) & "' ;" & vbCrLf)
+				'Response.Write("    sDatabase = '" & Server.HtmlEncode(Request.Cookies("Login")("Database")) & "' ;" & vbCrLf)
+				'Response.Write("    sServer = '" & Server.HtmlEncode(Request.Cookies("Login")("Server")) & "' ;" & vbCrLf)
 				Response.Write("    sWindowsAuthentication = '" & Server.HtmlEncode(Request.Cookies("Login")("WindowsAuthentication")) & "' ;" & vbCrLf)
 			End If
 			
@@ -184,7 +184,7 @@
 <script type="text/javascript">
 
 	function HelpAbout() {
-		//window.location.href = "<%: Url.Action("AboutHRPro", "Account") %>";
+		<%-- window.location.href = "<%: Url.Action("AboutHRPro", "Account") %>"; --%>
 		$("#About").dialog( "open" );
 	}
 

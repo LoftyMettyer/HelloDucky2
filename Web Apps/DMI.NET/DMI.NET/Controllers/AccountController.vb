@@ -1380,8 +1380,9 @@ Namespace Controllers
 					cookie.Expires = DateTime.Now.AddYears(1)
 					cookie.HttpOnly = True
 					cookie("User") = Request.Form("txtUserNameCopy")
-					cookie("Database") = Request.Form("txtDatabase")
-					cookie("Server") = Request.Form("txtServer")
+					'dont save or retrieve these anymore HRPRO-3030 / 3031
+					'cookie("Database") = Request.Form("txtDatabase")
+					'cookie("Server") = Request.Form("txtServer")
 					cookie("WindowsAuthentication") = Request.Form("chkWindowsAuthentication")
 					Response.Cookies.Add(cookie)
 

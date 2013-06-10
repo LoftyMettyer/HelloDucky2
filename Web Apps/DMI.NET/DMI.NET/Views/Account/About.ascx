@@ -1,13 +1,32 @@
-﻿<%
+﻿<%@ import Namespace="System.Web.Configuration" %>
+<%
 	Dim iNumRows As Integer
 %>
-<script type="text/javascript">
-	/* Return to the default page. */
-	function about_cancelClick() {
-		$("#About").dialog("close");
-		return false;
-	}
+<html>
+<head>
+	<script type="text/javascript">
+		/* Return to the default page. */
+		function about_cancelClick() {
+			$("#About").dialog("close");
+			return false;
+		}
+
+		<%_txtLocalServerValue = WebConfigurationManager.AppSettings("LoginPage:Server")%>
+		<%_txtLocalDatabaseValue = WebConfigurationManager.AppSettings("LoginPage:Database")%>
+	
+	</script>
+	<script runat="server">
+		Private _txtLocalServerValue As String
+		Private _txtLocalDatabaseValue As String
 </script>
+	<style type="text/css">
+		.auto-style1
+		{
+			width: 72px;
+		}
+  </style>
+</head>
+<body>
 
 <form method="post" id="frmAboutForm" name="frmAboutForm">
 	<br>
@@ -41,40 +60,58 @@
 						</td>
 						<td width="40" rowspan="<%=iNumRows %>"></td>
 					</tr>
+
 					<%If Len(Session("Server")) > 0 Then%>
-					<tr>
-						<td style="vertical-align: top; text-align: left; white-space: nowrap; padding-right: 10px;">Server :
-						</td>
-						<td style="vertical-align: top; text-align: left; white-space: nowrap;">
-							<%=session("Server")%>
-						</td>
-					</tr>
-					<tr>
-						<td style="vertical-align: top; text-align: left; white-space: nowrap; padding-right: 10px;">Database :
-						</td>
-						<td style="vertical-align: top; text-align: left; white-space: nowrap;">
-							<%=session("Database")%>
-						</td>
-					</tr>
-					<tr>
-						<td style="vertical-align: top; text-align: left; white-space: nowrap; padding-right: 10px;">Current user :
-						</td>
-						<td style="vertical-align: top; text-align: left; white-space: nowrap;">
-							<%=session("Username")%>
-						</td>
-					</tr>
-					<tr>
-						<td style="vertical-align: top; text-align: left; white-space: nowrap; padding-right: 10px;">User Group :
-						</td>
-						<td style="vertical-align: top; text-align: left; white-space: nowrap;">
-							<%=session("Usergroup")%>
-						</td>
-					</tr>
+						<tr>
+							<td style="vertical-align: top; text-align: left; white-space: nowrap; padding-right: 10px;">Server : 
+							</td>
+							<td style="vertical-align: top; text-align: left; white-space: nowrap;">
+								<%=session("Server")%>
+							`</td>
+						</tr>
+						<tr>
+							<td style="vertical-align: top; text-align: left; white-space: nowrap; padding-right: 10px;">Database : 
+							</td>
+							<td style="vertical-align: top; text-align: left; white-space: nowrap;">
+								<%=session("Database")%>
+							</td>
+						</tr>
+						<tr>
+							<td style="vertical-align: top; text-align: left; white-space: nowrap; padding-right: 10px;">Current user :
+							</td>
+							<td style="vertical-align: top; text-align: left; white-space: nowrap;">
+								<%=session("Username")%>
+							</td>
+						</tr>
+						<tr>
+							<td style="vertical-align: top; text-align: left; white-space: nowrap; padding-right: 10px;">User Group :
+							</td>
+							<td style="vertical-align: top; text-align: left; white-space: nowrap;">
+								<%=session("Usergroup")%>
+							</td>
+						</tr>
+					<%Else%>
+						<%--Get Server and DB from web config--%>
+						<tr>
+							<td style="vertical-align: top; text-align: left; white-space: nowrap; padding-right: 10px;">Server : 
+							</td>
+							<td style="vertical-align: top; text-align: left; white-space: nowrap;">
+								<%=_txtLocalServerValue%>
+							</td>
+						</tr>
+						<tr>
+							<td style="vertical-align: top; text-align: left; white-space: nowrap; padding-right: 10px;">Database : 
+							</td>
+							<td style="vertical-align: top; text-align: left; white-space: nowrap;">
+								<%=_txtLocalDatabaseValue%>
+							</td>
+						</tr>
 					<%End If%>
+
 					<tr>
 						<td colspan="2" style="vertical-align: top; text-align: left; white-space: nowrap;">
 							<br />
-							Copyright © Advanced Business Software and Solutions Ltd 2012
+							Copyright © Advanced Business Software and Solutions Ltd 2013
 						</td>
 					</tr>
 					<tr>
@@ -180,5 +217,7 @@
 			</td>
 		</tr>
 	</table>
-</form>
+</form></body>
+</html>
+
 
