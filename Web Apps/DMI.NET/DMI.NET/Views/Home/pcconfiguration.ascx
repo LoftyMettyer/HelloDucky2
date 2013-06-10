@@ -254,8 +254,6 @@
         //         return;
         //     }
 
-        debugger;
-
         if (definitionChanged() == false) {
             window.location.href = "main";
             return;
