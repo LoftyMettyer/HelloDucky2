@@ -454,7 +454,7 @@ Namespace ScriptDB
 
               For Each objColumn In objRelatedTable.DependsOnChildColumns
                 If objColumn.Table Is objTable Then
-                  aryColumns.Add(String.Format("NOT i.{0} = d.{0}", objColumn.Name))
+                  aryColumns.Add(String.Format("NOT ISNULL(i.{0}, {1}) = ISNULL(d.{0}, {1})", objColumn.Name, objColumn.NullCheckValue))
                   objIndex.IncludedColumns.AddIfNew(objColumn)
                 End If
               Next

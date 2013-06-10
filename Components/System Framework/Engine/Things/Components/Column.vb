@@ -189,6 +189,25 @@ Public Class Column
     End Get
   End Property
 
+  Public ReadOnly Property NullCheckValue As String
+    Get
+
+      Select Case CInt(DataType)
+        Case ColumnTypes.Text, ColumnTypes.WorkingPattern, ColumnTypes.Link
+          Return "''"
+        Case ColumnTypes.Integer, ColumnTypes.Numeric, ColumnTypes.Logic
+          Return "0"
+        Case ColumnTypes.Date
+          Return "'1899-12-31'"
+        Case Else
+          Return "0"
+      End Select
+    End Get
+  End Property
+
+
+
+
   Public ReadOnly Property ComponentReturnType As ComponentValueTypes
     Get
 
