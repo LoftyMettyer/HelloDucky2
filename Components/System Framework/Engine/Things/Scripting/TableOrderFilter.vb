@@ -10,7 +10,7 @@ Public Class TableOrderFilter
   Public Udf As GeneratedUdf
   Public RowDetails As ChildRowDetails
   Public Property IncludedColumns As ICollection(Of Column)
-  Public Property Dependencies As ICollection(Of Column)
+  Private Property Dependencies As ICollection(Of Column)
 
   Public Sub New()
     IncludedColumns = New Collection(Of Column)

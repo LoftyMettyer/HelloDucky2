@@ -113,7 +113,7 @@ Public Module PopulateObjects
 
   End Sub
 
-  Public Function GetCodeLibraryDependancies(ByVal codeLibrary As CodeLibrary) As ICollection(Of Setting)
+  Private Function GetCodeLibraryDependancies(ByVal codeLibrary As CodeLibrary) As ICollection(Of Setting)
 
     Dim params As New Connectivity.Parameters
     params.Add("@componentid", codeLibrary.Id)
@@ -137,7 +137,7 @@ Public Module PopulateObjects
 
   End Function
 
-  Public Sub PopulateTables()
+  Private Sub PopulateTables()
 
     Tables.Clear()
 
@@ -162,7 +162,7 @@ Public Module PopulateObjects
 
   End Sub
 
-  Public Sub PopulateTableColumns()
+  Private Sub PopulateTableColumns()
 
     Try
 
@@ -204,7 +204,7 @@ Public Module PopulateObjects
 
   End Sub
 
-  Public Sub PopulateTableOrders()
+  Private Sub PopulateTableOrders()
 
     Dim ds As DataSet = MetadataDb.ExecStoredProcedure("spadmin_getorders", Nothing)
 
@@ -222,7 +222,7 @@ Public Module PopulateObjects
 
   End Sub
 
-  Public Sub PopulateTableOrderItems()
+  Private Sub PopulateTableOrderItems()
 
     Dim ds As DataSet = MetadataDb.ExecStoredProcedure("spadmin_getorderitems", Nothing)
 
@@ -252,7 +252,7 @@ Public Module PopulateObjects
 
   End Sub
 
-  Public Sub PopulateTableValidations()
+  Private Sub PopulateTableValidations()
 
     Dim ds = MetadataDb.ExecStoredProcedure("spadmin_getvalidations", Nothing)
 
@@ -269,7 +269,7 @@ Public Module PopulateObjects
 
   End Sub
 
-  Public Sub PopulateTableRelations()
+  Private Sub PopulateTableRelations()
 
     Dim ds As DataSet = MetadataDb.ExecStoredProcedure("spadmin_getrelations", Nothing)
 
@@ -303,7 +303,7 @@ Public Module PopulateObjects
 
   End Sub
 
-  Public Sub PopulateTableExpressions()
+  Private Sub PopulateTableExpressions()
 
     Dim ds As DataSet = MetadataDb.ExecStoredProcedure("spadmin_getexpressions", Nothing)
 
@@ -338,7 +338,7 @@ Public Module PopulateObjects
 
   End Sub
 
-  Public Sub PopulateTableViews()
+  Private Sub PopulateTableViews()
 
     Dim ds As DataSet = MetadataDb.ExecStoredProcedure("spadmin_getviews", Nothing)
 
@@ -359,7 +359,7 @@ Public Module PopulateObjects
 
   End Sub
 
-  Public Sub PopulateTableViewItems()
+  Private Sub PopulateTableViewItems()
 
     Dim objDataset As DataSet = MetadataDb.ExecStoredProcedure("spadmin_getviewitems", Nothing)
 
@@ -376,7 +376,7 @@ Public Module PopulateObjects
 
   End Sub
 
-  Public Sub PopulateTableRecordDescriptions()
+  Private Sub PopulateTableRecordDescriptions()
 
     Dim ds As DataSet = MetadataDb.ExecStoredProcedure("spadmin_getdescriptions", Nothing)
 
@@ -403,7 +403,7 @@ Public Module PopulateObjects
 
   End Sub
 
-  Public Function LoadComponents(ByVal expression As Component, ByVal type As ComponentTypes) As ICollection(Of Component)
+  Private Function LoadComponents(ByVal expression As Component, ByVal type As ComponentTypes) As ICollection(Of Component)
 
     If _componentfunction Is Nothing Then
       _componentfunction = MetadataDb.ExecStoredProcedure("spadmin_getcomponent_function", Nothing)
@@ -478,7 +478,7 @@ Public Module PopulateObjects
 
   End Function
 
-  Public Sub PopulateFusionMessages()
+  Private Sub PopulateFusionMessages()
 
     Dim ds As DataSet = CommitDb.ExecStoredProcedure("fusion.spGetMessageDefinitions", Nothing)
 
@@ -499,7 +499,7 @@ Public Module PopulateObjects
 
   End Sub
 
-  Public Sub PopulateTableMasks()
+  Private Sub PopulateTableMasks()
 
     Dim ds As DataSet = MetadataDb.ExecStoredProcedure("spadmin_getmasks", Nothing)
 

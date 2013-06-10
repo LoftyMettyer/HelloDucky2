@@ -19,18 +19,18 @@ Public Class Expression
 
   Public Property Declarations As New ArrayList
   Public Property PreStatements As New ArrayList
-  Public Property Joins As ArrayList
-  Public Property FromTables As ArrayList
-  Public Property Wheres As ArrayList
+  Private Property Joins As ArrayList
+  Private Property FromTables As ArrayList
+  Private Property Wheres As ArrayList
 
   Private _linesOfCode As ScriptDB.LinesOfCode
   Private _calculatePostAudit As Boolean
 
-  Public Property CaseCount As Integer
-  Public Property RequiresRecordId As Boolean
-  Public Property RequiresOvernight As Boolean
-  Public Property ReferencesParent As Boolean
-  Public Property ReferencesChild As Boolean
+  Private Property CaseCount As Integer
+  Private Property RequiresRecordId As Boolean
+  Private Property RequiresOvernight As Boolean
+  Private Property ReferencesParent As Boolean
+  Private Property ReferencesChild As Boolean
 
   Public Property IsComplex As Boolean
   Public Property IsValid As Boolean = True

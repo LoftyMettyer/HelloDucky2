@@ -201,8 +201,6 @@
     <Compile Include="Things\Scripting\CodeLibrary.vb" />
     <Compile Include="Things\Components\Column.vb" />
     <Compile Include="Things\Components\Component.vb" />
-    <Compile Include="Things\Components\DiaryLink.vb" />
-    <Compile Include="Things\Components\EmailLink.vb" />
     <Compile Include="Things\Components\Expression.vb" />
     <Compile Include="Things\Scripting\RecordDescription.vb" />
     <Compile Include="Things\Scripting\Relation.vb" />

@@ -4,7 +4,7 @@
 Public Class TuningReport
   Implements IErrors
 
-  Public Expressions As ICollection(Of Column)
+  Public ReadOnly Expressions As ICollection(Of Column)
 
   Public Sub New()
     Expressions = New Collection(Of Column)
@@ -12,18 +12,18 @@ Public Class TuningReport
 
   Public Sub OutputToFile(ByVal fileName As String) Implements IErrors.OutputToFile
 
-    Dim objWriter As System.IO.StreamWriter
+    Dim objWriter As IO.StreamWriter
     Dim objThing As Base
     Dim objTable As Table
     Dim objColumn As Column
     Dim sMessage As String
 
-    System.IO.File.Delete(fileName)
-    objWriter = System.IO.File.AppendText(fileName)
+    IO.File.Delete(fileName)
+    objWriter = IO.File.AppendText(fileName)
 
     objWriter.Write(String.Format("{0}{0}{1}{0}EXPRESSION USAGE{0}{1}{0}{0}", vbNewLine, "-------------------"))
 
-    For Each objTable In Globals.Tables
+    For Each objTable In Tables
       For Each objColumn In objTable.Columns
         If objColumn.IsCalculated And objColumn.State <> DataRowState.Deleted Then
           sMessage = String.Format("({0}) {1}.{2}     | Expression = {3} - ({4})", objColumn.Tuning.Usage.ToString.PadLeft(3) _
@@ -48,7 +48,7 @@ Public Class TuningReport
     'Next
 
     objWriter.Write(String.Format("{0}{0}{1}{0}FUNCTION USAGE{0}{1}{0}{0}", vbNewLine, "-------------------"))
-    For Each objThing In Globals.Functions
+    For Each objThing In Functions
       sMessage = String.Format("({0}) - {1}", objThing.Tuning.Usage.ToString.PadLeft(5) _
             , objThing.Name) & vbNewLine
       objWriter.Write(sMessage)

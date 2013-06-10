@@ -1,5 +1,4 @@
-﻿Imports SystemFramework.Things
-Imports SystemFramework.ScriptDB
+﻿Imports SystemFramework.ScriptDB
 Imports SystemFramework.Enums.Connection
 
 Public Module Globals
@@ -20,13 +19,12 @@ Public Module Globals
   Public Options As [Option]
   Public Modifications As Modifications
   Public GetFieldsFromDb As ICollection(Of Component)
-  Public PerformanceIndexes As ICollection(Of Column)
   Public OnBankHolidayUpdate As ICollection(Of TriggeredUpdate)
 
-  Public ScriptDb As Script
+  '  Private ScriptDb As Script
   Public Login As Structures.Login
 
-  Public Version As Version = Reflection.Assembly.GetExecutingAssembly().GetName().Version
+  Public ReadOnly Version As Version = Reflection.Assembly.GetExecutingAssembly().GetName().Version
 
   Public Sub Initialise()
 
@@ -38,7 +36,6 @@ Public Module Globals
     ErrorLog = New Collections.Errors
     TuningLog = New TuningReport
     ModuleSetup = New Collections.Settings
-    ScriptDb = New Script
     Options = New [Option]
     Modifications = New Modifications
     SystemSettings = New Collections.Settings
@@ -46,7 +43,6 @@ Public Module Globals
     ' Dependency stack for special objects that will have procedures written for
     GetFieldsFromDb = New Collection(Of Component)
     OnBankHolidayUpdate = New Collection(Of TriggeredUpdate)
-    PerformanceIndexes = New Collection(Of Column)
 
   End Sub
 

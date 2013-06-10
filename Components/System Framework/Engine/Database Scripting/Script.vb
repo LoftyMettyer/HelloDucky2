@@ -1,6 +1,5 @@
 ﻿Imports System.Runtime.InteropServices
 Imports System.Text
-Imports SystemFramework.Things
 Imports System.Text.RegularExpressions
 Imports SystemFramework.Enums
 Imports SystemFramework.Enums.Errors
@@ -14,7 +13,7 @@ Namespace ScriptDB
 
 #Region "General"
 
-    Public Shared Function SqlDropUdf(ByVal schema As String, ByVal name As String) As String
+    Private Shared Function SqlDropUdf(ByVal schema As String, ByVal name As String) As String
 
       Return String.Format("IF EXISTS(SELECT o.[name] FROM sys.sysobjects o " &
                            "INNER JOIN sys.sysusers u ON o.[uid] = u.[uid] " & vbNewLine &
@@ -23,7 +22,7 @@ Namespace ScriptDB
 
     End Function
 
-    Public Shared Function SqlDropProcedure(ByVal schema As String, ByVal name As String) As String
+    Private Shared Function SqlDropProcedure(ByVal schema As String, ByVal name As String) As String
 
       Return String.Format("IF EXISTS(SELECT o.[name] FROM sys.sysobjects o " & vbNewLine &
                            "INNER JOIN sys.sysusers u ON o.[uid] = u.[uid] " & vbNewLine &

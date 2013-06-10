@@ -5,14 +5,11 @@ Namespace Connectivity
   Public Class AdoClassic
     Implements IConnection
 
-    Public DB As OleDb.OleDbConnection
     Public NativeObject As ADODB.Connection
 
 #Region "IConnection interface"
 
     Public Sub Close() Implements IConnection.Close
-      DB.Close()
-      'NativeObject.Close()
     End Sub
 
     Public Sub BeginTrans()

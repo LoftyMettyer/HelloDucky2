@@ -76,7 +76,7 @@ Public Class Component
 
   End Sub
 
-  Public Sub ConvertToExpression(ByRef recursionLevel As Long, ByRef recursion As Collection(Of Base))
+  Private Sub ConvertToExpression(ByRef recursionLevel As Long, ByRef recursion As Collection(Of Base))
 
     Dim objExpression As Expression
     Dim objColumn As Column
@@ -174,7 +174,7 @@ Public Class Component
 
 #Region "Cloning"
 
-  Public Function Clone() As Component
+  Private Function Clone() As Component
 
     Dim objClone As Component
 

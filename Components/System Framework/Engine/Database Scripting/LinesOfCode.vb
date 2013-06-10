@@ -16,7 +16,7 @@ Namespace ScriptDB
     Public Property ReturnType As ComponentValueTypes
     Public Property MakeTypesafe As Boolean = True
     Public Property CaseReturnType As CaseReturnType = CaseReturnType.Result
-    Public Property IsLogicBlock As Boolean
+    Private Property IsLogicBlock As Boolean
 
     Public Overloads Sub Add(ByVal lineOfCode As CodeElement)
 
