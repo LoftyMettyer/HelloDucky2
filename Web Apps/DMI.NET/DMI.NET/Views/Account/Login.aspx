@@ -436,20 +436,20 @@ Else
 		    <td style="height: 15px"></td>
 		    <td colspan="3">
 			    <table style="border:0px; border-spacing: 0px; border-collapse: collapse;">
-			        <tr class="" style="display: block">
-			            <td style="font-weight:bold ;width: 100px;">User name :</td>
+			        <tr class="">
+			            <td style="font-weight:bold">User name :</td>
 			            <td style="width: 10px"></td>
-			            <td style="width: 200px;">
+			            <td style="">
 								<input id="txtUserName" autocomplete="off" autocorrect="off" name="txtUserName" class="text" style="height: 22px;width: 100%; " onkeypress="CheckKeyPressed(event)"/>
 				        <input type="hidden" id="txtUserNameCopy" name="txtUserNameCopy" />    
 			            </td>
 			            
         		    </tr>
-    			    <tr class="" style="display: block">
-	    		        <td style="font-weight:bold ;width: 100px;">Password :</td>
+    			    <tr class="">
+	    		        <td style="font-weight:bold;">Password :</td>
 			            <td style="width: 10px">
 							</td>
-			            <td style="width: 200px;">
+			            <td style="">
 
 								<input id="txtPassword" name="txtPassword" type="password" class="text" style="height: 22px; width: 100%; " onkeypress="CheckKeyPressed(event);"/>
 			            </td>
@@ -480,7 +480,7 @@ Else
 			else
 %>
 				        <td class="" colspan="3" >
-				            <input id="chkWindowsAuthentication" name="chkWindowsAuthentication" type="checkbox" />
+				            <input type="hidden" id="chkWindowsAuthentication" name="chkWindowsAuthentication" type="checkbox" />
 				        </td>
 <%
 			end if 
@@ -488,10 +488,10 @@ Else
                  </tr>
 
 			            <tr class="" style="display: block;visibility:hidden;display:none" id="trDetails1">
-			                <td style="width: 100px;font-weight: bold;"><div id="DatabaseTextLabelDiv" runat="server">Database :</div></td>
+			                <td style="font-weight: bold;"><div id="DatabaseTextLabelDiv" runat="server">Database :</div></td>
 			                <td style="width: 10px">
 							    </td>
-			                <td style="width: 200px;">
+			                <td style="">
                                 <div id="DatabaseTextValueDiv" runat="server">
                                     <input id="txtDatabase" autocomplete="off" autocorrect="off" name="txtDatabase" style="height: 22px; width: 100%; " class="text" onkeypress="CheckKeyPressed(event)" value="<%=_txtDatabaseValue%>" />
                                 </div>
@@ -499,10 +499,10 @@ Else
 			            </tr>
                     
 			        <tr class="" style="display: block;visibility:hidden;display:none" id="trDetails2">
-			            <td style="width: 100px;font-weight: bold;"><div id="ServerTextLabelDiv" runat="server">Server :</div></td>
+			            <td style="font-weight: bold;"><div id="ServerTextLabelDiv" runat="server">Server :</div></td>
 			            <td style="width: 10px">
 							</td>
-			            <td style="width: 200px;">
+			            <td style="">
                             <div id="ServerTextValueDiv" runat="server">
                                 <input id="txtServer" autocomplete="off" autocorrect="off" name="txtServer" style="height: 22px; width: 100%; " class="text" onkeypress="CheckKeyPressed(event)" value="<%=_txtServerValue%>" />
                             </div>

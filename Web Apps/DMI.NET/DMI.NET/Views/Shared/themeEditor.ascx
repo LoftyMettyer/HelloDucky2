@@ -63,7 +63,7 @@
 </style>
 
 <div class="application">
-	<div id="themeeditoraccordion">
+	<div id="themeeditoraccordion" style="display: none;">
 
 		<h3>Font Settings</h3>
 		<!-- /theme group header -->

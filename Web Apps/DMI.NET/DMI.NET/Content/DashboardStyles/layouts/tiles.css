@@ -10,7 +10,9 @@ body
 }
 
 
-
+.footer-banner {
+	display: none;
+}
 
 .DashContent {position: absolute; top: 95px; bottom: 2px;left: 0px; right: 0px;
               margin: 0px 0px 0px 120px;
@@ -25,15 +27,12 @@ body
 *   Mobile Styles   *
 ********************/
 @media only screen and (max-height: 850px) {
-.DashContent 
-{
-	top: 0;
-	margin-left: 0;
-	padding-top: 0;
-	left: 80px;
-	
-}
-
+	.DashContent {
+		top: 0;
+		margin-left: 0;
+		padding-top: 0;
+		left: 80px;
+	}
 }
 
 
@@ -67,26 +66,37 @@ body
 .linkspagebuttontext a, .hypertextlinktext a, .dropdownlinktext a, .DBValueCaption p
 {
 	position: absolute;bottom: 0px; width: 100%; text-align: center; text-decoration: none; margin: 0px 2px 5px 2px;
+	font-size: 11pt;		
 	}
 
 .linkspagebuttontext img { display: none;}
 
 .hypertextlinktileIcon, .linkspagebuttontileIcon, .dropdownlinktileIcon
 {
+	margin: 0;
 	text-align: center;
-	font-size: 26pt;
+	font-size: 46pt;
 }
 
+.linkspagebuttontileIcon i {
+}
 
 
 .hypertextlinkseparatorframe, .linkspagebuttonseparatorframe, .dropdownlinkseparatorframe {border: none;width: 140px;margin-right: 10px;}
 
 .hypertextlinkseparator, .linkspagebuttonseparator, .dropdownlinkseparator
 {
+
+white-space:nowrap; 
+width:12em; 
+overflow:hidden; 
+text-overflow:ellipsis;
+
 	/*margin-left: 10px;*/
 	background-color: transparent!Important;
    font-size: 11pt;
    text-decoration: none;
+	color: white!important;
 }
 
 .linkspagebuttonseparator h2 {
@@ -207,14 +217,27 @@ li {list-style: none;}
 
 .RecDescPhoto, .RecordDescription { display: none;}
 
-.FixedLinksLeft {
-	position: fixed;
-	top: 0;
-	left: 0;
+.FixedLinksLeft, #fixedlinks {
+	position: fixed;	
 	bottom: 0;
-	width: 80px;
-	background-color: black;
-	
+	right: 0;
+	height: 70px;
+	background-color: black;	
+}
+
+#fixedlinks {
+	left: 0;
+	z-index: 99;
+}
+
+.FixedLinksLeft ul {
+	padding-top: 5px;
+}
+
+
+.FixedLinksRight {
+	position: fixed;
+	top: 20px;	
 }
 
 div.officebar > ul { padding-left: 0;}
@@ -250,6 +273,10 @@ div.officetab div.panel > span { display: none;}
 
 /* SSI Specific styling for shared screens go here:*/ 
 
+#row1 {
+	margin-left: 20px;
+}
+
 #findGridRow td {
 	font-size: 14pt;
 	padding: 8px 0 8px 8px;	
@@ -257,5 +284,32 @@ div.officetab div.panel > span { display: none;}
 
 #row3 td { color: white;}
 
+#row3 input { margin-bottom: 5px;}
 
+.pageTitle {
+	color: white;
+}
 
+.pageTitleIcon {
+	color: white;
+	display: block;
+	float: left;
+	font-size: 24pt;
+	margin-right: 15px;
+	cursor: pointer;
+	text-decoration: none!important;
+}
+
+.pageTitleIcon:hover {
+	color: orange;
+}
+
+#officebar, #officebar li {
+	background-color: black;
+	color: white;
+	border-style: none;
+}
+
+#officebar a {
+	color: white;
+}

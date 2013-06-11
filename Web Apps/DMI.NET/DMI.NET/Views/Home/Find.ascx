@@ -89,7 +89,7 @@
 								End If
 
 								If Len(sErrorDescription) = 0 Then
-							        Response.Write("						<h3 class='pageTitle'>Find - " & Replace(cmdFindWindowTitle.Parameters("title").Value, "_", " ") & "</h3>" & vbCrLf)
+									Response.Write("<a href='LinksMain' title='Home'><i class='pageTitleIcon icon-arrow-left'></i></a><h3 class='pageTitle'>Find - " & Replace(cmdFindWindowTitle.Parameters("title").Value, "_", " ") & "</h3>" & vbCrLf)
 									Response.Write("<INPUT type='hidden' id=txtQuickEntry name=txtQuickEntry value=" & cmdFindWindowTitle.Parameters("quickEntry").Value & ">" & vbCrLf)
 								End If
 	

@@ -79,7 +79,7 @@
 		If Not ua = Nothing Then
 			If ua.Contains("iPhone") Or ua.Contains("iPad") Then
 				currentTheme = "blue"
-				currentLayout = "tiles"
+				currentLayout = "tiles"				
 			End If
 		End If
 	%>
@@ -195,18 +195,18 @@
 					$("link[id=DMIthemeLink]").attr({ href: "" });
 
 
-                switch (window.currentLayout)
-			    {
-                    case "winkit":
-                        $("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/winkit.css")%>" });
-                        break;
-                    case "wireframe":
-                        $("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/wireframe.css")%>" });
-                        break;
-                    case "tiles":
-                        $("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/tiles.css")%>" });
-                        break;
-			    }
+				switch (window.currentLayout) {
+					case "winkit":
+						$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/winkit.css")%>" });
+                    	break;
+										case "wireframe":
+											$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/wireframe.css")%>" });
+                    	break;
+										case "tiles":
+											$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/tiles.css")%>" });
+                    	$("link[id=SSIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/jMetro/jquery-ui.css")%>" });
+                    	break;
+									}
 
 			    switch (window.currentTheme) {
 			        case "red":
@@ -222,9 +222,11 @@
                 }
 
 			}
+			
+			
 
 		});
-    </script>
+	</script>
 
 	<meta name="viewport"/>
 
@@ -281,7 +283,7 @@
 	    window.ROOT = '<%= Url.Content("~/") %>';       
 </script>
 </head>
-<body class="ui-widget ui-widget-content">
+<body class="ui-widget ui-widget-content absolutefull">
 	<header>
 		<asp:ContentPlaceHolder runat="server" ID="FixedLinksContent"></asp:ContentPlaceHolder>		
 	</header>
@@ -289,7 +291,7 @@
 	<div class="modal">
 		<!-- AJAX please wait spinner -->
 	</div>
-	<div id="About" title="About OpenHR"><%Html.RenderPartial("~/views/account/about.ascx")%></div>
+	<div id="About" title="About OpenHR" style="display: none;"><%Html.RenderPartial("~/views/account/about.ascx")%></div>
 	
 	
 	<div id="errorDialog" title="AJAX call failed.">

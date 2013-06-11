@@ -547,7 +547,7 @@
 	Response.Write("<INPUT type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>")
 %>
 
-<div id="contextmenu" class="accordion">
+<div id="contextmenu" class="accordion" style="display: none;">
 		<h3 id="mnutoolDatabase">Database</h3>
 		<div>
 			<ul id="mnubandDatabase">
@@ -684,5 +684,9 @@
 </form>
 
 <script type="text/javascript">
-    menu_window_onload();
+
+	menu_window_onload();
+	$("#contextmenu").fadeIn("slow");
+	$(".accordion").accordion("resize");
+
 </script>

@@ -244,6 +244,11 @@ label.radiodisabled
 	margin-top: 0;
 	margin-bottom: 0;
 }
+
+.pageTitleIcon {
+	display: none;
+}
+
 input.text
 {
 	/*color: #333366;
@@ -568,7 +573,6 @@ header {
 .FixedLinksRight {
 	/*float: right;*/
 	position: absolute;
-	bottom: 5px;
 	right: 0px;
 	z-index: 99;
 }

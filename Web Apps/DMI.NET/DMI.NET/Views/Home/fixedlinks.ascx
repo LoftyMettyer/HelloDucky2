@@ -17,7 +17,6 @@
 		//$("#toolbarHome").click();
 		$("#fixedlinks").fadeIn("slow");
 
-
 		$("#officebar .button").addClass("ui-corner-all");
 		
 		$('#officebar .button').hover(
@@ -44,7 +43,7 @@
 <%Else%>
 <img src="<%: Url.Action("ShowPhoto", "Home", new with { .ImageName="mworthing.jpg"}) %>"
 		alt="" />
-<%End If%></div><div id="fixedlinks" style="display: none;">
+<%End If%></div><div id="fixedlinks">
 	<div class="RecordDescription">
 		<p><a href="<%: Url.Action("LinksMain", "Home") %>" title="Home"><%=Session("recdesc")%></a></p>
 	</div>

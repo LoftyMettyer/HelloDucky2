@@ -11,9 +11,18 @@
 
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">	
+	<link id="SSIthemeLink" href="" rel="stylesheet" type="text/css" />
+	<link href="<%= Url.LatestContent("~/Content/jquery.gridster.css")%>" rel="stylesheet" type="text/css" />
+	<script src="<%: Url.LatestContent("~/Scripts/jquery/jquery.gridster.js")%>" type="text/javascript"></script>
+	<script src="<%: Url.LatestContent("~/Scripts/jquery/jquery.mousewheel.js")%>" type="text/javascript"></script>
+<%--	<script src="<%: Url.LatestContent("~/Scripts/jquery/jquery.flip.js")%>" type="text/javascript"></script>--%>
 
 	<script type="text/javascript">
-		function loadjscssfile(filename, filetype) {
+
+
+
+		function loadjscssfile(filename, filetype) {			
+
 			var fileref;
 			
 			if (filetype == "ajax") {
@@ -40,7 +49,7 @@
 
 		$(document).ready(function () {
 
-		    $("#fixedlinksframe").show();
+			$("#fixedlinksframe").show();
 
 			if (window.currentLayout == "tiles") {
 				setupTiles();
@@ -62,49 +71,49 @@
 				});
 			}
 
-		    //Load Poll.asp, then reload every 30 seconds to keep
-		    //session alive, and check for server messages.
+			//Load Poll.asp, then reload every 30 seconds to keep
+			//session alive, and check for server messages.
 			loadPartialView("poll", "home"); // first time
-		    // re-call the function each 30 seconds
+			// re-call the function each 30 seconds
 			window.setInterval("loadPartialView('poll', 'home')", 30000);
 
-
-			$(".DashContent").fadeIn("slow");
-
+			$(".DashContent").fadeIn("slow");			
 
 		});
 
 		function setupTiles() { 
-				//apply the gridster functionality.
-				griditup(true);
+			//apply the gridster functionality.
+			griditup(true);
 
-				//add mousewheel scrollability to the main content window
-				$(".DashContent").mousewheel(function (event, delta) {
-					this.scrollLeft -= (delta * 30);
-					event.preventDefault();
-				});
+			//add mousewheel scrollability to the main content window
+			$(".DashContent").mousewheel(function (event, delta) {
+				this.scrollLeft -= (delta * 30);
+				event.preventDefault();
+			});
 
-				//Add flippy stuff
-				$(".flipTile").hover(function () {
-					$(this).flip({
-						direction: 'tb'
-					});
-				});		
+			////Add flippy stuff
+			//$(".flipTile").hover(function () {
+			//	$(this).flip({
+			//		direction: 'tb'
+			//	});
+			//});		
 			
-				//hide the ribbon - they're charms in this layout
+			//hide the ribbon - they're charms in this layout
 			//$("#fixedlinks").hide();
 
 		}
 
 		function griditup(mode) {
-			if (mode == true) {
+			if (mode == true) {				
 				$(".gridster ul").gridster({
-					widget_margins: [10, 10],
+					widget_margins: [5, 5],
 					widget_base_dimensions: [120, 120],
 					min_rows: 4,
 					min_cols: 1,
 					avoid_overlapped_widgets: true
 				});
+
+
 			}
 		}
 
@@ -116,7 +125,6 @@
 			} else {
 				setCookie('Intranet_Theme', "blue", 365);
 			}
-
 
 			$(".DashContent").fadeOut("slow");
 
@@ -131,32 +139,32 @@
 				}
 
 				switch (newLayoutName) {
-					case "tiles":
-						//Hide all officebar tabs, except 'current' which WILL always be home tab...
+				case "tiles":
+					//Hide all officebar tabs, except 'current' which WILL always be home tab...
 						//$(".officebar > ul > li:not(.current)").hide();
 						//$(".current > a").hide();
 
-						window.changeTheme("theme-Blue");
-						$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/tiles.css")%>" });
-						setupTiles();
-						break;
-					case "wireframe":
-						//$(".officebar > ul > li:not(.current)").hide();
+					window.changeTheme("theme-Blue");
+					$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/tiles.css")%>" });
+					setupTiles();
+					break;
+				case "wireframe":
+					//$(".officebar > ul > li:not(.current)").hide();
 						//$(".current > a").hide();
 
-						window.changeTheme("theme-Blue");
-						$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/wireframe.css")%>" });
+					window.changeTheme("theme-Blue");
+					$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/wireframe.css")%>" });
 
-						break;
-					case "winkit":
-						window.changeTheme("theme-White");
-						$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/winkit.css")%>" });
-						$(".officebar > ul > li:not(.current)").show();
-						$(".current > a").show();
+					break;
+				case "winkit":
+					window.changeTheme("theme-White");
+					$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/winkit.css")%>" });
+					$(".officebar > ul > li:not(.current)").show();
+					$(".current > a").show();
 
-						//$(".hypertextlinks ul").addClass("menu");
-					default:
-						break;
+				//$(".hypertextlinks ul").addClass("menu");
+				default:
+					break;
 				}
 
 				$(".DashContent").fadeIn("slow");
@@ -225,7 +233,7 @@
 			<%iSeparatorNum += 1%>
 			<ul class="hypertextlinkseparatorframe" id="hypertextlinkseparatorframe_<%=iSeparatorNum %>">
 				<li class="hypertextlink-displaytype"><a class="hypertextlinkseparator" href="#">
-					<%: navlink.Text %></a>
+					<%: Replace(navlink.Text, "--", "")%></a>
 					<div class="gridster">
 						<ul>
 							<%Else%>
@@ -283,9 +291,7 @@
                         
                         sOnclick = "goUtility('" & sUtilityDef & "')"
                     Else
-                        sLinkKey = "recedit" & _
-                            "_" & Session("TopLevelRecID") & _
-                            "_" & navlink.ID
+                		sLinkKey = "recedit" & "_" & Session("TopLevelRecID") & "_" & navlink.ID
                         
                         sOnclick = "goScreen('" & sLinkKey & "')"
                     End If
@@ -309,8 +315,9 @@
 			<ul class="linkspagebuttonseparatorframe" id="linkspagebuttonseparatorframe_<%=iSeparatorNum %>">
 				<li class="linkspagebutton-displaytype">
 					
-					<a class="linkspagebuttonseparator" href="#"><%: navlink.Text %></a>
-
+					<div>
+						<a class="linkspagebuttonseparator" href="#"><%: navlink.Text %></a>
+					</div>
 					<div class="gridster">
 						<ul>
 							<%Else%>
@@ -322,13 +329,13 @@
 								$("#linkspagebuttonseparatorframe_<%=iSeparatorNum %>").addClass("cols<%=iColNum %>");
 							</script>
 							<%End If%>
-
+														
 							<%Select Case navlink.Element_Type%>
 
 							<%Case 0		 ' Button Link	%>
 								<%If navlink.UtilityType = -1 Then	' screen view%>
 									<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1"	class="linkspagebuttontext blueTile" onclick="<%=sOnclick%>">
-										<p class="linkspagebuttontileIcon"><i class="icon-table"></i></p>
+										<p class="linkspagebuttontileIcon" onclick="<%=sOnclick%>"><i class="icon-table" ></i></p>
 										<p><a href="#"><%: navlink.Text %><img src="<%: Url.Content("~/Content/images/extlink2.png") %>" alt=""/></a></p>
 									</li>								
 								<%ElseIf navlink.UtilityType = 25 Then	' workflow launch%>
@@ -386,9 +393,9 @@
 								<li id="li_<%: navlink.id %>" data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1"
 									data-sizey="1" class="linkspagebuttontext redTile displayonly">
 									<div class="DBValueScroller" id="marqueeDBV<%: navlink.id %>">
-										<p class="DBValue" id="DBV<%: navlink.id %>">
-											<img class="DBVSpinner" id="SpinnerDBV<%: navlink.id %>" src="<%: url.content("~/Content/images/spinner04.gif") %>"
-												alt="..." />
+										<p class="DBValue" id="DBV<%: navlink.id %>"><%=CInt(Math.Ceiling(Rnd() * 20))%>
+<%--											<img class="DBVSpinner" id="SpinnerDBV<%: navlink.id %>" src="<%: url.content("~/Content/images/spinner04.gif") %>"
+												alt="..." />--%>
 										</p>
 									</div>
 									<a href="#">
@@ -396,7 +403,7 @@
 											<%: navlink.Text %></p>
 									</a>
 								</li>
-<%--								<script type="text/javascript">loadjscssfile('$.getScript("http://abs16090/dmi.net/scripts/widgetscripts/wdg_oHRDBV.js", function () { initialiseWidget(<%: navlink.id %>, "DBV<%: navlink.id %>", "DBV<%: navlink.Text %>", ""); });', 'ajax');</script>--%>
+								<script type="text/javascript">//loadjscssfile('$.getScript("../scripts/widgetscripts/wdg_oHRDBV.js", function () { initialiseWidget(<%: navlink.id %>, "DBV<%: navlink.id %>", "DBV<%: navlink.Text %>", ""); });', 'ajax');</script>
 								<%iRowNum += 1%>
 
 							<%Case 5		 ' Todays events	%>
@@ -408,7 +415,7 @@
 									<div class="holidaycontainer" id="HolContainer<%: navlink.id %>"></div>
 									
 								</li>
-								<script type="text/javascript">loadjscssfile('$.getScript("http://abs16091/dmi.net/scripts/widgetscripts/wdg_oHRHoliday.js", function () { initialiseWidget(<%: navlink.id %>, "HolContainer<%: navlink.id %>", 19, ""); });', 'ajax');</script>
+								<%--<script type="text/javascript">loadjscssfile('$.getScript("http://abs16091/dmi.net/scripts/widgetscripts/wdg_oHRHoliday.js", function () { initialiseWidget(<%: navlink.id %>, "HolContainer<%: navlink.id %>", 19, ""); });', 'ajax');</script>--%>
 								<%iRowNum += 1%>
 
 

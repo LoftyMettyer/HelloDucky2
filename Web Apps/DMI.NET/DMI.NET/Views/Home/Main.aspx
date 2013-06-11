@@ -78,6 +78,7 @@
 
     $(document).ready(function() {
         $("#fixedlinksframe").show();
+        $("#FixedLinksContent").fadeIn("slow");
 
         //Load Poll.asp, then reload every 30 seconds to keep
         //session alive, and check for server messages.

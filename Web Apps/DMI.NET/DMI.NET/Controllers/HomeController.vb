@@ -2413,7 +2413,7 @@ Namespace Controllers
 
     <ValidateInput(False)>
     Function WorkflowPendingSteps() As ActionResult
-      Return PartialView()
+			Return PartialView()
     End Function
 
     <ValidateInput(False)>
@@ -3491,8 +3491,7 @@ Namespace Controllers
             And (CLng(Session("SSILinkViewID")) = CLng(Session("SingleRecordViewID"))) _
             And (CLng(Session("TopLevelRecID")) = 0) _
             And (CLng(Session("tableID")) <> CLng(Session("SingleRecordTableID"))) Then
-          'TODO: error - no parent record in the current view.
-          Stop
+          'TODO: error - no parent record in the current view.          
         End If
         If CleanNumeric(Session("startMode")) <> 3 Then
           Return View("recordEdit")

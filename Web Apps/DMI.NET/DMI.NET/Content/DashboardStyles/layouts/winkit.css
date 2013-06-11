@@ -24,7 +24,9 @@ body
 	width: 100%;
 }
 
-
+.pageTitleIcon {
+	display: none!important;
+}
 .DashContent {position: absolute; top: 126px; bottom: 2px;left: 0px; right: 0px;}
 
 
