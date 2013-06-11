@@ -578,12 +578,12 @@
     <None Include="_bin_deployableAssemblies\System.Web.Razor.dll" />
     <None Include="_bin_deployableAssemblies\System.Web.Helpers.dll" />
     <None Include="_bin_deployableAssemblies\System.Web.Mvc.dll" />
-    <None Include="Content\fonts\font-awesome\fontawesome-webfont.eot" />
-    <None Include="Content\fonts\font-awesome\fontawesome-webfont.ttf" />
-    <None Include="Content\fonts\font-awesome\fontawesome-webfont.woff" />
-    <None Include="Content\fonts\general_enclosed_foundicons.eot" />
-    <None Include="Content\fonts\general_enclosed_foundicons.ttf" />
-    <None Include="Content\fonts\general_enclosed_foundicons.woff" />
+    <Content Include="Content\fonts\font-awesome\fontawesome-webfont.eot" />
+    <Content Include="Content\fonts\font-awesome\fontawesome-webfont.ttf" />
+    <Content Include="Content\fonts\font-awesome\fontawesome-webfont.woff" />
+    <Content Include="Content\fonts\general_enclosed_foundicons.eot" />
+    <Content Include="Content\fonts\general_enclosed_foundicons.ttf" />
+    <Content Include="Content\fonts\general_enclosed_foundicons.woff" />
     <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>
