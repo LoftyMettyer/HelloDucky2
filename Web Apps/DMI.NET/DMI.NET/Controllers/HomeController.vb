@@ -663,10 +663,11 @@ Namespace Controllers
         Dim sViewName
         'NPG20081401 Fault 12868
         Dim dblPreviousColumnWidth
-        Dim objUser
+        Dim objUser As HR.Intranet.Server.clsSettings
 
         'NPG20081401 Fault 12868
-        objUser = CreateObject("COAIntServer.clsSettings")
+        objUser = New HR.Intranet.Server.clsSettings
+
         CallByName(objUser, "Connection", CallType.Let, Session("databaseConnection"))
 
         Const DEADLOCK_ERRORNUMBER = -2147467259
