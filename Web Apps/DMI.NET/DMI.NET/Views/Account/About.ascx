@@ -67,7 +67,7 @@
 							</td>
 							<td style="vertical-align: top; text-align: left; white-space: nowrap;">
 								<%=session("Server")%>
-							`</td>
+							</td>
 						</tr>
 						<tr>
 							<td style="vertical-align: top; text-align: left; white-space: nowrap; padding-right: 10px;">Database : 
