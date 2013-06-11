@@ -196,11 +196,11 @@
 
 
 				switch (window.currentLayout) {
-					case "winkit":
-						$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/winkit.css")%>" });
+									case "winkit":
+										$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/winkit.css")%>" });
                     	break;
 										case "wireframe":
-											$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/wireframe.css")%>" });
+											$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/wireframe.css")%>" });											
                     	break;
 										case "tiles":
 											$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/tiles.css")%>" });
@@ -283,7 +283,7 @@
 	    window.ROOT = '<%= Url.Content("~/") %>';       
 </script>
 </head>
-<body class="ui-widget ui-widget-content absolutefull">
+<body class="ui-widget absolutefull">
 	<header>
 		<asp:ContentPlaceHolder runat="server" ID="FixedLinksContent"></asp:ContentPlaceHolder>		
 	</header>

@@ -23,7 +23,7 @@ li a {	color: White;}
 .linkspagebuttonseparator {background-color: rgb(43, 120, 228);}
 .hypertextlinktext:hover {	background-color: #ff9608; }
 .linkspagebuttontext:hover {	background-color: #ff9608; }
-.linkspagebutton .displayonly { background-color: transparent; }
+/*.linkspagebutton .displayonly { background-color: transparent; }*/
 .generaltheme {background-color: rgb(43, 120, 228);}
 
 .widgetplaceholder { color: white;}

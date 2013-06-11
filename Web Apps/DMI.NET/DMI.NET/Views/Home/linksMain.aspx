@@ -228,6 +228,7 @@
 		<%Dim iSeparatorNum = 0%>
 			<div class="hypertextlinks">
 				<%For Each navlink In Model.NavigationLinks%>
+				<%Dim sTileColourClass = "Colour" & CStr(CInt(Math.Ceiling(Rnd() * 7)))%>
 				<%If navlink.LinkType = 0 Then	 ' hypertext link%>
 				<%If navlink.Element_Type = 1 Then		' separator%>
 				<%iRowNum = 1%>
@@ -262,7 +263,7 @@
 
 							 End Select%>
 
-							<li class="hypertextlinktext greenTile flipTile" data-col="<%=iColNum %>" data-row="<%=iRowNum %>"
+							<li class="hypertextlinktext <%=sTileColourClass%> flipTile" data-col="<%=iColNum %>" data-row="<%=iRowNum %>"
 								data-sizex="1" data-sizey="1">
 								<p class="hypertextlinktileIcon">
 									<i class="<%=classIcon %>"></i>
@@ -290,6 +291,9 @@
                 <%Dim sOnclick As String = ""
                     Dim sLinkKey As String = ""%>
 				<%For Each navlink In Model.NavigationLinks%>
+				
+				<%Dim sTileColourClass = "Colour" & CStr(CInt(Math.Ceiling(Rnd() * 7)))%>
+
 				<%If navlink.LinkType = 1 Then	 ' main dashboard link%>
                 <%
                     If navlink.UtilityID > 0 Then
@@ -343,18 +347,18 @@
 
 							<%Case 0		 ' Button Link	%>
 								<%If navlink.UtilityType = -1 Then	' screen view%>
-									<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1"	class="linkspagebuttontext blueTile" onclick="<%=sOnclick%>">
+									<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1"	class="linkspagebuttontext <%=sTileColourClass%>" onclick="<%=sOnclick%>">
 										<p class="linkspagebuttontileIcon" onclick="<%=sOnclick%>"><i class="icon-table" ></i></p>
 										<p><a href="#"><%: navlink.Text %><img src="<%: Url.Content("~/Content/images/extlink2.png") %>" alt=""/></a></p>
 									</li>								
 								<%ElseIf navlink.UtilityType = 25 Then	' workflow launch%>
-									<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1"	class="linkspagebuttontext lightBlueTile">
+									<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1"	class="linkspagebuttontext <%=sTileColourClass%>">
 										<p class="linkspagebuttontileIcon"><i class="icon-magic"></i></p>
 										<p><a href="#"><%: navlink.Text %><img src="<%: Url.Content("~/Content/images/extlink2.png") %>" alt=""/></a></p>
 									</li>								
 
 								<%ElseIf navlink.UtilityType = 2 Then	 ' report/utility%>
-									<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1"	class="linkspagebuttontext orangeTile">
+									<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1"	class="linkspagebuttontext <%=sTileColourClass%>">
 										<p class="linkspagebuttontileIcon"><i class="icon-file"></i></p>
 										<p><a href="#"><%: navlink.Text %><img src="<%: Url.Content("~/Content/images/extlink2.png") %>" alt=""/></a></p>
 									</li>								
@@ -366,7 +370,7 @@
 
 
 							<%Case 2		' Chart %>
-								<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1"	class="linkspagebuttontext blueTile displayonly">
+								<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1"	class="linkspagebuttontext <%=sTileColourClass%> displayonly">
 									<p class="linkspagebuttontileIcon">
 										<i class="icon-bar-chart"></i>
 									</p>
@@ -382,7 +386,7 @@
 								<%iRowNum += 1%>
 
 							<%Case 3		 ' Pending Workflows	%>
-								<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1"	class="linkspagebuttontext blueTile displayonly">
+								<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1"	class="linkspagebuttontext <%=sTileColourClass%> displayonly">
 									<p class="linkspagebuttontileIcon">
 										<i class="icon-inbox"></i>
 									</p>
@@ -400,7 +404,7 @@
 
 							<%Case 4		' Database Value%>
 								<li id="li_<%: navlink.id %>" data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1"
-									data-sizey="1" class="linkspagebuttontext redTile displayonly">
+									data-sizey="1" class="linkspagebuttontext <%=sTileColourClass%> displayonly">
 									<div class="DBValueScroller" id="marqueeDBV<%: navlink.id %>">
 										<p class="DBValue" id="DBV<%: navlink.id %>"><%=CInt(Math.Ceiling(Rnd() * 20))%>
 <%--											<img class="DBVSpinner" id="SpinnerDBV<%: navlink.id %>" src="<%: url.content("~/Content/images/spinner04.gif") %>"
@@ -416,7 +420,7 @@
 								<%iRowNum += 1%>
 
 							<%Case 5		 ' Todays events	%>
-								<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1"	class="linkspagebuttontext blueTile displayonly">
+								<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1"	class="linkspagebuttontext <%=sTileColourClass%> displayonly">
 									<p class="linkspagebuttontileIcon">
 										<i class="icon-calendar"></i>
 									</p>
@@ -430,7 +434,7 @@
 
 							<%Case Else%>
 								<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1"
-									class="linkspagebuttontext blueTile displayonly"><a href="#">
+									class="linkspagebuttontext <%=sTileColourClass%> displayonly"><a href="#">
 										<%: navlink.Text %></a></li>
 								<%iRowNum += 1%>
 
@@ -461,6 +465,8 @@
 				<%iRowNum = 1%>
 				<%iColNum = 1%>
 				<%For Each navlink In Model.NavigationLinks%>
+				<%Dim sTileColourClass = "Colour" & CStr(CInt(Math.Ceiling(Rnd() * 7)))%>
+
 				<%If navlink.LinkType = 2 Then	 ' dropdown link%>
 				<%If iRowNum > iMaxRows Then	 ' start a new column if required (affects tiles only)%>
 				<% iColNum += 1%>
@@ -470,7 +476,7 @@
 					$("#dropdownlinksseparatorframe<%=iSeparatorNum %>").addClass("cols<%=iColNum %>");
 				</script>
 				<%End If%>
-				<li class="dropdownlinktext greenTile" data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1"
+				<li class="dropdownlinktext <%=sTileColourClass%>" data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1"
 					data-sizey="1">
 					<p class="dropdownlinktileIcon">
 						<i class="icon-external-link"></i>

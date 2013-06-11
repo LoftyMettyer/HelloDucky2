@@ -4,7 +4,7 @@
 
 body 
 {	
-	height: 100%;
+	height: 99%;
 	padding: 0px;
 	margin: 0px;
 }
@@ -65,7 +65,8 @@ body
 
 .linkspagebuttontext a, .hypertextlinktext a, .dropdownlinktext a, .DBValueCaption p
 {
-	position: absolute;bottom: 0px; width: 100%; text-align: center; text-decoration: none; margin: 0px 2px 5px 2px;
+	position: absolute;bottom: 0px; text-align: center; text-decoration: none; margin: 0px 2px 5px 2px;
+	width: 100%; 
 	font-size: 11pt;		
 	}
 
@@ -210,6 +211,22 @@ li {list-style: none;}
    color: White;        
 }
 
+
+.Colour1 {background-color: rgb(0, 142, 0);color: white;}
+.Colour1 a {color: white;}
+.Colour2 {background-color: rgb(9, 76, 181);color: white;}
+.Colour2 a {color: white;}
+.Colour3 {background-color: rgb(0, 157, 0);color: white;}
+.Colour3 a {color: white;}
+.Colour4 {background-color: rgb(141, 0, 150);color: white;}
+.Colour4 a {color: white;}
+.Colour5 {background-color: rgb(211, 73, 39);color: white;}
+.Colour5 a {color: white;}
+.Colour6 {background-color: rgb(73, 27, 198);color: white;}
+.Colour6 a {color: white;}
+.Colour7 {background-color: rgb(255, 236, 0);color: black;}
+.Colour7 a {color: black;}
+
 .holidaycontainer { display: none;}
 
 
@@ -237,7 +254,8 @@ li {list-style: none;}
 
 .FixedLinksRight {
 	position: fixed;
-	top: 20px;	
+	left: 20px;
+	bottom: 10px;
 }
 
 div.officebar > ul { padding-left: 0;}
