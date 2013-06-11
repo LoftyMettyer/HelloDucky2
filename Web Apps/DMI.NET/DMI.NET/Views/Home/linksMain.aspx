@@ -177,16 +177,25 @@
 				url: window.ROOT + controller + "/" + action,
 				data: { psScreenInfo: params },
 				type: "POST",
-				success: function (html) {					
-					$("#" + targetDiv).html(html);
-					var breadcrumb = $(".pageTitle").text();
-					if ((action.toUpperCase() != "POLL") && (breadcrumb.length > 0)) {						
-						$(".RecordDescription p").append("<a href='javascript:alert(1)'>: " + breadcrumb + "</a>");
+				success: function (html) {
+					try {
+						$("#" + targetDiv).html(html);
+						var breadcrumb = $(".pageTitle").text();
+						if ((action.toUpperCase() != "POLL") && (breadcrumb.length > 0)) {
+							$(".RecordDescription p").append("<a href='javascript:alert(1)'>: " + breadcrumb + "</a>");
+						}
+					} catch(e) {
+						$("#errorDialogTitle").text(e.toString);
+						$("#errorDialogContentText").text(e.responseText);
+						$("#errorDialog").dialog("open");
 					}
 				},
 				error: function (req, status, errorObj) {
 					//TODO: remove this popup. Used for debugging only.
-					OpenHR.messageBox("ajax call to '" + action + "' failed with '" + errorObj + "'.");
+					//OpenHR.messageBox("ajax call to '" + action + "' failed with '" + errorObj + "'.");
+					$("#errorDialogTitle").text(errorObj);
+					$("#errorDialogContentText").text(req.responseText);
+					$("#errorDialog").dialog("open");
 				}
 			});
 		}

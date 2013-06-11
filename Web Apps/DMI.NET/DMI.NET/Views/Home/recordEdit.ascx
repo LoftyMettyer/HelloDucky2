@@ -3,7 +3,6 @@
 
 <script type="text/javascript">
 
-
 		//Fault HRPRO-2953
 		(function(){
 			if (document.selection && document.selection.empty) {
@@ -13,6 +12,14 @@
 
 
 		function recordEdit_window_onload() {
+			
+
+			if ($(".DashContent").length > 0) {
+				alert("SSI functionality TO DO. \n click Home.");
+				return false;
+			}
+
+
         //public variables
         this.mavIDColumns = new Array(3);
         var frmRecordEditForm = OpenHR.getForm("workframe", "frmRecordEditForm");

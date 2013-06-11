@@ -53,8 +53,8 @@
 				<li class="current ui-state-default ui-corner-top ui-state-active ui-state-hover"><a id="toolbarHome" href="#" rel="home">Home</a>
 					<ul>
 						<li><span>Fixed Links</span>
-							<div class="button"><a href="<%: Url.Action("LinksMain", "Home") %>" rel="table" title="Home">
-								<img src="<%: Url.Content("~/Scripts/officebar/winkit/home64HOVER.png") %>" alt="" /><i class="icon-home"></i><h6>Home</h6></a></div>
+							<div class="button"><a href="<%: Url.Action("LinksMain", "Home") %>" rel="table" title="Self-service Intranet">
+								<img src="<%: Url.Content("~/Scripts/officebar/winkit/home64HOVER.png") %>" alt="" /><i class="icon-home"></i><h6>SSI</h6></a></div>
 							<div class="button">
 								<a href="<%: Url.Action("LogOff", "Home") %>" rel="table" title="Log Off">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/cross64HOVER.png") %>" alt="" />
@@ -63,10 +63,10 @@
 								</a>
 							</div>
 							<div class="button">
-								<a href="<%: Url.Action("Main", "Home") %>" rel="table" title="Main">
+								<a href="<%: Url.Action("Main", "Home") %>" rel="table" title="Data Manager Intranet">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/abssmall.png") %>" alt="" />
 									<i class="icon-group"></i>
-									<h6>Main</h6>
+									<h6>DMI</h6>
 								</a>
 							</div>
 							<div class="button">
