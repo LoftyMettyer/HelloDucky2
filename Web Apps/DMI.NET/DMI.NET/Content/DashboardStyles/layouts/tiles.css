@@ -267,7 +267,7 @@ div.officetab li div.button
 
 .officebar li { list-style: none;}
 
-div.officebar ul li.current > a { display: none;}
+div.officebar ul li.current > a { display: none!important;}
 div.officetab div.panel > span { display: none;}
 
 
