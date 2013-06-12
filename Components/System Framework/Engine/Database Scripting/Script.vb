@@ -1,4 +1,7 @@
-﻿Imports System.Runtime.InteropServices
+﻿Option Strict On
+Option Explicit On
+
+Imports System.Runtime.InteropServices
 Imports System.Text
 Imports System.Text.RegularExpressions
 Imports SystemFramework.Enums

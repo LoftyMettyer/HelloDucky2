@@ -1,4 +1,7 @@
-﻿Imports System.Runtime.InteropServices
+﻿Option Strict On
+Option Explicit On
+
+Imports System.Runtime.InteropServices
 Imports SystemFramework.Enums
 Imports SystemFramework.Enums.Errors
 Imports SystemFramework.Structures
@@ -576,10 +579,20 @@ Public Class Expression
             AssociatedColumn.Table.DependsOnChildColumns.AddIfNew(objThisColumn)
           End If
 
-          If objThisColumn.SafeReturnType = "NULL" Then
-            lineOfCode.Code = String.Format("[{0}].[{1}]", objThisColumn.Table.Name, objThisColumn.Name)
+          ' Is the column calculated (should only apply when used getting child column values that also have a filter applied.
+          If objThisColumn.IsCalculated And Not objThisColumn.Calculation Is Nothing And ExpressionType = ExpressionType.ColumnFilter Then
+            If objThisColumn.Calculation.IsComplex Then
+              lineOfCode.Code = objThisColumn.Calculation.Udf.CallingCode.Replace("base.ID", String.Format("@prm_ID_{0}", objThisColumn.Table.Id))
+            Else
+              lineOfCode.Code = objThisColumn.Calculation.Udf.InlineCode
+            End If
+            lineOfCode.Code = lineOfCode.Code.Replace("base.", String.Format("{0}.", objThisColumn.Table.Name))
           Else
-            lineOfCode.Code = String.Format("ISNULL([{0}].[{1}],{2})", objThisColumn.Table.Name, objThisColumn.Name, objThisColumn.SafeReturnType)
+            If objThisColumn.SafeReturnType = "NULL" Then
+              lineOfCode.Code = String.Format("[{0}].[{1}]", objThisColumn.Table.Name, objThisColumn.Name)
+            Else
+              lineOfCode.Code = String.Format("ISNULL([{0}].[{1}],{2})", objThisColumn.Table.Name, objThisColumn.Name, objThisColumn.SafeReturnType)
+            End If
           End If
 
           ' Add table join component
