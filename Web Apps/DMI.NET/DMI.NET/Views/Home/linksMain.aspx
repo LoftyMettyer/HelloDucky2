@@ -348,7 +348,7 @@
 							<%Case 0		 ' Button Link	%>
 								<%If navlink.UtilityType = -1 Then	' screen view%>
 									<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1"	class="linkspagebuttontext <%=sTileColourClass%>" onclick="<%=sOnclick%>">
-										<p class="linkspagebuttontileIcon" onclick="<%=sOnclick%>"><i class="icon-table" ></i></p>
+										<p class="linkspagebuttontileIcon"><i class="icon-table" ></i></p>
 										<p><a href="#"><%: navlink.Text %><img src="<%: Url.Content("~/Content/images/extlink2.png") %>" alt=""/></a></p>
 									</li>								
 								<%ElseIf navlink.UtilityType = 25 Then	' workflow launch%>
@@ -552,5 +552,4 @@
 	<INPUT type="hidden" id=txtMenuSaved name=txtMenuSaved value=0>
 </FORM>	
 	
-
 </asp:Content>
