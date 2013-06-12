@@ -12,7 +12,6 @@ Public Class Expression
 
   Public Property Size As Integer
   Public Property Decimals As Integer
-  Public Property BaseTableId As Integer
   Public Property BaseTable As Table
 
   Public Udf As GeneratedUdf

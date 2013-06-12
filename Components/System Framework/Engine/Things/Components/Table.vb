@@ -9,7 +9,6 @@ Public Class Table
   Implements IObject
 
   Public Property TableType As TableType
-  Public Property ManualSummaryColumnBreaks As Boolean
   Public Property AuditInsert As Boolean
   Public Property AuditDelete As Boolean
   Public Property DefaultOrderId As Integer

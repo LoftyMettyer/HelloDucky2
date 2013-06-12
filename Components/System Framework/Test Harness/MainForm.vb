@@ -397,10 +397,6 @@ Public Class MainForm
 
   End Sub
 
-  Private Sub txtDatabase_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles txtDatabase.TextChanged
-
-  End Sub
-
   Private Sub Button3_Click(sender As System.Object, e As System.EventArgs) Handles Button3.Click
 
     Dim objPhoenix As New SystemFramework.SysMgr
@@ -410,7 +406,6 @@ Public Class MainForm
     objPhoenix.Initialise()
 
     objError = New SystemFramework.Structures.Error
-    objError.DateTime = Now
     objError.Detail = "my detail"
     objError.Severity = SystemFramework.Enums.Errors.Severity.Error
     objError.Message = "the error message"
@@ -418,7 +413,6 @@ Public Class MainForm
 
 
     objError = New SystemFramework.Structures.Error
-    objError.DateTime = Now
     objError.Detail = "my wanring detail"
     objError.Severity = SystemFramework.Enums.Errors.Severity.Warning
     objError.Message = "the warning message"
@@ -426,7 +420,6 @@ Public Class MainForm
 
 
     objError = New SystemFramework.Structures.Error
-    objError.DateTime = Now
     objError.Detail = "my wanring detail123234"
     objError.Severity = SystemFramework.Enums.Errors.Severity.Warning
     objError.Message = "the warning message"

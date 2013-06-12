@@ -186,18 +186,6 @@ Namespace Collections
       End Get
     End Property
 
-    Public ReadOnly Property Expressions As ICollection(Of Expression)
-      Get
-        Return _dicExpressions.Keys
-      End Get
-    End Property
-
-    Public ReadOnly Property Tables As ICollection(Of Table)
-      Get
-        Return _dicTables.Keys
-      End Get
-    End Property
-
     Public ReadOnly Property Columns As ICollection(Of Column)
       Get
         Return _dicColumns.Keys

@@ -25,40 +25,12 @@ Public Class Column
   Public Property TrimType As TrimType
   Public Property Alignment As AlignType
   Public Property Mandatory As Boolean
-  Public Property OleType As OleType
 
   Public Property UniqueType As UniqueCheckScope
 
   Public Property DefaultCalcId As Integer
   Public Property DefaultCalculation As Expression
   Public Property DefaultValue As String
-
-  Public ReadOnly Property DataTypeSize As String
-    Get
-
-      Select Case DataType
-        Case ColumnTypes.Text
-          If Multiline Or Size > 8000 Then
-            Return "MAX"
-          Else
-            Return CStr(Size)
-          End If
-
-        Case ColumnTypes.Numeric
-          Return (Size + Decimals).ToString
-
-        Case ColumnTypes.Logic
-          Return "1"
-
-        Case ColumnTypes.Date
-          Return "20"
-
-        Case Else
-          Return CStr(Size)
-
-      End Select
-    End Get
-  End Property
 
   ' Declaration syntax for a column type
   Public ReadOnly Property DataTypeSyntax As String
@@ -106,37 +78,11 @@ Public Class Column
 
   End Property
 
-  Public ReadOnly Property HasDefaultValue As Boolean
-    Get
-
-      If DefaultCalcId > 0 Then
-        Return True
-      Else
-        Select Case DataType
-          Case ColumnTypes.Text
-            Return DefaultValue.Length > 0
-          Case ColumnTypes.Numeric, ColumnTypes.Integer
-            Return CInt(DefaultValue) <> 0
-          Case ColumnTypes.Logic
-            Return CBool(DefaultValue) <> True
-          Case Else
-            Return False
-        End Select
-      End If
-
-    End Get
-  End Property
-
-
   Public ReadOnly Property IsCalculated As Boolean
     Get
       Return CalcId > 0
     End Get
   End Property
-
-  Public Function ApplyFormatting() As String
-    Return ApplyFormatting(String.Empty)
-  End Function
 
   Public Function ApplyFormatting(ByVal prefix As String) As String
 

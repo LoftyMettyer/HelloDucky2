@@ -21,7 +21,6 @@ Namespace Collections
       thisItem.Message = message
       thisItem.Detail = detail
       thisItem.User = Login.UserName
-      thisItem.DateTime = Now
 
       If Not Items.Any(Function(e) e.Section = thisItem.Section AndAlso
             e.ObjectName = thisItem.ObjectName AndAlso
@@ -41,27 +40,6 @@ Namespace Collections
       'Next
 
       Return Items.Aggregate(vbNullString, Function(current, thisItem) current + String.Format("{1}{0}{1}{2}{1}", thisItem.Message, vbNewLine, thisItem.Detail))
-
-    End Function
-
-    Public Function QuickReport() As String
-
-      Dim message As String = vbNullString
-
-      For Each thisItem As [Error] In Items
-
-        Select Case thisItem.Severity
-          Case Severity.Error
-            message += String.Format("{0} - {1}", thisItem.ObjectName, thisItem.Message)
-
-          Case Severity.Warning
-            'sMessage = sMessage & String.Format("{1}{1}{1}{1}{0}{1}{2}{1}", objError.Message, vbNewLine, objError.Detail)
-
-        End Select
-
-      Next
-
-      Return message
 
     End Function
 

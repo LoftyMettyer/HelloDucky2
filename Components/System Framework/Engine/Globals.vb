@@ -1,12 +1,9 @@
 ﻿Imports SystemFramework.ScriptDB
-Imports SystemFramework.Enums.Connection
 
 Public Module Globals
 
   Public MetadataDb As IConnection
   Public CommitDb As IConnection
-
-  Public MetadataProvider As MetadataProvider = MetadataProvider.PhoenixStoredProcs
 
   Public Tables As ICollection(Of Table)
   Public Operators As ICollection(Of CodeLibrary)

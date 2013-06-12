@@ -32,7 +32,6 @@ Public Class Component
   Public Property BaseExpression As Expression
   Public Property AssociatedColumn As Column
 
-  Public Property IsSchemaBound As Boolean = True
   Public Property IsTimeDependant As Boolean
 
   Public Property Parent As Component

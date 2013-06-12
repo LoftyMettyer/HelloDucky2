@@ -14,7 +14,6 @@ Namespace ScriptDB
 
     Public Property CodeLevel As Integer
     Public Property ReturnType As ComponentValueTypes
-    Public Property MakeTypesafe As Boolean = True
     Public Property CaseReturnType As CaseReturnType = CaseReturnType.Result
     Private Property IsLogicBlock As Boolean
 

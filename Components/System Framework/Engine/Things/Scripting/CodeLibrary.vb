@@ -9,7 +9,6 @@ Public Class CodeLibrary
   Public Property PreCode As String
   Public Property AfterCode As String
   Public Property ReturnType As ComponentValueTypes
-  Public Property RowNumberRequired As Boolean
   Public Property RecordIdRequired As Boolean
   Public Property OvernightOnly As Boolean
   Public Property CalculatePostAudit As Boolean
