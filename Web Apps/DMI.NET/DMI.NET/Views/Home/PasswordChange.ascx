@@ -133,16 +133,16 @@
                                 <td align="left" nowrap>Current Password :</td>
                                 <td width="20"></td>
                                 <td align="left">
-                                    <input id="txtCurrentPassword" name="txtCurrentPassword" type="password" class="text" style="WIDTH: 200px">
+                                    <input id="txtCurrentPassword"name="txtCurrentPassword"type="password"class="text"style="WIDTH:200px;margin-top:1px;margin-bottom:1px">
                                 </td>
                                 <td width="20"></td>
                             </tr>
                             <tr>
-                                <td width="20"></td>
+																<td width="20"></td>
                                 <td align="left" nowrap>New Password :</td>
                                 <td width="20"></td>
-                                <td align="left">
-                                    <input id="txtPassword1" name="txtPassword1" type="password" class="text" style="WIDTH: 200px">
+                                <td align="left" >
+                                    <input id="txtPassword1" name="txtPassword1" type="password" class="text" style="WIDTH: 200px; margin-top: 1px; margin-bottom: 1px">
                                 </td>
                                 <td width="20"></td>
                             </tr>
@@ -151,7 +151,7 @@
                                 <td align="left" nowrap>Confirm New Password :</td>
                                 <td width="20"></td>
                                 <td align="left">
-                                    <input id="txtPassword2" name="txtPassword2" type="password" class="text" style="WIDTH: 200px">
+                                    <input id="txtPassword2" name="txtPassword2" type="password" class="text" style="WIDTH: 200px; margin-top: 1px; margin-bottom: 1px">
                                 </td>
                                 <td width="20"></td>
                             </tr>
