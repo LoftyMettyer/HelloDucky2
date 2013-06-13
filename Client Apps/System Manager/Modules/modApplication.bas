@@ -2151,33 +2151,29 @@ End Sub
 
 Public Sub AttemptReLogin()
 
-  On Error GoTo StillBroken:
-
+  Dim bOK As Boolean
+  Dim iRetryCount As Integer
   Dim iAnswer As Integer
  
-  iAnswer = MsgBox("Your network connectivity has been lost." & vbCrLf & vbCrLf _
-    & "Would you like to attempt to automatically relogin? " & vbCrLf & vbCrLf _
-    & "If this happens on a regular basis please contact your system administrator it is unlikely that there are some underlying network issues." & vbCrLf _
-  , vbCritical + vbYesNo, App.Title)
+  iRetryCount = 0
+  bOK = False
 
-  Screen.MousePointer = vbHourglass
-
-  If iAnswer = 6 Then
-    gADOCon.Close
-    gADOCon.Open
-  Else
-    GoTo Quit
-  End If
+  Do While Not bOK
+    iRetryCount = iRetryCount + 1
+    iAnswer = MsgBox("Your network connectivity has been lost." & vbCrLf & vbCrLf _
+      & "Would you like to attempt to automatically relogin? " & vbCrLf & vbCrLf _
+      & "If this happens on a regular basis please contact your system administrator it is unlikely that there are some underlying network issues." _
+      & " Attempt #" & iRetryCount _
+    , vbCritical + vbYesNo, App.Title)
     
-  Screen.MousePointer = vbDefault
+    If iAnswer = 6 Then
+      bOK = AttemptConnection
+    Else
+      GoTo Quit
+    End If
+  Loop
+  
   Exit Sub
-
-StillBroken:
-
-  iAnswer = MsgBox("Your network connectivity cannot be established." & vbCrLf & vbCrLf _
-    & "You will need to relogin into application to continue." & vbCrLf & vbCrLf _
-    & "Changes have not been saved." _
-  , vbCritical, App.Title)
 
 Quit:
 
@@ -2188,4 +2184,25 @@ Quit:
 
 End Sub
 
+Public Function AttemptConnection() As Boolean
 
+  On Error GoTo ErrorTrap:
+
+  Screen.MousePointer = vbHourglass
+
+  If gADOCon.State = adStateOpen Then
+    gADOCon.Close
+  End If
+  gADOCon.Open
+  
+  Screen.MousePointer = vbDefault
+  AttemptConnection = True
+  
+TidyUpAndExit:
+  Exit Function
+
+ErrorTrap:
+  AttemptConnection = False
+  GoTo TidyUpAndExit
+
+End Function
