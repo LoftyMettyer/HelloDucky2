@@ -5069,7 +5069,7 @@ Public Sub OutputCurrentProcess(strInput As String, Optional blnOverwriteExistin
     gobjProgress.Bar2Value = 0
   End If
 
-  strFileName = App.Path & "\savelog.txt"
+  strFileName = gsLogDirectory & "\savelog.txt"
 
   If blnOverwriteExisting Then
     If Dir(strFileName) <> vbNullString Then
@@ -5739,7 +5739,7 @@ Public Sub OutputCurrentProcess2(strInput As String, Optional ByVal lngMaxSteps 
     gobjProgress.Bar2MaxValue = lngMaxSteps
   End If
 
-  strFileName = App.Path & "\savelog.txt"
+  strFileName = gsLogDirectory & "\savelog.txt"
 
   If Trim$(strInput) <> vbNullString Then
     Open strFileName For Append As #99

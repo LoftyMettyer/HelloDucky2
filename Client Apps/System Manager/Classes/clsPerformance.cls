@@ -45,7 +45,7 @@ End Sub
 
 Public Sub ClearLogFile()
   On Error Resume Next
-  Kill App.Path & msFileName
+  Kill gsLogDirectory & msFileName
 End Sub
 
 Public Sub LogClockEvent(ByRef sArea As String, ByRef sMessage As String)
@@ -59,7 +59,7 @@ Public Sub LogClockEvent(ByRef sArea As String, ByRef sMessage As String)
 
   If ASRDEVELOPMENT Then
   
-    Open App.Path & msFileName For Append As #mlngFileNum
+    Open gsLogDirectory & msFileName For Append As #mlngFileNum
   
     dblNow = GetTickCount
     dblEventElapsed = dblNow - mdblLastTick
@@ -93,7 +93,7 @@ Public Sub LogSummary()
   
     dblNow = GetTickCount
   
-    Open App.Path & msFileName For Append As #mlngFileNum
+    Open gsLogDirectory & msFileName For Append As #mlngFileNum
   
     If mbPaused Then
       dblTotalElapsed = (mdblPauseTick - mdblBaseTick) - mdblIgnoreTicks

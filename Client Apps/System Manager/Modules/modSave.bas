@@ -17,6 +17,8 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
   bFailed = False
   fOK = True
   
+  frmSysMgr.tmrKeepAlive.Enabled = False
+  
   ReDim alngExpressions(2, 0)
 
   OutputCurrentProcess "Start of save process", True
@@ -41,7 +43,6 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
     OutputCurrentProcess "Display Progress Bar"
     ' Display the progress bar.
     With gobjProgress
-      '.AviFile = App.Path & "\videos\DB_Transfer.Avi"
       .AVI = dbSave
       .Caption = Application.Name
       .MainCaption = "Saving Changes"
@@ -682,16 +683,12 @@ TidyUpAndExit:
   OutputCurrentProcess vbNullString
   
   If Not gobjHRProEngine.ErrorLog Is Nothing Then
-    gobjHRProEngine.ErrorLog.OutputToFile (App.Path + "\OpenHRFramework.log")
+    gobjHRProEngine.ErrorLog.OutputToFile (gsLogDirectory + "\OpenHRFramework.log")
     If gobjHRProEngine.ErrorLog.ErrorCount > 0 Then
       gobjProgress.Visible = False
       gobjHRProEngine.ErrorLog.Show
       fOK = Not gobjHRProEngine.ErrorLog.IsCatastrophic
     End If
-'
-'    If ASRDEVELOPMENT And Not gobjHRProEngine.TuningLog Is Nothing Then
-'      gobjHRProEngine.TuningLog.OutputToFile (App.Path + "\HRProSystemFrameworkTuning.log")
-'    End If
     
   End If
   
@@ -775,6 +772,8 @@ TidyUpAndExit:
   
   'Re-enable all controls
   EnableOpenForms True
+
+  frmSysMgr.tmrKeepAlive.Enabled = True
 
   OutputCurrentProcess "End of save process"
   Exit Function

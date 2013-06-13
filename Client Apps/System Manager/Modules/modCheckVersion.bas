@@ -455,7 +455,7 @@ Private Function GetServerDLLVersion(sConnect As String) As String
   rsExists.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly
 
   If rsExists.Fields(0).value = 0 Then
-    RunScript App.Path & "\Update Scripts\Lock.sql", sConnect
+    RunScript gsApplicationPath & "\Update Scripts\Lock.sql", sConnect
   End If
 
   rsExists.Close
@@ -603,7 +603,7 @@ Private Function UpdateDatabase( _
 
   'MH20010903 We don't know how old the database is so make
   'sure that the lock stuff in in there before we start...
-  strScriptPath = App.Path & "\Update Scripts\"
+  strScriptPath = gsApplicationPath & "\Update Scripts\"
   strFileName = "Lock.sql"
   RunScript strScriptPath & strFileName, sConnect
   gobjProgress.UpdateProgress False
@@ -1323,7 +1323,7 @@ Public Function UploadHotfixes() As Boolean
  
   On Error GoTo ErrorTrap
 
-  strScriptPath = App.Path & "\Update Scripts\"
+  strScriptPath = gsApplicationPath & "\Update Scripts\"
   strFile = Dir(strScriptPath & "script*.sql")
   Do While strFile <> ""
 

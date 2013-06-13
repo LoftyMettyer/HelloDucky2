@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
+Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "actbar.ocx"
 Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Begin VB.Form frmDbMgr 
    Caption         =   "Table Manager"
@@ -127,12 +127,14 @@ Begin VB.Form frmDbMgr
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   2
             TextSave        =   ""
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
          BeginProperty Panel2 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   1
             Object.Width           =   9393
             TextSave        =   ""
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -3546,10 +3548,8 @@ Private Sub TableCopy()
   
   If fOK Then
   
-    '# RH 19/05/00 - Show a progress bar with copytable video whilst the
-    '                table is being copied.
+    ' Show a progress bar with copytable video whilst the table is being copied.
     With gobjProgress
-      '.AviFile = App.Path & "\videos\copytable.avi"
       .AVI = dbCopyTable
       .MainCaption = "Copy Table"
       .NumberOfBars = 0

@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TabCtl32.Ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Begin VB.Form frmSSIntranetSetup 
    BorderStyle     =   3  'Fixed Dialog
@@ -2026,7 +2026,7 @@ Private Sub RefreshControls()
 
   End Select
 
-  cmdOk.Enabled = mfChanged
+  cmdOK.Enabled = mfChanged
   cmdPreview.Enabled = (cboSecurityGroup.Text <> "(All Groups)")
 
 End Sub
@@ -6237,7 +6237,7 @@ Private Function GenerateUniqueName() As String
 
   Dim strFileName As String
 
-  strFileName = App.Path & "\" & Replace(gsUserName, " ", "") & "dat_PreviewSSIDash.htm"
+  strFileName = gsApplicationPath & "\" & Replace(gsUserName, " ", "") & "dat_PreviewSSIDash.htm"
   GenerateUniqueName = strFileName
 
 End Function

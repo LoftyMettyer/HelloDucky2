@@ -72,8 +72,7 @@ Public Sub LoadSkin( _
 End Sub
 
 Public Property Get CodeJockStylePath() As String
-'  CodeJockStylePath = App.Path + "\Styles\COA.cjstyles"
-  CodeJockStylePath = App.Path & "\" & App.EXEName & ".exe"
+  CodeJockStylePath = gsApplicationPath & "\" & App.EXEName & ".exe"
 End Property
 
 Public Property Get CodeJockStyleIni() As String

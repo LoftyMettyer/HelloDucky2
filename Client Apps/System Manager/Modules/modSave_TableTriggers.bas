@@ -911,7 +911,7 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
 
     '************  DEBUG CODE  *****************
     If GetSystemSetting("development", "debug triggers", "0") = 1 Then
-      Open App.Path & "\trigger_" & psTableName & "_insert.txt" For Append As #1
+      Open gsLogDirectory & "\trigger_" & psTableName & "_insert.txt" For Append As #1
       Print #1, sInsertTriggerSQL.ToString
       Close #1
     End If
@@ -1136,7 +1136,7 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
 
     '************  DEBUG CODE  *****************
     If GetSystemSetting("development", "debug triggers", "0") = 1 Then
-      Open App.Path & "\trigger_" & psTableName & "_update.txt" For Append As #1
+      Open gsLogDirectory & "\trigger_" & psTableName & "_update.txt" For Append As #1
       Print #1, sUpdateTriggerSQL.ToString
       Close #1
     End If
@@ -1413,7 +1413,7 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
     
     '************  DEBUG CODE  *****************
     If GetSystemSetting("development", "debug triggers", "0") = 1 Then
-      Open App.Path & "\trigger_" & psTableName & "_delete.txt" For Append As #1
+      Open gsLogDirectory & "\trigger_" & psTableName & "_delete.txt" For Append As #1
       Print #1, sDeleteTriggerSQL.ToString
       Close #1
     End If

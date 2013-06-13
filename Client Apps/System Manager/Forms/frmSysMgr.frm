@@ -1,7 +1,7 @@
 VERSION 5.00
-Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
+Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "actbar.ocx"
 Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
-Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~2.OCX"
+Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "Codejock.SkinFramework.v13.1.0.ocx"
 Begin VB.MDIForm frmSysMgr 
    AutoShowChildren=   0   'False
    BackColor       =   &H00F7EEE9&
@@ -17,10 +17,10 @@ Begin VB.MDIForm frmSysMgr
    NegotiateToolbars=   0   'False
    StartUpPosition =   2  'CenterScreen
    WindowState     =   2  'Maximized
-   Begin VB.Timer Timer1 
-      Interval        =   30000
-      Left            =   660
-      Top             =   3750
+   Begin VB.Timer tmrKeepAlive 
+      Interval        =   6000
+      Left            =   4440
+      Top             =   3960
    End
    Begin ComctlLib.StatusBar StatusBar1 
       Align           =   2  'Align Bottom
@@ -124,14 +124,14 @@ Private WithEvents frmViewMgr As SystemMgr.frmViewMgr
 Attribute frmViewMgr.VB_VarHelpID = -1
 
 ' Functions to display/tile the background image
-Private Declare Function BitBlt Lib "gdi32" (ByVal hDestDC As Long, ByVal x As Long, ByVal y As Long, ByVal nWidth As Long, ByVal nHeight As Long, ByVal hSrcDC As Long, ByVal xSrc As Long, ByVal ySrc As Long, ByVal dwRop As Long) As Long
+Private Declare Function BitBlt Lib "gdi32" (ByVal hDestDC As Long, ByVal X As Long, ByVal Y As Long, ByVal nWidth As Long, ByVal nHeight As Long, ByVal hSrcDC As Long, ByVal xSrc As Long, ByVal ySrc As Long, ByVal dwRop As Long) As Long
 Private Declare Function CreateCompatibleDC Lib "gdi32" (ByVal lDC As Long) As Long
 Private Declare Function DeleteDC Lib "gdi32" (ByVal lDC As Long) As Long
 Private Declare Function SelectObject Lib "gdi32" (ByVal lDC As Long, ByVal hObject As Long) As Long
 
 Public Sub SetBackground(ByRef mbIsLoading As Boolean)
 
-  Dim x, y, hMemDC, pHeight, pWidth As Long
+  Dim X, Y, hMemDC, pHeight, pWidth As Long
   Dim pic As StdPicture
   Dim lngPictureID As Long
   Dim sFileName As String
@@ -176,24 +176,24 @@ Public Sub SetBackground(ByRef mbIsLoading As Boolean)
 
       ' Tiled backdrop
       If glngDesktopBitmapLocation = giLOCATION_TILE Then
-        For x = 0 To Me.ScaleWidth Step pWidth
-          For y = 0 To Me.ScaleHeight Step pHeight
-            BitBlt picWork.hDC, x \ Screen.TwipsPerPixelX, y \ Screen.TwipsPerPixelX, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
+        For X = 0 To Me.ScaleWidth Step pWidth
+          For Y = 0 To Me.ScaleHeight Step pHeight
+            BitBlt picWork.hDC, X \ Screen.TwipsPerPixelX, Y \ Screen.TwipsPerPixelX, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
           Next
         Next
       End If
 
       ' Tiled down the lefthand side
       If glngDesktopBitmapLocation = giLOCATION_LEFTTILE Then
-        For y = 0 To Me.ScaleHeight Step pHeight
-          BitBlt picWork.hDC, 0, y \ Screen.TwipsPerPixelX, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
+        For Y = 0 To Me.ScaleHeight Step pHeight
+          BitBlt picWork.hDC, 0, Y \ Screen.TwipsPerPixelX, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
         Next
       End If
 
       ' Tiled down the righthand side
       If glngDesktopBitmapLocation = giLOCATION_RIGHTTILE Then
-        For y = 0 To Me.ScaleHeight Step pHeight
-          BitBlt picWork.hDC, (Me.ScaleWidth - pWidth) \ Screen.TwipsPerPixelX, y \ Screen.TwipsPerPixelX, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
+        For Y = 0 To Me.ScaleHeight Step pHeight
+          BitBlt picWork.hDC, (Me.ScaleWidth - pWidth) \ Screen.TwipsPerPixelX, Y \ Screen.TwipsPerPixelX, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
         Next
       End If
 
@@ -209,22 +209,22 @@ Public Sub SetBackground(ByRef mbIsLoading As Boolean)
 
       ' Centred on the backdrop
       If glngDesktopBitmapLocation = giLOCATION_CENTRE Then
-        x = (ScaleWidth - pWidth) \ 2: x = x \ Screen.TwipsPerPixelX
-        y = (ScaleHeight - pHeight) \ 2: y = y \ Screen.TwipsPerPixelY
-        BitBlt picWork.hDC, x, y, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
+        X = (ScaleWidth - pWidth) \ 2: X = X \ Screen.TwipsPerPixelX
+        Y = (ScaleHeight - pHeight) \ 2: Y = Y \ Screen.TwipsPerPixelY
+        BitBlt picWork.hDC, X, Y, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
       End If
 
       ' Tiled across the top
       If glngDesktopBitmapLocation = giLOCATION_TOPTILE Then
-        For x = 0 To Me.ScaleWidth Step pWidth
-          BitBlt picWork.hDC, x \ Screen.TwipsPerPixelX, 0, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
+        For X = 0 To Me.ScaleWidth Step pWidth
+          BitBlt picWork.hDC, X \ Screen.TwipsPerPixelX, 0, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
         Next
       End If
 
       'Tiled across the bottom
       If glngDesktopBitmapLocation = giLOCATION_BOTTOMTILE Then
-        For x = 0 To Me.ScaleWidth Step pWidth
-          BitBlt picWork.hDC, x \ Screen.TwipsPerPixelX, (Me.ScaleHeight - pHeight) \ Screen.TwipsPerPixelX, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
+        For X = 0 To Me.ScaleWidth Step pWidth
+          BitBlt picWork.hDC, X \ Screen.TwipsPerPixelX, (Me.ScaleHeight - pHeight) \ Screen.TwipsPerPixelX, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
         Next
       End If
 
@@ -293,6 +293,7 @@ Private Sub MDIForm_Activate()
   
   ' Set the new multi-size icons for taskbar, application, and alt-tab
   SetIcon Me.hWnd, "!ABS", True
+ 
   
 End Sub
 
@@ -350,7 +351,7 @@ PrinterErrorTrap:
 
 End Sub
 
-Private Sub MDIForm_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub MDIForm_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
 
   If ASRDEVELOPMENT And Button = 1 And Shift = 1 Then
     Application.Changed = True
@@ -2335,7 +2336,7 @@ Private Sub ToolClick_DBMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       Dim plngHelp As Long
       
       If Not ShowAirHelp(0) Then
-        plngHelp = ShellExecute(0&, vbNullString, App.Path & "\" & App.HelpFile, vbNullString, vbNullString, vbNormalNoFocus)
+        plngHelp = ShellExecute(0&, vbNullString, gsApplicationPath & "\" & App.HelpFile, vbNullString, vbNullString, vbNormalNoFocus)
         If plngHelp = 0 Then
           MsgBox "Error whilst attempting to display help file." & vbCrLf & vbCrLf & "Please use windows explorer to find and view the file " & App.HelpFile & ".", vbExclamation + vbOKOnly, App.EXEName
         End If
@@ -2352,7 +2353,7 @@ Private Sub ToolClick_DBMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_VersionInfo"
       Screen.MousePointer = vbHourglass
       
-      strVersionFilename = App.Path & "\OpenHR System Manager Version Information.htm"
+      strVersionFilename = gsApplicationPath & "\OpenHR System Manager Version Information.htm"
       
       If Len(strVersionFilename) > 0 Then
         plngHelp = ShellExecute(0&, vbNullString, strVersionFilename, vbNullString, vbNullString, vbNormalNoFocus)
@@ -2667,20 +2668,13 @@ Private Sub ToolClick_PictMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       '' To be done.
     
       Dim plngHelp As Long
-      'TM20011005 Fault 2916
       'Call the App.HelpFile function to get the helpfile for current app. e.g.(SYS)
-'      plngHelp = ShellExecute(0&, vbNullString, App.Path & "\HRProHelp.chm", vbNullString, vbNullString, vbNormalNoFocus)
-      plngHelp = ShellExecute(0&, vbNullString, App.Path & "\" & App.HelpFile, vbNullString, vbNullString, vbNormalNoFocus)
+      plngHelp = ShellExecute(0&, vbNullString, gsApplicationPath & "\" & App.HelpFile, vbNullString, vbNullString, vbNormalNoFocus)
 
       If plngHelp = 0 Then
         MsgBox "Error whilst attempting to display help file." & vbCrLf & vbCrLf & "Please use windows explorer to view the file 'HRProHelp.chm'.", vbExclamation + vbOKOnly, "System Manager"
       End If
-    
-      ' DOESNT SEEM TO WORK !
-      'CommonDialog1.HelpFile = "HRProHelp.chm"
-      'CommonDialog1.HelpCommand = cdlHelpContents
-      'CommonDialog1.ShowHelp
-      
+         
     Case "ID_ViewCurrentUsers"
       'MH20010524 Will be required for read-only access...
       frmViewCurrentUsers.Saving = False
@@ -2692,7 +2686,7 @@ Private Sub ToolClick_PictMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_VersionInfo"
       Screen.MousePointer = vbHourglass
       
-      strVersionFilename = App.Path & "\OpenHR System Manager Version Information.htm"
+      strVersionFilename = gsApplicationPath & "\OpenHR System Manager Version Information.htm"
       
       If Len(strVersionFilename) > 0 Then
         plngHelp = ShellExecute(0&, vbNullString, strVersionFilename, vbNullString, vbNullString, vbNormalNoFocus)
@@ -2978,20 +2972,14 @@ Private Sub ToolClick_ScrMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       '' To be done.
     
       Dim plngHelp As Long
-      'TM20011005 Fault 2916
       'Call the App.HelpFile function to get the helpfile for current app. e.g.(SYS)
-'      plngHelp = ShellExecute(0&, vbNullString, App.Path & "\HRProHelp.chm", vbNullString, vbNullString, vbNormalNoFocus)
-      plngHelp = ShellExecute(0&, vbNullString, App.Path & "\" & App.HelpFile, vbNullString, vbNullString, vbNormalNoFocus)
+      plngHelp = ShellExecute(0&, vbNullString, gsApplicationPath & "\" & App.HelpFile, vbNullString, vbNullString, vbNormalNoFocus)
 
       If plngHelp = 0 Then
         MsgBox "Error whilst attempting to display help file." & vbCrLf & vbCrLf & "Please use windows explorer to view the file 'HRProHelp.chm'.", vbExclamation + vbOKOnly, "System Manager"
       End If
     
-      ' DOESNT SEEM TO WORK !
-      'CommonDialog1.HelpFile = "HRProHelp.chm"
-      'CommonDialog1.HelpCommand = cdlHelpContents
-      'CommonDialog1.ShowHelp
-      
+     
     Case "ID_ViewCurrentUsers"
       'MH20010524 Will be required for read-only access...
       frmViewCurrentUsers.Saving = False
@@ -3003,7 +2991,7 @@ Private Sub ToolClick_ScrMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_VersionInfo"
       Screen.MousePointer = vbHourglass
       
-      strVersionFilename = App.Path & "\OpenHR System Manager Version Information.htm"
+      strVersionFilename = gsApplicationPath & "\OpenHR System Manager Version Information.htm"
       
       If Len(strVersionFilename) > 0 Then
         plngHelp = ShellExecute(0&, vbNullString, strVersionFilename, vbNullString, vbNullString, vbNormalNoFocus)
@@ -3287,19 +3275,12 @@ Private Sub ToolClick_WorkflowMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       '' To be done.
 
       Dim plngHelp As Long
-      'TM20011005 Fault 2916
       'Call the App.HelpFile function to get the helpfile for current app. e.g.(SYS)
-'      plngHelp = ShellExecute(0&, vbNullString, App.Path & "\HRProHelp.chm", vbNullString, vbNullString, vbNormalNoFocus)
-      plngHelp = ShellExecute(0&, vbNullString, App.Path & "\" & App.HelpFile, vbNullString, vbNullString, vbNormalNoFocus)
+      plngHelp = ShellExecute(0&, vbNullString, gsApplicationPath & "\" & App.HelpFile, vbNullString, vbNullString, vbNormalNoFocus)
 
       If plngHelp = 0 Then
         MsgBox "Error whilst attempting to display help file." & vbCrLf & vbCrLf & "Please use windows explorer to view the file 'HRProHelp.chm'.", vbExclamation + vbOKOnly, "System Manager"
       End If
-
-      ' DOESNT SEEM TO WORK !
-      'CommonDialog1.HelpFile = "HRProHelp.chm"
-      'CommonDialog1.HelpCommand = cdlHelpContents
-      'CommonDialog1.ShowHelp
 
     Case "ID_ViewCurrentUsers"
       'MH20010524 Will be required for read-only access...
@@ -3312,7 +3293,7 @@ Private Sub ToolClick_WorkflowMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_VersionInfo"
       Screen.MousePointer = vbHourglass
 
-      strVersionFilename = App.Path & "\OpenHR System Manager Version Information.htm"
+      strVersionFilename = gsApplicationPath & "\OpenHR System Manager Version Information.htm"
 
       If Len(strVersionFilename) > 0 Then
         plngHelp = ShellExecute(0&, vbNullString, strVersionFilename, vbNullString, vbNullString, vbNormalNoFocus)
@@ -3625,20 +3606,13 @@ Private Sub ToolClick_ViewMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       '' To be done.
     
       Dim plngHelp As Long
-      'TM20011005 Fault 2916
       'Call the App.HelpFile function to get the helpfile for current app. e.g.(SYS)
-'      plngHelp = ShellExecute(0&, vbNullString, App.Path & "\HRProHelp.chm", vbNullString, vbNullString, vbNormalNoFocus)
-      plngHelp = ShellExecute(0&, vbNullString, App.Path & "\" & App.HelpFile, vbNullString, vbNullString, vbNormalNoFocus)
+      plngHelp = ShellExecute(0&, vbNullString, gsApplicationPath & "\" & App.HelpFile, vbNullString, vbNullString, vbNormalNoFocus)
 
       If plngHelp = 0 Then
         MsgBox "Error whilst attempting to display help file." & vbCrLf & vbCrLf & "Please use windows explorer to view the file 'HRProHelp.chm'.", vbExclamation + vbOKOnly, Application.Name
       End If
-    
-      ' DOESNT SEEM TO WORK !
-      'CommonDialog1.HelpFile = "HRProHelp.chm"
-      'CommonDialog1.HelpCommand = cdlHelpContents
-      'CommonDialog1.ShowHelp
-    
+       
     Case "ID_ViewCurrentUsers"
       'MH20010524 Will be required for read-only access...
       frmViewCurrentUsers.Saving = False
@@ -3650,7 +3624,7 @@ Private Sub ToolClick_ViewMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_VersionInfo"
       Screen.MousePointer = vbHourglass
       
-      strVersionFilename = App.Path & "\OpenHR System Manager Version Information.htm"
+      strVersionFilename = gsApplicationPath & "\OpenHR System Manager Version Information.htm"
       
       If Len(strVersionFilename) > 0 Then
         plngHelp = ShellExecute(0&, vbNullString, strVersionFilename, vbNullString, vbNullString, vbNormalNoFocus)
@@ -3902,7 +3876,7 @@ Private Sub ToolClick_SysMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       Dim plngHelp As Long
       
       If Not ShowAirHelp(0) Then
-        plngHelp = ShellExecute(0&, vbNullString, App.Path & "\" & App.HelpFile, vbNullString, vbNullString, vbNormalNoFocus)
+        plngHelp = ShellExecute(0&, vbNullString, gsApplicationPath & "\" & App.HelpFile, vbNullString, vbNullString, vbNormalNoFocus)
         If plngHelp = 0 Then
           MsgBox "Error whilst attempting to display help file." & vbCrLf & vbCrLf & "Please use windows explorer to find and view the file " & App.HelpFile & ".", vbExclamation + vbOKOnly, App.EXEName
         End If
@@ -3911,7 +3885,7 @@ Private Sub ToolClick_SysMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_VersionInfo"
       Screen.MousePointer = vbHourglass
       
-      strVersionFilename = App.Path & "\OpenHR System Manager Version Information.htm"
+      strVersionFilename = gsApplicationPath & "\OpenHR System Manager Version Information.htm"
       
       If Len(strVersionFilename) > 0 Then
         plngHelp = ShellExecute(0&, vbNullString, strVersionFilename, vbNullString, vbNullString, vbNormalNoFocus)
@@ -3936,7 +3910,7 @@ Private Sub ToolClick_SysMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_VersionInfo"
       Screen.MousePointer = vbHourglass
       
-      strVersionFilename = App.Path & "\OpenHR System Manager Version Information.htm"
+      strVersionFilename = gsApplicationPath & "\OpenHR System Manager Version Information.htm"
       
       If Len(strVersionFilename) > 0 Then
         plngHelp = ShellExecute(0&, vbNullString, strVersionFilename, vbNullString, vbNullString, vbNormalNoFocus)
@@ -4310,25 +4284,17 @@ Private Sub ToolClick_ScrDesigner(ByVal pTool As ActiveBarLibraryCtl.Tool)
       '' To be done.
     
       Dim plngHelp As Long
-      'TM20011005 Fault 2916
       'Call the App.HelpFile function to get the helpfile for current app. e.g.(SYS)
-'      plngHelp = ShellExecute(0&, vbNullString, App.Path & "\HRProHelp.chm", vbNullString, vbNullString, vbNormalNoFocus)
-      plngHelp = ShellExecute(0&, vbNullString, App.Path & "\" & App.HelpFile, vbNullString, vbNullString, vbNormalNoFocus)
+      plngHelp = ShellExecute(0&, vbNullString, gsApplicationPath & "\" & App.HelpFile, vbNullString, vbNullString, vbNormalNoFocus)
 
       If plngHelp = 0 Then
         MsgBox "Error whilst attempting to display help file." & vbCrLf & vbCrLf & "Please use windows explorer to view the file 'HRProHelp.chm'.", vbExclamation + vbOKOnly, Application.Name
       End If
-    
-      ' DOESNT SEEM TO WORK !
-      'CommonDialog1.HelpFile = "HRProHelp.chm"
-      'CommonDialog1.HelpCommand = cdlHelpContents
-      'CommonDialog1.ShowHelp
-      
-      
+          
     Case "ID_VersionInfo"
       Screen.MousePointer = vbHourglass
       
-      strVersionFilename = App.Path & "\OpenHR System Manager Version Information.htm"
+      strVersionFilename = gsApplicationPath & "\OpenHR System Manager Version Information.htm"
       
       If Len(strVersionFilename) > 0 Then
         plngHelp = ShellExecute(0&, vbNullString, strVersionFilename, vbNullString, vbNullString, vbNormalNoFocus)
@@ -4722,25 +4688,18 @@ Private Sub ToolClick_WebFormDesigner(ByVal pTool As ActiveBarLibraryCtl.Tool)
       '' To be done.
     
       Dim plngHelp As Long
-      'TM20011005 Fault 2916
       'Call the App.HelpFile function to get the helpfile for current app. e.g.(SYS)
-'      plngHelp = ShellExecute(0&, vbNullString, App.Path & "\HRProHelp.chm", vbNullString, vbNullString, vbNormalNoFocus)
-      plngHelp = ShellExecute(0&, vbNullString, App.Path & "\" & App.HelpFile, vbNullString, vbNullString, vbNormalNoFocus)
+      plngHelp = ShellExecute(0&, vbNullString, gsApplicationPath & "\" & App.HelpFile, vbNullString, vbNullString, vbNormalNoFocus)
 
       If plngHelp = 0 Then
         MsgBox "Error whilst attempting to display help file." & vbCrLf & vbCrLf & "Please use windows explorer to view the file 'HRProHelp.chm'.", vbExclamation + vbOKOnly, Application.Name
       End If
-    
-      ' DOESNT SEEM TO WORK !
-      'CommonDialog1.HelpFile = "HRProHelp.chm"
-      'CommonDialog1.HelpCommand = cdlHelpContents
-      'CommonDialog1.ShowHelp
-      
+     
       
     Case "ID_VersionInfo"
       Screen.MousePointer = vbHourglass
       
-      strVersionFilename = App.Path & "\OpenHR System Manager Version Information.htm"
+      strVersionFilename = gsApplicationPath & "\OpenHR System Manager Version Information.htm"
       
       If Len(strVersionFilename) > 0 Then
         plngHelp = ShellExecute(0&, vbNullString, strVersionFilename, vbNullString, vbNullString, vbNormalNoFocus)
@@ -5001,3 +4960,45 @@ Private Function CheckForDisabledMenuItems()
   Next
 
 End Function
+
+' A dummy procedure to keep the connection alive every 10 seconds
+Private Sub tmrKeepAlive_Timer()
+ 
+  On Error GoTo NetworkDown:
+ 
+  Dim sSQL As String
+  Dim sMessage As String
+  Dim rsMessages As New ADODB.Recordset
+  
+  sMessage = ""
+      
+  sSQL = "exec sp_ASRGetMessages"
+  rsMessages.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly
+  
+  Do While Not rsMessages.EOF
+    If Len(sMessage) > 0 Then
+      sMessage = sMessage & vbCrLf & vbCrLf & vbCrLf
+    End If
+    
+    sMessage = sMessage & rsMessages.Fields(0).value
+    rsMessages.MoveNext
+  Loop
+    
+  rsMessages.Close
+  Set rsMessages = Nothing
+
+  If Len(sMessage) > 0 Then
+    MsgBox sMessage, vbInformation + vbOKOnly, App.ProductName
+  End If
+
+  Set rsMessages = Nothing
+  
+  Exit Sub
+
+NetworkDown:
+
+  If Err.Description = "Connection failure" Or InStr(1, Err.Description, "General network error") Then
+    AttemptReLogin
+  End If
+
+End Sub

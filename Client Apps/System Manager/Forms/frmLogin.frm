@@ -398,14 +398,6 @@ Private Sub Form_Load()
   
   gblnAutomaticLogon = False
   
-  
-  ' Display the animated logo.
-  'sAnimationPath = App.Path & "\videos\asr.avi"
-
-  'On Error GoTo ErrorNoAnimation
-  'aniLogo.Open sAnimationPath
-  'On Error GoTo ErrorTrap
-
   ' Check that the SQL Server driver is installed.
   If Not CheckSQLDriver Then
     MsgBox "The required ODBC Driver '" & ODBCDRIVER & "' is not installed." & vbNewLine & _
@@ -520,6 +512,13 @@ Public Sub Login()
   
   Screen.MousePointer = vbHourglass
   
+  ' Get temporary file path - need to remove \ to make consistent with App.Path function
+  gsLogDirectory = Space(1024)
+  Call GetTempPath(1024, gsLogDirectory)
+  gsLogDirectory = Mid(gsLogDirectory, 1, Len(Trim(gsLogDirectory)) - 2)
+  
+  gsApplicationPath = App.Path
+
   glngSQLVersion = 0
   gbUseWindowsAuthentication = chkUseWindowsAuthentication.value
   gsDatabaseName = Replace(txtDatabase.Text, ";", "")
@@ -1399,7 +1398,6 @@ Public Sub CheckCommandLine()
     Next
 
     If blnPassword Then
-      'gobjProgress.AviFile = App.Path & "\videos\about.avi"
       gobjProgress.AVI = dbLogin
       gobjProgress.MainCaption = "Login"
       gobjProgress.NumberOfBars = 0
@@ -1558,7 +1556,7 @@ Public Function CreateLoginErrFile(sMsg As String) As String
   Dim lngCount As Long
   On Local Error Resume Next
 
-  Open App.Path & "\LoginErr.txt" For Output As #lngFileNum
+  Open gsLogDirectory & "\LoginErr.txt" For Output As #lngFileNum
   Print #lngFileNum, "Server    : " & txtServer.Text
   Print #lngFileNum, "Database  : " & txtDatabase.Text
   Print #lngFileNum, "Username  : " & txtUID.Text

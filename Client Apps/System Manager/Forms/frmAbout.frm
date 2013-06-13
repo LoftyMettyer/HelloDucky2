@@ -266,14 +266,6 @@ Private Sub Form_Load()
   Dim sSQL As String
   Dim sngMaxX As Single
   
-  'Start animation
-  'sAnimationPath = App.Path & "\videos\about.avi"
-  'On Error GoTo ErrorNoAnimation
-  'aniLogo.Open sAnimationPath
-  'On Error GoTo ErrorTrap
-  
-  ' Initialize the screen labels.
-  ' lblTitle.Caption = Application.Name & " - v" & App.Major & "." & App.Minor & "." & App.Revision
   lblTitle.Caption = "Version : " & App.Major & "." & App.Minor & "." & App.Revision
   lblDatabase.Caption = "Database : " & gsDatabaseName
   lblUser.Caption = "Current User : " & Trim(gsUserName)
@@ -287,12 +279,6 @@ Private Sub Form_Load()
   sngMaxX = IIf(lblSecurity.Left + lblSecurity.Width > sngMaxX, lblSecurity.Left + lblSecurity.Width, sngMaxX)
   sngMaxX = IIf(lblSql.Left + lblSql.Width > sngMaxX, lblSql.Left + lblSql.Width, sngMaxX)
   sngMaxX = IIf(lblCopyRight.Left + lblCopyRight.Width > sngMaxX, lblCopyRight.Left + lblCopyRight.Width, sngMaxX)
-  
-'  cmdOK.Left = sngMaxX + 250
-'  cmdSysInfo.Left = cmdOK.Left
-'  cmdTech.Left = cmdOK.Left
-
-  'Me.Width = cmdOK.Left + cmdOK.Width + 200
 
 TidyUpAndExit:
   Exit Sub

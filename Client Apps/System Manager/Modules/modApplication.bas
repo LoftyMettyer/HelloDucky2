@@ -2148,3 +2148,44 @@ Public Sub EditMobileDesigner()
 ErrorTrap:
   MsgBox "An error occurred while showing the mobile designer." & vbCrLf & "(" & Err.Number & " - " & Err.Description & ")", vbExclamation + vbOKOnly, Application.Name
 End Sub
+
+Public Sub AttemptReLogin()
+
+  On Error GoTo StillBroken:
+
+  Dim iAnswer As Integer
+ 
+  iAnswer = MsgBox("Your network connectivity has been lost." & vbCrLf & vbCrLf _
+    & "Would you like to attempt to automatically relogin? " & vbCrLf & vbCrLf _
+    & "If this happens on a regular basis please contact your system administrator it is unlikely that there are some underlying network issues." & vbCrLf _
+  , vbCritical + vbYesNo, App.Title)
+
+  Screen.MousePointer = vbHourglass
+
+  If iAnswer = 6 Then
+    gADOCon.Close
+    gADOCon.Open
+  Else
+    GoTo Quit
+  End If
+    
+  Screen.MousePointer = vbDefault
+  Exit Sub
+
+StillBroken:
+
+  iAnswer = MsgBox("Your network connectivity cannot be established." & vbCrLf & vbCrLf _
+    & "You will need to relogin into application to continue." & vbCrLf & vbCrLf _
+    & "Changes have not been saved." _
+  , vbCritical, App.Title)
+
+Quit:
+
+  Set gADOCon = Nothing
+  Application.LoggedIn = False
+  Application.Changed = False
+  UnLoad frmSysMgr
+
+End Sub
+
+

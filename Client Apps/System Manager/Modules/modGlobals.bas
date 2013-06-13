@@ -180,3 +180,8 @@ Public gfWorkflowModule As Boolean
 Public gfVersion1Module As Boolean
 Public gfMobileModule As Boolean
 
+' Directory paths
+Public gsLogDirectory As String
+Public gsApplicationPath As String
+
+
