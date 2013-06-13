@@ -1577,7 +1577,7 @@ Private Function GetRecordProfileTables() As Boolean
       mobjDefinition.Add !TableID, _
         !TableName, _
         IIf(IsNull(!RecordDescExprID), 0, !RecordDescExprID), _
-        lngFilterID, _
+        !FilterID, _
         0, _
         lngTempOrderID, _
         !MaxRecords, _
