@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{96E404DC-B217-4A2D-A891-C73A92A628CC}#1.0#0"; "coa_workingpattern.ocx"
+Object = "{96E404DC-B217-4A2D-A891-C73A92A628CC}#1.0#0"; "COA_WorkingPattern.ocx"
 Begin VB.Form frmAbsenceCalendar 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Absence Calendar "
@@ -932,7 +932,7 @@ Public Function AbsCal_IsDayABankHoliday(intIndex As Integer) As Boolean
   
 AbsCal_IsDayABankHolidayERROR:
   
-  COAMsgBox "Error whilst checking for bank holidays." & vbCrLf & Err.Description, vbExclamation + vbOKOnly, App.Title
+  COAMsgBox "Error whilst checking for bank holidays." & vbCrLf & Err.Description, vbExclamation + vbOKOnly, app.Title
   AbsCal_IsDayABankHoliday = False
   Set rstBankHolRegion = Nothing
 
@@ -1640,7 +1640,7 @@ Private Function GetAbsenceRecordSet() As Boolean
   
 GetAbsenceRecordSet_ERROR:
   
-  COAMsgBox "Error retrieving the Absence recordset." & vbCrLf & Err.Description, vbExclamation + vbOKOnly, App.Title
+  COAMsgBox "Error retrieving the Absence recordset." & vbCrLf & Err.Description, vbExclamation + vbOKOnly, app.Title
   Set mrstAbsenceRecords = Nothing
   GetAbsenceRecordSet = False
 
@@ -1840,7 +1840,7 @@ Public Sub Initialise()
     
   If mrstAbsenceRecords.BOF And mrstAbsenceRecords.EOF Then
     If COAMsgBox("The current employee does not have any absence records." & vbCrLf & vbCrLf & _
-              "Are you sure you want to view the absence calendar ?", vbYesNo + vbQuestion, App.Title) = vbNo Then
+              "Are you sure you want to view the absence calendar ?", vbYesNo + vbQuestion, app.Title) = vbNo Then
                 Screen.MousePointer = vbDefault
                 Exit Sub
     End If
@@ -2328,13 +2328,11 @@ Private Sub cmdPrint_Click()
     Printer.EndDoc
     
     ' Display a printing complete prompt
-    oPrinter.PrintConfirm "Absence Calendar", App.ProductName
+    oPrinter.PrintConfirm "Absence Calendar", app.ProductName
     
     Dim objDefPrinter As cSetDfltPrinter
     Set objDefPrinter = New cSetDfltPrinter
-    Do
-      objDefPrinter.SetPrinterAsDefault gstrDefaultPrinterName
-    Loop While Printer.DeviceName <> gstrDefaultPrinterName
+    objDefPrinter.SetPrinterAsDefault gstrDefaultPrinterName
     Set objDefPrinter = Nothing
 
   End If
@@ -3015,7 +3013,7 @@ Private Function GetPersonnelRecordSet() As Boolean
 PersonnelERROR:
   Set prstPersonnelData = Nothing
   GetPersonnelRecordSet = False
-  COAMsgBox "Error whilst retrieving the personnel information." & vbCrLf & Err.Description, vbExclamation + vbOKOnly, App.Title
+  COAMsgBox "Error whilst retrieving the personnel information." & vbCrLf & Err.Description, vbExclamation + vbOKOnly, app.Title
   Exit Function
 
 End Function
