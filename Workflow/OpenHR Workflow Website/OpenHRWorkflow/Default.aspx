@@ -68,6 +68,7 @@
 
       //Set the current page tab to page 1
       iCurrentTab = 1;
+      SetCurrentTab(iCurrentTab);
           
 			try {
 				iDefHeight = $get("frmMain").hdnFormHeight.value;
@@ -232,9 +233,9 @@
 			}
 		}
 
-		function goSubmit() {
+		function goSubmit() { 
 				
-		if($get("txtPostbackMode").value=="3") {
+		if($get("txtPostbackMode").value=="3") {      
 		  try {
 		    if($get("txtActiveDDE").value.indexOf("dde")>0) {
 		      //keep the lookup open.
@@ -341,7 +342,7 @@
 				$get("imgErrorMessages_Max").style.display = "none";
 				$get("imgErrorMessages_Max").style.visibility = "hidden";
 			}
-
+           
 
 			// Removed all transitions in the following block as they're IE only
 
@@ -627,14 +628,17 @@
 			catch (e) { }
 		}
 
-		function showMessage() {				
+		function showMessage() {			 
+    
+    //Reset current tab position
+    SetCurrentTab(iCurrentTab);	
 		
 		$get("pleasewaitScreen").style.visibility="hidden";
 		
 		//Reapply resizable column functionality to tables
 		//This is put here to ensure functionality is reapplied after partial/full postback.
-		ResizableColumns();
-		
+		ResizableColumns();		
+
     if($get("txtActiveDDE").value.indexOf("dde")>0) {
       try {  
         $find($get("txtActiveDDE").value).show();        

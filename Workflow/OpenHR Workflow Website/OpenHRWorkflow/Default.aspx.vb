@@ -684,7 +684,7 @@ Public Class _Default
                 ctlForm_PageTab(iCurrentPageTab).Style.Add("position", "absolute")
 
                 ' Hide this tab if it isn't the first.
-                If iCurrentPageTab > 1 Then ctlForm_PageTab(iCurrentPageTab).Style.Add("display", "none")
+                If iCurrentPageTab > 0 Then ctlForm_PageTab(iCurrentPageTab).Style.Add("display", "none")
 
                 ' Add this tab to the web form
                 pnlInputDiv.Controls.Add(ctlForm_PageTab(iCurrentPageTab))
