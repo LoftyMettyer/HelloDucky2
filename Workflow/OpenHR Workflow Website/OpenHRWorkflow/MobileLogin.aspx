@@ -53,7 +53,7 @@
     </script>
 
     </head>
-    <body onload="return window_onload()" class="desktop">
+    <body onload="return window_onload()">
         <form id="frmLogin" runat="server" defaultbutton="btnLogin">
 
             <div id="pnlPage" runat="server" style="overflow: hidden;">
