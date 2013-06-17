@@ -20,11 +20,13 @@
     <script src="Scripts/resizable-table.js" type="text/javascript"></script>
     <script src="scripts/WebNumericEditValidation.js" type="text/javascript"></script>--%>
 
-    <ajx:ToolkitScriptManager ID="ToolkitScriptManager1" runat="server" 
+    <ajx:ToolkitScriptManager ID="tsm" runat="server" 
         EnablePartialRendering="true" EnablePageMethods="true" CombineScripts="True" 
         LoadScriptsBeforeUI="False">
         <CompositeScript>
             <Scripts>
+                <asp:ScriptReference Name="MicrosoftAjax.js" />  
+                <asp:ScriptReference Name="MicrosoftAjaxWebForms.js" />  
                 <asp:ScriptReference Path="~/Scripts/default.js" />
                 <asp:ScriptReference Path="~/Scripts/resizable-table.js" />
                 <asp:ScriptReference Path="~/Scripts/WebNumericEditValidation.js" />
