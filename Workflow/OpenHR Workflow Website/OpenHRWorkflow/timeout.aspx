@@ -4,7 +4,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head runat="server">
-	<title>HR Pro Workflow</title>
+	<title>Open HR Workflow</title>
 
 	<SCRIPT FOR="window" EVENT="onload" LANGUAGE="JavaScript">
 	<!--

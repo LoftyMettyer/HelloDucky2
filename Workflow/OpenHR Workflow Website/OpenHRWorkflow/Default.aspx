@@ -1329,7 +1329,7 @@ function ResizeComboForForm(sender, args) {
     File Upload Popup
     -->
 	<div id="divFileUpload" style="position: absolute; left: 0px; top: 15%; width: 100%;
-		filter: revealTrans(duration=0.5, transition=12); display: none; z-index: 3; visibility: hidden;
+		display: none; z-index: 3; visibility: hidden;
 		text-align: center;" nowrap="nowrap" onfilterchange="return unblockFileUploadDIV();">
 		<iframe id="ifrmFileUpload" src="" frameborder="0" scrolling="no"></iframe>
 	</div>

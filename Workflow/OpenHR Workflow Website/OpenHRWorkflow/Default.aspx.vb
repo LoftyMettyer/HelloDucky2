@@ -199,7 +199,7 @@ Public Class _Default
     Dim iPageTabCount As Integer
     Dim iCurrentPageTab As Integer
 
-    Const sDEFAULTTITLE As String = "HR Pro Workflow"
+    Const sDEFAULTTITLE As String = "Open HR Workflow"
     Const IMAGEBORDERWIDTH As Integer = 2
 
     sAssemblyName = ""
@@ -378,7 +378,7 @@ Public Class _Default
 
     If sMessage.Length = 0 Then
       Try ' conn creation 
-        strConn = "Application Name=HR Pro Workflow;Data Source=" & msServer & ";Initial Catalog=" & msDatabase & ";Integrated Security=false;User ID=" & msUser & ";Password=" & msPwd & ";Pooling=false"
+        strConn = "Application Name=OpenHR Workflow;Data Source=" & msServer & ";Initial Catalog=" & msDatabase & ";Integrated Security=false;User ID=" & msUser & ";Password=" & msPwd & ";Pooling=false"
         conn = New SqlClient.SqlConnection(strConn)
         conn.Open()
         Try
@@ -3946,7 +3946,7 @@ Public Class _Default
 
     If sMessage.Length = 0 Then
       Try ' Open the database connection
-        strConn = "Application Name=HR Pro Workflow;Data Source=" & msServer & ";Initial Catalog=" & msDatabase & ";Integrated Security=false;User ID=" & msUser & ";Password=" & msPwd & ";Pooling=false"
+        strConn = "Application Name=OpenHR Workflow;Data Source=" & msServer & ";Initial Catalog=" & msDatabase & ";Integrated Security=false;User ID=" & msUser & ";Password=" & msPwd & ";Pooling=false"
         conn = New SqlClient.SqlConnection(strConn)
         conn.Open()
 
@@ -4402,7 +4402,7 @@ Public Class _Default
             sImageFileName = ""
             sImageFilePath = Server.MapPath("pictures")
 
-            strConn = "Application Name=HR Pro Workflow;Data Source=" & msServer & ";Initial Catalog=" & msDatabase & ";Integrated Security=false;User ID=" & msUser & ";Password=" & msPwd & ";Pooling=false"
+      strConn = "Application Name=OpenHR Workflow;Data Source=" & msServer & ";Initial Catalog=" & msDatabase & ";Integrated Security=false;User ID=" & msUser & ";Password=" & msPwd & ";Pooling=false"
             conn = New SqlClient.SqlConnection(strConn)
             conn.Open()
 

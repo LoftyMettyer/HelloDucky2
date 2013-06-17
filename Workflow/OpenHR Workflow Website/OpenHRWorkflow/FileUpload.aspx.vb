@@ -27,7 +27,7 @@ Partial Class FileUpload
 			psFileName = ""
 		End If
 
-		strConn = "Application Name=HR Pro Workflow;Data Source=" & Session("Server") & ";Initial Catalog=" & Session("Database") & ";Integrated Security=false;User ID=" & Session("User") & ";Password=" & Session("Pwd") & ";Pooling=false"
+    strConn = "Application Name=OpenHR Workflow;Data Source=" & Session("Server") & ";Initial Catalog=" & Session("Database") & ";Integrated Security=false;User ID=" & Session("User") & ";Password=" & Session("Pwd") & ";Pooling=false"
 		conn = New SqlClient.SqlConnection(strConn)
 		conn.Open()
 
@@ -165,7 +165,7 @@ Partial Class FileUpload
                 hdnElementID.Value = sQueryString
                 iElementItemID = CInt(sQueryString)
 
-                strConn = "Application Name=HR Pro Workflow;Data Source=" & Session("Server") & ";Initial Catalog=" & Session("Database") & ";Integrated Security=false;User ID=" & Session("User") & ";Password=" & Session("Pwd") & ";Pooling=false"
+        strConn = "Application Name=OpenHR Workflow;Data Source=" & Session("Server") & ";Initial Catalog=" & Session("Database") & ";Integrated Security=false;User ID=" & Session("User") & ";Password=" & Session("Pwd") & ";Pooling=false"
                 conn = New SqlClient.SqlConnection(strConn)
                 conn.Open()
 

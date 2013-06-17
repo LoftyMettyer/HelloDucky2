@@ -28,13 +28,7 @@
         "Entry"
         {
         "MsmKey" = "8:_3CB369EE115A1710D3124F82DA1C66CD"
-        "OwnerKey" = "8:_C4B9B7499FAC4AF2AD4F00E54AD0FEF4"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_3CB369EE115A1710D3124F82DA1C66CD"
-        "OwnerKey" = "8:_BB46B0D9106E46D2B2E498CEA684ED2E"
+        "OwnerKey" = "8:_9636CC3F6B56446696C137D846D4AA2E"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -46,7 +40,13 @@
         "Entry"
         {
         "MsmKey" = "8:_3CB369EE115A1710D3124F82DA1C66CD"
-        "OwnerKey" = "8:_9636CC3F6B56446696C137D846D4AA2E"
+        "OwnerKey" = "8:_BB46B0D9106E46D2B2E498CEA684ED2E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_3CB369EE115A1710D3124F82DA1C66CD"
+        "OwnerKey" = "8:_C4B9B7499FAC4AF2AD4F00E54AD0FEF4"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -118,37 +118,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_C4B9B7499FAC4AF2AD4F00E54AD0FEF4"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_BB46B0D9106E46D2B2E498CEA684ED2E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_9BFDBD7E93CF4A289AC3424D1E2149CA"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_9636CC3F6B56446696C137D846D4AA2E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_297C5491D46765973D54EC1F53B8659D"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_7D5126426707D3FCF0F4A8996E13F6EF"
+        "OwnerKey" = "8:_3CB369EE115A1710D3124F82DA1C66CD"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -160,7 +130,37 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_3CB369EE115A1710D3124F82DA1C66CD"
+        "OwnerKey" = "8:_7D5126426707D3FCF0F4A8996E13F6EF"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_297C5491D46765973D54EC1F53B8659D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_9636CC3F6B56446696C137D846D4AA2E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_9BFDBD7E93CF4A289AC3424D1E2149CA"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_BB46B0D9106E46D2B2E498CEA684ED2E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_C4B9B7499FAC4AF2AD4F00E54AD0FEF4"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -284,11 +284,6 @@
             "AssemblyAsmDisplayName" = "8:Infragistics35.WebUI.UltraWebGrid.v9.1, Version=9.1.20091.2040, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_297C5491D46765973D54EC1F53B8659D"
-                    {
-                    "Name" = "8:Infragistics35.WebUI.UltraWebGrid.v9.1.DLL"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:Infragistics35.WebUI.UltraWebGrid.v9.1.DLL"
             "TargetName" = "8:"
@@ -315,11 +310,6 @@
             "AssemblyAsmDisplayName" = "8:Infragistics35.WebUI.Shared.v9.1, Version=9.1.20091.2040, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_3CB369EE115A1710D3124F82DA1C66CD"
-                    {
-                    "Name" = "8:Infragistics35.WebUI.Shared.v9.1.DLL"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:Infragistics35.WebUI.Shared.v9.1.DLL"
             "TargetName" = "8:"
@@ -665,24 +655,24 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:HR Pro Workflow Web Site v5.0"
-        "ProductCode" = "8:{22132A26-E821-4D4C-ADE4-8FC46C7A0199}"
-        "PackageCode" = "8:{65CBB810-36DB-4877-A5BF-2E792A4EB5CB}"
+        "ProductName" = "8:OpenHR Workflow Web Site v5.0"
+        "ProductCode" = "8:{9C0AE9EE-C2A5-4432-AEBC-08ADC693460D}"
+        "PackageCode" = "8:{EA79524A-5995-401E-9565-EE60E57E8F22}"
         "UpgradeCode" = "8:{8D103CEA-CA57-49D4-A6E6-80D5076BB642}"
         "AspNetVersion" = "8:0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:5.0.2"
+        "ProductVersion" = "8:5.0.3"
         "Manufacturer" = "8:Advanced Business Software and Solutions Limited"
         "ARPHELPTELEPHONE" = "8:08451 609 999"
         "ARPHELPLINK" = "8:http://webfirst.advancedcomputersoftware.com/abs"
-        "Title" = "8:HR Pro Workflow Web Site v5.0"
+        "Title" = "8:OpenHR Workflow Web Site v5.0"
         "Subject" = "8:"
         "ARPCONTACT" = "8:Advanced Business Software and Solutions Limited"
         "Keywords" = "8:"
-        "ARPCOMMENTS" = "8:HR Pro Workflow Web Site v5.0"
+        "ARPCOMMENTS" = "8:OpenHR Workflow Web Site v5.0"
         "ARPURLINFOABOUT" = "8:http://www.advancedcomputersoftware.com/abs"
         "ARPPRODUCTICON" = "8:_42145331C5C64A948B725177D6C49EF2"
         "ARPIconIndex" = "3:0"
@@ -1127,37 +1117,9 @@
         }
         "ProjectOutput"
         {
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_D19DD4C00D5D46FF9E9DBADA44F8A609"
-            {
-            "SourcePath" = "8:"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_060C4D78AD8C49EC852195BEC9F88F20"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            "ProjectOutputGroupRegister" = "3:1"
-            "OutputConfiguration" = "8:"
-            "OutputGroupCanonicalName" = "8:Built"
-            "OutputProjectGuid" = "8:{CA3E1976-4014-4344-AB34-4D9EBCCAEDD0}"
-            "ShowKeyOutput" = "11:TRUE"
-                "ExcludeFilters"
-                {
-                }
-            }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_F095207D25C9491B948AC4FF9CC578AA"
             {
-            "SourcePath" = "8:..\\InstallerClassLibrary\\obj\\Debug\\InstallerClassLibrary.dll"
+            "SourcePath" = "8:..\\InstallerClassLibrary\\obj\\Release\\InstallerClassLibrary.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_ACDB8F00505241659EC63AF1774D10C6"

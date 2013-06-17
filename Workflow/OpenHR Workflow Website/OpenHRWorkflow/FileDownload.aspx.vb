@@ -84,7 +84,7 @@ Partial Class FileDownload
 		ReDim abtImage(0)
 
 		Try
-			strConn = "Application Name=HR Pro Workflow;Data Source=" & Session("Server") & ";Initial Catalog=" & Session("Database") & ";Integrated Security=false;User ID=" & Session("User") & ";Password=" & Session("Pwd") & ";Pooling=false"
+      strConn = "Application Name=OpenHR Workflow;Data Source=" & Session("Server") & ";Initial Catalog=" & Session("Database") & ";Integrated Security=false;User ID=" & Session("User") & ";Password=" & Session("Pwd") & ";Pooling=false"
 			conn = New SqlClient.SqlConnection(strConn)
 			conn.Open()
 
