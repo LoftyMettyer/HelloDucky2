@@ -19,7 +19,6 @@
               height: 450px;
               margin-left: auto;
               margin-right: auto;
-              /*margin-top: 50px;*/
               position: relative;
               overflow: hidden;
             }
@@ -27,8 +26,6 @@
             .large-view .header { position: relative; }
             .large-view .main { position: absolute; }
             .large-view .footer { position: absolute; }
-            /*.large-view .header { border-radius: 6px 6px 0px 0px; } */
-            /*.large-view .footer { border-radius: 0px 0px 6px 6px; }*/
           }
           
         </style>
@@ -103,8 +100,6 @@
         <form id="Form1" runat="server">
             
             <div id="page" class="page">
-
-                <%--<div id="content" class="content">--%>
                         
                     <div id="header" class="header" runat="server" />           
 
@@ -112,7 +107,6 @@
                         <asp:ContentPlaceHolder id="mainCPH" runat="server">
                         </asp:ContentPlaceHolder>
                     </div>
-                <%--</div>--%>
                 
                 <div id="footer" class="footer" runat="server">
                     <asp:ContentPlaceHolder id="footerCPH" runat="server">
