@@ -31,8 +31,9 @@
 	<form runat="server" hidefocus="true" id="frmMain" onsubmit="return submitForm();">
 	
 	<script language="javascript" type="text/javascript">
-  var app = Sys.Application
-  app.add_init(ApplicationInit);
+	
+    var app = Sys.Application;
+    app.add_init(ApplicationInit);
   
     // <!CDATA[
     var gridViewCtl = null;
@@ -523,7 +524,7 @@
 		}
 
 		function submitForm() {
-		  pbModeValue = document.getElementById("txtPostbackMode").value
+		    pbModeValue = document.getElementById("txtPostbackMode").value;
 			
 			try {
 				if (pbModeValue == 0) {
@@ -543,7 +544,7 @@
 			// 2 = Grid header postback
 			// 3 = FileUpload button postback
       try {
-        pbModeValue = document.getElementById("txtPostbackMode")
+          pbModeValue = document.getElementById("txtPostbackMode");
 	      pbModeValue.value = piValue;
 			}
 			catch (e) { }
@@ -578,10 +579,10 @@
 					if (event.type == "keydown") {
 						// Allow non-printing, arrow and delete keys
 						iEnteredKeystroke = window.event.keyCode;
-						fIsPermittedKeystroke = (((iEnteredKeystroke < 32)			// Non printing - don't count
-							|| (iEnteredKeystroke >= 33 && iEnteredKeystroke <= 40)	// Page Up, Down, Home, End, Arrow - don't count
-							|| (iEnteredKeystroke == 46))							// Delete - doesn't count
-							&& (iEnteredKeystroke != 13))							// Enter - does count
+					    fIsPermittedKeystroke = (((iEnteredKeystroke < 32)			// Non printing - don't count
+    					    || (iEnteredKeystroke >= 33 && iEnteredKeystroke <= 40)	// Page Up, Down, Home, End, Arrow - don't count
+        					    || (iEnteredKeystroke == 46))							// Delete - doesn't count
+            					    && (iEnteredKeystroke != 13));							// Enter - does count
 
 						// Decide whether the keystroke is allowed to proceed
 						if (!fIsPermittedKeystroke) {
@@ -1172,10 +1173,10 @@ function ResizeComboForForm(sender, args) {
           var reTAB = /\t/g;        
           var reSINGLEQUOTE = /\'/g;        
           var sLocaleDecimal = "\\<%=LocaleDecimal()%>";
-        	var reDECIMAL = new RegExp(sLocaleDecimal, "gi");
-	        var psWebComboID = "";
-	        
-	        psWebComboID = sender._id
+          var reDECIMAL = new RegExp(sLocaleDecimal, "gi");
+	      var psWebComboID = "";
+
+            psWebComboID = sender._id;
 	        
 	        if(psWebComboID=="") {return;}
 	        
@@ -1593,7 +1594,7 @@ function ResizeComboForForm(sender, args) {
 
   function isGridFiltered(iGridID) { 
     //searches the specified table for hidden rows and returns true if any are found...
-    var table = document.getElementById(iGridID)
+      var table = document.getElementById(iGridID);
     
     for (var r = 0; r < table.rows.length; r++) {
         if (table.rows[r].style.display == 'none') {
@@ -1604,7 +1605,7 @@ function ResizeComboForForm(sender, args) {
   }
   
   function GetGridRowHeight(iGridID) {
-    var table = document.getElementById(iGridID)
+      var table = document.getElementById(iGridID);
 
     for (var r = 0; r < table.rows.length; r++) {
         if (table.rows[r].style.display == '') {        
@@ -1646,16 +1647,16 @@ function ResizeComboForForm(sender, args) {
   }
   
   function SetCurrentTab(iNewTab) {
-    var currentTab = "forminput_" + iCurrentTab + "_21_PageTab"
-    var newTab = "forminput_" + iNewTab + "_21_PageTab"
+      var currentTab = "forminput_" + iCurrentTab + "_21_PageTab";
+      var newTab = "forminput_" + iNewTab + "_21_PageTab";
 
     try {
       $get(currentTab).style.display = "none";
       $get(currentTab.replace("PageTab","Panel")).style.borderBottom = "1px solid black";
-
+        
       $get(newTab).style.display = "block";
       $get(newTab.replace("PageTab","Panel")).style.borderBottom = "1px solid white";
-
+        
       iCurrentTab = iNewTab;
     }
     catch (e) {}
@@ -1704,9 +1705,9 @@ function ResizeComboForForm(sender, args) {
 					Font-Size="8pt" BorderStyle="None">
 				</asp:BulletedList>
 				<asp:Label ID="lblWarningsPrompt_1" runat="server" Text="Click"></asp:Label>
-				<span id="spnClickHere" name="spnClickHere" tabindex="1" style="color:#333366;" onclick="overrideWarningsAndSubmit();" onmouseover="try{this.style.color='#ff9608'}catch(e){}"
+				<span id="spnClickHere" name="spnClickHere" tabindex="1" style="color:#333366;" onclick="overrideWarningsAndSubmit();" onmouseover="try{this.style.color='#ff9608';}catch(e){}"
 					onmouseout="try{this.style.color='#333366';}catch(e){}" onfocus="try{this.style.color='#ff9608';}catch(e){}"
-					onblur="try{this.style.color='#333366';}catch(e){}" onkeypress="try{if(window.event.keyCode == 32){spnClickHere.click()};}catch(e){}">
+					onblur="try{this.style.color='#333366';}catch(e){}" onkeypress="try{if(window.event.keyCode == 32)spnClickHere.click();}catch(e){}">
 					<asp:Label ID="lblWarningsPrompt_2" runat="server" Text="here" Font-Underline="true" 
 						style="cursor: pointer;"></asp:Label>
 				</span>
@@ -1792,7 +1793,7 @@ function ResizeComboForForm(sender, args) {
       var element = elements[i];
       var allnodes = element.getElementsByTagName('*'),
                 length = allnodes.length;
-      var nodes = new Array(length)
+        var nodes = new Array(length);
       for (var k = 0; k < length; k++) {
         nodes[k] = allnodes[k];
       }

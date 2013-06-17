@@ -166,11 +166,11 @@
 								runat="server" Text="Click">
 							</asp:Label> 
 						<span id="spnClickHere" name="spnClickHere" onclick="closeMe();" tabindex="1"
-								onmouseover="try{this.style.color='#ff9608'}catch(e){}" 
+								onmouseover="try{this.style.color='#ff9608';}catch(e){}" 
 								onmouseout="try{this.style.color='#333366';}catch(e){}" 
 		            onfocus="try{this.style.color='#ff9608';}catch(e){}" 
 		            onblur="try{this.style.color='#333366';}catch(e){}"
-		            onkeypress="try{if(window.event.keyCode == 32){spnClickHere.click()};}catch(e){}"
+		            onkeypress="try{if(window.event.keyCode == 32){spnClickHere.click();}}catch(e){}"
 		            >
 							<asp:Label ID="lblClose" 
 								runat="server" Text="here" 

@@ -142,7 +142,7 @@
 								runat="server" Text="Click">
 							</asp:Label> 
 						<span onclick="try{window.history.back();}catch(e){}" tabindex="1"
-								onmouseover="try{this.style.color='#ff9608'}catch(e){}" 
+								onmouseover="try{this.style.color='#ff9608';}catch(e){}" 
 								onmouseout="try{this.style.color='#333366';}catch(e){}" 
 		            onfocus="try{this.style.color='#ff9608';}catch(e){}" 
 		            onblur="try{this.style.color='#333366';}catch(e){}"
@@ -157,7 +157,7 @@
 								runat="server" Text=" to reload this form, or">
 							</asp:Label>
 						<span onclick="closeMe();" tabindex="1"
-								onmouseover="try{this.style.color='#ff9608'}catch(e){}" 
+								onmouseover="try{this.style.color='#ff9608';}catch(e){}" 
 								onmouseout="try{this.style.color='#333366';}catch(e){}" 
 		            onfocus="try{this.style.color='#ff9608';}catch(e){}" 
 		            onblur="try{this.style.color='#333366';}catch(e){}"
