@@ -391,6 +391,7 @@ Public Class RecordSelector
     ' NPG20120110 Fault HRPRO-1831
     ' Hide pager bar if control is too narrow to display navigation buttons, or
     ' if it's empty.
+
     If (Me.Width.Value < 175 And Me.PageCount < 1) Or Me.IsEmpty Then
       iPagerHeight = 0
     Else
@@ -1274,7 +1275,8 @@ Public Class RecordSelector
     tblPager.Rows.Add(trPager)
 
     'add table to div
-    pnlPager.Controls.Add(tblPager)
+    ' NPG20120202 Fault HRPRO-1854, hide the pager row if there are no records.
+    If Not Me.IsEmpty Then pnlPager.Controls.Add(tblPager)
 
     'add div to pager row
     row.Controls.AddAt(0, New TableCell())
