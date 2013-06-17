@@ -157,15 +157,15 @@
 
     }
 
-
-		function window_onload() {
-			var iDefHeight;
-			var iDefWidth;
-			var iResizeByHeight;
-			var iResizeByWidth;
-      var sControlType;
-      var oldgridSelectedColor;
-			var ScrollTopPos;
+	function window_onload() {
+	    
+		var iDefHeight;
+		var iDefWidth;
+		var iResizeByHeight;
+		var iResizeByWidth;
+        var sControlType;
+        var oldgridSelectedColor;
+		var ScrollTopPos;
 
       //Set the current page tab to page 1
       iCurrentTab = 1;
@@ -176,18 +176,15 @@
                 iDefHeight = $get("bdyMain").offsetHeight;
 				iDefWidth = $get("frmMain").hdnFormWidth.value;
 				$get("bdyMain").bgColor = $get("frmMain").hdnColourThemeHex.value;
-				
+			    
 				window.focus();
 				if ((iDefHeight > 0) && (iDefWidth > 0)) {
 					iResizeByHeight = iDefHeight - document.documentElement.clientHeight;
-			
 					iResizeByWidth = iDefWidth - document.documentElement.clientWidth;
 					window.parent.moveTo((screen.availWidth - iDefWidth) / 2, (screen.availHeight - iDefHeight) / 3);
 					window.parent.resizeBy(iResizeByWidth, iResizeByHeight);
 				}
 				
-
-
 				try {
 					if ($get("frmMain").hdnFirstControl.value.length > 0) {
 					    sControlType = $get("frmMain").hdnFirstControl.value.substr($get("frmMain").hdnFirstControl.value.indexOf("_")+1);
