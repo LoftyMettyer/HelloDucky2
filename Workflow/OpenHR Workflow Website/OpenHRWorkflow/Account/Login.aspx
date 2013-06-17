@@ -35,7 +35,7 @@
             <td><asp:TextBox runat="server" ID="txtPassword" TextMode="Password" /></td>            
         </tr>
         <tr>
-            <td><asp:Label runat="server" ID="lblRememberPwd" Text="Remember me"/></td>
+            <td><asp:Label runat="server" ID="lblRememberPwd" Text="Remember me" AssociatedControlID="chkRememberPwd" /></td>
             <td><asp:CheckBox runat="server" ID="chkRememberPwd" /></td>            
         </tr>
     </table>

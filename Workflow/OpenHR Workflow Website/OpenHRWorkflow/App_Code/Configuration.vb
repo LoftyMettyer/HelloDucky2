@@ -32,6 +32,16 @@ Public Class Configuration
         Server, Database, user, password)
   End Function
 
+  Public Shared ReadOnly Property IsDebug() As Boolean
+    Get
+#If DEBUG Then
+      Return true
+#End If
+      Return False
+    End Get
+  End Property
+
+
   Private Shared WriteOnly Property MobileKey() As String
     Set(value As String)
 

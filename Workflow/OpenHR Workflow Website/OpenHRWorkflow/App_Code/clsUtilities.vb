@@ -143,7 +143,7 @@ Public Class Utilities
 "wap", "sch", "rover", "pocket", "benq", "java", _
 "pt", "pg", "vox", "amoi", "bird", "compal", _
 "kg", "voda", "sany", "kdd", "dbt", "sendo", _
-"sgh", "gradi", "jb", "dddi", "moto", "iphone"}
+"sgh", "gradi", "jb", "dddi", "moto", "iphone", "fennec"}
 
       'Loop through each item in the list created above 
       'and check if the header contains that text
