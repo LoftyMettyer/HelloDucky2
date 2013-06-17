@@ -433,6 +433,10 @@ function showSubmissionMessage() {
 		showErrorMessages('none');
 		$get("divSubmissionMessages").style.display = "block";
 		$get("divSubmissionMessages").style.visibility = "visible";
+
+		if (window.androidLayerBug) {
+			$get("divInput").style.display = "none";	
+		}		
 	}
 	catch (e) { }
 }
