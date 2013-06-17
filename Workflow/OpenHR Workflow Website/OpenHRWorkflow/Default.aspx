@@ -155,12 +155,12 @@
       SetCurrentTab(iCurrentTab);
           
 			try {
-				iDefHeight = $get("frmMain").hdnFormHeight.value;
+				//iDefHeight = $get("frmMain").hdnFormHeight.value;
+        iDefHeight = $get("bdyMain").offsetHeight;
 				iDefWidth = $get("frmMain").hdnFormWidth.value;
 				$get("bdyMain").bgColor = $get("frmMain").hdnColourThemeHex.value;
 				
 				window.focus();
-
 				if ((iDefHeight > 0) && (iDefWidth > 0)) {
 					iResizeByHeight = iDefHeight - document.documentElement.clientHeight;
 			
