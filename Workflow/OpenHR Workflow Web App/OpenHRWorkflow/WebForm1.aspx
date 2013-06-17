@@ -56,8 +56,8 @@
         <form id="form1" runat="server">
             <div class='tabstrip'>
                 <ul>
-                    <li class="active"><a href="#">Paris</a></li>
-                    <li><a href="#">New York</a></li>
+                    <li ><a href="#">Paris</a></li>
+                    <li class="active"><a href="#">New York</a></li>
                     <li><a href="#">London</a></li>
                     <li><a href="#">Moscow</a></li>
                     <li><a href="#">Sydney</a></li>

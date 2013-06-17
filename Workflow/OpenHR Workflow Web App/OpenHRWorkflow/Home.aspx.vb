@@ -10,7 +10,7 @@ Partial Class Home
 
       Dim db As New Database(App.Config.ConnectionString)
       Dim result As CheckLoginResult = db.CheckLoginDetails(User.Identity.Name)
-      Dim userGroupID As Integer
+		Dim userGroupID As Integer
 
       If result.Valid Then
          userGroupID = result.UserGroupID

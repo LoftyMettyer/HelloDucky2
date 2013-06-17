@@ -105,10 +105,10 @@ Public Class Config
 
       'Insert some fake value into the cache with a dependency on the theme & web.custom.config files
       'when they change we'll get a callback to reload the settings
-      HttpRuntime.Cache.Insert("filesTheSame", True,
-                               New CacheDependency(New String() {CustomConfigFile, ThemeFile}),
-                               Cache.NoAbsoluteExpiration, Cache.NoSlidingExpiration, CacheItemPriority.Default, Sub() Load()
-      )
+		HttpRuntime.Cache.Insert("filesTheSame", True,
+					New CacheDependency(New String() {CustomConfigFile, ThemeFile}),
+					Cache.NoAbsoluteExpiration, Cache.NoSlidingExpiration, CacheItemPriority.Default, Sub() Load()
+		)
 
    End Sub
 
