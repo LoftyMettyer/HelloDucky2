@@ -239,6 +239,8 @@ Public Class RecordSelector
             iGridWidth += 25
             'End If
 
+            If iGridWidth < 240 And Me.PageCount > 0 Then iGridWidth = 240 ' minimum width to ensure paging controls fit.
+
             strWidth = [String].Format("{0}{1}", iGridWidth, (If((Me.Width.Type = UnitType.Percentage), "%", "px")))
         End If
 
@@ -311,6 +313,8 @@ Public Class RecordSelector
             ' Add scrollbar width
             iGridWidth += 25
             'End If
+
+            If iGridWidth < 240 And Me.PageCount > 0 Then iGridWidth = 240 ' minimum width to ensure paging controls fit.
 
             strWidth = [String].Format("{0}{1}", iGridWidth - iScrollBarWidth, (If((Me.Width.Type = UnitType.Percentage), "%", "px")))
         End If
