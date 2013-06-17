@@ -2898,12 +2898,6 @@ Public Class _Default
                   ctlTabsDiv.Style.Add("position", "relative")
                   ctlTabsDiv.Style.Add("z-index", "1")
 
-                  'TODO get previous saved if not postback, think need to call [spASRGetWorkflowItemValues]
-                  Dim currentTab As Integer = 1
-
-                  Dim hiddenCurrentTab = New HiddenField With {.ID = sID & "currenttab", .Value = CStr(currentTab)}
-                  pnlTabsDiv.Controls.Add(hiddenCurrentTab)
-
                   If isMobileBrowser() Then
                     ctlTabsDiv.Style.Add("overflow-x", "auto")
                   Else
@@ -3210,8 +3204,6 @@ Public Class _Default
             .SelectMany(Function(c) c.Controls.Cast(Of Control)()) _
             .Where(Function(c) c.ClientID.StartsWith(FORMINPUTPREFIX))
 
-      controlList = controlList.Union(pnlTabsDiv.Controls.Cast(Of Control).Where(Function(c) c.ClientID.EndsWith("currenttab")))
-
       'TODO check list
       For Each ctlFormInput In controlList
 
@@ -3395,10 +3387,6 @@ Public Class _Default
                 sFormInput1 = sFormInput1 & sIDString & ctlForm_HiddenField.Value.ToString & vbTab
               End If
             End If
-
-          Case 21 'Tab control
-
-            sFormInput1 = sFormInput1 & sIDString & DirectCast(ctlFormInput, HiddenField).Value & vbTab
 
         End Select
 

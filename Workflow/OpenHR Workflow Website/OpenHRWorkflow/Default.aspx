@@ -11,6 +11,7 @@
 
     <style type="text/css">
         fieldset, legend { padding: 0px; margin: 0px; }
+        input[type="button"] { padding: 0px; }
         
 		.highlighted { background: yellow; }
         textarea {resize: none; }
@@ -166,8 +167,8 @@
 		var ScrollTopPos;
 
       //Set the current page tab
-	  //TODO pickup what the current tba should be
-      SetCurrentTab(1);
+	    iCurrentTab = 1;
+      SetCurrentTab(iCurrentTab);
 
 			try {
 				iDefHeight = window.$get("frmMain").hdnFormHeight.value;
@@ -769,9 +770,7 @@
 		function showMessage() {			 
     
         //Reset current tab position
-		    
-        //TODO where to get currentTab value from?
-        //SetCurrentTab(window.$get("frmMain").hdnCurrentTab.value);	
+        SetCurrentTab(iCurrentTab);	
 		
 		$get("pleasewaitScreen").style.visibility="hidden";
 		
@@ -1644,13 +1643,9 @@ function ResizeComboForForm(sender, args) {
       ScrollTopPos = iPos;          
     }
   }
-
-  var iCurrentTab = 1;
   
   function SetCurrentTab(iNewTab) {
-      
-//    var iCurrentTab = window.$get("frmMain").hdnCurrentTab.value;
-      
+            
     var currentTab = $get("forminput_" + iCurrentTab + "_21_PageTab");
     var currentPanel = $get("forminput_" + iCurrentTab + "_21_Panel");
     var newTab = $get("forminput_" + iNewTab + "_21_PageTab");
@@ -1665,9 +1660,7 @@ function ResizeComboForForm(sender, args) {
         
       if(newPanel!=null) newPanel.style.borderBottom = "1px solid white";
         
-
-//      $get("frmMain").hdnCurrentTab.value = iNewTab;
-        iCurrentTab = iNewTab;
+       iCurrentTab = iNewTab;
     }
     catch (e) {}
   }
