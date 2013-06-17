@@ -5,7 +5,7 @@
 // (c) 2006, bz
 //
 // 25.12.2006:  first working prototype
-// 26.12.2006:  now works in IE as well but not in Opera (Opera is @#$%!)
+// 26.12.2006:  now works in IE as well but not in Opera 
 // 27.12.2006:  changed initialization, now just make class='resizable' in table and load script
 //
 
@@ -193,7 +193,7 @@ function ColumnResize(table) {
   // prepare table header to be draggable
   // it runs during class creation
   for (var i = 0; i < dragColumns.length; i++) {
-    dragColumns[i].innerHTML = "<div style='position:relative;text-overflow:ellipsis;height:100%;width:100%'>" +
+    dragColumns[i].innerHTML = "<div style='position:relative;text-overflow:ellipsis;height:100%;width:98%'>" +
 			"<div style='" +
 			"position:absolute;height:100%;width:5px;margin-right:-5px;" +
 			"left:100%;top:0px;cursor:w-resize;z-index:10;'>" +
@@ -233,6 +233,7 @@ try {
 } catch (e) {
   window.onload = ResizableColumns;
 }
+
 
 //document.body.onload = ResizableColumns;
 

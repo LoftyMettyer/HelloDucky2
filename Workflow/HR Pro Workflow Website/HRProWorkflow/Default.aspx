@@ -43,10 +43,10 @@
         catch (e) {}
     }
 
+
+
+
 		function window_onload() {
-		
-		
-		
 			var iDefHeight;
 			var iDefWidth;
 			var iResizeByHeight;
@@ -603,11 +603,16 @@
 			catch (e) { }
 		}
 
-		function showMessage() {
-	      if(txtActiveDDE.value.indexOf("dde")>0) {
-		      $find(txtActiveDDE.value).show();
-		      txtActiveDDE.value="";
-		    }		
+		function showMessage() {				
+		
+		//Reapply resizable column functionality to tables
+		//This is put here to ensure functionality is reapplied after partial/full postback.
+		ResizableColumns();
+		
+    if(txtActiveDDE.value.indexOf("dde")>0) {
+      $find(txtActiveDDE.value).show();
+      txtActiveDDE.value="";
+    }		
 		    
 		if(txtPostbackMode.value==2) {
 		    //ShowMessage is the sub called in lieu of Application:EndRequest, i.e. Pretty much the end of
