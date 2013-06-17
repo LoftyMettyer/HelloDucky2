@@ -1298,7 +1298,7 @@ Public Class _Default
                       sTemp = sTemp & _
                        "<TD><input type='checkbox'" & _
                        " onclick=""" & sID & ".checked = checked;" & _
-                       CStr(IIf(IsMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');setPostbackMode(3);__doPostBack('" & sID & "', 'doLiteralsPostback');""", "")) & _
+                       CStr(IIf(IsMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');setPostbackMode(3);__doPostBack('" & sID & "', 'doLiteralsPostback');""", """")) & _
                        " onfocus=""try{" & sID & ".select();activateControl();}catch(e){};""" & _
                        CStr(IIf(fChecked, " CHECKED", "")) & _
                        " style='height:14px;width:14px;margin:0px;" & androidFix & "'" & _
@@ -1316,7 +1316,7 @@ Public Class _Default
                        ">" & NullSafeString(dr("caption")) & "</LABEL></TD>" & vbCrLf & _
                        "<TD><input type='checkbox'" & _
                        " onclick=""" & sID & ".checked = checked;" & _
-                       CStr(IIf(IsMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');setPostbackMode(3);__doPostBack('" & sID & "', 'doLiteralsPostback');""", "")) & _
+                       CStr(IIf(IsMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');setPostbackMode(3);__doPostBack('" & sID & "', 'doLiteralsPostback');""", """")) & _
                        " onfocus=""try{" & sID & ".select();activateControl();}catch(e){};""" & _
                        CStr(IIf(fChecked, " CHECKED", "")) & _
                        " style='height:14px;width:14px;margin:0px;" & androidFix & "'" & _
@@ -1331,7 +1331,7 @@ Public Class _Default
                       sTemp = sTemp & _
                        "<TD><input type='checkbox'" & _
                        " onclick=""" & sID & ".checked = checked;" & _
-                       CStr(IIf(IsMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');setPostbackMode(3);__doPostBack('" & sID & "', 'doLiteralsPostback');""", "")) & _
+                       CStr(IIf(IsMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');setPostbackMode(3);__doPostBack('" & sID & "', 'doLiteralsPostback');""", """")) & _
                        " onfocus=""try{" & sID & ".select();activateControl();}catch(e){};""" & _
                        CStr(IIf(UCase(NullSafeString(dr("value"))) = "TRUE", " CHECKED", "")) & _
                        " style='height:14px;width:14px;margin:0px;" & androidFix & "'" & _
@@ -1349,7 +1349,7 @@ Public Class _Default
                        ">" & NullSafeString(dr("caption")) & "</LABEL></TD>" & vbCrLf & _
                        "<TD><input type='checkbox'" & _
                        " onclick=""" & sID & ".checked = checked;" & _
-                       CStr(IIf(IsMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');setPostbackMode(3);__doPostBack('" & sID & "', 'doLiteralsPostback');""", "")) & _
+                       CStr(IIf(IsMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');setPostbackMode(3);__doPostBack('" & sID & "', 'doLiteralsPostback');""", """")) & _
                        " onfocus=""try{" & sID & ".select();activateControl();}catch(e){};""" & _
                        CStr(IIf(NullSafeString(dr("value")).ToUpper = "TRUE", " CHECKED", "")) & _
                        " style='height:14px;width:14px;margin:0px;" & androidFix & "'" & _
