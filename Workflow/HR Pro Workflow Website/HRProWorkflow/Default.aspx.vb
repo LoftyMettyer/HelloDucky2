@@ -3261,6 +3261,7 @@ Public Class _Default
 
                     sImageFileName = Session.SessionID().ToString & _
                      "_" & miImageCount.ToString & _
+                     "_" & Date.Now.Ticks.ToString & _
                      sExtension
                     sTempName = sImageFilePath & "\" & sImageFileName
 
