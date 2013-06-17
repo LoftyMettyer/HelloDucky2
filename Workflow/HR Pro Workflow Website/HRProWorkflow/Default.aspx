@@ -341,15 +341,18 @@ catch (e) {}
 		}
 
 		function submitForm() {
-		
+		  pbModeValue = document.getElementById("txtPostbackMode").value
+			
 			try {
-				if (txtPostbackMode.value == 0) {
-					document.getElementById(txtActiveElement.value).setActive();
+				if (pbModeValue == 0) {
+				  tAE = document.getElementById("txtActiveElement");				  
+				  if(eval(tAE)) {tae.value.setActive();}
+				  
 				}
 			}
 			catch (e) { };
-
-			return (txtPostbackMode.value != 0);
+			
+			return (pbModeValue != 0);
 		}
 
 		function setPostbackMode(piValue) {
@@ -357,10 +360,12 @@ catch (e) {}
 			// 1 = Submit/SaveForLater button postback (ie. WebForm submission)
 			// 2 = Grid header postback
 			// 3 = FileUpload button postback
-            try {
-				txtPostbackMode.value = piValue;
+      try {
+        pbModeValue = document.getElementById("txtPostbackMode")
+	      pbModeValue.value = piValue;
 			}
 			catch (e) { }
+			
 		}
 
 		function activateGridPostback() {
