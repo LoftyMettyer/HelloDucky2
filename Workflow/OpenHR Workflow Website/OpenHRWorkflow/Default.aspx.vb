@@ -2262,7 +2262,9 @@ Public Class _Default
                       .Enabled = True
                       .TargetControlID = sID & "TextBox"
                       ' Client-side handler.
-                      .OnClientPopup = "InitializeLookup"     ' can't pass the ID of the control, so use ._id in JS.
+                      If (sFilterSQL.Length > 0) Then
+                        .OnClientPopup = "InitializeLookup"     ' can't pass the ID of the control, so use ._id in JS.
+                      End If
                     End With
 
                     ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_DDE)
