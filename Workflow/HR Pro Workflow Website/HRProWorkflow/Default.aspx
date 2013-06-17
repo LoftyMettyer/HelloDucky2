@@ -1,19 +1,47 @@
-<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Default.aspx.vb" Inherits="_Default" EnableSessionState="True" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Default.aspx.vb" Inherits="_Default" EnableSessionState="True" %>
+
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajx" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<meta http-equiv="refresh" content="<%=Session("TimeoutSecs")%>;URL=timeout.aspx" />
+
 <html xmlns="http://www.w3.org/1999/xhtml" id="htmMain">
 <head runat="server">
-	<title></title>
-	<meta http-equiv="refresh" content="<%=Session("TimeoutSecs")%>;URL=timeout.aspx" />
+	  <title></title>
+    <script src="Scripts/resizable-table.js" type="text/javascript"></script>
+</head>
 
-	<script language="javascript" type="text/javascript">
+<body id="bdyMain" onload="return window_onload()" scroll="auto" style="overflow: auto;  
+	text-align: center; margin: 0px; padding: 0px;">
+	<img id="imgErrorMessages_Max" src="Images/uparrows_white.gif" alt="Show messages"
+		style="position: absolute; right: 1px; bottom: 1px; display: none; visibility: hidden;
+		z-index: 1;" onclick="showErrorMessages(true);" />
+	<form runat="server" hidefocus="true" id="frmMain" onsubmit="return submitForm();">
+	
+		<script language="javascript" type="text/javascript">
+  
     // <!CDATA[
+    var gridViewCtl = null;
+    var curSelRow = new Array();
+    var selRow = new Array();
+    var curSelRowBackColour = new Array();
+
+try {
+    //Need to specify Panel 2 here...
+    var prm = Sys.WebForms.PageRequestManager.getInstance();
+    prm.add_beginRequest(goSubmit);
+    prm.add_endRequest(showMessage);
+}
+catch (e) {}
+
 		function window_onload() {
 			var iDefHeight;
 			var iDefWidth;
 			var iResizeByHeight;
 			var iResizeByWidth;
-            var sControlType;
+      var sControlType;
+      var oldgridSelectedColor;
             
 			try {
 				iDefHeight = frmMain.hdnFormHeight.value;
@@ -29,6 +57,7 @@
 					window.parent.moveTo((screen.availWidth - iDefWidth) / 2, (screen.availHeight - iDefHeight) / 3);
 					window.parent.resizeBy(iResizeByWidth, iResizeByHeight);
 				}
+				
 
 				try {
 					if (frmMain.hdnFirstControl.value.length > 0) {
@@ -77,6 +106,7 @@
 				catch (e) { }
 
 				if ((iDefHeight > 0) && (iDefWidth > 0)) {
+				
 					iResizeByHeight = iDefHeight - document.documentElement.clientHeight;
 					iResizeByWidth = iDefWidth - document.documentElement.clientWidth;
 					window.parent.resizeBy(iResizeByWidth, iResizeByHeight);
@@ -119,7 +149,6 @@
 			var iCount;
 			var sQueryString;
 			var sFirstForm;
-
 			try {
 				iCount = 0;
 				sFirstForm = "";
@@ -157,7 +186,6 @@
 
 		function spawnWindow(psURL) {
 			var newWin;
-
 			try {
 				newWin = window.open(psURL);
 
@@ -216,10 +244,10 @@
 		}
 
 		function TraverseDOM(obj, lvl, actionFunc) {
+		
 		    var sControlType;
 		    var sFormInputPrefix = "forminput_";
 		    var sGridSuffix = "Grid";
-		    
 		    try
 		    {
     			for (var i = 0; i < obj.childNodes.length; i++) {
@@ -261,7 +289,8 @@
 		}
 
 		function showErrorMessages(pfDisplay) {
-			if (((frmMain.hdnCount_Errors.value > 0)
+		
+			if (((frmMain.hdnCount_Errors.value > 0)			
 				|| (frmMain.hdnCount_Warnings.value > 0))
 				&& (pfDisplay == false)) {
 				imgErrorMessages_Max.style.display = "block";
@@ -273,6 +302,8 @@
 			}
 
 			if (pfDisplay == true) {
+			  //refresh the errors WARP panel. 
+			  __doPostBack('pnlErrorMessages', '');
 				//divErrorMessages_Inner.style.visibility = "visible";
 				divErrorMessages_Outer.style.filter = "revealTrans(duration=0.3, transition=4)";
 				divErrorMessages_Outer.filters.revealTrans.apply();
@@ -287,7 +318,6 @@
 				//divErrorMessages_Outer.style.display = "none";
 				//divErrorMessages_Inner.style.visibility = "hidden";
 				divErrorMessages_Outer.filters.revealTrans.play();
-
 			}
 		}
 
@@ -311,6 +341,7 @@
 		}
 
 		function submitForm() {
+		
 			try {
 				if (txtPostbackMode.value == 0) {
 					document.getElementById(txtActiveElement.value).setActive();
@@ -607,7 +638,6 @@
 				frmMain.hdnCount_Warnings.value = 0;
 				divErrorMessages_Outer.style.display = "none";
 				showErrorMessages(false);
-
 				divSubmissionMessages.style.filter = "revealTrans(duration=0.5, transition=12)";
 				divSubmissionMessages.filters.revealTrans.apply();
 				divSubmissionMessages.style.display = "block";
@@ -800,36 +830,44 @@
             }
             catch(e) {}
 	    }
+
+  function scrollHeader(iGridID) {
+      //keeps the header table aligned with the gridview in record
+      //selectors and lookups.
+      var leftPos = document.getElementById(iGridID).scrollLeft;
+      document.getElementById(iGridID.replace("gridcontainer", "Header")).style.left = "-" + leftPos + "px";
+  }
 	    
-	    function InitializeLookup(psWebComboId) {
+  function InitializeLookup(sender, args) {
+  
 	        var sSelectWhere = "";
 	        var sValueID = "";
 	        var sValueType = "";
 	        var sControlType = "";
-            var sValue = "";
-            var sTemp = "";
-            var sSubTemp = "";
-            var numValue = 0;
-            var dtValue;
-            var fValue = true;
-            var iIndex;
-            var iTemp;
-            var reX = /x/g;        
-            var reDATE = /[YMD]/g;        
-            var reTAB = /\t/g;        
-            var reSINGLEQUOTE = /\'/g;        
-            var sLocaleDecimal = "\\<%=LocaleDecimal()%>";
+          var sValue = "";
+          var sTemp = "";
+          var sSubTemp = "";
+          var numValue = 0;
+          var dtValue;
+          var fValue = true;
+          var iIndex;
+          var iTemp;
+          var reX = /x/g;        
+          var reDATE = /[YMD]/g;        
+          var reTAB = /\t/g;        
+          var reSINGLEQUOTE = /\'/g;        
+          var sLocaleDecimal = "\\<%=LocaleDecimal()%>";
         	var reDECIMAL = new RegExp(sLocaleDecimal, "gi");
-	
-		    try {
-                closeOtherCombos(psWebComboId);
-
-			    var sID = "lookup" + psWebComboId;
+	        var psWebComboID = "";
+	        
+	        psWebComboID = sender._id
+	        
+	        if(psWebComboID=="") {return;}
+	        
+	        var sID = "lookup" + psWebComboID.replace("DDE","");
+	        
+		      try {
 			    
-			    // For some reason the WebComboID has '_' replaced with 'x'.
-			    // Replace 'x' with '_' as required to get the required ID.
-                sID = sID.replace(reX, "_");   
-
                 var ctlLookupFilter = document.getElementById(sID);
                 if (ctlLookupFilter)
                 { 
@@ -839,6 +877,7 @@
 	                {
 	                    // sSelectWhere has the format:
 	                    //  <filterValueControlID><TAB><selectWhere code with TABs where the value from filterValueControlID is to be inserted>
+                        
                         iIndex = sSelectWhere.indexOf("\t");
                         if (iIndex >= 0)
                         {
@@ -860,8 +899,16 @@
                                 || (sControlType == 14))
                             {
                                 // Dropdown (13), Lookup (14)
-                                var ctlLookupValueCombo = igcmbo_getComboById(sValueID);
-                        	    sValue = ctlLookupValueCombo.displayValue;
+                              if (sControlType == 13) {  
+                                var ctlLookupValueCombo = document.getElementById(sValueID);
+                        	      sValue = ctlLookupValueCombo.value;
+                        	    }
+                        	    else
+                        	    {
+                                var ctlLookupValueCombo = document.getElementById(sValueID + "TextBox");
+                        	      sValue = ctlLookupValueCombo.value;                        	    
+                        	    }
+                        	    
                         	    
                         	    if(sValueType == 11)
                         	    {
@@ -877,7 +924,7 @@
                         	            sTemp = sTemp + sSubTemp.substr(sSubTemp.length-2);
 
                         	            sValue = sTemp;
-                          	        }
+                          	      }
                         	        else
                         	        {
                         	            sValue = "";
@@ -961,30 +1008,346 @@
 
 	                        sValue = sValue.toUpperCase().trim().replace(reSINGLEQUOTE, "\'\'"); 
                             sSelectWhere = sSelectWhere.replace(reTAB, sValue);   
-					        var objCombo = igcmbo_getComboById(psWebComboId);
-	                        objCombo.selectWhere(sSelectWhere);
+                                                       
+                          // ASP's own gridview control doesn't have a nice built-in filter option,
+                          // so we'll loop through the rows and hide any that don't meet the criteria.
+                          // Need Filter column, Operator and Value.
+					                //var objCombo = igcmbo_getComboById(psWebComboId);
+	                        //        objCombo.selectWhere(sSelectWhere);
+        	                
+                          hideRows(psWebComboID.replace("DDE", "Grid"), sValue);
+	                
                         }
 	                }
                 }
             }
-            catch (e) {}
+           catch (e) {}
 
 	        return false;
-		}
+  }
+
+  function hideRows(gridName, searchValue)
+  {
+    //Get the column number
+    tblTable = document.getElementById(gridName);
+    
+    iFilterColumn = tblTable.attributes["LookupFilterColumn"].value;
+    
+    rows = document.getElementById(gridName).rows;
+    
+    //If only the blank row exists...
+    if(rows.length==1){return;}
+    
+    iVisibleRows = 1;
+      
+    for (i = 1; i < rows.length; i++) {
+      if ((rows[i].cells[iFilterColumn].innerText == searchValue) || (searchValue == ""))  {
+        rows[i].style.display = "block";
+        iVisibleRows += 1;
+      }
+      else {
+        rows[i].style.display = "none";
+      }
+    }
+
+    //Set the max height of the dropdown again.
+    iRowHeight = (document.getElementById(gridName.replace("Grid", "TextBox")).clientHeight) - 6;
+    iRowHeight = (iRowHeight< 22)?22:iRowHeight;
+
+    iDropHeight = (iRowHeight * ((iVisibleRows>6)?6:iVisibleRows) + 1);
+    
+    grdContainer = document.getElementById(gridName.replace("Grid", "gridcontainer"));
+    grdContainer.height = iDropHeight + 'px';
+    grdContainer.style.height = iDropHeight + 'px';
+  }
+
+
+ function getSelectedRow(iGridID, iRowIdx) {
+    getGridViewControl(iGridID);
+    if (null != gridViewCtl) {      
+      return gridViewCtl.rows[iRowIdx];      
+    }
+    return null;
+  }
+
+  function getGridViewControl(iGridID) {
+    //    if (null == gridViewCtl) {
+      gridViewCtl = document.getElementById(iGridID);
+    //}
+  }
+
+  function changeRow(iGridID, iRowIdx, strHighlightCol, iIDCol) {
+    //e.g. changeRow('forminput_38880_11_Grid', '0', '#FDEB9F', '7');
+    
+    //change the row colour and reset any previously selected rows.
+    
+    var iElementID = iGridID.substring(10, iGridID.indexOf("_", 10));
+   
+    selRow[iElementID] = getSelectedRow(iGridID, iRowIdx);
+    
+    if (curSelRow[iElementID] != null) {
+      if (strHighlightCol == "default") {
+        strHighlightCol = curSelRow[iElementID].style.backgroundColor;
+      }
+      curSelRow[iElementID].style.backgroundColor = curSelRowBackColour[iElementID];
+    }
+    if (null != selRow[iElementID]) {
+      curSelRowBackColour[iElementID] = selRow[iElementID].style.backgroundColor;  //oldgridSelectedColor;  Switch this to enable row highlight on hoverover.
+      curSelRow[iElementID] = selRow[iElementID];
+      curSelRow[iElementID].style.backgroundColor = strHighlightCol;
+    }
+
+    //The following doesn't work in Firefox. This will be referred to in future
+    //Get the record ID from the selected row and store to hidden element
+    //tblTable=document.getElementById(iGridID);
+    //Cell = tblTable.rows[iRowIdx].cells[iIDCol];
+    //hdn1 = document.getElementById(iGridID.replace("Grid","hiddenfield"));
+    //hdn1.value = Cell.innerText;
+    //Firefox compliant version of the above:
+    var theCells = selRow[iElementID].getElementsByTagName("td"); //Header would be th
+    var theText = theCells[iIDCol].innerHTML
+    hdn1 = document.getElementById(iGridID.replace("Grid","hiddenfield"));
+    hdn1.value = theText;
+    
+    //Might need this someday too, converts innerHTML to innerText.
+    //if(typeof HTMLElement!="undefined"){
+    //  HTMLElement.prototype.__defineGetter__("innerText", function () { 
+    //  var r = this.ownerDocument.createRange(); 
+    //  r.selectNodeContents(this); 
+    //  return r.toString(); 
+    //  }); 
+    //}
+    //alert(document.getElementById("div1").innerHTML);
+    //alert(document.getElementById("div1").innerText);
+  }
+
+  
+  function changeDDERow(iGridID, iRowIdx, strHighlightCol, iIDCol) {
+    
+    //e.g. changeDDERow('forminput_38880_11_Grid', '0', '#FDEB9F', '7');
+    
+    //Dropdown highlight colour is fixed at system highlight...
+    strHighlightCol = '#FDEB9F'
+    
+    //change the row colour and reset any previously selected rows.      
+    var iElementID = iGridID.substring(10, iGridID.indexOf("_", 10));
+    
+    selRow[iElementID] = getSelectedRow(iGridID, iRowIdx);
+    
+    if (curSelRow[iElementID] != null) {
+      if (strHighlightCol == "default") {
+        strHighlightCol = curSelRow[iElementID].style.backgroundColor;
+      }
+      curSelRow[iElementID].style.backgroundColor = curSelRowBackColour[iElementID];
+    }
+    if (null != selRow[iElementID]) {
+      curSelRowBackColour[iElementID] = selRow[iElementID].style.backgroundColor;  //oldgridSelectedColor;  Switch this to enable row highlight on hoverover.
+      curSelRow[iElementID] = selRow[iElementID];
+      curSelRow[iElementID].style.backgroundColor = strHighlightCol;
+    }
+    
+    //Set the textbox text to the selected grid item
+    tblTable = document.getElementById(iGridID);
+    iLookupColumnIndex = tblTable.attributes["LookupColumnIndex"].value;
+        
+    if(IsNumeric(iLookupColumnIndex)) {
+      Cell = tblTable.rows[iRowIdx].cells[iLookupColumnIndex];
+    }
+    else{
+      Cell = tblTable.rows[iRowIdx].cells[0];
+    }
+      txtTextBox = document.getElementById(iGridID.replace("Grid", "TextBox"));
+      txtTextBox.value = Cell.innerHTML.replace("&nbsp;","");
+  }
+  
+  
+  //Sort the grid/lookup when clicking on column headers.
+  //Needs a bit of work to convert dates correctly for sorting.
+  //and the lastcol/lastseq needs converting to an array.
+  var lastcol, lastseq;
+  function fsort(ao_table, ai_sortcol, ab_header) {
+    var ir, ic, is, ii, id;
+    
+    ir = ao_table.rows.length;
+    if (ir < 1) return;
+
+    ic = ao_table.rows[1].cells.length;
+    // if we have a header row, ignore the first row
+    if (ab_header == true) is = 1; else is = 0;
+
+    // take a copy of the data to shuffle in memory
+    var row_data = new Array(ir);
+    ii = 0;
+    for (i = is; i < ir; i++) {
+      var col_data = new Array(ic);
+      for (j = 0; j < ic; j++) {
+        col_data[j] = ao_table.rows[i].cells[j].innerHTML;
+      }
+      row_data[ii++] = col_data;
+    }
+
+    // sort the data
+    var bswap = false;
+    var row1, row2;
+    var col1, col2;
+
+    if (ai_sortcol != lastcol)
+      lastseq = 'A';
+    else {
+      if (lastseq == 'A') lastseq = 'D'; else lastseq = 'A';
+    }
+
+    // if we have a header row we have one less row to sort
+    if (ab_header == true) id = ir - 1; else id = ir;
+    for (i = 0; i < id; i++) {
+      bswap = false;
+      for (j = 0; j < id - 1; j++) {
+        // test the current value + the next and
+        // swap if required.
+        row1 = row_data[j];
+        row2 = row_data[j + 1];
+
+        if (IsNumeric(row1[ai_sortcol]) == true) {
+          col1 = parseFloat(row1[ai_sortcol]);
+          col2 = parseFloat(row2[ai_sortcol]);
+        }
+        else if (isDate(row1[ai_sortcol]) == true) {
+          col1 = Date.parse(row1[ai_sortcol]);
+          col2 = Date.parse(row2[ai_sortcol]);
+        }
+        else {
+          col1 = row1[ai_sortcol];
+          col2 = row2[ai_sortcol];
+        }
+
+
+        if (lastseq == "A") {
+          if (col1 > col2) {
+            row_data[j + 1] = row1;
+            row_data[j] = row2;
+            bswap = true;
+          }
+        }
+        else {
+          if (col1 < col2) {
+            row_data[j + 1] = row1;
+            row_data[j] = row2;
+            bswap = true;
+          }
+        }
+      }
+      if (bswap == false) break;
+    }
+
+    // load the data back into the table
+    // When we hit the ID of the selected row, store it so we can highlight and scroll to it.
+    
+    if(eval(document.getElementById(ao_table.id.replace("Grid", "TextBox")))) 
+    {
+      hdn1 = document.getElementById(ao_table.id.replace("Grid", "TextBox"));
+      iRecordID = hdn1.value.toUpperCase().trim()
+      iRecordIDColNum = ao_table.attributes["LookupColumnIndex"].value;
+    }
+    else
+    {
+      //get the selected ID from the hidden field
+      hdn1 = document.getElementById(ao_table.id.replace("Grid", "hiddenfield"));
+      iRecordID = hdn1.value;
+      if((iRecordID < 0) || (IsNumeric(iRecordID)==false)) {iRecordID = 0;}
+      iRecordIDColNum = GetIDColumnNum(ao_table.id);
+    }
+
+    ii = is;
+    iCurrentRow = -1;
+    
+    for (i = 0; i < id; i++) {
+      row1 = row_data[i];
+      for (j = 0; j < ic; j++) {
+        ao_table.rows[ii].cells[j].innerHTML = row1[j];
+      }
+      //check for ID match.
+      if (iRecordIDColNum >= 0) {
+        if (ao_table.rows[ii].cells[iRecordIDColNum].innerText.toUpperCase().trim() == iRecordID) {
+          iCurrentRow = ii;
+        }
+      }
+      
+      ii++;
+    }
+    lastcol = ai_sortcol;
+   
+    if (iCurrentRow >= 0)   {
+      doscroll(ao_table.id, iCurrentRow);
+    }
+  }
+
+  function GetIDColumnNum(GridID) {
+
+    ao_table = document.getElementById(GridID);
+    
+    ir = ao_table.rows.length;
+
+    if (ir < 1) return;
+
+    ic = ao_table.rows[1].cells.length;
+
+    ii = 0;
+      for (j = 0; j < ic; j++) {
+        col_colour = ao_table.rows[1].cells[j].style.backgroundColor;
+        if (col_colour == "black") {
+          return j;
+        }
+      }
+  }
+
+
+  function IsNumeric(sText) {
+    var ValidChars = "0123456789.-+ ";
+    var IsNumber = true;
+    var Char;
+
+    for (i = 0; i < sText.length && IsNumber == true; i++) {
+      Char = sText.charAt(i);
+      if (ValidChars.indexOf(Char) == -1) {
+        IsNumber = false;
+      }
+    }
+    return IsNumber;
+  }
+
+  function isDate(value) {
+    var d = Date.parse(value);
+    return (d > 0);
+  } 
+
+  
+  function doscroll(GridID, iRowNum) {
+    //scrolls the grid/lookup to the specified row and highlights it.
+    tblTable = document.getElementById(GridID);
+
+    if (iRowNum <= tblTable.rows.length) {
+      iRowHeight = tblTable.rows(iRowNum).offsetHeight;
+      //scroll to the row
+      document.getElementById(GridID.replace("Grid", "gridcontainer")).scrollTop = (iRowHeight * iRowNum);
+      //Highlight the row
+      if(eval(document.getElementById(GridID.replace("Grid", "TextBox"))))
+      {
+        changeDDERow(GridID, iRowNum, 'default', 0)
+      }
+      else
+      {
+        changeRow(GridID, iRowNum, 'default', GetIDColumnNum(GridID))
+      }
+    }
+  }  
+  
     // ]]>
 	</script>
 
 	<script src="scripts\WebNumericEditValidation.js" type="text/javascript"></script>
-
-</head>
-<body id="bdyMain" onload="return window_onload()" scroll="auto" style="overflow: auto;  
-	text-align: center; margin: 0px; padding: 0px;">
-	<img id="imgErrorMessages_Max" src="Images/uparrows_white.gif" alt="Show messages"
-		style="position: absolute; right: 1px; bottom: 1px; display: none; visibility: hidden;
-		z-index: 1;" onclick="showErrorMessages(true);" />
-	<form runat="server" hidefocus="true" id="frmMain" onsubmit="return submitForm();">
-	<asp:ScriptManager ID="ScriptManager1" runat="server">
-	</asp:ScriptManager>
+	
+  <ajx:ToolkitScriptManager ID="ToolkitScriptManager1" runat="server" EnablePartialRendering="true">
+  </ajx:ToolkitScriptManager>
 	<!--
         Web Form Validation Error Messages
         -->
@@ -997,7 +1360,7 @@
 				style="right: 1px; position: absolute; top: 0px;" onclick="showErrorMessages(false);" />
 			<igmisc:WebAsyncRefreshPanel id="pnlErrorMessages" runat="server" style="position: relative;"
 				width="100%" height="100%">
-				<asp:Label ID="lblErrors" runat="server" Text=""></asp:Label>
+				<asp:Label ID="lblErrors" runat="server" Text=""></asp:Label>				
 				<asp:BulletedList ID="bulletErrors" runat="server" Style="margin-top: 0px; margin-bottom: 0px;
 					padding-top: 5px; padding-bottom: 5px;" BulletStyle="Disc" Font-Names="Verdana"
 					Font-Size="8pt" BorderStyle="None">
@@ -1038,15 +1401,17 @@
         -->
 	<div id="divInput" style="z-index: 0; width: 100%; background-color: <%=ColourThemeHex()%>;
 		padding: 0px; margin: 0px; text-align: center">
-		<igmisc:WebAsyncRefreshPanel ID="pnlInput" runat="server" Style="position: relative;
+		<%--<igmisc:WebAsyncRefreshPanel ID="pnlInput2" runat="server" Style="position: relative;
 			padding-right: 0px; padding-left: 0px; padding-bottom: 0px; margin-top: 0px; margin-bottom: 0px;
 			margin-right: auto; margin-left: auto; padding-top: 0px;" LinkedRefreshControlID="pnlErrorMessages">
-			<igtxt:WebImageButton id="btnSubmit" runat="server" style="visibility: hidden; top: 0px;
-				position: absolute; left: 0px; width: 0px; height: 0px;" text="">
-			</igtxt:WebImageButton>
-			<igtxt:WebImageButton id="btnReEnableControls" runat="server" style="visibility: hidden;
-				top: 0px; position: absolute; left: 0px; width: 0px; height: 0px;" text="">
-			</igtxt:WebImageButton>
+		</igmisc:WebAsyncRefreshPanel>--%>
+      
+    <asp:UpdatePanel ID="pnlInput" runat="server" >
+    <ContentTemplate>
+      <asp:Button id="btnSubmit" runat="server" style="visibility: hidden; top: 0px;
+				position: absolute; left: 0px; width: 0px; height: 0px;" text=""/>
+        <asp:Button id="btnReEnableControls" runat="server" style="visibility: hidden;
+				top: 0px; position: absolute; left: 0px; width: 0px; height: 0px;" text=""/>
 			<asp:HiddenField ID="hdnCount_Errors" runat="server" Value="" />
 			<asp:HiddenField ID="hdnCount_Warnings" runat="server" Value="" />
 			<asp:HiddenField ID="hdnOverrideWarnings" runat="server" Value="0" />
@@ -1058,7 +1423,9 @@
 			<asp:HiddenField ID="hdnSubmissionMessage_1" runat="server" Value="" />
 			<asp:HiddenField ID="hdnSubmissionMessage_2" runat="server" Value="" />
 			<asp:HiddenField ID="hdnSubmissionMessage_3" runat="server" Value="" />
-		</igmisc:WebAsyncRefreshPanel>
+		</ContentTemplate>
+    </asp:UpdatePanel>			
+
 	</div>
 	<!--
     Temporary values from the server
@@ -1081,4 +1448,51 @@
 	<input type="hidden" id="txtLastDate_Day" name="txtLastDate_Day" value="" />
 	<input type="hidden" id="txtLastDate_Year" name="txtLastDate_Year" value="" />
 </body>
+
+<script language="javascript" type="text/javascript">
+
+  function disposeTree(sender, args) {
+  
+    //http://support.microsoft.com/?kbid=2000262
+
+    try { 
+  
+    var elements = args.get_panelsUpdating();
+    for (var i = elements.length - 1; i >= 0; i--) {
+      var element = elements[i];
+      var allnodes = element.getElementsByTagName('*'),
+                length = allnodes.length;
+      var nodes = new Array(length)
+      for (var k = 0; k < length; k++) {
+        nodes[k] = allnodes[k];
+      }
+      for (var j = 0, l = nodes.length; j < l; j++) {
+        var node = nodes[j];
+        if (node.nodeType === 1) {
+          if (node.dispose && typeof (node.dispose) === "function") {
+            node.dispose();
+          }
+          else if (node.control && typeof (node.control.dispose) === "function") {
+            node.control.dispose();
+          }
+
+          var behaviors = node._behaviors;
+          if (behaviors) {
+            behaviors = Array.apply(null, behaviors);
+            for (var k = behaviors.length - 1; k >= 0; k--) {
+              behaviors[k].dispose();
+            }
+          }
+        }
+      }
+      element.innerHTML = "";
+    }} catch (e) { }
+  }
+
+  try {
+    Sys.WebForms.PageRequestManager.getInstance().add_pageLoading(disposeTree);
+  }
+  catch (e) { }
+
+</script>
 </html>
