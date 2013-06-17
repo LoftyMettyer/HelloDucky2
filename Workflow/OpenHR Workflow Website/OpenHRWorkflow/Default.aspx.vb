@@ -3259,9 +3259,9 @@ Public Class _Default
 
         hdnErrorMessage.Value = sMessage
 
-        sMessage1 = sMessage & "<BR><BR>Click "
+        sMessage1 = sMessage & "<BR><BR>Click"
         sMessage2 = "here"
-        sMessage3 = " to close this form."
+        sMessage3 = "to close this form."
 
         hdnSubmissionMessage_1.Value = sMessage1
         hdnSubmissionMessage_2.Value = sMessage2
@@ -3653,36 +3653,36 @@ Public Class _Default
                 Select Case miSavedForLaterMessageType
                   Case 1 ' Custom
                     If Not General.SplitMessage(msSavedForLaterMessage, sMessage1, sMessage2, sMessage3) Then
-                      sMessage1 = "Workflow step saved for later.<BR><BR>Click "
+                      sMessage1 = "Workflow step saved for later.<BR><BR>Click"
                       sMessage2 = "here"
-                      sMessage3 = " to close this form."
+                      sMessage3 = "to close this form."
                     End If
                   Case 2 ' None
                     sMessage1 = ""
                     sMessage2 = ""
                     sMessage3 = ""
                   Case Else   'System default
-                    sMessage1 = "Workflow step saved for later.<BR><BR>Click "
+                    sMessage1 = "Workflow step saved for later.<BR><BR>Click"
                     sMessage2 = "here"
-                    sMessage3 = " to close this form."
+                    sMessage3 = "to close this form."
                 End Select
 
               ElseIf sFormElements.Length = 0 Then
                 Select Case miCompletionMessageType
                   Case 1 ' Custom
                     If Not General.SplitMessage(msCompletionMessage, sMessage1, sMessage2, sMessage3) Then
-                      sMessage1 = "Workflow step completed.<BR><BR>Click "
+                      sMessage1 = "Workflow step completed.<BR><BR>Click"
                       sMessage2 = "here"
-                      sMessage3 = " to close this form."
+                      sMessage3 = "to close this form."
                     End If
                   Case 2 ' None
                     sMessage1 = ""
                     sMessage2 = ""
                     sMessage3 = ""
                   Case Else   'System default
-                    sMessage1 = "Workflow step completed.<BR><BR>Click "
+                    sMessage1 = "Workflow step completed.<BR><BR>Click"
                     sMessage2 = "here"
-                    sMessage3 = " to close this form."
+                    sMessage3 = "to close this form."
                 End Select
               Else
                 arrFollowOnForms = sFormElements.Split(CChar(vbTab))
@@ -3718,19 +3718,19 @@ Public Class _Default
                 Select Case miFollowOnFormsMessageType
                   Case 1 ' Custom
                     If Not General.SplitMessage(msFollowOnFormsMessage, sMessage1, sMessage2, sMessage3) Then
-                      sMessage1 = "Workflow step completed.<BR><BR>Click "
+                      sMessage1 = "Workflow step completed.<BR><BR>Click"
                       sMessage2 = "here"
-                      sMessage3 = " to complete the follow-on Workflow form" & _
-                       CStr(IIf(iFollowOnFormCount = 1, "", "s")) & "."
+                      sMessage3 = "to complete the follow-on Workflow form" & _
+                       If(iFollowOnFormCount = 1, "", "s") & "."
                     End If
                   Case 2 ' None
                     sMessage1 = ""
                     sMessage2 = ""
                     sMessage3 = ""
                   Case Else   'System default
-                    sMessage1 = "Workflow step completed.<BR><BR>Click "
+                    sMessage1 = "Workflow step completed.<BR><BR>Click"
                     sMessage2 = "here"
-                    sMessage3 = " to complete the follow-on Workflow form" & _
+                    sMessage3 = "to complete the follow-on Workflow form" & _
                      CStr(IIf(iFollowOnFormCount = 1, "", "s")) & "."
                 End Select
 
@@ -3740,7 +3740,7 @@ Public Class _Default
               hdnSubmissionMessage_2.Value = NullSafeString(sMessage2)
               hdnSubmissionMessage_3.Value = NullSafeString(sMessage3)
 
-              hdnNoSubmissionMessage.Value = CStr(IIf((sMessage1.Length = 0) And (sMessage2.Length = 0) And (sMessage3.Length = 0), "1", "0"))
+              hdnNoSubmissionMessage.Value = CStr(If((sMessage1.Length = 0) And (sMessage2.Length = 0) And (sMessage3.Length = 0), "1", "0"))
               hdnFollowOnForms.Value = sFollowOnForms
 
               If hdnNoSubmissionMessage.Value <> "1" Then
@@ -3768,9 +3768,9 @@ Public Class _Default
 
       hdnErrorMessage.Value = sMessage
 
-      sMessage1 = sMessage & "<BR><BR>Click "
+      sMessage1 = sMessage & "<BR><BR>Click"
       sMessage2 = "here"
-      sMessage3 = " to close this form."
+      sMessage3 = "to close this form."
 
       hdnSubmissionMessage_1.Value = sMessage1
       hdnSubmissionMessage_2.Value = sMessage2
@@ -3819,7 +3819,6 @@ Public Class _Default
             .Where(Function(c) c.ClientID.StartsWith(FORMINPUTPREFIX))
 
       For Each ctlFormInput In controlList
-        'For Each ctlFormInput In pnlInput.ContentTemplateContainer.Controls
 
         sID = ctlFormInput.ID
 
@@ -3928,9 +3927,9 @@ Public Class _Default
 
       hdnErrorMessage.Value = sMessage
 
-      sMessage1 = sMessage & "<BR><BR>Click "
+      sMessage1 = sMessage & "<BR><BR>Click"
       sMessage2 = "here"
-      sMessage3 = " to close this form."
+      sMessage3 = "to close this form."
 
       hdnSubmissionMessage_1.Value = sMessage1
       hdnSubmissionMessage_2.Value = sMessage2
