@@ -736,7 +736,15 @@ Public Class _Default
                       .Style.Add("opacity", "0")
                     End If
 
-                    If NullSafeInteger(dr("BackColor")) <> 16249587 Then
+                    ' stops the mobiles displaying buttons with over-rounded corners...
+                    If IsMobileBrowser() Then
+                      .Style.Add("-webkit-appearance", "none")
+                      .Style.Add("background-color", "#CCCCCC")
+                      .Style.Add("border", "solid 1px #C0C0C0")
+                      .Style.Add("border-radius", "0px")
+                    End If
+
+                    If NullSafeInteger(dr("BackColor")) <> 16249587 AndAlso NullSafeInteger(dr("BackColor")) <> -2147483633 Then
                       .Style.Add("background-color", General.GetHtmlColour(NullSafeInteger(dr("BackColor"))).ToString)
                       .Style.Add("border", "solid 1px " & General.GetHtmlColour(9999523).ToString)
                     End If
@@ -765,9 +773,6 @@ Public Class _Default
 
                     .Style.Add("Width", Unit.Pixel(NullSafeInteger(dr("Width"))).ToString)
                     .Style.Add("Height", Unit.Pixel(NullSafeInteger(dr("Height"))).ToString)
-
-                    ' stops the mobiles displaying buttons with over-rounded corners...
-                    If IsMobileBrowser() Then .Style.Add("-webkit-appearance", "none")
 
                     .Attributes.Add("onclick", "try{setPostbackMode(1);}catch(e){};")
                   End With
@@ -2871,15 +2876,25 @@ Public Class _Default
                     .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
                     .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
 
-                    .Style.Add("BackColor", General.GetColour(NullSafeInteger(dr("BackColor"))).ToString)
-                    .Style.Add("Border", "Solid 1px " & General.GetColour(9999523).ToString)
-                    .Style.Add("Color", General.GetColour(NullSafeInteger(dr("ForeColor"))).ToString)
+                    ' stops the mobiles displaying buttons with over-rounded corners...
+                    If IsMobileBrowser() Then
+                      .Style.Add("-webkit-appearance", "none")
+                      .Style.Add("background-color", "#CCCCCC")
+                      .Style.Add("border", "solid 1px #C0C0C0")
+                      .Style.Add("border-radius", "0px")
+                    End If
+
+                    If NullSafeInteger(dr("BackColor")) <> 16249587 AndAlso NullSafeInteger(dr("BackColor")) <> -2147483633 Then
+                      .Style.Add("background-color", General.GetHtmlColour(NullSafeInteger(dr("BackColor"))).ToString)
+                      .Style.Add("border", "solid 1px " & General.GetHtmlColour(9999523).ToString)
+                    End If
+
+                    If NullSafeInteger(dr("ForeColor")) <> 6697779 Then
+                      .Style.Add("color", General.GetHtmlColour(NullSafeInteger(dr("ForeColor"))).ToString)
+                    End If
 
                     .Style.Add("padding", "0px")
                     .Style.Add("white-space", "normal")
-
-                    ' NPG20120412 - Fault HRPRO-2148
-                    If IsMobileBrowser() Then .Style.Add("-webkit-appearance", "none")
 
                     .Value = NullSafeString(dr("caption"))
 
