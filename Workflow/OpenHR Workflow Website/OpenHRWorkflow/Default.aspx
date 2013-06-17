@@ -11,7 +11,6 @@
 <!--<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=1;"/>-->
 <!--<meta name="viewport" content="width=700; user-scalable=1;"/>-->
 
-
 <head runat="server">
   <style type="text/css">
 		.highlighted { background: yellow; }
@@ -56,6 +55,86 @@
     }
 
 
+     function dateboxclick(elementID) {
+        if (document.getElementById(elementID).style.visibility == "visible") {
+          document.getElementById(elementID).style.visibility = "hidden";
+        }
+        else {
+          document.getElementById(elementID).style.visibility = "visible";
+        }
+
+
+        //Set default Date  
+        var Dt = new Date();
+
+        var cellHeight = document.getElementById(elementID + 'daysRow_1').offsetHeight;
+        
+        var Datebox = document.getElementById(elementID + 'Days');
+        Datebox.scrollTop = ((cellHeight + 2) * Dt.getDate());
+
+        Datebox = document.getElementById(elementID + 'Months');
+        Datebox.scrollTop = ((cellHeight + 2) * (Dt.getMonth() + 1));
+
+        Datebox = document.getElementById(elementID + 'Years');
+        Datebox.scrollTop = ((cellHeight + 2) * (Dt.getFullYear() - 1949));
+
+     }
+
+
+     function dateboxlostfocus(elementID) {
+        document.getElementById(elementID).style.visibility = "hidden";
+     }
+
+
+    function chooseDate(elementID) {      
+      var cellHeight = document.getElementById(elementID + 'daysRow_1').offsetHeight;
+
+      var DateBox = document.getElementById(elementID + 'Days');
+      var tmpDate = '' + Math.round(DateBox.scrollTop / (cellHeight + 2));
+      if(tmpDate.length<2) {var strDate='0' + tmpDate;}else{var strDate=tmpDate;}
+
+      var DateBox = document.getElementById(elementID + 'Months');
+      var tmpDate = '' + Math.round(DateBox.scrollTop / (cellHeight + 2));
+      if(tmpDate.length<2) {strDate+='/0' + tmpDate;}else{strDate+='/' +tmpDate;}
+
+      var DateBox = document.getElementById(elementID + 'Years');
+      var tmpDate = '' + (Math.round(DateBox.scrollTop / (cellHeight + 2))+ 1949);
+      strDate+='/' + tmpDate;
+
+      var dateTextBox = document.getElementById(elementID + 'TextBox');
+      dateTextBox.value = strDate;
+
+      var DateBox = document.getElementById(elementID);
+      DateBox.style.visibility = "hidden";
+
+    }
+
+
+    function dateBoxTodayClick(elementID) {
+       //Set today's Date  
+        var Dt = new Date();
+
+        var cellHeight = document.getElementById(elementID + 'daysRow_1').offsetHeight;
+        
+        var Datebox = document.getElementById(elementID + 'Days');
+        Datebox.scrollTop = ((cellHeight + 2) * Dt.getDate());
+
+        Datebox = document.getElementById(elementID + 'Months');
+        Datebox.scrollTop = ((cellHeight + 2) * (Dt.getMonth() + 1));
+
+        Datebox = document.getElementById(elementID + 'Years');
+        Datebox.scrollTop = ((cellHeight + 2) * (Dt.getFullYear() - 1949));      
+    }
+
+    function dateBoxClearClick(elementID) {
+      //close the calendar and clear the textbox
+      var DateBox = document.getElementById(elementID);
+      DateBox.style.visibility = "hidden";
+
+      var dateTextBox = document.getElementById(elementID + 'TextBox');
+      dateTextBox.value = '';
+
+    }
 
 
 		function window_onload() {
@@ -1347,9 +1426,9 @@ function ResizeComboForForm(sender, args) {
 	<!--
         Web Form Controls
         -->
-  <div id="pnlTabsDiv" style="height:auto;float:right" runat="server"></div>
+  <div id="pnlTabsDiv" style="height:auto;" runat="server"></div>
 	<div id="divInput" style="top:0px; left:0px; z-index: 0; background-color: <%=ColourThemeHex()%>;
-		padding: 0px; margin: 0px; text-align: center;float:right" runat="server">
+		padding: 0px; margin: 0px; text-align: center;float:left" runat="server">
       
     <asp:UpdatePanel ID="pnlInput" runat="server">
     <ContentTemplate>

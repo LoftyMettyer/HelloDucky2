@@ -1340,113 +1340,482 @@ Public Class _Default
                   End If
 
                 Case 7 ' Input value - date
-                  ctlForm_Date = New Infragistics.WebUI.WebSchedule.WebDateChooser
-                  With ctlForm_Date
-                    .ID = sID
-                    .TabIndex = CShort(NullSafeInteger(dr("tabIndex")) + 1)
 
-                    If (iMinTabIndex < 0) Or (NullSafeInteger(dr("tabIndex")) < iMinTabIndex) Then
-                      sDefaultFocusControl = sID
-                      iMinTabIndex = NullSafeInteger(dr("tabIndex"))
-                      ctlDefaultFocusControl = ctlForm_Date
-                    End If
+                  If isMobileBrowser() Then
 
-                    .Style("position") = "absolute"
-                    .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
-                    .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
+                    ' create a text box to hold the selected date
+                    ctlForm_TextInput = New TextBox
+                    With ctlForm_TextInput
+                      .ID = sID & "TextBox"
+                      .TabIndex = -1
+                      .Style("position") = "absolute"
+                      .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
+                      .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
+                      .Height() = Unit.Pixel(NullSafeInteger(dr("Height")) - 6)
+                      .Width() = Unit.Pixel(NullSafeInteger(dr("Width")) - 2)
+                      .Style("text-align") = "left"
+                      '.TextMode = TextBoxMode.SingleLine
+                      '.Wrap = False
+                      '.ReadOnly = True
+                      .Attributes.Add("readOnly", "readOnly")
+                      .Attributes.Add("onclick", "dateboxclick('" & sID & "');")
+                      .BorderColor = objGeneral.GetColour(5730458)
+                      .BorderStyle = BorderStyle.Solid
+                      .BorderWidth = Unit.Pixel(1)
+                      .BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColor")))
+                      .ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
+                      .Font.Name = NullSafeString(dr("FontName"))
+                      .Font.Size = FontUnit.Parse(NullSafeString(dr("FontSize")))
+                      .Font.Bold = NullSafeBoolean(dr("FontBold"))
+                      .Font.Italic = NullSafeBoolean(dr("FontItalic"))
+                      .Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
+                      .Font.Underline = NullSafeBoolean(dr("FontUnderline"))
+                    End With
 
-                    .CalendarLayout.FooterFormat = "Today: {0:d}"
-                    .CalendarLayout.FirstDayOfWeek = WebControls.FirstDayOfWeek.Sunday
-                    .CalendarLayout.ShowTitle = False
+                    ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_TextInput)
 
-                    .CalendarLayout.DayStyle.Font.Size = FontUnit.Parse(CStr(8))
-                    .CalendarLayout.DayStyle.Font.Name = "Verdana"
-                    .CalendarLayout.DayStyle.ForeColor = objGeneral.GetColour(6697779)
-                    .CalendarLayout.DayStyle.BackColor = objGeneral.GetColour(15988214)
+                    ' spinny iPhone type date control
+                    Dim ctlform_Panel As New Panel
 
-                    .CalendarLayout.FooterStyle.Font.Size = FontUnit.Parse(CStr(8))
-                    .CalendarLayout.FooterStyle.Font.Name = "Verdana"
-                    .CalendarLayout.FooterStyle.ForeColor = objGeneral.GetColour(6697779)
-                    .CalendarLayout.FooterStyle.BackColor = objGeneral.GetColour(16248553)
+                    With ctlform_Panel
+                      .ID = sID
+                      .Style.Add("font-family", "verdana")
+                      .Style.Add("padding-left", "0px")
+                      .Style.Add("padding-right", "0px")
+                      .Style.Add("position", "absolute")
+                      .Style.Add("visibility", "hidden")
+                      .Style.Add("width", "247px")
+                      .Style.Add("height", "150px")
+                      .Style.Add("text-align", "center")
+                      .Style.Add("position", "absolute")
+                      .Style.Add("left", Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString)
+                      Dim iTopPos As Integer = NullSafeInteger(dr("TopCoord")) + NullSafeInteger(dr("Height"))
+                      .Style.Add("top", Unit.Pixel(iTopPos).ToString)
+                      .Style.Add("margin-left", "-125px")
+                      .Style.Add("z-index", "1")
+                      .Style.Add("border-radius", "0px 10px 10px 10px")
+                      .Style.Add("border", "2px solid black")
+                      .Style.Add("vertical-align", "middle")
+                      .Style.Add("opacity", "1")
+                      '.Attributes.Add("onblur", "dateboxlostfocus('" & sID & "');")
+                      .Style.Add("background-color", "black")
 
-                    .CalendarLayout.SelectedDayStyle.Font.Size = FontUnit.Parse(CStr(8))
-                    .CalendarLayout.SelectedDayStyle.Font.Name = "Verdana"
-                    .CalendarLayout.SelectedDayStyle.Font.Bold = True
-                    .CalendarLayout.SelectedDayStyle.Font.Underline = True
-                    .CalendarLayout.SelectedDayStyle.ForeColor = objGeneral.GetColour(2774907)
-                    .CalendarLayout.SelectedDayStyle.BackColor = objGeneral.GetColour(10480637)
+                    End With
 
-                    .CalendarLayout.OtherMonthDayStyle.Font.Size = FontUnit.Parse(CStr(8))
-                    .CalendarLayout.OtherMonthDayStyle.Font.Name = "Verdana"
-                    .CalendarLayout.OtherMonthDayStyle.ForeColor = objGeneral.GetColour(11375765)
 
-                    .CalendarLayout.NextPrevStyle.ForeColor = System.Drawing.SystemColors.InactiveCaptionText
-                    .CalendarLayout.NextPrevStyle.BackColor = objGeneral.GetColour(16248553)
-                    .CalendarLayout.NextPrevStyle.ForeColor = objGeneral.GetColour(6697779)
+                    ' Couple of small divs for the 'Today' and 'Clear' buttons.
+                    Dim ctlForm_TodayPanel As New Panel
+                    With ctlForm_TodayPanel
+                      .Style.Add("text-align", "center")
+                      .Style.Add("vertical-align", "middle")
+                      .Style.Add("position", "absolute")
+                      .Style.Add("height", "15px")
+                      .Style.Add("width", "50px")
+                      .Style.Add("bottom", "151px")
+                      .Style.Add("left", "50%")
+                      .Style.Add("margin-left", "-125px")
+                      .Style.Add("background-color", "White")
+                      .Style.Add("border-radius", "5px 0px 0px 0px")
+                      .BorderColor = Color.Black
+                      .BorderWidth = 1
+                      .Attributes.Add("onclick", "dateBoxTodayClick('" & sID & "');")
+                    End With
 
-                    .CalendarLayout.CalendarStyle.Width = Unit.Pixel(152)
-                    .CalendarLayout.CalendarStyle.Height = Unit.Pixel(80)
-                    .CalendarLayout.CalendarStyle.Font.Size = FontUnit.Parse(CStr(8))
-                    .CalendarLayout.CalendarStyle.Font.Name = "Verdana"
-                    .CalendarLayout.CalendarStyle.BackColor = System.Drawing.Color.White
+                    ctlForm_Label = New Label
+                    With ctlForm_Label
+                      .Font.Name = "verdana"
+                      .Font.Size = FontUnit.Parse("7")
+                      .Text = "Today"
+                      .Width = Unit.Pixel(50)
+                      .Height = Unit.Pixel(10)
+                    End With
 
-                    .CalendarLayout.WeekendDayStyle.BackColor = objGeneral.GetColour(15004669)
+                    ctlForm_TodayPanel.Controls.Add(ctlForm_Label)
+                    ctlform_Panel.Controls.Add(ctlForm_TodayPanel)
 
-                    .CalendarLayout.TodayDayStyle.ForeColor = objGeneral.GetColour(2774907)
-                    .CalendarLayout.TodayDayStyle.BackColor = objGeneral.GetColour(10480637)
 
-                    .CalendarLayout.DropDownStyle.Font.Size = FontUnit.Parse(CStr(8))
-                    .CalendarLayout.DropDownStyle.Font.Name = "Verdana"
-                    .CalendarLayout.DropDownStyle.BorderStyle = BorderStyle.Solid
-                    .CalendarLayout.DropDownStyle.BorderColor = objGeneral.GetColour(10720408)
+                    ' Couple of small divs for the 'Today' and 'Clear' buttons.
+                    Dim ctlForm_ClearPanel As New Panel
+                    With ctlForm_ClearPanel
+                      .Style.Add("text-align", "center")
+                      .Style.Add("vertical-align", "middle")
+                      .Style.Add("position", "absolute")
+                      .Style.Add("height", "15px")
+                      .Style.Add("width", "50px")
+                      .Style.Add("bottom", "151px")
+                      .Style.Add("left", "50%")
+                      .Style.Add("margin-left", "-75px")
+                      .Style.Add("background-color", "White")
+                      .Style.Add("border-radius", "0px 5px 0px 0px")
+                      .BorderColor = Color.Black
+                      .BorderWidth = 1
+                      .Attributes.Add("onclick", "dateBoxClearClick('" & sID & "');")
+                    End With
 
-                    .CalendarLayout.DayHeaderStyle.BackColor = objGeneral.GetColour(16248553)
-                    .CalendarLayout.DayHeaderStyle.ForeColor = objGeneral.GetColour(6697779)
-                    .CalendarLayout.DayHeaderStyle.Font.Size = FontUnit.Parse(CStr(8))
-                    .CalendarLayout.DayHeaderStyle.Font.Name = "Verdana"
-                    .CalendarLayout.DayHeaderStyle.Font.Bold = True
+                    ctlForm_Label = New Label
+                    With ctlForm_Label
+                      .Font.Name = "verdana"
+                      .Font.Size = FontUnit.Parse("7")
+                      .Text = "Clear"
+                      .Width = Unit.Pixel(50)
+                      .Height = Unit.Pixel(10)
+                    End With
 
-                    .CalendarLayout.TitleStyle.ForeColor = objGeneral.GetColour(6697779)
-                    .CalendarLayout.TitleStyle.BackColor = objGeneral.GetColour(16248553)
-                    .NullDateLabel = ""
+                    ctlForm_ClearPanel.Controls.Add(ctlForm_Label)
+                    ctlform_Panel.Controls.Add(ctlForm_ClearPanel)
 
-                    If (Not IsDBNull(dr("value"))) Then
-                      If CStr(dr("value")).Length > 0 Then
-                        iYear = CShort(NullSafeString(dr("value")).Substring(6, 4))
-                        iMonth = CShort(NullSafeString(dr("value")).Substring(0, 2))
-                        iDay = CShort(NullSafeString(dr("value")).Substring(3, 2))
 
-                        dtDate = DateSerial(iYear, iMonth, iDay)
-                        .Value = dtDate
+
+
+                    Dim ctlCalSpin_Table As New Table
+                    ctlCalSpin_Table.Style.Add("width", "100%")
+
+                    Dim ctlCalSpin_Row As New TableRow
+
+                    ' -------------------- DAYS ------------------------
+                    Dim ctlCalSpin_Cell_Day As New TableCell
+                    With ctlCalSpin_Cell_Day
+                      .Style.Add("width", "55px")
+                      .Style.Add("left", "0px")
+                      .Style.Add("border-radius", "10px 0px 0px 10px")
+                      .Style.Add("position", "absolute")
+                      .Style.Add("top", "0px")
+                      .Style.Add("bottom", "0px")
+                      ' .Style.Add("border", "1px solid black")
+                    End With
+
+                    Dim ctlCalSpin_Panel_Day As New Panel
+                    With ctlCalSpin_Panel_Day
+                      .ID = sID & "Days"
+                      .Style.Add("border-radius", "10px 0px 0px 10px")
+                      .Style.Add("width", "100%")
+                      .Style.Add("height", "100%")
+                      .Style.Add("background-image", "url('images/CalSpinBG.gif');background-color:white")
+                      .Style.Add("overflow", "auto")
+                    End With
+
+                    Dim ctlCalSpin_Table_Day As New Table
+                    ctlCalSpin_Table_Day.Style.Add("overflow", "auto")
+
+                    ' 3 blank lines are added so the user can spin to an empty value
+                    Dim ctlCalSpin_EmptyRow As New TableRow
+                    Dim ctlCalSpin_EmptyCell As New TableCell
+                    Dim ctlCalSpin_EmptyCellContent As New LiteralControl
+
+                    For jncount = 1 To 3
+                      ctlCalSpin_EmptyRow = New TableRow
+                      ctlCalSpin_EmptyCell = New TableCell
+                      ctlCalSpin_EmptyCell.Text = "&nbsp"
+
+                      ctlCalSpin_EmptyRow.Controls.Add(ctlCalSpin_EmptyCell)
+                      ctlCalSpin_Table_Day.Controls.Add(ctlCalSpin_EmptyRow)
+                    Next
+
+                    ' add 31 days to the spinner
+                    For jncount = 1 To 31
+                      ctlCalSpin_EmptyRow = New TableRow
+                      ctlCalSpin_EmptyRow.ID = sID & "daysRow_" & jncount.ToString
+                      ctlCalSpin_EmptyCell = New TableCell
+                      ctlCalSpin_EmptyCell.Text = jncount.ToString
+                      ctlCalSpin_EmptyCell.Attributes.Add("onclick", "chooseDate('" & sID & "');")
+                      ctlCalSpin_EmptyRow.Controls.Add(ctlCalSpin_EmptyCell)
+
+                      ctlCalSpin_Table_Day.Controls.Add(ctlCalSpin_EmptyRow)
+                    Next
+
+                    ' 3 blank lines are added so the user can spin to an empty value
+                    For jncount = 1 To 3
+                      ctlCalSpin_EmptyRow = New TableRow
+                      ctlCalSpin_EmptyCell = New TableCell
+                      ctlCalSpin_EmptyCell.Text = "&nbsp"
+
+                      ctlCalSpin_EmptyRow.Controls.Add(ctlCalSpin_EmptyCell)
+                      ctlCalSpin_Table_Day.Controls.Add(ctlCalSpin_EmptyRow)
+                    Next
+
+
+                    ' add day table to day panel
+                    ctlCalSpin_Panel_Day.Controls.Add(ctlCalSpin_Table_Day)
+                    ' add day panel to day cell
+                    ctlCalSpin_Cell_Day.Controls.Add(ctlCalSpin_Panel_Day)
+                    ' add day cell to row
+                    ctlCalSpin_Row.Controls.Add(ctlCalSpin_Cell_Day)
+
+                    ' -------------------- MONTHS ------------------------
+                    Dim ctlCalSpin_Cell_Month As New TableCell
+                    With ctlCalSpin_Cell_Month
+
+                      '.Style.Add("margin-left", "2px")
+                      .Style.Add("position", "absolute")
+                      .Style.Add("width", "128px")
+                      .Style.Add("left", "47px")
+                      .Style.Add("top", "0px")
+                      .Style.Add("bottom", "0px")
+                      .Style.Add("border-left", "1px solid black")
+                      .Style.Add("border-right", "1px solid black")
+                    End With
+
+                    Dim ctlCalSpin_Panel_Month As New Panel
+                    With ctlCalSpin_Panel_Month
+                      .ID = sID & "Months"
+                      .Style.Add("width", "128px")
+                      .Style.Add("height", "100%")
+                      .Style.Add("background-image", "url('images/CalSpinBG.gif')")
+                      .Style.Add("background-color", "white")
+                      .Style.Add("overflow", "auto")
+                    End With
+
+                    Dim ctlCalSpin_Table_Month As New Table
+                    ctlCalSpin_Table_Month.Style.Add("overflow", "auto")
+
+                    ' Empty row
+                    ctlCalSpin_EmptyRow = New TableRow
+                    ctlCalSpin_EmptyCell = New TableCell
+                    ctlCalSpin_EmptyCellContent = New LiteralControl("&nbsp")
+                    ctlCalSpin_EmptyCell.Controls.Add(ctlCalSpin_EmptyCellContent)
+                    ctlCalSpin_EmptyRow.Controls.Add(ctlCalSpin_EmptyCell)
+
+                    ' 3 blank lines are added so the user can spin to an empty value
+                    For jncount = 1 To 3
+                      ctlCalSpin_EmptyRow = New TableRow
+                      ctlCalSpin_EmptyCell = New TableCell
+                      ctlCalSpin_EmptyCell.Text = "&nbsp"
+
+                      ctlCalSpin_EmptyRow.Controls.Add(ctlCalSpin_EmptyCell)
+                      ctlCalSpin_Table_Month.Controls.Add(ctlCalSpin_EmptyRow)
+                    Next
+
+                    ' add 12 months to the spinner
+                    For jncount = 1 To 12
+                      ctlCalSpin_EmptyRow = New TableRow
+                      ctlCalSpin_EmptyRow.ID = sID & "MonthsRow_" & jncount.ToString
+                      ctlCalSpin_EmptyCell = New TableCell
+                      ctlCalSpin_EmptyCell.Text = MonthName(jncount)
+                      ctlCalSpin_EmptyCell.Attributes.Add("onclick", "chooseDate('" & sID & "');")
+                      ctlCalSpin_EmptyRow.Controls.Add(ctlCalSpin_EmptyCell)
+
+                      ctlCalSpin_Table_Month.Controls.Add(ctlCalSpin_EmptyRow)
+                    Next
+
+                    ' 3 blank lines are added so the user can spin to an empty value
+                    For jncount = 1 To 3
+                      ctlCalSpin_EmptyRow = New TableRow
+                      ctlCalSpin_EmptyCell = New TableCell
+                      ctlCalSpin_EmptyCell.Text = "&nbsp"
+
+                      ctlCalSpin_EmptyRow.Controls.Add(ctlCalSpin_EmptyCell)
+                      ctlCalSpin_Table_Month.Controls.Add(ctlCalSpin_EmptyRow)
+                    Next
+
+
+                    ' add Month table to day panel
+                    ctlCalSpin_Panel_Month.Controls.Add(ctlCalSpin_Table_Month)
+
+                    ' add Month panel to Month cell
+                    ctlCalSpin_Cell_Month.Controls.Add(ctlCalSpin_Panel_Month)
+
+                    ' add Month cell to row
+                    ctlCalSpin_Row.Controls.Add(ctlCalSpin_Cell_Month)
+
+
+                    ' -------------------- YEARS ------------------------
+                    Dim ctlCalSpin_Cell_Year As New TableCell
+                    With ctlCalSpin_Cell_Year
+                      .Style.Add("width", "67px")
+                      .Style.Add("left", "178px")
+                      '.Style.Add("margin-left", "15px")
+                      .Style.Add("border-radius", "0px 10px 10px 0px")
+                      .Style.Add("position", "absolute")
+                      .Style.Add("top", "0px")
+                      .Style.Add("bottom", "0px")
+                      '.Style.Add("border", "1px solid cyan")
+                    End With
+
+                    Dim ctlCalSpin_Panel_Year As New Panel
+                    With ctlCalSpin_Panel_Year
+                      .ID = sID & "Years"
+                      .Style.Add("border-radius", "0px 10px 10px 0px")
+                      .Style.Add("width", "100%")
+                      .Style.Add("height", "100%")
+                      .Style.Add("background-image", "url('images/CalSpinBG.gif');background-color:white")
+                      .Style.Add("overflow", "auto")
+                    End With
+
+                    Dim ctlCalSpin_Table_Year As New Table
+                    ctlCalSpin_Table_Year.Style.Add("overflow", "auto")
+
+                    ' Empty row
+                    ctlCalSpin_EmptyRow = New TableRow
+                    ctlCalSpin_EmptyCell = New TableCell
+                    ctlCalSpin_EmptyCellContent = New LiteralControl("&nbsp")
+                    ctlCalSpin_EmptyCell.Controls.Add(ctlCalSpin_EmptyCellContent)
+                    ctlCalSpin_EmptyRow.Controls.Add(ctlCalSpin_EmptyCell)
+
+                    ' 3 blank lines are added so the user can spin to an empty value
+                    For jncount = 1 To 3
+                      ctlCalSpin_EmptyRow = New TableRow
+                      ctlCalSpin_EmptyCell = New TableCell
+                      ctlCalSpin_EmptyCell.Text = "&nbsp"
+
+                      ctlCalSpin_EmptyRow.Controls.Add(ctlCalSpin_EmptyCell)
+                      ctlCalSpin_Table_Year.Controls.Add(ctlCalSpin_EmptyRow)
+                    Next
+
+                    ' add 'some' yearss to the spinner
+                    For jncount = 1950 To 2092
+                      ctlCalSpin_EmptyRow = New TableRow
+                      ctlCalSpin_EmptyRow.ID = sID & "YearsRow_" & jncount.ToString
+                      ctlCalSpin_EmptyCell = New TableCell
+                      ctlCalSpin_EmptyCell.Text = jncount.ToString
+                      ctlCalSpin_EmptyCell.Attributes.Add("onclick", "chooseDate('" & sID & "');")
+                      ctlCalSpin_EmptyRow.Controls.Add(ctlCalSpin_EmptyCell)
+
+                      ctlCalSpin_Table_Year.Controls.Add(ctlCalSpin_EmptyRow)
+                    Next
+
+                    ' 3 blank lines are added so the user can spin to an empty value
+                    For jncount = 1 To 3
+                      ctlCalSpin_EmptyRow = New TableRow
+                      ctlCalSpin_EmptyCell = New TableCell
+                      ctlCalSpin_EmptyCell.Text = "&nbsp"
+
+                      ctlCalSpin_EmptyRow.Controls.Add(ctlCalSpin_EmptyCell)
+                      ctlCalSpin_Table_Year.Controls.Add(ctlCalSpin_EmptyRow)
+                    Next
+
+
+                    ' add Year table to day panel
+                    ctlCalSpin_Panel_Year.Controls.Add(ctlCalSpin_Table_Year)
+
+                    ' add Year panel to Year cell
+                    ctlCalSpin_Cell_Year.Controls.Add(ctlCalSpin_Panel_Year)
+
+                    ' add Year cell to row
+                    ctlCalSpin_Row.Controls.Add(ctlCalSpin_Cell_Year)
+
+                    ' add the row to the table
+                    ctlCalSpin_Table.Controls.Add(ctlCalSpin_Row)
+
+                    ' add the table to the panel
+                    ctlform_Panel.Controls.Add(ctlCalSpin_Table)
+
+                    ' add the whole thing to the relevant page tab.
+                    ' divInput.Controls.Add(ctlform_Panel)
+                    ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlform_Panel)
+
+
+                  Else
+                    ' Infragistics date control for normal tellies.
+
+
+                    ctlForm_Date = New Infragistics.WebUI.WebSchedule.WebDateChooser
+                    With ctlForm_Date
+                      .ID = sID
+                      .TabIndex = CShort(NullSafeInteger(dr("tabIndex")) + 1)
+
+                      If (iMinTabIndex < 0) Or (NullSafeInteger(dr("tabIndex")) < iMinTabIndex) Then
+                        sDefaultFocusControl = sID
+                        iMinTabIndex = NullSafeInteger(dr("tabIndex"))
+                        ctlDefaultFocusControl = ctlForm_Date
                       End If
-                    End If
 
-                    .BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColor")))
-                    .ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
-                    .BorderColor = objGeneral.GetColour(5730458)
+                      .Style("position") = "absolute"
+                      .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
+                      .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
 
-                    .Font.Name = NullSafeString(dr("FontName"))
-                    .Font.Size = FontUnit.Parse(NullSafeString(dr("FontSize")))
-                    .Font.Bold = NullSafeBoolean(dr("FontBold"))
-                    .Font.Italic = NullSafeBoolean(dr("FontItalic"))
-                    .Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
-                    .Font.Underline = NullSafeBoolean(dr("FontUnderline"))
+                      .CalendarLayout.FooterFormat = "Today: {0:d}"
+                      .CalendarLayout.FirstDayOfWeek = WebControls.FirstDayOfWeek.Sunday
+                      .CalendarLayout.ShowTitle = False
 
-                    .DropButton.ImageUrl1 = "../Images/downarrow.gif"
-                    .DropButton.ImageUrl2 = "../Images/downarrow.gif"
-                    .DropButton.ImageUrlHover = "../Images/downarrow-hover.gif"
+                      .CalendarLayout.DayStyle.Font.Size = FontUnit.Parse(CStr(8))
+                      .CalendarLayout.DayStyle.Font.Name = "Verdana"
+                      .CalendarLayout.DayStyle.ForeColor = objGeneral.GetColour(6697779)
+                      .CalendarLayout.DayStyle.BackColor = objGeneral.GetColour(15988214)
 
-                    .Height() = Unit.Pixel(NullSafeInteger(dr("Height")) - 2)
-                    .Width() = Unit.Pixel(NullSafeInteger(dr("Width")) - 2)
+                      .CalendarLayout.FooterStyle.Font.Size = FontUnit.Parse(CStr(8))
+                      .CalendarLayout.FooterStyle.Font.Name = "Verdana"
+                      .CalendarLayout.FooterStyle.ForeColor = objGeneral.GetColour(6697779)
+                      .CalendarLayout.FooterStyle.BackColor = objGeneral.GetColour(16248553)
 
-                    .ClientSideEvents.EditKeyDown = "dateControlKeyPress"
-                    .ClientSideEvents.TextChanged = "dateControlTextChanged"
-                    .ClientSideEvents.BeforeDropDown = "dateControlBeforeDropDown"
+                      .CalendarLayout.SelectedDayStyle.Font.Size = FontUnit.Parse(CStr(8))
+                      .CalendarLayout.SelectedDayStyle.Font.Name = "Verdana"
+                      .CalendarLayout.SelectedDayStyle.Font.Bold = True
+                      .CalendarLayout.SelectedDayStyle.Font.Underline = True
+                      .CalendarLayout.SelectedDayStyle.ForeColor = objGeneral.GetColour(2774907)
+                      .CalendarLayout.SelectedDayStyle.BackColor = objGeneral.GetColour(10480637)
 
-                  End With
+                      .CalendarLayout.OtherMonthDayStyle.Font.Size = FontUnit.Parse(CStr(8))
+                      .CalendarLayout.OtherMonthDayStyle.Font.Name = "Verdana"
+                      .CalendarLayout.OtherMonthDayStyle.ForeColor = objGeneral.GetColour(11375765)
 
-                  ' pnlInput.contenttemplatecontainer.Controls.Add(ctlForm_Date)
-                  ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_Date)
+                      .CalendarLayout.NextPrevStyle.ForeColor = System.Drawing.SystemColors.InactiveCaptionText
+                      .CalendarLayout.NextPrevStyle.BackColor = objGeneral.GetColour(16248553)
+                      .CalendarLayout.NextPrevStyle.ForeColor = objGeneral.GetColour(6697779)
+
+                      .CalendarLayout.CalendarStyle.Width = Unit.Pixel(152)
+                      .CalendarLayout.CalendarStyle.Height = Unit.Pixel(80)
+                      .CalendarLayout.CalendarStyle.Font.Size = FontUnit.Parse(CStr(8))
+                      .CalendarLayout.CalendarStyle.Font.Name = "Verdana"
+                      .CalendarLayout.CalendarStyle.BackColor = System.Drawing.Color.White
+
+                      .CalendarLayout.WeekendDayStyle.BackColor = objGeneral.GetColour(15004669)
+
+                      .CalendarLayout.TodayDayStyle.ForeColor = objGeneral.GetColour(2774907)
+                      .CalendarLayout.TodayDayStyle.BackColor = objGeneral.GetColour(10480637)
+
+                      .CalendarLayout.DropDownStyle.Font.Size = FontUnit.Parse(CStr(8))
+                      .CalendarLayout.DropDownStyle.Font.Name = "Verdana"
+                      .CalendarLayout.DropDownStyle.BorderStyle = BorderStyle.Solid
+                      .CalendarLayout.DropDownStyle.BorderColor = objGeneral.GetColour(10720408)
+
+                      .CalendarLayout.DayHeaderStyle.BackColor = objGeneral.GetColour(16248553)
+                      .CalendarLayout.DayHeaderStyle.ForeColor = objGeneral.GetColour(6697779)
+                      .CalendarLayout.DayHeaderStyle.Font.Size = FontUnit.Parse(CStr(8))
+                      .CalendarLayout.DayHeaderStyle.Font.Name = "Verdana"
+                      .CalendarLayout.DayHeaderStyle.Font.Bold = True
+
+                      .CalendarLayout.TitleStyle.ForeColor = objGeneral.GetColour(6697779)
+                      .CalendarLayout.TitleStyle.BackColor = objGeneral.GetColour(16248553)
+                      .NullDateLabel = ""
+
+                      If (Not IsDBNull(dr("value"))) Then
+                        If CStr(dr("value")).Length > 0 Then
+                          iYear = CShort(NullSafeString(dr("value")).Substring(6, 4))
+                          iMonth = CShort(NullSafeString(dr("value")).Substring(0, 2))
+                          iDay = CShort(NullSafeString(dr("value")).Substring(3, 2))
+
+                          dtDate = DateSerial(iYear, iMonth, iDay)
+                          .Value = dtDate
+                        End If
+                      End If
+
+                      .BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColor")))
+                      .ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
+                      .BorderColor = objGeneral.GetColour(5730458)
+
+                      .Font.Name = NullSafeString(dr("FontName"))
+                      .Font.Size = FontUnit.Parse(NullSafeString(dr("FontSize")))
+                      .Font.Bold = NullSafeBoolean(dr("FontBold"))
+                      .Font.Italic = NullSafeBoolean(dr("FontItalic"))
+                      .Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
+                      .Font.Underline = NullSafeBoolean(dr("FontUnderline"))
+
+                      .DropButton.ImageUrl1 = "../Images/downarrow.gif"
+                      .DropButton.ImageUrl2 = "../Images/downarrow.gif"
+                      .DropButton.ImageUrlHover = "../Images/downarrow-hover.gif"
+
+                      .Height() = Unit.Pixel(NullSafeInteger(dr("Height")) - 2)
+                      .Width() = Unit.Pixel(NullSafeInteger(dr("Width")) - 2)
+
+                      .ClientSideEvents.EditKeyDown = "dateControlKeyPress"
+                      .ClientSideEvents.TextChanged = "dateControlTextChanged"
+                      .ClientSideEvents.BeforeDropDown = "dateControlBeforeDropDown"
+
+                    End With
+
+                    ' pnlInput.contenttemplatecontainer.Controls.Add(ctlForm_Date)
+                    ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_Date)
+                  End If
 
                 Case 8 ' Frame
                   If NullSafeInteger(dr("BackStyle")) = 0 Then
@@ -2053,7 +2422,7 @@ Public Class _Default
                       .BorderStyle = BorderStyle.Solid
                       .BorderWidth = Unit.Pixel(1)
                       .ReadOnly = True
-                      .Style.Add("z-index", "1")
+                      .Style.Add("z-index", "0")
                       .Style.Add("background-image", "url('images/downarrow.gif');")
                       .Style.Add("background-position", "right;")
                       .Style.Add("background-repeat", "no-repeat;")
@@ -3853,7 +4222,7 @@ Public Class _Default
                     sFormValidation1 = sFormValidation1 & sIDString & CStr(IIf(ctlFormCheckBox.Checked, "1", "0")) & vbTab
                   End If
 
-                Case 7 ' Date Input
+                Case 7 ' Date Input                  
                   If (TypeOf ctlFormInput Is Infragistics.WebUI.WebSchedule.WebDateChooser) Then
                     ctlFormDateInput = DirectCast(ctlFormInput, Infragistics.WebUI.WebSchedule.WebDateChooser)
 
@@ -3866,6 +4235,23 @@ Public Class _Default
                     sFormInput1 = sFormInput1 & sIDString & sDateValueString & vbTab
                     sFormValidation1 = sFormValidation1 & sIDString & sDateValueString & vbTab
                   End If
+
+
+                  ' Mobile?
+
+                  If (TypeOf ctlFormInput Is System.Web.UI.WebControls.TextBox) Then
+                    ctlFormTextInput = DirectCast(ctlFormInput, System.Web.UI.WebControls.TextBox)
+
+                    If (ctlFormTextInput.Text = vbNullString) Then
+                      sDateValueString = "null"
+                    Else
+                      sDateValueString = objGeneral.ConvertLocaleDateToSQL(ctlFormTextInput.Text)
+                    End If
+
+                    sFormInput1 = sFormInput1 & sIDString & sDateValueString & vbTab
+                    sFormValidation1 = sFormValidation1 & sIDString & sDateValueString & vbTab
+                  End If
+
 
                   'Case 11 ' Grid (RecordSelector) Input
                   '    If (TypeOf ctlFormInput Is Infragistics.WebUI.UltraWebGrid.UltraWebGrid) Then
@@ -5137,7 +5523,7 @@ Public Class _Default
   Private Sub AddIPhoneHeaderTags(ByVal lngViewportWidth As Long)
     Dim ua As String = Request.UserAgent
 
-    If ua IsNot Nothing AndAlso (ua.Contains("iPhone") OrElse ua.Contains("iPod")) Then
+    If ua IsNot Nothing AndAlso (ua.Contains("iPhone") OrElse ua.Contains("iPad")) Then
       Dim meta As New HtmlMeta()
       meta.Name = "viewport"
       meta.Content = "width=" & lngViewportWidth & ", user-scalable=yes"
