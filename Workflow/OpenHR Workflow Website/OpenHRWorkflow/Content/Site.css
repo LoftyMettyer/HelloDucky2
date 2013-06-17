@@ -209,6 +209,7 @@ body { font-family: verdana; }
 .large-view .footer { border-radius: 0px 0px 6px 6px; }
 
 
+/* TODO remove
  .footer, .header {
     background: -moz-linear-gradient(#76b2e4, #266294);
     background: -webkit-linear-gradient(#76b2e4, #266294);
@@ -272,3 +273,4 @@ span {
     width: 370px !important;
     height: 500px !important;
 }
+*/
