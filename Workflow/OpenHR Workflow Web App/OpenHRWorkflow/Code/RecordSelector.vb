@@ -8,11 +8,6 @@ Imports System.Data
 Public Class RecordSelector
 	Inherits GridView
 
-	Protected customHeader As GridViewRow
-	Protected customPager As GridViewRow
-	Protected pagerTable As Table
-	Protected pagerRow As TableRow
-
 	Private Const MaxDropDownRows As Integer = 6
 	Private Const DefaultColumnWidth As Integer = 100
 	Private _visibleColumnCount As Integer
@@ -21,6 +16,7 @@ Public Class RecordSelector
 
 		Dim sDivStyle As String = ""
 		Dim iColCount As Integer
+		Dim customHeader As GridViewRow
 
 		'MyBase.Render(writer)
 
@@ -191,7 +187,7 @@ Public Class RecordSelector
 
 		' Need to hide the default pager row BEFORE rendering myBase.
 		' Dim customPager As GridViewRow = Me.BottomPagerRow
-		customPager = BottomPagerRow
+		Dim customPager = BottomPagerRow
 
 		If BottomPagerRow IsNot Nothing Then
 			BottomPagerRow.Visible = False
@@ -237,8 +233,288 @@ Public Class RecordSelector
 	End Sub
 
 	Protected Overrides Sub InitializePager(ByVal row As GridViewRow, ByVal columnSpan As Integer, ByVal pagedDataSource As PagedDataSource)
-		' MyBase.InitializePager(row, columnSpan, pagedDataSource)
-		InitCustomPager(row, columnSpan, pagedDataSource)
+
+		Const strPagerFontSize As String = "7"
+
+		Dim pnlPager As Panel = New Panel()
+		With pnlPager
+			.ID = "pnlPager"
+			.Height = CInt(CalculatePagerHeight().Replace("px", ""))
+		End With
+
+		Dim tblPager As Table = New Table()
+		With tblPager
+			.ID = "tblPager"
+			.CellSpacing = 0
+			.Style.Add("width", "100%")
+			.Style.Add("height", "100%")
+			.BorderStyle = BorderStyle.None
+			.GridLines = GridLines.Both
+		End With
+
+		Dim trPager As TableRow = New TableRow()
+		trPager.ID = "trPager"
+		trPager.Style.Add("width", "100%")
+		trPager.Style.Add("border", "0px")
+
+		Dim ltlPageIndex As Literal = New Literal()
+		ltlPageIndex.ID = "ltlPageIndex"
+		ltlPageIndex.Text = (PageIndex + 1).ToString()
+
+		Dim ltlPageCount As Literal = New Literal()
+		ltlPageCount.ID = "ltlPageCount"
+		ltlPageCount.Text = PageCount.ToString()
+
+		Dim tcSearchCell As TableCell = New TableCell()
+		With tcSearchCell
+			' .ID = "tcSearchCell"
+			.Attributes.Add("id", ID.Replace("Grid", "") & "tcSearch")
+			' add as an attribute to ensure unique ID (other ctlxxx is added at runtime)
+			.Style.Add("width", "150px")
+			.Style.Add("height", "100%")
+			.BorderStyle = BorderStyle.None
+		End With
+
+		Dim txtSearchBox As TextBox = New TextBox
+		With txtSearchBox
+			.Style.Add("font-size", "8pt")
+			.Style.Add("font-style", "italic")
+			.Style.Add("float", "left")
+			.Style.Add("top", "2px")
+			.Style.Add("left", "3px")
+			.Style.Add("width", "150px")
+			.Style.Add("height", "15px")
+			.Style.Add("border", "solid 1px gray")
+			.Text = "filter page..."
+			.Attributes.Add("onblur",
+			  "if(this.value==""""){this.style.fontStyle=""italic"";this.style.color=""gray"";this.value=""filter page...""}")
+			.Attributes.Add("onfocus",
+			  "if(this.value=='filter page...'){this.style.color=""black"";this.style.fontStyle=""normal"";this.value=""""}")
+			.Attributes.Add("onclick", "event.cancelBubble=true;")
+			.Attributes.Add("onkeyup", "filterTable(this, '" & ClientID.ToString & "')")
+		End With
+
+		tcSearchCell.Controls.Add(txtSearchBox)
+
+		Dim imgSearchImg As Image = New Image
+		With imgSearchImg
+			.Style.Add("position", "absolute")
+			.Style.Add("top", "4px")
+			.Style.Add("left", "136px")
+			.Style.Add("height", "15px")
+			.Style.Add("width", "15px")
+			.ImageUrl = "Images/search.gif"
+		End With
+
+		tcSearchCell.Controls.Add(imgSearchImg)
+		'  writer.Write("<img src='Images/search.gif' style='position:absolute;top:4px;left:140px;height:15px;width:15px'/>")
+
+
+		Dim tcPageXofY As TableCell = New TableCell()
+		With tcPageXofY
+			'.ID = "tcPageXofY"
+			.Attributes.Add("id", ID.Replace("Grid", "") & "tcPageXofY")
+			' add as an attribute to ensure unique ID (other ctlxxx is added at runtime)
+			.Style.Add("width", "35%")
+			.Style.Add("text-align", "right")
+			.Style.Add("padding-left", "5px")
+			.Style.Add("border", "0px")
+			.Height = Unit.Pixel(23)
+			.Font.Size = FontUnit.Parse(strPagerFontSize)
+			.Font.Name = HeaderStyle.Font.Name
+			.Controls.Add(New LiteralControl("Page "))
+			.Controls.Add(ltlPageIndex)
+			.Controls.Add(New LiteralControl(" of "))
+			.Controls.Add(ltlPageCount)
+		End With
+
+		Dim ibtnFirst As Button = New Button()
+		With ibtnFirst
+			.ID = "ibtnFirst"
+			.CommandName = "First"
+			.UseSubmitBehavior = False
+			.ToolTip = "First Page"
+			.Width = Unit.Pixel(16)
+			.Height = Unit.Pixel(16)
+			.Style.Add("cursor", "pointer")
+			.Style.Add("border-style", "none")
+			.CausesValidation = False
+			.Attributes.Add("onclick",
+			If(IsLookup, "try{$get('txtActiveDDE').value='" & ID.Replace("Grid", "dde") & "';setPostbackMode(3);}catch(e){};", "try{setPostbackMode(3);}catch(e){};"))
+			AddHandler .Command, AddressOf PagerCommand
+		End With
+
+		Dim ibtnPrevious As Button = New Button()
+		With ibtnPrevious
+			.ID = "ibtnPrevious"
+			.CommandName = "Previous"
+			.UseSubmitBehavior = False
+			.ToolTip = "Previous Page"
+			.Width = Unit.Pixel(16)
+			.Height = Unit.Pixel(16)
+			.Style.Add("cursor", "pointer")
+			.Style.Add("border-style", "none")
+			.CausesValidation = False
+			.Attributes.Add("onclick",
+			If(IsLookup, "try{$get('txtActiveDDE').value='" & ID.Replace("Grid", "dde") & "';setPostbackMode(3);}catch(e){};", "try{setPostbackMode(3);}catch(e){};"))
+			AddHandler .Command, AddressOf PagerCommand
+		End With
+
+		Dim ibtnNext As Button = New Button()
+		With ibtnNext
+			.ID = "ibtnNext"
+			.CommandName = "Next"
+			.UseSubmitBehavior = False
+			.ToolTip = "Next Page"
+			.Width = Unit.Pixel(16)
+			.Height = Unit.Pixel(16)
+			.Style.Add("cursor", "pointer")
+			.Style.Add("border-style", "none")
+			.CausesValidation = False
+			.Attributes.Add("onclick",
+			If(IsLookup, "try{$get('txtActiveDDE').value='" & ID.Replace("Grid", "dde") & "';setPostbackMode(3);}catch(e){};", "try{setPostbackMode(3);}catch(e){};"))
+			AddHandler .Command, AddressOf PagerCommand
+		End With
+
+		Dim ibtnLast As Button = New Button()
+		With ibtnLast
+			.ID = "ibtnLast"
+			.CommandName = "Last"
+			.UseSubmitBehavior = False
+			.ToolTip = "Last Page"
+			.Width = Unit.Pixel(16)
+			.Height = Unit.Pixel(16)
+			.Style.Add("cursor", "pointer")
+			.Style.Add("border-style", "none")
+			.CausesValidation = False
+			.Attributes.Add("onclick",
+			  If(IsLookup, "try{$get('txtActiveDDE').value='" & ID.Replace("Grid", "dde") & "';setPostbackMode(3);}catch(e){};", "try{setPostbackMode(3);}catch(e){};"))
+			AddHandler .Command, AddressOf PagerCommand
+		End With
+
+		If PageIndex > 0 Then
+			ibtnFirst.Style.Add("background-image", "url('Images/page-first.gif')")
+			ibtnPrevious.Style.Add("background-image", "url('Images/page-prev.gif')")
+			ibtnFirst.Enabled = True
+			ibtnPrevious.Enabled = True
+		Else
+			ibtnFirst.Style.Add("background-image", "url('Images/page-first-disabled.gif')")
+			ibtnPrevious.Style.Add("background-image", "url('Images/page-prev-disabled.gif')")
+			ibtnFirst.Enabled = False
+			ibtnPrevious.Enabled = False
+			ibtnFirst.Style.Add("cursor", "default")
+			ibtnPrevious.Style.Add("cursor", "default")
+		End If
+
+		If PageIndex < PageCount - 1 Then
+			ibtnNext.Style.Add("background-image", "url('Images/page-next.gif')")
+			ibtnLast.Style.Add("background-image", "url('Images/page-last.gif')")
+			ibtnNext.Enabled = True
+			ibtnLast.Enabled = True
+		Else
+			ibtnNext.Style.Add("background-image", "url('Images/page-next-disabled.gif')")
+			ibtnLast.Style.Add("background-image", "url('Images/page-last-disabled.gif')")
+			ibtnNext.Enabled = False
+			ibtnLast.Enabled = False
+			ibtnNext.Style.Add("cursor", "default")
+			ibtnLast.Style.Add("cursor", "default")
+		End If
+
+		Dim tcPagerBtns As TableCell = New TableCell()
+		With tcPagerBtns
+			'.ID = "tcPagerBtns"
+			.Attributes.Add("id", ID.Replace("Grid", "") & "tcPagerBtns")
+			' add as an attribute to ensure unique ID (other ctlxxx is added at runtime)
+			.Style.Add("width", "35%")
+			.Style.Add("text-align", "center")
+			.Style.Add("border", "0px")
+			.Controls.Add(ibtnFirst)
+			.Controls.Add(ibtnPrevious)
+			.Controls.Add(New LiteralControl("&nbsp;&nbsp;"))
+			.Controls.Add(ibtnNext)
+			.Controls.Add(ibtnLast)
+		End With
+
+		Dim ddlPages As DropDownList = New DropDownList()
+		With ddlPages
+			.ID = "ddlPages"
+			' .CssClass = "paging_gridview_pgr_ddl"
+			.Font.Size = FontUnit.Parse(strPagerFontSize)
+			.Font.Name = HeaderStyle.Font.Name
+			.AutoPostBack = True
+			For i As Integer = 1 To PageCount Step +1
+				.Items.Add(New ListItem(i.ToString(), i.ToString()))
+			Next i
+			.SelectedIndex = PageIndex
+			.CausesValidation = False
+			.Attributes.Add("onclick", "event.cancelBubble=true;")
+			.Attributes.Add("onchange",
+			If(IsLookup, "try{$get('txtActiveDDE').value='" & ID.Replace("Grid", "dde") & "';setPostbackMode(3);}catch(e){};", "try{setPostbackMode(3);}catch(e){};"))
+			AddHandler .SelectedIndexChanged, AddressOf ddlPages_SelectedIndexChanged
+		End With
+
+		Dim pagerDdl As TableCell = New TableCell()
+		With pagerDdl
+			' .ID = "tcPagerDDL"
+			.Attributes.Add("id", ID.Replace("Grid", "") & "tcPagerDDL")
+			' add as an attribute to ensure unique ID (other ctlxxx is added at runtime)
+			.Font.Size = FontUnit.Parse(strPagerFontSize)
+			.Font.Name = HeaderStyle.Font.Name
+			.Style.Add("width", "30%")
+			.Style.Add("text-align", "right")
+			.Style.Add("padding-right", "5px")
+			.Style.Add("border", "0px")
+			.Controls.Add(
+			 New LiteralControl(
+			  "<table cellpadding=""0"" cellspacing=""0"" frame=""void"" rules=""none""><tr><td style=""padding-right: 5px;border: 0px;"">Page:</td><td style=""border: 0px;"">"))
+			.Controls.Add(ddlPages)
+			.Controls.Add(New LiteralControl("</td></tr></table>"))
+		End With
+
+		' Hide navigation buttons depending on width of Record Selector
+		' NB Lookup navigation buttons are hidden at runtime using the 'ResizeComboForForm' JS function.
+		If Not IsLookup Then
+			' Hide Search box if required
+			If Width.Value < 420 Then
+				tcPageXofY.Style.Add("display", "none")
+				tcPageXofY.Style.Add("visibility", "hidden")
+				tcPagerBtns.Style.Add("display", "none")
+				tcPagerBtns.Style.Add("visibility", "hidden")
+			End If
+
+			If Width.Value < 175 Then
+				' Hide tcPageXofY AND tcPagerBtns
+				tcSearchCell.Style.Add("display", "none")
+				tcSearchCell.Style.Add("visibility", "hidden")
+			ElseIf Width.Value < 210 Then
+				' Hide just tcPageXofY
+				tcPageXofY.Style.Add("display", "none")
+				tcPageXofY.Style.Add("visibility", "hidden")
+				tcPagerBtns.Style.Add("display", "none")
+				tcPagerBtns.Style.Add("visibility", "hidden")
+			End If
+
+		End If
+
+		'add cells to row
+		trPager.Cells.Add(tcSearchCell)
+		If PageCount > 1 Then
+			trPager.Cells.Add(tcPageXofY)
+			trPager.Cells.Add(tcPagerBtns)
+			trPager.Cells.Add(pagerDdl)
+		End If
+
+		'add row to table
+		tblPager.Rows.Add(trPager)
+
+		'add table to div
+		' NPG20120202 Fault HRPRO-1854, hide the pager row if there are no records.
+		If Not IsEmpty Then pnlPager.Controls.Add(tblPager)
+
+		'add div to pager row
+		row.Controls.AddAt(0, New TableCell())
+		row.Cells(0).ColumnSpan = columnSpan
+		row.Cells(0).Controls.Add(pnlPager)
 	End Sub
 
 	Private Function CalculateWidth() As String
@@ -886,291 +1162,6 @@ Public Class RecordSelector
 
 		Return dt
 	End Function
-
-	Private Sub InitCustomPager(ByVal row As GridViewRow, ByVal columnSpan As Integer, ByVal pagedDataSource As PagedDataSource)
-
-		Const strPagerFontSize As String = "7"
-
-		Dim pnlPager As Panel = New Panel()
-		With pnlPager
-			.ID = "pnlPager"
-			.Height = CInt(CalculatePagerHeight().Replace("px", ""))
-		End With
-
-		Dim tblPager As Table = New Table()
-		With tblPager
-			.ID = "tblPager"
-			.CellSpacing = 0
-			.Style.Add("width", "100%")
-			.Style.Add("height", "100%")
-			.BorderStyle = BorderStyle.None
-			.GridLines = GridLines.Both
-		End With
-
-		Dim trPager As TableRow = New TableRow()
-		trPager.ID = "trPager"
-		trPager.Style.Add("width", "100%")
-		trPager.Style.Add("border", "0px")
-
-		Dim ltlPageIndex As Literal = New Literal()
-		ltlPageIndex.ID = "ltlPageIndex"
-		ltlPageIndex.Text = (PageIndex + 1).ToString()
-
-		Dim ltlPageCount As Literal = New Literal()
-		ltlPageCount.ID = "ltlPageCount"
-		ltlPageCount.Text = PageCount.ToString()
-
-		Dim tcSearchCell As TableCell = New TableCell()
-		With tcSearchCell
-			' .ID = "tcSearchCell"
-			.Attributes.Add("id", ID.Replace("Grid", "") & "tcSearch")
-			' add as an attribute to ensure unique ID (other ctlxxx is added at runtime)
-			.Style.Add("width", "150px")
-			.Style.Add("height", "100%")
-			.BorderStyle = BorderStyle.None
-		End With
-
-		Dim txtSearchBox As TextBox = New TextBox
-		With txtSearchBox
-			.Style.Add("font-size", "8pt")
-			.Style.Add("font-style", "italic")
-			.Style.Add("float", "left")
-			.Style.Add("top", "2px")
-			.Style.Add("left", "3px")
-			.Style.Add("width", "150px")
-			.Style.Add("height", "15px")
-			.Style.Add("border", "solid 1px gray")
-			.Text = "filter page..."
-			.Attributes.Add("onblur",
-					"if(this.value==""""){this.style.fontStyle=""italic"";this.style.color=""gray"";this.value=""filter page...""}")
-			.Attributes.Add("onfocus",
-					"if(this.value=='filter page...'){this.style.color=""black"";this.style.fontStyle=""normal"";this.value=""""}")
-			.Attributes.Add("onclick", "event.cancelBubble=true;")
-			.Attributes.Add("onkeyup", "filterTable(this, '" & ClientID.ToString & "')")
-		End With
-
-		tcSearchCell.Controls.Add(txtSearchBox)
-
-		Dim imgSearchImg As Image = New Image
-		With imgSearchImg
-			.Style.Add("position", "absolute")
-			.Style.Add("top", "4px")
-			.Style.Add("left", "136px")
-			.Style.Add("height", "15px")
-			.Style.Add("width", "15px")
-			.ImageUrl = "Images/search.gif"
-		End With
-
-		tcSearchCell.Controls.Add(imgSearchImg)
-		'  writer.Write("<img src='Images/search.gif' style='position:absolute;top:4px;left:140px;height:15px;width:15px'/>")
-
-
-		Dim tcPageXofY As TableCell = New TableCell()
-		With tcPageXofY
-			'.ID = "tcPageXofY"
-			.Attributes.Add("id", ID.Replace("Grid", "") & "tcPageXofY")
-			' add as an attribute to ensure unique ID (other ctlxxx is added at runtime)
-			.Style.Add("width", "35%")
-			.Style.Add("text-align", "right")
-			.Style.Add("padding-left", "5px")
-			.Style.Add("border", "0px")
-			.Height = Unit.Pixel(23)
-			.Font.Size = FontUnit.Parse(strPagerFontSize)
-			.Font.Name = HeaderStyle.Font.Name
-			.Controls.Add(New LiteralControl("Page "))
-			.Controls.Add(ltlPageIndex)
-			.Controls.Add(New LiteralControl(" of "))
-			.Controls.Add(ltlPageCount)
-		End With
-
-		Dim ibtnFirst As Button = New Button()
-		With ibtnFirst
-			.ID = "ibtnFirst"
-			.CommandName = "First"
-			.UseSubmitBehavior = False
-			.ToolTip = "First Page"
-			.Width = Unit.Pixel(16)
-			.Height = Unit.Pixel(16)
-			.Style.Add("cursor", "pointer")
-			.Style.Add("border-style", "none")
-			.CausesValidation = False
-			.Attributes.Add("onclick",
-			If(IsLookup, "try{$get('txtActiveDDE').value='" & ID.Replace("Grid", "dde") & "';setPostbackMode(3);}catch(e){};", "try{setPostbackMode(3);}catch(e){};"))
-			AddHandler .Command, AddressOf PagerCommand
-		End With
-
-		Dim ibtnPrevious As Button = New Button()
-		With ibtnPrevious
-			.ID = "ibtnPrevious"
-			.CommandName = "Previous"
-			.UseSubmitBehavior = False
-			.ToolTip = "Previous Page"
-			.Width = Unit.Pixel(16)
-			.Height = Unit.Pixel(16)
-			.Style.Add("cursor", "pointer")
-			.Style.Add("border-style", "none")
-			.CausesValidation = False
-			.Attributes.Add("onclick",
-			If(IsLookup, "try{$get('txtActiveDDE').value='" & ID.Replace("Grid", "dde") & "';setPostbackMode(3);}catch(e){};", "try{setPostbackMode(3);}catch(e){};"))
-			AddHandler .Command, AddressOf PagerCommand
-		End With
-
-		Dim ibtnNext As Button = New Button()
-		With ibtnNext
-			.ID = "ibtnNext"
-			.CommandName = "Next"
-			.UseSubmitBehavior = False
-			.ToolTip = "Next Page"
-			.Width = Unit.Pixel(16)
-			.Height = Unit.Pixel(16)
-			.Style.Add("cursor", "pointer")
-			.Style.Add("border-style", "none")
-			.CausesValidation = False
-			.Attributes.Add("onclick",
-			If(IsLookup, "try{$get('txtActiveDDE').value='" & ID.Replace("Grid", "dde") & "';setPostbackMode(3);}catch(e){};", "try{setPostbackMode(3);}catch(e){};"))
-			AddHandler .Command, AddressOf PagerCommand
-		End With
-
-		Dim ibtnLast As Button = New Button()
-		With ibtnLast
-			.ID = "ibtnLast"
-			.CommandName = "Last"
-			.UseSubmitBehavior = False
-			.ToolTip = "Last Page"
-			.Width = Unit.Pixel(16)
-			.Height = Unit.Pixel(16)
-			.Style.Add("cursor", "pointer")
-			.Style.Add("border-style", "none")
-			.CausesValidation = False
-			.Attributes.Add("onclick",
-			  If  (IsLookup, "try{$get('txtActiveDDE').value='" & ID.Replace("Grid", "dde") & "';setPostbackMode(3);}catch(e){};", "try{setPostbackMode(3);}catch(e){};"))
-			AddHandler .Command, AddressOf PagerCommand
-		End With
-
-		If PageIndex > 0 Then
-			ibtnFirst.Style.Add("background-image", "url('Images/page-first.gif')")
-			ibtnPrevious.Style.Add("background-image", "url('Images/page-prev.gif')")
-			ibtnFirst.Enabled = True
-			ibtnPrevious.Enabled = True
-		Else
-			ibtnFirst.Style.Add("background-image", "url('Images/page-first-disabled.gif')")
-			ibtnPrevious.Style.Add("background-image", "url('Images/page-prev-disabled.gif')")
-			ibtnFirst.Enabled = False
-			ibtnPrevious.Enabled = False
-			ibtnFirst.Style.Add("cursor", "default")
-			ibtnPrevious.Style.Add("cursor", "default")
-		End If
-
-		If PageIndex < PageCount - 1 Then
-			ibtnNext.Style.Add("background-image", "url('Images/page-next.gif')")
-			ibtnLast.Style.Add("background-image", "url('Images/page-last.gif')")
-			ibtnNext.Enabled = True
-			ibtnLast.Enabled = True
-		Else
-			ibtnNext.Style.Add("background-image", "url('Images/page-next-disabled.gif')")
-			ibtnLast.Style.Add("background-image", "url('Images/page-last-disabled.gif')")
-			ibtnNext.Enabled = False
-			ibtnLast.Enabled = False
-			ibtnNext.Style.Add("cursor", "default")
-			ibtnLast.Style.Add("cursor", "default")
-		End If
-
-		Dim tcPagerBtns As TableCell = New TableCell()
-		With tcPagerBtns
-			'.ID = "tcPagerBtns"
-			.Attributes.Add("id", ID.Replace("Grid", "") & "tcPagerBtns")
-			' add as an attribute to ensure unique ID (other ctlxxx is added at runtime)
-			.Style.Add("width", "35%")
-			.Style.Add("text-align", "center")
-			.Style.Add("border", "0px")
-			.Controls.Add(ibtnFirst)
-			.Controls.Add(ibtnPrevious)
-			.Controls.Add(New LiteralControl("&nbsp;&nbsp;"))
-			.Controls.Add(ibtnNext)
-			.Controls.Add(ibtnLast)
-		End With
-
-		Dim ddlPages As DropDownList = New DropDownList()
-		With ddlPages
-			.ID = "ddlPages"
-			' .CssClass = "paging_gridview_pgr_ddl"
-			.Font.Size = FontUnit.Parse(strPagerFontSize)
-			.Font.Name = HeaderStyle.Font.Name
-			.AutoPostBack = True
-			For i As Integer = 1 To PageCount Step +1
-				.Items.Add(New ListItem(i.ToString(), i.ToString()))
-			Next i
-			.SelectedIndex = PageIndex
-			.CausesValidation = False
-			.Attributes.Add("onclick", "event.cancelBubble=true;")
-			.Attributes.Add("onchange",
-			If(IsLookup, "try{$get('txtActiveDDE').value='" & ID.Replace("Grid", "dde") & "';setPostbackMode(3);}catch(e){};", "try{setPostbackMode(3);}catch(e){};"))
-			AddHandler .SelectedIndexChanged, AddressOf ddlPages_SelectedIndexChanged
-		End With
-
-		Dim pagerDdl As TableCell = New TableCell()
-		With pagerDdl
-			' .ID = "tcPagerDDL"
-			.Attributes.Add("id", ID.Replace("Grid", "") & "tcPagerDDL")
-			' add as an attribute to ensure unique ID (other ctlxxx is added at runtime)
-			.Font.Size = FontUnit.Parse(strPagerFontSize)
-			.Font.Name = HeaderStyle.Font.Name
-			.Style.Add("width", "30%")
-			.Style.Add("text-align", "right")
-			.Style.Add("padding-right", "5px")
-			.Style.Add("border", "0px")
-			.Controls.Add(
-			 New LiteralControl(
-			  "<table cellpadding=""0"" cellspacing=""0"" frame=""void"" rules=""none""><tr><td style=""padding-right: 5px;border: 0px;"">Page:</td><td style=""border: 0px;"">"))
-			.Controls.Add(ddlPages)
-			.Controls.Add(New LiteralControl("</td></tr></table>"))
-		End With
-
-		' Hide navigation buttons depending on width of Record Selector
-		' NB Lookup navigation buttons are hidden at runtime using the 'ResizeComboForForm' JS function.
-		If Not IsLookup Then
-			' Hide Search box if required
-			If Width.Value < 420 Then
-				tcPageXofY.Style.Add("display", "none")
-				tcPageXofY.Style.Add("visibility", "hidden")
-				tcPagerBtns.Style.Add("display", "none")
-				tcPagerBtns.Style.Add("visibility", "hidden")
-			End If
-
-			If Width.Value < 175 Then
-				' Hide tcPageXofY AND tcPagerBtns
-				tcSearchCell.Style.Add("display", "none")
-				tcSearchCell.Style.Add("visibility", "hidden")
-			ElseIf Width.Value < 210 Then
-				' Hide just tcPageXofY
-				tcPageXofY.Style.Add("display", "none")
-				tcPageXofY.Style.Add("visibility", "hidden")
-				tcPagerBtns.Style.Add("display", "none")
-				tcPagerBtns.Style.Add("visibility", "hidden")
-			End If
-
-		End If
-
-		'add cells to row
-		trPager.Cells.Add(tcSearchCell)
-		If PageCount > 1 Then
-			trPager.Cells.Add(tcPageXofY)
-			trPager.Cells.Add(tcPagerBtns)
-			trPager.Cells.Add(pagerDdl)
-		End If
-
-		'add row to table
-		tblPager.Rows.Add(trPager)
-
-		'add table to div
-		' NPG20120202 Fault HRPRO-1854, hide the pager row if there are no records.
-		If Not IsEmpty Then pnlPager.Controls.Add(tblPager)
-
-		'add div to pager row
-		row.Controls.AddAt(0, New TableCell())
-		row.Cells(0).ColumnSpan = columnSpan
-		row.Cells(0).Controls.Add(pnlPager)
-	End Sub
 
 	Protected Sub ddlPages_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs)
 		Dim newPageIndex As Integer = CType(sender, DropDownList).SelectedIndex
