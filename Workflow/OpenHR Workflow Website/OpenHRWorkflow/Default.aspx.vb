@@ -2098,7 +2098,6 @@ Public Class _Default
 
 
                 Case 14 ' lookup  Inputs
-
                   If Not isMobileBrowser() Then
 
                     ctlForm_UpdatePanel = New System.Web.UI.UpdatePanel
@@ -5394,7 +5393,7 @@ Public Class _Default
 "hand", "mobi", "phone", "cdm", "up.b", "audio", _
 "SIE-", "SEC-", "samsung", "HTC", "mot-", "mitsu", _
 "sagem", "sony", "alcatel", "lg", "eric", "vx", _
-"NEC", "philips", "mmm", "xx", "panasonic", "sharp", _
+"philips", "mmm", "xx", "panasonic", "sharp", _
 "wap", "sch", "rover", "pocket", "benq", "java", _
 "pt", "pg", "vox", "amoi", "bird", "compal", _
 "kg", "voda", "sany", "kdd", "dbt", "sendo", _
