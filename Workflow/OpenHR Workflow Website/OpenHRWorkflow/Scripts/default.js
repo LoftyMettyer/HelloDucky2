@@ -323,15 +323,17 @@
 	        catch (e) { }
 	    }
 
-	    function selectRow(gridId, rowIndex) {
+        function SR(row, rowIndex) {
 
-	        SetScrollTopPos(gridId + '_Grid', document.getElementById(gridId + '_gridcontainer').scrollTop, rowIndex);
+            var gridId = row.parentNode.parentNode.id;
+
+            SetScrollTopPos(gridId, document.getElementById(gridId.replace('_Grid', '_gridcontainer')).scrollTop, rowIndex);
             try {
                 setPostbackMode(3);
             }
-            catch(e) {
+            catch (e) {
             };
-            __doPostBack(gridId + '_Grid', 'Select$' + rowIndex);	        
+            __doPostBack(gridId, 'Select$' + rowIndex);
         }
 
 	    function dateControlKeyPress(pobjControl, piKeyCode, pobjEvent) {

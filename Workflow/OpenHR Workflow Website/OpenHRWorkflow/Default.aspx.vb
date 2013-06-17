@@ -918,7 +918,7 @@ Public Class _Default
                     .Style("position") = "absolute"
                     .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
                     .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
-                    .Style("word-wrap") = "break-word"
+                    '.Style("word-wrap") = "break-word"
                     ' NPG20120305 Fault HRPRO-1967 reverted by PBG20120419 Fault HRPRO-2157
                     .Style("overflow") = "auto"
                     .Style("text-align") = "left"
@@ -937,7 +937,6 @@ Public Class _Default
                     End If
                     .ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
 
-                    'TODO PG
                     .Font.Name = NullSafeString(dr("FontName"))
                     .Font.Size = ToPointFontUnit(NullSafeInteger(dr("FontSize")))
                     .Font.Bold = NullSafeBoolean(NullSafeBoolean(dr("FontBold")))

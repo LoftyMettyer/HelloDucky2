@@ -646,7 +646,7 @@ Public Class RecordSelector
       ' specify the row height cos of bug HRPRO-1685.
       ' NB: no need to be unique here, as the ID will automatically be 
       ' prefixed with the control's clientID.
-      'TODO PG
+      'PG removed for performance and altered some js where ids where used
       'e.Row.ID = "row" & e.Row.RowIndex.ToString
     End If
   End Sub
@@ -706,9 +706,7 @@ Public Class RecordSelector
         Next
 
         If Not Me.IsEmpty Then
-          'TODO PG
-          e.Row.Attributes("onclick") = "selectRow('" & grdGrid.ID.Replace("_Grid", "") & "','" & e.Row.RowIndex & "')"
-          'e.Row.Attributes("onclick") = "SR(this, " & e.Row.RowIndex & ")"
+          e.Row.Attributes("onclick") = "SR(this, " & e.Row.RowIndex & ")"
         End If
 
       ElseIf e.Row.RowType = DataControlRowType.Header Then
