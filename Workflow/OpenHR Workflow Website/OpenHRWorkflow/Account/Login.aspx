@@ -25,15 +25,18 @@
     
     <asp:Label runat="server" ID="lblWelcome" Text="Welcome"/>
     
-    <asp:ValidationSummary runat="server" ShowMessageBox="False" />
+    <asp:ValidationSummary runat="server" Font-Size="11px" />
 
     <table class="controlgrid">
         <tr>
-            <td><asp:Label runat="server" ID="lblUserName" Text="Username" AssociatedControlID="txtUserName" /></td>
+            <td>
+                <asp:Label runat="server" ID="lblUserName" Text="Username" AssociatedControlID="txtUserName"/>
+                <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="txtUserName" Text="*" ErrorMessage="Username is required"></asp:RequiredFieldValidator>
+            </td>
             <td>
                 <asp:TextBox runat="server" ID="txtUserName"/>
                 <%--    TODO finish or remove --%>
-                <asp:RequiredFieldValidator runat="server" ControlToValidate="txtUserName" ErrorMessage="Username is required"></asp:RequiredFieldValidator>
+
             </td>
         </tr>
         <tr>
