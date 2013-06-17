@@ -58,9 +58,7 @@ Partial Class FileUpload
       Dim fAlreadyUploaded As Boolean
 
       Try
-         Response.CacheControl = "no-cache"
-         Response.AddHeader("Pragma", "no-cache")
-         Response.Expires = -1
+			Response.Cache.SetCacheability(HttpCacheability.NoCache)
 
          If Not IsPostBack Then
             sFileExtensions = ""

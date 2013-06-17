@@ -21,9 +21,10 @@ Public Class App
       ' Fires upon attempting to authenticate the use
    End Sub
 
-   'TODO catch errors and show message page or setup in config.web
    Sub Application_Error(ByVal sender As Object, ByVal e As EventArgs)
-      ' Fires when an error occurs
+		' Fires when an error occurs
+		Session("message") = "Oops we're sorry, a server error occurred.<BR><BR>The error was: " & Server.GetLastError.GetBaseException().Message
+		Server.Transfer("~/Message.aspx")
    End Sub
 
    Sub Session_End(ByVal sender As Object, ByVal e As EventArgs)

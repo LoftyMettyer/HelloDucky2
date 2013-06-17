@@ -137,12 +137,12 @@ Public Class Database
 
 		Dim crypt As New Crypt
 		Dim encryptedString As String = crypt.EncryptQueryString((userId), -2,
-																					App.Config.Login,
-																					App.Config.Password,
-																					App.Config.Server,
-																					App.Config.Database,
-																					"",
-																					"")
+								 App.Config.Login,
+								 App.Config.Password,
+								 App.Config.Server,
+								 App.Config.Database,
+								 "",
+								 "")
 
 		Dim activationUrl As String = App.Config.WorkflowUrl & "?" & encryptedString
 
@@ -505,7 +505,7 @@ Public Class Database
 	End Function
 
 	Public Function WorkflowSubmitWebForm(elementItemId As Integer, instanceId As Integer, values As String,
-					  page As Integer) As SubmitWebFormResult
+			page As Integer) As SubmitWebFormResult
 
 		Dim result As New SubmitWebFormResult
 
@@ -647,13 +647,13 @@ Public Class Database
 
 			' get the run permissions for workflow for this user group.
 			Dim sql As String = "SELECT  [i].[itemKey], [p].[permitted]" &
-					  " FROM [ASRSysGroupPermissions] p" &
-					  " JOIN [ASRSysPermissionItems] i ON [p].[itemID] = [i].[itemID]" &
-					  " WHERE [p].[itemID] IN (" &
-					  " SELECT [itemID] FROM [ASRSysPermissionItems]	" &
-					  " WHERE [categoryID] = (SELECT [categoryID] FROM [ASRSysPermissionCategories] WHERE [categoryKey] = 'WORKFLOW')) " &
-					  " AND [groupName] = (SELECT [Name] FROM [ASRSysGroups] WHERE [ID] = " &
-					  userGroupID.ToString & ")"
+				 " FROM [ASRSysGroupPermissions] p" &
+				 " JOIN [ASRSysPermissionItems] i ON [p].[itemID] = [i].[itemID]" &
+				 " WHERE [p].[itemID] IN (" &
+				 " SELECT [itemID] FROM [ASRSysPermissionItems]	" &
+				 " WHERE [categoryID] = (SELECT [categoryID] FROM [ASRSysPermissionCategories] WHERE [categoryKey] = 'WORKFLOW')) " &
+				 " AND [groupName] = (SELECT [Name] FROM [ASRSysGroups] WHERE [ID] = " &
+				 userGroupID.ToString & ")"
 
 			conn.Open()
 			Dim cmd As New SqlCommand(sql, conn)
@@ -677,9 +677,9 @@ Public Class Database
 		Using conn As New SqlConnection(_connectionString)
 
 			Dim sql As String = "SELECT w.Id, w.Name, w.PictureID" &
-					  " FROM tbsys_mobilegroupworkflows gw" &
-					  " INNER JOIN tbsys_workflows w on gw.WorkflowID = w.ID" &
-					  " WHERE gw.UserGroupID = " & userGroupID & " AND w.enabled = 1 ORDER BY gw.Pos ASC"
+				 " FROM tbsys_mobilegroupworkflows gw" &
+				 " INNER JOIN tbsys_workflows w on gw.WorkflowID = w.ID" &
+				 " WHERE gw.UserGroupID = " & userGroupID & " AND w.enabled = 1 ORDER BY gw.Pos ASC"
 
 			conn.Open()
 			Dim cmd As New SqlCommand(sql, conn)
@@ -688,10 +688,10 @@ Public Class Database
 			While dr.Read()
 				list.Add(
 				 New WorkflowLink() With _
-					  {.ID = NullSafeInteger(dr("ID")), _
-					  .Name = NullSafeString(dr("Name")), _
-					  .PictureID = NullSafeInteger(dr("PictureID")) _
-					  })
+					{.ID = NullSafeInteger(dr("ID")), _
+					.Name = NullSafeString(dr("Name")), _
+					.PictureID = NullSafeInteger(dr("PictureID")) _
+					})
 			End While
 
 			Return list
@@ -723,11 +723,11 @@ Public Class Database
 				End If
 
 				list.Add(New WorkflowStepLink() With _
-							  {.Url = NullSafeString(dr("Url")),
-							  .Name = NullSafeString(dr("Name")),
-							  .Desc = desc,
-							  .PictureID = NullSafeInteger(dr("PictureID"))
-							  })
+					  {.Url = NullSafeString(dr("Url")),
+					  .Name = NullSafeString(dr("Name")),
+					  .Desc = desc,
+					  .PictureID = NullSafeInteger(dr("PictureID"))
+					  })
 			End While
 
 			Return (From x In list Order By x.Name, x.Desc).ToList()
@@ -746,48 +746,18 @@ Public Class Database
 			cmd.Parameters.Add("@piPictureID", SqlDbType.Int).Direction = ParameterDirection.Input
 			cmd.Parameters("@piPictureID").Value = id
 
-			Using reader As SqlDataReader = cmd.ExecuteReader(CommandBehavior.SequentialAccess)
-
-				Const bufferSize As Integer = 200
-
-				Dim writer As BinaryWriter, stream As New MemoryStream, buffer(bufferSize - 1) As Byte, bytesRead As Long, index As Long
-
-				If reader.Read Then
-
+			Using reader = cmd.ExecuteReader()
+				If reader.Read() Then
 					Dim picture As New Picture
 					picture.Id = id
-					picture.Name = NullSafeString(reader("Name"))
-
-					' Create a file to hold the output.
-					writer = New BinaryWriter(stream)
-
-					' Read bytes into buffer() and retain the number of bytes returned.
-					bytesRead = reader.GetBytes(1, index, buffer, 0, bufferSize)
-
-					' Continue reading and writing while there are bytes beyond the size of the buffer.
-					Do While bytesRead = bufferSize
-						writer.Write(buffer)
-						writer.Flush()
-
-						' Reposition the start index to the end of the last buffer and fill the buffer.
-						index += bufferSize
-						bytesRead = reader.GetBytes(1, index, buffer, 0, bufferSize)
-					Loop
-
-					' Write the remaining buffer.
-					writer.Write(buffer, 0, CInt(bytesRead))
-					writer.Flush()
-					writer.Close()
-
-					picture.Image = stream.ToArray()
-					stream.Close()
-
+					picture.Name = CStr(reader("Name"))
+					picture.Image = CType(reader("Picture"), Byte())
 					Return picture
+				Else
+					Return Nothing
 				End If
 			End Using
 		End Using
-
-		Return Nothing
 
 	End Function
 

@@ -3,8 +3,8 @@ Imports System.Globalization
 Imports System.Threading
 
 Public Class WorkflowUrl
-   Public InstanceID As Integer
-   Public ElementID As Integer
+	Public InstanceId As Integer
+	Public ElementId As Integer
    Public Server As String
    Public Database As String
    Public User As String

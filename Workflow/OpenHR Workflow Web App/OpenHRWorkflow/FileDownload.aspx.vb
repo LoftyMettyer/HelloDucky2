@@ -34,7 +34,7 @@ Partial Class FileDownload
          End If
 
          Session("message") = sErrorMessage
-         Response.Redirect("Message.aspx")
+			Server.Transfer("Message.aspx")
       End If
    End Sub
 

@@ -109,7 +109,7 @@ Public Class [Default]
 
 		If Not message.IsNullOrEmpty() Then
 			Session("message") = message
-			Response.Redirect("Message.aspx")
+			Server.Transfer("Message.aspx")
 		End If
 	End Sub
 
@@ -117,10 +117,8 @@ Public Class [Default]
 
 		Dim message As String = Nothing
 
-		'Add expires headers
-		Response.CacheControl = "no-cache"
-		Response.AddHeader("Pragma", "no-cache")
-		Response.Expires = -1
+		'Set the cache headers
+		Response.Cache.SetCacheability(HttpCacheability.NoCache)
 
 		'Set the page title
 		Page.Title = GetPageTitle("Workflow")
@@ -189,7 +187,7 @@ Public Class [Default]
 				SetSubmissionMessage(message & "<BR><BR>Click", "here", "to close this form.")
 			Else
 				Session("message") = message
-				Response.Redirect("Message.aspx")
+				Server.Transfer("Message.aspx")
 			End If
 		End If
 	End Sub
@@ -456,7 +454,7 @@ Public Class [Default]
 
 						'add attributes that denote the min & max values, number of decimal places is also implied
 						Dim max = New String("9"c, formItem.InputSize - formItem.InputDecimals) &
-									 If(formItem.InputDecimals > 0, "." & New String("9"c, formItem.InputDecimals), "")
+							 If(formItem.InputDecimals > 0, "." & New String("9"c, formItem.InputDecimals), "")
 
 						.Attributes.Add("data-numeric", String.Format("{{vMin: '-{0}', vMax: '{0}'}}", max))
 
@@ -557,7 +555,7 @@ Public Class [Default]
 					End If
 
 					Dim html = String.Format("<fieldset style='position:absolute; top:{0}px; left:{1}px; width:{2}px; height:{3}px; {4} {5} border:1px solid #999;'>",
-													 top, left, width, height, GetFontCss(formItem), GetColorCss(formItem))
+								top, left, width, height, GetFontCss(formItem), GetColorCss(formItem))
 
 					If formItem.Caption.Trim.Length > 0 Then
 						html += String.Format("<legend>{0}</legend>", formItem.Caption) & vbCrLf
@@ -574,10 +572,10 @@ Public Class [Default]
 					Select Case formItem.Orientation
 						Case 0 ' Vertical
 							html = String.Format("<div style='position:absolute; left:{0}px; top:{1}px; height:{2}px; width:0px; border-left: 1px solid {3};'></div>",
-													  formItem.Left, formItem.Top, formItem.Height, General.GetHtmlColour(formItem.BackColor))
+									  formItem.Left, formItem.Top, formItem.Height, General.GetHtmlColour(formItem.BackColor))
 						Case Else ' Horizontal
 							html = String.Format("<div style='position:absolute; left:{0}px; top:{1}px; height:0px; width:{2}px; border-left: 1px solid {3};'></div>",
-													  formItem.Left, formItem.Top, formItem.Width, General.GetHtmlColour(formItem.BackColor))
+									  formItem.Left, formItem.Top, formItem.Width, General.GetHtmlColour(formItem.BackColor))
 					End Select
 
 					tabPages(formItem.PageNo).Controls.Add(New LiteralControl(html))
@@ -868,11 +866,11 @@ Public Class [Default]
 						End With
 
 						Dim filterSql = LookupFilterSQL(formItem.LookupFilterColumnName,
-																  formItem.LookupFilterColumnDataType,
-																  formItem.LookupFilterOperator,
-																  FormInputPrefix &
-																  formItem.LookupFilterValueID &
-																  "_" & formItem.LookupFilterValueType & "_")
+										formItem.LookupFilterColumnDataType,
+										formItem.LookupFilterOperator,
+										FormInputPrefix &
+										formItem.LookupFilterValueID &
+										"_" & formItem.LookupFilterValueType & "_")
 
 						' Hidden Field to store any lookup filter code
 						If (filterSql.Length > 0) Then
@@ -984,11 +982,11 @@ Public Class [Default]
 							tabPages(formItem.PageNo).Controls.Add(control)
 
 							Dim filterSql = LookupFilterSQL(formItem.LookupFilterColumnName,
-																	  formItem.LookupFilterColumnDataType,
-																	  formItem.LookupFilterOperator,
-																	  FormInputPrefix &
-																	  formItem.LookupFilterValueID & "_" &
-																	  formItem.LookupFilterValueType & "_")
+											formItem.LookupFilterColumnDataType,
+											formItem.LookupFilterOperator,
+											FormInputPrefix &
+											formItem.LookupFilterValueID & "_" &
+											formItem.LookupFilterValueType & "_")
 
 							If (filterSql.Length > 0) Then
 								tabPages(formItem.PageNo).Controls.Add(New HiddenField With {.ID = "lookup" & controlId, .Value = filterSql})
@@ -1069,11 +1067,11 @@ Public Class [Default]
 						tabPages(formItem.PageNo).Controls.Add(control)
 
 						Dim filterSql = LookupFilterSQL(formItem.LookupFilterColumnName,
-																  formItem.LookupFilterColumnDataType,
-																  formItem.LookupFilterOperator,
-																  FormInputPrefix &
-																  formItem.LookupFilterValueID &
-																  "_" & formItem.LookupFilterValueType & "_")
+										formItem.LookupFilterColumnDataType,
+										formItem.LookupFilterOperator,
+										FormInputPrefix &
+										formItem.LookupFilterValueID &
+										"_" & formItem.LookupFilterValueType & "_")
 
 						If filterSql.Length > 0 Then
 							tabPages(formItem.PageNo).Controls.Add(New HiddenField With {.ID = "lookup" & controlId, .Value = filterSql})
@@ -1138,7 +1136,7 @@ Public Class [Default]
 					End If
 
 					Dim html = String.Format("<fieldset style='position:absolute; top:{0}px; left:{1}px; width:{2}px; height:{3}px; {4} {5} {6}'>",
-													 top, left, width, height, GetFontCss(formItem), GetColorCss(formItem), borderCss)
+								top, left, width, height, GetFontCss(formItem), GetColorCss(formItem), borderCss)
 
 					If formItem.PictureBorder And formItem.Caption.Trim.Length > 0 Then
 						html += String.Format("<legend>{0}</legend>", formItem.Caption) & vbCrLf
@@ -1229,7 +1227,7 @@ Public Class [Default]
 						.Value = formItem.Caption
 
 						Dim crypt As New Crypt,
-							 encodedId As String = crypt.SimpleEncrypt(formItem.Id.ToString, Session.SessionID)
+						  encodedId As String = crypt.SimpleEncrypt(formItem.Id.ToString, Session.SessionID)
 
 						If Not IsMobileBrowser() Then
 							.Attributes.Add("onclick", "try{showFileUpload(true, '" & encodedId & "', document.getElementById('file" & controlId & "').value);}catch(e){};")
@@ -1247,11 +1245,11 @@ Public Class [Default]
 					Dim crypt As New Crypt, encodedId As String = crypt.SimpleEncrypt(formItem.Id.ToString, Session.SessionID)
 
 					Dim html = "<span id='{0}' tabindex='{1}' style='position:absolute; display:inline-block; word-wrap:break-word; overflow:auto; " &
-						 "top:{2}px; left:{3}px; width:{4}px; height:{5}px; {6} {7}' " &
-						 "onclick='FileDownload_Click(""{8}"");' onkeypress='FileDownload_KeyPress(""{8}"");'>{9}</span>"
+					  "top:{2}px; left:{3}px; width:{4}px; height:{5}px; {6} {7}' " &
+					  "onclick='FileDownload_Click(""{8}"");' onkeypress='FileDownload_KeyPress(""{8}"");'>{9}</span>"
 
 					html = String.Format(html, controlId, formItem.TabIndex, formItem.Top, formItem.Left, formItem.Width, formItem.Height,
-							 GetFontCss(formItem), GetColorCss(formItem), encodedId, HttpUtility.HtmlEncode(formItem.Caption))
+						GetFontCss(formItem), GetColorCss(formItem), encodedId, HttpUtility.HtmlEncode(formItem.Caption))
 
 					UpdateAutoFocusControl(formItem.TabIndex, controlId)
 
@@ -1435,7 +1433,7 @@ Public Class [Default]
 			'Read the web form item values & build up a string of the form input values
 			Dim controlList As New List(Of Control)
 			GetControls(Page.Controls, controlList, Function(c) c.ClientID.StartsWith(FormInputPrefix) AndAlso
-											(c.ClientID.EndsWith("_") OrElse c.ClientID.EndsWith("TextBox") OrElse c.ClientID.EndsWith("Grid")))
+					  (c.ClientID.EndsWith("_") OrElse c.ClientID.EndsWith("TextBox") OrElse c.ClientID.EndsWith("Grid")))
 
 			For Each ctl As Control In controlList
 
@@ -1538,8 +1536,8 @@ Public Class [Default]
 			lblErrors.Text = If(bulletErrors.Items.Count > 0, "Unable to submit this form due to the following error" & If(bulletErrors.Items.Count = 1, "", "s") & ":", "")
 
 			lblWarnings.Text = If(bulletWarnings.Items.Count > 0,
-									 If(bulletErrors.Items.Count > 0, "And the following warning" & If(bulletWarnings.Items.Count = 1, "", "s") & ":",
-											 "Submitting this form raises the following warning" & If(bulletWarnings.Items.Count = 1, "", "s") & ":"), "")
+					 If(bulletErrors.Items.Count > 0, "And the following warning" & If(bulletWarnings.Items.Count = 1, "", "s") & ":",
+						"Submitting this form raises the following warning" & If(bulletWarnings.Items.Count = 1, "", "s") & ":"), "")
 
 			overrideWarning.Visible = (bulletWarnings.Items.Count > 0 And bulletErrors.Items.Count = 0)
 

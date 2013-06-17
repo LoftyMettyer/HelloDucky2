@@ -1,10 +1,8 @@
-﻿Imports System.Collections
-Imports System.Web
-
+﻿
 Public Class ImageHandler
-   Implements IHttpHandler, IReadOnlySessionState
+	Implements IHttpHandler, IReadOnlySessionState
 
-	Private Shared ReadOnly ContentMap As New Hashtable(StringComparer.CurrentCultureIgnoreCase)
+	Private Shared ReadOnly ContentMap As New Hashtable(StringComparer.InvariantCultureIgnoreCase)
 
 	Shared Sub New()
 		ContentMap.Add(".png", "image/png")
@@ -17,29 +15,24 @@ Public Class ImageHandler
 
 	Public Sub ProcessRequest(context As HttpContext) Implements IHttpHandler.ProcessRequest
 
-		Dim request = context.Request, response = context.Response, id As Integer
+		Dim request = context.Request,
+		  response = context.Response,
+		  id As Integer
 
 		Integer.TryParse(request.QueryString("id"), id)
 
-		If Not context.Request.Headers("If-Modified-Since").IsNullOrEmpty() Then
-			response.StatusCode = 304
-			response.StatusDescription = "Not Modified"
-			Return
-		End If
-
 		'Which database do we want to get the picture from?
-		Dim db As Database
+		Dim conn As String
 
 		If request.QueryString("s") IsNot Nothing Then
-
 			'for workflows the database info is store in the session and comes from the workflow url
 			Dim url As WorkflowUrl = CType(HttpContext.Current.Session("workflowUrl"), WorkflowUrl)
-			db = New Database(Database.CreateConnectionString(url.Server, url.Database, url.User, url.Password))
+			conn = Database.CreateConnectionString(url.Server, url.Database, url.User, url.Password)
 		Else
-			db = New Database(App.Config.ConnectionString)
+			conn = App.Config.ConnectionString
 		End If
 
-		'Stream the image from the database straight into the Response stream
+		Dim db As New Database(conn)
 		Dim picture = db.GetPicture(id)
 
 		If picture Is Nothing Then
@@ -48,9 +41,8 @@ Public Class ImageHandler
 
 		response.ContentType = GetContentType(picture.Name)
 		response.OutputStream.Write(picture.Image, 0, picture.Image.Length)
-		response.Cache.SetCacheability(HttpCacheability.[Public])
-		response.Cache.SetExpires(DateTime.Now.AddYears(1))
-		response.Cache.SetLastModified(DateTime.Now.AddYears(-1))
+		response.Cache.SetCacheability(HttpCacheability.Public)
+		response.Cache.SetMaxAge(TimeSpan.FromDays(90))
 		response.End()
 	End Sub
 

@@ -4,9 +4,7 @@ Partial Class SubmissionMessage
 
    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
 
-      Response.CacheControl = "no-cache"
-      Response.AddHeader("Pragma", "no-cache")
-      Response.Expires = -1
+		Response.Cache.SetCacheability(HttpCacheability.NoCache)
 
       lblSubmissionsMessage_1.Font.Size = App.Config.MessageFontSize
       lblSubmissionsMessage_2.Font.Size = App.Config.MessageFontSize
