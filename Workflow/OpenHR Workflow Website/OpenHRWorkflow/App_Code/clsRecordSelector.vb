@@ -1020,7 +1020,6 @@ Public Class RecordSelector
     Dim tblPager As Table = New Table()
     With tblPager
       .ID = "tblPager"
-      '.CellPadding = 3
       .CellSpacing = 0
       .Style.Add("width", "100%")
       .Style.Add("height", "100%")
@@ -1030,7 +1029,6 @@ Public Class RecordSelector
 
     Dim trPager As TableRow = New TableRow()
     trPager.ID = "trPager"
-    'trPager.Style.Add("float", "right")
     trPager.Style.Add("width", "100%")
     trPager.Style.Add("border", "0px")
 
@@ -1044,7 +1042,8 @@ Public Class RecordSelector
 
     Dim tcSearchCell As TableCell = New TableCell()
     With tcSearchCell
-      .ID = "tcSearchCell"
+      ' .ID = "tcSearchCell"
+      .Attributes.Add("id", MyBase.ID.Replace("Grid", "") & "tcSearch") ' add as an attribute to ensure unique ID (other ctlxxx is added at runtime)
       .Style.Add("width", "150px")
       .Style.Add("height", "100%")
       .BorderStyle = WebControls.BorderStyle.None
@@ -1055,7 +1054,6 @@ Public Class RecordSelector
       .Style.Add("font-size", "8pt")
       .Style.Add("font-style", "italic")
       .Style.Add("float", "left")
-      '.Style.Add("position", "absolute")
       .Style.Add("top", "2px")
       .Style.Add("left", "3px")
       .Style.Add("width", "150px")
@@ -1066,16 +1064,29 @@ Public Class RecordSelector
       .Attributes.Add("onfocus", "if(this.value!=""""){this.style.color=""black"";this.style.fontStyle=""normal"";this.value=""""}")
       .Attributes.Add("onclick", "event.cancelBubble=true;")
       .Attributes.Add("onkeyup", "filterTable(this, " & Me.ClientID.ToString & ")")
-
     End With
 
     tcSearchCell.Controls.Add(txtSearchBox)
 
+    Dim imgSearchImg As Image = New Image
+    With imgSearchImg
+      .Style.Add("position", "absolute")
+      .Style.Add("top", "4px")
+      .Style.Add("left", "140px")
+      .Style.Add("height", "15px")
+      .Style.Add("width", "15px")
+      .ImageUrl = "Images/search.gif"
+    End With
+
+    tcSearchCell.Controls.Add(imgSearchImg)
+    '  writer.Write("<img src='Images/search.gif' style='position:absolute;top:4px;left:140px;height:15px;width:15px'/>")
+
+
     Dim tcPageXofY As TableCell = New TableCell()
     With tcPageXofY
       .ID = "tcPageXofY"
-      .Style.Add("width", "30%")
-      .Style.Add("text-align", "left")
+      .Style.Add("width", "35%")
+      .Style.Add("text-align", "right")
       .Style.Add("padding-left", "5px")
       .Style.Add("border", "0px")
       .Height = Unit.Pixel(23)
@@ -1169,7 +1180,7 @@ Public Class RecordSelector
     Dim tcPagerBtns As TableCell = New TableCell()
     With tcPagerBtns
       .ID = "tcPagerBtns"
-      .Style.Add("width", "40%")
+      .Style.Add("width", "35%")
       .Style.Add("text-align", "center")
       .Style.Add("border", "0px")
       .Controls.Add(ibtnFirst)
@@ -1210,12 +1221,15 @@ Public Class RecordSelector
       .Controls.Add(New LiteralControl("</td></tr></table>"))
     End With
 
-    If Me.Width.Value < 420 Then
-      tcSearchCell.Style.Add("display", "none")
-      tcSearchCell.Style.Add("visibility", "hidden")
-    End If
     ' Hide navigation buttons depending on width of Record Selector
+    ' NB Lookup navigation buttons are hidden at runtime using the 'ResizeComboForForm' JS function.
     If Not IsLookup Then
+      ' Hide Search box if required
+      If MyBase.Width.Value < 420 Then
+        tcSearchCell.Style.Add("display", "none")
+        tcSearchCell.Style.Add("visibility", "hidden")
+      End If
+
       If MyBase.Width.Value < 175 Then
         ' Hide tcPageXofY AND tcPagerBtns
         tcPageXofY.Style.Add("display", "none")
