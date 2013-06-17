@@ -1792,6 +1792,7 @@ Public Class _Default
 
                                         .ClientSideEvents.EditKeyDown = "dropdownControlKeyPress"
 
+
                                         .DropDownLayout.AllowSorting = Infragistics.WebUI.UltraWebGrid.AllowSorting.Yes
                                         .DropDownLayout.HeaderClickAction = Infragistics.WebUI.UltraWebGrid.HeaderClickAction.SortMulti
                                         .DropDownLayout.StationaryMargins = Infragistics.WebUI.UltraWebGrid.StationaryMargins.Header

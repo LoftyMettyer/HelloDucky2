@@ -182,6 +182,19 @@
 			showErrorMessages(false);
 		}
 
+		function closeOtherCombos(objId) {
+			var theObject = document.getElementById(objId);
+			var level = 0;
+
+            // Tell the TraverseDOM function to run the doNothing function on each control. 
+            // The TraverseDOM function already has code close all WebCombos, so a 'doNothibng ios all that is required.
+			TraverseDOM(theObject, level, doNothing);
+		}
+
+		function doNothing() {
+		    // Empty function. Required - See note for closeOtherCombos function.
+		}
+
 		function disableChildElements(objId) {
 			var theObject = document.getElementById(objId);
 			var level = 0;
@@ -742,6 +755,8 @@
         	var reDECIMAL = new RegExp(sLocaleDecimal, "gi");
 	
 		    try {
+                closeOtherCombos(psWebComboId);
+
 			    var sID = "lookup" + psWebComboId;
 			    
 			    // For some reason the WebComboID has '_' replaced with 'x'.
