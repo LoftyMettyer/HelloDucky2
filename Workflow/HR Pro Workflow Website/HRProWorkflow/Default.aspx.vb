@@ -596,7 +596,7 @@ Public Class _Default
                                         .Style("position") = "absolute"
                                         .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
                                         .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
-                                        .StylePreset = Infragistics.WebUI.WebDataInput.ButtonStylePreset.WindowsXPBlue
+                                        '.StylePreset = Infragistics.WebUI.WebDataInput.ButtonStylePreset.WindowsXPBlue
 
                                         .Appearance.Style.BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColor")))
                                         .Appearance.Style.BorderStyle = BorderStyle.Solid
