@@ -128,7 +128,7 @@ Partial Class MobileLogin
       myConnection.Open()
 
       ' Create command
-      myCommand = New SqlClient.SqlCommand("select * from tbsys_mobileformelements where layoutid in (select layoutid from tbsys_mobileformlayout where formtypeid = 1)", myConnection)
+      myCommand = New SqlClient.SqlCommand("select * from tbsys_mobileformelements where layoutid in (select id from tbsys_mobileformlayout where formtypeid = 1)", myConnection)
 
       ' Create a DataReader to ferry information back from the database
       drElements = myCommand.ExecuteReader()
@@ -154,7 +154,6 @@ Partial Class MobileLogin
                   .Font.Size = FontUnit.Parse(NullSafeString(drElements("FontSize")))
                   .Font.Bold = NullSafeBoolean(NullSafeBoolean(drElements("FontBold")))
                   .Font.Italic = NullSafeBoolean(NullSafeBoolean(drElements("FontItalic")))
-                  .Font.Strikeout = NullSafeBoolean(NullSafeBoolean(drElements("FontStrikeThru")))
                 End With
 
                 ' Footer text
@@ -183,14 +182,14 @@ Partial Class MobileLogin
                 '.Style("position") = "absolute"
 
                 '' Vertical Offset
-                'If Not IsDBNull(drElements("TopCoord")) Or NullSafeInteger(drElements("VerticalOffsetBehaviour")) = 0 Then
+                'If NullSafeInteger(drElements("VerticalOffsetBehaviour")) = 0 Then
                 '  .Style("top") = Unit.Pixel(NullSafeInteger(drElements("VerticalOffset"))).ToString
                 'Else
                 '  .Style("bottom") = Unit.Pixel(NullSafeInteger(drElements("VerticalOffset"))).ToString
                 'End If
 
                 ' horizontal position
-                If Not IsDBNull(drElements("LeftCoord")) Or NullSafeInteger(drElements("HorizontalOffsetBehaviour")) = 0 Then
+                If NullSafeInteger(drElements("HorizontalOffsetBehaviour")) = 0 Then
                   .Style("left") = Unit.Pixel(NullSafeInteger(drElements("HorizontalOffset"))).ToString
                 Else
                   .Style("right") = Unit.Pixel(NullSafeInteger(drElements("HorizontalOffset"))).ToString
@@ -214,7 +213,6 @@ Partial Class MobileLogin
                 .Style.Add("font-size", NullSafeString(drElements("FontSize")) & "pt")
                 .Style.Add("font-weight", IIf(NullSafeBoolean(NullSafeBoolean(drElements("FontBold"))), "bold", "normal"))
                 .Style.Add("font-style", IIf(NullSafeBoolean(NullSafeBoolean(drElements("FontItalic"))), "italic", "normal"))
-                '.Font.Strikeout = NullSafeBoolean(NullSafeBoolean(drElements("FontStrikeThru")))
 
                 iTempHeight = NullSafeInteger(drElements("Height"))
                 iTempWidth = NullSafeInteger(drElements("Width"))
@@ -231,7 +229,7 @@ Partial Class MobileLogin
 
               ctlForm_HtmlInputText = TryCast(pnlContainer.FindControl(NullSafeString(drElements("HTMLElementID"))), HtmlInputText)
 
-              If Not IsDBNull(drElements("LeftCoord")) Or NullSafeInteger(drElements("HorizontalOffsetBehaviour")) = 0 Then
+              If NullSafeInteger(drElements("HorizontalOffsetBehaviour")) = 0 Then
                 ctlForm_HtmlInputText.Style("left") = Unit.Pixel(NullSafeInteger(drElements("HorizontalOffset"))).ToString
               Else
                 ctlForm_HtmlInputText.Style("right") = Unit.Pixel(NullSafeInteger(drElements("HorizontalOffset"))).ToString
@@ -259,14 +257,14 @@ Partial Class MobileLogin
               .Style("position") = "absolute"
 
               ' Vertical Offset
-              If Not IsDBNull(drElements("TopCoord")) Or NullSafeInteger(drElements("VerticalOffsetBehaviour")) = 0 Then
+              If NullSafeInteger(drElements("VerticalOffsetBehaviour")) = 0 Then
                 .Style("top") = Unit.Pixel(NullSafeInteger(drElements("VerticalOffset"))).ToString
               Else
                 .Style("bottom") = Unit.Pixel(NullSafeInteger(drElements("VerticalOffset"))).ToString
               End If
 
               ' horizontal position
-              If Not IsDBNull(drElements("LeftCoord")) Or NullSafeInteger(drElements("HorizontalOffsetBehaviour")) = 0 Then
+              If NullSafeInteger(drElements("HorizontalOffsetBehaviour")) = 0 Then
                 .Style("left") = Unit.Pixel(NullSafeInteger(drElements("HorizontalOffset"))).ToString
               Else
                 .Style("right") = Unit.Pixel(NullSafeInteger(drElements("HorizontalOffset"))).ToString
