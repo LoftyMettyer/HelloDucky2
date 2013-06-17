@@ -17,107 +17,25 @@ Partial Class MobileLogin
     Dim msServer As String
     Dim msUser As String
     Dim msPwd As String
-    Dim sTemp As String
-    Dim iTemp As Integer
-    Dim sQueryString As String
+    Dim sRedirectUrl As String
+    Dim sRedirectWebPageName As String
     Dim objCrypt As New Crypt
-
+    Dim fAuthenticated As Boolean = False
 
     ' Forms authentication can be overruled, and we do this for any existing workflow link.
-    
+
     ' is there is a remember me cookie, get the user name out of it and bypass the login screen.
     Dim CustomerGUID As String = HttpContext.Current.User.Identity.Name
 
     If Not (CustomerGUID = "" Or CustomerGUID = "sqluser") Then
       Session("LoginKey") = CustomerGUID
+      fAuthenticated = True
     End If
 
-
-    ' We only authenticate if the requested page is a mobile page.
-    Try
-      sTemp = FormsAuthentication.GetRedirectUrl("", False)  'Server.UrlDecode(Request.RawUrl.ToString)
-      iTemp = sTemp.IndexOf("?")
-
-      If iTemp >= 0 Then
-        sQueryString = sTemp.Substring(iTemp + 1)
-
-
-        '# This needs to be done properly!!!
-        If Not sQueryString.ToUpper().Contains("MOBILE") Then
-          ' challenge by continuing through...
-        Else
-          FormsAuthentication.RedirectFromLoginPage("", True)
-        End If
-      End If
-    Catch ex As Exception
-
-    End Try
-
-
-
-    '' First decode the URL to see if this is a valid workflow - we don't authenticate any workflow in progress or external workflow.
-    'Try
-    '  ' Read and decrypt the queryString.
-    '  miElementID = 0
-    '  miInstanceID = 0
-
-    '  sTemp = FormsAuthentication.GetRedirectUrl("", False)  'Server.UrlDecode(Request.RawUrl.ToString)
-    '  iTemp = sTemp.IndexOf("?")
-
-    '  If iTemp >= 0 Then
-    '    sQueryString = sTemp.Substring(iTemp + 1)
-
-    '    Try
-    '      ' Set the culture to English(GB) to ensure the decryption works OK. Fault HRPRO-1404
-    '      Dim sCultureName As String
-    '      sCultureName = Thread.CurrentThread.CurrentCulture.Name
-
-    '      Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-gb")
-    '      Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture("en-gb")
-
-    '      sTemp = objCrypt.DecompactString(sQueryString)
-    '      sTemp = objCrypt.DecryptString(sTemp, "", True)
-
-    '      ' Reset the culture to be the one used by the client. Fault HRPRO-1404
-    '      Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(sCultureName)
-    '      Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture(sCultureName)
-
-    '      ' Extract the required parameters from the decrypted queryString.
-    '      miInstanceID = CInt(Left(sTemp, InStr(sTemp, vbTab) - 1))
-    '      sTemp = Mid(sTemp, InStr(sTemp, vbTab) + 1)
-
-    '      miElementID = CInt(Left(sTemp, InStr(sTemp, vbTab) - 1))
-    '      sTemp = Mid(sTemp, InStr(sTemp, vbTab) + 1)
-
-    '      msUser = Left(sTemp, InStr(sTemp, vbTab) - 1)
-    '      sTemp = Mid(sTemp, InStr(sTemp, vbTab) + 1)
-
-    '      msPwd = Left(sTemp, InStr(sTemp, vbTab) - 1)
-    '      sTemp = Mid(sTemp, InStr(sTemp, vbTab) + 1)
-
-    '      msServer = Left(sTemp, InStr(sTemp, vbTab) - 1)
-    '      sTemp = Mid(sTemp, InStr(sTemp, vbTab) + 1)
-
-    '      ' We're a valid workflow if the elementID > -2 - by the way, a '-2' indicates a 'mobile activation' workflow link.
-    '      If (miElementID >= -2) _
-    '        And (Not IsPostBack) Then
-
-    '        ' This is an externally initiated workflow
-    '        ' Send user to originally requested page....
-    '        FormsAuthentication.RedirectFromLoginPage("", True)
-
-    '      End If
-
-    '    Catch ex As Exception
-    '      ' uh-oh, problem! Try to revert user to calling page.
-    '      'FormsAuthentication.RedirectFromLoginPage("", True)
-    '    End Try
-    '  Else
-    '    ' No workflow encrypted string passed, continue to login page...
-    '  End If
-    'Catch ex As Exception
-
-    'End Try
+    If fAuthenticated Then
+      ' forward on to requested page
+      FormsAuthentication.RedirectFromLoginPage("", True)
+    End If
 
   End Sub
 
