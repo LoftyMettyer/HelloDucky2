@@ -36,7 +36,9 @@ fieldset, legend { padding: 0px; margin: 0px; }
 .highlighted { background: yellow; }
 
 /* Textboxes */
-textarea { resize: none; }
+textarea {
+     resize: none;
+}
 
 /* Checkboxes */
 .checkbox {

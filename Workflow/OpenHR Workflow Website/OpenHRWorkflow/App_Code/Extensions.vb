@@ -78,10 +78,10 @@ Public Module Extensions
   End Sub
 
   <Extension()> _
-  Public Sub ApplySize(value As CssStyleCollection, dataReader As IDataReader)
+  Public Sub ApplySize(value As CssStyleCollection, dataReader As IDataReader, Optional widthAdjustment As Integer = 0, Optional heightAdjustment As Integer = 0)
 
-    value("Height") = Unit.Pixel(NullSafeInteger(dataReader("Height"))).ToString
-    value("Width") = Unit.Pixel(NullSafeInteger(dataReader("Width"))).ToString
+    value("Height") = Unit.Pixel(NullSafeInteger(dataReader("Height")) + heightAdjustment).ToString
+    value("Width") = Unit.Pixel(NullSafeInteger(dataReader("Width")) + widthAdjustment).ToString
 
   End Sub
 
@@ -98,10 +98,27 @@ Public Module Extensions
 
     value.ForeColor = General.GetColour(NullSafeInteger(dataReader("ForeColor")))
 
+    'TODO PG NOW if default vb choose own color
+    value.ForeColor = ColorTranslator.FromHtml("#333")
+
     If canBeTranparent AndAlso NullSafeInteger(dataReader("BackStyle")) = 0 Then
       value.BackColor = Color.Transparent
     Else
-      value.BackColor = General.GetColour(NullSafeInteger(dataReader("BackColor")))
+      'TODO NOW PG if vb default choose backcolor, or dont set one
+      'value.BackColor = General.GetColour(NullSafeInteger(dataReader("BackColor")))
+    End If
+
+  End Sub
+
+  <Extension()> _
+  Public Sub ApplyColor(value As CssStyleCollection, dataReader As IDataReader, Optional canBeTransparent As Boolean = False)
+
+    value("color") = General.GetHtmlColour(NullSafeInteger(dataReader("ForeColor")))
+
+    If canBeTransparent AndAlso NullSafeInteger(dataReader("BackStyle")) = 0 Then
+      value("background-color") = General.GetHtmlColour(NullSafeInteger(dataReader("BackColor")))
+    Else
+      value("background-color") = General.GetHtmlColour(NullSafeInteger(dataReader("BackColor")))
     End If
 
   End Sub
@@ -121,15 +138,11 @@ Public Module Extensions
   End Function
 
   <Extension()> _
-  Public Sub ApplyBorder(value As WebControl, adjustSize As Boolean, Optional adjustSizeAmount As Integer = -4, Optional borderColor As Integer = 5730458)
+  Public Sub ApplyBorder(value As WebControl, adjustSize As Boolean, Optional adjustSizeAmount As Integer = -4)
 
     value.BorderStyle = BorderStyle.Solid
-    value.BorderColor = General.GetColour(borderColor)
-    value.BorderWidth = Unit.Pixel(1)
-
-    'TODO PG NOW
-    value.BorderColor = ColorTranslator.FromHtml("#CCCCCC")
     value.BorderColor = ColorTranslator.FromHtml("#999999")
+    value.BorderWidth = Unit.Pixel(1)
 
     If adjustSize Then
       value.Width = Unit.Pixel(CInt(value.Width.Value) + adjustSizeAmount)

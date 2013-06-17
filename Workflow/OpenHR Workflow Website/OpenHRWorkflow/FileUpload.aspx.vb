@@ -149,32 +149,9 @@ Partial Class FileUpload
           bulletErrors.Font.Size = mobjConfig.ValidationMessageFontSize
           bulletErrors.ForeColor = General.GetColour(6697779)
 
-          With btnCancel
-            .Style.Add("Background-Color", General.GetColour(16249587).ToString)
-            .Style.Add("Border", "solid 1px " & General.GetColour(10720408).ToString)
-            .Style.Add("Color", General.GetColour(6697779).ToString)
-            .Style.Add("font-family", "Verdana")
-            .Attributes.Add("onclick", "try{exitFileUpload(0);}catch(e){};")
+          btnCancel.Attributes.Add("onclick", "try{exitFileUpload(0);}catch(e){};")
 
-            ' Disable until the Default plage postback is complete.
-            ' NPG20120201 Fault HRPRO-1845, always enabled now.
-            '.Enabled = False
-          End With
-
-          With btnClear
-            .Style.Add("Background-Color", General.GetColour(16249587).ToString)
-            .Style.Add("Border", "solid 1px " & General.GetColour(10720408).ToString)
-            .Style.Add("Color", General.GetColour(6697779).ToString)
-            .Style.Add("font-family", "Verdana")
-            .Visible = (sFileName.Length > 0)
-          End With
-
-          With btnFileUpload
-            .Style.Add("Background-Color", General.GetColour(16249587).ToString)
-            .Style.Add("border", "Solid 1px " & General.GetColour(10720408).ToString)
-            .Style.Add("Color", General.GetColour(6697779).ToString)
-            .Style.Add("Font-family", "Verdana")
-          End With
+          btnClear.Visible = (sFileName.Length > 0)
 
           With lblFileUploadPrompt
             If (sFileName.Length > 0) Then

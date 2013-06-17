@@ -664,17 +664,16 @@ Public Class _Default
 
                     ' stops the mobiles displaying buttons with over-rounded corners...
                     If IsMobileBrowser() OrElse IsMacSafari() Then
-                      'TODO PG NOW
-                      '.Style.Add("-webkit-appearance", "none")
-                      '.Style.Add("background-color", "#CCCCCC")
-                      '.Style.Add("border", "solid 1px #C0C0C0")
-                      '.Style.Add("border-radius", "5px")
+                      .Style.Add("-webkit-appearance", "none")
+                      .Style.Add("background-color", "#E6E6E6")
+                      .Style.Add("border", "solid 1px #CCC")
+                      .Style.Add("border-radius", "4px")
                     End If
 
                     If NullSafeInteger(dr("BackColor")) <> 16249587 AndAlso NullSafeInteger(dr("BackColor")) <> -2147483633 Then
                       .Style.Add("background-color", General.GetHtmlColour(NullSafeInteger(dr("BackColor"))).ToString)
-                      .Style.Add("border", "solid 1px " & General.GetHtmlColour(9999523).ToString)
-                      .Style.Add("border-radius", "5px")
+                      .Style.Add("border", "1px solid #CCC")
+                      .Style.Add("border-radius", "4px")
                     End If
 
                     If NullSafeInteger(dr("ForeColor")) <> 6697779 Then
@@ -793,7 +792,7 @@ Public Class _Default
                   Dim control = New Label
                   With control
                     .ApplyLocation(dr)
-                    .ApplySize(dr)
+                    .ApplySize(dr, 0, 1)
                     .Style.ApplyFont(dr)
                     .ApplyColor(dr, True)
 
@@ -1021,17 +1020,16 @@ Public Class _Default
 
                     With control
                       .ID = sID
+                      .Style.ApplyLocation(dr)
+                      .Style.ApplySize(dr, -10, -3)
+                      .Style.ApplyFont(dr)
+                      .Style.ApplyColor(dr)
 
-                      .Attributes.Add("type", "date")
-                      .Attributes.Add("onblur", "document.getElementById('" & sID & "Value').value = this.value;")
                       .Attributes.Add("TabIndex", NullSafeInteger(dr("tabIndex")).ToString)
                       UpdateAutoFocusControl(NullSafeShort(dr("tabIndex")), sID)
 
-                      .Style.ApplyLocation(dr)
-                      .Style("margin") = "0px"
-                      .Style("height") = Unit.Pixel(NullSafeInteger(dr("Height")) - 3).ToString
-                      .Style("width") = Unit.Pixel(NullSafeInteger(dr("Width"))).ToString
-                      .Style.ApplyFont(dr)
+                      .Attributes.Add("type", "date")
+                      .Attributes.Add("onblur", "document.getElementById('" & sID & "Value').value = this.value;")
 
                       If Not IsPostBack Then
 
@@ -1172,7 +1170,7 @@ Public Class _Default
                     .ApplySize(dr)
 
                     If NullSafeBoolean(dr("PictureBorder")) Then
-                      .ApplyBorder(True, -2, 10720408)
+                      .ApplyBorder(True, -2)
                     End If
 
                     Dim imageUrl As String = LoadPicture(NullSafeInteger(dr("pictureID")), sMessage)
@@ -1626,9 +1624,9 @@ Public Class _Default
                     Dim dde As New AjaxControlToolkit.DropDownExtender
 
                     With dde
+                      .DropArrowImageUrl = "~/Images/Blank.gif"
                       .DropArrowBackColor = Color.Transparent
-                      .DropArrowWidth = Unit.Pixel(30)
-                      .HighlightBackColor = backgroundColor
+                      .HighlightBackColor = Color.White
                       .HighlightBorderColor = textBox.BorderColor
 
                       ' Careful with the case here, use 'dde' in JavaScript:
@@ -1686,8 +1684,11 @@ Public Class _Default
                     With ctlForm_Dropdown
                       .ID = sID
                       .ApplyLocation(dr)
+                      .ApplySize(dr, -1, -1)
                       .Style.ApplyFont(dr)
                       .ApplyColor(dr)
+                      If Not IsMobileBrowser() Then .ApplyBorder(False)
+                      .Style.Add("padding", "1px")
 
                       .TabIndex = NullSafeShort(dr("tabIndex"))
                       UpdateAutoFocusControl(NullSafeShort(dr("tabIndex")), sID)
@@ -1704,9 +1705,6 @@ Public Class _Default
                       If (sFilterSQL.Length > 0) Then
                         ctlForm_PageTab(iCurrentPageTab).Controls.Add(New HiddenField With {.ID = "lookup" & sID, .Value = sFilterSQL})
                       End If
-
-                      '.Height() = Unit.Pixel(NullSafeInteger(dr("Height")) - 2)
-                      .Width() = Unit.Pixel(NullSafeInteger(dr("Width")) - 2)
 
                       If (Not IsPostBack) Then
                         connGrid = New SqlConnection(GetConnectionString)
@@ -1762,9 +1760,7 @@ Public Class _Default
                           cmdGrid.Dispose()
 
                         Catch ex As Exception
-                          sMessage = "Error loading lookup values:<BR><BR>" & _
-                           ex.Message.Replace(vbCrLf, "<BR>") & "<BR><BR>" & _
-                           "Contact your system administrator."
+                          sMessage = "Error loading lookup values:<BR><BR>" & ex.Message.Replace(vbCrLf, "<BR>") & "<BR><BR>" & "Contact your system administrator."
                           Exit While
 
                         Finally
@@ -1815,8 +1811,11 @@ Public Class _Default
                   With ctlForm_Dropdown
                     .ID = sID
                     .ApplyLocation(dr)
+                    .ApplySize(dr, -1, -1)
                     .Style.ApplyFont(dr)
                     .ApplyColor(dr)
+                    If Not IsMobileBrowser() Then .ApplyBorder(False)
+                    .Style.Add("padding", "1px")
 
                     .TabIndex = NullSafeShort(dr("tabIndex"))
                     UpdateAutoFocusControl(NullSafeShort(dr("tabIndex")), sID)
@@ -1834,16 +1833,6 @@ Public Class _Default
 
                     If sFilterSQL.Length > 0 Then
                       ctlForm_PageTab(iCurrentPageTab).Controls.Add(New HiddenField With {.ID = "lookup" & sID, .Value = sFilterSQL})
-                    End If
-
-                    If Not IsMobileBrowser() Then
-                      .ApplySize(dr, -1, -1)
-                      .ApplyBorder(False)
-                      .Style.Add("padding", "1px")
-                    Else
-                      'TODO NOW PG remove height line
-                      .Height() = Unit.Pixel(NullSafeInteger(dr("Height")) - 1)
-                      .Width() = Unit.Pixel(NullSafeInteger(dr("Width")) - 2)
                     End If
 
                     If (Not IsPostBack) Then
@@ -2059,25 +2048,25 @@ Public Class _Default
                   Dim control = New HtmlInputButton
                   With control
                     .ID = sID
-                    .Attributes.Add("TabIndex", NullSafeInteger(dr("tabIndex")).ToString)
-                    UpdateAutoFocusControl(NullSafeShort(dr("tabIndex")), sID)
-
-                    .Style.ApplyFont(dr)
                     .Style.ApplyLocation(dr)
                     .Style.ApplySize(dr)
+                    .Style.ApplyFont(dr)
+
+                    .Attributes.Add("TabIndex", NullSafeInteger(dr("tabIndex")).ToString)
+                    UpdateAutoFocusControl(NullSafeShort(dr("tabIndex")), sID)
 
                     ' stops the mobiles displaying buttons with over-rounded corners...
                     If IsMobileBrowser() OrElse IsMacSafari() Then
                       .Style.Add("-webkit-appearance", "none")
-                      .Style.Add("background-color", "#CCCCCC")
-                      .Style.Add("border", "solid 1px #C0C0C0")
-                      .Style.Add("border-radius", "5px")
+                      .Style.Add("background-color", "#E6E6E6")
+                      .Style.Add("border", "solid 1px #CCC")
+                      .Style.Add("border-radius", "4px")
                     End If
 
                     If NullSafeInteger(dr("BackColor")) <> 16249587 AndAlso NullSafeInteger(dr("BackColor")) <> -2147483633 Then
                       .Style.Add("background-color", General.GetHtmlColour(NullSafeInteger(dr("BackColor"))).ToString)
-                      .Style.Add("border", "solid 1px " & General.GetHtmlColour(9999523).ToString)
-                      .Style.Add("border-radius", "5px")
+                      .Style.Add("border", "solid 1px #CCC")
+                      .Style.Add("border-radius", "4px")
                     End If
 
                     If NullSafeInteger(dr("ForeColor")) <> 6697779 Then
@@ -2896,10 +2885,7 @@ Public Class _Default
     Dim filterSql As String = ""
 
     Try
-
-      If (psColumnName.Length > 0) _
-          And (piOperatorID > 0) _
-          And (psValue.Length > 0) Then
+      If (psColumnName.Length > 0) And (piOperatorID > 0) And (psValue.Length > 0) Then
 
         Select Case piColumnDataType
           Case SQLDataType.sqlBoolean

@@ -24,8 +24,8 @@
 
         jQuerySetup = function () {
 
-        //TODO PG NOW keep?
-            jQuery('input:button').button();
+            //TODO PG NOW???
+            jQuery('input[type=button]').button();
 
             // configure date controls
             jQuery.datepicker.setDefaults({
