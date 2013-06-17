@@ -1802,6 +1802,13 @@ Public Class _Default
                       .Height() = Unit.Pixel(NullSafeInteger(dr("Height")) - (2 * IMAGEBORDERWIDTH))
                       .Attributes.CssStyle("HEIGHT") = Unit.Pixel(NullSafeInteger(dr("Height")) - (2 * IMAGEBORDERWIDTH)).ToString
 
+                      .TabIndex = CShort(NullSafeInteger(dr("tabIndex")) + 1)
+
+                      If (iMinTabIndex < 0) Or (NullSafeInteger(dr("tabIndex")) < iMinTabIndex) Then
+                        sDefaultFocusControl = sID
+                        iMinTabIndex = NullSafeInteger(dr("tabIndex"))
+                      End If
+
                       .Font.Apply(dr)
 
                       .Width = Unit.Pixel(NullSafeInteger(dr("Width")))
@@ -1875,13 +1882,6 @@ Public Class _Default
                       .ColumnHeaders = True
                       .HeadFontSize = NullSafeSingle(dr("FontSize"))
                       .HeadLines = 1
-
-                      .TabIndex = CShort(NullSafeInteger(dr("tabIndex")) + 1)
-
-                      If (iMinTabIndex < 0) Or (NullSafeInteger(dr("tabIndex")) < iMinTabIndex) Then
-                        sDefaultFocusControl = sID
-                        iMinTabIndex = NullSafeInteger(dr("tabIndex"))
-                      End If
 
                       .Font.Apply(dr)
 
