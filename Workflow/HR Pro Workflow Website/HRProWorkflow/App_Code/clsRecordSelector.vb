@@ -189,9 +189,6 @@ Public Class RecordSelector
             strWidth = [String].Format("{0}{1}", iGridWidth, (If((Me.Width.Type = UnitType.Percentage), "%", "px")))
         End If
 
-        ' alert(document.getElementById("forminput_38904_14_Grid").offsetWidth);  = 411
-
-
         Return strWidth
 
     End Function
@@ -241,17 +238,32 @@ Public Class RecordSelector
     Private Function CalculateGridWidth() As [String]
         ' grid width is me.width - vertical scroll bar.
         Dim strWidth As String = "auto"
-        Dim itmpWidth As Integer = Me.Width.Value
+        Dim iScrollBarWidth As Integer = 0
 
-        If (iColWidth * m_iVisibleColumnCount) < Me.Width.Value Then
-            itmpWidth = itmpWidth - 17
+        If MyBase.Rows.Count > MAXDROPDOWNROWS Then
+            iScrollBarWidth = 17
         End If
 
-        If Not Me.Width.IsEmpty Then
-            strWidth = [String].Format("{0}{1}", itmpWidth, "px")
+        If Not IsLookup Then
+            If Not Me.Width.IsEmpty Then
+                strWidth = [String].Format("{0}{1}", Me.Width.Value - iScrollBarWidth, (If((Me.Width.Type = UnitType.Percentage), "%", "px")))
+            End If
+        Else
+            Dim iGridWidth As Integer = m_iVisibleColumnCount * (iColWidth + 2) ' 2 = padding
+            iGridWidth = CInt(IIf(iGridWidth < 0, 1, iGridWidth))
+            iGridWidth = CInt(IIf(iGridWidth < Me.Width.Value, Me.Width.Value, iGridWidth))
+
+            ' do rows exceed height?
+            If MyBase.Rows.Count > MAXDROPDOWNROWS Then
+                ' Add scrollbar width
+                iGridWidth += 25
+            End If
+
+            strWidth = [String].Format("{0}{1}", iGridWidth - iScrollBarWidth, (If((Me.Width.Type = UnitType.Percentage), "%", "px")))
         End If
-       
+
         Return strWidth
+
 
     End Function
 
