@@ -25,6 +25,7 @@ Partial Class Home
     Dim sMessage As String = ""
     Dim sImageFileName As String = ""
     Dim homeItemStyles = New Dictionary(Of String, String)
+    Dim homeItemForeColor As Integer
 
     Using conn As New SqlConnection(Configuration.ConnectionString)
 
@@ -37,7 +38,7 @@ Partial Class Home
       homeItemStyles.Add("font-size", NullSafeString(dr("HomeItemFontSize")) & "pt")
       homeItemStyles.Add("font-weight", If(NullSafeBoolean(NullSafeBoolean(dr("HomeItemFontBold"))), "bold", "normal"))
       homeItemStyles.Add("font-style", If(NullSafeBoolean(NullSafeBoolean(dr("HomeItemFontItalic"))), "italic", "normal"))
-
+      homeItemForeColor = NullSafeInteger(dr("HomeItemForeColor"))
     End Using
 
     Dim userGroupHasPermission As Boolean
@@ -80,6 +81,7 @@ Partial Class Home
         Dim cmd As New SqlCommand(sql, conn)
         Dim dr As SqlDataReader = cmd.ExecuteReader()
 
+        Dim general = New General
         ' Create the holding table for the list of workflows.
         Dim table = New Table
         table.Style.Add("width", "100%")
@@ -121,6 +123,7 @@ Partial Class Home
           For Each item In homeItemStyles
             label.Style.Add(item.Key, item.Value)
           Next
+          label.Style.Add("color", general.GetHtmlColour(homeItemForeColor))
           label.Style.Add("cursor", "pointer")
 
           cell.Controls.Add(label)

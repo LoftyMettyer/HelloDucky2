@@ -24,7 +24,9 @@ Partial Class PendingSteps
     Title = WebSiteName("To Do...")
 
     Dim todoTitleStyles = New Dictionary(Of String, String)
+    Dim todoTitleForeColor As Integer
     Dim todoDescStyles = New Dictionary(Of String, String)
+    Dim todoDescForeColor As Integer
 
     Using conn As New SqlConnection(Configuration.ConnectionString)
 
@@ -39,11 +41,14 @@ Partial Class PendingSteps
       todoTitleStyles.Add("font-weight", If(NullSafeBoolean(NullSafeBoolean(dr("TodoTitleFontBold"))), "bold", "normal"))
       todoTitleStyles.Add("font-style", If(NullSafeBoolean(NullSafeBoolean(dr("TodoTitleFontItalic"))), "italic", "normal"))
 
+      todoTitleForeColor = NullSafeInteger(dr("TodoTitleForeColor"))
+
       todoDescStyles.Add("font-family", NullSafeString(dr("TodoDescFontName")))
       todoDescStyles.Add("font-size", NullSafeString(dr("TodoDescFontSize")) & "pt")
       todoDescStyles.Add("font-weight", If(NullSafeBoolean(NullSafeBoolean(dr("TodoDescFontBold"))), "bold", "normal"))
       todoDescStyles.Add("font-style", If(NullSafeBoolean(NullSafeBoolean(dr("TodoDescFontItalic"))), "italic", "normal"))
 
+      todoDescForeColor = NullSafeInteger(dr("TodoDescForeColor"))
     End Using
 
     Dim userGroupHasPermission As Boolean
@@ -91,6 +96,8 @@ Partial Class PendingSteps
 
         Dim table As Table, row As TableRow, cell As TableCell, label As Label, image As Image
 
+        Dim general As New General
+
         ' Create the holding table
         table = New Table
 
@@ -129,6 +136,7 @@ Partial Class PendingSteps
           For Each item In todoTitleStyles
             label.Style.Add(item.Key, item.Value)
           Next
+          label.Style.Add("color", general.GetHtmlColour(todoTitleForeColor))
           label.Style.Add("cursor", "pointer")
           cell.Controls.Add(label)
 
@@ -148,6 +156,7 @@ Partial Class PendingSteps
           For Each item In todoDescStyles
             label.Style.Add(item.Key, item.Value)
           Next
+          label.Style.Add("color", general.GetHtmlColour(todoDescForeColor))
           label.Style.Add("cursor", "pointer")
           cell.Controls.Add(label)
 
