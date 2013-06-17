@@ -4,8 +4,10 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title></title>
-    
+
+    <link rel="apple-touch-icon" href="Images/Adv_hr&payroll.gif" />
+    <title>OpenHR Mobile</title>
+
     <style type="text/css">
       /* Remove margins from the 'html' and 'body' tags, and ensure the page takes up full screen height */
       html, body {height:100%; margin:0; padding:0;}
@@ -21,7 +23,7 @@
  	    <div id="pagebackground" runat="server" style="width:100%;height:100%"></div>
 
       <div id="content" style="height: 450px; width: 320px; margin: 0px auto; text-align: center; border-radius: 20px; padding: 10px;">
-        <iframe style="border-radius: 20px;filter: alpha(opacity=90); -moz-opacity: 0.9; opacity: 0.9" src="MobileLogin.aspx" height="100%" width="100%" frameborder="0">
+        <iframe style="border-radius: 20px;filter: alpha(opacity=90); -moz-opacity: 0.9; opacity: 0.9;border: 1px solid lightgray" src="MobileLogin.aspx" height="100%" width="100%" scrolling="no" frameborder="0">
                    
         </iframe> 
       </div>

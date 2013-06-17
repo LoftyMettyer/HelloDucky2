@@ -4,11 +4,11 @@ Partial Class TabletLogin
 
   Protected Sub Page_Init(sender As Object, e As System.EventArgs) Handles Me.Init
 
-    If System.IO.File.Exists(Server.MapPath("Images/customBackImage.png")) Then
+    If System.IO.File.Exists(Server.MapPath("Images/tabletBackImage.png")) Then
       Dim ctlForm_Image As New Image
 
       With ctlForm_Image
-        .ImageUrl = "Images/customBackImage.png"
+        .ImageUrl = "Images/tabletBackImage.png"
         .Style.Add("width", "100%")
         .Style.Add("height", "100%")
       End With
