@@ -196,7 +196,6 @@ Partial Class ForgottenLogin
 
   Private Function LoadPicture(ByVal piPictureID As Int32, ByRef psErrorMessage As String, ByVal pfServerSide As Boolean) As String
 
-    Dim strConn As String
     Dim conn As SqlClient.SqlConnection
     Dim cmdSelect As SqlClient.SqlCommand
     Dim dr As SqlClient.SqlDataReader
@@ -220,7 +219,7 @@ Partial Class ForgottenLogin
       psErrorMessage = ""
       LoadPicture = ""
       sImageFileName = ""
-      sImageWebPath = "pictures"
+      sImageWebPath = "~/pictures"
       sImageFilePath = Server.MapPath(sImageWebPath)
 
       conn = New SqlClient.SqlConnection(Configuration.ConnectionString)
@@ -361,7 +360,7 @@ Partial Class ForgottenLogin
     Else
       sHeader = "Request Submitted"
       sMessage = "An email has been sent to the entered address with your login details."
-      sRedirectTo = "MobileLogin.aspx"
+      sRedirectTo = "/MobileLogin.aspx"
     End If
 
     ShowMessage(sHeader, sMessage, sRedirectTo)

@@ -194,7 +194,6 @@ Partial Class Registration
 
   Private Function LoadPicture(ByVal piPictureID As Int32, ByRef psErrorMessage As String) As String
 
-    Dim strConn As String
     Dim conn As SqlClient.SqlConnection
     Dim cmdSelect As SqlClient.SqlCommand
     Dim dr As SqlClient.SqlDataReader
@@ -218,10 +217,10 @@ Partial Class Registration
       psErrorMessage = ""
       LoadPicture = ""
       sImageFileName = ""
-      sImageWebPath = "pictures"
+      sImageWebPath = "~/pictures"
       sImageFilePath = Server.MapPath(sImageWebPath)
 
-      conn = New SqlClient.SqlConnection(strConn)
+      conn = New SqlClient.SqlConnection(Configuration.ConnectionString)
       conn.Open()
 
       cmdSelect = New SqlClient.SqlCommand
@@ -389,7 +388,7 @@ Partial Class Registration
     Else
       sHeader = "Registration Submitted"
       sMessage = "An email has been sent to the entered address. To complete your registration, click the activation link in the email."
-      sRedirectTo = "MobileLogin.aspx"
+      sRedirectTo = "/MobileLogin.aspx"
     End If
 
     ShowMessage(sHeader, sMessage, sRedirectTo)

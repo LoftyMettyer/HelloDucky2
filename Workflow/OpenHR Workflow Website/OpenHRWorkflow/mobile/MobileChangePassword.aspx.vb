@@ -6,14 +6,12 @@ Partial Class ChangePassword
   Inherits Page
 
   Private _imageCount As Int16
-  Private _config As New Config
 
   Protected Sub Page_Init(sender As Object, e As EventArgs) Handles Me.Init
 
     Dim ctlFormHtmlGenericControl As HtmlGenericControl
     Dim ctlFormImageButton As ImageButton
     Dim ctlFormHtmlInputText As HtmlInputText
-    Dim strConn As String
     Dim objGeneral As New General
     Dim sMessage As String = ""
     Dim drLayouts As SqlClient.SqlDataReader
@@ -22,24 +20,8 @@ Partial Class ChangePassword
 
     _imageCount = 0
 
-    Try
-      _config.Mob_Initialise()
-      Session("Server") = _config.Server
-      Session("Database") = _config.Database
-      Session("Login") = _config.Login
-      Session("Password") = _config.Password
-      Session("WorkflowURL") = _config.WorkflowURL
-
-    Catch ex As Exception
-    End Try
-
     ' Establish Connection
-    strConn = CStr("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
-            ";Initial Catalog=" & Session("Database") & _
-            ";Integrated Security=false;User ID=" & Session("Login") & _
-            ";Password=" & Session("Password"))
-
-    Dim myConnection As New SqlClient.SqlConnection(strConn)
+    Dim myConnection As New SqlClient.SqlConnection(Configuration.ConnectionString)
     myConnection.Open()
 
     ' Create command
@@ -80,7 +62,7 @@ Partial Class ChangePassword
         'Header Image
         If i = 1 AndAlso Not IsDBNull(drLayouts("HeaderLogoID")) Then
 
-          Dim imageControl As New System.Web.UI.WebControls.Image
+          Dim imageControl As New Image
 
           With imageControl
             .Style("position") = "absolute"
@@ -118,12 +100,7 @@ Partial Class ChangePassword
     ' ======================== NOW FOR THE INDIVIDUAL ELEMENTS  ====================================
 
     ' Establish Connection
-    strConn = CStr("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
-            ";Initial Catalog=" & Session("Database") & _
-            ";Integrated Security=false;User ID=" & Session("Login") & _
-            ";Password=" & Session("Password"))
-
-    myConnection = New SqlClient.SqlConnection(strConn)
+    myConnection = New SqlClient.SqlConnection(Configuration.ConnectionString)
     myConnection.Open()
 
     ' Create command
@@ -211,10 +188,8 @@ Partial Class ChangePassword
 
   End Sub
 
-  Private Function LoadPicture(ByVal piPictureID As Int32, _
-    ByRef psErrorMessage As String) As String
+  Private Function LoadPicture(ByVal piPictureID As Int32, ByRef psErrorMessage As String) As String
 
-    Dim strConn As String
     Dim conn As SqlClient.SqlConnection
     Dim cmdSelect As SqlClient.SqlCommand
     Dim dr As SqlClient.SqlDataReader
@@ -238,14 +213,10 @@ Partial Class ChangePassword
       psErrorMessage = ""
       LoadPicture = ""
       sImageFileName = ""
-      sImageWebPath = "../pictures"
+      sImageWebPath = "~/pictures"
       sImageFilePath = Server.MapPath(sImageWebPath)
-      strConn = CStr("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
-                       ";Initial Catalog=" & Session("Database") & _
-                       ";Integrated Security=false;User ID=" & Session("Login") & _
-                       ";Password=" & Session("Password"))
 
-      conn = New SqlClient.SqlConnection(strConn)
+      conn = New SqlClient.SqlConnection(Configuration.ConnectionString)
       conn.Open()
 
       cmdSelect = New SqlClient.SqlCommand
@@ -274,8 +245,8 @@ Partial Class ChangePassword
           sTempName = sImageFilePath & "\" & sImageFileName
 
           ' Create a file to hold the output.
-          fs = New System.IO.FileStream(sTempName, IO.FileMode.OpenOrCreate, IO.FileAccess.Write)
-          bw = New System.IO.BinaryWriter(fs)
+          fs = New IO.FileStream(sTempName, IO.FileMode.OpenOrCreate, IO.FileAccess.Write)
+          bw = New IO.BinaryWriter(fs)
 
           ' Reset the starting byte for a new BLOB.
           startIndex = 0
@@ -324,28 +295,22 @@ Partial Class ChangePassword
 
   Protected Sub BtnSubmitClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnSubmit.Click
 
-    Dim strConn As String
     Dim conn As SqlClient.SqlConnection
     Dim cmdCheckUserSessions As SqlClient.SqlCommand
     Dim cmdChangePassword As SqlClient.SqlCommand
-    Dim cmdPasswordOK As SqlClient.SqlCommand
+    Dim cmdPasswordOk As SqlClient.SqlCommand
     Dim sHeader As String = ""
     Dim sMessage As String = ""
     Dim sRedirectTo As String = ""
-    Dim objCrypt As New Crypt
 
     Try
       'TODO how does nick want change password thing to work???
       ' Like this :P
 
-      If HttpContext.Current.User.ToString().Length = 0 Then sMessage = "Unable to identify you as a user"
+      If Not User.Identity.IsAuthenticated Then sMessage = "Unable to identify you as a user"
 
       If sMessage.Length = 0 Then
-        strConn = CStr("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
-                         ";Initial Catalog=" & Session("Database") & _
-                         ";Integrated Security=false;User ID=" & Session("Login") & _
-                         ";Password=" & Session("Password"))
-        conn = New SqlClient.SqlConnection(strConn)
+        conn = New SqlClient.SqlConnection(Configuration.ConnectionString)
         conn.Open()
 
         ' Force password change only if there are no other users logged in with the same name.
@@ -437,7 +402,7 @@ Partial Class ChangePassword
 
     If sMessage.Length = 0 Then
       sMessage = "Password changed successfully."
-      sRedirectTo = "Mobile/MobileHome.aspx"
+      sRedirectTo = "/Mobile/MobileHome.aspx"
     End If
 
     ShowMessage(sHeader, sMessage, sRedirectTo)
@@ -454,7 +419,7 @@ Partial Class ChangePassword
 
   End Sub
 
-  Protected Sub BtnCancelClick(sender As Object, e As System.Web.UI.ImageClickEventArgs) Handles btnCancel.Click
+  Protected Sub BtnCancelClick(sender As Object, e As ImageClickEventArgs) Handles btnCancel.Click
     Response.Redirect("MobileHome.aspx")
   End Sub
 End Class

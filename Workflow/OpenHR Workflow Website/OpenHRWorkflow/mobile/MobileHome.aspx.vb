@@ -7,7 +7,6 @@ Partial Class Home
   Inherits Page
 
   Private _imageCount As Int16
-  Private _config As New Config
 
   Protected Sub Page_Init(sender As Object, e As EventArgs) Handles Me.Init
 
@@ -337,7 +336,7 @@ Partial Class Home
       psErrorMessage = ""
       LoadPicture = ""
       sImageFileName = ""
-      sImageWebPath = "../pictures"
+      sImageWebPath = "~/pictures"
       sImageFilePath = Server.MapPath(sImageWebPath)
 
       conn = New SqlClient.SqlConnection(Configuration.ConnectionString)
