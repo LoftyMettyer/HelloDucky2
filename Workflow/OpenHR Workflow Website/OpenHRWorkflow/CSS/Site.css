@@ -54,7 +54,7 @@ body { font-family: verdana; }
 
 .controlgrid { width: 100%; }
 
-.main td { vertical-align: middle; }
+.main td, .footer td { vertical-align: middle; }
 
 .controlgrid input, .controlgrid label {
     margin-top: 3px;

@@ -95,7 +95,6 @@ Partial Class Home
           Dim cell = New TableCell  ' Image cell
           cell.Style.Add("width", "57px")
 
-          'TODO pictures: allow
           Dim image = New Image
           If NullSafeInteger(dr("pictureID")) = 0 Then
             sImageFileName = "~/Images/Connected48.png"
