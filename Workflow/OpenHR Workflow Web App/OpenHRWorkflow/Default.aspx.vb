@@ -1331,56 +1331,54 @@ Public Class [Default]
 					' add a cell for each tab
 					For Each sTabCaption In arrTabCaptions
 
-						If sTabCaption.Trim.Length > 0 Then
-							Dim tcTabCell As TableCell = New TableCell
+						Dim tcTabCell As TableCell = New TableCell
 
-							With tcTabCell
-								.ID = FormInputPrefix & iTabNo.ToString & "_21_Panel"
-								.Style.Add("padding-left", "5px")
-								.Style.Add("padding-right", "5px")
-								.Style.Add("border-radius", "5px 5px 0px 0px")
-								.Style.Add("width", "50px")
-								.BackColor = Color.White
-								.BorderWidth = 1
-								.BorderStyle = BorderStyle.Solid
-								.BorderColor = Color.Black
+						With tcTabCell
+							.ID = FormInputPrefix & iTabNo.ToString & "_21_Panel"
+							.Style.Add("padding-left", "5px")
+							.Style.Add("padding-right", "5px")
+							.Style.Add("border-radius", "5px 5px 0px 0px")
+							.Style.Add("width", "50px")
+							.BackColor = Color.White
+							.BorderWidth = 1
+							.BorderStyle = BorderStyle.Solid
+							.BorderColor = Color.Black
 
-								' label the button...
-								Dim label = New Label
-								label.Font.Name = "Verdana"
-								label.Font.Size = New FontUnit(11, UnitType.Pixel)
-								label.Text = sTabCaption.ToString
+							' label the button...
+							Dim label = New Label
+							label.Font.Name = "Verdana"
+							label.Font.Size = New FontUnit(11, UnitType.Pixel)
+							label.Text = sTabCaption.ToString
 
-								.Controls.Add(label)
+							.Controls.Add(label)
 
-								' Tab Clicking/mouseover
-								.Attributes.Add("onclick", "SetCurrentTab(" & iTabNo.ToString & ");")
-								.Attributes.Add("onmouseover", "this.style.cursor='pointer';")
-								.Attributes.Add("onmouseout", "this.style.cursor='';")
-							End With
+							' Tab Clicking/mouseover
+							.Attributes.Add("onclick", "SetCurrentTab(" & iTabNo.ToString & ");")
+							.Attributes.Add("onmouseover", "this.style.cursor='pointer';")
+							.Attributes.Add("onmouseout", "this.style.cursor='';")
+						End With
 
-							trPager.Cells.Add(tcTabCell)
+						trPager.Cells.Add(tcTabCell)
 
-							' NPG20120321 Fault HRPRO-2113
-							' Rather than put the controls div inside the relevant tab page (issues with referencing the AJAX controls on postback), 
-							' we move the controls div into the form by the top and left of the tabstrip, if it exists
+						' NPG20120321 Fault HRPRO-2113
+						' Rather than put the controls div inside the relevant tab page (issues with referencing the AJAX controls on postback), 
+						' we move the controls div into the form by the top and left of the tabstrip, if it exists
 
-							' Create the tab pages
-							tabPage = New Panel
-							tabPage.ID = FormInputPrefix & iTabNo.ToString & "_21_PageTab"
-							tabPage.Style.Add("position", "absolute")
-							tabPage.Style.Add("top", (formItem.Top + TabStripHeight) & "px")
-							tabPage.Style.Add("left", formItem.Left & "px")
-							If iTabNo > 1 Then
-								tabPage.Style.Add("display", "none")
-							End If
-							' Add this tab to the web form
-							tabPages.Add(tabPage)
-							pnlInputDiv.Controls.Add(tabPage)
-
-							iTabNo += 1
-							' keep tabs on the number of tabs hehehe :P
+						' Create the tab pages
+						tabPage = New Panel
+						tabPage.ID = FormInputPrefix & iTabNo.ToString & "_21_PageTab"
+						tabPage.Style.Add("position", "absolute")
+						tabPage.Style.Add("top", (formItem.Top + TabStripHeight) & "px")
+						tabPage.Style.Add("left", formItem.Left & "px")
+						If iTabNo > 1 Then
+							tabPage.Style.Add("display", "none")
 						End If
+						' Add this tab to the web form
+						tabPages.Add(tabPage)
+						pnlInputDiv.Controls.Add(tabPage)
+
+						iTabNo += 1
+						' keep tabs on the number of tabs hehehe :P
 					Next
 
 					'add row to table

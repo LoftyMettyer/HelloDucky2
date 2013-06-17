@@ -1004,7 +1004,7 @@ function SetCurrentTab(iNewTab) {
 
 		if (newTab != null) newTab.style.display = "block";
 
-		if (newPanel != null) newPanel.style.borderBottom = "1px solid white";
+		if (newPanel != null) newPanel.style.borderBottom = "1px solid transparent";
 
 		window.iCurrentTab = iNewTab;
 
