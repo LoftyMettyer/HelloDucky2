@@ -193,14 +193,18 @@ Public Class Utilities
     End If
   End Function
 
-  Public Shared Function WebSiteName() As String
+  Public Shared Function WebSiteName(Optional contentPageName As String = "") As String
 
-    Const ASSEMBLYNAME As String = "OPENHRWORKFLOW"
-    Const sDEFAULTTITLE As String = "OpenHR Workflow"
+    Const ASSEMBLYNAME As String = "OPENHR"
+    Const sDEFAULTTITLE As String = "OpenHR"
     Dim sWebSiteVersion As String
     Dim sTitle As String
 
     sTitle = sDEFAULTTITLE
+
+    If contentPageName.Length > 0 Then
+      sTitle &= " " & contentPageName
+    End If
 
     Try
       Dim sAssemblyName = Assembly.GetExecutingAssembly.GetName.Name.ToUpper
@@ -212,13 +216,13 @@ Public Class Utilities
       If sAssemblyName = ASSEMBLYNAME Then
         ' Compiled version of the web site, so perform version checks.
         If sWebSiteVersion.Length = 0 Then
-          sTitle = sDEFAULTTITLE & " (unknown version)"
+          sTitle &= " (unknown version)"
         Else
-          sTitle = sDEFAULTTITLE & " - v" & sWebSiteVersion
+          sTitle &= " - v" & sWebSiteVersion
         End If
       Else
         ' Development version of the web site, so do NOT perform version checks.
-        sTitle = sDEFAULTTITLE & " (development)"
+        sTitle &= " (development)"
       End If
     Catch ex As Exception
       sTitle = sDEFAULTTITLE

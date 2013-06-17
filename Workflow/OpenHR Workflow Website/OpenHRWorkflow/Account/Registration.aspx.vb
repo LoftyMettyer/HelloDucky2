@@ -9,6 +9,8 @@ Partial Class Registration
     Forms.LoadControlData(Me, 3)
     ' Set the e-mail input field to type=email (html5 only) ASP.NET requires this to be added thus:
     txtEmail.Attributes.Add("type", "email")
+
+    Title = WebSiteName("Registration")
   End Sub
 
   Protected Sub BtnRegisterClick(sender As Object, e As ImageClickEventArgs) Handles btnRegisterButton.Click

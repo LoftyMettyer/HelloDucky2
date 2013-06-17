@@ -20,6 +20,8 @@ Partial Class Home
 
     Forms.LoadControlData(Me, 2)
 
+    Title = WebSiteName("Home")
+
     Dim sMessage As String = ""
     Dim sImageFileName As String = ""
     Dim homeItemStyles = New Dictionary(Of String, String)

@@ -1,11 +1,14 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
+Imports Utilities
 
 Partial Class ChangePassword
     Inherits System.Web.UI.Page
 
   Protected Sub Page_Init(sender As Object, e As System.EventArgs) Handles Me.Init
     Forms.LoadControlData(Me, 4)
+
+    Title = WebSiteName("Change Password")
   End Sub
 
   Protected Sub BtnSubmitClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnSubmitButton.Click

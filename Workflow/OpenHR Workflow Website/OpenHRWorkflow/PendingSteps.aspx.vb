@@ -21,6 +21,8 @@ Partial Class PendingSteps
 
     Forms.LoadControlData(Me, 5)
 
+    Title = WebSiteName("To Do...")
+
     Dim todoTitleStyles = New Dictionary(Of String, String)
     Dim todoDescStyles = New Dictionary(Of String, String)
 

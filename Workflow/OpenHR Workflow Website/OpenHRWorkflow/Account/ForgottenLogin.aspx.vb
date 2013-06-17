@@ -9,6 +9,8 @@ Partial Class ForgottenLogin
     Forms.LoadControlData(Me, 6)
     ' Set the e-mail input field to type=email (html5 only) ASP.NET requires this to be added thus:
     txtEmail.Attributes.Add("type", "email")
+
+    Title = WebSiteName("Forgotten Login")
   End Sub
 
   Protected Sub BtnSubmitClick(sender As Object, e As ImageClickEventArgs) Handles btnSubmitButton.Click

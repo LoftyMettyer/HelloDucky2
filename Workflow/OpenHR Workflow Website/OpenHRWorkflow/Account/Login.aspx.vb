@@ -6,6 +6,9 @@ Partial Class Login
 
   Protected Sub Page_Init(sender As Object, e As System.EventArgs) Handles Me.Init
     Forms.LoadControlData(Me, 1)
+
+    Title = WebSiteName("Login")
+
   End Sub
 
   Protected Sub BtnLoginClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnLoginButton.Click

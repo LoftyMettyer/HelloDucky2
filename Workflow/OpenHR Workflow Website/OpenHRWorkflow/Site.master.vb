@@ -76,7 +76,8 @@ Partial Class Site
 
     End Using
 
-    Page.Title = WebSiteName()
+    ' NPG20120412 - Fault HRPRO-2160, webpages named by contentpages now.
+    'Page.Title = WebSiteName()
 
     SetupViewport()
 
