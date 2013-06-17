@@ -309,7 +309,9 @@ Public Class _Default
           miElementID = 0
           miInstanceID = 0
 
-          sTemp = Request.RawUrl.ToString
+          ' NPG20120201 - Fault HRPRO-1828
+          ' Request.RawUrl replaces symbols with % codes, e.g. $=%40.
+          sTemp = Server.UrlDecode(Request.RawUrl.ToString)
           iTemp = sTemp.IndexOf("?")
 
           If iTemp >= 0 Then
