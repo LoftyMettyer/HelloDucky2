@@ -11,7 +11,7 @@ Partial Class PendingSteps
   Const wfCategoryKey As String = "WORKFLOW"
 
   Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
-    Dim iLoop As String
+
     Dim strConn As String
     Dim conn As System.Data.SqlClient.SqlConnection
     Dim cmdSteps As System.Data.SqlClient.SqlCommand
@@ -97,7 +97,7 @@ Partial Class PendingSteps
       'Header Image
       If i = 1 AndAlso Not IsDBNull(drLayouts("HeaderLogoID")) Then
 
-        Dim imageControl As New System.Web.UI.WebControls.Image
+        Dim imageControl As New Image
 
         With imageControl
           .Style("position") = "absolute"
@@ -296,14 +296,10 @@ Partial Class PendingSteps
 
       rstSteps = cmdSteps.ExecuteReader
 
-      iLoop = 0
-
       ' Create the holding table
       ctlForm_Table = New Table
 
-      ctlForm_Table.Style.Add("position", "absolute")
-      ctlForm_Table.Style.Add("top", "0px")
-
+      Dim iLoop As Integer
       While (rstSteps.Read)
         ' Create a row to contain this pending step...
         ctlForm_Row = New TableRow
@@ -327,7 +323,7 @@ Partial Class PendingSteps
         ctlForm_Cell = New TableCell
         ctlForm_Label = New Label ' Workflow name text
         ctlForm_Label.Font.Underline = True
-        ctlForm_Label.Text = rstSteps("name")
+        ctlForm_Label.Text = CStr(rstSteps("name"))
         For Each item In todoTitleStyles
           ctlForm_Label.Style.Add(item.Key, item.Value)
         Next
@@ -358,7 +354,7 @@ Partial Class PendingSteps
 
       pnlWFList.Controls.Add(ctlForm_Table)
 
-      hdnStepCount.Value = iLoop
+      hdnStepCount.Value = CStr(iLoop)
 
       rstSteps.Close()
       cmdSteps.Dispose()
@@ -370,9 +366,9 @@ Partial Class PendingSteps
     ByRef psErrorMessage As String) As String
 
     Dim strConn As String
-    Dim conn As System.Data.SqlClient.SqlConnection
-    Dim cmdSelect As System.Data.SqlClient.SqlCommand
-    Dim dr As System.Data.SqlClient.SqlDataReader
+    Dim conn As SqlClient.SqlConnection
+    Dim cmdSelect As SqlClient.SqlCommand
+    Dim dr As SqlClient.SqlDataReader
     Dim sImageFileName As String
     Dim sImageFilePath As String
     Dim sImageWebPath As String
