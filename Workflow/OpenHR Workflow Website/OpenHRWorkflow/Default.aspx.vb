@@ -3547,7 +3547,7 @@ Public Class _Default
                       With ctlForm_Image
                         .Style.Add("width", "24px")
                         .Style.Add("height", m_iTabStripHeight - 6 & "px")
-                        .ImageUrl = "~/Images/tab-prev.gif"
+                        '.ImageUrl = "~/Images/tab-prev.gif"
                         .Style.Add("margin", "0px")
                         .Style.Add("padding", "0px")
                         .Attributes.Add("onclick", "var TabDiv = document.getElementById('TabsDiv');TabDiv.scrollLeft = TabDiv.scrollLeft - 20;")
@@ -3559,7 +3559,7 @@ Public Class _Default
                       With ctlForm_Image
                         .Style.Add("width", "24px")
                         .Style.Add("height", m_iTabStripHeight - 6 & "px")
-                        .ImageUrl = "~/Images/tab-next.gif"
+                        '.ImageUrl = "~/Images/tab-next.gif"
                         .Style.Add("margin", "0px")
                         .Style.Add("padding", "0px")
                         .Attributes.Add("onclick", "var TabDiv = document.getElementById('TabsDiv');TabDiv.scrollLeft = TabDiv.scrollLeft + 20;")
