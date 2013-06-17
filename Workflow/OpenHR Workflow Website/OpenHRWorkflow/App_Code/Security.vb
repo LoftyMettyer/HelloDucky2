@@ -3,13 +3,26 @@ Imports System.DirectoryServices
 
 Public Class Security
 
-  Public Shared Function ValidateUser(userName As String, password As String) As Boolean
+  Public Shared Function ValidateUser(userName As String, password As String) As String
+
+    Dim valid As Boolean
 
     If userName.IndexOf("\") > 0 Then
-      Return ValidateActiveDirectoryUser(userName.Split("\"c)(0), userName.Split("\"c)(1), password)
+      valid = ValidateActiveDirectoryUser(userName.Split("\"c)(0), userName.Split("\"c)(1), password)
     Else
-      Return ValidateSqlServerUser(userName, password)
+      valid = ValidateSqlServerUser(userName, password)
     End If
+
+    If Not valid Then
+      Return "The system could not log you on. Make sure your details are correct, then retype your password."
+    End If
+
+    Dim result As CheckLoginResult = Database.CheckLoginDetails(userName)
+    If Not result.Valid Then
+      Return result.InvalidReason
+    End If
+
+    Return String.Empty
 
   End Function
 

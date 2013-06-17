@@ -18,19 +18,13 @@ Partial Class Login
 
   Protected Sub BtnLoginClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnLogin.Click
 
-    Dim message As String = ""
-
     ' Check if the system is locked
     If Database.IsSystemLocked() Then
-      message = "Database locked." & vbCrLf & "Contact your system administrator."
-    ElseIf Not Security.ValidateUser(txtUserName.Text.Trim, txtPassword.Text) Then
-      message = "The system could not log you on. Make sure your details are correct, then retype your password."
-    Else
-      Dim result As CheckLoginResult = Database.CheckLoginDetails(txtUserName.Text.Trim)
-      If Not result.Valid Then
-        message = result.InvalidReason
-      End If
+      'TODO
+      'message = "Database locked." & vbCrLf & "Contact your system administrator."
     End If
+
+    Dim message As String = Security.ValidateUser(txtUserName.Text.Trim, txtPassword.Text)
 
     If message.Length > 0 Then
       CType(Master, Site).ShowDialog("Login Failed", message)

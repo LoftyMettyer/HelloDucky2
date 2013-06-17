@@ -31,6 +31,7 @@
         End Try
 	End Sub
 
+    'TODO catch errors and show message page or setup in config.web
 	Sub Application_Error(ByVal sender As Object, ByVal e As EventArgs)
 		' Code that runs when an unhandled error occurs
     End Sub

@@ -11,7 +11,6 @@ Partial Class ChangePassword
 
   Protected Sub BtnSubmitClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnSubmit.Click
 
-    ' Change users password
     Dim message As String = Database.ChangePassword(User.Identity.Name, txtCurrPassword.Text, txtNewPassword.Text)
 
     If message.Length > 0 Then
