@@ -3,6 +3,14 @@ Partial Class ChangePassword
   Inherits Page
 
   Protected Sub Page_Init(sender As Object, e As EventArgs) Handles Me.Init
+
+    Dim result As CheckLoginResult = Database.CheckLoginDetails(User.Identity.Name)
+
+    If Not result.Valid Then
+      Session("message") = result.InvalidReason
+      Response.Redirect("~/Message.aspx")
+    End If
+
     Title = Utilities.WebSiteName("Change Password")
     Forms.LoadControlData(Me, 4)
     Form.DefaultButton = btnSubmit.UniqueID
