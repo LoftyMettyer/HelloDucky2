@@ -16,7 +16,6 @@ Public Class Forms
 
         Dim control As Control = page.Master.FindControl("mainCPH").FindControl(CStr(dr("Name")))
         If control Is Nothing Then control = page.Master.FindControl("footerCPH").FindControl(CStr(dr("Name")))
-        Dim general As New General
 
         Select Case CInt(dr("Type"))
 
@@ -33,22 +32,28 @@ Public Class Forms
 
             With CType(control, Label)
               .Text = NullSafeString(dr("caption"))
+              .Font.Name = NullSafeString(dr("FontName"))
+              .Font.Size = New FontUnit(NullSafeSingle(dr("FontSize")))
+              .Font.Bold = NullSafeBoolean(dr("FontBold"))
+              .Font.Italic = NullSafeBoolean(dr("FontItalic"))
+              .Font.Underline = NullSafeBoolean(dr("FontUnderline"))
+              .Font.Strikeout = NullSafeBoolean(dr("FontStrikeout"))
+
+              .Style.Add("color", General.GetHtmlColour(NullSafeInteger(dr("ForeColor"))))
               .Style("word-wrap") = "break-word"
-              .Style.Add("color", general.GetHtmlColour(NullSafeInteger(dr("ForeColor"))))
-              .Style.Add("font-family", NullSafeString(dr("FontName")))
-              .Style.Add("font-size", NullSafeString(dr("FontSize")) & "pt")
-              .Style.Add("font-weight", If(NullSafeBoolean(dr("FontBold")), "bold", "normal"))
-              .Style.Add("font-style", If(NullSafeBoolean(dr("FontItalic")), "italic", "normal"))
             End With
 
           Case 3 ' Input value - character
 
             With CType(control, TextBox)
-              .Style.Add("color", general.GetHtmlColour(NullSafeInteger(dr("ForeColor"))))
-              .Style.Add("font-family", NullSafeString(dr("FontName")))
-              .Style.Add("font-size", NullSafeString(dr("FontSize")) & "pt")
-              .Style.Add("font-weight", If(NullSafeBoolean(dr("FontBold")), "bold", "normal"))
-              .Style.Add("font-style", If(NullSafeBoolean(dr("FontItalic")), "italic", "normal"))
+              .Font.Name = NullSafeString(dr("FontName"))
+              .Font.Size = New FontUnit(NullSafeSingle(dr("FontSize")))
+              .Font.Bold = NullSafeBoolean(dr("FontBold"))
+              .Font.Italic = NullSafeBoolean(dr("FontItalic"))
+              .Font.Underline = NullSafeBoolean(dr("FontUnderline"))
+              .Font.Strikeout = NullSafeBoolean(dr("FontStrikeout"))
+
+              .Style.Add("color", General.GetHtmlColour(NullSafeInteger(dr("ForeColor"))))
             End With
 
         End Select
@@ -57,5 +62,15 @@ Public Class Forms
     End Using
 
   End Sub
+
+End Class
+
+Public Class FontSetting
+  Public Name As String
+  Public Size As Single
+  Public Bold As Boolean
+  Public Italic As Boolean
+  Public Underline As Boolean
+  Public Strikeout As Boolean
 
 End Class

@@ -9,125 +9,129 @@ Imports System
 
 Public Class General
 
-    Public Function ColourPart(ByVal piColourCode As Int32, ByVal pcharColourPart As Char) As Integer
-        Dim iResult As Integer
+  Private Sub New()
 
-        iResult = 0
+  End Sub
 
-        Try
-            Select Case pcharColourPart
-                Case CChar("R")
-                    iResult = piColourCode And 255
-                Case CChar("G")
-                    iResult = CInt((piColourCode And 65280) / (2 ^ 8))
-                Case CChar("B")
-                    iResult = CInt((piColourCode And 16711680) / (2 ^ 16))
-            End Select
+  Public Shared Function ColourPart(ByVal piColourCode As Int32, ByVal pcharColourPart As Char) As Integer
+    Dim iResult As Integer
 
-            ColourPart = iResult
+    iResult = 0
 
-        Catch ex As Exception
-            ColourPart = 0
-        End Try
-    End Function
+    Try
+      Select Case pcharColourPart
+        Case CChar("R")
+          iResult = piColourCode And 255
+        Case CChar("G")
+          iResult = CInt((piColourCode And 65280) / (2 ^ 8))
+        Case CChar("B")
+          iResult = CInt((piColourCode And 16711680) / (2 ^ 16))
+      End Select
 
-    Public Function GetColour(ByVal piColour As Int32) As System.Drawing.Color
-        Try
-            ' AE20080520 Fault #13173 - There isnt always a direct relation from VB6
-            '   system colours to VB.NET as M$ decided to change them, however, we
-            '   can use the System.Drawing.ColorTranslator to get what we want :o)
+      ColourPart = iResult
 
-            '  Select Case piColour
-            '    Case -2147483648
-            '      GetColour = System.Drawing.Color.FromName("scrollbar")
+    Catch ex As Exception
+      ColourPart = 0
+    End Try
+  End Function
 
-            '    Case -2147483647
-            '      GetColour = System.Drawing.Color.FromName("background")
+  Public Shared Function GetColour(ByVal piColour As Int32) As System.Drawing.Color
+    Try
+      ' AE20080520 Fault #13173 - There isnt always a direct relation from VB6
+      '   system colours to VB.NET as M$ decided to change them, however, we
+      '   can use the System.Drawing.ColorTranslator to get what we want :o)
 
-            '    Case -2147483646
-            '      GetColour = System.Drawing.Color.FromName("activecaption")
+      '  Select Case piColour
+      '    Case -2147483648
+      '      GetColour = System.Drawing.Color.FromName("scrollbar")
 
-            '    Case -2147483645
-            '      GetColour = System.Drawing.Color.FromName("inactivecaption")
+      '    Case -2147483647
+      '      GetColour = System.Drawing.Color.FromName("background")
 
-            '    Case -2147483644
-            '      GetColour = System.Drawing.Color.FromName("menu")
+      '    Case -2147483646
+      '      GetColour = System.Drawing.Color.FromName("activecaption")
 
-            '    Case -2147483643
-            '      GetColour = System.Drawing.Color.FromName("window")
+      '    Case -2147483645
+      '      GetColour = System.Drawing.Color.FromName("inactivecaption")
 
-            '    Case -2147483642
-            '      GetColour = System.Drawing.Color.FromName("windowframe")
+      '    Case -2147483644
+      '      GetColour = System.Drawing.Color.FromName("menu")
 
-            '    Case -2147483641
-            '      GetColour = System.Drawing.Color.FromName("menutext")
+      '    Case -2147483643
+      '      GetColour = System.Drawing.Color.FromName("window")
 
-            '    Case -2147483640
-            '      GetColour = System.Drawing.Color.FromName("windowtext")
+      '    Case -2147483642
+      '      GetColour = System.Drawing.Color.FromName("windowframe")
 
-            '    Case -2147483639
-            '      GetColour = System.Drawing.Color.FromName("captiontext")
+      '    Case -2147483641
+      '      GetColour = System.Drawing.Color.FromName("menutext")
 
-            '    Case -2147483638
-            '      GetColour = System.Drawing.Color.FromName("activeborder")
+      '    Case -2147483640
+      '      GetColour = System.Drawing.Color.FromName("windowtext")
 
-            '    Case -2147483637
-            '      GetColour = System.Drawing.Color.FromName("inactiveborder")
+      '    Case -2147483639
+      '      GetColour = System.Drawing.Color.FromName("captiontext")
 
-            '    Case -2147483636
-            '      GetColour = System.Drawing.Color.FromName("appworkspace")
+      '    Case -2147483638
+      '      GetColour = System.Drawing.Color.FromName("activeborder")
 
-            '    Case -2147483635
-            '      GetColour = System.Drawing.Color.FromName("highlight")
+      '    Case -2147483637
+      '      GetColour = System.Drawing.Color.FromName("inactiveborder")
 
-            '    Case -2147483634
-            '      GetColour = System.Drawing.Color.FromName("highlighttext")
+      '    Case -2147483636
+      '      GetColour = System.Drawing.Color.FromName("appworkspace")
 
-            '    Case -2147483633
-            '      GetColour = System.Drawing.Color.FromName("threedface")
+      '    Case -2147483635
+      '      GetColour = System.Drawing.Color.FromName("highlight")
 
-            '    Case -2147483632
-            '      GetColour = System.Drawing.Color.FromName("threedshadow")
+      '    Case -2147483634
+      '      GetColour = System.Drawing.Color.FromName("highlighttext")
 
-            '    Case -2147483631
-            '      GetColour = System.Drawing.Color.FromName("graytext")
+      '    Case -2147483633
+      '      GetColour = System.Drawing.Color.FromName("threedface")
 
-            '    Case -2147483630
-            '      GetColour = System.Drawing.Color.FromName("buttontext")
+      '    Case -2147483632
+      '      GetColour = System.Drawing.Color.FromName("threedshadow")
 
-            '    Case -2147483629
-            '      GetColour = System.Drawing.Color.FromName("inactivecaptiontext")
+      '    Case -2147483631
+      '      GetColour = System.Drawing.Color.FromName("graytext")
 
-            '    Case -2147483628
-            '      GetColour = System.Drawing.Color.FromName("threedhighlight")
+      '    Case -2147483630
+      '      GetColour = System.Drawing.Color.FromName("buttontext")
 
-            '    Case -2147483627
-            '      GetColour = System.Drawing.Color.FromName("threeddarkshadow")
+      '    Case -2147483629
+      '      GetColour = System.Drawing.Color.FromName("inactivecaptiontext")
 
-            '    Case -2147483626
-            '      GetColour = System.Drawing.Color.FromName("threedlightshadow")
+      '    Case -2147483628
+      '      GetColour = System.Drawing.Color.FromName("threedhighlight")
 
-            '    Case -2147483625
-            '      GetColour = System.Drawing.Color.FromName("infotext")
+      '    Case -2147483627
+      '      GetColour = System.Drawing.Color.FromName("threeddarkshadow")
 
-            '    Case -2147483624
-            '      GetColour = System.Drawing.Color.FromName("infobackground")
+      '    Case -2147483626
+      '      GetColour = System.Drawing.Color.FromName("threedlightshadow")
 
-            '    Case Else
-            '      GetColour = System.Drawing.Color.FromArgb(ColourPart(piColour, CChar("R")), _
-            '       ColourPart(piColour, CChar("G")), _
-            '       ColourPart(piColour, CChar("B")))
-            '  End Select
+      '    Case -2147483625
+      '      GetColour = System.Drawing.Color.FromName("infotext")
 
-            Return ColorTranslator.FromOle(piColour)
+      '    Case -2147483624
+      '      GetColour = System.Drawing.Color.FromName("infobackground")
 
-        Catch ex As Exception
-            GetColour = System.Drawing.Color.White
-        End Try
+      '    Case Else
+      '      GetColour = System.Drawing.Color.FromArgb(ColourPart(piColour, CChar("R")), _
+      '       ColourPart(piColour, CChar("G")), _
+      '       ColourPart(piColour, CChar("B")))
+      '  End Select
 
-    End Function
+      Return ColorTranslator.FromOle(piColour)
 
-  Public Function GetHtmlColour(ByVal piColour As Int32) As String
+    Catch ex As Exception
+      GetColour = System.Drawing.Color.White
+    End Try
+
+  End Function
+
+  Public Shared Function GetHtmlColour(ByVal piColour As Int32) As String
 
     Try
       ' Create an instance of a Color structure.
@@ -143,389 +147,392 @@ Public Class General
 
   End Function
 
-    Public Function ConvertLocaleDateToSQL(ByVal psLocaleDateString As String) As String
-        Dim dtDate As Date
-        Dim iYear As Int16
-        Dim iMonth As Int16
-        Dim iDay As Int16
+  Public Shared Function ConvertLocaleDateToSQL(ByVal psLocaleDateString As String) As String
+    Dim dtDate As Date
+    Dim iYear As Int16
+    Dim iMonth As Int16
+    Dim iDay As Int16
 
-        Try
-            iYear = CShort(GetDatePart(psLocaleDateString, "Y"))
-            iMonth = CShort(GetDatePart(psLocaleDateString, "M"))
-            iDay = CShort(GetDatePart(psLocaleDateString, "D"))
+    Try
+      iYear = CShort(GetDatePart(psLocaleDateString, "Y"))
+      iMonth = CShort(GetDatePart(psLocaleDateString, "M"))
+      iDay = CShort(GetDatePart(psLocaleDateString, "D"))
 
-            dtDate = DateSerial(iYear, iMonth, iDay)
+      dtDate = DateSerial(iYear, iMonth, iDay)
 
-            ConvertLocaleDateToSQL = Format(dtDate, "MM/dd/yyyy")
-        Catch ex As Exception
-            ConvertLocaleDateToSQL = ""
-        End Try
+      ConvertLocaleDateToSQL = Format(dtDate, "MM/dd/yyyy")
+    Catch ex As Exception
+      ConvertLocaleDateToSQL = ""
+    End Try
 
-    End Function
-    Public Function ConvertSQLDateToLocale(ByVal psSQLDateString As String) As String
-        ' Convert SQL Date string (mm/dd/yyyy) into locale short format.
-        Dim dtDate As Date
-        Dim iYear As Int16
-        Dim iMonth As Int16
-        Dim iDay As Int16
+  End Function
 
-        Try
-            iYear = CShort(psSQLDateString.Substring(6, 4))
-            iMonth = CShort(psSQLDateString.Substring(0, 2))
-            iDay = CShort(psSQLDateString.Substring(3, 2))
+  Public Shared Function ConvertSQLDateToLocale(ByVal psSQLDateString As String) As String
+    ' Convert SQL Date string (mm/dd/yyyy) into locale short format.
+    Dim dtDate As Date
+    Dim iYear As Int16
+    Dim iMonth As Int16
+    Dim iDay As Int16
 
-            dtDate = DateSerial(iYear, iMonth, iDay)
-            ConvertSQLDateToLocale = dtDate.ToString(Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern)
-        Catch ex As Exception
-            ConvertSQLDateToLocale = ""
-        End Try
+    Try
+      iYear = CShort(psSQLDateString.Substring(6, 4))
+      iMonth = CShort(psSQLDateString.Substring(0, 2))
+      iDay = CShort(psSQLDateString.Substring(3, 2))
 
-    End Function
-    Public Function GetDatePart(ByVal psLocaleDateString As String, ByVal psDatePart As String) As String
-        Dim sLocaleDateFormat As String = Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern.ToUpper
-        Dim sLocaleDateSep As String
-        Dim iLoop As Integer
-        Dim iRequiredPart As Integer = 0
-        Dim sValuePart1 As String = ""
-        Dim sValuePart2 As String = ""
-        Dim sValuePart3 As String = ""
-        Dim iPartCounter As Integer = 1
-        Dim sTemp As String = ""
-        Dim sResult As String = ""
+      dtDate = DateSerial(iYear, iMonth, iDay)
+      ConvertSQLDateToLocale = dtDate.ToString(Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern)
+    Catch ex As Exception
+      ConvertSQLDateToLocale = ""
+    End Try
 
-        sLocaleDateSep = Replace(sLocaleDateFormat, "Y", "")
-        sLocaleDateSep = Replace(sLocaleDateSep, "M", "")
-        sLocaleDateSep = Left(Replace(sLocaleDateSep, "D", ""), 1)
+  End Function
 
-        For iLoop = 1 To Len(psLocaleDateString)
-            If Mid(psLocaleDateString, iLoop, 1) = sLocaleDateSep Then
-                Select Case iPartCounter
-                    Case 1
-                        sValuePart1 = sTemp
-                    Case 2
-                        sValuePart2 = sTemp
-                End Select
+  Public Shared Function GetDatePart(ByVal psLocaleDateString As String, ByVal psDatePart As String) As String
+    Dim sLocaleDateFormat As String = Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern.ToUpper
+    Dim sLocaleDateSep As String
+    Dim iLoop As Integer
+    Dim iRequiredPart As Integer = 0
+    Dim sValuePart1 As String = ""
+    Dim sValuePart2 As String = ""
+    Dim sValuePart3 As String = ""
+    Dim iPartCounter As Integer = 1
+    Dim sTemp As String = ""
+    Dim sResult As String = ""
 
-                iPartCounter = iPartCounter + 1
-                sTemp = ""
-            Else
-                sTemp = sTemp & Mid(psLocaleDateString, iLoop, 1)
-            End If
+    sLocaleDateSep = Replace(sLocaleDateFormat, "Y", "")
+    sLocaleDateSep = Replace(sLocaleDateSep, "M", "")
+    sLocaleDateSep = Left(Replace(sLocaleDateSep, "D", ""), 1)
 
-        Next iLoop
-        sValuePart3 = sTemp
-
-        Select Case psDatePart
-            Case "Y"
-                iRequiredPart = 1
-                If InStr(sLocaleDateFormat, "M") < InStr(sLocaleDateFormat, "Y") Then
-                    iRequiredPart = iRequiredPart + 1
-                End If
-                If InStr(sLocaleDateFormat, "D") < InStr(sLocaleDateFormat, "Y") Then
-                    iRequiredPart = iRequiredPart + 1
-                End If
-            Case "M"
-                iRequiredPart = 1
-                If InStr(sLocaleDateFormat, "Y") < InStr(sLocaleDateFormat, "M") Then
-                    iRequiredPart = iRequiredPart + 1
-                End If
-                If InStr(sLocaleDateFormat, "D") < InStr(sLocaleDateFormat, "M") Then
-                    iRequiredPart = iRequiredPart + 1
-                End If
-            Case "D"
-                iRequiredPart = 1
-                If InStr(sLocaleDateFormat, "Y") < InStr(sLocaleDateFormat, "D") Then
-                    iRequiredPart = iRequiredPart + 1
-                End If
-                If InStr(sLocaleDateFormat, "M") < InStr(sLocaleDateFormat, "D") Then
-                    iRequiredPart = iRequiredPart + 1
-                End If
+    For iLoop = 1 To Len(psLocaleDateString)
+      If Mid(psLocaleDateString, iLoop, 1) = sLocaleDateSep Then
+        Select Case iPartCounter
+          Case 1
+            sValuePart1 = sTemp
+          Case 2
+            sValuePart2 = sTemp
         End Select
 
-        Select iRequiredPart
-            Case 1
-                sResult = sValuePart1
-            Case 2
-                sResult = sValuePart2
-            Case 3
-                sResult = sValuePart3
-        End Select
+        iPartCounter = iPartCounter + 1
+        sTemp = ""
+      Else
+        sTemp = sTemp & Mid(psLocaleDateString, iLoop, 1)
+      End If
 
-        GetDatePart = sResult
-    End Function
+    Next iLoop
+    sValuePart3 = sTemp
 
-    Public Function BackgroundRepeat(ByVal piBackgroundImagePosition As Int16) As String
-        Dim sBackgroundRepeat As String
+    Select Case psDatePart
+      Case "Y"
+        iRequiredPart = 1
+        If InStr(sLocaleDateFormat, "M") < InStr(sLocaleDateFormat, "Y") Then
+          iRequiredPart = iRequiredPart + 1
+        End If
+        If InStr(sLocaleDateFormat, "D") < InStr(sLocaleDateFormat, "Y") Then
+          iRequiredPart = iRequiredPart + 1
+        End If
+      Case "M"
+        iRequiredPart = 1
+        If InStr(sLocaleDateFormat, "Y") < InStr(sLocaleDateFormat, "M") Then
+          iRequiredPart = iRequiredPart + 1
+        End If
+        If InStr(sLocaleDateFormat, "D") < InStr(sLocaleDateFormat, "M") Then
+          iRequiredPart = iRequiredPart + 1
+        End If
+      Case "D"
+        iRequiredPart = 1
+        If InStr(sLocaleDateFormat, "Y") < InStr(sLocaleDateFormat, "D") Then
+          iRequiredPart = iRequiredPart + 1
+        End If
+        If InStr(sLocaleDateFormat, "M") < InStr(sLocaleDateFormat, "D") Then
+          iRequiredPart = iRequiredPart + 1
+        End If
+    End Select
 
-        Try
-            sBackgroundRepeat = "no-repeat"
+    Select Case iRequiredPart
+      Case 1
+        sResult = sValuePart1
+      Case 2
+        sResult = sValuePart2
+      Case 3
+        sResult = sValuePart3
+    End Select
 
-            Select Case piBackgroundImagePosition
-                Case 0
-                    'Top Left
-                    sBackgroundRepeat = "no-repeat"
+    GetDatePart = sResult
+  End Function
 
-                Case 1
-                    'Top Right
-                    sBackgroundRepeat = "no-repeat"
+  Public Shared Function BackgroundRepeat(ByVal piBackgroundImagePosition As Int16) As String
+    Dim sBackgroundRepeat As String
 
-                Case 2
-                    'Centre
-                    sBackgroundRepeat = "no-repeat"
+    Try
+      sBackgroundRepeat = "no-repeat"
 
-                Case 3
-                    'Left Tile
-                    sBackgroundRepeat = "repeat-y"
+      Select Case piBackgroundImagePosition
+        Case 0
+          'Top Left
+          sBackgroundRepeat = "no-repeat"
 
-                Case 4
-                    'Right Tile
-                    sBackgroundRepeat = "repeat-y"
+        Case 1
+          'Top Right
+          sBackgroundRepeat = "no-repeat"
 
-                Case 5
-                    'Top Tile
-                    sBackgroundRepeat = "repeat-x"
+        Case 2
+          'Centre
+          sBackgroundRepeat = "no-repeat"
 
-                Case 6
-                    'Bottom Tile
-                    sBackgroundRepeat = "repeat-x"
+        Case 3
+          'Left Tile
+          sBackgroundRepeat = "repeat-y"
 
-                Case 7
-                    'Tile
-                    sBackgroundRepeat = "repeat"
+        Case 4
+          'Right Tile
+          sBackgroundRepeat = "repeat-y"
 
-                Case Else
-                    'Centre
-                    sBackgroundRepeat = "no-repeat"
-            End Select
+        Case 5
+          'Top Tile
+          sBackgroundRepeat = "repeat-x"
 
-            BackgroundRepeat = sBackgroundRepeat
+        Case 6
+          'Bottom Tile
+          sBackgroundRepeat = "repeat-x"
 
-        Catch ex As Exception
-            BackgroundRepeat = "no-repeat"
-        End Try
+        Case 7
+          'Tile
+          sBackgroundRepeat = "repeat"
 
-    End Function
+        Case Else
+          'Centre
+          sBackgroundRepeat = "no-repeat"
+      End Select
 
-    Public Function BackgroundPosition(ByVal piBackgroundImagePosition As Int16) As String
-        Dim sBackgroundPosition As String
+      BackgroundRepeat = sBackgroundRepeat
 
-        Try
-            sBackgroundPosition = "center"
+    Catch ex As Exception
+      BackgroundRepeat = "no-repeat"
+    End Try
 
-            Select Case piBackgroundImagePosition
-                Case 0
-                    'Top Left
-                    sBackgroundPosition = "top left"
+  End Function
 
-                Case 1
-                    'Top Right
-                    sBackgroundPosition = "top right"
+  Public Shared Function BackgroundPosition(ByVal piBackgroundImagePosition As Int16) As String
+    Dim sBackgroundPosition As String
 
-                Case 2
-                    'Centre
-                    sBackgroundPosition = "center"
+    Try
+      sBackgroundPosition = "center"
 
-                Case 3
-                    'Left Tile
-                    sBackgroundPosition = "left"
+      Select Case piBackgroundImagePosition
+        Case 0
+          'Top Left
+          sBackgroundPosition = "top left"
 
-                Case 4
-                    'Right Tile
-                    sBackgroundPosition = "right"
+        Case 1
+          'Top Right
+          sBackgroundPosition = "top right"
 
-                Case 5
-                    'Top Tile
-                    sBackgroundPosition = "top"
+        Case 2
+          'Centre
+          sBackgroundPosition = "center"
 
-                Case 6
-                    'Bottom Tile
-                    sBackgroundPosition = "bottom"
+        Case 3
+          'Left Tile
+          sBackgroundPosition = "left"
 
-                Case 7
-                    'Tile
-                    sBackgroundPosition = "top left"
+        Case 4
+          'Right Tile
+          sBackgroundPosition = "right"
 
-                Case Else
-                    'Centre
-                    sBackgroundPosition = "center"
-            End Select
+        Case 5
+          'Top Tile
+          sBackgroundPosition = "top"
 
-            BackgroundPosition = sBackgroundPosition
+        Case 6
+          'Bottom Tile
+          sBackgroundPosition = "bottom"
 
-        Catch ex As Exception
-            BackgroundPosition = "center"
-        End Try
+        Case 7
+          'Tile
+          sBackgroundPosition = "top left"
 
-    End Function
-    Public Function SplitMessage(ByVal psWholeMessage As String, _
+        Case Else
+          'Centre
+          sBackgroundPosition = "center"
+      End Select
+
+      BackgroundPosition = sBackgroundPosition
+
+    Catch ex As Exception
+      BackgroundPosition = "center"
+    End Try
+
+  End Function
+
+  Public Shared Function SplitMessage(ByVal psWholeMessage As String, _
       ByRef psPart1 As String, _
       ByRef psPart2 As String, _
       ByRef psPart3 As String) As Boolean
 
-        Dim asText() As String
-        Dim iTextIndex As Integer
-        Dim sChar As String
-        Dim sNextChar As String
-        Dim fLiteral As Boolean
-        Dim fIgnoreChar As Boolean
-        Dim fDoingSlash As Boolean
-        Dim sRTFCode As String
-        Dim sRTFCodeToDo As String
-        Dim iBracketLevel As Integer
+    Dim asText() As String
+    Dim iTextIndex As Integer
+    Dim sChar As String
+    Dim sNextChar As String
+    Dim fLiteral As Boolean
+    Dim fIgnoreChar As Boolean
+    Dim fDoingSlash As Boolean
+    Dim sRTFCode As String
+    Dim sRTFCodeToDo As String
+    Dim iBracketLevel As Integer
 
-        psPart1 = ""
-        psPart2 = ""
-        psPart3 = ""
+    psPart1 = ""
+    psPart2 = ""
+    psPart3 = ""
 
-        iTextIndex = 0
-        ReDim asText(2)
-        fDoingSlash = False
-        iBracketLevel = 0
-        sRTFCode = ""
-        sRTFCodeToDo = ""
+    iTextIndex = 0
+    ReDim asText(2)
+    fDoingSlash = False
+    iBracketLevel = 0
+    sRTFCode = ""
+    sRTFCodeToDo = ""
 
+    Try
+
+      Do While Len(psWholeMessage) > 0
+        sChar = Mid(psWholeMessage, 1, 1)
+        sNextChar = Mid(psWholeMessage, 2, 1)
+
+        fLiteral = sChar = "\" _
+          And ((sNextChar = "\") _
+            Or (sNextChar = "{") _
+            Or (sNextChar = "}"))
+
+        fIgnoreChar = fDoingSlash Or (iBracketLevel > 0)
+
+        If fDoingSlash Then
+          If sChar = " " _
+            Or sChar = "{" Then
+
+            fDoingSlash = False
+            sRTFCodeToDo = sRTFCode
+            sRTFCode = ""
+          ElseIf sChar = "\" Then
+            sRTFCodeToDo = sRTFCode
+            sRTFCode = sChar
+          Else
+            sRTFCode = sRTFCode & Trim(Replace(Replace(sChar, vbCr, ""), vbLf, ""))
+          End If
+        End If
+
+        If (iBracketLevel > 0) And sChar = "}" Then
+          iBracketLevel = iBracketLevel - 1
+          sRTFCodeToDo = sRTFCode
+          sRTFCode = ""
+        End If
+
+        If (Not fLiteral) Then
+          If (sChar = "\") Then
+            fDoingSlash = True
+            sRTFCode = sChar
+          ElseIf sChar = "{" Then
+            iBracketLevel = iBracketLevel + 1
+            sRTFCodeToDo = sRTFCode
+            sRTFCode = ""
+          ElseIf Not fIgnoreChar Then
+            '        asText(iTextIndex) = asText(iTextIndex) & sChar
+          End If
+        Else
+          '      asText(iTextIndex) = asText(iTextIndex) & sNextChar
+        End If
+
+        ' See if we need to interpret the RTF control code.
+        If Len(sRTFCodeToDo) > 0 Then
+          If ((sRTFCodeToDo = "\ul") And (iTextIndex = 0)) _
+            Or ((sRTFCodeToDo = "\ulnone") And (iTextIndex = 1)) Then
+            iTextIndex = iTextIndex + 1
+            '    ElseIf (sRTFCodeToDo = "\tab") Or (sRTFCodeToDo = "\cell") Then
+            '      asText(iTextIndex) = asText(iTextIndex) & vbTab
+            '    ElseIf (sRTFCodeToDo = "\row") Then
+            '      asText(iTextIndex) = asText(iTextIndex) & vbNewLine
+            '    ElseIf (Mid(sRTFCodeToDo, 1, 2) = "\'") Then
+            '      fFound = False
+            '      sDeniedChar = Chr(Val("&H" & Mid(sRTFCodeToDo, 3)))
+            '      For iLoop = 1 To UBound(asDeniedCharacters)
+            '        If sDeniedChar = asDeniedCharacters(iLoop) Then
+            '          fFound = True
+            '          Exit For
+            '        End If
+            '      Next iLoop
+            '      If Not fFound Then
+            '        ReDim Preserve asDeniedCharacters(UBound(asDeniedCharacters) + 1)
+            '        asDeniedCharacters(UBound(asDeniedCharacters)) = sDeniedChar
+            '      End If
+          End If
+
+          sRTFCodeToDo = ""
+        End If
+
+        If (Not fLiteral) Then
+          If (sChar = "\") Then
+            '       fDoingSlash = True
+            '        sRTFCode = sChar
+          ElseIf sChar = "{" Then
+            '        iBracketLevel = iBracketLevel + 1
+            '        sRTFCodeToDo = sRTFCode
+            '        sRTFCode = ""
+          ElseIf Not fIgnoreChar Then
+            asText(iTextIndex) = asText(iTextIndex) & sChar
+          End If
+        Else
+          asText(iTextIndex) = asText(iTextIndex) & sNextChar
+          fDoingSlash = False
+        End If
+
+        ' Move forward through the text (jump an extra character if we've just processed a literal.
+        If fLiteral Then
+          psWholeMessage = Mid(psWholeMessage, 3)
+        Else
+          psWholeMessage = Mid(psWholeMessage, 2)
+        End If
+      Loop
+
+      psPart1 = Replace(Replace(Replace(asText(0), "<", "&lt;"), ">", "&gt;"), vbCrLf, "<BR>")
+      psPart2 = Replace(Replace(Replace(asText(1), "<", "&lt;"), ">", "&gt;"), vbCrLf, "<BR>")
+      psPart3 = Replace(Replace(Replace(asText(2), "<", "&lt;"), ">", "&gt;"), vbCrLf, "<BR>")
+
+      SplitMessage = True
+
+    Catch ex As Exception
+      psPart1 = ""
+      psPart2 = ""
+      psPart3 = ""
+      SplitMessage = False
+    End Try
+  End Function
+
+  Public Shared Function ContentTypeFromExtension(ByVal psFileName As String) As String
+    Dim psContentType As String
+    Dim sExtension As String
+    Dim rkClasses As RegistryKey
+
+    psContentType = ""
+    sExtension = ""
+
+    Try
+      ' Get the extension from the file name (including the '.').
+      If psFileName.Length > 0 Then
+        sExtension = Path.GetExtension(psFileName).Trim.ToLower
+      End If
+
+      If sExtension.Length > 0 Then
         Try
-
-            Do While Len(psWholeMessage) > 0
-                sChar = Mid(psWholeMessage, 1, 1)
-                sNextChar = Mid(psWholeMessage, 2, 1)
-
-                fLiteral = sChar = "\" _
-                  And ((sNextChar = "\") _
-                    Or (sNextChar = "{") _
-                    Or (sNextChar = "}"))
-
-                fIgnoreChar = fDoingSlash Or (iBracketLevel > 0)
-
-                If fDoingSlash Then
-                    If sChar = " " _
-                      Or sChar = "{" Then
-
-                        fDoingSlash = False
-                        sRTFCodeToDo = sRTFCode
-                        sRTFCode = ""
-                    ElseIf sChar = "\" Then
-                        sRTFCodeToDo = sRTFCode
-                        sRTFCode = sChar
-                    Else
-                        sRTFCode = sRTFCode & Trim(Replace(Replace(sChar, vbCr, ""), vbLf, ""))
-                    End If
-                End If
-
-                If (iBracketLevel > 0) And sChar = "}" Then
-                    iBracketLevel = iBracketLevel - 1
-                    sRTFCodeToDo = sRTFCode
-                    sRTFCode = ""
-                End If
-
-                If (Not fLiteral) Then
-                    If (sChar = "\") Then
-                        fDoingSlash = True
-                        sRTFCode = sChar
-                    ElseIf sChar = "{" Then
-                        iBracketLevel = iBracketLevel + 1
-                        sRTFCodeToDo = sRTFCode
-                        sRTFCode = ""
-                    ElseIf Not fIgnoreChar Then
-                        '        asText(iTextIndex) = asText(iTextIndex) & sChar
-                    End If
-                Else
-                    '      asText(iTextIndex) = asText(iTextIndex) & sNextChar
-                End If
-
-                ' See if we need to interpret the RTF control code.
-                If Len(sRTFCodeToDo) > 0 Then
-                    If ((sRTFCodeToDo = "\ul") And (iTextIndex = 0)) _
-                      Or ((sRTFCodeToDo = "\ulnone") And (iTextIndex = 1)) Then
-                        iTextIndex = iTextIndex + 1
-                        '    ElseIf (sRTFCodeToDo = "\tab") Or (sRTFCodeToDo = "\cell") Then
-                        '      asText(iTextIndex) = asText(iTextIndex) & vbTab
-                        '    ElseIf (sRTFCodeToDo = "\row") Then
-                        '      asText(iTextIndex) = asText(iTextIndex) & vbNewLine
-                        '    ElseIf (Mid(sRTFCodeToDo, 1, 2) = "\'") Then
-                        '      fFound = False
-                        '      sDeniedChar = Chr(Val("&H" & Mid(sRTFCodeToDo, 3)))
-                        '      For iLoop = 1 To UBound(asDeniedCharacters)
-                        '        If sDeniedChar = asDeniedCharacters(iLoop) Then
-                        '          fFound = True
-                        '          Exit For
-                        '        End If
-                        '      Next iLoop
-                        '      If Not fFound Then
-                        '        ReDim Preserve asDeniedCharacters(UBound(asDeniedCharacters) + 1)
-                        '        asDeniedCharacters(UBound(asDeniedCharacters)) = sDeniedChar
-                        '      End If
-                    End If
-
-                    sRTFCodeToDo = ""
-                End If
-
-                If (Not fLiteral) Then
-                    If (sChar = "\") Then
-                        '       fDoingSlash = True
-                        '        sRTFCode = sChar
-                    ElseIf sChar = "{" Then
-                        '        iBracketLevel = iBracketLevel + 1
-                        '        sRTFCodeToDo = sRTFCode
-                        '        sRTFCode = ""
-                    ElseIf Not fIgnoreChar Then
-                        asText(iTextIndex) = asText(iTextIndex) & sChar
-                    End If
-                Else
-                    asText(iTextIndex) = asText(iTextIndex) & sNextChar
-                    fDoingSlash = False
-                End If
-
-                ' Move forward through the text (jump an extra character if we've just processed a literal.
-                If fLiteral Then
-                    psWholeMessage = Mid(psWholeMessage, 3)
-                Else
-                    psWholeMessage = Mid(psWholeMessage, 2)
-                End If
-            Loop
-
-            psPart1 = Replace(Replace(Replace(asText(0), "<", "&lt;"), ">", "&gt;"), vbCrLf, "<BR>")
-            psPart2 = Replace(Replace(Replace(asText(1), "<", "&lt;"), ">", "&gt;"), vbCrLf, "<BR>")
-            psPart3 = Replace(Replace(Replace(asText(2), "<", "&lt;"), ">", "&gt;"), vbCrLf, "<BR>")
-
-            SplitMessage = True
+          ' Try to determine the file's MIME type from the registry.
+          ' Use a try-catch as permissions might not allow registry access.
+          rkClasses = Registry.ClassesRoot
+          psContentType = rkClasses.OpenSubKey(sExtension).GetValue("Content Type").ToString
 
         Catch ex As Exception
-            psPart1 = ""
-            psPart2 = ""
-            psPart3 = ""
-            SplitMessage = False
+          psContentType = ""
         End Try
-    End Function
 
-    Public Function ContentTypeFromExtension(ByVal psFileName As String) As String
-        Dim psContentType As String
-        Dim sExtension As String
-        Dim rkClasses As RegistryKey
-
-        psContentType = ""
-        sExtension = ""
-
-        Try
-            ' Get the extension from the file name (including the '.').
-            If psFileName.Length > 0 Then
-                sExtension = Path.GetExtension(psFileName).Trim.ToLower
-            End If
-
-            If sExtension.Length > 0 Then
-                Try
-                    ' Try to determine the file's MIME type from the registry.
-                    ' Use a try-catch as permissions might not allow registry access.
-                    rkClasses = Registry.ClassesRoot
-                    psContentType = rkClasses.OpenSubKey(sExtension).GetValue("Content Type").ToString
-
-                Catch ex As Exception
-                    psContentType = ""
-                End Try
-
-                If psContentType.Length = 0 Then
-                    ' Unable to determine the file's MIME type from the registry, so check the 
-                    ' file extension in our own library or extensaions and MIME types.
+        If psContentType.Length = 0 Then
+          ' Unable to determine the file's MIME type from the registry, so check the 
+          ' file extension in our own library or extensaions and MIME types.
           Select Case sExtension.Substring(1)
             Case "323"
               psContentType = "text/h323"
@@ -1079,19 +1086,19 @@ Public Class General
               psContentType = "application/x-ztardist"
 
           End Select
-                End If
-            End If
+        End If
+      End If
 
-        Catch ex As Exception
-            psContentType = ""
+    Catch ex As Exception
+      psContentType = ""
 
-        Finally
-            If psContentType.Length = 0 Then
-                ' Unable to determine the file's MIME type, so use a default.
-                psContentType = "text/html"
-            End If
-        End Try
+    Finally
+      If psContentType.Length = 0 Then
+        ' Unable to determine the file's MIME type, so use a default.
+        psContentType = "text/html"
+      End If
+    End Try
 
-        Return psContentType
-    End Function
+    Return psContentType
+  End Function
 End Class

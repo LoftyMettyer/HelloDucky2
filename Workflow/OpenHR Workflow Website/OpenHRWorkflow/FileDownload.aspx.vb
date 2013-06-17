@@ -57,8 +57,7 @@ Partial Class FileDownload
 		Dim sContentType As String
 		Dim sFileName As String
 		Dim iIndex As Integer
-		Dim objGeneral As New General
-		Dim iItemType As Integer
+    Dim iItemType As Integer
 		Dim sTemp As String
 		Dim abtTemp As Byte()
 		Dim iOffset As Integer
@@ -271,7 +270,7 @@ Partial Class FileDownload
 
 			If sErrorMessage.Length = 0 Then
 				If sContentType.Length = 0 Then
-					sContentType = objGeneral.ContentTypeFromExtension(sFileName)
+          sContentType = General.ContentTypeFromExtension(sFileName)
 				End If
 
 				iIndex = InStrRev(sFileName, "\")

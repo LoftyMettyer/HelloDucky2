@@ -23,10 +23,10 @@ Partial Class PendingSteps
 
     Title = WebSiteName("To Do...")
 
-    Dim todoTitleStyles = New Dictionary(Of String, String)
     Dim todoTitleForeColor As Integer
-    Dim todoDescStyles = New Dictionary(Of String, String)
+    Dim todoTitleFontInfo As New FontSetting
     Dim todoDescForeColor As Integer
+    Dim todoDescFontInfo As New FontSetting
 
     Using conn As New SqlConnection(Configuration.ConnectionString)
 
@@ -36,19 +36,21 @@ Partial Class PendingSteps
       Dim dr As SqlDataReader = cmd.ExecuteReader()
       dr.Read()
 
-      todoTitleStyles.Add("font-family", NullSafeString(dr("TodoTitleFontName")))
-      todoTitleStyles.Add("font-size", NullSafeString(dr("TodoTitleFontSize")) & "pt")
-      todoTitleStyles.Add("font-weight", If(NullSafeBoolean(NullSafeBoolean(dr("TodoTitleFontBold"))), "bold", "normal"))
-      todoTitleStyles.Add("font-style", If(NullSafeBoolean(NullSafeBoolean(dr("TodoTitleFontItalic"))), "italic", "normal"))
-
       todoTitleForeColor = NullSafeInteger(dr("TodoTitleForeColor"))
-
-      todoDescStyles.Add("font-family", NullSafeString(dr("TodoDescFontName")))
-      todoDescStyles.Add("font-size", NullSafeString(dr("TodoDescFontSize")) & "pt")
-      todoDescStyles.Add("font-weight", If(NullSafeBoolean(NullSafeBoolean(dr("TodoDescFontBold"))), "bold", "normal"))
-      todoDescStyles.Add("font-style", If(NullSafeBoolean(NullSafeBoolean(dr("TodoDescFontItalic"))), "italic", "normal"))
+      todoTitleFontInfo.Name = NullSafeString(dr("TodoTitleFontName"))
+      todoTitleFontInfo.Size = NullSafeSingle(dr("TodoTitleFontSize"))
+      todoTitleFontInfo.Bold = NullSafeBoolean(dr("TodoTitleFontBold"))
+      todoTitleFontInfo.Italic = NullSafeBoolean(dr("TodoTitleFontItalic"))
+      todoTitleFontInfo.Underline = NullSafeBoolean(dr("TodoTitleFontUnderline"))
+      todoTitleFontInfo.Strikeout = NullSafeBoolean(dr("TodoTitleFontStrikeout"))
 
       todoDescForeColor = NullSafeInteger(dr("TodoDescForeColor"))
+      todoDescFontInfo.Name = NullSafeString(dr("TodoDescFontName"))
+      todoDescFontInfo.Size = NullSafeSingle(dr("TodoDescFontSize"))
+      todoDescFontInfo.Bold = NullSafeBoolean(dr("TodoDescFontBold"))
+      todoDescFontInfo.Italic = NullSafeBoolean(dr("TodoDescFontItalic"))
+      todoDescFontInfo.Underline = NullSafeBoolean(dr("TodoDescFontUnderline"))
+      todoDescFontInfo.Strikeout = NullSafeBoolean(dr("TodoDescFontStrikeout"))
     End Using
 
     Dim userGroupHasPermission As Boolean
@@ -96,8 +98,6 @@ Partial Class PendingSteps
 
         Dim table As Table, row As TableRow, cell As TableCell, label As Label, image As Image
 
-        Dim general As New General
-
         ' Create the holding table
         table = New Table
 
@@ -133,10 +133,13 @@ Partial Class PendingSteps
           label = New Label ' Workflow name text
           label.Font.Underline = True
           label.Text = CStr(dr("name"))
-          For Each item In todoTitleStyles
-            label.Style.Add(item.Key, item.Value)
-          Next
-          label.Style.Add("color", general.GetHtmlColour(todoTitleForeColor))
+          label.Font.Name = todoTitleFontInfo.Name
+          label.Font.Size = New FontUnit(todoTitleFontInfo.Size)
+          label.Font.Bold = todoTitleFontInfo.Bold
+          label.Font.Italic = todoTitleFontInfo.Italic
+          label.Font.Underline = todoTitleFontInfo.Underline
+          label.Font.Strikeout = todoTitleFontInfo.Strikeout
+          label.Style.Add("color", General.GetHtmlColour(todoTitleForeColor))
           label.Style.Add("cursor", "pointer")
           cell.Controls.Add(label)
 
@@ -152,11 +155,13 @@ Partial Class PendingSteps
             desc = dr("description").ToString
           End If
           label.Text = desc
-
-          For Each item In todoDescStyles
-            label.Style.Add(item.Key, item.Value)
-          Next
-          label.Style.Add("color", general.GetHtmlColour(todoDescForeColor))
+          label.Font.Name = todoDescFontInfo.Name
+          label.Font.Size = New FontUnit(todoDescFontInfo.Size)
+          label.Font.Bold = todoDescFontInfo.Bold
+          label.Font.Italic = todoDescFontInfo.Italic
+          label.Font.Underline = todoDescFontInfo.Underline
+          label.Font.Strikeout = todoDescFontInfo.Strikeout
+          label.Style.Add("color", General.GetHtmlColour(todoDescForeColor))
           label.Style.Add("cursor", "pointer")
           cell.Controls.Add(label)
 

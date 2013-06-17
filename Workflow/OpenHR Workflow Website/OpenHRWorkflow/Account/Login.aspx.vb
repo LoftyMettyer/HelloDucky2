@@ -29,7 +29,7 @@ Partial Class Login
     If sMessage.Length = 0 Then
       Try
         If Not Security.ValidateUser(txtUserName.Text.Trim, txtPassword.Text) Then
-          sMessage = "The user name or password provided is incorrect."
+          sMessage = "The system could not log you on. Make sure your details are correct, then retype your password."
         End If
       Catch ex As Exception
         sMessage = ex.Message

@@ -31,7 +31,7 @@
             <td><asp:TextBox runat="server" ID="txtUserName"/></td>
         </tr>
         <tr>
-            <td><asp:Label runat="server" ID="lblPassword" Text="Password"/></td>
+            <td><asp:Label runat="server" ID="lblPassword" Text="Password" Font-Strikeout="True" Font-Underline="True" /></td>
             <td><asp:TextBox runat="server" ID="txtPassword" TextMode="Password" /></td>            
         </tr>
         <tr>

@@ -22,9 +22,7 @@ Partial Class Home
 
     Title = WebSiteName("Home")
 
-    Dim sMessage As String = ""
-    Dim sImageFileName As String = ""
-    Dim homeItemStyles = New Dictionary(Of String, String)
+    Dim homeItemFontInfo As New FontSetting
     Dim homeItemForeColor As Integer
 
     Using conn As New SqlConnection(Configuration.ConnectionString)
@@ -34,11 +32,13 @@ Partial Class Home
       Dim dr As SqlDataReader = cmd.ExecuteReader()
       dr.Read()
 
-      homeItemStyles.Add("font-family", NullSafeString(dr("HomeItemFontName")))
-      homeItemStyles.Add("font-size", NullSafeString(dr("HomeItemFontSize")) & "pt")
-      homeItemStyles.Add("font-weight", If(NullSafeBoolean(NullSafeBoolean(dr("HomeItemFontBold"))), "bold", "normal"))
-      homeItemStyles.Add("font-style", If(NullSafeBoolean(NullSafeBoolean(dr("HomeItemFontItalic"))), "italic", "normal"))
       homeItemForeColor = NullSafeInteger(dr("HomeItemForeColor"))
+      homeItemFontInfo.Name = NullSafeString(dr("HomeItemFontName"))
+      homeItemFontInfo.Size = NullSafeSingle(dr("HomeItemFontSize"))
+      homeItemFontInfo.Bold = NullSafeBoolean(dr("HomeItemFontBold"))
+      homeItemFontInfo.Italic = NullSafeBoolean(dr("HomeItemFontItalic"))
+      homeItemFontInfo.Underline = NullSafeBoolean(dr("HomeItemFontUnderline"))
+      homeItemFontInfo.Strikeout = NullSafeBoolean(dr("HomeItemFontStrikeout"))
     End Using
 
     Dim userGroupHasPermission As Boolean
@@ -81,7 +81,6 @@ Partial Class Home
         Dim cmd As New SqlCommand(sql, conn)
         Dim dr As SqlDataReader = cmd.ExecuteReader()
 
-        Dim general = New General
         ' Create the holding table for the list of workflows.
         Dim table = New Table
         table.Style.Add("width", "100%")
@@ -99,7 +98,7 @@ Partial Class Home
           Dim cell = New TableCell  ' Image cell
           cell.Style.Add("width", "57px")
 
-          Dim image = New Image
+          Dim image As New Image, sImageFileName As String
           If NullSafeInteger(dr("PictureID")) = 0 Then
             sImageFileName = "~/Images/Connected48.png"
           Else
@@ -120,10 +119,13 @@ Partial Class Home
           cell = New TableCell
           Dim label = New Label ' Workflow name text
           label.Text = CStr(dr("Name"))
-          For Each item In homeItemStyles
-            label.Style.Add(item.Key, item.Value)
-          Next
-          label.Style.Add("color", general.GetHtmlColour(homeItemForeColor))
+          label.Font.Name = homeItemFontInfo.Name
+          label.Font.Size = New FontUnit(homeItemFontInfo.Size)
+          label.Font.Bold = homeItemFontInfo.Bold
+          label.Font.Italic = homeItemFontInfo.Italic
+          label.Font.Underline = homeItemFontInfo.Underline
+          label.Font.Strikeout = homeItemFontInfo.Strikeout
+          label.Style.Add("color", General.GetHtmlColour(homeItemForeColor))
           label.Style.Add("cursor", "pointer")
 
           cell.Controls.Add(label)

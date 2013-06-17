@@ -31,16 +31,14 @@ Partial Class Site
             control = footer
         End Select
 
-        Dim general As New General
-
         If Not IsDBNull(dr(prefix & "BackColor")) Then
           control.Style("Background-color") = general.GetHtmlColour(CInt(dr(prefix & "BackColor")))
         End If
 
         If Not IsDBNull(dr(prefix & "PictureID")) Then
           control.Style("background-image") = ResolveClientUrl(Picture.GetUrl(CInt(dr(prefix & "PictureID"))))
-          control.Style("background-repeat") = general.BackgroundRepeat(CShort(dr(prefix & "PictureLocation")))
-          control.Style("background-position") = general.BackgroundPosition(CShort(dr(prefix & "PictureLocation")))
+          control.Style("background-repeat") = General.BackgroundRepeat(CShort(dr(prefix & "PictureLocation")))
+          control.Style("background-position") = General.BackgroundPosition(CShort(dr(prefix & "PictureLocation")))
         End If
 
         'Header Image

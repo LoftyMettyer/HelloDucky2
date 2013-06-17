@@ -25,10 +25,10 @@ Public Class RecordSelector
     Dim iColWidth As Integer = 100  ' default, minimum column width for all grid columns
 
   Protected Overrides Sub Render(ByVal writer As System.Web.UI.HtmlTextWriter)
+
     Dim iIDColumnIndex As Int16
     Dim sDivStyle As String = ""
     Dim hdnScrollTop As String = "0"
-    Dim objGeneral As New General
     Dim iColCount As Integer
 
     'MyBase.Render(writer)
@@ -154,7 +154,7 @@ Public Class RecordSelector
         IIf(IsLookup, "", "left:" & Me.Style.Item("LEFT").ToString & ";") & _
         sDivStyle & _
         ";overflow:hidden;border-color:black;border-style:solid;border-width:1px;background-color:" & _
-        objGeneral.GetHTMLColour(System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.FromArgb(customHeader.BackColor.A, customHeader.BackColor.R, customHeader.BackColor.G, customHeader.BackColor.B)).ToString) & _
+        General.GetHtmlColour(System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.FromArgb(customHeader.BackColor.A, customHeader.BackColor.R, customHeader.BackColor.G, customHeader.BackColor.B)).ToString) & _
         "'>")
 
     'render header row 
@@ -179,7 +179,7 @@ Public Class RecordSelector
     writer.Write("<div id='" & ClientID.Replace("Grid", "") & "gridcontainer'  style='position:absolute;top:" & CalculateHeaderHeight() & _
                  ";bottom:" & CalculatePagerHeight() & ";left:0px;overflow-x:auto;overflow-y:auto;" & _
                  "width:" & CalculateWidth() & ";" & "background-color:" & _
-                 objGeneral.GetHTMLColour(System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.FromArgb(Me.BackColor.A, Me.BackColor.R, Me.BackColor.G, Me.BackColor.B)).ToString) & _
+                 General.GetHtmlColour(System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.FromArgb(Me.BackColor.A, Me.BackColor.R, Me.BackColor.G, Me.BackColor.B)).ToString) & _
                  ";' onscroll=scrollHeader('" & ClientID.Replace("Grid", "gridcontainer") & "')>")
 
 
@@ -668,7 +668,6 @@ Public Class RecordSelector
     'Dim grdGrid As System.Web.UI.WebControls.GridView
     Dim mydte As DateTime
     Dim sColumnCaption As String
-    Dim objGeneral As New General
 
     grdGrid = CType(sender, RecordSelector)
 

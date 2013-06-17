@@ -72,7 +72,6 @@ Partial Class FileUpload
     Dim sFileNameWithoutPath As String
     Dim objCrypt As New Crypt
     Dim fAlreadyUploaded As Boolean
-    Dim objGeneral As New General
 
     Try
       mobjConfig.Initialise(Server.MapPath("themes/ThemeHex.xml"))
@@ -153,29 +152,29 @@ Partial Class FileUpload
           Me.ViewState("ElementItemID") = iElementItemID
 
           lblFileUploadPrompt.Font.Size = mobjConfig.MessageFontSize
-          lblFileUploadPrompt.ForeColor = objGeneral.GetColour(6697779)
+          lblFileUploadPrompt.ForeColor = General.GetColour(6697779)
 
           With FileUpload1
             .Style.Add("Font-Size", mobjConfig.MessageFontSize.ToString)
             .Style.Add("Font-family", "Verdana")
-            .Style.Add("Color", objGeneral.GetColour(6697779).ToString)
-            .Style.Add("Background-Color", objGeneral.GetColour(15988214).ToString)
-            .Style.Add("border", "Solid 1px " & objGeneral.GetColour(5730458).ToString)
+            .Style.Add("Color", General.GetColour(6697779).ToString)
+            .Style.Add("Background-Color", General.GetColour(15988214).ToString)
+            .Style.Add("border", "Solid 1px " & General.GetColour(5730458).ToString)
 
           End With
 
           lblErrors.Font.Size = mobjConfig.ValidationMessageFontSize
-          lblErrors.ForeColor = objGeneral.GetColour(6697779)
+          lblErrors.ForeColor = General.GetColour(6697779)
           bulletErrors.Font.Size = mobjConfig.ValidationMessageFontSize
-          bulletErrors.ForeColor = objGeneral.GetColour(6697779)
+          bulletErrors.ForeColor = General.GetColour(6697779)
 
           With btnCancel
-            .Style.Add("Background-Color", objGeneral.GetColour(16249587).ToString)
-            .Style.Add("Border", "solid 1px " & objGeneral.GetColour(10720408).ToString)
+            .Style.Add("Background-Color", General.GetColour(16249587).ToString)
+            .Style.Add("Border", "solid 1px " & General.GetColour(10720408).ToString)
             '.Appearance.Style.BorderWidth = 1
             '.Appearance.InnerBorder.StyleTop = BorderStyle.None
             '.Appearance.Style.BorderColor = objGeneral.GetColour(10720408)
-            .Style.Add("Color", objGeneral.GetColour(6697779).ToString)
+            .Style.Add("Color", General.GetColour(6697779).ToString)
             '.FocusAppearance.Style.BorderColor = objGeneral.GetColour(562943)
             '.FocusAppearance.Style.BackColor = objGeneral.GetColour(12775933)
             '.HoverAppearance.Style.BorderColor = objGeneral.GetColour(562943)
@@ -189,12 +188,12 @@ Partial Class FileUpload
           End With
 
           With btnClear
-            .Style.Add("Background-Color", objGeneral.GetColour(16249587).ToString)
-            .Style.Add("Border", "solid 1px " & objGeneral.GetColour(10720408).ToString)
+            .Style.Add("Background-Color", General.GetColour(16249587).ToString)
+            .Style.Add("Border", "solid 1px " & General.GetColour(10720408).ToString)
             '.Appearance.Style.BorderWidth = 1
             '.Appearance.InnerBorder.StyleTop = BorderStyle.None
             '.Appearance.Style.BorderColor = objGeneral.GetColour(10720408)
-            .Style.Add("Color", objGeneral.GetColour(6697779).ToString)
+            .Style.Add("Color", General.GetColour(6697779).ToString)
             '.FocusAppearance.Style.BorderColor = objGeneral.GetColour(562943)
             '.FocusAppearance.Style.BackColor = objGeneral.GetColour(12775933)
             '.HoverAppearance.Style.BorderColor = objGeneral.GetColour(562943)
@@ -204,12 +203,12 @@ Partial Class FileUpload
           End With
 
           With btnFileUpload
-            .Style.Add("Background-Color", objGeneral.GetColour(16249587).ToString)
-            .Style.Add("border", "Solid 1px " & objGeneral.GetColour(10720408).ToString)
+            .Style.Add("Background-Color", General.GetColour(16249587).ToString)
+            .Style.Add("border", "Solid 1px " & General.GetColour(10720408).ToString)
             '.Appearance.Style.BorderWidth = 1
             '.Appearance.InnerBorder.StyleTop = BorderStyle.None
             ' .Appearance.Style.BorderColor = objGeneral.GetColour(10720408)
-            .Style.Add("Color", objGeneral.GetColour(6697779).ToString)
+            .Style.Add("Color", General.GetColour(6697779).ToString)
             '.FocusAppearance.Style.BorderColor = objGeneral.GetColour(562943)
             '.FocusAppearance.Style.BackColor = objGeneral.GetColour(12775933)
             '.HoverAppearance.Style.BorderColor = objGeneral.GetColour(562943)
