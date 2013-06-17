@@ -222,7 +222,7 @@
 	            return;			
 	        }		    
 
-	        $get("pleasewaitScreen").style.visibility="visible";
+	        $get("pleasewaitScreen").style.display="block";
 	        showOverlay(true);
 	        showErrorMessages(false);
 	    }
@@ -500,7 +500,7 @@
 	        //Reset current tab position
 	        SetCurrentTab(iCurrentTab);	
 		
-	        $get("pleasewaitScreen").style.visibility="hidden";
+	        $get("pleasewaitScreen").style.display="none";
 	        showOverlay(false);
 
 	        //Reapply resizable column functionality to tables
@@ -566,13 +566,10 @@
 	                                // Non-IE browsers can't self-close windows.
 	                                //show Please Wait box, with 'please close me' text
 	                                showOverlay(true);
-	                                
-	                                $get("pleasewaitScreen").style.visibility="visible";
+	                               
 	                                $get("pleasewaitScreen").style.width="200px";
-
-	                                labelCtl = document.getElementById("pleasewaitText");
-	                                if (null != labelCtl) {
-	                                    labelCtl.innerHTML = "Please close your browser.";                    
+	                                $get("pleasewaitScreen").style.display = "block";
+	                                $get("pleasewaitText").innerHTML = "Please close your browser.";
 	                                }								  
 	                            }
 	                        }

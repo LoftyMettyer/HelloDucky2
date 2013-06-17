@@ -46,7 +46,7 @@
         </CompositeScript>
     </ajx:ToolkitScriptManager>   
 
-    <div id="pleasewaitScreen" style="visibility:hidden;">
+    <div id="pleasewaitScreen" style="display:none;">
         <label id="pleasewaitText">Processing...<br/><br/>Please wait.</label>  
 	</div>
 		
