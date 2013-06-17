@@ -53,108 +53,6 @@
     }
 
 
-//     function dateboxclick(elementID) {
-//        if (document.getElementById(elementID).style.visibility == "visible") {
-//          document.getElementById(elementID).style.visibility = "hidden";
-//        }
-//        else {
-//          var oEl = document.getElementById(elementID);
-
-//          //also set left position to 0 if required          
-//          if (oEl.offsetLeft<0)
-//          {
-//            oEl.style.left = "125px"; //hardcoded!
-//          }    
-
-//          document.getElementById(elementID).style.visibility = "visible";
-//        }
-
-
-//        //Set default Date  
-//        var Dt = new Date();
-
-//        var cellHeight = document.getElementById(elementID + 'daysRow_1').offsetHeight;
-//        
-//        var Datebox = document.getElementById(elementID + 'Days');
-//        Datebox.scrollTop = ((cellHeight + 2) * Dt.getDate());
-
-//        Datebox = document.getElementById(elementID + 'Months');
-//        Datebox.scrollTop = ((cellHeight + 2) * (Dt.getMonth() + 1));
-
-//        Datebox = document.getElementById(elementID + 'Years');
-//        Datebox.scrollTop = ((cellHeight + 2) * (Dt.getFullYear() - 1899));
-
-//     }
-
-
-//     function dateboxlostfocus(elementID) {
-//        document.getElementById(elementID).style.visibility = "hidden";
-//     }
-
-
-
-
-//    function chooseDate(elementID) {      
-//      var cellHeight = document.getElementById(elementID + 'daysRow_1').offsetHeight;
-
-//      var DateBox = document.getElementById(elementID + 'Days');
-//      var tmpDate = '' + Math.round(DateBox.scrollTop / (cellHeight + 2));
-//      if(tmpDate.length<2) {var strDate='0' + tmpDate;}else{var strDate=tmpDate;}
-//      if(strDate=='00') strDate='01';
-
-//      var DateBox = document.getElementById(elementID + 'Months');
-//      var tmpDate = '' + Math.round(DateBox.scrollTop / (cellHeight + 2));
-//      if(tmpDate == '0') tmpDate='01';
-//      if(tmpDate.length<2) {strDate+='/0' + tmpDate;}else{strDate+='/' +tmpDate;}
-
-//      var DateBox = document.getElementById(elementID + 'Years');
-//      var tmpDate = '' + (Math.round(DateBox.scrollTop / (cellHeight + 2))+ 1900);
-//      strDate+='/' + tmpDate;
-
-//      var dateTextBox = document.getElementById(elementID + 'TextBox');
-//      dateTextBox.value = strDate;
-
-//      var DateBox = document.getElementById(elementID);
-//      DateBox.style.visibility = "hidden";
-
-//    }
-
-
-//    function dateBoxTodayClick(elementID) {
-//       //Set today's Date          
-//        
-//        var DateBox = document.getElementById(elementID);
-//        DateBox.style.visibility = "hidden";
-//        
-//        var Dt = new Date();
-
-//        var dateTextBox = document.getElementById(elementID + 'TextBox');
-//        dateTextBox.value = (Dt.getDate()<10?"0"+Dt.getDate():Dt.getDate()) + '/' +
-//          (Dt.getMonth()<9?"0"+(Dt.getMonth() + 1):(Dt.getMonth() + 1)) + '/' +
-//          (Dt.getFullYear());
-
-////        var cellHeight = document.getElementById(elementID + 'daysRow_1').offsetHeight;
-////        
-////        var Datebox = document.getElementById(elementID + 'Days');     
-////        Datebox.scrollTop = ((cellHeight + 2) * Dt.getDate());
-
-////        Datebox = document.getElementById(elementID + 'Months');
-////        Datebox.scrollTop = ((cellHeight + 2) * (Dt.getMonth() + 1));
-
-////        Datebox = document.getElementById(elementID + 'Years');
-////        Datebox.scrollTop = ((cellHeight + 2) * (Dt.getFullYear() - 1949));      
-//    }
-
-//    function dateBoxClearClick(elementID) {
-//      //close the calendar and clear the textbox
-//      var DateBox = document.getElementById(elementID);
-//      DateBox.style.visibility = "hidden";
-
-//      var dateTextBox = document.getElementById(elementID + 'TextBox');
-//      dateTextBox.value = '  /  /';
-
-//    }
-
   function getWindowWidth() {
     var myWidth = 0;
     if( typeof( window.innerWidth ) == 'number' ) {
@@ -355,21 +253,22 @@
 
 		function goSubmit() { 
 				
-		if($get("txtPostbackMode").value=="3") {      
-		  try {
-		    if($get("txtActiveDDE").value.indexOf("dde")>0) {
-		      //keep the lookup open.
-		      //kicks off InitializeLookup BTW.
-		      $find($get("txtActiveDDE").value).show();
-		    }
-		  }
-		  catch (e) {}
-		  return;			
-		}
-		//document.all.pleasewaitScreen.style.pixelTop = (document.body.scrollTop + 50);
-		$get("pleasewaitScreen").style.visibility="visible";
-		
-			disableChildElements("pnlInput");
+		    if($get("txtPostbackMode").value=="3") {      
+		      try {
+		        if($get("txtActiveDDE").value.indexOf("dde")>0) {
+		          //keep the lookup open.
+		          //kicks off InitializeLookup BTW.
+		          $find($get("txtActiveDDE").value).show();
+		        }
+		      }
+		      catch (e) {}
+		      return;			
+		    }		    
+
+		    closeOtherCombos("pnlInput");
+
+		    $get("pleasewaitScreen").style.visibility="visible";
+		    showOverlay(true);
 			showErrorMessages(false);
 		}
 
@@ -385,26 +284,6 @@
 		function doNothing(obj) {
 		    // Empty function. Required - See note for closeOtherCombos function.
 		}
-
-		function disableChildElements(objId) {
-		    try
-		    {
-			    var theObject = document.getElementById(objId);
-			    var level = 0;
-
-			    TraverseDOM(theObject, level, disableElement);
-    		}
-    		catch(e) {}
-		}
-
-		function disableElement(obj) {
-		    try
-		    {
-    			obj.disabled = true;
-    		}
-    		catch(e) {}
-		}
-
     
     function getElementsBySearchValue(searchValue) {
         var retVal = new Array();
@@ -479,8 +358,7 @@
 
 		function showErrorMessages(pfDisplay) {
 		
-			if ((($get("frmMain").hdnCount_Errors.value > 0)			
-				|| ($get("frmMain").hdnCount_Warnings.value > 0))
+			if ((($get("frmMain").hdnCount_Errors.value > 0) || ($get("frmMain").hdnCount_Warnings.value > 0))
 				&& (pfDisplay == false)) {
 				$get("imgErrorMessages_Max").style.display = "block";
 				$get("imgErrorMessages_Max").style.visibility = "visible";
@@ -491,26 +369,15 @@
 			}
            
 
-			// Removed all transitions in the following block as they're IE only
-
 			if (pfDisplay == true) {
 			  //refresh the errors WARP panel. 
 			  __doPostBack('pnlErrorMessages', '');
-				//divErrorMessages_Inner.style.visibility = "visible";
-				
-				//divErrorMessages_Outer.style.filter = "revealTrans(duration=0.3, transition=4)";
-				//divErrorMessages_Outer.filters.revealTrans.apply();
+
 				$get("divErrorMessages_Outer").style.display = "block";
 				$get("divErrorMessages_Outer").style.visibility = "visible";
-				//divErrorMessages_Outer.filters.revealTrans.play();
 			}
 			else {
-				//divErrorMessages_Outer.style.filter = "revealTrans(duration=0.3, transition=5)";
-				//divErrorMessages_Outer.filters.revealTrans.apply();
 				$get("divErrorMessages_Outer").style.visibility = "hidden";
-				//divErrorMessages_Outer.style.display = "none";
-				//divErrorMessages_Inner.style.visibility = "hidden";
-				//divErrorMessages_Outer.filters.revealTrans.play();
 			}
 		}
 
@@ -697,6 +564,15 @@
 			catch (e) { }
 		}
 
+        function showOverlay(display) {
+            if(display) {
+                $get("divOverlay").style.display = "block";
+            } else {
+                $get("divOverlay").style.display = "none";
+            }
+                
+        }
+
 		function showFileUpload(pfDisplay, psElementItemID, psAlreadyUploaded) {
 		
 			try {
@@ -718,28 +594,22 @@
 					$get("ifrmFileUpload").src = "FileUpload.aspx?" + sAlreadyUploaded + psElementItemID;
           
 					showErrorMessages(false);
-					document.getElementById("divInput").disabled = true;
+				    showOverlay(true);
 					document.getElementById("divErrorMessages_Outer").disabled = true;
 					document.getElementById("imgErrorMessages_Max").disabled = true;
 					document.getElementById("divErrorMessages_Outer").style.display = "none";
-					//divFileUpload.style.filter = "revealTrans(duration=0.5, transition=12)";
-					//divFileUpload.filters.revealTrans.apply();
 					document.getElementById("divFileUpload").style.visibility = "visible";
 					document.getElementById("divFileUpload").style.display = "block";
-					//divFileUpload.filters.revealTrans.play();
 				}
 				else {
-					//divFileUpload.style.filter = "revealTrans(duration=0.5, transition=12)";
-					//divFileUpload.filters.revealTrans.apply();
 					document.getElementById("divFileUpload").style.visibility = "hidden";
 					document.getElementById("divFileUpload").style.display = "none";
-					//divFileUpload.filters.revealTrans.play();
 
 					setPostbackMode(3);
 					
 					$get("frmMain").btnReEnableControls.click();
 
-					document.getElementById("divInput").disabled = false;
+				    showOverlay(false);
 					document.getElementById("divErrorMessages_Outer").disabled = false;
 					document.getElementById("imgErrorMessages_Max").disabled = false;
 				}
@@ -785,7 +655,8 @@
         SetCurrentTab(iCurrentTab);	
 		
 		$get("pleasewaitScreen").style.visibility="hidden";
-		
+		showOverlay(false);
+
 		//Reapply resizable column functionality to tables
 		//This is put here to ensure functionality is reapplied after partial/full postback.
 		ResizableColumns();		
@@ -850,7 +721,7 @@
 								{
 								  // Non-IE browsers can't self-close windows.
 								  //show Please Wait box, with 'please close me' text
-								  disableChildElements("pnlInput");
+							      showOverlay(true);
 								  $get("pleasewaitScreen").style.visibility="visible";
 								  $get("pleasewaitScreen").style.width="200px";
 
@@ -875,20 +746,17 @@
 		}
 
 		function showSubmissionMessage() {
-		  //Rem out all transitions as only IE can run 'em
+
 			try {
 				$get("ifrmMessages").src = "SubmissionMessage.aspx";
 
-				$get("divInput").disabled = true;
+			    showOverlay(true);
 				$get("frmMain").hdnCount_Errors.value = 0;
 				$get("frmMain").hdnCount_Warnings.value = 0;
 				$get("divErrorMessages_Outer").style.display = "none";
 				showErrorMessages(false);
-				//$get("divSubmissionMessages").style.filter = "revealTrans(duration=0.5, transition=12)";
-				//$get("divSubmissionMessages").filters.revealTrans.apply();
 				$get("divSubmissionMessages").style.display = "block";
 				$get("divSubmissionMessages").style.visibility = "visible";
-				//$get("divSubmissionMessages").filters.revealTrans.play();
 			}
 			catch (e) { }
 		}
@@ -1695,11 +1563,12 @@ function ResizeComboForForm(sender, args) {
 	<!--
     File Upload Popup
     -->
-	<div id="divFileUpload" style="position: absolute; left: 0px; top: 15%; width: 100%;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             display: none; z-index: 3; visibility: hidden;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             text-align: center;" nowrap="nowrap" onfilterchange="return unblockFileUploadDIV();">
+	<div id="divFileUpload" style="position: absolute; left: 0px; top: 15%; width: 100%; display: none; z-index: 3; visibility: hidden; text-align: center;" nowrap="nowrap" onfilterchange="return unblockFileUploadDIV();">
 		<iframe id="ifrmFileUpload" style="width:550px" src="" frameborder="0" scrolling="no"></iframe>
 	</div>
+    
+        <div id="divOverlay" style="display: none; position: fixed; left: 0; top: 0; width: 100%; height: 100%; z-index: 2; background-color: black; filter: alpha(opacity=20); opacity: 0.2;" ></div>
+
 	<!--
         Web Form Controls
         -->
