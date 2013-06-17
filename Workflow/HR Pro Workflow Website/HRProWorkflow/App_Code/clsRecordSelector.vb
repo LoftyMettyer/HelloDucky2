@@ -990,6 +990,8 @@ Public Class RecordSelector
 
         Dim trPager As TableRow = New TableRow()
         trPager.ID = "trPager"
+        trPager.Style.Add("float", "right")
+        trPager.Style.Add("width", "275px")
 
         Dim ltlPageIndex As Literal = New Literal()
         ltlPageIndex.ID = "ltlPageIndex"
@@ -1137,6 +1139,28 @@ Public Class RecordSelector
             .Controls.Add(ddlPages)
             .Controls.Add(New LiteralControl("</td></tr></table>"))
         End With
+
+
+        ' Hide navigation buttons depending on width of Record Selector
+        If Not IsLookup Then
+            If MyBase.Width.Value < 175 Then
+                ' Hide tcPageXofY AND tcPagerBtns
+                tcPageXofY.Style.Add("display", "none")
+                tcPageXofY.Style.Add("visibility", "hidden")
+                tcPagerBtns.Style.Add("display", "none")
+                tcPagerBtns.Style.Add("visibility", "hidden")
+                trPager.Style.Remove("width")
+                trPager.Style.Add("width", "75px")
+            ElseIf MyBase.Width.Value < 210 Then
+                ' Hide just tcPageXofY
+                tcPageXofY.Style.Add("display", "none")
+                tcPageXofY.Style.Add("visibility", "hidden")
+                trPager.Style.Remove("width")
+                trPager.Style.Add("width", "175px")
+            End If
+
+        End If
+
 
         'add cells to row
         trPager.Cells.Add(tcPageXofY)
