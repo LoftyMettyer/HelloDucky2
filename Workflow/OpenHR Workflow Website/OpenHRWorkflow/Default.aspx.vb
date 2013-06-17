@@ -1011,7 +1011,13 @@ Public Class _Default
                     .Attributes("onkeydown") = "try{checkMaxLength(" & NullSafeString(dr("inputSize")) & ");}catch(e){}"
                     .Attributes("onpaste") = "try{checkMaxLength(" & NullSafeString(dr("inputSize")) & ");}catch(e){}"
 
-                    If IsMobileBrowser() Then .Attributes.Add("onchange", "FilterMobileLookup('" & .ID.ToString & "');")
+                    'If IsMobileBrowser() Then .Attributes.Add("onchange", "FilterMobileLookup('" & .ID.ToString & "');")
+
+                    If IsMobileBrowser() Then
+                      .AutoPostBack = True
+                      .Attributes.Add("onchange", "FilterMobileLookup('" & .ID.ToString & "');")
+                      AddHandler .TextChanged, AddressOf Me.btnMob
+                    End If
 
                   End With
 
@@ -1212,7 +1218,10 @@ Public Class _Default
                     .ClientSideEvents.KeyDown = "WebNumericEditValidation_KeyDown"
                     .Attributes("onpaste") = "try{WebNumericEditValidation_Paste(this, event, '" & sID & "');}catch(e){};"
 
-                    If IsMobileBrowser() Then .ClientSideEvents.TextChanged = "FilterMobileLookup('" & .ID.ToString & "');"
+                    If IsMobileBrowser() Then
+                      .ClientSideEvents.ValueChange = "WebNumericEdit('" & .ID.ToString & "');FilterMobileLookup('" & .ID.ToString & "');"
+                      AddHandler .ValueChange, AddressOf Me.btnMob
+                    End If
 
                   End With
 
@@ -1286,8 +1295,8 @@ Public Class _Default
                     If NullSafeInteger(dr("alignment")) = 0 Then
                       sTemp = sTemp & _
                        "<TD><input type='checkbox'" & _
-                       " onclick=""" & sID & ".checked = checked;""" & _
-                       CStr(IIf(IsMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');""", "")) & _
+                       " onclick=""" & sID & ".checked = checked;" & _
+                       CStr(IIf(IsMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');setPostbackMode(3);__doPostBack('" & sID & "', 'doLiteralsPostback');""", "")) & _
                        " onfocus=""try{" & sID & ".select();activateControl();}catch(e){};""" & _
                        CStr(IIf(fChecked, " CHECKED", "")) & _
                        " style='height:14px;width:14px;margin:0px;" & androidFix & "'" & _
@@ -1304,8 +1313,8 @@ Public Class _Default
                        " onkeypress = ""try{if(window.event.keyCode == 32){chk" & sID & ".click()};}catch(e){}""" & _
                        ">" & NullSafeString(dr("caption")) & "</LABEL></TD>" & vbCrLf & _
                        "<TD><input type='checkbox'" & _
-                       " onclick=""" & sID & ".checked = checked;""" & _
-                       CStr(IIf(IsMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');""", "")) & _
+                       " onclick=""" & sID & ".checked = checked;" & _
+                       CStr(IIf(IsMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');setPostbackMode(3);__doPostBack('" & sID & "', 'doLiteralsPostback');""", "")) & _
                        " onfocus=""try{" & sID & ".select();activateControl();}catch(e){};""" & _
                        CStr(IIf(fChecked, " CHECKED", "")) & _
                        " style='height:14px;width:14px;margin:0px;" & androidFix & "'" & _
@@ -1314,11 +1323,13 @@ Public Class _Default
                        " name='chk" & sID & "'></TD>" & vbCrLf
                     End If
                   Else
+
+
                     If NullSafeInteger(dr("alignment")) = 0 Then
                       sTemp = sTemp & _
                        "<TD><input type='checkbox'" & _
-                       " onclick=""" & sID & ".checked = checked;""" & _
-                       CStr(IIf(IsMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');""", "")) & _
+                       " onclick=""" & sID & ".checked = checked;" & _
+                       CStr(IIf(IsMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');setPostbackMode(3);__doPostBack('" & sID & "', 'doLiteralsPostback');""", "")) & _
                        " onfocus=""try{" & sID & ".select();activateControl();}catch(e){};""" & _
                        CStr(IIf(UCase(NullSafeString(dr("value"))) = "TRUE", " CHECKED", "")) & _
                        " style='height:14px;width:14px;margin:0px;" & androidFix & "'" & _
@@ -1335,8 +1346,8 @@ Public Class _Default
                        " onkeypress = ""try{if(window.event.keyCode == 32){chk" & sID & ".click()};}catch(e){}""" & _
                        ">" & NullSafeString(dr("caption")) & "</LABEL></TD>" & vbCrLf & _
                        "<TD><input type='checkbox'" & _
-                       " onclick=""" & sID & ".checked = checked;""" & _
-                       CStr(IIf(IsMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');""", "")) & _
+                       " onclick=""" & sID & ".checked = checked;" & _
+                       CStr(IIf(IsMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');setPostbackMode(3);__doPostBack('" & sID & "', 'doLiteralsPostback');""", "")) & _
                        " onfocus=""try{" & sID & ".select();activateControl();}catch(e){};""" & _
                        CStr(IIf(NullSafeString(dr("value")).ToUpper = "TRUE", " CHECKED", "")) & _
                        " style='height:14px;width:14px;margin:0px;" & androidFix & "'" & _
@@ -1352,6 +1363,10 @@ Public Class _Default
 
                   ctlForm_CheckBox = New LiteralControl(sTemp)
                   ' pnlInput.contenttemplatecontainer.Controls.Add(ctlForm_CheckBox)
+
+
+
+
                   ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_CheckBox)
 
                   If (iMinTabIndex < 0) Or (NullSafeInteger(dr("tabIndex")) < iMinTabIndex) Then
@@ -1560,7 +1575,11 @@ Public Class _Default
                         .ClientSideEvents.BeforeCloseUp = "dateControlAndroidFix('" & sID.ToString & "', false)"
                       End If
 
-                      If IsMobileBrowser() Then .ClientSideEvents.AfterCloseUp = "FilterMobileLookup('" & sID.ToString & "');"
+                      ' If IsMobileBrowser() Then .ClientSideEvents.AfterCloseUp = "FilterMobileLookup('" & sID.ToString & "');"
+                      If IsMobileBrowser() Then
+                        .ClientSideEvents.AfterCloseUp = "FilterMobileLookup('" & .ID.ToString & "');setPostbackMode(3);__doPostBack('" & sID & "', 'doLiteralsPostback');"                        
+                      End If
+
                     End With
 
                     pnlInput.ContentTemplateContainer.Controls.Add(ctlForm_Date)
@@ -2306,7 +2325,13 @@ Public Class _Default
                       .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
                       .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
 
-                      .Attributes.Add("onchange", "FilterMobileLookup('" & .ID.ToString & "');")
+                      ' .Attributes.Add("onchange", "FilterMobileLookup('" & .ID.ToString & "');")
+                      If IsMobileBrowser() Then
+                        .AutoPostBack = True
+                        .Attributes.Add("onchange", "FilterMobileLookup('" & .ID.ToString & "');")
+                        AddHandler .TextChanged, AddressOf Me.btnMob
+                      End If
+
 
                       ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_Dropdown)
 
@@ -2470,8 +2495,13 @@ Public Class _Default
                     .Style("position") = "absolute"
                     .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
                     .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
+                    ' If IsMobileBrowser() Then .Attributes.Add("onchange", "FilterMobileLookup('" & .ID.ToString & "');")
 
-                    If IsMobileBrowser() Then .Attributes.Add("onchange", "FilterMobileLookup('" & .ID.ToString & "');")
+                    If IsMobileBrowser() Then
+                      .AutoPostBack = True
+                      .Attributes.Add("onchange", "FilterMobileLookup('" & .ID.ToString & "');")
+                      AddHandler .TextChanged, AddressOf Me.btnMob
+                    End If
 
                     ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_Dropdown)
 
@@ -3147,6 +3177,13 @@ Public Class _Default
               scriptString += "}"
               ClientScript.RegisterStartupScript(ClientScript.GetType, "Startup", scriptString, True)
 
+            End If
+
+            If IsPostBack Then
+              Dim parameter As String = Request("__EVENTARGUMENT")
+              If parameter = "doLiteralsPostback" Then
+                btnMob(Nothing, Nothing)
+              End If
             End If
 
             If sMessage.Length = 0 Then
@@ -4209,27 +4246,43 @@ Public Class _Default
 
   End Sub
 
-  Sub SetLookupFilter(ByVal sender As Object, ByVal e As System.EventArgs)
+  Private Sub btnMob(ByVal sender As Object, ByVal e As System.EventArgs)
+    Dim arrLookups() As String = hdnMobileLookupFilter.Value.Split(CChar(vbTab))
 
-    ' get button's ID
-    Dim btnSender As Button
-    btnSender = DirectCast(sender, Button)
+    For Each value As String In arrLookups
+      SetLookupFilter(Nothing, Nothing, value)
+    Next
+  End Sub
+
+
+
+  Sub SetLookupFilter(ByVal sender As Object, ByVal e As System.EventArgs, Optional lookupID As String = "")
+
+    If Not (sender Is Nothing) Then
+      ' get button's ID
+      Dim btnSender As Button
+      btnSender = DirectCast(sender, Button)
+
+      lookupID = btnSender.ID
+    End If
+
+    If lookupID.Length = 0 Then Return
 
     ' Create a datatable from the data in the session variable
     Dim dataTable As DataTable
-    dataTable = TryCast(HttpContext.Current.Session(btnSender.ID.Replace("refresh", "DATA")), DataTable)
+    dataTable = TryCast(HttpContext.Current.Session(lookupID.Replace("refresh", "DATA")), DataTable)
 
     ' get the filter sql
     Dim hiddenField As HiddenField
-    hiddenField = TryCast(pnlInputDiv.FindControl(btnSender.ID.Replace("refresh", "filterSQL")), HiddenField)
+    hiddenField = TryCast(pnlInputDiv.FindControl(lookupID.Replace("refresh", "filterSQL")), HiddenField)
 
     Dim filterSQL As String = hiddenField.Value
 
-    If TypeOf (pnlInputDiv.FindControl(btnSender.ID.Replace("refresh", ""))) Is DropDownList Then
+    If TypeOf (pnlInputDiv.FindControl(lookupID.Replace("refresh", ""))) Is DropDownList Then
 
       ' This is a dropdownlist style lookup (mobiles only)
       Dim dropdown As DropDownList
-      dropdown = TryCast(pnlInputDiv.FindControl(btnSender.ID.Replace("refresh", "")), DropDownList)
+      dropdown = TryCast(pnlInputDiv.FindControl(lookupID.Replace("refresh", "")), DropDownList)
 
       ' Store the current value, so we can re-add it after filtering.
       Dim strCurrentSelection As String = dropdown.Text
@@ -4261,7 +4314,7 @@ Public Class _Default
       filterDataTable(dataTable, filterSQL)
 
       Dim gridView As RecordSelector 'GridView
-      gridView = TryCast(pnlInputDiv.FindControl(btnSender.ID.Replace("refresh", "Grid")), RecordSelector)
+      gridView = TryCast(pnlInputDiv.FindControl(lookupID.Replace("refresh", "Grid")), RecordSelector)
 
       gridView.filterSQL = filterSQL.ToString
 
