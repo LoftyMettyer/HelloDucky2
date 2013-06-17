@@ -84,6 +84,17 @@
 			}
 			catch(e) {}
 		}
+
+    function closeMe() {
+			if(navigator.userAgent.indexOf("MSIE")>0) {
+				//Only IE can self-close windows that it didn't open
+        try{window.close();}catch(e){}
+			}
+      else {
+        alert("For your security please close your browser");
+      }
+    }
+
 	-->
 	</SCRIPT>
 </head>
@@ -143,7 +154,7 @@
 							</asp:Label>
 						</span>
 						to reload this form, or
-						<span onclick="try{window.close();}catch(e){}" tabindex="1"
+						<span onclick="closeMe();" tabindex="1"
 								onmouseover="try{this.style.color='#ff9608'}catch(e){}" 
 								onmouseout="try{this.style.color='#333366';}catch(e){}" 
 		            onfocus="try{this.style.color='#ff9608';}catch(e){}" 

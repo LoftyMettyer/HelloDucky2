@@ -225,7 +225,13 @@
 			}
 			catch (e) {
 				try {
-					newWin.close();
+			    if(navigator.userAgent.indexOf("MSIE")>0) {
+				    //Only IE can self-close windows that it didn't open
+            try{newWin.close();}catch(e){}
+			    }
+          else {
+            alert("For your security please close your browser");
+          }
 				}
 				catch (e) { }
 

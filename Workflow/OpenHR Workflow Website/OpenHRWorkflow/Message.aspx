@@ -93,6 +93,18 @@
 			catch(e) {}
 		}
 
+
+    function closeMe() {
+			if(navigator.userAgent.indexOf("MSIE")>0) {
+				//Only IE can self-close windows that it didn't open
+        try{window.close();}catch(e){}
+			}
+      else {
+        alert("For your security please close your browser");
+      }
+    }
+
+
 	document.getElementById('spnClickHere').focus();
 	-->
 	</SCRIPT>
@@ -147,7 +159,7 @@
 				<td align="center" bgcolor="White">
 					<font face='Verdana' style="color:#333366; FONT-SIZE:<%=MessageFontSize()%>pt">
 						Click 
-						<span id="spnClickHere" name="spnClickHere" onclick="try{window.close();}catch(e){}" tabindex="1"
+						<span id="spnClickHere" name="spnClickHere" onclick="closeMe();" tabindex="1"
 								onmouseover="try{this.style.color='#ff9608'}catch(e){}" 
 								onmouseout="try{this.style.color='#333366';}catch(e){}" 
 		            onfocus="try{this.style.color='#ff9608';}catch(e){}" 

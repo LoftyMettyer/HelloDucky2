@@ -33,11 +33,23 @@
                     window.parent.launchFollowOnForms(sFollowOnForms);
                 }
                 else {
-                    window.parent.close();
+                  closeMe();
                 }
             }
             catch (e) { };
-        }
+          }
+          
+
+
+          function closeMe() {
+            if (navigator.userAgent.indexOf("MSIE") > 0) {
+              //Only IE can self-close windows that it didn't open
+              try { window.parent.close(); } catch (e) { }
+            }
+            else {
+              alert("For your security please close your browser");
+            }
+          }
 // ]]>
 
     </script>
