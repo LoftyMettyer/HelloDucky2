@@ -240,970 +240,977 @@ Public Class RecordSelector
 
   End Sub
 
-    Protected Overrides Sub InitializePager(ByVal row As System.Web.UI.WebControls.GridViewRow, ByVal columnSpan As Integer, ByVal pagedDataSource As System.Web.UI.WebControls.PagedDataSource)
-        ' MyBase.InitializePager(row, columnSpan, pagedDataSource)
-        InitCustomPager(row, columnSpan, pagedDataSource)
-    End Sub
+  Protected Overrides Sub InitializePager(ByVal row As System.Web.UI.WebControls.GridViewRow, ByVal columnSpan As Integer, ByVal pagedDataSource As System.Web.UI.WebControls.PagedDataSource)
+    ' MyBase.InitializePager(row, columnSpan, pagedDataSource)
+    InitCustomPager(row, columnSpan, pagedDataSource)
+  End Sub
 
 
 
-    Private Function CalculateWidth() As [String]
-        Dim strWidth As String = "auto"
+  Private Function CalculateWidth() As [String]
+    Dim strWidth As String = "auto"
 
-        If Not IsLookup Then
-            If Not Me.Width.IsEmpty Then
-                strWidth = [String].Format("{0}{1}", Me.Width.Value, (If((Me.Width.Type = UnitType.Percentage), "%", "px")))
-            End If
+    If Not IsLookup Then
+      If Not Me.Width.IsEmpty Then
+        strWidth = [String].Format("{0}{1}", Me.Width.Value, (If((Me.Width.Type = UnitType.Percentage), "%", "px")))
+      End If
+    Else
+      Dim iGridWidth As Integer = m_iVisibleColumnCount * (iColWidth + 2) ' 2 = padding
+      iGridWidth = CInt(IIf(iGridWidth < 0, 1, iGridWidth))
+      iGridWidth = CInt(IIf(iGridWidth < Me.Width.Value, Me.Width.Value, iGridWidth))
+
+      ' do rows exceed height?
+      'If MyBase.Rows.Count > MAXDROPDOWNROWS Then
+      ' Add scrollbar width
+      iGridWidth += 25
+      'End If
+
+      If iGridWidth < 250 Then iGridWidth = 250 ' minimum width to ensure paging controls fit.
+
+      strWidth = [String].Format("{0}{1}", iGridWidth, (If((Me.Width.Type = UnitType.Percentage), "%", "px")))
+    End If
+
+    Return strWidth
+
+  End Function
+  Private Function CalculateHeight() As [String]
+    Dim strHeight As String = "auto"
+    Dim iHeight As Integer = ControlHeight
+
+    If Not IsLookup Then
+      If iHeight > 0 Then
+        strHeight = [String].Format("{0}{1}", iHeight, "px")
+      End If
+    Else
+      ' Set the size of the grid as per old DropDown setting...
+      ' remember that the height for lookups will only be c.21pixels...
+      Dim iRowHeight As Integer = iHeight - 6
+      iRowHeight = CInt(IIf(iRowHeight < 21, 21, iRowHeight))
+      Dim iDropHeight As Integer = (iRowHeight * CInt(IIf(MyBase.Rows.Count > MAXDROPDOWNROWS, MAXDROPDOWNROWS, MyBase.Rows.Count))) + 1
+
+      iDropHeight += iRowHeight  ' add row for headers
+      iDropHeight += 30   ' Pager height - now it's always displayed.
+
+      strHeight = [String].Format("{0}{1}", iDropHeight, "px")
+    End If
+
+    Return strHeight
+
+  End Function
+
+  Private Sub AdjustWidthForScrollbar()
+
+    Dim strHeight As String = "auto"
+
+    ''Adjust available width for the vertical scrollbar.
+    'iGapBetweenBorderAndText = (CInt(NullSafeSingle(dr("FontSize")) + 6) \ 4)
+    'iEffectiveRowHeight = CInt(NullSafeSingle(dr("FontSize"))) _
+    ' + 1 _
+    ' + (2 * iGapBetweenBorderAndText)
+
+    'iTempHeight = NullSafeInteger(ctlForm_GridContainer.Height.Value)
+    'iTempHeight = CInt(IIf(iTempHeight < 0, 1, iTempHeight))
+
+    'MyBase.Style.Remove("width")
+    'MyBase.Style.Add("width", "183px")
+
+  End Sub
+
+  Private Function CalculateGridWidth() As [String]
+    ' grid width is me.width - vertical scroll bar.
+    Dim strWidth As String = "auto"
+    Dim iScrollBarWidth As Integer = 0
+
+    If MyBase.Rows.Count > MAXDROPDOWNROWS Then
+      iScrollBarWidth = 17
+    End If
+
+    If Not IsLookup Then
+      If Not Me.Width.IsEmpty Then
+        strWidth = [String].Format("{0}{1}", Me.Width.Value - iScrollBarWidth, (If((Me.Width.Type = UnitType.Percentage), "%", "px")))
+      End If
+    Else
+      Dim iGridWidth As Integer = m_iVisibleColumnCount * (iColWidth + 2) ' 2 = padding
+      iGridWidth = CInt(IIf(iGridWidth < 0, 1, iGridWidth))
+      iGridWidth = CInt(IIf(iGridWidth < Me.Width.Value, Me.Width.Value, iGridWidth))
+
+      ' do rows exceed height?
+      'If MyBase.Rows.Count > MAXDROPDOWNROWS Then
+      ' Add scrollbar width
+      iGridWidth += 25
+      'End If
+
+      If iGridWidth < 250 Then iGridWidth = 250 ' minimum width to ensure paging controls fit.
+
+      strWidth = [String].Format("{0}{1}", iGridWidth - iScrollBarWidth, (If((Me.Width.Type = UnitType.Percentage), "%", "px")))
+    End If
+
+    Return strWidth
+
+
+  End Function
+
+
+  Private Function CalculateHeaderHeight() As [String]
+    Dim strHeaderHeight As String = "auto"
+    Dim iHeaderHeight As Integer = 0
+    Dim iGridHeight As Integer = ControlHeight
+
+    If NullSafeBoolean(Me.ColumnHeaders) And (NullSafeInteger(Me.HeadLines) > 0) Then
+      Dim iGridTopPadding As Integer = CInt(NullSafeSingle(Me.HeadFontSize) / 8)
+
+      iHeaderHeight = CInt(((NullSafeSingle(Me.HeadFontSize) + iGridTopPadding) * NullSafeInteger(Me.HeadLines) * 2) _
+       - 2 _
+       - (NullSafeSingle(Me.HeadFontSize) * (NullSafeInteger(Me.HeadLines) + 1) * (iGridTopPadding - 1) / 4))
+
+      If iHeaderHeight > NullSafeInteger(iGridHeight) Then
+        iHeaderHeight = NullSafeInteger(iGridHeight)
+      End If
+    End If
+
+    strHeaderHeight = [String].Format("{0}{1}", iHeaderHeight, "px")
+
+    Return strHeaderHeight
+
+  End Function
+
+  Private Function CalculatePagerHeight() As [String]
+    Dim strPagerHeight As String = "auto"
+    Dim iPagerHeight As Integer = 0
+    Dim iGridHeight As Integer = ControlHeight
+
+    'If Me.PageCount > 0 Then
+    'Dim iGridTopPadding As Integer = CInt(NullSafeSingle(Me.HeadFontSize) / 8)
+
+    'iPagerHeight = CInt((((NullSafeSingle(Me.HeadFontSize) + iGridTopPadding) * 2) - 2) * 1.5)
+
+    'If iPagerHeight > NullSafeInteger(iGridHeight) Then
+    '    iPagerHeight = NullSafeInteger(iGridHeight)
+    'End If
+
+    ' NPG20120110 Fault HRPRO-1831
+    ' Hide pager bar if control is too narrow to display navigation buttons, or
+    ' if it's empty.
+    If Me.Width.Value < 175 Or Me.IsEmpty Then
+      iPagerHeight = 0
+    Else
+      iPagerHeight = 24
+    End If
+
+    'End If
+
+    strPagerHeight = [String].Format("{0}{1}", iPagerHeight, "px")
+
+    Return strPagerHeight
+
+  End Function
+
+  Public Property IsEmpty() As Boolean
+    Get
+      If Not ViewState("IsEmpty") Is Nothing Then
+        Return DirectCast(ViewState("IsEmpty"), Boolean)
+      Else
+        Return True
+      End If
+    End Get
+    Set(ByVal value As Boolean)
+      ViewState("IsEmpty") = value
+    End Set
+  End Property
+
+  Public Property ControlHeight() As Integer
+    Get
+      If Not ViewState("ControlHeight") Is Nothing Then
+        Return DirectCast(ViewState("ControlHeight"), Integer)
+      Else
+        Return 1
+      End If
+    End Get
+    Set(ByVal value As Integer)
+      ViewState("ControlHeight") = value
+    End Set
+  End Property
+
+
+  Public Property HeadLines() As Integer
+    Get
+      If Not ViewState("HeadLines") Is Nothing Then
+        Return DirectCast(ViewState("HeadLines"), Integer)
+      Else
+        Return 1
+      End If
+    End Get
+    Set(ByVal value As Integer)
+      ViewState("HeadLines") = value
+    End Set
+  End Property
+
+
+
+  Public Property HeadFontSize() As Single
+    Get
+      If Not ViewState("HeadFontSize") Is Nothing Then
+        Return DirectCast(ViewState("HeadFontSize"), Single)
+      Else
+        Return 8
+      End If
+    End Get
+    Set(ByVal value As Single)
+      ViewState("HeadFontSize") = value
+    End Set
+  End Property
+
+  Public Property ColumnHeaders() As Boolean
+    Get
+      If Not ViewState("ColumnHeaders") Is Nothing Then
+        Return DirectCast(ViewState("ColumnHeaders"), Boolean)
+      Else
+        Return True
+      End If
+    End Get
+    Set(ByVal value As Boolean)
+      ViewState("ColumnHeaders") = value
+    End Set
+  End Property
+
+  Public Property IsLookup() As Boolean
+    Get
+      If Not ViewState("IsLookup") Is Nothing Then
+        Return DirectCast(ViewState("IsLookup"), Boolean)
+      Else
+        Return False
+      End If
+    End Get
+    Set(ByVal value As Boolean)
+      ViewState("IsLookup") = value
+    End Set
+  End Property
+
+  Public Property filterSQL() As String
+    Get
+      If Not ViewState("filterSQL") Is Nothing Then
+        Return DirectCast(ViewState("filterSQL"), String)
+      Else
+        Return ""
+      End If
+    End Get
+    Set(ByVal value As String)
+      ViewState("filterSQL") = value
+    End Set
+  End Property
+
+
+  Public Property sortBy() As String
+    Get
+      If Not ViewState("sortBy") Is Nothing Then
+        Return DirectCast(ViewState("sortBy"), String)
+      Else
+        Return ""
+      End If
+    End Get
+    Set(ByVal value As String)
+      ViewState("sortBy") = value
+    End Set
+  End Property
+
+  Private Sub RecordSelector_DataBound(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.DataBound
+
+    grdGrid = CType(sender, System.Web.UI.WebControls.GridView)
+
+    Dim iEffectiveRowHeight As Integer = grdGrid.RowStyle.Height.Value
+    Dim iRowCount As Integer = grdGrid.Rows.Count
+
+    grdGrid.Height = Unit.Pixel(iEffectiveRowHeight * iRowCount)
+
+  End Sub
+
+  Private Function ColumnSortDirectionCode(ByVal sColName As String) As Integer
+    ' me.sortby is a string of all currently set sort orders, 
+    ' it'll look something like this:   [Surname] ASC, [Forenames] DESC
+    ' This function looks for the passed in column name and returns the following:
+    ' 0 = column not found, 1 = ASC, 2 = DESC
+
+    Dim aColList() As String = Split(Me.sortBy, ",")
+
+    For iCount As Integer = 0 To aColList.Length - 1
+      If aColList(iCount).Contains("[" & sColName.Replace(" ", "_") & "]") Then
+
+        Select Case Right(aColList(iCount), 4).Trim.ToUpper
+          Case "ASC"
+            Return 1
+          Case "DESC"
+            Return 2
+          Case Else
+            Return 0
+        End Select
+      End If
+    Next
+
+    Return 0
+
+  End Function
+
+
+  Private Sub RecordSelector_PageIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.PageIndexChanged
+
+    ' Default behaviour of the gridview is to highlight the same row again when 
+    ' the page is changed. We'll override that.
+
+    grdGrid = CType(sender, System.Web.UI.WebControls.GridView)
+
+    Dim iCurrentIndex As Integer
+
+    grdGrid.SelectedIndex = -1
+    grdGrid.DataBind()
+
+    ' For lookups, use page and index number (breaks with sorting). For Grids use record ID.
+    If IsLookup Then
+      For itemIndex As Integer = 0 To grdGrid.Rows.Count - 1
+        iCurrentIndex = (grdGrid.PageIndex * grdGrid.PageSize) + itemIndex
+        If Me.SelectedID(grdGrid) = iCurrentIndex Then
+          grdGrid.SelectedIndex = itemIndex
+          grdGrid.DataBind() ' Need to bind (again) to reset selection.
+          Exit For
+        End If
+      Next
+    Else
+      ' get the grid's id column number.
+      Dim iColCount As Integer
+      Dim sColCaption As String
+      Dim iIDColNum As Integer = -1
+      For iColCount = 0 To grdGrid.HeaderRow.Cells.Count - 1
+        sColCaption = grdGrid.HeaderRow.Cells(iColCount).Text
+        If sColCaption.ToUpper = "ID" Then
+          ' Here it is
+          iIDColNum = iColCount
+          Exit For
+        End If
+      Next
+      If iIDColNum > 0 Then
+        For itemIndex As Integer = 0 To grdGrid.Rows.Count - 1
+          iCurrentIndex = NullSafeInteger(grdGrid.Rows(itemIndex).Cells(iIDColNum).Text)
+          If Me.SelectedID(grdGrid) = iCurrentIndex Then
+            grdGrid.SelectedIndex = itemIndex
+            grdGrid.DataBind() ' Need to bind (again) to reset selection.
+            Exit For
+          End If
+        Next
+      Else
+        grdGrid.SelectedIndex = 0
+        grdGrid.DataBind() ' Need to bind (again) to reset selection.
+      End If
+    End If
+  End Sub
+
+
+  Private Sub RecordSelector_PageIndexChanging(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewPageEventArgs) Handles Me.PageIndexChanging
+    ' Dim g As System.Web.UI.WebControls.GridView
+    Dim iIDCol As Integer = 0
+    grdGrid = CType(sender, System.Web.UI.WebControls.GridView)
+
+    grdGrid.PageIndex = e.NewPageIndex
+    ' grdGrid.DataSource = TryCast(HttpContext.Current.Session(grdGrid.ID.Replace("Grid", "DATA")), DataTable)
+    dataTable = TryCast(HttpContext.Current.Session(grdGrid.ID.Replace("Grid", "DATA")), DataTable)
+
+    If IsLookup Then
+      ' reapply filter?
+      dataTable = SetLookupFilter(dataTable)
+    End If
+
+    grdGrid.DataSource = dataTable
+    grdGrid.DataBind()
+
+  End Sub
+
+
+  Private Sub RecordSelector_RowCreated(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewRowEventArgs) Handles Me.RowCreated
+
+    ' custom header only - manually add the rows for sorting.
+    If e.Row.RowType = DataControlRowType.Header Then
+
+      Dim tcTableCell As TableCell
+      ' Dim d As GridView = sender
+      grdGrid = sender
+
+      For Each tcTableCell In e.Row.Cells
+        If grdGrid.AllowSorting Then
+          Dim lb As System.Web.UI.WebControls.LinkButton
+          ' lb = tcTableCell.Controls(0)
+          lb = CType(tcTableCell.Controls(0), System.Web.UI.WebControls.LinkButton)
+          tcTableCell.Text = lb.Text
+
+          If MyBase.HeaderStyle.Height.Value < 21 Then MyBase.HeaderStyle.Height = Unit.Pixel(NullSafeSingle(Me.HeadFontSize) * 2)
+          tcTableCell.ApplyStyle(MyBase.HeaderStyle)
         Else
-            Dim iGridWidth As Integer = m_iVisibleColumnCount * (iColWidth + 2) ' 2 = padding
-            iGridWidth = CInt(IIf(iGridWidth < 0, 1, iGridWidth))
-            iGridWidth = CInt(IIf(iGridWidth < Me.Width.Value, Me.Width.Value, iGridWidth))
-
-            ' do rows exceed height?
-            'If MyBase.Rows.Count > MAXDROPDOWNROWS Then
-            ' Add scrollbar width
-            iGridWidth += 25
-            'End If
-
-            If iGridWidth < 250 Then iGridWidth = 250 ' minimum width to ensure paging controls fit.
-
-            strWidth = [String].Format("{0}{1}", iGridWidth, (If((Me.Width.Type = UnitType.Percentage), "%", "px")))
+          tcTableCell.Text &= ""
+          If MyBase.HeaderStyle.Height.Value < 21 Then MyBase.HeaderStyle.Height = Unit.Pixel(NullSafeSingle(Me.HeadFontSize) * 2)
+          tcTableCell.ApplyStyle(MyBase.HeaderStyle)
         End If
+      Next
+    ElseIf e.Row.RowType = DataControlRowType.DataRow Then
+      ' ID for this row is used to calculate row height at runtime. Can't
+      ' specify the row height cos of bug HRPRO-1685.
+      ' NB: no need to be unique here, as the ID will automatically be 
+      ' prefixed with the control's clientID.
+      e.Row.ID = "row" & e.Row.RowIndex.ToString
+    End If
+  End Sub
 
-        Return strWidth
+  Private Sub RecordSelector_RowDataBound(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewRowEventArgs) Handles Me.RowDataBound
+    ' As each row is added to the grid's HTML table, do the following: 
+    'check the item being bound is actually a DataRow, if it is, 
+    'wire up the required html events and attach the relevant JavaScripts
 
-    End Function
-    Private Function CalculateHeight() As [String]
-        Dim strHeight As String = "auto"
-        Dim iHeight As Integer = ControlHeight
+    Dim iIDCol As Integer = 0
+    Dim sRowID As String = "0"
+    'Dim grdGrid As System.Web.UI.WebControls.GridView
+    Dim mydte As DateTime
+    Dim sColumnCaption As String
+    Dim objGeneral As New General
 
-        If Not IsLookup Then
-            If iHeight > 0 Then
-                strHeight = [String].Format("{0}{1}", iHeight, "px")
+    grdGrid = CType(sender, RecordSelector)
+
+    Try
+
+      If e.Row.RowType = DataControlRowType.DataRow Then
+        e.Row.Style.Add("overflow", "hidden")
+        If Not Me.IsEmpty Then e.Row.Style.Add("cursor", "pointer")
+
+        ' loop through the columns of this row. Hide ID columns
+        For iColCount As Integer = 0 To e.Row.Cells.Count - 1
+          sColumnCaption = UCase(grdGrid.HeaderRow.Cells(iColCount).Text)
+
+          If (Not IsLookup And (sColumnCaption = "ID" Or (Left(sColumnCaption, 3) = "ID_" And Val(Mid(sColumnCaption, 4)) > 0))) Or _
+              (IsLookup And sColumnCaption.StartsWith("ASRSYS")) Then
+
+            'If sColumnCaption = "ID" Or (Left(sColumnCaption, 3) = "ID_" And Val(Mid(sColumnCaption, 4)) > 0) Then
+            iIDCol = iColCount  ' store ID column number to assign to the javascript click event.
+            e.Row.Cells(iColCount).Style.Add("display", "none")
+            If sColumnCaption = "ID" Then
+              ' Background colour to black.
+              ' Javascript can see this and use it to recognise the ID column. 
+              e.Row.Cells(iColCount).BackColor = Drawing.Color.Black
             End If
-        Else            
-            ' Set the size of the grid as per old DropDown setting...
-            ' remember that the height for lookups will only be c.21pixels...
-            Dim iRowHeight As Integer = iHeight - 6
-            iRowHeight = CInt(IIf(iRowHeight < 21, 21, iRowHeight))
-            Dim iDropHeight As Integer = (iRowHeight * CInt(IIf(MyBase.Rows.Count > MAXDROPDOWNROWS, MAXDROPDOWNROWS, MyBase.Rows.Count))) + 1
-
-            iDropHeight += iRowHeight  ' add row for headers
-            iDropHeight += 30   ' Pager height - now it's always displayed.
-
-            strHeight = [String].Format("{0}{1}", iDropHeight, "px")
-        End If
-
-        Return strHeight
-
-    End Function
-
-    Private Sub AdjustWidthForScrollbar()
-
-        Dim strHeight As String = "auto"
-
-        ''Adjust available width for the vertical scrollbar.
-        'iGapBetweenBorderAndText = (CInt(NullSafeSingle(dr("FontSize")) + 6) \ 4)
-        'iEffectiveRowHeight = CInt(NullSafeSingle(dr("FontSize"))) _
-        ' + 1 _
-        ' + (2 * iGapBetweenBorderAndText)
-
-        'iTempHeight = NullSafeInteger(ctlForm_GridContainer.Height.Value)
-        'iTempHeight = CInt(IIf(iTempHeight < 0, 1, iTempHeight))
-
-        'MyBase.Style.Remove("width")
-        'MyBase.Style.Add("width", "183px")
-
-    End Sub
-
-    Private Function CalculateGridWidth() As [String]
-        ' grid width is me.width - vertical scroll bar.
-        Dim strWidth As String = "auto"
-        Dim iScrollBarWidth As Integer = 0
-
-        If MyBase.Rows.Count > MAXDROPDOWNROWS Then
-            iScrollBarWidth = 17
-        End If
-
-        If Not IsLookup Then
-            If Not Me.Width.IsEmpty Then
-                strWidth = [String].Format("{0}{1}", Me.Width.Value - iScrollBarWidth, (If((Me.Width.Type = UnitType.Percentage), "%", "px")))
-            End If
-        Else
-            Dim iGridWidth As Integer = m_iVisibleColumnCount * (iColWidth + 2) ' 2 = padding
-            iGridWidth = CInt(IIf(iGridWidth < 0, 1, iGridWidth))
-            iGridWidth = CInt(IIf(iGridWidth < Me.Width.Value, Me.Width.Value, iGridWidth))
-
-            ' do rows exceed height?
-            'If MyBase.Rows.Count > MAXDROPDOWNROWS Then
-            ' Add scrollbar width
-            iGridWidth += 25
-            'End If
-
-            If iGridWidth < 250 Then iGridWidth = 250 ' minimum width to ensure paging controls fit.
-
-            strWidth = [String].Format("{0}{1}", iGridWidth - iScrollBarWidth, (If((Me.Width.Type = UnitType.Percentage), "%", "px")))
-        End If
-
-        Return strWidth
-
-
-    End Function
-
-
-    Private Function CalculateHeaderHeight() As [String]
-        Dim strHeaderHeight As String = "auto"
-        Dim iHeaderHeight As Integer = 0
-        Dim iGridHeight As Integer = ControlHeight
-
-        If NullSafeBoolean(Me.ColumnHeaders) And (NullSafeInteger(Me.HeadLines) > 0) Then
-            Dim iGridTopPadding As Integer = CInt(NullSafeSingle(Me.HeadFontSize) / 8)
-
-            iHeaderHeight = CInt(((NullSafeSingle(Me.HeadFontSize) + iGridTopPadding) * NullSafeInteger(Me.HeadLines) * 2) _
-             - 2 _
-             - (NullSafeSingle(Me.HeadFontSize) * (NullSafeInteger(Me.HeadLines) + 1) * (iGridTopPadding - 1) / 4))
-
-            If iHeaderHeight > NullSafeInteger(iGridHeight) Then
-                iHeaderHeight = NullSafeInteger(iGridHeight)
-            End If
-        End If
-
-        strHeaderHeight = [String].Format("{0}{1}", iHeaderHeight, "px")
-
-        Return strHeaderHeight
-
-    End Function
-
-    Private Function CalculatePagerHeight() As [String]
-        Dim strPagerHeight As String = "auto"
-        Dim iPagerHeight As Integer = 0
-        Dim iGridHeight As Integer = ControlHeight
-
-        'If Me.PageCount > 0 Then
-        'Dim iGridTopPadding As Integer = CInt(NullSafeSingle(Me.HeadFontSize) / 8)
-
-        'iPagerHeight = CInt((((NullSafeSingle(Me.HeadFontSize) + iGridTopPadding) * 2) - 2) * 1.5)
-
-        'If iPagerHeight > NullSafeInteger(iGridHeight) Then
-        '    iPagerHeight = NullSafeInteger(iGridHeight)
-        'End If
-
-        iPagerHeight = 24
-
-        'End If
-
-        strPagerHeight = [String].Format("{0}{1}", iPagerHeight, "px")
-
-        Return strPagerHeight
-
-    End Function
-
-    Public Property IsEmpty() As Boolean
-        Get
-            If Not ViewState("IsEmpty") Is Nothing Then
-                Return DirectCast(ViewState("IsEmpty"), Boolean)
-            Else
-                Return True
-            End If
-        End Get
-        Set(ByVal value As Boolean)
-            ViewState("IsEmpty") = value
-        End Set
-    End Property
-
-    Public Property ControlHeight() As Integer
-        Get
-            If Not ViewState("ControlHeight") Is Nothing Then
-                Return DirectCast(ViewState("ControlHeight"), Integer)
-            Else
-                Return 1
-            End If
-        End Get
-        Set(ByVal value As Integer)
-            ViewState("ControlHeight") = value
-        End Set
-    End Property
-
-
-    Public Property HeadLines() As Integer
-        Get
-            If Not ViewState("HeadLines") Is Nothing Then
-                Return DirectCast(ViewState("HeadLines"), Integer)
-            Else
-                Return 1
-            End If
-        End Get
-        Set(ByVal value As Integer)
-            ViewState("HeadLines") = value
-        End Set
-    End Property
+          End If
 
 
 
-    Public Property HeadFontSize() As Single
-        Get
-            If Not ViewState("HeadFontSize") Is Nothing Then
-                Return DirectCast(ViewState("HeadFontSize"), Single)
-            Else
-                Return 8
-            End If
-        End Get
-        Set(ByVal value As Single)
-            ViewState("HeadFontSize") = value
-        End Set
-    End Property
 
-    Public Property ColumnHeaders() As Boolean
-        Get
-            If Not ViewState("ColumnHeaders") Is Nothing Then
-                Return DirectCast(ViewState("ColumnHeaders"), Boolean)
-            Else
-                Return True
-            End If
-        End Get
-        Set(ByVal value As Boolean)
-            ViewState("ColumnHeaders") = value
-        End Set
-    End Property
+          ' add overflow hidden and nowrap, stops the cells wrapping text or overflowing into adjacent cols.
+          e.Row.Cells(iColCount).Style.Add("overflow", "hidden")
+          e.Row.Cells(iColCount).Style.Add("white-space", "nowrap")
 
-    Public Property IsLookup() As Boolean
-        Get
-            If Not ViewState("IsLookup") Is Nothing Then
-                Return DirectCast(ViewState("IsLookup"), Boolean)
-            Else
-                Return False
-            End If
-        End Get
-        Set(ByVal value As Boolean)
-            ViewState("IsLookup") = value
-        End Set
-    End Property
+          ' this sets minimum width, not max.
+          e.Row.Cells(iColCount).Width = Unit.Pixel(iColWidth)
 
-    Public Property filterSQL() As String
-        Get
-            If Not ViewState("filterSQL") Is Nothing Then
-                Return DirectCast(ViewState("filterSQL"), String)
-            Else
-                Return ""
-            End If
-        End Get
-        Set(ByVal value As String)
-            ViewState("filterSQL") = value
-        End Set
-    End Property
+          ' Format the cells according to DataType
+          Dim curSelDataType As String = vbNullString
+          ' Dim curSelDataType As String = DataBinder.Eval(e.Row.DataItem, grdGrid.HeaderRow.Cells(iColCount).Text).GetType.ToString.ToUpper
 
+          If grdGrid.HeaderRow.Cells(iColCount).Text <> vbNullString Then
 
-    Public Property sortBy() As String
-        Get
-            If Not ViewState("sortBy") Is Nothing Then
-                Return DirectCast(ViewState("sortBy"), String)
-            Else
-                Return ""
-            End If
-        End Get
-        Set(ByVal value As String)
-            ViewState("sortBy") = value
-        End Set
-    End Property
+            curSelDataType = DataBinder.Eval(e.Row.DataItem, grdGrid.HeaderRow.Cells(iColCount).Text).GetType.ToString.ToUpper
 
-    Private Sub RecordSelector_DataBound(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.DataBound
-
-        grdGrid = CType(sender, System.Web.UI.WebControls.GridView)
-
-        Dim iEffectiveRowHeight As Integer = grdGrid.RowStyle.Height.Value
-        Dim iRowCount As Integer = grdGrid.Rows.Count
-
-        grdGrid.Height = Unit.Pixel(iEffectiveRowHeight * iRowCount)
-
-    End Sub
-
-    Private Function ColumnSortDirectionCode(ByVal sColName As String) As Integer
-        ' me.sortby is a string of all currently set sort orders, 
-        ' it'll look something like this:   [Surname] ASC, [Forenames] DESC
-        ' This function looks for the passed in column name and returns the following:
-        ' 0 = column not found, 1 = ASC, 2 = DESC
-
-        Dim aColList() As String = Split(Me.sortBy, ",")
-
-        For iCount As Integer = 0 To aColList.Length - 1
-            If aColList(iCount).Contains("[" & sColName.Replace(" ", "_") & "]") Then
-
-                Select Case Right(aColList(iCount), 4).Trim.ToUpper
-                    Case "ASC"
-                        Return 1
-                    Case "DESC"
-                        Return 2
-                    Case Else
-                        Return 0
-                End Select
-            End If
+            If curSelDataType.Contains("INT") _
+                Or curSelDataType.Contains("DECIMAL") _
+                Or curSelDataType.Contains("SINGLE") _
+                Or curSelDataType.Contains("DOUBLE") _
+                Then curSelDataType = "Integer"
+            If curSelDataType.Contains("DATETIME") Then curSelDataType = "DateTime"
+            If curSelDataType.Contains("BOOLEAN") Or curSelDataType.Contains("DBNULL") Then curSelDataType = "Boolean"
+          End If
+          Try
+            Select Case curSelDataType
+              Case "DateTime"
+                ' Is the cell a date? 
+                mydte = DateTime.Parse(e.Row.Cells(iColCount).Text.ToString())
+                e.Row.Cells(iColCount).Text = mydte.ToShortDateString()
+              Case "Integer"
+                e.Row.Cells(iColCount).Style.Add("text-align", "right")
+              Case "Boolean"
+                e.Row.Cells(iColCount).Style.Add("text-align", "center")
+              Case Else   ' String
+                ' Careful here: &nbsp is not a real space (it's chr160, not chr20) - might cause probs somewhere down the line....
+                e.Row.Cells(iColCount).Text = e.Row.Cells(iColCount).Text.Replace(" ", "&nbsp;")
+                e.Row.Cells(iColCount).Style.Add("text-align", "left")
+            End Select
+          Catch
+            ' um...
+          End Try
         Next
 
-        Return 0
-
-    End Function
-
-
-    Private Sub RecordSelector_PageIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.PageIndexChanged
-
-        ' Default behaviour of the gridview is to highlight the same row again when 
-        ' the page is changed. We'll override that.
-
-        grdGrid = CType(sender, System.Web.UI.WebControls.GridView)
-
-        Dim iCurrentIndex As Integer
-
-        grdGrid.SelectedIndex = -1
-        grdGrid.DataBind()
-
-        ' For lookups, use page and index number (breaks with sorting). For Grids use record ID.
-        If IsLookup Then
-            For itemIndex As Integer = 0 To grdGrid.Rows.Count - 1
-                iCurrentIndex = (grdGrid.PageIndex * grdGrid.PageSize) + itemIndex
-                If Me.SelectedID(grdGrid) = iCurrentIndex Then
-                    grdGrid.SelectedIndex = itemIndex
-                    grdGrid.DataBind() ' Need to bind (again) to reset selection.
-                    Exit For
-                End If
-            Next
-        Else            
-            ' get the grid's id column number.
-            Dim iColCount As Integer
-            Dim sColCaption As String
-            Dim iIDColNum As Integer = -1
-            For iColCount = 0 To grdGrid.HeaderRow.Cells.Count - 1
-                sColCaption = grdGrid.HeaderRow.Cells(iColCount).Text
-                If sColCaption.ToUpper = "ID" Then
-                    ' Here it is
-                    iIDColNum = iColCount
-                    Exit For
-                End If
-            Next
-            If iIDColNum > 0 Then
-                For itemIndex As Integer = 0 To grdGrid.Rows.Count - 1
-                    iCurrentIndex = NullSafeInteger(grdGrid.Rows(itemIndex).Cells(iIDColNum).Text)
-                    If Me.SelectedID(grdGrid) = iCurrentIndex Then
-                        grdGrid.SelectedIndex = itemIndex
-                        grdGrid.DataBind() ' Need to bind (again) to reset selection.
-                        Exit For
-                    End If
-                Next
-            Else
-                grdGrid.SelectedIndex = 0
-                grdGrid.DataBind() ' Need to bind (again) to reset selection.
-            End If
-        End If
-    End Sub
-
-
-    Private Sub RecordSelector_PageIndexChanging(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewPageEventArgs) Handles Me.PageIndexChanging
-        ' Dim g As System.Web.UI.WebControls.GridView
-        Dim iIDCol As Integer = 0
-        grdGrid = CType(sender, System.Web.UI.WebControls.GridView)
-
-        grdGrid.PageIndex = e.NewPageIndex
-        ' grdGrid.DataSource = TryCast(HttpContext.Current.Session(grdGrid.ID.Replace("Grid", "DATA")), DataTable)
-        dataTable = TryCast(HttpContext.Current.Session(grdGrid.ID.Replace("Grid", "DATA")), DataTable)
-
-        If IsLookup Then
-            ' reapply filter?
-            dataTable = SetLookupFilter(dataTable)
+        ' Add the javascript event to each row for click functionality
+        'e.Row.Attributes.Add("onclick", "changeRow('" & grdGrid.ID.ToString & "', '" & e.Row.Cells(iIDCol).Text & "', '" & GetHexColor(grdGrid.SelectedRowStyle.BackColor) & "', '" & iIDCol.ToString & "');oldgridSelectedColor = this.style.backgroundColor;")
+        ' Postback selection is really slow on big grids, so using javascript onclick above instead of the select event below.
+        'e.Row.Attributes("onclick") = ("SetScrollTopPos('" & grdGrid.ID.ToString & "', document.getElementById('" & grdGrid.ID.Replace("Grid", "gridcontainer") & "').scrollTop);" & _
+        '                               "try{setPostbackMode(2);}catch(e){};__doPostBack('" & grdGrid.UniqueID & "','Select$" & e.Row.RowIndex & "');" & _
+        '                               "SetScrollTopPos('" & grdGrid.ID.ToString & "', -1);")
+        If Not Me.IsEmpty Then
+          e.Row.Attributes("onclick") = ("SetScrollTopPos('" & grdGrid.ID.ToString & "', document.getElementById('" & grdGrid.ID.Replace("Grid", "gridcontainer") & "').scrollTop, " & e.Row.RowIndex & ");" & _
+                                              "try{setPostbackMode(3);}catch(e){};__doPostBack('" & grdGrid.UniqueID & "','Select$" & e.Row.RowIndex & "');")
         End If
 
-        grdGrid.DataSource = dataTable
-        grdGrid.DataBind()
+      ElseIf e.Row.RowType = DataControlRowType.Header Then
 
-    End Sub
+        ' Get the lookupfiltervalue column number, if applicable and store to a tag.
+        For iColCount As Integer = 0 To e.Row.Cells.Count - 1
+          sColumnCaption = UCase(e.Row.Cells(iColCount).Text)
+
+          If sColumnCaption.ToUpper = "ASRSYSLOOKUPFILTERVALUE" Then
+            grdGrid.Attributes.Remove("LookupFilterColumn")
+            grdGrid.Attributes.Add("LookupFilterColumn", iColCount.ToString)
+          End If
+        Next
+
+      End If
+    Catch ex As Exception
+
+    End Try
 
 
-    Private Sub RecordSelector_RowCreated(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewRowEventArgs) Handles Me.RowCreated
+  End Sub
 
-        ' custom header only - manually add the rows for sorting.
-        If e.Row.RowType = DataControlRowType.Header Then
 
-            Dim tcTableCell As TableCell
-            ' Dim d As GridView = sender
-            grdGrid = sender
+  Private Function GetHexColor(ByVal aRGBCode As System.Drawing.Color) As String
+    Dim strHEX As String
 
-            For Each tcTableCell In e.Row.Cells
-                If grdGrid.AllowSorting Then
-                    Dim lb As System.Web.UI.WebControls.LinkButton
-                    ' lb = tcTableCell.Controls(0)
-                    lb = CType(tcTableCell.Controls(0), System.Web.UI.WebControls.LinkButton)
-                    tcTableCell.Text = lb.Text
+    Dim A As String = Convert.ToString(aRGBCode.A, 16).PadLeft(2, "0"c).ToUpper
+    Dim R As String = Convert.ToString(aRGBCode.R, 16).PadLeft(2, "0"c).ToUpper
+    Dim G As String = Convert.ToString(aRGBCode.G, 16).PadLeft(2, "0"c).ToUpper
+    Dim B As String = Convert.ToString(aRGBCode.B, 16).PadLeft(2, "0"c).ToUpper
 
-                    If MyBase.HeaderStyle.Height.Value < 21 Then MyBase.HeaderStyle.Height = Unit.Pixel(NullSafeSingle(Me.HeadFontSize) * 2)
-                    tcTableCell.ApplyStyle(MyBase.HeaderStyle)
-                Else
-                    tcTableCell.Text &= ""
-                    If MyBase.HeaderStyle.Height.Value < 21 Then MyBase.HeaderStyle.Height = Unit.Pixel(NullSafeSingle(Me.HeadFontSize) * 2)
-                    tcTableCell.ApplyStyle(MyBase.HeaderStyle)
-                End If
-            Next
-        ElseIf e.Row.RowType = DataControlRowType.DataRow Then
-            ' ID for this row is used to calculate row height at runtime. Can't
-            ' specify the row height cos of bug HRPRO-1685.
-            ' NB: no need to be unique here, as the ID will automatically be 
-            ' prefixed with the control's clientID.
-            e.Row.ID = "row" & e.Row.RowIndex.ToString
+    strHEX = "#" & R & G & B
+
+    Return strHEX
+
+  End Function
+
+  Private Sub RecordSelector_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.SelectedIndexChanged
+
+    ' Set the dropdown value to the selected item
+    If IsLookup Then
+      ' Dim gv As GridView = TryCast(sender, GridView)
+      grdGrid = TryCast(sender, GridView)
+      ' Dim ddl As DropDownList = DirectCast(Parent.FindControl(gv.ID.Replace("Grid", "TextBox")), DropDownList)
+      ddl = DirectCast(Parent.FindControl(grdGrid.ID.Replace("Grid", "TextBox")), TextBox)
+
+      'ddl.Items.Clear()
+      'ddl.Items.Add(HttpUtility.HtmlDecode(grdGrid.Rows(grdGrid.SelectedIndex).Cells(ddl.Attributes("LookupColumnIndex")).Text).ToString().Replace(Chr(160), Chr(32)))
+      ddl.Text = HttpUtility.HtmlDecode(grdGrid.Rows(grdGrid.SelectedIndex).Cells(ddl.Attributes("LookupColumnIndex")).Text).ToString().Replace(Chr(160), Chr(32))
+      'ddl.SelectedIndex = 0
+    End If
+  End Sub
+
+  Private Sub RecordSelector_SelectedIndexChanging(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewSelectEventArgs) Handles Me.SelectedIndexChanging
+
+    ' Dim gv As GridView = TryCast(sender, GridView)
+    grdGrid = TryCast(sender, RecordSelector)
+
+    ' Get the current page and row index numbers
+    Dim iNewSelectedIndex As Integer = (grdGrid.PageIndex * grdGrid.PageSize) + e.NewSelectedIndex
+
+    ' Fault HRPRO-1645, use the ID of the record for RecordSelectors
+    If IsLookup Then
+      Me.SelectedID(grdGrid) = iNewSelectedIndex
+    Else
+      ' get the id column number.
+      Dim iColCount As Integer
+      Dim sColCaption As String
+      Dim iIDColNum As Integer = -1
+      For iColCount = 0 To grdGrid.HeaderRow.Cells.Count - 1
+        sColCaption = grdGrid.HeaderRow.Cells(iColCount).Text
+        If sColCaption.ToUpper = "ID" Then
+          ' Here it is
+          iIDColNum = iColCount
+          Exit For
         End If
-    End Sub
+      Next
 
-    Private Sub RecordSelector_RowDataBound(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewRowEventArgs) Handles Me.RowDataBound
-        ' As each row is added to the grid's HTML table, do the following: 
-        'check the item being bound is actually a DataRow, if it is, 
-        'wire up the required html events and attach the relevant JavaScripts
+      ' Get the ID from the column and store it.
+      Me.SelectedID(grdGrid) = IIf(iIDColNum > 0, NullSafeInteger(grdGrid.Rows(e.NewSelectedIndex).Cells(iIDColNum).Text), -1)
 
-        Dim iIDCol As Integer = 0
-        Dim sRowID As String = "0"
-        'Dim grdGrid As System.Web.UI.WebControls.GridView
-        Dim mydte As DateTime
-        Dim sColumnCaption As String
-        Dim objGeneral As New General
+    End If
 
-        grdGrid = CType(sender, RecordSelector)
+    'Dim dataTable As DataTable
+    'dataTable = DirectCast(grdGrid.DataSource, DataTable)
 
-        Try
+    ' Don't Databind - it sets all the ID's wrong when selecting...
+    ' grdGrid.DataSource = TryCast(HttpContext.Current.Session(grdGrid.ID.Replace("Grid", "DATA")), DataTable)
+    ' grdGrid.DataBind()
 
-            If e.Row.RowType = DataControlRowType.DataRow Then
-                e.Row.Style.Add("overflow", "hidden")
-                If Not Me.IsEmpty Then e.Row.Style.Add("cursor", "pointer")
+  End Sub
 
-                ' loop through the columns of this row. Hide ID columns
-                For iColCount As Integer = 0 To e.Row.Cells.Count - 1
-                    sColumnCaption = UCase(grdGrid.HeaderRow.Cells(iColCount).Text)
+  Public Property SelectedID(ByVal gv As GridView) As Integer
+    Get
+      If gv.Attributes("SelectedID") Is Nothing Then
+        Return -1
+      Else
+        Return gv.Attributes("SelectedID")
+      End If
+    End Get
 
-                    If (Not IsLookup And (sColumnCaption = "ID" Or (Left(sColumnCaption, 3) = "ID_" And Val(Mid(sColumnCaption, 4)) > 0))) Or _
-                        (IsLookup And sColumnCaption.StartsWith("ASRSYS")) Then
+    Set(ByVal value As Integer)
 
-                        'If sColumnCaption = "ID" Or (Left(sColumnCaption, 3) = "ID_" And Val(Mid(sColumnCaption, 4)) > 0) Then
-                        iIDCol = iColCount  ' store ID column number to assign to the javascript click event.
-                        e.Row.Cells(iColCount).Style.Add("display", "none")
-                        If sColumnCaption = "ID" Then
-                            ' Background colour to black.
-                            ' Javascript can see this and use it to recognise the ID column. 
-                            e.Row.Cells(iColCount).BackColor = Drawing.Color.Black
-                        End If
-                    End If
+      gv.Attributes("SelectedID") = value
+    End Set
+  End Property
 
+  Private Sub RecordSelector_Sorted(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Sorted
 
+    ' Default behaviour of the gridview is to highlight the same row again when 
+    ' the page is changed. We'll override that.
 
+    grdGrid = CType(sender, System.Web.UI.WebControls.GridView)
 
-                    ' add overflow hidden and nowrap, stops the cells wrapping text or overflowing into adjacent cols.
-                    e.Row.Cells(iColCount).Style.Add("overflow", "hidden")
-                    e.Row.Cells(iColCount).Style.Add("white-space", "nowrap")
+    Dim iCurrentIndex As Integer
 
-                    ' this sets minimum width, not max.
-                    e.Row.Cells(iColCount).Width = Unit.Pixel(iColWidth)
+    grdGrid.SelectedIndex = -1
+    grdGrid.DataBind()
 
-                    ' Format the cells according to DataType
-                    Dim curSelDataType As String = vbNullString
-                    ' Dim curSelDataType As String = DataBinder.Eval(e.Row.DataItem, grdGrid.HeaderRow.Cells(iColCount).Text).GetType.ToString.ToUpper
-
-                    If grdGrid.HeaderRow.Cells(iColCount).Text <> vbNullString Then
-
-                        curSelDataType = DataBinder.Eval(e.Row.DataItem, grdGrid.HeaderRow.Cells(iColCount).Text).GetType.ToString.ToUpper
-
-                        If curSelDataType.Contains("INT") _
-                            Or curSelDataType.Contains("DECIMAL") _
-                            Or curSelDataType.Contains("SINGLE") _
-                            Or curSelDataType.Contains("DOUBLE") _
-                            Then curSelDataType = "Integer"
-                        If curSelDataType.Contains("DATETIME") Then curSelDataType = "DateTime"
-                        If curSelDataType.Contains("BOOLEAN") Or curSelDataType.Contains("DBNULL") Then curSelDataType = "Boolean"
-                    End If
-                    Try
-                        Select Case curSelDataType
-                            Case "DateTime"
-                                ' Is the cell a date? 
-                                mydte = DateTime.Parse(e.Row.Cells(iColCount).Text.ToString())
-                                e.Row.Cells(iColCount).Text = mydte.ToShortDateString()
-                            Case "Integer"
-                                e.Row.Cells(iColCount).Style.Add("text-align", "right")
-                            Case "Boolean"
-                                e.Row.Cells(iColCount).Style.Add("text-align", "center")
-                            Case Else   ' String
-                                ' Careful here: &nbsp is not a real space (it's chr160, not chr20) - might cause probs somewhere down the line....
-                                e.Row.Cells(iColCount).Text = e.Row.Cells(iColCount).Text.Replace(" ", "&nbsp;")
-                                e.Row.Cells(iColCount).Style.Add("text-align", "left")
-                        End Select
-                    Catch
-                        ' um...
-                    End Try
-                Next
-
-                ' Add the javascript event to each row for click functionality
-                'e.Row.Attributes.Add("onclick", "changeRow('" & grdGrid.ID.ToString & "', '" & e.Row.Cells(iIDCol).Text & "', '" & GetHexColor(grdGrid.SelectedRowStyle.BackColor) & "', '" & iIDCol.ToString & "');oldgridSelectedColor = this.style.backgroundColor;")
-                ' Postback selection is really slow on big grids, so using javascript onclick above instead of the select event below.
-                'e.Row.Attributes("onclick") = ("SetScrollTopPos('" & grdGrid.ID.ToString & "', document.getElementById('" & grdGrid.ID.Replace("Grid", "gridcontainer") & "').scrollTop);" & _
-                '                               "try{setPostbackMode(2);}catch(e){};__doPostBack('" & grdGrid.UniqueID & "','Select$" & e.Row.RowIndex & "');" & _
-                '                               "SetScrollTopPos('" & grdGrid.ID.ToString & "', -1);")
-                If Not Me.IsEmpty Then
-                    e.Row.Attributes("onclick") = ("SetScrollTopPos('" & grdGrid.ID.ToString & "', document.getElementById('" & grdGrid.ID.Replace("Grid", "gridcontainer") & "').scrollTop, " & e.Row.RowIndex & ");" & _
-                                                        "try{setPostbackMode(3);}catch(e){};__doPostBack('" & grdGrid.UniqueID & "','Select$" & e.Row.RowIndex & "');")
-                End If
-
-                ElseIf e.Row.RowType = DataControlRowType.Header Then
-
-                    ' Get the lookupfiltervalue column number, if applicable and store to a tag.
-                    For iColCount As Integer = 0 To e.Row.Cells.Count - 1
-                        sColumnCaption = UCase(e.Row.Cells(iColCount).Text)
-
-                        If sColumnCaption.ToUpper = "ASRSYSLOOKUPFILTERVALUE" Then
-                            grdGrid.Attributes.Remove("LookupFilterColumn")
-                            grdGrid.Attributes.Add("LookupFilterColumn", iColCount.ToString)
-                        End If
-                    Next
-
-                End If
-        Catch ex As Exception
-
-        End Try
-
-
-    End Sub
-
- 
-    Private Function GetHexColor(ByVal aRGBCode As System.Drawing.Color) As String
-        Dim strHEX As String
-
-        Dim A As String = Convert.ToString(aRGBCode.A, 16).PadLeft(2, "0"c).ToUpper
-        Dim R As String = Convert.ToString(aRGBCode.R, 16).PadLeft(2, "0"c).ToUpper
-        Dim G As String = Convert.ToString(aRGBCode.G, 16).PadLeft(2, "0"c).ToUpper
-        Dim B As String = Convert.ToString(aRGBCode.B, 16).PadLeft(2, "0"c).ToUpper
-
-        strHEX = "#" & R & G & B
-
-        Return strHEX
-
-    End Function
-
-    Private Sub RecordSelector_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.SelectedIndexChanged
-
-        ' Set the dropdown value to the selected item
-        If IsLookup Then
-            ' Dim gv As GridView = TryCast(sender, GridView)
-            grdGrid = TryCast(sender, GridView)
-            ' Dim ddl As DropDownList = DirectCast(Parent.FindControl(gv.ID.Replace("Grid", "TextBox")), DropDownList)
-            ddl = DirectCast(Parent.FindControl(grdGrid.ID.Replace("Grid", "TextBox")), TextBox)
-
-            'ddl.Items.Clear()
-            'ddl.Items.Add(HttpUtility.HtmlDecode(grdGrid.Rows(grdGrid.SelectedIndex).Cells(ddl.Attributes("LookupColumnIndex")).Text).ToString().Replace(Chr(160), Chr(32)))
-            ddl.Text = HttpUtility.HtmlDecode(grdGrid.Rows(grdGrid.SelectedIndex).Cells(ddl.Attributes("LookupColumnIndex")).Text).ToString().Replace(Chr(160), Chr(32))
-            'ddl.SelectedIndex = 0
+    If Not IsLookup Then    ' don't handle lookup sorting for now - no ID's you see.
+      ' get the grid's id column number.
+      Dim iColCount As Integer
+      Dim sColCaption As String
+      Dim iIDColNum As Integer = -1
+      For iColCount = 0 To grdGrid.HeaderRow.Cells.Count - 1
+        sColCaption = grdGrid.HeaderRow.Cells(iColCount).Text
+        If sColCaption.ToUpper = "ID" Then
+          ' Here it is
+          iIDColNum = iColCount
+          Exit For
         End If
-    End Sub
+      Next
+      If iIDColNum > 0 Then
+        For itemIndex As Integer = 0 To grdGrid.Rows.Count - 1
+          iCurrentIndex = NullSafeInteger(grdGrid.Rows(itemIndex).Cells(iIDColNum).Text)
+          If Me.SelectedID(grdGrid) = iCurrentIndex Then
+            grdGrid.SelectedIndex = itemIndex
+            grdGrid.DataBind() ' Need to bind (again) to reset selection.
+            Exit For
+          End If
+        Next
+      Else
+        grdGrid.SelectedIndex = 0
+        grdGrid.DataBind() ' Need to bind (again) to reset selection.
+      End If
+    End If
+  End Sub
 
-    Private Sub RecordSelector_SelectedIndexChanging(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewSelectEventArgs) Handles Me.SelectedIndexChanging
+  Private Sub RecordSelector_Sorting(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewSortEventArgs) Handles Me.Sorting
+    ' Dim g As System.Web.UI.WebControls.GridView
+    Dim iIDCol As Integer = 0
+    grdGrid = CType(sender, System.Web.UI.WebControls.GridView)
 
-        ' Dim gv As GridView = TryCast(sender, GridView)
-        grdGrid = TryCast(sender, RecordSelector)
+    GridViewSort(sender, e)
+    'this handles the flipping of the sort direction
 
-        ' Get the current page and row index numbers
-        Dim iNewSelectedIndex As Integer = (grdGrid.PageIndex * grdGrid.PageSize) + e.NewSelectedIndex
 
-        ' Fault HRPRO-1645, use the ID of the record for RecordSelectors
-        If IsLookup Then
-            Me.SelectedID(grdGrid) = iNewSelectedIndex
+
+    Dim SortSQL As String = SortExpressionToSQL(e.SortExpression.Replace(" ", "_").Replace("+", ""), e.SortDirection)
+
+    ' Get the current dataset from the session variable,
+    ' Sort it, then store back to session variable.
+    dataTable = TryCast(HttpContext.Current.Session(grdGrid.ID.Replace("Grid", "DATA")), DataTable)
+
+    If IsLookup Then
+      ' reapply filter?
+      dataTable = SetLookupFilter(dataTable)
+    End If
+
+    If dataTable IsNot Nothing Then
+      Dim dataView As New DataView(dataTable)
+      '            SortSQL = "[Forenames] DESC, [Start_Date] ASC"
+
+      If Right(e.SortExpression, 1) = "+" Then
+        ' Control Click on column - APPEND to sort order - comma delimited.
+        If Me.sortBy.Length > 0 Then
+          If Me.sortBy.Contains("[" & e.SortExpression.Replace(" ", "_").Replace("+", "") & "]") Then
+            ' this sort order already set, so update.
+
+            Me.sortBy = Me.sortBy.Replace("[" & e.SortExpression.Replace(" ", "_").Replace("+", "") & "]" & _
+                                          IIf(e.SortDirection = WebControls.SortDirection.Ascending, " Desc", " Asc"), "[" & e.SortExpression.Replace(" ", "_").Replace("+", "") & "]" & _
+                                          IIf(e.SortDirection = WebControls.SortDirection.Ascending, " Asc", " Desc"))
+          Else
+            Me.sortBy &= "," & SortSQL.Replace("+", "")
+          End If
         Else
-            ' get the id column number.
-            Dim iColCount As Integer
-            Dim sColCaption As String
-            Dim iIDColNum As Integer = -1
-            For iColCount = 0 To grdGrid.HeaderRow.Cells.Count - 1
-                sColCaption = grdGrid.HeaderRow.Cells(iColCount).Text
-                If sColCaption.ToUpper = "ID" Then
-                    ' Here it is
-                    iIDColNum = iColCount
-                    Exit For
-                End If
-            Next
-
-            ' Get the ID from the column and store it.
-            Me.SelectedID(grdGrid) = IIf(iIDColNum > 0, NullSafeInteger(grdGrid.Rows(e.NewSelectedIndex).Cells(iIDColNum).Text), -1)
-
+          Me.sortBy = SortSQL.Replace("+", "")
         End If
-
-        'Dim dataTable As DataTable
-        'dataTable = DirectCast(grdGrid.DataSource, DataTable)
-
-        ' Don't Databind - it sets all the ID's wrong when selecting...
-        ' grdGrid.DataSource = TryCast(HttpContext.Current.Session(grdGrid.ID.Replace("Grid", "DATA")), DataTable)
-        ' grdGrid.DataBind()
-
-    End Sub
-
-    Public Property SelectedID(ByVal gv As GridView) As Integer
-        Get
-            If gv.Attributes("SelectedID") Is Nothing Then
-                Return -1
-            Else
-                Return gv.Attributes("SelectedID")
-            End If
-        End Get
-
-        Set(ByVal value As Integer)
-
-            gv.Attributes("SelectedID") = value
-        End Set
-    End Property
-
-    Private Sub RecordSelector_Sorted(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Sorted
-
-        ' Default behaviour of the gridview is to highlight the same row again when 
-        ' the page is changed. We'll override that.
-
-        grdGrid = CType(sender, System.Web.UI.WebControls.GridView)
-
-        Dim iCurrentIndex As Integer
-
-        grdGrid.SelectedIndex = -1
-        grdGrid.DataBind()
-
-        If Not IsLookup Then    ' don't handle lookup sorting for now - no ID's you see.
-            ' get the grid's id column number.
-            Dim iColCount As Integer
-            Dim sColCaption As String
-            Dim iIDColNum As Integer = -1
-            For iColCount = 0 To grdGrid.HeaderRow.Cells.Count - 1
-                sColCaption = grdGrid.HeaderRow.Cells(iColCount).Text
-                If sColCaption.ToUpper = "ID" Then
-                    ' Here it is
-                    iIDColNum = iColCount
-                    Exit For
-                End If
-            Next
-            If iIDColNum > 0 Then
-                For itemIndex As Integer = 0 To grdGrid.Rows.Count - 1
-                    iCurrentIndex = NullSafeInteger(grdGrid.Rows(itemIndex).Cells(iIDColNum).Text)
-                    If Me.SelectedID(grdGrid) = iCurrentIndex Then
-                        grdGrid.SelectedIndex = itemIndex
-                        grdGrid.DataBind() ' Need to bind (again) to reset selection.
-                        Exit For
-                    End If
-                Next
-            Else
-                grdGrid.SelectedIndex = 0
-                grdGrid.DataBind() ' Need to bind (again) to reset selection.
-            End If
-        End If
-    End Sub
-
-    Private Sub RecordSelector_Sorting(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewSortEventArgs) Handles Me.Sorting
-        ' Dim g As System.Web.UI.WebControls.GridView
-        Dim iIDCol As Integer = 0
-        grdGrid = CType(sender, System.Web.UI.WebControls.GridView)
-
-        GridViewSort(sender, e)
-        'this handles the flipping of the sort direction
+      Else
+        ' Not ctrl-click, so just sort by this column.
+        Me.sortBy = SortSQL
+      End If
 
 
 
-        Dim SortSQL As String = SortExpressionToSQL(e.SortExpression.Replace(" ", "_").Replace("+", ""), e.SortDirection)
+      dataView.Sort = Me.sortBy   ' SortSQL ' Convert.ToString(e.SortExpression).Replace(" ", "_") & " DESC"
+      dataTable = dataView.ToTable()
+      HttpContext.Current.Session(grdGrid.ID.Replace("Grid", "DATA")) = dataTable
+      grdGrid.DataSource = dataView
+      grdGrid.DataBind()
+    End If
 
-        ' Get the current dataset from the session variable,
-        ' Sort it, then store back to session variable.
-        dataTable = TryCast(HttpContext.Current.Session(grdGrid.ID.Replace("Grid", "DATA")), DataTable)
+  End Sub
 
-        If IsLookup Then
-            ' reapply filter?
-            dataTable = SetLookupFilter(dataTable)
-        End If
+  Public Shared Function SortExpressionToSQL(ByVal SortExpression As String, ByVal sortDir As System.Nullable(Of System.Web.UI.WebControls.SortDirection)) As String
+    Return ((If((SortExpression Is Nothing), Nothing, "[" & SortExpression & "]")) & " " & sortDir.ToString.Replace("ending", ""))
+  End Function
 
-        If dataTable IsNot Nothing Then
-            Dim dataView As New DataView(dataTable)
-            '            SortSQL = "[Forenames] DESC, [Start_Date] ASC"
+  Public Shared Sub GridViewSort(ByVal sender As Object, ByVal e As GridViewSortEventArgs)
+    'this technique leverages the GridView's generic Attributes collection to store the sort column & direction state between runs
+    'coupled with the "sender" argument of most event handlers, WebControl.Attributes becomes a handy little piece of ViewState for stuff like this
+    Dim grdGrid As GridView = TryCast(sender, GridView)
+    Dim previousColumn As String = grdGrid.Attributes("SortColumn")
+    grdGrid.Attributes("SortColumn") = e.SortExpression.Replace(" ", "_")
+    If previousColumn = e.SortExpression.Replace(" ", "_") Then
+      Dim previousDirection As String = grdGrid.Attributes("SortDirection")
+      'if we haven't sorted this column yet, default to Ascending (by passing Descending into the flipper)
+      e.SortDirection = Flip(If((previousDirection Is Nothing), SortDirection.Descending, DirectCast([Enum].Parse(GetType(SortDirection), previousDirection), SortDirection)))
+      grdGrid.Attributes("SortDirection") = e.SortDirection.ToString()
+    Else
+      grdGrid.Attributes("SortDirection") = SortDirection.Ascending.ToString
+    End If
+  End Sub
 
-            If Right(e.SortExpression, 1) = "+" Then
-                ' Control Click on column - APPEND to sort order - comma delimited.
-                If Me.sortBy.Length > 0 Then
-                    If Me.sortBy.Contains("[" & e.SortExpression.Replace(" ", "_").Replace("+", "") & "]") Then
-                        ' this sort order already set, so update.
+  Public Shared Function Flip(ByVal sortDir As SortDirection) As SortDirection
+    Return (If((sortDir = SortDirection.Ascending), SortDirection.Descending, SortDirection.Ascending))
+  End Function
 
-                        Me.sortBy = Me.sortBy.Replace("[" & e.SortExpression.Replace(" ", "_").Replace("+", "") & "]" & _
-                                                      IIf(e.SortDirection = WebControls.SortDirection.Ascending, " Desc", " Asc"), "[" & e.SortExpression.Replace(" ", "_").Replace("+", "") & "]" & _
-                                                      IIf(e.SortDirection = WebControls.SortDirection.Ascending, " Asc", " Desc"))
-                    Else
-                        Me.sortBy &= "," & SortSQL.Replace("+", "")
-                    End If
-                Else
-                    Me.sortBy = SortSQL.Replace("+", "")
-                End If
-            Else
-                ' Not ctrl-click, so just sort by this column.
-                Me.sortBy = SortSQL
-            End If
+  Function SetLookupFilter(ByVal dt As DataTable) As DataTable
 
+    If dt IsNot Nothing Then
+      Dim dataView As New DataView(dt)
+      dataView.RowFilter = Me.filterSQL    '   "ISNULL([ASRSysLookupFilterValue], '') = 'HERTFORDSHIRE'"
 
+      dt = dataView.ToTable()
+      ' HttpContext.Current.Session(btnSender.ID.Replace("refresh", "DATA")) = dataTable
 
-            dataView.Sort = Me.sortBy   ' SortSQL ' Convert.ToString(e.SortExpression).Replace(" ", "_") & " DESC"
-            dataTable = dataView.ToTable()
-            HttpContext.Current.Session(grdGrid.ID.Replace("Grid", "DATA")) = dataTable
-            grdGrid.DataSource = dataView
-            grdGrid.DataBind()
-        End If
+      If dt.Rows.Count = 0 Then
+        ' create a blank row to display.
+        Dim objDataRow As System.Data.DataRow
+        objDataRow = dt.NewRow()
+        dt.Rows.InsertAt(objDataRow, 0)
+      End If
+    End If
 
-    End Sub
+    Return dt
 
-    Public Shared Function SortExpressionToSQL(ByVal SortExpression As String, ByVal sortDir As System.Nullable(Of System.Web.UI.WebControls.SortDirection)) As String
-        Return ((If((SortExpression Is Nothing), Nothing, "[" & SortExpression & "]")) & " " & sortDir.ToString.Replace("ending", ""))
-    End Function
-
-    Public Shared Sub GridViewSort(ByVal sender As Object, ByVal e As GridViewSortEventArgs)
-        'this technique leverages the GridView's generic Attributes collection to store the sort column & direction state between runs
-        'coupled with the "sender" argument of most event handlers, WebControl.Attributes becomes a handy little piece of ViewState for stuff like this
-        Dim grdGrid As GridView = TryCast(sender, GridView)
-        Dim previousColumn As String = grdGrid.Attributes("SortColumn")
-        grdGrid.Attributes("SortColumn") = e.SortExpression.Replace(" ", "_")
-        If previousColumn = e.SortExpression.Replace(" ", "_") Then
-            Dim previousDirection As String = grdGrid.Attributes("SortDirection")
-            'if we haven't sorted this column yet, default to Ascending (by passing Descending into the flipper)
-            e.SortDirection = Flip(If((previousDirection Is Nothing), SortDirection.Descending, DirectCast([Enum].Parse(GetType(SortDirection), previousDirection), SortDirection)))
-            grdGrid.Attributes("SortDirection") = e.SortDirection.ToString()
-        Else
-            grdGrid.Attributes("SortDirection") = SortDirection.Ascending.ToString
-        End If
-    End Sub
-
-    Public Shared Function Flip(ByVal sortDir As SortDirection) As SortDirection
-        Return (If((sortDir = SortDirection.Ascending), SortDirection.Descending, SortDirection.Ascending))
-    End Function
-
-    Function SetLookupFilter(ByVal dt As DataTable) As DataTable
-
-        If dt IsNot Nothing Then
-            Dim dataView As New DataView(dt)
-            dataView.RowFilter = Me.filterSQL    '   "ISNULL([ASRSysLookupFilterValue], '') = 'HERTFORDSHIRE'"
-
-            dt = dataView.ToTable()
-            ' HttpContext.Current.Session(btnSender.ID.Replace("refresh", "DATA")) = dataTable
-
-            If dt.Rows.Count = 0 Then
-                ' create a blank row to display.
-                Dim objDataRow As System.Data.DataRow
-                objDataRow = dt.NewRow()
-                dt.Rows.InsertAt(objDataRow, 0)
-            End If
-        End If
-
-        Return dt
-
-    End Function
+  End Function
 
 
-    Private Sub InitCustomPager(ByVal row As System.Web.UI.WebControls.GridViewRow, ByVal columnSpan As Integer, ByVal pagedDataSource As System.Web.UI.WebControls.PagedDataSource)
-        Dim pnlPager As Panel = New Panel()
-        With pnlPager
-            .ID = "pnlPager"
-            '.CssClass = Me.PagerStyle.CssClass
-            .Style.Add("float", "right")
-            If MyBase.PageCount < 2 Then
-                ' Hide pager nav controls if there's only one page.
-                .Style.Add("display", "none")
-            End If
-        End With
+  Private Sub InitCustomPager(ByVal row As System.Web.UI.WebControls.GridViewRow, ByVal columnSpan As Integer, ByVal pagedDataSource As System.Web.UI.WebControls.PagedDataSource)
+    Dim pnlPager As Panel = New Panel()
+    With pnlPager
+      .ID = "pnlPager"
+      '.CssClass = Me.PagerStyle.CssClass
+      .Style.Add("float", "right")
+      If MyBase.PageCount < 2 Then
+        ' Hide pager nav controls if there's only one page.
+        .Style.Add("display", "none")
+      End If
+    End With
 
-        Dim tblPager As Table = New Table()
-        With tblPager
-            .ID = "tblPager"
-            .CellPadding = 3
-            .CellSpacing = 0
-            .Style.Add("width", "100%")
-            .Style.Add("height", "100%")
-            .BorderStyle = BorderStyle.None
-            .GridLines = GridLines.Both
-        End With
+    Dim tblPager As Table = New Table()
+    With tblPager
+      .ID = "tblPager"
+      .CellPadding = 3
+      .CellSpacing = 0
+      .Style.Add("width", "100%")
+      .Style.Add("height", "100%")
+      .BorderStyle = BorderStyle.None
+      .GridLines = GridLines.Both
+    End With
 
-        Dim trPager As TableRow = New TableRow()
-        trPager.ID = "trPager"
-        trPager.Style.Add("float", "right")
-        trPager.Style.Add("width", "275px")
+    Dim trPager As TableRow = New TableRow()
+    trPager.ID = "trPager"
+    trPager.Style.Add("float", "right")
+    trPager.Style.Add("width", "275px")
 
-        Dim ltlPageIndex As Literal = New Literal()
-        ltlPageIndex.ID = "ltlPageIndex"
-        ltlPageIndex.Text = (Me.PageIndex + 1).ToString()
+    Dim ltlPageIndex As Literal = New Literal()
+    ltlPageIndex.ID = "ltlPageIndex"
+    ltlPageIndex.Text = (Me.PageIndex + 1).ToString()
 
-        Dim ltlPageCount As Literal = New Literal()
-        ltlPageCount.ID = "ltlPageCount"
-        ltlPageCount.Text = Me.PageCount.ToString()
+    Dim ltlPageCount As Literal = New Literal()
+    ltlPageCount.ID = "ltlPageCount"
+    ltlPageCount.Text = Me.PageCount.ToString()
 
-        Dim tcPageXofY As TableCell = New TableCell()
-        With tcPageXofY
-            .ID = "tcPageXofY"
-            .Style.Add("width", "30%")
-            .Style.Add("text-align", "left")
-            .Style.Add("padding-left", "5px")
-            .Style.Add("border", "0px")
-            .Height = Unit.Pixel(23)
-            .Font.Size = FontUnit.Parse("10px")
-            .Font.Name = HeaderStyle.Font.Name
-            .Controls.Add(New LiteralControl("Page "))
-            .Controls.Add(ltlPageIndex)
-            .Controls.Add(New LiteralControl(" of "))
-            .Controls.Add(ltlPageCount)
-        End With
+    Dim tcPageXofY As TableCell = New TableCell()
+    With tcPageXofY
+      .ID = "tcPageXofY"
+      .Style.Add("width", "30%")
+      .Style.Add("text-align", "left")
+      .Style.Add("padding-left", "5px")
+      .Style.Add("border", "0px")
+      .Height = Unit.Pixel(23)
+      .Font.Size = FontUnit.Parse("10px")
+      .Font.Name = HeaderStyle.Font.Name
+      .Controls.Add(New LiteralControl("Page "))
+      .Controls.Add(ltlPageIndex)
+      .Controls.Add(New LiteralControl(" of "))
+      .Controls.Add(ltlPageCount)
+    End With
 
-        Dim ibtnFirst As ImageButton = New ImageButton()
-        With ibtnFirst
-            .ID = "ibtnFirst"
-            .CommandName = "First"
-            .ToolTip = "First Page"
-            .ImageAlign = ImageAlign.AbsMiddle
-            .Style.Add("cursor", "pointer")
-            .CausesValidation = False
-            .Attributes.Add("onclick", IIf(IsLookup, "try{$get('txtActiveDDE').value='" & grdGrid.ID.Replace("Grid", "dde") & "';setPostbackMode(3);}catch(e){};", "try{setPostbackMode(3);}catch(e){};"))
-            AddHandler .Command, AddressOf Me.PagerCommand
-        End With
+    Dim ibtnFirst As ImageButton = New ImageButton()
+    With ibtnFirst
+      .ID = "ibtnFirst"
+      .CommandName = "First"
+      .ToolTip = "First Page"
+      .ImageAlign = ImageAlign.AbsMiddle
+      .Style.Add("cursor", "pointer")
+      .CausesValidation = False
+      .Attributes.Add("onclick", IIf(IsLookup, "try{$get('txtActiveDDE').value='" & grdGrid.ID.Replace("Grid", "dde") & "';setPostbackMode(3);}catch(e){};", "try{setPostbackMode(3);}catch(e){};"))
+      AddHandler .Command, AddressOf Me.PagerCommand
+    End With
 
-        Dim ibtnPrevious As ImageButton = New ImageButton()
-        With ibtnPrevious
-            .ID = "ibtnPrevious"
-            .CommandName = "Previous"
-            .ToolTip = "Previous Page"
-            .ImageAlign = ImageAlign.AbsMiddle
-            .Style.Add("cursor", "pointer")
-            .CausesValidation = False
-            .Attributes.Add("onclick", IIf(IsLookup, "try{$get('txtActiveDDE').value='" & grdGrid.ID.Replace("Grid", "dde") & "';setPostbackMode(3);}catch(e){};", "try{setPostbackMode(3);}catch(e){};"))
-            AddHandler .Command, AddressOf Me.PagerCommand
-        End With
+    Dim ibtnPrevious As ImageButton = New ImageButton()
+    With ibtnPrevious
+      .ID = "ibtnPrevious"
+      .CommandName = "Previous"
+      .ToolTip = "Previous Page"
+      .ImageAlign = ImageAlign.AbsMiddle
+      .Style.Add("cursor", "pointer")
+      .CausesValidation = False
+      .Attributes.Add("onclick", IIf(IsLookup, "try{$get('txtActiveDDE').value='" & grdGrid.ID.Replace("Grid", "dde") & "';setPostbackMode(3);}catch(e){};", "try{setPostbackMode(3);}catch(e){};"))
+      AddHandler .Command, AddressOf Me.PagerCommand
+    End With
 
 
 
-        Dim ibtnNext As ImageButton = New ImageButton()
-        With ibtnNext
-            .ID = "ibtnNext"
-            .CommandName = "Next"
-            .ToolTip = "Next Page"
-            .ImageAlign = ImageAlign.AbsMiddle
-            .Style.Add("cursor", "pointer")
-            .CausesValidation = False
-            .Attributes.Add("onclick", IIf(IsLookup, "try{$get('txtActiveDDE').value='" & grdGrid.ID.Replace("Grid", "dde") & "';setPostbackMode(3);}catch(e){};", "try{setPostbackMode(3);}catch(e){};"))
-            AddHandler .Command, AddressOf Me.PagerCommand
-        End With
+    Dim ibtnNext As ImageButton = New ImageButton()
+    With ibtnNext
+      .ID = "ibtnNext"
+      .CommandName = "Next"
+      .ToolTip = "Next Page"
+      .ImageAlign = ImageAlign.AbsMiddle
+      .Style.Add("cursor", "pointer")
+      .CausesValidation = False
+      .Attributes.Add("onclick", IIf(IsLookup, "try{$get('txtActiveDDE').value='" & grdGrid.ID.Replace("Grid", "dde") & "';setPostbackMode(3);}catch(e){};", "try{setPostbackMode(3);}catch(e){};"))
+      AddHandler .Command, AddressOf Me.PagerCommand
+    End With
 
-        Dim ibtnLast As ImageButton = New ImageButton()
-        With ibtnLast
-            .ID = "ibtnLast"
-            .CommandName = "Last"
-            .ToolTip = "Last Page"
-            .ImageAlign = ImageAlign.AbsMiddle
-            .Style.Add("cursor", "pointer")
-            .CausesValidation = False
-            .Attributes.Add("onclick", IIf(IsLookup, "try{$get('txtActiveDDE').value='" & grdGrid.ID.Replace("Grid", "dde") & "';setPostbackMode(3);}catch(e){};", "try{setPostbackMode(3);}catch(e){};"))
-            AddHandler .Command, AddressOf Me.PagerCommand
-        End With
+    Dim ibtnLast As ImageButton = New ImageButton()
+    With ibtnLast
+      .ID = "ibtnLast"
+      .CommandName = "Last"
+      .ToolTip = "Last Page"
+      .ImageAlign = ImageAlign.AbsMiddle
+      .Style.Add("cursor", "pointer")
+      .CausesValidation = False
+      .Attributes.Add("onclick", IIf(IsLookup, "try{$get('txtActiveDDE').value='" & grdGrid.ID.Replace("Grid", "dde") & "';setPostbackMode(3);}catch(e){};", "try{setPostbackMode(3);}catch(e){};"))
+      AddHandler .Command, AddressOf Me.PagerCommand
+    End With
 
-        Dim url As String = "~/Images/"
-        If Me.PageIndex > 0 Then
-            ibtnFirst.ImageUrl = url + "page-first.gif"
-            ibtnPrevious.ImageUrl = url + "page-prev.gif"
-            ibtnFirst.Enabled = True
-            ibtnPrevious.Enabled = True
-        Else
-            ibtnFirst.ImageUrl = url + "page-first-disabled.gif"
-            ibtnPrevious.ImageUrl = url + "page-prev-disabled.gif"
-            ibtnFirst.Enabled = False
-            ibtnPrevious.Enabled = False
-            ibtnFirst.Style.Add("cursor", "default")
-            ibtnPrevious.Style.Add("cursor", "default")
-        End If
+    Dim url As String = "~/Images/"
+    If Me.PageIndex > 0 Then
+      ibtnFirst.ImageUrl = url + "page-first.gif"
+      ibtnPrevious.ImageUrl = url + "page-prev.gif"
+      ibtnFirst.Enabled = True
+      ibtnPrevious.Enabled = True
+    Else
+      ibtnFirst.ImageUrl = url + "page-first-disabled.gif"
+      ibtnPrevious.ImageUrl = url + "page-prev-disabled.gif"
+      ibtnFirst.Enabled = False
+      ibtnPrevious.Enabled = False
+      ibtnFirst.Style.Add("cursor", "default")
+      ibtnPrevious.Style.Add("cursor", "default")
+    End If
 
-        If Me.PageIndex < Me.PageCount - 1 Then
-            ibtnNext.ImageUrl = url + "page-next.gif"
-            ibtnLast.ImageUrl = url + "page-last.gif"
-            ibtnNext.Enabled = True
-            ibtnLast.Enabled = True
-        Else
-            ibtnNext.ImageUrl = url + "page-next-disabled.gif"
-            ibtnLast.ImageUrl = url + "page-last-disabled.gif"
-            ibtnNext.Enabled = False
-            ibtnLast.Enabled = False
-            ibtnNext.Style.Add("cursor", "default")
-            ibtnLast.Style.Add("cursor", "default")
-        End If
+    If Me.PageIndex < Me.PageCount - 1 Then
+      ibtnNext.ImageUrl = url + "page-next.gif"
+      ibtnLast.ImageUrl = url + "page-last.gif"
+      ibtnNext.Enabled = True
+      ibtnLast.Enabled = True
+    Else
+      ibtnNext.ImageUrl = url + "page-next-disabled.gif"
+      ibtnLast.ImageUrl = url + "page-last-disabled.gif"
+      ibtnNext.Enabled = False
+      ibtnLast.Enabled = False
+      ibtnNext.Style.Add("cursor", "default")
+      ibtnLast.Style.Add("cursor", "default")
+    End If
 
-        Dim tcPagerBtns As TableCell = New TableCell()
-        With tcPagerBtns
-            .ID = "tcPagerBtns"
-            .Style.Add("width", "40%")
-            .Style.Add("text-align", "center")
-            .Style.Add("border", "0px")
-            .Controls.Add(ibtnFirst)
-            .Controls.Add(ibtnPrevious)
-            .Controls.Add(New LiteralControl("&nbsp;&nbsp;"))
-            .Controls.Add(ibtnNext)
-            .Controls.Add(ibtnLast)
-        End With
+    Dim tcPagerBtns As TableCell = New TableCell()
+    With tcPagerBtns
+      .ID = "tcPagerBtns"
+      .Style.Add("width", "40%")
+      .Style.Add("text-align", "center")
+      .Style.Add("border", "0px")
+      .Controls.Add(ibtnFirst)
+      .Controls.Add(ibtnPrevious)
+      .Controls.Add(New LiteralControl("&nbsp;&nbsp;"))
+      .Controls.Add(ibtnNext)
+      .Controls.Add(ibtnLast)
+    End With
 
-        Dim ddlPages As DropDownList = New DropDownList()
-        With ddlPages
-            .ID = "ddlPages"
-            ' .CssClass = "paging_gridview_pgr_ddl"
-            .Font.Size = FontUnit.Parse("10px")
-            .Font.Name = HeaderStyle.Font.Name
-            .AutoPostBack = True
-            For i As Integer = 1 To Me.PageCount Step +1
-                .Items.Add(New ListItem(i.ToString(), i.ToString()))
-            Next i
-            .SelectedIndex = Me.PageIndex
-            .CausesValidation = False
-            .Attributes.Add("onclick", "event.cancelBubble=true;")
-            .Attributes.Add("onchange", IIf(IsLookup, "try{$get('txtActiveDDE').value='" & grdGrid.ID.Replace("Grid", "dde") & "';setPostbackMode(3);}catch(e){};", "try{setPostbackMode(3);}catch(e){};"))
-            AddHandler .SelectedIndexChanged, AddressOf Me.ddlPages_SelectedIndexChanged
-        End With
+    Dim ddlPages As DropDownList = New DropDownList()
+    With ddlPages
+      .ID = "ddlPages"
+      ' .CssClass = "paging_gridview_pgr_ddl"
+      .Font.Size = FontUnit.Parse("10px")
+      .Font.Name = HeaderStyle.Font.Name
+      .AutoPostBack = True
+      For i As Integer = 1 To Me.PageCount Step +1
+        .Items.Add(New ListItem(i.ToString(), i.ToString()))
+      Next i
+      .SelectedIndex = Me.PageIndex
+      .CausesValidation = False
+      .Attributes.Add("onclick", "event.cancelBubble=true;")
+      .Attributes.Add("onchange", IIf(IsLookup, "try{$get('txtActiveDDE').value='" & grdGrid.ID.Replace("Grid", "dde") & "';setPostbackMode(3);}catch(e){};", "try{setPostbackMode(3);}catch(e){};"))
+      AddHandler .SelectedIndexChanged, AddressOf Me.ddlPages_SelectedIndexChanged
+    End With
 
-        Dim tcPagerDDL As TableCell = New TableCell()
-        With tcPagerDDL
-            .ID = "tcPagerDDL"
-            .Font.Size = FontUnit.Parse("10px")
-            .Font.Name = HeaderStyle.Font.Name
-            .Style.Add("width", "30%")
-            .Style.Add("text-align", "right")
-            .Style.Add("padding-right", "5px")
-            .Style.Add("border", "0px")
-            .Controls.Add(New LiteralControl("<table cellpadding=""0"" cellspacing=""0"" frame=""void"" rules=""none""><tr><td style=""padding-right: 5px;border: 0px;"">Page:</td><td style=""border: 0px;"">"))
-            .Controls.Add(ddlPages)
-            .Controls.Add(New LiteralControl("</td></tr></table>"))
-        End With
-
-
-        ' Hide navigation buttons depending on width of Record Selector
-        If Not IsLookup Then
-            If MyBase.Width.Value < 175 Then
-                ' Hide tcPageXofY AND tcPagerBtns
-                tcPageXofY.Style.Add("display", "none")
-                tcPageXofY.Style.Add("visibility", "hidden")
-                tcPagerBtns.Style.Add("display", "none")
-                tcPagerBtns.Style.Add("visibility", "hidden")
-                trPager.Style.Remove("width")
-                trPager.Style.Add("width", "75px")
-            ElseIf MyBase.Width.Value < 210 Then
-                ' Hide just tcPageXofY
-                tcPageXofY.Style.Add("display", "none")
-                tcPageXofY.Style.Add("visibility", "hidden")
-                trPager.Style.Remove("width")
-                trPager.Style.Add("width", "175px")
-            End If
-
-        End If
+    Dim tcPagerDDL As TableCell = New TableCell()
+    With tcPagerDDL
+      .ID = "tcPagerDDL"
+      .Font.Size = FontUnit.Parse("10px")
+      .Font.Name = HeaderStyle.Font.Name
+      .Style.Add("width", "30%")
+      .Style.Add("text-align", "right")
+      .Style.Add("padding-right", "5px")
+      .Style.Add("border", "0px")
+      .Controls.Add(New LiteralControl("<table cellpadding=""0"" cellspacing=""0"" frame=""void"" rules=""none""><tr><td style=""padding-right: 5px;border: 0px;"">Page:</td><td style=""border: 0px;"">"))
+      .Controls.Add(ddlPages)
+      .Controls.Add(New LiteralControl("</td></tr></table>"))
+    End With
 
 
-        'add cells to row
-        trPager.Cells.Add(tcPageXofY)
-        trPager.Cells.Add(tcPagerBtns)
-        trPager.Cells.Add(tcPagerDDL)
+    ' Hide navigation buttons depending on width of Record Selector
+    If Not IsLookup Then
+      If MyBase.Width.Value < 175 Then
+        ' Hide tcPageXofY AND tcPagerBtns
+        tcPageXofY.Style.Add("display", "none")
+        tcPageXofY.Style.Add("visibility", "hidden")
+        tcPagerBtns.Style.Add("display", "none")
+        tcPagerBtns.Style.Add("visibility", "hidden")
+        trPager.Style.Remove("width")
+        trPager.Style.Add("width", "75px")
+      ElseIf MyBase.Width.Value < 210 Then
+        ' Hide just tcPageXofY
+        tcPageXofY.Style.Add("display", "none")
+        tcPageXofY.Style.Add("visibility", "hidden")
+        trPager.Style.Remove("width")
+        trPager.Style.Add("width", "175px")
+      End If
 
-        'add row to table
-        tblPager.Rows.Add(trPager)
+    End If
 
-        'add table to div
-        pnlPager.Controls.Add(tblPager)
 
-        'add div to pager row
-        row.Controls.AddAt(0, New TableCell())
-        row.Cells(0).ColumnSpan = columnSpan
-        row.Cells(0).Controls.Add(pnlPager)
-    End Sub
+    'add cells to row
+    trPager.Cells.Add(tcPageXofY)
+    trPager.Cells.Add(tcPagerBtns)
+    trPager.Cells.Add(tcPagerDDL)
+
+    'add row to table
+    tblPager.Rows.Add(trPager)
+
+    'add table to div
+    pnlPager.Controls.Add(tblPager)
+
+    'add div to pager row
+    row.Controls.AddAt(0, New TableCell())
+    row.Cells(0).ColumnSpan = columnSpan
+    row.Cells(0).Controls.Add(pnlPager)
+  End Sub
 
     Protected Sub ddlPages_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs)
         Dim newPageIndex As Integer = CType(sender, DropDownList).SelectedIndex
