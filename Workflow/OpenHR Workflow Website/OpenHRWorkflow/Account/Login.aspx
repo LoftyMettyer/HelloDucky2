@@ -3,10 +3,6 @@
 <asp:Content ID="head" ContentPlaceHolderID="headCPH" Runat="Server">
     <script type="text/javascript">
     // <!CDATA[
-        window.onload = function() {
-            document.getElementById('ctl00_mainCPH_txtUserName').focus();
-        };
-
         function submitCheck() {
 
             var header = 'Login Failed';

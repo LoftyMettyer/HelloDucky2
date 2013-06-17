@@ -64,8 +64,11 @@ Partial Class ChangePassword
           Try
             cmd.ExecuteNonQuery()
           Catch ex As SqlException
-            If ex.Number <> 15151 Then Throw
-            sMessage = "Current password is incorrect."
+            If ex.Number = 15151 Then
+              sMessage = "Current password is incorrect."
+            Else
+              sMessage = ex.Message
+            End If
           End Try
         End Using
       End If

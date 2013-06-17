@@ -5,7 +5,6 @@
         // <!CDATA[
         window.onload = function () {
             document.getElementById('ctl00_mainCPH_txtEmail').setAttribute('type', 'email');
-            document.getElementById('ctl00_mainCPH_txtEmail').focus();
         };
 
         function submitCheck() {
