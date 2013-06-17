@@ -311,7 +311,7 @@ Partial Class FileUpload
     If asErrorMessages.GetUpperBound(0) > 0 Then
       hdnCount_Errors.Value = asErrorMessages.GetUpperBound(0)
       lblErrors.Text = "Unable to upload the file due to the following error" & _
-        IIf(asErrorMessages.GetUpperBound(0) > 1, "s", "") & ":"
+        If(asErrorMessages.GetUpperBound(0) > 1, "s", "") & ":"
 
       For iIndex = 1 To asErrorMessages.GetUpperBound(0)
         bulletErrors.Items.Add(asErrorMessages(iIndex))

@@ -76,7 +76,7 @@ Public Class Database
     Using conn As New SqlConnection(Configuration.ConnectionString)
       conn.Open()
 
-      Dim cmd As New SqlClient.SqlCommand
+      Dim cmd As New SqlCommand
       cmd.CommandText = "spASRSysMobileCheckPendingWorkflowSteps"
       cmd.Connection = conn
       cmd.CommandType = CommandType.StoredProcedure

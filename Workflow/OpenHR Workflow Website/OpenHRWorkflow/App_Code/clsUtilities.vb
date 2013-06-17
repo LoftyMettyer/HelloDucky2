@@ -67,29 +67,6 @@ Public Class Utilities
   End Function
 
   '****************************************************************
-  '   NullSafeDouble
-  '****************************************************************
-  Public Shared Function NullSafeDouble(ByVal arg As Object, _
-    Optional ByVal returnIfEmpty As Double = 0) As Double
-
-    Dim returnValue As Double
-
-    If (arg Is DBNull.Value) OrElse (arg Is Nothing) _
-        OrElse (arg Is String.Empty) Then
-      returnValue = returnIfEmpty
-    Else
-      Try
-        returnValue = CDbl(arg)
-      Catch
-        returnValue = returnIfEmpty
-      End Try
-    End If
-
-    Return returnValue
-
-  End Function
-
-  '****************************************************************
   '   NullSafeSingle
   '****************************************************************
   Public Shared Function NullSafeSingle(ByVal arg As Object, _
@@ -172,7 +149,7 @@ Public Class Utilities
       'Loop through each item in the list created above 
       'and check if the header contains that text
       For Each s As String In mobiles
-        If context.Request.ServerVariables("HTTP_USER_AGENT").ToLower().Contains(s.ToLower()) Then
+        If context.Request.ServerVariables("HTTP_USER_AGENT").ToLower().Contains(s) Then
           Return True
         End If
       Next
@@ -214,14 +191,14 @@ Public Class Utilities
        & "." & Assembly.GetExecutingAssembly.GetName.Version.Build.ToString
 
       If sAssemblyName = ASSEMBLYNAME Then
-        ' Compiled version of the web site, so perform version checks.
+        ' Compiled version of the web site
         If sWebSiteVersion.Length = 0 Then
           sTitle &= " (unknown version)"
         Else
           sTitle &= " - v" & sWebSiteVersion
         End If
       Else
-        ' Development version of the web site, so do NOT perform version checks.
+        ' Development version of the web site
         sTitle &= " (development)"
       End If
     Catch ex As Exception

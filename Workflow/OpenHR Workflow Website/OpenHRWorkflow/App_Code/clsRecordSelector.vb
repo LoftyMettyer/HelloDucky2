@@ -148,10 +148,10 @@ Public Class RecordSelector
 
     ' Div to contain all items
     writer.Write("<div ID='" & Me.ID.ToString.Replace("Grid", "") & "' " & _
-        IIf(IsLookup, "style='", "style='position:absolute;") & _
+        If(IsLookup, "style='", "style='position:absolute;") & _
         " width:" & CalculateWidth() & ";height:" & CalculateHeight() & ";" & _
-        IIf(IsLookup, "", "top:" & Me.Style.Item("TOP").ToString & ";") & _
-        IIf(IsLookup, "", "left:" & Me.Style.Item("LEFT").ToString & ";") & _
+        If(IsLookup, "", "top:" & Me.Style.Item("TOP").ToString & ";") & _
+        If(IsLookup, "", "left:" & Me.Style.Item("LEFT").ToString & ";") & _
         sDivStyle & _
         ";overflow:hidden;border-color:black;border-style:solid;border-width:1px;background-color:" & _
         General.GetHtmlColour(System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.FromArgb(customHeader.BackColor.A, customHeader.BackColor.R, customHeader.BackColor.G, customHeader.BackColor.B)).ToString) & _
@@ -162,7 +162,7 @@ Public Class RecordSelector
                 " style='position:absolute;top:0px;left:0px;width:" & CalculateGridWidth() & ";height:" & CalculateHeaderHeight() & _
                 ";table-layout:fixed;border:0'" & _
                 " cellspacing='" & Me.CellSpacing.ToString() & "'" & _
-                IIf((MyBase.HeaderRow IsNot Nothing And Me.IsEmpty = False), " class='resizable'", "") & _
+                If((MyBase.HeaderRow IsNot Nothing And Me.IsEmpty = False), " class='resizable'", "") & _
                 ">")
 
     If MyBase.HeaderRow IsNot Nothing Then
@@ -256,8 +256,8 @@ Public Class RecordSelector
       End If
     Else
       Dim iGridWidth As Integer = m_iVisibleColumnCount * (iColWidth + 2) ' 2 = padding
-      iGridWidth = CInt(IIf(iGridWidth < 0, 1, iGridWidth))
-      iGridWidth = CInt(IIf(iGridWidth < Me.Width.Value, Me.Width.Value, iGridWidth))
+      iGridWidth = CInt(If(iGridWidth < 0, 1, iGridWidth))
+      iGridWidth = CInt(If(iGridWidth < Me.Width.Value, Me.Width.Value, iGridWidth))
 
       ' do rows exceed height?
       'If MyBase.Rows.Count > MAXDROPDOWNROWS Then
@@ -285,8 +285,8 @@ Public Class RecordSelector
       ' Set the size of the grid as per old DropDown setting...
       ' remember that the height for lookups will only be c.21pixels...
       Dim iRowHeight As Integer = iHeight - 6
-      iRowHeight = CInt(IIf(iRowHeight < 21, 21, iRowHeight))
-      Dim iDropHeight As Integer = (iRowHeight * CInt(IIf(MyBase.Rows.Count > MAXDROPDOWNROWS, MAXDROPDOWNROWS, MyBase.Rows.Count))) + 1
+      iRowHeight = CInt(If(iRowHeight < 21, 21, iRowHeight))
+      Dim iDropHeight As Integer = (iRowHeight * CInt(If(MyBase.Rows.Count > MAXDROPDOWNROWS, MAXDROPDOWNROWS, MyBase.Rows.Count))) + 1
 
       iDropHeight += iRowHeight  ' add row for headers
       iDropHeight += 30   ' Pager height - now it's always displayed.
@@ -309,7 +309,7 @@ Public Class RecordSelector
     ' + (2 * iGapBetweenBorderAndText)
 
     'iTempHeight = NullSafeInteger(ctlForm_GridContainer.Height.Value)
-    'iTempHeight = CInt(IIf(iTempHeight < 0, 1, iTempHeight))
+    'iTempHeight = CInt(If(iTempHeight < 0, 1, iTempHeight))
 
     'MyBase.Style.Remove("width")
     'MyBase.Style.Add("width", "183px")
@@ -331,8 +331,8 @@ Public Class RecordSelector
       End If
     Else
       Dim iGridWidth As Integer = m_iVisibleColumnCount * (iColWidth + 2) ' 2 = padding
-      iGridWidth = CInt(IIf(iGridWidth < 0, 1, iGridWidth))
-      iGridWidth = CInt(IIf(iGridWidth < Me.Width.Value, Me.Width.Value, iGridWidth))
+      iGridWidth = CInt(If(iGridWidth < 0, 1, iGridWidth))
+      iGridWidth = CInt(If(iGridWidth < Me.Width.Value, Me.Width.Value, iGridWidth))
 
       ' do rows exceed height?
       'If MyBase.Rows.Count > MAXDROPDOWNROWS Then
@@ -830,7 +830,7 @@ Public Class RecordSelector
       Next
 
       ' Get the ID from the column and store it.
-      Me.SelectedID(grdGrid) = IIf(iIDColNum > 0, NullSafeInteger(grdGrid.Rows(e.NewSelectedIndex).Cells(iIDColNum).Text), -1)
+      Me.SelectedID(grdGrid) = If(iIDColNum > 0, NullSafeInteger(grdGrid.Rows(e.NewSelectedIndex).Cells(iIDColNum).Text), -1)
 
     End If
 
@@ -935,8 +935,8 @@ Public Class RecordSelector
             ' this sort order already set, so update.
 
             Me.sortBy = Me.sortBy.Replace("[" & e.SortExpression.Replace(" ", "_").Replace("+", "") & "]" & _
-                                          IIf(e.SortDirection = WebControls.SortDirection.Ascending, " Desc", " Asc"), "[" & e.SortExpression.Replace(" ", "_").Replace("+", "") & "]" & _
-                                          IIf(e.SortDirection = WebControls.SortDirection.Ascending, " Asc", " Desc"))
+                                          If(e.SortDirection = WebControls.SortDirection.Ascending, " Desc", " Asc"), "[" & e.SortExpression.Replace(" ", "_").Replace("+", "") & "]" & _
+                                          If(e.SortDirection = WebControls.SortDirection.Ascending, " Asc", " Desc"))
           Else
             Me.sortBy &= "," & SortSQL.Replace("+", "")
           End If
@@ -1121,7 +1121,7 @@ Public Class RecordSelector
       .Style.Add("cursor", "pointer")
       .Style.Add("border-style", "none")
       .CausesValidation = False
-      .Attributes.Add("onclick", IIf(IsLookup, "try{$get('txtActiveDDE').value='" & grdGrid.ID.Replace("Grid", "dde") & "';setPostbackMode(3);}catch(e){};", "try{setPostbackMode(3);}catch(e){};"))
+      .Attributes.Add("onclick", If(IsLookup, "try{$get('txtActiveDDE').value='" & grdGrid.ID.Replace("Grid", "dde") & "';setPostbackMode(3);}catch(e){};", "try{setPostbackMode(3);}catch(e){};"))
       AddHandler .Command, AddressOf Me.PagerCommand
     End With
 
@@ -1136,7 +1136,7 @@ Public Class RecordSelector
       .Style.Add("cursor", "pointer")
       .Style.Add("border-style", "none")
       .CausesValidation = False
-      .Attributes.Add("onclick", IIf(IsLookup, "try{$get('txtActiveDDE').value='" & grdGrid.ID.Replace("Grid", "dde") & "';setPostbackMode(3);}catch(e){};", "try{setPostbackMode(3);}catch(e){};"))
+      .Attributes.Add("onclick", If(IsLookup, "try{$get('txtActiveDDE').value='" & grdGrid.ID.Replace("Grid", "dde") & "';setPostbackMode(3);}catch(e){};", "try{setPostbackMode(3);}catch(e){};"))
       AddHandler .Command, AddressOf Me.PagerCommand
     End With
 
@@ -1151,7 +1151,7 @@ Public Class RecordSelector
       .Style.Add("cursor", "pointer")
       .Style.Add("border-style", "none")
       .CausesValidation = False
-      .Attributes.Add("onclick", IIf(IsLookup, "try{$get('txtActiveDDE').value='" & grdGrid.ID.Replace("Grid", "dde") & "';setPostbackMode(3);}catch(e){};", "try{setPostbackMode(3);}catch(e){};"))
+      .Attributes.Add("onclick", If(IsLookup, "try{$get('txtActiveDDE').value='" & grdGrid.ID.Replace("Grid", "dde") & "';setPostbackMode(3);}catch(e){};", "try{setPostbackMode(3);}catch(e){};"))
       AddHandler .Command, AddressOf Me.PagerCommand
     End With
 
@@ -1166,7 +1166,7 @@ Public Class RecordSelector
       .Style.Add("cursor", "pointer")
       .Style.Add("border-style", "none")
       .CausesValidation = False
-      .Attributes.Add("onclick", IIf(IsLookup, "try{$get('txtActiveDDE').value='" & grdGrid.ID.Replace("Grid", "dde") & "';setPostbackMode(3);}catch(e){};", "try{setPostbackMode(3);}catch(e){};"))
+      .Attributes.Add("onclick", If(IsLookup, "try{$get('txtActiveDDE').value='" & grdGrid.ID.Replace("Grid", "dde") & "';setPostbackMode(3);}catch(e){};", "try{setPostbackMode(3);}catch(e){};"))
       AddHandler .Command, AddressOf Me.PagerCommand
     End With
 
@@ -1226,7 +1226,7 @@ Public Class RecordSelector
       .SelectedIndex = Me.PageIndex
       .CausesValidation = False
       .Attributes.Add("onclick", "event.cancelBubble=true;")
-      .Attributes.Add("onchange", IIf(IsLookup, "try{$get('txtActiveDDE').value='" & grdGrid.ID.Replace("Grid", "dde") & "';setPostbackMode(3);}catch(e){};", "try{setPostbackMode(3);}catch(e){};"))
+      .Attributes.Add("onchange", If(IsLookup, "try{$get('txtActiveDDE').value='" & grdGrid.ID.Replace("Grid", "dde") & "';setPostbackMode(3);}catch(e){};", "try{setPostbackMode(3);}catch(e){};"))
       AddHandler .SelectedIndexChanged, AddressOf Me.ddlPages_SelectedIndexChanged
     End With
 
