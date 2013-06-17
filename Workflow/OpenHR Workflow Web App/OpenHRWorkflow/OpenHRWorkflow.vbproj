@@ -492,7 +492,6 @@
     </None>
     <Content Include="Site.master" />
     <Content Include="web.config" />
-    <Content Include="web.custom.config" />
     <None Include="web.custom.config.template" />
   </ItemGroup>
   <ItemGroup>
