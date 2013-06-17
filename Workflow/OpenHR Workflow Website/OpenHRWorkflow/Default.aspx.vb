@@ -444,19 +444,14 @@ Public Class _Default
                   sWebSiteVersion = "&lt;unknown&gt;"
                 End If
 
-                sMessage = "The Workflow website version (" & sWebSiteVersion & ")" & _
-                 " is incompatible with the database version (" & sDBVersion & ")." & _
-                 "<BR><BR>Contact your system administrator."
+                sMessage = "The Workflow website version (" & sWebSiteVersion & ")" & " is incompatible with the database version (" & sDBVersion & ")." & "<BR><BR>Contact your system administrator."
               End If
             End If
 
             cmdCheck.Dispose()
           End If
 
-          If (sMessage.Length = 0) _
-           And (miInstanceID < 0) _
-           And (miElementID = -1) _
-           And (Not IsPostBack) Then
+          If (sMessage.Length = 0) And (miInstanceID < 0) And (miElementID = -1) And (Not IsPostBack) Then
 
             ' Externally initiated Workflow.
             iWorkflowID = -miInstanceID
@@ -648,12 +643,12 @@ Public Class _Default
                   Dim control = New HtmlInputButton
                   With control
                     .ID = sID
-                    .Attributes.Add("TabIndex", NullSafeInteger(dr("tabIndex")).ToString)
-                    UpdateAutoFocusControl(NullSafeShort(dr("tabIndex")), sID)
-
-                    .Style.ApplyFont(dr)
                     .Style.ApplyLocation(dr)
                     .Style.ApplySize(dr)
+                    .Style.ApplyFont(dr)
+
+                    .Attributes.Add("TabIndex", NullSafeInteger(dr("tabIndex")).ToString)
+                    UpdateAutoFocusControl(NullSafeShort(dr("tabIndex")), sID)
 
                     ' If the button has no caption, we treat as a transparent button.
                     ' This is so we can emulate picture buttons with very little code changes.
@@ -695,98 +690,57 @@ Public Class _Default
                   AddHandler control.ServerClick, AddressOf ButtonClick
 
                 Case 1 ' Database value
-                  'TODO PG combine with Case 4
-                  If (NullSafeInteger(dr("sourceItemType")) = -7) _
-                   Or (NullSafeInteger(dr("sourceItemType")) = 2) _
-                   Or (NullSafeInteger(dr("sourceItemType")) = 4) _
-                   Or (NullSafeInteger(dr("sourceItemType")) = 11) Then
-                    ' -7 = Logic
-                    ' 2, 4	= Numeric, Integer
-                    ' 11= Date
-                    Dim control = New Label
-                    With control
-                      .ApplyLocation(dr)
-                      .ApplySize(dr)
-                      .Style.ApplyFont(dr)
-                      .ApplyColor(dr, True)
 
-                      If NullSafeBoolean(dr("PictureBorder")) Then
-                        .ApplyBorder(True)
-                      End If
+                  Dim control = New Label
+                  With control
+                    .ApplyLocation(dr)
+                    .ApplySize(dr)
+                    .Style.ApplyFont(dr)
+                    .ApplyColor(dr, True)
 
-                      .Style("word-wrap") = "break-word"
-                      .Style("overflow") = "auto"
-                      .Style("text-align") = "left"
+                    If NullSafeBoolean(dr("PictureBorder")) Then
+                      .ApplyBorder(True)
+                    End If
 
-                      Select Case NullSafeInteger(dr("sourceItemType"))
-                        Case -7 ' Logic
-                          If NullSafeString(dr("value")) = String.Empty Then
-                            .Text = "&lt;undefined&gt;"
-                          ElseIf NullSafeString(dr("value")) = "1" Then
-                            .Text = Boolean.TrueString
-                          Else
-                            .Text = Boolean.FalseString
-                          End If
+                    .Style("word-wrap") = "break-word"
+                    .Style("overflow") = "auto"
 
-                        Case 2, 4   ' Numeric, Integer
-                          If IsDBNull(dr("value")) Then
-                            sTemp = "&lt;undefined&gt;"
-                          Else
-                            sTemp = CStr(dr("value")).Replace(".", Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator)
-                          End If
-                          If sTemp.Chars(0) = "-" Then
-                            sTemp = sTemp.Substring(1) & "-"
-                          End If
-                          .Text = sTemp
-                          .Style("direction") = "rtl"
+                    Select Case NullSafeInteger(dr("sourceItemType"))
+                      Case -7 ' Logic
+                        If NullSafeString(dr("value")) = String.Empty Then
+                          .Text = "&lt;undefined&gt;"
+                        ElseIf NullSafeString(dr("value")) = "1" Then
+                          .Text = Boolean.TrueString
+                        Else
+                          .Text = Boolean.FalseString
+                        End If
 
-                        Case 11 ' Date
-                          If NullSafeString(dr("value")) = String.Empty Then
-                            .Text = "&lt;undefined&gt;"
-                          ElseIf CStr(dr("value")).Trim.Length = 0 Then
-                            .Text = "&lt;undefined&gt;"
-                          Else
-                            .Text = General.ConvertSqlDateToLocale(NullSafeString(dr("value")))
-                          End If
-                      End Select
+                      Case 2, 4   ' Numeric, Integer
+                        If IsDBNull(dr("value")) Then
+                          sTemp = "&lt;undefined&gt;"
+                        Else
+                          sTemp = CStr(dr("value")).Replace(".", Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator)
+                        End If
+                        If sTemp.Chars(0) = "-" Then
+                          sTemp = sTemp.Substring(1) & "-"
+                        End If
+                        .Text = sTemp
 
-                    End With
+                      Case 11 ' Date
+                        If NullSafeString(dr("value")) = String.Empty Then
+                          .Text = "&lt;undefined&gt;"
+                        ElseIf CStr(dr("value")).Trim.Length = 0 Then
+                          .Text = "&lt;undefined&gt;"
+                        Else
+                          .Text = General.ConvertSqlDateToLocale(NullSafeString(dr("value")))
+                        End If
+                      Case Else 'Text
+                        .Text = NullSafeString(dr("value"))
+                    End Select
 
-                    ctlForm_PageTab(iCurrentPageTab).Controls.Add(control)
+                  End With
 
-                  Else
-                    ' Text
-
-                    'TODO PG NOW replace text area's with labels as above, IOS forces huge padding on text areas, fine when border is visible but not when invisible cos
-                    'doesnt match up with other controls alignments
-
-                    Dim control = New TextBox
-                    With control
-                      .TabIndex = -1
-
-                      .ApplyLocation(dr)
-                      .ApplySize(dr)
-                      .Style.ApplyFont(dr)
-                      .ApplyColor(dr, True)
-
-                      If NullSafeBoolean(dr("PictureBorder")) Then
-                        .ApplyBorder(True)
-                      Else
-                        .BorderStyle = BorderStyle.None
-                      End If
-
-                      .Style("word-wrap") = "break-word"
-                      .Style("overflow") = "auto"
-                      .Style("text-align") = "left"
-                      .TextMode = TextBoxMode.MultiLine
-                      .Wrap = True
-                      .ReadOnly = True
-
-                      .Text = NullSafeString(dr("value"))
-                    End With
-
-                    ctlForm_PageTab(iCurrentPageTab).Controls.Add(control)
-                  End If
+                  ctlForm_PageTab(iCurrentPageTab).Controls.Add(control)
 
                 Case 2 ' Label
                   Dim control = New Label
@@ -803,7 +757,6 @@ Public Class _Default
                     '.Style("word-wrap") = "break-word"
                     ' NPG20120305 Fault HRPRO-1967 reverted by PBG20120419 Fault HRPRO-2157
                     .Style("overflow") = "auto"
-                    .Style("text-align") = "left"
 
                     If NullSafeInteger(dr("captionType")) = 3 Then
                       ' Calculated caption
@@ -856,93 +809,58 @@ Public Class _Default
                   ctlForm_PageTab(iCurrentPageTab).Controls.Add(control)
 
                 Case 4 ' Workflow value
-                  If (NullSafeInteger(dr("sourceItemType")) = 6) _
-                   Or (NullSafeInteger(dr("sourceItemType")) = 5) _
-                   Or (NullSafeInteger(dr("sourceItemType")) = 7) Then
-                    ' 6 = Logic
-                    ' 5 = Number
-                    ' 7 = Date
 
-                    Dim control = New Label
-                    With control
-                      .ApplyLocation(dr)
-                      .ApplySize(dr)
-                      .Style.ApplyFont(dr)
-                      .ApplyColor(dr, True)
+                  Dim control = New Label
+                  With control
+                    .ApplyLocation(dr)
+                    .ApplySize(dr)
+                    .Style.ApplyFont(dr)
+                    .ApplyColor(dr, True)
 
-                      If NullSafeBoolean(dr("PictureBorder")) Then
-                        .ApplyBorder(True)
-                      End If
+                    If NullSafeBoolean(dr("PictureBorder")) Then
+                      .ApplyBorder(True)
+                    End If
 
-                      .Style("word-wrap") = "break-word"
-                      .Style("overflow") = "auto"
-                      .Style("text-align") = "left"
+                    .Style("word-wrap") = "break-word"
+                    .Style("overflow") = "auto"
 
-                      Select Case NullSafeInteger(dr("sourceItemType"))
-                        Case 6 ' Logic
-                          If NullSafeString(dr("value")) = String.Empty Then
-                            .Text = "&lt;undefined&gt;"
-                          ElseIf NullSafeString(dr("value")) = "1" Then
-                            .Text = Boolean.TrueString
-                          Else
-                            .Text = Boolean.FalseString
-                          End If
+                    Select Case NullSafeInteger(dr("sourceItemType"))
+                      Case 6 ' Logic
+                        If NullSafeString(dr("value")) = String.Empty Then
+                          .Text = "&lt;undefined&gt;"
+                        ElseIf NullSafeString(dr("value")) = "1" Then
+                          .Text = Boolean.TrueString
+                        Else
+                          .Text = Boolean.FalseString
+                        End If
 
-                        Case 5 ' Number
-                          If NullSafeString(dr("value")) = String.Empty Then
-                            sTemp = String.Empty
-                          Else
-                            sTemp = NullSafeString(dr("value")).Replace(".", Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator)
-                          End If
+                      Case 5 ' Number
+                        If NullSafeString(dr("value")) = String.Empty Then
+                          sTemp = String.Empty
+                        Else
+                          sTemp = NullSafeString(dr("value")).Replace(".", Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator)
+                        End If
 
-                          If sTemp.Length > 0 AndAlso sTemp.Chars(0) = "-" Then
-                            sTemp = sTemp.Substring(1) & "-"
-                          End If
-                          .Text = sTemp
-                          .Style("direction") = "rtl"
+                        If sTemp.Length > 0 AndAlso sTemp.Chars(0) = "-" Then
+                          sTemp = sTemp.Substring(1) & "-"
+                        End If
+                        .Text = sTemp
 
-                        Case 7 ' Date
-                          If IsDBNull(dr("value")) Then
-                            .Text = "&lt;undefined&gt;"
-                          ElseIf CStr(dr("value")).Trim.ToUpper = "NULL" Then
-                            .Text = "&lt;undefined&gt;"
-                          Else
-                            .Text = General.ConvertSqlDateToLocale(NullSafeString(dr("value")))
-                          End If
-                      End Select
+                      Case 7 ' Date
+                        If IsDBNull(dr("value")) Then
+                          .Text = "&lt;undefined&gt;"
+                        ElseIf CStr(dr("value")).Trim.ToUpper = "NULL" Then
+                          .Text = "&lt;undefined&gt;"
+                        Else
+                          .Text = General.ConvertSqlDateToLocale(NullSafeString(dr("value")))
+                        End If
+                      Case Else 'Text
+                        .Text = NullSafeString(dr("value"))
+                    End Select
 
-                    End With
+                  End With
 
-                    ctlForm_PageTab(iCurrentPageTab).Controls.Add(control)
-                  Else
-                    ' Text
-                    Dim control = New TextBox
-                    With control
-                      .TabIndex = -1
-
-                      .ApplyLocation(dr)
-                      .ApplySize(dr)
-                      .Style.ApplyFont(dr)
-                      .ApplyColor(dr, True)
-
-                      If NullSafeBoolean(dr("PictureBorder")) Then
-                        .ApplyBorder(True)
-                      Else
-                        .BorderStyle = BorderStyle.None
-                      End If
-
-                      .Style("word-wrap") = "break-word"
-                      .Style("overflow") = "auto"
-                      .Style("text-align") = "left"
-                      .TextMode = TextBoxMode.MultiLine
-                      .Wrap = True
-                      .ReadOnly = True
-
-                      .Text = NullSafeString(dr("value"))
-                    End With
-
-                    ctlForm_PageTab(iCurrentPageTab).Controls.Add(control)
-                  End If
+                  ctlForm_PageTab(iCurrentPageTab).Controls.Add(control)
 
                 Case 5 ' Input value - numeric
 
@@ -1116,22 +1034,19 @@ Public Class _Default
                     height -= fontAdjustment
                   End If
 
-                  sTemp = "<fieldset style='z-index: 0; " & _
+                  sTemp = "<fieldset style='" & _
+                 " position: absolute;" & _
                  " top: " & top & "px;" & _
                  " left: " & left & "px;" & _
                  " width: " & width & "px;" & _
                  " height: " & height & "px;" & _
                  " " & GetFontCss(dr) & _
                  " " & GetColorCss(dr) & _
-                 " border: solid 1px #9894a3;" & _
-                 " position: absolute;'>"
+                 " border: 1px solid #999;" & _
+                 " '>"
 
                   If NullSafeString(dr("caption")).Trim.Length > 0 Then
-
-                    sTemp += "<legend style='color: " & General.GetHtmlColour(NullSafeInteger(dr("ForeColor"))) & ";" & _
-                    " margin-left: 5px; margin-right:5px; padding-left: 2px; padding-right: 2px;' align='Left'>" & _
-                    NullSafeString(dr("caption")) & _
-                    "</legend>" & vbCrLf
+                    sTemp += String.Format("<legend>{0}</legend>", NullSafeString(dr("caption"))) & vbCrLf
                   End If
 
                   sTemp += "</fieldset>" & vbCrLf
@@ -1398,9 +1313,7 @@ Public Class _Default
                       cmdGrid.Dispose()
 
                     Catch ex As Exception
-                      sMessage = "Error loading web form grid values:<BR><BR>" & _
-                       ex.Message.Replace(vbCrLf, "<BR>") & "<BR><BR>" & _
-                       "Contact your system administrator."
+                      sMessage = "Error loading web form grid values:<BR><BR>" & ex.Message.Replace(vbCrLf, "<BR>") & "<BR><BR>" & "Contact your system administrator."
                       Exit While
 
                     Finally
@@ -1430,8 +1343,6 @@ Public Class _Default
                     ' ============================================================
                     Dim textBox = New TextBox
 
-                    Dim backgroundColor As Color = General.GetColour(NullSafeInteger(dr("BackColor")))
-
                     With textBox
                       .ID = sID & "TextBox"
                       .ApplyLocation(dr)
@@ -1445,7 +1356,6 @@ Public Class _Default
 
                       .ReadOnly = True
                       .Style.Add("padding", "1px")
-                      .Style.Add("z-index", "0")
                       .Style.Add("background-image", "url('images/downarrow.gif')")
                       .Style.Add("background-position", "right top")
                       .Style.Add("background-repeat", "no-repeat")
@@ -1590,9 +1500,7 @@ Public Class _Default
 
                       Catch ex As Exception
 
-                        sMessage = "Error loading lookup values:<BR><BR>" & _
-                         ex.Message.Replace(vbCrLf, "<BR>") & "<BR><BR>" & _
-                         "Contact your system administrator."
+                        sMessage = "Error loading lookup values:<BR><BR>" & ex.Message.Replace(vbCrLf, "<BR>") & "<BR><BR>" & "Contact your system administrator."
                         Exit While
 
                       Finally
@@ -1626,7 +1534,7 @@ Public Class _Default
                     With dde
                       .DropArrowImageUrl = "~/Images/Blank.gif"
                       .DropArrowBackColor = Color.Transparent
-                      .HighlightBackColor = Color.White
+                      .HighlightBackColor = textBox.BackColor
                       .HighlightBorderColor = textBox.BorderColor
 
                       ' Careful with the case here, use 'dde' in JavaScript:
@@ -1890,9 +1798,7 @@ Public Class _Default
                         cmdGrid.Dispose()
 
                       Catch ex As Exception
-                        sMessage = "Error loading lookup values:<BR><BR>" & _
-                         ex.Message.Replace(vbCrLf, "<BR>") & "<BR><BR>" & _
-                         "Contact your system administrator."
+                        sMessage = "Error loading lookup values:<BR><BR>" & ex.Message.Replace(vbCrLf, "<BR>") & "<BR><BR>" & "Contact your system administrator."
                         Exit While
 
                       Finally
@@ -1928,7 +1834,7 @@ Public Class _Default
                     borderCss = "border-style: none;"
                     radioTop = 2
                   Else
-                    borderCss = "border: solid 1px #9894a3;"
+                    borderCss = "border: 1px solid #999;"
                     width -= 2
                     height -= 2
 
@@ -1944,7 +1850,8 @@ Public Class _Default
                     End If
                   End If
 
-                  sTemp = "<fieldset style='z-index: 0; " & _
+                  sTemp = "<fieldset style='" & _
+                   " position: absolute; " & _
                    " top: " & top & "px; " & _
                    " left: " & left & "px; " & _
                    " width: " & width & "px; " & _
@@ -1952,14 +1859,10 @@ Public Class _Default
                    " " & GetFontCss(dr) & _
                    " " & GetColorCss(dr) & _
                    " " & borderCss & _
-                   " position: absolute;'>"
+                   " '>"
 
                   If NullSafeBoolean(dr("PictureBorder")) And (NullSafeString(dr("caption")).Trim.Length > 0) Then
-
-                    sTemp += "<legend style='color: " & General.GetHtmlColour(NullSafeInteger(dr("ForeColor"))) & ";" & _
-                    " margin-left: 5px; margin-right:5px; padding-left: 2px; padding-right: 2px;' align='Left'>" & _
-                    NullSafeString(dr("caption")) & _
-                    "</legend>"
+                    sTemp += String.Format("<legend>{0}</legend>", NullSafeString(dr("caption"))) & vbCrLf
                   End If
 
                   sTemp += "</fieldset>" & vbCrLf
@@ -2025,9 +1928,7 @@ Public Class _Default
                       cmdGrid.Dispose()
 
                     Catch ex As Exception
-                      sMessage = "Error loading web form option group values:<BR><BR>" & _
-                      ex.Message.Replace(vbCrLf, "<BR>") & "<BR><BR>" & _
-                      "Contact your system administrator."
+                      sMessage = "Error loading web form option group values:<BR><BR>" & ex.Message.Replace(vbCrLf, "<BR>") & "<BR><BR>" & "Contact your system administrator."
                       Exit While
 
                     Finally
@@ -2092,7 +1993,7 @@ Public Class _Default
                 Case 19, 20 ' DB File or WF File
 
                   sTemp = "<span id='" & sID & "' tabindex=" & NullSafeInteger(dr("tabIndex")).ToString & _
-                   " style='position: absolute; display:inline-block; word-wrap:break-word; overflow:auto; text-align:left;" & _
+                   " style='position: absolute; display:inline-block; word-wrap:break-word; overflow:auto;" & _
                    " top: " & NullSafeString(dr("TopCoord")) & "px;" & _
                    " left: " & NullSafeString(dr("LeftCoord")) & "px;" & _
                    " height:" & NullSafeString(dr("Height")) & "px;" & _
@@ -2324,18 +2225,14 @@ Public Class _Default
           AddHeaderTags(iFormWidth)
 
         Catch ex As Exception
-          sMessage = "Error loading web form controls:<BR><BR>" & _
-           ex.Message.Replace(vbCrLf, "<BR>") & "<BR><BR>" & _
-           "Contact your system administrator."
+          sMessage = "Error loading web form controls:<BR><BR>" & ex.Message.Replace(vbCrLf, "<BR>") & "<BR><BR>" & "Contact your system administrator."
         Finally
           conn.Close()
           conn.Dispose()
         End Try
 
       Catch ex As Exception   ' conn creation 
-        sMessage = "Error creating SQL connection:<BR><BR>" & _
-        ex.Message.Replace(vbCrLf, "<BR>") & "<BR><BR>" & _
-        "Contact your system administrator."
+        sMessage = "Error creating SQL connection:<BR><BR>" & ex.Message.Replace(vbCrLf, "<BR>") & "<BR><BR>" & "Contact your system administrator."
       End Try
     End If
 

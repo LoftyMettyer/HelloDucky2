@@ -96,41 +96,59 @@ Public Module Extensions
   <Extension()> _
   Public Sub ApplyColor(value As WebControl, dataReader As IDataReader, Optional canBeTranparent As Boolean = False)
 
-    value.ForeColor = General.GetColour(NullSafeInteger(dataReader("ForeColor")))
-
-    'TODO PG NOW if default vb choose own color
-    value.ForeColor = ColorTranslator.FromHtml("#333")
+    value.ForeColor = General.GetColour(AdjustedForeColor(NullSafeInteger(dataReader("ForeColor"))))
 
     If canBeTranparent AndAlso NullSafeInteger(dataReader("BackStyle")) = 0 Then
       value.BackColor = Color.Transparent
     Else
-      'TODO NOW PG if vb default choose backcolor, or dont set one
-      'value.BackColor = General.GetColour(NullSafeInteger(dataReader("BackColor")))
+      value.BackColor = General.GetColour(AdjustedBackColor(NullSafeInteger(dataReader("BackColor"))))
     End If
 
   End Sub
 
+  Private Function AdjustedForeColor(color As Integer) As Integer
+    'TODO PG NOW
+    Select Case color
+      Case 6697779 '#333366
+        Return 3355443 '#333333
+      Case Else
+        Return color
+    End Select
+    Return color
+  End Function
+
+  Private Function AdjustedBackColor(color As Integer) As Integer
+    'TODO NOW PG
+    Select Case color
+      Case 15988214
+        Return 16777215 '#FFFFFF
+      Case Else
+        Return color
+    End Select
+    Return color
+  End Function
+
   <Extension()> _
   Public Sub ApplyColor(value As CssStyleCollection, dataReader As IDataReader, Optional canBeTransparent As Boolean = False)
 
-    value("color") = General.GetHtmlColour(NullSafeInteger(dataReader("ForeColor")))
+    value("color") = General.GetHtmlColour(AdjustedForeColor(NullSafeInteger(dataReader("ForeColor"))))
 
     If canBeTransparent AndAlso NullSafeInteger(dataReader("BackStyle")) = 0 Then
-      value("background-color") = General.GetHtmlColour(NullSafeInteger(dataReader("BackColor")))
+      value("background-color") = "transparent"
     Else
-      value("background-color") = General.GetHtmlColour(NullSafeInteger(dataReader("BackColor")))
+      value("background-color") = General.GetHtmlColour(AdjustedBackColor(NullSafeInteger(dataReader("BackColor"))))
     End If
 
   End Sub
 
   Public Function GetColorCss(datareader As IDataReader, Optional canBeTransparent As Boolean = False) As String
 
-    Dim css As String = "color: " & General.GetHtmlColour(NullSafeInteger(datareader("ForeColor"))) & ";"
+    Dim css As String = "color: " & General.GetHtmlColour(AdjustedForeColor(NullSafeInteger(datareader("ForeColor")))) & ";"
 
     If canBeTransparent AndAlso NullSafeInteger(datareader("BackStyle")) = 0 Then
       css += " background-color: transparent;"
     Else
-      css += " background-color: " & General.GetHtmlColour(NullSafeInteger(datareader("BackColor"))) & ";"
+      css += " background-color: " & General.GetHtmlColour(AdjustedBackColor(NullSafeInteger(datareader("BackColor")))) & ";"
     End If
 
     Return css
@@ -141,7 +159,7 @@ Public Module Extensions
   Public Sub ApplyBorder(value As WebControl, adjustSize As Boolean, Optional adjustSizeAmount As Integer = -4)
 
     value.BorderStyle = BorderStyle.Solid
-    value.BorderColor = ColorTranslator.FromHtml("#999999")
+    value.BorderColor = ColorTranslator.FromHtml("#999")
     value.BorderWidth = Unit.Pixel(1)
 
     If adjustSize Then

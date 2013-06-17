@@ -18,7 +18,9 @@ input[type="button"] { padding: 0px; }
 
 /* Frames */
 fieldset, legend { padding: 0px; margin: 0px; }
-        
+     
+legend { margin-left: 5px; margin-right:5px; padding-left: 2px; padding-right: 2px; } 
+     
 /* Record Selectors */
 .recordSelector {
     text-align: left;

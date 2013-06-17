@@ -70,13 +70,11 @@
 
     </script>
 </head>
-<body id="bdyMain" style="overflow: auto; text-align: center; background-color: <%= ColourThemeHex()%>;">
-<%-- TODO PG get rid off text-align: center --%>
+<body id="bdyMain" style="overflow: auto; background-color: <%= ColourThemeHex()%>;">
 
   <form runat="server" id="frmMain" onsubmit="return submitForm();" autocomplete="off">
 	    
-  <div id="innerMeasurements" style="visibility:hidden;background-color:red;position:fixed;top:0px;left:0px;right:0px;bottom:0px;">
-  </div>    
+  <div id="innerMeasurements" style="visibility:hidden;background-color:red;position:fixed;top:0px;left:0px;right:0px;bottom:0px;"></div>    
 
   <script type="text/javascript">
     //Fault HRPRO-2269 - includes the 'innerMeasurements' div shown above.
@@ -91,7 +89,6 @@
     <%--    <script src="Scripts/default.js" type="text/javascript"></script>
     <script src="Scripts/resizable-table.js" type="text/javascript"></script>--%>
      
-    <%--TODO remove the file WebNumericEditValidation.js --%>
     <ajx:ToolkitScriptManager ID="tsm" runat="server" 
         EnablePartialRendering="true" EnablePageMethods="true" CombineScripts="True" 
         LoadScriptsBeforeUI="True">
@@ -105,29 +102,24 @@
         </CompositeScript>
     </ajx:ToolkitScriptManager>   
 
-    <div id="pleasewaitScreen" style="display:none">
+    <div id="pleasewaitScreen" style="display:none;">
         <span id="pleasewaitText">Processing...<br/><br/>Please wait.</span>
 	</div>
 		
-	<!--
-    Submission and Exceptional Errors Popup
-    -->
+	<!-- Submission and Exceptional Errors Popup -->
 	<div id="divSubmissionMessages" style="position: absolute; left: 0px; top: 15%; width: 100%; display: none; z-index: 102; visibility: hidden; text-align: center;">
 		<iframe id="ifrmMessages" src="" frameborder="0" scrolling="no"></iframe>
 	</div>
-	<!--
-    File Upload Popup
-    -->
+
+	<!-- File Upload Popup -->
 	<div id="divFileUpload" style="position: absolute; left: 0px; top: 15%; width: 100%; display: none; z-index: 101; text-align: center;">
 		<iframe id="ifrmFileUpload" src="" style="width:550px" frameborder="0" scrolling="no"></iframe>
 	</div>
     
     <div id="divOverlay"></div>
 
-	<!--
-        Web Form Controls
-        -->
-	<div id="divInput" style="z-index: 0; text-align: center; float:left" runat="server">
+	<!-- Web Form Controls -->
+	<div id="divInput" style="float:left" runat="server">
         <asp:UpdatePanel ID="pnlInput" runat="server">
             <ContentTemplate>
                 <div id = "pnlInputDiv" runat="server" style="position:relative; margin: 0 auto;">
