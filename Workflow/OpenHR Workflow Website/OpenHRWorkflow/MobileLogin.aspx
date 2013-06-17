@@ -61,20 +61,24 @@
               <table style="position:absolute;width:100%;height:100%" >
                 <tr id="space1" style="width: 100%"><td></td></tr>
                 <tr style="width: 100%; height:21px">
+                  <td colspan="2"><label style="margin:15px" id="lblWelcome" runat="server">lblWelcome</label></td>
+                </tr>
+                <tr id="space2" style="width: 100%"><td></td></tr>
+                <tr style="width: 100%; height:21px">
                   <td style="width:40%" ><label style="margin:15px" id="lblUserName" runat="server">lblUserName</label></td>
                   <td ><input type="text" id="txtUserName" runat="server"/></td>
                 </tr>
-                <tr id="space2" style="width: 100%"><td></td></tr>
+                <tr id="space3" style="width: 100%"><td></td></tr>
                 <tr style="width: 100%; height:21px">
                   <td style="width:50%"><label style="margin:15px" id="lblPassword" runat="server">lblPassword</label></td>
                   <td><input id="txtPassword" runat="server" type="password"/></td>
                 </tr>
-                <tr id="space3" style="width: 100%"><td></td></tr>
+                <tr id="space4" style="width: 100%"><td></td></tr>
                 <tr style="width: 100%; height:21px">
                   <td style="width:50%"><label style="margin:15px" id="lblRememberPwd" runat="server">lblRememberPwd</label></td>
                   <td><input id="chkRememberPwd" type="checkbox" runat="server" /></td>
                 </tr>
-                <tr id="space4" style="width: 100%;height:80%"><td></td></tr>
+                <tr id="space5" style="width: 100%;height:80%"><td></td></tr>
                </table>
             </div>
           </div>
