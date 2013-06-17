@@ -12,6 +12,16 @@ Public Class RecordSelector
 	Private Const DefaultColumnWidth As Integer = 100
 	Private _visibleColumnCount As Integer
 
+	Protected Overrides Sub OnPreRender(e As EventArgs)
+		If SelectedIndex > -1 AndAlso SelectedID(Me) = -1 Then
+			'get the id column number.
+			Dim iIDColNum As Integer = GetIdColumn()
+			'Get the ID from the column and store it.
+			SelectedID(Me) = If(iIDColNum > 0, NullSafeInteger(Rows(0).Cells(iIDColNum).Text), -1)
+		End If
+		MyBase.OnPreRender(e)
+	End Sub
+
 	Protected Overrides Sub Render(ByVal writer As HtmlTextWriter)
 
 		Dim sDivStyle As String = ""
@@ -919,15 +929,7 @@ Public Class RecordSelector
 			SelectedID(Me) = iNewSelectedIndex
 		Else
 			' get the id column number.
-			Dim iIDColNum As Integer = -1
-			For iColCount As Integer = 0 To HeaderRow.Cells.Count - 1
-				Dim sColCaption = HeaderRow.Cells(iColCount).Text
-				If sColCaption.ToUpper = "ID" Then
-					' Here it is
-					iIDColNum = iColCount
-					Exit For
-				End If
-			Next
+			Dim iIDColNum As Integer = GetIdColumn()
 
 			' Get the ID from the column and store it.
 			SelectedID(Me) = If(iIDColNum > 0, NullSafeInteger(Rows(e.NewSelectedIndex).Cells(iIDColNum).Text), -1)
@@ -983,17 +985,8 @@ Public Class RecordSelector
 			Next
 		Else
 			' get the grid's id column number.
-			Dim iColCount As Integer
-			Dim sColCaption As String
-			Dim iIDColNum As Integer = -1
-			For iColCount = 0 To HeaderRow.Cells.Count - 1
-				sColCaption = HeaderRow.Cells(iColCount).Text
-				If sColCaption.ToUpper = "ID" Then
-					' Here it is
-					iIDColNum = iColCount
-					Exit For
-				End If
-			Next
+			Dim iIDColNum As Integer = GetIdColumn()
+
 			If iIDColNum > 0 Then
 				For itemIndex As Integer = 0 To Rows.Count - 1
 					iCurrentIndex = NullSafeInteger(Rows(itemIndex).Cells(iIDColNum).Text)
@@ -1071,6 +1064,23 @@ Public Class RecordSelector
 		End If
 	End Sub
 
+	Private Function GetIdColumn() As Integer
+
+		Dim iColCount As Integer
+		Dim sColCaption As String
+		Dim iIdColNum As Integer = -1
+
+		For iColCount = 0 To HeaderRow.Cells.Count - 1
+			sColCaption = HeaderRow.Cells(iColCount).Text
+			If sColCaption.ToUpper = "ID" Then
+				' Here it is
+				iIdColNum = iColCount
+				Exit For
+			End If
+		Next
+		Return iIdColNum
+	End Function
+
 	Private Sub RecordSelector_Sorted(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Sorted
 
 		' Default behaviour of the gridview is to highlight the same row again when 
@@ -1083,17 +1093,8 @@ Public Class RecordSelector
 
 		If Not IsLookup Then	' don't handle lookup sorting for now - no ID's you see.
 			' get the grid's id column number.
-			Dim iColCount As Integer
-			Dim sColCaption As String
-			Dim iIDColNum As Integer = -1
-			For iColCount = 0 To HeaderRow.Cells.Count - 1
-				sColCaption = HeaderRow.Cells(iColCount).Text
-				If sColCaption.ToUpper = "ID" Then
-					' Here it is
-					iIDColNum = iColCount
-					Exit For
-				End If
-			Next
+			Dim iIDColNum As Integer = GetIdColumn()
+
 			If iIDColNum > 0 Then
 				For itemIndex As Integer = 0 To Rows.Count - 1
 					iCurrentIndex = NullSafeInteger(Rows(itemIndex).Cells(iIDColNum).Text)
