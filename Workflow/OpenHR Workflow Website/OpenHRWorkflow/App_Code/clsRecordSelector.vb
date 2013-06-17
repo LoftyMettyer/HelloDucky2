@@ -999,7 +999,7 @@ Public Class RecordSelector
 
       If dt.Rows.Count = 0 Then
         ' create a blank row to display.
-        Dim objDataRow As System.Data.DataRow
+        Dim objDataRow As DataRow
         objDataRow = dt.NewRow()
         dt.Rows.InsertAt(objDataRow, 0)
       End If

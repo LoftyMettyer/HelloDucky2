@@ -141,7 +141,7 @@ Public Class _Default
     Dim iYear As Int16
     Dim iMonth As Int16
     Dim iDay As Int16
-    Dim objGridColumn As System.Data.DataColumn
+    Dim objGridColumn As DataColumn
     Dim iHeaderHeight As Int32
     Dim iTempHeight As Int32
     Dim iTempWidth As Int32
@@ -2899,9 +2899,11 @@ Public Class _Default
                   ctlTabsDiv.ID = "TabsDiv"
                   ctlTabsDiv.Style.Add("height", TabStripHeight & "px")
 
-                  'TODO
-                  Dim hidden = New HiddenField() With {.ID = sID & "currentTab", .Value = "1"}
-                  pnlTabsDiv.Controls.Add(hidden)
+                  'TODO get previous saved if not postback, think need to call [spASRGetWorkflowItemValues]
+                  Dim currentTab As Integer = 1
+
+                  Dim hiddenCurrentTab = New HiddenField With {.ID = sID & "currenttab", .Value = CStr(currentTab)}
+                  pnlTabsDiv.Controls.Add(hiddenCurrentTab)
 
                   If isMobileBrowser() Then
                     ctlTabsDiv.Style.Add("overflow-x", "auto")
@@ -3210,7 +3212,7 @@ Public Class _Default
             .SelectMany(Function(c) c.Controls.Cast(Of Control)()) _
             .Where(Function(c) c.ClientID.StartsWith(FORMINPUTPREFIX))
 
-      controlList = controlList.Union(pnlTabsDiv.Controls.Cast(Of Control).Where(Function(c) c.ID.EndsWith("currentTab")))
+      controlList = controlList.Union(pnlTabsDiv.Controls.Cast(Of Control).Where(Function(c) c.ClientID.EndsWith("currenttab")))
 
       'TODO check list
       For Each ctlFormInput In controlList
@@ -3398,7 +3400,6 @@ Public Class _Default
 
           Case 21 'Tab control
 
-            'TODO
             sFormInput1 = sFormInput1 & sIDString & DirectCast(ctlFormInput, HiddenField).Value & vbTab
 
         End Select
@@ -4115,7 +4116,7 @@ Public Class _Default
       filterDataTable(dataTable, filterSQL)
 
       ' insert the previously selected item
-      Dim objDataRow As System.Data.DataRow
+      Dim objDataRow As DataRow
       objDataRow = dataTable.NewRow()
       'objDataRow.ItemArray = dataTable.Rows(dropdown.SelectedIndex).ItemArray
       objDataRow(0) = strCurrentSelection
@@ -4161,7 +4162,7 @@ Public Class _Default
 
       If dataTable.Rows.Count < 2 Then
         ' create a blank row to display.
-        Dim objDataRow As System.Data.DataRow
+        Dim objDataRow As DataRow
         objDataRow = dataTable.NewRow()
         dataTable.Rows.InsertAt(objDataRow, 0)
       End If

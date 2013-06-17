@@ -166,7 +166,8 @@
 		var ScrollTopPos;
 
       //Set the current page tab
-      SetCurrentTab(window.$get("frmMain").hdnCurrentTab.value);
+	  //TODO pickup what the current tba should be
+      SetCurrentTab(1);
 
 			try {
 				iDefHeight = window.$get("frmMain").hdnFormHeight.value;
@@ -768,7 +769,9 @@
 		function showMessage() {			 
     
         //Reset current tab position
-        SetCurrentTab(window.$get("frmMain").hdnCurrentTab.value);	
+		    
+        //TODO where to get currentTab value from?
+        //SetCurrentTab(window.$get("frmMain").hdnCurrentTab.value);	
 		
 		$get("pleasewaitScreen").style.visibility="hidden";
 		
@@ -1641,10 +1644,12 @@ function ResizeComboForForm(sender, args) {
       ScrollTopPos = iPos;          
     }
   }
+
+  var iCurrentTab = 1;
   
   function SetCurrentTab(iNewTab) {
       
-    var iCurrentTab = window.$get("frmMain").hdnCurrentTab.value;
+//    var iCurrentTab = window.$get("frmMain").hdnCurrentTab.value;
       
     var currentTab = $get("forminput_" + iCurrentTab + "_21_PageTab");
     var currentPanel = $get("forminput_" + iCurrentTab + "_21_Panel");
@@ -1660,7 +1665,9 @@ function ResizeComboForForm(sender, args) {
         
       if(newPanel!=null) newPanel.style.borderBottom = "1px solid white";
         
-      $get("frmMain").hdnCurrentTab.value = iNewTab;
+
+//      $get("frmMain").hdnCurrentTab.value = iNewTab;
+        iCurrentTab = iNewTab;
     }
     catch (e) {}
   }
@@ -1769,7 +1776,6 @@ function ResizeComboForForm(sender, args) {
 	<asp:HiddenField ID="hdnFormBackPosition" runat="server" Value="" />
 	<asp:HiddenField ID="hdnColourThemeHex" runat="server" Value="" />
 	<asp:HiddenField ID="hdnFirstControl" runat="server" Value="" />
-    <asp:HiddenField ID="hdnCurrentTab" runat="server" Value="1" />
 	</form>
 	<!--
     Temporary client-side values
