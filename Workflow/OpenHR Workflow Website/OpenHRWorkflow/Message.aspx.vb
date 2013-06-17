@@ -5,9 +5,9 @@ Partial Class Message
 	Public Function ColourThemeHex() As String
 		ColourThemeHex = mobjConfig.ColourThemeHex
 	End Function
-	Public Function ColourThemeFolder() As String
-		ColourThemeFolder = mobjConfig.ColourThemeFolder
-	End Function
+  Public Function ColourThemeFolder() As String
+    ColourThemeFolder = mobjConfig.ColourThemeFolder
+  End Function
 	Public Function MessageFontSize() As Int16
 		MessageFontSize = mobjConfig.MessageFontSize
 	End Function
