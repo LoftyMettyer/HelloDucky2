@@ -2100,7 +2100,7 @@ Public Class _Default
                                         .Width = Unit.Pixel(NullSafeInteger(dr("Width")))
                                         .Height = Unit.Pixel(NullSafeInteger(dr("Height")) - 7)
 
-                                        .ClientSideEvents.Click = "try{showFileUpload(true, " & sEncodedID & ", document.getElementById('file" & sID & "').value);}catch(e){};"
+                                        .ClientSideEvents.Click = "try{showFileUpload(true, '" & sEncodedID & "', document.getElementById('file" & sID & "').value);}catch(e){};"
 
                                         AddHandler ctlForm_Button.Click, AddressOf Me.DisableControls
                                     End With
