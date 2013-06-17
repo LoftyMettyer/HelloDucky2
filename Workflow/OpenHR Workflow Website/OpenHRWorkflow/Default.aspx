@@ -104,7 +104,6 @@
 	        var iResizeByHeight;
 	        var iResizeByWidth;
 	        var sControlType;
-	        var oldgridSelectedColor;
 	        //var ScrollTopPos;
 	        //Set the current page tab	  
 	        var iPageNo = document.getElementById("hdnDefaultPageNo").value;	  
@@ -118,16 +117,11 @@
 
 	        try {
 	            iDefHeight = window.$get("frmMain").hdnFormHeight.value;
-	            //iDefHeight = window.$get("bdyMain").offsetHeight;
 	            iDefWidth = window.$get("frmMain").hdnFormWidth.value;
 			    
 	            window.focus();
 	            if ((iDefHeight > 0) && (iDefWidth > 0)) {
-	                //iResizeByHeight = iDefHeight - document.documentElement.clientHeight;
-	                //iResizeByHeight = iDefHeight - window.innerHeight;				  
 	                iResizeByHeight = iDefHeight - getWindowHeight();
-	                //iResizeByWidth = iDefWidth - document.documentElement.clientWidth;
-	                //iResizeByWidth = iDefWidth - window.innerWidth;
 	                iResizeByWidth = iDefWidth - getWindowWidth();
 	                window.parent.moveTo((screen.availWidth - iDefWidth) / 2, (screen.availHeight - iDefHeight) / 3);
 	                window.parent.resizeBy(iResizeByWidth, iResizeByHeight);				  
@@ -179,17 +173,6 @@
 	            }
 	            catch (e) { }
 
-//NPG20120130 Fault HRPRO-1842
-//Disabled the second resize as safari browser can't keep up and doubles the resize.
-//Doesn't seem to affect the other browsers, so see how it goes
-//				if ((iDefHeight > 0) && (iDefWidth > 0)) {
-//				
-//					iResizeByHeight = iDefHeight - document.documentElement.clientHeight;
-//					iResizeByWidth = iDefWidth - document.documentElement.clientWidth;
-//					window.parent.resizeBy(iResizeByWidth, iResizeByHeight);
-//				}
-
-
 	            launchForms(window.$get("frmMain").hdnSiblingForms.value, false);
 	        }
 	        catch (e) {}
@@ -200,9 +183,6 @@
 	            window.resizeBy(0,1);
 	        }
 	        catch(e) {}
-
-
-
 	    }
 
 	    function launchForms(psForms, pfFirstFormRelocate) {
@@ -554,8 +534,7 @@
 	                dtCurrentDate = pobjControl.getValue();				
           
 	                $get("txtLastDate_Month").value = dtCurrentDate.getMonth();
-	                $get("txtLastDate_Day").value = dtCurrentDate.getDate();
-	                //txtLastDate_Year.value = dtCurrentDate.getYear();					
+	                $get("txtLastDate_Day").value = dtCurrentDate.getDate();		
 	                $get("txtLastDate_Year").value = dtCurrentDate.getFullYear();          
 	            }
 	        }
@@ -600,12 +579,7 @@
         }
                 
 	    function showOverlay(display) {
-	        if(display) {
-	            $get("divOverlay").style.display = "block";
-	        } else {
-	            $get("divOverlay").style.display = "none";
-	        }
-                
+	        $get("divOverlay").style.display = display ? "block" : "none";               
 	    }
 
 	    function showFileUpload(pfDisplay, psElementItemID, psAlreadyUploaded) {
@@ -1633,7 +1607,7 @@
 	<asp:HiddenField ID="hdnFormHeight" runat="server" Value="0" />
 	<asp:HiddenField ID="hdnFormWidth" runat="server" Value="0" />
 	<asp:HiddenField ID="hdnFirstControl" runat="server" Value="" />
-  <asp:HiddenField ID="hdnDefaultPageNo" runat="server" Value="0" />
+    <asp:HiddenField ID="hdnDefaultPageNo" runat="server" Value="0" />
 	</form>
 	<!--
     Temporary client-side values

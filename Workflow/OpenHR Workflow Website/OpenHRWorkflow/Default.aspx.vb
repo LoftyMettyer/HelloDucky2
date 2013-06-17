@@ -3778,12 +3778,12 @@ Public Class _Default
 
   End Sub
 
-  Public Sub DisableControls(ByVal sender As System.Object, e As System.EventArgs)
-    EnableDisableControls(False)
+  Protected Sub btnReEnableControls_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnReEnableControls.Click
+    EnableDisableControls(True)
   End Sub
 
-  Public Sub EnableControls(ByVal sender As System.Object, ByVal e As Infragistics.WebUI.WebDataInput.ButtonEventArgs)
-    EnableDisableControls(True)
+  Public Sub DisableControls(ByVal sender As System.Object, e As System.EventArgs)
+    EnableDisableControls(False)
   End Sub
 
   Private Sub EnableDisableControls(ByVal pfEnabled As Boolean)
@@ -4094,10 +4094,6 @@ Public Class _Default
     If Not cs.IsClientScriptBlockRegistered("RefreshLiteralsCode") Then
       cs.RegisterClientScriptBlock(Me.GetType, "RefreshLiteralsCode", RefreshLiteralsCode, True)
     End If
-  End Sub
-
-  Protected Sub btnReEnableControls_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnReEnableControls.Click
-    EnableDisableControls(True)
   End Sub
 
   Private Function LookupFilterSQL(ByVal psColumnName As String, ByVal piColumnDataType As Integer, ByVal piOperatorID As Integer, ByVal psValue As String) As String

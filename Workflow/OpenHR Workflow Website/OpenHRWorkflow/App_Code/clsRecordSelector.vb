@@ -734,12 +734,6 @@ Public Class RecordSelector
           End Try
         Next
 
-        ' Add the javascript event to each row for click functionality
-        'e.Row.Attributes.Add("onclick", "changeRow('" & grdGrid.ID.ToString & "', '" & e.Row.Cells(iIDCol).Text & "', '" & GetHexColor(grdGrid.SelectedRowStyle.BackColor) & "', '" & iIDCol.ToString & "');oldgridSelectedColor = this.style.backgroundColor;")
-        ' Postback selection is really slow on big grids, so using javascript onclick above instead of the select event below.
-        'e.Row.Attributes("onclick") = ("SetScrollTopPos('" & grdGrid.ID.ToString & "', document.getElementById('" & grdGrid.ID.Replace("Grid", "gridcontainer") & "').scrollTop);" & _
-        '                               "try{setPostbackMode(2);}catch(e){};__doPostBack('" & grdGrid.UniqueID & "','Select$" & e.Row.RowIndex & "');" & _
-        '                               "SetScrollTopPos('" & grdGrid.ID.ToString & "', -1);")
         If Not Me.IsEmpty Then
           e.Row.Attributes("onclick") = ("SetScrollTopPos('" & grdGrid.ID.ToString & "', document.getElementById('" & grdGrid.ID.Replace("Grid", "gridcontainer") & "').scrollTop, " & e.Row.RowIndex & ");" & _
                                               "try{setPostbackMode(3);}catch(e){};__doPostBack('" & grdGrid.UniqueID & "','Select$" & e.Row.RowIndex & "');")
