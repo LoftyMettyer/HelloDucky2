@@ -345,7 +345,7 @@ Public Class Database
          cmd.CommandType = CommandType.StoredProcedure
          cmd.Connection = conn
 
-         If keyParameter.Length > 0 Then
+         If Not keyParameter = Nothing Then
             cmd.CommandText = "spASRMobileInstantiateWorkflow"
          Else
             cmd.CommandText = "spASRInstantiateWorkflow"

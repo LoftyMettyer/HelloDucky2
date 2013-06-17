@@ -5,6 +5,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head runat="server">
+        <title></title>
         <meta name="format-detection" content="telephone=no"/>
     
         <link rel="shortcut icon" href="images/logo.ico"/>
@@ -15,8 +16,6 @@
         <script src="Scripts/jquery-ui-1.8.21.custom.min.js" type="text/javascript"> </script>
         <script src="Scripts/jquery.metadata.js" type="text/javascript"> </script>
         <script src="Scripts/autoNumeric-1.7.4.js" type="text/javascript"> </script>
-
-        <title></title>
     
         <script type="text/javascript">
             jQuery.noConflict();
@@ -134,11 +133,12 @@
                     <ContentTemplate>
                         <div id = "pnlInputDiv" runat="server" style="position: relative; margin: 0 auto;">
                     
+                            <!-- Tab Control -->
                             <div id="pnlTabsDiv" style="position: absolute;" runat="server">
                                 <div id="pnlTabsBorder" style="position: absolute; top: 20px; left: 0; right: 0; bottom: 0; border: 1px solid black;">
                                 </div>
                             </div>
-                        </div>    
+                        </div>
                         <asp:Button id="btnDoFilter" runat="server" style="display: none;"/>
                         <asp:HiddenField ID="hdnMobileLookupFilter" runat="server" Value="" />
                         <asp:HiddenField ID="hdnCount_Errors" runat="server" Value="" />

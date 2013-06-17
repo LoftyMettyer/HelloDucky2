@@ -47,8 +47,7 @@ Public Module Extensions
 
       If formItem.FontItalic Then css += "italic "
       If formItem.FontBold Then css += "bold "
-      css += ToPoint(formItem.FontSize).ToString & "pt " & formItem.FontName &
-             ";"
+      css += ToPoint(formItem.FontSize).ToString & "pt " & formItem.FontName & ";"
 
       Dim decoration As String = If(formItem.FontStrikeThru, "line-through ", "") &
                                  If(formItem.FontUnderline, "underline ", "")
@@ -139,14 +138,12 @@ Public Module Extensions
 
    Public Function GetColorCss(formItem As FormItem, Optional canBeTransparent As Boolean = False) As String
 
-      Dim css As String = "color: " & General.GetHtmlColour(AdjustedForeColor(formItem.ForeColor)) &
-                          ";"
+      Dim css As String = "color: " & General.GetHtmlColour(AdjustedForeColor(formItem.ForeColor)) & ";"
 
       If canBeTransparent AndAlso formItem.BackStyle = 0 Then
          css += " background-color: transparent;"
       Else
-         css += " background-color: " &
-                General.GetHtmlColour(AdjustedBackColor(formItem.BackColor)) & ";"
+         css += " background-color: " & General.GetHtmlColour(AdjustedBackColor(formItem.BackColor)) & ";"
       End If
 
       Return css
