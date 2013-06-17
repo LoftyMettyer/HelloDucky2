@@ -296,7 +296,8 @@ function filterTable(term, tableID) {
   for (var r = 0; r < table.rows.length; r++) {
     var display = '';
     for (var i = 0; i < terms.length; i++) {
-      if (table.rows[r].innerHTML.replace(/<[^>]+>/g, "").toLowerCase()
+      
+      if (table.rows[r].innerHTML.replace(/<[^>]+>/g, "|").toLowerCase()
 				.indexOf(terms[i]) < 0) {
         display = 'none';
       } else {
