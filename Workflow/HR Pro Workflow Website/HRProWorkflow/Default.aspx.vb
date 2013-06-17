@@ -1724,6 +1724,8 @@ Public Class _Default
                                         ' EnableXmlHTTP is required becaue we're using client-side filtering using 'selectwhere'
                                         .EnableXmlHTTP = True
                                         .ClientSideEvents.BeforeDropDown = "InitializeLookup"
+                                        .ClientSideEvents.EditKeyDown = "dropdownControlKeyPress"
+                                        .ClientSideEvents.AfterDropDown = "ResizeFormForCombo"
 
                                         pnlInput.Controls.Add(ctlForm_Dropdown)
 
@@ -1789,8 +1791,6 @@ Public Class _Default
 
                                         .Height() = Unit.Pixel(NullSafeInteger(dr("Height")) - 2)
                                         .Width() = Unit.Pixel(NullSafeInteger(dr("Width")) - 2)
-
-                                        .ClientSideEvents.EditKeyDown = "dropdownControlKeyPress"
 
 
                                         .DropDownLayout.AllowSorting = Infragistics.WebUI.UltraWebGrid.AllowSorting.Yes

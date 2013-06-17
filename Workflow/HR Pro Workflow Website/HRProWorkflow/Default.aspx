@@ -82,9 +82,10 @@
 					window.parent.resizeBy(iResizeByWidth, iResizeByHeight);
 				}
 
+
 				launchForms(frmMain.hdnSiblingForms.value, false);
 			}
-			catch (e) { }
+			catch (e) {}
 		}
 
 		function resizeToFit(piWidth, piHeight) {
@@ -191,19 +192,27 @@
 			TraverseDOM(theObject, level, doNothing);
 		}
 
-		function doNothing() {
+		function doNothing(obj) {
 		    // Empty function. Required - See note for closeOtherCombos function.
 		}
 
 		function disableChildElements(objId) {
-			var theObject = document.getElementById(objId);
-			var level = 0;
+		    try
+		    {
+			    var theObject = document.getElementById(objId);
+			    var level = 0;
 
-			TraverseDOM(theObject, level, disableElement);
+			    TraverseDOM(theObject, level, disableElement);
+    		}
+    		catch(e) {}
 		}
 
 		function disableElement(obj) {
-			obj.disabled = true;
+		    try
+		    {
+    			obj.disabled = true;
+    		}
+    		catch(e) {}
 		}
 
 		function TraverseDOM(obj, lvl, actionFunc) {
@@ -211,40 +220,44 @@
 		    var sFormInputPrefix = "forminput_";
 		    var sGridSuffix = "Grid";
 		    
-			for (var i = 0; i < obj.childNodes.length; i++) {
-				var childObj = obj.childNodes[i];
+		    try
+		    {
+    			for (var i = 0; i < obj.childNodes.length; i++) {
+    				var childObj = obj.childNodes[i];
 
-                // Close any lookup/dropdown grids.
-                try
-                {
-                    if (childObj.id != undefined) {
-                        if (childObj.id.substr(0, "forminput_".length) == "forminput_")
-                        {
-                            sControlType = childObj.id.substr(childObj.id.indexOf("_")+1);
-                            sControlType = sControlType.substr(sControlType.indexOf("_")+1);
-                            sControlType = sControlType.substring(0, sControlType.indexOf("_"));
-
-                            if ((sControlType == 13)
-                                || (sControlType == 14))
+                    // Close any lookup/dropdown grids.
+                    try
+                    {
+                        if (childObj.id != undefined) {
+                            if (childObj.id.substr(0, "forminput_".length) == "forminput_")
                             {
-                                if ((childObj.id.substr(0, sFormInputPrefix.length) == sFormInputPrefix) &&
-                                    (childObj.id.substr(childObj.id.length - sGridSuffix.length) != sGridSuffix))
+                                sControlType = childObj.id.substr(childObj.id.indexOf("_")+1);
+                                sControlType = sControlType.substr(sControlType.indexOf("_")+1);
+                                sControlType = sControlType.substring(0, sControlType.indexOf("_"));
+
+                                if ((sControlType == 13)
+                                    || (sControlType == 14))
                                 {
-                                    igcmbo_getComboById(childObj.id).setDropDown(false);
+                                    if ((childObj.id.substr(0, sFormInputPrefix.length) == sFormInputPrefix) &&
+                                        (childObj.id.substr(childObj.id.length - sGridSuffix.length) != sGridSuffix))
+                                    {
+                                        igcmbo_getComboById(childObj.id).setDropDown(false);
+                                    }
                                 }
                             }
                         }
                     }
-                }
-                catch(e){}
+                    catch(e){}
 
-				if (childObj.tagName) 
-				{
-					actionFunc(childObj);
-				}
+				    if (childObj.tagName) 
+				    {
+					    actionFunc(childObj);
+				    }
 
-				TraverseDOM(childObj, lvl + 1, actionFunc);
-			}
+				    TraverseDOM(childObj, lvl + 1, actionFunc);
+	    		}
+	    	}
+	    	catch(e) {}
 		}
 
 		function showErrorMessages(pfDisplay) {
@@ -734,6 +747,48 @@
 	        catch(e) {}
 	    }
 	    
+	    function ResizeFormForCombo(psWebComboId) {
+			var iResizeByHeight = 0;
+			var iResizeByWidth = 0;
+            
+			try {
+	            var objCombo = igcmbo_getComboById(psWebComboId);
+                var grid = objCombo.getGrid();
+
+                var oEl = grid.Element;
+
+                if (oEl.scrollWidth > bdyMain.clientWidth)
+                {
+                    if (oEl.scrollWidth > screen.availWidth)
+                    {
+                        iResizeByWidth = screen.availWidth - bdyMain.clientWidth;
+                    }
+                    else
+                    {
+                        iResizeByWidth = oEl.scrollWidth - bdyMain.clientWidth;
+                    }
+                }
+                
+                if (oEl.scrollHeight > bdyMain.clientHeight)
+                {
+                    if (oEl.scrollHeight > screen.availHeight)
+                    {
+                        iResizeByHeight = screen.availHeight - bdyMain.clientHeight;
+                    }
+                    else
+                    {
+                        iResizeByHeight = oEl.scrollHeight - bdyMain.clientHeight;
+                    }
+                }
+                
+                if ((iResizeByWidth > 0) || (iResizeByHeight > 0))
+                {
+                    setTimeout('window.resizeBy(' + iResizeByWidth + ',' + iResizeByHeight + ');', 100);
+                }
+            }
+            catch(e) {}
+	    }
+	    
 	    function InitializeLookup(psWebComboId) {
 	        var sSelectWhere = "";
 	        var sValueID = "";
@@ -910,7 +965,7 @@
 	<script src="scripts\WebNumericEditValidation.js" type="text/javascript"></script>
 
 </head>
-<body id="bdyMain" onload="return window_onload()" scroll="auto" style="overflow: auto;
+<body id="bdyMain" onload="return window_onload()" scroll="auto" style="overflow: auto;  
 	text-align: center; margin: 0px; padding: 0px;">
 	<img id="imgErrorMessages_Max" src="Images/uparrows_white.gif" alt="Show messages"
 		style="position: absolute; right: 1px; bottom: 1px; display: none; visibility: hidden;
