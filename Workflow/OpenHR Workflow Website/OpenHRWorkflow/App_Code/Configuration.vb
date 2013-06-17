@@ -41,8 +41,11 @@ Public Class Configuration
     End Get
   End Property
 
-
-  Private Shared WriteOnly Property MobileKey() As String
+  Private Shared _mobileKey As String
+  Public Shared Property MobileKey() As String
+    Get
+      Return _mobileKey
+    End Get
     Set(value As String)
 
       Try
@@ -56,12 +59,14 @@ Public Class Configuration
         Password = values(3)
         Server = values(4)
         Database = values(5)
+        _mobileKey = value
 
       Catch ex As Exception
         Login = ""
         Password = ""
         Server = ""
         Database = ""
+        _mobileKey = ""
       End Try
 
     End Set

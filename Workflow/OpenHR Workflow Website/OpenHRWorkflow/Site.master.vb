@@ -6,6 +6,10 @@ Partial Class Site
 
   Protected Sub Page_Init(sender As Object, e As EventArgs) Handles Me.Init
 
+    Forms.RedirectIfDbLocked()
+
+    Forms.RedirectToNotConfigured()
+
     Using conn As New SqlConnection(Configuration.ConnectionString)
 
       conn.Open()

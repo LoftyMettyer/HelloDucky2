@@ -143,14 +143,6 @@ Partial Class Home
 
   Public Function WorkflowLink(ByVal workflowID As Integer) As String
 
-    If Configuration.WorkflowUrl.Length = 0 Then
-      Return ""
-    End If
-
-    If Configuration.Login.Length = 0 Then
-      Return ""
-    End If
-
     ' For externally initiated workflows:
     '      plngInstance = -1 * workflowID
     '      plngStepID = -

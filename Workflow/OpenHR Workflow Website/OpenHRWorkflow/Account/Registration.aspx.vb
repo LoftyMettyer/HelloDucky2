@@ -11,13 +11,6 @@ Partial Class Registration
 
   Protected Sub BtnRegisterClick(sender As Object, e As EventArgs) Handles btnRegister.Click
 
-    'TODO
-    If Configuration.WorkflowUrl.Length = 0 Then
-      'message = "Unable to determine Workflow URL."
-    ElseIf Configuration.Login.Length = 0 Then
-      'message = "Unable to connect to server."
-    End If
-
     Dim message As String = Database.Register(txtEmail.Text)
 
     If message.Length > 0 Then
