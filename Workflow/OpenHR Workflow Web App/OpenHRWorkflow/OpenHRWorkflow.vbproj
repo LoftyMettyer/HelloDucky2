@@ -491,8 +491,9 @@
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
     <Content Include="Site.master" />
-    <Content Include="web.config" />
-    <None Include="web.custom.config.template" />
+    <Content Include="Web.custom.config" />
+    <Content Include="Web.config" />
+    <None Include="Web.custom.config.template" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
