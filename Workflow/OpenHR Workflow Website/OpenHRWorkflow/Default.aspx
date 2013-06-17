@@ -689,41 +689,39 @@
 					if (sAlreadyUploaded != "1") {
 						sAlreadyUploaded = "0";
 					}
-
+          
 					try {
 						txtActiveElement.value = document.activeElement.id;
 					}
 					catch (e) { }
-
+          
 					$get("ifrmFileUpload").src = "FileUpload.aspx?" + sAlreadyUploaded + psElementItemID;
-
+          
 					showErrorMessages(false);
-
-					divInput.disabled = true;
-					divErrorMessages_Outer.disabled = true;
-					imgErrorMessages_Max.disabled = true;
-					divErrorMessages_Outer.style.display = "none";
-
-					divFileUpload.style.filter = "revealTrans(duration=0.5, transition=12)";
-					divFileUpload.filters.revealTrans.apply();
-					divFileUpload.style.visibility = "visible";
-					divFileUpload.style.display = "block";
-					divFileUpload.filters.revealTrans.play();
+					document.getElementById("divInput").disabled = true;
+					document.getElementById("divErrorMessages_Outer").disabled = true;
+					document.getElementById("imgErrorMessages_Max").disabled = true;
+					document.getElementById("divErrorMessages_Outer").style.display = "none";
+					//divFileUpload.style.filter = "revealTrans(duration=0.5, transition=12)";
+					//divFileUpload.filters.revealTrans.apply();
+					document.getElementById("divFileUpload").style.visibility = "visible";
+					document.getElementById("divFileUpload").style.display = "block";
+					//divFileUpload.filters.revealTrans.play();
 				}
 				else {
-					divFileUpload.style.filter = "revealTrans(duration=0.5, transition=12)";
-					divFileUpload.filters.revealTrans.apply();
-					divFileUpload.style.visibility = "hidden";
-					divFileUpload.style.display = "none";
-					divFileUpload.filters.revealTrans.play();
+					//divFileUpload.style.filter = "revealTrans(duration=0.5, transition=12)";
+					//divFileUpload.filters.revealTrans.apply();
+					document.getElementById("divFileUpload").style.visibility = "hidden";
+					document.getElementById("divFileUpload").style.display = "none";
+					//divFileUpload.filters.revealTrans.play();
 
 					setPostbackMode(3);
 					
 					$get("frmMain").btnReEnableControls.click();
 
-					divInput.disabled = false;
-					divErrorMessages_Outer.disabled = false;
-					imgErrorMessages_Max.disabled = false;
+					document.getElementById("divInput").disabled = false;
+					document.getElementById("divErrorMessages_Outer").disabled = false;
+					document.getElementById("imgErrorMessages_Max").disabled = false;
 				}
 			}
 			catch (e) { }
@@ -1506,7 +1504,7 @@ function ResizeComboForForm(sender, args) {
 	<div id="divFileUpload" style="position: absolute; left: 0px; top: 15%; width: 100%;
 		display: none; z-index: 3; visibility: hidden;
 		text-align: center;" nowrap="nowrap" onfilterchange="return unblockFileUploadDIV();">
-		<iframe id="ifrmFileUpload" src="" frameborder="0" scrolling="no"></iframe>
+		<iframe id="ifrmFileUpload" style="width:550px" src="" frameborder="0" scrolling="no"></iframe>
 	</div>
 	<!--
         Web Form Controls
