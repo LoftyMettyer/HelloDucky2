@@ -107,7 +107,9 @@ function InitialiseWindow() {
 
 		try {
 			if (window.autoFocusControl.length > 0) {
-				document.getElementById(window.autoFocusControl).focus();
+				setTimeout(function () {
+					document.getElementById(window.autoFocusControl).focus();
+				}, 0);
 			}
 		}
 		catch (e) { }
