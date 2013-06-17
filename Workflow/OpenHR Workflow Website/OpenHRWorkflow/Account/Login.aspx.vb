@@ -9,7 +9,7 @@ Partial Class Login
 
     Title = WebSiteName("Login")
     Page.Form.DefaultButton = btnLoginButton.UniqueID
-    Page.Form.DefaultFocus = txtUserName.UniqueID
+    Page.Form.DefaultFocus = txtUserName.ClientID
   End Sub
 
   Protected Sub BtnLoginClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnLoginButton.Click

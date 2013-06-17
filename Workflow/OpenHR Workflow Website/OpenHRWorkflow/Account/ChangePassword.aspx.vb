@@ -9,6 +9,8 @@ Partial Class ChangePassword
     Forms.LoadControlData(Me, 4)
 
     Title = WebSiteName("Change Password")
+    Page.Form.DefaultButton = btnSubmitButton.UniqueID
+    Page.Form.DefaultFocus = txtCurrPassword.UniqueID
   End Sub
 
   Protected Sub BtnSubmitClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnSubmitButton.Click

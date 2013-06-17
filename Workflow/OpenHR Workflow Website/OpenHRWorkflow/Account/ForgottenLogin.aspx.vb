@@ -10,7 +10,7 @@ Partial Class ForgottenLogin
 
     Title = WebSiteName("Forgotten Login")
     Page.Form.DefaultButton = btnSubmitButton.UniqueID
-    Page.Form.DefaultFocus = txtEmail.UniqueID
+    Page.Form.DefaultFocus = txtEmail.ClientID
   End Sub
 
   Protected Sub BtnSubmitClick(sender As Object, e As EventArgs) Handles btnSubmitButton.Click
