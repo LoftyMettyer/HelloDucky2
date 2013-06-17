@@ -945,8 +945,10 @@ Public Class _Default
                     .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
                     .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
                     .Style("word-wrap") = "break-word"
-                    .Style("overflow") = "auto"
+                    ' NPG20120305 Fault HRPRO-1967
+                    '.Style("overflow") = "auto"
                     .Style("text-align") = "left"
+
 
                     If NullSafeInteger(dr("captionType")) = 3 Then
                       ' Calculated caption
@@ -963,7 +965,7 @@ Public Class _Default
                     .ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
 
                     .Font.Name = NullSafeString(dr("FontName"))
-                    .Font.Size = FontUnit.Parse(NullSafeString(dr("FontSize")))
+                    .Font.Size = FontUnit.Parse(NullSafeString(dr("FontSize")))                    
                     .Font.Bold = NullSafeBoolean(NullSafeBoolean(dr("FontBold")))
                     .Font.Italic = NullSafeBoolean(NullSafeBoolean(dr("FontItalic")))
                     .Font.Strikeout = NullSafeBoolean(NullSafeBoolean(dr("FontStrikeThru")))
@@ -981,7 +983,8 @@ Public Class _Default
                       iTempWidth = iTempWidth - (2 * IMAGEBORDERWIDTH)
                     End If
 
-                    .Height() = Unit.Pixel(iTempHeight)
+                    ' NPG20120305 Fault HRPRO-1967
+                    '.Height() = Unit.Pixel(iTempHeight)
                     .Width() = Unit.Pixel(iTempWidth)
                   End With
 
@@ -5417,9 +5420,9 @@ Public Class _Default
   End Function
 
   Private Sub AddMobileHeaderTags(ByVal lngViewportWidth As Long)
-    'Dim ua As String = Request.UserAgent
+    ' Dim ua As String = Request.UserAgent
 
-    'If ua IsNot Nothing AndAlso (ua.Contains("iPhone") OrElse ua.Contains("iPad")) Then
+    ' If ua IsNot Nothing AndAlso (ua.Contains("iPhone") OrElse ua.Contains("iPad")) Then
     Dim meta As New HtmlMeta()
     meta.Name = "viewport"
     meta.Content = "width=" & lngViewportWidth & ", user-scalable=yes"
@@ -5429,7 +5432,7 @@ Public Class _Default
     link.Attributes("rel") = "apple-touch-icon"
     link.Href = "favicon.ico"
     Page.Header.Controls.Add(link)
-    'End If
+    ' End If
   End Sub
 
 
