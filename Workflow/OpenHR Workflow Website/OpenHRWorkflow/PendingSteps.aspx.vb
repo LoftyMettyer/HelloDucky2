@@ -50,7 +50,7 @@ Partial Class PendingSteps
       todoDescFontInfo.Strikeout = NullSafeBoolean(dr("TodoDescFontStrikeout"))
     End Using
 
-    Dim canRun As Boolean = Database.CanUserGroupRunWorkflows(userGroupID)
+    Dim canRun As Boolean = Database.CanRunWorkflows(userGroupID)
 
     Dim stepCount As Integer
 

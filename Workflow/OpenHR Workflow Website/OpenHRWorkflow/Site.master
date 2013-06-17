@@ -40,7 +40,6 @@
                     touchScroll('ctl00_main');
                 }
             };
-
             function showDialog(title, message) {
                 document.getElementById('ctl00_dialogTitle').innerHTML = title;
                 document.getElementById('ctl00_dialogMessage').innerHTML = message;
@@ -125,14 +124,10 @@
 
         <div id="dialog" class="dialog" style="display: none;" runat="server">
             
-            <label id="dialogTitle" runat="server" style="font-weight: bold; font-size: large; color: white"></label>
-            <br/>
-            <br/>
-            <label id="dialogMessage" runat="server" style="font-size: large; color: white"></label>
-            <br/>
-            <br/>
+            <h2 id="dialogTitle" runat="server" style="font-weight: bold; font-size: 16px; color: white; margin: 0;"></h2>
+            <p id="dialogMessage" runat="server" style="font-size: 13px; color: white; margin: 13px 0 15px 0;"></p>
             <input type="hidden" id="dialogRedirect" runat="server"/>
-            <input type="button" id="dialogOk" value="OK" style="width: 100px; height: 30px; background-color: ButtonHighlight" onclick=" closeDialog(); "/>
+            <input type="button" id="dialogOk" value="OK" style="width: 90px; height: 30px; background-color: ButtonHighlight" onclick=" closeDialog(); "/>
         </div>
 
     </body>

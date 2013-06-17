@@ -18,19 +18,7 @@ Partial Class Registration
     ElseIf Configuration.Login.Length = 0 Then
       message = "Unable to connect to server."
     Else
-      ' Fetch the record ID for the specified e-mail.
-      Dim userID = Database.GetUserID(txtEmail.Text)
-
-      Dim objCrypt As New Crypt
-      Dim strEncryptedString As String = objCrypt.EncryptQueryString((userID), -2, _
-          Configuration.Login, _
-          Configuration.Password, _
-          Configuration.Server, _
-          Configuration.Database, _
-          User.Identity.Name, _
-          "")
-
-      message = Database.Register(txtEmail.Text, Configuration.WorkflowUrl & "?" & strEncryptedString)
+      message = Database.Register(txtEmail.Text)
     End If
 
     If message.Length > 0 Then

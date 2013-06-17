@@ -1,6 +1,5 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
-Imports System.Collections.Generic
 Imports Utilities
 
 Public Class Database
@@ -24,26 +23,6 @@ Public Class Database
       Return False
     End Using
 
-  End Function
-
-  Public Shared Function GetUserCountOnServer(userName As String) As Integer
-
-    Using conn As New SqlConnection(Configuration.ConnectionString)
-      conn.Open()
-
-      Dim cmd As New SqlCommand("spASRGetCurrentUsersCountOnServer", conn)
-      cmd.CommandType = CommandType.StoredProcedure
-
-      cmd.Parameters.Add("@iLoginCount", SqlDbType.Int).Direction = ParameterDirection.Output
-
-      cmd.Parameters.Add("@psLoginName", SqlDbType.NVarChar, 2147483646).Direction = ParameterDirection.Input
-      cmd.Parameters("@psLoginName").Value = userName
-
-      cmd.ExecuteNonQuery()
-
-      Return CInt(cmd.Parameters("@iLoginCount").Value)
-
-    End Using
   End Function
 
   Public Shared Function CheckLoginDetails(userName As String) As CheckLoginResult
@@ -72,7 +51,7 @@ Public Class Database
 
   End Function
 
-  Public Shared Function GetWorkflowPendingStepCount(userName As String) As Integer
+  Public Shared Function GetPendingStepCount(userName As String) As Integer
 
     Using conn As New SqlConnection(Configuration.ConnectionString)
       conn.Open()
@@ -117,7 +96,25 @@ Public Class Database
 
   End Function
 
-  Public Shared Function Register(email As String, activationUrl As String) As String
+  Public Shared Function Register(email As String) As String
+
+    'Check the email address relates to a user
+    Dim userID = GetUserID(email)
+
+    If userID = 0 Then
+      Return "No records exist with the given email address."
+    End If
+
+    Dim crypt As New Crypt
+    Dim encryptedString As String = crypt.EncryptQueryString((userID), -2, _
+        Configuration.Login, _
+        Configuration.Password, _
+        Configuration.Server, _
+        Configuration.Database, _
+        "", _
+        "")
+
+    Dim activationUrl As String = Configuration.WorkflowUrl & "?" & encryptedString
 
     Using conn As New SqlConnection(Configuration.ConnectionString)
       conn.Open()
@@ -143,6 +140,14 @@ Public Class Database
 
   Public Shared Function ForgotLogin(email As String) As String
 
+    'Check the email address relates to a user
+    Dim userID = GetUserID(email)
+
+    If userID = 0 Then
+      Return "No records exist with the given email address."
+    End If
+
+    'Send it all to sql to validate and email out
     Using conn As New SqlConnection(Configuration.ConnectionString)
       conn.Open()
 
@@ -162,8 +167,33 @@ Public Class Database
 
   End Function
 
-  'TODO: this should be an atomic operation, ASRSysPassword's purpose?
+  Public Shared Function GetLoginCount(userName As String) As Integer
+
+    'Does not include being logged into the mobile site
+    Using conn As New SqlConnection(Configuration.ConnectionString)
+      conn.Open()
+
+      Dim cmd As New SqlCommand("spASRGetCurrentUsersCountOnServer", conn)
+      cmd.CommandType = CommandType.StoredProcedure
+
+      cmd.Parameters.Add("@iLoginCount", SqlDbType.Int).Direction = ParameterDirection.Output
+
+      cmd.Parameters.Add("@psLoginName", SqlDbType.NVarChar, 2147483646).Direction = ParameterDirection.Input
+      cmd.Parameters("@psLoginName").Value = userName
+
+      cmd.ExecuteNonQuery()
+
+      Return CInt(cmd.Parameters("@iLoginCount").Value)
+
+    End Using
+
+  End Function
+
   Public Shared Function ChangePassword(userName As String, currentPassword As String, newPassword As String) As String
+
+    If GetLoginCount(userName) > 0 Then
+      Return "Could not change your password. You are logged into the system using another application."
+    End If
 
     ' Attempt to change the password on the SQL Server.
     Using conn As New SqlConnection(Configuration.ConnectionString)
@@ -192,24 +222,24 @@ Public Class Database
       End Try
     End Using
 
-    ' Password changed okay. Update the appropriate record in the ASRSysPasswords table.
-    Using conn As New SqlConnection(Configuration.ConnectionString)
-      conn.Open()
+      ' Password changed okay. Update the appropriate record in the ASRSysPasswords table.
+      Using conn As New SqlConnection(Configuration.ConnectionString)
+        conn.Open()
 
-      Dim cmd As New SqlCommand("spASRSysMobilePasswordOK", conn)
-      cmd.CommandType = CommandType.StoredProcedure
+        Dim cmd As New SqlCommand("spASRSysMobilePasswordOK", conn)
+        cmd.CommandType = CommandType.StoredProcedure
 
-      cmd.Parameters.Add("@sCurrentUser", SqlDbType.NVarChar, 2147483646).Direction = ParameterDirection.Input
-      cmd.Parameters("@sCurrentUser").Value = userName
+        cmd.Parameters.Add("@sCurrentUser", SqlDbType.NVarChar, 2147483646).Direction = ParameterDirection.Input
+        cmd.Parameters("@sCurrentUser").Value = userName
 
-      cmd.ExecuteNonQuery()
-    End Using
+        cmd.ExecuteNonQuery()
+      End Using
 
-    Return String.Empty
+      Return String.Empty
 
   End Function
 
-  Public Shared Function CanUserGroupRunWorkflows(userGroupID As Integer) As Boolean
+  Public Shared Function CanRunWorkflows(userGroupID As Integer) As Boolean
 
     Using conn As New SqlConnection(Configuration.ConnectionString)
 

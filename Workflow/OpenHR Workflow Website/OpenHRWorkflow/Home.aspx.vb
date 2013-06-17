@@ -39,7 +39,7 @@ Partial Class Home
 
     Dim itemCount As Integer
 
-    Dim canRun As Boolean = Database.CanUserGroupRunWorkflows(userGroupID)
+    Dim canRun As Boolean = Database.CanRunWorkflows(userGroupID)
 
     If canRun Then
 
@@ -124,7 +124,7 @@ Partial Class Home
 
     ' Update the workflow step count indicator
     If canRun Then
-      Dim count As Integer = Database.GetWorkflowPendingStepCount(User.Identity.Name)
+      Dim count As Integer = Database.GetPendingStepCount(User.Identity.Name)
       lblWFCount.Text = CStr(count)
       lblWFCount.Visible = (count > 0)
     Else
