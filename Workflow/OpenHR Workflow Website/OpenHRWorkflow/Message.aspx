@@ -5,6 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
 	<title><%=Session("titleVersion")%></title>
+    
 
 	<script for="window" event="onload" type="text/javascript">
 	<!--
@@ -118,7 +119,7 @@
 	bottommargin="0" rightmargin="0" leftmargin="0" topmargin="0" 
 	scroll=auto 
 	style="overflow:auto;">
-
+    
 	<form name="frmMessage" id="frmMessage" method="post" runat="server" 
 		 style="overflow:visible; 
 				left: 0px; width: 100%; 
