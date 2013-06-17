@@ -879,6 +879,7 @@ Public Class _Default
                     .Style("position") = "absolute"
                     .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
                     .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
+
                     '.Style("word-wrap") = "break-word"
                     ' NPG20120305 Fault HRPRO-1967 reverted by PBG20120419 Fault HRPRO-2157
                     .Style("overflow") = "auto"
