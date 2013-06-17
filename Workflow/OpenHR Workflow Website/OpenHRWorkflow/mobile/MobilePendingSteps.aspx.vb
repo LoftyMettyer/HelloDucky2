@@ -250,6 +250,8 @@ Partial Class PendingSteps
 
     End Try
 
+    Dim stepCount As Integer
+
     If userGroupHasPermission Then
 
       ' Get the pending steps.
@@ -267,7 +269,6 @@ Partial Class PendingSteps
       ' Create the holding table
       ctlFormTable = New Table
 
-      Dim iLoop As Integer
       While (rstSteps.Read)
         ' Create a row to contain this pending step...
         ctlFormRow = New TableRow
@@ -321,15 +322,19 @@ Partial Class PendingSteps
         ctlFormRow.Cells.Add(ctlFormCell)
         ctlFormTable.Rows.Add(ctlFormRow)
 
-        iLoop += 1
+        stepCount += 1
       End While
 
       pnlWFList.Controls.Add(ctlFormTable)
 
-      hdnStepCount.Value = CStr(iLoop)
-
       rstSteps.Close()
       cmdSteps.Dispose()
+    End If
+
+    If stepCount > 0 Then
+      lblNothingTodo.Visible = False
+    Else
+      lblInstruction.Visible = False
     End If
 
   End Sub

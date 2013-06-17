@@ -11,25 +11,9 @@
         <style type="text/css">
             body { font-family: Verdana; }
         </style>
-
-        <script type="text/javascript">
-// <!CDATA[
-
-            function window_onload() {
-
-                if (document.getElementById('hdnStepCount').value == 0) {
-                    document.getElementById('lblNothingTodo').style.visibility = "visible";
-                    document.getElementById('lblNothingTodo').style.display = "block";
-                } else {
-                    document.getElementById('lblInstruction').style.visibility = "visible";
-                    document.getElementById('lblInstruction').style.display = "block";
-                }
-            }
-// ]]>
-    </script>
     </head>
     
-    <body onload="return window_onload()" style="margin: 0px; overflow: hidden">
+    <body style="margin: 0px; overflow: hidden">
         <form id="form1" runat="server">
 
             <div id="pnlContainer" runat="server" style="overflow: hidden; background-color: Red">
@@ -39,8 +23,8 @@
                     <div id="pnlBody"  runat="server" style="position: absolute; width: 100%; height: 100%; z-index: 1">      
                   
                         <div runat="server" id="pnlWFList" style="width: 100%; height: 100%; top: 40px; bottom: 0px; overflow: auto">                  
-                            <label id="lblNothingTodo" runat="server" style="visibility: hidden; display: none; margin: 15px;">You have nothing in your 'To Do' list.</label>
-                            <label id="lblInstruction" runat="server" style="visibility: hidden; display: none; margin: 15px;">Click on a 'to do' item to view the details and complete your action.</label>
+                            <label id="lblNothingTodo" runat="server" style="display: block; margin: 15px;">You have nothing in your 'To Do' list.</label>
+                            <label id="lblInstruction" runat="server" style="display: block; margin: 15px;">Click on a 'to do' item to view the details and complete your action.</label>
                         </div>
 
                     </div>
@@ -59,8 +43,6 @@
                     </table>
                 </div>        
             </div>
-
-            <asp:HiddenField ID="hdnStepCount" runat="server" Value="0" />
 
         </form>
     </body>

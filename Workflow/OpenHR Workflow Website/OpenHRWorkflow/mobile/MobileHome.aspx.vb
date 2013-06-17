@@ -229,6 +229,8 @@ Partial Class Home
 
     End Try
 
+    Dim itemCount As Integer
+
     If userGroupHasPermission Then
 
       sql = "SELECT w.Id, w.Name, w.PictureID" & _
@@ -245,7 +247,6 @@ Partial Class Home
       table.Style.Add("width", "100%")
 
       'Iterate through the results
-      Dim itemCount As Integer
       While reader.Read()
 
         ' Create a row to contain this pending step...
@@ -293,11 +294,16 @@ Partial Class Home
       reader.Close()
       pnlWFList.Controls.Add(table)
 
-      hdnItemCount.Value = CStr(itemCount)
     End If
 
     ' close sql connection
     myConnection.Close()
+
+    If itemCount > 0 Then
+      lblNothingTodo.Visible = False
+    Else
+      lblWelcome.Visible = False
+    End If
 
     ' Update the wf steps count
     If userGroupHasPermission Then

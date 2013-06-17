@@ -11,24 +11,8 @@
         <style type="text/css">
             body { font-family: Verdana; }
         </style>
-
-        <script type="text/javascript">
-// <!CDATA[
-
-            function window_onload() {
-
-                if (document.getElementById('hdnItemCount').value == 0) {
-                    document.getElementById('lblNothingTodo').style.visibility = "visible";
-                    document.getElementById('lblNothingTodo').style.display = "block";
-                } else {
-                    document.getElementById('lblWelcome').style.visibility = "visible";
-                    document.getElementById('lblWelcome').style.display = "block";
-                }
-            }
-// ]]>
-    </script>
     </head>
-    <body onload="return window_onload()" style="margin: 0px; overflow: hidden">
+    <body style="margin: 0px; overflow: hidden">
         <form id="form1" runat="server">
 
             <div id="pnlContainer" runat="server" style="overflow: hidden; background-color: Red">
@@ -40,8 +24,8 @@
                             <tr id="space1" style="width: 100%"><td></td></tr>
                             <tr style="width: 100%; height: 21px">
                                 <td colspan="2">
-                                    <label id="lblNothingTodo" runat="server" style="visibility: hidden; display: none; margin: 15px;">lblNothingTodo</label>
-                                    <label id="lblWelcome" runat="server" style="visibility: hidden; display: none; margin: 15px;">lblWelcome</label>
+                                    <label id="lblNothingTodo" runat="server" style="display: block; margin: 15px;">lblNothingTodo</label>
+                                    <label id="lblWelcome" runat="server" style="display: block; margin: 15px;">lblWelcome</label>
                                 </td>
                             </tr>
                             <tr id="space2" style="width: 100%"><td></td></tr>  
@@ -90,9 +74,7 @@
                     <input type="button" value="OK" style="width: 100px; height: 30px; background-color: ButtonHighlight" onclick="closeMsgBox(); "/>
                 </div>
             </div>   
-                
-            <asp:HiddenField ID="hdnItemCount" runat="server" Value="0" />
-                     
+                                     
         </form>
     </body>
 
