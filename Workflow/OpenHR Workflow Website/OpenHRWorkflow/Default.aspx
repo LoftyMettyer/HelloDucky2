@@ -49,31 +49,31 @@
                 }
             });
 
-            //jQuery('input.date').datepicker();
+            jQuery('input.date').datepicker();
 
-//            jQuery('input.date').change(function () {
-//                //validate a typed date and format it
-//                var $this = jQuery(this);
-//                var value = $this.val();
-//                try {
-//                    var date = jQuery.datepicker.parseDate(window.localeDateFormatjQuery, value);
-//                    if (date != null) {
-//                        $this.val(jQuery.datepicker.formatDate(window.localeDateFormatjQuery, date));
-//                        jQuery.datepicker.setDefaults({ defaultDate: date });
-//                    }
-//                } catch (e) {
-//                    $this.val('');
-//                }
-//            });
+            jQuery('input.date').change(function () {
+                //validate a typed date and format it
+                var $this = jQuery(this);
+                var value = $this.val();
+                try {
+                    var date = jQuery.datepicker.parseDate(window.localeDateFormatjQuery, value);
+                    if (date != null) {
+                        $this.val(jQuery.datepicker.formatDate(window.localeDateFormatjQuery, date));
+                        jQuery.datepicker.setDefaults({ defaultDate: date });
+                    }
+                } catch (e) {
+                    $this.val('');
+                }
+            });
 
-//            jQuery('input.date').keyup(function (e) {
-//                //F2 should set todays date
-//                if (e.which == 113) {
-//                    var date = new Date();
-//                    jQuery(this).val(jQuery.datepicker.formatDate(window.localeDateFormatjQuery, date));
-//                    jQuery.datepicker.setDefaults({ defaultDate: date });
-//                }
-//            });
+            jQuery('input.date').keyup(function (e) {
+                //F2 should set todays date
+                if (e.which == 113) {
+                    var date = new Date();
+                    jQuery(this).val(jQuery.datepicker.formatDate(window.localeDateFormatjQuery, date));
+                    jQuery.datepicker.setDefaults({ defaultDate: date });
+                }
+            });
 
             //configure numeric controls
             jQuery.metadata.setType('attr', 'data-numeric');
