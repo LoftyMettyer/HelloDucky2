@@ -21,6 +21,15 @@
             
             //window.scrollTo(0, 1);
 
+            if (form1.hdnItemCount.value == 0) {
+                lblNothingTodo.style.visibility = "visible";
+                lblNothingTodo.style.display = "block";
+            }
+            else {
+                lblWelcome.style.visibility = "visible";
+                lblWelcome.style.display = "block";
+            }
+            
             try{
                 fixDate(dtExpiry);
                 /*
@@ -114,7 +123,10 @@
             <table>
                  <tr id="space1" style="width: 100%"><td></td></tr>
                 <tr style="width: 100%; height:21px">
-                  <td colspan="2"><label style="margin:15px" id="lblWelcome" runat="server">lblWelcome</label></td>
+                  <td colspan="2">
+                      <label id="lblNothingTodo" runat="server" style="visibility:hidden;display:none;margin:15px;">lblNothingTodo</label>
+                      <label id="lblWelcome" runat="server" style="visibility:hidden;display:none;margin:15px;">lblWelcome</label>
+                  </td>
                 </tr>
                 <tr id="space2" style="width: 100%"><td></td></tr>  
                 </table>
@@ -165,6 +177,8 @@
                <input type="button" value="OK" style="width:100px;height:30px;background-color: ButtonHighlight" onclick="closeMsgBox();"/>
              </div>
         </div>   
+                
+        <asp:HiddenField ID="hdnItemCount" runat="server" Value="0" />
                      
     </form>
 </body>

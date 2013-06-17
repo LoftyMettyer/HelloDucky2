@@ -322,6 +322,7 @@ Partial Class Home
       table.Style.Add("width", "100%")
 
       'Iterate through the results
+      Dim itemCount As Integer
       While reader.Read()
 
         ' Create a row to contain this pending step...
@@ -360,9 +361,12 @@ Partial Class Home
 
         table.Rows.Add(row)
 
+        itemCount += 1
       End While
       reader.Close()
       pnlWFList.Controls.Add(table)
+
+      hdnItemCount.Value = CStr(itemCount)
     End If
 
     ' close sql connection
