@@ -146,8 +146,8 @@ Public Class RecordSelector
 
         MyBase.Style.Add("border-right", "none")
         MyBase.Style.Add("border-left", "none")
-        MyBase.Style.Add("border-top", "none")
-        MyBase.Style.Add("border-bottom", "none")
+        MyBase.Style.Add("border-top", "solid 1px black")
+        MyBase.Style.Add("border-bottom", "solid 1px black")
         AdjustWidthForScrollbar()   ' reduce width if vertical scrollbar
 
         MyBase.Render(writer)
