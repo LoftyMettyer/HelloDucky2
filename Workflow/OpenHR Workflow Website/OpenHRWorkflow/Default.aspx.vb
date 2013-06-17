@@ -1308,41 +1308,42 @@ Public Class _Default
 
                     If NullSafeInteger(dr("alignment")) = 0 Then
                       sTemp = sTemp & _
-                       "<TD width='1px'><input type='checkbox'" & _
+                       "<TD><input type='checkbox'" & _
                        " onmouseover = ""try{forChk" & sID & ".style.color='#ff9608'; }catch(e){};""" & _
                        " onmouseout = ""try{forChk" & sID & ".style.color='';}catch(e){};""" & _
                        " onclick=""" & sID & ".checked = checked;""" & _
                        CStr(IIf(isMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');""", "")) & _
                        " onfocus=""try{" & sID & ".select();activateControl();}catch(e){};""" & _
                        CStr(IIf(fChecked, " CHECKED", "")) & _
-                       " style='height:14px;width:14px;'" & _
+                       " style='height:14px;width:14px;margin:0px'" & _
                        " tabIndex='" & NullSafeInteger(dr("tabIndex")) + 1 & "'" & _
                        " id='chk" & sID & "'" & _
                        " name='chk" & sID & "'></TD>" & vbCrLf & _
-                       "<TD width='4px'></TD><TD><LABEL ID='forChk" & sID & "' FOR='chk" & sID & "' tabIndex='-1'" & _
+                       "</TD><TD width='100%'><LABEL ID='forChk" & sID & "' FOR='chk" & sID & "' tabIndex='-1'" & _
+                       " style='padding-left: 3px;'" & _
                        " onkeypress = ""try{if(window.event.keyCode == 32){chk" & sID & ".click()};}catch(e){}""" & _
                        " onmouseover = ""try{forChk" & sID & ".style.color='#ff9608'; }catch(e){};""" & _
                        " onmouseout = ""try{forChk" & sID & ".style.color='';}catch(e){};""" & _
                        " onfocus = ""try{forChk" & sID & ".style.color='#ff9608'; }catch(e){};""" & _
                        " onblur = ""try{forChk" & sID & ".style.color='';}catch(e){};""" & _
-                       ">&nbsp;&nbsp;" & NullSafeString(dr("caption")) & "</LABEL></TD>" & vbCrLf
+                       ">" & NullSafeString(dr("caption")) & "</LABEL></TD>" & vbCrLf
                     Else
                       sTemp = sTemp & _
-                       "<TD><LABEL ID='forChk" & sID & "' FOR='chk" & sID & "' tabIndex='" & NullSafeInteger(dr("tabIndex")) + 1 & "'" & _
+                       "<TD width='100%'><LABEL ID='forChk" & sID & "' FOR='chk" & sID & "' tabIndex='" & NullSafeInteger(dr("tabIndex")) + 1 & "'" & _
                        " onkeypress = ""try{if(window.event.keyCode == 32){chk" & sID & ".click()};}catch(e){}""" & _
                        " onmouseover = ""try{forChk" & sID & ".style.color='#ff9608'; }catch(e){};""" & _
                        " onmouseout = ""try{forChk" & sID & ".style.color='';}catch(e){};""" & _
                        " onfocus = ""try{forChk" & sID & ".style.color='#ff9608'; }catch(e){};""" & _
                        " onblur = ""try{forChk" & sID & ".style.color='';}catch(e){};""" & _
                        ">" & NullSafeString(dr("caption")) & "</LABEL></TD>" & vbCrLf & _
-                       "<TD width='1px'><input type='checkbox'" & _
+                       "<TD><input type='checkbox'" & _
                        " onmouseover = ""try{forChk" & sID & ".style.color='#ff9608'; }catch(e){};""" & _
                        " onmouseout = ""try{forChk" & sID & ".style.color='';}catch(e){};""" & _
                        " onclick=""" & sID & ".checked = checked;""" & _
                        CStr(IIf(isMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');""", "")) & _
                        " onfocus=""try{" & sID & ".select();activateControl();}catch(e){};""" & _
                        CStr(IIf(fChecked, " CHECKED", "")) & _
-                       " style='height:14px;width:14px;'" & _
+                       " style='height:14px;width:14px;margin:0px'" & _
                        " tabIndex='-1'" & _
                        " id='chk" & sID & "'" & _
                        " name='chk" & sID & "'></TD>" & vbCrLf
@@ -1350,41 +1351,42 @@ Public Class _Default
                   Else
                     If NullSafeInteger(dr("alignment")) = 0 Then
                       sTemp = sTemp & _
-                       "<TD width='1px'><input type='checkbox'" & _
+                       "<TD><input type='checkbox'" & _
                        " onmouseover = ""try{forChk" & sID & ".style.color='#ff9608'; }catch(e){};""" & _
                        " onmouseout = ""try{forChk" & sID & ".style.color='';}catch(e){};""" & _
                        " onclick=""" & sID & ".checked = checked;""" & _
                        CStr(IIf(isMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');""", "")) & _
                        " onfocus=""try{" & sID & ".select();activateControl();}catch(e){};""" & _
                        CStr(IIf(UCase(NullSafeString(dr("value"))) = "TRUE", " CHECKED", "")) & _
-                       " style='height:14px;width:14px;'" & _
+                       " style='height:14px;width:14px;margin:0px'" & _
                        " tabIndex='" & NullSafeInteger(dr("tabIndex")) + 1 & "'" & _
                        " id='chk" & sID & "'" & _
                        " name='chk" & sID & "'></TD>" & vbCrLf & _
-                       "<TD width='4px'></TD><TD><LABEL ID='forChk" & sID & "' FOR='chk" & sID & "' tabIndex='-1'" & _
+                       "</TD><TD width='100%'><LABEL ID='forChk" & sID & "' FOR='chk" & sID & "' tabIndex='-1'" & _
+                       " style='padding-left: 3px;'" & _
                        " onkeypress = ""try{if(window.event.keyCode == 32){chk" & sID & ".click()};}catch(e){}""" & _
                        " onmouseover = ""try{forChk" & sID & ".style.color='#ff9608'; }catch(e){};""" & _
                        " onmouseout = ""try{forChk" & sID & ".style.color='';}catch(e){};""" & _
                        " onfocus = ""try{forChk" & sID & ".style.color='#ff9608'; }catch(e){};""" & _
                        " onblur = ""try{forChk" & sID & ".style.color='';}catch(e){};""" & _
-                       ">&nbsp;&nbsp;" & NullSafeString(dr("caption")) & "</LABEL></TD>" & vbCrLf
+                       ">" & NullSafeString(dr("caption")) & "</LABEL></TD>" & vbCrLf
                     Else
                       sTemp = sTemp & _
-                       "<TD><LABEL ID='forChk" & sID & "' FOR='chk" & sID & "' tabIndex='" & NullSafeInteger(dr("tabIndex")) + 1 & "'" & _
+                       "<TD width='100%'><LABEL ID='forChk" & sID & "' FOR='chk" & sID & "' tabIndex='" & NullSafeInteger(dr("tabIndex")) + 1 & "'" & _
                        " onkeypress = ""try{if(window.event.keyCode == 32){chk" & sID & ".click()};}catch(e){}""" & _
                        " onmouseover = ""try{forChk" & sID & ".style.color='#ff9608'; }catch(e){};""" & _
                        " onmouseout = ""try{forChk" & sID & ".style.color='';}catch(e){};""" & _
                        " onfocus = ""try{forChk" & sID & ".style.color='#ff9608'; }catch(e){};""" & _
                        " onblur = ""try{forChk" & sID & ".style.color='';}catch(e){};""" & _
                        ">" & NullSafeString(dr("caption")) & "</LABEL></TD>" & vbCrLf & _
-                       "<TD width='1px'><input type='checkbox'" & _
+                       "<TD><input type='checkbox'" & _
                        " onmouseover = ""try{forChk" & sID & ".style.color='#ff9608'; }catch(e){};""" & _
                        " onmouseout = ""try{forChk" & sID & ".style.color='';}catch(e){};""" & _
                        " onclick=""" & sID & ".checked = checked;""" & _
                        CStr(IIf(isMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');""", "")) & _
                        " onfocus=""try{" & sID & ".select();activateControl();}catch(e){};""" & _
                        CStr(IIf(NullSafeString(dr("value")).ToUpper = "TRUE", " CHECKED", "")) & _
-                       " style='height:14px;width:14px;'" & _
+                       " style='height:14px;width:14px;margin:0px'" & _
                        " tabIndex='-1'" & _
                        " id='chk" & sID & "'" & _
                        " name='chk" & sID & "'></TD>" & vbCrLf
