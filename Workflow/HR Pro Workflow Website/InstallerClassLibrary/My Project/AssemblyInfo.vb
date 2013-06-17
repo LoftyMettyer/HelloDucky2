@@ -10,9 +10,9 @@ Imports System.Runtime.InteropServices
 
 <Assembly: AssemblyTitle("InstallerClassLibrary")> 
 <Assembly: AssemblyDescription("")> 
-<Assembly: AssemblyCompany("COA Solutions Ltd.")> 
+<Assembly: AssemblyCompany("Advnaced Business Software and Solutions Limited")> 
 <Assembly: AssemblyProduct("InstallerClassLibrary")> 
-<Assembly: AssemblyCopyright("Copyright © 2009 COA Solutions Ltd.")> 
+<Assembly: AssemblyCopyright("Copyright © Advanced Business Software and Solutions Limited 2000-2011")> 
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: ComVisible(False)>
@@ -31,5 +31,5 @@ Imports System.Runtime.InteropServices
 ' by using the '*' as shown below:
 ' <Assembly: AssemblyVersion("1.0.*")> 
 
-<Assembly: AssemblyVersion("3.8.1.0")> 
-<Assembly: AssemblyFileVersion("3.8.1.0")> 
+<Assembly: AssemblyVersion("4.3.15.0")> 
+<Assembly: AssemblyFileVersion("4.3.15.0")> 
