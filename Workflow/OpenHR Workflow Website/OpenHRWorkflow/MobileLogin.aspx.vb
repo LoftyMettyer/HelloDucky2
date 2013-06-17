@@ -42,7 +42,10 @@ Partial Class MobileLogin
         Session("WorkflowURL") = mobjConfig.WorkflowURL
 
       Catch ex As Exception
-
+        sMessage = "Error" & vbCrLf & ex.Message
+        lblMsgBox.InnerText = sMessage
+        pnlGreyOut.Style.Add("visibility", "visible")
+        pnlMsgBox.Style.Add("visibility", "visible")
       End Try
 
       ' Establish Connection
