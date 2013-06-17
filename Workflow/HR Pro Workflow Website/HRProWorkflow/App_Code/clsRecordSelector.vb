@@ -86,7 +86,7 @@ Public Class RecordSelector
         End If
 
 
-        ' Div to contain all items
+        ' Div to contain all items - too small for lookups
         writer.Write("<div ID='" & Me.ID.ToString.Replace("Grid", "") & "' " & _
             IIf(IsLookup, "style='", "style='position:absolute;") & _
             " width:" & CalculateWidth() & ";height:" & CalculateHeight() & ";" & _
@@ -115,7 +115,7 @@ Public Class RecordSelector
         writer.Write("</table>")
 
         ' Create a div to contain the Gridview table, not the pager controls or the header columns.
-        ' (This is the one with scrollbars)
+        ' (This is the one with scrollbars) - too small for lookups
         writer.Write("<div id='" & ClientID.Replace("Grid", "") & "gridcontainer'  style='position:absolute;top:" & CalculateHeaderHeight() & _
                      ";bottom:" & CalculatePagerHeight() & ";overflow-x:auto;overflow-y:auto;" & _
                      "width:" & CalculateWidth() & ";" & "background-color:#FFFFFF;' onscroll=scrollHeader('" & ClientID.Replace("Grid", "gridcontainer") & "')>")
@@ -176,12 +176,21 @@ Public Class RecordSelector
                 strWidth = [String].Format("{0}{1}", Me.Width.Value, (If((Me.Width.Type = UnitType.Percentage), "%", "px")))
             End If
         Else
-            Dim iGridWidth As Integer = m_iVisibleColumnCount * iColWidth
+            Dim iGridWidth As Integer = m_iVisibleColumnCount * (iColWidth + 2) ' 2 = padding
             iGridWidth = CInt(IIf(iGridWidth < 0, 1, iGridWidth))
             iGridWidth = CInt(IIf(iGridWidth < Me.Width.Value, Me.Width.Value, iGridWidth))
 
+            ' do rows exceed height?
+            If MyBase.Rows.Count > MAXDROPDOWNROWS Then
+                ' Add scrollbar width
+                iGridWidth += 25
+            End If
+
             strWidth = [String].Format("{0}{1}", iGridWidth, (If((Me.Width.Type = UnitType.Percentage), "%", "px")))
         End If
+
+        ' alert(document.getElementById("forminput_38904_14_Grid").offsetWidth);  = 411
+
 
         Return strWidth
 
@@ -496,7 +505,7 @@ Public Class RecordSelector
                     If MyBase.HeaderStyle.Height.Value < 21 Then MyBase.HeaderStyle.Height = Unit.Pixel(NullSafeSingle(Me.HeadFontSize) * 2)
                     tcTableCell.ApplyStyle(MyBase.HeaderStyle)
                 End If
-            Next
+            Next       
         End If
     End Sub
 
@@ -518,7 +527,7 @@ Public Class RecordSelector
 
             If e.Row.RowType = DataControlRowType.DataRow Then
                 e.Row.Style.Add("overflow", "hidden")
-                e.Row.Style.Add("cursor", "pointer")
+                If Not Me.IsEmpty Then e.Row.Style.Add("cursor", "pointer")
 
                 ' loop through the columns of this row. Hide ID columns
                 For iColCount As Integer = 0 To e.Row.Cells.Count - 1
@@ -585,8 +594,10 @@ Public Class RecordSelector
                 'e.Row.Attributes("onclick") = ("SetScrollTopPos('" & grdGrid.ID.ToString & "', document.getElementById('" & grdGrid.ID.Replace("Grid", "gridcontainer") & "').scrollTop);" & _
                 '                               "try{setPostbackMode(2);}catch(e){};__doPostBack('" & grdGrid.UniqueID & "','Select$" & e.Row.RowIndex & "');" & _
                 '                               "SetScrollTopPos('" & grdGrid.ID.ToString & "', -1);")
-                e.Row.Attributes("onclick") = ("SetScrollTopPos('" & grdGrid.ID.ToString & "', document.getElementById('" & grdGrid.ID.Replace("Grid", "gridcontainer") & "').scrollTop);" & _
-                                                    "try{setPostbackMode(2);}catch(e){};__doPostBack('" & grdGrid.UniqueID & "','Select$" & e.Row.RowIndex & "');")
+                If Not Me.IsEmpty Then
+                    e.Row.Attributes("onclick") = ("SetScrollTopPos('" & grdGrid.ID.ToString & "', document.getElementById('" & grdGrid.ID.Replace("Grid", "gridcontainer") & "').scrollTop);" & _
+                                                        "try{setPostbackMode(2);}catch(e){};__doPostBack('" & grdGrid.UniqueID & "','Select$" & e.Row.RowIndex & "');")
+                End If
             ElseIf e.Row.RowType = DataControlRowType.Pager Then
                 ' This enables postback for the grid
 

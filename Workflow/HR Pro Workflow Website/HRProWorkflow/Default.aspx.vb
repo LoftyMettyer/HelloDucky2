@@ -1501,6 +1501,7 @@ Public Class _Default
                                         ' EnableViewState must be on. Mucks up the grid data otherwise. Should be reviewed
                                         ' if performance is silly, but while paging is enabled it shouldn't be too bad.
                                         .EnableViewState = True
+                                        .IsEmpty = False
                                         .EmptyDataText = "no records to display"
 
                                         ' Header Row
@@ -1723,13 +1724,13 @@ Public Class _Default
 
                                             If dt.Rows.Count > 0 Then
                                                 ''                                              Stop
+                                                ctlForm_PagingGridView.IsEmpty = False
                                                 ctlForm_PagingGridView.DataSource = dt
                                                 ctlForm_PagingGridView.DataBind()
-                                                ctlForm_PagingGridView.IsEmpty = False
                                             Else
                                                 ''                                                Stop
-                                                ShowNoResultFound(dt, ctlForm_PagingGridView)
                                                 ctlForm_PagingGridView.IsEmpty = True
+                                                ShowNoResultFound(dt, ctlForm_PagingGridView)
                                             End If
 
                                             'drGrid.Close()
@@ -1932,6 +1933,7 @@ Public Class _Default
                                         .ID = sID & "Grid"
                                         .IsLookup = True
                                         .EnableViewState = True ' Must be set to True
+                                        .IsEmpty = False
                                         .EmptyDataText = "no records to display"
                                         .AllowPaging = True
                                         .AllowSorting = True
@@ -2288,7 +2290,7 @@ Public Class _Default
                                     ' parent form, and resize the parent form if necessary
                                     ' =================================================================
                                     scriptString += "var bhvDdl=$find('" & ctlForm_DDE.BehaviorID.ToString & "');"
-                                    scriptString += "bhvDdl .add_shown(ResizeFormForCombo);"
+                                    scriptString += "try {bhvDdl .add_shown(ResizeFormForCombo);} catch (e) {}"
 
 
                                     ' ====================================================
@@ -4552,10 +4554,12 @@ Public Class _Default
 
         'You can set the styles here
         gv.Rows(0).Cells(0).HorizontalAlign = HorizontalAlign.Center
-        gv.Rows(0).Cells(0).ForeColor = System.Drawing.Color.Red
-        gv.Rows(0).Cells(0).Font.Bold = True
+        'gv.Rows(0).Cells(0).ForeColor = System.Drawing.Color.Red
+        'gv.Rows(0).Cells(0).Font.Bold = True
         'set No Results found to the new added cell
         gv.Rows(0).Cells(0).Text = gv.EmptyDataText
+
+        gv.SelectedIndex = -1
 
 
     End Sub
