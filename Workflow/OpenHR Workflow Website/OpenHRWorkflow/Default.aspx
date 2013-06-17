@@ -1569,19 +1569,16 @@
 
 			<igmisc:WebAsyncRefreshPanel id="pnlErrorMessages" runat="server" style="position: relative;" width="90%" height="100%">
 				<asp:Label ID="lblErrors" runat="server" Text=""></asp:Label>				
-				<asp:BulletedList ID="bulletErrors" runat="server" Style="margin-top: 0px; margin-bottom: 0px; padding-top: 5px; padding-bottom: 5px;" BulletStyle="Disc" Font-Names="Verdana"
-					Font-Size="11pt" BorderStyle="None">
+				<asp:BulletedList ID="bulletErrors" runat="server" Style="margin-top: 0px; margin-bottom: 0px; padding-top: 5px; padding-bottom: 5px;" BulletStyle="Disc" Font-Names="Verdana" Font-Size="11pt" BorderStyle="None">
 				</asp:BulletedList>
 				<asp:Label ID="lblWarnings" runat="server" Text=""></asp:Label>
-				<asp:BulletedList ID="bulletWarnings" runat="server" Style="margin-top: 0px; margin-bottom: 0px; padding-top: 5px; padding-bottom: 5px;" BulletStyle="Disc" Font-Names="Verdana"
-					Font-Size="11px" BorderStyle="None">
+				<asp:BulletedList ID="bulletWarnings" runat="server" Style="margin-top: 0px; margin-bottom: 0px; padding-top: 5px; padding-bottom: 5px;" BulletStyle="Disc" Font-Names="Verdana" Font-Size="11px" BorderStyle="None">
 				</asp:BulletedList>
 				<asp:Label ID="lblWarningsPrompt_1" runat="server" Text="Click"></asp:Label>
 				<span id="spnClickHere" name="spnClickHere" tabindex="1" style="color:#333366;" onclick="overrideWarningsAndSubmit();" onmouseover="try{this.style.color='#ff9608';}catch(e){}"
 					onmouseout="try{this.style.color='#333366';}catch(e){}" onfocus="try{this.style.color='#ff9608';}catch(e){}"
 					onblur="try{this.style.color='#333366';}catch(e){}" onkeypress="try{if(window.event.keyCode == 32)spnClickHere.click();}catch(e){}">
-					<asp:Label ID="lblWarningsPrompt_2" runat="server" Text="here" Font-Underline="true" 
-						style="cursor: pointer;"></asp:Label>
+					<asp:Label ID="lblWarningsPrompt_2" runat="server" Text="here" Font-Underline="true" style="cursor: pointer;"></asp:Label>
 				</span>
 				<asp:Label ID="lblWarningsPrompt_3" runat="server" Text=""></asp:Label>
 			</igmisc:WebAsyncRefreshPanel>

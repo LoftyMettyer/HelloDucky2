@@ -1286,8 +1286,6 @@ Public Class _Default
                     If NullSafeInteger(dr("alignment")) = 0 Then
                       sTemp = sTemp & _
                        "<TD><input type='checkbox'" & _
-                       " onmouseover = ""try{forChk" & sID & ".style.color='#ff9608'; }catch(e){};""" & _
-                       " onmouseout = ""try{forChk" & sID & ".style.color='';}catch(e){};""" & _
                        " onclick=""" & sID & ".checked = checked;""" & _
                        CStr(IIf(IsMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');""", "")) & _
                        " onfocus=""try{" & sID & ".select();activateControl();}catch(e){};""" & _
@@ -1299,23 +1297,13 @@ Public Class _Default
                        "</TD><TD width='100%'><LABEL ID='forChk" & sID & "' FOR='chk" & sID & "' tabIndex='-1'" & _
                        " style='padding-left: 3px;'" & _
                        " onkeypress = ""try{if(window.event.keyCode == 32){chk" & sID & ".click()};}catch(e){}""" & _
-                       " onmouseover = ""try{forChk" & sID & ".style.color='#ff9608'; }catch(e){};""" & _
-                       " onmouseout = ""try{forChk" & sID & ".style.color='';}catch(e){};""" & _
-                       " onfocus = ""try{forChk" & sID & ".style.color='#ff9608'; }catch(e){};""" & _
-                       " onblur = ""try{forChk" & sID & ".style.color='';}catch(e){};""" & _
                        ">" & NullSafeString(dr("caption")) & "</LABEL></TD>" & vbCrLf
                     Else
                       sTemp = sTemp & _
                        "<TD width='100%'><LABEL ID='forChk" & sID & "' FOR='chk" & sID & "' tabIndex='" & NullSafeInteger(dr("tabIndex")) + 1 & "'" & _
                        " onkeypress = ""try{if(window.event.keyCode == 32){chk" & sID & ".click()};}catch(e){}""" & _
-                       " onmouseover = ""try{forChk" & sID & ".style.color='#ff9608'; }catch(e){};""" & _
-                       " onmouseout = ""try{forChk" & sID & ".style.color='';}catch(e){};""" & _
-                       " onfocus = ""try{forChk" & sID & ".style.color='#ff9608'; }catch(e){};""" & _
-                       " onblur = ""try{forChk" & sID & ".style.color='';}catch(e){};""" & _
                        ">" & NullSafeString(dr("caption")) & "</LABEL></TD>" & vbCrLf & _
                        "<TD><input type='checkbox'" & _
-                       " onmouseover = ""try{forChk" & sID & ".style.color='#ff9608'; }catch(e){};""" & _
-                       " onmouseout = ""try{forChk" & sID & ".style.color='';}catch(e){};""" & _
                        " onclick=""" & sID & ".checked = checked;""" & _
                        CStr(IIf(IsMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');""", "")) & _
                        " onfocus=""try{" & sID & ".select();activateControl();}catch(e){};""" & _
@@ -1329,8 +1317,6 @@ Public Class _Default
                     If NullSafeInteger(dr("alignment")) = 0 Then
                       sTemp = sTemp & _
                        "<TD><input type='checkbox'" & _
-                       " onmouseover = ""try{forChk" & sID & ".style.color='#ff9608'; }catch(e){};""" & _
-                       " onmouseout = ""try{forChk" & sID & ".style.color='';}catch(e){};""" & _
                        " onclick=""" & sID & ".checked = checked;""" & _
                        CStr(IIf(IsMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');""", "")) & _
                        " onfocus=""try{" & sID & ".select();activateControl();}catch(e){};""" & _
@@ -1342,23 +1328,13 @@ Public Class _Default
                        "</TD><TD width='100%'><LABEL ID='forChk" & sID & "' FOR='chk" & sID & "' tabIndex='-1'" & _
                        " style='padding-left: 3px;'" & _
                        " onkeypress = ""try{if(window.event.keyCode == 32){chk" & sID & ".click()};}catch(e){}""" & _
-                       " onmouseover = ""try{forChk" & sID & ".style.color='#ff9608'; }catch(e){};""" & _
-                       " onmouseout = ""try{forChk" & sID & ".style.color='';}catch(e){};""" & _
-                       " onfocus = ""try{forChk" & sID & ".style.color='#ff9608'; }catch(e){};""" & _
-                       " onblur = ""try{forChk" & sID & ".style.color='';}catch(e){};""" & _
                        ">" & NullSafeString(dr("caption")) & "</LABEL></TD>" & vbCrLf
                     Else
                       sTemp = sTemp & _
                        "<TD width='100%'><LABEL ID='forChk" & sID & "' FOR='chk" & sID & "' tabIndex='" & NullSafeInteger(dr("tabIndex")) + 1 & "'" & _
                        " onkeypress = ""try{if(window.event.keyCode == 32){chk" & sID & ".click()};}catch(e){}""" & _
-                       " onmouseover = ""try{forChk" & sID & ".style.color='#ff9608'; }catch(e){};""" & _
-                       " onmouseout = ""try{forChk" & sID & ".style.color='';}catch(e){};""" & _
-                       " onfocus = ""try{forChk" & sID & ".style.color='#ff9608'; }catch(e){};""" & _
-                       " onblur = ""try{forChk" & sID & ".style.color='';}catch(e){};""" & _
                        ">" & NullSafeString(dr("caption")) & "</LABEL></TD>" & vbCrLf & _
                        "<TD><input type='checkbox'" & _
-                       " onmouseover = ""try{forChk" & sID & ".style.color='#ff9608'; }catch(e){};""" & _
-                       " onmouseout = ""try{forChk" & sID & ".style.color='';}catch(e){};""" & _
                        " onclick=""" & sID & ".checked = checked;""" & _
                        CStr(IIf(IsMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');""", "")) & _
                        " onfocus=""try{" & sID & ".select();activateControl();}catch(e){};""" & _
@@ -2739,8 +2715,6 @@ Public Class _Default
                            " <input id=""opt" & sID & "_" & iTemp.ToString & """ type=""radio""" & _
                            " style=""margin: 0px; padding: 3px;""" & _
                            " name=""opt" & sID & """ value=""" & drGrid(0).ToString & """" & _
-                           " onfocus = ""try{forOpt" & sID & "_" & iTemp.ToString & ".style.color='#ff9608'; activateControl();}catch(e){};""" & _
-                           " onblur = ""try{forOpt" & sID & "_" & iTemp.ToString & ".style.color='';}catch(e){};""" & _
                            " onclick = """ & sID & ".value=opt" & sID & "[" & iTemp.ToString & "].value;""" & _
                                                   CStr(IIf(IsMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');""", ""))
 
@@ -2762,8 +2736,6 @@ Public Class _Default
                            " <input id=""opt" & sID & "_" & iTemp.ToString & """ type=""radio""" & _
                            " style=""margin: 0px; padding: 3px;""" & _
                            " name=""opt" & sID & """ value=""" & drGrid(0).ToString & """" & _
-                           " onfocus = ""try{forOpt" & sID & "_" & iTemp.ToString & ".style.color='#ff9608'; activateControl();}catch(e){};""" & _
-                           " onblur = ""try{forOpt" & sID & "_" & iTemp.ToString & ".style.color='';}catch(e){};""" & _
                            " onclick = """ & sID & ".value=opt" & sID & "[" & iTemp.ToString & "].value;""" & _
                                             CStr(IIf(IsMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');""", ""))
 
@@ -2780,8 +2752,6 @@ Public Class _Default
                       "/>" & _
                       " <label id=""forOpt" & sID & "_" & iTemp.ToString & """ for=""opt" & sID & "_" & iTemp.ToString & """ tabindex=""-1""" _
                       & " style=""position: relative; top: -2px;""" _
-                      & " onmouseover = ""try{this.style.color='#ff9608'; }catch(e){};""" _
-                      & " onmouseout = ""try{this.style.color='';}catch(e){};""" _
                       & ">" _
                       & drGrid(0).ToString _
                       & "</label>" & _
@@ -2953,10 +2923,7 @@ Public Class _Default
                    " color: " & General.GetHtmlColour(NullSafeInteger(dr("ForeColor"))) & "; " & _
                    "' onclick='FileDownload_Click(""" & sEncodedID & """);'" & _
                    " onkeypress='FileDownload_KeyPress(""" & sEncodedID & """);'" & _
-                   " onmouseover=""this.style.cursor='pointer';this.style.color='#ff9608';""" & _
-                   " onmouseout=""this.style.cursor='';this.style.color='" & General.GetHtmlColour(NullSafeInteger(dr("ForeColor"))) & "';""" & _
-                   " onfocus=""this.style.color='#ff9608';""" & _
-                   " onblur=""this.style.color='" & General.GetHtmlColour(NullSafeInteger(dr("ForeColor"))) & "';"">" & _
+                   " >" & _
                    HttpUtility.HtmlEncode(NullSafeString(dr("caption"))) & _
                    "</span>"
 
@@ -3002,10 +2969,7 @@ Public Class _Default
                    " color: " & General.GetHtmlColour(NullSafeInteger(dr("ForeColor"))) & "; " & _
                    "' onclick='FileDownload_Click(""" & sEncodedID & """);'" & _
                    " onkeypress='FileDownload_KeyPress(""" & sEncodedID & """);'" & _
-                   " onmouseover=""this.style.cursor='pointer';this.style.color='#ff9608';""" & _
-                   " onmouseout=""this.style.cursor='';this.style.color='" & General.GetHtmlColour(NullSafeInteger(dr("ForeColor"))) & "';""" & _
-                   " onfocus=""this.style.color='#ff9608';""" & _
-                   " onblur=""this.style.color='" & General.GetHtmlColour(NullSafeInteger(dr("ForeColor"))) & "';"">" & _
+                   " >" & _
                    HttpUtility.HtmlEncode(NullSafeString(dr("caption"))) & _
                    "</span>"
 
