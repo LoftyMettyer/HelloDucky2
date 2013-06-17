@@ -37,8 +37,7 @@ Partial Class MobileLogin
     strConn = CStr("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
                      ";Initial Catalog=" & Session("Database") & _
                      ";Integrated Security=false;User ID=" & Session("Login") & _
-                     ";Password=" & Session("Password") & _
-                     ";Pooling=false")
+                     ";Password=" & Session("Password"))
 
     Dim myConnection As New SqlClient.SqlConnection(strConn)
     myConnection.Open()
@@ -114,11 +113,10 @@ Partial Class MobileLogin
     ' ======================== NOW FOR THE INDIVIDUAL ELEMENTS  ====================================
 
     ' Establish Connection
-    strConn = CType(("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
+    strConn = CStr("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
                      ";Initial Catalog=" & Session("Database") & _
                      ";Integrated Security=false;User ID=" & Session("Login") & _
-                     ";Password=" & Session("Password") & _
-                     ";Pooling=false"), String)
+                     ";Password=" & Session("Password"))
 
     myConnection = New SqlClient.SqlConnection(strConn)
     myConnection.Open()
@@ -232,11 +230,10 @@ Partial Class MobileLogin
       sImageWebPath = "pictures"
       sImageFilePath = Server.MapPath(sImageWebPath)
 
-      strConn = CType(("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
+      strConn = CStr("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
                        ";Initial Catalog=" & Session("Database") & _
                        ";Integrated Security=false;User ID=" & Session("Login") & _
-                       ";Password=" & Session("Password") & _
-                       ";Pooling=false"), String)
+                       ";Password=" & Session("Password"))
 
       conn = New SqlClient.SqlConnection(strConn)
       conn.Open()
@@ -336,11 +333,10 @@ Partial Class MobileLogin
     End If
 
     ' Perform system Lock Check first.
-    strConn = CType(("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
+    strConn = CStr("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
                            ";Initial Catalog=" & Session("Database") & _
                            ";Integrated Security=false;User ID=" & Session("Login") & _
-                           ";Password=" & Session("Password") & _
-                           ";Pooling=false"), String)
+                           ";Password=" & Session("Password"))
 
     Try
       conn = New SqlClient.SqlConnection(strConn)
@@ -387,11 +383,10 @@ Partial Class MobileLogin
       Else
         ' ============ SQL AUTHENTICATION =============
         ' SQL User - validate against the DB
-        strConn = CType(("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
+        strConn = CStr("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
                ";Initial Catalog=" & Session("Database") & _
                ";Integrated Security=false;User ID=" & userName & _
-               ";Password=" & txtPassword.Value & _
-               ";Pooling=false"), String)
+               ";Password=" & txtPassword.Value)
         Try
           conn = New SqlClient.SqlConnection(strConn)
           conn.Open()
@@ -409,8 +404,7 @@ Partial Class MobileLogin
         strConn = CStr("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
                          ";Initial Catalog=" & Session("Database") & _
                          ";Integrated Security=false;User ID=" & Session("Login") & _
-                         ";Password=" & Session("Password") & _
-                         ";Pooling=false")
+                         ";Password=" & Session("Password"))
 
         conn = New SqlClient.SqlConnection(strConn)
         conn.Open()

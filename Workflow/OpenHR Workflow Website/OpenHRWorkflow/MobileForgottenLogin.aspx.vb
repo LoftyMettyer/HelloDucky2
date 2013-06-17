@@ -35,11 +35,10 @@ Partial Class ForgottenLogin
     If sMessage.Length = 0 Then
 
       ' Establish Connection
-      strConn = CType(("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
+      strConn = CStr("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
                        ";Initial Catalog=" & Session("Database") & _
                        ";Integrated Security=false;User ID=" & Session("Login") & _
-                       ";Password=" & Session("Password") & _
-                       ";Pooling=false"), String)
+                       ";Password=" & Session("Password"))
 
       Dim myConnection As New SqlClient.SqlConnection(strConn)
       myConnection.Open()
@@ -120,12 +119,10 @@ Partial Class ForgottenLogin
       ' ======================== NOW FOR THE INDIVIDUAL ELEMENTS  ====================================
 
       ' Establish Connection
-      strConn = CType(("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
+      strConn = CStr("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
                        ";Initial Catalog=" & Session("Database") & _
                        ";Integrated Security=false;User ID=" & Session("Login") & _
-                       ";Password=" & Session("Password") & _
-                       ";Pooling=false"), String)
-      'strConn = "Application Name=OpenHR Workflow;Data Source=.\sqlexpress;Initial Catalog=hrprostd43;Integrated Security=false;User ID=sa;Password=asr;Pooling=false"
+                       ";Password=" & Session("Password"))
 
       myConnection = New SqlClient.SqlConnection(strConn)
       myConnection.Open()
@@ -252,13 +249,11 @@ Partial Class ForgottenLogin
       sImageWebPath = "pictures"
       sImageFilePath = Server.MapPath(sImageWebPath)
 
-      strConn = CType(("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
+      strConn = CStr("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
                        ";Initial Catalog=" & Session("Database") & _
                        ";Integrated Security=false;User ID=" & Session("Login") & _
-                       ";Password=" & Session("Password") & _
-                       ";Pooling=false"), String)
-      'strConn = "Application Name=OpenHR Workflow;Data Source=.\sqlexpress;Initial Catalog=hrprostd43;Integrated Security=false;User ID=sa;Password=asr;Pooling=false"
-      'strConn = "Application Name=OpenHR Workflow;Data Source=" & msServer & ";Initial Catalog=" & msDatabase & ";Integrated Security=false;User ID=" & msUser & ";Password=" & msPwd & ";Pooling=false"
+                       ";Password=" & Session("Password"))
+
       conn = New SqlClient.SqlConnection(strConn)
       conn.Open()
 
@@ -349,8 +344,7 @@ Partial Class ForgottenLogin
       strConn = CStr("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
       ";Initial Catalog=" & Session("Database") & _
       ";Integrated Security=false;User ID=" & Session("Login") & _
-      ";Password=" & Session("Password") & _
-      ";Pooling=false")
+      ";Password=" & Session("Password"))
 
       conn = New SqlClient.SqlConnection(strConn)
       conn.Open()

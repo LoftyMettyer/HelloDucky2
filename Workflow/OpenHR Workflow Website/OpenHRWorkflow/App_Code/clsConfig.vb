@@ -306,4 +306,5 @@ Public Class Config
   Public Sub New()
 
   End Sub
+
 End Class

@@ -37,8 +37,7 @@ Partial Class ChangePassword
     strConn = CStr("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
             ";Initial Catalog=" & Session("Database") & _
             ";Integrated Security=false;User ID=" & Session("Login") & _
-            ";Password=" & Session("Password") & _
-            ";Pooling=false")
+            ";Password=" & Session("Password"))
 
     Dim myConnection As New SqlClient.SqlConnection(strConn)
     myConnection.Open()
@@ -122,8 +121,7 @@ Partial Class ChangePassword
     strConn = CStr("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
             ";Initial Catalog=" & Session("Database") & _
             ";Integrated Security=false;User ID=" & Session("Login") & _
-            ";Password=" & Session("Password") & _
-            ";Pooling=false")
+            ";Password=" & Session("Password"))
 
     myConnection = New SqlClient.SqlConnection(strConn)
     myConnection.Open()
@@ -242,11 +240,10 @@ Partial Class ChangePassword
       sImageFileName = ""
       sImageWebPath = "../pictures"
       sImageFilePath = Server.MapPath(sImageWebPath)
-      strConn = CType(("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
+      strConn = CStr("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
                        ";Initial Catalog=" & Session("Database") & _
                        ";Integrated Security=false;User ID=" & Session("Login") & _
-                       ";Password=" & Session("Password") & _
-                       ";Pooling=false"), String)
+                       ";Password=" & Session("Password"))
 
       conn = New SqlClient.SqlConnection(strConn)
       conn.Open()
@@ -345,8 +342,7 @@ Partial Class ChangePassword
       strConn = CStr("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
                        ";Initial Catalog=" & Session("Database") & _
                        ";Integrated Security=false;User ID=" & Session("Login") & _
-                       ";Password=" & Session("Password") & _
-                       ";Pooling=false")
+                       ";Password=" & Session("Password"))
       conn = New SqlClient.SqlConnection(strConn)
       conn.Open()
 
