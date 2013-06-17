@@ -86,6 +86,14 @@ Public Class _Default
         InitializeComponent()
 
         ScriptManager.GetCurrent(Page).AsyncPostBackTimeout = SubmissionTimeout()
+
+
+
+
+
+
+
+
     End Sub
 
 #End Region
@@ -94,6 +102,7 @@ Public Class _Default
 
         Dim ctlForm_Date As Infragistics.WebUI.WebSchedule.WebDateChooser
         Dim ctlForm_Button As Infragistics.WebUI.WebDataInput.WebImageButton
+        Dim ctlForm_InputButton As Button
         Dim ctlForm_Label As Label
         Dim ctlForm_TextInput As TextBox
         Dim ctlForm_CheckBox As LiteralControl
@@ -103,7 +112,6 @@ Public Class _Default
         Dim ctlForm_NumericInput As Infragistics.WebUI.WebDataInput.WebNumericEdit
         'Dim ctlForm_RecordSelectionGrid As Infragistics.WebUI.UltraWebGrid.UltraWebGrid
         Dim ctlForm_PagingGridView As RecordSelector
-        Dim ctlForm_Table As System.Web.UI.WebControls.Table
         Dim ctlForm_Frame As LiteralControl
         Dim ctlForm_Line As LiteralControl
         Dim ctlForm_OptionGroup As LiteralControl
@@ -147,7 +155,6 @@ Public Class _Default
         Dim iDay As Int16
         Dim objGridColumn As System.Data.DataColumn 'Infragistics.WebUI.UltraWebGrid.UltraGridColumn
         ' Dim objGridCell As Infragistics.WebUI.UltraWebGrid.UltraGridCell
-        Dim iGridWidth As Int32
         Dim iHeaderHeight As Int32
         Dim iTempHeight As Int32
         Dim iTempWidth As Int32
@@ -155,12 +162,9 @@ Public Class _Default
         Dim drGrid As System.Data.SqlClient.SqlDataReader
         Dim cmdGrid As System.Data.SqlClient.SqlCommand
         Dim cmdQS As System.Data.SqlClient.SqlCommand
-        Dim sColumnCaption As String
-        Dim iVisibleColumnCount As Integer
         Dim iMinTabIndex As Integer
         Dim sDefaultValue As String
         Dim fRecordOK As Boolean
-        Dim iIDColumnIndex As Int16
         Dim iGridTopPadding As Integer
         Dim iRowHeight As Integer
         Dim iDropHeight As Integer
@@ -186,10 +190,6 @@ Public Class _Default
         Dim sDecoration As String
         Dim sEncodedID As String
         Dim iMaxLength As Integer
-        Dim iEffectiveRowHeight As Integer
-        Dim iGapBetweenBorderAndText As Integer
-        Dim iLoop As Integer
-        Dim iWidthUsed As Integer
         Dim sFilterSQL As String
         Dim da As SqlDataAdapter
         Dim dt As DataTable
@@ -213,6 +213,8 @@ Public Class _Default
         ReDim arrQueryStrings(0)
         sSiblingForms = ""
         sTitle = sDEFAULTTITLE
+
+
 
         Try
             mobjConfig.Initialise(Server.MapPath("themes/ThemeHex.xml"))
@@ -572,6 +574,7 @@ Public Class _Default
                         cmdSelect.Parameters.Add("@psFollowOnFormsMessage", SqlDbType.VarChar, 200).Direction = ParameterDirection.Output
 
                         dr = cmdSelect.ExecuteReader
+
 
                         While (dr.Read) And (sMessage.Length = 0)
                             sID = FORMINPUTPREFIX & NullSafeString(dr("id")) & "_" & NullSafeString(dr("ItemType")) & "_"
@@ -1459,6 +1462,10 @@ Public Class _Default
                                     ' but also put a header DIV above the grid which contains copies of the column headers. This is 
                                     ' to simulate fixing the headers when the grid is scrolled. We use this table to allow 
                                     ' clickable sorting and resizable column widths.
+                                    '
+                                    ' =========================================================
+                                    ' Grids are now created using the clsRecordSelector class.
+                                    ' =========================================================
 
                                     ctlForm_PagingGridView = New RecordSelector
                                     With ctlForm_PagingGridView
@@ -1469,11 +1476,14 @@ Public Class _Default
                                         .Attributes.CssStyle("WIDTH") = Unit.Pixel(NullSafeInteger(dr("Width"))).ToString
 
                                         ' Don't use .height - it causes large row heights if the grid isn't filled.
+                                        ' Use .ControlHeight instead - custom property.
                                         '.Height = NullSafeInteger(dr("Height"))
                                         ' .Attributes.Add("Height", NullSafeInteger(dr("Height")).ToString)
-                                        .ControlHeight = NullSafeInteger(dr("Height"))
-                                        .Width = NullSafeInteger(dr("Width"))
                                         '.Style.Add("height", Unit.Pixel(NullSafeInteger(dr("Height"))).ToString)
+                                        .ControlHeight = NullSafeInteger(dr("Height"))
+
+                                        .Width = NullSafeInteger(dr("Width"))
+
                                         .BorderColor = Color.Black
                                         .BorderStyle = BorderStyle.Solid
                                         .BorderWidth = 1
@@ -1487,90 +1497,19 @@ Public Class _Default
                                         '.EnableSortingAndPagingCallbacks = True
                                         .PageSize = mobjConfig.LookupRowsRange
                                         .IsLookup = False
-                                        '.EnableViewState = False
+                                        ' EnableViewState must be on. Mucks up the grid data otherwise. Should be reviewed
+                                        ' if performance is silly, but while paging is enabled it shouldn't be too bad.
+                                        .EnableViewState = True
+                                        .EmptyDataText = "no records to display"
 
                                         ' Header Row
                                         .ColumnHeaders = NullSafeBoolean(dr("ColumnHeaders"))
                                         .HeadFontSize = NullSafeSingle(dr("HeadFontSize"))
                                         .HeadLines = NullSafeInteger(dr("Headlines"))
 
-                                        ' =========================================================
-                                        ' Grids are now created using the clsRecordSelector class.
-                                        ' =========================================================
-
-                                        ' '' HEADER formatting
-                                        ''iGridTopPadding = CInt(NullSafeSingle(dr("HeadFontSize")) / 8)
-                                        ''If NullSafeBoolean(dr("ColumnHeaders")) And (NullSafeInteger(dr("Headlines")) > 0) Then
-                                        ''    iHeaderHeight = CInt(((NullSafeSingle(dr("HeadFontSize")) + iGridTopPadding) * NullSafeInteger(dr("Headlines")) * 2) _
-                                        ''     - 2 _
-                                        ''     - (NullSafeSingle(dr("HeadFontSize")) * (NullSafeInteger(dr("Headlines")) + 1) * (iGridTopPadding - 1) / 4))
-
-                                        ''    If iHeaderHeight > NullSafeInteger(dr("Height")) Then
-                                        ''        iHeaderHeight = NullSafeInteger(dr("Height"))
-                                        ''    End If
-                                        ''Else
-                                        ''    iHeaderHeight = 0
-                                        ''End If
-
-                                        ''iTempHeight = NullSafeInteger(dr("Height")) - iHeaderHeight
-                                        ''iTempHeight = CInt(IIf(iTempHeight < 0, 1, iTempHeight))
-                                        '.Height = Unit.Pixel(iTempHeight)
-                                        '.Style.Add("Position", "static")
-
-                                        'NPG20100611 Fault HRPRO 873
-                                        'Deduct 1 pixel from the iGridWidth variable to prevent horizontal scrollbar.
-                                        ''iGridWidth = NullSafeInteger(dr("Width")) - 1
-
-                                        ' ---------------Step 1 of 5, create a table for the grid's header columns
-                                        ''ctlForm_Table = New System.Web.UI.WebControls.Table
-                                        ''With ctlForm_Table
-                                        ''    .ID = sID & "Header"
-                                        ''    .Width = iGridWidth     ' deduct the scrollbar - need to check for the scrollbar!
-                                        ''    .CellSpacing = 0
-                                        ''    .Style.Add("table-layout", "fixed")
-                                        ''    .CssClass = "resizable"
-                                        ''    .Style.Add("border", "0")
-                                        ''    .Style.Add("position", "relative")
-                                        ''    '.Style.Add("border-collapse", "collapse")                                        
-                                        ''End With
-
-                                        ' ---------------Step 2 of 5, create a div (panel) for Everything to do with the grid
-                                        ''Dim ctlForm_TableContainer As New Panel
-                                        ''With ctlForm_TableContainer
-
-                                        ''    .ID = sID
-
-                                        ''    .Style.Add("Position", "Absolute")
-                                        ''    .Attributes.CssStyle("LEFT") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
-                                        ''    .Attributes.CssStyle("TOP") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
-                                        ''    .Attributes.CssStyle("WIDTH") = Unit.Pixel(NullSafeInteger(dr("Width"))).ToString
-                                        ''    .Style.Add("overflow", "hidden")
-                                        ''    .Height = NullSafeInteger(dr("Height"))
-                                        ''    .Style.Add("height", Unit.Pixel(NullSafeInteger(dr("Height"))).ToString)
-
-                                        ''    .BorderColor = Color.Black
-                                        ''    .BorderStyle = BorderStyle.Solid
-                                        ''    .BorderWidth = 1
-
-                                        ''    .Style.Add("border-bottom-width", "2px")
-                                        ''    '.Style.Add("display", "none")
-                                        ''    .BackColor = objGeneral.GetColour(NullSafeInteger(dr("HeaderBackColor")))
-
-                                        ''End With
-
-                                        ' ---------------Step 3 of 5, create the GridView control
-                                        ' ctlForm_RecordSelectionGrid = NewInfragistics.WebUI.UltraWebGrid.UltraWebGrid(sID)
-                                        ''ctlForm_RecordSelectionGrid = New System.Web.UI.WebControls.GridView
-
-                                        ''With ctlForm_RecordSelectionGrid
-
-                                        .EmptyDataText = "no data"
-
                                         ' set top row as default item
                                         .SelectedIndex = 0
 
-                                        ''    .ShowHeader = False
-                                        ''    .ID = sID & "Grid"
                                         .TabIndex = CShort(NullSafeInteger(dr("tabIndex")) + 1)
 
                                         If (iMinTabIndex < 0) Or (NullSafeInteger(dr("tabIndex")) < iMinTabIndex) Then
@@ -1579,16 +1518,6 @@ Public Class _Default
                                         End If
 
                                         ''    ' .DisplayLayout.ClientSideEvents.ColumnHeaderClickHandler = "activateGridPostback"
-
-                                        ''.Attributes.CssStyle("POSITION") = "absolute"
-                                        ' ''.Attributes.CssStyle("LEFT") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
-                                        ' ''.Attributes.CssStyle("TOP") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
-                                        ''.Attributes.CssStyle("overflow") = "auto"
-                                        ''.Style("overflow") = "auto"
-                                        ' '' .Attributes.CssStyle("WIDTH") = Unit.Pixel(NullSafeInteger(dr("Width"))).ToString
-                                        ''.Attributes.CssStyle("WIDTH") = Unit.Pixel(NullSafeInteger(dr("Width"))).ToString
-                                        ''.Style.Add("table-layout", "fixed")
-                                        ''.Style.Add("border", "0")
 
                                         ''    '.DisplayLayout.AllowSortingDefault = Infragistics.WebUI.UltraWebGrid.AllowSorting.Yes
                                         ''    '.DisplayLayout.HeaderClickActionDefault = Infragistics.WebUI.UltraWebGrid.HeaderClickAction.SortMulti
@@ -1610,20 +1539,6 @@ Public Class _Default
                                         ''    ' Infragistics.WebUI.UltraWebGrid.ShowMarginInfo.Yes, _
                                         ''    ' Infragistics.WebUI.UltraWebGrid.ShowMarginInfo.No), Infragistics.WebUI.UltraWebGrid.ShowMarginInfo)
                                         ''    '.DisplayLayout.GridLinesDefault = Infragistics.WebUI.UltraWebGrid.UltraGridLines.Both
-
-                                        ''    '' HEADER formatting
-                                        ''    'iGridTopPadding = CInt(NullSafeSingle(dr("HeadFontSize")) / 8)
-                                        ''    'If NullSafeBoolean(dr("ColumnHeaders")) And (NullSafeInteger(dr("Headlines")) > 0) Then
-                                        ''    '    iHeaderHeight = CInt(((NullSafeSingle(dr("HeadFontSize")) + iGridTopPadding) * NullSafeInteger(dr("Headlines")) * 2) _
-                                        ''    '     - 2 _
-                                        ''    '     - (NullSafeSingle(dr("HeadFontSize")) * (NullSafeInteger(dr("Headlines")) + 1) * (iGridTopPadding - 1) / 4))
-
-                                        ''    '    If iHeaderHeight > NullSafeInteger(dr("Height")) Then
-                                        ''    '        iHeaderHeight = NullSafeInteger(dr("Height"))
-                                        ''    '    End If
-                                        ''    'Else
-                                        ''    '    iHeaderHeight = 0
-                                        ''    'End If
 
                                         .HeaderStyle.BackColor = objGeneral.GetColour(NullSafeInteger(dr("HeaderBackColor")))
                                         .HeaderStyle.BorderColor = objGeneral.GetColour(10720408)
@@ -1659,9 +1574,9 @@ Public Class _Default
                                         '.HeaderStyle.BorderDetails.WidthTop = Unit.Pixel(0)
                                         '.HeaderStyle.BorderDetails.WidthBottom = Unit.Pixel(1)
                                         '.HeaderStyle.BorderDetails.WidthRight = Unit.Pixel(1)
+
                                         .PagerSettings.Mode = PagerButtons.NextPreviousFirstLast
                                         .PagerSettings.FirstPageImageUrl = "Images/page-first.gif"
-
                                         .PagerSettings.LastPageImageUrl = "Images/page-last.gif"
                                         .PagerSettings.NextPageImageUrl = "Images/page-next.gif"
                                         .PagerSettings.PreviousPageImageUrl = "Images/page-prev.gif"
@@ -1721,11 +1636,9 @@ Public Class _Default
                                         '.RowStyle.Padding.Bottom = Unit.Pixel(1)
                                         .RowStyle.VerticalAlign = VerticalAlign.Middle
 
-                                        iRowHeight = 21 ' Grid will set to fit font.
+                                        iRowHeight = 21
                                         '.DisplayLayout.RowHeightDefault = Unit.Pixel(iRowHeight)
                                         .RowStyle.Height = Unit.Pixel(iRowHeight)
-
-
 
                                         If IsDBNull(dr("ForeColorHighlight")) Then
                                             '.DisplayLayout.SelectedRowStyleDefault.ForeColor = System.Drawing.SystemColors.HighlightText
@@ -1766,55 +1679,15 @@ Public Class _Default
                                         ''    ' Add client side events to the rows as they're generated
                                         ''    AddHandler .RowDataBound, AddressOf Me.GridRowDataBound
 
-                                        ''    '' Enable the following for paging
-                                        ''    .AllowPaging = True
-                                        ''    .PageSize = 50
-                                        ''    .EnableSortingAndPagingCallbacks = True
-                                        ''    AddHandler .PageIndexChanging, AddressOf PageIndexChanging
-                                        ''    ' End paging
-
                                     End With
 
-                                    ' --------------------Step 4 of 5, create a div (panel) to contain the GridView control
-                                    ' Restricts the size and provide scroll bars etc.                                    
-                                    ''Dim ctlForm_GridContainer As New Panel
-
-                                    ''With ctlForm_GridContainer
-                                    ''    .ID = sID & "gridcontainer"
-
-                                    ''    .Style.Add("Position", "Relative")
-                                    ''    '.Attributes.CssStyle("LEFT") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
-                                    ''    '.Attributes.CssStyle("TOP") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
-                                    ''    .Attributes.CssStyle("WIDTH") = Unit.Pixel(NullSafeInteger(dr("Width"))).ToString
-
-                                    ''    .Height = Unit.Pixel(iTempHeight)
-                                    ''    .Style.Add("height", Unit.Pixel(iTempHeight).ToString)
-                                    ''    .Style.Add("overflow", "hidden")
-                                    ''    .Style.Add("overflow-y", "auto")
-                                    ''    .Style.Add("overflow-x", "auto")
-
-                                    ''    .Attributes.Add("onscroll", "scrollHeader('" & .ID.ToString() & "')")
-                                    ''End With
-
-                                    ' ------Combine the components now. 
-                                    ''ctlForm_TableContainer.Controls.Add(ctlForm_Table)
-                                    ''ctlForm_GridContainer.Controls.Add(ctlForm_RecordSelectionGrid) ' Add the grid to the DIV (panel)
-                                    ''ctlForm_TableContainer.Controls.Add(ctlForm_GridContainer) ' Add the Table to the div
-                                    ''pnlInput.ContentTemplateContainer.Controls.Add(ctlForm_TableContainer) ' Add the containing div and it's grid to the WARP panel... 
-
-                                    ' use the following if paging, this will put the grid in an UpdatePanel
-                                    'ctlForm_UpdatePanel = New System.Web.UI.UpdatePanel
-                                    'ctlForm_UpdatePanel.ContentTemplateContainer.Controls.Add(ctlForm_TableContainer)
-                                    'pnlInput.ContentTemplateContainer.Controls.Add(ctlForm_UpdatePanel)
-
-                                    'pnlInput.ContentTemplateContainer.Controls.Add(ctlForm_PagingGridView)
-
-
-                                    'ctlForm_UpdatePanel.ContentTemplateContainer.Controls.Add(ctlForm_PagingGridView)
-                                    'pnlInputDiv.Controls.Add(ctlForm_UpdatePanel)
+                                    ' ==================================================
+                                    ' Add the Paging Grid View to the holding panel now.
+                                    ' Before the databind, or you'll get errors!
+                                    ' ==================================================
                                     pnlInputDiv.Controls.Add(ctlForm_PagingGridView)
 
-                                    ' Refreshing the datasource breaks the grid. Enable this for paging though.
+
                                     If (Not IsPostBack) Then
                                         connGrid = New SqlClient.SqlConnection(strConn)
                                         connGrid.Open()
@@ -1843,12 +1716,21 @@ Public Class _Default
 
                                             Session(sID & "DATA") = dt
 
-
                                             ' NOTE: Do the dataBind() after adding to the panel
                                             ' otherwise you get an error.
                                             ' ctlForm_PagingGridView.DataKeyNames = New String() {"ID"}
-                                            ctlForm_PagingGridView.DataSource = dt
-                                            ctlForm_PagingGridView.DataBind()
+
+                                            If dt.Rows.Count > 0 Then
+                                                ''                                              Stop
+                                                ctlForm_PagingGridView.DataSource = dt
+                                                ctlForm_PagingGridView.DataBind()
+                                                ctlForm_PagingGridView.IsEmpty = False
+                                            Else
+                                                ''                                                Stop
+                                                ShowNoResultFound(dt, ctlForm_PagingGridView)
+                                                ctlForm_PagingGridView.IsEmpty = True
+                                            End If
+
                                             'drGrid.Close()
                                             'drGrid = Nothing
 
@@ -1860,61 +1742,6 @@ Public Class _Default
 
                                             cmdGrid.Dispose()
                                             cmdGrid = Nothing
-
-                                            ' '' Format the column(s)
-                                            ' ''For Each objGridColumn In .Columns
-                                            ''iVisibleColumnCount = ctlForm_RecordSelectionGrid.HeaderRow.Cells.Count
-
-                                            ''Dim rowHeaderRow As New TableRow
-                                            ''Dim cellHeaderCell As New TableHeaderCell
-
-                                            ''For iColCount As Integer = 0 To ctlForm_RecordSelectionGrid.HeaderRow.Cells.Count - 1
-
-                                            ''    sColumnCaption = UCase(ctlForm_RecordSelectionGrid.HeaderRow.Cells(iColCount).Text)
-
-                                            ''    If sColumnCaption = "ID" Then
-                                            ''        iIDColumnIndex = CShort(iColCount)
-                                            ''    Else
-                                            ''        iIDColumnIndex = -1
-                                            ''    End If
-
-                                            ''    If sColumnCaption = "ID" Or (Left(sColumnCaption, 3) = "ID_" And Val(Mid(sColumnCaption, 4)) > 0) Then
-                                            ''        iVisibleColumnCount = iVisibleColumnCount - 1
-                                            ''        ctlForm_RecordSelectionGrid.HeaderRow.Cells(iColCount).Style.Add("display", "none")
-                                            ''    Else
-                                            ''        ctlForm_RecordSelectionGrid.HeaderRow.Cells(iColCount).Text = Replace(ctlForm_RecordSelectionGrid.HeaderRow.Cells(iColCount).Text, "_", " ")
-
-                                            ''        ' Add each of the gridview's column headers to the header table
-                                            ''        cellHeaderCell = New TableHeaderCell
-                                            ''        cellHeaderCell.ID = sID & "header" & CStr(iColCount + 1)
-                                            ''        cellHeaderCell.Style.Add("width", "10")
-                                            ''        cellHeaderCell.Style.Add("overflow", "hidden")
-                                            ''        cellHeaderCell.Style.Add("white-space", "nowrap")
-                                            ''        cellHeaderCell.Style.Add("text-overflow", "ellipsis")
-                                            ''        If iColCount <> 0 Then  ' horrible. Should work out how to hide left border if it overlaps the row border.
-                                            ''            cellHeaderCell.Style.Add("border-left", "1px solid gray")
-                                            ''        End If
-                                            ''        cellHeaderCell.Style.Add("border-bottom", "1px solid gray")
-                                            ''        cellHeaderCell.Style.Add("padding-top", "0px")
-                                            ''        cellHeaderCell.Style.Add("padding-bottom", "0px")
-                                            ''        cellHeaderCell.Width = Unit.Pixel(100)
-                                            ''        cellHeaderCell.Attributes.Add("onclick", "fsort(" + ctlForm_RecordSelectionGrid.ID.ToString() & ", '" + CStr(iColCount) & "', false)")
-                                            ''        cellHeaderCell.Controls.Add(New LiteralControl(Replace(ctlForm_RecordSelectionGrid.HeaderRow.Cells(iColCount).Text, "_", " ")))
-                                            ''        rowHeaderRow.Cells.Add(cellHeaderCell)
-
-                                            ''        ' this stuff moved to the GridRowDataBound event now
-                                            ''        'If objGridColumn.DataType = "System.DateTime" Then
-                                            ''        '    objGridColumn.Format = Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern
-                                            ''        'ElseIf objGridColumn.DataType = "System.Boolean" Then
-                                            ''        '    objGridColumn.CellStyle.HorizontalAlign = HorizontalAlign.Center
-                                            ''        'ElseIf objGridColumn.DataType = "System.Decimal" _
-                                            ''        ' Or objGridColumn.DataType = "System.Int32" Then
-
-                                            ''        '    objGridColumn.CellStyle.HorizontalAlign = HorizontalAlign.Right
-                                            ''        'End If
-
-                                            ''    End If
-                                            ''Next
 
                                             ' '' Add the newly created column header row to the column header table
 
@@ -2013,49 +1840,55 @@ Public Class _Default
                                             ' ''End If
 
                                         Catch ex As Exception
-                    sMessage = "Error loading web form grid values:<BR><BR>" & _
-                     ex.Message.Replace(vbCrLf, "<BR>") & "<BR><BR>" & _
-                     "Contact your system administrator."
-                    Exit While
+                                            sMessage = "Error loading web form grid values:<BR><BR>" & _
+                                             ex.Message.Replace(vbCrLf, "<BR>") & "<BR><BR>" & _
+                                             "Contact your system administrator."
+                                            Exit While
 
-                Finally
-                    connGrid.Close()
-                    connGrid.Dispose()
-                End Try
+                                        Finally
+                                            connGrid.Close()
+                                            connGrid.Dispose()
+                                        End Try
+                                    Else
+                                        ' If not a postback, check for empty datagrid and set empty row message
+                                        Dim dtSource As DataTable = TryCast(HttpContext.Current.Session(sID & "DATA"), DataTable)
+
+                                        If dtSource.Rows.Count = 1 Then
+                                            ShowNoResultFound(dtSource, ctlForm_PagingGridView)
+                                        End If
                                     End If
 
-
-                                    ' Hidden field is used to store scroll position for the grid.
+                                    ' ============================================================
+                                    ' Hidden field is used to store scroll position of the grid.
+                                    ' ============================================================
                                     ctlForm_HiddenField = New System.Web.UI.WebControls.HiddenField
                                     With ctlForm_HiddenField
-                                        .ID = sID & "hiddenfield"
+                                        .ID = sID & "scrollpos"
                                     End With
 
-                                    ' pnlInput.ContentTemplateContainer.Controls.Add(ctlForm_HiddenField)
                                     pnlInputDiv.Controls.Add(ctlForm_HiddenField)
 
-                                    ' '' Set first row as default
-                                    ''If iIDColumnIndex >= 0 Then
-                                    ''    Dim iDefaultRowID As Integer = 0    ' set row 0 as the default for the grid
-                                    ''    Page.ClientScript.RegisterStartupScript(Type.[GetType]("System.String"), "addScript", "changeRow('" & ctlForm_RecordSelectionGrid.ID.ToString & "', '" & iDefaultRowID.ToString & "', '" & msBackColorHighlight & "', '" & iIDColumnIndex.ToString & "');", True)
-                                    ''End If
 
                                 Case 14 ' lookup  Inputs
-                                    ' Might want to look at using popupControl instead of DropDownExtender. This will then allow us 
-                                    ' to use paging within the dropdown panel. DDE will close itself after page changes...
-
                                     ' ctlForm_Dropdown = New Infragistics.WebUI.WebCombo.WebCombo()
+
+
+                                    ' ==============================================================
+                                    ' Lookups. So, these are created on the fly as:
+
+
+                                    ctlForm_UpdatePanel = New System.Web.UI.UpdatePanel
 
                                     ' iGridWidth = NullSafeInteger(800)
                                     'Dim iGridHeight As Integer = NullSafeInteger(300)
                                     'Dim iColWidth As Integer = 100
 
-                                    ' **************** AJAX DropDown Extender *********************
-                                    ' Add textbox to become dropdown
-                                    'ctlForm_TextInput = New System.Web.UI.WebControls.TextBox
+
+                                    ' ============================================================
+                                    ' Create a dropdown list as the main control
+                                    ' ============================================================
                                     ctlForm_Dropdown = New DropDownList
 
-                                    'With ctlForm_TextInput
                                     With ctlForm_Dropdown
                                         .ID = sID & "TextBox"
                                         .Style("position") = "absolute"
@@ -2073,96 +1906,54 @@ Public Class _Default
                                         .Width = Unit.Pixel(NullSafeInteger(dr("Width")))
                                         .BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColor")))
                                         .ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
-                                        ''.SelForeColor = System.Drawing.SystemColors.HighlightText
-                                        ''.SelBackColor = System.Drawing.SystemColors.Highlight
                                         .BorderColor = objGeneral.GetColour(5730458)
                                         .BorderStyle = BorderStyle.Solid
                                         .BorderWidth = Unit.Pixel(1)
+                                        ' create a blank entry and select it. This prevents the dropdown
+                                        ' becoming long by default. Need to hide it completely really, but
+                                        ' under the kosh at the mo.
                                         .Items.Add("")
                                         .SelectedIndex = 0
                                     End With
-                                    'pnlInput.ContentTemplateContainer.Controls.Add(ctlForm_TextInput)
-                                    ' pnlInputDiv.Controls.Add(ctlForm_TextInput)
+
                                     pnlInputDiv.Controls.Add(ctlForm_Dropdown)
 
 
-                                    '' ---------------Step 1 of 5, create a table for the grid's header columns
-                                    'ctlForm_Table = New System.Web.UI.WebControls.Table
-                                    'With ctlForm_Table
-                                    '    .ID = sID & "Header"
-                                    '    '.Width = iGridWidth     ' deduct the scrollbar - need to check for the scrollbar!
-                                    '    .CellSpacing = 0
-                                    '    .Style.Add("table-layout", "fixed")
-                                    '    .CssClass = "resizable"
-                                    '    .Style.Add("border", "0")
-                                    '    '.Style.Add("border-collapse", "collapse")
-                                    'End With
-
-                                    '' ---------------Step 2 of 5, create a div (panel) for Everything to do with the grid
-                                    'Dim ctlForm_TableContainer As New Panel
-                                    'With ctlForm_TableContainer
-                                    '    .ID = sID
-                                    '    .Style.Add("Position", "Relative")
-                                    '    .BorderColor = Color.Black
-                                    '    .BorderStyle = BorderStyle.Solid
-                                    '    .BorderWidth = 1
-
-                                    '    .Style.Add("border-bottom-width", "2px")
-                                    '    .Style.Add("display", "none")
-
-                                    '    ' This specifies the colour to the right of the column header table
-                                    '    ' if there's a scroll bar. Ensure it matches the rowHeaderRow.backcolor
-                                    ' .BackColor = objGeneral.GetColour(16248553)
-                                    'End With
-
-
-                                    ' Panel to contain gridview & its updatepanel.
-                                    'Dim ctlForm_Panel As New Panel
-                                    'With ctlForm_Panel
-                                    '    .ID = sID & "Panel"
-                                    '    .BackColor = Drawing.Color.White
-                                    'End With
-                                    'pnlInputDiv.Controls.Add(ctlForm_Panel)
-
-
-                                    '' Updatepanel allows paging without postback
-                                    'Dim ctlForm_GridUpdatePanel As New UpdatePanel
-                                    'With ctlForm_GridUpdatePanel
-                                    '    .ID = sID & "UpdatePanel"
-                                    'End With
-                                    'ctlForm_Panel.Controls.Add(ctlForm_GridUpdatePanel)
-
-
-
-                                    ' ---------------Step 3 of 5, create the GridView control
-                                    ' ctlForm_RecordSelectionGrid = NewInfragistics.WebUI.UltraWebGrid.UltraWebGrid(sID)
+                                    ' ============================================================
+                                    ' Create the Lookup table grid, as per normal record selectors.
+                                    ' This will be hidden on page_load, and displayed when the 
+                                    ' DropdownList above is clicked. The magic is brought together
+                                    ' by the AJAX DropDownExtender control below.
+                                    ' ============================================================
                                     ctlForm_PagingGridView = New RecordSelector
 
                                     With ctlForm_PagingGridView
                                         .ID = sID & "Grid"
                                         .IsLookup = True
-                                        '.EnableViewState = False
-                                        .EmptyDataText = "no data"
+                                        .EnableViewState = True ' Must be set to True
+                                        .EmptyDataText = "no records to display"
                                         .AllowPaging = True
                                         .AllowSorting = True
-                                        ' .EnableSortingAndPagingCallbacks = True
-                                        ' .PageSize = 20
+                                        '.EnableSortingAndPagingCallbacks = True
                                         .PageSize = mobjConfig.LookupRowsRange
+                                        .ShowFooter = False
 
                                         .Style.Add("Position", "Absolute")
                                         .Attributes.CssStyle("LEFT") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
                                         .Attributes.CssStyle("TOP") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
                                         .Attributes.CssStyle("WIDTH") = Unit.Pixel(NullSafeInteger(dr("Width"))).ToString
 
+                                        ' Don't set the height of this control. Must use the ControlHeight property
+                                        ' to stop the grid's rows from autosizing.
                                         ' .Height = Unit.Pixel(NullSafeInteger(dr("Height")))
                                         ' .Attributes.Add("Height", Unit.Pixel(NullSafeInteger(dr("Height"))).ToString)
+                                        ' .Style.Add("height", Unit.Pixel(NullSafeInteger(dr("Height"))).ToString)
                                         .ControlHeight = NullSafeInteger(dr("Height"))
                                         .Width = Unit.Pixel(NullSafeInteger(dr("Width")))
-                                        ' .Style.Add("height", Unit.Pixel(NullSafeInteger(dr("Height"))).ToString)
                                         .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
                                         .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
 
-                                        ' Header Row
+                                        ' Header Row - fixed for lookups.
                                         .ColumnHeaders = True
                                         .HeadFontSize = NullSafeSingle(dr("FontSize"))
                                         .HeadLines = 1
@@ -2173,11 +1964,6 @@ Public Class _Default
                                             sDefaultFocusControl = sID
                                             iMinTabIndex = NullSafeInteger(dr("tabIndex"))
                                         End If
-
-                                        '.ShowHeader = False
-
-                                        '.Style.Add("table-layout", "fixed")
-                                        '.Style.Add("border", "0")
 
                                         .Font.Name = NullSafeString(dr("FontName"))
                                         .Font.Size = FontUnit.Parse(NullSafeString(dr("FontSize")))
@@ -2210,6 +1996,10 @@ Public Class _Default
                                         .RowStyle.BackColor = objGeneral.GetColour(15988214)
                                         .RowStyle.ForeColor = objGeneral.GetColour(6697779)
 
+                                        iRowHeight = 21
+                                        '.DisplayLayout.RowHeightDefault = Unit.Pixel(iRowHeight)
+                                        .RowStyle.Height = Unit.Pixel(iRowHeight)
+
                                         ''.ExpandEffects.Type = Infragistics.WebUI.WebCombo.ExpandEffectType.Slide
 
                                         ''.DropDownLayout.RowStyle.Padding.Left = Unit.Pixel(3)
@@ -2225,16 +2015,12 @@ Public Class _Default
 
                                         ''.DropDownLayout.TableLayout = Infragistics.WebUI.UltraWebGrid.TableLayout.Fixed
 
-                                        '.Height() = Unit.Pixel(iGridHeight)
-                                        '.Width() = Unit.Pixel(iGridWidth)
-
                                         ''.DropDownLayout.AllowSorting = Infragistics.WebUI.UltraWebGrid.AllowSorting.Yes
                                         ''.DropDownLayout.HeaderClickAction = Infragistics.WebUI.UltraWebGrid.HeaderClickAction.SortMulti
                                         ''.DropDownLayout.StationaryMargins = Infragistics.WebUI.UltraWebGrid.StationaryMargins.Header
                                         ''.DropDownLayout.RowStyle.Cursor = Infragistics.WebUI.Shared.Cursors.Default
 
                                         ''.DropDownLayout.AllowColSizing = Infragistics.WebUI.UltraWebGrid.AllowSizing.Free
-
                                         ''.DropDownLayout.GridLines = Infragistics.WebUI.UltraWebGrid.UltraGridLines.Both
 
                                         ' HEADER formatting
@@ -2243,8 +2029,6 @@ Public Class _Default
                                         ' - 2 _
                                         ' - (NullSafeSingle(dr("FontSize")) * 2 * (iGridTopPadding - 1) / 4))
 
-                                        ' HeaderStyle irrelevant as showheader = false
-                                        ' Format ctlForm_Table instead.
                                         .HeaderStyle.BackColor = objGeneral.GetColour(16248553)
                                         .HeaderStyle.BorderColor = objGeneral.GetColour(10720408)
                                         .HeaderStyle.BorderStyle = BorderStyle.Solid
@@ -2281,7 +2065,6 @@ Public Class _Default
 
                                         .PagerSettings.Mode = PagerButtons.NextPreviousFirstLast
                                         .PagerSettings.FirstPageImageUrl = "Images/page-first.gif"
-
                                         .PagerSettings.LastPageImageUrl = "Images/page-last.gif"
                                         .PagerSettings.NextPageImageUrl = "Images/page-next.gif"
                                         .PagerSettings.PreviousPageImageUrl = "Images/page-prev.gif"
@@ -2297,17 +2080,6 @@ Public Class _Default
                                         .PagerStyle.Wrap = False
                                         .PagerStyle.VerticalAlign = VerticalAlign.Middle
                                         .PagerStyle.HorizontalAlign = HorizontalAlign.Center
-
-                                        'AddHandler .RowDataBound, AddressOf Me.DDE_GridRowDataBound
-
-                                        '' Enable the following for paging
-                                        '.AllowPaging = True
-                                        '.PageSize = 50
-                                        'AddHandler .PageIndexChanging, AddressOf PageIndexChanging
-
-
-
-                                        ' End paging
                                     End With
 
                                     sFilterSQL = LookupFilterSQL(NullSafeString(dr("lookupFilterColumnName")), _
@@ -2315,64 +2087,36 @@ Public Class _Default
                                             NullSafeInteger(dr("LookupFilterOperator")), _
                                             FORMINPUTPREFIX & NullSafeString(dr("lookupFilterValueID")) & "_" & NullSafeString(dr("lookupFilterValueType")) & "_")
 
+
+                                    ' ==========================================================
+                                    ' Hidden Field to store any lookup filter code
+                                    ' ==========================================================
                                     If (sFilterSQL.Length > 0) Then
                                         ctlForm_HiddenField = New HiddenField
                                         With ctlForm_HiddenField
                                             .ID = "lookup" & sID
                                             .Value = sFilterSQL
                                         End With
-                                        'pnlInput.ContentTemplateContainer.Controls.Add(ctlForm_HiddenField)
                                         pnlInputDiv.Controls.Add(ctlForm_HiddenField)
                                     End If
 
 
-                                    ' The following client side handlers are now added to the AJAX Toolkit's DDE control, Step 5.
-
+                                    ' The following client side handlers are now part of the web page itself, beginRequest and endRequest handlers
                                     ' InitializeDataSource & DataBound methods need to be defined because we have EnableXmlHTTP enabled.
                                     ' EnableXmlHTTP is required becaue we're using client-side filtering using 'selectwhere'
-                                    'AddHandler ctlForm_Dropdown.InitializeDataSource, AddressOf Me.InitializeLookupData
                                     'AddHandler ctlForm_Dropdown.DataBound, AddressOf Me.LookupDataBound
                                     'AddHandler ctlForm_Dropdown.Load, AddressOf Me.InitializeLookupData
 
-                                    ' --------------------Step 4 of 5, create a div (panel) to contain the GridView control
-                                    ' Restricts the size and provide scroll bars etc.                                    
-                                    'Dim ctlForm_GridContainer As New Panel
+                                    ' The following is set on the DropDownExtender Control below.
+                                    'AddHandler ctlForm_Dropdown.InitializeDataSource, AddressOf Me.InitializeLookupData
 
-                                    'With ctlForm_GridContainer
-                                    '    .ID = sID & "gridcontainer"
-
-                                    '    .Style.Add("Position", "Relative")
-                                    '    '.Attributes.CssStyle("LEFT") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
-                                    '    '.Attributes.CssStyle("TOP") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
-                                    '    '.Attributes.CssStyle("WIDTH") = Unit.Pixel(iGridWidth).ToString
-
-                                    '    '.Height = Unit.Pixel(iGridHeight)
-                                    '    '.Style.Add("height", Unit.Pixel(iGridHeight).ToString)
-                                    '    .Style.Add("overflow", "hidden")
-                                    '    .Style.Add("overflow-y", "auto")
-
-                                    'End With
-
-
-                                    ' ------Combine the components now. 
-                                    'ctlForm_TableContainer.Controls.Add(ctlForm_Table)
-                                    'ctlForm_GridContainer.Controls.Add(ctlForm_RecordSelectionGrid) ' Add the grid to the DIV (panel)
-                                    'ctlForm_TableContainer.Controls.Add(ctlForm_GridContainer) ' Add the Table to the div
-                                    ' pnlInput.ContentTemplateContainer.Controls.Add(ctlForm_TableContainer) ' Add the containing div and it's grid to the WARP panel... 
                                     pnlInputDiv.Controls.Add(ctlForm_PagingGridView)
-                                    'ctlForm_GridUpdatePanel.ContentTemplateContainer.Controls.Add(ctlForm_PagingGridView)
 
-                                    ' enable for paging...
-                                    'ctlForm_UpdatePanel = New System.Web.UI.UpdatePanel
-                                    'ctlForm_UpdatePanel.ID = sID & "pnlInputDDE"
-                                    'ctlForm_UpdatePanel.ContentTemplateContainer.Controls.Add(ctlForm_TableContainer)
-                                    'pnlInput.ContentTemplateContainer.Controls.Add(ctlForm_UpdatePanel)
 
                                     If (Not IsPostBack) Then
                                         connGrid = New SqlClient.SqlConnection(strConn)
                                         connGrid.Open()
                                         Try
-
                                             cmdGrid = New SqlClient.SqlCommand
                                             cmdGrid.CommandText = "spASRGetWorkflowItemValues"
                                             cmdGrid.Connection = connGrid
@@ -2403,10 +2147,6 @@ Public Class _Default
 
                                             'drGrid = cmdGrid.ExecuteReader()
 
-                                            ' do this here so we have it for the rowdatabind event
-                                            ''ctlForm_RecordSelectionGrid.DataSource = drGrid
-                                            ''ctlForm_RecordSelectionGrid.DataBind()
-
                                             'drGrid.Close()
                                             'drGrid = Nothing
 
@@ -2427,76 +2167,13 @@ Public Class _Default
                                             ctlForm_Dropdown.Attributes.Remove("DataType")
                                             ctlForm_Dropdown.Attributes.Add("DataType", NullSafeString(dt.Columns(CInt(ctlForm_Dropdown.Attributes("LookupColumnIndex"))).DataType.ToString))
 
-                                            ctlForm_PagingGridView.DataSource = dt
+                                            ' Yup we store the data to a session variable. This is so we can sort/filter 
+                                            ' it and stillreset if necessary without running the SP again
+                                            ctlForm_PagingGridView.DataSource = Session(sID & "DATA")
                                             ctlForm_PagingGridView.DataBind()
-
-                                            ' Highlight the selected row if possible, including setting the page index...
-                                            'If NullSafeString(cmdGrid.Parameters("@psDefaultValue").Value).Length > 0 Then
-                                            '    Dim sSelectString As String = dt.Columns(NullSafeInteger(cmdGrid.Parameters("@piLookupColumnIndex").Value)).ToString & "='" & NullSafeString(cmdGrid.Parameters("@psDefaultValue").Value) & "'"
-                                            '    Dim iDefaultRowNum As Integer = -1
-                                            '    Dim foundRows() As DataRow
-
-                                            '    foundRows = dt.Select(sSelectString)
-
-                                            '    If foundRows.GetUpperBound(0) > 0 Then
-                                            '        iDefaultRowNum = dt.Rows.IndexOf(dt.[Select](sSelectString)(0))
-                                            '    End If
-
-                                            '    ' ctlForm_PagingGridView.PageIndex = iDefaultRowNum \ ctlForm_PagingGridView.PageSize
-                                            '    'ctlForm_PagingGridView.SelectedIndex = iDefaultRowNum Mod ctlForm_PagingGridView.PageSize
-
-                                            'End If
 
                                             cmdGrid.Dispose()
                                             cmdGrid = Nothing
-
-                                            ' ctlForm_PagingGridView.EnableSortingAndPagingCallbacks = True
-
-                                            '' Format the column(s)
-                                            ''For Each objGridColumn In .Columns
-
-                                            'iVisibleColumnCount = ctlForm_RecordSelectionGrid.HeaderRow.Cells.Count
-
-                                            'Dim rowHeaderRow As New TableRow
-                                            'Dim cellHeaderCell As New TableHeaderCell
-
-                                            'For iColCount As Integer = 0 To ctlForm_RecordSelectionGrid.HeaderRow.Cells.Count - 1
-
-                                            '    sColumnCaption = UCase(ctlForm_RecordSelectionGrid.HeaderRow.Cells(iColCount).Text)
-
-                                            '    If sColumnCaption.StartsWith("ASRSYS") Then
-                                            '        iIDColumnIndex = CShort(iColCount)
-                                            '    Else
-                                            '        iIDColumnIndex = -1
-                                            '    End If
-
-                                            '    If sColumnCaption.StartsWith("ASRSYS") Then
-                                            '        iVisibleColumnCount = iVisibleColumnCount - 1
-                                            '        ctlForm_RecordSelectionGrid.HeaderRow.Cells(iColCount).Style.Add("display", "none")
-                                            '    Else
-                                            '        ctlForm_RecordSelectionGrid.HeaderRow.Cells(iColCount).Text = Replace(ctlForm_RecordSelectionGrid.HeaderRow.Cells(iColCount).Text, "_", " ")
-
-                                            '        ' Add each of the gridview's column headers to the header table
-                                            '        cellHeaderCell = New TableHeaderCell
-                                            '        cellHeaderCell.ID = sID & "header" & CStr(iColCount + 1)
-                                            '        cellHeaderCell.Style.Add("width", "10")
-                                            '        cellHeaderCell.Style.Add("overflow", "hidden")
-                                            '        cellHeaderCell.Style.Add("white-space", "nowrap")
-                                            '        cellHeaderCell.Style.Add("text-overflow", "ellipsis")
-                                            '        If iColCount <> 0 Then  ' horrible. Should work out how to hide left border if it overlaps the row border.
-                                            '            cellHeaderCell.Style.Add("border-left", "1px solid gray")
-                                            '        End If
-                                            '        cellHeaderCell.Style.Add("border-bottom", "1px solid gray")
-                                            '        cellHeaderCell.Style.Add("padding-top", "0px")
-                                            '        cellHeaderCell.Style.Add("padding-bottom", "0px")
-
-                                            '        cellHeaderCell.Attributes.Add("onclick", "fsort(" + ctlForm_RecordSelectionGrid.ID.ToString() & ", '" + CStr(iColCount) & "', false)")
-
-                                            '        cellHeaderCell.Controls.Add(New LiteralControl(Replace(ctlForm_RecordSelectionGrid.HeaderRow.Cells(iColCount).Text, "_", " ")))
-                                            '        rowHeaderRow.Cells.Add(cellHeaderCell)
-
-                                            '    End If
-                                            'Next
 
                                             '' Add the newly created column header row to the column header table
 
@@ -2558,12 +2235,6 @@ Public Class _Default
                                             'iRowHeight = CInt(IIf(iRowHeight < 22, 22, iRowHeight))
                                             'iDropHeight = (iRowHeight * CInt(IIf(ctlForm_RecordSelectionGrid.Rows.Count > MAXDROPDOWNROWS, MAXDROPDOWNROWS, ctlForm_RecordSelectionGrid.Rows.Count))) + 1
 
-                                            ''ctlForm_TableContainer.Height = Unit.Pixel(iDropHeight)
-                                            ''ctlForm_TableContainer.Style.Add("height", Unit.Pixel(iDropHeight).ToString)
-
-                                            'ctlForm_GridContainer.Height = Unit.Pixel(iDropHeight)
-                                            'ctlForm_GridContainer.Style.Add("height", Unit.Pixel(iDropHeight).ToString)
-
                                         Catch ex As Exception
 
                                             sMessage = "Error loading lookup values:<BR><BR>" & _
@@ -2578,63 +2249,74 @@ Public Class _Default
 
                                     End If
 
-                                    ' Set the textbox to the default value.
-                                    ' ctlForm_TextInput.Text = ctlForm_RecordSelectionGrid.Attributes("DefaultValue").ToString
+                                    ' ==================================================
+                                    ' Set the dropdownList to the default value.
+                                    ' ==================================================
                                     If ctlForm_PagingGridView.Attributes("DefaultValue").ToString.Length > 0 Then
                                         ctlForm_Dropdown.Items.Add(ctlForm_PagingGridView.Attributes("DefaultValue").ToString)
                                         ctlForm_Dropdown.SelectedIndex = 1
                                     End If
 
 
-                                    ' Set dropdown width to fit the columns displayed.
-                                    ''If NullSafeInteger(dr("ItemType")) = 14 Then
-                                    ''    .DropDownLayout.DropdownWidth = System.Web.UI.WebControls.Unit.Empty
-                                    ''Else
-                                    ''    .DropDownLayout.DropdownWidth = Unit.Pixel(NullSafeInteger(dr("Width")))
-                                    ''End If
-
-                                    ' Add DDE Extender
-                                    ' This simply links up the textbox and the div to make a dropdown.
-                                    ' Needs to be replaced with the popupcontrol extender when paging is coded in.
+                                    ' =============================================================================
+                                    ' AJAX DropDownExtender (DDE) Control
+                                    ' This simply links up the DropDownList and the Lookup Grid to make a dropdown.
+                                    ' =============================================================================
                                     ctlForm_DDE = New AjaxControlToolkit.DropDownExtender
 
                                     With ctlForm_DDE
                                         .DropArrowBackColor = Color.Transparent
                                         .DropArrowWidth = Unit.Pixel(20)
                                         .HighlightBackColor = Color.Transparent
-
-                                        '.DropArrowImageUrl = "Images/Transparent.gif"
-                                        '$find("dde")._isOver= false;
-                                        '$find("dde").hover();
+                                        ' Careful with the case here, use 'dde' in JavaScript:
                                         .ID = sID & "DDE"
+                                        .BehaviorID = sID & "dde"
                                         .DropDownControlID = sID
                                         .Enabled = True
                                         .TargetControlID = sID & "TextBox"
-
-                                        .BehaviorID = sID & "dde"
-
                                         ' Client-side handler.
                                         .OnClientPopup = "InitializeLookup"     ' can't pass the ID of the control, so use ._id in JS.
-
                                     End With
 
-                                    'pnlInput.ContentTemplateContainer.Controls.Add(ctlForm_DDE)
                                     pnlInputDiv.Controls.Add(ctlForm_DDE)
 
-                                    ' hidden field for scroll position
+                                    ' ====================================================
+                                    ' hidden field to store scroll position (not required?)
+                                    ' ====================================================
                                     ctlForm_HiddenField = New System.Web.UI.WebControls.HiddenField
                                     With ctlForm_HiddenField
-                                        .ID = sID & "hiddenfield"
+                                        .ID = sID & "scrollpos"
                                     End With
 
-                                    ' pnlInput.ContentTemplateContainer.Controls.Add(ctlForm_HiddenField)
                                     pnlInputDiv.Controls.Add(ctlForm_HiddenField)
 
-                                    ' Set first row as default
-                                    'If iIDColumnIndex >= 0 Then
-                                    '    Dim iDefaultRowID As Integer = 3    ' set row 0 as the default for the grid
-                                    '    Page.ClientScript.RegisterStartupScript(Type.[GetType]("System.String"), "addScript", "changeDDERow('" & ctlForm_PagingGridView.ID.ToString & "', '" & iDefaultRowID.ToString & "', '" & msBackColorHighlight & "', '0');", True)
-                                    'End If
+                                    ' ====================================================
+                                    ' hidden field to hold any filter SQL code
+                                    ' ====================================================
+                                    ctlForm_HiddenField = New System.Web.UI.WebControls.HiddenField
+                                    With ctlForm_HiddenField
+                                        .ID = sID & "filterSQL"
+                                    End With
+
+                                    pnlInputDiv.Controls.Add(ctlForm_HiddenField)
+
+                                    ' ============================================================
+                                    ' Hidden Button for JS to call which fires filter click event. 
+                                    ' ============================================================
+                                    ctlForm_InputButton = New Button
+
+                                    With ctlForm_InputButton
+                                        .ID = sID & "refresh"
+                                        .Style.Add("display", "none")
+                                    End With
+
+                                    AddHandler ctlForm_InputButton.Click, AddressOf SetLookupFilter
+
+                                    pnlInputDiv.Controls.Add(ctlForm_InputButton)
+
+
+
+
 
 
                                 Case 13 ' Dropdown (13) Inputs
@@ -3362,13 +3044,15 @@ Public Class _Default
 
                                 'Creates a new async trigger
                                 Dim trigger As New AsyncPostBackTrigger()
-                                'Sets the control that will trigger a post-back on the UpdatePanel
-                                trigger.ControlID = "btnSubmit"
+
                                 'Sets the event name of the control
                                 'trigger.EventName = "goSubmit"
                                 'Adds the trigger to the UpdatePanels' triggers collection
-                                pnlInput.Triggers.Add(trigger)
 
+                                'Sets the control that will trigger a post-back on the UpdatePanel
+
+                                trigger.ControlID = "btnSubmit"
+                                pnlInput.Triggers.Add(trigger)
 
                                 pnlInput.UpdateMode = UpdatePanelUpdateMode.Conditional
                                 'pnlInput.ChildrenAsTriggers = False
@@ -3576,10 +3260,13 @@ Public Class _Default
                 End If
             Next ctlFormInput
         End If
+
+
     End Sub
 
 
     Public Sub ButtonClick(ByVal sender As System.Object, ByVal e As System.EventArgs) '    Infragistics.WebUI.WebDataInput.ButtonEventArgs)
+
         Dim objGeneral As New General
         Dim strConn As String
         Dim conn As System.Data.SqlClient.SqlConnection
@@ -3591,7 +3278,6 @@ Public Class _Default
         Dim sFormValidation1 As String
         Dim ctlFormInput As Control
         Dim sID As String
-        Dim ctlsID As String
         Dim ctlFormCheckBox As CheckBox
         Dim ctlFormTextInput As TextBox
         Dim ctlFormDateInput As Infragistics.WebUI.WebSchedule.WebDateChooser
@@ -3727,12 +3413,11 @@ Public Class _Default
 
 
                         Case 11 ' Grid (RecordSelector) Input
-
-                            If (TypeOf ctlFormInput Is GridView) Then    ' Infragistics.WebUI.UltraWebGrid.UltraWebGrid) Then
+                            If (TypeOf ctlFormInput Is RecordSelector) Then    ' Infragistics.WebUI.UltraWebGrid.UltraWebGrid) Then
                                 ctlForm_PagingGridView = DirectCast(ctlFormInput, RecordSelector)
                                 sRecordID = "0"
 
-                                If ctlForm_PagingGridView.SelectedIndex >= 0 Then
+                                If Not ctlForm_PagingGridView.IsEmpty And ctlForm_PagingGridView.SelectedIndex >= 0 Then
                                     For iColCount As Integer = 0 To ctlForm_PagingGridView.HeaderRow.Cells.Count - 1
                                         sColumnCaption = UCase(ctlForm_PagingGridView.HeaderRow.Cells(iColCount).Text)
 
@@ -4131,7 +3816,7 @@ Public Class _Default
         sMessage3 = ""
 
         Try ' Disable all controls.
-            For Each ctlFormInput In pnlInput.contenttemplatecontainer.Controls
+            For Each ctlFormInput In pnlInput.ContentTemplateContainer.Controls
                 sID = ctlFormInput.ID
 
                 If (Left(sID, Len(FORMINPUTPREFIX)) = FORMINPUTPREFIX) Then
@@ -4800,25 +4485,103 @@ Public Class _Default
     'End Sub
 
 
-    <System.Web.Services.WebMethod()> _
-Public Shared Function SetGridFilter(ByVal sGridID As String, ByVal sGridFilter As String) As Boolean
-        'On server side we can do anything, like we can access the Session.
-        'We can do database access operation. Without postback.
+    '    <System.Web.Services.WebMethod()> _
+    'Public Shared Function SetGridFilter(ByVal sGridID As String, ByVal sGridFilter As String) As Boolean
+    '        'On server side we can do anything, like we can access the Session.
+    '        'We can do database access operation. Without postback.
+
+    '        Dim dataTable As DataTable
+    '        dataTable = TryCast(HttpContext.Current.Session(sGridID.Replace("DDE", "DATA")), DataTable)
+
+    '        If dataTable IsNot Nothing Then
+    '            Dim dataView As New DataView(dataTable)
+    '            dataView.RowFilter = sGridFilter   ' e.g. "ISNULL([ASRSysLookupFilterValue], '') = 'HERTFORDSHIRE'"
+    '            dataTable = dataView.ToTable()
+    '            HttpContext.Current.Session(sGridID.Replace("DDE", "DATA")) = dataTable
+    '        End If
+
+    '        Try
+    '            Return True
+    '        Catch ex As Exception
+    '            Throw ex
+    '        End Try
+
+    '    End Function
+
+
+
+
+    Private Sub ShowNoResultFound(ByVal source As DataTable, ByVal gv As GridView)
+
+        source.Rows.Add(source.NewRow())
+        '' create a new blank row to the DataTable
+        '' Bind the DataTable which contain a blank row to the GridView
+        gv.DataSource = source
+        gv.DataBind()
+        ' Get the total number of columns in the GridView to know what the Column Span should be
+        Dim columnsCount As Integer = gv.Columns.Count
+        gv.Rows(0).Cells.Clear()
+        ' clear all the cells in the row
+        gv.Rows(0).Cells.Add(New TableCell())
+        'add a new blank cell
+        gv.Rows(0).Cells(0).ColumnSpan = columnsCount
+        'set the column span to the new added cell
+
+        'You can set the styles here
+        gv.Rows(0).Cells(0).HorizontalAlign = HorizontalAlign.Center
+        gv.Rows(0).Cells(0).ForeColor = System.Drawing.Color.Red
+        gv.Rows(0).Cells(0).Font.Bold = True
+        'set No Results found to the new added cell
+        gv.Rows(0).Cells(0).Text = gv.EmptyDataText
+
+
+    End Sub
+
+    Sub SetLookupFilter(ByVal sender As Object, ByVal e As System.EventArgs)
+
+        ' get button's ID
+        Dim btnSender As Button
+        btnSender = DirectCast(sender, Button)
+
+        ' Create a datatable from the data in the session variable
         Dim dataTable As DataTable
-        dataTable = TryCast(HttpContext.Current.Session(sGridID.Replace("DDE", "DATA")), DataTable)
+        dataTable = TryCast(HttpContext.Current.Session(btnSender.ID.Replace("refresh", "DATA")), DataTable)
+
+        ' get the filter sql
+        Dim hiddenField As HiddenField
+        hiddenField = TryCast(pnlInputDiv.FindControl(btnSender.ID.Replace("refresh", "filterSQL")), HiddenField)
+
+        Dim filterSQL As String = hiddenField.Value
 
         If dataTable IsNot Nothing Then
             Dim dataView As New DataView(dataTable)
-            dataView.RowFilter = sGridFilter   ' e.g. "ISNULL([ASRSysLookupFilterValue], '') = 'HERTFORDSHIRE'"
+            dataView.RowFilter = filterSQL    '   "ISNULL([ASRSysLookupFilterValue], '') = 'HERTFORDSHIRE'"
+            
             dataTable = dataView.ToTable()
-            HttpContext.Current.Session(sGridID.Replace("DDE", "DATA")) = dataTable
+            ' HttpContext.Current.Session(btnSender.ID.Replace("refresh", "DATA")) = dataTable
+
+            If dataTable.Rows.Count = 0 Then
+                ' create a blank row to display.
+                Dim objDataRow As System.Data.DataRow
+                objDataRow = dataTable.NewRow()
+                dataTable.Rows.InsertAt(objDataRow, 0)
+            End If
+
+
         End If
 
-        Try
-            Return True
-        Catch ex As Exception
-            Throw ex
-        End Try
-    End Function
+
+        Dim gridView As RecordSelector 'GridView
+        gridView = TryCast(pnlInputDiv.FindControl(btnSender.ID.Replace("refresh", "Grid")), RecordSelector)
+
+        gridView.DataSource = dataTable
+        gridView.DataBind()
+
+
+        ' reset filter.
+        hiddenField.Value = ""
+
+
+    End Sub
 
 End Class
