@@ -16,7 +16,6 @@
 // <!CDATA[
 
             function window_onload() {
-                //window.scrollTo(0, 1);
 
                 if (document.getElementById('hdnItemCount').value == 0) {
                     document.getElementById('lblNothingTodo').style.visibility = "visible";

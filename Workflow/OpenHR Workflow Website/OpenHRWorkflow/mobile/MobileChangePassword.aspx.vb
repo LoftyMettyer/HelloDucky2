@@ -304,11 +304,6 @@ Partial Class ChangePassword
     Dim sRedirectTo As String = ""
 
     Try
-      'TODO how does nick want change password thing to work???
-      ' Like this :P
-
-      If Not User.Identity.IsAuthenticated Then sMessage = "Unable to identify you as a user"
-
       If sMessage.Length = 0 Then
         conn = New SqlClient.SqlConnection(Configuration.ConnectionString)
         conn.Open()
@@ -375,17 +370,17 @@ Partial Class ChangePassword
 
         If sMessage.Length = 0 Then
           ' Password changed okay. Update the appropriate record in the ASRSysPasswords table.
-          cmdPasswordOK = New SqlClient.SqlCommand
-          cmdPasswordOK.CommandText = "spASRSysMobilePasswordOK"
-          cmdPasswordOK.Connection = conn
-          cmdPasswordOK.CommandType = CommandType.StoredProcedure
+          cmdPasswordOk = New SqlClient.SqlCommand
+          cmdPasswordOk.CommandText = "spASRSysMobilePasswordOK"
+          cmdPasswordOk.Connection = conn
+          cmdPasswordOk.CommandType = CommandType.StoredProcedure
 
-          cmdPasswordOK.Parameters.Add("@sCurrentUser", SqlDbType.NVarChar, 2147483646).Direction = ParameterDirection.Input
-          cmdPasswordOK.Parameters("@sCurrentUser").Value = User.Identity.Name.ToString()
+          cmdPasswordOk.Parameters.Add("@sCurrentUser", SqlDbType.NVarChar, 2147483646).Direction = ParameterDirection.Input
+          cmdPasswordOk.Parameters("@sCurrentUser").Value = User.Identity.Name.ToString()
 
-          cmdPasswordOK.ExecuteNonQuery()
+          cmdPasswordOk.ExecuteNonQuery()
 
-          cmdPasswordOK.Dispose()
+          cmdPasswordOk.Dispose()
 
           ' Tell the user that the password was changed okay.
           sMessage = "Password changed successfully."

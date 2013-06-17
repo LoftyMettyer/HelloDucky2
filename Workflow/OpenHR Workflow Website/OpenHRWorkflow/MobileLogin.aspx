@@ -13,12 +13,12 @@
       // <!CDATA[
 
             function window_onload() {
-                //window.scrollTo(0, 1);
                 document.getElementById("txtUserName").focus();
             }
 
             function submitCheck() {
 
+                if()
                 return true;
             }
 

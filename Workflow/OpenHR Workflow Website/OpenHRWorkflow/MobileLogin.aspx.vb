@@ -329,30 +329,30 @@ Partial Class MobileLogin
 
     If sMessage.Length = 0 Then
       Try
-        Dim conn As SqlClient.SqlConnection
-        Dim cmdCheck As SqlClient.SqlCommand
+        Using conn As New SqlClient.SqlConnection(Configuration.ConnectionString)
 
-        conn = New SqlClient.SqlConnection(Configuration.ConnectionString)
-        conn.Open()
+          conn.Open()
 
-        cmdCheck = New SqlClient.SqlCommand
-        cmdCheck.CommandText = "spASRSysMobileCheckLogin"
-        cmdCheck.Connection = conn
-        cmdCheck.CommandType = CommandType.StoredProcedure
+          Dim cmdCheck As SqlClient.SqlCommand
+          cmdCheck = New SqlClient.SqlCommand
+          cmdCheck.CommandText = "spASRSysMobileCheckLogin"
+          cmdCheck.Connection = conn
+          cmdCheck.CommandType = CommandType.StoredProcedure
 
-        cmdCheck.Parameters.Add("@psKeyParameter", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
-        cmdCheck.Parameters("@psKeyParameter").Value = userName
+          cmdCheck.Parameters.Add("@psKeyParameter", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
+          cmdCheck.Parameters("@psKeyParameter").Value = userName
 
-        cmdCheck.Parameters.Add("@piUserGroupID", SqlDbType.Int).Direction = ParameterDirection.Output
+          cmdCheck.Parameters.Add("@piUserGroupID", SqlDbType.Int).Direction = ParameterDirection.Output
 
-        cmdCheck.Parameters.Add("@psMessage", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Output
+          cmdCheck.Parameters.Add("@psMessage", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Output
 
-        cmdCheck.ExecuteNonQuery()
+          cmdCheck.ExecuteNonQuery()
 
-        sMessage = NullSafeString(cmdCheck.Parameters("@psMessage").Value())
-        Session("UserGroupID") = NullSafeInteger(cmdCheck.Parameters("@piUserGroupID").Value())
+          sMessage = NullSafeString(cmdCheck.Parameters("@psMessage").Value())
+          Session("UserGroupID") = NullSafeInteger(cmdCheck.Parameters("@piUserGroupID").Value())
 
-        cmdCheck.Dispose()
+          cmdCheck.Dispose()
+        End Using
 
       Catch ex As Exception
         sMessage = "Error :" & vbCrLf & vbCrLf & ex.Message & vbCrLf & vbCrLf & "Contact your system administrator."
@@ -409,24 +409,21 @@ Partial Class MobileLogin
   Private Function ValidateUserSqlServer(userName As String, password As String) As Boolean
 
     Try
-      Dim conn As New SqlClient.SqlConnection(Configuration.ConnectionStringFor(userName, password))
-      conn.Open()
-      conn.Close()
+      Using conn As New SqlClient.SqlConnection(Configuration.ConnectionStringFor(userName, password))
+        conn.Open()
+      End Using
+      Return True
     Catch ex As Exception
-      'TODO clean up
       Return False
     End Try
-
-    Return True
 
   End Function
 
   Private Function IsSystemLocked() As Boolean
 
-    Try
-      Dim conn = New SqlClient.SqlConnection(Configuration.ConnectionString)
-      conn.Open()
+    Using conn As New SqlClient.SqlConnection(Configuration.ConnectionString)
 
+      conn.Open()
       ' Check if the database is locked.
       Dim cmd = New SqlClient.SqlCommand
       cmd.CommandText = "sp_ASRLockCheck"
@@ -438,21 +435,11 @@ Partial Class MobileLogin
 
       While dr.Read
         ' Not a read-only lock.
-        If NullSafeInteger(dr("priority")) <> 3 Then
-          Return True
-        End If
+        If NullSafeInteger(dr("priority")) <> 3 Then Return True
       End While
 
-    Catch ex As Exception
-      Throw
-    Finally
-      'TODO cleanup
-      'dr.Close()
-      'cmd.Dispose()
-      'conn.Close()
-    End Try
-
-    Return False
+      Return False
+    End Using
 
   End Function
 

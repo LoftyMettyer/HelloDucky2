@@ -12,7 +12,6 @@
 // <!CDATA[
 
             function window_onload() {
-                //window.scrollTo(0, 1);
                 document.getElementById('txtCurrPassword').focus();
             }
 

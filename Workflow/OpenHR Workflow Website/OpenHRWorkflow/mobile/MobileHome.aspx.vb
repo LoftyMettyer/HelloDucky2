@@ -167,7 +167,6 @@ Partial Class Home
 
           End If
 
-
         Case 3 ' Input value - character
           If NullSafeString(drElements("Name")).Length > 0 Then
 
@@ -194,10 +193,8 @@ Partial Class Home
       btnChangePwd_label.Visible = False
     End If
 
-    Dim groupId As Integer
-    Dim fUserHasRunPermission As Boolean
+    Dim groupId As Integer, fUserHasRunPermission As Boolean
 
-    'TODO close your session come straight to this page and this value is not populated!!!!
     If Session("UserGroupID") <> "0" Then groupId = CInt(Session("UserGroupID"))
 
     If groupId <> 0 Then
@@ -295,20 +292,17 @@ Partial Class Home
     myConnection.Close()
 
     ' Update the wf steps count
-    If fUserHasRunPermission Then CountPendingWfSteps()
+    If fUserHasRunPermission Then
 
-  End Sub
-
-
-  Private Sub CountPendingWfSteps()
-    ' Update number of OS workflows
-    Dim count As Integer = CheckPendingSteps()
-    If count > 0 Then
-      lblWFCount.InnerText = CStr(count)
-      pnlWFCount.Style.Add("visibility", "visible")
-    Else
-      pnlWFCount.Style.Add("visibility", "hidden")
+      Dim pendingSteps As Integer = GetPendingSteps()
+      If pendingSteps > 0 Then
+        lblWFCount.InnerText = CStr(pendingSteps)
+        pnlWFCount.Style.Add("visibility", "visible")
+      Else
+        pnlWFCount.Style.Add("visibility", "hidden")
+      End If
     End If
+
   End Sub
 
   Private Function LoadPicture(ByVal piPictureID As Int32, ByRef psErrorMessage As String) As String
@@ -418,8 +412,6 @@ Partial Class Home
 
   Public Function WorkflowLink(ByVal workflowID As Integer) As String
 
-    Dim objCrypt As New Crypt
-
     If Configuration.WorkflowUrl.Length = 0 Then
       Return ""
     End If
@@ -432,7 +424,8 @@ Partial Class Home
     '      plngInstance = -1 * workflowID
     '      plngStepID = -
 
-    'TODO check
+    'TODO workflow link
+    Dim objCrypt As New Crypt
     Dim sEncryptedString As String = objCrypt.EncryptQueryString((-1 * workflowID), -1, _
         Configuration.Login, _
         Configuration.Password, _
@@ -445,34 +438,28 @@ Partial Class Home
 
   End Function
 
-  Private Function CheckPendingSteps() As Integer
+  Private Function GetPendingSteps() As Integer
 
-    Dim conn As SqlClient.SqlConnection
-    Dim cmd As SqlClient.SqlCommand
-    Dim dr As SqlClient.SqlDataReader
+    Using conn As New SqlClient.SqlConnection(Configuration.ConnectionString)
 
-    ' Open a connection to the database.
-    conn = New SqlClient.SqlConnection(Configuration.ConnectionString)
-    conn.Open()
+      conn.Open()
 
-    cmd = New SqlClient.SqlCommand
-    cmd.CommandText = "spASRSysMobileCheckPendingWorkflowSteps"
-    cmd.Connection = conn
-    cmd.CommandType = CommandType.StoredProcedure
+      Dim cmd As New SqlClient.SqlCommand
+      cmd.CommandText = "spASRSysMobileCheckPendingWorkflowSteps"
+      cmd.Connection = conn
+      cmd.CommandType = CommandType.StoredProcedure
 
-    cmd.Parameters.Add("@psKeyParameter", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
-    cmd.Parameters("@psKeyParameter").Value = User.Identity.Name
+      cmd.Parameters.Add("@psKeyParameter", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
+      cmd.Parameters("@psKeyParameter").Value = User.Identity.Name
 
-    dr = cmd.ExecuteReader
+      Dim dr As SqlClient.SqlDataReader = cmd.ExecuteReader
 
-    Dim count As Integer
-    While dr.Read
-      count += 1
-    End While
-    dr.Close()
-    cmd.Dispose()
-    'TODO clean up
-    Return count
+      Dim count As Integer
+      While dr.Read
+        count += 1
+      End While
+      Return count
+    End Using
 
   End Function
 
@@ -485,11 +472,10 @@ Partial Class Home
   End Sub
 
   Protected Sub BtnLogoutClick(sender As Object, e As ImageClickEventArgs) Handles btnLogout.Click
-    LogoutAuthenticatedUser()
+    Logout()
   End Sub
 
-  Private Sub LogoutAuthenticatedUser()
-    ' Remove the cookie from cookies collection.
+  Private Sub Logout()
 
     FormsAuthentication.SignOut()
 

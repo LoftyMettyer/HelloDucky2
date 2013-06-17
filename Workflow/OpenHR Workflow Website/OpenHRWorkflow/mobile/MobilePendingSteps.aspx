@@ -16,8 +16,6 @@
 // <!CDATA[
 
             function window_onload() {
-                //TODO kkeps these??
-                //window.scrollTo(0, 1);
 
                 if (document.getElementById('hdnStepCount').value == 0) {
                     document.getElementById('lblNothingTodo').style.visibility = "visible";

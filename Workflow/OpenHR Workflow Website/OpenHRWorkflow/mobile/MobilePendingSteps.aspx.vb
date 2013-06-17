@@ -7,7 +7,6 @@ Partial Class PendingSteps
   Inherits Page
 
   Private _imageCount As Int16
-  Private _config As New Config
 
   Protected Sub Page_Init(sender As Object, e As EventArgs) Handles Me.Init
 
@@ -437,7 +436,6 @@ Partial Class PendingSteps
       psErrorMessage = ex.Message
     End Try
   End Function
-
 
   Protected Sub BtnRefreshClick(sender As Object, e As ImageClickEventArgs) Handles btnRefresh.Click
     Response.Redirect("~/Mobile/MobilePendingSteps.aspx")

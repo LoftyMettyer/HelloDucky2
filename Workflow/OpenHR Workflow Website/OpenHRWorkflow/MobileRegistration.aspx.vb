@@ -347,7 +347,7 @@ Partial Class Registration
 
         If sMessage.Length = 0 Then
 
-          'TODO
+          'TODO workflow link
           strEncryptedString = objCrypt.EncryptQueryString((userID), -2, _
               Configuration.Login, _
               Configuration.Password, _
