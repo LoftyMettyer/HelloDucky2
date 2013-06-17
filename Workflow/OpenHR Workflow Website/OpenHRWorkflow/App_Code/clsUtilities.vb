@@ -2,6 +2,7 @@ Option Strict On
 
 Imports Microsoft.VisualBasic
 Imports System
+Imports System.Reflection
 
 Public Class Utilities
 
@@ -17,7 +18,7 @@ Public Class Utilities
   Public Shared Function PointToPixelFontUnit(pointSize As Integer) As FontUnit
     Return New FontUnit(PointToPixel(pointSize), UnitType.Pixel)
   End Function
-  
+
   '****************************************************************
   ' NullSafeString
   '****************************************************************
@@ -192,6 +193,40 @@ Public Class Utilities
     End If
   End Function
 
+  Public Shared Function WebSiteName() As String
+
+    Const ASSEMBLYNAME As String = "OPENHRWORKFLOW"
+    Const sDEFAULTTITLE As String = "OpenHR Workflow"
+    Dim sWebSiteVersion As String
+    Dim sTitle As String
+
+    sTitle = sDEFAULTTITLE
+
+    Try
+      Dim sAssemblyName = Assembly.GetExecutingAssembly.GetName.Name.ToUpper
+
+      sWebSiteVersion = Assembly.GetExecutingAssembly.GetName.Version.Major.ToString _
+       & "." & Assembly.GetExecutingAssembly.GetName.Version.Minor.ToString _
+       & "." & Assembly.GetExecutingAssembly.GetName.Version.Build.ToString
+
+      If sAssemblyName = ASSEMBLYNAME Then
+        ' Compiled version of the web site, so perform version checks.
+        If sWebSiteVersion.Length = 0 Then
+          sTitle = sDEFAULTTITLE & " (unknown version)"
+        Else
+          sTitle = sDEFAULTTITLE & " - v" & sWebSiteVersion
+        End If
+      Else
+        ' Development version of the web site, so do NOT perform version checks.
+        sTitle = sDEFAULTTITLE & " (development)"
+      End If
+    Catch ex As Exception
+      sTitle = sDEFAULTTITLE
+    End Try
+
+    WebSiteName = sTitle
+
+  End Function
 
 
 End Class

@@ -76,6 +76,8 @@ Partial Class Site
 
     End Using
 
+    Page.Title = WebSiteName()
+
     SetupViewport()
 
   End Sub
