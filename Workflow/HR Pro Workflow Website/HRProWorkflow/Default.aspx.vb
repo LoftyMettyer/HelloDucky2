@@ -3032,7 +3032,7 @@ Public Class _Default
                 cmdSelect.Dispose()
 
                 ' Ensure URL encoding doesn't stuff up the picture name, so encode the % character as %25.
-                LoadPicture = Replace("pictures/" & sImageFileName, "%", "%25")
+                LoadPicture = Server.UrlEncode("pictures/" & sImageFileName)
 
             Catch ex As Exception
                 LoadPicture = ""
@@ -3042,7 +3042,6 @@ Public Class _Default
                 conn.Close()
                 conn.Dispose()
             End Try
-
         Catch ex As Exception
             LoadPicture = ""
             psErrorMessage = ex.Message
