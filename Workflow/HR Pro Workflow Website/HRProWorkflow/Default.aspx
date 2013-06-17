@@ -219,7 +219,7 @@
 		}
 
 		function goSubmit() {
-		
+				
 		if(txtPostbackMode.value=="2") {
 		    if(txtActiveDDE.value.indexOf("dde")>0) {
 		      //keep the lookup open.
@@ -228,6 +228,9 @@
 		    }
 		    return;			
 		}
+		//document.all.pleasewaitScreen.style.pixelTop = (document.body.scrollTop + 50);
+		document.all.pleasewaitScreen.style.visibility="visible";
+		
 			disableChildElements("pnlInput");
 			showErrorMessages(false);
 		}
@@ -604,6 +607,8 @@
 		}
 
 		function showMessage() {				
+		
+		document.all.pleasewaitScreen.style.visibility="hidden";
 		
 		//Reapply resizable column functionality to tables
 		//This is put here to ensure functionality is reapplied after partial/full postback.
@@ -1183,7 +1188,18 @@ function Right(str, n){
 	<!--
         Web Form Validation Error Messages
         -->        
-        
+
+<div id="pleasewaitScreen" style="position:absolute;z-index:5;top:30%;left:42%;visibility:hidden">
+			<table style="background-color:black;border:solid 1 black;padding:0;height:50;width:100" id="Table1">
+				<tr>
+					<td style="width:100%;height:100%;background-color:White;text-align:center;vertical-align:middle; font-family:Verdana;font-size:x-small;color:black">
+								Submitting...<br>Please Wait
+					</td>
+				</tr>
+			</table>
+		</div>
+		
+		       
 	<div id="divErrorMessages_Outer" onfilterchange="unblockErrorMessageDIV();" style="position: absolute;
 		bottom: 0px; left: 0px; right: 0px; display: none; visibility: hidden; z-index: 1">
 		<div id="divErrorMessages_Inner" style="background-color: white; text-align: left;
