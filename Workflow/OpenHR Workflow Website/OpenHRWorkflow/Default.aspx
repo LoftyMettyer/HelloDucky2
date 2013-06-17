@@ -15,6 +15,20 @@
         input[type="button"] { padding: 0px; }
 		.highlighted { background: yellow; }
         textarea {resize: none; }
+        
+        .recordSelector {
+            text-align: left;
+        }
+        .recrodSelector tr {
+            cursor: pointer;
+            overflow: hidden;
+        }
+        .recordSelector td {
+            width: 100px;
+            overflow: hidden;
+            white-space: nowrap;
+            border: 1px solid gray;
+        }
     </style>
 
 	<title></title>	  

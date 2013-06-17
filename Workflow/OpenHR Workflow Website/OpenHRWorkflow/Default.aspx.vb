@@ -1734,6 +1734,7 @@ Public Class _Default
                   ctlForm_PagingGridView = New RecordSelector
                   With ctlForm_PagingGridView
 
+                    .CssClass = "recordSelector"
                     .Style.Add("Position", "Absolute")
                     .Attributes.CssStyle("LEFT") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
                     .Attributes.CssStyle("TOP") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
@@ -1820,26 +1821,19 @@ Public Class _Default
                     .PagerStyle.VerticalAlign = VerticalAlign.Middle
                     .PagerStyle.HorizontalAlign = HorizontalAlign.Center
 
-                    ' ROW formatting
-                    .AlternatingRowStyle.BackColor = General.GetColour(NullSafeInteger(dr("BackColorOdd")))
-                    .AlternatingRowStyle.Font.Name = NullSafeString(dr("FontName"))
-                    .AlternatingRowStyle.Font.Size = ToPointFontUnit(NullSafeInteger(dr("FontSize")))
-                    .AlternatingRowStyle.Font.Bold = NullSafeBoolean(dr("FontBold"))
-                    .AlternatingRowStyle.Font.Italic = NullSafeBoolean(dr("FontItalic"))
-                    .AlternatingRowStyle.Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
-                    .AlternatingRowStyle.Font.Underline = NullSafeBoolean(dr("FontUnderline"))
-                    .AlternatingRowStyle.ForeColor = General.GetColour(NullSafeInteger(dr("ForeColorOdd")))
-                    .AlternatingRowStyle.VerticalAlign = VerticalAlign.Middle
+                    .Font.Name = NullSafeString(dr("FontName"))
+                    .Font.Size = ToPointFontUnit(NullSafeInteger(dr("FontSize")))
+                    .Font.Bold = NullSafeBoolean(dr("FontBold"))
+                    .Font.Italic = NullSafeBoolean(dr("FontItalic"))
+                    .Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
+                    .Font.Underline = NullSafeBoolean(dr("FontUnderline"))
 
-                    .RowStyle.BackColor = General.GetColour(NullSafeInteger(dr("BackColorEven")))
-                    .RowStyle.Font.Name = NullSafeString(dr("FontName"))
-                    .RowStyle.Font.Size = ToPointFontUnit(NullSafeInteger(dr("FontSize")))
-                    .RowStyle.Font.Bold = NullSafeBoolean(dr("FontBold"))
-                    .RowStyle.Font.Italic = NullSafeBoolean(dr("FontItalic"))
-                    .RowStyle.Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
-                    .RowStyle.Font.Underline = NullSafeBoolean(dr("FontUnderline"))
+                    ' ROW formatting
+                    .AlternatingRowStyle.ForeColor = General.GetColour(NullSafeInteger(dr("ForeColorOdd")))
+                    .AlternatingRowStyle.BackColor = General.GetColour(NullSafeInteger(dr("BackColorOdd")))
+
                     .RowStyle.ForeColor = General.GetColour(NullSafeInteger(dr("ForeColorEven")))
-                    .RowStyle.VerticalAlign = VerticalAlign.Middle
+                    .RowStyle.BackColor = General.GetColour(NullSafeInteger(dr("BackColorEven")))
 
                     iRowHeight = 21
 

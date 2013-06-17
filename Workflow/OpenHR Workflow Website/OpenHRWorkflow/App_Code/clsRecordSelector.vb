@@ -673,8 +673,6 @@ Public Class RecordSelector
     Try
 
       If e.Row.RowType = DataControlRowType.DataRow Then
-        e.Row.Style.Add("overflow", "hidden")
-        If Not Me.IsEmpty Then e.Row.Style.Add("cursor", "pointer")
 
         ' loop through the columns of this row. Hide ID columns
         For iColCount As Integer = 0 To e.Row.Cells.Count - 1
@@ -683,7 +681,6 @@ Public Class RecordSelector
           If (Not IsLookup And (sColumnCaption = "ID" Or (Left(sColumnCaption, 3) = "ID_" And Val(Mid(sColumnCaption, 4)) > 0))) Or _
               (IsLookup And sColumnCaption.StartsWith("ASRSYS")) Then
 
-            'If sColumnCaption = "ID" Or (Left(sColumnCaption, 3) = "ID_" And Val(Mid(sColumnCaption, 4)) > 0) Then
             iIDCol = iColCount  ' store ID column number to assign to the javascript click event.
             e.Row.Cells(iColCount).Style.Add("display", "none")
             If sColumnCaption = "ID" Then
@@ -693,17 +690,13 @@ Public Class RecordSelector
             End If
           End If
 
-
-
-
+          'PG replaced with css in default.aspx for performance
           ' add overflow hidden and nowrap, stops the cells wrapping text or overflowing into adjacent cols.
-          e.Row.Cells(iColCount).Style.Add("overflow", "hidden")
-          e.Row.Cells(iColCount).Style.Add("white-space", "nowrap")
-
+          'e.Row.Cells(iColCount).Style.Add("overflow", "hidden")
+          'e.Row.Cells(iColCount).Style.Add("white-space", "nowrap")
           ' this sets minimum width, not max.
-          e.Row.Cells(iColCount).Width = Unit.Pixel(iColWidth)
-
-          e.Row.Cells(iColCount).Style.Add("border", "1px solid gray")
+          'e.Row.Cells(iColCount).Width = Unit.Pixel(iColWidth)
+          'e.Row.Cells(iColCount).Style.Add("border", "1px solid gray")
 
           ' Format the cells according to DataType
           Dim curSelDataType As String = vbNullString
@@ -714,9 +707,9 @@ Public Class RecordSelector
             curSelDataType = DataBinder.Eval(e.Row.DataItem, grdGrid.HeaderRow.Cells(iColCount).Text).GetType.ToString.ToUpper
 
             If curSelDataType.Contains("INT") _
-                Or curSelDataType.Contains("DECIMAL") _
-                Or curSelDataType.Contains("SINGLE") _
-                Or curSelDataType.Contains("DOUBLE") _
+                OrElse curSelDataType.Contains("DECIMAL") _
+                OrElse curSelDataType.Contains("SINGLE") _
+                OrElse curSelDataType.Contains("DOUBLE") _
                 Then curSelDataType = "Integer"
             If curSelDataType.Contains("DATETIME") Then curSelDataType = "DateTime"
             If curSelDataType.Contains("BOOLEAN") Or curSelDataType.Contains("DBNULL") Then curSelDataType = "Boolean"
@@ -727,6 +720,7 @@ Public Class RecordSelector
                 ' Is the cell a date? 
                 mydte = DateTime.Parse(e.Row.Cells(iColCount).Text.ToString())
                 e.Row.Cells(iColCount).Text = mydte.ToShortDateString()
+                e.Row.Cells(iColCount).Style.Add("text-align", "center")
               Case "Integer"
                 e.Row.Cells(iColCount).Style.Add("text-align", "right")
               Case "Boolean"
@@ -734,7 +728,7 @@ Public Class RecordSelector
               Case Else   ' String
                 ' Careful here: &nbsp is not a real space (it's chr160, not chr20) - might cause probs somewhere down the line....
                 e.Row.Cells(iColCount).Text = e.Row.Cells(iColCount).Text.Replace(" ", "&nbsp;")
-                e.Row.Cells(iColCount).Style.Add("text-align", "left")
+                'e.Row.Cells(iColCount).Style.Add("text-align", "left")
             End Select
           Catch
             ' um...
