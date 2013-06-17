@@ -1890,13 +1890,10 @@ Public Class _Default
                       ' ctlForm_PagingGridView.DataKeyNames = New String() {"ID"}
 
                       If dt.Rows.Count > 0 Then
-                        ''                                              
                         ctlForm_PagingGridView.IsEmpty = False
                         ctlForm_PagingGridView.DataSource = dt
                         ctlForm_PagingGridView.DataBind()
-
                       Else
-                        ''                                                
                         ctlForm_PagingGridView.IsEmpty = True
                         ShowNoResultFound(dt, ctlForm_PagingGridView)
                       End If
@@ -1955,7 +1952,6 @@ Public Class _Default
                     ' If a postback, check for empty datagrid and set empty row message
                     Dim dtSource As DataTable = TryCast(HttpContext.Current.Session(sID & "DATA"), DataTable)
 
-                    'If dtSource.Rows.Count = 0 Then
                     If ctlForm_PagingGridView.IsEmpty Then
                       ShowNoResultFound(dtSource, ctlForm_PagingGridView)
                     End If
@@ -2187,7 +2183,8 @@ Public Class _Default
                         da.Fill(dt)
                         Session(sID & "DATA") = dt
 
-                        '' Create a blank row at the top of the dropdown grid.
+
+                        ' Create a blank row at the top of the dropdown grid.
                         objDataRow = dt.NewRow()
                         dt.Rows.InsertAt(objDataRow, 0)
 
@@ -2206,6 +2203,8 @@ Public Class _Default
 
                         ctlForm_PagingGridView.DataSource = dt
                         ctlForm_PagingGridView.DataBind()
+
+                        ctlForm_PagingGridView.IsEmpty = (dt.Rows.Count - 1 = 0)
 
                         cmdGrid.Dispose()
 
@@ -4241,8 +4240,8 @@ Public Class _Default
 
     source.Clear()
     source.Rows.Add(source.NewRow())
-    '' create a new blank row to the DataTable
-    '' Bind the DataTable which contain a blank row to the GridView
+    ' create a new blank row to the DataTable
+    ' Bind the DataTable which contain a blank row to the GridView
     gv.DataSource = source
     gv.DataBind()
     ' Get the total number of columns in the GridView to know what the Column Span should be
@@ -4256,8 +4255,6 @@ Public Class _Default
 
     'You can set the styles here
     gv.Rows(0).Cells(0).HorizontalAlign = HorizontalAlign.Center
-    'gv.Rows(0).Cells(0).ForeColor = Color.Red
-    'gv.Rows(0).Cells(0).Font.Bold = True
     'set No Results found to the new added cell
     gv.Rows(0).Cells(0).Text = gv.EmptyDataText
 
