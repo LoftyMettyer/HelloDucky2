@@ -1977,6 +1977,8 @@ Public Class _Default
                     ' ============================================================
                     ctlForm_TextInput = New TextBox
 
+                    Dim backgroundColor As Color = General.GetColour(NullSafeInteger(dr("BackColor")))
+
                     With ctlForm_TextInput
                       .ID = sID & "TextBox"
                       .Style("position") = "absolute"
@@ -1992,7 +1994,8 @@ Public Class _Default
                       .Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
                       .Font.Underline = NullSafeBoolean(dr("FontUnderline"))
                       .Width = Unit.Pixel(NullSafeInteger(dr("Width")))
-                      .BackColor = Color.Transparent
+                      .BackColor = backgroundColor
+                      '.BackColor = Color.Transparent
                       .ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
                       .BorderColor = General.GetColour(5730458)
                       .BorderStyle = BorderStyle.Solid
@@ -2243,8 +2246,9 @@ Public Class _Default
                     With ctlForm_DDE
                       .DropArrowBackColor = Color.Transparent
                       .DropArrowWidth = Unit.Pixel(20)
+                      .HighlightBackColor = backgroundColor
+                      '.HighlightBackColor = Color.Transparent
 
-                      .HighlightBackColor = Color.Transparent
                       ' Careful with the case here, use 'dde' in JavaScript:
                       .ID = sID & "DDE"
                       .BehaviorID = sID & "dde"

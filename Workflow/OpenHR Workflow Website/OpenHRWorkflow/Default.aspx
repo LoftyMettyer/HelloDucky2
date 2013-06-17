@@ -1078,9 +1078,9 @@ function ResizeComboForForm(sender, args) {
         }
         else {
           document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.visibility = "visible";
-          document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.display = "block";
+          document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.display = "";
           document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.visibility = "visible";
-          document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.display = "block";
+          document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.display = ""; 
         }
       }
       else {
@@ -1093,9 +1093,9 @@ function ResizeComboForForm(sender, args) {
         }
         else {
           document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.visibility = "visible";
-          document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.display = "block";
+          document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.display = "";
           document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.visibility = "visible";
-          document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.display = "block";
+          document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.display = "";
         }                    
       }
     }

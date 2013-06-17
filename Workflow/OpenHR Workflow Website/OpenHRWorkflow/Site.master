@@ -36,7 +36,7 @@
         <script type="text/javascript">
             // <!CDATA[
             window.onload = function () {
-                if (navigator.userAgent.indexOf('Android') !== -1) {
+                if (navigator.userAgent.indexOf('Android') !== -1 && navigator.userAgent.indexOf('AppleWebKit') != -1) {
                     touchScroll('ctl00_main');
                 }
             };
