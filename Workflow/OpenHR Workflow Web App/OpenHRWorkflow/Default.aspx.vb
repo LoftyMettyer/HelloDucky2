@@ -632,8 +632,8 @@ Public Class [Default]
 								html = String.Format("<div style='position:absolute; left:{0}px; top:{1}px; height:{2}px; width:0px; border-left: 1px solid {3};'></div>",
 								  formItem.Left, formItem.Top, formItem.Height, General.GetHtmlColour(formItem.BackColor))
 							Case Else ' Horizontal
-								html = String.Format("<div style='position:absolute; left:{0}px; top:{1}px; height:0px; width:{2}px; border-left: 1px solid {3};'></div>",
-								  formItem.Left, formItem.Top, formItem.Width, General.GetHtmlColour(formItem.BackColor))
+								html = String.Format("<div style='position:absolute; left:{0}px; top:{1}px; height:0px; width:{2}px; border-top: 1px solid {3};'></div>",
+							  formItem.Left, formItem.Top, formItem.Width, General.GetHtmlColour(formItem.BackColor))
 						End Select
 
 						tabPages(formItem.PageNo).Controls.Add(New LiteralControl(html))
