@@ -1023,7 +1023,7 @@ Public Class RecordSelector
 
     Dim trPager As TableRow = New TableRow()
     trPager.ID = "trPager"
-    trPager.Style.Add("float", "right")
+    'trPager.Style.Add("float", "right")
     trPager.Style.Add("width", "275px")
 
     Dim ltlPageIndex As Literal = New Literal()
