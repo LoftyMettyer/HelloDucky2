@@ -218,6 +218,7 @@ Public Class _Default
 
         Try
             mobjConfig.Initialise(Server.MapPath("themes/ThemeHex.xml"))
+
             miSubmissionTimeoutInSeconds = mobjConfig.SubmissionTimeoutInSeconds
 
             Response.CacheControl = "no-cache"
@@ -1932,12 +1933,18 @@ Public Class _Default
                                             .Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
                                             .Font.Underline = NullSafeBoolean(dr("FontUnderline"))
                                             .Width = Unit.Pixel(NullSafeInteger(dr("Width")))
-                                            .BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColor")))
+                                            .BackColor = Color.Transparent
+                                            ' .BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColor")))
                                             .ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
                                             .BorderColor = objGeneral.GetColour(5730458)
                                             .BorderStyle = BorderStyle.Solid
                                             .BorderWidth = Unit.Pixel(1)
                                             .ReadOnly = True
+                                            .Style.Add("z-index", "1")
+                                            .Style.Add("background-image", "url('images/downarrow.gif');")
+                                            .Style.Add("background-position", "right;")
+                                            .Style.Add("background-repeat", "no-repeat;")
+
                                         End With
 
                                         'pnlInputDiv.Controls.Add(ctlForm_Dropdown)
@@ -1958,10 +1965,11 @@ Public Class _Default
                                             '.BorderColor = Color.Gray
                                             '.BorderStyle = BorderStyle.Solid
                                             '.BorderWidth = Unit.Pixel(1)
+                                            .Style.Add("z-index", "0")
                                         End With
 
 
-                                        pnlInputDiv.Controls.Add(ctlForm_Image)
+                                        'pnlInputDiv.Controls.Add(ctlForm_Image)
 
                                         ' ============================================================
                                         ' Create the Lookup table grid, as per normal record selectors.
