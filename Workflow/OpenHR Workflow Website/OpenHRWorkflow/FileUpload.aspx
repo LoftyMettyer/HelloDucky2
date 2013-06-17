@@ -8,10 +8,10 @@
   <script type="text/javascript">
 // <!CDATA[
     function window_onload() {
-      // Resize the frame.
+
       try {
         if (document.getElementById("hdnCount_Errors").value > 0) {
-          showErrorMessages(true);
+            showErrorMessages(true);
         }
         else {
           if (document.getElementById("hdnExitMode").value > 0) {
@@ -27,28 +27,33 @@
 
       //Fault HRPRO-2270
       window.parent.resizeIframe("ifrmFileUpload", document.getElementById("divFileUpload").offsetHeight);
+
+      try {
+        document.getElementById("FileUpload1").focus();
+      } catch(e) {} 
     }
 
-    function resizeFrame() {
+    //TODO remove
+//    function resizeFrame() {
 
-      var tmpElement = document.getElementById("frmFileUpload").offsetParent;
-      var iRequiredWidth = tmpElement.scrollWidth;
-      var iMinWidth = 0.9 * parent.document.getElementById("frmMain").hdnFormWidth.value;
-      
-        if (iRequiredWidth < iMinWidth) {
-            iRequiredWidth = iMinWidth;
-        }
+//      var tmpElement = document.getElementById("frmFileUpload").offsetParent;
+//      var iRequiredWidth = tmpElement.scrollWidth;
+//      var iMinWidth = 0.9 * parent.document.getElementById("frmMain").hdnFormWidth.value;
+//      
+//        if (iRequiredWidth < iMinWidth) {
+//            iRequiredWidth = iMinWidth;
+//        }
 
-          document.getElementById("FileUpload1").style.width = (iRequiredWidth - 150) + 'px';
-          document.getElementById("FileUpload1").style.width = '400px';
-        try {            
-              window.resizeTo(iRequiredWidth, tmpElement.scrollHeight);
-              window.parent.resizeToFit(tmpElement.scrollWidth, tmpElement.scrollHeight);
-            }
-            catch (e) {
-              window.location = document.URL;
-            }
-          }
+//          document.getElementById("FileUpload1").style.width = (iRequiredWidth - 150) + 'px';
+//          document.getElementById("FileUpload1").style.width = '400px';
+//        try {            
+//              window.resizeTo(iRequiredWidth, tmpElement.scrollHeight);
+//              window.parent.resizeToFit(tmpElement.scrollWidth, tmpElement.scrollHeight);
+//        }
+//        catch (e) {
+//            window.location = document.URL;
+//        }
+//    }
           
     
     function showErrorMessages(pfDisplay) {
@@ -72,15 +77,16 @@
       }
     }
 
-    function unblockErrorMessageDIV() {
-      try {
-        if ((document.getElementById("divErrorMessages_Outer").style.visibility == "hidden") &&
-					(document.getElementById("divErrorMessages_Outer").style.display != "none")) {
-          document.getElementById("divErrorMessages_Outer").style.display = "none";
-        }
-      }
-      catch (e) { }
-    }
+    //TODO PG remove
+//    function unblockErrorMessageDIV() {
+//      try {
+//        if ((document.getElementById("divErrorMessages_Outer").style.visibility == "hidden") &&
+//					(document.getElementById("divErrorMessages_Outer").style.display != "none")) {
+//          document.getElementById("divErrorMessages_Outer").style.display = "none";
+//        }
+//      }
+//      catch (e) { }
+//    }
 
     function exitFileUpload(piExitMode) {
       try {
@@ -89,12 +95,13 @@
       catch (e) { }
     }
 
-    function enableControls() {
-        try {
-            document.getElementById('btnCancel').disabled = false;
-        }
-        catch (e) { }
-    }
+    //TODO PG look at
+//    function enableControls() {
+//        try {
+//            document.getElementById('btnCancel').disabled = false;
+//        }
+//        catch (e) { }
+//    }
 
     function refreshFileUploadButton(psFileUploadValue) {
       try {
@@ -125,7 +132,7 @@
   <!--
     Web Form Validation Error Messages
     -->
-  <div id="divErrorMessages_Outer" onfilterchange="unblockErrorMessageDIV();" style="position: absolute; width: 100%; bottom: 0px; left: 0px; right: 0px; display: none; visibility: hidden; z-index: 1">
+  <div id="divErrorMessages_Outer" style="position: absolute; width: 100%; bottom: 0px; left: 0px; right: 0px; display: none; visibility: hidden; z-index: 1">
       
     <div id="divErrorMessages_Inner" style="background-color: white; text-align: left; position: relative; margin: 0px; padding: 5px; border: 1px solid; font-size: 8pt; color: black; font-family: Verdana;">
         

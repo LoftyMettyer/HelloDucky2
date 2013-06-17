@@ -52,7 +52,7 @@
 		
     <img id="imgErrorMessages_Max" src="Images/uparrows_white.gif" alt="Show messages" style="position: absolute; right: 1px; bottom: 1px; display: none; visibility: hidden; z-index: 1; width:20px; height:20px;" onclick="showErrorMessages(true);" />
 
-	<div id="divErrorMessages_Outer" onfilterchange="unblockErrorMessageDIV();" style="position: absolute; bottom: 0px; left: 0px; right: 0px; display: none; visibility: hidden; z-index: 1">
+	<div id="divErrorMessages_Outer" style="position: absolute; bottom: 0px; left: 0px; right: 0px; display: none; visibility: hidden; z-index: 1">
 		
         <div id="divErrorMessages_Inner" style="background-color: white; text-align: left; position: relative; margin: 0px; padding: 5px; border: 1px solid; font-size: 11px; color: black; font-family: Verdana;">
 		    
@@ -78,13 +78,13 @@
 	<!--
     Submission and Exceptional Errors Popup 
     -->
-	<div id="divSubmissionMessages" style="position: absolute; left: 0px; top: 15%; width: 100%; display: none; z-index: 3; visibility: hidden; text-align: center;" nowrap="nowrap">
+	<div id="divSubmissionMessages" style="position: absolute; left: 0px; top: 15%; width: 100%; display: none; z-index: 102; visibility: hidden; text-align: center;" nowrap="nowrap">
 		<iframe id="ifrmMessages" src="" frameborder="0" scrolling="no"></iframe>
 	</div>
 	<!--
     File Upload Popup
     -->
-	<div id="divFileUpload" style="position: absolute; left: 0px; top: 15%; width: 100%; display: none; z-index: 3; visibility: hidden; text-align: center;" nowrap="nowrap" onfilterchange="return unblockFileUploadDIV();">
+	<div id="divFileUpload" style="position: absolute; left: 0px; top: 15%; width: 100%; display: none; z-index: 101; visibility: hidden; text-align: center;" nowrap="nowrap">
 		<iframe id="ifrmFileUpload" src="" style="width:550px"  frameborder="0" scrolling="no"></iframe>
 	</div>
     
@@ -104,7 +104,7 @@
                     </div>
                 </div>    
                 <asp:Button id="btnSubmit" runat="server" style="visibility: hidden; top: 0px; position: absolute; left: 0px; width: 0px; height: 0px;" text=""/>
-                <asp:Button id="btnReEnableControls" runat="server" style="visibility: hidden; top: 0px; position: absolute; left: 0px; width: 0px; height: 0px;" text=""/>
+                <%-- TODO PG remove <asp:Button id="btnReEnableControls" runat="server" style="visibility: hidden; top: 0px; position: absolute; left: 0px; width: 0px; height: 0px;" text=""/>--%>
                 <asp:Button id="btnDoFilter" runat="server" style="visibility: hidden; top: 0px; position: absolute; left: 0px; width: 0px; height: 0px;" text=""/>
                 <asp:HiddenField ID="hdnMobileLookupFilter" runat="server" Value="" />
 			    <asp:HiddenField ID="hdnCount_Errors" runat="server" Value="" />

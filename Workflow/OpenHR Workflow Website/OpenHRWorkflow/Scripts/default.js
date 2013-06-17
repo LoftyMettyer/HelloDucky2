@@ -29,7 +29,7 @@
 	      document.getElementById(id).height = (iNewHeight) + "px";
 	    }
 
-
+        //TODO PG remove
 //	    function getWindowWidth() {
 //	        var myWidth = 0;
 //	        if( typeof( window.innerWidth ) == 'number' ) {
@@ -45,6 +45,7 @@
 //	        return myWidth;
 //	    }
 
+	    //TODO PG remove
 //	    function getWindowHeight() {
 //	        var myHeight = 0;
 //	        if( typeof( window.innerHeight) == 'number' ) {
@@ -424,7 +425,8 @@
 	        try {
 	            if (pfDisplay == true) {
 
-	                setPostbackMode(3);
+                    //TODO PG remove
+	                //setPostbackMode(3);
 
 	                var sAlreadyUploaded = new String(psAlreadyUploaded);
 	                sAlreadyUploaded = sAlreadyUploaded.substr(0, 1);
@@ -441,9 +443,11 @@
           
 	                showErrorMessages(false);
 	                showOverlay(true);
-	                document.getElementById("divErrorMessages_Outer").disabled = true;
+	                
+                    document.getElementById("divErrorMessages_Outer").disabled = true;
 	                document.getElementById("imgErrorMessages_Max").disabled = true;
 	                document.getElementById("divErrorMessages_Outer").style.display = "none";
+	                
 	                document.getElementById("divFileUpload").style.visibility = "visible";
 	                document.getElementById("divFileUpload").style.display = "block";
 	            }
@@ -451,9 +455,9 @@
 	                document.getElementById("divFileUpload").style.visibility = "hidden";
 	                document.getElementById("divFileUpload").style.display = "none";
 
-	                setPostbackMode(3);
-					
-	                $get("frmMain").btnReEnableControls.click();
+	                //TODO PG remove
+	                //setPostbackMode(3);
+	                //$get("frmMain").btnReEnableControls.click();
 
 	                showOverlay(false);
 	                document.getElementById("divErrorMessages_Outer").disabled = false;
@@ -485,15 +489,16 @@
 	        catch (e) { }
 	    }
 
-	    function unblockErrorMessageDIV() {
-	        try {
-	            if ((divErrorMessages_Outer.style.visibility == "hidden") &&
-    	            (divErrorMessages_Outer.style.display != "none")) {
-	                divErrorMessages_Outer.style.display = "none";
-	            }
-	        }
-	        catch (e) { }
-	    }
+        //TODO PG remove
+//	    function unblockErrorMessageDIV() {
+//	        try {
+//	            if ((divErrorMessages_Outer.style.visibility == "hidden") &&
+//    	            (divErrorMessages_Outer.style.display != "none")) {
+//	                divErrorMessages_Outer.style.display = "none";
+//	            }
+//	        }
+//	        catch (e) { }
+//	    }
 
 	    function showMessage() {			 
     
@@ -507,7 +512,7 @@
 	        //This is put here to ensure functionality is reapplied after partial/full postback.
 	        ResizableColumns();		
 
-	        if($get("txtActiveDDE").value.indexOf("dde")>0) {
+	        if($get("txtActiveDDE").value.indexOf("dde") > 0) {
 	            try {  
 	                $find($get("txtActiveDDE").value).show();        
 	                $get("txtActiveDDE").value="";        
@@ -535,9 +540,11 @@
 	                // 2 = Grid header postback
 	                // 3 = FileUpload button postback
 					
-	                if ($get("txtPostbackMode").value == 3) {
-	                    $get("ifrmFileUpload").contentWindow.enableControls();
-	                }
+                    //TODO PG remove
+//	                if ($get("txtPostbackMode").value == 3) {
+//	                    $get("ifrmFileUpload").contentWindow.enableControls();
+	                //	                }
+	                
 	                // not doing this causes the object referenced is null error:
 	                setPostbackMode(0);
 	                return;
@@ -553,16 +560,14 @@
 	                        if ($get("frmMain").hdnFollowOnForms.value.length > 0) {
 	                            launchFollowOnForms($get("frmMain").hdnFollowOnForms.value);
 	                        }
-	                        else {							
-	                            if(navigator.userAgent.indexOf("MSIE")>0) {
+	                        else {
+	                            showOverlay(true);
+	                            
+	                            if(navigator.userAgent.indexOf("MSIE") > 0) {
 	                                //Only IE can self-close windows that it didn't open
 	                                window.close();
-	                            }
-	                            else
-	                            {
+	                            } else {
 	                                // Non-IE browsers can't self-close windows, show close message instead
-	                                showOverlay(true);
-
 	                                $get("pleasewaitScreen").style.display = "block";
 	                                $get("pleasewaitText").innerHTML = "Please close your browser.";						  
 	                            }
@@ -597,20 +602,21 @@
 	        catch (e) { }
 	    }
 
-	    function unblockFileUploadDIV() {
-	        try {
-	            if (($get("divFileUpload").style.visibility == "hidden") &&
-    	            ($get("divFileUpload").style.display != "none")) {
-	                $get("divFileUpload").style.display = "none";
-	            }
-	        }
-	        catch (e) { }
+        //TODO PG remove
+//	    function unblockFileUploadDIV() {
+//	        try {
+//	            if (($get("divFileUpload").style.visibility == "hidden") &&
+//    	            ($get("divFileUpload").style.display != "none")) {
+//	                $get("divFileUpload").style.display = "none";
+//	            }
+//	        }
+//	        catch (e) { }
 
-	        try {
-	            document.getElementById($get("txtActiveElement").value).setActive();
-	        }
-	        catch (e) { }
-	    }
+//	        try {
+//	            document.getElementById($get("txtActiveElement").value).setActive();
+//	        }
+//	        catch (e) { }
+//	    }
 
 	    function FileDownload_Click(psID) {
 	        spawnWindow("FileDownload.aspx?" + psID);
