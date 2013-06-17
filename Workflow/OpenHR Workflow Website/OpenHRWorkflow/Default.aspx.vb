@@ -83,7 +83,7 @@ Public Class _Default
     'Do not modify it using the code editor.
     InitializeComponent()
 
-    ScriptManager.GetCurrent(Page).AsyncPostBackTimeout = SubmissionTimeout()
+    ScriptManager.GetCurrent(Page).AsyncPostBackTimeout = mobjConfig.SubmissionTimeout
 
   End Sub
 
@@ -3597,19 +3597,15 @@ Public Class _Default
   End Sub
 
   Public Function LocaleDateFormat() As String
-    LocaleDateFormat = Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern.ToUpper
+    Return Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern.ToUpper
   End Function
 
   Public Function LocaleDecimal() As String
-    LocaleDecimal = Thread.CurrentThread.CurrentUICulture.NumberFormat.NumberDecimalSeparator
+    Return Thread.CurrentThread.CurrentUICulture.NumberFormat.NumberDecimalSeparator
   End Function
 
   Public Function ColourThemeHex() As String
-    ColourThemeHex = mobjConfig.ColourThemeHex
-  End Function
-
-  Public Function SubmissionTimeout() As Int32
-    SubmissionTimeout = mobjConfig.SubmissionTimeout
+    Return mobjConfig.ColourThemeHex
   End Function
 
   Protected Sub btnSubmit_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnSubmit.Click

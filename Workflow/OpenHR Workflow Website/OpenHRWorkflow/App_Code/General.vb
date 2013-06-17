@@ -12,120 +12,11 @@ Public Class General
   Private Sub New()
   End Sub
 
-  Public Shared Function ColourPart(ByVal piColourCode As Int32, ByVal pcharColourPart As Char) As Integer
-    Dim iResult As Integer
-
-    iResult = 0
-
+  Public Shared Function GetColour(ByVal piColour As Int32) As Color
     Try
-      Select Case pcharColourPart
-        Case CChar("R")
-          iResult = piColourCode And 255
-        Case CChar("G")
-          iResult = CInt((piColourCode And 65280) / (2 ^ 8))
-        Case CChar("B")
-          iResult = CInt((piColourCode And 16711680) / (2 ^ 16))
-      End Select
-
-      ColourPart = iResult
-
-    Catch ex As Exception
-      ColourPart = 0
-    End Try
-  End Function
-
-  Public Shared Function GetColour(ByVal piColour As Int32) As System.Drawing.Color
-    Try
-      ' AE20080520 Fault #13173 - There isnt always a direct relation from VB6
-      '   system colours to VB.NET as M$ decided to change them, however, we
-      '   can use the System.Drawing.ColorTranslator to get what we want :o)
-
-      '  Select Case piColour
-      '    Case -2147483648
-      '      GetColour = System.Drawing.Color.FromName("scrollbar")
-
-      '    Case -2147483647
-      '      GetColour = System.Drawing.Color.FromName("background")
-
-      '    Case -2147483646
-      '      GetColour = System.Drawing.Color.FromName("activecaption")
-
-      '    Case -2147483645
-      '      GetColour = System.Drawing.Color.FromName("inactivecaption")
-
-      '    Case -2147483644
-      '      GetColour = System.Drawing.Color.FromName("menu")
-
-      '    Case -2147483643
-      '      GetColour = System.Drawing.Color.FromName("window")
-
-      '    Case -2147483642
-      '      GetColour = System.Drawing.Color.FromName("windowframe")
-
-      '    Case -2147483641
-      '      GetColour = System.Drawing.Color.FromName("menutext")
-
-      '    Case -2147483640
-      '      GetColour = System.Drawing.Color.FromName("windowtext")
-
-      '    Case -2147483639
-      '      GetColour = System.Drawing.Color.FromName("captiontext")
-
-      '    Case -2147483638
-      '      GetColour = System.Drawing.Color.FromName("activeborder")
-
-      '    Case -2147483637
-      '      GetColour = System.Drawing.Color.FromName("inactiveborder")
-
-      '    Case -2147483636
-      '      GetColour = System.Drawing.Color.FromName("appworkspace")
-
-      '    Case -2147483635
-      '      GetColour = System.Drawing.Color.FromName("highlight")
-
-      '    Case -2147483634
-      '      GetColour = System.Drawing.Color.FromName("highlighttext")
-
-      '    Case -2147483633
-      '      GetColour = System.Drawing.Color.FromName("threedface")
-
-      '    Case -2147483632
-      '      GetColour = System.Drawing.Color.FromName("threedshadow")
-
-      '    Case -2147483631
-      '      GetColour = System.Drawing.Color.FromName("graytext")
-
-      '    Case -2147483630
-      '      GetColour = System.Drawing.Color.FromName("buttontext")
-
-      '    Case -2147483629
-      '      GetColour = System.Drawing.Color.FromName("inactivecaptiontext")
-
-      '    Case -2147483628
-      '      GetColour = System.Drawing.Color.FromName("threedhighlight")
-
-      '    Case -2147483627
-      '      GetColour = System.Drawing.Color.FromName("threeddarkshadow")
-
-      '    Case -2147483626
-      '      GetColour = System.Drawing.Color.FromName("threedlightshadow")
-
-      '    Case -2147483625
-      '      GetColour = System.Drawing.Color.FromName("infotext")
-
-      '    Case -2147483624
-      '      GetColour = System.Drawing.Color.FromName("infobackground")
-
-      '    Case Else
-      '      GetColour = System.Drawing.Color.FromArgb(ColourPart(piColour, CChar("R")), _
-      '       ColourPart(piColour, CChar("G")), _
-      '       ColourPart(piColour, CChar("B")))
-      '  End Select
-
       Return ColorTranslator.FromOle(piColour)
-
     Catch ex As Exception
-      GetColour = System.Drawing.Color.White
+      Return Color.White
     End Try
 
   End Function
@@ -146,7 +37,7 @@ Public Class General
 
   End Function
 
-  Public Shared Function ConvertLocaleDateToSQL(ByVal psLocaleDateString As String) As String
+  Public Shared Function ConvertLocaleDateToSql(ByVal psLocaleDateString As String) As String
     Dim dtDate As Date
     Dim iYear As Int16
     Dim iMonth As Int16
@@ -159,14 +50,14 @@ Public Class General
 
       dtDate = DateSerial(iYear, iMonth, iDay)
 
-      ConvertLocaleDateToSQL = Format(dtDate, "MM/dd/yyyy")
+      Return Format(dtDate, "MM/dd/yyyy")
     Catch ex As Exception
-      ConvertLocaleDateToSQL = ""
+      Return ""
     End Try
 
   End Function
 
-  Public Shared Function ConvertSQLDateToLocale(ByVal psSQLDateString As String) As String
+  Public Shared Function ConvertSqlDateToLocale(ByVal psSQLDateString As String) As String
     ' Convert SQL Date string (mm/dd/yyyy) into locale short format.
     Dim dtDate As Date
     Dim iYear As Int16
@@ -179,9 +70,9 @@ Public Class General
       iDay = CShort(psSQLDateString.Substring(3, 2))
 
       dtDate = DateSerial(iYear, iMonth, iDay)
-      ConvertSQLDateToLocale = dtDate.ToString(Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern)
+      Return dtDate.ToString(Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern)
     Catch ex As Exception
-      ConvertSQLDateToLocale = ""
+      Return ""
     End Try
 
   End Function
@@ -263,8 +154,6 @@ Public Class General
     Dim sBackgroundRepeat As String
 
     Try
-      sBackgroundRepeat = "no-repeat"
-
       Select Case piBackgroundImagePosition
         Case 0
           'Top Left
@@ -303,10 +192,10 @@ Public Class General
           sBackgroundRepeat = "no-repeat"
       End Select
 
-      BackgroundRepeat = sBackgroundRepeat
+      Return sBackgroundRepeat
 
     Catch ex As Exception
-      BackgroundRepeat = "no-repeat"
+      Return "no-repeat"
     End Try
 
   End Function
@@ -315,8 +204,6 @@ Public Class General
     Dim sBackgroundPosition As String
 
     Try
-      sBackgroundPosition = "center"
-
       Select Case piBackgroundImagePosition
         Case 0
           'Top Left
@@ -355,10 +242,10 @@ Public Class General
           sBackgroundPosition = "center"
       End Select
 
-      BackgroundPosition = sBackgroundPosition
+      Return sBackgroundPosition
 
     Catch ex As Exception
-      BackgroundPosition = "center"
+      Return "center"
     End Try
 
   End Function

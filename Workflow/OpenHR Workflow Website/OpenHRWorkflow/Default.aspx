@@ -14,7 +14,8 @@
 
 <body id="bdyMain" style="overflow: auto; text-align: center; margin: 0px; padding: 0px; background-color: <%= ColourThemeHex()%>;">
 	
-	<form runat="server" hidefocus="true" id="frmMain" onsubmit="return submitForm();">
+  <form runat="server" hidefocus="true" id="frmMain" onsubmit="return submitForm();">
+	    
   <div id="innerMeasurements" style="visibility:hidden;background-color:red;position:fixed;top:0px;left:0px;right:0px;bottom:0px;">
   </div>    
 
@@ -22,6 +23,9 @@
     //Fault HRPRO-2269 - includes the 'innerMeasurements' div shown above.
     window.currentHeight = document.getElementById("innerMeasurements").offsetHeight;
     window.currentWidth = document.getElementById("innerMeasurements").offsetWidth;
+
+    window.localeDateFormat = "<%= LocaleDateFormat() %>";
+    window.localeDecimal = "<%= LocaleDecimal() %>";
   </script>
 
     <%--    <script src="Scripts/default.js" type="text/javascript"></script>
@@ -42,14 +46,8 @@
         </CompositeScript>
     </ajx:ToolkitScriptManager>   
 
-    <div id="pleasewaitScreen" style="position:absolute;z-index:5;top:30%;width:150px;height:60px;left:50%;margin-left:-75px;visibility:hidden">
-		<table border="0" cellspacing="0" cellpadding="10" style="top: 0px; left: 0px; width: 100%; height: 100%; position: relative; text-align: center; font-size: 10pt; color: black; font-family: Verdana; border: black 1px solid;" bgcolor="White">
-				<tr>
-					<td style="width:100%;height:100%;background-color:White;text-align:center;vertical-align:middle">
-								<label id="pleasewaitText">Processing...<br/><br/>Please wait.<br/></label>
-					</td>
-				</tr>
-		</table>
+    <div id="pleasewaitScreen" style="visibility:hidden;">
+        <label id="pleasewaitText">Processing...<br/><br/>Please wait.</label>  
 	</div>
 		
     <img id="imgErrorMessages_Max" src="Images/uparrows_white.gif" alt="Show messages" style="position: absolute; right: 1px; bottom: 1px; display: none; visibility: hidden; z-index: 1; width:20px; height:20px;" onclick="showErrorMessages(true);" />
