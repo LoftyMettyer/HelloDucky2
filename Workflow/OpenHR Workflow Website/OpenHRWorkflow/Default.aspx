@@ -638,11 +638,11 @@
 
 			try {
 				if (pNewText.length > 0) {
-					dtCurrentDate = pobjControl.getValue();					
-					txtLastDate_Month.value = dtCurrentDate.getMonth();
-					txtLastDate_Day.value = dtCurrentDate.getDate();
+					dtCurrentDate = pobjControl.getValue();				
+					$get("txtLastDate_Month").value = dtCurrentDate.getMonth();
+					$get("txtLastDate_Day").value = dtCurrentDate.getDate();
 					//txtLastDate_Year.value = dtCurrentDate.getYear();					
-					txtLastDate_Year.value = dtCurrentDate.getFullYear();					
+					$get("txtLastDate_Year").value = dtCurrentDate.getFullYear();					
 				}
 			}
 			catch (e) { }
@@ -651,9 +651,9 @@
 		function dateControlBeforeDropDown(pobjControl, pPanel, pobjEvent) {
 			try {
 				var sCurrentText = pobjControl.getText();
-				var sLastDate_Month = txtLastDate_Month.value;
-				var sLastDate_Day = txtLastDate_Day.value;
-				var sLastDate_Year = txtLastDate_Year.value;
+				var sLastDate_Month = $get("txtLastDate_Month").value;
+				var sLastDate_Day = $get("txtLastDate_Day").value;
+				var sLastDate_Year = $get("txtLastDate_Year").value;
 				var dtLastDate;
 
 				if ((sCurrentText.length == 0)
