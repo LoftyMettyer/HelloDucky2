@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<preserve resultType="8" virtualPath="/HRProWorkflow/global.asax" hash="fffffffffa083f4e" filehash="200b2762984e" flags="150000" assembly="OpenHRWorkflow" type="ASP.global_asax">
+<preserve resultType="8" virtualPath="/HRProWorkflow/global.asax" hash="fffffffffa083f4e" filehash="21c7df2a35a0" flags="150000" assembly="OpenHRWorkflow" type="ASP.global_asax">
   <filedeps>
     <filedep name="/HRProWorkflow/global.asax" />
   </filedeps>

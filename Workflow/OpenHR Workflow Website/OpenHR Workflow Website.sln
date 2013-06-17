@@ -53,16 +53,16 @@ Global
 		SccLocalPath2 = .
 		CanCheckoutShared = false
 		SccProjectFilePathRelativizedFromConnection2 = WebSetup\\
-		SccWebProject3 = true
-		SccProjectUniqueName3 = http://localhost/OpenHRWorkflow
-		SccProjectName3 = \u0022$/Workflow/OpenHR\u0020Workflow\u0020Website/OpenHRWorkflow\u0022,\u0020LXXCAAAA
-		SccLocalPath3 = C:\\Dev\\WORKFLOW\\OpenHR\u0020Workflow\u0020Website\\OpenHRWorkflow
+		SccProjectUniqueName3 = OpenHRWorkflow_deploy\\OpenHRWorkflow_deploy.wdproj
+		SccLocalPath3 = .
 		CanCheckoutShared = false
-		SccProjectEnlistmentChoice3 = 2
-		SccProjectUniqueName4 = OpenHRWorkflow_deploy\\OpenHRWorkflow_deploy.wdproj
-		SccLocalPath4 = .
+		SccProjectFilePathRelativizedFromConnection3 = OpenHRWorkflow_deploy\\
+		SccWebProject4 = true
+		SccProjectUniqueName4 = http://localhost/OpenHRWorkflow
+		SccProjectName4 = \u0022$/Workflow/OpenHR\u0020Workflow\u0020Website/OpenHRWorkflow\u0022,\u0020LXXCAAAA
+		SccLocalPath4 = C:\\Dev\\WORKFLOW\\OpenHR\u0020Workflow\u0020Website\\OpenHRWorkflow
 		CanCheckoutShared = false
-		SccProjectFilePathRelativizedFromConnection4 = OpenHRWorkflow_deploy\\
+		SccProjectEnlistmentChoice4 = 2
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|.NET = Debug|.NET
