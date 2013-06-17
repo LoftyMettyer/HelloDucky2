@@ -7,24 +7,12 @@
 "LanguageId" = "3:1033"
 "CodePage" = "3:1252"
 "UILanguageId" = "3:1033"
-"SccProjectName" = "8:\"$/HR Pro Workflow Website\", HXABAAAA"
+"SccProjectName" = "8:\"$/Workflow/HR Pro Workflow Website\", KUXCAAAA"
 "SccLocalPath" = "8:.."
 "SccAuxPath" = "8:"
 "SccProvider" = "8:MSSCCI:Microsoft Visual SourceSafe"
     "Hierarchy"
     {
-        "Entry"
-        {
-        "MsmKey" = "8:_03C31600886C61A6636F011B2B59AF50"
-        "OwnerKey" = "8:_9636CC3F6B56446696C137D846D4AA2E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_0F2862F8EC1BB67EAD99752131469E45"
-        "OwnerKey" = "8:_7D5126426707D3FCF0F4A8996E13F6EF"
-        "MsmSig" = "8:_UNDEFINED"
-        }
         "Entry"
         {
         "MsmKey" = "8:_42145331C5C64A948B725177D6C49EF2"
@@ -41,12 +29,6 @@
         {
         "MsmKey" = "8:_5FE6C0D20D074CA0BD05693FC6152E76"
         "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_7D5126426707D3FCF0F4A8996E13F6EF"
-        "OwnerKey" = "8:_9BFDBD7E93CF4A289AC3424D1E2149CA"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -75,36 +57,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_DFB39D06B7A3AA18358979D98CF44FD5"
-        "OwnerKey" = "8:_5272158086F1410A98D671C98CD384D2"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_DFB39D06B7A3AA18358979D98CF44FD5"
-        "OwnerKey" = "8:_C4B9B7499FAC4AF2AD4F00E54AD0FEF4"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_DFB39D06B7A3AA18358979D98CF44FD5"
-        "OwnerKey" = "8:_BB46B0D9106E46D2B2E498CEA684ED2E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_DFB39D06B7A3AA18358979D98CF44FD5"
-        "OwnerKey" = "8:_03C31600886C61A6636F011B2B59AF50"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_DFB39D06B7A3AA18358979D98CF44FD5"
-        "OwnerKey" = "8:_9636CC3F6B56446696C137D846D4AA2E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_F095207D25C9491B948AC4FF9CC578AA"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -119,54 +71,6 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_F095207D25C9491B948AC4FF9CC578AA"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_DFB39D06B7A3AA18358979D98CF44FD5"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_C4B9B7499FAC4AF2AD4F00E54AD0FEF4"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_BB46B0D9106E46D2B2E498CEA684ED2E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_9BFDBD7E93CF4A289AC3424D1E2149CA"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_9636CC3F6B56446696C137D846D4AA2E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_7D5126426707D3FCF0F4A8996E13F6EF"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_5272158086F1410A98D671C98CD384D2"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_03C31600886C61A6636F011B2B59AF50"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -283,57 +187,6 @@
         }
         "File"
         {
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_03C31600886C61A6636F011B2B59AF50"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:TRUE"
-            "AssemblyAsmDisplayName" = "8:Infragistics35.WebUI.UltraWebGrid.v9.1, Version=9.1.20091.2040, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_03C31600886C61A6636F011B2B59AF50"
-                    {
-                    "Name" = "8:Infragistics35.WebUI.UltraWebGrid.v9.1.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:Infragistics35.WebUI.UltraWebGrid.v9.1.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_ACDB8F00505241659EC63AF1774D10C6"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0F2862F8EC1BB67EAD99752131469E45"
-            {
-            "SourcePath" = "8:dte80a.olb"
-            "TargetName" = "8:dte80a.olb"
-            "Tag" = "8:"
-            "Folder" = "8:_060C4D78AD8C49EC852195BEC9F88F20"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_42145331C5C64A948B725177D6C49EF2"
             {
             "SourcePath" = "8:..\\..\\..\\Installers\\Graphics\\COA.ico"
@@ -361,11 +214,6 @@
             "AssemblyAsmDisplayName" = "8:Infragistics35.WebUI.WebDataInput.v9.1, Version=9.1.20091.2040, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_5272158086F1410A98D671C98CD384D2"
-                    {
-                    "Name" = "8:Infragistics35.WebUI.WebDataInput.v9.1.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:C:\\Program Files\\Infragistics\\NetAdvantage for .NET 2009.1\\ASP.NET\\CLR3.5\\Bin\\Infragistics35.WebUI.WebDataInput.v9.1.dll"
             "TargetName" = "8:"
@@ -405,37 +253,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_7D5126426707D3FCF0F4A8996E13F6EF"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:TRUE"
-            "AssemblyAsmDisplayName" = "8:EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
-                "ScatterAssemblies"
-                {
-                    "_7D5126426707D3FCF0F4A8996E13F6EF"
-                    {
-                    "Name" = "8:EnvDTE.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:EnvDTE.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_060C4D78AD8C49EC852195BEC9F88F20"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_9636CC3F6B56446696C137D846D4AA2E"
             {
             "AssemblyRegister" = "3:1"
@@ -443,11 +260,6 @@
             "AssemblyAsmDisplayName" = "8:Infragistics35.WebUI.WebCombo.v9.1, Version=9.1.20091.2040, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_9636CC3F6B56446696C137D846D4AA2E"
-                    {
-                    "Name" = "8:Infragistics35.WebUI.WebCombo.v9.1.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:C:\\Program Files\\Infragistics\\NetAdvantage for .NET 2009.1\\ASP.NET\\CLR3.5\\Bin\\Infragistics35.WebUI.WebCombo.v9.1.dll"
             "TargetName" = "8:"
@@ -474,11 +286,6 @@
             "AssemblyAsmDisplayName" = "8:Infragistics35.Web.v9.1, Version=9.1.20091.2040, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_9BFDBD7E93CF4A289AC3424D1E2149CA"
-                    {
-                    "Name" = "8:Infragistics35.Web.v9.1.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:C:\\Program Files\\Infragistics\\NetAdvantage for .NET 2009.1\\ASP.NET\\CLR3.5\\Bin\\Infragistics35.Web.v9.1.dll"
             "TargetName" = "8:"
@@ -505,11 +312,6 @@
             "AssemblyAsmDisplayName" = "8:Infragistics35.WebUI.WebDateChooser.v9.1, Version=9.1.20091.2040, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_BB46B0D9106E46D2B2E498CEA684ED2E"
-                    {
-                    "Name" = "8:Infragistics35.WebUI.WebDateChooser.v9.1.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:C:\\Program Files\\Infragistics\\NetAdvantage for .NET 2009.1\\ASP.NET\\CLR3.5\\Bin\\Infragistics35.WebUI.WebDateChooser.v9.1.dll"
             "TargetName" = "8:"
@@ -536,11 +338,6 @@
             "AssemblyAsmDisplayName" = "8:Infragistics35.WebUI.Misc.v9.1, Version=9.1.20091.2040, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_C4B9B7499FAC4AF2AD4F00E54AD0FEF4"
-                    {
-                    "Name" = "8:Infragistics35.WebUI.Misc.v9.1.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:C:\\Program Files\\Infragistics\\NetAdvantage for .NET 2009.1\\ASP.NET\\CLR3.5\\Bin\\Infragistics35.WebUI.Misc.v9.1.dll"
             "TargetName" = "8:"
@@ -558,37 +355,6 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_DFB39D06B7A3AA18358979D98CF44FD5"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:TRUE"
-            "AssemblyAsmDisplayName" = "8:Infragistics35.WebUI.Shared.v9.1, Version=9.1.20091.2040, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_DFB39D06B7A3AA18358979D98CF44FD5"
-                    {
-                    "Name" = "8:Infragistics35.WebUI.Shared.v9.1.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:Infragistics35.WebUI.Shared.v9.1.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_ACDB8F00505241659EC63AF1774D10C6"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F70779A9CEF34370A0F7FF96D29A098A"
@@ -1182,7 +948,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_F095207D25C9491B948AC4FF9CC578AA"
             {
-            "SourcePath" = "8:..\\InstallerClassLibrary\\obj\\Release\\InstallerClassLibrary.dll"
+            "SourcePath" = "8:..\\InstallerClassLibrary\\obj\\Debug\\InstallerClassLibrary.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_ACDB8F00505241659EC63AF1774D10C6"

@@ -12,7 +12,7 @@
     <SourceWebPhysicalPath>..\HRProWorkflow</SourceWebPhysicalPath>
     <SourceWebProject>{0B837796-B0AB-4CE9-862A-670B5D756A16}|C:\dev\HR Pro Workflow Website\HRProWorkflow</SourceWebProject>
     <SourceWebVirtualPath>/HRProWorkflow</SourceWebVirtualPath>
-    <SccProjectName>"%24/HR Pro Workflow Website", HXABAAAA</SccProjectName>
+    <SccProjectName>"%24/Workflow/HR Pro Workflow Website", KUXCAAAA</SccProjectName>
     <SccLocalPath>..</SccLocalPath>
     <SccAuxPath>
     </SccAuxPath>
