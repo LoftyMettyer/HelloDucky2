@@ -13,7 +13,8 @@
 			var iDefWidth;
 			var iResizeByHeight;
 			var iResizeByWidth;
-
+            var sControlType;
+            
 			try {
 				iDefHeight = frmMain.hdnFormHeight.value;
 				iDefWidth = frmMain.hdnFormWidth.value;
@@ -31,7 +32,46 @@
 
 				try {
 					if (frmMain.hdnFirstControl.value.length > 0) {
-						document.getElementById(frmMain.hdnFirstControl.value).setActive();
+					    sControlType = frmMain.hdnFirstControl.value.substr(frmMain.hdnFirstControl.value.indexOf("_")+1);
+                        sControlType = sControlType.substr(sControlType.indexOf("_")+1);
+                        sControlType = sControlType.substring(0, sControlType.indexOf("_"));
+
+                        if (sControlType == 7)
+                        {
+                            // Date (7)
+                            igdrp_getComboById(frmMain.hdnFirstControl.value).focus();
+                        }
+                        else
+                        {
+                            if ((sControlType == 13)
+                                || (sControlType == 14))
+                            {
+                                igcmbo_getComboById(frmMain.hdnFirstControl.value).focus();
+                            }
+                            else
+                            {
+                                if (sControlType == 11)
+                                {
+                                    // Record Selector (11)
+                                    var grid = igtbl_getGridById(frmMain.hdnFirstControl.value);
+                                    var oRows = grid.Rows;
+                                    grid.Element.focus(); 
+                                    
+                                    if (oRows.length > 0)
+                                    {
+                                        oRow = grid.getActiveRow();
+	                                    if (oRow != null)
+	                                    {
+                                            oRow.scrollToView();
+                                        }
+                                    }
+                                }
+                                else
+                                {
+						            document.getElementById(frmMain.hdnFirstControl.value).setActive();
+						        }
+						    }
+                        }
 					}
 				}
 				catch (e) { }

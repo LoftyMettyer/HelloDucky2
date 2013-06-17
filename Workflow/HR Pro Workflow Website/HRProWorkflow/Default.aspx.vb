@@ -779,7 +779,7 @@ Public Class _Default
                                         .TabIndex = CShort(NullSafeInteger(dr("tabIndex")) + 1)
 
                                         If (iMinTabIndex < 0) Or (NullSafeInteger(dr("tabIndex")) < iMinTabIndex) Then
-                                            sDefaultFocusControl = ""
+                                            sDefaultFocusControl = sID
                                             iMinTabIndex = NullSafeInteger(dr("tabIndex"))
                                             ctlDefaultFocusControl = ctlForm_TextInput
                                         End If
@@ -1183,7 +1183,7 @@ Public Class _Default
                                         .TabIndex = CShort(NullSafeInteger(dr("tabIndex")) + 1)
 
                                         If (iMinTabIndex < 0) Or (NullSafeInteger(dr("tabIndex")) < iMinTabIndex) Then
-                                            sDefaultFocusControl = ""
+                                            sDefaultFocusControl = sID
                                             iMinTabIndex = NullSafeInteger(dr("tabIndex"))
                                             ctlDefaultFocusControl = ctlForm_Date
                                         End If
@@ -1411,9 +1411,8 @@ Public Class _Default
                                         .TabIndex = CShort(NullSafeInteger(dr("tabIndex")) + 1)
 
                                         If (iMinTabIndex < 0) Or (NullSafeInteger(dr("tabIndex")) < iMinTabIndex) Then
-                                            sDefaultFocusControl = ""
+                                            sDefaultFocusControl = sID
                                             iMinTabIndex = NullSafeInteger(dr("tabIndex"))
-                                            ctlDefaultFocusControl = ctlForm_RecordSelectionGrid
                                         End If
 
                                         .DisplayLayout.ClientSideEvents.ColumnHeaderClickHandler = "activateGridPostback"
@@ -1685,9 +1684,11 @@ Public Class _Default
                                                             .Rows(objGridCell.Row.Index).Activated = True
                                                         Else
                                                             .Rows(0).Selected = True
+                                                            .Rows(0).Activated = True
                                                         End If
                                                     Else
                                                         .Rows(0).Selected = True
+                                                        .Rows(0).Activated = True
                                                     End If
                                                 End If
 
@@ -3310,6 +3311,7 @@ Public Class _Default
 
                     End If
                 End If
+
             Catch ex As Exception
                 ' ???handle exception
                 Stop
