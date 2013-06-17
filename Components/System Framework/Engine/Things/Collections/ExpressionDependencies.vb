@@ -73,10 +73,13 @@ Namespace Collections
       objDepends.Filter = child.Filter
       objDepends.Order = child.Order
       objDepends.RowNumber = child.RowNumber
+      objDepends.RowSelection = child.RowSelection
 
       ' Is this column/filter/order/line no in the dependcy stack
       For Each objThing As Dependency In _colThings
-        If objThing.Thing Is child.Column And objThing.Filter Is child.Filter And objThing.Order Is child.Order And objThing.RowNumber = child.RowNumber Then
+        If objThing.Thing Is child.Column And objThing.Filter Is child.Filter And objThing.Order Is child.Order _
+          And objThing.RowNumber = child.RowNumber And objThing.RowSelection = child.RowSelection Then
+
           iPartNumber = objThing.PartNumber
           bFound = True
           Exit For

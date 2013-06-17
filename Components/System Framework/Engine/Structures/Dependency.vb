@@ -8,6 +8,7 @@
     Property Filter As Expression
     Property Order As TableOrder
     Property RowNumber As Integer
+    Property RowSelection As Enums.ColumnRowSelection
   End Structure
 
 End Namespace
