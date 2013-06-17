@@ -146,7 +146,7 @@ Partial Class MobileLogin
 
       'Iterate through the results
       While drElements.Read()
-        Select Case CInt(drElements("ElementType"))
+        Select Case CInt(drElements("Type"))
 
           Case 0 ' Button
 
