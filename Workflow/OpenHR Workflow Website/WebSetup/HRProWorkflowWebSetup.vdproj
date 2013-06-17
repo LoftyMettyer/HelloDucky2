@@ -15,31 +15,37 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_086568499B2310048FEE3DE8964DDA0D"
+        "MsmKey" = "8:_297C5491D46765973D54EC1F53B8659D"
+        "OwnerKey" = "8:_9636CC3F6B56446696C137D846D4AA2E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_3CB369EE115A1710D3124F82DA1C66CD"
         "OwnerKey" = "8:_5272158086F1410A98D671C98CD384D2"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_086568499B2310048FEE3DE8964DDA0D"
+        "MsmKey" = "8:_3CB369EE115A1710D3124F82DA1C66CD"
         "OwnerKey" = "8:_C4B9B7499FAC4AF2AD4F00E54AD0FEF4"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_086568499B2310048FEE3DE8964DDA0D"
+        "MsmKey" = "8:_3CB369EE115A1710D3124F82DA1C66CD"
         "OwnerKey" = "8:_BB46B0D9106E46D2B2E498CEA684ED2E"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_086568499B2310048FEE3DE8964DDA0D"
-        "OwnerKey" = "8:_C175848A96A3BB0E9D4086960FE78BB1"
+        "MsmKey" = "8:_3CB369EE115A1710D3124F82DA1C66CD"
+        "OwnerKey" = "8:_297C5491D46765973D54EC1F53B8659D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_086568499B2310048FEE3DE8964DDA0D"
+        "MsmKey" = "8:_3CB369EE115A1710D3124F82DA1C66CD"
         "OwnerKey" = "8:_9636CC3F6B56446696C137D846D4AA2E"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -75,20 +81,8 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_B957D7441B3C877AA6B8275151D0C1DF"
-        "OwnerKey" = "8:_7D5126426707D3FCF0F4A8996E13F6EF"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_BB46B0D9106E46D2B2E498CEA684ED2E"
         "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_C175848A96A3BB0E9D4086960FE78BB1"
-        "OwnerKey" = "8:_9636CC3F6B56446696C137D846D4AA2E"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -107,6 +101,12 @@
         {
         "MsmKey" = "8:_F70779A9CEF34370A0F7FF96D29A098A"
         "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_FA522F3E4E107DDEDE435A503B4F16F4"
+        "OwnerKey" = "8:_7D5126426707D3FCF0F4A8996E13F6EF"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -142,7 +142,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_C175848A96A3BB0E9D4086960FE78BB1"
+        "OwnerKey" = "8:_297C5491D46765973D54EC1F53B8659D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -160,7 +160,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_086568499B2310048FEE3DE8964DDA0D"
+        "OwnerKey" = "8:_3CB369EE115A1710D3124F82DA1C66CD"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -269,7 +269,7 @@
                 {
                 "Name" = "8:.NET Framework"
                 "Message" = "8:[VSDNETMSG]"
-                "FrameworkVersion" = "8:.NETFramework,Version=v2.0"
+                "FrameworkVersion" = "8:.NETFramework,Version=v3.5"
                 "AllowLaterVersions" = "11:FALSE"
                 "InstallUrl" = "8:http://go.microsoft.com/fwlink/?LinkId=9832"
                 }
@@ -277,20 +277,51 @@
         }
         "File"
         {
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_086568499B2310048FEE3DE8964DDA0D"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_297C5491D46765973D54EC1F53B8659D"
             {
             "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:TRUE"
-            "AssemblyAsmDisplayName" = "8:Infragistics35.WebUI.Shared.v9.1, Version=9.1.20091.2040, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:Infragistics35.WebUI.UltraWebGrid.v9.1, Version=9.1.20091.2040, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_086568499B2310048FEE3DE8964DDA0D"
+                    "_297C5491D46765973D54EC1F53B8659D"
                     {
-                    "Name" = "8:Infragistics35.WebUI.Shared.v9.1.dll"
+                    "Name" = "8:Infragistics35.WebUI.UltraWebGrid.v9.1.DLL"
                     "Attributes" = "3:512"
                     }
                 }
-            "SourcePath" = "8:Infragistics35.WebUI.Shared.v9.1.dll"
+            "SourcePath" = "8:Infragistics35.WebUI.UltraWebGrid.v9.1.DLL"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_ACDB8F00505241659EC63AF1774D10C6"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_3CB369EE115A1710D3124F82DA1C66CD"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:Infragistics35.WebUI.Shared.v9.1, Version=9.1.20091.2040, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_3CB369EE115A1710D3124F82DA1C66CD"
+                    {
+                    "Name" = "8:Infragistics35.WebUI.Shared.v9.1.DLL"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:Infragistics35.WebUI.Shared.v9.1.DLL"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_ACDB8F00505241659EC63AF1774D10C6"
@@ -452,26 +483,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B957D7441B3C877AA6B8275151D0C1DF"
-            {
-            "SourcePath" = "8:dte80a.olb"
-            "TargetName" = "8:dte80a.olb"
-            "Tag" = "8:"
-            "Folder" = "8:_ACDB8F00505241659EC63AF1774D10C6"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_BB46B0D9106E46D2B2E498CEA684ED2E"
             {
             "AssemblyRegister" = "3:1"
@@ -501,37 +512,6 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_C175848A96A3BB0E9D4086960FE78BB1"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:TRUE"
-            "AssemblyAsmDisplayName" = "8:Infragistics35.WebUI.UltraWebGrid.v9.1, Version=9.1.20091.2040, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_C175848A96A3BB0E9D4086960FE78BB1"
-                    {
-                    "Name" = "8:Infragistics35.WebUI.UltraWebGrid.v9.1.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:Infragistics35.WebUI.UltraWebGrid.v9.1.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_ACDB8F00505241659EC63AF1774D10C6"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_C4B9B7499FAC4AF2AD4F00E54AD0FEF4"
@@ -583,6 +563,26 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FA522F3E4E107DDEDE435A503B4F16F4"
+            {
+            "SourcePath" = "8:dte80a.olb"
+            "TargetName" = "8:dte80a.olb"
+            "Tag" = "8:"
+            "Folder" = "8:_ACDB8F00505241659EC63AF1774D10C6"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
         }
@@ -667,9 +667,9 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:OpenHR Workflow Web Site v5.0"
         "ProductCode" = "8:{9C0AE9EE-C2A5-4432-AEBC-08ADC693460D}"
-        "PackageCode" = "8:{EA79524A-5995-401E-9565-EE60E57E8F22}"
+        "PackageCode" = "8:{1193DB1D-5952-4F06-86E7-5A72012A6EDF}"
         "UpgradeCode" = "8:{8D103CEA-CA57-49D4-A6E6-80D5076BB642}"
-        "AspNetVersion" = "8:0"
+        "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:TRUE"

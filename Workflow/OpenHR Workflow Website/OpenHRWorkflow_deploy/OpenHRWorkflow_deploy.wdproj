@@ -11,7 +11,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{CA3E1976-4014-4344-AB34-4D9EBCCAEDD0}</ProjectGuid>
     <SourceWebPhysicalPath>..\OpenHRWorkflow</SourceWebPhysicalPath>
-    <SourceWebProject>{0B837796-B0AB-4CE9-862A-670B5D756A16}|C:\dev\HR Pro Workflow Website\HRProWorkflow</SourceWebProject>
+    <SourceWebProject>{0B837796-B0AB-4CE9-862A-670B5D756A16}|C:\dev\OpenHR Workflow Website\HRProWorkflow</SourceWebProject>
     <SourceWebVirtualPath>/HRProWorkflow</SourceWebVirtualPath>
     <SccProjectName>"%24/Workflow/OpenHR Workflow Website", HXXCAAAA</SccProjectName>
     <SccLocalPath>..</SccLocalPath>
