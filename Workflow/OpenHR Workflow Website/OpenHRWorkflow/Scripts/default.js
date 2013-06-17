@@ -569,8 +569,7 @@
 	                               
 	                                $get("pleasewaitScreen").style.width="200px";
 	                                $get("pleasewaitScreen").style.display = "block";
-	                                $get("pleasewaitText").innerHTML = "Please close your browser.";
-	                                }								  
+	                                $get("pleasewaitText").innerHTML = "Please close your browser.";						  
 	                            }
 	                        }
 	                    }
