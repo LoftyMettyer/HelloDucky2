@@ -1,35 +1,22 @@
 ﻿Imports System.Data
 Imports Utilities
 Imports System.Web.Security
-Imports System.Globalization
-Imports System.Threading
 
 Partial Class MobileLogin
-  Inherits System.Web.UI.Page
+  Inherits Page
 
-  Private miImageCount As Int16
-  Private mobjConfig As New Config
-  Private miSubmissionTimeoutInSeconds As Int32
+  Private _miImageCount As Int16
+  Private ReadOnly _mobjConfig As New Config
+  Private _miSubmissionTimeoutInSeconds As Int32
 
-  Protected Sub Page_Init(sender As Object, e As System.EventArgs) Handles Me.Init
+  Protected Sub Page_Init(sender As Object, e As EventArgs) Handles Me.Init
 
-    Dim miInstanceID As Integer
-    Dim miElementID As Integer
-    Dim msServer As String
-    Dim msUser As String
-    Dim msPwd As String
-    Dim sRedirectUrl As String
-    Dim sRedirectWebPageName As String
-    Dim objCrypt As New Crypt
-    Dim fAuthenticated As Boolean = False
-
-    ' Forms authentication can be overruled, and we do this for any existing workflow link.
-
+    Dim fAuthenticated As Boolean
     ' is there is a remember me cookie, get the user name out of it and bypass the login screen.
-    Dim CustomerGUID As String = HttpContext.Current.User.Identity.Name
+    Dim cookieUser As String = HttpContext.Current.User.Identity.Name
 
-    If Not (CustomerGUID = "" Or CustomerGUID = "sqluser") Then
-      Session("LoginKey") = CustomerGUID
+    If Not (cookieUser = "" Or cookieUser = "sqluser") Then
+      Session("LoginKey") = cookieUser
       fAuthenticated = True
     Else
       Session("LoginKey") = Nothing
@@ -43,32 +30,28 @@ Partial Class MobileLogin
 
   End Sub
 
-  Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+  Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
 
-    Dim ctlForm_HTMLGenericControl As HtmlGenericControl
-    Dim ctlForm_HtmlInputText As HtmlInputText
-    Dim ctlForm_ImageButton As ImageButton   ' Button
+    Dim ctlFormHtmlGenericControl As HtmlGenericControl
+    Dim ctlFormHtmlInputText As HtmlInputText
+    Dim ctlFormImageButton As ImageButton   ' Button
     Dim strConn As String
     Dim objGeneral As New General
-    Dim lngPanel_1_Height As Long = 57
-    Dim lngPanel_2_Height As Long = 57
     Dim sMessage As String = ""
-    Dim drLayouts As System.Data.SqlClient.SqlDataReader
-    Dim drElements As System.Data.SqlClient.SqlDataReader
-    Dim sImageFileName As String = ""
-    Dim iTempHeight As Integer
-    Dim iTempWidth As Integer
+    Dim drLayouts As SqlClient.SqlDataReader
+    Dim drElements As SqlClient.SqlDataReader
+    Dim sImageFileName As String
 
-    miImageCount = 0
+    _miImageCount = 0
     If Not IsPostBack Then
 
       Try
-        mobjConfig.Mob_Initialise()
-        Session("Server") = mobjConfig.Server
-        Session("Database") = mobjConfig.Database
-        Session("Login") = mobjConfig.Login
-        Session("Password") = mobjConfig.Password
-        Session("WorkflowURL") = mobjConfig.WorkflowURL
+        _mobjConfig.Mob_Initialise()
+        Session("Server") = _mobjConfig.Server
+        Session("Database") = _mobjConfig.Database
+        Session("Login") = _mobjConfig.Login
+        Session("Password") = _mobjConfig.Password
+        Session("WorkflowURL") = _mobjConfig.WorkflowURL
 
       Catch ex As Exception
         sMessage = "Error" & vbCrLf & ex.Message
@@ -77,22 +60,18 @@ Partial Class MobileLogin
         pnlMsgBox.Style.Add("visibility", "visible")
       End Try
 
-
       If User.Identity.IsAuthenticated Then
         ' skip this page!
         submitLoginDetails()
       End If
 
-
       Try
-
         ' Establish Connection
         strConn = CType(("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
                          ";Initial Catalog=" & Session("Database") & _
                          ";Integrated Security=false;User ID=" & Session("Login") & _
                          ";Password=" & Session("Password") & _
                          ";Pooling=false"), String)
-        'strConn = "Application Name=OpenHR Workflow;Data Source=.\sqlexpress;Initial Catalog=hrprostd43;Integrated Security=false;User ID=sa;Password=asr;Pooling=false"
 
         Dim myConnection As New SqlClient.SqlConnection(strConn)
         myConnection.Open()
@@ -104,13 +83,11 @@ Partial Class MobileLogin
         drLayouts = myCommand.ExecuteReader()
 
         If drLayouts.Read() Then
-
-          For i As Integer = 1 To 3
-
+          For iPanelID As Integer = 1 To 3
             Dim prefix As String = String.Empty
             Dim control As HtmlGenericControl = Nothing
 
-            Select Case i
+            Select Case iPanelID
               Case 1
                 prefix = "Header"
                 control = pnlHeader
@@ -133,9 +110,8 @@ Partial Class MobileLogin
             End If
 
             'Header Image
-            If i = 1 AndAlso Not IsDBNull(drLayouts("HeaderLogoID")) Then
-
-              Dim imageControl As New System.Web.UI.WebControls.Image
+            If iPanelID = 1 AndAlso Not IsDBNull(drLayouts("HeaderLogoID")) Then
+              Dim imageControl As New Image
 
               With imageControl
                 .Style("position") = "absolute"
@@ -152,7 +128,7 @@ Partial Class MobileLogin
                   .Style("right") = Unit.Pixel(NullSafeInteger(drLayouts("HeaderLogoHorizontalOffset"))).ToString
                 End If
 
-                .BackColor = System.Drawing.Color.Transparent
+                .BackColor = Drawing.Color.Transparent
                 .ImageUrl = LoadPicture(NullSafeInteger(drLayouts("HeaderLogoID")), sMessage)
                 .Height() = Unit.Pixel(NullSafeInteger(drLayouts("HeaderLogoHeight")))
                 .Width() = Unit.Pixel(NullSafeInteger(drLayouts("HeaderLogoWidth")))
@@ -161,9 +137,7 @@ Partial Class MobileLogin
 
               pnlHeader.Controls.Add(imageControl)
             End If
-
           Next
-
         End If
 
         ' Close the connection (will automatically close the reader)
@@ -173,12 +147,11 @@ Partial Class MobileLogin
         ' ======================== NOW FOR THE INDIVIDUAL ELEMENTS  ====================================
 
         ' Establish Connection
-        strConn = "Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
-          ";Initial Catalog=" & Session("Database") & _
-          ";Integrated Security=false;User ID=" & Session("Login") & _
-          ";Password=" & Session("Password") & _
-          ";Pooling=false"
-        'strConn = "Application Name=OpenHR Workflow;Data Source=.\sqlexpress;Initial Catalog=hrprostd43;Integrated Security=false;User ID=sa;Password=asr;Pooling=false"
+        strConn = CType(("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
+                         ";Initial Catalog=" & Session("Database") & _
+                         ";Integrated Security=false;User ID=" & Session("Login") & _
+                         ";Password=" & Session("Password") & _
+                         ";Pooling=false"), String)
 
         myConnection = New SqlClient.SqlConnection(strConn)
         myConnection.Open()
@@ -194,14 +167,10 @@ Partial Class MobileLogin
           Select Case CInt(drElements("Type"))
 
             Case 0 ' Button
-
               If NullSafeString(drElements("Name")).Length > 0 Then
-                ctlForm_ImageButton = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name"))), ImageButton)
+                ctlFormImageButton = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name"))), ImageButton)
 
-                'ctlForm_ImageButton = New ImageButton
-                With ctlForm_ImageButton
-                  .Width = Unit.Pixel(40)
-                  .Height = Unit.Pixel(40)
+                With ctlFormImageButton
                   sImageFileName = LoadPicture(NullSafeInteger(drElements("PictureID")), sMessage)
                   .ImageUrl = sImageFileName
                   .Font.Name = NullSafeString(drElements("FontName"))
@@ -212,8 +181,8 @@ Partial Class MobileLogin
 
                 ' Footer text
                 If NullSafeString(drElements("Caption")).Length > 0 Then
-                  ctlForm_HTMLGenericControl = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name")) & "_label"), HtmlGenericControl)
-                  With ctlForm_HTMLGenericControl
+                  ctlFormHtmlGenericControl = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name")) & "_label"), HtmlGenericControl)
+                  With ctlFormHtmlGenericControl
                     .Style("word-wrap") = "break-word"
                     .Style("overflow") = "auto"
                     .Style.Add("z-index", "1")
@@ -229,80 +198,35 @@ Partial Class MobileLogin
 
             Case 2 ' Label
               If NullSafeString(drElements("Name")).Length > 0 Then
-                ctlForm_HTMLGenericControl = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name"))), HtmlGenericControl)  'New Label
-                With ctlForm_HTMLGenericControl
-                  '.Style("position") = "absolute"
-
-                  '' Vertical Offset
-                  'If NullSafeInteger(drElements("VerticalOffsetBehaviour")) = 0 Then
-                  '  .Style("top") = Unit.Pixel(NullSafeInteger(drElements("VerticalOffset"))).ToString
-                  'Else
-                  '  .Style("bottom") = Unit.Pixel(NullSafeInteger(drElements("VerticalOffset"))).ToString
-                  'End If
-
-                  ' horizontal position
-                  If NullSafeInteger(drElements("HorizontalOffsetBehaviour")) = 0 Then
-                    .Style("left") = Unit.Pixel(NullSafeInteger(drElements("HorizontalOffset"))).ToString
-                  Else
-                    .Style("right") = Unit.Pixel(NullSafeInteger(drElements("HorizontalOffset"))).ToString
-                  End If
-
+                ctlFormHtmlGenericControl = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name"))), HtmlGenericControl)  'New Label
+                With ctlFormHtmlGenericControl
                   .Style("word-wrap") = "break-word"
                   .Style("overflow") = "auto"
                   .Style("text-align") = "left"
                   .Style.Add("z-index", "1")
                   .InnerText = NullSafeString(drElements("caption"))
-
-                  If NullSafeInteger(drElements("BackStyle")) = 0 Then
-                    .Style.Add("background-color", "Transparent")
-                  Else
-                    .Style.Add("background-color", objGeneral.GetHTMLColour(NullSafeInteger(drElements("BackColor"))))
-                  End If
-
-                  .Style.Add("color", objGeneral.GetHTMLColour(NullSafeInteger(drElements("ForeColor"))))
-
                   .Style.Add("font-family", NullSafeString(drElements("FontName")))
                   .Style.Add("font-size", NullSafeString(drElements("FontSize")) & "pt")
                   .Style.Add("font-weight", If(NullSafeBoolean(NullSafeBoolean(drElements("FontBold"))), "bold", "normal"))
                   .Style.Add("font-style", If(NullSafeBoolean(NullSafeBoolean(drElements("FontItalic"))), "italic", "normal"))
-
-                  iTempHeight = NullSafeInteger(drElements("Height"))
-                  iTempWidth = NullSafeInteger(drElements("Width"))
-
-                  '.Height() = Unit.Pixel(iTempHeight)
-                  .Style.Add("width", CStr(iTempWidth))
                 End With
 
               End If
 
-
             Case 3 ' Input value - character
               If NullSafeString(drElements("Name")).Length > 0 Then
-
-                ctlForm_HtmlInputText = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name"))), HtmlInputText)
-
-                If NullSafeInteger(drElements("HorizontalOffsetBehaviour")) = 0 Then
-                  ctlForm_HtmlInputText.Style("left") = Unit.Pixel(NullSafeInteger(drElements("HorizontalOffset"))).ToString
-                Else
-                  ctlForm_HtmlInputText.Style("right") = Unit.Pixel(NullSafeInteger(drElements("HorizontalOffset"))).ToString
-                End If
-
-                ctlForm_HtmlInputText.Style("resize") = "none"
-                ctlForm_HtmlInputText.Style.Add("border-style", "solid")
-                ctlForm_HtmlInputText.Style.Add("border-width", "1")
-                ctlForm_HtmlInputText.Style.Add("border-color", objGeneral.GetHTMLColour(5730458))
-                ctlForm_HtmlInputText.Style.Add("background-color", objGeneral.GetHTMLColour(NullSafeInteger(drElements("BackColor"))))
-                ctlForm_HtmlInputText.Style.Add("color", objGeneral.GetHTMLColour(NullSafeInteger(drElements("ForeColor"))))
-                ctlForm_HtmlInputText.Style.Add("font-family", NullSafeString(drElements("FontName")))
-                ctlForm_HtmlInputText.Style.Add("font-size", NullSafeString(drElements("FontSize")) & "pt")
-                ctlForm_HtmlInputText.Style.Add("font-weight", If(NullSafeBoolean(NullSafeBoolean(drElements("FontBold"))), "bold", "normal"))
-                ctlForm_HtmlInputText.Style.Add("font-style", If(NullSafeBoolean(NullSafeBoolean(drElements("FontItalic"))), "italic", "normal"))
-                ctlForm_HtmlInputText.Style.Add("width", CStr(NullSafeInteger(drElements("Width"))) & "px")
-
+                ctlFormHtmlInputText = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name"))), HtmlInputText)
+                ctlFormHtmlInputText.Style("resize") = "none"
+                ctlFormHtmlInputText.Style.Add("border-style", "solid")
+                ctlFormHtmlInputText.Style.Add("border-width", "1")
+                ctlFormHtmlInputText.Style.Add("border-color", objGeneral.GetHTMLColour(5730458))
+                ctlFormHtmlInputText.Style.Add("font-family", NullSafeString(drElements("FontName")))
+                ctlFormHtmlInputText.Style.Add("font-size", NullSafeString(drElements("FontSize")) & "pt")
+                ctlFormHtmlInputText.Style.Add("font-weight", If(NullSafeBoolean(NullSafeBoolean(drElements("FontBold"))), "bold", "normal"))
+                ctlFormHtmlInputText.Style.Add("font-style", If(NullSafeBoolean(NullSafeBoolean(drElements("FontItalic"))), "italic", "normal"))
               End If
 
           End Select
-
         End While
 
         ' Close the connection (will automatically close the reader)
@@ -310,11 +234,10 @@ Partial Class MobileLogin
         drElements.Close()
 
       Catch ex As Exception   ' conn creation 
-        sMessage = "Error creating SQL connection:<BR><BR>" & _
-        ex.Message.Replace(vbCrLf, "<BR>") & "<BR><BR>" & _
+        sMessage = "Error creating SQL connection:" & vbCrLf & vbCrLf & _
+        ex.Message.ToString & vbCrLf & vbCrLf & _
         "Contact your system administrator."
       End Try
-
 
       If sMessage.Length > 0 Then
         Session("message") = sMessage
@@ -322,35 +245,33 @@ Partial Class MobileLogin
       End If
     End If
 
-
   End Sub
 
-  Private Function LoadPicture(ByVal piPictureID As Int32, _
+  Private Function loadPicture(ByVal piPictureID As Int32, _
     ByRef psErrorMessage As String) As String
 
     Dim strConn As String
-    Dim conn As System.Data.SqlClient.SqlConnection
-    Dim cmdSelect As System.Data.SqlClient.SqlCommand
-    Dim dr As System.Data.SqlClient.SqlDataReader
+    Dim conn As SqlClient.SqlConnection
+    Dim cmdSelect As SqlClient.SqlCommand
+    Dim dr As SqlClient.SqlDataReader
     Dim sImageFileName As String
     Dim sImageFilePath As String
     Dim sImageWebPath As String
     Dim sTempName As String
-    Dim fs As System.IO.FileStream
-    Dim bw As System.IO.BinaryWriter
-    Dim iBufferSize As Integer = 100
+    Dim fs As IO.FileStream
+    Dim bw As IO.BinaryWriter
+    Const iBufferSize As Integer = 100
     Dim outByte(iBufferSize - 1) As Byte
     Dim retVal As Long
-    Dim startIndex As Long = 0
+    Dim startIndex As Long
     Dim sExtension As String = ""
     Dim iIndex As Integer
     Dim sName As String
 
     Try
-      miImageCount = CShort(miImageCount + 1)
+      _miImageCount = CShort(_miImageCount + 1)
 
       psErrorMessage = ""
-      LoadPicture = ""
       sImageFileName = ""
       sImageWebPath = "pictures"
       sImageFilePath = Server.MapPath(sImageWebPath)
@@ -360,8 +281,7 @@ Partial Class MobileLogin
                        ";Integrated Security=false;User ID=" & Session("Login") & _
                        ";Password=" & Session("Password") & _
                        ";Pooling=false"), String)
-      'strConn = "Application Name=OpenHR Workflow;Data Source=.\sqlexpress;Initial Catalog=hrprostd43;Integrated Security=false;User ID=sa;Password=asr;Pooling=false"
-      'strConn = "Application Name=OpenHR Workflow;Data Source=" & msServer & ";Initial Catalog=" & msDatabase & ";Integrated Security=false;User ID=" & msUser & ";Password=" & msPwd & ";Pooling=false"
+
       conn = New SqlClient.SqlConnection(strConn)
       conn.Open()
 
@@ -385,14 +305,14 @@ Partial Class MobileLogin
           End If
 
           sImageFileName = Session.SessionID().ToString & _
-           "_" & miImageCount.ToString & _
+           "_" & _miImageCount.ToString & _
            "_" & Date.Now.Ticks.ToString & _
            sExtension
           sTempName = sImageFilePath & "\" & sImageFileName
 
           ' Create a file to hold the output.
-          fs = New System.IO.FileStream(sTempName, IO.FileMode.OpenOrCreate, IO.FileAccess.Write)
-          bw = New System.IO.BinaryWriter(fs)
+          fs = New IO.FileStream(sTempName, IO.FileMode.OpenOrCreate, IO.FileAccess.Write)
+          bw = New IO.BinaryWriter(fs)
 
           ' Reset the starting byte for a new BLOB.
           startIndex = 0
@@ -441,26 +361,20 @@ Partial Class MobileLogin
 
   Protected Sub btnLogin_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnLogin.Click
     submitLoginDetails()
-
   End Sub
 
   Private Sub submitLoginDetails()
-    
+
     Dim strConn As String
-    Dim conn As System.Data.SqlClient.SqlConnection
-    Dim cmdCheck As System.Data.SqlClient.SqlCommand
-    Dim dr As System.Data.SqlClient.SqlDataReader
-
-    Dim objCrypt As New Crypt
-
+    Dim conn As SqlClient.SqlConnection
+    Dim cmdCheck As SqlClient.SqlCommand
+    Dim dr As SqlClient.SqlDataReader
     Dim sMessage As String = ""
-    Dim sEncryptedPwd As String = ""
-    Dim sDecryptedPwd As String = ""
     Dim aUserDetails() As String
     Dim fAuthenticated As Boolean = False
     Dim sAuthUser As String = ""
 
-    miSubmissionTimeoutInSeconds = mobjConfig.SubmissionTimeoutInSeconds
+    _miSubmissionTimeoutInSeconds = _mobjConfig.SubmissionTimeoutInSeconds
 
     If NullSafeString(Session("loginKey")) <> vbNullString Then fAuthenticated = True
 
@@ -473,8 +387,7 @@ Partial Class MobileLogin
         sMessage = "No Login entered."
       End If
 
-
-      ' Lock Check.
+      ' Perform system Lock Check first.
       strConn = CType(("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
                              ";Initial Catalog=" & Session("Database") & _
                              ";Integrated Security=false;User ID=" & Session("Login") & _
@@ -490,7 +403,7 @@ Partial Class MobileLogin
         cmdCheck.CommandText = "sp_ASRLockCheck"
         cmdCheck.Connection = conn
         cmdCheck.CommandType = CommandType.StoredProcedure
-        cmdCheck.CommandTimeout = miSubmissionTimeoutInSeconds
+        cmdCheck.CommandTimeout = _miSubmissionTimeoutInSeconds
 
         dr = cmdCheck.ExecuteReader()
 
@@ -513,11 +426,12 @@ Partial Class MobileLogin
       If sMessage.Length = 0 Then
 
         If txtUserName.Value.IndexOf("\") > 0 Then
+          ' ============ WINDOWS AUTHENTICATION =============
           ' The presence of a backslash indicates this is a windows user. 
           ' validate the user against AD
-          aUserDetails = txtUserName.Value.Split("\")
+          aUserDetails = txtUserName.Value.Split(CType("\", Char))
           Try
-            Me.AuthenticateUser(aUserDetails(0), aUserDetails(1), txtPassword.Value)
+            authenticateUser(aUserDetails(0), aUserDetails(1), txtPassword.Value)
             sAuthUser = txtUserName.Value
             fAuthenticated = True
             Session("LoginKey") = txtUserName.Value
@@ -531,8 +445,8 @@ Partial Class MobileLogin
             Session("RememberPWD") = Nothing
           End Try
         Else
+          ' ============ SQL AUTHENTICATION =============
           ' SQL User - validate against the DB
-
           If sMessage.Length = 0 Then
             strConn = CType(("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
                  ";Initial Catalog=" & Session("Database") & _
@@ -550,28 +464,24 @@ Partial Class MobileLogin
               Session("LoginKey") = txtUserName.Value
               Session("RememberPWD") = chkRememberPwd.Value
             Catch ex As Exception
-              'lblError.Text = ex.Message
-              'lblError.Visible = True
               sMessage = ex.Message
               fAuthenticated = False
               Session("LoginKey") = Nothing
               Session("RememberPWD") = Nothing
             End Try
           End If
-
         End If
-        
       End If
     End If
 
     If fAuthenticated And sMessage.Length = 0 Then
       Try
-
         strConn = CType(("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
                          ";Initial Catalog=" & Session("Database") & _
                          ";Integrated Security=false;User ID=" & Session("Login") & _
                          ";Password=" & Session("Password") & _
                          ";Pooling=false"), String)
+
         conn = New SqlClient.SqlConnection(strConn)
         conn.Open()
 
@@ -583,8 +493,6 @@ Partial Class MobileLogin
         cmdCheck.Parameters.Add("@psKeyParameter", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
         cmdCheck.Parameters("@psKeyParameter").Value = Session("LoginKey")
 
-        'cmdCheck.Parameters.Add("@psPWDParameter", SqlDbType.NVarChar, 2147483646).Direction = ParameterDirection.Output
-
         cmdCheck.Parameters.Add("@piUserGroupID", SqlDbType.Int).Direction = ParameterDirection.Output
 
         cmdCheck.Parameters.Add("@psMessage", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Output
@@ -592,8 +500,6 @@ Partial Class MobileLogin
         cmdCheck.ExecuteNonQuery()
 
         sMessage = NullSafeString(cmdCheck.Parameters("@psMessage").Value())
-        ' sEncryptedPwd = NullSafeString(cmdCheck.Parameters("@psPWDParameter").Value())
-
         Session("UserGroupID") = NullSafeInteger(cmdCheck.Parameters("@piUserGroupID").Value())
 
         cmdCheck.Dispose()
@@ -632,7 +538,6 @@ Partial Class MobileLogin
 
   End Sub
   Protected Sub btnRegister_Click(sender As Object, e As System.Web.UI.ImageClickEventArgs) Handles btnRegister.Click
-
     ' set a temporary user name so that we can move past the authentication page.
     FormsAuthentication.SetAuthCookie("sqluser", False)
     Response.Redirect("~/mobile/MobileRegistration.aspx")
@@ -644,12 +549,11 @@ Partial Class MobileLogin
     Response.Redirect("~/mobile/MobileForgottenLogin.aspx")
   End Sub
 
-  Private Sub AuthenticateUser(domainName As String, userName As String, password As String)
-    ' Path to you LDAP directory server.
+  Private Sub authenticateUser(domainName As String, userName As String, password As String)
+    ' Path to youR LDAP directory server.
     ' Contact your network administrator to obtain a valid path.
 
-
-    Dim adPath As String = "LDAP://" & System.Configuration.ConfigurationManager.AppSettings("DefaultActiveDirectoryServer")
+    Dim adPath As String = "LDAP://" & ConfigurationManager.AppSettings("DefaultActiveDirectoryServer")
 
     Dim adAuth As New clsActiveDirectoryValidator(adPath)
     If True = adAuth.IsAuthenticated(domainName, userName, password) Then
@@ -666,58 +570,7 @@ Partial Class MobileLogin
       ' Redirect the user to the originally requested page
       ' HttpContext.Current.Response.Redirect(FormsAuthentication.GetRedirectUrl(userName, False))
     End If
-
-
-
   End Sub
-
-  Public Shared Function isMobileBrowser() As Boolean
-    'GETS THE CURRENT USER CONTEXT
-    Dim context As HttpContext = HttpContext.Current
-
-    'FIRST TRY BUILT IN ASP.NT CHECK
-    If context.Request.Browser.IsMobileDevice Then
-      Return True
-    End If
-    'THEN TRY CHECKING FOR THE HTTP_X_WAP_PROFILE HEADER
-    If context.Request.ServerVariables("HTTP_X_WAP_PROFILE") IsNot Nothing Then
-      Return True
-    End If
-    'THEN TRY CHECKING THAT HTTP_ACCEPT EXISTS AND CONTAINS WAP
-    If context.Request.ServerVariables("HTTP_ACCEPT") IsNot Nothing AndAlso context.Request.ServerVariables("HTTP_ACCEPT").ToLower().Contains("wap") Then
-      Return True
-    End If
-    'AND FINALLY CHECK THE HTTP_USER_AGENT 
-    'HEADER VARIABLE FOR ANY ONE OF THE FOLLOWING
-    If context.Request.ServerVariables("HTTP_USER_AGENT") IsNot Nothing Then
-      'Create a list of all mobile types
-      Dim mobiles As String() = New String() {"midp", "j2me", "avant", "docomo", "novarra", "palmos", _
-"palmsource", "240x320", "opwv", "chtml", "pda", "windows ce", _
-"mmp/", "blackberry", "mib/", "symbian", "wireless", "nokia", _
-"hand", "mobi", "phone", "cdm", "up.b", "audio", _
-"SIE-", "SEC-", "samsung", "HTC", "mot-", "mitsu", _
-"sagem", "sony", "alcatel", "lg", "eric", "vx", _
-"philips", "mmm", "xx", "panasonic", "sharp", _
-"wap", "sch", "rover", "pocket", "benq", "java", _
-"pt", "pg", "vox", "amoi", "bird", "compal", _
-"kg", "voda", "sany", "kdd", "dbt", "sendo", _
-"sgh", "gradi", "jb", "dddi", "moto", "iphone"}
-
-      'Loop through each item in the list created above 
-      'and check if the header contains that text
-      For Each s As String In mobiles
-        If context.Request.ServerVariables("HTTP_USER_AGENT").ToLower().Contains(s.ToLower()) Then
-          Return True
-        End If
-      Next
-
-    End If
-
-    Return False
-  End Function
-
-
-
 
 
 End Class
