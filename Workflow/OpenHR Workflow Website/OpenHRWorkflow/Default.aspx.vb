@@ -759,9 +759,13 @@ Public Class _Default
                     .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
                     .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
 
-                    .Style.Add("BackColor", objGeneral.GetColour(NullSafeInteger(dr("BackColor"))).ToString)
-                    .Style.Add("Border", "Solid 1px " & objGeneral.GetColour(9999523).ToString)
-                    .Style.Add("Color", objGeneral.GetColour(NullSafeInteger(dr("ForeColor"))).ToString)
+                    If NullSafeInteger(dr("BackColor")) <> 16249587 Then
+                      .Style.Add("background-color", objGeneral.GetHTMLColour(NullSafeInteger(dr("BackColor"))).ToString)
+                      .Style.Add("border", "solid 1px " & objGeneral.GetHTMLColour(9999523).ToString)
+                    End If
+                    If NullSafeInteger(dr("ForeColor")) <> 6697779 Then
+                      .Style.Add("color", objGeneral.GetHTMLColour(NullSafeInteger(dr("ForeColor"))).ToString)
+                    End If
 
                     .Style.Add("padding", "0px")
                     .Style.Add("white-space", "normal")
@@ -3691,10 +3695,9 @@ Public Class _Default
 
                 pnlInputDiv.Style("width") = iFormWidth.ToString & "px"
                 pnlInputDiv.Style("height") = iFormHeight.ToString & "px"
-
                 pnlInputDiv.Style("left") = "-2px"
 
-                hdnFormHeight.Value = (iFormHeight + m_iTabStripHeight).ToString
+                hdnFormHeight.Value = iFormHeight.ToString
                 hdnFormWidth.Value = iFormWidth.ToString
                 hdnFormBackColourHex.Value = sBackgroundColourHex
                 hdnFormBackImage.Value = sBackgroundImage
