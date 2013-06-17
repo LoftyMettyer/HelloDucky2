@@ -15,7 +15,15 @@
 <body id="bdyMain" style="overflow: auto; text-align: center; margin: 0px; padding: 0px; background-color: <%= ColourThemeHex()%>;">
 	
 	<form runat="server" hidefocus="true" id="frmMain" onsubmit="return submitForm();">
-    
+  <div id="innerMeasurements" style="visibility:hidden;background-color:red;position:fixed;top:0px;left:0px;right:0px;bottom:0px;">
+  </div>    
+
+  <script type="text/javascript">
+    //Fault HRPRO-2269 - includes the 'innerMeasurements' div shown above.
+    window.currentHeight = document.getElementById("innerMeasurements").offsetHeight;
+    window.currentWidth = document.getElementById("innerMeasurements").offsetWidth;
+  </script>
+
     <%--    <script src="Scripts/default.js" type="text/javascript"></script>
     <script src="Scripts/resizable-table.js" type="text/javascript"></script>
     <script src="scripts/WebNumericEditValidation.js" type="text/javascript"></script>--%>

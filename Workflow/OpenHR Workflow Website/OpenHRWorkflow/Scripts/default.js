@@ -73,13 +73,14 @@
 	        SetCurrentTab(iCurrentTab);
 
 	        try {
+	          
 	            iDefHeight = window.$get("frmMain").hdnFormHeight.value;
 	            iDefWidth = window.$get("frmMain").hdnFormWidth.value;
 			    
 	            window.focus();
 	            if ((iDefHeight > 0) && (iDefWidth > 0)) {
-	                iResizeByHeight = iDefHeight - getWindowHeight();
-	                iResizeByWidth = iDefWidth - getWindowWidth();
+	              iResizeByHeight = iDefHeight - window.currentHeight; //  getWindowHeight();
+	              iResizeByWidth = iDefWidth - window.currentWidth;  // getWindowWidth();
 	                window.parent.resizeBy(iResizeByWidth, iResizeByHeight);	
 	                window.parent.moveTo((screen.availWidth - iDefWidth) / 2, (screen.availHeight - iDefHeight) / 3);			  
 	            }
@@ -121,12 +122,12 @@
 
 	            launchForms(window.$get("frmMain").hdnSiblingForms.value, false);
 	        }
-	        catch (e) {}
+	        catch (e) { }
 
-	        //Fault HRPRO-2121
+	        //Fault HRPRO-2269: no longer required.
 	        try	{
-	            window.resizeBy(0,-1);
-	            window.resizeBy(0,1);
+	            //window.resizeBy(0,-1);
+	            //window.resizeBy(0,1);
 	        }
 	        catch(e) {}
 	    }
