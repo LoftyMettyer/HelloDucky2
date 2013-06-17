@@ -117,7 +117,7 @@ Public Class RecordSelector
         ' Create a div to contain the Gridview table, not the pager controls or the header columns.
         ' (This is the one with scrollbars) - too small for lookups
         writer.Write("<div id='" & ClientID.Replace("Grid", "") & "gridcontainer'  style='position:absolute;top:" & CalculateHeaderHeight() & _
-                     ";bottom:" & CalculatePagerHeight() & ";overflow-x:auto;overflow-y:auto;" & _
+                     ";bottom:" & CalculatePagerHeight() & ";left:0px;overflow-x:auto;overflow-y:auto;" & _
                      "width:" & CalculateWidth() & ";" & "background-color:#FFFFFF;' onscroll=scrollHeader('" & ClientID.Replace("Grid", "gridcontainer") & "')>")
 
 
