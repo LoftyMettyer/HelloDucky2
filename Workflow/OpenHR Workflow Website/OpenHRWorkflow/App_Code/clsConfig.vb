@@ -4,6 +4,8 @@ Imports Microsoft.VisualBasic
 Imports System.Xml
 Imports Utilities
 Imports System
+Imports System.Globalization
+Imports System.Threading
 
 Public Class Config
   Private msThemeName As String
@@ -22,6 +24,7 @@ Public Class Config
   Private msLogin As String
   Private msPassword As String
   Private msWorkflowURL As String
+  Private msMobileKey As String
 
 
   Public Sub Initialise(ByVal psConfigFile As String)
@@ -75,12 +78,52 @@ Public Class Config
   End Sub
 
   Public Sub Mob_Initialise()
+    Dim miElementID As Integer = 0
+    Dim miInstanceID As Integer = 0
+    Dim sTemp As String = ""
+    Dim objCrypt As New Crypt
+
     Try
-      msServerName = System.Configuration.ConfigurationManager.AppSettings("Server").Trim
-      msDatabaseName = System.Configuration.ConfigurationManager.AppSettings("Database").Trim
-      msLogin = System.Configuration.ConfigurationManager.AppSettings("Login").Trim
-      msPassword = System.Configuration.ConfigurationManager.AppSettings("Password").Trim
+      'msServerName = System.Configuration.ConfigurationManager.AppSettings("Server").Trim
+      'msDatabaseName = System.Configuration.ConfigurationManager.AppSettings("Database").Trim
+      'msLogin = System.Configuration.ConfigurationManager.AppSettings("Login").Trim
+      'msPassword = System.Configuration.ConfigurationManager.AppSettings("Password").Trim
       msWorkflowURL = System.Configuration.ConfigurationManager.AppSettings("WorkflowURL").Trim
+      msMobileKey = System.Configuration.ConfigurationManager.AppSettings("MobileKey").Trim
+
+      ' Try the newer encryption first
+      ' Set the culture to English(GB) to ensure the decryption works OK. Fault HRPRO-1404
+      Dim sCultureName As String
+      sCultureName = Thread.CurrentThread.CurrentCulture.Name
+
+      Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-gb")
+      Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture("en-gb")
+
+      sTemp = objCrypt.DecompactString(msMobileKey)
+      sTemp = objCrypt.DecryptString(sTemp, "", True)
+
+      ' Reset the culture to be the one used by the client. Fault HRPRO-1404
+      Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(sCultureName)
+      Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture(sCultureName)
+
+      ' Extract the required parameters from the decrypted queryString.
+      miInstanceID = CInt(Left(sTemp, InStr(sTemp, vbTab) - 1))
+      sTemp = Mid(sTemp, InStr(sTemp, vbTab) + 1)
+
+      miElementID = CInt(Left(sTemp, InStr(sTemp, vbTab) - 1))
+      sTemp = Mid(sTemp, InStr(sTemp, vbTab) + 1)
+
+      msLogin = Left(sTemp, InStr(sTemp, vbTab) - 1)
+      sTemp = Mid(sTemp, InStr(sTemp, vbTab) + 1)
+
+      msPassword = Left(sTemp, InStr(sTemp, vbTab) - 1)
+      sTemp = Mid(sTemp, InStr(sTemp, vbTab) + 1)
+
+      msServerName = Left(sTemp, InStr(sTemp, vbTab) - 1)
+      sTemp = Mid(sTemp, InStr(sTemp, vbTab) + 1)
+
+      msDatabaseName = Mid(sTemp, InStr(sTemp, vbTab) + 1)
+
     Catch ex As Exception
 
     End Try
