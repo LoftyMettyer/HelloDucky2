@@ -646,6 +646,7 @@ Public Class RecordSelector
           tcTableCell.Text &= ""
           If MyBase.HeaderStyle.Height.Value < 21 Then MyBase.HeaderStyle.Height = Unit.Pixel(NullSafeSingle(Me.HeadFontSize) * 2)
           tcTableCell.ApplyStyle(MyBase.HeaderStyle)
+
         End If
       Next
     ElseIf e.Row.RowType = DataControlRowType.DataRow Then
@@ -1116,6 +1117,8 @@ Public Class RecordSelector
       .CommandName = "First"
       .UseSubmitBehavior = False
       .ToolTip = "First Page"
+      .Width = Unit.Pixel(16)
+      .Height = Unit.Pixel(16)
       .Style.Add("cursor", "pointer")
       .Style.Add("border-style", "none")
       .CausesValidation = False
@@ -1129,6 +1132,8 @@ Public Class RecordSelector
       .CommandName = "Previous"
       .UseSubmitBehavior = False
       .ToolTip = "Previous Page"
+      .Width = Unit.Pixel(16)
+      .Height = Unit.Pixel(16)
       .Style.Add("cursor", "pointer")
       .Style.Add("border-style", "none")
       .CausesValidation = False
@@ -1142,6 +1147,8 @@ Public Class RecordSelector
       .CommandName = "Next"
       .UseSubmitBehavior = False
       .ToolTip = "Next Page"
+      .Width = Unit.Pixel(16)
+      .Height = Unit.Pixel(16)
       .Style.Add("cursor", "pointer")
       .Style.Add("border-style", "none")
       .CausesValidation = False
@@ -1155,6 +1162,8 @@ Public Class RecordSelector
       .CommandName = "Last"
       .UseSubmitBehavior = False
       .ToolTip = "Last Page"
+      .Width = Unit.Pixel(16)
+      .Height = Unit.Pixel(16)
       .Style.Add("cursor", "pointer")
       .Style.Add("border-style", "none")
       .CausesValidation = False
