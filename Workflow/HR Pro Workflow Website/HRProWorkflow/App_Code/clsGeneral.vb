@@ -162,6 +162,25 @@ Public Class General
         End Try
 
     End Function
+    Public Function ConvertSQLDateToLocale(ByVal psSQLDateString As String) As String
+        ' Convert SQL Date string (mm/dd/yyyy) into locale short format.
+        Dim dtDate As Date
+        Dim iYear As Int16
+        Dim iMonth As Int16
+        Dim iDay As Int16
+
+        Try
+            iYear = CShort(psSQLDateString.Substring(6, 4))
+            iMonth = CShort(psSQLDateString.Substring(0, 2))
+            iDay = CShort(psSQLDateString.Substring(3, 2))
+
+            dtDate = DateSerial(iYear, iMonth, iDay)
+            ConvertSQLDateToLocale = dtDate.ToString(Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern)
+        Catch ex As Exception
+            ConvertSQLDateToLocale = ""
+        End Try
+
+    End Function
     Public Function GetDatePart(ByVal psLocaleDateString As String, ByVal psDatePart As String) As String
         Dim sLocaleDateFormat As String = Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern.ToUpper
         Dim sLocaleDateSep As String
