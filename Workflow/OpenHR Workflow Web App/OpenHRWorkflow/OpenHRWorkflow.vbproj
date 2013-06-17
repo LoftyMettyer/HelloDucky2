@@ -1,0 +1,529 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>
+    </SchemaVersion>
+    <ProjectGuid>{FC85112C-FF7D-4539-8F0C-785C8AA08AD6}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <RootNamespace>OpenHRWorkflow</RootNamespace>
+    <AssemblyName>OpenHRWorkflow</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <MyType>Custom</MyType>
+    <UseIISExpress>false</UseIISExpress>
+    <SccProjectName>"%24/Workflow/OpenHR Workflow Web App", LTQDAAAA</SccProjectName>
+    <SccLocalPath>..</SccLocalPath>
+    <SccAuxPath />
+    <SccProvider>MSSCCI:Microsoft Visual SourceSafe</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\</OutputPath>
+    <DocumentationFile>OpenHRWorkflow.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <DesktopBuildPackageLocation>obj\Debug\Package</DesktopBuildPackageLocation>
+    <DeployIisAppPath>Default Web Site/OpenHRWorkflow_deploy</DeployIisAppPath>
+    <PackageAsSingleFile>false</PackageAsSingleFile>
+    <IncludeIisSettings>false</IncludeIisSettings>
+    <PublishDatabases>false</PublishDatabases>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DocumentationFile>OpenHRWorkflow.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <PublishDatabases>false</PublishDatabases>
+    <PackageAsSingleFile>false</PackageAsSingleFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionExplicit>On</OptionExplicit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionCompare>Text</OptionCompare>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionStrict>On</OptionStrict>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionInfer>On</OptionInfer>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AjaxControlToolkit">
+      <HintPath>Lib\AjaxControlToolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Linq" />
+    <Import Include="System.Xml.Linq" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Collections.Specialized" />
+    <Import Include="System.Configuration" />
+    <Import Include="System.Text" />
+    <Import Include="System.Text.RegularExpressions" />
+    <Import Include="System.Web" />
+    <Import Include="System.Web.Caching" />
+    <Import Include="System.Web.SessionState" />
+    <Import Include="System.Web.Security" />
+    <Import Include="System.Web.Profile" />
+    <Import Include="System.Web.UI" />
+    <Import Include="System.Web.UI.WebControls" />
+    <Import Include="System.Web.UI.HtmlControls" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Account\ChangePassword.aspx" />
+    <Content Include="Account\ForgottenLogin.aspx" />
+    <Content Include="Account\Login.aspx" />
+    <Content Include="Account\Registration.aspx" />
+    <Content Include="Content\Default.css" />
+    <Content Include="Content\Site.css" />
+    <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="Content\themes\base\images\ui-icons_222222_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_454545_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_888888_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Content\themes\base\jquery.ui.accordion.css" />
+    <Content Include="Content\themes\base\jquery.ui.all.css" />
+    <Content Include="Content\themes\base\jquery.ui.autocomplete.css" />
+    <Content Include="Content\themes\base\jquery.ui.base.css" />
+    <Content Include="Content\themes\base\jquery.ui.button.css" />
+    <Content Include="Content\themes\base\jquery.ui.core.css" />
+    <Content Include="Content\themes\base\jquery.ui.datepicker.css" />
+    <Content Include="Content\themes\base\jquery.ui.dialog.css" />
+    <Content Include="Content\themes\base\jquery.ui.progressbar.css" />
+    <Content Include="Content\themes\base\jquery.ui.resizable.css" />
+    <Content Include="Content\themes\base\jquery.ui.selectable.css" />
+    <Content Include="Content\themes\base\jquery.ui.slider.css" />
+    <Content Include="Content\themes\base\jquery.ui.tabs.css" />
+    <Content Include="Content\themes\base\jquery.ui.theme.css" />
+    <Content Include="Default.aspx" />
+    <Content Include="FileDownload.aspx" />
+    <Content Include="FileUpload.aspx" />
+    <Content Include="Global.asax" />
+    <Content Include="Home.aspx" />
+    <Content Include="Images\Adv_hr&amp;payroll.gif" />
+    <Content Include="Images\bg.gif" />
+    <Content Include="Images\Blank.gif" />
+    <Content Include="Images\Calendar16.png" />
+    <Content Include="Images\COA.ico" />
+    <Content Include="Images\Connected48.png" />
+    <Content Include="Images\downarrow-hover.gif" />
+    <Content Include="Images\downarrow.gif" />
+    <Content Include="Images\downarrows_white.gif" />
+    <Content Include="Images\Logo.ico" />
+    <Content Include="Images\page-first-disabled.gif" />
+    <Content Include="Images\page-first.gif" />
+    <Content Include="Images\page-last-disabled.gif" />
+    <Content Include="Images\page-last.gif" />
+    <Content Include="Images\page-next-disabled.gif" />
+    <Content Include="Images\page-next.gif" />
+    <Content Include="Images\page-prev-disabled.gif" />
+    <Content Include="Images\page-prev.gif" />
+    <Content Include="Images\search.gif" />
+    <Content Include="Images\sort-asc.gif" />
+    <Content Include="Images\sort-desc.gif" />
+    <Content Include="Images\tab-next.gif" />
+    <Content Include="Images\tab-prev.gif" />
+    <Content Include="Images\Transparent.gif" />
+    <Content Include="Images\uparrows_white.gif" />
+    <Content Include="Lib\AjaxControlToolkit.dll" />
+    <Content Include="Message.aspx" />
+    <Content Include="PendingSteps.aspx" />
+    <Content Include="Scripts\autoNumeric-1.7.4.js" />
+    <Content Include="Scripts\default.js" />
+    <Content Include="Scripts\jquery-1.5.1-vsdoc.js" />
+    <Content Include="Scripts\jquery-1.5.1.js" />
+    <Content Include="Scripts\jquery-1.5.1.min.js" />
+    <Content Include="Scripts\jquery-ui-1.8.21.custom.min.js" />
+    <Content Include="Scripts\jquery.metadata.js" />
+    <Content Include="Scripts\resizable-table.js" />
+    <Content Include="SubmissionMessage.aspx" />
+    <Content Include="Themes\Aliceblue\crnrbot.gif" />
+    <Content Include="Themes\Aliceblue\crnrtop.gif" />
+    <Content Include="Themes\Aliceblue\rcrnrbot.gif" />
+    <Content Include="Themes\Aliceblue\rcrnrtop.gif" />
+    <Content Include="Themes\Antiquewhite\crnrbot.gif" />
+    <Content Include="Themes\Antiquewhite\crnrtop.gif" />
+    <Content Include="Themes\Antiquewhite\rcrnrbot.gif" />
+    <Content Include="Themes\Antiquewhite\rcrnrtop.gif" />
+    <Content Include="Themes\Aqua\crnrbot.gif" />
+    <Content Include="Themes\Aqua\crnrtop.gif" />
+    <Content Include="Themes\Aqua\rcrnrbot.gif" />
+    <Content Include="Themes\Aqua\rcrnrtop.gif" />
+    <Content Include="Themes\Azure\crnrbot.gif" />
+    <Content Include="Themes\Azure\crnrtop.gif" />
+    <Content Include="Themes\Azure\rcrnrbot.gif" />
+    <Content Include="Themes\Azure\rcrnrtop.gif" />
+    <Content Include="Themes\Black\crnrbot.gif" />
+    <Content Include="Themes\Black\crnrtop.gif" />
+    <Content Include="Themes\Black\rcrnrbot.gif" />
+    <Content Include="Themes\Black\rcrnrtop.gif" />
+    <Content Include="Themes\Blanco\crnrbot.gif" />
+    <Content Include="Themes\Blanco\crnrtop.gif" />
+    <Content Include="Themes\Blanco\rcrnrbot.gif" />
+    <Content Include="Themes\Blanco\rcrnrtop.gif" />
+    <Content Include="Themes\Blue\crnrbot.gif" />
+    <Content Include="Themes\Blue\crnrtop.gif" />
+    <Content Include="Themes\Blue\rcrnrbot.gif" />
+    <Content Include="Themes\Blue\rcrnrtop.gif" />
+    <Content Include="Themes\Burlywood\crnrbot.gif" />
+    <Content Include="Themes\Burlywood\crnrtop.gif" />
+    <Content Include="Themes\Burlywood\rcrnrbot.gif" />
+    <Content Include="Themes\Burlywood\rcrnrtop.gif" />
+    <Content Include="Themes\Chocolate\crnrbot.gif" />
+    <Content Include="Themes\Chocolate\crnrtop.gif" />
+    <Content Include="Themes\Chocolate\rcrnrbot.gif" />
+    <Content Include="Themes\Chocolate\rcrnrtop.gif" />
+    <Content Include="Themes\colourthemes.htm" />
+    <Content Include="Themes\Damson\crnrbot.gif" />
+    <Content Include="Themes\Damson\crnrtop.gif" />
+    <Content Include="Themes\Damson\rcrnrbot.gif" />
+    <Content Include="Themes\Damson\rcrnrtop.gif" />
+    <Content Include="Themes\Darkgray\crnrbot.gif" />
+    <Content Include="Themes\Darkgray\crnrtop.gif" />
+    <Content Include="Themes\Darkgray\rcrnrbot.gif" />
+    <Content Include="Themes\Darkgray\rcrnrtop.gif" />
+    <Content Include="Themes\Darkkhaki\crnrbot.gif" />
+    <Content Include="Themes\Darkkhaki\crnrtop.gif" />
+    <Content Include="Themes\Darkkhaki\rcrnrbot.gif" />
+    <Content Include="Themes\Darkkhaki\rcrnrtop.gif" />
+    <Content Include="Themes\Darkorange\crnrbot.gif" />
+    <Content Include="Themes\Darkorange\crnrtop.gif" />
+    <Content Include="Themes\Darkorange\rcrnrbot.gif" />
+    <Content Include="Themes\Darkorange\rcrnrtop.gif" />
+    <Content Include="Themes\Darkseagreen\crnrbot.gif" />
+    <Content Include="Themes\Darkseagreen\crnrtop.gif" />
+    <Content Include="Themes\Darkseagreen\rcrnrbot.gif" />
+    <Content Include="Themes\Darkseagreen\rcrnrtop.gif" />
+    <Content Include="Themes\Darkviolet\crnrbot.gif" />
+    <Content Include="Themes\Darkviolet\crnrtop.gif" />
+    <Content Include="Themes\Darkviolet\rcrnrbot.gif" />
+    <Content Include="Themes\Darkviolet\rcrnrtop.gif" />
+    <Content Include="Themes\DeepRed\crnrbot.gif" />
+    <Content Include="Themes\DeepRed\crnrtop.gif" />
+    <Content Include="Themes\DeepRed\rcrnrbot.gif" />
+    <Content Include="Themes\DeepRed\rcrnrtop.gif" />
+    <Content Include="Themes\DeepSkyBlue\crnrbot.gif" />
+    <Content Include="Themes\DeepSkyBlue\crnrtop.gif" />
+    <Content Include="Themes\DeepSkyBlue\rcrnrbot.gif" />
+    <Content Include="Themes\DeepSkyBlue\rcrnrtop.gif" />
+    <Content Include="Themes\DodgerBlue\crnrbot.gif" />
+    <Content Include="Themes\DodgerBlue\crnrtop.gif" />
+    <Content Include="Themes\DodgerBlue\rcrnrbot.gif" />
+    <Content Include="Themes\DodgerBlue\rcrnrtop.gif" />
+    <Content Include="Themes\Forestgreen\crnrbot.gif" />
+    <Content Include="Themes\Forestgreen\crnrtop.gif" />
+    <Content Include="Themes\Forestgreen\rcrnrbot.gif" />
+    <Content Include="Themes\Forestgreen\rcrnrtop.gif" />
+    <Content Include="Themes\Gold\crnrbot.gif" />
+    <Content Include="Themes\Gold\crnrtop.gif" />
+    <Content Include="Themes\Gold\rcrnrbot.gif" />
+    <Content Include="Themes\Gold\rcrnrtop.gif" />
+    <Content Include="Themes\GreySkyBlue\crnrbot.gif" />
+    <Content Include="Themes\GreySkyBlue\crnrtop.gif" />
+    <Content Include="Themes\GreySkyBlue\rcrnrbot.gif" />
+    <Content Include="Themes\GreySkyBlue\rcrnrtop.gif" />
+    <Content Include="Themes\Ivy\crnrbot.gif" />
+    <Content Include="Themes\Ivy\crnrtop.gif" />
+    <Content Include="Themes\Ivy\rcrnrbot.gif" />
+    <Content Include="Themes\Ivy\rcrnrtop.gif" />
+    <Content Include="Themes\LightSkyBlue\crnrbot.gif" />
+    <Content Include="Themes\LightSkyBlue\crnrtop.gif" />
+    <Content Include="Themes\LightSkyBlue\rcrnrbot.gif" />
+    <Content Include="Themes\LightSkyBlue\rcrnrtop.gif" />
+    <Content Include="Themes\Limegreen\crnrbot.gif" />
+    <Content Include="Themes\Limegreen\crnrtop.gif" />
+    <Content Include="Themes\Limegreen\rcrnrbot.gif" />
+    <Content Include="Themes\Limegreen\rcrnrtop.gif" />
+    <Content Include="Themes\Maroon\crnrbot.gif" />
+    <Content Include="Themes\Maroon\crnrtop.gif" />
+    <Content Include="Themes\Maroon\rcrnrbot.gif" />
+    <Content Include="Themes\Maroon\rcrnrtop.gif" />
+    <Content Include="Themes\MidnightNavy\crnrbot.gif" />
+    <Content Include="Themes\MidnightNavy\crnrtop.gif" />
+    <Content Include="Themes\MidnightNavy\rcrnrbot.gif" />
+    <Content Include="Themes\MidnightNavy\rcrnrtop.gif" />
+    <Content Include="Themes\Navy2\crnrbot.gif" />
+    <Content Include="Themes\Navy2\crnrtop.gif" />
+    <Content Include="Themes\Navy2\rcrnrbot.gif" />
+    <Content Include="Themes\Navy2\rcrnrtop.gif" />
+    <Content Include="Themes\Navy\crnrbot.gif" />
+    <Content Include="Themes\Navy\crnrtop.gif" />
+    <Content Include="Themes\Navy\rcrnrbot.gif" />
+    <Content Include="Themes\Navy\rcrnrtop.gif" />
+    <Content Include="Themes\Olive\crnrbot.gif" />
+    <Content Include="Themes\Olive\crnrtop.gif" />
+    <Content Include="Themes\Olive\rcrnrbot.gif" />
+    <Content Include="Themes\Olive\rcrnrtop.gif" />
+    <Content Include="Themes\PantoneBlue\crnrbot.gif" />
+    <Content Include="Themes\PantoneBlue\crnrtop.gif" />
+    <Content Include="Themes\PantoneBlue\rcrnrbot.gif" />
+    <Content Include="Themes\PantoneBlue\rcrnrtop.gif" />
+    <Content Include="Themes\PantoneGold\crnrbot.gif" />
+    <Content Include="Themes\PantoneGold\crnrtop.gif" />
+    <Content Include="Themes\PantoneGold\rcrnrbot.gif" />
+    <Content Include="Themes\PantoneGold\rcrnrtop.gif" />
+    <Content Include="Themes\Raspberry\crnrbot.gif" />
+    <Content Include="Themes\Raspberry\crnrtop.gif" />
+    <Content Include="Themes\Raspberry\rcrnrbot.gif" />
+    <Content Include="Themes\Raspberry\rcrnrtop.gif" />
+    <Content Include="Themes\Red2\crnrbot.gif" />
+    <Content Include="Themes\Red2\crnrtop.gif" />
+    <Content Include="Themes\Red2\rcrnrbot.gif" />
+    <Content Include="Themes\Red2\rcrnrtop.gif" />
+    <Content Include="Themes\Red\crnrbot.gif" />
+    <Content Include="Themes\Red\crnrtop.gif" />
+    <Content Include="Themes\Red\rcrnrbot.gif" />
+    <Content Include="Themes\Red\rcrnrtop.gif" />
+    <Content Include="Themes\RichGrey\crnrbot.gif" />
+    <Content Include="Themes\RichGrey\crnrtop.gif" />
+    <Content Include="Themes\RichGrey\rcrnrbot.gif" />
+    <Content Include="Themes\RichGrey\rcrnrtop.gif" />
+    <Content Include="Themes\RipeTomato\crnrbot.gif" />
+    <Content Include="Themes\RipeTomato\crnrtop.gif" />
+    <Content Include="Themes\RipeTomato\rcrnrbot.gif" />
+    <Content Include="Themes\RipeTomato\rcrnrtop.gif" />
+    <Content Include="Themes\Teal2\crnrbot.gif" />
+    <Content Include="Themes\Teal2\crnrtop.gif" />
+    <Content Include="Themes\Teal2\rcrnrbot.gif" />
+    <Content Include="Themes\Teal2\rcrnrtop.gif" />
+    <Content Include="Themes\Teal\crnrbot.gif" />
+    <Content Include="Themes\Teal\crnrtop.gif" />
+    <Content Include="Themes\Teal\rcrnrbot.gif" />
+    <Content Include="Themes\Teal\rcrnrtop.gif" />
+    <Content Include="Themes\ThemeHex.xml" />
+    <Content Include="Themes\TuscanOrange\crnrbot.gif" />
+    <Content Include="Themes\TuscanOrange\crnrtop.gif" />
+    <Content Include="Themes\TuscanOrange\rcrnrbot.gif" />
+    <Content Include="Themes\TuscanOrange\rcrnrtop.gif" />
+    <Content Include="Themes\VioletBlue\crnrbot.gif" />
+    <Content Include="Themes\VioletBlue\crnrtop.gif" />
+    <Content Include="Themes\VioletBlue\rcrnrbot.gif" />
+    <Content Include="Themes\VioletBlue\rcrnrtop.gif" />
+    <Content Include="Themes\VioletGreyer\crnrbot.gif" />
+    <Content Include="Themes\VioletGreyer\crnrtop.gif" />
+    <Content Include="Themes\VioletGreyer\rcrnrbot.gif" />
+    <Content Include="Themes\VioletGreyer\rcrnrtop.gif" />
+    <Content Include="Themes\VioletGrey\crnrbot.gif" />
+    <Content Include="Themes\VioletGrey\crnrtop.gif" />
+    <Content Include="Themes\VioletGrey\rcrnrbot.gif" />
+    <Content Include="Themes\VioletGrey\rcrnrtop.gif" />
+    <Content Include="Timeout.aspx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Account\ChangePassword.aspx.designer.vb">
+      <DependentUpon>ChangePassword.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Account\ChangePassword.aspx.vb">
+      <DependentUpon>ChangePassword.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Account\ForgottenLogin.aspx.designer.vb">
+      <DependentUpon>ForgottenLogin.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Account\ForgottenLogin.aspx.vb">
+      <DependentUpon>ForgottenLogin.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Account\Login.aspx.designer.vb">
+      <DependentUpon>Login.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Account\Login.aspx.vb">
+      <DependentUpon>Login.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Account\Registration.aspx.designer.vb">
+      <DependentUpon>Registration.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Account\Registration.aspx.vb">
+      <DependentUpon>Registration.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Code\Config.vb" />
+    <Compile Include="Code\Configuration.vb" />
+    <Compile Include="Code\Crypt.vb" />
+    <Compile Include="Code\Database.vb" />
+    <Compile Include="Code\Enums.vb" />
+    <Compile Include="Code\Extensions.vb" />
+    <Compile Include="Code\Forms.vb" />
+    <Compile Include="Code\General.vb" />
+    <Compile Include="Code\Picture.vb" />
+    <Compile Include="Code\RecordSelector.vb" />
+    <Compile Include="Code\Security.vb" />
+    <Compile Include="Code\Utilities.vb" />
+    <Compile Include="Code\WorkflowUrl.vb" />
+    <Compile Include="Default.aspx.designer.vb">
+      <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Default.aspx.vb">
+      <DependentUpon>Default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="FileDownload.aspx.designer.vb">
+      <DependentUpon>FileDownload.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="FileDownload.aspx.vb">
+      <DependentUpon>FileDownload.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="FileUpload.aspx.designer.vb">
+      <DependentUpon>FileUpload.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="FileUpload.aspx.vb">
+      <DependentUpon>FileUpload.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Global.asax.vb">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Home.aspx.designer.vb">
+      <DependentUpon>Home.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Home.aspx.vb">
+      <DependentUpon>Home.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Message.aspx.designer.vb">
+      <DependentUpon>Message.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Message.aspx.vb">
+      <DependentUpon>Message.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\MyExtensions\MyWebExtension.vb">
+      <VBMyExtensionTemplateID>Microsoft.VisualBasic.Web.MyExtension</VBMyExtensionTemplateID>
+      <VBMyExtensionTemplateVersion>1.0.0.0</VBMyExtensionTemplateVersion>
+    </Compile>
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="PendingSteps.aspx.designer.vb">
+      <DependentUpon>PendingSteps.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PendingSteps.aspx.vb">
+      <DependentUpon>PendingSteps.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Site.master.designer.vb">
+      <DependentUpon>Site.master</DependentUpon>
+    </Compile>
+    <Compile Include="Site.master.vb">
+      <DependentUpon>Site.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="SubmissionMessage.aspx.designer.vb">
+      <DependentUpon>SubmissionMessage.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="SubmissionMessage.aspx.vb">
+      <DependentUpon>SubmissionMessage.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Timeout.aspx.designer.vb">
+      <DependentUpon>Timeout.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Timeout.aspx.vb">
+      <DependentUpon>Timeout.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Account\Web.config" />
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+    <Content Include="Site.master" />
+    <Content Include="web.config" />
+    <Content Include="web.custom.config" />
+    <None Include="web.custom.config.template" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+    <Folder Include="Pictures\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>60885</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost/OpenHRWorkflow</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

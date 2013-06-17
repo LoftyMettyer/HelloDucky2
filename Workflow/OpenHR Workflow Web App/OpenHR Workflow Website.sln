@@ -1,0 +1,78 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "OpenHRWorkflowInstaller", "OpenHRWorkflowInstaller\OpenHRWorkflowInstaller.vbproj", "{1371B89A-9495-484C-816F-DEE9025335E0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{FC85112C-FF7D-4539-8F0C-785C8AA08AD6} = {FC85112C-FF7D-4539-8F0C-785C8AA08AD6}
+	EndProjectSection
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "OpenHRWorkflowSetup", "OpenHRWorkflowSetup\HRProWorkflowWebSetup.vdproj", "{84B3579F-B5F3-4AFC-986A-3A5197FD9101}"
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "OpenHRWorkflow", "OpenHRWorkflow\OpenHRWorkflow.vbproj", "{FC85112C-FF7D-4539-8F0C-785C8AA08AD6}"
+EndProject
+Global
+	GlobalSection(SourceCodeControl) = preSolution
+		SccNumberOfProjects = 4
+		SccProjectName0 = \u0022$/Workflow/OpenHR\u0020Workflow\u0020Web\u0020App\u0022,\u0020LTQDAAAA
+		SccLocalPath0 = .
+		SccProvider0 = MSSCCI:Microsoft\u0020Visual\u0020SourceSafe
+		CanCheckoutShared = false
+		SccProjectUniqueName1 = OpenHRWorkflow\\OpenHRWorkflow.vbproj
+		SccLocalPath1 = .
+		CanCheckoutShared = false
+		SccProjectFilePathRelativizedFromConnection1 = OpenHRWorkflow\\
+		SccProjectUniqueName2 = OpenHRWorkflowInstaller\\OpenHRWorkflowInstaller.vbproj
+		SccLocalPath2 = .
+		CanCheckoutShared = false
+		SccProjectFilePathRelativizedFromConnection2 = OpenHRWorkflowInstaller\\
+		SccProjectUniqueName3 = OpenHRWorkflowSetup\\HRProWorkflowWebSetup.vdproj
+		SccLocalPath3 = .
+		CanCheckoutShared = false
+		SccProjectFilePathRelativizedFromConnection3 = OpenHRWorkflowSetup\\
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|.NET = Debug|.NET
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Release|.NET = Release|.NET
+		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1371B89A-9495-484C-816F-DEE9025335E0}.Debug|.NET.ActiveCfg = Debug|Any CPU
+		{1371B89A-9495-484C-816F-DEE9025335E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1371B89A-9495-484C-816F-DEE9025335E0}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{1371B89A-9495-484C-816F-DEE9025335E0}.Release|.NET.ActiveCfg = Release|Any CPU
+		{1371B89A-9495-484C-816F-DEE9025335E0}.Release|.NET.Build.0 = Release|Any CPU
+		{1371B89A-9495-484C-816F-DEE9025335E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1371B89A-9495-484C-816F-DEE9025335E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1371B89A-9495-484C-816F-DEE9025335E0}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{1371B89A-9495-484C-816F-DEE9025335E0}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{84B3579F-B5F3-4AFC-986A-3A5197FD9101}.Debug|.NET.ActiveCfg = Debug
+		{84B3579F-B5F3-4AFC-986A-3A5197FD9101}.Debug|.NET.Build.0 = Debug
+		{84B3579F-B5F3-4AFC-986A-3A5197FD9101}.Debug|Any CPU.ActiveCfg = Debug
+		{84B3579F-B5F3-4AFC-986A-3A5197FD9101}.Debug|Mixed Platforms.ActiveCfg = Debug
+		{84B3579F-B5F3-4AFC-986A-3A5197FD9101}.Release|.NET.ActiveCfg = Release
+		{84B3579F-B5F3-4AFC-986A-3A5197FD9101}.Release|.NET.Build.0 = Release
+		{84B3579F-B5F3-4AFC-986A-3A5197FD9101}.Release|Any CPU.ActiveCfg = Release
+		{84B3579F-B5F3-4AFC-986A-3A5197FD9101}.Release|Any CPU.Build.0 = Release
+		{84B3579F-B5F3-4AFC-986A-3A5197FD9101}.Release|Mixed Platforms.ActiveCfg = Release
+		{84B3579F-B5F3-4AFC-986A-3A5197FD9101}.Release|Mixed Platforms.Build.0 = Release
+		{FC85112C-FF7D-4539-8F0C-785C8AA08AD6}.Debug|.NET.ActiveCfg = Debug|Any CPU
+		{FC85112C-FF7D-4539-8F0C-785C8AA08AD6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC85112C-FF7D-4539-8F0C-785C8AA08AD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC85112C-FF7D-4539-8F0C-785C8AA08AD6}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{FC85112C-FF7D-4539-8F0C-785C8AA08AD6}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{FC85112C-FF7D-4539-8F0C-785C8AA08AD6}.Release|.NET.ActiveCfg = Release|Any CPU
+		{FC85112C-FF7D-4539-8F0C-785C8AA08AD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC85112C-FF7D-4539-8F0C-785C8AA08AD6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC85112C-FF7D-4539-8F0C-785C8AA08AD6}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{FC85112C-FF7D-4539-8F0C-785C8AA08AD6}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(TextTemplating) = postSolution
+		TextTemplating = 1
+	EndGlobalSection
+EndGlobal
