@@ -11,18 +11,11 @@ Partial Class MobileLogin
 
     Dim ctlForm_HTMLGenericControl As HtmlGenericControl
     Dim ctlForm_HtmlInputText As HtmlInputText
-    Dim ctlForm_Image As Image
     Dim ctlForm_ImageButton As ImageButton   ' Button
     Dim strConn As String
     Dim objGeneral As New General
     Dim lngPanel_1_Height As Long = 57
     Dim lngPanel_2_Height As Long = 57
-    Dim sBackgroundImage As String
-    Dim sBackgroundRepeat As String
-    Dim sBackgroundPosition As String
-    Dim iBackgroundColour As Integer
-    Dim sBackgroundColourHex As String
-    Dim iBackgroundImagePosition As Integer
     Dim sMessage As String = ""
     Dim drLayouts As System.Data.SqlClient.SqlDataReader
     Dim drElements As System.Data.SqlClient.SqlDataReader
@@ -65,50 +58,68 @@ Partial Class MobileLogin
       ' Create a DataReader to ferry information back from the database
       drLayouts = myCommand.ExecuteReader()
 
-      ctlForm_HTMLGenericControl = New HtmlGenericControl
+      If drLayouts.Read() Then
 
-      'Iterate through the results
-      'While drLayouts.Read()
-      '  sBackgroundImage = ""
-      '  sBackgroundRepeat = ""
-      '  sBackgroundPosition = ""
+        For i As Integer = 1 To 3
 
-      '  '... Work with the current record ...
-      '  Select Case CInt(drLayouts("PanelID"))
-      '    Case 1  ' ================= Banner Div ================
-      '      'Dim strHeader As String = "pnlHeader"
-      '      'ctlForm_HTMLGenericControl = TryCast(pnlContainer.FindControl(strHeader), HtmlGenericControl)
+          Dim prefix As String = String.Empty
+          Dim control As HtmlGenericControl = Nothing
 
-      '      ctlForm_HTMLGenericControl = TryCast(pnlHeader, HtmlGenericControl)
+          Select Case i
+            Case 1
+              prefix = "Header"
+              control = TryCast(pnlHeader, HtmlGenericControl)
+            Case 2
+              prefix = "Main"
+              control = TryCast(ScrollerFrame, HtmlGenericControl)
+            Case 3
+              prefix = "Footer"
+              control = TryCast(pnlFooter, HtmlGenericControl)
+          End Select
 
-      '    Case 2    ' ================= Main Body Div ================
-      '      ctlForm_HTMLGenericControl = TryCast(ScrollerFrame, HtmlGenericControl)
+          If Not IsDBNull(drLayouts(prefix & "BackColor")) Then
+            control.Style("Background-color") = objGeneral.GetHTMLColour(CInt(drLayouts(prefix & "BackColor")))
+          End If
 
-      '    Case 3   ' ================= Footer Div ================
-      '      ctlForm_HTMLGenericControl = TryCast(pnlFooter, HtmlGenericControl)
-      '  End Select
+          If Not IsDBNull(drLayouts(prefix & "PictureID")) Then
+            control.Style("Background-image") = LoadPicture(CInt(drLayouts(prefix & "PictureID")), sMessage)
+            control.Style("background-repeat") = objGeneral.BackgroundRepeat(CShort(drLayouts(prefix & "PictureLocation")))
+            control.Style("background-position") = objGeneral.BackgroundPosition(CShort(drLayouts(prefix & "PictureLocation")))
+          End If
 
-      '  ' Background Image
-      '  If CInt(drLayouts("PictureID")) > 0 Then
-      '    sBackgroundImage = LoadPicture(CInt(drLayouts("PictureID")), sMessage)
-      '    ctlForm_HTMLGenericControl.Style("Background-image") = sBackgroundImage
-      '    sBackgroundImage = "url('" & sBackgroundImage & "')"
-      '    iBackgroundImagePosition = CInt(drLayouts("PictureLocation"))
-      '    sBackgroundRepeat = objGeneral.BackgroundRepeat(CShort(iBackgroundImagePosition))
-      '    sBackgroundPosition = objGeneral.BackgroundPosition(CShort(iBackgroundImagePosition))
-      '    ctlForm_HTMLGenericControl.Style("background-repeat") = sBackgroundRepeat
-      '    ctlForm_HTMLGenericControl.Style("background-position") = sBackgroundPosition
-      '  End If
+          'Header Image
+          If i = 1 Then
 
-      '  ' background colour
-      '  sBackgroundColourHex = ""
-      '  If Not IsDBNull(drLayouts("BackColor")) Then
-      '    iBackgroundColour = CInt(drLayouts("BackColor"))
-      '    sBackgroundColourHex = objGeneral.GetHTMLColour(iBackgroundColour).ToString()
-      '    ctlForm_HTMLGenericControl.Style("Background-color") = objGeneral.GetHTMLColour(NullSafeInteger(iBackgroundColour))
-      '  End If
+            Dim imageControl As New System.Web.UI.WebControls.Image
 
-      'End While
+            With imageControl
+              .Style("position") = "absolute"
+
+              If NullSafeInteger(drLayouts("HeaderLogoVerticalOffsetBehaviour")) = 0 Then
+                .Style("top") = Unit.Pixel(NullSafeInteger(drLayouts("HeaderLogoVerticalOffset"))).ToString
+              Else
+                .Style("bottom") = Unit.Pixel(NullSafeInteger(drLayouts("HeaderLogoVerticalOffset"))).ToString
+              End If
+
+              If NullSafeInteger(drLayouts("HeaderLogoHorizontalOffsetBehaviour")) = 0 Then
+                .Style("left") = Unit.Pixel(NullSafeInteger(drLayouts("HeaderLogoHorizontalOffset"))).ToString
+              Else
+                .Style("right") = Unit.Pixel(NullSafeInteger(drLayouts("HeaderLogoHorizontalOffset"))).ToString
+              End If
+
+              .BackColor = System.Drawing.Color.Transparent
+              .ImageUrl = LoadPicture(NullSafeInteger(drLayouts("HeaderLogoID")), sMessage)
+              .Height() = Unit.Pixel(NullSafeInteger(drLayouts("HeaderLogoHeight")))
+              .Width() = Unit.Pixel(NullSafeInteger(drLayouts("HeaderLogoWidth")))
+              .Style.Add("z-index", "1")
+            End With
+
+            pnlHeader.Controls.Add(imageControl)
+          End If
+
+        Next
+
+      End If
 
       ' Close the connection (will automatically close the reader)
       myConnection.Close()
@@ -249,48 +260,6 @@ Partial Class MobileLogin
 
             End If
 
-
-          Case 10 ' Image
-            ctlForm_Image = New System.Web.UI.WebControls.Image
-
-            With ctlForm_Image
-              .Style("position") = "absolute"
-
-              ' Vertical Offset
-              If NullSafeInteger(drElements("VerticalOffsetBehaviour")) = 0 Then
-                .Style("top") = Unit.Pixel(NullSafeInteger(drElements("VerticalOffset"))).ToString
-              Else
-                .Style("bottom") = Unit.Pixel(NullSafeInteger(drElements("VerticalOffset"))).ToString
-              End If
-
-              ' horizontal position
-              If NullSafeInteger(drElements("HorizontalOffsetBehaviour")) = 0 Then
-                .Style("left") = Unit.Pixel(NullSafeInteger(drElements("HorizontalOffset"))).ToString
-              Else
-                .Style("right") = Unit.Pixel(NullSafeInteger(drElements("HorizontalOffset"))).ToString
-              End If
-
-              If NullSafeInteger(drElements("BackStyle")) = 0 Then
-                .BackColor = System.Drawing.Color.Transparent
-              Else
-                .BackColor = objGeneral.GetColour(NullSafeInteger(drElements("BackColor")))
-              End If
-
-              sImageFileName = LoadPicture(NullSafeInteger(drElements("pictureID")), sMessage)
-              If sMessage.Length > 0 Then
-                Exit While
-              End If
-              .ImageUrl = sImageFileName
-
-              iTempHeight = NullSafeInteger(drElements("Height"))
-              iTempWidth = NullSafeInteger(drElements("Width"))
-
-              .Height() = Unit.Pixel(iTempHeight)
-              .Width() = Unit.Pixel(iTempWidth)
-              .Style.Add("z-index", "1")
-            End With
-
-            pnlContainer.Controls.Add(ctlForm_Image)
         End Select
 
       End While
