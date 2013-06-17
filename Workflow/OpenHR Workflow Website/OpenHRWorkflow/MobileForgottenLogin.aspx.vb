@@ -219,7 +219,7 @@ Partial Class ForgottenLogin
       psErrorMessage = ""
       LoadPicture = ""
       sImageFileName = ""
-      sImageWebPath = "~/pictures"
+      sImageWebPath = "pictures"
       sImageFilePath = Server.MapPath(sImageWebPath)
 
       conn = New SqlClient.SqlConnection(Configuration.ConnectionString)
