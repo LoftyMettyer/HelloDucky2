@@ -84,7 +84,7 @@
           </div>
           
           <div  style="text-align:center; position:absolute;top:357px;width:100%;z-index-0">
-            <p style="font-family: Verdana; font-size: 10px; z-index: 2; color: #333366;">Copyright © Advanced Business Software and Solutions Limited 2011</p>
+            <p style="font-family: Verdana; font-size: 10px; z-index: 2; color: #333366;">Copyright © Advanced Business Software and Solutions Ltd 2012</p>
           </div>
 
           <div id="pnlFooter" runat="server" style="position:fixed;overflow:hidden;left:0px;bottom:0px;z-index-0;width:100%;height:60px">
