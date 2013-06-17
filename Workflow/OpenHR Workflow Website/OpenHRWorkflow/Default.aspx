@@ -1217,7 +1217,8 @@
 	        if(sourceControlID=="") {return;}
 	        
 	        var lookups = getElementsBySearchValue(sourceControlID);
-          
+	        var AllLookupIDs = "";
+
 	        for(var i = 0; i < lookups.length; i++) {
 
 	            try {
@@ -1229,6 +1230,7 @@
 	            if(psWebComboID.length>0) {
 	        
 	                var sID = "lookup" + psWebComboID;
+	                AllLookupIDs = AllLookupIDs + (i == 0 ? "" : "\t") + psWebComboID + "refresh";
 
 	                try {
 	                    var ctlLookupFilter = document.getElementById(sID);
@@ -1385,7 +1387,7 @@
                           
 	                                //$get("txtActiveDDE").value = psWebComboID;
                           
-	                                setPostbackMode(3);
+	                                //setPostbackMode(3);
                           
 	                                //These lines hide the lookup dropdown until it's filled with data.
 	                                //document.getElementById(psWebComboID.replace("dde","")).style.height="0px";
@@ -1393,18 +1395,21 @@
                           
 	                                //This clicks the server-side button to apply filtering...                          
 	                                //this also kicks off the gosubmit() via postback beginrequest.                          
-	                                document.getElementById(psWebComboID + "refresh").click();                                                    
+	                                //document.getElementById(psWebComboID + "refresh").click();                                                    
 
 	                                //set pbmode back to 0 to prevent recursion.                          
-	                                setPostbackMode(0);
+	                                //setPostbackMode(0);
 	                            }
 	                        }
 	                    }
 	                }
 	                catch (e) {}
 	            }
-	        }
-	        return false;
+	            }
+	            setPostbackMode(3);
+	            document.getElementById("hdnMobileLookupFilter").value = AllLookupIDs;
+
+	        //return false;
 	    }
 
 	    function Right(str, n){
@@ -1497,7 +1502,7 @@
 	    }
 
 	// ]]>
-	</script>
+  </script>
 
 	<script src="scripts\WebNumericEditValidation.js" type="text/javascript"></script>
 	
@@ -1570,6 +1575,7 @@
                 </div>    
                 <asp:Button id="btnSubmit" runat="server" style="visibility: hidden; top: 0px; position: absolute; left: 0px; width: 0px; height: 0px;" text=""/>
                 <asp:Button id="btnReEnableControls" runat="server" style="visibility: hidden; top: 0px; position: absolute; left: 0px; width: 0px; height: 0px;" text=""/>
+          <asp:HiddenField ID="hdnMobileLookupFilter" runat="server" Value="" />
 			    <asp:HiddenField ID="hdnCount_Errors" runat="server" Value="" />
 			    <asp:HiddenField ID="hdnCount_Warnings" runat="server" Value="" />
 			    <asp:HiddenField ID="hdnOverrideWarnings" runat="server" Value="0" />
