@@ -1259,10 +1259,10 @@ Public Class _Default
                        " onfocus=""try{" & sID & ".select();activateControl();}catch(e){};""" & _
                        CStr(IIf(fChecked, " CHECKED", "")) & _
                        " style='height:14px;width:14px;'" & _
-                       " tabIndex='-1'" & _
+                       " tabIndex='" & NullSafeInteger(dr("tabIndex")) + 1 & "'" & _
                        " id='chk" & sID & "'" & _
                        " name='chk" & sID & "'></TD>" & vbCrLf & _
-                       "<TD width='4px'></TD><TD><LABEL ID='forChk" & sID & "' FOR='chk" & sID & "' tabIndex='" & NullSafeInteger(dr("tabIndex")) + 1 & "'" & _
+                       "<TD width='4px'></TD><TD><LABEL ID='forChk" & sID & "' FOR='chk" & sID & "' tabIndex='-1'" & _
                        " onkeypress = ""try{if(window.event.keyCode == 32){chk" & sID & ".click()};}catch(e){}""" & _
                        " onmouseover = ""try{forChk" & sID & ".style.color='#ff9608'; }catch(e){};""" & _
                        " onmouseout = ""try{forChk" & sID & ".style.color='';}catch(e){};""" & _
@@ -1299,10 +1299,10 @@ Public Class _Default
                        " onfocus=""try{" & sID & ".select();activateControl();}catch(e){};""" & _
                        CStr(IIf(UCase(NullSafeString(dr("value"))) = "TRUE", " CHECKED", "")) & _
                        " style='height:14px;width:14px;'" & _
-                       " tabIndex='-1'" & _
+                       " tabIndex='" & NullSafeInteger(dr("tabIndex")) + 1 & "'" & _
                        " id='chk" & sID & "'" & _
                        " name='chk" & sID & "'></TD>" & vbCrLf & _
-                       "<TD width='4px'></TD><TD><LABEL ID='forChk" & sID & "' FOR='chk" & sID & "' tabIndex='" & NullSafeInteger(dr("tabIndex")) + 1 & "'" & _
+                       "<TD width='4px'></TD><TD><LABEL ID='forChk" & sID & "' FOR='chk" & sID & "' tabIndex='-1'" & _
                        " onkeypress = ""try{if(window.event.keyCode == 32){chk" & sID & ".click()};}catch(e){}""" & _
                        " onmouseover = ""try{forChk" & sID & ".style.color='#ff9608'; }catch(e){};""" & _
                        " onmouseout = ""try{forChk" & sID & ".style.color='';}catch(e){};""" & _
