@@ -81,8 +81,6 @@
                                 <td><input id="chkRememberPwd" type="checkbox" runat="server" /></td>
                             </tr>
                             <tr id="space5" style="width: 100%; height: 80%"><td></td></tr>
-                            <tr>
-                            </tr>
                         </table>
                     </div>
                 </div>
@@ -107,7 +105,6 @@
                 </div>        
  
             </div>
-
             <div id="pnlGreyOut" runat="server" style="position: absolute; visibility: hidden; width: 100%; height: 100%; filter: alpha(opacity=50); -moz-opacity: 0.5; opacity: 0.5; background-color: #222; margin: 0px; z-index: 1">
             </div>
 
