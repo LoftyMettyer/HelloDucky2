@@ -7,29 +7,29 @@ Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "HRProWorkflowWebSetup", "We
 EndProject
 Project("{2CFEAB61-6A3B-4EB8-B523-560B4BEEF521}") = "HRProWorkflow_deploy", "HRProWorkflow_deploy\HRProWorkflow_deploy.wdproj", "{CA3E1976-4014-4344-AB34-4D9EBCCAEDD0}"
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "HRProWorkflow", "http://localhost/HRProWorkflow", "{D1D0E976-6553-4235-BAB3-649C8F1AC0D9}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "OpenHRWorkflow", "http://localhost/OpenHRWorkflow", "{D1D0E976-6553-4235-BAB3-649C8F1AC0D9}"
 	ProjectSection(WebsiteProperties) = preProject
-		SccProjectName = ""$/Workflow/HR Pro Workflow Website/HRProWorkflow", LXXCAAAA"
+		SccProjectName = ""$/Workflow/OpenHR Workflow Website/OpenHRWorkflow", LXXCAAAA"
 		SccAuxPath = ""
 		SccLocalPath = "."
 		SccProvider = "MSSCCI:Microsoft Visual SourceSafe"
 		UseIISExpress = "false"
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv3.5"
-		Debug.AspNetCompiler.VirtualPath = "/HRProWorkflow"
-		Debug.AspNetCompiler.PhysicalPath = "HRProWorkflow\"
-		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\HRProWorkflow\"
-		Debug.AspNetCompiler.Updateable = "false"
+		Debug.AspNetCompiler.VirtualPath = "/OpenHRWorkflow"
+		Debug.AspNetCompiler.PhysicalPath = "OpenHRWorkflow\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\OpenHRWorkflow\"
+		Debug.AspNetCompiler.Updateable = "true"
 		Debug.AspNetCompiler.ForceOverwrite = "true"
 		Debug.AspNetCompiler.FixedNames = "false"
 		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.VirtualPath = "/HRProWorkflow"
-		Release.AspNetCompiler.PhysicalPath = "HRProWorkflow\"
-		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\HRProWorkflow\"
-		Release.AspNetCompiler.Updateable = "false"
+		Release.AspNetCompiler.VirtualPath = "/OpenHRWorkflow"
+		Release.AspNetCompiler.PhysicalPath = "OpenHRWorkflow\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\OpenHRWorkflow\"
+		Release.AspNetCompiler.Updateable = "true"
 		Release.AspNetCompiler.ForceOverwrite = "true"
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
-		SlnRelativePath = "HRProWorkflow\"
+		SlnRelativePath = "OpenHRWorkflow\"
 	EndProjectSection
 EndProject
 Global
@@ -46,9 +46,9 @@ Global
 		SccLocalPath3 = .
 		SccProjectFilePathRelativizedFromConnection3 = HRProWorkflow_deploy\\
 		SccWebProject4 = true
-		SccProjectUniqueName4 = http://localhost/HRProWorkflow
-		SccProjectName4 = \u0022$/Workflow/HR\u0020Pro\u0020Workflow\u0020Website/HRProWorkflow\u0022,\u0020LXXCAAAA
-		SccLocalPath4 = C:\\dev\\HR\u0020Pro\u0020Workflow\\HRProWorkflow
+		SccProjectUniqueName4 = http://localhost/OpenHRWorkflow
+		SccProjectName4 = \u0022$/Workflow/OpenHR\u0020Workflow\u0020Website/OpenHRWorkflow\u0022,\u0020LXXCAAAA
+		SccLocalPath4 = C:\\Dev\\WORKFLOW\\OpenHR\u0020Workflow\u0020Website\\OpenHRWorkflow
 		SccProjectEnlistmentChoice4 = 2
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
