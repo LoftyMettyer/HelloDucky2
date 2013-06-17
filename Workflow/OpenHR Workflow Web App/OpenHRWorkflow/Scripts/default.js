@@ -120,18 +120,20 @@ function InitialiseWindow() {
 	}
 	catch (e) { }
 
-	// For GPS Location functionality. Future Development. 
+	/*	
+	//For GPS Location functionality. Future Development. 
 	//Unremark this, and same comments in default.aspx.vb to enable.
-//	if (navigator.geolocation) {
-//		var GPSObjects = document.getElementsByClassName("GPSTextBox");
-//		for (var i = 0; i < GPSObjects.length; i++) {
-//			navigator.geolocation.getCurrentPosition(function (position) {
-//				var lat = position.coords.latitude;
-//				var lng = position.coords.longitude; 
-//				GPSObjects[i].value = lat + "," + lng;
-//			});			
-//		}
-//	}	
+	if (navigator.geolocation) {
+	var GPSObjects = document.getElementsByClassName("GPSTextBox");
+	for (var i = 0; i < GPSObjects.length; i++) {
+	navigator.geolocation.getCurrentPosition(function (position) {
+	var lat = position.coords.latitude;
+	var lng = position.coords.longitude; 
+	GPSObjects[i].value = lat + "," + lng;
+	});			
+	}
+	}	
+	*/
 }
 
 function launchForms(psForms, pfFirstFormRelocate) {
