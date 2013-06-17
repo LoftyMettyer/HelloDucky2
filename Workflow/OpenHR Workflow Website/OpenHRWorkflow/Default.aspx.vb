@@ -3073,6 +3073,7 @@ Public Class _Default
                     .Style("position") = "absolute"
                     .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
                     .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
+                    '.Attributes.Add("onclick", "getElementsByPartialName('" & sID & "');")
 
                     ' EnableXmlHTTP is required becaue we're using client-side filtering using 'selectwhere'
                     ''.EnableXmlHTTP = True

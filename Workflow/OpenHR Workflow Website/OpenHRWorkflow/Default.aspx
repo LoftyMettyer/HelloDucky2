@@ -64,6 +64,14 @@
           document.getElementById(elementID).style.visibility = "hidden";
         }
         else {
+          var oEl = document.getElementById(elementID);
+
+          //also set left position to 0 if required          
+          if (oEl.offsetLeft<0)
+          {
+            oEl.style.left = "125px"; //hardcoded!
+          }    
+
           document.getElementById(elementID).style.visibility = "visible";
         }
 
@@ -374,6 +382,24 @@
     		}
     		catch(e) {}
 		}
+
+    function getElementsByPartialName(partialName) {
+        var retVal = new Array();
+        var elems = document.getElementsByTagName("input");
+
+        for(var i = 0; i < elems.length; i++) {
+            var nameProp = elems[i].getAttribute('name');
+
+            if(nameProp.substr(0, 6) == "lookup") {
+              var valueProp = elems[i].getAttribute('value');
+                if(valueProp.indexOf(partialName) > 0) {
+                  //this lookup needs filtering...
+                  //alert(nameProp);
+                }
+            }   
+        }        
+    } 
+
 
 		function TraverseDOM(obj, lvl, actionFunc) {
 		
