@@ -165,7 +165,7 @@ Public Class RecordSelector
         writer.Write("<div id='" & ClientID.Replace("Grid", "") & "gridcontainer'  style='position:absolute;top:" & CalculateHeaderHeight() & _
                      ";bottom:" & CalculatePagerHeight() & ";left:0px;overflow-x:auto;overflow-y:auto;" & _
                      "width:" & CalculateWidth() & ";" & "background-color:" & _
-                     objGeneral.GetHTMLColour(System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.FromArgb(Me.BackColor.A, Me.BackColor.R, Me.BackColor.G, Me.BackColor.B)).ToString) & _
+                     objGeneral.GetHTMLColour(System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.FromArgb(customHeader.BackColor.A, customHeader.BackColor.R, customHeader.BackColor.G, customHeader.BackColor.B)).ToString) & _
                      ";' onscroll=scrollHeader('" & ClientID.Replace("Grid", "gridcontainer") & "')>")
 
 
