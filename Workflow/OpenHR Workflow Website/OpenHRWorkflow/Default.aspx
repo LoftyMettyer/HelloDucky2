@@ -1651,10 +1651,12 @@ function ResizeComboForForm(sender, args) {
       var newTab = "forminput_" + iNewTab + "_21_PageTab";
 
     try {
-      $get(currentTab).style.display = "none";
+      if($get(currentTab)!=null)
+        $get(currentTab).style.display = "none";
       $get(currentTab.replace("PageTab","Panel")).style.borderBottom = "1px solid black";
         
-      $get(newTab).style.display = "block";
+      if($get(newTab)!=null)
+        $get(newTab).style.display = "block";
       $get(newTab.replace("PageTab","Panel")).style.borderBottom = "1px solid white";
         
       iCurrentTab = iNewTab;
