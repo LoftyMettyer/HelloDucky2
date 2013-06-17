@@ -5052,8 +5052,8 @@ Public Class _Default
 
   Private Sub AddIPhoneHeaderTags(ByVal lngViewportWidth As Long)
     Dim ua As String = Request.UserAgent
-    Stop
-    If ua IsNot Nothing AndAlso (ua.Contains("iPhone") OrElse ua.Contains("iPod") OrElse ua.Contains("Android")) Then
+
+    If ua IsNot Nothing AndAlso (ua.Contains("iPhone") OrElse ua.Contains("iPod")) Then
       Dim meta As New HtmlMeta()
       meta.Name = "viewport"
       meta.Content = "width=" & lngViewportWidth & ", user-scalable=yes"
