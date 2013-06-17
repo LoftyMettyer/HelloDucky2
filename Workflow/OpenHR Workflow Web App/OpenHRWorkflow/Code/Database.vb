@@ -435,7 +435,7 @@ Public Class Database
 		End Using
 	End Function
 
-	Public Function GetWorkflowItemValues(elementItemId As Integer, instanceId As Integer) As WorkflowItemValuesResult
+	Public Function GetWorkflowItemValues(elementItemId As Integer, instanceId As Integer, Optional pageSize As Integer = 0, Optional pageIndex As Integer = 0) As WorkflowItemValuesResult
 
 		Dim result As New WorkflowItemValuesResult
 
@@ -447,7 +447,7 @@ Public Class Database
 			cmd.CommandTimeout = _timeout
 
 			cmd.Parameters.Add("@piElementItemID", SqlDbType.Int).Direction = ParameterDirection.Input
-			cmd.Parameters("@piElementItemID").Value = elementItemID
+			cmd.Parameters("@piElementItemID").Value = elementItemId
 
 			cmd.Parameters.Add("@piInstanceID", SqlDbType.Int).Direction = ParameterDirection.Input
 			cmd.Parameters("@piInstanceID").Value = instanceId

@@ -161,7 +161,6 @@ Public Module Extensions
 
 #Region "String extensions"
 
-   'TODO replace all stringValue = Nothing, stringValue.Length = 0, stringValue = “”, stringValue = string.Empty
    <Extension()>
    Public Function IsNullOrEmpty(value As String) As Boolean
       Return String.IsNullOrEmpty(value)
@@ -171,7 +170,6 @@ Public Module Extensions
 
 #Region "DataReader extensions"
 
-   'TODO PG replace as NullSafeInteger calls etc
    <Extension()>
    Public Function AsInt(reader As IDataReader, columnName As String) As Integer
 

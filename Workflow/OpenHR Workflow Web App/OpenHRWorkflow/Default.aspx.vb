@@ -882,7 +882,7 @@ Public Class [Default]
 						If Not IsPostBack Then
 
 							'get the data
-							Dim result = _db.GetWorkflowItemValues(formItem.Id, _url.InstanceID)
+							Dim result = _db.GetWorkflowItemValues(formItem.Id, _url.InstanceId)
 
 							'insert a blank row
 							result.Data.Rows.InsertAt(result.Data.NewRow(), 0)
@@ -946,7 +946,7 @@ Public Class [Default]
 						tabPages(formItem.PageNo).Controls.Add(New HiddenField With {.ID = controlId & "scrollpos"})
 
 						' hidden field to hold any filter SQL code
-						tabPages(formItem.PageNo).Controls.Add(New HiddenField With {.ID = controlId & "filterSQL"})
+						tabPages(formItem.PageNo).Controls.Add(New HiddenField With {.ID = controlId & "FilterSql"})
 
 						' Hidden Button for JS to call which fires filter click event. 
 						Dim button = New Button
@@ -982,11 +982,11 @@ Public Class [Default]
 							tabPages(formItem.PageNo).Controls.Add(control)
 
 							Dim filterSql = LookupFilterSQL(formItem.LookupFilterColumnName,
-											formItem.LookupFilterColumnDataType,
-											formItem.LookupFilterOperator,
-											FormInputPrefix &
-											formItem.LookupFilterValueID & "_" &
-											formItem.LookupFilterValueType & "_")
+								 formItem.LookupFilterColumnDataType,
+								 formItem.LookupFilterOperator,
+								 FormInputPrefix &
+								 formItem.LookupFilterValueID & "_" &
+								 formItem.LookupFilterValueType & "_")
 
 							If (filterSql.Length > 0) Then
 								tabPages(formItem.PageNo).Controls.Add(New HiddenField With {.ID = "lookup" & controlId, .Value = filterSql})
@@ -1030,7 +1030,7 @@ Public Class [Default]
 						End With
 
 						' hidden field to hold any filter SQL code
-						tabPages(formItem.PageNo).Controls.Add(New HiddenField With {.ID = controlId & "filterSQL"})
+						tabPages(formItem.PageNo).Controls.Add(New HiddenField With {.ID = controlId & "FilterSql"})
 
 						' Hidden Button for JS to call which fires filter click event. 
 						Dim button = New Button
@@ -1067,11 +1067,11 @@ Public Class [Default]
 						tabPages(formItem.PageNo).Controls.Add(control)
 
 						Dim filterSql = LookupFilterSQL(formItem.LookupFilterColumnName,
-										formItem.LookupFilterColumnDataType,
-										formItem.LookupFilterOperator,
-										FormInputPrefix &
-										formItem.LookupFilterValueID &
-										"_" & formItem.LookupFilterValueType & "_")
+							 formItem.LookupFilterColumnDataType,
+							 formItem.LookupFilterOperator,
+							 FormInputPrefix &
+							 formItem.LookupFilterValueID &
+							 "_" & formItem.LookupFilterValueType & "_")
 
 						If filterSql.Length > 0 Then
 							tabPages(formItem.PageNo).Controls.Add(New HiddenField With {.ID = "lookup" & controlId, .Value = filterSql})
@@ -1136,7 +1136,7 @@ Public Class [Default]
 					End If
 
 					Dim html = String.Format("<fieldset style='position:absolute; top:{0}px; left:{1}px; width:{2}px; height:{3}px; {4} {5} {6}'>",
-								top, left, width, height, GetFontCss(formItem), GetColorCss(formItem), borderCss)
+						top, left, width, height, GetFontCss(formItem), GetColorCss(formItem), borderCss)
 
 					If formItem.PictureBorder And formItem.Caption.Trim.Length > 0 Then
 						html += String.Format("<legend>{0}</legend>", formItem.Caption) & vbCrLf
@@ -1249,7 +1249,7 @@ Public Class [Default]
 					  "onclick='FileDownload_Click(""{8}"");' onkeypress='FileDownload_KeyPress(""{8}"");'>{9}</span>"
 
 					html = String.Format(html, controlId, formItem.TabIndex, formItem.Top, formItem.Left, formItem.Width, formItem.Height,
-						GetFontCss(formItem), GetColorCss(formItem), encodedId, HttpUtility.HtmlEncode(formItem.Caption))
+					 GetFontCss(formItem), GetColorCss(formItem), encodedId, HttpUtility.HtmlEncode(formItem.Caption))
 
 					UpdateAutoFocusControl(formItem.TabIndex, controlId)
 
@@ -1431,7 +1431,7 @@ Public Class [Default]
 			'Read the web form item values & build up a string of the form input values
 			Dim controlList As New List(Of Control)
 			GetControls(Page.Controls, controlList, Function(c) c.ClientID.StartsWith(FormInputPrefix) AndAlso
-					  (c.ClientID.EndsWith("_") OrElse c.ClientID.EndsWith("TextBox") OrElse c.ClientID.EndsWith("Grid")))
+				 (c.ClientID.EndsWith("_") OrElse c.ClientID.EndsWith("TextBox") OrElse c.ClientID.EndsWith("Grid")))
 
 			For Each ctl As Control In controlList
 
@@ -1534,8 +1534,8 @@ Public Class [Default]
 			lblErrors.Text = If(bulletErrors.Items.Count > 0, "Unable to submit this form due to the following error" & If(bulletErrors.Items.Count = 1, "", "s") & ":", "")
 
 			lblWarnings.Text = If(bulletWarnings.Items.Count > 0,
-					 If(bulletErrors.Items.Count > 0, "And the following warning" & If(bulletWarnings.Items.Count = 1, "", "s") & ":",
-						"Submitting this form raises the following warning" & If(bulletWarnings.Items.Count = 1, "", "s") & ":"), "")
+				If(bulletErrors.Items.Count > 0, "And the following warning" & If(bulletWarnings.Items.Count = 1, "", "s") & ":",
+				"Submitting this form raises the following warning" & If(bulletWarnings.Items.Count = 1, "", "s") & ":"), "")
 
 			overrideWarning.Visible = (bulletWarnings.Items.Count > 0 And bulletErrors.Items.Count = 0)
 
@@ -1718,7 +1718,7 @@ Public Class [Default]
 		Dim dataTable As DataTable = TryCast(Session(lookupId.Replace("refresh", "DATA")), DataTable)
 
 		' get the filter sql
-		Dim hiddenField As HiddenField = TryCast(pnlInputDiv.FindControl(lookupId.Replace("refresh", "filterSQL")), HiddenField)
+		Dim hiddenField As HiddenField = TryCast(pnlInputDiv.FindControl(lookupId.Replace("refresh", "FilterSql")), HiddenField)
 
 		Dim filterSql As String = hiddenField.Value
 

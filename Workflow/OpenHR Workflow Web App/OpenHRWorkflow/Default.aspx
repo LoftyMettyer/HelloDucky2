@@ -1,5 +1,5 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" Inherits="OpenHRWorkflow.Default" EnableSessionState="True" Codebehind="Default.aspx.vb" %>
-<%@ Import Namespace="OpenHRWorkflow" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" Inherits="OpenHRWorkflow.Default" EnableSessionState="True" Codebehind="Default.aspx.vb" Trace="true" %>
+<%@ Import Namespace="OpenHRWorkflow" %> 
 
 <%@ Register Assembly="ScriptReferenceProfiler" Namespace="ScriptReferenceProfiler" TagPrefix="cc1" %>
 
