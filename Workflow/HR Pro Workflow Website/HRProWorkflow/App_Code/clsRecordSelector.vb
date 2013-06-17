@@ -200,11 +200,21 @@ Public Class RecordSelector
 
         MyBase.Render(writer)
         writer.Write("</div>")
-
         ' Render the custom pager row now.
         If customPager IsNot Nothing AndAlso Me.PageCount > 1 Then
             writer.Write("<div  border='0' cellspacing='" & Me.CellSpacing.ToString() & "' cellpadding='" & _
-                            Me.CellPadding.ToString() & "' style='position:absolute;right:0px;bottom:0px;height: " & CalculatePagerHeight() & ";'>")
+                            Me.CellPadding.ToString() & "' style='width:100%;position:absolute;right:0px;bottom:0px;height: " & CalculatePagerHeight() & ";'>")
+
+            Dim iGridwidth As Integer
+            iGridwidth = CInt(CalculateGridWidth.Replace("px", "").Replace("%", ""))
+
+            If iGridwidth >= 420 Then
+                writer.Write("     <input name='filter' style='font-size:8pt;font-style:italic;float:left;position:absolute;top:2px;left:3px;width:150px;height:15px;border:solid 1px gray' value='search..' " & _
+                             "onblur='if(this.value==""""){this.style.fontStyle=""italic"";this.style.color=""gray"";this.value=""search...""}'" & _
+                             "onfocus='if(this.value!=""""){this.style.color=""black"";this.style.fontStyle=""normal"";this.value=""""}' onclick='event.cancelBubble=true;'" & _
+                             "onkeyup='filterTable(this, " & Me.ClientID.ToString & ")' type='text'>")
+                writer.Write("<img src='Images/search.gif' style='position:absolute;top:4px;left:140px;height:15px;width:15px'/>")
+            End If
             customPager.ApplyStyle(Me.PagerStyle)
             customPager.Visible = True
             customPager.RenderControl(writer)
@@ -241,7 +251,7 @@ Public Class RecordSelector
             iGridWidth += 25
             'End If
 
-            If iGridWidth < 240 And Me.PageCount > 0 Then iGridWidth = 240 ' minimum width to ensure paging controls fit.
+            If iGridWidth < 250 And Me.PageCount > 0 Then iGridWidth = 250 ' minimum width to ensure paging controls fit.
 
             strWidth = [String].Format("{0}{1}", iGridWidth, (If((Me.Width.Type = UnitType.Percentage), "%", "px")))
         End If
@@ -316,7 +326,7 @@ Public Class RecordSelector
             iGridWidth += 25
             'End If
 
-            If iGridWidth < 240 And Me.PageCount > 0 Then iGridWidth = 240 ' minimum width to ensure paging controls fit.
+            If iGridWidth < 250 And Me.PageCount > 0 Then iGridWidth = 250 ' minimum width to ensure paging controls fit.
 
             strWidth = [String].Format("{0}{1}", iGridWidth - iScrollBarWidth, (If((Me.Width.Type = UnitType.Percentage), "%", "px")))
         End If
@@ -708,21 +718,21 @@ Public Class RecordSelector
                 If Not Me.IsEmpty Then
                     e.Row.Attributes("onclick") = ("SetScrollTopPos('" & grdGrid.ID.ToString & "', document.getElementById('" & grdGrid.ID.Replace("Grid", "gridcontainer") & "').scrollTop);" & _
                                                         "try{setPostbackMode(2);}catch(e){};__doPostBack('" & grdGrid.UniqueID & "','Select$" & e.Row.RowIndex & "');")
-                End If               
+                End If
 
-            ElseIf e.Row.RowType = DataControlRowType.Header Then
+                ElseIf e.Row.RowType = DataControlRowType.Header Then
 
-                ' Get the lookupfiltervalue column number, if applicable and store to a tag.
-                For iColCount As Integer = 0 To e.Row.Cells.Count - 1
-                    sColumnCaption = UCase(e.Row.Cells(iColCount).Text)
+                    ' Get the lookupfiltervalue column number, if applicable and store to a tag.
+                    For iColCount As Integer = 0 To e.Row.Cells.Count - 1
+                        sColumnCaption = UCase(e.Row.Cells(iColCount).Text)
 
-                    If sColumnCaption.ToUpper = "ASRSYSLOOKUPFILTERVALUE" Then
-                        grdGrid.Attributes.Remove("LookupFilterColumn")
-                        grdGrid.Attributes.Add("LookupFilterColumn", iColCount.ToString)
-                    End If
-                Next
+                        If sColumnCaption.ToUpper = "ASRSYSLOOKUPFILTERVALUE" Then
+                            grdGrid.Attributes.Remove("LookupFilterColumn")
+                            grdGrid.Attributes.Add("LookupFilterColumn", iColCount.ToString)
+                        End If
+                    Next
 
-            End If
+                End If
         Catch ex As Exception
 
         End Try
@@ -962,6 +972,7 @@ Public Class RecordSelector
         With pnlPager
             .ID = "pnlPager"
             '.CssClass = Me.PagerStyle.CssClass
+            .Style.Add("float", "right")
         End With
 
         Dim tblPager As Table = New Table()

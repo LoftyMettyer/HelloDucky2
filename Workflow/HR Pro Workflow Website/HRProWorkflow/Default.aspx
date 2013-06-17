@@ -10,6 +10,10 @@
 <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=1;"/>
 
 <head runat="server">
+  <style type="text/css">
+		.highlighted { background: yellow; }
+	</style>
+
 	  <title></title>	  
     <script src="Scripts/resizable-table.js" type="text/javascript"></script>	 
 </head>
@@ -1289,6 +1293,7 @@ function Right(str, n){
     <ContentTemplate>
     <div id = "pnlInputDiv" runat="server" style="position:relative;padding-right:0px;padding-left:0px;padding-bottom:0px;
                             margin-top:0px;margin-bottom:0px;margin-right:auto;margin-left:auto;padding-top:0px;">
+
     </div>    
       <asp:Button id="btnSubmit" runat="server" style="visibility: hidden; top: 0px;
 				position: absolute; left: 0px; width: 0px; height: 0px;" text=""/>
@@ -1307,7 +1312,7 @@ function Right(str, n){
 			<asp:HiddenField ID="hdnSubmissionMessage_3" runat="server" Value="" />
 		</ContentTemplate>
     </asp:UpdatePanel>			
-
+    
 	</div>
 	<!--
     Temporary values from the server
