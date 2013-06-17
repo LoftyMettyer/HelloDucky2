@@ -734,18 +734,7 @@ Public Class _Default
 
                     .Value = NullSafeString(dr("caption"))
 
-                    sTemp2 = CStr(IIf(NullSafeBoolean(dr("FontStrikeThru")), " line-through", "")) & _
-                       CStr(IIf(NullSafeBoolean(dr("FontUnderline")), " underline", ""))
-
-                    If sTemp2.Length = 0 Then
-                      sTemp2 = " none"
-                    End If
-
-                    .Style.Add("Font-family", NullSafeString(dr("FontName")).ToString)
-                    .Style.Add("font-size", ToPoint(NullSafeInteger(dr("FontSize"))).ToString & "pt")
-                    .Style.Add("font-weight", CStr(IIf(NullSafeBoolean(dr("FontBold")), "bold", "normal")))
-                    .Style.Add("font-style", CStr(IIf(NullSafeBoolean(dr("FontItalic")), "italic", "normal")))
-                    .Style.Add("text-decoration", sTemp2)
+                    .Style.ApplyFont(dr)
 
                     .Style.Add("Width", Unit.Pixel(NullSafeInteger(dr("Width"))).ToString)
                     .Style.Add("Height", Unit.Pixel(NullSafeInteger(dr("Height"))).ToString)
@@ -815,12 +804,7 @@ Public Class _Default
 
                       .ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
 
-                      .Font.Name = NullSafeString(dr("FontName"))
-                      .Font.Size = ToPointFontUnit(NullSafeInteger(dr("FontSize")))
-                      .Font.Bold = NullSafeBoolean(NullSafeBoolean(dr("FontBold")))
-                      .Font.Italic = NullSafeBoolean(NullSafeBoolean(dr("FontItalic")))
-                      .Font.Strikeout = NullSafeBoolean(NullSafeBoolean(dr("FontStrikeThru")))
-                      .Font.Underline = NullSafeBoolean(NullSafeBoolean(dr("FontUnderline")))
+                      .Font.Apply(dr)
 
                       iTempHeight = NullSafeInteger(dr("Height"))
                       iTempWidth = NullSafeInteger(dr("Width"))
@@ -866,12 +850,7 @@ Public Class _Default
                       End If
                       .ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
 
-                      .Font.Name = NullSafeString(dr("FontName"))
-                      .Font.Size = ToPointFontUnit(NullSafeInteger(dr("FontSize")))
-                      .Font.Bold = NullSafeBoolean(dr("FontBold"))
-                      .Font.Italic = NullSafeBoolean(dr("FontItalic"))
-                      .Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
-                      .Font.Underline = NullSafeBoolean(dr("FontUnderline"))
+                      .Font.Apply(dr)
 
                       iTempHeight = NullSafeInteger(dr("Height"))
                       iTempWidth = NullSafeInteger(dr("Width"))
@@ -919,12 +898,7 @@ Public Class _Default
                     End If
                     .ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
 
-                    .Font.Name = NullSafeString(dr("FontName"))
-                    .Font.Size = ToPointFontUnit(NullSafeInteger(dr("FontSize")))
-                    .Font.Bold = NullSafeBoolean(NullSafeBoolean(dr("FontBold")))
-                    .Font.Italic = NullSafeBoolean(NullSafeBoolean(dr("FontItalic")))
-                    .Font.Strikeout = NullSafeBoolean(NullSafeBoolean(dr("FontStrikeThru")))
-                    .Font.Underline = NullSafeBoolean(NullSafeBoolean(dr("FontUnderline")))
+                    .Font.Apply(dr)
 
                     iTempHeight = NullSafeInteger(dr("Height"))
                     iTempWidth = NullSafeInteger(dr("Width"))
@@ -980,12 +954,7 @@ Public Class _Default
                     .BackColor = General.GetColour(NullSafeInteger(dr("BackColor")))
                     .ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
 
-                    .Font.Name = NullSafeString(dr("FontName"))
-                    .Font.Size = ToPointFontUnit(NullSafeInteger(dr("FontSize")))
-                    .Font.Bold = NullSafeBoolean(dr("FontBold"))
-                    .Font.Italic = NullSafeBoolean(dr("FontItalic"))
-                    .Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
-                    .Font.Underline = NullSafeBoolean(dr("FontUnderline"))
+                    .Font.Apply(dr)
 
                     .Height() = Unit.Pixel(NullSafeInteger(dr("Height")) - 6)
                     .Width() = Unit.Pixel(NullSafeInteger(dr("Width")) - 6)
@@ -1061,12 +1030,7 @@ Public Class _Default
                       End If
                       .ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
 
-                      .Font.Name = NullSafeString(dr("FontName"))
-                      .Font.Size = ToPointFontUnit(NullSafeInteger(dr("FontSize")))
-                      .Font.Bold = NullSafeBoolean(dr("FontBold"))
-                      .Font.Italic = NullSafeBoolean(dr("FontItalic"))
-                      .Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
-                      .Font.Underline = NullSafeBoolean(dr("FontUnderline"))
+                      .Font.Apply(dr)
 
                       iTempHeight = NullSafeInteger(dr("Height"))
                       iTempWidth = NullSafeInteger(dr("Width"))
@@ -1111,12 +1075,7 @@ Public Class _Default
                       End If
                       .ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
 
-                      .Font.Name = NullSafeString(dr("FontName"))
-                      .Font.Size = ToPointFontUnit(NullSafeInteger(dr("FontSize")))
-                      .Font.Bold = NullSafeBoolean(dr("FontBold"))
-                      .Font.Italic = NullSafeBoolean(dr("FontItalic"))
-                      .Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
-                      .Font.Underline = NullSafeBoolean(dr("FontUnderline"))
+                      .Font.Apply(dr)
 
                       iTempHeight = NullSafeInteger(dr("Height"))
                       iTempWidth = NullSafeInteger(dr("Width"))
@@ -1182,12 +1141,7 @@ Public Class _Default
                     .BackColor = General.GetColour(NullSafeInteger(dr("BackColor")))
                     .ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
 
-                    .Font.Name = NullSafeString(dr("FontName"))
-                    .Font.Size = ToPointFontUnit(NullSafeInteger(dr("FontSize")))
-                    .Font.Bold = NullSafeBoolean(dr("FontBold"))
-                    .Font.Italic = NullSafeBoolean(dr("FontItalic"))
-                    .Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
-                    .Font.Underline = NullSafeBoolean(dr("FontUnderline"))
+                    .Font.Apply(dr)
 
                     .Height() = Unit.Pixel(NullSafeInteger(dr("Height")) - 6)
                     .Width() = Unit.Pixel(NullSafeInteger(dr("Width")) - 6)
@@ -1216,12 +1170,9 @@ Public Class _Default
                     .CssClass = If(NullSafeInteger(dr("alignment")) = 0, "checkbox left", "checkbox right")
                     If IsAndroidBrowser() Then .CssClass += " android"
                     .Text = NullSafeString(dr("caption"))
-                    .Font.Name = NullSafeString(dr("FontName"))
-                    .Font.Size = ToPointFontUnit(NullSafeInteger(dr("FontSize")))
-                    .Font.Bold = NullSafeBoolean(dr("FontBold"))
-                    .Font.Italic = NullSafeBoolean(dr("FontItalic"))
-                    .Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
-                    .Font.Underline = NullSafeBoolean(dr("FontUnderline"))
+
+                    .Font.Apply(dr)
+
                     .Style("position") = "absolute"
                     .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
                     .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
@@ -1274,19 +1225,7 @@ Public Class _Default
                       .Style("height") = Unit.Pixel(NullSafeInteger(dr("Height")) - 3).ToString
                       .Style("width") = Unit.Pixel(NullSafeInteger(dr("Width"))).ToString
 
-                      sTemp2 = CStr(IIf(NullSafeBoolean(dr("FontStrikeThru")), " line-through", "")) & _
-                         CStr(IIf(NullSafeBoolean(dr("FontUnderline")), " underline", ""))
-
-                      If sTemp2.Length = 0 Then
-                        sTemp2 = " none"
-                      End If
-
-                      .Style.Add("Font-family", NullSafeString(dr("FontName")).ToString)
-                      .Style.Add("font-size", ToPoint(NullSafeInteger(dr("FontSize"))).ToString & "pt")
-                      .Style.Add("font-weight", CStr(IIf(NullSafeBoolean(dr("FontBold")), "bold", "normal")))
-                      .Style.Add("font-style", CStr(IIf(NullSafeBoolean(dr("FontItalic")), "italic", "normal")))
-                      .Style.Add("text-decoration", sTemp2)
-
+                      .Style.ApplyFont(dr)
 
                       If Not IsPostBack Then
 
@@ -1364,7 +1303,7 @@ Public Class _Default
                       .CalendarLayout.FooterFormat = "Today: {0:d}"
                       .CalendarLayout.FirstDayOfWeek = WebControls.FirstDayOfWeek.Sunday
                       .CalendarLayout.ShowTitle = False
-
+                 
                       Dim fontUnit = New FontUnit(11, UnitType.Pixel)
 
                       .CalendarLayout.DayStyle.Font.Size = fontUnit
@@ -1433,12 +1372,7 @@ Public Class _Default
                       .ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
                       .BorderColor = General.GetColour(5730458)
 
-                      .Font.Name = NullSafeString(dr("FontName"))
-                      .Font.Size = ToPointFontUnit(NullSafeInteger(dr("FontSize")))
-                      .Font.Bold = NullSafeBoolean(dr("FontBold"))
-                      .Font.Italic = NullSafeBoolean(dr("FontItalic"))
-                      .Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
-                      .Font.Underline = NullSafeBoolean(dr("FontUnderline"))
+                      .Font.Apply(dr)
 
                       If IsMobileBrowser() Then
                         .DropButton.ImageUrl1 = "~/Images/Calendar16.png"
@@ -1681,12 +1615,9 @@ Public Class _Default
                     .HeaderStyle.BorderColor = General.GetColour(10720408)
                     .HeaderStyle.BorderStyle = BorderStyle.Double
                     .HeaderStyle.BorderWidth = Unit.Pixel(0)
-                    .HeaderStyle.Font.Name = NullSafeString(dr("HeadFontName"))
-                    .HeaderStyle.Font.Size = ToPointFontUnit(NullSafeInteger(dr("HeadFontSize")))
-                    .HeaderStyle.Font.Bold = NullSafeBoolean(dr("HeadFontBold"))
-                    .HeaderStyle.Font.Italic = NullSafeBoolean(dr("HeadFontItalic"))
-                    .HeaderStyle.Font.Strikeout = NullSafeBoolean(dr("HeadFontStrikeThru"))
-                    .HeaderStyle.Font.Underline = NullSafeBoolean(dr("HeadFontUnderline"))
+
+                    .HeaderStyle.Font.Apply(dr, "Head")
+
                     .HeaderStyle.ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
                     .HeaderStyle.Wrap = False
                     .HeaderStyle.VerticalAlign = VerticalAlign.Middle
@@ -1697,23 +1628,15 @@ Public Class _Default
                     .PagerStyle.BorderColor = General.GetColour(10720408)
                     .PagerStyle.BorderStyle = BorderStyle.Solid
                     .PagerStyle.BorderWidth = Unit.Pixel(0)
-                    .PagerStyle.Font.Name = NullSafeString(dr("HeadFontName"))
-                    .PagerStyle.Font.Size = ToPointFontUnit(NullSafeInteger(dr("HeadFontSize")))
-                    .PagerStyle.Font.Bold = NullSafeBoolean(dr("HeadFontBold"))
-                    .PagerStyle.Font.Italic = NullSafeBoolean(dr("HeadFontItalic"))
-                    .PagerStyle.Font.Strikeout = NullSafeBoolean(dr("HeadFontStrikeThru"))
-                    .PagerStyle.Font.Underline = NullSafeBoolean(dr("HeadFontUnderline"))
+
+                    .PagerStyle.Font.Apply(dr, "Head")
+           
                     .PagerStyle.ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
                     .PagerStyle.Wrap = False
                     .PagerStyle.VerticalAlign = VerticalAlign.Middle
                     .PagerStyle.HorizontalAlign = HorizontalAlign.Center
 
-                    .Font.Name = NullSafeString(dr("FontName"))
-                    .Font.Size = ToPointFontUnit(NullSafeInteger(dr("FontSize")))
-                    .Font.Bold = NullSafeBoolean(dr("FontBold"))
-                    .Font.Italic = NullSafeBoolean(dr("FontItalic"))
-                    .Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
-                    .Font.Underline = NullSafeBoolean(dr("FontUnderline"))
+                    .Font.Apply(dr)
 
                     If NullSafeInteger(dr("ForeColorEven")) <> NullSafeInteger(dr("ForeColor")) Then
                       .RowStyle.ForeColor = General.GetColour(NullSafeInteger(dr("ForeColorEven")))
@@ -1879,12 +1802,9 @@ Public Class _Default
                       .Attributes.CssStyle("WIDTH") = Unit.Pixel(NullSafeInteger(dr("Width")) - (2 * IMAGEBORDERWIDTH)).ToString
                       .Height() = Unit.Pixel(NullSafeInteger(dr("Height")) - (2 * IMAGEBORDERWIDTH))
                       .Attributes.CssStyle("HEIGHT") = Unit.Pixel(NullSafeInteger(dr("Height")) - (2 * IMAGEBORDERWIDTH)).ToString
-                      .Font.Name = NullSafeString(dr("FontName"))
-                      .Font.Size = ToPointFontUnit(NullSafeInteger(dr("FontSize")))
-                      .Font.Bold = NullSafeBoolean(dr("FontBold"))
-                      .Font.Italic = NullSafeBoolean(dr("FontItalic"))
-                      .Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
-                      .Font.Underline = NullSafeBoolean(dr("FontUnderline"))
+
+                      .Font.Apply(dr)
+
                       .Width = Unit.Pixel(NullSafeInteger(dr("Width")))
                       .BackColor = backgroundColor
                       '.BackColor = Color.Transparent
@@ -1964,12 +1884,7 @@ Public Class _Default
                         iMinTabIndex = NullSafeInteger(dr("tabIndex"))
                       End If
 
-                      .Font.Name = NullSafeString(dr("FontName"))
-                      .Font.Size = ToPointFontUnit(NullSafeInteger(dr("FontSize")))
-                      .Font.Bold = NullSafeBoolean(dr("FontBold"))
-                      .Font.Italic = NullSafeBoolean(dr("FontItalic"))
-                      .Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
-                      .Font.Underline = NullSafeBoolean(dr("FontUnderline"))
+                      .Font.Apply(dr)
 
                       .BackColor = General.GetColour(NullSafeInteger(dr("BackColor")))
                       .ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
@@ -1986,27 +1901,19 @@ Public Class _Default
                       .HeaderStyle.BorderColor = General.GetColour(10720408)
                       .HeaderStyle.BorderStyle = BorderStyle.Solid
                       .HeaderStyle.BorderWidth = Unit.Pixel(0)
-                      .HeaderStyle.Font.Name = NullSafeString(dr("FontName"))
-                      .HeaderStyle.Font.Size = ToPointFontUnit(NullSafeInteger(dr("FontSize")))
-                      .HeaderStyle.Font.Italic = NullSafeBoolean(dr("FontItalic"))
-                      .HeaderStyle.Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
-                      .HeaderStyle.Font.Underline = NullSafeBoolean(dr("FontUnderline"))
+
+                      .HeaderStyle.Font.Apply(dr)
                       .HeaderStyle.ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
                       .HeaderStyle.Wrap = False
                       .HeaderStyle.VerticalAlign = VerticalAlign.Middle
                       .HeaderStyle.HorizontalAlign = HorizontalAlign.Center
 
-                      .PagerStyle.BorderWidth = Unit.Pixel(0)
-                      .PagerStyle.Font.Name = NullSafeString(dr("FontName"))
-                      .PagerStyle.Font.Size = ToPointFontUnit(NullSafeInteger(dr("FontSize")))
-                      .PagerStyle.Font.Bold = NullSafeBoolean(dr("FontBold"))
-                      .PagerStyle.Font.Italic = NullSafeBoolean(dr("FontItalic"))
-                      .PagerStyle.Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
-                      .PagerStyle.Font.Underline = NullSafeBoolean(dr("FontUnderline"))
+                      .PagerStyle.Font.Apply(dr)
                       .PagerStyle.ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
                       .PagerStyle.Wrap = False
                       .PagerStyle.VerticalAlign = VerticalAlign.Middle
                       .PagerStyle.HorizontalAlign = HorizontalAlign.Center
+                      .PagerStyle.BorderWidth = Unit.Pixel(0)
                     End With
 
                     sFilterSQL = LookupFilterSQL(NullSafeString(dr("lookupFilterColumnName")), _
@@ -2220,12 +2127,7 @@ Public Class _Default
                         ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_HiddenField)
                       End If
 
-                      .Font.Name = NullSafeString(dr("FontName"))
-                      .Font.Size = ToPointFontUnit(NullSafeInteger(dr("FontSize")))
-                      .Font.Bold = NullSafeBoolean(dr("FontBold"))
-                      .Font.Italic = NullSafeBoolean(dr("FontItalic"))
-                      .Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
-                      .Font.Underline = NullSafeBoolean(dr("FontUnderline"))
+                      .Font.Apply(dr)
 
                       .BackColor = General.GetColour(NullSafeInteger(dr("BackColor")))
                       .ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
@@ -2376,12 +2278,7 @@ Public Class _Default
                       ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_HiddenField)
                     End If
 
-                    .Font.Name = NullSafeString(dr("FontName"))
-                    .Font.Size = ToPointFontUnit(NullSafeInteger(dr("FontSize")))
-                    .Font.Bold = NullSafeBoolean(dr("FontBold"))
-                    .Font.Italic = NullSafeBoolean(dr("FontItalic"))
-                    .Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
-                    .Font.Underline = NullSafeBoolean(dr("FontUnderline"))
+                    .Font.Apply(dr)
 
                     .BackColor = General.GetColour(NullSafeInteger(dr("BackColor")))
                     .ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
@@ -2542,12 +2439,7 @@ Public Class _Default
                     If IsAndroidBrowser() Then .CssClass += " android"
                     .TabIndex = CShort(NullSafeInteger(dr("tabIndex")) + 1)
                     .RepeatDirection = If(NullSafeInteger(dr("Orientation")) = 0, RepeatDirection.Vertical, RepeatDirection.Horizontal)
-                    .Font.Name = NullSafeString(dr("FontName"))
-                    .Font.Size = ToPointFontUnit(NullSafeInteger(dr("FontSize")))
-                    .Font.Bold = NullSafeBoolean(dr("FontBold"))
-                    .Font.Italic = NullSafeBoolean(dr("FontItalic"))
-                    .Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
-                    .Font.Underline = NullSafeBoolean(dr("FontUnderline"))
+                    .Font.Apply(dr)
                     .Style("position") = "absolute"
                     .Style("top") = Unit.Pixel(radioTop + NullSafeInteger(dr("TopCoord"))).ToString
                     .Style("left") = Unit.Pixel(9 + NullSafeInteger(dr("LeftCoord"))).ToString
@@ -2657,18 +2549,7 @@ Public Class _Default
 
                     .Value = NullSafeString(dr("caption"))
 
-                    sTemp2 = CStr(IIf(NullSafeBoolean(dr("FontStrikeThru")), " line-through", "")) & _
-                       CStr(IIf(NullSafeBoolean(dr("FontUnderline")), " underline", ""))
-
-                    If sTemp2.Length = 0 Then
-                      sTemp2 = " none"
-                    End If
-
-                    .Style.Add("font-family", NullSafeString(dr("FontName")).ToString)
-                    .Style.Add("font-size", ToPoint(NullSafeInteger(dr("FontSize"))).ToString & "pt")
-                    .Style.Add("font-weight", CStr(IIf(NullSafeBoolean(dr("FontBold")), "bold", "normal")))
-                    .Style.Add("font-style", CStr(IIf(NullSafeBoolean(dr("FontItalic")), "italic", "normal")))
-                    .Style.Add("text-decoration", sTemp2)
+                    .Style.ApplyFont(dr)
 
                     .Style.Add("Width", Unit.Pixel(NullSafeInteger(dr("Width"))).ToString)
                     .Style.Add("Height", Unit.Pixel(NullSafeInteger(dr("Height"))).ToString)
