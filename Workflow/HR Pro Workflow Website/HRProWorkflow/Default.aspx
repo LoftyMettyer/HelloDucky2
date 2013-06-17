@@ -637,7 +637,7 @@
       catch (e) {}      
     }		
 		    
-		if($get("txtPostbackMode").value==2) {
+		if($get("txtPostbackMode").value==3) {
 		    //ShowMessage is the sub called in lieu of Application:EndRequest, i.e. Pretty much the end of
 		    //the postback cycle. So we'll reset all grid scroll bars to their previous position
 		    SetScrollTopPos("", "-1");		    
@@ -1179,17 +1179,30 @@ function ResizeComboForForm(sender, args) {
   }
 
 
-function Right(str, n){
-    if (n <= 0)
-       return "";
-    else if (n > String(str).length)
-       return str;
-    else {
-       var iLen = String(str).length;
-       return String(str).substring(iLen, iLen - n);
-    }
-}
+  function Right(str, n){
+      if (n <= 0)
+         return "";
+      else if (n > String(str).length)
+         return str;
+      else {
+         var iLen = String(str).length;
+         return String(str).substring(iLen, iLen - n);
+      }
+  }
 
+  function isGridFiltered(iGridID) { 
+    //searches the specified table for hidden rows and returns true if any are found...
+    var table = document.getElementById(iGridID)
+    
+    for (var r = 0; r < table.rows.length; r++) {
+        if (table.rows[r].style.display == 'none') {
+          return true;
+        }
+    }
+    return false;  
+  }
+  
+  
   function SetScrollTopPos(iGridID, iPos) {
     if(iPos==-1) {
     // -1 is the 'code' to reset scrollbar to stored position
@@ -1199,8 +1212,7 @@ function Right(str, n){
 	    {
 		    for (i=0; i<controlCollection.length; i++)  
 		    {
-			    if(Right(controlCollection.item(i).name, 9)=="scrollpos") {
-			    
+			    if(Right(controlCollection.item(i).name, 9)=="scrollpos") {			    
 			      document.getElementById(controlCollection.item(i).name.replace("scrollpos", "gridcontainer")).scrollTop = (controlCollection.item(i).value);
     			}	
 		    }
