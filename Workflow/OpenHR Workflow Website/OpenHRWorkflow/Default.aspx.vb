@@ -967,7 +967,7 @@ Public Class _Default
                       .Style("word-wrap") = "break-word"
                       .Style("resize") = "none"
                     End If
- 
+
                     .Text = NullSafeString(dr("value"))
 
                     .BorderStyle = BorderStyle.Solid
@@ -3813,7 +3813,15 @@ Public Class _Default
     Dim sMessage3 As String = ""
 
     Try ' Disable all controls.
-      For Each ctlFormInput In pnlInput.ContentTemplateContainer.Controls
+      Dim controlList = pnlInputDiv.Controls.Cast(Of Control)() _
+            .Union(pnlTabsDiv.Controls.Cast(Of Control)) _
+            .Where(Function(c) c.ClientID.EndsWith("_PageTab")) _
+            .SelectMany(Function(c) c.Controls.Cast(Of Control)()) _
+            .Where(Function(c) c.ClientID.StartsWith(FORMINPUTPREFIX))
+
+      For Each ctlFormInput In controlList
+        'For Each ctlFormInput In pnlInput.ContentTemplateContainer.Controls
+
         sID = ctlFormInput.ID
 
         If (Left(sID, Len(FORMINPUTPREFIX)) = FORMINPUTPREFIX) Then
@@ -3830,8 +3838,11 @@ Public Class _Default
           Select Case iType
             Case 0 ' Button
               ctlFormHTMLInputButton = DirectCast(ctlFormInput, HtmlInputButton)
-              ctlFormHTMLInputButton.Style.Remove("disabled")
-              If pfEnabled Then ctlFormHTMLInputButton.Style.Add("disabled", "disabled")
+              'ctlFormHTMLInputButton.Style.Remove("disabled")
+              'If Not pfEnabled Then ctlFormHTMLInputButton.Style.Add("disabled", "disabled")
+
+              ctlFormHTMLInputButton.Attributes.Remove("disabled")
+              If Not pfEnabled Then ctlFormHTMLInputButton.Attributes.Add("disabled", "disabled")
 
             Case 1 ' Database value
             Case 2 ' Label
@@ -3879,7 +3890,7 @@ Public Class _Default
               End If
 
             Case 14 ' Lookup Input
-              If Not isMobileBrowser() Then
+              If Not IsMobileBrowser() Then
 
                 If (TypeOf ctlFormInput Is AjaxControlToolkit.DropDownExtender) Then 'Infragistics.WebUI.WebCombo.WebCombo) Then
                   DirectCast(ctlFormInput, AjaxControlToolkit.DropDownExtender).Enabled = pfEnabled
