@@ -118,7 +118,7 @@ Partial Class MobileLogin
           Case 0 ' Button
 
             If NullSafeString(drElements("Name")).Length > 0 Then
-              ctlFormImageButton = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name"))), ImageButton)
+              ctlFormImageButton = TryCast(pnlPage.FindControl(NullSafeString(drElements("Name"))), ImageButton)
 
               With ctlFormImageButton
                 sImageFileName = LoadPicture(NullSafeInteger(drElements("pictureID")), sMessage)
@@ -131,7 +131,7 @@ Partial Class MobileLogin
 
               ' Footer text
               If NullSafeString(drElements("Caption")).Length > 0 Then
-                ctlFormHtmlGenericControl = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name")) & "_label"), HtmlGenericControl)
+                ctlFormHtmlGenericControl = TryCast(pnlPage.FindControl(NullSafeString(drElements("Name")) & "_label"), HtmlGenericControl)
                 With ctlFormHtmlGenericControl
                   .Style("word-wrap") = "break-word"
                   .Style("overflow") = "auto"
@@ -147,7 +147,7 @@ Partial Class MobileLogin
 
           Case 2 ' Label
             If NullSafeString(drElements("Name")).Length > 0 Then
-              ctlFormHtmlGenericControl = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name"))), HtmlGenericControl)  'New Label
+              ctlFormHtmlGenericControl = TryCast(pnlPage.FindControl(NullSafeString(drElements("Name"))), HtmlGenericControl)  'New Label
               With ctlFormHtmlGenericControl
                 .Style("word-wrap") = "break-word"
                 .InnerText = NullSafeString(drElements("caption"))
@@ -164,7 +164,7 @@ Partial Class MobileLogin
           Case 3 ' Input value - character
             If NullSafeString(drElements("Name")).Length > 0 Then
 
-              ctlFormHtmlInputText = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name"))), HtmlInputText)
+              ctlFormHtmlInputText = TryCast(pnlPage.FindControl(NullSafeString(drElements("Name"))), HtmlInputText)
               ctlFormHtmlInputText.Style.Add("color", objGeneral.GetHTMLColour(NullSafeInteger(drElements("ForeColor"))))
               ctlFormHtmlInputText.Style.Add("font-family", NullSafeString(drElements("FontName")))
               ctlFormHtmlInputText.Style.Add("font-size", NullSafeString(drElements("FontSize")) & "pt")
@@ -179,8 +179,8 @@ Partial Class MobileLogin
       myConnection.Close()
       drElements.Close()
     Else
-      pnlContainer.Style.Remove("display")
-      pnlContainer.Style.Add("display", "none")
+      pnlPage.Style.Remove("display")
+      pnlPage.Style.Add("display", "none")
       ShowMessage("Server Error", "Could not open a connection to SQL Server", "Message.aspx")
     End If
 

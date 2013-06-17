@@ -301,7 +301,7 @@ Public Class _Default
             sQueryString = sTemp.Substring(iTemp + 1)
           Else
             ' NPG20120326 Fault HRPRO-2128
-            Response.Redirect("login.aspx")
+            Response.Redirect("MobileLogin.aspx")
           End If
 
           ' Try the newer encryption first

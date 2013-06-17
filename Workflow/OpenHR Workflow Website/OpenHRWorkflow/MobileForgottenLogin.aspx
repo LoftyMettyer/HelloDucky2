@@ -50,7 +50,7 @@
     <body onload="return window_onload()">
         <form id="frmForgotLogin" runat="server" defaultbutton="btnSubmit">
 
-            <div id="pnlContainer" runat="server" style="overflow: hidden;">
+            <div id="pnlPage" runat="server" style="overflow: hidden;">
                 
                 <div id="pnlHeader" runat="server" />
                                     
@@ -80,21 +80,21 @@
                     </table>
                 </div>        
             </div>
-
-            <div id="pnlGreyOut" runat="server"/>
-            
-            <div id="pnlMsgBox" runat="server" style="visibility: hidden; z-index: 2; position: absolute; width: 100%; top: 30%">
-                <div id="inner" style="background-color: #002248; border: 2px solid gainsboro; width: 300px; margin: 0px auto; text-align: center; border-radius: 10px; padding: 10px;">
-                    <label id="lblMsgHeader" runat="server" style="font-family: Verdana; font-weight: bold; font-size: large; color: white"></label>
-                    <br/>
-                    <br/>
-                    <label id="lblMsgBox" runat="server" style="font-family: Verdana; font-size: large; color: white"></label>
-                    <br/>
-                    <br/>
-                    <input type="hidden" id="hdnRedirectTo" runat="server"/>
-                    <input type="button" value="OK" style="width: 100px; height: 30px; background-color: ButtonHighlight" onclick=" closeMsgBox(); "/>
-                </div>
-            </div>
         </form>
+        
+        <div id="pnlGreyOut" runat="server"/>
+            
+        <div id="pnlMsgBox" runat="server" style="visibility: hidden; z-index: 2; position: absolute; width: 100%; top: 30%">
+            <div id="inner" style="background-color: #002248; border: 2px solid gainsboro; width: 300px; margin: 0px auto; text-align: center; border-radius: 10px; padding: 10px;">
+                <label id="lblMsgHeader" runat="server" style="font-family: Verdana; font-weight: bold; font-size: large; color: white"></label>
+                <br/>
+                <br/>
+                <label id="lblMsgBox" runat="server" style="font-family: Verdana; font-size: large; color: white"></label>
+                <br/>
+                <br/>
+                <input type="hidden" id="hdnRedirectTo" runat="server"/>
+                <input type="button" value="OK" style="width: 100px; height: 30px; background-color: ButtonHighlight" onclick=" closeMsgBox(); "/>
+            </div>
+        </div>
     </body>
 </html>

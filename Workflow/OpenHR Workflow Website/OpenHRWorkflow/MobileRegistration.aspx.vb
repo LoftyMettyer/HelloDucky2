@@ -115,7 +115,7 @@ Partial Class Registration
         Case 0 ' Button
 
           If NullSafeString(drElements("Name")).Length > 0 Then
-            ctlFormImageButton = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name"))), ImageButton)
+            ctlFormImageButton = TryCast(pnlPage.FindControl(NullSafeString(drElements("Name"))), ImageButton)
 
             With ctlFormImageButton
               sImageFileName = LoadPicture(NullSafeInteger(drElements("pictureID")), sMessage)
@@ -128,7 +128,7 @@ Partial Class Registration
 
             ' Footer text
             If NullSafeString(drElements("Caption")).Length > 0 Then
-              ctlFormHtmlGenericControl = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name")) & "_label"), HtmlGenericControl)
+              ctlFormHtmlGenericControl = TryCast(pnlPage.FindControl(NullSafeString(drElements("Name")) & "_label"), HtmlGenericControl)
               With ctlFormHtmlGenericControl
                 .Style("word-wrap") = "break-word"
                 .Style("overflow") = "auto"
@@ -144,7 +144,7 @@ Partial Class Registration
 
         Case 2 ' Label
           If NullSafeString(drElements("Name")).Length > 0 Then
-            ctlFormHtmlGenericControl = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name"))), HtmlGenericControl)  'New Label
+            ctlFormHtmlGenericControl = TryCast(pnlPage.FindControl(NullSafeString(drElements("Name"))), HtmlGenericControl)  'New Label
             With ctlFormHtmlGenericControl
               .Style("word-wrap") = "break-word"
               .InnerText = NullSafeString(drElements("caption"))
@@ -161,7 +161,7 @@ Partial Class Registration
         Case 3 ' Input value - character
           If NullSafeString(drElements("Name")).Length > 0 Then
 
-            ctlFormHtmlInputText = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name"))), HtmlInputText)
+            ctlFormHtmlInputText = TryCast(pnlPage.FindControl(NullSafeString(drElements("Name"))), HtmlInputText)
             ctlFormHtmlInputText.Style.Add("color", objGeneral.GetHTMLColour(NullSafeInteger(drElements("ForeColor"))))
             ctlFormHtmlInputText.Style.Add("font-family", NullSafeString(drElements("FontName")))
             ctlFormHtmlInputText.Style.Add("font-size", NullSafeString(drElements("FontSize")) & "pt")
@@ -381,7 +381,7 @@ Partial Class Registration
     Else
       sHeader = "Registration Submitted"
       sMessage = "An email has been sent to the entered address. To complete your registration, click the activation link in the email."
-      sRedirectTo = "/MobileLogin.aspx"
+      sRedirectTo = "MobileLogin.aspx"
     End If
 
     ShowMessage(sHeader, sMessage, sRedirectTo)
