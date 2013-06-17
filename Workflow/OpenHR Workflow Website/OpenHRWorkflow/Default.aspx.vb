@@ -24,7 +24,6 @@ Public Class _Default
   Private msPwd As String
 
   Private mobjConfig As New Config
-  Private msRefreshLiteralsCode As String
   Private miCompletionMessageType As Integer
   Private msCompletionMessage As String
   Private miSavedForLaterMessageType As Integer
@@ -97,16 +96,12 @@ Public Class _Default
     Dim ctlForm_HTMLInputButton As HtmlInputButton
     Dim ctlForm_Label As Label
     Dim ctlForm_TextInput As TextBox
-    Dim ctlForm_CheckBox As LiteralControl
-    Dim ctlForm_CheckBoxReal As CheckBox
     Dim ctlForm_Dropdown As DropDownList
     Dim ctlForm_Image As WebControls.Image
     Dim ctlForm_NumericInput As Infragistics.WebUI.WebDataInput.WebNumericEdit
     Dim ctlForm_PagingGridView As RecordSelector
     Dim ctlForm_Frame As LiteralControl
     Dim ctlForm_Line As LiteralControl
-    Dim ctlForm_OptionGroup As LiteralControl
-    Dim ctlForm_OptionGroupReal As TextBox
     Dim ctlForm_HiddenField As HiddenField
     Dim ctlForm_Literal As LiteralControl
     Dim ctlForm_PageTab() As Panel
@@ -129,7 +124,6 @@ Public Class _Default
     Dim cmdInitiate As SqlCommand
     Dim cmdActivate As SqlCommand
     Dim dr As SqlDataReader
-    Dim iTemp As Integer
     Dim sTemp As String = String.Empty
     Dim sTemp2 As String
     Dim sDBVersion As String
@@ -149,12 +143,9 @@ Public Class _Default
     Dim cmdGrid As SqlCommand
     Dim cmdQS As SqlCommand
     Dim iMinTabIndex As Integer
-    Dim sDefaultValue As String
     Dim fRecordOK As Boolean
     Dim sDefaultFocusControl As String
     Dim ctlDefaultFocusControl As New Control
-    Dim fChecked As Boolean
-    Dim ctlFormCheckBox As CheckBox
     Dim iWorkflowID As Integer
     Dim sFormElements As String
     Dim arrFollowOnForms() As String
@@ -194,7 +185,6 @@ Public Class _Default
     miImageCount = 0
     sDefaultFocusControl = ""
     iMinTabIndex = -1
-    msRefreshLiteralsCode = ""
     ReDim arrQueryStrings(0)
     sSiblingForms = ""
 
@@ -246,7 +236,7 @@ Public Class _Default
       ElseIf Request.ServerVariables("HTTP_ACCEPT_LANGUAGE") IsNot Nothing Then
         cultureString = Request.ServerVariables("HTTP_ACCEPT_LANGUAGE")
       Else
-        cultureString = System.Configuration.ConfigurationManager.AppSettings("defaultculture")
+        cultureString = ConfigurationManager.AppSettings("defaultculture")
       End If
 
       If cultureString.ToLower = "en-us" Then cultureString = "en-GB"
@@ -261,12 +251,12 @@ Public Class _Default
     If sMessage.Length = 0 Then
       If IsPostBack Then
 
-        miInstanceID = CInt(Me.ViewState("InstanceID"))
-        miElementID = CInt(Me.ViewState("ElementID"))
-        msUser = Me.ViewState("User").ToString
-        msPwd = Me.ViewState("Pwd").ToString
-        msServer = Me.ViewState("Server").ToString
-        msDatabase = Me.ViewState("Database").ToString
+        miInstanceID = CInt(ViewState("InstanceID"))
+        miElementID = CInt(ViewState("ElementID"))
+        msUser = ViewState("User").ToString
+        msPwd = ViewState("Pwd").ToString
+        msServer = ViewState("Server").ToString
+        msDatabase = ViewState("Database").ToString
 
       Else
         Try
@@ -279,7 +269,7 @@ Public Class _Default
           ' NPG20120201 - Fault HRPRO-1828
           ' Request.RawUrl replaces symbols with % codes, e.g. $=%40.
           sTemp = Server.UrlDecode(Request.RawUrl.ToString)
-          iTemp = sTemp.IndexOf("?")
+          Dim iTemp As Integer = sTemp.IndexOf("?")
 
           If iTemp >= 0 Then
             sQueryString = sTemp.Substring(iTemp + 1)
@@ -604,12 +594,12 @@ Public Class _Default
           If sMessage.Length = 0 Then
             ' Remember the useful parameters for use in postbacks.
 
-            Me.ViewState("InstanceID") = miInstanceID
-            Me.ViewState("ElementID") = miElementID
-            Me.ViewState("User") = msUser
-            Me.ViewState("Pwd") = msPwd
-            Me.ViewState("Server") = msServer
-            Me.ViewState("Database") = msDatabase
+            ViewState("InstanceID") = miInstanceID
+            ViewState("ElementID") = miElementID
+            ViewState("User") = msUser
+            ViewState("Pwd") = msPwd
+            ViewState("Server") = msServer
+            ViewState("Database") = msDatabase
 
             'FileUpload.apsx and FileDownload.aspx require these variables
             Session("User") = msUser
@@ -765,7 +755,7 @@ Public Class _Default
 
                   ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_HTMLInputButton)
 
-                  AddHandler ctlForm_HTMLInputButton.ServerClick, AddressOf Me.ButtonClick
+                  AddHandler ctlForm_HTMLInputButton.ServerClick, AddressOf ButtonClick
 
                 Case 1 ' Database value
                   If (NullSafeInteger(dr("sourceItemType")) = -7) _
@@ -1005,11 +995,9 @@ Public Class _Default
                       .Attributes("maxlength") = NullSafeString(dr("inputSize"))
                     End If
 
-                    'If IsMobileBrowser() Then .Attributes.Add("onchange", "FilterMobileLookup('" & .ID.ToString & "');")
-
                     If IsMobileBrowser() Then
                       .AutoPostBack = True
-                      .Attributes.Add("onchange", "FilterMobileLookup('" & .ID.ToString & "');")
+                      .Attributes.Add("onchange", "FilterMobileLookup('" & .ID & "');")
                       AddHandler .TextChanged, AddressOf Me.btnMob
                     End If
 
@@ -1212,7 +1200,7 @@ Public Class _Default
                     .Attributes("onpaste") = "try{WebNumericEditValidation_Paste(this, event, '" & sID & "');}catch(e){};"
 
                     If IsMobileBrowser() Then
-                      .ClientSideEvents.ValueChange = "WebNumericEdit('" & .ID.ToString & "');FilterMobileLookup('" & .ID.ToString & "');"
+                      .ClientSideEvents.ValueChange = "WebNumericEdit('" & .ID & "');FilterMobileLookup('" & .ID & "');"
                       AddHandler .ValueChange, AddressOf Me.btnMob
                     End If
 
@@ -1221,149 +1209,45 @@ Public Class _Default
                   ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_NumericInput)
 
                 Case 6 ' Input value - logic
-                  ' NB. We use a table with a label and checkbox in, instead of just a checkbox
-                  ' for formatting purposes.
-                  ctlForm_CheckBoxReal = New CheckBox
-                  With ctlForm_CheckBoxReal
-                    .Height = Unit.Parse("0")
-                    .Width = Unit.Parse("0")
-                    .TabIndex = 0
-                    .Style("visibility") = "hidden"
-                    .Checked = (NullSafeString(dr("value")).ToUpper = "TRUE")
+
+                  Dim checkBox = New CheckBox
+                  With checkBox
                     .ID = sID
+                    .Checked = (NullSafeString(dr("value")).ToLower = "true")
+                    .TabIndex = CShort(NullSafeInteger(dr("tabIndex")) + 1)
+                    .CssClass = If(NullSafeInteger(dr("alignment")) = 0, "checkbox left", "checkbox right")
+                    .Text = NullSafeString(dr("caption"))
+                    .Font.Name = NullSafeString(dr("FontName"))
+                    .Font.Size = ToPointFontUnit(NullSafeInteger(dr("FontSize")))
+                    .Font.Bold = NullSafeBoolean(dr("FontBold"))
+                    .Font.Italic = NullSafeBoolean(dr("FontItalic"))
+                    .Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
+                    .Font.Underline = NullSafeBoolean(dr("FontUnderline"))
+                    .Style("position") = "absolute"
+                    .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
+                    .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
+                    .Style("line-height") = NullSafeInteger(dr("Height")).ToString & "px"
+                    .Height() = Unit.Pixel(NullSafeInteger(dr("Height")))
+                    .Width() = Unit.Pixel(NullSafeInteger(dr("Width")))
+                    .ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
+                    If NullSafeInteger(dr("BackStyle")) = 1 Then
+                      .BackColor = General.GetColour(NullSafeInteger(dr("BackColor")))
+                    End If
+
+                    If IsMobileBrowser() Then
+                      .Attributes("onclick") = "FilterMobileLookup('" & sID & "');__doPostBack('" & sID & "', 'doLiteralsPostback');"
+                    End If
                   End With
-                  ' pnlInput.contenttemplatecontainer.Controls.Add(ctlForm_CheckBoxReal)
-                  ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_CheckBoxReal)
 
-                  msRefreshLiteralsCode = msRefreshLiteralsCode & vbNewLine & _
-                   vbTab & vbTab & "try" & vbNewLine & _
-                   vbTab & vbTab & "{" & vbNewLine & _
-                   vbTab & vbTab & vbTab & "frmMain.chk" & sID & ".checked = frmMain." & sID & ".checked;" & vbNewLine & _
-                   vbTab & vbTab & "}" & vbNewLine & _
-                   vbTab & vbTab & "catch(e) {}"
-
-                  If NullSafeInteger(dr("BackStyle")) = 0 Then
-                    sBackColour = "Transparent"
-                  Else
-                    sBackColour = General.GetHtmlColour(NullSafeInteger(dr("BackColor")))
-                  End If
-
-                  sTemp2 = CStr(IIf(NullSafeBoolean(dr("FontStrikeThru")), " line-through", "")) & _
-                   CStr(IIf(NullSafeBoolean(dr("FontUnderline")), " underline", ""))
-
-                  If sTemp2.Length = 0 Then
-                    sTemp2 = " none"
-                  End If
-
-                  sTemp = "<TABLE BORDER='0' CELLSPACING='0' CELLPADDING='0'" & _
-                   " WIDTH=" & NullSafeString(dr("Width")) & _
-                   " style='DISPLAY: inline-block; POSITION: absolute; TEXT-ALIGN: Left;" & _
-                   " TOP: " & NullSafeString(dr("TopCoord")) & "px; " & " LEFT: " & NullSafeString(dr("LeftCoord")) & "px; " & _
-                   " WIDTH: " & NullSafeString(dr("Width")) & "px; " & " HEIGHT: " & NullSafeString(dr("Height")) & "px; " & _
-                   " BACKGROUND-COLOR: " & sBackColour & "; " & _
-                   " COLOR: " & General.GetHtmlColour(NullSafeInteger(dr("ForeColor"))) & "; " & _
-                   " font-family: " & NullSafeString(dr("FontName")) & "; " & _
-                   " font-size: " & ToPoint(NullSafeInteger(dr("FontSize"))).ToString & "pt; " & _
-                   " font-weight: " & CStr(IIf(NullSafeBoolean(dr("FontBold")), "bold", "normal")) & ";" & _
-                   " font-style: " & CStr(IIf(NullSafeBoolean(dr("FontItalic")), "italic", "normal")) & ";" & _
-                   " text-decoration:" & sTemp2 & "'>" & vbCrLf & _
-                   "<TR>" & vbCrLf
-
-                  'android checkboxes need to be moved up
-                  Dim androidFix As String = String.Empty
-
-                  If IsAndroidBrowser() Then
-                    androidFix = "position:relative;top:-4px;"
-                  End If
-
-                  If IsPostBack Then
-                    If pnlInput.FindControl(sID) Is Nothing Then
-                      fChecked = True
-                    Else
-                      ctlFormCheckBox = DirectCast(pnlInput.FindControl(sID), CheckBox)
-                      fChecked = ctlFormCheckBox.Checked
-                    End If
-
-                    If NullSafeInteger(dr("alignment")) = 0 Then
-                      sTemp = sTemp & _
-                       "<TD><input type='checkbox'" & _
-                       " onclick=""" & sID & ".checked = checked;" & _
-                       CStr(IIf(IsMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');setPostbackMode(3);__doPostBack('" & sID & "', 'doLiteralsPostback');""", """")) & _
-                       " onfocus=""try{" & sID & ".select();activateControl();}catch(e){};""" & _
-                       CStr(IIf(fChecked, " CHECKED", "")) & _
-                       " style='height:14px;width:14px;margin:0px;" & androidFix & "'" & _
-                       " tabIndex='" & NullSafeInteger(dr("tabIndex")) + 1 & "'" & _
-                       " id='chk" & sID & "'" & _
-                       " name='chk" & sID & "'></TD>" & vbCrLf & _
-                       "</TD><TD width='100%'><LABEL ID='forChk" & sID & "' FOR='chk" & sID & "' tabIndex='-1'" & _
-                       " style='padding-left: 3px;'" & _
-                       " onkeypress = ""try{if(window.event.keyCode == 32){chk" & sID & ".click()};}catch(e){}""" & _
-                       ">" & NullSafeString(dr("caption")) & "</LABEL></TD>" & vbCrLf
-                    Else
-                      sTemp = sTemp & _
-                       "<TD width='100%'><LABEL ID='forChk" & sID & "' FOR='chk" & sID & "' tabIndex='" & NullSafeInteger(dr("tabIndex")) + 1 & "'" & _
-                       " onkeypress = ""try{if(window.event.keyCode == 32){chk" & sID & ".click()};}catch(e){}""" & _
-                       ">" & NullSafeString(dr("caption")) & "</LABEL></TD>" & vbCrLf & _
-                       "<TD><input type='checkbox'" & _
-                       " onclick=""" & sID & ".checked = checked;" & _
-                       CStr(IIf(IsMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');setPostbackMode(3);__doPostBack('" & sID & "', 'doLiteralsPostback');""", """")) & _
-                       " onfocus=""try{" & sID & ".select();activateControl();}catch(e){};""" & _
-                       CStr(IIf(fChecked, " CHECKED", "")) & _
-                       " style='height:14px;width:14px;margin:0px;" & androidFix & "'" & _
-                       " tabIndex='-1'" & _
-                       " id='chk" & sID & "'" & _
-                       " name='chk" & sID & "'></TD>" & vbCrLf
-                    End If
-                  Else
-
-
-                    If NullSafeInteger(dr("alignment")) = 0 Then
-                      sTemp = sTemp & _
-                       "<TD><input type='checkbox'" & _
-                       " onclick=""" & sID & ".checked = checked;" & _
-                       CStr(IIf(IsMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');setPostbackMode(3);__doPostBack('" & sID & "', 'doLiteralsPostback');""", """")) & _
-                       " onfocus=""try{" & sID & ".select();activateControl();}catch(e){};""" & _
-                       CStr(IIf(UCase(NullSafeString(dr("value"))) = "TRUE", " CHECKED", "")) & _
-                       " style='height:14px;width:14px;margin:0px;" & androidFix & "'" & _
-                       " tabIndex='" & NullSafeInteger(dr("tabIndex")) + 1 & "'" & _
-                       " id='chk" & sID & "'" & _
-                       " name='chk" & sID & "'></TD>" & vbCrLf & _
-                       "</TD><TD width='100%'><LABEL ID='forChk" & sID & "' FOR='chk" & sID & "' tabIndex='-1'" & _
-                       " style='padding-left: 3px;'" & _
-                       " onkeypress = ""try{if(window.event.keyCode == 32){chk" & sID & ".click()};}catch(e){}""" & _
-                       ">" & NullSafeString(dr("caption")) & "</LABEL></TD>" & vbCrLf
-                    Else
-                      sTemp = sTemp & _
-                       "<TD width='100%'><LABEL ID='forChk" & sID & "' FOR='chk" & sID & "' tabIndex='" & NullSafeInteger(dr("tabIndex")) + 1 & "'" & _
-                       " onkeypress = ""try{if(window.event.keyCode == 32){chk" & sID & ".click()};}catch(e){}""" & _
-                       ">" & NullSafeString(dr("caption")) & "</LABEL></TD>" & vbCrLf & _
-                       "<TD><input type='checkbox'" & _
-                       " onclick=""" & sID & ".checked = checked;" & _
-                       CStr(IIf(IsMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');setPostbackMode(3);__doPostBack('" & sID & "', 'doLiteralsPostback');""", """")) & _
-                       " onfocus=""try{" & sID & ".select();activateControl();}catch(e){};""" & _
-                       CStr(IIf(NullSafeString(dr("value")).ToUpper = "TRUE", " CHECKED", "")) & _
-                       " style='height:14px;width:14px;margin:0px;" & androidFix & "'" & _
-                       " tabIndex='-1'" & _
-                       " id='chk" & sID & "'" & _
-                       " name='chk" & sID & "'></TD>" & vbCrLf
-                    End If
-                  End If
-
-                  sTemp = sTemp & _
-                   "</TR>" & vbCrLf & _
-                   "</TABLE>"
-
-                  ctlForm_CheckBox = New LiteralControl(sTemp)
-                  ' pnlInput.contenttemplatecontainer.Controls.Add(ctlForm_CheckBox)
-
-                  ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_CheckBox)
+                  ctlForm_PageTab(iCurrentPageTab).Controls.Add(checkBox)
 
                   If (iMinTabIndex < 0) Or (NullSafeInteger(dr("tabIndex")) < iMinTabIndex) Then
-                    sDefaultFocusControl = "chk" & sID
+                    sDefaultFocusControl = sID
                     iMinTabIndex = NullSafeInteger(dr("tabIndex"))
                   End If
 
                 Case 7 ' Input value - date
+
                   Dim HDNValue As String = ""
 
                   If GetBrowserFamily() = "IOS" Then
@@ -1560,13 +1444,12 @@ Public Class _Default
                       If IsAndroidBrowser() Then
                         'On android native browser when the calendar control drops down you are unable to select the month or year combo if there is a control underneath
                         'So hide these controls on drop down and restore on close up
-                        .ClientSideEvents.BeforeDropDown = "dateControlBeforeDropDown();dateControlAndroidFix('" & sID.ToString & "', true)"
-                        .ClientSideEvents.BeforeCloseUp = "dateControlAndroidFix('" & sID.ToString & "', false)"
+                        .ClientSideEvents.BeforeDropDown = "dateControlBeforeDropDown();dateControlAndroidFix('" & sID & "', true)"
+                        .ClientSideEvents.BeforeCloseUp = "dateControlAndroidFix('" & sID & "', false)"
                       End If
 
-                      ' If IsMobileBrowser() Then .ClientSideEvents.AfterCloseUp = "FilterMobileLookup('" & sID.ToString & "');"
                       If IsMobileBrowser() Then
-                        .ClientSideEvents.AfterCloseUp = "FilterMobileLookup('" & .ID.ToString & "');setPostbackMode(3);__doPostBack('" & sID & "', 'doLiteralsPostback');"
+                        .ClientSideEvents.AfterCloseUp = "FilterMobileLookup('" & .ID & "');__doPostBack('" & sID & "', 'doLiteralsPostback');"
                       End If
 
                     End With
@@ -1634,7 +1517,6 @@ Public Class _Default
 
                   ctlForm_Frame = New LiteralControl(sTemp)
 
-                  ' pnlInput.contenttemplatecontainer.Controls.Add(ctlForm_Frame)
                   ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_Frame)
 
                 Case 9 ' Line
@@ -1956,7 +1838,7 @@ Public Class _Default
                   ' ============================================================
                   ' Hidden field is used to store scroll position of the grid.
                   ' ============================================================
-                  ctlForm_HiddenField = New System.Web.UI.WebControls.HiddenField
+                  ctlForm_HiddenField = New HiddenField
                   With ctlForm_HiddenField
                     .ID = sID & "scrollpos"
                   End With
@@ -2007,7 +1889,7 @@ Public Class _Default
 
                     ' add a little dropdown to make the textbox look like a dropdown.                                    
                     ctlForm_Image = New WebControls.Image
-                    Dim itmpDropDownWidth As Integer = 17
+                    Const itmpDropDownWidth As Integer = 17
 
                     With ctlForm_Image
                       .ImageUrl = "Images/downarrow.gif"
@@ -2250,7 +2132,7 @@ Public Class _Default
                     ' ====================================================
                     ' hidden field to store scroll position (not required?)
                     ' ====================================================
-                    ctlForm_HiddenField = New System.Web.UI.WebControls.HiddenField
+                    ctlForm_HiddenField = New HiddenField
                     With ctlForm_HiddenField
                       .ID = sID & "scrollpos"
                     End With
@@ -2260,7 +2142,7 @@ Public Class _Default
                     ' ====================================================
                     ' hidden field to hold any filter SQL code
                     ' ====================================================
-                    ctlForm_HiddenField = New System.Web.UI.WebControls.HiddenField
+                    ctlForm_HiddenField = New HiddenField
                     With ctlForm_HiddenField
                       .ID = sID & "filterSQL"
                     End With
@@ -2290,7 +2172,7 @@ Public Class _Default
                     ' ================================================================================================================
                     ' ================================================================================================================
                     ' ================================================================================================================
-                    ctlForm_Dropdown = New System.Web.UI.WebControls.DropDownList
+                    ctlForm_Dropdown = New DropDownList
 
                     With ctlForm_Dropdown
                       .ID = sID
@@ -2305,11 +2187,10 @@ Public Class _Default
                       .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
                       .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
 
-                      ' .Attributes.Add("onchange", "FilterMobileLookup('" & .ID.ToString & "');")
                       If IsMobileBrowser() Then
                         .AutoPostBack = True
-                        .Attributes.Add("onchange", "FilterMobileLookup('" & .ID.ToString & "');")
-                        AddHandler .TextChanged, AddressOf Me.btnMob
+                        .Attributes.Add("onchange", "FilterMobileLookup('" & .ID & "');")
+                        AddHandler .TextChanged, AddressOf BtnMob
                       End If
 
 
@@ -2426,7 +2307,7 @@ Public Class _Default
                     ' ====================================================
                     ' hidden field to hold any filter SQL code
                     ' ====================================================
-                    ctlForm_HiddenField = New System.Web.UI.WebControls.HiddenField
+                    ctlForm_HiddenField = New HiddenField
                     With ctlForm_HiddenField
                       .ID = sID & "filterSQL"
                     End With
@@ -2465,12 +2346,11 @@ Public Class _Default
                     .Style("position") = "absolute"
                     .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
                     .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
-                    ' If IsMobileBrowser() Then .Attributes.Add("onchange", "FilterMobileLookup('" & .ID.ToString & "');")
 
                     If IsMobileBrowser() Then
                       .AutoPostBack = True
-                      .Attributes.Add("onchange", "FilterMobileLookup('" & .ID.ToString & "');")
-                      AddHandler .TextChanged, AddressOf Me.btnMob
+                      .Attributes.Add("onchange", "FilterMobileLookup('" & .ID & "');")
+                      AddHandler .TextChanged, AddressOf btnMob
                     End If
 
                     ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_Dropdown)
@@ -2577,66 +2457,60 @@ Public Class _Default
                         ctlForm_Dropdown.SelectedValue = listItem.Value
                       End If
 
-
                     End If
 
                   End With
 
                 Case 15 ' OptionGroup
+
                   If NullSafeInteger(dr("BackStyle")) = 0 Then
                     sBackColour = "Transparent"
                   Else
                     sBackColour = General.GetHtmlColour(NullSafeInteger(dr("BackColor")))
                   End If
 
-                  sTemp2 = CStr(IIf(NullSafeBoolean(dr("FontStrikeThru")), " line-through", "")) & _
-                           CStr(IIf(NullSafeBoolean(dr("FontUnderline")), " underline", ""))
-
-                  If sTemp2.Length = 0 Then
-                    sTemp2 = " none"
-                  End If
+                  sTemp2 = CStr(IIf(NullSafeBoolean(dr("FontStrikeThru")), " line-through", "")) & CStr(IIf(NullSafeBoolean(dr("FontUnderline")), " underline", ""))
+                  sTemp2 = If(sTemp2.Length = 0, " none", sTemp2)
 
                   Dim top = NullSafeInteger(dr("TopCoord"))
                   Dim left = NullSafeInteger(dr("LeftCoord"))
                   Dim width = NullSafeInteger(dr("Width"))
                   Dim height = NullSafeInteger(dr("Height"))
                   Dim fontAdjustment = CInt(CInt(dr("FontSize")) * 0.8)
-                  Dim startAdjustment As Integer = 0
-                  Dim borderCss As String = String.Empty
+                  Dim borderCss As String
+
+                  Dim radioTop As Int32 = 0
 
                   If Not NullSafeBoolean(dr("PictureBorder")) Then
-                    borderCss = "BORDER-STYLE: none;"
+                    borderCss = "border-style: none;"
+                    radioTop = 2
                   Else
-                    borderCss = "BORDER-STYLE: solid; BORDER-COLOR: #9894a3; BORDER-WIDTH: 1px;"
+                    borderCss = "border-style: solid; border-color: #9894a3; border-width: 1px;"
                     width -= 2
                     height -= 2
 
-                    If NullSafeString(dr("caption")).Trim.Length > 0 Then
-                      startAdjustment = fontAdjustment
-
-                      If BrowserRequiresFieldsetAdjustment() Then
-                        startAdjustment -= 10
-                      End If
-                    Else
+                    If NullSafeString(dr("caption")).Trim.Length = 0 Then
                       top += fontAdjustment
                       height -= fontAdjustment
                     End If
+
+                    radioTop = 19 + CInt((NullSafeInteger(dr("FontSize")) - 8) * 1.375)
                   End If
 
                   sTemp = "<fieldset style='z-index: 0; " & _
-                   " TOP: " & top & "px; " & _
-                   " LEFT: " & left & "px; " & _
-                   " WIDTH: " & width & "px; " & _
-                   " HEIGHT: " & height & "px; " & _
-                   " BACKGROUND-COLOR: " & sBackColour & "; " & _
-                   " COLOR: " & General.GetHtmlColour(NullSafeInteger(dr("ForeColor"))) & ";" & _
+                   " top: " & top & "px; " & _
+                   " left: " & left & "px; " & _
+                   " width: " & width & "px; " & _
+                   " height: " & height & "px; " & _
+                   " background-color: " & sBackColour & "; " & _
+                   " color: " & General.GetHtmlColour(NullSafeInteger(dr("ForeColor"))) & ";" & _
                    " font-family: " & NullSafeString(dr("FontName")) & "; " & _
                    " font-size: " & ToPoint(NullSafeInteger(dr("FontSize"))).ToString & "pt; " & _
                    " font-weight: " & CStr(IIf(NullSafeBoolean(dr("FontBold")), "bold", "normal")) & ";" & _
                    " font-style: " & CStr(IIf(NullSafeBoolean(dr("FontItalic")), "italic", "normal")) & ";" & _
                    " text-decoration:" & sTemp2 & ";" & _
                    " " & borderCss & _
-                   " POSITION: absolute;'>"
+                   " position: absolute;'>"
 
                   If NullSafeBoolean(dr("PictureBorder")) And (NullSafeString(dr("caption")).Trim.Length > 0) Then
 
@@ -2646,170 +2520,86 @@ Public Class _Default
                     "</legend>"
                   End If
 
-                  connGrid = New SqlConnection(GetConnectionString)
-                  connGrid.Open()
+                  sTemp += "</fieldset>" & vbCrLf
 
-                  Try
-                    cmdGrid = New SqlCommand
-                    cmdGrid.CommandText = "spASRGetWorkflowItemValues"
-                    cmdGrid.Connection = connGrid
-                    cmdGrid.CommandType = CommandType.StoredProcedure
-                    cmdGrid.CommandTimeout = miSubmissionTimeoutInSeconds
+                  ctlForm_PageTab(iCurrentPageTab).Controls.Add(New LiteralControl(sTemp))
 
-                    cmdGrid.Parameters.Add("@piElementItemID", SqlDbType.Int).Direction = ParameterDirection.Input
-                    cmdGrid.Parameters("@piElementItemID").Value = NullSafeString(dr("ID"))
+                  Dim radioList As New RadioButtonList
+                  With radioList
+                    .ID = sID
+                    .CssClass = "radioList"
+                    .TabIndex = CShort(NullSafeInteger(dr("tabIndex")) + 1)
+                    .RepeatDirection = If(NullSafeInteger(dr("Orientation")) = 0, RepeatDirection.Vertical, RepeatDirection.Horizontal)
+                    .Font.Name = NullSafeString(dr("FontName"))
+                    .Font.Size = ToPointFontUnit(NullSafeInteger(dr("FontSize")))
+                    .Font.Bold = NullSafeBoolean(dr("FontBold"))
+                    .Font.Italic = NullSafeBoolean(dr("FontItalic"))
+                    .Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
+                    .Font.Underline = NullSafeBoolean(dr("FontUnderline"))
 
-                    cmdGrid.Parameters.Add("@piInstanceID", SqlDbType.Int).Direction = ParameterDirection.Input
-                    cmdGrid.Parameters("@piInstanceID").Value = miInstanceID
+                    .Style("position") = "absolute"
+                    .Style("top") = Unit.Pixel(radioTop + NullSafeInteger(dr("TopCoord"))).ToString
+                    .Style("left") = Unit.Pixel(9 + NullSafeInteger(dr("LeftCoord"))).ToString
+                    .Width() = Unit.Pixel(NullSafeInteger(dr("Width")) - 12)
+                  End With
 
-                    cmdGrid.Parameters.Add("@piLookupColumnIndex", SqlDbType.Int).Direction = ParameterDirection.Output
-                    cmdGrid.Parameters.Add("@piItemType", SqlDbType.Int).Direction = ParameterDirection.Output
-                    cmdGrid.Parameters.Add("@psDefaultValue", SqlDbType.VarChar, 8000).Direction = ParameterDirection.Output
+                  ctlForm_PageTab(iCurrentPageTab).Controls.Add(radioList)
 
-                    drGrid = cmdGrid.ExecuteReader
+                  If Not IsPostBack Then
 
-                    Dim graphic As Graphics = Graphics.FromImage(New Bitmap(1, 1, Imaging.PixelFormat.Format32bppArgb))
-                    Dim style As FontStyle = _
-                     CType(IIf(NullSafeBoolean(dr("FontBold")), FontStyle.Bold, FontStyle.Regular), FontStyle) Or _
-                     CType(IIf(NullSafeBoolean(dr("FontItalic")), FontStyle.Italic, FontStyle.Regular), FontStyle)
+                    connGrid = New SqlConnection(GetConnectionString)
+                    connGrid.Open()
+                    Try
+                      cmdGrid = New SqlCommand
+                      cmdGrid.CommandText = "spASRGetWorkflowItemValues"
+                      cmdGrid.Connection = connGrid
+                      cmdGrid.CommandType = CommandType.StoredProcedure
+                      cmdGrid.CommandTimeout = miSubmissionTimeoutInSeconds
 
-                    Dim font As Font = New Font(dr("FontName").ToString(), Convert.ToInt32(dr("FontSize")), style)
+                      cmdGrid.Parameters.Add("@piElementItemID", SqlDbType.Int).Direction = ParameterDirection.Input
+                      cmdGrid.Parameters("@piElementItemID").Value = NullSafeString(dr("ID"))
 
-                    Dim stringSize As SizeF = New SizeF
-                    Dim lastLeft As Double = CInt(((NullSafeSingle(dr("FontSize"))) * 5 / 4)) - 1
-                    Dim spacer As Single = graphic.MeasureString("WW", font).Width
+                      cmdGrid.Parameters.Add("@piInstanceID", SqlDbType.Int).Direction = ParameterDirection.Input
+                      cmdGrid.Parameters("@piInstanceID").Value = miInstanceID
 
-                    iTemp = 0
-                    sDefaultValue = ""
-                    While drGrid.Read
-                      Select Case NullSafeInteger(dr("Orientation"))
-                        Case 0 ' Vertical
+                      cmdGrid.Parameters.Add("@piLookupColumnIndex", SqlDbType.Int).Direction = ParameterDirection.Output
+                      cmdGrid.Parameters.Add("@piItemType", SqlDbType.Int).Direction = ParameterDirection.Output
+                      cmdGrid.Parameters.Add("@psDefaultValue", SqlDbType.VarChar, 8000).Direction = ParameterDirection.Output
 
-                          Dim spanTop As Int32 = _
-                              CInt((NullSafeInteger(dr("FontSize")) * 1.25) + 1) + _
-                              CInt(iTemp * CInt((NullSafeInteger(dr("FontSize")) * 1.5) + 4)) - _
-                              CInt(IIf(NullSafeBoolean(dr("PictureBorder")), 0, 10)) + _
-                              startAdjustment
+                      drGrid = cmdGrid.ExecuteReader
 
-                          Dim spanLeft As Int32 = CInt(((NullSafeSingle(dr("FontSize"))) * 5 / 4) - 1)
+                      While drGrid.Read
+                        radioList.Items.Add(New ListItem() With { _
+                                            .Text = drGrid(0).ToString, _
+                                            .Value = drGrid(0).ToString, _
+                                            .Selected = (CInt(drGrid.GetValue(1)) = 1) _
+                                          })
+                      End While
 
-                          sTemp = sTemp & _
-                           "<span tabindex=" & CShort(NullSafeInteger(dr("tabIndex")) + 1).ToString & _
-                           " style=""z-index: 0;" & _
-                           " font-family: " & NullSafeString(dr("FontName")) & "; " & _
-                           " font-size: " & ToPoint(NullSafeInteger(dr("FontSize"))).ToString & "pt; " & _
-                           " font-weight: " & CStr(IIf(NullSafeBoolean(dr("FontBold")), "bold", "normal")) & ";" & _
-                           " font-style: " & CStr(IIf(NullSafeBoolean(dr("FontItalic")), "italic", "normal")) & ";" & _
-                           " text-decoration:" & sTemp2 & ";" & _
-                           " left: " & spanLeft.ToString & "px; position: absolute; top: " & spanTop.ToString & "px"">" & _
-                           " <input id=""opt" & sID & "_" & iTemp.ToString & """ type=""radio""" & _
-                           " style=""margin: 0px; padding: 3px;""" & _
-                           " name=""opt" & sID & """ value=""" & drGrid(0).ToString & """" & _
-                           " onclick = """ & sID & ".value=opt" & sID & "[" & iTemp.ToString & "].value;""" & _
-                                                  CStr(IIf(IsMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');""", ""))
-
-                        Case 1 ' Horizontal
-                          stringSize = graphic.MeasureString(drGrid(0).ToString(), font)
-                          Dim spanTop As Int32 = CInt((NullSafeInteger(dr("FontSize")) * 1.25) + 1) - _
-                              CInt(IIf(NullSafeBoolean(dr("PictureBorder")), 0, 10)) + _
-                              startAdjustment
-
-                          sTemp = sTemp & _
-                           "<span tabindex=" & CShort(NullSafeInteger(dr("tabIndex")) + 1).ToString & _
-                           " style=""z-index: 0;" & _
-                           " font-family: " & NullSafeString(dr("FontName")) & "; " & _
-                           " font-size: " & ToPoint(NullSafeInteger(dr("FontSize"))).ToString & "pt; " & _
-                           " font-weight: " & CStr(IIf(NullSafeBoolean(dr("FontBold")), "bold", "normal")) & ";" & _
-                           " font-style: " & CStr(IIf(NullSafeBoolean(dr("FontItalic")), "italic", "normal")) & ";" & _
-                           " text-decoration:" & sTemp2 & ";" & _
-                           " left: " & lastLeft & "px; position: absolute; top: " & spanTop.ToString & "px"">" & _
-                           " <input id=""opt" & sID & "_" & iTemp.ToString & """ type=""radio""" & _
-                           " style=""margin: 0px; padding: 3px;""" & _
-                           " name=""opt" & sID & """ value=""" & drGrid(0).ToString & """" & _
-                           " onclick = """ & sID & ".value=opt" & sID & "[" & iTemp.ToString & "].value;""" & _
-                                            CStr(IIf(IsMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');""", ""))
-
-                          lastLeft += (stringSize.Width + (font.Size * 2) + 28)
-                      End Select
-
-                      'either select first item or the default value if set
-                      If iTemp = 0 Or CInt(drGrid.GetValue(1)) = 1 Then
-
-                        'default value found so override selecting the first item
-                        If CInt(drGrid.GetValue(1)) = 1 Then
-                          sTemp = sTemp.Replace(" checked=""checked""", "")
-                        End If
-                        'select this item
-                        sTemp = sTemp & " checked=""checked"""
-                        sDefaultValue = drGrid(0).ToString
-                      Else
-
+                      If radioList.SelectedIndex = -1 Then
+                        radioList.SelectedIndex = 0
                       End If
 
-                      sTemp = sTemp & _
-                      "/>" & _
-                      " <label id=""forOpt" & sID & "_" & iTemp.ToString & """ for=""opt" & sID & "_" & iTemp.ToString & """ tabindex=""-1""" _
-                      & " style=""position: relative; top: -2px;""" _
-                      & ">" _
-                      & drGrid(0).ToString _
-                      & "</label>" & _
-                      " </span>"
+                      drGrid.Close()
+                      cmdGrid.Dispose()
 
-                      msRefreshLiteralsCode = msRefreshLiteralsCode & vbNewLine & _
-                       vbTab & vbTab & "try" & vbNewLine & _
-                       vbTab & vbTab & "{" & vbNewLine & _
-                       vbTab & vbTab & vbTab & "if (frmMain.opt" & sID & "_" & iTemp.ToString & ".value == frmMain." & sID & ".value)" & vbNewLine & _
-                       vbTab & vbTab & vbTab & "{" & vbNewLine & _
-                       vbTab & vbTab & vbTab & vbTab & "frmMain.opt" & sID & "_" & iTemp.ToString & ".checked = 'checked';" & vbNewLine & _
-                       vbTab & vbTab & vbTab & "}" & vbNewLine & _
-                       vbTab & vbTab & vbTab & "else" & vbNewLine & _
-                       vbTab & vbTab & vbTab & "{" & vbNewLine & _
-                       vbTab & vbTab & vbTab & vbTab & "frmMain.opt" & sID & "_" & iTemp.ToString & ".checked = '';" & vbNewLine & _
-                       vbTab & vbTab & vbTab & "}" & vbNewLine & _
-                       vbTab & vbTab & "}" & vbNewLine & _
-                      vbTab & vbTab & "catch(e) {}"
+                      If (iMinTabIndex < 0) Or (NullSafeInteger(dr("tabIndex")) < iMinTabIndex) Then
+                        sDefaultFocusControl = sID & "_0"
+                        iMinTabIndex = NullSafeInteger(dr("tabIndex"))
+                      End If
 
-                      iTemp = iTemp + 1
-                    End While
+                    Catch ex As Exception
+                      sMessage = "Error loading web form option group values:<BR><BR>" & _
+                      ex.Message.Replace(vbCrLf, "<BR>") & "<BR><BR>" & _
+                      "Contact your system administrator."
+                      Exit While
 
-                    drGrid.Close()
-                    cmdGrid.Dispose()
+                    Finally
+                      connGrid.Close()
+                      connGrid.Dispose()
+                    End Try
 
-                    sTemp = sTemp & _
-                     "</fieldset>" & vbCrLf
-
-                    ctlForm_OptionGroup = New LiteralControl(sTemp)
-
-                    ' pnlInput.ContentTemplateContainer.Controls.Add(ctlForm_OptionGroup)
-                    ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_OptionGroup)
-
-                    ctlForm_OptionGroupReal = New TextBox
-                    With ctlForm_OptionGroupReal
-                      .Height = Unit.Parse("0")
-                      .Width = Unit.Parse("0")
-                      .TabIndex = 0
-                      .Style("visibility") = "hidden"
-                      .Text = sDefaultValue
-                      .ID = sID
-                    End With
-
-                    If (iMinTabIndex < 0) Or (NullSafeInteger(dr("tabIndex")) < iMinTabIndex) Then
-                      sDefaultFocusControl = "opt" & sID & "_0"
-                      iMinTabIndex = NullSafeInteger(dr("tabIndex"))
-                    End If
-
-                    ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_OptionGroupReal)
-
-                  Catch ex As Exception
-                    sMessage = "Error loading web form option group values:<BR><BR>" & _
-                    ex.Message.Replace(vbCrLf, "<BR>") & "<BR><BR>" & _
-                    "Contact your system administrator."
-                    Exit While
-
-                  Finally
-                    connGrid.Close()
-                    connGrid.Dispose()
-                  End Try
+                  End If
 
                 Case 17 ' Input value - file upload
 
@@ -2869,7 +2659,7 @@ Public Class _Default
                     If Not IsMobileBrowser() Then
                       .Attributes.Add("onclick", "try{showFileUpload(true, '" & sEncodedID & "', document.getElementById('file" & sID & "').value);}catch(e){};")
 
-                      AddHandler ctlForm_HTMLInputButton.ServerClick, AddressOf Me.DisableControls
+                      AddHandler ctlForm_HTMLInputButton.ServerClick, AddressOf DisableControls
                     Else
                       .Attributes.Add("onclick", "try{alert('Your browser does not support file upload.');}catch(e){};")
                     End If
@@ -3001,8 +2791,8 @@ Public Class _Default
                     ctlTabsDiv.Style.Add("margin-right", "51px")
 
                     ' Nav arrows for non-mobile browsers
-                    Dim ctlForm_TabArrows As New Panel
-                    With ctlForm_TabArrows
+                    Dim ctlFormTabArrows As New Panel
+                    With ctlFormTabArrows
                       .Style.Add("position", "absolute")
                       .Style.Add("top", "0px")
                       .Style.Add("right", "0px")
@@ -3023,7 +2813,7 @@ Public Class _Default
                       .Style.Add("padding", "0px")
                       .Attributes.Add("onclick", "var TabDiv = document.getElementById('TabsDiv');TabDiv.scrollLeft = TabDiv.scrollLeft - 20;")
                     End With
-                    ctlForm_TabArrows.Controls.Add(ctlForm_Image)
+                    ctlFormTabArrows.Controls.Add(ctlForm_Image)
 
                     ' Right scroll arrow
                     ctlForm_Image = New WebControls.Image
@@ -3035,9 +2825,9 @@ Public Class _Default
                       .Style.Add("padding", "0px")
                       .Attributes.Add("onclick", "var TabDiv = document.getElementById('TabsDiv');TabDiv.scrollLeft = TabDiv.scrollLeft + 20;")
                     End With
-                    ctlForm_TabArrows.Controls.Add(ctlForm_Image)
+                    ctlFormTabArrows.Controls.Add(ctlForm_Image)
 
-                    pnlTabsDiv.Controls.Add(ctlForm_TabArrows)
+                    pnlTabsDiv.Controls.Add(ctlFormTabArrows)
 
                   End If
 
@@ -3049,14 +2839,11 @@ Public Class _Default
                   trPager.Height = Unit.Pixel(miTabStripHeight - 1) ' to prevent vertical scrollbar
                   trPager.Style.Add("white-space", "nowrap")
 
-                  Dim tcTabCell As New TableCell
-                  'Dim ctlForm_Label As New Label
-
                   Dim iTabNo As Integer = 1
                   ' add a cell for each tab
                   For Each sTabCaption In arrTabCaptions
                     If sTabCaption.Trim.Length > 0 Then
-                      tcTabCell = New TableCell
+                      Dim tcTabCell As TableCell = New TableCell
 
                       With tcTabCell
                         .ID = FORMINPUTPREFIX & iTabNo.ToString & "_21_Panel"
@@ -3275,7 +3062,7 @@ Public Class _Default
 
   End Sub
 
-  Public Sub ButtonClick(ByVal sender As System.Object, ByVal e As System.EventArgs)
+  Public Sub ButtonClick(ByVal sender As System.Object, ByVal e As EventArgs)
 
     Dim conn As SqlConnection
     Dim dr As SqlDataReader
@@ -3386,8 +3173,8 @@ Public Class _Default
 
             If (TypeOf ctlFormInput Is CheckBox) Then
               ctlFormCheckBox = DirectCast(ctlFormInput, CheckBox)
-              sFormInput1 = sFormInput1 & sIDString & CStr(IIf(ctlFormCheckBox.Checked, "1", "0")) & vbTab
-              sFormValidation1 = sFormValidation1 & sIDString & CStr(IIf(ctlFormCheckBox.Checked, "1", "0")) & vbTab
+              sFormInput1 = sFormInput1 & sIDString & If(ctlFormCheckBox.Checked, "1", "0") & vbTab
+              sFormValidation1 = sFormValidation1 & sIDString & If(ctlFormCheckBox.Checked, "1", "0") & vbTab
             End If
 
           Case 7 ' Date Input
@@ -3416,17 +3203,8 @@ Public Class _Default
                   sDateValueString = "null"
                 Else
                   sDateValueString = Format(DateTime.Parse(ctlForm_HiddenField.Value), "MM/dd/yyyy")
-                  'sDateValueString = General.ConvertLocaleDateToSQL(ctlForm_HiddenField.Value)
                 End If
               End If
-
-              'ctlFormHTMLInputText = DirectCast(ctlFormInput, HtmlInputText)
-
-              'If (ctlFormHTMLInputText.Value.ToString = vbNullString) Or (ctlFormHTMLInputText.Value.ToString = "  /  /") Then
-              '  sDateValueString = "null"
-              'Else
-              '  sDateValueString = General.ConvertLocaleDateToSQL(ctlFormHTMLInputText.Value)
-              'End If
 
               sFormInput1 = sFormInput1 & sIDString & sDateValueString & vbTab
               sFormValidation1 = sFormValidation1 & sIDString & sDateValueString & vbTab
@@ -3509,10 +3287,10 @@ Public Class _Default
 
           Case 15 ' OptionGroup Input
 
-            If (TypeOf ctlFormInput Is TextBox) Then
-              ctlFormTextInput = DirectCast(ctlFormInput, TextBox)
-              sFormInput1 = sFormInput1 & sIDString & ctlFormTextInput.Text & vbTab
-              sFormValidation1 = sFormValidation1 & sIDString & ctlFormTextInput.Text & vbTab
+            If (TypeOf ctlFormInput Is RadioButtonList) Then
+              Dim radioList = DirectCast(ctlFormInput, RadioButtonList)
+              sFormInput1 = sFormInput1 & sIDString & radioList.SelectedValue & vbTab
+              sFormValidation1 = sFormValidation1 & sIDString & radioList.SelectedValue & vbTab
             End If
 
           Case 17 ' FileUpload
@@ -3581,7 +3359,7 @@ Public Class _Default
           While dr.Read
             If NullSafeInteger(dr("failureType")) = 0 Then
               bulletErrors.Items.Add(NullSafeString(dr("Message")))
-            ElseIf CDbl(hdnOverrideWarnings.Value) <> 1 Then
+            ElseIf hdnOverrideWarnings.Value <> "1" Then
               bulletWarnings.Items.Add(NullSafeString(dr("Message")))
             End If
           End While
@@ -3782,11 +3560,11 @@ Public Class _Default
 
   End Sub
 
-  Protected Sub btnReEnableControls_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnReEnableControls.Click
+  Protected Sub BtnReEnableControlsClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnReEnableControls.Click
     EnableDisableControls(True)
   End Sub
 
-  Public Sub DisableControls(ByVal sender As System.Object, e As System.EventArgs)
+  Public Sub DisableControls(ByVal sender As System.Object, e As EventArgs)
     EnableDisableControls(False)
   End Sub
 
@@ -3794,13 +3572,6 @@ Public Class _Default
 
     Dim ctlFormInput As Control
     Dim sID As String
-    Dim ctlFormCheckBox As CheckBox
-    Dim ctlFormTextInput As TextBox
-    Dim ctlFormHTMLInputButton As HtmlInputButton
-    Dim ctlFormDateInput As Infragistics.WebUI.WebSchedule.WebDateChooser
-    Dim ctlFormNumericInput As Infragistics.WebUI.WebDataInput.WebNumericEdit
-    Dim ctlFormRecordSelectionGrid As System.Web.UI.WebControls.GridView
-    Dim ctlFormDropdown As System.Web.UI.WebControls.DropDownList
     Dim sIDString As String
     Dim iTemp As Int16
     Dim sTemp As String
@@ -3827,7 +3598,6 @@ Public Class _Default
 
           iTemp = CShort(sIDString.IndexOf("_"))
           sTemp = sIDString.Substring(iTemp + 1)
-          sIDString = sIDString.Substring(0, iTemp) & vbTab
 
           iTemp = CShort(sTemp.IndexOf("_"))
           sType = sTemp.Substring(0, iTemp)
@@ -3835,37 +3605,34 @@ Public Class _Default
 
           Select Case iType
             Case 0 ' Button
-              ctlFormHTMLInputButton = DirectCast(ctlFormInput, HtmlInputButton)
-              ctlFormHTMLInputButton.Attributes.Remove("disabled")
-              If Not pfEnabled Then ctlFormHTMLInputButton.Attributes.Add("disabled", "disabled")
+              DirectCast(ctlFormInput, HtmlInputButton).Attributes.Remove("disabled")
+              If Not pfEnabled Then
+                DirectCast(ctlFormInput, HtmlInputButton).Attributes.Add("disabled", "disabled")
+              End If
 
             Case 1 ' Database value
             Case 2 ' Label
 
             Case 3 ' Character Input
               If (TypeOf ctlFormInput Is TextBox) Then
-                ctlFormTextInput = DirectCast(ctlFormInput, TextBox)
-                ctlFormTextInput.Enabled = pfEnabled
+                DirectCast(ctlFormInput, TextBox).Enabled = pfEnabled
               End If
 
             Case 4 ' Workflow value
 
             Case 5 ' Numeric Input
               If (TypeOf ctlFormInput Is Infragistics.WebUI.WebDataInput.WebNumericEdit) Then
-                ctlFormNumericInput = DirectCast(ctlFormInput, Infragistics.WebUI.WebDataInput.WebNumericEdit)
-                ctlFormNumericInput.Enabled = pfEnabled
+                DirectCast(ctlFormInput, Infragistics.WebUI.WebDataInput.WebNumericEdit).Enabled = pfEnabled
               End If
 
             Case 6 ' Logic Input
               If (TypeOf ctlFormInput Is CheckBox) Then
-                ctlFormCheckBox = CType(ctlFormInput, CheckBox)
-                ctlFormCheckBox.Enabled = pfEnabled
+                DirectCast(ctlFormInput, CheckBox).Enabled = pfEnabled
               End If
 
             Case 7 ' Date Input
               If (TypeOf ctlFormInput Is Infragistics.WebUI.WebSchedule.WebDateChooser) Then
-                ctlFormDateInput = DirectCast(ctlFormInput, Infragistics.WebUI.WebSchedule.WebDateChooser)
-                ctlFormDateInput.Enabled = pfEnabled
+                DirectCast(ctlFormInput, Infragistics.WebUI.WebSchedule.WebDateChooser).Enabled = pfEnabled
               End If
 
             Case 8 ' Frame
@@ -3873,41 +3640,39 @@ Public Class _Default
             Case 10 ' Image
 
             Case 11 ' Grid (RecordSelector) Input                            
-              If (TypeOf ctlFormInput Is System.Web.UI.WebControls.GridView) Then 'Infragistics.WebUI.UltraWebGrid.UltraWebGrid) Then
-                ctlFormRecordSelectionGrid = DirectCast(ctlFormInput, System.Web.UI.WebControls.GridView) ' Infragistics.WebUI.UltraWebGrid.UltraWebGrid)
-                ctlFormRecordSelectionGrid.Enabled = pfEnabled
+              If (TypeOf ctlFormInput Is GridView) Then
+                DirectCast(ctlFormInput, GridView).Enabled = pfEnabled
               End If
 
             Case 13 ' Dropdown Input
-              If (TypeOf ctlFormInput Is System.Web.UI.WebControls.DropDownList) Then 'Infragistics.WebUI.WebCombo.WebCombo) Then
-                ctlFormDropdown = DirectCast(ctlFormInput, System.Web.UI.WebControls.DropDownList) 'Infragistics.WebUI.WebCombo.WebCombo)
-                ctlFormDropdown.Enabled = pfEnabled
+              If (TypeOf ctlFormInput Is DropDownList) Then
+                DirectCast(ctlFormInput, DropDownList).Enabled = pfEnabled
               End If
 
             Case 14 ' Lookup Input
               If Not IsMobileBrowser() Then
 
-                If (TypeOf ctlFormInput Is AjaxControlToolkit.DropDownExtender) Then 'Infragistics.WebUI.WebCombo.WebCombo) Then
+                If (TypeOf ctlFormInput Is AjaxControlToolkit.DropDownExtender) Then
                   DirectCast(ctlFormInput, AjaxControlToolkit.DropDownExtender).Enabled = pfEnabled
                 End If
               Else
                 ' Mobile Browser
-                If (TypeOf ctlFormInput Is System.Web.UI.WebControls.DropDownList) Then
-                  ctlFormDropdown = DirectCast(ctlFormInput, System.Web.UI.WebControls.DropDownList)
-                  ctlFormDropdown.Enabled = pfEnabled
+                If (TypeOf ctlFormInput Is DropDownList) Then
+                  DirectCast(ctlFormInput, DropDownList).Enabled = pfEnabled
                 End If
               End If
 
             Case 15 ' OptionGroup Input
-              If (TypeOf ctlFormInput Is TextBox) Then
-                ctlFormTextInput = DirectCast(ctlFormInput, TextBox)
-                ctlFormTextInput.Enabled = pfEnabled
+
+              If (TypeOf ctlFormInput Is RadioButtonList) Then
+                DirectCast(ctlFormInput, RadioButtonList).Enabled = pfEnabled
               End If
 
             Case 17 ' Input value - file upload
-              ctlFormHTMLInputButton = DirectCast(ctlFormInput, HtmlInputButton)
-              ctlFormHTMLInputButton.Style.Remove("disabled")
-              If pfEnabled Then ctlFormHTMLInputButton.Style.Add("disabled", "disabled")
+              DirectCast(ctlFormInput, HtmlInputButton).Style.Remove("disabled")
+              If pfEnabled Then
+                DirectCast(ctlFormInput, HtmlInputButton).Style.Add("disabled", "disabled")
+              End If
 
           End Select
         End If
@@ -3934,7 +3699,7 @@ Public Class _Default
       hdnSubmissionMessage_1.Value = sMessage1
       hdnSubmissionMessage_2.Value = sMessage2
       hdnSubmissionMessage_3.Value = sMessage3
-      hdnNoSubmissionMessage.Value = CStr(IIf((sMessage1.Length = 0) And (sMessage2.Length = 0) And (sMessage3.Length = 0), "1", "0"))
+      hdnNoSubmissionMessage.Value = If(sMessage1.Length = 0 And sMessage2.Length = 0 And sMessage3.Length = 0, "1", "0")
       hdnFollowOnForms.Value = ""
     End If
   End Sub
@@ -3955,7 +3720,7 @@ Public Class _Default
     SubmissionTimeout = mobjConfig.SubmissionTimeout
   End Function
 
-  Protected Sub btnSubmit_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnSubmit.Click
+  Protected Sub btnSubmit_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnSubmit.Click
     ButtonClick(sender, e)
   End Sub
 
@@ -3972,8 +3737,8 @@ Public Class _Default
     Dim sImageFileName As String
     Dim sImageFilePath As String
     Dim sTempName As String
-    Dim fs As System.IO.FileStream
-    Dim bw As System.IO.BinaryWriter
+    Dim fs As IO.FileStream
+    Dim bw As IO.BinaryWriter
     Dim iBufferSize As Integer = 100
     Dim outByte(iBufferSize - 1) As Byte
     Dim retVal As Long
@@ -4019,8 +3784,8 @@ Public Class _Default
           sTempName = sImageFilePath & "\" & sImageFileName
 
           ' Create a file to hold the output.
-          fs = New System.IO.FileStream(sTempName, IO.FileMode.OpenOrCreate, IO.FileAccess.Write)
-          bw = New System.IO.BinaryWriter(fs)
+          fs = New IO.FileStream(sTempName, IO.FileMode.OpenOrCreate, IO.FileAccess.Write)
+          bw = New IO.BinaryWriter(fs)
 
           ' Reset the starting byte for a new BLOB.
           startIndex = 0
@@ -4067,37 +3832,9 @@ Public Class _Default
     End Try
   End Function
 
-  Public Function RefreshLiteralsCode() As String
-    Dim sb As New StringBuilder
-
-    Try
-      sb.AppendLine("function refreshLiterals()")
-      sb.AppendLine("{")
-      sb.AppendLine(vbTab & " try")
-      sb.AppendLine(vbTab & "{")
-      sb.AppendLine(msRefreshLiteralsCode)
-      sb.AppendLine(vbTab & "}")
-      sb.AppendLine(vbTab & "catch(e) {}")
-      sb.AppendLine(vbTab & "}")
-      Return sb.ToString
-
-    Catch ex As Exception
-      Return ""
-    End Try
-
-  End Function
-
-  Protected Sub Page_PreRender(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.PreRender
-    Dim cs As ClientScriptManager
-
-    cs = Page.ClientScript
-    If Not cs.IsClientScriptBlockRegistered("RefreshLiteralsCode") Then
-      cs.RegisterClientScriptBlock(Me.GetType, "RefreshLiteralsCode", RefreshLiteralsCode, True)
-    End If
-  End Sub
-
   Private Function LookupFilterSQL(ByVal psColumnName As String, ByVal piColumnDataType As Integer, ByVal piOperatorID As Integer, ByVal psValue As String) As String
-    Dim sLookupFilterSQL As String = ""
+
+    Dim filterSql As String = ""
 
     Try
 
@@ -4109,76 +3846,74 @@ Public Class _Default
           Case SQLDataType.sqlBoolean
             Select Case piOperatorID
               Case FilterOperators.giFILTEROP_EQUALS
-                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) = " & vbTab
+                filterSql = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) = " & vbTab
               Case FilterOperators.giFILTEROP_NOTEQUALTO
-                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) <> " & vbTab
+                filterSql = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) <> " & vbTab
             End Select
 
           Case SQLDataType.sqlNumeric, SQLDataType.sqlInteger
             Select Case piOperatorID
               Case FilterOperators.giFILTEROP_EQUALS
-                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) = " & vbTab
+                filterSql = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) = " & vbTab
 
               Case FilterOperators.giFILTEROP_NOTEQUALTO
-                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) <> " & vbTab
+                filterSql = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) <> " & vbTab
 
               Case FilterOperators.giFILTEROP_ISATMOST
-                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) <= " & vbTab
+                filterSql = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) <= " & vbTab
 
               Case FilterOperators.giFILTEROP_ISATLEAST
-                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) >= " & vbTab
+                filterSql = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) >= " & vbTab
 
               Case FilterOperators.giFILTEROP_ISMORETHAN
-                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) > " & vbTab
+                filterSql = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) > " & vbTab
 
               Case FilterOperators.giFILTEROP_ISLESSTHAN
-                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) < " & vbTab
+                filterSql = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) < " & vbTab
             End Select
 
           Case SQLDataType.sqlDate
             Select Case piOperatorID
               Case FilterOperators.giFILTEROP_ON
-                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], '') = '" & vbTab & "'"
+                filterSql = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], '') = '" & vbTab & "'"
 
               Case FilterOperators.giFILTEROP_NOTON
-                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], '') <> '" & vbTab & "'"
+                filterSql = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], '') <> '" & vbTab & "'"
 
               Case FilterOperators.giFILTEROP_ONORBEFORE
-                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "LEN(ISNULL([ASRSysLookupFilterValue], '')) = 0 OR (LEN('" & vbTab & "') > 0 AND ISNULL([ASRSysLookupFilterValue], '') <= '" & vbTab & "')"
+                filterSql = piColumnDataType.ToString & vbTab & psValue & vbTab & "LEN(ISNULL([ASRSysLookupFilterValue], '')) = 0 OR (LEN('" & vbTab & "') > 0 AND ISNULL([ASRSysLookupFilterValue], '') <= '" & vbTab & "')"
 
               Case FilterOperators.giFILTEROP_ONORAFTER
-                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "LEN('" & vbTab & "') = 0 OR (LEN('" & vbTab & "') > 0 AND ISNULL([ASRSysLookupFilterValue], '') >= '" & vbTab & "')"
+                filterSql = piColumnDataType.ToString & vbTab & psValue & vbTab & "LEN('" & vbTab & "') = 0 OR (LEN('" & vbTab & "') > 0 AND ISNULL([ASRSysLookupFilterValue], '') >= '" & vbTab & "')"
 
               Case FilterOperators.giFILTEROP_AFTER
-                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "(LEN('" & vbTab & "') = 0 AND LEN(ISNULL([ASRSysLookupFilterValue], '')) > 0) OR (LEN('" & vbTab & "') > 0 AND ISNULL([ASRSysLookupFilterValue], '') > '" & vbTab & "')"
+                filterSql = piColumnDataType.ToString & vbTab & psValue & vbTab & "(LEN('" & vbTab & "') = 0 AND LEN(ISNULL([ASRSysLookupFilterValue], '')) > 0) OR (LEN('" & vbTab & "') > 0 AND ISNULL([ASRSysLookupFilterValue], '') > '" & vbTab & "')"
 
               Case FilterOperators.giFILTEROP_BEFORE
-                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "LEN('" & vbTab & "') > 0 AND ISNULL([ASRSysLookupFilterValue], '') < '" & vbTab & "'"
+                filterSql = piColumnDataType.ToString & vbTab & psValue & vbTab & "LEN('" & vbTab & "') > 0 AND ISNULL([ASRSysLookupFilterValue], '') < '" & vbTab & "'"
             End Select
 
           Case SQLDataType.sqlVarChar, SQLDataType.sqlVarBinary, SQLDataType.sqlLongVarChar
             Select Case piOperatorID
               Case FilterOperators.giFILTEROP_IS
-                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], '') = '" & vbTab & "'"
+                filterSql = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], '') = '" & vbTab & "'"
 
               Case FilterOperators.giFILTEROP_ISNOT
-                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], '') <> '" & vbTab & "'"
+                filterSql = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], '') <> '" & vbTab & "'"
 
               Case FilterOperators.giFILTEROP_CONTAINS
-                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], '') LIKE '%" & vbTab & "%'"
+                filterSql = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], '') LIKE '%" & vbTab & "%'"
 
               Case FilterOperators.giFILTEROP_DOESNOTCONTAIN
-                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "LEN('" & vbTab & "') > 0 AND ISNULL([ASRSysLookupFilterValue], '') NOT LIKE '%" & vbTab & "%'"
+                filterSql = piColumnDataType.ToString & vbTab & psValue & vbTab & "LEN('" & vbTab & "') > 0 AND ISNULL([ASRSysLookupFilterValue], '') NOT LIKE '%" & vbTab & "%'"
             End Select
-          Case Else
         End Select
       End If
 
     Catch ex As Exception
     End Try
 
-
-    LookupFilterSQL = sLookupFilterSQL
+    Return filterSql
 
   End Function
 
@@ -4209,7 +3944,7 @@ Public Class _Default
 
   End Sub
 
-  Private Sub btnMob(ByVal sender As Object, ByVal e As System.EventArgs)
+  Private Sub BtnMob(ByVal sender As Object, ByVal e As EventArgs)
     Dim arrLookups() As String = hdnMobileLookupFilter.Value.Split(CChar(vbTab))
 
     For Each value As String In arrLookups
@@ -4217,7 +3952,7 @@ Public Class _Default
     Next
   End Sub
 
-  Sub SetLookupFilter(ByVal sender As Object, ByVal e As System.EventArgs, Optional lookupID As String = "")
+  Sub SetLookupFilter(ByVal sender As Object, ByVal e As EventArgs, Optional lookupID As String = "")
 
     If Not (sender Is Nothing) Then
       ' get button's ID
@@ -4237,7 +3972,7 @@ Public Class _Default
     Dim hiddenField As HiddenField
     hiddenField = TryCast(pnlInputDiv.FindControl(lookupID.Replace("refresh", "filterSQL")), HiddenField)
 
-    Dim filterSQL As String = hiddenField.Value
+    Dim filterSql As String = hiddenField.Value
 
     If TypeOf (pnlInputDiv.FindControl(lookupID.Replace("refresh", ""))) Is DropDownList Then
 
@@ -4249,7 +3984,7 @@ Public Class _Default
       Dim strCurrentSelection As String = dropdown.Text
 
       ' Filter the table now.
-      filterDataTable(dataTable, filterSQL)
+      filterDataTable(dataTable, filterSql)
 
       ' insert the previously selected item
       Dim objDataRow As DataRow
@@ -4272,12 +4007,12 @@ Public Class _Default
     Else
       ' This is a normal grid lookup (not Mobile)
 
-      filterDataTable(dataTable, filterSQL)
+      filterDataTable(dataTable, filterSql)
 
-      Dim gridView As RecordSelector 'GridView
+      Dim gridView As RecordSelector
       gridView = TryCast(pnlInputDiv.FindControl(lookupID.Replace("refresh", "Grid")), RecordSelector)
 
-      gridView.filterSQL = filterSQL.ToString
+      gridView.filterSQL = filterSql.ToString
 
       gridView.DataSource = dataTable
       gridView.DataBind()
@@ -4289,10 +4024,10 @@ Public Class _Default
 
   End Sub
 
-  Private Sub filterDataTable(ByRef dataTable As DataTable, ByVal filterSQL As String)
+  Private Sub FilterDataTable(ByRef dataTable As DataTable, ByVal filterSql As String)
     If dataTable IsNot Nothing Then
       Dim dataView As New DataView(dataTable)
-      dataView.RowFilter = filterSQL
+      dataView.RowFilter = filterSql
 
       dataTable = dataView.ToTable()
 

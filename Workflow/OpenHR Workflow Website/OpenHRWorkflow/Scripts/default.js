@@ -524,8 +524,6 @@
 	                return;
 	            }
 
-	            if($get("txtPostbackMode").value!="2") refreshLiterals();
-
 	            if (($get("txtPostbackMode").value == 2)
     	            || ($get("txtPostbackMode").value == 3)) 
 	            {

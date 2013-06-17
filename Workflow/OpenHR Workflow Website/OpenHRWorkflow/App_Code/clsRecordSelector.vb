@@ -27,7 +27,6 @@ Public Class RecordSelector
 
     Dim iIDColumnIndex As Int16
     Dim sDivStyle As String = ""
-    Dim hdnScrollTop As String = "0"
     Dim iColCount As Integer
 
     'MyBase.Render(writer)
@@ -593,8 +592,7 @@ Public Class RecordSelector
 
 
   Private Sub RecordSelector_PageIndexChanging(ByVal sender As Object, ByVal e As GridViewPageEventArgs) Handles Me.PageIndexChanging
-    ' Dim g As System.Web.UI.WebControls.GridView
-    Dim iIDCol As Integer = 0
+
     grdGrid = CType(sender, GridView)
 
     grdGrid.PageIndex = e.NewPageIndex
@@ -845,8 +843,7 @@ Public Class RecordSelector
   End Sub
 
   Private Sub RecordSelector_Sorting(ByVal sender As Object, ByVal e As GridViewSortEventArgs) Handles Me.Sorting
-    ' Dim g As System.Web.UI.WebControls.GridView
-    Dim iIDCol As Integer = 0
+
     grdGrid = CType(sender, GridView)
 
     GridViewSort(sender, e)
@@ -1114,7 +1111,6 @@ Public Class RecordSelector
       AddHandler .Command, AddressOf Me.PagerCommand
     End With
 
-    Dim url As String = "~/Images/"
     If Me.PageIndex > 0 Then
       ibtnFirst.Style.Add("background-image", "url('Images/page-first.gif')")
       ibtnPrevious.Style.Add("background-image", "url('Images/page-prev.gif')")

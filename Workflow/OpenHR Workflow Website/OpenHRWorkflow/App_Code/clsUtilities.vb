@@ -154,19 +154,6 @@ Public Class Utilities
     Return False
   End Function
 
-  Public Shared Function BrowserRequiresFieldsetAdjustment() As Boolean
-    'Absolutely positioning controls inside a fieldset is hit and miss across browsers
-    'The top zero position maybe considered either the physical top of the control or
-    'underneath the legend.
-    Dim userAgent = HttpContext.Current.Request.ServerVariables("HTTP_USER_AGENT").ToLower
-
-    'If radio buttons inside an option group appear too low, add the browser to the list below.
-    If userAgent.Contains("fennec") Then
-      Return True
-    End If
-    Return False
-  End Function
-
   Public Shared Function BrowserRequiresOverflowScrollFix() As Boolean
 
     'Earlier android browsers dont support scrolling on overflowed divs
