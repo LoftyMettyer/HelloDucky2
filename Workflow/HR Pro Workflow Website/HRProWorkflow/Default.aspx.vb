@@ -2290,7 +2290,7 @@ Public Class _Default
                                     ' parent form, and resize the parent form if necessary
                                     ' =================================================================
                                     scriptString += "var bhvDdl=$find('" & ctlForm_DDE.BehaviorID.ToString & "');"
-                                    scriptString += "try {bhvDdl .add_shown(ResizeFormForCombo);} catch (e) {}"
+                                    scriptString += "try {bhvDdl .add_shown(ResizeComboForForm);} catch (e) {}"
 
 
                                     ' ====================================================

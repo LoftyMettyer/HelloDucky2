@@ -872,7 +872,7 @@
 //            catch(e) {}
 //	    }
 
-function ResizeFormForCombo(sender, args) {
+function ResizeComboForForm(sender, args) {
       psWebComboID = sender._id;
             
 			var iResizeByHeight = 0;
@@ -891,10 +891,18 @@ function ResizeFormForCombo(sender, args) {
                     
                     oEl.style.width = iNewWidth;
                     document.getElementById(psWebComboID.replace("dde", "gridcontainer")).style.width = oEl.style.width;
-                  }                               
+                  }   
+                  
+                  //also set left position to 0 if required (right coord > bymain.width)
+                  //alert(oEl.offsetLeft + oEl.offsetWidth + ":" + bdyMain.clientWidth);
+                  if ((oEl.offsetLeft + oEl.offsetWidth) > bdyMain.clientWidth)
+                  {
+                    oEl.style.left = "0px";
+                  }                                                 
                 }
             }
       catch(e) {}
+
 
 }
 

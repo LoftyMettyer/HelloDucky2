@@ -207,11 +207,11 @@ Public Class RecordSelector
             ' Set the size of the grid as per old DropDown setting...
             ' remember that the height for lookups will only be c.21pixels...
             Dim iRowHeight As Integer = iHeight - 6
-            iRowHeight = CInt(IIf(iRowHeight < 22, 22, iRowHeight))
+            iRowHeight = CInt(IIf(iRowHeight < 21, 21, iRowHeight))
             Dim iDropHeight As Integer = (iRowHeight * CInt(IIf(MyBase.Rows.Count > MAXDROPDOWNROWS, MAXDROPDOWNROWS, MyBase.Rows.Count))) + 1
 
             iDropHeight = iDropHeight + iRowHeight  ' add row for headers
-            iDropHeight = iDropHeight + IIf(MyBase.PageCount > 0, iDropHeight, 0)   ' add row for pager if required.
+            iDropHeight = iDropHeight + IIf(MyBase.PageCount > 0, iRowHeight, 0)   ' add row for pager if required.
 
             strHeight = [String].Format("{0}{1}", iDropHeight, "px")
         End If
