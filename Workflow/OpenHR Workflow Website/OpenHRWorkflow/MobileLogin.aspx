@@ -12,10 +12,10 @@
   <script type="text/javascript">
       // <!CDATA[
 
-//      function window_onload() {
+      function window_onload() {
 //        if (typeof (getCookie("Login")) != "object") {
 //          frmLogin.txtUserName.value = getCookie("Login");
-//        }
+        }
 
 
 //        frmLogin.txtUserName.focus();
