@@ -118,7 +118,6 @@
 				  iResizeByWidth = iDefWidth - getWindowWidth();
 					window.parent.moveTo((screen.availWidth - iDefWidth) / 2, (screen.availHeight - iDefHeight) / 3);
 					window.parent.resizeBy(iResizeByWidth, iResizeByHeight);				  
-
 				}
 				
 				try {
@@ -181,6 +180,16 @@
 				launchForms(window.$get("frmMain").hdnSiblingForms.value, false);
 			}
 			catch (e) {}
+
+      //Fault HRPRO-2121
+     	try	{
+		    window.resizeBy(0,-1);
+		    window.resizeBy(0,1);
+	    }
+	    catch(e) {}
+
+
+
 		}
 
 		function launchForms(psForms, pfFirstFormRelocate) {
