@@ -196,8 +196,7 @@
         <td>
         </td>
         <td style="background-color: White" valign="middle">
-          <asp:FileUpload ID="FileUpload1" runat="server" Width="400" onChange="refreshFileUploadButton(this.value);"
-            onKeyUp="refreshFileUploadButton(this.value);" />
+          <input id="FileUpload1" runat="server" Width="400" type="file" onKeyUp="refreshFileUploadButton(this.value);" onchange="refreshFileUploadButton(this.value);"/>
         </td>
         <td>
         </td>
@@ -211,13 +210,11 @@
         <td>
         </td>
         <td rowspan="2">
-          <igtxt:WebImageButton ID="btnFileUpload" runat="server" text="Upload" AccessKey="U"
-            UnderlineAccessKey="true" enabled="false">
-          </igtxt:WebImageButton>&nbsp;
-          <igtxt:WebImageButton ID="btnClear" runat="server" text="Clear" AccessKey="l" UnderlineAccessKey="true">
-          </igtxt:WebImageButton>&nbsp;
-          <igtxt:WebImageButton ID="btnCancel" runat="server" text="Cancel" AccessKey="C" UnderlineAccessKey="true">
-          </igtxt:WebImageButton>
+          <input id="btnFileUpload" value="Upload" runat="server" type="button" enabled="false" accesskey=U/>
+          &nbsp;
+          <input id="btnClear" value="Clear" runat="server" type="button" enabled="false" accesskey="l"/>
+          &nbsp;
+          <input id="btnCancel" value="Cancel" runat="server" type="button" accesskey="C"/>
           <br />
           <br />
         </td>
