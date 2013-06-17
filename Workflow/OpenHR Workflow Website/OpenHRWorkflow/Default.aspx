@@ -15,17 +15,22 @@
 <body id="bdyMain" style="overflow: auto; text-align: center; margin: 0px; padding: 0px; background-color: <%= ColourThemeHex()%>;">
 	
 	<form runat="server" hidefocus="true" id="frmMain" onsubmit="return submitForm();">
-	
-    <script src="Scripts/default.js" type="text/javascript"></script>
+    
+    <%--    <script src="Scripts/default.js" type="text/javascript"></script>
     <script src="Scripts/resizable-table.js" type="text/javascript"></script>
-    <script src="scripts/WebNumericEditValidation.js" type="text/javascript"></script>
+    <script src="scripts/WebNumericEditValidation.js" type="text/javascript"></script>--%>
 
-    <ajx:ToolkitScriptManager ID="ToolkitScriptManager1" runat="server" EnablePartialRendering="true" EnablePageMethods="true" CombineScripts="True">
-        
-    </ajx:ToolkitScriptManager>
-	<!--
-        Web Form Validation Error Messages
-    -->        
+    <ajx:ToolkitScriptManager ID="ToolkitScriptManager1" runat="server" 
+        EnablePartialRendering="true" EnablePageMethods="true" CombineScripts="True" 
+        LoadScriptsBeforeUI="False">
+        <CompositeScript>
+            <Scripts>
+                <asp:ScriptReference Path="~/Scripts/default.js" />
+                <asp:ScriptReference Path="~/Scripts/resizable-table.js" />
+                <asp:ScriptReference Path="~/Scripts/WebNumericEditValidation.js" />
+            </Scripts>
+        </CompositeScript>
+    </ajx:ToolkitScriptManager>   
 
     <div id="pleasewaitScreen" style="position:absolute;z-index:5;top:30%;width:150px;height:60px;left:50%;margin-left:-75px;visibility:hidden">
 		<table border="0" cellspacing="0" cellpadding="10" style="top: 0px; left: 0px; width: 100%; height: 100%; position: relative; text-align: center; font-size: 10pt; color: black; font-family: Verdana; border: black 1px solid;" bgcolor="White">
