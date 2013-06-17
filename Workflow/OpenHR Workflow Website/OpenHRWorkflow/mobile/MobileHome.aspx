@@ -6,32 +6,25 @@
     <head runat="server">
         <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"/>
         <link rel="apple-touch-icon" href="/Images/Adv_hr&payroll.gif" />
+        <link href="../CSS/mobile.css" rel="stylesheet" type="text/css" />
         <title>OpenHR Mobile</title>
-
-        <style type="text/css">
-            body { font-family: Verdana; }
-        </style>
     </head>
-    <body style="margin: 0px; overflow: hidden">
+    <body>
         <form id="form1" runat="server">
 
-            <div id="pnlContainer" runat="server" style="overflow: hidden; background-color: Red">
-                <div id="pnlHeader" runat="server" style="position: absolute; overflow: hidden; left: 0px; top: 0px; z-index: 1; width: 100%; height: 57px">
-                </div>
+            <div id="pnlContainer" runat="server" style="overflow: hidden;">
+                
+                <div id="pnlHeader" runat="server" style="position: absolute; overflow: hidden; left: 0px; top: 0px; z-index: 1; width: 100%; height: 57px"/>
+                
                 <div id="ScrollerFrame" runat="server" style="position: fixed; left: 0px; top: 57px; bottom: 60px; z-index: 1; width: 100%">
-                    <div id="pnlBody" runat="server" style="height: 100%; z-index: 1">
-                        <table>
-                            <tr id="space1" style="width: 100%"><td></td></tr>
-                            <tr style="width: 100%; height: 21px">
-                                <td colspan="2">
-                                    <label id="lblNothingTodo" runat="server" style="display: block; margin: 15px;">lblNothingTodo</label>
-                                    <label id="lblWelcome" runat="server" style="display: block; margin: 15px;">lblWelcome</label>
-                                </td>
-                            </tr>
-                            <tr id="space2" style="width: 100%"><td></td></tr>  
-                        </table>
-                        <div runat="server" id="pnlWFList" style="margin: 15px; width: 100%; height: 100%; top: 40px; bottom: 0px; overflow: auto">
-                        </div>
+                    
+                    <div id="pnlBody" runat="server" style="height: 100%; z-index: 1; overflow: auto">
+                        
+                        <label id="lblNothingTodo" runat="server" style="display: block;">lblNothingTodo</label>
+                        <label id="lblWelcome" runat="server" style="display: block;">lblWelcome</label>
+
+                        <div runat="server" id="pnlWFList" />
+
                     </div>
                 </div>
           
@@ -60,9 +53,9 @@
 
  
             </div>
-            <div id="pnlGreyOut" runat="server" style="position: absolute; visibility: hidden; width: 100%; height: 100%; filter: alpha(opacity=50); -moz-opacity: 0.5; opacity: 0.5; background-color: #222; margin: 0px; z-index: 1">
-            </div>
-        
+            
+            <div id="pnlGreyOut" runat="server" style="position: absolute; visibility: hidden; width: 100%; height: 100%; filter: alpha(opacity=50); -moz-opacity: 0.5; opacity: 0.5; background-color: #222; margin: 0px; z-index: 1"/>
+            
             <div id="pnlMsgBox" runat="server" style="visibility: hidden; z-index: 2; position: absolute; width: 100%; top: 30%">
                 <div id="inner" style="background-color: #002248; border: 2px solid gainsboro; width: 300px; margin: 0px auto; text-align: center; border-radius: 10px; padding: 10px;">
                     <label id="lblMsgHeader" runat="server" style="font-family: Verdana; font-weight: bold; font-size: large; color: white"></label>

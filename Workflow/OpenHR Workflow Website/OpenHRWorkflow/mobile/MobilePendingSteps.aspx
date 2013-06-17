@@ -6,26 +6,25 @@
     <head runat="server">
         <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"/>
         <link rel="apple-touch-icon" href="/Images/Adv_hr&payroll.gif" />
+        <link href="../CSS/mobile.css" rel="stylesheet" type="text/css" />
         <title>OpenHR Mobile</title>
-    
-        <style type="text/css">
-            body { font-family: Verdana; }
-        </style>
     </head>
     
-    <body style="margin: 0px; overflow: hidden">
+    <body>
         <form id="form1" runat="server">
 
-            <div id="pnlContainer" runat="server" style="overflow: hidden; background-color: Red">
-                <div id="pnlHeader" runat="server" style="position: absolute; overflow: hidden; left: 0px; top: 0px; z-index: 1; width: 100%; height: 57px">
-                </div>
+            <div id="pnlContainer" runat="server" style="overflow: hidden;">
+
+                <div id="pnlHeader" runat="server" style="position: absolute; overflow: hidden; left: 0px; top: 0px; z-index: 1; width: 100%; height: 57px"/>
+                
                 <div id="ScrollerFrame" runat="server" style="position: fixed; left: 0px; top: 57px; z-index: 1; bottom: 60px; width: 100%">
-                    <div id="pnlBody"  runat="server" style="position: absolute; width: 100%; height: 100%; z-index: 1">      
+                    
+                    <div id="pnlBody"  runat="server" style="position: absolute; width: 100%; height: 100%; z-index: 1; overflow: auto;">      
                   
-                        <div runat="server" id="pnlWFList" style="width: 100%; height: 100%; top: 40px; bottom: 0px; overflow: auto">                  
-                            <label id="lblNothingTodo" runat="server" style="display: block; margin: 15px;">You have nothing in your 'To Do' list.</label>
-                            <label id="lblInstruction" runat="server" style="display: block; margin: 15px;">Click on a 'to do' item to view the details and complete your action.</label>
-                        </div>
+                        <label id="lblNothingTodo" runat="server" style="display: block;">You have nothing in your 'To Do' list.</label>
+                        <label id="lblInstruction" runat="server" style="display: block;">Click on a 'to do' item to view the details and complete your action.</label>
+
+                        <div runat="server" id="pnlWFList" />                  
 
                     </div>
                 </div>
