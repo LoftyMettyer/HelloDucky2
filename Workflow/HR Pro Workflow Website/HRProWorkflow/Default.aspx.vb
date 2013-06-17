@@ -4514,8 +4514,9 @@ Public Class _Default
 
 
 
-    Private Sub ShowNoResultFound(ByVal source As DataTable, ByVal gv As GridView)
+    Private Sub ShowNoResultFound(ByVal source As DataTable, ByVal gv As RecordSelector)
 
+        source.Clear()
         source.Rows.Add(source.NewRow())
         '' create a new blank row to the DataTable
         '' Bind the DataTable which contain a blank row to the GridView

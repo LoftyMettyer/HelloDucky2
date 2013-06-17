@@ -11,7 +11,7 @@ Public Class RecordSelector
 
     Protected WithEvents customHeader As GridViewRow
     Protected WithEvents customPager As GridViewRow
-    Protected WithEvents grdGrid As GridView
+    Protected WithEvents grdGrid As RecordSelector ' GridView
     Protected WithEvents pagerTable As Table
     Protected WithEvents pagerRow As TableRow
     Protected WithEvents ddl As DropDownList
@@ -463,7 +463,7 @@ Public Class RecordSelector
         Dim sColumnCaption As String
         Dim objGeneral As New General
 
-        grdGrid = CType(sender, System.Web.UI.WebControls.GridView)
+        grdGrid = CType(sender, RecordSelector)
 
         Try
 
@@ -536,7 +536,7 @@ Public Class RecordSelector
                 '                               "try{setPostbackMode(2);}catch(e){};__doPostBack('" & grdGrid.UniqueID & "','Select$" & e.Row.RowIndex & "');" & _
                 '                               "SetScrollTopPos('" & grdGrid.ID.ToString & "', -1);")
                 e.Row.Attributes("onclick") = ("SetScrollTopPos('" & grdGrid.ID.ToString & "', document.getElementById('" & grdGrid.ID.Replace("Grid", "gridcontainer") & "').scrollTop);" & _
-                                                "try{setPostbackMode(2);}catch(e){};__doPostBack('" & grdGrid.UniqueID & "','Select$" & e.Row.RowIndex & "');")
+                                                    "try{setPostbackMode(2);}catch(e){};__doPostBack('" & grdGrid.UniqueID & "','Select$" & e.Row.RowIndex & "');")
             ElseIf e.Row.RowType = DataControlRowType.Pager Then
                 ' This enables postback for the grid
 
