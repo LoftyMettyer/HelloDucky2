@@ -294,9 +294,9 @@ Partial Class Home
     ' Update the wf steps count
     If fUserHasRunPermission Then
 
-      Dim pendingSteps As Integer = GetPendingSteps()
-      If pendingSteps > 0 Then
-        lblWFCount.InnerText = CStr(pendingSteps)
+      Dim count As Integer = GetPendingStepsCount()
+      If count > 0 Then
+        lblWFCount.InnerText = CStr(count)
         pnlWFCount.Style.Add("visibility", "visible")
       Else
         pnlWFCount.Style.Add("visibility", "hidden")
@@ -438,7 +438,7 @@ Partial Class Home
 
   End Function
 
-  Private Function GetPendingSteps() As Integer
+  Private Function GetPendingStepsCount() As Integer
 
     Using conn As New SqlClient.SqlConnection(Configuration.ConnectionString)
 
