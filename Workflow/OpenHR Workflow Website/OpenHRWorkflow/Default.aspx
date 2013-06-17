@@ -35,7 +35,7 @@
     <script src="Scripts/resizable-table.js" type="text/javascript"></script>
 </head>
 
-<body id="bdyMain" onload="return window_onload()" style="overflow: auto; text-align: center; margin: 0px; padding: 0px;">
+<body id="bdyMain" onload="return window_onload()" style="overflow: auto; text-align: center; margin: 0px; padding: 0px; background-color: <%= ColourThemeHex()%>;">
 	
     <img id="imgErrorMessages_Max" src="Images/uparrows_white.gif" alt="Show messages" style="position: absolute; right: 1px; bottom: 1px; display: none; visibility: hidden; z-index: 1; width:20px; height:20px;" onclick="showErrorMessages(true);" />
 
@@ -120,7 +120,6 @@
 	            iDefHeight = window.$get("frmMain").hdnFormHeight.value;
 	            //iDefHeight = window.$get("bdyMain").offsetHeight;
 	            iDefWidth = window.$get("frmMain").hdnFormWidth.value;
-	            window.$get("bdyMain").bgColor = window.$get("frmMain").hdnColourThemeHex.value;
 			    
 	            window.focus();
 	            if ((iDefHeight > 0) && (iDefWidth > 0)) {
@@ -1633,11 +1632,6 @@
     -->
 	<asp:HiddenField ID="hdnFormHeight" runat="server" Value="0" />
 	<asp:HiddenField ID="hdnFormWidth" runat="server" Value="0" />
-	<asp:HiddenField ID="hdnFormBackColourHex" runat="server" Value="" />
-	<asp:HiddenField ID="hdnFormBackImage" runat="server" Value="" />
-	<asp:HiddenField ID="hdnFormBackRepeat" runat="server" Value="" />
-	<asp:HiddenField ID="hdnFormBackPosition" runat="server" Value="" />
-	<asp:HiddenField ID="hdnColourThemeHex" runat="server" Value="" />
 	<asp:HiddenField ID="hdnFirstControl" runat="server" Value="" />
   <asp:HiddenField ID="hdnDefaultPageNo" runat="server" Value="0" />
 	</form>

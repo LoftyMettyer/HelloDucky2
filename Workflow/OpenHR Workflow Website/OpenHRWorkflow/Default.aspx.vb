@@ -3161,14 +3161,10 @@ Public Class _Default
                   If sMessage.Length = 0 Then
                     divInput.Style("Background-image") = sBackgroundImage
                   End If
-                  If sMessage.Length = 0 Then
-                    sBackgroundImage = "url('" & sBackgroundImage & "')"
-                  End If
 
                   iBackgroundImagePosition = CInt(cmdSelect.Parameters("@piBackImageLocation").Value())
                   sBackgroundRepeat = General.BackgroundRepeat(CShort(iBackgroundImagePosition))
                   sBackgroundPosition = General.BackgroundPosition(CShort(iBackgroundImagePosition))
-
                 End If
                 divInput.Style("background-repeat") = sBackgroundRepeat
                 divInput.Style("background-position") = sBackgroundPosition
@@ -3190,12 +3186,7 @@ Public Class _Default
 
                 hdnFormHeight.Value = iFormHeight.ToString
                 hdnFormWidth.Value = iFormWidth.ToString
-                hdnFormBackColourHex.Value = sBackgroundColourHex
-                hdnFormBackImage.Value = sBackgroundImage
-                hdnFormBackRepeat.Value = sBackgroundRepeat
-                hdnFormBackPosition.Value = sBackgroundPosition
 
-                hdnColourThemeHex.Value = mobjConfig.ColourThemeHex().ToString
                 hdnSiblingForms.Value = sSiblingForms.ToString
 
                 miCompletionMessageType = NullSafeInteger(cmdSelect.Parameters("@piCompletionMessageType").Value)
@@ -3960,10 +3951,6 @@ Public Class _Default
     ColourThemeHex = mobjConfig.ColourThemeHex
   End Function
 
-  Public Function ColourThemeFolder() As String
-    ColourThemeFolder = mobjConfig.ColourThemeFolder
-  End Function
-
   Public Function SubmissionTimeout() As Int32
     SubmissionTimeout = mobjConfig.SubmissionTimeout
   End Function
@@ -4307,8 +4294,6 @@ Public Class _Default
       End If
     End If
   End Sub
-
-
 
   Private Sub AddHeaderTags(ByVal lngViewportWidth As Long)
 
