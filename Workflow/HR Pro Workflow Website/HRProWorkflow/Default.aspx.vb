@@ -3190,6 +3190,8 @@ Public Class _Default
 
                     .Attributes.Add("LookupColumnIndex", iLookupColumnIndex.ToString)
 
+                    .DropDownLayout.RowsRange = dt.Rows.Count
+
                     ' Set requested data for grid
                     .DataSource = dt
                     .DataBind()
