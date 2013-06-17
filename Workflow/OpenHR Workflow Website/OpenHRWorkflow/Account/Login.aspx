@@ -7,11 +7,11 @@
 
             var header = 'Login Failed';
 
-            if (document.getElementById('ctl00_mainCPH_txtUserName').value.length === 0) {
+            if (document.getElementById('ctl00_mainCPH_txtUserName').value.trim().length === 0) {
                 showDialog(header, 'Username is required.');
                 return false;
             }
-            if (document.getElementById('ctl00_mainCPH_txtPassword').value.length === 0) {
+            if (document.getElementById('ctl00_mainCPH_txtPassword').value.trim().length === 0) {
                 showDialog(header, 'Password is required.');
                 return false;
             }

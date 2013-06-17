@@ -24,7 +24,7 @@ Partial Class Registration
 
     If sMessage.Length = 0 Then
       Try
-        ' Fetch the record ID for the specified e-mail. 
+        ' Fetch the record ID for the specified e-mail.
         Dim userID = Database.GetUserID(txtEmail.Text)
 
         Dim objCrypt As New Crypt
