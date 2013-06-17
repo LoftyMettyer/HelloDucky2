@@ -292,11 +292,6 @@ Partial Class MobileLogin
     Dim sMessage As String = ""
     Dim userName As String = txtUserName.Value.Trim
 
-    ' Basic validation of details
-    If userName = "" Then
-      sMessage = "No Login entered."
-    End If
-
     ' Check if the system is locked
     Try
       If IsSystemLocked() Then

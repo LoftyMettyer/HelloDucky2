@@ -17,24 +17,31 @@
 
             function submitCheck() {
 
-                if (document.getElementById('txtCurrPassword').value.length == 0 && document.getElementById('txtNewPassword').value.length == 0) {
-                    showMsgBox("No passwords entered.");
+                var header = 'Change Password Failed';
+                
+                if (document.getElementById('txtCurrPassword').value.length === 0) {
+                    showMsgBox(header, 'Current Password is required.');
+                    return false;
+                }
+                if (document.getElementById('txtNewPassword').value.length === 0) {
+                    showMsgBox(header, 'New Password is required.');
+                    return false;
+                }
+                if (document.getElementById('txtConfPassword').value.length === 0) {
+                    showMsgBox(header, 'Confirm Password is required.');
                     return false;
                 }
 
                 if (document.getElementById('txtNewPassword').value != document.getElementById('txtConfPassword').value) {
-                    showMsgBox("The new passwords do not match.");
-                    return false;
-                }
-                if (document.getElementById('txtNewPassword').value.length == 0) {
-                    showMsgBox("A new password must be entered.");
+                    showMsgBox(header, 'New Password and Confirm Password do not match.');
                     return false;
                 }
                 return true;
             }
 
-            function showMsgBox(strText) {
-                document.getElementById('lblMsgBox').innerHTML = strText;
+            function showMsgBox(header, message) {
+                document.getElementById('lblMsgHeader').innerHTML = header;
+                document.getElementById('lblMsgBox').innerHTML = message;
                 document.getElementById('pnlGreyOut').style.visibility = "visible";
                 document.getElementById('pnlMsgBox').style.visibility = "visible";
             }

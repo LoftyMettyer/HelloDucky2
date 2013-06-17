@@ -18,12 +18,22 @@
 
             function submitCheck() {
 
-                if()
+                var header = 'Login Failed';
+                
+                if (document.getElementById('txtUserName').value.length === 0) {
+                    showMsgBox(header, 'Username is required.');
+                    return false;
+                }
+                if (document.getElementById('txtPassword').value.length === 0) {
+                    showMsgBox(header, 'Password is required.');
+                    return false;
+                }
                 return true;
             }
 
-            function showMsgBox(strText) {
-                document.getElementById('lblMsgBox').innerHTML = strText;
+            function showMsgBox(header, message) {
+                document.getElementById('lblMsgHeader').innerHTML = header;
+                document.getElementById('lblMsgBox').innerHTML = message;
                 document.getElementById('pnlGreyOut').style.visibility = "visible";
                 document.getElementById('pnlMsgBox').style.visibility = "visible";
             }
