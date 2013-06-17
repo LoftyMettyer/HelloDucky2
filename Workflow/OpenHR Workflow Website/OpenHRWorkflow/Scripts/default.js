@@ -244,8 +244,7 @@
 
 	    function showErrorMessages(pfDisplay) {
 		
-	        if ((($get("frmMain").hdnCount_Errors.value > 0) || ($get("frmMain").hdnCount_Warnings.value > 0))
-    	        && (pfDisplay == false)) {
+	        if ((($get("frmMain").hdnCount_Errors.value > 0) || ($get("frmMain").hdnCount_Warnings.value > 0)) && (pfDisplay == false)) {
 	            $get("imgErrorMessages_Max").style.display = "block";
 	            $get("imgErrorMessages_Max").style.visibility = "visible";
 	        }
@@ -254,7 +253,6 @@
 	            $get("imgErrorMessages_Max").style.visibility = "hidden";
 	        }
            
-
 	        if (pfDisplay == true) {
 	            //refresh the errors WARP panel. 
 	            __doPostBack('pnlErrorMessages', '');
