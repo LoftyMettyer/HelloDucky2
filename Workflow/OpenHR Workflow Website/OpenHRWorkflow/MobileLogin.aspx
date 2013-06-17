@@ -88,11 +88,11 @@
             </div>
           </div>
           
-          <div  style="display:none;text-align:center; position:absolute;top:357px;width:100%;z-index-0">
+          <div  style="text-align:center; position:absolute;top:357px;width:100%;z-index:0">
             <p style="font-family: Verdana; font-size: 10px; z-index: 2; color: #333366;">Copyright © Advanced Business Software and Solutions Ltd 2012</p>
           </div>
 
-          <div id="pnlFooter" runat="server" style="position:fixed;overflow:hidden;left:0px;bottom:0px;z-index-0;width:100%;height:60px">
+          <div id="pnlFooter" runat="server" style="position:fixed;overflow:hidden;left:0px;bottom:0px;z-index:0;width:100%;height:60px">
             <table id="tblFooter" runat="server" style="height:100%;width:100%">
               <tr style="height:40px">
                 <td style="width:33%;text-align:center;overflow:hidden"><asp:ImageButton ID="btnLogin"  runat="server" /></td>
