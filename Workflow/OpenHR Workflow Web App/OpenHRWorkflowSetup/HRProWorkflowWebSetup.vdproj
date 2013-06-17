@@ -28,7 +28,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_A1DC97B507EF87E64B5E79E74E298FB2"
+        "MsmKey" = "8:_B9CD2FCAB3204822DF85F27A314A585E"
+        "OwnerKey" = "8:_27CCB823E78043E5BA2E3F1C6685062F"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_EAA18313218CF6B47C6EF23F6EFCCED4"
         "OwnerKey" = "8:_27CCB823E78043E5BA2E3F1C6685062F"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -59,7 +65,13 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_A1DC97B507EF87E64B5E79E74E298FB2"
+        "OwnerKey" = "8:_EAA18313218CF6B47C6EF23F6EFCCED4"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_B9CD2FCAB3204822DF85F27A314A585E"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -196,20 +208,51 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_A1DC97B507EF87E64B5E79E74E298FB2"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_B9CD2FCAB3204822DF85F27A314A585E"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:AjaxControlToolkit, Version=4.1.51116.0, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_A1DC97B507EF87E64B5E79E74E298FB2"
+                    "_B9CD2FCAB3204822DF85F27A314A585E"
                     {
                     "Name" = "8:AjaxControlToolkit.dll"
                     "Attributes" = "3:512"
                     }
                 }
             "SourcePath" = "8:AjaxControlToolkit.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_ACDB8F00505241659EC63AF1774D10C6"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_EAA18313218CF6B47C6EF23F6EFCCED4"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:ScriptReferenceProfiler, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_EAA18313218CF6B47C6EF23F6EFCCED4"
+                    {
+                    "Name" = "8:ScriptReferenceProfiler.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:ScriptReferenceProfiler.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_ACDB8F00505241659EC63AF1774D10C6"
@@ -327,24 +370,24 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:OpenHR Workflow Web Site v5.0"
-        "ProductCode" = "8:{DA13E48A-546E-4C08-AEA1-820684C5F4F0}"
-        "PackageCode" = "8:{E9F75274-98DD-4D0C-BAE0-AA7C55EB5C56}"
+        "ProductName" = "8:OpenHR Workflow Web Site v5.1"
+        "ProductCode" = "8:{285DC76C-5D4E-47AC-8785-C95F1992D8C6}"
+        "PackageCode" = "8:{B307936D-5BB6-4427-9BE6-43F6EDB8DDA5}"
         "UpgradeCode" = "8:{8D103CEA-CA57-49D4-A6E6-80D5076BB642}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:5.0.18"
+        "ProductVersion" = "8:5.1.1"
         "Manufacturer" = "8:Advanced Business Software and Solutions Limited"
         "ARPHELPTELEPHONE" = "8:08451 609 999"
         "ARPHELPLINK" = "8:http://webfirst.advancedcomputersoftware.com/abs"
-        "Title" = "8:OpenHR Workflow Web Site v5.0"
+        "Title" = "8:OpenHR Workflow Web Site v5.1"
         "Subject" = "8:"
         "ARPCONTACT" = "8:Advanced Business Software and Solutions Limited"
         "Keywords" = "8:"
-        "ARPCOMMENTS" = "8:OpenHR Workflow Web Site v5.0"
+        "ARPCOMMENTS" = "8:OpenHR Workflow Web Site v5.1"
         "ARPURLINFOABOUT" = "8:http://www.advancedcomputersoftware.com/abs"
         "ARPPRODUCTICON" = "8:_42145331C5C64A948B725177D6C49EF2"
         "ARPIconIndex" = "3:0"
@@ -791,7 +834,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_27CCB823E78043E5BA2E3F1C6685062F"
             {
-            "SourcePath" = "8:..\\OpenHRWorkflow\\obj\\Release\\OpenHRWorkflow.dll"
+            "SourcePath" = "8:..\\OpenHRWorkflow\\obj\\Debug\\OpenHRWorkflow.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_060C4D78AD8C49EC852195BEC9F88F20"
@@ -850,7 +893,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_F095207D25C9491B948AC4FF9CC578AA"
             {
-            "SourcePath" = "8:..\\OpenHRWorkflowInstaller\\obj\\Release\\InstallerClassLibrary.dll"
+            "SourcePath" = "8:..\\OpenHRWorkflowInstaller\\obj\\Debug\\InstallerClassLibrary.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_ACDB8F00505241659EC63AF1774D10C6"
