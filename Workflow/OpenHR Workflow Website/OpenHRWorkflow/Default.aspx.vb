@@ -207,7 +207,7 @@ Public Class _Default
     Dim sPWDParameter As String = ""
     ' MOBILE - end
 
-    Const sDEFAULTTITLE As String = "Open HR Workflow"
+    Const sDEFAULTTITLE As String = "OpenHR Workflow"
     Const IMAGEBORDERWIDTH As Integer = 2
 
     sAssemblyName = ""
@@ -225,7 +225,6 @@ Public Class _Default
     sSiblingForms = ""
     sTitle = sDEFAULTTITLE
     iPageTabCount = 0
-
 
     Try
       mobjConfig.Initialise(Server.MapPath("themes/ThemeHex.xml"))
