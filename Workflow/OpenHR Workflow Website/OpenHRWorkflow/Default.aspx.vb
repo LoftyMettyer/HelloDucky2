@@ -1827,7 +1827,7 @@ Public Class _Default
                     .Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
                     .Font.Underline = NullSafeBoolean(dr("FontUnderline"))
 
-                    ' ROW formatting
+                    'TODO PG
                     .AlternatingRowStyle.ForeColor = General.GetColour(NullSafeInteger(dr("ForeColorOdd")))
                     .AlternatingRowStyle.BackColor = General.GetColour(NullSafeInteger(dr("BackColorOdd")))
 
