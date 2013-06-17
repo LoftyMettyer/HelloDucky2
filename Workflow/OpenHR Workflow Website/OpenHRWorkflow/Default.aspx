@@ -3,9 +3,8 @@
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajx" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml" id="htmMain">
-<head id="Head1" runat="server">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
     <meta name="format-detection" content="telephone=no"/>
     
     <link rel="shortcut icon" href="images/logo.ico"/>
