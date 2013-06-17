@@ -164,7 +164,9 @@ Public Class RecordSelector
         ' (This is the one with scrollbars) - too small for lookups
         writer.Write("<div id='" & ClientID.Replace("Grid", "") & "gridcontainer'  style='position:absolute;top:" & CalculateHeaderHeight() & _
                      ";bottom:" & CalculatePagerHeight() & ";left:0px;overflow-x:auto;overflow-y:auto;" & _
-                     "width:" & CalculateWidth() & ";" & "background-color:#FFFFFF;' onscroll=scrollHeader('" & ClientID.Replace("Grid", "gridcontainer") & "')>")
+                     "width:" & CalculateWidth() & ";" & "background-color:" & _
+                     objGeneral.GetHTMLColour(System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.FromArgb(Me.BackColor.A, Me.BackColor.R, Me.BackColor.G, Me.BackColor.B)).ToString) & _
+                     ";' onscroll=scrollHeader('" & ClientID.Replace("Grid", "gridcontainer") & "')>")
 
 
         ' Need to hide the default pager row BEFORE rendering myBase.
