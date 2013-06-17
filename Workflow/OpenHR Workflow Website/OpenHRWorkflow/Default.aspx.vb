@@ -1009,7 +1009,9 @@ Public Class _Default
 
                     .Attributes("onfocus") = "try{" & sID & ".select();activateControl();}catch(e){};"
 
-                    .Attributes("maxlength") = NullSafeString(dr("inputSize"))
+                    If NullSafeInteger(dr("inputSize")) > 0 Then
+                      .Attributes("maxlength") = NullSafeString(dr("inputSize"))
+                    End If
 
                     'If IsMobileBrowser() Then .Attributes.Add("onchange", "FilterMobileLookup('" & .ID.ToString & "');")
 
