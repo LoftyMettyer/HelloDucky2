@@ -2987,7 +2987,7 @@ Public Class _Default
                   ctlTabsDiv.Style.Add("position", "relative")
                   ctlTabsDiv.Style.Add("z-index", "1")
 
-                  If IsMobileBrowser() Then
+                  If IsMobileBrowser() And Not IsAndroidBrowser() Then
                     ctlTabsDiv.Style.Add("overflow-x", "auto")
                   Else
                     ' for non-mobile browsers we display arrows to scroll the tab bar left and right.
@@ -3575,7 +3575,7 @@ Public Class _Default
           While dr.Read
             If NullSafeInteger(dr("failureType")) = 0 Then
               bulletErrors.Items.Add(NullSafeString(dr("Message")))
-            ElseIf CDbl(hdnOverrideWarnings.Value) <> 1.0 Then
+            ElseIf CDbl(hdnOverrideWarnings.Value) <> 1 Then
               bulletWarnings.Items.Add(NullSafeString(dr("Message")))
             End If
           End While
@@ -3593,17 +3593,14 @@ Public Class _Default
            ""))
 
           lblWarnings.Text = CStr(IIf(bulletWarnings.Items.Count > 0, _
-           CStr(IIf(bulletErrors.Items.Count > 0, _
-           "And the following warning" & _
-          CStr(IIf(bulletWarnings.Items.Count = 1, "", "s")) & ":", _
-           "Submitting this form raises the following warning" & _
+           CStr(IIf(bulletErrors.Items.Count > 0, "And the following warning" & _
+          CStr(IIf(bulletWarnings.Items.Count = 1, "", "s")) & ":", "Submitting this form raises the following warning" & _
           CStr(IIf(bulletWarnings.Items.Count = 1, "", "s")) & ":")), _
            ""))
 
           lblWarningsPrompt_1.Visible = (bulletWarnings.Items.Count > 0 And bulletErrors.Items.Count = 0)
           lblWarningsPrompt_2.Visible = (bulletWarnings.Items.Count > 0 And bulletErrors.Items.Count = 0)
-          lblWarningsPrompt_3.Text = "to ignore " & _
-           CStr(IIf(bulletWarnings.Items.Count = 1, "this warning", "these warnings")) & " and submit the form."
+          lblWarningsPrompt_3.Text = "to ignore " & CStr(IIf(bulletWarnings.Items.Count = 1, "this warning", "these warnings")) & " and submit the form."
           lblWarningsPrompt_3.Visible = (bulletWarnings.Items.Count > 0 And bulletErrors.Items.Count = 0)
 
         Catch ex As Exception
