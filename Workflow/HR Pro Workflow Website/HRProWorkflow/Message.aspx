@@ -157,7 +157,7 @@
 							<asp:Label ID="lblClose" 
 								runat="server" Text="here" 
 								Font-Underline="true" 
-								style="cursor: hand;">
+								style="cursor: pointer;">
 							</asp:Label>
 						</span>
 						to close this form.

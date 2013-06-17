@@ -1203,7 +1203,7 @@ function Right(str, n){
 					onmouseout="try{this.style.color='#333366';}catch(e){}" onfocus="try{this.style.color='#ff9608';}catch(e){}"
 					onblur="try{this.style.color='#333366';}catch(e){}" onkeypress="try{if(window.event.keyCode == 32){spnClickHere.click()};}catch(e){}">
 					<asp:Label ID="lblWarningsPrompt_2" runat="server" Text="here" Font-Underline="true" 
-						style="cursor: hand;"></asp:Label>
+						style="cursor: pointer;"></asp:Label>
 				</span>
 				<asp:Label ID="lblWarningsPrompt_3" runat="server" Text=""></asp:Label>
 			</igmisc:WebAsyncRefreshPanel>

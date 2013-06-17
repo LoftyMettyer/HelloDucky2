@@ -2932,7 +2932,7 @@ Public Class _Default
                                      " color: " & objGeneral.GetHTMLColour(NullSafeInteger(dr("ForeColor"))) & "; " & _
                                      "' onclick='FileDownload_Click(""" & sEncodedID & """);'" & _
                                      " onkeypress='FileDownload_KeyPress(""" & sEncodedID & """);'" & _
-                                     " onmouseover=""this.style.cursor='hand';this.style.color='#ff9608';""" & _
+                                     " onmouseover=""this.style.cursor='pointer';this.style.color='#ff9608';""" & _
                                      " onmouseout=""this.style.cursor='';this.style.color='" & objGeneral.GetHTMLColour(NullSafeInteger(dr("ForeColor"))) & "';""" & _
                                      " onfocus=""this.style.color='#ff9608';""" & _
                                      " onblur=""this.style.color='" & objGeneral.GetHTMLColour(NullSafeInteger(dr("ForeColor"))) & "';"">" & _
@@ -2982,7 +2982,7 @@ Public Class _Default
                                      " color: " & objGeneral.GetHTMLColour(NullSafeInteger(dr("ForeColor"))) & "; " & _
                                      "' onclick='FileDownload_Click(""" & sEncodedID & """);'" & _
                                      " onkeypress='FileDownload_KeyPress(""" & sEncodedID & """);'" & _
-                                     " onmouseover=""this.style.cursor='hand';this.style.color='#ff9608';""" & _
+                                     " onmouseover=""this.style.cursor='pointer';this.style.color='#ff9608';""" & _
                                      " onmouseout=""this.style.cursor='';this.style.color='" & objGeneral.GetHTMLColour(NullSafeInteger(dr("ForeColor"))) & "';""" & _
                                      " onfocus=""this.style.color='#ff9608';""" & _
                                      " onblur=""this.style.color='" & objGeneral.GetHTMLColour(NullSafeInteger(dr("ForeColor"))) & "';"">" & _
