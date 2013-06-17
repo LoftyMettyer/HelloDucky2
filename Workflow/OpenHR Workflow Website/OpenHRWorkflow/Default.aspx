@@ -20,7 +20,9 @@
     <script src="Scripts/resizable-table.js" type="text/javascript"></script>
     <script src="scripts/WebNumericEditValidation.js" type="text/javascript"></script>
 
-    <ajx:ToolkitScriptManager ID="ToolkitScriptManager1" runat="server" EnablePartialRendering="true" EnablePageMethods="true"></ajx:ToolkitScriptManager>
+    <ajx:ToolkitScriptManager ID="ToolkitScriptManager1" runat="server" EnablePartialRendering="true" EnablePageMethods="true" CombineScripts="True">
+        
+    </ajx:ToolkitScriptManager>
 	<!--
         Web Form Validation Error Messages
     -->        
