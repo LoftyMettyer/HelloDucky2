@@ -6,7 +6,7 @@ Public Class App
 
    Sub Application_Start(ByVal sender As Object, ByVal e As EventArgs)
       ' Fires when the application is started
-      Config = New Config(Server.MapPath("Web.custom.config"), Server.MapPath("themes/ThemeHex.xml"))
+		Config = New Config(Server.MapPath("~/Web.custom.config"), Server.MapPath("~/Themes/ThemeHex.xml"))
    End Sub
 
    Sub Session_Start(ByVal sender As Object, ByVal e As EventArgs)
