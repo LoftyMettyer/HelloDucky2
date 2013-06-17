@@ -227,10 +227,10 @@ Public Class _Default
       Response.AddHeader("Pragma", "no-cache")
       Response.Expires = -1
 
-      If Not IsPostBack Then
-        Session.Clear()
-        Session("TimeoutSecs") = Session.Timeout * 60
-      End If
+            If Not IsPostBack And Not isMobileBrowser() Then
+                Session.Clear()
+                Session("TimeoutSecs") = Session.Timeout * 60
+            End If
     Catch ex As Exception
     End Try
 
@@ -418,7 +418,7 @@ Public Class _Default
 
         Dim myConnection As New SqlClient.SqlConnection(strConn)
         myConnection.Open()
-        Dim myCommand As New SqlClient.SqlCommand("UPDATE tbsys_mobilelogins SET [password] = [newpassword] WHERE [userid] = " & CStr(miInstanceID), myConnection)
+                Dim myCommand As New SqlClient.SqlCommand("UPDATE tbsys_mobilelogins SET [password] = 'Active' WHERE [userid] = " & CStr(miInstanceID), myConnection)
         myCommand.ExecuteNonQuery()
         myConnection.Close()
 
