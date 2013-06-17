@@ -74,7 +74,9 @@
                 document.getElementById('ctl00_dialogMessage').innerHTML = message;
                 document.getElementById('ctl00_overlay').style.display = "block";
                 document.getElementById('ctl00_dialog').style.display = "block";
-                document.getElementById('dialogOk').focus();
+              	 setTimeout(function() {
+            		document.getElementById('dialogOk').focus();	
+            	}, 1);
             }
 
             function closeDialog() {
