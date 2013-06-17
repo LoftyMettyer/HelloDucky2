@@ -12,14 +12,12 @@ Public Class [Default]
    Private _url As WorkflowUrl
    Private _form As WorkflowForm
    Private _db As Database
-   Private _siblingForms As String = ""
    Private _minTabIndex As Short?
    Private _autoFocusControl As String
 
    Private Const TabStripHeight As Integer = 21
    Private Const FormInputPrefix As String = "FI_"
 
-   'TODO firing off openhrworkflow/?asdasdasd is being redirected cos it should be openhrworkflow/default.aspx?asdasdasd
    Protected Sub Page_PreInit(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.PreInit
 
       Dim message As String = Nothing
@@ -78,10 +76,12 @@ Public Class [Default]
                   _url.ElementID = CInt(forms(0))
                   forms.RemoveAt(0)
 
-                  _siblingForms = String.Join(vbTab, forms.Select(Function(f) _db.GetWorkflowQueryString(_url.InstanceID, CInt(f))))
+                  Dim siblingForms = String.Join(vbTab, forms.Select(Function(f) _db.GetWorkflowQueryString(_url.InstanceID, CInt(f))))
 
                   Dim crypt As New Crypt
                   Dim newUrl = crypt.EncryptQueryString(_url.InstanceID, _url.ElementID, _url.User, _url.Password, _url.Server, _url.Database, "", "")
+
+                  Session("FireSiblings_" & newUrl) = siblingForms
                   Response.Redirect("~/Default.aspx?" & newUrl, True)
                End If
             End If
@@ -146,6 +146,11 @@ Public Class [Default]
                hdnDefaultPageNo.Value = _db.GetWorkflowCurrentTab(_url.InstanceID).ToString
             End If
 
+            'Do we need to fire off any sibling forms
+            Dim siblingSessionKey = "FireSiblings_" & Request.QueryString(0)
+            hdnSiblingForms.Value = CStr(Session(siblingSessionKey))
+            Session.Remove(siblingSessionKey)
+
             'Get the worklfow form details
             _form = _db.GetWorkflowForm(_url.InstanceID, _url.ElementID)
 
@@ -178,8 +183,6 @@ Public Class [Default]
                pnlInputDiv.Style("width") = _form.Width.ToString & "px"
                pnlInputDiv.Style("height") = _form.Height.ToString & "px"
                pnlInputDiv.Style("left") = "-2px"
-
-               hdnSiblingForms.Value = _siblingForms.ToString
             End If
 
             ' Resize the mobile 'viewport' to fit the webform
@@ -199,6 +202,7 @@ Public Class [Default]
 
             hdnErrorMessage.Value = message
             hdnFollowOnForms.Value = ""
+            hdnSiblingForms.Value = ""
             SetSubmissionMessage(message & "<BR><BR>Click", "here", "to close this form.")
          Else
             Session("message") = message
