@@ -326,48 +326,116 @@ Partial Class ChangePassword
 
     Dim strConn As String
     Dim conn As SqlClient.SqlConnection
-    Dim cmdChgPwd As SqlClient.SqlCommand
+    Dim cmdCheckUserSessions As SqlClient.SqlCommand
+    Dim cmdChangePassword As SqlClient.SqlCommand
+    Dim cmdPasswordOK As SqlClient.SqlCommand
     Dim sHeader As String = ""
     Dim sMessage As String = ""
     Dim sRedirectTo As String = ""
     Dim objCrypt As New Crypt
-    Dim strEncryptedPwd As String
 
     Try
       'TODO how does nick want change password thing to work???
+      ' Like this :P
 
-      ' Encrypt the password so that it can be transmitted in clear text
-      strEncryptedPwd = objCrypt.EncryptString(txtNewPassword.Value, "jmltn", False)
+      If HttpContext.Current.User.ToString().Length = 0 Then sMessage = "Unable to identify you as a user"
 
-      strConn = CStr("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
-                       ";Initial Catalog=" & Session("Database") & _
-                       ";Integrated Security=false;User ID=" & Session("Login") & _
-                       ";Password=" & Session("Password"))
-      conn = New SqlClient.SqlConnection(strConn)
-      conn.Open()
+      If sMessage.Length = 0 Then
+        strConn = CStr("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
+                         ";Initial Catalog=" & Session("Database") & _
+                         ";Integrated Security=false;User ID=" & Session("Login") & _
+                         ";Password=" & Session("Password"))
+        conn = New SqlClient.SqlConnection(strConn)
+        conn.Open()
 
-      cmdChgPwd = New SqlClient.SqlCommand
-      cmdChgPwd.CommandText = "spASRSysMobileChangePassword"
-      cmdChgPwd.Connection = conn
-      cmdChgPwd.CommandType = CommandType.StoredProcedure
+        ' Force password change only if there are no other users logged in with the same name.
+        cmdCheckUserSessions = New SqlClient.SqlCommand
+        cmdCheckUserSessions.CommandText = "spASRGetCurrentUsersCountOnServer"
+        cmdCheckUserSessions.Connection = conn
+        cmdCheckUserSessions.CommandType = CommandType.StoredProcedure
 
-      cmdChgPwd.Parameters.Add("@psKeyParameter", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
-      cmdChgPwd.Parameters("@psKeyParameter").Value = User.Identity.Name
+        cmdCheckUserSessions.Parameters.Add("@iLoginCount", SqlDbType.Int).Direction = ParameterDirection.Output
 
-      cmdChgPwd.Parameters.Add("@psPWDParameterNew", SqlDbType.NVarChar, 2147483646).Direction = ParameterDirection.Input
-      cmdChgPwd.Parameters("@psPWDParameterNew").Value = strEncryptedPwd
+        cmdCheckUserSessions.Parameters.Add("@psLoginName", SqlDbType.NVarChar, 2147483646).Direction = ParameterDirection.Input
+        cmdCheckUserSessions.Parameters("@psLoginName").Value = User.Identity.Name.ToString()
 
-      cmdChgPwd.ExecuteNonQuery()
-      cmdChgPwd.Dispose()
+        cmdCheckUserSessions.ExecuteNonQuery()
 
+        Dim iUserSessionCount As Integer = CInt(cmdCheckUserSessions.Parameters("@iLoginCount").Value)
+
+        cmdCheckUserSessions.Dispose()
+
+
+        ' is OK?
+        If iUserSessionCount < 2 Then
+          ' Read the Password details from the Password form.
+          Dim sCurrentPassword As String = txtCurrPassword.Value
+          Dim sNewPassword As String = txtNewPassword.Value
+
+          ' Attempt to change the password on the SQL Server.
+          cmdChangePassword = New SqlClient.SqlCommand
+          cmdChangePassword.CommandText = "sp_password"
+          cmdChangePassword.Connection = conn
+          cmdChangePassword.CommandType = CommandType.StoredProcedure
+
+          cmdChangePassword.Parameters.Add("@old", SqlDbType.NVarChar, 2147483646).Direction = ParameterDirection.Input
+          If Len(sCurrentPassword) > 0 Then
+            cmdChangePassword.Parameters("@old").Value = sCurrentPassword
+          Else
+            cmdChangePassword.Parameters("@old").Value = vbNullString
+          End If
+
+          cmdChangePassword.Parameters.Add("@new", SqlDbType.NVarChar, 2147483646).Direction = ParameterDirection.Input
+          If Len(sNewPassword) > 0 Then
+            cmdChangePassword.Parameters("@new").Value = sNewPassword
+          Else
+            cmdChangePassword.Parameters("@new").Value = vbNullString
+          End If
+
+          cmdChangePassword.Parameters.Add("@loginame", SqlDbType.NVarChar, 2147483646).Direction = ParameterDirection.Input
+          cmdChangePassword.Parameters("@loginame").Value = User.Identity.Name.ToString()
+
+          cmdChangePassword.ExecuteNonQuery()
+
+          cmdChangePassword.Dispose()
+        Else
+          sMessage = "You could not change your password. The account is currently being used by "
+          If iUserSessionCount > 2 Then
+            sMessage &= iUserSessionCount.ToString & " users"
+          Else
+            sMessage &= " another user"
+          End If
+          sMessage &= " in the system."
+        End If
+
+        If sMessage.Length = 0 Then
+          ' Password changed okay. Update the appropriate record in the ASRSysPasswords table.
+          cmdPasswordOK = New SqlClient.SqlCommand
+          cmdPasswordOK.CommandText = "spASRSysMobilePasswordOK"
+          cmdPasswordOK.Connection = conn
+          cmdPasswordOK.CommandType = CommandType.StoredProcedure
+
+          cmdPasswordOK.Parameters.Add("@sCurrentUser", SqlDbType.NVarChar, 2147483646).Direction = ParameterDirection.Input
+          cmdPasswordOK.Parameters("@sCurrentUser").Value = User.Identity.Name.ToString()
+
+          cmdPasswordOK.ExecuteNonQuery()
+
+          cmdPasswordOK.Dispose()
+
+          ' Tell the user that the password was changed okay.
+          sMessage = "Password changed successfully."
+        End If
+      End If
+
+      sHeader = "Change Password Submitted"
+      
     Catch ex As Exception
+      sHeader = "Change Password Failed"
       sMessage = "Error :" & vbCrLf & vbCrLf & ex.Message.ToString & vbCrLf & vbCrLf & "Contact your system administrator."
     End Try
 
-    If sMessage.Length > 0 Then
-      sHeader = "Change Password Failed"
-    Else
-      sHeader = "Change Password Submitted"
+
+    If sMessage.Length = 0 Then
       sMessage = "Password changed successfully."
       sRedirectTo = "Mobile/MobileHome.aspx"
     End If
