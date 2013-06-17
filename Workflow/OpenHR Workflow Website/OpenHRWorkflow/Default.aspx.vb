@@ -1610,7 +1610,6 @@ Public Class _Default
                     .BorderWidth = 1
 
                     .Style.Add("border-bottom-width", "2px")
-                    .BackColor = objGeneral.GetColour(NullSafeInteger(dr("HeaderBackColor")))
 
                     .ID = sID & "Grid"
                     .AllowPaging = True
