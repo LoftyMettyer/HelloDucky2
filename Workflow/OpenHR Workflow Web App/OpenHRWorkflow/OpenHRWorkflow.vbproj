@@ -33,6 +33,7 @@
     <PackageAsSingleFile>false</PackageAsSingleFile>
     <IncludeIisSettings>false</IncludeIisSettings>
     <PublishDatabases>false</PublishDatabases>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
