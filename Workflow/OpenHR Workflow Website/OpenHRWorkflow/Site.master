@@ -10,6 +10,28 @@
         <link href="CSS/Site.css" rel="stylesheet" type="text/css" />
         <title></title>
         
+        <style type="text/css">
+          /* needs inline css as external css not reloaded when the screen is rotated */
+          @media all and (orientation: landscape) {
+            .page {
+              width: 320px;
+              height: 450px;
+              margin-left: auto;
+              margin-right: auto;
+              /*margin-top: 50px;*/
+              position: relative;
+              overflow: hidden;
+            }
+
+            .large-view .header { position: relative; }
+            .large-view .main { position: absolute; }
+            .large-view .footer { position: absolute; }
+            /*.large-view .header { border-radius: 6px 6px 0px 0px; } */
+            /*.large-view .footer { border-radius: 0px 0px 6px 6px; }*/
+          }
+          
+        </style>
+
         <script type="text/javascript">
             // <!CDATA[
             window.onload = function () {
@@ -65,6 +87,7 @@
                     this.scrollLeft = scrollStartPosX - event.touches[0].pageX;
                 }, false);
             }
+
         // ]]>
         </script>
         <asp:ContentPlaceHolder id="headCPH" runat="server">
