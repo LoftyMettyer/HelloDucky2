@@ -25,7 +25,11 @@ Public Class ActiveDirectoryValidator
       _path = result.Path
       Dim _filterAttribute As String = CStr(result.Properties("cn")(0))
     Catch ex As Exception
-      Throw New Exception("Login Error: " & ex.Message)
+      If ex.Message.Contains("unknown user") OrElse ex.Message.Contains("bad password") Then
+        Return False
+      Else
+        Throw
+      End If
     End Try
     Return True
   End Function
