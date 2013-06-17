@@ -1853,11 +1853,11 @@ Public Class _Default
                                             connGrid.Close()
                                             connGrid.Dispose()
                                         End Try
-                                    Else
+                                    Else                                        
                                         ' If not a postback, check for empty datagrid and set empty row message
                                         Dim dtSource As DataTable = TryCast(HttpContext.Current.Session(sID & "DATA"), DataTable)
 
-                                        If dtSource.Rows.Count = 1 Then
+                                        If dtSource.Rows.Count = 0 Then
                                             ShowNoResultFound(dtSource, ctlForm_PagingGridView)
                                         End If
                                     End If
