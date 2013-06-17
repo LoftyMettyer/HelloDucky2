@@ -62,7 +62,7 @@ Public Class RecordSelector
                         If IsLookup Then
                             customHeader.Cells(iColCount).Attributes("onclick") = ("txtActiveDDE.value='" & grdGrid.ID.Replace("Grid", "dde") & "';try{setPostbackMode(2);}catch(e){};__doPostBack('" & MyBase.UniqueID & "','Sort$") & customHeader.Cells(iColCount).Text & "');"
                         Else
-                            customHeader.Cells(iColCount).Attributes("onclick") = ("try{setPostbackMode(2);}catch(e){};__doPostBack('" & MyBase.UniqueID & "','Sort$") & customHeader.Cells(iColCount).Text & "');"
+                            customHeader.Cells(iColCount).Attributes("onclick") = ("try{setPostbackMode(2);}catch(e){};if(event.ctrlKey){__doPostBack('" & MyBase.UniqueID & "','Sort$" & customHeader.Cells(iColCount).Text & "+');}else{__doPostBack('" & MyBase.UniqueID & "','Sort$") & customHeader.Cells(iColCount).Text & "');}"
                         End If
                     End If
                     ' Add each of the gridview's column headers to the header table
@@ -77,7 +77,53 @@ Public Class RecordSelector
                     customHeader.Cells(iColCount).Style.Add("border-bottom", "1px solid gray")
                     customHeader.Cells(iColCount).Style.Add("padding-top", "0px")
                     customHeader.Cells(iColCount).Style.Add("padding-bottom", "0px")
-                    customHeader.Cells(iColCount).Controls.Add(New LiteralControl(Replace(customHeader.Cells(iColCount).Text, "_", " ")))
+
+                    Dim ctlTextPanel As New Panel
+                    With ctlTextPanel
+                        .ID = "textbox"
+                        .Style.Add("float", "left")
+                        .Style.Add("width", "100%")
+                        .Style.Add("height", "100%")
+                        .Style.Add("overflow", "hidden")
+                        .Style.Add("text-overflow", "ellipsis")
+                        .Style.Add("white-space", "nowrap")
+                    End With
+
+                    ' customHeader.Cells(iColCount).Controls.Add(New LiteralControl(Replace(customHeader.Cells(iColCount).Text, "_", " ")))
+                    ctlTextPanel.Controls.Add(New LiteralControl(Replace(customHeader.Cells(iColCount).Text, "_", " ")))
+
+                    customHeader.Cells(iColCount).Controls.Add(ctlTextPanel)
+
+                    Dim ctlSortPanel As New Panel
+                    With ctlSortPanel
+                        .ID = "sortpanel"
+                        .Style.Add("position", "absolute")
+                        .Style.Add("right", "0px")
+                        .Style.Add("float", "right")
+                        ' .Style.Add("width", "16px")
+                        .Style.Add("height", "100%")
+                    End With
+
+                    Dim ctlSortImage As New Image
+                    With ctlSortImage
+                        .ID = "sortimage"
+
+                        Select Case ColumnSortDirectionCode(customHeader.Cells(iColCount).Text)
+                            Case 0
+                                .Visible = False
+                            Case 1
+                                .ImageUrl = "Images/sort-asc.gif"
+                                .Visible = True
+                            Case 2
+                                .ImageUrl = "Images/sort-desc.gif"
+                                .Visible = True
+                        End Select
+
+                    End With
+
+                    ctlSortPanel.Controls.Add(ctlSortImage)
+                    customHeader.Cells(iColCount).Controls.Add(ctlSortPanel)
+
                 End If
             Next
         Else
@@ -408,6 +454,19 @@ Public Class RecordSelector
     End Property
 
 
+    Public Property sortBy() As String
+        Get
+            If Not ViewState("sortBy") Is Nothing Then
+                Return DirectCast(ViewState("sortBy"), String)
+            Else
+                Return ""
+            End If
+        End Get
+        Set(ByVal value As String)
+            ViewState("sortBy") = value
+        End Set
+    End Property
+
     Private Sub RecordSelector_DataBound(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.DataBound
 
         grdGrid = CType(sender, System.Web.UI.WebControls.GridView)
@@ -419,7 +478,31 @@ Public Class RecordSelector
 
     End Sub
 
- 
+    Private Function ColumnSortDirectionCode(ByVal sColName As String) As Integer
+        ' me.sortby is a string of all currently set sort orders, 
+        ' it'll look something like this:   [Surname] ASC, [Forenames] DESC
+        ' This function looks for the passed in column name and returns the following:
+        ' 0 = column not found, 1 = ASC, 2 = DESC
+
+        Dim aColList() As String = Split(Me.sortBy, ",")
+
+        For iCount As Integer = 0 To aColList.Length - 1
+            If aColList(iCount).Contains("[" & sColName.Replace(" ", "_") & "]") Then
+
+                Select Case Right(aColList(iCount), 4).Trim.ToUpper
+                    Case "ASC"
+                        Return 1
+                    Case "DESC"
+                        Return 2
+                    Case Else
+                        Return 0
+                End Select
+            End If
+        Next
+
+        Return 0
+
+    End Function
 
 
     Private Sub RecordSelector_PageIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.PageIndexChanged
@@ -638,6 +721,7 @@ Public Class RecordSelector
                         grdGrid.Attributes.Add("LookupFilterColumn", iColCount.ToString)
                     End If
                 Next
+
             End If
         Catch ex As Exception
 
@@ -646,7 +730,7 @@ Public Class RecordSelector
 
     End Sub
 
-
+ 
     Private Function GetHexColor(ByVal aRGBCode As System.Drawing.Color) As String
         Dim strHEX As String
 
@@ -779,11 +863,13 @@ Public Class RecordSelector
         GridViewSort(sender, e)
         'this handles the flipping of the sort direction
 
-        Dim SortSQL As String = SortExpressionToSQL(e.SortExpression.Replace(" ", "_"), e.SortDirection)
+
+
+        Dim SortSQL As String = SortExpressionToSQL(e.SortExpression.Replace(" ", "_").Replace("+", ""), e.SortDirection)
 
         ' Get the current dataset from the session variable,
         ' Sort it, then store back to session variable.
-        dataTable = TryCast(HttpContext.Current.Session(grdGrid.ID.Replace("Grid", "DATA")), DataTable)        
+        dataTable = TryCast(HttpContext.Current.Session(grdGrid.ID.Replace("Grid", "DATA")), DataTable)
 
         If IsLookup Then
             ' reapply filter?
@@ -792,7 +878,31 @@ Public Class RecordSelector
 
         If dataTable IsNot Nothing Then
             Dim dataView As New DataView(dataTable)
-            dataView.Sort = SortSQL ' Convert.ToString(e.SortExpression).Replace(" ", "_") & " DESC"
+            '            SortSQL = "[Forenames] DESC, [Start_Date] ASC"
+
+            If Right(e.SortExpression, 1) = "+" Then
+                ' Control Click on column - APPEND to sort order - comma delimited.
+                If Me.sortBy.Length > 0 Then
+                    If Me.sortBy.Contains("[" & e.SortExpression.Replace(" ", "_").Replace("+", "") & "]") Then
+                        ' this sort order already set, so update.
+
+                        Me.sortBy = Me.sortBy.Replace("[" & e.SortExpression.Replace(" ", "_").Replace("+", "") & "]" & _
+                                                      IIf(e.SortDirection = WebControls.SortDirection.Ascending, " Desc", " Asc"), "[" & e.SortExpression.Replace(" ", "_").Replace("+", "") & "]" & _
+                                                      IIf(e.SortDirection = WebControls.SortDirection.Ascending, " Asc", " Desc"))
+                    Else
+                        Me.sortBy &= "," & SortSQL.Replace("+", "")
+                    End If
+                Else
+                    Me.sortBy = SortSQL.Replace("+", "")
+                End If
+            Else
+                ' Not ctrl-click, so just sort by this column.
+                Me.sortBy = SortSQL
+            End If
+
+
+
+            dataView.Sort = Me.sortBy   ' SortSQL ' Convert.ToString(e.SortExpression).Replace(" ", "_") & " DESC"
             dataTable = dataView.ToTable()
             'HttpContext.Current.Session(grdGrid.ID.Replace("Grid", "DATA")) = dataTable
             grdGrid.DataSource = dataView
