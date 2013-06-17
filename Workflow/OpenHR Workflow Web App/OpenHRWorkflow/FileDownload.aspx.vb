@@ -274,7 +274,7 @@ Partial Class FileDownload
             Response.ClearContent()
             Response.ContentEncoding = Encoding.UTF8
             Response.ContentType = sContentType
-            Response.OutputStream.Write(abtImage, iOffset, abtImage.Length)
+				Response.OutputStream.Write(abtImage, iOffset, abtImage.Length - iOffset)
             Response.Flush()
             Response.Close()
          End If
