@@ -381,6 +381,7 @@ Partial Class PendingSteps
     Dim dr As System.Data.SqlClient.SqlDataReader
     Dim sImageFileName As String
     Dim sImageFilePath As String
+    Dim sImageWebPath As String
     Dim sTempName As String
     Dim fs As System.IO.FileStream
     Dim bw As System.IO.BinaryWriter
@@ -398,12 +399,13 @@ Partial Class PendingSteps
       psErrorMessage = ""
       LoadPicture = ""
       sImageFileName = ""
-      sImageFilePath = Server.MapPath("pictures")
-      strConn = "Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
-        ";Initial Catalog=" & Session("Database") & _
-        ";Integrated Security=false;User ID=" & Session("Login") & _
-        ";Password=" & Session("Password") & _
-        ";Pooling=false"
+      sImageWebPath = "~/pictures"
+      sImageFilePath = Server.MapPath(sImageWebPath)
+      strConn = CType(("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
+                       ";Initial Catalog=" & Session("Database") & _
+                       ";Integrated Security=false;User ID=" & Session("Login") & _
+                       ";Password=" & Session("Password") & _
+                       ";Pooling=false"), String)
       'strConn = "Application Name=OpenHR Workflow;Data Source=.\sqlexpress;Initial Catalog=hrprostd43;Integrated Security=false;User ID=sa;Password=asr;Pooling=false"
       'strConn = "Application Name=OpenHR Workflow;Data Source=" & msServer & ";Initial Catalog=" & msDatabase & ";Integrated Security=false;User ID=" & msUser & ";Password=" & msPwd & ";Pooling=false"
       conn = New SqlClient.SqlConnection(strConn)
@@ -467,7 +469,7 @@ Partial Class PendingSteps
         cmdSelect.Dispose()
 
         ' Ensure URL encoding doesn't stuff up the picture name, so encode the % character as %25.
-        LoadPicture = "pictures/" & sImageFileName
+        LoadPicture = sImageWebPath & "/" & sImageFileName
 
       Catch ex As Exception
         LoadPicture = ""
@@ -485,10 +487,10 @@ Partial Class PendingSteps
 
 
   Protected Sub btnRefresh_Click(sender As Object, e As System.Web.UI.ImageClickEventArgs) Handles btnRefresh.Click
-    Response.Redirect("MobilePendingSteps.aspx")
+    Response.Redirect("~/mobile/MobilePendingSteps.aspx")
   End Sub
 
   Protected Sub btnCancel_Click(sender As Object, e As System.Web.UI.ImageClickEventArgs) Handles btnCancel.Click
-    Response.Redirect("MobileHome.aspx")
+    Response.Redirect("~/mobile/MobileHome.aspx")
   End Sub
 End Class

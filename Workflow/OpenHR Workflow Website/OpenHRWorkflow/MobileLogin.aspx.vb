@@ -330,6 +330,7 @@ Partial Class MobileLogin
     Dim dr As System.Data.SqlClient.SqlDataReader
     Dim sImageFileName As String
     Dim sImageFilePath As String
+    Dim sImageWebPath As String
     Dim sTempName As String
     Dim fs As System.IO.FileStream
     Dim bw As System.IO.BinaryWriter
@@ -347,7 +348,8 @@ Partial Class MobileLogin
       psErrorMessage = ""
       LoadPicture = ""
       sImageFileName = ""
-      sImageFilePath = Server.MapPath("pictures")
+      sImageWebPath = "~/pictures"
+      sImageFilePath = Server.MapPath(sImageWebPath)
 
       strConn = "Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
         ";Initial Catalog=" & Session("Database") & _
@@ -417,7 +419,7 @@ Partial Class MobileLogin
         cmdSelect.Dispose()
 
         ' Ensure URL encoding doesn't stuff up the picture name, so encode the % character as %25.
-        LoadPicture = "pictures/" & sImageFileName
+        LoadPicture = sImageWebPath & "/" & sImageFileName
 
       Catch ex As Exception
         LoadPicture = ""
@@ -556,7 +558,7 @@ Partial Class MobileLogin
 
     If sMessage.Length > 0 Then
       Session("message") = sMessage
-      Session("nextPage") = "MobileLogin"
+      Session("nextPage") = "~/MobileLogin"
       lblMsgBox.InnerText = sMessage
       pnlGreyOut.Style.Add("visibility", "visible")
       pnlMsgBox.Style.Add("visibility", "visible")
@@ -565,7 +567,7 @@ Partial Class MobileLogin
         ' Where were we heading before being asked for authentication?
         If FormsAuthentication.GetRedirectUrl(sAuthUser, False) = FormsAuthentication.DefaultUrl Then
           ' Nowhere! Go to the home page.
-          Response.Redirect("MobileHome.aspx")
+          Response.Redirect("~/mobile/MobileHome.aspx")
         Else
           'Go to the page originally specified by the client.
           HttpContext.Current.Response.Redirect(FormsAuthentication.GetRedirectUrl(sAuthUser, False))
@@ -578,13 +580,13 @@ Partial Class MobileLogin
 
     ' set a temporary user name so that we can move past the authentication page.
     FormsAuthentication.SetAuthCookie("sqluser", False)
-    Response.Redirect("MobileRegistration.aspx")
+    Response.Redirect("~/mobile/MobileRegistration.aspx")
   End Sub
 
   Protected Sub btnForgotPwd_Click(sender As Object, e As System.Web.UI.ImageClickEventArgs) Handles btnForgotPwd.Click
     ' set a temporary user name so that we can move past the authentication page.
     FormsAuthentication.SetAuthCookie("sqluser", False)
-    Response.Redirect("MobileForgottenLogin.aspx")
+    Response.Redirect("~/mobile/MobileForgottenLogin.aspx")
   End Sub
 
   Private Sub AuthenticateUser(domainName As String, userName As String, password As String)

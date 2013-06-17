@@ -269,7 +269,7 @@ Partial Class ChangePassword
       lblMsgBox.InnerText = sMessage
       pnlGreyOut.Style.Add("visibility", "visible")
       pnlMsgBox.Style.Add("visibility", "visible")
-      Session("nextPage") = "MobileHome"
+      Session("nextPage") = "~/mobile/MobileHome"
     End If
 
 
@@ -285,6 +285,7 @@ Partial Class ChangePassword
     Dim dr As System.Data.SqlClient.SqlDataReader
     Dim sImageFileName As String
     Dim sImageFilePath As String
+    Dim sImageWebPath As String
     Dim sTempName As String
     Dim fs As System.IO.FileStream
     Dim bw As System.IO.BinaryWriter
@@ -302,12 +303,13 @@ Partial Class ChangePassword
       psErrorMessage = ""
       LoadPicture = ""
       sImageFileName = ""
-      sImageFilePath = Server.MapPath("pictures")
-      strConn = "Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
-              ";Initial Catalog=" & Session("Database") & _
-              ";Integrated Security=false;User ID=" & Session("Login") & _
-              ";Password=" & Session("Password") & _
-              ";Pooling=false"
+      sImageWebPath = "~/pictures"
+      sImageFilePath = Server.MapPath(sImageWebPath)
+      strConn = CType(("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
+                       ";Initial Catalog=" & Session("Database") & _
+                       ";Integrated Security=false;User ID=" & Session("Login") & _
+                       ";Password=" & Session("Password") & _
+                       ";Pooling=false"), String)
 
       conn = New SqlClient.SqlConnection(strConn)
       conn.Open()
@@ -370,7 +372,7 @@ Partial Class ChangePassword
         cmdSelect.Dispose()
 
         ' Ensure URL encoding doesn't stuff up the picture name, so encode the % character as %25.
-        LoadPicture = "pictures/" & sImageFileName
+        LoadPicture = sImageWebPath & "/" & sImageFileName
 
       Catch ex As Exception
         LoadPicture = ""
@@ -439,10 +441,10 @@ Partial Class ChangePassword
     lblMsgBox.InnerText = sMessage
     pnlGreyOut.Style.Add("visibility", "visible")
     pnlMsgBox.Style.Add("visibility", "visible")
-    Session("nextPage") = "MobileHome"
+    Session("nextPage") = "~/mobile/MobileHome"
   End Sub
 
   Protected Sub btnCancel_Click(sender As Object, e As System.Web.UI.ImageClickEventArgs) Handles btnCancel.Click
-    Response.Redirect("MobileHome.aspx")
+    Response.Redirect("~/mobile/MobileHome.aspx")
   End Sub
 End Class

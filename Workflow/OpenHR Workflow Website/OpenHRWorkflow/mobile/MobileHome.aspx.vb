@@ -346,6 +346,7 @@ Partial Class Home
     Dim dr As System.Data.SqlClient.SqlDataReader
     Dim sImageFileName As String
     Dim sImageFilePath As String
+    Dim sImageWebPath As String
     Dim sTempName As String
     Dim fs As System.IO.FileStream
     Dim bw As System.IO.BinaryWriter
@@ -363,13 +364,14 @@ Partial Class Home
       psErrorMessage = ""
       LoadPicture = ""
       sImageFileName = ""
-      sImageFilePath = Server.MapPath("pictures")
+      sImageWebPath = "~/pictures"
+      sImageFilePath = Server.MapPath(sImageWebPath)
 
-      strConn = "Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
-        ";Initial Catalog=" & Session("Database") & _
-        ";Integrated Security=false;User ID=" & Session("Login") & _
-        ";Password=" & Session("Password") & _
-        ";Pooling=false"
+      strConn = CType(("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
+                       ";Initial Catalog=" & Session("Database") & _
+                       ";Integrated Security=false;User ID=" & Session("Login") & _
+                       ";Password=" & Session("Password") & _
+                       ";Pooling=false"), String)
       'strConn = "Application Name=OpenHR Workflow;Data Source=.\sqlexpress;Initial Catalog=hrprostd43;Integrated Security=false;User ID=sa;Password=asr;Pooling=false"
       'strConn = "Application Name=OpenHR Workflow;Data Source=" & msServer & ";Initial Catalog=" & msDatabase & ";Integrated Security=false;User ID=" & msUser & ";Password=" & msPwd & ";Pooling=false"
       conn = New SqlClient.SqlConnection(strConn)
@@ -433,7 +435,7 @@ Partial Class Home
         cmdSelect.Dispose()
 
         ' Ensure URL encoding doesn't stuff up the picture name, so encode the % character as %25.
-        LoadPicture = "pictures/" & sImageFileName
+        LoadPicture = sImageWebPath & "/" & sImageFileName
 
       Catch ex As Exception
         LoadPicture = ""
@@ -531,7 +533,7 @@ Partial Class Home
   End Function
 
   Protected Sub btnChangePwd_Click(sender As Object, e As System.Web.UI.ImageClickEventArgs) Handles btnChangePwd.Click
-    Response.Redirect("MobileChangePassword.aspx")
+    Response.Redirect("~/mobile/MobileChangePassword.aspx")
   End Sub
 
   Protected Sub btnLogout_Click(sender As Object, e As System.Web.UI.ImageClickEventArgs) Handles btnLogout.Click
@@ -539,7 +541,7 @@ Partial Class Home
   End Sub
 
   Protected Sub btnToDoList_Click(sender As Object, e As System.Web.UI.ImageClickEventArgs) Handles btnToDoList.Click
-    Response.Redirect("MobilePendingSteps.aspx")
+    Response.Redirect("~/mobile/MobilePendingSteps.aspx")
   End Sub
 
   Private Sub LogoutAuthenticatedUser()
