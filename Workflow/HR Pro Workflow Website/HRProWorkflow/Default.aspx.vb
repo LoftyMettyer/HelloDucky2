@@ -81,11 +81,7 @@ Public Class _Default
         'CODEGEN: This method call is required by the Web Form Designer
         'Do not modify it using the code editor.
         InitializeComponent()
-    End Sub
 
-#End Region
-
-    Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         Dim ctlForm_Date As Infragistics.WebUI.WebSchedule.WebDateChooser
         Dim ctlForm_Button As Infragistics.WebUI.WebDataInput.WebImageButton
         Dim ctlForm_Label As Label
@@ -153,7 +149,7 @@ Public Class _Default
         Dim iIDColumnIndex As Int16
         Dim iGridTopPadding As Integer
         Dim iRowHeight As Integer
-        'Dim iDropHeight As Integer
+        Dim iDropHeight As Integer
         Dim iYOffset As Integer
         Dim sDefaultFocusControl As String
         Dim ctlDefaultFocusControl As Control
@@ -181,8 +177,12 @@ Public Class _Default
         Dim iLoop As Integer
         Dim iWidthUsed As Integer
         Dim sFilterSQL As String
+        Dim da As SqlDataAdapter
+        Dim dt As DataTable
+        Dim objDataRow As System.Data.DataRow
+        Dim iLookupColumnIndex As Integer
+        Dim iItemType As Integer
 
-        'Const iGRIDBORDERWIDTH As Integer = 10
         Const sDEFAULTTITLE As String = "HR Pro Workflow"
         Const IMAGEBORDERWIDTH As Integer = 2
 
@@ -261,12 +261,12 @@ Public Class _Default
 
         If sMessage.Length = 0 Then
             If IsPostBack Then
-                miInstanceID = CInt(Me.ViewState("InstanceID"))
-                miElementID = CInt(Me.ViewState("ElementID"))
-                msUser = Me.ViewState("User").ToString
-                msPwd = Me.ViewState("Pwd").ToString
-                msServer = Me.ViewState("Server").ToString
-                msDatabase = Me.ViewState("Database").ToString
+                miInstanceID = CInt(Session("InstanceID"))
+                miElementID = CInt(Session("ElementID"))
+                msUser = Session("User").ToString
+                msPwd = Session("Pwd").ToString
+                msServer = Session("Server").ToString
+                msDatabase = Session("Database").ToString
             Else
                 Try
                     ' Read and decrypt the queryString.
@@ -345,27 +345,31 @@ Public Class _Default
                 conn.Open()
 
                 Try
-                    ' Check if the database is locked.
-                    cmdCheck = New SqlClient.SqlCommand
-                    cmdCheck.CommandText = "sp_ASRLockCheck"
-                    cmdCheck.Connection = conn
-                    cmdCheck.CommandType = CommandType.StoredProcedure
-                    cmdCheck.CommandTimeout = miSubmissionTimeoutInSeconds
+                    If (sMessage.Length = 0) _
+                     And (Not IsPostBack) Then
 
-                    dr = cmdCheck.ExecuteReader()
+                        ' Check if the database is locked.
+                        cmdCheck = New SqlClient.SqlCommand
+                        cmdCheck.CommandText = "sp_ASRLockCheck"
+                        cmdCheck.Connection = conn
+                        cmdCheck.CommandType = CommandType.StoredProcedure
+                        cmdCheck.CommandTimeout = miSubmissionTimeoutInSeconds
 
-                    blnLocked = False
-                    While dr.Read
-                        If NullSafeInteger(dr("priority")) <> 3 Then
-                            ' Not a read-only lock.
-                            blnLocked = True
-                            sMessage = "Database locked.<BR><BR>Contact your system administrator."
-                            Exit While
-                        End If
-                    End While
+                        dr = cmdCheck.ExecuteReader()
 
-                    dr.Close()
-                    cmdCheck.Dispose()
+                        blnLocked = False
+                        While dr.Read
+                            If NullSafeInteger(dr("priority")) <> 3 Then
+                                ' Not a read-only lock.
+                                blnLocked = True
+                                sMessage = "Database locked.<BR><BR>Contact your system administrator."
+                                Exit While
+                            End If
+                        End While
+
+                        dr.Close()
+                        cmdCheck.Dispose()
+                    End If
 
                     If (sMessage.Length = 0) _
                      And (Not IsPostBack) Then
@@ -496,17 +500,11 @@ Public Class _Default
 
                     If sMessage.Length = 0 Then
                         ' Remember the useful parameters for use in postbacks.
-                        Me.ViewState("InstanceID") = miInstanceID
-                        Me.ViewState("ElementID") = miElementID
-                        Me.ViewState("User") = msUser
-                        Me.ViewState("Pwd") = msPwd
-                        Me.ViewState("Server") = msServer
-                        Me.ViewState("Database") = msDatabase
-
                         Session("User") = msUser
                         Session("Pwd") = msPwd
                         Session("Server") = msServer
                         Session("Database") = msDatabase
+                        Session("ElementID") = miElementID
                         Session("InstanceID") = miInstanceID
 
                         cmdSelect = New SqlClient.SqlCommand
@@ -578,8 +576,6 @@ Public Class _Default
                                         .Width = Unit.Pixel(NullSafeInteger(dr("Width")))
                                         .Height = Unit.Pixel(NullSafeInteger(dr("Height")) - 7)
 
-                                        '.ClientSideEvents.Focus = "try{setPostbackMode(1);}catch(e){};"
-                                        '.ClientSideEvents.Blur = "try{setPostbackMode(0);}catch(e){};"
                                         .ClientSideEvents.Click = "try{setPostbackMode(1);}catch(e){};"
                                     End With
                                     pnlInput.Controls.Add(ctlForm_Button)
@@ -816,11 +812,9 @@ Public Class _Default
                                         .Attributes("onfocus") = "try{" & sID & ".select();activateControl();}catch(e){};"
                                         .Attributes("onkeydown") = "try{checkMaxLength(" & NullSafeString(dr("inputSize")) & ");}catch(e){}"
                                         .Attributes("onpaste") = "try{checkMaxLength(" & NullSafeString(dr("inputSize")) & ");}catch(e){}"
-
                                     End With
 
                                     pnlInput.Controls.Add(ctlForm_TextInput)
-
 
                                 Case 4 ' Workflow value
                                     If (NullSafeInteger(dr("sourceItemType")) = 6) _
@@ -1540,10 +1534,13 @@ Public Class _Default
                                         .Width() = Unit.Pixel(NullSafeInteger(dr("Width")))
 
                                         ' LOOK AT REPLACING THESE TO IMPROVE PERFORMANCE!
-                                        '.DisplayLayout.LoadOnDemand = Infragistics.WebUI.UltraWebGrid.LoadOnDemand.Xml
-                                        '.DisplayLayout.RowsRange = 10
-                                        '.Browser = Infragistics.WebUI.UltraWebGrid.BrowserLevel.Xml
-                                        '.DisplayLayout.XmlLoadOnDemandType = Infragistics.WebUI.UltraWebGrid.XmlLoadOnDemandType.Accumulative
+                                        ''.DisplayLayout.LoadOnDemand = Infragistics.WebUI.UltraWebGrid.LoadOnDemand.Xml
+                                        ''.DisplayLayout.RowsRange = 10 'mobjConfig.LookupRowsRange
+                                        ''.Browser = Infragistics.WebUI.UltraWebGrid.BrowserLevel.Xml
+                                        ''.DisplayLayout.XmlLoadOnDemandType = Infragistics.WebUI.UltraWebGrid.XmlLoadOnDemandType.Accumulative
+
+                                        ''AddHandler ctlForm_RecordSelectionGrid.InitializeDataSource, AddressOf Me.InitializeGridData
+                                        ''AddHandler ctlForm_RecordSelectionGrid.DataBound, AddressOf Me.GridDataBound
 
                                         pnlInput.Controls.Add(ctlForm_RecordSelectionGrid)
 
@@ -1567,6 +1564,13 @@ Public Class _Default
                                                 cmdGrid.Parameters.Add("@pfOK", SqlDbType.Bit).Direction = ParameterDirection.Output
 
                                                 drGrid = cmdGrid.ExecuteReader()
+                                                ''da = New SqlDataAdapter(cmdGrid)
+                                                ''dt = New DataTable()
+
+                                                ' '' Fill the datatable with data from the datadapter.
+                                                ''da.Fill(dt)
+
+                                                ''Session(sID & "_DATA") = dt
 
                                                 ' NOTE: Do the dataBind() after adding to the panel
                                                 ' otherwise you get an error.
@@ -1615,11 +1619,11 @@ Public Class _Default
                                                     End If
                                                 Next objGridColumn
 
-                                                ' NPG20100611 Fault HRPRO 873
-                                                ' Deduct 1 pixel from the iGridWidth variable to prevent horizontal scrollbar.
+                                                'NPG20100611 Fault HRPRO 873
+                                                'Deduct 1 pixel from the iGridWidth variable to prevent horizontal scrollbar.
                                                 iGridWidth = NullSafeInteger(dr("Width")) - 1
 
-                                                ' Adjust available width for the vertical scrollbar.
+                                                'Adjust available width for the vertical scrollbar.
                                                 iGapBetweenBorderAndText = (CInt(NullSafeSingle(dr("FontSize")) + 6) \ 4)
                                                 iEffectiveRowHeight = CInt(NullSafeSingle(dr("FontSize"))) _
                                                  + 1 _
@@ -1629,9 +1633,9 @@ Public Class _Default
                                                     iGridWidth = iGridWidth - 16
                                                 End If
 
-                                                ' NPG20100611 Fault HRPRO 873
-                                                ' If the grid column widths are left to default it mucks up, so calculate every time.
-                                                ' I've also excluded the iGRIDBORDERWIDTH value when calculating the widths as this left a big gap.
+                                                'NPG20100611 Fault HRPRO 873
+                                                'If the grid column widths are left to default it mucks up, so calculate every time.
+                                                '   I've also excluded the iGRIDBORDERWIDTH value when calculating the widths as this left a big gap.
 
                                                 If iGridWidth > (iVisibleColumnCount * .DisplayLayout.ColWidthDefault.Value) _
                                                  And (iVisibleColumnCount > 0) Then
@@ -1705,8 +1709,6 @@ Public Class _Default
                                         .ID = sID
                                         .TabIndex = CShort(NullSafeInteger(dr("tabIndex")) + 1)
 
-
-
                                         If (iMinTabIndex < 0) Or (NullSafeInteger(dr("tabIndex")) < iMinTabIndex) Then
                                             sDefaultFocusControl = sID
                                             iMinTabIndex = NullSafeInteger(dr("tabIndex"))
@@ -1722,8 +1724,9 @@ Public Class _Default
                                         .ClientSideEvents.EditKeyDown = "dropdownControlKeyPress"
                                         .ClientSideEvents.AfterDropDown = "ResizeFormForCombo"
 
-                                        pnlInput.Controls.Add(ctlForm_Dropdown)
+                                        '.DropDownLayout.XmlLoadOnDemandType = Infragistics.WebUI.WebCombo.ComboLoadOnDemandType.Accumulative
 
+                                        pnlInput.Controls.Add(ctlForm_Dropdown)
 
                                         sFilterSQL = LookupFilterSQL(NullSafeString(dr("lookupFilterColumnName")), _
                                                 NullSafeInteger(dr("lookupFilterColumnDataType")), _
@@ -1788,7 +1791,6 @@ Public Class _Default
                                         .Height() = Unit.Pixel(NullSafeInteger(dr("Height")) - 2)
                                         .Width() = Unit.Pixel(NullSafeInteger(dr("Width")) - 2)
 
-
                                         .DropDownLayout.AllowSorting = Infragistics.WebUI.UltraWebGrid.AllowSorting.Yes
                                         .DropDownLayout.HeaderClickAction = Infragistics.WebUI.UltraWebGrid.HeaderClickAction.SortMulti
                                         .DropDownLayout.StationaryMargins = Infragistics.WebUI.UltraWebGrid.StationaryMargins.Header
@@ -1836,6 +1838,79 @@ Public Class _Default
                                         .DropDownLayout.RowStyle.VerticalAlign = VerticalAlign.Middle
 
                                         .DropDownLayout.RowSelectors = Infragistics.WebUI.UltraWebGrid.RowSelectors.No
+                                        .DropDownLayout.RowsRange = mobjConfig.LookupRowsRange
+
+                                        ' Set dropdown width to fit the columns displayed.
+                                        .DropDownLayout.DropdownWidth = System.Web.UI.WebControls.Unit.Empty
+
+                                        If (Not IsPostBack) Then
+                                            connGrid = New SqlClient.SqlConnection(strConn)
+                                            connGrid.Open()
+
+                                            Try
+                                                cmdGrid = New SqlClient.SqlCommand
+                                                cmdGrid.CommandText = "spASRGetWorkflowItemValues"
+                                                cmdGrid.Connection = connGrid
+                                                cmdGrid.CommandType = CommandType.StoredProcedure
+                                                cmdGrid.CommandTimeout = miSubmissionTimeoutInSeconds
+
+                                                cmdGrid.Parameters.Add("@piElementItemID", SqlDbType.Int).Direction = ParameterDirection.Input
+                                                cmdGrid.Parameters("@piElementItemID").Value = CInt(NullSafeString(dr("id")))
+
+                                                cmdGrid.Parameters.Add("@piInstanceID", SqlDbType.Int).Direction = ParameterDirection.Input
+                                                cmdGrid.Parameters("@piInstanceID").Value = miInstanceID
+
+                                                cmdGrid.Parameters.Add("@piLookupColumnIndex", SqlDbType.Int).Direction = ParameterDirection.Output
+                                                cmdGrid.Parameters.Add("@piItemType", SqlDbType.Int).Direction = ParameterDirection.Output
+                                                cmdGrid.Parameters.Add("@psDefaultValue", SqlDbType.VarChar, 8000).Direction = ParameterDirection.Output
+
+                                                da = New SqlDataAdapter(cmdGrid)
+                                                dt = New DataTable()
+
+                                                ' Create a blank row at the top of the dropdown grid.
+                                                objDataRow = dt.NewRow()
+                                                dt.Rows.InsertAt(objDataRow, 0)
+
+                                                ' Fill the datatable with data from the datadapter.
+                                                da.Fill(dt)
+
+                                                Session(sID & "_DATA") = dt
+
+                                                iLookupColumnIndex = NullSafeInteger(cmdGrid.Parameters("@piLookupColumnIndex").Value)
+                                                iItemType = NullSafeInteger(cmdGrid.Parameters("@piItemType").Value)
+
+                                                .Attributes.Remove("LookupColumnIndex")
+                                                .Attributes.Add("LookupColumnIndex", iLookupColumnIndex.ToString)
+
+                                                .Attributes.Remove("DefaultValue")
+                                                .Attributes.Add("DefaultValue", NullSafeString(cmdGrid.Parameters("@psDefaultValue").Value))
+
+                                                cmdGrid.Dispose()
+                                                cmdGrid = Nothing
+
+                                                ' Only show headers for lookups, not dropdown lists
+                                                If iItemType = 14 Then
+                                                    .DropDownLayout.ColHeadersVisible = Infragistics.WebUI.UltraWebGrid.ShowMarginInfo.Yes
+                                                Else
+                                                    .DropDownLayout.ColHeadersVisible = Infragistics.WebUI.UltraWebGrid.ShowMarginInfo.No
+                                                End If
+
+                                                iRowHeight = CInt(.Height.Value) - 6
+                                                iRowHeight = CInt(IIf(iRowHeight < 22, 22, iRowHeight))
+                                                iDropHeight = (iRowHeight * CInt(IIf(dt.Rows.Count > MAXDROPDOWNROWS, MAXDROPDOWNROWS, dt.Rows.Count))) + 1
+                                                .DropDownLayout.DropdownHeight = Unit.Pixel(iDropHeight)
+
+                                            Catch ex As Exception
+                                                sMessage = "Error loading lookup values:<BR><BR>" & _
+                                                 ex.Message.Replace(vbCrLf, "<BR>") & "<BR><BR>" & _
+                                                 "Contact your system administrator."
+                                                Exit While
+
+                                            Finally
+                                                connGrid.Close()
+                                                connGrid.Dispose()
+                                            End Try
+                                        End If
                                     End With
 
 
@@ -2331,6 +2406,141 @@ Public Class _Default
             Else
                 Response.Redirect("Message.aspx")
             End If
+        End If
+
+    End Sub
+
+#End Region
+
+    Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        Dim ctlFormInput As Control
+        Dim sID As String
+        Dim sIDString As String
+        Dim iTemp As Int16
+        Dim sTemp As String
+        Dim iType As Int16
+        Dim sType As String
+        Dim ctlFormDropdown As Infragistics.WebUI.WebCombo.WebCombo
+        Dim objGridColumn As Infragistics.WebUI.UltraWebGrid.UltraGridColumn
+        Dim iLookupColumnIndex As Int16
+        Dim ctlFormRecordSelectionGrid As Infragistics.WebUI.UltraWebGrid.UltraWebGrid
+
+        ' Set the DataSource properties of each combo (dropdown list or lookup), 
+        ' and then bind the DataSource to the combo.
+        ' The DataSource property is set to the DataTable created on initial Page_Init,
+        ' and stored in a sesion variable for each combo.
+
+        If (Not IsPostBack) Then
+            For Each ctlFormInput In pnlInput.Controls
+                sID = ctlFormInput.ID
+
+                If (Left(sID, Len(FORMINPUTPREFIX)) = FORMINPUTPREFIX) Then
+                    sIDString = sID.Substring(Len(FORMINPUTPREFIX))
+
+                    iTemp = CShort(sIDString.IndexOf("_"))
+                    sTemp = sIDString.Substring(iTemp + 1)
+                    sIDString = sIDString.Substring(0, iTemp) & vbTab
+
+                    iTemp = CShort(sTemp.IndexOf("_"))
+                    sType = sTemp.Substring(0, iTemp)
+                    iType = CShort(sType)
+
+                    'If (iType = 11) Then
+                    '    ' 11 = Record Selector
+                    '    If (TypeOf ctlFormInput Is Infragistics.WebUI.UltraWebGrid.UltraWebGrid) Then
+                    '        ctlFormRecordSelectionGrid = DirectCast(ctlFormInput, Infragistics.WebUI.UltraWebGrid.UltraWebGrid)
+
+                    '        With ctlFormRecordSelectionGrid
+                    '            'iLookupColumnIndex = CShort(.Attributes.Item("LookupColumnIndex"))
+                    '            .DataSource = Session(sID & "_DATA")
+                    '            .DataBind()
+
+                    '            '' Format the column(s)
+                    '            'For Each objGridColumn In .Columns
+                    '            '    If objGridColumn.BaseColumnName.StartsWith("ASRSys") Then
+                    '            '        objGridColumn.Hidden = True
+                    '            '    Else
+                    '            '        If iLookupColumnIndex = objGridColumn.Index Then
+                    '            '            .DataTextField = objGridColumn.BaseColumnName
+
+                    '            '            If objGridColumn.DataType = "System.Decimal" _
+                    '            '            Or objGridColumn.DataType = "System.Int32" Then
+
+                    '            '                .ClientSideEvents.AfterSelectChange = "ChangeLookup"
+                    '            '            End If
+
+                    '            '            .Attributes.Remove("DataType")
+                    '            '            .Attributes.Add("DataType", objGridColumn.DataType)
+                    '            '        End If
+                    '            '        objGridColumn.AllowNull = False
+
+                    '            '        If objGridColumn.DataType = "System.DateTime" Then
+                    '            '            objGridColumn.Format = Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern
+
+                    '            '        ElseIf objGridColumn.DataType = "System.Boolean" Then
+                    '            '            objGridColumn.CellStyle.HorizontalAlign = HorizontalAlign.Center
+
+                    '            '        ElseIf objGridColumn.DataType = "System.Decimal" _
+                    '            '            Or objGridColumn.DataType = "System.Int32" Then
+
+                    '            '            objGridColumn.CellStyle.HorizontalAlign = HorizontalAlign.Right
+                    '            '        End If
+                    '            '    End If
+                    '            'Next objGridColumn
+                    '        End With
+
+
+                    '    End If
+                    'End If
+
+                    If ((iType = 13) Or (iType = 14)) Then
+                        ' 13 = Dropdown Input
+                        ' 14 = Lookup Input
+                        If (TypeOf ctlFormInput Is Infragistics.WebUI.WebCombo.WebCombo) Then
+                            ctlFormDropdown = DirectCast(ctlFormInput, Infragistics.WebUI.WebCombo.WebCombo)
+
+                            With ctlFormDropdown
+                                iLookupColumnIndex = CShort(.Attributes.Item("LookupColumnIndex"))
+                                .DataSource = Session(sID & "_DATA")
+                                .DataBind()
+
+                                ' Format the column(s)
+                                For Each objGridColumn In .Columns
+                                    If objGridColumn.BaseColumnName.StartsWith("ASRSys") Then
+                                        objGridColumn.Hidden = True
+                                    Else
+                                        If iLookupColumnIndex = objGridColumn.Index Then
+                                            .DataTextField = objGridColumn.BaseColumnName
+
+                                            If objGridColumn.DataType = "System.Decimal" _
+                                            Or objGridColumn.DataType = "System.Int32" Then
+
+                                                .ClientSideEvents.AfterSelectChange = "ChangeLookup"
+                                            End If
+
+                                            .Attributes.Remove("DataType")
+                                            .Attributes.Add("DataType", objGridColumn.DataType)
+                                        End If
+                                        objGridColumn.AllowNull = False
+
+                                        If objGridColumn.DataType = "System.DateTime" Then
+                                            objGridColumn.Format = Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern
+
+                                        ElseIf objGridColumn.DataType = "System.Boolean" Then
+                                            objGridColumn.CellStyle.HorizontalAlign = HorizontalAlign.Center
+
+                                        ElseIf objGridColumn.DataType = "System.Decimal" _
+                                            Or objGridColumn.DataType = "System.Int32" Then
+
+                                            objGridColumn.CellStyle.HorizontalAlign = HorizontalAlign.Right
+                                        End If
+                                    End If
+                                Next objGridColumn
+                            End With
+                        End If
+                    End If
+                End If
+            Next ctlFormInput
         End If
     End Sub
 
@@ -3098,154 +3308,23 @@ Public Class _Default
     End Sub
 
     Public Sub InitializeLookupData(ByVal sender As Object, ByVal e As Infragistics.WebUI.WebCombo.WebComboEventArgs)
-        Dim connGrid As System.Data.SqlClient.SqlConnection
-        Dim cmdGrid As System.Data.SqlClient.SqlCommand
-        Dim strConn As String
-        Dim objGridColumn As Infragistics.WebUI.UltraWebGrid.UltraGridColumn
-        Dim da As SqlDataAdapter
-        Dim dt As DataTable
         Dim sID As String
-        Dim sIDString As String
-        Dim iTemp As Int16
-        Dim sTemp As String
-        Dim iLookupColumnIndex As Integer
-        Dim objDataRow As System.Data.DataRow
-        Dim iItemType As Integer
-        Dim iRowHeight As Integer
-        Dim iDropHeight As Integer
-        Dim objGeneral As New General
 
         Dim objCombo As Infragistics.WebUI.WebCombo.WebCombo = _
             DirectCast(sender, Infragistics.WebUI.WebCombo.WebCombo)
 
-        strConn = "Application Name=HR Pro Workflow;Data Source=" & msServer & ";Initial Catalog=" & msDatabase & ";Integrated Security=false;User ID=" & msUser & ";Password=" & msPwd & ";Pooling=false"
+        Try
+            With objCombo
+                sID = .ID
+                .DataSource = Session(sID & "_DATA")
 
-        connGrid = New SqlClient.SqlConnection(strConn)
-        connGrid.Open()
-
-        With objCombo
-            sID = .ID
-
-            Try
-                If (Left(sID, Len(FORMINPUTPREFIX)) = FORMINPUTPREFIX) Then
-                    sIDString = sID.Substring(Len(FORMINPUTPREFIX))
-
-                    iTemp = CShort(sIDString.IndexOf("_"))
-                    sTemp = sIDString.Substring(iTemp + 1)
-                    sIDString = sIDString.Substring(0, iTemp) & vbTab
-
-                    cmdGrid = New SqlClient.SqlCommand
-                    cmdGrid.CommandText = "spASRGetWorkflowItemValues"
-                    cmdGrid.Connection = connGrid
-                    cmdGrid.CommandType = CommandType.StoredProcedure
-                    cmdGrid.CommandTimeout = miSubmissionTimeoutInSeconds
-
-                    cmdGrid.Parameters.Add("@piElementItemID", SqlDbType.Int).Direction = ParameterDirection.Input
-                    cmdGrid.Parameters("@piElementItemID").Value = CInt(sIDString)
-
-                    cmdGrid.Parameters.Add("@piInstanceID", SqlDbType.Int).Direction = ParameterDirection.Input
-                    cmdGrid.Parameters("@piInstanceID").Value = miInstanceID
-
-                    cmdGrid.Parameters.Add("@piLookupColumnIndex", SqlDbType.Int).Direction = ParameterDirection.Output
-                    cmdGrid.Parameters.Add("@piItemType", SqlDbType.Int).Direction = ParameterDirection.Output
-                    cmdGrid.Parameters.Add("@psDefaultValue", SqlDbType.VarChar, 8000).Direction = ParameterDirection.Output
-
-                    da = New SqlDataAdapter(cmdGrid)
-                    dt = New DataTable()
-
-                    ' Create a blank row at the top of the dropdown grid.
-                    objDataRow = dt.NewRow()
-                    dt.Rows.InsertAt(objDataRow, 0)
-
-                    ' Fill the datatable with data from the datadapter.
-                    da.Fill(dt)
-
-                    iLookupColumnIndex = NullSafeInteger(cmdGrid.Parameters("@piLookupColumnIndex").Value)
-                    iItemType = NullSafeInteger(cmdGrid.Parameters("@piItemType").Value)
-
-                    msLastSelectedValue = ""
-                    If IsPostBack Then
-                        msLastSelectedValue = .DisplayValue
-                    Else
-                        msLastSelectedValue = NullSafeString(cmdGrid.Parameters("@psDefaultValue").Value)
-
-                        If dt.Columns(iLookupColumnIndex).DataType.FullName = "System.DateTime" Then
-                            msLastSelectedValue = objGeneral.ConvertSQLDateToLocale(msLastSelectedValue)
-                        End If
-                    End If
-
-                    .Attributes.Remove("LookupColumnIndex")
-                    .Attributes.Remove("DefaultValue")
-                    .Attributes.Remove("DataType")
-
-                    .Attributes.Add("DefaultValue", msLastSelectedValue)
-                    .Attributes.Add("LookupColumnIndex", iLookupColumnIndex.ToString)
-
-                    .DropDownLayout.RowsRange = mobjConfig.LookupRowsRange
-
-                    ' Set requested data for grid
-                    .DataSource = dt
-                    .DataBind()
-
-                    cmdGrid.Dispose()
-                    cmdGrid = Nothing
-
-                    ' Only show headers for lookups, not dropdown lists
-                    If iItemType = 14 Then
-                        .DropDownLayout.ColHeadersVisible = Infragistics.WebUI.UltraWebGrid.ShowMarginInfo.Yes
-                    Else
-                        .DropDownLayout.ColHeadersVisible = Infragistics.WebUI.UltraWebGrid.ShowMarginInfo.No
-                    End If
-
-                    ' Format the column(s)
-                    For Each objGridColumn In .Columns
-                        If objGridColumn.BaseColumnName.StartsWith("ASRSys") Then
-                            objGridColumn.Hidden = True
-                        Else
-                            If iLookupColumnIndex = objGridColumn.Index Then
-                                .DataTextField = objGridColumn.BaseColumnName
-
-                                If objGridColumn.DataType = "System.Decimal" _
-                                Or objGridColumn.DataType = "System.Int32" Then
-
-                                    .ClientSideEvents.AfterSelectChange = "ChangeLookup"
-                                End If
-
-                                .Attributes.Add("DataType", objGridColumn.DataType)
-                            End If
-                            objGridColumn.AllowNull = False
-
-                            If objGridColumn.DataType = "System.DateTime" Then
-                                objGridColumn.Format = Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern
-
-                            ElseIf objGridColumn.DataType = "System.Boolean" Then
-                                objGridColumn.CellStyle.HorizontalAlign = HorizontalAlign.Center
-
-                            ElseIf objGridColumn.DataType = "System.Decimal" _
-                                Or objGridColumn.DataType = "System.Int32" Then
-
-                                objGridColumn.CellStyle.HorizontalAlign = HorizontalAlign.Right
-                            End If
-                        End If
-                    Next objGridColumn
-
-                    ' Set dropdown width to fit the columns displayed.
-                    .DropDownLayout.DropdownWidth = System.Web.UI.WebControls.Unit.Empty
-
-                    iRowHeight = CInt(.Height.Value) - 6
-                    iRowHeight = CInt(IIf(iRowHeight < 22, 22, iRowHeight))
-                    iDropHeight = (iRowHeight * CInt(IIf(.Rows.Count > MAXDROPDOWNROWS, MAXDROPDOWNROWS, .Rows.Count))) + 1
-                    .DropDownLayout.DropdownHeight = Unit.Pixel(iDropHeight)
-
+                If IsPostBack Then
+                    .Attributes("DefaultValue") = .DisplayValue
                 End If
-            Catch ex As Exception
-                ' ???handle exception
-            Finally
-                connGrid.Close()
-                connGrid.Dispose()
+            End With
+        Catch ex As Exception
+        End Try
 
-            End Try
-        End With
     End Sub
 
     Public Sub LookupDataBound(ByVal sender As Object, ByVal e As System.EventArgs)
@@ -3346,5 +3425,36 @@ Public Class _Default
 
     End Function
 
+    Public Sub InitializeGridData(ByVal sender As Object, ByVal e As Infragistics.WebUI.UltraWebGrid.UltraGridEventArgs)
+        'Dim sID As String
 
+        'Dim objGrid As Infragistics.WebUI.UltraWebGrid.UltraWebGrid = _
+        '   DirectCast(sender, Infragistics.WebUI.UltraWebGrid.UltraWebGrid)
+
+        'Try
+        '    With objGrid
+        '        sID = .ID
+        '        .DataSource = Session(sID & "_DATA")
+
+        '        '        If IsPostBack Then
+        '        '            .Attributes("DefaultValue") = .DisplayValue
+        '        '        End If
+        '    End With
+        'Catch ex As Exception
+        'End Try
+
+    End Sub
+
+    Public Sub GridDataBound(ByVal sender As Object, ByVal e As System.EventArgs)
+        'Dim objCombo As Infragistics.WebUI.WebCombo.WebCombo = _
+        '    DirectCast(sender, Infragistics.WebUI.WebCombo.WebCombo)
+
+        'Try
+        '    objCombo.DisplayValue = objCombo.Attributes("DefaultValue")
+
+        'Catch ex As Exception
+        '    ' ???handle exception
+        'Finally
+        'End Try
+    End Sub
 End Class
