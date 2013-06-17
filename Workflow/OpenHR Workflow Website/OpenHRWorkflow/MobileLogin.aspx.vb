@@ -60,7 +60,7 @@ Partial Class MobileLogin
       myConnection.Open()
 
       ' Create command
-      Dim myCommand As New SqlClient.SqlCommand("select * from tbsys_mobileformlayout where FormTypeID = 1", myConnection)
+      Dim myCommand As New SqlClient.SqlCommand("select * from tbsys_mobileformlayout where ID = 1", myConnection)
 
       ' Create a DataReader to ferry information back from the database
       drLayouts = myCommand.ExecuteReader()
@@ -68,47 +68,47 @@ Partial Class MobileLogin
       ctlForm_HTMLGenericControl = New HtmlGenericControl
 
       'Iterate through the results
-      While drLayouts.Read()
-        sBackgroundImage = ""
-        sBackgroundRepeat = ""
-        sBackgroundPosition = ""
+      'While drLayouts.Read()
+      '  sBackgroundImage = ""
+      '  sBackgroundRepeat = ""
+      '  sBackgroundPosition = ""
 
-        '... Work with the current record ...
-        Select Case CInt(drLayouts("PanelID"))
-          Case 1  ' ================= Banner Div ================
-            'Dim strHeader As String = "pnlHeader"
-            'ctlForm_HTMLGenericControl = TryCast(pnlContainer.FindControl(strHeader), HtmlGenericControl)
+      '  '... Work with the current record ...
+      '  Select Case CInt(drLayouts("PanelID"))
+      '    Case 1  ' ================= Banner Div ================
+      '      'Dim strHeader As String = "pnlHeader"
+      '      'ctlForm_HTMLGenericControl = TryCast(pnlContainer.FindControl(strHeader), HtmlGenericControl)
 
-            ctlForm_HTMLGenericControl = TryCast(pnlHeader, HtmlGenericControl)
+      '      ctlForm_HTMLGenericControl = TryCast(pnlHeader, HtmlGenericControl)
 
-          Case 2    ' ================= Main Body Div ================
-            ctlForm_HTMLGenericControl = TryCast(ScrollerFrame, HtmlGenericControl)
+      '    Case 2    ' ================= Main Body Div ================
+      '      ctlForm_HTMLGenericControl = TryCast(ScrollerFrame, HtmlGenericControl)
 
-          Case 3   ' ================= Footer Div ================
-            ctlForm_HTMLGenericControl = TryCast(pnlFooter, HtmlGenericControl)
-        End Select
+      '    Case 3   ' ================= Footer Div ================
+      '      ctlForm_HTMLGenericControl = TryCast(pnlFooter, HtmlGenericControl)
+      '  End Select
 
-        ' Background Image
-        If CInt(drLayouts("PictureID")) > 0 Then
-          sBackgroundImage = LoadPicture(CInt(drLayouts("PictureID")), sMessage)
-          ctlForm_HTMLGenericControl.Style("Background-image") = sBackgroundImage
-          sBackgroundImage = "url('" & sBackgroundImage & "')"
-          iBackgroundImagePosition = CInt(drLayouts("PictureLocation"))
-          sBackgroundRepeat = objGeneral.BackgroundRepeat(CShort(iBackgroundImagePosition))
-          sBackgroundPosition = objGeneral.BackgroundPosition(CShort(iBackgroundImagePosition))
-          ctlForm_HTMLGenericControl.Style("background-repeat") = sBackgroundRepeat
-          ctlForm_HTMLGenericControl.Style("background-position") = sBackgroundPosition
-        End If
+      '  ' Background Image
+      '  If CInt(drLayouts("PictureID")) > 0 Then
+      '    sBackgroundImage = LoadPicture(CInt(drLayouts("PictureID")), sMessage)
+      '    ctlForm_HTMLGenericControl.Style("Background-image") = sBackgroundImage
+      '    sBackgroundImage = "url('" & sBackgroundImage & "')"
+      '    iBackgroundImagePosition = CInt(drLayouts("PictureLocation"))
+      '    sBackgroundRepeat = objGeneral.BackgroundRepeat(CShort(iBackgroundImagePosition))
+      '    sBackgroundPosition = objGeneral.BackgroundPosition(CShort(iBackgroundImagePosition))
+      '    ctlForm_HTMLGenericControl.Style("background-repeat") = sBackgroundRepeat
+      '    ctlForm_HTMLGenericControl.Style("background-position") = sBackgroundPosition
+      '  End If
 
-        ' background colour
-        sBackgroundColourHex = ""
-        If Not IsDBNull(drLayouts("BackColor")) Then
-          iBackgroundColour = CInt(drLayouts("BackColor"))
-          sBackgroundColourHex = objGeneral.GetHTMLColour(iBackgroundColour).ToString()
-          ctlForm_HTMLGenericControl.Style("Background-color") = objGeneral.GetHTMLColour(NullSafeInteger(iBackgroundColour))
-        End If
+      '  ' background colour
+      '  sBackgroundColourHex = ""
+      '  If Not IsDBNull(drLayouts("BackColor")) Then
+      '    iBackgroundColour = CInt(drLayouts("BackColor"))
+      '    sBackgroundColourHex = objGeneral.GetHTMLColour(iBackgroundColour).ToString()
+      '    ctlForm_HTMLGenericControl.Style("Background-color") = objGeneral.GetHTMLColour(NullSafeInteger(iBackgroundColour))
+      '  End If
 
-      End While
+      'End While
 
       ' Close the connection (will automatically close the reader)
       myConnection.Close()
@@ -128,7 +128,7 @@ Partial Class MobileLogin
       myConnection.Open()
 
       ' Create command
-      myCommand = New SqlClient.SqlCommand("select * from tbsys_mobileformelements where layoutid in (select id from tbsys_mobileformlayout where formtypeid = 1)", myConnection)
+      myCommand = New SqlClient.SqlCommand("select * from tbsys_mobileformelements where form = 1)", myConnection)
 
       ' Create a DataReader to ferry information back from the database
       drElements = myCommand.ExecuteReader()
@@ -141,8 +141,8 @@ Partial Class MobileLogin
 
             If CInt(drElements("ButtonStyle")) = 1 Then   ' Footer Icon
 
-              If NullSafeString(drElements("HTMLElementID")).Length > 0 Then
-                ctlForm_ImageButton = TryCast(pnlContainer.FindControl(NullSafeString(drElements("HTMLElementID"))), ImageButton)
+              If NullSafeString(drElements("Name")).Length > 0 Then
+                ctlForm_ImageButton = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name"))), ImageButton)
 
                 'ctlForm_ImageButton = New ImageButton
                 With ctlForm_ImageButton
@@ -158,7 +158,7 @@ Partial Class MobileLogin
 
                 ' Footer text
                 If NullSafeString(drElements("Caption")).Length > 0 Then
-                  ctlForm_HTMLGenericControl = TryCast(pnlContainer.FindControl(NullSafeString(drElements("HTMLElementID")) & "_label"), HtmlGenericControl)
+                  ctlForm_HTMLGenericControl = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name")) & "_label"), HtmlGenericControl)
                   With ctlForm_HTMLGenericControl
                     .Style("word-wrap") = "break-word"
                     .Style("overflow") = "auto"
@@ -176,8 +176,8 @@ Partial Class MobileLogin
 
 
           Case 2 ' Label
-            If NullSafeString(drElements("HTMLElementID")).Length > 0 Then
-              ctlForm_HTMLGenericControl = TryCast(pnlContainer.FindControl(NullSafeString(drElements("HTMLElementID"))), HtmlGenericControl)  'New Label
+            If NullSafeString(drElements("Name")).Length > 0 Then
+              ctlForm_HTMLGenericControl = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name"))), HtmlGenericControl)  'New Label
               With ctlForm_HTMLGenericControl
                 '.Style("position") = "absolute"
 
@@ -225,9 +225,9 @@ Partial Class MobileLogin
 
 
           Case 3 ' Input value - character
-            If NullSafeString(drElements("HTMLElementID")).Length > 0 Then
+            If NullSafeString(drElements("Name")).Length > 0 Then
 
-              ctlForm_HtmlInputText = TryCast(pnlContainer.FindControl(NullSafeString(drElements("HTMLElementID"))), HtmlInputText)
+              ctlForm_HtmlInputText = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name"))), HtmlInputText)
 
               If NullSafeInteger(drElements("HorizontalOffsetBehaviour")) = 0 Then
                 ctlForm_HtmlInputText.Style("left") = Unit.Pixel(NullSafeInteger(drElements("HorizontalOffset"))).ToString
