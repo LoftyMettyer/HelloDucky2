@@ -2751,9 +2751,11 @@ Public Class _Default
                                                      " FONT-WEIGHT: " & CStr(IIf(NullSafeBoolean(dr("FontBold")), "bold", "normal")) & ";" & _
                                                      " FONT-STYLE: " & CStr(IIf(NullSafeBoolean(dr("FontItalic")), "italic", "normal")) & ";" & _
                                                      " TEXT-DECORATION:" & sTemp2 & ";" & _
+                                                     " width:100%;" & _
                                                      " left: " & spanLeft.ToString & "px; position: absolute; top: " & spanTop.ToString & "px"">" & _
                                                      " <input id=""opt" & sID & "_" & iTemp.ToString & """ type=""radio""" & _
                                                      " name=""opt" & sID & """ value=""" & drGrid(0).ToString & """" & _
+                                                     " style='float:left'" & _
                                                      " onfocus = ""try{forOpt" & sID & "_" & iTemp.ToString & ".style.color='#ff9608'; activateControl();}catch(e){};""" & _
                                                      " onblur = ""try{forOpt" & sID & "_" & iTemp.ToString & ".style.color='';}catch(e){};""" & _
                                                      " onclick = """ & sID & ".value=opt" & sID & "[" & iTemp.ToString & "].value;"""
@@ -2770,9 +2772,11 @@ Public Class _Default
                                                      " FONT-WEIGHT: " & CStr(IIf(NullSafeBoolean(dr("FontBold")), "bold", "normal")) & ";" & _
                                                      " FONT-STYLE: " & CStr(IIf(NullSafeBoolean(dr("FontItalic")), "italic", "normal")) & ";" & _
                                                      " TEXT-DECORATION:" & sTemp2 & ";" & _
+                                                     " width:100%;" & _
                                                      " left: " & lastLeft & "px; position: absolute; top: " & spanTop.ToString & "px"">" & _
                                                      " <input id=""opt" & sID & "_" & iTemp.ToString & """ type=""radio""" & _
                                                      " name=""opt" & sID & """ value=""" & drGrid(0).ToString & """" & _
+                                                     " style='float:left'" & _
                                                      " onfocus = ""try{forOpt" & sID & "_" & iTemp.ToString & ".style.color='#ff9608'; activateControl();}catch(e){};""" & _
                                                      " onblur = ""try{forOpt" & sID & "_" & iTemp.ToString & ".style.color='';}catch(e){};""" & _
                                                      " onclick = """ & sID & ".value=opt" & sID & "[" & iTemp.ToString & "].value;"""
