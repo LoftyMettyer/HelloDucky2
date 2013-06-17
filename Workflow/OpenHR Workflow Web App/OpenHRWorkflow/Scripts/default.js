@@ -976,7 +976,7 @@ function SetScrollTopPos(iGridID, iPos, iRowIndex) {
 			iPos = (iRowIndex * GetGridRowHeight(iGridID)) - 1;
 		}
 		//store the scrollbar position
-		document.getElementById(iGridID.replace("Grid", "scrollpos")).nodeValue = iPos;
+		document.getElementById(iGridID.replace("Grid", "scrollpos")).value = iPos;
 	}
 }
 
