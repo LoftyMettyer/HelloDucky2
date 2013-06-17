@@ -54,7 +54,7 @@
 	    }
 
 	    function window_onload() {
-	    
+
 	        var iDefHeight;
 	        var iDefWidth;
 	        var iResizeByHeight;
