@@ -2821,6 +2821,7 @@ Public Class _Default
                   End Try
 
                 Case 17 ' Input value - file upload
+
                   ctlForm_HTMLInputButton = New HtmlInputButton
                   With ctlForm_HTMLInputButton
                     .ID = sID
@@ -2842,6 +2843,9 @@ Public Class _Default
                     .Style.Add("padding", "0px")
                     .Style.Add("white-space", "normal")
 
+                    ' NPG20120412 - Fault HRPRO-2148
+                    If IsMobileBrowser() Then .Style.Add("-webkit-appearance", "none")
+
                     .Value = NullSafeString(dr("caption"))
 
                     sTemp2 = CStr(IIf(NullSafeBoolean(dr("FontStrikeThru")), " line-through", "")) & _
@@ -2860,7 +2864,7 @@ Public Class _Default
                     .Style.Add("Width", Unit.Pixel(NullSafeInteger(dr("Width"))).ToString)
                     .Style.Add("Height", Unit.Pixel(NullSafeInteger(dr("Height"))).ToString)
 
-                    If Not isMobileBrowser() Then
+                    If Not IsMobileBrowser() Then
                       .Attributes.Add("onclick", "try{showFileUpload(true, '" & sEncodedID & "', document.getElementById('file" & sID & "').value);}catch(e){};")
 
                       AddHandler ctlForm_HTMLInputButton.ServerClick, AddressOf Me.DisableControls
