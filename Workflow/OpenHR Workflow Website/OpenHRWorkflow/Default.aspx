@@ -19,7 +19,7 @@
 
   <style type="text/css">
 		.highlighted { background: yellow; }
-    textarea {resize: none; }
+    textarea {resize: none; }    
 	</style>
 
 	  <title></title>	  

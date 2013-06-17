@@ -104,8 +104,9 @@ Public Class _Default
   Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
 
     Dim ctlForm_Date As Infragistics.WebUI.WebSchedule.WebDateChooser
-    Dim ctlForm_Button As Infragistics.WebUI.WebDataInput.WebImageButton
+    ' Dim ctlForm_Button As Infragistics.WebUI.WebDataInput.WebImageButton
     Dim ctlForm_InputButton As Button
+    Dim ctlForm_HTMLInputButton As System.Web.UI.HtmlControls.HtmlInputButton
     Dim ctlForm_Label As Label
     Dim ctlForm_TextInput As TextBox
     Dim ctlForm_CheckBox As LiteralControl
@@ -699,11 +700,59 @@ Public Class _Default
               sEncodedID = objCrypt.SimpleEncrypt(NullSafeString(dr("id")).ToString, Session.SessionID)
 
               Select Case NullSafeInteger(dr("ItemType"))
+                'Case 0 ' Button
+                '  ctlForm_Button = New Infragistics.WebUI.WebDataInput.WebImageButton
+                '  With ctlForm_Button
+                '    .ID = sID
+                '    .TabIndex = CShort(NullSafeInteger(dr("tabIndex")) + 1)
+
+                '    If (iMinTabIndex < 0) Or (NullSafeInteger(dr("tabIndex")) < iMinTabIndex) Then
+                '      sDefaultFocusControl = sID
+                '      iMinTabIndex = NullSafeInteger(dr("tabIndex"))
+                '    End If
+
+                '    .Style("position") = "absolute"
+                '    .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
+                '    .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
+                '    .StylePreset = Infragistics.WebUI.WebDataInput.ButtonStylePreset.WindowsXPBlue
+
+                '    .Appearance.Style.BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColor")))
+                '    .Appearance.Style.BorderStyle = BorderStyle.Solid
+                '    .Appearance.Style.BorderWidth = 1
+                '    .Appearance.InnerBorder.StyleTop = BorderStyle.None
+                '    .Appearance.Style.BorderColor = objGeneral.GetColour(9999523)
+                '    .Appearance.Style.ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
+                '    .FocusAppearance.Style.BorderColor = objGeneral.GetColour(562943)
+                '    .FocusAppearance.Style.BackColor = objGeneral.GetColour(12775933)
+                '    .HoverAppearance.Style.BorderColor = objGeneral.GetColour(562943)
+
+                '    .Overflow = Infragistics.WebUI.WebControls.ButtonOverflow.WordWrap
+
+                '    .Text = NullSafeString(dr("caption"))
+                '    .Font.Name = NullSafeString(dr("FontName"))
+                '    .Font.Size = FontUnit.Parse(NullSafeString(dr("FontSize")))
+                '    .Font.Bold = NullSafeBoolean(NullSafeBoolean(dr("FontBold")))
+                '    .Font.Italic = NullSafeBoolean(NullSafeBoolean(dr("FontItalic")))
+                '    .Font.Strikeout = NullSafeBoolean(NullSafeBoolean(dr("FontStrikeThru")))
+                '    .Font.Underline = NullSafeBoolean(NullSafeBoolean(dr("FontUnderline")))
+
+                '    .Width = Unit.Pixel(NullSafeInteger(dr("Width")))
+                '    .Height = Unit.Pixel(NullSafeInteger(dr("Height")) - 7)
+
+                '    .ClientSideEvents.Click = "try{setPostbackMode(1);}catch(e){};"
+                '  End With
+
+                '  ' pnlInput.ContentTemplateContainer.Controls.Add(ctlForm_Button)
+
+                '  ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_Button)
+
+                '  AddHandler ctlForm_Button.Click, AddressOf Me.ButtonClick
+
                 Case 0 ' Button
-                  ctlForm_Button = New Infragistics.WebUI.WebDataInput.WebImageButton
-                  With ctlForm_Button
+                  ctlForm_HTMLInputButton = New System.Web.UI.HtmlControls.HtmlInputButton
+                  With ctlForm_HTMLInputButton
                     .ID = sID
-                    .TabIndex = CShort(NullSafeInteger(dr("tabIndex")) + 1)
+                    .Attributes.Add("TabIndex", CShort(NullSafeInteger(dr("tabIndex")) + 1).ToString)
 
                     If (iMinTabIndex < 0) Or (NullSafeInteger(dr("tabIndex")) < iMinTabIndex) Then
                       sDefaultFocusControl = sID
@@ -713,39 +762,45 @@ Public Class _Default
                     .Style("position") = "absolute"
                     .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
                     .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
-                    .StylePreset = Infragistics.WebUI.WebDataInput.ButtonStylePreset.WindowsXPBlue
 
-                    .Appearance.Style.BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColor")))
-                    .Appearance.Style.BorderStyle = BorderStyle.Solid
-                    .Appearance.Style.BorderWidth = 1
-                    .Appearance.InnerBorder.StyleTop = BorderStyle.None
-                    .Appearance.Style.BorderColor = objGeneral.GetColour(9999523)
-                    .Appearance.Style.ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
-                    .FocusAppearance.Style.BorderColor = objGeneral.GetColour(562943)
-                    .FocusAppearance.Style.BackColor = objGeneral.GetColour(12775933)
-                    .HoverAppearance.Style.BorderColor = objGeneral.GetColour(562943)
+                    .Style.Add("BackColor", objGeneral.GetColour(NullSafeInteger(dr("BackColor"))).ToString)
+                    .Style.Add("Border", "Solid 1px " & objGeneral.GetColour(9999523).ToString)
+                    .Style.Add("Color", objGeneral.GetColour(NullSafeInteger(dr("ForeColor"))).ToString)
 
-                    .Overflow = Infragistics.WebUI.WebControls.ButtonOverflow.WordWrap
+                    .Style.Add("padding", "0px")
+                    .Style.Add("white-space", "normal")
 
-                    .Text = NullSafeString(dr("caption"))
-                    .Font.Name = NullSafeString(dr("FontName"))
-                    .Font.Size = FontUnit.Parse(NullSafeString(dr("FontSize")))
-                    .Font.Bold = NullSafeBoolean(NullSafeBoolean(dr("FontBold")))
-                    .Font.Italic = NullSafeBoolean(NullSafeBoolean(dr("FontItalic")))
-                    .Font.Strikeout = NullSafeBoolean(NullSafeBoolean(dr("FontStrikeThru")))
-                    .Font.Underline = NullSafeBoolean(NullSafeBoolean(dr("FontUnderline")))
+                    .Value = NullSafeString(dr("caption"))
 
-                    .Width = Unit.Pixel(NullSafeInteger(dr("Width")))
-                    .Height = Unit.Pixel(NullSafeInteger(dr("Height")) - 7)
+                    sTemp2 = CStr(IIf(NullSafeBoolean(dr("FontStrikeThru")), " line-through", "")) & _
+                       CStr(IIf(NullSafeBoolean(dr("FontUnderline")), " underline", ""))
 
-                    .ClientSideEvents.Click = "try{setPostbackMode(1);}catch(e){};"
+                    If sTemp2.Length = 0 Then
+                      sTemp2 = " none"
+                    End If
+
+                    .Style.Add("Font-family", NullSafeString(dr("FontName")).ToString)
+                    .Style.Add("Font-Size", NullSafeString(dr("FontSize")) & "pt; ")
+                    .Style.Add("Font-weight", CStr(IIf(NullSafeBoolean(dr("FontBold")), "bold", "normal")))
+                    .Style.Add("FontStyle", CStr(IIf(NullSafeBoolean(dr("FontItalic")), "italic", "normal")))
+                    .Style.Add("Text-Decoration", sTemp2)
+
+                    .Style.Add("Width", Unit.Pixel(NullSafeInteger(dr("Width"))).ToString)
+                    .Style.Add("Height", Unit.Pixel(NullSafeInteger(dr("Height"))).ToString)                    
+
+                    ' stops the mobiles displaying buttons with over-rounded corners...
+                    If isMobileBrowser() Then .Style.Add("-webkit-appearance", "none")
+
+                    .Attributes.Add("onclick", "try{setPostbackMode(1);}catch(e){};")
                   End With
 
                   ' pnlInput.ContentTemplateContainer.Controls.Add(ctlForm_Button)
 
-                  ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_Button)
+                  ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_HTMLInputButton)
 
-                  AddHandler ctlForm_Button.Click, AddressOf Me.ButtonClick
+                  AddHandler ctlForm_HTMLInputButton.ServerClick, AddressOf Me.ButtonClick
+
+
 
                 Case 1 ' Database value
                   If (NullSafeInteger(dr("sourceItemType")) = -7) _
@@ -3599,11 +3654,66 @@ Public Class _Default
                     connGrid.Dispose()
                   End Try
 
+                  'Case 17 ' Input value - file upload
+                  '  ctlForm_Button = New Infragistics.WebUI.WebDataInput.WebImageButton
+                  '  With ctlForm_Button
+                  '    .ID = sID
+                  '    .TabIndex = CShort(NullSafeInteger(dr("tabIndex")) + 1)
+
+                  '    If (iMinTabIndex < 0) Or (NullSafeInteger(dr("tabIndex")) < iMinTabIndex) Then
+                  '      sDefaultFocusControl = sID
+                  '      iMinTabIndex = NullSafeInteger(dr("tabIndex"))
+                  '    End If
+
+                  '    .Style("position") = "absolute"
+                  '    .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
+                  '    .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
+
+                  '    .Appearance.Style.BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColor")))
+                  '    .Appearance.Style.BorderStyle = BorderStyle.Solid
+                  '    .Appearance.Style.BorderWidth = 1
+                  '    .Appearance.InnerBorder.StyleTop = BorderStyle.None
+                  '    .Appearance.Style.BorderColor = objGeneral.GetColour(9999523)
+                  '    .Appearance.Style.ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
+                  '    .FocusAppearance.Style.BorderColor = objGeneral.GetColour(562943)
+                  '    .FocusAppearance.Style.BackColor = objGeneral.GetColour(12775933)
+                  '    .HoverAppearance.Style.BorderColor = objGeneral.GetColour(562943)
+
+
+                  '    .Text = NullSafeString(dr("caption"))
+                  '    .Font.Name = NullSafeString(dr("FontName"))
+                  '    .Font.Size = FontUnit.Parse(NullSafeString(dr("FontSize")))
+                  '    .Font.Bold = NullSafeBoolean(NullSafeBoolean(dr("FontBold")))
+                  '    .Font.Italic = NullSafeBoolean(NullSafeBoolean(dr("FontItalic")))
+                  '    .Font.Strikeout = NullSafeBoolean(NullSafeBoolean(dr("FontStrikeThru")))
+                  '    .Font.Underline = NullSafeBoolean(NullSafeBoolean(dr("FontUnderline")))
+
+                  '    .Width = Unit.Pixel(NullSafeInteger(dr("Width")))
+                  '    .Height = Unit.Pixel(NullSafeInteger(dr("Height")) - 7)
+
+                  '    .ClientSideEvents.Click = "try{showFileUpload(true, '" & sEncodedID & "', document.getElementById('file" & sID & "').value);}catch(e){};"
+
+                  '    AddHandler ctlForm_Button.Click, AddressOf Me.DisableControls
+                  '  End With
+
+
+                  '  'pnlInput.ContentTemplateContainer.Controls.Add(ctlForm_Button)
+                  '  ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_Button)
+
+                  '  ctlForm_HiddenField = New HiddenField
+                  '  With ctlForm_HiddenField
+                  '    .ID = "file" & sID
+                  '    .Value = NullSafeString(dr("value"))
+                  '  End With
+                  '  'pnlInput.ContentTemplateContainer.Controls.Add(ctlForm_HiddenField)
+                  '  ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_HiddenField)
+
+
                 Case 17 ' Input value - file upload
-                  ctlForm_Button = New Infragistics.WebUI.WebDataInput.WebImageButton
-                  With ctlForm_Button
+                  ctlForm_HTMLInputButton = New System.Web.UI.HtmlControls.HtmlInputButton
+                  With ctlForm_HTMLInputButton
                     .ID = sID
-                    .TabIndex = CShort(NullSafeInteger(dr("tabIndex")) + 1)
+                    .Attributes.Add("TabIndex", CShort(NullSafeInteger(dr("tabIndex")) + 1).ToString)
 
                     If (iMinTabIndex < 0) Or (NullSafeInteger(dr("tabIndex")) < iMinTabIndex) Then
                       sDefaultFocusControl = sID
@@ -3614,36 +3724,39 @@ Public Class _Default
                     .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
                     .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
 
-                    .Appearance.Style.BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColor")))
-                    .Appearance.Style.BorderStyle = BorderStyle.Solid
-                    .Appearance.Style.BorderWidth = 1
-                    .Appearance.InnerBorder.StyleTop = BorderStyle.None
-                    .Appearance.Style.BorderColor = objGeneral.GetColour(9999523)
-                    .Appearance.Style.ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
-                    .FocusAppearance.Style.BorderColor = objGeneral.GetColour(562943)
-                    .FocusAppearance.Style.BackColor = objGeneral.GetColour(12775933)
-                    .HoverAppearance.Style.BorderColor = objGeneral.GetColour(562943)
+                    .Style.Add("BackColor", objGeneral.GetColour(NullSafeInteger(dr("BackColor"))).ToString)
+                    .Style.Add("Border", "Solid 1px " & objGeneral.GetColour(9999523).ToString)
+                    .Style.Add("Color", objGeneral.GetColour(NullSafeInteger(dr("ForeColor"))).ToString)
 
+                    .Style.Add("padding", "0px")
+                    .Style.Add("white-space", "normal")
 
-                    .Text = NullSafeString(dr("caption"))
-                    .Font.Name = NullSafeString(dr("FontName"))
-                    .Font.Size = FontUnit.Parse(NullSafeString(dr("FontSize")))
-                    .Font.Bold = NullSafeBoolean(NullSafeBoolean(dr("FontBold")))
-                    .Font.Italic = NullSafeBoolean(NullSafeBoolean(dr("FontItalic")))
-                    .Font.Strikeout = NullSafeBoolean(NullSafeBoolean(dr("FontStrikeThru")))
-                    .Font.Underline = NullSafeBoolean(NullSafeBoolean(dr("FontUnderline")))
+                    .Value = NullSafeString(dr("caption"))
 
-                    .Width = Unit.Pixel(NullSafeInteger(dr("Width")))
-                    .Height = Unit.Pixel(NullSafeInteger(dr("Height")) - 7)
+                    sTemp2 = CStr(IIf(NullSafeBoolean(dr("FontStrikeThru")), " line-through", "")) & _
+                       CStr(IIf(NullSafeBoolean(dr("FontUnderline")), " underline", ""))
 
-                    .ClientSideEvents.Click = "try{showFileUpload(true, '" & sEncodedID & "', document.getElementById('file" & sID & "').value);}catch(e){};"
+                    If sTemp2.Length = 0 Then
+                      sTemp2 = " none"
+                    End If
 
-                    AddHandler ctlForm_Button.Click, AddressOf Me.DisableControls
+                    .Style.Add("Font-family", NullSafeString(dr("FontName")).ToString)
+                    .Style.Add("Font-Size", NullSafeString(dr("FontSize")) & "pt; ")
+                    .Style.Add("Font-weight", CStr(IIf(NullSafeBoolean(dr("FontBold")), "bold", "normal")))
+                    .Style.Add("FontStyle", CStr(IIf(NullSafeBoolean(dr("FontItalic")), "italic", "normal")))
+                    .Style.Add("Text-Decoration", sTemp2)
+
+                    .Style.Add("Width", Unit.Pixel(NullSafeInteger(dr("Width"))).ToString)
+                    .Style.Add("Height", Unit.Pixel(NullSafeInteger(dr("Height"))).ToString)
+
+                    .Attributes.Add("onclick", "try{showFileUpload(true, '" & sEncodedID & "', document.getElementById('file" & sID & "').value);}catch(e){};")
+
+                    AddHandler ctlForm_HTMLInputButton.ServerClick, AddressOf Me.DisableControls
                   End With
 
 
                   'pnlInput.ContentTemplateContainer.Controls.Add(ctlForm_Button)
-                  ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_Button)
+                  ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_HTMLInputButton)
 
                   ctlForm_HiddenField = New HiddenField
                   With ctlForm_HiddenField
@@ -3652,7 +3765,6 @@ Public Class _Default
                   End With
                   'pnlInput.ContentTemplateContainer.Controls.Add(ctlForm_HiddenField)
                   ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_HiddenField)
-
                 Case 19 ' DB File
                   sDecoration = ""
                   If NullSafeBoolean(dr("FontUnderline")) Then
@@ -3933,9 +4045,9 @@ Public Class _Default
 
                 pnlTabsDiv.Style("width") = iFormWidth.ToString & "px"
                 If m_iTabStripHeight > 0 Then
-                  pnlTabsDiv.style("height") = (m_iTabStripHeight.ToString) & "px"
+                  pnlTabsDiv.Style("height") = (m_iTabStripHeight.ToString) & "px"
                 Else
-                  pnlTabsDiV.style("height") = "auto"
+                  pnlTabsDiv.Style("height") = "auto"
                 End If
 
 
@@ -4274,15 +4386,19 @@ Public Class _Default
               Select Case iType
 
                 Case 0 ' Button
-                  Dim btn As Infragistics.WebUI.WebDataInput.WebImageButton = _
-                   DirectCast(sender, Infragistics.WebUI.WebDataInput.WebImageButton)
+                  'Dim btn As Infragistics.WebUI.WebDataInput.WebImageButton = _
+                  ' DirectCast(sender, Infragistics.WebUI.WebDataInput.WebImageButton)
+
+                  Dim btn As System.Web.UI.HtmlControls.HtmlInputButton = _
+                      DirectCast(sender, System.Web.UI.HtmlControls.HtmlInputButton)
 
                   If (ctlFormInput.ID = btn.ID) Then
                     hdnLastButtonClicked.Value = btn.ID
                     sFormInput1 = sFormInput1 & sIDString & "1" & vbTab
                     sFormValidation1 = sFormValidation1 & sIDString & "1" & vbTab
                   Else
-                    If (TypeOf ctlFormInput Is Infragistics.WebUI.WebDataInput.WebImageButton) Then
+                    ' If (TypeOf ctlFormInput Is Infragistics.WebUI.WebDataInput.WebImageButton) Then
+                    If (TypeOf ctlFormInput Is System.Web.UI.HtmlControls.HtmlInputButton) Then
                       sFormInput1 = sFormInput1 & sIDString & "0" & vbTab
                       sFormValidation1 = sFormValidation1 & sIDString & "0" & vbTab
                     End If
@@ -4482,7 +4598,8 @@ Public Class _Default
                   End If
 
                 Case 17 ' FileUpload
-                  If (TypeOf ctlFormInput Is Infragistics.WebUI.WebDataInput.WebImageButton) Then
+                  ' If (TypeOf ctlFormInput Is Infragistics.WebUI.WebDataInput.WebImageButton) Then
+                  If (TypeOf ctlFormInput Is System.Web.UI.HtmlControls.HtmlInputButton) Then
 
                     If pnlInput.FindControl("file" & sID) Is Nothing Then
                       sFormValidation1 = sFormValidation1 & sIDString & "0" & vbTab
@@ -4748,7 +4865,8 @@ Public Class _Default
     End If
 
   End Sub
-  Public Sub DisableControls(ByVal sender As System.Object, ByVal e As Infragistics.WebUI.WebDataInput.ButtonEventArgs)
+  ' Public Sub DisableControls(ByVal sender As System.Object, ByVal e As Infragistics.WebUI.WebDataInput.ButtonEventArgs)
+  Public Sub DisableControls(ByVal sender As System.Object, e As System.EventArgs)
     EnableDisableControls(False)
   End Sub
   Public Sub EnableControls(ByVal sender As System.Object, ByVal e As Infragistics.WebUI.WebDataInput.ButtonEventArgs)
@@ -4760,7 +4878,8 @@ Public Class _Default
     Dim sID As String
     Dim ctlFormCheckBox As CheckBox
     Dim ctlFormTextInput As TextBox
-    Dim ctlFormButtonInput As Infragistics.WebUI.WebDataInput.WebImageButton
+    ' Dim ctlFormButtonInput As Infragistics.WebUI.WebDataInput.WebImageButton
+    Dim ctlFormHTMLInputButton As System.Web.UI.HtmlControls.HtmlInputButton
     Dim ctlFormDateInput As Infragistics.WebUI.WebSchedule.WebDateChooser
     Dim ctlFormNumericInput As Infragistics.WebUI.WebDataInput.WebNumericEdit
     Dim ctlFormRecordSelectionGrid As System.Web.UI.WebControls.GridView ' Infragistics.WebUI.UltraWebGrid.UltraWebGrid
@@ -4798,8 +4917,11 @@ Public Class _Default
 
           Select Case iType
             Case 0 ' Button
-              ctlFormButtonInput = DirectCast(ctlFormInput, Infragistics.WebUI.WebDataInput.WebImageButton)
-              ctlFormButtonInput.Enabled = pfEnabled
+              ' ctlFormButtonInput = DirectCast(ctlFormInput, Infragistics.WebUI.WebDataInput.WebImageButton)
+              ctlFormHTMLInputButton = DirectCast(ctlFormInput, System.Web.UI.HtmlControls.HtmlInputButton)
+              ctlFormHTMLInputButton.Style.Remove("disabled")
+              If pfEnabled Then ctlFormHTMLInputButton.Style.Add("disabled", "disabled")
+
 
             Case 1 ' Database value
             Case 2 ' Label
@@ -4874,8 +4996,11 @@ Public Class _Default
               End If
 
             Case 17 ' Input value - file upload
-              ctlFormButtonInput = DirectCast(ctlFormInput, Infragistics.WebUI.WebDataInput.WebImageButton)
-              ctlFormButtonInput.Enabled = pfEnabled
+              ' ctlFormButtonInput = DirectCast(ctlFormInput, Infragistics.WebUI.WebDataInput.WebImageButton)
+              ctlFormHTMLInputButton = DirectCast(ctlFormInput, System.Web.UI.HtmlControls.HtmlInputButton)
+              ' ctlFormButtonInput.Enabled = pfEnabled
+              ctlFormHTMLInputButton.Style.Remove("disabled")
+              If pfEnabled Then ctlFormHTMLInputButton.Style.Add("disabled", "disabled")
 
           End Select
         End If
@@ -5645,6 +5770,6 @@ Public Class _Default
   End Function
 
 
- 
+
 
 End Class
