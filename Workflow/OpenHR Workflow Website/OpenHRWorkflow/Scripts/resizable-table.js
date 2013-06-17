@@ -297,10 +297,16 @@ function filterTable(term, tableID) {
     var display = '';
     for (var i = 0; i < terms.length; i++) {
       
-      if (table.rows[r].innerHTML.replace(/<[^>]+>/g, "|").toLowerCase()
+      //NPG20120202 Fault HRPRO-1923
+      //Last [hidden] column in the row stores the ID (record selectors only). So trim them off before filtering
+      var dataRow = table.rows[r].innerHTML.substring(0, table.rows[r].innerHTML.indexOf("display: none"))+'>';
+
+      //if (table.rows[r].innerHTML.replace(/<[^>]+>/g, "|").toLowerCase()
+      if (dataRow.replace(/<[^>]+>/g, "|").toLowerCase()
 				.indexOf(terms[i]) < 0) {
         display = 'none';
       } else {
+        //alert((table.rows[r].innerHTML.substring(0, table.rows[r].innerHTML.indexOf("display: none"))+'>').replace(/<[^>]+>/g, "|").toLowerCase());
         if (terms[i].length) highlight(terms[i], table.rows[r]);
       }
       table.rows[r].style.display = display;
