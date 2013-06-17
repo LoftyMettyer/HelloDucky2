@@ -37,7 +37,7 @@ Public Class _Default
   Private Const FORMINPUTPREFIX As String = "forminput_"
   Private Const ASSEMBLYNAME As String = "OPENHRWORKFLOW"
   Private Const MAXDROPDOWNROWS As Int16 = 6
-  Private Const TabStripHeight As Integer = 30
+  Private Const miTabStripHeight As Integer = 30
 
   Private Enum SQLDataType
     sqlUnknown = 0      ' ?
@@ -665,7 +665,8 @@ Public Class _Default
 
               iCurrentPageTab = NullSafeInteger(dr("pageno"))
 
-              ' Now set the correct div to use...
+              ' Create the tab for this control. Do this first in case the tabstrip control hasn't been read yet,
+              ' and the tabs haven't been generated.
               Try
                 Dim strTemp As String = ctlForm_PageTab(iCurrentPageTab).ID.ToString
                 ' OK, if the id exists, the div has already been created. Do nothing.
@@ -680,14 +681,17 @@ Public Class _Default
                 ctlForm_PageTab(iCurrentPageTab).Style.Add("position", "absolute")
 
                 ' Add this tab to the web form
-                If iCurrentPageTab = 0 Then
-                  pnlInputDiv.Controls.Add(ctlForm_PageTab(iCurrentPageTab))
-                Else
-                  ctlForm_PageTab(iCurrentPageTab).Style.Add("display", "none")
-                  pnlTabsDiv.Controls.Add(ctlForm_PageTab(iCurrentPageTab))
-                End If
+                'If iCurrentPageTab = 0 Then
+                pnlInputDiv.Controls.Add(ctlForm_PageTab(iCurrentPageTab))
+                'Else
+                'ctlForm_PageTab(iCurrentPageTab).Style.Add("display", "none")
+                'pnlTabsDiv.Controls.Add(ctlForm_PageTab(iCurrentPageTab))
+                'End If
               End Try
 
+
+
+              ' Generate the unique ID for this control and process it onto the form.
               sID = FORMINPUTPREFIX & NullSafeString(dr("id")) & "_" & NullSafeString(dr("ItemType")) & "_"
               sEncodedID = objCrypt.SimpleEncrypt(NullSafeString(dr("id")).ToString, Session.SessionID)
 
@@ -2911,7 +2915,7 @@ Public Class _Default
 
                   Dim ctlTabsDiv As New Panel
                   ctlTabsDiv.ID = "TabsDiv"
-                  ctlTabsDiv.Style.Add("height", TabStripHeight & "px")
+                  ctlTabsDiv.Style.Add("height", miTabStripHeight & "px")
                   ctlTabsDiv.Style.Add("position", "relative")
                   ctlTabsDiv.Style.Add("z-index", "1")
 
@@ -2939,7 +2943,7 @@ Public Class _Default
                     ctlForm_Image = New WebControls.Image
                     With ctlForm_Image
                       .Style.Add("width", "24px")
-                      .Style.Add("height", TabStripHeight - 6 & "px")
+                      .Style.Add("height", miTabStripHeight - 6 & "px")
                       .ImageUrl = "~/Images/tab-prev.gif"
                       .Style.Add("margin", "0px")
                       .Style.Add("padding", "0px")
@@ -2951,7 +2955,7 @@ Public Class _Default
                     ctlForm_Image = New WebControls.Image
                     With ctlForm_Image
                       .Style.Add("width", "24px")
-                      .Style.Add("height", TabStripHeight - 6 & "px")
+                      .Style.Add("height", miTabStripHeight - 6 & "px")
                       .ImageUrl = "~/Images/tab-next.gif"
                       .Style.Add("margin", "0px")
                       .Style.Add("padding", "0px")
@@ -2968,7 +2972,7 @@ Public Class _Default
                   ctlTabsTable.CellSpacing = 0
                   ctlTabsTable.Style.Add("margin-top", "2px")
                   Dim trPager As TableRow = New TableRow()
-                  trPager.Height = Unit.Pixel(TabStripHeight - 4 - 1) ' to prevent vertical scrollbar
+                  trPager.Height = Unit.Pixel(miTabStripHeight - 4 - 1) ' to prevent vertical scrollbar
                   trPager.Style.Add("white-space", "nowrap")
 
                   Dim tcTabCell As New TableCell
@@ -3006,6 +3010,46 @@ Public Class _Default
                       End With
 
                       trPager.Cells.Add(tcTabCell)
+
+                      ' NPG20120321 Fault HRPRO-2113
+                      ' Rather than put the controls div inside the relevant tab page (issues with referencing the AJAX controls on postback), 
+                      ' we move the controls div into the form by the top and left of the tabstrip, if it exists
+
+                      If iTabNo > 0 Then  ' Tab 0 is the base page.
+
+                        ' create any MISSING tabs...
+                        Try
+                          Dim strTemp As String = ctlForm_PageTab(iTabNo).ID.ToString
+                          ' OK, if the id exists, the div has already been created. Do nothing.
+                        Catch ex As Exception
+                          ' Otherwise create the div
+                          ' Create the new div, give it a unique id then we can refer to that when it's reused in the next loop.
+                          ' store the id in the array for reference. NB 21 is the itemtype for a page Tab
+                          If iTabNo > ctlForm_PageTab.GetUpperBound(0) Then ReDim Preserve ctlForm_PageTab(iTabNo)
+
+                          ctlForm_PageTab(iTabNo) = New Panel
+                          ctlForm_PageTab(iTabNo).ID = FORMINPUTPREFIX & iTabNo.ToString & "_21_PageTab"
+                          ctlForm_PageTab(iTabNo).Style.Add("position", "absolute")
+
+                          ' Add this tab to the web form
+                          pnlInputDiv.Controls.Add(ctlForm_PageTab(iTabNo))
+                        End Try
+
+                        ' Move all tabs to their relative position within the tab frame.
+                        Try
+                          iTempHeight = miTabStripHeight + NullSafeInteger(dr("TopCoord"))
+                          iTempWidth = NullSafeInteger(dr("LeftCoord"))
+
+                          ctlForm_PageTab(iTabNo).Style.Add("top", iTempHeight & "px")
+                          ctlForm_PageTab(iTabNo).Style.Add("left", iTempWidth & "px")
+
+                          ' Hide all tabs but the first.
+                          ctlForm_PageTab(iTabNo).Style.Add("display", "none")
+                        Catch ex As Exception
+                          Beep()
+                        End Try
+                      End If
+
                       iTabNo += 1 ' keep tabs on the number of tabs hehehe :P
                     End If
                   Next
