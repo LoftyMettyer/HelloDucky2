@@ -11,4 +11,5 @@
   <add key="MobileKey" value=""/>
   <add key="WorkflowURL" value=""/>
   <add key="DefaultActiveDirectoryServer" value="" />
+  <add key="TabletBackColour" value="lightgray"/>
 </appSettings>
