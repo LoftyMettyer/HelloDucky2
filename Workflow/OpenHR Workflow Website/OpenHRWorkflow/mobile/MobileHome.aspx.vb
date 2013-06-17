@@ -533,7 +533,7 @@ Partial Class Home
   End Function
 
   Protected Sub btnChangePwd_Click(sender As Object, e As System.Web.UI.ImageClickEventArgs) Handles btnChangePwd.Click
-    Response.Redirect("~/mobile/MobileChangePassword.aspx")
+    Response.Redirect("MobileChangePassword.aspx")
   End Sub
 
   Protected Sub btnLogout_Click(sender As Object, e As System.Web.UI.ImageClickEventArgs) Handles btnLogout.Click
@@ -541,7 +541,7 @@ Partial Class Home
   End Sub
 
   Protected Sub btnToDoList_Click(sender As Object, e As System.Web.UI.ImageClickEventArgs) Handles btnToDoList.Click
-    Response.Redirect("~/mobile/MobilePendingSteps.aspx")
+    Response.Redirect("MobilePendingSteps.aspx")
   End Sub
 
   Private Sub LogoutAuthenticatedUser()

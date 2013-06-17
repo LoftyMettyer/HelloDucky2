@@ -30,6 +30,9 @@ Partial Class MobileLogin
     If Not (CustomerGUID = "" Or CustomerGUID = "sqluser") Then
       Session("LoginKey") = CustomerGUID
       fAuthenticated = True
+    Else
+      Session("LoginKey") = Nothing
+      fAuthenticated = False
     End If
 
     If fAuthenticated Then
@@ -351,11 +354,11 @@ Partial Class MobileLogin
       sImageWebPath = "~/pictures"
       sImageFilePath = Server.MapPath(sImageWebPath)
 
-      strConn = "Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
-        ";Initial Catalog=" & Session("Database") & _
-        ";Integrated Security=false;User ID=" & Session("Login") & _
-        ";Password=" & Session("Password") & _
-        ";Pooling=false"
+      strConn = CType(("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
+                       ";Initial Catalog=" & Session("Database") & _
+                       ";Integrated Security=false;User ID=" & Session("Login") & _
+                       ";Password=" & Session("Password") & _
+                       ";Pooling=false"), String)
       'strConn = "Application Name=OpenHR Workflow;Data Source=.\sqlexpress;Initial Catalog=hrprostd43;Integrated Security=false;User ID=sa;Password=asr;Pooling=false"
       'strConn = "Application Name=OpenHR Workflow;Data Source=" & msServer & ";Initial Catalog=" & msDatabase & ";Integrated Security=false;User ID=" & msUser & ";Password=" & msPwd & ";Pooling=false"
       conn = New SqlClient.SqlConnection(strConn)
@@ -532,7 +535,7 @@ Partial Class MobileLogin
         cmdCheck.Parameters.Add("@psKeyParameter", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
         cmdCheck.Parameters("@psKeyParameter").Value = Session("LoginKey")
 
-        cmdCheck.Parameters.Add("@psPWDParameter", SqlDbType.NVarChar, 2147483646).Direction = ParameterDirection.Output
+        'cmdCheck.Parameters.Add("@psPWDParameter", SqlDbType.NVarChar, 2147483646).Direction = ParameterDirection.Output
 
         cmdCheck.Parameters.Add("@piUserGroupID", SqlDbType.Int).Direction = ParameterDirection.Output
 
@@ -541,7 +544,7 @@ Partial Class MobileLogin
         cmdCheck.ExecuteNonQuery()
 
         sMessage = NullSafeString(cmdCheck.Parameters("@psMessage").Value())
-        sEncryptedPwd = NullSafeString(cmdCheck.Parameters("@psPWDParameter").Value())
+        ' sEncryptedPwd = NullSafeString(cmdCheck.Parameters("@psPWDParameter").Value())
 
         Session("UserGroupID") = NullSafeInteger(cmdCheck.Parameters("@piUserGroupID").Value())
 
@@ -554,14 +557,17 @@ Partial Class MobileLogin
       End Try
     End If
 
-
-
     If sMessage.Length > 0 Then
       Session("message") = sMessage
       Session("nextPage") = "~/MobileLogin"
       lblMsgBox.InnerText = sMessage
       pnlGreyOut.Style.Add("visibility", "visible")
       pnlMsgBox.Style.Add("visibility", "visible")
+
+      FormsAuthentication.SignOut()
+      Session("LoginKey") = Nothing
+      Session("nextPage") = "~/MobileLogin"
+
     Else
       If fAuthenticated Then
         ' Where were we heading before being asked for authentication?
@@ -570,6 +576,7 @@ Partial Class MobileLogin
           Response.Redirect("~/mobile/MobileHome.aspx")
         Else
           'Go to the page originally specified by the client.
+          FormsAuthentication.SignOut()
           HttpContext.Current.Response.Redirect(FormsAuthentication.GetRedirectUrl(sAuthUser, False))
         End If
       End If

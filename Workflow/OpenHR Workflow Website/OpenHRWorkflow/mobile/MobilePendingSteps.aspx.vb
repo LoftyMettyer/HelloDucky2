@@ -487,10 +487,10 @@ Partial Class PendingSteps
 
 
   Protected Sub btnRefresh_Click(sender As Object, e As System.Web.UI.ImageClickEventArgs) Handles btnRefresh.Click
-    Response.Redirect("~/mobile/MobilePendingSteps.aspx")
+    Response.Redirect("MobilePendingSteps.aspx")
   End Sub
 
   Protected Sub btnCancel_Click(sender As Object, e As System.Web.UI.ImageClickEventArgs) Handles btnCancel.Click
-    Response.Redirect("~/mobile/MobileHome.aspx")
+    Response.Redirect("MobileHome.aspx")
   End Sub
 End Class

@@ -269,7 +269,7 @@ Partial Class ChangePassword
       lblMsgBox.InnerText = sMessage
       pnlGreyOut.Style.Add("visibility", "visible")
       pnlMsgBox.Style.Add("visibility", "visible")
-      Session("nextPage") = "~/mobile/MobileHome"
+      Session("nextPage") = "MobileHome"
     End If
 
 
@@ -441,10 +441,10 @@ Partial Class ChangePassword
     lblMsgBox.InnerText = sMessage
     pnlGreyOut.Style.Add("visibility", "visible")
     pnlMsgBox.Style.Add("visibility", "visible")
-    Session("nextPage") = "~/mobile/MobileHome"
+    Session("nextPage") = "MobileHome"
   End Sub
 
   Protected Sub btnCancel_Click(sender As Object, e As System.Web.UI.ImageClickEventArgs) Handles btnCancel.Click
-    Response.Redirect("~/mobile/MobileHome.aspx")
+    Response.Redirect("MobileHome.aspx")
   End Sub
 End Class
