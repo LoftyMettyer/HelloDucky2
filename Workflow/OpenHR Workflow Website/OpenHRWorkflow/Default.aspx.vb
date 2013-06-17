@@ -1376,15 +1376,15 @@ Public Class _Default
                       .Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
                       .Font.Underline = NullSafeBoolean(dr("FontUnderline"))
 
-                      If (Not IsDBNull(dr("value"))) Then
-                        If CStr(dr("value")).Length > 0 Then
-                          iYear = CShort(NullSafeString(dr("value")).Substring(6, 4))
-                          iMonth = CShort(NullSafeString(dr("value")).Substring(0, 2))
-                          iDay = CShort(NullSafeString(dr("value")).Substring(3, 2))
+                      If (Not IsDBNull(dr("value"))) And CStr(dr("value")).Length > 0 Then
+                        iYear = CShort(NullSafeString(dr("value")).Substring(6, 4))
+                        iMonth = CShort(NullSafeString(dr("value")).Substring(0, 2))
+                        iDay = CShort(NullSafeString(dr("value")).Substring(3, 2))
 
-                          dtDate = DateSerial(iYear, iMonth, iDay)
-                          .Text = FormatDateTime(dtDate, DateFormat.ShortDate)
-                        End If
+                        dtDate = DateSerial(iYear, iMonth, iDay)
+                        .Text = FormatDateTime(dtDate, DateFormat.ShortDate)
+                      Else
+                        .Text = "  /  /"
                       End If
 
                     End With
