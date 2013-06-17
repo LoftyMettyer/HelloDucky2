@@ -38,6 +38,8 @@ Public Class Picture
 
     If Not Map.TryGetValue(id, url) Then
 
+      'TODO must thread lock this code
+
       If Not Directory.Exists(FullPath) Then
         Directory.CreateDirectory(FullPath)
       End If
@@ -45,6 +47,8 @@ Public Class Picture
       Dim file = LoadPicture(id)
       url = RootPath & "/" & Path.GetFileName(file)
       Map.Add(CInt(id), url)
+
+      'End Thread lock
     End If
 
     Return url

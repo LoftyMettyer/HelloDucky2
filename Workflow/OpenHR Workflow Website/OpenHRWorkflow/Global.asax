@@ -11,6 +11,7 @@
         Try
             Dim path = Server.MapPath("~/Pictures")
             
+            'Delete the picture files created by default.aspx
             For Each file In System.IO.Directory.GetFiles(path)
                 Try
                     System.IO.File.Delete(file)
@@ -18,6 +19,7 @@
                 End Try
             Next
             
+            'Delete the picture files created by rest of system
             For Each folder In System.IO.Directory.GetDirectories(path)
                 Try
                     System.IO.Directory.Delete(folder, True)
@@ -38,7 +40,22 @@
     End Sub
   
 	Sub Session_End(ByVal sender As Object, ByVal e As EventArgs)
-        ' Code that runs when a session ends.      
+        ' Code that runs when a session ends.
+        
+        Try
+            Dim path = Server.MapPath("~/Pictures")
+            
+            'Delete the picture files created by default.aspx
+            For Each file In System.IO.Directory.GetFiles(path)
+                Try
+                    System.IO.File.Delete(file)
+                Catch ex As Exception
+                End Try
+            Next
+            
+        Catch ex As Exception
+        End Try
+        
 	End Sub
           
 </script>
