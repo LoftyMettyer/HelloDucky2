@@ -937,6 +937,7 @@ Public Class _Default
                     End If
                     .ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
 
+                    'TODO PG
                     .Font.Name = NullSafeString(dr("FontName"))
                     .Font.Size = ToPointFontUnit(NullSafeInteger(dr("FontSize")))
                     .Font.Bold = NullSafeBoolean(NullSafeBoolean(dr("FontBold")))
@@ -1785,7 +1786,13 @@ Public Class _Default
                       iMinTabIndex = NullSafeInteger(dr("tabIndex"))
                     End If
 
-                    .BackColor = General.GetColour(NullSafeInteger(dr("BackColor")))
+                    Dim backColor As Integer = NullSafeInteger(dr("BackColor"))
+
+                    If backColor = 16777215 AndAlso NullSafeInteger(dr("BackColorEven")) = 15988214 Then
+                      backColor = NullSafeInteger(dr("BackColorEven"))
+                    End If
+
+                    .BackColor = General.GetColour(backColor)
                     .ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
 
                     .HeaderStyle.BackColor = General.GetColour(NullSafeInteger(dr("HeaderBackColor")))
@@ -1827,12 +1834,21 @@ Public Class _Default
                     .Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
                     .Font.Underline = NullSafeBoolean(dr("FontUnderline"))
 
-                    'TODO PG
-                    .AlternatingRowStyle.ForeColor = General.GetColour(NullSafeInteger(dr("ForeColorOdd")))
-                    .AlternatingRowStyle.BackColor = General.GetColour(NullSafeInteger(dr("BackColorOdd")))
+                    If NullSafeInteger(dr("ForeColorEven")) <> NullSafeInteger(dr("ForeColor")) Then
+                      .RowStyle.ForeColor = General.GetColour(NullSafeInteger(dr("ForeColorEven")))
+                    End If
 
-                    .RowStyle.ForeColor = General.GetColour(NullSafeInteger(dr("ForeColorEven")))
-                    .RowStyle.BackColor = General.GetColour(NullSafeInteger(dr("BackColorEven")))
+                    If NullSafeInteger(dr("BackColorEven")) <> backColor Then
+                      .RowStyle.BackColor = General.GetColour(NullSafeInteger(dr("BackColorEven")))
+                    End If
+
+                    If NullSafeInteger(dr("ForeColorOdd")) <> NullSafeInteger(dr("ForeColor")) Then
+                      .AlternatingRowStyle.ForeColor = General.GetColour(NullSafeInteger(dr("ForeColorOdd")))
+                    End If
+
+                    If NullSafeInteger(dr("BackColorOdd")) <> NullSafeInteger(dr("BackColorEven")) Then
+                      .AlternatingRowStyle.BackColor = General.GetColour(NullSafeInteger(dr("BackColorOdd")))
+                    End If
 
                     If IsDBNull(dr("ForeColorHighlight")) Then
                       .SelectedRowStyle.ForeColor = SystemColors.HighlightText

@@ -646,7 +646,8 @@ Public Class RecordSelector
       ' specify the row height cos of bug HRPRO-1685.
       ' NB: no need to be unique here, as the ID will automatically be 
       ' prefixed with the control's clientID.
-      e.Row.ID = "row" & e.Row.RowIndex.ToString
+      'TODO PG
+      'e.Row.ID = "row" & e.Row.RowIndex.ToString
     End If
   End Sub
 
@@ -654,12 +655,6 @@ Public Class RecordSelector
     ' As each row is added to the grid's HTML table, do the following: 
     'check the item being bound is actually a DataRow, if it is, 
     'wire up the required html events and attach the relevant JavaScripts
-
-    Dim iIDCol As Integer = 0
-    Dim sRowID As String = "0"
-    'Dim grdGrid As System.Web.UI.WebControls.GridView
-    Dim mydte As DateTime
-    Dim sColumnCaption As String
 
     grdGrid = CType(sender, RecordSelector)
 
@@ -669,21 +664,13 @@ Public Class RecordSelector
         ' loop through the columns of this row. Hide ID columns
         For iColCount As Integer = 0 To e.Row.Cells.Count - 1
 
-          sColumnCaption = UCase(grdGrid.HeaderRow.Cells(iColCount).Text)
+          Dim sColumnCaption As String = UCase(grdGrid.HeaderRow.Cells(iColCount).Text)
 
           Dim hidden As Boolean = False
 
           If (Not IsLookup AndAlso (sColumnCaption = "ID" OrElse (Left(sColumnCaption, 3) = "ID_" AndAlso Val(Mid(sColumnCaption, 4)) > 0))) OrElse (IsLookup AndAlso sColumnCaption.StartsWith("ASRSYS")) Then
-
             hidden = True
-            iIDCol = iColCount  ' store ID column number to assign to the javascript click event.
             e.Row.Cells(iColCount).Style.Add("display", "none")
-            If sColumnCaption = "ID" Then
-              ' Background colour to black.
-              ' Javascript can see this and use it to recognise the ID column. 
-              'TODO PG
-              e.Row.Cells(iColCount).BackColor = Drawing.Color.Black
-            End If
           End If
 
           ' Format the cells according to DataType
@@ -701,8 +688,8 @@ Public Class RecordSelector
             Select Case curSelDataType
               Case "DateTime"
                 ' Is the cell a date? 
-                mydte = DateTime.Parse(e.Row.Cells(iColCount).Text.ToString())
-                e.Row.Cells(iColCount).Text = mydte.ToShortDateString()
+                Dim value As DateTime = DateTime.Parse(e.Row.Cells(iColCount).Text.ToString())
+                e.Row.Cells(iColCount).Text = value.ToShortDateString()
 
                 If Not hidden Then e.Row.Cells(iColCount).Style.Add("text-align", "center")
               Case "Integer"
@@ -721,13 +708,14 @@ Public Class RecordSelector
         If Not Me.IsEmpty Then
           'TODO PG
           e.Row.Attributes("onclick") = "selectRow('" & grdGrid.ID.Replace("_Grid", "") & "','" & e.Row.RowIndex & "')"
+          'e.Row.Attributes("onclick") = "SR(this, " & e.Row.RowIndex & ")"
         End If
 
       ElseIf e.Row.RowType = DataControlRowType.Header Then
 
         ' Get the lookupfiltervalue column number, if applicable and store to a tag.
         For iColCount As Integer = 0 To e.Row.Cells.Count - 1
-          sColumnCaption = UCase(e.Row.Cells(iColCount).Text)
+          Dim sColumnCaption As String = UCase(e.Row.Cells(iColCount).Text)
 
           If sColumnCaption.ToUpper = "ASRSYSLOOKUPFILTERVALUE" Then
             grdGrid.Attributes.Remove("LookupFilterColumn")
