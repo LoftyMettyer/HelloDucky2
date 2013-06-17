@@ -9,7 +9,7 @@
 	<SCRIPT FOR="window" EVENT="onload" LANGUAGE="JavaScript">
 	<!--
 		var iMINWIDTH = 400;
-
+    
 		// Resize the browser.
 		try 
 		{
@@ -86,13 +86,18 @@
 		}
 
     function closeMe() {
-			if(navigator.userAgent.indexOf("MSIE")>0) {
-				//Only IE can self-close windows that it didn't open
-        try{window.close();}catch(e){}
-			}
-      else {
-        alert("For your security please close your browser");
-      }
+        try{
+          window.close();
+
+          document.getElementById('Label1').innerHTML = "For your security please close your browser.";
+          document.getElementById('Label2').innerHTML = "";
+          document.getElementById('lblBack').innerHTML = "";
+          document.getElementById('Label3').innerHTML = "";
+          document.getElementById('lblClose').innerHTML = "";
+          document.getElementById('Label4').innerHTML = "";
+        }
+        
+        catch(e){alert("For your security please close your browser");}
     }
 
 	-->
@@ -129,7 +134,9 @@
 				<td width="40" bgcolor="White"></td>
 				<td align="center" bgcolor="White" nowrap>
 						<font face='Verdana' style="color:#333366; FONT-SIZE:<%=MessageFontSize()%>pt">
-							Session timeout.
+							<asp:Label ID="Label1" 
+								runat="server" Text="Session timeout.">
+							</asp:Label> 
 						</font>
 				</td>
 				<td width="40" bgcolor="White"></td>
@@ -140,7 +147,9 @@
 				<td width="10" bgcolor="<%=ColourThemeHex()%>"></td>
 				<td colspan="3" align="center" bgcolor="White">
 					<font face='Verdana' style="color:#333366; FONT-SIZE:<%=MessageFontSize()%>pt">
-						Click 
+							<asp:Label ID="Label2" 
+								runat="server" Text="Click">
+							</asp:Label> 
 						<span onclick="try{window.history.back();}catch(e){}" tabindex="1"
 								onmouseover="try{this.style.color='#ff9608'}catch(e){}" 
 								onmouseout="try{this.style.color='#333366';}catch(e){}" 
@@ -153,7 +162,9 @@
 								style="cursor: hand;">
 							</asp:Label>
 						</span>
-						to reload this form, or
+							<asp:Label ID="Label3" 
+								runat="server" Text=" to reload this form, or">
+							</asp:Label>
 						<span onclick="closeMe();" tabindex="1"
 								onmouseover="try{this.style.color='#ff9608'}catch(e){}" 
 								onmouseout="try{this.style.color='#333366';}catch(e){}" 
@@ -166,7 +177,9 @@
 								style="cursor: hand;">
 							</asp:Label>
 						</span>
-						to close it.
+							<asp:Label ID="Label4" 
+								runat="server" Text=" to close it.">
+							</asp:Label>
 					</font>
 				</td>
 				<td width="10" bgcolor="<%=ColourThemeHex()%>"></td>

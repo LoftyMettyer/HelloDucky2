@@ -9,7 +9,7 @@
 	<SCRIPT FOR="window" EVENT="onload" LANGUAGE="JavaScript">
 	<!--
 		var iMINWIDTH = 400;
-
+    
 		// Resize the browser.
 		try
 		{
@@ -95,13 +95,16 @@
 
 
     function closeMe() {
-			if(navigator.userAgent.indexOf("MSIE")>0) {
-				//Only IE can self-close windows that it didn't open
-        try{window.close();}catch(e){}
-			}
-      else {
-        alert("For your security please close your browser");
-      }
+        try{
+          window.close();
+
+          document.getElementById('lblPrompt1').innerHTML = "For your security please close your browser.";
+          document.getElementById('lblClose').innerHTML = "";
+          document.getElementById('lblPrompt2').innerHTML = "";
+        }
+        
+        catch(e){alert("For your security please close your browser");}
+        
     }
 
 
@@ -158,7 +161,9 @@
 				<td width="40" bgcolor="White"></td>
 				<td align="center" bgcolor="White">
 					<font face='Verdana' style="color:#333366; FONT-SIZE:<%=MessageFontSize()%>pt">
-						Click 
+						<asp:Label ID="lblPrompt1" 
+								runat="server" Text="Click">
+							</asp:Label> 
 						<span id="spnClickHere" name="spnClickHere" onclick="closeMe();" tabindex="1"
 								onmouseover="try{this.style.color='#ff9608'}catch(e){}" 
 								onmouseout="try{this.style.color='#333366';}catch(e){}" 
@@ -172,7 +177,9 @@
 								style="cursor: pointer;">
 							</asp:Label>
 						</span>
-						to close this form.
+						<asp:Label ID="lblPrompt2" 
+								runat="server" Text="to close this form.">
+							</asp:Label> 
 					</font>
 				</td>
 				<td width="40" bgcolor="White"></td>
