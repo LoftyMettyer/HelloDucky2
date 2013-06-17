@@ -386,6 +386,11 @@
 	        catch (e) { }
 	    }
 
+	    //Function to call postback for the webNumericEdit change event. IG Bug.
+	    function WebNumericEdit(oEdit) {
+	        window.setTimeout('igedit_getById("' + oEdit + '").doPost(3)', 1);
+	    }
+
 	    function dateControlTextChanged(pobjControl, pNewText, pobjEvent) {
 	
 	        var dtCurrentDate;
