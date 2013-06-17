@@ -22,23 +22,29 @@
       }
       catch (e) { };
 
+      
       resizeFrame();
     }
 
     function resizeFrame() {
-      var iRequiredWidth = frmFileUpload.offsetParent.scrollWidth;
-      var iMinWidth = 0.9 * window.parent.frmMain.hdnFormWidth.value;
+        var iRequiredWidth = frmFileUpload.offsetParent.scrollWidth;
+        var iMinWidth = 0.9 * window.parent.frmMain.hdnFormWidth.value;
 
-      if (iRequiredWidth < iMinWidth) {
-        iRequiredWidth = iMinWidth;
-      }
+        if (iRequiredWidth < iMinWidth) {
+            iRequiredWidth = iMinWidth;
+        }
 
-      document.getElementById('FileUpload1').style.width = (iRequiredWidth - 150) + 'px';
+        document.getElementById('FileUpload1').style.width = (iRequiredWidth - 150) + 'px';
 
-      window.resizeTo(iRequiredWidth, frmFileUpload.offsetParent.scrollHeight);
-      window.parent.resizeToFit(frmFileUpload.offsetParent.scrollWidth, frmFileUpload.offsetParent.scrollHeight);
+            try {
+                window.resizeTo(iRequiredWidth, frmFileUpload.offsetParent.scrollHeight);
+                window.parent.resizeToFit(frmFileUpload.offsetParent.scrollWidth, frmFileUpload.offsetParent.scrollHeight);
+            }
+            catch (e) {
+                window.location = document.URL;
+            }
     }
-
+    
     function showErrorMessages(pfDisplay) {
       if (((frmFileUpload.hdnCount_Errors.value > 0)
 				|| (frmFileUpload.hdnCount_Warnings.value > 0))
