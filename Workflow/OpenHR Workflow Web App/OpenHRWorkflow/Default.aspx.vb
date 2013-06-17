@@ -676,8 +676,9 @@ Public Class [Default]
 
 							.Style.Add("border-bottom-width", "2px")
 
-							.ID = controlId & "Grid"
-							.AllowPaging = True
+						.ID = controlId & "Grid"
+						.ClientIDMode = ClientIDMode.Static
+						.AllowPaging = True
 							.AllowSorting = True
 							'.EnableSortingAndPagingCallbacks = True
 
@@ -856,7 +857,8 @@ Public Class [Default]
 							Dim recordSelector = New RecordSelector
 
 							With recordSelector
-								.ID = controlId & "Grid"
+							.ID = controlId & "Grid"
+							.ClientIDMode = ClientIDMode.Static
 								.IsLookup = True
 								.EnableViewState = True
 								' Must be set to True
