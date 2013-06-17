@@ -4,169 +4,164 @@ Imports System.Drawing
 Imports Utilities
 
 Public Module Extensions
+   <Extension()>
+   Public Sub Apply(value As FontInfo, formItem As FormItem, Optional namePrefix As String = Nothing)
+      'TODO PG NOW namePrefix code
+      With value
+         .Name = formItem.FontName
+         .Size = ToPointFontUnit(formItem.FontSize)
+         .Bold = formItem.FontBold
+         .Italic = formItem.FontItalic
+         .Strikeout = formItem.FontStrikeThru
+         .Underline = formItem.FontUnderline
+      End With
+   End Sub
 
-  <Extension()> _
-  Public Sub Apply(value As FontInfo, dataReader As IDataReader, Optional namePrefix As String = Nothing)
+   <Extension()>
+   Public Sub ApplyFont(value As WebControl, formItem As FormItem, Optional namePrefix As String = Nothing)
+      value.Font.Apply(formItem, namePrefix)
+   End Sub
 
-    With value
-      .Name = NullSafeString(dataReader(namePrefix & "FontName"))
-      .Size = ToPointFontUnit(NullSafeInteger(dataReader(namePrefix & "FontSize")))
-      .Bold = NullSafeBoolean(dataReader(namePrefix & "FontBold"))
-      .Italic = NullSafeBoolean(dataReader(namePrefix & "FontItalic"))
-      .Strikeout = NullSafeBoolean(dataReader(namePrefix & "FontStrikeThru"))
-      .Underline = NullSafeBoolean(dataReader(namePrefix & "FontUnderline"))
-    End With
+   <Extension()>
+   Public Sub ApplyFont(value As CssStyleCollection, formItem As FormItem)
 
-  End Sub
+      Dim css As String = ""
 
-  <Extension()> _
-  Public Sub ApplyFont(value As WebControl, dataReader As IDataReader, Optional namePrefix As String = Nothing)
-    value.Font.Apply(dataReader, namePrefix)
-  End Sub
+      If formItem.FontItalic Then css += "italic "
+      If formItem.FontBold Then css += "bold "
+      css += ToPoint(formItem.FontSize).ToString & "pt " & formItem.FontName
 
-  <Extension()> _
-  Public Sub ApplyFont(value As CssStyleCollection, dataReader As IDataReader)
+      value.Add("font", css)
 
-    Dim css As String = ""
+      Dim decoration As String = If(formItem.FontStrikeThru, "line-through ", "") &
+                                 If(formItem.FontUnderline, "underline ", "")
 
-    If NullSafeBoolean(dataReader("FontItalic")) Then css += "italic "
-    If NullSafeBoolean(dataReader("FontBold")) Then css += "bold "
-    css += ToPoint(NullSafeInteger(dataReader("FontSize"))).ToString & "pt " & NullSafeString(dataReader("FontName"))
+      If decoration.Length > 0 Then
+         value.Add("text-decoration", decoration.TrimEnd)
+      End If
+   End Sub
 
-    value.Add("font", css)
+   Public Function GetFontCss(formItem As FormItem) As String
 
-    Dim decoration As String = If(NullSafeBoolean(dataReader("FontStrikeThru")), "line-through ", "") & _
-                               If(NullSafeBoolean(dataReader("FontUnderline")), "underline ", "")
+      Dim css As String = "font: "
 
-    If decoration.Length > 0 Then
-      value.Add("text-decoration", decoration.TrimEnd)
-    End If
+      If formItem.FontItalic Then css += "italic "
+      If formItem.FontBold Then css += "bold "
+      css += ToPoint(formItem.FontSize).ToString & "pt " & formItem.FontName &
+             ";"
 
-  End Sub
+      Dim decoration As String = If(formItem.FontStrikeThru, "line-through ", "") &
+                                 If(formItem.FontUnderline, "underline ", "")
 
-  Public Function GetFontCss(dataReader As IDataReader) As String
+      If decoration.Length > 0 Then
+         css += " text-decoration: " & decoration.TrimEnd & ";"
+      End If
 
-    Dim css As String = "font: "
+      Return css
+   End Function
 
-    If NullSafeBoolean(dataReader("FontItalic")) Then css += "italic "
-    If NullSafeBoolean(dataReader("FontBold")) Then css += "bold "
-    css += ToPoint(NullSafeInteger(dataReader("FontSize"))).ToString & "pt " & NullSafeString(dataReader("FontName")) & ";"
+   <Extension()>
+   Public Sub ApplyLocation(value As CssStyleCollection, formItem As FormItem)
 
-    Dim decoration As String = If(NullSafeBoolean(dataReader("FontStrikeThru")), "line-through ", "") & _
-                               If(NullSafeBoolean(dataReader("FontUnderline")), "underline ", "")
+      value("position") = "absolute"
+      value("top") = Unit.Pixel(formItem.Top).ToString
+      value("left") = Unit.Pixel(formItem.Left).ToString
+   End Sub
 
-    If decoration.Length > 0 Then
-      css += " text-decoration: " & decoration.TrimEnd & ";"
-    End If
+   <Extension()>
+   Public Sub ApplyLocation(value As WebControl, formItem As FormItem)
+      value.Style.ApplyLocation(formItem)
+   End Sub
 
-    Return css
+   <Extension()>
+   Public Sub ApplySize(value As CssStyleCollection, formItem As FormItem, Optional widthAdjustment As Integer = 0,
+                        Optional heightAdjustment As Integer = 0)
 
-  End Function
+      value("Height") = Unit.Pixel(formItem.Height + heightAdjustment).ToString
+      value("Width") = Unit.Pixel(formItem.Width + widthAdjustment).ToString
+   End Sub
 
-  <Extension()> _
-  Public Sub ApplyLocation(value As CssStyleCollection, dataReader As IDataReader)
+   <Extension()>
+   Public Sub ApplySize(value As WebControl, formItem As FormItem, Optional widthAdjustment As Integer = 0,
+                        Optional heightAdjustment As Integer = 0)
 
-    value("position") = "absolute"
-    value("top") = Unit.Pixel(NullSafeInteger(dataReader("TopCoord"))).ToString
-    value("left") = Unit.Pixel(NullSafeInteger(dataReader("LeftCoord"))).ToString
+      value.Height = Unit.Pixel(formItem.Height + heightAdjustment)
+      value.Width = Unit.Pixel(formItem.Width + widthAdjustment)
+   End Sub
 
-  End Sub
+   <Extension()>
+   Public Sub ApplyColor(value As WebControl, formItem As FormItem, Optional canBeTranparent As Boolean = False)
 
-  <Extension()> _
-  Public Sub ApplyLocation(value As WebControl, dataReader As IDataReader)
-    value.Style.ApplyLocation(dataReader)
-  End Sub
+      value.ForeColor = General.GetColour(AdjustedForeColor(formItem.ForeColor))
 
-  <Extension()> _
-  Public Sub ApplySize(value As CssStyleCollection, dataReader As IDataReader, Optional widthAdjustment As Integer = 0, Optional heightAdjustment As Integer = 0)
+      If canBeTranparent AndAlso formItem.BackStyle = 0 Then
+         value.BackColor = Color.Transparent
+      Else
+         value.BackColor = General.GetColour(AdjustedBackColor(formItem.BackColor))
+      End If
+   End Sub
 
-    value("Height") = Unit.Pixel(NullSafeInteger(dataReader("Height")) + heightAdjustment).ToString
-    value("Width") = Unit.Pixel(NullSafeInteger(dataReader("Width")) + widthAdjustment).ToString
+   Private Function AdjustedForeColor(color As Integer) As Integer
+      'TODO PG NOW
+      Select Case color
+         Case 6697779 '#333366
+            Return 3355443
+            '#333333
+         Case Else
+            Return color
+      End Select
+      Return color
+   End Function
 
-  End Sub
+   Private Function AdjustedBackColor(color As Integer) As Integer
+      'TODO PG NOW
+      Select Case color
+         Case 15988214
+            Return 16777215
+            '#FFFFFF
+         Case Else
+            Return color
+      End Select
+      Return color
+   End Function
 
-  <Extension()> _
-  Public Sub ApplySize(value As WebControl, dataReader As IDataReader, Optional widthAdjustment As Integer = 0, Optional heightAdjustment As Integer = 0)
+   <Extension()>
+   Public Sub ApplyColor(value As CssStyleCollection, formItem As FormItem, Optional canBeTransparent As Boolean = False)
 
-    value.Height = Unit.Pixel(NullSafeInteger(dataReader("Height")) + heightAdjustment)
-    value.Width = Unit.Pixel(NullSafeInteger(dataReader("Width")) + widthAdjustment)
+      value("color") = General.GetHtmlColour(AdjustedForeColor(formItem.ForeColor))
 
-  End Sub
+      If canBeTransparent AndAlso formItem.BackStyle = 0 Then
+         value("background-color") = "transparent"
+      Else
+         value("background-color") = General.GetHtmlColour(AdjustedBackColor(formItem.BackColor))
+      End If
+   End Sub
 
-  <Extension()> _
-  Public Sub ApplyColor(value As WebControl, dataReader As IDataReader, Optional canBeTranparent As Boolean = False)
+   Public Function GetColorCss(formItem As FormItem, Optional canBeTransparent As Boolean = False) As String
 
-    value.ForeColor = General.GetColour(AdjustedForeColor(NullSafeInteger(dataReader("ForeColor"))))
+      Dim css As String = "color: " & General.GetHtmlColour(AdjustedForeColor(formItem.ForeColor)) &
+                          ";"
 
-    If canBeTranparent AndAlso NullSafeInteger(dataReader("BackStyle")) = 0 Then
-      value.BackColor = Color.Transparent
-    Else
-      value.BackColor = General.GetColour(AdjustedBackColor(NullSafeInteger(dataReader("BackColor"))))
-    End If
+      If canBeTransparent AndAlso formItem.BackStyle = 0 Then
+         css += " background-color: transparent;"
+      Else
+         css += " background-color: " &
+                General.GetHtmlColour(AdjustedBackColor(formItem.BackColor)) & ";"
+      End If
 
-  End Sub
+      Return css
+   End Function
 
-  Private Function AdjustedForeColor(color As Integer) As Integer
-    'TODO PG NOW
-    Select Case color
-      Case 6697779 '#333366
-        Return 3355443 '#333333
-      Case Else
-        Return color
-    End Select
-    Return color
-  End Function
+   <Extension()>
+   Public Sub ApplyBorder(value As WebControl, adjustSize As Boolean, Optional adjustSizeAmount As Integer = - 4)
 
-  Private Function AdjustedBackColor(color As Integer) As Integer
-    'TODO PG NOW
-    Select Case color
-      Case 15988214
-        Return 16777215 '#FFFFFF
-      Case Else
-        Return color
-    End Select
-    Return color
-  End Function
+      value.BorderStyle = BorderStyle.Solid
+      value.BorderColor = ColorTranslator.FromHtml("#999")
+      value.BorderWidth = 1
 
-  <Extension()> _
-  Public Sub ApplyColor(value As CssStyleCollection, dataReader As IDataReader, Optional canBeTransparent As Boolean = False)
-
-    value("color") = General.GetHtmlColour(AdjustedForeColor(NullSafeInteger(dataReader("ForeColor"))))
-
-    If canBeTransparent AndAlso NullSafeInteger(dataReader("BackStyle")) = 0 Then
-      value("background-color") = "transparent"
-    Else
-      value("background-color") = General.GetHtmlColour(AdjustedBackColor(NullSafeInteger(dataReader("BackColor"))))
-    End If
-
-  End Sub
-
-  Public Function GetColorCss(datareader As IDataReader, Optional canBeTransparent As Boolean = False) As String
-
-    Dim css As String = "color: " & General.GetHtmlColour(AdjustedForeColor(NullSafeInteger(datareader("ForeColor")))) & ";"
-
-    If canBeTransparent AndAlso NullSafeInteger(datareader("BackStyle")) = 0 Then
-      css += " background-color: transparent;"
-    Else
-      css += " background-color: " & General.GetHtmlColour(AdjustedBackColor(NullSafeInteger(datareader("BackColor")))) & ";"
-    End If
-
-    Return css
-
-  End Function
-
-  <Extension()> _
-  Public Sub ApplyBorder(value As WebControl, adjustSize As Boolean, Optional adjustSizeAmount As Integer = -4)
-
-    value.BorderStyle = BorderStyle.Solid
-    value.BorderColor = ColorTranslator.FromHtml("#999")
-    value.BorderWidth = Unit.Pixel(1)
-
-    If adjustSize Then
-      value.Width = Unit.Pixel(CInt(value.Width.Value) + adjustSizeAmount)
-      value.Height = Unit.Pixel(CInt(value.Height.Value) + adjustSizeAmount)
-    End If
-
-  End Sub
-
+      If adjustSize Then
+         value.Width = CInt(value.Width.Value) + adjustSizeAmount
+         value.Height = CInt(value.Height.Value) + adjustSizeAmount
+      End If
+   End Sub
 End Module

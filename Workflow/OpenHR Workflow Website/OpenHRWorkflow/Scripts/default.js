@@ -26,17 +26,16 @@
 	        overlay = jQuery('#divOverlay');
 	        wait = jQuery('#pleasewaitScreen');
 	        
-	        var iDefHeight, iDefWidth, iResizeByHeight, iResizeByWidth;
-
 	        //Set the current page tab	  
 	        SetCurrentTab(document.getElementById("hdnDefaultPageNo").value);
 
 	        window.iCurrentMessageState = 'none';
 
 	        try {
-	            iDefHeight = window.$get("frmMain").hdnFormHeight.value;
-	            iDefWidth = window.$get("frmMain").hdnFormWidth.value;
-
+	           var iDefHeight, iDefWidth, iResizeByHeight, iResizeByWidth;
+	           iDefHeight = jQuery('#pnlInputDiv').height();  
+	           iDefWidth = jQuery('#pnlInputDiv').width(); 
+	           
 	            window.focus();
 
 	            if (iDefHeight > 0 && iDefWidth > 0) {

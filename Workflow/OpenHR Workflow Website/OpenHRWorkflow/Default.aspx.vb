@@ -1,19 +1,17 @@
 Option Strict On
 
-Imports System
 Imports System.Data
-Imports System.Globalization
 Imports System.Threading
-Imports System.Drawing
-Imports System.Collections.Generic
-Imports Microsoft.VisualBasic
-Imports Utilities
-Imports System.Data.SqlClient
-Imports System.Transactions
+Imports System.Globalization
 Imports System.Reflection
+Imports System.Drawing
+Imports AjaxControlToolkit
+Imports System.Transactions
+Imports System.Data.SqlClient
+Imports System.IO
 
 Public Class [Default]
-   Inherits System.Web.UI.Page
+   Inherits Page
 
    Private _config As Config
    Private _instanceID As Integer
@@ -25,6 +23,8 @@ Public Class [Default]
    Private _db As Database
    Private _form As WorkflowForm
    Private _imageCount As Integer
+   Private _siblingForms As String
+   Private _minTabIndex As Short?
    Private _autoFocusControl As String
 
    Private Const TabStripHeight As Integer = 21
@@ -34,149 +34,122 @@ Public Class [Default]
 
    Dim sMessage As String = ""
 
-   Protected Sub Page_Init(ByVal sender As System.Object, ByVal e As EventArgs) Handles MyBase.Init
+   Protected Sub Page_PreInit(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.PreInit
 
-      Dim sTemp As String
-      Dim sQueryString As String
-      Dim objCrypt As New Crypt
-      Dim sKeyParameter As String = ""
-      Dim sSiblingForms As String
+      'Code below is only for initial page load not postbacks
+      If IsPostBack Then
+         Return
+      End If
 
-      'Decript the url (use the rawUrl rather than the querystring itself, some characters are ignored in the querystring)
+      'Page requested with no workflow details, just redirect to the login page
+      If Request.QueryString.Count = 0 Then
+         Response.Redirect("~/Account/Login.aspx", True)
+      End If
+
+      'Extract the workflow details from the url (use the rawUrl rather than queryString)
+      'as some characters are ignored in the queryString
+      Dim query = Server.UrlDecode(Request.RawUrl)
+      query = query.Substring(query.IndexOf("?") + 1)
+
+      Dim userName As String = ""
       Try
-         sTemp = Server.UrlDecode(Request.RawUrl)
-         Dim iTemp As Integer = sTemp.IndexOf("?")
+         'Try the latest encryption method
+         'Set the culture to English(GB) to ensure the decryption works OK. Fault HRPRO-1404
+         Dim currentCulture = Thread.CurrentThread.CurrentCulture
 
-         If iTemp >= 0 Then
-            sQueryString = sTemp.Substring(iTemp + 1)
-         Else
-            ' NPG20120326 Fault HRPRO-2128
-            Response.Redirect("~/Account/Login.aspx", False)
-            Return
-            'TODO this still goes through Page_Load
-         End If
+         Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-GB")
+         Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture("en-GB")
 
-         ' Try the newer encryption first
+         Dim crypt As New Crypt
+         query = crypt.DecompactString(query)
+         query = crypt.DecryptString(query, "", True)
+
+         'Reset the culture to be the one used by the client. Fault HRPRO-1404
+         Thread.CurrentThread.CurrentCulture = currentCulture
+         Thread.CurrentThread.CurrentUICulture = currentCulture
+
+         'Extract the required parameters from the decrypted queryString.
+         Dim values = query.Split(vbTab(0))
+
+         _instanceID = CInt(values(0))
+         _elementID = CInt(values(1))
+         _user = values(2)
+         _password = values(3)
+         _server = values(4)
+         _database = values(5)
+         If values.Count > 6 Then userName = values(6)
+
+      Catch ex As Exception
+         'Try the older encryption method
          Try
-            ' Set the culture to English(GB) to ensure the decryption works OK. Fault HRPRO-1404
-            Dim sCultureName As String = Thread.CurrentThread.CurrentCulture.Name
+            Dim crypt As New Crypt
+            query = crypt.ProcessDecryptString(query)
+            query = crypt.DecryptString(query, "", False)
 
-            Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-GB")
-            Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture("en-GB")
+            Dim values = query.Split(vbTab(0))
 
-            sTemp = objCrypt.DecompactString(sQueryString)
-            sTemp = objCrypt.DecryptString(sTemp, "", True)
-
-            ' Reset the culture to be the one used by the client. Fault HRPRO-1404
-            Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(sCultureName)
-            Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture(sCultureName)
-
-            ' Extract the required parameters from the decrypted queryString.
-            Dim values = sTemp.Split(vbTab(0))
-
-            _instanceID = CInt(values(0))
-            _elementID = CInt(values(1))
+            If _instanceID = 0 Then _instanceID = CInt(values(0))
+            If _elementID = 0 Then _elementID = CInt(values(1))
             _user = values(2)
             _password = values(3)
             _server = values(4)
             _database = values(5)
-            If values.Count > 6 Then sKeyParameter = values(6)
-
-         Catch ex As Exception
-            ' Older encryption method
-            sQueryString = objCrypt.ProcessDecryptString(sQueryString)
-            sTemp = objCrypt.DecryptString(sQueryString, "", False)
-
-            ' Extract the required parameters from the decrypted queryString.
-            If _instanceID = 0 Then
-               _instanceID = CInt(Left(sTemp, InStr(sTemp, vbTab) - 1))
-            End If
-            sTemp = Mid(sTemp, InStr(sTemp, vbTab) + 1)
-
-            If _elementID = 0 Then
-               _elementID = CInt(Left(sTemp, InStr(sTemp, vbTab) - 1))
-            End If
-            sTemp = Mid(sTemp, InStr(sTemp, vbTab) + 1)
-
-            _user = Left(sTemp, InStr(sTemp, vbTab) - 1)
-            sTemp = Mid(sTemp, InStr(sTemp, vbTab) + 1)
-
-            _password = Left(sTemp, InStr(sTemp, vbTab) - 1)
-            sTemp = Mid(sTemp, InStr(sTemp, vbTab) + 1)
-
-            _server = Left(sTemp, InStr(sTemp, vbTab) - 1)
-            sTemp = Mid(sTemp, InStr(sTemp, vbTab) + 1)
-
-            _database = Mid(sTemp, InStr(sTemp, vbTab) + 1)
-
+         Catch exx As Exception
+            sMessage = "Invalid query string."
          End Try
-      Catch ex As Exception
-         sMessage = "Invalid query string."
       End Try
 
-      'Set up the database class
-      'TODO can we trust this is fixed see db in later code
-      _db = New Database(GetConnectionString)
+      Dim db As New Database(GetConnectionString)
 
       'Activating mobile security. I've hijacked the _instanceID and populated it with the User ID that is to be activated.
-      If sMessage.Length = 0 And Not IsPostBack And _elementID = - 2 And _instanceID > 0 Then
+      If sMessage.Length = 0 And _elementID = - 2 And _instanceID > 0 Then
 
-         sMessage = _db.ActivateUser(_instanceID)
+         sMessage = db.ActivateUser(_instanceID)
 
          If sMessage.Length = 0 Then
-            sMessage = "You have been successfully activated"
+            sMessage = "You have been successfully activated."
          End If
       End If
 
-      If sMessage.Length = 0 And Not IsPostBack And _instanceID < 0 And _elementID = - 1 Then
-
-         ' Externally initiated Workflow.
-         Dim workflowID = - _instanceID
+      'Initiate the workflow if thats whats required
+      If sMessage.Length = 0 And _instanceID < 0 And _elementID = - 1 Then
 
          Dim result As InstantiateWorkflowResult
 
-         If sKeyParameter.Length > 0 Then
+         If userName.Length > 0 Then
             'Instantiate from mobile
-            result = _db.InstantiateWorkflow(workflowID, sKeyParameter)
+            result = db.InstantiateWorkflow(- _instanceID, userName)
          Else
-            result = _db.InstantiateWorkflow(workflowID)
+            result = db.InstantiateWorkflow(- _instanceID)
          End If
 
-         'TODO redirect to url for now already existing workflow
-         'TODO what is follow on forms for
+         If result.Message <> "" Then
+            sMessage = "Error:<BR><BR>" & result.Message
+         Else
+            _instanceID = result.InstanceId
 
-         _instanceID = result.InstanceId
-
-         If result.Message.Length = 0 Then
             If result.FormElements.Length = 0 Then
                sMessage = "Workflow initiated successfully."
             Else
-               Dim followOnForms =
-                      result.FormElements.Split(New String() {vbTab}, StringSplitOptions.RemoveEmptyEntries).ToList
+               'The first form element is this workflow and any others are sibling forms (that need to be opened at the same time)
+               Dim forms = result.FormElements.Split(New String() {vbTab}, StringSplitOptions.RemoveEmptyEntries).ToList
 
-               _elementID = CInt(followOnForms(0))
-               followOnForms.RemoveAt(0)
+               _elementID = CInt(forms(0))
+               forms.RemoveAt(0)
 
-               sSiblingForms = String.Join(vbTab,
-                                           followOnForms.Select(
-                                              Function(f) _db.GetWorkflowQueryString(_instanceID, CInt(f))))
+               _siblingForms = String.Join(vbTab, forms.Select(Function(f) _db.GetWorkflowQueryString(_instanceID, CInt(f))))
 
                'TODO dont need this if we're redirecting and processing a new url
-               'TODO how to deal with subling forms
+               'TODO how to deal with sibling forms
             End If
-         Else
-            sMessage = "Error:<BR><BR>" & result.Message
          End If
-
       End If
    End Sub
 
-   Protected Sub Page_Load(ByVal sender As System.Object, ByVal e As EventArgs) Handles MyBase.Load
+   Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
 
       Dim sAssemblyName As String = ""
       Dim sWebSiteVersion As String = ""
-
-      Dim sSiblingForms As String = ""
 
       Try
          Response.CacheControl = "no-cache"
@@ -210,21 +183,12 @@ Public Class [Default]
       Page.Title = pageTitle
 
       'Set the page culture
-      SetCulture()
-
-      If IsPostBack Then
-         _instanceID = CInt(ViewState("InstanceID"))
-         _elementID = CInt(ViewState("ElementID"))
-         _user = ViewState("User").ToString
-         _password = ViewState("Pwd").ToString
-         _server = ViewState("Server").ToString
-         _database = ViewState("Database").ToString
-      End If
+      SetPageCulture()
 
       Dim db As New Database(GetConnectionString)
 
       'check to see if the database is locked
-      If sMessage.Length = 0 And Not IsPostBack Then
+      If Not IsPostBack And sMessage.Length = 0 Then
 
          If db.IsSystemLocked() Then
             sMessage = "Database locked.<BR><BR>Contact your system administrator."
@@ -232,7 +196,7 @@ Public Class [Default]
       End If
 
       'check if the database and website versions match.
-      If Not IsPostBack Then
+      If Not IsPostBack And sMessage.Length = 0 Then
 
          Dim dbVersion As String = db.GetSetting("database", "version", False)
 
@@ -253,9 +217,7 @@ Public Class [Default]
                   sWebSiteVersion = "&lt;unknown&gt;"
                End If
 
-               sMessage = "The Workflow website version (" & sWebSiteVersion & ")" &
-                          " is incompatible with the database version (" & dbVersion & ")." &
-                          "<BR><BR>Contact your system administrator."
+               sMessage = "The Workflow website version (" & sWebSiteVersion & ")" & " is incompatible with the database version (" & dbVersion & ")." & "<BR><BR>Contact your system administrator."
             End If
          End If
       End If
@@ -265,1438 +227,1334 @@ Public Class [Default]
          Try
             ScriptManager.GetCurrent(Page).AsyncPostBackTimeout = _config.SubmissionTimeout
 
-            If sMessage.Length = 0 Then
-               ' Remember the useful parameters for use in postbacks.
+            If IsPostBack Then
+               _instanceID = CInt(ViewState("InstanceID"))
+               _elementID = CInt(ViewState("ElementID"))
+               _user = ViewState("User").ToString
+               _password = ViewState("Pwd").ToString
+               _server = ViewState("Server").ToString
+               _database = ViewState("Database").ToString
+            End If
 
-               ViewState("InstanceID") = _instanceID
-               ViewState("ElementID") = _elementID
-               ViewState("User") = _user
-               ViewState("Pwd") = _password
-               ViewState("Server") = _server
-               ViewState("Database") = _database
+            ' Remember the useful parameters for use in postbacks.
+            ViewState("InstanceID") = _instanceID
+            ViewState("ElementID") = _elementID
+            ViewState("User") = _user
+            ViewState("Pwd") = _password
+            ViewState("Server") = _server
+            ViewState("Database") = _database
 
-               'FileUpload.apsx and FileDownload.aspx require these variables
-               Session("User") = _user
-               Session("Pwd") = _password
-               Session("Server") = _server
-               Session("Database") = _database
-               Session("ElementID") = _elementID
-               Session("InstanceID") = _instanceID
+            'FileUpload.apsx and FileDownload.aspx require these variables
+            Session("User") = _user
+            Session("Pwd") = _password
+            Session("Server") = _server
+            Session("Database") = _database
+            Session("ElementID") = _elementID
+            Session("InstanceID") = _instanceID
 
-               ' Get the selected tab number for this workflow, if any...
-               If Not IsPostBack Then
-                  hdnDefaultPageNo.Value = db.GetWorkflowCurrentTab(_instanceID).ToString
-               End If
+            ' Get the selected tab number for this workflow, if any...
+            If Not IsPostBack Then
+               hdnDefaultPageNo.Value = db.GetWorkflowCurrentTab(_instanceID).ToString
+            End If
 
-               _form = _db.GetWorkflowForm(_instanceID, _elementID)
+            'Get the worklfow form details
+            _form = _db.GetWorkflowForm(_instanceID, _elementID)
 
-               Dim dr As SqlDataReader = _form.Items
+            'If there is a tab control move it to the beginning of the item list so that its created before other controls
+            Dim tabItem As FormItem = _form.Items.FirstOrDefault(Function(fi) fi.ItemType = 21)
+            If tabItem IsNot Nothing Then
+               _form.Items.Remove(tabItem)
+               _form.Items.Insert(0, tabItem)
+            End If
 
-               Dim scriptString As String = "function pageLoad() {"
+            'Add the main form page that control will be added to
+            Dim tabPages As New List(Of Panel)
+            Dim tabPage = New Panel
+            tabPage.ID = FormInputPrefix & (0).ToString & "_21_PageTab"
+            tabPage.Style.Add("position", "absolute")
+            tabPages.Add(tabPage)
+            pnlInputDiv.Controls.Add(tabPage)
 
-               Dim tabPages() As Panel
-               ReDim Preserve tabPages(0)
+            Dim scriptString As String = "function pageLoad() {"
 
-               While dr.Read And sMessage.Length = 0
+            'Create each of the controls for the form
+            For Each formItem As FormItem In _form.Items
 
-                  Dim tabPage As Integer = NullSafeInteger(dr("pageno"))
+               'Generate the unique ID for this control and process it onto the form.
+               Dim sID As String = FormInputPrefix & formItem.Id & "_" & formItem.ItemType & "_"
 
-                  ' Create the tab for this control. Do this first in case the tabstrip control hasn't been read yet,
-                  ' and the tabs haven't been generated.
-                  Try
-                     Dim strTemp As String = tabPages(tabPage).ID.ToString
-                     ' OK, if the id exists, the div has already been created. Do nothing.
-                  Catch ex As Exception
-                     ' Create the new div, give it a unique id then we can refer to that when it's reused in the next loop.
-                     ' store the id in the array for reference. NB 21 is the itemtype for a page Tab
-                     If tabPage > tabPages.GetUpperBound(0) Then ReDim Preserve tabPages(tabPage)
+               Select Case formItem.ItemType
 
-                     tabPages(tabPage) = New Panel
-                     tabPages(tabPage).ID = FormInputPrefix & tabPage.ToString & "_21_PageTab"
-                     tabPages(tabPage).Style.Add("position", "absolute")
+                  Case 0 ' Button
+                     Dim control = New HtmlInputButton
+                     With control
+                        .ID = sID
+                        .Style.ApplyLocation(formItem)
+                        .Style.ApplySize(formItem)
+                        .Style.ApplyFont(formItem)
 
-                     ' Add this tab to the web form
-                     pnlInputDiv.Controls.Add(tabPages(tabPage))
-                  End Try
+                        .Attributes.Add("TabIndex", formItem.TabIndex.ToString)
+                        UpdateAutoFocusControl(formItem.TabIndex, sID)
 
-                  ' Generate the unique ID for this control and process it onto the form.
-                  Dim sID As String = FormInputPrefix & NullSafeString(dr("id")) & "_" & NullSafeString(dr("ItemType")) &
-                                      "_"
+                        ' If the button has no caption, we treat as a transparent button.
+                        ' This is so we can emulate picture buttons with very little code changes.
+                        If formItem.Caption = Nothing Then
+                           .Style.Add("filter", "alpha(opacity=0)")
+                           .Style.Add("opacity", "0")
+                        End If
 
-                  Select Case NullSafeInteger(dr("ItemType"))
+                        ' stops the mobiles displaying buttons with over-rounded corners...
+                        If IsMobileBrowser() OrElse Utilities.IsMacSafari() Then
+                           .Style.Add("-webkit-appearance", "none")
+                           .Style.Add("background-color", "#E6E6E6")
+                           .Style.Add("border", "solid 1px #CCC")
+                           .Style.Add("border-radius", "4px")
+                        End If
 
-                     Case 0 ' Button
-                        Dim control = New HtmlInputButton
-                        With control
-                           .ID = sID
-                           .Style.ApplyLocation(dr)
-                           .Style.ApplySize(dr)
-                           .Style.ApplyFont(dr)
+                        If formItem.BackColor <> 16249587 AndAlso formItem.BackColor <> -2147483633 Then
+                           .Style.Add("background-color",General.GetHtmlColour(formItem.BackColor).ToString)
+                           .Style.Add("border", "1px solid #CCC")
+                           .Style.Add("border-radius", "4px")
+                        End If
 
-                           .Attributes.Add("TabIndex", NullSafeInteger(dr("tabIndex")).ToString)
-                           UpdateAutoFocusControl(NullSafeShort(dr("tabIndex")), sID)
+                        If formItem.ForeColor <> 6697779 Then
+                           .Style.Add("color", General.GetHtmlColour(formItem.ForeColor).ToString)
+                        End If
 
-                           ' If the button has no caption, we treat as a transparent button.
-                           ' This is so we can emulate picture buttons with very little code changes.
-                           If NullSafeString(dr("caption")) = vbNullString Then
-                              .Style.Add("filter", "alpha(opacity=0)")
-                              .Style.Add("opacity", "0")
-                           End If
+                        .Style.Add("padding", "0px")
+                        .Style.Add("white-space", "normal")
 
-                           ' stops the mobiles displaying buttons with over-rounded corners...
-                           If IsMobileBrowser() OrElse IsMacSafari() Then
-                              .Style.Add("-webkit-appearance", "none")
-                              .Style.Add("background-color", "#E6E6E6")
-                              .Style.Add("border", "solid 1px #CCC")
-                              .Style.Add("border-radius", "4px")
-                           End If
+                        .Value = formItem.Caption
 
-                           If _
-                              NullSafeInteger(dr("BackColor")) <> 16249587 AndAlso
-                              NullSafeInteger(dr("BackColor")) <> - 2147483633 Then
-                              .Style.Add("background-color",
-                                         General.GetHtmlColour(NullSafeInteger(dr("BackColor"))).ToString)
-                              .Style.Add("border", "1px solid #CCC")
-                              .Style.Add("border-radius", "4px")
-                           End If
+                        .Style.Add("z-index", "2")
 
-                           If NullSafeInteger(dr("ForeColor")) <> 6697779 Then
-                              .Style.Add("color", General.GetHtmlColour(NullSafeInteger(dr("ForeColor"))).ToString)
-                           End If
+                        .Attributes.Add("onclick", "try{setPostbackMode(1);}catch(e){};")
+                     End With
 
-                           .Style.Add("padding", "0px")
-                           .Style.Add("white-space", "normal")
+                     tabPages(formItem.PageNo).Controls.Add(control)
 
-                           .Value = NullSafeString(dr("caption"))
+                     AddHandler control.ServerClick, AddressOf ButtonClick
 
-                           .Style.Add("z-index", "2")
+                  Case 1 ' Database value
 
-                           .Attributes.Add("onclick", "try{setPostbackMode(1);}catch(e){};")
-                        End With
+                     Dim control = New Label
+                     With control
+                        .ApplyLocation(formItem)
+                        .ApplySize(formItem)
+                        .Style.ApplyFont(formItem)
+                        .ApplyColor(formItem, True)
 
-                        tabPages(tabPage).Controls.Add(control)
-
-                        AddHandler control.ServerClick, AddressOf ButtonClick
-
-                     Case 1 ' Database value
-
-                        Dim control = New Label
-                        With control
-                           .ApplyLocation(dr)
-                           .ApplySize(dr)
-                           .Style.ApplyFont(dr)
-                           .ApplyColor(dr, True)
-
-                           If NullSafeBoolean(dr("PictureBorder")) Then
-                              .ApplyBorder(True)
-                           End If
-
-                           .Style("word-wrap") = "break-word"
-                           .Style("overflow") = "auto"
-
-                           Select Case NullSafeInteger(dr("sourceItemType"))
-                              Case - 7 ' Logic
-                                 If NullSafeString(dr("value")) = String.Empty Then
-                                    .Text = "&lt;undefined&gt;"
-                                 ElseIf NullSafeString(dr("value")) = "1" Then
-                                    .Text = Boolean.TrueString
-                                 Else
-                                    .Text = Boolean.FalseString
-                                 End If
-
-                              Case 2, 4 ' Numeric, Integer
-                                 If IsDBNull(dr("value")) Then
-                                    .Text = "&lt;undefined&gt;"
-                                 Else
-                                    Dim value = CStr(dr("value")).Replace(".",
-                                                                          Thread.CurrentThread.CurrentCulture.
-                                                                            NumberFormat.NumberDecimalSeparator)
-                                    If value.Chars(0) = "-" Then
-                                       value = value.Substring(1) & "-"
-                                    End If
-                                    .Text = value
-                                 End If
-
-                              Case 11 ' Date
-                                 If NullSafeString(dr("value")) = String.Empty Then
-                                    .Text = "&lt;undefined&gt;"
-                                 ElseIf CStr(dr("value")).Trim.Length = 0 Then
-                                    .Text = "&lt;undefined&gt;"
-                                 Else
-                                    .Text = General.ConvertSqlDateToLocale(NullSafeString(dr("value")))
-                                 End If
-                              Case Else 'Text
-                                 .Text = NullSafeString(dr("value"))
-                           End Select
-
-                        End With
-
-                        tabPages(tabPage).Controls.Add(control)
-
-                     Case 2 ' Label
-                        Dim control = New Label
-                        With control
-                           .ApplyLocation(dr)
-                           .ApplySize(dr, 0, 1)
-                           .Style.ApplyFont(dr)
-                           .ApplyColor(dr, True)
-
-                           If NullSafeBoolean(dr("PictureBorder")) Then
-                              .ApplyBorder(True)
-                           End If
-
-                           ' NPG20120305 Fault HRPRO-1967 reverted by PBG20120419 Fault HRPRO-2157
-                           '.Style("word-wrap") = "break-word"
-                           .Style("overflow") = "auto"
-
-                           If NullSafeInteger(dr("captionType")) = 3 Then 'calculated caption
-                              .Text = NullSafeString(dr("value"))
-                           Else
-                              .Text = NullSafeString(dr("caption"))
-                           End If
-                        End With
-
-                        tabPages(tabPage).Controls.Add(control)
-
-                     Case 3 ' Input value - character
-                        Dim control = New TextBox
-                        With control
-                           .ID = sID
-                           .TabIndex = NullSafeShort(dr("tabIndex"))
-                           UpdateAutoFocusControl(NullSafeShort(dr("tabIndex")), sID)
-
-                           .ApplyLocation(dr)
-                           .ApplySize(dr, - 1, - 1)
-                           .Style.ApplyFont(dr)
-                           .ApplyColor(dr)
+                        If formItem.PictureBorder Then
                            .ApplyBorder(True)
+                        End If
 
-                           If NullSafeBoolean(dr("PasswordType")) Then
-                              .TextMode = TextBoxMode.Password
-                           Else
-                              .TextMode = TextBoxMode.MultiLine
-                              .Wrap = True
-                              .Style("overflow") = "auto"
-                              .Style("word-wrap") = "break-word"
-                              .Style("resize") = "none"
-                           End If
-                           .Style("padding") = "1px"
+                        .Style("word-wrap") = "break-word"
+                        .Style("overflow") = "auto"
 
-                           .Text = NullSafeString(dr("value"))
-
-                           .Attributes("onfocus") = "try{" & sID & ".select();}catch(e){};"
-
-                           If NullSafeInteger(dr("inputSize")) > 0 Then
-                              .Attributes("maxlength") = NullSafeString(dr("inputSize"))
-                           End If
-
-                           If IsMobileBrowser() Then
-                              .Attributes.Add("onchange", "FilterMobileLookup('" & .ID & "');")
-                           End If
-
-                        End With
-
-                        tabPages(tabPage).Controls.Add(control)
-
-                     Case 4 ' Workflow value
-
-                        Dim control = New Label
-                        With control
-                           .ApplyLocation(dr)
-                           .ApplySize(dr)
-                           .Style.ApplyFont(dr)
-                           .ApplyColor(dr, True)
-
-                           If NullSafeBoolean(dr("PictureBorder")) Then
-                              .ApplyBorder(True)
-                           End If
-
-                           .Style("word-wrap") = "break-word"
-                           .Style("overflow") = "auto"
-
-                           Select Case NullSafeInteger(dr("sourceItemType"))
-                              Case 6 ' Logic
-                                 If NullSafeString(dr("value")) = String.Empty Then
-                                    .Text = "&lt;undefined&gt;"
-                                 ElseIf NullSafeString(dr("value")) = "1" Then
-                                    .Text = Boolean.TrueString
-                                 Else
-                                    .Text = Boolean.FalseString
-                                 End If
-
-                              Case 5 ' Number
-                                 If NullSafeString(dr("value")) = String.Empty Then
-                                    .Text = String.Empty
-                                 Else
-                                    Dim value = NullSafeString(dr("value")).Replace(".",
-                                                                                    Thread.CurrentThread.CurrentCulture.
-                                                                                      NumberFormat.
-                                                                                      NumberDecimalSeparator)
-                                    If value.Length > 0 AndAlso value.Chars(0) = "-" Then
-                                       value = value.Substring(1) & "-"
-                                    End If
-                                    .Text = value
-                                 End If
-
-                              Case 7 ' Date
-                                 If IsDBNull(dr("value")) Then
-                                    .Text = "&lt;undefined&gt;"
-                                 ElseIf CStr(dr("value")).Trim.ToUpper = "NULL" Then
-                                    .Text = "&lt;undefined&gt;"
-                                 Else
-                                    .Text = General.ConvertSqlDateToLocale(NullSafeString(dr("value")))
-                                 End If
-                              Case Else 'Text
-                                 .Text = NullSafeString(dr("value"))
-                           End Select
-
-                        End With
-
-                        tabPages(tabPage).Controls.Add(control)
-
-                     Case 5 ' Input value - numeric
-
-                        Dim control = New TextBox
-                        With control
-                           .ID = sID
-                           .CssClass = "numeric"
-
-                           .TabIndex = NullSafeShort(dr("tabIndex"))
-                           UpdateAutoFocusControl(NullSafeShort(dr("tabIndex")), sID)
-
-                           .ApplyLocation(dr)
-                           .ApplySize(dr, - 1, - 1)
-                           .Style.ApplyFont(dr)
-                           .ApplyColor(dr, True)
-                           .ApplyBorder(True)
-                           .Style("padding") = "1px"
-
-                           'add attributes that denote the min & max values, number of decimal places is also implied
-                           Dim max =
-                                  New String("9"c,
-                                             NullSafeInteger(dr("inputSize")) - NullSafeInteger(dr("inputDecimals"))) &
-                                  If _
-                                     (NullSafeInteger(dr("inputDecimals")) > 0,
-                                      "." & New String("9"c, NullSafeInteger(dr("inputDecimals"))), "")
-
-                           .Attributes.Add("data-numeric", String.Format("{{vMin: '-{0}', vMax: '{0}'}}", max))
-
-                           'set the control value
-                           Dim value As Single
-                           If NullSafeString(dr("value")) <> "" Then
-                              value = CSng(NullSafeString(dr("value")).Replace(".",
-                                                                               Thread.CurrentThread.CurrentCulture.
-                                                                                 NumberFormat.NumberDecimalSeparator))
-                           End If
-                           .Text =
-                              value.ToString("N" & NullSafeInteger(dr("inputDecimals"))).Replace(
-                                 Thread.CurrentThread.CurrentCulture.NumberFormat.NumberGroupSeparator, "")
-
-                           .Attributes("onfocus") = "try{" & sID & ".select();}catch(e){};"
-
-                           If IsMobileBrowser() Then
-                              .Attributes.Add("onchange", "FilterMobileLookup('" & .ID & "');")
-                           End If
-
-                        End With
-                        tabPages(tabPage).Controls.Add(control)
-
-                     Case 6 ' Input value - logic
-
-                        Dim checkBox = New CheckBox
-                        With checkBox
-                           .ID = sID
-                           .ApplyLocation(dr)
-                           .ApplySize(dr)
-                           .Style.ApplyFont(dr)
-                           .ApplyColor(dr, True)
-
-                           .TabIndex = NullSafeShort(dr("tabIndex"))
-                           UpdateAutoFocusControl(NullSafeShort(dr("tabIndex")), sID)
-
-                           .CssClass = If(NullSafeInteger(dr("alignment")) = 0, "checkbox left", "checkbox right")
-                           If IsAndroidBrowser() Then .CssClass += " android"
-                           .Style("line-height") = NullSafeInteger(dr("Height")).ToString & "px"
-
-                           .Text = NullSafeString(dr("caption"))
-                           .Checked = (NullSafeString(dr("value")).ToLower = "true")
-
-                           If IsMobileBrowser() Then
-                              .Attributes("onclick") = "FilterMobileLookup('" & sID & "');"
-                           End If
-                        End With
-
-                        tabPages(tabPage).Controls.Add(checkBox)
-
-                     Case 7 ' Input value - date
-
-                        Dim control = New TextBox
-                        With control
-                           .ID = sID
-                           .CssClass = "date"
-
-                           .TabIndex = NullSafeShort(dr("tabIndex"))
-                           UpdateAutoFocusControl(NullSafeShort(dr("tabIndex")), sID)
-
-                           .Style.ApplyFont(dr)
-                           .ApplyColor(dr, True)
-
-                           If GetBrowserFamily() = "IOS" Then
-                              'use html5 date
-                              .Attributes.Add("type", "date")
-                              'ios sizing fix
-                              .ApplySize(dr, - 10, - 3)
-                              'ios requires date in yyyy-mm-dd format
-                              .Text =
-                                 If _
-                                    (NullSafeString(dr("value")) = "", "",
-                                     DateTime.ParseExact(NullSafeString(dr("value")), "MM/dd/yyyy", Nothing).ToString(
-                                        "yyyy-MM-dd"))
-                           Else
-                              .CssClass += " withPicker"
-                              .ApplySize(dr, - 1, - 1)
-                              .ApplyBorder(True)
-                              .Attributes("onfocus") = "try{" & sID & ".select();}catch(e){};"
-                              .Text = General.ConvertSqlDateToLocale(NullSafeString(dr("value")))
-                              If IsMobileBrowser() Then
-                                 'stop keyboard popping up on mobiles
-                                 .ReadOnly = True
+                        Select Case formItem.SourceItemType
+                           Case - 7 ' Logic
+                              If formItem.Value = Nothing Then
+                                 .Text = "&lt;undefined&gt;"
+                              ElseIf formItem.Value = "1" Then
+                                 .Text = Boolean.TrueString
+                              Else
+                                 .Text = Boolean.FalseString
                               End If
-                           End If
 
-                           If IsMobileBrowser() Then
-                              .Attributes.Add("onchange", "FilterMobileLookup('" & .ID & "');")
-                           End If
-                        End With
+                           Case 2, 4 ' Numeric, Integer
+                              If formItem.Value = Nothing Then
+                                 .Text = "&lt;undefined&gt;"
+                              Else
+                                 Dim value = formItem.Value.Replace(".", Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator)
+                                 If value.Chars(0) = "-" Then
+                                    value = value.Substring(1) & "-"
+                                 End If
+                                 .Text = value
+                              End If
 
-                        Dim panel As New Panel
-                        panel.Controls.Add(control)
-                        panel.ApplyLocation(dr)
-
-                        tabPages(tabPage).Controls.Add(panel)
-
-                     Case 8 ' Frame
-
-                        Dim top = NullSafeInteger(dr("TopCoord"))
-                        Dim left = NullSafeInteger(dr("LeftCoord"))
-                        Dim width = NullSafeInteger(dr("Width"))
-                        Dim height = NullSafeInteger(dr("Height"))
-                        Dim fontAdjustment = CInt(CInt(dr("FontSize"))*0.8)
-
-                        width -= 2
-                        height -= 2
-
-                        If NullSafeString(dr("caption")).Trim.Length = 0 Then
-                           top += fontAdjustment
-                           height -= fontAdjustment
-                        End If
-
-                        Dim html = "<fieldset style='" &
-                                   " position: absolute;" &
-                                   " top: " & top & "px;" &
-                                   " left: " & left & "px;" &
-                                   " width: " & width & "px;" &
-                                   " height: " & height & "px;" &
-                                   " " & GetFontCss(dr) &
-                                   " " & GetColorCss(dr) &
-                                   " border: 1px solid #999;" &
-                                   " '>"
-
-                        If NullSafeString(dr("caption")).Trim.Length > 0 Then
-                           html += String.Format("<legend>{0}</legend>", NullSafeString(dr("caption"))) & vbCrLf
-                        End If
-
-                        html += "</fieldset>" & vbCrLf
-
-                        tabPages(tabPage).Controls.Add(New LiteralControl(html))
-
-                     Case 9 ' Line
-
-                        Dim html As String
-
-                        Select Case NullSafeInteger(dr("Orientation"))
-                           Case 0
-                              ' Vertical
-                              html = "<div style='position: absolute;" &
-                                     " left: " & NullSafeString(dr("LeftCoord")) & "px;" &
-                                     " top: " & NullSafeString(dr("TopCoord")) & "px;" &
-                                     " height: " & NullSafeString(dr("Height")) & "px;" &
-                                     " width: 0px;" &
-                                     " border-left: 1px solid " &
-                                     General.GetHtmlColour(NullSafeInteger(dr("Backcolor"))) & ";'" &
-                                     "></div>"
-                           Case Else
-                              ' Horizontal
-                              html = "<img style='position: absolute;" &
-                                     " left: " & NullSafeString(dr("LeftCoord")) & "px;" &
-                                     " top: " & NullSafeString(dr("TopCoord")) & "px;" &
-                                     " height: 0px;" &
-                                     " width: " & NullSafeString(dr("Width")) & "px;" &
-                                     " border-top: 1px solid " & General.GetHtmlColour(NullSafeInteger(dr("Backcolor"))) &
-                                     ";'" &
-                                     "></div>"
+                           Case 11 ' Date
+                              If formItem.Value = Nothing Then
+                                 .Text = "&lt;undefined&gt;"
+                              ElseIf formItem.Value.Trim.Length = 0 Then
+                                 .Text = "&lt;undefined&gt;"
+                              Else
+                                 .Text = General.ConvertSqlDateToLocale(formItem.Value)
+                              End If
+                           Case Else 'Text
+                              .Text = formItem.Value
                         End Select
 
-                        tabPages(tabPage).Controls.Add(New LiteralControl(html))
+                     End With
 
-                     Case 10 ' Image
+                     tabPages(formItem.PageNo).Controls.Add(control)
 
-                        Dim control = New WebControls.Image
+                  Case 2 ' Label
+                     Dim control = New Label
+                     With control
+                        .ApplyLocation(formItem)
+                        .ApplySize(formItem, 0, 1)
+                        .Style.ApplyFont(formItem)
+                        .ApplyColor(formItem, True)
 
-                        With control
-                           .ApplyLocation(dr)
-                           .ApplySize(dr)
+                        If formItem.PictureBorder Then
+                           .ApplyBorder(True)
+                        End If
 
-                           If NullSafeBoolean(dr("PictureBorder")) Then
-                              .ApplyBorder(True, - 2)
+                        ' NPG20120305 Fault HRPRO-1967 reverted by PBG20120419 Fault HRPRO-2157
+                        '.Style("word-wrap") = "break-word"
+                        .Style("overflow") = "auto"
+
+                        If formItem.CaptionType = 3 Then 'calculated caption
+                           .Text = formItem.Value
+                        Else
+                           .Text = formItem.Caption
+                        End If
+                     End With
+
+                     tabPages(formItem.PageNo).Controls.Add(control)
+
+                  Case 3 ' Input value - character
+                     Dim control = New TextBox
+                     With control
+                        .ID = sID
+                        .TabIndex = formItem.TabIndex
+                        UpdateAutoFocusControl(formItem.TabIndex, sID)
+
+                        .ApplyLocation(formItem)
+                        .ApplySize(formItem, - 1, - 1)
+                        .Style.ApplyFont(formItem)
+                        .ApplyColor(formItem)
+                        .ApplyBorder(True)
+
+                        If formItem.PasswordType Then
+                           .TextMode = TextBoxMode.Password
+                        Else
+                           .TextMode = TextBoxMode.MultiLine
+                           .Wrap = True
+                           .Style("overflow") = "auto"
+                           .Style("word-wrap") = "break-word"
+                           .Style("resize") = "none"
+                        End If
+                        .Style("padding") = "1px"
+
+                        .Text = formItem.Value
+
+                        .Attributes("onfocus") = "try{" & sID & ".select();}catch(e){};"
+
+                        If formItem.InputSize > 0 Then
+                           .Attributes("maxlength") = formItem.InputSize.ToString
+                        End If
+
+                        If IsMobileBrowser() Then
+                           .Attributes.Add("onchange", "FilterMobileLookup('" & .ID & "');")
+                        End If
+
+                     End With
+
+                     tabPages(formItem.PageNo).Controls.Add(control)
+
+                  Case 4 ' Workflow value
+
+                     Dim control = New Label
+                     With control
+                        .ApplyLocation(formItem)
+                        .ApplySize(formItem)
+                        .Style.ApplyFont(formItem)
+                        .ApplyColor(formItem, True)
+
+                        If formItem.PictureBorder Then
+                           .ApplyBorder(True)
+                        End If
+
+                        .Style("word-wrap") = "break-word"
+                        .Style("overflow") = "auto"
+
+                        Select Case formItem.SourceItemType
+                           Case 6 ' Logic
+                              If formItem.Value = Nothing Then
+                                 .Text = "&lt;undefined&gt;"
+                              ElseIf formItem.Value = "1" Then
+                                 .Text = Boolean.TrueString
+                              Else
+                                 .Text = Boolean.FalseString
+                              End If
+
+                           Case 5 ' Number
+                              If formItem.Value = Nothing Then
+                                 .Text = String.Empty
+                              Else
+                                 Dim value = formItem.Value.Replace(".", Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator)
+                                 If value.Length > 0 AndAlso value.Chars(0) = "-" Then
+                                    value = value.Substring(1) & "-"
+                                 End If
+                                 .Text = value
+                              End If
+
+                           Case 7 ' Date
+                              If formItem.Value = Nothing Then
+                                 .Text = "&lt;undefined&gt;"
+                              ElseIf formItem.Value.Trim.ToLower = "null" Then
+                                 .Text = "&lt;undefined&gt;"
+                              Else
+                                 .Text = General.ConvertSqlDateToLocale(formItem.Value)
+                              End If
+                           Case Else 'Text
+                              .Text = formItem.Value
+                        End Select
+
+                     End With
+
+                     tabPages(formItem.PageNo).Controls.Add(control)
+
+                  Case 5 ' Input value - numeric
+
+                     Dim control = New TextBox
+                     With control
+                        .ID = sID
+                        .CssClass = "numeric"
+
+                        .TabIndex = formItem.TabIndex
+                        UpdateAutoFocusControl(formItem.TabIndex, sID)
+
+                        .ApplyLocation(formItem)
+                        .ApplySize(formItem, - 1, - 1)
+                        .Style.ApplyFont(formItem)
+                        .ApplyColor(formItem, True)
+                        .ApplyBorder(True)
+                        .Style("padding") = "1px"
+
+                        'add attributes that denote the min & max values, number of decimal places is also implied
+                        Dim max = New String("9"c, formItem.InputSize - formItem.InputDecimals) &
+                                  If(formItem.InputDecimals > 0, "." & New String("9"c, formItem.InputDecimals), "")
+
+                        .Attributes.Add("data-numeric", String.Format("{{vMin: '-{0}', vMax: '{0}'}}", max))
+
+                        'set the control value
+                        Dim value As Single
+                        If Not formItem.Value = Nothing Then
+                           value = CSng(formItem.Value.Replace(".", Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator))
+                        End If
+                        .Text = value.ToString("N" & formItem.InputDecimals).Replace(Thread.CurrentThread.CurrentCulture.NumberFormat.NumberGroupSeparator, "")
+
+                        .Attributes("onfocus") = "try{" & sID & ".select();}catch(e){};"
+
+                        If IsMobileBrowser() Then
+                           .Attributes.Add("onchange", "FilterMobileLookup('" & .ID & "');")
+                        End If
+
+                     End With
+                     tabPages(formItem.PageNo).Controls.Add(control)
+
+                  Case 6 ' Input value - logic
+
+                     Dim checkBox = New CheckBox
+                     With checkBox
+                        .ID = sID
+                        .ApplyLocation(formItem)
+                        .ApplySize(formItem)
+                        .Style.ApplyFont(formItem)
+                        .ApplyColor(formItem, True)
+
+                        .TabIndex = formItem.TabIndex
+                        UpdateAutoFocusControl(formItem.TabIndex, sID)
+
+                        .CssClass = If(formItem.Alignment = 0, "checkbox left", "checkbox right")
+                        If Utilities.IsAndroidBrowser() Then .CssClass += " android"
+                        .Style("line-height") = formItem.Height.ToString & "px"
+
+                        .Text = formItem.Caption
+                        .Checked = (formItem.Value.ToLower = "true")
+
+                        If IsMobileBrowser() Then
+                           .Attributes("onclick") = "FilterMobileLookup('" & sID & "');"
+                        End If
+                     End With
+
+                     tabPages(formItem.PageNo).Controls.Add(checkBox)
+
+                  Case 7 ' Input value - date
+
+                     Dim control = New TextBox
+                     With control
+                        .ID = sID
+                        .CssClass = "date"
+
+                        .TabIndex = formItem.TabIndex
+                        UpdateAutoFocusControl(formItem.TabIndex, sID)
+
+                        .Style.ApplyFont(formItem)
+                        .ApplyColor(formItem, True)
+
+                        If Utilities.GetBrowserFamily() = "IOS" Then
+                           'use html5 date
+                           .Attributes.Add("type", "date")
+                           'ios sizing fix
+                           .ApplySize(formItem, - 10, - 3)
+                           'ios requires date in yyyy-mm-dd format
+                           .Text = If(formItem.Value = Nothing, "", DateTime.ParseExact(formItem.Value, "MM/dd/yyyy", Nothing).ToString("yyyy-MM-dd"))
+                        Else
+                           .CssClass += " withPicker"
+                           .ApplySize(formItem, - 1, - 1)
+                           .ApplyBorder(True)
+                           .Attributes("onfocus") = "try{" & sID & ".select();}catch(e){};"
+                           .Text = General.ConvertSqlDateToLocale(formItem.Value)
+                           If IsMobileBrowser() Then
+                              'stop keyboard popping up on mobiles
+                              .ReadOnly = True
                            End If
+                        End If
 
-                           Dim imageUrl As String = LoadPicture(NullSafeInteger(dr("pictureID")), sMessage)
-                           If sMessage.Length > 0 Then
-                              Exit While
-                           End If
-                           .ImageUrl = imageUrl
+                        If IsMobileBrowser() Then
+                           .Attributes.Add("onchange", "FilterMobileLookup('" & .ID & "');")
+                        End If
+                     End With
+
+                     Dim panel As New Panel
+                     panel.Controls.Add(control)
+                     panel.ApplyLocation(formItem)
+
+                     tabPages(formItem.PageNo).Controls.Add(panel)
+
+                  Case 8 ' Frame
+
+                     Dim top = formItem.Top
+                     Dim left = formItem.Left
+                     Dim width = formItem.Width
+                     Dim height = formItem.Height
+                     Dim fontAdjustment = CInt(formItem.FontSize*0.8)
+
+                     width -= 2
+                     height -= 2
+
+                     If formItem.Caption.Trim.Length = 0 Then
+                        top += fontAdjustment
+                        height -= fontAdjustment
+                     End If
+
+                     Dim html = "<fieldset style='" &
+                                " position: absolute;" &
+                                " top: " & top & "px;" &
+                                " left: " & left & "px;" &
+                                " width: " & width & "px;" &
+                                " height: " & height & "px;" &
+                                " " & GetFontCss(formItem) &
+                                " " & GetColorCss(formItem) &
+                                " border: 1px solid #999;" &
+                                " '>"
+
+                     If formItem.Caption.Trim.Length > 0 Then
+                        html += String.Format("<legend>{0}</legend>", formItem.Caption) & vbCrLf
+                     End If
+
+                     html += "</fieldset>" & vbCrLf
+
+                     tabPages(formItem.PageNo).Controls.Add(New LiteralControl(html))
+
+                  Case 9 ' Line
+
+                     Dim html As String
+
+                     Select Case formItem.Orientation
+                        Case 0 ' Vertical
+                           html = "<div style='position: absolute;" &
+                                  " left: " & formItem.Left & "px;" &
+                                  " top: " & formItem.Top & "px;" &
+                                  " height: " & formItem.Height & "px;" &
+                                  " width: 0px;" &
+                                  " border-left: 1px solid " &
+                                  General.GetHtmlColour(formItem.BackColor) & ";'" &
+                                  "></div>"
+                        Case Else ' Horizontal
+                           html = "<div style='position: absolute;" &
+                                  " left: " & formItem.Left & "px;" &
+                                  " top: " & formItem.Top & "px;" &
+                                  " height: 0px;" &
+                                  " width: " & formItem.Width & "px;" &
+                                  " border-top: 1px solid " &
+                                  General.GetHtmlColour(formItem.BackColor) &
+                                  ";'" &
+                                  "></div>"
+                     End Select
+
+                     tabPages(formItem.PageNo).Controls.Add(New LiteralControl(html))
+
+                  Case 10 ' Image
+
+                     Dim control = New WebControls.Image
+
+                     With control
+                        .ApplyLocation(formItem)
+                        .ApplySize(formItem)
+
+                        If formItem.PictureBorder Then
+                           .ApplyBorder(True, - 2)
+                        End If
+
+                        Dim imageUrl As String = LoadPicture(formItem.PictureID, sMessage)
+                        If sMessage.Length > 0 Then
+                           Exit For
+                        End If
+                        .ImageUrl = imageUrl
+                     End With
+
+                     tabPages(formItem.PageNo).Controls.Add(control)
+
+                  Case 11 ' Record Selection Grid
+                     ' NPG20110501 Fault HR PRO 1414
+                     ' We're using the ASP.NET standard gridview control now. To replicate the old infragistics
+                     ' grid we'll put the Gridview control within a DIV to enable scroll bars and fix the height&width, 
+                     ' but also put a header DIV above the grid which contains copies of the column headers. This is 
+                     ' to simulate fixing the headers when the grid is scrolled. We use this table to allow 
+                     ' clickable sorting and resizable column widths.
+
+                     ' Grids are now created using the clsRecordSelector class.
+                     Dim recordSelector = New RecordSelector
+                     With recordSelector
+
+                        .CssClass = "recordSelector"
+                        .Style.Add("Position", "Absolute")
+                        .Attributes.CssStyle("LEFT") = Unit.Pixel(formItem.Left).ToString
+                        .Attributes.CssStyle("TOP") = Unit.Pixel(formItem.Top).ToString
+                        .Attributes.CssStyle("WIDTH") = Unit.Pixel(formItem.Width).ToString
+
+                        ' Don't use .height - it causes large row heights if the grid isn't filled.
+                        ' Use .ControlHeight instead - custom property.
+                        .ControlHeight = formItem.Height
+                        .Width = formItem.Width
+
+                        'TODO PG changing this color makes no difference must be set in the recordSelector class
+                        .BorderColor = Color.Black
+                        .BorderStyle = BorderStyle.Solid
+                        .BorderWidth = 1
+
+                        .Style.Add("border-bottom-width", "2px")
+
+                        .ID = sID & "Grid"
+                        .AllowPaging = True
+                        .AllowSorting = True
+                        '.EnableSortingAndPagingCallbacks = True
+
+                        ' Androids currently can't scroll internal divs, so fix 
+                        ' pagesize of record selector to height of control.
+                        If Utilities.GetBrowserFamily() = "ANDROID" Then
+                           Dim piRowHeight As Double = (formItem.FontSize - 8) + 21
+                           .PageSize = Math.Min(CInt(Math.Truncate((CInt(formItem.Height - 42) / piRowHeight))), _config.LookupRowsRange)
+                           .RowStyle.Height = CInt(piRowHeight)
+                        Else
+                           .PageSize = _config.LookupRowsRange
+                        End If
+
+                        .IsLookup = False
+                        ' EnableViewState must be on. Mucks up the grid data otherwise. Should be reviewed
+                        ' if performance is silly, but while paging is enabled it shouldn't be too bad.
+                        .EnableViewState = True
+                        .IsEmpty = False
+                        .EmptyDataText = "no records to display"
+                        .ShowHeaderWhenEmpty = True
+
+                        ' Header Row
+                        .ColumnHeaders = formItem.ColumnHeaders
+                        .HeadFontSize = CSng(formItem.HeadFontSize)
+                        .HeadLines = formItem.HeadLines
+
+                        .TabIndex = formItem.TabIndex
+                        UpdateAutoFocusControl(formItem.TabIndex, sID)
+
+                        Dim backColor As Integer = formItem.BackColor
+
+                        If backColor = 16777215 AndAlso formItem.BackColorEven = 15988214 Then
+                           backColor = formItem.BackColorEven
+                        End If
+
+                        .BackColor = General.GetColour(backColor)
+                        .ForeColor = General.GetColour(formItem.ForeColor)
+
+                        .HeaderStyle.BackColor = General.GetColour(formItem.HeaderBackColor)
+                        .HeaderStyle.BorderColor = General.GetColour(10720408)
+                        .HeaderStyle.BorderStyle = BorderStyle.Double
+                        .HeaderStyle.BorderWidth = 0
+
+                        .HeaderStyle.Font.Apply(formItem, "Head")
+
+                        .HeaderStyle.ForeColor = General.GetColour(formItem.ForeColor)
+                        .HeaderStyle.Wrap = False
+                        .HeaderStyle.VerticalAlign = VerticalAlign.Middle
+                        .HeaderStyle.HorizontalAlign = HorizontalAlign.Center
+
+                        ' PagerStyle settings
+                        .PagerStyle.BackColor = General.GetColour(formItem.HeaderBackColor)
+                        .PagerStyle.BorderColor = General.GetColour(10720408)
+                        .PagerStyle.BorderStyle = BorderStyle.Solid
+                        .PagerStyle.BorderWidth = 0
+                        .PagerStyle.Font.Apply(formItem, "Head")
+                        .PagerStyle.ForeColor = General.GetColour(formItem.ForeColor)
+                        .PagerStyle.Wrap = False
+                        .PagerStyle.VerticalAlign = VerticalAlign.Middle
+                        .PagerStyle.HorizontalAlign = HorizontalAlign.Center
+
+                        .Font.Apply(formItem)
+
+                        If formItem.ForeColorEven <> formItem.ForeColor Then
+                           .RowStyle.ForeColor = General.GetColour(formItem.ForeColorEven)
+                        End If
+
+                        If formItem.BackColorEven <> backColor Then
+                           .RowStyle.BackColor = General.GetColour(formItem.BackColorEven)
+                        End If
+
+                        If formItem.ForeColorOdd <> formItem.ForeColor Then
+                           .AlternatingRowStyle.ForeColor = General.GetColour(formItem.ForeColorOdd)
+                        End If
+
+                        If formItem.BackColorOdd <> formItem.BackColorEven Then
+                           .AlternatingRowStyle.BackColor = General.GetColour(formItem.BackColorOdd)
+                        End If
+
+                        If Not formItem.ForeColorHighlight.HasValue Then
+                           .SelectedRowStyle.ForeColor = SystemColors.HighlightText
+                        Else
+                           .SelectedRowStyle.ForeColor =General.GetColour(formItem.ForeColorHighlight.Value)
+                        End If
+                        If Not formItem.BackColorHighlight.HasValue Then
+                           .SelectedRowStyle.BackColor = SystemColors.Highlight
+                        Else
+                           .SelectedRowStyle.BackColor =General.GetColour(formItem.BackColorHighlight.Value)
+                        End If
+
+                     End With
+
+                     ' ==================================================
+                     ' Add the Paging Grid View to the holding panel now.
+                     ' Before the databind, or you'll get errors!
+                     ' ==================================================
+                     tabPages(formItem.PageNo).Controls.Add(recordSelector)
+
+                     If Not IsPostBack Then
+
+                        Dim result = db.GetWorkflowGridItems(formItem.Id, _instanceID)
+
+                        Session(sID & "DATA") = result.Data
+
+                        recordSelector.DataKeyNames = New String() {"ID"}
+
+                        recordSelector.IsEmpty = (result.Data.Rows.Count = 0)
+                        recordSelector.DataSource = result.Data
+                        recordSelector.DataBind()
+
+                        'set the default value
+                        If Utilities.NullSafeInteger(formItem.Value) <> 0 Then
+
+                           Dim colIndex As Integer = result.Data.Columns.IndexOf("ID")
+
+                           For r = 0 To result.Data.Rows.Count - 1
+                              If result.Data.Rows(r).Item(colIndex).ToString = formItem.Value Then
+                                 ' set selected page index and row number
+                                 recordSelector.PageIndex = CInt(r\recordSelector.PageSize)
+                                 recordSelector.SelectedIndex = CInt(r Mod recordSelector.PageSize)
+                                 recordSelector.DataBind()
+                                 Exit For
+                              End If
+                           Next
+                        End If
+
+                        If recordSelector.SelectedIndex = - 1 AndAlso recordSelector.Rows.Count > 0 Then
+                           recordSelector.SelectedIndex = 0
+                        End If
+
+                        If Not result.Ok Then
+                           sMessage =
+                              "Error loading web form. Web Form record selector item record has been deleted or not selected."
+                           Exit For
+                        End If
+                     End If
+
+                     ' Hidden field is used to store scroll position of the grid.
+                     tabPages(formItem.PageNo).Controls.Add(New HiddenField With {.ID = sID & "scrollpos"})
+
+                  Case 14 ' lookup  Inputs
+                     If Not IsMobileBrowser() Then
+
+                        ' ============================================================
+                        ' Create a textbox as the main control
+                        ' ============================================================
+                        Dim textBox = New TextBox
+
+                        With textBox
+                           .ID = sID & "TextBox"
+                           .ApplyLocation(formItem)
+                           .ApplySize(formItem, - 1, - 1)
+                           .Style.ApplyFont(formItem)
+                           .ApplyColor(formItem)
+                           .ApplyBorder(True)
+
+                           .TabIndex = formItem.TabIndex
+                           UpdateAutoFocusControl(formItem.TabIndex, sID & "TextBox")
+
+                           .ReadOnly = True
+                           .Style.Add("padding", "1px")
+                           .Style.Add("background-image", "url('images/downarrow.gif')")
+                           .Style.Add("background-position", "right top")
+                           .Style.Add("background-repeat", "no-repeat")
+                           .Style.Add("background-origin", "content-box")
+                           .Style.Add("background-size", "17px 100%")
                         End With
 
-                        tabPages(tabPage).Controls.Add(control)
+                        tabPages(formItem.PageNo).Controls.Add(textBox)
 
-                     Case 11 ' Record Selection Grid
-                        ' NPG20110501 Fault HR PRO 1414
-                        ' We're using the ASP.NET standard gridview control now. To replicate the old infragistics
-                        ' grid we'll put the Gridview control within a DIV to enable scroll bars and fix the height&width, 
-                        ' but also put a header DIV above the grid which contains copies of the column headers. This is 
-                        ' to simulate fixing the headers when the grid is scrolled. We use this table to allow 
-                        ' clickable sorting and resizable column widths.
-                        '
-                        ' =========================================================
-                        ' Grids are now created using the clsRecordSelector class.
-                        ' =========================================================
-
+                        ' ============================================================
+                        ' Create the Lookup table grid, as per normal record selectors.
+                        ' This will be hidden on page_load, and displayed when the 
+                        ' DropdownList above is clicked. The magic is brought together
+                        ' by the AJAX DropDownExtender control below.
+                        ' ============================================================
                         Dim recordSelector = New RecordSelector
+
                         With recordSelector
-
-                           .CssClass = "recordSelector"
-                           .Style.Add("Position", "Absolute")
-                           .Attributes.CssStyle("LEFT") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
-                           .Attributes.CssStyle("TOP") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
-                           .Attributes.CssStyle("WIDTH") = Unit.Pixel(NullSafeInteger(dr("Width"))).ToString
-
-                           ' Don't use .height - it causes large row heights if the grid isn't filled.
-                           ' Use .ControlHeight instead - custom property.
-                           .ControlHeight = NullSafeInteger(dr("Height"))
-
-                           .Width = NullSafeInteger(dr("Width"))
-
-                           .BorderColor = Color.Black
-                           .BorderStyle = BorderStyle.Solid
-                           .BorderWidth = 1
-
-                           .Style.Add("border-bottom-width", "2px")
-
                            .ID = sID & "Grid"
+                           .IsLookup = True
+                           .EnableViewState = True
+                           ' Must be set to True
+                           .IsEmpty = False
+                           .EmptyDataText = "no records to display"
                            .AllowPaging = True
                            .AllowSorting = True
                            '.EnableSortingAndPagingCallbacks = True
+                           .PageSize = _config.LookupRowsRange
+                           .ShowFooter = False
 
-                           ' Androids currently can't scroll internal divs, so fix 
-                           ' pagesize of record selector to height of control.
-                           If GetBrowserFamily() = "ANDROID" Then
-                              Dim piRowHeight As Double = (CInt(NullSafeString(dr("FontSize"))) - 8) + 21
-                              .PageSize =
-                                 Math.Min(CInt(Math.Truncate((CInt(NullSafeInteger(dr("Height")) - 42)/piRowHeight))),
-                                          _config.LookupRowsRange)
-                              .RowStyle.Height = Unit.Pixel(CInt(piRowHeight))
-                           Else
-                              .PageSize = _config.LookupRowsRange
-                           End If
+                           .CssClass = "recordSelector"
+                           .Style.Add("Position", "Absolute")
+                           .Style("top") = Unit.Pixel(formItem.Top).ToString
+                           .Style("left") = Unit.Pixel(formItem.Left).ToString
 
-                           .IsLookup = False
-                           ' EnableViewState must be on. Mucks up the grid data otherwise. Should be reviewed
-                           ' if performance is silly, but while paging is enabled it shouldn't be too bad.
-                           .EnableViewState = True
-                           .IsEmpty = False
-                           .EmptyDataText = "no records to display"
+                           .Attributes.CssStyle("left") = Unit.Pixel(formItem.Left).ToString
+                           .Attributes.CssStyle("top") = Unit.Pixel(formItem.Top).ToString
+                           .Attributes.CssStyle("width") = Unit.Pixel(formItem.Width).ToString
 
-                           ' Header Row
-                           .ColumnHeaders = NullSafeBoolean(dr("ColumnHeaders"))
-                           .HeadFontSize = NullSafeSingle(dr("HeadFontSize"))
-                           .HeadLines = NullSafeInteger(dr("Headlines"))
+                           ' Don't set the height of this control. Must use the ControlHeight property
+                           ' to stop the grid's rows from autosizing.
+                           .ControlHeight = formItem.Height
+                           .Width = formItem.Width
 
-                           .TabIndex = NullSafeShort(dr("tabIndex"))
-                           UpdateAutoFocusControl(NullSafeShort(dr("tabIndex")), sID)
+                           ' Header Row - fixed for lookups.
+                           .ColumnHeaders = True
+                           .HeadFontSize = CSng(formItem.FontSize)
+                           .HeadLines = 1
 
-                           Dim backColor As Integer = NullSafeInteger(dr("BackColor"))
+                           .ApplyFont(formItem)
+                           .ApplyColor(formItem)
+                           .ApplyBorder(False)
 
-                           If backColor = 16777215 AndAlso NullSafeInteger(dr("BackColorEven")) = 15988214 Then
-                              backColor = NullSafeInteger(dr("BackColorEven"))
-                           End If
+                           .SelectedRowStyle.ForeColor = General.GetColour(2774907)
+                           .SelectedRowStyle.BackColor = General.GetColour(10480637)
 
-                           .BackColor = General.GetColour(backColor)
-                           .ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
-
-                           .HeaderStyle.BackColor = General.GetColour(NullSafeInteger(dr("HeaderBackColor")))
+                           ' HEADER formatting
+                           .HeaderStyle.BackColor = General.GetColour(16248553)
                            .HeaderStyle.BorderColor = General.GetColour(10720408)
-                           .HeaderStyle.BorderStyle = BorderStyle.Double
-                           .HeaderStyle.BorderWidth = Unit.Pixel(0)
+                           .HeaderStyle.BorderStyle = BorderStyle.Solid
+                           .HeaderStyle.BorderWidth = 0
 
-                           .HeaderStyle.Font.Apply(dr, "Head")
-
-                           .HeaderStyle.ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
+                           .HeaderStyle.Font.Apply(formItem)
+                           .HeaderStyle.ForeColor = General.GetColour(formItem.ForeColor)
                            .HeaderStyle.Wrap = False
                            .HeaderStyle.VerticalAlign = VerticalAlign.Middle
                            .HeaderStyle.HorizontalAlign = HorizontalAlign.Center
 
-                           ' PagerStyle settings
-                           .PagerStyle.BackColor = General.GetColour(NullSafeInteger(dr("HeaderBackColor")))
-                           .PagerStyle.BorderColor = General.GetColour(10720408)
-                           .PagerStyle.BorderStyle = BorderStyle.Solid
-                           .PagerStyle.BorderWidth = Unit.Pixel(0)
-
-                           .PagerStyle.Font.Apply(dr, "Head")
-
-                           .PagerStyle.ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
+                           .PagerStyle.Font.Apply(formItem)
+                           .PagerStyle.ForeColor = General.GetColour(formItem.ForeColor)
                            .PagerStyle.Wrap = False
                            .PagerStyle.VerticalAlign = VerticalAlign.Middle
                            .PagerStyle.HorizontalAlign = HorizontalAlign.Center
-
-                           .Font.Apply(dr)
-
-                           If NullSafeInteger(dr("ForeColorEven")) <> NullSafeInteger(dr("ForeColor")) Then
-                              .RowStyle.ForeColor = General.GetColour(NullSafeInteger(dr("ForeColorEven")))
-                           End If
-
-                           If NullSafeInteger(dr("BackColorEven")) <> backColor Then
-                              .RowStyle.BackColor = General.GetColour(NullSafeInteger(dr("BackColorEven")))
-                           End If
-
-                           If NullSafeInteger(dr("ForeColorOdd")) <> NullSafeInteger(dr("ForeColor")) Then
-                              .AlternatingRowStyle.ForeColor = General.GetColour(NullSafeInteger(dr("ForeColorOdd")))
-                           End If
-
-                           If NullSafeInteger(dr("BackColorOdd")) <> NullSafeInteger(dr("BackColorEven")) Then
-                              .AlternatingRowStyle.BackColor = General.GetColour(NullSafeInteger(dr("BackColorOdd")))
-                           End If
-
-                           If IsDBNull(dr("ForeColorHighlight")) Then
-                              .SelectedRowStyle.ForeColor = SystemColors.HighlightText
-                           Else
-                              .SelectedRowStyle.ForeColor = General.GetColour(NullSafeInteger(dr("ForeColorHighlight")))
-                           End If
-                           If IsDBNull(dr("BackColorHighlight")) Then
-                              .SelectedRowStyle.BackColor = SystemColors.Highlight
-                           Else
-                              .SelectedRowStyle.BackColor = General.GetColour(NullSafeInteger(dr("BackColorHighlight")))
-                           End If
-
+                           .PagerStyle.BorderWidth = 0
                         End With
 
-                        ' ==================================================
-                        ' Add the Paging Grid View to the holding panel now.
-                        ' Before the databind, or you'll get errors!
-                        ' ==================================================
-                        tabPages(tabPage).Controls.Add(recordSelector)
+                        Dim filterSql = LookupFilterSQL(formItem.LookupFilterColumnName,
+                                                        formItem.LookupFilterColumnDataType,
+                                                        formItem.LookupFilterOperator,
+                                                        FormInputPrefix &
+                                                        formItem.LookupFilterValueID &
+                                                        "_" & formItem.LookupFilterValueType & "_")
+
+                        ' Hidden Field to store any lookup filter code
+                        If (filterSql.Length > 0) Then
+                           tabPages(formItem.PageNo).Controls.Add(New HiddenField With {.ID = "lookup" & sID,.Value = filterSql})
+                        End If
+
+                        tabPages(formItem.PageNo).Controls.Add(recordSelector)
 
                         If Not IsPostBack Then
 
-                           Dim result = db.GetWorkflowGridItems(NullSafeInteger(dr("id")), _instanceID)
+                           'get the data
+                           Dim result = db.GetWorkflowItemValues(formItem.Id, _instanceID)
 
+                           'insert a blank row
+                           result.Data.Rows.InsertAt(result.Data.NewRow(), 0)
+
+                           'bind data to grid
+                           recordSelector.IsEmpty = (result.Data.Rows.Count - 1 = 0)
+                           recordSelector.DataSource = result.Data
+                           recordSelector.DataBind()
+
+                           'store the data its needed for paging, sorting
                            Session(sID & "DATA") = result.Data
 
-                           recordSelector.DataKeyNames = New String() {"ID"}
-
-                           If result.Data.Rows.Count > 0 Then
-                              recordSelector.IsEmpty = False
-                              recordSelector.DataSource = result.Data
-                              recordSelector.DataBind()
-                           Else
-                              recordSelector.IsEmpty = True
-                              ShowNoResultFound(result.Data, recordSelector)
-                           End If
+                           'store info its needed later
+                           textBox.Attributes.Add("LookupColumnIndex",result.LookupColumnIndex.ToString)
+                           textBox.Attributes.Add("DataType",result.Data.Columns(result.LookupColumnIndex).DataType.ToString)
 
                            'set the default value
-                           If NullSafeInteger(dr("value")) <> 0 Then
+                           textBox.Text = result.DefaultValue
 
-                              Dim colIndex As Integer = result.Data.Columns.IndexOf("ID")
-
-                              For r = 0 To result.Data.Rows.Count - 1
-                                 If result.Data.Rows(r).Item(colIndex).ToString = CStr(dr("value")) Then
-                                    ' set selected page index and row number
-                                    recordSelector.PageIndex = CInt(r\recordSelector.PageSize)
-                                    recordSelector.SelectedIndex = CInt(r Mod recordSelector.PageSize)
-                                    recordSelector.DataBind()
-                                    Exit For
-                                 End If
-                              Next
-                           End If
-
-                           If recordSelector.SelectedIndex = - 1 AndAlso recordSelector.Rows.Count > 0 Then
-                              recordSelector.SelectedIndex = 0
-                           End If
-
-                           If Not result.Ok Then
-                              sMessage =
-                                 "Error loading web form. Web Form record selector item record has been deleted or not selected."
-                              Exit While
-                           End If
-                        Else
-                           ' If a postback, check for empty datagrid and set empty row message
-                           If recordSelector.IsEmpty Then
-                              ShowNoResultFound(TryCast(HttpContext.Current.Session(sID & "DATA"), DataTable),
-                                                recordSelector)
-                           End If
+                           For i As Integer = 0 To recordSelector.Rows.Count - 1
+                              If i > recordSelector.PageSize Then Exit For
+                              ' don't bother if on other pages
+                              If recordSelector.Rows(i).Cells(result.LookupColumnIndex).Text =result.DefaultValue Then
+                                 recordSelector.SelectedIndex = i
+                                 Exit For
+                              End If
+                           Next
                         End If
 
-                        ' ============================================================
-                        ' Hidden field is used to store scroll position of the grid.
-                        ' ============================================================
-                        tabPages(tabPage).Controls.Add(New HiddenField With {.ID = sID & "scrollpos"})
+                        ' AJAX DropDownExtender (DDE) Control - this simply links up the DropDownList and the Lookup Grid to make a dropdown.
+                        Dim dde As New DropDownExtender
 
+                        With dde
+                           .DropArrowImageUrl = "~/Images/Blank.gif"
+                           .DropArrowBackColor = Color.Transparent
+                           .HighlightBackColor = textBox.BackColor
+                           .HighlightBorderColor = textBox.BorderColor
 
-                     Case 14 ' lookup  Inputs
-                        If Not IsMobileBrowser() Then
-
-                           ' ============================================================
-                           ' Create a textbox as the main control
-                           ' ============================================================
-                           Dim textBox = New TextBox
-
-                           With textBox
-                              .ID = sID & "TextBox"
-                              .ApplyLocation(dr)
-                              .ApplySize(dr, - 1, - 1)
-                              .Style.ApplyFont(dr)
-                              .ApplyColor(dr)
-                              .ApplyBorder(True)
-
-                              .TabIndex = NullSafeShort(dr("tabIndex"))
-                              UpdateAutoFocusControl(NullSafeShort(dr("tabIndex")), sID & "TextBox")
-
-                              .ReadOnly = True
-                              .Style.Add("padding", "1px")
-                              .Style.Add("background-image", "url('images/downarrow.gif')")
-                              .Style.Add("background-position", "right top")
-                              .Style.Add("background-repeat", "no-repeat")
-                              .Style.Add("background-origin", "content-box")
-                              .Style.Add("background-size", "17px 100%")
-                           End With
-
-                           tabPages(tabPage).Controls.Add(textBox)
-
-                           ' ============================================================
-                           ' Create the Lookup table grid, as per normal record selectors.
-                           ' This will be hidden on page_load, and displayed when the 
-                           ' DropdownList above is clicked. The magic is brought together
-                           ' by the AJAX DropDownExtender control below.
-                           ' ============================================================
-                           Dim recordSelector = New RecordSelector
-
-                           With recordSelector
-                              .ID = sID & "Grid"
-                              .IsLookup = True
-                              .EnableViewState = True
-                              ' Must be set to True
-                              .IsEmpty = False
-                              .EmptyDataText = "no records to display"
-                              .AllowPaging = True
-                              .AllowSorting = True
-                              '.EnableSortingAndPagingCallbacks = True
-                              .PageSize = _config.LookupRowsRange
-                              .ShowFooter = False
-
-                              .CssClass = "recordSelector"
-                              .Style.Add("Position", "Absolute")
-                              .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
-                              .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
-
-                              .Attributes.CssStyle("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
-                              .Attributes.CssStyle("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
-                              .Attributes.CssStyle("width") = Unit.Pixel(NullSafeInteger(dr("Width"))).ToString
-
-                              ' Don't set the height of this control. Must use the ControlHeight property
-                              ' to stop the grid's rows from autosizing.
-                              .ControlHeight = NullSafeInteger(dr("Height"))
-                              .Width = Unit.Pixel(NullSafeInteger(dr("Width")))
-
-                              ' Header Row - fixed for lookups.
-                              .ColumnHeaders = True
-                              .HeadFontSize = NullSafeSingle(dr("FontSize"))
-                              .HeadLines = 1
-
-                              .ApplyFont(dr)
-                              .ApplyColor(dr)
-                              .ApplyBorder(False)
-
-                              .SelectedRowStyle.ForeColor = General.GetColour(2774907)
-                              .SelectedRowStyle.BackColor = General.GetColour(10480637)
-
-                              ' HEADER formatting
-                              .HeaderStyle.BackColor = General.GetColour(16248553)
-                              .HeaderStyle.BorderColor = General.GetColour(10720408)
-                              .HeaderStyle.BorderStyle = BorderStyle.Solid
-                              .HeaderStyle.BorderWidth = Unit.Pixel(0)
-
-                              .HeaderStyle.Font.Apply(dr)
-                              .HeaderStyle.ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
-                              .HeaderStyle.Wrap = False
-                              .HeaderStyle.VerticalAlign = VerticalAlign.Middle
-                              .HeaderStyle.HorizontalAlign = HorizontalAlign.Center
-
-                              .PagerStyle.Font.Apply(dr)
-                              .PagerStyle.ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
-                              .PagerStyle.Wrap = False
-                              .PagerStyle.VerticalAlign = VerticalAlign.Middle
-                              .PagerStyle.HorizontalAlign = HorizontalAlign.Center
-                              .PagerStyle.BorderWidth = Unit.Pixel(0)
-                           End With
-
-                           Dim filterSql = LookupFilterSQL(NullSafeString(dr("lookupFilterColumnName")),
-                                                           NullSafeInteger(dr("lookupFilterColumnDataType")),
-                                                           NullSafeInteger(dr("LookupFilterOperator")),
-                                                           FormInputPrefix & NullSafeString(dr("lookupFilterValueID")) &
-                                                           "_" & NullSafeString(dr("lookupFilterValueType")) & "_")
-
-
-                           ' ==========================================================
-                           ' Hidden Field to store any lookup filter code
-                           ' ==========================================================
+                           ' Careful with the case here, use 'dde' in JavaScript:
+                           .ID = sID & "DDE"
+                           .BehaviorID = sID & "dde"
+                           .DropDownControlID = sID
+                           .Enabled = True
+                           .TargetControlID = sID & "TextBox"
+                           ' Client-side handler.
                            If (filterSql.Length > 0) Then
-                              tabPages(tabPage).Controls.Add(New HiddenField _
-                                                               With {.ID = "lookup" & sID, .Value = filterSql})
+                              .OnClientPopup = "InitializeLookup"
+                              ' can't pass the ID of the control, so use ._id in JS.
                            End If
+                        End With
 
-                           tabPages(tabPage).Controls.Add(recordSelector)
+                        tabPages(formItem.PageNo).Controls.Add(dde)
+
+                        ' Attach a JavaScript functino to the 'add_shown' method of this
+                        ' DropDownExtender. Used to check if popup is bigger than the
+                        ' parent form, and resize the parent form if necessary
+                        scriptString += "var bhvDdl=$find('" & dde.BehaviorID.ToString & "');"
+                        scriptString += "try {bhvDdl.add_shown(ResizeComboForForm);} catch (e) {}"
+
+                        ' hidden field to store scroll position (not required?)
+                        tabPages(formItem.PageNo).Controls.Add(New HiddenField With {.ID = sID & "scrollpos"})
+
+                        ' hidden field to hold any filter SQL code
+                        tabPages(formItem.PageNo).Controls.Add(New HiddenField With {.ID = sID & "filterSQL"})
+
+                        ' Hidden Button for JS to call which fires filter click event. 
+                        Dim button = New Button
+                        With button
+                           .ID = sID & "refresh"
+                           .Style.Add("display", "none")
+                           .Text = .ID
+                        End With
+
+                        AddHandler button.Click, AddressOf SetLookupFilter
+
+                        tabPages(formItem.PageNo).Controls.Add(button)
+                     Else
+                        ' ================================================================================================================
+                        ' Mobile Browser - convert lookup data to a standard dropdown.
+                        ' ================================================================================================================
+                        Dim control As New DropDownList
+
+                        With control
+                           .ID = sID
+                           .ApplyLocation(formItem)
+                           .ApplySize(formItem, - 1, - 1)
+                           .Style.ApplyFont(formItem)
+                           .ApplyColor(formItem)
+                           If Not IsMobileBrowser() Then .ApplyBorder(False)
+                           .Style.Add("padding", "1px")
+
+                           .TabIndex = formItem.TabIndex
+                           UpdateAutoFocusControl(formItem.TabIndex, sID)
+
+                           .Attributes.Add("onchange", "FilterMobileLookup('" & .ID & "');")
+
+                           tabPages(formItem.PageNo).Controls.Add(control)
+
+                           Dim filterSql = LookupFilterSQL(formItem.LookupFilterColumnName,
+                                                           formItem.LookupFilterColumnDataType,
+                                                           formItem.LookupFilterOperator,
+                                                           FormInputPrefix &
+                                                           formItem.LookupFilterValueID & "_" &
+                                                           formItem.LookupFilterValueType & "_")
+
+                           If (filterSql.Length > 0) Then
+                              tabPages(formItem.PageNo).Controls.Add(New HiddenField With {.ID = "lookup" & sID,.Value = filterSql})
+                           End If
 
                            If Not IsPostBack Then
 
                               'get the data
-                              Dim result = db.GetWorkflowItemValues(CInt(NullSafeString(dr("id"))), _instanceID)
+                              Dim result = db.GetWorkflowItemValues(formItem.Id, _instanceID)
 
                               'insert a blank row
                               result.Data.Rows.InsertAt(result.Data.NewRow(), 0)
 
-                              'bind data to grid
-                              recordSelector.IsEmpty = (result.Data.Rows.Count - 1 = 0)
-                              recordSelector.DataSource = result.Data
-                              recordSelector.DataBind()
+                              'bind to the data
+                              .DataTextField = result.Data.Columns(result.LookupColumnIndex).ColumnName
+
+                              If result.Data.Columns(result.LookupColumnIndex).DataType Is GetType(DateTime) Then
+                                 .DataTextFormatString = "{0:d}"
+                              End If
+                              control.DataSource = result.Data
+                              control.DataBind()
 
                               'store the data its needed for paging, sorting
                               Session(sID & "DATA") = result.Data
 
                               'store info its needed later
-                              textBox.Attributes.Add("LookupColumnIndex", result.LookupColumnIndex.ToString)
-                              textBox.Attributes.Add("DataType",
-                                                     result.Data.Columns(result.LookupColumnIndex).DataType.ToString)
-
-                              'set the default value
-                              textBox.Text = result.DefaultValue
-
-                              For i As Integer = 0 To recordSelector.Rows.Count - 1
-                                 If i > recordSelector.PageSize Then Exit For
-                                 ' don't bother if on other pages
-                                 If recordSelector.Rows(i).Cells(result.LookupColumnIndex).Text = result.DefaultValue _
-                                    Then
-                                    recordSelector.SelectedIndex = i
-                                    Exit For
-                                 End If
-                              Next
-                           End If
-
-                           ' =============================================================================
-                           ' AJAX DropDownExtender (DDE) Control
-                           ' This simply links up the DropDownList and the Lookup Grid to make a dropdown.
-                           ' =============================================================================
-                           Dim dde As New AjaxControlToolkit.DropDownExtender
-
-                           With dde
-                              .DropArrowImageUrl = "~/Images/Blank.gif"
-                              .DropArrowBackColor = Color.Transparent
-                              .HighlightBackColor = textBox.BackColor
-                              .HighlightBorderColor = textBox.BorderColor
-
-                              ' Careful with the case here, use 'dde' in JavaScript:
-                              .ID = sID & "DDE"
-                              .BehaviorID = sID & "dde"
-                              .DropDownControlID = sID
-                              .Enabled = True
-                              .TargetControlID = sID & "TextBox"
-                              ' Client-side handler.
-                              If (filterSql.Length > 0) Then
-                                 .OnClientPopup = "InitializeLookup"
-                                 ' can't pass the ID of the control, so use ._id in JS.
-                              End If
-                           End With
-
-                           tabPages(tabPage).Controls.Add(dde)
-
-                           ' =================================================================
-                           ' Attach a JavaScript functino to the 'add_shown' method of this
-                           ' DropDownExtender. Used to check if popup is bigger than the
-                           ' parent form, and resize the parent form if necessary
-                           ' =================================================================
-                           scriptString += "var bhvDdl=$find('" & dde.BehaviorID.ToString & "');"
-                           scriptString += "try {bhvDdl.add_shown(ResizeComboForForm);} catch (e) {}"
-
-                           ' ====================================================
-                           ' hidden field to store scroll position (not required?)
-                           ' ====================================================
-                           tabPages(tabPage).Controls.Add(New HiddenField With {.ID = sID & "scrollpos"})
-
-                           ' ====================================================
-                           ' hidden field to hold any filter SQL code
-                           ' ====================================================
-                           tabPages(tabPage).Controls.Add(New HiddenField With {.ID = sID & "filterSQL"})
-
-                           ' ============================================================
-                           ' Hidden Button for JS to call which fires filter click event. 
-                           ' ============================================================
-                           Dim button = New Button
-                           With button
-                              .ID = sID & "refresh"
-                              .Style.Add("display", "none")
-                              .Text = .ID
-                           End With
-
-                           AddHandler button.Click, AddressOf SetLookupFilter
-
-                           tabPages(tabPage).Controls.Add(button)
-
-                        Else
-                           ' ================================================================================================================
-                           ' Mobile Browser - convert lookup data to a standard dropdown.
-                           ' ================================================================================================================
-                           Dim control As New DropDownList
-
-                           With control
-                              .ID = sID
-                              .ApplyLocation(dr)
-                              .ApplySize(dr, - 1, - 1)
-                              .Style.ApplyFont(dr)
-                              .ApplyColor(dr)
-                              If Not IsMobileBrowser() Then .ApplyBorder(False)
-                              .Style.Add("padding", "1px")
-
-                              .TabIndex = NullSafeShort(dr("tabIndex"))
-                              UpdateAutoFocusControl(NullSafeShort(dr("tabIndex")), sID)
-
-                              .Attributes.Add("onchange", "FilterMobileLookup('" & .ID & "');")
-
-                              tabPages(tabPage).Controls.Add(control)
-
-                              Dim filterSql = LookupFilterSQL(NullSafeString(dr("lookupFilterColumnName")),
-                                                              NullSafeInteger(dr("lookupFilterColumnDataType")),
-                                                              NullSafeInteger(dr("LookupFilterOperator")),
-                                                              FormInputPrefix &
-                                                              NullSafeString(dr("lookupFilterValueID")) & "_" &
-                                                              NullSafeString(dr("lookupFilterValueType")) & "_")
-
-                              If (filterSql.Length > 0) Then
-                                 tabPages(tabPage).Controls.Add(New HiddenField _
-                                                                  With {.ID = "lookup" & sID, .Value = filterSql})
-                              End If
-
-                              If Not IsPostBack Then
-
-                                 'get the data
-                                 Dim result = db.GetWorkflowItemValues(CInt(NullSafeString(dr("id"))), _instanceID)
-
-                                 'insert a blank row
-                                 result.Data.Rows.InsertAt(result.Data.NewRow(), 0)
-
-                                 'bind to the data
-                                 .DataTextField = result.Data.Columns(result.LookupColumnIndex).ColumnName
-
-                                 If result.Data.Columns(result.LookupColumnIndex).DataType Is GetType(DateTime) Then
-                                    .DataTextFormatString = "{0:d}"
-                                 End If
-                                 control.DataSource = result.Data
-                                 control.DataBind()
-
-                                 'store the data its needed for paging, sorting
-                                 Session(sID & "DATA") = result.Data
-
-                                 'store info its needed later
-                                 .Attributes.Add("LookupColumnIndex", result.LookupColumnIndex.ToString)
-                                 .Attributes.Add("DataType",
-                                                 result.Data.Columns(result.LookupColumnIndex).DataType.ToString)
-
-                                 'set the default and selected value
-                                 Dim item As ListItem = control.Items.FindByValue(result.DefaultValue)
-                                 If item IsNot Nothing Then
-                                    control.SelectedValue = item.Value
-                                 Else
-                                    'The selected value is not in the list, so add it after the blank row
-                                    control.Items.Insert(1, result.DefaultValue)
-                                    control.SelectedIndex = 1
-                                 End If
-                              End If
-
-                           End With
-
-                           ' hidden field to hold any filter SQL code
-                           tabPages(tabPage).Controls.Add(New HiddenField With {.ID = sID & "filterSQL"})
-
-                           ' Hidden Button for JS to call which fires filter click event. 
-                           Dim button = New Button
-                           With button
-                              .ID = sID & "refresh"
-                              .Style.Add("display", "none")
-                           End With
-
-                           AddHandler button.Click, AddressOf SetLookupFilter
-
-                           tabPages(tabPage).Controls.Add(button)
-                        End If
-
-                     Case 13 ' Dropdown (13) Inputs
-
-                        Dim control As New DropDownList
-
-                        With control
-                           .ID = sID
-                           .ApplyLocation(dr)
-                           .ApplySize(dr, - 1, - 1)
-                           .Style.ApplyFont(dr)
-                           .ApplyColor(dr)
-                           If Not IsMobileBrowser() Then .ApplyBorder(False)
-                           .Style.Add("padding", "1px")
-
-                           .TabIndex = NullSafeShort(dr("tabIndex"))
-                           UpdateAutoFocusControl(NullSafeShort(dr("tabIndex")), sID)
-
-                           If IsMobileBrowser() Then
-                              .Attributes.Add("onchange", "FilterMobileLookup('" & .ID & "');")
-                           End If
-
-                           tabPages(tabPage).Controls.Add(control)
-
-                           Dim filterSql = LookupFilterSQL(NullSafeString(dr("lookupFilterColumnName")),
-                                                           NullSafeInteger(dr("lookupFilterColumnDataType")),
-                                                           NullSafeInteger(dr("LookupFilterOperator")),
-                                                           FormInputPrefix & NullSafeString(dr("lookupFilterValueID")) &
-                                                           "_" & NullSafeString(dr("lookupFilterValueType")) & "_")
-
-                           If filterSql.Length > 0 Then
-                              tabPages(tabPage).Controls.Add(New HiddenField _
-                                                               With {.ID = "lookup" & sID, .Value = filterSql})
-                           End If
-
-                           If Not IsPostBack Then
-                              'get the data
-                              Dim result = db.GetWorkflowItemValues(CInt(NullSafeString(dr("id"))), _instanceID)
-
-                              'insert a blank row
-                              result.Data.Rows.InsertAt(result.Data.NewRow(), 0)
-
-                              'bind data to grid
-                              For Each column As DataColumn In result.Data.Columns
-                                 If Not column.ColumnName.StartsWith("ASRSys") Then
-                                    .DataTextField = column.ColumnName
-                                 End If
-                              Next
-                              .DataSource = result.Data
-                              .DataBind()
-
-                              'store info its needed later
                               .Attributes.Add("LookupColumnIndex", result.LookupColumnIndex.ToString)
-                              .Attributes.Add("DataType",
-                                              result.Data.Columns(result.LookupColumnIndex).DataType.ToString)
+                              .Attributes.Add("DataType", result.Data.Columns(result.LookupColumnIndex).DataType.ToString)
 
-                              'set the default value
+                              'set the default and selected value
                               Dim item As ListItem = control.Items.FindByValue(result.DefaultValue)
                               If item IsNot Nothing Then
-                                 .SelectedValue = item.Value
+                                 control.SelectedValue = item.Value
+                              Else
+                                 'The selected value is not in the list, so add it after the blank row
+                                 control.Items.Insert(1, result.DefaultValue)
+                                 control.SelectedIndex = 1
                               End If
-
                            End If
 
                         End With
 
-                     Case 15 ' OptionGroup
+                        ' hidden field to hold any filter SQL code
+                        tabPages(formItem.PageNo).Controls.Add(New HiddenField With {.ID = sID & "filterSQL"})
 
-                        Dim top = NullSafeInteger(dr("TopCoord"))
-                        Dim left = NullSafeInteger(dr("LeftCoord"))
-                        Dim width = NullSafeInteger(dr("Width"))
-                        Dim height = NullSafeInteger(dr("Height"))
-                        Dim fontAdjustment = CInt(CInt(dr("FontSize"))*0.8)
-                        Dim borderCss As String
-
-                        Dim radioTop As Int32
-
-                        If Not NullSafeBoolean(dr("PictureBorder")) Then
-                           borderCss = "border-style: none;"
-                           radioTop = 2
-                        Else
-                           borderCss = "border: 1px solid #999;"
-                           width -= 2
-                           height -= 2
-
-                           If NullSafeString(dr("caption")).Trim.Length = 0 Then
-                              top += fontAdjustment
-                              height -= fontAdjustment
-                           End If
-
-                           radioTop = 19 + CInt((NullSafeInteger(dr("FontSize")) - 8)*1.375)
-
-                           If IsAndroidBrowser() AndAlso NullSafeInteger(dr("Orientation")) = 0 Then
-                              radioTop -= 5
-                           End If
-                        End If
-
-                        Dim html = "<fieldset style='" &
-                                   " position: absolute; " &
-                                   " top: " & top & "px; " &
-                                   " left: " & left & "px; " &
-                                   " width: " & width & "px; " &
-                                   " height: " & height & "px; " &
-                                   " " & GetFontCss(dr) &
-                                   " " & GetColorCss(dr) &
-                                   " " & borderCss &
-                                   " '>"
-
-                        If NullSafeBoolean(dr("PictureBorder")) And (NullSafeString(dr("caption")).Trim.Length > 0) Then
-                           html += String.Format("<legend>{0}</legend>", NullSafeString(dr("caption"))) & vbCrLf
-                        End If
-
-                        html += "</fieldset>" & vbCrLf
-
-                        tabPages(tabPage).Controls.Add(New LiteralControl(html))
-
-                        Dim radioList As New RadioButtonList
-                        With radioList
-                           .ID = sID
-                           .Style.ApplyFont(dr)
-                           .CssClass = "radioList"
-                           If IsAndroidBrowser() Then .CssClass += " android"
-
-                           .TabIndex = NullSafeShort(dr("tabIndex"))
-                           UpdateAutoFocusControl(NullSafeShort(dr("tabIndex")), sID & "_0")
-
-                           .RepeatDirection =
-                              If _
-                                 (NullSafeInteger(dr("Orientation")) = 0, RepeatDirection.Vertical,
-                                  RepeatDirection.Horizontal)
-
-                           .Style("position") = "absolute"
-                           .Style("top") = Unit.Pixel(radioTop + NullSafeInteger(dr("TopCoord"))).ToString
-                           .Style("left") = Unit.Pixel(9 + NullSafeInteger(dr("LeftCoord"))).ToString
-                           .Width() = Unit.Pixel(NullSafeInteger(dr("Width")) - 12)
+                        ' Hidden Button for JS to call which fires filter click event. 
+                        Dim button = New Button
+                        With button
+                           .ID = sID & "refresh"
+                           .Style.Add("display", "none")
                         End With
 
-                        tabPages(tabPage).Controls.Add(radioList)
+                        AddHandler button.Click, AddressOf SetLookupFilter
 
-                        If Not IsPostBack Then
+                        tabPages(formItem.PageNo).Controls.Add(button)
+                     End If
 
-                           'get the data
-                           Dim result = db.GetWorkflowItemValues(CInt(NullSafeString(dr("id"))), _instanceID)
+                  Case 13 ' Dropdown (13) Inputs
 
-                           'bind to the data
-                           radioList.DataTextField = result.Data.Columns(0).ColumnName
-                           radioList.DataSource = result.Data
-                           radioList.DataBind()
+                     Dim control As New DropDownList
 
-                           'set the default value
-                           radioList.SelectedValue = result.DefaultValue
+                     With control
+                        .ID = sID
+                        .ApplyLocation(formItem)
+                        .ApplySize(formItem, - 1, - 1)
+                        .Style.ApplyFont(formItem)
+                        .ApplyColor(formItem)
+                        If Not IsMobileBrowser() Then .ApplyBorder(False)
+                        .Style.Add("padding", "1px")
 
-                           If radioList.SelectedIndex = - 1 Then
-                              radioList.SelectedIndex = 0
-                           End If
-
-                        End If
+                        .TabIndex = formItem.TabIndex
+                        UpdateAutoFocusControl(formItem.TabIndex, sID)
 
                         If IsMobileBrowser() Then
-                           For Each item As ListItem In radioList.Items
-                              item.Attributes.Add("onchange", "FilterMobileLookup('" & sID & "');")
-                           Next
+                           .Attributes.Add("onchange", "FilterMobileLookup('" & .ID & "');")
                         End If
 
-                     Case 17 ' Input value - file upload
+                        tabPages(formItem.PageNo).Controls.Add(control)
 
-                        Dim control = New HtmlInputButton
-                        With control
-                           .ID = sID
-                           .Style.ApplyLocation(dr)
-                           .Style.ApplySize(dr)
-                           .Style.ApplyFont(dr)
+                        Dim filterSql = LookupFilterSQL(formItem.LookupFilterColumnName,
+                                                        formItem.LookupFilterColumnDataType,
+                                                        formItem.LookupFilterOperator,
+                                                        FormInputPrefix &
+                                                        formItem.LookupFilterValueID &
+                                                        "_" & formItem.LookupFilterValueType & "_")
 
-                           .Attributes.Add("TabIndex", NullSafeInteger(dr("tabIndex")).ToString)
-                           UpdateAutoFocusControl(NullSafeShort(dr("tabIndex")), sID)
+                        If filterSql.Length > 0 Then
+                           tabPages(formItem.PageNo).Controls.Add(New HiddenField With {.ID = "lookup" & sID,.Value = filterSql})
+                        End If
 
-                           ' stops the mobiles displaying buttons with over-rounded corners...
-                           If IsMobileBrowser() OrElse IsMacSafari() Then
-                              .Style.Add("-webkit-appearance", "none")
-                              .Style.Add("background-color", "#E6E6E6")
-                              .Style.Add("border", "solid 1px #CCC")
-                              .Style.Add("border-radius", "4px")
+                        If Not IsPostBack Then
+                           'get the data
+                           Dim result = db.GetWorkflowItemValues(formItem.Id, _instanceID)
+
+                           'insert a blank row
+                           result.Data.Rows.InsertAt(result.Data.NewRow(), 0)
+
+                           'bind data to grid
+                           For Each column As DataColumn In result.Data.Columns
+                              If Not column.ColumnName.StartsWith("ASRSys") Then
+                                 .DataTextField = column.ColumnName
+                              End If
+                           Next
+                           .DataSource = result.Data
+                           .DataBind()
+
+                           'store info its needed later
+                           .Attributes.Add("LookupColumnIndex", result.LookupColumnIndex.ToString)
+                           .Attributes.Add("DataType", result.Data.Columns(result.LookupColumnIndex).DataType.ToString)
+
+                           'set the default value
+                           Dim item As ListItem = control.Items.FindByValue(result.DefaultValue)
+                           If item IsNot Nothing Then
+                              .SelectedValue = item.Value
                            End If
 
-                           If _
-                              NullSafeInteger(dr("BackColor")) <> 16249587 AndAlso
-                              NullSafeInteger(dr("BackColor")) <> - 2147483633 Then
-                              .Style.Add("background-color",
-                                         General.GetHtmlColour(NullSafeInteger(dr("BackColor"))).ToString)
-                              .Style.Add("border", "solid 1px #CCC")
-                              .Style.Add("border-radius", "4px")
-                           End If
+                        End If
 
-                           If NullSafeInteger(dr("ForeColor")) <> 6697779 Then
-                              .Style.Add("color", General.GetHtmlColour(NullSafeInteger(dr("ForeColor"))).ToString)
-                           End If
+                     End With
 
-                           .Style.Add("padding", "0px")
-                           .Style.Add("white-space", "normal")
+                  Case 15 ' OptionGroup
 
-                           .Value = NullSafeString(dr("caption"))
+                     Dim top = formItem.Top,
+                         left = formItem.Left,
+                         width = formItem.Width,
+                         height = formItem.Height
 
-                           Dim crypt As New Crypt,
-                               sEncodedID As String = crypt.SimpleEncrypt(NullSafeString(dr("id")).ToString,
-                                                                          Session.SessionID)
+                     Dim fontAdjustment = CInt(formItem.FontSize*0.8)
+                     Dim borderCss As String
 
-                           If Not IsMobileBrowser() Then
-                              .Attributes.Add("onclick",
-                                              "try{showFileUpload(true, '" & sEncodedID &
-                                              "', document.getElementById('file" & sID & "').value);}catch(e){};")
-                           Else
-                              .Attributes.Add("onclick",
-                                              "try{alert('Your browser does not support file upload.');}catch(e){};")
-                           End If
-                        End With
+                     Dim radioTop As Int32
 
-                        tabPages(tabPage).Controls.Add(control)
+                     If Not formItem.PictureBorder Then
+                        borderCss = "border-style: none;"
+                        radioTop = 2
+                     Else
+                        borderCss = "border: 1px solid #999;"
+                        width -= 2
+                        height -= 2
 
-                        tabPages(tabPage).Controls.Add(New HiddenField _
-                                                         With {.ID = "file" & sID, .Value = NullSafeString(dr("value"))})
+                        If formItem.Caption.Trim.Length = 0 Then
+                           top += fontAdjustment
+                           height -= fontAdjustment
+                        End If
 
-                     Case 19, 20 ' DB File or WF File
+                        radioTop = 19 + CInt((formItem.FontSize - 8)*1.375)
+
+                        If Utilities.IsAndroidBrowser() AndAlso formItem.Orientation = 0 Then
+                           radioTop -= 5
+                        End If
+                     End If
+
+                     Dim html = "<fieldset style='" &
+                                " position: absolute; " &
+                                " top: " & top & "px; " &
+                                " left: " & left & "px; " &
+                                " width: " & width & "px; " &
+                                " height: " & height & "px; " &
+                                " " & GetFontCss(formItem) &
+                                " " & GetColorCss(formItem) &
+                                " " & borderCss &
+                                " '>"
+
+                     If formItem.PictureBorder And formItem.Caption.Trim.Length > 0 Then
+                        html += String.Format("<legend>{0}</legend>", formItem.Caption) & vbCrLf
+                     End If
+
+                     html += "</fieldset>" & vbCrLf
+
+                     tabPages(formItem.PageNo).Controls.Add(New LiteralControl(html))
+
+                     Dim radioList As New RadioButtonList
+                     With radioList
+                        .ID = sID
+                        .Style.ApplyFont(formItem)
+                        .CssClass = "radioList"
+                        If Utilities.IsAndroidBrowser() Then .CssClass += " android"
+
+                        .TabIndex = formItem.TabIndex
+                        UpdateAutoFocusControl(formItem.TabIndex, sID & "_0")
+
+                        .RepeatDirection = If (formItem.Orientation = 0, WebControls.RepeatDirection.Vertical,WebControls.RepeatDirection.Horizontal)
+
+                        .Style("position") = "absolute"
+                        .Style("top") = Unit.Pixel(radioTop + formItem.Top).ToString
+                        .Style("left") = Unit.Pixel(9 + formItem.Left).ToString
+                        .Width() = formItem.Width - 12
+                     End With
+
+                     tabPages(formItem.PageNo).Controls.Add(radioList)
+
+                     If Not IsPostBack Then
+
+                        'get the data
+                        Dim result = db.GetWorkflowItemValues(formItem.Id, _instanceID)
+
+                        'bind to the data
+                        radioList.DataTextField = result.Data.Columns(0).ColumnName
+                        radioList.DataSource = result.Data
+                        radioList.DataBind()
+
+                        'set the default value
+                        radioList.SelectedValue = result.DefaultValue
+
+                        If radioList.SelectedIndex = - 1 Then
+                           radioList.SelectedIndex = 0
+                        End If
+
+                     End If
+
+                     If IsMobileBrowser() Then
+                        For Each item As ListItem In radioList.Items
+                           item.Attributes.Add("onchange", "FilterMobileLookup('" & sID & "');")
+                        Next
+                     End If
+
+                  Case 17 ' Input value - file upload
+
+                     Dim control = New HtmlInputButton
+                     With control
+                        .ID = sID
+                        .Style.ApplyLocation(formItem)
+                        .Style.ApplySize(formItem)
+                        .Style.ApplyFont(formItem)
+
+                        .Attributes.Add("TabIndex", formItem.TabIndex.ToString)
+                        UpdateAutoFocusControl(formItem.TabIndex, sID)
+
+                        ' stops the mobiles displaying buttons with over-rounded corners...
+                        If IsMobileBrowser() OrElse Utilities.IsMacSafari() Then
+                           .Style.Add("-webkit-appearance", "none")
+                           .Style.Add("background-color", "#E6E6E6")
+                           .Style.Add("border", "solid 1px #CCC")
+                           .Style.Add("border-radius", "4px")
+                        End If
+
+                        If formItem.BackColor <> 16249587 AndAlso formItem.BackColor <> - 2147483633 Then
+                           .Style.Add("background-color",General.GetHtmlColour(formItem.BackColor).ToString)
+                           .Style.Add("border", "solid 1px #CCC")
+                           .Style.Add("border-radius", "4px")
+                        End If
+
+                        If formItem.ForeColor <> 6697779 Then
+                           .Style.Add("color", General.GetHtmlColour(formItem.ForeColor).ToString)
+                        End If
+
+                        .Style.Add("padding", "0px")
+                        .Style.Add("white-space", "normal")
+
+                        .Value = formItem.Caption
 
                         Dim crypt As New Crypt,
-                            sEncodedID As String = crypt.SimpleEncrypt(NullSafeString(dr("id")).ToString,
-                                                                       Session.SessionID)
+                            sEncodedID As String = crypt.SimpleEncrypt(formItem.Id.ToString,Session.SessionID)
 
-                        Dim html = "<span id='" & sID & "' tabindex=" & NullSafeInteger(dr("tabIndex")).ToString &
-                                   " style='position: absolute; display:inline-block; word-wrap:break-word; overflow:auto;" &
-                                   " top: " & NullSafeString(dr("TopCoord")) & "px;" &
-                                   " left: " & NullSafeString(dr("LeftCoord")) & "px;" &
-                                   " height:" & NullSafeString(dr("Height")) & "px;" &
-                                   " width:" & NullSafeInteger(dr("Width")) & "px;" &
-                                   " " & GetFontCss(dr) &
-                                   " " & GetColorCss(dr) &
-                                   "'" &
-                                   " onclick='FileDownload_Click(""" & sEncodedID & """);'" &
-                                   " onkeypress='FileDownload_KeyPress(""" & sEncodedID & """);'" &
-                                   " >" &
-                                   HttpUtility.HtmlEncode(NullSafeString(dr("caption"))) &
-                                   "</span>"
-
-                        UpdateAutoFocusControl(NullSafeShort(dr("tabIndex")), sID)
-
-                        tabPages(tabPage).Controls.Add(New LiteralControl(html))
-
-                     Case 21 ' Tab Strip
-
-                        'split out the tab names to calculate number of tabs - may not have loaded all tabs yet, so can't count them.
-                        Dim arrTabCaptions As String() = NullSafeString(dr("Caption")).Split(New Char() {";"c})
-
-                        pnlTabsDiv.Style("width") = CStr(dr("Width")) & "px"
-                        pnlTabsDiv.Style("height") = CStr(dr("Height")) & "px"
-                        pnlTabsDiv.Style("left") = CStr(dr("LeftCoord")) & "px"
-                        pnlTabsDiv.Style("top") = CStr(dr("TopCoord")) & "px"
-
-                        Dim ctlTabsDiv As New Panel
-                        ctlTabsDiv.ID = "TabsDiv"
-                        ctlTabsDiv.Style.Add("height", TabStripHeight & "px")
-                        ctlTabsDiv.Style.Add("position", "relative")
-                        ctlTabsDiv.Style.Add("z-index", "1")
-
-                        If IsMobileBrowser() And Not IsAndroidBrowser() Then
-                           ctlTabsDiv.Style.Add("overflow-x", "auto")
+                        If Not IsMobileBrowser() Then
+                           .Attributes.Add("onclick", "try{showFileUpload(true, '" & sEncodedID & "', document.getElementById('file" & sID & "').value);}catch(e){};")
                         Else
-                           ' for non-mobile browsers we display arrows to scroll the tab bar left and right.
-                           ctlTabsDiv.Style.Add("overflow", "hidden")
-                           ctlTabsDiv.Style.Add("margin-right", "51px")
-
-                           ' Nav arrows for non-mobile browsers
-                           Dim ctlFormTabArrows As New Panel
-                           With ctlFormTabArrows
-                              .Style.Add("position", "absolute")
-                              .Style.Add("top", "0px")
-                              .Style.Add("right", "0px")
-                              .Style.Add("width", "48px")
-                              .Style.Add("z-index", "1")
-                              .BackColor = Color.White
-                              .BorderColor = Color.Black
-                              .BorderWidth = 1
-                           End With
-
-                           ' Left scroll arrow
-                           Dim image = New WebControls.Image
-                           With image
-                              .Style.Add("width", "24px")
-                              .Style.Add("height", TabStripHeight - 2 & "px")
-                              .ImageUrl = "~/Images/tab-prev.gif"
-                              .Style.Add("margin", "0px")
-                              .Style.Add("padding", "0px")
-                              .Attributes.Add("onclick",
-                                              "var TabDiv = document.getElementById('TabsDiv');TabDiv.scrollLeft = TabDiv.scrollLeft - 20;")
-                           End With
-                           ctlFormTabArrows.Controls.Add(image)
-
-                           ' Right scroll arrow
-                           image = New WebControls.Image
-                           With image
-                              .Style.Add("width", "24px")
-                              .Style.Add("height", TabStripHeight - 2 & "px")
-                              .ImageUrl = "~/Images/tab-next.gif"
-                              .Style.Add("margin", "0px")
-                              .Style.Add("padding", "0px")
-                              .Attributes.Add("onclick",
-                                              "var TabDiv = document.getElementById('TabsDiv');TabDiv.scrollLeft = TabDiv.scrollLeft + 20;")
-                           End With
-                           ctlFormTabArrows.Controls.Add(image)
-
-                           pnlTabsDiv.Controls.Add(ctlFormTabArrows)
+                           .Attributes.Add("onclick","try{alert('Your browser does not support file upload.');}catch(e){};")
                         End If
+                     End With
 
-                        ' generate the tabs.
-                        Dim ctlTabsTable As New Table
-                        ctlTabsTable.CellSpacing = 0
-                        ' ctlTabsTable.Style.Add("margin-top", "2px")
-                        Dim trPager As TableRow = New TableRow()
-                        trPager.Height = Unit.Pixel(TabStripHeight - 1)
-                        ' to prevent vertical scrollbar
-                        trPager.Style.Add("white-space", "nowrap")
+                     tabPages(formItem.PageNo).Controls.Add(control)
 
-                        Dim iTabNo As Integer = 1
-                        ' add a cell for each tab
-                        For Each sTabCaption In arrTabCaptions
-                           If sTabCaption.Trim.Length > 0 Then
-                              Dim tcTabCell As TableCell = New TableCell
+                     tabPages(formItem.PageNo).Controls.Add(New HiddenField With {.ID = "file" & sID,.Value = formItem.Value})
 
-                              With tcTabCell
-                                 .ID = FormInputPrefix & iTabNo.ToString & "_21_Panel"
-                                 .BorderColor = Color.Black
-                                 .Style.Add("padding-left", "5px")
-                                 .Style.Add("padding-right", "5px")
-                                 .Style.Add("border-radius", "5px 5px 0px 0px")
-                                 .Style.Add("width", "50px")
-                                 .BorderWidth = 1
-                                 .BorderStyle = BorderStyle.Solid
-                                 .BackColor = Color.White
+                  Case 19, 20 ' DB File or WF File
 
-                                 ' label the button...
-                                 Dim label = New Label
-                                 label.Font.Name = "Verdana"
-                                 label.Font.Size = New FontUnit(11, UnitType.Pixel)
-                                 label.Text = sTabCaption.ToString
+                     Dim crypt As New Crypt, sEncodedID As String = crypt.SimpleEncrypt(formItem.Id.ToString, Session.SessionID)
 
-                                 .Controls.Add(label)
+                     Dim html = "<span id='" & sID & "' tabindex=" & formItem.TabIndex.ToString &
+                                " style='position: absolute; display:inline-block; word-wrap:break-word; overflow:auto;" &
+                                " top: " & formItem.Top & "px;" &
+                                " left: " & formItem.Left & "px;" &
+                                " height:" & formItem.Height & "px;" &
+                                " width:" & formItem.Width & "px;" &
+                                " " & GetFontCss(formItem) &
+                                " " & GetColorCss(formItem) &
+                                "'" &
+                                " onclick='FileDownload_Click(""" & sEncodedID & """);'" &
+                                " onkeypress='FileDownload_KeyPress(""" & sEncodedID & """);'" &
+                                " >" &
+                                HttpUtility.HtmlEncode(formItem.Caption) &
+                                "</span>"
 
-                                 ' Tab Clicking/mouseover
-                                 .Attributes.Add("onclick", "SetCurrentTab(" & iTabNo.ToString & ");")
-                                 .Attributes.Add("onmouseover", "this.style.cursor='pointer';")
-                                 .Attributes.Add("onmouseout", "this.style.cursor='';")
-                              End With
+                     UpdateAutoFocusControl(formItem.TabIndex, sID)
 
-                              trPager.Cells.Add(tcTabCell)
+                     tabPages(formItem.PageNo).Controls.Add(New LiteralControl(html))
 
-                              ' NPG20120321 Fault HRPRO-2113
-                              ' Rather than put the controls div inside the relevant tab page (issues with referencing the AJAX controls on postback), 
-                              ' we move the controls div into the form by the top and left of the tabstrip, if it exists
+                  Case 21 ' Tab Strip
 
-                              If iTabNo > 0 Then ' Tab 0 is the base page.
+                     'split out the tab names to calculate number of tabs - may not have loaded all tabs yet, so can't count them.
+                     Dim arrTabCaptions As String() = formItem.Caption.Split(New Char() {";"c})
 
-                                 ' create any MISSING tabs...
-                                 Try
-                                    Dim strTemp As String = tabPages(iTabNo).ID.ToString
-                                    ' OK, if the id exists, the div has already been created. Do nothing.
-                                 Catch ex As Exception
-                                    ' Otherwise create the div
-                                    ' Create the new div, give it a unique id then we can refer to that when it's reused in the next loop.
-                                    ' store the id in the array for reference. NB 21 is the itemtype for a page Tab
-                                    If iTabNo > tabPages.GetUpperBound(0) Then ReDim Preserve tabPages(iTabNo)
+                     pnlTabsDiv.Style("width") = formItem.Width & "px"
+                     pnlTabsDiv.Style("height") = formItem.Height & "px"
+                     pnlTabsDiv.Style("left") = formItem.Left & "px"
+                     pnlTabsDiv.Style("top") = formItem.Top & "px"
 
-                                    tabPages(iTabNo) = New Panel
-                                    tabPages(iTabNo).ID = FormInputPrefix & iTabNo.ToString & "_21_PageTab"
-                                    tabPages(iTabNo).Style.Add("position", "absolute")
+                     Dim ctlTabsDiv As New Panel
+                     ctlTabsDiv.ID = "TabsDiv"
+                     ctlTabsDiv.Style.Add("height", TabStripHeight & "px")
+                     ctlTabsDiv.Style.Add("position", "relative")
+                     ctlTabsDiv.Style.Add("z-index", "1")
 
-                                    ' Add this tab to the web form
-                                    pnlInputDiv.Controls.Add(tabPages(iTabNo))
-                                 End Try
+                     If IsMobileBrowser() And Not Utilities.IsAndroidBrowser() Then
+                        ctlTabsDiv.Style.Add("overflow-x", "auto")
+                     Else
+                        ' for non-mobile browsers we display arrows to scroll the tab bar left and right.
+                        ctlTabsDiv.Style.Add("overflow", "hidden")
+                        ctlTabsDiv.Style.Add("margin-right", "51px")
 
-                                 ' Move all tabs to their relative position within the tab frame.
-                                 Try
-                                    tabPages(iTabNo).Style.Add("top",
-                                                               NullSafeInteger(dr("TopCoord")) + TabStripHeight & "px")
-                                    tabPages(iTabNo).Style.Add("left", NullSafeInteger(dr("LeftCoord")) & "px")
+                        ' Nav arrows for non-mobile browsers
+                        Dim ctlFormTabArrows As New Panel
+                        With ctlFormTabArrows
+                           .Style.Add("position", "absolute")
+                           .Style.Add("top", "0px")
+                           .Style.Add("right", "0px")
+                           .Style.Add("width", "48px")
+                           .Style.Add("z-index", "1")
+                           .BackColor = Color.White
+                           .BorderColor = Color.Black
+                           .BorderWidth = 1
+                        End With
 
-                                    ' Hide all tabs but the first.
-                                    tabPages(iTabNo).Style.Add("display", "none")
-                                 Catch ex As Exception
+                        ' Left scroll arrow
+                        Dim image = New WebControls.Image
+                        With image
+                           .Style.Add("width", "24px")
+                           .Style.Add("height", TabStripHeight - 2 & "px")
+                           .ImageUrl = "~/Images/tab-prev.gif"
+                           .Style.Add("margin", "0px")
+                           .Style.Add("padding", "0px")
+                           .Attributes.Add("onclick", "var TabDiv = document.getElementById('TabsDiv');TabDiv.scrollLeft = TabDiv.scrollLeft - 20;")
+                        End With
+                        ctlFormTabArrows.Controls.Add(image)
 
-                                 End Try
-                              End If
+                        ' Right scroll arrow
+                        image = New WebControls.Image
+                        With image
+                           .Style.Add("width", "24px")
+                           .Style.Add("height", TabStripHeight - 2 & "px")
+                           .ImageUrl = "~/Images/tab-next.gif"
+                           .Style.Add("margin", "0px")
+                           .Style.Add("padding", "0px")
+                           .Attributes.Add("onclick", "var TabDiv = document.getElementById('TabsDiv');TabDiv.scrollLeft = TabDiv.scrollLeft + 20;")
+                        End With
+                        ctlFormTabArrows.Controls.Add(image)
 
-                              iTabNo += 1
-                              ' keep tabs on the number of tabs hehehe :P
-                           End If
-                        Next
-
-                        'add row to table
-                        ctlTabsTable.Rows.Add(trPager)
-
-                        'add table to div
-                        ctlTabsDiv.Controls.Add(ctlTabsTable)
-                        pnlTabsDiv.Controls.AddAt(0, ctlTabsDiv)
-
-                  End Select
-               End While
-
-               dr.Close()
-               _form.Connection.Close()
-
-               If (Not ClientScript.IsStartupScriptRegistered("Startup")) Then
-                  ' Form the script to be registered at client side.
-                  scriptString += "}"
-                  ClientScript.RegisterStartupScript(ClientScript.GetType, "Startup", scriptString, True)
-               End If
-
-               If sMessage.Length = 0 Then
-
-                  If _form.ErrorMessage <> "" Then
-                     sMessage = _form.ErrorMessage
-                  End If
-
-                  If _form.BackImage > 0 Then
-                     Dim image As String = LoadPicture(_form.BackImage, sMessage)
-                     If sMessage.Length = 0 Then
-                        divInput.Style("background-image") = image
-                        divInput.Style("background-repeat") = General.BackgroundRepeat(_form.BackImageLocation)
-                        divInput.Style("background-position") = General.BackgroundPosition(_form.BackImageLocation)
+                        pnlTabsDiv.Controls.Add(ctlFormTabArrows)
                      End If
-                  End If
 
-                  If _form.BackColour > 0 Then
-                     divInput.Style("background-color") = General.GetHtmlColour(_form.BackColour)
-                  End If
+                     ' generate the tabs.
+                     Dim ctlTabsTable As New Table
+                     ctlTabsTable.CellSpacing = 0
+                     ' ctlTabsTable.Style.Add("margin-top", "2px")
+                     Dim trPager As TableRow = New TableRow()
+                     trPager.Height = TabStripHeight - 1
+                     ' to prevent vertical scrollbar
+                     trPager.Style.Add("white-space", "nowrap")
 
-                  pnlInputDiv.Style("width") = _form.Width.ToString & "px"
-                  pnlInputDiv.Style("height") = _form.Height.ToString & "px"
-                  pnlInputDiv.Style("left") = "-2px"
+                     Dim iTabNo As Integer = 1
+                     ' add a cell for each tab
+                     For Each sTabCaption In arrTabCaptions
 
-                  'TODO PG dont need can get size in jQuery from pnlInputDiv css
-                  hdnFormWidth.Value = _form.Width.ToString
-                  hdnFormHeight.Value = _form.Height.ToString
+                        If sTabCaption.Trim.Length > 0 Then
+                           Dim tcTabCell As TableCell = New TableCell
 
-                  hdnSiblingForms.Value = sSiblingForms.ToString
+                           With tcTabCell
+                              .ID = FormInputPrefix & iTabNo.ToString & "_21_Panel"
+                              .BorderColor = Color.Black
+                              .Style.Add("padding-left", "5px")
+                              .Style.Add("padding-right", "5px")
+                              .Style.Add("border-radius", "5px 5px 0px 0px")
+                              .Style.Add("width", "50px")
+                              .BorderWidth = 1
+                              .BorderStyle = BorderStyle.Solid
+                              .BackColor = Color.White
+
+                              ' label the button...
+                              Dim label = New Label
+                              label.Font.Name = "Verdana"
+                              label.Font.Size = New FontUnit(11, UnitType.Pixel)
+                              label.Text = sTabCaption.ToString
+
+                              .Controls.Add(label)
+
+                              ' Tab Clicking/mouseover
+                              .Attributes.Add("onclick", "SetCurrentTab(" & iTabNo.ToString & ");")
+                              .Attributes.Add("onmouseover", "this.style.cursor='pointer';")
+                              .Attributes.Add("onmouseout", "this.style.cursor='';")
+                           End With
+
+                           trPager.Cells.Add(tcTabCell)
+
+                           ' NPG20120321 Fault HRPRO-2113
+                           ' Rather than put the controls div inside the relevant tab page (issues with referencing the AJAX controls on postback), 
+                           ' we move the controls div into the form by the top and left of the tabstrip, if it exists
+
+                           ' Create the tab pages
+                           tabPage = New Panel
+                           tabPage.ID = FormInputPrefix & iTabNo.ToString & "_21_PageTab"
+                           tabPage.Style.Add("position", "absolute")
+                           tabPage.Style.Add("top", (formItem.Top + TabStripHeight) & "px")
+                           tabPage.Style.Add("left", formItem.Left & "px")
+                           If iTabNo > 1 Then
+                              tabPage.Style.Add("display", "none")
+                           End If
+                           ' Add this tab to the web form
+                           tabPages.Add(tabPage)
+                           pnlInputDiv.Controls.Add(tabPage)
+
+                           iTabNo += 1
+                           ' keep tabs on the number of tabs hehehe :P
+                        End If
+                     Next
+
+                     'add row to table
+                     ctlTabsTable.Rows.Add(trPager)
+
+                     'add table to div
+                     ctlTabsDiv.Controls.Add(ctlTabsTable)
+                     pnlTabsDiv.Controls.AddAt(0, ctlTabsDiv)
+
+               End Select
+
+               If sMessage <> "" Then Exit For
+            Next
+
+            If (Not ClientScript.IsStartupScriptRegistered("Startup")) Then
+               ' Form the script to be registered at client side.
+               scriptString += "}"
+               ClientScript.RegisterStartupScript(ClientScript.GetType, "Startup", scriptString,True)
+            End If
+
+            If sMessage.Length = 0 Then
+
+               If _form.ErrorMessage <> "" Then
+                  sMessage = _form.ErrorMessage
                End If
 
+               If _form.BackImage > 0 Then
+                  Dim image As String = LoadPicture(_form.BackImage, sMessage)
+                  If sMessage.Length = 0 Then
+                     divInput.Style("background-image") = image
+                     divInput.Style("background-repeat") =General.BackgroundRepeat(_form.BackImageLocation)
+                     divInput.Style("background-position") =General.BackgroundPosition(_form.BackImageLocation)
+                  End If
+               End If
+
+               If _form.BackColour > 0 Then
+                  divInput.Style("background-color") = General.GetHtmlColour(_form.BackColour)
+               End If
+
+               pnlInputDiv.Style("width") = _form.Width.ToString & "px"
+               pnlInputDiv.Style("height") = _form.Height.ToString & "px"
+               pnlInputDiv.Style("left") = "-2px"
+
+               hdnSiblingForms.Value = _siblingForms.ToString
             End If
 
             ' Resize the mobile 'viewport' to fit the webform
             AddHeaderTags(_form.Width)
 
          Catch ex As Exception
-            sMessage = "Error loading web form controls:<BR><BR>" & ex.Message.Replace(vbCrLf, "<BR>") & "<BR><BR>" &
-                       "Contact your system administrator."
+            sMessage = "Error loading web form controls:<BR><BR>" & ex.Message.Replace(vbCrLf, "<BR>") & "<BR><BR>" & "Contact your system administrator."
          End Try
 
       End If
@@ -1731,8 +1589,7 @@ Public Class [Default]
       hdnNoSubmissionMessage.Value = If(message1.Length + message2.Length + message3.Length = 0, "1", "0")
    End Sub
 
-   Private Sub GetControls(controlCollection As ControlCollection, result As ICollection(Of Control),
-                           Optional predicate As Func(Of Control, Boolean) = Nothing)
+   Private Sub GetControls(controlCollection As ControlCollection, result As ICollection(Of Control), Optional predicate As Func(Of Control, Boolean) = Nothing)
 
       For Each c As Control In controlCollection
          If predicate Is Nothing OrElse predicate(c) Then
@@ -1744,7 +1601,7 @@ Public Class [Default]
       Next
    End Sub
 
-   Public Sub ButtonClick(ByVal sender As System.Object, ByVal e As EventArgs)
+   Public Sub ButtonClick(ByVal sender As Object, ByVal e As EventArgs)
 
       Dim db As New Database(GetConnectionString)
       Dim valueString As String = ""
@@ -1755,9 +1612,7 @@ Public Class [Default]
          ' This is a tab delimited string of itemIDs and values.
          Dim controlList As New List(Of Control)
          GetControls(Page.Controls, controlList, Function(c) c.ClientID.StartsWith(FormInputPrefix) AndAlso
-                                                             (c.ClientID.EndsWith("_") OrElse
-                                                              c.ClientID.EndsWith("TextBox") OrElse
-                                                              c.ClientID.EndsWith("Grid")))
+                                 (c.ClientID.EndsWith("_") OrElse c.ClientID.EndsWith("TextBox") OrElse c.ClientID.EndsWith("Grid")))
 
          For Each ctlFormInput As Control In controlList
 
@@ -1793,11 +1648,7 @@ Public Class [Default]
 
                   If TypeOf ctlFormInput Is TextBox Then
                      Dim control = DirectCast(ctlFormInput, TextBox)
-                     value =
-                        If _
-                           (CSng(control.Text) = CSng(0), "0",
-                            control.Text.Replace(Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator,
-                                                 "."))
+                     value = If (CSng(control.Text) = CSng(0), "0",control.Text.Replace(Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator,"."))
                      valueString += sIDString & value & vbTab
                   End If
 
@@ -1812,14 +1663,14 @@ Public Class [Default]
 
                   If TypeOf ctlFormInput Is TextBox Then
                      Dim control = DirectCast(ctlFormInput, TextBox)
-                     value = If(control.Text.Trim = "", "null", DateTime.Parse(control.Text).ToString("MM/dd/yyyy"))
+                     value = If (control.Text.Trim = "", "null",DateTime.Parse(control.Text).ToString("MM/dd/yyyy"))
                      valueString += sIDString & value & vbTab
                   End If
 
                Case 11 ' Grid (RecordSelector) Input
                   If TypeOf ctlFormInput Is RecordSelector Then
                      Dim control = DirectCast(ctlFormInput, RecordSelector)
-                     value = If(control.SelectedValue IsNot Nothing, CStr(control.SelectedValue), "0")
+                     value =If(control.SelectedValue IsNot Nothing, CStr(control.SelectedValue), "0")
                      valueString += sIDString & value & vbTab
                   End If
 
@@ -1838,15 +1689,9 @@ Public Class [Default]
                         Dim control = DirectCast(ctlFormInput, TextBox)
 
                         If control.Attributes("DataType") = "System.DateTime" Then
-                           value = If(control.Text = "", "null", General.ConvertLocaleDateToSql(control.Text))
-                        ElseIf _
-                           control.Attributes("DataType") = "System.Decimal" Or
-                           control.Attributes("DataType") = "System.Int32" Then
-                           value =
-                              If _
-                                 (control.Text = "", "",
-                                  control.Text.Replace(
-                                     Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator, "."))
+                           value =If(control.Text = "", "null", General.ConvertLocaleDateToSql(control.Text))
+                        ElseIf control.Attributes("DataType") = "System.Decimal" Or control.Attributes("DataType") = "System.Int32" Then
+                           value = If (control.Text = "", "", control.Text.Replace(Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator, "."))
                         Else
                            value = control.Text
                         End If
@@ -1906,17 +1751,11 @@ Public Class [Default]
          hdnCount_Warnings.Value = CStr(bulletWarnings.Items.Count)
          hdnOverrideWarnings.Value = "0"
 
-         lblErrors.Text = If(bulletErrors.Items.Count > 0,
-                             "Unable to submit this form due to the following error" &
-                             If(bulletErrors.Items.Count = 1, "", "s") & ":",
-                             "")
+         lblErrors.Text = If(bulletErrors.Items.Count > 0, "Unable to submit this form due to the following error" & If(bulletErrors.Items.Count = 1, "", "s") & ":","")
 
          lblWarnings.Text = If(bulletWarnings.Items.Count > 0,
-                               If(bulletErrors.Items.Count > 0, "And the following warning" &
-                                                                If(bulletWarnings.Items.Count = 1, "", "s") & ":",
-                                  "Submitting this form raises the following warning" &
-                                  If(bulletWarnings.Items.Count = 1, "", "s") & ":"),
-                               "")
+                            If(bulletErrors.Items.Count > 0, "And the following warning" & If(bulletWarnings.Items.Count = 1, "", "s") & ":",
+                                  "Submitting this form raises the following warning" & If(bulletWarnings.Items.Count = 1, "", "s") & ":"), "")
 
          overrideWarning.Visible = (bulletWarnings.Items.Count > 0 And bulletErrors.Items.Count = 0)
 
@@ -1927,8 +1766,7 @@ Public Class [Default]
                'TODO NOW PG why transactionscope???
                Dim submit As SubmitWebFormResult
                Using (New TransactionScope(TransactionScopeOption.Suppress))
-                  submit = db.WorkflowSubmitWebForm(_elementID, _instanceID, valueString,
-                                                    NullSafeInteger(hdnDefaultPageNo.Value))
+                  submit = db.WorkflowSubmitWebForm(_elementID, _instanceID, valueString, Utilities.NullSafeInteger(hdnDefaultPageNo.Value))
                End Using
 
                hdnFollowOnForms.Value = ""
@@ -1937,14 +1775,12 @@ Public Class [Default]
                   Select Case _form.SavedForLaterMessageType
                      Case 1 ' Custom
                         If Not SetSubmissionMessage(_form.SavedForLaterMessage) Then
-                           SetSubmissionMessage("Workflow step saved for later.<BR><BR>Click", "here",
-                                                "to close this form.")
+                           SetSubmissionMessage("Workflow step saved for later.<BR><BR>Click", "here", "to close this form.")
                         End If
                      Case 2 ' None
                         SetSubmissionMessage("", "", "")
                      Case Else 'System default
-                        SetSubmissionMessage("Workflow step saved for later.<BR><BR>Click", "here",
-                                             "to close this form.")
+                        SetSubmissionMessage("Workflow step saved for later.<BR><BR>Click", "here", "to close this form.")
                   End Select
 
                ElseIf submit.FormElements.Length = 0 Then
@@ -1969,23 +1805,18 @@ Public Class [Default]
                   Select Case _form.FollowOnFormsMessageType
                      Case 1 ' Custom
                         If Not SetSubmissionMessage(_form.FollowOnFormsMessage) Then
-                           SetSubmissionMessage("Workflow step completed.<BR><BR>Click", "here",
-                                                "to complete the follow-on Workflow form" &
-                                                If(followOnForms.Count = 1, "", "s") & ".")
+                           SetSubmissionMessage("Workflow step completed.<BR><BR>Click", "here", "to complete the follow-on Workflow form" & If(followOnForms.Count = 1, "", "s") & ".")
                         End If
                      Case 2 ' None
                         SetSubmissionMessage("", "", "")
                      Case Else 'System default
-                        SetSubmissionMessage("Workflow step completed.<BR><BR>Click", "here",
-                                             "to complete the follow-on Workflow form" &
-                                             If(followOnForms.Count = 1, "", "s") & ".")
+                        SetSubmissionMessage("Workflow step completed.<BR><BR>Click", "here", "to complete the follow-on Workflow form" & If(followOnForms.Count = 1, "", "s") & ".")
                   End Select
                End If
 
             Catch ex As Exception
                sMessage = "Error submitting the web form:<BR><BR>" & ex.Message
             End Try
-
          End If
 
       End If
@@ -2000,10 +1831,8 @@ Public Class [Default]
       End If
    End Sub
 
-   Private _minTabIndex As Short = - 1
-
    Private Sub UpdateAutoFocusControl(tabIndex As Short, focusId As String)
-      If _minTabIndex < 0 Or tabIndex < _minTabIndex Then
+      If Not _minTabIndex.HasValue OrElse tabIndex < _minTabIndex.Value Then
          _autoFocusControl = focusId
          _minTabIndex = tabIndex
       End If
@@ -2023,7 +1852,7 @@ Public Class [Default]
    End Function
 
    Public Function AndroidLayerBug() As Boolean
-      Return IsAndroidBrowser()
+      Return Utilities.IsAndroidBrowser()
    End Function
 
    Public Function IsMobileBrowser() As Boolean
@@ -2039,9 +1868,7 @@ Public Class [Default]
    End Function
 
    Private Function GetConnectionString() As String
-      Dim connectionString = "Application Name=OpenHR Workflow;Data Source=" & _server & ";Initial Catalog=" & _database &
-                             ";Integrated Security=false;User ID=" & _user & ";Password=" & _password & ";Pooling=false"
-      Return connectionString
+      Return "Application Name=OpenHR Workflow;Data Source=" & _server & ";Initial Catalog=" & _database & ";Integrated Security=false;User ID=" & _user & ";Password=" & _password & ";Pooling=false"
    End Function
 
    Private Function LoadPicture(ByVal piPictureID As Int32, ByRef psErrorMessage As String) As String
@@ -2052,8 +1879,8 @@ Public Class [Default]
       Dim sImageFileName As String
       Dim sImageFilePath As String
       Dim sTempName As String
-      Dim fs As IO.FileStream
-      Dim bw As IO.BinaryWriter
+      Dim fs As FileStream
+      Dim bw As BinaryWriter
       Const iBufferSize As Integer = 100
       Dim outByte(iBufferSize - 1) As Byte
       Dim retVal As Long
@@ -2085,21 +1912,18 @@ Public Class [Default]
             dr = cmdSelect.ExecuteReader(CommandBehavior.SequentialAccess)
 
             Do While dr.Read
-               sName = NullSafeString(dr("name"))
+               sName = Utilities.NullSafeString(dr("name"))
                iIndex = sName.LastIndexOf(".")
                If iIndex >= 0 Then
                   sExtension = sName.Substring(iIndex)
                End If
 
-               sImageFileName = Session.SessionID().ToString &
-                                "_" & _imageCount.ToString &
-                                "_" & Date.Now.Ticks.ToString &
-                                sExtension
+               sImageFileName = Session.SessionID().ToString & "_" & _imageCount.ToString & "_" & Date.Now.Ticks.ToString & sExtension
                sTempName = sImageFilePath & "\" & sImageFileName
 
                ' Create a file to hold the output.
-               fs = New IO.FileStream(sTempName, IO.FileMode.OpenOrCreate, IO.FileAccess.Write)
-               bw = New IO.BinaryWriter(fs)
+               fs = New FileStream(sTempName, FileMode.OpenOrCreate, FileAccess.Write)
+               bw = New BinaryWriter(fs)
 
                ' Reset the starting byte for a new BLOB.
                startIndex = 0
@@ -2146,133 +1970,81 @@ Public Class [Default]
       End Try
    End Function
 
-   Private Function LookupFilterSQL(ByVal psColumnName As String, ByVal piColumnDataType As Integer,
-                                    ByVal piOperatorID As Integer, ByVal psValue As String) As String
+   Private Function LookupFilterSQL(ByVal columnName As String, ByVal columnDataType As Integer, ByVal operatorID As Integer, ByVal value As String) As String
 
-      Dim filterSql As String = ""
+      If Not (columnName.Length > 0 And operatorID > 0 And value.Length > 0) Then
+         Return ""
+      End If
 
-      Try
-         If (psColumnName.Length > 0) And (piOperatorID > 0) And (psValue.Length > 0) Then
-
-            Select Case piColumnDataType
-               Case SqlDataType.Boolean
-                  Select Case piOperatorID
-                     Case FilterOperators.giFILTEROP_EQUALS
-                        filterSql = piColumnDataType.ToString & vbTab & psValue & vbTab &
-                                    "ISNULL([ASRSysLookupFilterValue], 0) = " & vbTab
-                     Case FilterOperators.giFILTEROP_NOTEQUALTO
-                        filterSql = piColumnDataType.ToString & vbTab & psValue & vbTab &
-                                    "ISNULL([ASRSysLookupFilterValue], 0) <> " & vbTab
-                  End Select
-
-               Case SqlDataType.Numeric, SqlDataType.Integer
-                  Select Case piOperatorID
-                     Case FilterOperators.giFILTEROP_EQUALS
-                        filterSql = piColumnDataType.ToString & vbTab & psValue & vbTab &
-                                    "ISNULL([ASRSysLookupFilterValue], 0) = " & vbTab
-
-                     Case FilterOperators.giFILTEROP_NOTEQUALTO
-                        filterSql = piColumnDataType.ToString & vbTab & psValue & vbTab &
-                                    "ISNULL([ASRSysLookupFilterValue], 0) <> " & vbTab
-
-                     Case FilterOperators.giFILTEROP_ISATMOST
-                        filterSql = piColumnDataType.ToString & vbTab & psValue & vbTab &
-                                    "ISNULL([ASRSysLookupFilterValue], 0) <= " & vbTab
-
-                     Case FilterOperators.giFILTEROP_ISATLEAST
-                        filterSql = piColumnDataType.ToString & vbTab & psValue & vbTab &
-                                    "ISNULL([ASRSysLookupFilterValue], 0) >= " & vbTab
-
-                     Case FilterOperators.giFILTEROP_ISMORETHAN
-                        filterSql = piColumnDataType.ToString & vbTab & psValue & vbTab &
-                                    "ISNULL([ASRSysLookupFilterValue], 0) > " & vbTab
-
-                     Case FilterOperators.giFILTEROP_ISLESSTHAN
-                        filterSql = piColumnDataType.ToString & vbTab & psValue & vbTab &
-                                    "ISNULL([ASRSysLookupFilterValue], 0) < " & vbTab
-                  End Select
-
-               Case SqlDataType.Date
-                  Select Case piOperatorID
-                     Case FilterOperators.giFILTEROP_ON
-                        filterSql = piColumnDataType.ToString & vbTab & psValue & vbTab &
-                                    "ISNULL([ASRSysLookupFilterValue], '') = '" & vbTab & "'"
-
-                     Case FilterOperators.giFILTEROP_NOTON
-                        filterSql = piColumnDataType.ToString & vbTab & psValue & vbTab &
-                                    "ISNULL([ASRSysLookupFilterValue], '') <> '" & vbTab & "'"
-
-                     Case FilterOperators.giFILTEROP_ONORBEFORE
-                        filterSql = piColumnDataType.ToString & vbTab & psValue & vbTab &
-                                    "LEN(ISNULL([ASRSysLookupFilterValue], '')) = 0 OR (LEN('" & vbTab &
-                                    "') > 0 AND ISNULL([ASRSysLookupFilterValue], '') <= '" & vbTab & "')"
-
-                     Case FilterOperators.giFILTEROP_ONORAFTER
-                        filterSql = piColumnDataType.ToString & vbTab & psValue & vbTab & "LEN('" & vbTab &
-                                    "') = 0 OR (LEN('" & vbTab & "') > 0 AND ISNULL([ASRSysLookupFilterValue], '') >= '" &
-                                    vbTab & "')"
-
-                     Case FilterOperators.giFILTEROP_AFTER
-                        filterSql = piColumnDataType.ToString & vbTab & psValue & vbTab & "(LEN('" & vbTab &
-                                    "') = 0 AND LEN(ISNULL([ASRSysLookupFilterValue], '')) > 0) OR (LEN('" & vbTab &
-                                    "') > 0 AND ISNULL([ASRSysLookupFilterValue], '') > '" & vbTab & "')"
-
-                     Case FilterOperators.giFILTEROP_BEFORE
-                        filterSql = piColumnDataType.ToString & vbTab & psValue & vbTab & "LEN('" & vbTab &
-                                    "') > 0 AND ISNULL([ASRSysLookupFilterValue], '') < '" & vbTab & "'"
-                  End Select
-
-               Case SqlDataType.VarChar, SqlDataType.VarBinary, SqlDataType.LongVarChar
-                  Select Case piOperatorID
-                     Case FilterOperators.giFILTEROP_IS
-                        filterSql = piColumnDataType.ToString & vbTab & psValue & vbTab &
-                                    "ISNULL([ASRSysLookupFilterValue], '') = '" & vbTab & "'"
-
-                     Case FilterOperators.giFILTEROP_ISNOT
-                        filterSql = piColumnDataType.ToString & vbTab & psValue & vbTab &
-                                    "ISNULL([ASRSysLookupFilterValue], '') <> '" & vbTab & "'"
-
-                     Case FilterOperators.giFILTEROP_CONTAINS
-                        filterSql = piColumnDataType.ToString & vbTab & psValue & vbTab &
-                                    "ISNULL([ASRSysLookupFilterValue], '') LIKE '%" & vbTab & "%'"
-
-                     Case FilterOperators.giFILTEROP_DOESNOTCONTAIN
-                        filterSql = piColumnDataType.ToString & vbTab & psValue & vbTab & "LEN('" & vbTab &
-                                    "') > 0 AND ISNULL([ASRSysLookupFilterValue], '') NOT LIKE '%" & vbTab & "%'"
-                  End Select
+      Select Case columnDataType
+         Case SqlDataType.Boolean
+            Select Case operatorID
+               Case FilterOperators.giFILTEROP_EQUALS
+                  Return columnDataType.ToString & vbTab & value & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) = " & vbTab
+               Case FilterOperators.giFILTEROP_NOTEQUALTO
+                  Return columnDataType.ToString & vbTab & value & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) <> " & vbTab
             End Select
-         End If
+         Case SqlDataType.Numeric, SqlDataType.Integer
+            Select Case operatorID
+               Case FilterOperators.giFILTEROP_EQUALS
+                  Return columnDataType.ToString & vbTab & value & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) = " & vbTab
 
-      Catch ex As Exception
-      End Try
+               Case FilterOperators.giFILTEROP_NOTEQUALTO
+                  Return columnDataType.ToString & vbTab & value & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) <> " & vbTab
 
-      Return filterSql
+               Case FilterOperators.giFILTEROP_ISATMOST
+                  Return columnDataType.ToString & vbTab & value & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) <= " & vbTab
+
+               Case FilterOperators.giFILTEROP_ISATLEAST
+                  Return columnDataType.ToString & vbTab & value & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) >= " & vbTab
+
+               Case FilterOperators.giFILTEROP_ISMORETHAN
+                  Return columnDataType.ToString & vbTab & value & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) > " & vbTab
+
+               Case FilterOperators.giFILTEROP_ISLESSTHAN
+                  Return columnDataType.ToString & vbTab & value & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) < " & vbTab
+            End Select
+
+         Case SqlDataType.Date
+            Select Case operatorID
+               Case FilterOperators.giFILTEROP_ON
+                  Return columnDataType.ToString & vbTab & value & vbTab & "ISNULL([ASRSysLookupFilterValue], '') = '" & vbTab & "'"
+
+               Case FilterOperators.giFILTEROP_NOTON
+                  Return columnDataType.ToString & vbTab & value & vbTab & "ISNULL([ASRSysLookupFilterValue], '') <> '" & vbTab & "'"
+
+               Case FilterOperators.giFILTEROP_ONORBEFORE
+                  Return columnDataType.ToString & vbTab & value & vbTab & "LEN(ISNULL([ASRSysLookupFilterValue], '')) = 0 OR (LEN('" & vbTab & "') > 0 AND ISNULL([ASRSysLookupFilterValue], '') <= '" & vbTab & "')"
+
+               Case FilterOperators.giFILTEROP_ONORAFTER
+                  Return columnDataType.ToString & vbTab & value & vbTab & "LEN('" & vbTab & "') = 0 OR (LEN('" & vbTab & "') > 0 AND ISNULL([ASRSysLookupFilterValue], '') >= '" & vbTab & "')"
+
+               Case FilterOperators.giFILTEROP_AFTER
+                  Return columnDataType.ToString & vbTab & value & vbTab & "(LEN('" & vbTab & "') = 0 AND LEN(ISNULL([ASRSysLookupFilterValue], '')) > 0) OR (LEN('" & vbTab & "') > 0 AND ISNULL([ASRSysLookupFilterValue], '') > '" & vbTab & "')"
+
+               Case FilterOperators.giFILTEROP_BEFORE
+                  Return columnDataType.ToString & vbTab & value & vbTab & "LEN('" & vbTab & "') > 0 AND ISNULL([ASRSysLookupFilterValue], '') < '" & vbTab & "'"
+            End Select
+
+         Case SqlDataType.VarChar, SqlDataType.VarBinary, SqlDataType.LongVarChar
+            Select Case operatorID
+               Case FilterOperators.giFILTEROP_IS
+                  Return columnDataType.ToString & vbTab & value & vbTab & "ISNULL([ASRSysLookupFilterValue], '') = '" & vbTab & "'"
+
+               Case FilterOperators.giFILTEROP_ISNOT
+                  Return columnDataType.ToString & vbTab & value & vbTab & "ISNULL([ASRSysLookupFilterValue], '') <> '" & vbTab & "'"
+
+               Case FilterOperators.giFILTEROP_CONTAINS
+                  Return columnDataType.ToString & vbTab & value & vbTab & "ISNULL([ASRSysLookupFilterValue], '') LIKE '%" & vbTab & "%'"
+
+               Case FilterOperators.giFILTEROP_DOESNOTCONTAIN
+                  Return columnDataType.ToString & vbTab & value & vbTab & "LEN('" & vbTab & "') > 0 AND ISNULL([ASRSysLookupFilterValue], '') NOT LIKE '%" & vbTab & "%'"
+            End Select
+      End Select
+
+      Return ""
+
    End Function
-
-   Private Sub ShowNoResultFound(ByVal source As DataTable, ByVal gv As RecordSelector)
-
-      source.Clear()
-      source.Rows.Add(source.NewRow())
-      ' create a new blank row to the DataTable
-      ' Bind the DataTable which contain a blank row to the GridView
-      gv.DataSource = source
-      gv.DataBind()
-      ' Get the total number of columns in the GridView to know what the Column Span should be
-      Dim columnsCount As Integer = gv.Columns.Count
-      gv.Rows(0).Cells.Clear()
-      ' clear all the cells in the row
-      gv.Rows(0).Cells.Add(New TableCell())
-      'add a new blank cell
-      gv.Rows(0).Cells(0).ColumnSpan = columnsCount
-      'set the column span to the new added cell
-
-      'You can set the styles here
-      gv.Rows(0).Cells(0).HorizontalAlign = HorizontalAlign.Center
-      'set No Results found to the new added cell
-      gv.Rows(0).Cells(0).Text = gv.EmptyDataText
-
-      gv.SelectedIndex = - 1
-   End Sub
 
    Protected Sub BtnDoFilterClick(sender As Object, e As EventArgs) Handles btnDoFilter.Click
 
@@ -2294,8 +2066,7 @@ Public Class [Default]
       Dim dataTable As DataTable = TryCast(HttpContext.Current.Session(lookupID.Replace("refresh", "DATA")), DataTable)
 
       ' get the filter sql
-      Dim hiddenField As HiddenField = TryCast(pnlInputDiv.FindControl(lookupID.Replace("refresh", "filterSQL")),
-                                               HiddenField)
+      Dim hiddenField As HiddenField = TryCast(pnlInputDiv.FindControl(lookupID.Replace("refresh", "filterSQL")), HiddenField)
 
       Dim filterSql As String = hiddenField.Value
 
@@ -2329,8 +2100,7 @@ Public Class [Default]
          ' This is a normal grid lookup (not Mobile)
          FilterDataTable(dataTable, filterSql)
 
-         Dim gridView As RecordSelector = TryCast(pnlInputDiv.FindControl(lookupID.Replace("refresh", "Grid")),
-                                                  RecordSelector)
+         Dim gridView As RecordSelector = TryCast(pnlInputDiv.FindControl(lookupID.Replace("refresh", "Grid")), RecordSelector)
 
          gridView.filterSQL = filterSql.ToString
          gridView.DataSource = dataTable
@@ -2342,7 +2112,9 @@ Public Class [Default]
    End Sub
 
    Private Sub FilterDataTable(ByRef dataTable As DataTable, ByVal filterSql As String)
+
       If dataTable IsNot Nothing Then
+
          Dim dataView As New DataView(dataTable)
          dataView.RowFilter = filterSql
 
@@ -2350,20 +2122,18 @@ Public Class [Default]
 
          If dataTable.Rows.Count < 2 Then
             ' create a blank row to display.
-            Dim objDataRow As DataRow
-            objDataRow = dataTable.NewRow()
-            dataTable.Rows.InsertAt(objDataRow, 0)
+            dataTable.Rows.InsertAt(dataTable.NewRow(), 0)
          End If
       End If
    End Sub
 
-   Private Sub AddHeaderTags(ByVal lngViewportWidth As Long)
+   Private Sub AddHeaderTags(ByVal viewportWidth As Long)
 
       ' Create the following timeout meta tag programatically for all browsers
-      '    <meta http-equiv="refresh" content="5; URL=timeout.aspx" />
+      ' <meta http-equiv="refresh" content="5; URL=timeout.aspx" />
       Dim meta As New HtmlMeta()
       meta.HttpEquiv = "refresh"
-      meta.Content = (Session.Timeout*60).ToString & "; URL=timeout.aspx"
+      meta.Content = (Session.Timeout * 60).ToString & "; URL=timeout.aspx"
 
       Page.Header.Controls.Add(meta)
 
@@ -2371,7 +2141,7 @@ Public Class [Default]
       If IsMobileBrowser() Then
          meta = New HtmlMeta()
          meta.Name = "viewport"
-         meta.Content = "width=" & lngViewportWidth & ", user-scalable=yes"
+         meta.Content = "width=" & viewportWidth & ", user-scalable=yes"
          Page.Header.Controls.Add(meta)
 
          Dim link As New HtmlLink()
@@ -2381,21 +2151,21 @@ Public Class [Default]
       End If
    End Sub
 
-   Private Sub SetCulture()
+   Private Sub SetPageCulture()
 
-      Dim culture As String
+      Dim cult As String
 
       If Request.UserLanguages IsNot Nothing Then
-         culture = Request.UserLanguages(0)
+         cult = Request.UserLanguages(0)
       ElseIf Request.ServerVariables("HTTP_ACCEPT_LANGUAGE") IsNot Nothing Then
-         culture = Request.ServerVariables("HTTP_ACCEPT_LANGUAGE")
+         cult = Request.ServerVariables("HTTP_ACCEPT_LANGUAGE")
       Else
-         culture = ConfigurationManager.AppSettings("defaultculture")
+         cult = ConfigurationManager.AppSettings("defaultculture")
       End If
 
-      If culture.ToLower = "en-us" Then culture = "en-GB"
+      If cult.ToLower = "en-us" Then cult = "en-GB"
 
-      Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(culture)
-      Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture(culture)
+      Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cult)
+      Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture(cult)
    End Sub
 End Class

@@ -182,8 +182,6 @@
             <!--
                 Temporary values from the server
                 -->
-            <asp:HiddenField ID="hdnFormHeight" runat="server" Value="0" />
-            <asp:HiddenField ID="hdnFormWidth" runat="server" Value="0" />
             <asp:HiddenField ID="hdnDefaultPageNo" runat="server" Value="0" />
         </form>
         <!--

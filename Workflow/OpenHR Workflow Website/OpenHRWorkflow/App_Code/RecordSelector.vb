@@ -507,7 +507,7 @@ Public Class RecordSelector
     Dim iEffectiveRowHeight As Integer = grdGrid.RowStyle.Height.Value
     Dim iRowCount As Integer = grdGrid.Rows.Count
 
-    grdGrid.Height = Unit.Pixel(iEffectiveRowHeight * iRowCount)
+      grdGrid.Height = iEffectiveRowHeight * iRowCount
 
   End Sub
 
