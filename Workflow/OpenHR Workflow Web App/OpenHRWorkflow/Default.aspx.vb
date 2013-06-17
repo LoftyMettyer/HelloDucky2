@@ -118,7 +118,6 @@ Public Class [Default]
       End If
 
       'Perform version checks if not running in ide
-      'TODO PG check this is ok
 #If DEBUG Then
 #Else
       'check if the database and website versions match.

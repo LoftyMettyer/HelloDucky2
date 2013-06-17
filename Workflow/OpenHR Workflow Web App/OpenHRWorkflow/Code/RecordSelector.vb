@@ -365,19 +365,6 @@ Public Class RecordSelector
 
   Private Function CalculatePagerHeight() As String
 
-    'Dim strPagerHeight As String = "auto"
-    'Dim iPagerHeight As Integer = 0
-    'Dim iGridHeight As Integer = ControlHeight
-
-    'If Me.PageCount > 0 Then
-    'Dim iGridTopPadding As Integer = CInt(NullSafeSingle(Me.HeadFontSize) / 8)
-
-    'iPagerHeight = CInt((((NullSafeSingle(Me.HeadFontSize) + iGridTopPadding) * 2) - 2) * 1.5)
-
-    'If iPagerHeight > NullSafeInteger(iGridHeight) Then
-    '    iPagerHeight = NullSafeInteger(iGridHeight)
-    'End If
-
     ' NPG20120110 Fault HRPRO-1831
     ' Hide pager bar if control is too narrow to display navigation buttons, or
     ' if it's empty.
@@ -714,8 +701,7 @@ Public Class RecordSelector
     Catch ex As Exception
 
     End Try
-
-
+   
   End Sub
 
   Private Sub RecordSelector_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.SelectedIndexChanged
@@ -924,7 +910,6 @@ Public Class RecordSelector
     Return dt
 
   End Function
-
 
   Private Sub InitCustomPager(ByVal row As GridViewRow, ByVal columnSpan As Integer, ByVal pagedDataSource As PagedDataSource)
 
@@ -1157,9 +1142,7 @@ Public Class RecordSelector
     If Not IsLookup Then
       ' Hide Search box if required
       If MyBase.Width.Value < 420 Then
-        'tcSearchCell.Style.Add("display", "none")
-        'tcSearchCell.Style.Add("visibility", "hidden")
-        tcPageXofY.Style.Add("display", "none")
+            tcPageXofY.Style.Add("display", "none")
         tcPageXofY.Style.Add("visibility", "hidden")
         tcPagerBtns.Style.Add("display", "none")
         tcPagerBtns.Style.Add("visibility", "hidden")
@@ -1167,13 +1150,7 @@ Public Class RecordSelector
 
       If MyBase.Width.Value < 175 Then
         ' Hide tcPageXofY AND tcPagerBtns
-        'tcPageXofY.Style.Add("display", "none")
-        'tcPageXofY.Style.Add("visibility", "hidden")
-        'tcPagerBtns.Style.Add("display", "none")
-        'tcPagerBtns.Style.Add("visibility", "hidden")
-        'trPager.Style.Remove("width")
-        'trPager.Style.Add("width", "75px")
-        tcSearchCell.Style.Add("display", "none")
+            tcSearchCell.Style.Add("display", "none")
         tcSearchCell.Style.Add("visibility", "hidden")
       ElseIf MyBase.Width.Value < 210 Then
         ' Hide just tcPageXofY
@@ -1181,12 +1158,9 @@ Public Class RecordSelector
         tcPageXofY.Style.Add("visibility", "hidden")
         tcPagerBtns.Style.Add("display", "none")
         tcPagerBtns.Style.Add("visibility", "hidden")
-        'trPager.Style.Remove("width")
-        'trPager.Style.Add("width", "175px")
       End If
 
     End If
-
 
     'add cells to row
     trPager.Cells.Add(tcSearchCell)

@@ -25,8 +25,8 @@ Public Class Forms
 
       Dim message As String = ""
 
-      If App.Config.WorkflowUrl.Length = 0 Then message += "Workflow url is not defined, "
-      If App.Config.MobileKey.Length = 0 Then message += "Mobile key is not defined, "
+      If App.Config.WorkflowUrl.IsNullOrEmpty Then message += "Workflow url is not defined, "
+      If App.Config.MobileKey.IsNullOrEmpty Then message += "Mobile key is not defined, "
 
       If message.Length > 0 Then
          HttpContext.Current.Session("message") = "The system is not configured correctly, " & message.TrimEnd(","c, " "c) & ". Please contact your system administrator."
