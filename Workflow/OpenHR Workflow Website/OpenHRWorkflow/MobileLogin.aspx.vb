@@ -18,7 +18,7 @@ Partial Class MobileLogin
     Dim drElements As SqlClient.SqlDataReader
     Dim sImageFileName As String
 
-    _ImageCount = 0
+    _imageCount = 0
 
     ' Establish Connection
     Dim myConnection As New SqlClient.SqlConnection(Configuration.ConnectionString)
@@ -66,7 +66,7 @@ Partial Class MobileLogin
 
           'Header Image
           If iPanelID = 1 AndAlso Not IsDBNull(drLayouts("HeaderLogoID")) Then
-            Dim imageControl As New Image
+            Dim imageControl As New WebControls.Image
 
             With imageControl
               .Style("position") = "absolute"
@@ -206,7 +206,7 @@ Partial Class MobileLogin
     Dim sName As String
 
     Try
-      _ImageCount = CShort(_ImageCount + 1)
+      _imageCount = CShort(_imageCount + 1)
 
       psErrorMessage = ""
       sImageFileName = ""
@@ -236,7 +236,7 @@ Partial Class MobileLogin
           End If
 
           sImageFileName = Session.SessionID().ToString & _
-           "_" & _ImageCount.ToString & _
+           "_" & _imageCount.ToString & _
            "_" & Date.Now.Ticks.ToString & _
            sExtension
           sTempName = sImageFilePath & "\" & sImageFileName
