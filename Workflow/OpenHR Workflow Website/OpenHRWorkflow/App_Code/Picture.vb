@@ -9,6 +9,7 @@ Public Class Picture
   Private Shared ReadOnly Folder As String
   Private Shared ReadOnly RootPath As String
   Private Shared ReadOnly FullPath As String
+  Private Shared ReadOnly Lock As New Object
 
   Shared Sub New()
 
@@ -36,20 +37,21 @@ Public Class Picture
 
     Dim url As String = String.Empty
 
-    If Not Map.TryGetValue(id, url) Then
+    SyncLock Lock
 
-      'TODO must thread lock this code
+      If Not Map.TryGetValue(id, url) Then
 
-      If Not Directory.Exists(FullPath) Then
-        Directory.CreateDirectory(FullPath)
+        If Not Directory.Exists(FullPath) Then
+          Directory.CreateDirectory(FullPath)
+        End If
+
+        Dim file = LoadPicture(id)
+        url = RootPath & "/" & Path.GetFileName(file)
+        Map.Add(CInt(id), url)
+
       End If
 
-      Dim file = LoadPicture(id)
-      url = RootPath & "/" & Path.GetFileName(file)
-      Map.Add(CInt(id), url)
-
-      'End Thread lock
-    End If
+    End SyncLock
 
     Return url
 
