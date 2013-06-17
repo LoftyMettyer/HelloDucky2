@@ -193,7 +193,7 @@ Public Class Utilities
 
   Public Shared Function WebSiteName(Optional contentPageName As String = "") As String
 
-    Const ASSEMBLYNAME As String = "OPENHR"
+    Const ASSEMBLYNAME As String = "OPENHRWORKFLOW"
     Const sDEFAULTTITLE As String = "OpenHR"
     Dim sWebSiteVersion As String
     Dim sTitle As String
