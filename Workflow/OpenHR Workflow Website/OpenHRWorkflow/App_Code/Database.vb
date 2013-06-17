@@ -51,6 +51,59 @@ Public Class Database
 
   End Function
 
+  Public Shared Function GetWorkflowPendingStepCount(userName As String) As Integer
+
+    Using conn As New SqlConnection(Configuration.ConnectionString)
+      conn.Open()
+
+      Dim cmd As New SqlClient.SqlCommand
+      cmd.CommandText = "spASRSysMobileCheckPendingWorkflowSteps"
+      cmd.Connection = conn
+      cmd.CommandType = CommandType.StoredProcedure
+
+      cmd.Parameters.Add("@psKeyParameter", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
+      cmd.Parameters("@psKeyParameter").Value = userName
+
+      Dim dr As SqlDataReader = cmd.ExecuteReader
+
+      Dim count As Integer
+      While dr.Read
+        count += 1
+      End While
+      Return count
+    End Using
+
+  End Function
+
+  Public Shared Function CanUserGroupRunWorkflows(userGroupID As Integer) As Boolean
+
+    Using conn As New SqlConnection(Configuration.ConnectionString)
+
+      ' get the run permissions for workflow for this user group.
+      Dim sql As String = "SELECT  [i].[itemKey], [p].[permitted]" & _
+                           " FROM [ASRSysGroupPermissions] p" & _
+                           " JOIN [ASRSysPermissionItems] i ON [p].[itemID] = [i].[itemID]" & _
+                           " WHERE [p].[itemID] IN (" & _
+                               " SELECT [itemID] FROM [ASRSysPermissionItems]	" & _
+                                " WHERE [categoryID] = (SELECT [categoryID] FROM [ASRSysPermissionCategories] WHERE [categoryKey] = 'WORKFLOW')) " & _
+                                " AND [groupName] = (SELECT [Name] FROM [ASRSysGroups] WHERE [ID] = " & userGroupID.ToString & ")"
+
+      conn.Open()
+      Dim cmd As New SqlCommand(sql, conn)
+      Dim dr As SqlDataReader = cmd.ExecuteReader()
+
+      While dr.Read()
+        Select Case CStr(dr("itemKey"))
+          Case "RUN"
+            Return CBool(dr("permitted"))
+        End Select
+      End While
+
+      Return False
+    End Using
+
+  End Function
+
 End Class
 
 Public Structure CheckLoginResult

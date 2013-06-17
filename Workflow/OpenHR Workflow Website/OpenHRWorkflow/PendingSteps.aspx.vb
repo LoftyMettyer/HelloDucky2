@@ -8,6 +8,8 @@ Partial Class PendingSteps
     Inherits System.Web.UI.Page
 
   Protected Sub Page_Init(sender As Object, e As EventArgs) Handles Me.Init
+    Title = WebSiteName("To Do...")
+    Forms.LoadControlData(Me, 5)
 
     Dim result As CheckLoginResult = Database.CheckLoginDetails(User.Identity.Name)
     Dim userGroupID As Integer
@@ -18,10 +20,6 @@ Partial Class PendingSteps
       Session("message") = result.InvalidReason
       Response.Redirect("~/Message.aspx")
     End If
-
-    Forms.LoadControlData(Me, 5)
-
-    Title = WebSiteName("To Do...")
 
     Dim todoTitleForeColor As Integer
     Dim todoTitleFontInfo As New FontSetting
@@ -53,36 +51,11 @@ Partial Class PendingSteps
       todoDescFontInfo.Strikeout = NullSafeBoolean(dr("TodoDescFontStrikeout"))
     End Using
 
-    Dim userGroupHasPermission As Boolean
-
-    Using conn As New SqlConnection(Configuration.ConnectionString)
-
-      conn.Open()
-
-    ' get the run permissions for workflow for this user group.
-      Dim sql As String = "SELECT  [i].[itemKey], [p].[permitted]" & _
-                          " FROM [ASRSysGroupPermissions] p" & _
-                          " JOIN [ASRSysPermissionItems] i ON [p].[itemID] = [i].[itemID]" & _
-                          " WHERE [p].[itemID] IN (" & _
-                              " SELECT [itemID] FROM [ASRSysPermissionItems]	" & _
-                              " WHERE [categoryID] = (SELECT [categoryID] FROM [ASRSysPermissionCategories] WHERE [categoryKey] = 'WORKFLOW')) " & _
-                          " AND [groupName] = (SELECT [Name] FROM [ASRSysGroups] WHERE [ID] = " & userGroupID.ToString & ")"
-
-      Dim cmd As New SqlCommand(sql, conn)
-      Dim dr As SqlDataReader = cmd.ExecuteReader()
-
-      While dr.Read()
-        Select Case CStr(dr("itemKey"))
-          Case "RUN"
-            userGroupHasPermission = (dr("permitted") = True)
-        End Select
-      End While
-
-    End Using
+    Dim canRun As Boolean = Database.CanUserGroupRunWorkflows(userGroupID)
 
     Dim stepCount As Integer
 
-    If userGroupHasPermission Then
+    If canRun Then
 
       ' Get the pending steps.
       Using conn As New SqlConnection(Configuration.ConnectionString)

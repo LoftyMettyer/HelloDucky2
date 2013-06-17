@@ -6,11 +6,10 @@ Partial Class ForgottenLogin
   Inherits System.Web.UI.Page
 
   Protected Sub Page_Init(sender As Object, e As System.EventArgs) Handles Me.Init
-    Forms.LoadControlData(Me, 6)
-
     Title = WebSiteName("Forgotten Login")
-    Page.Form.DefaultButton = btnSubmit.UniqueID
-    Page.Form.DefaultFocus = txtEmail.ClientID
+    Forms.LoadControlData(Me, 6)
+    Form.DefaultButton = btnSubmit.UniqueID
+    Form.DefaultFocus = txtEmail.ClientID
   End Sub
 
   Protected Sub BtnSubmitClick(sender As Object, e As EventArgs) Handles btnSubmit.Click

@@ -7,6 +7,20 @@
 
     <div runat="server" id="pnlWFList" />
 
+<%--    <asp:ListView ID="ListView1" runat="server">
+        <LayoutTemplate>
+            <ul><li id="ItemPlaceHolder" runat="server"></li></ul>
+        </LayoutTemplate>
+        <ItemTemplate>
+            <li>
+                <asp:HyperLink runat="server" NavigateUrl='<%# Eval("Url") %>'>
+                    <asp:Image runat="server" ImageUrl='<%# Eval("Image") %>'/>
+                    <asp:Label runat="server" Text='<%# Eval("Name") %>'/>
+                </asp:HyperLink>
+            </li>
+        </ItemTemplate>
+    </asp:ListView>--%>
+
 </asp:Content>
 
 <asp:Content ID="footer" ContentPlaceHolderID="footerCPH" Runat="Server">

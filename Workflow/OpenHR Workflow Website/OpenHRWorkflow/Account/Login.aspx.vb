@@ -5,11 +5,10 @@ Partial Class Login
     Inherits System.Web.UI.Page
 
   Protected Sub Page_Init(sender As Object, e As System.EventArgs) Handles Me.Init
-    Forms.LoadControlData(Me, 1)
-
     Title = WebSiteName("Login")
-    Page.Form.DefaultButton = btnLogin.UniqueID
-    Page.Form.DefaultFocus = txtUserName.ClientID
+    Forms.LoadControlData(Me, 1)
+    Form.DefaultButton = btnLogin.UniqueID
+    Form.DefaultFocus = txtUserName.ClientID
   End Sub
 
   Protected Sub BtnLoginClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnLogin.Click

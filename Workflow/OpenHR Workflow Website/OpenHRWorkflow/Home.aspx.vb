@@ -7,6 +7,8 @@ Partial Class Home
     Inherits System.Web.UI.Page
 
   Protected Sub Page_Init(sender As Object, e As EventArgs) Handles Me.Init
+    Title = WebSiteName("Home")
+    Forms.LoadControlData(Me, 2)
 
     Dim result As CheckLoginResult = Database.CheckLoginDetails(User.Identity.Name)
     Dim userGroupID As Integer
@@ -17,10 +19,6 @@ Partial Class Home
       Session("message") = result.InvalidReason
       Response.Redirect("~/Message.aspx")
     End If
-
-    Forms.LoadControlData(Me, 2)
-
-    Title = WebSiteName("Home")
 
     Dim homeItemFontInfo As New FontSetting
     Dim homeItemForeColor As Integer
@@ -41,34 +39,12 @@ Partial Class Home
       homeItemFontInfo.Strikeout = NullSafeBoolean(dr("HomeItemFontStrikeout"))
     End Using
 
-    Dim userGroupHasPermission As Boolean
-
-    Using conn As New SqlConnection(Configuration.ConnectionString)
-
-      ' get the run permissions for workflow for this user group.
-      Dim sql As String = "SELECT  [i].[itemKey], [p].[permitted]" & _
-                           " FROM [ASRSysGroupPermissions] p" & _
-                           " JOIN [ASRSysPermissionItems] i ON [p].[itemID] = [i].[itemID]" & _
-                           " WHERE [p].[itemID] IN (" & _
-                               " SELECT [itemID] FROM [ASRSysPermissionItems]	" & _
-                                " WHERE [categoryID] = (SELECT [categoryID] FROM [ASRSysPermissionCategories] WHERE [categoryKey] = 'WORKFLOW')) " & _
-                                " AND [groupName] = (SELECT [Name] FROM [ASRSysGroups] WHERE [ID] = " & userGroupID.ToString & ")"
-      conn.Open()
-      Dim cmd As New SqlCommand(sql, conn)
-      Dim dr As SqlDataReader = cmd.ExecuteReader()
-
-      While dr.Read()
-        Select Case CStr(dr("itemKey"))
-          Case "RUN"
-            userGroupHasPermission = (dr("permitted") = True)
-        End Select
-      End While
-
-    End Using
-
     Dim itemCount As Integer
+    Dim workflows As New List(Of WorkflowLink)
 
-    If userGroupHasPermission Then
+    Dim canRun As Boolean = Database.CanUserGroupRunWorkflows(userGroupID)
+
+    If canRun Then
 
       Using conn As New SqlConnection(Configuration.ConnectionString)
 
@@ -108,6 +84,8 @@ Partial Class Home
           image.Height() = Unit.Pixel(57)
           image.Width() = Unit.Pixel(57)
           image.Style.Add("cursor", "pointer")
+
+          workflows.Add(New WorkflowLink() With {.Name = CStr(dr("Name")), .Image = sImageFileName, .Url = WorkflowLink(CInt(dr("ID")))})
 
           ' add ImageButton to cell
           cell.Controls.Add(image)
@@ -149,19 +127,22 @@ Partial Class Home
       lblWelcome.Visible = False
     End If
 
-    ' Update the wf steps count
-    If userGroupHasPermission Then
-
-      Dim count As Integer = GetPendingStepsCount()
-
+    ' Update the workflow step count indicator
+    If canRun Then
+      Dim count As Integer = Database.GetWorkflowPendingStepCount(User.Identity.Name)
       lblWFCount.Text = CStr(count)
       lblWFCount.Visible = (count > 0)
+    Else
+      lblWFCount.Visible = False
     End If
 
     ' Disable the Change Password button for windows authenticated Security
     If User.Identity.Name.Contains("\") Then
       btnChangePwd.Visible = False
     End If
+
+    'ListView1.DataSource = workflows
+    'ListView1.DataBind()
 
   End Sub
 
@@ -193,40 +174,38 @@ Partial Class Home
   End Function
 
   Protected Sub BtnLogoutClick(sender As Object, e As EventArgs) Handles btnLogout.Click
-
     FormsAuthentication.SignOut()
-
-    ' clear authentication cookie
-    Dim cookie As HttpCookie = New HttpCookie(FormsAuthentication.FormsCookieName, "")
-    cookie.Expires = DateTime.Now.AddYears(-1)
-    Response.Cookies.Add(cookie)
-
     FormsAuthentication.RedirectToLoginPage()
-
   End Sub
 
-  Private Function GetPendingStepsCount() As Integer
+End Class
 
-    Using conn As New SqlConnection(Configuration.ConnectionString)
-      conn.Open()
-
-      Dim cmd As New SqlClient.SqlCommand
-      cmd.CommandText = "spASRSysMobileCheckPendingWorkflowSteps"
-      cmd.Connection = conn
-      cmd.CommandType = CommandType.StoredProcedure
-
-      cmd.Parameters.Add("@psKeyParameter", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
-      cmd.Parameters("@psKeyParameter").Value = User.Identity.Name
-
-      Dim dr As SqlClient.SqlDataReader = cmd.ExecuteReader
-
-      Dim count As Integer
-      While dr.Read
-        count += 1
-      End While
-      Return count
-    End Using
-
-  End Function
-
+Public Class WorkflowLink
+  Private _name As String
+  Public Property Name As String
+    Get
+      Return _name
+    End Get
+    Set(value As String)
+      _name = value
+    End Set
+  End Property
+  Private _image As String
+  Public Property Image As String
+    Get
+      Return _image
+    End Get
+    Set(value As String)
+      _image = value
+    End Set
+  End Property
+  Private _url As String
+  Public Property Url As String
+    Get
+      Return _url
+    End Get
+    Set(value As String)
+      _url = value
+    End Set
+  End Property
 End Class
