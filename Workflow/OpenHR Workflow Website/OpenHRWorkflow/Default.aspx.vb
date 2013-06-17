@@ -3981,8 +3981,8 @@ Public Class _Default
 
           End If
 
-          ' Resize the mobile 'viewport' to fit the webform - iPhone only???
-          AddIPhoneHeaderTags(iFormWidth)
+          ' Resize the mobile 'viewport' to fit the webform - mobiles only
+          If isMobileBrowser() Then AddMobileHeaderTags(iFormWidth)
 
         Catch ex As Exception
           sMessage = "Error loading web form controls:<BR><BR>" & _
@@ -5607,20 +5607,20 @@ Public Class _Default
     Return False
   End Function
 
-  Private Sub AddIPhoneHeaderTags(ByVal lngViewportWidth As Long)
-    Dim ua As String = Request.UserAgent
+  Private Sub AddMobileHeaderTags(ByVal lngViewportWidth As Long)
+    'Dim ua As String = Request.UserAgent
 
-    If ua IsNot Nothing AndAlso (ua.Contains("iPhone") OrElse ua.Contains("iPad")) Then
-      Dim meta As New HtmlMeta()
-      meta.Name = "viewport"
-      meta.Content = "width=" & lngViewportWidth & ", user-scalable=yes"
-      Page.Header.Controls.Add(meta)
+    'If ua IsNot Nothing AndAlso (ua.Contains("iPhone") OrElse ua.Contains("iPad")) Then
+    Dim meta As New HtmlMeta()
+    meta.Name = "viewport"
+    meta.Content = "width=" & lngViewportWidth & ", user-scalable=yes"
+    Page.Header.Controls.Add(meta)
 
-      Dim link As New HtmlLink()
-      link.Attributes("rel") = "apple-touch-icon"
-      link.Href = "favicon.ico"
-      Page.Header.Controls.Add(link)
-    End If
+    Dim link As New HtmlLink()
+    link.Attributes("rel") = "apple-touch-icon"
+    link.Href = "favicon.ico"
+    Page.Header.Controls.Add(link)
+    'End If
   End Sub
 
 
