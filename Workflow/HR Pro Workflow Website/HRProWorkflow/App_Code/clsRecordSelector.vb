@@ -148,7 +148,7 @@ Public Class RecordSelector
                     " style='position:absolute;top:0px;left:0px;width:" & CalculateGridWidth() & ";height:" & CalculateHeaderHeight() & _
                     ";table-layout:fixed;border:0'" & _
                     " cellspacing='" & Me.CellSpacing.ToString() & "'" & _
-                    IIf((MyBase.HeaderRow IsNot Nothing), " class='resizable'", "") & _
+                    IIf((MyBase.HeaderRow IsNot Nothing And Me.IsEmpty = False), " class='resizable'", "") & _
                     ">")
 
         If MyBase.HeaderRow IsNot Nothing Then
