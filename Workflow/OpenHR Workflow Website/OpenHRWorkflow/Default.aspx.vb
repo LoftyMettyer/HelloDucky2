@@ -33,6 +33,7 @@ Public Class _Default
   Private msFollowOnFormsMessage As String
   Private miSubmissionTimeoutInSeconds As Int32
   Private m_iLookupColumnIndex As Integer
+  Private iPageNo As Integer = 0
 
   Private Const FORMINPUTPREFIX As String = "forminput_"
   Private Const ASSEMBLYNAME As String = "OPENHRWORKFLOW"
@@ -626,6 +627,27 @@ Public Class _Default
             Session("ElementID") = miElementID
             Session("InstanceID") = miInstanceID
 
+            ' Get the selected tab number for this workflow, if any...
+            If Not IsPostBack Then
+              Try
+                cmdSelect = New SqlCommand("SELECT [pageno] FROM [dbo].[ASRSysWorkflowInstances] WHERE [ID] = " & NullSafeInteger(miInstanceID).ToString, conn)
+                dr = cmdSelect.ExecuteReader()
+
+                While dr.Read()
+                  ' store the tab
+                  iPageNo = NullSafeInteger(dr("pageno"))
+                End While
+
+                dr.Close()
+                cmdSelect.Dispose()
+
+              Catch ex As Exception
+                iPageNo = 0
+              End Try
+
+              hdnDefaultPageNo.Value = iPageNo.ToString
+            End If
+
             cmdSelect = New SqlCommand
             cmdSelect.CommandText = "spASRGetWorkflowFormItems"
             cmdSelect.Connection = conn
@@ -745,7 +767,7 @@ Public Class _Default
                     .Style.Add("Height", Unit.Pixel(NullSafeInteger(dr("Height"))).ToString)
 
                     ' stops the mobiles displaying buttons with over-rounded corners...
-                    If isMobileBrowser() Then .Style.Add("-webkit-appearance", "none")
+                    If IsMobileBrowser() Then .Style.Add("-webkit-appearance", "none")
 
                     .Attributes.Add("onclick", "try{setPostbackMode(1);}catch(e){};")
                   End With
@@ -3626,6 +3648,9 @@ Public Class _Default
 
           Using (New TransactionScope(TransactionScopeOption.Suppress))
             Try
+              ' Get the currently selected tab...
+              iPageNo = NullSafeInteger(hdnDefaultPageNo.Value)
+
               cmdUpdate = New SqlCommand("spASRSubmitWorkflowStep", conn)
               cmdUpdate.CommandType = CommandType.StoredProcedure
               cmdUpdate.CommandTimeout = miSubmissionTimeoutInSeconds
@@ -3641,6 +3666,9 @@ Public Class _Default
 
               cmdUpdate.Parameters.Add("@psFormElements", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Output
               cmdUpdate.Parameters.Add("@pfSavedForLater", SqlDbType.Bit).Direction = ParameterDirection.Output
+
+              cmdUpdate.Parameters.Add("@piPageNo", SqlDbType.Int).Direction = ParameterDirection.Input
+              cmdUpdate.Parameters("@piPageNo").Value = iPageNo
 
               cmdUpdate.ExecuteNonQuery()
 

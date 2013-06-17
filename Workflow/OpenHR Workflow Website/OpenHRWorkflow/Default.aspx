@@ -194,10 +194,15 @@
     var sControlType;
     var oldgridSelectedColor;
 		//var ScrollTopPos;
-
-      //Set the current page tab
+      //Set the current page tab	  
+	  var iPageNo = document.getElementById("hdnDefaultPageNo").value;	  
+	  if(iPageNo > 0) {
+	    window.iCurrentTab = iPageNo;
+	  }
+	  else {
 	    window.iCurrentTab = 1;
-      SetCurrentTab(iCurrentTab);
+	  }
+	  SetCurrentTab(iCurrentTab);
 
 			try {
 				iDefHeight = window.$get("frmMain").hdnFormHeight.value;
@@ -1615,6 +1620,8 @@ function ResizeComboForForm(sender, args) {
     var newTab = $get("forminput_" + iNewTab + "_21_PageTab");
     var newPanel = $get("forminput_" + iNewTab + "_21_Panel");
 
+    document.getElementById("hdnDefaultPageNo").value = iNewTab;
+    
     try {
       if(currentTab!=null) currentTab.style.display = "none";
       
@@ -1624,7 +1631,8 @@ function ResizeComboForForm(sender, args) {
         
       if(newPanel!=null) newPanel.style.borderBottom = "1px solid white";
         
-       iCurrentTab = iNewTab;
+       window.iCurrentTab = iNewTab;            
+
     }
     catch (e) {}
   }
@@ -1732,6 +1740,7 @@ function ResizeComboForForm(sender, args) {
 	<asp:HiddenField ID="hdnFormBackPosition" runat="server" Value="" />
 	<asp:HiddenField ID="hdnColourThemeHex" runat="server" Value="" />
 	<asp:HiddenField ID="hdnFirstControl" runat="server" Value="" />
+  <asp:HiddenField ID="hdnDefaultPageNo" runat="server" Value="0" />
 	</form>
 	<!--
     Temporary client-side values
