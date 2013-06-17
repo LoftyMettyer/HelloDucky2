@@ -88,7 +88,7 @@ Partial Class MobileLogin
           End If
 
           'Header Image
-          If i = 1 Then
+          If i = 1 AndAlso Not IsDBNull(drLayouts("HeaderLogoID")) Then
 
             Dim imageControl As New System.Web.UI.WebControls.Image
 
