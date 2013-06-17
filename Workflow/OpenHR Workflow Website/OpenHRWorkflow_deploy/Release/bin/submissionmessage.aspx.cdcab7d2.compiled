@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<preserve resultType="3" virtualPath="/HRProWorkflow/SubmissionMessage.aspx" hash="d1bab5060" filehash="9fb96196344fc277" flags="110000" assembly="HRProWorkflow" type="ASP.submissionmessage_aspx">
+<preserve resultType="3" virtualPath="/HRProWorkflow/SubmissionMessage.aspx" hash="fffffff5b61cd447" filehash="1a1cb7814a851d52" flags="110000" assembly="OpenHRWorkflow" type="ASP.submissionmessage_aspx">
   <filedeps>
     <filedep name="/HRProWorkflow/SubmissionMessage.aspx" />
     <filedep name="/HRProWorkflow/SubmissionMessage.aspx.vb" />

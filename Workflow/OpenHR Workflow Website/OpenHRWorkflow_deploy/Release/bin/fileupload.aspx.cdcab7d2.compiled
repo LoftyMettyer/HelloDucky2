@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<preserve resultType="3" virtualPath="/HRProWorkflow/FileUpload.aspx" hash="d1bab5060" filehash="83b983de7367a020" flags="110000" assembly="HRProWorkflow" type="ASP.fileupload_aspx">
+<preserve resultType="3" virtualPath="/HRProWorkflow/FileUpload.aspx" hash="fffffff5b61cd447" filehash="bcc247f422bb650a" flags="110000" assembly="OpenHRWorkflow" type="ASP.fileupload_aspx">
   <filedeps>
     <filedep name="/HRProWorkflow/FileUpload.aspx" />
     <filedep name="/HRProWorkflow/FileUpload.aspx.vb" />
