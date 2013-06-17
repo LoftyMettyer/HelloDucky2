@@ -174,15 +174,26 @@ body { font-family: verdana; }
     padding: 0px 2px 1px 2px;
     border-radius: 30px;
 }
-.workflow-list li {
+
+.workflow-list li a 
+{
+    display: block;
     margin-bottom: 4px;
 }
-.workflow-list li a {
-    display: block;
-}
-.workflow-list li img {
+.workflow-list img {
     width: 48px;
     height: 48px;
+    margin-right: 4px;
+}
+.workflow-list .detail, .workflow-list .image {
+    display: table-cell;
+    vertical-align: middle;
+}
+.workflow-list .detail {
+    width: 100%;
+}
+.workflow-list span span {
+    display: block;
 }
 
 /* Adjustment for larger screens */

@@ -53,8 +53,14 @@ Partial Class Home
       link.NavigateUrl = WorkflowLink(item.ID)
       link.Target = "_blank"
 
+      Dim imageContainer As New HtmlGenericControl("span")
+      imageContainer.Attributes.Add("class", "image")
+
       Dim image As New Image
       image.ImageUrl = If(item.PictureID = 0, "~/Images/Connected48.png", Picture.GetUrl(item.PictureID))
+
+      Dim detailContainer As New HtmlGenericControl("span")
+      detailContainer.Attributes.Add("class", "detail")
 
       Dim label = New Label
       label.Text = item.Name
@@ -68,8 +74,10 @@ Partial Class Home
 
       workflowList.Controls.Add(li)
       li.Controls.Add(link)
-      link.Controls.Add(image)
-      link.Controls.Add(label)
+      link.Controls.Add(imageContainer)
+      imageContainer.Controls.Add(image)
+      link.Controls.Add(detailContainer)
+      detailContainer.Controls.Add(label)
     Next
 
     If workflows.Count > 0 Then
