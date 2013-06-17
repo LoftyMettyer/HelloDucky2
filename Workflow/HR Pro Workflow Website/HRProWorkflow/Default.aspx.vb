@@ -2994,9 +2994,11 @@ Public Class _Default
                 dr = cmdSelect.ExecuteReader(CommandBehavior.SequentialAccess)
 
                 Do While dr.Read
+                    ' JPD 14/1/11 - JIRA 1153 - Some installations of the Workflow website had problems handling URLs that contained percent signs followed by two digits, even when URLencoding has been performed.
+                    ' Replace all '%' with '%-' to ensure percent signs aren't followed by digits.
                     sImageFileName = Session.SessionID().ToString & _
                      "_" & miImageCount.ToString & _
-                     "_" & NullSafeString(dr("name"))
+                     "_" & NullSafeString(dr("name")).Replace("%", "%-")
                     sTempName = sImageFilePath & "\" & sImageFileName
 
                     ' Create a file to hold the output.
