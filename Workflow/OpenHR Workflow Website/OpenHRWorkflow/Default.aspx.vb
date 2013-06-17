@@ -741,6 +741,7 @@ Public Class _Default
                     If NullSafeInteger(dr("BackColor")) <> 16249587 AndAlso NullSafeInteger(dr("BackColor")) <> -2147483633 Then
                       .Style.Add("background-color", General.GetHtmlColour(NullSafeInteger(dr("BackColor"))).ToString)
                       .Style.Add("border", "solid 1px " & General.GetHtmlColour(9999523).ToString)
+                      .Style.Add("border-radius", "5px")
                     End If
 
                     If NullSafeInteger(dr("ForeColor")) <> 6697779 Then
