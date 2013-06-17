@@ -1272,6 +1272,22 @@ Public Class _Default
                       .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
                       .Style("margin") = "0px"
                       .Style("height") = Unit.Pixel(NullSafeInteger(dr("Height")) - 3).ToString
+                      .Style("width") = Unit.Pixel(NullSafeInteger(dr("Width"))).ToString
+
+                      sTemp2 = CStr(IIf(NullSafeBoolean(dr("FontStrikeThru")), " line-through", "")) & _
+                         CStr(IIf(NullSafeBoolean(dr("FontUnderline")), " underline", ""))
+
+                      If sTemp2.Length = 0 Then
+                        sTemp2 = " none"
+                      End If
+
+                      .Style.Add("Font-family", NullSafeString(dr("FontName")).ToString)
+                      .Style.Add("font-size", ToPoint(NullSafeInteger(dr("FontSize"))).ToString & "pt")
+                      .Style.Add("font-weight", CStr(IIf(NullSafeBoolean(dr("FontBold")), "bold", "normal")))
+                      .Style.Add("font-style", CStr(IIf(NullSafeBoolean(dr("FontItalic")), "italic", "normal")))
+                      .Style.Add("text-decoration", sTemp2)
+
+
                       If Not IsPostBack Then
 
                         If (Not IsDBNull(dr("value"))) Then
