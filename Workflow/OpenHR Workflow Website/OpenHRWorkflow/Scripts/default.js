@@ -410,8 +410,8 @@
             var dc = igdrp_getComboById(elementID);
             dc.showCalendar();
         }
-        
-	    function showOverlay(display) {
+
+        function showOverlay(display) {
 	        $get("divOverlay").style.display = display ? "block" : "none";               
 	    }
 

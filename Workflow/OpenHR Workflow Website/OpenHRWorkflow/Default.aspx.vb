@@ -3829,9 +3829,6 @@ Public Class _Default
           Select Case iType
             Case 0 ' Button
               ctlFormHTMLInputButton = DirectCast(ctlFormInput, HtmlInputButton)
-              'ctlFormHTMLInputButton.Style.Remove("disabled")
-              'If Not pfEnabled Then ctlFormHTMLInputButton.Style.Add("disabled", "disabled")
-
               ctlFormHTMLInputButton.Attributes.Remove("disabled")
               If Not pfEnabled Then ctlFormHTMLInputButton.Attributes.Add("disabled", "disabled")
 
