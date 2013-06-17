@@ -1,6 +1,7 @@
 Imports System.Xml
 Imports System
 
+'TODO merge the Config & Configuration classes (use FileWatcher for ThemeHex.xml? may have file access permission issues)
 Public Class Config
   Private msThemeName As String = ""
   Private msThemeHex As String = ""

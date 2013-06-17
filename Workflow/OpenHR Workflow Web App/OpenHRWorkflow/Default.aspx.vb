@@ -4,6 +4,7 @@ Imports System.Globalization
 Imports System.Drawing
 Imports AjaxControlToolkit
 Imports System.Transactions
+Imports System.Reflection
 
 Public Class [Default]
    Inherits Page
@@ -40,7 +41,7 @@ Public Class [Default]
 
       _url = New WorkflowUrl
 
-      Try
+      Try 'TODO move the decrpy to the WorkflowUrl class
          'Try the latest encryption method
          'Set the culture to English(GB) to ensure the decryption works OK. Fault HRPRO-1404
          Dim currentCulture = Thread.CurrentThread.CurrentCulture
