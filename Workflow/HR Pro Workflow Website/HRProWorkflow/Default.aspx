@@ -1201,7 +1201,7 @@ function Right(str, n){
         font-family: Verdana; border: black 1px solid;" bgcolor="White">
 				<tr>
 					<td style="width:100%;height:100%;background-color:White;text-align:center;vertical-align:middle">
-								Submitting Workflow step...<br><br>Please wait.<br>
+								Processing Workflow step...<br><br>Please wait.<br>
 					</td>
 				</tr>
 			</table>
