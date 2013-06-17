@@ -298,8 +298,13 @@ function filterTable(term, tableID) {
     for (var i = 0; i < terms.length; i++) {
       
       //NPG20120202 Fault HRPRO-1923
-      //Last [hidden] column in the row stores the ID (record selectors only). So trim them off before filtering
-      var dataRow = table.rows[r].innerHTML.substring(0, table.rows[r].innerHTML.indexOf("display: none"))+'>';
+      //Last [hidden] column in the row stores the ID (record selectors only). So trim them off before filtering      
+      if (table.rows[r].innerHTML.indexOf("display: none") < 0) {
+        var dataRow = table.rows[r].innerHTML.substring(0, table.rows[r].innerHTML.indexOf("display:none")) + '>';
+      }
+      else {
+        var dataRow = table.rows[r].innerHTML.substring(0, table.rows[r].innerHTML.indexOf("display: none")) + '>';
+      }
 
       //if (table.rows[r].innerHTML.replace(/<[^>]+>/g, "|").toLowerCase()
       if (dataRow.replace(/<[^>]+>/g, "|").toLowerCase()
