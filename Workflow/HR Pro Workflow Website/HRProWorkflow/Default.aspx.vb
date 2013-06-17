@@ -3719,36 +3719,49 @@ Public Class _Default
 
 
                         Case 14 ' Lookup Input
-                            If (TypeOf ctlFormInput Is System.Web.UI.WebControls.TextBox) Then   ' System.Web.UI.WebControls.DropDownList) Then 'Infragistics.WebUI.WebCombo.WebCombo) Then
-                                ctlFormTextInput = DirectCast(ctlFormInput, System.Web.UI.WebControls.TextBox)   ' System.Web.UI.WebControls.DropDownList) 'Infragistics.WebUI.WebCombo.WebCombo)
+                            If Not isMobileBrowser() Then
 
-                                sTemp = ctlFormTextInput.Text ' .DisplayValue
 
-                                If ctlFormTextInput.Attributes("DataType") = "System.DateTime" Then
-                                    If sTemp Is Nothing Then
-                                        sTemp = "null"
-                                    Else
-                                        If (sTemp.Length = 0) Then
+                                If (TypeOf ctlFormInput Is System.Web.UI.WebControls.TextBox) Then   ' System.Web.UI.WebControls.DropDownList) Then 'Infragistics.WebUI.WebCombo.WebCombo) Then
+                                    ctlFormTextInput = DirectCast(ctlFormInput, System.Web.UI.WebControls.TextBox)   ' System.Web.UI.WebControls.DropDownList) 'Infragistics.WebUI.WebCombo.WebCombo)
+
+                                    sTemp = ctlFormTextInput.Text ' .DisplayValue
+
+                                    If ctlFormTextInput.Attributes("DataType") = "System.DateTime" Then
+                                        If sTemp Is Nothing Then
                                             sTemp = "null"
                                         Else
-                                            sTemp = objGeneral.ConvertLocaleDateToSQL(sTemp)
+                                            If (sTemp.Length = 0) Then
+                                                sTemp = "null"
+                                            Else
+                                                sTemp = objGeneral.ConvertLocaleDateToSQL(sTemp)
+                                            End If
                                         End If
-                                    End If
-                                ElseIf ctlFormTextInput.Attributes("DataType") = "System.Decimal" _
-                                 Or ctlFormTextInput.Attributes("DataType") = "System.Int32" Then
+                                    ElseIf ctlFormTextInput.Attributes("DataType") = "System.Decimal" _
+                                     Or ctlFormTextInput.Attributes("DataType") = "System.Int32" Then
 
-                                    If sTemp Is Nothing Then
-                                        sTemp = ""
-                                    Else
-                                        sTemp = CStr(IIf(sTemp.Length = 0, "", CStr(sTemp).Replace(Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator, ".")))
+                                        If sTemp Is Nothing Then
+                                            sTemp = ""
+                                        Else
+                                            sTemp = CStr(IIf(sTemp.Length = 0, "", CStr(sTemp).Replace(Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator, ".")))
+                                        End If
+
                                     End If
 
+                                    sFormInput1 = sFormInput1 & sIDString & sTemp & vbTab
+                                    sFormValidation1 = sFormValidation1 & sIDString & sTemp & vbTab
+                                End If
+                            Else
+                                ' Mobile Browser - it's a Dropdown List.
+                                If (TypeOf ctlFormInput Is System.Web.UI.WebControls.DropDownList) Then 'Infragistics.WebUI.WebCombo.WebCombo) Then
+                                    ctlFormDropdown = DirectCast(ctlFormInput, System.Web.UI.WebControls.DropDownList) 'Infragistics.WebUI.WebCombo.WebCombo)
+
+                                    sTemp = ctlFormDropdown.Text ' .DisplayValue
+                                    sFormInput1 = sFormInput1 & sIDString & sTemp & vbTab
+                                    sFormValidation1 = sFormValidation1 & sIDString & sTemp & vbTab
                                 End If
 
-                                sFormInput1 = sFormInput1 & sIDString & sTemp & vbTab
-                                sFormValidation1 = sFormValidation1 & sIDString & sTemp & vbTab
                             End If
-
 
                         Case 15 ' OptionGroup Input
                             If (TypeOf ctlFormInput Is TextBox) Then
@@ -4126,9 +4139,19 @@ Public Class _Default
                             End If
 
                         Case 14 ' Lookup Input
-                            If (TypeOf ctlFormInput Is AjaxControlToolkit.DropDownExtender) Then 'Infragistics.WebUI.WebCombo.WebCombo) Then
-                                ctlForm_DDE = DirectCast(ctlFormInput, AjaxControlToolkit.DropDownExtender) 'Infragistics.WebUI.WebCombo.WebCombo)
-                                ctlForm_DDE.Enabled = pfEnabled
+                            If Not isMobileBrowser() Then
+
+
+                                If (TypeOf ctlFormInput Is AjaxControlToolkit.DropDownExtender) Then 'Infragistics.WebUI.WebCombo.WebCombo) Then
+                                    ctlForm_DDE = DirectCast(ctlFormInput, AjaxControlToolkit.DropDownExtender) 'Infragistics.WebUI.WebCombo.WebCombo)
+                                    ctlForm_DDE.Enabled = pfEnabled
+                                End If
+                            Else
+                                ' Mobile Browser
+                                If (TypeOf ctlFormInput Is System.Web.UI.WebControls.DropDownList) Then
+                                    ctlFormDropdown = DirectCast(ctlFormInput, System.Web.UI.WebControls.DropDownList)
+                                    ctlFormDropdown.Enabled = pfEnabled
+                                End If
                             End If
 
                         Case 15 ' OptionGroup Input
