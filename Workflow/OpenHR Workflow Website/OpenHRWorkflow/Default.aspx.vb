@@ -3707,88 +3707,120 @@ Public Class _Default
 
                 Case 21   ' Tab Strip
 
+                  Dim iTabStripHeight As Integer = 30
+
                   'split out the tab names to calculate number of tabs - may not have loaded all tabs yet, so can't count them.
                   sTemp = NullSafeString(dr("Caption"))   '"Page 1;Page 2;"
                   Dim arrTabCaptions As String() = sTemp.Split(New Char() {";"c})
 
-                  ' create the holding div - don't really need this, but keeps it contained. May want to use this for back colour at some point.
-                  Dim ctlTabsDiv As New Panel
-                  ctlTabsDiv.Style.Add("height", "auto")
-                  ctlTabsDiv.BackColor = Color.LightGray
+                  If True Then
+                    Dim ctlTabsDiv As New Panel
+                    ctlTabsDiv.ID = "TabsDiv"
+                    ctlTabsDiv.Style.Add("height", iTabStripHeight & "px")
 
-                  ' create individual divs for each little tab. Do it this way, so the tabs wrap if the form isn't wide enough.
-                  Dim ctlForm_TabPanel As Panel
-                  Dim sTabCaption As String
-                  Dim iTabNo As Integer = 1
 
-                  For Each sTabCaption In arrTabCaptions
+                    If isMobileBrowser() Then
+                      ctlTabsDiv.Style.Add("overflow-x", "auto")
+                    Else
+                      ' for non-mobile browsers we display arrows to scroll the tab bar left and right.
+                      ctlTabsDiv.Style.Add("overflow", "hidden")
+                      ctlTabsDiv.Style.Add("margin-right", "50px")
 
-                    If sTabCaption.ToString <> "" Then
-
-                      ctlForm_TabPanel = New Panel
-                      With ctlForm_TabPanel
-                        '.ID = sID & "Panel_" & iTabNo.ToString
-                        .ID = "forminput_" & iTabNo.ToString & "_21_Panel"
-                        .Style.Add("float", "left") ' for wrapping.
-
-                        ' Tab Appearance
-                        If Not isMobileBrowser() Then
-                          .BorderStyle = BorderStyle.Solid
-                          .BorderWidth = 1
-                        End If
-
-                        .BackColor = Color.Transparent  ' Color.LightGray
-                        '.Style.Add("border-left-color", "white")
-                        .Style.Add("border-radius", "5px 5px 0px 0px")
-
-                        ' For Mobiles increase the padding to make the buttons bigger
-                        If isMobileBrowser() Then
-                          .Style.Add("padding-left", "15px")
-                          .Style.Add("padding-right", "15px")
-                          .Style.Add("padding-top", "5px")
-                          .Style.Add("padding-bottom", "5px")
-                        Else
-                          .Style.Add("padding-left", "5px")
-                          .Style.Add("padding-right", "5px")
-                        End If
-
-                        ' Tab Clicking/mouseover
-                        .Attributes.Add("onclick", "SetCurrentTab(" & iTabNo.ToString & ");")
-                        .Attributes.Add("onmouseover", "this.style.cursor='pointer';")
-                        .Attributes.Add("onmouseout", "this.style.cursor='';")
+                      ' Nav arrows for non-mobile browsers
+                      Dim ctlForm_TabArrows As New Panel
+                      With ctlForm_TabArrows
+                        .Style.Add("position", "absolute")
+                        .Style.Add("top", "2px")
+                        .Style.Add("right", "0px")
+                        .Style.Add("width", "50px")
+                        '.Style.Add("height", iTabStripHeight - 4 & "px")
+                        .Style.Add("z-index", "1")
+                        .BackColor = Color.White
+                        .BorderColor = Color.Black
+                        .BorderWidth = 1
                       End With
 
-                      ' Tab Caption
-                      ctlForm_Label = New Label
-                      ctlForm_Label.Font.Name = "Verdana"  ' NullSafeString(dr("FontName"))
-                      If isMobileBrowser() Then
-                        ctlForm_Label.BackColor = Color.LightGray
-                        ctlForm_Label.ForeColor = Color.Black
-                        ctlForm_Label.Style.Add("border-radius", "5px")
-                        ctlForm_Label.Style.Add("padding", "5px")
-                        ctlForm_Label.Font.Size = FontUnit.Point(20)
-                        ctlForm_Label.BorderColor = Color.Black
-                        ctlForm_Label.BorderStyle = BorderStyle.Solid
-                        ctlForm_Label.BorderWidth = 1
-                      Else
-                        ctlForm_Label.Font.Size = FontUnit.Point(10)   'FontUnit.Parse(NullSafeString(dr("FontSize")))
-                      End If
+                      ' Left scroll arrow
+                      ctlForm_Image = New System.Web.UI.WebControls.Image 'Infragistics.WebUI.WebDataInput.WebImageButton
+                      With ctlForm_Image
+                        .Style.Add("top", "0px")
+                        .Style.Add("left", "0px")
+                        .Style.Add("width", "25px")
+                        .Style.Add("height", iTabStripHeight - 6 & "px")
+                        .ImageUrl = "~/Images/page-prev.gif"
+                        .Attributes.Add("onclick", "var TabDiv = document.getElementById('TabsDiv');TabDiv.scrollLeft = TabDiv.scrollLeft - 15;")
+                      End With
+                      ctlForm_TabArrows.Controls.Add(ctlForm_Image)
 
-                      ctlForm_Label.Text = sTabCaption
+                      ' Right scroll arrow
+                      ctlForm_Image = New System.Web.UI.WebControls.Image 'Infragistics.WebUI.WebDataInput.WebImageButton
+                      With ctlForm_Image
+                        .Style.Add("top", "0px")
+                        .Style.Add("left", "0px")
+                        .Style.Add("width", "25px")
+                        .Style.Add("height", iTabStripHeight - 6 & "px")
+                        .ImageUrl = "~/Images/page-next.gif"
+                        .Style.Add("margin", "0px")
+                        .Style.Add("padding", "0px")
+                        .Attributes.Add("onclick", "var TabDiv = document.getElementById('TabsDiv');TabDiv.scrollLeft = TabDiv.scrollLeft + 15;")
+                      End With
+                      ctlForm_TabArrows.Controls.Add(ctlForm_Image)
 
-                      ' Add the caption to the tab...
-                      ctlForm_TabPanel.Controls.Add(ctlForm_Label)
-                      ' add the tab to the containing div...
-                      ctlTabsDiv.Controls.Add(ctlForm_TabPanel)
-
-                      iTabNo += 1 ' keep tabs on the number of tabs hehehe :P
+                      ctlTabsDiv.Controls.Add(ctlForm_TabArrows)
 
                     End If
 
-                  Next
+                    ' generate the tabs.
+                    Dim ctlTabsTable As New Table
+                    Dim trPager As TableRow = New TableRow()
+                    trPager.Height = Unit.Pixel(iTabStripHeight - 4)  ' to prevent vertical scrollbar
+                    trPager.Style.Add("white-space", "nowrap")
 
-                  pnlTabsDiv.Controls.Add(ctlTabsDiv)
+                    Dim tcTabCell As New TableCell
+                    'Dim ctlForm_Label As New Label
 
+                    Dim iTabNo As Integer = 1
+                    ' add a cell for each tab
+                    For Each sTabCaption In arrTabCaptions
+                      If sTabCaption.Trim.Length > 0 Then
+                        tcTabCell = New TableCell
+
+                        With tcTabCell
+                          .ID = "forminput_" & iTabNo.ToString & "_21_Panel"
+                          .BorderColor = Color.Black
+                          .Style.Add("padding-left", "5px")
+                          .Style.Add("padding-right", "5px")
+                          .Style.Add("border-radius", "5px 5px 0px 0px")
+                          .Style.Add("width", "50px")
+                          .BorderWidth = 1
+                          .BorderStyle = BorderStyle.Solid
+
+                          ' label the button...
+                          ctlForm_Label = New Label
+                          ctlForm_Label.Font.Name = "Verdana"  ' NullSafeString(dr("FontName"))
+                          ctlForm_Label.Font.Size = FontUnit.Parse("8")
+                          ctlForm_Label.Text = sTabCaption.ToString
+
+                          .Controls.Add(ctlForm_Label)
+
+                          ' Tab Clicking/mouseover
+                          .Attributes.Add("onclick", "SetCurrentTab(" & iTabNo.ToString & ");")
+                          .Attributes.Add("onmouseover", "this.style.cursor='pointer';")
+                          .Attributes.Add("onmouseout", "this.style.cursor='';")
+                        End With
+
+                        trPager.Cells.Add(tcTabCell)
+                        iTabNo += 1 ' keep tabs on the number of tabs hehehe :P
+                      End If
+                    Next
+
+                    'add row to table
+                    ctlTabsTable.Rows.Add(trPager)
+
+                    'add table to div
+                    ctlTabsDiv.Controls.Add(ctlTabsTable)
+                    pnlTabsDiv.Controls.Add(ctlTabsDiv)
+                  End If
 
               End Select
             End While
