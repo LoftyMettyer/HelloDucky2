@@ -22,6 +22,13 @@
 	        catch (e) {}
 	    }
 
+      //fault HRPRO-2270
+	    function resizeIframe(id, iNewHeight) {
+        //Plus one for luck (IE9 actually)
+	      iNewHeight = iNewHeight + 1;
+	      document.getElementById(id).height = (iNewHeight) + "px";
+	    }
+
 
 //	    function getWindowWidth() {
 //	        var myWidth = 0;

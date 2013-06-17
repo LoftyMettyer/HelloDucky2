@@ -21,9 +21,12 @@
         }
       }
       catch (e) { };
-      
+
       //Fault HRPRO-2149
       //resizeFrame();
+
+      //Fault HRPRO-2270
+      window.parent.resizeIframe("ifrmFileUpload", document.getElementById("divFileUpload").offsetHeight);
     }
 
     function resizeFrame() {
@@ -114,7 +117,7 @@
   </script> 
 
 </head>
-<body onload="return window_onload()" scroll="auto" style="overflow: auto; padding: 0px; margin: 0px; border: 0px; text-align: center;">
+<body onload="return window_onload()"  style="padding: 0px; margin: 0px; border: 0px; text-align: center;">
   
   <img id="imgErrorMessages_Max" src="Images/uparrows_white.gif" alt="Show messages" style="position: absolute; right: 1px; bottom: 1px; display: none; visibility: hidden; z-index: 1;" onclick="showErrorMessages(true);" />
   
@@ -155,7 +158,7 @@
         <td width="40" valign="top">
           <img src="themes/<%=ColourThemeFolder()%>/CrnrTop.gif" alt="" width="40" height="40" />
         </td>
-        <td rowspan="2" style="background-color: White" nowrap="nowrap">
+        <td rowspan="2" style="background-color: White">
           <br />
           <asp:Label ID="lblFileUploadPrompt" runat="server" Text="Select the file you wish to upload:"
             Font-Names="Verdana"></asp:Label>
