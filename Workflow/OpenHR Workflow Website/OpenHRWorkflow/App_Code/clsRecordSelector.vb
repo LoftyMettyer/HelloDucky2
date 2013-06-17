@@ -907,8 +907,6 @@ Public Class RecordSelector
     GridViewSort(sender, e)
     'this handles the flipping of the sort direction
 
-
-
     Dim SortSQL As String = SortExpressionToSQL(e.SortExpression.Replace(" ", "_").Replace("+", ""), e.SortDirection)
 
     ' Get the current dataset from the session variable,
@@ -921,8 +919,14 @@ Public Class RecordSelector
     End If
 
     If dataTable IsNot Nothing Then
+
       Dim dataView As New DataView(dataTable)
-      '            SortSQL = "[Forenames] DESC, [Start_Date] ASC"
+
+      Dim hasBlankRow As Boolean = dataTable.Rows.Count > 0 AndAlso dataTable.Rows(0).RowState = DataRowState.Added
+      'remove blank row at top if exists
+      If hasBlankRow Then
+        dataTable.Rows.RemoveAt(0)
+      End If
 
       If Right(e.SortExpression, 1) = "+" Then
         ' Control Click on column - APPEND to sort order - comma delimited.
@@ -944,12 +948,16 @@ Public Class RecordSelector
         Me.sortBy = SortSQL
       End If
 
-
-
       dataView.Sort = Me.sortBy   ' SortSQL ' Convert.ToString(e.SortExpression).Replace(" ", "_") & " DESC"
       dataTable = dataView.ToTable()
+
+      If hasBlankRow Then
+        'add blank row at top if needed
+        dataTable.Rows.InsertAt(dataTable.NewRow(), 0)
+      End If
+
       HttpContext.Current.Session(grdGrid.ID.Replace("Grid", "DATA")) = dataTable
-      grdGrid.DataSource = dataView
+      grdGrid.DataSource = dataTable
       grdGrid.DataBind()
     End If
 
