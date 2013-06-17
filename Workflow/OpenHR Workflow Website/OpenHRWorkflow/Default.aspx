@@ -12,7 +12,7 @@
 	<title></title>	
 </head>
 
-<body id="bdyMain" onload="return window_onload()" style="overflow: auto; text-align: center; margin: 0px; padding: 0px; background-color: <%= ColourThemeHex()%>;">
+<body id="bdyMain" style="overflow: auto; text-align: center; margin: 0px; padding: 0px; background-color: <%= ColourThemeHex()%>;">
 	
 	<form runat="server" hidefocus="true" id="frmMain" onsubmit="return submitForm();">
 	
@@ -123,5 +123,8 @@
 	<input type="hidden" id="txtLastDate_Year" name="txtLastDate_Year" value="" />	
 	<input type="hidden" id="txtActiveDDE" name="txtActiveDDE" value="" />	
     
+    <script type="text/javascript">
+        window_onload();
+    </script>
 </body>
 </html>
