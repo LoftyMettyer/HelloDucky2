@@ -11,7 +11,7 @@ Partial Class ForgottenLogin
     txtEmail.Attributes.Add("type", "email")
   End Sub
 
-  Protected Sub BtnSubmitClick(sender As Object, e As ImageClickEventArgs) Handles btnSubmit.Click
+  Protected Sub BtnSubmitClick(sender As Object, e As ImageClickEventArgs) Handles btnSubmitButton.Click
 
     Dim sHeader As String = ""
     Dim sMessage As String = ""
@@ -72,10 +72,6 @@ Partial Class ForgottenLogin
 
     CType(Master, Site).ShowDialog(sHeader, sMessage, sRedirectTo)
 
-  End Sub
-
-  Protected Sub BtnCancelClick(sender As Object, e As ImageClickEventArgs) Handles btnCancel.Click
-    Response.Redirect("~/Account/Login.aspx")
   End Sub
 
 End Class

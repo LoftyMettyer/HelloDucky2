@@ -8,7 +8,7 @@ Partial Class ChangePassword
     Forms.LoadControlData(Me, 4)
   End Sub
 
-  Protected Sub BtnSubmitClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnSubmit.Click
+  Protected Sub BtnSubmitClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnSubmitButton.Click
 
     Dim sHeader As String = ""
     Dim sMessage As String = ""
@@ -84,7 +84,7 @@ Partial Class ChangePassword
 
             cmd.ExecuteNonQuery()
           End Using
-          
+
           ' Tell the user that the password was changed okay.
           sMessage = "Password changed successfully."
         End If
@@ -105,10 +105,6 @@ Partial Class ChangePassword
 
     CType(Master, Site).ShowDialog(sHeader, sMessage, sRedirectTo)
 
-  End Sub
-
-  Protected Sub BtnCancelClick(sender As Object, e As ImageClickEventArgs) Handles btnCancel.Click
-    Response.Redirect("~/Home.aspx")
   End Sub
 
 End Class

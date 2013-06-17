@@ -36,15 +36,14 @@
 
 <asp:Content ID="footer" ContentPlaceHolderID="footerCPH" Runat="Server">
     
-    <table style="height: 100%; width: 100%">
-        <tr style="height: 40px">
-            <td style="width: 50%; text-align: center; overflow: hidden"><asp:ImageButton ID="btnRegister" runat="server" OnClientClick="return submitCheck();"/></td>
-            <td style="width: 50%; text-align: center; overflow: hidden"><asp:ImageButton ID="btnHome" runat="server" /></td>
-        </tr>
-        <tr style="height: 17px">
-            <td style="width: 50%; text-align: center; overflow: hidden"><label runat="server" id="btnRegister_label"></label></td>
-            <td style="width: 50%; text-align: center; overflow: hidden"><label runat="server" id="btnHome_label"></label></td>
-        </tr>
-    </table>
+     <ol class="footer-buttons col2">
+        <li>
+            <a href="javascript:void(0);" onclick="document.getElementById('ctl00_footerCPH_btnRegisterButton').click();">
+                <asp:Image ID="btnRegister" runat="server" /><asp:Label ID="btnRegister_Label" runat="server"/>
+            </a>
+            <asp:ImageButton ID="btnRegisterButton" runat="server" OnClientClick="return submitCheck();"/>
+        </li>
+        <li><a href="Login.aspx"><asp:Image ID="btnHome" runat="server" /><asp:Label ID="btnHome_Label" runat="server"/></a></li>
+    </ol>
 
 </asp:Content>

@@ -50,17 +50,15 @@
 
 <asp:Content ID="footer" ContentPlaceHolderID="footerCPH" Runat="Server">
     
-    <table style="height: 100%; width: 100%">
-        <tr style="height: 40px">
-            <td style="width: 33%; text-align: center; overflow: hidden"><asp:ImageButton ID="btnLogin"  runat="server" OnClientClick="return submitCheck();"/></td>
-            <td style="width: 33%; text-align: center; overflow: hidden"><asp:ImageButton ID="btnForgotPwd" runat="server"/></td>
-            <td style="width: 33%; text-align: center; overflow: hidden"><asp:ImageButton ID="btnRegister" runat="server" /></td>
-        </tr>
-        <tr style="height: 17px">
-            <td style="width: 33%; text-align: center; overflow: hidden"><label runat="server" id="btnLogin_label"></label></td>
-            <td style="width: 33%; text-align: center; overflow: hidden"><label runat="server" id="btnForgotPwd_label"></label></td>
-            <td style="width: 33%; text-align: center; overflow: hidden"><label runat="server" id="btnRegister_label"></label></td>
-        </tr>
-    </table>
+    <ol class="footer-buttons col3">
+        <li>
+            <a href="javascript:void(0);" onclick="document.getElementById('ctl00_footerCPH_btnLoginButton').click();">
+                <asp:Image ID="btnLogin" runat="server" /><asp:Label ID="btnLogin_Label" runat="server"/>
+            </a>
+            <asp:Button ID="btnLoginButton" runat="server" OnClientClick="return submitCheck();"/>
+        </li>
+        <li><a href="ForgottenLogin.aspx"><asp:Image ID="btnForgotPwd" runat="server" /><asp:Label ID="btnForgotPwd_label" runat="server"/></a></li>
+        <li><a href="Registration.aspx"><asp:Image ID="btnRegister" runat="server" /><asp:Label ID="btnRegister_label" runat="server"/></a></li>
+    </ol>
 
 </asp:Content>

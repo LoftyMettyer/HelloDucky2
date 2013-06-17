@@ -14,15 +14,9 @@
 
 <asp:Content ID="footer" ContentPlaceHolderID="footerCPH" Runat="Server">
     
-    <table style="height: 100%; width: 100%">
-        <tr style="height: 40px">
-            <td style="width: 50%; text-align: center; overflow: hidden"><asp:ImageButton ID="btnRefresh" runat="server" /></td>
-            <td style="width: 50%; text-align: center; overflow: hidden"><asp:ImageButton ID="btnCancel" runat="server" /></td>
-        </tr>
-        <tr style="height: 17px">
-            <td style="width: 50%; text-align: center; overflow: hidden"><label runat="server" id="btnRefresh_label"></label></td>
-            <td style="width: 50%; text-align: center; overflow: hidden"><label runat="server" id="btnCancel_label"></label></td>
-        </tr>
-    </table>
+    <ol class="footer-buttons col2">
+        <li><a href="PendingSteps.aspx"><asp:Image ID="btnRefresh" runat="server" /><asp:Label ID="btnRefresh_Label" runat="server"/></a></li>
+        <li><a href="Home.aspx"><asp:Image ID="btnCancel" runat="server" /><asp:Label ID="btnCancel_Label" runat="server"/></a></li>
+    </ol>
 
 </asp:Content>

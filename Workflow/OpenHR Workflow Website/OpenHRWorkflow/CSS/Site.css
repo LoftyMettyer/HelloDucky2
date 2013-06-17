@@ -1,11 +1,15 @@
 ﻿/* Reset */
-html, body, div, span, table, tbody, tfoot, thead, tr, th, td {
+html, body, div, span, table, tbody, tfoot, thead, tr, th, td, ul, ol {
     margin: 0;
     padding: 0;
     border: 0;
     font-size: 100%;
     font: inherit;
     vertical-align: baseline;
+}
+
+ul, ol {
+    list-style-type: none;
 }
 
 table {
@@ -65,7 +69,6 @@ body { font-family: verdana; }
 
 .main td { vertical-align: middle; }
 
-
 .controlgrid input, .controlgrid label {
     margin-top: 3px;
     margin-bottom: 3px;
@@ -106,8 +109,8 @@ body { font-family: verdana; }
     position: fixed;
     top: 30%;
     left: 50%;
-    width: 300px;
-    margin-left: -162px;
+    width: 290px;
+    margin-left: -157px;
     background-color: #002248; 
     padding: 10px;
     border: 2px solid gainsboro; 
@@ -124,6 +127,45 @@ body { font-family: verdana; }
     height: 100%;
 }
 
+/* Footer Buttons */
+.footer-buttons li {
+    float: left;
+    width: 33%;
+}
+.footer-buttons.col2 li {
+    width: 50%
+}
+.footer-buttons.col3 li {
+    width: 33%
+}
+.footer-buttons li a, .footer-buttons li label {
+    position: relative;
+    display: block;
+    height: 60px;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+}
+.footer-buttons input[type=submit] {
+    display: none;
+}
+.footer-buttons li img {
+    display: block;
+    margin: 0 auto;
+    padding-top: 7px;
+    width: 32px;
+    height 32px;
+}
+.footer-buttons li span {
+    display: block;
+    margin-top: 3px;
+    font-size: 8px;
+    color: black;
+}
+.wf-count {
+
+}
+
 /* Adjustment for larger screens */
 
 .large-view .page {
@@ -137,11 +179,7 @@ body { font-family: verdana; }
 }
 
 .large-view .header { position: relative; }
-
 .large-view .main { position: absolute; }
-
 .large-view .footer { position: absolute; }
-
 .large-view .header { border-radius: 6px 6px 0px 0px; }
-
 .large-view .footer { border-radius: 0px 0px 6px 6px; }

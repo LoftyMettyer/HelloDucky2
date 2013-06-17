@@ -148,9 +148,9 @@ Partial Class Home
       Dim count As Integer = GetPendingStepsCount()
       If count > 0 Then
         lblWFCount.InnerText = CStr(count)
-        pnlWFCount.Style.Add("visibility", "visible")
+        lblWFCount.Style.Add("visibility", "visible")
       Else
-        pnlWFCount.Style.Add("visibility", "hidden")
+        lblWFCount.Style.Add("visibility", "hidden")
       End If
     End If
 
@@ -189,15 +189,7 @@ Partial Class Home
 
   End Function
 
-  Protected Sub BtnToDoListClick(sender As Object, e As ImageClickEventArgs) Handles btnToDoList.Click
-    Response.Redirect("~/PendingSteps.aspx")
-  End Sub
-
-  Protected Sub BtnChangePwdClick(sender As Object, e As ImageClickEventArgs) Handles btnChangePwd.Click
-    Response.Redirect("~/Account/ChangePassword.aspx")
-  End Sub
-
-  Protected Sub BtnLogoutClick(sender As Object, e As ImageClickEventArgs) Handles btnLogout.Click
+  Protected Sub BtnLogoutClick(sender As Object, e As ImageClickEventArgs) Handles btnLogoutButton.Click
 
     FormsAuthentication.SignOut()
 

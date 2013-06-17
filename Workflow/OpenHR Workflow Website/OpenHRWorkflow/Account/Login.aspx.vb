@@ -8,7 +8,7 @@ Partial Class Login
     Forms.LoadControlData(Me, 1)
   End Sub
 
-  Protected Sub BtnLoginClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnLogin.Click
+  Protected Sub BtnLoginClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnLoginButton.Click
 
     Dim sMessage As String = ""
     Dim userName As String = txtUserName.Value.Trim
@@ -60,14 +60,6 @@ Partial Class Login
       FormsAuthentication.RedirectFromLoginPage(userName, chkRememberPwd.Checked)
     End If
 
-  End Sub
-
-  Protected Sub BtnRegisterClick(sender As Object, e As ImageClickEventArgs) Handles btnRegister.Click
-    Response.Redirect("~/Account/Registration.aspx")
-  End Sub
-
-  Protected Sub BtnForgotPwdClick(sender As Object, e As ImageClickEventArgs) Handles btnForgotPwd.Click
-    Response.Redirect("~/Account/ForgottenLogin.aspx")
   End Sub
 
 End Class

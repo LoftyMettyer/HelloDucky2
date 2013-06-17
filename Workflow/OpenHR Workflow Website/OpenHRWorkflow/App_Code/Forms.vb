@@ -22,28 +22,11 @@ Public Class Forms
 
           Case 0 ' Button
 
-            With CType(control, ImageButton)
-              .ImageUrl = Picture.GetUrl(NullSafeInteger(dr("PictureID")))
-              .Font.Name = NullSafeString(dr("FontName"))
-              .Font.Size = FontUnit.Parse(NullSafeString(dr("FontSize")))
-              .Font.Bold = NullSafeBoolean(NullSafeBoolean(dr("FontBold")))
-              .Font.Italic = NullSafeBoolean(NullSafeBoolean(dr("FontItalic")))
-            End With
+            CType(control, Image).ImageUrl = Picture.GetUrl(NullSafeInteger(dr("PictureID")))
 
             ' Footer text
             If NullSafeString(dr("Caption")).Length > 0 Then
-
-              With CType(control.Parent.FindControl(CStr(dr("Name")) & "_label"), HtmlGenericControl)
-                .InnerText = NullSafeString(dr("caption"))
-                'TODO this can all be css
-                .Style("word-wrap") = "break-word"
-                .Style("overflow") = "auto"
-                .Style.Add("background-color", "Transparent")
-                .Style.Add("font-family", "Verdana")
-                .Style.Add("font-size", "6pt")
-                .Style.Add("font-weight", "normal")
-                .Style.Add("font-style", "normal")
-              End With
+              CType(control.Parent.FindControl(CStr(dr("Name")) & "_label"), Label).Text = NullSafeString(dr("caption"))
             End If
 
           Case 2 ' Label

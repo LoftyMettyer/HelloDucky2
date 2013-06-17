@@ -14,24 +14,21 @@
 
 <asp:Content ID="footer" ContentPlaceHolderID="footerCPH" Runat="Server">
     
-    <table style="height: 100%; width: 100%">
-        <tr style="height: 40px">
-            <td style="width: 33%; text-align: center; overflow: hidden">
-                <div style="position: relative; width: 40px; height: 100%; margin: auto">
-                    <asp:ImageButton ID="btnToDoList" runat="server"/>
-                    <div id="pnlWFCount" runat="server" style="position: absolute; top: 0px; right: -6px; padding: 1px 2px 1px 2px; background-color: Red; color: White; font-family: verdana; font-weight: bold; font-size: 0.75em; border-radius: 30px; box-shadow: 1px 1px 1px gray;">
-                        <label id="lblWFCount" runat="server"></label>
-                    </div>
-                </div>
-            </td>
-            <td style="width: 33%; text-align: center; overflow: hidden"><asp:ImageButton ID="btnChangePwd" runat="server" /></td>
-            <td style="width: 33%; text-align: center; overflow: hidden"><asp:ImageButton ID="btnLogout" runat="server" /></td>
-        </tr>
-        <tr style="height: 17px">
-            <td style="width: 33%; text-align: center; overflow: hidden"><label runat="server" id="btnToDoList_label"></label></td>
-            <td style="width: 33%; text-align: center; overflow: hidden"><label runat="server" id="btnChangePwd_label"></label></td>
-            <td style="width: 33%; text-align: center; overflow: hidden"><label runat="server" id="btnLogout_label"></label></td>
-        </tr>
-    </table>
-
+    <ol class="footer-buttons col3">
+        <li>
+            <a href="PendingSteps.aspx">
+                <asp:Image ID="btnToDoList" runat="server" />
+                <asp:Label ID="btnToDoList_Label" runat="server"/>
+                <label ID="lblWFCount" style="position: absolute; background-color: Red; color: White; top: 6px; left: 50%; width: 13px; height: 13px; font-size: 11px;font-weight: bold; padding: 1px 2px 1px 2px; margin-left:5px; border-radius: 30px; box-shadow: 1px 1px 1px gray;" runat="server"/>
+            </a>
+        </li>
+        <li><a href="Account/ChangePassword.aspx"><asp:Image ID="btnChangePwd" runat="server" /><asp:Label ID="btnChangePwd_Label" runat="server"/></a></li>
+        <li>
+            <a href="javascript:void(0);" onclick="document.getElementById('ctl00_footerCPH_btnLogoutButton').click();">
+                <asp:Image ID="btnLogout" runat="server" /><asp:Label ID="btnLogout_Label" runat="server"/>
+            </a>
+            <asp:ImageButton ID="btnLogoutButton" runat="server"/>
+        </li>
+    </ol>
+        
 </asp:Content>

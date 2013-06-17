@@ -170,12 +170,4 @@ Partial Class PendingSteps
 
   End Sub
 
-  Protected Sub BtnRefreshClick(sender As Object, e As ImageClickEventArgs) Handles btnRefresh.Click
-    Response.Redirect("~/PendingSteps.aspx")
-  End Sub
-
-  Protected Sub BtnCancelClick(sender As Object, e As ImageClickEventArgs) Handles btnCancel.Click
-    Response.Redirect("~/Home.aspx")
-  End Sub
-
 End Class

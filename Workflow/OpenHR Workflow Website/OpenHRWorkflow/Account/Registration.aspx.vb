@@ -11,7 +11,7 @@ Partial Class Registration
     txtEmail.Attributes.Add("type", "email")
   End Sub
 
-  Protected Sub BtnRegisterClick(sender As Object, e As ImageClickEventArgs) Handles btnRegister.Click
+  Protected Sub BtnRegisterClick(sender As Object, e As ImageClickEventArgs) Handles btnRegisterButton.Click
 
     Dim sHeader As String = ""
     Dim sMessage As String = ""
@@ -99,10 +99,6 @@ Partial Class Registration
 
     CType(Master, Site).ShowDialog(sHeader, sMessage, sRedirectTo)
 
-  End Sub
-
-  Protected Sub BtnHomeClick(sender As Object, e As ImageClickEventArgs) Handles btnHome.Click
-    Response.Redirect("~/Account/Login.aspx")
   End Sub
 
 End Class
