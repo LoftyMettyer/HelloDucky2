@@ -108,9 +108,9 @@
 
 			<tr height="40">
 				<td width="10" bgcolor="<%=App.Config.ColourThemeHex()%>">&nbsp;&nbsp;</td>
-				<td width="40" valign="top"><img src="themes/<%=App.Config.ColourThemeFolder()%>/CrnrTop.gif" width="40" height="40" alt="" /></td>
+				<td width="40" valign="top"><img src="<%= VirtualPathUtility.ToAbsolute("~/Themes/" & App.Config.ColourThemeFolder() & "/CrnrTop.gif") %>" width="40" height="40" alt="" /></td>
 				<td width="100%" bgcolor="White"></td>
-				<td width="40" valign="top"><img src="themes/<%=App.Config.ColourThemeFolder()%>/RCrnrTop.gif" width="40" height="40" alt="" /></td>
+				<td width="40" valign="top"><img src="<%= VirtualPathUtility.ToAbsolute("~/Themes/" & App.Config.ColourThemeFolder() & "/RcrnrTop.gif") %>" width="40" height="40" alt="" /></td>
 				<td width="10" bgcolor="<%=App.Config.ColourThemeHex()%>">&nbsp;&nbsp;</td>
 			</tr>
 
@@ -164,9 +164,9 @@
 
 			<tr height=40>
 				<td width="10" bgcolor="<%=App.Config.ColourThemeHex()%>"></td>
-				<td width="40" valign="top"><img src="themes/<%=App.Config.ColourThemeFolder()%>/CrnrBot.gif" width="40" height="40" alt="" /></td>
+				<td width="40" valign="top"><img src="<%= VirtualPathUtility.ToAbsolute("~/Themes/" & App.Config.ColourThemeFolder() & "/CrnrBot.gif") %>" width="40" height="40" alt="" /></td>
 				<td width="100%" bgcolor="White"></td>
-				<td width="40" valign="top"><img src="themes/<%=App.Config.ColourThemeFolder()%>/RCrnrBot.gif" width="40" height="40" alt="" /></td>
+				<td width="40" valign="top"><img src="<%= VirtualPathUtility.ToAbsolute("~/Themes/" & App.Config.ColourThemeFolder() & "/RcrnrBot.gif") %>" width="40" height="40" alt="" /></td>
 				<td width="10" bgcolor="<%=App.Config.ColourThemeHex()%>"></td>
 			</tr>
 

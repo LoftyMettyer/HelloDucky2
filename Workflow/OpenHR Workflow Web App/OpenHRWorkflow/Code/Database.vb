@@ -62,6 +62,9 @@ Public Class Database
 
 	Public Function IsSystemLocked() As Boolean
 
+		'TODO PG
+		Return True
+
 		Using conn As New SqlConnection(_connectionString)
 			conn.Open()
 			' Check if the database is locked.

@@ -13,39 +13,39 @@ Option Explicit On
 
 Partial Public Class Message
 
-   '''<summary>
-   '''frmMessage control.
-   '''</summary>
-   '''<remarks>
-   '''Auto-generated field.
-   '''To modify move field declaration from designer file to code-behind file.
-   '''</remarks>
-   Protected WithEvents frmMessage As Global.System.Web.UI.HtmlControls.HtmlForm
+	'''<summary>
+	'''frmMessage control.
+	'''</summary>
+	'''<remarks>
+	'''Auto-generated field.
+	'''To modify move field declaration from designer file to code-behind file.
+	'''</remarks>
+	Protected WithEvents frmMessage As Global.System.Web.UI.HtmlControls.HtmlForm
 
-   '''<summary>
-   '''lblPrompt1 control.
-   '''</summary>
-   '''<remarks>
-   '''Auto-generated field.
-   '''To modify move field declaration from designer file to code-behind file.
-   '''</remarks>
-   Protected WithEvents lblPrompt1 As Global.System.Web.UI.WebControls.Label
+	'''<summary>
+	'''lblPrompt1 control.
+	'''</summary>
+	'''<remarks>
+	'''Auto-generated field.
+	'''To modify move field declaration from designer file to code-behind file.
+	'''</remarks>
+	Protected WithEvents lblPrompt1 As Global.System.Web.UI.WebControls.Label
 
-   '''<summary>
-   '''lblClose control.
-   '''</summary>
-   '''<remarks>
-   '''Auto-generated field.
-   '''To modify move field declaration from designer file to code-behind file.
-   '''</remarks>
-   Protected WithEvents lblClose As Global.System.Web.UI.WebControls.Label
+	'''<summary>
+	'''lblClose control.
+	'''</summary>
+	'''<remarks>
+	'''Auto-generated field.
+	'''To modify move field declaration from designer file to code-behind file.
+	'''</remarks>
+	Protected WithEvents lblClose As Global.System.Web.UI.WebControls.Label
 
-   '''<summary>
-   '''lblPrompt2 control.
-   '''</summary>
-   '''<remarks>
-   '''Auto-generated field.
-   '''To modify move field declaration from designer file to code-behind file.
-   '''</remarks>
-   Protected WithEvents lblPrompt2 As Global.System.Web.UI.WebControls.Label
+	'''<summary>
+	'''lblPrompt2 control.
+	'''</summary>
+	'''<remarks>
+	'''Auto-generated field.
+	'''To modify move field declaration from designer file to code-behind file.
+	'''</remarks>
+	Protected WithEvents lblPrompt2 As Global.System.Web.UI.WebControls.Label
 End Class
