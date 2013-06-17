@@ -1549,7 +1549,7 @@ Public Class _Default
                                         '.HeaderStyle.BorderDetails.WidthBottom = Unit.Pixel(1)
                                         '.HeaderStyle.BorderDetails.WidthRight = Unit.Pixel(1)
                                         .HeaderStyle.BorderWidth = Unit.Pixel(0)
-                                        .HeaderStyle.Font.Name = NullSafeString(dr("HeadFontName"))
+                                        .HeaderStyle.Font.Name = NullSafeString(dr("HeadFontName"))                                        
                                         .HeaderStyle.Font.Size = FontUnit.Parse(NullSafeString(dr("HeadFontSize")))
                                         .HeaderStyle.Font.Bold = NullSafeBoolean(dr("HeadFontBold"))
                                         .HeaderStyle.Font.Italic = NullSafeBoolean(dr("HeadFontItalic"))
@@ -2032,6 +2032,7 @@ Public Class _Default
                                         .HeaderStyle.BackColor = objGeneral.GetColour(16248553)
                                         .HeaderStyle.BorderColor = objGeneral.GetColour(10720408)
                                         .HeaderStyle.BorderStyle = BorderStyle.Solid
+                                        .HeaderStyle.BorderWidth = Unit.Pixel(0)
                                         '.HeaderStyle.BorderDetails.WidthLeft = Unit.Pixel(0)
                                         '.HeaderStyle.BorderDetails.WidthTop = Unit.Pixel(0)
                                         '.HeaderStyle.BorderDetails.WidthBottom = Unit.Pixel(1)

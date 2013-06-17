@@ -37,6 +37,7 @@ Public Class RecordSelector
         customHeader = Me.HeaderRow
 
         If MyBase.HeaderRow IsNot Nothing Then
+
             m_iVisibleColumnCount = MyBase.HeaderRow.Cells.Count
             customHeader.ApplyStyle(Me.HeaderStyle)
 
@@ -77,7 +78,7 @@ Public Class RecordSelector
                     customHeader.Cells(iColCount).Style.Add("padding-top", "0px")
                     customHeader.Cells(iColCount).Style.Add("padding-bottom", "0px")
                     customHeader.Cells(iColCount).Controls.Add(New LiteralControl(Replace(customHeader.Cells(iColCount).Text, "_", " ")))
-                    End If
+                End If
             Next
         Else
             ' No records to display.....
@@ -427,6 +428,7 @@ Public Class RecordSelector
 
         ' custom header only - manually add the rows for sorting.
         If e.Row.RowType = DataControlRowType.Header Then
+
             Dim tcTableCell As TableCell
             ' Dim d As GridView = sender
             grdGrid = sender
@@ -437,8 +439,13 @@ Public Class RecordSelector
                     ' lb = tcTableCell.Controls(0)
                     lb = CType(tcTableCell.Controls(0), System.Web.UI.WebControls.LinkButton)
                     tcTableCell.Text = lb.Text
+
+                    If MyBase.HeaderStyle.Height.Value < 21 Then MyBase.HeaderStyle.Height = Unit.Pixel(NullSafeSingle(Me.HeadFontSize) * 2)
+                    tcTableCell.ApplyStyle(MyBase.HeaderStyle)
                 Else
                     tcTableCell.Text &= ""
+                    If MyBase.HeaderStyle.Height.Value < 21 Then MyBase.HeaderStyle.Height = Unit.Pixel(NullSafeSingle(Me.HeadFontSize) * 2)
+                    tcTableCell.ApplyStyle(MyBase.HeaderStyle)
                 End If
             Next
         End If
