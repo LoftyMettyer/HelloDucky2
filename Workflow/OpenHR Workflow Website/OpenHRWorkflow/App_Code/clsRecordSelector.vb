@@ -923,7 +923,7 @@ Public Class RecordSelector
 
       Dim dataView As New DataView(dataTable)
 
-      Dim hasBlankRow As Boolean = dataTable.Rows.Count > 0 AndAlso dataTable.Rows(0).RowState = DataRowState.Added
+      Dim hasBlankRow As Boolean = dataTable.Rows.Count > 0 AndAlso Array.TrueForAll(dataTable.Rows(0).ItemArray, Function(v) IsDBNull(v))
       'remove blank row at top if exists
       If hasBlankRow Then
         dataTable.Rows.RemoveAt(0)
