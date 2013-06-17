@@ -2052,6 +2052,7 @@ Public Class _Default
                       .PageSize = mobjConfig.LookupRowsRange
                       .ShowFooter = False
 
+                      .CssClass = "recordSelector"
                       .Style.Add("Position", "Absolute")
                       .Attributes.CssStyle("LEFT") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
                       .Attributes.CssStyle("TOP") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
