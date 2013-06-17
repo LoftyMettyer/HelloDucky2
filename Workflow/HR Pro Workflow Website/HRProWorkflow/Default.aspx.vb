@@ -9,6 +9,7 @@ Imports Microsoft.VisualBasic
 Imports Utilities
 Imports System.Data.SqlClient
 Imports System.Diagnostics
+Imports System.Transactions
 
 Public Class _Default
     Inherits System.Web.UI.Page
@@ -184,8 +185,6 @@ Public Class _Default
         'Const iGRIDBORDERWIDTH As Integer = 10
         Const sDEFAULTTITLE As String = "HR Pro Workflow"
         Const IMAGEBORDERWIDTH As Integer = 2
-
-        Debug.Print("DEF pageload in")
 
         sAssemblyName = ""
         sWebSiteVersion = ""
@@ -2311,8 +2310,6 @@ Public Class _Default
             End Try
         End If
 
-        Debug.Print("DEF pageload out")
-
         If sMessage.Length > 0 Then
             Session("message") = sMessage
 
@@ -2380,7 +2377,6 @@ Public Class _Default
         Dim sQueryString As String
         Dim arrQueryStrings() As String
         Dim sFollowOnForms As String
-        Dim objTransaction As System.Data.SqlClient.SqlTransaction
 
         sMessage = ""
         fSavedForLater = False
@@ -2636,141 +2632,136 @@ Public Class _Default
                  And (bulletWarnings.Items.Count = 0) _
                  And (bulletErrors.Items.Count = 0) Then
 
-                    objTransaction = conn.BeginTransaction()
+                    Using (New TransactionScope(TransactionScopeOption.Suppress))
+                        Try
+                            cmdUpdate = New SqlClient.SqlCommand("spASRSubmitWorkflowStep", conn)
+                            cmdUpdate.CommandType = CommandType.StoredProcedure
+                            cmdUpdate.CommandTimeout = miSubmissionTimeoutInSeconds
 
-                    Try
-                        cmdUpdate = New SqlClient.SqlCommand("spASRSubmitWorkflowStep", conn)
-                        cmdUpdate.CommandType = CommandType.StoredProcedure
-                        cmdUpdate.CommandTimeout = miSubmissionTimeoutInSeconds
-                        cmdUpdate.Transaction = objTransaction
+                            cmdUpdate.Parameters.Add("@piInstanceID", SqlDbType.Int).Direction = ParameterDirection.Input
+                            cmdUpdate.Parameters("@piInstanceID").Value = miInstanceID
 
-                        cmdUpdate.Parameters.Add("@piInstanceID", SqlDbType.Int).Direction = ParameterDirection.Input
-                        cmdUpdate.Parameters("@piInstanceID").Value = miInstanceID
+                            cmdUpdate.Parameters.Add("@piElementID", SqlDbType.Int).Direction = ParameterDirection.Input
+                            cmdUpdate.Parameters("@piElementID").Value = miElementID
 
-                        cmdUpdate.Parameters.Add("@piElementID", SqlDbType.Int).Direction = ParameterDirection.Input
-                        cmdUpdate.Parameters("@piElementID").Value = miElementID
+                            cmdUpdate.Parameters.Add("@psFormInput1", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
+                            cmdUpdate.Parameters("@psFormInput1").Value = sFormInput1
 
-                        cmdUpdate.Parameters.Add("@psFormInput1", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
-                        cmdUpdate.Parameters("@psFormInput1").Value = sFormInput1
+                            cmdUpdate.Parameters.Add("@psFormElements", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Output
+                            cmdUpdate.Parameters.Add("@pfSavedForLater", SqlDbType.Bit).Direction = ParameterDirection.Output
 
-                        cmdUpdate.Parameters.Add("@psFormElements", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Output
-                        cmdUpdate.Parameters.Add("@pfSavedForLater", SqlDbType.Bit).Direction = ParameterDirection.Output
+                            cmdUpdate.ExecuteNonQuery()
 
-                        cmdUpdate.ExecuteNonQuery()
+                            sFormElements = CStr(cmdUpdate.Parameters("@psFormElements").Value())
+                            fSavedForLater = CBool(cmdUpdate.Parameters("@pfSavedForLater").Value())
 
-                        sFormElements = CStr(cmdUpdate.Parameters("@psFormElements").Value())
-                        fSavedForLater = CBool(cmdUpdate.Parameters("@pfSavedForLater").Value())
+                            cmdUpdate.Dispose()
 
-                        cmdUpdate.Dispose()
-
-                        If fSavedForLater Then
-                            Select Case miSavedForLaterMessageType
-                                Case 1 ' Custom
-                                    If Not objGeneral.SplitMessage(msSavedForLaterMessage, sMessage1, sMessage2, sMessage3) Then
+                            If fSavedForLater Then
+                                Select Case miSavedForLaterMessageType
+                                    Case 1 ' Custom
+                                        If Not objGeneral.SplitMessage(msSavedForLaterMessage, sMessage1, sMessage2, sMessage3) Then
+                                            sMessage1 = "Workflow step saved for later.<BR><BR>Click "
+                                            sMessage2 = "here"
+                                            sMessage3 = " to close this form."
+                                        End If
+                                    Case 2 ' None
+                                        sMessage1 = ""
+                                        sMessage2 = ""
+                                        sMessage3 = ""
+                                    Case Else   'System default
                                         sMessage1 = "Workflow step saved for later.<BR><BR>Click "
                                         sMessage2 = "here"
                                         sMessage3 = " to close this form."
-                                    End If
-                                Case 2 ' None
-                                    sMessage1 = ""
-                                    sMessage2 = ""
-                                    sMessage3 = ""
-                                Case Else   'System default
-                                    sMessage1 = "Workflow step saved for later.<BR><BR>Click "
-                                    sMessage2 = "here"
-                                    sMessage3 = " to close this form."
-                            End Select
+                                End Select
 
-                        ElseIf sFormElements.Length = 0 Then
-                            Select Case miCompletionMessageType
-                                Case 1 ' Custom
-                                    If Not objGeneral.SplitMessage(msCompletionMessage, sMessage1, sMessage2, sMessage3) Then
+                            ElseIf sFormElements.Length = 0 Then
+                                Select Case miCompletionMessageType
+                                    Case 1 ' Custom
+                                        If Not objGeneral.SplitMessage(msCompletionMessage, sMessage1, sMessage2, sMessage3) Then
+                                            sMessage1 = "Workflow step completed.<BR><BR>Click "
+                                            sMessage2 = "here"
+                                            sMessage3 = " to close this form."
+                                        End If
+                                    Case 2 ' None
+                                        sMessage1 = ""
+                                        sMessage2 = ""
+                                        sMessage3 = ""
+                                    Case Else   'System default
                                         sMessage1 = "Workflow step completed.<BR><BR>Click "
                                         sMessage2 = "here"
                                         sMessage3 = " to close this form."
-                                    End If
-                                Case 2 ' None
-                                    sMessage1 = ""
-                                    sMessage2 = ""
-                                    sMessage3 = ""
-                                Case Else   'System default
-                                    sMessage1 = "Workflow step completed.<BR><BR>Click "
-                                    sMessage2 = "here"
-                                    sMessage3 = " to close this form."
-                            End Select
-                        Else
-                            arrFollowOnForms = sFormElements.Split(CChar(vbTab))
-                            iFollowOnFormCount = arrFollowOnForms.GetUpperBound(0)
+                                End Select
+                            Else
+                                arrFollowOnForms = sFormElements.Split(CChar(vbTab))
+                                iFollowOnFormCount = arrFollowOnForms.GetUpperBound(0)
 
-                            For iIndex = 0 To iFollowOnFormCount - 1
-                                sStep = arrFollowOnForms(iIndex)
+                                For iIndex = 0 To iFollowOnFormCount - 1
+                                    sStep = arrFollowOnForms(iIndex)
 
-                                cmdQS = New SqlClient.SqlCommand("spASRGetWorkflowQueryString", conn)
-                                cmdQS.CommandType = CommandType.StoredProcedure
-                                cmdQS.CommandTimeout = miSubmissionTimeoutInSeconds
-                                cmdQS.Transaction = objTransaction
+                                    cmdQS = New SqlClient.SqlCommand("spASRGetWorkflowQueryString", conn)
+                                    cmdQS.CommandType = CommandType.StoredProcedure
+                                    cmdQS.CommandTimeout = miSubmissionTimeoutInSeconds
 
-                                cmdQS.Parameters.Add("@piInstanceID", SqlDbType.Int).Direction = ParameterDirection.Input
-                                cmdQS.Parameters("@piInstanceID").Value = miInstanceID
+                                    cmdQS.Parameters.Add("@piInstanceID", SqlDbType.Int).Direction = ParameterDirection.Input
+                                    cmdQS.Parameters("@piInstanceID").Value = miInstanceID
 
-                                cmdQS.Parameters.Add("@piElementID", SqlDbType.Int).Direction = ParameterDirection.Input
-                                cmdQS.Parameters("@piElementID").Value = CLng(sStep)
+                                    cmdQS.Parameters.Add("@piElementID", SqlDbType.Int).Direction = ParameterDirection.Input
+                                    cmdQS.Parameters("@piElementID").Value = CLng(sStep)
 
-                                cmdQS.Parameters.Add("@psQueryString", SqlDbType.VarChar, 8000).Direction = ParameterDirection.Output
+                                    cmdQS.Parameters.Add("@psQueryString", SqlDbType.VarChar, 8000).Direction = ParameterDirection.Output
 
-                                cmdQS.ExecuteNonQuery()
+                                    cmdQS.ExecuteNonQuery()
 
-                                sQueryString = CStr(cmdQS.Parameters("@psQueryString").Value())
+                                    sQueryString = CStr(cmdQS.Parameters("@psQueryString").Value())
 
-                                ReDim Preserve arrQueryStrings(arrQueryStrings.GetUpperBound(0) + 1)
-                                arrQueryStrings(arrQueryStrings.GetUpperBound(0)) = sQueryString
+                                    ReDim Preserve arrQueryStrings(arrQueryStrings.GetUpperBound(0) + 1)
+                                    arrQueryStrings(arrQueryStrings.GetUpperBound(0)) = sQueryString
 
-                                cmdQS.Dispose()
-                            Next iIndex
+                                    cmdQS.Dispose()
+                                Next iIndex
 
-                            sFollowOnForms = Join(arrQueryStrings, vbTab)
+                                sFollowOnForms = Join(arrQueryStrings, vbTab)
 
-                            Select Case miFollowOnFormsMessageType
-                                Case 1 ' Custom
-                                    If Not objGeneral.SplitMessage(msFollowOnFormsMessage, sMessage1, sMessage2, sMessage3) Then
+                                Select Case miFollowOnFormsMessageType
+                                    Case 1 ' Custom
+                                        If Not objGeneral.SplitMessage(msFollowOnFormsMessage, sMessage1, sMessage2, sMessage3) Then
+                                            sMessage1 = "Workflow step completed.<BR><BR>Click "
+                                            sMessage2 = "here"
+                                            sMessage3 = " to complete the follow-on Workflow form" & _
+                                             CStr(IIf(iFollowOnFormCount = 1, "", "s")) & "."
+                                        End If
+                                    Case 2 ' None
+                                        sMessage1 = ""
+                                        sMessage2 = ""
+                                        sMessage3 = ""
+                                    Case Else   'System default
                                         sMessage1 = "Workflow step completed.<BR><BR>Click "
                                         sMessage2 = "here"
                                         sMessage3 = " to complete the follow-on Workflow form" & _
                                          CStr(IIf(iFollowOnFormCount = 1, "", "s")) & "."
-                                    End If
-                                Case 2 ' None
-                                    sMessage1 = ""
-                                    sMessage2 = ""
-                                    sMessage3 = ""
-                                Case Else   'System default
-                                    sMessage1 = "Workflow step completed.<BR><BR>Click "
-                                    sMessage2 = "here"
-                                    sMessage3 = " to complete the follow-on Workflow form" & _
-                                     CStr(IIf(iFollowOnFormCount = 1, "", "s")) & "."
-                            End Select
+                                End Select
 
-                        End If
+                            End If
 
-                        sMessage1 = NullSafeString(sMessage1)
-                        sMessage2 = NullSafeString(sMessage2)
-                        sMessage3 = NullSafeString(sMessage3)
+                            sMessage1 = NullSafeString(sMessage1)
+                            sMessage2 = NullSafeString(sMessage2)
+                            sMessage3 = NullSafeString(sMessage3)
 
-                        hdnSubmissionMessage_1.Value = Replace(sMessage1, " ", "&nbsp;")
-                        hdnSubmissionMessage_2.Value = Replace(sMessage2, " ", "&nbsp;")
-                        hdnSubmissionMessage_3.Value = Replace(sMessage3, " ", "&nbsp;")
-                        hdnNoSubmissionMessage.Value = CStr(IIf((sMessage1.Length = 0) And (sMessage2.Length = 0) And (sMessage3.Length = 0), "1", "0"))
-                        hdnFollowOnForms.Value = sFollowOnForms
+                            hdnSubmissionMessage_1.Value = Replace(sMessage1, " ", "&nbsp;")
+                            hdnSubmissionMessage_2.Value = Replace(sMessage2, " ", "&nbsp;")
+                            hdnSubmissionMessage_3.Value = Replace(sMessage3, " ", "&nbsp;")
+                            hdnNoSubmissionMessage.Value = CStr(IIf((sMessage1.Length = 0) And (sMessage2.Length = 0) And (sMessage3.Length = 0), "1", "0"))
+                            hdnFollowOnForms.Value = sFollowOnForms
 
-                        If hdnNoSubmissionMessage.Value <> "1" Then
-                            EnableDisableControls(False)
-                        End If
+                            If hdnNoSubmissionMessage.Value <> "1" Then
+                                EnableDisableControls(False)
+                            End If
 
-                        objTransaction.Commit()
-                    Catch ex As Exception
-                        sMessage = "Error submitting the web form:<BR><BR>" & ex.Message
-
-                        objTransaction.Rollback()
-                    End Try
+                        Catch ex As Exception
+                            sMessage = "Error submitting the web form:<BR><BR>" & ex.Message
+                        End Try
+                    End Using
                 End If
 
                 conn.Close()
