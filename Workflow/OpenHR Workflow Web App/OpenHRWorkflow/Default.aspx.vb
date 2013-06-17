@@ -582,7 +582,7 @@ Public Class [Default]
 
 						If IsMobileBrowser() Then
 							' css
-							html &= "z-index: 1; filter: alpha(opacity=0); opacity: 0;' "
+							html &= "filter: alpha(opacity=0); opacity: 0;' "
 
 							' Onclick
 							Dim TargetID As String = FormInputPrefix & HotSpotID & "_" & HotSpotItemType & "_"
