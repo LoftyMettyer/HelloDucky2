@@ -101,25 +101,22 @@ Public Module Extensions
       End If
    End Sub
 
-   'TODO default colors
    Private Function AdjustedForeColor(color As Integer) As Integer
       Select Case color
-         'Case 6697779 '#333366
-         '   Return 3355443 '#333333
+			Case 6697779 '#333366
+				Return 3355443	'#333333
          Case Else
             Return color
       End Select
-      Return color
-   End Function
+	End Function
 
    Private Function AdjustedBackColor(color As Integer) As Integer
       Select Case color
-         'Case 15988214
-         '   Return 16777215 '#FFFFFF
+			Case 15988214
+				Return 16777215 '#FFFFFF
          Case Else
             Return color
       End Select
-      Return color
    End Function
 
    <Extension()>

@@ -85,7 +85,7 @@ body { font-family: verdana; }
     width: 100%;
     text-align: center;
     font-size: 10px;
-    color: #333366;
+    color: #333333;
 }
 
 .overlay {
@@ -177,8 +177,8 @@ body { font-family: verdana; }
 }
 .workflow-list img {
     border: 0;
-    width: 48px;
-    height: 48px;
+    width: 42px;
+    height: 42px;
     margin-right: 8px;
 }
 .workflow-list .detail, .workflow-list .image {

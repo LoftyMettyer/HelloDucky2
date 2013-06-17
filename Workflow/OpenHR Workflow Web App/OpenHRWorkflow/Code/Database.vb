@@ -775,7 +775,7 @@ Public Class Database
 					Loop
 
 					' Write the remaining buffer.
-					writer.Write(buffer, 0, CInt(bytesRead) - 1)
+					writer.Write(buffer, 0, CInt(bytesRead))
 					writer.Flush()
 					writer.Close()
 

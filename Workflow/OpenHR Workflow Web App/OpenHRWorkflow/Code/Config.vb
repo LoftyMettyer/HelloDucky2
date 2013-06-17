@@ -14,8 +14,8 @@ Public Class Config
    Public Property LookupRowsRange As Integer
    Public Property MessageFontSize As Integer
    Public Property ValidationMessageFontSize As Integer
-   Public Property OLEFolderServer As String
-   Public Property OLEFolderLocal As String
+	Public Property OleFolderServer As String
+	Public Property OleFolderLocal As String
    Public Property PhotographFolder As String
    Public Property ColourThemeFolder As String
    Public Property ColourThemeForeColour As String
@@ -23,10 +23,9 @@ Public Class Config
    Public Property TabletBackColour As String
    Public Property DefaultActiveDirectoryServer As String
    Public Property ConnectionString As String
-
-   ''' <summary>
-   ''' Timeout measured in milliseconds
-   ''' </summary>
+	''' <summary>
+	''' Timeout measured in milliseconds
+	''' </summary>
    Public Property SubmissionTimeout As Integer
    Public Property SubmissionTimeoutInSeconds As Integer
 

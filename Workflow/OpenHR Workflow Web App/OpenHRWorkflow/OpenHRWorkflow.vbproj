@@ -120,20 +120,7 @@
     <Content Include="Content\themes\base\images\ui-icons_454545_256x240.png" />
     <Content Include="Content\themes\base\images\ui-icons_888888_256x240.png" />
     <Content Include="Content\themes\base\images\ui-icons_cd0a0a_256x240.png" />
-    <Content Include="Content\themes\base\jquery.ui.accordion.css" />
-    <Content Include="Content\themes\base\jquery.ui.all.css" />
-    <Content Include="Content\themes\base\jquery.ui.autocomplete.css" />
-    <Content Include="Content\themes\base\jquery.ui.base.css" />
-    <Content Include="Content\themes\base\jquery.ui.button.css" />
-    <Content Include="Content\themes\base\jquery.ui.core.css" />
-    <Content Include="Content\themes\base\jquery.ui.datepicker.css" />
-    <Content Include="Content\themes\base\jquery.ui.dialog.css" />
-    <Content Include="Content\themes\base\jquery.ui.progressbar.css" />
-    <Content Include="Content\themes\base\jquery.ui.resizable.css" />
-    <Content Include="Content\themes\base\jquery.ui.selectable.css" />
-    <Content Include="Content\themes\base\jquery.ui.slider.css" />
-    <Content Include="Content\themes\base\jquery.ui.tabs.css" />
-    <Content Include="Content\themes\base\jquery.ui.theme.css" />
+    <Content Include="Content\themes\base\jquery-ui-1.8.21.custom.css" />
     <Content Include="Default.aspx" />
     <Content Include="FileDownload.aspx" />
     <Content Include="FileUpload.aspx" />
@@ -169,13 +156,17 @@
     <Content Include="Message.aspx" />
     <Content Include="PendingSteps.aspx" />
     <Content Include="Scripts\autoNumeric-1.7.4.js" />
+    <Content Include="Scripts\autoNumeric-1.7.4.min.js" />
     <Content Include="Scripts\default.js" />
     <Content Include="Scripts\jquery-1.5.1-vsdoc.js" />
     <Content Include="Scripts\jquery-1.5.1.js" />
     <Content Include="Scripts\jquery-1.5.1.min.js" />
+    <Content Include="Scripts\jquery-1.7.2.min.js" />
     <Content Include="Scripts\jquery-ui-1.8.21.custom.min.js" />
     <Content Include="Scripts\jquery.metadata.js" />
+    <Content Include="Scripts\jquery.metadata.min.js" />
     <Content Include="Scripts\resizable-table.js" />
+    <Content Include="Scripts\resizable-table.min.js" />
     <Content Include="SubmissionMessage.aspx" />
     <Content Include="Themes\Aliceblue\crnrbot.gif" />
     <Content Include="Themes\Aliceblue\crnrtop.gif" />
@@ -348,7 +339,6 @@
     <Content Include="Themes\VioletGrey\rcrnrbot.gif" />
     <Content Include="Themes\VioletGrey\rcrnrtop.gif" />
     <Content Include="Timeout.aspx" />
-    <Content Include="WebForm1.aspx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Account\ChangePassword.aspx.designer.vb">
@@ -475,13 +465,6 @@
     <Compile Include="Timeout.aspx.vb">
       <DependentUpon>Timeout.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="WebForm1.aspx.designer.vb">
-      <DependentUpon>WebForm1.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="WebForm1.aspx.vb">
-      <DependentUpon>WebForm1.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
