@@ -795,10 +795,6 @@
 	            spawnWindow("FileDownload.aspx?" + psID);
 	        }
 	    }
-
-	    function WARP_SetTimeout() {
-	        ig_shared.getCBManager()._timeLimit = <%=SubmissionTimeout()%>;
-	    }
 	    
 	    function GetDatePart(psLocaleDateValue, psDatePart) {
 	        var reDATE = /[YMD]/g;        
@@ -915,9 +911,6 @@
 	    function ResizeComboForForm(sender, args) {
 	        psWebComboID = sender._id;
             
-	        var iResizeByHeight = 0;
-	        var iResizeByWidth = 0;
-
 	        //Let's set the width of the lookup panel to the width of the screen. 
 	        //It used to resize the screen, but don't want this happening now.
 
@@ -979,8 +972,6 @@
 	        }
 	        catch(e) {}
 	    }
-
-
 
 	    function scrollHeader(iGridID) {
 	        //keeps the header table aligned with the gridview in record
@@ -1415,14 +1406,6 @@
 	        }
 	        return false;
 	    }
-
-
-	    function getGridViewControl(iGridID) {
-	        //    if (null == gridViewCtl) {
-	        gridViewCtl = document.getElementById(iGridID);
-	        //}
-	    }
-
 
 	    function Right(str, n){
 	        if (n <= 0)
