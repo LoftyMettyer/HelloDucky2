@@ -50,15 +50,15 @@
         <span id="pleasewaitText">Processing...<br/><br/>Please wait.</span>
 	</div>
 		
-    <img id="imgErrorMessages_Max" src="Images/uparrows_white.gif" alt="Show messages" style="position: absolute; right: 1px; bottom: 1px; display: none; visibility: hidden; z-index: 10; width:20px; height:20px;" onclick="showErrorMessages(true);" />
+    <img id="imgErrorMessages_Max" src="Images/uparrows_white.gif" alt="Show messages" style="position: absolute; right: 1px; bottom: 1px; display: none; visibility: hidden; z-index: 10; width:20px; height:20px; cursor:pointer;" onclick="showErrorMessages(true);" />
 
 	<div id="divErrorMessages_Outer" style="position: absolute; bottom: 0px; left: 0px; right: 0px; display: none; visibility: hidden; z-index: 10">
 		
         <div id="divErrorMessages_Inner" style="background-color: white; text-align: left; position: relative; margin: 0px; padding: 5px; border: 1px solid; font-size: 11px; color: black; font-family: Verdana;">
 		    
-			<img id="imgErrorMessages_Min" src="Images/downarrows_white.gif" alt="Hide messages" style="right: 1px; position: absolute; top: 0px; width:20px; height:20px;" onclick="showErrorMessages(false);" />
-            
-			<igmisc:WebAsyncRefreshPanel id="pnlErrorMessages" runat="server" style="position: relative;" width="90%" height="100%">
+			<img id="imgErrorMessages_Min" src="Images/downarrows_white.gif" alt="Hide messages" style="right: 1px; position: absolute; top: 0px; width:20px; height:20px;cursor:pointer;" onclick="showErrorMessages(false);" />
+                            
+			<igmisc:WebAsyncRefreshPanel id="pnlErrorMessages" runat="server"  style="position: relative;" width="90%" height="100%">
 				<asp:Label ID="lblErrors" runat="server" Text=""></asp:Label>				
 				<asp:BulletedList ID="bulletErrors" runat="server" Style="margin-top: 0px; margin-bottom: 0px; padding-top: 5px; padding-bottom: 5px;" BulletStyle="Disc" Font-Names="Verdana" Font-Size="11pt" BorderStyle="None">
 				</asp:BulletedList>
@@ -73,6 +73,7 @@
 				</span>
 				<asp:Label ID="lblWarningsPrompt_3" runat="server" Text=""></asp:Label>
 			</igmisc:WebAsyncRefreshPanel>
+            
 		</div>
 	</div>
 	<!--
