@@ -10,7 +10,6 @@ Imports System
 Public Class General
 
   Private Sub New()
-
   End Sub
 
   Public Shared Function ColourPart(ByVal piColourCode As Int32, ByVal pcharColourPart As Char) As Integer
