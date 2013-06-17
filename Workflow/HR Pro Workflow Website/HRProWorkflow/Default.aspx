@@ -1196,13 +1196,13 @@ function Right(str, n){
         Web Form Validation Error Messages
         -->        
 
-<div id="pleasewaitScreen" style="position:absolute;z-index:5;top:30%;left:42%;visibility:hidden">
-			<table border="0" cellspacing="0" cellpadding="0" style="top: 0px; left: 0px; width: 240px;
+<div id="pleasewaitScreen" style="position:absolute;z-index:5;top:30%;width:150px;left:50%;margin-left:-75px;visibility:hidden">
+			<table border="0" cellspacing="0" cellpadding="0" style="top: 0px; left: 0px; width: 150px;
         height: 60px; position: relative; text-align: center; font-size: 10pt; color: black;
         font-family: Verdana; border: black 1px solid;" bgcolor="White">
 				<tr>
 					<td style="width:100%;height:100%;background-color:White;text-align:center;vertical-align:middle">
-								Processing Workflow step...<br><br>Please wait.<br>
+								Processing...<br><br>Please wait.<br>
 					</td>
 				</tr>
 			</table>
