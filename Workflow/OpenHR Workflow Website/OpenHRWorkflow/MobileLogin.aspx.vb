@@ -70,13 +70,13 @@ Partial Class MobileLogin
             Select Case i
               Case 1
                 prefix = "Header"
-                control = TryCast(pnlHeader, HtmlGenericControl)
+                control = pnlHeader
               Case 2
                 prefix = "Main"
-                control = TryCast(ScrollerFrame, HtmlGenericControl)
+                control = ScrollerFrame
               Case 3
                 prefix = "Footer"
-                control = TryCast(pnlFooter, HtmlGenericControl)
+                control = pnlFooter
             End Select
 
             If Not IsDBNull(drLayouts(prefix & "BackColor")) Then
@@ -152,41 +152,37 @@ Partial Class MobileLogin
 
             Case 0 ' Button
 
-              If CInt(drElements("ButtonStyle")) = 1 Then   ' Footer Icon
+              If NullSafeString(drElements("Name")).Length > 0 Then
+                ctlForm_ImageButton = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name"))), ImageButton)
 
-                If NullSafeString(drElements("Name")).Length > 0 Then
-                  ctlForm_ImageButton = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name"))), ImageButton)
+                'ctlForm_ImageButton = New ImageButton
+                With ctlForm_ImageButton
+                  .Width = Unit.Pixel(40)
+                  .Height = Unit.Pixel(40)
+                  sImageFileName = LoadPicture(NullSafeInteger(drElements("PictureID")), sMessage)
+                  .ImageUrl = sImageFileName
+                  .Font.Name = NullSafeString(drElements("FontName"))
+                  .Font.Size = FontUnit.Parse(NullSafeString(drElements("FontSize")))
+                  .Font.Bold = NullSafeBoolean(NullSafeBoolean(drElements("FontBold")))
+                  .Font.Italic = NullSafeBoolean(NullSafeBoolean(drElements("FontItalic")))
+                End With
 
-                  'ctlForm_ImageButton = New ImageButton
-                  With ctlForm_ImageButton
-                    .Width = Unit.Pixel(40)
-                    .Height = Unit.Pixel(40)
-                    sImageFileName = LoadPicture(NullSafeInteger(drElements("pictureID")), sMessage)
-                    .ImageUrl = sImageFileName
-                    .Font.Name = NullSafeString(drElements("FontName"))
-                    .Font.Size = FontUnit.Parse(NullSafeString(drElements("FontSize")))
-                    .Font.Bold = NullSafeBoolean(NullSafeBoolean(drElements("FontBold")))
-                    .Font.Italic = NullSafeBoolean(NullSafeBoolean(drElements("FontItalic")))
+                ' Footer text
+                If NullSafeString(drElements("Caption")).Length > 0 Then
+                  ctlForm_HTMLGenericControl = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name")) & "_label"), HtmlGenericControl)
+                  With ctlForm_HTMLGenericControl
+                    .Style("word-wrap") = "break-word"
+                    .Style("overflow") = "auto"
+                    .Style.Add("z-index", "1")
+                    .InnerText = NullSafeString(drElements("caption"))
+                    .Style.Add("background-color", "Transparent")
+                    .Style.Add("font-family", "Verdana")
+                    .Style.Add("font-size", "6pt")
+                    .Style.Add("font-weight", "normal")
+                    .Style.Add("font-style", "normal")
                   End With
-
-                  ' Footer text
-                  If NullSafeString(drElements("Caption")).Length > 0 Then
-                    ctlForm_HTMLGenericControl = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name")) & "_label"), HtmlGenericControl)
-                    With ctlForm_HTMLGenericControl
-                      .Style("word-wrap") = "break-word"
-                      .Style("overflow") = "auto"
-                      .Style.Add("z-index", "1")
-                      .InnerText = NullSafeString(drElements("caption"))
-                      .Style.Add("background-color", "Transparent")
-                      .Style.Add("font-family", "Verdana")
-                      .Style.Add("font-size", "6pt")
-                      .Style.Add("font-weight", "normal")
-                      .Style.Add("font-style", "normal")
-                    End With
-                  End If
                 End If
               End If
-
 
             Case 2 ' Label
               If NullSafeString(drElements("Name")).Length > 0 Then
@@ -224,8 +220,8 @@ Partial Class MobileLogin
 
                   .Style.Add("font-family", NullSafeString(drElements("FontName")))
                   .Style.Add("font-size", NullSafeString(drElements("FontSize")) & "pt")
-                  .Style.Add("font-weight", IIf(NullSafeBoolean(NullSafeBoolean(drElements("FontBold"))), "bold", "normal"))
-                  .Style.Add("font-style", IIf(NullSafeBoolean(NullSafeBoolean(drElements("FontItalic"))), "italic", "normal"))
+                  .Style.Add("font-weight", If(NullSafeBoolean(NullSafeBoolean(drElements("FontBold"))), "bold", "normal"))
+                  .Style.Add("font-style", If(NullSafeBoolean(NullSafeBoolean(drElements("FontItalic"))), "italic", "normal"))
 
                   iTempHeight = NullSafeInteger(drElements("Height"))
                   iTempWidth = NullSafeInteger(drElements("Width"))
@@ -256,8 +252,8 @@ Partial Class MobileLogin
                 ctlForm_HtmlInputText.Style.Add("color", objGeneral.GetHTMLColour(NullSafeInteger(drElements("ForeColor"))))
                 ctlForm_HtmlInputText.Style.Add("font-family", NullSafeString(drElements("FontName")))
                 ctlForm_HtmlInputText.Style.Add("font-size", NullSafeString(drElements("FontSize")) & "pt")
-                ctlForm_HtmlInputText.Style.Add("font-weight", IIf(NullSafeBoolean(NullSafeBoolean(drElements("FontBold"))), "bold", "normal"))
-                ctlForm_HtmlInputText.Style.Add("font-style", IIf(NullSafeBoolean(NullSafeBoolean(drElements("FontItalic"))), "italic", "normal"))
+                ctlForm_HtmlInputText.Style.Add("font-weight", If(NullSafeBoolean(NullSafeBoolean(drElements("FontBold"))), "bold", "normal"))
+                ctlForm_HtmlInputText.Style.Add("font-style", If(NullSafeBoolean(NullSafeBoolean(drElements("FontItalic"))), "italic", "normal"))
                 ctlForm_HtmlInputText.Style.Add("width", CStr(NullSafeInteger(drElements("Width"))) & "px")
 
               End If
@@ -279,7 +275,7 @@ Partial Class MobileLogin
 
       If sMessage.Length > 0 Then
         Session("message") = sMessage
-          Response.Redirect("Message.aspx")
+        Response.Redirect("Message.aspx")
       End If
     End If
 

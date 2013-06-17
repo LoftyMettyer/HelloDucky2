@@ -38,20 +38,27 @@ EndProject
 Global
 	GlobalSection(SourceCodeControl) = preSolution
 		SccNumberOfProjects = 5
+		SccProjectName0 = \u0022$/Workflow/OpenHR\u0020Workflow\u0020Website\u0022,\u0020HXXCAAAA
 		SccLocalPath0 = .
+		SccProvider0 = MSSCCI:Microsoft\u0020Visual\u0020SourceSafe
+		CanCheckoutShared = false
 		SccProjectUniqueName1 = InstallerClassLibrary\\InstallerClassLibrary.vbproj
 		SccLocalPath1 = .
+		CanCheckoutShared = false
 		SccProjectFilePathRelativizedFromConnection1 = InstallerClassLibrary\\
 		SccProjectUniqueName2 = WebSetup\\HRProWorkflowWebSetup.vdproj
 		SccLocalPath2 = .
+		CanCheckoutShared = false
 		SccProjectFilePathRelativizedFromConnection2 = WebSetup\\
 		SccWebProject3 = true
 		SccProjectUniqueName3 = http://localhost/OpenHRWorkflow
 		SccProjectName3 = \u0022$/Workflow/OpenHR\u0020Workflow\u0020Website/OpenHRWorkflow\u0022,\u0020LXXCAAAA
 		SccLocalPath3 = C:\\Dev\\WORKFLOW\\OpenHR\u0020Workflow\u0020Website\\OpenHRWorkflow
+		CanCheckoutShared = false
 		SccProjectEnlistmentChoice3 = 2
 		SccProjectUniqueName4 = OpenHRWorkflow_deploy\\OpenHRWorkflow_deploy.wdproj
 		SccLocalPath4 = .
+		CanCheckoutShared = false
 		SccProjectFilePathRelativizedFromConnection4 = OpenHRWorkflow_deploy\\
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
