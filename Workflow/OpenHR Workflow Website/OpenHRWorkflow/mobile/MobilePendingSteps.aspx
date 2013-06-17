@@ -57,7 +57,7 @@ dh {
         <div id="pnlContainer" runat="server" style="overflow:hidden;background-color:Red">
           <div id="pnlHeader" runat="server" style="position:absolute;overflow:hidden;left:0px;top:0px;z-index:1;width:100%;height:57px">
           </div>
-          <div id="ScrollerFrame" runat="server" style="position:absolute;left:0px;top:57px;z-index:1;height:400px;width:100%">
+          <div id="ScrollerFrame" runat="server" style="position:fixed;left:0px;top:57px;z-index:1;bottom:60px;width:100%">
             <div id="pnlBody"  runat="server" style="position:absolute;width:100%;height:100%;z-index:1">      
                   
               <div runat="server" id="pnlWFList" style="width:100%;height:100%;top:40px;bottom:0px;overflow:auto">

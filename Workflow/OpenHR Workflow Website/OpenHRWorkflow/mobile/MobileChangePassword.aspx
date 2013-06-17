@@ -64,7 +64,7 @@
       <div id="pnlContainer" runat="server" style="overflow:hidden;background-color:Red">
         <div id="pnlHeader" runat="server" style="position:absolute;overflow:hidden;left:0px;top:0px;z-index:1;width:100%;height:57px">
         </div>
-          <div id="ScrollerFrame" runat="server" style="position:absolute;left:0px;top:57px;z-index:1;height:400px;width:100%">
+          <div id="ScrollerFrame" runat="server" style="position:fixed;left:0px;top:57px;z-index:1;bottom:60px;width:100%">
             <div id="pnlBody" runat="server" style="height:100%;z-index:1">      
               <table style="position:absolute;width:100%;height:100%" >
                 <tr id="space1" style="width: 100%"><td></td></tr>

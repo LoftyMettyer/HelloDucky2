@@ -264,8 +264,9 @@ Partial Class Home
 
 
     ' Disable the Change Password button for windows authenticated users
-    If NullSafeString(Session("LoginKey")).IndexOf("\") < 0 Then
-      btnChangePwd.Enabled = False
+    If NullSafeString(Session("LoginKey")).IndexOf("\") >= 0 Then
+      btnChangePwd.Visible = False
+      btnChangePwd_label.Visible = False
     End If
 
 
