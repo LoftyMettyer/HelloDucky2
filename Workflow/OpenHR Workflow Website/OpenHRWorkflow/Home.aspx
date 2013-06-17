@@ -7,23 +7,6 @@
     
     <ul runat="server" id="workflowList" class="workflow-list"/>
 
-<%-- TODO Prob should be using databinding, much simpler than building stuff in code.
-    <asp:ListView ID="workflowList" runat="server">
-        <LayoutTemplate>
-            <ul>
-                <li id="ItemPlaceHolder" runat="server"></li>
-            </ul>
-        </LayoutTemplate>
-        <ItemTemplate>
-            <li>
-                <asp:HyperLink runat="server" NavigateUrl='<%# Eval("Url") %>'>
-                    <asp:Image runat="server" ImageUrl='<%# Eval("Image") %>'/>
-                    <asp:Label runat="server" Text='<%# Eval("Name") %>'/>
-                </asp:HyperLink>
-            </li>
-        </ItemTemplate>
-    </asp:ListView>--%>
-
 </asp:Content>
 
 <asp:Content ID="footer" ContentPlaceHolderID="footerCPH" Runat="Server">

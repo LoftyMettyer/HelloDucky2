@@ -29,11 +29,7 @@
 
     <table class="controlgrid">
         <tr>
-            <td>
-                <asp:Label runat="server" ID="lblUserName" Text="Username" AssociatedControlID="txtUserName"/>
-                <%--    TODO finish or remove --%>
-                <%--<asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="txtUserName" Text="*" ErrorMessage="Username is required"></asp:RequiredFieldValidator>--%>
-            </td>
+            <td><asp:Label runat="server" ID="lblUserName" Text="Username" AssociatedControlID="txtUserName"/></td>
             <td><asp:TextBox runat="server" ID="txtUserName"/></td>
         </tr>
         <tr>
