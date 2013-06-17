@@ -640,7 +640,7 @@
 		if($get("txtPostbackMode").value==3) {
 		    //ShowMessage is the sub called in lieu of Application:EndRequest, i.e. Pretty much the end of
 		    //the postback cycle. So we'll reset all grid scroll bars to their previous position
-		    SetScrollTopPos("", "-1");		    
+		    SetScrollTopPos("", "-1", 0);		    
       }
       
       
@@ -1202,23 +1202,42 @@ function ResizeComboForForm(sender, args) {
     return false;  
   }
   
+  function GetGridRowHeight(iGridID) {
+    var table = document.getElementById(iGridID)
+
+
+    for (var r = 0; r < table.rows.length; r++) {
+        if (table.rows[r].style.display == '') {
+          return document.getElementById(iGridID.replace("Grid", "Grid_row" + r)).offsetHeight;
+        }
+    }
+    
+    return 0;    
+  }
   
-  function SetScrollTopPos(iGridID, iPos) {
+  
+  function SetScrollTopPos(iGridID, iPos, iRowIndex) {
     if(iPos==-1) {
     // -1 is the 'code' to reset scrollbar to stored position
     //Loop through all hidden scroll fields and reset values.
     var controlCollection = $get("frmMain").elements;
-	    if (controlCollection!=null) 
-	    {
-		    for (i=0; i<controlCollection.length; i++)  
-		    {
-			    if(Right(controlCollection.item(i).name, 9)=="scrollpos") {			    
-			      document.getElementById(controlCollection.item(i).name.replace("scrollpos", "gridcontainer")).scrollTop = (controlCollection.item(i).value);
-    			}	
-		    }
-	    }							
+      if (controlCollection!=null) 
+      {
+	      for (i=0; i<controlCollection.length; i++)  
+	      {
+		      if(Right(controlCollection.item(i).name, 9)=="scrollpos") {			    
+		        document.getElementById(controlCollection.item(i).name.replace("scrollpos", "gridcontainer")).scrollTop = (controlCollection.item(i).value);
+  			  }	
+	      }
+      }							
     }
     else { 
+      //Check if this grid is quick-filtered (NOT lookup filtered)
+      //If it is, calculate the scroll position to use after postback,
+      //otherwise store the current scroll position for postback...
+      if(isGridFiltered(iGridID)) {
+        iPos = (iRowIndex * GetGridRowHeight(iGridID)) - 1;
+        }
       //store the scrollbar position
       hdn1 = document.getElementById(iGridID.replace("Grid","scrollpos"));
       hdn1.value = iPos;

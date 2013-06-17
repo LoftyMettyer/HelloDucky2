@@ -202,14 +202,14 @@ Public Class RecordSelector
         MyBase.Render(writer)
         writer.Write("</div>")
         ' Render the custom pager row now.
-        If customPager IsNot Nothing AndAlso Me.PageCount > 1 Then
+        If customPager IsNot Nothing Then
             writer.Write("<div  border='0' cellspacing='" & Me.CellSpacing.ToString() & "' cellpadding='" & _
                             Me.CellPadding.ToString() & "' style='width:100%;position:absolute;right:0px;bottom:0px;height: " & CalculatePagerHeight() & ";'>")
 
             Dim iGridwidth As Integer
             iGridwidth = CInt(CalculateGridWidth.Replace("px", "").Replace("%", ""))
 
-            If iGridwidth >= 420 Then
+            If iGridwidth >= 420 Or (IsLookup And MyBase.PageCount < 2) Then
                 writer.Write("     <input name='filter' style='font-size:8pt;font-style:italic;float:left;position:absolute;top:2px;left:3px;width:150px;height:15px;border:solid 1px gray' value='search..' " & _
                              "onblur='if(this.value==""""){this.style.fontStyle=""italic"";this.style.color=""gray"";this.value=""search...""}'" & _
                              "onfocus='if(this.value!=""""){this.style.color=""black"";this.style.fontStyle=""normal"";this.value=""""}' onclick='event.cancelBubble=true;'" & _
@@ -252,7 +252,7 @@ Public Class RecordSelector
             iGridWidth += 25
             'End If
 
-            If iGridWidth < 250 And Me.PageCount > 0 Then iGridWidth = 250 ' minimum width to ensure paging controls fit.
+            If iGridWidth < 250 Then iGridWidth = 250 ' minimum width to ensure paging controls fit.
 
             strWidth = [String].Format("{0}{1}", iGridWidth, (If((Me.Width.Type = UnitType.Percentage), "%", "px")))
         End If
@@ -275,8 +275,8 @@ Public Class RecordSelector
             iRowHeight = CInt(IIf(iRowHeight < 21, 21, iRowHeight))
             Dim iDropHeight As Integer = (iRowHeight * CInt(IIf(MyBase.Rows.Count > MAXDROPDOWNROWS, MAXDROPDOWNROWS, MyBase.Rows.Count))) + 1
 
-            iDropHeight = iDropHeight + iRowHeight  ' add row for headers
-            iDropHeight = iDropHeight + IIf(MyBase.PageCount > 0, iRowHeight, 0)   ' add row for pager if required.
+            iDropHeight += iRowHeight  ' add row for headers
+            iDropHeight += 30   ' Pager height - now it's always displayed.
 
             strHeight = [String].Format("{0}{1}", iDropHeight, "px")
         End If
@@ -327,7 +327,7 @@ Public Class RecordSelector
             iGridWidth += 25
             'End If
 
-            If iGridWidth < 250 And Me.PageCount > 0 Then iGridWidth = 250 ' minimum width to ensure paging controls fit.
+            If iGridWidth < 250 Then iGridWidth = 250 ' minimum width to ensure paging controls fit.
 
             strWidth = [String].Format("{0}{1}", iGridWidth - iScrollBarWidth, (If((Me.Width.Type = UnitType.Percentage), "%", "px")))
         End If
@@ -366,18 +366,18 @@ Public Class RecordSelector
         Dim iPagerHeight As Integer = 0
         Dim iGridHeight As Integer = ControlHeight
 
-        If Me.PageCount > 1 Then
-            'Dim iGridTopPadding As Integer = CInt(NullSafeSingle(Me.HeadFontSize) / 8)
+        'If Me.PageCount > 0 Then
+        'Dim iGridTopPadding As Integer = CInt(NullSafeSingle(Me.HeadFontSize) / 8)
 
-            'iPagerHeight = CInt((((NullSafeSingle(Me.HeadFontSize) + iGridTopPadding) * 2) - 2) * 1.5)
+        'iPagerHeight = CInt((((NullSafeSingle(Me.HeadFontSize) + iGridTopPadding) * 2) - 2) * 1.5)
 
-            'If iPagerHeight > NullSafeInteger(iGridHeight) Then
-            '    iPagerHeight = NullSafeInteger(iGridHeight)
-            'End If
+        'If iPagerHeight > NullSafeInteger(iGridHeight) Then
+        '    iPagerHeight = NullSafeInteger(iGridHeight)
+        'End If
 
-            iPagerHeight = 24
+        iPagerHeight = 24
 
-        End If
+        'End If
 
         strPagerHeight = [String].Format("{0}{1}", iPagerHeight, "px")
 
@@ -626,7 +626,13 @@ Public Class RecordSelector
                     If MyBase.HeaderStyle.Height.Value < 21 Then MyBase.HeaderStyle.Height = Unit.Pixel(NullSafeSingle(Me.HeadFontSize) * 2)
                     tcTableCell.ApplyStyle(MyBase.HeaderStyle)
                 End If
-            Next       
+            Next
+        ElseIf e.Row.RowType = DataControlRowType.DataRow Then
+            ' ID for this row is used to calculate row height at runtime. Can't
+            ' specify the row height cos of bug HRPRO-1685.
+            ' NB: no need to be unique here, as the ID will automatically be 
+            ' prefixed with the control's clientID.
+            e.Row.ID = "row" & e.Row.RowIndex.ToString
         End If
     End Sub
 
@@ -720,7 +726,7 @@ Public Class RecordSelector
                 '                               "try{setPostbackMode(2);}catch(e){};__doPostBack('" & grdGrid.UniqueID & "','Select$" & e.Row.RowIndex & "');" & _
                 '                               "SetScrollTopPos('" & grdGrid.ID.ToString & "', -1);")
                 If Not Me.IsEmpty Then
-                    e.Row.Attributes("onclick") = ("SetScrollTopPos('" & grdGrid.ID.ToString & "', document.getElementById('" & grdGrid.ID.Replace("Grid", "gridcontainer") & "').scrollTop);" & _
+                    e.Row.Attributes("onclick") = ("SetScrollTopPos('" & grdGrid.ID.ToString & "', document.getElementById('" & grdGrid.ID.Replace("Grid", "gridcontainer") & "').scrollTop, " & e.Row.RowIndex & ");" & _
                                                         "try{setPostbackMode(3);}catch(e){};__doPostBack('" & grdGrid.UniqueID & "','Select$" & e.Row.RowIndex & "');")
                 End If
 
@@ -978,6 +984,10 @@ Public Class RecordSelector
             .ID = "pnlPager"
             '.CssClass = Me.PagerStyle.CssClass
             .Style.Add("float", "right")
+            If MyBase.PageCount < 2 Then
+                ' Hide pager nav controls if there's only one page.
+                .Style.Add("display", "none")
+            End If
         End With
 
         Dim tblPager As Table = New Table()
