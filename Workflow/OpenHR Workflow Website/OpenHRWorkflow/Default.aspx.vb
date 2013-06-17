@@ -122,7 +122,6 @@ Public Class _Default
     Dim sMessage As String
     Dim sQueryString As String
     Dim objCrypt As New Crypt
-    Dim objGeneral As New General
     Dim blnLocked As Boolean
     Dim conn As SqlConnection
     Dim cmdCheck As SqlCommand
@@ -716,12 +715,12 @@ Public Class _Default
                     End If
 
                     If NullSafeInteger(dr("BackColor")) <> 16249587 Then
-                      .Style.Add("background-color", objGeneral.GetHTMLColour(NullSafeInteger(dr("BackColor"))).ToString)
-                      .Style.Add("border", "solid 1px " & objGeneral.GetHTMLColour(9999523).ToString)
+                      .Style.Add("background-color", General.GetHtmlColour(NullSafeInteger(dr("BackColor"))).ToString)
+                      .Style.Add("border", "solid 1px " & General.GetHtmlColour(9999523).ToString)
                     End If
 
                     If NullSafeInteger(dr("ForeColor")) <> 6697779 Then
-                      .Style.Add("color", objGeneral.GetHTMLColour(NullSafeInteger(dr("ForeColor"))).ToString)
+                      .Style.Add("color", General.GetHtmlColour(NullSafeInteger(dr("ForeColor"))).ToString)
                     End If
 
                     .Style.Add("padding", "0px")
@@ -800,17 +799,17 @@ Public Class _Default
                           ElseIf CStr(dr("value")).Trim.Length = 0 Then
                             .Text = "&lt;undefined&gt;"
                           Else
-                            .Text = objGeneral.ConvertSQLDateToLocale(NullSafeString(dr("value")))
+                            .Text = General.ConvertSQLDateToLocale(NullSafeString(dr("value")))
                           End If
                       End Select
 
                       If NullSafeInteger(dr("BackStyle")) = 0 Then
                         .BackColor = Color.Transparent
                       Else
-                        .BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColor")))
+                        .BackColor = General.GetColour(NullSafeInteger(dr("BackColor")))
                       End If
 
-                      .ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
+                      .ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
 
                       .Font.Name = NullSafeString(dr("FontName"))
                       .Font.Size = PointToPixelFontUnit(NullSafeInteger(dr("FontSize")))
@@ -824,7 +823,7 @@ Public Class _Default
 
                       If NullSafeBoolean(dr("PictureBorder")) Then
                         .BorderStyle = BorderStyle.Solid
-                        .BorderColor = objGeneral.GetColour(5730458)
+                        .BorderColor = General.GetColour(5730458)
                         .BorderWidth = Unit.Pixel(1)
 
                         iTempHeight = iTempHeight - (2 * IMAGEBORDERWIDTH)
@@ -859,9 +858,9 @@ Public Class _Default
                       If NullSafeInteger(dr("BackStyle")) = 0 Then
                         .BackColor = Color.Transparent
                       Else
-                        .BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColor")))
+                        .BackColor = General.GetColour(NullSafeInteger(dr("BackColor")))
                       End If
-                      .ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
+                      .ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
 
                       .Font.Name = NullSafeString(dr("FontName"))
                       .Font.Size = PointToPixelFontUnit(NullSafeInteger(dr("FontSize")))
@@ -875,7 +874,7 @@ Public Class _Default
 
                       If NullSafeBoolean(dr("PictureBorder")) Then
                         .BorderStyle = BorderStyle.Solid
-                        .BorderColor = objGeneral.GetColour(5730458)
+                        .BorderColor = General.GetColour(5730458)
                         .BorderWidth = Unit.Pixel(1)
 
                         iTempHeight = iTempHeight - (2 * IMAGEBORDERWIDTH)
@@ -912,9 +911,9 @@ Public Class _Default
                     If NullSafeInteger(dr("BackStyle")) = 0 Then
                       .BackColor = Color.Transparent
                     Else
-                      .BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColor")))
+                      .BackColor = General.GetColour(NullSafeInteger(dr("BackColor")))
                     End If
-                    .ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
+                    .ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
 
                     .Font.Name = NullSafeString(dr("FontName"))
                     .Font.Size = PointToPixelFontUnit(NullSafeInteger(dr("FontSize")))
@@ -928,7 +927,7 @@ Public Class _Default
 
                     If NullSafeBoolean(dr("PictureBorder")) Then
                       .BorderStyle = BorderStyle.Solid
-                      .BorderColor = objGeneral.GetColour(5730458)
+                      .BorderColor = General.GetColour(5730458)
                       .BorderWidth = Unit.Pixel(1)
 
                       iTempHeight = iTempHeight - (2 * IMAGEBORDERWIDTH)
@@ -972,10 +971,10 @@ Public Class _Default
 
                     .BorderStyle = BorderStyle.Solid
                     .BorderWidth = Unit.Pixel(1)
-                    .BorderColor = objGeneral.GetColour(5730458)
+                    .BorderColor = General.GetColour(5730458)
 
-                    .BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColor")))
-                    .ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
+                    .BackColor = General.GetColour(NullSafeInteger(dr("BackColor")))
+                    .ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
 
                     .Font.Name = NullSafeString(dr("FontName"))
                     .Font.Size = PointToPixelFontUnit(NullSafeInteger(dr("FontSize")))
@@ -991,7 +990,7 @@ Public Class _Default
                     .Attributes("onkeydown") = "try{checkMaxLength(" & NullSafeString(dr("inputSize")) & ");}catch(e){}"
                     .Attributes("onpaste") = "try{checkMaxLength(" & NullSafeString(dr("inputSize")) & ");}catch(e){}"
 
-                    If isMobileBrowser() Then .Attributes.Add("onchange", "FilterMobileLookup('" & .ID.ToString & "');")
+                    If IsMobileBrowser() Then .Attributes.Add("onchange", "FilterMobileLookup('" & .ID.ToString & "');")
 
                   End With
 
@@ -1043,16 +1042,16 @@ Public Class _Default
                           ElseIf CStr(dr("value")).Trim.ToUpper = "NULL" Then
                             .Text = "&lt;undefined&gt;"
                           Else
-                            .Text = objGeneral.ConvertSQLDateToLocale(NullSafeString(dr("value")))
+                            .Text = General.ConvertSQLDateToLocale(NullSafeString(dr("value")))
                           End If
                       End Select
 
                       If NullSafeInteger(dr("BackStyle")) = 0 Then
                         .BackColor = Color.Transparent
                       Else
-                        .BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColor")))
+                        .BackColor = General.GetColour(NullSafeInteger(dr("BackColor")))
                       End If
-                      .ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
+                      .ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
 
                       .Font.Name = NullSafeString(dr("FontName"))
                       .Font.Size = PointToPixelFontUnit(NullSafeInteger(dr("FontSize")))
@@ -1066,7 +1065,7 @@ Public Class _Default
 
                       If NullSafeBoolean(dr("PictureBorder")) Then
                         .BorderStyle = BorderStyle.Solid
-                        .BorderColor = objGeneral.GetColour(5730458)
+                        .BorderColor = General.GetColour(5730458)
                         .BorderWidth = Unit.Pixel(1)
 
                         iTempHeight = iTempHeight - (2 * IMAGEBORDERWIDTH)
@@ -1100,9 +1099,9 @@ Public Class _Default
                       If NullSafeInteger(dr("BackStyle")) = 0 Then
                         .BackColor = Color.Transparent
                       Else
-                        .BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColor")))
+                        .BackColor = General.GetColour(NullSafeInteger(dr("BackColor")))
                       End If
-                      .ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
+                      .ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
 
                       .Font.Name = NullSafeString(dr("FontName"))
                       .Font.Size = PointToPixelFontUnit(NullSafeInteger(dr("FontSize")))
@@ -1116,7 +1115,7 @@ Public Class _Default
 
                       If NullSafeBoolean(dr("PictureBorder")) Then
                         .BorderStyle = BorderStyle.Solid
-                        .BorderColor = objGeneral.GetColour(5730458)
+                        .BorderColor = General.GetColour(5730458)
                         .BorderWidth = Unit.Pixel(1)
 
                         iTempHeight = iTempHeight - (2 * IMAGEBORDERWIDTH)
@@ -1169,12 +1168,12 @@ Public Class _Default
 
                     .Nullable = False
 
-                    .BorderColor = objGeneral.GetColour(5730458)
+                    .BorderColor = General.GetColour(5730458)
                     .BorderStyle = BorderStyle.Solid
                     .BorderWidth = Unit.Pixel(1)
 
-                    .BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColor")))
-                    .ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
+                    .BackColor = General.GetColour(NullSafeInteger(dr("BackColor")))
+                    .ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
 
                     .Font.Name = NullSafeString(dr("FontName"))
                     .Font.Size = PointToPixelFontUnit(NullSafeInteger(dr("FontSize")))
@@ -1192,7 +1191,7 @@ Public Class _Default
                     .ClientSideEvents.KeyDown = "WebNumericEditValidation_KeyDown"
                     .Attributes("onpaste") = "try{WebNumericEditValidation_Paste(this, event, '" & sID & "');}catch(e){};"
 
-                    If isMobileBrowser() Then .ClientSideEvents.TextChanged = "FilterMobileLookup('" & .ID.ToString & "');"
+                    If IsMobileBrowser() Then .ClientSideEvents.TextChanged = "FilterMobileLookup('" & .ID.ToString & "');"
 
                   End With
 
@@ -1224,7 +1223,7 @@ Public Class _Default
                   If NullSafeInteger(dr("BackStyle")) = 0 Then
                     sBackColour = "Transparent"
                   Else
-                    sBackColour = objGeneral.GetHTMLColour(NullSafeInteger(dr("BackColor")))
+                    sBackColour = General.GetHtmlColour(NullSafeInteger(dr("BackColor")))
                   End If
 
                   sTemp2 = CStr(IIf(NullSafeBoolean(dr("FontStrikeThru")), " line-through", "")) & _
@@ -1240,7 +1239,7 @@ Public Class _Default
                    " TOP: " & NullSafeString(dr("TopCoord")) & "px; " & " LEFT: " & NullSafeString(dr("LeftCoord")) & "px; " & _
                    " WIDTH: " & NullSafeString(dr("Width")) & "px; " & " HEIGHT: " & NullSafeString(dr("Height")) & "px; " & _
                    " BACKGROUND-COLOR: " & sBackColour & "; " & _
-                   " COLOR: " & objGeneral.GetHTMLColour(NullSafeInteger(dr("ForeColor"))) & "; " & _
+                   " COLOR: " & General.GetHtmlColour(NullSafeInteger(dr("ForeColor"))) & "; " & _
                    " FONT-FAMILY: " & NullSafeString(dr("FontName")) & "; " & _
                    " FONT-SIZE: " & PointToPixel(NullSafeInteger(dr("FontSize"))).ToString & "px; " & _
                    " FONT-WEIGHT: " & CStr(IIf(NullSafeBoolean(dr("FontBold")), "bold", "normal")) & ";" & _
@@ -1262,7 +1261,7 @@ Public Class _Default
                        " onmouseover = ""try{forChk" & sID & ".style.color='#ff9608'; }catch(e){};""" & _
                        " onmouseout = ""try{forChk" & sID & ".style.color='';}catch(e){};""" & _
                        " onclick=""" & sID & ".checked = checked;""" & _
-                       CStr(IIf(isMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');""", "")) & _
+                       CStr(IIf(IsMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');""", "")) & _
                        " onfocus=""try{" & sID & ".select();activateControl();}catch(e){};""" & _
                        CStr(IIf(fChecked, " CHECKED", "")) & _
                        " style='height:14px;width:14px;margin:0px'" & _
@@ -1290,7 +1289,7 @@ Public Class _Default
                        " onmouseover = ""try{forChk" & sID & ".style.color='#ff9608'; }catch(e){};""" & _
                        " onmouseout = ""try{forChk" & sID & ".style.color='';}catch(e){};""" & _
                        " onclick=""" & sID & ".checked = checked;""" & _
-                       CStr(IIf(isMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');""", "")) & _
+                       CStr(IIf(IsMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');""", "")) & _
                        " onfocus=""try{" & sID & ".select();activateControl();}catch(e){};""" & _
                        CStr(IIf(fChecked, " CHECKED", "")) & _
                        " style='height:14px;width:14px;margin:0px'" & _
@@ -1305,7 +1304,7 @@ Public Class _Default
                        " onmouseover = ""try{forChk" & sID & ".style.color='#ff9608'; }catch(e){};""" & _
                        " onmouseout = ""try{forChk" & sID & ".style.color='';}catch(e){};""" & _
                        " onclick=""" & sID & ".checked = checked;""" & _
-                       CStr(IIf(isMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');""", "")) & _
+                       CStr(IIf(IsMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');""", "")) & _
                        " onfocus=""try{" & sID & ".select();activateControl();}catch(e){};""" & _
                        CStr(IIf(UCase(NullSafeString(dr("value"))) = "TRUE", " CHECKED", "")) & _
                        " style='height:14px;width:14px;margin:0px'" & _
@@ -1333,7 +1332,7 @@ Public Class _Default
                        " onmouseover = ""try{forChk" & sID & ".style.color='#ff9608'; }catch(e){};""" & _
                        " onmouseout = ""try{forChk" & sID & ".style.color='';}catch(e){};""" & _
                        " onclick=""" & sID & ".checked = checked;""" & _
-                       CStr(IIf(isMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');""", "")) & _
+                       CStr(IIf(IsMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');""", "")) & _
                        " onfocus=""try{" & sID & ".select();activateControl();}catch(e){};""" & _
                        CStr(IIf(NullSafeString(dr("value")).ToUpper = "TRUE", " CHECKED", "")) & _
                        " style='height:14px;width:14px;margin:0px'" & _
@@ -1434,7 +1433,7 @@ Public Class _Default
 
                       ' Mobiles sometimes show keyboards when dateboxes are clicked.
                       ' These can overlap the calendar control, so suppress it.
-                      If isMobileBrowser() Then
+                      If IsMobileBrowser() Then
                         .Editable = False
                         .Attributes.Add("onclick", "showCalendar('" & .ClientID.ToString & "');")
                       End If
@@ -1457,28 +1456,28 @@ Public Class _Default
 
                       .CalendarLayout.DayStyle.Font.Size = fontUnit
                       .CalendarLayout.DayStyle.Font.Name = "Verdana"
-                      .CalendarLayout.DayStyle.ForeColor = objGeneral.GetColour(6697779)
-                      .CalendarLayout.DayStyle.BackColor = objGeneral.GetColour(15988214)
+                      .CalendarLayout.DayStyle.ForeColor = General.GetColour(6697779)
+                      .CalendarLayout.DayStyle.BackColor = General.GetColour(15988214)
 
                       .CalendarLayout.FooterStyle.Font.Size = fontUnit
                       .CalendarLayout.FooterStyle.Font.Name = "Verdana"
-                      .CalendarLayout.FooterStyle.ForeColor = objGeneral.GetColour(6697779)
-                      .CalendarLayout.FooterStyle.BackColor = objGeneral.GetColour(16248553)
+                      .CalendarLayout.FooterStyle.ForeColor = General.GetColour(6697779)
+                      .CalendarLayout.FooterStyle.BackColor = General.GetColour(16248553)
 
                       .CalendarLayout.SelectedDayStyle.Font.Size = fontUnit
                       .CalendarLayout.SelectedDayStyle.Font.Name = "Verdana"
                       .CalendarLayout.SelectedDayStyle.Font.Bold = True
                       .CalendarLayout.SelectedDayStyle.Font.Underline = True
-                      .CalendarLayout.SelectedDayStyle.ForeColor = objGeneral.GetColour(2774907)
-                      .CalendarLayout.SelectedDayStyle.BackColor = objGeneral.GetColour(10480637)
+                      .CalendarLayout.SelectedDayStyle.ForeColor = General.GetColour(2774907)
+                      .CalendarLayout.SelectedDayStyle.BackColor = General.GetColour(10480637)
 
                       .CalendarLayout.OtherMonthDayStyle.Font.Size = fontUnit
                       .CalendarLayout.OtherMonthDayStyle.Font.Name = "Verdana"
-                      .CalendarLayout.OtherMonthDayStyle.ForeColor = objGeneral.GetColour(11375765)
+                      .CalendarLayout.OtherMonthDayStyle.ForeColor = General.GetColour(11375765)
 
                       .CalendarLayout.NextPrevStyle.ForeColor = SystemColors.InactiveCaptionText
-                      .CalendarLayout.NextPrevStyle.BackColor = objGeneral.GetColour(16248553)
-                      .CalendarLayout.NextPrevStyle.ForeColor = objGeneral.GetColour(6697779)
+                      .CalendarLayout.NextPrevStyle.BackColor = General.GetColour(16248553)
+                      .CalendarLayout.NextPrevStyle.ForeColor = General.GetColour(6697779)
 
                       .CalendarLayout.CalendarStyle.Width = Unit.Pixel(152)
                       .CalendarLayout.CalendarStyle.Height = Unit.Pixel(80)
@@ -1486,24 +1485,24 @@ Public Class _Default
                       .CalendarLayout.CalendarStyle.Font.Name = "Verdana"
                       .CalendarLayout.CalendarStyle.BackColor = Color.White
 
-                      .CalendarLayout.WeekendDayStyle.BackColor = objGeneral.GetColour(15004669)
+                      .CalendarLayout.WeekendDayStyle.BackColor = General.GetColour(15004669)
 
-                      .CalendarLayout.TodayDayStyle.ForeColor = objGeneral.GetColour(2774907)
-                      .CalendarLayout.TodayDayStyle.BackColor = objGeneral.GetColour(10480637)
+                      .CalendarLayout.TodayDayStyle.ForeColor = General.GetColour(2774907)
+                      .CalendarLayout.TodayDayStyle.BackColor = General.GetColour(10480637)
 
                       .CalendarLayout.DropDownStyle.Font.Size = fontUnit
                       .CalendarLayout.DropDownStyle.Font.Name = "Verdana"
                       .CalendarLayout.DropDownStyle.BorderStyle = BorderStyle.Solid
-                      .CalendarLayout.DropDownStyle.BorderColor = objGeneral.GetColour(10720408)
+                      .CalendarLayout.DropDownStyle.BorderColor = General.GetColour(10720408)
 
-                      .CalendarLayout.DayHeaderStyle.BackColor = objGeneral.GetColour(16248553)
-                      .CalendarLayout.DayHeaderStyle.ForeColor = objGeneral.GetColour(6697779)
+                      .CalendarLayout.DayHeaderStyle.BackColor = General.GetColour(16248553)
+                      .CalendarLayout.DayHeaderStyle.ForeColor = General.GetColour(6697779)
                       .CalendarLayout.DayHeaderStyle.Font.Size = fontUnit
                       .CalendarLayout.DayHeaderStyle.Font.Name = "Verdana"
                       .CalendarLayout.DayHeaderStyle.Font.Bold = True
 
-                      .CalendarLayout.TitleStyle.ForeColor = objGeneral.GetColour(6697779)
-                      .CalendarLayout.TitleStyle.BackColor = objGeneral.GetColour(16248553)
+                      .CalendarLayout.TitleStyle.ForeColor = General.GetColour(6697779)
+                      .CalendarLayout.TitleStyle.BackColor = General.GetColour(16248553)
                       .NullDateLabel = ""
 
                       If (Not IsDBNull(dr("value"))) Then
@@ -1517,9 +1516,9 @@ Public Class _Default
                         End If
                       End If
 
-                      .BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColor")))
-                      .ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
-                      .BorderColor = objGeneral.GetColour(5730458)
+                      .BackColor = General.GetColour(NullSafeInteger(dr("BackColor")))
+                      .ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
+                      .BorderColor = General.GetColour(5730458)
 
                       .Font.Name = NullSafeString(dr("FontName"))
                       .Font.Size = PointToPixelFontUnit(NullSafeInteger(dr("FontSize")))
@@ -1528,7 +1527,7 @@ Public Class _Default
                       .Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
                       .Font.Underline = NullSafeBoolean(dr("FontUnderline"))
 
-                      If isMobileBrowser() Then
+                      If IsMobileBrowser() Then
                         .DropButton.ImageUrl1 = "~/Images/Calendar16.png"
                         .DropButton.ImageUrl2 = "~/Images/Calendar16.png"
                         .DropButton.ImageUrlHover = "~/Images/Calendar16.png"
@@ -1544,7 +1543,7 @@ Public Class _Default
                       .ClientSideEvents.TextChanged = "dateControlTextChanged"
                       .ClientSideEvents.BeforeDropDown = "dateControlBeforeDropDown"
 
-                      If isMobileBrowser() Then .ClientSideEvents.AfterCloseUp = "FilterMobileLookup('" & sID.ToString & "');"
+                      If IsMobileBrowser() Then .ClientSideEvents.AfterCloseUp = "FilterMobileLookup('" & sID.ToString & "');"
                     End With
 
                     pnlInput.ContentTemplateContainer.Controls.Add(ctlForm_Date)
@@ -1557,7 +1556,7 @@ Public Class _Default
                   If NullSafeInteger(dr("BackStyle")) = 0 Then
                     sBackColour = "Transparent"
                   Else
-                    sBackColour = objGeneral.GetHTMLColour(NullSafeInteger(dr("BackColor")))
+                    sBackColour = General.GetHtmlColour(NullSafeInteger(dr("BackColor")))
                   End If
 
                   sTemp2 = CStr(IIf(NullSafeBoolean(dr("FontStrikeThru")), " line-through", "")) & _
@@ -1588,7 +1587,7 @@ Public Class _Default
                  " WIDTH: " & width & "px; " & _
                  " HEIGHT: " & height & "px; " & _
                  " BACKGROUND-COLOR: " & sBackColour & "; " & _
-                 " COLOR: " & objGeneral.GetHTMLColour(NullSafeInteger(dr("ForeColor"))) & ";" & _
+                 " COLOR: " & General.GetHtmlColour(NullSafeInteger(dr("ForeColor"))) & ";" & _
                  " FONT-FAMILY: " & NullSafeString(dr("FontName")) & "; " & _
                  " FONT-SIZE: " & PointToPixel(NullSafeInteger(dr("FontSize"))).ToString & "px; " & _
                  " FONT-WEIGHT: " & CStr(IIf(NullSafeBoolean(dr("FontBold")), "bold", "normal")) & ";" & _
@@ -1599,7 +1598,7 @@ Public Class _Default
 
                   If NullSafeString(dr("caption")).Trim.Length > 0 Then
 
-                    sTemp += "<legend style='color: " & objGeneral.GetHTMLColour(NullSafeInteger(dr("ForeColor"))) & ";" & _
+                    sTemp += "<legend style='color: " & General.GetHtmlColour(NullSafeInteger(dr("ForeColor"))) & ";" & _
                     " margin-left: 5px; margin-right:5px; padding-left: 2px; padding-right: 2px;' align='Left'>" & _
                     NullSafeString(dr("caption")) & _
                     "</legend>"
@@ -1625,7 +1624,7 @@ Public Class _Default
                        " BORDER-TOP-STYLE:none;" & _
                        " BORDER-RIGHT-STYLE:none;" & _
                        " BORDER-BOTTOM-STYLE:none;" & _
-                       " BORDER-LEFT-COLOR:" & objGeneral.GetHTMLColour(NullSafeInteger(dr("Backcolor"))) & ";" & _
+                       " BORDER-LEFT-COLOR:" & General.GetHtmlColour(NullSafeInteger(dr("Backcolor"))) & ";" & _
                        " BORDER-LEFT-STYLE:solid;" & _
                        " BORDER-LEFT-WIDTH:1px'/>"
                     Case 1
@@ -1638,7 +1637,7 @@ Public Class _Default
                        " BORDER-LEFT-STYLE:none;" & _
                        " BORDER-RIGHT-STYLE:none;" & _
                        " BORDER-BOTTOM-STYLE:none;" & _
-                       " BORDER-TOP-COLOR:" & objGeneral.GetHTMLColour(NullSafeInteger(dr("Backcolor"))) & ";" & _
+                       " BORDER-TOP-COLOR:" & General.GetHtmlColour(NullSafeInteger(dr("Backcolor"))) & ";" & _
                        " BORDER-TOP-STYLE:solid;" & _
                        " BORDER-TOP-WIDTH:1px'/>"
                   End Select
@@ -1666,7 +1665,7 @@ Public Class _Default
 
                     If NullSafeBoolean(dr("PictureBorder")) Then
                       .BorderStyle = BorderStyle.Solid
-                      .BorderColor = objGeneral.GetColour(10720408)
+                      .BorderColor = General.GetColour(10720408)
                       .BorderWidth = 1
 
                       iTempHeight = iTempHeight - 2
@@ -1746,11 +1745,11 @@ Public Class _Default
                       iMinTabIndex = NullSafeInteger(dr("tabIndex"))
                     End If
 
-                    .BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColor")))
-                    .ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
+                    .BackColor = General.GetColour(NullSafeInteger(dr("BackColor")))
+                    .ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
 
-                    .HeaderStyle.BackColor = objGeneral.GetColour(NullSafeInteger(dr("HeaderBackColor")))
-                    .HeaderStyle.BorderColor = objGeneral.GetColour(10720408)
+                    .HeaderStyle.BackColor = General.GetColour(NullSafeInteger(dr("HeaderBackColor")))
+                    .HeaderStyle.BorderColor = General.GetColour(10720408)
                     .HeaderStyle.BorderStyle = BorderStyle.Double
                     .HeaderStyle.BorderWidth = Unit.Pixel(0)
                     .HeaderStyle.Font.Name = NullSafeString(dr("HeadFontName"))
@@ -1759,15 +1758,15 @@ Public Class _Default
                     .HeaderStyle.Font.Italic = NullSafeBoolean(dr("HeadFontItalic"))
                     .HeaderStyle.Font.Strikeout = NullSafeBoolean(dr("HeadFontStrikeThru"))
                     .HeaderStyle.Font.Underline = NullSafeBoolean(dr("HeadFontUnderline"))
-                    .HeaderStyle.ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
+                    .HeaderStyle.ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
                     .HeaderStyle.Wrap = False
                     .HeaderStyle.Height = Unit.Pixel(iHeaderHeight)
                     .HeaderStyle.VerticalAlign = VerticalAlign.Middle
                     .HeaderStyle.HorizontalAlign = HorizontalAlign.Center
 
                     ' PagerStyle settings
-                    .PagerStyle.BackColor = objGeneral.GetColour(NullSafeInteger(dr("HeaderBackColor")))
-                    .PagerStyle.BorderColor = objGeneral.GetColour(10720408)
+                    .PagerStyle.BackColor = General.GetColour(NullSafeInteger(dr("HeaderBackColor")))
+                    .PagerStyle.BorderColor = General.GetColour(10720408)
                     .PagerStyle.BorderStyle = BorderStyle.Solid
                     .PagerStyle.BorderWidth = Unit.Pixel(0)
                     .PagerStyle.Font.Name = NullSafeString(dr("HeadFontName"))
@@ -1776,30 +1775,30 @@ Public Class _Default
                     .PagerStyle.Font.Italic = NullSafeBoolean(dr("HeadFontItalic"))
                     .PagerStyle.Font.Strikeout = NullSafeBoolean(dr("HeadFontStrikeThru"))
                     .PagerStyle.Font.Underline = NullSafeBoolean(dr("HeadFontUnderline"))
-                    .PagerStyle.ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
+                    .PagerStyle.ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
                     .PagerStyle.Wrap = False
                     .PagerStyle.VerticalAlign = VerticalAlign.Middle
                     .PagerStyle.HorizontalAlign = HorizontalAlign.Center
 
                     ' ROW formatting
-                    .AlternatingRowStyle.BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColorOdd")))
+                    .AlternatingRowStyle.BackColor = General.GetColour(NullSafeInteger(dr("BackColorOdd")))
                     .AlternatingRowStyle.Font.Name = NullSafeString(dr("FontName"))
                     .AlternatingRowStyle.Font.Size = PointToPixelFontUnit(NullSafeInteger(dr("FontSize")))
                     .AlternatingRowStyle.Font.Bold = NullSafeBoolean(dr("FontBold"))
                     .AlternatingRowStyle.Font.Italic = NullSafeBoolean(dr("FontItalic"))
                     .AlternatingRowStyle.Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
                     .AlternatingRowStyle.Font.Underline = NullSafeBoolean(dr("FontUnderline"))
-                    .AlternatingRowStyle.ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColorOdd")))
+                    .AlternatingRowStyle.ForeColor = General.GetColour(NullSafeInteger(dr("ForeColorOdd")))
                     .AlternatingRowStyle.VerticalAlign = VerticalAlign.Middle
 
-                    .RowStyle.BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColorEven")))
+                    .RowStyle.BackColor = General.GetColour(NullSafeInteger(dr("BackColorEven")))
                     .RowStyle.Font.Name = NullSafeString(dr("FontName"))
                     .RowStyle.Font.Size = PointToPixelFontUnit(NullSafeInteger(dr("FontSize")))
                     .RowStyle.Font.Bold = NullSafeBoolean(dr("FontBold"))
                     .RowStyle.Font.Italic = NullSafeBoolean(dr("FontItalic"))
                     .RowStyle.Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
                     .RowStyle.Font.Underline = NullSafeBoolean(dr("FontUnderline"))
-                    .RowStyle.ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColorEven")))
+                    .RowStyle.ForeColor = General.GetColour(NullSafeInteger(dr("ForeColorEven")))
                     .RowStyle.VerticalAlign = VerticalAlign.Middle
 
                     iRowHeight = 21
@@ -1807,12 +1806,12 @@ Public Class _Default
                     If IsDBNull(dr("ForeColorHighlight")) Then
                       .SelectedRowStyle.ForeColor = SystemColors.HighlightText
                     Else
-                      .SelectedRowStyle.ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColorHighlight")))
+                      .SelectedRowStyle.ForeColor = General.GetColour(NullSafeInteger(dr("ForeColorHighlight")))
                     End If
                     If IsDBNull(dr("BackColorHighlight")) Then
                       .SelectedRowStyle.BackColor = SystemColors.Highlight
                     Else
-                      .SelectedRowStyle.BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColorHighlight")))
+                      .SelectedRowStyle.BackColor = General.GetColour(NullSafeInteger(dr("BackColorHighlight")))
                     End If
 
                   End With
@@ -1940,7 +1939,7 @@ Public Class _Default
 
 
                 Case 14 ' lookup  Inputs
-                  If Not isMobileBrowser() Then
+                  If Not IsMobileBrowser() Then
 
                     ctlForm_UpdatePanel = New System.Web.UI.UpdatePanel
 
@@ -1965,8 +1964,8 @@ Public Class _Default
                       .Font.Underline = NullSafeBoolean(dr("FontUnderline"))
                       .Width = Unit.Pixel(NullSafeInteger(dr("Width")))
                       .BackColor = Color.Transparent
-                      .ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
-                      .BorderColor = objGeneral.GetColour(5730458)
+                      .ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
+                      .BorderColor = General.GetColour(5730458)
                       .BorderStyle = BorderStyle.Solid
                       .BorderWidth = Unit.Pixel(1)
                       .ReadOnly = True
@@ -2047,10 +2046,10 @@ Public Class _Default
                       .Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
                       .Font.Underline = NullSafeBoolean(dr("FontUnderline"))
 
-                      .BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColor")))
-                      .ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
+                      .BackColor = General.GetColour(NullSafeInteger(dr("BackColor")))
+                      .ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
 
-                      .BorderColor = objGeneral.GetColour(5730458)
+                      .BorderColor = General.GetColour(5730458)
                       .BorderStyle = BorderStyle.Solid
                       .BorderWidth = Unit.Pixel(1)
 
@@ -2059,10 +2058,10 @@ Public Class _Default
                       .RowStyle.Font.Italic = NullSafeBoolean(dr("FontItalic"))
                       .RowStyle.Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
                       .RowStyle.Font.Underline = NullSafeBoolean(dr("FontUnderline"))
-                      .RowStyle.BackColor = objGeneral.GetColour(15988214)
-                      .RowStyle.ForeColor = objGeneral.GetColour(6697779)
+                      .RowStyle.BackColor = General.GetColour(15988214)
+                      .RowStyle.ForeColor = General.GetColour(6697779)
 
-                      .RowStyle.BorderColor = objGeneral.GetColour(10720408)
+                      .RowStyle.BorderColor = General.GetColour(10720408)
                       .RowStyle.BorderStyle = BorderStyle.Solid
                       .RowStyle.BorderWidth = Unit.Pixel(1)
 
@@ -2070,12 +2069,12 @@ Public Class _Default
 
                       .RowStyle.VerticalAlign = VerticalAlign.Middle
 
-                      .SelectedRowStyle.ForeColor = objGeneral.GetColour(2774907)
-                      .SelectedRowStyle.BackColor = objGeneral.GetColour(10480637)
+                      .SelectedRowStyle.ForeColor = General.GetColour(2774907)
+                      .SelectedRowStyle.BackColor = General.GetColour(10480637)
 
                       ' HEADER formatting
-                      .HeaderStyle.BackColor = objGeneral.GetColour(16248553)
-                      .HeaderStyle.BorderColor = objGeneral.GetColour(10720408)
+                      .HeaderStyle.BackColor = General.GetColour(16248553)
+                      .HeaderStyle.BorderColor = General.GetColour(10720408)
                       .HeaderStyle.BorderStyle = BorderStyle.Solid
                       .HeaderStyle.BorderWidth = Unit.Pixel(0)
                       .HeaderStyle.Font.Name = NullSafeString(dr("FontName"))
@@ -2083,7 +2082,7 @@ Public Class _Default
                       .HeaderStyle.Font.Italic = NullSafeBoolean(dr("FontItalic"))
                       .HeaderStyle.Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
                       .HeaderStyle.Font.Underline = NullSafeBoolean(dr("FontUnderline"))
-                      .HeaderStyle.ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
+                      .HeaderStyle.ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
                       .HeaderStyle.Wrap = False
                       .HeaderStyle.Height = Unit.Pixel(iHeaderHeight)
                       .HeaderStyle.VerticalAlign = VerticalAlign.Middle
@@ -2098,7 +2097,7 @@ Public Class _Default
                       .PagerStyle.Font.Italic = NullSafeBoolean(dr("FontItalic"))
                       .PagerStyle.Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
                       .PagerStyle.Font.Underline = NullSafeBoolean(dr("FontUnderline"))
-                      .PagerStyle.ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
+                      .PagerStyle.ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
                       .PagerStyle.Wrap = False
                       .PagerStyle.VerticalAlign = VerticalAlign.Middle
                       .PagerStyle.HorizontalAlign = HorizontalAlign.Center
@@ -2296,7 +2295,7 @@ Public Class _Default
                       .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
                       .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
 
-                      If isMobileBrowser() Then .Attributes.Add("onchange", "FilterMobileLookup('" & .ID.ToString & "');")
+                      If IsMobileBrowser() Then .Attributes.Add("onchange", "FilterMobileLookup('" & .ID.ToString & "');")
 
                       ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_Dropdown)
 
@@ -2321,8 +2320,8 @@ Public Class _Default
                       .Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
                       .Font.Underline = NullSafeBoolean(dr("FontUnderline"))
 
-                      .BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColor")))
-                      .ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
+                      .BackColor = General.GetColour(NullSafeInteger(dr("BackColor")))
+                      .ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
 
                       .Height() = Unit.Pixel(NullSafeInteger(dr("Height")) - 2)
                       .Width() = Unit.Pixel(NullSafeInteger(dr("Width")) - 2)
@@ -2457,7 +2456,7 @@ Public Class _Default
                     .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
                     .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
 
-                    If isMobileBrowser() Then .Attributes.Add("onchange", "FilterMobileLookup('" & .ID.ToString & "');")
+                    If IsMobileBrowser() Then .Attributes.Add("onchange", "FilterMobileLookup('" & .ID.ToString & "');")
 
                     ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_Dropdown)
 
@@ -2482,8 +2481,8 @@ Public Class _Default
                     .Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
                     .Font.Underline = NullSafeBoolean(dr("FontUnderline"))
 
-                    .BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColor")))
-                    .ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
+                    .BackColor = General.GetColour(NullSafeInteger(dr("BackColor")))
+                    .ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
 
                     .Height() = Unit.Pixel(NullSafeInteger(dr("Height")) - 2)
                     .Width() = Unit.Pixel(NullSafeInteger(dr("Width")) - 2)
@@ -2600,7 +2599,7 @@ Public Class _Default
                   If NullSafeInteger(dr("BackStyle")) = 0 Then
                     sBackColour = "Transparent"
                   Else
-                    sBackColour = objGeneral.GetHTMLColour(NullSafeInteger(dr("BackColor")))
+                    sBackColour = General.GetHtmlColour(NullSafeInteger(dr("BackColor")))
                   End If
 
                   sTemp2 = CStr(IIf(NullSafeBoolean(dr("FontStrikeThru")), " line-through", "")) & _
@@ -2639,7 +2638,7 @@ Public Class _Default
                    " WIDTH: " & width & "px; " & _
                    " HEIGHT: " & height & "px; " & _
                    " BACKGROUND-COLOR: " & sBackColour & "; " & _
-                   " COLOR: " & objGeneral.GetHTMLColour(NullSafeInteger(dr("ForeColor"))) & ";" & _
+                   " COLOR: " & General.GetHtmlColour(NullSafeInteger(dr("ForeColor"))) & ";" & _
                    " FONT-FAMILY: " & NullSafeString(dr("FontName")) & "; " & _
                    " FONT-SIZE: " & PointToPixel(NullSafeInteger(dr("FontSize"))).ToString & "px; " & _
                    " FONT-WEIGHT: " & CStr(IIf(NullSafeBoolean(dr("FontBold")), "bold", "normal")) & ";" & _
@@ -2650,7 +2649,7 @@ Public Class _Default
 
                   If NullSafeBoolean(dr("PictureBorder")) And (NullSafeString(dr("caption")).Trim.Length > 0) Then
 
-                    sTemp += "<legend style='color: " & objGeneral.GetHTMLColour(NullSafeInteger(dr("ForeColor"))) & ";" & _
+                    sTemp += "<legend style='color: " & General.GetHtmlColour(NullSafeInteger(dr("ForeColor"))) & ";" & _
                     " margin-left: 5px; margin-right:5px; padding-left: 2px; padding-right: 2px;' align='Left'>" & _
                     NullSafeString(dr("caption")) & _
                     "</legend>"
@@ -2719,7 +2718,7 @@ Public Class _Default
                            " onfocus = ""try{forOpt" & sID & "_" & iTemp.ToString & ".style.color='#ff9608'; activateControl();}catch(e){};""" & _
                            " onblur = ""try{forOpt" & sID & "_" & iTemp.ToString & ".style.color='';}catch(e){};""" & _
                            " onclick = """ & sID & ".value=opt" & sID & "[" & iTemp.ToString & "].value;""" & _
-                                                  CStr(IIf(isMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');""", ""))
+                                                  CStr(IIf(IsMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');""", ""))
 
                         Case 1 ' Horizontal
                           stringSize = graphic.MeasureString(drGrid(0).ToString(), font)
@@ -2743,7 +2742,7 @@ Public Class _Default
                            " onfocus = ""try{forOpt" & sID & "_" & iTemp.ToString & ".style.color='#ff9608'; activateControl();}catch(e){};""" & _
                            " onblur = ""try{forOpt" & sID & "_" & iTemp.ToString & ".style.color='';}catch(e){};""" & _
                            " onclick = """ & sID & ".value=opt" & sID & "[" & iTemp.ToString & "].value;""" & _
-                                            CStr(IIf(isMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');""", ""))
+                                            CStr(IIf(IsMobileBrowser, " FilterMobileLookup('" & sID.ToString & "');""", ""))
 
                           lastLeft += (stringSize.Width + (font.Size * 2) + 28)
                       End Select
@@ -2836,9 +2835,9 @@ Public Class _Default
                     .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
                     .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
 
-                    .Style.Add("BackColor", objGeneral.GetColour(NullSafeInteger(dr("BackColor"))).ToString)
-                    .Style.Add("Border", "Solid 1px " & objGeneral.GetColour(9999523).ToString)
-                    .Style.Add("Color", objGeneral.GetColour(NullSafeInteger(dr("ForeColor"))).ToString)
+                    .Style.Add("BackColor", General.GetColour(NullSafeInteger(dr("BackColor"))).ToString)
+                    .Style.Add("Border", "Solid 1px " & General.GetColour(9999523).ToString)
+                    .Style.Add("Color", General.GetColour(NullSafeInteger(dr("ForeColor"))).ToString)
 
                     .Style.Add("padding", "0px")
                     .Style.Add("white-space", "normal")
@@ -2897,7 +2896,7 @@ Public Class _Default
                   If NullSafeInteger(dr("BackStyle")) = 0 Then
                     sBackColour = "Transparent"
                   Else
-                    sBackColour = objGeneral.GetHTMLColour(NullSafeInteger(dr("BackColor")))
+                    sBackColour = General.GetHtmlColour(NullSafeInteger(dr("BackColor")))
                   End If
 
                   If (iMinTabIndex < 0) Or (NullSafeInteger(dr("tabIndex")) < iMinTabIndex) Then
@@ -2917,13 +2916,13 @@ Public Class _Default
                    " font-style:" & IIf(NullSafeBoolean(NullSafeBoolean(dr("FontItalic"))), "italic;", "normal;").ToString & _
                    " text-decoration:" & sDecoration & ";" & _
                    " background-color: " & sBackColour & "; " & _
-                   " color: " & objGeneral.GetHTMLColour(NullSafeInteger(dr("ForeColor"))) & "; " & _
+                   " color: " & General.GetHtmlColour(NullSafeInteger(dr("ForeColor"))) & "; " & _
                    "' onclick='FileDownload_Click(""" & sEncodedID & """);'" & _
                    " onkeypress='FileDownload_KeyPress(""" & sEncodedID & """);'" & _
                    " onmouseover=""this.style.cursor='pointer';this.style.color='#ff9608';""" & _
-                   " onmouseout=""this.style.cursor='';this.style.color='" & objGeneral.GetHTMLColour(NullSafeInteger(dr("ForeColor"))) & "';""" & _
+                   " onmouseout=""this.style.cursor='';this.style.color='" & General.GetHtmlColour(NullSafeInteger(dr("ForeColor"))) & "';""" & _
                    " onfocus=""this.style.color='#ff9608';""" & _
-                   " onblur=""this.style.color='" & objGeneral.GetHTMLColour(NullSafeInteger(dr("ForeColor"))) & "';"">" & _
+                   " onblur=""this.style.color='" & General.GetHtmlColour(NullSafeInteger(dr("ForeColor"))) & "';"">" & _
                    HttpUtility.HtmlEncode(NullSafeString(dr("caption"))) & _
                    "</span>"
 
@@ -2946,7 +2945,7 @@ Public Class _Default
                   If NullSafeInteger(dr("BackStyle")) = 0 Then
                     sBackColour = "Transparent"
                   Else
-                    sBackColour = objGeneral.GetHTMLColour(NullSafeInteger(dr("BackColor")))
+                    sBackColour = General.GetHtmlColour(NullSafeInteger(dr("BackColor")))
                   End If
 
                   If (iMinTabIndex < 0) Or (NullSafeInteger(dr("tabIndex")) < iMinTabIndex) Then
@@ -2966,13 +2965,13 @@ Public Class _Default
                    " font-style:" & IIf(NullSafeBoolean(NullSafeBoolean(dr("FontItalic"))), "italic;", "normal;").ToString & _
                    " text-decoration:" & sDecoration & ";" & _
                    " background-color: " & sBackColour & "; " & _
-                   " color: " & objGeneral.GetHTMLColour(NullSafeInteger(dr("ForeColor"))) & "; " & _
+                   " color: " & General.GetHtmlColour(NullSafeInteger(dr("ForeColor"))) & "; " & _
                    "' onclick='FileDownload_Click(""" & sEncodedID & """);'" & _
                    " onkeypress='FileDownload_KeyPress(""" & sEncodedID & """);'" & _
                    " onmouseover=""this.style.cursor='pointer';this.style.color='#ff9608';""" & _
-                   " onmouseout=""this.style.cursor='';this.style.color='" & objGeneral.GetHTMLColour(NullSafeInteger(dr("ForeColor"))) & "';""" & _
+                   " onmouseout=""this.style.cursor='';this.style.color='" & General.GetHtmlColour(NullSafeInteger(dr("ForeColor"))) & "';""" & _
                    " onfocus=""this.style.color='#ff9608';""" & _
-                   " onblur=""this.style.color='" & objGeneral.GetHTMLColour(NullSafeInteger(dr("ForeColor"))) & "';"">" & _
+                   " onblur=""this.style.color='" & General.GetHtmlColour(NullSafeInteger(dr("ForeColor"))) & "';"">" & _
                    HttpUtility.HtmlEncode(NullSafeString(dr("caption"))) & _
                    "</span>"
 
@@ -2997,7 +2996,7 @@ Public Class _Default
                   ctlTabsDiv.Style.Add("position", "relative")
                   ctlTabsDiv.Style.Add("z-index", "1")
 
-                  If isMobileBrowser() Then
+                  If IsMobileBrowser() Then
                     ctlTabsDiv.Style.Add("overflow-x", "auto")
                   Else
                     ' for non-mobile browsers we display arrows to scroll the tab bar left and right.
@@ -3170,8 +3169,8 @@ Public Class _Default
                   End If
 
                   iBackgroundImagePosition = CInt(cmdSelect.Parameters("@piBackImageLocation").Value())
-                  sBackgroundRepeat = objGeneral.BackgroundRepeat(CShort(iBackgroundImagePosition))
-                  sBackgroundPosition = objGeneral.BackgroundPosition(CShort(iBackgroundImagePosition))
+                  sBackgroundRepeat = General.BackgroundRepeat(CShort(iBackgroundImagePosition))
+                  sBackgroundPosition = General.BackgroundPosition(CShort(iBackgroundImagePosition))
 
                 End If
                 divInput.Style("background-repeat") = sBackgroundRepeat
@@ -3180,9 +3179,9 @@ Public Class _Default
                 sBackgroundColourHex = ""
                 If Not IsDBNull(cmdSelect.Parameters("@piBackColour").Value) Then
                   iBackgroundColour = CInt(cmdSelect.Parameters("@piBackColour").Value())
-                  sBackgroundColourHex = objGeneral.GetHTMLColour(iBackgroundColour).ToString()
+                  sBackgroundColourHex = General.GetHtmlColour(iBackgroundColour).ToString()
 
-                  divInput.Style("Background-color") = objGeneral.GetHTMLColour(NullSafeInteger(iBackgroundColour))
+                  divInput.Style("Background-color") = General.GetHtmlColour(NullSafeInteger(iBackgroundColour))
                 End If
 
                 iFormWidth = CInt(cmdSelect.Parameters("@piWidth").Value)
@@ -3284,7 +3283,6 @@ Public Class _Default
 
   Public Sub ButtonClick(ByVal sender As System.Object, ByVal e As System.EventArgs)
 
-    Dim objGeneral As New General
     Dim conn As SqlConnection
     Dim dr As SqlDataReader
     Dim cmdValidate As SqlCommand
@@ -3423,7 +3421,7 @@ Public Class _Default
                   sDateValueString = "null"
                 Else
                   sDateValueString = Format(DateTime.Parse(ctlForm_HiddenField.Value), "MM/dd/yyyy")
-                  'sDateValueString = objGeneral.ConvertLocaleDateToSQL(ctlForm_HiddenField.Value)
+                  'sDateValueString = General.ConvertLocaleDateToSQL(ctlForm_HiddenField.Value)
                 End If
               End If
 
@@ -3432,7 +3430,7 @@ Public Class _Default
               'If (ctlFormHTMLInputText.Value.ToString = vbNullString) Or (ctlFormHTMLInputText.Value.ToString = "  /  /") Then
               '  sDateValueString = "null"
               'Else
-              '  sDateValueString = objGeneral.ConvertLocaleDateToSQL(ctlFormHTMLInputText.Value)
+              '  sDateValueString = General.ConvertLocaleDateToSQL(ctlFormHTMLInputText.Value)
               'End If
 
               sFormInput1 = sFormInput1 & sIDString & sDateValueString & vbTab
@@ -3469,7 +3467,7 @@ Public Class _Default
             End If
 
           Case 14 ' Lookup Input
-            If Not isMobileBrowser() Then
+            If Not IsMobileBrowser() Then
 
 
               If (TypeOf ctlFormInput Is System.Web.UI.WebControls.TextBox) Then
@@ -3484,7 +3482,7 @@ Public Class _Default
                     If (sTemp.Length = 0) Then
                       sTemp = "null"
                     Else
-                      sTemp = objGeneral.ConvertLocaleDateToSQL(sTemp)
+                      sTemp = General.ConvertLocaleDateToSQL(sTemp)
                     End If
                   End If
                 ElseIf ctlFormTextInput.Attributes("DataType") = "System.Decimal" _
@@ -3549,21 +3547,21 @@ Public Class _Default
 
         Try ' Validate the web form entry.
           lblErrors.Font.Size = mobjConfig.ValidationMessageFontSize
-          lblErrors.ForeColor = objGeneral.GetColour(6697779)
+          lblErrors.ForeColor = General.GetColour(6697779)
 
           lblWarnings.Font.Size = mobjConfig.ValidationMessageFontSize
-          lblWarnings.ForeColor = objGeneral.GetColour(6697779)
+          lblWarnings.ForeColor = General.GetColour(6697779)
           lblWarningsPrompt_1.Font.Size = mobjConfig.ValidationMessageFontSize
-          lblWarningsPrompt_1.ForeColor = objGeneral.GetColour(6697779)
+          lblWarningsPrompt_1.ForeColor = General.GetColour(6697779)
           lblWarningsPrompt_2.Font.Size = mobjConfig.ValidationMessageFontSize
           lblWarningsPrompt_3.Font.Size = mobjConfig.ValidationMessageFontSize
-          lblWarningsPrompt_3.ForeColor = objGeneral.GetColour(6697779)
+          lblWarningsPrompt_3.ForeColor = General.GetColour(6697779)
 
           bulletErrors.Font.Size = mobjConfig.ValidationMessageFontSize
-          bulletErrors.ForeColor = objGeneral.GetColour(6697779)
+          bulletErrors.ForeColor = General.GetColour(6697779)
 
           bulletWarnings.Font.Size = mobjConfig.ValidationMessageFontSize
-          bulletWarnings.ForeColor = objGeneral.GetColour(6697779)
+          bulletWarnings.ForeColor = General.GetColour(6697779)
 
           bulletErrors.Items.Clear()
           bulletWarnings.Items.Clear()
@@ -3654,7 +3652,7 @@ Public Class _Default
               If fSavedForLater Then
                 Select Case miSavedForLaterMessageType
                   Case 1 ' Custom
-                    If Not objGeneral.SplitMessage(msSavedForLaterMessage, sMessage1, sMessage2, sMessage3) Then
+                    If Not General.SplitMessage(msSavedForLaterMessage, sMessage1, sMessage2, sMessage3) Then
                       sMessage1 = "Workflow step saved for later.<BR><BR>Click "
                       sMessage2 = "here"
                       sMessage3 = " to close this form."
@@ -3672,7 +3670,7 @@ Public Class _Default
               ElseIf sFormElements.Length = 0 Then
                 Select Case miCompletionMessageType
                   Case 1 ' Custom
-                    If Not objGeneral.SplitMessage(msCompletionMessage, sMessage1, sMessage2, sMessage3) Then
+                    If Not General.SplitMessage(msCompletionMessage, sMessage1, sMessage2, sMessage3) Then
                       sMessage1 = "Workflow step completed.<BR><BR>Click "
                       sMessage2 = "here"
                       sMessage3 = " to close this form."
@@ -3719,7 +3717,7 @@ Public Class _Default
 
                 Select Case miFollowOnFormsMessageType
                   Case 1 ' Custom
-                    If Not objGeneral.SplitMessage(msFollowOnFormsMessage, sMessage1, sMessage2, sMessage3) Then
+                    If Not General.SplitMessage(msFollowOnFormsMessage, sMessage1, sMessage2, sMessage3) Then
                       sMessage1 = "Workflow step completed.<BR><BR>Click "
                       sMessage2 = "here"
                       sMessage3 = " to complete the follow-on Workflow form" & _

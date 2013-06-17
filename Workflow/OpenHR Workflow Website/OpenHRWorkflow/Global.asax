@@ -36,10 +36,10 @@
     End Sub
   
 	Sub Session_Start(ByVal sender As Object, ByVal e As EventArgs)
-		' Code that runs when a new session is started
+        ' Code that runs when a new session is started
     End Sub
   
-	Sub Session_End(ByVal sender As Object, ByVal e As EventArgs)
+    Sub Session_End(ByVal sender As Object, ByVal e As EventArgs)
         ' Code that runs when a session ends.
         
         Try
@@ -56,6 +56,6 @@
         Catch ex As Exception
         End Try
         
-	End Sub
+    End Sub
           
 </script>
