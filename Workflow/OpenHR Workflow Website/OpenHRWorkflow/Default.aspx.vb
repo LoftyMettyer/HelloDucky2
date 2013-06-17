@@ -1986,7 +1986,7 @@ Public Class _Default
                     .AllowPaging = True
                     .AllowSorting = True
                     '.EnableSortingAndPagingCallbacks = True
-                    .PageSize = 5 'mobjConfig.LookupRowsRange
+                    .PageSize = mobjConfig.LookupRowsRange
                     .IsLookup = False
                     ' EnableViewState must be on. Mucks up the grid data otherwise. Should be reviewed
                     ' if performance is silly, but while paging is enabled it shouldn't be too bad.
