@@ -667,7 +667,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:OpenHR Workflow Web Site v5.0"
         "ProductCode" = "8:{9C0AE9EE-C2A5-4432-AEBC-08ADC693460D}"
-        "PackageCode" = "8:{3FE6AFAC-50A0-43A5-8632-9B29633FC92A}"
+        "PackageCode" = "8:{E996763A-CFCC-4953-8802-E21E7BB2C5FE}"
         "UpgradeCode" = "8:{8D103CEA-CA57-49D4-A6E6-80D5076BB642}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
