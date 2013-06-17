@@ -70,9 +70,10 @@ body { font-family: verdana; }
     margin-left: 0px;
 }
 
-.controlgrid input[type=text] {
+.controlgrid input[type="text"], .controlgrid input[type="password"], .controlgrid input[type="email"] {
     padding: 2px;
     border: 1px solid lightgray;
+	 width: 95%;
 }
 
 .controlgrid input[type="checkbox"] {
