@@ -1620,7 +1620,12 @@ Public Class _Default
                                                         iLoop = iLoop + 1
                                                         If iLoop < iVisibleColumnCount Then
                                                             'objGridColumn.Width = Unit.Pixel(CInt(iGridWidth / iVisibleColumnCount) - iGRIDBORDERWIDTH)
-                                                            objGridColumn.Width = Unit.Pixel(CInt(iGridWidth / iVisibleColumnCount))
+
+                                                            Dim iminWidth As Int32 = CInt(iGridWidth / iVisibleColumnCount)
+
+                                                            If iminWidth < 100 Then iminWidth = 100
+
+                                                            objGridColumn.Width = Unit.Pixel(iminWidth)
 
                                                             ' iWidthUsed = iWidthUsed + CInt(objGridColumn.Width.Value) + iGRIDBORDERWIDTH
                                                             iWidthUsed = iWidthUsed + CInt(objGridColumn.Width.Value)
