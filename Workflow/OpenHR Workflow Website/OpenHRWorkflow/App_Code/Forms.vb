@@ -33,7 +33,7 @@ Public Class Forms
 
             With CType(control, Label)
               .Text = NullSafeString(dr("caption"))
-              .Style("word-wrap") = "break-word" 'TODO move to css
+              .Style("word-wrap") = "break-word"
               .Style.Add("color", general.GetHtmlColour(NullSafeInteger(dr("ForeColor"))))
               .Style.Add("font-family", NullSafeString(dr("FontName")))
               .Style.Add("font-size", NullSafeString(dr("FontSize")) & "pt")
