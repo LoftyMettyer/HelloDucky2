@@ -128,19 +128,28 @@
 
 
     function dateBoxTodayClick(elementID) {
-       //Set today's Date  
+       //Set today's Date          
+        
+        var DateBox = document.getElementById(elementID);
+        DateBox.style.visibility = "hidden";
+        
         var Dt = new Date();
 
-        var cellHeight = document.getElementById(elementID + 'daysRow_1').offsetHeight;
-        
-        var Datebox = document.getElementById(elementID + 'Days');
-        Datebox.scrollTop = ((cellHeight + 2) * Dt.getDate());
+        var dateTextBox = document.getElementById(elementID + 'TextBox');
+        dateTextBox.value = (Dt.getDate()<10?"0"+Dt.getDate():Dt.getDate()) + '/' +
+          (Dt.getMonth()<9?"0"+(Dt.getMonth() + 1):(Dt.getMonth() + 1)) + '/' +
+          (Dt.getFullYear());
 
-        Datebox = document.getElementById(elementID + 'Months');
-        Datebox.scrollTop = ((cellHeight + 2) * (Dt.getMonth() + 1));
+//        var cellHeight = document.getElementById(elementID + 'daysRow_1').offsetHeight;
+//        
+//        var Datebox = document.getElementById(elementID + 'Days');     
+//        Datebox.scrollTop = ((cellHeight + 2) * Dt.getDate());
 
-        Datebox = document.getElementById(elementID + 'Years');
-        Datebox.scrollTop = ((cellHeight + 2) * (Dt.getFullYear() - 1949));      
+//        Datebox = document.getElementById(elementID + 'Months');
+//        Datebox.scrollTop = ((cellHeight + 2) * (Dt.getMonth() + 1));
+
+//        Datebox = document.getElementById(elementID + 'Years');
+//        Datebox.scrollTop = ((cellHeight + 2) * (Dt.getFullYear() - 1949));      
     }
 
     function dateBoxClearClick(elementID) {
