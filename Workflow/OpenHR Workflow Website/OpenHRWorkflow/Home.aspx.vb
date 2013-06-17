@@ -99,7 +99,7 @@ Partial Class Home
           If NullSafeInteger(dr("pictureID")) = 0 Then
             sImageFileName = "~/Images/Connected48.png"
           Else
-            sImageFileName = "~/" & Picture.LoadPicture(CInt(dr("pictureID")))
+            sImageFileName = Picture.LoadPicture(CInt(dr("pictureID")))
           End If
           image.ImageUrl = sImageFileName
           image.Height() = Unit.Pixel(57)

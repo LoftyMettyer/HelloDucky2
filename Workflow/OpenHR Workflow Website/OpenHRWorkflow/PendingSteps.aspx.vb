@@ -107,7 +107,7 @@ Partial Class PendingSteps
           If NullSafeInteger(dr("pictureID")) = 0 Then
             fileName = "~/Images/Connected48.png"
           Else
-            fileName = "~/" & Picture.LoadPicture(CInt(dr("pictureID")))
+            fileName = Picture.LoadPicture(CInt(dr("pictureID")))
           End If
           image.ImageUrl = fileName
           image.Height() = Unit.Pixel(57)

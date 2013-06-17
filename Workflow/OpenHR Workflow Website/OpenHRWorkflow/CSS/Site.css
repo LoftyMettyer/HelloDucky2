@@ -63,7 +63,7 @@ body { font-family: verdana; }
 
 .controlgrid input {
     padding: 2px;
-    border: 1px solid #333366;
+    border: 1px solid lightgray;
 }
 
 .controlgrid input[type="checkbox"] { border: none; }

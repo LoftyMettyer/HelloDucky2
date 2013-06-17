@@ -87,7 +87,7 @@ Public Class Picture
         bw.Close()
         fs.Close()
 
-        Return "Pictures/" & fileName
+        Return "~/Pictures/" & fileName
       Else
         Return ""
       End If
