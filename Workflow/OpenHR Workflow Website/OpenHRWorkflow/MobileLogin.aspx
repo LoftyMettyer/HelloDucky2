@@ -86,9 +86,9 @@
           <div id="pnlFooter" runat="server" style="position:fixed;overflow:hidden;left:0px;bottom:0px;z-index-0;width:100%;height:60px">
             <table id="tblFooter" runat="server" style="height:100%;width:100%">
               <tr style="height:40px">
-                <td style="width:33%;text-align:center;overflow:hidden"><asp:ImageButton ID="btnRegister"  runat="server" /></td>
+                <td style="width:33%;text-align:center;overflow:hidden"><asp:ImageButton ID="btnLogin"  runat="server" /></td>
                 <td style="width:33%;text-align:center;overflow:hidden"><asp:ImageButton ID="btnForgotPwd" runat="server"/></td>
-                <td style="width:33%;text-align:center;overflow:hidden"><asp:ImageButton ID="btnLogin" runat="server" /></td>
+                <td style="width:33%;text-align:center;overflow:hidden"><asp:ImageButton ID="btnRegister" runat="server" /></td>
               </tr>
               <tr style="height:17px">
                 <td style="width:33%;text-align:center;overflow:hidden"><label runat="server" id="btnLogin_label"></label></td>
