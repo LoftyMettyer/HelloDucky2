@@ -1719,7 +1719,7 @@ Public Class [Default]
 		If lookupID.Length = 0 Then Return
 
 		' Create a datatable from the data in the session variable
-		Dim dataTable As DataTable = TryCast(HttpRuntime.Cache(lookupId.Replace("refresh", "DATA")), DataTable)
+		Dim dataTable As DataTable = TryCast(Session(lookupId.Replace("refresh", "DATA")), DataTable)
 
 		' get the filter sql
 		Dim hiddenField As HiddenField = TryCast(pnlInputDiv.FindControl(lookupId.Replace("refresh", "filterSQL")), HiddenField)
