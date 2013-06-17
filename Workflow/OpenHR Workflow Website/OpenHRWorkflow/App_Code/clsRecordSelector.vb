@@ -731,7 +731,7 @@ Public Class RecordSelector
           'e.Row.Attributes("onclick") = ("SetScrollTopPos('" & grdGrid.ID.ToString & "', document.getElementById('" & grdGrid.ID.Replace("Grid", "gridcontainer") & "').scrollTop, " & e.Row.RowIndex & ");" & _
           '                                   "try{setPostbackMode(3);}catch(e){};__doPostBack('" & grdGrid.UniqueID & "','Select$" & e.Row.RowIndex & "');")
 
-          e.Row.Attributes("onclick") = "selectRow('" & grdGrid.ID.Replace("_Grid", "") & "', '" & e.Row.RowIndex & "')"
+          e.Row.Attributes("onclick") = "selectRow('" & grdGrid.ID.Replace("_Grid", "") & "','" & e.Row.RowIndex & "')"
         End If
 
       ElseIf e.Row.RowType = DataControlRowType.Header Then

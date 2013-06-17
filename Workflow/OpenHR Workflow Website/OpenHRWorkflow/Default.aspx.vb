@@ -1834,8 +1834,6 @@ Public Class _Default
                     .RowStyle.ForeColor = General.GetColour(NullSafeInteger(dr("ForeColorEven")))
                     .RowStyle.BackColor = General.GetColour(NullSafeInteger(dr("BackColorEven")))
 
-                    iRowHeight = 21
-
                     If IsDBNull(dr("ForeColorHighlight")) Then
                       .SelectedRowStyle.ForeColor = SystemColors.HighlightText
                     Else
@@ -2046,9 +2044,9 @@ Public Class _Default
 
                       .CssClass = "recordSelector"
                       .Style.Add("Position", "Absolute")
-                      .Attributes.CssStyle("LEFT") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
-                      .Attributes.CssStyle("TOP") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
-                      .Attributes.CssStyle("WIDTH") = Unit.Pixel(NullSafeInteger(dr("Width"))).ToString
+                      .Attributes.CssStyle("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
+                      .Attributes.CssStyle("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
+                      .Attributes.CssStyle("width") = Unit.Pixel(NullSafeInteger(dr("Width"))).ToString
 
                       ' Don't set the height of this control. Must use the ControlHeight property
                       ' to stop the grid's rows from autosizing.
@@ -2083,22 +2081,6 @@ Public Class _Default
                       .BorderStyle = BorderStyle.Solid
                       .BorderWidth = Unit.Pixel(1)
 
-                      .RowStyle.Font.Name = NullSafeString(dr("FontName"))
-                      .RowStyle.Font.Size = ToPointFontUnit(NullSafeInteger(dr("FontSize")))
-                      .RowStyle.Font.Italic = NullSafeBoolean(dr("FontItalic"))
-                      .RowStyle.Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
-                      .RowStyle.Font.Underline = NullSafeBoolean(dr("FontUnderline"))
-                      .RowStyle.BackColor = General.GetColour(15988214)
-                      .RowStyle.ForeColor = General.GetColour(6697779)
-
-                      .RowStyle.BorderColor = General.GetColour(10720408)
-                      .RowStyle.BorderStyle = BorderStyle.Solid
-                      .RowStyle.BorderWidth = Unit.Pixel(1)
-
-                      iRowHeight = 21
-
-                      .RowStyle.VerticalAlign = VerticalAlign.Middle
-
                       .SelectedRowStyle.ForeColor = General.GetColour(2774907)
                       .SelectedRowStyle.BackColor = General.GetColour(10480637)
 
@@ -2118,8 +2100,6 @@ Public Class _Default
                       .HeaderStyle.VerticalAlign = VerticalAlign.Middle
                       .HeaderStyle.HorizontalAlign = HorizontalAlign.Center
 
-                      ' ROW formatting
-                      .RowStyle.VerticalAlign = VerticalAlign.Middle
                       .PagerStyle.BorderWidth = Unit.Pixel(0)
                       .PagerStyle.Font.Name = NullSafeString(dr("FontName"))
                       .PagerStyle.Font.Size = ToPointFontUnit(NullSafeInteger(dr("FontSize")))
