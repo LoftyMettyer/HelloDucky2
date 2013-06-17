@@ -43,142 +43,142 @@
 	
 	<script language="javascript" type="text/javascript">
 	
-    var app = Sys.Application;
-    app.add_init(ApplicationInit);
+	    var app = Sys.Application;
+	    app.add_init(ApplicationInit);
   
     // <!CDATA[
-    var gridViewCtl = null;
-    var curSelRow = new Array();
-    var selRow = new Array();
-    var curSelRowBackColour = new Array();
+	    var gridViewCtl = null;
+	    var curSelRow = new Array();
+	    var selRow = new Array();
+	    var curSelRowBackColour = new Array();
  
-    function ApplicationInit(sender) {
-        try 
-        {
-            // For postback, set up the scripts for begin and end requests...
-            var prm = Sys.WebForms.PageRequestManager.getInstance();
-            if (!prm.get_isInAsyncPostBack()) 
-            {
-              prm.add_beginRequest(goSubmit);
-              prm.add_endRequest(showMessage);
-            }
-        }
-        catch (e) {}
-    }
+	    function ApplicationInit(sender) {
+	        try 
+	        {
+	            // For postback, set up the scripts for begin and end requests...
+	            var prm = Sys.WebForms.PageRequestManager.getInstance();
+	            if (!prm.get_isInAsyncPostBack()) 
+	            {
+	                prm.add_beginRequest(goSubmit);
+	                prm.add_endRequest(showMessage);
+	            }
+	        }
+	        catch (e) {}
+	    }
 
 
-  function getWindowWidth() {
-    var myWidth = 0;
-    if( typeof( window.innerWidth ) == 'number' ) {
-      //Non-IE
-      myWidth = window.innerWidth;
-    } else if( document.documentElement && ( document.documentElement.clientWidth) ) {
-      //IE 6+ in 'standards compliant mode'
-      myWidth = document.documentElement.clientWidth;
-    } else if( document.body && ( document.body.clientWidth) ) {
-      //IE 4 compatible
-      myWidth = document.body.clientWidth;
-    }
-    return myWidth;
-  }
+	    function getWindowWidth() {
+	        var myWidth = 0;
+	        if( typeof( window.innerWidth ) == 'number' ) {
+	            //Non-IE
+	            myWidth = window.innerWidth;
+	        } else if( document.documentElement && ( document.documentElement.clientWidth) ) {
+	            //IE 6+ in 'standards compliant mode'
+	            myWidth = document.documentElement.clientWidth;
+	        } else if( document.body && ( document.body.clientWidth) ) {
+	            //IE 4 compatible
+	            myWidth = document.body.clientWidth;
+	        }
+	        return myWidth;
+	    }
 
-  function getWindowHeight() {
-    var myHeight = 0;
-    if( typeof( window.innerHeight) == 'number' ) {
-      //Non-IE
-      myHeight = window.innerHeight;
-    } else if( document.documentElement && ( document.documentElement.clientHeight ) ) {
-      //IE 6+ in 'standards compliant mode'
-      myHeight = document.documentElement.clientHeight;
-    } else if( document.body && ( document.body.clientHeight ) ) {
-      //IE 4 compatible
-      myHeight = document.body.clientHeight;
-    }
-    return myHeight;
-  }
+	    function getWindowHeight() {
+	        var myHeight = 0;
+	        if( typeof( window.innerHeight) == 'number' ) {
+	            //Non-IE
+	            myHeight = window.innerHeight;
+	        } else if( document.documentElement && ( document.documentElement.clientHeight ) ) {
+	            //IE 6+ in 'standards compliant mode'
+	            myHeight = document.documentElement.clientHeight;
+	        } else if( document.body && ( document.body.clientHeight ) ) {
+	            //IE 4 compatible
+	            myHeight = document.body.clientHeight;
+	        }
+	        return myHeight;
+	    }
 
-	function window_onload() {
+	    function window_onload() {
 	    
-		var iDefHeight;
-		var iDefWidth;
-		var iResizeByHeight;
-		var iResizeByWidth;
-    var sControlType;
-    var oldgridSelectedColor;
-		//var ScrollTopPos;
-      //Set the current page tab	  
-	  var iPageNo = document.getElementById("hdnDefaultPageNo").value;	  
-	  if(iPageNo > 0) {
-	    window.iCurrentTab = iPageNo;
-	  }
-	  else {
-	    window.iCurrentTab = 1;
-	  }
-	  SetCurrentTab(iCurrentTab);
+	        var iDefHeight;
+	        var iDefWidth;
+	        var iResizeByHeight;
+	        var iResizeByWidth;
+	        var sControlType;
+	        var oldgridSelectedColor;
+	        //var ScrollTopPos;
+	        //Set the current page tab	  
+	        var iPageNo = document.getElementById("hdnDefaultPageNo").value;	  
+	        if(iPageNo > 0) {
+	            window.iCurrentTab = iPageNo;
+	        }
+	        else {
+	            window.iCurrentTab = 1;
+	        }
+	        SetCurrentTab(iCurrentTab);
 
-			try {
-				iDefHeight = window.$get("frmMain").hdnFormHeight.value;
-        //iDefHeight = window.$get("bdyMain").offsetHeight;
-				iDefWidth = window.$get("frmMain").hdnFormWidth.value;
-				window.$get("bdyMain").bgColor = window.$get("frmMain").hdnColourThemeHex.value;
+	        try {
+	            iDefHeight = window.$get("frmMain").hdnFormHeight.value;
+	            //iDefHeight = window.$get("bdyMain").offsetHeight;
+	            iDefWidth = window.$get("frmMain").hdnFormWidth.value;
+	            window.$get("bdyMain").bgColor = window.$get("frmMain").hdnColourThemeHex.value;
 			    
-				window.focus();
-				if ((iDefHeight > 0) && (iDefWidth > 0)) {
-					//iResizeByHeight = iDefHeight - document.documentElement.clientHeight;
-				  //iResizeByHeight = iDefHeight - window.innerHeight;				  
-				  iResizeByHeight = iDefHeight - getWindowHeight();
-					//iResizeByWidth = iDefWidth - document.documentElement.clientWidth;
-				  //iResizeByWidth = iDefWidth - window.innerWidth;
-				  iResizeByWidth = iDefWidth - getWindowWidth();
-					window.parent.moveTo((screen.availWidth - iDefWidth) / 2, (screen.availHeight - iDefHeight) / 3);
-					window.parent.resizeBy(iResizeByWidth, iResizeByHeight);				  
-				}
+	            window.focus();
+	            if ((iDefHeight > 0) && (iDefWidth > 0)) {
+	                //iResizeByHeight = iDefHeight - document.documentElement.clientHeight;
+	                //iResizeByHeight = iDefHeight - window.innerHeight;				  
+	                iResizeByHeight = iDefHeight - getWindowHeight();
+	                //iResizeByWidth = iDefWidth - document.documentElement.clientWidth;
+	                //iResizeByWidth = iDefWidth - window.innerWidth;
+	                iResizeByWidth = iDefWidth - getWindowWidth();
+	                window.parent.moveTo((screen.availWidth - iDefWidth) / 2, (screen.availHeight - iDefHeight) / 3);
+	                window.parent.resizeBy(iResizeByWidth, iResizeByHeight);				  
+	            }
 				
-				try {
-					if (window.$get("frmMain").hdnFirstControl.value.length > 0) {
-					    sControlType = window.$get("frmMain").hdnFirstControl.value.substr(window.$get("frmMain").hdnFirstControl.value.indexOf("_")+1);
-                        sControlType = sControlType.substr(sControlType.indexOf("_")+1);
-                        sControlType = sControlType.substring(0, sControlType.indexOf("_"));
+	            try {
+	                if (window.$get("frmMain").hdnFirstControl.value.length > 0) {
+	                    sControlType = window.$get("frmMain").hdnFirstControl.value.substr(window.$get("frmMain").hdnFirstControl.value.indexOf("_")+1);
+	                    sControlType = sControlType.substr(sControlType.indexOf("_")+1);
+	                    sControlType = sControlType.substring(0, sControlType.indexOf("_"));
 
-                        if (sControlType == 7)
-                        {
-                            // Date (7)
-                            igdrp_getComboById(window.$get("frmMain").hdnFirstControl.value).focus();
-                        }
-                        else
-                        {
-                            if ((sControlType == 13)
-                                || (sControlType == 14))
-                            {
-                                igcmbo_getComboById(window.$get("frmMain").hdnFirstControl.value).focus();
-                            }
-                            else
-                            {
-                                if (sControlType == 11)
-                                {
-                                    // Record Selector (11)
-                                    var grid = igtbl_getGridById(window.$get("frmMain").hdnFirstControl.value);
-                                    var oRows = grid.Rows;
-                                    grid.Element.focus(); 
+	                    if (sControlType == 7)
+	                    {
+	                        // Date (7)
+	                        igdrp_getComboById(window.$get("frmMain").hdnFirstControl.value).focus();
+	                    }
+	                    else
+	                    {
+	                        if ((sControlType == 13)
+    	                        || (sControlType == 14))
+	                        {
+	                            igcmbo_getComboById(window.$get("frmMain").hdnFirstControl.value).focus();
+	                        }
+	                        else
+	                        {
+	                            if (sControlType == 11)
+	                            {
+	                                // Record Selector (11)
+	                                var grid = igtbl_getGridById(window.$get("frmMain").hdnFirstControl.value);
+	                                var oRows = grid.Rows;
+	                                grid.Element.focus(); 
                                     
-                                    if (oRows.length > 0)
-                                    {
-                                        oRow = grid.getActiveRow();
+	                                if (oRows.length > 0)
+	                                {
+	                                    oRow = grid.getActiveRow();
 	                                    if (oRow != null)
 	                                    {
-                                            oRow.scrollToView();
-                                        }
-                                    }
-                                }
-                                else
-                                {
-						            document.getElementById(window.$get("frmMain").hdnFirstControl.value).setActive();
-						        }
-						    }
-                        }
-					}
-				}
-				catch (e) { }
+	                                        oRow.scrollToView();
+	                                    }
+	                                }
+	                            }
+	                            else
+	                            {
+	                                document.getElementById(window.$get("frmMain").hdnFirstControl.value).setActive();
+	                            }
+	                        }
+	                    }
+	                }
+	            }
+	            catch (e) { }
 
 //NPG20120130 Fault HRPRO-1842
 //Disabled the second resize as safari browser can't keep up and doubles the resize.
@@ -191,1344 +191,1362 @@
 //				}
 
 
-				launchForms(window.$get("frmMain").hdnSiblingForms.value, false);
-			}
-			catch (e) {}
+	            launchForms(window.$get("frmMain").hdnSiblingForms.value, false);
+	        }
+	        catch (e) {}
 
-      //Fault HRPRO-2121
-     	try	{
-		    window.resizeBy(0,-1);
-		    window.resizeBy(0,1);
+	        //Fault HRPRO-2121
+	        try	{
+	            window.resizeBy(0,-1);
+	            window.resizeBy(0,1);
+	        }
+	        catch(e) {}
+
+
+
 	    }
-	    catch(e) {}
 
+	    function launchForms(psForms, pfFirstFormRelocate) {
+	        var asForms;
+	        var iLoop;
+	        var iCount;
+	        var sQueryString;
+	        var sFirstForm;
+	        try {
+	            iCount = 0;
+	            sFirstForm = "";
+	            asForms = psForms.split("\t");
 
+	            for (iLoop = 1; iLoop < asForms.length; iLoop++) {
+	                sQueryString = asForms[iLoop];
 
-		}
+	                if (sQueryString.length > 0) {
+	                    iCount = iCount + 1;
 
-		function launchForms(psForms, pfFirstFormRelocate) {
-			var asForms;
-			var iLoop;
-			var iCount;
-			var sQueryString;
-			var sFirstForm;
-			try {
-				iCount = 0;
-				sFirstForm = "";
-				asForms = psForms.split("\t");
+	                    if (iCount == 1) {
+	                        sFirstForm = sQueryString;
+	                    }
+	                    else {
+	                        // Open other forms in new browsers.
+	                        spawnWindow(sQueryString);
+	                    }
+	                }
+	            }
 
-				for (iLoop = 1; iLoop < asForms.length; iLoop++) {
-					sQueryString = asForms[iLoop];
+	            if (sFirstForm.length > 0) {
+	                if (pfFirstFormRelocate == true) {
+	                    // Open first form in current browser.
+	                    window.location = sFirstForm;
+	                }
+	                else {
+	                    // Open first form in new browser.
+	                    spawnWindow(sFirstForm);
+	                }
+	            }
+	        }
+	        catch (e) { }
+	    }
 
-					if (sQueryString.length > 0) {
-						iCount = iCount + 1;
+	    function spawnWindow(psURL) {
+	        var newWin;
+	        try {
+	            newWin = window.open(psURL);
 
-						if (iCount == 1) {
-							sFirstForm = sQueryString;
-						}
-						else {
-							// Open other forms in new browsers.
-							spawnWindow(sQueryString);
-						}
-					}
-				}
-
-				if (sFirstForm.length > 0) {
-					if (pfFirstFormRelocate == true) {
-						// Open first form in current browser.
-						window.location = sFirstForm;
-					}
-					else {
-						// Open first form in new browser.
-						spawnWindow(sFirstForm);
-					}
-				}
-			}
-			catch (e) { }
-		}
-
-		function spawnWindow(psURL) {
-			var newWin;
-			try {
-				newWin = window.open(psURL);
-
-				if (parseInt(navigator.appVersion) >= 4) {
-					try {
-						newWin.window.focus();
-					}
-					catch (e) { }
-				}
-			}
-			catch (e) {
-				try {
-            try {
-              newWin.close();
-            }
+	            if (parseInt(navigator.appVersion) >= 4) {
+	                try {
+	                    newWin.window.focus();
+	                }
+	                catch (e) { }
+	            }
+	        }
+	        catch (e) {
+	            try {
+	                try {
+	                    newWin.close();
+	                }
             
-            catch(e){alert("For your security please close your browser");}
+	                catch(e){alert("For your security please close your browser");}
             
-				}
-				catch (e) { }
+	            }
+	            catch (e) { }
 
-				spawnWindow(psURL);
-			}
-		}
+	            spawnWindow(psURL);
+	        }
+	    }
 
-		function goSubmit() { 
+	    function goSubmit() { 
 				
-		    if($get("txtPostbackMode").value=="3") {      
-		      try {
-		        if($get("txtActiveDDE").value.indexOf("dde")>0) {
-		          //keep the lookup open.
-		          //kicks off InitializeLookup BTW.
-		          $find($get("txtActiveDDE").value).show();
-		        }
-		      }
-		      catch (e) {}
-		      return;			
-		    }		    
+	        if($get("txtPostbackMode").value=="3") {      
+	            try {
+	                if($get("txtActiveDDE").value.indexOf("dde")>0) {
+	                    //keep the lookup open.
+	                    //kicks off InitializeLookup BTW.
+	                    $find($get("txtActiveDDE").value).show();
+	                }
+	            }
+	            catch (e) {}
+	            return;			
+	        }		    
 
-		    closeOtherCombos("pnlInput");
+	        closeOtherCombos("pnlInput");
 
-		    $get("pleasewaitScreen").style.visibility="visible";
-		    showOverlay(true);
-			showErrorMessages(false);
-		}
+	        $get("pleasewaitScreen").style.visibility="visible";
+	        showOverlay(true);
+	        showErrorMessages(false);
+	    }
 
-		function closeOtherCombos(objId) {
-			var theObject = document.getElementById(objId);
-			var level = 0;
+	    function closeOtherCombos(objId) {
+	        var theObject = document.getElementById(objId);
+	        var level = 0;
 
-            // Tell the TraverseDOM function to run the doNothing function on each control. 
-            // The TraverseDOM function already has code close all WebCombos, so a 'doNothibng ios all that is required.
-			TraverseDOM(theObject, level, doNothing);
-		}
+	        // Tell the TraverseDOM function to run the doNothing function on each control. 
+	        // The TraverseDOM function already has code close all WebCombos, so a 'doNothibng ios all that is required.
+	        TraverseDOM(theObject, level, doNothing);
+	    }
 
-		function doNothing(obj) {
-		    // Empty function. Required - See note for closeOtherCombos function.
-		}
+	    function doNothing(obj) {
+	        // Empty function. Required - See note for closeOtherCombos function.
+	    }
     
-    function getElementsBySearchValue(searchValue) {
-        var retVal = new Array();
-        var elems = document.getElementsByTagName("input");
+	    function getElementsBySearchValue(searchValue) {
+	        var retVal = new Array();
+	        var elems = document.getElementsByTagName("input");
 
-        for(var i = 0; i < elems.length; i++) {
-          var valueProp = "";
+	        for(var i = 0; i < elems.length; i++) {
+	            var valueProp = "";
               
-          try {
-            var nameProp = elems[i].getAttribute('name');
-            if(nameProp.substr(0, 15)=="lookupforminput")
-              var valueProp = elems[i].getAttribute('value');
-          }
-          catch(e) {}              
+	            try {
+	                var nameProp = elems[i].getAttribute('name');
+	                if(nameProp.substr(0, 15)=="lookupforminput")
+	                    var valueProp = elems[i].getAttribute('value');
+	            }
+	            catch(e) {}              
               
-          if(!(valueProp==null)) {
-            if(valueProp.indexOf(searchValue) > 0) {
-              retVal.push(elems[i]);
-            }         
-          }
-        }
+	            if(!(valueProp==null)) {
+	                if(valueProp.indexOf(searchValue) > 0) {
+	                    retVal.push(elems[i]);
+	                }         
+	            }
+	        }
 
-        return retVal;     
-    } 
+	        return retVal;     
+	    } 
 
 
-		function TraverseDOM(obj, lvl, actionFunc) {
+	    function TraverseDOM(obj, lvl, actionFunc) {
 		
-		    var sControlType;
-		    var sFormInputPrefix = "forminput_";
-		    var sGridSuffix = "Grid";
-		    try
-		    {
-    			for (var i = 0; i < obj.childNodes.length; i++) {
-    				var childObj = obj.childNodes[i];
+	        var sControlType;
+	        var sFormInputPrefix = "forminput_";
+	        var sGridSuffix = "Grid";
+	        try
+	        {
+	            for (var i = 0; i < obj.childNodes.length; i++) {
+	                var childObj = obj.childNodes[i];
 
-                    // Close any lookup/dropdown grids.
-                    try
-                    {
-                        if (childObj.id != undefined) {
-                            if (childObj.id.substr(0, "forminput_".length) == "forminput_")
-                            {
-                                sControlType = childObj.id.substr(childObj.id.indexOf("_")+1);
-                                sControlType = sControlType.substr(sControlType.indexOf("_")+1);
-                                sControlType = sControlType.substring(0, sControlType.indexOf("_"));
+	                // Close any lookup/dropdown grids.
+	                try
+	                {
+	                    if (childObj.id != undefined) {
+	                        if (childObj.id.substr(0, "forminput_".length) == "forminput_")
+	                        {
+	                            sControlType = childObj.id.substr(childObj.id.indexOf("_")+1);
+	                            sControlType = sControlType.substr(sControlType.indexOf("_")+1);
+	                            sControlType = sControlType.substring(0, sControlType.indexOf("_"));
 
-                                if ((sControlType == 13)
-                                    || (sControlType == 14))
-                                {
-                                    if ((childObj.id.substr(0, sFormInputPrefix.length) == sFormInputPrefix) &&
-                                        (childObj.id.substr(childObj.id.length - sGridSuffix.length) != sGridSuffix))
-                                    {
-                                        igcmbo_getComboById(childObj.id).setDropDown(false);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    catch(e) { }
+	                            if ((sControlType == 13)
+    	                            || (sControlType == 14))
+	                            {
+	                                if ((childObj.id.substr(0, sFormInputPrefix.length) == sFormInputPrefix) &&
+    	                                (childObj.id.substr(childObj.id.length - sGridSuffix.length) != sGridSuffix))
+	                                {
+	                                    igcmbo_getComboById(childObj.id).setDropDown(false);
+	                                }
+	                            }
+	                        }
+	                    }
+	                }
+	                catch(e) { }
 
-				    if (childObj.tagName) 
-				    {
-					    actionFunc(childObj);
-				    }
+	                if (childObj.tagName) 
+	                {
+	                    actionFunc(childObj);
+	                }
 
-				    TraverseDOM(childObj, lvl + 1, actionFunc);
-	    		}
-	    	}
-	    	catch(e) {
-		    }
-		}
+	                TraverseDOM(childObj, lvl + 1, actionFunc);
+	            }
+	        }
+	        catch(e) {
+	        }
+	    }
 
-		function showErrorMessages(pfDisplay) {
+	    function showErrorMessages(pfDisplay) {
 		
-			if ((($get("frmMain").hdnCount_Errors.value > 0) || ($get("frmMain").hdnCount_Warnings.value > 0))
-				&& (pfDisplay == false)) {
-				$get("imgErrorMessages_Max").style.display = "block";
-				$get("imgErrorMessages_Max").style.visibility = "visible";
-			}
-			else {
-				$get("imgErrorMessages_Max").style.display = "none";
-				$get("imgErrorMessages_Max").style.visibility = "hidden";
-			}
+	        if ((($get("frmMain").hdnCount_Errors.value > 0) || ($get("frmMain").hdnCount_Warnings.value > 0))
+    	        && (pfDisplay == false)) {
+	            $get("imgErrorMessages_Max").style.display = "block";
+	            $get("imgErrorMessages_Max").style.visibility = "visible";
+	        }
+	        else {
+	            $get("imgErrorMessages_Max").style.display = "none";
+	            $get("imgErrorMessages_Max").style.visibility = "hidden";
+	        }
            
 
-			if (pfDisplay == true) {
-			  //refresh the errors WARP panel. 
-			  __doPostBack('pnlErrorMessages', '');
+	        if (pfDisplay == true) {
+	            //refresh the errors WARP panel. 
+	            __doPostBack('pnlErrorMessages', '');
 
-				$get("divErrorMessages_Outer").style.display = "block";
-				$get("divErrorMessages_Outer").style.visibility = "visible";
-			}
-			else {
-				$get("divErrorMessages_Outer").style.visibility = "hidden";
-			}
-		}
+	            $get("divErrorMessages_Outer").style.display = "block";
+	            $get("divErrorMessages_Outer").style.visibility = "visible";
+	        }
+	        else {
+	            $get("divErrorMessages_Outer").style.visibility = "hidden";
+	        }
+	    }
 
-		function launchFollowOnForms(psForms) {
-			launchForms(psForms, true);
-		}
+	    function launchFollowOnForms(psForms) {
+	        launchForms(psForms, true);
+	    }
 
-		function overrideWarningsAndSubmit() {
-			if (divErrorMessages_Outer.disabled == true) {
-				return;
-			};
+	    function overrideWarningsAndSubmit() {
+	        if (divErrorMessages_Outer.disabled == true) {
+	            return;
+	        };
 
-			$get("frmMain").hdnOverrideWarnings.value = 1;
+	        $get("frmMain").hdnOverrideWarnings.value = 1;
 
-			try {
-				document.getElementById(frmMain.hdnLastButtonClicked.value).click();
-			}
-			catch (e) {
-				$get("frmMain").btnSubmit.click();
-			}
-		}
+	        try {
+	            document.getElementById(frmMain.hdnLastButtonClicked.value).click();
+	        }
+	        catch (e) {
+	            $get("frmMain").btnSubmit.click();
+	        }
+	    }
 
-		function submitForm() {
-		    pbModeValue = document.getElementById("txtPostbackMode").value;
+	    function submitForm() {
+	        pbModeValue = document.getElementById("txtPostbackMode").value;
 			
-			try {
-				if (pbModeValue == 0) {
-				  tAE = document.getElementById("txtActiveElement");				  
-				  if(eval(tAE)) {tae.value.setActive();}
+	        try {
+	            if (pbModeValue == 0) {
+	                tAE = document.getElementById("txtActiveElement");				  
+	                if(eval(tAE)) {tae.value.setActive();}
 				  
-				}
-			}
-			catch (e) { };
+	            }
+	        }
+	        catch (e) { };
 			
-			return (pbModeValue != 0);
-		}
+	        return (pbModeValue != 0);
+	    }
 
-		function setPostbackMode(piValue) {
-			// 0 = Default
-			// 1 = Submit/SaveForLater button postback (ie. WebForm submission)
-			// 2 = Grid header postback
-			// 3 = FileUpload button postback
-      try {
-          pbModeValue = document.getElementById("txtPostbackMode");
-	      pbModeValue.value = piValue;
-			}
-			catch (e) { }
+	    function setPostbackMode(piValue) {
+	        // 0 = Default
+	        // 1 = Submit/SaveForLater button postback (ie. WebForm submission)
+	        // 2 = Grid header postback
+	        // 3 = FileUpload button postback
+	        try {
+	            pbModeValue = document.getElementById("txtPostbackMode");
+	            pbModeValue.value = piValue;
+	        }
+	        catch (e) { }
 			
-		}
+	    }
 
-		function activateGridPostback() {
-			setPostbackMode(3);
-		}
+	    function activateGridPostback() {
+	        setPostbackMode(3);
+	    }
 
-		function activateControl() {
-			try {
-				txtActiveElement.value = document.activeElement.id;
-			}
-			catch (e) { }
-		}
+	    function activateControl() {
+	        try {
+	            txtActiveElement.value = document.activeElement.id;
+	        }
+	        catch (e) { }
+	    }
 
-		function checkMaxLength(iMaxLength) {
-			var sClipboardText;
-			var iResultantLength;
-			var iCurrentFieldLength;
-			var fIsPermittedKeystroke;
-			var iEnteredKeystroke;
-			var fActionAllowed = true;
-			var iSelectionLength;
+	    function checkMaxLength(iMaxLength) {
+	        var sClipboardText;
+	        var iResultantLength;
+	        var iCurrentFieldLength;
+	        var fIsPermittedKeystroke;
+	        var iEnteredKeystroke;
+	        var fActionAllowed = true;
+	        var iSelectionLength;
 
-			try {
-				if (iMaxLength > 0) {
-					iSelectionLength = parseInt(document.selection.createRange().text.length);
-					iCurrentFieldLength = parseInt(event.srcElement.value.length);
+	        try {
+	            if (iMaxLength > 0) {
+	                iSelectionLength = parseInt(document.selection.createRange().text.length);
+	                iCurrentFieldLength = parseInt(event.srcElement.value.length);
 
-					if (event.type == "keydown") {
-						// Allow non-printing, arrow and delete keys
-						iEnteredKeystroke = window.event.keyCode;
-					    fIsPermittedKeystroke = (((iEnteredKeystroke < 32)			// Non printing - don't count
-    					    || (iEnteredKeystroke >= 33 && iEnteredKeystroke <= 40)	// Page Up, Down, Home, End, Arrow - don't count
-        					    || (iEnteredKeystroke == 46))							// Delete - doesn't count
-            					    && (iEnteredKeystroke != 13));							// Enter - does count
+	                if (event.type == "keydown") {
+	                    // Allow non-printing, arrow and delete keys
+	                    iEnteredKeystroke = window.event.keyCode;
+	                    fIsPermittedKeystroke = (((iEnteredKeystroke < 32)			// Non printing - don't count
+    	                    || (iEnteredKeystroke >= 33 && iEnteredKeystroke <= 40)	// Page Up, Down, Home, End, Arrow - don't count
+        	                    || (iEnteredKeystroke == 46))							// Delete - doesn't count
+            	                    && (iEnteredKeystroke != 13));							// Enter - does count
 
-						// Decide whether the keystroke is allowed to proceed
-						if (!fIsPermittedKeystroke) {
-							if ((iCurrentFieldLength - iSelectionLength) >= iMaxLength) {
-								fActionAllowed = false;
-							}
-						}
+	                    // Decide whether the keystroke is allowed to proceed
+	                    if (!fIsPermittedKeystroke) {
+	                        if ((iCurrentFieldLength - iSelectionLength) >= iMaxLength) {
+	                            fActionAllowed = false;
+	                        }
+	                    }
 
-						window.event.returnValue = fActionAllowed;
-						return (fActionAllowed);
-					}
+	                    window.event.returnValue = fActionAllowed;
+	                    return (fActionAllowed);
+	                }
 
-					if (event.type == "paste") {
-						sClipboardText = window.clipboardData.getData("Text");
-						iResultantLength = iCurrentFieldLength + sClipboardText.length - iSelectionLength;
+	                if (event.type == "paste") {
+	                    sClipboardText = window.clipboardData.getData("Text");
+	                    iResultantLength = iCurrentFieldLength + sClipboardText.length - iSelectionLength;
 
-						if (iResultantLength > iMaxLength) {
-							fActionAllowed = false;
-						}
+	                    if (iResultantLength > iMaxLength) {
+	                        fActionAllowed = false;
+	                    }
 
-						window.event.returnValue = fActionAllowed;
-						return (fActionAllowed);
-					}
-				}
-			}
-			catch (e) { }
-		}
+	                    window.event.returnValue = fActionAllowed;
+	                    return (fActionAllowed);
+	                }
+	            }
+	        }
+	        catch (e) { }
+	    }
 
-		function dropdownControlKeyPress(pobjControlID, pNewValue, piKeyCode) {
-			try {
-				activateControl();
+	    function dropdownControlKeyPress(pobjControlID, pNewValue, piKeyCode) {
+	        try {
+	            activateControl();
 
-				if (piKeyCode == 32) // SPACE - drop list
-				{
-					var objCombo1 = igcmbo_getComboById(pobjControlID);
-					objCombo1.setDropDown(true);
-				}
-				if (piKeyCode == 13) // RTN - close list
-				{
-					var objCombo2 = igcmbo_getComboById(pobjControlID);
-					objCombo2.setDropDown(false);
-				}
-			}
-			catch (e) { }
-		}
+	            if (piKeyCode == 32) // SPACE - drop list
+	            {
+	                var objCombo1 = igcmbo_getComboById(pobjControlID);
+	                objCombo1.setDropDown(true);
+	            }
+	            if (piKeyCode == 13) // RTN - close list
+	            {
+	                var objCombo2 = igcmbo_getComboById(pobjControlID);
+	                objCombo2.setDropDown(false);
+	            }
+	        }
+	        catch (e) { }
+	    }
 
-		function dateControlKeyPress(pobjControl, piKeyCode, pobjEvent) {
-			try {
-				activateControl();
+	    function dateControlKeyPress(pobjControl, piKeyCode, pobjEvent) {
+	        try {
+	            activateControl();
 
-				if (piKeyCode == 113) // F2 - set today's date
-				{
-					var d = new Date();
-					pobjControl.setValue(d);
-				}
-				if (piKeyCode == 117) // F6 - show calendar
-				{
-					pobjControl.setDropDownVisible(true);
-				}
-			}
-			catch (e) { }
-		}
+	            if (piKeyCode == 113) // F2 - set today's date
+	            {
+	                var d = new Date();
+	                pobjControl.setValue(d);
+	            }
+	            if (piKeyCode == 117) // F6 - show calendar
+	            {
+	                pobjControl.setDropDownVisible(true);
+	            }
+	        }
+	        catch (e) { }
+	    }
 
-		function dateControlTextChanged(pobjControl, pNewText, pobjEvent) {
-			var sDate;
-			var dtCurrentDate;
+	    function dateControlTextChanged(pobjControl, pNewText, pobjEvent) {
+	        var sDate;
+	        var dtCurrentDate;
 
-			try {
-				if (pNewText.length > 0) {
-					dtCurrentDate = pobjControl.getValue();				
+	        try {
+	            if (pNewText.length > 0) {
+	                dtCurrentDate = pobjControl.getValue();				
           
-					$get("txtLastDate_Month").value = dtCurrentDate.getMonth();
-					$get("txtLastDate_Day").value = dtCurrentDate.getDate();
-					//txtLastDate_Year.value = dtCurrentDate.getYear();					
-					$get("txtLastDate_Year").value = dtCurrentDate.getFullYear();          
-				}
-			}
-			catch (e) { }
-		}
+	                $get("txtLastDate_Month").value = dtCurrentDate.getMonth();
+	                $get("txtLastDate_Day").value = dtCurrentDate.getDate();
+	                //txtLastDate_Year.value = dtCurrentDate.getYear();					
+	                $get("txtLastDate_Year").value = dtCurrentDate.getFullYear();          
+	            }
+	        }
+	        catch (e) { }
+	    }
 
-    function showCalendar(elementID) {
-      var dc = igdrp_getComboById(elementID);
-      dc.showCalendar();
-    }
+	    function showCalendar(elementID) {
+	        var dc = igdrp_getComboById(elementID);
+	        dc.showCalendar();
+	    }
 
-		function dateControlBeforeDropDown(pobjControl, pPanel, pobjEvent) {
-			try {
-				var sCurrentText = pobjControl.getText();
-				var sLastDate_Month = $get("txtLastDate_Month").value;
-				var sLastDate_Day = $get("txtLastDate_Day").value;
-				var sLastDate_Year = $get("txtLastDate_Year").value;
-				var dtLastDate;
+	    function dateControlBeforeDropDown(pobjControl, pPanel, pobjEvent) {
+	        try {
+	            var sCurrentText = pobjControl.getText();
+	            var sLastDate_Month = $get("txtLastDate_Month").value;
+	            var sLastDate_Day = $get("txtLastDate_Day").value;
+	            var sLastDate_Year = $get("txtLastDate_Year").value;
+	            var dtLastDate;
 
-				if ((sCurrentText.length == 0)
-                    && (sLastDate_Month.length > 0)
-                    && (sLastDate_Day.length > 0)
-                    && (sLastDate_Year.length > 0)) {
-					dtLastDate = new Date(sLastDate_Year, sLastDate_Month, sLastDate_Day);
-					pobjControl.Calendar.setSelectedDate(dtLastDate);
-				}
-			}
-			catch (e) { }
-		}
+	            if ((sCurrentText.length == 0)
+    	            && (sLastDate_Month.length > 0)
+        	            && (sLastDate_Day.length > 0)
+            	            && (sLastDate_Year.length > 0)) {
+	                dtLastDate = new Date(sLastDate_Year, sLastDate_Month, sLastDate_Day);
+	                pobjControl.Calendar.setSelectedDate(dtLastDate);
+	            }
+	        }
+	        catch (e) { }
+	    }
 
-        function showOverlay(display) {
-            if(display) {
-                $get("divOverlay").style.display = "block";
-            } else {
-                $get("divOverlay").style.display = "none";
-            }
+        //TODO PG
+//        function dateControlFixBeforeDropDown(pbojControl) {
+//            document.getElementById('forminput_46479_7_').disabled = true;
+//            var items = document.getElementsByTagName('input');
+//            for(var i = 0; i < items.length; i++) {
+//                items[i].disabled = true;
+//                items[i].style.display = 'none';
+//            }
+//            
+//        }
+
+//        function dateControlFixAfterCloseUp(pbojControl) {
+//            var items = document.getElementsByTagName('input');
+//            for(var i = 0; i < items.length; i++) {
+//                items[i].disabled = false;
+//            }
+//        }
                 
-        }
+	    function showOverlay(display) {
+	        if(display) {
+	            $get("divOverlay").style.display = "block";
+	        } else {
+	            $get("divOverlay").style.display = "none";
+	        }
+                
+	    }
 
-		function showFileUpload(pfDisplay, psElementItemID, psAlreadyUploaded) {
+	    function showFileUpload(pfDisplay, psElementItemID, psAlreadyUploaded) {
 		
-			try {
-				if (pfDisplay == true) {
+	        try {
+	            if (pfDisplay == true) {
 
-					setPostbackMode(3);
+	                setPostbackMode(3);
 
-					var sAlreadyUploaded = new String(psAlreadyUploaded);
-					sAlreadyUploaded = sAlreadyUploaded.substr(0, 1);
-					if (sAlreadyUploaded != "1") {
-						sAlreadyUploaded = "0";
-					}
+	                var sAlreadyUploaded = new String(psAlreadyUploaded);
+	                sAlreadyUploaded = sAlreadyUploaded.substr(0, 1);
+	                if (sAlreadyUploaded != "1") {
+	                    sAlreadyUploaded = "0";
+	                }
           
-					try {
-						txtActiveElement.value = document.activeElement.id;
-					}
-					catch (e) { }
+	                try {
+	                    txtActiveElement.value = document.activeElement.id;
+	                }
+	                catch (e) { }
           
-					$get("ifrmFileUpload").src = "FileUpload.aspx?" + sAlreadyUploaded + psElementItemID;
+	                $get("ifrmFileUpload").src = "FileUpload.aspx?" + sAlreadyUploaded + psElementItemID;
           
-					showErrorMessages(false);
-				    showOverlay(true);
-					document.getElementById("divErrorMessages_Outer").disabled = true;
-					document.getElementById("imgErrorMessages_Max").disabled = true;
-					document.getElementById("divErrorMessages_Outer").style.display = "none";
-					document.getElementById("divFileUpload").style.visibility = "visible";
-					document.getElementById("divFileUpload").style.display = "block";
-				}
-				else {
-					document.getElementById("divFileUpload").style.visibility = "hidden";
-					document.getElementById("divFileUpload").style.display = "none";
+	                showErrorMessages(false);
+	                showOverlay(true);
+	                document.getElementById("divErrorMessages_Outer").disabled = true;
+	                document.getElementById("imgErrorMessages_Max").disabled = true;
+	                document.getElementById("divErrorMessages_Outer").style.display = "none";
+	                document.getElementById("divFileUpload").style.visibility = "visible";
+	                document.getElementById("divFileUpload").style.display = "block";
+	            }
+	            else {
+	                document.getElementById("divFileUpload").style.visibility = "hidden";
+	                document.getElementById("divFileUpload").style.display = "none";
 
-					setPostbackMode(3);
+	                setPostbackMode(3);
 					
-					$get("frmMain").btnReEnableControls.click();
+	                $get("frmMain").btnReEnableControls.click();
 
-				    showOverlay(false);
-					document.getElementById("divErrorMessages_Outer").disabled = false;
-					document.getElementById("imgErrorMessages_Max").disabled = false;
-				}
-			}
-			catch (e) { }
-		}
+	                showOverlay(false);
+	                document.getElementById("divErrorMessages_Outer").disabled = false;
+	                document.getElementById("imgErrorMessages_Max").disabled = false;
+	            }
+	        }
+	        catch (e) { }
+	    }
 
-		function fileUploadDone(psElementItemID, piExitMode) {
-			// 0 = Cancel
-			// 1 = Clear
-			// 2 = File Uploaded
-			// Hide the file upload dialog, and record how the fileUpload was performed.
-			try {
-				if ((piExitMode == 1) || (piExitMode == 2)) {
-					var sID = "fileforminput_" + psElementItemID + "_17_";
+	    function fileUploadDone(psElementItemID, piExitMode) {
+	        // 0 = Cancel
+	        // 1 = Clear
+	        // 2 = File Uploaded
+	        // Hide the file upload dialog, and record how the fileUpload was performed.
+	        try {
+	            if ((piExitMode == 1) || (piExitMode == 2)) {
+	                var sID = "fileforminput_" + psElementItemID + "_17_";
 
-					if (piExitMode == 2) {
-						$get("frmMain").elements.namedItem(sID).value = "1";
-					}
-					else {
-						$get("frmMain").elements.namedItem(sID).value = "0";
-					}
-				}
+	                if (piExitMode == 2) {
+	                    $get("frmMain").elements.namedItem(sID).value = "1";
+	                }
+	                else {
+	                    $get("frmMain").elements.namedItem(sID).value = "0";
+	                }
+	            }
 
-				showFileUpload(false, '0', 0);
-			}
-			catch (e) { }
-		}
+	            showFileUpload(false, '0', 0);
+	        }
+	        catch (e) { }
+	    }
 
-		function unblockErrorMessageDIV() {
-			try {
-				if ((divErrorMessages_Outer.style.visibility == "hidden") &&
-					(divErrorMessages_Outer.style.display != "none")) {
-					divErrorMessages_Outer.style.display = "none";
-				}
-			}
-			catch (e) { }
-		}
+	    function unblockErrorMessageDIV() {
+	        try {
+	            if ((divErrorMessages_Outer.style.visibility == "hidden") &&
+    	            (divErrorMessages_Outer.style.display != "none")) {
+	                divErrorMessages_Outer.style.display = "none";
+	            }
+	        }
+	        catch (e) { }
+	    }
 
-		function showMessage() {			 
+	    function showMessage() {			 
     
-        //Reset current tab position
-        SetCurrentTab(iCurrentTab);	
+	        //Reset current tab position
+	        SetCurrentTab(iCurrentTab);	
 		
-		$get("pleasewaitScreen").style.visibility="hidden";
-		showOverlay(false);
+	        $get("pleasewaitScreen").style.visibility="hidden";
+	        showOverlay(false);
 
-		//Reapply resizable column functionality to tables
-		//This is put here to ensure functionality is reapplied after partial/full postback.
-		ResizableColumns();		
+	        //Reapply resizable column functionality to tables
+	        //This is put here to ensure functionality is reapplied after partial/full postback.
+	        ResizableColumns();		
 
-    if($get("txtActiveDDE").value.indexOf("dde")>0) {
-      try {  
-        $find($get("txtActiveDDE").value).show();        
-        $get("txtActiveDDE").value="";        
-      }
-      catch (e) {}      
-    }		
+	        if($get("txtActiveDDE").value.indexOf("dde")>0) {
+	            try {  
+	                $find($get("txtActiveDDE").value).show();        
+	                $get("txtActiveDDE").value="";        
+	            }
+	            catch (e) {}      
+	        }		
 		    
-		if($get("txtPostbackMode").value==3) {
-		    //ShowMessage is the sub called in lieu of Application:EndRequest, i.e. Pretty much the end of
-		    //the postback cycle. So we'll reset all grid scroll bars to their previous position
-		    SetScrollTopPos("", "-1", 0);		    
-      }
+	        if($get("txtPostbackMode").value==3) {
+	            //ShowMessage is the sub called in lieu of Application:EndRequest, i.e. Pretty much the end of
+	            //the postback cycle. So we'll reset all grid scroll bars to their previous position
+	            SetScrollTopPos("", "-1", 0);		    
+	        }
       
       
-			try {
-				if ($get("frmMain").hdnErrorMessage.value.length > 0) {
-					showSubmissionMessage();
-					return;
-				}
+	        try {
+	            if ($get("frmMain").hdnErrorMessage.value.length > 0) {
+	                showSubmissionMessage();
+	                return;
+	            }
 
-				if($get("txtPostbackMode").value!="2") refreshLiterals();
+	            if($get("txtPostbackMode").value!="2") refreshLiterals();
 
-				if (($get("txtPostbackMode").value == 2)
-                    || ($get("txtPostbackMode").value == 3)) 
-                {
-					// 0 = Default
-					// 1 = Submit/SaveForLater button postback (ie. WebForm submission)
-					// 2 = Grid header postback
-					// 3 = FileUpload button postback
+	            if (($get("txtPostbackMode").value == 2)
+    	            || ($get("txtPostbackMode").value == 3)) 
+	            {
+	                // 0 = Default
+	                // 1 = Submit/SaveForLater button postback (ie. WebForm submission)
+	                // 2 = Grid header postback
+	                // 3 = FileUpload button postback
 					
-					if ($get("txtPostbackMode").value == 3) 
-					{
-					    $get("ifrmFileUpload").contentWindow.enableControls();
-          }
-          // not doing this causes the object referenced is null error:
-					setPostbackMode(0);
-					return;
+	                if ($get("txtPostbackMode").value == 3) 
+	                {
+	                    $get("ifrmFileUpload").contentWindow.enableControls();
+	                }
+	                // not doing this causes the object referenced is null error:
+	                setPostbackMode(0);
+	                return;
 					
-				}
+	            }
 
-				if (($get("frmMain").hdnCount_Errors.value > 0)
-			        || ($get("frmMain").hdnCount_Warnings.value > 0)) {
-					showErrorMessages(true);
-				}
-				else {
-					if ($get("frmMain").hdnNoSubmissionMessage.value == 1) {
-						try {
-							if ($get("frmMain").hdnFollowOnForms.value.length > 0) {
-								launchFollowOnForms($get("frmMain").hdnFollowOnForms.value);
-							}
-							else {							
-							  if(navigator.userAgent.indexOf("MSIE")>0) {
-							    //Only IE can self-close windows that it didn't open
-								  window.close();
-								}
-								else
-								{
-								  // Non-IE browsers can't self-close windows.
-								  //show Please Wait box, with 'please close me' text
-							      showOverlay(true);
-								  $get("pleasewaitScreen").style.visibility="visible";
-								  $get("pleasewaitScreen").style.width="200px";
+	            if (($get("frmMain").hdnCount_Errors.value > 0)
+    	            || ($get("frmMain").hdnCount_Warnings.value > 0)) {
+	                showErrorMessages(true);
+	            }
+	            else {
+	                if ($get("frmMain").hdnNoSubmissionMessage.value == 1) {
+	                    try {
+	                        if ($get("frmMain").hdnFollowOnForms.value.length > 0) {
+	                            launchFollowOnForms($get("frmMain").hdnFollowOnForms.value);
+	                        }
+	                        else {							
+	                            if(navigator.userAgent.indexOf("MSIE")>0) {
+	                                //Only IE can self-close windows that it didn't open
+	                                window.close();
+	                            }
+	                            else
+	                            {
+	                                // Non-IE browsers can't self-close windows.
+	                                //show Please Wait box, with 'please close me' text
+	                                showOverlay(true);
+	                                $get("pleasewaitScreen").style.visibility="visible";
+	                                $get("pleasewaitScreen").style.width="200px";
 
-                  labelCtl = document.getElementById("pleasewaitText");
-                  if (null != labelCtl) {
-                    labelCtl.innerHTML = "Workflow completed.<BR/><BR/>Please close your browser.";                    
-                  }								  
-								}
-							}
-						}
-						catch (e) { };
-					}
-					else {
-						if ($get("txtPostbackMode").value == 1) {
-							showSubmissionMessage();
-						}
-					}
-				}
-				setPostbackMode(0);
-			}
-			catch (e) { }
-		}
+	                                labelCtl = document.getElementById("pleasewaitText");
+	                                if (null != labelCtl) {
+	                                    labelCtl.innerHTML = "Workflow completed.<BR/><BR/>Please close your browser.";                    
+	                                }								  
+	                            }
+	                        }
+	                    }
+	                    catch (e) { };
+	                }
+	                else {
+	                    if ($get("txtPostbackMode").value == 1) {
+	                        showSubmissionMessage();
+	                    }
+	                }
+	            }
+	            setPostbackMode(0);
+	        }
+	        catch (e) { }
+	    }
 
-		function showSubmissionMessage() {
+	    function showSubmissionMessage() {
 
-			try {
-				$get("ifrmMessages").src = "SubmissionMessage.aspx";
+	        try {
+	            $get("ifrmMessages").src = "SubmissionMessage.aspx";
 
-			    showOverlay(true);
-				$get("frmMain").hdnCount_Errors.value = 0;
-				$get("frmMain").hdnCount_Warnings.value = 0;
-				$get("divErrorMessages_Outer").style.display = "none";
-				showErrorMessages(false);
-				$get("divSubmissionMessages").style.display = "block";
-				$get("divSubmissionMessages").style.visibility = "visible";
-			}
-			catch (e) { }
-		}
+	            showOverlay(true);
+	            $get("frmMain").hdnCount_Errors.value = 0;
+	            $get("frmMain").hdnCount_Warnings.value = 0;
+	            $get("divErrorMessages_Outer").style.display = "none";
+	            showErrorMessages(false);
+	            $get("divSubmissionMessages").style.display = "block";
+	            $get("divSubmissionMessages").style.visibility = "visible";
+	        }
+	        catch (e) { }
+	    }
 
-		function unblockFileUploadDIV() {
-			try {
-				if (($get("divFileUpload").style.visibility == "hidden") &&
-					($get("divFileUpload").style.display != "none")) {
-					$get("divFileUpload").style.display = "none";
-				}
-			}
-			catch (e) { }
+	    function unblockFileUploadDIV() {
+	        try {
+	            if (($get("divFileUpload").style.visibility == "hidden") &&
+    	            ($get("divFileUpload").style.display != "none")) {
+	                $get("divFileUpload").style.display = "none";
+	            }
+	        }
+	        catch (e) { }
 
-			try {
-				document.getElementById($get("txtActiveElement").value).setActive();
-			}
-			catch (e) { }
-		}
+	        try {
+	            document.getElementById($get("txtActiveElement").value).setActive();
+	        }
+	        catch (e) { }
+	    }
 
-		function FileDownload_Click(psID) {
-			spawnWindow("FileDownload.aspx?" + psID);
-		}
+	    function FileDownload_Click(psID) {
+	        spawnWindow("FileDownload.aspx?" + psID);
+	    }
 
-		function FileDownload_KeyPress(psID) {
-			// If the user presses SPACE (keyCode = 32) launch the file download.
-			if (window.event.keyCode == 32) {
-				spawnWindow("FileDownload.aspx?" + psID);
-			}
-		}
+	    function FileDownload_KeyPress(psID) {
+	        // If the user presses SPACE (keyCode = 32) launch the file download.
+	        if (window.event.keyCode == 32) {
+	            spawnWindow("FileDownload.aspx?" + psID);
+	        }
+	    }
 
-		function WARP_SetTimeout() {
-			ig_shared.getCBManager()._timeLimit = <%=SubmissionTimeout()%>;
-		}
+	    function WARP_SetTimeout() {
+	        ig_shared.getCBManager()._timeLimit = <%=SubmissionTimeout()%>;
+	    }
 	    
-		function GetDatePart(psLocaleDateValue, psDatePart) {
-            var reDATE = /[YMD]/g;        
-            var sLocaleDateFormat = "<%=LocaleDateFormat()%>";
-            var sLocaleDateSep = sLocaleDateFormat.replace(reDATE, "").substr(0, 1);
-            var iLoop;
-            var iRequiredPart = 1;
-            var sValuePart1;
-            var sValuePart2;
-            var sValuePart3;
-            var iPartCounter = 1;
-            var sTemp = "";
+	    function GetDatePart(psLocaleDateValue, psDatePart) {
+	        var reDATE = /[YMD]/g;        
+	        var sLocaleDateFormat = "<%=LocaleDateFormat()%>";
+	        var sLocaleDateSep = sLocaleDateFormat.replace(reDATE, "").substr(0, 1);
+	        var iLoop;
+	        var iRequiredPart = 1;
+	        var sValuePart1;
+	        var sValuePart2;
+	        var sValuePart3;
+	        var iPartCounter = 1;
+	        var sTemp = "";
 
-            for (iLoop=0; iLoop<psLocaleDateValue.length; iLoop++)
-            {
-                if (psLocaleDateValue.substr(iLoop, 1) == sLocaleDateSep)
-                {
-                    if (iPartCounter == 1)
-                    {
-                        sValuePart1 = sTemp;
-                    }
-                    else
-                    {
-                        if (iPartCounter == 2)
-                        {
-                            sValuePart2 = sTemp;
-                        }
-                    }
+	        for (iLoop=0; iLoop<psLocaleDateValue.length; iLoop++)
+	        {
+	            if (psLocaleDateValue.substr(iLoop, 1) == sLocaleDateSep)
+	            {
+	                if (iPartCounter == 1)
+	                {
+	                    sValuePart1 = sTemp;
+	                }
+	                else
+	                {
+	                    if (iPartCounter == 2)
+	                    {
+	                        sValuePart2 = sTemp;
+	                    }
+	                }
                     
-                    iPartCounter++;
-                    sTemp = "";
-                }
-                else
-                {
-                    sTemp = sTemp + psLocaleDateValue.substr(iLoop, 1);
-                }
-            }
-            sValuePart3 = sTemp;
+	                iPartCounter++;
+	                sTemp = "";
+	            }
+	            else
+	            {
+	                sTemp = sTemp + psLocaleDateValue.substr(iLoop, 1);
+	            }
+	        }
+	        sValuePart3 = sTemp;
 
             
-            if (psDatePart == "Y")
-            {    
-                if (sLocaleDateFormat.indexOf("M") < sLocaleDateFormat.indexOf("Y"))
-                {
-                    iRequiredPart++;
-                }
-                if (sLocaleDateFormat.indexOf("D") < sLocaleDateFormat.indexOf("Y"))
-                {
-                    iRequiredPart++;
-                }
-            }
-            else
-            {
-                if (psDatePart == "M")
-                {
-                    if (sLocaleDateFormat.indexOf("Y") < sLocaleDateFormat.indexOf("M"))
-                    {
-                        iRequiredPart++;
-                    }
-                    if (sLocaleDateFormat.indexOf("D") < sLocaleDateFormat.indexOf("M"))
-                    {
-                        iRequiredPart++;
-                    }
-                }
-                else
-                {
-                    if (sLocaleDateFormat.indexOf("Y") < sLocaleDateFormat.indexOf("D"))
-                    {
-                        iRequiredPart++;
-                    }
-                    if (sLocaleDateFormat.indexOf("M") < sLocaleDateFormat.indexOf("D"))
-                    {
-                        iRequiredPart++;
-                    }
-                }
-            }
+	        if (psDatePart == "Y")
+	        {    
+	            if (sLocaleDateFormat.indexOf("M") < sLocaleDateFormat.indexOf("Y"))
+	            {
+	                iRequiredPart++;
+	            }
+	            if (sLocaleDateFormat.indexOf("D") < sLocaleDateFormat.indexOf("Y"))
+	            {
+	                iRequiredPart++;
+	            }
+	        }
+	        else
+	        {
+	            if (psDatePart == "M")
+	            {
+	                if (sLocaleDateFormat.indexOf("Y") < sLocaleDateFormat.indexOf("M"))
+	                {
+	                    iRequiredPart++;
+	                }
+	                if (sLocaleDateFormat.indexOf("D") < sLocaleDateFormat.indexOf("M"))
+	                {
+	                    iRequiredPart++;
+	                }
+	            }
+	            else
+	            {
+	                if (sLocaleDateFormat.indexOf("Y") < sLocaleDateFormat.indexOf("D"))
+	                {
+	                    iRequiredPart++;
+	                }
+	                if (sLocaleDateFormat.indexOf("M") < sLocaleDateFormat.indexOf("D"))
+	                {
+	                    iRequiredPart++;
+	                }
+	            }
+	        }
 
-            if (iRequiredPart == 1)
-            {
-                return (sValuePart1);
-            }
-            else
-            {
-                if (iRequiredPart == 2)
-                {
-                    return (sValuePart2);
-                }
-                else
-                {
-                    if (iRequiredPart == 3)
-                    {
-                        return (sValuePart3);
-                    }
-                    else
-                    {
-                        return ("");
-                    }
-                }
-            }
-		}
+	        if (iRequiredPart == 1)
+	        {
+	            return (sValuePart1);
+	        }
+	        else
+	        {
+	            if (iRequiredPart == 2)
+	            {
+	                return (sValuePart2);
+	            }
+	            else
+	            {
+	                if (iRequiredPart == 3)
+	                {
+	                    return (sValuePart3);
+	                }
+	                else
+	                {
+	                    return ("");
+	                }
+	            }
+	        }
+	    }
 	    
 	    function ChangeLookup(psWebComboId) {
 	        // Ensure locale number formatting is applied.
 	        try
 	        {
-                var sLocaleDecimal = "<%=LocaleDecimal()%>";
-                var reDECIMAL = /\./g;        
-                var objCombo = igcmbo_getComboById(psWebComboId);
+	            var sLocaleDecimal = "<%=LocaleDecimal()%>";
+	            var reDECIMAL = /\./g;        
+	            var objCombo = igcmbo_getComboById(psWebComboId);
 	            objCombo.setDisplayValue(objCombo.displayValue.replace(reDECIMAL, sLocaleDecimal));
 	        }
 	        catch(e) {}
 	    }
 
-function ResizeComboForForm(sender, args) {
-  psWebComboID = sender._id;
+	    function ResizeComboForForm(sender, args) {
+	        psWebComboID = sender._id;
             
-	var iResizeByHeight = 0;
-	var iResizeByWidth = 0;
+	        var iResizeByHeight = 0;
+	        var iResizeByWidth = 0;
 
-  //Let's set the width of the lookup panel to the width of the screen. 
-  //It used to resize the screen, but don't want this happening now.
+	        //Let's set the width of the lookup panel to the width of the screen. 
+	        //It used to resize the screen, but don't want this happening now.
 
-	try {			
-    var oEl = document.getElementById(psWebComboID.replace("dde", ""));
-    if(eval(oEl)) 
-    {
-      if (oEl.offsetWidth > $get("bdyMain").clientWidth)
-      {
-        iNewWidth = $get("bdyMain").clientWidth - oEl.offsetLeft - 5 + "px";
+	        try {			
+	            var oEl = document.getElementById(psWebComboID.replace("dde", ""));
+	            if(eval(oEl)) 
+	            {
+	                if (oEl.offsetWidth > $get("bdyMain").clientWidth)
+	                {
+	                    iNewWidth = $get("bdyMain").clientWidth - oEl.offsetLeft - 5 + "px";
                     
-        oEl.style.width = iNewWidth;
-        document.getElementById(psWebComboID.replace("dde", "gridcontainer")).style.width = oEl.style.width;
-      }   
+	                    oEl.style.width = iNewWidth;
+	                    document.getElementById(psWebComboID.replace("dde", "gridcontainer")).style.width = oEl.style.width;
+	                }   
                   
-      //also set left position to 0 if required (right coord > bymain.width)
-      if ((oEl.offsetLeft + oEl.offsetWidth) > $get("bdyMain").clientWidth)
-      {
-        oEl.style.left = "0px";
-      }                                                 
+	                //also set left position to 0 if required (right coord > bymain.width)
+	                if ((oEl.offsetLeft + oEl.offsetWidth) > $get("bdyMain").clientWidth)
+	                {
+	                    oEl.style.left = "0px";
+	                }                                                 
                   
-      //Hide the navigation icons as required
-      //Order to hide is: nav arrows go first, then 'page 1 of x'. Finally the search box goes.
-      //N.B. if the control is paged, min width is 420px before hiding the relevant controls
+	                //Hide the navigation icons as required
+	                //Order to hide is: nav arrows go first, then 'page 1 of x'. Finally the search box goes.
+	                //N.B. if the control is paged, min width is 420px before hiding the relevant controls
 
-      //Check to see if this is a paged control...
-      var oElDDL = document.getElementById(psWebComboID.replace("dde", "tcPagerDDL"));
-      if(eval(oElDDL)) {
-        //This is a paged control, so different rules apply.
-        if(oEl.offsetWidth<420) {
-          document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.visibility = "hidden";
-          document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.display = "none";
-          document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.visibility = "hidden";
-          document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.display = "none";
-        }
-        else {
-          document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.visibility = "visible";
-          document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.display = "";
-          document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.visibility = "visible";
-          document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.display = ""; 
-        }
-      }
-      else {
-        //Not a paged control
-        if(oEl.offsetWidth<250) {
-          document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.visibility = "hidden";
-          document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.display = "none";
-          document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.visibility = "hidden";
-          document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.display = "none";
-        }
-        else {
-          document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.visibility = "visible";
-          document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.display = "";
-          document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.visibility = "visible";
-          document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.display = "";
-        }                    
-      }
-    }
-  }
-  catch(e) {}
-}
+	                //Check to see if this is a paged control...
+	                var oElDDL = document.getElementById(psWebComboID.replace("dde", "tcPagerDDL"));
+	                if(eval(oElDDL)) {
+	                    //This is a paged control, so different rules apply.
+	                    if(oEl.offsetWidth<420) {
+	                        document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.visibility = "hidden";
+	                        document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.display = "none";
+	                        document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.visibility = "hidden";
+	                        document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.display = "none";
+	                    }
+	                    else {
+	                        document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.visibility = "visible";
+	                        document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.display = "";
+	                        document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.visibility = "visible";
+	                        document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.display = ""; 
+	                    }
+	                }
+	                else {
+	                    //Not a paged control
+	                    if(oEl.offsetWidth<250) {
+	                        document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.visibility = "hidden";
+	                        document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.display = "none";
+	                        document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.visibility = "hidden";
+	                        document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.display = "none";
+	                    }
+	                    else {
+	                        document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.visibility = "visible";
+	                        document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.display = "";
+	                        document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.visibility = "visible";
+	                        document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.display = "";
+	                    }                    
+	                }
+	            }
+	        }
+	        catch(e) {}
+	    }
 
 
 
-  function scrollHeader(iGridID) {
-      //keeps the header table aligned with the gridview in record
-      //selectors and lookups.
-      var leftPos = document.getElementById(iGridID).scrollLeft;
-      document.getElementById(iGridID.replace("gridcontainer", "Header")).style.left = "-" + leftPos + "px";
+	    function scrollHeader(iGridID) {
+	        //keeps the header table aligned with the gridview in record
+	        //selectors and lookups.
+	        var leftPos = document.getElementById(iGridID).scrollLeft;
+	        document.getElementById(iGridID.replace("gridcontainer", "Header")).style.left = "-" + leftPos + "px";
       
-      var hdn1 = document.getElementById(iGridID.replace("Grid","scrollpos"));
-      hdn1.value = document.getElementById(iGridID).scrollTop;
+	        var hdn1 = document.getElementById(iGridID.replace("Grid","scrollpos"));
+	        hdn1.value = document.getElementById(iGridID).scrollTop;
       
-  }
+	    }
 	    
-  function InitializeLookup(sender, args) {
+	    function InitializeLookup(sender, args) {
   
-  if($get("txtActiveDDE").value.indexOf("dde")>=0) {
-    // If we're in the process of displaying a filtered lookup already, do nothing and exit the function...
-    return;
-  }
+	        if($get("txtActiveDDE").value.indexOf("dde")>=0) {
+	            // If we're in the process of displaying a filtered lookup already, do nothing and exit the function...
+	            return;
+	        }
 
 	        var sSelectWhere = "";
 	        var sValueID = "";
 	        var sValueType = "";
 	        var sControlType = "";
-          var sValue = "";
-          var sTemp = "";
-          var sSubTemp = "";
-          var numValue = 0;
-          var dtValue;
-          var fValue = true;
-          var iIndex;
-          var iTemp;
-          var reX = /x/g;        
-          var reDATE = /[YMD]/g;        
-          var reTAB = /\t/g;        
-          var reSINGLEQUOTE = /\'/g;        
-          var sLocaleDecimal = "\\<%=LocaleDecimal()%>";
-          var reDECIMAL = new RegExp(sLocaleDecimal, "gi");
-	      var psWebComboID = "";
+	        var sValue = "";
+	        var sTemp = "";
+	        var sSubTemp = "";
+	        var numValue = 0;
+	        var dtValue;
+	        var fValue = true;
+	        var iIndex;
+	        var iTemp;
+	        var reX = /x/g;        
+	        var reDATE = /[YMD]/g;        
+	        var reTAB = /\t/g;        
+	        var reSINGLEQUOTE = /\'/g;        
+	        var sLocaleDecimal = "\\<%=LocaleDecimal()%>";
+	        var reDECIMAL = new RegExp(sLocaleDecimal, "gi");
+	        var psWebComboID = "";
 
-            psWebComboID = sender._id;
+	        psWebComboID = sender._id;
 	        
 	        if(psWebComboID=="") {return;}
 	        
 	        var sID = "lookup" + psWebComboID.replace("dde","");
-		      try {
-			          var ctlLookupFilter = document.getElementById(sID);
-                if (ctlLookupFilter)
-                { 
-                  sSelectWhere = ctlLookupFilter.value;
+	        try {
+	            var ctlLookupFilter = document.getElementById(sID);
+	            if (ctlLookupFilter)
+	            { 
+	                sSelectWhere = ctlLookupFilter.value;
 
 	                if (sSelectWhere.length > 0)
 	                {
 	                    // sSelectWhere has the format:
 	                    //  <filterValueControlID><TAB><selectWhere code with TABs where the value from filterValueControlID is to be inserted>
                         
-                        iIndex = sSelectWhere.indexOf("\t");
-                        if (iIndex >= 0)
-                        {
-                            sValueType = sSelectWhere.substring(0, iIndex);
-                            sSelectWhere = sSelectWhere.substr(iIndex+1);
-                        }
+	                    iIndex = sSelectWhere.indexOf("\t");
+	                    if (iIndex >= 0)
+	                    {
+	                        sValueType = sSelectWhere.substring(0, iIndex);
+	                        sSelectWhere = sSelectWhere.substr(iIndex+1);
+	                    }
                         
-                        iIndex = sSelectWhere.indexOf("\t");
-                        if (iIndex >= 0)
-                        {
-                            sValueID = sSelectWhere.substring(0, iIndex);
-                            sSelectWhere = sSelectWhere.substr(iIndex+1);
+	                    iIndex = sSelectWhere.indexOf("\t");
+	                    if (iIndex >= 0)
+	                    {
+	                        sValueID = sSelectWhere.substring(0, iIndex);
+	                        sSelectWhere = sSelectWhere.substr(iIndex+1);
 
-                            sControlType = sValueID.substr(sValueID.indexOf("_")+1);
-                            sControlType = sControlType.substr(sControlType.indexOf("_")+1);
-                            sControlType = sControlType.substring(0, sControlType.indexOf("_"));
+	                        sControlType = sValueID.substr(sValueID.indexOf("_")+1);
+	                        sControlType = sControlType.substr(sControlType.indexOf("_")+1);
+	                        sControlType = sControlType.substring(0, sControlType.indexOf("_"));
                             
-                            if ((sControlType == 13)
-                                || (sControlType == 14))
-                            {
-                                // Dropdown (13), Lookup (14)
-                              if (sControlType == 13) {  
-                                var ctlLookupValueCombo = document.getElementById(sValueID);
-                        	      sValue = ctlLookupValueCombo.value;
-                        	    }
-                        	    else
-                        	    {
-                                var ctlLookupValueCombo = document.getElementById(sValueID + "TextBox");
-                        	      sValue = ctlLookupValueCombo.value;                        	    
-                        	    }
+	                        if ((sControlType == 13)
+    	                        || (sControlType == 14))
+	                        {
+	                            // Dropdown (13), Lookup (14)
+	                            if (sControlType == 13) {  
+	                                var ctlLookupValueCombo = document.getElementById(sValueID);
+	                                sValue = ctlLookupValueCombo.value;
+	                            }
+	                            else
+	                            {
+	                                var ctlLookupValueCombo = document.getElementById(sValueID + "TextBox");
+	                                sValue = ctlLookupValueCombo.value;                        	    
+	                            }
                         	    
                         	    
-                        	    if(sValueType == 11)
-                        	    {
-                        	        // Date value from lookup. Convert from locale format to yyyymmdd.
-                        	        if (sValue.length > 0)
-                        	        {
-                        	            sTemp = GetDatePart(sValue, "Y");
+	                            if(sValueType == 11)
+	                            {
+	                                // Date value from lookup. Convert from locale format to yyyymmdd.
+	                                if (sValue.length > 0)
+	                                {
+	                                    sTemp = GetDatePart(sValue, "Y");
                         	             
-                        	            sSubTemp = "0" + GetDatePart(sValue, "M");
-                        	            sTemp = sTemp + sSubTemp.substr(sSubTemp.length-2);
+	                                    sSubTemp = "0" + GetDatePart(sValue, "M");
+	                                    sTemp = sTemp + sSubTemp.substr(sSubTemp.length-2);
                         	            
-                        	            sSubTemp = "0" + GetDatePart(sValue, "D");
-                        	            sTemp = sTemp + sSubTemp.substr(sSubTemp.length-2);
+	                                    sSubTemp = "0" + GetDatePart(sValue, "D");
+	                                    sTemp = sTemp + sSubTemp.substr(sSubTemp.length-2);
 
-                        	            sValue = sTemp;
-                          	      }
-                        	        else
-                        	        {
-                        	            sValue = "";
-                        	        }
-                        	    }
-                        	    else
-                        	    {
-                        	        if((sValueType == 2) || (sValueType == 4))
-                        	        {
-                        	            // numerics/integers
-                        	            if (sValue.length > 0)
-                        	            {
-                        	                sValue = sValue.replace(reDECIMAL, ".");
-                        	            }
-                        	            else
-                        	            {
-                        	                sValue = "0";
-                        	            }
-                        	        }
-                        	    }
-                            }
-                            else
-                            {
-                                if (sControlType == 6)
-                                {
-                                    // Checkbox (6)
-                                    var ctlLookupValueCheckbox = document.getElementById(sValueID);
-                        	        fValue = ctlLookupValueCheckbox.checked;
-                                    if (fValue == true)
-                                    {
-                                        sValue = "1";
-                                    }
-                                    else
-                                    {
-                                        sValue = "0";
-                                    }
-                                }
-                                else
-                                {
-                                    if (sControlType == 5)
-                                    {
-                                        // Numeric (5)
-                                        var ctlLookupValueNumeric = igedit_getById(sValueID);
-                    	                numValue = ctlLookupValueNumeric.getValue();
-                                        sValue = numValue.toString();
-                                    }
-                                    else
-                                    {
-                                        if (sControlType == 7)
-                                        {
-                                            // Date (7)
-                                            var ctlLookupValueDate = igdrp_getComboById(sValueID);
-                    	                    dtValue = ctlLookupValueDate.getValue();
-                    	                    if (dtValue)
-                    	                    {
-                                	            // Get year part.
-                        	                    sTemp = dtValue.getFullYear();
+	                                    sValue = sTemp;
+	                                }
+	                                else
+	                                {
+	                                    sValue = "";
+	                                }
+	                            }
+	                            else
+	                            {
+	                                if((sValueType == 2) || (sValueType == 4))
+	                                {
+	                                    // numerics/integers
+	                                    if (sValue.length > 0)
+	                                    {
+	                                        sValue = sValue.replace(reDECIMAL, ".");
+	                                    }
+	                                    else
+	                                    {
+	                                        sValue = "0";
+	                                    }
+	                                }
+	                            }
+	                        }
+	                        else
+	                        {
+	                            if (sControlType == 6)
+	                            {
+	                                // Checkbox (6)
+	                                var ctlLookupValueCheckbox = document.getElementById(sValueID);
+	                                fValue = ctlLookupValueCheckbox.checked;
+	                                if (fValue == true)
+	                                {
+	                                    sValue = "1";
+	                                }
+	                                else
+	                                {
+	                                    sValue = "0";
+	                                }
+	                            }
+	                            else
+	                            {
+	                                if (sControlType == 5)
+	                                {
+	                                    // Numeric (5)
+	                                    var ctlLookupValueNumeric = igedit_getById(sValueID);
+	                                    numValue = ctlLookupValueNumeric.getValue();
+	                                    sValue = numValue.toString();
+	                                }
+	                                else
+	                                {
+	                                    if (sControlType == 7)
+	                                    {
+	                                        // Date (7)
+	                                        var ctlLookupValueDate = igdrp_getComboById(sValueID);
+	                                        dtValue = ctlLookupValueDate.getValue();
+	                                        if (dtValue)
+	                                        {
+	                                            // Get year part.
+	                                            sTemp = dtValue.getFullYear();
                         	            
-                        	                    // Get month part. Pad to 2 digits if required.
-                        	                    sSubTemp = "0" + (dtValue.getMonth() + 1);
-                                	            sTemp = sTemp + sSubTemp.substr(sSubTemp.length-2);
+	                                            // Get month part. Pad to 2 digits if required.
+	                                            sSubTemp = "0" + (dtValue.getMonth() + 1);
+	                                            sTemp = sTemp + sSubTemp.substr(sSubTemp.length-2);
 
-                        	                    // Get day part. Pad to 2 digits if required.
-                                	            sSubTemp = "0" + dtValue.getDate();
-                                	            sValue = sTemp + sSubTemp.substr(sSubTemp.length-2);
-                                            }
-                                            else
-                                            {
-                                                sValue = "";
-                                            }
-                                        }
-                                        else
-                                        {
-                                            // CharInput, OptionGroup
+	                                            // Get day part. Pad to 2 digits if required.
+	                                            sSubTemp = "0" + dtValue.getDate();
+	                                            sValue = sTemp + sSubTemp.substr(sSubTemp.length-2);
+	                                        }
+	                                        else
+	                                        {
+	                                            sValue = "";
+	                                        }
+	                                    }
+	                                    else
+	                                    {
+	                                        // CharInput, OptionGroup
 	                                        var ctlLookupValue = document.getElementById(sValueID);
 	                                        sValue = ctlLookupValue.value;
 	                                    }
-                                    }
+	                                }
 	                            }
 	                        }
 
 	                        sValue = sValue.toUpperCase().trim().replace(reSINGLEQUOTE, "\'\'"); 
-                            sSelectWhere = sSelectWhere.replace(reTAB, sValue);   
+	                        sSelectWhere = sSelectWhere.replace(reTAB, sValue);   
                                 
-					                //var objCombo = igcmbo_getComboById(psWebComboId);
+	                        //var objCombo = igcmbo_getComboById(psWebComboId);
 	                        //        objCombo.selectWhere(sSelectWhere);
         	                                         
-                          if(sValue=="") {
-                            document.getElementById(psWebComboID.replace("dde", "filterSQL")).value = "";                          
-                          }
-                          else {
-                            document.getElementById(psWebComboID.replace("dde", "filterSQL")).value = sSelectWhere;                          
-                          }
+	                        if(sValue=="") {
+	                            document.getElementById(psWebComboID.replace("dde", "filterSQL")).value = "";                          
+	                        }
+	                        else {
+	                            document.getElementById(psWebComboID.replace("dde", "filterSQL")).value = sSelectWhere;                          
+	                        }
                           
-                          //This prevents the lookup closing after the filter is applied/removed
+	                        //This prevents the lookup closing after the filter is applied/removed
                           
-                          $get("txtActiveDDE").value = psWebComboID;
+	                        $get("txtActiveDDE").value = psWebComboID;
                           
-                          setPostbackMode(3);
+	                        setPostbackMode(3);
                           
-                          //These lines hide the lookup dropdown until it's filled with data.
-                          document.getElementById(psWebComboID.replace("dde","")).style.height="0px";
-                          document.getElementById(psWebComboID.replace("dde","")).style.width="0px";
+	                        //These lines hide the lookup dropdown until it's filled with data.
+	                        document.getElementById(psWebComboID.replace("dde","")).style.height="0px";
+	                        document.getElementById(psWebComboID.replace("dde","")).style.width="0px";
                           
-                          //This clicks the server-side button to apply filtering...                          
-                          //this also kicks off the gosubmit() via postback beginrequest.                          
-                          document.getElementById(psWebComboID.replace("dde", "refresh")).click();
+	                        //This clicks the server-side button to apply filtering...                          
+	                        //this also kicks off the gosubmit() via postback beginrequest.                          
+	                        document.getElementById(psWebComboID.replace("dde", "refresh")).click();
                           
-                          //set pbmode back to 0 to prevent recursion.                          
-                          setPostbackMode(0);                                                                  
-                        }
+	                        //set pbmode back to 0 to prevent recursion.                          
+	                        setPostbackMode(0);                                                                  
+	                    }
 	                }
-                }
-            }
-           catch (e) {}
+	            }
+	        }
+	        catch (e) {}
 
 	        return false;
-  }
+	    }
 
 
-  function FilterMobileLookup(sourceControlID) {
+	    function FilterMobileLookup(sourceControlID) {
 	        var sSelectWhere = "";
 	        var sValueID = "";
 	        var sValueType = "";
 	        var sControlType = "";
-          var sValue = "";
-          var sTemp = "";
-          var sSubTemp = "";
-          var numValue = 0;
-          var dtValue;
-          var fValue = true;
-          var iIndex;
-          var iTemp;
-          var reX = /x/g;        
-          var reDATE = /[YMD]/g;        
-          var reTAB = /\t/g;        
-          var reSINGLEQUOTE = /\'/g;        
-          var sLocaleDecimal = "\\<%=LocaleDecimal()%>";
-        	var reDECIMAL = new RegExp(sLocaleDecimal, "gi");
+	        var sValue = "";
+	        var sTemp = "";
+	        var sSubTemp = "";
+	        var numValue = 0;
+	        var dtValue;
+	        var fValue = true;
+	        var iIndex;
+	        var iTemp;
+	        var reX = /x/g;        
+	        var reDATE = /[YMD]/g;        
+	        var reTAB = /\t/g;        
+	        var reSINGLEQUOTE = /\'/g;        
+	        var sLocaleDecimal = "\\<%=LocaleDecimal()%>";
+	        var reDECIMAL = new RegExp(sLocaleDecimal, "gi");
 	        
 	        if(sourceControlID=="") {return;}
 	        
-          var lookups = getElementsBySearchValue(sourceControlID);
+	        var lookups = getElementsBySearchValue(sourceControlID);
           
-          for(var i = 0; i < lookups.length; i++) {
+	        for(var i = 0; i < lookups.length; i++) {
 
-          try {
-            var psWebComboID = lookups[i].name.replace("lookup", "");
-          }
-          catch(e) {var psWebComboID="";}
+	            try {
+	                var psWebComboID = lookups[i].name.replace("lookup", "");
+	            }
+	            catch(e) {var psWebComboID="";}
           
           
-          if(psWebComboID.length>0) {
+	            if(psWebComboID.length>0) {
 	        
-            var sID = "lookup" + psWebComboID;
+	                var sID = "lookup" + psWebComboID;
 
-		        try {
-			            var ctlLookupFilter = document.getElementById(sID);
-                  if (ctlLookupFilter)
-                  { 
-                    sSelectWhere = ctlLookupFilter.value;
+	                try {
+	                    var ctlLookupFilter = document.getElementById(sID);
+	                    if (ctlLookupFilter)
+	                    { 
+	                        sSelectWhere = ctlLookupFilter.value;
                   
-	                  if (sSelectWhere.length > 0)
-	                  {
-	                      // sSelectWhere has the format:
-	                      //  <filterValueControlID><TAB><selectWhere code with TABs where the value from filterValueControlID is to be inserted>
+	                        if (sSelectWhere.length > 0)
+	                        {
+	                            // sSelectWhere has the format:
+	                            //  <filterValueControlID><TAB><selectWhere code with TABs where the value from filterValueControlID is to be inserted>
                         
-                          iIndex = sSelectWhere.indexOf("\t");
-                          if (iIndex >= 0)
-                          {
-                              sValueType = sSelectWhere.substring(0, iIndex);
-                              sSelectWhere = sSelectWhere.substr(iIndex+1);
-                          }
+	                            iIndex = sSelectWhere.indexOf("\t");
+	                            if (iIndex >= 0)
+	                            {
+	                                sValueType = sSelectWhere.substring(0, iIndex);
+	                                sSelectWhere = sSelectWhere.substr(iIndex+1);
+	                            }
                         
-                          iIndex = sSelectWhere.indexOf("\t");
-                          if (iIndex >= 0)
-                          {
-                              sValueID = sSelectWhere.substring(0, iIndex);
-                              sSelectWhere = sSelectWhere.substr(iIndex+1);
+	                            iIndex = sSelectWhere.indexOf("\t");
+	                            if (iIndex >= 0)
+	                            {
+	                                sValueID = sSelectWhere.substring(0, iIndex);
+	                                sSelectWhere = sSelectWhere.substr(iIndex+1);
 
-                              sControlType = sValueID.substr(sValueID.indexOf("_")+1);
-                              sControlType = sControlType.substr(sControlType.indexOf("_")+1);
-                              sControlType = sControlType.substring(0, sControlType.indexOf("_"));
+	                                sControlType = sValueID.substr(sValueID.indexOf("_")+1);
+	                                sControlType = sControlType.substr(sControlType.indexOf("_")+1);
+	                                sControlType = sControlType.substring(0, sControlType.indexOf("_"));
                             
-                              if ((sControlType == 13)
-                                  || (sControlType == 14))
-                              {
-                                  // Dropdown (13), Lookup (14)
-                                if (sControlType == 13) {
-                                  var ctlLookupValueCombo = document.getElementById(sValueID);
-                        	        sValue = ctlLookupValueCombo.value;
-                        	      }
-                        	      else
-                        	      {
-                                  var ctlLookupValueCombo = document.getElementById(sValueID + "TextBox");
-                                  if(!(eval(ctlLookupValueCombo))) {var ctlLookupValueCombo = document.getElementById(sValueID);}
+	                                if ((sControlType == 13)
+    	                                || (sControlType == 14))
+	                                {
+	                                    // Dropdown (13), Lookup (14)
+	                                    if (sControlType == 13) {
+	                                        var ctlLookupValueCombo = document.getElementById(sValueID);
+	                                        sValue = ctlLookupValueCombo.value;
+	                                    }
+	                                    else
+	                                    {
+	                                        var ctlLookupValueCombo = document.getElementById(sValueID + "TextBox");
+	                                        if(!(eval(ctlLookupValueCombo))) {var ctlLookupValueCombo = document.getElementById(sValueID);}
 
-                           	      sValue = ctlLookupValueCombo.value;                                  
-                        	      }
+	                                        sValue = ctlLookupValueCombo.value;                                  
+	                                    }
                         	    
                         	    
-                        	      if(sValueType == 11)
-                        	      {
-                        	          // Date value from lookup. Convert from locale format to yyyymmdd.
-                        	          if (sValue.length > 0)
-                        	          {
-                        	              sTemp = GetDatePart(sValue, "Y");
+	                                    if(sValueType == 11)
+	                                    {
+	                                        // Date value from lookup. Convert from locale format to yyyymmdd.
+	                                        if (sValue.length > 0)
+	                                        {
+	                                            sTemp = GetDatePart(sValue, "Y");
                         	             
-                        	              sSubTemp = "0" + GetDatePart(sValue, "M");
-                        	              sTemp = sTemp + sSubTemp.substr(sSubTemp.length-2);
+	                                            sSubTemp = "0" + GetDatePart(sValue, "M");
+	                                            sTemp = sTemp + sSubTemp.substr(sSubTemp.length-2);
                         	            
-                        	              sSubTemp = "0" + GetDatePart(sValue, "D");
-                        	              sTemp = sTemp + sSubTemp.substr(sSubTemp.length-2);
+	                                            sSubTemp = "0" + GetDatePart(sValue, "D");
+	                                            sTemp = sTemp + sSubTemp.substr(sSubTemp.length-2);
 
-                        	              sValue = sTemp;
-                          	        }
-                        	          else
-                        	          {
-                        	              sValue = "";
-                        	          }
-                        	      }
-                        	      else
-                        	      {
-                        	          if((sValueType == 2) || (sValueType == 4))
-                        	          {
-                        	              // numerics/integers
-                        	              if (sValue.length > 0)
-                        	              {
-                        	                  sValue = sValue.replace(reDECIMAL, ".");
-                        	              }
-                        	              else
-                        	              {
-                        	                  sValue = "0";
-                        	              }
-                        	          }
-                        	      }
-                              }
-                              else
-                              {
-                                  if (sControlType == 6)
-                                  {
-                                      // Checkbox (6)
-                                      var ctlLookupValueCheckbox = document.getElementById(sValueID);
-                        	          fValue = ctlLookupValueCheckbox.checked;
-                                      if (fValue == true)
-                                      {
-                                          sValue = "1";
-                                      }
-                                      else
-                                      {
-                                          sValue = "0";
-                                      }
-                                  }
-                                  else
-                                  {
-                                      if (sControlType == 5)
-                                      {
-                                          // Numeric (5)
-                                          var ctlLookupValueNumeric = igedit_getById(sValueID);
-                    	                  numValue = ctlLookupValueNumeric.getValue();
-                                          sValue = numValue.toString();
-                                      }
-                                      else
-                                      {
-                                          if (sControlType == 7)
-                                          {
-                                              // Date (7)
-                                              var ctlLookupValueDate = igdrp_getComboById(sValueID);
-                    	                      dtValue = ctlLookupValueDate.getValue();
-                    	                      if (dtValue)
-                    	                      {
-                                	              // Get year part.
-                        	                      sTemp = dtValue.getFullYear();
+	                                            sValue = sTemp;
+	                                        }
+	                                        else
+	                                        {
+	                                            sValue = "";
+	                                        }
+	                                    }
+	                                    else
+	                                    {
+	                                        if((sValueType == 2) || (sValueType == 4))
+	                                        {
+	                                            // numerics/integers
+	                                            if (sValue.length > 0)
+	                                            {
+	                                                sValue = sValue.replace(reDECIMAL, ".");
+	                                            }
+	                                            else
+	                                            {
+	                                                sValue = "0";
+	                                            }
+	                                        }
+	                                    }
+	                                }
+	                                else
+	                                {
+	                                    if (sControlType == 6)
+	                                    {
+	                                        // Checkbox (6)
+	                                        var ctlLookupValueCheckbox = document.getElementById(sValueID);
+	                                        fValue = ctlLookupValueCheckbox.checked;
+	                                        if (fValue == true)
+	                                        {
+	                                            sValue = "1";
+	                                        }
+	                                        else
+	                                        {
+	                                            sValue = "0";
+	                                        }
+	                                    }
+	                                    else
+	                                    {
+	                                        if (sControlType == 5)
+	                                        {
+	                                            // Numeric (5)
+	                                            var ctlLookupValueNumeric = igedit_getById(sValueID);
+	                                            numValue = ctlLookupValueNumeric.getValue();
+	                                            sValue = numValue.toString();
+	                                        }
+	                                        else
+	                                        {
+	                                            if (sControlType == 7)
+	                                            {
+	                                                // Date (7)
+	                                                var ctlLookupValueDate = igdrp_getComboById(sValueID);
+	                                                dtValue = ctlLookupValueDate.getValue();
+	                                                if (dtValue)
+	                                                {
+	                                                    // Get year part.
+	                                                    sTemp = dtValue.getFullYear();
                         	            
-                        	                      // Get month part. Pad to 2 digits if required.
-                        	                      sSubTemp = "0" + (dtValue.getMonth() + 1);
-                                	              sTemp = sTemp + sSubTemp.substr(sSubTemp.length-2);
+	                                                    // Get month part. Pad to 2 digits if required.
+	                                                    sSubTemp = "0" + (dtValue.getMonth() + 1);
+	                                                    sTemp = sTemp + sSubTemp.substr(sSubTemp.length-2);
 
-                        	                      // Get day part. Pad to 2 digits if required.
-                                	              sSubTemp = "0" + dtValue.getDate();
-                                	              sValue = sTemp + sSubTemp.substr(sSubTemp.length-2);
-                                              }
-                                              else
-                                              {
-                                                  sValue = "";
-                                              }
-                                          }
-                                          else
-                                          {
-                                              // CharInput, OptionGroup
-	                                          var ctlLookupValue = document.getElementById(sValueID);
-	                                          sValue = ctlLookupValue.value;
-	                                      }
-                                     }
-	                              }
-	                          }
+	                                                    // Get day part. Pad to 2 digits if required.
+	                                                    sSubTemp = "0" + dtValue.getDate();
+	                                                    sValue = sTemp + sSubTemp.substr(sSubTemp.length-2);
+	                                                }
+	                                                else
+	                                                {
+	                                                    sValue = "";
+	                                                }
+	                                            }
+	                                            else
+	                                            {
+	                                                // CharInput, OptionGroup
+	                                                var ctlLookupValue = document.getElementById(sValueID);
+	                                                sValue = ctlLookupValue.value;
+	                                            }
+	                                        }
+	                                    }
+	                                }
 
-	                          sValue = sValue.toUpperCase().trim().replace(reSINGLEQUOTE, "\'\'"); 
-                              sSelectWhere = sSelectWhere.replace(reTAB, sValue);
+	                                sValue = sValue.toUpperCase().trim().replace(reSINGLEQUOTE, "\'\'"); 
+	                                sSelectWhere = sSelectWhere.replace(reTAB, sValue);
         	                       
-                            if(sValue=="") {
-                              document.getElementById(psWebComboID + "filterSQL").value = "";
-                            }
-                            else {
-                              document.getElementById(psWebComboID + "filterSQL").value = sSelectWhere;                          
-                            }
+	                                if(sValue=="") {
+	                                    document.getElementById(psWebComboID + "filterSQL").value = "";
+	                                }
+	                                else {
+	                                    document.getElementById(psWebComboID + "filterSQL").value = sSelectWhere;                          
+	                                }
                           
-                            //This prevents the lookup closing after the filter is applied/removed
+	                                //This prevents the lookup closing after the filter is applied/removed
                           
-                            //$get("txtActiveDDE").value = psWebComboID;
+	                                //$get("txtActiveDDE").value = psWebComboID;
                           
-                            setPostbackMode(3);
+	                                setPostbackMode(3);
                           
-                            //These lines hide the lookup dropdown until it's filled with data.
-                            //document.getElementById(psWebComboID.replace("dde","")).style.height="0px";
-                            //document.getElementById(psWebComboID.replace("dde","")).style.width="0px";
+	                                //These lines hide the lookup dropdown until it's filled with data.
+	                                //document.getElementById(psWebComboID.replace("dde","")).style.height="0px";
+	                                //document.getElementById(psWebComboID.replace("dde","")).style.width="0px";
                           
-                            //This clicks the server-side button to apply filtering...                          
-                            //this also kicks off the gosubmit() via postback beginrequest.                          
-                            document.getElementById(psWebComboID+ "refresh").click();                                                       
+	                                //This clicks the server-side button to apply filtering...                          
+	                                //this also kicks off the gosubmit() via postback beginrequest.                          
+	                                document.getElementById(psWebComboID+ "refresh").click();                                                       
 
-                            //set pbmode back to 0 to prevent recursion.                          
-                            setPostbackMode(0);
-                         }
-	                   }
-                  }
-              }
-             catch (e) {}
-            }
-          }
+	                                //set pbmode back to 0 to prevent recursion.                          
+	                                setPostbackMode(0);
+	                            }
+	                        }
+	                    }
+	                }
+	                catch (e) {}
+	            }
+	        }
           
 	        return false;
-  }
+	    }
 
 
-  function getGridViewControl(iGridID) {
-    //    if (null == gridViewCtl) {
-      gridViewCtl = document.getElementById(iGridID);
-    //}
-  }
+	    function getGridViewControl(iGridID) {
+	        //    if (null == gridViewCtl) {
+	        gridViewCtl = document.getElementById(iGridID);
+	        //}
+	    }
 
 
-  function Right(str, n){
-      if (n <= 0)
-         return "";
-      else if (n > String(str).length)
-         return str;
-      else {
-         var iLen = String(str).length;
-         return String(str).substring(iLen, iLen - n);
-      }
-  }
+	    function Right(str, n){
+	        if (n <= 0)
+	            return "";
+	        else if (n > String(str).length)
+	            return str;
+	        else {
+	            var iLen = String(str).length;
+	            return String(str).substring(iLen, iLen - n);
+	        }
+	    }
 
-  function isGridFiltered(iGridID) { 
-    //searches the specified table for hidden rows and returns true if any are found...
-      var table = document.getElementById(iGridID);
+	    function isGridFiltered(iGridID) { 
+	        //searches the specified table for hidden rows and returns true if any are found...
+	        var table = document.getElementById(iGridID);
     
-    for (var r = 0; r < table.rows.length; r++) {
-        if (table.rows[r].style.display == 'none') {
-          return true;
-        }
-    }
-    return false;  
-  }
+	        for (var r = 0; r < table.rows.length; r++) {
+	            if (table.rows[r].style.display == 'none') {
+	                return true;
+	            }
+	        }
+	        return false;  
+	    }
   
-  function GetGridRowHeight(iGridID) {
-      var table = document.getElementById(iGridID);
+	    function GetGridRowHeight(iGridID) {
+	        var table = document.getElementById(iGridID);
 
-    for (var r = 0; r < table.rows.length; r++) {
-        if (table.rows[r].style.display == '') {        
-          return document.getElementById(iGridID.replace("Grid", "Grid_row" + r)).offsetHeight;
-        }
-    }
+	        for (var r = 0; r < table.rows.length; r++) {
+	            if (table.rows[r].style.display == '') {        
+	                return document.getElementById(iGridID.replace("Grid", "Grid_row" + r)).offsetHeight;
+	            }
+	        }
     
-    return 0;    
-  }
+	        return 0;    
+	    }
   
   
-  function SetScrollTopPos(iGridID, iPos, iRowIndex) {
-    if(iPos==-1) {
-    // -1 is the 'code' to reset scrollbar to stored position
-    //Loop through all hidden scroll fields and reset values.
-    var controlCollection = $get("frmMain").elements;
-      if (controlCollection!=null) 
-      {
-	      for (i=0; i<controlCollection.length; i++)  
-	      {
-		      if(Right(controlCollection.item(i).name, 9)=="scrollpos") {			    
-		        document.getElementById(controlCollection.item(i).name.replace("scrollpos", "gridcontainer")).scrollTop = (controlCollection.item(i).value);
-  			  }	
-	      }
-      }							
-    }
-    else { 
-      //Check if this grid is quick-filtered (NOT lookup filtered)
-      //If it is, calculate the scroll position to use after postback,
-      //otherwise store the current scroll position for postback...
-      if(isGridFiltered(iGridID)) {
-        iPos = (iRowIndex * GetGridRowHeight(iGridID)) - 1;
-        }
-      //store the scrollbar position
-      hdn1 = document.getElementById(iGridID.replace("Grid","scrollpos"));
-      hdn1.value = iPos;
-      ScrollTopPos = iPos;          
-    }
-  }
+	    function SetScrollTopPos(iGridID, iPos, iRowIndex) {
+	        if(iPos==-1) {
+	            // -1 is the 'code' to reset scrollbar to stored position
+	            //Loop through all hidden scroll fields and reset values.
+	            var controlCollection = $get("frmMain").elements;
+	            if (controlCollection!=null) 
+	            {
+	                for (i=0; i<controlCollection.length; i++)  
+	                {
+	                    if(Right(controlCollection.item(i).name, 9)=="scrollpos") {			    
+	                        document.getElementById(controlCollection.item(i).name.replace("scrollpos", "gridcontainer")).scrollTop = (controlCollection.item(i).value);
+	                    }	
+	                }
+	            }							
+	        }
+	        else { 
+	            //Check if this grid is quick-filtered (NOT lookup filtered)
+	            //If it is, calculate the scroll position to use after postback,
+	            //otherwise store the current scroll position for postback...
+	            if(isGridFiltered(iGridID)) {
+	                iPos = (iRowIndex * GetGridRowHeight(iGridID)) - 1;
+	            }
+	            //store the scrollbar position
+	            hdn1 = document.getElementById(iGridID.replace("Grid","scrollpos"));
+	            hdn1.value = iPos;
+	            ScrollTopPos = iPos;          
+	        }
+	    }
   
-  function SetCurrentTab(iNewTab) {
+	    function SetCurrentTab(iNewTab) {
             
-    var currentTab = $get("forminput_" + iCurrentTab + "_21_PageTab");
-    var currentPanel = $get("forminput_" + iCurrentTab + "_21_Panel");
-    var newTab = $get("forminput_" + iNewTab + "_21_PageTab");
-    var newPanel = $get("forminput_" + iNewTab + "_21_Panel");
+	        var currentTab = $get("forminput_" + iCurrentTab + "_21_PageTab");
+	        var currentPanel = $get("forminput_" + iCurrentTab + "_21_Panel");
+	        var newTab = $get("forminput_" + iNewTab + "_21_PageTab");
+	        var newPanel = $get("forminput_" + iNewTab + "_21_Panel");
 
-    document.getElementById("hdnDefaultPageNo").value = iNewTab;
+	        document.getElementById("hdnDefaultPageNo").value = iNewTab;
     
-    try {
-      if(currentTab!=null) currentTab.style.display = "none";
+	        try {
+	            if(currentTab!=null) currentTab.style.display = "none";
       
-      if(currentPanel!=null) currentPanel.style.borderBottom = "1px solid black";
+	            if(currentPanel!=null) currentPanel.style.borderBottom = "1px solid black";
         
-      if(newTab!=null) newTab.style.display = "block";
+	            if(newTab!=null) newTab.style.display = "block";
         
-      if(newPanel!=null) newPanel.style.borderBottom = "1px solid white";
+	            if(newPanel!=null) newPanel.style.borderBottom = "1px solid white";
         
-       window.iCurrentTab = iNewTab;            
+	            window.iCurrentTab = iNewTab;            
 
-    }
-    catch (e) {}
-  }
+	        }
+	        catch (e) {}
+	    }
 
-    // ]]>
+	// ]]>
 	</script>
 
 	<script src="scripts\WebNumericEditValidation.js" type="text/javascript"></script>
@@ -1647,49 +1665,49 @@ function ResizeComboForForm(sender, args) {
 
 <script language="javascript" type="text/javascript">
 
-  function disposeTree(sender, args) {
+    function disposeTree(sender, args) {
 
-    //http://support.microsoft.com/?kbid=2000262
+        //http://support.microsoft.com/?kbid=2000262
+
+        try {
+
+            var elements = args.get_panelsUpdating();
+            for (var i = elements.length - 1; i >= 0; i--) {
+                var element = elements[i];
+                var allnodes = element.getElementsByTagName('*'),
+                    length = allnodes.length;
+                var nodes = new Array(length);
+                for (var k = 0; k < length; k++) {
+                    nodes[k] = allnodes[k];
+                }
+                for (var j = 0, l = nodes.length; j < l; j++) {
+                    var node = nodes[j];
+                    if (node.nodeType === 1) {
+                        if (node.dispose && typeof (node.dispose) === "function") {
+                            node.dispose();
+                        }
+                        else if (node.control && typeof (node.control.dispose) === "function") {
+                            node.control.dispose();
+                        }
+
+                        var behaviors = node._behaviors;
+                        if (behaviors) {
+                            behaviors = Array.apply(null, behaviors);
+                            for (var k = behaviors.length - 1; k >= 0; k--) {
+                                behaviors[k].dispose();
+                            }
+                        }
+                    }
+                }
+                element.innerHTML = "";
+            } 
+        } catch (e) { }
+    }
 
     try {
-
-      var elements = args.get_panelsUpdating();
-      for (var i = elements.length - 1; i >= 0; i--) {
-        var element = elements[i];
-        var allnodes = element.getElementsByTagName('*'),
-                length = allnodes.length;
-        var nodes = new Array(length);
-        for (var k = 0; k < length; k++) {
-          nodes[k] = allnodes[k];
-        }
-        for (var j = 0, l = nodes.length; j < l; j++) {
-          var node = nodes[j];
-          if (node.nodeType === 1) {
-            if (node.dispose && typeof (node.dispose) === "function") {
-              node.dispose();
-            }
-            else if (node.control && typeof (node.control.dispose) === "function") {
-              node.control.dispose();
-            }
-
-            var behaviors = node._behaviors;
-            if (behaviors) {
-              behaviors = Array.apply(null, behaviors);
-              for (var k = behaviors.length - 1; k >= 0; k--) {
-                behaviors[k].dispose();
-              }
-            }
-          }
-        }
-        element.innerHTML = "";
-      } 
-    } catch (e) { }
-  }
-
-  try {
-    Sys.WebForms.PageRequestManager.getInstance().add_pageLoading(disposeTree);
-  }
-  catch (e) { }
+        Sys.WebForms.PageRequestManager.getInstance().add_pageLoading(disposeTree);
+    }
+    catch (e) { }
 
 </script>
 </html>

@@ -1272,7 +1272,7 @@ Public Class _Default
                    " font-weight: " & CStr(IIf(NullSafeBoolean(dr("FontBold")), "bold", "normal")) & ";" & _
                    " font-style: " & CStr(IIf(NullSafeBoolean(dr("FontItalic")), "italic", "normal")) & ";" & _
                    " text-decoration:" & sTemp2 & "'>" & vbCrLf & _
-                   "<TR style='background-color:red;'>" & vbCrLf
+                   "<TR>" & vbCrLf
 
                   'android checkboxes need to be moved up
                   Dim androidFix As String = String.Empty
@@ -1582,6 +1582,9 @@ Public Class _Default
                       .ClientSideEvents.EditKeyDown = "dateControlKeyPress"
                       .ClientSideEvents.TextChanged = "dateControlTextChanged"
                       .ClientSideEvents.BeforeDropDown = "dateControlBeforeDropDown"
+                      'TODO PG
+                      '.ClientSideEvents.BeforeDropDown = "dateControlBeforeDropDown();dateControlFixBeforeDropDown()" '
+                      '.ClientSideEvents.AfterCloseUp = "dateControlFixAfterCloseUp()"
 
                       If IsMobileBrowser() Then .ClientSideEvents.AfterCloseUp = "FilterMobileLookup('" & sID.ToString & "');"
                     End With
