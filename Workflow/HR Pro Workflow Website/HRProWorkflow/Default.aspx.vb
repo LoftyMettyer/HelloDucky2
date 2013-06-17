@@ -2041,7 +2041,6 @@ Public Class _Default
                                     ''End If
 
                                 Case 14 ' lookup  Inputs
-
                                     ' Might want to look at using popupControl instead of DropDownExtender. This will then allow us 
                                     ' to use paging within the dropdown panel. DDE will close itself after page changes...
 
@@ -2432,15 +2431,22 @@ Public Class _Default
                                             ctlForm_PagingGridView.DataBind()
 
                                             ' Highlight the selected row if possible, including setting the page index...
-                                            If NullSafeString(cmdGrid.Parameters("@psDefaultValue").Value).Length > 0 Then
+                                            'If NullSafeString(cmdGrid.Parameters("@psDefaultValue").Value).Length > 0 Then
+                                            '    Dim sSelectString As String = dt.Columns(NullSafeInteger(cmdGrid.Parameters("@piLookupColumnIndex").Value)).ToString & "='" & NullSafeString(cmdGrid.Parameters("@psDefaultValue").Value) & "'"
+                                            '    Dim iDefaultRowNum As Integer = -1
+                                            '    Dim foundRows() As DataRow
 
-                                                Dim sSelectString As String = dt.Columns(NullSafeInteger(cmdGrid.Parameters("@piLookupColumnIndex").Value)).ToString & "='" & NullSafeString(cmdGrid.Parameters("@psDefaultValue").Value) & "'"
-                                                Dim iDefaultRowNum As Integer = dt.Rows.IndexOf(dt.[Select](sSelectString)(0))
+                                            '    foundRows = dt.Select(sSelectString)
 
-                                                ' ctlForm_PagingGridView.PageIndex = iDefaultRowNum \ ctlForm_PagingGridView.PageSize
-                                                'ctlForm_PagingGridView.SelectedIndex = iDefaultRowNum Mod ctlForm_PagingGridView.PageSize
+                                            '    If foundRows.GetUpperBound(0) > 0 Then
+                                            '        iDefaultRowNum = dt.Rows.IndexOf(dt.[Select](sSelectString)(0))
+                                            '    End If
 
-                                            End If
+                                            '    ' ctlForm_PagingGridView.PageIndex = iDefaultRowNum \ ctlForm_PagingGridView.PageSize
+                                            '    'ctlForm_PagingGridView.SelectedIndex = iDefaultRowNum Mod ctlForm_PagingGridView.PageSize
+
+                                            'End If
+
                                             cmdGrid.Dispose()
                                             cmdGrid = Nothing
 
@@ -2559,6 +2565,7 @@ Public Class _Default
                                             'ctlForm_GridContainer.Style.Add("height", Unit.Pixel(iDropHeight).ToString)
 
                                         Catch ex As Exception
+
                                             sMessage = "Error loading lookup values:<BR><BR>" & _
                                              ex.Message.Replace(vbCrLf, "<BR>") & "<BR><BR>" & _
                                              "Contact your system administrator."
