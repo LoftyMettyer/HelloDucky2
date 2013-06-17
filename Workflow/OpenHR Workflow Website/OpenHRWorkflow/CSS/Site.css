@@ -140,7 +140,7 @@ body { font-family: verdana; }
 .footer-buttons.col3 li {
     width: 33%
 }
-.footer-buttons li a, .footer-buttons li label {
+.footer-buttons li a {
     position: relative;
     display: block;
     height: 60px;
@@ -161,7 +161,19 @@ body { font-family: verdana; }
     font-size: 8px;
     color: black;
 }
-
+.step-count {
+    display: block;
+    position: absolute; 
+    background-color: Red; 
+    color: White !important;
+    left: 50%;
+    top: 5px;
+    margin-left: 10px;
+    font-size: 11px !important;
+    font-weight: bold;
+    padding: 0px 2px 1px 2px;
+    border-radius: 30px;
+}
 /* Adjustment for larger screens */
 .large-view .page {
     width: 320px;

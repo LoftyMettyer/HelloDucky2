@@ -21,12 +21,8 @@ Public Class Forms
 
           Case 0 ' Button
 
-            CType(control, Image).ImageUrl = Picture.GetUrl(NullSafeInteger(dr("PictureID")))
-
-            ' Footer text
-            If NullSafeString(dr("Caption")).Length > 0 Then
-              CType(control.Parent.FindControl(CStr(dr("Name")) & "_label"), Label).Text = NullSafeString(dr("caption"))
-            End If
+            CType(control.Controls(0), Image).ImageUrl = Picture.GetUrl(NullSafeInteger(dr("PictureID")))
+            CType(control.Controls(1), Label).Text = NullSafeString(dr("caption"))
 
           Case 2 ' Label
 
@@ -72,5 +68,4 @@ Public Class FontSetting
   Public Italic As Boolean
   Public Underline As Boolean
   Public Strikeout As Boolean
-
 End Class

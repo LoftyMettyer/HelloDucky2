@@ -36,19 +36,19 @@
 
 <asp:Content ID="footer" ContentPlaceHolderID="footerCPH" Runat="Server">
     
-    <ol class="footer-buttons col2">
+    <ul class="footer-buttons col2">
         <li>
-            <asp:LinkButton runat="server" ID="btnSubmitButton" OnClientClick="return submitCheck();">
-                <asp:Image runat="server" ID="btnSubmit"/>
-                <asp:Label runat="server" ID="btnSubmit_Label"/>
+            <asp:LinkButton runat="server" ID="btnSubmit" OnClientClick="return submitCheck();">
+                <asp:Image runat="server"/>
+                <asp:Label runat="server"/>
             </asp:LinkButton>
         </li>
         <li>
-            <asp:HyperLink runat="server" NavigateUrl="~/Account/Login.aspx">
-                <asp:Image runat="server" ID="btnCancel" />
-                <asp:Label runat="server" ID="btnCancel_Label" />
+            <asp:HyperLink runat="server" ID="btnCancel" NavigateUrl="~/Account/Login.aspx">
+                <asp:Image runat="server"/>
+                <asp:Label runat="server"/>
             </asp:HyperLink>
         </li>
-    </ol>
+    </ul>
 
 </asp:Content>

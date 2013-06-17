@@ -9,11 +9,11 @@ Partial Class ForgottenLogin
     Forms.LoadControlData(Me, 6)
 
     Title = WebSiteName("Forgotten Login")
-    Page.Form.DefaultButton = btnSubmitButton.UniqueID
+    Page.Form.DefaultButton = btnSubmit.UniqueID
     Page.Form.DefaultFocus = txtEmail.ClientID
   End Sub
 
-  Protected Sub BtnSubmitClick(sender As Object, e As EventArgs) Handles btnSubmitButton.Click
+  Protected Sub BtnSubmitClick(sender As Object, e As EventArgs) Handles btnSubmit.Click
 
     Dim sHeader As String = ""
     Dim sMessage As String = ""

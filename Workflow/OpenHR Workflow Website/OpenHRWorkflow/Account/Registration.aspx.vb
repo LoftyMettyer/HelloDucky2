@@ -9,11 +9,11 @@ Partial Class Registration
     Forms.LoadControlData(Me, 3)
 
     Title = WebSiteName("Registration")
-    Page.Form.DefaultButton = btnRegisterButton.UniqueID
+    Page.Form.DefaultButton = btnRegister.UniqueID
     Page.Form.DefaultFocus = txtEmail.ClientID
   End Sub
 
-  Protected Sub BtnRegisterClick(sender As Object, e As EventArgs) Handles btnRegisterButton.Click
+  Protected Sub BtnRegisterClick(sender As Object, e As EventArgs) Handles btnRegister.Click
 
     Dim sHeader As String = ""
     Dim sMessage As String = ""

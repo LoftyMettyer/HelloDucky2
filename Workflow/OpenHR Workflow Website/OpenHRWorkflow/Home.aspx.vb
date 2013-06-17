@@ -153,17 +153,14 @@ Partial Class Home
     If userGroupHasPermission Then
 
       Dim count As Integer = GetPendingStepsCount()
-      If count > 0 Then
-        lblWFCount.InnerText = CStr(count)
-        lblWFCount.Style.Add("visibility", "visible")
-      Else
-        lblWFCount.Style.Add("visibility", "hidden")
-      End If
+
+      lblWFCount.Text = CStr(count)
+      lblWFCount.Visible = (count > 0)
     End If
 
     ' Disable the Change Password button for windows authenticated Security
     If User.Identity.Name.Contains("\") Then
-      btnChangePwdButton.Visible = False
+      btnChangePwd.Visible = False
     End If
 
   End Sub
@@ -195,7 +192,7 @@ Partial Class Home
 
   End Function
 
-  Protected Sub BtnLogoutClick(sender As Object, e As EventArgs) Handles btnLogoutButton.Click
+  Protected Sub BtnLogoutClick(sender As Object, e As EventArgs) Handles btnLogout.Click
 
     FormsAuthentication.SignOut()
 

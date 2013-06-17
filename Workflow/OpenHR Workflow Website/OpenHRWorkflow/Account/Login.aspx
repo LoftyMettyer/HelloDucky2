@@ -31,7 +31,7 @@
             <td><asp:TextBox runat="server" ID="txtUserName"/></td>
         </tr>
         <tr>
-            <td><asp:Label runat="server" ID="lblPassword" Text="Password" Font-Strikeout="True" Font-Underline="True" /></td>
+            <td><asp:Label runat="server" ID="lblPassword" Text="Password"/></td>
             <td><asp:TextBox runat="server" ID="txtPassword" TextMode="Password" /></td>            
         </tr>
         <tr>
@@ -46,25 +46,25 @@
 
 <asp:Content ID="footer" ContentPlaceHolderID="footerCPH" Runat="Server">
     
-    <ol class="footer-buttons col3">
+    <ul class="footer-buttons col3">
         <li>
-            <asp:LinkButton ID="btnLoginButton" runat="server"  OnClientClick="return submitCheck();">
-                <asp:Image runat="server" ID="btnLogin"/>
-                <asp:Label runat="server" ID="btnLogin_Label"/>
+            <asp:LinkButton runat="server" ID="btnLogin" OnClientClick="return submitCheck();">
+                <asp:Image runat="server"/>
+                <asp:Label runat="server"/>
             </asp:LinkButton>
         </li>
         <li>
-            <asp:HyperLink runat="server" NavigateUrl="~/Account/ForgottenLogin.aspx">
-                <asp:Image runat="server" ID="btnForgotPwd"  />
-                <asp:Label runat="server" ID="btnForgotPwd_label" />           
+            <asp:HyperLink runat="server" ID="btnForgotPwd" NavigateUrl="~/Account/ForgottenLogin.aspx">
+                <asp:Image runat="server"/>
+                <asp:Label runat="server"/>
             </asp:HyperLink>
         </li>
         <li>
-            <asp:HyperLink runat="server" NavigateUrl="~/Account/Registration.aspx">
-                <asp:Image runat="server" ID="btnRegister"/>
-                <asp:Label runat="server" ID="btnRegister_label"/>
+            <asp:HyperLink runat="server" ID="btnRegister" NavigateUrl="~/Account/Registration.aspx">
+                <asp:Image runat="server"/>
+                <asp:Label runat="server"/>
             </asp:HyperLink>
         </li>
-    </ol>
-                                                               
+    </ul>
+
 </asp:Content>

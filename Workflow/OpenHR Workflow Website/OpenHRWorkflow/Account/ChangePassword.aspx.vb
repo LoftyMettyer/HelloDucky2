@@ -9,16 +9,16 @@ Partial Class ChangePassword
     Forms.LoadControlData(Me, 4)
 
     Title = WebSiteName("Change Password")
-    Page.Form.DefaultButton = btnSubmitButton.UniqueID
+    Page.Form.DefaultButton = btnSubmit.UniqueID
     Page.Form.DefaultFocus = txtCurrPassword.ClientID
   End Sub
 
-  Protected Sub BtnSubmitClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnSubmitButton.Click
+  Protected Sub BtnSubmitClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnSubmit.Click
 
     Dim sHeader As String = ""
     Dim sMessage As String = ""
     Dim sRedirectTo As String = ""
-  
+
     Try
       Dim userSessionCount As Integer
 

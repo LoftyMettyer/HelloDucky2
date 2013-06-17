@@ -3,7 +3,7 @@
 <asp:Content ID="head" ContentPlaceHolderID="headCPH" Runat="Server">
     <script type="text/javascript">
         // <!CDATA[
-        window.onload = function () {
+        window.onload = function() {
             document.getElementById('ctl00_mainCPH_txtEmail').setAttribute('type', 'email');
         };
 
@@ -36,13 +36,18 @@
 
 <asp:Content ID="footer" ContentPlaceHolderID="footerCPH" Runat="Server">
     
-    <ol class="footer-buttons col2">
+    <ul class="footer-buttons col2">
         <li>
-            <asp:LinkButton runat="server" ID="btnRegisterButton" OnClientClick="return submitCheck();">
-                <asp:Image runat="server" ID="btnRegister"/>
-                <asp:Label runat="server" ID="btnRegister_Label"/>
-            </asp:LinkButton></li><li>
-            <asp:HyperLink runat="server" NavigateUrl="~/Account/Login.aspx">
-                <asp:Image runat="server" ID="btnHome"/>
-                <asp:Label runat="server" ID="btnHome_Label"/>
-            </asp:HyperLink></li></ol></asp:Content>
+            <asp:LinkButton runat="server" ID="btnRegister" OnClientClick="return submitCheck();">
+                <asp:Image runat="server"/>
+                <asp:Label runat="server"/>
+            </asp:LinkButton>
+        </li>
+        <li>
+            <asp:HyperLink runat="server" ID="btnHome" NavigateUrl="~/Account/Login.aspx">
+                <asp:Image runat="server"/>
+                <asp:Label runat="server"/>
+            </asp:HyperLink>
+        </li>
+    </ul>
+</asp:Content>

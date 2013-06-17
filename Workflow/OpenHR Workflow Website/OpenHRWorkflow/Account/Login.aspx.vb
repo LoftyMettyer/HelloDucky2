@@ -8,11 +8,11 @@ Partial Class Login
     Forms.LoadControlData(Me, 1)
 
     Title = WebSiteName("Login")
-    Page.Form.DefaultButton = btnLoginButton.UniqueID
+    Page.Form.DefaultButton = btnLogin.UniqueID
     Page.Form.DefaultFocus = txtUserName.ClientID
   End Sub
 
-  Protected Sub BtnLoginClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnLoginButton.Click
+  Protected Sub BtnLoginClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnLogin.Click
 
     Dim sMessage As String = ""
 
