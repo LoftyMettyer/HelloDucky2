@@ -69,8 +69,8 @@ Partial Class Site
 
             .BackColor = Drawing.Color.Transparent
             .ImageUrl = Picture.GetUrl(NullSafeInteger(dr("HeaderLogoID")))
-            .Height() = Unit.Pixel(NullSafeInteger(dr("HeaderLogoHeight")))
-            .Width() = Unit.Pixel(NullSafeInteger(dr("HeaderLogoWidth")))
+                  .Height() = NullSafeInteger(dr("HeaderLogoHeight"))
+                  .Width() = NullSafeInteger(dr("HeaderLogoWidth"))
             .Style.Add("z-index", "1")
           End With
 
