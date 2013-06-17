@@ -128,7 +128,7 @@ Partial Class MobileLogin
       myConnection.Open()
 
       ' Create command
-      myCommand = New SqlClient.SqlCommand("select * from tbsys_mobileformelements where form = 1)", myConnection)
+      myCommand = New SqlClient.SqlCommand("select * from tbsys_mobileformelements where form = 1", myConnection)
 
       ' Create a DataReader to ferry information back from the database
       drElements = myCommand.ExecuteReader()
