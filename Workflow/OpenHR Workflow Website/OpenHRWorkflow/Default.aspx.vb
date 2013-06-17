@@ -930,97 +930,46 @@ Public Class _Default
 
                 Case 7 ' Input value - date
 
-                  If GetBrowserFamily() = "IOS" Then
-                    ' Use the built in date barrel control.
-                    ' HTML 5 only, and even then some browsers don't work properly. Yes YOU, android!
-                    Dim control = New HtmlInputText
-                    Dim hdnValue As String = ""
+                  Dim control = New TextBox
+                  With control
+                    .ID = sID
+                    .CssClass = "date"
 
-                    With control
-                      .ID = sID
-                      .Style.ApplyLocation(dr)
-                      .Style.ApplySize(dr, -10, -3)
-                      .Style.ApplyFont(dr)
-                      .Style.ApplyColor(dr)
+                    .TabIndex = NullSafeShort(dr("tabIndex"))
+                    UpdateAutoFocusControl(NullSafeShort(dr("tabIndex")), sID)
 
-                      .Attributes.Add("TabIndex", NullSafeInteger(dr("tabIndex")).ToString)
-                      UpdateAutoFocusControl(NullSafeShort(dr("tabIndex")), sID)
+                    .Style.ApplyFont(dr)
+                    .ApplyColor(dr, True)
 
+                    If GetBrowserFamily() = "IOS" Then
+                      'use html5 date
                       .Attributes.Add("type", "date")
-                      .Attributes.Add("onblur", "document.getElementById('" & sID & "Value').value = this.value;")
-
-                      If Not IsPostBack Then
-
-                        If (Not IsDBNull(dr("value"))) Then
-                          If CStr(dr("value")).Length > 0 Then
-                            Dim sDateString As String
-
-                            Dim iYear = CShort(NullSafeString(dr("value")).Substring(6, 4))
-                            sDateString = iYear.ToString & "-"
-
-                            Dim iMonth = CShort(NullSafeString(dr("value")).Substring(0, 2))
-                            If iMonth < 10 Then
-                              sDateString &= "0" & iMonth.ToString & "-"
-                            Else
-                              sDateString &= iMonth.ToString & "-"
-                            End If
-
-                            Dim iDay = CShort(NullSafeString(dr("value")).Substring(3, 2))
-                            If iDay < 10 Then
-                              sDateString &= "0" & iDay.ToString
-                            Else
-                              sDateString &= iDay.ToString
-                            End If
-
-                            hdnValue = sDateString
-                            .Value = hdnValue
-
-                          End If
-                        End If
-                      Else
-                        ' retrieve value from hidden field
-                        .Value = Request.Form(sID & "Value").ToString
-                      End If
-
-                    End With
-
-                    ctlForm_PageTab(iCurrentPageTab).Controls.Add(control)
-
-                    ' Yippee, can't find a way of storing the value to a server visible variable. 
-                    ' So, use a hidden value.
-                    ctlForm_PageTab(iCurrentPageTab).Controls.Add(New HiddenField With {.ID = sID & "Value", .Value = hdnValue})
-
-                  Else
-                    'TODO merge with IOS date above, once AjaxToolkit removed cos it cant postback input[type=date], .ApplySize(dr, -10, -3) for IOS, no .ApplyBorder(), date must be yyyy-mm-dd, remove the get value code from ButtonClick
-                    Dim control = New TextBox
-                    With control
-                      .ID = sID
-                      .CssClass = "date"
-
-                      .TabIndex = NullSafeShort(dr("tabIndex"))
-                      UpdateAutoFocusControl(NullSafeShort(dr("tabIndex")), sID)
-
+                      'ios sizing fix
+                      .ApplySize(dr, -10, -3)
+                      'ios requires date in yyyy-mm-dd format
+                      .Text = If(NullSafeString(dr("value")) = "", "", DateTime.ParseExact(NullSafeString(dr("value")), "MM/dd/yyyy", Nothing).ToString("yyyy-MM-dd"))
+                    Else
+                      .CssClass += " withPicker"
                       .ApplySize(dr, -1, -1)
-                      .Style.ApplyFont(dr)
-                      .ApplyColor(dr, True)
                       .ApplyBorder(True)
-
-                      .Text = General.ConvertSqlDateToLocale(NullSafeString(dr("value")))
-
                       .Attributes("onfocus") = "try{" & sID & ".select();}catch(e){};"
-
+                      .Text = General.ConvertSqlDateToLocale(NullSafeString(dr("value")))
                       If IsMobileBrowser() Then
+                        'stop keyboard popping up on mobiles
                         .ReadOnly = True
-                        .Attributes.Add("onchange", "FilterMobileLookup('" & .ID & "');")
                       End If
-                    End With
+                    End If
 
-                    Dim panel As New Panel
-                    panel.Controls.Add(control)
-                    panel.ApplyLocation(dr)
+                    If IsMobileBrowser() Then
+                      .Attributes.Add("onchange", "FilterMobileLookup('" & .ID & "');")
+                    End If
+                  End With
 
-                    ctlForm_PageTab(iCurrentPageTab).Controls.Add(panel)
-                  End If
+                  Dim panel As New Panel
+                  panel.Controls.Add(control)
+                  panel.ApplyLocation(dr)
+
+                  ctlForm_PageTab(iCurrentPageTab).Controls.Add(panel)
 
                 Case 8 ' Frame
 
@@ -2371,13 +2320,6 @@ Public Class _Default
             If TypeOf ctlFormInput Is TextBox Then
               Dim control = DirectCast(ctlFormInput, TextBox)
               value = If(control.Text.Trim = "", "null", DateTime.Parse(control.Text).ToString("MM/dd/yyyy"))
-              valueString += sIDString & value & vbTab
-            End If
-
-            If TypeOf ctlFormInput Is HtmlInputText Then
-              'an HTML5 compliant mobile device?
-              Dim control = DirectCast(pnlInput.FindControl(sID & "Value"), HiddenField)
-              value = If(control.Value = "", "null", Format(DateTime.Parse(control.Value), "MM/dd/yyyy"))
               valueString += sIDString & value & vbTab
             End If
 

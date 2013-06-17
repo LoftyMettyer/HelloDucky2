@@ -29,6 +29,4 @@ Partial Class ChangePassword
 
   End Sub
 
-
-
 End Class

@@ -49,9 +49,9 @@
                 }
             });
 
-            jQuery('input.date').datepicker();
+            jQuery('input.date.withPicker').datepicker();
 
-            jQuery('input.date').change(function () {
+            jQuery('input.date.withPicker').change(function () {
                 //validate a typed date and format it
                 var $this = jQuery(this);
                 var value = $this.val();
@@ -66,7 +66,7 @@
                 }
             });
 
-            jQuery('input.date').keyup(function (e) {
+            jQuery('input.date.withPicker').keyup(function (e) {
                 //F2 should set todays date
                 if (e.which == 113) {
                     var date = new Date();
