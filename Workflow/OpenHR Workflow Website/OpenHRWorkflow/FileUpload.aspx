@@ -61,21 +61,11 @@
       }
 
       if (pfDisplay == true) {
-        //divErrorMessages_Inner.style.visibility = "visible";
-        //divErrorMessages_Outer.style.filter = "revealTrans(duration=0.3, transition=4)";
-        //divErrorMessages_Outer.filters.revealTrans.apply();
         document.getElementById("divErrorMessages_Outer").style.display = "block";
         document.getElementById("divErrorMessages_Outer").style.visibility = "visible";
-        //divErrorMessages_Outer.filters.revealTrans.play();
       }
       else {
-        //divErrorMessages_Outer.style.filter = "revealTrans(duration=0.3, transition=5)";
-        //divErrorMessages_Outer.filters.revealTrans.apply();
         document.getElementById("divErrorMessages_Outer").style.visibility = "hidden";
-        //divErrorMessages_Outer.style.display = "none";
-        //divErrorMessages_Inner.style.visibility = "hidden";
-        //divErrorMessages_Outer.filters.revealTrans.play();
-
       }
     }
 
@@ -91,7 +81,6 @@
 
     function exitFileUpload(piExitMode) {
       try {
-        //window.parent.fileUploadDone(frmFileUpload.hdnElementID.value, piExitMode);
         window.parent.fileUploadDone(document.getElementById("hdnElementID").value, piExitMode);
       }
       catch (e) { }
@@ -124,30 +113,27 @@
     }
 
 // ]]>
-  </script>
+  </script> 
 
 </head>
-<body onload="return window_onload()" scroll="auto" style="overflow: auto; padding: 0px;
-  margin: 0px; border: 0px; text-align: center;">
-  <img id="imgErrorMessages_Max" src="Images/uparrows_white.gif" alt="Show messages"
-    style="position: absolute; right: 1px; bottom: 1px; display: none; visibility: hidden;
-    z-index: 1;" onclick="showErrorMessages(true);" />
-  <form id="frmFileUpload" runat="server" style="height: 100%; width: 100%; top: 0px;
-  left: 0px;">
+<body onload="return window_onload()" scroll="auto" style="overflow: auto; padding: 0px; margin: 0px; border: 0px; text-align: center;">
+  
+  <img id="imgErrorMessages_Max" src="Images/uparrows_white.gif" alt="Show messages" style="position: absolute; right: 1px; bottom: 1px; display: none; visibility: hidden; z-index: 1;" onclick="showErrorMessages(true);" />
+  
+  <form id="frmFileUpload" runat="server" style="height: 100%; width: 100%; top: 0px; left: 0px;">
   <!--
     Web Form Validation Error Messages
     -->
-  <div id="divErrorMessages_Outer" onfilterchange="unblockErrorMessageDIV();" style="position: absolute;
-    width: 100%; bottom: 0px; left: 0px; right: 0px; display: none; visibility: hidden;
-    z-index: 1">
-    <div id="divErrorMessages_Inner" style="background-color: white; text-align: left;
-      position: relative; margin: 0px; padding: 5px; border: 1px solid; font-size: 8pt;
-      color: black; font-family: Verdana;">
-      <img id="imgErrorMessages_Min" src="Images/downarrows_white.gif" alt="Hide messages"
-        style="right: 1px; position: absolute; top: 0px;" onclick="showErrorMessages(false);" />
+  <div id="divErrorMessages_Outer" onfilterchange="unblockErrorMessageDIV();" style="position: absolute; width: 100%; bottom: 0px; left: 0px; right: 0px; display: none; visibility: hidden; z-index: 1">
+      
+    <div id="divErrorMessages_Inner" style="background-color: white; text-align: left; position: relative; margin: 0px; padding: 5px; border: 1px solid; font-size: 8pt; color: black; font-family: Verdana;">
+        
+      <img id="imgErrorMessages_Min" src="Images/downarrows_white.gif" alt="Hide messages" style="right: 1px; position: absolute; top: 0px;" onclick="showErrorMessages(false);" />
+      
       <asp:Label ID="lblErrors" runat="server" Text="Unable to upload the file due to the following error:"></asp:Label>
+
       <asp:BulletedList ID="bulletErrors" runat="server" Style="margin-top: 0px; margin-bottom: 0px;
-        padding-top: 5px; padding-bottom: 5px;" BulletStyle="Disc" Font-Names="Verdana"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               padding-top: 5px; padding-bottom: 5px;" BulletStyle="Disc" Font-Names="Verdana"
         Font-Size="8pt" BorderStyle="None">
       </asp:BulletedList>
     </div>
@@ -155,14 +141,14 @@
   <!--
     File Upload Controls
     -->
-  <div id="divFileUpload" style="z-index: 0; width: 100%; text-align: center; padding: 0px;
-    margin: 0px;">
+  <div id="divFileUpload" style="z-index: 0; width: 100%; text-align: center; padding: 0px; margin: 0px;">
+      
     <table border="0" cellspacing="0" cellpadding="0" style="top: 0px; left: 0px; width: 100%;
-      height: 100%; position: relative; text-align: center; font-size: 10pt; color: black;
-      font-family: Verdana; border: black 1px solid;" bgcolor="White">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         height: 100%; position: relative; text-align: center; font-size: 10pt; color: black;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         font-family: Verdana; border: black 1px solid;" bgcolor="White">
+        
       <tr style="background-color: <%=ColourThemeHex()%>;">
-        <td colspan="5" height="10">
-        </td>
+          <td colspan="5" height="10"/>
       </tr>
       <tr style="height: 40px">
         <td width="10" style="background-color: <%=ColourThemeHex()%>;">
@@ -184,14 +170,14 @@
         </td>
       </tr>
       <tr>
-        <td width="10" style="background-color: <%=ColourThemeHex()%>;">
-        </td>
-        <td>
-        </td>
-        <td>
-        </td>
-        <td width="10" style="background-color: <%=ColourThemeHex()%>;">
-        </td>
+          <td width="10" style="background-color: <%=ColourThemeHex()%>;"/>
+        
+          <td/>
+        
+          <td/>
+        
+          <td width="10" style="background-color: <%=ColourThemeHex()%>;"/>
+        
       </tr>
       <tr style="height: 40px">
         <td width="10" style="background-color: <%=ColourThemeHex()%>;">
@@ -200,7 +186,7 @@
         <td>
         </td>
         <td style="background-color: White" valign="middle">
-          <input id="FileUpload1" runat="server" size=50 Width="100%" type="file" onKeyUp="refreshFileUploadButton(this.value);" onchange="refreshFileUploadButton(this.value);"/>
+          <input id="FileUpload1" runat="server" size="48" Width="100%" type="file" onKeyUp="refreshFileUploadButton(this.value);" onchange="refreshFileUploadButton(this.value);"/>
         </td>
         <td>
         </td>
