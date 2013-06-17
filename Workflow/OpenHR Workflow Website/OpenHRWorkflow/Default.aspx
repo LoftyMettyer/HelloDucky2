@@ -15,6 +15,7 @@
 <head runat="server">
   <style type="text/css">
 		.highlighted { background: yellow; }
+    textarea {resize: none; }
 	</style>
 
 	  <title></title>	  
