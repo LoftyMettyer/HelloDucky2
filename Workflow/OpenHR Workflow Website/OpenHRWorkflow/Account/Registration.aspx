@@ -38,13 +38,13 @@
     
     <ul class="footer-buttons col2">
         <li>
-            <asp:LinkButton runat="server" ID="btnRegister" OnClientClick="return submitCheck();">
+            <asp:LinkButton runat="server" ID="btnSubmit" OnClientClick="return submitCheck();">
                 <asp:Image runat="server"/>
                 <asp:Label runat="server"/>
             </asp:LinkButton>
         </li>
         <li>
-            <asp:HyperLink runat="server" ID="btnHome" NavigateUrl="~/Account/Login.aspx">
+            <asp:HyperLink runat="server" ID="btnCancel" NavigateUrl="~/Account/Login.aspx">
                 <asp:Image runat="server"/>
                 <asp:Label runat="server"/>
             </asp:HyperLink>
