@@ -163,7 +163,7 @@ Public Class [Default]
 				divInput.Style("background-position") = General.BackgroundPosition(_form.BackImageLocation)
 			End If
 
-			If _form.BackColour > 0 Then
+			If _form.BackColour >= 0 Then
 				divInput.Style("background-color") = General.GetHtmlColour(_form.BackColour)
 			End If
 
