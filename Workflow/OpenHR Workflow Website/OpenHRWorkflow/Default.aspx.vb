@@ -37,7 +37,7 @@ Public Class _Default
 
   Private Const FORMINPUTPREFIX As String = "FI_"
   Private Const ASSEMBLYNAME As String = "OPENHRWORKFLOW"
-  Private Const MAXDROPDOWNROWS As Int16 = 6
+  Private Const DEFAULTTITLE As String = "OpenHR Workflow"
   Private Const miTabStripHeight As Integer = 21
 
   Private Enum SQLDataType
@@ -90,7 +90,7 @@ Public Class _Default
 
 #End Region
 
-  Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+  Private Sub Page_Load(ByVal sender As System.Object, ByVal e As EventArgs) Handles MyBase.Load
 
     Dim ctlForm_Date As Infragistics.WebUI.WebSchedule.WebDateChooser
     Dim ctlForm_InputButton As Button
@@ -99,7 +99,7 @@ Public Class _Default
     Dim ctlForm_TextInput As TextBox
     Dim ctlForm_CheckBox As LiteralControl
     Dim ctlForm_CheckBoxReal As CheckBox
-    Dim ctlForm_Dropdown As System.Web.UI.WebControls.DropDownList
+    Dim ctlForm_Dropdown As DropDownList
     Dim ctlForm_Image As WebControls.Image
     Dim ctlForm_NumericInput As Infragistics.WebUI.WebDataInput.WebNumericEdit
     Dim ctlForm_PagingGridView As RecordSelector
@@ -127,7 +127,7 @@ Public Class _Default
     Dim cmdCheck As SqlCommand
     Dim cmdSelect As SqlCommand
     Dim cmdInitiate As SqlCommand
-    Dim cmdActivate As System.Data.SqlClient.SqlCommand
+    Dim cmdActivate As SqlCommand
     Dim dr As SqlDataReader
     Dim iTemp As Integer
     Dim sTemp As String = String.Empty
@@ -142,7 +142,6 @@ Public Class _Default
     Dim iMonth As Int16
     Dim iDay As Int16
     Dim objGridColumn As DataColumn
-    Dim iHeaderHeight As Int32
     Dim iTempHeight As Int32
     Dim iTempWidth As Int32
     Dim connGrid As SqlConnection
@@ -152,9 +151,6 @@ Public Class _Default
     Dim iMinTabIndex As Integer
     Dim sDefaultValue As String
     Dim fRecordOK As Boolean
-    Dim iGridTopPadding As Integer
-    Dim iRowHeight As Integer
-    Dim iDropHeight As Integer
     Dim sDefaultFocusControl As String
     Dim ctlDefaultFocusControl As New Control
     Dim fChecked As Boolean
@@ -169,19 +165,16 @@ Public Class _Default
     Dim sSiblingForms As String
     Dim iFormHeight As Integer
     Dim iFormWidth As Integer
-    Dim sTitle As String
     Dim sMessage1 As String
     Dim sMessage2 As String
     Dim sMessage3 As String
     Dim sDecoration As String
     Dim sEncodedID As String
-    Dim iMaxLength As Integer
     Dim sFilterSQL As String
     Dim da As SqlDataAdapter
     Dim dt As DataTable
     Dim objDataRow As DataRow
     Dim iItemType As Integer
-    Dim iPageTabCount As Integer
     Dim iCurrentPageTab As Integer
 
     ' MOBILE - start
@@ -189,7 +182,6 @@ Public Class _Default
     Dim sPWDParameter As String = ""
     ' MOBILE - end
 
-    Const sDEFAULTTITLE As String = "OpenHR Workflow"
     Const IMAGEBORDERWIDTH As Integer = 2
 
     sAssemblyName = ""
@@ -205,8 +197,6 @@ Public Class _Default
     msRefreshLiteralsCode = ""
     ReDim arrQueryStrings(0)
     sSiblingForms = ""
-    sTitle = sDEFAULTTITLE
-    iPageTabCount = 0
 
     Try
       mobjConfig.Initialise(Server.MapPath("themes/ThemeHex.xml"))
@@ -224,6 +214,7 @@ Public Class _Default
     Catch ex As Exception
     End Try
 
+    Dim sTitle As String
     Try
       sAssemblyName = Assembly.GetExecutingAssembly.GetName.Name.ToUpper
 
@@ -234,16 +225,16 @@ Public Class _Default
       If sAssemblyName = ASSEMBLYNAME Then
         ' Compiled version of the web site, so perform version checks.
         If sWebSiteVersion.Length = 0 Then
-          sTitle = sDEFAULTTITLE & " (unknown version)"
+          sTitle = DEFAULTTITLE & " (unknown version)"
         Else
-          sTitle = sDEFAULTTITLE & " - v" & sWebSiteVersion
+          sTitle = DEFAULTTITLE & " - v" & sWebSiteVersion
         End If
       Else
         ' Development version of the web site, so do NOT perform version checks.
-        sTitle = sDEFAULTTITLE & " (development)"
+        sTitle = DEFAULTTITLE & " (development)"
       End If
     Catch ex As Exception
-      sTitle = sDEFAULTTITLE
+      sTitle = DEFAULTTITLE
     End Try
     Page.Title = sTitle
 
@@ -402,10 +393,10 @@ Public Class _Default
       Try ' conn creation 
         ' update tbsysMobile_Logins, and copy the 'newpassword' string to the 'password' field using 'userid' from miInstanceID
         ' Establish Connection
-        Dim myConnection As New SqlClient.SqlConnection(GetConnectionString)
+        Dim myConnection As New SqlConnection(GetConnectionString)
         myConnection.Open()
 
-        cmdActivate = New SqlClient.SqlCommand
+        cmdActivate = New SqlCommand
         cmdActivate.CommandText = "spASRSysMobileActivateUser"
         cmdActivate.Connection = myConnection
         cmdActivate.CommandType = CommandType.StoredProcedure
@@ -1184,10 +1175,8 @@ Public Class _Default
                     .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
                     .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
 
-                    iMaxLength = NullSafeInteger(dr("inputSize")) + 1   ' Add 1 for the minus sign.
-                    If NullSafeInteger(dr("inputDecimals")) > 0 Then
-                      iMaxLength = iMaxLength + 1 ' Add 1 for the decimal point if required.
-                    End If
+                    Dim iMaxLength As Integer = NullSafeInteger(dr("inputSize")) + 1   ' Add 1 for the minus sign.
+                    If NullSafeInteger(dr("inputDecimals")) > 0 Then iMaxLength += 1 ' Add 1 for the decimal point if required.
                     .MaxLength = iMaxLength
                     .MinDecimalPlaces = DirectCast(NullSafeInteger(dr("inputDecimals")), Infragistics.WebUI.WebDataInput.MinDecimalPlaces)
                     .MaxValue = (10 ^ (NullSafeInteger(dr("inputSize")) - NullSafeInteger(dr("inputDecimals")))) - 1 + (1 - (1 / (10 ^ NullSafeInteger(dr("inputDecimals")))))
@@ -1380,7 +1369,7 @@ Public Class _Default
                 Case 7 ' Input value - date
                   Dim HDNValue As String = ""
 
-                  If getBrowserFamily() = "IOS" Then
+                  If GetBrowserFamily() = "IOS" Then
                     ' Use the built in date barrel control.
                     ' HTML 5 only, and even then some browsers don't work properly. Yes YOU, android!
                     ctlForm_HTMLInputText = New HtmlInputText
@@ -1758,7 +1747,7 @@ Public Class _Default
 
                     ' Androids currently can't scroll internal divs, so fix 
                     ' pagesize of record selector to height of control.
-                    If getBrowserFamily() = "ANDROID" Then
+                    If GetBrowserFamily() = "ANDROID" Then
                       Dim piRowHeight As Double = (CInt(NullSafeString(dr("FontSize"))) - 8) + 21
                       .PageSize = Math.Min(CInt(Math.Truncate((CInt(NullSafeInteger(dr("Height")) - 42) / piRowHeight))), mobjConfig.LookupRowsRange)
                       .RowStyle.Height = Unit.Pixel(CInt(piRowHeight))
@@ -1806,7 +1795,6 @@ Public Class _Default
                     .HeaderStyle.Font.Underline = NullSafeBoolean(dr("HeadFontUnderline"))
                     .HeaderStyle.ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
                     .HeaderStyle.Wrap = False
-                    .HeaderStyle.Height = Unit.Pixel(iHeaderHeight)
                     .HeaderStyle.VerticalAlign = VerticalAlign.Middle
                     .HeaderStyle.HorizontalAlign = HorizontalAlign.Center
 
@@ -2111,7 +2099,6 @@ Public Class _Default
                       .HeaderStyle.Font.Underline = NullSafeBoolean(dr("FontUnderline"))
                       .HeaderStyle.ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
                       .HeaderStyle.Wrap = False
-                      .HeaderStyle.Height = Unit.Pixel(iHeaderHeight)
                       .HeaderStyle.VerticalAlign = VerticalAlign.Middle
                       .HeaderStyle.HorizontalAlign = HorizontalAlign.Center
 
@@ -2355,14 +2342,8 @@ Public Class _Default
                       .BackColor = General.GetColour(NullSafeInteger(dr("BackColor")))
                       .ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
 
-                      .Height() = Unit.Pixel(NullSafeInteger(dr("Height")) - 2)
+                      '.Height() = Unit.Pixel(NullSafeInteger(dr("Height")) - 2)
                       .Width() = Unit.Pixel(NullSafeInteger(dr("Width")) - 2)
-
-                      ' HEADER formatting
-                      iGridTopPadding = CInt(NullSafeSingle(dr("FontSize")) / 8)
-                      iHeaderHeight = CInt(((NullSafeSingle(dr("FontSize")) + iGridTopPadding) * 2) _
-                       - 2 _
-                       - (NullSafeSingle(dr("FontSize")) * 2 * (iGridTopPadding - 1) / 4))
 
                       If (Not IsPostBack) Then
                         connGrid = New SqlConnection(GetConnectionString)
@@ -2416,10 +2397,6 @@ Public Class _Default
                           ctlForm_Dropdown.DataBind()
 
                           cmdGrid.Dispose()
-
-                          iRowHeight = CInt(.Height.Value) - 6
-                          iRowHeight = CInt(IIf(iRowHeight < 22, 22, iRowHeight))
-                          iDropHeight = (iRowHeight * CInt(IIf(dt.Rows.Count > MAXDROPDOWNROWS, MAXDROPDOWNROWS, dt.Rows.Count))) + 1
 
                         Catch ex As Exception
                           sMessage = "Error loading lookup values:<BR><BR>" & _
@@ -2477,7 +2454,7 @@ Public Class _Default
 
                 Case 13 ' Dropdown (13) Inputs
 
-                  ctlForm_Dropdown = New System.Web.UI.WebControls.DropDownList
+                  ctlForm_Dropdown = New DropDownList
 
                   With ctlForm_Dropdown
                     .ID = sID
@@ -2525,14 +2502,8 @@ Public Class _Default
                     .BackColor = General.GetColour(NullSafeInteger(dr("BackColor")))
                     .ForeColor = General.GetColour(NullSafeInteger(dr("ForeColor")))
 
-                    .Height() = Unit.Pixel(NullSafeInteger(dr("Height")) - 2)
+                    '.Height() = Unit.Pixel(NullSafeInteger(dr("Height")) - 12)
                     .Width() = Unit.Pixel(NullSafeInteger(dr("Width")) - 2)
-
-                    ' HEADER formatting
-                    iGridTopPadding = CInt(NullSafeSingle(dr("FontSize")) / 8)
-                    iHeaderHeight = CInt(((NullSafeSingle(dr("FontSize")) + iGridTopPadding) * 2) _
-                     - 2 _
-                     - (NullSafeSingle(dr("FontSize")) * 2 * (iGridTopPadding - 1) / 4))
 
                     If (Not IsPostBack) Then
                       connGrid = New SqlConnection(GetConnectionString)
@@ -2588,10 +2559,6 @@ Public Class _Default
                         ctlForm_Dropdown.DataBind()
 
                         cmdGrid.Dispose()
-
-                        iRowHeight = CInt(.Height.Value) - 6
-                        iRowHeight = CInt(IIf(iRowHeight < 22, 22, iRowHeight))
-                        iDropHeight = (iRowHeight * CInt(IIf(dt.Rows.Count > MAXDROPDOWNROWS, MAXDROPDOWNROWS, dt.Rows.Count))) + 1
 
                       Catch ex As Exception
                         sMessage = "Error loading lookup values:<BR><BR>" & _
@@ -3394,13 +3361,14 @@ Public Class _Default
 
           Case 3 ' Character Input
 
-            If (TypeOf ctlFormInput Is TextBox) Then
+            If TypeOf ctlFormInput Is TextBox Then
               ctlFormTextInput = DirectCast(ctlFormInput, TextBox)
               sFormInput1 = sFormInput1 & sIDString & Replace(ctlFormTextInput.Text, vbTab, " ") & vbTab
               sFormValidation1 = sFormValidation1 & sIDString & Replace(ctlFormTextInput.Text, vbTab, " ") & vbTab
             End If
 
           Case 5 ' Numeric Input
+
             If (TypeOf ctlFormInput Is Infragistics.WebUI.WebDataInput.WebNumericEdit) Then
               ctlFormNumericInput = DirectCast(ctlFormInput, Infragistics.WebUI.WebDataInput.WebNumericEdit)
               sNumValueString = CStr(IIf(IsDBNull(ctlFormNumericInput.Value), "0", CStr(ctlFormNumericInput.Value).Replace(Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator, ".")))
@@ -3409,6 +3377,7 @@ Public Class _Default
             End If
 
           Case 6 ' Logic Input
+
             If (TypeOf ctlFormInput Is CheckBox) Then
               ctlFormCheckBox = DirectCast(ctlFormInput, CheckBox)
               sFormInput1 = sFormInput1 & sIDString & CStr(IIf(ctlFormCheckBox.Checked, "1", "0")) & vbTab
@@ -3478,8 +3447,9 @@ Public Class _Default
             End If
 
           Case 13 ' Dropdown Input
-            If (TypeOf ctlFormInput Is System.Web.UI.WebControls.DropDownList) Then
-              ctlFormDropdown = DirectCast(ctlFormInput, System.Web.UI.WebControls.DropDownList)
+
+            If (TypeOf ctlFormInput Is DropDownList) Then
+              ctlFormDropdown = DirectCast(ctlFormInput, DropDownList)
 
               sTemp = ctlFormDropdown.Text ' .DisplayValue
               sFormInput1 = sFormInput1 & sIDString & sTemp & vbTab
@@ -3487,11 +3457,11 @@ Public Class _Default
             End If
 
           Case 14 ' Lookup Input
+
             If Not IsMobileBrowser() Then
 
-
-              If (TypeOf ctlFormInput Is System.Web.UI.WebControls.TextBox) Then
-                ctlFormTextInput = DirectCast(ctlFormInput, System.Web.UI.WebControls.TextBox)
+              If (TypeOf ctlFormInput Is TextBox) Then
+                ctlFormTextInput = DirectCast(ctlFormInput, TextBox)
 
                 sTemp = ctlFormTextInput.Text
 
@@ -3521,8 +3491,8 @@ Public Class _Default
               End If
             Else
               ' Mobile Browser - it's a Dropdown List.
-              If (TypeOf ctlFormInput Is System.Web.UI.WebControls.DropDownList) Then 'Infragistics.WebUI.WebCombo.WebCombo) Then
-                ctlFormDropdown = DirectCast(ctlFormInput, System.Web.UI.WebControls.DropDownList) 'Infragistics.WebUI.WebCombo.WebCombo)
+              If (TypeOf ctlFormInput Is DropDownList) Then
+                ctlFormDropdown = DirectCast(ctlFormInput, DropDownList)
 
                 sTemp = ctlFormDropdown.Text ' .DisplayValue
                 sFormInput1 = sFormInput1 & sIDString & sTemp & vbTab
@@ -3532,6 +3502,7 @@ Public Class _Default
             End If
 
           Case 15 ' OptionGroup Input
+
             If (TypeOf ctlFormInput Is TextBox) Then
               ctlFormTextInput = DirectCast(ctlFormInput, TextBox)
               sFormInput1 = sFormInput1 & sIDString & ctlFormTextInput.Text & vbTab
@@ -3539,7 +3510,7 @@ Public Class _Default
             End If
 
           Case 17 ' FileUpload
-            ' If (TypeOf ctlFormInput Is Infragistics.WebUI.WebDataInput.WebImageButton) Then
+
             If (TypeOf ctlFormInput Is HtmlInputButton) Then
 
               If pnlInput.FindControl("file" & sID) Is Nothing Then
@@ -3604,7 +3575,7 @@ Public Class _Default
           While dr.Read
             If NullSafeInteger(dr("failureType")) = 0 Then
               bulletErrors.Items.Add(NullSafeString(dr("Message")))
-            ElseIf CDbl(hdnOverrideWarnings.Value) <> 1 Then
+            ElseIf CDbl(hdnOverrideWarnings.Value) <> 1.0 Then
               bulletWarnings.Items.Add(NullSafeString(dr("Message")))
             End If
           End While

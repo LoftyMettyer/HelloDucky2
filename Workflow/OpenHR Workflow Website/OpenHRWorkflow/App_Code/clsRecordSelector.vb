@@ -239,12 +239,12 @@ Public Class RecordSelector
 
 
 
-  Private Function CalculateWidth() As [String]
+  Private Function CalculateWidth() As String
     Dim strWidth As String = "auto"
 
     If Not IsLookup Then
       If Not Me.Width.IsEmpty Then
-        strWidth = [String].Format("{0}{1}", Me.Width.Value, (If((Me.Width.Type = UnitType.Percentage), "%", "px")))
+        strWidth = String.Format("{0}{1}", Me.Width.Value, (If((Me.Width.Type = UnitType.Percentage), "%", "px")))
       End If
     Else
       Dim iGridWidth As Integer = m_iVisibleColumnCount * (iColWidth + 2) ' 2 = padding
@@ -259,19 +259,20 @@ Public Class RecordSelector
 
       If iGridWidth < 250 Then iGridWidth = 250 ' minimum width to ensure paging controls fit.
 
-      strWidth = [String].Format("{0}{1}", iGridWidth, (If((Me.Width.Type = UnitType.Percentage), "%", "px")))
+      strWidth = String.Format("{0}{1}", iGridWidth, (If((Me.Width.Type = UnitType.Percentage), "%", "px")))
     End If
 
     Return strWidth
 
   End Function
-  Private Function CalculateHeight() As [String]
+  Private Function CalculateHeight() As String
+
     Dim strHeight As String = "auto"
     Dim iHeight As Integer = ControlHeight
 
     If Not IsLookup Then
       If iHeight > 0 Then
-        strHeight = [String].Format("{0}{1}", iHeight, "px")
+        strHeight = String.Format("{0}{1}", iHeight, "px")
       End If
     Else
       ' Set the size of the grid as per old DropDown setting...
@@ -283,7 +284,7 @@ Public Class RecordSelector
       iDropHeight += iRowHeight  ' add row for headers
       iDropHeight += 30   ' Pager height - now it's always displayed.
 
-      strHeight = [String].Format("{0}{1}", iDropHeight, "px")
+      strHeight = String.Format("{0}{1}", iDropHeight, "px")
     End If
 
     Return strHeight
@@ -292,7 +293,7 @@ Public Class RecordSelector
 
   Private Sub AdjustWidthForScrollbar()
 
-    Dim strHeight As String = "auto"
+    'Dim strHeight As String = "auto"
 
     ''Adjust available width for the vertical scrollbar.
     'iGapBetweenBorderAndText = (CInt(NullSafeSingle(dr("FontSize")) + 6) \ 4)
@@ -308,7 +309,7 @@ Public Class RecordSelector
 
   End Sub
 
-  Private Function CalculateGridWidth() As [String]
+  Private Function CalculateGridWidth() As String
     ' grid width is me.width - vertical scroll bar.
     Dim strWidth As String = "auto"
     Dim iScrollBarWidth As Integer = 0
@@ -319,7 +320,7 @@ Public Class RecordSelector
 
     If Not IsLookup Then
       If Not Me.Width.IsEmpty Then
-        strWidth = [String].Format("{0}{1}", Me.Width.Value - iScrollBarWidth, (If((Me.Width.Type = UnitType.Percentage), "%", "px")))
+        strWidth = String.Format("{0}{1}", Me.Width.Value - iScrollBarWidth, (If((Me.Width.Type = UnitType.Percentage), "%", "px")))
       End If
     Else
       Dim iGridWidth As Integer = m_iVisibleColumnCount * (iColWidth + 2) ' 2 = padding
@@ -334,7 +335,7 @@ Public Class RecordSelector
 
       If iGridWidth < 250 Then iGridWidth = 250 ' minimum width to ensure paging controls fit.
 
-      strWidth = [String].Format("{0}{1}", iGridWidth - iScrollBarWidth, (If((Me.Width.Type = UnitType.Percentage), "%", "px")))
+      strWidth = String.Format("{0}{1}", iGridWidth - iScrollBarWidth, (If((Me.Width.Type = UnitType.Percentage), "%", "px")))
     End If
 
     Return strWidth
@@ -342,8 +343,8 @@ Public Class RecordSelector
 
   End Function
 
+  Private Function CalculateHeaderHeight() As String
 
-  Private Function CalculateHeaderHeight() As [String]
     Dim strHeaderHeight As String = "auto"
     Dim iHeaderHeight As Integer = 0
     Dim iGridHeight As Integer = ControlHeight
@@ -360,16 +361,17 @@ Public Class RecordSelector
       End If
     End If
 
-    strHeaderHeight = [String].Format("{0}{1}", iHeaderHeight, "px")
+    strHeaderHeight = String.Format("{0}{1}", iHeaderHeight, "px")
 
     Return strHeaderHeight
 
   End Function
 
-  Private Function CalculatePagerHeight() As [String]
-    Dim strPagerHeight As String = "auto"
-    Dim iPagerHeight As Integer = 0
-    Dim iGridHeight As Integer = ControlHeight
+  Private Function CalculatePagerHeight() As String
+
+    'Dim strPagerHeight As String = "auto"
+    'Dim iPagerHeight As Integer = 0
+    'Dim iGridHeight As Integer = ControlHeight
 
     'If Me.PageCount > 0 Then
     'Dim iGridTopPadding As Integer = CInt(NullSafeSingle(Me.HeadFontSize) / 8)
@@ -385,16 +387,10 @@ Public Class RecordSelector
     ' if it's empty.
 
     If (Me.Width.Value < 175 And Me.PageCount < 1) Or Me.IsEmpty Then
-      iPagerHeight = 0
+      Return "0px"
     Else
-      iPagerHeight = 24
+      Return "24px"
     End If
-
-    'End If
-
-    strPagerHeight = [String].Format("{0}{1}", iPagerHeight, "px")
-
-    Return strPagerHeight
 
   End Function
 
@@ -848,10 +844,10 @@ Public Class RecordSelector
     End If
   End Sub
 
-  Private Sub RecordSelector_Sorting(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewSortEventArgs) Handles Me.Sorting
+  Private Sub RecordSelector_Sorting(ByVal sender As Object, ByVal e As GridViewSortEventArgs) Handles Me.Sorting
     ' Dim g As System.Web.UI.WebControls.GridView
     Dim iIDCol As Integer = 0
-    grdGrid = CType(sender, System.Web.UI.WebControls.GridView)
+    grdGrid = CType(sender, GridView)
 
     GridViewSort(sender, e)
     'this handles the flipping of the sort direction
@@ -912,7 +908,7 @@ Public Class RecordSelector
 
   End Sub
 
-  Public Shared Function SortExpressionToSQL(ByVal SortExpression As String, ByVal sortDir As System.Nullable(Of System.Web.UI.WebControls.SortDirection)) As String
+  Public Shared Function SortExpressionToSQL(ByVal SortExpression As String, ByVal sortDir As System.Nullable(Of SortDirection)) As String
     Return ((If((SortExpression Is Nothing), Nothing, "[" & SortExpression & "]")) & " " & sortDir.ToString.Replace("ending", ""))
   End Function
 
@@ -957,7 +953,7 @@ Public Class RecordSelector
   End Function
 
 
-  Private Sub InitCustomPager(ByVal row As System.Web.UI.WebControls.GridViewRow, ByVal columnSpan As Integer, ByVal pagedDataSource As System.Web.UI.WebControls.PagedDataSource)
+  Private Sub InitCustomPager(ByVal row As GridViewRow, ByVal columnSpan As Integer, ByVal pagedDataSource As PagedDataSource)
 
     Dim strPagerFontSize As String = "7"
 
@@ -1255,27 +1251,27 @@ Public Class RecordSelector
         OnPageIndexChanging(New GridViewPageEventArgs(newPageIndex))
     End Sub
 
-    Protected Sub PagerCommand(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.CommandEventArgs)
-        Dim curPageIndex As Integer = Me.PageIndex
-        Dim newPageIndex As Integer = 0
+  Protected Sub PagerCommand(ByVal sender As Object, ByVal e As CommandEventArgs)
+    Dim curPageIndex As Integer = Me.PageIndex
+    Dim newPageIndex As Integer = 0
 
-        Select Case e.CommandName
-            Case "First"
-                newPageIndex = 0
-            Case "Previous"
-                If curPageIndex > 0 Then
-                    newPageIndex = curPageIndex - 1
-                End If
-            Case "Next"
-                If Not curPageIndex = Me.PageCount Then
-                    newPageIndex = curPageIndex + 1
-                End If
-            Case "Last"
-                newPageIndex = Me.PageCount
-        End Select
+    Select Case e.CommandName
+      Case "First"
+        newPageIndex = 0
+      Case "Previous"
+        If curPageIndex > 0 Then
+          newPageIndex = curPageIndex - 1
+        End If
+      Case "Next"
+        If Not curPageIndex = Me.PageCount Then
+          newPageIndex = curPageIndex + 1
+        End If
+      Case "Last"
+        newPageIndex = Me.PageCount
+    End Select
 
-        OnPageIndexChanging(New GridViewPageEventArgs(newPageIndex))
-    End Sub
+    OnPageIndexChanging(New GridViewPageEventArgs(newPageIndex))
+  End Sub
 End Class
 
 

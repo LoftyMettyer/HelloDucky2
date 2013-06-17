@@ -20,8 +20,7 @@ Public Class Utilities
   '****************************************************************
   ' NullSafeString
   '****************************************************************
-  Public Shared Function NullSafeString(ByVal arg As Object, _
-  Optional ByVal returnIfEmpty As String = "") As String
+  Public Shared Function NullSafeString(ByVal arg As Object, Optional ByVal returnIfEmpty As String = "") As String
 
     Dim returnValue As String
 
@@ -44,8 +43,7 @@ Public Class Utilities
   '****************************************************************
   ' NullSafeInteger
   '****************************************************************
-  Public Shared Function NullSafeInteger(ByVal arg As Object, _
-    Optional ByVal returnIfEmpty As Integer = 0) As Integer
+  Public Shared Function NullSafeInteger(ByVal arg As Object, Optional ByVal returnIfEmpty As Integer = 0) As Integer
 
     Dim returnValue As Integer
 
@@ -67,8 +65,7 @@ Public Class Utilities
   '****************************************************************
   '   NullSafeSingle
   '****************************************************************
-  Public Shared Function NullSafeSingle(ByVal arg As Object, _
-    Optional ByVal returnIfEmpty As Single = 0) As Single
+  Public Shared Function NullSafeSingle(ByVal arg As Object, Optional ByVal returnIfEmpty As Single = 0) As Single
 
     Dim returnValue As Single
 
@@ -94,8 +91,7 @@ Public Class Utilities
 
     Dim returnValue As Boolean
 
-    If (arg Is DBNull.Value) OrElse (arg Is Nothing) _
-        OrElse (arg Is String.Empty) Then
+    If (arg Is DBNull.Value) OrElse (arg Is Nothing) OrElse (arg Is String.Empty) Then
       returnValue = False
     Else
       Try
@@ -212,11 +208,11 @@ Public Class Utilities
   Public Shared Function WebSiteName(Optional contentPageName As String = "") As String
 
     Const ASSEMBLYNAME As String = "OPENHRWORKFLOW"
-    Const sDEFAULTTITLE As String = "OpenHR"
+    Const DEFAULTTITLE As String = "OpenHR"
     Dim sWebSiteVersion As String
     Dim sTitle As String
 
-    sTitle = sDEFAULTTITLE
+    sTitle = DEFAULTTITLE
 
     If contentPageName.Length > 0 Then
       sTitle &= " " & contentPageName
@@ -241,7 +237,7 @@ Public Class Utilities
         sTitle &= " (development)"
       End If
     Catch ex As Exception
-      sTitle = sDEFAULTTITLE
+      sTitle = DEFAULTTITLE
     End Try
 
     WebSiteName = sTitle
