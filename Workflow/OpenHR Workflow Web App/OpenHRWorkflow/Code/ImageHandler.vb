@@ -34,7 +34,7 @@ Public Class ImageHandler
 
          'for workflows the database info is store in the session and comes from the workflow url
          Dim url As WorkflowUrl = CType(HttpContext.Current.Session("workflowUrl"), WorkflowUrl)
-         db = New Database(Database.GetConnectionString(url.Server, url.Database, url.User, url.Password))
+         db = New Database(Database.CreateConnectionString(url.Server, url.Database, url.User, url.Password))
       Else
          db = New Database(App.Config.ConnectionString)
       End If

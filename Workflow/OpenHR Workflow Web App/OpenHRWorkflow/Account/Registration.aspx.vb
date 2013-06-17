@@ -1,26 +1,27 @@
 ﻿
 Partial Class Registration
-  Inherits Page
+   Inherits Page
 
-  Protected Sub Page_Init(sender As Object, e As EventArgs) Handles Me.Init
-    Title = Utilities.GetPageTitle("Registration")
-    Forms.LoadControlData(Me, 3)
-    Form.DefaultButton = btnSubmit2.UniqueID
-    Form.DefaultFocus = txtEmail.ClientID
-  End Sub
+   Protected Sub Page_Init(sender As Object, e As EventArgs) Handles Me.Init
 
-  Protected Sub BtnRegisterClick(sender As Object, e As EventArgs) Handles btnSubmit.Click, btnSubmit2.Click
+      Title = Utilities.GetPageTitle("Registration")
+      Forms.LoadControlData(Me, 3)
+      Form.DefaultButton = btnSubmit2.UniqueID
+      Form.DefaultFocus = txtEmail.ClientID
+   End Sub
 
-    Dim db As New Database
-    Dim message As String = db.Register(txtEmail.Text)
+   Protected Sub BtnRegisterClick(sender As Object, e As EventArgs) Handles btnSubmit.Click, btnSubmit2.Click
 
-    If message.Length > 0 Then
-      CType(Master, Site).ShowDialog("Registration Failed", message)
-    Else
-      CType(Master, Site).ShowDialog("Registration Submitted", "An email has been sent to the entered address. " & _
-                                     "To complete your registration, click the activation link in the email.", "Login.aspx")
-    End If
+      Dim db As New Database(App.Config.ConnectionString)
+      Dim message As String = db.Register(txtEmail.Text)
 
-  End Sub
+      If message.Length > 0 Then
+         CType(Master, Site).ShowDialog("Registration Failed", message)
+      Else
+         CType(Master, Site).ShowDialog("Registration Submitted", "An email has been sent to the entered address. " & _
+                                        "To complete your registration, click the activation link in the email.", "Login.aspx")
+      End If
+
+   End Sub
 
 End Class

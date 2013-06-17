@@ -17,7 +17,7 @@ Partial Class FileUpload
 
       Dim workflowUrl = CType(Session("workflowUrl"), WorkflowUrl)
 
-      conn = New SqlClient.SqlConnection(Database.GetConnectionString(workflowUrl.Server, workflowUrl.Database, workflowUrl.User, workflowUrl.Password))
+      conn = New SqlClient.SqlConnection(Database.CreateConnectionString(workflowUrl.Server, workflowUrl.Database, workflowUrl.User, workflowUrl.Password))
       conn.Open()
 
       cmdSave = New SqlClient.SqlCommand("spASRWorkflowFileUpload", conn)
@@ -84,7 +84,7 @@ Partial Class FileUpload
 
             Dim workflowUrl = CType(Session("workflowUrl"), WorkflowUrl)
 
-            conn = New SqlClient.SqlConnection(Database.GetConnectionString(workflowUrl.Server, workflowUrl.Database, workflowUrl.User, workflowUrl.Password))
+            conn = New SqlClient.SqlConnection(Database.CreateConnectionString(workflowUrl.Server, workflowUrl.Database, workflowUrl.User, workflowUrl.Password))
             conn.Open()
             Try
                cmdDetails = New SqlClient.SqlCommand

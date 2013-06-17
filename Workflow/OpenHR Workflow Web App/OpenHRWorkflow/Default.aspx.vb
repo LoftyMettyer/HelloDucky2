@@ -21,8 +21,7 @@ Public Class [Default]
 
    Protected Sub Page_PreInit(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.PreInit
 
-      'TODO PG IsNullOrEmpty()
-      Dim message As String = ""
+      Dim message As String = Nothing
 
       'The script manager calls this page to get it combined js files, if the calls is from there ignore it
       If Request.QueryString.Count > 1 Then
@@ -43,7 +42,7 @@ Public Class [Default]
          message = ex.Message
       End Try
 
-      _db = New Database(Database.GetConnectionString(_url.Server, _url.Database, _url.User, _url.Password))
+      _db = New Database(Database.CreateConnectionString(_url.Server, _url.Database, _url.User, _url.Password))
 
       'TODO PG prob have to check db lock & version before doing below
 
@@ -51,24 +50,24 @@ Public Class [Default]
       If Not IsPostBack Then
 
          'Activating mobile security. I've hijacked the _instanceID and populated it with the User ID that is to be activated.
-         If message.Length = 0 And _url.ElementID = -2 And _url.InstanceID > 0 Then
+         If message.IsNullOrEmpty() And _url.ElementID = -2 And _url.InstanceID > 0 Then
 
             message = _db.ActivateUser(_url.InstanceID)
 
-            If message.Length = 0 Then
+            If message.IsNullOrEmpty() Then
                message = "You have been successfully activated."
             End If
          End If
 
          'Initiate the workflow if thats whats required
-         If message.Length = 0 And _url.InstanceID < 0 And _url.ElementID = -1 Then
+         If message.IsNullOrEmpty() And _url.InstanceID < 0 And _url.ElementID = -1 Then
 
             Dim result As InstantiateWorkflowResult = _db.InstantiateWorkflow(-_url.InstanceID, _url.UserName)
 
-            If result.Message <> "" Then
+            If Not result.Message.IsNullOrEmpty() Then
                message = "Error:<BR><BR>" & result.Message
             Else
-               If result.FormElements.Length = 0 Then
+               If result.FormElements.IsNullOrEmpty() Then
                   message = "Workflow initiated successfully."
                Else
                   'The first form element is this workflow and any others are sibling forms (that need to be opened at the same time)
@@ -89,7 +88,7 @@ Public Class [Default]
 
       End If
 
-      If message.Length > 0 Then
+      If Not message.IsNullOrEmpty() Then
          Session("message") = message
          Response.Redirect("Message.aspx")
       End If
@@ -210,8 +209,7 @@ Public Class [Default]
 
    Private Function CreateControls(workflowForm As WorkflowForm, ByRef script As String) As String
 
-      'TODO PG IsNullOrEmpty
-      Dim message As String = ""
+      Dim message As String = Nothing
 
       'Sort the form items so that the tab control is created first then the control based on their tab index
       Dim tabItem As FormItem = _form.Items.FirstOrDefault(Function(fi) fi.ItemType = 21)
@@ -1410,7 +1408,7 @@ Public Class [Default]
 
          End Select
 
-         If message <> "" Then Exit For
+         If Not message.IsNullOrEmpty() Then Exit For
       Next
 
       Return message
@@ -1444,8 +1442,8 @@ Public Class [Default]
 
    Public Sub ButtonClick(ByVal sender As Object, ByVal e As EventArgs)
 
-      Dim valueString As String = ""
-      Dim message As String = ""
+      Dim valueString As String = Nothing
+      Dim message As String = Nothing
 
       Try
          ' Read the web form item values & build up a string of the form input values.
@@ -1569,7 +1567,7 @@ Public Class [Default]
          message = "Error reading web form item values:<BR><BR>" & ex.Message
       End Try
 
-      If message.Length = 0 Then
+      If message.IsNullOrEmpty() Then
 
          ' Validate the web form entry.
          errorMessagePanel.Font.Name = "Verdana"
@@ -1591,7 +1589,7 @@ Public Class [Default]
          hdnCount_Warnings.Value = CStr(bulletWarnings.Items.Count)
          hdnOverrideWarnings.Value = "0"
 
-         lblErrors.Text = If(bulletErrors.Items.Count > 0, "Unable to submit this form due to the following error" & If(bulletErrors.Items.Count = 1, "", "s") & ":","")
+         lblErrors.Text = If(bulletErrors.Items.Count > 0, "Unable to submit this form due to the following error" & If(bulletErrors.Items.Count = 1, "", "s") & ":", "")
 
          lblWarnings.Text = If(bulletWarnings.Items.Count > 0,
                             If(bulletErrors.Items.Count > 0, "And the following warning" & If(bulletWarnings.Items.Count = 1, "", "s") & ":",
@@ -1661,7 +1659,7 @@ Public Class [Default]
 
       End If
 
-      If message.Length > 0 Then
+      If Not message.IsNullOrEmpty() Then
          bulletErrors.Items.Clear()
          bulletWarnings.Items.Clear()
 

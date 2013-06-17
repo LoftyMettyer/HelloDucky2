@@ -8,18 +8,13 @@ Public Class Database
    Private ReadOnly _connectionString As String
    Private ReadOnly _timeout As Integer
 
-   Public Sub New()
-      _connectionString = App.Config.ConnectionString
-      _timeout = App.Config.SubmissionTimeoutInSeconds
-   End Sub
-
    Public Sub New(connectionString As String)
       _connectionString = connectionString
       _timeout = App.Config.SubmissionTimeoutInSeconds
    End Sub
 
-   Public Shared Function GetConnectionString(server As String, database As String, user As String, password As String) As String
-      Return "Application Name=OpenHR Workflow;Data Source=" & server & ";Initial Catalog=" & database & ";Integrated Security=false;User ID=" & user & ";Password=" & password & ";Pooling=false"
+   Public Shared Function CreateConnectionString(server As String, database As String, user As String, password As String) As String
+      Return "Application Name=OpenHR Workflow;Data Source=" & server & ";Initial Catalog=" & database & ";Integrated Security=false;User ID=" & user & ";Password=" & password & ";Pooling=true"
    End Function
 
    Public Function IsSystemLocked() As Boolean
@@ -49,6 +44,7 @@ Public Class Database
 
          Dim cmd As New SqlCommand("spASRIntActivateModule", conn)
          cmd.CommandType = CommandType.StoredProcedure
+         cmd.CommandTimeout = _timeout
 
          cmd.Parameters.Add("@sModule", SqlDbType.VarChar, 50).Direction = ParameterDirection.Input
          cmd.Parameters("@sModule").Value = "MOBILE"
@@ -68,6 +64,7 @@ Public Class Database
 
          Dim cmd As New SqlCommand("spASRSysMobileCheckLogin", conn)
          cmd.CommandType = CommandType.StoredProcedure
+         cmd.CommandTimeout = _timeout
 
          cmd.Parameters.Add("@psKeyParameter", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
          cmd.Parameters("@psKeyParameter").Value = userName
@@ -91,10 +88,9 @@ Public Class Database
       Using conn As New SqlConnection(_connectionString)
          conn.Open()
 
-         Dim cmd As New SqlCommand
-         cmd.CommandText = "spASRSysMobileCheckPendingWorkflowSteps"
-         cmd.Connection = conn
+         Dim cmd As New SqlCommand("spASRSysMobileCheckPendingWorkflowSteps", conn)
          cmd.CommandType = CommandType.StoredProcedure
+         cmd.CommandTimeout = _timeout
 
          cmd.Parameters.Add("@psKeyParameter", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
          cmd.Parameters("@psKeyParameter").Value = userName
@@ -116,6 +112,7 @@ Public Class Database
 
          Dim cmd As New SqlCommand("spASRSysMobileGetUserIDFromEmail", conn)
          cmd.CommandType = CommandType.StoredProcedure
+         cmd.CommandTimeout = _timeout
 
          cmd.Parameters.Add("@psEmail", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
          cmd.Parameters("@psEmail").Value = email
@@ -154,6 +151,7 @@ Public Class Database
 
          Dim cmd As New SqlCommand("spASRSysMobileRegistration", conn)
          cmd.CommandType = CommandType.StoredProcedure
+         cmd.CommandTimeout = _timeout
 
          cmd.Parameters.Add("@psEmailAddress", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
          cmd.Parameters("@psEmailAddress").Value = email
@@ -185,6 +183,7 @@ Public Class Database
 
          Dim cmd As New SqlCommand("spASRSysMobileForgotLogin", conn)
          cmd.CommandType = CommandType.StoredProcedure
+         cmd.CommandTimeout = _timeout
 
          cmd.Parameters.Add("@psEmailAddress", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
          cmd.Parameters("@psEmailAddress").Value = email
@@ -206,6 +205,7 @@ Public Class Database
 
          Dim cmd As New SqlCommand("spASRGetCurrentUsersCountOnServer", conn)
          cmd.CommandType = CommandType.StoredProcedure
+         cmd.CommandTimeout = _timeout
 
          cmd.Parameters.Add("@iLoginCount", SqlDbType.Int).Direction = ParameterDirection.Output
 
@@ -228,6 +228,7 @@ Public Class Database
 
          Dim cmd As New SqlCommand("spASRSysMobileActivateUser", conn)
          cmd.CommandType = CommandType.StoredProcedure
+         cmd.CommandTimeout = _timeout
 
          cmd.Parameters.Add("@piRecordID", SqlDbType.Int).Direction = ParameterDirection.Input
          cmd.Parameters("@piRecordID").Value = userId
@@ -250,6 +251,7 @@ Public Class Database
 
          Dim cmd As New SqlCommand("spASRGetWorkflowFormItems", conn)
          cmd.CommandType = CommandType.StoredProcedure
+         cmd.CommandTimeout = _timeout
 
          cmd.Parameters.Add("@piInstanceID", SqlDbType.Int).Direction = ParameterDirection.Input
          cmd.Parameters("@piInstanceID").Value = instanceId
@@ -350,6 +352,7 @@ Public Class Database
          Dim cmd As New SqlCommand()
          cmd.CommandType = CommandType.StoredProcedure
          cmd.Connection = conn
+         cmd.CommandTimeout = _timeout
 
          If Not keyParameter = Nothing Then
             cmd.CommandText = "spASRMobileInstantiateWorkflow"
@@ -389,6 +392,7 @@ Public Class Database
 
          Dim cmd As New SqlCommand("spASRGetWorkflowQueryString", conn)
          cmd.CommandType = CommandType.StoredProcedure
+         cmd.CommandTimeout = _timeout
 
          cmd.Parameters.Add("@piInstanceID", SqlDbType.Int).Direction = ParameterDirection.Input
          cmd.Parameters("@piInstanceID").Value = instanceId
@@ -413,6 +417,7 @@ Public Class Database
 
          Dim cmd As New SqlCommand("spASRGetWorkflowItemValues", conn)
          cmd.CommandType = CommandType.StoredProcedure
+         cmd.CommandTimeout = _timeout
 
          cmd.Parameters.Add("@piElementItemID", SqlDbType.Int).Direction = ParameterDirection.Input
          cmd.Parameters("@piElementItemID").Value = elementItemID
@@ -444,6 +449,7 @@ Public Class Database
 
          Dim cmd As New SqlCommand("spASRGetWorkflowGridItems", conn)
          cmd.CommandType = CommandType.StoredProcedure
+         cmd.CommandTimeout = _timeout
 
          cmd.Parameters.Add("@piInstanceID", SqlDbType.Int).Direction = ParameterDirection.Input
          cmd.Parameters("@piInstanceID").Value = instanceId
@@ -463,8 +469,7 @@ Public Class Database
       End Using
    End Function
 
-   Public Function WorkflowValidateWebForm(elementItemID As Integer, instanceId As Integer, values As String) _
-      As ValidateWebFormResult
+   Public Function WorkflowValidateWebForm(elementItemID As Integer, instanceId As Integer, values As String) As ValidateWebFormResult
 
       Dim result As New ValidateWebFormResult With {.Warnings = New List(Of String), .Errors = New List(Of String)}
 
@@ -473,6 +478,7 @@ Public Class Database
 
          Dim cmd As New SqlCommand("spASRSysWorkflowWebFormValidation", conn)
          cmd.CommandType = CommandType.StoredProcedure
+         cmd.CommandTimeout = _timeout
 
          cmd.Parameters.Add("@piInstanceID", SqlDbType.Int).Direction = ParameterDirection.Input
          cmd.Parameters("@piInstanceID").Value = instanceId
@@ -508,6 +514,7 @@ Public Class Database
 
          Dim cmd As New SqlCommand("spASRSubmitWorkflowStep", conn)
          cmd.CommandType = CommandType.StoredProcedure
+         cmd.CommandTimeout = _timeout
 
          cmd.Parameters.Add("@piInstanceID", SqlDbType.Int).Direction = ParameterDirection.Input
          cmd.Parameters("@piInstanceID").Value = instanceId
@@ -540,10 +547,7 @@ Public Class Database
       Using conn As New SqlConnection(_connectionString)
          conn.Open()
 
-         Dim _
-            cmd As _
-               New SqlCommand("SELECT [pageno] FROM [dbo].[ASRSysWorkflowInstances] WHERE [ID] = " & instanceId.ToString,
-                              conn)
+         Dim cmd As New SqlCommand("SELECT [pageno] FROM [dbo].[ASRSysWorkflowInstances] WHERE [ID] = " & instanceId.ToString, conn)
          Dim dr As SqlDataReader = cmd.ExecuteReader()
 
          If dr.Read() Then
@@ -563,6 +567,7 @@ Public Class Database
 
          Dim cmd As New SqlCommand("spASRGetSetting", conn)
          cmd.CommandType = CommandType.StoredProcedure
+         cmd.CommandTimeout = _timeout
 
          cmd.Parameters.Add("@psSection", SqlDbType.VarChar, 8000).Direction = ParameterDirection.Input
          cmd.Parameters("@psSection").Value = section
@@ -597,6 +602,7 @@ Public Class Database
 
          Dim cmd As New SqlCommand("sp_password", conn)
          cmd.CommandType = CommandType.StoredProcedure
+         cmd.CommandTimeout = _timeout
 
          cmd.Parameters.Add("@old", SqlDbType.NVarChar, 2147483646).Direction = ParameterDirection.Input
          cmd.Parameters("@old").Value = currentPassword
@@ -624,6 +630,7 @@ Public Class Database
 
          Dim cmd As New SqlCommand("spASRSysMobilePasswordOK", conn)
          cmd.CommandType = CommandType.StoredProcedure
+         cmd.CommandTimeout = _timeout
 
          cmd.Parameters.Add("@sCurrentUser", SqlDbType.NVarChar, 2147483646).Direction = ParameterDirection.Input
          cmd.Parameters("@sCurrentUser").Value = userName
@@ -700,6 +707,7 @@ Public Class Database
 
          Dim cmd As New SqlCommand("spASRSysMobileCheckPendingWorkflowSteps", conn)
          cmd.CommandType = CommandType.StoredProcedure
+         cmd.CommandTimeout = _timeout
 
          cmd.Parameters.Add("@psKeyParameter", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
          cmd.Parameters("@psKeyParameter").Value = userName
@@ -714,12 +722,11 @@ Public Class Database
                desc = desc.Substring(CStr(dr("name")).Trim().Length + 2).Trim()
             End If
 
-            list.Add(
-               New WorkflowStepLink() With _
-                       {.Url = NullSafeString(dr("Url")), _
-                       .Name = NullSafeString(dr("Name")), _
-                       .Desc = desc, _
-                       .PictureID = NullSafeInteger(dr("PictureID")) _
+            list.Add(New WorkflowStepLink() With _
+                       {.Url = NullSafeString(dr("Url")),
+                       .Name = NullSafeString(dr("Name")),
+                       .Desc = desc,
+                       .PictureID = NullSafeInteger(dr("PictureID"))
                        })
          End While
 
@@ -734,6 +741,7 @@ Public Class Database
 
          Dim cmd As New SqlCommand("spASRGetPicture", conn)
          cmd.CommandType = CommandType.StoredProcedure
+         cmd.CommandTimeout = _timeout
 
          cmd.Parameters.Add("@piPictureID", SqlDbType.Int).Direction = ParameterDirection.Input
          cmd.Parameters("@piPictureID").Value = id

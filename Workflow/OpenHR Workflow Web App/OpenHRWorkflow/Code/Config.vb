@@ -106,13 +106,9 @@ Public Class Config
 
       'Insert some fake value into the cache with a dependency on the theme & web.custom.config files
       'when they change we'll get a callback to reload the settings
-      'TODO PG change timeouts
       HttpRuntime.Cache.Insert("filesTheSame", True,
                                New CacheDependency(New String() {CustomConfigFile, ThemeFile}),
-                               DateTime.UtcNow.AddMinutes(1),
-                               TimeSpan.Zero,
-                               CacheItemPriority.Default,
-                               Sub() Load()
+                               Cache.NoAbsoluteExpiration, Cache.NoSlidingExpiration, CacheItemPriority.Default, Sub() Load()
       )
 
    End Sub
@@ -128,11 +124,6 @@ Public Class Config
       Catch ex As Exception
          Return defaultValue
       End Try
-   End Function
-
-   'TODO PG NOW cleanup all connection string creation (take care with application name & pooling)
-   Public Function ConnectionStringFor(user As String, password As String) As String
-      Return String.Format("Application Name=OpenHR Mobile;Data Source={0};Initial Catalog={1};Integrated Security=false;User ID={2};Password={3};Pooling=false", Server, Database, user, password)
    End Function
 
 End Class

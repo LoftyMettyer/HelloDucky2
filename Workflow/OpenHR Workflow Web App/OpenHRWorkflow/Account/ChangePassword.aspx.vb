@@ -4,7 +4,7 @@ Partial Class ChangePassword
 
   Protected Sub Page_Init(sender As Object, e As EventArgs) Handles Me.Init
 
-    Dim db As New Database
+      Dim db As New Database(App.Config.ConnectionString)
     Dim result As CheckLoginResult = db.CheckLoginDetails(User.Identity.Name)
 
     If Not result.Valid Then
@@ -18,17 +18,18 @@ Partial Class ChangePassword
     Form.DefaultFocus = txtCurrPassword.ClientID
   End Sub
 
-  Protected Sub BtnSubmitClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnSubmit.Click, btnSubmit2.Click
+   Protected Sub BtnSubmitClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnSubmit.Click, btnSubmit2.Click
 
-    Dim db As New Database
-    Dim message As String = db.ChangePassword(User.Identity.Name, txtCurrPassword.Text, txtNewPassword.Text)
+      Dim db As New Database(App.Config.ConnectionString)
 
-    If message.Length > 0 Then
-      CType(Master, Site).ShowDialog("Change Password Failed", message)
-    Else
-      CType(Master, Site).ShowDialog("Change Password Submitted", "Password changed successfully.", "../Home.aspx")
-    End If
+      Dim message As String = db.ChangePassword(User.Identity.Name, txtCurrPassword.Text, txtNewPassword.Text)
 
-  End Sub
+      If message.Length > 0 Then
+         CType(Master, Site).ShowDialog("Change Password Failed", message)
+      Else
+         CType(Master, Site).ShowDialog("Change Password Submitted", "Password changed successfully.", "../Home.aspx")
+      End If
+
+   End Sub
 
 End Class

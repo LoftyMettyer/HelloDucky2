@@ -1,50 +1,50 @@
 ﻿Imports System.Data.SqlClient
 
 Public Class Forms
-  Public Shared Sub RedirectIfNotLicensed()
+   Public Shared Sub RedirectIfNotLicensed()
 
-    Dim db As New Database
-    If Not db.IsMobileLicensed() Then
-      HttpContext.Current.Session("message") = "You are not licensed for the OpenHR Mobile module. Please contact your Advanced Business Solutions Account Manager for details"
-      HttpContext.Current.Response.Redirect("~/Message.aspx")
-    End If
+      Dim db As New Database(App.Config.ConnectionString)
+      If Not db.IsMobileLicensed() Then
+         HttpContext.Current.Session("message") = "You are not licensed for the OpenHR Mobile module. Please contact your Advanced Business Solutions Account Manager for details"
+         HttpContext.Current.Response.Redirect("~/Message.aspx")
+      End If
 
-  End Sub
+   End Sub
 
-  Public Shared Sub RedirectIfDbLocked()
+   Public Shared Sub RedirectIfDbLocked()
 
-    Dim db As New Database
-    If db.IsSystemLocked() Then
-      HttpContext.Current.Session("message") = "The system is currently being modified. Please retry again shortly."
-      HttpContext.Current.Response.Redirect("~/Message.aspx")
-    End If
+      Dim db As New Database(App.Config.ConnectionString)
+      If db.IsSystemLocked() Then
+         HttpContext.Current.Session("message") = "The system is currently being modified. Please retry again shortly."
+         HttpContext.Current.Response.Redirect("~/Message.aspx")
+      End If
 
-  End Sub
+   End Sub
 
-  Public Shared Sub RedirectToNotConfigured()
+   Public Shared Sub RedirectToNotConfigured()
 
-    Dim message As String = ""
+      Dim message As String = ""
 
       If App.Config.WorkflowUrl.Length = 0 Then message += "Workflow url is not defined, "
       If App.Config.MobileKey.Length = 0 Then message += "Mobile key is not defined, "
 
-    If message.Length > 0 Then
-      HttpContext.Current.Session("message") = "The system is not configured correctly, " & message.TrimEnd(","c, " "c) & ". Please contact your system administrator."
-      HttpContext.Current.Response.Redirect("~/Message.aspx")
-    End If
+      If message.Length > 0 Then
+         HttpContext.Current.Session("message") = "The system is not configured correctly, " & message.TrimEnd(","c, " "c) & ". Please contact your system administrator."
+         HttpContext.Current.Response.Redirect("~/Message.aspx")
+      End If
 
-  End Sub
+   End Sub
 
-  Public Shared Sub RedirectToHomeIfAuthentcated()
+   Public Shared Sub RedirectToHomeIfAuthentcated()
 
-    'Go to the home page if already logged in
-    If HttpContext.Current.Request.IsAuthenticated Then
-      HttpContext.Current.Response.Redirect("~/Home.aspx")
-    End If
+      'Go to the home page if already logged in
+      If HttpContext.Current.Request.IsAuthenticated Then
+         HttpContext.Current.Response.Redirect("~/Home.aspx")
+      End If
 
-  End Sub
+   End Sub
 
-  Public Shared Sub LoadControlData(page As Page, formId As Integer)
+   Public Shared Sub LoadControlData(page As Page, formId As Integer)
 
       Using conn As New SqlConnection(App.Config.ConnectionString)
 
@@ -98,7 +98,7 @@ Public Class Forms
 
       End Using
 
-  End Sub
+   End Sub
 
 End Class
 

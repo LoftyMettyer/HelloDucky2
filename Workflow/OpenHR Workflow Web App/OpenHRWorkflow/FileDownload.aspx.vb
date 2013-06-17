@@ -75,7 +75,7 @@ Partial Class FileDownload
       Dim workflowUrl = CType(Session("workflowUrl"), WorkflowUrl)
 
       Try
-         conn = New SqlClient.SqlConnection(Database.GetConnectionString(workflowUrl.Server, workflowUrl.Database, workflowUrl.User, workflowUrl.Password))
+         conn = New SqlClient.SqlConnection(Database.CreateConnectionString(workflowUrl.Server, workflowUrl.Database, workflowUrl.User, workflowUrl.Password))
          conn.Open()
 
          cmdRead = New SqlClient.SqlCommand("spASRWorkflowFileDownload", conn)

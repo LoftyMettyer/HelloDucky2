@@ -11,7 +11,7 @@ Partial Class ForgottenLogin
 
   Protected Sub BtnSubmitClick(sender As Object, e As EventArgs) Handles btnSubmit.Click, btnSubmit2.Click
 
-    Dim db As New Database
+      Dim db As New Database(App.Config.ConnectionString)
     Dim message As String = db.ForgotLogin(txtEmail.Text)
 
     If message.Length > 0 Then
