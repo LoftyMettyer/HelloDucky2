@@ -140,6 +140,7 @@ body { font-family: verdana; }
 .footer-buttons li img {
     display: block;
     margin: 0 auto;
+    border: 0;
     padding-top: 7px;
     width: 32px;
     height: 32px;
