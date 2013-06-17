@@ -1,11 +1,113 @@
 ﻿Imports System.Data
 Imports Utilities
+Imports System.Web.Security
+Imports System.Globalization
+Imports System.Threading
 
 Partial Class MobileLogin
   Inherits System.Web.UI.Page
 
   Private miImageCount As Int16
   Private mobjConfig As New Config
+
+  Protected Sub Page_Init(sender As Object, e As System.EventArgs) Handles Me.Init
+
+    Dim miInstanceID As Integer
+    Dim miElementID As Integer
+    Dim msServer As String
+    Dim msUser As String
+    Dim msPwd As String
+    Dim sTemp As String
+    Dim iTemp As Integer
+    Dim sQueryString As String
+    Dim objCrypt As New Crypt
+
+    ' OK. Bit of a palava. 
+    ' First we check if this is a mobile browser. If not, just send the client to originally requested page.
+    If isMobileBrowser() Then
+
+      ' is there is a remember me cookie, get the user name out of it and bypass the login screen.
+      Dim CustomerGUID As String = HttpContext.Current.User.Identity.Name
+
+      If CustomerGUID = "" Or CustomerGUID = "sqluser" Then
+        ' No username stored.
+      Else
+        Session("LoginKey") = CustomerGUID
+        ' submitLoginDetails()
+
+      End If
+
+
+      ' This is a mobile browser. We now decode the URL to see if this is an external workflow - we don't authenticate them either!
+      Try
+        ' Read and decrypt the queryString.
+        miElementID = 0
+        miInstanceID = 0
+
+        sTemp = FormsAuthentication.GetRedirectUrl("", False)  'Server.UrlDecode(Request.RawUrl.ToString)
+        iTemp = sTemp.IndexOf("?")
+
+        If iTemp >= 0 Then
+          sQueryString = sTemp.Substring(iTemp + 1)
+
+          Try
+            ' Set the culture to English(GB) to ensure the decryption works OK. Fault HRPRO-1404
+            Dim sCultureName As String
+            sCultureName = Thread.CurrentThread.CurrentCulture.Name
+
+            Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-gb")
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture("en-gb")
+
+            sTemp = objCrypt.DecompactString(sQueryString)
+            sTemp = objCrypt.DecryptString(sTemp, "", True)
+
+            ' Reset the culture to be the one used by the client. Fault HRPRO-1404
+            Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(sCultureName)
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture(sCultureName)
+
+            ' Extract the required parameters from the decrypted queryString.
+            miInstanceID = CInt(Left(sTemp, InStr(sTemp, vbTab) - 1))
+            sTemp = Mid(sTemp, InStr(sTemp, vbTab) + 1)
+
+            miElementID = CInt(Left(sTemp, InStr(sTemp, vbTab) - 1))
+            sTemp = Mid(sTemp, InStr(sTemp, vbTab) + 1)
+
+            msUser = Left(sTemp, InStr(sTemp, vbTab) - 1)
+            sTemp = Mid(sTemp, InStr(sTemp, vbTab) + 1)
+
+            msPwd = Left(sTemp, InStr(sTemp, vbTab) - 1)
+            sTemp = Mid(sTemp, InStr(sTemp, vbTab) + 1)
+
+            msServer = Left(sTemp, InStr(sTemp, vbTab) - 1)
+            sTemp = Mid(sTemp, InStr(sTemp, vbTab) + 1)
+
+            If (miInstanceID < 0) _
+              And (miElementID = -1) _
+              And (Not IsPostBack) Then
+
+              ' This is an externally initiated workflow
+              ' Send user to originally requested page....
+              FormsAuthentication.RedirectFromLoginPage("", True)
+
+            End If
+
+          Catch ex As Exception
+            ' uh-oh, problem! Try to revert user to calling page.
+            FormsAuthentication.RedirectFromLoginPage("", True)
+          End Try
+        Else
+          ' No workflow encrypted string passed, continue to login page.          
+        End If
+      Catch ex As Exception
+
+      End Try
+    Else
+      ' Non-mobile browser, so just send the client to the originally requested page.
+      ' Users are brought here by default now if they're not authenticated.
+      FormsAuthentication.RedirectFromLoginPage("", True)
+    End If
+
+  End Sub
 
   Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
 
@@ -22,6 +124,13 @@ Partial Class MobileLogin
     Dim sImageFileName As String = ""
     Dim iTempHeight As Integer
     Dim iTempWidth As Integer
+
+
+    If User.Identity.IsAuthenticated Then
+      Label1.Text = User.Identity.Name
+    Else
+      Label1.Text = "No user identity available."
+    End If
 
     miImageCount = 0
     If Not IsPostBack Then
@@ -40,6 +149,13 @@ Partial Class MobileLogin
         pnlGreyOut.Style.Add("visibility", "visible")
         pnlMsgBox.Style.Add("visibility", "visible")
       End Try
+
+
+      If User.Identity.IsAuthenticated Then
+        ' skip this page!
+        submitLoginDetails()
+      End If
+
 
       Try
 
@@ -395,6 +511,11 @@ Partial Class MobileLogin
   End Function
 
   Protected Sub btnLogin_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnLogin.Click
+    submitLoginDetails()
+
+  End Sub
+
+  Private Sub submitLoginDetails()
     Dim strConn As String
     Dim conn As System.Data.SqlClient.SqlConnection
     Dim cmdCheck As System.Data.SqlClient.SqlCommand
@@ -403,15 +524,66 @@ Partial Class MobileLogin
     Dim sMessage As String = ""
     Dim sEncryptedPwd As String = ""
     Dim sDecryptedPwd As String = ""
+    Dim aUserDetails() As String
+    Dim fAuthenticated As Boolean = False
+    Dim sAuthUser As String = ""
 
-    ' Get the password stored for this user, decrypt it, then compare it here.
 
-    Try
+    If NullSafeString(Session("loginKey")) <> vbNullString Then fAuthenticated = True
+
+    If Not fAuthenticated Then
+      Dim fPersistCookie As Boolean = chkRememberPwd.Checked
+
+      ' Get the password stored for this user, decrypt it, then compare it here.
+      ' do a few quick checks before validating the user
       If txtUserName.Value.Trim.Length = 0 Then
         sMessage = "No Login entered."
-      Else
+      End If
+
+      If sMessage.Length = 0 Then
+
+        If txtUserName.Value.IndexOf("\") > 0 Then
+          ' The presence of a backslash indicates this is a windows user. 
+          ' validate the user against AD
+          aUserDetails = txtUserName.Value.Split("\")
+          Try
+            Me.AuthenticateUser(aUserDetails(0), aUserDetails(1), txtPassword.Value)
+            sAuthUser = txtUserName.Value
+            fAuthenticated = True
+          Catch ex As Exception
+            lblError.Text = ex.Message
+            lblError.Visible = True
+          End Try
+        Else
+          ' SQL User - validate against the DB
+          strConn = "Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
+             ";Initial Catalog=" & Session("Database") & _
+             ";Integrated Security=false;User ID=" & txtUserName.Value & _
+             ";Password=" & txtPassword.Value & _
+             ";Pooling=false"
+          conn = New SqlClient.SqlConnection(strConn)
+          Try
+            conn.Open()
+            conn.Close()
+            FormsAuthentication.SetAuthCookie(txtUserName.Value, fPersistCookie)
+            sAuthUser = txtUserName.Value
+            fAuthenticated = True
+          Catch ex As Exception
+            lblError.Text = ex.Message
+            lblError.Visible = True
+          End Try
+
+        End If
+
         Session("LoginKey") = txtUserName.Value
         Session("RememberPWD") = chkRememberPwd.Value
+
+      End If
+    End If
+
+    If fAuthenticated Then
+
+      Try
 
         strConn = "Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
         ";Initial Catalog=" & Session("Database") & _
@@ -443,13 +615,20 @@ Partial Class MobileLogin
         Session("UserGroupID") = NullSafeInteger(cmdCheck.Parameters("@piUserGroupID").Value())
 
         cmdCheck.Dispose()
-      End If
 
-    Catch ex As Exception
-      sMessage = "Error :<BR><BR>" & _
-      ex.Message.Replace(vbCrLf, "<BR>") & "<BR><BR>" & _
-      "Contact your system administrator."
-    End Try
+
+
+      Catch ex As Exception
+        sMessage = "Error :<BR><BR>" & _
+        ex.Message.Replace(vbCrLf, "<BR>") & "<BR><BR>" & _
+        "Contact your system administrator."
+      End Try
+    End If
+
+
+
+
+
 
     If sMessage.Length > 0 Then
       Session("message") = sMessage
@@ -458,31 +637,124 @@ Partial Class MobileLogin
       pnlGreyOut.Style.Add("visibility", "visible")
       pnlMsgBox.Style.Add("visibility", "visible")
     Else
-      ' Validate the password
-      sDecryptedPwd = objCrypt.DecryptString(sEncryptedPwd, "jmltn", False)
+      '' Validate the password
+      'sDecryptedPwd = objCrypt.DecryptString(sEncryptedPwd, "jmltn", False)
 
-      If Trim(txtPassword.Value) = Trim(sDecryptedPwd) Then
-        Session("LoginPWD") = sDecryptedPwd
-        Response.Redirect("MobileHome.aspx")
-      Else
-        sMessage = "Invalid password."
-        lblMsgBox.InnerText = sMessage
-        pnlGreyOut.Style.Add("visibility", "visible")
-        pnlMsgBox.Style.Add("visibility", "visible")
+      'If Trim(txtPassword.Value) = Trim(sDecryptedPwd) Then
+      '  Session("LoginPWD") = sDecryptedPwd
+      '  Response.Redirect("MobileHome.aspx")
+      'Else
+      '  sMessage = "Invalid password."
+      '  lblMsgBox.InnerText = sMessage
+      '  pnlGreyOut.Style.Add("visibility", "visible")
+      '  pnlMsgBox.Style.Add("visibility", "visible")
+      'End If
+
+      ' We're already authenticated so...
+      If fAuthenticated Then
+        ' Where were we heading before being asked for authentication?
+        If FormsAuthentication.GetRedirectUrl(sAuthUser, False) = FormsAuthentication.DefaultUrl Then
+          ' Nowhere! Go to the home page.
+          Response.Redirect("MobileHome.aspx")
+        Else
+          'Go to the page originally specified by the client.
+          HttpContext.Current.Response.Redirect(FormsAuthentication.GetRedirectUrl(sAuthUser, False))
+        End If
+
       End If
 
+
     End If
-
   End Sub
-
-
   Protected Sub btnRegister_Click(sender As Object, e As System.Web.UI.ImageClickEventArgs) Handles btnRegister.Click
+
+    ' set a temporary user name so that we can move past the authentication page.
+    FormsAuthentication.SetAuthCookie("sqluser", False)
     Response.Redirect("MobileRegistration.aspx")
   End Sub
 
   Protected Sub btnForgotPwd_Click(sender As Object, e As System.Web.UI.ImageClickEventArgs) Handles btnForgotPwd.Click
+    ' set a temporary user name so that we can move past the authentication page.
+    FormsAuthentication.SetAuthCookie("sqluser", False)
     Response.Redirect("MobileForgottenLogin.aspx")
   End Sub
+
+  Private Sub AuthenticateUser(domainName As String, userName As String, password As String)
+    ' Path to you LDAP directory server.
+    ' Contact your network administrator to obtain a valid path.
+
+
+    Dim adPath As String = "LDAP://" & System.Configuration.ConfigurationManager.AppSettings("DefaultActiveDirectoryServer")
+
+    Dim adAuth As New clsActiveDirectoryValidator(adPath)
+    If True = adAuth.IsAuthenticated(domainName, userName, password) Then
+      ' Create the authetication ticket
+      Dim authTicket As New FormsAuthenticationTicket(1, userName, DateTime.Now, DateTime.Now.AddMinutes(20), False, "")
+      ' Now encrypt the ticket.
+      Dim encryptedTicket As String = FormsAuthentication.Encrypt(authTicket)
+      ' Create a cookie and add the encrypted ticket to the
+      ' cookie as data.
+      Dim authCookie As New HttpCookie(FormsAuthentication.FormsCookieName, encryptedTicket)
+      ' Add the cookie to the outgoing cookies collection.
+      HttpContext.Current.Response.Cookies.Add(authCookie)
+      FormsAuthentication.SetAuthCookie(txtUserName.Value, chkRememberPwd.Checked)
+      ' Redirect the user to the originally requested page
+      ' HttpContext.Current.Response.Redirect(FormsAuthentication.GetRedirectUrl(userName, False))
+    End If
+
+
+
+  End Sub
+
+  Public Shared Function isMobileBrowser() As Boolean
+    'GETS THE CURRENT USER CONTEXT
+    Dim context As HttpContext = HttpContext.Current
+
+    'FIRST TRY BUILT IN ASP.NT CHECK
+    If context.Request.Browser.IsMobileDevice Then
+      Return True
+    End If
+    'THEN TRY CHECKING FOR THE HTTP_X_WAP_PROFILE HEADER
+    If context.Request.ServerVariables("HTTP_X_WAP_PROFILE") IsNot Nothing Then
+      Return True
+    End If
+    'THEN TRY CHECKING THAT HTTP_ACCEPT EXISTS AND CONTAINS WAP
+    If context.Request.ServerVariables("HTTP_ACCEPT") IsNot Nothing AndAlso context.Request.ServerVariables("HTTP_ACCEPT").ToLower().Contains("wap") Then
+      Return True
+    End If
+    'AND FINALLY CHECK THE HTTP_USER_AGENT 
+    'HEADER VARIABLE FOR ANY ONE OF THE FOLLOWING
+    If context.Request.ServerVariables("HTTP_USER_AGENT") IsNot Nothing Then
+      'Create a list of all mobile types
+      Dim mobiles As String() = New String() {"midp", "j2me", "avant", "docomo", "novarra", "palmos", _
+"palmsource", "240x320", "opwv", "chtml", "pda", "windows ce", _
+"mmp/", "blackberry", "mib/", "symbian", "wireless", "nokia", _
+"hand", "mobi", "phone", "cdm", "up.b", "audio", _
+"SIE-", "SEC-", "samsung", "HTC", "mot-", "mitsu", _
+"sagem", "sony", "alcatel", "lg", "eric", "vx", _
+"philips", "mmm", "xx", "panasonic", "sharp", _
+"wap", "sch", "rover", "pocket", "benq", "java", _
+"pt", "pg", "vox", "amoi", "bird", "compal", _
+"kg", "voda", "sany", "kdd", "dbt", "sendo", _
+"sgh", "gradi", "jb", "dddi", "moto", "iphone"}
+
+      'Loop through each item in the list created above 
+      'and check if the header contains that text
+      For Each s As String In mobiles
+        If context.Request.ServerVariables("HTTP_USER_AGENT").ToLower().Contains(s.ToLower()) Then
+          Return True
+        End If
+      Next
+
+    End If
+
+    Return False
+  End Function
+
+
+
+
+
 End Class
 
 

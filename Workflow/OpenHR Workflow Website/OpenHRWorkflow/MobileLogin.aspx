@@ -13,30 +13,30 @@
   <script type="text/javascript">
       // <!CDATA[
 
-      function window_onload() {
-        if (typeof (getCookie("Login")) != "object") {
-          frmLogin.txtUserName.value = getCookie("Login");
-        }
+//      function window_onload() {
+//        if (typeof (getCookie("Login")) != "object") {
+//          frmLogin.txtUserName.value = getCookie("Login");
+//        }
 
 
-        frmLogin.txtUserName.focus();
+//        frmLogin.txtUserName.focus();
 
-      }
+//      }
 
-      function getCookie(name) {
-        var dc = document.cookie;
-        var prefix = name + "=";
-        var begin = dc.indexOf("; " + prefix);
-        if (begin == -1) {
-          begin = dc.indexOf(prefix);
-          if (begin != 0) return null;
-        } else
-          begin += 2;
-        var end = document.cookie.indexOf(";", begin);
-        if (end == -1)
-          end = dc.length;
-        return unescape(dc.substring(begin + prefix.length, end));
-      }
+//      function getCookie(name) {
+//        var dc = document.cookie;
+//        var prefix = name + "=";
+//        var begin = dc.indexOf("; " + prefix);
+//        if (begin == -1) {
+//          begin = dc.indexOf(prefix);
+//          if (begin != 0) return null;
+//        } else
+//          begin += 2;
+//        var end = document.cookie.indexOf(";", begin);
+//        if (end == -1)
+//          end = dc.length;
+//        return unescape(dc.substring(begin + prefix.length, end));
+//      }
 
       function closeMsgBox() {
         pnlGreyOut.style.visibility = "hidden";
@@ -79,6 +79,12 @@
                   <td><input id="chkRememberPwd" type="checkbox" runat="server" /></td>
                 </tr>
                 <tr id="space5" style="width: 100%;height:80%"><td></td></tr>
+                <tr>
+                  <td colspan="2" align="center">
+                    <asp:label ID="lblError" runat="server" Visible="False" ForeColor="Red"/>
+                    User: <asp:label ID="Label1" runat="server" ForeColor="Red"/>
+                  </td>
+                </tr>
                </table>
             </div>
           </div>
