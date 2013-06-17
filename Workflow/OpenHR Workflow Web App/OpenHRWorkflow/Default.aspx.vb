@@ -467,9 +467,9 @@ Public Class [Default]
 						.Attributes.Add("data-numeric", String.Format("{{vMin: '-{0}', vMax: '{0}'}}", max))
 
 						'set the control value
-						Dim value As Single
+						Dim value As Decimal
 						If Not formItem.Value = Nothing Then
-							value = CSng(formItem.Value.Replace(".", Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator))
+							value = CDec(formItem.Value.Replace(".", Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator))
 						End If
 						.Text = value.ToString("N" & formItem.InputDecimals).Replace(Thread.CurrentThread.CurrentCulture.NumberFormat.NumberGroupSeparator, "")
 
