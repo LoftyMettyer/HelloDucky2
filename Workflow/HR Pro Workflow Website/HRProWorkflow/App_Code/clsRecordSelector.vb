@@ -27,6 +27,7 @@ Public Class RecordSelector
         Dim sDivStyle As String = ""
         Dim hdnScrollTop As String = "0"
         Dim objGeneral As New General
+        Dim iColCount As Integer
 
         'MyBase.Render(writer)
 
