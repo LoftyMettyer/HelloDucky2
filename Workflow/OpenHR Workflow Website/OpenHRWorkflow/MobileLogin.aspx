@@ -113,8 +113,8 @@
         <div id="pnlGreyOut" runat="server" style="position: absolute;visibility: hidden;width: 100%;height: 100%;filter:alpha(opacity=50);
                               -moz-opacity:0.5;opacity: 0.5;background-color: #222;margin:0px;z-index:1">
         </div>
-          <div id="pnlMsgBox" runat="server" style="background-color: #002248;position: absolute;visibility: hidden;width: 450px;height:100px;
-                                            text-align:center;position:absolute;left:50%;top:50%;margin-left:-150px;margin-top:-50px;z-index:2;
+          <div id="pnlMsgBox" runat="server" style="background-color: #002248;position: absolute;visibility: hidden;width: 450px;height:150px;
+                                            text-align:center;position:absolute;left:50%;top:50%;margin-left:-150px;margin-top:-75px;z-index:2;
                                             border-radius:10px;border:2px solid #001648;vertical-align:middle;opacity:0.8">
             <br/>&nbsp;&nbsp;
             <label id="lblMsgBox" runat="server" style="font-family: Verdana;font-size:large;color:white"></label>

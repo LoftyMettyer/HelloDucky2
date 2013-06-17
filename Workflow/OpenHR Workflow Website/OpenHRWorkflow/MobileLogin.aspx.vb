@@ -9,6 +9,7 @@ Partial Class MobileLogin
 
   Private miImageCount As Int16
   Private mobjConfig As New Config
+  Private miSubmissionTimeoutInSeconds As Int32
 
   Protected Sub Page_Init(sender As Object, e As System.EventArgs) Handles Me.Init
 
@@ -86,11 +87,11 @@ Partial Class MobileLogin
       Try
 
         ' Establish Connection
-        strConn = "Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
-          ";Initial Catalog=" & Session("Database") & _
-          ";Integrated Security=false;User ID=" & Session("Login") & _
-          ";Password=" & Session("Password") & _
-          ";Pooling=false"
+        strConn = CType(("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
+                         ";Initial Catalog=" & Session("Database") & _
+                         ";Integrated Security=false;User ID=" & Session("Login") & _
+                         ";Password=" & Session("Password") & _
+                         ";Pooling=false"), String)
         'strConn = "Application Name=OpenHR Workflow;Data Source=.\sqlexpress;Initial Catalog=hrprostd43;Integrated Security=false;User ID=sa;Password=asr;Pooling=false"
 
         Dim myConnection As New SqlClient.SqlConnection(strConn)
@@ -448,6 +449,8 @@ Partial Class MobileLogin
     Dim strConn As String
     Dim conn As System.Data.SqlClient.SqlConnection
     Dim cmdCheck As System.Data.SqlClient.SqlCommand
+    Dim dr As System.Data.SqlClient.SqlDataReader
+
     Dim objCrypt As New Crypt
 
     Dim sMessage As String = ""
@@ -457,6 +460,7 @@ Partial Class MobileLogin
     Dim fAuthenticated As Boolean = False
     Dim sAuthUser As String = ""
 
+    miSubmissionTimeoutInSeconds = mobjConfig.SubmissionTimeoutInSeconds
 
     If NullSafeString(Session("loginKey")) <> vbNullString Then fAuthenticated = True
 
@@ -469,6 +473,43 @@ Partial Class MobileLogin
         sMessage = "No Login entered."
       End If
 
+
+      ' Lock Check.
+      strConn = CType(("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
+                             ";Initial Catalog=" & Session("Database") & _
+                             ";Integrated Security=false;User ID=" & Session("Login") & _
+                             ";Password=" & Session("Password") & _
+                             ";Pooling=false"), String)
+
+      Try
+        conn = New SqlClient.SqlConnection(strConn)
+        conn.Open()
+
+        ' Check if the database is locked.
+        cmdCheck = New SqlClient.SqlCommand
+        cmdCheck.CommandText = "sp_ASRLockCheck"
+        cmdCheck.Connection = conn
+        cmdCheck.CommandType = CommandType.StoredProcedure
+        cmdCheck.CommandTimeout = miSubmissionTimeoutInSeconds
+
+        dr = cmdCheck.ExecuteReader()
+
+        While dr.Read
+          If NullSafeInteger(dr("priority")) <> 3 Then
+            ' Not a read-only lock.
+            sMessage = "Database locked." & vbCrLf & "Contact your system administrator."
+            Exit While
+          End If
+        End While
+
+        dr.Close()
+        cmdCheck.Dispose()
+        conn.Close()
+      Catch ex As Exception
+        sMessage = "Unable to perform system lock check"
+      End Try
+
+      ' Continue with authentication
       If sMessage.Length = 0 Then
 
         If txtUserName.Value.IndexOf("\") > 0 Then
@@ -487,32 +528,35 @@ Partial Class MobileLogin
           End Try
         Else
           ' SQL User - validate against the DB
-          strConn = CType(("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
-                           ";Initial Catalog=" & Session("Database") & _
-                           ";Integrated Security=false;User ID=" & txtUserName.Value & _
-                           ";Password=" & txtPassword.Value & _
-                           ";Pooling=false"), String)
-          conn = New SqlClient.SqlConnection(strConn)
 
-          Try
-            conn.Open()
-            conn.Close()
-            FormsAuthentication.SetAuthCookie(txtUserName.Value, fPersistCookie)
-            sAuthUser = txtUserName.Value
-            fAuthenticated = True
-            Session("LoginKey") = txtUserName.Value
-            Session("RememberPWD") = chkRememberPwd.Value
-          Catch ex As Exception
-            'lblError.Text = ex.Message
-            'lblError.Visible = True
-            sMessage = ex.Message
-            fAuthenticated = False
-            Session("LoginKey") = Nothing
-            Session("RememberPWD") = Nothing
-          End Try
+          If sMessage.Length = 0 Then
+            strConn = CType(("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
+                 ";Initial Catalog=" & Session("Database") & _
+                 ";Integrated Security=false;User ID=" & txtUserName.Value & _
+                 ";Password=" & txtPassword.Value & _
+                 ";Pooling=false"), String)
+            conn = New SqlClient.SqlConnection(strConn)
+
+            Try
+              conn.Open()
+              conn.Close()
+              FormsAuthentication.SetAuthCookie(txtUserName.Value, fPersistCookie)
+              sAuthUser = txtUserName.Value
+              fAuthenticated = True
+              Session("LoginKey") = txtUserName.Value
+              Session("RememberPWD") = chkRememberPwd.Value
+            Catch ex As Exception
+              'lblError.Text = ex.Message
+              'lblError.Visible = True
+              sMessage = ex.Message
+              fAuthenticated = False
+              Session("LoginKey") = Nothing
+              Session("RememberPWD") = Nothing
+            End Try
+          End If
 
         End If
-
+        
       End If
     End If
 
