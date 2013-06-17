@@ -408,9 +408,7 @@ Public Class _Default
       Try ' conn creation 
         ' update tbsysMobile_Logins, and copy the 'newpassword' string to the 'password' field using 'userid' from miInstanceID
         ' Establish Connection
-        Dim strConn As String = "Application Name=OpenHR Workflow;Data Source=" & msServer & ";Initial Catalog=" & msDatabase & ";Integrated Security=false;User ID=" & msUser & ";Password=" & msPwd & ";Pooling=false"
-
-        Dim myConnection As New SqlClient.SqlConnection(strConn)
+        Dim myConnection As New SqlClient.SqlConnection(GetConnectionString)
         myConnection.Open()
 
         cmdActivate = New SqlClient.SqlCommand

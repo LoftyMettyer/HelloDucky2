@@ -92,6 +92,8 @@ Partial Class Site
 
   Private Sub SetupViewport()
 
+    Return
+
     If IsMobileBrowser() And Not IsTablet() Then
       Return
     End If
