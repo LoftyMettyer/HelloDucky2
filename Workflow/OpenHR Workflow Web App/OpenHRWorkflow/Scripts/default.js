@@ -736,10 +736,10 @@ function InitializeLookup(sender, args) {
 					sSelectWhere = sSelectWhere.replace(reTAB, sValue);
 
 					if (sValue == "") {
-						document.getElementById(psWebComboID.replace("dde", "filterSQL")).value = "";
+						document.getElementById(psWebComboID.replace("dde", "filterSql")).value = "";
 					}
 					else {
-						document.getElementById(psWebComboID.replace("dde", "filterSQL")).value = sSelectWhere;
+						document.getElementById(psWebComboID.replace("dde", "filterSql")).value = sSelectWhere;
 					}
 
 					//This prevents the lookup closing after the filter is applied/removed
@@ -915,10 +915,10 @@ function FilterMobileLookup(sourceControlID) {
 							sSelectWhere = sSelectWhere.replace(reTAB, sValue);
 
 							if (sValue == "") {
-								document.getElementById(psWebComboID + "filterSQL").value = "";
+								document.getElementById(psWebComboID + "filterSql").value = "";
 							}
 							else {
-								document.getElementById(psWebComboID + "filterSQL").value = sSelectWhere;
+								document.getElementById(psWebComboID + "filterSql").value = sSelectWhere;
 							}
 						}
 					}

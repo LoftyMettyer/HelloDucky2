@@ -1004,7 +1004,7 @@ Public Class [Default]
 							tabPages(formItem.PageNo).Controls.Add(New HiddenField With {.ID = controlId & "scrollpos"})
 
 							' hidden field to hold any filter SQL code
-							tabPages(formItem.PageNo).Controls.Add(New HiddenField With {.ID = controlId & "FilterSql"})
+						tabPages(formItem.PageNo).Controls.Add(New HiddenField With {.ID = controlId & "filterSql"})
 
 							' Hidden Button for JS to call which fires filter click event. 
 							Dim button = New Button
@@ -1088,7 +1088,7 @@ Public Class [Default]
 							End With
 
 							' hidden field to hold any filter SQL code
-							tabPages(formItem.PageNo).Controls.Add(New HiddenField With {.ID = controlId & "FilterSql"})
+						tabPages(formItem.PageNo).Controls.Add(New HiddenField With {.ID = controlId & "filterSql"})
 
 							' Hidden Button for JS to call which fires filter click event. 
 							Dim button = New Button
@@ -1772,7 +1772,7 @@ Public Class [Default]
 		Dim dataTable As DataTable = TryCast(Session(lookupId.Replace("refresh", "DATA")), DataTable)
 
 		' get the filter sql
-		Dim hiddenField As HiddenField = TryCast(pnlInputDiv.FindControl(lookupId.Replace("refresh", "FilterSql")), HiddenField)
+		Dim hiddenField As HiddenField = TryCast(pnlInputDiv.FindControl(lookupId.Replace("refresh", "filterSql")), HiddenField)
 
 		Dim filterSql As String = hiddenField.Value
 
