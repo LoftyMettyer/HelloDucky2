@@ -44,10 +44,12 @@
     <AssemblyAttributes Include="AssemblyFileVersion">
       <Value>5.0.2.0</Value>
       <Value>5.0.3.0</Value>
+      <Value>5.0.5.0</Value>
     </AssemblyAttributes>
     <AssemblyAttributes Include="AssemblyVersion">
       <Value>5.0.2.0</Value>
       <Value>5.0.3.0</Value>
+      <Value>5.0.5.0</Value>
     </AssemblyAttributes>
   </ItemGroup>
   <ItemGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">

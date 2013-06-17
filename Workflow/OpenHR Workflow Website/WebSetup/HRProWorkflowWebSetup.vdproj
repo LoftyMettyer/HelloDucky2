@@ -119,6 +119,12 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_DFB39D06B7A3AA18358979D98CF44FD5"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_C4B9B7499FAC4AF2AD4F00E54AD0FEF4"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -143,12 +149,6 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_03C31600886C61A6636F011B2B59AF50"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_7D5126426707D3FCF0F4A8996E13F6EF"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -161,7 +161,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_DFB39D06B7A3AA18358979D98CF44FD5"
+        "OwnerKey" = "8:_03C31600886C61A6636F011B2B59AF50"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -667,15 +667,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:OpenHR Workflow Web Site v5.0"
-        "ProductCode" = "8:{9C0AE9EE-C2A5-4432-AEBC-08ADC693460D}"
-        "PackageCode" = "8:{B33E27C4-BF29-4411-9AAE-6B030C9E6C9A}"
+        "ProductCode" = "8:{1C78CFB5-360D-4B5C-96A7-C479C44D3167}"
+        "PackageCode" = "8:{A16C51CF-CB33-4B10-AA50-5B5389FCB35B}"
         "UpgradeCode" = "8:{8D103CEA-CA57-49D4-A6E6-80D5076BB642}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:5.0.3"
+        "ProductVersion" = "8:5.0.5"
         "Manufacturer" = "8:Advanced Business Software and Solutions Limited"
         "ARPHELPTELEPHONE" = "8:08451 609 999"
         "ARPHELPLINK" = "8:http://webfirst.advancedcomputersoftware.com/abs"
