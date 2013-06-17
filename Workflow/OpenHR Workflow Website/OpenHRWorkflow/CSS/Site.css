@@ -178,6 +178,7 @@ body { font-family: verdana; }
 .workflow-list li a 
 {
     display: block;
+    text-decoration: none;
     margin-bottom: 4px;
 }
 .workflow-list img {
