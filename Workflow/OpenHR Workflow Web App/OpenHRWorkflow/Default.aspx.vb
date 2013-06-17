@@ -367,12 +367,12 @@ Public Class [Default]
 						.Text = formItem.Value
 
 						'For GPS activation (future development - also unremark same comments in default.js):
-						If formItem.Value = "$GPS" Then
-							.Attributes.Add("class", "GPSTextBox")
-							.Text = ""
-						Else
-							.Text = formItem.Value
-						End If
+						'If formItem.Value = "$GPS" Then
+						'	.Attributes.Add("class", "GPSTextBox")
+						'	.Text = ""
+						'Else
+						'  .Text = formItem.Value
+						'End If
 
 						.Attributes("onfocus") = "try{" & controlId & ".select();}catch(e){};"
 
