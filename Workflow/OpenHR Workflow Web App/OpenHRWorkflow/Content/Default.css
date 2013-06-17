@@ -124,6 +124,7 @@ textarea {
 	background-color: white;
 	border: 1px solid black;
 	cursor: pointer;
+	min-width: 50px;
 }
 .tab.active {
 	border-bottom: 1px solid transparent;
