@@ -120,18 +120,18 @@ function InitialiseWindow() {
 
 	// For GPS Location functionality. Future Development. 
 	//Unremark this, and same comments in default.aspx.vb to enable.
-	//	var GPSObjects = document.getElementsByClassName("GPSTextBox");
-	//	for (var i = 0; i < GPSObjects.length; i++) {
-	//		
-	//		if (navigator.geolocation) {
-	//			navigator.geolocation.getCurrentPosition(function (position) {
-	//				var lat = position.coords.latitude;
-	//				var lng = position.coords.longitude; 
-	//				GPSObjects[i].value = lat + "," + lng;
-	//			});			
-	//			GPSObjects[i].value = lat + "," + lng;
-	//		}
-	//	}
+		var GPSObjects = document.getElementsByClassName("GPSTextBox");
+		for (var i = 0; i < GPSObjects.length; i++) {
+			
+			if (navigator.geolocation) {
+				navigator.geolocation.getCurrentPosition(function (position) {
+					var lat = position.coords.latitude;
+					var lng = position.coords.longitude; 
+					GPSObjects[i].value = lat + "," + lng;
+				});			
+				GPSObjects[i].value = lat + "," + lng;
+			}
+		}
 	
 }
 
