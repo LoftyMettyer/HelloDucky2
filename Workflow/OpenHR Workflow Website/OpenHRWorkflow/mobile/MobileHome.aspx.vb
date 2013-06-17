@@ -1,57 +1,51 @@
-﻿
-Imports System
+﻿Imports System
 Imports System.Data
 Imports System.Collections.Generic
 Imports Utilities
 
 Partial Class Home
-  Inherits System.Web.UI.Page
+  Inherits Page
 
-  Private miImageCount As Int16
-  Private miStepCount As Integer
-  Private mobjConfig As New Config
-  Const wfCategoryKey As String = "WORKFLOW"
+  Private _imageCount As Int16
+  Private _config As New Config
 
-  Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+  Protected Sub Page_Init(sender As Object, e As EventArgs) Handles Me.Init
 
     Dim ctlFormHtmlGenericControl As HtmlGenericControl
     Dim ctlFormHtmlInputText As HtmlInputText
-    Dim ctlFormImageButton As ImageButton   ' Button
+    Dim ctlFormImageButton As ImageButton
     Dim strConn As String
     Dim objGeneral As New General
     Dim sMessage As String = ""
-    Dim drLayouts As System.Data.SqlClient.SqlDataReader
-    Dim drElements As System.Data.SqlClient.SqlDataReader
+    Dim drLayouts As SqlClient.SqlDataReader
+    Dim drElements As SqlClient.SqlDataReader
     Dim sImageFileName As String = ""
     Dim sql As String
     Dim command As SqlClient.SqlCommand
     Dim reader As IDataReader
-    miImageCount = 0
+
+    _imageCount = 0
 
     Try
-      mobjConfig.Mob_Initialise()
-      Session("Server") = mobjConfig.Server
-      Session("Database") = mobjConfig.Database
-      Session("Login") = mobjConfig.Login
-      Session("Password") = mobjConfig.Password
-      Session("WorkflowURL") = mobjConfig.WorkflowURL
+      _config.Mob_Initialise()
+      Session("Server") = _config.Server
+      Session("Database") = _config.Database
+      Session("Login") = _config.Login
+      Session("Password") = _config.Password
+      Session("WorkflowURL") = _config.WorkflowURL
 
     Catch ex As Exception
-
     End Try
 
     ' Establish Connection
-    strConn = CType(("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
+    strConn = CStr("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
                      ";Initial Catalog=" & Session("Database") & _
                      ";Integrated Security=false;User ID=" & Session("Login") & _
                      ";Password=" & Session("Password") & _
-                     ";Pooling=false"), String)
-    'strConn = "Application Name=OpenHR Workflow;Data Source=.\sqlexpress;Initial Catalog=hrprostd43;Integrated Security=false;User ID=sa;Password=asr;Pooling=false"
+                     ";Pooling=false")
 
     Dim myConnection As New SqlClient.SqlConnection(strConn)
     myConnection.Open()
-
-    ' Create command
     Dim myCommand As New SqlClient.SqlCommand("select * from tbsys_mobileformlayout where ID = 1", myConnection)
 
     ' Create a DataReader to ferry information back from the database
@@ -88,7 +82,7 @@ Partial Class Home
       'Header Image
       If i = 1 AndAlso Not IsDBNull(drLayouts("HeaderLogoID")) Then
 
-        Dim imageControl As New System.Web.UI.WebControls.Image
+        Dim imageControl As New Image
 
         With imageControl
           .Style("position") = "absolute"
@@ -135,7 +129,6 @@ Partial Class Home
                      ";Integrated Security=false;User ID=" & Session("Login") & _
                      ";Password=" & Session("Password") & _
                      ";Pooling=false"), String)
-    'strConn = "Application Name=OpenHR Workflow;Data Source=.\sqlexpress;Initial Catalog=hrprostd43;Integrated Security=false;User ID=sa;Password=asr;Pooling=false"
 
     myConnection = New SqlClient.SqlConnection(strConn)
     myConnection.Open()
@@ -183,7 +176,7 @@ Partial Class Home
 
         Case 2 ' Label
           If NullSafeString(drElements("Name")).Length > 0 Then
-            ctlFormHtmlGenericControl = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name"))), HtmlGenericControl)  'New Label
+            ctlFormHtmlGenericControl = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name"))), HtmlGenericControl)
             With ctlFormHtmlGenericControl
               .Style("word-wrap") = "break-word"
               .Style("overflow") = "auto"
@@ -220,9 +213,8 @@ Partial Class Home
     End While
     drElements.Close()
 
-
     ' Disable the Change Password button for windows authenticated users
-    If NullSafeString(Session("LoginKey")).IndexOf("\") >= 0 Then
+    If User.Identity.Name.Contains("\") Then
       btnChangePwd.Visible = False
       btnChangePwd_label.Visible = False
     End If
@@ -230,6 +222,7 @@ Partial Class Home
     Dim groupId As Integer
     Dim fUserHasRunPermission As Boolean
 
+    'TODO close your session come straight to this page and this value is not populated!!!!
     If Session("UserGroupID") <> "0" Then groupId = CInt(Session("UserGroupID"))
 
     If groupId <> 0 Then
@@ -240,7 +233,7 @@ Partial Class Home
                            " JOIN [ASRSysPermissionItems] i ON [p].[itemID] = [i].[itemID]" & _
                            " WHERE [p].[itemID] IN (" & _
                                " SELECT [itemID] FROM [ASRSysPermissionItems]	" & _
-                                " WHERE [categoryID] = (SELECT [categoryID] FROM [ASRSysPermissionCategories] WHERE [categoryKey] = '" & wfCategoryKey & "')) " & _
+                                " WHERE [categoryID] = (SELECT [categoryID] FROM [ASRSysPermissionCategories] WHERE [categoryKey] = 'WORKFLOW')) " & _
                                 " AND [groupName] = (SELECT [Name] FROM [ASRSysGroups] WHERE [ID] = " & groupId.ToString & ")"
       Try
         command = New SqlClient.SqlCommand(sql, myConnection)
@@ -250,7 +243,6 @@ Partial Class Home
           Select Case reader("itemKey")
             Case "RUN"
               fUserHasRunPermission = (reader("permitted") = True)
-
           End Select
         End While
 
@@ -328,45 +320,44 @@ Partial Class Home
     myConnection.Close()
 
     ' Update the wf steps count
-    If fUserHasRunPermission Then CountPendingWFSteps()
+    If fUserHasRunPermission Then CountPendingWfSteps()
 
   End Sub
 
 
-  Private Sub CountPendingWFSteps()
+  Private Sub CountPendingWfSteps()
     ' Update number of OS workflows
-    Dim iWFCount As Integer = CheckPendingSteps()
-    If iWFCount > 0 Then
-      lblWFCount.InnerText = CStr(iWFCount)
+    Dim count As Integer = CheckPendingSteps()
+    If count > 0 Then
+      lblWFCount.InnerText = CStr(count)
       pnlWFCount.Style.Add("visibility", "visible")
     Else
       pnlWFCount.Style.Add("visibility", "hidden")
     End If
   End Sub
 
-  Private Function LoadPicture(ByVal piPictureID As Int32, _
-    ByRef psErrorMessage As String) As String
+  Private Function LoadPicture(ByVal piPictureID As Int32, ByRef psErrorMessage As String) As String
 
     Dim strConn As String
-    Dim conn As System.Data.SqlClient.SqlConnection
-    Dim cmdSelect As System.Data.SqlClient.SqlCommand
-    Dim dr As System.Data.SqlClient.SqlDataReader
+    Dim conn As SqlClient.SqlConnection
+    Dim cmdSelect As SqlClient.SqlCommand
+    Dim dr As SqlClient.SqlDataReader
     Dim sImageFileName As String
     Dim sImageFilePath As String
     Dim sImageWebPath As String
     Dim sTempName As String
-    Dim fs As System.IO.FileStream
-    Dim bw As System.IO.BinaryWriter
+    Dim fs As IO.FileStream
+    Dim bw As IO.BinaryWriter
     Dim iBufferSize As Integer = 100
     Dim outByte(iBufferSize - 1) As Byte
     Dim retVal As Long
-    Dim startIndex As Long = 0
+    Dim startIndex As Long
     Dim sExtension As String = ""
     Dim iIndex As Integer
     Dim sName As String
 
     Try
-      miImageCount = CShort(miImageCount + 1)
+      _imageCount = CShort(_imageCount + 1)
 
       psErrorMessage = ""
       LoadPicture = ""
@@ -374,13 +365,12 @@ Partial Class Home
       sImageWebPath = "../pictures"
       sImageFilePath = Server.MapPath(sImageWebPath)
 
-      strConn = CType(("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
+      strConn = CStr("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
                        ";Initial Catalog=" & Session("Database") & _
                        ";Integrated Security=false;User ID=" & Session("Login") & _
                        ";Password=" & Session("Password") & _
-                       ";Pooling=false"), String)
-      'strConn = "Application Name=OpenHR Workflow;Data Source=.\sqlexpress;Initial Catalog=hrprostd43;Integrated Security=false;User ID=sa;Password=asr;Pooling=false"
-      'strConn = "Application Name=OpenHR Workflow;Data Source=" & msServer & ";Initial Catalog=" & msDatabase & ";Integrated Security=false;User ID=" & msUser & ";Password=" & msPwd & ";Pooling=false"
+                       ";Pooling=false")
+
       conn = New SqlClient.SqlConnection(strConn)
       conn.Open()
 
@@ -404,14 +394,14 @@ Partial Class Home
           End If
 
           sImageFileName = Session.SessionID().ToString & _
-           "_" & miImageCount.ToString & _
+           "_" & _imageCount.ToString & _
            "_" & Date.Now.Ticks.ToString & _
            sExtension
           sTempName = sImageFilePath & "\" & sImageFileName
 
           ' Create a file to hold the output.
-          fs = New System.IO.FileStream(sTempName, IO.FileMode.OpenOrCreate, IO.FileAccess.Write)
-          bw = New System.IO.BinaryWriter(fs)
+          fs = New IO.FileStream(sTempName, IO.FileMode.OpenOrCreate, IO.FileAccess.Write)
+          bw = New IO.BinaryWriter(fs)
 
           ' Reset the starting byte for a new BLOB.
           startIndex = 0
@@ -459,19 +449,19 @@ Partial Class Home
   End Function
 
   Public Function WorkflowLink(ByVal pintWorkflowID As Integer) As String
-    Dim sURL As String
+
+    Dim sUrl As String
     Dim sUser As String
-    Dim sEncryptedString As String
     Dim objCrypt As New Crypt
 
     WorkflowLink = ""
 
-    sURL = Session("WorkflowURL")
-    If Len(sURL) = 0 Then
+    sUrl = CStr(Session("WorkflowURL"))
+    If Len(sUrl) = 0 Then
       Exit Function
     End If
 
-    sUser = Session("Login")
+    sUser = CStr(Session("Login"))
     If Len(sUser) = 0 Then
       Exit Function
     End If
@@ -479,37 +469,31 @@ Partial Class Home
     ' For externally initiated workflows:
     '      plngInstance = -1 * workflowID
     '      plngStepID = -
-    sEncryptedString = objCrypt.EncryptQueryString((-1 * pintWorkflowID), -1, sUser, _
-        Session("Password"), _
-        Session("Server"), _
-        Session("Database"), _
-        Session("LoginKey"), _
-        Session("LoginPWD"))
+    Dim sEncryptedString As String = objCrypt.EncryptQueryString((-1 * pintWorkflowID), -1, sUser, _
+        CStr(Session("Password")), _
+        CStr(Session("Server")), _
+        CStr(Session("Database")), _
+        CStr(User.Identity.Name), _
+        "")
 
-    WorkflowLink = sURL & "?" & sEncryptedString
+    Return sURL & "?" & sEncryptedString
 
-  End Function
-
-
-  Public Function StepCount() As String
-    StepCount = miStepCount
   End Function
 
   Private Function CheckPendingSteps() As Integer
-    Dim iLoop As String
-    Dim strConn As String
-    Dim conn As System.Data.SqlClient.SqlConnection
-    Dim cmdSteps As System.Data.SqlClient.SqlCommand
-    Dim rstSteps As System.Data.SqlClient.SqlDataReader
 
-    Session("In") = "True"
+    Dim iLoop As Integer
+    Dim strConn As String
+    Dim conn As SqlClient.SqlConnection
+    Dim cmdSteps As SqlClient.SqlCommand
+    Dim rstSteps As SqlClient.SqlDataReader
 
     ' Open a connection to the database.
-    strConn = "Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
+    strConn = CStr("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
         ";Initial Catalog=" & Session("Database") & _
         ";Integrated Security=false;User ID=" & Session("Login") & _
         ";Password=" & Session("Password") & _
-        ";Pooling=false"
+        ";Pooling=false")
 
     conn = New SqlClient.SqlConnection(strConn)
     conn.Open()
@@ -520,35 +504,32 @@ Partial Class Home
     cmdSteps.CommandType = CommandType.StoredProcedure
 
     cmdSteps.Parameters.Add("@psKeyParameter", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
-    cmdSteps.Parameters("@psKeyParameter").Value = Session("LoginKey")
+    cmdSteps.Parameters("@psKeyParameter").Value = User.Identity.Name
 
     rstSteps = cmdSteps.ExecuteReader
 
     iLoop = 0
 
-    While (rstSteps.Read)
-      iLoop = iLoop + 1
+    While rstSteps.Read
+      iLoop += 1
     End While
-
-    miStepCount = iLoop
-
     rstSteps.Close()
     cmdSteps.Dispose()
 
-    CheckPendingSteps = miStepCount
+    Return iLoop
 
   End Function
 
-  Protected Sub btnChangePwd_Click(sender As Object, e As System.Web.UI.ImageClickEventArgs) Handles btnChangePwd.Click
+  Protected Sub BtnToDoListClick(sender As Object, e As ImageClickEventArgs) Handles btnToDoList.Click
+    Response.Redirect("MobilePendingSteps.aspx")
+  End Sub
+
+  Protected Sub BtnChangePwdClick(sender As Object, e As ImageClickEventArgs) Handles btnChangePwd.Click
     Response.Redirect("MobileChangePassword.aspx")
   End Sub
 
-  Protected Sub btnLogout_Click(sender As Object, e As System.Web.UI.ImageClickEventArgs) Handles btnLogout.Click
+  Protected Sub BtnLogoutClick(sender As Object, e As ImageClickEventArgs) Handles btnLogout.Click
     LogoutAuthenticatedUser()
-  End Sub
-
-  Protected Sub btnToDoList_Click(sender As Object, e As System.Web.UI.ImageClickEventArgs) Handles btnToDoList.Click
-    Response.Redirect("MobilePendingSteps.aspx")
   End Sub
 
   Private Sub LogoutAuthenticatedUser()
@@ -558,16 +539,15 @@ Partial Class Home
     Session.Abandon()
 
     ' clear authentication cookie
-    Dim cookie1 As HttpCookie = New HttpCookie(FormsAuthentication.FormsCookieName, "")
-    cookie1.Expires = DateTime.Now.AddYears(-1)
-    Response.Cookies.Add(cookie1)
+    Dim cookie As HttpCookie = New HttpCookie(FormsAuthentication.FormsCookieName, "")
+    cookie.Expires = DateTime.Now.AddYears(-1)
+    Response.Cookies.Add(cookie)
 
     ' clear session cookie (not necessary for your current problem but i would recommend you do it anyway)
     Dim cookie2 As HttpCookie = New HttpCookie("ASP.NET_SessionId", "")
     cookie2.Expires = DateTime.Now.AddYears(-1)
     Response.Cookies.Add(cookie2)
 
-    'FormsAuthentication.RedirectToLoginPage()
     Response.Redirect("~/MobileLogin.aspx")
   End Sub
 

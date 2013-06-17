@@ -4,49 +4,47 @@ Imports System.Collections.Generic
 Imports Utilities
 
 Partial Class PendingSteps
-  Inherits System.Web.UI.Page
+  Inherits Page
 
-  Private miImageCount As Int16
-  Private mobjConfig As New Config
-  Const wfCategoryKey As String = "WORKFLOW"
+  Private _imageCount As Int16
+  Private _config As New Config
 
-  Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+  Protected Sub Page_Init(sender As Object, e As EventArgs) Handles Me.Init
 
     Dim strConn As String
-    Dim conn As System.Data.SqlClient.SqlConnection
-    Dim cmdSteps As System.Data.SqlClient.SqlCommand
-    Dim rstSteps As System.Data.SqlClient.SqlDataReader
+    Dim conn As SqlClient.SqlConnection
+    Dim cmdSteps As SqlClient.SqlCommand
+    Dim rstSteps As SqlClient.SqlDataReader
     Dim ctlFormHtmlGenericControl As HtmlGenericControl
     Dim ctlFormHtmlInputText As HtmlInputText
     Dim ctlFormImage As Image
     Dim ctlFormImageButton As ImageButton   ' Button
     Dim objGeneral As New General
     Dim sMessage As String = ""
-    Dim drLayouts As System.Data.SqlClient.SqlDataReader
-    Dim drElements As System.Data.SqlClient.SqlDataReader
+    Dim drLayouts As SqlClient.SqlDataReader
+    Dim drElements As SqlClient.SqlDataReader
     Dim sImageFileName As String = ""
-    Dim ctlForm_Table As Table
-    Dim ctlForm_Row As TableRow
-    Dim ctlForm_Cell As TableCell
-    Dim ctlForm_Label As Label
+    Dim ctlFormTable As Table
+    Dim ctlFormRow As TableRow
+    Dim ctlFormCell As TableCell
+    Dim ctlFormLabel As Label
     Dim sql As String
     Dim command As SqlClient.SqlCommand
     Dim reader As IDataReader
 
     Dim strWFStepText As String
 
-    miImageCount = 0
+    _ImageCount = 0
 
     Try
-      mobjConfig.Mob_Initialise()
-      Session("Server") = mobjConfig.Server
-      Session("Database") = mobjConfig.Database
-      Session("Login") = mobjConfig.Login
-      Session("Password") = mobjConfig.Password
-      Session("WorkflowURL") = mobjConfig.WorkflowURL
+      _Config.Mob_Initialise()
+      Session("Server") = _Config.Server
+      Session("Database") = _Config.Database
+      Session("Login") = _Config.Login
+      Session("Password") = _Config.Password
+      Session("WorkflowURL") = _Config.WorkflowURL
 
     Catch ex As Exception
-
     End Try
 
     ' Establish Connection
@@ -55,7 +53,6 @@ Partial Class PendingSteps
                      ";Integrated Security=false;User ID=" & Session("Login") & _
                      ";Password=" & Session("Password") & _
                      ";Pooling=false"), String)
-    'strConn = "Application Name=OpenHR Workflow;Data Source=.\sqlexpress;Initial Catalog=hrprostd43;Integrated Security=false;User ID=sa;Password=asr;Pooling=false"
 
     Dim myConnection As New SqlClient.SqlConnection(strConn)
     myConnection.Open()
@@ -150,7 +147,6 @@ Partial Class PendingSteps
                      ";Integrated Security=false;User ID=" & Session("Login") & _
                      ";Password=" & Session("Password") & _
                      ";Pooling=false"), String)
-    'strConn = "Application Name=OpenHR Workflow;Data Source=.\sqlexpress;Initial Catalog=hrprostd43;Integrated Security=false;User ID=sa;Password=asr;Pooling=false"
 
     myConnection = New SqlClient.SqlConnection(strConn)
     myConnection.Open()
@@ -248,8 +244,8 @@ Partial Class PendingSteps
     conn = New SqlClient.SqlConnection(strConn)
     conn.Open()
 
-    Dim groupId As Integer = 0
-    Dim fUserHasRunPermission As Boolean = False
+    Dim groupId As Integer
+    Dim fUserHasRunPermission As Boolean
 
     If Session("UserGroupID") <> "0" Then groupId = CInt(Session("UserGroupID"))
 
@@ -261,11 +257,11 @@ Partial Class PendingSteps
                            " JOIN [ASRSysPermissionItems] i ON [p].[itemID] = [i].[itemID]" & _
                            " WHERE [p].[itemID] IN (" & _
                                " SELECT [itemID] FROM [ASRSysPermissionItems]	" & _
-                                " WHERE [categoryID] = (SELECT [categoryID] FROM [ASRSysPermissionCategories] WHERE [categoryKey] = '" & wfCategoryKey & "')) " & _
+                                " WHERE [categoryID] = (SELECT [categoryID] FROM [ASRSysPermissionCategories] WHERE [categoryKey] = 'WORKFLOW')) " & _
                            " AND [groupName] = (SELECT [Name] FROM [ASRSysGroups] WHERE [ID] = " & groupId.ToString & ")"
       Try
         command = New SqlClient.SqlCommand(sql, conn)
-        reader = Command.ExecuteReader()
+        reader = command.ExecuteReader()
 
         While reader.Read()
           Select Case CStr(reader("itemKey"))
@@ -275,7 +271,7 @@ Partial Class PendingSteps
           End Select
         End While
 
-        reader.close()
+        reader.Close()
       Catch ex As Exception
 
       End Try
@@ -292,21 +288,21 @@ Partial Class PendingSteps
       cmdSteps.CommandType = CommandType.StoredProcedure
 
       cmdSteps.Parameters.Add("@psKeyParameter", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
-      cmdSteps.Parameters("@psKeyParameter").Value = Session("LoginKey")
+      cmdSteps.Parameters("@psKeyParameter").Value = User.Identity.Name
 
       rstSteps = cmdSteps.ExecuteReader
 
       ' Create the holding table
-      ctlForm_Table = New Table
+      ctlFormTable = New Table
 
       Dim iLoop As Integer
       While (rstSteps.Read)
         ' Create a row to contain this pending step...
-        ctlForm_Row = New TableRow
-        ctlForm_Row.Attributes.Add("onclick", "window.open('" & rstSteps("url").ToString & "');")
+        ctlFormRow = New TableRow
+        ctlFormRow.Attributes.Add("onclick", "window.open('" & rstSteps("url").ToString & "');")
 
         ' Create a cell to contain the workflow icon
-        ctlForm_Cell = New TableCell  ' Image cell
+        ctlFormCell = New TableCell  ' Image cell
         ctlFormImage = New Image
         If NullSafeInteger(rstSteps("pictureID")) = 0 Then
           sImageFileName = "~/Images/Connected48.png"
@@ -318,45 +314,45 @@ Partial Class PendingSteps
         ctlFormImage.Width() = Unit.Pixel(57)
 
         ' add ImageButton to cell
-        ctlForm_Cell.Controls.Add(ctlFormImage)
+        ctlFormCell.Controls.Add(ctlFormImage)
 
         ' Add cell to row
-        ctlForm_Row.Cells.Add(ctlForm_Cell)
+        ctlFormRow.Cells.Add(ctlFormCell)
 
         ' Create a cell to contain the workflow name and description
-        ctlForm_Cell = New TableCell
-        ctlForm_Label = New Label ' Workflow name text
-        ctlForm_Label.Font.Underline = True
-        ctlForm_Label.Text = CStr(rstSteps("name"))
+        ctlFormCell = New TableCell
+        ctlFormLabel = New Label ' Workflow name text
+        ctlFormLabel.Font.Underline = True
+        ctlFormLabel.Text = CStr(rstSteps("name"))
         For Each item In todoTitleStyles
-          ctlForm_Label.Style.Add(item.Key, item.Value)
+          ctlFormLabel.Style.Add(item.Key, item.Value)
         Next
-        ctlForm_Cell.Controls.Add(ctlForm_Label)
+        ctlFormCell.Controls.Add(ctlFormLabel)
 
         ' Line Break
-        ctlForm_Cell.Controls.Add(New LiteralControl("<br>"))
+        ctlFormCell.Controls.Add(New LiteralControl("<br>"))
 
-        ctlForm_Label = New Label ' Workflow step description text
+        ctlFormLabel = New Label ' Workflow step description text
 
         If Left(rstSteps("description"), Len(rstSteps("name")) + 2) = (Trim(rstSteps("name")) & " -") Then
           strWFStepText = rstSteps("description").ToString.Remove(0, (rstSteps("name").ToString.Length) + 2)
         Else
           strWFStepText = rstSteps("description").ToString
         End If
-        ctlForm_Label.Text = strWFStepText
+        ctlFormLabel.Text = strWFStepText
         For Each item In todoDescStyles
-          ctlForm_Label.Style.Add(item.Key, item.Value)
+          ctlFormLabel.Style.Add(item.Key, item.Value)
         Next
-        ctlForm_Cell.Controls.Add(ctlForm_Label)
+        ctlFormCell.Controls.Add(ctlFormLabel)
 
         ' Add cell to row, and row to table.
-        ctlForm_Row.Cells.Add(ctlForm_Cell)
-        ctlForm_Table.Rows.Add(ctlForm_Row)
+        ctlFormRow.Cells.Add(ctlFormCell)
+        ctlFormTable.Rows.Add(ctlFormRow)
 
         iLoop += 1
       End While
 
-      pnlWFList.Controls.Add(ctlForm_Table)
+      pnlWFList.Controls.Add(ctlFormTable)
 
       hdnStepCount.Value = CStr(iLoop)
 
@@ -366,8 +362,7 @@ Partial Class PendingSteps
 
   End Sub
 
-  Private Function LoadPicture(ByVal piPictureID As Int32, _
-    ByRef psErrorMessage As String) As String
+  Private Function LoadPicture(ByVal piPictureID As Int32, ByRef psErrorMessage As String) As String
 
     Dim strConn As String
     Dim conn As SqlClient.SqlConnection
@@ -377,18 +372,18 @@ Partial Class PendingSteps
     Dim sImageFilePath As String
     Dim sImageWebPath As String
     Dim sTempName As String
-    Dim fs As System.IO.FileStream
-    Dim bw As System.IO.BinaryWriter
+    Dim fs As IO.FileStream
+    Dim bw As IO.BinaryWriter
     Dim iBufferSize As Integer = 100
     Dim outByte(iBufferSize - 1) As Byte
     Dim retVal As Long
-    Dim startIndex As Long = 0
+    Dim startIndex As Long
     Dim sExtension As String = ""
     Dim iIndex As Integer
     Dim sName As String
 
     Try
-      miImageCount = CShort(miImageCount + 1)
+      _ImageCount = CShort(_ImageCount + 1)
 
       psErrorMessage = ""
       LoadPicture = ""
@@ -425,7 +420,7 @@ Partial Class PendingSteps
           End If
 
           sImageFileName = Session.SessionID().ToString & _
-           "_" & miImageCount.ToString & _
+           "_" & _ImageCount.ToString & _
            "_" & Date.Now.Ticks.ToString & _
            sExtension
           sTempName = sImageFilePath & "\" & sImageFileName
@@ -480,11 +475,11 @@ Partial Class PendingSteps
   End Function
 
 
-  Protected Sub btnRefresh_Click(sender As Object, e As System.Web.UI.ImageClickEventArgs) Handles btnRefresh.Click
+  Protected Sub BtnRefreshClick(sender As Object, e As ImageClickEventArgs) Handles btnRefresh.Click
     Response.Redirect("MobilePendingSteps.aspx")
   End Sub
 
-  Protected Sub btnCancel_Click(sender As Object, e As System.Web.UI.ImageClickEventArgs) Handles btnCancel.Click
+  Protected Sub BtnCancelClick(sender As Object, e As ImageClickEventArgs) Handles btnCancel.Click
     Response.Redirect("MobileHome.aspx")
   End Sub
 End Class

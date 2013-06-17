@@ -2,14 +2,16 @@
 Imports Utilities
 
 Partial Class Registration
-    Inherits System.Web.UI.Page
-  Private _miImageCount As Int16
-  Private ReadOnly _mobjConfig As New Config
+  Inherits Page
+
+  Private _imageCount As Int16
+  Private _config As New Config
 
   Protected Sub Page_Init(sender As Object, e As System.EventArgs) Handles Me.Init
+
     Dim ctlFormHtmlGenericControl As HtmlGenericControl
     Dim ctlFormHtmlInputText As HtmlInputText
-    Dim ctlFormImageButton As ImageButton   ' Button
+    Dim ctlFormImageButton As ImageButton
     Dim strConn As String
     Dim objGeneral As New General
     Dim sMessage As String = ""
@@ -17,15 +19,15 @@ Partial Class Registration
     Dim drElements As SqlClient.SqlDataReader
     Dim sImageFileName As String = ""
 
-    _miImageCount = 0
+    _imageCount = 0
 
     Try
-      _mobjConfig.Mob_Initialise()
-      Session("Server") = _mobjConfig.Server
-      Session("Database") = _mobjConfig.Database
-      Session("Login") = _mobjConfig.Login
-      Session("Password") = _mobjConfig.Password
-      Session("WorkflowURL") = _mobjConfig.WorkflowURL
+      _config.Mob_Initialise()
+      Session("Server") = _config.Server
+      Session("Database") = _config.Database
+      Session("Login") = _config.Login
+      Session("Password") = _config.Password
+      Session("WorkflowURL") = _config.WorkflowURL
 
     Catch ex As Exception
 
@@ -37,7 +39,6 @@ Partial Class Registration
                      ";Integrated Security=false;User ID=" & Session("Login") & _
                      ";Password=" & Session("Password") & _
                      ";Pooling=false"), String)
-    'strConn = "Application Name=OpenHR Workflow;Data Source=.\sqlexpress;Initial Catalog=hrprostd43;Integrated Security=false;User ID=sa;Password=asr;Pooling=false"
 
     Dim myConnection As New SqlClient.SqlConnection(strConn)
     myConnection.Open()
@@ -117,16 +118,12 @@ Partial Class Registration
 
     ' ======================== NOW FOR THE INDIVIDUAL ELEMENTS  ====================================
 
-    ' Set the e-mail input field to type=email (html5 only) ASP.NET requires this to be added thus:
-    txtEmail.Attributes.Add("type", "email")
-
     ' Establish Connection
     strConn = CType(("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
                      ";Initial Catalog=" & Session("Database") & _
                      ";Integrated Security=false;User ID=" & Session("Login") & _
                      ";Password=" & Session("Password") & _
                      ";Pooling=false"), String)
-    'strConn = "Application Name=OpenHR Workflow;Data Source=.\sqlexpress;Initial Catalog=hrprostd43;Integrated Security=false;User ID=sa;Password=asr;Pooling=false"
 
     myConnection = New SqlClient.SqlConnection(strConn)
     myConnection.Open()
@@ -190,7 +187,6 @@ Partial Class Registration
 
           End If
 
-
         Case 3 ' Input value - character
           If NullSafeString(drElements("Name")).Length > 0 Then
 
@@ -213,10 +209,16 @@ Partial Class Registration
     ' Close the connection (will automatically close the reader)
     myConnection.Close()
     drElements.Close()
+
+    SetCustomControlSettings()
   End Sub
 
-  Private Function LoadPicture(ByVal piPictureID As Int32, _
-    ByRef psErrorMessage As String) As String
+  Private Sub SetCustomControlSettings()
+    ' Set the e-mail input field to type=email (html5 only) ASP.NET requires this to be added thus:
+    txtEmail.Attributes.Add("type", "email")
+  End Sub
+
+  Private Function LoadPicture(ByVal piPictureID As Int32, ByRef psErrorMessage As String) As String
 
     Dim strConn As String
     Dim conn As SqlClient.SqlConnection
@@ -226,23 +228,23 @@ Partial Class Registration
     Dim sImageFilePath As String
     Dim sImageWebPath As String
     Dim sTempName As String
-    Dim fs As System.IO.FileStream
-    Dim bw As System.IO.BinaryWriter
+    Dim fs As IO.FileStream
+    Dim bw As IO.BinaryWriter
     Const iBufferSize As Integer = 100
     Dim outByte(iBufferSize - 1) As Byte
     Dim retVal As Long
-    Dim startIndex As Long = 0
+    Dim startIndex As Long
     Dim sExtension As String = ""
     Dim iIndex As Integer
     Dim sName As String
 
     Try
-      _miImageCount = CShort(_miImageCount + 1)
+      _imageCount = CShort(_imageCount + 1)
 
       psErrorMessage = ""
       LoadPicture = ""
       sImageFileName = ""
-      sImageWebPath = "../pictures"
+      sImageWebPath = "pictures"
       sImageFilePath = Server.MapPath(sImageWebPath)
 
       strConn = CType(("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
@@ -275,7 +277,7 @@ Partial Class Registration
           End If
 
           sImageFileName = Session.SessionID().ToString & _
-           "_" & _miImageCount.ToString & _
+           "_" & _imageCount.ToString & _
            "_" & Date.Now.Ticks.ToString & _
            sExtension
           sTempName = sImageFilePath & "\" & sImageFileName
@@ -329,31 +331,21 @@ Partial Class Registration
     End Try
   End Function
 
+  Protected Sub BtnRegisterClick(sender As Object, e As ImageClickEventArgs) Handles btnRegister.Click
 
-  Protected Sub btnRegister_Click(sender As Object, e As System.Web.UI.ImageClickEventArgs) Handles btnRegister.Click
     Dim strConn As String
     Dim conn As SqlClient.SqlConnection
     Dim cmdRegistration As SqlClient.SqlCommand
     Dim cmdUserID As SqlClient.SqlCommand
+    Dim sHeader As String = ""
     Dim sMessage As String = ""
+    Dim sRedirectTo As String = ""
     Dim objCrypt As New Crypt
-
-    'Dim strEncryptedPwd As String
     Dim strEncryptedString As String
-
     Dim lngUserID As Long
 
     If txtEmail.Value.Length = 0 Then
       sMessage = "No email address entered."
-      
-      'ElseIf txtUserName.Value.Length = 0 Then
-      '  sMessage = "A login must be entered."
-
-      'ElseIf txtPassword.Value <> txtConfPassword.Value Then
-      '  sMessage = "The passwords do not match."
-
-      'ElseIf txtPassword.Value.Length = 0 Then
-      '  sMessage = "A password must be entered."
     End If
 
     If sMessage.Length = 0 Then
@@ -386,13 +378,13 @@ Partial Class Registration
         cmdUserID.Dispose()
 
         Dim sUrl As String = Session("WorkflowURL").ToString()
-        If Len(sUrl) = 0 Then
-          sMessage = "Unable to determine Workflow URL"
+        If sUrl.Length = 0 Then
+          sMessage = "Unable to determine Workflow URL."
         End If
 
         Dim sUser As String = Session("Login").ToString()
-        If Len(sUser) = 0 Then
-          sMessage = "Unable to determine your Login"
+        If sUser.Length = 0 Then
+          sMessage = "Unable to connect to server."
         End If
 
         If sMessage.Length = 0 Then
@@ -402,13 +394,13 @@ Partial Class Registration
               Session("Server"), _
               Session("Database"), _
               Session("LoginKey"), _
-              Session("LoginPWD"))
+              "")
 
-          strConn = CType(("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
+          strConn = CStr("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
                            ";Initial Catalog=" & Session("Database") & _
                            ";Integrated Security=false;User ID=" & Session("Login") & _
                            ";Password=" & Session("Password") & _
-                           ";Pooling=false"), String)
+                           ";Pooling=false")
           conn = New SqlClient.SqlConnection(strConn)
           conn.Open()
 
@@ -432,34 +424,34 @@ Partial Class Registration
           cmdRegistration.Dispose()
         End If
       Catch ex As Exception
-        sMessage = "Error :" & vbCrLf & vbCrLf & _
-        ex.Message.ToString & vbCrLf & _
-        "Contact your system administrator."
+        sMessage = "Error :" & vbCrLf & vbCrLf & ex.Message & vbCrLf & "Contact your system administrator."
       End Try
     End If
 
-    If sMessage.Length = 0 Then
-      FormsAuthentication.SignOut()
-      lblMsgHeader.InnerText = "Registration Submitted"
-      sMessage = "An email has been sent to the entered address. To complete your registration, click the activation link in the email."
-      Session("nextPage") = "~/MobileLogin"
+    If sMessage.Length > 0 Then
+      sHeader = "Registration Failed"
     Else
-      Session("nextPage") = "MobileRegistration"
+      sHeader = "Registration Submitted"
+      sMessage = "An email has been sent to the entered address. To complete your registration, click the activation link in the email."
+      sRedirectTo = "MobileLogin.aspx"
     End If
 
-    ' Display message box.
-    lblMsgBox.InnerText = sMessage
+    ShowMessage(sHeader, sMessage, sRedirectTo)
+
+  End Sub
+
+  Private Sub ShowMessage(headerText As String, messageText As String, redirectTo As String)
+
+    lblMsgHeader.InnerText = headerText
+    lblMsgBox.InnerText = messageText
+    hdnRedirectTo.Value = redirectTo
     pnlGreyOut.Style.Add("visibility", "visible")
     pnlMsgBox.Style.Add("visibility", "visible")
 
   End Sub
 
-  Protected Sub btnHome_Click(sender As Object, e As System.Web.UI.ImageClickEventArgs) Handles btnHome.Click
-    ' sign out the temporary user.
-    FormsAuthentication.SignOut()
-
+  Protected Sub BtnHomeClick(sender As Object, e As ImageClickEventArgs) Handles btnHome.Click
     Response.Redirect("~/MobileLogin.aspx")
   End Sub
-
 
 End Class

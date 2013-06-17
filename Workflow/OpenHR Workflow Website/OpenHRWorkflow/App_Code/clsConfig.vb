@@ -32,14 +32,14 @@ Public Class Config
     Dim xmlReader As XmlTextReader
 
     Try
-      msThemeName = System.Configuration.ConfigurationManager.AppSettings("Theme").Trim.ToUpper
-      miMessageFontSize = NullSafeInteger(System.Configuration.ConfigurationManager.AppSettings("MessageFontSize"))
-      miValidationMessageFontSize = NullSafeInteger(System.Configuration.ConfigurationManager.AppSettings("ValidationMessageFontSize"))
-      msOLEFolder_Server = System.Configuration.ConfigurationManager.AppSettings("OLEFolder_Server").Trim
-      msOLEFolder_Local = System.Configuration.ConfigurationManager.AppSettings("OLEFolder_Local").Trim
-      msPhotographFolder = System.Configuration.ConfigurationManager.AppSettings("PhotographFolder").Trim
-      miSubmissionTimeout = NullSafeInteger(System.Configuration.ConfigurationManager.AppSettings("SubmissionTimeout"))
-      miLookupRowsRange = NullSafeInteger(System.Configuration.ConfigurationManager.AppSettings("LookupRowsRange"))
+      msThemeName = ConfigurationManager.AppSettings("Theme").Trim.ToUpper
+      miMessageFontSize = NullSafeInteger(ConfigurationManager.AppSettings("MessageFontSize"))
+      miValidationMessageFontSize = NullSafeInteger(ConfigurationManager.AppSettings("ValidationMessageFontSize"))
+      msOLEFolder_Server = ConfigurationManager.AppSettings("OLEFolder_Server").Trim
+      msOLEFolder_Local = ConfigurationManager.AppSettings("OLEFolder_Local").Trim
+      msPhotographFolder = ConfigurationManager.AppSettings("PhotographFolder").Trim
+      miSubmissionTimeout = NullSafeInteger(ConfigurationManager.AppSettings("SubmissionTimeout"))
+      miLookupRowsRange = NullSafeInteger(ConfigurationManager.AppSettings("LookupRowsRange"))
 
       ' Read the Hex and Foreground values for the defined theme.
       Try
@@ -78,18 +78,19 @@ Public Class Config
   End Sub
 
   Public Sub Mob_Initialise()
-    Dim miElementID As Integer = 0
-    Dim miInstanceID As Integer = 0
+
+    Dim miElementID As Integer
+    Dim miInstanceID As Integer
     Dim sTemp As String = ""
     Dim objCrypt As New Crypt
 
     Try
-      'msServerName = System.Configuration.ConfigurationManager.AppSettings("Server").Trim
-      'msDatabaseName = System.Configuration.ConfigurationManager.AppSettings("Database").Trim
-      'msLogin = System.Configuration.ConfigurationManager.AppSettings("Login").Trim
-      'msPassword = System.Configuration.ConfigurationManager.AppSettings("Password").Trim
-      msWorkflowURL = System.Configuration.ConfigurationManager.AppSettings("WorkflowURL").Trim
-      msMobileKey = System.Configuration.ConfigurationManager.AppSettings("MobileKey").Trim
+      'msServerName = ConfigurationManager.AppSettings("Server").Trim
+      'msDatabaseName = ConfigurationManager.AppSettings("Database").Trim
+      'msLogin = ConfigurationManager.AppSettings("Login").Trim
+      'msPassword = ConfigurationManager.AppSettings("Password").Trim
+      msWorkflowURL = ConfigurationManager.AppSettings("WorkflowURL").Trim
+      msMobileKey = ConfigurationManager.AppSettings("MobileKey").Trim
 
       ' Try the newer encryption first
       ' Set the culture to English(GB) to ensure the decryption works OK. Fault HRPRO-1404

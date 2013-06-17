@@ -1,36 +1,35 @@
 ﻿Imports System.Data
 Imports Utilities
-Imports System.Net.Mail
 
 Partial Class ForgottenLogin
-  Inherits System.Web.UI.Page
-  Private miImageCount As Int16
-  Private mobjConfig As New Config
+  Inherits Page
 
-  Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+  Private _imageCount As Int16
+  Private _config As New Config
+
+  Protected Sub Page_Init(sender As Object, e As System.EventArgs) Handles Me.Init
 
     Dim ctlFormHtmlGenericControl As HtmlGenericControl
     Dim ctlFormHtmlInputText As HtmlInputText
-    Dim ctlFormImageButton As ImageButton   ' Button
+    Dim ctlFormImageButton As ImageButton
     Dim strConn As String
     Dim objGeneral As New General
     Dim sMessage As String = ""
-    Dim drLayouts As System.Data.SqlClient.SqlDataReader
-    Dim drElements As System.Data.SqlClient.SqlDataReader
+    Dim drLayouts As SqlClient.SqlDataReader
+    Dim drElements As SqlClient.SqlDataReader
     Dim sImageFileName As String = ""
 
-    miImageCount = 0
+    _ImageCount = 0
 
     Try
-      mobjConfig.Mob_Initialise()
-      Session("Server") = mobjConfig.Server
-      Session("Database") = mobjConfig.Database
-      Session("Login") = mobjConfig.Login
-      Session("Password") = mobjConfig.Password
-      Session("WorkflowURL") = mobjConfig.WorkflowURL
+      _Config.Mob_Initialise()
+      Session("Server") = _Config.Server
+      Session("Database") = _Config.Database
+      Session("Login") = _Config.Login
+      Session("Password") = _Config.Password
+      Session("WorkflowURL") = _Config.WorkflowURL
 
     Catch ex As Exception
-      sMessage = "Unable to initialise screen" & vbCrLf & ex.Message
     End Try
 
     If sMessage.Length = 0 Then
@@ -83,7 +82,7 @@ Partial Class ForgottenLogin
           'Header Image
           If i = 1 AndAlso Not IsDBNull(drLayouts("HeaderLogoID")) Then
 
-            Dim imageControl As New System.Web.UI.WebControls.Image
+            Dim imageControl As New Image
 
             With imageControl
               .Style("position") = "absolute"
@@ -100,7 +99,7 @@ Partial Class ForgottenLogin
                 .Style("right") = Unit.Pixel(NullSafeInteger(drLayouts("HeaderLogoHorizontalOffset"))).ToString
               End If
 
-              .BackColor = System.Drawing.Color.Transparent
+              .BackColor = Drawing.Color.Transparent
               .ImageUrl = LoadPicture(NullSafeInteger(drLayouts("HeaderLogoID")), sMessage, False)
               .Height() = Unit.Pixel(NullSafeInteger(drLayouts("HeaderLogoHeight")))
               .Width() = Unit.Pixel(NullSafeInteger(drLayouts("HeaderLogoWidth")))
@@ -119,11 +118,6 @@ Partial Class ForgottenLogin
       drLayouts.Close()
 
       ' ======================== NOW FOR THE INDIVIDUAL ELEMENTS  ====================================
-
-      ' Set the e-mail input field to type=email (html5 only) ASP.NET requires this to be added thus:
-      txtEmail.Attributes.Add("type", "email")
-
-
 
       ' Establish Connection
       strConn = CType(("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
@@ -220,44 +214,42 @@ Partial Class ForgottenLogin
       drElements.Close()
     End If
 
-    If sMessage.Length > 0 Then
-      ' Display message box.
-      lblMsgBox.InnerText = sMessage
-      pnlGreyOut.Style.Add("visibility", "visible")
-      pnlMsgBox.Style.Add("visibility", "visible")
-      Session("nextPage") = "~/MobileLogin"
-    End If
+    SetCustomControlSettings()
 
   End Sub
 
-  Private Function LoadPicture(ByVal piPictureID As Int32, _
-    ByRef psErrorMessage As String, ByVal pfServerSide As Boolean) As String
+  Private Sub SetCustomControlSettings()
+    ' Set the e-mail input field to type=email (html5 only) ASP.NET requires this to be added thus:
+    txtEmail.Attributes.Add("type", "email")
+  End Sub
+
+  Private Function LoadPicture(ByVal piPictureID As Int32, ByRef psErrorMessage As String, ByVal pfServerSide As Boolean) As String
 
     Dim strConn As String
-    Dim conn As System.Data.SqlClient.SqlConnection
-    Dim cmdSelect As System.Data.SqlClient.SqlCommand
-    Dim dr As System.Data.SqlClient.SqlDataReader
+    Dim conn As SqlClient.SqlConnection
+    Dim cmdSelect As SqlClient.SqlCommand
+    Dim dr As SqlClient.SqlDataReader
     Dim sImageFileName As String
     Dim sImageFilePath As String
     Dim sImageWebPath As String
     Dim sTempName As String
-    Dim fs As System.IO.FileStream
-    Dim bw As System.IO.BinaryWriter
+    Dim fs As IO.FileStream
+    Dim bw As IO.BinaryWriter
     Dim iBufferSize As Integer = 100
     Dim outByte(iBufferSize - 1) As Byte
     Dim retVal As Long
-    Dim startIndex As Long = 0
+    Dim startIndex As Long
     Dim sExtension As String = ""
     Dim iIndex As Integer
     Dim sName As String
 
     Try
-      miImageCount = CShort(miImageCount + 1)
+      _ImageCount = CShort(_ImageCount + 1)
 
       psErrorMessage = ""
       LoadPicture = ""
       sImageFileName = ""
-      sImageWebPath = "../pictures"
+      sImageWebPath = "pictures"
       sImageFilePath = Server.MapPath(sImageWebPath)
 
       strConn = CType(("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
@@ -290,14 +282,14 @@ Partial Class ForgottenLogin
           End If
 
           sImageFileName = Session.SessionID().ToString & _
-           "_" & miImageCount.ToString & _
+           "_" & _ImageCount.ToString & _
            "_" & Date.Now.Ticks.ToString & _
            sExtension
           sTempName = sImageFilePath & "\" & sImageFileName
 
           ' Create a file to hold the output.
-          fs = New System.IO.FileStream(sTempName, IO.FileMode.OpenOrCreate, IO.FileAccess.Write)
-          bw = New System.IO.BinaryWriter(fs)
+          fs = New IO.FileStream(sTempName, IO.FileMode.OpenOrCreate, IO.FileAccess.Write)
+          bw = New IO.BinaryWriter(fs)
 
           ' Reset the starting byte for a new BLOB.
           startIndex = 0
@@ -343,19 +335,23 @@ Partial Class ForgottenLogin
     End Try
   End Function
 
-  Protected Sub btnSubmit_Click(sender As Object, e As System.Web.UI.ImageClickEventArgs) Handles btnSubmit.Click
+  Protected Sub BtnSubmitClick(sender As Object, e As ImageClickEventArgs) Handles btnSubmit.Click
+
     Dim strConn As String
-    Dim conn As System.Data.SqlClient.SqlConnection
-    Dim cmdForgotLogin As System.Data.SqlClient.SqlCommand
+    Dim conn As SqlClient.SqlConnection
+    Dim cmdForgotLogin As SqlClient.SqlCommand
+    Dim sHeader As String = ""
     Dim sMessage As String = ""
+    Dim sRedirectTo As String = ""
     Dim lngUserID As Long
 
     Try
-      strConn = "Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
+      strConn = CStr("Application Name=OpenHR Mobile;Data Source=" & Session("Server") & _
       ";Initial Catalog=" & Session("Database") & _
       ";Integrated Security=false;User ID=" & Session("Login") & _
       ";Password=" & Session("Password") & _
-      ";Pooling=false"
+      ";Pooling=false")
+
       conn = New SqlClient.SqlConnection(strConn)
       conn.Open()
 
@@ -381,35 +377,11 @@ Partial Class ForgottenLogin
       If lngUserID = 0 Then sMessage = "No records exist with the given email address."
 
       If sMessage.Length = 0 Then
-        '' --------------- Part two, retrieve and decrypt password for userID --------------------
-        'cmdForgotLogin = New SqlClient.SqlCommand("select top 1 [password] from [tbsys_mobilelogins] where [userid] = " & CStr(lngUserID), conn)
-        '' Create a DataReader to ferry information back from the database
-        'drUserIDs = cmdForgotLogin.ExecuteReader()
-        ''Iterate through the results
-        'While drUserIDs.Read()
-        '  sEncryptedString = NullSafeString(drUserIDs("password"))
-        'End While
-
-        'drUserIDs.Close()
-
-        'If sEncryptedString.Length > 0 Then
-        '  ' get the clear text password.
-        '  sPwdKey = objCrypt.DecryptString(sEncryptedString, "jmltn", False)
-        'Else
-        '  sMessage = "No registered user exists with the given email address."
-        'End If
-
-      End If
-
-      If sMessage.Length = 0 Then
         ' ------------- Part two, send it all to sql to validate and email out -----------------
         cmdForgotLogin = New SqlClient.SqlCommand
         cmdForgotLogin.CommandText = "spASRSysMobileForgotLogin"
         cmdForgotLogin.Connection = conn
         cmdForgotLogin.CommandType = CommandType.StoredProcedure
-
-        'cmdForgotLogin.Parameters.Add("@psPWDParameter", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
-        'cmdForgotLogin.Parameters("@psPWDParameter").Value = sPwdKey
 
         cmdForgotLogin.Parameters.Add("@psEmailAddress", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
         cmdForgotLogin.Parameters("@psEmailAddress").Value = txtEmail.Value
@@ -424,29 +396,32 @@ Partial Class ForgottenLogin
       End If
 
     Catch ex As Exception
-      sMessage = "Error :<BR><BR>" & _
-      ex.Message.Replace(vbCrLf, "<BR>") & "<BR><BR>" & _
-      "Contact your system administrator."
+      sMessage = "Error :" & vbCrLf & vbCrLf & ex.Message & vbCrLf & vbCrLf & "Contact your system administrator."
     End Try
 
-    If sMessage.Length = 0 Then
-      FormsAuthentication.SignOut()
-      lblMsgHeader.InnerText = "Request Submitted"
-      sMessage = "An email has been sent to the entered address with your login details."
-      Session("nextPage") = "~/MobileLogin"
+    If sMessage.Length > 0 Then
+      sHeader = "Request Failed"
     Else
-      Session("nextPage") = "MobileForgottenLogin"
+      sHeader = "Request Submitted"
+      sMessage = "An email has been sent to the entered address with your login details."
+      sRedirectTo = "MobileLogin.aspx"
     End If
 
-    ' Display message box.
-    lblMsgBox.InnerText = sMessage
+    ShowMessage(sHeader, sMessage, sRedirectTo)
+
+  End Sub
+
+  Private Sub ShowMessage(headerText As String, messageText As String, redirectTo As String)
+
+    lblMsgHeader.InnerText = headerText
+    lblMsgBox.InnerText = messageText
+    hdnRedirectTo.Value = redirectTo
     pnlGreyOut.Style.Add("visibility", "visible")
     pnlMsgBox.Style.Add("visibility", "visible")
 
   End Sub
 
-  Protected Sub btnCancel_Click(sender As Object, e As System.Web.UI.ImageClickEventArgs) Handles btnCancel.Click
-    FormsAuthentication.SignOut()
+  Protected Sub BtnCancelClick(sender As Object, e As ImageClickEventArgs) Handles btnCancel.Click
     Response.Redirect("~/MobileLogin.aspx")
   End Sub
 
