@@ -7,95 +7,69 @@
 	<title><%=Session("titleVersion")%></title>
     <link rel="shortcut icon" href="images/logo.ico"/>
 
-	<script for="window" event="onload" type="text/javascript">
-	<!--
-	    var iMINWIDTH = 400;
-    
-		// Resize the browser.
-	    try
-	    {
-	        window.parent.resizeTo(10, 10);
-	    }
-	    catch(e) {}
+	<script type="text/javascript">
 
-//		iResizeByHeight = frmMessage.offsetParent.scrollHeight - frmMessage.offsetParent.clientHeight;
-	    iResizeByHeight = window.document.documentElement.scrollHeight - window.document.documentElement.clientHeight;
-		
-	    if (document.getElementById("frmMessage").offsetParent.offsetHeight + iResizeByHeight > screen.availHeight) 
-	    {
-	        try
-	        {
-	            window.parent.moveTo((screen.width - frmMessage.offsetParent.offsetWidth) / 2, 0);
-	            window.parent.resizeTo(document.getElementById("frmMessage").offsetParent.offsetWidth, screen.availHeight);
+	    function window_onload() {
+
+	        var iDefHeight;
+	        var iDefWidth;
+	        var iResizeByHeight;
+	        var iResizeByWidth;
+	        var sControlType;
+
+	        try {
+	            iDefHeight = 150;
+	            iDefWidth = 400;
+	            window.focus();
+	            if ((iDefHeight > 0) && (iDefWidth > 0)) {
+	                iResizeByHeight = iDefHeight - getWindowHeight();
+	                iResizeByWidth = iDefWidth - getWindowWidth();
+	                window.parent.moveTo((screen.availWidth - iDefWidth) / 2, (screen.availHeight - iDefHeight) / 3);
+	                window.parent.resizeBy(iResizeByWidth, iResizeByHeight);	               
+	            }				
+	        }
+	        catch (e) {}
+
+	        //Fault HRPRO-2121
+	        try	{
+	            window.resizeBy(0,-1);
+	            window.resizeBy(0,1);
 	        }
 	        catch(e) {}
-	    }
-	    else 
-	    {
-	        try
-	        {
-	            window.parent.moveTo((screen.width - document.getElementById("frmMessage").offsetParent.offsetWidth) / 2, (screen.availHeight - (document.getElementById("frmMessage").offsetParent.offsetHeight + iResizeByHeight)) / 3);
-	            window.parent.resizeBy(0, iResizeByHeight);
-	        }
-	        catch(e) {}
-	    }
 
-	    if(document.getElementById("frmMessage").offsetParent.scrollWidth < iMINWIDTH)
-	    {
-	        iResizeByWidth = iMINWIDTH - document.getElementById("frmMessage").offsetParent.clientWidth;
-	    }
-	    else
-	    {
-	        //iResizeByWidth = frmMessage.offsetParent.scrollWidth - frmMessage.offsetParent.clientWidth;
-	        iResizeByWidth = window.document.documentElement.scrollWidth - window.document.documentElement.clientWidth;
-	    }
+	        document.getElementById('spnClickHere').focus();
 
-		//alert(iResizeByWidth);
+	      }
 
-	    if (document.getElementById("frmMessage").offsetParent.offsetWidth + iResizeByWidth > screen.width) 
-	    {
-	        try
-	        {
-	            window.parent.moveTo(0, (screen.availHeight - document.getElementById("frmMessage").offsetParent.offsetHeight) / 3);
-	            window.parent.resizeTo(screen.width, document.getElementById("frmMessage").offsetParent.offsetHeight);
+	      function getWindowWidth() {
+	        var myWidth = 0;
+	        if (typeof (window.innerWidth) == 'number') {
+	          //Non-IE
+	          myWidth = window.innerWidth;
+	        } else if (document.documentElement && (document.documentElement.clientWidth)) {
+	          //IE 6+ in 'standards compliant mode'
+	          myWidth = document.documentElement.clientWidth;
+	        } else if (document.body && (document.body.clientWidth)) {
+	          //IE 4 compatible
+	          myWidth = document.body.clientWidth;
 	        }
-	        catch(e) {}
-	    }
-	    else 
-	    {
-	        try
-	        {
-	            window.parent.moveTo((screen.width - (document.getElementById("frmMessage").offsetParent.offsetWidth + iResizeByWidth)) / 2, (screen.availHeight - document.getElementById("frmMessage").offsetParent.offsetHeight) / 3);
-	            window.parent.resizeBy(iResizeByWidth, 0);
-	        }
-	        catch(e) {}
-	    }
-		
-		// Redo the height calc (it does need to be done again).		
-		//iResizeByHeight = frmMessage.offsetParent.scrollHeight - frmMessage.offsetParent.clientHeight;
-	    iResizeByHeight = window.document.documentElement.scrollHeight - window.document.documentElement.clientHeight;
+	        return myWidth;
+	      }
 
-	    if (document.getElementById("frmMessage").offsetParent.offsetHeight + iResizeByHeight > screen.availHeight) 
-	    {
-	        try
-	        {
-	            window.parent.moveTo((screen.width - document.getElementById("frmMessage").offsetParent.offsetWidth) / 2, 0);
-	            window.parent.resizeTo(document.getElementById("frmMessage").offsetParent.offsetWidth, screen.availHeight);
+	      function getWindowHeight() {
+	        var myHeight = 0;
+	        if (typeof (window.innerHeight) == 'number') {
+	          //Non-IE
+	          myHeight = window.innerHeight;
+	        } else if (document.documentElement && (document.documentElement.clientHeight)) {
+	          //IE 6+ in 'standards compliant mode'
+	          myHeight = document.documentElement.clientHeight;
+	        } else if (document.body && (document.body.clientHeight)) {
+	          //IE 4 compatible
+	          myHeight = document.body.clientHeight;
 	        }
-	        catch(e) {}
-	    }
-	    else 
-	    {
-	        try
-	        {
-	            window.parent.moveTo((screen.width - document.getElementById("frmMessage").offsetParent.offsetWidth) / 2, (screen.availHeight - (document.getElementById("frmMessage").offsetParent.offsetHeight + iResizeByHeight)) / 3);
-	            window.parent.resizeBy(0, iResizeByHeight);
-	        }
-	        catch(e) {}
-	    }
-
-	    document.getElementById('spnClickHere').focus();
-	-->
+	        return myHeight;
+	      }
 	</script>
 
     <script type="text/javascript">
@@ -200,5 +174,8 @@
 			</tr>
 		</table>
 	</form>
+    <script type="text/javascript">
+      window_onload();
+    </script>
 </body>
 </html>
