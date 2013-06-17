@@ -60,7 +60,7 @@ Public Class RecordSelector
                     customHeader.Cells(iColCount).Text = Replace(customHeader.Cells(iColCount).Text, "_", " ")
                     If MyBase.Rows.Count > 1 Then
                         If IsLookup Then
-                            customHeader.Cells(iColCount).Attributes("onclick") = ("txtActiveDDE.value='" & grdGrid.ID.Replace("Grid", "dde") & "';try{setPostbackMode(2);}catch(e){};__doPostBack('" & MyBase.UniqueID & "','Sort$") & customHeader.Cells(iColCount).Text & "');"
+                            customHeader.Cells(iColCount).Attributes("onclick") = ("txtActiveDDE.value='" & grdGrid.ID.Replace("Grid", "dde") & "';try{setPostbackMode(2);}catch(e){};if(event.ctrlKey){__doPostBack('" & MyBase.UniqueID & "','Sort$" & customHeader.Cells(iColCount).Text & "+');}else{__doPostBack('" & MyBase.UniqueID & "','Sort$") & customHeader.Cells(iColCount).Text & "');}"
                         Else
                             customHeader.Cells(iColCount).Attributes("onclick") = ("try{setPostbackMode(2);}catch(e){};if(event.ctrlKey){__doPostBack('" & MyBase.UniqueID & "','Sort$" & customHeader.Cells(iColCount).Text & "+');}else{__doPostBack('" & MyBase.UniqueID & "','Sort$") & customHeader.Cells(iColCount).Text & "');}"
                         End If
