@@ -167,6 +167,21 @@ Public Class Utilities
     Return False
   End Function
 
+  Public Shared Function BrowserRequiresOverflowScrollFix() As Boolean
+
+    'Earlier android browsers dont support scrolling on overflowed divs
+    'So we have to include a fix where neeeded
+    If IsAndroidBrowser() Then
+
+      Dim userAgent = HttpContext.Current.Request.ServerVariables("HTTP_USER_AGENT").ToLower
+      If userAgent Like "*android 2.*" Then Return True
+      If userAgent Like "*android 3.*" Then Return True
+    End If
+
+    Return False
+
+  End Function
+
   Public Shared Function IsAndroidBrowser() As Boolean
 
     Dim userAgent = HttpContext.Current.Request.ServerVariables("HTTP_USER_AGENT").ToLower

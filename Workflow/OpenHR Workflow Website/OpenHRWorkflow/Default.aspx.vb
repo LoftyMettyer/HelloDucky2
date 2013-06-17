@@ -1154,8 +1154,6 @@ Public Class _Default
 
                 Case 5 ' Input value - numeric
 
-
-
                   ctlForm_NumericInput = New Infragistics.WebUI.WebDataInput.WebNumericEdit
                   With ctlForm_NumericInput
                     .ID = sID
