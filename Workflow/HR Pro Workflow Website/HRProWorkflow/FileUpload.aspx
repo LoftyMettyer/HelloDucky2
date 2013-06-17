@@ -87,10 +87,19 @@
     }
 
     function exitFileUpload(piExitMode) {
-      try {
-        window.parent.fileUploadDone(frmFileUpload.hdnElementID.value, piExitMode);
-      }
-      catch (e) { }
+        try {
+            window.parent.fileUploadDone(frmFileUpload.hdnElementID.value, piExitMode);
+        }
+        catch (e) { }
+    }
+
+    function enableControls() {
+        try {
+            var button = ig_getWebControlById("btnCancel");
+
+            button.setEnabled(true);
+        }
+        catch (e) { }
     }
 
     function refreshFileUploadButton(psFileUploadValue) {

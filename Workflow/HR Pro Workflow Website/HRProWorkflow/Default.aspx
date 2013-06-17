@@ -322,7 +322,11 @@
 		}
 
 		function setPostbackMode(piValue) {
-			try {
+			// 0 = Default
+			// 1 = Submit/SaveForLater button postback (ie. WebForm submission)
+			// 2 = Grid header postback
+			// 3 = FileUpload button postback
+            try {
 				txtPostbackMode.value = piValue;
 			}
 			catch (e) { }
@@ -458,8 +462,10 @@
 		}
 
 		function showFileUpload(pfDisplay, psElementItemID, psAlreadyUploaded) {
+		
 			try {
 				if (pfDisplay == true) {
+
 					setPostbackMode(3);
 
 					var sAlreadyUploaded = new String(psAlreadyUploaded);
@@ -549,12 +555,18 @@
 				refreshLiterals();
 
 				if ((txtPostbackMode.value == 2)
-                    || (txtPostbackMode.value == 3)) {
+                    || (txtPostbackMode.value == 3)) 
+                {
 					// 0 = Default
 					// 1 = Submit/SaveForLater button postback (ie. WebForm submission)
 					// 2 = Grid header postback
 					// 3 = FileUpload button postback
-					txtPostbackMode.value = 0;
+					
+					if (txtPostbackMode.value == 3) 
+					{
+					    document.all.ifrmFileUpload.contentWindow.enableControls();
+                    }
+					setPostbackMode(0);
 					return;
 				}
 
@@ -581,7 +593,7 @@
 					}
 				}
 
-				txtPostbackMode.value = 0;
+				setPostbackMode(0);
 			}
 			catch (e) { }
 		}
@@ -769,17 +781,17 @@
                     }
                 }
                 
-                if (oEl.scrollHeight > bdyMain.clientHeight)
-                {
-                    if (oEl.scrollHeight > screen.availHeight)
-                    {
-                        iResizeByHeight = screen.availHeight - bdyMain.clientHeight;
-                    }
-                    else
-                    {
-                        iResizeByHeight = oEl.scrollHeight - bdyMain.clientHeight;
-                    }
-                }
+//                if (oEl.scrollHeight > bdyMain.clientHeight)
+//                {
+//                    if (oEl.scrollHeight > screen.availHeight)
+//                    {
+//                        iResizeByHeight = screen.availHeight - bdyMain.clientHeight;
+//                    }
+//                    else
+//                    {
+//                        iResizeByHeight = oEl.scrollHeight - bdyMain.clientHeight;
+//                    }
+//                }
                 
                 if ((iResizeByWidth > 0) || (iResizeByHeight > 0))
                 {

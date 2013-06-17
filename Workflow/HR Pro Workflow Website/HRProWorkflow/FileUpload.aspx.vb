@@ -2,6 +2,7 @@
 Imports System.Data
 Imports System.Drawing
 Imports Utilities
+Imports System.Diagnostics
 
 Partial Class FileUpload
 	Inherits System.Web.UI.Page
@@ -143,6 +144,8 @@ Partial Class FileUpload
 			Response.AddHeader("Pragma", "no-cache")
 			Response.Expires = -1
 
+            Debug.Print("FU pageload in")
+
 			If Not IsPostBack Then
 				sFileExtensions = ""
 				iMaxFileSize = 0
@@ -241,7 +244,10 @@ Partial Class FileUpload
 						.HoverAppearance.Style.BorderColor = objGeneral.GetColour(562943)
 
 						.Font.Name = "Verdana"
-						.ClientSideEvents.Click = "try{exitFileUpload(0);}catch(e){};"
+                        .ClientSideEvents.Click = "try{exitFileUpload(0);}catch(e){};"
+
+                        ' Disable until the Default plage postback is complete.
+                        .Enabled = False
 					End With
 
 					With btnClear
@@ -299,7 +305,10 @@ Partial Class FileUpload
 			End If
 		Catch ex As Exception
 			'' jpd handle the exception
-		End Try
+        End Try
+
+        Debug.Print("FU pageload out")
+
 	End Sub
 
 	Protected Sub btnClear_Click(ByVal sender As Object, ByVal e As Infragistics.WebUI.WebDataInput.ButtonEventArgs) Handles btnClear.Click
