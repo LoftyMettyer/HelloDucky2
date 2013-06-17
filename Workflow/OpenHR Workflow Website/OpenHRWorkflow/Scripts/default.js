@@ -96,6 +96,7 @@
 				
 	            try {
 	                if (window.$get("frmMain").hdnFirstControl.value.length > 0) {
+	                    
 	                    sControlType = window.$get("frmMain").hdnFirstControl.value.substr(window.$get("frmMain").hdnFirstControl.value.indexOf("_")+1);
 	                    sControlType = sControlType.substr(sControlType.indexOf("_")+1);
 	                    sControlType = sControlType.substring(0, sControlType.indexOf("_"));
@@ -221,9 +222,9 @@
 	            }
 	            catch (e) {}
 	            return;			
-	        }		    
+	        }
 
-	        $get("pleasewaitScreen").style.display="block";
+	        showWait(true);
 	        showOverlay(true);
 	        showErrorMessages(false);
 	    }
@@ -280,14 +281,14 @@
 	    }
 
 	    function overrideWarningsAndSubmit() {
-	        if (divErrorMessages_Outer.disabled == true) {
+	        if ($get("divErrorMessages_Outer").disabled == true) {
 	            return;
 	        };
 
 	        $get("frmMain").hdnOverrideWarnings.value = 1;
 
 	        try {
-	            document.getElementById(frmMain.hdnLastButtonClicked.value).click();
+	            document.getElementById($get("frmMain").hdnLastButtonClicked.value).click();
 	        }
 	        catch (e) {
 	            $get("frmMain").btnSubmit.click();
@@ -295,18 +296,20 @@
 	    }
 
 	    function submitForm() {
-	        pbModeValue = document.getElementById("txtPostbackMode").value;
+	        var mode = document.getElementById("txtPostbackMode").value;
 			
 	        try {
-	            if (pbModeValue == 0) {
+	            if (mode == 0) {
 	                tAE = document.getElementById("txtActiveElement");				  
-	                if(eval(tAE)) {tae.value.setActive();}
+	                if(eval(tAE)) {
+	                    tae.value.setActive();
+	                }
 				  
 	            }
 	        }
 	        catch (e) { };
-			
-	        return (pbModeValue != 0);
+
+	        return (mode != 0);
 	    }
 
 	    function setPostbackMode(piValue) {
@@ -315,8 +318,7 @@
 	        // 2 = Grid header postback
 	        // 3 = FileUpload button postback
 	        try {
-	            pbModeValue = document.getElementById("txtPostbackMode");
-	            pbModeValue.value = piValue;
+	            document.getElementById("txtPostbackMode").value = piValue;
 	        }
 	        catch (e) { }
 			
@@ -412,13 +414,16 @@
         }
 
         function showCalendar(elementID) {
-            var dc = igdrp_getComboById(elementID);
-            dc.showCalendar();
+            igdrp_getComboById(elementID).showCalendar();
         }
 
         function showOverlay(display) {
 	        $get("divOverlay").style.display = display ? "block" : "none";               
 	    }
+
+        function showWait(display) {
+            $get("pleasewaitScreen").style.display = display ? "block" : "none"; 
+        }
 
 	    function showFileUpload(pfDisplay, psElementItemID, psAlreadyUploaded) {
 		
@@ -503,9 +508,9 @@
 	    function showMessage() {			 
     
 	        //Reset current tab position
-	        SetCurrentTab(iCurrentTab);	
-		
-	        $get("pleasewaitScreen").style.display="none";
+	        SetCurrentTab(iCurrentTab);
+
+	        showWait(false);
 	        showOverlay(false);
 
 	        //Reapply resizable column functionality to tables
@@ -568,7 +573,7 @@
 	                                window.close();
 	                            } else {
 	                                // Non-IE browsers can't self-close windows, show close message instead
-	                                $get("pleasewaitScreen").style.display = "block";
+	                                showWait(true);
 	                                $get("pleasewaitText").innerHTML = "Please close your browser.";						  
 	                            }
 	                        }

@@ -3262,7 +3262,7 @@ Public Class _Default
 
           hdnCount_Errors.Value = CStr(bulletErrors.Items.Count)
           hdnCount_Warnings.Value = CStr(bulletWarnings.Items.Count)
-          hdnOverrideWarnings.Value = CStr(0)
+          hdnOverrideWarnings.Value = "0"
 
           lblErrors.Text = CStr(IIf(bulletErrors.Items.Count > 0, _
            "Unable to submit this form due to the following error" & _

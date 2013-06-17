@@ -50,9 +50,9 @@
         <span id="pleasewaitText">Processing...<br/><br/>Please wait.</span>
 	</div>
 		
-    <img id="imgErrorMessages_Max" src="Images/uparrows_white.gif" alt="Show messages" style="position: absolute; right: 1px; bottom: 1px; display: none; visibility: hidden; z-index: 1; width:20px; height:20px;" onclick="showErrorMessages(true);" />
+    <img id="imgErrorMessages_Max" src="Images/uparrows_white.gif" alt="Show messages" style="position: absolute; right: 1px; bottom: 1px; display: none; visibility: hidden; z-index: 10; width:20px; height:20px;" onclick="showErrorMessages(true);" />
 
-	<div id="divErrorMessages_Outer" style="position: absolute; bottom: 0px; left: 0px; right: 0px; display: none; visibility: hidden; z-index: 1">
+	<div id="divErrorMessages_Outer" style="position: absolute; bottom: 0px; left: 0px; right: 0px; display: none; visibility: hidden; z-index: 10">
 		
         <div id="divErrorMessages_Inner" style="background-color: white; text-align: left; position: relative; margin: 0px; padding: 5px; border: 1px solid; font-size: 11px; color: black; font-family: Verdana;">
 		    
