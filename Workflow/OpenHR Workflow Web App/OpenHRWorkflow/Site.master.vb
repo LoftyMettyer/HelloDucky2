@@ -89,6 +89,7 @@ Partial Class Site
 		dialogRedirect.Value = redirectTo
 		overlay.Style.Add("display", "block")
 		dialog.Style.Add("display", "block")
+		dialog.Focus()
 	End Sub
 
 	Private Sub SetupViewport()
