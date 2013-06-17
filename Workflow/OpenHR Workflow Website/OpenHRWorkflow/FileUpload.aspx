@@ -22,7 +22,8 @@
       }
       catch (e) { };
       
-      resizeFrame();
+      //Fault HRPRO-2149
+      //resizeFrame();
     }
 
     function resizeFrame() {
