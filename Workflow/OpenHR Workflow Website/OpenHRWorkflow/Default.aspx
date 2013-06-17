@@ -1747,7 +1747,10 @@ function ResizeComboForForm(sender, args) {
             <ContentTemplate>
                 <div id = "pnlInputDiv" runat="server" style="position:relative;padding-right:0px;padding-left:0px;padding-bottom:0px;margin-top:0px;margin-bottom:0px;margin-right:auto;margin-left:auto;padding-top:0px;">
                     
-                    <div id="pnlTabsDiv" style="position: absolute;" runat="server"></div>
+                    <div id="pnlTabsDiv" style="position: absolute;" runat="server">
+                        <div id="pnlTabsBorder" style="position: absolute; top: 27px; left: 0; right: 0; bottom: 0; border: 1px solid black;">
+                        </div>
+                    </div>
                 </div>    
                 <asp:Button id="btnSubmit" runat="server" style="visibility: hidden; top: 0px; position: absolute; left: 0px; width: 0px; height: 0px;" text=""/>
                 <asp:Button id="btnReEnableControls" runat="server" style="visibility: hidden; top: 0px; position: absolute; left: 0px; width: 0px; height: 0px;" text=""/>

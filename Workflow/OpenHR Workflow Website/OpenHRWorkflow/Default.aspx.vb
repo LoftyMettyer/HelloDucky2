@@ -663,14 +663,11 @@ Public Class _Default
                 ctlForm_PageTab(iCurrentPageTab).ID = FORMINPUTPREFIX & iCurrentPageTab.ToString & "_21_PageTab"
                 ctlForm_PageTab(iCurrentPageTab).Style.Add("position", "absolute")
 
-                If iCurrentPageTab > 0 Then
-                  ctlForm_PageTab(iCurrentPageTab).Style.Add("display", "none")
-                End If
-
                 ' Add this tab to the web form
                 If iCurrentPageTab = 0 Then
                   pnlInputDiv.Controls.Add(ctlForm_PageTab(iCurrentPageTab))
                 Else
+                  ctlForm_PageTab(iCurrentPageTab).Style.Add("display", "none")
                   pnlTabsDiv.Controls.Add(ctlForm_PageTab(iCurrentPageTab))
                 End If
               End Try
@@ -2898,6 +2895,8 @@ Public Class _Default
                   Dim ctlTabsDiv As New Panel
                   ctlTabsDiv.ID = "TabsDiv"
                   ctlTabsDiv.Style.Add("height", TabStripHeight & "px")
+                  ctlTabsDiv.Style.Add("position", "relative")
+                  ctlTabsDiv.Style.Add("z-index", "1")
 
                   'TODO get previous saved if not postback, think need to call [spASRGetWorkflowItemValues]
                   Dim currentTab As Integer = 1
@@ -2919,7 +2918,6 @@ Public Class _Default
                       .Style.Add("top", "2px")
                       .Style.Add("right", "0px")
                       .Style.Add("width", "48px")
-                      '.Style.Add("height", iTabStripHeight - 4 & "px")
                       .Style.Add("z-index", "1")
                       .BackColor = Color.White
                       .BorderColor = Color.Black
@@ -2950,7 +2948,7 @@ Public Class _Default
                     End With
                     ctlForm_TabArrows.Controls.Add(ctlForm_Image)
 
-                    ctlTabsDiv.Controls.Add(ctlForm_TabArrows)
+                    pnlTabsDiv.Controls.Add(ctlForm_TabArrows)
 
                   End If
 
