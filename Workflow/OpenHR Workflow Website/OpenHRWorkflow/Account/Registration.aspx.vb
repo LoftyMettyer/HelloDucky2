@@ -11,7 +11,8 @@ Partial Class Registration
 
   Protected Sub BtnRegisterClick(sender As Object, e As EventArgs) Handles btnSubmit.Click, btnSubmit2.Click
 
-    Dim message As String = Database.Register(txtEmail.Text)
+    Dim db As New Database
+    Dim message As String = db.Register(txtEmail.Text)
 
     If message.Length > 0 Then
       CType(Master, Site).ShowDialog("Registration Failed", message)

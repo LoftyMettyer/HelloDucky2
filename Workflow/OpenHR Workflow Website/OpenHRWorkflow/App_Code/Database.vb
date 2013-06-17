@@ -6,9 +6,19 @@ Imports Utilities
 
 Public Class Database
 
-  Public Shared Function IsSystemLocked() As Boolean
+  Private ReadOnly _connectionString As String
 
-    Using conn As New SqlConnection(Configuration.ConnectionString)
+  Public Sub New()
+    _connectionString = Configuration.ConnectionString
+  End Sub
+
+  Public Sub New(connectionString As String)
+    _connectionString = connectionString
+  End Sub
+
+  Public Function IsSystemLocked() As Boolean
+
+    Using conn As New SqlConnection(_connectionString)
       conn.Open()
       ' Check if the database is locked.
       Dim cmd = New SqlCommand("sp_ASRLockCheck", conn)
@@ -27,9 +37,9 @@ Public Class Database
 
   End Function
 
-  Public Shared Function IsMobileLicensed() As Boolean
+  Public Function IsMobileLicensed() As Boolean
 
-    Using conn As New SqlConnection(Configuration.ConnectionString)
+    Using conn As New SqlConnection(_connectionString)
       conn.Open()
 
       Dim cmd As New SqlCommand("spASRIntActivateModule", conn)
@@ -47,9 +57,9 @@ Public Class Database
 
   End Function
 
-  Public Shared Function CheckLoginDetails(userName As String) As CheckLoginResult
+  Public Function CheckLoginDetails(userName As String) As CheckLoginResult
 
-    Using conn As New SqlConnection(Configuration.ConnectionString)
+    Using conn As New SqlConnection(_connectionString)
       conn.Open()
 
       Dim cmd As New SqlCommand("spASRSysMobileCheckLogin", conn)
@@ -73,9 +83,9 @@ Public Class Database
 
   End Function
 
-  Public Shared Function GetPendingStepCount(userName As String) As Integer
+  Public Function GetPendingStepCount(userName As String) As Integer
 
-    Using conn As New SqlConnection(Configuration.ConnectionString)
+    Using conn As New SqlConnection(_connectionString)
       conn.Open()
 
       Dim cmd As New SqlCommand
@@ -97,9 +107,9 @@ Public Class Database
 
   End Function
 
-  Public Shared Function GetUserID(email As String) As Integer
+  Public Function GetUserID(email As String) As Integer
 
-    Using conn As New SqlConnection(Configuration.ConnectionString)
+    Using conn As New SqlConnection(_connectionString)
       conn.Open()
 
       Dim cmd As New SqlCommand("spASRSysMobileGetUserIDFromEmail", conn)
@@ -118,7 +128,7 @@ Public Class Database
 
   End Function
 
-  Public Shared Function Register(email As String) As String
+  Public Function Register(email As String) As String
 
     'Check the email address relates to a user
     Dim userID = GetUserID(email)
@@ -138,7 +148,7 @@ Public Class Database
 
     Dim activationUrl As String = Configuration.WorkflowUrl & "?" & encryptedString
 
-    Using conn As New SqlConnection(Configuration.ConnectionString)
+    Using conn As New SqlConnection(_connectionString)
       conn.Open()
 
       Dim cmd As New SqlCommand("spASRSysMobileRegistration", conn)
@@ -160,7 +170,7 @@ Public Class Database
 
   End Function
 
-  Public Shared Function ForgotLogin(email As String) As String
+  Public Function ForgotLogin(email As String) As String
 
     'Check the email address relates to a user
     Dim userID = GetUserID(email)
@@ -170,7 +180,7 @@ Public Class Database
     End If
 
     'Send it all to sql to validate and email out
-    Using conn As New SqlConnection(Configuration.ConnectionString)
+    Using conn As New SqlConnection(_connectionString)
       conn.Open()
 
       Dim cmd As New SqlCommand("spASRSysMobileForgotLogin", conn)
@@ -189,10 +199,10 @@ Public Class Database
 
   End Function
 
-  Public Shared Function GetLoginCount(userName As String) As Integer
+  Public Function GetLoginCount(userName As String) As Integer
 
     'Does not include being logged into the mobile site
-    Using conn As New SqlConnection(Configuration.ConnectionString)
+    Using conn As New SqlConnection(_connectionString)
       conn.Open()
 
       Dim cmd As New SqlCommand("spASRGetCurrentUsersCountOnServer", conn)
@@ -211,14 +221,242 @@ Public Class Database
 
   End Function
 
-  Public Shared Function ChangePassword(userName As String, currentPassword As String, newPassword As String) As String
+  Public Function ActivateUser(userId As Integer) As String
+
+    ' update tbsysMobile_Logins, and copy the 'newpassword' string to the 'password' field
+
+    Using conn As New SqlConnection(_connectionString)
+      conn.Open()
+
+      Dim cmd As New SqlCommand("spASRSysMobileActivateUser", conn)
+      cmd.CommandType = CommandType.StoredProcedure
+
+      cmd.Parameters.Add("@piRecordID", SqlDbType.Int).Direction = ParameterDirection.Input
+      cmd.Parameters("@piRecordID").Value = userId
+
+      cmd.Parameters.Add("@psMessage", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Output
+
+      cmd.ExecuteNonQuery()
+
+      Return CStr(cmd.Parameters("@psMessage").Value())
+
+    End Using
+
+  End Function
+
+  Public Function GetWorkflowQueryString(instanceId As Integer, [step] As Integer) As String
+
+    Using conn As New SqlConnection(_connectionString)
+      conn.Open()
+
+      Dim cmd As New SqlCommand("spASRGetWorkflowQueryString", conn)
+      cmd.CommandType = CommandType.StoredProcedure
+
+      cmd.Parameters.Add("@piInstanceID", SqlDbType.Int).Direction = ParameterDirection.Input
+      cmd.Parameters("@piInstanceID").Value = instanceId
+
+      cmd.Parameters.Add("@piElementID", SqlDbType.Int).Direction = ParameterDirection.Input
+      cmd.Parameters("@piElementID").Value = [step]
+
+      cmd.Parameters.Add("@psQueryString", SqlDbType.VarChar, 8000).Direction = ParameterDirection.Output
+
+      cmd.ExecuteNonQuery()
+
+      Return CStr(cmd.Parameters("@psQueryString").Value())
+    End Using
+
+  End Function
+
+  Public Function GetWorkflowItemValues(elementItemID As Integer, instanceId As Integer) As WorkflowItemValuesResult
+
+    Dim result As New WorkflowItemValuesResult
+
+    Using conn As New SqlConnection(_connectionString)
+      conn.Open()
+
+      Dim cmd As New SqlCommand("spASRGetWorkflowItemValues", conn)
+      cmd.CommandType = CommandType.StoredProcedure
+
+      cmd.Parameters.Add("@piElementItemID", SqlDbType.Int).Direction = ParameterDirection.Input
+      cmd.Parameters("@piElementItemID").Value = elementItemID
+
+      cmd.Parameters.Add("@piInstanceID", SqlDbType.Int).Direction = ParameterDirection.Input
+      cmd.Parameters("@piInstanceID").Value = instanceId
+
+      cmd.Parameters.Add("@piLookupColumnIndex", SqlDbType.Int).Direction = ParameterDirection.Output
+      cmd.Parameters.Add("@piItemType", SqlDbType.Int).Direction = ParameterDirection.Output
+      cmd.Parameters.Add("@psDefaultValue", SqlDbType.VarChar, 8000).Direction = ParameterDirection.Output
+
+      Dim adapter As New SqlDataAdapter(cmd)
+      result.Data = New DataTable()
+      adapter.Fill(result.Data)
+
+      result.LookupColumnIndex = NullSafeInteger(cmd.Parameters("@piLookupColumnIndex").Value)
+      result.DefaultValue = NullSafeString(cmd.Parameters("@psDefaultValue").Value)
+
+      Return result
+    End Using
+
+  End Function
+
+  Public Function GetWorkflowGridItems(elementItemID As Integer, instanceId As Integer) As WorkflowGridItemsResult
+
+    Dim result As New WorkflowGridItemsResult
+
+    Using conn As New SqlConnection(_connectionString)
+      conn.Open()
+
+      Dim cmd As New SqlCommand("spASRGetWorkflowGridItems", conn)
+      cmd.CommandType = CommandType.StoredProcedure
+
+      cmd.Parameters.Add("@piInstanceID", SqlDbType.Int).Direction = ParameterDirection.Input
+      cmd.Parameters("@piInstanceID").Value = instanceId
+
+      cmd.Parameters.Add("@piElementItemID", SqlDbType.Int).Direction = ParameterDirection.Input
+      cmd.Parameters("@piElementItemID").Value = elementItemID
+
+      cmd.Parameters.Add("@pfOK", SqlDbType.Bit).Direction = ParameterDirection.Output
+
+      Dim adapter As New SqlDataAdapter(cmd)
+      result.Data = New DataTable()
+      adapter.Fill(result.Data)
+
+      result.Ok = CBool(cmd.Parameters("@pfOK").Value)
+
+      Return result
+    End Using
+
+  End Function
+
+  Public Function WorkflowValidateWebForm(elementItemID As Integer, instanceId As Integer, values As String) As ValidateWebFormResult
+
+    Dim result As New ValidateWebFormResult With {.Warnings = New List(Of String), .Errors = New List(Of String)}
+
+    Using conn As New SqlConnection(_connectionString)
+      conn.Open()
+
+      Dim cmd As New SqlCommand("spASRSysWorkflowWebFormValidation", conn)
+      cmd.CommandType = CommandType.StoredProcedure
+
+      cmd.Parameters.Add("@piInstanceID", SqlDbType.Int).Direction = ParameterDirection.Input
+      cmd.Parameters("@piInstanceID").Value = instanceId
+
+      cmd.Parameters.Add("@piElementID", SqlDbType.Int).Direction = ParameterDirection.Input
+      cmd.Parameters("@piElementID").Value = elementItemID
+
+      cmd.Parameters.Add("@psFormInput1", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
+      cmd.Parameters("@psFormInput1").Value = values
+
+      Dim dr As SqlDataReader = cmd.ExecuteReader
+
+      While dr.Read
+        If NullSafeInteger(dr("failureType")) = 0 Then
+          result.Errors.Add(NullSafeString(dr("Message")))
+        Else
+          result.Warnings.Add(NullSafeString(dr("Message")))
+        End If
+      End While
+      dr.Close()
+
+      Return result
+    End Using
+
+  End Function
+
+  Public Function WorkflowSubmitWebForm(elementItemID As Integer, instanceId As Integer, values As String, page As Integer) As SubmitWebFormResult
+
+    Dim result As New SubmitWebFormResult
+
+    Using conn As New SqlConnection(_connectionString)
+      conn.Open()
+
+      Dim cmd As New SqlCommand("spASRSubmitWorkflowStep", conn)
+      cmd.CommandType = CommandType.StoredProcedure
+
+      cmd.Parameters.Add("@piInstanceID", SqlDbType.Int).Direction = ParameterDirection.Input
+      cmd.Parameters("@piInstanceID").Value = instanceId
+
+      cmd.Parameters.Add("@piElementID", SqlDbType.Int).Direction = ParameterDirection.Input
+      cmd.Parameters("@piElementID").Value = elementItemID
+
+      cmd.Parameters.Add("@psFormInput1", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
+      cmd.Parameters("@psFormInput1").Value = values
+
+      cmd.Parameters.Add("@psFormElements", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Output
+      cmd.Parameters.Add("@pfSavedForLater", SqlDbType.Bit).Direction = ParameterDirection.Output
+
+      cmd.Parameters.Add("@piPageNo", SqlDbType.Int).Direction = ParameterDirection.Input
+      cmd.Parameters("@piPageNo").Value = page
+
+      cmd.ExecuteNonQuery()
+
+      result.FormElements = CStr(cmd.Parameters("@psFormElements").Value())
+      result.SavedForLater = CBool(cmd.Parameters("@pfSavedForLater").Value())
+
+      Return result
+    End Using
+
+  End Function
+
+  Public Function GetWorkflowCurrentTab(instanceId As Integer) As Integer
+
+    Dim tabPage As Integer
+
+    Using conn As New SqlConnection(_connectionString)
+      conn.Open()
+
+      Dim cmd As New SqlCommand("SELECT [pageno] FROM [dbo].[ASRSysWorkflowInstances] WHERE [ID] = " & instanceId.ToString, conn)
+      Dim dr As SqlDataReader = cmd.ExecuteReader()
+
+      If dr.Read() Then
+        tabPage = NullSafeInteger(dr("pageno"))
+      End If
+      dr.Close()
+
+    End Using
+
+    Return tabPage
+
+  End Function
+
+  Public Function GetSetting(section As String, key As String, userSetting As Boolean) As String
+
+    Using conn As New SqlConnection(_connectionString)
+      conn.Open()
+
+      Dim cmd As New SqlCommand("spASRGetSetting", conn)
+      cmd.CommandType = CommandType.StoredProcedure
+
+      cmd.Parameters.Add("@psSection", SqlDbType.VarChar, 8000).Direction = ParameterDirection.Input
+      cmd.Parameters("@psSection").Value = section
+
+      cmd.Parameters.Add("@psKey", SqlDbType.VarChar, 8000).Direction = ParameterDirection.Input
+      cmd.Parameters("@psKey").Value = key
+
+      cmd.Parameters.Add("@psDefault", SqlDbType.VarChar, 8000).Direction = ParameterDirection.Input
+      cmd.Parameters("@psDefault").Value = ""
+
+      cmd.Parameters.Add("@pfUserSetting", SqlDbType.Bit).Direction = ParameterDirection.Input
+      cmd.Parameters("@pfUserSetting").Value = userSetting
+
+      cmd.Parameters.Add("@psResult", SqlDbType.VarChar, 8000).Direction = ParameterDirection.Output
+
+      cmd.ExecuteNonQuery()
+
+      Return CStr(cmd.Parameters("@psResult").Value)
+
+    End Using
+
+  End Function
+
+  Public Function ChangePassword(userName As String, currentPassword As String, newPassword As String) As String
 
     If GetLoginCount(userName) > 0 Then
       Return "Could not change your password. You are logged into the system using another application."
     End If
 
     ' Attempt to change the password on the SQL Server.
-    Using conn As New SqlConnection(Configuration.ConnectionString)
+    Using conn As New SqlConnection(_connectionString)
       conn.Open()
 
       Dim cmd As New SqlCommand("sp_password", conn)
@@ -244,26 +482,26 @@ Public Class Database
       End Try
     End Using
 
-      ' Password changed okay. Update the appropriate record in the ASRSysPasswords table.
-      Using conn As New SqlConnection(Configuration.ConnectionString)
-        conn.Open()
+    ' Password changed okay. Update the appropriate record in the ASRSysPasswords table.
+    Using conn As New SqlConnection(_connectionString)
+      conn.Open()
 
-        Dim cmd As New SqlCommand("spASRSysMobilePasswordOK", conn)
-        cmd.CommandType = CommandType.StoredProcedure
+      Dim cmd As New SqlCommand("spASRSysMobilePasswordOK", conn)
+      cmd.CommandType = CommandType.StoredProcedure
 
-        cmd.Parameters.Add("@sCurrentUser", SqlDbType.NVarChar, 2147483646).Direction = ParameterDirection.Input
-        cmd.Parameters("@sCurrentUser").Value = userName
+      cmd.Parameters.Add("@sCurrentUser", SqlDbType.NVarChar, 2147483646).Direction = ParameterDirection.Input
+      cmd.Parameters("@sCurrentUser").Value = userName
 
-        cmd.ExecuteNonQuery()
-      End Using
+      cmd.ExecuteNonQuery()
+    End Using
 
-      Return String.Empty
+    Return String.Empty
 
   End Function
 
-  Public Shared Function CanRunWorkflows(userGroupID As Integer) As Boolean
+  Public Function CanRunWorkflows(userGroupID As Integer) As Boolean
 
-    Using conn As New SqlConnection(Configuration.ConnectionString)
+    Using conn As New SqlConnection(_connectionString)
 
       ' get the run permissions for workflow for this user group.
       Dim sql As String = "SELECT  [i].[itemKey], [p].[permitted]" & _
@@ -290,11 +528,11 @@ Public Class Database
 
   End Function
 
-  Public Shared Function GetWorkflowList(userGroupID As Integer) As List(Of WorkflowLink)
+  Public Function GetWorkflowList(userGroupID As Integer) As List(Of WorkflowLink)
 
     Dim list As New List(Of WorkflowLink)
-  
-    Using conn As New SqlConnection(Configuration.ConnectionString)
+
+    Using conn As New SqlConnection(_connectionString)
 
       Dim sql As String = "SELECT w.Id, w.Name, w.PictureID" & _
             " FROM tbsys_mobilegroupworkflows gw" & _
@@ -318,11 +556,11 @@ Public Class Database
 
   End Function
 
-  Public Shared Function GetPendingStepList(userName As String) As List(Of WorkflowStepLink)
+  Public Function GetPendingStepList(userName As String) As List(Of WorkflowStepLink)
 
     Dim list As New List(Of WorkflowStepLink)
 
-    Using conn As New SqlConnection(Configuration.ConnectionString)
+    Using conn As New SqlConnection(_connectionString)
       conn.Open()
 
       Dim cmd As New SqlCommand("spASRSysMobileCheckPendingWorkflowSteps", conn)
@@ -361,6 +599,27 @@ Public Structure CheckLoginResult
   Public InvalidReason As String
   Public UserGroupID As Integer
 End Structure
+
+Public Class WorkflowItemValuesResult
+  Public Data As DataTable
+  Public LookupColumnIndex As Integer
+  Public DefaultValue As String
+End Class
+
+Public Class WorkflowGridItemsResult
+  Public Data As DataTable
+  Public Ok As Boolean
+End Class
+
+Public Class ValidateWebFormResult
+  Public Warnings As List(Of String)
+  Public Errors As List(Of String)
+End Class
+
+Public Class SubmitWebFormResult
+  Public FormElements As String
+  Public SavedForLater As Boolean
+End Class
 
 Public Class WorkflowLink
   Public ID As Integer

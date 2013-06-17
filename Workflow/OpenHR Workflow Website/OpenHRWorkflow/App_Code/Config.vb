@@ -5,9 +5,9 @@ Imports Utilities
 Imports System
 
 Public Class Config
-  Private msThemeName As String
-  Private msThemeHex As String
-  Private msThemeFore As String
+  Private msThemeName As String = ""
+  Private msThemeHex As String = ""
+  Private msThemeFore As String = ""
   Private miMessageFontSize As Int32
   Private miValidationMessageFontSize As Int32
   Private miSubmissionTimeout As Int32
@@ -21,7 +21,8 @@ Public Class Config
     Dim xmlReader As XmlTextReader
 
     Try
-      msThemeName = ConfigurationManager.AppSettings("Theme").Trim.ToUpper
+      msThemeName = ConfigurationManager.AppSettings("Theme")
+      If msThemeName Is Nothing Then msThemeName = "" Else msThemeName = msThemeName.Trim.ToUpper()
       miMessageFontSize = NullSafeInteger(ConfigurationManager.AppSettings("MessageFontSize"))
       miValidationMessageFontSize = NullSafeInteger(ConfigurationManager.AppSettings("ValidationMessageFontSize"))
       msOLEFolder_Server = ConfigurationManager.AppSettings("OLEFolder_Server").Trim

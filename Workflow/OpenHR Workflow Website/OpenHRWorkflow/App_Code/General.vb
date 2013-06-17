@@ -64,6 +64,8 @@ Public Class General
     Dim iMonth As Int16
     Dim iDay As Int16
 
+    If psSQLDateString = Nothing Then Return ""
+
     Try
       iYear = CShort(psSQLDateString.Substring(6, 4))
       iMonth = CShort(psSQLDateString.Substring(0, 2))

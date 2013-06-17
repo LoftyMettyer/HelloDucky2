@@ -1,44 +1,35 @@
-﻿	
-	    var app = Sys.Application;
-	    app.add_init(ApplicationInit);
+﻿
+    var formInputPrefix = "FI_";
 
-	    var formInputPrefix = "FI_";
- 
-	    function ApplicationInit(sender) {
-	        try 
-	        {
-	            // For postback, set up the scripts for begin and end requests...
-	            var prm = Sys.WebForms.PageRequestManager.getInstance();
-	            if (!prm.get_isInAsyncPostBack()) 
-	            {
-	                prm.add_beginRequest(goSubmit);
-	                prm.add_endRequest(showMessage);
-	            }
-	        }
-	        catch (e) {}
-	    }
+    Sys.Application.add_init(function () {
+        // For postback, set up the scripts for begin and end requests...
+        try {
+            var inst = Sys.WebForms.PageRequestManager.getInstance();
+            if (!inst.get_isInAsyncPostBack()) {
+                inst.add_beginRequest(goSubmit);
+                inst.add_endRequest(showMessage);
+            }
+        } catch (e) {}
+    });
 
-      //fault HRPRO-2270
-	    function resizeIframe(id, iNewHeight) {
+    //fault HRPRO-2270
+    function resizeIframe(id, newHeight) {
         //Plus one for luck (IE9 actually)
-	      iNewHeight = iNewHeight + 1;
-	      document.getElementById(id).height = (iNewHeight) + "px";
-	    }
+        document.getElementById(id).height = (newHeight + 1) + "px";
+    }
 
+    var overlay;
+    var wait;
+    
 	    function window_onload() {
 
+	        overlay = jQuery('#divOverlay');
+	        wait = jQuery('#pleasewaitScreen');
+	        
 	        var iDefHeight, iDefWidth, iResizeByHeight, iResizeByWidth;
 
 	        //Set the current page tab	  
-	        var iPageNo = document.getElementById("hdnDefaultPageNo").value;
-	        
-	        if(iPageNo > 0) {
-	            window.iCurrentTab = iPageNo;
-	        }
-	        else {
-	            window.iCurrentTab = 1;
-	        }
-	        SetCurrentTab(iCurrentTab);
+	        SetCurrentTab(document.getElementById("hdnDefaultPageNo").value);
 
 	        window.iCurrentMessageState = 'none';
 
@@ -69,29 +60,16 @@
 	    }
 
 	    function launchForms(psForms, pfFirstFormRelocate) {
-	        var asForms;
-	        var iLoop;
-	        var iCount;
-	        var sQueryString;
-	        var sFirstForm;
+
 	        try {
-	            iCount = 0;
-	            sFirstForm = "";
-	            asForms = psForms.split("\t");
+	            var asForms = psForms.split("\t"), sFirstForm = "";
 
-	            for (iLoop = 1; iLoop < asForms.length; iLoop++) {
-	                sQueryString = asForms[iLoop];
-
-	                if (sQueryString.length > 0) {
-	                    iCount = iCount + 1;
-
-	                    if (iCount == 1) {
-	                        sFirstForm = sQueryString;
-	                    }
-	                    else {
-	                        // Open other forms in new browsers.
-	                        spawnWindow(sQueryString);
-	                    }
+	            for (var i = 0; i < asForms.length; i++) {
+	                if (i == 0) {
+	                    sFirstForm = asForms[i];
+	                } else {
+	                    // Open other forms in new browsers.
+	                    spawnWindow(asForms[i]);
 	                }
 	            }
 
@@ -99,14 +77,13 @@
 	                if (pfFirstFormRelocate == true) {
 	                    // Open first form in current browser.
 	                    window.location = sFirstForm;
-	                }
-	                else {
+	                } else {
 	                    // Open first form in new browser.
 	                    spawnWindow(sFirstForm);
 	                }
 	            }
+	        } catch(e) {
 	        }
-	        catch (e) { }
 	    }
 
 	    function spawnWindow(psURL) {
@@ -144,10 +121,11 @@
 	            return;			
 	        }
 
-	        showWait(true);
-	        showOverlay(true);
+	        wait.show();
+	        overlay.show();
 	    }
 
+        //TODO replace should be 1 line of jQuery
 	    function getElementsBySearchValue(searchValue) {
 	        var retVal = new Array();
 	        var elems = document.getElementsByTagName("input");
@@ -158,7 +136,7 @@
 	            try {
 	                var nameProp = elems[i].getAttribute('name');
 	                if(nameProp.substr(0, 8)=="lookupFI")
-	                    var valueProp = elems[i].getAttribute('value');
+	                    valueProp = elems[i].getAttribute('value');
 	            }
 	            catch(e) {}              
               
@@ -176,16 +154,16 @@
 
 	        switch (state) {
 	            case 'max':
-	                document.getElementById("errorMessagePanel").style.display = "block";
-	                document.getElementById("errorMessageMax").style.display = "none";
+	                jQuery('#errorMessagePanel').show();
+	                jQuery('#errorMessageMax').hide();
 	                break;
 	            case 'min':
-	                document.getElementById("errorMessagePanel").style.display = "none";
-	                document.getElementById("errorMessageMax").style.display = "block";
+	                jQuery('#errorMessagePanel').hide();
+	                jQuery('#errorMessageMax').show();
 	                break;
 	            default:
-	                document.getElementById("errorMessagePanel").style.display = "none";
-	                document.getElementById("errorMessageMax").style.display = "none";
+	                jQuery('#errorMessagePanel').hide();
+	                jQuery('#errorMessageMax').hide();
 	        }
 	        window.iCurrentMessageState = state;
 	    }
@@ -201,7 +179,7 @@
 
 	    function overrideWarningsAndSubmit() {
 
-	        $get("frmMain").hdnOverrideWarnings.value = 1;
+	        $get("frmMain").hdnOverrideWarnings.value = "1";
 
 	        try {
 	            document.getElementById($get("frmMain").hdnLastButtonClicked.value).click();
@@ -240,14 +218,6 @@
             __doPostBack(gridId, 'Select$' + rowIndex);
         }
 
-        function showOverlay(display) {
-	        $get("divOverlay").style.display = display ? "block" : "none";               
-	    }
-
-        function showWait(display) {
-            $get("pleasewaitScreen").style.display = display ? "block" : "none"; 
-        }
-
 	    function showFileUpload(pfDisplay, psElementItemID, psAlreadyUploaded) {
 		
 	        try {
@@ -261,14 +231,14 @@
                     
 	                $get("ifrmFileUpload").src = "FileUpload.aspx?" + sAlreadyUploaded + psElementItemID;
 
-	                showOverlay(true);
+	                overlay.show();
 	                showErrorMessages(hasErrors() ? 'min' : 'none');
 	                
 	                document.getElementById("divFileUpload").style.display = "block";
 	            }
 	            else {
 	                document.getElementById("divFileUpload").style.display = "none";
-	                showOverlay(false);
+	                overlay.hide();
 	            }
 	        }
 	        catch (e) { }
@@ -307,9 +277,9 @@
 	        SetCurrentTab(iCurrentTab);
 	        //Reset current error message display
 	        showErrorMessages(window.iCurrentMessageState);
-	        
-	        showWait(false);
-	        showOverlay(false);
+
+	        wait.hide();
+	        overlay.hide();
 
 	        //Reapply resizable column functionality to tables
 	        //This is put here to ensure functionality is reapplied after partial/full postback.
@@ -328,7 +298,6 @@
 	            //the postback cycle. So we'll reset all grid scroll bars to their previous position
 	            SetScrollTopPos("", "-1", 0);		    
 	        }
-      
       
 	        try {
 	            if ($get("frmMain").hdnErrorMessage.value.length > 0) {
@@ -359,15 +328,15 @@
 	                            launchFollowOnForms($get("frmMain").hdnFollowOnForms.value);
 	                        }
 	                        else {
-	                            showOverlay(true);
+	                            overlay.show();
 	                            
 	                            if(navigator.userAgent.indexOf("MSIE") > 0) {
 	                                //Only IE can self-close windows that it didn't open
 	                                window.close();
 	                            } else {
 	                                // Non-IE browsers can't self-close windows, show close message instead
-	                                showWait(true);
-	                                $get("pleasewaitText").innerHTML = "Please close your browser.";						  
+	                                wait.show();
+	                                wait.text('Please close your browser.');
 	                            }
 	                        }
 	                    }
@@ -389,7 +358,7 @@
 	        try {
 	            $get("ifrmMessages").src = "SubmissionMessage.aspx";
 
-	            showOverlay(true);
+	            overlay.show();
 	            showErrorMessages('none');
 	            $get("divSubmissionMessages").style.display = "block";
 	            $get("divSubmissionMessages").style.visibility = "visible";
@@ -397,14 +366,14 @@
 	        catch (e) { }
 	    }
 
-	    function FileDownload_Click(psID) {
-	        spawnWindow("FileDownload.aspx?" + psID);
+	    function FileDownload_Click(id) {
+	        spawnWindow("FileDownload.aspx?" + id);
 	    }
 
-	    function FileDownload_KeyPress(psID) {
+	    function FileDownload_KeyPress(id) {
 	        // If the user presses SPACE (keyCode = 32) launch the file download.
 	        if (window.event.keyCode == 32) {
-	            spawnWindow("FileDownload.aspx?" + psID);
+	            spawnWindow("FileDownload.aspx?" + id);
 	        }
 	    }
 	    
@@ -510,26 +479,23 @@
 	    }
 	    
 	    function ResizeComboForForm(sender, args) {
-	        psWebComboID = sender._id;
+	        
+            var psWebComboId = sender._id;
             
 	        //Let's set the width of the lookup panel to the width of the screen. 
 	        //It used to resize the screen, but don't want this happening now.
 
 	        try {			
-	            var oEl = document.getElementById(psWebComboID.replace("dde", ""));
+	            var oEl = document.getElementById(psWebComboId.replace("dde", ""));
 	            if(eval(oEl)) 
 	            {
-	                if (oEl.offsetWidth > $get("bdyMain").clientWidth)
-	                {
-	                    iNewWidth = $get("bdyMain").clientWidth - oEl.offsetLeft - 5 + "px";
-                    
-	                    oEl.style.width = iNewWidth;
-	                    document.getElementById(psWebComboID.replace("dde", "gridcontainer")).style.width = oEl.style.width;
+	                if (oEl.offsetWidth > $get("bdyMain").clientWidth) {
+	                    oEl.style.width = $get("bdyMain").clientWidth - oEl.offsetLeft - 5 + "px";
+	                    document.getElementById(psWebComboId.replace("dde", "gridcontainer")).style.width = oEl.style.width;
 	                }   
                   
 	                //also set left position to 0 if required (right coord > bymain.width)
-	                if ((oEl.offsetLeft + oEl.offsetWidth) > $get("bdyMain").clientWidth)
-	                {
+	                if ((oEl.offsetLeft + oEl.offsetWidth) > $get("bdyMain").clientWidth) {
 	                    oEl.style.left = "0px";
 	                }                                                 
                   
@@ -538,35 +504,35 @@
 	                //N.B. if the control is paged, min width is 420px before hiding the relevant controls
 
 	                //Check to see if this is a paged control...
-	                var oElDDL = document.getElementById(psWebComboID.replace("dde", "tcPagerDDL"));
+	                var oElDDL = document.getElementById(psWebComboId.replace("dde", "tcPagerDDL"));
 	                if(eval(oElDDL)) {
 	                    //This is a paged control, so different rules apply.
 	                    if(oEl.offsetWidth<420) {
-	                        document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.visibility = "hidden";
-	                        document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.display = "none";
-	                        document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.visibility = "hidden";
-	                        document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.display = "none";
+	                        document.getElementById(psWebComboId.replace("dde", "tcPagerBtns")).style.visibility = "hidden";
+	                        document.getElementById(psWebComboId.replace("dde", "tcPagerBtns")).style.display = "none";
+	                        document.getElementById(psWebComboId.replace("dde", "tcPageXofY")).style.visibility = "hidden";
+	                        document.getElementById(psWebComboId.replace("dde", "tcPageXofY")).style.display = "none";
 	                    }
 	                    else {
-	                        document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.visibility = "visible";
-	                        document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.display = "";
-	                        document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.visibility = "visible";
-	                        document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.display = ""; 
+	                        document.getElementById(psWebComboId.replace("dde", "tcPagerBtns")).style.visibility = "visible";
+	                        document.getElementById(psWebComboId.replace("dde", "tcPagerBtns")).style.display = "";
+	                        document.getElementById(psWebComboId.replace("dde", "tcPageXofY")).style.visibility = "visible";
+	                        document.getElementById(psWebComboId.replace("dde", "tcPageXofY")).style.display = ""; 
 	                    }
 	                }
 	                else {
 	                    //Not a paged control
 	                    if(oEl.offsetWidth<250) {
-	                        document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.visibility = "hidden";
-	                        document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.display = "none";
-	                        document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.visibility = "hidden";
-	                        document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.display = "none";
+	                        document.getElementById(psWebComboId.replace("dde", "tcPagerBtns")).style.visibility = "hidden";
+	                        document.getElementById(psWebComboId.replace("dde", "tcPagerBtns")).style.display = "none";
+	                        document.getElementById(psWebComboId.replace("dde", "tcPageXofY")).style.visibility = "hidden";
+	                        document.getElementById(psWebComboId.replace("dde", "tcPageXofY")).style.display = "none";
 	                    }
 	                    else {
-	                        document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.visibility = "visible";
-	                        document.getElementById(psWebComboID.replace("dde", "tcPagerBtns")).style.display = "";
-	                        document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.visibility = "visible";
-	                        document.getElementById(psWebComboID.replace("dde", "tcPageXofY")).style.display = "";
+	                        document.getElementById(psWebComboId.replace("dde", "tcPagerBtns")).style.visibility = "visible";
+	                        document.getElementById(psWebComboId.replace("dde", "tcPagerBtns")).style.display = "";
+	                        document.getElementById(psWebComboId.replace("dde", "tcPageXofY")).style.visibility = "visible";
+	                        document.getElementById(psWebComboId.replace("dde", "tcPageXofY")).style.display = "";
 	                    }                    
 	                }
 	            }
@@ -588,7 +554,7 @@
   
 	        if($get("txtActiveDDE").value.indexOf("dde")>=0) {
 	            // If we're in the process of displaying a filtered lookup already, do nothing and exit the function...
-	            return;
+	            return false;
 	        }
 
 	        var sSelectWhere = "";
@@ -598,9 +564,7 @@
 	        var sValue = "";
 	        var sTemp = "";
 	        var sSubTemp = "";
-	        var numValue = 0;
 	        var dtValue;
-	        var fValue = true;
 	        var iIndex;     
 	        var reTAB = /\t/g;        
 	        var reSINGLEQUOTE = /\'/g;        
@@ -609,7 +573,7 @@
 
 	        psWebComboID = sender._id;
 	        
-	        if(psWebComboID=="") {return;}
+	        if(psWebComboID=="") {return false;}
 	        
 	        var sID = "lookup" + psWebComboID.replace("dde","");
 	        try {
@@ -640,13 +604,11 @@
                             
 	                        if ((sControlType == 13) || (sControlType == 14)) {
 	                            // Dropdown (13), Lookup (14)
-	                            if (sControlType == 13) {  
-	                                var ctlLookupValueCombo = document.getElementById(sValueID);
-	                                sValue = ctlLookupValueCombo.value;
+	                            if (sControlType == 13) {
+	                                sValue = document.getElementById(sValueID).value;
 	                            }
 	                            else {
-	                                var ctlLookupValueCombo = document.getElementById(sValueID + "TextBox");
-	                                sValue = ctlLookupValueCombo.value;                        	    
+	                                sValue = document.getElementById(sValueID + "TextBox").value;
 	                            }
                         	    
 	                            if(sValueType == 11) {
@@ -681,9 +643,7 @@
 	                        else {
 	                            if (sControlType == 6) {
 	                                // Checkbox (6)
-	                                var ctlLookupValueCheckbox = document.getElementById(sValueID);
-	                                fValue = ctlLookupValueCheckbox.checked;
-	                                if (fValue == true) {
+	                                if (document.getElementById(sValueID).checked == true) {
 	                                    sValue = "1";
 	                                }
 	                                else {
@@ -693,13 +653,12 @@
 	                            else {
 	                                if (sControlType == 5) {
 	                                    // Numeric (5)
-	                                    var ctlLookupValueNumeric = igedit_getById(sValueID);
-	                                    numValue = ctlLookupValueNumeric.getValue();
-	                                    sValue = numValue.toString();
+	                                    sValue = document.getElementById(sValueID).value;
 	                                }
 	                                else {
 	                                    if (sControlType == 7) {
 	                                        // Date (7)
+	                                        //TODO PG have changed date control
 	                                        var ctlLookupValueDate = igdrp_getComboById(sValueID);
 	                                        dtValue = ctlLookupValueDate.getValue();
 	                                        if (dtValue) {
@@ -763,6 +722,7 @@
 	    }
 
 	    function FilterMobileLookup(sourceControlID) {
+	        
 	        var sSelectWhere = "";
 	        var sValueID = "";
 	        var sValueType = "";
@@ -770,14 +730,13 @@
 	        var sValue = "";
 	        var sTemp = "";
 	        var sSubTemp = "";
-	        var numValue = 0;
 	        var dtValue;
-	        var fValue = true;
 	        var iIndex;
 	        var reTAB = /\t/g;
 	        var reSINGLEQUOTE = /\'/g;
 	        var reDECIMAL = new RegExp("\\" + window.localeDecimal, "gi");
-
+	        var psWebComboID;
+	        
 	        if (sourceControlID == "") { return; }
 
 	        var lookups = getElementsBySearchValue(sourceControlID);
@@ -786,18 +745,18 @@
 	        for (var i = 0; i < lookups.length; i++) {
 
 	            try {
-	                var psWebComboID = lookups[i].name.replace("lookup", "");
+	                psWebComboID = lookups[i].name.replace("lookup", "");
 	            }
-	            catch (e) { var psWebComboID = ""; }
+	            catch (e) { psWebComboID = ""; }
 
 
 	            if (psWebComboID.length > 0) {
 
-	                var sID = "lookup" + psWebComboID;
+	                var sId = "lookup" + psWebComboID;
 	                AllLookupIDs = AllLookupIDs + (i == 0 ? "" : "\t") + psWebComboID + "refresh";
 
 	                try {
-	                    var ctlLookupFilter = document.getElementById(sID);
+	                    var ctlLookupFilter = document.getElementById(sId);
 	                    if (ctlLookupFilter) {
 	                        sSelectWhere = ctlLookupFilter.value;
 
@@ -820,15 +779,14 @@
 	                                sControlType = sControlType.substr(sControlType.indexOf("_") + 1);
 	                                sControlType = sControlType.substring(0, sControlType.indexOf("_"));
 
-	                                if ((sControlType == 13) || (sControlType == 14)) {
+	                                if (sControlType == 13 || sControlType == 14) {
 	                                    // Dropdown (13), Lookup (14)
 	                                    if (sControlType == 13) {
-	                                        var ctlLookupValueCombo = document.getElementById(sValueID);
-	                                        sValue = ctlLookupValueCombo.value;
+	                                        sValue = document.getElementById(sValueID).value;
 	                                    }
 	                                    else {
 	                                        var ctlLookupValueCombo = document.getElementById(sValueID + "TextBox");
-	                                        if (!(eval(ctlLookupValueCombo))) { var ctlLookupValueCombo = document.getElementById(sValueID); }
+	                                        if (!(eval(ctlLookupValueCombo))) { ctlLookupValueCombo = document.getElementById(sValueID); }
 
 	                                        sValue = ctlLookupValueCombo.value;
 	                                    }
@@ -865,9 +823,7 @@
 	                                else {
 	                                    if (sControlType == 6) {
 	                                        // Checkbox (6)
-	                                        var ctlLookupValueCheckbox = document.getElementById(sValueID);
-	                                        fValue = ctlLookupValueCheckbox.checked;
-	                                        if (fValue == true) {
+	                                        if (document.getElementById(sValueID).checked == true) {
 	                                            sValue = "1";
 	                                        }
 	                                        else {
@@ -877,13 +833,12 @@
 	                                    else {
 	                                        if (sControlType == 5) {
 	                                            // Numeric (5)
-	                                            var ctlLookupValueNumeric = igedit_getById(sValueID);
-	                                            numValue = ctlLookupValueNumeric.getValue();
-	                                            sValue = numValue.toString();
+	                                            sValue = document.getElementById(sValueID).value;
 	                                        }
 	                                        else {
 	                                            if (sControlType == 7) {
-	                                                // Date (7)
+	                                                // Date (7) 
+	                                                //TODO PG have changed date control
 	                                                var ctlLookupValueDate = igdrp_getComboById(sValueID);
 	                                                dtValue = ctlLookupValueDate.getValue();
 	                                                if (dtValue) {
@@ -904,8 +859,7 @@
 	                                            }
 	                                            else {
 	                                                // CharInput, OptionGroup
-	                                                var ctlLookupValue = document.getElementById(sValueID);
-	                                                sValue = ctlLookupValue.value;
+	                                                sValue = document.getElementById(sValueID).value;
 	                                            }
 	                                        }
 	                                    }
@@ -978,7 +932,7 @@
 	            var controlCollection = $get("frmMain").elements;
 	            if (controlCollection!=null) 
 	            {
-	                for (i=0; i<controlCollection.length; i++)  
+	                for (var i = 0; i<controlCollection.length; i++)  
 	                {
 	                    if(Right(controlCollection.item(i).name, 9)=="scrollpos") {			    
 	                        document.getElementById(controlCollection.item(i).name.replace("scrollpos", "gridcontainer")).scrollTop = (controlCollection.item(i).value);
@@ -994,15 +948,20 @@
 	                iPos = (iRowIndex * GetGridRowHeight(iGridID)) - 1;
 	            }
 	            //store the scrollbar position
-	            hdn1 = document.getElementById(iGridID.replace("Grid","scrollpos"));
-	            hdn1.value = iPos;
-	            ScrollTopPos = iPos;          
+	            document.getElementById(iGridID.replace("Grid","scrollpos")).nodeValue = iPos;      
 	        }
 	    }
   
 	    function SetCurrentTab(iNewTab) {
 
-	        var formInputPrefix = "FI_";
+            if(iNewTab < 1) {
+                iNewTab = 1;
+            }
+
+            if(window.iCurrentTab === undefined) {
+                window.iCurrentTab = 1;
+            }
+
 	        var currentTab = $get(formInputPrefix + iCurrentTab + "_21_PageTab");
 	        var currentPanel = $get(formInputPrefix + iCurrentTab + "_21_Panel");
 	        var newTab = $get(formInputPrefix + iNewTab + "_21_PageTab");

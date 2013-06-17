@@ -15,7 +15,7 @@ Imports System.Reflection
 Public Class _Default
   Inherits System.Web.UI.Page
 
-  Private miInstanceID As Integer
+  Private _instanceID As Integer
   Private miElementID As Integer
   Private msServer As String
   Private msDatabase As String
@@ -31,46 +31,12 @@ Public Class _Default
   Private miFollowOnFormsMessageType As Integer
   Private msFollowOnFormsMessage As String
   Private miSubmissionTimeoutInSeconds As Int32
-  Private m_iLookupColumnIndex As Integer
-  Private iPageNo As Integer = 0
   Private _autoFocusControl As String
 
   Private Const FORMINPUTPREFIX As String = "FI_"
   Private Const ASSEMBLYNAME As String = "OPENHRWORKFLOW"
   Private Const DEFAULTTITLE As String = "OpenHR Workflow"
   Private Const miTabStripHeight As Integer = 21
-
-  Private Enum SQLDataType
-    sqlUnknown = 0      ' ?
-    sqlOle = -4         ' OLE columns
-    sqlBoolean = -7     ' Logic columns
-    sqlNumeric = 2      ' Numeric columns
-    sqlInteger = 4      ' Integer columns
-    sqlDate = 11        ' Date columns
-    sqlVarChar = 12     ' Character columns
-    sqlVarBinary = -3   ' Photo columns
-    sqlLongVarChar = -1 ' Working Pattern columns
-  End Enum
-
-  Private Enum FilterOperators
-    giFILTEROP_UNDEFINED = 0
-    giFILTEROP_EQUALS = 1
-    giFILTEROP_NOTEQUALTO = 2
-    giFILTEROP_ISATMOST = 3
-    giFILTEROP_ISATLEAST = 4
-    giFILTEROP_ISMORETHAN = 5
-    giFILTEROP_ISLESSTHAN = 6
-    giFILTEROP_ON = 7
-    giFILTEROP_NOTON = 8
-    giFILTEROP_AFTER = 9
-    giFILTEROP_BEFORE = 10
-    giFILTEROP_ONORAFTER = 11
-    giFILTEROP_ONORBEFORE = 12
-    giFILTEROP_CONTAINS = 13
-    giFILTEROP_IS = 14
-    giFILTEROP_DOESNOTCONTAIN = 15
-    giFILTEROP_ISNOT = 16
-  End Enum
 
 #Region " Web Form Designer Generated Code "
 
@@ -92,59 +58,32 @@ Public Class _Default
 
   Private Sub Page_Load(ByVal sender As System.Object, ByVal e As EventArgs) Handles MyBase.Load
 
-    Dim ctlForm_Dropdown As DropDownList
     Dim ctlForm_Image As WebControls.Image
     Dim ctlForm_PagingGridView As RecordSelector
-
     Dim ctlForm_PageTab() As Panel
-    Dim sAssemblyName As String
-    Dim sWebSiteVersion As String
-    Dim sMessage As String
+
+    Dim sAssemblyName As String = ""
+    Dim sWebSiteVersion As String = ""
+    Dim sMessage As String = ""
     Dim sQueryString As String
     Dim objCrypt As New Crypt
     Dim conn As SqlConnection
-    Dim cmdCheck As SqlCommand
     Dim cmdSelect As SqlCommand
     Dim cmdInitiate As SqlCommand
-    Dim cmdActivate As SqlCommand
     Dim dr As SqlDataReader
     Dim sTemp As String = String.Empty
     Dim sDBVersion As String
-    Dim sID As String
-    Dim connGrid As SqlConnection
-    Dim drGrid As SqlDataReader
-    Dim cmdGrid As SqlCommand
-    Dim cmdQS As SqlCommand
     Dim iWorkflowID As Integer
-    Dim sFormElements As String
-    Dim arrFollowOnForms() As String
-    Dim iFollowOnFormCount As Integer
-    Dim iIndex As Integer
-    Dim sStep As String
-    Dim arrQueryStrings() As String
-    Dim sSiblingForms As String
+    Dim sSiblingForms As String = ""
     Dim iFormHeight As Integer
     Dim iFormWidth As Integer
     Dim sEncodedID As String
-    Dim sFilterSQL As String
-    Dim da As SqlDataAdapter
-    Dim dt As DataTable
-    Dim objDataRow As DataRow
-    Dim iItemType As Integer
-    Dim iCurrentPageTab As Integer
+    Dim sFilterSql As String
 
     ' MOBILE - start
     Dim sKeyParameter As String = ""
     Dim sPwdParameter As String = ""
     ' MOBILE - end
-
-    sAssemblyName = ""
-    sWebSiteVersion = ""
-    sMessage = ""
-    sQueryString = ""
-    miImageCount = 0
-    ReDim arrQueryStrings(0)
-    sSiblingForms = ""
 
     Try
       mobjConfig.Initialise(Server.MapPath("themes/ThemeHex.xml"))
@@ -162,6 +101,7 @@ Public Class _Default
     Catch ex As Exception
     End Try
 
+    'Set the page title
     Dim sTitle As String
     Try
       sAssemblyName = Assembly.GetExecutingAssembly.GetName.Name.ToUpper
@@ -186,30 +126,26 @@ Public Class _Default
     End Try
     Page.Title = sTitle
 
-    Try
-      Dim cultureString As String
+    'Set the page culture
+    Dim cultureString As String
 
-      If Request.UserLanguages IsNot Nothing Then
-        cultureString = Request.UserLanguages(0)
-      ElseIf Request.ServerVariables("HTTP_ACCEPT_LANGUAGE") IsNot Nothing Then
-        cultureString = Request.ServerVariables("HTTP_ACCEPT_LANGUAGE")
-      Else
-        cultureString = ConfigurationManager.AppSettings("defaultculture")
-      End If
+    If Request.UserLanguages IsNot Nothing Then
+      cultureString = Request.UserLanguages(0)
+    ElseIf Request.ServerVariables("HTTP_ACCEPT_LANGUAGE") IsNot Nothing Then
+      cultureString = Request.ServerVariables("HTTP_ACCEPT_LANGUAGE")
+    Else
+      cultureString = ConfigurationManager.AppSettings("defaultculture")
+    End If
 
-      If cultureString.ToLower = "en-us" Then cultureString = "en-GB"
+    If cultureString.ToLower = "en-us" Then cultureString = "en-GB"
 
-      Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cultureString)
-      Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture(cultureString)
-
-    Catch ex As Exception
-      sMessage = "Error reading the client culture:<BR><BR>" & ex.Message
-    End Try
+    Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cultureString)
+    Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture(cultureString)
 
     If sMessage.Length = 0 Then
       If IsPostBack Then
 
-        miInstanceID = CInt(ViewState("InstanceID"))
+        _instanceID = CInt(ViewState("InstanceID"))
         miElementID = CInt(ViewState("ElementID"))
         msUser = ViewState("User").ToString
         msPwd = ViewState("Pwd").ToString
@@ -222,7 +158,7 @@ Public Class _Default
           ' Use the rawURL rather than the QueryString itself, as some of the 
           ' encryption characters are ignored in the QueryString.
           miElementID = 0
-          miInstanceID = 0
+          _instanceID = 0
 
           ' NPG20120201 - Fault HRPRO-1828
           ' Request.RawUrl replaces symbols with % codes, e.g. $=%40.
@@ -254,7 +190,7 @@ Public Class _Default
             Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture(sCultureName)
 
             ' Extract the required parameters from the decrypted queryString.
-            miInstanceID = CInt(Left(sTemp, InStr(sTemp, vbTab) - 1))
+            _instanceID = CInt(Left(sTemp, InStr(sTemp, vbTab) - 1))
             sTemp = Mid(sTemp, InStr(sTemp, vbTab) + 1)
 
             miElementID = CInt(Left(sTemp, InStr(sTemp, vbTab) - 1))
@@ -302,8 +238,8 @@ Public Class _Default
             sTemp = objCrypt.DecryptString(sQueryString, "", False)
 
             ' Extract the required parameters from the decrypted queryString.
-            If miInstanceID = 0 Then
-              miInstanceID = CInt(Left(sTemp, InStr(sTemp, vbTab) - 1))
+            If _instanceID = 0 Then
+              _instanceID = CInt(Left(sTemp, InStr(sTemp, vbTab) - 1))
             End If
             sTemp = Mid(sTemp, InStr(sTemp, vbTab) + 1)
 
@@ -330,101 +266,35 @@ Public Class _Default
       End If
     End If
 
-    ' - Mobile START - 
-    ' This bit is simply for activating Mobile Security.
-    ' NPG20111215 - I've hijacked the miInstanceID and populated it with the 
-    ' User ID that is to be activated.
-    If (sMessage.Length = 0) _
-     And (miElementID = -2) _
-     And (miInstanceID > 0) _
-     And (Not IsPostBack) Then
-      Try ' conn creation 
-        ' update tbsysMobile_Logins, and copy the 'newpassword' string to the 'password' field using 'userid' from miInstanceID
-        ' Establish Connection
-        Dim myConnection As New SqlConnection(GetConnectionString)
-        myConnection.Open()
+    Dim db As New Database(GetConnectionString)
 
-        cmdActivate = New SqlCommand
-        cmdActivate.CommandText = "spASRSysMobileActivateUser"
-        cmdActivate.Connection = myConnection
-        cmdActivate.CommandType = CommandType.StoredProcedure
+    ' This bit is simply for activating Mobile Security. I've hijacked the _instanceID
+    ' and populated it with the User ID that is to be activated.
+    If sMessage.Length = 0 And Not IsPostBack And miElementID = -2 And _instanceID > 0 Then
 
-        cmdActivate.Parameters.Add("@piRecordID", SqlDbType.Int).Direction = ParameterDirection.Input
-        cmdActivate.Parameters("@piRecordID").Value = NullSafeInteger(miInstanceID)
+      sMessage = db.ActivateUser(_instanceID)
 
-        cmdActivate.Parameters.Add("@psMessage", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Output
-
-        cmdActivate.ExecuteNonQuery()
-
-        sMessage = CStr(cmdActivate.Parameters("@psMessage").Value())
-
-        cmdActivate.Dispose()
-        ' set message to something to skip all the normal workflow stuff.
-        If sMessage.Length = 0 Then
-          sMessage = "You have been successfully activated"
-        End If
-
-      Catch ex As Exception
-        sMessage = "Unable to activate user."
-      End Try
-      ' done. smessage populated, so should skip the rest of default.aspx.
+      If sMessage.Length = 0 Then
+        sMessage = "You have been successfully activated"
+      End If
     End If
-    ' - Mobile END -
 
     If sMessage.Length = 0 Then
       Try
         conn = New SqlConnection(GetConnectionString)
         conn.Open()
         Try
-          If (sMessage.Length = 0) And (Not IsPostBack) Then
+          If sMessage.Length = 0 And Not IsPostBack Then
 
-            ' Check if the database is locked.
-            cmdCheck = New SqlCommand
-            cmdCheck.CommandText = "sp_ASRLockCheck"
-            cmdCheck.Connection = conn
-            cmdCheck.CommandType = CommandType.StoredProcedure
-            cmdCheck.CommandTimeout = miSubmissionTimeoutInSeconds
-
-            dr = cmdCheck.ExecuteReader()
-
-            While dr.Read
-              If NullSafeInteger(dr("priority")) <> 3 Then
-                ' Not a read-only lock.
-                sMessage = "Database locked.<BR><BR>Contact your system administrator."
-                Exit While
-              End If
-            End While
-
-            dr.Close()
-            cmdCheck.Dispose()
+            If db.IsSystemLocked() Then
+              sMessage = "Database locked.<BR><BR>Contact your system administrator."
+            End If
           End If
 
           If sMessage.Length = 0 And Not IsPostBack Then
 
             ' Check if the database and website versions match.
-            cmdCheck = New SqlCommand
-            cmdCheck.CommandText = "spASRGetSetting"
-            cmdCheck.Connection = conn
-            cmdCheck.CommandType = CommandType.StoredProcedure
-            cmdCheck.CommandTimeout = miSubmissionTimeoutInSeconds
-
-            cmdCheck.Parameters.Add("@psSection", SqlDbType.VarChar, 8000).Direction = ParameterDirection.Input
-            cmdCheck.Parameters("@psSection").Value = "database"
-
-            cmdCheck.Parameters.Add("@psKey", SqlDbType.VarChar, 8000).Direction = ParameterDirection.Input
-            cmdCheck.Parameters("@psKey").Value = "version"
-
-            cmdCheck.Parameters.Add("@psDefault", SqlDbType.VarChar, 8000).Direction = ParameterDirection.Input
-            cmdCheck.Parameters("@psDefault").Value = ""
-
-            cmdCheck.Parameters.Add("@pfUserSetting", SqlDbType.Bit).Direction = ParameterDirection.Input
-            cmdCheck.Parameters("@pfUserSetting").Value = False
-
-            cmdCheck.Parameters.Add("@psResult", SqlDbType.VarChar, 8000).Direction = ParameterDirection.Output
-
-            cmdCheck.ExecuteNonQuery()
-
-            sDBVersion = CStr(cmdCheck.Parameters("@psResult").Value)
+            sDBVersion = db.GetSetting("database", "version", False)
 
             If sAssemblyName = ASSEMBLYNAME Then
               ' Complied version of the web site, so perform version checks.
@@ -448,13 +318,12 @@ Public Class _Default
               End If
             End If
 
-            cmdCheck.Dispose()
           End If
 
-          If (sMessage.Length = 0) And (miInstanceID < 0) And (miElementID = -1) And (Not IsPostBack) Then
+          If sMessage.Length = 0 And Not IsPostBack And _instanceID < 0 And miElementID = -1 Then
 
             ' Externally initiated Workflow.
-            iWorkflowID = -miInstanceID
+            iWorkflowID = -_instanceID
 
             cmdInitiate = New SqlCommand
 
@@ -490,8 +359,8 @@ Public Class _Default
 
             cmdInitiate.ExecuteNonQuery()
 
-            miInstanceID = NullSafeInteger(cmdInitiate.Parameters("@piInstanceID").Value)
-            sFormElements = CStr(cmdInitiate.Parameters("@psFormElements").Value())
+            _instanceID = NullSafeInteger(cmdInitiate.Parameters("@piInstanceID").Value)
+            Dim sFormElements As String = CStr(cmdInitiate.Parameters("@psFormElements").Value())
             sMessage = NullSafeString(cmdInitiate.Parameters("@psMessage").Value)
 
             cmdInitiate.Dispose()
@@ -500,41 +369,13 @@ Public Class _Default
               If sFormElements.Length = 0 Then
                 sMessage = "Workflow initiated successfully."
               Else
-                arrFollowOnForms = sFormElements.Split(CChar(vbTab))
-                iFollowOnFormCount = arrFollowOnForms.GetUpperBound(0)
+                Dim followOnForms = sFormElements.Split(New String() {vbTab}, StringSplitOptions.RemoveEmptyEntries).ToList
 
-                For iIndex = 0 To iFollowOnFormCount - 1
-                  sStep = arrFollowOnForms(iIndex)
+                miElementID = CInt(followOnForms(0))
+                followOnForms.RemoveAt(0)
 
-                  If iIndex = 0 Then
-                    miElementID = CInt(sStep)
-                  Else
-                    cmdQS = New SqlCommand("spASRGetWorkflowQueryString", conn)
-                    cmdQS.CommandType = CommandType.StoredProcedure
-                    cmdQS.CommandTimeout = miSubmissionTimeoutInSeconds
-
-                    cmdQS.Parameters.Add("@piInstanceID", SqlDbType.Int).Direction = ParameterDirection.Input
-                    cmdQS.Parameters("@piInstanceID").Value = miInstanceID
-
-                    cmdQS.Parameters.Add("@piElementID", SqlDbType.Int).Direction = ParameterDirection.Input
-                    cmdQS.Parameters("@piElementID").Value = CLng(sStep)
-
-                    cmdQS.Parameters.Add("@psQueryString", SqlDbType.VarChar, 8000).Direction = ParameterDirection.Output
-
-                    cmdQS.ExecuteNonQuery()
-
-                    sQueryString = CStr(cmdQS.Parameters("@psQueryString").Value())
-
-                    ReDim Preserve arrQueryStrings(arrQueryStrings.GetUpperBound(0) + 1)
-                    arrQueryStrings(arrQueryStrings.GetUpperBound(0)) = sQueryString
-
-                    cmdQS.Dispose()
-                  End If
-                Next iIndex
-
-                sSiblingForms = Join(arrQueryStrings, vbTab)
+                sSiblingForms = String.Join(vbTab, followOnForms.Select(Function(f) db.GetWorkflowQueryString(_instanceID, CInt(f))))
               End If
-
             Else
               sMessage = "Error:<BR><BR>" & sMessage
             End If
@@ -544,7 +385,7 @@ Public Class _Default
           If sMessage.Length = 0 Then
             ' Remember the useful parameters for use in postbacks.
 
-            ViewState("InstanceID") = miInstanceID
+            ViewState("InstanceID") = _instanceID
             ViewState("ElementID") = miElementID
             ViewState("User") = msUser
             ViewState("Pwd") = msPwd
@@ -557,27 +398,11 @@ Public Class _Default
             Session("Server") = msServer
             Session("Database") = msDatabase
             Session("ElementID") = miElementID
-            Session("InstanceID") = miInstanceID
+            Session("InstanceID") = _instanceID
 
             ' Get the selected tab number for this workflow, if any...
             If Not IsPostBack Then
-              Try
-                cmdSelect = New SqlCommand("SELECT [pageno] FROM [dbo].[ASRSysWorkflowInstances] WHERE [ID] = " & NullSafeInteger(miInstanceID).ToString, conn)
-                dr = cmdSelect.ExecuteReader()
-
-                While dr.Read()
-                  ' store the tab
-                  iPageNo = NullSafeInteger(dr("pageno"))
-                End While
-
-                dr.Close()
-                cmdSelect.Dispose()
-
-              Catch ex As Exception
-                iPageNo = 0
-              End Try
-
-              hdnDefaultPageNo.Value = iPageNo.ToString
+              hdnDefaultPageNo.Value = db.GetWorkflowCurrentTab(_instanceID).ToString
             End If
 
             cmdSelect = New SqlCommand
@@ -587,7 +412,7 @@ Public Class _Default
             cmdSelect.CommandTimeout = miSubmissionTimeoutInSeconds
 
             cmdSelect.Parameters.Add("@piInstanceID", SqlDbType.Int).Direction = ParameterDirection.Input
-            cmdSelect.Parameters("@piInstanceID").Value = miInstanceID
+            cmdSelect.Parameters("@piInstanceID").Value = _instanceID
 
             cmdSelect.Parameters.Add("@piElementID", SqlDbType.Int).Direction = ParameterDirection.Input
             cmdSelect.Parameters("@piElementID").Value = miElementID
@@ -610,9 +435,9 @@ Public Class _Default
             Dim scriptString As String = "function pageLoad() {"
 
             ReDim Preserve ctlForm_PageTab(0)
-            While (dr.Read) And (sMessage.Length = 0)
+            While dr.Read And sMessage.Length = 0
 
-              iCurrentPageTab = NullSafeInteger(dr("pageno"))
+              Dim iCurrentPageTab As Integer = NullSafeInteger(dr("pageno"))
 
               ' Create the tab for this control. Do this first in case the tabstrip control hasn't been read yet,
               ' and the tabs haven't been generated.
@@ -634,7 +459,7 @@ Public Class _Default
               End Try
 
               ' Generate the unique ID for this control and process it onto the form.
-              sID = FORMINPUTPREFIX & NullSafeString(dr("id")) & "_" & NullSafeString(dr("ItemType")) & "_"
+              Dim sID As String = FORMINPUTPREFIX & NullSafeString(dr("id")) & "_" & NullSafeString(dr("ItemType")) & "_"
               sEncodedID = objCrypt.SimpleEncrypt(NullSafeString(dr("id")).ToString, Session.SessionID)
 
               Select Case NullSafeInteger(dr("ItemType"))
@@ -1184,101 +1009,51 @@ Public Class _Default
                   ' ==================================================
                   ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_PagingGridView)
 
+                  If Not IsPostBack Then
 
-                  If (Not IsPostBack) Then
-                    connGrid = New SqlConnection(GetConnectionString)
-                    connGrid.Open()
+                    Dim result = db.GetWorkflowGridItems(NullSafeInteger(dr("id")), _instanceID)
 
-                    Try
-                      cmdGrid = New SqlCommand
-                      cmdGrid.CommandText = "spASRGetWorkflowGridItems"
-                      cmdGrid.Connection = connGrid
-                      cmdGrid.CommandType = CommandType.StoredProcedure
-                      cmdGrid.CommandTimeout = miSubmissionTimeoutInSeconds
+                    Session(sID & "DATA") = result.Data
 
-                      cmdGrid.Parameters.Add("@piInstanceID", SqlDbType.Int).Direction = ParameterDirection.Input
-                      cmdGrid.Parameters("@piInstanceID").Value = miInstanceID
+                    ctlForm_PagingGridView.DataKeyNames = New String() {"ID"}
 
-                      cmdGrid.Parameters.Add("@piElementItemID", SqlDbType.Int).Direction = ParameterDirection.Input
-                      cmdGrid.Parameters("@piElementItemID").Value = NullSafeString(dr("ID"))
+                    If result.Data.Rows.Count > 0 Then
+                      ctlForm_PagingGridView.IsEmpty = False
+                      ctlForm_PagingGridView.DataSource = result.Data
+                      ctlForm_PagingGridView.DataBind()
+                    Else
+                      ctlForm_PagingGridView.IsEmpty = True
+                      ShowNoResultFound(result.Data, ctlForm_PagingGridView)
+                    End If
 
-                      cmdGrid.Parameters.Add("@pfOK", SqlDbType.Bit).Direction = ParameterDirection.Output
+                    'set the default value
+                    If NullSafeInteger(dr("value")) <> 0 Then
 
-                      'drGrid = cmdGrid.ExecuteReader()
-                      da = New SqlDataAdapter(cmdGrid)
-                      dt = New DataTable()
+                      Dim colIndex As Integer = result.Data.Columns.IndexOf("ID")
 
-                      ' Fill the datatable with data from the datadapter.
-                      da.Fill(dt)
-                      Session(sID & "DATA") = dt
-
-                      ' NOTE: Do the dataBind() after adding to the panel
-                      ' otherwise you get an error.
-                      ' ctlForm_PagingGridView.DataKeyNames = New String() {"ID"}
-
-                      If dt.Rows.Count > 0 Then
-                        ctlForm_PagingGridView.IsEmpty = False
-                        ctlForm_PagingGridView.DataSource = dt
-                        ctlForm_PagingGridView.DataBind()
-                      Else
-                        ctlForm_PagingGridView.IsEmpty = True
-                        ShowNoResultFound(dt, ctlForm_PagingGridView)
-                      End If
-
-                      ' ------------------------------------------------
-                      ' Set default/first row
-                      ' ------------------------------------------------
-                      If ctlForm_PagingGridView.Rows.Count > 0 Then
-                        If CStr(dr("value")).Length > 0 And CStr(dr("value")) <> "0" Then
-                          Dim iIndexColumnNumber As Integer = dt.Columns.IndexOf("ID")
-                          Dim iRowNumber As Long = 0
-
-                          For Each rRow As DataRow In dt.Rows
-                            If rRow.Item(iIndexColumnNumber).ToString = CStr(dr("value")) Then
-
-                              ' set selected page index
-                              Dim iCurrentPage As Long = iRowNumber \ ctlForm_PagingGridView.PageSize
-                              ctlForm_PagingGridView.PageIndex = CInt(iCurrentPage)
-
-                              ' set row number
-                              Dim iCurrentRow As Long = iRowNumber Mod ctlForm_PagingGridView.PageSize
-                              ctlForm_PagingGridView.SelectedIndex = CInt(iCurrentRow)
-
-                              ctlForm_PagingGridView.DataBind()
-                              Exit For
-
-                            End If
-
-                            iRowNumber += 1
-                          Next
-                        Else
-                          ' set top row as default item
-                          ctlForm_PagingGridView.SelectedIndex = 0
+                      For r = 0 To result.Data.Rows.Count - 1
+                        If result.Data.Rows(r).Item(colIndex).ToString = CStr(dr("value")) Then
+                          ' set selected page index and row number
+                          ctlForm_PagingGridView.PageIndex = CInt(r \ ctlForm_PagingGridView.PageSize)
+                          ctlForm_PagingGridView.SelectedIndex = CInt(r Mod ctlForm_PagingGridView.PageSize)
+                          ctlForm_PagingGridView.DataBind()
+                          Exit For
                         End If
-                      End If
+                      Next
+                    End If
 
-                      Dim recordOk = CBool(cmdGrid.Parameters("@pfOK").Value)
-                      If Not recordOk Then
-                        sMessage = "Error loading web form. Web Form record selector item record has been deleted or not selected."
-                        Exit While
-                      End If
+                    If ctlForm_PagingGridView.SelectedIndex = -1 AndAlso ctlForm_PagingGridView.Rows.Count > 0 Then
+                      ctlForm_PagingGridView.SelectedIndex = 0
+                    End If
 
-                      cmdGrid.Dispose()
-
-                    Catch ex As Exception
-                      sMessage = "Error loading web form grid values:<BR><BR>" & ex.Message.Replace(vbCrLf, "<BR>") & "<BR><BR>" & "Contact your system administrator."
+                    If Not result.Ok Then
+                      sMessage = "Error loading web form. Web Form record selector item record has been deleted or not selected."
                       Exit While
-
-                    Finally
-                      connGrid.Close()
-                      connGrid.Dispose()
-                    End Try
+                    End If
                   Else
                     ' If a postback, check for empty datagrid and set empty row message
-                    Dim dtSource As DataTable = TryCast(HttpContext.Current.Session(sID & "DATA"), DataTable)
-
                     If ctlForm_PagingGridView.IsEmpty Then
-                      ShowNoResultFound(dtSource, ctlForm_PagingGridView)
+                      ShowNoResultFound(TryCast(HttpContext.Current.Session(sID & "DATA"), DataTable), ctlForm_PagingGridView)
                     End If
                   End If
 
@@ -1384,7 +1159,7 @@ Public Class _Default
                       .PagerStyle.BorderWidth = Unit.Pixel(0)
                     End With
 
-                    sFilterSQL = LookupFilterSQL(NullSafeString(dr("lookupFilterColumnName")), _
+                    sFilterSql = LookupFilterSQL(NullSafeString(dr("lookupFilterColumnName")), _
                             NullSafeInteger(dr("lookupFilterColumnDataType")), _
                             NullSafeInteger(dr("LookupFilterOperator")), _
                             FORMINPUTPREFIX & NullSafeString(dr("lookupFilterValueID")) & "_" & NullSafeString(dr("lookupFilterValueType")) & "_")
@@ -1393,88 +1168,41 @@ Public Class _Default
                     ' ==========================================================
                     ' Hidden Field to store any lookup filter code
                     ' ==========================================================
-                    If (sFilterSQL.Length > 0) Then
-                      ctlForm_PageTab(iCurrentPageTab).Controls.Add(New HiddenField With {.ID = "lookup" & sID, .Value = sFilterSQL})
+                    If (sFilterSql.Length > 0) Then
+                      ctlForm_PageTab(iCurrentPageTab).Controls.Add(New HiddenField With {.ID = "lookup" & sID, .Value = sFilterSql})
                     End If
 
                     ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_PagingGridView)
 
+                    If Not IsPostBack Then
 
-                    If (Not IsPostBack) Then
-                      connGrid = New SqlConnection(GetConnectionString)
-                      connGrid.Open()
-                      Try
-                        cmdGrid = New SqlCommand
-                        cmdGrid.CommandText = "spASRGetWorkflowItemValues"
-                        cmdGrid.Connection = connGrid
-                        cmdGrid.CommandType = CommandType.StoredProcedure
-                        cmdGrid.CommandTimeout = miSubmissionTimeoutInSeconds
+                      'get the data
+                      Dim result = db.GetWorkflowItemValues(CInt(NullSafeString(dr("id"))), _instanceID)
 
-                        cmdGrid.Parameters.Add("@piElementItemID", SqlDbType.Int).Direction = ParameterDirection.Input
-                        cmdGrid.Parameters("@piElementItemID").Value = CInt(NullSafeString(dr("id")))
+                      'insert a blank row
+                      result.Data.Rows.InsertAt(result.Data.NewRow(), 0)
 
-                        cmdGrid.Parameters.Add("@piInstanceID", SqlDbType.Int).Direction = ParameterDirection.Input
-                        cmdGrid.Parameters("@piInstanceID").Value = miInstanceID
+                      'bind data to grid
+                      ctlForm_PagingGridView.IsEmpty = (result.Data.Rows.Count - 1 = 0)
+                      ctlForm_PagingGridView.DataSource = result.Data
+                      ctlForm_PagingGridView.DataBind()
 
-                        cmdGrid.Parameters.Add("@piLookupColumnIndex", SqlDbType.Int).Direction = ParameterDirection.Output
-                        cmdGrid.Parameters.Add("@piItemType", SqlDbType.Int).Direction = ParameterDirection.Output
-                        cmdGrid.Parameters.Add("@psDefaultValue", SqlDbType.VarChar, 8000).Direction = ParameterDirection.Output
+                      'store the data its needed for paging, sorting
+                      Session(sID & "DATA") = result.Data
 
-                        da = New SqlDataAdapter(cmdGrid)
-                        dt = New DataTable()
+                      'store info its needed later
+                      textBox.Attributes.Add("LookupColumnIndex", result.LookupColumnIndex.ToString)
+                      textBox.Attributes.Add("DataType", result.Data.Columns(result.LookupColumnIndex).DataType.ToString)
 
-                        ' Fill the datatable with data from the datadapter.
-                        da.Fill(dt)
-                        Session(sID & "DATA") = dt
+                      'set the default value
+                      textBox.Text = result.DefaultValue
 
-                        ' Create a blank row at the top of the dropdown grid.
-                        objDataRow = dt.NewRow()
-                        dt.Rows.InsertAt(objDataRow, 0)
-
-                        m_iLookupColumnIndex = NullSafeInteger(cmdGrid.Parameters("@piLookupColumnIndex").Value)
-
-                        iItemType = NullSafeInteger(cmdGrid.Parameters("@piItemType").Value)
-
-                        textBox.Attributes.Remove("LookupColumnIndex")
-                        textBox.Attributes.Add("LookupColumnIndex", m_iLookupColumnIndex.ToString)
-
-                        textBox.Attributes.Remove("DefaultValue")
-                        textBox.Attributes.Add("DefaultValue", NullSafeString(cmdGrid.Parameters("@psDefaultValue").Value))
-
-                        textBox.Attributes.Remove("DataType")
-                        textBox.Attributes.Add("DataType", NullSafeString(dt.Columns(CInt(textBox.Attributes("LookupColumnIndex"))).DataType.ToString))
-
-                        ctlForm_PagingGridView.DataSource = dt
-                        ctlForm_PagingGridView.DataBind()
-
-                        ctlForm_PagingGridView.IsEmpty = (dt.Rows.Count - 1 = 0)
-
-                        cmdGrid.Dispose()
-
-                      Catch ex As Exception
-
-                        sMessage = "Error loading lookup values:<BR><BR>" & ex.Message.Replace(vbCrLf, "<BR>") & "<BR><BR>" & "Contact your system administrator."
-                        Exit While
-
-                      Finally
-                        connGrid.Close()
-                        connGrid.Dispose()
-                      End Try
-
-                      ' ==================================================
-                      ' Set the dropdownList to the default value.
-                      ' ==================================================
-                      If textBox.Attributes("DefaultValue").ToString.Length > 0 Then
-                        textBox.Text = textBox.Attributes("DefaultValue").ToString
-                      End If
-
-                      For jncount As Integer = 0 To ctlForm_PagingGridView.Rows.Count - 1
-                        If jncount > ctlForm_PagingGridView.PageSize Then Exit For ' don't bother if on other pages
-                        If ctlForm_PagingGridView.Rows(jncount).Cells(m_iLookupColumnIndex).Text = textBox.Attributes("DefaultValue").ToString Then
-                          ctlForm_PagingGridView.SelectedIndex = jncount
+                      For i As Integer = 0 To ctlForm_PagingGridView.Rows.Count - 1
+                        If i > ctlForm_PagingGridView.PageSize Then Exit For ' don't bother if on other pages
+                        If ctlForm_PagingGridView.Rows(i).Cells(result.LookupColumnIndex).Text = result.DefaultValue Then
+                          ctlForm_PagingGridView.SelectedIndex = i
                           Exit For
                         End If
-
                       Next
                     End If
 
@@ -1497,7 +1225,7 @@ Public Class _Default
                       .Enabled = True
                       .TargetControlID = sID & "TextBox"
                       ' Client-side handler.
-                      If (sFilterSQL.Length > 0) Then
+                      If (sFilterSql.Length > 0) Then
                         .OnClientPopup = "InitializeLookup"     ' can't pass the ID of the control, so use ._id in JS.
                       End If
                     End With
@@ -1540,9 +1268,9 @@ Public Class _Default
                     ' ================================================================================================================
                     ' Mobile Browser - convert lookup data to a standard dropdown.
                     ' ================================================================================================================
-                    ctlForm_Dropdown = New DropDownList
+                    Dim control As New DropDownList
 
-                    With ctlForm_Dropdown
+                    With control
                       .ID = sID
                       .ApplyLocation(dr)
                       .ApplySize(dr, -1, -1)
@@ -1556,103 +1284,58 @@ Public Class _Default
 
                       .Attributes.Add("onchange", "FilterMobileLookup('" & .ID & "');")
 
-                      ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_Dropdown)
+                      ctlForm_PageTab(iCurrentPageTab).Controls.Add(control)
 
-                      sFilterSQL = LookupFilterSQL(NullSafeString(dr("lookupFilterColumnName")), _
+                      sFilterSql = LookupFilterSQL(NullSafeString(dr("lookupFilterColumnName")), _
                               NullSafeInteger(dr("lookupFilterColumnDataType")), _
                               NullSafeInteger(dr("LookupFilterOperator")), _
                               FORMINPUTPREFIX & NullSafeString(dr("lookupFilterValueID")) & "_" & NullSafeString(dr("lookupFilterValueType")) & "_")
 
-                      If (sFilterSQL.Length > 0) Then
-                        ctlForm_PageTab(iCurrentPageTab).Controls.Add(New HiddenField With {.ID = "lookup" & sID, .Value = sFilterSQL})
+                      If (sFilterSql.Length > 0) Then
+                        ctlForm_PageTab(iCurrentPageTab).Controls.Add(New HiddenField With {.ID = "lookup" & sID, .Value = sFilterSql})
                       End If
 
-                      If (Not IsPostBack) Then
-                        connGrid = New SqlConnection(GetConnectionString)
-                        connGrid.Open()
+                      If Not IsPostBack Then
 
-                        Try
+                        'get the data
+                        Dim result = db.GetWorkflowItemValues(CInt(NullSafeString(dr("id"))), _instanceID)
 
-                          cmdGrid = New SqlCommand
-                          cmdGrid.CommandText = "spASRGetWorkflowItemValues"
-                          cmdGrid.Connection = connGrid
-                          cmdGrid.CommandType = CommandType.StoredProcedure
-                          cmdGrid.CommandTimeout = miSubmissionTimeoutInSeconds
+                        'insert a blank row
+                        result.Data.Rows.InsertAt(result.Data.NewRow(), 0)
 
-                          cmdGrid.Parameters.Add("@piElementItemID", SqlDbType.Int).Direction = ParameterDirection.Input
-                          cmdGrid.Parameters("@piElementItemID").Value = CInt(NullSafeString(dr("id")))
+                        'bind to the data
+                        .DataTextField = result.Data.Columns(result.LookupColumnIndex).ColumnName
 
-                          cmdGrid.Parameters.Add("@piInstanceID", SqlDbType.Int).Direction = ParameterDirection.Input
-                          cmdGrid.Parameters("@piInstanceID").Value = miInstanceID
+                        If result.Data.Columns(result.LookupColumnIndex).DataType Is GetType(DateTime) Then
+                          .DataTextFormatString = "{0:d}"
+                        End If
+                        control.DataSource = result.Data
+                        control.DataBind()
 
-                          cmdGrid.Parameters.Add("@piLookupColumnIndex", SqlDbType.Int).Direction = ParameterDirection.Output
-                          cmdGrid.Parameters.Add("@piItemType", SqlDbType.Int).Direction = ParameterDirection.Output
-                          cmdGrid.Parameters.Add("@psDefaultValue", SqlDbType.VarChar, 8000).Direction = ParameterDirection.Output
+                        'store the data its needed for paging, sorting
+                        Session(sID & "DATA") = result.Data
 
-                          da = New SqlDataAdapter(cmdGrid)
-                          dt = New DataTable()
+                        'store info its needed later
+                        .Attributes.Add("LookupColumnIndex", result.LookupColumnIndex.ToString)
+                        .Attributes.Add("DataType", result.Data.Columns(result.LookupColumnIndex).DataType.ToString)
 
-                          ' Create a blank row at the top of the dropdown grid.
-                          objDataRow = dt.NewRow()
-                          dt.Rows.InsertAt(objDataRow, 0)
-
-                          ' Fill the datatable with data from the datadapter.
-                          da.Fill(dt)
-                          Session(sID & "DATA") = dt
-
-                          ctlForm_Dropdown.DataSource = dt
-
-                          m_iLookupColumnIndex = NullSafeInteger(cmdGrid.Parameters("@piLookupColumnIndex").Value)
-                          iItemType = NullSafeInteger(cmdGrid.Parameters("@piItemType").Value)
-
-                          If dt.Columns(m_iLookupColumnIndex).DataType Is GetType(DateTime) Then
-                            .DataTextFormatString = "{0:d}"
-                          End If
-                          .DataTextField = dt.Columns(m_iLookupColumnIndex).ColumnName.ToString
-
-                          .Attributes.Remove("LookupColumnIndex")
-                          .Attributes.Add("LookupColumnIndex", m_iLookupColumnIndex.ToString)
-
-                          .Attributes.Remove("DefaultValue")
-                          .Attributes.Add("DefaultValue", NullSafeString(cmdGrid.Parameters("@psDefaultValue").Value))
-
-                          ctlForm_Dropdown.DataBind()
-
-                          cmdGrid.Dispose()
-
-                        Catch ex As Exception
-                          sMessage = "Error loading lookup values:<BR><BR>" & ex.Message.Replace(vbCrLf, "<BR>") & "<BR><BR>" & "Contact your system administrator."
-                          Exit While
-
-                        Finally
-                          connGrid.Close()
-                          connGrid.Dispose()
-                        End Try
-
-                        ' ==================================================
-                        ' Set the dropdownList to the default value.
-                        ' ==================================================
-
-                        Dim listItem As ListItem = ctlForm_Dropdown.Items.FindByValue(ctlForm_Dropdown.Attributes("DefaultValue").ToString)
-                        If listItem IsNot Nothing Then
-                          ctlForm_Dropdown.SelectedValue = listItem.Value
+                        'set the default and selected value
+                        Dim item As ListItem = control.Items.FindByValue(result.DefaultValue)
+                        If item IsNot Nothing Then
+                          control.SelectedValue = item.Value
                         Else
                           'The selected value is not in the list, so add it after the blank row
-                          ctlForm_Dropdown.Items.Insert(1, ctlForm_Dropdown.Attributes("DefaultValue").ToString)
-                          ctlForm_Dropdown.SelectedIndex = 1
+                          control.Items.Insert(1, result.DefaultValue)
+                          control.SelectedIndex = 1
                         End If
                       End If
 
                     End With
 
-                    ' ====================================================
                     ' hidden field to hold any filter SQL code
-                    ' ====================================================
                     ctlForm_PageTab(iCurrentPageTab).Controls.Add(New HiddenField With {.ID = sID & "filterSQL"})
 
-                    ' ============================================================
                     ' Hidden Button for JS to call which fires filter click event. 
-                    ' ============================================================
                     Dim button = New Button
                     With button
                       .ID = sID & "refresh"
@@ -1662,14 +1345,13 @@ Public Class _Default
                     AddHandler button.Click, AddressOf SetLookupFilter
 
                     ctlForm_PageTab(iCurrentPageTab).Controls.Add(button)
-
                   End If
 
                 Case 13 ' Dropdown (13) Inputs
 
-                  ctlForm_Dropdown = New DropDownList
+                  Dim control As New DropDownList
 
-                  With ctlForm_Dropdown
+                  With control
                     .ID = sID
                     .ApplyLocation(dr)
                     .ApplySize(dr, -1, -1)
@@ -1685,87 +1367,41 @@ Public Class _Default
                       .Attributes.Add("onchange", "FilterMobileLookup('" & .ID & "');")
                     End If
 
-                    ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_Dropdown)
+                    ctlForm_PageTab(iCurrentPageTab).Controls.Add(control)
 
-                    sFilterSQL = LookupFilterSQL(NullSafeString(dr("lookupFilterColumnName")), _
+                    sFilterSql = LookupFilterSQL(NullSafeString(dr("lookupFilterColumnName")), _
                             NullSafeInteger(dr("lookupFilterColumnDataType")), _
                             NullSafeInteger(dr("LookupFilterOperator")), _
                             FORMINPUTPREFIX & NullSafeString(dr("lookupFilterValueID")) & "_" & NullSafeString(dr("lookupFilterValueType")) & "_")
 
-                    If sFilterSQL.Length > 0 Then
-                      ctlForm_PageTab(iCurrentPageTab).Controls.Add(New HiddenField With {.ID = "lookup" & sID, .Value = sFilterSQL})
+                    If sFilterSql.Length > 0 Then
+                      ctlForm_PageTab(iCurrentPageTab).Controls.Add(New HiddenField With {.ID = "lookup" & sID, .Value = sFilterSql})
                     End If
 
-                    If (Not IsPostBack) Then
-                      connGrid = New SqlConnection(GetConnectionString)
-                      connGrid.Open()
+                    If Not IsPostBack Then
+                      'get the data
+                      Dim result = db.GetWorkflowItemValues(CInt(NullSafeString(dr("id"))), _instanceID)
 
-                      Try
+                      'insert a blank row
+                      result.Data.Rows.InsertAt(result.Data.NewRow(), 0)
 
-                        cmdGrid = New SqlCommand
-                        cmdGrid.CommandText = "spASRGetWorkflowItemValues"
-                        cmdGrid.Connection = connGrid
-                        cmdGrid.CommandType = CommandType.StoredProcedure
-                        cmdGrid.CommandTimeout = miSubmissionTimeoutInSeconds
+                      'bind data to grid
+                      For Each column As DataColumn In result.Data.Columns
+                        If Not column.ColumnName.StartsWith("ASRSys") Then
+                          .DataTextField = column.ColumnName
+                        End If
+                      Next
+                      .DataSource = result.Data
+                      .DataBind()
 
-                        cmdGrid.Parameters.Add("@piElementItemID", SqlDbType.Int).Direction = ParameterDirection.Input
-                        cmdGrid.Parameters("@piElementItemID").Value = CInt(NullSafeString(dr("id")))
+                      'store info its needed later
+                      .Attributes.Add("LookupColumnIndex", result.LookupColumnIndex.ToString)
+                      .Attributes.Add("DataType", result.Data.Columns(result.LookupColumnIndex).DataType.ToString)
 
-                        cmdGrid.Parameters.Add("@piInstanceID", SqlDbType.Int).Direction = ParameterDirection.Input
-                        cmdGrid.Parameters("@piInstanceID").Value = miInstanceID
-
-                        cmdGrid.Parameters.Add("@piLookupColumnIndex", SqlDbType.Int).Direction = ParameterDirection.Output
-                        cmdGrid.Parameters.Add("@piItemType", SqlDbType.Int).Direction = ParameterDirection.Output
-                        cmdGrid.Parameters.Add("@psDefaultValue", SqlDbType.VarChar, 8000).Direction = ParameterDirection.Output
-
-                        da = New SqlDataAdapter(cmdGrid)
-                        dt = New DataTable()
-
-                        ' Create a blank row at the top of the dropdown grid.
-                        objDataRow = dt.NewRow()
-                        dt.Rows.InsertAt(objDataRow, 0)
-
-                        ' Fill the datatable with data from the datadapter.
-                        da.Fill(dt)
-
-                        ' Format the column(s)
-                        For Each column As DataColumn In dt.Columns
-                          If Not column.ColumnName.StartsWith("ASRSys") Then
-                            .DataTextField = column.ColumnName.ToString
-                          End If
-                        Next
-
-                        ctlForm_Dropdown.DataSource = dt
-
-                        m_iLookupColumnIndex = NullSafeInteger(cmdGrid.Parameters("@piLookupColumnIndex").Value)
-                        iItemType = NullSafeInteger(cmdGrid.Parameters("@piItemType").Value)
-
-                        .Attributes.Remove("LookupColumnIndex")
-                        .Attributes.Add("LookupColumnIndex", m_iLookupColumnIndex.ToString)
-
-                        .Attributes.Remove("DefaultValue")
-                        .Attributes.Add("DefaultValue", NullSafeString(cmdGrid.Parameters("@psDefaultValue").Value))
-
-                        ctlForm_Dropdown.DataBind()
-
-                        cmdGrid.Dispose()
-
-                      Catch ex As Exception
-                        sMessage = "Error loading lookup values:<BR><BR>" & ex.Message.Replace(vbCrLf, "<BR>") & "<BR><BR>" & "Contact your system administrator."
-                        Exit While
-
-                      Finally
-                        connGrid.Close()
-                        connGrid.Dispose()
-                      End Try
-
-                      ' ==================================================
-                      ' Set the dropdownList to the default value.
-                      ' ==================================================
-
-                      Dim listItem As ListItem = ctlForm_Dropdown.Items.FindByValue(ctlForm_Dropdown.Attributes("DefaultValue").ToString)
-                      If listItem IsNot Nothing Then
-                        ctlForm_Dropdown.SelectedValue = listItem.Value
+                      'set the default value
+                      Dim item As ListItem = control.Items.FindByValue(result.DefaultValue)
+                      If item IsNot Nothing Then
+                        .SelectedValue = item.Value
                       End If
 
                     End If
@@ -1844,50 +1480,20 @@ Public Class _Default
 
                   If Not IsPostBack Then
 
-                    connGrid = New SqlConnection(GetConnectionString)
-                    connGrid.Open()
-                    Try
-                      cmdGrid = New SqlCommand
-                      cmdGrid.CommandText = "spASRGetWorkflowItemValues"
-                      cmdGrid.Connection = connGrid
-                      cmdGrid.CommandType = CommandType.StoredProcedure
-                      cmdGrid.CommandTimeout = miSubmissionTimeoutInSeconds
+                    'get the data
+                    Dim result = db.GetWorkflowItemValues(CInt(NullSafeString(dr("id"))), _instanceID)
 
-                      cmdGrid.Parameters.Add("@piElementItemID", SqlDbType.Int).Direction = ParameterDirection.Input
-                      cmdGrid.Parameters("@piElementItemID").Value = NullSafeString(dr("ID"))
+                    'bind to the data
+                    radioList.DataTextField = result.Data.Columns(0).ColumnName
+                    radioList.DataSource = result.Data
+                    radioList.DataBind()
 
-                      cmdGrid.Parameters.Add("@piInstanceID", SqlDbType.Int).Direction = ParameterDirection.Input
-                      cmdGrid.Parameters("@piInstanceID").Value = miInstanceID
+                    'set the default value
+                    radioList.SelectedValue = result.DefaultValue
 
-                      cmdGrid.Parameters.Add("@piLookupColumnIndex", SqlDbType.Int).Direction = ParameterDirection.Output
-                      cmdGrid.Parameters.Add("@piItemType", SqlDbType.Int).Direction = ParameterDirection.Output
-                      cmdGrid.Parameters.Add("@psDefaultValue", SqlDbType.VarChar, 8000).Direction = ParameterDirection.Output
-
-                      drGrid = cmdGrid.ExecuteReader
-
-                      While drGrid.Read
-                        radioList.Items.Add(New ListItem() With { _
-                                            .Text = drGrid(0).ToString, _
-                                            .Value = drGrid(0).ToString, _
-                                            .Selected = (CInt(drGrid.GetValue(1)) = 1) _
-                                          })
-                      End While
-
-                      If radioList.SelectedIndex = -1 Then
-                        radioList.SelectedIndex = 0
-                      End If
-
-                      drGrid.Close()
-                      cmdGrid.Dispose()
-
-                    Catch ex As Exception
-                      sMessage = "Error loading web form option group values:<BR><BR>" & ex.Message.Replace(vbCrLf, "<BR>") & "<BR><BR>" & "Contact your system administrator."
-                      Exit While
-
-                    Finally
-                      connGrid.Close()
-                      connGrid.Dispose()
-                    End Try
+                    If radioList.SelectedIndex = -1 Then
+                      radioList.SelectedIndex = 0
+                    End If
 
                   End If
 
@@ -2168,7 +1774,6 @@ Public Class _Default
             End If
 
             cmdSelect.Dispose()
-
           End If
 
           ' Resize the mobile 'viewport' to fit the webform
@@ -2232,34 +1837,9 @@ Public Class _Default
 
   Public Sub ButtonClick(ByVal sender As System.Object, ByVal e As EventArgs)
 
-    Dim conn As SqlConnection
-    Dim dr As SqlDataReader
-    Dim cmdValidate As SqlCommand
-    Dim cmdUpdate As SqlCommand
-    Dim cmdQs As SqlCommand
-    Dim valueString As String
-    Dim ctlFormInput As Control
-    Dim sID As String
-    Dim sIDString As String
-    Dim iTemp As Int16
-    Dim sTemp As String
-    Dim iType As Int16
-    Dim sType As String
-    Dim sFormElements As String
-    Dim arrFollowOnForms() As String
-    Dim fSavedForLater As Boolean
-    Dim sMessage As String
-    Dim iFollowOnFormCount As Integer
-    Dim iIndex As Integer
-    Dim sStep As String
-    Dim arrQueryStrings() As String
-    Dim sFollowOnForms As String
-    Dim value As String
-
-    sMessage = ""
-    valueString = ""
-    sFollowOnForms = ""
-    ReDim arrQueryStrings(0)
+    Dim db As New Database(GetConnectionString)
+    Dim valueString As String = ""
+    Dim sMessage As String = ""
 
     Try
       ' Read the web form item values & build up a string of the form input values.
@@ -2268,19 +1848,17 @@ Public Class _Default
       GetControls(Page.Controls, controlList, Function(c) c.ClientID.StartsWith(FORMINPUTPREFIX) AndAlso _
                                                 (c.ClientID.EndsWith("_") OrElse c.ClientID.EndsWith("TextBox") OrElse c.ClientID.EndsWith("Grid")))
 
-      For Each ctlFormInput In controlList
+      For Each ctlFormInput As Control In controlList
 
-        sID = ctlFormInput.ID
-        sIDString = sID.Substring(Len(FORMINPUTPREFIX))
-        iTemp = CShort(sIDString.IndexOf("_"))
-        sTemp = sIDString.Substring(iTemp + 1)
+        Dim sIDString As String = ctlFormInput.ID.Substring(Len(FORMINPUTPREFIX))
+        Dim iTemp As Int16 = CShort(sIDString.IndexOf("_"))
+        Dim sTemp As String = sIDString.Substring(iTemp + 1)
         sIDString = sIDString.Substring(0, iTemp) & vbTab
-
         iTemp = CShort(sTemp.IndexOf("_"))
-        sType = sTemp.Substring(0, iTemp)
-        iType = CShort(sType)
+        Dim sType As String = sTemp.Substring(0, iTemp)
+        Dim value As String
 
-        Select Case iType
+        Select Case CShort(sType)
 
           Case 0 ' Button
 
@@ -2326,17 +1904,7 @@ Public Class _Default
           Case 11 ' Grid (RecordSelector) Input
             If TypeOf ctlFormInput Is RecordSelector Then
               Dim control = DirectCast(ctlFormInput, RecordSelector)
-
-              value = "0"
-              If Not control.IsEmpty And control.SelectedIndex >= 0 Then
-                For iColCount As Integer = 0 To control.HeaderRow.Cells.Count - 1
-                  If (control.HeaderRow.Cells(iColCount).Text.ToLower() = "id") Then
-                    value = control.SelectedRow.Cells(iColCount).Text
-                    Exit For
-                  End If
-                Next
-              End If
-
+              value = If(control.SelectedValue IsNot Nothing, CStr(control.SelectedValue), "0")
               valueString += sIDString & value & vbTab
             End If
 
@@ -2354,29 +1922,15 @@ Public Class _Default
               If TypeOf ctlFormInput Is TextBox Then
                 Dim control = DirectCast(ctlFormInput, TextBox)
 
-                sTemp = control.Text
-
                 If control.Attributes("DataType") = "System.DateTime" Then
-                  If sTemp Is Nothing Then
-                    sTemp = "null"
-                  Else
-                    If (sTemp.Length = 0) Then
-                      sTemp = "null"
-                    Else
-                      sTemp = General.ConvertLocaleDateToSql(sTemp)
-                    End If
-                  End If
+                  value = If(control.Text = "", "null", General.ConvertLocaleDateToSql(control.Text))
                 ElseIf control.Attributes("DataType") = "System.Decimal" Or control.Attributes("DataType") = "System.Int32" Then
-
-                  If sTemp Is Nothing Then
-                    sTemp = ""
-                  Else
-                    sTemp = If(sTemp.Length = 0, "", sTemp.Replace(Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator, "."))
-                  End If
-
+                  value = If(control.Text = "", "", control.Text.Replace(Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator, "."))
+                Else
+                  value = control.Text
                 End If
 
-                valueString += sIDString & sTemp & vbTab
+                valueString += sIDString & value & vbTab
               End If
             Else
               ' Mobile Browser - it's a Dropdown List.
@@ -2397,7 +1951,7 @@ Public Class _Default
           Case 17 ' FileUpload
 
             If TypeOf ctlFormInput Is HtmlInputButton Then
-              value = DirectCast(pnlInput.FindControl("file" & sID), HiddenField).Value
+              value = DirectCast(pnlInput.FindControl("file" & ctlFormInput.ID), HiddenField).Value
               valueString += sIDString & value & vbTab
             End If
 
@@ -2410,181 +1964,101 @@ Public Class _Default
     End Try
 
     If sMessage.Length = 0 Then
-      Try
-        conn = New SqlConnection(GetConnectionString)
-        conn.Open()
 
-        Try ' Validate the web form entry.
-          errorMessagePanel.Font.Name = "Verdana"
-          errorMessagePanel.Font.Size = mobjConfig.ValidationMessageFontSize
-          errorMessagePanel.ForeColor = General.GetColour(6697779)
+      ' Validate the web form entry.
+      errorMessagePanel.Font.Name = "Verdana"
+      errorMessagePanel.Font.Size = mobjConfig.ValidationMessageFontSize
+      errorMessagePanel.ForeColor = General.GetColour(6697779)
 
-          bulletErrors.Items.Clear()
-          bulletWarnings.Items.Clear()
+      bulletErrors.Items.Clear()
+      bulletWarnings.Items.Clear()
 
-          cmdValidate = New SqlCommand("spASRSysWorkflowWebFormValidation", conn)
-          cmdValidate.CommandType = CommandType.StoredProcedure
-          cmdValidate.CommandTimeout = miSubmissionTimeoutInSeconds
+      Dim result = db.WorkflowValidateWebForm(miElementID, _instanceID, valueString)
 
-          cmdValidate.Parameters.Add("@piInstanceID", SqlDbType.Int).Direction = ParameterDirection.Input
-          cmdValidate.Parameters("@piInstanceID").Value = miInstanceID
+      result.Errors.ForEach(Sub(f) bulletErrors.Items.Add(f))
 
-          cmdValidate.Parameters.Add("@piElementID", SqlDbType.Int).Direction = ParameterDirection.Input
-          cmdValidate.Parameters("@piElementID").Value = miElementID
+      If hdnOverrideWarnings.Value <> "1" Then
+        result.Warnings.ForEach(Sub(f) bulletWarnings.Items.Add(f))
+      End If
 
-          cmdValidate.Parameters.Add("@psFormInput1", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
-          cmdValidate.Parameters("@psFormInput1").Value = valueString
+      hdnCount_Errors.Value = CStr(bulletErrors.Items.Count)
+      hdnCount_Warnings.Value = CStr(bulletWarnings.Items.Count)
+      hdnOverrideWarnings.Value = "0"
 
-          dr = cmdValidate.ExecuteReader
+      lblErrors.Text = If(bulletErrors.Items.Count > 0, _
+        "Unable to submit this form due to the following error" & _
+        If(bulletErrors.Items.Count = 1, "", "s") & ":", _
+        "")
 
-          While dr.Read
-            If NullSafeInteger(dr("failureType")) = 0 Then
-              bulletErrors.Items.Add(NullSafeString(dr("Message")))
-            ElseIf hdnOverrideWarnings.Value <> "1" Then
-              bulletWarnings.Items.Add(NullSafeString(dr("Message")))
-            End If
-          End While
+      lblWarnings.Text = If(bulletWarnings.Items.Count > 0, _
+        If(bulletErrors.Items.Count > 0, "And the following warning" & _
+        If(bulletWarnings.Items.Count = 1, "", "s") & ":", "Submitting this form raises the following warning" & _
+        If(bulletWarnings.Items.Count = 1, "", "s") & ":"), _
+       "")
 
-          dr.Close()
-          cmdValidate.Dispose()
+      overrideWarning.Visible = (bulletWarnings.Items.Count > 0 And bulletErrors.Items.Count = 0)
 
-          hdnCount_Errors.Value = CStr(bulletErrors.Items.Count)
-          hdnCount_Warnings.Value = CStr(bulletWarnings.Items.Count)
-          hdnOverrideWarnings.Value = "0"
+      ' Submit the webform
+      If bulletWarnings.Items.Count = 0 And bulletErrors.Items.Count = 0 Then
 
-          lblErrors.Text = If(bulletErrors.Items.Count > 0, _
-            "Unable to submit this form due to the following error" & _
-            If(bulletErrors.Items.Count = 1, "", "s") & ":", _
-            "")
+        Try
+          'TODO NOW PG why transactionscope???
+          Dim submit As SubmitWebFormResult
+          Using (New TransactionScope(TransactionScopeOption.Suppress))
+            submit = db.WorkflowSubmitWebForm(miElementID, _instanceID, valueString, NullSafeInteger(hdnDefaultPageNo.Value))
+          End Using
 
-          lblWarnings.Text = If(bulletWarnings.Items.Count > 0, _
-            If(bulletErrors.Items.Count > 0, "And the following warning" & _
-            If(bulletWarnings.Items.Count = 1, "", "s") & ":", "Submitting this form raises the following warning" & _
-            If(bulletWarnings.Items.Count = 1, "", "s") & ":"), _
-           "")
+          hdnFollowOnForms.Value = ""
 
-          overrideWarning.Visible = (bulletWarnings.Items.Count > 0 And bulletErrors.Items.Count = 0)
+          If submit.SavedForLater Then
+            Select Case miSavedForLaterMessageType
+              Case 1 ' Custom
+                If Not SetSubmissionMessage(msSavedForLaterMessage) Then
+                  SetSubmissionMessage("Workflow step saved for later.<BR><BR>Click", "here", "to close this form.")
+                End If
+              Case 2 ' None
+                SetSubmissionMessage("", "", "")
+              Case Else   'System default
+                SetSubmissionMessage("Workflow step saved for later.<BR><BR>Click", "here", "to close this form.")
+            End Select
+
+          ElseIf submit.FormElements.Length = 0 Then
+            Select Case miCompletionMessageType
+              Case 1 ' Custom
+                If Not SetSubmissionMessage(msCompletionMessage) Then
+                  SetSubmissionMessage("Workflow step completed.<BR><BR>Click", "here", "to close this form.")
+                End If
+              Case 2 ' None
+                SetSubmissionMessage("", "", "")
+              Case Else   'System default
+                SetSubmissionMessage("Workflow step completed.<BR><BR>Click", "here", "to close this form.")
+            End Select
+          Else
+            Dim followOnForms As String() = submit.FormElements.
+              Split(New String() {vbTab}, StringSplitOptions.RemoveEmptyEntries).
+              Select(Function(f) db.GetWorkflowQueryString(_instanceID, CInt(f))).
+              ToArray()
+
+            hdnFollowOnForms.Value = String.Join(vbTab, followOnForms)
+
+            Select Case miFollowOnFormsMessageType
+              Case 1 ' Custom
+                If Not SetSubmissionMessage(msFollowOnFormsMessage) Then
+                  SetSubmissionMessage("Workflow step completed.<BR><BR>Click", "here", "to complete the follow-on Workflow form" & If(followOnForms.Count = 1, "", "s") & ".")
+                End If
+              Case 2 ' None
+                SetSubmissionMessage("", "", "")
+              Case Else   'System default
+                SetSubmissionMessage("Workflow step completed.<BR><BR>Click", "here", "to complete the follow-on Workflow form" & If(followOnForms.Count = 1, "", "s") & ".")
+            End Select
+          End If
 
         Catch ex As Exception
-          sMessage = "Error validating the web form:<BR><BR>" & ex.Message
+          sMessage = "Error submitting the web form:<BR><BR>" & ex.Message
         End Try
 
-        ' Submit the webform
-        If (sMessage.Length = 0) And (bulletWarnings.Items.Count = 0) And (bulletErrors.Items.Count = 0) Then
+      End If
 
-          Using (New TransactionScope(TransactionScopeOption.Suppress))
-            Try
-              ' Get the currently selected tab...
-              iPageNo = NullSafeInteger(hdnDefaultPageNo.Value)
-
-              cmdUpdate = New SqlCommand("spASRSubmitWorkflowStep", conn)
-              cmdUpdate.CommandType = CommandType.StoredProcedure
-              cmdUpdate.CommandTimeout = miSubmissionTimeoutInSeconds
-
-              cmdUpdate.Parameters.Add("@piInstanceID", SqlDbType.Int).Direction = ParameterDirection.Input
-              cmdUpdate.Parameters("@piInstanceID").Value = miInstanceID
-
-              cmdUpdate.Parameters.Add("@piElementID", SqlDbType.Int).Direction = ParameterDirection.Input
-              cmdUpdate.Parameters("@piElementID").Value = miElementID
-
-              cmdUpdate.Parameters.Add("@psFormInput1", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
-              cmdUpdate.Parameters("@psFormInput1").Value = valueString
-
-              cmdUpdate.Parameters.Add("@psFormElements", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Output
-              cmdUpdate.Parameters.Add("@pfSavedForLater", SqlDbType.Bit).Direction = ParameterDirection.Output
-
-              cmdUpdate.Parameters.Add("@piPageNo", SqlDbType.Int).Direction = ParameterDirection.Input
-              cmdUpdate.Parameters("@piPageNo").Value = iPageNo
-
-              cmdUpdate.ExecuteNonQuery()
-
-              sFormElements = CStr(cmdUpdate.Parameters("@psFormElements").Value())
-              fSavedForLater = CBool(cmdUpdate.Parameters("@pfSavedForLater").Value())
-
-              cmdUpdate.Dispose()
-
-              If fSavedForLater Then
-                Select Case miSavedForLaterMessageType
-                  Case 1 ' Custom
-                    If Not SetSubmissionMessage(msSavedForLaterMessage) Then
-                      SetSubmissionMessage("Workflow step saved for later.<BR><BR>Click", "here", "to close this form.")
-                    End If
-                  Case 2 ' None
-                    SetSubmissionMessage("", "", "")
-                  Case Else   'System default
-                    SetSubmissionMessage("Workflow step saved for later.<BR><BR>Click", "here", "to close this form.")
-                End Select
-
-              ElseIf sFormElements.Length = 0 Then
-                Select Case miCompletionMessageType
-                  Case 1 ' Custom
-                    If Not SetSubmissionMessage(msCompletionMessage) Then
-                      SetSubmissionMessage("Workflow step completed.<BR><BR>Click", "here", "to close this form.")
-                    End If
-                  Case 2 ' None
-                    SetSubmissionMessage("", "", "")
-                  Case Else   'System default
-                    SetSubmissionMessage("Workflow step completed.<BR><BR>Click", "here", "to close this form.")
-                End Select
-              Else
-                arrFollowOnForms = sFormElements.Split(CChar(vbTab))
-                iFollowOnFormCount = arrFollowOnForms.GetUpperBound(0)
-
-                For iIndex = 0 To iFollowOnFormCount - 1
-                  sStep = arrFollowOnForms(iIndex)
-
-                  cmdQs = New SqlCommand("spASRGetWorkflowQueryString", conn)
-                  cmdQs.CommandType = CommandType.StoredProcedure
-                  cmdQs.CommandTimeout = miSubmissionTimeoutInSeconds
-
-                  cmdQs.Parameters.Add("@piInstanceID", SqlDbType.Int).Direction = ParameterDirection.Input
-                  cmdQs.Parameters("@piInstanceID").Value = miInstanceID
-
-                  cmdQs.Parameters.Add("@piElementID", SqlDbType.Int).Direction = ParameterDirection.Input
-                  cmdQs.Parameters("@piElementID").Value = CLng(sStep)
-
-                  cmdQs.Parameters.Add("@psQueryString", SqlDbType.VarChar, 8000).Direction = ParameterDirection.Output
-
-                  cmdQs.ExecuteNonQuery()
-
-                  Dim sQueryString As String = CStr(cmdQs.Parameters("@psQueryString").Value())
-
-                  ReDim Preserve arrQueryStrings(arrQueryStrings.GetUpperBound(0) + 1)
-                  arrQueryStrings(arrQueryStrings.GetUpperBound(0)) = sQueryString
-
-                  cmdQs.Dispose()
-                Next iIndex
-
-                sFollowOnForms = Join(arrQueryStrings, vbTab)
-
-                Select Case miFollowOnFormsMessageType
-                  Case 1 ' Custom
-                    If Not SetSubmissionMessage(msFollowOnFormsMessage) Then
-                      SetSubmissionMessage("Workflow step completed.<BR><BR>Click", "here", "to complete the follow-on Workflow form" & If(iFollowOnFormCount = 1, "", "s") & ".")
-                    End If
-                  Case 2 ' None
-                    SetSubmissionMessage("", "", "")
-                  Case Else   'System default
-                    SetSubmissionMessage("Workflow step completed.<BR><BR>Click", "here", "to complete the follow-on Workflow form" & If(iFollowOnFormCount = 1, "", "s") & ".")
-                End Select
-
-              End If
-
-              hdnFollowOnForms.Value = sFollowOnForms
-
-            Catch ex As Exception
-              sMessage = "Error submitting the web form:<BR><BR>" & ex.Message
-            End Try
-
-          End Using
-        End If
-
-        conn.Close()
-        conn.Dispose()
-
-      Catch ex As Exception
-        sMessage = "Error connecting to the database:<BR><BR>" & ex.Message
-      End Try
     End If
 
     If sMessage.Length > 0 Then
@@ -2750,7 +2224,7 @@ Public Class _Default
       If (psColumnName.Length > 0) And (piOperatorID > 0) And (psValue.Length > 0) Then
 
         Select Case piColumnDataType
-          Case SQLDataType.sqlBoolean
+          Case SqlDataType.Boolean
             Select Case piOperatorID
               Case FilterOperators.giFILTEROP_EQUALS
                 filterSql = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) = " & vbTab
@@ -2758,7 +2232,7 @@ Public Class _Default
                 filterSql = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) <> " & vbTab
             End Select
 
-          Case SQLDataType.sqlNumeric, SQLDataType.sqlInteger
+          Case SqlDataType.Numeric, SqlDataType.Integer
             Select Case piOperatorID
               Case FilterOperators.giFILTEROP_EQUALS
                 filterSql = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) = " & vbTab
@@ -2779,7 +2253,7 @@ Public Class _Default
                 filterSql = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) < " & vbTab
             End Select
 
-          Case SQLDataType.sqlDate
+          Case SqlDataType.Date
             Select Case piOperatorID
               Case FilterOperators.giFILTEROP_ON
                 filterSql = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], '') = '" & vbTab & "'"
@@ -2800,7 +2274,7 @@ Public Class _Default
                 filterSql = piColumnDataType.ToString & vbTab & psValue & vbTab & "LEN('" & vbTab & "') > 0 AND ISNULL([ASRSysLookupFilterValue], '') < '" & vbTab & "'"
             End Select
 
-          Case SQLDataType.sqlVarChar, SQLDataType.sqlVarBinary, SQLDataType.sqlLongVarChar
+          Case SqlDataType.VarChar, SqlDataType.VarBinary, SqlDataType.LongVarChar
             Select Case piOperatorID
               Case FilterOperators.giFILTEROP_IS
                 filterSql = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], '') = '" & vbTab & "'"
@@ -2852,40 +2326,32 @@ Public Class _Default
 
   Protected Sub BtnDoFilterClick(sender As Object, e As EventArgs) Handles btnDoFilter.Click
 
-    Dim arrLookups() As String = hdnMobileLookupFilter.Value.Split(CChar(vbTab))
-
-    For Each value As String In arrLookups
+    For Each value As String In hdnMobileLookupFilter.Value.Split(CChar(vbTab))
       SetLookupFilter(Nothing, Nothing, value)
     Next
   End Sub
 
   Sub SetLookupFilter(ByVal sender As Object, ByVal e As EventArgs, Optional lookupID As String = "")
 
-    If Not (sender Is Nothing) Then
+    If sender IsNot Nothing Then
       ' get button's ID
-      Dim btnSender As Button
-      btnSender = DirectCast(sender, Button)
-
-      lookupID = btnSender.ID
+      lookupID = DirectCast(sender, Button).ID
     End If
 
     If lookupID.Length = 0 Then Return
 
     ' Create a datatable from the data in the session variable
-    Dim dataTable As DataTable
-    dataTable = TryCast(HttpContext.Current.Session(lookupID.Replace("refresh", "DATA")), DataTable)
+    Dim dataTable As DataTable = TryCast(HttpContext.Current.Session(lookupID.Replace("refresh", "DATA")), DataTable)
 
     ' get the filter sql
-    Dim hiddenField As HiddenField
-    hiddenField = TryCast(pnlInputDiv.FindControl(lookupID.Replace("refresh", "filterSQL")), HiddenField)
+    Dim hiddenField As HiddenField = TryCast(pnlInputDiv.FindControl(lookupID.Replace("refresh", "filterSQL")), HiddenField)
 
     Dim filterSql As String = hiddenField.Value
 
     If TypeOf (pnlInputDiv.FindControl(lookupID.Replace("refresh", ""))) Is DropDownList Then
 
       ' This is a dropdownlist style lookup (mobiles only)
-      Dim dropdown As DropDownList
-      dropdown = TryCast(pnlInputDiv.FindControl(lookupID.Replace("refresh", "")), DropDownList)
+      Dim dropdown As DropDownList = TryCast(pnlInputDiv.FindControl(lookupID.Replace("refresh", "")), DropDownList)
 
       ' Store the current value, so we can re-add it after filtering.
       Dim strCurrentSelection As String = dropdown.Text
@@ -2894,8 +2360,7 @@ Public Class _Default
       FilterDataTable(dataTable, filterSql)
 
       ' insert the previously selected item
-      Dim objDataRow As DataRow
-      objDataRow = dataTable.NewRow()
+      Dim objDataRow As DataRow = dataTable.NewRow()
       objDataRow(0) = strCurrentSelection
       dataTable.Rows.InsertAt(objDataRow, 0)
 
@@ -2911,14 +2376,11 @@ Public Class _Default
       hiddenField.Value = ""
     Else
       ' This is a normal grid lookup (not Mobile)
-
       FilterDataTable(dataTable, filterSql)
 
-      Dim gridView As RecordSelector
-      gridView = TryCast(pnlInputDiv.FindControl(lookupID.Replace("refresh", "Grid")), RecordSelector)
+      Dim gridView As RecordSelector = TryCast(pnlInputDiv.FindControl(lookupID.Replace("refresh", "Grid")), RecordSelector)
 
       gridView.filterSQL = filterSql.ToString
-
       gridView.DataSource = dataTable
       gridView.DataBind()
     End If

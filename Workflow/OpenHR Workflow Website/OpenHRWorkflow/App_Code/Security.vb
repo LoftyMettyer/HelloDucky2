@@ -13,7 +13,8 @@ Public Class Security
       If Not ValidateSqlServerUser(userName, password) Then Return invalidLoginDetails
     End If
 
-    Dim result As CheckLoginResult = Database.CheckLoginDetails(userName)
+    Dim db As New Database
+    Dim result As CheckLoginResult = db.CheckLoginDetails(userName)
     If Not result.Valid Then
       If result.InvalidReason.ToLower() Like "*incorrect*e-mail*password*" Then Return invalidLoginDetails
       Return result.InvalidReason

@@ -8,6 +8,10 @@ html, body, div, span, table, tbody, tfoot, thead, tr, th, td, ul, ol {
     vertical-align: baseline;
 }
 
+a {
+    outline: 0;
+}
+
 ul, ol {
     list-style-type: none;
 }
@@ -127,7 +131,7 @@ body { font-family: verdana; }
     width: 50%
 }
 .footer-buttons.col3 li {
-    width: 33%
+    width: 33.3%
 }
 .footer-buttons li a {
     position: relative;
@@ -204,3 +208,67 @@ body { font-family: verdana; }
 .large-view .header { border-radius: 6px 6px 0px 0px; }
 .large-view .footer { border-radius: 0px 0px 6px 6px; }
 
+
+ .footer, .header {
+    background: -moz-linear-gradient(#76b2e4, #266294);
+    background: -webkit-linear-gradient(#76b2e4, #266294);
+    background: linear-gradient(#76b2e4, #4682B4); 
+}
+.footer-buttons li {
+    box-sizing: border-box;
+}
+.footer-buttons li a 
+{
+    height: 58px;
+}
+.footer-buttons li a:hover {
+    background-color: #66a2d4;
+}
+
+.footer-buttons li span {
+    color: #FFF;
+    font-size: 10px;
+    font-weight: bold;
+}
+.footer-buttons li a {
+    border: 1px solid #266294;
+    margin-right: -0px; 
+}
+.footer-buttons li + li a {
+    border-left: none;
+}
+.footer-buttons li span {
+    font-family: arial;
+}
+.footer, .header {
+    border-radius: 0px !important;
+}
+.workflow-list li {
+    border: 1px solid #DDD;
+    padding:5px;
+    border-radius: 4px;
+    background-color: #F5F5F5;
+    background: -moz-linear-gradient(#FFF, #F0F0F0);
+    background: -webkit-linear-gradient(#FFF, #F0F0F0);
+    margin-bottom:4px;
+}
+.workflow-list .image {
+    vertical-align: top;     
+}
+.workflow-list img {
+    width: 36px;
+    height: 36px;
+    vertical-align: top;
+}
+.detail span {
+    color: #333 !important;
+    font-family: Segoe UI !important;
+    margin-bottom: 3px;
+}
+span {
+    font-family: Segoe UI !important;
+}
+.large-view .page {
+    width: 370px !important;
+    height: 500px !important;
+}

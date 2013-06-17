@@ -118,7 +118,7 @@ Public Module Extensions
   End Function
 
   Private Function AdjustedBackColor(color As Integer) As Integer
-    'TODO NOW PG
+    'TODO PG NOW
     Select Case color
       Case 15988214
         Return 16777215 '#FFFFFF

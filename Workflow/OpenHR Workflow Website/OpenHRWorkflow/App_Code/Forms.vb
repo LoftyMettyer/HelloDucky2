@@ -4,7 +4,8 @@ Imports System.Data.SqlClient
 Public Class Forms
   Public Shared Sub RedirectIfNotLicensed()
 
-    If Not Database.IsMobileLicensed() Then
+    Dim db As New Database
+    If Not db.IsMobileLicensed() Then
       HttpContext.Current.Session("message") = "You are not licensed for the OpenHR Mobile module. Please contact your Advanced Business Solutions Account Manager for details"
       HttpContext.Current.Response.Redirect("~/Message.aspx")
     End If
@@ -13,7 +14,8 @@ Public Class Forms
 
   Public Shared Sub RedirectIfDbLocked()
 
-    If Database.IsSystemLocked() Then
+    Dim db As New Database
+    If db.IsSystemLocked() Then
       HttpContext.Current.Session("message") = "The system is currently being modified. Please retry again shortly."
       HttpContext.Current.Response.Redirect("~/Message.aspx")
     End If

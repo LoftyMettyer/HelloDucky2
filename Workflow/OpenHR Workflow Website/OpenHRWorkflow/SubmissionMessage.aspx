@@ -43,8 +43,6 @@
             catch (e) { };
           }
 
-
-
           function closeMe() {
             try {
               window.parent.close();
@@ -53,7 +51,6 @@
               document.getElementById('lblSubmissionsMessage_2').innerHTML = '';
               document.getElementById('lblSubmissionsMessage_3').innerHTML = '';
 
-              // Resize the fame.
               resizeFrame();
             } 
              catch (e) { alert("For your security please close your browser"); }

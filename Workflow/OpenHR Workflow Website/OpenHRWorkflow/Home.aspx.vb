@@ -9,7 +9,8 @@ Partial Class Home
     Title = WebSiteName("Home")
     Forms.LoadControlData(Me, 2)
 
-    Dim result As CheckLoginResult = Database.CheckLoginDetails(User.Identity.Name)
+    Dim db As New Database
+    Dim result As CheckLoginResult = db.CheckLoginDetails(User.Identity.Name)
     Dim userGroupID As Integer
 
     If result.Valid Then
@@ -38,11 +39,11 @@ Partial Class Home
       homeItemFontInfo.Strikeout = NullSafeBoolean(dr("HomeItemFontStrikeout"))
     End Using
 
-    Dim canRun As Boolean = Database.CanRunWorkflows(userGroupID)
+    Dim canRun As Boolean = db.CanRunWorkflows(userGroupID)
     Dim workflows As New List(Of WorkflowLink)
 
     If canRun Then
-      workflows = Database.GetWorkflowList(userGroupID)
+      workflows = db.GetWorkflowList(userGroupID)
     End If
 
     For Each item In workflows
@@ -88,7 +89,7 @@ Partial Class Home
 
     ' Update the workflow step count indicator
     If canRun Then
-      Dim count As Integer = Database.GetPendingStepCount(User.Identity.Name)
+      Dim count As Integer = db.GetPendingStepCount(User.Identity.Name)
       lblWFCount.Text = CStr(count)
       lblWFCount.Visible = (count > 0)
     Else

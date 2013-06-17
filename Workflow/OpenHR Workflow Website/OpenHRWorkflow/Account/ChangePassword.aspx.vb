@@ -4,7 +4,8 @@ Partial Class ChangePassword
 
   Protected Sub Page_Init(sender As Object, e As EventArgs) Handles Me.Init
 
-    Dim result As CheckLoginResult = Database.CheckLoginDetails(User.Identity.Name)
+    Dim db As New Database
+    Dim result As CheckLoginResult = db.CheckLoginDetails(User.Identity.Name)
 
     If Not result.Valid Then
       FormsAuthentication.SignOut()
@@ -19,7 +20,8 @@ Partial Class ChangePassword
 
   Protected Sub BtnSubmitClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnSubmit.Click, btnSubmit2.Click
 
-    Dim message As String = Database.ChangePassword(User.Identity.Name, txtCurrPassword.Text, txtNewPassword.Text)
+    Dim db As New Database
+    Dim message As String = db.ChangePassword(User.Identity.Name, txtCurrPassword.Text, txtNewPassword.Text)
 
     If message.Length > 0 Then
       CType(Master, Site).ShowDialog("Change Password Failed", message)

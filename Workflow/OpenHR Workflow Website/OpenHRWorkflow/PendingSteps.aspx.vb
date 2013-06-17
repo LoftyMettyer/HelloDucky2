@@ -10,7 +10,8 @@ Partial Class PendingSteps
     Title = WebSiteName("To Do...")
     Forms.LoadControlData(Me, 5)
 
-    Dim result As CheckLoginResult = Database.CheckLoginDetails(User.Identity.Name)
+    Dim db As New Database
+    Dim result As CheckLoginResult = db.CheckLoginDetails(User.Identity.Name)
     Dim userGroupID As Integer
 
     If result.Valid Then
@@ -50,11 +51,11 @@ Partial Class PendingSteps
       todoDescFontInfo.Strikeout = NullSafeBoolean(dr("TodoDescFontStrikeout"))
     End Using
 
-    Dim canRun As Boolean = Database.CanRunWorkflows(userGroupID)
+    Dim canRun As Boolean = db.CanRunWorkflows(userGroupID)
     Dim workflows As New List(Of WorkflowStepLink)
 
     If canRun Then
-      workflows = Database.GetPendingStepList(User.Identity.Name)
+      workflows = db.GetPendingStepList(User.Identity.Name)
     End If
 
     For Each item In workflows

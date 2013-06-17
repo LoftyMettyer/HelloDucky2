@@ -271,7 +271,7 @@ Public Class Utilities
       sTitle = DEFAULTTITLE
     End Try
 
-    WebSiteName = sTitle
+    Return sTitle
 
   End Function
 
