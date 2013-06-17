@@ -657,10 +657,11 @@
 			try {
 				if (pNewText.length > 0) {
 					dtCurrentDate = pobjControl.getValue();				
+          
 					$get("txtLastDate_Month").value = dtCurrentDate.getMonth();
 					$get("txtLastDate_Day").value = dtCurrentDate.getDate();
 					//txtLastDate_Year.value = dtCurrentDate.getYear();					
-					$get("txtLastDate_Year").value = dtCurrentDate.getFullYear();					
+					$get("txtLastDate_Year").value = dtCurrentDate.getFullYear();          
 				}
 			}
 			catch (e) { }
@@ -1363,7 +1364,6 @@ function ResizeComboForForm(sender, args) {
 
 
   function FilterMobileLookup(sourceControlID) {
-  
 	        var sSelectWhere = "";
 	        var sValueID = "";
 	        var sValueType = "";

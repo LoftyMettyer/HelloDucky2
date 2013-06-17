@@ -1508,18 +1508,23 @@ Public Class _Default
                     .Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
                     .Font.Underline = NullSafeBoolean(dr("FontUnderline"))
 
-                    .DropButton.ImageUrl1 = "../Images/downarrow.gif"
-                    .DropButton.ImageUrl2 = "../Images/downarrow.gif"
-                    .DropButton.ImageUrlHover = "../Images/downarrow-hover.gif"
-
+                    If isMobileBrowser() Then
+                      .DropButton.ImageUrl1 = "~/Images/Calendar16.png"
+                      .DropButton.ImageUrl2 = "~/Images/Calendar16.png"
+                      .DropButton.ImageUrlHover = "~/Images/Calendar16.png"
+                    Else
+                      .DropButton.ImageUrl1 = "~/Images/downarrow.gif"
+                      .DropButton.ImageUrl2 = "~/Images/downarrow.gif"
+                      .DropButton.ImageUrlHover = "~/Images/downarrow-hover.gif"
+                    End If
                     .Height() = Unit.Pixel(NullSafeInteger(dr("Height")) - 2)
                     .Width() = Unit.Pixel(NullSafeInteger(dr("Width")) - 2)
 
                     .ClientSideEvents.EditKeyDown = "dateControlKeyPress"
-                    .ClientSideEvents.TextChanged = "dateControlTextChanged" & _
-                                             CStr(IIf(isMobileBrowser, ";FilterMobileLookup('" & sID.ToString & "');""", ""))
+                    .ClientSideEvents.TextChanged = "dateControlTextChanged"
                     .ClientSideEvents.BeforeDropDown = "dateControlBeforeDropDown"
 
+                    If isMobileBrowser() Then .ClientSideEvents.AfterCloseUp = "FilterMobileLookup('" & sID.ToString & "');"
                   End With
 
                   ' pnlInput.contenttemplatecontainer.Controls.Add(ctlForm_Date)
