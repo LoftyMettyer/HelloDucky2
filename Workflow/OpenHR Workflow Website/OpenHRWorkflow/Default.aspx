@@ -21,11 +21,10 @@
     <script src="Scripts/resizable-table.js" type="text/javascript"></script>
 </head>
 
-<body id="bdyMain" onload="return window_onload()" style="overflow: auto;  
-          text-align: center; margin: 0px; padding: 0px;">
-	<img id="imgErrorMessages_Max" src="Images/uparrows_white.gif" alt="Show messages"
-		style="position: absolute; right: 1px; bottom: 1px; display: none; visibility: hidden;
-                                                               z-index: 1;" onclick="showErrorMessages(true);" />
+<body id="bdyMain" onload="return window_onload()" style="overflow: auto; text-align: center; margin: 0px; padding: 0px;">
+	
+    <img id="imgErrorMessages_Max" src="Images/uparrows_white.gif" alt="Show messages" style="position: absolute; right: 1px; bottom: 1px; display: none; visibility: hidden; z-index: 1; width:20px; height:20px;" onclick="showErrorMessages(true);" />
+
 	<form runat="server" hidefocus="true" id="frmMain" onsubmit="return submitForm();">
 	
 	<script language="javascript" type="text/javascript">
@@ -279,31 +278,6 @@
 				launchForms(window.$get("frmMain").hdnSiblingForms.value, false);
 			}
 			catch (e) {}
-		}
-
-		function resizeToFit(piWidth, piHeight) {
-//			var iDefHeight;
-//			var iDefWidth;
-//			var iResizeByHeight;
-//			var iResizeByWidth;
-
-//			try {
-//				iDefHeight = $get("frmMain").hdnFormHeight.value;
-//				iDefWidth = $get("frmMain").hdnFormWidth.value;
-
-//				iResizeByHeight = piHeight - htmMain.clientHeight;
-//				iResizeByWidth = piWidth - htmMain.clientWidth;
-
-//				if (iResizeByHeight < 0) {
-//					iResizeByHeight = 0;
-//				}
-//				if (iResizeByWidth < 0) {
-//					iResizeByWidth = 0;
-//				}
-
-//				window.parent.resizeBy(iResizeByWidth, iResizeByHeight);
-//			}
-//			catch (e) { }
 		}
 
 		function launchForms(psForms, pfFirstFormRelocate) {
@@ -1056,49 +1030,6 @@
 	        catch(e) {}
 	    }
 
-// Old resizeformforcombo - used with Infragistics only, now replaced.	    
-//	    function ResizeFormForCombo(psWebComboId) {
-//			var iResizeByHeight = 0;
-//			var iResizeByWidth = 0;
-//            
-//			try {
-//	            var objCombo = igcmbo_getComboById(psWebComboId);
-//                var grid = objCombo.getGrid();
-
-//                var oEl = grid.Element;
-
-//                if (oEl.scrollWidth > bdyMain.clientWidth)
-//                {
-//                    if (oEl.scrollWidth > screen.availWidth)
-//                    {
-//                        iResizeByWidth = screen.availWidth - bdyMain.clientWidth;
-//                    }
-//                    else
-//                    {
-//                        iResizeByWidth = oEl.scrollWidth - bdyMain.clientWidth;
-//                    }
-//                }
-//                
-////                if (oEl.scrollHeight > bdyMain.clientHeight)
-////                {
-////                    if (oEl.scrollHeight > screen.availHeight)
-////                    {
-////                        iResizeByHeight = screen.availHeight - bdyMain.clientHeight;
-////                    }
-////                    else
-////                    {
-////                        iResizeByHeight = oEl.scrollHeight - bdyMain.clientHeight;
-////                    }
-////                }
-//                
-//                if ((iResizeByWidth > 0) || (iResizeByHeight > 0))
-//                {
-//                    setTimeout('window.resizeBy(' + iResizeByWidth + ',' + iResizeByHeight + ');', 100);
-//                }
-//            }
-//            catch(e) {}
-//	    }
-
 function ResizeComboForForm(sender, args) {
   psWebComboID = sender._id;
             
@@ -1725,18 +1656,15 @@ function ResizeComboForForm(sender, args) {
 		
         <div id="divErrorMessages_Inner" style="background-color: white; text-align: left; position: relative; margin: 0px; padding: 5px; border: 1px solid; font-size: 11px; color: black; font-family: Verdana;">
 		    
-			<img id="imgErrorMessages_Min" src="Images/downarrows_white.gif" alt="Hide messages"
-				style="right: 1px; position: absolute; top: 0px;" onclick="showErrorMessages(false);" />
-			<igmisc:WebAsyncRefreshPanel id="pnlErrorMessages" runat="server" style="position: relative;"
-				width="90%" height="100%">
+			<img id="imgErrorMessages_Min" src="Images/downarrows_white.gif" alt="Hide messages" style="right: 1px; position: absolute; top: 0px; width:20px; height:20px;" onclick="showErrorMessages(false);" />
+
+			<igmisc:WebAsyncRefreshPanel id="pnlErrorMessages" runat="server" style="position: relative;" width="90%" height="100%">
 				<asp:Label ID="lblErrors" runat="server" Text=""></asp:Label>				
-				<asp:BulletedList ID="bulletErrors" runat="server" Style="margin-top: 0px; margin-bottom: 0px;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        padding-top: 5px; padding-bottom: 5px;" BulletStyle="Disc" Font-Names="Verdana"
+				<asp:BulletedList ID="bulletErrors" runat="server" Style="margin-top: 0px; margin-bottom: 0px; padding-top: 5px; padding-bottom: 5px;" BulletStyle="Disc" Font-Names="Verdana"
 					Font-Size="11pt" BorderStyle="None">
 				</asp:BulletedList>
 				<asp:Label ID="lblWarnings" runat="server" Text=""></asp:Label>
-				<asp:BulletedList ID="bulletWarnings" runat="server" Style="margin-top: 0px; margin-bottom: 0px;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     padding-top: 5px; padding-bottom: 5px;" BulletStyle="Disc" Font-Names="Verdana"
+				<asp:BulletedList ID="bulletWarnings" runat="server" Style="margin-top: 0px; margin-bottom: 0px; padding-top: 5px; padding-bottom: 5px;" BulletStyle="Disc" Font-Names="Verdana"
 					Font-Size="11px" BorderStyle="None">
 				</asp:BulletedList>
 				<asp:Label ID="lblWarningsPrompt_1" runat="server" Text="Click"></asp:Label>
@@ -1753,8 +1681,7 @@ function ResizeComboForForm(sender, args) {
 	<!--
     Submission and Exceptional Errors Popup 
     -->
-	<div id="divSubmissionMessages" style="position: absolute; left: 0px; top: 15%; width: 100%;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    display: none; z-index: 3; visibility: hidden; text-align: center;" nowrap="nowrap">
+	<div id="divSubmissionMessages" style="position: absolute; left: 0px; top: 15%; width: 100%; display: none; z-index: 3; visibility: hidden; text-align: center;" nowrap="nowrap">
 		<iframe id="ifrmMessages" src="" frameborder="0" scrolling="no"></iframe>
 	</div>
 	<!--

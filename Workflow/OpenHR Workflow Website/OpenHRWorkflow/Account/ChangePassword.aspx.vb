@@ -1,10 +1,9 @@
-﻿Imports Utilities
-
+﻿
 Partial Class ChangePassword
-    Inherits System.Web.UI.Page
+  Inherits Page
 
-  Protected Sub Page_Init(sender As Object, e As System.EventArgs) Handles Me.Init
-    Title = WebSiteName("Change Password")
+  Protected Sub Page_Init(sender As Object, e As EventArgs) Handles Me.Init
+    Title = Utilities.WebSiteName("Change Password")
     Forms.LoadControlData(Me, 4)
     Form.DefaultButton = btnSubmit.UniqueID
     Form.DefaultFocus = txtCurrPassword.ClientID
@@ -12,35 +11,24 @@ Partial Class ChangePassword
 
   Protected Sub BtnSubmitClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnSubmit.Click
 
-    Dim sHeader As String = ""
-    Dim sMessage As String = ""
-    Dim sRedirectTo As String = ""
+    Dim message As String = ""
 
-    Try
-      ' Force password change only if there are no other security logged in with the same name.
-      Dim userSessionCount As Integer = Database.GetUserCountOnServer(User.Identity.Name)
+    ' Force password change only if there are no other security logged in with the same name.
+    Dim userSessionCount As Integer = Database.GetUserCountOnServer(User.Identity.Name)
 
-      If userSessionCount > 1 Then
-        sMessage = String.Format("You could not change your password. The account is currently being used by {0} in the system.", _
-                    If(userSessionCount > 2, userSessionCount.ToString & " security", "another user"))
-      Else
-        ' Change users password
-        sMessage = Database.ChangePassword(User.Identity.Name, txtCurrPassword.Text, txtNewPassword.Text)
-      End If
-
-    Catch ex As Exception
-      sMessage = "Error :" & vbCrLf & vbCrLf & ex.Message.ToString & vbCrLf & vbCrLf & "Contact your system administrator."
-    End Try
-
-    If sMessage.Length > 0 Then
-      sHeader = "Change Password Failed"
+    If userSessionCount > 1 Then
+      message = String.Format("You could not change your password. The account is currently being used by {0} in the system.", _
+                      If(userSessionCount > 2, userSessionCount.ToString & " security", "another user"))
     Else
-      sHeader = "Change Password Submitted"
-      sMessage = "Password changed successfully."
-      sRedirectTo = "../Home.aspx"
+      ' Change users password
+      message = Database.ChangePassword(User.Identity.Name, txtCurrPassword.Text, txtNewPassword.Text)
     End If
 
-    CType(Master, Site).ShowDialog(sHeader, sMessage, sRedirectTo)
+    If message.Length > 0 Then
+      CType(Master, Site).ShowDialog("Change Password Failed", message)
+    Else
+      CType(Master, Site).ShowDialog("Change Password Submitted", "Password changed successfully.", "../Home.aspx")
+    End If
 
   End Sub
 

@@ -4,7 +4,7 @@ Imports System.Data.SqlClient
 Imports Utilities
 
 Partial Class PendingSteps
-    Inherits System.Web.UI.Page
+  Inherits Page
 
   Protected Sub Page_Init(sender As Object, e As EventArgs) Handles Me.Init
     Title = WebSiteName("To Do...")

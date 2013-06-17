@@ -78,7 +78,7 @@ Partial Class Site
 
   End Sub
 
-  Public Sub ShowDialog(title As String, message As String, redirectTo As String)
+  Public Sub ShowDialog(title As String, message As String, Optional redirectTo As String = "")
 
     dialogTitle.InnerText = title
     dialogMessage.InnerText = message

@@ -1,7 +1,6 @@
-﻿Imports Utilities
-
+﻿
 Partial Class Login
-    Inherits System.Web.UI.Page
+  Inherits Page
 
   Protected Sub Page_Init(sender As Object, e As EventArgs) Handles Me.Init
 
@@ -11,7 +10,7 @@ Partial Class Login
       Return
     End If
 
-    Title = WebSiteName("Login")
+    Title = Utilities.WebSiteName("Login")
     Forms.LoadControlData(Me, 1)
     Form.DefaultButton = btnLogin.UniqueID
     Form.DefaultFocus = txtUserName.ClientID
@@ -19,29 +18,22 @@ Partial Class Login
 
   Protected Sub BtnLoginClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnLogin.Click
 
-    Dim sMessage As String = ""
+    Dim message As String = ""
 
-    Try
-      ' Check if the system is locked
-      If Database.IsSystemLocked() Then
-        sMessage = "Database locked." & vbCrLf & "Contact your system administrator."
-
-      ElseIf Not Security.ValidateUser(txtUserName.Text.Trim, txtPassword.Text) Then
-        sMessage = "The system could not log you on. Make sure your details are correct, then retype your password."
-
-      Else
-        Dim result As CheckLoginResult = Database.CheckLoginDetails(txtUserName.Text.Trim)
-        If Not result.Valid Then
-          sMessage = result.InvalidReason
-        End If
+    ' Check if the system is locked
+    If Database.IsSystemLocked() Then
+      message = "Database locked." & vbCrLf & "Contact your system administrator."
+    ElseIf Not Security.ValidateUser(txtUserName.Text.Trim, txtPassword.Text) Then
+      message = "The system could not log you on. Make sure your details are correct, then retype your password."
+    Else
+      Dim result As CheckLoginResult = Database.CheckLoginDetails(txtUserName.Text.Trim)
+      If Not result.Valid Then
+        message = result.InvalidReason
       End If
+    End If
 
-    Catch ex As Exception
-      sMessage = "Error :" & vbCrLf & vbCrLf & ex.Message & vbCrLf & vbCrLf & "Contact your system administrator."
-    End Try
-
-    If sMessage.Length > 0 Then
-      CType(Master, Site).ShowDialog("Login Failed", sMessage, "")
+    If message.Length > 0 Then
+      CType(Master, Site).ShowDialog("Login Failed", message)
     Else
       FormsAuthentication.RedirectFromLoginPage(txtUserName.Text.Trim, chkRememberPwd.Checked)
     End If
