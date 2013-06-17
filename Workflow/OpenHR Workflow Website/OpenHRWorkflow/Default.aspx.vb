@@ -3563,6 +3563,7 @@ Public Class _Default
 
         hdnErrorMessage.Value = sMessage
 
+
         sMessage1 = sMessage & "<BR><BR>Click "
         sMessage2 = "here"
         sMessage3 = " to close this form."
@@ -5149,5 +5150,17 @@ Public Class _Default
       Page.Header.Controls.Add(link)
     End If
   End Sub
+
+
+  Private Function isInternetExplorer() As Boolean
+    If Request.UserAgent.IndexOf("MSIE") > 0 Then
+      Return True
+    Else
+      Return False
+    End If
+  End Function
+
+
+ 
 
 End Class
