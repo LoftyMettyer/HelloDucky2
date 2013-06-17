@@ -221,12 +221,15 @@
 		function goSubmit() {
 				
 		if(txtPostbackMode.value=="2") {
+		  try {
 		    if(txtActiveDDE.value.indexOf("dde")>0) {
 		      //keep the lookup open.
 		      //kicks off InitializeLookup BTW.
 		      $find(txtActiveDDE.value).show();
 		    }
-		    return;			
+		  }
+		  catch (e) {}
+		  return;			
 		}
 		//document.all.pleasewaitScreen.style.pixelTop = (document.body.scrollTop + 50);
 		document.all.pleasewaitScreen.style.visibility="visible";
@@ -615,8 +618,11 @@
 		ResizableColumns();
 		
     if(txtActiveDDE.value.indexOf("dde")>0) {
-      $find(txtActiveDDE.value).show();
-      txtActiveDDE.value="";
+      try {  
+        $find(txtActiveDDE.value).show();
+        txtActiveDDE.value="";
+      }
+      catch (e) {}      
     }		
 		    
 		if(txtPostbackMode.value==2) {
