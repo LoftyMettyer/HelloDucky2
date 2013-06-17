@@ -268,7 +268,7 @@ Partial Class PendingSteps
         reader = Command.ExecuteReader()
 
         While reader.Read()
-          Select Case reader("itemKey")
+          Select Case CStr(reader("itemKey"))
             Case "RUN"
               fUserHasRunPermission = (reader("permitted") = True)
 
