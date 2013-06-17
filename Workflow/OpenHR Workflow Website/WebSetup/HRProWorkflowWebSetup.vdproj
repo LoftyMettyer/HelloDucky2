@@ -685,7 +685,7 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:OpenHR Workflow Web Site v5.0"
-        "ProductCode" = "8:{628902D2-D52F-4752-8AAD-921BEA1A43D2}"
+        "ProductCode" = "8:{B2E9DB6A-DF7F-4385-A366-0214636C2EB0}"
         "PackageCode" = "8:{B52BB74A-3A4C-47CB-BCAB-AEF17960907F}"
         "UpgradeCode" = "8:{8D103CEA-CA57-49D4-A6E6-80D5076BB642}"
         "AspNetVersion" = "8:2.0.50727.0"
