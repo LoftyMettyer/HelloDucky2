@@ -5,9 +5,9 @@ Public Class Forms
 
   Public Shared Sub RedirectIfDbLocked()
 
-    If Database.IsSystemLocked() Or True Then
-      HttpContext.Current.Session("message") = "The system is currently being modified. Please retry again shortly."
-      HttpContext.Current.Response.Redirect("~/Message.aspx")
+    If Database.IsSystemLocked() Then
+      HttpContext.Current.Session("messages") = "The system is currently being modified. Please retry again shortly."
+      HttpContext.Current.Response.Redirect("~/Messages.aspx")
     End If
 
   End Sub
@@ -21,7 +21,7 @@ Public Class Forms
 
     If message.Length > 0 Then
       HttpContext.Current.Session("message") = "The system is not configured correctly, " & message.TrimEnd(","c, " "c) & ". Please contact your system administrator."
-      HttpContext.Current.Response.Redirect("~/Message.aspx")
+      HttpContext.Current.Response.Redirect("~/Messages.aspx")
     End If
 
   End Sub
