@@ -1725,12 +1725,12 @@ Public Class _Default
                                             ' ctlForm_PagingGridView.DataKeyNames = New String() {"ID"}
 
                                             If dt.Rows.Count > 0 Then
-                                                ''                                              Stop
+                                                ''                                              
                                                 ctlForm_PagingGridView.IsEmpty = False
                                                 ctlForm_PagingGridView.DataSource = dt
                                                 ctlForm_PagingGridView.DataBind()
                                             Else
-                                                ''                                                Stop
+                                                ''                                                
                                                 ctlForm_PagingGridView.IsEmpty = True
                                                 ShowNoResultFound(dt, ctlForm_PagingGridView)
                                             End If
@@ -2162,11 +2162,11 @@ Public Class _Default
 
                                             iItemType = NullSafeInteger(cmdGrid.Parameters("@piItemType").Value)
 
-                                            ctlForm_PagingGridView.Attributes.Remove("LookupColumnIndex")
-                                            ctlForm_PagingGridView.Attributes.Add("LookupColumnIndex", m_iLookupColumnIndex.ToString)
+                                            ctlForm_Dropdown.Attributes.Remove("LookupColumnIndex")
+                                            ctlForm_Dropdown.Attributes.Add("LookupColumnIndex", m_iLookupColumnIndex.ToString)
 
-                                            ctlForm_PagingGridView.Attributes.Remove("DefaultValue")
-                                            ctlForm_PagingGridView.Attributes.Add("DefaultValue", NullSafeString(cmdGrid.Parameters("@psDefaultValue").Value))
+                                            ctlForm_Dropdown.Attributes.Remove("DefaultValue")
+                                            ctlForm_Dropdown.Attributes.Add("DefaultValue", NullSafeString(cmdGrid.Parameters("@psDefaultValue").Value))
 
                                             ' Datatype - 
                                             ' curSelDataType = DataBinder.Eval(e.Row.DataItem, grdGrid.HeaderRow.Cells(iColCount).Text).GetType.ToString.ToUpper
@@ -2258,14 +2258,14 @@ Public Class _Default
                                         ' ==================================================
                                         ' Set the dropdownList to the default value.
                                         ' ==================================================
-                                        If ctlForm_PagingGridView.Attributes("DefaultValue").ToString.Length > 0 Then
-                                            ctlForm_Dropdown.Items.Add(ctlForm_PagingGridView.Attributes("DefaultValue").ToString)
+                                        If ctlForm_Dropdown.Attributes("DefaultValue").ToString.Length > 0 Then
+                                            ctlForm_Dropdown.Items.Add(ctlForm_Dropdown.Attributes("DefaultValue").ToString)
                                             ctlForm_Dropdown.SelectedIndex = 1
                                         End If
 
                                         For jncount As Integer = 0 To ctlForm_PagingGridView.Rows.Count - 1
                                             If jncount > ctlForm_PagingGridView.PageSize Then Exit For ' don't bother if on other pages
-                                            If ctlForm_PagingGridView.Rows(jncount).Cells(m_iLookupColumnIndex).Text = ctlForm_PagingGridView.Attributes("DefaultValue").ToString Then
+                                            If ctlForm_PagingGridView.Rows(jncount).Cells(m_iLookupColumnIndex).Text = ctlForm_Dropdown.Attributes("DefaultValue").ToString Then
                                                 ctlForm_PagingGridView.SelectedIndex = jncount
                                                 Exit For
                                             End If
@@ -2608,6 +2608,16 @@ Public Class _Default
                                                 connGrid.Close()
                                                 connGrid.Dispose()
                                             End Try
+
+                                            ' ==================================================
+                                            ' Set the dropdownList to the default value.
+                                            ' ==================================================
+
+                                            Dim listItem As ListItem = ctlForm_Dropdown.Items.FindByValue(ctlForm_Dropdown.Attributes("DefaultValue").ToString)
+                                            If listItem IsNot Nothing Then
+                                                ctlForm_Dropdown.SelectedValue = listItem.Value
+                                            End If
+
 
                                         End If
 
@@ -3525,7 +3535,6 @@ Public Class _Default
 
 
                         Case 14 ' Lookup Input
-
                             If (TypeOf ctlFormInput Is System.Web.UI.WebControls.DropDownList) Then 'Infragistics.WebUI.WebCombo.WebCombo) Then
                                 ctlFormDropdown = DirectCast(ctlFormInput, System.Web.UI.WebControls.DropDownList) 'Infragistics.WebUI.WebCombo.WebCombo)
 
