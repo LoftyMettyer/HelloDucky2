@@ -34,6 +34,9 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "OpenHRWorkflow", "http://lo
 	EndProjectSection
 EndProject
 Project("{2CFEAB61-6A3B-4EB8-B523-560B4BEEF521}") = "OpenHRWorkflow_deploy", "OpenHRWorkflow_deploy\OpenHRWorkflow_deploy.wdproj", "{CA3E1976-4014-4344-AB34-4D9EBCCAEDD0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D1D0E976-6553-4235-BAB3-649C8F1AC0D9} = {D1D0E976-6553-4235-BAB3-649C8F1AC0D9}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SourceCodeControl) = preSolution
