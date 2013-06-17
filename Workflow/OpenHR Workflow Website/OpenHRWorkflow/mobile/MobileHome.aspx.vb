@@ -253,6 +253,7 @@ Partial Class Home
         Dim row = New TableRow
         row.Style.Add("width", "100%")
         row.Attributes.Add("onclick", "window.open('" & WorkflowLink(CInt(reader("ID"))) & "');")
+        row.Style.Add("cursor", "pointer")
 
         ' Create a cell to contain the workflow icon
         Dim cell = New TableCell  ' Image cell
@@ -267,6 +268,7 @@ Partial Class Home
         image.ImageUrl = sImageFileName
         image.Height() = Unit.Pixel(57)
         image.Width() = Unit.Pixel(57)
+        image.Style.Add("cursor", "pointer")
 
         ' add ImageButton to cell
         cell.Controls.Add(image)
@@ -281,6 +283,7 @@ Partial Class Home
         For Each item In homeItemStyles
           label.Style.Add(item.Key, item.Value)
         Next
+        label.Style.Add("cursor", "pointer")
 
         cell.Controls.Add(label)
 

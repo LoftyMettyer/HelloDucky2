@@ -273,6 +273,7 @@ Partial Class PendingSteps
         ' Create a row to contain this pending step...
         ctlFormRow = New TableRow
         ctlFormRow.Attributes.Add("onclick", "window.open('" & rstSteps("url").ToString & "');")
+        ctlFormRow.Style.Add("cursor", "pointer")
 
         ' Create a cell to contain the workflow icon
         ctlFormCell = New TableCell  ' Image cell
@@ -285,6 +286,7 @@ Partial Class PendingSteps
         ctlFormImage.ImageUrl = sImageFileName
         ctlFormImage.Height() = Unit.Pixel(57)
         ctlFormImage.Width() = Unit.Pixel(57)
+        ctlFormImage.Style.Add("cursor", "pointer")
 
         ' add ImageButton to cell
         ctlFormCell.Controls.Add(ctlFormImage)
@@ -300,6 +302,7 @@ Partial Class PendingSteps
         For Each item In todoTitleStyles
           ctlFormLabel.Style.Add(item.Key, item.Value)
         Next
+        ctlFormLabel.Style.Add("cursor", "pointer")
         ctlFormCell.Controls.Add(ctlFormLabel)
 
         ' Line Break
@@ -316,6 +319,7 @@ Partial Class PendingSteps
         For Each item In todoDescStyles
           ctlFormLabel.Style.Add(item.Key, item.Value)
         Next
+        ctlFormLabel.Style.Add("cursor", "pointer")
         ctlFormCell.Controls.Add(ctlFormLabel)
 
         ' Add cell to row, and row to table.
