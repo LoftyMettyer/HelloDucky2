@@ -708,6 +708,14 @@ Public Class _Default
                     .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
                     .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
 
+                    ' If the button has no caption, we treat as a transparent button.
+                    ' This is so we can emulate picture buttons with very little code changes.
+                    If NullSafeString(dr("caption")) = vbNullString Then
+                      .Style.Add("filter", "alpha(opacity=0)")
+                      .Style.Add("opacity", "0")
+                    End If
+
+
                     If NullSafeInteger(dr("BackColor")) <> 16249587 Then
                       .Style.Add("background-color", objGeneral.GetHTMLColour(NullSafeInteger(dr("BackColor"))).ToString)
                       .Style.Add("border", "solid 1px " & objGeneral.GetHTMLColour(9999523).ToString)
