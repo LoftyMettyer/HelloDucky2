@@ -3,7 +3,7 @@ Partial Class Registration
   Inherits Page
 
   Protected Sub Page_Init(sender As Object, e As EventArgs) Handles Me.Init
-    Title = Utilities.WebSiteName("Registration")
+    Title = Utilities.GetPageTitle("Registration")
     Forms.LoadControlData(Me, 3)
     Form.DefaultButton = btnSubmit2.UniqueID
     Form.DefaultFocus = txtEmail.ClientID

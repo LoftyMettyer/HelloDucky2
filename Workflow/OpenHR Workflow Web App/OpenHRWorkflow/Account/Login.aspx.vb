@@ -6,7 +6,7 @@ Partial Class Login
 
     Forms.RedirectToHomeIfAuthentcated()
 
-    Title = Utilities.WebSiteName("Login")
+    Title = Utilities.GetPageTitle("Login")
     Forms.LoadControlData(Me, 1)
     Form.DefaultButton = btnLogin2.UniqueID
     Form.DefaultFocus = txtUserName.ClientID

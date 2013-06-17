@@ -161,9 +161,7 @@ Public Class [Default]
       End Try
 
       'Set the page title
-      With Assembly.GetExecutingAssembly.GetName.Version
-         Page.Title = String.Format("OpenHR Workflow - v{0}.{1}.{2}", .Major, .Minor, .Build)
-      End With
+      Page.Title = GetPageTitle("Workflow")
 
       'Set the page culture
       SetPageCulture()

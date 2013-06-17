@@ -1,5 +1,3 @@
-Option Strict On
-
 Imports System
 Imports System.Reflection
 
@@ -236,42 +234,11 @@ Public Module Utilities
       End If
    End Function
 
-   Public Function WebSiteName(Optional contentPageName As String = "") As String
+   Public Function GetPageTitle(pageName As String) As String
 
-      Const ASSEMBLYNAME As String = "OPENHRWORKFLOW"
-      Const DEFAULTTITLE As String = "OpenHR"
-      Dim sWebSiteVersion As String
-      Dim sTitle As String
-
-      sTitle = DEFAULTTITLE
-
-      If contentPageName.Length > 0 Then
-         sTitle &= " " & contentPageName
-      End If
-
-      Try
-         Dim sAssemblyName = Assembly.GetExecutingAssembly.GetName.Name.ToUpper
-
-         sWebSiteVersion = Assembly.GetExecutingAssembly.GetName.Version.Major.ToString _
-          & "." & Assembly.GetExecutingAssembly.GetName.Version.Minor.ToString _
-          & "." & Assembly.GetExecutingAssembly.GetName.Version.Build.ToString
-
-         If sAssemblyName = ASSEMBLYNAME Then
-            ' Compiled version of the web site
-            If sWebSiteVersion.Length = 0 Then
-               sTitle &= " (unknown version)"
-            Else
-               sTitle &= " - v" & sWebSiteVersion
-            End If
-         Else
-            ' Development version of the web site
-            sTitle &= " (development)"
-         End If
-      Catch ex As Exception
-         sTitle = DEFAULTTITLE
-      End Try
-
-      Return sTitle
+      With Assembly.GetExecutingAssembly.GetName.Version
+         Return String.Format("OpenHR {0} - v{1}{2}{3}", pageName, .Major, .Minor, .Build)
+      End With
 
    End Function
 

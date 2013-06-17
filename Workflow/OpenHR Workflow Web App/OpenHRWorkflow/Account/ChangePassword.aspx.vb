@@ -12,7 +12,7 @@ Partial Class ChangePassword
       FormsAuthentication.RedirectToLoginPage()
     End If
 
-    Title = Utilities.WebSiteName("Change Password")
+    Title = Utilities.GetPageTitle("Change Password")
     Forms.LoadControlData(Me, 4)
     Form.DefaultButton = btnSubmit2.UniqueID
     Form.DefaultFocus = txtCurrPassword.ClientID
