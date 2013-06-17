@@ -25,7 +25,7 @@ Partial Class MobileLogin
     ' Create command
     Dim myCommand As New SqlClient.SqlCommand("select * from tbsys_mobileformlayout where ID = 1", myConnection)
 
-
+    ' On this page, check that the SQL server specified actually connects successfully.
     Try
       myConnection.Open()
 
@@ -33,7 +33,7 @@ Partial Class MobileLogin
       drLayouts = myCommand.ExecuteReader()
 
     Catch ex As Exception
-      sMessage = "oh poo."
+      sMessage = "Connection Failed"
     End Try
 
     If sMessage.Length = 0 Then
