@@ -1190,10 +1190,12 @@ function Right(str, n){
         -->        
 
 <div id="pleasewaitScreen" style="position:absolute;z-index:5;top:30%;left:42%;visibility:hidden">
-			<table style="background-color:black;border:solid 1 black;padding:0;height:50;width:100" id="Table1">
+			<table border="0" cellspacing="0" cellpadding="0" style="top: 0px; left: 0px; width: 240px;
+        height: 60px; position: relative; text-align: center; font-size: 10pt; color: black;
+        font-family: Verdana; border: black 1px solid;" bgcolor="White">
 				<tr>
-					<td style="width:100%;height:100%;background-color:White;text-align:center;vertical-align:middle; font-family:Verdana;font-size:x-small;color:black">
-								Submitting...<br>Please Wait
+					<td style="width:100%;height:100%;background-color:White;text-align:center;vertical-align:middle">
+								Submitting Workflow step...<br><br>Please wait.<br>
 					</td>
 				</tr>
 			</table>
