@@ -135,6 +135,7 @@
     <Content Include="Images\downarrow-hover.gif" />
     <Content Include="Images\downarrow.gif" />
     <Content Include="Images\downarrows_white.gif" />
+    <Content Include="Images\highlight.png" />
     <Content Include="Images\Logo.ico" />
     <Content Include="Images\page-first-disabled.gif" />
     <Content Include="Images\page-first.gif" />
