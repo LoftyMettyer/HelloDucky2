@@ -113,7 +113,7 @@
     </script>
 </head>
 <body onload="return window_onload()" style="margin:0px;overflow:hidden">
-    <form id="form2" runat="server">
+    <form id="form1" runat="server">
 
         <div id="pnlContainer" runat="server" style="overflow:hidden;background-color:Red">
           <div id="pnlHeader" runat="server" style="position:absolute;overflow:hidden;left:0px;top:0px;z-index:1;width:100%;height:57px">
