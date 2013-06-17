@@ -2378,6 +2378,7 @@ Public Class _Default
         Dim sQueryString As String
         Dim arrQueryStrings() As String
         Dim sFollowOnForms As String
+        Dim objTransaction As System.Data.SqlClient.SqlTransaction
 
         sMessage = ""
         fSavedForLater = False
@@ -2517,9 +2518,9 @@ Public Class _Default
 
                                 End If
 
-                                    sFormInput1 = sFormInput1 & sIDString & sTemp & vbTab
-                                    sFormValidation1 = sFormValidation1 & sIDString & sTemp & vbTab
-                                End If
+                                sFormInput1 = sFormInput1 & sIDString & sTemp & vbTab
+                                sFormValidation1 = sFormValidation1 & sIDString & sTemp & vbTab
+                            End If
 
                         Case 15 ' OptionGroup Input
                             If (TypeOf ctlFormInput Is TextBox) Then
@@ -2629,14 +2630,17 @@ Public Class _Default
                 End Try
 
                 ' Submit the webform
-                Try
-                    If (sMessage.Length = 0) _
-                     And (bulletWarnings.Items.Count = 0) _
-                     And (bulletErrors.Items.Count = 0) Then
+                If (sMessage.Length = 0) _
+                 And (bulletWarnings.Items.Count = 0) _
+                 And (bulletErrors.Items.Count = 0) Then
 
+                    objTransaction = conn.BeginTransaction()
+
+                    Try
                         cmdUpdate = New SqlClient.SqlCommand("spASRSubmitWorkflowStep", conn)
                         cmdUpdate.CommandType = CommandType.StoredProcedure
                         cmdUpdate.CommandTimeout = miSubmissionTimeoutInSeconds
+                        cmdUpdate.Transaction = objTransaction
 
                         cmdUpdate.Parameters.Add("@piInstanceID", SqlDbType.Int).Direction = ParameterDirection.Input
                         cmdUpdate.Parameters("@piInstanceID").Value = miInstanceID
@@ -2702,6 +2706,7 @@ Public Class _Default
                                 cmdQS = New SqlClient.SqlCommand("spASRGetWorkflowQueryString", conn)
                                 cmdQS.CommandType = CommandType.StoredProcedure
                                 cmdQS.CommandTimeout = miSubmissionTimeoutInSeconds
+                                cmdQS.Transaction = objTransaction
 
                                 cmdQS.Parameters.Add("@piInstanceID", SqlDbType.Int).Direction = ParameterDirection.Input
                                 cmdQS.Parameters("@piInstanceID").Value = miInstanceID
@@ -2757,10 +2762,14 @@ Public Class _Default
                         If hdnNoSubmissionMessage.Value <> "1" Then
                             EnableDisableControls(False)
                         End If
-                    End If
-                Catch ex As Exception
-                    sMessage = "Error submitting the web form:<BR><BR>" & ex.Message
-                End Try
+
+                        objTransaction.Commit()
+                    Catch ex As Exception
+                        sMessage = "Error submitting the web form:<BR><BR>" & ex.Message
+
+                        objTransaction.Rollback()
+                    End Try
+                End If
 
                 conn.Close()
                 conn.Dispose()
