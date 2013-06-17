@@ -24,148 +24,158 @@ Public Class RecordSelector
     Private m_iVisibleColumnCount As Integer
     Dim iColWidth As Integer = 100  ' default, minimum column width for all grid columns
 
-    Protected Overrides Sub Render(ByVal writer As System.Web.UI.HtmlTextWriter)
-        Dim iIDColumnIndex As Int16
-        Dim sDivStyle As String = ""
-        Dim hdnScrollTop As String = "0"
-        Dim objGeneral As New General
-        Dim iColCount As Integer
+  Protected Overrides Sub Render(ByVal writer As System.Web.UI.HtmlTextWriter)
+    Dim iIDColumnIndex As Int16
+    Dim sDivStyle As String = ""
+    Dim hdnScrollTop As String = "0"
+    Dim objGeneral As New General
+    Dim iColCount As Integer
 
-        'MyBase.Render(writer)
+    'MyBase.Render(writer)
 
-        If IsLookup Then sDivStyle = ";display:none;"
+    If IsLookup Then sDivStyle = ";display:none;"
 
-        ' Custom Header row first.
-        'Dim customHeader As GridViewRow = Me.HeaderRow
-        customHeader = Me.HeaderRow
+    ' Custom Header row first.
+    'Dim customHeader As GridViewRow = Me.HeaderRow
+    customHeader = Me.HeaderRow
 
-        If MyBase.HeaderRow IsNot Nothing Then
+    If MyBase.HeaderRow IsNot Nothing Then
 
-            m_iVisibleColumnCount = MyBase.HeaderRow.Cells.Count
-            customHeader.ApplyStyle(Me.HeaderStyle)
+      m_iVisibleColumnCount = MyBase.HeaderRow.Cells.Count
+      customHeader.ApplyStyle(Me.HeaderStyle)
 
-            Dim sColumnCaption As String = ""
+      Dim sColumnCaption As String = ""
 
-            For iColCount = 0 To Me.HeaderRow.Cells.Count - 1
-                sColumnCaption = UCase(customHeader.Cells(iColCount).Text)
+      For iColCount = 0 To Me.HeaderRow.Cells.Count - 1
+        sColumnCaption = UCase(customHeader.Cells(iColCount).Text)
 
-                If (Not IsLookup And sColumnCaption = "ID") Or (IsLookup And sColumnCaption.StartsWith("ASRSYS")) Then
-                    iIDColumnIndex = CShort(iColCount)
-                Else
-                    iIDColumnIndex = -1
-                End If
-
-                If (Not IsLookup And (sColumnCaption = "ID" Or (Left(sColumnCaption, 3) = "ID_" And Val(Mid(sColumnCaption, 4)) > 0))) Or _
-                    (IsLookup And sColumnCaption.StartsWith("ASRSYS")) Then
-                    m_iVisibleColumnCount = m_iVisibleColumnCount - 1
-                    customHeader.Cells(iColCount).Style.Add("display", "none")
-                Else
-                    customHeader.Cells(iColCount).Text = Replace(customHeader.Cells(iColCount).Text, "_", " ")
-
-                    ' Add each of the gridview's column headers to the header table
-                    customHeader.Cells(iColCount).ID = Me.ID.ToString & "header" & CStr(iColCount + 1)
-                    customHeader.Cells(iColCount).Style.Add("width", Unit.Pixel(iColWidth).ToString)
-                    customHeader.Cells(iColCount).Style.Add("overflow", "hidden")
-                    customHeader.Cells(iColCount).Style.Add("white-space", "nowrap")
-                    customHeader.Cells(iColCount).Style.Add("text-overflow", "ellipsis")
-                    If iColCount <> 0 Then  ' horrible. Should work out how to hide left border if it overlaps the row border.
-                        customHeader.Cells(iColCount).Style.Add("border-left", "1px solid gray")
-                    End If
-                    customHeader.Cells(iColCount).Style.Add("border-bottom", "1px solid gray")
-                    customHeader.Cells(iColCount).Style.Add("padding-top", "0px")
-                    customHeader.Cells(iColCount).Style.Add("padding-bottom", "0px")
-
-                    Dim ctlTextPanel As New Panel
-                    With ctlTextPanel
-                        .ID = "textbox"
-                        .Style.Add("float", "left")
-                        .Style.Add("width", "100%")
-                        .Style.Add("height", "100%")
-                        .Style.Add("overflow", "hidden")
-                        .Style.Add("text-overflow", "ellipsis")
-                        .Style.Add("white-space", "nowrap")
-                        If MyBase.Rows.Count > 1 Then
-                            If IsLookup Then
-                                .Attributes("onclick") = ("$get('txtActiveDDE').value='" & grdGrid.ID.Replace("Grid", "dde") & "';try{setPostbackMode(3);}catch(e){};if(event.ctrlKey){__doPostBack('" & MyBase.UniqueID & "','Sort$" & customHeader.Cells(iColCount).Text & "+');}else{__doPostBack('" & MyBase.UniqueID & "','Sort$") & customHeader.Cells(iColCount).Text & "');}"
-                            Else
-                                .Attributes("onclick") = ("try{setPostbackMode(3);}catch(e){};if(event.ctrlKey){__doPostBack('" & MyBase.UniqueID & "','Sort$" & customHeader.Cells(iColCount).Text & "+');}else{__doPostBack('" & MyBase.UniqueID & "','Sort$") & customHeader.Cells(iColCount).Text & "');}"
-                            End If
-                        End If
-                    End With
-
-                    ' customHeader.Cells(iColCount).Controls.Add(New LiteralControl(Replace(customHeader.Cells(iColCount).Text, "_", " ")))
-                    ctlTextPanel.Controls.Add(New LiteralControl(Replace(customHeader.Cells(iColCount).Text, "_", " ")))
-
-                    customHeader.Cells(iColCount).Controls.Add(ctlTextPanel)
-
-                    Dim ctlSortPanel As New Panel
-                    With ctlSortPanel
-                        .ID = "sortpanel"
-                        .Style.Add("position", "absolute")
-                        .Style.Add("right", "0px")
-                        .Style.Add("float", "right")
-                        ' .Style.Add("width", "16px")
-                        .Style.Add("height", "100%")
-                    End With
-
-                    Dim ctlSortImage As New Image
-                    With ctlSortImage
-                        .ID = "sortimage"
-
-                        Select Case ColumnSortDirectionCode(customHeader.Cells(iColCount).Text)
-                            Case 0
-                                .Visible = False
-                            Case 1
-                                .ImageUrl = "Images/sort-asc.gif"
-                                .Visible = True
-                            Case 2
-                                .ImageUrl = "Images/sort-desc.gif"
-                                .Visible = True
-                        End Select
-
-                    End With
-
-                    ctlSortPanel.Controls.Add(ctlSortImage)
-                    customHeader.Cells(iColCount).Controls.Add(ctlSortPanel)
-
-                End If
-            Next
+        If (Not IsLookup And sColumnCaption = "ID") Or (IsLookup And sColumnCaption.StartsWith("ASRSYS")) Then
+          iIDColumnIndex = CShort(iColCount)
         Else
-            ' No records to display.....
-            Return
+          iIDColumnIndex = -1
         End If
 
+        If (Not IsLookup And (sColumnCaption = "ID" Or (Left(sColumnCaption, 3) = "ID_" And Val(Mid(sColumnCaption, 4)) > 0))) Or _
+            (IsLookup And sColumnCaption.StartsWith("ASRSYS")) Then
+          m_iVisibleColumnCount = m_iVisibleColumnCount - 1
+          customHeader.Cells(iColCount).Style.Add("display", "none")
+        Else
+          customHeader.Cells(iColCount).Text = Replace(customHeader.Cells(iColCount).Text, "_", " ")
 
-        ' Div to contain all items
-        writer.Write("<div ID='" & Me.ID.ToString.Replace("Grid", "") & "' " & _
-            IIf(IsLookup, "style='", "style='position:absolute;") & _
-            " width:" & CalculateWidth() & ";height:" & CalculateHeight() & ";" & _
-            IIf(IsLookup, "", "top:" & Me.Style.Item("TOP").ToString & ";") & _
-            IIf(IsLookup, "", "left:" & Me.Style.Item("LEFT").ToString & ";") & _
-            sDivStyle & _
-            ";overflow:hidden;border-color:black;border-style:solid;border-width:1px;background-color:" & _
-            objGeneral.GetHTMLColour(System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.FromArgb(customHeader.BackColor.A, customHeader.BackColor.R, customHeader.BackColor.G, customHeader.BackColor.B)).ToString) & _
-            "'>")
+          ' Add each of the gridview's column headers to the header table
+          customHeader.Cells(iColCount).ID = Me.ID.ToString & "header" & CStr(iColCount + 1)
+          customHeader.Cells(iColCount).Style.Add("width", Unit.Pixel(iColWidth).ToString)
+          customHeader.Cells(iColCount).Style.Add("overflow", "hidden")
+          customHeader.Cells(iColCount).Style.Add("white-space", "nowrap")
+          customHeader.Cells(iColCount).Style.Add("text-overflow", "ellipsis")
+          If iColCount <> 0 Then  ' horrible. Should work out how to hide left border if it overlaps the row border.
+            customHeader.Cells(iColCount).Style.Add("border-left", "1px solid gray")
+          End If
+          customHeader.Cells(iColCount).Style.Add("border-bottom", "1px solid gray")
+          customHeader.Cells(iColCount).Style.Add("padding-top", "0px")
+          customHeader.Cells(iColCount).Style.Add("padding-bottom", "0px")
 
-        'render header row 
-        writer.Write("<table ID='" & Me.ID.ToString.Replace("Grid", "") & "Header'" & _
-                    " style='position:absolute;top:0px;left:0px;width:" & CalculateGridWidth() & ";height:" & CalculateHeaderHeight() & _
-                    ";table-layout:fixed;border:0'" & _
-                    " cellspacing='" & Me.CellSpacing.ToString() & "'" & _
-                    IIf((MyBase.HeaderRow IsNot Nothing And Me.IsEmpty = False), " class='resizable'", "") & _
-                    ">")
+          Dim ctlTextPanel As New Panel
+          With ctlTextPanel
+            .ID = "textbox"
+            .Style.Add("float", "left")
+            .Style.Add("width", "100%")
+            .Style.Add("height", "100%")
+            .Style.Add("overflow", "hidden")
+            .Style.Add("text-overflow", "ellipsis")
+            .Style.Add("white-space", "nowrap")
+            If MyBase.Rows.Count > 1 Then
+              If IsLookup Then
+                .Attributes("onclick") = ("$get('txtActiveDDE').value='" & grdGrid.ID.Replace("Grid", "dde") & "';try{setPostbackMode(3);}catch(e){};if(event.ctrlKey){__doPostBack('" & MyBase.UniqueID & "','Sort$" & customHeader.Cells(iColCount).Text & "+');}else{__doPostBack('" & MyBase.UniqueID & "','Sort$") & customHeader.Cells(iColCount).Text & "');}"
+              Else
+                .Attributes("onclick") = ("try{setPostbackMode(3);}catch(e){};if(event.ctrlKey){__doPostBack('" & MyBase.UniqueID & "','Sort$" & customHeader.Cells(iColCount).Text & "+');}else{__doPostBack('" & MyBase.UniqueID & "','Sort$") & customHeader.Cells(iColCount).Text & "');}"
+              End If
+            End If
+          End With
 
-        If MyBase.HeaderRow IsNot Nothing Then
-            customHeader.RenderControl(writer)
-            'make invisible default header  row
-            Me.HeaderRow.Visible = False
+          ' customHeader.Cells(iColCount).Controls.Add(New LiteralControl(Replace(customHeader.Cells(iColCount).Text, "_", " ")))
+          ctlTextPanel.Controls.Add(New LiteralControl(Replace(customHeader.Cells(iColCount).Text, "_", " ")))
+
+          customHeader.Cells(iColCount).Controls.Add(ctlTextPanel)
+
+          Dim ctlSortPanel As New Panel
+          With ctlSortPanel
+            .ID = "sortpanel"
+            .Style.Add("position", "absolute")
+            .Style.Add("right", "0px")
+            .Style.Add("float", "right")
+            ' .Style.Add("width", "16px")
+            .Style.Add("height", "100%")
+          End With
+
+
+          Dim ctlSortImage As New Image
+          With ctlSortImage
+            .ID = "sortimage"
+
+            Select Case ColumnSortDirectionCode(customHeader.Cells(iColCount).Text)
+              Case 0
+                .Visible = False
+              Case 1
+                .ImageUrl = "Images/sort-asc.gif"
+                .Visible = True
+              Case 2
+                .ImageUrl = "Images/sort-desc.gif"
+                .Visible = True
+            End Select
+
+            ' Apply onclick event for sorting to the sort-direction arrow too. Fault HRPRO-1832
+            If MyBase.Rows.Count > 1 Then
+              If IsLookup Then
+                .Attributes("onclick") = ("$get('txtActiveDDE').value='" & grdGrid.ID.Replace("Grid", "dde") & "';try{setPostbackMode(3);}catch(e){};if(event.ctrlKey){__doPostBack('" & MyBase.UniqueID & "','Sort$" & customHeader.Cells(iColCount).Text & "+');}else{__doPostBack('" & MyBase.UniqueID & "','Sort$") & customHeader.Cells(iColCount).Text & "');}"
+              Else
+                .Attributes("onclick") = ("try{setPostbackMode(3);}catch(e){};if(event.ctrlKey){__doPostBack('" & MyBase.UniqueID & "','Sort$" & customHeader.Cells(iColCount).Text & "+');}else{__doPostBack('" & MyBase.UniqueID & "','Sort$") & customHeader.Cells(iColCount).Text & "');}"
+              End If
+            End If
+
+          End With
+
+          ctlSortPanel.Controls.Add(ctlSortImage)
+          customHeader.Cells(iColCount).Controls.Add(ctlSortPanel)
+
         End If
+      Next
+    Else
+      ' No records to display.....
+      Return
+    End If
 
 
-        writer.Write("</table>")
+    ' Div to contain all items
+    writer.Write("<div ID='" & Me.ID.ToString.Replace("Grid", "") & "' " & _
+        IIf(IsLookup, "style='", "style='position:absolute;") & _
+        " width:" & CalculateWidth() & ";height:" & CalculateHeight() & ";" & _
+        IIf(IsLookup, "", "top:" & Me.Style.Item("TOP").ToString & ";") & _
+        IIf(IsLookup, "", "left:" & Me.Style.Item("LEFT").ToString & ";") & _
+        sDivStyle & _
+        ";overflow:hidden;border-color:black;border-style:solid;border-width:1px;background-color:" & _
+        objGeneral.GetHTMLColour(System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.FromArgb(customHeader.BackColor.A, customHeader.BackColor.R, customHeader.BackColor.G, customHeader.BackColor.B)).ToString) & _
+        "'>")
 
-        ' Create a div to contain the Gridview table, not the pager controls or the header columns.
-        ' (This is the one with scrollbars) - too small for lookups
+    'render header row 
+    writer.Write("<table ID='" & Me.ID.ToString.Replace("Grid", "") & "Header'" & _
+                " style='position:absolute;top:0px;left:0px;width:" & CalculateGridWidth() & ";height:" & CalculateHeaderHeight() & _
+                ";table-layout:fixed;border:0'" & _
+                " cellspacing='" & Me.CellSpacing.ToString() & "'" & _
+                IIf((MyBase.HeaderRow IsNot Nothing And Me.IsEmpty = False), " class='resizable'", "") & _
+                ">")
+
+    If MyBase.HeaderRow IsNot Nothing Then
+      customHeader.RenderControl(writer)
+      'make invisible default header  row
+      Me.HeaderRow.Visible = False
+    End If
+
+
+    writer.Write("</table>")
+
+    ' Create a div to contain the Gridview table, not the pager controls or the header columns.
+    ' (This is the one with scrollbars) - too small for lookups
     writer.Write("<div id='" & ClientID.Replace("Grid", "") & "gridcontainer'  style='position:absolute;top:" & CalculateHeaderHeight() & _
                  ";bottom:" & CalculatePagerHeight() & ";left:0px;overflow-x:auto;overflow-y:auto;" & _
                  "width:" & CalculateWidth() & ";" & "background-color:" & _
@@ -173,62 +183,62 @@ Public Class RecordSelector
                  ";' onscroll=scrollHeader('" & ClientID.Replace("Grid", "gridcontainer") & "')>")
 
 
-        ' Need to hide the default pager row BEFORE rendering myBase.
-        ' Dim customPager As GridViewRow = Me.BottomPagerRow
-        customPager = Me.BottomPagerRow
+    ' Need to hide the default pager row BEFORE rendering myBase.
+    ' Dim customPager As GridViewRow = Me.BottomPagerRow
+    customPager = Me.BottomPagerRow
 
-        If Me.BottomPagerRow IsNot Nothing Then
-            Me.BottomPagerRow.Visible = False
-        End If
+    If Me.BottomPagerRow IsNot Nothing Then
+      Me.BottomPagerRow.Visible = False
+    End If
 
-        ' now render data rows        
-        MyBase.Attributes.CssStyle("overflow") = "auto"
-        MyBase.Style("overflow") = "auto"
-        MyBase.Style.Add("table-layout", "fixed")
-        MyBase.Style.Remove("position")
-
-
-        MyBase.Attributes.CssStyle("WIDTH") = CalculateGridWidth()
-
-        If IsLookup Then
-            MyBase.Style.Remove("top")
-            MyBase.Attributes.CssStyle.Remove("LEFT")
-            MyBase.Attributes.CssStyle.Remove("TOP")
-        End If
-
-        MyBase.Style.Add("border-right", "none")
-        MyBase.Style.Add("border-left", "none")
-        MyBase.Style.Add("border-top", "solid 1px black")
-        MyBase.Style.Add("border-bottom", "solid 1px black")
-        AdjustWidthForScrollbar()   ' reduce width if vertical scrollbar
-
-        MyBase.Render(writer)
-        writer.Write("</div>")
-        ' Render the custom pager row now.
-        If customPager IsNot Nothing Then
-            writer.Write("<div  border='0' cellspacing='" & Me.CellSpacing.ToString() & "' cellpadding='" & _
-                            Me.CellPadding.ToString() & "' style='width:100%;position:absolute;right:0px;bottom:0px;height: " & CalculatePagerHeight() & ";'>")
-
-            Dim iGridwidth As Integer
-            iGridwidth = CInt(CalculateGridWidth.Replace("px", "").Replace("%", ""))
-
-            If iGridwidth >= 420 Or (IsLookup And MyBase.PageCount < 2) Then
-                writer.Write("     <input name='filter' style='font-size:8pt;font-style:italic;float:left;position:absolute;top:2px;left:3px;width:150px;height:15px;border:solid 1px gray' value='search..' " & _
-                             "onblur='if(this.value==""""){this.style.fontStyle=""italic"";this.style.color=""gray"";this.value=""search...""}'" & _
-                             "onfocus='if(this.value!=""""){this.style.color=""black"";this.style.fontStyle=""normal"";this.value=""""}' onclick='event.cancelBubble=true;'" & _
-                             "onkeyup='filterTable(this, " & Me.ClientID.ToString & ")' type='text'>")
-                writer.Write("<img src='Images/search.gif' style='position:absolute;top:4px;left:140px;height:15px;width:15px'/>")
-            End If
-            customPager.ApplyStyle(Me.PagerStyle)
-            customPager.Visible = True
-            customPager.RenderControl(writer)
-            writer.Write("</div>")
-        End If
-
-        writer.Write("</div>")
+    ' now render data rows        
+    MyBase.Attributes.CssStyle("overflow") = "auto"
+    MyBase.Style("overflow") = "auto"
+    MyBase.Style.Add("table-layout", "fixed")
+    MyBase.Style.Remove("position")
 
 
-    End Sub
+    MyBase.Attributes.CssStyle("WIDTH") = CalculateGridWidth()
+
+    If IsLookup Then
+      MyBase.Style.Remove("top")
+      MyBase.Attributes.CssStyle.Remove("LEFT")
+      MyBase.Attributes.CssStyle.Remove("TOP")
+    End If
+
+    MyBase.Style.Add("border-right", "none")
+    MyBase.Style.Add("border-left", "none")
+    MyBase.Style.Add("border-top", "solid 1px black")
+    MyBase.Style.Add("border-bottom", "solid 1px black")
+    AdjustWidthForScrollbar()   ' reduce width if vertical scrollbar
+
+    MyBase.Render(writer)
+    writer.Write("</div>")
+    ' Render the custom pager row now.
+    If customPager IsNot Nothing Then
+      writer.Write("<div  border='0' cellspacing='" & Me.CellSpacing.ToString() & "' cellpadding='" & _
+                      Me.CellPadding.ToString() & "' style='width:100%;position:absolute;right:0px;bottom:0px;height: " & CalculatePagerHeight() & ";'>")
+
+      Dim iGridwidth As Integer
+      iGridwidth = CInt(CalculateGridWidth.Replace("px", "").Replace("%", ""))
+
+      If iGridwidth >= 420 Or (IsLookup And MyBase.PageCount < 2) Then
+        writer.Write("     <input name='filter' style='font-size:8pt;font-style:italic;float:left;position:absolute;top:2px;left:3px;width:150px;height:15px;border:solid 1px gray' value='search..' " & _
+                     "onblur='if(this.value==""""){this.style.fontStyle=""italic"";this.style.color=""gray"";this.value=""search...""}'" & _
+                     "onfocus='if(this.value!=""""){this.style.color=""black"";this.style.fontStyle=""normal"";this.value=""""}' onclick='event.cancelBubble=true;'" & _
+                     "onkeyup='filterTable(this, " & Me.ClientID.ToString & ")' type='text'>")
+        writer.Write("<img src='Images/search.gif' style='position:absolute;top:4px;left:140px;height:15px;width:15px'/>")
+      End If
+      customPager.ApplyStyle(Me.PagerStyle)
+      customPager.Visible = True
+      customPager.RenderControl(writer)
+      writer.Write("</div>")
+    End If
+
+    writer.Write("</div>")
+
+
+  End Sub
 
     Protected Overrides Sub InitializePager(ByVal row As System.Web.UI.WebControls.GridViewRow, ByVal columnSpan As Integer, ByVal pagedDataSource As System.Web.UI.WebControls.PagedDataSource)
         ' MyBase.InitializePager(row, columnSpan, pagedDataSource)
