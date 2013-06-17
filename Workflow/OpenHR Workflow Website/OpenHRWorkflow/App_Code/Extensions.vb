@@ -127,6 +127,10 @@ Public Module Extensions
     value.BorderColor = General.GetColour(borderColor)
     value.BorderWidth = Unit.Pixel(1)
 
+    'TODO PG NOW
+    value.BorderColor = ColorTranslator.FromHtml("#CCCCCC")
+    value.BorderColor = ColorTranslator.FromHtml("#999999")
+
     If adjustSize Then
       value.Width = Unit.Pixel(CInt(value.Width.Value) + adjustSizeAmount)
       value.Height = Unit.Pixel(CInt(value.Height.Value) + adjustSizeAmount)

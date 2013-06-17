@@ -144,15 +144,6 @@ Partial Class FileUpload
           lblFileUploadPrompt.Font.Size = mobjConfig.MessageFontSize
           lblFileUploadPrompt.ForeColor = General.GetColour(6697779)
 
-          With FileUpload1
-            .Style.Add("Font-Size", mobjConfig.MessageFontSize.ToString)
-            .Style.Add("Font-family", "Verdana")
-            .Style.Add("Color", General.GetColour(6697779).ToString)
-            .Style.Add("Background-Color", General.GetColour(15988214).ToString)
-            .Style.Add("border", "Solid 1px " & General.GetColour(5730458).ToString)
-
-          End With
-
           lblErrors.Font.Size = mobjConfig.ValidationMessageFontSize
           lblErrors.ForeColor = General.GetColour(6697779)
           bulletErrors.Font.Size = mobjConfig.ValidationMessageFontSize

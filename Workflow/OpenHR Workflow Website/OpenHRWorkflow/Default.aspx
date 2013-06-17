@@ -14,6 +14,7 @@
 
     <script src="Scripts/jquery-1.5.1.min.js" type="text/javascript"></script>
     <script src="Scripts/jquery-ui-1.8.21.custom.min.js" type="text/javascript"></script>
+    <script src="Scripts/jquery.metadata.js" type="text/javascript"></script>
     <script src="Scripts/autoNumeric-1.7.4.js" type="text/javascript"></script>
 
 	<title></title>
@@ -21,8 +22,12 @@
     <script type="text/javascript">
         jQuery.noConflict();
 
-        jQuerySetup = function() {
-            
+        jQuerySetup = function () {
+
+        //TODO PG NOW keep?
+            jQuery('input:button').button();
+
+            // configure date controls
             jQuery.datepicker.setDefaults({
                 changeYear: true,
                 changeMonth: true,
@@ -32,23 +37,22 @@
             });
 
             jQuery('input.date').datepicker();
-            jQuery('input.numeric').autoNumeric({ aSep: '', aDec: window.localeDecimal, wEmpty: 'zero', vMin: '-9999.99', vMax: '9999.99' });
 
-            jQuery('input.date').change(function() {
+            jQuery('input.date').change(function () {
                 var $this = jQuery(this);
                 var value = $this.val();
                 try {
                     var date = jQuery.datepicker.parseDate(window.localeDateFormatjQuery, value);
-                    if (date!= null) {
+                    if (date != null) {
                         $this.val(jQuery.datepicker.formatDate(window.localeDateFormatjQuery, date));
-                        jQuery.datepicker.setDefaults({ defaultDate: date });   
+                        jQuery.datepicker.setDefaults({ defaultDate: date });
                     }
-                } catch(e) {
+                } catch (e) {
                     $this.val('');
                 }
             });
 
-            jQuery('input.date').keyup(function(e) {
+            jQuery('input.date').keyup(function (e) {
                 //F2 should set todays date
                 if (e.which == 113) {
                     var date = new Date();
@@ -57,6 +61,9 @@
                 }
             });
 
+            //configure numeric controls
+            jQuery.metadata.setType('attr', 'data-numeric');
+            jQuery('input.numeric').autoNumeric({ aSep: '', aDec: window.localeDecimal, wEmpty: 'zero' });
         };
 
         jQuery(jQuerySetup);

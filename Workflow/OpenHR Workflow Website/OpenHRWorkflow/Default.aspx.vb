@@ -664,10 +664,11 @@ Public Class _Default
 
                     ' stops the mobiles displaying buttons with over-rounded corners...
                     If IsMobileBrowser() OrElse IsMacSafari() Then
-                      .Style.Add("-webkit-appearance", "none")
-                      .Style.Add("background-color", "#CCCCCC")
-                      .Style.Add("border", "solid 1px #C0C0C0")
-                      .Style.Add("border-radius", "5px")
+                      'TODO PG NOW
+                      '.Style.Add("-webkit-appearance", "none")
+                      '.Style.Add("background-color", "#CCCCCC")
+                      '.Style.Add("border", "solid 1px #C0C0C0")
+                      '.Style.Add("border-radius", "5px")
                     End If
 
                     If NullSafeInteger(dr("BackColor")) <> 16249587 AndAlso NullSafeInteger(dr("BackColor")) <> -2147483633 Then
@@ -756,6 +757,10 @@ Public Class _Default
 
                   Else
                     ' Text
+
+                    'TODO PG NOW replace text area's with labels as above, IOS forces huge padding on text areas, fine when border is visible but not when invisible cos
+                    'doesnt match up with other controls alignments
+
                     Dim control = New TextBox
                     With control
                       .TabIndex = -1
@@ -819,7 +824,7 @@ Public Class _Default
                     UpdateAutoFocusControl(NullSafeShort(dr("tabIndex")), sID)
 
                     .ApplyLocation(dr)
-                    .ApplySize(dr, -2, -2)
+                    .ApplySize(dr, -1, -1)
                     .Style.ApplyFont(dr)
                     .ApplyColor(dr)
                     .ApplyBorder(True)
@@ -833,6 +838,7 @@ Public Class _Default
                       .Style("word-wrap") = "break-word"
                       .Style("resize") = "none"
                     End If
+                    .Style("padding") = "1px"
 
                     .Text = NullSafeString(dr("value"))
 
@@ -950,20 +956,24 @@ Public Class _Default
                     UpdateAutoFocusControl(NullSafeShort(dr("tabIndex")), sID)
 
                     .ApplyLocation(dr)
-                    .ApplySize(dr, -2, -2)
+                    .ApplySize(dr, -1, -1)
                     .Style.ApplyFont(dr)
                     .ApplyColor(dr, True)
                     .ApplyBorder(True)
+                    .Style("padding") = "1px"
 
-                    If NullSafeSingle(dr("value")) = CSng(0) Then
-                      .Text = (0).ToString("N" & NullSafeInteger(dr("inputDecimals")))
-                    Else
-                      .Text = NullSafeString(dr("value")).Replace(".", Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator)
+                    'add attributes that denote the min & max values, number of decimal places is also implied
+                    Dim max = New String("9"c, NullSafeInteger(dr("inputSize")) - NullSafeInteger(dr("inputDecimals"))) & _
+                      If(NullSafeInteger(dr("inputDecimals")) > 0, "." & New String("9"c, NullSafeInteger(dr("inputDecimals"))), "")
+
+                    .Attributes.Add("data-numeric", String.Format("{{vMin: '-{0}', vMax: '{0}'}}", max))
+
+                    'set the control value
+                    Dim value As Single
+                    If NullSafeString(dr("value")) <> "" Then
+                      value = CSng(NullSafeString(dr("value")).Replace(".", Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator))
                     End If
-
-                    'TODO PG NOW set meta data tags and add script !!!!
-                    Dim decimalDigits = NullSafeInteger(dr("inputDecimals"))
-                    Dim maxValue = (10 ^ (NullSafeInteger(dr("inputSize")) - NullSafeInteger(dr("inputDecimals")))) - 1 + (1 - (1 / (10 ^ NullSafeInteger(dr("inputDecimals")))))
+                    .Text = value.ToString("N" & NullSafeInteger(dr("inputDecimals"))).Replace(Thread.CurrentThread.CurrentCulture.NumberFormat.NumberGroupSeparator, "")
 
                     .Attributes("onfocus") = "try{" & sID & ".select();}catch(e){};"
 
@@ -1074,7 +1084,7 @@ Public Class _Default
                       UpdateAutoFocusControl(NullSafeShort(dr("tabIndex")), sID)
 
                       .ApplyLocation(dr)
-                      .ApplySize(dr, -2, -2)
+                      .ApplySize(dr, -1, -1)
                       .Style.ApplyFont(dr)
                       .ApplyColor(dr, True)
                       .ApplyBorder(True)
@@ -1427,7 +1437,7 @@ Public Class _Default
                     With textBox
                       .ID = sID & "TextBox"
                       .ApplyLocation(dr)
-                      .ApplySize(dr)
+                      .ApplySize(dr, -1, -1)
                       .Style.ApplyFont(dr)
                       .ApplyColor(dr)
                       .ApplyBorder(True)
@@ -1436,10 +1446,13 @@ Public Class _Default
                       UpdateAutoFocusControl(NullSafeShort(dr("tabIndex")), sID & "TextBox")
 
                       .ReadOnly = True
+                      .Style.Add("padding", "1px")
                       .Style.Add("z-index", "0")
                       .Style.Add("background-image", "url('images/downarrow.gif')")
-                      .Style.Add("background-position", "right")
+                      .Style.Add("background-position", "right top")
                       .Style.Add("background-repeat", "no-repeat")
+                      .Style.Add("background-origin", "content-box")
+                      .Style.Add("background-size", "17px 100%")
                     End With
 
                     ctlForm_PageTab(iCurrentPageTab).Controls.Add(textBox)
@@ -1614,8 +1627,9 @@ Public Class _Default
 
                     With dde
                       .DropArrowBackColor = Color.Transparent
-                      .DropArrowWidth = Unit.Pixel(20)
+                      .DropArrowWidth = Unit.Pixel(30)
                       .HighlightBackColor = backgroundColor
+                      .HighlightBorderColor = textBox.BorderColor
 
                       ' Careful with the case here, use 'dde' in JavaScript:
                       .ID = sID & "DDE"
@@ -1822,8 +1836,15 @@ Public Class _Default
                       ctlForm_PageTab(iCurrentPageTab).Controls.Add(New HiddenField With {.ID = "lookup" & sID, .Value = sFilterSQL})
                     End If
 
-                    '.Height() = Unit.Pixel(NullSafeInteger(dr("Height")) - 12)
-                    .Width() = Unit.Pixel(NullSafeInteger(dr("Width")) - 2)
+                    If Not IsMobileBrowser() Then
+                      .ApplySize(dr, -1, -1)
+                      .ApplyBorder(False)
+                      .Style.Add("padding", "1px")
+                    Else
+                      'TODO NOW PG remove height line
+                      .Height() = Unit.Pixel(NullSafeInteger(dr("Height")) - 1)
+                      .Width() = Unit.Pixel(NullSafeInteger(dr("Width")) - 2)
+                    End If
 
                     If (Not IsPostBack) Then
                       connGrid = New SqlConnection(GetConnectionString)
