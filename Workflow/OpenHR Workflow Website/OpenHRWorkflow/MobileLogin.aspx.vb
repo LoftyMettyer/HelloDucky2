@@ -22,160 +22,172 @@ Partial Class MobileLogin
 
     ' Establish Connection
     Dim myConnection As New SqlClient.SqlConnection(Configuration.ConnectionString)
-    myConnection.Open()
-
     ' Create command
     Dim myCommand As New SqlClient.SqlCommand("select * from tbsys_mobileformlayout where ID = 1", myConnection)
 
-    ' Create a DataReader to ferry information back from the database
-    drLayouts = myCommand.ExecuteReader()
 
-    If drLayouts.Read() Then
-      For iPanelID As Integer = 1 To 3
-        Dim prefix As String = String.Empty
-        Dim control As HtmlGenericControl = Nothing
+    Try
+      myConnection.Open()
 
-        Select Case iPanelID
-          Case 1
-            prefix = "Header"
-            control = pnlHeader
-          Case 2
-            prefix = "Main"
-            control = ScrollerFrame
-          Case 3
-            prefix = "Footer"
-            control = pnlFooter
-        End Select
+      ' Create a DataReader to ferry information back from the database
+      drLayouts = myCommand.ExecuteReader()
 
-        If Not IsDBNull(drLayouts(prefix & "BackColor")) Then
-          control.Style("Background-color") = objGeneral.GetHTMLColour(CInt(drLayouts(prefix & "BackColor")))
-        End If
+    Catch ex As Exception
+      sMessage = "oh poo."
+    End Try
 
-        If Not IsDBNull(drLayouts(prefix & "PictureID")) Then
-          control.Style("Background-image") = LoadPicture(CInt(drLayouts(prefix & "PictureID")), sMessage)
-          control.Style("background-repeat") = objGeneral.BackgroundRepeat(CShort(drLayouts(prefix & "PictureLocation")))
-          control.Style("background-position") = objGeneral.BackgroundPosition(CShort(drLayouts(prefix & "PictureLocation")))
-        End If
+    If sMessage.Length = 0 Then
+      If drLayouts.Read() Then
+        For iPanelID As Integer = 1 To 3
+          Dim prefix As String = String.Empty
+          Dim control As HtmlGenericControl = Nothing
 
-        'Header Image
-        If iPanelID = 1 AndAlso Not IsDBNull(drLayouts("HeaderLogoID")) Then
-          Dim imageControl As New Image
+          Select Case iPanelID
+            Case 1
+              prefix = "Header"
+              control = pnlHeader
+            Case 2
+              prefix = "Main"
+              control = ScrollerFrame
+            Case 3
+              prefix = "Footer"
+              control = pnlFooter
+          End Select
 
-          With imageControl
-            .Style("position") = "absolute"
+          If Not IsDBNull(drLayouts(prefix & "BackColor")) Then
+            control.Style("Background-color") = objGeneral.GetHTMLColour(CInt(drLayouts(prefix & "BackColor")))
+          End If
 
-            If NullSafeInteger(drLayouts("HeaderLogoVerticalOffsetBehaviour")) = 0 Then
-              .Style("top") = Unit.Pixel(NullSafeInteger(drLayouts("HeaderLogoVerticalOffset"))).ToString
-            Else
-              .Style("bottom") = Unit.Pixel(NullSafeInteger(drLayouts("HeaderLogoVerticalOffset"))).ToString
-            End If
+          If Not IsDBNull(drLayouts(prefix & "PictureID")) Then
+            control.Style("Background-image") = LoadPicture(CInt(drLayouts(prefix & "PictureID")), sMessage)
+            control.Style("background-repeat") = objGeneral.BackgroundRepeat(CShort(drLayouts(prefix & "PictureLocation")))
+            control.Style("background-position") = objGeneral.BackgroundPosition(CShort(drLayouts(prefix & "PictureLocation")))
+          End If
 
-            If NullSafeInteger(drLayouts("HeaderLogoHorizontalOffsetBehaviour")) = 0 Then
-              .Style("left") = Unit.Pixel(NullSafeInteger(drLayouts("HeaderLogoHorizontalOffset"))).ToString
-            Else
-              .Style("right") = Unit.Pixel(NullSafeInteger(drLayouts("HeaderLogoHorizontalOffset"))).ToString
-            End If
+          'Header Image
+          If iPanelID = 1 AndAlso Not IsDBNull(drLayouts("HeaderLogoID")) Then
+            Dim imageControl As New Image
 
-            .BackColor = Drawing.Color.Transparent
-            .ImageUrl = LoadPicture(NullSafeInteger(drLayouts("HeaderLogoID")), sMessage)
-            .Height() = Unit.Pixel(NullSafeInteger(drLayouts("HeaderLogoHeight")))
-            .Width() = Unit.Pixel(NullSafeInteger(drLayouts("HeaderLogoWidth")))
-            .Style.Add("z-index", "1")
-          End With
+            With imageControl
+              .Style("position") = "absolute"
 
-          pnlHeader.Controls.Add(imageControl)
-        End If
-      Next
-    End If
+              If NullSafeInteger(drLayouts("HeaderLogoVerticalOffsetBehaviour")) = 0 Then
+                .Style("top") = Unit.Pixel(NullSafeInteger(drLayouts("HeaderLogoVerticalOffset"))).ToString
+              Else
+                .Style("bottom") = Unit.Pixel(NullSafeInteger(drLayouts("HeaderLogoVerticalOffset"))).ToString
+              End If
 
-    ' Close the connection (will automatically close the reader)
-    myConnection.Close()
-    drLayouts.Close()
+              If NullSafeInteger(drLayouts("HeaderLogoHorizontalOffsetBehaviour")) = 0 Then
+                .Style("left") = Unit.Pixel(NullSafeInteger(drLayouts("HeaderLogoHorizontalOffset"))).ToString
+              Else
+                .Style("right") = Unit.Pixel(NullSafeInteger(drLayouts("HeaderLogoHorizontalOffset"))).ToString
+              End If
 
-    ' ======================== NOW FOR THE INDIVIDUAL ELEMENTS  ====================================
-
-    ' Establish Connection
-    myConnection = New SqlClient.SqlConnection(Configuration.ConnectionString)
-    myConnection.Open()
-
-    ' Create command
-    myCommand = New SqlClient.SqlCommand("select * from tbsys_mobileformelements where form = 1", myConnection)
-
-    ' Create a DataReader to ferry information back from the database
-    drElements = myCommand.ExecuteReader()
-
-    'Iterate through the results
-    While drElements.Read()
-      Select Case CInt(drElements("Type"))
-
-        Case 0 ' Button
-          If NullSafeString(drElements("Name")).Length > 0 Then
-            ctlFormImageButton = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name"))), ImageButton)
-
-            With ctlFormImageButton
-              sImageFileName = LoadPicture(NullSafeInteger(drElements("PictureID")), sMessage)
-              .ImageUrl = sImageFileName
-              .Font.Name = NullSafeString(drElements("FontName"))
-              .Font.Size = FontUnit.Parse(NullSafeString(drElements("FontSize")))
-              .Font.Bold = NullSafeBoolean(NullSafeBoolean(drElements("FontBold")))
-              .Font.Italic = NullSafeBoolean(NullSafeBoolean(drElements("FontItalic")))
+              .BackColor = Drawing.Color.Transparent
+              .ImageUrl = LoadPicture(NullSafeInteger(drLayouts("HeaderLogoID")), sMessage)
+              .Height() = Unit.Pixel(NullSafeInteger(drLayouts("HeaderLogoHeight")))
+              .Width() = Unit.Pixel(NullSafeInteger(drLayouts("HeaderLogoWidth")))
+              .Style.Add("z-index", "1")
             End With
 
-            ' Footer text
-            If NullSafeString(drElements("Caption")).Length > 0 Then
-              ctlFormHtmlGenericControl = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name")) & "_label"), HtmlGenericControl)
+            pnlHeader.Controls.Add(imageControl)
+          End If
+        Next
+      End If
+
+      ' Close the connection (will automatically close the reader)
+      myConnection.Close()
+      drLayouts.Close()
+
+      ' ======================== NOW FOR THE INDIVIDUAL ELEMENTS  ====================================
+
+      ' Establish Connection
+      myConnection = New SqlClient.SqlConnection(Configuration.ConnectionString)
+      myConnection.Open()
+
+      ' Create command
+      myCommand = New SqlClient.SqlCommand("select * from tbsys_mobileformelements where form = 1", myConnection)
+
+      ' Create a DataReader to ferry information back from the database
+      drElements = myCommand.ExecuteReader()
+
+      'Iterate through the results
+      While drElements.Read()
+        Select Case CInt(drElements("Type"))
+
+          Case 0 ' Button
+            If NullSafeString(drElements("Name")).Length > 0 Then
+              ctlFormImageButton = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name"))), ImageButton)
+
+              With ctlFormImageButton
+                sImageFileName = LoadPicture(NullSafeInteger(drElements("PictureID")), sMessage)
+                .ImageUrl = sImageFileName
+                .Font.Name = NullSafeString(drElements("FontName"))
+                .Font.Size = FontUnit.Parse(NullSafeString(drElements("FontSize")))
+                .Font.Bold = NullSafeBoolean(NullSafeBoolean(drElements("FontBold")))
+                .Font.Italic = NullSafeBoolean(NullSafeBoolean(drElements("FontItalic")))
+              End With
+
+              ' Footer text
+              If NullSafeString(drElements("Caption")).Length > 0 Then
+                ctlFormHtmlGenericControl = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name")) & "_label"), HtmlGenericControl)
+                With ctlFormHtmlGenericControl
+                  .Style("word-wrap") = "break-word"
+                  .Style("overflow") = "auto"
+                  .Style.Add("z-index", "1")
+                  .InnerText = NullSafeString(drElements("caption"))
+                  .Style.Add("background-color", "Transparent")
+                  .Style.Add("font-family", "Verdana")
+                  .Style.Add("font-size", "6pt")
+                  .Style.Add("font-weight", "normal")
+                  .Style.Add("font-style", "normal")
+                End With
+              End If
+            End If
+
+          Case 2 ' Label
+            If NullSafeString(drElements("Name")).Length > 0 Then
+              ctlFormHtmlGenericControl = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name"))), HtmlGenericControl)  'New Label
               With ctlFormHtmlGenericControl
                 .Style("word-wrap") = "break-word"
                 .Style("overflow") = "auto"
+                .Style("text-align") = "left"
                 .Style.Add("z-index", "1")
                 .InnerText = NullSafeString(drElements("caption"))
-                .Style.Add("background-color", "Transparent")
-                .Style.Add("font-family", "Verdana")
-                .Style.Add("font-size", "6pt")
-                .Style.Add("font-weight", "normal")
-                .Style.Add("font-style", "normal")
+                .Style.Add("color", objGeneral.GetHTMLColour(NullSafeInteger(drElements("ForeColor"))))
+                .Style.Add("font-family", NullSafeString(drElements("FontName")))
+                .Style.Add("font-size", NullSafeString(drElements("FontSize")) & "pt")
+                .Style.Add("font-weight", If(NullSafeBoolean(NullSafeBoolean(drElements("FontBold"))), "bold", "normal"))
+                .Style.Add("font-style", If(NullSafeBoolean(NullSafeBoolean(drElements("FontItalic"))), "italic", "normal"))
               End With
+
             End If
-          End If
 
-        Case 2 ' Label
-          If NullSafeString(drElements("Name")).Length > 0 Then
-            ctlFormHtmlGenericControl = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name"))), HtmlGenericControl)  'New Label
-            With ctlFormHtmlGenericControl
-              .Style("word-wrap") = "break-word"
-              .Style("overflow") = "auto"
-              .Style("text-align") = "left"
-              .Style.Add("z-index", "1")
-              .InnerText = NullSafeString(drElements("caption"))
-              .Style.Add("color", objGeneral.GetHTMLColour(NullSafeInteger(drElements("ForeColor"))))
-              .Style.Add("font-family", NullSafeString(drElements("FontName")))
-              .Style.Add("font-size", NullSafeString(drElements("FontSize")) & "pt")
-              .Style.Add("font-weight", If(NullSafeBoolean(NullSafeBoolean(drElements("FontBold"))), "bold", "normal"))
-              .Style.Add("font-style", If(NullSafeBoolean(NullSafeBoolean(drElements("FontItalic"))), "italic", "normal"))
-            End With
+          Case 3 ' Input value - character
+            If NullSafeString(drElements("Name")).Length > 0 Then
+              ctlFormHtmlInputText = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name"))), HtmlInputText)
+              ctlFormHtmlInputText.Style("resize") = "none"
+              ctlFormHtmlInputText.Style.Add("border-style", "solid")
+              ctlFormHtmlInputText.Style.Add("border-width", "1")
+              ctlFormHtmlInputText.Style.Add("border-color", objGeneral.GetHTMLColour(5730458))
+              ctlFormHtmlInputText.Style.Add("color", objGeneral.GetHTMLColour(NullSafeInteger(drElements("ForeColor"))))
+              ctlFormHtmlInputText.Style.Add("font-family", NullSafeString(drElements("FontName")))
+              ctlFormHtmlInputText.Style.Add("font-size", NullSafeString(drElements("FontSize")) & "pt")
+              ctlFormHtmlInputText.Style.Add("font-weight", If(NullSafeBoolean(NullSafeBoolean(drElements("FontBold"))), "bold", "normal"))
+              ctlFormHtmlInputText.Style.Add("font-style", If(NullSafeBoolean(NullSafeBoolean(drElements("FontItalic"))), "italic", "normal"))
+            End If
 
-          End If
+        End Select
+      End While
 
-        Case 3 ' Input value - character
-          If NullSafeString(drElements("Name")).Length > 0 Then
-            ctlFormHtmlInputText = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name"))), HtmlInputText)
-            ctlFormHtmlInputText.Style("resize") = "none"
-            ctlFormHtmlInputText.Style.Add("border-style", "solid")
-            ctlFormHtmlInputText.Style.Add("border-width", "1")
-            ctlFormHtmlInputText.Style.Add("border-color", objGeneral.GetHTMLColour(5730458))
-            ctlFormHtmlInputText.Style.Add("color", objGeneral.GetHTMLColour(NullSafeInteger(drElements("ForeColor"))))
-            ctlFormHtmlInputText.Style.Add("font-family", NullSafeString(drElements("FontName")))
-            ctlFormHtmlInputText.Style.Add("font-size", NullSafeString(drElements("FontSize")) & "pt")
-            ctlFormHtmlInputText.Style.Add("font-weight", If(NullSafeBoolean(NullSafeBoolean(drElements("FontBold"))), "bold", "normal"))
-            ctlFormHtmlInputText.Style.Add("font-style", If(NullSafeBoolean(NullSafeBoolean(drElements("FontItalic"))), "italic", "normal"))
-          End If
-
-      End Select
-    End While
-
-    ' Close the connection (will automatically close the reader)
-    myConnection.Close()
-    drElements.Close()
+      ' Close the connection (will automatically close the reader)
+      myConnection.Close()
+      drElements.Close()
+    Else
+      pnlContainer.Style.Remove("display")
+      pnlContainer.Style.Add("display", "none")
+      ShowMessage("Server Error", "Could not open a connection to SQL Server", "Message.aspx")
+    End If
 
   End Sub
 
