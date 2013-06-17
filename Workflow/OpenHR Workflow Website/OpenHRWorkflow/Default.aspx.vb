@@ -39,7 +39,7 @@ Public Class _Default
   Private m_iTabStripHeight As Integer = 0
 
   Private Const FORMINPUTPREFIX As String = "forminput_"
-  Private Const ASSEMBLYNAME As String = "HRPROWORKFLOW"
+  Private Const ASSEMBLYNAME As String = "OPENHRWORKFLOW"
   Private Const ROWHEIGHTFONTRATIO As Single = 2.5
   Private Const MAXDROPDOWNROWS As Int16 = 6
 
