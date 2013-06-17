@@ -43,11 +43,11 @@
 	        window.iCurrentMessageState = 'none';
 
 	        try {
-	          
 	            iDefHeight = window.$get("frmMain").hdnFormHeight.value;
 	            iDefWidth = window.$get("frmMain").hdnFormWidth.value;
-			    
+
 	            window.focus();
+
 	            if (iDefHeight > 0 && iDefWidth > 0) {
 	              iResizeByHeight = iDefHeight - window.currentHeight; 
 	              iResizeByWidth = iDefWidth - window.currentWidth;
@@ -57,8 +57,8 @@
 	            }
 
 	            try {
-	                if (window.$get("frmMain").hdnFirstControl.value.length > 0) {
-	                    document.getElementById(window.$get("frmMain").hdnFirstControl.value).focus();
+	                if (window.autoFocusControl.length > 0) {
+	                    document.getElementById(window.autoFocusControl).focus();
 	                }
 	            }
 	            catch (e) { }
@@ -238,19 +238,6 @@
             catch (e) {
             };
             __doPostBack(gridId, 'Select$' + rowIndex);
-        }
-
-        function dateControlAndroidFix(controlId, hide) {
-            var dateControl = document.getElementById(controlId);
-            var nodes = dateControl.parentNode.childNodes;
-            for(var i = 0; i < nodes.length; i++) {
-                var ctl = nodes[i];
-                if (ctl.id && ctl.id.indexOf('FI_') == 0 && ctl.id != dateControl.id) {
-                    if (ctl.offsetTop > dateControl.offsetTop && ctl.offsetTop < dateControl.offsetTop + 100) {
-                        ctl.style.visibility = hide ? 'hidden' : 'visible';
-                    }
-                }
-            }
         }
 
         function showOverlay(display) {

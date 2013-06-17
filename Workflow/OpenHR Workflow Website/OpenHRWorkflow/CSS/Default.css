@@ -3,8 +3,6 @@ html, body, div, span {
     margin: 0;
     padding: 0;
     border: 0;
-    font-size: 100%;
-    font: inherit;
 }
 /* Site styling */
 body {
@@ -95,17 +93,22 @@ textarea {
 
 /* Dates */
 .ui-datepicker {
-    z-index: 5 !important; 
+    z-index: 5 !important;
+    font-size: 11px !important;
 }
 .ui-datepicker th {
     padding-bottom: 0.4em !important; 
     padding-top: 0.4em !important; 
 }
-/* TODO PG NOW
-.ui-corner-all {
+.ui-datepicker-trigger {
+    position: absolute;
+    right: 2px;
+    top: 50%;
+    margin-top: -8px;
+}
+.ui-datepicker.ui-corner-all, .ui-datepicker .ui-corner-all {
     border-radius: 0px !important;
 }
-*/
 
 /* Numeric */
 .numeric {
@@ -172,4 +175,9 @@ textarea {
     width:20px; 
     height:20px; 
     cursor:pointer;
+}
+
+/* Fixes */
+.androidHide {
+    visibility: hidden;
 }

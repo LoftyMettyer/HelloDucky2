@@ -19,7 +19,7 @@
 
 	<title></title>
     
-    <script type="text/javascript">
+    <script type="text/javascript">       
         jQuery.noConflict();
 
         jQuerySetup = function () {
@@ -33,12 +33,26 @@
                 changeMonth: true,
                 showOtherMonths: true,
                 selectOtherMonths: true,
-                dateFormat: window.localeDateFormatjQuery
+                showOn: window.isMobile ? 'both' : 'button',
+                buttonImage: 'Images/calendar16.png',
+                buttonText: '',
+                buttonImageOnly: true,
+                dateFormat: window.localeDateFormatjQuery,
+                beforeShow: function (input) {
+                    if (!window.androidLayerBug) return;
+                    var top = jQuery(input).offset().top + jQuery(input).height();
+                    jQuery('[id^=FI], img').filter(function () { return jQuery(this).offset().top > top && jQuery(this).offset().top < top + 100; }).addClass('androidHide');
+                },
+                onClose: function () {
+                    if (!window.androidLayerBug) return;
+                    jQuery('.androidHide').removeClass('androidHide');
+                }
             });
 
             jQuery('input.date').datepicker();
 
             jQuery('input.date').change(function () {
+                //validate a typed date and format it
                 var $this = jQuery(this);
                 var value = $this.val();
                 try {
@@ -81,9 +95,12 @@
       window.currentHeight = document.getElementById("innerMeasurements").offsetHeight;
       window.currentWidth = document.getElementById("innerMeasurements").offsetWidth;
 
-      window.localeDateFormat = "<%= LocaleDateFormat() %>";
-      window.localeDateFormatjQuery = "<%= LocaleDateFormatjQuery() %>";
-      window.localeDecimal = "<%= LocaleDecimal() %>";
+      window.autoFocusControl = '<%= AutoFocusControl() %>';
+      window.localeDateFormat = '<%= LocaleDateFormat() %>';
+      window.localeDateFormatjQuery = '<%= LocaleDateFormatjQuery() %>';
+      window.localeDecimal = '<%= LocaleDecimal() %>';
+      window.isMobile = <%= If(IsMobileBrowser(), "true", "false") %>;
+      window.androidLayerBug = <%= If(AndroidLayerBug(), "true", "false") %>;
   </script>
 
     <%--    <script src="Scripts/default.js" type="text/javascript"></script>
@@ -174,7 +191,6 @@
     -->
 	<asp:HiddenField ID="hdnFormHeight" runat="server" Value="0" />
 	<asp:HiddenField ID="hdnFormWidth" runat="server" Value="0" />
-	<asp:HiddenField ID="hdnFirstControl" runat="server" Value="" />
     <asp:HiddenField ID="hdnDefaultPageNo" runat="server" Value="0" />
 	</form>
 	<!--

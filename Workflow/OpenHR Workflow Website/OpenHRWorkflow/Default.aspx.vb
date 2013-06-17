@@ -999,12 +999,13 @@ Public Class _Default
                       .TabIndex = NullSafeShort(dr("tabIndex"))
                       UpdateAutoFocusControl(NullSafeShort(dr("tabIndex")), sID)
 
-                      .ApplyLocation(dr)
+                      '.ApplyLocation(dr)
                       .ApplySize(dr, -1, -1)
                       .Style.ApplyFont(dr)
                       .ApplyColor(dr, True)
                       .ApplyBorder(True)
 
+                      .ReadOnly = True
                       .Text = General.ConvertSqlDateToLocale(NullSafeString(dr("value")))
 
                       .Attributes("onfocus") = "try{" & sID & ".select();}catch(e){};"
@@ -1015,7 +1016,11 @@ Public Class _Default
                       End If
                     End With
 
-                    ctlForm_PageTab(iCurrentPageTab).Controls.Add(control)
+                    Dim panel As New Panel
+                    panel.Controls.Add(control)
+                    panel.ApplyLocation(dr)
+
+                    ctlForm_PageTab(iCurrentPageTab).Controls.Add(panel)
                   End If
 
                 Case 8 ' Frame
@@ -2211,9 +2216,6 @@ Public Class _Default
                 msSavedForLaterMessage = NullSafeString(cmdSelect.Parameters("@psSavedForLaterMessage").Value)
                 miFollowOnFormsMessageType = NullSafeInteger(cmdSelect.Parameters("@piFollowOnFormsMessageType").Value)
                 msFollowOnFormsMessage = NullSafeString(cmdSelect.Parameters("@psFollowOnFormsMessage").Value)
-
-                'Set the first focus control
-                hdnFirstControl.Value = _autoFocusControl
               End If
             End If
 
@@ -2664,6 +2666,18 @@ Public Class _Default
 
   Public Function LocaleDecimal() As String
     Return Thread.CurrentThread.CurrentUICulture.NumberFormat.NumberDecimalSeparator
+  End Function
+
+  Public Function AndroidLayerBug() As Boolean
+    Return IsAndroidBrowser()
+  End Function
+
+  Public Function IsMobileBrowser() As Boolean
+    Return Utilities.IsMobileBrowser()
+  End Function
+
+  Public Function AutoFocusControl() As String
+    Return _autoFocusControl
   End Function
 
   Public Function ColourThemeHex() As String

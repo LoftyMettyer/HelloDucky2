@@ -23,17 +23,6 @@ body { font-family: verdana; }
 .page {
     z-index: 1;
 }
-
-/*
-.content {
-    position: absolute;
-    top: 0px;
-    bottom: 60px;
-    width: 100%;
-    overflow-x: hidden;
-    overflow-y: auto;
-} 
-*/
 .header {
     position: relative;
     overflow: hidden;
