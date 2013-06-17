@@ -370,6 +370,14 @@ Public Class [Default]
 
 						.Text = formItem.Value
 
+						' For GPS activation (future development - also unremark same comments in default.js):
+						'If formItem.Value = "$GPS" Then
+						'	.Attributes.Add("class", "GPSTextBox")
+						'	.Text = ""
+						'Else
+						'	.Text = formItem.Value
+						'End If
+
 						.Attributes("onfocus") = "try{" & controlId & ".select();}catch(e){};"
 
 						If formItem.InputSize > 0 Then
@@ -454,7 +462,7 @@ Public Class [Default]
 
 						'add attributes that denote the min & max values, number of decimal places is also implied
 						Dim max = New String("9"c, formItem.InputSize - formItem.InputDecimals) &
-							 If(formItem.InputDecimals > 0, "." & New String("9"c, formItem.InputDecimals), "")
+						  If(formItem.InputDecimals > 0, "." & New String("9"c, formItem.InputDecimals), "")
 
 						.Attributes.Add("data-numeric", String.Format("{{vMin: '-{0}', vMax: '{0}'}}", max))
 
@@ -554,415 +562,548 @@ Public Class [Default]
 						height -= fontAdjustment
 					End If
 
-					Dim html = String.Format("<fieldset style='position:absolute; top:{0}px; left:{1}px; width:{2}px; height:{3}px; {4} {5} border:1px solid #999;'>",
-								top, left, width, height, GetFontCss(formItem), GetColorCss(formItem))
+					Dim html As String = "<fieldset "
+					Dim HotSpotID As Long = 0
+					Dim HotSpotItemType As Long = 0
 
-					If formItem.Caption.Trim.Length > 0 Then
-						html += String.Format("<legend>{0}</legend>", formItem.Caption) & vbCrLf
+					If formItem.HotSpotIdentifier.Length > 0 Then
+						Dim HotSpotIdentifier As String = formItem.HotSpotIdentifier
+						Dim HotSpotItem As FormItem = _form.Items.Find(Function(fi) fi.Identifier = HotSpotIdentifier)
+
+						If HotSpotItem IsNot Nothing Then
+							HotSpotID = HotSpotItem.Id
+							HotSpotItemType = HotSpotItem.ItemType
+						End If
 					End If
 
-					html += "</fieldset>" & vbCrLf
+					html &= String.Format(" style='position:absolute; top:{0}px; left:{1}px; width:{2}px; height:{3}px; {4} ", top, left, width, height, GetFontCss(formItem))
 
-					tabPages(formItem.PageNo).Controls.Add(New LiteralControl(html))
+					If HotSpotID > 0 Then
+
+						If IsMobileBrowser() Then
+							' css
+							html &= "z-index: 1; filter: alpha(opacity=0); opacity: 0;' "
+
+							' Onclick
+							Dim TargetID As String = FormInputPrefix & HotSpotID & "_" & HotSpotItemType & "_"
+							Select Case HotSpotItemType
+								Case 0	' button
+									html &= "onclick='document.getElementById(" & Chr(34) & TargetID & Chr(34) & ").click();'>"
+
+								Case 6	' Logic
+									' Toggle the logic box...
+									html &= "onclick='document.getElementById(" & Chr(34) & TargetID & Chr(34) & ").checked = !document.getElementById(" & Chr(34) & TargetID & Chr(34) & ").checked;'>"
+
+									'Case 15	' Option Group - disabled: couldn't agree on functionality
+									'	' Cycle through the options...
+
+									'Case 17	' File Upload Button - disabled: file upload disabled in mobiles.
+									'	html &= "onclick='document.getElementById(" & Chr(34) & TargetID & Chr(34) & ").click();'>"
+
+								Case Else	' all other char inputs
+									html &= "onclick='document.getElementById(" & Chr(34) & TargetID & Chr(34) & ").focus();'>"
+
+							End Select
+
+						Else
+							' Hotspots not displayed in desktops.
+							html &= "display: none;'>"
+						End If
+
+					Else
+						' css
+						html &= String.Format(" {0} border:1px solid #999;'>", GetColorCss(formItem, True))
+					End If
+
+						If formItem.Caption.Trim.Length > 0 Then
+							html += String.Format("<legend>{0}</legend>", formItem.Caption) & vbCrLf
+						End If
+
+						html += "</fieldset>" & vbCrLf
+
+						tabPages(formItem.PageNo).Controls.Add(New LiteralControl(html))
 
 				Case 9 ' Line
 
-					Dim html As String
+						Dim html As String
 
-					Select Case formItem.Orientation
-						Case 0 ' Vertical
-							html = String.Format("<div style='position:absolute; left:{0}px; top:{1}px; height:{2}px; width:0px; border-left: 1px solid {3};'></div>",
-									  formItem.Left, formItem.Top, formItem.Height, General.GetHtmlColour(formItem.BackColor))
-						Case Else ' Horizontal
-							html = String.Format("<div style='position:absolute; left:{0}px; top:{1}px; height:0px; width:{2}px; border-left: 1px solid {3};'></div>",
-									  formItem.Left, formItem.Top, formItem.Width, General.GetHtmlColour(formItem.BackColor))
-					End Select
+						Select Case formItem.Orientation
+							Case 0 ' Vertical
+								html = String.Format("<div style='position:absolute; left:{0}px; top:{1}px; height:{2}px; width:0px; border-left: 1px solid {3};'></div>",
+								  formItem.Left, formItem.Top, formItem.Height, General.GetHtmlColour(formItem.BackColor))
+							Case Else ' Horizontal
+								html = String.Format("<div style='position:absolute; left:{0}px; top:{1}px; height:0px; width:{2}px; border-left: 1px solid {3};'></div>",
+								  formItem.Left, formItem.Top, formItem.Width, General.GetHtmlColour(formItem.BackColor))
+						End Select
 
-					tabPages(formItem.PageNo).Controls.Add(New LiteralControl(html))
+						tabPages(formItem.PageNo).Controls.Add(New LiteralControl(html))
 
 				Case 10 ' Image
 
-					Dim control = New WebControls.Image
+						Dim control = New WebControls.Image
 
-					With control
-						.ApplyLocation(formItem)
-						.ApplySize(formItem)
-
-						If formItem.PictureBorder Then
-							.ApplyBorder(True, -2)
-						End If
-
-						.ImageUrl = "~/Image.ashx?s=&id=" & formItem.PictureID
-					End With
-
-					tabPages(formItem.PageNo).Controls.Add(control)
-
-				Case 11 ' Record Selection Grid
-					' NPG20110501 Fault HR PRO 1414
-					' We're using the ASP.NET standard gridview control now. To replicate the old infragistics
-					' grid we'll put the Gridview control within a DIV to enable scroll bars and fix the height&width, 
-					' but also put a header DIV above the grid which contains copies of the column headers. This is 
-					' to simulate fixing the headers when the grid is scrolled. We use this table to allow 
-					' clickable sorting and resizable column widths.
-
-					' Grids are now created using the clsRecordSelector class.
-					Dim recordSelector = New RecordSelector
-					With recordSelector
-
-						.CssClass = "recordSelector"
-						.Style.Add("Position", "Absolute")
-						.Attributes.CssStyle("LEFT") = Unit.Pixel(formItem.Left).ToString
-						.Attributes.CssStyle("TOP") = Unit.Pixel(formItem.Top).ToString
-						.Attributes.CssStyle("WIDTH") = Unit.Pixel(formItem.Width).ToString
-
-						' Don't use .height - it causes large row heights if the grid isn't filled.
-						' Use .ControlHeight instead - custom property.
-						.ControlHeight = formItem.Height
-						.Width = formItem.Width
-
-						'TODO PG changing this color makes no difference must be set in the recordSelector class
-						.BorderColor = Color.Black
-						.BorderStyle = BorderStyle.Solid
-						.BorderWidth = 1
-
-						.Style.Add("border-bottom-width", "2px")
-
-						.ID = controlId & "Grid"
-						.AllowPaging = True
-						.AllowSorting = True
-						'.EnableSortingAndPagingCallbacks = True
-
-						' Androids currently can't scroll internal divs, so fix 
-						' pagesize of record selector to height of control.
-						If GetBrowserFamily() = "ANDROID" Then
-							Dim piRowHeight As Double = (formItem.FontSize - 8) + 21
-							.PageSize = Math.Min(CInt(Math.Truncate((CInt(formItem.Height - 42) / piRowHeight))), App.Config.LookupRowsRange)
-							.RowStyle.Height = CInt(piRowHeight)
-						Else
-							.PageSize = App.Config.LookupRowsRange
-						End If
-
-						.IsLookup = False
-						' EnableViewState must be on. Mucks up the grid data otherwise. Should be reviewed
-						' if performance is silly, but while paging is enabled it shouldn't be too bad.
-						.EnableViewState = True
-						.IsEmpty = False
-						.EmptyDataText = "no records to display"
-						.ShowHeaderWhenEmpty = True
-
-						' Header Row
-						.ColumnHeaders = formItem.ColumnHeaders
-						.HeadFontSize = CSng(formItem.HeadFontSize)
-						.HeadLines = formItem.HeadLines
-
-						.TabIndex = formItem.TabIndex
-						UpdateAutoFocusControl(formItem.TabIndex, controlId)
-
-						Dim backColor As Integer = formItem.BackColor
-
-						If backColor = 16777215 AndAlso formItem.BackColorEven = 15988214 Then
-							backColor = formItem.BackColorEven
-						End If
-
-						.BackColor = General.GetColour(backColor)
-						.ForeColor = General.GetColour(formItem.ForeColor)
-
-						.HeaderStyle.BackColor = General.GetColour(formItem.HeaderBackColor)
-						.HeaderStyle.BorderColor = General.GetColour(10720408)
-						.HeaderStyle.BorderStyle = BorderStyle.Double
-						.HeaderStyle.BorderWidth = 0
-
-						.HeaderStyle.Font.Apply(formItem, "Head")
-
-						.HeaderStyle.ForeColor = General.GetColour(formItem.ForeColor)
-						.HeaderStyle.Wrap = False
-						.HeaderStyle.VerticalAlign = VerticalAlign.Middle
-						.HeaderStyle.HorizontalAlign = HorizontalAlign.Center
-
-						' PagerStyle settings
-						.PagerStyle.BackColor = General.GetColour(formItem.HeaderBackColor)
-						.PagerStyle.BorderColor = General.GetColour(10720408)
-						.PagerStyle.BorderStyle = BorderStyle.Solid
-						.PagerStyle.BorderWidth = 0
-						.PagerStyle.Font.Apply(formItem, "Head")
-						.PagerStyle.ForeColor = General.GetColour(formItem.ForeColor)
-						.PagerStyle.Wrap = False
-						.PagerStyle.VerticalAlign = VerticalAlign.Middle
-						.PagerStyle.HorizontalAlign = HorizontalAlign.Center
-
-						.Font.Apply(formItem)
-
-						If formItem.ForeColorEven <> formItem.ForeColor Then
-							.RowStyle.ForeColor = General.GetColour(formItem.ForeColorEven)
-						End If
-
-						If formItem.BackColorEven <> backColor Then
-							.RowStyle.BackColor = General.GetColour(formItem.BackColorEven)
-						End If
-
-						If formItem.ForeColorOdd <> formItem.ForeColor Then
-							.AlternatingRowStyle.ForeColor = General.GetColour(formItem.ForeColorOdd)
-						End If
-
-						If formItem.BackColorOdd <> formItem.BackColorEven Then
-							.AlternatingRowStyle.BackColor = General.GetColour(formItem.BackColorOdd)
-						End If
-
-						If Not formItem.ForeColorHighlight.HasValue Then
-							.SelectedRowStyle.ForeColor = SystemColors.HighlightText
-						Else
-							.SelectedRowStyle.ForeColor = General.GetColour(formItem.ForeColorHighlight.Value)
-						End If
-						If Not formItem.BackColorHighlight.HasValue Then
-							.SelectedRowStyle.BackColor = SystemColors.Highlight
-						Else
-							.SelectedRowStyle.BackColor = General.GetColour(formItem.BackColorHighlight.Value)
-						End If
-
-					End With
-
-					' ==================================================
-					' Add the Paging Grid View to the holding panel now.
-					' Before the databind, or you'll get errors!
-					' ==================================================
-					tabPages(formItem.PageNo).Controls.Add(recordSelector)
-
-					If Not IsPostBack Then
-
-						Dim result = _db.GetWorkflowGridItems(formItem.Id, _url.InstanceID)
-
-						Session(controlId & "DATA") = result.Data
-
-						recordSelector.DataKeyNames = New String() {"ID"}
-
-						recordSelector.IsEmpty = (result.Data.Rows.Count = 0)
-						recordSelector.DataSource = result.Data
-						recordSelector.DataBind()
-
-						'set the default value
-						If NullSafeInteger(formItem.Value) <> 0 Then
-
-							Dim colIndex As Integer = result.Data.Columns.IndexOf("ID")
-
-							For r = 0 To result.Data.Rows.Count - 1
-								If result.Data.Rows(r).Item(colIndex).ToString = formItem.Value Then
-									' set selected page index and row number
-									recordSelector.PageIndex = CInt(r \ recordSelector.PageSize)
-									recordSelector.SelectedIndex = CInt(r Mod recordSelector.PageSize)
-									recordSelector.DataBind()
-									Exit For
-								End If
-							Next
-						End If
-
-						If recordSelector.SelectedIndex = -1 AndAlso recordSelector.Rows.Count > 0 Then
-							recordSelector.SelectedIndex = 0
-						End If
-
-						If Not result.Ok Then
-							message = "Error loading web form. Web Form record selector item record has been deleted or not selected."
-							Exit For
-						End If
-					End If
-
-					' Hidden field is used to store scroll position of the grid.
-					tabPages(formItem.PageNo).Controls.Add(New HiddenField With {.ID = controlId & "scrollpos"})
-
-				Case 14 ' lookup  Inputs
-					If Not IsMobileBrowser() Then
-
-						' ============================================================
-						' Create a textbox as the main control
-						' ============================================================
-						Dim textBox = New TextBox
-
-						With textBox
-							.ID = controlId & "TextBox"
+						With control
 							.ApplyLocation(formItem)
-							.ApplySize(formItem, -1, -1)
-							.Style.ApplyFont(formItem)
-							.ApplyColor(formItem)
-							.ApplyBorder(True)
+							.ApplySize(formItem)
 
-							.TabIndex = formItem.TabIndex
-							UpdateAutoFocusControl(formItem.TabIndex, controlId & "TextBox")
+							If formItem.PictureBorder Then
+								.ApplyBorder(True, -2)
+							End If
 
-							.ReadOnly = True
-							.Style.Add("padding", "1px")
-							.Style.Add("background-image", "url('images/downarrow.gif')")
-							.Style.Add("background-position", "right top")
-							.Style.Add("background-repeat", "no-repeat")
-							.Style.Add("background-origin", "content-box")
-							.Style.Add("background-size", "17px 100%")
+							.ImageUrl = "~/Image.ashx?s=&id=" & formItem.PictureId
 						End With
 
-						tabPages(formItem.PageNo).Controls.Add(textBox)
+						tabPages(formItem.PageNo).Controls.Add(control)
 
-						' ============================================================
-						' Create the Lookup table grid, as per normal record selectors.
-						' This will be hidden on page_load, and displayed when the 
-						' DropdownList above is clicked. The magic is brought together
-						' by the AJAX DropDownExtender control below.
-						' ============================================================
+				Case 11 ' Record Selection Grid
+						' NPG20110501 Fault HR PRO 1414
+						' We're using the ASP.NET standard gridview control now. To replicate the old infragistics
+						' grid we'll put the Gridview control within a DIV to enable scroll bars and fix the height&width, 
+						' but also put a header DIV above the grid which contains copies of the column headers. This is 
+						' to simulate fixing the headers when the grid is scrolled. We use this table to allow 
+						' clickable sorting and resizable column widths.
+
+						' Grids are now created using the clsRecordSelector class.
 						Dim recordSelector = New RecordSelector
-
 						With recordSelector
-							.ID = controlId & "Grid"
-							.IsLookup = True
-							.EnableViewState = True
-							' Must be set to True
-							.IsEmpty = False
-							.EmptyDataText = "no records to display"
-							.AllowPaging = True
-							.AllowSorting = True
-							'.EnableSortingAndPagingCallbacks = True
-							.PageSize = App.Config.LookupRowsRange
-							.ShowFooter = False
 
 							.CssClass = "recordSelector"
 							.Style.Add("Position", "Absolute")
-							.Style("top") = Unit.Pixel(formItem.Top).ToString
-							.Style("left") = Unit.Pixel(formItem.Left).ToString
+							.Attributes.CssStyle("LEFT") = Unit.Pixel(formItem.Left).ToString
+							.Attributes.CssStyle("TOP") = Unit.Pixel(formItem.Top).ToString
+							.Attributes.CssStyle("WIDTH") = Unit.Pixel(formItem.Width).ToString
 
-							.Attributes.CssStyle("left") = Unit.Pixel(formItem.Left).ToString
-							.Attributes.CssStyle("top") = Unit.Pixel(formItem.Top).ToString
-							.Attributes.CssStyle("width") = Unit.Pixel(formItem.Width).ToString
-
-							' Don't set the height of this control. Must use the ControlHeight property
-							' to stop the grid's rows from autosizing.
+							' Don't use .height - it causes large row heights if the grid isn't filled.
+							' Use .ControlHeight instead - custom property.
 							.ControlHeight = formItem.Height
 							.Width = formItem.Width
 
-							' Header Row - fixed for lookups.
-							.ColumnHeaders = True
-							.HeadFontSize = CSng(formItem.FontSize)
-							.HeadLines = 1
+							'TODO PG changing this color makes no difference must be set in the recordSelector class
+							.BorderColor = Color.Black
+							.BorderStyle = BorderStyle.Solid
+							.BorderWidth = 1
 
-							.ApplyFont(formItem)
-							.ApplyColor(formItem)
-							.ApplyBorder(False)
+							.Style.Add("border-bottom-width", "2px")
 
-							.SelectedRowStyle.ForeColor = General.GetColour(2774907)
-							.SelectedRowStyle.BackColor = General.GetColour(10480637)
+							.ID = controlId & "Grid"
+							.AllowPaging = True
+							.AllowSorting = True
+							'.EnableSortingAndPagingCallbacks = True
 
-							' HEADER formatting
-							.HeaderStyle.BackColor = General.GetColour(16248553)
+							' Androids currently can't scroll internal divs, so fix 
+							' pagesize of record selector to height of control.
+							If GetBrowserFamily() = "ANDROID" Then
+								Dim piRowHeight As Double = (formItem.FontSize - 8) + 21
+								.PageSize = Math.Min(CInt(Math.Truncate((CInt(formItem.Height - 42) / piRowHeight))), App.Config.LookupRowsRange)
+								.RowStyle.Height = CInt(piRowHeight)
+							Else
+								.PageSize = App.Config.LookupRowsRange
+							End If
+
+							.IsLookup = False
+							' EnableViewState must be on. Mucks up the grid data otherwise. Should be reviewed
+							' if performance is silly, but while paging is enabled it shouldn't be too bad.
+							.EnableViewState = True
+							.IsEmpty = False
+							.EmptyDataText = "no records to display"
+							.ShowHeaderWhenEmpty = True
+
+							' Header Row
+							.ColumnHeaders = formItem.ColumnHeaders
+							.HeadFontSize = CSng(formItem.HeadFontSize)
+							.HeadLines = formItem.HeadLines
+
+							.TabIndex = formItem.TabIndex
+							UpdateAutoFocusControl(formItem.TabIndex, controlId)
+
+							Dim backColor As Integer = formItem.BackColor
+
+							If backColor = 16777215 AndAlso formItem.BackColorEven = 15988214 Then
+								backColor = formItem.BackColorEven
+							End If
+
+							.BackColor = General.GetColour(backColor)
+							.ForeColor = General.GetColour(formItem.ForeColor)
+
+							.HeaderStyle.BackColor = General.GetColour(formItem.HeaderBackColor)
 							.HeaderStyle.BorderColor = General.GetColour(10720408)
-							.HeaderStyle.BorderStyle = BorderStyle.Solid
+							.HeaderStyle.BorderStyle = BorderStyle.Double
 							.HeaderStyle.BorderWidth = 0
 
-							.HeaderStyle.Font.Apply(formItem)
+							.HeaderStyle.Font.Apply(formItem, "Head")
+
 							.HeaderStyle.ForeColor = General.GetColour(formItem.ForeColor)
 							.HeaderStyle.Wrap = False
 							.HeaderStyle.VerticalAlign = VerticalAlign.Middle
 							.HeaderStyle.HorizontalAlign = HorizontalAlign.Center
 
-							.PagerStyle.Font.Apply(formItem)
+							' PagerStyle settings
+							.PagerStyle.BackColor = General.GetColour(formItem.HeaderBackColor)
+							.PagerStyle.BorderColor = General.GetColour(10720408)
+							.PagerStyle.BorderStyle = BorderStyle.Solid
+							.PagerStyle.BorderWidth = 0
+							.PagerStyle.Font.Apply(formItem, "Head")
 							.PagerStyle.ForeColor = General.GetColour(formItem.ForeColor)
 							.PagerStyle.Wrap = False
 							.PagerStyle.VerticalAlign = VerticalAlign.Middle
 							.PagerStyle.HorizontalAlign = HorizontalAlign.Center
-							.PagerStyle.BorderWidth = 0
+
+							.Font.Apply(formItem)
+
+							If formItem.ForeColorEven <> formItem.ForeColor Then
+								.RowStyle.ForeColor = General.GetColour(formItem.ForeColorEven)
+							End If
+
+							If formItem.BackColorEven <> backColor Then
+								.RowStyle.BackColor = General.GetColour(formItem.BackColorEven)
+							End If
+
+							If formItem.ForeColorOdd <> formItem.ForeColor Then
+								.AlternatingRowStyle.ForeColor = General.GetColour(formItem.ForeColorOdd)
+							End If
+
+							If formItem.BackColorOdd <> formItem.BackColorEven Then
+								.AlternatingRowStyle.BackColor = General.GetColour(formItem.BackColorOdd)
+							End If
+
+							If Not formItem.ForeColorHighlight.HasValue Then
+								.SelectedRowStyle.ForeColor = SystemColors.HighlightText
+							Else
+								.SelectedRowStyle.ForeColor = General.GetColour(formItem.ForeColorHighlight.Value)
+							End If
+							If Not formItem.BackColorHighlight.HasValue Then
+								.SelectedRowStyle.BackColor = SystemColors.Highlight
+							Else
+								.SelectedRowStyle.BackColor = General.GetColour(formItem.BackColorHighlight.Value)
+							End If
+
 						End With
 
-						Dim filterSql = LookupFilterSQL(formItem.LookupFilterColumnName,
-										formItem.LookupFilterColumnDataType,
-										formItem.LookupFilterOperator,
-										FormInputPrefix &
-										formItem.LookupFilterValueID &
-										"_" & formItem.LookupFilterValueType & "_")
-
-						' Hidden Field to store any lookup filter code
-						If (filterSql.Length > 0) Then
-							tabPages(formItem.PageNo).Controls.Add(New HiddenField With {.ID = "lookup" & controlId, .Value = filterSql})
-						End If
-
+						' ==================================================
+						' Add the Paging Grid View to the holding panel now.
+						' Before the databind, or you'll get errors!
+						' ==================================================
 						tabPages(formItem.PageNo).Controls.Add(recordSelector)
 
 						If Not IsPostBack Then
 
-							'get the data
-							Dim result = _db.GetWorkflowItemValues(formItem.Id, _url.InstanceId)
+							Dim result = _db.GetWorkflowGridItems(formItem.Id, _url.InstanceId)
 
-							'insert a blank row
-							result.Data.Rows.InsertAt(result.Data.NewRow(), 0)
-
-							'store the data its needed for paging, sorting
 							Session(controlId & "DATA") = result.Data
 
-							'bind data to grid
-							recordSelector.IsEmpty = (result.Data.Rows.Count - 1 = 0)
+							recordSelector.DataKeyNames = New String() {"ID"}
+
+							recordSelector.IsEmpty = (result.Data.Rows.Count = 0)
 							recordSelector.DataSource = result.Data
 							recordSelector.DataBind()
 
-							'store info its needed later
-							textBox.Attributes.Add("LookupColumnIndex", result.LookupColumnIndex.ToString)
-							textBox.Attributes.Add("DataType", result.Data.Columns(result.LookupColumnIndex).DataType.ToString)
-
 							'set the default value
-							textBox.Text = result.DefaultValue
+							If NullSafeInteger(formItem.Value) <> 0 Then
 
-							For i As Integer = 0 To recordSelector.Rows.Count - 1
-								If i > recordSelector.PageSize Then Exit For
-								' don't bother if on other pages
-								If recordSelector.Rows(i).Cells(result.LookupColumnIndex).Text = result.DefaultValue Then
-									recordSelector.SelectedIndex = i
-									Exit For
-								End If
-							Next
+								Dim colIndex As Integer = result.Data.Columns.IndexOf("ID")
+
+								For r = 0 To result.Data.Rows.Count - 1
+									If result.Data.Rows(r).Item(colIndex).ToString = formItem.Value Then
+										' set selected page index and row number
+										recordSelector.PageIndex = CInt(r \ recordSelector.PageSize)
+										recordSelector.SelectedIndex = CInt(r Mod recordSelector.PageSize)
+										recordSelector.DataBind()
+										Exit For
+									End If
+								Next
+							End If
+
+							If recordSelector.SelectedIndex = -1 AndAlso recordSelector.Rows.Count > 0 Then
+								recordSelector.SelectedIndex = 0
+							End If
+
+							If Not result.Ok Then
+								message = "Error loading web form. Web Form record selector item record has been deleted or not selected."
+								Exit For
+							End If
 						End If
 
-						' AJAX DropDownExtender (DDE) Control - this simply links up the DropDownList and the Lookup Grid to make a dropdown.
-						Dim dde As New DropDownExtender
-
-						With dde
-							.DropArrowImageUrl = "~/Images/Blank.gif"
-							.DropArrowBackColor = Color.Transparent
-							.HighlightBackColor = textBox.BackColor
-							.HighlightBorderColor = textBox.BorderColor
-
-							' Careful with the case here, use 'dde' in JavaScript:
-							.ID = controlId & "DDE"
-							.BehaviorID = controlId & "dde"
-							.DropDownControlID = controlId
-							.Enabled = True
-							.TargetControlID = controlId & "TextBox"
-							' Client-side handler.
-							If (filterSql.Length > 0) Then
-								.OnClientPopup = "InitializeLookup"
-								' can't pass the ID of the control, so use ._id in JS.
-							End If
-						End With
-
-						tabPages(formItem.PageNo).Controls.Add(dde)
-
-						' Attach a JavaScript functino to the 'add_shown' method of this
-						' DropDownExtender. Used to check if popup is bigger than the
-						' parent form, and resize the parent form if necessary
-						script += "var bhvDdl=$find('" & dde.BehaviorID.ToString & "');"
-						script += "try {bhvDdl.add_shown(ResizeComboForForm);} catch (e) {}"
-
-						' hidden field to store scroll position (not required?)
+						' Hidden field is used to store scroll position of the grid.
 						tabPages(formItem.PageNo).Controls.Add(New HiddenField With {.ID = controlId & "scrollpos"})
 
-						' hidden field to hold any filter SQL code
-						tabPages(formItem.PageNo).Controls.Add(New HiddenField With {.ID = controlId & "FilterSql"})
+				Case 14 ' lookup  Inputs
+						If Not IsMobileBrowser() Then
 
-						' Hidden Button for JS to call which fires filter click event. 
-						Dim button = New Button
-						With button
-							.ID = controlId & "refresh"
-							.Style.Add("display", "none")
-							.Text = .ID
-						End With
+							' ============================================================
+							' Create a textbox as the main control
+							' ============================================================
+							Dim textBox = New TextBox
 
-						AddHandler button.Click, AddressOf SetLookupFilter
+							With textBox
+								.ID = controlId & "TextBox"
+								.ApplyLocation(formItem)
+								.ApplySize(formItem, -1, -1)
+								.Style.ApplyFont(formItem)
+								.ApplyColor(formItem)
+								.ApplyBorder(True)
 
-						tabPages(formItem.PageNo).Controls.Add(button)
-					Else
-						' ================================================================================================================
-						' Mobile Browser - convert lookup data to a standard dropdown.
-						' ================================================================================================================
+								.TabIndex = formItem.TabIndex
+								UpdateAutoFocusControl(formItem.TabIndex, controlId & "TextBox")
+
+								.ReadOnly = True
+								.Style.Add("padding", "1px")
+								.Style.Add("background-image", "url('images/downarrow.gif')")
+								.Style.Add("background-position", "right top")
+								.Style.Add("background-repeat", "no-repeat")
+								.Style.Add("background-origin", "content-box")
+								.Style.Add("background-size", "17px 100%")
+							End With
+
+							tabPages(formItem.PageNo).Controls.Add(textBox)
+
+							' ============================================================
+							' Create the Lookup table grid, as per normal record selectors.
+							' This will be hidden on page_load, and displayed when the 
+							' DropdownList above is clicked. The magic is brought together
+							' by the AJAX DropDownExtender control below.
+							' ============================================================
+							Dim recordSelector = New RecordSelector
+
+							With recordSelector
+								.ID = controlId & "Grid"
+								.IsLookup = True
+								.EnableViewState = True
+								' Must be set to True
+								.IsEmpty = False
+								.EmptyDataText = "no records to display"
+								.AllowPaging = True
+								.AllowSorting = True
+								'.EnableSortingAndPagingCallbacks = True
+								.PageSize = App.Config.LookupRowsRange
+								.ShowFooter = False
+
+								.CssClass = "recordSelector"
+								.Style.Add("Position", "Absolute")
+								.Style("top") = Unit.Pixel(formItem.Top).ToString
+								.Style("left") = Unit.Pixel(formItem.Left).ToString
+
+								.Attributes.CssStyle("left") = Unit.Pixel(formItem.Left).ToString
+								.Attributes.CssStyle("top") = Unit.Pixel(formItem.Top).ToString
+								.Attributes.CssStyle("width") = Unit.Pixel(formItem.Width).ToString
+
+								' Don't set the height of this control. Must use the ControlHeight property
+								' to stop the grid's rows from autosizing.
+								.ControlHeight = formItem.Height
+								.Width = formItem.Width
+
+								' Header Row - fixed for lookups.
+								.ColumnHeaders = True
+								.HeadFontSize = CSng(formItem.FontSize)
+								.HeadLines = 1
+
+								.ApplyFont(formItem)
+								.ApplyColor(formItem)
+								.ApplyBorder(False)
+
+								.SelectedRowStyle.ForeColor = General.GetColour(2774907)
+								.SelectedRowStyle.BackColor = General.GetColour(10480637)
+
+								' HEADER formatting
+								.HeaderStyle.BackColor = General.GetColour(16248553)
+								.HeaderStyle.BorderColor = General.GetColour(10720408)
+								.HeaderStyle.BorderStyle = BorderStyle.Solid
+								.HeaderStyle.BorderWidth = 0
+
+								.HeaderStyle.Font.Apply(formItem)
+								.HeaderStyle.ForeColor = General.GetColour(formItem.ForeColor)
+								.HeaderStyle.Wrap = False
+								.HeaderStyle.VerticalAlign = VerticalAlign.Middle
+								.HeaderStyle.HorizontalAlign = HorizontalAlign.Center
+
+								.PagerStyle.Font.Apply(formItem)
+								.PagerStyle.ForeColor = General.GetColour(formItem.ForeColor)
+								.PagerStyle.Wrap = False
+								.PagerStyle.VerticalAlign = VerticalAlign.Middle
+								.PagerStyle.HorizontalAlign = HorizontalAlign.Center
+								.PagerStyle.BorderWidth = 0
+							End With
+
+							Dim filterSql = LookupFilterSQL(formItem.LookupFilterColumnName,
+							  formItem.LookupFilterColumnDataType,
+							  formItem.LookupFilterOperator,
+							  FormInputPrefix &
+							  formItem.LookupFilterValueId &
+							  "_" & formItem.LookupFilterValueType & "_")
+
+							' Hidden Field to store any lookup filter code
+							If (filterSql.Length > 0) Then
+								tabPages(formItem.PageNo).Controls.Add(New HiddenField With {.ID = "lookup" & controlId, .Value = filterSql})
+							End If
+
+							tabPages(formItem.PageNo).Controls.Add(recordSelector)
+
+							If Not IsPostBack Then
+
+								'get the data
+								Dim result = _db.GetWorkflowItemValues(formItem.Id, _url.InstanceId)
+
+								'insert a blank row
+								result.Data.Rows.InsertAt(result.Data.NewRow(), 0)
+
+								'store the data its needed for paging, sorting
+								Session(controlId & "DATA") = result.Data
+
+								'bind data to grid
+								recordSelector.IsEmpty = (result.Data.Rows.Count - 1 = 0)
+								recordSelector.DataSource = result.Data
+								recordSelector.DataBind()
+
+								'store info its needed later
+								textBox.Attributes.Add("LookupColumnIndex", result.LookupColumnIndex.ToString)
+								textBox.Attributes.Add("DataType", result.Data.Columns(result.LookupColumnIndex).DataType.ToString)
+
+								'set the default value
+								textBox.Text = result.DefaultValue
+
+								For i As Integer = 0 To recordSelector.Rows.Count - 1
+									If i > recordSelector.PageSize Then Exit For
+									' don't bother if on other pages
+									If recordSelector.Rows(i).Cells(result.LookupColumnIndex).Text = result.DefaultValue Then
+										recordSelector.SelectedIndex = i
+										Exit For
+									End If
+								Next
+							End If
+
+							' AJAX DropDownExtender (DDE) Control - this simply links up the DropDownList and the Lookup Grid to make a dropdown.
+							Dim dde As New DropDownExtender
+
+							With dde
+								.DropArrowImageUrl = "~/Images/Blank.gif"
+								.DropArrowBackColor = Color.Transparent
+								.HighlightBackColor = textBox.BackColor
+								.HighlightBorderColor = textBox.BorderColor
+
+								' Careful with the case here, use 'dde' in JavaScript:
+								.ID = controlId & "DDE"
+								.BehaviorID = controlId & "dde"
+								.DropDownControlID = controlId
+								.Enabled = True
+								.TargetControlID = controlId & "TextBox"
+								' Client-side handler.
+								If (filterSql.Length > 0) Then
+									.OnClientPopup = "InitializeLookup"
+									' can't pass the ID of the control, so use ._id in JS.
+								End If
+							End With
+
+							tabPages(formItem.PageNo).Controls.Add(dde)
+
+							' Attach a JavaScript functino to the 'add_shown' method of this
+							' DropDownExtender. Used to check if popup is bigger than the
+							' parent form, and resize the parent form if necessary
+							script += "var bhvDdl=$find('" & dde.BehaviorID.ToString & "');"
+							script += "try {bhvDdl.add_shown(ResizeComboForForm);} catch (e) {}"
+
+							' hidden field to store scroll position (not required?)
+							tabPages(formItem.PageNo).Controls.Add(New HiddenField With {.ID = controlId & "scrollpos"})
+
+							' hidden field to hold any filter SQL code
+							tabPages(formItem.PageNo).Controls.Add(New HiddenField With {.ID = controlId & "FilterSql"})
+
+							' Hidden Button for JS to call which fires filter click event. 
+							Dim button = New Button
+							With button
+								.ID = controlId & "refresh"
+								.Style.Add("display", "none")
+								.Text = .ID
+							End With
+
+							AddHandler button.Click, AddressOf SetLookupFilter
+
+							tabPages(formItem.PageNo).Controls.Add(button)
+						Else
+							' ================================================================================================================
+							' Mobile Browser - convert lookup data to a standard dropdown.
+							' ================================================================================================================
+							Dim control As New DropDownList
+
+							With control
+								.ID = controlId
+								.ApplyLocation(formItem)
+								.ApplySize(formItem, -1, -1)
+								.Style.ApplyFont(formItem)
+								.ApplyColor(formItem)
+								If Not IsMobileBrowser() Then .ApplyBorder(False)
+								.Style.Add("padding", "1px")
+
+								.TabIndex = formItem.TabIndex
+								UpdateAutoFocusControl(formItem.TabIndex, controlId)
+
+								.Attributes.Add("onchange", "FilterMobileLookup('" & .ID & "');")
+
+								tabPages(formItem.PageNo).Controls.Add(control)
+
+								Dim filterSql = LookupFilterSQL(formItem.LookupFilterColumnName,
+								  formItem.LookupFilterColumnDataType,
+								  formItem.LookupFilterOperator,
+								  FormInputPrefix &
+								  formItem.LookupFilterValueId & "_" &
+								  formItem.LookupFilterValueType & "_")
+
+								If (filterSql.Length > 0) Then
+									tabPages(formItem.PageNo).Controls.Add(New HiddenField With {.ID = "lookup" & controlId, .Value = filterSql})
+								End If
+
+								If Not IsPostBack Then
+
+									'get the data
+									Dim result = _db.GetWorkflowItemValues(formItem.Id, _url.InstanceId)
+
+									'insert a blank row
+									result.Data.Rows.InsertAt(result.Data.NewRow(), 0)
+
+									'bind to the data
+									.DataTextField = result.Data.Columns(result.LookupColumnIndex).ColumnName
+
+									If result.Data.Columns(result.LookupColumnIndex).DataType Is GetType(DateTime) Then
+										.DataTextFormatString = "{0:d}"
+									End If
+									control.DataSource = result.Data
+									control.DataBind()
+
+									'store the data its needed for paging, sorting
+									Session(controlId & "DATA") = result.Data
+
+									'store info its needed later
+									.Attributes.Add("LookupColumnIndex", result.LookupColumnIndex.ToString)
+									.Attributes.Add("DataType", result.Data.Columns(result.LookupColumnIndex).DataType.ToString)
+
+									'set the default and selected value
+									Dim item As ListItem = control.Items.FindByValue(result.DefaultValue)
+									If item IsNot Nothing Then
+										control.SelectedValue = item.Value
+									Else
+										'The selected value is not in the list, so add it after the blank row
+										control.Items.Insert(1, result.DefaultValue)
+										control.SelectedIndex = 1
+									End If
+								End If
+
+							End With
+
+							' hidden field to hold any filter SQL code
+							tabPages(formItem.PageNo).Controls.Add(New HiddenField With {.ID = controlId & "FilterSql"})
+
+							' Hidden Button for JS to call which fires filter click event. 
+							Dim button = New Button
+							With button
+								.ID = controlId & "refresh"
+								.Style.Add("display", "none")
+							End With
+
+							AddHandler button.Click, AddressOf SetLookupFilter
+
+							tabPages(formItem.PageNo).Controls.Add(button)
+						End If
+
+				Case 13 ' Dropdown (13) Inputs
+
 						Dim control As New DropDownList
 
 						With control
@@ -977,411 +1118,329 @@ Public Class [Default]
 							.TabIndex = formItem.TabIndex
 							UpdateAutoFocusControl(formItem.TabIndex, controlId)
 
-							.Attributes.Add("onchange", "FilterMobileLookup('" & .ID & "');")
+							If IsMobileBrowser() Then
+								.Attributes.Add("onchange", "FilterMobileLookup('" & .ID & "');")
+							End If
 
 							tabPages(formItem.PageNo).Controls.Add(control)
 
 							Dim filterSql = LookupFilterSQL(formItem.LookupFilterColumnName,
-								 formItem.LookupFilterColumnDataType,
-								 formItem.LookupFilterOperator,
-								 FormInputPrefix &
-								 formItem.LookupFilterValueID & "_" &
-								 formItem.LookupFilterValueType & "_")
+							  formItem.LookupFilterColumnDataType,
+							  formItem.LookupFilterOperator,
+							  FormInputPrefix &
+							  formItem.LookupFilterValueId &
+							  "_" & formItem.LookupFilterValueType & "_")
 
-							If (filterSql.Length > 0) Then
+							If filterSql.Length > 0 Then
 								tabPages(formItem.PageNo).Controls.Add(New HiddenField With {.ID = "lookup" & controlId, .Value = filterSql})
 							End If
 
 							If Not IsPostBack Then
-
 								'get the data
-								Dim result = _db.GetWorkflowItemValues(formItem.Id, _url.InstanceID)
+								Dim result = _db.GetWorkflowItemValues(formItem.Id, _url.InstanceId)
 
 								'insert a blank row
 								result.Data.Rows.InsertAt(result.Data.NewRow(), 0)
 
-								'bind to the data
-								.DataTextField = result.Data.Columns(result.LookupColumnIndex).ColumnName
-
-								If result.Data.Columns(result.LookupColumnIndex).DataType Is GetType(DateTime) Then
-									.DataTextFormatString = "{0:d}"
-								End If
-								control.DataSource = result.Data
-								control.DataBind()
-
-								'store the data its needed for paging, sorting
-								Session(controlId & "DATA") = result.Data
+								'bind data to grid
+								For Each column As DataColumn In result.Data.Columns
+									If Not column.ColumnName.StartsWith("ASRSys") Then
+										.DataTextField = column.ColumnName
+									End If
+								Next
+								.DataSource = result.Data
+								.DataBind()
 
 								'store info its needed later
 								.Attributes.Add("LookupColumnIndex", result.LookupColumnIndex.ToString)
 								.Attributes.Add("DataType", result.Data.Columns(result.LookupColumnIndex).DataType.ToString)
 
-								'set the default and selected value
+								'set the default value
 								Dim item As ListItem = control.Items.FindByValue(result.DefaultValue)
 								If item IsNot Nothing Then
-									control.SelectedValue = item.Value
-								Else
-									'The selected value is not in the list, so add it after the blank row
-									control.Items.Insert(1, result.DefaultValue)
-									control.SelectedIndex = 1
+									.SelectedValue = item.Value
 								End If
+
 							End If
 
 						End With
-
-						' hidden field to hold any filter SQL code
-						tabPages(formItem.PageNo).Controls.Add(New HiddenField With {.ID = controlId & "FilterSql"})
-
-						' Hidden Button for JS to call which fires filter click event. 
-						Dim button = New Button
-						With button
-							.ID = controlId & "refresh"
-							.Style.Add("display", "none")
-						End With
-
-						AddHandler button.Click, AddressOf SetLookupFilter
-
-						tabPages(formItem.PageNo).Controls.Add(button)
-					End If
-
-				Case 13 ' Dropdown (13) Inputs
-
-					Dim control As New DropDownList
-
-					With control
-						.ID = controlId
-						.ApplyLocation(formItem)
-						.ApplySize(formItem, -1, -1)
-						.Style.ApplyFont(formItem)
-						.ApplyColor(formItem)
-						If Not IsMobileBrowser() Then .ApplyBorder(False)
-						.Style.Add("padding", "1px")
-
-						.TabIndex = formItem.TabIndex
-						UpdateAutoFocusControl(formItem.TabIndex, controlId)
-
-						If IsMobileBrowser() Then
-							.Attributes.Add("onchange", "FilterMobileLookup('" & .ID & "');")
-						End If
-
-						tabPages(formItem.PageNo).Controls.Add(control)
-
-						Dim filterSql = LookupFilterSQL(formItem.LookupFilterColumnName,
-							 formItem.LookupFilterColumnDataType,
-							 formItem.LookupFilterOperator,
-							 FormInputPrefix &
-							 formItem.LookupFilterValueID &
-							 "_" & formItem.LookupFilterValueType & "_")
-
-						If filterSql.Length > 0 Then
-							tabPages(formItem.PageNo).Controls.Add(New HiddenField With {.ID = "lookup" & controlId, .Value = filterSql})
-						End If
-
-						If Not IsPostBack Then
-							'get the data
-							Dim result = _db.GetWorkflowItemValues(formItem.Id, _url.InstanceID)
-
-							'insert a blank row
-							result.Data.Rows.InsertAt(result.Data.NewRow(), 0)
-
-							'bind data to grid
-							For Each column As DataColumn In result.Data.Columns
-								If Not column.ColumnName.StartsWith("ASRSys") Then
-									.DataTextField = column.ColumnName
-								End If
-							Next
-							.DataSource = result.Data
-							.DataBind()
-
-							'store info its needed later
-							.Attributes.Add("LookupColumnIndex", result.LookupColumnIndex.ToString)
-							.Attributes.Add("DataType", result.Data.Columns(result.LookupColumnIndex).DataType.ToString)
-
-							'set the default value
-							Dim item As ListItem = control.Items.FindByValue(result.DefaultValue)
-							If item IsNot Nothing Then
-								.SelectedValue = item.Value
-							End If
-
-						End If
-
-					End With
 
 				Case 15 ' OptionGroup
 
-					Dim top = formItem.Top, left = formItem.Left, width = formItem.Width, height = formItem.Height
-					Dim fontAdjustment = CInt(formItem.FontSize * 0.8)
-					Dim borderCss As String
+						Dim top = formItem.Top, left = formItem.Left, width = formItem.Width, height = formItem.Height
+						Dim fontAdjustment = CInt(formItem.FontSize * 0.8)
+						Dim borderCss As String
 
-					Dim radioTop As Int32
+						Dim radioTop As Int32
 
-					If Not formItem.PictureBorder Then
-						borderCss = "border-style: none;"
-						radioTop = 2
-					Else
-						borderCss = "border: 1px solid #999;"
-						width -= 2
-						height -= 2
+						If Not formItem.PictureBorder Then
+							borderCss = "border-style: none;"
+							radioTop = 2
+						Else
+							borderCss = "border: 1px solid #999;"
+							width -= 2
+							height -= 2
 
-						If formItem.Caption.Trim.Length = 0 Then
-							top += fontAdjustment
-							height -= fontAdjustment
+							If formItem.Caption.Trim.Length = 0 Then
+								top += fontAdjustment
+								height -= fontAdjustment
+							End If
+
+							radioTop = 19 + CInt((formItem.FontSize - 8) * 1.375)
+
+							If IsAndroidBrowser() AndAlso formItem.Orientation = 0 Then
+								radioTop -= 5
+							End If
 						End If
 
-						radioTop = 19 + CInt((formItem.FontSize - 8) * 1.375)
+						Dim html = String.Format("<fieldset style='position:absolute; top:{0}px; left:{1}px; width:{2}px; height:{3}px; {4} {5} {6}'>",
+						 top, left, width, height, GetFontCss(formItem), GetColorCss(formItem), borderCss)
 
-						If IsAndroidBrowser() AndAlso formItem.Orientation = 0 Then
-							radioTop -= 5
+						If formItem.PictureBorder And formItem.Caption.Trim.Length > 0 Then
+							html += String.Format("<legend>{0}</legend>", formItem.Caption) & vbCrLf
 						End If
-					End If
 
-					Dim html = String.Format("<fieldset style='position:absolute; top:{0}px; left:{1}px; width:{2}px; height:{3}px; {4} {5} {6}'>",
-						top, left, width, height, GetFontCss(formItem), GetColorCss(formItem), borderCss)
+						html += "</fieldset>" & vbCrLf
 
-					If formItem.PictureBorder And formItem.Caption.Trim.Length > 0 Then
-						html += String.Format("<legend>{0}</legend>", formItem.Caption) & vbCrLf
-					End If
+						tabPages(formItem.PageNo).Controls.Add(New LiteralControl(html))
 
-					html += "</fieldset>" & vbCrLf
-
-					tabPages(formItem.PageNo).Controls.Add(New LiteralControl(html))
-
-					Dim radioList As New RadioButtonList
-					With radioList
-						.ID = controlId
-						.Style.ApplyFont(formItem)
+						Dim radioList As New RadioButtonList
+						With radioList
+							.ID = controlId
+							.Style.ApplyFont(formItem)
 						.CssClass = "radioList"
-						If IsAndroidBrowser() Then .CssClass += " android"
 
-						.TabIndex = formItem.TabIndex
-						UpdateAutoFocusControl(formItem.TabIndex, controlId & "_0")
+							If IsAndroidBrowser() Then .CssClass += " android"
 
-						.RepeatDirection = If(formItem.Orientation = 0, WebControls.RepeatDirection.Vertical, WebControls.RepeatDirection.Horizontal)
+							.TabIndex = formItem.TabIndex
+							UpdateAutoFocusControl(formItem.TabIndex, controlId & "_0")
 
-						.Style("position") = "absolute"
-						.Style("top") = Unit.Pixel(radioTop + formItem.Top).ToString
-						.Style("left") = Unit.Pixel(9 + formItem.Left).ToString
-						.Width() = formItem.Width - 12
-					End With
+							.RepeatDirection = If(formItem.Orientation = 0, WebControls.RepeatDirection.Vertical, WebControls.RepeatDirection.Horizontal)
 
-					tabPages(formItem.PageNo).Controls.Add(radioList)
+							.Style("position") = "absolute"
+							.Style("top") = Unit.Pixel(radioTop + formItem.Top).ToString
+							.Style("left") = Unit.Pixel(9 + formItem.Left).ToString
+							.Width() = formItem.Width - 12
+						End With
 
-					If Not IsPostBack Then
+						tabPages(formItem.PageNo).Controls.Add(radioList)
 
-						'get the data
-						Dim result = _db.GetWorkflowItemValues(formItem.Id, _url.InstanceID)
+						If Not IsPostBack Then
 
-						'bind to the data
-						radioList.DataTextField = result.Data.Columns(0).ColumnName
-						radioList.DataSource = result.Data
-						radioList.DataBind()
+							'get the data
+							Dim result = _db.GetWorkflowItemValues(formItem.Id, _url.InstanceId)
 
-						'set the default value
-						radioList.SelectedValue = result.DefaultValue
+							'bind to the data
+							radioList.DataTextField = result.Data.Columns(0).ColumnName
+							radioList.DataSource = result.Data
+							radioList.DataBind()
 
-						If radioList.SelectedIndex = -1 Then
-							radioList.SelectedIndex = 0
+							'set the default value
+							radioList.SelectedValue = result.DefaultValue
+
+							If radioList.SelectedIndex = -1 Then
+								radioList.SelectedIndex = 0
+							End If
+
 						End If
 
-					End If
-
-					If IsMobileBrowser() Then
-						For Each item As ListItem In radioList.Items
-							item.Attributes.Add("onchange", "FilterMobileLookup('" & controlId & "');")
-						Next
-					End If
+						If IsMobileBrowser() Then
+							For Each item As ListItem In radioList.Items
+								item.Attributes.Add("onchange", "FilterMobileLookup('" & controlId & "');")
+							Next
+						End If
 
 				Case 17 ' Input value - file upload
 
-					Dim control = New HtmlInputButton
-					With control
-						.ID = controlId
-						.Style.ApplyLocation(formItem)
-						.Style.ApplySize(formItem)
-						.Style.ApplyFont(formItem)
+						Dim control = New HtmlInputButton
+						With control
+							.ID = controlId
+							.Style.ApplyLocation(formItem)
+							.Style.ApplySize(formItem)
+							.Style.ApplyFont(formItem)
 
-						.Attributes.Add("TabIndex", formItem.TabIndex.ToString)
-						UpdateAutoFocusControl(formItem.TabIndex, controlId)
+							.Attributes.Add("TabIndex", formItem.TabIndex.ToString)
+							UpdateAutoFocusControl(formItem.TabIndex, controlId)
 
-						' stops the mobiles displaying buttons with over-rounded corners...
-						If IsMobileBrowser() OrElse IsMacSafari() Then
-							.Style.Add("-webkit-appearance", "none")
-							.Style.Add("background-color", "#E6E6E6")
-							.Style.Add("border", "solid 1px #CCC")
-							.Style.Add("border-radius", "4px")
-						End If
+							' stops the mobiles displaying buttons with over-rounded corners...
+							If IsMobileBrowser() OrElse IsMacSafari() Then
+								.Style.Add("-webkit-appearance", "none")
+								.Style.Add("background-color", "#E6E6E6")
+								.Style.Add("border", "solid 1px #CCC")
+								.Style.Add("border-radius", "4px")
+							End If
 
-						If formItem.BackColor <> 16249587 AndAlso formItem.BackColor <> -2147483633 Then
-							.Style.Add("background-color", General.GetHtmlColour(formItem.BackColor).ToString)
-							.Style.Add("border", "solid 1px #CCC")
-							.Style.Add("border-radius", "4px")
-						End If
+							If formItem.BackColor <> 16249587 AndAlso formItem.BackColor <> -2147483633 Then
+								.Style.Add("background-color", General.GetHtmlColour(formItem.BackColor).ToString)
+								.Style.Add("border", "solid 1px #CCC")
+								.Style.Add("border-radius", "4px")
+							End If
 
-						If formItem.ForeColor <> 6697779 Then
-							.Style.Add("color", General.GetHtmlColour(formItem.ForeColor).ToString)
-						End If
+							If formItem.ForeColor <> 6697779 Then
+								.Style.Add("color", General.GetHtmlColour(formItem.ForeColor).ToString)
+							End If
 
-						.Style.Add("padding", "0px")
-						.Style.Add("white-space", "normal")
+							.Style.Add("padding", "0px")
+							.Style.Add("white-space", "normal")
 
-						.Value = formItem.Caption
+							.Value = formItem.Caption
 
-						Dim crypt As New Crypt,
-						  encodedId As String = crypt.SimpleEncrypt(formItem.Id.ToString, Session.SessionID)
+							Dim crypt As New Crypt,
+							  encodedId As String = crypt.SimpleEncrypt(formItem.Id.ToString, Session.SessionID)
 
-						If Not IsMobileBrowser() Then
-							.Attributes.Add("onclick", "try{showFileUpload(true, '" & encodedId & "', document.getElementById('file" & controlId & "').value);}catch(e){};")
-						Else
-							.Attributes.Add("onclick", "try{alert('Your browser does not support file upload.');}catch(e){};")
-						End If
-					End With
+							If Not IsMobileBrowser() Then
+								.Attributes.Add("onclick", "try{showFileUpload(true, '" & encodedId & "', document.getElementById('file" & controlId & "').value);}catch(e){};")
+							Else
+								.Attributes.Add("onclick", "try{alert('Your browser does not support file upload.');}catch(e){};")
+							End If
+						End With
 
-					tabPages(formItem.PageNo).Controls.Add(control)
+						tabPages(formItem.PageNo).Controls.Add(control)
 
-					tabPages(formItem.PageNo).Controls.Add(New HiddenField With {.ID = "file" & controlId, .Value = formItem.Value})
+						tabPages(formItem.PageNo).Controls.Add(New HiddenField With {.ID = "file" & controlId, .Value = formItem.Value})
 
 				Case 19, 20	' DB File or WF File
 
-					Dim crypt As New Crypt, encodedId As String = crypt.SimpleEncrypt(formItem.Id.ToString, Session.SessionID)
+						Dim crypt As New Crypt, encodedId As String = crypt.SimpleEncrypt(formItem.Id.ToString, Session.SessionID)
 
-					Dim html = "<span id='{0}' tabindex='{1}' style='position:absolute; display:inline-block; word-wrap:break-word; overflow:auto; " &
-					  "top:{2}px; left:{3}px; width:{4}px; height:{5}px; {6} {7}' " &
-					  "onclick='FileDownload_Click(""{8}"");' onkeypress='FileDownload_KeyPress(""{8}"");'>{9}</span>"
+						Dim html = "<span id='{0}' tabindex='{1}' style='position:absolute; display:inline-block; word-wrap:break-word; overflow:auto; " &
+						  "top:{2}px; left:{3}px; width:{4}px; height:{5}px; {6} {7}' " &
+						  "onclick='FileDownload_Click(""{8}"");' onkeypress='FileDownload_KeyPress(""{8}"");'>{9}</span>"
 
-					html = String.Format(html, controlId, formItem.TabIndex, formItem.Top, formItem.Left, formItem.Width, formItem.Height,
-					 GetFontCss(formItem), GetColorCss(formItem), encodedId, HttpUtility.HtmlEncode(formItem.Caption))
+						html = String.Format(html, controlId, formItem.TabIndex, formItem.Top, formItem.Left, formItem.Width, formItem.Height,
+						 GetFontCss(formItem), GetColorCss(formItem), encodedId, HttpUtility.HtmlEncode(formItem.Caption))
 
-					UpdateAutoFocusControl(formItem.TabIndex, controlId)
+						UpdateAutoFocusControl(formItem.TabIndex, controlId)
 
-					tabPages(formItem.PageNo).Controls.Add(New LiteralControl(html))
+						tabPages(formItem.PageNo).Controls.Add(New LiteralControl(html))
 
 				Case 21 ' Tab Strip
 
-					'split out the tab names to calculate number of tabs - may not have loaded all tabs yet, so can't count them.
-					Dim arrTabCaptions As List(Of String) = formItem.Caption.Split(New Char() {";"c}).ToList()
-					arrTabCaptions.RemoveAt(arrTabCaptions.Count - 1)
+						'split out the tab names to calculate number of tabs - may not have loaded all tabs yet, so can't count them.
+						Dim arrTabCaptions As List(Of String) = formItem.Caption.Split(New Char() {";"c}).ToList()
+						arrTabCaptions.RemoveAt(arrTabCaptions.Count - 1)
 
-					pnlTabsDiv.Style("width") = formItem.Width & "px"
-					pnlTabsDiv.Style("height") = formItem.Height & "px"
-					pnlTabsDiv.Style("left") = formItem.Left & "px"
-					pnlTabsDiv.Style("top") = formItem.Top & "px"
+						pnlTabsDiv.Style("width") = formItem.Width & "px"
+						pnlTabsDiv.Style("height") = formItem.Height & "px"
+						pnlTabsDiv.Style("left") = formItem.Left & "px"
+						pnlTabsDiv.Style("top") = formItem.Top & "px"
 
-					Dim ctlTabsDiv As New Panel
-					ctlTabsDiv.ID = "TabsDiv"
-					ctlTabsDiv.Style.Add("height", TabStripHeight & "px")
-					ctlTabsDiv.Style.Add("position", "relative")
-					ctlTabsDiv.Style.Add("z-index", "1")
+						Dim ctlTabsDiv As New Panel
+						ctlTabsDiv.ID = "TabsDiv"
+						ctlTabsDiv.Style.Add("height", TabStripHeight & "px")
+						ctlTabsDiv.Style.Add("position", "relative")
+						ctlTabsDiv.Style.Add("z-index", "1")
 
-					If IsMobileBrowser() And Not IsAndroidBrowser() Then
-						ctlTabsDiv.Style.Add("overflow-x", "auto")
-					Else
-						' for non-mobile browsers we display arrows to scroll the tab bar left and right.
-						ctlTabsDiv.Style.Add("overflow", "hidden")
-						ctlTabsDiv.Style.Add("margin-right", "51px")
+						If IsMobileBrowser() And Not IsAndroidBrowser() Then
+							ctlTabsDiv.Style.Add("overflow-x", "auto")
+						Else
+							' for non-mobile browsers we display arrows to scroll the tab bar left and right.
+							ctlTabsDiv.Style.Add("overflow", "hidden")
+							ctlTabsDiv.Style.Add("margin-right", "51px")
 
-						' Nav arrows for non-mobile browsers
-						Dim ctlFormTabArrows As New Panel
-						With ctlFormTabArrows
-							.Style.Add("position", "absolute")
-							.Style.Add("top", "0px")
-							.Style.Add("right", "0px")
-							.Style.Add("width", "48px")
-							.Style.Add("z-index", "1")
-							.BorderWidth = 1
-							.BackColor = Color.White
-							.BorderColor = Color.Black
-						End With
+							' Nav arrows for non-mobile browsers
+							Dim ctlFormTabArrows As New Panel
+							With ctlFormTabArrows
+								.Style.Add("position", "absolute")
+								.Style.Add("top", "0px")
+								.Style.Add("right", "0px")
+								.Style.Add("width", "48px")
+								.Style.Add("z-index", "1")
+								.BorderWidth = 1
+								.BackColor = Color.White
+								.BorderColor = Color.Black
+							End With
 
-						' Left scroll arrow
-						Dim image = New WebControls.Image
-						With image
-							.Style.Add("width", "24px")
-							.Style.Add("height", TabStripHeight - 2 & "px")
-							.ImageUrl = "~/Images/tab-prev.gif"
-							.Style.Add("margin", "0px")
-							.Style.Add("padding", "0px")
-							.Attributes.Add("onclick", "var TabDiv = document.getElementById('TabsDiv');TabDiv.scrollLeft = TabDiv.scrollLeft - 20;")
-						End With
-						ctlFormTabArrows.Controls.Add(image)
+							' Left scroll arrow
+							Dim image = New WebControls.Image
+							With image
+								.Style.Add("width", "24px")
+								.Style.Add("height", TabStripHeight - 2 & "px")
+								.ImageUrl = "~/Images/tab-prev.gif"
+								.Style.Add("margin", "0px")
+								.Style.Add("padding", "0px")
+								.Attributes.Add("onclick", "var TabDiv = document.getElementById('TabsDiv');TabDiv.scrollLeft = TabDiv.scrollLeft - 20;")
+							End With
+							ctlFormTabArrows.Controls.Add(image)
 
-						' Right scroll arrow
-						image = New WebControls.Image
-						With image
-							.Style.Add("width", "24px")
-							.Style.Add("height", TabStripHeight - 2 & "px")
-							.ImageUrl = "~/Images/tab-next.gif"
-							.Style.Add("margin", "0px")
-							.Style.Add("padding", "0px")
-							.Attributes.Add("onclick", "var TabDiv = document.getElementById('TabsDiv');TabDiv.scrollLeft = TabDiv.scrollLeft + 20;")
-						End With
-						ctlFormTabArrows.Controls.Add(image)
+							' Right scroll arrow
+							image = New WebControls.Image
+							With image
+								.Style.Add("width", "24px")
+								.Style.Add("height", TabStripHeight - 2 & "px")
+								.ImageUrl = "~/Images/tab-next.gif"
+								.Style.Add("margin", "0px")
+								.Style.Add("padding", "0px")
+								.Attributes.Add("onclick", "var TabDiv = document.getElementById('TabsDiv');TabDiv.scrollLeft = TabDiv.scrollLeft + 20;")
+							End With
+							ctlFormTabArrows.Controls.Add(image)
 
-						pnlTabsDiv.Controls.Add(ctlFormTabArrows)
-					End If
-
-					' generate the tabs.
-					Dim ctlTabsTable As New Table
-					ctlTabsTable.CellSpacing = 0
-					Dim trPager As TableRow = New TableRow()
-					trPager.Height = TabStripHeight - 1
-					' to prevent vertical scrollbar
-					trPager.Style.Add("white-space", "nowrap")
-
-					Dim iTabNo As Integer = 1
-					' add a cell for each tab
-					For Each sTabCaption In arrTabCaptions
-
-						Dim tcTabCell As TableCell = New TableCell
-
-						With tcTabCell
-							.ID = FormInputPrefix & iTabNo.ToString & "_21_Panel"
-							.CssClass = "tab"
-							If iTabNo = 1 Then
-								.CssClass += " active"
-							End If
-
-							' label the button...
-							Dim label = New Label
-							label.Font.Name = "Verdana"
-							label.Font.Size = New FontUnit(11, UnitType.Pixel)
-							label.Text = sTabCaption.ToString
-
-							.Controls.Add(label)
-
-							' Tab Clicking/mouseover
-							.Attributes.Add("onclick", "SetCurrentTab(" & iTabNo.ToString & ");")
-						End With
-
-						trPager.Cells.Add(tcTabCell)
-
-						' NPG20120321 Fault HRPRO-2113
-						' Rather than put the controls div inside the relevant tab page (issues with referencing the AJAX controls on postback), 
-						' we move the controls div into the form by the top and left of the tabstrip, if it exists
-
-						' Create the tab pages
-						tabPage = New Panel
-						tabPage.ID = FormInputPrefix & iTabNo.ToString & "_21_PageTab"
-						tabPage.CssClass = "tab-page"
-						tabPage.Style.Add("position", "absolute")
-						tabPage.Style.Add("top", (formItem.Top + TabStripHeight) & "px")
-						tabPage.Style.Add("left", formItem.Left & "px")
-						If iTabNo > 1 Then
-							tabPage.Style.Add("display", "none")
+							pnlTabsDiv.Controls.Add(ctlFormTabArrows)
 						End If
-						' Add this tab to the web form
-						tabPages.Add(tabPage)
-						pnlInputDiv.Controls.Add(tabPage)
 
-						iTabNo += 1
-						' keep tabs on the number of tabs hehehe :P
-					Next
+						' generate the tabs.
+						Dim ctlTabsTable As New Table
+						ctlTabsTable.CellSpacing = 0
+						Dim trPager As TableRow = New TableRow()
+						trPager.Height = TabStripHeight - 1
+						' to prevent vertical scrollbar
+						trPager.Style.Add("white-space", "nowrap")
 
-					'add row to table
-					ctlTabsTable.Rows.Add(trPager)
+						Dim iTabNo As Integer = 1
+						' add a cell for each tab
+						For Each sTabCaption In arrTabCaptions
 
-					'add table to div
-					ctlTabsDiv.Controls.Add(ctlTabsTable)
-					pnlTabsDiv.Controls.AddAt(0, ctlTabsDiv)
+							Dim tcTabCell As TableCell = New TableCell
+
+							With tcTabCell
+								.ID = FormInputPrefix & iTabNo.ToString & "_21_Panel"
+								.CssClass = "tab"
+								If iTabNo = 1 Then
+									.CssClass += " active"
+								End If
+
+								' label the button...
+								Dim label = New Label
+								label.Font.Name = "Verdana"
+								label.Font.Size = New FontUnit(11, UnitType.Pixel)
+								label.Text = sTabCaption.ToString
+
+								.Controls.Add(label)
+
+								' Tab Clicking/mouseover
+								.Attributes.Add("onclick", "SetCurrentTab(" & iTabNo.ToString & ");")
+							End With
+
+							trPager.Cells.Add(tcTabCell)
+
+							' NPG20120321 Fault HRPRO-2113
+							' Rather than put the controls div inside the relevant tab page (issues with referencing the AJAX controls on postback), 
+							' we move the controls div into the form by the top and left of the tabstrip, if it exists
+
+							' Create the tab pages
+							tabPage = New Panel
+							tabPage.ID = FormInputPrefix & iTabNo.ToString & "_21_PageTab"
+							tabPage.CssClass = "tab-page"
+							tabPage.Style.Add("position", "absolute")
+							tabPage.Style.Add("top", (formItem.Top + TabStripHeight) & "px")
+							tabPage.Style.Add("left", formItem.Left & "px")
+							If iTabNo > 1 Then
+								tabPage.Style.Add("display", "none")
+							End If
+							' Add this tab to the web form
+							tabPages.Add(tabPage)
+							pnlInputDiv.Controls.Add(tabPage)
+
+							iTabNo += 1
+							' keep tabs on the number of tabs hehehe :P
+						Next
+
+						'add row to table
+						ctlTabsTable.Rows.Add(trPager)
+
+						'add table to div
+						ctlTabsDiv.Controls.Add(ctlTabsTable)
+						pnlTabsDiv.Controls.AddAt(0, ctlTabsDiv)
 
 			End Select
 
@@ -1426,7 +1485,7 @@ Public Class [Default]
 			'Read the web form item values & build up a string of the form input values
 			Dim controlList As New List(Of Control)
 			GetControls(Page.Controls, controlList, Function(c) c.ClientID.StartsWith(FormInputPrefix) AndAlso
-				 (c.ClientID.EndsWith("_") OrElse c.ClientID.EndsWith("TextBox") OrElse c.ClientID.EndsWith("Grid")))
+			  (c.ClientID.EndsWith("_") OrElse c.ClientID.EndsWith("TextBox") OrElse c.ClientID.EndsWith("Grid")))
 
 			For Each ctl As Control In controlList
 
@@ -1529,8 +1588,8 @@ Public Class [Default]
 			lblErrors.Text = If(bulletErrors.Items.Count > 0, "Unable to submit this form due to the following error" & If(bulletErrors.Items.Count = 1, "", "s") & ":", "")
 
 			lblWarnings.Text = If(bulletWarnings.Items.Count > 0,
-				If(bulletErrors.Items.Count > 0, "And the following warning" & If(bulletWarnings.Items.Count = 1, "", "s") & ":",
-				"Submitting this form raises the following warning" & If(bulletWarnings.Items.Count = 1, "", "s") & ":"), "")
+			 If(bulletErrors.Items.Count > 0, "And the following warning" & If(bulletWarnings.Items.Count = 1, "", "s") & ":",
+			 "Submitting this form raises the following warning" & If(bulletWarnings.Items.Count = 1, "", "s") & ":"), "")
 
 			overrideWarning.Visible = (bulletWarnings.Items.Count > 0 And bulletErrors.Items.Count = 0)
 

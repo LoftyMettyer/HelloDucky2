@@ -86,7 +86,7 @@
 							<div id="pnlTabsDiv" style="position: absolute;" runat="server">
 								<div id="pnlTabsBorder" style="position: absolute; top: 20px; left: 0; right: 0; bottom: 0; border: 1px solid black;">
 								</div>
-							</div>
+							</div>							
 						</div>
 						<asp:Button id="btnDoFilter" runat="server" style="display: none;"/>
 						<asp:HiddenField ID="hdnMobileLookupFilter" runat="server" Value="" />
