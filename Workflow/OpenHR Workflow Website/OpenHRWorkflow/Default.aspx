@@ -6,7 +6,6 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" id="htmMain">
 <head runat="server">
-    <meta http-equiv="refresh" content="<%=Session("TimeoutSecs")%>;URL=timeout.aspx" />
     <meta name="format-detection" content="telephone=no"/>
     <link rel="shortcut icon" href="pictures/logo.ico"/>
 
