@@ -165,9 +165,8 @@
         var oldgridSelectedColor;
 		var ScrollTopPos;
 
-      //Set the current page tab to page 1
-      window.iCurrentTab = 1;
-      SetCurrentTab(window.iCurrentTab);
+      //Set the current page tab
+      SetCurrentTab(window.$get("frmMain").hdnCurrentTab.value);
 
 			try {
 				iDefHeight = window.$get("frmMain").hdnFormHeight.value;
@@ -768,8 +767,8 @@
 
 		function showMessage() {			 
     
-    //Reset current tab position
-    SetCurrentTab(iCurrentTab);	
+        //Reset current tab position
+        SetCurrentTab(window.$get("frmMain").hdnCurrentTab.value);	
 		
 		$get("pleasewaitScreen").style.visibility="hidden";
 		
@@ -1644,19 +1643,24 @@ function ResizeComboForForm(sender, args) {
   }
   
   function SetCurrentTab(iNewTab) {
-      var currentTab = "forminput_" + iCurrentTab + "_21_PageTab";
-      var newTab = "forminput_" + iNewTab + "_21_PageTab";
+      
+    var iCurrentTab = window.$get("frmMain").hdnCurrentTab.value;
+      
+    var currentTab = $get("forminput_" + iCurrentTab + "_21_PageTab");
+    var currentPanel = $get("forminput_" + iCurrentTab + "_21_Panel");
+    var newTab = $get("forminput_" + iNewTab + "_21_PageTab");
+    var newPanel = $get("forminput_" + iNewTab + "_21_Panel");
 
     try {
-      if($get(currentTab)!=null)
-        $get(currentTab).style.display = "none";
-      $get(currentTab.replace("PageTab","Panel")).style.borderBottom = "1px solid black";
+      if(currentTab!=null) currentTab.style.display = "none";
+      
+      if(currentPanel!=null) currentPanel.style.borderBottom = "1px solid black";
         
-      if($get(newTab)!=null)
-        $get(newTab).style.display = "block";
-      $get(newTab.replace("PageTab","Panel")).style.borderBottom = "1px solid white";
+      if(newTab!=null) newTab.style.display = "block";
         
-      iCurrentTab = iNewTab;
+      if(newPanel!=null) newPanel.style.borderBottom = "1px solid white";
+        
+      $get("frmMain").hdnCurrentTab.value = iNewTab;
     }
     catch (e) {}
   }
@@ -1734,8 +1738,7 @@ function ResizeComboForForm(sender, args) {
 	<div id="divInput" style="top:0px; left:0px; z-index: 0; padding: 0px; margin: 0px; text-align: center;float:left" runat="server">
         <asp:UpdatePanel ID="pnlInput" runat="server">
             <ContentTemplate>
-                <div id = "pnlInputDiv" runat="server" style="position:relative;padding-right:0px;padding-left:0px;padding-bottom:0px;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    margin-top:0px;margin-bottom:0px;margin-right:auto;margin-left:auto;padding-top:0px;">
+                <div id = "pnlInputDiv" runat="server" style="position:relative;padding-right:0px;padding-left:0px;padding-bottom:0px;margin-top:0px;margin-bottom:0px;margin-right:auto;margin-left:auto;padding-top:0px;">
                     
                     <div id="pnlTabsDiv" style="position: absolute;" runat="server"></div>
                 </div>    
@@ -1766,6 +1769,7 @@ function ResizeComboForForm(sender, args) {
 	<asp:HiddenField ID="hdnFormBackPosition" runat="server" Value="" />
 	<asp:HiddenField ID="hdnColourThemeHex" runat="server" Value="" />
 	<asp:HiddenField ID="hdnFirstControl" runat="server" Value="" />
+    <asp:HiddenField ID="hdnCurrentTab" runat="server" Value="1" />
 	</form>
 	<!--
     Temporary client-side values

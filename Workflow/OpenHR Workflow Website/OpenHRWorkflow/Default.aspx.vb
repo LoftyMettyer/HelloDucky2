@@ -8,9 +8,9 @@ Imports System.Drawing
 Imports Microsoft.VisualBasic
 Imports Utilities
 Imports System.Data.SqlClient
-Imports System.Diagnostics
 Imports System.Transactions
-
+Imports System.Reflection
+Imports System.Linq
 
 Public Class _Default
   Inherits System.Web.UI.Page
@@ -32,17 +32,12 @@ Public Class _Default
   Private miFollowOnFormsMessageType As Integer
   Private msFollowOnFormsMessage As String
   Private miSubmissionTimeoutInSeconds As Int32
-  Private msLastSelectedValue As String
-  Private msForeColorHighlight As String
-  Private msBackColorHighlight As String
   Private m_iLookupColumnIndex As Integer
-  Private m_iTabStripHeight As Integer = 0
 
   Private Const FORMINPUTPREFIX As String = "forminput_"
   Private Const ASSEMBLYNAME As String = "OPENHRWORKFLOW"
-  Private Const ROWHEIGHTFONTRATIO As Single = 2.5
   Private Const MAXDROPDOWNROWS As Int16 = 6
-
+  Private Const TabStripHeight As Integer = 30
 
   Private Enum SQLDataType
     sqlUnknown = 0      ' ?
@@ -97,17 +92,15 @@ Public Class _Default
   Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
 
     Dim ctlForm_Date As Infragistics.WebUI.WebSchedule.WebDateChooser
-    ' Dim ctlForm_Button As Infragistics.WebUI.WebDataInput.WebImageButton
     Dim ctlForm_InputButton As Button
-    Dim ctlForm_HTMLInputButton As System.Web.UI.HtmlControls.HtmlInputButton
+    Dim ctlForm_HTMLInputButton As HtmlInputButton
     Dim ctlForm_Label As Label
     Dim ctlForm_TextInput As TextBox
     Dim ctlForm_CheckBox As LiteralControl
     Dim ctlForm_CheckBoxReal As CheckBox
-    Dim ctlForm_Dropdown As System.Web.UI.WebControls.DropDownList  'Infragistics.WebUI.WebCombo.WebCombo
-    Dim ctlForm_Image As System.Web.UI.WebControls.Image
+    Dim ctlForm_Dropdown As System.Web.UI.WebControls.DropDownList
+    Dim ctlForm_Image As WebControls.Image
     Dim ctlForm_NumericInput As Infragistics.WebUI.WebDataInput.WebNumericEdit
-    'Dim ctlForm_RecordSelectionGrid As Infragistics.WebUI.UltraWebGrid.UltraWebGrid
     Dim ctlForm_PagingGridView As RecordSelector
     Dim ctlForm_Frame As LiteralControl
     Dim ctlForm_Line As LiteralControl
@@ -127,17 +120,15 @@ Public Class _Default
     Dim sAssemblyName As String
     Dim sWebSiteVersion As String
     Dim sMessage As String
-    Dim sAcceptLanguage As String
     Dim sQueryString As String
     Dim objCrypt As New Crypt
     Dim objGeneral As New General
     Dim blnLocked As Boolean
-    Dim strConn As String
-    Dim conn As System.Data.SqlClient.SqlConnection
-    Dim cmdCheck As System.Data.SqlClient.SqlCommand
-    Dim cmdSelect As System.Data.SqlClient.SqlCommand
-    Dim cmdInitiate As System.Data.SqlClient.SqlCommand
-    Dim dr As System.Data.SqlClient.SqlDataReader
+    Dim conn As SqlConnection
+    Dim cmdCheck As SqlCommand
+    Dim cmdSelect As SqlCommand
+    Dim cmdInitiate As SqlCommand
+    Dim dr As SqlDataReader
     Dim iTemp As Integer
     Dim sTemp As String = String.Empty
     Dim sTemp2 As String
@@ -150,15 +141,14 @@ Public Class _Default
     Dim iYear As Int16
     Dim iMonth As Int16
     Dim iDay As Int16
-    Dim objGridColumn As System.Data.DataColumn 'Infragistics.WebUI.UltraWebGrid.UltraGridColumn
-    ' Dim objGridCell As Infragistics.WebUI.UltraWebGrid.UltraGridCell
+    Dim objGridColumn As System.Data.DataColumn
     Dim iHeaderHeight As Int32
     Dim iTempHeight As Int32
     Dim iTempWidth As Int32
-    Dim connGrid As System.Data.SqlClient.SqlConnection
-    Dim drGrid As System.Data.SqlClient.SqlDataReader
-    Dim cmdGrid As System.Data.SqlClient.SqlCommand
-    Dim cmdQS As System.Data.SqlClient.SqlCommand
+    Dim connGrid As SqlConnection
+    Dim drGrid As SqlDataReader
+    Dim cmdGrid As SqlCommand
+    Dim cmdQS As SqlCommand
     Dim iMinTabIndex As Integer
     Dim sDefaultValue As String
     Dim fRecordOK As Boolean
@@ -189,7 +179,7 @@ Public Class _Default
     Dim sFilterSQL As String
     Dim da As SqlDataAdapter
     Dim dt As DataTable
-    Dim objDataRow As System.Data.DataRow
+    Dim objDataRow As DataRow
     Dim iItemType As Integer
     Dim iPageTabCount As Integer
     Dim iCurrentPageTab As Integer
@@ -235,11 +225,11 @@ Public Class _Default
     End Try
 
     Try
-      sAssemblyName = System.Reflection.Assembly.GetExecutingAssembly.GetName.Name.ToUpper
+      sAssemblyName = Assembly.GetExecutingAssembly.GetName.Name.ToUpper
 
-      sWebSiteVersion = System.Reflection.Assembly.GetExecutingAssembly.GetName.Version.Major.ToString _
-       & "." & System.Reflection.Assembly.GetExecutingAssembly.GetName.Version.Minor.ToString _
-       & "." & System.Reflection.Assembly.GetExecutingAssembly.GetName.Version.Build.ToString
+      sWebSiteVersion = Assembly.GetExecutingAssembly.GetName.Version.Major.ToString _
+       & "." & Assembly.GetExecutingAssembly.GetName.Version.Minor.ToString _
+       & "." & Assembly.GetExecutingAssembly.GetName.Version.Build.ToString
 
       If sAssemblyName = ASSEMBLYNAME Then
         ' Compiled version of the web site, so perform version checks.
@@ -265,8 +255,6 @@ Public Class _Default
       ElseIf Request.ServerVariables("HTTP_ACCEPT_LANGUAGE") IsNot Nothing Then
         cultureString = Request.ServerVariables("HTTP_ACCEPT_LANGUAGE")
       Else
-        ' Cannot read the client culture from the request. 
-        ' Use the default culture from the config file.
         cultureString = System.Configuration.ConfigurationManager.AppSettings("defaultculture")
       End If
 
@@ -416,11 +404,9 @@ Public Class _Default
       Try ' conn creation 
         ' update tbsysMobile_Logins, and copy the 'newpassword' string to the 'password' field using 'userid' from miInstanceID
         ' Establish Connection
-        strConn = "Application Name=OpenHR Workflow;Data Source=" & msServer & ";Initial Catalog=" & msDatabase & ";Integrated Security=false;User ID=" & msUser & ";Password=" & msPwd & ";Pooling=false"
-
-        Dim myConnection As New SqlClient.SqlConnection(strConn)
+        Dim myConnection As New SqlConnection(GetConnectionString)
         myConnection.Open()
-                Dim myCommand As New SqlClient.SqlCommand("UPDATE tbsys_mobilelogins SET [password] = 'Active' WHERE [userid] = " & CStr(miInstanceID), myConnection)
+        Dim myCommand As New SqlCommand("UPDATE tbsys_mobilelogins SET [password] = 'Active' WHERE [userid] = " & CStr(miInstanceID), myConnection)
         myCommand.ExecuteNonQuery()
         myConnection.Close()
 
@@ -435,16 +421,15 @@ Public Class _Default
     ' - Mobile END -
 
     If sMessage.Length = 0 Then
-      Try ' conn creation 
-        strConn = "Application Name=OpenHR Workflow;Data Source=" & msServer & ";Initial Catalog=" & msDatabase & ";Integrated Security=false;User ID=" & msUser & ";Password=" & msPwd & ";Pooling=false"
-        conn = New SqlClient.SqlConnection(strConn)
+      Try
+        conn = New SqlConnection(GetConnectionString)
         conn.Open()
         Try
           If (sMessage.Length = 0) _
            And (Not IsPostBack) Then
 
             ' Check if the database is locked.
-            cmdCheck = New SqlClient.SqlCommand
+            cmdCheck = New SqlCommand
             cmdCheck.CommandText = "sp_ASRLockCheck"
             cmdCheck.Connection = conn
             cmdCheck.CommandType = CommandType.StoredProcedure
@@ -466,11 +451,10 @@ Public Class _Default
             cmdCheck.Dispose()
           End If
 
-          If (sMessage.Length = 0) _
-           And (Not IsPostBack) Then
+          If sMessage.Length = 0 And Not IsPostBack Then
 
             ' Check if the database and website versions match.
-            cmdCheck = New SqlClient.SqlCommand
+            cmdCheck = New SqlCommand
             cmdCheck.CommandText = "spASRGetSetting"
             cmdCheck.Connection = conn
             cmdCheck.CommandType = CommandType.StoredProcedure
@@ -498,8 +482,8 @@ Public Class _Default
               ' Complied version of the web site, so perform version checks.
               If sWebSiteVersion.Length > 0 Then
                 ' Just get the major and minor parts of the 4 part version.
-                sWebSiteVersion = System.Reflection.Assembly.GetExecutingAssembly.GetName.Version.Major & _
-                 "." & System.Reflection.Assembly.GetExecutingAssembly.GetName.Version.Minor
+                sWebSiteVersion = Assembly.GetExecutingAssembly.GetName.Version.Major & _
+                 "." & Assembly.GetExecutingAssembly.GetName.Version.Minor
               End If
 
               If (sDBVersion <> sWebSiteVersion) _
@@ -529,9 +513,7 @@ Public Class _Default
             ' Externally initiated Workflow.
             iWorkflowID = -miInstanceID
 
-            cmdInitiate = New SqlClient.SqlCommand
-
-            ' cmdInitiate.CommandText = "spASRInstantiateWorkflow"
+            cmdInitiate = New SqlCommand
 
             ' MOBILE - start
             If Len(sKeyParameter) > 0 Then
@@ -584,7 +566,7 @@ Public Class _Default
                   If iIndex = 0 Then
                     miElementID = CInt(sStep)
                   Else
-                    cmdQS = New SqlClient.SqlCommand("spASRGetWorkflowQueryString", conn)
+                    cmdQS = New SqlCommand("spASRGetWorkflowQueryString", conn)
                     cmdQS.CommandType = CommandType.StoredProcedure
                     cmdQS.CommandTimeout = miSubmissionTimeoutInSeconds
 
@@ -633,7 +615,7 @@ Public Class _Default
             Session("ElementID") = miElementID
             Session("InstanceID") = miInstanceID
 
-            cmdSelect = New SqlClient.SqlCommand
+            cmdSelect = New SqlCommand
             cmdSelect.CommandText = "spASRGetWorkflowFormItems"
             cmdSelect.Connection = conn
             cmdSelect.CommandType = CommandType.StoredProcedure
@@ -664,6 +646,7 @@ Public Class _Default
 
             ReDim Preserve ctlForm_PageTab(0)
             While (dr.Read) And (sMessage.Length = 0)
+
               iCurrentPageTab = NullSafeInteger(dr("pageno"))
 
               ' Now set the correct div to use...
@@ -680,8 +663,9 @@ Public Class _Default
                 ctlForm_PageTab(iCurrentPageTab).ID = FORMINPUTPREFIX & iCurrentPageTab.ToString & "_21_PageTab"
                 ctlForm_PageTab(iCurrentPageTab).Style.Add("position", "absolute")
 
-                ' Hide this tab if it isn't the first.
-                If iCurrentPageTab > 0 Then ctlForm_PageTab(iCurrentPageTab).Style.Add("display", "none")
+                If iCurrentPageTab > 0 Then
+                  ctlForm_PageTab(iCurrentPageTab).Style.Add("display", "none")
+                End If
 
                 ' Add this tab to the web form
                 If iCurrentPageTab = 0 Then
@@ -691,61 +675,13 @@ Public Class _Default
                 End If
               End Try
 
-
               sID = FORMINPUTPREFIX & NullSafeString(dr("id")) & "_" & NullSafeString(dr("ItemType")) & "_"
               sEncodedID = objCrypt.SimpleEncrypt(NullSafeString(dr("id")).ToString, Session.SessionID)
 
               Select Case NullSafeInteger(dr("ItemType"))
-                'Case 0 ' Button
-                '  ctlForm_Button = New Infragistics.WebUI.WebDataInput.WebImageButton
-                '  With ctlForm_Button
-                '    .ID = sID
-                '    .TabIndex = CShort(NullSafeInteger(dr("tabIndex")) + 1)
-
-                '    If (iMinTabIndex < 0) Or (NullSafeInteger(dr("tabIndex")) < iMinTabIndex) Then
-                '      sDefaultFocusControl = sID
-                '      iMinTabIndex = NullSafeInteger(dr("tabIndex"))
-                '    End If
-
-                '    .Style("position") = "absolute"
-                '    .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
-                '    .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
-                '    .StylePreset = Infragistics.WebUI.WebDataInput.ButtonStylePreset.WindowsXPBlue
-
-                '    .Appearance.Style.BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColor")))
-                '    .Appearance.Style.BorderStyle = BorderStyle.Solid
-                '    .Appearance.Style.BorderWidth = 1
-                '    .Appearance.InnerBorder.StyleTop = BorderStyle.None
-                '    .Appearance.Style.BorderColor = objGeneral.GetColour(9999523)
-                '    .Appearance.Style.ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
-                '    .FocusAppearance.Style.BorderColor = objGeneral.GetColour(562943)
-                '    .FocusAppearance.Style.BackColor = objGeneral.GetColour(12775933)
-                '    .HoverAppearance.Style.BorderColor = objGeneral.GetColour(562943)
-
-                '    .Overflow = Infragistics.WebUI.WebControls.ButtonOverflow.WordWrap
-
-                '    .Text = NullSafeString(dr("caption"))
-                '    .Font.Name = NullSafeString(dr("FontName"))
-                '    .Font.Size = PointToPixelFontUnit(NullSafeInteger(dr("FontSize")))
-                '    .Font.Bold = NullSafeBoolean(NullSafeBoolean(dr("FontBold")))
-                '    .Font.Italic = NullSafeBoolean(NullSafeBoolean(dr("FontItalic")))
-                '    .Font.Strikeout = NullSafeBoolean(NullSafeBoolean(dr("FontStrikeThru")))
-                '    .Font.Underline = NullSafeBoolean(NullSafeBoolean(dr("FontUnderline")))
-
-                '    .Width = Unit.Pixel(NullSafeInteger(dr("Width")))
-                '    .Height = Unit.Pixel(NullSafeInteger(dr("Height")) - 7)
-
-                '    .ClientSideEvents.Click = "try{setPostbackMode(1);}catch(e){};"
-                '  End With
-
-                '  ' pnlInput.ContentTemplateContainer.Controls.Add(ctlForm_Button)
-
-                '  ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_Button)
-
-                '  AddHandler ctlForm_Button.Click, AddressOf Me.ButtonClick
 
                 Case 0 ' Button
-                  ctlForm_HTMLInputButton = New System.Web.UI.HtmlControls.HtmlInputButton
+                  ctlForm_HTMLInputButton = New HtmlInputButton
                   With ctlForm_HTMLInputButton
                     .ID = sID
                     .Attributes.Add("TabIndex", CShort(NullSafeInteger(dr("tabIndex")) + 1).ToString)
@@ -794,13 +730,9 @@ Public Class _Default
                     .Attributes.Add("onclick", "try{setPostbackMode(1);}catch(e){};")
                   End With
 
-                  ' pnlInput.ContentTemplateContainer.Controls.Add(ctlForm_Button)
-
                   ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_HTMLInputButton)
 
                   AddHandler ctlForm_HTMLInputButton.ServerClick, AddressOf Me.ButtonClick
-
-
 
                 Case 1 ' Database value
                   If (NullSafeInteger(dr("sourceItemType")) = -7) _
@@ -852,7 +784,7 @@ Public Class _Default
                       End Select
 
                       If NullSafeInteger(dr("BackStyle")) = 0 Then
-                        .BackColor = System.Drawing.Color.Transparent
+                        .BackColor = Color.Transparent
                       Else
                         .BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColor")))
                       End If
@@ -883,7 +815,6 @@ Public Class _Default
 
                     End With
 
-                    'pnlInput.ContentTemplateContainer.Controls.Add(ctlForm_Label)
                     ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_Label)
 
                   Else
@@ -905,7 +836,7 @@ Public Class _Default
                       .Text = NullSafeString(dr("value"))
 
                       If NullSafeInteger(dr("BackStyle")) = 0 Then
-                        .BackColor = System.Drawing.Color.Transparent
+                        .BackColor = Color.Transparent
                       Else
                         .BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColor")))
                       End If
@@ -934,10 +865,8 @@ Public Class _Default
 
                       .Height() = Unit.Pixel(iTempHeight)
                       .Width() = Unit.Pixel(iTempWidth)
-
                     End With
 
-                    'pnlInput.contenttemplatecontainer.Controls.Add(ctlForm_TextInput)
                     ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_TextInput)
                   End If
 
@@ -952,7 +881,6 @@ Public Class _Default
                     '.Style("overflow") = "auto"
                     .Style("text-align") = "left"
 
-
                     If NullSafeInteger(dr("captionType")) = 3 Then
                       ' Calculated caption
                       .Text = NullSafeString(dr("value"))
@@ -961,7 +889,7 @@ Public Class _Default
                     End If
 
                     If NullSafeInteger(dr("BackStyle")) = 0 Then
-                      .BackColor = System.Drawing.Color.Transparent
+                      .BackColor = Color.Transparent
                     Else
                       .BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColor")))
                     End If
@@ -991,9 +919,7 @@ Public Class _Default
                     .Width() = Unit.Pixel(iTempWidth)
                   End With
 
-                  'pnlInput.contenttemplatecontainer.Controls.Add(ctlForm_Label)
                   ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_Label)
-
 
                 Case 3 ' Input value - character
                   ctlForm_TextInput = New TextBox
@@ -1048,7 +974,6 @@ Public Class _Default
 
                   End With
 
-                  'pnlInput.contenttemplatecontainer.Controls.Add(ctlForm_TextInput)
                   ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_TextInput)
 
                 Case 4 ' Workflow value
@@ -1102,7 +1027,7 @@ Public Class _Default
                       End Select
 
                       If NullSafeInteger(dr("BackStyle")) = 0 Then
-                        .BackColor = System.Drawing.Color.Transparent
+                        .BackColor = Color.Transparent
                       Else
                         .BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColor")))
                       End If
@@ -1132,7 +1057,6 @@ Public Class _Default
 
                     End With
 
-                    'pnlInput.contenttemplatecontainer.Controls.Add(ctlForm_Label)
                     ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_Label)
                   Else
                     ' Text
@@ -1153,7 +1077,7 @@ Public Class _Default
                       .Text = NullSafeString(dr("value"))
 
                       If NullSafeInteger(dr("BackStyle")) = 0 Then
-                        .BackColor = System.Drawing.Color.Transparent
+                        .BackColor = Color.Transparent
                       Else
                         .BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColor")))
                       End If
@@ -1184,7 +1108,6 @@ Public Class _Default
                       .Width() = Unit.Pixel(iTempWidth)
                     End With
 
-                    'pnlInput.contenttemplatecontainer.Controls.Add(ctlForm_TextInput)
                     ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_TextInput)
                   End If
 
@@ -1463,7 +1386,7 @@ Public Class _Default
                     .CalendarLayout.OtherMonthDayStyle.Font.Name = "Verdana"
                     .CalendarLayout.OtherMonthDayStyle.ForeColor = objGeneral.GetColour(11375765)
 
-                    .CalendarLayout.NextPrevStyle.ForeColor = System.Drawing.SystemColors.InactiveCaptionText
+                    .CalendarLayout.NextPrevStyle.ForeColor = SystemColors.InactiveCaptionText
                     .CalendarLayout.NextPrevStyle.BackColor = objGeneral.GetColour(16248553)
                     .CalendarLayout.NextPrevStyle.ForeColor = objGeneral.GetColour(6697779)
 
@@ -1471,7 +1394,7 @@ Public Class _Default
                     .CalendarLayout.CalendarStyle.Height = Unit.Pixel(80)
                     .CalendarLayout.CalendarStyle.Font.Size = fontUnit
                     .CalendarLayout.CalendarStyle.Font.Name = "Verdana"
-                    .CalendarLayout.CalendarStyle.BackColor = System.Drawing.Color.White
+                    .CalendarLayout.CalendarStyle.BackColor = Color.White
 
                     .CalendarLayout.WeekendDayStyle.BackColor = objGeneral.GetColour(15004669)
 
@@ -1557,9 +1480,8 @@ Public Class _Default
                   Dim width = NullSafeInteger(dr("Width"))
                   Dim height = NullSafeInteger(dr("Height"))
                   Dim fontAdjustment = CInt(CInt(dr("FontSize")) * 0.8)
-                  Dim borderCss As String = String.Empty
+                  Dim borderCss As String = "BORDER-STYLE: solid; BORDER-COLOR: #9894a3; BORDER-WIDTH: 1px;"
 
-                  borderCss = "BORDER-STYLE: solid; BORDER-COLOR: #9894a3; BORDER-WIDTH: 1px;"
                   width -= 2
                   height -= 2
 
@@ -1631,11 +1553,10 @@ Public Class _Default
 
                   ctlForm_Line = New LiteralControl(sTemp)
 
-                  'pnlInput.contenttemplatecontainer.Controls.Add(ctlForm_Line)
                   ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_Line)
 
                 Case 10 ' Image
-                  ctlForm_Image = New System.Web.UI.WebControls.Image
+                  ctlForm_Image = New WebControls.Image
 
                   With ctlForm_Image
                     .Style("position") = "absolute"
@@ -1665,7 +1586,6 @@ Public Class _Default
 
                   End With
 
-                  'pnlInput.contenttemplatecontainer.Controls.Add(ctlForm_Image)
                   ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_Image)
 
                 Case 11 ' Record Selection Grid
@@ -1690,9 +1610,6 @@ Public Class _Default
 
                     ' Don't use .height - it causes large row heights if the grid isn't filled.
                     ' Use .ControlHeight instead - custom property.
-                    '.Height = NullSafeInteger(dr("Height"))
-                    ' .Attributes.Add("Height", NullSafeInteger(dr("Height")).ToString)
-                    '.Style.Add("height", Unit.Pixel(NullSafeInteger(dr("Height"))).ToString)
                     .ControlHeight = NullSafeInteger(dr("Height"))
 
                     .Width = NullSafeInteger(dr("Width"))
@@ -1737,37 +1654,12 @@ Public Class _Default
                       iMinTabIndex = NullSafeInteger(dr("tabIndex"))
                     End If
 
-                    ''    ' .DisplayLayout.ClientSideEvents.ColumnHeaderClickHandler = "activateGridPostback"
-
-                    ''    '.DisplayLayout.AllowSortingDefault = Infragistics.WebUI.UltraWebGrid.AllowSorting.Yes
-                    ''    '.DisplayLayout.HeaderClickActionDefault = Infragistics.WebUI.UltraWebGrid.HeaderClickAction.SortMulti
-                    ''    '.DisplayLayout.SelectTypeRowDefault = Infragistics.WebUI.UltraWebGrid.SelectType.Single
-                    ''    '.DisplayLayout.TableLayout = Infragistics.WebUI.UltraWebGrid.TableLayout.Fixed
-                    ''    '.DisplayLayout.StationaryMargins = Infragistics.WebUI.UltraWebGrid.StationaryMargins.Header
-                    ''    '.DisplayLayout.RowStyleDefault.Cursor = Infragistics.WebUI.Shared.Cursors.Default
-
                     .BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColor")))
                     .ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
-
-                    ''    '.BorderColor = objGeneral.GetColour(10720408)
-                    ''    '.BorderStyle = BorderStyle.Solid
-                    ''    '.BorderWidth = Unit.Pixel(1)
-
-                    ''    '.DisplayLayout.AllowColSizingDefault = Infragistics.WebUI.UltraWebGrid.AllowSizing.Free
-                    ''    '.DisplayLayout.CellClickActionDefault = Infragistics.WebUI.UltraWebGrid.CellClickAction.RowSelect
-                    ''    '.DisplayLayout.ColHeadersVisibleDefault = DirectCast(IIf(NullSafeBoolean(dr("ColumnHeaders")) And (NullSafeInteger(dr("Headlines")) > 0), _
-                    ''    ' Infragistics.WebUI.UltraWebGrid.ShowMarginInfo.Yes, _
-                    ''    ' Infragistics.WebUI.UltraWebGrid.ShowMarginInfo.No), Infragistics.WebUI.UltraWebGrid.ShowMarginInfo)
-                    ''    '.DisplayLayout.GridLinesDefault = Infragistics.WebUI.UltraWebGrid.UltraGridLines.Both
 
                     .HeaderStyle.BackColor = objGeneral.GetColour(NullSafeInteger(dr("HeaderBackColor")))
                     .HeaderStyle.BorderColor = objGeneral.GetColour(10720408)
                     .HeaderStyle.BorderStyle = BorderStyle.Double
-
-                    '.HeaderStyle.BorderDetails.WidthLeft = Unit.Pixel(0)
-                    '.HeaderStyle.BorderDetails.WidthTop = Unit.Pixel(0)
-                    '.HeaderStyle.BorderDetails.WidthBottom = Unit.Pixel(1)
-                    '.HeaderStyle.BorderDetails.WidthRight = Unit.Pixel(1)
                     .HeaderStyle.BorderWidth = Unit.Pixel(0)
                     .HeaderStyle.Font.Name = NullSafeString(dr("HeadFontName"))
                     .HeaderStyle.Font.Size = PointToPixelFontUnit(NullSafeInteger(dr("HeadFontSize")))
@@ -1776,10 +1668,6 @@ Public Class _Default
                     .HeaderStyle.Font.Strikeout = NullSafeBoolean(dr("HeadFontStrikeThru"))
                     .HeaderStyle.Font.Underline = NullSafeBoolean(dr("HeadFontUnderline"))
                     .HeaderStyle.ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
-                    '.HeaderStyle.Padding.Top = Unit.Pixel(iGridTopPadding)
-                    '.HeaderStyle.Padding.Bottom = Unit.Pixel(0)
-                    '.HeaderStyle.Padding.Left = Unit.Pixel(2)
-                    '.HeaderStyle.Padding.Right = Unit.Pixel(2)
                     .HeaderStyle.Wrap = False
                     .HeaderStyle.Height = Unit.Pixel(iHeaderHeight)
                     .HeaderStyle.VerticalAlign = VerticalAlign.Middle
@@ -1789,18 +1677,6 @@ Public Class _Default
                     .PagerStyle.BackColor = objGeneral.GetColour(NullSafeInteger(dr("HeaderBackColor")))
                     .PagerStyle.BorderColor = objGeneral.GetColour(10720408)
                     .PagerStyle.BorderStyle = BorderStyle.Solid
-
-                    '.HeaderStyle.BorderDetails.WidthLeft = Unit.Pixel(0)
-                    '.HeaderStyle.BorderDetails.WidthTop = Unit.Pixel(0)
-                    '.HeaderStyle.BorderDetails.WidthBottom = Unit.Pixel(1)
-                    '.HeaderStyle.BorderDetails.WidthRight = Unit.Pixel(1)
-
-                    '.PagerSettings.Mode = PagerButtons.NextPreviousFirstLast
-                    '.PagerSettings.FirstPageImageUrl = "Images/page-first.gif"
-                    '.PagerSettings.LastPageImageUrl = "Images/page-last.gif"
-                    '.PagerSettings.NextPageImageUrl = "Images/page-next.gif"
-                    '.PagerSettings.PreviousPageImageUrl = "Images/page-prev.gif"
-
                     .PagerStyle.BorderWidth = Unit.Pixel(0)
                     .PagerStyle.Font.Name = NullSafeString(dr("HeadFontName"))
                     .PagerStyle.Font.Size = PointToPixelFontUnit(NullSafeInteger(dr("HeadFontSize")))
@@ -1809,12 +1685,7 @@ Public Class _Default
                     .PagerStyle.Font.Strikeout = NullSafeBoolean(dr("HeadFontStrikeThru"))
                     .PagerStyle.Font.Underline = NullSafeBoolean(dr("HeadFontUnderline"))
                     .PagerStyle.ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
-                    '.HeaderStyle.Padding.Top = Unit.Pixel(iGridTopPadding)
-                    '.HeaderStyle.Padding.Bottom = Unit.Pixel(0)
-                    '.HeaderStyle.Padding.Left = Unit.Pixel(2)
-                    '.HeaderStyle.Padding.Right = Unit.Pixel(2)
                     .PagerStyle.Wrap = False
-                    ''.PagerStyle.Height = Unit.Pixel(iHeaderHeight)
                     .PagerStyle.VerticalAlign = VerticalAlign.Middle
                     .PagerStyle.HorizontalAlign = HorizontalAlign.Center
 
@@ -1827,23 +1698,9 @@ Public Class _Default
                     .AlternatingRowStyle.Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
                     .AlternatingRowStyle.Font.Underline = NullSafeBoolean(dr("FontUnderline"))
                     .AlternatingRowStyle.ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColorOdd")))
-                    '.DisplayLayout.RowAlternateStyleDefault.Padding.Left = Unit.Pixel(3)
-                    '.DisplayLayout.RowAlternateStyleDefault.Padding.Right = Unit.Pixel(3)
-                    '.DisplayLayout.RowAlternateStyleDefault.Padding.Top = Unit.Pixel(0)
-                    '.DisplayLayout.RowAlternateStyleDefault.Padding.Bottom = Unit.Pixel(1)
                     .AlternatingRowStyle.VerticalAlign = VerticalAlign.Middle
 
-                    ''    '.DisplayLayout.RowSelectorsDefault = Infragistics.WebUI.UltraWebGrid.RowSelectors.No
-
                     .RowStyle.BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColorEven")))
-
-                    '.RowStyle.BorderColor = objGeneral.GetColour(10720408)
-                    '.RowStyle.BorderStyle = BorderStyle.Solid
-                    '.RowStyle.BorderWidth = Unit.Pixel(1)
-                    '.RowStyle.BorderDetails.WidthLeft = Unit.Pixel(0)
-                    '.RowStyle.BorderDetails.WidthTop = Unit.Pixel(0)
-                    '.RowStyle.BorderDetails.WidthBottom = Unit.Pixel(1)
-                    '.RowStyle.BorderDetails.WidthRight = Unit.Pixel(1)
                     .RowStyle.Font.Name = NullSafeString(dr("FontName"))
                     .RowStyle.Font.Size = PointToPixelFontUnit(NullSafeInteger(dr("FontSize")))
                     .RowStyle.Font.Bold = NullSafeBoolean(dr("FontBold"))
@@ -1851,58 +1708,20 @@ Public Class _Default
                     .RowStyle.Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
                     .RowStyle.Font.Underline = NullSafeBoolean(dr("FontUnderline"))
                     .RowStyle.ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColorEven")))
-                    '.RowStyle.Padding.Left = Unit.Pixel(3)
-                    '.RowStyle.Padding.Right = Unit.Pixel(3)
-                    '.RowStyle.Padding.Top = Unit.Pixel(0)
-                    '.RowStyle.Padding.Bottom = Unit.Pixel(1)
                     .RowStyle.VerticalAlign = VerticalAlign.Middle
 
-
-
                     iRowHeight = 21
-                    '.DisplayLayout.RowHeightDefault = Unit.Pixel(iRowHeight)
-
-                    ' NPG20110802 Fault HRPRO-1685, remove rowheight to autofit.
-                    '.RowStyle.Height = Unit.Pixel(iRowHeight)
 
                     If IsDBNull(dr("ForeColorHighlight")) Then
-                      '.DisplayLayout.SelectedRowStyleDefault.ForeColor = System.Drawing.SystemColors.HighlightText
-                      .SelectedRowStyle.ForeColor = System.Drawing.SystemColors.HighlightText
-                      msForeColorHighlight = System.Drawing.SystemColors.HighlightText.ToString
+                      .SelectedRowStyle.ForeColor = SystemColors.HighlightText
                     Else
-                      '.DisplayLayout.SelectedRowStyleDefault.ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColorHighlight")))
                       .SelectedRowStyle.ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColorHighlight")))
-                      msForeColorHighlight = objGeneral.GetHTMLColour(NullSafeInteger(dr("ForeColorHighlight")))
                     End If
                     If IsDBNull(dr("BackColorHighlight")) Then
-                      ' .DisplayLayout.SelectedRowStyleDefault.BackColor = System.Drawing.SystemColors.Highlight
-                      .SelectedRowStyle.BackColor = System.Drawing.SystemColors.Highlight
-                      msBackColorHighlight = System.Drawing.SystemColors.Highlight.ToString
+                      .SelectedRowStyle.BackColor = SystemColors.Highlight
                     Else
-                      ' .DisplayLayout.SelectedRowStyleDefault.BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColorHighlight")))
                       .SelectedRowStyle.BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColorHighlight")))
-                      msBackColorHighlight = objGeneral.GetHTMLColour(NullSafeInteger(dr("BackColorHighlight")))
                     End If
-
-                    ''    '.DisplayLayout.ActivationObject.BorderColor = objGeneral.GetColour(10720408)
-                    ''    '.DisplayLayout.ActivationObject.BorderStyle = BorderStyle.Solid
-                    ''    '.DisplayLayout.ActivationObject.BorderDetails.WidthLeft = Unit.Pixel(0)
-                    ''    '.DisplayLayout.ActivationObject.BorderDetails.WidthTop = Unit.Pixel(1)
-                    ''    '.DisplayLayout.ActivationObject.BorderDetails.WidthBottom = Unit.Pixel(1)
-                    ''    '.DisplayLayout.ActivationObject.BorderDetails.WidthRight = Unit.Pixel(1)
-
-                    ''    'iTempHeight = NullSafeInteger(dr("Height")) - iHeaderHeight
-                    ''    'iTempHeight = CInt(IIf(iTempHeight < 0, 1, iTempHeight))
-                    ''    '.Height = Unit.Pixel(iTempHeight)
-                    ''    '.Width = Unit.Pixel(NullSafeInteger(dr("Width")))
-                    ''    '.Style.Add("Position", "static")
-
-                    ''    ' select row 1
-                    ''    ' .SelectedIndex = 1
-                    ''    ' .SelectedRowStyle.BackColor = System.Drawing.Color.LightCyan
-
-                    ''    ' Add client side events to the rows as they're generated
-                    ''    AddHandler .RowDataBound, AddressOf Me.GridRowDataBound
 
                   End With
 
@@ -1914,11 +1733,11 @@ Public Class _Default
 
 
                   If (Not IsPostBack) Then
-                    connGrid = New SqlClient.SqlConnection(strConn)
+                    connGrid = New SqlConnection(GetConnectionString)
                     connGrid.Open()
 
                     Try
-                      cmdGrid = New SqlClient.SqlCommand
+                      cmdGrid = New SqlCommand
                       cmdGrid.CommandText = "spASRGetWorkflowGridItems"
                       cmdGrid.Connection = connGrid
                       cmdGrid.CommandType = CommandType.StoredProcedure
@@ -1989,10 +1808,6 @@ Public Class _Default
                         End If
                       End If
 
-
-                      'drGrid.Close()
-                      'drGrid = Nothing
-
                       fRecordOK = CBool(cmdGrid.Parameters("@pfOK").Value)
                       If Not fRecordOK Then
                         sMessage = "Error loading web form. Web Form record selector item record has been deleted or not selected."
@@ -2000,85 +1815,6 @@ Public Class _Default
                       End If
 
                       cmdGrid.Dispose()
-                      cmdGrid = Nothing
-
-                      ' '' Add the newly created column header row to the column header table
-
-                      ''rowHeaderRow.BackColor = objGeneral.GetColour(NullSafeInteger(dr("HeaderBackColor")))
-                      ''rowHeaderRow.BorderColor = objGeneral.GetColour(10720408)
-                      ''rowHeaderRow.BorderStyle = BorderStyle.Solid
-                      ''rowHeaderRow.BorderWidth = Unit.Pixel(0)
-                      ''rowHeaderRow.Font.Name = NullSafeString(dr("HeadFontName"))
-                      ''rowHeaderRow.Font.Size = PointToPixelFontUnit(NullSafeString(dr("HeadFontSize")))
-                      ''rowHeaderRow.Font.Bold = NullSafeBoolean(dr("HeadFontBold"))
-                      ''rowHeaderRow.Font.Italic = NullSafeBoolean(dr("HeadFontItalic"))
-                      ''rowHeaderRow.Font.Strikeout = NullSafeBoolean(dr("HeadFontStrikeThru"))
-                      ''rowHeaderRow.Font.Underline = NullSafeBoolean(dr("HeadFontUnderline"))
-                      ''rowHeaderRow.ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
-                      ' '' rowHeaderRow.Wrap = False
-                      ''rowHeaderRow.Height = Unit.Pixel(iHeaderHeight)
-                      ''rowHeaderRow.VerticalAlign = VerticalAlign.Middle
-                      ''rowHeaderRow.HorizontalAlign = HorizontalAlign.Center
-
-                      ''ctlForm_Table.Rows.Add(rowHeaderRow)
-
-                      ''If Not (NullSafeBoolean(dr("ColumnHeaders")) And (NullSafeInteger(dr("Headlines")) > 0)) Then
-                      ''    ctlForm_Table.Style.Add("display", "none")
-                      ''End If
-
-                      '' ''NPG20100611 Fault HRPRO 873
-                      '' ''Deduct 1 pixel from the iGridWidth variable to prevent horizontal scrollbar.
-                      ' ''iGridWidth = NullSafeInteger(dr("Width")) - 1
-
-                      ' ''Adjust available width for the vertical scrollbar.
-                      ''iGapBetweenBorderAndText = (CInt(NullSafeSingle(dr("FontSize")) + 6) \ 4)
-                      ''iEffectiveRowHeight = CInt(NullSafeSingle(dr("FontSize"))) _
-                      '' + 1 _
-                      '' + (2 * iGapBetweenBorderAndText)
-
-                      ''If (ctlForm_RecordSelectionGrid.Rows.Count * iEffectiveRowHeight > iTempHeight) Then
-                      ''    iGridWidth = iGridWidth - 16
-                      ''    ctlForm_Table.Width = iGridWidth
-                      ''    ctlForm_RecordSelectionGrid.Width = iGridWidth
-                      ''    ctlForm_RecordSelectionGrid.Attributes.CssStyle("WIDTH") = iGridWidth.ToString
-                      ''End If
-
-                      ' ''NPG20100611 Fault HRPRO 873
-                      ' ''If the grid column widths are left to default it mucks up, so calculate every time.
-                      ' ''   I've also excluded the iGRIDBORDERWIDTH value when calculating the widths as this left a big gap.
-
-                      '' ''If iGridWidth > (iVisibleColumnCount * .DisplayLayout.ColWidthDefault.Value) _
-                      '' '' And (iVisibleColumnCount > 0) Then
-
-                      '' ''    iLoop = 0
-                      '' ''    iWidthUsed = 0
-                      '' ''    iGridWidth = iGridWidth - 2
-
-                      '' ''    For Each objGridColumn In .Columns
-                      '' ''        If objGridColumn.Hidden Then
-                      '' ''            objGridColumn.Width = Unit.Pixel(0)
-                      '' ''        Else
-                      '' ''            iLoop = iLoop + 1
-                      '' ''            If iLoop < iVisibleColumnCount Then
-                      '' ''                objGridColumn.Width = Unit.Pixel(CInt(iGridWidth / iVisibleColumnCount) - iGRIDBORDERWIDTH)
-
-                      '' ''                Dim iminWidth As Int32 = CInt(iGridWidth / iVisibleColumnCount)
-
-                      '' ''                If iminWidth < 100 Then iminWidth = 100
-
-                      '' ''                objGridColumn.Width = Unit.Pixel(iminWidth)
-
-                      '' ''                iWidthUsed = iWidthUsed + CInt(objGridColumn.Width.Value) + iGRIDBORDERWIDTH
-                      '' ''                iWidthUsed = iWidthUsed + CInt(objGridColumn.Width.Value)
-                      '' ''            Else
-                      '' ''                objGridColumn.Width = Unit.Pixel(iGridWidth - iWidthUsed - iGRIDBORDERWIDTH)
-                      '' ''                objGridColumn.Width = Unit.Pixel(iGridWidth - iWidthUsed)
-                      '' ''            End If
-                      '' ''        End If
-                      '' ''    Next objGridColumn
-                      '' ''    objGridColumn = Nothing
-                      '' ''End If
-
 
                     Catch ex As Exception
                       sMessage = "Error loading web form grid values:<BR><BR>" & _
@@ -2137,7 +1873,6 @@ Public Class _Default
                       .Font.Underline = NullSafeBoolean(dr("FontUnderline"))
                       .Width = Unit.Pixel(NullSafeInteger(dr("Width")))
                       .BackColor = Color.Transparent
-                      ' .BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColor")))
                       .ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
                       .BorderColor = objGeneral.GetColour(5730458)
                       .BorderStyle = BorderStyle.Solid
@@ -2150,11 +1885,10 @@ Public Class _Default
 
                     End With
 
-                    'ctlForm_PageTab(iCurrentPageTab).controls.add(ctlForm_Dropdown)
                     ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_TextInput)
 
                     ' add a little dropdown to make the textbox look like a dropdown.                                    
-                    ctlForm_Image = New System.Web.UI.WebControls.Image
+                    ctlForm_Image = New WebControls.Image
                     Dim itmpDropDownWidth As Integer = 17
 
                     With ctlForm_Image
@@ -2165,12 +1899,8 @@ Public Class _Default
                       .Attributes.CssStyle("WIDTH") = Unit.Pixel(itmpDropDownWidth).ToString
                       .Height() = Unit.Pixel(NullSafeInteger(dr("Height")) - (IMAGEBORDERWIDTH))
                       .Attributes.CssStyle("HEIGHT") = Unit.Pixel(NullSafeInteger(dr("Height")) - (IMAGEBORDERWIDTH)).ToString
-                      '.BorderColor = Color.Gray
-                      '.BorderStyle = BorderStyle.Solid
-                      '.BorderWidth = Unit.Pixel(1)
                       .Style.Add("z-index", "0")
                     End With
-
 
                     'ctlForm_PageTab(iCurrentPageTab).controls.add(ctlForm_Image)
 
@@ -2201,9 +1931,6 @@ Public Class _Default
 
                       ' Don't set the height of this control. Must use the ControlHeight property
                       ' to stop the grid's rows from autosizing.
-                      ' .Height = Unit.Pixel(NullSafeInteger(dr("Height")))
-                      ' .Attributes.Add("Height", Unit.Pixel(NullSafeInteger(dr("Height"))).ToString)
-                      ' .Style.Add("height", Unit.Pixel(NullSafeInteger(dr("Height"))).ToString)
                       .ControlHeight = NullSafeInteger(dr("Height"))
                       .Width = Unit.Pixel(NullSafeInteger(dr("Width")))
                       .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
@@ -2230,19 +1957,10 @@ Public Class _Default
 
                       .BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColor")))
                       .ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
-                      ''.SelForeColor = System.Drawing.SystemColors.HighlightText
-                      ''.SelBackColor = System.Drawing.SystemColors.Highlight
-
-                      msBackColorHighlight = System.Drawing.SystemColors.Highlight.ToString
 
                       .BorderColor = objGeneral.GetColour(5730458)
                       .BorderStyle = BorderStyle.Solid
                       .BorderWidth = Unit.Pixel(1)
-
-                      ''.DropDownLayout.FrameStyle.BorderColor = objGeneral.GetColour(10720408)
-                      ''.DropDownLayout.FrameStyle.BorderStyle = BorderStyle.Solid
-                      ''.DropDownLayout.FrameStyle.BorderWidth = Unit.Pixel(1)
-                      ''.DropDownLayout.FrameStyle.BackColor = objGeneral.GetColour(16248040)
 
                       .RowStyle.Font.Name = NullSafeString(dr("FontName"))
                       .RowStyle.Font.Size = PointToPixelFontUnit(NullSafeInteger(dr("FontSize")))
@@ -2257,81 +1975,30 @@ Public Class _Default
                       .RowStyle.BorderWidth = Unit.Pixel(1)
 
                       iRowHeight = 21
-                      '.DisplayLayout.RowHeightDefault = Unit.Pixel(iRowHeight)
 
-                      ' NPG20110802 Fault HRPRO-1685, remove rowheight to autofit.
-                      ' .RowStyle.Height = Unit.Pixel(iRowHeight)
-
-                      ''.ExpandEffects.Type = Infragistics.WebUI.WebCombo.ExpandEffectType.Slide
-
-                      ''.DropDownLayout.RowStyle.Padding.Left = Unit.Pixel(3)
-                      ''.DropDownLayout.RowStyle.Padding.Right = Unit.Pixel(3)
-                      ''.DropDownLayout.RowStyle.Padding.Top = Unit.Pixel(0)
-                      ''.DropDownLayout.RowStyle.Padding.Bottom = Unit.Pixel(1)
                       .RowStyle.VerticalAlign = VerticalAlign.Middle
 
                       .SelectedRowStyle.ForeColor = objGeneral.GetColour(2774907)
                       .SelectedRowStyle.BackColor = objGeneral.GetColour(10480637)
 
-                      ''.DropDownLayout.BorderCollapse = Infragistics.WebUI.UltraWebGrid.BorderCollapse.Collapse
-
-                      ''.DropDownLayout.TableLayout = Infragistics.WebUI.UltraWebGrid.TableLayout.Fixed
-
-                      ''.DropDownLayout.AllowSorting = Infragistics.WebUI.UltraWebGrid.AllowSorting.Yes
-                      ''.DropDownLayout.HeaderClickAction = Infragistics.WebUI.UltraWebGrid.HeaderClickAction.SortMulti
-                      ''.DropDownLayout.StationaryMargins = Infragistics.WebUI.UltraWebGrid.StationaryMargins.Header
-                      ''.DropDownLayout.RowStyle.Cursor = Infragistics.WebUI.Shared.Cursors.Default
-
-                      ''.DropDownLayout.AllowColSizing = Infragistics.WebUI.UltraWebGrid.AllowSizing.Free
-                      ''.DropDownLayout.GridLines = Infragistics.WebUI.UltraWebGrid.UltraGridLines.Both
-
                       ' HEADER formatting
-                      'iGridTopPadding = CInt(NullSafeSingle(dr("FontSize")) / 8)
-                      'iHeaderHeight = CInt(((NullSafeSingle(dr("FontSize")) + iGridTopPadding) * 2) _
-                      ' - 2 _
-                      ' - (NullSafeSingle(dr("FontSize")) * 2 * (iGridTopPadding - 1) / 4))
-
                       .HeaderStyle.BackColor = objGeneral.GetColour(16248553)
                       .HeaderStyle.BorderColor = objGeneral.GetColour(10720408)
                       .HeaderStyle.BorderStyle = BorderStyle.Solid
                       .HeaderStyle.BorderWidth = Unit.Pixel(0)
-                      '.HeaderStyle.BorderDetails.WidthLeft = Unit.Pixel(0)
-                      '.HeaderStyle.BorderDetails.WidthTop = Unit.Pixel(0)
-                      '.HeaderStyle.BorderDetails.WidthBottom = Unit.Pixel(1)
-                      '.HeaderStyle.BorderDetails.WidthRight = Unit.Pixel(1)
-
                       .HeaderStyle.Font.Name = NullSafeString(dr("FontName"))
                       .HeaderStyle.Font.Size = PointToPixelFontUnit(NullSafeInteger(dr("FontSize")))
                       .HeaderStyle.Font.Italic = NullSafeBoolean(dr("FontItalic"))
                       .HeaderStyle.Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
                       .HeaderStyle.Font.Underline = NullSafeBoolean(dr("FontUnderline"))
                       .HeaderStyle.ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
-                      '.HeaderStyle.Padding.Top = Unit.Pixel(iGridTopPadding)
-                      '.HeaderStyle.Padding.Bottom = Unit.Pixel(0)
-                      '.HeaderStyle.Padding.Left = Unit.Pixel(2)
-                      '.HeaderStyle.Padding.Right = Unit.Pixel(2)
                       .HeaderStyle.Wrap = False
                       .HeaderStyle.Height = Unit.Pixel(iHeaderHeight)
                       .HeaderStyle.VerticalAlign = VerticalAlign.Middle
                       .HeaderStyle.HorizontalAlign = HorizontalAlign.Center
 
                       ' ROW formatting
-                      '.RowStyle.Padding.Left = Unit.Pixel(3)
-                      '.RowStyle.Padding.Left = Unit.Pixel(3)
-                      '.RowStyle.Padding.Right = Unit.Pixel(3)
-                      '.RowStyle.Padding.Top = Unit.Pixel(0)
-                      '.RowStyle.Padding.Bottom = Unit.Pixel(1)
                       .RowStyle.VerticalAlign = VerticalAlign.Middle
-
-                      '.RowSelectors = Infragistics.WebUI.UltraWebGrid.RowSelectors.No
-                      '.RowsRange = mobjConfig.LookupRowsRange
-
-                      '.PagerSettings.Mode = PagerButtons.NextPreviousFirstLast
-                      '.PagerSettings.FirstPageImageUrl = "Images/page-first.gif"
-                      '.PagerSettings.LastPageImageUrl = "Images/page-last.gif"
-                      '.PagerSettings.NextPageImageUrl = "Images/page-next.gif"
-                      '.PagerSettings.PreviousPageImageUrl = "Images/page-prev.gif"
-
                       .PagerStyle.BorderWidth = Unit.Pixel(0)
                       .PagerStyle.Font.Name = NullSafeString(dr("FontName"))
                       .PagerStyle.Font.Size = PointToPixelFontUnit(NullSafeInteger(dr("FontSize")))
@@ -2363,24 +2030,14 @@ Public Class _Default
                       ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_HiddenField)
                     End If
 
-
-                    ' The following client side handlers are now part of the web page itself, beginRequest and endRequest handlers
-                    ' InitializeDataSource & DataBound methods need to be defined because we have EnableXmlHTTP enabled.
-                    ' EnableXmlHTTP is required becaue we're using client-side filtering using 'selectwhere'
-                    'AddHandler ctlForm_Dropdown.DataBound, AddressOf Me.LookupDataBound
-                    'AddHandler ctlForm_Dropdown.Load, AddressOf Me.InitializeLookupData
-
-                    ' The following is set on the DropDownExtender Control below.
-                    'AddHandler ctlForm_Dropdown.InitializeDataSource, AddressOf Me.InitializeLookupData
-
                     ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_PagingGridView)
 
 
                     If (Not IsPostBack) Then
-                      connGrid = New SqlClient.SqlConnection(strConn)
+                      connGrid = New SqlConnection(GetConnectionString)
                       connGrid.Open()
                       Try
-                        cmdGrid = New SqlClient.SqlCommand
+                        cmdGrid = New SqlCommand
                         cmdGrid.CommandText = "spASRGetWorkflowItemValues"
                         cmdGrid.Connection = connGrid
                         cmdGrid.CommandType = CommandType.StoredProcedure
@@ -2408,20 +2065,9 @@ Public Class _Default
                         objDataRow = dt.NewRow()
                         dt.Rows.InsertAt(objDataRow, 0)
 
-                        'drGrid = cmdGrid.ExecuteReader()
-
-                        'drGrid.Close()
-                        'drGrid = Nothing
-
                         m_iLookupColumnIndex = NullSafeInteger(cmdGrid.Parameters("@piLookupColumnIndex").Value)
 
                         iItemType = NullSafeInteger(cmdGrid.Parameters("@piItemType").Value)
-
-                        'ctlForm_Dropdown.Attributes.Remove("LookupColumnIndex")
-                        'ctlForm_Dropdown.Attributes.Add("LookupColumnIndex", m_iLookupColumnIndex.ToString)
-
-                        'ctlForm_Dropdown.Attributes.Remove("DefaultValue")
-                        'ctlForm_Dropdown.Attributes.Add("DefaultValue", NullSafeString(cmdGrid.Parameters("@psDefaultValue").Value))
 
                         ctlForm_TextInput.Attributes.Remove("LookupColumnIndex")
                         ctlForm_TextInput.Attributes.Add("LookupColumnIndex", m_iLookupColumnIndex.ToString)
@@ -2429,13 +2075,6 @@ Public Class _Default
                         ctlForm_TextInput.Attributes.Remove("DefaultValue")
                         ctlForm_TextInput.Attributes.Add("DefaultValue", NullSafeString(cmdGrid.Parameters("@psDefaultValue").Value))
 
-
-                        ' Datatype - 
-                        ' curSelDataType = DataBinder.Eval(e.Row.DataItem, grdGrid.HeaderRow.Cells(iColCount).Text).GetType.ToString.ToUpper
-
-                        'dt.Columns(CInt(ctlForm_Dropdown.Attributes("LookupColumnIndex"))).DataType
-                        'ctlForm_Dropdown.Attributes.Remove("DataType")
-                        'ctlForm_Dropdown.Attributes.Add("DataType", NullSafeString(dt.Columns(CInt(ctlForm_Dropdown.Attributes("LookupColumnIndex"))).DataType.ToString))
                         ctlForm_TextInput.Attributes.Remove("DataType")
                         ctlForm_TextInput.Attributes.Add("DataType", NullSafeString(dt.Columns(CInt(ctlForm_TextInput.Attributes("LookupColumnIndex"))).DataType.ToString))
 
@@ -2445,67 +2084,6 @@ Public Class _Default
                         ctlForm_PagingGridView.DataBind()
 
                         cmdGrid.Dispose()
-                        cmdGrid = Nothing
-
-                        '' Add the newly created column header row to the column header table
-
-                        'rowHeaderRow.BackColor = objGeneral.GetColour(16248553)
-                        'rowHeaderRow.BorderColor = objGeneral.GetColour(10720408)
-                        'rowHeaderRow.BorderStyle = BorderStyle.Solid
-                        'rowHeaderRow.BorderWidth = Unit.Pixel(0)
-                        'rowHeaderRow.Font.Name = NullSafeString(dr("FontName"))
-                        'rowHeaderRow.Font.Size = PointToPixelFontUnit(NullSafeString(dr("FontSize")))
-                        'rowHeaderRow.Font.Italic = NullSafeBoolean(dr("FontItalic"))
-                        'rowHeaderRow.Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
-                        'rowHeaderRow.Font.Underline = NullSafeBoolean(dr("FontUnderline"))
-                        'rowHeaderRow.ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
-                        ''rowHeaderRow.Wrap = False
-                        'rowHeaderRow.Height = Unit.Pixel(iHeaderHeight)
-                        'rowHeaderRow.VerticalAlign = VerticalAlign.Middle
-                        'rowHeaderRow.HorizontalAlign = HorizontalAlign.Center
-
-                        'ctlForm_Table.Rows.Add(rowHeaderRow)
-
-                        ' ''NPG20100611 Fault HRPRO 873
-                        ' ''Deduct 1 pixel from the iGridWidth variable to prevent horizontal scrollbar.
-                        ''iGridWidth = NullSafeInteger(dr("Width")) - 1
-
-                        ''Adjust available width for the vertical scrollbar.
-                        'iGapBetweenBorderAndText = (CInt(NullSafeSingle(dr("FontSize")) + 6) \ 4)
-                        'iEffectiveRowHeight = CInt(NullSafeSingle(dr("FontSize"))) _
-                        ' + 1 _
-                        ' + (2 * iGapBetweenBorderAndText)
-
-                        'iTempHeight = NullSafeInteger(ctlForm_GridContainer.Height.Value)
-                        'iTempHeight = CInt(IIf(iTempHeight < 0, 1, iTempHeight))
-
-                        'iGridWidth = iVisibleColumnCount * iColWidth
-                        'iGridWidth = CInt(IIf(iGridWidth < 0, 1, iGridWidth))
-                        '' minimum width should be the width of the dropdown control itself
-                        'iGridWidth = CInt(IIf(iGridWidth < NullSafeInteger(dr("Width")), NullSafeInteger(dr("Width")), iGridWidth))
-
-                        '' maximum width???
-
-                        'If (ctlForm_RecordSelectionGrid.Rows.Count * iEffectiveRowHeight > iTempHeight) Then
-                        '    ' There's a scrollbar
-                        '    ctlForm_GridContainer.Width = iGridWidth - 16
-                        '    iGridWidth = iGridWidth - 32
-                        '    ctlForm_Table.Width = iGridWidth
-                        '    ctlForm_RecordSelectionGrid.Width = iGridWidth
-                        '    ctlForm_RecordSelectionGrid.Attributes.CssStyle("WIDTH") = iGridWidth.ToString
-                        'Else
-                        '    ctlForm_GridContainer.Width = iGridWidth
-                        '    iGridWidth = iGridWidth - 1
-                        '    ctlForm_Table.Width = iGridWidth
-                        '    ctlForm_RecordSelectionGrid.Width = iGridWidth
-                        '    ctlForm_RecordSelectionGrid.Attributes.CssStyle("WIDTH") = iGridWidth.ToString
-                        'End If
-
-                        '' Set the size of the grid as per old DropDown setting...
-                        '' iRowHeight = CInt(ctlForm_TextInput.Height.Value) - 6
-                        'iRowHeight = CInt(ctlForm_Dropdown.Height.Value) - 6
-                        'iRowHeight = CInt(IIf(iRowHeight < 22, 22, iRowHeight))
-                        'iDropHeight = (iRowHeight * CInt(IIf(ctlForm_RecordSelectionGrid.Rows.Count > MAXDROPDOWNROWS, MAXDROPDOWNROWS, ctlForm_RecordSelectionGrid.Rows.Count))) + 1
 
                       Catch ex As Exception
 
@@ -2535,9 +2113,6 @@ Public Class _Default
 
                       Next
                     End If
-
-
-
 
                     ' =============================================================================
                     ' AJAX DropDownExtender (DDE) Control
@@ -2629,9 +2204,6 @@ Public Class _Default
                       .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
                       .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
 
-                      '.Attributes.Add("onclick", "return false;")
-                      '.Attributes.Add("onmousedown", "InitializeLookup(" & sID & ");")
-
                       If isMobileBrowser() Then .Attributes.Add("onchange", "FilterMobileLookup('" & .ID.ToString & "');")
 
                       ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_Dropdown)
@@ -2670,12 +2242,12 @@ Public Class _Default
                        - (NullSafeSingle(dr("FontSize")) * 2 * (iGridTopPadding - 1) / 4))
 
                       If (Not IsPostBack) Then
-                        connGrid = New SqlClient.SqlConnection(strConn)
+                        connGrid = New SqlConnection(GetConnectionString)
                         connGrid.Open()
 
                         Try
 
-                          cmdGrid = New SqlClient.SqlCommand
+                          cmdGrid = New SqlCommand
                           cmdGrid.CommandText = "spASRGetWorkflowItemValues"
                           cmdGrid.Connection = connGrid
                           cmdGrid.CommandType = CommandType.StoredProcedure
@@ -2721,7 +2293,6 @@ Public Class _Default
                           ctlForm_Dropdown.DataBind()
 
                           cmdGrid.Dispose()
-                          cmdGrid = Nothing
 
                           iRowHeight = CInt(.Height.Value) - 6
                           iRowHeight = CInt(IIf(iRowHeight < 22, 22, iRowHeight))
@@ -2777,13 +2348,9 @@ Public Class _Default
 
                   End If
 
-
-
-
-
                 Case 13 ' Dropdown (13) Inputs
 
-                  ctlForm_Dropdown = New System.Web.UI.WebControls.DropDownList ' Infragistics.WebUI.WebCombo.WebCombo()
+                  ctlForm_Dropdown = New System.Web.UI.WebControls.DropDownList
 
                   With ctlForm_Dropdown
                     .ID = sID
@@ -2797,19 +2364,9 @@ Public Class _Default
                     .Style("position") = "absolute"
                     .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
                     .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
-                    '.Attributes.Add("onclick", "getElementsByPartialName('" & sID & "');")
 
                     If isMobileBrowser() Then .Attributes.Add("onchange", "FilterMobileLookup('" & .ID.ToString & "');")
 
-                    ' EnableXmlHTTP is required becaue we're using client-side filtering using 'selectwhere'
-                    ''.EnableXmlHTTP = True
-                    ''.ClientSideEvents.BeforeDropDown = "InitializeLookup"
-                    ''.ClientSideEvents.EditKeyDown = "dropdownControlKeyPress"
-                    ''.ClientSideEvents.AfterDropDown = "ResizeFormForCombo"
-
-                    '.DropDownLayout.XmlLoadOnDemandType = Infragistics.WebUI.WebCombo.ComboLoadOnDemandType.Accumulative
-
-                    'pnlInput.ContentTemplateContainer.Controls.Add(ctlForm_Dropdown)
                     ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_Dropdown)
 
                     sFilterSQL = LookupFilterSQL(NullSafeString(dr("lookupFilterColumnName")), _
@@ -2823,15 +2380,8 @@ Public Class _Default
                         .ID = "lookup" & sID
                         .Value = sFilterSQL
                       End With
-                      'pnlInput.ContentTemplateContainer.Controls.Add(ctlForm_HiddenField)
                       ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_HiddenField)
                     End If
-
-                    ' InitializeDataSource & DataBound methods need to be defined because we have EnableXmlHTTP enabled.
-                    ' EnableXmlHTTP is required becaue we're using client-side filtering using 'selectwhere'
-                    'AddHandler ctlForm_Dropdown.InitializeDataSource, AddressOf Me.InitializeLookupData
-
-                    'AddHandler ctlForm_Dropdown.Load, AddressOf Me.InitializeLookupData
 
                     .Font.Name = NullSafeString(dr("FontName"))
                     .Font.Size = PointToPixelFontUnit(NullSafeInteger(dr("FontSize")))
@@ -2842,49 +2392,9 @@ Public Class _Default
 
                     .BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColor")))
                     .ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
-                    ''.SelForeColor = System.Drawing.SystemColors.HighlightText
-                    ''.SelBackColor = System.Drawing.SystemColors.Highlight
-                    ' .BorderColor = objGeneral.GetColour(5730458)
-
-                    ''.DropDownLayout.FrameStyle.BorderColor = objGeneral.GetColour(10720408)
-                    ''.DropDownLayout.FrameStyle.BorderStyle = BorderStyle.Solid
-                    ''.DropDownLayout.FrameStyle.BorderWidth = Unit.Pixel(1)
-                    ''.DropDownLayout.FrameStyle.BackColor = objGeneral.GetColour(16248040)
-
-                    ''.DropDownLayout.RowStyle.Font.Name = NullSafeString(dr("FontName"))
-                    ''.DropDownLayout.RowStyle.Font.Size = PointToPixelFontUnit(NullSafeString(dr("FontSize")))
-                    ''.DropDownLayout.RowStyle.Font.Italic = NullSafeBoolean(dr("FontItalic"))
-                    ''.DropDownLayout.RowStyle.Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
-                    ''.DropDownLayout.RowStyle.Font.Underline = NullSafeBoolean(dr("FontUnderline"))
-                    ''.DropDownLayout.RowStyle.BackColor = objGeneral.GetColour(15988214)
-                    ''.DropDownLayout.RowStyle.ForeColor = objGeneral.GetColour(6697779)
-
-                    ''.ExpandEffects.Type = Infragistics.WebUI.WebCombo.ExpandEffectType.Slide
-
-                    ''.DropDownLayout.RowStyle.Padding.Left = Unit.Pixel(3)
-                    ''.DropDownLayout.RowStyle.Padding.Right = Unit.Pixel(3)
-                    ''.DropDownLayout.RowStyle.Padding.Top = Unit.Pixel(0)
-                    ''.DropDownLayout.RowStyle.Padding.Bottom = Unit.Pixel(1)
-                    ''.DropDownLayout.RowStyle.VerticalAlign = VerticalAlign.Middle
-
-                    ''.DropDownLayout.SelectedRowStyle.ForeColor = objGeneral.GetColour(2774907)
-                    ''.DropDownLayout.SelectedRowStyle.BackColor = objGeneral.GetColour(10480637)
-
-                    ''.DropDownLayout.BorderCollapse = Infragistics.WebUI.UltraWebGrid.BorderCollapse.Collapse
-
-                    ''.DropDownLayout.TableLayout = Infragistics.WebUI.UltraWebGrid.TableLayout.Fixed
 
                     .Height() = Unit.Pixel(NullSafeInteger(dr("Height")) - 2)
                     .Width() = Unit.Pixel(NullSafeInteger(dr("Width")) - 2)
-
-                    ''.DropDownLayout.AllowSorting = Infragistics.WebUI.UltraWebGrid.AllowSorting.Yes
-                    ''.DropDownLayout.HeaderClickAction = Infragistics.WebUI.UltraWebGrid.HeaderClickAction.SortMulti
-                    ''.DropDownLayout.StationaryMargins = Infragistics.WebUI.UltraWebGrid.StationaryMargins.Header
-                    ''.DropDownLayout.RowStyle.Cursor = Infragistics.WebUI.Shared.Cursors.Default
-
-                    ''.DropDownLayout.AllowColSizing = Infragistics.WebUI.UltraWebGrid.AllowSizing.Free
-
-                    ''.DropDownLayout.GridLines = Infragistics.WebUI.UltraWebGrid.UltraGridLines.Both
 
                     ' HEADER formatting
                     iGridTopPadding = CInt(NullSafeSingle(dr("FontSize")) / 8)
@@ -2892,48 +2402,13 @@ Public Class _Default
                      - 2 _
                      - (NullSafeSingle(dr("FontSize")) * 2 * (iGridTopPadding - 1) / 4))
 
-                    ''.DropDownLayout.HeaderStyle.BackColor = objGeneral.GetColour(16248553)
-                    ''.DropDownLayout.HeaderStyle.BorderColor = objGeneral.GetColour(10720408)
-                    ''.DropDownLayout.HeaderStyle.BorderStyle = BorderStyle.Solid
-                    ''.DropDownLayout.HeaderStyle.BorderDetails.WidthLeft = Unit.Pixel(0)
-                    ''.DropDownLayout.HeaderStyle.BorderDetails.WidthTop = Unit.Pixel(0)
-                    ''.DropDownLayout.HeaderStyle.BorderDetails.WidthBottom = Unit.Pixel(1)
-                    ''.DropDownLayout.HeaderStyle.BorderDetails.WidthRight = Unit.Pixel(1)
-
-                    ''.DropDownLayout.HeaderStyle.Font.Name = NullSafeString(dr("FontName"))
-                    ''.DropDownLayout.HeaderStyle.Font.Size = PointToPixelFontUnit(NullSafeString(dr("FontSize")))
-                    ''.DropDownLayout.HeaderStyle.Font.Italic = NullSafeBoolean(dr("FontItalic"))
-                    ''.DropDownLayout.HeaderStyle.Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
-                    ''.DropDownLayout.HeaderStyle.Font.Underline = NullSafeBoolean(dr("FontUnderline"))
-                    ''.DropDownLayout.HeaderStyle.ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
-                    ''.DropDownLayout.HeaderStyle.Padding.Top = Unit.Pixel(iGridTopPadding)
-                    ''.DropDownLayout.HeaderStyle.Padding.Bottom = Unit.Pixel(0)
-                    ''.DropDownLayout.HeaderStyle.Padding.Left = Unit.Pixel(2)
-                    ''.DropDownLayout.HeaderStyle.Padding.Right = Unit.Pixel(2)
-                    ''.DropDownLayout.HeaderStyle.Wrap = False
-                    ''.DropDownLayout.HeaderStyle.Height = Unit.Pixel(iHeaderHeight)
-                    ''.DropDownLayout.HeaderStyle.VerticalAlign = VerticalAlign.Middle
-                    ''.DropDownLayout.HeaderStyle.HorizontalAlign = HorizontalAlign.Center
-
-                    ' ROW formatting
-                    ''.DropDownLayout.RowStyle.Padding.Left = Unit.Pixel(3)
-                    ''.DropDownLayout.RowStyle.Padding.Left = Unit.Pixel(3)
-                    ''.DropDownLayout.RowStyle.Padding.Right = Unit.Pixel(3)
-                    ''.DropDownLayout.RowStyle.Padding.Top = Unit.Pixel(0)
-                    ''.DropDownLayout.RowStyle.Padding.Bottom = Unit.Pixel(1)
-                    ''.DropDownLayout.RowStyle.VerticalAlign = VerticalAlign.Middle
-
-                    ''.DropDownLayout.RowSelectors = Infragistics.WebUI.UltraWebGrid.RowSelectors.No
-                    ''.DropDownLayout.RowsRange = mobjConfig.LookupRowsRange
-
-
                     If (Not IsPostBack) Then
-                      connGrid = New SqlClient.SqlConnection(strConn)
+                      connGrid = New SqlConnection(GetConnectionString)
                       connGrid.Open()
 
                       Try
 
-                        cmdGrid = New SqlClient.SqlCommand
+                        cmdGrid = New SqlCommand
                         cmdGrid.CommandText = "spASRGetWorkflowItemValues"
                         cmdGrid.Connection = connGrid
                         cmdGrid.CommandType = CommandType.StoredProcedure
@@ -2960,47 +2435,11 @@ Public Class _Default
                         da.Fill(dt)
                         Session(sID & "_DATA") = dt
 
-                        '' Format the column(s)
+                        ' Format the column(s)
                         For Each objGridColumn In dt.Columns
                           If objGridColumn.ColumnName.StartsWith("ASRSys") Then
-                            'objGridColumn..Hidden = True
                           Else
-                            'If iLookupColumnIndex = objGridColumn.Index Then
                             .DataTextField = objGridColumn.ColumnName.ToString
-
-                            'If objGridColumn.DataType = "System.Decimal" _
-                            'Or objGridColumn.DataType = "System.Int32" Then
-
-                            '    .ClientSideEvents.AfterSelectChange = "ChangeLookup"
-                            'End If
-
-                            '.Attributes.Remove("DataType")
-                            '.Attributes.Add("DataType", objGridColumn.DataType)
-
-                            'If iType = 13 Then
-                            '    If .Rows.Count > MAXDROPDOWNROWS Then
-                            '        ' Vertical scrollbar will be visible. Adjust the column width
-                            '        .DropDownLayout.ColWidthDefault = Unit.Pixel(CInt(.DropDownLayout.DropdownWidth.Value) - 20)
-                            '    Else
-                            '        ' Vertical scrollbar will NOT be visible.
-                            '        .DropDownLayout.ColWidthDefault = Unit.Pixel(CInt(.DropDownLayout.DropdownWidth.Value) - 5)
-                            '    End If
-                            'End If
-
-                            'End If
-                            'objGridColumn.AllowNull = False
-
-                            'If objGridColumn.DataType = "System.DateTime" Then
-                            '    objGridColumn.Format = Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern
-
-                            'ElseIf objGridColumn.DataType = "System.Boolean" Then
-                            '    objGridColumn.CellStyle.HorizontalAlign = HorizontalAlign.Center
-
-                            'ElseIf objGridColumn.DataType = "System.Decimal" _
-                            '    Or objGridColumn.DataType = "System.Int32" Then
-
-                            '    objGridColumn.CellStyle.HorizontalAlign = HorizontalAlign.Right
-                            'End If
                           End If
                         Next objGridColumn
 
@@ -3015,14 +2454,9 @@ Public Class _Default
                         .Attributes.Remove("DefaultValue")
                         .Attributes.Add("DefaultValue", NullSafeString(cmdGrid.Parameters("@psDefaultValue").Value))
 
-                        ' AddHandler ctlForm_Dropdown.DataBound, AddressOf Me.LookupDataBound
-
                         ctlForm_Dropdown.DataBind()
 
                         cmdGrid.Dispose()
-                        cmdGrid = Nothing
-
-
 
                         ' Only show headers for lookups, not dropdown lists
                         If iItemType = 14 Then
@@ -3130,11 +2564,11 @@ Public Class _Default
                     "</legend>"
                   End If
 
-                  connGrid = New SqlClient.SqlConnection(strConn)
+                  connGrid = New SqlConnection(GetConnectionString)
                   connGrid.Open()
 
                   Try
-                    cmdGrid = New SqlClient.SqlCommand
+                    cmdGrid = New SqlCommand
                     cmdGrid.CommandText = "spASRGetWorkflowItemValues"
                     cmdGrid.Connection = connGrid
                     cmdGrid.CommandType = CommandType.StoredProcedure
@@ -3256,9 +2690,7 @@ Public Class _Default
                     End While
 
                     drGrid.Close()
-                    drGrid = Nothing
                     cmdGrid.Dispose()
-                    cmdGrid = Nothing
 
                     sTemp = sTemp & _
                      "</fieldset>" & vbCrLf
@@ -3283,7 +2715,6 @@ Public Class _Default
                       iMinTabIndex = NullSafeInteger(dr("tabIndex"))
                     End If
 
-                    'pnlInput.ContentTemplateContainer.Controls.Add(ctlForm_OptionGroupReal)
                     ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_OptionGroupReal)
 
                   Catch ex As Exception
@@ -3297,63 +2728,8 @@ Public Class _Default
                     connGrid.Dispose()
                   End Try
 
-                  'Case 17 ' Input value - file upload
-                  '  ctlForm_Button = New Infragistics.WebUI.WebDataInput.WebImageButton
-                  '  With ctlForm_Button
-                  '    .ID = sID
-                  '    .TabIndex = CShort(NullSafeInteger(dr("tabIndex")) + 1)
-
-                  '    If (iMinTabIndex < 0) Or (NullSafeInteger(dr("tabIndex")) < iMinTabIndex) Then
-                  '      sDefaultFocusControl = sID
-                  '      iMinTabIndex = NullSafeInteger(dr("tabIndex"))
-                  '    End If
-
-                  '    .Style("position") = "absolute"
-                  '    .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
-                  '    .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
-
-                  '    .Appearance.Style.BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColor")))
-                  '    .Appearance.Style.BorderStyle = BorderStyle.Solid
-                  '    .Appearance.Style.BorderWidth = 1
-                  '    .Appearance.InnerBorder.StyleTop = BorderStyle.None
-                  '    .Appearance.Style.BorderColor = objGeneral.GetColour(9999523)
-                  '    .Appearance.Style.ForeColor = objGeneral.GetColour(NullSafeInteger(dr("ForeColor")))
-                  '    .FocusAppearance.Style.BorderColor = objGeneral.GetColour(562943)
-                  '    .FocusAppearance.Style.BackColor = objGeneral.GetColour(12775933)
-                  '    .HoverAppearance.Style.BorderColor = objGeneral.GetColour(562943)
-
-
-                  '    .Text = NullSafeString(dr("caption"))
-                  '    .Font.Name = NullSafeString(dr("FontName"))
-                  '    .Font.Size = PointToPixelFontUnit(NullSafeString(dr("FontSize")))
-                  '    .Font.Bold = NullSafeBoolean(NullSafeBoolean(dr("FontBold")))
-                  '    .Font.Italic = NullSafeBoolean(NullSafeBoolean(dr("FontItalic")))
-                  '    .Font.Strikeout = NullSafeBoolean(NullSafeBoolean(dr("FontStrikeThru")))
-                  '    .Font.Underline = NullSafeBoolean(NullSafeBoolean(dr("FontUnderline")))
-
-                  '    .Width = Unit.Pixel(NullSafeInteger(dr("Width")))
-                  '    .Height = Unit.Pixel(NullSafeInteger(dr("Height")) - 7)
-
-                  '    .ClientSideEvents.Click = "try{showFileUpload(true, '" & sEncodedID & "', document.getElementById('file" & sID & "').value);}catch(e){};"
-
-                  '    AddHandler ctlForm_Button.Click, AddressOf Me.DisableControls
-                  '  End With
-
-
-                  '  'pnlInput.ContentTemplateContainer.Controls.Add(ctlForm_Button)
-                  '  ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_Button)
-
-                  '  ctlForm_HiddenField = New HiddenField
-                  '  With ctlForm_HiddenField
-                  '    .ID = "file" & sID
-                  '    .Value = NullSafeString(dr("value"))
-                  '  End With
-                  '  'pnlInput.ContentTemplateContainer.Controls.Add(ctlForm_HiddenField)
-                  '  ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_HiddenField)
-
-
                 Case 17 ' Input value - file upload
-                  ctlForm_HTMLInputButton = New System.Web.UI.HtmlControls.HtmlInputButton
+                  ctlForm_HTMLInputButton = New HtmlInputButton
                   With ctlForm_HTMLInputButton
                     .ID = sID
                     .Attributes.Add("TabIndex", CShort(NullSafeInteger(dr("tabIndex")) + 1).ToString)
@@ -3401,8 +2777,6 @@ Public Class _Default
                     End If
                   End With
 
-
-                  'pnlInput.ContentTemplateContainer.Controls.Add(ctlForm_Button)
                   ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_HTMLInputButton)
 
                   ctlForm_HiddenField = New HiddenField
@@ -3410,7 +2784,7 @@ Public Class _Default
                     .ID = "file" & sID
                     .Value = NullSafeString(dr("value"))
                   End With
-                  'pnlInput.ContentTemplateContainer.Controls.Add(ctlForm_HiddenField)
+
                   ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_HiddenField)
                 Case 19 ' DB File
                   sDecoration = ""
@@ -3459,7 +2833,6 @@ Public Class _Default
 
                   ctlForm_Literal = New LiteralControl(sTemp)
 
-                  'pnlInput.ContentTemplateContainer.Controls.Add(ctlForm_Literal)
                   ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_Literal)
 
                 Case 20 ' WF File
@@ -3509,10 +2882,7 @@ Public Class _Default
 
                   ctlForm_Literal = New LiteralControl(sTemp)
 
-                  'pnlInput.ContentTemplateContainer.Controls.Add(ctlForm_Literal)
                   ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_Literal)
-
-
 
                 Case 21   ' Tab Strip
 
@@ -3520,121 +2890,121 @@ Public Class _Default
                   sTemp = NullSafeString(dr("Caption"))   '"Page 1;Page 2;"
                   Dim arrTabCaptions As String() = sTemp.Split(New Char() {";"c})
 
-                  m_iTabStripHeight = 30
-
                   pnlTabsDiv.Style("width") = CStr(dr("Width")) & "px"
                   pnlTabsDiv.Style("height") = CStr(dr("Height")) & "px"
                   pnlTabsDiv.Style("left") = CStr(dr("LeftCoord")) & "px"
                   pnlTabsDiv.Style("top") = CStr(dr("TopCoord")) & "px"
 
-                  If True Then
-                    Dim ctlTabsDiv As New Panel
-                    ctlTabsDiv.ID = "TabsDiv"
-                    ctlTabsDiv.Style.Add("height", m_iTabStripHeight & "px")
+                  Dim ctlTabsDiv As New Panel
+                  ctlTabsDiv.ID = "TabsDiv"
+                  ctlTabsDiv.Style.Add("height", TabStripHeight & "px")
 
-                    If isMobileBrowser() Then
-                      ctlTabsDiv.Style.Add("overflow-x", "auto")
-                    Else
-                      ' for non-mobile browsers we display arrows to scroll the tab bar left and right.
-                      ctlTabsDiv.Style.Add("overflow", "hidden")
-                      ctlTabsDiv.Style.Add("margin-right", "51px")
+                  'TODO
+                  Dim hidden = New HiddenField() With {.ID = sID & "currentTab", .Value = "1"}
+                  pnlTabsDiv.Controls.Add(hidden)
 
-                      ' Nav arrows for non-mobile browsers
-                      Dim ctlForm_TabArrows As New Panel
-                      With ctlForm_TabArrows
-                        .Style.Add("position", "absolute")
-                        .Style.Add("top", "2px")
-                        .Style.Add("right", "0px")
-                        .Style.Add("width", "48px")
-                        '.Style.Add("height", iTabStripHeight - 4 & "px")
-                        .Style.Add("z-index", "1")
-                        .BackColor = Color.White
-                        .BorderColor = Color.Black
-                        .BorderWidth = 1
-                      End With
+                  If isMobileBrowser() Then
+                    ctlTabsDiv.Style.Add("overflow-x", "auto")
+                  Else
+                    ' for non-mobile browsers we display arrows to scroll the tab bar left and right.
+                    ctlTabsDiv.Style.Add("overflow", "hidden")
+                    ctlTabsDiv.Style.Add("margin-right", "51px")
 
-                      ' Left scroll arrow
-                      ctlForm_Image = New System.Web.UI.WebControls.Image 'Infragistics.WebUI.WebDataInput.WebImageButton
-                      With ctlForm_Image
-                        .Style.Add("width", "24px")
-                        .Style.Add("height", m_iTabStripHeight - 6 & "px")
-                        .ImageUrl = "~/Images/tab-prev.gif"
-                        .Style.Add("margin", "0px")
-                        .Style.Add("padding", "0px")
-                        .Attributes.Add("onclick", "var TabDiv = document.getElementById('TabsDiv');TabDiv.scrollLeft = TabDiv.scrollLeft - 20;")
-                      End With
-                      ctlForm_TabArrows.Controls.Add(ctlForm_Image)
+                    ' Nav arrows for non-mobile browsers
+                    Dim ctlForm_TabArrows As New Panel
+                    With ctlForm_TabArrows
+                      .Style.Add("position", "absolute")
+                      .Style.Add("top", "2px")
+                      .Style.Add("right", "0px")
+                      .Style.Add("width", "48px")
+                      '.Style.Add("height", iTabStripHeight - 4 & "px")
+                      .Style.Add("z-index", "1")
+                      .BackColor = Color.White
+                      .BorderColor = Color.Black
+                      .BorderWidth = 1
+                    End With
 
-                      ' Right scroll arrow
-                      ctlForm_Image = New System.Web.UI.WebControls.Image 'Infragistics.WebUI.WebDataInput.WebImageButton
-                      With ctlForm_Image
-                        .Style.Add("width", "24px")
-                        .Style.Add("height", m_iTabStripHeight - 6 & "px")
-                        .ImageUrl = "~/Images/tab-next.gif"
-                        .Style.Add("margin", "0px")
-                        .Style.Add("padding", "0px")
-                        .Attributes.Add("onclick", "var TabDiv = document.getElementById('TabsDiv');TabDiv.scrollLeft = TabDiv.scrollLeft + 20;")
-                      End With
-                      ctlForm_TabArrows.Controls.Add(ctlForm_Image)
+                    ' Left scroll arrow
+                    ctlForm_Image = New WebControls.Image
+                    With ctlForm_Image
+                      .Style.Add("width", "24px")
+                      .Style.Add("height", TabStripHeight - 6 & "px")
+                      .ImageUrl = "~/Images/tab-prev.gif"
+                      .Style.Add("margin", "0px")
+                      .Style.Add("padding", "0px")
+                      .Attributes.Add("onclick", "var TabDiv = document.getElementById('TabsDiv');TabDiv.scrollLeft = TabDiv.scrollLeft - 20;")
+                    End With
+                    ctlForm_TabArrows.Controls.Add(ctlForm_Image)
 
-                      ctlTabsDiv.Controls.Add(ctlForm_TabArrows)
+                    ' Right scroll arrow
+                    ctlForm_Image = New WebControls.Image
+                    With ctlForm_Image
+                      .Style.Add("width", "24px")
+                      .Style.Add("height", TabStripHeight - 6 & "px")
+                      .ImageUrl = "~/Images/tab-next.gif"
+                      .Style.Add("margin", "0px")
+                      .Style.Add("padding", "0px")
+                      .Attributes.Add("onclick", "var TabDiv = document.getElementById('TabsDiv');TabDiv.scrollLeft = TabDiv.scrollLeft + 20;")
+                    End With
+                    ctlForm_TabArrows.Controls.Add(ctlForm_Image)
 
-                    End If
+                    ctlTabsDiv.Controls.Add(ctlForm_TabArrows)
 
-                    ' generate the tabs.
-                    Dim ctlTabsTable As New Table
-                    ctlTabsTable.CellSpacing = 0
-                    ctlTabsTable.Style.Add("margin-top", "2px")
-                    Dim trPager As TableRow = New TableRow()
-                    trPager.Height = Unit.Pixel(m_iTabStripHeight - 4 - 1) ' to prevent vertical scrollbar
-                    trPager.Style.Add("white-space", "nowrap")
-
-                    Dim tcTabCell As New TableCell
-                    'Dim ctlForm_Label As New Label
-
-                    Dim iTabNo As Integer = 1
-                    ' add a cell for each tab
-                    For Each sTabCaption In arrTabCaptions
-                      If sTabCaption.Trim.Length > 0 Then
-                        tcTabCell = New TableCell
-
-                        With tcTabCell
-                          .ID = "forminput_" & iTabNo.ToString & "_21_Panel"
-                          .BorderColor = Color.Black
-                          .Style.Add("padding-left", "5px")
-                          .Style.Add("padding-right", "5px")
-                          .Style.Add("border-radius", "5px 5px 0px 0px")
-                          .Style.Add("width", "50px")
-                          .BorderWidth = 1
-                          .BorderStyle = BorderStyle.Solid
-                          .BackColor = Color.White
-
-                          ' label the button...
-                          ctlForm_Label = New Label
-                          ctlForm_Label.Font.Name = "Verdana"
-                          ctlForm_Label.Font.Size = New FontUnit(11, UnitType.Pixel)
-                          ctlForm_Label.Text = sTabCaption.ToString
-
-                          .Controls.Add(ctlForm_Label)
-
-                          ' Tab Clicking/mouseover
-                          .Attributes.Add("onclick", "SetCurrentTab(" & iTabNo.ToString & ");")
-                          .Attributes.Add("onmouseover", "this.style.cursor='pointer';")
-                          .Attributes.Add("onmouseout", "this.style.cursor='';")
-                        End With
-
-                        trPager.Cells.Add(tcTabCell)
-                        iTabNo += 1 ' keep tabs on the number of tabs hehehe :P
-                      End If
-                    Next
-
-                    'add row to table
-                    ctlTabsTable.Rows.Add(trPager)
-
-                    'add table to div
-                    ctlTabsDiv.Controls.Add(ctlTabsTable)
-                    pnlTabsDiv.Controls.AddAt(0, ctlTabsDiv)
                   End If
+
+                  ' generate the tabs.
+                  Dim ctlTabsTable As New Table
+                  ctlTabsTable.CellSpacing = 0
+                  ctlTabsTable.Style.Add("margin-top", "2px")
+                  Dim trPager As TableRow = New TableRow()
+                  trPager.Height = Unit.Pixel(TabStripHeight - 4 - 1) ' to prevent vertical scrollbar
+                  trPager.Style.Add("white-space", "nowrap")
+
+                  Dim tcTabCell As New TableCell
+                  'Dim ctlForm_Label As New Label
+
+                  Dim iTabNo As Integer = 1
+                  ' add a cell for each tab
+                  For Each sTabCaption In arrTabCaptions
+                    If sTabCaption.Trim.Length > 0 Then
+                      tcTabCell = New TableCell
+
+                      With tcTabCell
+                        .ID = "forminput_" & iTabNo.ToString & "_21_Panel"
+                        .BorderColor = Color.Black
+                        .Style.Add("padding-left", "5px")
+                        .Style.Add("padding-right", "5px")
+                        .Style.Add("border-radius", "5px 5px 0px 0px")
+                        .Style.Add("width", "50px")
+                        .BorderWidth = 1
+                        .BorderStyle = BorderStyle.Solid
+                        .BackColor = Color.White
+
+                        ' label the button...
+                        ctlForm_Label = New Label
+                        ctlForm_Label.Font.Name = "Verdana"
+                        ctlForm_Label.Font.Size = New FontUnit(11, UnitType.Pixel)
+                        ctlForm_Label.Text = sTabCaption.ToString
+
+                        .Controls.Add(ctlForm_Label)
+
+                        ' Tab Clicking/mouseover
+                        .Attributes.Add("onclick", "SetCurrentTab(" & iTabNo.ToString & ");")
+                        .Attributes.Add("onmouseover", "this.style.cursor='pointer';")
+                        .Attributes.Add("onmouseout", "this.style.cursor='';")
+                      End With
+
+                      trPager.Cells.Add(tcTabCell)
+                      iTabNo += 1 ' keep tabs on the number of tabs hehehe :P
+                    End If
+                  Next
+
+                  'add row to table
+                  ctlTabsTable.Rows.Add(trPager)
+
+                  'add table to div
+                  ctlTabsDiv.Controls.Add(ctlTabsTable)
+                  pnlTabsDiv.Controls.AddAt(0, ctlTabsDiv)
 
               End Select
             End While
@@ -3660,11 +3030,7 @@ Public Class _Default
                 If CInt(cmdSelect.Parameters("@piBackImage").Value) > 0 Then
                   sBackgroundImage = LoadPicture(CInt(cmdSelect.Parameters("@piBackImage").Value), sMessage)
                   If sMessage.Length = 0 Then
-
-                    'pnlInputDiv.Style("Background-image") = sBackgroundImage
                     divInput.Style("Background-image") = sBackgroundImage
-                    ' pnlInput.BackImageUrl = sBackgroundImage
-
                   End If
                   If sMessage.Length = 0 Then
                     sBackgroundImage = "url('" & sBackgroundImage & "')"
@@ -3675,10 +3041,6 @@ Public Class _Default
                   sBackgroundPosition = objGeneral.BackgroundPosition(CShort(iBackgroundImagePosition))
 
                 End If
-                'pnlInput.Style("background-repeat") = sBackgroundRepeat
-                'pnlInput.Style("background-position") = sBackgroundPosition
-                'pnlInputDiv.Style("background-repeat") = sBackgroundRepeat
-                'pnlInputDiv.Style("background-position") = sBackgroundPosition
                 divInput.Style("background-repeat") = sBackgroundRepeat
                 divInput.Style("background-position") = sBackgroundPosition
 
@@ -3722,19 +3084,10 @@ Public Class _Default
                 'Adds the trigger to the UpdatePanels' triggers collection
 
                 'Sets the control that will trigger a post-back on the UpdatePanel
-
                 trigger.ControlID = "btnSubmit"
                 pnlInput.Triggers.Add(trigger)
 
                 pnlInput.UpdateMode = UpdatePanelUpdateMode.Conditional
-                'pnlInput.ChildrenAsTriggers = False
-                ' These two are now created clientside as PageRequestManager functions...
-                'pnlInput.ClientSideEvents.RefreshRequest = "goSubmit();"
-
-                'pnlInput.ClientSideEvents.RefreshComplete = "showMessage();"
-
-                ' This is now created in the Page_Init event.
-                ' pnlInput.ClientSideEvents.InitializePanel = "WARP_SetTimeout();"
 
                 If sDefaultFocusControl.Length > 0 Then
                   frmMain.DefaultFocus = sDefaultFocusControl
@@ -3794,178 +3147,28 @@ Public Class _Default
       End If
     End If
 
-
-
-
-    Dim ctlFormInput As Control
-    '   Dim sID As String
-    Dim sIDString As String
-    '    Dim iTemp As Int16
-    '    Dim sTemp As String
-    Dim iType As Int16
-    Dim sType As String
-    'Dim ctlFormDropdown As System.Web.UI.WebControls.DropDownList   'Infragistics.WebUI.WebCombo.WebCombo
-    '    Dim objGridColumn As Infragistics.WebUI.UltraWebGrid.UltraGridColumn
-    '    Dim iLookupColumnIndex As Int16
-    'Dim ctlFormRecordSelectionGrid As System.Web.UI.WebControls.GridView ' Infragistics.WebUI.UltraWebGrid.UltraWebGrid
-
-    ' Set the DataSource properties of each combo (dropdown list or lookup), 
-    ' and then bind the DataSource to the combo.
-    ' The DataSource property is set to the DataTable created on initial Page_Init,
-    ' and stored in a sesion variable for each combo.
-
-    If (Not IsPostBack) Then
-      For Each ctlFormInput In pnlInput.ContentTemplateContainer.Controls
-        sID = ctlFormInput.ID
-
-        If (Left(sID, Len(FORMINPUTPREFIX)) = FORMINPUTPREFIX) Then
-          sIDString = sID.Substring(Len(FORMINPUTPREFIX))
-
-          iTemp = CShort(sIDString.IndexOf("_"))
-          sTemp = sIDString.Substring(iTemp + 1)
-          sIDString = sIDString.Substring(0, iTemp) & vbTab
-
-          iTemp = CShort(sTemp.IndexOf("_"))
-          sType = sTemp.Substring(0, iTemp)
-          iType = CShort(sType)
-
-          'If (iType = 11) Then
-          '    ' 11 = Record Selector
-          '    If (TypeOf ctlFormInput Is Infragistics.WebUI.UltraWebGrid.UltraWebGrid) Then
-          '        ctlFormRecordSelectionGrid = DirectCast(ctlFormInput, Infragistics.WebUI.UltraWebGrid.UltraWebGrid)
-
-          '        With ctlFormRecordSelectionGrid
-          '            'iLookupColumnIndex = CShort(.Attributes.Item("LookupColumnIndex"))
-          '            .DataSource = Session(sID & "_DATA")
-          '            .DataBind()
-
-          '            '' Format the column(s)
-          '            'For Each objGridColumn In .Columns
-          '            '    If objGridColumn.BaseColumnName.StartsWith("ASRSys") Then
-          '            '        objGridColumn.Hidden = True
-          '            '    Else
-          '            '        If iLookupColumnIndex = objGridColumn.Index Then
-          '            '            .DataTextField = objGridColumn.BaseColumnName
-
-          '            '            If objGridColumn.DataType = "System.Decimal" _
-          '            '            Or objGridColumn.DataType = "System.Int32" Then
-
-          '            '                .ClientSideEvents.AfterSelectChange = "ChangeLookup"
-          '            '            End If
-
-          '            '            .Attributes.Remove("DataType")
-          '            '            .Attributes.Add("DataType", objGridColumn.DataType)
-          '            '        End If
-          '            '        objGridColumn.AllowNull = False
-
-          '            '        If objGridColumn.DataType = "System.DateTime" Then
-          '            '            objGridColumn.Format = Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern
-
-          '            '        ElseIf objGridColumn.DataType = "System.Boolean" Then
-          '            '            objGridColumn.CellStyle.HorizontalAlign = HorizontalAlign.Center
-
-          '            '        ElseIf objGridColumn.DataType = "System.Decimal" _
-          '            '            Or objGridColumn.DataType = "System.Int32" Then
-
-          '            '            objGridColumn.CellStyle.HorizontalAlign = HorizontalAlign.Right
-          '            '        End If
-          '            '    End If
-          '            'Next objGridColumn
-          '        End With
-
-
-          '    End If
-          'End If
-
-          'If ((iType = 13) Or (iType = 14)) Then
-          '  ' 13 = Dropdown Input
-          '  ' 14 = Lookup Input
-          '              If (TypeOf ctlFormInput Is System.Web.UI.WebControls.DropDownList) Then '  Infragistics.WebUI.WebCombo.WebCombo) Then
-          '                  ctlFormDropdown = DirectCast(ctlFormInput, System.Web.UI.WebControls.DropDownList) 'Infragistics.WebUI.WebCombo.WebCombo)
-
-          '                  With ctlFormDropdown
-          '                      iLookupColumnIndex = CShort(.Attributes.Item("LookupColumnIndex"))
-          '                      .DataSource = Session(sID & "_DATA")
-          '                      .DataBind()
-
-          '                      ' Format the column(s)
-          '                      'For Each objGridColumn In .Columns
-          '                      '    If objGridColumn.BaseColumnName.StartsWith("ASRSys") Then
-          '                      '        objGridColumn.Hidden = True
-          '                      '    Else
-          '                      '        If iLookupColumnIndex = objGridColumn.Index Then
-          '                      '            .DataTextField = objGridColumn.BaseColumnName
-
-          '                      '            If objGridColumn.DataType = "System.Decimal" _
-          '                      '            Or objGridColumn.DataType = "System.Int32" Then
-
-          '                      '                .ClientSideEvents.AfterSelectChange = "ChangeLookup"
-          '                      '            End If
-
-          '                      '            .Attributes.Remove("DataType")
-          '                      '            .Attributes.Add("DataType", objGridColumn.DataType)
-
-          '                      '            If iType = 13 Then
-          '                      '                If .Rows.Count > MAXDROPDOWNROWS Then
-          '                      '                    ' Vertical scrollbar will be visible. Adjust the column width
-          '                      '                    .DropDownLayout.ColWidthDefault = Unit.Pixel(CInt(.DropDownLayout.DropdownWidth.Value) - 20)
-          '                      '                Else
-          '                      '                    ' Vertical scrollbar will NOT be visible.
-          '                      '                    .DropDownLayout.ColWidthDefault = Unit.Pixel(CInt(.DropDownLayout.DropdownWidth.Value) - 5)
-          '                      '                End If
-          '                      '            End If
-
-          '                      '        End If
-          '                      '        objGridColumn.AllowNull = False
-
-          '                      '        If objGridColumn.DataType = "System.DateTime" Then
-          '                      '            objGridColumn.Format = Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern
-
-          '                      '        ElseIf objGridColumn.DataType = "System.Boolean" Then
-          '                      '            objGridColumn.CellStyle.HorizontalAlign = HorizontalAlign.Center
-
-          '                      '        ElseIf objGridColumn.DataType = "System.Decimal" _
-          '                      '            Or objGridColumn.DataType = "System.Int32" Then
-
-          '                      '            objGridColumn.CellStyle.HorizontalAlign = HorizontalAlign.Right
-          '                      '        End If
-          '                      '    End If
-          '                      'Next objGridColumn
-          '                  End With
-          '              End If
-          'End If
-        End If
-      Next ctlFormInput
-    End If
-
-
   End Sub
 
-
-  Public Sub ButtonClick(ByVal sender As System.Object, ByVal e As System.EventArgs) '    Infragistics.WebUI.WebDataInput.ButtonEventArgs)
-
+  Public Sub ButtonClick(ByVal sender As System.Object, ByVal e As System.EventArgs)
 
     Dim objGeneral As New General
-    Dim strConn As String
-    Dim conn As System.Data.SqlClient.SqlConnection
-    Dim dr As System.Data.SqlClient.SqlDataReader
-    Dim cmdValidate As System.Data.SqlClient.SqlCommand
-    Dim cmdUpdate As System.Data.SqlClient.SqlCommand
-    Dim cmdQS As System.Data.SqlClient.SqlCommand
+    Dim conn As SqlConnection
+    Dim dr As SqlDataReader
+    Dim cmdValidate As SqlCommand
+    Dim cmdUpdate As SqlCommand
+    Dim cmdQS As SqlCommand
     Dim sFormInput1 As String
     Dim sFormValidation1 As String
     Dim ctlFormInput As Control
-    Dim ctlFormPageTab As Control
-    Dim sID As String
     Dim ctlFormCheckBox As CheckBox
     Dim ctlFormTextInput As TextBox
     Dim ctlFormDateInput As Infragistics.WebUI.WebSchedule.WebDateChooser
     Dim ctlFormNumericInput As Infragistics.WebUI.WebDataInput.WebNumericEdit
-    ' Dim ctlFormRecordSelectionGrid As Infragistics.WebUI.UltraWebGrid.UltraWebGrid
     Dim ctlForm_PagingGridView As RecordSelector
-    Dim ctlFormDropdown As System.Web.UI.WebControls.DropDownList ' Infragistics.WebUI.WebCombo.WebCombo
+    Dim ctlFormDropdown As DropDownList
     Dim ctlForm_HiddenField As HiddenField
-    Dim sMessage As String
+
+    Dim sID As String
     Dim sIDString As String
     Dim sDateValueString As String
     Dim sNumValueString As String
@@ -3974,24 +3177,21 @@ Public Class _Default
     Dim iType As Int16
     Dim sType As String
     Dim sRecordID As String
-    ' Dim objGridColumn As Infragistics.WebUI.UltraWebGrid.UltraGridColumn
     Dim sFormElements As String
     Dim arrFollowOnForms() As String
     Dim fSavedForLater As Boolean
+    Dim sMessage As String
     Dim sMessage1 As String
     Dim sMessage2 As String
     Dim sMessage3 As String
     Dim iFollowOnFormCount As Integer
     Dim iIndex As Integer
     Dim sStep As String
-    Dim sQueryString As String
     Dim arrQueryStrings() As String
     Dim sFollowOnForms As String
     Dim sColumnCaption As String
 
     sMessage = ""
-    fSavedForLater = False
-    iFollowOnFormCount = 0
     sMessage1 = ""
     sMessage2 = ""
     sMessage3 = ""
@@ -3999,278 +3199,219 @@ Public Class _Default
     sFormValidation1 = ""
     sFollowOnForms = ""
     ReDim arrQueryStrings(0)
-    Try ' Read the web form item values.
-      ' Build up a string of the form input values.
+
+    Try
+      ' Read the web form item values & build up a string of the form input values.
       ' This is a tab delimited string of itemIDs and values.
 
-      'For Each ctlFormInput In pnlInputDiv.Controls   ' pnlInput.ContentTemplateContainer.Controls      
-      Dim strPageTab As String
+      Dim controlList = pnlInputDiv.Controls.Cast(Of Control)() _
+            .Union(pnlTabsDiv.Controls.Cast(Of Control)) _
+            .Where(Function(c) c.ClientID.EndsWith("_PageTab")) _
+            .SelectMany(Function(c) c.Controls.Cast(Of Control)()) _
+            .Where(Function(c) c.ClientID.StartsWith(FORMINPUTPREFIX))
 
-      For Each ctlFormPageTab In pnlInputDiv.Controls
+      controlList = controlList.Union(pnlTabsDiv.Controls.Cast(Of Control).Where(Function(c) c.ID.EndsWith("currentTab")))
 
-        ' loop through each control, and if it's a page tab loop through that and process contents.
-        If Right(ctlFormPageTab.ClientID, 8) = "_PageTab" Then
+      'TODO check list
+      For Each ctlFormInput In controlList
 
-          strPageTab = ctlFormPageTab.ID
+        sID = ctlFormInput.ID
+        sIDString = sID.Substring(Len(FORMINPUTPREFIX))
+        iTemp = CShort(sIDString.IndexOf("_"))
+        sTemp = sIDString.Substring(iTemp + 1)
+        sIDString = sIDString.Substring(0, iTemp) & vbTab
 
-          Dim tmpPanel As New Panel
-          tmpPanel = TryCast(pnlInputDiv.FindControl(strPageTab), Panel)
+        iTemp = CShort(sTemp.IndexOf("_"))
+        sType = sTemp.Substring(0, iTemp)
+        iType = CShort(sType)
 
-          For Each ctlFormInput In tmpPanel.Controls
-            sID = ctlFormInput.ID
+        Select Case iType
 
-            If (Left(sID, Len(FORMINPUTPREFIX)) = FORMINPUTPREFIX) Then
-              sIDString = sID.Substring(Len(FORMINPUTPREFIX))
-              iTemp = CShort(sIDString.IndexOf("_"))
-              sTemp = sIDString.Substring(iTemp + 1)
-              sIDString = sIDString.Substring(0, iTemp) & vbTab
+          Case 0 ' Button
 
-              iTemp = CShort(sTemp.IndexOf("_"))
-              sType = sTemp.Substring(0, iTemp)
-              iType = CShort(sType)
+            Dim btn As HtmlInputButton = DirectCast(sender, HtmlInputButton)
 
-              Select Case iType
-
-                Case 0 ' Button
-                  'Dim btn As Infragistics.WebUI.WebDataInput.WebImageButton = _
-                  ' DirectCast(sender, Infragistics.WebUI.WebDataInput.WebImageButton)
-
-                  Dim btn As System.Web.UI.HtmlControls.HtmlInputButton = _
-                      DirectCast(sender, System.Web.UI.HtmlControls.HtmlInputButton)
-
-                  If (ctlFormInput.ID = btn.ID) Then
-                    hdnLastButtonClicked.Value = btn.ID
-                    sFormInput1 = sFormInput1 & sIDString & "1" & vbTab
-                    sFormValidation1 = sFormValidation1 & sIDString & "1" & vbTab
-                  Else
-                    ' If (TypeOf ctlFormInput Is Infragistics.WebUI.WebDataInput.WebImageButton) Then
-                    If (TypeOf ctlFormInput Is System.Web.UI.HtmlControls.HtmlInputButton) Then
-                      sFormInput1 = sFormInput1 & sIDString & "0" & vbTab
-                      sFormValidation1 = sFormValidation1 & sIDString & "0" & vbTab
-                    End If
-                  End If
-
-                Case 3 ' Character Input
-
-                  If (TypeOf ctlFormInput Is TextBox) Then
-                    ctlFormTextInput = DirectCast(ctlFormInput, TextBox)
-                    sFormInput1 = sFormInput1 & sIDString & Replace(ctlFormTextInput.Text, vbTab, " ") & vbTab
-                    sFormValidation1 = sFormValidation1 & sIDString & Replace(ctlFormTextInput.Text, vbTab, " ") & vbTab
-                  End If
-
-                Case 5 ' Numeric Input
-                  If (TypeOf ctlFormInput Is Infragistics.WebUI.WebDataInput.WebNumericEdit) Then
-                    ctlFormNumericInput = DirectCast(ctlFormInput, Infragistics.WebUI.WebDataInput.WebNumericEdit)
-                    sNumValueString = CStr(IIf(IsDBNull(ctlFormNumericInput.Value), "0", CStr(ctlFormNumericInput.Value).Replace(Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator, ".")))
-                    sFormInput1 = sFormInput1 & sIDString & sNumValueString & vbTab
-                    sFormValidation1 = sFormValidation1 & sIDString & sNumValueString & vbTab
-                  End If
-
-                Case 6 ' Logic Input
-                  If (TypeOf ctlFormInput Is CheckBox) Then
-                    ctlFormCheckBox = DirectCast(ctlFormInput, CheckBox)
-                    'sFormInput1 = sFormInput1 & sIDString & IIf(UCase(ctlFormCheckBox.Checked) = "TRUE", "1", "0") & vbTab
-                    sFormInput1 = sFormInput1 & sIDString & CStr(IIf(ctlFormCheckBox.Checked, "1", "0")) & vbTab
-                    sFormValidation1 = sFormValidation1 & sIDString & CStr(IIf(ctlFormCheckBox.Checked, "1", "0")) & vbTab
-                  End If
-
-                Case 7 ' Date Input                  
-                  If (TypeOf ctlFormInput Is Infragistics.WebUI.WebSchedule.WebDateChooser) Then
-                    ctlFormDateInput = DirectCast(ctlFormInput, Infragistics.WebUI.WebSchedule.WebDateChooser)
-
-                    If (ctlFormDateInput.Text = ctlFormDateInput.NullDateLabel) Then
-                      sDateValueString = "null"
-                    Else
-                      sDateValueString = Format(ctlFormDateInput.Value, "MM/dd/yyyy")
-                    End If
-
-                    sFormInput1 = sFormInput1 & sIDString & sDateValueString & vbTab
-                    sFormValidation1 = sFormValidation1 & sIDString & sDateValueString & vbTab
-                  End If
-
-
-                  ' Mobile?
-
-                  If (TypeOf ctlFormInput Is System.Web.UI.WebControls.TextBox) Then
-                    ctlFormTextInput = DirectCast(ctlFormInput, System.Web.UI.WebControls.TextBox)
-
-                    If (ctlFormTextInput.Text = vbNullString) Or (ctlFormTextInput.Text = "  /  /") Then
-                      sDateValueString = "null"
-                    Else
-                      sDateValueString = objGeneral.ConvertLocaleDateToSQL(ctlFormTextInput.Text)
-                    End If
-
-                    sFormInput1 = sFormInput1 & sIDString & sDateValueString & vbTab
-                    sFormValidation1 = sFormValidation1 & sIDString & sDateValueString & vbTab
-                  End If
-
-
-                  'Case 11 ' Grid (RecordSelector) Input
-                  '    If (TypeOf ctlFormInput Is Infragistics.WebUI.UltraWebGrid.UltraWebGrid) Then
-                  '        ctlFormRecordSelectionGrid = DirectCast(ctlFormInput, Infragistics.WebUI.UltraWebGrid.UltraWebGrid)
-                  '        sRecordID = "0"
-
-                  '        If ctlFormRecordSelectionGrid.DisplayLayout.SelectedRows.Count > 0 Then
-                  '            For Each objGridColumn In ctlFormRecordSelectionGrid.Columns
-                  '                sColumnCaption = UCase(objGridColumn.Header.Caption)
-
-                  '                If (sColumnCaption = "ID") Then
-                  '                    sRecordID = ctlFormRecordSelectionGrid.DisplayLayout.SelectedRows(0).GetCellText(objGridColumn)
-                  '                    Exit For
-                  '                End If
-                  '            Next objGridColumn
-                  '        End If
-
-                  '        sFormInput1 = sFormInput1 & sIDString & sRecordID & vbTab
-                  '        sFormValidation1 = sFormValidation1 & sIDString & sRecordID & vbTab
-                  '    End If
-
-
-                Case 11 ' Grid (RecordSelector) Input
-                  If (TypeOf ctlFormInput Is RecordSelector) Then    ' Infragistics.WebUI.UltraWebGrid.UltraWebGrid) Then
-                    ctlForm_PagingGridView = DirectCast(ctlFormInput, RecordSelector)
-                    sRecordID = "0"
-
-                    If Not ctlForm_PagingGridView.IsEmpty And ctlForm_PagingGridView.SelectedIndex >= 0 Then
-                      For iColCount As Integer = 0 To ctlForm_PagingGridView.HeaderRow.Cells.Count - 1
-                        sColumnCaption = UCase(ctlForm_PagingGridView.HeaderRow.Cells(iColCount).Text)
-
-                        If (sColumnCaption = "ID") Then
-                          sRecordID = ctlForm_PagingGridView.SelectedRow.Cells(iColCount).Text
-                          Exit For
-                        End If
-                      Next iColCount
-                    End If
-
-                    sFormInput1 = sFormInput1 & sIDString & sRecordID & vbTab
-                    sFormValidation1 = sFormValidation1 & sIDString & sRecordID & vbTab
-                  End If
-
-
-
-                Case 13 ' Dropdown Input
-                  If (TypeOf ctlFormInput Is System.Web.UI.WebControls.DropDownList) Then 'Infragistics.WebUI.WebCombo.WebCombo) Then
-                    ctlFormDropdown = DirectCast(ctlFormInput, System.Web.UI.WebControls.DropDownList) 'Infragistics.WebUI.WebCombo.WebCombo)
-
-                    sTemp = ctlFormDropdown.Text ' .DisplayValue
-                    sFormInput1 = sFormInput1 & sIDString & sTemp & vbTab
-                    sFormValidation1 = sFormValidation1 & sIDString & sTemp & vbTab
-                  End If
-
-
-
-                  'Case 14 ' Lookup Input
-                  '    If (TypeOf ctlFormInput Is System.Web.UI.WebControls.DropDownList) Then 'Infragistics.WebUI.WebCombo.WebCombo) Then
-                  '        ctlFormDropdown = DirectCast(ctlFormInput, System.Web.UI.WebControls.DropDownList) 'Infragistics.WebUI.WebCombo.WebCombo)
-
-                  '        sTemp = ctlFormDropdown.Text ' .DisplayValue
-
-                  '        If ctlFormDropdown.Attributes("DataType") = "System.DateTime" Then
-                  '            If sTemp Is Nothing Then
-                  '                sTemp = "null"
-                  '            Else
-                  '                If (sTemp.Length = 0) Then
-                  '                    sTemp = "null"
-                  '                Else
-                  '                    sTemp = objGeneral.ConvertLocaleDateToSQL(sTemp)
-                  '                End If
-                  '            End If
-                  '        ElseIf ctlFormDropdown.Attributes("DataType") = "System.Decimal" _
-                  '         Or ctlFormDropdown.Attributes("DataType") = "System.Int32" Then
-
-                  '            If sTemp Is Nothing Then
-                  '                sTemp = ""
-                  '            Else
-                  '                sTemp = CStr(IIf(sTemp.Length = 0, "", CStr(sTemp).Replace(Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator, ".")))
-                  '            End If
-
-                  '        End If
-
-                  '        sFormInput1 = sFormInput1 & sIDString & sTemp & vbTab
-                  '        sFormValidation1 = sFormValidation1 & sIDString & sTemp & vbTab
-                  '    End If
-
-
-                Case 14 ' Lookup Input
-                  If Not isMobileBrowser() Then
-
-
-                    If (TypeOf ctlFormInput Is System.Web.UI.WebControls.TextBox) Then   ' System.Web.UI.WebControls.DropDownList) Then 'Infragistics.WebUI.WebCombo.WebCombo) Then
-                      ctlFormTextInput = DirectCast(ctlFormInput, System.Web.UI.WebControls.TextBox)   ' System.Web.UI.WebControls.DropDownList) 'Infragistics.WebUI.WebCombo.WebCombo)
-
-                      sTemp = ctlFormTextInput.Text ' .DisplayValue
-
-                      If ctlFormTextInput.Attributes("DataType") = "System.DateTime" Then
-                        If sTemp Is Nothing Then
-                          sTemp = "null"
-                        Else
-                          If (sTemp.Length = 0) Then
-                            sTemp = "null"
-                          Else
-                            sTemp = objGeneral.ConvertLocaleDateToSQL(sTemp)
-                          End If
-                        End If
-                      ElseIf ctlFormTextInput.Attributes("DataType") = "System.Decimal" _
-                       Or ctlFormTextInput.Attributes("DataType") = "System.Int32" Then
-
-                        If sTemp Is Nothing Then
-                          sTemp = ""
-                        Else
-                          sTemp = CStr(IIf(sTemp.Length = 0, "", CStr(sTemp).Replace(Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator, ".")))
-                        End If
-
-                      End If
-
-                      sFormInput1 = sFormInput1 & sIDString & sTemp & vbTab
-                      sFormValidation1 = sFormValidation1 & sIDString & sTemp & vbTab
-                    End If
-                  Else
-                    ' Mobile Browser - it's a Dropdown List.
-                    If (TypeOf ctlFormInput Is System.Web.UI.WebControls.DropDownList) Then 'Infragistics.WebUI.WebCombo.WebCombo) Then
-                      ctlFormDropdown = DirectCast(ctlFormInput, System.Web.UI.WebControls.DropDownList) 'Infragistics.WebUI.WebCombo.WebCombo)
-
-                      sTemp = ctlFormDropdown.Text ' .DisplayValue
-                      sFormInput1 = sFormInput1 & sIDString & sTemp & vbTab
-                      sFormValidation1 = sFormValidation1 & sIDString & sTemp & vbTab
-                    End If
-
-                  End If
-
-                Case 15 ' OptionGroup Input
-                  If (TypeOf ctlFormInput Is TextBox) Then
-                    ctlFormTextInput = DirectCast(ctlFormInput, TextBox)
-                    sFormInput1 = sFormInput1 & sIDString & ctlFormTextInput.Text & vbTab
-                    sFormValidation1 = sFormValidation1 & sIDString & ctlFormTextInput.Text & vbTab
-                  End If
-
-                Case 17 ' FileUpload
-                  ' If (TypeOf ctlFormInput Is Infragistics.WebUI.WebDataInput.WebImageButton) Then
-                  If (TypeOf ctlFormInput Is System.Web.UI.HtmlControls.HtmlInputButton) Then
-
-                    If pnlInput.FindControl("file" & sID) Is Nothing Then
-                      sFormValidation1 = sFormValidation1 & sIDString & "0" & vbTab
-                      sFormInput1 = sFormInput1 & sIDString & "0" & vbTab
-                    Else
-                      ctlForm_HiddenField = DirectCast(pnlInput.FindControl("file" & sID), HiddenField)
-                      sFormValidation1 = sFormValidation1 & sIDString & ctlForm_HiddenField.Value.ToString & vbTab
-                      sFormInput1 = sFormInput1 & sIDString & ctlForm_HiddenField.Value.ToString & vbTab
-                    End If
-                  End If
-
-              End Select
+            If (ctlFormInput.ID = btn.ID) Then
+              hdnLastButtonClicked.Value = btn.ID
+              sFormInput1 = sFormInput1 & sIDString & "1" & vbTab
+              sFormValidation1 = sFormValidation1 & sIDString & "1" & vbTab
+            Else
+              If (TypeOf ctlFormInput Is HtmlInputButton) Then
+                sFormInput1 = sFormInput1 & sIDString & "0" & vbTab
+                sFormValidation1 = sFormValidation1 & sIDString & "0" & vbTab
+              End If
             End If
-          Next ctlFormInput
-        End If
-      Next ctlFormPageTab
+
+          Case 3 ' Character Input
+
+            If (TypeOf ctlFormInput Is TextBox) Then
+              ctlFormTextInput = DirectCast(ctlFormInput, TextBox)
+              sFormInput1 = sFormInput1 & sIDString & Replace(ctlFormTextInput.Text, vbTab, " ") & vbTab
+              sFormValidation1 = sFormValidation1 & sIDString & Replace(ctlFormTextInput.Text, vbTab, " ") & vbTab
+            End If
+
+          Case 5 ' Numeric Input
+            If (TypeOf ctlFormInput Is Infragistics.WebUI.WebDataInput.WebNumericEdit) Then
+              ctlFormNumericInput = DirectCast(ctlFormInput, Infragistics.WebUI.WebDataInput.WebNumericEdit)
+              sNumValueString = CStr(IIf(IsDBNull(ctlFormNumericInput.Value), "0", CStr(ctlFormNumericInput.Value).Replace(Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator, ".")))
+              sFormInput1 = sFormInput1 & sIDString & sNumValueString & vbTab
+              sFormValidation1 = sFormValidation1 & sIDString & sNumValueString & vbTab
+            End If
+
+          Case 6 ' Logic Input
+            If (TypeOf ctlFormInput Is CheckBox) Then
+              ctlFormCheckBox = DirectCast(ctlFormInput, CheckBox)
+              sFormInput1 = sFormInput1 & sIDString & CStr(IIf(ctlFormCheckBox.Checked, "1", "0")) & vbTab
+              sFormValidation1 = sFormValidation1 & sIDString & CStr(IIf(ctlFormCheckBox.Checked, "1", "0")) & vbTab
+            End If
+
+          Case 7 ' Date Input                  
+            If (TypeOf ctlFormInput Is Infragistics.WebUI.WebSchedule.WebDateChooser) Then
+              ctlFormDateInput = DirectCast(ctlFormInput, Infragistics.WebUI.WebSchedule.WebDateChooser)
+
+              If (ctlFormDateInput.Text = ctlFormDateInput.NullDateLabel) Then
+                sDateValueString = "null"
+              Else
+                sDateValueString = Format(ctlFormDateInput.Value, "MM/dd/yyyy")
+              End If
+
+              sFormInput1 = sFormInput1 & sIDString & sDateValueString & vbTab
+              sFormValidation1 = sFormValidation1 & sIDString & sDateValueString & vbTab
+            End If
+
+            ' Mobile?
+
+            If (TypeOf ctlFormInput Is System.Web.UI.WebControls.TextBox) Then
+              ctlFormTextInput = DirectCast(ctlFormInput, System.Web.UI.WebControls.TextBox)
+
+              If (ctlFormTextInput.Text = vbNullString) Or (ctlFormTextInput.Text = "  /  /") Then
+                sDateValueString = "null"
+              Else
+                sDateValueString = objGeneral.ConvertLocaleDateToSQL(ctlFormTextInput.Text)
+              End If
+
+              sFormInput1 = sFormInput1 & sIDString & sDateValueString & vbTab
+              sFormValidation1 = sFormValidation1 & sIDString & sDateValueString & vbTab
+            End If
+
+          Case 11 ' Grid (RecordSelector) Input
+            If (TypeOf ctlFormInput Is RecordSelector) Then
+              ctlForm_PagingGridView = DirectCast(ctlFormInput, RecordSelector)
+              sRecordID = "0"
+
+              If Not ctlForm_PagingGridView.IsEmpty And ctlForm_PagingGridView.SelectedIndex >= 0 Then
+                Try
+                  'TODO
+                  For iColCount As Integer = 0 To ctlForm_PagingGridView.HeaderRow.Cells.Count - 1
+                    sColumnCaption = UCase(ctlForm_PagingGridView.HeaderRow.Cells(iColCount).Text)
+
+                    If (sColumnCaption = "ID") Then
+                      sRecordID = ctlForm_PagingGridView.SelectedRow.Cells(iColCount).Text
+                      Exit For
+                    End If
+                  Next
+                Catch ex As Exception
+                  'TODO
+                  Beep()
+                End Try
+
+              End If
+
+              sFormInput1 = sFormInput1 & sIDString & sRecordID & vbTab
+              sFormValidation1 = sFormValidation1 & sIDString & sRecordID & vbTab
+            End If
+
+          Case 13 ' Dropdown Input
+            If (TypeOf ctlFormInput Is System.Web.UI.WebControls.DropDownList) Then
+              ctlFormDropdown = DirectCast(ctlFormInput, System.Web.UI.WebControls.DropDownList)
+
+              sTemp = ctlFormDropdown.Text ' .DisplayValue
+              sFormInput1 = sFormInput1 & sIDString & sTemp & vbTab
+              sFormValidation1 = sFormValidation1 & sIDString & sTemp & vbTab
+            End If
+
+          Case 14 ' Lookup Input
+            If Not isMobileBrowser() Then
+
+
+              If (TypeOf ctlFormInput Is System.Web.UI.WebControls.TextBox) Then
+                ctlFormTextInput = DirectCast(ctlFormInput, System.Web.UI.WebControls.TextBox)
+
+                sTemp = ctlFormTextInput.Text
+
+                If ctlFormTextInput.Attributes("DataType") = "System.DateTime" Then
+                  If sTemp Is Nothing Then
+                    sTemp = "null"
+                  Else
+                    If (sTemp.Length = 0) Then
+                      sTemp = "null"
+                    Else
+                      sTemp = objGeneral.ConvertLocaleDateToSQL(sTemp)
+                    End If
+                  End If
+                ElseIf ctlFormTextInput.Attributes("DataType") = "System.Decimal" _
+                 Or ctlFormTextInput.Attributes("DataType") = "System.Int32" Then
+
+                  If sTemp Is Nothing Then
+                    sTemp = ""
+                  Else
+                    sTemp = CStr(IIf(sTemp.Length = 0, "", CStr(sTemp).Replace(Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator, ".")))
+                  End If
+
+                End If
+
+                sFormInput1 = sFormInput1 & sIDString & sTemp & vbTab
+                sFormValidation1 = sFormValidation1 & sIDString & sTemp & vbTab
+              End If
+            Else
+              ' Mobile Browser - it's a Dropdown List.
+              If (TypeOf ctlFormInput Is System.Web.UI.WebControls.DropDownList) Then 'Infragistics.WebUI.WebCombo.WebCombo) Then
+                ctlFormDropdown = DirectCast(ctlFormInput, System.Web.UI.WebControls.DropDownList) 'Infragistics.WebUI.WebCombo.WebCombo)
+
+                sTemp = ctlFormDropdown.Text ' .DisplayValue
+                sFormInput1 = sFormInput1 & sIDString & sTemp & vbTab
+                sFormValidation1 = sFormValidation1 & sIDString & sTemp & vbTab
+              End If
+
+            End If
+
+          Case 15 ' OptionGroup Input
+            If (TypeOf ctlFormInput Is TextBox) Then
+              ctlFormTextInput = DirectCast(ctlFormInput, TextBox)
+              sFormInput1 = sFormInput1 & sIDString & ctlFormTextInput.Text & vbTab
+              sFormValidation1 = sFormValidation1 & sIDString & ctlFormTextInput.Text & vbTab
+            End If
+
+          Case 17 ' FileUpload
+            ' If (TypeOf ctlFormInput Is Infragistics.WebUI.WebDataInput.WebImageButton) Then
+            If (TypeOf ctlFormInput Is HtmlInputButton) Then
+
+              If pnlInput.FindControl("file" & sID) Is Nothing Then
+                sFormValidation1 = sFormValidation1 & sIDString & "0" & vbTab
+                sFormInput1 = sFormInput1 & sIDString & "0" & vbTab
+              Else
+                ctlForm_HiddenField = DirectCast(pnlInput.FindControl("file" & sID), HiddenField)
+                sFormValidation1 = sFormValidation1 & sIDString & ctlForm_HiddenField.Value.ToString & vbTab
+                sFormInput1 = sFormInput1 & sIDString & ctlForm_HiddenField.Value.ToString & vbTab
+              End If
+            End If
+
+          Case 21 'Tab control
+
+            'TODO
+            sFormInput1 = sFormInput1 & sIDString & DirectCast(ctlFormInput, HiddenField).Value & vbTab
+
+        End Select
+
+      Next
 
     Catch ex As Exception
       sMessage = "Error reading web form item values:<BR><BR>" & ex.Message
     End Try
 
     If sMessage.Length = 0 Then
-      Try ' Open the database connection
-        strConn = "Application Name=OpenHR Workflow;Data Source=" & msServer & ";Initial Catalog=" & msDatabase & ";Integrated Security=false;User ID=" & msUser & ";Password=" & msPwd & ";Pooling=false"
-        conn = New SqlClient.SqlConnection(strConn)
+      Try
+        conn = New SqlConnection(GetConnectionString)
         conn.Open()
 
         Try ' Validate the web form entry.
@@ -4294,7 +3435,7 @@ Public Class _Default
           bulletErrors.Items.Clear()
           bulletWarnings.Items.Clear()
 
-          cmdValidate = New SqlClient.SqlCommand("spASRSysWorkflowWebFormValidation", conn)
+          cmdValidate = New SqlCommand("spASRSysWorkflowWebFormValidation", conn)
           cmdValidate.CommandType = CommandType.StoredProcedure
           cmdValidate.CommandTimeout = miSubmissionTimeoutInSeconds
 
@@ -4354,7 +3495,7 @@ Public Class _Default
 
           Using (New TransactionScope(TransactionScopeOption.Suppress))
             Try
-              cmdUpdate = New SqlClient.SqlCommand("spASRSubmitWorkflowStep", conn)
+              cmdUpdate = New SqlCommand("spASRSubmitWorkflowStep", conn)
               cmdUpdate.CommandType = CommandType.StoredProcedure
               cmdUpdate.CommandTimeout = miSubmissionTimeoutInSeconds
 
@@ -4419,7 +3560,7 @@ Public Class _Default
                 For iIndex = 0 To iFollowOnFormCount - 1
                   sStep = arrFollowOnForms(iIndex)
 
-                  cmdQS = New SqlClient.SqlCommand("spASRGetWorkflowQueryString", conn)
+                  cmdQS = New SqlCommand("spASRGetWorkflowQueryString", conn)
                   cmdQS.CommandType = CommandType.StoredProcedure
                   cmdQS.CommandTimeout = miSubmissionTimeoutInSeconds
 
@@ -4433,7 +3574,7 @@ Public Class _Default
 
                   cmdQS.ExecuteNonQuery()
 
-                  sQueryString = CStr(cmdQS.Parameters("@psQueryString").Value())
+                  Dim sQueryString As String = CStr(cmdQS.Parameters("@psQueryString").Value())
 
                   ReDim Preserve arrQueryStrings(arrQueryStrings.GetUpperBound(0) + 1)
                   arrQueryStrings(arrQueryStrings.GetUpperBound(0)) = sQueryString
@@ -4512,40 +3653,36 @@ Public Class _Default
     End If
 
   End Sub
-  ' Public Sub DisableControls(ByVal sender As System.Object, ByVal e As Infragistics.WebUI.WebDataInput.ButtonEventArgs)
+
   Public Sub DisableControls(ByVal sender As System.Object, e As System.EventArgs)
     EnableDisableControls(False)
   End Sub
+
   Public Sub EnableControls(ByVal sender As System.Object, ByVal e As Infragistics.WebUI.WebDataInput.ButtonEventArgs)
     EnableDisableControls(True)
   End Sub
+
   Private Sub EnableDisableControls(ByVal pfEnabled As Boolean)
 
     Dim ctlFormInput As Control
     Dim sID As String
     Dim ctlFormCheckBox As CheckBox
     Dim ctlFormTextInput As TextBox
-    ' Dim ctlFormButtonInput As Infragistics.WebUI.WebDataInput.WebImageButton
-    Dim ctlFormHTMLInputButton As System.Web.UI.HtmlControls.HtmlInputButton
+    Dim ctlFormHTMLInputButton As HtmlInputButton
     Dim ctlFormDateInput As Infragistics.WebUI.WebSchedule.WebDateChooser
     Dim ctlFormNumericInput As Infragistics.WebUI.WebDataInput.WebNumericEdit
-    Dim ctlFormRecordSelectionGrid As System.Web.UI.WebControls.GridView ' Infragistics.WebUI.UltraWebGrid.UltraWebGrid
-    Dim ctlFormDropdown As System.Web.UI.WebControls.DropDownList ' Infragistics.WebUI.WebCombo.WebCombo
+    Dim ctlFormRecordSelectionGrid As System.Web.UI.WebControls.GridView
+    Dim ctlFormDropdown As System.Web.UI.WebControls.DropDownList
     Dim ctlForm_DDE As AjaxControlToolkit.DropDownExtender
-    Dim sMessage As String
     Dim sIDString As String
     Dim iTemp As Int16
     Dim sTemp As String
     Dim iType As Int16
     Dim sType As String
-    Dim sMessage1 As String
-    Dim sMessage2 As String
-    Dim sMessage3 As String
-
-    sMessage = ""
-    sMessage1 = ""
-    sMessage2 = ""
-    sMessage3 = ""
+    Dim sMessage As String = ""
+    Dim sMessage1 As String = ""
+    Dim sMessage2 As String = ""
+    Dim sMessage3 As String = ""
 
     Try ' Disable all controls.
       For Each ctlFormInput In pnlInput.ContentTemplateContainer.Controls
@@ -4564,11 +3701,9 @@ Public Class _Default
 
           Select Case iType
             Case 0 ' Button
-              ' ctlFormButtonInput = DirectCast(ctlFormInput, Infragistics.WebUI.WebDataInput.WebImageButton)
-              ctlFormHTMLInputButton = DirectCast(ctlFormInput, System.Web.UI.HtmlControls.HtmlInputButton)
+              ctlFormHTMLInputButton = DirectCast(ctlFormInput, HtmlInputButton)
               ctlFormHTMLInputButton.Style.Remove("disabled")
               If pfEnabled Then ctlFormHTMLInputButton.Style.Add("disabled", "disabled")
-
 
             Case 1 ' Database value
             Case 2 ' Label
@@ -4607,11 +3742,6 @@ Public Class _Default
               If (TypeOf ctlFormInput Is System.Web.UI.WebControls.GridView) Then 'Infragistics.WebUI.UltraWebGrid.UltraWebGrid) Then
                 ctlFormRecordSelectionGrid = DirectCast(ctlFormInput, System.Web.UI.WebControls.GridView) ' Infragistics.WebUI.UltraWebGrid.UltraWebGrid)
                 ctlFormRecordSelectionGrid.Enabled = pfEnabled
-                If pfEnabled Then
-                  'ctlFormRecordSelectionGrid.DisplayLayout.ReadOnly = Infragistics.WebUI.UltraWebGrid.ReadOnly.NotSet
-                Else
-                  'ctlFormRecordSelectionGrid.DisplayLayout.ReadOnly = Infragistics.WebUI.UltraWebGrid.ReadOnly.LevelZero
-                End If
               End If
 
             Case 13 ' Dropdown Input
@@ -4622,7 +3752,6 @@ Public Class _Default
 
             Case 14 ' Lookup Input
               If Not isMobileBrowser() Then
-
 
                 If (TypeOf ctlFormInput Is AjaxControlToolkit.DropDownExtender) Then 'Infragistics.WebUI.WebCombo.WebCombo) Then
                   ctlForm_DDE = DirectCast(ctlFormInput, AjaxControlToolkit.DropDownExtender) 'Infragistics.WebUI.WebCombo.WebCombo)
@@ -4643,9 +3772,7 @@ Public Class _Default
               End If
 
             Case 17 ' Input value - file upload
-              ' ctlFormButtonInput = DirectCast(ctlFormInput, Infragistics.WebUI.WebDataInput.WebImageButton)
-              ctlFormHTMLInputButton = DirectCast(ctlFormInput, System.Web.UI.HtmlControls.HtmlInputButton)
-              ' ctlFormButtonInput.Enabled = pfEnabled
+              ctlFormHTMLInputButton = DirectCast(ctlFormInput, HtmlInputButton)
               ctlFormHTMLInputButton.Style.Remove("disabled")
               If pfEnabled Then ctlFormHTMLInputButton.Style.Add("disabled", "disabled")
 
@@ -4678,9 +3805,11 @@ Public Class _Default
       hdnFollowOnForms.Value = ""
     End If
   End Sub
+
   Public Function LocaleDateFormat() As String
     LocaleDateFormat = Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern.ToUpper
   End Function
+
   Public Function LocaleDecimal() As String
     LocaleDecimal = Thread.CurrentThread.CurrentUICulture.NumberFormat.NumberDecimalSeparator
   End Function
@@ -4692,29 +3821,25 @@ Public Class _Default
   Public Function ColourThemeFolder() As String
     ColourThemeFolder = mobjConfig.ColourThemeFolder
   End Function
-  'Public Function SubmissionTimeout() As String
-  '    SubmissionTimeout = mobjConfig.SubmissionTimeout.ToString
-  'End Function
+
   Public Function SubmissionTimeout() As Int32
     SubmissionTimeout = mobjConfig.SubmissionTimeout
   End Function
-
-
-  'Protected Sub btnSubmit_Click(ByVal sender As Object, ByVal e As Infragistics.WebUI.WebDataInput.ButtonEventArgs) Handles btnSubmit.Click
-  '    ButtonClick(sender, e)
-  'End Sub
 
   Protected Sub btnSubmit_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnSubmit.Click
     ButtonClick(sender, e)
   End Sub
 
-  Private Function LoadPicture(ByVal piPictureID As Int32, _
-   ByRef psErrorMessage As String) As String
+  Private Function GetConnectionString() As String
+    Dim connectionString = "Application Name=OpenHR Workflow;Data Source=" & msServer & ";Initial Catalog=" & msDatabase & ";Integrated Security=false;User ID=" & msUser & ";Password=" & msPwd & ";Pooling=false"
+    Return connectionString
+  End Function
 
-    Dim strConn As String
-    Dim conn As System.Data.SqlClient.SqlConnection
-    Dim cmdSelect As System.Data.SqlClient.SqlCommand
-    Dim dr As System.Data.SqlClient.SqlDataReader
+  Private Function LoadPicture(ByVal piPictureID As Int32, ByRef psErrorMessage As String) As String
+
+    Dim conn As SqlConnection
+    Dim cmdSelect As SqlCommand
+    Dim dr As SqlDataReader
     Dim sImageFileName As String
     Dim sImageFilePath As String
     Dim sTempName As String
@@ -4723,7 +3848,7 @@ Public Class _Default
     Dim iBufferSize As Integer = 100
     Dim outByte(iBufferSize - 1) As Byte
     Dim retVal As Long
-    Dim startIndex As Long = 0
+    Dim startIndex As Long
     Dim sExtension As String = ""
     Dim iIndex As Integer
     Dim sName As String
@@ -4736,11 +3861,10 @@ Public Class _Default
       sImageFileName = ""
       sImageFilePath = Server.MapPath("pictures")
 
-      strConn = "Application Name=OpenHR Workflow;Data Source=" & msServer & ";Initial Catalog=" & msDatabase & ";Integrated Security=false;User ID=" & msUser & ";Password=" & msPwd & ";Pooling=false"
-      conn = New SqlClient.SqlConnection(strConn)
+      conn = New SqlConnection(GetConnectionString)
       conn.Open()
 
-      cmdSelect = New SqlClient.SqlCommand
+      cmdSelect = New SqlCommand
       cmdSelect.CommandText = "spASRGetPicture"
       cmdSelect.Connection = conn
       cmdSelect.CommandType = CommandType.StoredProcedure
@@ -4814,8 +3938,6 @@ Public Class _Default
     End Try
   End Function
 
-
-
   Public Function RefreshLiteralsCode() As String
     Dim sb As New StringBuilder
 
@@ -4836,14 +3958,6 @@ Public Class _Default
 
   End Function
 
-
-
-
-
-
-
-
-
   Protected Sub Page_PreRender(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.PreRender
     Dim cs As ClientScriptManager
 
@@ -4853,71 +3967,9 @@ Public Class _Default
     End If
   End Sub
 
-
-  'Protected Sub btnReEnableControls_Click(ByVal sender As Object, ByVal e As Infragistics.WebUI.WebDataInput.ButtonEventArgs) Handles btnReEnableControls.Click
-  '    EnableDisableControls(True)
-
-  'End Sub
-
   Protected Sub btnReEnableControls_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnReEnableControls.Click
     EnableDisableControls(True)
   End Sub
-
-
-  'Public Sub InitializeLookupData(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.DropDownList) ' Infragistics.WebUI.WebCombo.WebComboEventArgs)
-  '    'Dim sID As String
-
-  '    ' ''Dim objCombo As Infragistics.WebUI.WebCombo.WebCombo = _
-  '    ' ''    DirectCast(sender, Infragistics.WebUI.WebCombo.WebCombo)
-
-  '    'Dim objCombo As System.Web.UI.WebControls.DropDownList = DirectCast(sender, System.Web.UI.WebControls.DropDownList)
-
-  '    'Try
-  '    '    With objCombo
-  '    '        sID = .ID
-  '    '        .DataSource = Session(sID & "_DATA")
-
-  '    '        If IsPostBack Then
-  '    '            ''.Attributes("DefaultValue") = .Text
-  '    '        End If
-
-  '    '    End With
-  '    'Catch ex As Exception
-  '    'End Try
-
-  'End Sub
-
-  'Public Sub LookupDataBound(ByVal sender As Object, ByVal e As System.EventArgs)
-
-
-  '    Dim objCombo As System.Web.UI.WebControls.DropDownList = _
-  '        DirectCast(sender, System.Web.UI.WebControls.DropDownList)
-
-  '    Try
-  '        objCombo.Text = objCombo.Attributes("DefaultValue")
-
-  '    Catch ex As Exception
-  '        ' ???handle exception
-  '    Finally
-  '    End Try
-  'End Sub
-
-  'Public Sub DDEDataBound(ByVal sender As Object, ByVal e As System.EventArgs)
-
-
-
-  '    Dim objCombo As AjaxControlToolkit.DropDownExtender = _
-  '                DirectCast(sender, AjaxControlToolkit.DropDownExtender)
-
-  '    Try
-  '        ''objCombo.Text = objCombo.Attributes("DefaultValue")
-
-
-  '    Catch ex As Exception
-  '        ' ???handle exception
-  '    Finally
-  '    End Try
-  'End Sub
 
   Private Function LookupFilterSQL(ByVal psColumnName As String, ByVal piColumnDataType As Integer, ByVal piOperatorID As Integer, ByVal psValue As String) As String
     Dim sLookupFilterSQL As String = ""
@@ -5005,262 +4057,6 @@ Public Class _Default
 
   End Function
 
-  'Sub GridRowDataBound(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewRowEventArgs)
-  '    ' As each row is added to the grid's HTML table, do the following: 
-  '    'check the item being bound is actually a DataRow, if it is, 
-  '    'wire up the required html events and attach the relevant JavaScripts
-
-  '    Dim iIDCol As Integer = 0
-  '    Dim sRowID As String = "0"
-  '    Dim grdGrid As System.Web.UI.WebControls.GridView
-  '    Dim mydte As DateTime
-  '    Dim sColumnCaption As String
-
-  '    grdGrid = CType(sender, System.Web.UI.WebControls.GridView)
-
-  '    If e.Row.RowType = DataControlRowType.DataRow Then
-
-  '        e.Row.Style.Add("overflow", "hidden")
-  '        e.Row.Style.Add("cursor", "pointer")
-
-
-
-  '        ' loop through the columns of this row. Hide ID columns
-  '        For iColCount As Integer = 0 To e.Row.Cells.Count - 1
-  '            sColumnCaption = UCase(grdGrid.HeaderRow.Cells(iColCount).Text)
-
-  '            If sColumnCaption = "ID" Or (Left(sColumnCaption, 3) = "ID_" And Val(Mid(sColumnCaption, 4)) > 0) Then
-  '                iIDCol = iColCount  ' store ID column number to assign to the javascript click event.
-  '                e.Row.Cells(iColCount).Style.Add("display", "none")
-  '                If sColumnCaption = "ID" Then
-  '                    ' Background colour to black.
-  '                    ' Javascript can see this and use it to recognise the ID column. Couldn't think of 
-  '                    ' a better way, but sure there is one.
-  '                    e.Row.Cells(iColCount).BackColor = Color.Black
-  '                End If
-  '            End If
-
-  '            ' add overflow hidden and nowrap, stops the cells wrapping text or overflowing into adjacent cols.
-  '            e.Row.Cells(iColCount).Style.Add("overflow", "hidden")
-  '            e.Row.Cells(iColCount).Style.Add("white-space", "nowrap")
-
-  '            ' this sets minimum width, not max.
-  '            e.Row.Cells(iColCount).Width = Unit.Pixel(100)
-
-
-
-  '            ' Format the cells according to DataType
-  '            Dim curSelDataType As String = DataBinder.Eval(e.Row.DataItem, grdGrid.HeaderRow.Cells(iColCount).Text).GetType.ToString.ToUpper
-
-  '            If curSelDataType.Contains("INT") _
-  '                Or curSelDataType.Contains("DECIMAL") _
-  '                Or curSelDataType.Contains("SINGLE") _
-  '                Or curSelDataType.Contains("DOUBLE") _
-  '                Then curSelDataType = "Integer"
-  '            If curSelDataType.Contains("DATETIME") Then curSelDataType = "DateTime"
-  '            If curSelDataType.Contains("BOOLEAN") Then curSelDataType = "Boolean"
-
-  '            Try
-  '                Select Case curSelDataType
-  '                    Case "DateTime"
-  '                        ' Is the cell a date? 
-  '                        mydte = DateTime.Parse(e.Row.Cells(iColCount).Text.ToString())
-  '                        e.Row.Cells(iColCount).Text = mydte.ToShortDateString()
-  '                    Case "Integer"
-  '                        e.Row.Cells(iColCount).Style.Add("text-align", "right")
-  '                    Case "Boolean"
-  '                        e.Row.Cells(iColCount).Style.Add("text-align", "center")
-  '                    Case Else   ' String
-  '                        e.Row.Cells(iColCount).Style.Add("text-align", "left")
-  '                End Select
-  '            Catch
-  '                ' um...
-  '            End Try
-  '        Next
-
-  '        ' Add some javascript events to each row for highlight functionality
-  '        ' Not required, wasn't current functionality, but here you go if it should ever be 'needed'...
-  '        'e.Row.Attributes("onmouseover") = "oldgridSelectedColor = this.style.backgroundColor;this.style.backgroundColor = '" & msBackColorHighlight.Trim & "';"
-  '        'e.Row.Attributes("onmouseout") = "this.style.backgroundColor = oldgridSelectedColor;this.style.textDecoration = 'none';"
-  '        'e.Row.Style.Add("cursor", "pointer")
-
-  '        ' Add the javascript event to each row for click functionality
-  '        If grdGrid.ID.Contains("Grid") Then
-  '            e.Row.Attributes.Add("onclick", "changeRow('" & grdGrid.ID.ToString & "', '" & m_iRowIdx.ToString & "', '" & msBackColorHighlight.Trim & "', '" & iIDCol.ToString & "');oldgridSelectedColor = this.style.backgroundColor;")
-  '        Else    ' dropdown?
-  '            'e.Row.Attributes.Add("onclick", "changeDDERow('" & g.ID.ToString & "', '" & m_iRowIdx.ToString & "', 'TextBox1');")
-  '        End If
-
-  '    ElseIf e.Row.RowType = DataControlRowType.Pager Then
-  '        ' This enables postback for the grid
-
-  '        Dim pagerTable As Table = DirectCast(e.Row.Cells(0).Controls(0), Table)
-  '        Dim pagerRow As TableRow = pagerTable.Rows(0)
-
-  '        ' Dim pagerSettings As PagerSettings = DirectCast(sender, GridView).PagerSettings
-  '        ' Dim cellsCount As Integer = pagerRow.Cells.Count
-
-  '        For iColCount As Integer = 0 To pagerRow.Cells.Count - 1
-  '            pagerRow.Cells(iColCount).Attributes.Add("onclick", "try{setPostbackMode(2);}catch(e){};")
-  '        Next
-
-
-  '    End If
-
-  '    m_iRowIdx += 1
-
-  'End Sub
-
-
-  'Sub DDE_GridRowDataBound(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewRowEventArgs)
-
-  '    ' For Lookup Grids only - DropdownExtender
-
-  '    ' As each row is added to the grid's HTML table, do the following: 
-  '    'check the item being bound is actually a DataRow, if it is, 
-  '    'wire up the required html events and attach the relevant JavaScripts
-
-  '    Dim iIDCol As Integer = 0
-  '    Dim sRowID As String = "0"
-  '    Dim grdGrid As System.Web.UI.WebControls.GridView
-  '    Dim mydte As DateTime
-  '    Dim sColumnCaption As String
-
-  '    grdGrid = CType(sender, System.Web.UI.WebControls.GridView)
-
-  '    If e.Row.RowType = DataControlRowType.DataRow Then
-
-  '        e.Row.Style.Add("overflow", "hidden")
-  '        e.Row.Style.Add("cursor", "pointer")
-
-  '        ' loop through the columns of this row. Hide ID columns
-  '        For iColCount As Integer = 0 To e.Row.Cells.Count - 1
-  '            sColumnCaption = UCase(grdGrid.HeaderRow.Cells(iColCount).Text)
-
-  '            If sColumnCaption.StartsWith("ASRSYS") Then
-  '                iIDCol = iColCount  ' store ID column number to assign to the javascript click event.
-  '                e.Row.Cells(iColCount).Style.Add("display", "none")
-  '                If sColumnCaption.StartsWith("ASRSYS") Then
-  '                    ' Background colour to black.
-  '                    ' Javascript can see this and use it to recognise the ID column. Couldn't think of 
-  '                    ' a better way, but sure there is one.
-  '                    e.Row.Cells(iColCount).BackColor = Color.Black
-  '                End If
-  '            End If
-
-  '            ' add overflow hidden and nowrap, stops the cells wrapping text or overflowing into adjacent cols.
-  '            e.Row.Cells(iColCount).Style.Add("overflow", "hidden")
-  '            e.Row.Cells(iColCount).Style.Add("white-space", "nowrap")
-
-  '            ' this sets minimum width, not max.
-  '            e.Row.Cells(iColCount).Width = Unit.Pixel(100)
-
-  '            ' Format the cells according to DataType
-  '            Dim curSelDataType As String = DataBinder.Eval(e.Row.DataItem, grdGrid.HeaderRow.Cells(iColCount).Text).GetType.ToString.ToUpper
-
-  '            If curSelDataType.Contains("INT") _
-  '                Or curSelDataType.Contains("DECIMAL") _
-  '                Or curSelDataType.Contains("SINGLE") _
-  '                Or curSelDataType.Contains("DOUBLE") _
-  '                Then curSelDataType = "Integer"
-  '            If curSelDataType.Contains("DATETIME") Then curSelDataType = "DateTime"
-  '            If curSelDataType.Contains("BOOLEAN") Then curSelDataType = "Boolean"
-
-  '            Try
-  '                Select Case curSelDataType
-  '                    Case "DateTime"
-  '                        ' Is the cell a date? 
-  '                        mydte = DateTime.Parse(e.Row.Cells(iColCount).Text.ToString())
-  '                        e.Row.Cells(iColCount).Text = mydte.ToShortDateString()
-  '                    Case "Integer"
-  '                        e.Row.Cells(iColCount).Style.Add("text-align", "right")
-  '                    Case "Boolean"
-  '                        e.Row.Cells(iColCount).Style.Add("text-align", "center")
-  '                    Case Else   ' String
-  '                        e.Row.Cells(iColCount).Style.Add("text-align", "left")
-  '                End Select
-  '            Catch
-  '                ' um...
-  '            End Try
-  '        Next
-
-  '        ' Add some javascript events to each row for highlight functionality
-  '        ' Not required, wasn't current functionality, but here you go if it should ever be 'needed'...
-  '        'e.Row.Attributes("onmouseover") = "oldgridSelectedColor = this.style.backgroundColor;this.style.backgroundColor = '" & msBackColorHighlight.Trim & "';"
-  '        'e.Row.Attributes("onmouseout") = "this.style.backgroundColor = oldgridSelectedColor;this.style.textDecoration = 'none';"
-  '        'e.Row.Style.Add("cursor", "pointer")
-
-  '        ' Add the javascript event to each row for click functionality
-
-  '        e.Row.Attributes.Add("onclick", "changeDDERow('" & grdGrid.ID.ToString & "', '" & m_iRowIdx.ToString & "', '" & msBackColorHighlight.Trim & "', '" & m_iLookupColumnIndex & "');oldgridSelectedColor = this.style.backgroundColor;")
-
-
-  '    ElseIf e.Row.RowType = DataControlRowType.Header Then
-
-  '        ' Get the lookupfiltervalue column number, if applicable and store to a tag.
-  '        For iColCount As Integer = 0 To e.Row.Cells.Count - 1
-  '            sColumnCaption = UCase(e.Row.Cells(iColCount).Text)
-
-  '            If sColumnCaption.ToUpper = "ASRSYSLOOKUPFILTERVALUE" Then
-  '                grdGrid.Attributes.Remove("LookupFilterColumn")
-  '                grdGrid.Attributes.Add("LookupFilterColumn", iColCount.ToString)
-  '            End If
-  '        Next
-
-  '    ElseIf e.Row.RowType = DataControlRowType.Pager Then
-  '        ' This enables postback for the grid
-
-  '        Dim pagerTable As Table = DirectCast(e.Row.Cells(0).Controls(0), Table)
-  '        Dim pagerRow As TableRow = pagerTable.Rows(0)
-
-  '        ' Dim pagerSettings As PagerSettings = DirectCast(sender, GridView).PagerSettings
-  '        ' Dim cellsCount As Integer = pagerRow.Cells.Count
-
-  '        For iColCount As Integer = 0 To pagerRow.Cells.Count - 1
-  '            pagerRow.Cells(iColCount).Attributes.Add("onclick", "try{setPostbackMode(2);}catch(e){};")
-  '        Next
-
-  '    End If
-  '    m_iRowIdx += 1
-  'End Sub
-
-  'Protected Sub PageIndexChanging(ByVal sender As Object, ByVal e As GridViewPageEventArgs)
-
-  '    Dim g As System.Web.UI.WebControls.GridView
-  '    Dim iIDCol As Integer = 0
-  '    g = CType(sender, System.Web.UI.WebControls.GridView)
-
-  '    g.PageIndex = e.NewPageIndex
-  '    g.DataBind()
-  'End Sub
-
-
-  '    <System.Web.Services.WebMethod()> _
-  'Public Shared Function SetGridFilter(ByVal sGridID As String, ByVal sGridFilter As String) As Boolean
-  '        'On server side we can do anything, like we can access the Session.
-  '        'We can do database access operation. Without postback.
-
-  '        Dim dataTable As DataTable
-  '        dataTable = TryCast(HttpContext.Current.Session(sGridID.Replace("DDE", "DATA")), DataTable)
-
-  '        If dataTable IsNot Nothing Then
-  '            Dim dataView As New DataView(dataTable)
-  '            dataView.RowFilter = sGridFilter   ' e.g. "ISNULL([ASRSysLookupFilterValue], '') = 'HERTFORDSHIRE'"
-  '            dataTable = dataView.ToTable()
-  '            HttpContext.Current.Session(sGridID.Replace("DDE", "DATA")) = dataTable
-  '        End If
-
-  '        Try
-  '            Return True
-  '        Catch ex As Exception
-  '            Throw ex
-  '        End Try
-
-  '    End Function
-
-
-
-
   Private Sub ShowNoResultFound(ByVal source As DataTable, ByVal gv As RecordSelector)
 
     source.Clear()
@@ -5280,7 +4076,7 @@ Public Class _Default
 
     'You can set the styles here
     gv.Rows(0).Cells(0).HorizontalAlign = HorizontalAlign.Center
-    'gv.Rows(0).Cells(0).ForeColor = System.Drawing.Color.Red
+    'gv.Rows(0).Cells(0).ForeColor = Color.Red
     'gv.Rows(0).Cells(0).Font.Bold = True
     'set No Results found to the new added cell
     gv.Rows(0).Cells(0).Text = gv.EmptyDataText
@@ -5359,7 +4155,7 @@ Public Class _Default
   Private Sub filterDataTable(ByRef dataTable As DataTable, ByVal filterSQL As String)
     If dataTable IsNot Nothing Then
       Dim dataView As New DataView(dataTable)
-      dataView.RowFilter = filterSQL    '   "ISNULL([ASRSysLookupFilterValue], '') = 'HERTFORDSHIRE'"
+      dataView.RowFilter = filterSQL
 
       dataTable = dataView.ToTable()
 
@@ -5441,19 +4237,6 @@ Public Class _Default
     End If
   End Sub
 
-
-
-
-
-
-  Private Function isInternetExplorer() As Boolean
-    If Request.UserAgent.IndexOf("MSIE") > 0 Then
-      Return True
-    Else
-      Return False
-    End If
-  End Function
-
   Private Function getBrowserFamily() As String
 
     Dim ua As String = Request.UserAgent.ToUpper
@@ -5470,6 +4253,5 @@ Public Class _Default
       Return "UNKNOWN"
     End If
   End Function
-
 
 End Class
