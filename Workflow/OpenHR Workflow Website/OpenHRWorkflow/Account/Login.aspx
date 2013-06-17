@@ -4,7 +4,7 @@
     <script type="text/javascript">
     // <!CDATA[
         function submitCheck() {
-            return true;
+
             var header = 'Login Failed';
 
             if (document.getElementById('<%= txtUserName.ClientID %>').value.trim().length === 0) {
@@ -31,13 +31,10 @@
         <tr>
             <td>
                 <asp:Label runat="server" ID="lblUserName" Text="Username" AssociatedControlID="txtUserName"/>
-                <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="txtUserName" Text="*" ErrorMessage="Username is required"></asp:RequiredFieldValidator>
-            </td>
-            <td>
-                <asp:TextBox runat="server" ID="txtUserName"/>
                 <%--    TODO finish or remove --%>
-
+                <%--<asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="txtUserName" Text="*" ErrorMessage="Username is required"></asp:RequiredFieldValidator>--%>
             </td>
+            <td><asp:TextBox runat="server" ID="txtUserName"/></td>
         </tr>
         <tr>
             <td><asp:Label runat="server" ID="lblPassword" Text="Password"/></td>
