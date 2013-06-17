@@ -253,7 +253,7 @@ Partial Class MobileLogin
               ctlForm_HtmlInputText.Style.Add("background-color", objGeneral.GetHTMLColour(NullSafeInteger(drElements("BackColor"))))
               ctlForm_HtmlInputText.Style.Add("color", objGeneral.GetHTMLColour(NullSafeInteger(drElements("ForeColor"))))
               ctlForm_HtmlInputText.Style.Add("font-family", NullSafeString(drElements("FontName")))
-              ctlForm_HtmlInputText.Style.Add("font-size", NullSafeString(drElements("FontSize")))
+              ctlForm_HtmlInputText.Style.Add("font-size", NullSafeString(drElements("FontSize")) & "pt")
               ctlForm_HtmlInputText.Style.Add("font-weight", IIf(NullSafeBoolean(NullSafeBoolean(drElements("FontBold"))), "bold", "normal"))
               ctlForm_HtmlInputText.Style.Add("font-style", IIf(NullSafeBoolean(NullSafeBoolean(drElements("FontItalic"))), "italic", "normal"))
               ctlForm_HtmlInputText.Style.Add("width", CStr(NullSafeInteger(drElements("Width"))) & "px")
