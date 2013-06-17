@@ -3693,6 +3693,8 @@ Public Class _Default
                 pnlInputDiv.Style("width") = iFormWidth.ToString & "px"
                 pnlInputDiv.Style("height") = iFormHeight.ToString & "px"
 
+                pnlInputDiv.Style("left") = "-2px"
+
                 hdnFormHeight.Value = (iFormHeight + m_iTabStripHeight).ToString
                 hdnFormWidth.Value = iFormWidth.ToString
                 hdnFormBackColourHex.Value = sBackgroundColourHex

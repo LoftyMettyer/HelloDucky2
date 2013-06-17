@@ -7,12 +7,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" id="htmMain">
 
 <meta http-equiv="refresh" content="<%=Session("TimeoutSecs")%>;URL=timeout.aspx" />
-    <meta name="format-detection" content="telephone=no"/>
+<meta name="format-detection" content="telephone=no"/>
 <!--<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=1;"/>-->
 <!--<meta name="viewport" content="width=700; user-scalable=1;"/>-->
 
 <head runat="server">
-    <link rel="icon" type="image/png" href="/pictures/logo.ico"/>
+    <link rel="shortcut icon" href="pictures/logo.ico"/>
 
     <style type="text/css">
 		.highlighted { background: yellow; }
@@ -168,47 +168,50 @@
 		var ScrollTopPos;
 
       //Set the current page tab to page 1
-      iCurrentTab = 1;
-      SetCurrentTab(iCurrentTab);
+      window.iCurrentTab = 1;
+      SetCurrentTab(window.iCurrentTab);
 
 			try {
-				iDefHeight = $get("frmMain").hdnFormHeight.value;
-                iDefHeight = $get("bdyMain").offsetHeight;
-				iDefWidth = $get("frmMain").hdnFormWidth.value;
-				$get("bdyMain").bgColor = $get("frmMain").hdnColourThemeHex.value;
+				iDefHeight = window.$get("frmMain").hdnFormHeight.value;
+        //iDefHeight = window.$get("bdyMain").offsetHeight;
+				iDefWidth = window.$get("frmMain").hdnFormWidth.value;
+				window.$get("bdyMain").bgColor = window.$get("frmMain").hdnColourThemeHex.value;
 			    
 				window.focus();
 				if ((iDefHeight > 0) && (iDefWidth > 0)) {
-					iResizeByHeight = iDefHeight - document.documentElement.clientHeight;
-					iResizeByWidth = iDefWidth - document.documentElement.clientWidth;
+					//iResizeByHeight = iDefHeight - document.documentElement.clientHeight;
+				  iResizeByHeight = iDefHeight - window.innerHeight;
+					//iResizeByWidth = iDefWidth - document.documentElement.clientWidth;
+				  iResizeByWidth = iDefWidth - window.innerWidth;
 					window.parent.moveTo((screen.availWidth - iDefWidth) / 2, (screen.availHeight - iDefHeight) / 3);
-					window.parent.resizeBy(iResizeByWidth, iResizeByHeight);
+					window.parent.resizeBy(iResizeByWidth, iResizeByHeight);				  
+
 				}
 				
 				try {
-					if ($get("frmMain").hdnFirstControl.value.length > 0) {
-					    sControlType = $get("frmMain").hdnFirstControl.value.substr($get("frmMain").hdnFirstControl.value.indexOf("_")+1);
+					if (window.$get("frmMain").hdnFirstControl.value.length > 0) {
+					    sControlType = window.$get("frmMain").hdnFirstControl.value.substr(window.$get("frmMain").hdnFirstControl.value.indexOf("_")+1);
                         sControlType = sControlType.substr(sControlType.indexOf("_")+1);
                         sControlType = sControlType.substring(0, sControlType.indexOf("_"));
 
                         if (sControlType == 7)
                         {
                             // Date (7)
-                            igdrp_getComboById($get("frmMain").hdnFirstControl.value).focus();
+                            igdrp_getComboById(window.$get("frmMain").hdnFirstControl.value).focus();
                         }
                         else
                         {
                             if ((sControlType == 13)
                                 || (sControlType == 14))
                             {
-                                igcmbo_getComboById($get("frmMain").hdnFirstControl.value).focus();
+                                igcmbo_getComboById(window.$get("frmMain").hdnFirstControl.value).focus();
                             }
                             else
                             {
                                 if (sControlType == 11)
                                 {
                                     // Record Selector (11)
-                                    var grid = igtbl_getGridById($get("frmMain").hdnFirstControl.value);
+                                    var grid = igtbl_getGridById(window.$get("frmMain").hdnFirstControl.value);
                                     var oRows = grid.Rows;
                                     grid.Element.focus(); 
                                     
@@ -223,7 +226,7 @@
                                 }
                                 else
                                 {
-						            document.getElementById($get("frmMain").hdnFirstControl.value).setActive();
+						            document.getElementById(window.$get("frmMain").hdnFirstControl.value).setActive();
 						        }
 						    }
                         }
@@ -242,7 +245,7 @@
 //				}
 
 
-				launchForms($get("frmMain").hdnSiblingForms.value, false);
+				launchForms(window.$get("frmMain").hdnSiblingForms.value, false);
 			}
 			catch (e) {}
 		}
