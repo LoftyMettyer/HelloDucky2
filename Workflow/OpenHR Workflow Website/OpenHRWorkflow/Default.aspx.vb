@@ -1408,11 +1408,6 @@ Public Class _Default
                       .Style("position") = "absolute"
                       .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
                       .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
-                      'TODO
-                      '.Style("width") = Unit.Pixel(NullSafeInteger(dr("Width"))).ToString
-                      '.Style("height") = Unit.Pixel(NullSafeInteger(dr("Height"))).ToString
-                      '.Style("padding") = "0px"
-                      '.Style("margin") = "0px"
 
                       If (Not IsDBNull(dr("value"))) Then
                         If CStr(dr("value")).Length > 0 Then
@@ -1435,8 +1430,6 @@ Public Class _Default
                             sDateString &= iDay.ToString
                           End If
 
-
-                          ' dtDate = DateSerial(iYear, iMonth, iDay)
                           HDNValue = sDateString
                           .Value = HDNValue
 
@@ -3448,7 +3441,6 @@ Public Class _Default
 
             ' Is this an HTML5 compliant mobile device?
             If (TypeOf ctlFormInput Is HtmlInputText) Then
-
 
               If pnlInput.FindControl(sID & "Value") Is Nothing Then
                 sDateValueString = "null"

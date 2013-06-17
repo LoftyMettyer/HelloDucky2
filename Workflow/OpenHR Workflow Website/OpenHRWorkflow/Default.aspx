@@ -15,6 +15,12 @@
         
 		.highlighted { background: yellow; }
         textarea {resize: none; }
+        input[type=date] {
+            -webkit-appearance: none;
+            padding: 0px;
+            margin: 0px;
+            
+        }
     </style>
 
 	<title></title>	  
