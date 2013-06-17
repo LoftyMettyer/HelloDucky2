@@ -43,7 +43,7 @@ Partial Class ChangePassword
             control = pnlHeader
           Case 2
             prefix = "Main"
-            control = ScrollerFrame
+            control = pnlBody
           Case 3
             prefix = "Footer"
             control = pnlFooter

@@ -52,25 +52,22 @@
 
             <div id="pnlContainer" runat="server" style="overflow: hidden;">
                 
-                <div id="pnlHeader" runat="server" style="position: absolute; overflow: hidden; left: 0px; top: 0px; z-index: 1; width: 100%; height: 57px"/>
-                
-                <div id="ScrollerFrame" runat="server" style="position: fixed; left: 0px; top: 57px; z-index: 1; bottom: 60px; width: 100%;">
-                    
-                    <div id="pnlBody">
+                <div id="pnlHeader" runat="server" />
+                                    
+                <div id="pnlBody" runat="server">
                               
-                        <label id="lblWelcome" runat="server">lblWelcome</label>
+                    <label id="lblWelcome" runat="server">lblWelcome</label>
 
-                        <table class="controlgrid">
-                            <tr>
-                                <td ><label id="lblEmail" runat="server">lblEmail</label></td>
-                                <td><input id="txtEmail" runat="server" /></td>
-                            </tr>
+                    <table class="controlgrid">
+                        <tr>
+                            <td ><label id="lblEmail" runat="server">lblEmail</label></td>
+                            <td><input id="txtEmail" runat="server" /></td>
+                        </tr>
                 
-                        </table>
-                    </div>
+                    </table>
                 </div>
           
-                <div id="pnlFooter" runat="server" style="position: fixed; overflow: hidden; left: 0px; bottom: 0px; z-index: 1; width: 100%; height: 60px">
+                <div id="pnlFooter" runat="server">
                     <table id="tblFooter" runat="server" style="height: 100%; width: 100%">
                         <tr style="height: 40px">
                             <td style="width: 50%; text-align: center; overflow: hidden"><asp:ImageButton ID="btnSubmit" runat="server" OnClientClick="return submitCheck();"/></td>                

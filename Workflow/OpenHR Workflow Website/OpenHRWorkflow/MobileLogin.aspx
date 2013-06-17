@@ -58,36 +58,34 @@
 
             <div id="pnlContainer" runat="server" style="overflow: hidden;">
 
-                <div id="pnlHeader" runat="server" style="position: absolute; overflow: hidden; left: 0px; top: 0px; z-index: 0; width: 100%; height: 57px"/>
+                <div id="pnlHeader" runat="server"/>
                 
-                <div id="ScrollerFrame" runat="server" style="position: fixed; left: 0px; top: 57px; z-index: 0; bottom: 60px; width: 100%;">
-                    
-                    <div id="pnlBody" runat="server">
-                              
-                        <label id="lblWelcome" runat="server">lblWelcome</label>
+                <div id="pnlBody" runat="server">
+                     
+                    <label id="lblWelcome" runat="server">lblWelcome</label>
 
-                        <table class="controlgrid">
-                            <tr>
-                                <td><label id="lblUserName" runat="server">lblUserName</label></td>
-                                <td ><input type="text" id="txtUserName" runat="server"/></td>
-                            </tr>
-                            <tr>
-                                <td><label id="lblPassword" runat="server">lblPassword</label></td>
-                                <td><input id="txtPassword" runat="server" type="password"/></td>
-                            </tr>
-                            <tr>
-                                <td><label  id="lblRememberPwd" runat="server">lblRememberPwd</label></td>
-                                <td><input id="chkRememberPwd" type="checkbox" runat="server" /></td>
-                            </tr>
-                        </table>
-                    </div>
+                    <table class="controlgrid">
+                        <tr>
+                            <td><label id="lblUserName" runat="server">lblUserName</label></td>
+                            <td ><input type="text" id="txtUserName" runat="server"/></td>
+                        </tr>
+                        <tr>
+                            <td><label id="lblPassword" runat="server">lblPassword</label></td>
+                            <td><input id="txtPassword" runat="server" type="password"/></td>
+                        </tr>
+                        <tr>
+                            <td><label  id="lblRememberPwd" runat="server">lblRememberPwd</label></td>
+                            <td><input id="chkRememberPwd" type="checkbox" runat="server" /></td>
+                        </tr>
+                    </table>
+              
                 </div>
           
-                <div  style="text-align: center; position: fixed; bottom: 75px; width: 100%; z-index: 0">
+                <div style="text-align: center; position: fixed; bottom: 75px; width: 100%; z-index: 0">
                     <p style="font-family: Verdana; font-size: 10px; z-index: 2; color: #333366;">Copyright © Advanced Business Software and Solutions Ltd 2012</p>
                 </div>
 
-                <div id="pnlFooter" runat="server" style="position: fixed; overflow: hidden; left: 0px; bottom: 0px; z-index: 0; width: 100%; height: 60px">
+                <div id="pnlFooter" runat="server">
                     <table id="tblFooter" runat="server" style="height: 100%; width: 100%">
                         <tr style="height: 40px">
                             <td style="width: 33%; text-align: center; overflow: hidden"><asp:ImageButton ID="btnLogin"  runat="server" OnClientClick="return submitCheck();"/></td>
