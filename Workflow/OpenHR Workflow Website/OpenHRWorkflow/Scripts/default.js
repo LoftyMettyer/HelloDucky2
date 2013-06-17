@@ -398,8 +398,8 @@
             var nodes = dateControl.parentNode.childNodes;
             for(var i = 0; i < nodes.length; i++) {
                 var ctl = nodes[i];
-                if(ctl.id && ctl.id.indexOf('FI_') == 0 && ctl.id != dateControl.id) {
-                    if(ctl.offsetTop > dateControl.offsetTop && ctl.offsetTop < dateControl.offsetTop + 25) {
+                if (ctl.id && ctl.id.indexOf('FI_') == 0 && ctl.id != dateControl.id) {
+                    if (ctl.offsetTop > dateControl.offsetTop && ctl.offsetTop < dateControl.offsetTop + 100) {
                         ctl.style.visibility = hide ? 'hidden' : 'visible';
                     }
                 }
