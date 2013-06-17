@@ -2243,7 +2243,6 @@ Public Class _Default
                       .DropArrowBackColor = Color.Transparent
                       .DropArrowWidth = Unit.Pixel(20)
                       .HighlightBackColor = backgroundColor
-                      '.HighlightBackColor = Color.Transparent
 
                       ' Careful with the case here, use 'dde' in JavaScript:
                       .ID = sID & "DDE"
@@ -2252,7 +2251,6 @@ Public Class _Default
                       .Enabled = True
                       .TargetControlID = sID & "TextBox"
                       ' Client-side handler.
-                      'PG when was the IF added, and was it by me?
                       If (sFilterSQL.Length > 0) Then
                         .OnClientPopup = "InitializeLookup"     ' can't pass the ID of the control, so use ._id in JS.
                       End If
@@ -3153,7 +3151,7 @@ Public Class _Default
                           ' Hide all tabs but the first.
                           ctlForm_PageTab(iTabNo).Style.Add("display", "none")
                         Catch ex As Exception
-                          Beep()
+
                         End Try
                       End If
 
