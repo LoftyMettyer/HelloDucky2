@@ -3,10 +3,6 @@
 	    app.add_init(ApplicationInit);
 
 	    var formInputPrefix = "FI_";
-	    var gridViewCtl = null;
-	    var curSelRow = new Array();
-	    var selRow = new Array();
-	    var curSelRowBackColour = new Array();
  
 	    function ApplicationInit(sender) {
 	        try 
@@ -28,38 +24,6 @@
 	      iNewHeight = iNewHeight + 1;
 	      document.getElementById(id).height = (iNewHeight) + "px";
 	    }
-
-        //TODO PG remove
-//	    function getWindowWidth() {
-//	        var myWidth = 0;
-//	        if( typeof( window.innerWidth ) == 'number' ) {
-//	            //Non-IE
-//	            myWidth = window.innerWidth;
-//	        } else if( document.documentElement && ( document.documentElement.clientWidth) ) {
-//	            //IE 6+ in 'standards compliant mode'
-//	            myWidth = document.documentElement.clientWidth;
-//	        } else if( document.body && ( document.body.clientWidth) ) {
-//	            //IE 4 compatible
-//	            myWidth = document.body.clientWidth;
-//	        }
-//	        return myWidth;
-//	    }
-
-	    //TODO PG remove
-//	    function getWindowHeight() {
-//	        var myHeight = 0;
-//	        if( typeof( window.innerHeight) == 'number' ) {
-//	            //Non-IE
-//	            myHeight = window.innerHeight;
-//	        } else if( document.documentElement && ( document.documentElement.clientHeight ) ) {
-//	            //IE 6+ in 'standards compliant mode'
-//	            myHeight = document.documentElement.clientHeight;
-//	        } else if( document.body && ( document.body.clientHeight ) ) {
-//	            //IE 4 compatible
-//	            myHeight = document.body.clientHeight;
-//	        }
-//	        return myHeight;
-//	    }
 
 	    function window_onload() {
 
@@ -106,22 +70,10 @@
 	                        igdrp_getComboById(window.$get("frmMain").hdnFirstControl.value).focus();
 	                    }
 	                    else if (sControlType == 13 || sControlType == 14) {
-	                        //TODO wont work, not using infragistics combos anymore
-	                        igcmbo_getComboById(window.$get("frmMain").hdnFirstControl.value).focus();
+                            // Lookup & Dropdown
 	                    }
 	                    else if (sControlType == 11) {
-	                        // Record Selector
-	                        //TODO wont work, not using infragistics combos anymore
-	                        var grid = igtbl_getGridById(window.$get("frmMain").hdnFirstControl.value);
-	                        var oRows = grid.Rows;
-	                        grid.Element.focus(); 
-                                    
-	                        if (oRows.length > 0) {
-	                            oRow = grid.getActiveRow();
-	                            if (oRow != null) {
-	                                oRow.scrollToView();
-	                            }
-	                        }
+	                        // Record Selector                                   
 	                    }
 	                    else {
 	                        document.getElementById(window.$get("frmMain").hdnFirstControl.value).setActive();
@@ -133,13 +85,6 @@
 	            launchForms(window.$get("frmMain").hdnSiblingForms.value, false);
 	        }
 	        catch (e) { }
-
-	        //Fault HRPRO-2269: no longer required.
-	        try	{
-	            //window.resizeBy(0,-1);
-	            //window.resizeBy(0,1);
-	        }
-	        catch(e) {}
 	    }
 
 	    function launchForms(psForms, pfFirstFormRelocate) {
@@ -295,17 +240,6 @@
 	    function submitForm() {
 	        var mode = document.getElementById("txtPostbackMode").value;
 			
-	        try {
-	            if (mode == 0) {
-	                tAE = document.getElementById("txtActiveElement");				  
-	                if(eval(tAE)) {
-	                    tae.value.setActive();
-	                }
-				  
-	            }
-	        }
-	        catch (e) { };
-
 	        return (mode != 0);
 	    }
 
@@ -319,17 +253,6 @@
 	        }
 	        catch (e) { }
 			
-	    }
-
-	    function activateGridPostback() {
-	        setPostbackMode(3);
-	    }
-
-	    function activateControl() {
-	        try {
-	            txtActiveElement.value = document.activeElement.id;
-	        }
-	        catch (e) { }
 	    }
 
         function SR(row, rowIndex) {
@@ -347,8 +270,6 @@
 
 	    function dateControlKeyPress(pobjControl, piKeyCode, pobjEvent) {
 	        try {
-	            activateControl();
-
 	            if (piKeyCode == 113) // F2 - set today's date
 	            {
 	                var d = new Date();
@@ -427,40 +348,22 @@
 	        try {
 	            if (pfDisplay == true) {
 
-                    //TODO PG remove
-	                //setPostbackMode(3);
-
 	                var sAlreadyUploaded = new String(psAlreadyUploaded);
 	                sAlreadyUploaded = sAlreadyUploaded.substr(0, 1);
 	                if (sAlreadyUploaded != "1") {
 	                    sAlreadyUploaded = "0";
 	                }
-          
-	                try {
-	                    txtActiveElement.value = document.activeElement.id;
-	                }
-	                catch (e) { }
-          
+                    
 	                $get("ifrmFileUpload").src = "FileUpload.aspx?" + sAlreadyUploaded + psElementItemID;
           
 	                showErrorMessages(false);
 	                showOverlay(true);
 	                
 	                document.getElementById("divErrorMessages_Outer").style.display = "none";
-	                
-                    //TODO PG remove
-	                //document.getElementById("divFileUpload").style.visibility = "visible";
 	                document.getElementById("divFileUpload").style.display = "block";
 	            }
 	            else {
-	                //TODO PG remove
-	                //document.getElementById("divFileUpload").style.visibility = "hidden";
 	                document.getElementById("divFileUpload").style.display = "none";
-
-	                //TODO PG remove
-	                //setPostbackMode(3);
-	                //$get("frmMain").btnReEnableControls.click();
-
 	                showOverlay(false);
 	            }
 	        }
@@ -488,17 +391,6 @@
 	        }
 	        catch (e) { }
 	    }
-
-        //TODO PG remove
-//	    function unblockErrorMessageDIV() {
-//	        try {
-//	            if ((divErrorMessages_Outer.style.visibility == "hidden") &&
-//    	            (divErrorMessages_Outer.style.display != "none")) {
-//	                divErrorMessages_Outer.style.display = "none";
-//	            }
-//	        }
-//	        catch (e) { }
-//	    }
 
 	    function showMessage() {			 
     
@@ -539,12 +431,7 @@
 	                // 1 = Submit/SaveForLater button postback (ie. WebForm submission)
 	                // 2 = Grid header postback
 	                // 3 = FileUpload button postback
-					
-                    //TODO PG remove
-//	                if ($get("txtPostbackMode").value == 3) {
-//	                    $get("ifrmFileUpload").contentWindow.enableControls();
-	                //	                }
-	                
+						                
 	                // not doing this causes the object referenced is null error:
 	                setPostbackMode(0);
 	                return;
@@ -828,15 +715,13 @@
 	                    //  <filterValueControlID><TAB><selectWhere code with TABs where the value from filterValueControlID is to be inserted>
                         
 	                    iIndex = sSelectWhere.indexOf("\t");
-	                    if (iIndex >= 0)
-	                    {
+	                    if (iIndex >= 0) {
 	                        sValueType = sSelectWhere.substring(0, iIndex);
 	                        sSelectWhere = sSelectWhere.substr(iIndex+1);
 	                    }
                         
 	                    iIndex = sSelectWhere.indexOf("\t");
-	                    if (iIndex >= 0)
-	                    {
+	                    if (iIndex >= 0) {
 	                        sValueID = sSelectWhere.substring(0, iIndex);
 	                        sSelectWhere = sSelectWhere.substr(iIndex+1);
 
@@ -844,26 +729,20 @@
 	                        sControlType = sControlType.substr(sControlType.indexOf("_")+1);
 	                        sControlType = sControlType.substring(0, sControlType.indexOf("_"));
                             
-	                        if ((sControlType == 13)
-    	                        || (sControlType == 14))
-	                        {
+	                        if ((sControlType == 13) || (sControlType == 14)) {
 	                            // Dropdown (13), Lookup (14)
 	                            if (sControlType == 13) {  
 	                                var ctlLookupValueCombo = document.getElementById(sValueID);
 	                                sValue = ctlLookupValueCombo.value;
 	                            }
-	                            else
-	                            {
+	                            else {
 	                                var ctlLookupValueCombo = document.getElementById(sValueID + "TextBox");
 	                                sValue = ctlLookupValueCombo.value;                        	    
 	                            }
                         	    
-                        	    
-	                            if(sValueType == 11)
-	                            {
+	                            if(sValueType == 11) {
 	                                // Date value from lookup. Convert from locale format to yyyymmdd.
-	                                if (sValue.length > 0)
-	                                {
+	                                if (sValue.length > 0) {
 	                                    sTemp = GetDatePart(sValue, "Y");
                         	             
 	                                    sSubTemp = "0" + GetDatePart(sValue, "M");
@@ -874,61 +753,47 @@
 
 	                                    sValue = sTemp;
 	                                }
-	                                else
-	                                {
+	                                else {
 	                                    sValue = "";
 	                                }
 	                            }
-	                            else
-	                            {
-	                                if((sValueType == 2) || (sValueType == 4))
-	                                {
+	                            else {
+	                                if((sValueType == 2) || (sValueType == 4)) {
 	                                    // numerics/integers
-	                                    if (sValue.length > 0)
-	                                    {
+	                                    if (sValue.length > 0) {
 	                                        sValue = sValue.replace(reDECIMAL, ".");
 	                                    }
-	                                    else
-	                                    {
+	                                    else {
 	                                        sValue = "0";
 	                                    }
 	                                }
 	                            }
 	                        }
-	                        else
-	                        {
-	                            if (sControlType == 6)
-	                            {
+	                        else {
+	                            if (sControlType == 6) {
 	                                // Checkbox (6)
 	                                var ctlLookupValueCheckbox = document.getElementById(sValueID);
 	                                fValue = ctlLookupValueCheckbox.checked;
-	                                if (fValue == true)
-	                                {
+	                                if (fValue == true) {
 	                                    sValue = "1";
 	                                }
-	                                else
-	                                {
+	                                else {
 	                                    sValue = "0";
 	                                }
 	                            }
-	                            else
-	                            {
-	                                if (sControlType == 5)
-	                                {
+	                            else {
+	                                if (sControlType == 5) {
 	                                    // Numeric (5)
 	                                    var ctlLookupValueNumeric = igedit_getById(sValueID);
 	                                    numValue = ctlLookupValueNumeric.getValue();
 	                                    sValue = numValue.toString();
 	                                }
-	                                else
-	                                {
-	                                    if (sControlType == 7)
-	                                    {
+	                                else {
+	                                    if (sControlType == 7) {
 	                                        // Date (7)
 	                                        var ctlLookupValueDate = igdrp_getComboById(sValueID);
 	                                        dtValue = ctlLookupValueDate.getValue();
-	                                        if (dtValue)
-	                                        {
+	                                        if (dtValue) {
 	                                            // Get year part.
 	                                            sTemp = dtValue.getFullYear();
                         	            
@@ -940,13 +805,11 @@
 	                                            sSubTemp = "0" + dtValue.getDate();
 	                                            sValue = sTemp + sSubTemp.substr(sSubTemp.length-2);
 	                                        }
-	                                        else
-	                                        {
+	                                        else {
 	                                            sValue = "";
 	                                        }
 	                                    }
-	                                    else
-	                                    {
+	                                    else {
 	                                        // CharInput, OptionGroup
 	                                        var ctlLookupValue = document.getElementById(sValueID);
 	                                        sValue = ctlLookupValue.value;
@@ -957,10 +820,7 @@
 
 	                        sValue = sValue.toUpperCase().trim().replace(reSINGLEQUOTE, "\'\'"); 
 	                        sSelectWhere = sSelectWhere.replace(reTAB, sValue);   
-                                
-	                        //var objCombo = igcmbo_getComboById(psWebComboId);
-	                        //        objCombo.selectWhere(sSelectWhere);
-        	                                         
+                                        	                                         
 	                        if(sValue=="") {
 	                            document.getElementById(psWebComboID.replace("dde", "filterSQL")).value = "";                          
 	                        }
@@ -1051,8 +911,7 @@
 	                                sControlType = sControlType.substr(sControlType.indexOf("_") + 1);
 	                                sControlType = sControlType.substring(0, sControlType.indexOf("_"));
 
-	                                if ((sControlType == 13)
-    	                                || (sControlType == 14)) {
+	                                if ((sControlType == 13) || (sControlType == 14)) {
 	                                    // Dropdown (13), Lookup (14)
 	                                    if (sControlType == 13) {
 	                                        var ctlLookupValueCombo = document.getElementById(sValueID);
@@ -1064,7 +923,6 @@
 
 	                                        sValue = ctlLookupValueCombo.value;
 	                                    }
-
 
 	                                    if (sValueType == 11) {
 	                                        // Date value from lookup. Convert from locale format to yyyymmdd.
@@ -1196,13 +1054,10 @@
 
 	        for (var r = 0; r < table.rows.length; r++) {
 	            if (table.rows[r].style.display == '') {
-	              //return document.getElementById(iGridID.replace("Grid", "Grid_row" + r)).offsetHeight;
 	              var rows = document.getElementById(iGridID).rows;
 	              return (rows[r].offsetHeight);
-	              
 	            }
 	        }
-    
 	        return 0;    
 	    }
   

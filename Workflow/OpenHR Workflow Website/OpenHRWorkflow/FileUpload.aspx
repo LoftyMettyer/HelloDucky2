@@ -22,39 +22,13 @@
       }
       catch (e) { };
 
-      //Fault HRPRO-2149
-      //resizeFrame();
-
       //Fault HRPRO-2270
       window.parent.resizeIframe("ifrmFileUpload", document.getElementById("divFileUpload").offsetHeight);
 
       try {
         document.getElementById("FileUpload1").focus();
       } catch(e) {} 
-    }
-
-    //TODO remove
-//    function resizeFrame() {
-
-//      var tmpElement = document.getElementById("frmFileUpload").offsetParent;
-//      var iRequiredWidth = tmpElement.scrollWidth;
-//      var iMinWidth = 0.9 * parent.document.getElementById("frmMain").hdnFormWidth.value;
-//      
-//        if (iRequiredWidth < iMinWidth) {
-//            iRequiredWidth = iMinWidth;
-//        }
-
-//          document.getElementById("FileUpload1").style.width = (iRequiredWidth - 150) + 'px';
-//          document.getElementById("FileUpload1").style.width = '400px';
-//        try {            
-//              window.resizeTo(iRequiredWidth, tmpElement.scrollHeight);
-//              window.parent.resizeToFit(tmpElement.scrollWidth, tmpElement.scrollHeight);
-//        }
-//        catch (e) {
-//            window.location = document.URL;
-//        }
-//    }
-          
+    }          
     
     function showErrorMessages(pfDisplay) {
       if (((document.getElementById("hdnCount_Errors").value > 0)
@@ -77,31 +51,12 @@
       }
     }
 
-    //TODO PG remove
-//    function unblockErrorMessageDIV() {
-//      try {
-//        if ((document.getElementById("divErrorMessages_Outer").style.visibility == "hidden") &&
-//					(document.getElementById("divErrorMessages_Outer").style.display != "none")) {
-//          document.getElementById("divErrorMessages_Outer").style.display = "none";
-//        }
-//      }
-//      catch (e) { }
-//    }
-
     function exitFileUpload(piExitMode) {
       try {
         window.parent.fileUploadDone(document.getElementById("hdnElementID").value, piExitMode);
       }
       catch (e) { }
     }
-
-    //TODO PG look at
-//    function enableControls() {
-//        try {
-//            document.getElementById('btnCancel').disabled = false;
-//        }
-//        catch (e) { }
-//    }
 
     function refreshFileUploadButton(psFileUploadValue) {
       try {

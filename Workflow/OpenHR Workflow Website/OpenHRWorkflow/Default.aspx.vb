@@ -960,7 +960,7 @@ Public Class _Default
                     .Height() = Unit.Pixel(NullSafeInteger(dr("Height")) - 6)
                     .Width() = Unit.Pixel(NullSafeInteger(dr("Width")) - 6)
 
-                    .Attributes("onfocus") = "try{" & sID & ".select();activateControl();}catch(e){};"
+                    .Attributes("onfocus") = "try{" & sID & ".select();}catch(e){};"
 
                     If NullSafeInteger(dr("inputSize")) > 0 Then
                       .Attributes("maxlength") = NullSafeString(dr("inputSize"))
@@ -1147,8 +1147,6 @@ Public Class _Default
                     .Height() = Unit.Pixel(NullSafeInteger(dr("Height")) - 6)
                     .Width() = Unit.Pixel(NullSafeInteger(dr("Width")) - 6)
 
-                    .Attributes("onfocus") = "try{" & sID & ".select();activateControl();}catch(e){};"
-
                     .ClientSideEvents.KeyPress = "WebNumericEditValidation_KeyPress"
                     .ClientSideEvents.KeyDown = "WebNumericEditValidation_KeyDown"
                     .Attributes("onpaste") = "try{WebNumericEditValidation_Paste(this, event, '" & sID & "');}catch(e){};"
@@ -1246,7 +1244,7 @@ Public Class _Default
 
                             iDay = CShort(NullSafeString(dr("value")).Substring(3, 2))
                             If iDay < 10 Then
-                              sDateString &= "0" & iDay.ToString & "-"
+                              sDateString &= "0" & iDay.ToString
                             Else
                               sDateString &= iDay.ToString
                             End If
@@ -2557,9 +2555,6 @@ Public Class _Default
 
                     If Not IsMobileBrowser() Then
                       .Attributes.Add("onclick", "try{showFileUpload(true, '" & sEncodedID & "', document.getElementById('file" & sID & "').value);}catch(e){};")
-
-                      'TODO PG remove
-                      'AddHandler ctlForm_HTMLInputButton.ServerClick, AddressOf DisableControls
                     Else
                       .Attributes.Add("onclick", "try{alert('Your browser does not support file upload.');}catch(e){};")
                     End If
@@ -3414,11 +3409,6 @@ Public Class _Default
               hdnNoSubmissionMessage.Value = If(sMessage1.Length = 0 And sMessage2.Length = 0 And sMessage3.Length = 0, "1", "0")
               hdnFollowOnForms.Value = sFollowOnForms
 
-              'TODO PG remove
-              'If hdnNoSubmissionMessage.Value <> "1" Then
-              '  EnableDisableControls(False)
-              'End If
-
             Catch ex As Exception
               sMessage = "Error submitting the web form:<BR><BR>" & ex.Message
             End Try
@@ -3449,158 +3439,9 @@ Public Class _Default
       hdnSubmissionMessage_3.Value = sMessage3
       hdnNoSubmissionMessage.Value = CStr(IIf((sMessage1.Length = 0) And (sMessage2.Length = 0) And (sMessage3.Length = 0), "1", "0"))
       hdnFollowOnForms.Value = ""
-      'TODO PG remove
-      'EnableDisableControls(False)
     End If
 
   End Sub
-
-  'TODO PG remove
-  'Protected Sub BtnReEnableControlsClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnReEnableControls.Click
-  '  EnableDisableControls(True)
-  'End Sub
-
-  'TODO PG remove
-  'Public Sub DisableControls(ByVal sender As System.Object, e As EventArgs)
-  '  EnableDisableControls(False)
-  'End Sub
-
-  'TODO PG remove
-  'Private Sub EnableDisableControls(ByVal pfEnabled As Boolean)
-
-  '  Dim ctlFormInput As Control
-  '  Dim sID As String
-  '  Dim sIDString As String
-  '  Dim iTemp As Int16
-  '  Dim sTemp As String
-  '  Dim iType As Int16
-  '  Dim sType As String
-  '  Dim sMessage As String = ""
-  '  Dim sMessage1 As String = ""
-  '  Dim sMessage2 As String = ""
-  '  Dim sMessage3 As String = ""
-
-  '  Try ' Disable all controls.
-  '    Dim controlList = pnlInputDiv.Controls.Cast(Of Control)() _
-  '          .Union(pnlTabsDiv.Controls.Cast(Of Control)) _
-  '          .Where(Function(c) c.ClientID.EndsWith("_PageTab")) _
-  '          .SelectMany(Function(c) c.Controls.Cast(Of Control)()) _
-  '          .Where(Function(c) c.ClientID.StartsWith(FORMINPUTPREFIX))
-
-  '    For Each ctlFormInput In controlList
-
-  '      sID = ctlFormInput.ID
-
-  '      If (Left(sID, Len(FORMINPUTPREFIX)) = FORMINPUTPREFIX) Then
-  '        sIDString = sID.Substring(Len(FORMINPUTPREFIX))
-
-  '        iTemp = CShort(sIDString.IndexOf("_"))
-  '        sTemp = sIDString.Substring(iTemp + 1)
-
-  '        iTemp = CShort(sTemp.IndexOf("_"))
-  '        sType = sTemp.Substring(0, iTemp)
-  '        iType = CShort(sType)
-
-  '        Select Case iType
-  '          Case 0 ' Button
-  '            DirectCast(ctlFormInput, HtmlInputButton).Attributes.Remove("disabled")
-  '            If Not pfEnabled Then
-  '              DirectCast(ctlFormInput, HtmlInputButton).Attributes.Add("disabled", "disabled")
-  '            End If
-
-  '          Case 1 ' Database value
-  '          Case 2 ' Label
-
-  '          Case 3 ' Character Input
-  '            If (TypeOf ctlFormInput Is TextBox) Then
-  '              DirectCast(ctlFormInput, TextBox).Enabled = pfEnabled
-  '            End If
-
-  '          Case 4 ' Workflow value
-
-  '          Case 5 ' Numeric Input
-  '            If (TypeOf ctlFormInput Is Infragistics.WebUI.WebDataInput.WebNumericEdit) Then
-  '              DirectCast(ctlFormInput, Infragistics.WebUI.WebDataInput.WebNumericEdit).Enabled = pfEnabled
-  '            End If
-
-  '          Case 6 ' Logic Input
-  '            If (TypeOf ctlFormInput Is CheckBox) Then
-  '              DirectCast(ctlFormInput, CheckBox).Enabled = pfEnabled
-  '            End If
-
-  '          Case 7 ' Date Input
-  '            If (TypeOf ctlFormInput Is Infragistics.WebUI.WebSchedule.WebDateChooser) Then
-  '              DirectCast(ctlFormInput, Infragistics.WebUI.WebSchedule.WebDateChooser).Enabled = pfEnabled
-  '            End If
-
-  '          Case 8 ' Frame
-  '          Case 9 ' Line
-  '          Case 10 ' Image
-
-  '          Case 11 ' Grid (RecordSelector) Input                            
-  '            If (TypeOf ctlFormInput Is GridView) Then
-  '              DirectCast(ctlFormInput, GridView).Enabled = pfEnabled
-  '            End If
-
-  '          Case 13 ' Dropdown Input
-  '            If (TypeOf ctlFormInput Is DropDownList) Then
-  '              DirectCast(ctlFormInput, DropDownList).Enabled = pfEnabled
-  '            End If
-
-  '          Case 14 ' Lookup Input
-  '            If Not IsMobileBrowser() Then
-
-  '              If (TypeOf ctlFormInput Is AjaxControlToolkit.DropDownExtender) Then
-  '                DirectCast(ctlFormInput, AjaxControlToolkit.DropDownExtender).Enabled = pfEnabled
-  '              End If
-  '            Else
-  '              ' Mobile Browser
-  '              If (TypeOf ctlFormInput Is DropDownList) Then
-  '                DirectCast(ctlFormInput, DropDownList).Enabled = pfEnabled
-  '              End If
-  '            End If
-
-  '          Case 15 ' OptionGroup Input
-
-  '            If (TypeOf ctlFormInput Is RadioButtonList) Then
-  '              DirectCast(ctlFormInput, RadioButtonList).Enabled = pfEnabled
-  '            End If
-
-  '          Case 17 ' Input value - file upload
-  '            DirectCast(ctlFormInput, HtmlInputButton).Style.Remove("disabled")
-  '            If pfEnabled Then
-  '              DirectCast(ctlFormInput, HtmlInputButton).Style.Add("disabled", "disabled")
-  '            End If
-
-  '        End Select
-  '      End If
-  '    Next ctlFormInput
-
-  '  Catch ex As Exception
-  '    If pfEnabled Then
-  '      sMessage = "Error enabling web form items:<BR><BR>" & ex.Message
-  '    Else
-  '      sMessage = "Error disabling web form items:<BR><BR>" & ex.Message
-  '    End If
-  '  End Try
-
-  '  If sMessage.Length > 0 Then
-  '    bulletErrors.Items.Clear()
-  '    bulletWarnings.Items.Clear()
-
-  '    hdnErrorMessage.Value = sMessage
-
-  '    sMessage1 = sMessage & "<BR><BR>Click"
-  '    sMessage2 = "here"
-  '    sMessage3 = "to close this form."
-
-  '    hdnSubmissionMessage_1.Value = sMessage1
-  '    hdnSubmissionMessage_2.Value = sMessage2
-  '    hdnSubmissionMessage_3.Value = sMessage3
-  '    hdnNoSubmissionMessage.Value = If(sMessage1.Length = 0 And sMessage2.Length = 0 And sMessage3.Length = 0, "1", "0")
-  '    hdnFollowOnForms.Value = ""
-  '  End If
-  'End Sub
 
   Public Function LocaleDateFormat() As String
     Return Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern.ToUpper
@@ -3953,30 +3794,6 @@ Public Class _Default
       link.Href = "favicon.ico"
       Page.Header.Controls.Add(link)
     End If
-  End Sub
-
-  Private Sub ShowSessionSize()
-
-    Page.Trace.Write("Session Trace Info")
-
-    Dim totalSessionBytes As Long
-
-    Dim b As New System.Runtime.Serialization.Formatters.Binary.BinaryFormatter()
-    Dim m As System.IO.MemoryStream
-
-    For Each key As String In Session
-
-      Dim obj As Object = Session(key)
-
-      m = New System.IO.MemoryStream()
-      b.Serialize(m, obj)
-      totalSessionBytes += m.Length
-
-      Page.Trace.Write(String.Format("{0}: {1:n} kb", key, m.Length / 1024))
-    Next
-
-    Page.Trace.Write(String.Format("Total Size of Session Data: {0:n} kb", totalSessionBytes / 1024))
-
   End Sub
 
 End Class

@@ -106,7 +106,6 @@
                     </div>
                 </div>    
                 <asp:Button id="btnSubmit" runat="server" style="visibility: hidden; top: 0px; position: absolute; left: 0px; width: 0px; height: 0px;" text=""/>
-                <%-- TODO PG remove <asp:Button id="btnReEnableControls" runat="server" style="visibility: hidden; top: 0px; position: absolute; left: 0px; width: 0px; height: 0px;" text=""/>--%>
                 <asp:Button id="btnDoFilter" runat="server" style="visibility: hidden; top: 0px; position: absolute; left: 0px; width: 0px; height: 0px;" text=""/>
                 <asp:HiddenField ID="hdnMobileLookupFilter" runat="server" Value="" />
 			    <asp:HiddenField ID="hdnCount_Errors" runat="server" Value="" />
@@ -135,7 +134,6 @@
     Temporary client-side values
     -->
 	<input type="hidden" id="txtPostbackMode" name="txtPostbackMode" value="0" />
-	<input type="hidden" id="txtActiveElement" name="txtActiveElement" value="" />
 	<input type="hidden" id="txtLastDate_Month" name="txtLastDate_Month" value="" />
 	<input type="hidden" id="txtLastDate_Day" name="txtLastDate_Day" value="" />
 	<input type="hidden" id="txtLastDate_Year" name="txtLastDate_Year" value="" />	
