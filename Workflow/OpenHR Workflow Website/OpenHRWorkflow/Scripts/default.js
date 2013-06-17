@@ -281,9 +281,6 @@
 	    }
 
 	    function overrideWarningsAndSubmit() {
-	        if ($get("divErrorMessages_Outer").disabled == true) {
-	            return;
-	        };
 
 	        $get("frmMain").hdnOverrideWarnings.value = 1;
 
@@ -449,15 +446,15 @@
 	                showErrorMessages(false);
 	                showOverlay(true);
 	                
-                    document.getElementById("divErrorMessages_Outer").disabled = true;
-	                document.getElementById("imgErrorMessages_Max").disabled = true;
 	                document.getElementById("divErrorMessages_Outer").style.display = "none";
 	                
-	                document.getElementById("divFileUpload").style.visibility = "visible";
+                    //TODO PG remove
+	                //document.getElementById("divFileUpload").style.visibility = "visible";
 	                document.getElementById("divFileUpload").style.display = "block";
 	            }
 	            else {
-	                document.getElementById("divFileUpload").style.visibility = "hidden";
+	                //TODO PG remove
+	                //document.getElementById("divFileUpload").style.visibility = "hidden";
 	                document.getElementById("divFileUpload").style.display = "none";
 
 	                //TODO PG remove
@@ -465,8 +462,6 @@
 	                //$get("frmMain").btnReEnableControls.click();
 
 	                showOverlay(false);
-	                document.getElementById("divErrorMessages_Outer").disabled = false;
-	                document.getElementById("imgErrorMessages_Max").disabled = false;
 	            }
 	        }
 	        catch (e) { }
@@ -606,22 +601,6 @@
 	        }
 	        catch (e) { }
 	    }
-
-        //TODO PG remove
-//	    function unblockFileUploadDIV() {
-//	        try {
-//	            if (($get("divFileUpload").style.visibility == "hidden") &&
-//    	            ($get("divFileUpload").style.display != "none")) {
-//	                $get("divFileUpload").style.display = "none";
-//	            }
-//	        }
-//	        catch (e) { }
-
-//	        try {
-//	            document.getElementById($get("txtActiveElement").value).setActive();
-//	        }
-//	        catch (e) { }
-//	    }
 
 	    function FileDownload_Click(psID) {
 	        spawnWindow("FileDownload.aspx?" + psID);

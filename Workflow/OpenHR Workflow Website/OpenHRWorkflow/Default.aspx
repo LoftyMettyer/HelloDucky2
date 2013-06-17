@@ -78,7 +78,7 @@
 		</div>
 	</div>
 	<!--
-    Submission and Exceptional Errors Popup 
+    Submission and Exceptional Errors Popup
     -->
 	<div id="divSubmissionMessages" style="position: absolute; left: 0px; top: 15%; width: 100%; display: none; z-index: 102; visibility: hidden; text-align: center;" nowrap="nowrap">
 		<iframe id="ifrmMessages" src="" frameborder="0" scrolling="no"></iframe>
@@ -86,7 +86,7 @@
 	<!--
     File Upload Popup
     -->
-	<div id="divFileUpload" style="position: absolute; left: 0px; top: 15%; width: 100%; display: none; z-index: 101; visibility: hidden; text-align: center;" nowrap="nowrap">
+	<div id="divFileUpload" style="position: absolute; left: 0px; top: 15%; width: 100%; display: none; z-index: 101; text-align: center;" nowrap="nowrap">
 		<iframe id="ifrmFileUpload" src="" style="width:550px"  frameborder="0" scrolling="no"></iframe>
 	</div>
     
