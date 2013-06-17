@@ -221,13 +221,6 @@ Public Class RecordSelector
       Dim iGridwidth As Integer
       iGridwidth = CInt(CalculateGridWidth.Replace("px", "").Replace("%", ""))
 
-      'If iGridwidth >= 420 Or (IsLookup And MyBase.PageCount < 2) Then
-      '  writer.Write("     <input name='filter' style='font-size:8pt;font-style:italic;float:left;position:absolute;top:2px;left:3px;width:150px;height:15px;border:solid 1px gray' value='search..' " & _
-      '               "onblur='if(this.value==""""){this.style.fontStyle=""italic"";this.style.color=""gray"";this.value=""search...""}'" & _
-      '               "onfocus='if(this.value!=""""){this.style.color=""black"";this.style.fontStyle=""normal"";this.value=""""}' onclick='event.cancelBubble=true;'" & _
-      '               "onkeyup='filterTable(this, " & Me.ClientID.ToString & ")' type='text'>")
-      '  writer.Write("<img src='Images/search.gif' style='position:absolute;top:4px;left:140px;height:15px;width:15px'/>")
-      'End If
       customPager.ApplyStyle(Me.PagerStyle)
       customPager.Visible = True
       customPager.RenderControl(writer)
@@ -735,8 +728,10 @@ Public Class RecordSelector
         Next
 
         If Not Me.IsEmpty Then
-          e.Row.Attributes("onclick") = ("SetScrollTopPos('" & grdGrid.ID.ToString & "', document.getElementById('" & grdGrid.ID.Replace("Grid", "gridcontainer") & "').scrollTop, " & e.Row.RowIndex & ");" & _
-                                              "try{setPostbackMode(3);}catch(e){};__doPostBack('" & grdGrid.UniqueID & "','Select$" & e.Row.RowIndex & "');")
+          'e.Row.Attributes("onclick") = ("SetScrollTopPos('" & grdGrid.ID.ToString & "', document.getElementById('" & grdGrid.ID.Replace("Grid", "gridcontainer") & "').scrollTop, " & e.Row.RowIndex & ");" & _
+          '                                   "try{setPostbackMode(3);}catch(e){};__doPostBack('" & grdGrid.UniqueID & "','Select$" & e.Row.RowIndex & "');")
+
+          e.Row.Attributes("onclick") = "selectRow('" & grdGrid.ID.Replace("_Grid", "") & "', '" & e.Row.RowIndex & "')"
         End If
 
       ElseIf e.Row.RowType = DataControlRowType.Header Then

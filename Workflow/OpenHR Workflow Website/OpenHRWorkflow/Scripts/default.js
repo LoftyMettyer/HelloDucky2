@@ -323,6 +323,17 @@
 	        catch (e) { }
 	    }
 
+	    function selectRow(gridId, rowIndex) {
+
+	        SetScrollTopPos(gridId + '_Grid', document.getElementById(gridId + '_gridcontainer').scrollTop, rowIndex);
+            try {
+                setPostbackMode(3);
+            }
+            catch(e) {
+            };
+            __doPostBack(gridId + '_Grid', 'Select$' + rowIndex);	        
+        }
+
 	    function dateControlKeyPress(pobjControl, piKeyCode, pobjEvent) {
 	        try {
 	            activateControl();
