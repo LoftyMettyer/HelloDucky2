@@ -4,14 +4,14 @@
     <script type="text/javascript">
     // <!CDATA[
         function submitCheck() {
-
+            return true;
             var header = 'Login Failed';
 
-            if (document.getElementById('ctl00_mainCPH_txtUserName').value.trim().length === 0) {
+            if (document.getElementById('<%= txtUserName.ClientID %>').value.trim().length === 0) {
                 showDialog(header, 'Username is required.');
                 return false;
             }
-            if (document.getElementById('ctl00_mainCPH_txtPassword').value.trim().length === 0) {
+            if (document.getElementById('<%= txtPassword.ClientID %>').value.trim().length === 0) {
                 showDialog(header, 'Password is required.');
                 return false;
             }
@@ -24,11 +24,17 @@
 <asp:Content ID="main" ContentPlaceHolderID="mainCPH" Runat="Server">
     
     <asp:Label runat="server" ID="lblWelcome" Text="Welcome"/>
+    
+    <asp:ValidationSummary runat="server" ShowMessageBox="False" />
 
     <table class="controlgrid">
         <tr>
-            <td><asp:Label runat="server" ID="lblUserName" Text="Username"/></td>
-            <td><asp:TextBox runat="server" ID="txtUserName"/></td>
+            <td><asp:Label runat="server" ID="lblUserName" Text="Username" AssociatedControlID="txtUserName" /></td>
+            <td>
+                <asp:TextBox runat="server" ID="txtUserName"/>
+                <%--    TODO finish or remove --%>
+                <asp:RequiredFieldValidator runat="server" ControlToValidate="txtUserName" ErrorMessage="Username is required"></asp:RequiredFieldValidator>
+            </td>
         </tr>
         <tr>
             <td><asp:Label runat="server" ID="lblPassword" Text="Password"/></td>

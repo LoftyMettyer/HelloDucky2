@@ -7,20 +7,20 @@
 
             var header = 'Change Password Failed';
 
-            if (document.getElementById('ctl00_mainCPH_txtCurrPassword').value.trim().length === 0) {
+            if (document.getElementById('<%= txtCurrPassword.ClientID %>').value.trim().length === 0) {
                 showDialog(header, 'Current Password is required.');
                 return false;
             }
-            if (document.getElementById('ctl00_mainCPH_txtNewPassword').value.trim().length === 0) {
+            if (document.getElementById('<%= txtNewPassword.ClientID %>').value.trim().length === 0) {
                 showDialog(header, 'New Password is required.');
                 return false;
             }
-            if (document.getElementById('ctl00_mainCPH_txtConfPassword').value.trim().length === 0) {
+            if (document.getElementById('<%= txtConfPassword.ClientID %>').value.trim().length === 0) {
                 showDialog(header, 'Confirm Password is required.');
                 return false;
             }
 
-            if (document.getElementById('ctl00_mainCPH_txtNewPassword').value != document.getElementById('ctl00_mainCPH_txtConfPassword').value) {
+            if (document.getElementById('<%= txtNewPassword.ClientID %>').value != document.getElementById('<%= txtConfPassword.ClientID %>').value) {
                 showDialog(header, 'New Password and Confirm Password do not match.');
                 return false;
             }

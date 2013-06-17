@@ -4,14 +4,14 @@
     <script  type="text/javascript">
         // <!CDATA[
         window.onload = function () {
-            document.getElementById('ctl00_mainCPH_txtEmail').setAttribute('type', 'email');
+            document.getElementById('<%= txtEmail.ClientID %>').setAttribute('type', 'email');
         };
 
         function submitCheck() {
 
             var header = 'Request Failed';
 
-            if (document.getElementById('ctl00_mainCPH_txtEmail').value.trim().length === 0) {
+            if (document.getElementById('<%= txtEmail.ClientID %>').value.trim().length === 0) {
                 showDialog(header, 'Email address is required.');
                 return false;
             }

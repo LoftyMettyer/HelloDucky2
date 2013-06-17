@@ -1,8 +1,8 @@
 ﻿
 Partial Class Registration
-  Inherits System.Web.UI.Page
+  Inherits Page
 
-  Protected Sub Page_Init(sender As Object, e As System.EventArgs) Handles Me.Init
+  Protected Sub Page_Init(sender As Object, e As EventArgs) Handles Me.Init
     Title = Utilities.WebSiteName("Registration")
     Forms.LoadControlData(Me, 3)
     Form.DefaultButton = btnRegister.UniqueID
