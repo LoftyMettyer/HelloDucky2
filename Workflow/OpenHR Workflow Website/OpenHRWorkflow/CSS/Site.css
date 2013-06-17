@@ -83,10 +83,11 @@ body {
     left: 0;
     top: 0;
     width: 100%; 
-    height: 100%; 
-    /* TODO use hidden plus put overlay as part of messageBox */
-    visibility: hidden;
+    height: 100%;
+    display: none;
     
+    /* TODO use hidden plus put overlay as part of messageBox */
+
     background-color: #222; /* rgba(252, 252, 252, 0.9); */
     
     filter: alpha(opacity=50);
