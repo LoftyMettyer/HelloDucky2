@@ -3221,7 +3221,6 @@ Public Class _Default
             .SelectMany(Function(c) c.Controls.Cast(Of Control)()) _
             .Where(Function(c) c.ClientID.StartsWith(FORMINPUTPREFIX))
 
-      'TODO check list
       For Each ctlFormInput In controlList
 
         sID = ctlFormInput.ID
@@ -3293,7 +3292,7 @@ Public Class _Default
             If (TypeOf ctlFormInput Is System.Web.UI.WebControls.TextBox) Then
               ctlFormTextInput = DirectCast(ctlFormInput, System.Web.UI.WebControls.TextBox)
 
-              If (ctlFormTextInput.Text = vbNullString) Or (ctlFormTextInput.Text = "  /  /") Then
+              If (ctlFrmTextInput.Text = vbNullString) Or (ctlFormTextInput.Text = "  /  /") Then
                 sDateValueString = "null"
               Else
                 sDateValueString = objGeneral.ConvertLocaleDateToSQL(ctlFormTextInput.Text)
@@ -3309,22 +3308,14 @@ Public Class _Default
               sRecordID = "0"
 
               If Not ctlForm_PagingGridView.IsEmpty And ctlForm_PagingGridView.SelectedIndex >= 0 Then
-                Try
-                  'TODO
-                  For iColCount As Integer = 0 To ctlForm_PagingGridView.HeaderRow.Cells.Count - 1
-                    sColumnCaption = UCase(ctlForm_PagingGridView.HeaderRow.Cells(iColCount).Text)
+                For iColCount As Integer = 0 To ctlForm_PagingGridView.HeaderRow.Cells.Count - 1
+                  sColumnCaption = UCase(ctlForm_PagingGridView.HeaderRow.Cells(iColCount).Text)
 
-                    If (sColumnCaption = "ID") Then
-                      sRecordID = ctlForm_PagingGridView.SelectedRow.Cells(iColCount).Text
-                      Exit For
-                    End If
-                  Next
-                Catch ex As Exception
-                  'TODO
-                  Beep()
-                  'Throw New Exception("arrrgghhh!!!")
-                End Try
-
+                  If (sColumnCaption = "ID") Then
+                    sRecordID = ctlForm_PagingGridView.SelectedRow.Cells(iColCount).Text
+                    Exit For
+                  End If
+                Next
               End If
 
               sFormInput1 = sFormInput1 & sIDString & sRecordID & vbTab
