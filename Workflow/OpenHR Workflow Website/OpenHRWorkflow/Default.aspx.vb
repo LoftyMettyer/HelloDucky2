@@ -2448,6 +2448,10 @@ Public Class _Default
                         Dim listItem As ListItem = ctlForm_Dropdown.Items.FindByValue(ctlForm_Dropdown.Attributes("DefaultValue").ToString)
                         If listItem IsNot Nothing Then
                           ctlForm_Dropdown.SelectedValue = listItem.Value
+                        Else
+                          'The selected value is not in the list, so add it after the blank row
+                          ctlForm_Dropdown.Items.Insert(1, ctlForm_Dropdown.Attributes("DefaultValue").ToString)
+                          ctlForm_Dropdown.SelectedIndex = 1
                         End If
                       End If
 

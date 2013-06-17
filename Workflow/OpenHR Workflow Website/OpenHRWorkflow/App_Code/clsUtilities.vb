@@ -113,6 +113,7 @@ Public Class Utilities
   ' isMobileBrowser
   '****************************************************************
   Public Shared Function IsMobileBrowser() As Boolean
+
     'GETS THE CURRENT USER CONTEXT
     Dim context As HttpContext = HttpContext.Current
 
