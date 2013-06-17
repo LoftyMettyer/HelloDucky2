@@ -2210,7 +2210,6 @@ Public Class _Default
                     ' AJAX DropDownExtender (DDE) Control
                     ' This simply links up the DropDownList and the Lookup Grid to make a dropdown.
                     ' =============================================================================
-                    'TODO: PG REPLACE
                     Dim ctlForm_DDE As New AjaxControlToolkit.DropDownExtender
 
                     With ctlForm_DDE
