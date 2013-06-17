@@ -46,7 +46,7 @@ Public Class WebSiteInstaller
 
 		Dim metaAppPoolPath As String = "IIS://" & System.Environment.MachineName & "/W3SVC/AppPools"
 
-		Try 'These will only work for II6/II7+
+		Try 'These will only work for II6/II7+ (IIS5 doesnt have app pools, it runs each web app in own process)
 			If Not AppPoolExists(metaAppPoolPath, AppPoolName) Then
 				CreateAppPool(metaAppPoolPath, AppPoolName)
 			End If
@@ -102,7 +102,8 @@ Public Class WebSiteInstaller
 				Dim appPools As New DirectoryEntry(strMetabasePath)
 				Dim newPool = appPools.Children.Add(strAppPoolName, "IIsApplicationPool")
 
-				Try 'These will only work for IIS7+
+				Try 'These will only work for IIS7+ 
+					'(IIS doesnt have some settings like ManagedRuntime version, the pool automatically picks up the ASP version from the web app, but cant have ASP2 & ASP4 apps in the same pool)
 					newPool.Properties("IdleTimeout")(0) = 60
 					newPool.Properties("ManagedPipelineMode")(0) = 0
 					newPool.Properties("ManagedRuntimeVersion")(0) = "v4.0"
