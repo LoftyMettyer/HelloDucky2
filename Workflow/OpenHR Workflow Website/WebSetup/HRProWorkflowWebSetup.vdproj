@@ -269,7 +269,7 @@
                 {
                 "Name" = "8:.NET Framework"
                 "Message" = "8:[VSDNETMSG]"
-                "FrameworkVersion" = "8:.NETFramework,Version=v3.5"
+                "FrameworkVersion" = "8:.NETFramework,Version=v2.0"
                 "AllowLaterVersions" = "11:FALSE"
                 "InstallUrl" = "8:http://go.microsoft.com/fwlink/?LinkId=9832"
                 }
@@ -667,9 +667,9 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:OpenHR Workflow Web Site v5.0"
         "ProductCode" = "8:{9C0AE9EE-C2A5-4432-AEBC-08ADC693460D}"
-        "PackageCode" = "8:{E996763A-CFCC-4953-8802-E21E7BB2C5FE}"
+        "PackageCode" = "8:{6839E567-A648-4A91-A189-D6ACAC5AF1AB}"
         "UpgradeCode" = "8:{8D103CEA-CA57-49D4-A6E6-80D5076BB642}"
-        "AspNetVersion" = "8:4.0.30319.0"
+        "AspNetVersion" = "8:3"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:TRUE"
