@@ -88,9 +88,7 @@
 
     function enableControls() {
         try {
-            var button = ig_getWebControlById("btnCancel");
-
-            button.setEnabled(true);
+            document.getElementById('btnCancel').disabled = false;
         }
         catch (e) { }
     }
@@ -100,13 +98,13 @@
         // Trim leading and trailing spaces.
         psFileUploadValue = psFileUploadValue.replace(/(^\s*)|(\s*$)/g, "");
 
-        var button = ig_getWebControlById("btnFileUpload");
-
+        var button = document.getElementById('btnFileUpload');
+          
         if (psFileUploadValue.length > 0) {
-          button.setEnabled(true);
+            button.disabled = false;
         }
         else {
-          button.setEnabled(false);
+            button.disabled = true;
         }
       }
       catch (e) { }
@@ -200,9 +198,9 @@
         <td>
         </td>
         <td rowspan="2">
-          <input id="btnFileUpload" value="Upload" runat="server" type="button" enabled="false" accesskey="U"/>
+          <input id="btnFileUpload" value="Upload" runat="server" type="button" accesskey="U" disabled="disabled" />
           &nbsp;
-          <input id="btnClear" value="Clear" runat="server" type="button" enabled="false" accesskey="l"/>
+          <input id="btnClear" value="Clear" runat="server" type="button" accesskey="l"/>
           &nbsp;
           <input id="btnCancel" value="Cancel" runat="server" type="button" accesskey="C"/>
           <br />

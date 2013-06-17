@@ -3,9 +3,9 @@ Imports System.Data
 Imports Utilities
 
 Partial Class FileUpload
-	Inherits System.Web.UI.Page
+  Inherits Page
 
-	Private mobjConfig As New Config
+  Private ReadOnly mobjConfig As New Config
 	Private miSubmissionTimeoutInSeconds As Int32
 
 	Public Function ColourThemeHex() As String
@@ -17,15 +17,15 @@ Partial Class FileUpload
 	Private Function SaveImage(ByVal abtImage As Byte(), ByVal psContentType As String, ByVal psFileName As String, ByVal pfClear As Boolean) As Integer
 		Dim iRowsAffected As Integer
 		Dim strConn As String
-		Dim conn As System.Data.SqlClient.SqlConnection
-		Dim cmdSave As System.Data.SqlClient.SqlCommand
+    Dim conn As SqlClient.SqlConnection
+    Dim cmdSave As SqlClient.SqlCommand
 
 		If abtImage.GetUpperBound(0) = 0 Then
 			psContentType = ""
 			psFileName = ""
 		End If
 
-    strConn = "Application Name=OpenHR Workflow;Data Source=" & Session("Server") & ";Initial Catalog=" & Session("Database") & ";Integrated Security=false;User ID=" & Session("User") & ";Password=" & Session("Pwd") & ";Pooling=false"
+    strConn = CStr("Application Name=OpenHR Workflow;Data Source=" & Session("Server") & ";Initial Catalog=" & Session("Database") & ";Integrated Security=false;User ID=" & Session("User") & ";Password=" & Session("Pwd") & ";Pooling=false")
 		conn = New SqlClient.SqlConnection(strConn)
 		conn.Open()
 
@@ -33,7 +33,7 @@ Partial Class FileUpload
 		cmdSave.CommandType = CommandType.StoredProcedure
 		cmdSave.CommandTimeout = miSubmissionTimeoutInSeconds
 
-		cmdSave.Parameters.AddWithValue("@piElementItemID", Me.ViewState("ElementItemID"))
+    cmdSave.Parameters.AddWithValue("@piElementItemID", ViewState("ElementItemID"))
 		cmdSave.Parameters.AddWithValue("@piInstanceID", Session("InstanceID"))
 		cmdSave.Parameters.AddWithValue("@pimgFile", abtImage)
 		cmdSave.Parameters.AddWithValue("@psContentType", psContentType)
@@ -50,20 +50,15 @@ Partial Class FileUpload
 		SaveImage = iRowsAffected
 	End Function
 
-  'Protected Sub btnFileUpload_Click(ByVal sender As Object, ByVal e As Infragistics.WebUI.WebDataInput.ButtonEventArgs) Handles btnFileUpload.Click
-
-
-  '	End Sub
-
-  Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+  Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
     Dim sTemp As String
     Dim iTemp As Integer
     Dim sQueryString As String
     Dim iElementItemID As Integer
     Dim strConn As String
-    Dim drDetails As System.Data.SqlClient.SqlDataReader
-    Dim cmdDetails As System.Data.SqlClient.SqlCommand
-    Dim conn As System.Data.SqlClient.SqlConnection
+    Dim drDetails As SqlClient.SqlDataReader
+    Dim cmdDetails As SqlClient.SqlCommand
+    Dim conn As SqlClient.SqlConnection
     Dim iMaxFileSize As Integer
     Dim sFileExtensions As String
     Dim sFileName As String
@@ -83,7 +78,6 @@ Partial Class FileUpload
         sFileExtensions = ""
         iMaxFileSize = 0
         sFileName = ""
-        iElementItemID = 0
         fAlreadyUploaded = False
 
         sTemp = Request.RawUrl.ToString
@@ -100,7 +94,7 @@ Partial Class FileUpload
         hdnElementID.Value = sQueryString
         iElementItemID = CInt(sQueryString)
 
-        strConn = "Application Name=OpenHR Workflow;Data Source=" & Session("Server") & ";Initial Catalog=" & Session("Database") & ";Integrated Security=false;User ID=" & Session("User") & ";Password=" & Session("Pwd") & ";Pooling=false"
+        strConn = CStr("Application Name=OpenHR Workflow;Data Source=" & Session("Server") & ";Initial Catalog=" & Session("Database") & ";Integrated Security=false;User ID=" & Session("User") & ";Password=" & Session("Pwd") & ";Pooling=false")
         conn = New SqlClient.SqlConnection(strConn)
         conn.Open()
 
@@ -130,7 +124,6 @@ Partial Class FileUpload
           End If
 
           drDetails.Close()
-          drDetails = Nothing
 
           iMaxFileSize = NullSafeInteger(cmdDetails.Parameters("@piSize").Value)
           If iMaxFileSize <= 0 Then
@@ -142,12 +135,11 @@ Partial Class FileUpload
           End If
 
           cmdDetails.Dispose()
-          cmdDetails = Nothing
 
-          Me.ViewState("MaxFileSize") = iMaxFileSize
-          Me.ViewState("FileExtensions") = sFileExtensions
-          Me.ViewState("FileName") = sFileName
-          Me.ViewState("ElementItemID") = iElementItemID
+          ViewState("MaxFileSize") = iMaxFileSize
+          ViewState("FileExtensions") = sFileExtensions
+          ViewState("FileName") = sFileName
+          ViewState("ElementItemID") = iElementItemID
 
           lblFileUploadPrompt.Font.Size = mobjConfig.MessageFontSize
           lblFileUploadPrompt.ForeColor = General.GetColour(6697779)
@@ -169,14 +161,7 @@ Partial Class FileUpload
           With btnCancel
             .Style.Add("Background-Color", General.GetColour(16249587).ToString)
             .Style.Add("Border", "solid 1px " & General.GetColour(10720408).ToString)
-            '.Appearance.Style.BorderWidth = 1
-            '.Appearance.InnerBorder.StyleTop = BorderStyle.None
-            '.Appearance.Style.BorderColor = objGeneral.GetColour(10720408)
             .Style.Add("Color", General.GetColour(6697779).ToString)
-            '.FocusAppearance.Style.BorderColor = objGeneral.GetColour(562943)
-            '.FocusAppearance.Style.BackColor = objGeneral.GetColour(12775933)
-            '.HoverAppearance.Style.BorderColor = objGeneral.GetColour(562943)
-
             .Style.Add("font-family", "Verdana")
             .Attributes.Add("onclick", "try{exitFileUpload(0);}catch(e){};")
 
@@ -188,14 +173,7 @@ Partial Class FileUpload
           With btnClear
             .Style.Add("Background-Color", General.GetColour(16249587).ToString)
             .Style.Add("Border", "solid 1px " & General.GetColour(10720408).ToString)
-            '.Appearance.Style.BorderWidth = 1
-            '.Appearance.InnerBorder.StyleTop = BorderStyle.None
-            '.Appearance.Style.BorderColor = objGeneral.GetColour(10720408)
             .Style.Add("Color", General.GetColour(6697779).ToString)
-            '.FocusAppearance.Style.BorderColor = objGeneral.GetColour(562943)
-            '.FocusAppearance.Style.BackColor = objGeneral.GetColour(12775933)
-            '.HoverAppearance.Style.BorderColor = objGeneral.GetColour(562943)
-
             .Style.Add("font-family", "Verdana")
             .Visible = (sFileName.Length > 0)
           End With
@@ -203,14 +181,7 @@ Partial Class FileUpload
           With btnFileUpload
             .Style.Add("Background-Color", General.GetColour(16249587).ToString)
             .Style.Add("border", "Solid 1px " & General.GetColour(10720408).ToString)
-            '.Appearance.Style.BorderWidth = 1
-            '.Appearance.InnerBorder.StyleTop = BorderStyle.None
-            ' .Appearance.Style.BorderColor = objGeneral.GetColour(10720408)
             .Style.Add("Color", General.GetColour(6697779).ToString)
-            '.FocusAppearance.Style.BorderColor = objGeneral.GetColour(562943)
-            '.FocusAppearance.Style.BackColor = objGeneral.GetColour(12775933)
-            '.HoverAppearance.Style.BorderColor = objGeneral.GetColour(562943)
-
             .Style.Add("Font-family", "Verdana")
           End With
 
@@ -232,10 +203,10 @@ Partial Class FileUpload
           conn.Close()
           conn.Dispose()
 
-          Me.ViewState("MaxFileSize") = iMaxFileSize
-          Me.ViewState("FileExtensions") = sFileExtensions
-          Me.ViewState("FileName") = sFileName
-          Me.ViewState("ElementItemID") = iElementItemID
+          ViewState("MaxFileSize") = iMaxFileSize
+          ViewState("FileExtensions") = sFileExtensions
+          ViewState("FileName") = sFileName
+          ViewState("ElementItemID") = iElementItemID
         End Try
       End If
     Catch ex As Exception
@@ -244,13 +215,7 @@ Partial Class FileUpload
 
   End Sub
 
-
-
-
- 
-
-
-  Protected Sub btnFileUpload_ServerClick(sender As Object, e As System.EventArgs) Handles btnFileUpload.ServerClick
+  Protected Sub btnFileUpload_ServerClick(sender As Object, e As EventArgs) Handles btnFileUpload.ServerClick
     Dim reader As BinaryReader
     Dim abtImage As Byte()
     Dim asErrorMessages() As String
@@ -261,12 +226,12 @@ Partial Class FileUpload
 
     ReDim asErrorMessages(0)
     bulletErrors.Items.Clear()
-    hdnCount_Errors.Value = 0
+    hdnCount_Errors.Value = "0"
 
     Try
       If FileUpload1.Value.Length > 0 Then
-        iMaxFileSize = Me.ViewState("MaxFileSize")
-        sFileExtensions = Me.ViewState("FileExtensions")
+        iMaxFileSize = CInt(ViewState("MaxFileSize"))
+        sFileExtensions = CStr(ViewState("FileExtensions"))
 
         'Check if the file has a valid size.
         If (iMaxFileSize > 0) _
@@ -278,7 +243,7 @@ Partial Class FileUpload
 
         'Check if the file is of a valid type.
         If sFileExtensions.Length > 0 Then
-          sFileExt = vbTab & System.IO.Path.GetExtension(FileUpload1.Value).ToLower & vbTab
+          sFileExt = vbTab & Path.GetExtension(FileUpload1.Value).ToLower & vbTab
 
           If (InStr(sFileExtensions, sFileExt) = 0) Then
             ' Report lack of file selected.
@@ -292,7 +257,7 @@ Partial Class FileUpload
           reader = New BinaryReader(FileUpload1.PostedFile.InputStream)
           abtImage = reader.ReadBytes(FileUpload1.PostedFile.ContentLength)
           SaveImage(abtImage, FileUpload1.PostedFile.ContentType, FileUpload1.PostedFile.FileName, False)
-          hdnExitMode.Value = 2
+          hdnExitMode.Value = "2"
         End If
       Else
         ' Report lack of file selected.
@@ -307,7 +272,7 @@ Partial Class FileUpload
     End Try
 
     If asErrorMessages.GetUpperBound(0) > 0 Then
-      hdnCount_Errors.Value = asErrorMessages.GetUpperBound(0)
+      hdnCount_Errors.Value = CStr(asErrorMessages.GetUpperBound(0))
       lblErrors.Text = "Unable to upload the file due to the following error" & _
         If(asErrorMessages.GetUpperBound(0) > 1, "s", "") & ":"
 
@@ -317,15 +282,16 @@ Partial Class FileUpload
     End If
   End Sub
 
-  Protected Sub btnClear_ServerClick(sender As Object, e As System.EventArgs) Handles btnClear.ServerClick
+  Protected Sub btnClear_ServerClick(sender As Object, e As EventArgs) Handles btnClear.ServerClick
+
     Dim abtImage As Byte()
     ReDim abtImage(0)
 
     bulletErrors.Items.Clear()
-    hdnCount_Errors.Value = 0
+    hdnCount_Errors.Value = "0"
 
     SaveImage(abtImage, "", "", True)
-    hdnExitMode.Value = 1
+    hdnExitMode.Value = "1"
 
   End Sub
 End Class
