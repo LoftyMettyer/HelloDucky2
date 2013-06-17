@@ -529,7 +529,9 @@ Public Class [Default]
 							.Text = General.ConvertSqlDateToLocale(formItem.Value)
 							If IsMobileBrowser() Then
 								'stop keyboard popping up on mobiles
-								.ReadOnly = True
+								'HRPRO-2744 ReadOnly = True causes the posted back value not the be available form the .Text property, so set the readonly attributes directly instead. 
+								'.ReadOnly = True
+								.Attributes.Add("readonly", "readonly")
 							End If
 						End If
 
