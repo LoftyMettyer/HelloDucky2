@@ -2183,7 +2183,6 @@ Public Class _Default
                         da.Fill(dt)
                         Session(sID & "DATA") = dt
 
-
                         ' Create a blank row at the top of the dropdown grid.
                         objDataRow = dt.NewRow()
                         dt.Rows.InsertAt(objDataRow, 0)

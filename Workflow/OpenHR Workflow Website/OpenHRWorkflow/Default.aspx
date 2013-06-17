@@ -14,7 +14,7 @@
         input[type="button"]::-moz-focus-inner { border: 0; padding: 0; }
         input[type="button"] { padding: 0px; }
 		.highlighted { background: yellow; }
-        textarea {resize: none; }
+        textarea { resize: none; }
         
         .recordSelector {
             text-align: left;
@@ -1551,9 +1551,7 @@
     -->        
 
     <div id="pleasewaitScreen" style="position:absolute;z-index:5;top:30%;width:150px;height:60px;left:50%;margin-left:-75px;visibility:hidden">
-		<table border="0" cellspacing="0" cellpadding="10" style="top: 0px; left: 0px; width: 100%;
-                                                                                                                                                                                                                  height: 100%; position: relative; text-align: center; font-size: 10pt; color: black;
-                                                                                                                                                                                                                  font-family: Verdana; border: black 1px solid;" bgcolor="White">
+		<table border="0" cellspacing="0" cellpadding="10" style="top: 0px; left: 0px; width: 100%; height: 100%; position: relative; text-align: center; font-size: 10pt; color: black; font-family: Verdana; border: black 1px solid;" bgcolor="White">
 				<tr>
 					<td style="width:100%;height:100%;background-color:White;text-align:center;vertical-align:middle">
 								<label id="pleasewaitText">Processing...<br/><br/>Please wait.<br/></label>
