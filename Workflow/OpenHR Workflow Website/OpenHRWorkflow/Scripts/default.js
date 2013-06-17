@@ -562,7 +562,7 @@
 
 	                                labelCtl = document.getElementById("pleasewaitText");
 	                                if (null != labelCtl) {
-	                                    labelCtl.innerHTML = "Workflow completed.<BR/><BR/>Please close your browser.";                    
+	                                    labelCtl.innerHTML = "Please close your browser.";                    
 	                                }								  
 	                            }
 	                        }
