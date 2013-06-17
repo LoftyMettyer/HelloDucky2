@@ -69,9 +69,10 @@ Partial Class Home
 
       Using conn As New SqlConnection(Configuration.ConnectionString)
 
-        Dim sql As String = "SELECT w.Id, w.Name, w.PictureID" & _
+        Dim sql As String = "SELECT w.Id, w.Name, w.PictureID, p.Name AS PictureName" & _
               " FROM tbsys_mobilegroupworkflows gw" & _
               " INNER JOIN tbsys_workflows w on gw.WorkflowID = w.ID" & _
+              " LEFT JOIN ASRSysPictures p ON p.PictureID = w.PictureID" & _
               " WHERE gw.UserGroupID = " & userGroupID & " AND w.enabled = 1 ORDER BY gw.Pos ASC"
 
         conn.Open()
@@ -96,10 +97,10 @@ Partial Class Home
           cell.Style.Add("width", "57px")
 
           Dim image = New Image
-          If NullSafeInteger(dr("pictureID")) = 0 Then
+          If NullSafeInteger(dr("PictureID")) = 0 Then
             sImageFileName = "~/Images/Connected48.png"
           Else
-            sImageFileName = Picture.LoadPicture(CInt(dr("pictureID")))
+            sImageFileName = Picture.GetUrl(CInt(dr("PictureID")), CStr(dr("PictureName")))
           End If
           image.ImageUrl = sImageFileName
           image.Height() = Unit.Pixel(57)

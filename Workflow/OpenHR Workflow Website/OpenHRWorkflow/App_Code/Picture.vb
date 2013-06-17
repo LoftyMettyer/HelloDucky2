@@ -4,30 +4,28 @@ Imports System.Data.SqlClient
 
 Public Class Picture
 
-  'Public Shared Function GetFileName(id As Integer, Optional name As String = Nothing) As String
+  Public Shared Function GetUrl(id As Integer, name As String) As String
 
-  '  If name Is Nothing Then Return ""
+    If id = 0 Then Return ""
 
-  '  Dim ext As String = Path.GetExtension(name)
+    Dim extension As String = Path.GetExtension(name)
 
-  '  Return String.Format("Pic{0}{1}", id, ext)
+    Dim directory = (Configuration.Server & Configuration.Database).GetHashCode()
 
-  'End Function
+    Dim fileName As String = directory & "/" & id.ToString & extension
 
-  'Public Shared Function GetUrl(id As Integer, Optional name As String = Nothing) As String
+    Dim filePath As String = HttpContext.Current.Server.MapPath("~/" & fileName)
 
-  '  If id = 0 Then Return ""
+    If File.Exists(filePath) Then
+      Return "~/" & fileName
+    Else
+      LoadPicture(id, filePath)
+      Return "~/" & fileName
+    End If
 
-  '  Dim fileName As String
-  '  fileName = Picture.GetFileName(id, name)
-  '  fileName = HttpContext.Current.Server.MapPath(fileName)
-  '  Picture.LoadPicture(id, fileName)
+  End Function
 
-  '  Return fileName
-
-  'End Function
-
-  Public Shared Function LoadPicture(id As Integer) As String
+  Private Shared Sub LoadPicture(id As Integer, filePath As String)
 
     Using conn As New SqlConnection(Configuration.ConnectionString)
 
@@ -51,16 +49,14 @@ Public Class Picture
 
       If dr.Read Then
 
-        Dim ext As String = Path.GetExtension(CStr(dr("Name")))
-        Dim fileName As String = String.Format("Pic-{0}{1}", Guid.NewGuid, ext)
-        Dim filePath = HttpContext.Current.Server.MapPath("~/Pictures")
+        Dim fileDirectory = Path.GetDirectoryName(filePath)
 
-        If Not Directory.Exists(filePath) Then
-          Directory.CreateDirectory(filePath)
+        If Not Directory.Exists(fileDirectory) Then
+          Directory.CreateDirectory(fileDirectory)
         End If
 
         ' Create a file to hold the output.
-        fs = New System.IO.FileStream(filePath & "\" & fileName, IO.FileMode.OpenOrCreate, IO.FileAccess.Write)
+        fs = New System.IO.FileStream(filePath, IO.FileMode.OpenOrCreate, IO.FileAccess.Write)
         bw = New System.IO.BinaryWriter(fs)
 
         ' Reset the starting byte for a new BLOB.
@@ -87,13 +83,10 @@ Public Class Picture
         bw.Close()
         fs.Close()
 
-        Return "~/Pictures/" & fileName
-      Else
-        Return ""
       End If
 
     End Using
 
-  End Function
+  End Sub
 
 End Class

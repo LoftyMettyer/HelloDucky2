@@ -8,8 +8,16 @@ Partial Class Site
 
     Using conn As New SqlConnection(Configuration.ConnectionString)
 
+      Dim sql As String = "SELECT ml.*, hp.Name AS HeaderPictureName, hl.Name AS HeaderLogoName, mp.Name AS MainPictureName, fp.Name AS FooterPictureName" & _
+                          " FROM tbsys_mobileformlayout ml " & _
+                          " LEFT OUTER JOIN ASRSysPictures hp ON ml.HeaderPictureID = hp.PictureID" & _
+                          " LEFT OUTER JOIN ASRSysPictures hl ON ml.HeaderLogoID = hl.PictureID" & _
+                          " LEFT OUTER JOIN ASRSysPictures mp ON ml.MainPictureID = mp.PictureID" & _
+                          " LEFT OUTER JOIN ASRSysPictures fp ON ml.FooterPictureID = fp.PictureID" & _
+                          " WHERE ml.ID = 1"
+
       conn.Open()
-      Dim cmd As New SqlCommand("SELECT * FROM tbsys_mobileformlayout WHERE ID = 1", conn)
+      Dim cmd As New SqlCommand(sql, conn)
       Dim dr As SqlDataReader = cmd.ExecuteReader()
 
       dr.Read()
@@ -38,7 +46,7 @@ Partial Class Site
         End If
 
         If Not IsDBNull(dr(prefix & "PictureID")) Then
-          control.Style("background-image") = ResolveClientUrl(Picture.LoadPicture(CInt(dr(prefix & "PictureID"))))
+          control.Style("background-image") = ResolveClientUrl(Picture.GetUrl(CInt(dr(prefix & "PictureID")), CStr(dr(prefix & "PictureName"))))
           control.Style("background-repeat") = general.BackgroundRepeat(CShort(dr(prefix & "PictureLocation")))
           control.Style("background-position") = general.BackgroundPosition(CShort(dr(prefix & "PictureLocation")))
         End If
@@ -64,7 +72,7 @@ Partial Class Site
             End If
 
             .BackColor = Drawing.Color.Transparent
-            .ImageUrl = Picture.LoadPicture(NullSafeInteger(dr("HeaderLogoID")))
+            .ImageUrl = Picture.GetUrl(NullSafeInteger(dr("HeaderLogoID")), NullSafeString(dr("HeaderLogoName")))
             .Height() = Unit.Pixel(NullSafeInteger(dr("HeaderLogoHeight")))
             .Width() = Unit.Pixel(NullSafeInteger(dr("HeaderLogoWidth")))
             .Style.Add("z-index", "1")

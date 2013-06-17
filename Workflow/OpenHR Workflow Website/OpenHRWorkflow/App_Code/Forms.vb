@@ -23,7 +23,7 @@ Public Class Forms
           Case 0 ' Button
 
             With CType(control, ImageButton)
-              .ImageUrl = Picture.LoadPicture(NullSafeInteger(dr("PictureID")))
+              .ImageUrl = Picture.GetUrl(NullSafeInteger(dr("PictureID")), NullSafeString(dr("PictureName")))
               .Font.Name = NullSafeString(dr("FontName"))
               .Font.Size = FontUnit.Parse(NullSafeString(dr("FontSize")))
               .Font.Bold = NullSafeBoolean(NullSafeBoolean(dr("FontBold")))
