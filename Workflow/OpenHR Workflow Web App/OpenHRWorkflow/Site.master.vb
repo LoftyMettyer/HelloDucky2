@@ -1,122 +1,118 @@
 ﻿Imports System.Data.SqlClient
 
 Partial Class Site
-  Inherits System.Web.UI.MasterPage
+	Inherits System.Web.UI.MasterPage
 
-  Protected Sub Page_Init(sender As Object, e As EventArgs) Handles Me.Init
+	Protected Sub Page_Init(sender As Object, e As EventArgs) Handles Me.Init
 
-    Forms.RedirectIfNotLicensed()
+		Forms.RedirectToNotConfigured()
 
-    Forms.RedirectIfDbLocked()
+		Forms.RedirectIfNotLicensed()
 
-    Forms.RedirectToNotConfigured()
+		Forms.RedirectIfDbLocked()
 
-      Using conn As New SqlConnection(App.Config.ConnectionString)
+		Using conn As New SqlConnection(App.Config.ConnectionString)
 
-         conn.Open()
-         Dim cmd As New SqlCommand("SELECT * FROM tbsys_mobileformlayout WHERE ID = 1", conn)
-         Dim dr As SqlDataReader = cmd.ExecuteReader()
+			conn.Open()
+			Dim cmd As New SqlCommand("SELECT * FROM tbsys_mobileformlayout WHERE ID = 1", conn)
+			Dim dr As SqlDataReader = cmd.ExecuteReader()
 
-         dr.Read()
+			dr.Read()
 
-         For i As Integer = 1 To 3
+			For i As Integer = 1 To 3
 
-            Dim prefix As String = String.Empty
-            Dim control As HtmlGenericControl = Nothing
+				Dim prefix As String = String.Empty
+				Dim control As HtmlGenericControl = Nothing
 
-            Select Case i
-               Case 1
-                  prefix = "Header"
-                  control = header
-               Case 2
-                  prefix = "Main"
-                  control = main
-               Case 3
-                  prefix = "Footer"
-                  control = footer
-            End Select
+				Select Case i
+					Case 1
+						prefix = "Header"
+						control = header
+					Case 2
+						prefix = "Main"
+						control = main
+					Case 3
+						prefix = "Footer"
+						control = footer
+				End Select
 
-            If Not IsDBNull(dr(prefix & "BackColor")) Then
-               control.Style("Background-color") = General.GetHtmlColour(CInt(dr(prefix & "BackColor")))
-            End If
+				If Not IsDBNull(dr(prefix & "BackColor")) Then
+					control.Style("Background-color") = General.GetHtmlColour(CInt(dr(prefix & "BackColor")))
+				End If
 
-            If Not IsDBNull(dr(prefix & "PictureID")) Then
-               control.Style("background-image") = ResolveClientUrl("~/Image.ashx?id=" & CInt(dr(prefix & "PictureID")))
-               control.Style("background-repeat") = General.BackgroundRepeat(CShort(dr(prefix & "PictureLocation")))
-               control.Style("background-position") = General.BackgroundPosition(CShort(dr(prefix & "PictureLocation")))
-            End If
+				If Not IsDBNull(dr(prefix & "PictureID")) Then
+					control.Style("background-image") = ResolveClientUrl("~/Image.ashx?id=" & CInt(dr(prefix & "PictureID")))
+					control.Style("background-repeat") = General.BackgroundRepeat(CShort(dr(prefix & "PictureLocation")))
+					control.Style("background-position") = General.BackgroundPosition(CShort(dr(prefix & "PictureLocation")))
+				End If
 
-            'Header Image
-            If i = 1 AndAlso Not IsDBNull(dr("HeaderLogoID")) Then
+				'Header Image
+				If i = 1 AndAlso Not IsDBNull(dr("HeaderLogoID")) Then
 
-               Dim imageControl As New Image
+					Dim imageControl As New Image
 
-               With imageControl
-                  .Style("position") = "absolute"
+					With imageControl
+						.Style("position") = "absolute"
 
-                  If NullSafeInteger(dr("HeaderLogoVerticalOffsetBehaviour")) = 0 Then
-                     .Style("top") = Unit.Pixel(NullSafeInteger(dr("HeaderLogoVerticalOffset"))).ToString
-                  Else
-                     .Style("bottom") = Unit.Pixel(NullSafeInteger(dr("HeaderLogoVerticalOffset"))).ToString
-                  End If
+						If NullSafeInteger(dr("HeaderLogoVerticalOffsetBehaviour")) = 0 Then
+							.Style("top") = Unit.Pixel(NullSafeInteger(dr("HeaderLogoVerticalOffset"))).ToString
+						Else
+							.Style("bottom") = Unit.Pixel(NullSafeInteger(dr("HeaderLogoVerticalOffset"))).ToString
+						End If
 
-                  If NullSafeInteger(dr("HeaderLogoHorizontalOffsetBehaviour")) = 0 Then
-                     .Style("left") = Unit.Pixel(NullSafeInteger(dr("HeaderLogoHorizontalOffset"))).ToString
-                  Else
-                     .Style("right") = Unit.Pixel(NullSafeInteger(dr("HeaderLogoHorizontalOffset"))).ToString
-                  End If
+						If NullSafeInteger(dr("HeaderLogoHorizontalOffsetBehaviour")) = 0 Then
+							.Style("left") = Unit.Pixel(NullSafeInteger(dr("HeaderLogoHorizontalOffset"))).ToString
+						Else
+							.Style("right") = Unit.Pixel(NullSafeInteger(dr("HeaderLogoHorizontalOffset"))).ToString
+						End If
 
-                  .BackColor = Drawing.Color.Transparent
-                  .ImageUrl = "~/Image.ashx?id=" & CInt(dr("HeaderLogoID"))
-                  .Height() = NullSafeInteger(dr("HeaderLogoHeight"))
-                  .Width() = NullSafeInteger(dr("HeaderLogoWidth"))
-                  .Style.Add("z-index", "1")
-               End With
+						.BackColor = Drawing.Color.Transparent
+						.ImageUrl = "~/Image.ashx?id=" & CInt(dr("HeaderLogoID"))
+						.Height() = NullSafeInteger(dr("HeaderLogoHeight"))
+						.Width() = NullSafeInteger(dr("HeaderLogoWidth"))
+						.Style.Add("z-index", "1")
+					End With
 
-               header.Controls.Add(imageControl)
-            End If
-         Next
+					header.Controls.Add(imageControl)
+				End If
+			Next
 
-      End Using
+		End Using
 
-    SetupViewport()
+		SetupViewport()
+	End Sub
 
-  End Sub
+	Public Sub ShowDialog(title As String, message As String, Optional redirectTo As String = "")
 
-  Public Sub ShowDialog(title As String, message As String, Optional redirectTo As String = "")
+		dialogTitle.InnerText = title
+		dialogMessage.InnerText = message
+		dialogRedirect.Value = redirectTo
+		overlay.Style.Add("display", "block")
+		dialog.Style.Add("display", "block")
+	End Sub
 
-    dialogTitle.InnerText = title
-    dialogMessage.InnerText = message
-    dialogRedirect.Value = redirectTo
-    overlay.Style.Add("display", "block")
-    dialog.Style.Add("display", "block")
+	Private Sub SetupViewport()
 
-  End Sub
+		If IsMobileBrowser() And Not IsTablet() Then
+			Return
+		End If
 
-  Private Sub SetupViewport()
+		Page.Form.Attributes.Add("class", "large-view")
 
-    If IsMobileBrowser() And Not IsTablet() Then
-      Return
-    End If
+		Dim control = FindControl("background")
 
-    Page.Form.Attributes.Add("class", "large-view")
+		If System.IO.File.Exists(Server.MapPath("~/Images/tabletBackImage.png")) Then
 
-    Dim control = FindControl("background")
+			Dim image As New Image
+			With image
+				.ImageUrl = "~/Images/tabletBackImage.png"
+				.Style.Add("width", "100%")
+				.Style.Add("height", "100%")
+			End With
 
-    If System.IO.File.Exists(Server.MapPath("~/Images/tabletBackImage.png")) Then
-
-      Dim image As New Image
-      With image
-        .ImageUrl = "~/Images/tabletBackImage.png"
-        .Style.Add("width", "100%")
-        .Style.Add("height", "100%")
-      End With
-
-      control.Controls.Add(image)
-    Else
-         CType(control, HtmlGenericControl).Style.Add("background-color", App.Config.TabletBackColour)
-    End If
-
-  End Sub
-
+			control.Controls.Add(image)
+		Else
+			CType(control, HtmlGenericControl).Style.Add("background-color", App.Config.TabletBackColour)
+		End If
+	End Sub
 End Class

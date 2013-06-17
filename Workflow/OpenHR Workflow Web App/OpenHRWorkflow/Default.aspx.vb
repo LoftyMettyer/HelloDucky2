@@ -29,7 +29,7 @@ Public Class [Default]
 
 		'Page requested with no workflow details, just redirect to the login page
 		If Request.QueryString.Count = 0 Then
-			Response.Redirect("~/Account/Login.aspx", True)
+			Response.Redirect("~/Account/Login.aspx")
 		End If
 
 		'Extract the workflow details from the url (use the rawUrl rather than queryString) as some characters are ignored in the queryString

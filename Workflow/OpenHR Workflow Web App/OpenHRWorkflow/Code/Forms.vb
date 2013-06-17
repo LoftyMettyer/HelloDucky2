@@ -23,16 +23,28 @@ Public Class Forms
 
 	Public Shared Sub RedirectToNotConfigured()
 
-		Dim message As String = ""
+		Dim errors As New List(Of String)
 
-		If App.Config.WorkflowUrl.IsNullOrEmpty Then message += "Workflow url is not defined, "
-		If App.Config.MobileKey.IsNullOrEmpty Then message += "Mobile key is not defined, "
+		If App.Config.WorkflowUrl.IsNullOrEmpty Then errors.Add("The Workflow Url is has not been configured.")
 
-		If message.Length > 0 Then
-			HttpContext.Current.Session("message") = "The system is not configured correctly, " & message.TrimEnd(","c, " "c) & ". Please contact your system administrator."
-			HttpContext.Current.Server.Transfer("~/Message.aspx")
+		If App.Config.MobileKey.IsNullOrEmpty Then
+			errors.Add("The Mobile Key has not been configured.")
+		Else
+			Dim db As New Database(App.Config.ConnectionString)
+
+			If Not db.CanConnect() Then
+				errors.Add("Unable to connect to the database specified by the Mobile Key, either the key is invalid or the database is unreachable.")
+			Else
+				If Not db.IsIntranetFunctionInstalled() Then
+					errors.Add("The database is out of date, re-run the latest intranet update script.")
+				End If
+			End If
 		End If
 
+		If errors.Count > 0 Then
+			HttpContext.Current.Session("message") = "The system is not configured correctly for the following reasons:<BR><BR>" & String.Join("<BR>", errors)
+			HttpContext.Current.Server.Transfer("~/Message.aspx")
+		End If
 	End Sub
 
 	Public Shared Sub RedirectToHomeIfAuthentcated()

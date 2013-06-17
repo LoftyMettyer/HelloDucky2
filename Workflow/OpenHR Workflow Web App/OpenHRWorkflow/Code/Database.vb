@@ -17,6 +17,33 @@ Public Class Database
 		Return "Application Name=OpenHR Workflow;Data Source=" & server & ";Initial Catalog=" & database & ";Integrated Security=false;User ID=" & user & ";Password=" & password & ";Pooling=true"
 	End Function
 
+	Public Function CanConnect() As Boolean
+		Using conn As New SqlConnection(_connectionString)
+			Try
+				conn.Open()
+			Catch ex As Exception
+				Return False
+			End Try
+			Return True
+		End Using
+	End Function
+
+	Public Function IsIntranetFunctionInstalled() As Boolean
+
+		Using conn As New SqlConnection(_connectionString)
+			conn.Open()
+
+			Dim cmd As New SqlCommand("IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[udfASRNetIsModuleLicensed]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT')) SELECT 1 ELSE SELECT 0", conn)
+			cmd.CommandType = CommandType.Text
+			cmd.CommandTimeout = _timeout
+
+			Dim result = cmd.ExecuteScalar()
+
+			Return CInt(result) = 1
+		End Using
+
+	End Function
+
 	Public Function IsSystemLocked() As Boolean
 
 		Using conn As New SqlConnection(_connectionString)
