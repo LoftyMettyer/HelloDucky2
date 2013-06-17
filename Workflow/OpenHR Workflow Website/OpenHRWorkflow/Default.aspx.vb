@@ -36,11 +36,13 @@ Public Class _Default
   Private msForeColorHighlight As String
   Private msBackColorHighlight As String
   Private m_iLookupColumnIndex As Integer
+  Private m_iTabStripHeight As Integer = 0
 
   Private Const FORMINPUTPREFIX As String = "forminput_"
   Private Const ASSEMBLYNAME As String = "HRPROWORKFLOW"
   Private Const ROWHEIGHTFONTRATIO As Single = 2.5
   Private Const MAXDROPDOWNROWS As Int16 = 6
+
 
   Private Enum SQLDataType
     sqlUnknown = 0      ' ?
@@ -3739,16 +3741,16 @@ Public Class _Default
 
                 Case 21   ' Tab Strip
 
-                  Dim iTabStripHeight As Integer = 30
-
                   'split out the tab names to calculate number of tabs - may not have loaded all tabs yet, so can't count them.
                   sTemp = NullSafeString(dr("Caption"))   '"Page 1;Page 2;"
                   Dim arrTabCaptions As String() = sTemp.Split(New Char() {";"c})
 
+                  m_iTabStripHeight = 30
+
                   If True Then
                     Dim ctlTabsDiv As New Panel
                     ctlTabsDiv.ID = "TabsDiv"
-                    ctlTabsDiv.Style.Add("height", iTabStripHeight & "px")
+                    ctlTabsDiv.Style.Add("height", m_iTabStripHeight & "px")
 
 
                     If isMobileBrowser() Then
@@ -3778,7 +3780,7 @@ Public Class _Default
                         .Style.Add("top", "0px")
                         .Style.Add("left", "0px")
                         .Style.Add("width", "25px")
-                        .Style.Add("height", iTabStripHeight - 6 & "px")
+                        .Style.Add("height", m_iTabStripHeight - 6 & "px")
                         .ImageUrl = "~/Images/page-prev.gif"
                         .Attributes.Add("onclick", "var TabDiv = document.getElementById('TabsDiv');TabDiv.scrollLeft = TabDiv.scrollLeft - 15;")
                       End With
@@ -3790,7 +3792,7 @@ Public Class _Default
                         .Style.Add("top", "0px")
                         .Style.Add("left", "0px")
                         .Style.Add("width", "25px")
-                        .Style.Add("height", iTabStripHeight - 6 & "px")
+                        .Style.Add("height", m_iTabStripHeight - 6 & "px")
                         .ImageUrl = "~/Images/page-next.gif"
                         .Style.Add("margin", "0px")
                         .Style.Add("padding", "0px")
@@ -3805,7 +3807,7 @@ Public Class _Default
                     ' generate the tabs.
                     Dim ctlTabsTable As New Table
                     Dim trPager As TableRow = New TableRow()
-                    trPager.Height = Unit.Pixel(iTabStripHeight - 4)  ' to prevent vertical scrollbar
+                    trPager.Height = Unit.Pixel(m_iTabStripHeight - 4)  ' to prevent vertical scrollbar
                     trPager.Style.Add("white-space", "nowrap")
 
                     Dim tcTabCell As New TableCell
@@ -3914,9 +3916,14 @@ Public Class _Default
                 pnlInputDiv.Style("height") = iFormHeight.ToString & "px"
 
                 pnlTabsDiv.Style("width") = iFormWidth.ToString & "px"
+                If m_iTabStripHeight > 0 Then
+                  pnlTabsDiv.style("height") = (m_iTabStripHeight.ToString) & "px"
+                Else
+                  pnlTabsDiV.style("height") = "auto"
+                End If
 
 
-                hdnFormHeight.Value = iFormHeight.ToString
+                hdnFormHeight.Value = (iFormHeight + m_iTabStripHeight).ToString
                 hdnFormWidth.Value = iFormWidth.ToString
                 hdnFormBackColourHex.Value = sBackgroundColourHex
                 hdnFormBackImage.Value = sBackgroundImage

@@ -165,8 +165,8 @@
       SetCurrentTab(iCurrentTab);
           
 			try {
-				//iDefHeight = $get("frmMain").hdnFormHeight.value;
-        iDefHeight = $get("bdyMain").offsetHeight;
+				iDefHeight = $get("frmMain").hdnFormHeight.value;
+        //iDefHeight = $get("bdyMain").offsetHeight;
 				iDefWidth = $get("frmMain").hdnFormWidth.value;
 				$get("bdyMain").bgColor = $get("frmMain").hdnColourThemeHex.value;
 				
@@ -226,12 +226,15 @@
 				}
 				catch (e) { }
 
-				if ((iDefHeight > 0) && (iDefWidth > 0)) {
-				
-					iResizeByHeight = iDefHeight - document.documentElement.clientHeight;
-					iResizeByWidth = iDefWidth - document.documentElement.clientWidth;
-					window.parent.resizeBy(iResizeByWidth, iResizeByHeight);
-				}
+//NPG20120130 Fault HRPRO-1842
+//Disabled the second resize as safari browser can't keep up and doubles the resize.
+//Doesn't seem to affect the other browsers, so see how it goes
+//				if ((iDefHeight > 0) && (iDefWidth > 0)) {
+//				
+//					iResizeByHeight = iDefHeight - document.documentElement.clientHeight;
+//					iResizeByWidth = iDefWidth - document.documentElement.clientWidth;
+//					window.parent.resizeBy(iResizeByWidth, iResizeByHeight);
+//				}
 
 
 				launchForms($get("frmMain").hdnSiblingForms.value, false);
