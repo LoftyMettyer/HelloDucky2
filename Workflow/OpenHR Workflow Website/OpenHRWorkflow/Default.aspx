@@ -587,23 +587,18 @@
 	        catch (e) { }
 	    }
 
-        //TODO PG
-//        function dateControlFixBeforeDropDown(pbojControl) {
-//            document.getElementById('forminput_46479_7_').disabled = true;
-//            var items = document.getElementsByTagName('input');
-//            for(var i = 0; i < items.length; i++) {
-//                items[i].disabled = true;
-//                items[i].style.display = 'none';
-//            }
-//            
-//        }
-
-//        function dateControlFixAfterCloseUp(pbojControl) {
-//            var items = document.getElementsByTagName('input');
-//            for(var i = 0; i < items.length; i++) {
-//                items[i].disabled = false;
-//            }
-//        }
+        function dateControlAndroidFix(controlId, hide) {
+            var dateControl = document.getElementById(controlId);
+            var nodes = dateControl.parentNode.childNodes;
+            for(var i = 0; i < nodes.length; i++) {
+                var ctl = nodes[i];
+                if(ctl.id && ctl.id.indexOf('forminput') == 0 && ctl.id != dateControl.id) {
+                    if(ctl.offsetTop > dateControl.offsetTop && ctl.offsetTop < dateControl.offsetTop + 25) {
+                        ctl.style.visibility = hide ? 'hidden' : 'visible';
+                    }
+                }
+            }
+        }
                 
 	    function showOverlay(display) {
 	        if(display) {

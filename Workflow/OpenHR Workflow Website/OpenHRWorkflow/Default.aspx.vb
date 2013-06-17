@@ -1582,9 +1582,13 @@ Public Class _Default
                       .ClientSideEvents.EditKeyDown = "dateControlKeyPress"
                       .ClientSideEvents.TextChanged = "dateControlTextChanged"
                       .ClientSideEvents.BeforeDropDown = "dateControlBeforeDropDown"
-                      'TODO PG
-                      '.ClientSideEvents.BeforeDropDown = "dateControlBeforeDropDown();dateControlFixBeforeDropDown()" '
-                      '.ClientSideEvents.AfterCloseUp = "dateControlFixAfterCloseUp()"
+
+                      If IsAndroidBrowser() Then
+                        'On android native browser when the calendar control drops down you are unable to select the month or year combo if there is a control underneath
+                        'So hide these controls on drop down and restore on close up
+                        .ClientSideEvents.BeforeDropDown = "dateControlBeforeDropDown();dateControlAndroidFix('" & sID.ToString & "', true)"
+                        .ClientSideEvents.BeforeCloseUp = "dateControlAndroidFix('" & sID.ToString & "', false)"
+                      End If
 
                       If IsMobileBrowser() Then .ClientSideEvents.AfterCloseUp = "FilterMobileLookup('" & sID.ToString & "');"
                     End With
