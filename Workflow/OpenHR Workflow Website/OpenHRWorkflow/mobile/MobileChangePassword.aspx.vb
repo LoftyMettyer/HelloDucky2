@@ -9,19 +9,15 @@ Partial Class ChangePassword
 
   Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
 
-    Dim ctlForm_HTMLGenericControl As HtmlGenericControl
-    Dim ctlForm_HtmlInputText As HtmlInputText
-    Dim ctlForm_ImageButton As ImageButton   ' Button
+    Dim ctlFormHtmlGenericControl As HtmlGenericControl
+    Dim ctlFormImageButton As ImageButton   ' Button
+    Dim ctlFormHtmlInputText As HtmlInputText
     Dim strConn As String
     Dim objGeneral As New General
-    Dim lngPanel_1_Height As Long = 57
-    Dim lngPanel_2_Height As Long = 57
     Dim sMessage As String = ""
     Dim drLayouts As System.Data.SqlClient.SqlDataReader
     Dim drElements As System.Data.SqlClient.SqlDataReader
     Dim sImageFileName As String = ""
-    Dim iTempHeight As Integer
-    Dim iTempWidth As Integer
 
     miImageCount = 0
 
@@ -148,12 +144,9 @@ Partial Class ChangePassword
           Case 0 ' Button
 
             If NullSafeString(drElements("Name")).Length > 0 Then
-              ctlForm_ImageButton = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name"))), ImageButton)
+              ctlFormImageButton = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name"))), ImageButton)
 
-              'ctlForm_ImageButton = New ImageButton
-              With ctlForm_ImageButton
-                .Width = Unit.Pixel(40)
-                .Height = Unit.Pixel(40)
+              With ctlFormImageButton
                 sImageFileName = LoadPicture(NullSafeInteger(drElements("pictureID")), sMessage)
                 .ImageUrl = sImageFileName
                 .Font.Name = NullSafeString(drElements("FontName"))
@@ -164,8 +157,8 @@ Partial Class ChangePassword
 
               ' Footer text
               If NullSafeString(drElements("Caption")).Length > 0 Then
-                ctlForm_HTMLGenericControl = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name")) & "_label"), HtmlGenericControl)
-                With ctlForm_HTMLGenericControl
+                ctlFormHtmlGenericControl = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name")) & "_label"), HtmlGenericControl)
+                With ctlFormHtmlGenericControl
                   .Style("word-wrap") = "break-word"
                   .Style("overflow") = "auto"
                   .Style.Add("z-index", "1")
@@ -181,48 +174,18 @@ Partial Class ChangePassword
 
           Case 2 ' Label
             If NullSafeString(drElements("Name")).Length > 0 Then
-              ctlForm_HTMLGenericControl = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name"))), HtmlGenericControl)  'New Label
-              With ctlForm_HTMLGenericControl
-                '.Style("position") = "absolute"
-
-                '' Vertical Offset
-                'If NullSafeInteger(drElements("VerticalOffsetBehaviour")) = 0 Then
-                '  .Style("top") = Unit.Pixel(NullSafeInteger(drElements("VerticalOffset"))).ToString
-                'Else
-                '  .Style("bottom") = Unit.Pixel(NullSafeInteger(drElements("VerticalOffset"))).ToString
-                'End If
-
-                ' horizontal position
-                If NullSafeInteger(drElements("HorizontalOffsetBehaviour")) = 0 Then
-                  .Style("left") = Unit.Pixel(NullSafeInteger(drElements("HorizontalOffset"))).ToString
-                Else
-                  .Style("right") = Unit.Pixel(NullSafeInteger(drElements("HorizontalOffset"))).ToString
-                End If
-
+              ctlFormHtmlGenericControl = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name"))), HtmlGenericControl)  'New Label
+              With ctlFormHtmlGenericControl
                 .Style("word-wrap") = "break-word"
                 .Style("overflow") = "auto"
                 .Style("text-align") = "left"
                 .Style.Add("z-index", "1")
                 .InnerText = NullSafeString(drElements("caption"))
-
-                If NullSafeInteger(drElements("BackStyle")) = 0 Then
-                  .Style.Add("background-color", "Transparent")
-                Else
-                  .Style.Add("background-color", objGeneral.GetHTMLColour(NullSafeInteger(drElements("BackColor"))))
-                End If
-
                 .Style.Add("color", objGeneral.GetHTMLColour(NullSafeInteger(drElements("ForeColor"))))
-
                 .Style.Add("font-family", NullSafeString(drElements("FontName")))
                 .Style.Add("font-size", NullSafeString(drElements("FontSize")) & "pt")
                 .Style.Add("font-weight", If(NullSafeBoolean(NullSafeBoolean(drElements("FontBold"))), "bold", "normal"))
                 .Style.Add("font-style", If(NullSafeBoolean(NullSafeBoolean(drElements("FontItalic"))), "italic", "normal"))
-
-                iTempHeight = NullSafeInteger(drElements("Height"))
-                iTempWidth = NullSafeInteger(drElements("Width"))
-
-                '.Height() = Unit.Pixel(iTempHeight)
-                .Style.Add("width", CStr(iTempWidth))
               End With
 
             End If
@@ -231,26 +194,16 @@ Partial Class ChangePassword
           Case 3 ' Input value - character
             If NullSafeString(drElements("Name")).Length > 0 Then
 
-              ctlForm_HtmlInputText = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name"))), HtmlInputText)
-
-              If NullSafeInteger(drElements("HorizontalOffsetBehaviour")) = 0 Then
-                ctlForm_HtmlInputText.Style("left") = Unit.Pixel(NullSafeInteger(drElements("HorizontalOffset"))).ToString
-              Else
-                ctlForm_HtmlInputText.Style("right") = Unit.Pixel(NullSafeInteger(drElements("HorizontalOffset"))).ToString
-              End If
-
-              ctlForm_HtmlInputText.Style("resize") = "none"
-              ctlForm_HtmlInputText.Style.Add("border-style", "solid")
-              ctlForm_HtmlInputText.Style.Add("border-width", "1")
-              ctlForm_HtmlInputText.Style.Add("border-color", objGeneral.GetHTMLColour(5730458))
-              ctlForm_HtmlInputText.Style.Add("background-color", objGeneral.GetHTMLColour(NullSafeInteger(drElements("BackColor"))))
-              ctlForm_HtmlInputText.Style.Add("color", objGeneral.GetHTMLColour(NullSafeInteger(drElements("ForeColor"))))
-              ctlForm_HtmlInputText.Style.Add("font-family", NullSafeString(drElements("FontName")))
-              ctlForm_HtmlInputText.Style.Add("font-size", NullSafeString(drElements("FontSize")) & "pt")
-              ctlForm_HtmlInputText.Style.Add("font-weight", If(NullSafeBoolean(NullSafeBoolean(drElements("FontBold"))), "bold", "normal"))
-              ctlForm_HtmlInputText.Style.Add("font-style", If(NullSafeBoolean(NullSafeBoolean(drElements("FontItalic"))), "italic", "normal"))
-              ctlForm_HtmlInputText.Style.Add("width", CStr(NullSafeInteger(drElements("Width"))) & "px")
-
+              ctlFormHtmlInputText = TryCast(pnlContainer.FindControl(NullSafeString(drElements("Name"))), HtmlInputText)
+              ctlFormHtmlInputText.Style("resize") = "none"
+              ctlFormHtmlInputText.Style.Add("border-style", "solid")
+              ctlFormHtmlInputText.Style.Add("border-width", "1")
+              ctlFormHtmlInputText.Style.Add("border-color", objGeneral.GetHTMLColour(5730458))
+              ctlFormHtmlInputText.Style.Add("color", objGeneral.GetHTMLColour(NullSafeInteger(drElements("ForeColor"))))
+              ctlFormHtmlInputText.Style.Add("font-family", NullSafeString(drElements("FontName")))
+              ctlFormHtmlInputText.Style.Add("font-size", NullSafeString(drElements("FontSize")) & "pt")
+              ctlFormHtmlInputText.Style.Add("font-weight", If(NullSafeBoolean(NullSafeBoolean(drElements("FontBold"))), "bold", "normal"))
+              ctlFormHtmlInputText.Style.Add("font-style", If(NullSafeBoolean(NullSafeBoolean(drElements("FontItalic"))), "italic", "normal"))
             End If
 
         End Select

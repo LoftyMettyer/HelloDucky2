@@ -205,6 +205,7 @@ Partial Class MobileLogin
                   .Style("text-align") = "left"
                   .Style.Add("z-index", "1")
                   .InnerText = NullSafeString(drElements("caption"))
+                  .Style.Add("color", objGeneral.GetHTMLColour(NullSafeInteger(drElements("ForeColor"))))
                   .Style.Add("font-family", NullSafeString(drElements("FontName")))
                   .Style.Add("font-size", NullSafeString(drElements("FontSize")) & "pt")
                   .Style.Add("font-weight", If(NullSafeBoolean(NullSafeBoolean(drElements("FontBold"))), "bold", "normal"))
@@ -220,6 +221,7 @@ Partial Class MobileLogin
                 ctlFormHtmlInputText.Style.Add("border-style", "solid")
                 ctlFormHtmlInputText.Style.Add("border-width", "1")
                 ctlFormHtmlInputText.Style.Add("border-color", objGeneral.GetHTMLColour(5730458))
+                ctlFormHtmlInputText.Style.Add("color", objGeneral.GetHTMLColour(NullSafeInteger(drElements("ForeColor"))))
                 ctlFormHtmlInputText.Style.Add("font-family", NullSafeString(drElements("FontName")))
                 ctlFormHtmlInputText.Style.Add("font-size", NullSafeString(drElements("FontSize")) & "pt")
                 ctlFormHtmlInputText.Style.Add("font-weight", If(NullSafeBoolean(NullSafeBoolean(drElements("FontBold"))), "bold", "normal"))
@@ -556,7 +558,8 @@ Partial Class MobileLogin
     Dim adPath As String = "LDAP://" & ConfigurationManager.AppSettings("DefaultActiveDirectoryServer")
 
     Dim adAuth As New clsActiveDirectoryValidator(adPath)
-    If True = adAuth.IsAuthenticated(domainName, userName, password) Then
+
+    If adAuth.IsAuthenticated(domainName, userName, password) Then
       ' Create the authetication ticket
       Dim authTicket As New FormsAuthenticationTicket(1, userName, DateTime.Now, DateTime.Now.AddMinutes(20), False, "")
       ' Now encrypt the ticket.
