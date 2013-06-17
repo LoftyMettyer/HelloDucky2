@@ -57,25 +57,25 @@
           <div id="pnlHeader" runat="server" style="position:absolute;overflow:hidden;left:0px;top:0px;z-index:0;width:100%;height:57px">
           </div>
           <div id="ScrollerFrame" runat="server" style="position:absolute;left:0px;top:57px;z-index:0;height:400px;width:100%">
-            <div id="pnlBody" runat="server" style="height:100%;z-index:0; margin: 15px">      
-              <table style="position:absolute;width:100%;height:100%" >
-                <tr id="space1" style="width: 100%"><td></td></tr>
-                <tr style="width: 100%; height:21px">
-                  <td colspan="2"><label style="margin:15px" id="lblWelcome" runat="server">lblWelcome</label></td>
+            <div id="pnlBody" runat="server" style="height:100%;z-index:0; ">      
+              <table style="width:100%;height:100%" >
+<%--                <tr id="space1" style="width: 100%"><td></td></tr>
+--%>                <tr style="width: 100%; height:21px;margin: 0;padding: 0;">
+                  <td colspan="2"><label id="lblWelcome" runat="server">lblWelcome</label></td>
                 </tr>
                 <tr id="space2" style="width: 100%"><td></td></tr>
                 <tr style="width: 100%; height:21px">
-                  <td style="width:40%" ><label style="margin:15px" id="lblUserName" runat="server">lblUserName</label></td>
+                  <td style="width:40%" ><label id="lblUserName" runat="server">lblUserName</label></td>
                   <td ><input type="text" id="txtUserName" runat="server"/></td>
                 </tr>
                 <tr id="space3" style="width: 100%"><td></td></tr>
                 <tr style="width: 100%; height:21px">
-                  <td style="width:50%"><label style="margin:15px" id="lblPassword" runat="server">lblPassword</label></td>
+                  <td style="width:50%"><label id="lblPassword" runat="server">lblPassword</label></td>
                   <td><input id="txtPassword" runat="server" type="password"/></td>
                 </tr>
                 <tr id="space4" style="width: 100%"><td></td></tr>
                 <tr style="width: 100%; height:21px">
-                  <td style="width:50%"><label style="margin:15px" id="lblRememberPwd" runat="server">lblRememberPwd</label></td>
+                  <td style="width:50%"><label  id="lblRememberPwd" runat="server">lblRememberPwd</label></td>
                   <td><input id="chkRememberPwd" type="checkbox" runat="server" /></td>
                 </tr>
                 <tr id="space5" style="width: 100%;height:80%"><td></td></tr>
@@ -83,7 +83,7 @@
             </div>
           </div>
           
-          <div  style="text-align:center; position:absolute;top:357px;width:100%;z-index-0">
+          <div  style="display:none;text-align:center; position:absolute;top:357px;width:100%;z-index-0">
             <p style="font-family: Verdana; font-size: 10px; z-index: 2; color: #333366;">Copyright © Advanced Business Software and Solutions Ltd 2012</p>
           </div>
 

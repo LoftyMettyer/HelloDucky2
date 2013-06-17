@@ -431,12 +431,16 @@ Partial Class MobileLogin
 
         cmdCheck.Parameters.Add("@psPWDParameter", SqlDbType.NVarChar, 2147483646).Direction = ParameterDirection.Output
 
+        cmdCheck.Parameters.Add("@piUserGroupID", SqlDbType.Int).Direction = ParameterDirection.Output
+
         cmdCheck.Parameters.Add("@psMessage", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Output
 
         cmdCheck.ExecuteNonQuery()
 
         sMessage = NullSafeString(cmdCheck.Parameters("@psMessage").Value())
         sEncryptedPwd = NullSafeString(cmdCheck.Parameters("@psPWDParameter").Value())
+
+        Session("UserGroupID") = NullSafeInteger(cmdCheck.Parameters("@piUserGroupID").Value())
 
         cmdCheck.Dispose()
       End If
