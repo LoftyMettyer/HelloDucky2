@@ -1,13 +1,32 @@
 <%@ Application Language="VB" %>
 
 <script runat="server">
-
+    
     Sub Application_Start(ByVal sender As Object, ByVal e As EventArgs)
         ' Code that runs on application startup
     End Sub
-    
+
 	Sub Application_End(ByVal sender As Object, ByVal e As EventArgs)
-		' Code that runs on application shutdown
+        ' Code that runs on application shutdown       
+        Try
+            Dim path = Server.MapPath("~/Pictures")
+            
+            For Each file In System.IO.Directory.GetFiles(path)
+                Try
+                    System.IO.File.Delete(file)
+                Catch ex As Exception
+                End Try
+            Next
+            
+            For Each folder In System.IO.Directory.GetDirectories(path)
+                Try
+                    System.IO.Directory.Delete(folder, True)
+                Catch ex As Exception
+                End Try
+            Next
+            
+        Catch ex As Exception
+        End Try
 	End Sub
          
 	Sub Application_Error(ByVal sender As Object, ByVal e As EventArgs)
@@ -16,13 +35,10 @@
   
 	Sub Session_Start(ByVal sender As Object, ByVal e As EventArgs)
 		' Code that runs when a new session is started
-        
-        Session("TimeoutSecs") = Session.Timeout * 60
-
-	End Sub
+    End Sub
   
 	Sub Session_End(ByVal sender As Object, ByVal e As EventArgs)
-		' Code that runs when a session ends. 
+        ' Code that runs when a session ends.      
 	End Sub
           
 </script>

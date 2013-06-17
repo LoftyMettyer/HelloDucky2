@@ -13,7 +13,7 @@ Public Class Picture
   Shared Sub New()
 
     Folder = (Configuration.Server & Configuration.Database).GetHashCode().ToString()
-    RootPath = "~/Pics/" & Folder
+    RootPath = "~/Pictures/" & Folder
     FullPath = HttpContext.Current.Server.MapPath(RootPath)
 
     If Directory.Exists(FullPath) Then

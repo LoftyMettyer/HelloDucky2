@@ -220,7 +220,6 @@ Public Class _Default
 
       If Not IsPostBack And Not isMobileBrowser() Then
         Session.Clear()
-        Session("TimeoutSecs") = Session.Timeout * 60
       End If
     Catch ex As Exception
     End Try
@@ -270,12 +269,6 @@ Public Class _Default
 
     If sMessage.Length = 0 Then
       If IsPostBack Then
-        miInstanceID = CInt(Session("InstanceID"))
-        miElementID = CInt(Session("ElementID"))
-        msUser = Session("User").ToString
-        msPwd = Session("Pwd").ToString
-        msServer = Session("Server").ToString
-        msDatabase = Session("Database").ToString
 
         miInstanceID = CInt(Me.ViewState("InstanceID"))
         miElementID = CInt(Me.ViewState("ElementID"))
@@ -301,7 +294,8 @@ Public Class _Default
             sQueryString = sTemp.Substring(iTemp + 1)
           Else
             ' NPG20120326 Fault HRPRO-2128
-            Response.Redirect("Account/Login.aspx")
+            Response.Redirect("~/Account/Login.aspx", False)
+            Return
           End If
 
           ' Try the newer encryption first
@@ -4300,10 +4294,10 @@ Public Class _Default
   Private Sub AddHeaderTags(ByVal lngViewportWidth As Long)
 
     ' Create the following timeout meta tag programatically for all browsers
-    '    <meta http-equiv="refresh" content="<%=Session("TimeoutSecs")%>;URL=timeout.aspx" />
+    '    <meta http-equiv="refresh" content="5; URL=timeout.aspx" />
     Dim meta As New HtmlMeta()
     meta.HttpEquiv = "refresh"
-    meta.Content = CType(Session("TimeoutSecs"), String) & ";URL=timeout.aspx"
+    meta.Content = (Session.Timeout * 60).ToString & "; URL=timeout.aspx"
 
     Page.Header.Controls.Add(meta)
 
