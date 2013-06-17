@@ -14,7 +14,7 @@ Public Class RecordSelector
     Protected WithEvents grdGrid As RecordSelector ' GridView
     Protected WithEvents pagerTable As Table
     Protected WithEvents pagerRow As TableRow
-    Protected WithEvents ddl As DropDownList
+    Protected WithEvents ddl As TextBox ' DropDownList
     Protected WithEvents dataTable As DataTable
 
     Private m_iPagerHeight As Integer = 30
@@ -763,11 +763,12 @@ Public Class RecordSelector
             ' Dim gv As GridView = TryCast(sender, GridView)
             grdGrid = TryCast(sender, GridView)
             ' Dim ddl As DropDownList = DirectCast(Parent.FindControl(gv.ID.Replace("Grid", "TextBox")), DropDownList)
-            ddl = DirectCast(Parent.FindControl(grdGrid.ID.Replace("Grid", "TextBox")), DropDownList)
+            ddl = DirectCast(Parent.FindControl(grdGrid.ID.Replace("Grid", "TextBox")), TextBox)
 
-            ddl.Items.Clear()
-            ddl.Items.Add(HttpUtility.HtmlDecode(grdGrid.Rows(grdGrid.SelectedIndex).Cells(ddl.Attributes("LookupColumnIndex")).Text).ToString().Replace(Chr(160), Chr(32)))
-            ddl.SelectedIndex = 0
+            'ddl.Items.Clear()
+            'ddl.Items.Add(HttpUtility.HtmlDecode(grdGrid.Rows(grdGrid.SelectedIndex).Cells(ddl.Attributes("LookupColumnIndex")).Text).ToString().Replace(Chr(160), Chr(32)))
+            ddl.Text = HttpUtility.HtmlDecode(grdGrid.Rows(grdGrid.SelectedIndex).Cells(ddl.Attributes("LookupColumnIndex")).Text).ToString().Replace(Chr(160), Chr(32))
+            'ddl.SelectedIndex = 0
         End If
     End Sub
 

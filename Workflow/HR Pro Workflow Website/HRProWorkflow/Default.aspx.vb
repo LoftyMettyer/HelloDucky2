@@ -1906,16 +1906,17 @@ Public Class _Default
                                     ' ============================================================
                                     ' Create a dropdown list as the main control
                                     ' ============================================================
-                                    ctlForm_Dropdown = New DropDownList
+                                    ' ctlForm_Dropdown = New DropDownList
+                                    ctlForm_TextInput = New TextBox
 
-                                    With ctlForm_Dropdown
+                                    With ctlForm_TextInput     'ctlForm_Dropdown
                                         .ID = sID & "TextBox"
                                         .Style("position") = "absolute"
                                         .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
                                         .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
-                                        .Attributes.CssStyle("WIDTH") = Unit.Pixel(NullSafeInteger(dr("Width"))).ToString
-                                        .Height() = Unit.Pixel(NullSafeInteger(dr("Height")) - 2)
-                                        .Attributes.CssStyle("HEIGHT") = Unit.Pixel(NullSafeInteger(dr("Height"))).ToString
+                                        .Attributes.CssStyle("WIDTH") = Unit.Pixel(NullSafeInteger(dr("Width")) - (2 * IMAGEBORDERWIDTH)).ToString
+                                        .Height() = Unit.Pixel(NullSafeInteger(dr("Height")) - (2 * IMAGEBORDERWIDTH))
+                                        .Attributes.CssStyle("HEIGHT") = Unit.Pixel(NullSafeInteger(dr("Height")) - (2 * IMAGEBORDERWIDTH)).ToString
                                         .Font.Name = NullSafeString(dr("FontName"))
                                         .Font.Size = FontUnit.Parse(NullSafeString(dr("FontSize")))
                                         .Font.Bold = NullSafeBoolean(dr("FontBold"))
@@ -1928,15 +1929,29 @@ Public Class _Default
                                         .BorderColor = objGeneral.GetColour(5730458)
                                         .BorderStyle = BorderStyle.Solid
                                         .BorderWidth = Unit.Pixel(1)
-                                        ' create a blank entry and select it. This prevents the dropdown
-                                        ' becoming long by default. Need to hide it completely really, but
-                                        ' under the kosh at the mo.
-                                        .Items.Add("")
-                                        .SelectedIndex = 0
+                                        .ReadOnly = True                                        
                                     End With
 
-                                    pnlInputDiv.Controls.Add(ctlForm_Dropdown)
+                                    'pnlInputDiv.Controls.Add(ctlForm_Dropdown)
+                                    pnlInputDiv.Controls.Add(ctlForm_TextInput)
 
+                                    ' add a little dropdown to make the textbox look like a dropdown.                                    
+                                    ctlForm_Image = New System.Web.UI.WebControls.Image
+                                    With ctlForm_Image
+                                        .ImageUrl = "Images/DDE-downarrow.gif"
+                                        .Style("position") = "absolute"
+                                        .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord")) + 1).ToString
+                                        .Style("left") = Unit.Pixel((NullSafeInteger(dr("LeftCoord")) + NullSafeInteger(dr("Width")) - (2 * IMAGEBORDERWIDTH)) - 13).ToString
+                                        .Attributes.CssStyle("WIDTH") = Unit.Pixel(14).ToString
+                                        .Height() = Unit.Pixel(NullSafeInteger(dr("Height")) - (2 * IMAGEBORDERWIDTH))
+                                        .Attributes.CssStyle("HEIGHT") = Unit.Pixel(NullSafeInteger(dr("Height")) - (2 * IMAGEBORDERWIDTH)).ToString
+                                        .BorderColor = Color.Gray
+                                        .BorderStyle = BorderStyle.Solid
+                                        .BorderWidth = Unit.Pixel(1)
+                                    End With
+
+
+                                    pnlInputDiv.Controls.Add(ctlForm_Image)
 
                                     ' ============================================================
                                     ' Create the Lookup table grid, as per normal record selectors.
@@ -2177,18 +2192,27 @@ Public Class _Default
 
                                             iItemType = NullSafeInteger(cmdGrid.Parameters("@piItemType").Value)
 
-                                            ctlForm_Dropdown.Attributes.Remove("LookupColumnIndex")
-                                            ctlForm_Dropdown.Attributes.Add("LookupColumnIndex", m_iLookupColumnIndex.ToString)
+                                            'ctlForm_Dropdown.Attributes.Remove("LookupColumnIndex")
+                                            'ctlForm_Dropdown.Attributes.Add("LookupColumnIndex", m_iLookupColumnIndex.ToString)
 
-                                            ctlForm_Dropdown.Attributes.Remove("DefaultValue")
-                                            ctlForm_Dropdown.Attributes.Add("DefaultValue", NullSafeString(cmdGrid.Parameters("@psDefaultValue").Value))
+                                            'ctlForm_Dropdown.Attributes.Remove("DefaultValue")
+                                            'ctlForm_Dropdown.Attributes.Add("DefaultValue", NullSafeString(cmdGrid.Parameters("@psDefaultValue").Value))
+
+                                            ctlForm_TextInput.Attributes.Remove("LookupColumnIndex")
+                                            ctlForm_TextInput.Attributes.Add("LookupColumnIndex", m_iLookupColumnIndex.ToString)
+
+                                            ctlForm_TextInput.Attributes.Remove("DefaultValue")
+                                            ctlForm_TextInput.Attributes.Add("DefaultValue", NullSafeString(cmdGrid.Parameters("@psDefaultValue").Value))
+
 
                                             ' Datatype - 
                                             ' curSelDataType = DataBinder.Eval(e.Row.DataItem, grdGrid.HeaderRow.Cells(iColCount).Text).GetType.ToString.ToUpper
 
                                             'dt.Columns(CInt(ctlForm_Dropdown.Attributes("LookupColumnIndex"))).DataType
-                                            ctlForm_Dropdown.Attributes.Remove("DataType")
-                                            ctlForm_Dropdown.Attributes.Add("DataType", NullSafeString(dt.Columns(CInt(ctlForm_Dropdown.Attributes("LookupColumnIndex"))).DataType.ToString))
+                                            'ctlForm_Dropdown.Attributes.Remove("DataType")
+                                            'ctlForm_Dropdown.Attributes.Add("DataType", NullSafeString(dt.Columns(CInt(ctlForm_Dropdown.Attributes("LookupColumnIndex"))).DataType.ToString))
+                                            ctlForm_TextInput.Attributes.Remove("DataType")
+                                            ctlForm_TextInput.Attributes.Add("DataType", NullSafeString(dt.Columns(CInt(ctlForm_TextInput.Attributes("LookupColumnIndex"))).DataType.ToString))
 
                                             ' Yup we store the data to a session variable. This is so we can sort/filter 
                                             ' it and stillreset if necessary without running the SP again
@@ -2273,14 +2297,13 @@ Public Class _Default
                                         ' ==================================================
                                         ' Set the dropdownList to the default value.
                                         ' ==================================================
-                                        If ctlForm_Dropdown.Attributes("DefaultValue").ToString.Length > 0 Then
-                                            ctlForm_Dropdown.Items.Add(ctlForm_Dropdown.Attributes("DefaultValue").ToString)
-                                            ctlForm_Dropdown.SelectedIndex = 1
+                                        If ctlForm_TextInput.Attributes("DefaultValue").ToString.Length > 0 Then
+                                            ctlForm_TextInput.Text = ctlForm_TextInput.Attributes("DefaultValue").ToString
                                         End If
 
                                         For jncount As Integer = 0 To ctlForm_PagingGridView.Rows.Count - 1
                                             If jncount > ctlForm_PagingGridView.PageSize Then Exit For ' don't bother if on other pages
-                                            If ctlForm_PagingGridView.Rows(jncount).Cells(m_iLookupColumnIndex).Text = ctlForm_Dropdown.Attributes("DefaultValue").ToString Then
+                                            If ctlForm_PagingGridView.Rows(jncount).Cells(m_iLookupColumnIndex).Text = ctlForm_TextInput.Attributes("DefaultValue").ToString Then
                                                 ctlForm_PagingGridView.SelectedIndex = jncount
                                                 Exit For
                                             End If
@@ -3199,10 +3222,10 @@ Public Class _Default
         '    Dim sTemp As String
         Dim iType As Int16
         Dim sType As String
-        Dim ctlFormDropdown As System.Web.UI.WebControls.DropDownList   'Infragistics.WebUI.WebCombo.WebCombo
+        'Dim ctlFormDropdown As System.Web.UI.WebControls.DropDownList   'Infragistics.WebUI.WebCombo.WebCombo
         '    Dim objGridColumn As Infragistics.WebUI.UltraWebGrid.UltraGridColumn
         '    Dim iLookupColumnIndex As Int16
-        Dim ctlFormRecordSelectionGrid As System.Web.UI.WebControls.GridView ' Infragistics.WebUI.UltraWebGrid.UltraWebGrid
+        'Dim ctlFormRecordSelectionGrid As System.Web.UI.WebControls.GridView ' Infragistics.WebUI.UltraWebGrid.UltraWebGrid
 
         ' Set the DataSource properties of each combo (dropdown list or lookup), 
         ' and then bind the DataSource to the combo.
@@ -3550,12 +3573,12 @@ Public Class _Default
 
 
                         Case 14 ' Lookup Input
-                            If (TypeOf ctlFormInput Is System.Web.UI.WebControls.DropDownList) Then 'Infragistics.WebUI.WebCombo.WebCombo) Then
-                                ctlFormDropdown = DirectCast(ctlFormInput, System.Web.UI.WebControls.DropDownList) 'Infragistics.WebUI.WebCombo.WebCombo)
+                            If (TypeOf ctlFormInput Is System.Web.UI.WebControls.TextBox) Then   ' System.Web.UI.WebControls.DropDownList) Then 'Infragistics.WebUI.WebCombo.WebCombo) Then
+                                ctlFormTextInput = DirectCast(ctlFormInput, System.Web.UI.WebControls.TextBox)   ' System.Web.UI.WebControls.DropDownList) 'Infragistics.WebUI.WebCombo.WebCombo)
 
-                                sTemp = ctlFormDropdown.Text ' .DisplayValue
+                                sTemp = ctlFormTextInput.Text ' .DisplayValue
 
-                                If ctlFormDropdown.Attributes("DataType") = "System.DateTime" Then
+                                If ctlFormTextInput.Attributes("DataType") = "System.DateTime" Then
                                     If sTemp Is Nothing Then
                                         sTemp = "null"
                                     Else
@@ -3565,8 +3588,8 @@ Public Class _Default
                                             sTemp = objGeneral.ConvertLocaleDateToSQL(sTemp)
                                         End If
                                     End If
-                                ElseIf ctlFormDropdown.Attributes("DataType") = "System.Decimal" _
-                                 Or ctlFormDropdown.Attributes("DataType") = "System.Int32" Then
+                                ElseIf ctlFormTextInput.Attributes("DataType") = "System.Decimal" _
+                                 Or ctlFormTextInput.Attributes("DataType") = "System.Int32" Then
 
                                     If sTemp Is Nothing Then
                                         sTemp = ""
