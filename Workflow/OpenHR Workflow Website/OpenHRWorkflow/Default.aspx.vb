@@ -13,88 +13,89 @@ Imports System.Transactions
 
 
 Public Class _Default
-    Inherits System.Web.UI.Page
+  Inherits System.Web.UI.Page
 
-    Private miInstanceID As Integer
-    Private miElementID As Integer
-    Private msServer As String
-    Private msDatabase As String
-    Private miImageCount As Int16
-    Private msUser As String
-    Private msPwd As String
-    Private mobjConfig As New Config
-    Private msRefreshLiteralsCode As String
-    Private miCompletionMessageType As Integer
-    Private msCompletionMessage As String
-    Private miSavedForLaterMessageType As Integer
-    Private msSavedForLaterMessage As String
-    Private miFollowOnFormsMessageType As Integer
-    Private msFollowOnFormsMessage As String
-    Private miSubmissionTimeoutInSeconds As Int32
-    Private msLastSelectedValue As String
-    Private msForeColorHighlight As String
-    Private msBackColorHighlight As String
-    Private m_iLookupColumnIndex As Integer
+  Private miInstanceID As Integer
+  Private miElementID As Integer
+  Private msServer As String
+  Private msDatabase As String
+  Private miImageCount As Int16
+  Private msUser As String
+  Private msPwd As String
 
-    Private Const FORMINPUTPREFIX As String = "forminput_"
-    Private Const ASSEMBLYNAME As String = "HRPROWORKFLOW"
-    Private Const ROWHEIGHTFONTRATIO As Single = 2.5
-    Private Const MAXDROPDOWNROWS As Int16 = 6
+  Private mobjConfig As New Config
+  Private msRefreshLiteralsCode As String
+  Private miCompletionMessageType As Integer
+  Private msCompletionMessage As String
+  Private miSavedForLaterMessageType As Integer
+  Private msSavedForLaterMessage As String
+  Private miFollowOnFormsMessageType As Integer
+  Private msFollowOnFormsMessage As String
+  Private miSubmissionTimeoutInSeconds As Int32
+  Private msLastSelectedValue As String
+  Private msForeColorHighlight As String
+  Private msBackColorHighlight As String
+  Private m_iLookupColumnIndex As Integer
 
-    Private Enum SQLDataType
-        sqlUnknown = 0      ' ?
-        sqlOle = -4         ' OLE columns
-        sqlBoolean = -7     ' Logic columns
-        sqlNumeric = 2      ' Numeric columns
-        sqlInteger = 4      ' Integer columns
-        sqlDate = 11        ' Date columns
-        sqlVarChar = 12     ' Character columns
-        sqlVarBinary = -3   ' Photo columns
-        sqlLongVarChar = -1 ' Working Pattern columns
-    End Enum
+  Private Const FORMINPUTPREFIX As String = "forminput_"
+  Private Const ASSEMBLYNAME As String = "HRPROWORKFLOW"
+  Private Const ROWHEIGHTFONTRATIO As Single = 2.5
+  Private Const MAXDROPDOWNROWS As Int16 = 6
 
-    Private Enum FilterOperators
-        giFILTEROP_UNDEFINED = 0
-        giFILTEROP_EQUALS = 1
-        giFILTEROP_NOTEQUALTO = 2
-        giFILTEROP_ISATMOST = 3
-        giFILTEROP_ISATLEAST = 4
-        giFILTEROP_ISMORETHAN = 5
-        giFILTEROP_ISLESSTHAN = 6
-        giFILTEROP_ON = 7
-        giFILTEROP_NOTON = 8
-        giFILTEROP_AFTER = 9
-        giFILTEROP_BEFORE = 10
-        giFILTEROP_ONORAFTER = 11
-        giFILTEROP_ONORBEFORE = 12
-        giFILTEROP_CONTAINS = 13
-        giFILTEROP_IS = 14
-        giFILTEROP_DOESNOTCONTAIN = 15
-        giFILTEROP_ISNOT = 16
-    End Enum
+  Private Enum SQLDataType
+    sqlUnknown = 0      ' ?
+    sqlOle = -4         ' OLE columns
+    sqlBoolean = -7     ' Logic columns
+    sqlNumeric = 2      ' Numeric columns
+    sqlInteger = 4      ' Integer columns
+    sqlDate = 11        ' Date columns
+    sqlVarChar = 12     ' Character columns
+    sqlVarBinary = -3   ' Photo columns
+    sqlLongVarChar = -1 ' Working Pattern columns
+  End Enum
+
+  Private Enum FilterOperators
+    giFILTEROP_UNDEFINED = 0
+    giFILTEROP_EQUALS = 1
+    giFILTEROP_NOTEQUALTO = 2
+    giFILTEROP_ISATMOST = 3
+    giFILTEROP_ISATLEAST = 4
+    giFILTEROP_ISMORETHAN = 5
+    giFILTEROP_ISLESSTHAN = 6
+    giFILTEROP_ON = 7
+    giFILTEROP_NOTON = 8
+    giFILTEROP_AFTER = 9
+    giFILTEROP_BEFORE = 10
+    giFILTEROP_ONORAFTER = 11
+    giFILTEROP_ONORBEFORE = 12
+    giFILTEROP_CONTAINS = 13
+    giFILTEROP_IS = 14
+    giFILTEROP_DOESNOTCONTAIN = 15
+    giFILTEROP_ISNOT = 16
+  End Enum
 
 #Region " Web Form Designer Generated Code "
 
-    'This call is required by the Web Form Designer.
-    <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
+  'This call is required by the Web Form Designer.
+  <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
 
-    End Sub
+  End Sub
 
-    Private Sub Page_Init(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Init
-        'CODEGEN: This method call is required by the Web Form Designer
-        'Do not modify it using the code editor.
-        InitializeComponent()
+  Private Sub Page_Init(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Init
+    'CODEGEN: This method call is required by the Web Form Designer
+    'Do not modify it using the code editor.
+    InitializeComponent()
 
-        ScriptManager.GetCurrent(Page).AsyncPostBackTimeout = SubmissionTimeout()
-
-
+    ScriptManager.GetCurrent(Page).AsyncPostBackTimeout = SubmissionTimeout()
 
 
 
 
 
 
-    End Sub
+
+
+  End Sub
 
 #End Region
 
@@ -198,6 +199,11 @@ Public Class _Default
     Dim iItemType As Integer
     Dim iPageTabCount As Integer
     Dim iCurrentPageTab As Integer
+
+    ' MOBILE - start
+    Dim sKeyParameter As String = ""
+    Dim sPWDParameter As String = ""
+    ' MOBILE - end
 
     Const sDEFAULTTITLE As String = "Open HR Workflow"
     Const IMAGEBORDERWIDTH As Integer = 2
@@ -341,7 +347,32 @@ Public Class _Default
             msServer = Left(sTemp, InStr(sTemp, vbTab) - 1)
             sTemp = Mid(sTemp, InStr(sTemp, vbTab) + 1)
 
-            msDatabase = Mid(sTemp, InStr(sTemp, vbTab) + 1)
+            ' MOBILE - start
+            sKeyParameter = ""
+            sPWDParameter = ""
+
+            'msDatabase = Mid(sTemp, InStr(sTemp, vbTab) + 1)
+            If InStr(sTemp, vbTab) > 0 Then
+              msDatabase = Left(sTemp, InStr(sTemp, vbTab) - 1)
+
+              ' See if there are any extra parameters used for record identification
+              Try
+                sTemp = Mid(sTemp, InStr(sTemp, vbTab) + 1)
+
+                sKeyParameter = Left(sTemp, InStr(sTemp, vbTab) - 1)
+                sTemp = Mid(sTemp, InStr(sTemp, vbTab) + 1)
+
+                sPWDParameter = Mid(sTemp, InStr(sTemp, vbTab) + 1)
+
+              Catch ex As Exception
+                sKeyParameter = ""
+                sPWDParameter = ""
+              End Try
+            Else
+              msDatabase = Mid(sTemp, InStr(sTemp, vbTab) + 1)
+            End If
+            ' MOBILE - end
+
 
           Catch ex As Exception
             ' Older encryption method
@@ -369,12 +400,42 @@ Public Class _Default
             sTemp = Mid(sTemp, InStr(sTemp, vbTab) + 1)
 
             msDatabase = Mid(sTemp, InStr(sTemp, vbTab) + 1)
+
           End Try
         Catch theError As Exception
           sMessage = "Invalid query string."
         End Try
       End If
     End If
+
+    ' - Mobile START - 
+    ' This bit is simply for activating Mobile users.
+    ' NPG20111215 - I've hijacked the miInstanceID and populated it with the 
+    ' User ID that is to be activated.
+    If (sMessage.Length = 0) _
+     And (miElementID = -2) _
+     And (miInstanceID > 0) _
+     And (Not IsPostBack) Then
+      Try ' conn creation 
+        ' update tbsysMobile_Logins, and copy the 'newpassword' string to the 'password' field using 'userid' from miInstanceID
+        ' Establish Connection
+        strConn = "Application Name=OpenHR Workflow;Data Source=" & msServer & ";Initial Catalog=" & msDatabase & ";Integrated Security=false;User ID=" & msUser & ";Password=" & msPwd & ";Pooling=false"
+
+        Dim myConnection As New SqlClient.SqlConnection(strConn)
+        myConnection.Open()
+        Dim myCommand As New SqlClient.SqlCommand("UPDATE tbsys_mobilelogins SET [password] = [newpassword] WHERE [userid] = " & CStr(miInstanceID), myConnection)
+        myCommand.ExecuteNonQuery()
+        myConnection.Close()
+
+        ' set message to something to skip all the normal workflow stuff.
+        sMessage = "You have been successfully activated"
+
+      Catch ex As Exception
+        sMessage = "Unable to activate user."
+      End Try
+      ' done. smessage populated, so should skip the rest of default.aspx.
+    End If
+    ' - Mobile END -
 
     If sMessage.Length = 0 Then
       Try ' conn creation 
@@ -472,13 +533,34 @@ Public Class _Default
             iWorkflowID = -miInstanceID
 
             cmdInitiate = New SqlClient.SqlCommand
-            cmdInitiate.CommandText = "spASRInstantiateWorkflow"
+
+            ' cmdInitiate.CommandText = "spASRInstantiateWorkflow"
+
+            ' MOBILE - start
+            If Len(sKeyParameter) > 0 Then
+              'sPWDParameter
+              cmdInitiate.CommandText = "spASRMobileInstantiateWorkflow"
+            Else
+              cmdInitiate.CommandText = "spASRInstantiateWorkflow"
+            End If
+            ' MOBILE - end
+
             cmdInitiate.Connection = conn
             cmdInitiate.CommandType = CommandType.StoredProcedure
             cmdInitiate.CommandTimeout = miSubmissionTimeoutInSeconds
 
             cmdInitiate.Parameters.Add("@piWorkflowID", SqlDbType.Int).Direction = ParameterDirection.Input
             cmdInitiate.Parameters("@piWorkflowID").Value = iWorkflowID
+
+            ' MOBILE - start
+            If Len(sKeyParameter) > 0 Then
+              cmdInitiate.Parameters.Add("@psKeyParameter", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
+              cmdInitiate.Parameters("@psKeyParameter").Value = sKeyParameter
+
+              cmdInitiate.Parameters.Add("@psPWDParameter", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
+              cmdInitiate.Parameters("@psPWDParameter").Value = sPWDParameter
+            End If
+            ' MOBILE - end
 
             cmdInitiate.Parameters.Add("@piInstanceID", SqlDbType.Int).Direction = ParameterDirection.Output
             cmdInitiate.Parameters.Add("@psFormElements", SqlDbType.VarChar, 8000).Direction = ParameterDirection.Output
@@ -530,9 +612,11 @@ Public Class _Default
 
                 sSiblingForms = Join(arrQueryStrings, vbTab)
               End If
+
             Else
               sMessage = "Error:<BR><BR>" & sMessage
             End If
+
           End If
 
           If sMessage.Length = 0 Then
@@ -4188,321 +4272,319 @@ Public Class _Default
     End If
 
   End Sub
-    Public Sub DisableControls(ByVal sender As System.Object, ByVal e As Infragistics.WebUI.WebDataInput.ButtonEventArgs)
-        EnableDisableControls(False)
-    End Sub
-    Public Sub EnableControls(ByVal sender As System.Object, ByVal e As Infragistics.WebUI.WebDataInput.ButtonEventArgs)
-        EnableDisableControls(True)
-    End Sub
-    Private Sub EnableDisableControls(ByVal pfEnabled As Boolean)
+  Public Sub DisableControls(ByVal sender As System.Object, ByVal e As Infragistics.WebUI.WebDataInput.ButtonEventArgs)
+    EnableDisableControls(False)
+  End Sub
+  Public Sub EnableControls(ByVal sender As System.Object, ByVal e As Infragistics.WebUI.WebDataInput.ButtonEventArgs)
+    EnableDisableControls(True)
+  End Sub
+  Private Sub EnableDisableControls(ByVal pfEnabled As Boolean)
 
-        Dim ctlFormInput As Control
-        Dim sID As String
-        Dim ctlFormCheckBox As CheckBox
-        Dim ctlFormTextInput As TextBox
-        Dim ctlFormButtonInput As Infragistics.WebUI.WebDataInput.WebImageButton
-        Dim ctlFormDateInput As Infragistics.WebUI.WebSchedule.WebDateChooser
-        Dim ctlFormNumericInput As Infragistics.WebUI.WebDataInput.WebNumericEdit
-        Dim ctlFormRecordSelectionGrid As System.Web.UI.WebControls.GridView ' Infragistics.WebUI.UltraWebGrid.UltraWebGrid
-        Dim ctlFormDropdown As System.Web.UI.WebControls.DropDownList ' Infragistics.WebUI.WebCombo.WebCombo
-        Dim ctlForm_DDE As AjaxControlToolkit.DropDownExtender
-        Dim sMessage As String
-        Dim sIDString As String
-        Dim iTemp As Int16
-        Dim sTemp As String
-        Dim iType As Int16
-        Dim sType As String
-        Dim sMessage1 As String
-        Dim sMessage2 As String
-        Dim sMessage3 As String
+    Dim ctlFormInput As Control
+    Dim sID As String
+    Dim ctlFormCheckBox As CheckBox
+    Dim ctlFormTextInput As TextBox
+    Dim ctlFormButtonInput As Infragistics.WebUI.WebDataInput.WebImageButton
+    Dim ctlFormDateInput As Infragistics.WebUI.WebSchedule.WebDateChooser
+    Dim ctlFormNumericInput As Infragistics.WebUI.WebDataInput.WebNumericEdit
+    Dim ctlFormRecordSelectionGrid As System.Web.UI.WebControls.GridView ' Infragistics.WebUI.UltraWebGrid.UltraWebGrid
+    Dim ctlFormDropdown As System.Web.UI.WebControls.DropDownList ' Infragistics.WebUI.WebCombo.WebCombo
+    Dim ctlForm_DDE As AjaxControlToolkit.DropDownExtender
+    Dim sMessage As String
+    Dim sIDString As String
+    Dim iTemp As Int16
+    Dim sTemp As String
+    Dim iType As Int16
+    Dim sType As String
+    Dim sMessage1 As String
+    Dim sMessage2 As String
+    Dim sMessage3 As String
 
-        sMessage = ""
-        sMessage1 = ""
-        sMessage2 = ""
-        sMessage3 = ""
+    sMessage = ""
+    sMessage1 = ""
+    sMessage2 = ""
+    sMessage3 = ""
 
-        Try ' Disable all controls.
-            For Each ctlFormInput In pnlInput.ContentTemplateContainer.Controls
-                sID = ctlFormInput.ID
+    Try ' Disable all controls.
+      For Each ctlFormInput In pnlInput.ContentTemplateContainer.Controls
+        sID = ctlFormInput.ID
 
-                If (Left(sID, Len(FORMINPUTPREFIX)) = FORMINPUTPREFIX) Then
-                    sIDString = sID.Substring(Len(FORMINPUTPREFIX))
+        If (Left(sID, Len(FORMINPUTPREFIX)) = FORMINPUTPREFIX) Then
+          sIDString = sID.Substring(Len(FORMINPUTPREFIX))
 
-                    iTemp = CShort(sIDString.IndexOf("_"))
-                    sTemp = sIDString.Substring(iTemp + 1)
-                    sIDString = sIDString.Substring(0, iTemp) & vbTab
+          iTemp = CShort(sIDString.IndexOf("_"))
+          sTemp = sIDString.Substring(iTemp + 1)
+          sIDString = sIDString.Substring(0, iTemp) & vbTab
 
-                    iTemp = CShort(sTemp.IndexOf("_"))
-                    sType = sTemp.Substring(0, iTemp)
-                    iType = CShort(sType)
+          iTemp = CShort(sTemp.IndexOf("_"))
+          sType = sTemp.Substring(0, iTemp)
+          iType = CShort(sType)
 
-                    Select Case iType
-                        Case 0 ' Button
-                            ctlFormButtonInput = DirectCast(ctlFormInput, Infragistics.WebUI.WebDataInput.WebImageButton)
-                            ctlFormButtonInput.Enabled = pfEnabled
+          Select Case iType
+            Case 0 ' Button
+              ctlFormButtonInput = DirectCast(ctlFormInput, Infragistics.WebUI.WebDataInput.WebImageButton)
+              ctlFormButtonInput.Enabled = pfEnabled
 
-                        Case 1 ' Database value
-                        Case 2 ' Label
+            Case 1 ' Database value
+            Case 2 ' Label
 
-                        Case 3 ' Character Input
-                            If (TypeOf ctlFormInput Is TextBox) Then
-                                ctlFormTextInput = DirectCast(ctlFormInput, TextBox)
-                                ctlFormTextInput.Enabled = pfEnabled
-                            End If
+            Case 3 ' Character Input
+              If (TypeOf ctlFormInput Is TextBox) Then
+                ctlFormTextInput = DirectCast(ctlFormInput, TextBox)
+                ctlFormTextInput.Enabled = pfEnabled
+              End If
 
-                        Case 4 ' Workflow value
+            Case 4 ' Workflow value
 
-                        Case 5 ' Numeric Input
-                            If (TypeOf ctlFormInput Is Infragistics.WebUI.WebDataInput.WebNumericEdit) Then
-                                ctlFormNumericInput = DirectCast(ctlFormInput, Infragistics.WebUI.WebDataInput.WebNumericEdit)
-                                ctlFormNumericInput.Enabled = pfEnabled
-                            End If
+            Case 5 ' Numeric Input
+              If (TypeOf ctlFormInput Is Infragistics.WebUI.WebDataInput.WebNumericEdit) Then
+                ctlFormNumericInput = DirectCast(ctlFormInput, Infragistics.WebUI.WebDataInput.WebNumericEdit)
+                ctlFormNumericInput.Enabled = pfEnabled
+              End If
 
-                        Case 6 ' Logic Input
-                            If (TypeOf ctlFormInput Is CheckBox) Then
-                                ctlFormCheckBox = CType(ctlFormInput, CheckBox)
-                                ctlFormCheckBox.Enabled = pfEnabled
-                            End If
+            Case 6 ' Logic Input
+              If (TypeOf ctlFormInput Is CheckBox) Then
+                ctlFormCheckBox = CType(ctlFormInput, CheckBox)
+                ctlFormCheckBox.Enabled = pfEnabled
+              End If
 
-                        Case 7 ' Date Input
-                            If (TypeOf ctlFormInput Is Infragistics.WebUI.WebSchedule.WebDateChooser) Then
-                                ctlFormDateInput = DirectCast(ctlFormInput, Infragistics.WebUI.WebSchedule.WebDateChooser)
-                                ctlFormDateInput.Enabled = pfEnabled
-                            End If
+            Case 7 ' Date Input
+              If (TypeOf ctlFormInput Is Infragistics.WebUI.WebSchedule.WebDateChooser) Then
+                ctlFormDateInput = DirectCast(ctlFormInput, Infragistics.WebUI.WebSchedule.WebDateChooser)
+                ctlFormDateInput.Enabled = pfEnabled
+              End If
 
-                        Case 8 ' Frame
-                        Case 9 ' Line
-                        Case 10 ' Image
+            Case 8 ' Frame
+            Case 9 ' Line
+            Case 10 ' Image
 
-                        Case 11 ' Grid (RecordSelector) Input                            
-                            If (TypeOf ctlFormInput Is System.Web.UI.WebControls.GridView) Then 'Infragistics.WebUI.UltraWebGrid.UltraWebGrid) Then
-                                ctlFormRecordSelectionGrid = DirectCast(ctlFormInput, System.Web.UI.WebControls.GridView) ' Infragistics.WebUI.UltraWebGrid.UltraWebGrid)
-                                ctlFormRecordSelectionGrid.Enabled = pfEnabled
-                                If pfEnabled Then
-                                    'ctlFormRecordSelectionGrid.DisplayLayout.ReadOnly = Infragistics.WebUI.UltraWebGrid.ReadOnly.NotSet
-                                Else
-                                    'ctlFormRecordSelectionGrid.DisplayLayout.ReadOnly = Infragistics.WebUI.UltraWebGrid.ReadOnly.LevelZero
-                                End If
-                            End If
-
-                        Case 13 ' Dropdown Input
-                            If (TypeOf ctlFormInput Is System.Web.UI.WebControls.DropDownList) Then 'Infragistics.WebUI.WebCombo.WebCombo) Then
-                                ctlFormDropdown = DirectCast(ctlFormInput, System.Web.UI.WebControls.DropDownList) 'Infragistics.WebUI.WebCombo.WebCombo)
-                                ctlFormDropdown.Enabled = pfEnabled
-                            End If
-
-                        Case 14 ' Lookup Input
-                            If Not isMobileBrowser() Then
-
-
-                                If (TypeOf ctlFormInput Is AjaxControlToolkit.DropDownExtender) Then 'Infragistics.WebUI.WebCombo.WebCombo) Then
-                                    ctlForm_DDE = DirectCast(ctlFormInput, AjaxControlToolkit.DropDownExtender) 'Infragistics.WebUI.WebCombo.WebCombo)
-                                    ctlForm_DDE.Enabled = pfEnabled
-                                End If
-                            Else
-                                ' Mobile Browser
-                                If (TypeOf ctlFormInput Is System.Web.UI.WebControls.DropDownList) Then
-                                    ctlFormDropdown = DirectCast(ctlFormInput, System.Web.UI.WebControls.DropDownList)
-                                    ctlFormDropdown.Enabled = pfEnabled
-                                End If
-                            End If
-
-                        Case 15 ' OptionGroup Input
-                            If (TypeOf ctlFormInput Is TextBox) Then
-                                ctlFormTextInput = DirectCast(ctlFormInput, TextBox)
-                                ctlFormTextInput.Enabled = pfEnabled
-                            End If
-
-                        Case 17 ' Input value - file upload
-                            ctlFormButtonInput = DirectCast(ctlFormInput, Infragistics.WebUI.WebDataInput.WebImageButton)
-                            ctlFormButtonInput.Enabled = pfEnabled
-
-                    End Select
+            Case 11 ' Grid (RecordSelector) Input                            
+              If (TypeOf ctlFormInput Is System.Web.UI.WebControls.GridView) Then 'Infragistics.WebUI.UltraWebGrid.UltraWebGrid) Then
+                ctlFormRecordSelectionGrid = DirectCast(ctlFormInput, System.Web.UI.WebControls.GridView) ' Infragistics.WebUI.UltraWebGrid.UltraWebGrid)
+                ctlFormRecordSelectionGrid.Enabled = pfEnabled
+                If pfEnabled Then
+                  'ctlFormRecordSelectionGrid.DisplayLayout.ReadOnly = Infragistics.WebUI.UltraWebGrid.ReadOnly.NotSet
+                Else
+                  'ctlFormRecordSelectionGrid.DisplayLayout.ReadOnly = Infragistics.WebUI.UltraWebGrid.ReadOnly.LevelZero
                 End If
-            Next ctlFormInput
+              End If
 
-        Catch ex As Exception
-            If pfEnabled Then
-                sMessage = "Error enabling web form items:<BR><BR>" & ex.Message
-            Else
-                sMessage = "Error disabling web form items:<BR><BR>" & ex.Message
-            End If
-        End Try
+            Case 13 ' Dropdown Input
+              If (TypeOf ctlFormInput Is System.Web.UI.WebControls.DropDownList) Then 'Infragistics.WebUI.WebCombo.WebCombo) Then
+                ctlFormDropdown = DirectCast(ctlFormInput, System.Web.UI.WebControls.DropDownList) 'Infragistics.WebUI.WebCombo.WebCombo)
+                ctlFormDropdown.Enabled = pfEnabled
+              End If
 
-        If sMessage.Length > 0 Then
-            bulletErrors.Items.Clear()
-            bulletWarnings.Items.Clear()
+            Case 14 ' Lookup Input
+              If Not isMobileBrowser() Then
 
-            hdnErrorMessage.Value = sMessage
 
-            sMessage1 = sMessage & "<BR><BR>Click "
-            sMessage2 = "here"
-            sMessage3 = " to close this form."
+                If (TypeOf ctlFormInput Is AjaxControlToolkit.DropDownExtender) Then 'Infragistics.WebUI.WebCombo.WebCombo) Then
+                  ctlForm_DDE = DirectCast(ctlFormInput, AjaxControlToolkit.DropDownExtender) 'Infragistics.WebUI.WebCombo.WebCombo)
+                  ctlForm_DDE.Enabled = pfEnabled
+                End If
+              Else
+                ' Mobile Browser
+                If (TypeOf ctlFormInput Is System.Web.UI.WebControls.DropDownList) Then
+                  ctlFormDropdown = DirectCast(ctlFormInput, System.Web.UI.WebControls.DropDownList)
+                  ctlFormDropdown.Enabled = pfEnabled
+                End If
+              End If
 
-            hdnSubmissionMessage_1.Value = Replace(sMessage1, " ", "&nbsp;")
-            hdnSubmissionMessage_2.Value = Replace(sMessage2, " ", "&nbsp;")
-            hdnSubmissionMessage_3.Value = Replace(sMessage3, " ", "&nbsp;")
-            hdnNoSubmissionMessage.Value = CStr(IIf((sMessage1.Length = 0) And (sMessage2.Length = 0) And (sMessage3.Length = 0), "1", "0"))
-            hdnFollowOnForms.Value = ""
+            Case 15 ' OptionGroup Input
+              If (TypeOf ctlFormInput Is TextBox) Then
+                ctlFormTextInput = DirectCast(ctlFormInput, TextBox)
+                ctlFormTextInput.Enabled = pfEnabled
+              End If
+
+            Case 17 ' Input value - file upload
+              ctlFormButtonInput = DirectCast(ctlFormInput, Infragistics.WebUI.WebDataInput.WebImageButton)
+              ctlFormButtonInput.Enabled = pfEnabled
+
+          End Select
         End If
-    End Sub
-    Public Function LocaleDateFormat() As String
-        LocaleDateFormat = Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern.ToUpper
-    End Function
-    Public Function LocaleDecimal() As String
-        LocaleDecimal = Thread.CurrentThread.CurrentUICulture.NumberFormat.NumberDecimalSeparator
-    End Function
-    Public Function ColourThemeHex() As String
-        ColourThemeHex = mobjConfig.ColourThemeHex
-    End Function
-    Public Function ColourThemeFolder() As String
-        ColourThemeFolder = mobjConfig.ColourThemeFolder
-    End Function
-    'Public Function SubmissionTimeout() As String
-    '    SubmissionTimeout = mobjConfig.SubmissionTimeout.ToString
-    'End Function
-    Public Function SubmissionTimeout() As Int32
-        SubmissionTimeout = mobjConfig.SubmissionTimeout
-    End Function
+      Next ctlFormInput
+
+    Catch ex As Exception
+      If pfEnabled Then
+        sMessage = "Error enabling web form items:<BR><BR>" & ex.Message
+      Else
+        sMessage = "Error disabling web form items:<BR><BR>" & ex.Message
+      End If
+    End Try
+
+    If sMessage.Length > 0 Then
+      bulletErrors.Items.Clear()
+      bulletWarnings.Items.Clear()
+
+      hdnErrorMessage.Value = sMessage
+
+      sMessage1 = sMessage & "<BR><BR>Click "
+      sMessage2 = "here"
+      sMessage3 = " to close this form."
+
+      hdnSubmissionMessage_1.Value = Replace(sMessage1, " ", "&nbsp;")
+      hdnSubmissionMessage_2.Value = Replace(sMessage2, " ", "&nbsp;")
+      hdnSubmissionMessage_3.Value = Replace(sMessage3, " ", "&nbsp;")
+      hdnNoSubmissionMessage.Value = CStr(IIf((sMessage1.Length = 0) And (sMessage2.Length = 0) And (sMessage3.Length = 0), "1", "0"))
+      hdnFollowOnForms.Value = ""
+    End If
+  End Sub
+  Public Function LocaleDateFormat() As String
+    LocaleDateFormat = Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern.ToUpper
+  End Function
+  Public Function LocaleDecimal() As String
+    LocaleDecimal = Thread.CurrentThread.CurrentUICulture.NumberFormat.NumberDecimalSeparator
+  End Function
+  Public Function ColourThemeHex() As String
+    ColourThemeHex = mobjConfig.ColourThemeHex
+  End Function
+  Public Function ColourThemeFolder() As String
+    ColourThemeFolder = mobjConfig.ColourThemeFolder
+  End Function
+  'Public Function SubmissionTimeout() As String
+  '    SubmissionTimeout = mobjConfig.SubmissionTimeout.ToString
+  'End Function
+  Public Function SubmissionTimeout() As Int32
+    SubmissionTimeout = mobjConfig.SubmissionTimeout
+  End Function
 
 
-    'Protected Sub btnSubmit_Click(ByVal sender As Object, ByVal e As Infragistics.WebUI.WebDataInput.ButtonEventArgs) Handles btnSubmit.Click
-    '    ButtonClick(sender, e)
-    'End Sub
+  'Protected Sub btnSubmit_Click(ByVal sender As Object, ByVal e As Infragistics.WebUI.WebDataInput.ButtonEventArgs) Handles btnSubmit.Click
+  '    ButtonClick(sender, e)
+  'End Sub
 
-    Protected Sub btnSubmit_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnSubmit.Click
-        ButtonClick(sender, e)
-    End Sub
+  Protected Sub btnSubmit_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnSubmit.Click
+    ButtonClick(sender, e)
+  End Sub
 
-    Private Function LoadPicture(ByVal piPictureID As Int32, _
-     ByRef psErrorMessage As String) As String
+  Private Function LoadPicture(ByVal piPictureID As Int32, _
+   ByRef psErrorMessage As String) As String
 
-        Dim strConn As String
-        Dim conn As System.Data.SqlClient.SqlConnection
-        Dim cmdSelect As System.Data.SqlClient.SqlCommand
-        Dim dr As System.Data.SqlClient.SqlDataReader
-        Dim sImageFileName As String
-        Dim sImageFilePath As String
-        Dim sTempName As String
-        Dim fs As System.IO.FileStream
-        Dim bw As System.IO.BinaryWriter
-        Dim iBufferSize As Integer = 100
-        Dim outByte(iBufferSize - 1) As Byte
-        Dim retVal As Long
-        Dim startIndex As Long = 0
-        Dim sExtension As String = ""
-        Dim iIndex As Integer
-        Dim sName As String
+    Dim strConn As String
+    Dim conn As System.Data.SqlClient.SqlConnection
+    Dim cmdSelect As System.Data.SqlClient.SqlCommand
+    Dim dr As System.Data.SqlClient.SqlDataReader
+    Dim sImageFileName As String
+    Dim sImageFilePath As String
+    Dim sTempName As String
+    Dim fs As System.IO.FileStream
+    Dim bw As System.IO.BinaryWriter
+    Dim iBufferSize As Integer = 100
+    Dim outByte(iBufferSize - 1) As Byte
+    Dim retVal As Long
+    Dim startIndex As Long = 0
+    Dim sExtension As String = ""
+    Dim iIndex As Integer
+    Dim sName As String
 
-        Try
-            miImageCount = CShort(miImageCount + 1)
+    Try
+      miImageCount = CShort(miImageCount + 1)
 
-            psErrorMessage = ""
-            LoadPicture = ""
-            sImageFileName = ""
-            sImageFilePath = Server.MapPath("pictures")
+      psErrorMessage = ""
+      LoadPicture = ""
+      sImageFileName = ""
+      sImageFilePath = Server.MapPath("pictures")
 
       strConn = "Application Name=OpenHR Workflow;Data Source=" & msServer & ";Initial Catalog=" & msDatabase & ";Integrated Security=false;User ID=" & msUser & ";Password=" & msPwd & ";Pooling=false"
-            conn = New SqlClient.SqlConnection(strConn)
-            conn.Open()
+      conn = New SqlClient.SqlConnection(strConn)
+      conn.Open()
 
-            cmdSelect = New SqlClient.SqlCommand
-            cmdSelect.CommandText = "spASRGetPicture"
-            cmdSelect.Connection = conn
-            cmdSelect.CommandType = CommandType.StoredProcedure
-            cmdSelect.CommandTimeout = miSubmissionTimeoutInSeconds
+      cmdSelect = New SqlClient.SqlCommand
+      cmdSelect.CommandText = "spASRGetPicture"
+      cmdSelect.Connection = conn
+      cmdSelect.CommandType = CommandType.StoredProcedure
+      cmdSelect.CommandTimeout = miSubmissionTimeoutInSeconds
 
-            cmdSelect.Parameters.Add("@piPictureID", SqlDbType.Int).Direction = ParameterDirection.Input
-            cmdSelect.Parameters("@piPictureID").Value = piPictureID
+      cmdSelect.Parameters.Add("@piPictureID", SqlDbType.Int).Direction = ParameterDirection.Input
+      cmdSelect.Parameters("@piPictureID").Value = piPictureID
 
-            Try
-                dr = cmdSelect.ExecuteReader(CommandBehavior.SequentialAccess)
+      Try
+        dr = cmdSelect.ExecuteReader(CommandBehavior.SequentialAccess)
 
-                Do While dr.Read
-                    sName = NullSafeString(dr("name"))
-                    iIndex = sName.LastIndexOf(".")
-                    If iIndex >= 0 Then
-                        sExtension = sName.Substring(iIndex)
-                    End If
+        Do While dr.Read
+          sName = NullSafeString(dr("name"))
+          iIndex = sName.LastIndexOf(".")
+          If iIndex >= 0 Then
+            sExtension = sName.Substring(iIndex)
+          End If
 
-                    sImageFileName = Session.SessionID().ToString & _
-                     "_" & miImageCount.ToString & _
-                     "_" & Date.Now.Ticks.ToString & _
-                     sExtension
-                    sTempName = sImageFilePath & "\" & sImageFileName
+          sImageFileName = Session.SessionID().ToString & _
+           "_" & miImageCount.ToString & _
+           "_" & Date.Now.Ticks.ToString & _
+           sExtension
+          sTempName = sImageFilePath & "\" & sImageFileName
 
-                    ' Create a file to hold the output.
-                    fs = New System.IO.FileStream(sTempName, IO.FileMode.OpenOrCreate, IO.FileAccess.Write)
-                    bw = New System.IO.BinaryWriter(fs)
+          ' Create a file to hold the output.
+          fs = New System.IO.FileStream(sTempName, IO.FileMode.OpenOrCreate, IO.FileAccess.Write)
+          bw = New System.IO.BinaryWriter(fs)
 
-                    ' Reset the starting byte for a new BLOB.
-                    startIndex = 0
+          ' Reset the starting byte for a new BLOB.
+          startIndex = 0
 
-                    ' Read bytes into outbyte() and retain the number of bytes returned.
-                    retVal = dr.GetBytes(1, startIndex, outByte, 0, iBufferSize)
+          ' Read bytes into outbyte() and retain the number of bytes returned.
+          retVal = dr.GetBytes(1, startIndex, outByte, 0, iBufferSize)
 
-                    ' Continue reading and writing while there are bytes beyond the size of the buffer.
-                    Do While retVal = iBufferSize
-                        bw.Write(outByte)
-                        bw.Flush()
+          ' Continue reading and writing while there are bytes beyond the size of the buffer.
+          Do While retVal = iBufferSize
+            bw.Write(outByte)
+            bw.Flush()
 
-                        ' Reposition the start index to the end of the last buffer and fill the buffer.
-                        startIndex += iBufferSize
-                        retVal = dr.GetBytes(1, startIndex, outByte, 0, iBufferSize)
-                    Loop
+            ' Reposition the start index to the end of the last buffer and fill the buffer.
+            startIndex += iBufferSize
+            retVal = dr.GetBytes(1, startIndex, outByte, 0, iBufferSize)
+          Loop
 
-                    ' Write the remaining buffer.
-                    bw.Write(outByte)
-                    bw.Flush()
+          ' Write the remaining buffer.
+          bw.Write(outByte)
+          bw.Flush()
 
-                    ' Close the output file.
-                    bw.Close()
-                    fs.Close()
-                Loop
+          ' Close the output file.
+          bw.Close()
+          fs.Close()
+        Loop
 
-                dr.Close()
-                cmdSelect.Dispose()
+        dr.Close()
+        cmdSelect.Dispose()
 
-                ' Ensure URL encoding doesn't stuff up the picture name, so encode the % character as %25.
-                LoadPicture = "pictures/" & sImageFileName
+        ' Ensure URL encoding doesn't stuff up the picture name, so encode the % character as %25.
+        LoadPicture = "pictures/" & sImageFileName
 
-            Catch ex As Exception
-                LoadPicture = ""
-                psErrorMessage = ex.Message
+      Catch ex As Exception
+        LoadPicture = ""
+        psErrorMessage = ex.Message
 
-            Finally
-                conn.Close()
-                conn.Dispose()
-            End Try
-        Catch ex As Exception
-            LoadPicture = ""
-            psErrorMessage = ex.Message
-        End Try
-    End Function
-
-
-
-    Public Function RefreshLiteralsCode() As String
-        Dim sb As New StringBuilder
-
-        Try
-            sb.AppendLine("function refreshLiterals()")
-            sb.AppendLine("{")
-            sb.AppendLine(vbTab & " try")
-            sb.AppendLine(vbTab & "{")
-            sb.AppendLine(msRefreshLiteralsCode)
-            sb.AppendLine(vbTab & "}")
-            sb.AppendLine(vbTab & "catch(e) {}")
-            sb.AppendLine(vbTab & "}")
-            Return sb.ToString
-
-        Catch ex As Exception
-            Return ""
-        End Try
-
-    End Function
+      Finally
+        conn.Close()
+        conn.Dispose()
+      End Try
+    Catch ex As Exception
+      LoadPicture = ""
+      psErrorMessage = ex.Message
+    End Try
+  End Function
 
 
+
+  Public Function RefreshLiteralsCode() As String
+    Dim sb As New StringBuilder
+
+    Try
+      sb.AppendLine("function refreshLiterals()")
+      sb.AppendLine("{")
+      sb.AppendLine(vbTab & " try")
+      sb.AppendLine(vbTab & "{")
+      sb.AppendLine(msRefreshLiteralsCode)
+      sb.AppendLine(vbTab & "}")
+      sb.AppendLine(vbTab & "catch(e) {}")
+      sb.AppendLine(vbTab & "}")
+      Return sb.ToString
+
+    Catch ex As Exception
+      Return ""
+    End Try
+
+  End Function
 
 
 
@@ -4510,544 +4592,546 @@ Public Class _Default
 
 
 
-    Protected Sub Page_PreRender(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.PreRender
-        Dim cs As ClientScriptManager
 
-        cs = Page.ClientScript
-        If Not cs.IsClientScriptBlockRegistered("RefreshLiteralsCode") Then
-            cs.RegisterClientScriptBlock(Me.GetType, "RefreshLiteralsCode", RefreshLiteralsCode, True)
+
+  Protected Sub Page_PreRender(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.PreRender
+    Dim cs As ClientScriptManager
+
+    cs = Page.ClientScript
+    If Not cs.IsClientScriptBlockRegistered("RefreshLiteralsCode") Then
+      cs.RegisterClientScriptBlock(Me.GetType, "RefreshLiteralsCode", RefreshLiteralsCode, True)
+    End If
+  End Sub
+
+
+  'Protected Sub btnReEnableControls_Click(ByVal sender As Object, ByVal e As Infragistics.WebUI.WebDataInput.ButtonEventArgs) Handles btnReEnableControls.Click
+  '    EnableDisableControls(True)
+
+  'End Sub
+
+  Protected Sub btnReEnableControls_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnReEnableControls.Click
+    EnableDisableControls(True)
+  End Sub
+
+
+  'Public Sub InitializeLookupData(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.DropDownList) ' Infragistics.WebUI.WebCombo.WebComboEventArgs)
+  '    'Dim sID As String
+
+  '    ' ''Dim objCombo As Infragistics.WebUI.WebCombo.WebCombo = _
+  '    ' ''    DirectCast(sender, Infragistics.WebUI.WebCombo.WebCombo)
+
+  '    'Dim objCombo As System.Web.UI.WebControls.DropDownList = DirectCast(sender, System.Web.UI.WebControls.DropDownList)
+
+  '    'Try
+  '    '    With objCombo
+  '    '        sID = .ID
+  '    '        .DataSource = Session(sID & "_DATA")
+
+  '    '        If IsPostBack Then
+  '    '            ''.Attributes("DefaultValue") = .Text
+  '    '        End If
+
+  '    '    End With
+  '    'Catch ex As Exception
+  '    'End Try
+
+  'End Sub
+
+  'Public Sub LookupDataBound(ByVal sender As Object, ByVal e As System.EventArgs)
+
+
+  '    Dim objCombo As System.Web.UI.WebControls.DropDownList = _
+  '        DirectCast(sender, System.Web.UI.WebControls.DropDownList)
+
+  '    Try
+  '        objCombo.Text = objCombo.Attributes("DefaultValue")
+
+  '    Catch ex As Exception
+  '        ' ???handle exception
+  '    Finally
+  '    End Try
+  'End Sub
+
+  'Public Sub DDEDataBound(ByVal sender As Object, ByVal e As System.EventArgs)
+
+
+
+  '    Dim objCombo As AjaxControlToolkit.DropDownExtender = _
+  '                DirectCast(sender, AjaxControlToolkit.DropDownExtender)
+
+  '    Try
+  '        ''objCombo.Text = objCombo.Attributes("DefaultValue")
+
+
+  '    Catch ex As Exception
+  '        ' ???handle exception
+  '    Finally
+  '    End Try
+  'End Sub
+
+  Private Function LookupFilterSQL(ByVal psColumnName As String, ByVal piColumnDataType As Integer, ByVal piOperatorID As Integer, ByVal psValue As String) As String
+    Dim sLookupFilterSQL As String = ""
+
+    Try
+
+      If (psColumnName.Length > 0) _
+          And (piOperatorID > 0) _
+          And (psValue.Length > 0) Then
+
+        Select Case piColumnDataType
+          Case SQLDataType.sqlBoolean
+            Select Case piOperatorID
+              Case FilterOperators.giFILTEROP_EQUALS
+                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) = " & vbTab
+              Case FilterOperators.giFILTEROP_NOTEQUALTO
+                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) <> " & vbTab
+            End Select
+
+          Case SQLDataType.sqlNumeric, SQLDataType.sqlInteger
+            Select Case piOperatorID
+              Case FilterOperators.giFILTEROP_EQUALS
+                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) = " & vbTab
+
+              Case FilterOperators.giFILTEROP_NOTEQUALTO
+                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) <> " & vbTab
+
+              Case FilterOperators.giFILTEROP_ISATMOST
+                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) <= " & vbTab
+
+              Case FilterOperators.giFILTEROP_ISATLEAST
+                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) >= " & vbTab
+
+              Case FilterOperators.giFILTEROP_ISMORETHAN
+                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) > " & vbTab
+
+              Case FilterOperators.giFILTEROP_ISLESSTHAN
+                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) < " & vbTab
+            End Select
+
+          Case SQLDataType.sqlDate
+            Select Case piOperatorID
+              Case FilterOperators.giFILTEROP_ON
+                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], '') = '" & vbTab & "'"
+
+              Case FilterOperators.giFILTEROP_NOTON
+                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], '') <> '" & vbTab & "'"
+
+              Case FilterOperators.giFILTEROP_ONORBEFORE
+                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "LEN(ISNULL([ASRSysLookupFilterValue], '')) = 0 OR (LEN('" & vbTab & "') > 0 AND ISNULL([ASRSysLookupFilterValue], '') <= '" & vbTab & "')"
+
+              Case FilterOperators.giFILTEROP_ONORAFTER
+                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "LEN('" & vbTab & "') = 0 OR (LEN('" & vbTab & "') > 0 AND ISNULL([ASRSysLookupFilterValue], '') >= '" & vbTab & "')"
+
+              Case FilterOperators.giFILTEROP_AFTER
+                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "(LEN('" & vbTab & "') = 0 AND LEN(ISNULL([ASRSysLookupFilterValue], '')) > 0) OR (LEN('" & vbTab & "') > 0 AND ISNULL([ASRSysLookupFilterValue], '') > '" & vbTab & "')"
+
+              Case FilterOperators.giFILTEROP_BEFORE
+                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "LEN('" & vbTab & "') > 0 AND ISNULL([ASRSysLookupFilterValue], '') < '" & vbTab & "'"
+            End Select
+
+          Case SQLDataType.sqlVarChar, SQLDataType.sqlVarBinary, SQLDataType.sqlLongVarChar
+            Select Case piOperatorID
+              Case FilterOperators.giFILTEROP_IS
+                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], '') = '" & vbTab & "'"
+
+              Case FilterOperators.giFILTEROP_ISNOT
+                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], '') <> '" & vbTab & "'"
+
+              Case FilterOperators.giFILTEROP_CONTAINS
+                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], '') LIKE '%" & vbTab & "%'"
+
+              Case FilterOperators.giFILTEROP_DOESNOTCONTAIN
+                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "LEN('" & vbTab & "') > 0 AND ISNULL([ASRSysLookupFilterValue], '') NOT LIKE '%" & vbTab & "%'"
+            End Select
+          Case Else
+        End Select
+      End If
+
+    Catch ex As Exception
+    End Try
+
+
+    LookupFilterSQL = sLookupFilterSQL
+
+  End Function
+
+  'Sub GridRowDataBound(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewRowEventArgs)
+  '    ' As each row is added to the grid's HTML table, do the following: 
+  '    'check the item being bound is actually a DataRow, if it is, 
+  '    'wire up the required html events and attach the relevant JavaScripts
+
+  '    Dim iIDCol As Integer = 0
+  '    Dim sRowID As String = "0"
+  '    Dim grdGrid As System.Web.UI.WebControls.GridView
+  '    Dim mydte As DateTime
+  '    Dim sColumnCaption As String
+
+  '    grdGrid = CType(sender, System.Web.UI.WebControls.GridView)
+
+  '    If e.Row.RowType = DataControlRowType.DataRow Then
+
+  '        e.Row.Style.Add("overflow", "hidden")
+  '        e.Row.Style.Add("cursor", "pointer")
+
+
+
+  '        ' loop through the columns of this row. Hide ID columns
+  '        For iColCount As Integer = 0 To e.Row.Cells.Count - 1
+  '            sColumnCaption = UCase(grdGrid.HeaderRow.Cells(iColCount).Text)
+
+  '            If sColumnCaption = "ID" Or (Left(sColumnCaption, 3) = "ID_" And Val(Mid(sColumnCaption, 4)) > 0) Then
+  '                iIDCol = iColCount  ' store ID column number to assign to the javascript click event.
+  '                e.Row.Cells(iColCount).Style.Add("display", "none")
+  '                If sColumnCaption = "ID" Then
+  '                    ' Background colour to black.
+  '                    ' Javascript can see this and use it to recognise the ID column. Couldn't think of 
+  '                    ' a better way, but sure there is one.
+  '                    e.Row.Cells(iColCount).BackColor = Color.Black
+  '                End If
+  '            End If
+
+  '            ' add overflow hidden and nowrap, stops the cells wrapping text or overflowing into adjacent cols.
+  '            e.Row.Cells(iColCount).Style.Add("overflow", "hidden")
+  '            e.Row.Cells(iColCount).Style.Add("white-space", "nowrap")
+
+  '            ' this sets minimum width, not max.
+  '            e.Row.Cells(iColCount).Width = Unit.Pixel(100)
+
+
+
+  '            ' Format the cells according to DataType
+  '            Dim curSelDataType As String = DataBinder.Eval(e.Row.DataItem, grdGrid.HeaderRow.Cells(iColCount).Text).GetType.ToString.ToUpper
+
+  '            If curSelDataType.Contains("INT") _
+  '                Or curSelDataType.Contains("DECIMAL") _
+  '                Or curSelDataType.Contains("SINGLE") _
+  '                Or curSelDataType.Contains("DOUBLE") _
+  '                Then curSelDataType = "Integer"
+  '            If curSelDataType.Contains("DATETIME") Then curSelDataType = "DateTime"
+  '            If curSelDataType.Contains("BOOLEAN") Then curSelDataType = "Boolean"
+
+  '            Try
+  '                Select Case curSelDataType
+  '                    Case "DateTime"
+  '                        ' Is the cell a date? 
+  '                        mydte = DateTime.Parse(e.Row.Cells(iColCount).Text.ToString())
+  '                        e.Row.Cells(iColCount).Text = mydte.ToShortDateString()
+  '                    Case "Integer"
+  '                        e.Row.Cells(iColCount).Style.Add("text-align", "right")
+  '                    Case "Boolean"
+  '                        e.Row.Cells(iColCount).Style.Add("text-align", "center")
+  '                    Case Else   ' String
+  '                        e.Row.Cells(iColCount).Style.Add("text-align", "left")
+  '                End Select
+  '            Catch
+  '                ' um...
+  '            End Try
+  '        Next
+
+  '        ' Add some javascript events to each row for highlight functionality
+  '        ' Not required, wasn't current functionality, but here you go if it should ever be 'needed'...
+  '        'e.Row.Attributes("onmouseover") = "oldgridSelectedColor = this.style.backgroundColor;this.style.backgroundColor = '" & msBackColorHighlight.Trim & "';"
+  '        'e.Row.Attributes("onmouseout") = "this.style.backgroundColor = oldgridSelectedColor;this.style.textDecoration = 'none';"
+  '        'e.Row.Style.Add("cursor", "pointer")
+
+  '        ' Add the javascript event to each row for click functionality
+  '        If grdGrid.ID.Contains("Grid") Then
+  '            e.Row.Attributes.Add("onclick", "changeRow('" & grdGrid.ID.ToString & "', '" & m_iRowIdx.ToString & "', '" & msBackColorHighlight.Trim & "', '" & iIDCol.ToString & "');oldgridSelectedColor = this.style.backgroundColor;")
+  '        Else    ' dropdown?
+  '            'e.Row.Attributes.Add("onclick", "changeDDERow('" & g.ID.ToString & "', '" & m_iRowIdx.ToString & "', 'TextBox1');")
+  '        End If
+
+  '    ElseIf e.Row.RowType = DataControlRowType.Pager Then
+  '        ' This enables postback for the grid
+
+  '        Dim pagerTable As Table = DirectCast(e.Row.Cells(0).Controls(0), Table)
+  '        Dim pagerRow As TableRow = pagerTable.Rows(0)
+
+  '        ' Dim pagerSettings As PagerSettings = DirectCast(sender, GridView).PagerSettings
+  '        ' Dim cellsCount As Integer = pagerRow.Cells.Count
+
+  '        For iColCount As Integer = 0 To pagerRow.Cells.Count - 1
+  '            pagerRow.Cells(iColCount).Attributes.Add("onclick", "try{setPostbackMode(2);}catch(e){};")
+  '        Next
+
+
+  '    End If
+
+  '    m_iRowIdx += 1
+
+  'End Sub
+
+
+  'Sub DDE_GridRowDataBound(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewRowEventArgs)
+
+  '    ' For Lookup Grids only - DropdownExtender
+
+  '    ' As each row is added to the grid's HTML table, do the following: 
+  '    'check the item being bound is actually a DataRow, if it is, 
+  '    'wire up the required html events and attach the relevant JavaScripts
+
+  '    Dim iIDCol As Integer = 0
+  '    Dim sRowID As String = "0"
+  '    Dim grdGrid As System.Web.UI.WebControls.GridView
+  '    Dim mydte As DateTime
+  '    Dim sColumnCaption As String
+
+  '    grdGrid = CType(sender, System.Web.UI.WebControls.GridView)
+
+  '    If e.Row.RowType = DataControlRowType.DataRow Then
+
+  '        e.Row.Style.Add("overflow", "hidden")
+  '        e.Row.Style.Add("cursor", "pointer")
+
+  '        ' loop through the columns of this row. Hide ID columns
+  '        For iColCount As Integer = 0 To e.Row.Cells.Count - 1
+  '            sColumnCaption = UCase(grdGrid.HeaderRow.Cells(iColCount).Text)
+
+  '            If sColumnCaption.StartsWith("ASRSYS") Then
+  '                iIDCol = iColCount  ' store ID column number to assign to the javascript click event.
+  '                e.Row.Cells(iColCount).Style.Add("display", "none")
+  '                If sColumnCaption.StartsWith("ASRSYS") Then
+  '                    ' Background colour to black.
+  '                    ' Javascript can see this and use it to recognise the ID column. Couldn't think of 
+  '                    ' a better way, but sure there is one.
+  '                    e.Row.Cells(iColCount).BackColor = Color.Black
+  '                End If
+  '            End If
+
+  '            ' add overflow hidden and nowrap, stops the cells wrapping text or overflowing into adjacent cols.
+  '            e.Row.Cells(iColCount).Style.Add("overflow", "hidden")
+  '            e.Row.Cells(iColCount).Style.Add("white-space", "nowrap")
+
+  '            ' this sets minimum width, not max.
+  '            e.Row.Cells(iColCount).Width = Unit.Pixel(100)
+
+  '            ' Format the cells according to DataType
+  '            Dim curSelDataType As String = DataBinder.Eval(e.Row.DataItem, grdGrid.HeaderRow.Cells(iColCount).Text).GetType.ToString.ToUpper
+
+  '            If curSelDataType.Contains("INT") _
+  '                Or curSelDataType.Contains("DECIMAL") _
+  '                Or curSelDataType.Contains("SINGLE") _
+  '                Or curSelDataType.Contains("DOUBLE") _
+  '                Then curSelDataType = "Integer"
+  '            If curSelDataType.Contains("DATETIME") Then curSelDataType = "DateTime"
+  '            If curSelDataType.Contains("BOOLEAN") Then curSelDataType = "Boolean"
+
+  '            Try
+  '                Select Case curSelDataType
+  '                    Case "DateTime"
+  '                        ' Is the cell a date? 
+  '                        mydte = DateTime.Parse(e.Row.Cells(iColCount).Text.ToString())
+  '                        e.Row.Cells(iColCount).Text = mydte.ToShortDateString()
+  '                    Case "Integer"
+  '                        e.Row.Cells(iColCount).Style.Add("text-align", "right")
+  '                    Case "Boolean"
+  '                        e.Row.Cells(iColCount).Style.Add("text-align", "center")
+  '                    Case Else   ' String
+  '                        e.Row.Cells(iColCount).Style.Add("text-align", "left")
+  '                End Select
+  '            Catch
+  '                ' um...
+  '            End Try
+  '        Next
+
+  '        ' Add some javascript events to each row for highlight functionality
+  '        ' Not required, wasn't current functionality, but here you go if it should ever be 'needed'...
+  '        'e.Row.Attributes("onmouseover") = "oldgridSelectedColor = this.style.backgroundColor;this.style.backgroundColor = '" & msBackColorHighlight.Trim & "';"
+  '        'e.Row.Attributes("onmouseout") = "this.style.backgroundColor = oldgridSelectedColor;this.style.textDecoration = 'none';"
+  '        'e.Row.Style.Add("cursor", "pointer")
+
+  '        ' Add the javascript event to each row for click functionality
+
+  '        e.Row.Attributes.Add("onclick", "changeDDERow('" & grdGrid.ID.ToString & "', '" & m_iRowIdx.ToString & "', '" & msBackColorHighlight.Trim & "', '" & m_iLookupColumnIndex & "');oldgridSelectedColor = this.style.backgroundColor;")
+
+
+  '    ElseIf e.Row.RowType = DataControlRowType.Header Then
+
+  '        ' Get the lookupfiltervalue column number, if applicable and store to a tag.
+  '        For iColCount As Integer = 0 To e.Row.Cells.Count - 1
+  '            sColumnCaption = UCase(e.Row.Cells(iColCount).Text)
+
+  '            If sColumnCaption.ToUpper = "ASRSYSLOOKUPFILTERVALUE" Then
+  '                grdGrid.Attributes.Remove("LookupFilterColumn")
+  '                grdGrid.Attributes.Add("LookupFilterColumn", iColCount.ToString)
+  '            End If
+  '        Next
+
+  '    ElseIf e.Row.RowType = DataControlRowType.Pager Then
+  '        ' This enables postback for the grid
+
+  '        Dim pagerTable As Table = DirectCast(e.Row.Cells(0).Controls(0), Table)
+  '        Dim pagerRow As TableRow = pagerTable.Rows(0)
+
+  '        ' Dim pagerSettings As PagerSettings = DirectCast(sender, GridView).PagerSettings
+  '        ' Dim cellsCount As Integer = pagerRow.Cells.Count
+
+  '        For iColCount As Integer = 0 To pagerRow.Cells.Count - 1
+  '            pagerRow.Cells(iColCount).Attributes.Add("onclick", "try{setPostbackMode(2);}catch(e){};")
+  '        Next
+
+  '    End If
+  '    m_iRowIdx += 1
+  'End Sub
+
+  'Protected Sub PageIndexChanging(ByVal sender As Object, ByVal e As GridViewPageEventArgs)
+
+  '    Dim g As System.Web.UI.WebControls.GridView
+  '    Dim iIDCol As Integer = 0
+  '    g = CType(sender, System.Web.UI.WebControls.GridView)
+
+  '    g.PageIndex = e.NewPageIndex
+  '    g.DataBind()
+  'End Sub
+
+
+  '    <System.Web.Services.WebMethod()> _
+  'Public Shared Function SetGridFilter(ByVal sGridID As String, ByVal sGridFilter As String) As Boolean
+  '        'On server side we can do anything, like we can access the Session.
+  '        'We can do database access operation. Without postback.
+
+  '        Dim dataTable As DataTable
+  '        dataTable = TryCast(HttpContext.Current.Session(sGridID.Replace("DDE", "DATA")), DataTable)
+
+  '        If dataTable IsNot Nothing Then
+  '            Dim dataView As New DataView(dataTable)
+  '            dataView.RowFilter = sGridFilter   ' e.g. "ISNULL([ASRSysLookupFilterValue], '') = 'HERTFORDSHIRE'"
+  '            dataTable = dataView.ToTable()
+  '            HttpContext.Current.Session(sGridID.Replace("DDE", "DATA")) = dataTable
+  '        End If
+
+  '        Try
+  '            Return True
+  '        Catch ex As Exception
+  '            Throw ex
+  '        End Try
+
+  '    End Function
+
+
+
+
+  Private Sub ShowNoResultFound(ByVal source As DataTable, ByVal gv As RecordSelector)
+
+    source.Clear()
+    source.Rows.Add(source.NewRow())
+    '' create a new blank row to the DataTable
+    '' Bind the DataTable which contain a blank row to the GridView
+    gv.DataSource = source
+    gv.DataBind()
+    ' Get the total number of columns in the GridView to know what the Column Span should be
+    Dim columnsCount As Integer = gv.Columns.Count
+    gv.Rows(0).Cells.Clear()
+    ' clear all the cells in the row
+    gv.Rows(0).Cells.Add(New TableCell())
+    'add a new blank cell
+    gv.Rows(0).Cells(0).ColumnSpan = columnsCount
+    'set the column span to the new added cell
+
+    'You can set the styles here
+    gv.Rows(0).Cells(0).HorizontalAlign = HorizontalAlign.Center
+    'gv.Rows(0).Cells(0).ForeColor = System.Drawing.Color.Red
+    'gv.Rows(0).Cells(0).Font.Bold = True
+    'set No Results found to the new added cell
+    gv.Rows(0).Cells(0).Text = gv.EmptyDataText
+
+    gv.SelectedIndex = -1
+
+
+  End Sub
+
+  Sub SetLookupFilter(ByVal sender As Object, ByVal e As System.EventArgs)
+
+    ' get button's ID
+    Dim btnSender As Button
+    btnSender = DirectCast(sender, Button)
+
+    ' Create a datatable from the data in the session variable
+    Dim dataTable As DataTable
+    dataTable = TryCast(HttpContext.Current.Session(btnSender.ID.Replace("refresh", "DATA")), DataTable)
+
+    ' get the filter sql
+    Dim hiddenField As HiddenField
+    hiddenField = TryCast(pnlInputDiv.FindControl(btnSender.ID.Replace("refresh", "filterSQL")), HiddenField)
+
+    Dim filterSQL As String = hiddenField.Value
+
+    If dataTable IsNot Nothing Then
+      Dim dataView As New DataView(dataTable)
+      dataView.RowFilter = filterSQL    '   "ISNULL([ASRSysLookupFilterValue], '') = 'HERTFORDSHIRE'"
+
+      dataTable = dataView.ToTable()
+      ' HttpContext.Current.Session(btnSender.ID.Replace("refresh", "DATA")) = dataTable
+
+      If dataTable.Rows.Count = 0 Then
+        ' create a blank row to display.
+        Dim objDataRow As System.Data.DataRow
+        objDataRow = dataTable.NewRow()
+        dataTable.Rows.InsertAt(objDataRow, 0)
+      End If
+
+
+    End If
+
+
+    Dim gridView As RecordSelector 'GridView
+    gridView = TryCast(pnlInputDiv.FindControl(btnSender.ID.Replace("refresh", "Grid")), RecordSelector)
+
+    gridView.filterSQL = filterSQL.ToString
+
+    gridView.DataSource = dataTable
+    gridView.DataBind()
+
+
+    ' reset filter.
+    hiddenField.Value = ""
+
+
+  End Sub
+
+  Public Shared Function isMobileBrowser() As Boolean
+    'GETS THE CURRENT USER CONTEXT
+    Dim context As HttpContext = HttpContext.Current
+
+    'FIRST TRY BUILT IN ASP.NT CHECK
+    If context.Request.Browser.IsMobileDevice Then
+      Return True
+    End If
+    'THEN TRY CHECKING FOR THE HTTP_X_WAP_PROFILE HEADER
+    If context.Request.ServerVariables("HTTP_X_WAP_PROFILE") IsNot Nothing Then
+      Return True
+    End If
+    'THEN TRY CHECKING THAT HTTP_ACCEPT EXISTS AND CONTAINS WAP
+    If context.Request.ServerVariables("HTTP_ACCEPT") IsNot Nothing AndAlso context.Request.ServerVariables("HTTP_ACCEPT").ToLower().Contains("wap") Then
+      Return True
+    End If
+    'AND FINALLY CHECK THE HTTP_USER_AGENT 
+    'HEADER VARIABLE FOR ANY ONE OF THE FOLLOWING
+    If context.Request.ServerVariables("HTTP_USER_AGENT") IsNot Nothing Then
+      'Create a list of all mobile types
+      Dim mobiles As String() = New String() {"midp", "j2me", "avant", "docomo", "novarra", "palmos", _
+"palmsource", "240x320", "opwv", "chtml", "pda", "windows ce", _
+"mmp/", "blackberry", "mib/", "symbian", "wireless", "nokia", _
+"hand", "mobi", "phone", "cdm", "up.b", "audio", _
+"SIE-", "SEC-", "samsung", "HTC", "mot-", "mitsu", _
+"sagem", "sony", "alcatel", "lg", "eric", "vx", _
+"NEC", "philips", "mmm", "xx", "panasonic", "sharp", _
+"wap", "sch", "rover", "pocket", "benq", "java", _
+"pt", "pg", "vox", "amoi", "bird", "compal", _
+"kg", "voda", "sany", "kdd", "dbt", "sendo", _
+"sgh", "gradi", "jb", "dddi", "moto", "iphone"}
+
+      'Loop through each item in the list created above 
+      'and check if the header contains that text
+      For Each s As String In mobiles
+        If context.Request.ServerVariables("HTTP_USER_AGENT").ToLower().Contains(s.ToLower()) Then
+          Return True
         End If
-    End Sub
+      Next
 
+    End If
 
-    'Protected Sub btnReEnableControls_Click(ByVal sender As Object, ByVal e As Infragistics.WebUI.WebDataInput.ButtonEventArgs) Handles btnReEnableControls.Click
-    '    EnableDisableControls(True)
-
-    'End Sub
-
-    Protected Sub btnReEnableControls_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnReEnableControls.Click
-        EnableDisableControls(True)
-    End Sub
-
-
-    'Public Sub InitializeLookupData(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.DropDownList) ' Infragistics.WebUI.WebCombo.WebComboEventArgs)
-    '    'Dim sID As String
-
-    '    ' ''Dim objCombo As Infragistics.WebUI.WebCombo.WebCombo = _
-    '    ' ''    DirectCast(sender, Infragistics.WebUI.WebCombo.WebCombo)
-
-    '    'Dim objCombo As System.Web.UI.WebControls.DropDownList = DirectCast(sender, System.Web.UI.WebControls.DropDownList)
-
-    '    'Try
-    '    '    With objCombo
-    '    '        sID = .ID
-    '    '        .DataSource = Session(sID & "_DATA")
-
-    '    '        If IsPostBack Then
-    '    '            ''.Attributes("DefaultValue") = .Text
-    '    '        End If
-
-    '    '    End With
-    '    'Catch ex As Exception
-    '    'End Try
-
-    'End Sub
-
-    'Public Sub LookupDataBound(ByVal sender As Object, ByVal e As System.EventArgs)
-
-
-    '    Dim objCombo As System.Web.UI.WebControls.DropDownList = _
-    '        DirectCast(sender, System.Web.UI.WebControls.DropDownList)
-
-    '    Try
-    '        objCombo.Text = objCombo.Attributes("DefaultValue")
-
-    '    Catch ex As Exception
-    '        ' ???handle exception
-    '    Finally
-    '    End Try
-    'End Sub
-
-    'Public Sub DDEDataBound(ByVal sender As Object, ByVal e As System.EventArgs)
-
-
-
-    '    Dim objCombo As AjaxControlToolkit.DropDownExtender = _
-    '                DirectCast(sender, AjaxControlToolkit.DropDownExtender)
-
-    '    Try
-    '        ''objCombo.Text = objCombo.Attributes("DefaultValue")
-
-
-    '    Catch ex As Exception
-    '        ' ???handle exception
-    '    Finally
-    '    End Try
-    'End Sub
-
-    Private Function LookupFilterSQL(ByVal psColumnName As String, ByVal piColumnDataType As Integer, ByVal piOperatorID As Integer, ByVal psValue As String) As String
-        Dim sLookupFilterSQL As String = ""
-
-        Try
-
-            If (psColumnName.Length > 0) _
-                And (piOperatorID > 0) _
-                And (psValue.Length > 0) Then
-
-                Select Case piColumnDataType
-                    Case SQLDataType.sqlBoolean
-                        Select Case piOperatorID
-                            Case FilterOperators.giFILTEROP_EQUALS
-                                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) = " & vbTab
-                            Case FilterOperators.giFILTEROP_NOTEQUALTO
-                                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) <> " & vbTab
-                        End Select
-
-                    Case SQLDataType.sqlNumeric, SQLDataType.sqlInteger
-                        Select Case piOperatorID
-                            Case FilterOperators.giFILTEROP_EQUALS
-                                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) = " & vbTab
-
-                            Case FilterOperators.giFILTEROP_NOTEQUALTO
-                                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) <> " & vbTab
-
-                            Case FilterOperators.giFILTEROP_ISATMOST
-                                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) <= " & vbTab
-
-                            Case FilterOperators.giFILTEROP_ISATLEAST
-                                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) >= " & vbTab
-
-                            Case FilterOperators.giFILTEROP_ISMORETHAN
-                                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) > " & vbTab
-
-                            Case FilterOperators.giFILTEROP_ISLESSTHAN
-                                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], 0) < " & vbTab
-                        End Select
-
-                    Case SQLDataType.sqlDate
-                        Select Case piOperatorID
-                            Case FilterOperators.giFILTEROP_ON
-                                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], '') = '" & vbTab & "'"
-
-                            Case FilterOperators.giFILTEROP_NOTON
-                                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], '') <> '" & vbTab & "'"
-
-                            Case FilterOperators.giFILTEROP_ONORBEFORE
-                                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "LEN(ISNULL([ASRSysLookupFilterValue], '')) = 0 OR (LEN('" & vbTab & "') > 0 AND ISNULL([ASRSysLookupFilterValue], '') <= '" & vbTab & "')"
-
-                            Case FilterOperators.giFILTEROP_ONORAFTER
-                                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "LEN('" & vbTab & "') = 0 OR (LEN('" & vbTab & "') > 0 AND ISNULL([ASRSysLookupFilterValue], '') >= '" & vbTab & "')"
-
-                            Case FilterOperators.giFILTEROP_AFTER
-                                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "(LEN('" & vbTab & "') = 0 AND LEN(ISNULL([ASRSysLookupFilterValue], '')) > 0) OR (LEN('" & vbTab & "') > 0 AND ISNULL([ASRSysLookupFilterValue], '') > '" & vbTab & "')"
-
-                            Case FilterOperators.giFILTEROP_BEFORE
-                                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "LEN('" & vbTab & "') > 0 AND ISNULL([ASRSysLookupFilterValue], '') < '" & vbTab & "'"
-                        End Select
-
-                    Case SQLDataType.sqlVarChar, SQLDataType.sqlVarBinary, SQLDataType.sqlLongVarChar
-                        Select Case piOperatorID
-                            Case FilterOperators.giFILTEROP_IS
-                                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], '') = '" & vbTab & "'"
-
-                            Case FilterOperators.giFILTEROP_ISNOT
-                                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], '') <> '" & vbTab & "'"
-
-                            Case FilterOperators.giFILTEROP_CONTAINS
-                                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "ISNULL([ASRSysLookupFilterValue], '') LIKE '%" & vbTab & "%'"
-
-                            Case FilterOperators.giFILTEROP_DOESNOTCONTAIN
-                                sLookupFilterSQL = piColumnDataType.ToString & vbTab & psValue & vbTab & "LEN('" & vbTab & "') > 0 AND ISNULL([ASRSysLookupFilterValue], '') NOT LIKE '%" & vbTab & "%'"
-                        End Select
-                    Case Else
-                End Select
-            End If
-
-        Catch ex As Exception
-        End Try
-
-
-        LookupFilterSQL = sLookupFilterSQL
-
-    End Function
-
-    'Sub GridRowDataBound(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewRowEventArgs)
-    '    ' As each row is added to the grid's HTML table, do the following: 
-    '    'check the item being bound is actually a DataRow, if it is, 
-    '    'wire up the required html events and attach the relevant JavaScripts
-
-    '    Dim iIDCol As Integer = 0
-    '    Dim sRowID As String = "0"
-    '    Dim grdGrid As System.Web.UI.WebControls.GridView
-    '    Dim mydte As DateTime
-    '    Dim sColumnCaption As String
-
-    '    grdGrid = CType(sender, System.Web.UI.WebControls.GridView)
-
-    '    If e.Row.RowType = DataControlRowType.DataRow Then
-
-    '        e.Row.Style.Add("overflow", "hidden")
-    '        e.Row.Style.Add("cursor", "pointer")
-
-
-
-    '        ' loop through the columns of this row. Hide ID columns
-    '        For iColCount As Integer = 0 To e.Row.Cells.Count - 1
-    '            sColumnCaption = UCase(grdGrid.HeaderRow.Cells(iColCount).Text)
-
-    '            If sColumnCaption = "ID" Or (Left(sColumnCaption, 3) = "ID_" And Val(Mid(sColumnCaption, 4)) > 0) Then
-    '                iIDCol = iColCount  ' store ID column number to assign to the javascript click event.
-    '                e.Row.Cells(iColCount).Style.Add("display", "none")
-    '                If sColumnCaption = "ID" Then
-    '                    ' Background colour to black.
-    '                    ' Javascript can see this and use it to recognise the ID column. Couldn't think of 
-    '                    ' a better way, but sure there is one.
-    '                    e.Row.Cells(iColCount).BackColor = Color.Black
-    '                End If
-    '            End If
-
-    '            ' add overflow hidden and nowrap, stops the cells wrapping text or overflowing into adjacent cols.
-    '            e.Row.Cells(iColCount).Style.Add("overflow", "hidden")
-    '            e.Row.Cells(iColCount).Style.Add("white-space", "nowrap")
-
-    '            ' this sets minimum width, not max.
-    '            e.Row.Cells(iColCount).Width = Unit.Pixel(100)
-
-
-
-    '            ' Format the cells according to DataType
-    '            Dim curSelDataType As String = DataBinder.Eval(e.Row.DataItem, grdGrid.HeaderRow.Cells(iColCount).Text).GetType.ToString.ToUpper
-
-    '            If curSelDataType.Contains("INT") _
-    '                Or curSelDataType.Contains("DECIMAL") _
-    '                Or curSelDataType.Contains("SINGLE") _
-    '                Or curSelDataType.Contains("DOUBLE") _
-    '                Then curSelDataType = "Integer"
-    '            If curSelDataType.Contains("DATETIME") Then curSelDataType = "DateTime"
-    '            If curSelDataType.Contains("BOOLEAN") Then curSelDataType = "Boolean"
-
-    '            Try
-    '                Select Case curSelDataType
-    '                    Case "DateTime"
-    '                        ' Is the cell a date? 
-    '                        mydte = DateTime.Parse(e.Row.Cells(iColCount).Text.ToString())
-    '                        e.Row.Cells(iColCount).Text = mydte.ToShortDateString()
-    '                    Case "Integer"
-    '                        e.Row.Cells(iColCount).Style.Add("text-align", "right")
-    '                    Case "Boolean"
-    '                        e.Row.Cells(iColCount).Style.Add("text-align", "center")
-    '                    Case Else   ' String
-    '                        e.Row.Cells(iColCount).Style.Add("text-align", "left")
-    '                End Select
-    '            Catch
-    '                ' um...
-    '            End Try
-    '        Next
-
-    '        ' Add some javascript events to each row for highlight functionality
-    '        ' Not required, wasn't current functionality, but here you go if it should ever be 'needed'...
-    '        'e.Row.Attributes("onmouseover") = "oldgridSelectedColor = this.style.backgroundColor;this.style.backgroundColor = '" & msBackColorHighlight.Trim & "';"
-    '        'e.Row.Attributes("onmouseout") = "this.style.backgroundColor = oldgridSelectedColor;this.style.textDecoration = 'none';"
-    '        'e.Row.Style.Add("cursor", "pointer")
-
-    '        ' Add the javascript event to each row for click functionality
-    '        If grdGrid.ID.Contains("Grid") Then
-    '            e.Row.Attributes.Add("onclick", "changeRow('" & grdGrid.ID.ToString & "', '" & m_iRowIdx.ToString & "', '" & msBackColorHighlight.Trim & "', '" & iIDCol.ToString & "');oldgridSelectedColor = this.style.backgroundColor;")
-    '        Else    ' dropdown?
-    '            'e.Row.Attributes.Add("onclick", "changeDDERow('" & g.ID.ToString & "', '" & m_iRowIdx.ToString & "', 'TextBox1');")
-    '        End If
-
-    '    ElseIf e.Row.RowType = DataControlRowType.Pager Then
-    '        ' This enables postback for the grid
-
-    '        Dim pagerTable As Table = DirectCast(e.Row.Cells(0).Controls(0), Table)
-    '        Dim pagerRow As TableRow = pagerTable.Rows(0)
-
-    '        ' Dim pagerSettings As PagerSettings = DirectCast(sender, GridView).PagerSettings
-    '        ' Dim cellsCount As Integer = pagerRow.Cells.Count
-
-    '        For iColCount As Integer = 0 To pagerRow.Cells.Count - 1
-    '            pagerRow.Cells(iColCount).Attributes.Add("onclick", "try{setPostbackMode(2);}catch(e){};")
-    '        Next
-
-
-    '    End If
-
-    '    m_iRowIdx += 1
-
-    'End Sub
-
-
-    'Sub DDE_GridRowDataBound(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewRowEventArgs)
-
-    '    ' For Lookup Grids only - DropdownExtender
-
-    '    ' As each row is added to the grid's HTML table, do the following: 
-    '    'check the item being bound is actually a DataRow, if it is, 
-    '    'wire up the required html events and attach the relevant JavaScripts
-
-    '    Dim iIDCol As Integer = 0
-    '    Dim sRowID As String = "0"
-    '    Dim grdGrid As System.Web.UI.WebControls.GridView
-    '    Dim mydte As DateTime
-    '    Dim sColumnCaption As String
-
-    '    grdGrid = CType(sender, System.Web.UI.WebControls.GridView)
-
-    '    If e.Row.RowType = DataControlRowType.DataRow Then
-
-    '        e.Row.Style.Add("overflow", "hidden")
-    '        e.Row.Style.Add("cursor", "pointer")
-
-    '        ' loop through the columns of this row. Hide ID columns
-    '        For iColCount As Integer = 0 To e.Row.Cells.Count - 1
-    '            sColumnCaption = UCase(grdGrid.HeaderRow.Cells(iColCount).Text)
-
-    '            If sColumnCaption.StartsWith("ASRSYS") Then
-    '                iIDCol = iColCount  ' store ID column number to assign to the javascript click event.
-    '                e.Row.Cells(iColCount).Style.Add("display", "none")
-    '                If sColumnCaption.StartsWith("ASRSYS") Then
-    '                    ' Background colour to black.
-    '                    ' Javascript can see this and use it to recognise the ID column. Couldn't think of 
-    '                    ' a better way, but sure there is one.
-    '                    e.Row.Cells(iColCount).BackColor = Color.Black
-    '                End If
-    '            End If
-
-    '            ' add overflow hidden and nowrap, stops the cells wrapping text or overflowing into adjacent cols.
-    '            e.Row.Cells(iColCount).Style.Add("overflow", "hidden")
-    '            e.Row.Cells(iColCount).Style.Add("white-space", "nowrap")
-
-    '            ' this sets minimum width, not max.
-    '            e.Row.Cells(iColCount).Width = Unit.Pixel(100)
-
-    '            ' Format the cells according to DataType
-    '            Dim curSelDataType As String = DataBinder.Eval(e.Row.DataItem, grdGrid.HeaderRow.Cells(iColCount).Text).GetType.ToString.ToUpper
-
-    '            If curSelDataType.Contains("INT") _
-    '                Or curSelDataType.Contains("DECIMAL") _
-    '                Or curSelDataType.Contains("SINGLE") _
-    '                Or curSelDataType.Contains("DOUBLE") _
-    '                Then curSelDataType = "Integer"
-    '            If curSelDataType.Contains("DATETIME") Then curSelDataType = "DateTime"
-    '            If curSelDataType.Contains("BOOLEAN") Then curSelDataType = "Boolean"
-
-    '            Try
-    '                Select Case curSelDataType
-    '                    Case "DateTime"
-    '                        ' Is the cell a date? 
-    '                        mydte = DateTime.Parse(e.Row.Cells(iColCount).Text.ToString())
-    '                        e.Row.Cells(iColCount).Text = mydte.ToShortDateString()
-    '                    Case "Integer"
-    '                        e.Row.Cells(iColCount).Style.Add("text-align", "right")
-    '                    Case "Boolean"
-    '                        e.Row.Cells(iColCount).Style.Add("text-align", "center")
-    '                    Case Else   ' String
-    '                        e.Row.Cells(iColCount).Style.Add("text-align", "left")
-    '                End Select
-    '            Catch
-    '                ' um...
-    '            End Try
-    '        Next
-
-    '        ' Add some javascript events to each row for highlight functionality
-    '        ' Not required, wasn't current functionality, but here you go if it should ever be 'needed'...
-    '        'e.Row.Attributes("onmouseover") = "oldgridSelectedColor = this.style.backgroundColor;this.style.backgroundColor = '" & msBackColorHighlight.Trim & "';"
-    '        'e.Row.Attributes("onmouseout") = "this.style.backgroundColor = oldgridSelectedColor;this.style.textDecoration = 'none';"
-    '        'e.Row.Style.Add("cursor", "pointer")
-
-    '        ' Add the javascript event to each row for click functionality
-
-    '        e.Row.Attributes.Add("onclick", "changeDDERow('" & grdGrid.ID.ToString & "', '" & m_iRowIdx.ToString & "', '" & msBackColorHighlight.Trim & "', '" & m_iLookupColumnIndex & "');oldgridSelectedColor = this.style.backgroundColor;")
-
-
-    '    ElseIf e.Row.RowType = DataControlRowType.Header Then
-
-    '        ' Get the lookupfiltervalue column number, if applicable and store to a tag.
-    '        For iColCount As Integer = 0 To e.Row.Cells.Count - 1
-    '            sColumnCaption = UCase(e.Row.Cells(iColCount).Text)
-
-    '            If sColumnCaption.ToUpper = "ASRSYSLOOKUPFILTERVALUE" Then
-    '                grdGrid.Attributes.Remove("LookupFilterColumn")
-    '                grdGrid.Attributes.Add("LookupFilterColumn", iColCount.ToString)
-    '            End If
-    '        Next
-
-    '    ElseIf e.Row.RowType = DataControlRowType.Pager Then
-    '        ' This enables postback for the grid
-
-    '        Dim pagerTable As Table = DirectCast(e.Row.Cells(0).Controls(0), Table)
-    '        Dim pagerRow As TableRow = pagerTable.Rows(0)
-
-    '        ' Dim pagerSettings As PagerSettings = DirectCast(sender, GridView).PagerSettings
-    '        ' Dim cellsCount As Integer = pagerRow.Cells.Count
-
-    '        For iColCount As Integer = 0 To pagerRow.Cells.Count - 1
-    '            pagerRow.Cells(iColCount).Attributes.Add("onclick", "try{setPostbackMode(2);}catch(e){};")
-    '        Next
-
-    '    End If
-    '    m_iRowIdx += 1
-    'End Sub
-
-    'Protected Sub PageIndexChanging(ByVal sender As Object, ByVal e As GridViewPageEventArgs)
-
-    '    Dim g As System.Web.UI.WebControls.GridView
-    '    Dim iIDCol As Integer = 0
-    '    g = CType(sender, System.Web.UI.WebControls.GridView)
-
-    '    g.PageIndex = e.NewPageIndex
-    '    g.DataBind()
-    'End Sub
-
-
-    '    <System.Web.Services.WebMethod()> _
-    'Public Shared Function SetGridFilter(ByVal sGridID As String, ByVal sGridFilter As String) As Boolean
-    '        'On server side we can do anything, like we can access the Session.
-    '        'We can do database access operation. Without postback.
-
-    '        Dim dataTable As DataTable
-    '        dataTable = TryCast(HttpContext.Current.Session(sGridID.Replace("DDE", "DATA")), DataTable)
-
-    '        If dataTable IsNot Nothing Then
-    '            Dim dataView As New DataView(dataTable)
-    '            dataView.RowFilter = sGridFilter   ' e.g. "ISNULL([ASRSysLookupFilterValue], '') = 'HERTFORDSHIRE'"
-    '            dataTable = dataView.ToTable()
-    '            HttpContext.Current.Session(sGridID.Replace("DDE", "DATA")) = dataTable
-    '        End If
-
-    '        Try
-    '            Return True
-    '        Catch ex As Exception
-    '            Throw ex
-    '        End Try
-
-    '    End Function
-
-
-
-
-    Private Sub ShowNoResultFound(ByVal source As DataTable, ByVal gv As RecordSelector)
-
-        source.Clear()
-        source.Rows.Add(source.NewRow())
-        '' create a new blank row to the DataTable
-        '' Bind the DataTable which contain a blank row to the GridView
-        gv.DataSource = source
-        gv.DataBind()
-        ' Get the total number of columns in the GridView to know what the Column Span should be
-        Dim columnsCount As Integer = gv.Columns.Count
-        gv.Rows(0).Cells.Clear()
-        ' clear all the cells in the row
-        gv.Rows(0).Cells.Add(New TableCell())
-        'add a new blank cell
-        gv.Rows(0).Cells(0).ColumnSpan = columnsCount
-        'set the column span to the new added cell
-
-        'You can set the styles here
-        gv.Rows(0).Cells(0).HorizontalAlign = HorizontalAlign.Center
-        'gv.Rows(0).Cells(0).ForeColor = System.Drawing.Color.Red
-        'gv.Rows(0).Cells(0).Font.Bold = True
-        'set No Results found to the new added cell
-        gv.Rows(0).Cells(0).Text = gv.EmptyDataText
-
-        gv.SelectedIndex = -1
-
-
-    End Sub
-
-    Sub SetLookupFilter(ByVal sender As Object, ByVal e As System.EventArgs)
-
-        ' get button's ID
-        Dim btnSender As Button
-        btnSender = DirectCast(sender, Button)
-
-        ' Create a datatable from the data in the session variable
-        Dim dataTable As DataTable
-        dataTable = TryCast(HttpContext.Current.Session(btnSender.ID.Replace("refresh", "DATA")), DataTable)
-
-        ' get the filter sql
-        Dim hiddenField As HiddenField
-        hiddenField = TryCast(pnlInputDiv.FindControl(btnSender.ID.Replace("refresh", "filterSQL")), HiddenField)
-
-        Dim filterSQL As String = hiddenField.Value
-
-        If dataTable IsNot Nothing Then
-            Dim dataView As New DataView(dataTable)
-            dataView.RowFilter = filterSQL    '   "ISNULL([ASRSysLookupFilterValue], '') = 'HERTFORDSHIRE'"
-
-            dataTable = dataView.ToTable()
-            ' HttpContext.Current.Session(btnSender.ID.Replace("refresh", "DATA")) = dataTable
-
-            If dataTable.Rows.Count = 0 Then
-                ' create a blank row to display.
-                Dim objDataRow As System.Data.DataRow
-                objDataRow = dataTable.NewRow()
-                dataTable.Rows.InsertAt(objDataRow, 0)
-            End If
-
-
-        End If
-
-
-        Dim gridView As RecordSelector 'GridView
-        gridView = TryCast(pnlInputDiv.FindControl(btnSender.ID.Replace("refresh", "Grid")), RecordSelector)
-
-        gridView.filterSQL = filterSQL.ToString
-
-        gridView.DataSource = dataTable
-        gridView.DataBind()
-
-
-        ' reset filter.
-        hiddenField.Value = ""
-
-
-    End Sub
-
-    Public Shared Function isMobileBrowser() As Boolean
-        'GETS THE CURRENT USER CONTEXT
-        Dim context As HttpContext = HttpContext.Current
-
-        'FIRST TRY BUILT IN ASP.NT CHECK
-        If context.Request.Browser.IsMobileDevice Then
-            Return True
-        End If
-        'THEN TRY CHECKING FOR THE HTTP_X_WAP_PROFILE HEADER
-        If context.Request.ServerVariables("HTTP_X_WAP_PROFILE") IsNot Nothing Then
-            Return True
-        End If
-        'THEN TRY CHECKING THAT HTTP_ACCEPT EXISTS AND CONTAINS WAP
-        If context.Request.ServerVariables("HTTP_ACCEPT") IsNot Nothing AndAlso context.Request.ServerVariables("HTTP_ACCEPT").ToLower().Contains("wap") Then
-            Return True
-        End If
-        'AND FINALLY CHECK THE HTTP_USER_AGENT 
-        'HEADER VARIABLE FOR ANY ONE OF THE FOLLOWING
-        If context.Request.ServerVariables("HTTP_USER_AGENT") IsNot Nothing Then
-            'Create a list of all mobile types
-            Dim mobiles As String() = New String() {"midp", "j2me", "avant", "docomo", "novarra", "palmos", _
-   "palmsource", "240x320", "opwv", "chtml", "pda", "windows ce", _
-   "mmp/", "blackberry", "mib/", "symbian", "wireless", "nokia", _
-   "hand", "mobi", "phone", "cdm", "up.b", "audio", _
-   "SIE-", "SEC-", "samsung", "HTC", "mot-", "mitsu", _
-   "sagem", "sony", "alcatel", "lg", "eric", "vx", _
-   "NEC", "philips", "mmm", "xx", "panasonic", "sharp", _
-   "wap", "sch", "rover", "pocket", "benq", "java", _
-   "pt", "pg", "vox", "amoi", "bird", "compal", _
-   "kg", "voda", "sany", "kdd", "dbt", "sendo", _
-   "sgh", "gradi", "jb", "dddi", "moto", "iphone"}
-
-            'Loop through each item in the list created above 
-            'and check if the header contains that text
-            For Each s As String In mobiles
-                If context.Request.ServerVariables("HTTP_USER_AGENT").ToLower().Contains(s.ToLower()) Then
-                    Return True
-                End If
-            Next
-
-        End If
-
-        Return False
+    Return False
   End Function
 
   Private Sub AddIPhoneHeaderTags(ByVal lngViewportWidth As Long)
