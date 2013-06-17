@@ -373,7 +373,18 @@ Public Class RecordSelector
         End Set
     End Property
 
- 
+    Public Property filterSQL() As String
+        Get
+            If Not ViewState("filterSQL") Is Nothing Then
+                Return DirectCast(ViewState("filterSQL"), String)
+            Else
+                Return ""
+            End If
+        End Get
+        Set(ByVal value As String)
+            ViewState("filterSQL") = value
+        End Set
+    End Property
 
 
     Private Sub RecordSelector_DataBound(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.DataBound
@@ -448,7 +459,15 @@ Public Class RecordSelector
         grdGrid = CType(sender, System.Web.UI.WebControls.GridView)
 
         grdGrid.PageIndex = e.NewPageIndex
-        grdGrid.DataSource = TryCast(HttpContext.Current.Session(grdGrid.ID.Replace("Grid", "DATA")), DataTable)
+        ' grdGrid.DataSource = TryCast(HttpContext.Current.Session(grdGrid.ID.Replace("Grid", "DATA")), DataTable)
+        dataTable = TryCast(HttpContext.Current.Session(grdGrid.ID.Replace("Grid", "DATA")), DataTable)
+
+        If IsLookup Then
+            ' reapply filter?
+            dataTable = SetLookupFilter(dataTable)
+        End If
+
+        grdGrid.DataSource = dataTable
         grdGrid.DataBind()
 
     End Sub
@@ -664,9 +683,6 @@ Public Class RecordSelector
 
         End If
 
-
-
-
         'Dim dataTable As DataTable
         'dataTable = DirectCast(grdGrid.DataSource, DataTable)
 
@@ -744,17 +760,20 @@ Public Class RecordSelector
 
         ' Get the current dataset from the session variable,
         ' Sort it, then store back to session variable.
-        ' Dim dataTable As DataTable '= TryCast(g.DataSource, DataTable)
-        dataTable = TryCast(HttpContext.Current.Session(grdGrid.ID.Replace("Grid", "DATA")), DataTable)
+        dataTable = TryCast(HttpContext.Current.Session(grdGrid.ID.Replace("Grid", "DATA")), DataTable)        
+
+        If IsLookup Then
+            ' reapply filter?
+            dataTable = SetLookupFilter(dataTable)
+        End If
 
         If dataTable IsNot Nothing Then
             Dim dataView As New DataView(dataTable)
             dataView.Sort = SortSQL ' Convert.ToString(e.SortExpression).Replace(" ", "_") & " DESC"
             dataTable = dataView.ToTable()
-            HttpContext.Current.Session(grdGrid.ID.Replace("Grid", "DATA")) = dataTable
+            'HttpContext.Current.Session(grdGrid.ID.Replace("Grid", "DATA")) = dataTable
             grdGrid.DataSource = dataView
             grdGrid.DataBind()
-
         End If
 
     End Sub
@@ -781,6 +800,27 @@ Public Class RecordSelector
 
     Public Shared Function Flip(ByVal sortDir As SortDirection) As SortDirection
         Return (If((sortDir = SortDirection.Ascending), SortDirection.Descending, SortDirection.Ascending))
+    End Function
+
+    Function SetLookupFilter(ByVal dt As DataTable) As DataTable
+
+        If dt IsNot Nothing Then
+            Dim dataView As New DataView(dt)
+            dataView.RowFilter = Me.filterSQL    '   "ISNULL([ASRSysLookupFilterValue], '') = 'HERTFORDSHIRE'"
+
+            dt = dataView.ToTable()
+            ' HttpContext.Current.Session(btnSender.ID.Replace("refresh", "DATA")) = dataTable
+
+            If dt.Rows.Count = 0 Then
+                ' create a blank row to display.
+                Dim objDataRow As System.Data.DataRow
+                objDataRow = dt.NewRow()
+                dt.Rows.InsertAt(objDataRow, 0)
+            End If
+        End If
+
+        Return dt
+
     End Function
 
 End Class

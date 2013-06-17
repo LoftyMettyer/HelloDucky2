@@ -4597,6 +4597,8 @@ Public Class _Default
         Dim gridView As RecordSelector 'GridView
         gridView = TryCast(pnlInputDiv.FindControl(btnSender.ID.Replace("refresh", "Grid")), RecordSelector)
 
+        gridView.filterSQL = filterSQL.ToString
+
         gridView.DataSource = dataTable
         gridView.DataBind()
 
