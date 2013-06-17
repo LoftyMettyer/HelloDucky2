@@ -102,21 +102,11 @@ Namespace Collections
           sTypesafeCode = child.Column.SafeReturnType
         End If
 
-
         ' Calculate the extra parameters we require if there's a filter attached
         If Not child.Filter Is Nothing Then
-
           child.Filter.AssociatedColumn = child.Filter.BaseTable.Columns(0)
           child.Filter.ExpressionType = ExpressionType.ColumnFilter
           child.Filter.GenerateCodeForColumn()
-
-          ' Add the dependent columns
-          For Each objColumn In child.Filter.Dependencies.Columns
-            If objColumn.Table Is child.BaseTable Then
-              'aryParameters.Add(String.Format("@prm_{0}", objColumn.Name))
-            End If
-          Next
-
         End If
 
         objOrderFilter = child.Column.Table.TableOrderFilter(child)
