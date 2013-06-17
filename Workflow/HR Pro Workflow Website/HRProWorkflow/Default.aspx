@@ -1286,7 +1286,7 @@ function Right(str, n){
 	<!--
         Web Form Controls
         -->
-	<div id="divInput" style="z-index: 0; width: 100%; background-color: <%=ColourThemeHex()%>;
+	<div id="divInput" style="position:absolute; top:0px; left:0px; z-index: 0; width: 100%; background-color: <%=ColourThemeHex()%>;
 		padding: 0px; margin: 0px; text-align: center" runat="server">
       
     <asp:UpdatePanel ID="pnlInput" runat="server">

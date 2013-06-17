@@ -1620,9 +1620,10 @@ Public Class _Default
                                         ''    '.DisplayLayout.RowSelectorsDefault = Infragistics.WebUI.UltraWebGrid.RowSelectors.No
 
                                         .RowStyle.BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColorEven")))
+
                                         .RowStyle.BorderColor = objGeneral.GetColour(10720408)
                                         .RowStyle.BorderStyle = BorderStyle.Solid
-                                        .RowStyle.BorderWidth = Unit.Pixel(0)
+                                        .RowStyle.BorderWidth = Unit.Pixel(1)
                                         '.RowStyle.BorderDetails.WidthLeft = Unit.Pixel(0)
                                         '.RowStyle.BorderDetails.WidthTop = Unit.Pixel(0)
                                         '.RowStyle.BorderDetails.WidthBottom = Unit.Pixel(1)
