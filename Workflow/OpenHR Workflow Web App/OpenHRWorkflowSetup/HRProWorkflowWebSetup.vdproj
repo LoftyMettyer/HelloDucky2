@@ -329,7 +329,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:OpenHR Workflow Web Site v5.0"
         "ProductCode" = "8:{DA13E48A-546E-4C08-AEA1-820684C5F4F0}"
-        "PackageCode" = "8:{010F2E52-B8AD-4E9F-919B-EB60109D060C}"
+        "PackageCode" = "8:{032DEB99-BE48-4F06-9C66-F8F412C26A05}"
         "UpgradeCode" = "8:{8D103CEA-CA57-49D4-A6E6-80D5076BB642}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -843,6 +843,7 @@
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"
                 {
+                "ExcludeFilter" = "8:Web.custom.config"
                 "ExcludeFilter" = "8:Web.Release.config"
                 "ExcludeFilter" = "8:Web.Debug.config"
                 }

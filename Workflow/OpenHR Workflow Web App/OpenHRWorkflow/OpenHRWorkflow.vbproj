@@ -500,7 +500,7 @@
       <DependentUpon>Web.config</DependentUpon>
     </Content>
     <Content Include="Web.custom.config" />
-    <None Include="Web.custom.config.template" />
+    <Content Include="Web.custom.config.template" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
