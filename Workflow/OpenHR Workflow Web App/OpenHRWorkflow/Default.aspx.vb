@@ -496,7 +496,7 @@ Public Class [Default]
 						UpdateAutoFocusControl(formItem.TabIndex, controlId)
 
 						.CssClass = If(formItem.Alignment = 0, "checkbox left", "checkbox right")
-						If IsAndroidBrowser() Then .CssClass += " android"
+						If IsAndroidBrowser() And Not IsTablet() Then .CssClass += " android"
 						.Style("line-height") = formItem.Height.ToString & "px"
 
 						.Text = formItem.Caption
@@ -692,13 +692,13 @@ Public Class [Default]
 
 							' Androids currently can't scroll internal divs, so fix 
 							' pagesize of record selector to height of control.
-							If GetBrowserFamily() = "ANDROID" Then
-								Dim piRowHeight As Double = (formItem.FontSize - 8) + 21
-								.PageSize = Math.Min(CInt(Math.Truncate((CInt(formItem.Height - 42) / piRowHeight))), App.Config.LookupRowsRange)
-								.RowStyle.Height = CInt(piRowHeight)
-							Else
-								.PageSize = App.Config.LookupRowsRange
-							End If
+						If BrowserRequiresOverflowScrollFix() Then
+							Dim piRowHeight As Double = (formItem.FontSize - 8) + 21
+							.PageSize = Math.Min(CInt(Math.Truncate((CInt(formItem.Height - 42) / piRowHeight))), App.Config.LookupRowsRange)
+							.RowStyle.Height = CInt(piRowHeight)
+						Else
+							.PageSize = App.Config.LookupRowsRange
+						End If
 
 							.IsLookup = False
 							' EnableViewState must be on. Mucks up the grid data otherwise. Should be reviewed
@@ -1188,9 +1188,9 @@ Public Class [Default]
 
 							radioTop = 19 + CInt((formItem.FontSize - 8) * 1.375)
 
-							If IsAndroidBrowser() AndAlso formItem.Orientation = 0 Then
-								radioTop -= 5
-							End If
+						If IsAndroidBrowser() And Not IsTablet() AndAlso formItem.Orientation = 0 Then
+							radioTop -= 5
+						End If
 						End If
 
 					Dim html = String.Format("<fieldset style='position:absolute; top:{0}px; left:{1}px; width:{2}px; height:{3}px; {4} {5} {6}'>",
@@ -1210,7 +1210,7 @@ Public Class [Default]
 							.Style.ApplyFont(formItem)
 						.CssClass = "radioList"
 
-							If IsAndroidBrowser() Then .CssClass += " android"
+						If IsAndroidBrowser() And Not IsTablet() Then .CssClass += " android"
 
 							.TabIndex = formItem.TabIndex
 							UpdateAutoFocusControl(formItem.TabIndex, controlId & "_0")
@@ -1331,52 +1331,52 @@ Public Class [Default]
 						ctlTabsDiv.Style.Add("position", "relative")
 						ctlTabsDiv.Style.Add("z-index", "1")
 
-						If IsMobileBrowser() And Not IsAndroidBrowser() Then
-							ctlTabsDiv.Style.Add("overflow-x", "auto")
-						Else
-							' for non-mobile browsers we display arrows to scroll the tab bar left and right.
-							ctlTabsDiv.Style.Add("overflow", "hidden")
-							ctlTabsDiv.Style.Add("margin-right", "51px")
+					If IsMobileBrowser() And Not BrowserRequiresOverflowScrollFix() Then
+						ctlTabsDiv.Style.Add("overflow-x", "auto")
+					Else
+						' for non-mobile browsers we display arrows to scroll the tab bar left and right.
+						ctlTabsDiv.Style.Add("overflow", "hidden")
+						ctlTabsDiv.Style.Add("margin-right", "51px")
 
-							' Nav arrows for non-mobile browsers
-							Dim ctlFormTabArrows As New Panel
-							With ctlFormTabArrows
-								.Style.Add("position", "absolute")
-								.Style.Add("top", "0px")
-								.Style.Add("right", "0px")
-								.Style.Add("width", "48px")
-								.Style.Add("z-index", "1")
-								.BorderWidth = 1
-								.BackColor = Color.White
-								.BorderColor = Color.Black
-							End With
+						' Nav arrows for non-mobile browsers
+						Dim ctlFormTabArrows As New Panel
+						With ctlFormTabArrows
+							.Style.Add("position", "absolute")
+							.Style.Add("top", "0px")
+							.Style.Add("right", "0px")
+							.Style.Add("width", "48px")
+							.Style.Add("z-index", "1")
+							.BorderWidth = 1
+							.BackColor = Color.White
+							.BorderColor = Color.Black
+						End With
 
-							' Left scroll arrow
-							Dim image = New WebControls.Image
-							With image
-								.Style.Add("width", "24px")
-								.Style.Add("height", TabStripHeight - 2 & "px")
-								.ImageUrl = "~/Images/tab-prev.gif"
-								.Style.Add("margin", "0px")
-								.Style.Add("padding", "0px")
-								.Attributes.Add("onclick", "var TabDiv = document.getElementById('TabsDiv');TabDiv.scrollLeft = TabDiv.scrollLeft - 20;")
-							End With
-							ctlFormTabArrows.Controls.Add(image)
+						' Left scroll arrow
+						Dim image = New WebControls.Image
+						With image
+							.Style.Add("width", "24px")
+							.Style.Add("height", TabStripHeight - 2 & "px")
+							.ImageUrl = "~/Images/tab-prev.gif"
+							.Style.Add("margin", "0px")
+							.Style.Add("padding", "0px")
+							.Attributes.Add("onclick", "var TabDiv = document.getElementById('TabsDiv');TabDiv.scrollLeft = TabDiv.scrollLeft - 20;")
+						End With
+						ctlFormTabArrows.Controls.Add(image)
 
-							' Right scroll arrow
-							image = New WebControls.Image
-							With image
-								.Style.Add("width", "24px")
-								.Style.Add("height", TabStripHeight - 2 & "px")
-								.ImageUrl = "~/Images/tab-next.gif"
-								.Style.Add("margin", "0px")
-								.Style.Add("padding", "0px")
-								.Attributes.Add("onclick", "var TabDiv = document.getElementById('TabsDiv');TabDiv.scrollLeft = TabDiv.scrollLeft + 20;")
-							End With
-							ctlFormTabArrows.Controls.Add(image)
+						' Right scroll arrow
+						image = New WebControls.Image
+						With image
+							.Style.Add("width", "24px")
+							.Style.Add("height", TabStripHeight - 2 & "px")
+							.ImageUrl = "~/Images/tab-next.gif"
+							.Style.Add("margin", "0px")
+							.Style.Add("padding", "0px")
+							.Attributes.Add("onclick", "var TabDiv = document.getElementById('TabsDiv');TabDiv.scrollLeft = TabDiv.scrollLeft + 20;")
+						End With
+						ctlFormTabArrows.Controls.Add(image)
 
-							pnlTabsDiv.Controls.Add(ctlFormTabArrows)
-						End If
+						pnlTabsDiv.Controls.Add(ctlFormTabArrows)
+					End If
 
 						' generate the tabs.
 						Dim ctlTabsTable As New Table
@@ -1665,7 +1665,7 @@ Public Class [Default]
 	End Function
 
 	Public Function AndroidLayerBug() As Boolean
-		Return IsAndroidBrowser()
+		Return Utilities.BrowserRequiresLayerFix()
 	End Function
 
 	Public Function IsMobileBrowser() As Boolean

@@ -146,17 +146,17 @@ Public Module Utilities
       'HEADER VARIABLE FOR ANY ONE OF THE FOLLOWING
       If context.Request.ServerVariables("HTTP_USER_AGENT") IsNot Nothing Then
          'Create a list of all mobile types
-         Dim mobiles As String() = New String() {"midp", "j2me", "avant", "docomo", "novarra", "palmos", _
-   "palmsource", "240x320", "opwv", "chtml", "pda", "windows ce", _
-   "mmp/", "blackberry", "mib/", "symbian", "wireless", "nokia", _
-   "hand", "mobi", "phone", "cdm", "up.b", "audio", _
-   "SIE-", "SEC-", "samsung", "HTC", "mot-", "mitsu", _
-   "sagem", "sony", "alcatel", "lg", "eric", "vx", _
-   "philips", "mmm", "xx", "panasonic", "sharp", _
-   "wap", "sch", "rover", "pocket", "benq", "java", _
-   "pt", "pg", "vox", "amoi", "bird", "compal", _
-   "kg", "voda", "sany", "kdd", "dbt", "sendo", _
-   "sgh", "gradi", "jb", "dddi", "moto", "iphone", "fennec"}
+			Dim mobiles As String() = New String() {"midp", "j2me", "avant", "docomo", "novarra", "palmos", _
+	"palmsource", "240x320", "opwv", "chtml", "pda", "windows ce", _
+	"mmp/", "blackberry", "mib/", "symbian", "wireless", "nokia", _
+	"hand", "mobi", "phone", "cdm", "up.b", "audio", _
+	"SIE-", "SEC-", "samsung", "HTC", "mot-", "mitsu", _
+	"sagem", "sony", "alcatel", "lg", "eric", "vx", _
+	"philips", "mmm", "xx", "panasonic", "sharp", _
+	"wap", "sch", "rover", "pocket", "benq", "java", _
+	"pt", "pg", "vox", "amoi", "bird", "compal", _
+	"kg", "voda", "sany", "kdd", "dbt", "sendo", _
+	"sgh", "gradi", "jb", "dddi", "moto", "iphone", "fennec", "android"}
 
          'Loop through each item in the list created above 
          'and check if the header contains that text
@@ -186,6 +186,10 @@ Public Module Utilities
 
    End Function
 
+	Public Function BrowserRequiresLayerFix() As Boolean
+		Return BrowserRequiresOverflowScrollFix()
+	End Function
+
    Public Function IsAndroidBrowser() As Boolean
 
       Dim userAgent = HttpContext.Current.Request.ServerVariables("HTTP_USER_AGENT").ToLower
@@ -208,13 +212,15 @@ Public Module Utilities
 
    Public Function IsTablet() As Boolean
 
-      Dim ua As String = HttpContext.Current.Request.UserAgent.ToUpper
+		Dim ua As String = HttpContext.Current.Request.UserAgent.ToLower()
 
-      If ua.Contains("IPAD") Then
-         Return True
-      Else
-         Return False
-      End If
+		If ua.Contains("ipad") Then
+			Return True
+		ElseIf ua.Contains("android") AndAlso Not ua.Contains("mobile") Then
+			Return True
+		Else
+			Return False
+		End If
    End Function
 
    Public Function GetBrowserFamily() As String
