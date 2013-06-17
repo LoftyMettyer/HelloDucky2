@@ -158,7 +158,7 @@
       DateBox.style.visibility = "hidden";
 
       var dateTextBox = document.getElementById(elementID + 'TextBox');
-      dateTextBox.value = '';
+      dateTextBox.value = '  /  /';
 
     }
 

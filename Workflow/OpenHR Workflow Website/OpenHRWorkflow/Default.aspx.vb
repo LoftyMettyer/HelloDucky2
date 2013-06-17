@@ -1375,6 +1375,18 @@ Public Class _Default
                       .Font.Italic = NullSafeBoolean(dr("FontItalic"))
                       .Font.Strikeout = NullSafeBoolean(dr("FontStrikeThru"))
                       .Font.Underline = NullSafeBoolean(dr("FontUnderline"))
+
+                      If (Not IsDBNull(dr("value"))) Then
+                        If CStr(dr("value")).Length > 0 Then
+                          iYear = CShort(NullSafeString(dr("value")).Substring(6, 4))
+                          iMonth = CShort(NullSafeString(dr("value")).Substring(0, 2))
+                          iDay = CShort(NullSafeString(dr("value")).Substring(3, 2))
+
+                          dtDate = DateSerial(iYear, iMonth, iDay)
+                          .Text = FormatDateTime(dtDate, DateFormat.ShortDate)
+                        End If
+                      End If
+
                     End With
 
                     ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_TextInput)
@@ -4320,7 +4332,7 @@ Public Class _Default
                   If (TypeOf ctlFormInput Is System.Web.UI.WebControls.TextBox) Then
                     ctlFormTextInput = DirectCast(ctlFormInput, System.Web.UI.WebControls.TextBox)
 
-                    If (ctlFormTextInput.Text = vbNullString) Then
+                    If (ctlFormTextInput.Text = vbNullString) Or (ctlFormTextInput.Text = "  /  /") Then
                       sDateValueString = "null"
                     Else
                       sDateValueString = objGeneral.ConvertLocaleDateToSQL(ctlFormTextInput.Text)
