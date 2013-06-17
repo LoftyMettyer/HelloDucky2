@@ -703,6 +703,8 @@ Public Class RecordSelector
           ' this sets minimum width, not max.
           e.Row.Cells(iColCount).Width = Unit.Pixel(iColWidth)
 
+          e.Row.Cells(iColCount).Style.Add("border", "1px solid gray")
+
           ' Format the cells according to DataType
           Dim curSelDataType As String = vbNullString
           ' Dim curSelDataType As String = DataBinder.Eval(e.Row.DataItem, grdGrid.HeaderRow.Cells(iColCount).Text).GetType.ToString.ToUpper

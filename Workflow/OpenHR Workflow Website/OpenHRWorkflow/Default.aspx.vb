@@ -2109,9 +2109,9 @@ Public Class _Default
 
                     .RowStyle.BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColorEven")))
 
-                    .RowStyle.BorderColor = objGeneral.GetColour(10720408)
-                    .RowStyle.BorderStyle = BorderStyle.Solid
-                    .RowStyle.BorderWidth = Unit.Pixel(1)
+                    '.RowStyle.BorderColor = objGeneral.GetColour(10720408)
+                    '.RowStyle.BorderStyle = BorderStyle.Solid
+                    '.RowStyle.BorderWidth = Unit.Pixel(1)
                     '.RowStyle.BorderDetails.WidthLeft = Unit.Pixel(0)
                     '.RowStyle.BorderDetails.WidthTop = Unit.Pixel(0)
                     '.RowStyle.BorderDetails.WidthBottom = Unit.Pixel(1)
@@ -2128,6 +2128,8 @@ Public Class _Default
                     '.RowStyle.Padding.Top = Unit.Pixel(0)
                     '.RowStyle.Padding.Bottom = Unit.Pixel(1)
                     .RowStyle.VerticalAlign = VerticalAlign.Middle
+
+
 
                     iRowHeight = 21
                     '.DisplayLayout.RowHeightDefault = Unit.Pixel(iRowHeight)
