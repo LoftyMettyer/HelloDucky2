@@ -957,17 +957,17 @@ Public Class _Default
                     .Style("position") = "absolute"
                     .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
                     .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
-                    .Style("word-wrap") = "break-word"
-                    .Style("overflow") = "auto"
-                    .Style("resize") = "none"
 
                     If NullSafeBoolean(dr("PasswordType")) Then
                       .TextMode = TextBoxMode.Password
                     Else
                       .TextMode = TextBoxMode.MultiLine
+                      .Wrap = True
+                      .Style("overflow") = "auto"
+                      .Style("word-wrap") = "break-word"
+                      .Style("resize") = "none"
                     End If
-                    .Wrap = True
-
+ 
                     .Text = NullSafeString(dr("value"))
 
                     .BorderStyle = BorderStyle.Solid
