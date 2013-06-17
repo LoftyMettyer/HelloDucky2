@@ -987,8 +987,8 @@ function SetCurrentTab(iNewTab) {
 	jQuery('.tab').removeClass('active');
 	jQuery('.tab-page').hide();
 
-	jQuery('#' + formInputPrefix + iNewTab + '_21_PageTab').show();
 	jQuery('#' + formInputPrefix + iNewTab + '_21_Panel').addClass('active');
+	jQuery('#' + formInputPrefix + iNewTab + '_21_PageTab').show();
 
 	window.iCurrentTab = iNewTab;
 	document.getElementById("hdnDefaultPageNo").value = iNewTab;
