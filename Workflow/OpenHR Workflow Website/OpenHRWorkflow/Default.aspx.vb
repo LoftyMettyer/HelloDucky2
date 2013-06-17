@@ -749,6 +749,7 @@ Public Class _Default
 
                     .Style.Add("Width", Unit.Pixel(NullSafeInteger(dr("Width"))).ToString)
                     .Style.Add("Height", Unit.Pixel(NullSafeInteger(dr("Height"))).ToString)
+                    .Style.Add("z-index", "2")
 
                     .Attributes.Add("onclick", "try{setPostbackMode(1);}catch(e){};")
                   End With
