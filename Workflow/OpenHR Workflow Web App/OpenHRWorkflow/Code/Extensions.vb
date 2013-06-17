@@ -104,6 +104,7 @@ Public Module Extensions
    Private Function AdjustedForeColor(color As Integer) As Integer
       Select Case color
 			Case 6697779 '#333366
+				Return color
 				Return 3355443	'#333333
          Case Else
             Return color
@@ -148,7 +149,7 @@ Public Module Extensions
    Public Sub ApplyBorder(value As WebControl, adjustSize As Boolean, Optional adjustSizeAmount As Integer = -4)
 
       value.BorderStyle = BorderStyle.Solid
-      value.BorderColor = ColorTranslator.FromHtml("#999")
+		value.BorderColor = ColorTranslator.FromHtml("#AAA")
       value.BorderWidth = 1
 
       If adjustSize Then

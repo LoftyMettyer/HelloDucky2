@@ -15,7 +15,7 @@ Public Class [Default]
 	Private _minTabIndex As Short?
 	Private _autoFocusControl As String
 
-	Private Const TabStripHeight As Integer = 21
+	Private Const TabStripHeight As Integer = 31
 	Private Const FormInputPrefix As String = "FI_"
 
 	Protected Sub Page_PreInit(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.PreInit
@@ -1288,9 +1288,9 @@ Public Class [Default]
 							.Style.Add("right", "0px")
 							.Style.Add("width", "48px")
 							.Style.Add("z-index", "1")
+							.BorderWidth = 1
 							.BackColor = Color.White
 							.BorderColor = Color.Black
-							.BorderWidth = 1
 						End With
 
 						' Left scroll arrow
@@ -1338,14 +1338,14 @@ Public Class [Default]
 
 							With tcTabCell
 								.ID = FormInputPrefix & iTabNo.ToString & "_21_Panel"
-								.BorderColor = Color.Black
 								.Style.Add("padding-left", "5px")
 								.Style.Add("padding-right", "5px")
 								.Style.Add("border-radius", "5px 5px 0px 0px")
 								.Style.Add("width", "50px")
+								.BackColor = Color.White
 								.BorderWidth = 1
 								.BorderStyle = BorderStyle.Solid
-								.BackColor = Color.White
+								.BorderColor = Color.Black
 
 								' label the button...
 								Dim label = New Label
