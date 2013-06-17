@@ -108,7 +108,6 @@ Public Class _Default
     Dim ctlForm_OptionGroupReal As TextBox
     Dim ctlForm_HiddenField As HiddenField
     Dim ctlForm_Literal As LiteralControl
-    Dim ctlForm_DDE As AjaxControlToolkit.DropDownExtender
     Dim ctlForm_UpdatePanel As System.Web.UI.UpdatePanel
     Dim ctlForm_PageTab() As Panel
     Dim sBackgroundImage As String
@@ -2132,7 +2131,8 @@ Public Class _Default
                     ' AJAX DropDownExtender (DDE) Control
                     ' This simply links up the DropDownList and the Lookup Grid to make a dropdown.
                     ' =============================================================================
-                    ctlForm_DDE = New AjaxControlToolkit.DropDownExtender
+                    'TODO: PG REPLACE
+                    Dim ctlForm_DDE As New AjaxControlToolkit.DropDownExtender
 
                     With ctlForm_DDE
                       .DropArrowBackColor = Color.Transparent
@@ -3669,7 +3669,6 @@ Public Class _Default
     Dim ctlFormNumericInput As Infragistics.WebUI.WebDataInput.WebNumericEdit
     Dim ctlFormRecordSelectionGrid As System.Web.UI.WebControls.GridView
     Dim ctlFormDropdown As System.Web.UI.WebControls.DropDownList
-    Dim ctlForm_DDE As AjaxControlToolkit.DropDownExtender
     Dim sIDString As String
     Dim iTemp As Int16
     Dim sTemp As String
@@ -3750,8 +3749,7 @@ Public Class _Default
               If Not isMobileBrowser() Then
 
                 If (TypeOf ctlFormInput Is AjaxControlToolkit.DropDownExtender) Then 'Infragistics.WebUI.WebCombo.WebCombo) Then
-                  ctlForm_DDE = DirectCast(ctlFormInput, AjaxControlToolkit.DropDownExtender) 'Infragistics.WebUI.WebCombo.WebCombo)
-                  ctlForm_DDE.Enabled = pfEnabled
+                  DirectCast(ctlFormInput, AjaxControlToolkit.DropDownExtender).Enabled = pfEnabled
                 End If
               Else
                 ' Mobile Browser
