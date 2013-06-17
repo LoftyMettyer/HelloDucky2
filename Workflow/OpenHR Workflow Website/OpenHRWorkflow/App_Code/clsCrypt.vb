@@ -82,7 +82,7 @@ Public Class Crypt
       iTemp = iTemp + 1
     Next iLoop
 
-    EncryptByte = VB6.CopyArray(pabytText)
+    EncryptByte = pabytText.Clone
 
   End Function
 
