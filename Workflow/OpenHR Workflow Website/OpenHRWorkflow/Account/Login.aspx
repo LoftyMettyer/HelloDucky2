@@ -60,7 +60,7 @@
         <li>
             <asp:HyperLink runat="server" NavigateUrl="~/Account/ForgottenLogin.aspx">
                 <asp:Image runat="server" ID="btnForgotPwd"  />
-                <asp:Label runat="server" ID="btnForgotPwd_label" />
+                <asp:Label runat="server" ID="btnForgotPwd_label" />           
             </asp:HyperLink>
         </li>
         <li>
