@@ -230,23 +230,24 @@ Partial Class FileUpload
                     bulletErrors.Font.Size = mobjConfig.ValidationMessageFontSize
                     bulletErrors.ForeColor = objGeneral.GetColour(6697779)
 
-                    With btnCancel
-                        .Appearance.Style.BackColor = objGeneral.GetColour(16249587)
-                        .Appearance.Style.BorderStyle = BorderStyle.Solid
-                        .Appearance.Style.BorderWidth = 1
-                        .Appearance.InnerBorder.StyleTop = BorderStyle.None
-                        .Appearance.Style.BorderColor = objGeneral.GetColour(10720408)
-                        .Appearance.Style.ForeColor = objGeneral.GetColour(6697779)
-                        .FocusAppearance.Style.BorderColor = objGeneral.GetColour(562943)
-                        .FocusAppearance.Style.BackColor = objGeneral.GetColour(12775933)
-                        .HoverAppearance.Style.BorderColor = objGeneral.GetColour(562943)
+          With btnCancel
+            .Appearance.Style.BackColor = objGeneral.GetColour(16249587)
+            .Appearance.Style.BorderStyle = BorderStyle.Solid
+            .Appearance.Style.BorderWidth = 1
+            .Appearance.InnerBorder.StyleTop = BorderStyle.None
+            .Appearance.Style.BorderColor = objGeneral.GetColour(10720408)
+            .Appearance.Style.ForeColor = objGeneral.GetColour(6697779)
+            .FocusAppearance.Style.BorderColor = objGeneral.GetColour(562943)
+            .FocusAppearance.Style.BackColor = objGeneral.GetColour(12775933)
+            .HoverAppearance.Style.BorderColor = objGeneral.GetColour(562943)
 
-                        .Font.Name = "Verdana"
-                        .ClientSideEvents.Click = "try{exitFileUpload(0);}catch(e){};"
+            .Font.Name = "Verdana"
+            .ClientSideEvents.Click = "try{exitFileUpload(0);}catch(e){};"
 
-                        ' Disable until the Default plage postback is complete.
-                        .Enabled = False
-                    End With
+            ' Disable until the Default plage postback is complete.
+            ' NPG20120201 Fault HRPRO-1845, always enabled now.
+            '.Enabled = False
+          End With
 
                     With btnClear
                         .Appearance.Style.BackColor = objGeneral.GetColour(16249587)
