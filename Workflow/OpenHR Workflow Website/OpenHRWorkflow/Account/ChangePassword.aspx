@@ -59,6 +59,8 @@
     
     <ul class="footer-buttons col2">
         <li>
+            <asp:Button runat="server" ID="btnSubmit2" OnClientClick="return submitCheck();" style="display: none;"/>
+
             <asp:LinkButton runat="server" ID="btnSubmit" OnClientClick="return submitCheck();">
                 <asp:Image runat="server"/>
                 <asp:Label runat="server"/>

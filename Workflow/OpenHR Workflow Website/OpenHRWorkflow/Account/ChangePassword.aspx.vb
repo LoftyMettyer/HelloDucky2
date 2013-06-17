@@ -13,11 +13,11 @@ Partial Class ChangePassword
 
     Title = Utilities.WebSiteName("Change Password")
     Forms.LoadControlData(Me, 4)
-    Form.DefaultButton = btnSubmit.UniqueID
+    Form.DefaultButton = btnSubmit2.UniqueID
     Form.DefaultFocus = txtCurrPassword.ClientID
   End Sub
 
-  Protected Sub BtnSubmitClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnSubmit.Click
+  Protected Sub BtnSubmitClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnSubmit.Click, btnSubmit2.Click
 
     Dim message As String = Database.ChangePassword(User.Identity.Name, txtCurrPassword.Text, txtNewPassword.Text)
 

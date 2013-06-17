@@ -5,11 +5,11 @@ Partial Class Registration
   Protected Sub Page_Init(sender As Object, e As EventArgs) Handles Me.Init
     Title = Utilities.WebSiteName("Registration")
     Forms.LoadControlData(Me, 3)
-    Form.DefaultButton = btnSubmit.UniqueID
+    Form.DefaultButton = btnSubmit2.UniqueID
     Form.DefaultFocus = txtEmail.ClientID
   End Sub
 
-  Protected Sub BtnRegisterClick(sender As Object, e As EventArgs) Handles btnSubmit.Click
+  Protected Sub BtnRegisterClick(sender As Object, e As EventArgs) Handles btnSubmit.Click, btnSubmit2.Click
 
     Dim message As String = Database.Register(txtEmail.Text)
 

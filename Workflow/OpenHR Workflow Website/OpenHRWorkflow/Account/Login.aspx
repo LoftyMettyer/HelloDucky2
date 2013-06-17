@@ -7,11 +7,11 @@
 
             var header = 'Login Failed';
 
-            if (document.getElementById('<%= txtUserName.ClientID %>').value.trim().length === 0) {
+            if (document.getElementById('<%=txtUserName.ClientID%>').value.trim().length === 0) {
                 showDialog(header, 'Username is required.');
                 return false;
             }
-            if (document.getElementById('<%= txtPassword.ClientID %>').value.trim().length === 0) {
+            if (document.getElementById('<%=txtPassword.ClientID%>').value.trim().length === 0) {
                 showDialog(header, 'Password is required.');
                 return false;
             }
@@ -50,6 +50,8 @@
     
     <ul class="footer-buttons col3">
         <li>
+            <asp:Button runat="server" ID="btnLogin2" OnClientClick="return submitCheck();" style="display: none;"/>
+
             <asp:LinkButton runat="server" ID="btnLogin" OnClientClick="return submitCheck();">
                 <asp:Image runat="server"/>
                 <asp:Label runat="server"/>
@@ -68,5 +70,4 @@
             </asp:HyperLink>
         </li>
     </ul>
-
 </asp:Content>
