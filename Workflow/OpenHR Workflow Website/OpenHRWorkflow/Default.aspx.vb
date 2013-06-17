@@ -3305,6 +3305,7 @@ Public Class _Default
                 Catch ex As Exception
                   'TODO
                   Beep()
+                  'Throw New Exception("arrrgghhh!!!")
                 End Try
 
               End If
