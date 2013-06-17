@@ -12,5 +12,4 @@
   <add key="WorkflowURL" value=""/>
   <add key="DefaultActiveDirectoryServer" value="" />
   <add key="TabletBackColour" value="lightgray"/>
-  <add key="FormsTimeout" value="262800"/>
 </appSettings>
