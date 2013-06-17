@@ -4,28 +4,6 @@ Public Class App
 
    Sub Application_Start(ByVal sender As Object, ByVal e As EventArgs)
       ' Fires when the application is started
-
-      Try
-         Dim path = Server.MapPath("~/Pictures")
-
-         'Delete the picture files created by default.aspx
-         For Each file In System.IO.Directory.GetFiles(path)
-            Try
-               System.IO.File.Delete(file)
-            Catch ex As Exception
-            End Try
-         Next
-
-         'Delete the picture files created by rest of system
-         For Each folder In System.IO.Directory.GetDirectories(path)
-            Try
-               System.IO.Directory.Delete(folder, True)
-            Catch ex As Exception
-            End Try
-         Next
-
-      Catch ex As Exception
-      End Try
    End Sub
 
    Sub Session_Start(ByVal sender As Object, ByVal e As EventArgs)
@@ -47,20 +25,6 @@ Public Class App
 
    Sub Session_End(ByVal sender As Object, ByVal e As EventArgs)
       ' Fires when the session ends
-
-      Try
-         Dim path = Server.MapPath("~/Pictures")
-
-         'Delete the picture files created by default.aspx
-         For Each file In System.IO.Directory.GetFiles(path)
-            Try
-               System.IO.File.Delete(file)
-            Catch ex As Exception
-            End Try
-         Next
-
-      Catch ex As Exception
-      End Try
    End Sub
 
    Sub Application_End(ByVal sender As Object, ByVal e As EventArgs)

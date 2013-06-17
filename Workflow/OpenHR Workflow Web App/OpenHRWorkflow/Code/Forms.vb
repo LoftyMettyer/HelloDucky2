@@ -62,8 +62,8 @@ Public Class Forms
 
           Case 0 ' Button
 
-            CType(control.Controls(0), Image).ImageUrl = Picture.GetUrl(NullSafeInteger(dr("PictureID")))
-            CType(control.Controls(1), Label).Text = NullSafeString(dr("caption"))
+                  CType(control.Controls(0), Image).ImageUrl = "~/Image.ashx?id=" & NullSafeInteger(dr("PictureID"))
+                  CType(control.Controls(1), Label).Text = NullSafeString(dr("caption"))
 
           Case 2 ' Label
 

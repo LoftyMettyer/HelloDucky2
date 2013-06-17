@@ -1,5 +1,3 @@
-Option Strict On
-
 Imports System.Xml
 Imports System
 

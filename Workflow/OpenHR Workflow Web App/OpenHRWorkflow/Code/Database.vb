@@ -2,6 +2,7 @@
 Imports System.Linq
 Imports System.Data.SqlClient
 Imports System.Collections.Generic
+Imports System.IO
 
 Public Class Database
    Private ReadOnly _connectionString As String
@@ -13,6 +14,10 @@ Public Class Database
    Public Sub New(connectionString As String)
       _connectionString = connectionString
    End Sub
+
+   Public Shared Function GetConnectionString(server As String, database As String, user As String, password As String) As String
+      Return "Application Name=OpenHR Workflow;Data Source=" & server & ";Initial Catalog=" & database & ";Integrated Security=false;User ID=" & user & ";Password=" & password & ";Pooling=false"
+   End Function
 
    Public Function IsSystemLocked() As Boolean
 
@@ -718,6 +723,54 @@ Public Class Database
          Return (From x In list Order By x.Name, x.Desc).ToList()
       End Using
    End Function
+
+   Public Sub GetPicture(id As Integer, outputStream As Stream, ByRef fileName As String)
+
+      Using conn As New SqlConnection(_connectionString)
+         conn.Open()
+
+         Dim cmd As New SqlCommand("spASRGetPicture", conn)
+         cmd.CommandType = CommandType.StoredProcedure
+
+         cmd.Parameters.Add("@piPictureID", SqlDbType.Int).Direction = ParameterDirection.Input
+         cmd.Parameters("@piPictureID").Value = id
+
+         Using reader As SqlDataReader = cmd.ExecuteReader(CommandBehavior.SequentialAccess)
+
+            Const bufferSize As Integer = 100
+
+            Dim writer As BinaryWriter, buffer(bufferSize - 1) As Byte, bytesRead As Long, index As Long
+
+            If reader.Read Then
+
+               fileName = NullSafeString(reader("Name"))
+
+               ' Create a file to hold the output.
+               writer = New BinaryWriter(outputStream)
+
+               ' Read bytes into buffer() and retain the number of bytes returned.
+               bytesRead = reader.GetBytes(1, index, buffer, 0, bufferSize)
+
+               ' Continue reading and writing while there are bytes beyond the size of the buffer.
+               Do While bytesRead = bufferSize
+                  writer.Write(buffer)
+                  writer.Flush()
+
+                  ' Reposition the start index to the end of the last buffer and fill the buffer.
+                  index += bufferSize
+                  bytesRead = reader.GetBytes(1, index, buffer, 0, bufferSize)
+               Loop
+
+               ' Write the remaining buffer.
+               writer.Write(buffer, 0, CInt(bytesRead) - 1)
+               writer.Flush()
+               writer.Close()
+            End If
+         End Using
+      End Using
+
+   End Sub
+
 End Class
 
 Public Structure CheckLoginResult

@@ -27,8 +27,9 @@ Partial Class FileUpload
          psFileName = ""
       End If
 
-      strConn = CStr("Application Name=OpenHR Workflow;Data Source=" & CStr(Session("Server")) & ";Initial Catalog=" & CStr(Session("Database")) & ";Integrated Security=false;User ID=" & CStr(Session("User")) & ";Password=" & CStr(Session("Pwd")) & ";Pooling=false")
-      conn = New SqlClient.SqlConnection(strConn)
+      Dim workflowUrl = CType(Session("workflowUrl"), WorkflowUrl)
+
+      conn = New SqlClient.SqlConnection(Database.GetConnectionString(workflowUrl.Server, workflowUrl.Database, workflowUrl.User, workflowUrl.Password))
       conn.Open()
 
       cmdSave = New SqlClient.SqlCommand("spASRWorkflowFileUpload", conn)
@@ -36,7 +37,7 @@ Partial Class FileUpload
       cmdSave.CommandTimeout = miSubmissionTimeoutInSeconds
 
       cmdSave.Parameters.AddWithValue("@piElementItemID", ViewState("ElementItemID"))
-      cmdSave.Parameters.AddWithValue("@piInstanceID", Session("InstanceID"))
+      cmdSave.Parameters.AddWithValue("@piInstanceID", workflowUrl.InstanceID)
       cmdSave.Parameters.AddWithValue("@pimgFile", abtImage)
       cmdSave.Parameters.AddWithValue("@psContentType", psContentType)
       cmdSave.Parameters.AddWithValue("@psFileName", psFileName)
@@ -99,8 +100,7 @@ Partial Class FileUpload
 
             Dim workflowUrl = CType(Session("workflowUrl"), WorkflowUrl)
 
-            strConn = CStr("Application Name=OpenHR Workflow;Data Source=" & workflowUrl.Server & ";Initial Catalog=" & workflowUrl.Database & ";Integrated Security=false;User ID=" & workflowUrl.User & ";Password=" & workflowUrl.Password & ";Pooling=false")
-            conn = New SqlClient.SqlConnection(strConn)
+            conn = New SqlClient.SqlConnection(Database.GetConnectionString(workflowUrl.Server, workflowUrl.Database, workflowUrl.User, workflowUrl.Password))
             conn.Open()
             Try
                cmdDetails = New SqlClient.SqlCommand

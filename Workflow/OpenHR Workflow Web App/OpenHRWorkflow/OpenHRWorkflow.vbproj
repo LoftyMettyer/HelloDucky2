@@ -380,7 +380,7 @@
     <Compile Include="Code\Extensions.vb" />
     <Compile Include="Code\Forms.vb" />
     <Compile Include="Code\General.vb" />
-    <Compile Include="Code\Picture.vb" />
+    <Compile Include="Code\ImageHandler.vb" />
     <Compile Include="Code\RecordSelector.vb" />
     <Compile Include="Code\Security.vb" />
     <Compile Include="Code\Utilities.vb" />
@@ -505,7 +505,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Pictures\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />

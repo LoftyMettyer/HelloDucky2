@@ -295,24 +295,6 @@
                         {
                         }
                     }
-                    "{4C6F2762-250E-4E7D-82DC-65B304135C98}:_D85654A4BA2741979683CB8186E4F431"
-                    {
-                    "AllowScriptSourceAccess" = "11:FALSE"
-                    "AllowReadAccess" = "11:TRUE"
-                    "AllowWriteAccess" = "11:TRUE"
-                    "AllowDirectoryBrowse" = "11:TRUE"
-                    "LogVisits" = "11:TRUE"
-                    "Index" = "11:TRUE"
-                    "ExecutePermissions" = "3:2"
-                    "Name" = "8:Pictures"
-                    "AlwaysCreate" = "11:TRUE"
-                    "Condition" = "8:"
-                    "Transitive" = "11:FALSE"
-                    "Property" = "8:_E626FD904D3546C2804B7171F785B6FB"
-                        "Folders"
-                        {
-                        }
-                    }
                 }
             }
         }
@@ -347,7 +329,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:OpenHR Workflow Web Site v5.0"
         "ProductCode" = "8:{DA13E48A-546E-4C08-AEA1-820684C5F4F0}"
-        "PackageCode" = "8:{9BAD8C34-A5DF-4CA4-8CAC-198934DA7291}"
+        "PackageCode" = "8:{010F2E52-B8AD-4E9F-919B-EB60109D060C}"
         "UpgradeCode" = "8:{8D103CEA-CA57-49D4-A6E6-80D5076BB642}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -809,7 +791,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_27CCB823E78043E5BA2E3F1C6685062F"
             {
-            "SourcePath" = "8:..\\OpenHRWorkflow\\obj\\Debug\\OpenHRWorkflow.dll"
+            "SourcePath" = "8:..\\OpenHRWorkflow\\obj\\Release\\OpenHRWorkflow.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_060C4D78AD8C49EC852195BEC9F88F20"
@@ -861,11 +843,13 @@
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"
                 {
+                "ExcludeFilter" = "8:Web.Release.config"
+                "ExcludeFilter" = "8:Web.Debug.config"
                 }
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_F095207D25C9491B948AC4FF9CC578AA"
             {
-            "SourcePath" = "8:..\\OpenHRWorkflowInstaller\\obj\\Debug\\InstallerClassLibrary.dll"
+            "SourcePath" = "8:..\\OpenHRWorkflowInstaller\\obj\\Release\\InstallerClassLibrary.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_ACDB8F00505241659EC63AF1774D10C6"

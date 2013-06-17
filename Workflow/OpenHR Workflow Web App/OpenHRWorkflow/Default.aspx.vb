@@ -1,14 +1,9 @@
-Option Strict On
-
 Imports System.Data
 Imports System.Threading
 Imports System.Globalization
-Imports System.Reflection
 Imports System.Drawing
 Imports AjaxControlToolkit
 Imports System.Transactions
-Imports System.Data.SqlClient
-Imports System.IO
 
 Public Class [Default]
    Inherits Page
@@ -17,7 +12,6 @@ Public Class [Default]
    Private _url As WorkflowUrl
    Private _form As WorkflowForm
    Private _db As Database
-   Private _imageCount As Integer
    Private _siblingForms As String = ""
    Private _minTabIndex As Short?
    Private _autoFocusControl As String
@@ -93,7 +87,7 @@ Public Class [Default]
          End Try
       End Try
 
-      _db = New Database(GetConnectionString)
+      _db = New Database(Database.GetConnectionString(_url.Server, _url.Database, _url.User, _url.Password))
 
       'TODO PG prob have to check db lock & version before doing below
 
@@ -174,30 +168,30 @@ Public Class [Default]
          End If
       End If
 
+      'Perform version checks if not running in ide
+      'TODO PG check this is ok
+#If DEBUG Then
+#Else
       'check if the database and website versions match.
       If message.Length = 0 And Not IsPostBack Then
 
-         'Perform version checks if not running in ide
-         'TODO PG check if in dev mode
-         If True Then
+         Dim dbVersion As String = _db.GetSetting("database", "version", False)
 
-            Dim dbVersion As String = _db.GetSetting("database", "version", False)
+         Dim wsVersion As String = Assembly.GetExecutingAssembly.GetName.Version.Major & "." &
+                                   Assembly.GetExecutingAssembly.GetName.Version.Minor
 
-            Dim wsVersion As String = Assembly.GetExecutingAssembly.GetName.Version.Major & "." &
-                                      Assembly.GetExecutingAssembly.GetName.Version.Minor
+         If dbVersion <> wsVersion Then
 
-            If dbVersion <> wsVersion Then
-
-               message = String.Format("The Workflow website version ({0}) is incompatible with the database version ({1})." &
-                                       "<BR><BR>Contact your system administrator.", wsVersion, If(dbVersion = Nothing, "&lt;unknown&gt;", dbVersion))
-            End If
+            message = String.Format("The Workflow website version ({0}) is incompatible with the database version ({1})." &
+                                    "<BR><BR>Contact your system administrator.", wsVersion, If(dbVersion = Nothing, "&lt;unknown&gt;", dbVersion))
          End If
       End If
+#End If
 
       If message.Length = 0 Then
 
          Try
-            'FileUpload.apsx and FileDownload.aspx require the url details
+            'FileUpload.apsx, FileDownload.aspx & ImageHandler require the url details
             Session("workflowUrl") = _url
 
             ' Get the selected tab number for this workflow, if any...
@@ -225,12 +219,9 @@ Public Class [Default]
                End If
 
                If _form.BackImage > 0 Then
-                  Dim image As String = LoadPicture(_form.BackImage, message)
-                  If message.Length = 0 Then
-                     divInput.Style("background-image") = image
-                     divInput.Style("background-repeat") = General.BackgroundRepeat(_form.BackImageLocation)
-                     divInput.Style("background-position") = General.BackgroundPosition(_form.BackImageLocation)
-                  End If
+                  divInput.Style("background-image") = ResolveClientUrl("~/Image.ashx?s=&id=" & _form.BackImage)
+                  divInput.Style("background-repeat") = General.BackgroundRepeat(_form.BackImageLocation)
+                  divInput.Style("background-position") = General.BackgroundPosition(_form.BackImageLocation)
                End If
 
                If _form.BackColour > 0 Then
@@ -670,11 +661,7 @@ Public Class [Default]
                      .ApplyBorder(True, -2)
                   End If
 
-                  Dim imageUrl As String = LoadPicture(formItem.PictureID, message)
-                  If message.Length > 0 Then
-                     Exit For
-                  End If
-                  .ImageUrl = imageUrl
+                  .ImageUrl = "~/Image.ashx?s=&id=" & formItem.PictureID
                End With
 
                tabPages(formItem.PageNo).Controls.Add(control)
@@ -1769,109 +1756,6 @@ Public Class [Default]
 
    Public Function ColourThemeHex() As String
       Return _config.ColourThemeHex
-   End Function
-
-   Private Function GetConnectionString() As String
-      Return "Application Name=OpenHR Workflow;Data Source=" & _url.Server & ";Initial Catalog=" & _url.Database & ";Integrated Security=false;User ID=" & _url.User & ";Password=" & _url.Password & ";Pooling=false"
-   End Function
-
-   Private Function LoadPicture(ByVal piPictureID As Int32, ByRef psErrorMessage As String) As String
-
-      Dim conn As SqlConnection
-      Dim cmdSelect As SqlCommand
-      Dim dr As SqlDataReader
-      Dim sImageFileName As String
-      Dim sImageFilePath As String
-      Dim sTempName As String
-      Dim fs As FileStream
-      Dim bw As BinaryWriter
-      Const iBufferSize As Integer = 100
-      Dim outByte(iBufferSize - 1) As Byte
-      Dim retVal As Long
-      Dim startIndex As Long
-      Dim sExtension As String = ""
-      Dim iIndex As Integer
-      Dim sName As String
-
-      Try
-         _imageCount += 1
-
-         psErrorMessage = ""
-         sImageFileName = ""
-         sImageFilePath = Server.MapPath("pictures")
-
-         conn = New SqlConnection(GetConnectionString)
-         conn.Open()
-
-         cmdSelect = New SqlCommand
-         cmdSelect.CommandText = "spASRGetPicture"
-         cmdSelect.Connection = conn
-         cmdSelect.CommandType = CommandType.StoredProcedure
-         cmdSelect.CommandTimeout = _config.SubmissionTimeoutInSeconds
-
-         cmdSelect.Parameters.Add("@piPictureID", SqlDbType.Int).Direction = ParameterDirection.Input
-         cmdSelect.Parameters("@piPictureID").Value = piPictureID
-
-         Try
-            dr = cmdSelect.ExecuteReader(CommandBehavior.SequentialAccess)
-
-            Do While dr.Read
-               sName = Utilities.NullSafeString(dr("name"))
-               iIndex = sName.LastIndexOf(".")
-               If iIndex >= 0 Then
-                  sExtension = sName.Substring(iIndex)
-               End If
-
-               sImageFileName = Session.SessionID().ToString & "_" & _imageCount.ToString & "_" & Date.Now.Ticks.ToString & sExtension
-               sTempName = sImageFilePath & "\" & sImageFileName
-
-               ' Create a file to hold the output.
-               fs = New FileStream(sTempName, FileMode.OpenOrCreate, FileAccess.Write)
-               bw = New BinaryWriter(fs)
-
-               ' Reset the starting byte for a new BLOB.
-               startIndex = 0
-
-               ' Read bytes into outbyte() and retain the number of bytes returned.
-               retVal = dr.GetBytes(1, startIndex, outByte, 0, iBufferSize)
-
-               ' Continue reading and writing while there are bytes beyond the size of the buffer.
-               Do While retVal = iBufferSize
-                  bw.Write(outByte)
-                  bw.Flush()
-
-                  ' Reposition the start index to the end of the last buffer and fill the buffer.
-                  startIndex += iBufferSize
-                  retVal = dr.GetBytes(1, startIndex, outByte, 0, iBufferSize)
-               Loop
-
-               ' Write the remaining buffer.
-               bw.Write(outByte)
-               bw.Flush()
-
-               ' Close the output file.
-               bw.Close()
-               fs.Close()
-            Loop
-
-            dr.Close()
-            cmdSelect.Dispose()
-
-            ' Ensure URL encoding doesn't stuff up the picture name, so encode the % character as %25.
-            LoadPicture = "pictures/" & sImageFileName
-
-         Catch ex As Exception
-            LoadPicture = ""
-            psErrorMessage = ex.Message
-
-         Finally
-            conn.Close()
-            conn.Dispose()
-         End Try
-      Catch ex As Exception
-         LoadPicture = ""
-         psErrorMessage = ex.Message
-      End Try
    End Function
 
    Private Function LookupFilterSQL(ByVal columnName As String, ByVal columnDataType As Integer, ByVal operatorID As Integer, ByVal value As String) As String

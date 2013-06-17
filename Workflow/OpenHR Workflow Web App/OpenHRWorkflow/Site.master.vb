@@ -41,7 +41,7 @@ Partial Class Site
         End If
 
         If Not IsDBNull(dr(prefix & "PictureID")) Then
-          control.Style("background-image") = ResolveClientUrl(Picture.GetUrl(CInt(dr(prefix & "PictureID"))))
+               control.Style("background-image") = ResolveClientUrl("~/Image.ashx?id=" & CInt(dr(prefix & "PictureID")))
           control.Style("background-repeat") = General.BackgroundRepeat(CShort(dr(prefix & "PictureLocation")))
           control.Style("background-position") = General.BackgroundPosition(CShort(dr(prefix & "PictureLocation")))
         End If
@@ -67,7 +67,7 @@ Partial Class Site
             End If
 
             .BackColor = Drawing.Color.Transparent
-            .ImageUrl = Picture.GetUrl(NullSafeInteger(dr("HeaderLogoID")))
+                  .ImageUrl = "~/Image.ashx?id=" & CInt(dr("HeaderLogoID"))
                   .Height() = NullSafeInteger(dr("HeaderLogoHeight"))
                   .Width() = NullSafeInteger(dr("HeaderLogoWidth"))
             .Style.Add("z-index", "1")

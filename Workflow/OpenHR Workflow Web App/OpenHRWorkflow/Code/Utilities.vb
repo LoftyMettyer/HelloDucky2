@@ -237,7 +237,7 @@ Public Module Utilities
    Public Function GetPageTitle(pageName As String) As String
 
       With Assembly.GetExecutingAssembly.GetName.Version
-         Return String.Format("OpenHR {0} - v{1}{2}{3}", pageName, .Major, .Minor, .Build)
+         Return String.Format("OpenHR {0} - v{1}.{2}.{3}", pageName, .Major, .Minor, .Build)
       End With
 
    End Function

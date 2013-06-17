@@ -57,7 +57,7 @@ Partial Class Home
       imageContainer.Attributes.Add("class", "image")
 
       Dim image As New Image
-      image.ImageUrl = If(item.PictureID = 0, "~/Images/Connected48.png", Picture.GetUrl(item.PictureID))
+         image.ImageUrl = If(item.PictureID = 0, "~/Images/Connected48.png", "~/Image.ashx?id=" & item.PictureID)
 
       Dim detailContainer As New HtmlGenericControl("span")
       detailContainer.Attributes.Add("class", "detail")

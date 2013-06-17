@@ -81,8 +81,7 @@ Partial Class FileDownload
       Dim workflowUrl = CType(Session("workflowUrl"), WorkflowUrl)
 
       Try
-         strConn = CStr("Application Name=OpenHR Workflow;Data Source=" & workflowUrl.Server & ";Initial Catalog=" & workflowUrl.Database & ";Integrated Security=false;User ID=" & workflowUrl.User & ";Password=" & workflowUrl.Password & ";Pooling=false")
-         conn = New SqlClient.SqlConnection(strConn)
+         conn = New SqlClient.SqlConnection(Database.GetConnectionString(workflowUrl.Server, workflowUrl.Database, workflowUrl.User, workflowUrl.Password))
          conn.Open()
 
          cmdRead = New SqlClient.SqlCommand("spASRWorkflowFileDownload", conn)
@@ -135,7 +134,7 @@ Partial Class FileDownload
                If sFileName.Length = 0 Then
                   sErrorMessage = "No file to download."
                Else
-                  If iColumnDataType = - 3 Then
+                  If iColumnDataType = -3 Then
                      ' Photograph
                      sPhotographFolder = mobjConfig.PhotographFolder().Trim
 
@@ -179,7 +178,7 @@ Partial Class FileDownload
                            sOLEFolder_Server = mobjConfig.OLEFolder_Server().Trim
 
                            If sOLEFolder_Server.Length = 0 Then
-                              sErrorMessage = "The " & If(iColumnDataType = - 3, "Photograph", "Server OLE") &
+                              sErrorMessage = "The " & If(iColumnDataType = -3, "Photograph", "Server OLE") &
                                               " path has not been defined, or is invalid."
                            Else
 

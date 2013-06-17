@@ -10,7 +10,7 @@ Public Class RecordSelector
 
     Protected WithEvents customHeader As GridViewRow
     Protected WithEvents customPager As GridViewRow
-    Protected WithEvents grdGrid As RecordSelector ' GridView
+   Protected WithEvents grdGrid As RecordSelector ' GridView 'TODO PG shouldnt be storing this, it is "Me."
     Protected WithEvents pagerTable As Table
     Protected WithEvents pagerRow As TableRow
     Protected WithEvents ddl As TextBox ' DropDownList
@@ -535,7 +535,6 @@ Public Class RecordSelector
 
   End Function
 
-
   Private Sub RecordSelector_PageIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.PageIndexChanged
 
     ' Default behaviour of the gridview is to highlight the same row again when 
@@ -607,21 +606,19 @@ Public Class RecordSelector
 
   End Sub
 
-
   Private Sub RecordSelector_RowCreated(ByVal sender As Object, ByVal e As GridViewRowEventArgs) Handles Me.RowCreated
 
     ' custom header only - manually add the rows for sorting.
     If e.Row.RowType = DataControlRowType.Header Then
 
       Dim tcTableCell As TableCell
-      ' Dim d As GridView = sender
-         'grdGrid = sender
+
+         grdGrid = CType(sender, RecordSelector)
 
       For Each tcTableCell In e.Row.Cells
         If grdGrid.AllowSorting Then
-          Dim lb As System.Web.UI.WebControls.LinkButton
-          ' lb = tcTableCell.Controls(0)
-          lb = CType(tcTableCell.Controls(0), System.Web.UI.WebControls.LinkButton)
+               Dim lb As LinkButton = CType(tcTableCell.Controls(0), LinkButton)
+
           tcTableCell.Text = lb.Text
 
                If MyBase.HeaderStyle.Height.Value < 21 Then MyBase.HeaderStyle.Height = Unit.Pixel(NullSafeInteger(Me.HeadFontSize) * 2)
@@ -720,21 +717,6 @@ Public Class RecordSelector
 
 
   End Sub
-
-
-  Private Function GetHexColor(ByVal aRGBCode As System.Drawing.Color) As String
-    Dim strHEX As String
-
-    'Dim A As String = Convert.ToString(aRGBCode.A, 16).PadLeft(2, "0"c).ToUpper
-    Dim R As String = Convert.ToString(aRGBCode.R, 16).PadLeft(2, "0"c).ToUpper
-    Dim G As String = Convert.ToString(aRGBCode.G, 16).PadLeft(2, "0"c).ToUpper
-    Dim B As String = Convert.ToString(aRGBCode.B, 16).PadLeft(2, "0"c).ToUpper
-
-    strHEX = "#" & R & G & B
-
-    Return strHEX
-
-  End Function
 
   Private Sub RecordSelector_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.SelectedIndexChanged
 

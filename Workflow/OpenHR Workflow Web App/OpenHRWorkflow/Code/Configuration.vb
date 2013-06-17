@@ -11,9 +11,7 @@ Public Class Configuration
     DefaultActiveDirectoryServer = GetAppSetting("DefaultActiveDirectoryServer", "")
     SubmissionTimeoutInSeconds = 120
 
-    ConnectionString = String.Format( _
-        "Application Name=OpenHR Mobile;Data Source={0};Initial Catalog={1};Integrated Security=false;User ID={2};Password={3};Pooling=true", _
-        Server, Database, Login, Password)
+    ConnectionString = String.Format("Application Name=OpenHR Mobile;Data Source={0};Initial Catalog={1};Integrated Security=false;User ID={2};Password={3};Pooling=true", Server, Database, Login, Password)
   End Sub
 
   Public Shared Server As String
@@ -26,10 +24,9 @@ Public Class Configuration
   Public Shared DefaultActiveDirectoryServer As String
   Public Shared SubmissionTimeoutInSeconds As Integer
 
+   'TODO PG NOW cleanup all connection string creation (take care with application name & pooling)
   Public Shared Function ConnectionStringFor(user As String, password As String) As String
-    Return String.Format( _
-        "Application Name=OpenHR Mobile;Data Source={0};Initial Catalog={1};Integrated Security=false;User ID={2};Password={3};Pooling=false", _
-        Server, Database, user, password)
+      Return String.Format("Application Name=OpenHR Mobile;Data Source={0};Initial Catalog={1};Integrated Security=false;User ID={2};Password={3};Pooling=false", Server, Database, user, password)
   End Function
 
   Public Shared ReadOnly Property IsDebug() As Boolean

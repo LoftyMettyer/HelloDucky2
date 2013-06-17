@@ -1,5 +1,3 @@
-Option Strict On
-
 Imports Microsoft.VisualBasic
 Imports System.Threading
 Imports System.Drawing
