@@ -80,7 +80,7 @@ table {
     border: none;
 }
 
-.desktop #pnlPage {
+.largeViewport #pnlPage {
     width: 320px;
     height: 450px;
     margin-left: auto;
@@ -90,21 +90,21 @@ table {
     background-color: red;
     border-radius: 10px;
 }
-.desktop #pnlHeader {
+.largeViewport #pnlHeader {
     position: static;
 }
-.desktop #pnlBody {
+.largeViewport #pnlBody {
     position: absolute;
 }
-.desktop #pnlFooter {
+.largeViewport #pnlFooter {
     position: absolute;
     bottom: 0px;
 }
-.desktop .copyright {
+.largeViewport .copyright {
     position: absolute;
     z-index: 1;
 }
-.desktop #pnlGreyOut {
+.largeViewport #pnlGreyOut {
     top: 0px;
     left: 0px;
 }

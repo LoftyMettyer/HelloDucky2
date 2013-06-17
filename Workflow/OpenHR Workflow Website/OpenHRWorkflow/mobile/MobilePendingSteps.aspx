@@ -10,7 +10,7 @@
         <title>OpenHR Mobile</title>
     </head>
     
-    <body class="desktop">
+    <body>
         <form id="form1" runat="server">
 
             <div id="pnlPage" runat="server" style="overflow: hidden;">
