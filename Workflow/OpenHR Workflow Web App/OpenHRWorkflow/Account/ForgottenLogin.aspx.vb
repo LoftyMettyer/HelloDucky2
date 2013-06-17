@@ -22,4 +22,8 @@ Partial Class ForgottenLogin
 
   End Sub
 
+	Public Function CanChangeInputTypeToEmail() As Boolean
+		Return IsMobileBrowser() Or IsTablet()
+	End Function
+
 End Class

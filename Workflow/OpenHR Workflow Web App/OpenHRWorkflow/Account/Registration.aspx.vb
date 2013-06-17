@@ -24,4 +24,8 @@ Partial Class Registration
 
    End Sub
 
+	Public Function CanChangeInputTypeToEmail() As Boolean
+		Return IsMobileBrowser() Or IsTablet()
+	End Function
+
 End Class

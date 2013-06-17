@@ -2,21 +2,23 @@
 
 <asp:Content ID="head" ContentPlaceHolderID="headCPH" Runat="Server">   
     <script  type="text/javascript">
-        // <!CDATA[
-        window.onload = function () {
+    	// <!CDATA[
+    	<% If CanChangeInputTypeToEmail() Then %>
+    	window.onload = function () {
             document.getElementById('<%= txtEmail.ClientID %>').setAttribute('type', 'email');
         };
+		<% End If %>
+		
+      function submitCheck() {
 
-        function submitCheck() {
+			var header = 'Request Failed';
 
-            var header = 'Request Failed';
-
-            if (document.getElementById('<%= txtEmail.ClientID %>').value.trim().length === 0) {
-                showDialog(header, 'Email address is required.');
-                return false;
-            }
-            return true;
-        }
+         if (document.getElementById('<%= txtEmail.ClientID %>').value.trim().length === 0) {
+				showDialog(header, 'Email address is required.');
+            return false;
+         }
+         return true;
+     }
     // ]]>
     </script>
 </asp:Content>

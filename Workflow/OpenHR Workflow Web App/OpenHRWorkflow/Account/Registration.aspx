@@ -2,11 +2,12 @@
 
 <asp:Content ID="head" ContentPlaceHolderID="headCPH" Runat="Server">
     <script type="text/javascript">
-        // <!CDATA[
+    	// <!CDATA[
+    	<% If CanChangeInputTypeToEmail() Then %>
         window.onload = function() {
             document.getElementById('<%= txtEmail.ClientID %>').setAttribute('type', 'email');
         };
-
+		<% End If %>
         function submitCheck() {
 
             var header = 'Registration Failed';
