@@ -1258,7 +1258,8 @@ Public Class [Default]
 				Case 21 ' Tab Strip
 
 					'split out the tab names to calculate number of tabs - may not have loaded all tabs yet, so can't count them.
-					Dim arrTabCaptions As String() = formItem.Caption.Split(New Char() {";"c})
+					Dim arrTabCaptions As List(Of String) = formItem.Caption.Split(New Char() {";"c}).ToList()
+					arrTabCaptions.RemoveAt(arrTabCaptions.Count - 1)
 
 					pnlTabsDiv.Style("width") = formItem.Width & "px"
 					pnlTabsDiv.Style("height") = formItem.Height & "px"
