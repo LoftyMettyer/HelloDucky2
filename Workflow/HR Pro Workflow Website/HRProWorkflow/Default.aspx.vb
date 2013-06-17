@@ -944,7 +944,7 @@ Public Class _Default
 
                                         objNumberFormatInfo = DirectCast(Thread.CurrentThread.CurrentCulture.NumberFormat.Clone, NumberFormatInfo)
                                         objNumberFormatInfo.NumberDecimalDigits = NullSafeInteger(dr("inputDecimals"))
-                                        objNumberFormatInfo.NumberGroupSeparator = vbNullString
+                                        objNumberFormatInfo.NumberGroupSeparator = ""
                                         .NumberFormat = objNumberFormatInfo
 
                                         .Style("position") = "absolute"
