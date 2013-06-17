@@ -3292,7 +3292,7 @@ Public Class _Default
             If (TypeOf ctlFormInput Is System.Web.UI.WebControls.TextBox) Then
               ctlFormTextInput = DirectCast(ctlFormInput, System.Web.UI.WebControls.TextBox)
 
-              If (ctlFrmTextInput.Text = vbNullString) Or (ctlFormTextInput.Text = "  /  /") Then
+              If (ctlFormTextInput.Text = vbNullString) Or (ctlFormTextInput.Text = "  /  /") Then
                 sDateValueString = "null"
               Else
                 sDateValueString = objGeneral.ConvertLocaleDateToSQL(ctlFormTextInput.Text)
