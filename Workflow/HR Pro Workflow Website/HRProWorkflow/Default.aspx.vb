@@ -331,7 +331,7 @@ Public Class _Default
                         msDatabase = Mid(sTemp, InStr(sTemp, vbTab) + 1)
                     End Try
                 Catch theError As Exception
-                    sMessage = "Invalid query string, resulting in the following error:<BR><BR>" & theError.Message
+                    sMessage = "Invalid query string."
                 End Try
             End If
         End If
