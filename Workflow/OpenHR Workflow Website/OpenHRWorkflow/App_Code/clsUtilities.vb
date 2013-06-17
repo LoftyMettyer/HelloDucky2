@@ -162,6 +162,18 @@ Public Class Utilities
     Return False
   End Function
 
+  Public Shared Function BrowserRequiresFieldsetAdjustment() As Boolean
+    'Absolutely positioning controls inside a fieldset is hit and miss across browsers
+    'The top zero position maybe considered either the physical top of the control or
+    'underneath the legend.
+
+    'If radio buttons inside an option group appear too low, add the browser to the list below.
+    If HttpContext.Current.Request.ServerVariables("HTTP_USER_AGENT").ToLower.Contains("fennec") Then
+      Return True
+    End If
+    Return False
+  End Function
+
   Public Shared Function IsTablet() As Boolean
 
     Dim ua As String = HttpContext.Current.Request.UserAgent.ToUpper
