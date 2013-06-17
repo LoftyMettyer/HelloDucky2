@@ -143,7 +143,7 @@
 				<td width="10" bgcolor="<%=ColourThemeHex()%>"></td>
 				<td width="40" bgcolor="White"></td>
 				<td align="center" bgcolor="White">
-					<font face='Verdana' style="color:#333366; FONT-SIZE:<%=MessageFontSize()%>pt">
+					<font face='Verdana' style="color:#333366; font-size:<%=MessageFontSize()%>pt">
 						<%=Session("message")%>
 					</font>
 				</td>
@@ -161,7 +161,7 @@
 				<td width="10" bgcolor="<%=ColourThemeHex()%>"></td>
 				<td width="40" bgcolor="White"></td>
 				<td align="center" bgcolor="White">
-					<font face='Verdana' style="color:#333366; FONT-SIZE:<%=MessageFontSize()%>pt">
+					<font face='Verdana' style="color:#333366; font-size:<%=MessageFontSize()%>pt">
 						<asp:Label ID="lblPrompt1" 
 								runat="server" Text="Click">
 							</asp:Label> 

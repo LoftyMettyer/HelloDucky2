@@ -124,7 +124,7 @@
 				<td width="10" bgcolor="<%=ColourThemeHex()%>"></td>
 				<td width="40" bgcolor="White"></td>
 				<td align="center" bgcolor="White" nowrap>
-						<font face='Verdana' style="color:#333366; FONT-SIZE:<%=MessageFontSize()%>pt">
+						<font face='Verdana' style="color:#333366; font-size:<%=MessageFontSize()%>pt">
 							<asp:Label ID="Label1" 
 								runat="server" Text="Session timeout.">
 							</asp:Label> 
@@ -137,7 +137,7 @@
 			<tr height="100%">
 				<td width="10" bgcolor="<%=ColourThemeHex()%>"></td>
 				<td colspan="3" align="center" bgcolor="White">
-					<font face='Verdana' style="color:#333366; FONT-SIZE:<%=MessageFontSize()%>pt">
+					<font face='Verdana' style="color:#333366; font-size:<%=MessageFontSize()%>pt">
 							<asp:Label ID="Label2" 
 								runat="server" Text="Click">
 							</asp:Label> 
