@@ -1011,10 +1011,10 @@ Public Class RecordSelector
       '.Style.Add("position", "absolute")
       '.Style.Add("width", "")
 
-      If MyBase.PageCount < 2 Then
-        ' Hide pager nav controls if there's only one page.
-        .Style.Add("display", "none")
-      End If
+      'If MyBase.PageCount < 2 Then
+      '  ' Hide pager nav controls if there's only one page.
+      '  .Style.Add("display", "none")
+      'End If
     End With
 
     Dim tblPager As Table = New Table()
@@ -1072,7 +1072,7 @@ Public Class RecordSelector
     With imgSearchImg
       .Style.Add("position", "absolute")
       .Style.Add("top", "4px")
-      .Style.Add("left", "140px")
+      .Style.Add("left", "136px")
       .Style.Add("height", "15px")
       .Style.Add("width", "15px")
       .ImageUrl = "Images/search.gif"
@@ -1209,7 +1209,8 @@ Public Class RecordSelector
 
     Dim tcPagerDDL As TableCell = New TableCell()
     With tcPagerDDL
-      .ID = "tcPagerDDL"
+      ' .ID = "tcPagerDDL"
+      .Attributes.Add("id", MyBase.ID.Replace("Grid", "") & "tcPagerDDL") ' add as an attribute to ensure unique ID (other ctlxxx is added at runtime)
       .Font.Size = FontUnit.Parse(strPagerFontSize)
       .Font.Name = HeaderStyle.Font.Name
       .Style.Add("width", "30%")
@@ -1251,9 +1252,11 @@ Public Class RecordSelector
 
     'add cells to row
     trPager.Cells.Add(tcSearchCell)
-    trPager.Cells.Add(tcPageXofY)
-    trPager.Cells.Add(tcPagerBtns)
-    trPager.Cells.Add(tcPagerDDL)
+    If MyBase.PageCount > 1 Then
+      trPager.Cells.Add(tcPageXofY)
+      trPager.Cells.Add(tcPagerBtns)
+      trPager.Cells.Add(tcPagerDDL)
+    End If
 
     'add row to table
     tblPager.Rows.Add(trPager)

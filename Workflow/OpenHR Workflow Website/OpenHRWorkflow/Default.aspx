@@ -1018,47 +1018,59 @@
 //	    }
 
 function ResizeComboForForm(sender, args) {
-      psWebComboID = sender._id;
+  psWebComboID = sender._id;
             
-			var iResizeByHeight = 0;
-			var iResizeByWidth = 0;
+	var iResizeByHeight = 0;
+	var iResizeByWidth = 0;
 
-      //Let's set the width of the lookup panel to the width of the screen. 
-      //It used to resize the screen, but don't want this happening now.
+  //Let's set the width of the lookup panel to the width of the screen. 
+  //It used to resize the screen, but don't want this happening now.
 
-			try {			
-                var oEl = document.getElementById(psWebComboID.replace("dde", ""));
-                if(eval(oEl)) 
-                {
-                  if (oEl.offsetWidth > $get("bdyMain").clientWidth)
-                  {
-                    iNewWidth = $get("bdyMain").clientWidth - oEl.offsetLeft - 5 + "px";
+	try {			
+    var oEl = document.getElementById(psWebComboID.replace("dde", ""));
+    if(eval(oEl)) 
+    {
+      if (oEl.offsetWidth > $get("bdyMain").clientWidth)
+      {
+        iNewWidth = $get("bdyMain").clientWidth - oEl.offsetLeft - 5 + "px";
                     
-                    oEl.style.width = iNewWidth;
-                    document.getElementById(psWebComboID.replace("dde", "gridcontainer")).style.width = oEl.style.width;
-                  }   
+        oEl.style.width = iNewWidth;
+        document.getElementById(psWebComboID.replace("dde", "gridcontainer")).style.width = oEl.style.width;
+      }   
                   
-                  //also set left position to 0 if required (right coord > bymain.width)
-                  //alert(oEl.offsetLeft + oEl.offsetWidth + ":" + bdyMain.clientWidth);
-                  if ((oEl.offsetLeft + oEl.offsetWidth) > $get("bdyMain").clientWidth)
-                  {
-                    oEl.style.left = "0px";
-                  }                                                 
+      //also set left position to 0 if required (right coord > bymain.width)
+      if ((oEl.offsetLeft + oEl.offsetWidth) > $get("bdyMain").clientWidth)
+      {
+        oEl.style.left = "0px";
+      }                                                 
                   
-                  //Hide the navigation icons as required
-                  if(oEl.offsetWidth<420) {
-                    document.getElementById(psWebComboID.replace("dde", "tcSearch")).style.visibility = "hidden";
-                    document.getElementById(psWebComboID.replace("dde", "tcSearch")).style.display = "none";
-                  }
-                  else {
-                    document.getElementById(psWebComboID.replace("dde", "tcSearch")).style.visibility = "visible";
-                    document.getElementById(psWebComboID.replace("dde", "tcSearch")).style.display = "block";
-                  }
-                }
-                
-            }
-      catch(e) {}
+      //Hide the navigation icons as required
+      //if the control is paged, min width is 420px before hiding the search box
+      var oElDDL = document.getElementById(psWebComboID.replace("dde", "tcPagerDDL"));
 
+      if(eval(oElDDL)) {
+        if(oEl.offsetWidth<420) {
+          document.getElementById(psWebComboID.replace("dde", "tcSearch")).style.visibility = "hidden";
+          document.getElementById(psWebComboID.replace("dde", "tcSearch")).style.display = "none";
+        }
+        else {
+          document.getElementById(psWebComboID.replace("dde", "tcSearch")).style.visibility = "visible";
+          document.getElementById(psWebComboID.replace("dde", "tcSearch")).style.display = "block";
+        }
+      }
+      else {
+        if(oEl.offsetWidth<250) {
+          document.getElementById(psWebComboID.replace("dde", "tcSearch")).style.visibility = "hidden";
+          document.getElementById(psWebComboID.replace("dde", "tcSearch")).style.display = "none";
+        }
+        else {
+          document.getElementById(psWebComboID.replace("dde", "tcSearch")).style.visibility = "visible";
+          document.getElementById(psWebComboID.replace("dde", "tcSearch")).style.display = "block";
+        }                    
+      }
+    }
+  }
+  catch(e) {}
 }
 
 
