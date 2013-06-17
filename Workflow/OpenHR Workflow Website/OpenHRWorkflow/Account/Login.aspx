@@ -32,7 +32,7 @@
     <table class="controlgrid">
         <tr>
             <td><asp:Label runat="server" ID="lblUserName" Text="Username"/></td>
-            <td><asp:TextBox runat="server" ID="txtUserName" /></td>
+            <td><asp:TextBox runat="server" ID="txtUserName"/></td>
         </tr>
         <tr>
             <td><asp:Label runat="server" ID="lblPassword" Text="Password"/></td>
@@ -55,12 +55,20 @@
             <asp:LinkButton ID="btnLoginButton" runat="server"  OnClientClick="return submitCheck();">
                 <asp:Image runat="server" ID="btnLogin"/>
                 <asp:Label runat="server" ID="btnLogin_Label"/>
-            </asp:LinkButton></li><li>
+            </asp:LinkButton>
+        </li>
+        <li>
             <asp:HyperLink runat="server" NavigateUrl="~/Account/ForgottenLogin.aspx">
                 <asp:Image runat="server" ID="btnForgotPwd"  />
                 <asp:Label runat="server" ID="btnForgotPwd_label" />           
-            </asp:HyperLink></li><li>
+            </asp:HyperLink>
+        </li>
+        <li>
             <asp:HyperLink runat="server" NavigateUrl="~/Account/Registration.aspx">
                 <asp:Image runat="server" ID="btnRegister"/>
                 <asp:Label runat="server" ID="btnRegister_label"/>
-            </asp:HyperLink></li></ol></asp:Content>
+            </asp:HyperLink>
+        </li>
+    </ol>
+                                                               
+</asp:Content>

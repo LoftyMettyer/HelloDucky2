@@ -14,10 +14,9 @@ Partial Class Login
   Protected Sub BtnLoginClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnLoginButton.Click
 
     Dim sMessage As String = ""
-    Dim userName As String = txtUserName.Text.Trim
 
-    ' Check if the system is locked
     Try
+      ' Check if the system is locked
       If Database.IsSystemLocked() Then
         sMessage = "Database locked." & vbCrLf & "Contact your system administrator."
       End If
@@ -27,19 +26,10 @@ Partial Class Login
 
     ' Continue with authentication
     If sMessage.Length = 0 Then
-
       Try
-        Dim valid As Boolean
-
-        If userName.IndexOf("\") > 0 Then
-          'Active dirctory authentication
-          valid = Security.ValidateActiveDirectoryUser(userName.Split("\"c)(0), userName.Split("\"c)(1), txtPassword.Text)
-        Else
-          'Sql server authentication
-          valid = Security.ValidateSqlServerUser(userName, txtPassword.Text)
+        If Not Security.ValidateUser(txtUserName.Text.Trim, txtPassword.Text) Then
+          sMessage = "The user name or password provided is incorrect."
         End If
-
-        If Not valid Then sMessage = "The user name or password provided is incorrect."
       Catch ex As Exception
         sMessage = ex.Message
       End Try
@@ -48,7 +38,7 @@ Partial Class Login
 
     If sMessage.Length = 0 Then
       Try
-        Dim result As CheckLoginResult = Database.CheckLoginDetails(userName)
+        Dim result As CheckLoginResult = Database.CheckLoginDetails(txtUserName.Text.Trim)
         If Not result.Valid Then
           sMessage = result.InvalidReason
         End If
@@ -60,7 +50,7 @@ Partial Class Login
     If sMessage.Length > 0 Then
       CType(Master, Site).ShowDialog("Login Failed", sMessage, "")
     Else
-      FormsAuthentication.RedirectFromLoginPage(userName, chkRememberPwd.Checked)
+      FormsAuthentication.RedirectFromLoginPage(txtUserName.Text.Trim, chkRememberPwd.Checked)
     End If
 
   End Sub

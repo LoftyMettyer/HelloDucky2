@@ -3,6 +3,16 @@ Imports System.DirectoryServices
 
 Public Class Security
 
+  Public Shared Function ValidateUser(userName As String, password As String) As Boolean
+
+    If userName.IndexOf("\") > 0 Then
+      Return ValidateActiveDirectoryUser(userName.Split("\"c)(0), userName.Split("\"c)(1), password)
+    Else
+      Return ValidateSqlServerUser(userName, password)
+    End If
+
+  End Function
+
   ''' <summary>
   ''' code from http://msdn.microsoft.com/en-us/library/ms180890%28v=vs.90%29.aspx
   ''' </summary>
