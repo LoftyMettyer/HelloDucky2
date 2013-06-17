@@ -281,7 +281,7 @@
 			catch (e) {}
 		}
 
-//		function resizeToFit(piWidth, piHeight) {
+		function resizeToFit(piWidth, piHeight) {
 //			var iDefHeight;
 //			var iDefWidth;
 //			var iResizeByHeight;
@@ -304,7 +304,7 @@
 //				window.parent.resizeBy(iResizeByWidth, iResizeByHeight);
 //			}
 //			catch (e) { }
-//		}
+		}
 
 		function launchForms(psForms, pfFirstFormRelocate) {
 			var asForms;

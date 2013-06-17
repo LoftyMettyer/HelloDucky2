@@ -3394,7 +3394,8 @@ Public Class _Default
               sFormValidation1 = sFormValidation1 & sIDString & CStr(IIf(ctlFormCheckBox.Checked, "1", "0")) & vbTab
             End If
 
-          Case 7 ' Date Input                  
+          Case 7 ' Date Input
+
             If (TypeOf ctlFormInput Is Infragistics.WebUI.WebSchedule.WebDateChooser) Then
               ctlFormDateInput = DirectCast(ctlFormInput, Infragistics.WebUI.WebSchedule.WebDateChooser)
 
@@ -3416,8 +3417,12 @@ Public Class _Default
                 sDateValueString = "null"
               Else
                 ctlForm_HiddenField = DirectCast(pnlInput.FindControl(sID & "Value"), HiddenField)
-                sDateValueString = Format(DateTime.Parse(ctlForm_HiddenField.Value), "MM/dd/yyyy")
-                'sDateValueString = objGeneral.ConvertLocaleDateToSQL(ctlForm_HiddenField.Value)
+                If ctlForm_HiddenField.Value.ToString = "" Then
+                  sDateValueString = "null"
+                Else
+                  sDateValueString = Format(DateTime.Parse(ctlForm_HiddenField.Value), "MM/dd/yyyy")
+                  'sDateValueString = objGeneral.ConvertLocaleDateToSQL(ctlForm_HiddenField.Value)
+                End If
               End If
 
               'ctlFormHTMLInputText = DirectCast(ctlFormInput, HtmlInputText)
