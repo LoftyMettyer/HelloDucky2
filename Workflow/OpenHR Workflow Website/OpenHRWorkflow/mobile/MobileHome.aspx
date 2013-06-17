@@ -21,13 +21,13 @@
             
             //window.scrollTo(0, 1);
 
-            if (form1.hdnItemCount.value == 0) {
-                lblNothingTodo.style.visibility = "visible";
-                lblNothingTodo.style.display = "block";
+            if (document.getElementById('hdnItemCount').value == 0) {
+                document.getElementById('lblNothingTodo').style.visibility = "visible";
+                document.getElementById('lblNothingTodo').style.display = "block";
             }
             else {
-                lblWelcome.style.visibility = "visible";
-                lblWelcome.style.display = "block";
+                document.getElementById('lblWelcome').style.visibility = "visible";
+                document.getElementById('lblWelcome').style.display = "block";
             }
             
             try{

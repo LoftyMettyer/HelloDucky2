@@ -241,7 +241,7 @@ Partial Class Home
                            " WHERE [p].[itemID] IN (" & _
                                " SELECT [itemID] FROM [ASRSysPermissionItems]	" & _
                                 " WHERE [categoryID] = (SELECT [categoryID] FROM [ASRSysPermissionCategories] WHERE [categoryKey] = '" & wfCategoryKey & "')) " & _
-                           " AND [groupName] = (SELECT [Name] FROM [ASRSysGroups] WHERE [ID] = " & groupId.ToString & ")"
+                                " AND [groupName] = (SELECT [Name] FROM [ASRSysGroups] WHERE [ID] = " & groupId.ToString & ")"
       Try
         command = New SqlClient.SqlCommand(sql, myConnection)
         reader = command.ExecuteReader()

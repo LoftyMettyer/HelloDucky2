@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"/>
     <title>OpenHR Mobile </title>
     
-<style>
+<style type="text/css">
 body {
     font-family: Verdana;
     }
@@ -24,8 +24,7 @@ dh {
     padding: 12px 10px;
     text-decoration: none;
     text-shadow: 0px 1px 0px #fff;
-    background-image: -webkit-gradient(linear, left top, left bottom, 
-                                       from(#ccc), to(#999));
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#ccc), to(#999));
     }    
 
 </style>
@@ -35,15 +34,13 @@ dh {
 
         function window_onload() {
 
-            //window.scrollTo(0, 1);
-            
-            if (form1.hdnStepCount.value == 0) {
-              lblNothingTodo.style.visibility = "visible";
-              lblNothingTodo.style.display = "block";
+            if (document.getElementById('hdnStepCount').value == 0) {
+                document.getElementById('lblNothingTodo').style.visibility = "visible";
+                document.getElementById('lblNothingTodo').style.display = "block";
             }
             else {
-              lblInstruction.style.visibility = "visible";
-              lblInstruction.style.display = "block";
+                document.getElementById('lblInstruction').style.visibility = "visible";
+                document.getElementById('lblInstruction').style.display = "block";
             }
         }
 
@@ -60,11 +57,9 @@ dh {
           <div id="ScrollerFrame" runat="server" style="position:fixed;left:0px;top:57px;z-index:1;bottom:60px;width:100%">
             <div id="pnlBody"  runat="server" style="position:absolute;width:100%;height:100%;z-index:1">      
                   
-              <div runat="server" id="pnlWFList" style="width:100%;height:100%;top:40px;bottom:0px;overflow:auto">
-    
+              <div runat="server" id="pnlWFList" style="width:100%;height:100%;top:40px;bottom:0px;overflow:auto">                  
                 <label id="lblNothingTodo" runat="server" style="visibility:hidden;display:none;margin:15px;">You have nothing in your 'To Do' list.</label>
                 <label id="lblInstruction" runat="server" style="visibility:hidden;display:none;margin:15px;">Click on a 'to do' item to view the details and complete your action.</label>
-
               </div>
 
             </div>
@@ -86,12 +81,7 @@ dh {
               </tr>
             </table>
           </div>        
-
- 
-        </div>
-
-
- 
+    </div>
 
     <asp:HiddenField ID="hdnStepCount" runat="server" Value="0" />
 
