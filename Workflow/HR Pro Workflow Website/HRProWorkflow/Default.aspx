@@ -194,10 +194,39 @@
 		}
 
 		function TraverseDOM(obj, lvl, actionFunc) {
+		    var sControlType;
+		    var sFormInputPrefix = "forminput_";
+		    var sGridSuffix = "Grid";
+		    
 			for (var i = 0; i < obj.childNodes.length; i++) {
 				var childObj = obj.childNodes[i];
 
-				if (childObj.tagName) {
+                // Close any lookup/dropdown grids.
+                try
+                {
+                    if (childObj.id != undefined) {
+                        if (childObj.id.substr(0, "forminput_".length) == "forminput_")
+                        {
+                            sControlType = childObj.id.substr(childObj.id.indexOf("_")+1);
+                            sControlType = sControlType.substr(sControlType.indexOf("_")+1);
+                            sControlType = sControlType.substring(0, sControlType.indexOf("_"));
+
+                            if ((sControlType == 13)
+                                || (sControlType == 14))
+                            {
+                                if ((childObj.id.substr(0, sFormInputPrefix.length) == sFormInputPrefix) &&
+                                    (childObj.id.substr(childObj.id.length - sGridSuffix.length) != sGridSuffix))
+                                {
+                                    igcmbo_getComboById(childObj.id).setDropDown(false);
+                                }
+                            }
+                        }
+                    }
+                }
+                catch(e){}
+
+				if (childObj.tagName) 
+				{
 					actionFunc(childObj);
 				}
 
@@ -855,8 +884,8 @@
                         }
 	                }
                 }
-		    }
-		    catch (e) {}
+            }
+            catch (e) {}
 
 	        return false;
 		}
