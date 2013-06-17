@@ -8,6 +8,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" id="htmMain">
 
 <meta http-equiv="refresh" content="<%=Session("TimeoutSecs")%>;URL=timeout.aspx" />
+<meta name="format-detection" content="telephone=no">
 <!--<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=1;"/>-->
 <!--<meta name="viewport" content="width=700; user-scalable=1;"/>-->
 
@@ -163,7 +164,7 @@
       //Set the current page tab to page 1
       iCurrentTab = 1;
       SetCurrentTab(iCurrentTab);
-          
+
 			try {
 				iDefHeight = $get("frmMain").hdnFormHeight.value;
         //iDefHeight = $get("bdyMain").offsetHeight;
@@ -179,6 +180,7 @@
 					window.parent.resizeBy(iResizeByWidth, iResizeByHeight);
 				}
 				
+
 
 				try {
 					if ($get("frmMain").hdnFirstControl.value.length > 0) {
