@@ -27,24 +27,36 @@ Public Class WebSiteInstaller
       metaSitePath = "IIS://" & Environment.MachineName & targetSite & "/ROOT/" & targetVDir
 
 		'Setup correct authentication
-		Dim iis As Object
-		iis = GetIISObject(metaSitePath)
-      iis.AuthAnonymous = True
-      iis.AuthBasic = False
-      iis.AuthMD5 = False
-      iis.AuthPassport = False
-      iis.AuthNTLM = False
-      iis.SetInfo()
+		Try
+			'IIS6+
+			Dim iis As Object = GetIISObject(metaSitePath)
+			iis.AuthAnonymous = True
+			iis.AuthBasic = False
+			iis.AuthMD5 = False
+			iis.AuthPassport = False
+			iis.AuthNTLM = False
+		Catch ex As Exception
+			'IIS5
+			Dim iis As Object = GetIISObject(metaSitePath)
+			iis.AuthAnonymous = True
+			iis.AuthBasic = False
+			iis.AuthNTLM = False
+			iis.SetInfo()
+		End Try
 
-		Dim metaAppPoolPath As String = "IIS://" & System.Environment.MachineName & "/W3SVC/AppPools"
+		Try
+			Dim metaAppPoolPath As String = "IIS://" & System.Environment.MachineName & "/W3SVC/AppPools"
 
-		If Not AppPoolExists(metaAppPoolPath, AppPoolName) Then
-			CreateAppPool(metaAppPoolPath, AppPoolName)
-		End If
+			If Not AppPoolExists(metaAppPoolPath, AppPoolName) Then
+				CreateAppPool(metaAppPoolPath, AppPoolName)
+			End If
 
-		If AppPoolExists(metaAppPoolPath, AppPoolName) Then
-			AssignVDirToAppPool(metaSitePath, AppPoolName)
-		End If
+			If AppPoolExists(metaAppPoolPath, AppPoolName) Then
+				AssignVDirToAppPool(metaSitePath, AppPoolName)
+			End If
+		Catch ex As Exception
+			'Fails for II5
+		End Try
 
 		'Retrieve the "Friendly Site Name" from IIS for TargetSite
 		Dim entry As DirectoryEntry = New DirectoryEntry("IIS://" & Environment.MachineName & targetSite)
@@ -62,7 +74,7 @@ Public Class WebSiteInstaller
 
 		config.Save()
 
-   End Sub
+	End Sub
 
    Private Function GetIISObject(ByVal strFullObjectPath As String) As Object
 
