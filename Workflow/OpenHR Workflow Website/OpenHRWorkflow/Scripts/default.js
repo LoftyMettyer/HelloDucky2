@@ -80,8 +80,8 @@
 	            if ((iDefHeight > 0) && (iDefWidth > 0)) {
 	                iResizeByHeight = iDefHeight - getWindowHeight();
 	                iResizeByWidth = iDefWidth - getWindowWidth();
-	                window.parent.moveTo((screen.availWidth - iDefWidth) / 2, (screen.availHeight - iDefHeight) / 3);
-	                window.parent.resizeBy(iResizeByWidth, iResizeByHeight);				  
+	                window.parent.resizeBy(iResizeByWidth, iResizeByHeight);	
+	                window.parent.moveTo((screen.availWidth - iDefWidth) / 2, (screen.availHeight - iDefHeight) / 3);			  
 	            }
 				
 	            try {
