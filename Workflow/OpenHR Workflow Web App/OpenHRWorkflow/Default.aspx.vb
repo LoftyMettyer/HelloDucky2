@@ -609,7 +609,7 @@ Public Class [Default]
 					End If
 
 						If formItem.Caption.Trim.Length > 0 Then
-							html += String.Format("<legend>{0}</legend>", formItem.Caption) & vbCrLf
+						html += String.Format("<legend style='{0}'>{1}</legend>", GetColorCss(formItem, True), formItem.Caption) & vbCrLf
 						End If
 
 						html += "</fieldset>" & vbCrLf
