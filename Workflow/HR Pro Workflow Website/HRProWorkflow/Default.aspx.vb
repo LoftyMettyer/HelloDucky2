@@ -1509,9 +1509,6 @@ Public Class _Default
                                         .HeadFontSize = NullSafeSingle(dr("HeadFontSize"))
                                         .HeadLines = NullSafeInteger(dr("Headlines"))
 
-                                        ' set top row as default item
-                                        .SelectedIndex = 0
-
                                         .TabIndex = CShort(NullSafeInteger(dr("tabIndex")) + 1)
 
                                         If (iMinTabIndex < 0) Or (NullSafeInteger(dr("tabIndex")) < iMinTabIndex) Then
@@ -1729,11 +1726,45 @@ Public Class _Default
                                                 ctlForm_PagingGridView.IsEmpty = False
                                                 ctlForm_PagingGridView.DataSource = dt
                                                 ctlForm_PagingGridView.DataBind()
+
                                             Else
                                                 ''                                                
                                                 ctlForm_PagingGridView.IsEmpty = True
                                                 ShowNoResultFound(dt, ctlForm_PagingGridView)
                                             End If
+
+                                            ' ------------------------------------------------
+                                            ' Set default/first row
+                                            ' ------------------------------------------------
+                                            If ctlForm_PagingGridView.Rows.Count > 0 Then
+                                                If CStr(dr("value")).Length > 0 Then
+                                                    Dim iIndexColumnNumber As Integer = dt.Columns.IndexOf("ID")
+                                                    Dim iRowNumber As Long = 0
+
+                                                    For Each rRow As DataRow In dt.Rows
+                                                        If rRow.Item(iIndexColumnNumber).ToString = CStr(dr("value")) Then
+
+                                                            ' set selected page index
+                                                            Dim iCurrentPage As Long = iRowNumber \ ctlForm_PagingGridView.PageSize
+                                                            ctlForm_PagingGridView.PageIndex = CInt(iCurrentPage)
+
+                                                            ' set row number
+                                                            Dim iCurrentRow As Long = iRowNumber Mod ctlForm_PagingGridView.PageSize
+                                                            ctlForm_PagingGridView.SelectedIndex = CInt(iCurrentRow)
+
+                                                            ctlForm_PagingGridView.DataBind()
+                                                            Exit For
+
+                                                        End If
+
+                                                        iRowNumber += 1
+                                                    Next
+                                                Else
+                                                    ' set top row as default item
+                                                    ctlForm_PagingGridView.SelectedIndex = 0
+                                                End If
+                                            End If
+
 
                                             'drGrid.Close()
                                             'drGrid = Nothing
@@ -1824,24 +1855,6 @@ Public Class _Default
                                             '' ''    objGridColumn = Nothing
                                             '' ''End If
 
-                                            ' '' Select the first row (if available).
-                                            ' ''If ctlForm_RecordSelectionGrid.Rows.Count > 0 Then
-                                            ' ''    If CStr(dr("value")).Length > 0 Then
-
-                                            ' ''        'objGridCell = .Columns(iIDColumnIndex).Find(NullSafeString(dr("value")))
-
-                                            ' ''        'If Not objGridCell Is Nothing Then
-                                            ' ''        '    .Rows(objGridCell.Row.Index).Selected = True
-                                            ' ''        '    .Rows(objGridCell.Row.Index).Activated = True
-                                            ' ''        'Else
-                                            ' ''        '    .Rows(0).Selected = True
-                                            ' ''        '    .Rows(0).Activated = True
-                                            ' ''        'End If
-                                            ' ''    Else
-                                            ' ''        '.Rows(0).Selected = True
-                                            ' ''        '.Rows(0).Activated = True
-                                            ' ''    End If
-                                            ' ''End If
 
                                         Catch ex As Exception
                                             sMessage = "Error loading web form grid values:<BR><BR>" & _
