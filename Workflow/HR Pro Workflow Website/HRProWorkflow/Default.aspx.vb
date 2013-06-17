@@ -3001,7 +3001,7 @@ Public Class _Default
                     sImageFileName = Session.SessionID().ToString & _
                      "_" & miImageCount.ToString & _
                      "_" & NullSafeString(dr("name")).Replace("%", "%-")
-                    sTempName = sImageFilePath & "\" & sImageFileName
+                    sTempName = sImageFilePath & "\" & Server.UrlEncode(sImageFileName)
 
                     ' Create a file to hold the output.
                     fs = New System.IO.FileStream(sTempName, IO.FileMode.OpenOrCreate, IO.FileAccess.Write)
@@ -3036,7 +3036,7 @@ Public Class _Default
                 cmdSelect.Dispose()
 
                 ' Ensure URL encoding doesn't stuff up the picture name, so encode the % character as %25.
-                LoadPicture = Server.UrlEncode("pictures/" & sImageFileName)
+                LoadPicture = "pictures/" & Server.UrlEncode(sImageFileName)
 
             Catch ex As Exception
                 LoadPicture = ""
