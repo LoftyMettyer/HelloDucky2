@@ -7,10 +7,11 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" id="htmMain">
 <meta http-equiv="refresh" content="<%=Session("TimeoutSecs")%>;URL=timeout.aspx" />
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=1;"/>
 
 <head runat="server">
 	  <title></title>	  
-    <script src="Scripts/resizable-table.js" type="text/javascript"></script>
+    <script src="Scripts/resizable-table.js" type="text/javascript"></script>	 
 </head>
 
 <body id="bdyMain" onload="return window_onload()" scroll="auto" style="overflow: auto;  
@@ -19,6 +20,8 @@
 		style="position: absolute; right: 1px; bottom: 1px; display: none; visibility: hidden;
 		z-index: 1;" onclick="showErrorMessages(true);" />
 	<form runat="server" hidefocus="true" id="frmMain" onsubmit="return submitForm();">
+	
+
 	
 		<script language="javascript" type="text/javascript">
   var app = Sys.Application
@@ -55,17 +58,17 @@
       var sControlType;
       var oldgridSelectedColor;
 			var ScrollTopPos;
-           
+          
 			try {
-				iDefHeight = frmMain.hdnFormHeight.value;
-				iDefWidth = frmMain.hdnFormWidth.value;
-
-				bdyMain.bgColor = frmMain.hdnColourThemeHex.value;
-
+				iDefHeight = $get("frmMain").hdnFormHeight.value;
+				iDefWidth = $get("frmMain").hdnFormWidth.value;
+				$get("bdyMain").bgColor = $get("frmMain").hdnColourThemeHex.value;
+				
 				window.focus();
 
 				if ((iDefHeight > 0) && (iDefWidth > 0)) {
 					iResizeByHeight = iDefHeight - document.documentElement.clientHeight;
+			
 					iResizeByWidth = iDefWidth - document.documentElement.clientWidth;
 					window.parent.moveTo((screen.availWidth - iDefWidth) / 2, (screen.availHeight - iDefHeight) / 3);
 					window.parent.resizeBy(iResizeByWidth, iResizeByHeight);
@@ -73,29 +76,29 @@
 				
 
 				try {
-					if (frmMain.hdnFirstControl.value.length > 0) {
-					    sControlType = frmMain.hdnFirstControl.value.substr(frmMain.hdnFirstControl.value.indexOf("_")+1);
+					if ($get("frmMain").hdnFirstControl.value.length > 0) {
+					    sControlType = $get("frmMain").hdnFirstControl.value.substr($get("frmMain").hdnFirstControl.value.indexOf("_")+1);
                         sControlType = sControlType.substr(sControlType.indexOf("_")+1);
                         sControlType = sControlType.substring(0, sControlType.indexOf("_"));
 
                         if (sControlType == 7)
                         {
                             // Date (7)
-                            igdrp_getComboById(frmMain.hdnFirstControl.value).focus();
+                            igdrp_getComboById($get("frmMain").hdnFirstControl.value).focus();
                         }
                         else
                         {
                             if ((sControlType == 13)
                                 || (sControlType == 14))
                             {
-                                igcmbo_getComboById(frmMain.hdnFirstControl.value).focus();
+                                igcmbo_getComboById($get("frmMain").hdnFirstControl.value).focus();
                             }
                             else
                             {
                                 if (sControlType == 11)
                                 {
                                     // Record Selector (11)
-                                    var grid = igtbl_getGridById(frmMain.hdnFirstControl.value);
+                                    var grid = igtbl_getGridById($get("frmMain").hdnFirstControl.value);
                                     var oRows = grid.Rows;
                                     grid.Element.focus(); 
                                     
@@ -110,7 +113,7 @@
                                 }
                                 else
                                 {
-						            document.getElementById(frmMain.hdnFirstControl.value).setActive();
+						            document.getElementById($get("frmMain").hdnFirstControl.value).setActive();
 						        }
 						    }
                         }
@@ -126,7 +129,7 @@
 				}
 
 
-				launchForms(frmMain.hdnSiblingForms.value, false);
+				launchForms($get("frmMain").hdnSiblingForms.value, false);
 			}
 			catch (e) {}
 		}
@@ -138,8 +141,8 @@
 			var iResizeByWidth;
 
 			try {
-				iDefHeight = frmMain.hdnFormHeight.value;
-				iDefWidth = frmMain.hdnFormWidth.value;
+				iDefHeight = $get("frmMain").hdnFormHeight.value;
+				iDefWidth = $get("frmMain").hdnFormWidth.value;
 
 				iResizeByHeight = piHeight - htmMain.clientHeight;
 				iResizeByWidth = piWidth - htmMain.clientWidth;
@@ -221,19 +224,19 @@
 
 		function goSubmit() {
 				
-		if(txtPostbackMode.value=="2") {
+		if($get("txtPostbackMode").value=="2") {
 		  try {
-		    if(txtActiveDDE.value.indexOf("dde")>0) {
+		    if($get("txtActiveDDE").value.indexOf("dde")>0) {
 		      //keep the lookup open.
 		      //kicks off InitializeLookup BTW.
-		      $find(txtActiveDDE.value).show();
+		      $find($get("txtActiveDDE").value).show();
 		    }
 		  }
 		  catch (e) {}
 		  return;			
 		}
 		//document.all.pleasewaitScreen.style.pixelTop = (document.body.scrollTop + 50);
-		document.all.pleasewaitScreen.style.visibility="visible";
+		$get("pleasewaitScreen").style.visibility="visible";
 		
 			disableChildElements("pnlInput");
 			showErrorMessages(false);
@@ -318,34 +321,38 @@
 
 		function showErrorMessages(pfDisplay) {
 		
-			if (((frmMain.hdnCount_Errors.value > 0)			
-				|| (frmMain.hdnCount_Warnings.value > 0))
+			if ((($get("frmMain").hdnCount_Errors.value > 0)			
+				|| ($get("frmMain").hdnCount_Warnings.value > 0))
 				&& (pfDisplay == false)) {
-				imgErrorMessages_Max.style.display = "block";
-				imgErrorMessages_Max.style.visibility = "visible";
+				$get("imgErrorMessages_Max").style.display = "block";
+				$get("imgErrorMessages_Max").style.visibility = "visible";
 			}
 			else {
-				imgErrorMessages_Max.style.display = "none";
-				imgErrorMessages_Max.style.visibility = "hidden";
+				$get("imgErrorMessages_Max").style.display = "none";
+				$get("imgErrorMessages_Max").style.visibility = "hidden";
 			}
+
+
+			// Removed all transitions in the following block as they're IE only
 
 			if (pfDisplay == true) {
 			  //refresh the errors WARP panel. 
 			  __doPostBack('pnlErrorMessages', '');
 				//divErrorMessages_Inner.style.visibility = "visible";
-				divErrorMessages_Outer.style.filter = "revealTrans(duration=0.3, transition=4)";
-				divErrorMessages_Outer.filters.revealTrans.apply();
-				divErrorMessages_Outer.style.display = "block";
-				divErrorMessages_Outer.style.visibility = "visible";
-				divErrorMessages_Outer.filters.revealTrans.play();
+				
+				//divErrorMessages_Outer.style.filter = "revealTrans(duration=0.3, transition=4)";
+				//divErrorMessages_Outer.filters.revealTrans.apply();
+				$get("divErrorMessages_Outer").style.display = "block";
+				$get("divErrorMessages_Outer").style.visibility = "visible";
+				//divErrorMessages_Outer.filters.revealTrans.play();
 			}
 			else {
-				divErrorMessages_Outer.style.filter = "revealTrans(duration=0.3, transition=5)";
-				divErrorMessages_Outer.filters.revealTrans.apply();
-				divErrorMessages_Outer.style.visibility = "hidden";
+				//divErrorMessages_Outer.style.filter = "revealTrans(duration=0.3, transition=5)";
+				//divErrorMessages_Outer.filters.revealTrans.apply();
+				$get("divErrorMessages_Outer").style.visibility = "hidden";
 				//divErrorMessages_Outer.style.display = "none";
 				//divErrorMessages_Inner.style.visibility = "hidden";
-				divErrorMessages_Outer.filters.revealTrans.play();
+				//divErrorMessages_Outer.filters.revealTrans.play();
 			}
 		}
 
@@ -358,13 +365,13 @@
 				return;
 			};
 
-			frmMain.hdnOverrideWarnings.value = 1;
+			$get("frmMain").hdnOverrideWarnings.value = 1;
 
 			try {
 				document.getElementById(frmMain.hdnLastButtonClicked.value).click();
 			}
 			catch (e) {
-				frmMain.btnSubmit.click();
+				$get("frmMain").btnSubmit.click();
 			}
 		}
 
@@ -544,7 +551,7 @@
 					}
 					catch (e) { }
 
-					document.all.ifrmFileUpload.src = "FileUpload.aspx?" + sAlreadyUploaded + psElementItemID;
+					$get("ifrmFileUpload").src = "FileUpload.aspx?" + sAlreadyUploaded + psElementItemID;
 
 					showErrorMessages(false);
 
@@ -568,7 +575,7 @@
 
 					setPostbackMode(3);
 					
-					frmMain.btnReEnableControls.click();
+					$get("frmMain").btnReEnableControls.click();
 
 					divInput.disabled = false;
 					divErrorMessages_Outer.disabled = false;
@@ -588,10 +595,10 @@
 					var sID = "fileforminput_" + psElementItemID + "_17_";
 
 					if (piExitMode == 2) {
-						frmMain.elements.namedItem(sID).value = "1";
+						$get("frmMain").elements.namedItem(sID).value = "1";
 					}
 					else {
-						frmMain.elements.namedItem(sID).value = "0";
+						$get("frmMain").elements.namedItem(sID).value = "0";
 					}
 				}
 
@@ -612,21 +619,21 @@
 
 		function showMessage() {				
 		
-		document.all.pleasewaitScreen.style.visibility="hidden";
+		$get("pleasewaitScreen").style.visibility="hidden";
 		
 		//Reapply resizable column functionality to tables
 		//This is put here to ensure functionality is reapplied after partial/full postback.
 		ResizableColumns();
 		
-    if(txtActiveDDE.value.indexOf("dde")>0) {
+    if($get("txtActiveDDE").value.indexOf("dde")>0) {
       try {  
-        $find(txtActiveDDE.value).show();
-        txtActiveDDE.value="";
+        $find($get("txtActiveDDE").value).show();        
+        $get("txtActiveDDE").value="";        
       }
       catch (e) {}      
     }		
 		    
-		if(txtPostbackMode.value==2) {
+		if($get("txtPostbackMode").value==2) {
 		    //ShowMessage is the sub called in lieu of Application:EndRequest, i.e. Pretty much the end of
 		    //the postback cycle. So we'll reset all grid scroll bars to their previous position
 		    SetScrollTopPos("", "-1");		    
@@ -634,24 +641,24 @@
       
       
 			try {
-				if (frmMain.hdnErrorMessage.value.length > 0) {
+				if ($get("frmMain").hdnErrorMessage.value.length > 0) {
 					showSubmissionMessage();
 					return;
 				}
 
-				if(txtPostbackMode.value!="2") refreshLiterals();
+				if($get("txtPostbackMode").value!="2") refreshLiterals();
 
-				if ((txtPostbackMode.value == 2)
-                    || (txtPostbackMode.value == 3)) 
+				if (($get("txtPostbackMode").value == 2)
+                    || ($get("txtPostbackMode").value == 3)) 
                 {
 					// 0 = Default
 					// 1 = Submit/SaveForLater button postback (ie. WebForm submission)
 					// 2 = Grid header postback
 					// 3 = FileUpload button postback
 					
-					if (txtPostbackMode.value == 3) 
+					if ($get("txtPostbackMode").value == 3) 
 					{
-					    document.all.ifrmFileUpload.contentWindow.enableControls();
+					    $get("ifrmFileUpload").contentWindow.enableControls();
           }
           // not doing this causes the object referenced is null error:
 					setPostbackMode(0);
@@ -659,24 +666,40 @@
 					
 				}
 
-				if ((frmMain.hdnCount_Errors.value > 0)
-			        || (frmMain.hdnCount_Warnings.value > 0)) {
+				if (($get("frmMain").hdnCount_Errors.value > 0)
+			        || ($get("frmMain").hdnCount_Warnings.value > 0)) {
 					showErrorMessages(true);
 				}
 				else {
-					if (frmMain.hdnNoSubmissionMessage.value == 1) {
+					if ($get("frmMain").hdnNoSubmissionMessage.value == 1) {
 						try {
-							if (frmMain.hdnFollowOnForms.value.length > 0) {
-								launchFollowOnForms(frmMain.hdnFollowOnForms.value);
+							if ($get("frmMain").hdnFollowOnForms.value.length > 0) {
+								launchFollowOnForms($get("frmMain").hdnFollowOnForms.value);
 							}
-							else {
-								window.close();
+							else {							
+							  if(navigator.userAgent.indexOf("MSIE")>0) {
+							    //Only IE can self-close windows that it didn't open
+								  window.close();
+								}
+								else
+								{
+								  // Non-IE browsers can't self-close windows.
+								  //show Please Wait box, with 'please close me' text
+								  disableChildElements("pnlInput");
+								  $get("pleasewaitScreen").style.visibility="visible";
+								  $get("pleasewaitScreen").style.width="200px";
+
+                  labelCtl = document.getElementById("pleasewaitText");
+                  if (null != labelCtl) {
+                    labelCtl.innerHTML = "Workflow completed.<BR/><BR/>Please close your browser.";                    
+                  }								  
+								}
 							}
 						}
 						catch (e) { };
 					}
 					else {
-						if (txtPostbackMode.value == 1) {
+						if ($get("txtPostbackMode").value == 1) {
 							showSubmissionMessage();
 						}
 					}
@@ -687,34 +710,35 @@
 		}
 
 		function showSubmissionMessage() {
+		  //Rem out all transitions as only IE can run 'em
 			try {
-				document.all.ifrmMessages.src = "SubmissionMessage.aspx";
+				$get("ifrmMessages").src = "SubmissionMessage.aspx";
 
-				divInput.disabled = true;
-				frmMain.hdnCount_Errors.value = 0;
-				frmMain.hdnCount_Warnings.value = 0;
-				divErrorMessages_Outer.style.display = "none";
+				$get("divInput").disabled = true;
+				$get("frmMain").hdnCount_Errors.value = 0;
+				$get("frmMain").hdnCount_Warnings.value = 0;
+				$get("divErrorMessages_Outer").style.display = "none";
 				showErrorMessages(false);
-				divSubmissionMessages.style.filter = "revealTrans(duration=0.5, transition=12)";
-				divSubmissionMessages.filters.revealTrans.apply();
-				divSubmissionMessages.style.display = "block";
-				divSubmissionMessages.style.visibility = "visible";
-				divSubmissionMessages.filters.revealTrans.play();
+				//$get("divSubmissionMessages").style.filter = "revealTrans(duration=0.5, transition=12)";
+				//$get("divSubmissionMessages").filters.revealTrans.apply();
+				$get("divSubmissionMessages").style.display = "block";
+				$get("divSubmissionMessages").style.visibility = "visible";
+				//$get("divSubmissionMessages").filters.revealTrans.play();
 			}
 			catch (e) { }
 		}
 
 		function unblockFileUploadDIV() {
 			try {
-				if ((divFileUpload.style.visibility == "hidden") &&
-					(divFileUpload.style.display != "none")) {
-					divFileUpload.style.display = "none";
+				if (($get("divFileUpload").style.visibility == "hidden") &&
+					($get("divFileUpload").style.display != "none")) {
+					$get("divFileUpload").style.display = "none";
 				}
 			}
 			catch (e) { }
 
 			try {
-				document.getElementById(txtActiveElement.value).setActive();
+				document.getElementById($get("txtActiveElement").value).setActive();
 			}
 			catch (e) { }
 		}
@@ -902,9 +926,9 @@ function ResizeComboForForm(sender, args) {
                 var oEl = document.getElementById(psWebComboID.replace("dde", ""));
                 if(eval(oEl)) 
                 {
-                  if (oEl.offsetWidth > bdyMain.clientWidth)
+                  if (oEl.offsetWidth > $get("bdyMain").clientWidth)
                   {
-                    iNewWidth = bdyMain.clientWidth - oEl.offsetLeft - 5 + "px";
+                    iNewWidth = $get("bdyMain").clientWidth - oEl.offsetLeft - 5 + "px";
                     
                     oEl.style.width = iNewWidth;
                     document.getElementById(psWebComboID.replace("dde", "gridcontainer")).style.width = oEl.style.width;
@@ -912,14 +936,13 @@ function ResizeComboForForm(sender, args) {
                   
                   //also set left position to 0 if required (right coord > bymain.width)
                   //alert(oEl.offsetLeft + oEl.offsetWidth + ":" + bdyMain.clientWidth);
-                  if ((oEl.offsetLeft + oEl.offsetWidth) > bdyMain.clientWidth)
+                  if ((oEl.offsetLeft + oEl.offsetWidth) > $get("bdyMain").clientWidth)
                   {
                     oEl.style.left = "0px";
                   }                                                 
                 }
             }
       catch(e) {}
-
 
 }
 
@@ -938,11 +961,11 @@ function ResizeComboForForm(sender, args) {
 	    
   function InitializeLookup(sender, args) {
   
-  if(txtActiveDDE.value.indexOf("dde")>=0) {
+  if($get("txtActiveDDE").value.indexOf("dde")>=0) {
     // If we're in the process of displaying a filtered lookup already, do nothing and exit the function...
     return;
   }
-	
+
 	        var sSelectWhere = "";
 	        var sValueID = "";
 	        var sValueType = "";
@@ -1121,7 +1144,9 @@ function ResizeComboForForm(sender, args) {
                           }
                           
                           //This prevents the lookup closing after the filter is applied/removed
-                          txtActiveDDE.value = psWebComboID;
+                          
+                          $get("txtActiveDDE").value = psWebComboID;
+                          
                           setPostbackMode(2);
                           
                           //These lines hide the lookup dropdown until it's filled with data.
@@ -1165,7 +1190,7 @@ function Right(str, n){
     if(iPos==-1) {
     // -1 is the 'code' to reset scrollbar to stored position
     //Loop through all hidden scroll fields and reset values.
-    var controlCollection = frmMain.elements;
+    var controlCollection = $get("frmMain").elements;
 	    if (controlCollection!=null) 
 	    {
 		    for (i=0; i<controlCollection.length; i++)  
@@ -1196,13 +1221,13 @@ function Right(str, n){
         Web Form Validation Error Messages
         -->        
 
-<div id="pleasewaitScreen" style="position:absolute;z-index:5;top:30%;width:150px;left:50%;margin-left:-75px;visibility:hidden">
-			<table border="0" cellspacing="0" cellpadding="0" style="top: 0px; left: 0px; width: 150px;
-        height: 60px; position: relative; text-align: center; font-size: 10pt; color: black;
+<div id="pleasewaitScreen" style="position:absolute;z-index:5;top:30%;width:150px;height:60px;left:50%;margin-left:-75px;visibility:hidden">
+			<table border="0" cellspacing="0" cellpadding="10" style="top: 0px; left: 0px; width: 100%;
+        height: 100%; position: relative; text-align: center; font-size: 10pt; color: black;
         font-family: Verdana; border: black 1px solid;" bgcolor="White">
 				<tr>
 					<td style="width:100%;height:100%;background-color:White;text-align:center;vertical-align:middle">
-								Processing...<br><br>Please wait.<br>
+								<label id="pleasewaitText">Processing...<br/><br/>Please wait.<br/></label>
 					</td>
 				</tr>
 			</table>

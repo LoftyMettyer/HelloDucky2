@@ -20,12 +20,12 @@
 //		iResizeByHeight = frmMessage.offsetParent.scrollHeight - frmMessage.offsetParent.clientHeight;
 		iResizeByHeight = window.document.documentElement.scrollHeight - window.document.documentElement.clientHeight;
 		
-		if (frmMessage.offsetParent.offsetHeight + iResizeByHeight > screen.availHeight) 
+		if ($get("frmMessage").offsetParent.offsetHeight + iResizeByHeight > screen.availHeight) 
 		{
 			try
 			{
 				window.parent.moveTo((screen.width - frmMessage.offsetParent.offsetWidth) / 2, 0);
-				window.parent.resizeTo(frmMessage.offsetParent.offsetWidth, screen.availHeight);
+				window.parent.resizeTo($get("frmMessage").offsetParent.offsetWidth, screen.availHeight);
 			}
 			catch(e) {}
 		}
@@ -33,15 +33,15 @@
 		{
 			try
 			{
-				window.parent.moveTo((screen.width - frmMessage.offsetParent.offsetWidth) / 2, (screen.availHeight - (frmMessage.offsetParent.offsetHeight + iResizeByHeight)) / 3);
+				window.parent.moveTo((screen.width - $get("frmMessage").offsetParent.offsetWidth) / 2, (screen.availHeight - ($get("frmMessage").offsetParent.offsetHeight + iResizeByHeight)) / 3);
 				window.parent.resizeBy(0, iResizeByHeight);
 			}
 			catch(e) {}
 		}
 
-		if(frmMessage.offsetParent.scrollWidth < iMINWIDTH)
+		if($get("frmMessage").offsetParent.scrollWidth < iMINWIDTH)
 		{
-			iResizeByWidth = iMINWIDTH - frmMessage.offsetParent.clientWidth;
+			iResizeByWidth = iMINWIDTH - $get("frmMessage").offsetParent.clientWidth;
 		}
 		else
 		{
@@ -51,12 +51,12 @@
 
 		//alert(iResizeByWidth);
 
-		if (frmMessage.offsetParent.offsetWidth + iResizeByWidth > screen.width) 
+		if ($get("frmMessage").offsetParent.offsetWidth + iResizeByWidth > screen.width) 
 		{
 			try
 			{
-				window.parent.moveTo(0, (screen.availHeight - frmMessage.offsetParent.offsetHeight) / 3);
-				window.parent.resizeTo(screen.width, frmMessage.offsetParent.offsetHeight);
+				window.parent.moveTo(0, (screen.availHeight - $get("frmMessage").offsetParent.offsetHeight) / 3);
+				window.parent.resizeTo(screen.width, $get("frmMessage").offsetParent.offsetHeight);
 			}
 			catch(e) {}
 		}
@@ -64,7 +64,7 @@
 		{
 			try
 			{
-				window.parent.moveTo((screen.width - (frmMessage.offsetParent.offsetWidth + iResizeByWidth)) / 2, (screen.availHeight - frmMessage.offsetParent.offsetHeight) / 3);
+				window.parent.moveTo((screen.width - ($get("frmMessage").offsetParent.offsetWidth + iResizeByWidth)) / 2, (screen.availHeight - $get("frmMessage").offsetParent.offsetHeight) / 3);
 				window.parent.resizeBy(iResizeByWidth, 0);
 			}
 			catch(e) {}
@@ -74,12 +74,12 @@
 		//iResizeByHeight = frmMessage.offsetParent.scrollHeight - frmMessage.offsetParent.clientHeight;
 		iResizeByHeight = window.document.documentElement.scrollHeight - window.document.documentElement.clientHeight;
 
-		if (frmMessage.offsetParent.offsetHeight + iResizeByHeight > screen.availHeight) 
+		if ($get("frmMessage").offsetParent.offsetHeight + iResizeByHeight > screen.availHeight) 
 		{
 			try
 			{
-				window.parent.moveTo((screen.width - frmMessage.offsetParent.offsetWidth) / 2, 0);
-				window.parent.resizeTo(frmMessage.offsetParent.offsetWidth, screen.availHeight);
+				window.parent.moveTo((screen.width - $get("frmMessage").offsetParent.offsetWidth) / 2, 0);
+				window.parent.resizeTo($get("frmMessage").offsetParent.offsetWidth, screen.availHeight);
 			}
 			catch(e) {}
 		}
@@ -87,7 +87,7 @@
 		{
 			try
 			{
-				window.parent.moveTo((screen.width - frmMessage.offsetParent.offsetWidth) / 2, (screen.availHeight - (frmMessage.offsetParent.offsetHeight + iResizeByHeight)) / 3);
+				window.parent.moveTo((screen.width - $get("frmMessage").offsetParent.offsetWidth) / 2, (screen.availHeight - ($get("frmMessage").offsetParent.offsetHeight + iResizeByHeight)) / 3);
 				window.parent.resizeBy(0, iResizeByHeight);
 			}
 			catch(e) {}

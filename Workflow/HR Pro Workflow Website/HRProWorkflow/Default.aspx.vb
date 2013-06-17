@@ -834,6 +834,7 @@ Public Class _Default
                                         .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
                                         .Style("word-wrap") = "break-word"
                                         .Style("overflow") = "auto"
+                                        .Style("resize") = "none"
 
                                         If NullSafeBoolean(dr("PasswordType")) Then
                                             .TextMode = TextBoxMode.Password

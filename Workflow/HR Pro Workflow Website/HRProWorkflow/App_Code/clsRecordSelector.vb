@@ -60,7 +60,7 @@ Public Class RecordSelector
                     customHeader.Cells(iColCount).Text = Replace(customHeader.Cells(iColCount).Text, "_", " ")
                     If MyBase.Rows.Count > 1 Then
                         If IsLookup Then
-                            customHeader.Cells(iColCount).Attributes("onclick") = ("txtActiveDDE.value='" & grdGrid.ID.Replace("Grid", "dde") & "';try{setPostbackMode(2);}catch(e){};if(event.ctrlKey){__doPostBack('" & MyBase.UniqueID & "','Sort$" & customHeader.Cells(iColCount).Text & "+');}else{__doPostBack('" & MyBase.UniqueID & "','Sort$") & customHeader.Cells(iColCount).Text & "');}"
+                            customHeader.Cells(iColCount).Attributes("onclick") = ("$get('txtActiveDDE').value='" & grdGrid.ID.Replace("Grid", "dde") & "';try{setPostbackMode(2);}catch(e){};if(event.ctrlKey){__doPostBack('" & MyBase.UniqueID & "','Sort$" & customHeader.Cells(iColCount).Text & "+');}else{__doPostBack('" & MyBase.UniqueID & "','Sort$") & customHeader.Cells(iColCount).Text & "');}"
                         Else
                             customHeader.Cells(iColCount).Attributes("onclick") = ("try{setPostbackMode(2);}catch(e){};if(event.ctrlKey){__doPostBack('" & MyBase.UniqueID & "','Sort$" & customHeader.Cells(iColCount).Text & "+');}else{__doPostBack('" & MyBase.UniqueID & "','Sort$") & customHeader.Cells(iColCount).Text & "');}"
                         End If
@@ -1008,7 +1008,7 @@ Public Class RecordSelector
             .ImageAlign = ImageAlign.AbsMiddle
             .Style.Add("cursor", "pointer")
             .CausesValidation = False
-            .Attributes.Add("onclick", IIf(IsLookup, "try{txtActiveDDE.value='" & grdGrid.ID.Replace("Grid", "dde") & "';setPostbackMode(2);}catch(e){};", "try{setPostbackMode(2);}catch(e){};"))
+            .Attributes.Add("onclick", IIf(IsLookup, "try{$get('txtActiveDDE').value='" & grdGrid.ID.Replace("Grid", "dde") & "';setPostbackMode(2);}catch(e){};", "try{setPostbackMode(2);}catch(e){};"))
             AddHandler .Command, AddressOf Me.PagerCommand
         End With
 
@@ -1020,7 +1020,7 @@ Public Class RecordSelector
             .ImageAlign = ImageAlign.AbsMiddle
             .Style.Add("cursor", "pointer")
             .CausesValidation = False
-            .Attributes.Add("onclick", IIf(IsLookup, "try{txtActiveDDE.value='" & grdGrid.ID.Replace("Grid", "dde") & "';setPostbackMode(2);}catch(e){};", "try{setPostbackMode(2);}catch(e){};"))
+            .Attributes.Add("onclick", IIf(IsLookup, "try{$get('txtActiveDDE').value='" & grdGrid.ID.Replace("Grid", "dde") & "';setPostbackMode(2);}catch(e){};", "try{setPostbackMode(2);}catch(e){};"))
             AddHandler .Command, AddressOf Me.PagerCommand
         End With
 
@@ -1034,7 +1034,7 @@ Public Class RecordSelector
             .ImageAlign = ImageAlign.AbsMiddle
             .Style.Add("cursor", "pointer")
             .CausesValidation = False
-            .Attributes.Add("onclick", IIf(IsLookup, "try{txtActiveDDE.value='" & grdGrid.ID.Replace("Grid", "dde") & "';setPostbackMode(2);}catch(e){};", "try{setPostbackMode(2);}catch(e){};"))
+            .Attributes.Add("onclick", IIf(IsLookup, "try{$get('txtActiveDDE').value='" & grdGrid.ID.Replace("Grid", "dde") & "';setPostbackMode(2);}catch(e){};", "try{setPostbackMode(2);}catch(e){};"))
             AddHandler .Command, AddressOf Me.PagerCommand
         End With
 
@@ -1046,7 +1046,7 @@ Public Class RecordSelector
             .ImageAlign = ImageAlign.AbsMiddle
             .Style.Add("cursor", "pointer")
             .CausesValidation = False
-            .Attributes.Add("onclick", IIf(IsLookup, "try{txtActiveDDE.value='" & grdGrid.ID.Replace("Grid", "dde") & "';setPostbackMode(2);}catch(e){};", "try{setPostbackMode(2);}catch(e){};"))
+            .Attributes.Add("onclick", IIf(IsLookup, "try{$get('txtActiveDDE').value='" & grdGrid.ID.Replace("Grid", "dde") & "';setPostbackMode(2);}catch(e){};", "try{setPostbackMode(2);}catch(e){};"))
             AddHandler .Command, AddressOf Me.PagerCommand
         End With
 
@@ -1105,7 +1105,7 @@ Public Class RecordSelector
             .SelectedIndex = Me.PageIndex
             .CausesValidation = False
             .Attributes.Add("onclick", "event.cancelBubble=true;")
-            .Attributes.Add("onchange", IIf(IsLookup, "try{txtActiveDDE.value='" & grdGrid.ID.Replace("Grid", "dde") & "';setPostbackMode(2);}catch(e){};", "try{setPostbackMode(2);}catch(e){};"))
+            .Attributes.Add("onchange", IIf(IsLookup, "try{$get('txtActiveDDE').value='" & grdGrid.ID.Replace("Grid", "dde") & "';setPostbackMode(2);}catch(e){};", "try{setPostbackMode(2);}catch(e){};"))
             AddHandler .SelectedIndexChanged, AddressOf Me.ddlPages_SelectedIndexChanged
         End With
 
