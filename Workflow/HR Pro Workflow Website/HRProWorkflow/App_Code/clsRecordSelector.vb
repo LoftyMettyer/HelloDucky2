@@ -598,7 +598,7 @@ Public Class RecordSelector
             ddl = DirectCast(Parent.FindControl(grdGrid.ID.Replace("Grid", "TextBox")), DropDownList)
 
             ddl.Items.Clear()
-            ddl.Items.Add(grdGrid.Rows(grdGrid.SelectedIndex).Cells(grdGrid.Attributes("LookupColumnIndex")).Text)
+            ddl.Items.Add(HttpUtility.HtmlDecode(grdGrid.Rows(grdGrid.SelectedIndex).Cells(grdGrid.Attributes("LookupColumnIndex")).Text).ToString())
             ddl.SelectedIndex = 0
         End If
     End Sub
