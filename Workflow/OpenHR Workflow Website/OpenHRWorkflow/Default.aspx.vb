@@ -227,6 +227,7 @@ Public Class _Default
     sTitle = sDEFAULTTITLE
     iPageTabCount = 0
 
+
     Try
       mobjConfig.Initialise(Server.MapPath("themes/ThemeHex.xml"))
 
@@ -3780,7 +3781,6 @@ Public Class _Default
 
         hdnErrorMessage.Value = sMessage
 
-
         sMessage1 = sMessage & "<BR><BR>Click "
         sMessage2 = "here"
         sMessage3 = " to close this form."
@@ -4482,6 +4482,7 @@ Public Class _Default
             Catch ex As Exception
               sMessage = "Error submitting the web form:<BR><BR>" & ex.Message
             End Try
+
           End Using
         End If
 
