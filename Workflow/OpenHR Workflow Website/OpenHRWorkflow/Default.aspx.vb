@@ -174,7 +174,7 @@ Public Class _Default
     Dim iDropHeight As Integer
     Dim iYOffset As Integer
     Dim sDefaultFocusControl As String
-    Dim ctlDefaultFocusControl As Control
+    Dim ctlDefaultFocusControl As New Control
     Dim fChecked As Boolean
     Dim ctlFormCheckBox As CheckBox
     Dim iWorkflowID As Integer
