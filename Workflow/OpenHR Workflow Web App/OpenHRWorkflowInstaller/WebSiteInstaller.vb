@@ -44,9 +44,9 @@ Public Class WebSiteInstaller
 			iis.SetInfo()
 		End Try
 
-		Try
-			Dim metaAppPoolPath As String = "IIS://" & System.Environment.MachineName & "/W3SVC/AppPools"
+		Dim metaAppPoolPath As String = "IIS://" & System.Environment.MachineName & "/W3SVC/AppPools"
 
+		Try 'These will only work for II6/II7+
 			If Not AppPoolExists(metaAppPoolPath, AppPoolName) Then
 				CreateAppPool(metaAppPoolPath, AppPoolName)
 			End If
@@ -55,8 +55,8 @@ Public Class WebSiteInstaller
 				AssignVDirToAppPool(metaSitePath, AppPoolName)
 			End If
 		Catch ex As Exception
-			'Fails for II5
 		End Try
+
 
 		'Retrieve the "Friendly Site Name" from IIS for TargetSite
 		Dim entry As DirectoryEntry = New DirectoryEntry("IIS://" & Environment.MachineName & targetSite)
@@ -102,10 +102,12 @@ Public Class WebSiteInstaller
 				Dim appPools As New DirectoryEntry(strMetabasePath)
 				Dim newPool = appPools.Children.Add(strAppPoolName, "IIsApplicationPool")
 
-				newPool.Properties("ManagedRuntimeVersion")(0) = "v4.0"
-				newPool.Properties("ManagedPipelineMode")(0) = 0
-				newPool.Properties("IdleTimeout")(0) = 60
-
+				Try 'These will only work for IIS7+
+					newPool.Properties("IdleTimeout")(0) = 60
+					newPool.Properties("ManagedPipelineMode")(0) = 0
+					newPool.Properties("ManagedRuntimeVersion")(0) = "v4.0"
+				Catch ex As Exception
+				End Try
 				newPool.CommitChanges()
 			Else
 				Throw New InstallException("Failed in CreateAppPool; application pools can only be created in the */W3SVC/AppPools node.")
