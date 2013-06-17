@@ -222,13 +222,13 @@ Public Class RecordSelector
       Dim iGridwidth As Integer
       iGridwidth = CInt(CalculateGridWidth.Replace("px", "").Replace("%", ""))
 
-      If iGridwidth >= 420 Or (IsLookup And MyBase.PageCount < 2) Then
-        writer.Write("     <input name='filter' style='font-size:8pt;font-style:italic;float:left;position:absolute;top:2px;left:3px;width:150px;height:15px;border:solid 1px gray' value='search..' " & _
-                     "onblur='if(this.value==""""){this.style.fontStyle=""italic"";this.style.color=""gray"";this.value=""search...""}'" & _
-                     "onfocus='if(this.value!=""""){this.style.color=""black"";this.style.fontStyle=""normal"";this.value=""""}' onclick='event.cancelBubble=true;'" & _
-                     "onkeyup='filterTable(this, " & Me.ClientID.ToString & ")' type='text'>")
-        writer.Write("<img src='Images/search.gif' style='position:absolute;top:4px;left:140px;height:15px;width:15px'/>")
-      End If
+      'If iGridwidth >= 420 Or (IsLookup And MyBase.PageCount < 2) Then
+      '  writer.Write("     <input name='filter' style='font-size:8pt;font-style:italic;float:left;position:absolute;top:2px;left:3px;width:150px;height:15px;border:solid 1px gray' value='search..' " & _
+      '               "onblur='if(this.value==""""){this.style.fontStyle=""italic"";this.style.color=""gray"";this.value=""search...""}'" & _
+      '               "onfocus='if(this.value!=""""){this.style.color=""black"";this.style.fontStyle=""normal"";this.value=""""}' onclick='event.cancelBubble=true;'" & _
+      '               "onkeyup='filterTable(this, " & Me.ClientID.ToString & ")' type='text'>")
+      '  writer.Write("<img src='Images/search.gif' style='position:absolute;top:4px;left:140px;height:15px;width:15px'/>")
+      'End If
       customPager.ApplyStyle(Me.PagerStyle)
       customPager.Visible = True
       customPager.RenderControl(writer)
@@ -999,11 +999,18 @@ Public Class RecordSelector
 
 
   Private Sub InitCustomPager(ByVal row As System.Web.UI.WebControls.GridViewRow, ByVal columnSpan As Integer, ByVal pagedDataSource As System.Web.UI.WebControls.PagedDataSource)
+
+    Dim strPagerFontSize As String = "7"
+
     Dim pnlPager As Panel = New Panel()
     With pnlPager
       .ID = "pnlPager"
+      .Height = CalculatePagerHeight().Replace("px", "")
       '.CssClass = Me.PagerStyle.CssClass
-      .Style.Add("float", "right")
+      '.Style.Add("float", "right")
+      '.Style.Add("position", "absolute")
+      '.Style.Add("width", "")
+
       If MyBase.PageCount < 2 Then
         ' Hide pager nav controls if there's only one page.
         .Style.Add("display", "none")
@@ -1013,7 +1020,7 @@ Public Class RecordSelector
     Dim tblPager As Table = New Table()
     With tblPager
       .ID = "tblPager"
-      .CellPadding = 3
+      '.CellPadding = 3
       .CellSpacing = 0
       .Style.Add("width", "100%")
       .Style.Add("height", "100%")
@@ -1024,7 +1031,8 @@ Public Class RecordSelector
     Dim trPager As TableRow = New TableRow()
     trPager.ID = "trPager"
     'trPager.Style.Add("float", "right")
-    trPager.Style.Add("width", "275px")
+    trPager.Style.Add("width", "100%")
+    trPager.Style.Add("border", "0px")
 
     Dim ltlPageIndex As Literal = New Literal()
     ltlPageIndex.ID = "ltlPageIndex"
@@ -1034,6 +1042,35 @@ Public Class RecordSelector
     ltlPageCount.ID = "ltlPageCount"
     ltlPageCount.Text = Me.PageCount.ToString()
 
+    Dim tcSearchCell As TableCell = New TableCell()
+    With tcSearchCell
+      .ID = "tcSearchCell"
+      .Style.Add("width", "150px")
+      .Style.Add("height", "100%")
+      .BorderStyle = WebControls.BorderStyle.None
+    End With
+
+    Dim txtSearchBox As TextBox = New TextBox
+    With txtSearchBox
+      .Style.Add("font-size", "8pt")
+      .Style.Add("font-style", "italic")
+      .Style.Add("float", "left")
+      '.Style.Add("position", "absolute")
+      .Style.Add("top", "2px")
+      .Style.Add("left", "3px")
+      .Style.Add("width", "150px")
+      .Style.Add("height", "15px")
+      .Style.Add("border", "solid 1px gray")
+      .Text = "search.."
+      .Attributes.Add("onblur", "if(this.value==""""){this.style.fontStyle=""italic"";this.style.color=""gray"";this.value=""search...""}")
+      .Attributes.Add("onfocus", "if(this.value!=""""){this.style.color=""black"";this.style.fontStyle=""normal"";this.value=""""}")
+      .Attributes.Add("onclick", "event.cancelBubble=true;")
+      .Attributes.Add("onkeyup", "filterTable(this, " & Me.ClientID.ToString & ")")
+
+    End With
+
+    tcSearchCell.Controls.Add(txtSearchBox)
+
     Dim tcPageXofY As TableCell = New TableCell()
     With tcPageXofY
       .ID = "tcPageXofY"
@@ -1042,7 +1079,7 @@ Public Class RecordSelector
       .Style.Add("padding-left", "5px")
       .Style.Add("border", "0px")
       .Height = Unit.Pixel(23)
-      .Font.Size = FontUnit.Parse("10px")
+      .Font.Size = FontUnit.Parse(strPagerFontSize)
       .Font.Name = HeaderStyle.Font.Name
       .Controls.Add(New LiteralControl("Page "))
       .Controls.Add(ltlPageIndex)
@@ -1146,7 +1183,7 @@ Public Class RecordSelector
     With ddlPages
       .ID = "ddlPages"
       ' .CssClass = "paging_gridview_pgr_ddl"
-      .Font.Size = FontUnit.Parse("10px")
+      .Font.Size = FontUnit.Parse(strPagerFontSize)
       .Font.Name = HeaderStyle.Font.Name
       .AutoPostBack = True
       For i As Integer = 1 To Me.PageCount Step +1
@@ -1162,7 +1199,7 @@ Public Class RecordSelector
     Dim tcPagerDDL As TableCell = New TableCell()
     With tcPagerDDL
       .ID = "tcPagerDDL"
-      .Font.Size = FontUnit.Parse("10px")
+      .Font.Size = FontUnit.Parse(strPagerFontSize)
       .Font.Name = HeaderStyle.Font.Name
       .Style.Add("width", "30%")
       .Style.Add("text-align", "right")
@@ -1173,7 +1210,10 @@ Public Class RecordSelector
       .Controls.Add(New LiteralControl("</td></tr></table>"))
     End With
 
-
+    If Me.Width.Value < 420 Then
+      tcSearchCell.Style.Add("display", "none")
+      tcSearchCell.Style.Add("visibility", "hidden")
+    End If
     ' Hide navigation buttons depending on width of Record Selector
     If Not IsLookup Then
       If MyBase.Width.Value < 175 Then
@@ -1196,6 +1236,7 @@ Public Class RecordSelector
 
 
     'add cells to row
+    trPager.Cells.Add(tcSearchCell)
     trPager.Cells.Add(tcPageXofY)
     trPager.Cells.Add(tcPagerBtns)
     trPager.Cells.Add(tcPagerDDL)
