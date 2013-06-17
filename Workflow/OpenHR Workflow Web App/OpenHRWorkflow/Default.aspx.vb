@@ -15,7 +15,7 @@ Public Class [Default]
 	Private _minTabIndex As Short?
 	Private _autoFocusControl As String
 
-	Private Const TabStripHeight As Integer = 31
+	Private Const TabStripHeight As Integer = 21
 	Private Const FormInputPrefix As String = "FI_"
 
 	Protected Sub Page_PreInit(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.PreInit
