@@ -10,6 +10,16 @@ Partial Class Home
 
   Protected Sub Page_Init(sender As Object, e As EventArgs) Handles Me.Init
 
+    Dim result As CheckLoginResult = Database.CheckLoginDetails(User.Identity.Name)
+    Dim userGroupID As Integer
+
+    If result.Valid Then
+      userGroupID = result.UserGroupID
+    Else
+      Session("message") = result.InvalidReason
+      Response.Redirect("~/Message.aspx")
+    End If
+
     Dim ctlFormHtmlGenericControl As HtmlGenericControl
     Dim ctlFormHtmlInputText As HtmlInputText
     Dim ctlFormImageButton As ImageButton
@@ -193,41 +203,39 @@ Partial Class Home
       btnChangePwd_label.Visible = False
     End If
 
-    Dim groupId As Integer, fUserHasRunPermission As Boolean
+    Dim userGroupHasPermission As Boolean
 
-    If Session("UserGroupID") <> "0" Then groupId = CInt(Session("UserGroupID"))
+    ' get the run permissions for workflow for this user group.
+    sql = "SELECT  [i].[itemKey], [p].[permitted]" & _
+                         " FROM [ASRSysGroupPermissions] p" & _
+                         " JOIN [ASRSysPermissionItems] i ON [p].[itemID] = [i].[itemID]" & _
+                         " WHERE [p].[itemID] IN (" & _
+                             " SELECT [itemID] FROM [ASRSysPermissionItems]	" & _
+                              " WHERE [categoryID] = (SELECT [categoryID] FROM [ASRSysPermissionCategories] WHERE [categoryKey] = 'WORKFLOW')) " & _
+                              " AND [groupName] = (SELECT [Name] FROM [ASRSysGroups] WHERE [ID] = " & userGroupID.ToString & ")"
+    Try
+      command = New SqlClient.SqlCommand(sql, myConnection)
+      reader = command.ExecuteReader()
 
-    If groupId <> 0 Then
+      While reader.Read()
+        Select Case reader("itemKey")
+          Case "RUN"
+            userGroupHasPermission = (reader("permitted") = True)
+        End Select
+      End While
 
-      ' get the run permissions for workflow for this user group.
-      sql = "SELECT  [i].[itemKey], [p].[permitted]" & _
-                           " FROM [ASRSysGroupPermissions] p" & _
-                           " JOIN [ASRSysPermissionItems] i ON [p].[itemID] = [i].[itemID]" & _
-                           " WHERE [p].[itemID] IN (" & _
-                               " SELECT [itemID] FROM [ASRSysPermissionItems]	" & _
-                                " WHERE [categoryID] = (SELECT [categoryID] FROM [ASRSysPermissionCategories] WHERE [categoryKey] = 'WORKFLOW')) " & _
-                                " AND [groupName] = (SELECT [Name] FROM [ASRSysGroups] WHERE [ID] = " & groupId.ToString & ")"
-      Try
-        command = New SqlClient.SqlCommand(sql, myConnection)
-        reader = command.ExecuteReader()
+      reader.Close()
+    Catch ex As Exception
 
-        While reader.Read()
-          Select Case reader("itemKey")
-            Case "RUN"
-              fUserHasRunPermission = (reader("permitted") = True)
-          End Select
-        End While
+    End Try
 
-        reader.Close()
-      Catch ex As Exception
+    If userGroupHasPermission Then
 
-      End Try
+      sql = "SELECT w.Id, w.Name, w.PictureID" & _
+            " FROM tbsys_mobilegroupworkflows gw" & _
+            " INNER JOIN tbsys_workflows w on gw.WorkflowID = w.ID" & _
+            " WHERE gw.UserGroupID = " & userGroupID & " AND w.enabled = 1 ORDER BY gw.Pos ASC"
 
-    End If
-
-    If fUserHasRunPermission Then
-
-      sql = "select w.Id, w.Name, w.PictureID from tbsys_mobilegroupworkflows gw inner join tbsys_workflows w on gw.WorkflowID = w.ID where gw.UserGroupID = " & groupId & " and w.enabled = 1 order by gw.Pos ASC"
       command = New SqlClient.SqlCommand(sql, myConnection)
 
       reader = command.ExecuteReader()
@@ -292,7 +300,7 @@ Partial Class Home
     myConnection.Close()
 
     ' Update the wf steps count
-    If fUserHasRunPermission Then
+    If userGroupHasPermission Then
 
       Dim count As Integer = GetPendingStepsCount()
       If count > 0 Then
@@ -438,31 +446,6 @@ Partial Class Home
 
   End Function
 
-  Private Function GetPendingStepsCount() As Integer
-
-    Using conn As New SqlClient.SqlConnection(Configuration.ConnectionString)
-
-      conn.Open()
-
-      Dim cmd As New SqlClient.SqlCommand
-      cmd.CommandText = "spASRSysMobileCheckPendingWorkflowSteps"
-      cmd.Connection = conn
-      cmd.CommandType = CommandType.StoredProcedure
-
-      cmd.Parameters.Add("@psKeyParameter", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
-      cmd.Parameters("@psKeyParameter").Value = User.Identity.Name
-
-      Dim dr As SqlClient.SqlDataReader = cmd.ExecuteReader
-
-      Dim count As Integer
-      While dr.Read
-        count += 1
-      End While
-      Return count
-    End Using
-
-  End Function
-
   Protected Sub BtnToDoListClick(sender As Object, e As ImageClickEventArgs) Handles btnToDoList.Click
     Response.Redirect("~/Mobile/MobilePendingSteps.aspx")
   End Sub
@@ -487,5 +470,29 @@ Partial Class Home
     Response.Redirect("~/MobileLogin.aspx")
   End Sub
 
+  Private Function GetPendingStepsCount() As Integer
+
+    Using conn As New SqlClient.SqlConnection(Configuration.ConnectionString)
+
+      conn.Open()
+
+      Dim cmd As New SqlClient.SqlCommand
+      cmd.CommandText = "spASRSysMobileCheckPendingWorkflowSteps"
+      cmd.Connection = conn
+      cmd.CommandType = CommandType.StoredProcedure
+
+      cmd.Parameters.Add("@psKeyParameter", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
+      cmd.Parameters("@psKeyParameter").Value = User.Identity.Name
+
+      Dim dr As SqlClient.SqlDataReader = cmd.ExecuteReader
+
+      Dim count As Integer
+      While dr.Read
+        count += 1
+      End While
+      Return count
+    End Using
+
+  End Function
 
 End Class

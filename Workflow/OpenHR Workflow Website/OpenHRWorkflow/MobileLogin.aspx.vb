@@ -294,7 +294,7 @@ Partial Class MobileLogin
 
     ' Check if the system is locked
     Try
-      If IsSystemLocked() Then
+      If Database.IsSystemLocked() Then
         sMessage = "Database locked." & vbCrLf & "Contact your system administrator."
       End If
     Catch ex As Exception
@@ -309,10 +309,10 @@ Partial Class MobileLogin
 
         If userName.IndexOf("\") > 0 Then
           'Active dirctory authentication
-          valid = ValidateUserActiveDirectory(userName.Split("\"c)(0), userName.Split("\"c)(1), txtPassword.Value)
+          valid = Users.ValidateUserActiveDirectory(userName.Split("\"c)(0), userName.Split("\"c)(1), txtPassword.Value)
         Else
           'Sql server authentication
-          valid = ValidateUserSqlServer(userName, txtPassword.Value)
+          valid = Users.ValidateUserSqlServer(userName, txtPassword.Value)
         End If
 
         If Not valid Then sMessage = "The user name or password provided is incorrect."
@@ -324,31 +324,10 @@ Partial Class MobileLogin
 
     If sMessage.Length = 0 Then
       Try
-        Using conn As New SqlClient.SqlConnection(Configuration.ConnectionString)
-
-          conn.Open()
-
-          Dim cmdCheck As SqlClient.SqlCommand
-          cmdCheck = New SqlClient.SqlCommand
-          cmdCheck.CommandText = "spASRSysMobileCheckLogin"
-          cmdCheck.Connection = conn
-          cmdCheck.CommandType = CommandType.StoredProcedure
-
-          cmdCheck.Parameters.Add("@psKeyParameter", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
-          cmdCheck.Parameters("@psKeyParameter").Value = userName
-
-          cmdCheck.Parameters.Add("@piUserGroupID", SqlDbType.Int).Direction = ParameterDirection.Output
-
-          cmdCheck.Parameters.Add("@psMessage", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Output
-
-          cmdCheck.ExecuteNonQuery()
-
-          sMessage = NullSafeString(cmdCheck.Parameters("@psMessage").Value())
-          Session("UserGroupID") = NullSafeInteger(cmdCheck.Parameters("@piUserGroupID").Value())
-
-          cmdCheck.Dispose()
-        End Using
-
+        Dim result As CheckLoginResult = Database.CheckLoginDetails(userName)
+        If Not result.Valid Then
+          sMessage = result.InvalidReason
+        End If
       Catch ex As Exception
         sMessage = "Error :" & vbCrLf & vbCrLf & ex.Message & vbCrLf & vbCrLf & "Contact your system administrator."
       End Try
@@ -387,56 +366,6 @@ Partial Class MobileLogin
   Protected Sub BtnForgotPwdClick(sender As Object, e As ImageClickEventArgs) Handles btnForgotPwd.Click
     Response.Redirect("~/MobileForgottenLogin.aspx")
   End Sub
-
-  Private Function ValidateUserActiveDirectory(domainName As String, userName As String, password As String) As Boolean
-
-    ' Path to youR LDAP directory server.
-    ' Contact your network administrator to obtain a valid path.
-
-    Dim adPath As String = "LDAP://" & Configuration.DefaultActiveDirectoryServer
-
-    Dim adAuth As New ActiveDirectoryValidator(adPath)
-
-    Return adAuth.IsAuthenticated(domainName, userName, password)
-
-  End Function
-
-  Private Function ValidateUserSqlServer(userName As String, password As String) As Boolean
-
-    Try
-      Using conn As New SqlClient.SqlConnection(Configuration.ConnectionStringFor(userName, password))
-        conn.Open()
-      End Using
-      Return True
-    Catch ex As Exception
-      Return False
-    End Try
-
-  End Function
-
-  Private Function IsSystemLocked() As Boolean
-
-    Using conn As New SqlClient.SqlConnection(Configuration.ConnectionString)
-
-      conn.Open()
-      ' Check if the database is locked.
-      Dim cmd = New SqlClient.SqlCommand
-      cmd.CommandText = "sp_ASRLockCheck"
-      cmd.Connection = conn
-      cmd.CommandType = CommandType.StoredProcedure
-      cmd.CommandTimeout = Configuration.SubmissionTimeoutInSeconds
-
-      Dim dr = cmd.ExecuteReader()
-
-      While dr.Read
-        ' Not a read-only lock.
-        If NullSafeInteger(dr("priority")) <> 3 Then Return True
-      End While
-
-      Return False
-    End Using
-
-  End Function
 
 End Class
 

@@ -10,6 +10,16 @@ Partial Class PendingSteps
 
   Protected Sub Page_Init(sender As Object, e As EventArgs) Handles Me.Init
 
+    Dim result As CheckLoginResult = Database.CheckLoginDetails(User.Identity.Name)
+    Dim userGroupID As Integer
+
+    If result.Valid Then
+      userGroupID = result.UserGroupID
+    Else
+      Session("message") = result.InvalidReason
+      Response.Redirect("~/Message.aspx")
+    End If
+
     Dim conn As SqlClient.SqlConnection
     Dim cmdSteps As SqlClient.SqlCommand
     Dim rstSteps As SqlClient.SqlDataReader
@@ -214,41 +224,33 @@ Partial Class PendingSteps
     conn = New SqlClient.SqlConnection(Configuration.ConnectionString)
     conn.Open()
 
-    Dim groupId As Integer
-    Dim fUserHasRunPermission As Boolean
+    Dim userGroupHasPermission As Boolean
 
-    If Session("UserGroupID") <> "0" Then groupId = CInt(Session("UserGroupID"))
+    ' get the run permissions for workflow for this user group.
+    sql = "SELECT  [i].[itemKey], [p].[permitted]" & _
+                          " FROM [ASRSysGroupPermissions] p" & _
+                          " JOIN [ASRSysPermissionItems] i ON [p].[itemID] = [i].[itemID]" & _
+                          " WHERE [p].[itemID] IN (" & _
+                              " SELECT [itemID] FROM [ASRSysPermissionItems]	" & _
+                              " WHERE [categoryID] = (SELECT [categoryID] FROM [ASRSysPermissionCategories] WHERE [categoryKey] = 'WORKFLOW')) " & _
+                          " AND [groupName] = (SELECT [Name] FROM [ASRSysGroups] WHERE [ID] = " & userGroupID.ToString & ")"
+    Try
+      command = New SqlClient.SqlCommand(sql, conn)
+      reader = command.ExecuteReader()
 
-    If groupId <> 0 Then
+      While reader.Read()
+        Select Case CStr(reader("itemKey"))
+          Case "RUN"
+            userGroupHasPermission = (reader("permitted") = True)
+        End Select
+      End While
 
-      ' get the run permissions for workflow for this user group.
-      sql = "SELECT  [i].[itemKey], [p].[permitted]" & _
-                           " FROM [ASRSysGroupPermissions] p" & _
-                           " JOIN [ASRSysPermissionItems] i ON [p].[itemID] = [i].[itemID]" & _
-                           " WHERE [p].[itemID] IN (" & _
-                               " SELECT [itemID] FROM [ASRSysPermissionItems]	" & _
-                                " WHERE [categoryID] = (SELECT [categoryID] FROM [ASRSysPermissionCategories] WHERE [categoryKey] = 'WORKFLOW')) " & _
-                           " AND [groupName] = (SELECT [Name] FROM [ASRSysGroups] WHERE [ID] = " & groupId.ToString & ")"
-      Try
-        command = New SqlClient.SqlCommand(sql, conn)
-        reader = command.ExecuteReader()
+      reader.Close()
+    Catch ex As Exception
 
-        While reader.Read()
-          Select Case CStr(reader("itemKey"))
-            Case "RUN"
-              fUserHasRunPermission = (reader("permitted") = True)
+    End Try
 
-          End Select
-        End While
-
-        reader.Close()
-      Catch ex As Exception
-
-      End Try
-
-    End If
-
-    If fUserHasRunPermission Then
+    If userGroupHasPermission Then
 
       ' Get the pending steps.
       ' Open a connection to the database.

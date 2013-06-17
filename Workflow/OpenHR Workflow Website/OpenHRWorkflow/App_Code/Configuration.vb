@@ -56,3 +56,9 @@ Public Class Configuration
   End Property
 
 End Class
+
+Public Structure CheckLoginResult
+  Public Valid As Boolean
+  Public InvalidReason As String
+  Public UserGroupID As Integer
+End Structure
