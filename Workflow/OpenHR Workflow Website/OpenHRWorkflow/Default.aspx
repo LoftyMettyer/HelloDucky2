@@ -1684,11 +1684,10 @@ function ResizeComboForForm(sender, args) {
 	</div>
 		
 		       
-	<div id="divErrorMessages_Outer" onfilterchange="unblockErrorMessageDIV();" style="position: absolute;
-                                                                                                                                                                                                                                                                                                                                                                   bottom: 0px; left: 0px; right: 0px; display: none; visibility: hidden; z-index: 1">
-		<div id="divErrorMessages_Inner" style="background-color: white; text-align: left;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                           position: relative; margin: 0px; padding: 5px; border: 1px solid; font-size: 8pt;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                           color: black; font-family: Verdana;">
+	<div id="divErrorMessages_Outer" onfilterchange="unblockErrorMessageDIV();" style="position: absolute; bottom: 0px; left: 0px; right: 0px; display: none; visibility: hidden; z-index: 1">
+		
+        <div id="divErrorMessages_Inner" style="background-color: white; text-align: left; position: relative; margin: 0px; padding: 5px; border: 1px solid; font-size: 11px; color: black; font-family: Verdana;">
+		    
 			<img id="imgErrorMessages_Min" src="Images/downarrows_white.gif" alt="Hide messages"
 				style="right: 1px; position: absolute; top: 0px;" onclick="showErrorMessages(false);" />
 			<igmisc:WebAsyncRefreshPanel id="pnlErrorMessages" runat="server" style="position: relative;"
@@ -1696,12 +1695,12 @@ function ResizeComboForForm(sender, args) {
 				<asp:Label ID="lblErrors" runat="server" Text=""></asp:Label>				
 				<asp:BulletedList ID="bulletErrors" runat="server" Style="margin-top: 0px; margin-bottom: 0px;
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         padding-top: 5px; padding-bottom: 5px;" BulletStyle="Disc" Font-Names="Verdana"
-					Font-Size="8pt" BorderStyle="None">
+					Font-Size="11pt" BorderStyle="None">
 				</asp:BulletedList>
 				<asp:Label ID="lblWarnings" runat="server" Text=""></asp:Label>
 				<asp:BulletedList ID="bulletWarnings" runat="server" Style="margin-top: 0px; margin-bottom: 0px;
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      padding-top: 5px; padding-bottom: 5px;" BulletStyle="Disc" Font-Names="Verdana"
-					Font-Size="8pt" BorderStyle="None">
+					Font-Size="11px" BorderStyle="None">
 				</asp:BulletedList>
 				<asp:Label ID="lblWarningsPrompt_1" runat="server" Text="Click"></asp:Label>
 				<span id="spnClickHere" name="spnClickHere" tabindex="1" style="color:#333366;" onclick="overrideWarningsAndSubmit();" onmouseover="try{this.style.color='#ff9608';}catch(e){}"
