@@ -1738,7 +1738,7 @@ function ResizeComboForForm(sender, args) {
 	<!--
         Web Form Controls
         -->
-  <div id="pnlTabsDiv" style="height:30px;" runat="server"></div>
+  <div id="pnlTabsDiv" style="height:30px; position: relative;" runat="server"></div>
 	<div id="divInput" style="top:0px; left:0px; z-index: 0; background-color: <%=ColourThemeHex()%>;
 		padding: 0px; margin: 0px; text-align: center;float:left" runat="server">
       

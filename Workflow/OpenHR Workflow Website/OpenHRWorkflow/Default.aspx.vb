@@ -3535,7 +3535,7 @@ Public Class _Default
                     Else
                       ' for non-mobile browsers we display arrows to scroll the tab bar left and right.
                       ctlTabsDiv.Style.Add("overflow", "hidden")
-                      ctlTabsDiv.Style.Add("margin-right", "50px")
+                      ctlTabsDiv.Style.Add("margin-right", "51px")
 
                       ' Nav arrows for non-mobile browsers
                       Dim ctlForm_TabArrows As New Panel
@@ -3543,7 +3543,7 @@ Public Class _Default
                         .Style.Add("position", "absolute")
                         .Style.Add("top", "2px")
                         .Style.Add("right", "0px")
-                        .Style.Add("width", "50px")
+                        .Style.Add("width", "48px")
                         '.Style.Add("height", iTabStripHeight - 4 & "px")
                         .Style.Add("z-index", "1")
                         .BackColor = Color.White
@@ -3554,26 +3554,24 @@ Public Class _Default
                       ' Left scroll arrow
                       ctlForm_Image = New System.Web.UI.WebControls.Image 'Infragistics.WebUI.WebDataInput.WebImageButton
                       With ctlForm_Image
-                        .Style.Add("top", "0px")
-                        .Style.Add("left", "0px")
-                        .Style.Add("width", "25px")
+                        .Style.Add("width", "24px")
                         .Style.Add("height", m_iTabStripHeight - 6 & "px")
                         .ImageUrl = "~/Images/page-prev.gif"
-                        .Attributes.Add("onclick", "var TabDiv = document.getElementById('TabsDiv');TabDiv.scrollLeft = TabDiv.scrollLeft - 15;")
+                        .Style.Add("margin", "0px")
+                        .Style.Add("padding", "0px")
+                        .Attributes.Add("onclick", "var TabDiv = document.getElementById('TabsDiv');TabDiv.scrollLeft = TabDiv.scrollLeft - 20;")
                       End With
                       ctlForm_TabArrows.Controls.Add(ctlForm_Image)
 
                       ' Right scroll arrow
                       ctlForm_Image = New System.Web.UI.WebControls.Image 'Infragistics.WebUI.WebDataInput.WebImageButton
                       With ctlForm_Image
-                        .Style.Add("top", "0px")
-                        .Style.Add("left", "0px")
-                        .Style.Add("width", "25px")
+                        .Style.Add("width", "24px")
                         .Style.Add("height", m_iTabStripHeight - 6 & "px")
                         .ImageUrl = "~/Images/page-next.gif"
                         .Style.Add("margin", "0px")
                         .Style.Add("padding", "0px")
-                        .Attributes.Add("onclick", "var TabDiv = document.getElementById('TabsDiv');TabDiv.scrollLeft = TabDiv.scrollLeft + 15;")
+                        .Attributes.Add("onclick", "var TabDiv = document.getElementById('TabsDiv');TabDiv.scrollLeft = TabDiv.scrollLeft + 20;")
                       End With
                       ctlForm_TabArrows.Controls.Add(ctlForm_Image)
 
