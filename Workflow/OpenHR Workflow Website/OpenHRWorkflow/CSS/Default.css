@@ -80,6 +80,7 @@ textarea { resize: none; }
 
 /* Wait Indicator */
 #pleasewaitScreen {
+    display: none;
     position:absolute;
     width:130px;
     top:30%;

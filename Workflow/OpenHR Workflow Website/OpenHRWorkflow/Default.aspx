@@ -46,8 +46,8 @@
         </CompositeScript>
     </ajx:ToolkitScriptManager>   
 
-    <div id="pleasewaitScreen" style="display:none;">
-        <label id="pleasewaitText">Processing...<br/><br/>Please wait.</label>  
+    <div id="pleasewaitScreen" style="display:none">
+        <span id="pleasewaitText">Processing...<br/><br/>Please wait.</span>
 	</div>
 		
     <img id="imgErrorMessages_Max" src="Images/uparrows_white.gif" alt="Show messages" style="position: absolute; right: 1px; bottom: 1px; display: none; visibility: hidden; z-index: 1; width:20px; height:20px;" onclick="showErrorMessages(true);" />

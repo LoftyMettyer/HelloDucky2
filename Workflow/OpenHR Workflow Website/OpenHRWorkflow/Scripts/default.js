@@ -528,16 +528,14 @@
 	                return;
 	            }
 
-	            if (($get("txtPostbackMode").value == 2)
-    	            || ($get("txtPostbackMode").value == 3)) 
+	            if (($get("txtPostbackMode").value == 2) || ($get("txtPostbackMode").value == 3)) 
 	            {
 	                // 0 = Default
 	                // 1 = Submit/SaveForLater button postback (ie. WebForm submission)
 	                // 2 = Grid header postback
 	                // 3 = FileUpload button postback
 					
-	                if ($get("txtPostbackMode").value == 3) 
-	                {
+	                if ($get("txtPostbackMode").value == 3) {
 	                    $get("ifrmFileUpload").contentWindow.enableControls();
 	                }
 	                // not doing this causes the object referenced is null error:
@@ -546,8 +544,7 @@
 					
 	            }
 
-	            if (($get("frmMain").hdnCount_Errors.value > 0)
-    	            || ($get("frmMain").hdnCount_Warnings.value > 0)) {
+	            if (($get("frmMain").hdnCount_Errors.value > 0) || ($get("frmMain").hdnCount_Warnings.value > 0)) {
 	                showErrorMessages(true);
 	            }
 	            else {
@@ -563,11 +560,9 @@
 	                            }
 	                            else
 	                            {
-	                                // Non-IE browsers can't self-close windows.
-	                                //show Please Wait box, with 'please close me' text
+	                                // Non-IE browsers can't self-close windows, show close message instead
 	                                showOverlay(true);
-	                               
-	                                $get("pleasewaitScreen").style.width="200px";
+
 	                                $get("pleasewaitScreen").style.display = "block";
 	                                $get("pleasewaitText").innerHTML = "Please close your browser.";						  
 	                            }
