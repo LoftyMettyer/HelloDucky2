@@ -3014,6 +3014,8 @@ Public Class _Default
                                 pnlInputDiv.Style("background-repeat") = sBackgroundRepeat
                                 pnlInputDiv.Style("background-position") = sBackgroundPosition
 
+
+
                                 sBackgroundColourHex = ""
                                 If Not IsDBNull(cmdSelect.Parameters("@piBackColour").Value) Then
                                     iBackgroundColour = CInt(cmdSelect.Parameters("@piBackColour").Value())
@@ -3023,8 +3025,8 @@ Public Class _Default
 
                                 iFormWidth = CInt(cmdSelect.Parameters("@piWidth").Value)
                                 iFormHeight = CInt(cmdSelect.Parameters("@piHeight").Value)
-                                pnlInputDiv.Style("width") = Unit.Pixel(iFormWidth).ToString & "px"
-                                pnlInputDiv.Style("height") = Unit.Pixel(iFormHeight).ToString & "px"
+                                pnlInputDiv.Style("width") = iFormWidth.ToString & "px"
+                                pnlInputDiv.Style("height") = iFormHeight.ToString & "px"
 
                                 hdnFormHeight.Value = iFormHeight.ToString
                                 hdnFormWidth.Value = iFormWidth.ToString
