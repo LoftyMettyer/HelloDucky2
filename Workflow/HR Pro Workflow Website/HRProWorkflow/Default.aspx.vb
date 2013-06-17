@@ -1606,37 +1606,37 @@ Public Class _Default
                                                 ' If the grid column widths are left to default it mucks up, so calculate every time.
                                                 ' I've also excluded the iGRIDBORDERWIDTH value when calculating the widths as this left a big gap.
 
-                                                'If iGridWidth > (iVisibleColumnCount * .DisplayLayout.ColWidthDefault.Value) _
-                                                ' And (iVisibleColumnCount > 0) Then
+                                                If iGridWidth > (iVisibleColumnCount * .DisplayLayout.ColWidthDefault.Value) _
+                                                 And (iVisibleColumnCount > 0) Then
 
-                                                iLoop = 0
-                                                iWidthUsed = 0
-                                                iGridWidth = iGridWidth - 2
+                                                    iLoop = 0
+                                                    iWidthUsed = 0
+                                                    iGridWidth = iGridWidth - 2
 
-                                                For Each objGridColumn In .Columns
-                                                    If objGridColumn.Hidden Then
-                                                        objGridColumn.Width = Unit.Pixel(0)
-                                                    Else
-                                                        iLoop = iLoop + 1
-                                                        If iLoop < iVisibleColumnCount Then
-                                                            'objGridColumn.Width = Unit.Pixel(CInt(iGridWidth / iVisibleColumnCount) - iGRIDBORDERWIDTH)
-
-                                                            Dim iminWidth As Int32 = CInt(iGridWidth / iVisibleColumnCount)
-
-                                                            If iminWidth < 100 Then iminWidth = 100
-
-                                                            objGridColumn.Width = Unit.Pixel(iminWidth)
-
-                                                            ' iWidthUsed = iWidthUsed + CInt(objGridColumn.Width.Value) + iGRIDBORDERWIDTH
-                                                            iWidthUsed = iWidthUsed + CInt(objGridColumn.Width.Value)
+                                                    For Each objGridColumn In .Columns
+                                                        If objGridColumn.Hidden Then
+                                                            objGridColumn.Width = Unit.Pixel(0)
                                                         Else
-                                                            ' objGridColumn.Width = Unit.Pixel(iGridWidth - iWidthUsed - iGRIDBORDERWIDTH)
-                                                            objGridColumn.Width = Unit.Pixel(iGridWidth - iWidthUsed)
+                                                            iLoop = iLoop + 1
+                                                            If iLoop < iVisibleColumnCount Then
+                                                                'objGridColumn.Width = Unit.Pixel(CInt(iGridWidth / iVisibleColumnCount) - iGRIDBORDERWIDTH)
+
+                                                                Dim iminWidth As Int32 = CInt(iGridWidth / iVisibleColumnCount)
+
+                                                                If iminWidth < 100 Then iminWidth = 100
+
+                                                                objGridColumn.Width = Unit.Pixel(iminWidth)
+
+                                                                ' iWidthUsed = iWidthUsed + CInt(objGridColumn.Width.Value) + iGRIDBORDERWIDTH
+                                                                iWidthUsed = iWidthUsed + CInt(objGridColumn.Width.Value)
+                                                            Else
+                                                                ' objGridColumn.Width = Unit.Pixel(iGridWidth - iWidthUsed - iGRIDBORDERWIDTH)
+                                                                objGridColumn.Width = Unit.Pixel(iGridWidth - iWidthUsed)
+                                                            End If
                                                         End If
-                                                    End If
-                                                Next objGridColumn
-                                                objGridColumn = Nothing
-                                                ' End If
+                                                    Next objGridColumn
+                                                    objGridColumn = Nothing
+                                                End If
 
                                                 ' Select the first row (if available).
                                                 If .Rows.Count > 0 Then
