@@ -11,8 +11,8 @@
 
     <style type="text/css">
         fieldset, legend { padding: 0px; margin: 0px; }
+        input[type="button"]::-moz-focus-inner { border: 0; padding: 0; }
         input[type="button"] { padding: 0px; }
-        
 		.highlighted { background: yellow; }
         textarea {resize: none; }
     </style>
