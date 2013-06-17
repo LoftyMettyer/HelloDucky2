@@ -214,6 +214,13 @@ Public Class RecordSelector
 
     End Sub
 
+    Protected Overrides Sub InitializePager(ByVal row As System.Web.UI.WebControls.GridViewRow, ByVal columnSpan As Integer, ByVal pagedDataSource As System.Web.UI.WebControls.PagedDataSource)
+        ' MyBase.InitializePager(row, columnSpan, pagedDataSource)
+        InitCustomPager(row, columnSpan, pagedDataSource)
+    End Sub
+
+
+
     Private Function CalculateWidth() As [String]
         Dim strWidth As String = "auto"
 
@@ -343,13 +350,15 @@ Public Class RecordSelector
         Dim iGridHeight As Integer = ControlHeight
 
         If Me.PageCount > 1 Then
-            Dim iGridTopPadding As Integer = CInt(NullSafeSingle(Me.HeadFontSize) / 8)
+            'Dim iGridTopPadding As Integer = CInt(NullSafeSingle(Me.HeadFontSize) / 8)
 
-            iPagerHeight = CInt((((NullSafeSingle(Me.HeadFontSize) + iGridTopPadding) * 2) - 2) * 1.5)
+            'iPagerHeight = CInt((((NullSafeSingle(Me.HeadFontSize) + iGridTopPadding) * 2) - 2) * 1.5)
 
-            If iPagerHeight > NullSafeInteger(iGridHeight) Then
-                iPagerHeight = NullSafeInteger(iGridHeight)
-            End If
+            'If iPagerHeight > NullSafeInteger(iGridHeight) Then
+            '    iPagerHeight = NullSafeInteger(iGridHeight)
+            'End If
+
+            iPagerHeight = 24
 
         End If
 
@@ -693,43 +702,7 @@ Public Class RecordSelector
                 If Not Me.IsEmpty Then
                     e.Row.Attributes("onclick") = ("SetScrollTopPos('" & grdGrid.ID.ToString & "', document.getElementById('" & grdGrid.ID.Replace("Grid", "gridcontainer") & "').scrollTop);" & _
                                                         "try{setPostbackMode(2);}catch(e){};__doPostBack('" & grdGrid.UniqueID & "','Select$" & e.Row.RowIndex & "');")
-                End If
-            ElseIf e.Row.RowType = DataControlRowType.Pager Then
-                ' This enables postback for the grid
-
-                ' Dim pagerTable As Table = DirectCast(e.Row.Cells(0).Controls(0), Table)
-                ' Dim pagerRow As TableRow = pagerTable.Rows(0)
-
-                pagerTable = DirectCast(e.Row.Cells(0).Controls(0), Table)
-                pagerRow = pagerTable.Rows(0)
-
-                For iColCount As Integer = 0 To pagerTable.Rows(0).Cells.Count - 1
-                    If IsLookup Then
-                        pagerRow.Cells(iColCount).Attributes.Add("onclick", "try{txtActiveDDE.value='" & grdGrid.ID.Replace("Grid", "dde") & "';setPostbackMode(2);}catch(e){};")
-                    Else
-                        pagerRow.Cells(iColCount).Attributes.Add("onclick", "try{setPostbackMode(2);}catch(e){};")
-                    End If
-
-
-
-
-                    If grdGrid.PageIndex = 0 Then
-                        ' page 1
-                        If iColCount = 0 Then pagerRow.Cells(iColCount).ToolTip = "Next" & " (page " & (grdGrid.PageIndex + 2).ToString & " of " & grdGrid.PageCount.ToString & ")"
-                        If iColCount = 1 Then pagerRow.Cells(iColCount).ToolTip = "Last" & " (page " & (grdGrid.PageCount).ToString & " of " & grdGrid.PageCount.ToString & ")"
-                    ElseIf grdGrid.PageIndex = grdGrid.PageCount - 1 Then
-                        If iColCount = 0 Then pagerRow.Cells(iColCount).ToolTip = "First" & " (page 1 of " & grdGrid.PageCount.ToString & ")"
-                        If iColCount = 1 Then pagerRow.Cells(iColCount).ToolTip = "Previous" & " (page " & (grdGrid.PageIndex).ToString & " of " & grdGrid.PageCount.ToString & ")"
-                    Else
-                        ' all four buttons
-                        If iColCount = 0 Then pagerRow.Cells(iColCount).ToolTip = "First" & " (page 1 of " & grdGrid.PageCount.ToString & ")"
-                        If iColCount = 1 Then pagerRow.Cells(iColCount).ToolTip = "Previous" & " (page " & (grdGrid.PageIndex).ToString & " of " & grdGrid.PageCount.ToString & ")"
-                        If iColCount = 2 Then pagerRow.Cells(iColCount).ToolTip = "Next" & " (page " & (grdGrid.PageIndex + 2).ToString & " of " & grdGrid.PageCount.ToString & ")"
-                        If iColCount = 3 Then pagerRow.Cells(iColCount).ToolTip = "Last" & " (page " & (grdGrid.PageCount).ToString & " of " & grdGrid.PageCount.ToString & ")"
-                    End If
-
-
-                Next
+                End If               
 
             ElseIf e.Row.RowType = DataControlRowType.Header Then
 
@@ -977,6 +950,218 @@ Public Class RecordSelector
 
     End Function
 
+
+    Private Sub InitCustomPager(ByVal row As System.Web.UI.WebControls.GridViewRow, ByVal columnSpan As Integer, ByVal pagedDataSource As System.Web.UI.WebControls.PagedDataSource)
+        Dim pnlPager As Panel = New Panel()
+        With pnlPager
+            .ID = "pnlPager"
+            '.CssClass = Me.PagerStyle.CssClass
+        End With
+
+        Dim tblPager As Table = New Table()
+        With tblPager
+            .ID = "tblPager"
+            .CellPadding = 3
+            .CellSpacing = 0
+            .Style.Add("width", "100%")
+            .Style.Add("height", "100%")
+            .BorderStyle = BorderStyle.None
+            .GridLines = GridLines.Both
+        End With
+
+        Dim trPager As TableRow = New TableRow()
+        trPager.ID = "trPager"
+
+        Dim ltlPageIndex As Literal = New Literal()
+        ltlPageIndex.ID = "ltlPageIndex"
+        ltlPageIndex.Text = (Me.PageIndex + 1).ToString()
+
+        Dim ltlPageCount As Literal = New Literal()
+        ltlPageCount.ID = "ltlPageCount"
+        ltlPageCount.Text = Me.PageCount.ToString()
+
+        Dim tcPageXofY As TableCell = New TableCell()
+        With tcPageXofY
+            .ID = "tcPageXofY"
+            .Style.Add("width", "30%")
+            .Style.Add("text-align", "left")
+            .Style.Add("padding-left", "5px")
+            .Style.Add("border", "0px")
+            .Height = Unit.Pixel(23)
+            .Font.Size = FontUnit.Parse("10px")
+            .Font.Name = HeaderStyle.Font.Name
+            .Controls.Add(New LiteralControl("Page "))
+            .Controls.Add(ltlPageIndex)
+            .Controls.Add(New LiteralControl(" of "))
+            .Controls.Add(ltlPageCount)
+        End With
+
+        Dim ibtnFirst As ImageButton = New ImageButton()
+        With ibtnFirst
+            .ID = "ibtnFirst"
+            .CommandName = "First"
+            .ToolTip = "First Page"
+            .ImageAlign = ImageAlign.AbsMiddle
+            .Style.Add("cursor", "pointer")
+            .CausesValidation = False
+            .Attributes.Add("onclick", IIf(IsLookup, "try{txtActiveDDE.value='" & grdGrid.ID.Replace("Grid", "dde") & "';setPostbackMode(2);}catch(e){};", "try{setPostbackMode(2);}catch(e){};"))
+            AddHandler .Command, AddressOf Me.PagerCommand
+        End With
+
+        Dim ibtnPrevious As ImageButton = New ImageButton()
+        With ibtnPrevious
+            .ID = "ibtnPrevious"
+            .CommandName = "Previous"
+            .ToolTip = "Previous Page"
+            .ImageAlign = ImageAlign.AbsMiddle
+            .Style.Add("cursor", "pointer")
+            .CausesValidation = False
+            .Attributes.Add("onclick", IIf(IsLookup, "try{txtActiveDDE.value='" & grdGrid.ID.Replace("Grid", "dde") & "';setPostbackMode(2);}catch(e){};", "try{setPostbackMode(2);}catch(e){};"))
+            AddHandler .Command, AddressOf Me.PagerCommand
+        End With
+
+
+
+        Dim ibtnNext As ImageButton = New ImageButton()
+        With ibtnNext
+            .ID = "ibtnNext"
+            .CommandName = "Next"
+            .ToolTip = "Next Page"
+            .ImageAlign = ImageAlign.AbsMiddle
+            .Style.Add("cursor", "pointer")
+            .CausesValidation = False
+            .Attributes.Add("onclick", IIf(IsLookup, "try{txtActiveDDE.value='" & grdGrid.ID.Replace("Grid", "dde") & "';setPostbackMode(2);}catch(e){};", "try{setPostbackMode(2);}catch(e){};"))
+            AddHandler .Command, AddressOf Me.PagerCommand
+        End With
+
+        Dim ibtnLast As ImageButton = New ImageButton()
+        With ibtnLast
+            .ID = "ibtnLast"
+            .CommandName = "Last"
+            .ToolTip = "Last Page"
+            .ImageAlign = ImageAlign.AbsMiddle
+            .Style.Add("cursor", "pointer")
+            .CausesValidation = False
+            .Attributes.Add("onclick", IIf(IsLookup, "try{txtActiveDDE.value='" & grdGrid.ID.Replace("Grid", "dde") & "';setPostbackMode(2);}catch(e){};", "try{setPostbackMode(2);}catch(e){};"))
+            AddHandler .Command, AddressOf Me.PagerCommand
+        End With
+
+        Dim url As String = "~/Images/"
+        If Me.PageIndex > 0 Then
+            ibtnFirst.ImageUrl = url + "page-first.gif"
+            ibtnPrevious.ImageUrl = url + "page-prev.gif"
+            ibtnFirst.Enabled = True
+            ibtnPrevious.Enabled = True
+        Else
+            ibtnFirst.ImageUrl = url + "page-first-disabled.gif"
+            ibtnPrevious.ImageUrl = url + "page-prev-disabled.gif"
+            ibtnFirst.Enabled = False
+            ibtnPrevious.Enabled = False
+            ibtnFirst.Style.Add("cursor", "default")
+            ibtnPrevious.Style.Add("cursor", "default")
+        End If
+
+        If Me.PageIndex < Me.PageCount - 1 Then
+            ibtnNext.ImageUrl = url + "page-next.gif"
+            ibtnLast.ImageUrl = url + "page-last.gif"
+            ibtnNext.Enabled = True
+            ibtnLast.Enabled = True
+        Else
+            ibtnNext.ImageUrl = url + "page-next-disabled.gif"
+            ibtnLast.ImageUrl = url + "page-last-disabled.gif"
+            ibtnNext.Enabled = False
+            ibtnLast.Enabled = False
+            ibtnNext.Style.Add("cursor", "default")
+            ibtnLast.Style.Add("cursor", "default")
+        End If
+
+        Dim tcPagerBtns As TableCell = New TableCell()
+        With tcPagerBtns
+            .ID = "tcPagerBtns"
+            .Style.Add("width", "40%")
+            .Style.Add("text-align", "center")
+            .Style.Add("border", "0px")
+            .Controls.Add(ibtnFirst)
+            .Controls.Add(ibtnPrevious)
+            .Controls.Add(New LiteralControl("&nbsp;&nbsp;"))
+            .Controls.Add(ibtnNext)
+            .Controls.Add(ibtnLast)
+        End With
+
+        Dim ddlPages As DropDownList = New DropDownList()
+        With ddlPages
+            .ID = "ddlPages"
+            ' .CssClass = "paging_gridview_pgr_ddl"
+            .Font.Size = FontUnit.Parse("10px")
+            .Font.Name = HeaderStyle.Font.Name
+            .AutoPostBack = True
+            For i As Integer = 1 To Me.PageCount Step +1
+                .Items.Add(New ListItem(i.ToString(), i.ToString()))
+            Next i
+            .SelectedIndex = Me.PageIndex
+            .CausesValidation = False
+            .Attributes.Add("onclick", "event.cancelBubble=true;")
+            .Attributes.Add("onchange", IIf(IsLookup, "try{txtActiveDDE.value='" & grdGrid.ID.Replace("Grid", "dde") & "';setPostbackMode(2);}catch(e){};", "try{setPostbackMode(2);}catch(e){};"))
+            AddHandler .SelectedIndexChanged, AddressOf Me.ddlPages_SelectedIndexChanged
+        End With
+
+        Dim tcPagerDDL As TableCell = New TableCell()
+        With tcPagerDDL
+            .ID = "tcPagerDDL"
+            .Font.Size = FontUnit.Parse("10px")
+            .Font.Name = HeaderStyle.Font.Name
+            .Style.Add("width", "30%")
+            .Style.Add("text-align", "right")
+            .Style.Add("padding-right", "5px")
+            .Style.Add("border", "0px")
+            .Controls.Add(New LiteralControl("<table cellpadding=""0"" cellspacing=""0"" frame=""void"" rules=""none""><tr><td style=""padding-right: 5px;border: 0px;"">Page:</td><td style=""border: 0px;"">"))
+            .Controls.Add(ddlPages)
+            .Controls.Add(New LiteralControl("</td></tr></table>"))
+        End With
+
+        'add cells to row
+        trPager.Cells.Add(tcPageXofY)
+        trPager.Cells.Add(tcPagerBtns)
+        trPager.Cells.Add(tcPagerDDL)
+
+        'add row to table
+        tblPager.Rows.Add(trPager)
+
+        'add table to div
+        pnlPager.Controls.Add(tblPager)
+
+        'add div to pager row
+        row.Controls.AddAt(0, New TableCell())
+        row.Cells(0).ColumnSpan = columnSpan
+        row.Cells(0).Controls.Add(pnlPager)
+    End Sub
+
+    Protected Sub ddlPages_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs)
+        Dim newPageIndex As Integer = CType(sender, DropDownList).SelectedIndex
+        OnPageIndexChanging(New GridViewPageEventArgs(newPageIndex))
+    End Sub
+
+    Protected Sub PagerCommand(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.CommandEventArgs)
+        Dim curPageIndex As Integer = Me.PageIndex
+        Dim newPageIndex As Integer = 0
+
+        Select Case e.CommandName
+            Case "First"
+                newPageIndex = 0
+            Case "Previous"
+                If curPageIndex > 0 Then
+                    newPageIndex = curPageIndex - 1
+                End If
+            Case "Next"
+                If Not curPageIndex = Me.PageCount Then
+                    newPageIndex = curPageIndex + 1
+                End If
+            Case "Last"
+                newPageIndex = Me.PageCount
+        End Select
+
+        OnPageIndexChanging(New GridViewPageEventArgs(newPageIndex))
+    End Sub
 End Class
 
 

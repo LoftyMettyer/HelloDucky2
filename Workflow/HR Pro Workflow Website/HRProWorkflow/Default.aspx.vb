@@ -1577,11 +1577,11 @@ Public Class _Default
                                         '.HeaderStyle.BorderDetails.WidthBottom = Unit.Pixel(1)
                                         '.HeaderStyle.BorderDetails.WidthRight = Unit.Pixel(1)
 
-                                        .PagerSettings.Mode = PagerButtons.NextPreviousFirstLast
-                                        .PagerSettings.FirstPageImageUrl = "Images/page-first.gif"
-                                        .PagerSettings.LastPageImageUrl = "Images/page-last.gif"
-                                        .PagerSettings.NextPageImageUrl = "Images/page-next.gif"
-                                        .PagerSettings.PreviousPageImageUrl = "Images/page-prev.gif"
+                                        '.PagerSettings.Mode = PagerButtons.NextPreviousFirstLast
+                                        '.PagerSettings.FirstPageImageUrl = "Images/page-first.gif"
+                                        '.PagerSettings.LastPageImageUrl = "Images/page-last.gif"
+                                        '.PagerSettings.NextPageImageUrl = "Images/page-next.gif"
+                                        '.PagerSettings.PreviousPageImageUrl = "Images/page-prev.gif"
 
                                         .PagerStyle.BorderWidth = Unit.Pixel(0)
                                         .PagerStyle.Font.Name = NullSafeString(dr("HeadFontName"))
@@ -2071,11 +2071,11 @@ Public Class _Default
                                         '.RowSelectors = Infragistics.WebUI.UltraWebGrid.RowSelectors.No
                                         '.RowsRange = mobjConfig.LookupRowsRange
 
-                                        .PagerSettings.Mode = PagerButtons.NextPreviousFirstLast
-                                        .PagerSettings.FirstPageImageUrl = "Images/page-first.gif"
-                                        .PagerSettings.LastPageImageUrl = "Images/page-last.gif"
-                                        .PagerSettings.NextPageImageUrl = "Images/page-next.gif"
-                                        .PagerSettings.PreviousPageImageUrl = "Images/page-prev.gif"
+                                        '.PagerSettings.Mode = PagerButtons.NextPreviousFirstLast
+                                        '.PagerSettings.FirstPageImageUrl = "Images/page-first.gif"
+                                        '.PagerSettings.LastPageImageUrl = "Images/page-last.gif"
+                                        '.PagerSettings.NextPageImageUrl = "Images/page-next.gif"
+                                        '.PagerSettings.PreviousPageImageUrl = "Images/page-prev.gif"
 
                                         .PagerStyle.BorderWidth = Unit.Pixel(0)
                                         .PagerStyle.Font.Name = NullSafeString(dr("FontName"))
