@@ -15,19 +15,21 @@
     <link rel="shortcut icon" href="pictures/logo.ico"/>
 
     <style type="text/css">
+        fieldset, legend { padding: 0px; margin: 0px; }
+        
 		.highlighted { background: yellow; }
-        textarea {resize: none; }    
-	</style>
+        textarea {resize: none; }
+    </style>
 
 	<title></title>	  
     <script src="Scripts/resizable-table.js" type="text/javascript"></script>
 </head>
 
 <body id="bdyMain" onload="return window_onload()" style="overflow: auto;  
-	text-align: center; margin: 0px; padding: 0px;">
+          text-align: center; margin: 0px; padding: 0px;">
 	<img id="imgErrorMessages_Max" src="Images/uparrows_white.gif" alt="Show messages"
 		style="position: absolute; right: 1px; bottom: 1px; display: none; visibility: hidden;
-		z-index: 1;" onclick="showErrorMessages(true);" />
+                                                               z-index: 1;" onclick="showErrorMessages(true);" />
 	<form runat="server" hidefocus="true" id="frmMain" onsubmit="return submitForm();">
 	
 	<script language="javascript" type="text/javascript">
@@ -1676,8 +1678,8 @@ function ResizeComboForForm(sender, args) {
 
     <div id="pleasewaitScreen" style="position:absolute;z-index:5;top:30%;width:150px;height:60px;left:50%;margin-left:-75px;visibility:hidden">
 		<table border="0" cellspacing="0" cellpadding="10" style="top: 0px; left: 0px; width: 100%;
-                height: 100%; position: relative; text-align: center; font-size: 10pt; color: black;
-                font-family: Verdana; border: black 1px solid;" bgcolor="White">
+                                                                                                                                                                                                                  height: 100%; position: relative; text-align: center; font-size: 10pt; color: black;
+                                                                                                                                                                                                                  font-family: Verdana; border: black 1px solid;" bgcolor="White">
 				<tr>
 					<td style="width:100%;height:100%;background-color:White;text-align:center;vertical-align:middle">
 								<label id="pleasewaitText">Processing...<br/><br/>Please wait.<br/></label>
@@ -1688,22 +1690,22 @@ function ResizeComboForForm(sender, args) {
 		
 		       
 	<div id="divErrorMessages_Outer" onfilterchange="unblockErrorMessageDIV();" style="position: absolute;
-		bottom: 0px; left: 0px; right: 0px; display: none; visibility: hidden; z-index: 1">
+                                                                                                                                                                                                                                                                                                                                                                   bottom: 0px; left: 0px; right: 0px; display: none; visibility: hidden; z-index: 1">
 		<div id="divErrorMessages_Inner" style="background-color: white; text-align: left;
-			position: relative; margin: 0px; padding: 5px; border: 1px solid; font-size: 8pt;
-			color: black; font-family: Verdana;">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                           position: relative; margin: 0px; padding: 5px; border: 1px solid; font-size: 8pt;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                           color: black; font-family: Verdana;">
 			<img id="imgErrorMessages_Min" src="Images/downarrows_white.gif" alt="Hide messages"
 				style="right: 1px; position: absolute; top: 0px;" onclick="showErrorMessages(false);" />
 			<igmisc:WebAsyncRefreshPanel id="pnlErrorMessages" runat="server" style="position: relative;"
 				width="90%" height="100%">
 				<asp:Label ID="lblErrors" runat="server" Text=""></asp:Label>				
 				<asp:BulletedList ID="bulletErrors" runat="server" Style="margin-top: 0px; margin-bottom: 0px;
-					padding-top: 5px; padding-bottom: 5px;" BulletStyle="Disc" Font-Names="Verdana"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        padding-top: 5px; padding-bottom: 5px;" BulletStyle="Disc" Font-Names="Verdana"
 					Font-Size="8pt" BorderStyle="None">
 				</asp:BulletedList>
 				<asp:Label ID="lblWarnings" runat="server" Text=""></asp:Label>
 				<asp:BulletedList ID="bulletWarnings" runat="server" Style="margin-top: 0px; margin-bottom: 0px;
-					padding-top: 5px; padding-bottom: 5px;" BulletStyle="Disc" Font-Names="Verdana"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     padding-top: 5px; padding-bottom: 5px;" BulletStyle="Disc" Font-Names="Verdana"
 					Font-Size="8pt" BorderStyle="None">
 				</asp:BulletedList>
 				<asp:Label ID="lblWarningsPrompt_1" runat="server" Text="Click"></asp:Label>
@@ -1721,15 +1723,15 @@ function ResizeComboForForm(sender, args) {
     Submission and Exceptional Errors Popup 
     -->
 	<div id="divSubmissionMessages" style="position: absolute; left: 0px; top: 15%; width: 100%;
-		display: none; z-index: 3; visibility: hidden; text-align: center;" nowrap="nowrap">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    display: none; z-index: 3; visibility: hidden; text-align: center;" nowrap="nowrap">
 		<iframe id="ifrmMessages" src="" frameborder="0" scrolling="no"></iframe>
 	</div>
 	<!--
     File Upload Popup
     -->
 	<div id="divFileUpload" style="position: absolute; left: 0px; top: 15%; width: 100%;
-		display: none; z-index: 3; visibility: hidden;
-		text-align: center;" nowrap="nowrap" onfilterchange="return unblockFileUploadDIV();">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             display: none; z-index: 3; visibility: hidden;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             text-align: center;" nowrap="nowrap" onfilterchange="return unblockFileUploadDIV();">
 		<iframe id="ifrmFileUpload" style="width:550px" src="" frameborder="0" scrolling="no"></iframe>
 	</div>
 	<!--
@@ -1739,7 +1741,7 @@ function ResizeComboForForm(sender, args) {
         <asp:UpdatePanel ID="pnlInput" runat="server">
             <ContentTemplate>
                 <div id = "pnlInputDiv" runat="server" style="position:relative;padding-right:0px;padding-left:0px;padding-bottom:0px;
-                                        margin-top:0px;margin-bottom:0px;margin-right:auto;margin-left:auto;padding-top:0px;">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    margin-top:0px;margin-bottom:0px;margin-right:auto;margin-left:auto;padding-top:0px;">
                     
                     <div id="pnlTabsDiv" style="position: absolute;" runat="server"></div>
                 </div>    

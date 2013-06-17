@@ -141,7 +141,6 @@ Public Class _Default
     Dim iTemp As Integer
     Dim sTemp As String = String.Empty
     Dim sTemp2 As String
-    Dim sTemp3 As String
     Dim sDBVersion As String
     Dim sID As String
     Dim sImageFileName As String
@@ -166,7 +165,6 @@ Public Class _Default
     Dim iGridTopPadding As Integer
     Dim iRowHeight As Integer
     Dim iDropHeight As Integer
-    Dim iYOffset As Integer
     Dim sDefaultFocusControl As String
     Dim ctlDefaultFocusControl As New Control
     Dim fChecked As Boolean
@@ -1545,39 +1543,41 @@ Public Class _Default
                     sTemp2 = " none"
                   End If
 
-                  Dim fieldsetTopCoord As Int32 = _
-                   CInt((NullSafeInteger(dr("TopCoord")) + (NullSafeSingle(dr("FontSize")) * 2.5 / 3)))
-                  Dim fieldsetLeftCoord As Int32 = NullSafeInteger(dr("LeftCoord"))
-                  Dim fieldsetWidth As Int32 = NullSafeInteger(dr("Width")) - 4
-                  Dim fieldsetHeight As Int32 = _
-                   CInt((NullSafeInteger(dr("Height")) - 1 _
-                   - CInt(IIf(NullSafeString(dr("caption")).Trim.Length > 0, 0, 2)) _
-                   - (NullSafeSingle(dr("FontSize")) * 2.5 / 3)))
+                  Dim top = NullSafeInteger(dr("TopCoord"))
+                  Dim left = NullSafeInteger(dr("LeftCoord"))
+                  Dim width = NullSafeInteger(dr("Width"))
+                  Dim height = NullSafeInteger(dr("Height"))
+                  Dim fontAdjustment = CInt(CInt(dr("FontSize")) * 0.8)
+                  Dim borderCss As String = String.Empty
 
-                  sTemp = "<fieldset style='TOP: " & fieldsetTopCoord.ToString & "px; " & _
-                  " LEFT: " & fieldsetLeftCoord.ToString & "px; " & _
-                  " WIDTH: " & fieldsetWidth.ToString & "px; " & _
-                  " HEIGHT: " & fieldsetHeight.ToString & "px; " & _
-                  " BACKGROUND-COLOR: " & sBackColour & "; " & _
-                  " BORDER-STYLE: solid; " & _
-                  " BORDER-COLOR: #9894a3; " & _
-                  " BORDER-WIDTH: 1px; " & _
-                  " COLOR: " & objGeneral.GetHTMLColour(NullSafeInteger(dr("ForeColor"))) & "; " & _
-                  " FONT-FAMILY: " & NullSafeString(dr("FontName")) & "; " & _
-                  " FONT-SIZE: " & NullSafeString(dr("FontSize")) & "pt; " & _
-                  " FONT-WEIGHT: " & CStr(IIf(NullSafeBoolean(dr("FontBold")), "bold", "normal")) & ";" & _
-                  " FONT-STYLE: " & CStr(IIf(NullSafeBoolean(dr("FontItalic")), "italic", "normal")) & ";" & _
-                  " TEXT-DECORATION:" & sTemp2 & ";" & _
-                  " POSITION: absolute;padding-right: 0px; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px;'>"
+                  borderCss = "BORDER-STYLE: solid; BORDER-COLOR: #9894a3; BORDER-WIDTH: 1px;"
+                  width -= 2
+                  height -= 2
+
+                  If NullSafeString(dr("caption")).Trim.Length = 0 Then
+                    top += fontAdjustment
+                    height -= fontAdjustment
+                  End If
+
+                  sTemp = "<fieldset style='z-index: 0; " & _
+                 " TOP: " & top & "px; " & _
+                 " LEFT: " & left & "px; " & _
+                 " WIDTH: " & width & "px; " & _
+                 " HEIGHT: " & height & "px; " & _
+                 " BACKGROUND-COLOR: " & sBackColour & "; " & _
+                 " COLOR: " & objGeneral.GetHTMLColour(NullSafeInteger(dr("ForeColor"))) & ";" & _
+                 " FONT-FAMILY: " & NullSafeString(dr("FontName")) & "; " & _
+                 " FONT-SIZE: " & NullSafeString(dr("FontSize")) & "pt; " & _
+                 " FONT-WEIGHT: " & CStr(IIf(NullSafeBoolean(dr("FontBold")), "bold", "normal")) & ";" & _
+                 " FONT-STYLE: " & CStr(IIf(NullSafeBoolean(dr("FontItalic")), "italic", "normal")) & ";" & _
+                 " TEXT-DECORATION:" & sTemp2 & ";" & _
+                 " " & borderCss & _
+                 " POSITION: absolute;'>"
 
                   If NullSafeString(dr("caption")).Trim.Length > 0 Then
-                    Dim legendTop As Int32 = CInt((NullSafeSingle(dr("FontSize")) * -11 / 10))
 
-                    sTemp = sTemp & _
-                    "<legend" & _
-                    " style='top: " & legendTop.ToString & _
-                    "px; COLOR: " & objGeneral.GetHTMLColour(NullSafeInteger(dr("ForeColor"))) & ";" & _
-                    " padding-right: 2px; padding-left: 2px; padding-bottom: 0px; margin-left: 5px; padding-top: 0px; position: relative;' align='Left'>" & _
+                    sTemp += "<legend style='color: " & objGeneral.GetHTMLColour(NullSafeInteger(dr("ForeColor"))) & ";" & _
+                    " margin-left: 5px; margin-right:5px; padding-left: 2px; padding-right: 2px;' align='Left'>" & _
                     NullSafeString(dr("caption")) & _
                     "</legend>"
                   End If
@@ -3067,69 +3067,54 @@ Public Class _Default
                   End If
 
                   sTemp2 = CStr(IIf(NullSafeBoolean(dr("FontStrikeThru")), " line-through", "")) & _
-                   CStr(IIf(NullSafeBoolean(dr("FontUnderline")), " underline", ""))
+                           CStr(IIf(NullSafeBoolean(dr("FontUnderline")), " underline", ""))
 
                   If sTemp2.Length = 0 Then
                     sTemp2 = " none"
                   End If
 
-                  sTemp3 = ""
-
-                  Dim fieldsetTop As Int32
+                  Dim top = NullSafeInteger(dr("TopCoord"))
+                  Dim left = NullSafeInteger(dr("LeftCoord"))
+                  Dim width = NullSafeInteger(dr("Width"))
+                  Dim height = NullSafeInteger(dr("Height"))
+                  Dim fontAdjustment = CInt(CInt(dr("FontSize")) * 0.8)
+                  Dim startAdjustment As Integer = 0
+                  Dim borderCss As String = String.Empty
 
                   If Not NullSafeBoolean(dr("PictureBorder")) Then
-                    fieldsetTop = NullSafeInteger(dr("TopCoord"))
-
-                    sTemp3 = " BORDER-STYLE: none;"
-                    sTemp = "<fieldset style='z-index: 0; TOP: " & fieldsetTop.ToString & "px; " & _
-                     " LEFT: " & (NullSafeInteger(dr("LeftCoord")) - 1).ToString & "px; " & _
-                     " WIDTH: " & (NullSafeInteger(dr("Width")) - 1).ToString & "px; " & _
-                     " HEIGHT: " & (NullSafeInteger(dr("Height")) + 1).ToString & "px; " & _
-                     " BACKGROUND-COLOR: " & sBackColour & "; " & _
-                     " COLOR: " & objGeneral.GetHTMLColour(NullSafeInteger(dr("ForeColor"))) & ";" & _
-                     " FONT-FAMILY: " & NullSafeString(dr("FontName")) & "; " & _
-                     " FONT-SIZE: " & NullSafeString(dr("FontSize")) & "pt; " & _
-                     " FONT-WEIGHT: " & CStr(IIf(NullSafeBoolean(dr("FontBold")), "bold", "normal")) & ";" & _
-                     " FONT-STYLE: " & CStr(IIf(NullSafeBoolean(dr("FontItalic")), "italic", "normal")) & ";" & _
-                     " TEXT-DECORATION:" & sTemp2 & ";" & sTemp3 & _
-                     " POSITION: absolute;'>"
-
-                    iYOffset = CInt(NullSafeSingle(dr("FontSize")) / 2)
+                    borderCss = "BORDER-STYLE: none;"
                   Else
-                    fieldsetTop = _
-                 CInt((NullSafeInteger(dr("TopCoord")) + (NullSafeSingle(dr("FontSize")) * 2.5 / 3)))
-                    Dim fieldsetLeft As Int32 = NullSafeInteger(dr("LeftCoord"))
-                    Dim fieldsetWidth As Int32 = NullSafeInteger(dr("Width")) - 2
-                    Dim fieldsetHeight As Int32 = _
-                     CInt((NullSafeInteger(dr("Height")) - 1 - (NullSafeSingle(dr("FontSize")) * 2.5 / 3)))
+                    borderCss = "BORDER-STYLE: solid; BORDER-COLOR: #9894a3; BORDER-WIDTH: 1px;"
+                    width -= 2
+                    height -= 2
 
-                    sTemp = "<fieldset style='z-index: 0; TOP: " & fieldsetTop.ToString & "px; " & _
-                     " LEFT: " & fieldsetLeft.ToString & "px; " & _
-                     " WIDTH: " & fieldsetWidth.ToString & "px; " & _
-                     " HEIGHT: " & fieldsetHeight.ToString & "px; " & _
-                     " BACKGROUND-COLOR: " & sBackColour & "; " & _
-                     " BORDER-STYLE: solid; " & _
-                     " BORDER-COLOR: #9894a3; " & _
-                     " BORDER-WIDTH: 1px; " & _
-                     " COLOR: " & objGeneral.GetHTMLColour(NullSafeInteger(dr("ForeColor"))) & ";" & _
-                     " FONT-FAMILY: " & NullSafeString(dr("FontName")) & "; " & _
-                     " FONT-SIZE: " & NullSafeString(dr("FontSize")) & "pt; " & _
-                     " FONT-WEIGHT: " & CStr(IIf(NullSafeBoolean(dr("FontBold")), "bold", "normal")) & ";" & _
-                     " FONT-STYLE: " & CStr(IIf(NullSafeBoolean(dr("FontItalic")), "italic", "normal")) & ";" & _
-                     " TEXT-DECORATION:" & sTemp2 & ";" & sTemp3 & _
-                     " POSITION: absolute;padding-right: 0px; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px;'>"
-
-                    iYOffset = CInt(2 - NullSafeSingle(dr("FontSize")) - (2 * (NullSafeSingle(dr("FontSize")) / 4) - 2))
+                    If NullSafeString(dr("caption")).Trim.Length > 0 Then
+                      startAdjustment = fontAdjustment
+                    Else
+                      top += fontAdjustment
+                      height -= fontAdjustment
+                    End If
                   End If
 
-                  If NullSafeBoolean(dr("PictureBorder")) And (NullSafeString(dr("caption")).Trim.Length > 0) Then
-                    Dim legendTop As Int32 = CInt((NullSafeSingle(dr("FontSize")) * -11 / 10))
+                  sTemp = "<fieldset style='z-index: 0; " & _
+                   " TOP: " & top & "px; " & _
+                   " LEFT: " & left & "px; " & _
+                   " WIDTH: " & width & "px; " & _
+                   " HEIGHT: " & height & "px; " & _
+                   " BACKGROUND-COLOR: " & sBackColour & "; " & _
+                   " COLOR: " & objGeneral.GetHTMLColour(NullSafeInteger(dr("ForeColor"))) & ";" & _
+                   " FONT-FAMILY: " & NullSafeString(dr("FontName")) & "; " & _
+                   " FONT-SIZE: " & NullSafeString(dr("FontSize")) & "pt; " & _
+                   " FONT-WEIGHT: " & CStr(IIf(NullSafeBoolean(dr("FontBold")), "bold", "normal")) & ";" & _
+                   " FONT-STYLE: " & CStr(IIf(NullSafeBoolean(dr("FontItalic")), "italic", "normal")) & ";" & _
+                   " TEXT-DECORATION:" & sTemp2 & ";" & _
+                   " " & borderCss & _
+                   " POSITION: absolute;'>"
 
-                    sTemp = sTemp & _
-                    "<legend" & _
-                    " style='top: " & legendTop.ToString & "px;" & _
-                    " COLOR: " & objGeneral.GetHTMLColour(NullSafeInteger(dr("ForeColor"))) & ";" & _
-                    " padding-right: 0px; padding-left: 0px; padding-bottom: 0px; margin-left: 5px; padding-top: " & CInt(NullSafeSingle(dr("FontSize")) / 4).ToString & "px; position: relative;' align='Left'>" & _
+                  If NullSafeBoolean(dr("PictureBorder")) And (NullSafeString(dr("caption")).Trim.Length > 0) Then
+
+                    sTemp += "<legend style='color: " & objGeneral.GetHTMLColour(NullSafeInteger(dr("ForeColor"))) & ";" & _
+                    " margin-left: 5px; margin-right:5px; padding-left: 2px; padding-right: 2px;' align='Left'>" & _
                     NullSafeString(dr("caption")) & _
                     "</legend>"
                   End If
@@ -3176,7 +3161,8 @@ Public Class _Default
                           Dim spanTop As Int32 = _
                               CInt((NullSafeInteger(dr("FontSize")) * 1.25) + 1) + _
                               CInt(iTemp * CInt((NullSafeInteger(dr("FontSize")) * 1.5) + 4)) - _
-                              CInt(IIf(NullSafeBoolean(dr("PictureBorder")), 0, 10))
+                              CInt(IIf(NullSafeBoolean(dr("PictureBorder")), 0, 10)) + _
+                              startAdjustment
 
                           Dim spanLeft As Int32 = CInt(((NullSafeSingle(dr("FontSize"))) * 5 / 4) - 1)
 
@@ -3201,7 +3187,8 @@ Public Class _Default
                         Case 1 ' Horizontal
                           stringSize = graphic.MeasureString(drGrid(0).ToString(), font)
                           Dim spanTop As Int32 = CInt((NullSafeInteger(dr("FontSize")) * 1.25) + 1) - _
-                              CInt(IIf(NullSafeBoolean(dr("PictureBorder")), 0, 10))
+                              CInt(IIf(NullSafeBoolean(dr("PictureBorder")), 0, 10)) + _
+                              startAdjustment
 
                           sTemp = sTemp & _
                            "<span tabindex=" & CShort(NullSafeInteger(dr("tabIndex")) + 1).ToString & _
