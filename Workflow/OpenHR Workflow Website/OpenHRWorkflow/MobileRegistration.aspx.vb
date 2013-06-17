@@ -178,6 +178,7 @@ Partial Class Registration
     drElements.Close()
 
     SetCustomControlSettings()
+    Forms.SetupViewport(Me)
   End Sub
 
   Private Sub SetCustomControlSettings()

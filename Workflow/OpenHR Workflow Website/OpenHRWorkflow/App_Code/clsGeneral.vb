@@ -127,21 +127,21 @@ Public Class General
 
     End Function
 
-    Public Function GetHTMLColour(ByVal piColour As Int32) As String
+  Public Function GetHtmlColour(ByVal piColour As Int32) As String
 
-        Try
-            ' Create an instance of a Color structure.
-            Dim myColor As Color = ColorTranslator.FromOle(piColour)
+    Try
+      ' Create an instance of a Color structure.
+      Dim myColor As Color = ColorTranslator.FromOle(piColour)
 
-            ' Translate myColor to an HTML color.
-            Dim htmlColor As String = ColorTranslator.ToHtml(myColor)
+      ' Translate myColor to an HTML color.
+      Dim htmlColor As String = ColorTranslator.ToHtml(myColor)
 
-            Return (htmlColor)
-        Catch ex As Exception
-            Return ColorTranslator.ToHtml(Color.White)
-        End Try
+      Return (htmlColor)
+    Catch ex As Exception
+      Return ColorTranslator.ToHtml(Color.White)
+    End Try
 
-    End Function
+  End Function
 
     Public Function ConvertLocaleDateToSQL(ByVal psLocaleDateString As String) As String
         Dim dtDate As Date

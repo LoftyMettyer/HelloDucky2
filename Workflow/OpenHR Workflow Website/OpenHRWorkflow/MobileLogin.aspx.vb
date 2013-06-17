@@ -184,6 +184,8 @@ Partial Class MobileLogin
       ShowMessage("Server Error", "Could not open a connection to SQL Server", "Message.aspx")
     End If
 
+    Forms.SetupViewport(Me)
+
   End Sub
 
   Private Function LoadPicture(ByVal piPictureID As Int32, ByRef psErrorMessage As String) As String

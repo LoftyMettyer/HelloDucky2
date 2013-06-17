@@ -178,6 +178,8 @@ Partial Class ChangePassword
     myConnection.Close()
     drElements.Close()
 
+    Forms.SetupViewport(Me)
+
   End Sub
 
   Private Function LoadPicture(ByVal piPictureID As Int32, ByRef psErrorMessage As String) As String

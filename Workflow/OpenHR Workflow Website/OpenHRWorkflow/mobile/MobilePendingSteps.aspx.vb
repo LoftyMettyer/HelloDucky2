@@ -333,6 +333,8 @@ Partial Class PendingSteps
       lblInstruction.Visible = False
     End If
 
+    Forms.SetupViewport(Me)
+
   End Sub
 
   Private Function LoadPicture(ByVal piPictureID As Int32, ByRef psErrorMessage As String) As String

@@ -314,6 +314,8 @@ Partial Class Home
       End If
     End If
 
+    Forms.SetupViewport(Me)
+
   End Sub
 
   Private Function LoadPicture(ByVal piPictureID As Int32, ByRef psErrorMessage As String) As String

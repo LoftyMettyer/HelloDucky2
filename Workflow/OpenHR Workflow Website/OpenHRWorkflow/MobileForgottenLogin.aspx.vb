@@ -178,7 +178,7 @@ Partial Class ForgottenLogin
     drElements.Close()
 
     SetCustomControlSettings()
-
+    Forms.SetupViewport(Me)
   End Sub
 
   Private Sub SetCustomControlSettings()
