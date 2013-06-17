@@ -342,6 +342,7 @@
     <Content Include="Themes\VioletGrey\rcrnrbot.gif" />
     <Content Include="Themes\VioletGrey\rcrnrtop.gif" />
     <Content Include="Timeout.aspx" />
+    <Content Include="WebForm1.aspx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Account\ChangePassword.aspx.designer.vb">
@@ -468,6 +469,13 @@
     <Compile Include="Timeout.aspx.vb">
       <DependentUpon>Timeout.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="WebForm1.aspx.designer.vb">
+      <DependentUpon>WebForm1.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="WebForm1.aspx.vb">
+      <DependentUpon>WebForm1.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
