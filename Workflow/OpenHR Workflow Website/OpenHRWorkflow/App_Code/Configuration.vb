@@ -9,6 +9,7 @@ Public Class Configuration
     WorkflowUrl = ConfigurationManager.AppSettings("WorkflowURL")
     DefaultActiveDirectoryServer = ConfigurationManager.AppSettings("DefaultActiveDirectoryServer")
     SubmissionTimeoutInSeconds = 120
+    TabletBackColour = ConfigurationManager.AppSettings("TabletBackColour")
 
     ConnectionString = String.Format( _
         "Application Name=OpenHR Mobile;Data Source={0};Initial Catalog={1};Integrated Security=false;User ID={2};Password={3}", _
@@ -23,6 +24,7 @@ Public Class Configuration
   Public Shared WorkflowUrl As String
   Public Shared SubmissionTimeoutInSeconds As Integer
   Public Shared DefaultActiveDirectoryServer As String
+  Public Shared TabletBackColour As String
 
   Public Shared Function ConnectionStringFor(user As String, password As String) As String
     Return String.Format( _
