@@ -91,20 +91,22 @@ function InitialiseWindow() {
 	window.iCurrentMessageState = 'none';
 
 	try {
-		var iDefHeight, iDefWidth, iResizeByHeight, iResizeByWidth;
-		iDefHeight = jQuery('#pnlInputDiv').height();
-		iDefWidth = jQuery('#pnlInputDiv').width();
+		if (navigator.userAgent.indexOf("MSIE") > 0) {
+			var iDefHeight, iDefWidth, iResizeByHeight, iResizeByWidth;
+			iDefHeight = jQuery('#pnlInputDiv').height();
+			iDefWidth = jQuery('#pnlInputDiv').width();
 
-		window.focus();
+			window.focus();
 
-		if (iDefHeight > 0 && iDefWidth > 0) {
-			iResizeByHeight = iDefHeight - window.currentHeight;
-			iResizeByWidth = iDefWidth - window.currentWidth;
+			if (iDefHeight > 0 && iDefWidth > 0) {
+				iResizeByHeight = iDefHeight - window.currentHeight;
+				iResizeByWidth = iDefWidth - window.currentWidth;
 
-			window.parent.resizeBy(iResizeByWidth, iResizeByHeight);
-			window.parent.moveTo((screen.availWidth - iDefWidth) / 2, (screen.availHeight - iDefHeight) / 3);
+				window.parent.resizeBy(iResizeByWidth, iResizeByHeight);
+				window.parent.moveTo((screen.availWidth - iDefWidth) / 2, (screen.availHeight - iDefHeight) / 3);
+			}
 		}
-
+		
 		try {
 			if (window.autoFocusControl.length > 0) {
 				setTimeout(function () {
