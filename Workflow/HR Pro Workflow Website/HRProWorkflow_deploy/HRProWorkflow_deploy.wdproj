@@ -23,9 +23,9 @@
     <OutputPath>.\Debug</OutputPath>
     <EnableUpdateable>false</EnableUpdateable>
     <UseMerge>true</UseMerge>
-    <SingleAssemblyName>HRProWorkflow_deploy</SingleAssemblyName>
+    <SingleAssemblyName>HRProWorkflow</SingleAssemblyName>
     <DeleteAppDataFolder>false</DeleteAppDataFolder>
-    <DeleteAppCodeCompiledFiles>false</DeleteAppCodeCompiledFiles>
+    <DeleteAppCodeCompiledFiles>true</DeleteAppCodeCompiledFiles>
     <UseWebConfigReplacement>false</UseWebConfigReplacement>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -49,10 +49,10 @@
   </ItemGroup>
   <ItemGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <AssemblyAttributes Include="AssemblyFileVersion">
-      <Value>4.1.0.0</Value>
+      <Value>4.1.7.0</Value>
     </AssemblyAttributes>
     <AssemblyAttributes Include="AssemblyVersion">
-      <Value>4.1.0.0</Value>
+      <Value>4.1.7.0</Value>
     </AssemblyAttributes>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WebDeployment\v9.0\Microsoft.WebDeployment.targets" />
