@@ -3030,7 +3030,8 @@ Public Class _Default
                 dr.Close()
                 cmdSelect.Dispose()
 
-                LoadPicture = "pictures/" & sImageFileName
+                ' Ensure URL encoding doesn't stuff up the picture name, so encode the % character as %25.
+                LoadPicture = Replace("pictures/" & sImageFileName, "%", "%25")
 
             Catch ex As Exception
                 LoadPicture = ""
