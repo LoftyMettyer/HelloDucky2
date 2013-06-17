@@ -4,8 +4,8 @@
     
     <asp:Label runat="server" ID="lblWelcome" Text="Welcome"/>
     <asp:Label runat="server" ID="lblNothingTodo" Text="No items"/>
-
-    <div runat="server" id="pnlWFList" />
+    
+    <ul runat="server" id="workflowList" class="workflow-list"/>
 
 <%-- TODO Prob should be using databinding, much simpler than building stuff in code.
     <asp:ListView ID="workflowList" runat="server">

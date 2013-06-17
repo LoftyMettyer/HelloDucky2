@@ -6,6 +6,8 @@ Partial Class Site
 
   Protected Sub Page_Init(sender As Object, e As EventArgs) Handles Me.Init
 
+    Forms.RedirectIfNotLicensed()
+
     Forms.RedirectIfDbLocked()
 
     Forms.RedirectToNotConfigured()

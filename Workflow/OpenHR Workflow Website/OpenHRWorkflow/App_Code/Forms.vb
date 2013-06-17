@@ -3,6 +3,20 @@ Imports System.Data.SqlClient
 
 Public Class Forms
 
+  Private Shared _licensed As Boolean?
+
+  Public Shared Sub RedirectIfNotLicensed()
+
+    If Not _licensed.HasValue Then
+      _licensed = Database.IsMobileLicensed()
+    End If
+    If Not _licensed.Value Then
+      HttpContext.Current.Session("message") = "You are not licensed for the OpenHR Mobile module. Please contact your Advanced Business Solutions Account Manager for details"
+      HttpContext.Current.Response.Redirect("~/Message.aspx")
+    End If
+
+  End Sub
+
   Public Shared Sub RedirectIfDbLocked()
 
     If Database.IsSystemLocked() Then

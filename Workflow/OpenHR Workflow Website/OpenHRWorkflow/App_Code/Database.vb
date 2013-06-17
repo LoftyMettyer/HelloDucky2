@@ -1,5 +1,7 @@
 ﻿Imports System.Data
+Imports System.Linq
 Imports System.Data.SqlClient
+Imports System.Collections.Generic
 Imports Utilities
 
 Public Class Database
@@ -21,6 +23,26 @@ Public Class Database
       End While
 
       Return False
+    End Using
+
+  End Function
+
+  Public Shared Function IsMobileLicensed() As Boolean
+
+    Using conn As New SqlConnection(Configuration.ConnectionString)
+      conn.Open()
+
+      Dim cmd As New SqlCommand("spASRIntActivateModule", conn)
+      cmd.CommandType = CommandType.StoredProcedure
+
+      cmd.Parameters.Add("@sModule", SqlDbType.VarChar, 50).Direction = ParameterDirection.Input
+      cmd.Parameters("@sModule").Value = "MOBILE"
+
+      cmd.Parameters.Add("@bLicensed", SqlDbType.Bit).Direction = ParameterDirection.Output
+
+      cmd.ExecuteNonQuery()
+
+      Return NullSafeBoolean(cmd.Parameters("@bLicensed").Value())
     End Using
 
   End Function
@@ -268,6 +290,70 @@ Public Class Database
 
   End Function
 
+  Public Shared Function GetWorkflowList(userGroupID As Integer) As List(Of WorkflowLink)
+
+    Dim list As New List(Of WorkflowLink)
+  
+    Using conn As New SqlConnection(Configuration.ConnectionString)
+
+      Dim sql As String = "SELECT w.Id, w.Name, w.PictureID" & _
+            " FROM tbsys_mobilegroupworkflows gw" & _
+            " INNER JOIN tbsys_workflows w on gw.WorkflowID = w.ID" & _
+            " WHERE gw.UserGroupID = " & userGroupID & " AND w.enabled = 1 ORDER BY gw.Pos ASC"
+
+      conn.Open()
+      Dim cmd As New SqlCommand(sql, conn)
+      Dim dr As SqlDataReader = cmd.ExecuteReader()
+
+      While dr.Read()
+        list.Add(New WorkflowLink() With _
+                 {.ID = NullSafeInteger(dr("ID")), _
+                  .Name = NullSafeString(dr("Name")), _
+                  .PictureID = NullSafeInteger(dr("PictureID")) _
+                 })
+      End While
+
+      Return list
+    End Using
+
+  End Function
+
+  Public Shared Function GetPendingStepList(userName As String) As List(Of WorkflowStepLink)
+
+    Dim list As New List(Of WorkflowStepLink)
+
+    Using conn As New SqlConnection(Configuration.ConnectionString)
+      conn.Open()
+
+      Dim cmd As New SqlCommand("spASRSysMobileCheckPendingWorkflowSteps", conn)
+      cmd.CommandType = CommandType.StoredProcedure
+
+      cmd.Parameters.Add("@psKeyParameter", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
+      cmd.Parameters("@psKeyParameter").Value = userName
+
+      Dim dr As SqlDataReader = cmd.ExecuteReader
+
+      While dr.Read()
+
+        Dim desc As String = CStr(dr("description"))
+
+        If desc.StartsWith(CStr(dr("name")).Trim() & " -") Then
+          desc = desc.Substring(CStr(dr("name")).Trim().Length + 2).Trim()
+        End If
+
+        list.Add(New WorkflowStepLink() With _
+              {.Url = NullSafeString(dr("Url")), _
+               .Name = NullSafeString(dr("Name")), _
+               .Desc = desc, _
+               .PictureID = NullSafeInteger(dr("PictureID")) _
+              })
+      End While
+
+      Return (From x In list Order By x.Name, x.Desc).ToList()
+    End Using
+
+  End Function
+
 End Class
 
 Public Structure CheckLoginResult
@@ -275,3 +361,16 @@ Public Structure CheckLoginResult
   Public InvalidReason As String
   Public UserGroupID As Integer
 End Structure
+
+Public Class WorkflowLink
+  Public ID As Integer
+  Public Name As String
+  Public PictureID As Integer
+End Class
+
+Public Class WorkflowStepLink
+  Public Url As String
+  Public Name As String
+  Public Desc As String
+  Public PictureID As Integer
+End Class

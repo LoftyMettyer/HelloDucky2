@@ -174,13 +174,17 @@ body { font-family: verdana; }
     padding: 0px 2px 1px 2px;
     border-radius: 30px;
 }
-.workflow-list img {
-    margin-right: 6px;
+.workflow-list li {
+    margin-bottom: 4px;
 }
-.workflow-list td {
-    padding-top: 2px;
-    padding-bottom: 2px;
+.workflow-list li a {
+    display: block;
 }
+.workflow-list li img {
+    width: 48px;
+    height: 48px;
+}
+
 /* Adjustment for larger screens */
 .large-view .page {
     width: 320px;

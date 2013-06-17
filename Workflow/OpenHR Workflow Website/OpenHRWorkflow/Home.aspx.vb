@@ -1,4 +1,5 @@
 ﻿Imports System.Data.SqlClient
+Imports System.Collections.Generic
 Imports Utilities
 
 Partial Class Home
@@ -37,87 +38,41 @@ Partial Class Home
       homeItemFontInfo.Strikeout = NullSafeBoolean(dr("HomeItemFontStrikeout"))
     End Using
 
-    Dim itemCount As Integer
-
     Dim canRun As Boolean = Database.CanRunWorkflows(userGroupID)
+    Dim workflows As New List(Of WorkflowLink)
 
     If canRun Then
-
-      Using conn As New SqlConnection(Configuration.ConnectionString)
-
-        Dim sql As String = "SELECT w.Id, w.Name, w.PictureID" & _
-              " FROM tbsys_mobilegroupworkflows gw" & _
-              " INNER JOIN tbsys_workflows w on gw.WorkflowID = w.ID" & _
-              " WHERE gw.UserGroupID = " & userGroupID & " AND w.enabled = 1 ORDER BY gw.Pos ASC"
-
-        conn.Open()
-        Dim cmd As New SqlCommand(sql, conn)
-        Dim dr As SqlDataReader = cmd.ExecuteReader()
-
-        ' Create the holding table for the list of workflows.
-        Dim table = New Table
-        table.CssClass = "workflow-list"
-        table.Style.Add("width", "100%")
-
-        'Iterate through the results
-        While dr.Read()
-
-          ' Create a row to contain this pending step...
-          Dim row = New TableRow
-          row.Style.Add("width", "100%")
-          row.Attributes.Add("onclick", "window.open('" & WorkflowLink(CInt(dr("ID"))) & "');")
-          row.Style.Add("cursor", "pointer")
-
-          ' Create a cell to contain the workflow icon
-          Dim cell = New TableCell  ' Image cell
-          cell.Style.Add("width", "57px")
-
-          Dim image As New Image, sImageFileName As String
-          If NullSafeInteger(dr("PictureID")) = 0 Then
-            sImageFileName = "~/Images/Connected48.png"
-          Else
-            sImageFileName = Picture.GetUrl(CInt(dr("PictureID")))
-          End If
-          image.ImageUrl = sImageFileName
-          image.Height() = Unit.Pixel(48)
-          image.Width() = Unit.Pixel(48)
-          image.Style.Add("cursor", "pointer")
-
-          ' add ImageButton to cell
-          cell.Controls.Add(image)
-
-          ' Add cell to row
-          row.Cells.Add(cell)
-
-          ' Create a cell to contain the workflow name and description
-          cell = New TableCell
-          Dim label = New Label ' Workflow name text
-          label.Text = CStr(dr("Name"))
-          label.Font.Name = homeItemFontInfo.Name
-          label.Font.Size = New FontUnit(homeItemFontInfo.Size)
-          label.Font.Bold = homeItemFontInfo.Bold
-          label.Font.Italic = homeItemFontInfo.Italic
-          label.Font.Underline = homeItemFontInfo.Underline
-          label.Font.Strikeout = homeItemFontInfo.Strikeout
-          label.Style.Add("color", General.GetHtmlColour(homeItemForeColor))
-          label.Style.Add("cursor", "pointer")
-
-          cell.Controls.Add(label)
-
-          ' Add cell to row, and row to table.
-          row.Cells.Add(cell)
-
-          table.Rows.Add(row)
-
-          itemCount += 1
-        End While
-        pnlWFList.Controls.Add(table)
-
-      End Using
-
+      workflows = Database.GetWorkflowList(userGroupID)
     End If
 
-    If itemCount > 0 Then
+    For Each item In workflows
+
+      Dim li As New HtmlGenericControl("li")
+
+      Dim link As New HyperLink
+      link.NavigateUrl = WorkflowLink(item.ID)
+      link.Target = "_blank"
+
+      Dim image As New Image
+      image.ImageUrl = If(item.PictureID = 0, "~/Images/Connected48.png", Picture.GetUrl(item.PictureID))
+
+      Dim label = New Label
+      label.Text = item.Name
+      label.Font.Name = homeItemFontInfo.Name
+      label.Font.Size = New FontUnit(homeItemFontInfo.Size)
+      label.Font.Bold = homeItemFontInfo.Bold
+      label.Font.Italic = homeItemFontInfo.Italic
+      label.Font.Underline = homeItemFontInfo.Underline
+      label.Font.Strikeout = homeItemFontInfo.Strikeout
+      label.Style.Add("color", General.GetHtmlColour(homeItemForeColor))
+
+      workflowList.Controls.Add(li)
+      li.Controls.Add(link)
+      link.Controls.Add(image)
+      link.Controls.Add(label)
+    Next
+
+    If workflows.Count > 0 Then
       lblNothingTodo.Visible = False
     Else
       lblWelcome.Visible = False

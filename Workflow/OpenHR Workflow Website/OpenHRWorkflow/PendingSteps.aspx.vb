@@ -1,6 +1,6 @@
 ﻿Imports System
-Imports System.Data
 Imports System.Data.SqlClient
+Imports System.Collections.Generic
 Imports Utilities
 
 Partial Class PendingSteps
@@ -51,106 +51,51 @@ Partial Class PendingSteps
     End Using
 
     Dim canRun As Boolean = Database.CanRunWorkflows(userGroupID)
-
-    Dim stepCount As Integer
+    Dim workflows As New List(Of WorkflowStepLink)
 
     If canRun Then
-
-      ' Get the pending steps.
-      Using conn As New SqlConnection(Configuration.ConnectionString)
-        conn.Open()
-
-        Dim cmd As New SqlCommand("spASRSysMobileCheckPendingWorkflowSteps", conn)
-        cmd.CommandType = CommandType.StoredProcedure
-
-        cmd.Parameters.Add("@psKeyParameter", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
-        cmd.Parameters("@psKeyParameter").Value = User.Identity.Name
-
-        Dim dr As SqlDataReader = cmd.ExecuteReader
-
-        Dim table As Table, row As TableRow, cell As TableCell, label As Label, image As Image
-
-        ' Create the holding table
-        table = New Table
-        table.CssClass = "workflow-list"
-
-        While (dr.Read)
-          ' Create a row to contain this pending step...
-          row = New TableRow
-          row.Attributes.Add("onclick", "window.open('" & dr("url").ToString & "');")
-          row.Style.Add("cursor", "pointer")
-
-          ' Create a cell to contain the workflow icon
-          cell = New TableCell  ' Image cell
-          image = New Image
-
-          Dim fileName As String
-          If NullSafeInteger(dr("PictureID")) = 0 Then
-            fileName = "~/Images/Connected48.png"
-          Else
-            fileName = Picture.GetUrl(CInt(dr("PictureID")))
-          End If
-          image.ImageUrl = fileName
-          image.Height() = Unit.Pixel(48)
-          image.Width() = Unit.Pixel(48)
-          image.Style.Add("cursor", "pointer")
-
-          ' add ImageButton to cell
-          cell.Controls.Add(image)
-
-          ' Add cell to row
-          row.Cells.Add(cell)
-
-          ' Create a cell to contain the workflow name and description
-          cell = New TableCell
-          label = New Label ' Workflow name text
-          label.Text = CStr(dr("name"))
-          label.Font.Name = todoTitleFontInfo.Name
-          label.Font.Size = New FontUnit(todoTitleFontInfo.Size)
-          label.Font.Bold = todoTitleFontInfo.Bold
-          label.Font.Italic = todoTitleFontInfo.Italic
-          label.Font.Underline = todoTitleFontInfo.Underline
-          label.Font.Strikeout = todoTitleFontInfo.Strikeout
-          label.Style.Add("color", General.GetHtmlColour(todoTitleForeColor))
-          label.Style.Add("cursor", "pointer")
-          cell.Controls.Add(label)
-
-          ' Line Break
-          cell.Controls.Add(New LiteralControl("<br>"))
-
-          label = New Label ' Workflow step description text
-
-          Dim desc As String
-          If Left(CStr(dr("description")), Len(dr("name")) + 2) = (Trim(CStr(dr("name"))) & " -") Then
-            desc = dr("description").ToString.Remove(0, (dr("name").ToString.Length) + 2)
-          Else
-            desc = dr("description").ToString
-          End If
-          label.Text = desc
-          label.Font.Name = todoDescFontInfo.Name
-          label.Font.Size = New FontUnit(todoDescFontInfo.Size)
-          label.Font.Bold = todoDescFontInfo.Bold
-          label.Font.Italic = todoDescFontInfo.Italic
-          label.Font.Underline = todoDescFontInfo.Underline
-          label.Font.Strikeout = todoDescFontInfo.Strikeout
-          label.Style.Add("color", General.GetHtmlColour(todoDescForeColor))
-          label.Style.Add("cursor", "pointer")
-          cell.Controls.Add(label)
-
-          ' Add cell to row, and row to table.
-          row.Cells.Add(cell)
-          table.Rows.Add(row)
-
-          stepCount += 1
-        End While
-
-        pnlWFList.Controls.Add(table)
-
-      End Using
-
+      workflows = Database.GetPendingStepList(User.Identity.Name)
     End If
 
-    If stepCount > 0 Then
+    For Each item In workflows
+
+      Dim li As New HtmlGenericControl("li")
+
+      Dim link As New HyperLink
+      link.NavigateUrl = item.Url
+      link.Target = "_blank"
+
+      Dim image As New Image
+      image.ImageUrl = If(item.PictureID = 0, "~/Images/Connected48.png", Picture.GetUrl(item.PictureID))
+
+      Dim label = New Label
+      label.Text = item.Name
+      label.Font.Name = todoTitleFontInfo.Name
+      label.Font.Size = New FontUnit(todoTitleFontInfo.Size)
+      label.Font.Bold = todoTitleFontInfo.Bold
+      label.Font.Italic = todoTitleFontInfo.Italic
+      label.Font.Underline = todoTitleFontInfo.Underline
+      label.Font.Strikeout = todoTitleFontInfo.Strikeout
+      label.Style.Add("color", General.GetHtmlColour(todoTitleForeColor))
+
+      Dim labelDesc As New Label
+      labelDesc.Text = item.Desc
+      labelDesc.Font.Name = todoDescFontInfo.Name
+      labelDesc.Font.Size = New FontUnit(todoDescFontInfo.Size)
+      labelDesc.Font.Bold = todoDescFontInfo.Bold
+      labelDesc.Font.Italic = todoDescFontInfo.Italic
+      labelDesc.Font.Underline = todoDescFontInfo.Underline
+      labelDesc.Font.Strikeout = todoDescFontInfo.Strikeout
+      labelDesc.Style.Add("color", General.GetHtmlColour(todoDescForeColor))
+
+      workflowList.Controls.Add(li)
+      li.Controls.Add(link)
+      link.Controls.Add(image)
+      link.Controls.Add(label)
+      link.Controls.Add(labelDesc)
+    Next
+
+    If workflows.Count > 0 Then
       lblNothingTodo.Visible = False
     Else
       lblInstruction.Visible = False

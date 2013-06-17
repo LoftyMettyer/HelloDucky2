@@ -5,7 +5,7 @@
     <asp:Label runat="server" ID="lblInstruction" Text="Welcome"/>
     <asp:Label runat="server" ID="lblNothingTodo" Text="No items"/>
 
-    <div runat="server" id="pnlWFList" />
+    <ul runat="server" id="workflowList" class="workflow-list"/>
 
 </asp:Content>
 
