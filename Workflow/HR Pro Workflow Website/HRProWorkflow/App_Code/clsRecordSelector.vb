@@ -667,6 +667,9 @@ Public Class RecordSelector
                         End If
                     End If
 
+
+
+
                     ' add overflow hidden and nowrap, stops the cells wrapping text or overflowing into adjacent cols.
                     e.Row.Cells(iColCount).Style.Add("overflow", "hidden")
                     e.Row.Cells(iColCount).Style.Add("white-space", "nowrap")
@@ -688,7 +691,7 @@ Public Class RecordSelector
                             Or curSelDataType.Contains("DOUBLE") _
                             Then curSelDataType = "Integer"
                         If curSelDataType.Contains("DATETIME") Then curSelDataType = "DateTime"
-                        If curSelDataType.Contains("BOOLEAN") Then curSelDataType = "Boolean"
+                        If curSelDataType.Contains("BOOLEAN") Or curSelDataType.Contains("DBNULL") Then curSelDataType = "Boolean"
                     End If
                     Try
                         Select Case curSelDataType
@@ -700,7 +703,7 @@ Public Class RecordSelector
                                 e.Row.Cells(iColCount).Style.Add("text-align", "right")
                             Case "Boolean"
                                 e.Row.Cells(iColCount).Style.Add("text-align", "center")
-                            Case Else   ' String                                
+                            Case Else   ' String
                                 ' Careful here: &nbsp is not a real space (it's chr160, not chr20) - might cause probs somewhere down the line....
                                 e.Row.Cells(iColCount).Text = e.Row.Cells(iColCount).Text.Replace(" ", "&nbsp;")
                                 e.Row.Cells(iColCount).Style.Add("text-align", "left")
