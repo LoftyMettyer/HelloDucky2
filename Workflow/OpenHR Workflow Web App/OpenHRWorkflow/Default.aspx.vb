@@ -24,8 +24,6 @@ Public Class [Default]
 
    Private Const TabStripHeight As Integer = 21
    Private Const FormInputPrefix As String = "FI_"
-   Private Const DefaultTitle As String = "OpenHR Workflow"
-   Private Const CompiledAssemblyName As String = "OPENHRWORKFLOW"
 
    Protected Sub Page_PreInit(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.PreInit
 
@@ -150,8 +148,6 @@ Public Class [Default]
    Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
 
       Dim message As String = ""
-      Dim assemblyName As String = ""
-      Dim webSiteVersion As String = ""
 
       Try
          Response.CacheControl = "no-cache"
@@ -165,24 +161,9 @@ Public Class [Default]
       End Try
 
       'Set the page title
-      Dim pageTitle As String = DefaultTitle
-
-      'TODO PG NOW can this ever be zero length see other code
       With Assembly.GetExecutingAssembly.GetName.Version
-         webSiteVersion = String.Format("{0}.{1}.{2}", .Major, .Minor, .Build)
+         Page.Title = String.Format("OpenHR Workflow - v{0}.{1}.{2}", .Major, .Minor, .Build)
       End With
-
-      assemblyName = Assembly.GetExecutingAssembly.GetName.Name.ToUpper
-
-      If assemblyName = CompiledAssemblyName Then
-         'Compiled version of the web site, so perform version checks.
-         pageTitle += " - v" & webSiteVersion
-      Else
-         'Development version of the web site
-         pageTitle += " (development)"
-      End If
-
-      Page.Title = pageTitle
 
       'Set the page culture
       SetPageCulture()
@@ -198,101 +179,96 @@ Public Class [Default]
       'check if the database and website versions match.
       If message.Length = 0 And Not IsPostBack Then
 
-         Dim dbVersion As String = _db.GetSetting("database", "version", False)
+         'Perform version checks if not running in ide
+         'TODO PG check if in dev mode
+         If True Then
 
-         'Complied version of the web site, so perform version checks.
-         If assemblyName = CompiledAssemblyName Then
+            Dim dbVersion As String = _db.GetSetting("database", "version", False)
 
-            'Just get the major and minor parts of the 4 part version.
-            webSiteVersion = Assembly.GetExecutingAssembly.GetName.Version.Major & "." & Assembly.GetExecutingAssembly.GetName.Version.Minor
+            Dim wsVersion As String = Assembly.GetExecutingAssembly.GetName.Version.Major & "." &
+                                      Assembly.GetExecutingAssembly.GetName.Version.Minor
 
-            If dbVersion <> webSiteVersion Or webSiteVersion.Length = 0 Then
-               ' Version mismatch.
-               If dbVersion.Length = 0 Then
-                  dbVersion = "&lt;unknown&gt;"
-               End If
-               If webSiteVersion.Length = 0 Then
-                  webSiteVersion = "&lt;unknown&gt;"
-               End If
+            If dbVersion <> wsVersion Then
 
-               message = "The Workflow website version (" & webSiteVersion & ")" & " is incompatible with the database version (" & dbVersion & ")." & "<BR><BR>Contact your system administrator."
+               message = String.Format("The Workflow website version ({0}) is incompatible with the database version ({1})." &
+                                       "<BR><BR>Contact your system administrator.", wsVersion, If(dbVersion = Nothing, "&lt;unknown&gt;", dbVersion))
             End If
          End If
       End If
 
-         If message.Length = 0 Then
+      If message.Length = 0 Then
 
-            Try
-               'FileUpload.apsx and FileDownload.aspx require the url details
-               Session("workflowUrl") = _url
+         Try
+            'FileUpload.apsx and FileDownload.aspx require the url details
+            Session("workflowUrl") = _url
 
-               ' Get the selected tab number for this workflow, if any...
-               If Not IsPostBack Then
-                  hdnDefaultPageNo.Value = _db.GetWorkflowCurrentTab(_url.InstanceID).ToString
-               End If
-
-               'Get the worklfow form details
-               _form = _db.GetWorkflowForm(_url.InstanceID, _url.ElementID)
-
-               Dim script As String = ""
-               message = CreateControls(_form, script)
-
-               ScriptManager.GetCurrent(Page).AsyncPostBackTimeout = _config.SubmissionTimeout
-
-               If (Not ClientScript.IsStartupScriptRegistered("Startup")) Then
-                  ' Form the script to be registered at client side.
-                  ClientScript.RegisterStartupScript(ClientScript.GetType, "Startup", "function pageLoad() {" & script & "}", True)
-               End If
-
-               If message.Length = 0 Then
-
-                  If _form.ErrorMessage <> "" Then
-                     message = _form.ErrorMessage
-                  End If
-
-                  If _form.BackImage > 0 Then
-                     Dim image As String = LoadPicture(_form.BackImage, message)
-                     If message.Length = 0 Then
-                        divInput.Style("background-image") = image
-                        divInput.Style("background-repeat") = General.BackgroundRepeat(_form.BackImageLocation)
-                        divInput.Style("background-position") = General.BackgroundPosition(_form.BackImageLocation)
-                     End If
-                  End If
-
-                  If _form.BackColour > 0 Then
-                     divInput.Style("background-color") = General.GetHtmlColour(_form.BackColour)
-                  End If
-
-                  pnlInputDiv.Style("width") = _form.Width.ToString & "px"
-                  pnlInputDiv.Style("height") = _form.Height.ToString & "px"
-                  pnlInputDiv.Style("left") = "-2px"
-
-                  hdnSiblingForms.Value = _siblingForms.ToString
-               End If
-
-               ' Resize the mobile 'viewport' to fit the webform
-               AddHeaderTags(_form.Width)
-
-            Catch ex As Exception
-               message = "Error loading web form controls:<BR><BR>" & ex.Message.Replace(vbCrLf, "<BR>") & "<BR><BR>" & "Contact your system administrator."
-            End Try
-
-         End If
-
-         If message.Length > 0 Then
-
-            If IsPostBack Then
-               bulletErrors.Items.Clear()
-               bulletWarnings.Items.Clear()
-
-               hdnErrorMessage.Value = message
-               hdnFollowOnForms.Value = ""
-               SetSubmissionMessage(message & "<BR><BR>Click", "here", "to close this form.")
-            Else
-               Session("message") = message
-               Response.Redirect("Message.aspx")
+            ' Get the selected tab number for this workflow, if any...
+            If Not IsPostBack Then
+               hdnDefaultPageNo.Value = _db.GetWorkflowCurrentTab(_url.InstanceID).ToString
             End If
+
+            'Get the worklfow form details
+            _form = _db.GetWorkflowForm(_url.InstanceID, _url.ElementID)
+
+            Dim script As String = ""
+            message = CreateControls(_form, script)
+
+            ScriptManager.GetCurrent(Page).AsyncPostBackTimeout = _config.SubmissionTimeout
+
+            If (Not ClientScript.IsStartupScriptRegistered("Startup")) Then
+               ' Form the script to be registered at client side.
+               ClientScript.RegisterStartupScript(ClientScript.GetType, "Startup", "function pageLoad() {" & script & "}", True)
+            End If
+
+            If message.Length = 0 Then
+
+               If _form.ErrorMessage <> "" Then
+                  message = _form.ErrorMessage
+               End If
+
+               If _form.BackImage > 0 Then
+                  Dim image As String = LoadPicture(_form.BackImage, message)
+                  If message.Length = 0 Then
+                     divInput.Style("background-image") = image
+                     divInput.Style("background-repeat") = General.BackgroundRepeat(_form.BackImageLocation)
+                     divInput.Style("background-position") = General.BackgroundPosition(_form.BackImageLocation)
+                  End If
+               End If
+
+               If _form.BackColour > 0 Then
+                  divInput.Style("background-color") = General.GetHtmlColour(_form.BackColour)
+               End If
+
+               pnlInputDiv.Style("width") = _form.Width.ToString & "px"
+               pnlInputDiv.Style("height") = _form.Height.ToString & "px"
+               pnlInputDiv.Style("left") = "-2px"
+
+               hdnSiblingForms.Value = _siblingForms.ToString
+            End If
+
+            ' Resize the mobile 'viewport' to fit the webform
+            AddHeaderTags(_form.Width)
+
+         Catch ex As Exception
+            message = "Error loading web form controls:<BR><BR>" & ex.Message.Replace(vbCrLf, "<BR>") & "<BR><BR>" & "Contact your system administrator."
+         End Try
+
+      End If
+
+      If message.Length > 0 Then
+
+         If IsPostBack Then
+            bulletErrors.Items.Clear()
+            bulletWarnings.Items.Clear()
+
+            hdnErrorMessage.Value = message
+            hdnFollowOnForms.Value = ""
+            SetSubmissionMessage(message & "<BR><BR>Click", "here", "to close this form.")
+         Else
+            Session("message") = message
+            Response.Redirect("Message.aspx")
          End If
+      End If
    End Sub
 
    Private Function CreateControls(workflowForm As WorkflowForm, ByRef script As String) As String

@@ -6,7 +6,7 @@ Partial Class PendingSteps
   Inherits Page
 
   Protected Sub Page_Init(sender As Object, e As EventArgs) Handles Me.Init
-    Title = WebSiteName("To Do...")
+    Title = GetPageTitle("To Do...")
     Forms.LoadControlData(Me, 5)
 
     Dim db As New Database

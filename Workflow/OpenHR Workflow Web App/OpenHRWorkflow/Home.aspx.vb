@@ -5,7 +5,7 @@ Partial Class Home
   Inherits Page
 
   Protected Sub Page_Init(sender As Object, e As EventArgs) Handles Me.Init
-    Title = WebSiteName("Home")
+    Title = GetPageTitle("Home")
     Forms.LoadControlData(Me, 2)
 
     Dim db As New Database
