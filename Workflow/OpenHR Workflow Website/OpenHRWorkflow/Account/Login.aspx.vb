@@ -19,33 +19,20 @@ Partial Class Login
       ' Check if the system is locked
       If Database.IsSystemLocked() Then
         sMessage = "Database locked." & vbCrLf & "Contact your system administrator."
-      End If
-    Catch ex As Exception
-      sMessage = "Unable to perform system lock check."
-    End Try
 
-    ' Continue with authentication
-    If sMessage.Length = 0 Then
-      Try
-        If Not Security.ValidateUser(txtUserName.Text.Trim, txtPassword.Text) Then
-          sMessage = "The system could not log you on. Make sure your details are correct, then retype your password."
-        End If
-      Catch ex As Exception
-        sMessage = ex.Message
-      End Try
+      ElseIf Not Security.ValidateUser(txtUserName.Text.Trim, txtPassword.Text) Then
+        sMessage = "The system could not log you on. Make sure your details are correct, then retype your password."
 
-    End If
-
-    If sMessage.Length = 0 Then
-      Try
+      Else
         Dim result As CheckLoginResult = Database.CheckLoginDetails(txtUserName.Text.Trim)
         If Not result.Valid Then
           sMessage = result.InvalidReason
         End If
-      Catch ex As Exception
-        sMessage = "Error :" & vbCrLf & vbCrLf & ex.Message & vbCrLf & vbCrLf & "Contact your system administrator."
-      End Try
-    End If
+      End If
+
+    Catch ex As Exception
+      sMessage = "Error :" & vbCrLf & vbCrLf & ex.Message & vbCrLf & vbCrLf & "Contact your system administrator."
+    End Try
 
     If sMessage.Length > 0 Then
       CType(Master, Site).ShowDialog("Login Failed", sMessage, "")

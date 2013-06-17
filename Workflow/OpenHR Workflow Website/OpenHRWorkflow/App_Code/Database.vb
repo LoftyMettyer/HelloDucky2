@@ -25,6 +25,26 @@ Public Class Database
 
   End Function
 
+  Public Shared Function GetUserCountOnServer(userName As String) As Integer
+
+    Using conn As New SqlConnection(Configuration.ConnectionString)
+      conn.Open()
+
+      Dim cmd As New SqlCommand("spASRGetCurrentUsersCountOnServer", conn)
+      cmd.CommandType = CommandType.StoredProcedure
+
+      cmd.Parameters.Add("@iLoginCount", SqlDbType.Int).Direction = ParameterDirection.Output
+
+      cmd.Parameters.Add("@psLoginName", SqlDbType.NVarChar, 2147483646).Direction = ParameterDirection.Input
+      cmd.Parameters("@psLoginName").Value = userName
+
+      cmd.ExecuteNonQuery()
+
+      Return CInt(cmd.Parameters("@iLoginCount").Value)
+
+    End Using
+  End Function
+
   Public Shared Function CheckLoginDetails(userName As String) As CheckLoginResult
 
     Using conn As New SqlConnection(Configuration.ConnectionString)
@@ -72,6 +92,119 @@ Public Class Database
       End While
       Return count
     End Using
+
+  End Function
+
+  Public Shared Function GetUserID(email As String) As Integer
+
+    Using conn As New SqlConnection(Configuration.ConnectionString)
+      conn.Open()
+
+      Dim cmd As New SqlCommand("spASRSysMobileGetUserIDFromEmail", conn)
+      cmd.CommandType = CommandType.StoredProcedure
+
+      cmd.Parameters.Add("@psEmail", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
+      cmd.Parameters("@psEmail").Value = email
+
+      cmd.Parameters.Add("@piUserID", SqlDbType.Int).Direction = ParameterDirection.Output
+
+      cmd.ExecuteNonQuery()
+
+      Return NullSafeInteger(cmd.Parameters("@piUserID").Value())
+
+    End Using
+
+  End Function
+
+  Public Shared Function Register(email As String, activationUrl As String) As String
+
+    Using conn As New SqlConnection(Configuration.ConnectionString)
+      conn.Open()
+
+      Dim cmd As New SqlCommand("spASRSysMobileRegistration", conn)
+      cmd.CommandType = CommandType.StoredProcedure
+
+      cmd.Parameters.Add("@psEmailAddress", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
+      cmd.Parameters("@psEmailAddress").Value = email
+
+      cmd.Parameters.Add("@psActivationURL", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
+      cmd.Parameters("@psActivationURL").Value = activationUrl
+
+      cmd.Parameters.Add("@psMessage", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Output
+
+      cmd.ExecuteNonQuery()
+
+      Return CStr(cmd.Parameters("@psMessage").Value())
+
+    End Using
+
+  End Function
+
+  Public Shared Function ForgotLogin(email As String) As String
+
+    Using conn As New SqlConnection(Configuration.ConnectionString)
+      conn.Open()
+
+      Dim cmd As New SqlCommand("spASRSysMobileForgotLogin", conn)
+      cmd.CommandType = CommandType.StoredProcedure
+
+      cmd.Parameters.Add("@psEmailAddress", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
+      cmd.Parameters("@psEmailAddress").Value = email
+
+      cmd.Parameters.Add("@psMessage", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Output
+
+      cmd.ExecuteNonQuery()
+
+      Return CStr(cmd.Parameters("@psMessage").Value())
+
+    End Using
+
+  End Function
+
+  'TODO: this should be an atomic operation, ASRSysPassword's purpose?
+  Public Shared Function ChangePassword(userName As String, currentPassword As String, newPassword As String) As String
+
+    ' Attempt to change the password on the SQL Server.
+    Using conn As New SqlConnection(Configuration.ConnectionString)
+      conn.Open()
+
+      Dim cmd As New SqlCommand("sp_password", conn)
+      cmd.CommandType = CommandType.StoredProcedure
+
+      cmd.Parameters.Add("@old", SqlDbType.NVarChar, 2147483646).Direction = ParameterDirection.Input
+      cmd.Parameters("@old").Value = currentPassword
+
+      cmd.Parameters.Add("@new", SqlDbType.NVarChar, 2147483646).Direction = ParameterDirection.Input
+      cmd.Parameters("@new").Value = newPassword
+
+      cmd.Parameters.Add("@loginame", SqlDbType.NVarChar, 2147483646).Direction = ParameterDirection.Input
+      cmd.Parameters("@loginame").Value = userName
+
+      Try
+        cmd.ExecuteNonQuery()
+      Catch ex As SqlException
+        If ex.Number = 15151 Then
+          Return "Current password is incorrect."
+        Else
+          Return ex.Message
+        End If
+      End Try
+    End Using
+
+    ' Password changed okay. Update the appropriate record in the ASRSysPasswords table.
+    Using conn As New SqlConnection(Configuration.ConnectionString)
+      conn.Open()
+
+      Dim cmd As New SqlCommand("spASRSysMobilePasswordOK", conn)
+      cmd.CommandType = CommandType.StoredProcedure
+
+      cmd.Parameters.Add("@sCurrentUser", SqlDbType.NVarChar, 2147483646).Direction = ParameterDirection.Input
+      cmd.Parameters("@sCurrentUser").Value = userName
+
+      cmd.ExecuteNonQuery()
+    End Using
+
+    Return String.Empty
 
   End Function
 

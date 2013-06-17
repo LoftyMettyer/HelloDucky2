@@ -19,44 +19,14 @@ Partial Class ForgottenLogin
     Dim sRedirectTo As String = ""
 
     Try
-      ' Done in three parts. First get the ID for this e-mail (SQL). Second retrieve and decrypt password (VB), third send a reminder e-mail (SQL).
-      ' Scratch that! First get the username from the db for this email address, then send the e-mail.
-      Using conn As New SqlConnection(Configuration.ConnectionString)
-        conn.Open()
+      'Check the email address relates to a user
+      Dim userID = Database.GetUserID(txtEmail.Text)
 
-        Dim cmd = New SqlCommand("spASRSysMobileGetUserIDFromEmail", conn)
-        cmd.CommandType = CommandType.StoredProcedure
-
-        cmd.Parameters.Add("@psEmail", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
-        cmd.Parameters("@psEmail").Value = txtEmail.Text
-
-        cmd.Parameters.Add("@piUserID", SqlDbType.Int).Direction = ParameterDirection.Output
-
-        cmd.ExecuteNonQuery()
-
-        Dim userID = NullSafeInteger(cmd.Parameters("@piUserID").Value())
-
-        If userID = 0 Then sMessage = "No records exist with the given email address."
-      End Using
-
-      If sMessage.Length = 0 Then
-        ' ------------- Part two, send it all to sql to validate and email out -----------------
-        Using conn As New SqlConnection(Configuration.ConnectionString)
-          conn.Open()
-
-          Dim cmd As New SqlCommand("spASRSysMobileForgotLogin", conn)
-          cmd.CommandType = CommandType.StoredProcedure
-
-          cmd.Parameters.Add("@psEmailAddress", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
-          cmd.Parameters("@psEmailAddress").Value = txtEmail.Text
-
-          cmd.Parameters.Add("@psMessage", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Output
-
-          cmd.ExecuteNonQuery()
-
-          sMessage = CStr(cmd.Parameters("@psMessage").Value())
-
-        End Using
+      If userID = 0 Then
+        sMessage = "No records exist with the given email address."
+      Else
+        'Send it all to sql to validate and email out
+        sMessage = Database.ForgotLogin(txtEmail.Text)
       End If
 
     Catch ex As Exception
