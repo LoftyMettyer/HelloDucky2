@@ -15,7 +15,7 @@ Public Class Security
 
     Dim result As CheckLoginResult = Database.CheckLoginDetails(userName)
     If Not result.Valid Then
-      If result.InvalidReason = "Incorrect e-mail / password combination" Then Return invalidLoginDetails
+      If result.InvalidReason.ToLower() Like "*incorrect*e-mail*password*" Then Return invalidLoginDetails
       Return result.InvalidReason
     End If
 
