@@ -1,8 +1,7 @@
 Option Strict Off
 
-Imports VB = Microsoft.VisualBasic
-Imports VB6 = Microsoft.VisualBasic.Compatibility.VB6
 Imports System
+Imports Microsoft.VisualBasic
 
 Public Class Crypt
 
@@ -264,7 +263,7 @@ Public Class Crypt
       ' This chunk of 3 Hex characters can then be translated into 2 base64 characters (ie. still have possible values 0 - 4095)
       ' Woohoo! We've reduced the length of the encrypted string by about one third!
       sNewString = ""
-      sSubString = VB.Left(sModifiedSourceString & "000", 3)
+      sSubString = Left(sModifiedSourceString & "000", 3)
       sModifiedSourceString = Mid(sModifiedSourceString, 4)
       iValue = Val("&H" & sSubString)
 
