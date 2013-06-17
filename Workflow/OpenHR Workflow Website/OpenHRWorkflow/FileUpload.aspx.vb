@@ -1,8 +1,6 @@
 ﻿Imports System.IO
 Imports System.Data
-Imports System.Drawing
 Imports Utilities
-Imports System.Diagnostics
 
 Partial Class FileUpload
 	Inherits System.Web.UI.Page

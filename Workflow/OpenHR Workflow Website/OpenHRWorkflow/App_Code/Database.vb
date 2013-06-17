@@ -1,5 +1,6 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
+Imports System.Collections.Generic
 Imports Utilities
 
 Public Class Database

@@ -4,7 +4,7 @@ Imports System.Data.SqlClient
 Partial Class Site
   Inherits System.Web.UI.MasterPage
 
-  Protected Sub Page_Init(sender As Object, e As System.EventArgs) Handles Me.Init
+  Protected Sub Page_Init(sender As Object, e As EventArgs) Handles Me.Init
 
     Using conn As New SqlConnection(Configuration.ConnectionString)
 
@@ -32,7 +32,7 @@ Partial Class Site
         End Select
 
         If Not IsDBNull(dr(prefix & "BackColor")) Then
-          control.Style("Background-color") = general.GetHtmlColour(CInt(dr(prefix & "BackColor")))
+          control.Style("Background-color") = General.GetHtmlColour(CInt(dr(prefix & "BackColor")))
         End If
 
         If Not IsDBNull(dr(prefix & "PictureID")) Then

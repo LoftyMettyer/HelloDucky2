@@ -1,6 +1,4 @@
-﻿Imports System.Data
-Imports System.Data.SqlClient
-Imports Utilities
+﻿Imports Utilities
 
 Partial Class Registration
   Inherits System.Web.UI.Page

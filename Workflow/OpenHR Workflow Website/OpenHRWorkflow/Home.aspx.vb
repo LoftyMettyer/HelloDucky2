@@ -1,5 +1,4 @@
-﻿Imports System.Data
-Imports System.Data.SqlClient
+﻿Imports System.Data.SqlClient
 Imports System.Collections.Generic
 Imports Utilities
 
@@ -40,7 +39,6 @@ Partial Class Home
     End Using
 
     Dim itemCount As Integer
-    Dim workflows As New List(Of WorkflowLink)
 
     Dim canRun As Boolean = Database.CanUserGroupRunWorkflows(userGroupID)
 
@@ -84,8 +82,6 @@ Partial Class Home
           image.Height() = Unit.Pixel(57)
           image.Width() = Unit.Pixel(57)
           image.Style.Add("cursor", "pointer")
-
-          workflows.Add(New WorkflowLink() With {.Name = CStr(dr("Name")), .Image = sImageFileName, .Url = WorkflowLink(CInt(dr("ID")))})
 
           ' add ImageButton to cell
           cell.Controls.Add(image)
@@ -180,32 +176,3 @@ Partial Class Home
 
 End Class
 
-Public Class WorkflowLink
-  Private _name As String
-  Public Property Name As String
-    Get
-      Return _name
-    End Get
-    Set(value As String)
-      _name = value
-    End Set
-  End Property
-  Private _image As String
-  Public Property Image As String
-    Get
-      Return _image
-    End Get
-    Set(value As String)
-      _image = value
-    End Set
-  End Property
-  Private _url As String
-  Public Property Url As String
-    Get
-      Return _url
-    End Get
-    Set(value As String)
-      _url = value
-    End Set
-  End Property
-End Class

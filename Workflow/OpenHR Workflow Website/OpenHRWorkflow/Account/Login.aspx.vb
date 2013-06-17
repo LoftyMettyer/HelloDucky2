@@ -1,10 +1,9 @@
-﻿Imports System.Data.SqlClient
-Imports Utilities
+﻿Imports Utilities
 
 Partial Class Login
     Inherits System.Web.UI.Page
 
-  Protected Sub Page_Init(sender As Object, e As System.EventArgs) Handles Me.Init
+  Protected Sub Page_Init(sender As Object, e As EventArgs) Handles Me.Init
     Title = WebSiteName("Login")
     Forms.LoadControlData(Me, 1)
     Form.DefaultButton = btnLogin.UniqueID

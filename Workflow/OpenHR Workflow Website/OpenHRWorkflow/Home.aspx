@@ -7,9 +7,12 @@
 
     <div runat="server" id="pnlWFList" />
 
-<%--    <asp:ListView ID="ListView1" runat="server">
+<%-- Prob should be using databinding, much simpler than building stuff in code.
+    <asp:ListView ID="workflowList" runat="server">
         <LayoutTemplate>
-            <ul><li id="ItemPlaceHolder" runat="server"></li></ul>
+            <ul>
+                <li id="ItemPlaceHolder" runat="server"></li>
+            </ul>
         </LayoutTemplate>
         <ItemTemplate>
             <li>

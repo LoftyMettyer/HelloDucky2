@@ -1,7 +1,6 @@
 ﻿Imports System
 Imports System.Data
 Imports System.Data.SqlClient
-Imports System.Collections.Generic
 Imports Utilities
 
 Partial Class PendingSteps
@@ -104,7 +103,6 @@ Partial Class PendingSteps
           ' Create a cell to contain the workflow name and description
           cell = New TableCell
           label = New Label ' Workflow name text
-          label.Font.Underline = True
           label.Text = CStr(dr("name"))
           label.Font.Name = todoTitleFontInfo.Name
           label.Font.Size = New FontUnit(todoTitleFontInfo.Size)
