@@ -11,7 +11,13 @@
         <title></title>
         
         <script type="text/javascript">
-           // <!CDATA[
+            // <!CDATA[
+            window.onload = function () {
+                if (navigator.userAgent.indexOf('Android') !== -1) {
+                    touchScroll('ctl00_main');
+                }
+            };
+
             function showDialog(title, message) {
                 document.getElementById('ctl00_dialogTitle').innerHTML = title;
                 document.getElementById('ctl00_dialogMessage').innerHTML = message;
@@ -22,51 +28,86 @@
             function closeDialog() {
                 document.getElementById('ctl00_overlay').style.display = "none";
                 document.getElementById('ctl00_dialog').style.display = "none";
-                
+
                 var redirect = document.getElementById('ctl00_dialogRedirect').value;
 
                 if (redirect.length > 0) {
                     window.location.replace(redirect);
                 }
             }
+
+            function touchScroll(id) {
+
+                var el = document.getElementById(id);
+                var scrollStartPosY = 0;
+                var scrollStartPosX = 0;
+
+                document.getElementById(id).addEventListener("touchstart", function(event) {
+                    scrollStartPosY = this.scrollTop + event.touches[0].pageY;
+                    scrollStartPosX = this.scrollLeft + event.touches[0].pageX;
+                    //event.preventDefault(); // Keep this remarked so you can click on buttons and links in the div
+                }, false);
+
+                document.getElementById(id).addEventListener("touchmove", function(event) {
+                    // These if statements allow the full page to scroll (not just the div) if they are
+                    // at the top of the div scroll or the bottom of the div scroll
+                    // The -5 and +5 below are in case they are trying to scroll the page sideways
+                    // but their finger moves a few pixels down or up.  The event.preventDefault() function
+                    // will not be called in that case so that the whole page can scroll.
+                    if ((this.scrollTop < this.scrollHeight - this.offsetHeight && this.scrollTop + event.touches[0].pageY < scrollStartPosY - 5) || (this.scrollTop != 0 && this.scrollTop + event.touches[0].pageY > scrollStartPosY + 5)) {
+                        event.preventDefault();
+                    }
+                    if ((this.scrollLeft < this.scrollWidth - this.offsetWidth && this.scrollLeft + event.touches[0].pageX < scrollStartPosX - 5) || (this.scrollLeft != 0 && this.scrollLeft + event.touches[0].pageX > scrollStartPosX + 5)) {
+                        event.preventDefault();
+                    }
+
+                    this.scrollTop = scrollStartPosY - event.touches[0].pageY;
+                    this.scrollLeft = scrollStartPosX - event.touches[0].pageX;
+                }, false);
+            }
         // ]]>
         </script>
         <asp:ContentPlaceHolder id="headCPH" runat="server">
         </asp:ContentPlaceHolder>
     </head>
-    <body>
-        <form runat="server">
-
-            <div id="page" class="page">
+    <body>          
+        <form id="Form1" runat="server">
             
-                <div id="header" class="header" runat="server" />
+            <div id="page" class="page">
 
-                <div id="main" class="main" runat="server">
-                    <asp:ContentPlaceHolder id="mainCPH" runat="server">
-                    </asp:ContentPlaceHolder>
-                </div>
- 
+                <%--<div id="content" class="content">--%>
+                        
+                    <div id="header" class="header" runat="server" />           
+
+                    <div id="main" class="main" runat="server">
+                        <asp:ContentPlaceHolder id="mainCPH" runat="server">
+                        </asp:ContentPlaceHolder>
+                    </div>
+                <%--</div>--%>
+                
                 <div id="footer" class="footer" runat="server">
                     <asp:ContentPlaceHolder id="footerCPH" runat="server">
                     </asp:ContentPlaceHolder>
                 </div>
+
             </div>
+
         </form>
- 
+
         <div id="background" class="background" runat="server"/>
         
         <div id="overlay" class="overlay" style="display: none;" runat="server"/>
 
         <div id="dialog" class="dialog" style="display: none;" runat="server">
             
-                <label id="dialogTitle" runat="server" style="font-weight: bold; font-size: large; color: white"></label>
-                <br/>
-                <br/>
-                <label id="dialogMessage" runat="server" style="font-size: large; color: white"></label>
-                <br/>
-                <br/>
-                <input type="hidden" id="dialogRedirect" runat="server"/>
-                <input type="button" value="OK" style="width: 100px; height: 30px; background-color: ButtonHighlight" onclick="closeDialog(); "/>
+            <label id="dialogTitle" runat="server" style="font-weight: bold; font-size: large; color: white"></label>
+            <br/>
+            <br/>
+            <label id="dialogMessage" runat="server" style="font-size: large; color: white"></label>
+            <br/>
+            <br/>
+            <input type="hidden" id="dialogRedirect" runat="server"/>
+            <input type="button" value="OK" style="width: 100px; height: 30px; background-color: ButtonHighlight" onclick=" closeDialog(); "/>
         </div>
 
     </body>
