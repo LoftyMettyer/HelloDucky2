@@ -353,11 +353,6 @@
 	        catch (e) { }
 	    }
 
-	    //Function to call postback for the webNumericEdit change event. IG Bug.
-	    function WebNumericEdit(oEdit) {
-	        window.setTimeout('igedit_getById("' + oEdit + '").doPost(3)', 1);
-	    }
-
 	    function dateControlTextChanged(pobjControl, pNewText, pobjEvent) {
 	
 	        var dtCurrentDate;
@@ -1011,7 +1006,6 @@
 	        return false;
 	    }
 
-
 	    function FilterMobileLookup(sourceControlID) {
 	        var sSelectWhere = "";
 	        var sValueID = "";
@@ -1025,164 +1019,140 @@
 	        var fValue = true;
 	        var iIndex;
 	        var iTemp;
-	        var reX = /x/g;        
-	        var reDATE = /[YMD]/g;        
-	        var reTAB = /\t/g;        
-	        var reSINGLEQUOTE = /\'/g;        
+	        var reX = /x/g;
+	        var reDATE = /[YMD]/g;
+	        var reTAB = /\t/g;
+	        var reSINGLEQUOTE = /\'/g;
 	        var sLocaleDecimal = "\\<%=LocaleDecimal()%>";
 	        var reDECIMAL = new RegExp(sLocaleDecimal, "gi");
-	        
-	        if(sourceControlID=="") {return;}
-	        
+
+	        if (sourceControlID == "") { return; }
+
 	        var lookups = getElementsBySearchValue(sourceControlID);
 	        var AllLookupIDs = "";
 
-	        for(var i = 0; i < lookups.length; i++) {
+	        for (var i = 0; i < lookups.length; i++) {
 
 	            try {
 	                var psWebComboID = lookups[i].name.replace("lookup", "");
 	            }
-	            catch(e) {var psWebComboID="";}
-          
-          
-	            if(psWebComboID.length>0) {
-	        
+	            catch (e) { var psWebComboID = ""; }
+
+
+	            if (psWebComboID.length > 0) {
+
 	                var sID = "lookup" + psWebComboID;
 	                AllLookupIDs = AllLookupIDs + (i == 0 ? "" : "\t") + psWebComboID + "refresh";
 
 	                try {
 	                    var ctlLookupFilter = document.getElementById(sID);
-	                    if (ctlLookupFilter)
-	                    { 
+	                    if (ctlLookupFilter) {
 	                        sSelectWhere = ctlLookupFilter.value;
-                  
-	                        if (sSelectWhere.length > 0)
-	                        {
+
+	                        if (sSelectWhere.length > 0) {
 	                            // sSelectWhere has the format:
 	                            //  <filterValueControlID><TAB><selectWhere code with TABs where the value from filterValueControlID is to be inserted>
-                        
-	                            iIndex = sSelectWhere.indexOf("\t");
-	                            if (iIndex >= 0)
-	                            {
-	                                sValueType = sSelectWhere.substring(0, iIndex);
-	                                sSelectWhere = sSelectWhere.substr(iIndex+1);
-	                            }
-                        
-	                            iIndex = sSelectWhere.indexOf("\t");
-	                            if (iIndex >= 0)
-	                            {
-	                                sValueID = sSelectWhere.substring(0, iIndex);
-	                                sSelectWhere = sSelectWhere.substr(iIndex+1);
 
-	                                sControlType = sValueID.substr(sValueID.indexOf("_")+1);
-	                                sControlType = sControlType.substr(sControlType.indexOf("_")+1);
+	                            iIndex = sSelectWhere.indexOf("\t");
+	                            if (iIndex >= 0) {
+	                                sValueType = sSelectWhere.substring(0, iIndex);
+	                                sSelectWhere = sSelectWhere.substr(iIndex + 1);
+	                            }
+
+	                            iIndex = sSelectWhere.indexOf("\t");
+	                            if (iIndex >= 0) {
+	                                sValueID = sSelectWhere.substring(0, iIndex);
+	                                sSelectWhere = sSelectWhere.substr(iIndex + 1);
+
+	                                sControlType = sValueID.substr(sValueID.indexOf("_") + 1);
+	                                sControlType = sControlType.substr(sControlType.indexOf("_") + 1);
 	                                sControlType = sControlType.substring(0, sControlType.indexOf("_"));
-                            
+
 	                                if ((sControlType == 13)
-    	                                || (sControlType == 14))
-	                                {
+    	                                || (sControlType == 14)) {
 	                                    // Dropdown (13), Lookup (14)
 	                                    if (sControlType == 13) {
 	                                        var ctlLookupValueCombo = document.getElementById(sValueID);
 	                                        sValue = ctlLookupValueCombo.value;
 	                                    }
-	                                    else
-	                                    {
+	                                    else {
 	                                        var ctlLookupValueCombo = document.getElementById(sValueID + "TextBox");
-	                                        if(!(eval(ctlLookupValueCombo))) {var ctlLookupValueCombo = document.getElementById(sValueID);}
+	                                        if (!(eval(ctlLookupValueCombo))) { var ctlLookupValueCombo = document.getElementById(sValueID); }
 
-	                                        sValue = ctlLookupValueCombo.value;                                  
+	                                        sValue = ctlLookupValueCombo.value;
 	                                    }
-                        	    
-                        	    
-	                                    if(sValueType == 11)
-	                                    {
+
+
+	                                    if (sValueType == 11) {
 	                                        // Date value from lookup. Convert from locale format to yyyymmdd.
-	                                        if (sValue.length > 0)
-	                                        {
+	                                        if (sValue.length > 0) {
 	                                            sTemp = GetDatePart(sValue, "Y");
-                        	             
+
 	                                            sSubTemp = "0" + GetDatePart(sValue, "M");
-	                                            sTemp = sTemp + sSubTemp.substr(sSubTemp.length-2);
-                        	            
+	                                            sTemp = sTemp + sSubTemp.substr(sSubTemp.length - 2);
+
 	                                            sSubTemp = "0" + GetDatePart(sValue, "D");
-	                                            sTemp = sTemp + sSubTemp.substr(sSubTemp.length-2);
+	                                            sTemp = sTemp + sSubTemp.substr(sSubTemp.length - 2);
 
 	                                            sValue = sTemp;
 	                                        }
-	                                        else
-	                                        {
+	                                        else {
 	                                            sValue = "";
 	                                        }
 	                                    }
-	                                    else
-	                                    {
-	                                        if((sValueType == 2) || (sValueType == 4))
-	                                        {
+	                                    else {
+	                                        if ((sValueType == 2) || (sValueType == 4)) {
 	                                            // numerics/integers
-	                                            if (sValue.length > 0)
-	                                            {
+	                                            if (sValue.length > 0) {
 	                                                sValue = sValue.replace(reDECIMAL, ".");
 	                                            }
-	                                            else
-	                                            {
+	                                            else {
 	                                                sValue = "0";
 	                                            }
 	                                        }
 	                                    }
 	                                }
-	                                else
-	                                {
-	                                    if (sControlType == 6)
-	                                    {
+	                                else {
+	                                    if (sControlType == 6) {
 	                                        // Checkbox (6)
 	                                        var ctlLookupValueCheckbox = document.getElementById(sValueID);
 	                                        fValue = ctlLookupValueCheckbox.checked;
-	                                        if (fValue == true)
-	                                        {
+	                                        if (fValue == true) {
 	                                            sValue = "1";
 	                                        }
-	                                        else
-	                                        {
+	                                        else {
 	                                            sValue = "0";
 	                                        }
 	                                    }
-	                                    else
-	                                    {
-	                                        if (sControlType == 5)
-	                                        {
+	                                    else {
+	                                        if (sControlType == 5) {
 	                                            // Numeric (5)
 	                                            var ctlLookupValueNumeric = igedit_getById(sValueID);
 	                                            numValue = ctlLookupValueNumeric.getValue();
 	                                            sValue = numValue.toString();
 	                                        }
-	                                        else
-	                                        {
-	                                            if (sControlType == 7)
-	                                            {
+	                                        else {
+	                                            if (sControlType == 7) {
 	                                                // Date (7)
 	                                                var ctlLookupValueDate = igdrp_getComboById(sValueID);
 	                                                dtValue = ctlLookupValueDate.getValue();
-	                                                if (dtValue)
-	                                                {
+	                                                if (dtValue) {
 	                                                    // Get year part.
 	                                                    sTemp = dtValue.getFullYear();
-                        	            
+
 	                                                    // Get month part. Pad to 2 digits if required.
 	                                                    sSubTemp = "0" + (dtValue.getMonth() + 1);
-	                                                    sTemp = sTemp + sSubTemp.substr(sSubTemp.length-2);
+	                                                    sTemp = sTemp + sSubTemp.substr(sSubTemp.length - 2);
 
 	                                                    // Get day part. Pad to 2 digits if required.
 	                                                    sSubTemp = "0" + dtValue.getDate();
-	                                                    sValue = sTemp + sSubTemp.substr(sSubTemp.length-2);
+	                                                    sValue = sTemp + sSubTemp.substr(sSubTemp.length - 2);
 	                                                }
-	                                                else
-	                                                {
+	                                                else {
 	                                                    sValue = "";
 	                                                }
 	                                            }
-	                                            else
-	                                            {
+	                                            else {
 	                                                // CharInput, OptionGroup
 	                                                var ctlLookupValue = document.getElementById(sValueID);
 	                                                sValue = ctlLookupValue.value;
@@ -1191,28 +1161,30 @@
 	                                    }
 	                                }
 
-	                                sValue = sValue.toUpperCase().trim().replace(reSINGLEQUOTE, "\'\'"); 
+	                                sValue = sValue.toUpperCase().trim().replace(reSINGLEQUOTE, "\'\'");
 	                                sSelectWhere = sSelectWhere.replace(reTAB, sValue);
-        	                       
-	                                if(sValue=="") {
+
+	                                if (sValue == "") {
 	                                    document.getElementById(psWebComboID + "filterSQL").value = "";
 	                                }
 	                                else {
-	                                    document.getElementById(psWebComboID + "filterSQL").value = sSelectWhere;                          
+	                                    document.getElementById(psWebComboID + "filterSQL").value = sSelectWhere;
 	                                }
-                                }
+	                            }
 	                        }
 	                    }
 	                }
-	                catch (e) {}
+	                catch (e) { }
 	            }
-	            }
-	            setPostbackMode(3);
-	            document.getElementById("hdnMobileLookupFilter").value = AllLookupIDs;
+	        }
+	        setPostbackMode(3);
+	        document.getElementById("hdnMobileLookupFilter").value = AllLookupIDs;
 
-	        //return false;
+	        if (AllLookupIDs.length > 0) {
+	            $get("frmMain").btnDoFilter.click();
+            }
 	    }
-
+	    
 	    function Right(str, n){
 	        if (n <= 0)
 	            return "";

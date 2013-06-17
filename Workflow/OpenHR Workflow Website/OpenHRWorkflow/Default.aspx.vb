@@ -91,6 +91,9 @@ Public Class _Default
 
   Private Sub Page_Load(ByVal sender As System.Object, ByVal e As EventArgs) Handles MyBase.Load
 
+    'TODO PG
+    System.Diagnostics.Debug.WriteLine("Postback")
+
     Dim ctlForm_Date As Infragistics.WebUI.WebSchedule.WebDateChooser
     Dim ctlForm_InputButton As Button
     Dim ctlForm_HTMLInputButton As HtmlInputButton
@@ -997,9 +1000,7 @@ Public Class _Default
                     End If
 
                     If IsMobileBrowser() Then
-                      .AutoPostBack = True
                       .Attributes.Add("onchange", "FilterMobileLookup('" & .ID & "');")
-                      AddHandler .TextChanged, AddressOf Me.btnMob
                     End If
 
                   End With
@@ -1201,8 +1202,7 @@ Public Class _Default
                     .Attributes("onpaste") = "try{WebNumericEditValidation_Paste(this, event, '" & sID & "');}catch(e){};"
 
                     If IsMobileBrowser() Then
-                      .ClientSideEvents.ValueChange = "WebNumericEdit('" & .ID & "');FilterMobileLookup('" & .ID & "');"
-                      AddHandler .ValueChange, AddressOf Me.btnMob
+                      .ClientSideEvents.ValueChange = "FilterMobileLookup('" & .ID & "');"
                     End If
 
                   End With
@@ -1237,7 +1237,7 @@ Public Class _Default
                     End If
 
                     If IsMobileBrowser() Then
-                      .Attributes("onclick") = "FilterMobileLookup('" & sID & "');__doPostBack('" & sID & "', 'doLiteralsPostback');"
+                      .Attributes("onclick") = "FilterMobileLookup('" & sID & "');"
                     End If
                   End With
 
@@ -1451,7 +1451,7 @@ Public Class _Default
                       End If
 
                       If IsMobileBrowser() Then
-                        .ClientSideEvents.AfterCloseUp = "FilterMobileLookup('" & .ID & "');__doPostBack('" & sID & "', 'doLiteralsPostback');"
+                        .ClientSideEvents.AfterCloseUp = "FilterMobileLookup('" & .ID & "');"
                       End If
 
                     End With
@@ -2189,12 +2189,7 @@ Public Class _Default
                       .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
                       .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
 
-                      If IsMobileBrowser() Then
-                        .AutoPostBack = True
-                        .Attributes.Add("onchange", "FilterMobileLookup('" & .ID & "');")
-                        AddHandler .TextChanged, AddressOf BtnMob
-                      End If
-
+                      .Attributes.Add("onchange", "FilterMobileLookup('" & .ID & "');")
 
                       ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_Dropdown)
 
@@ -2305,7 +2300,6 @@ Public Class _Default
 
                     End With
 
-
                     ' ====================================================
                     ' hidden field to hold any filter SQL code
                     ' ====================================================
@@ -2350,9 +2344,7 @@ Public Class _Default
                     .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
 
                     If IsMobileBrowser() Then
-                      .AutoPostBack = True
                       .Attributes.Add("onchange", "FilterMobileLookup('" & .ID & "');")
-                      AddHandler .TextChanged, AddressOf btnMob
                     End If
 
                     ctlForm_PageTab(iCurrentPageTab).Controls.Add(ctlForm_Dropdown)
@@ -2605,6 +2597,12 @@ Public Class _Default
                       connGrid.Dispose()
                     End Try
 
+                  End If
+
+                  If IsMobileBrowser() Then
+                    For Each item As ListItem In radioList.Items
+                      item.Attributes.Add("onchange", "FilterMobileLookup('" & sID & "');")
+                    Next
                   End If
 
                 Case 17 ' Input value - file upload
@@ -2939,13 +2937,6 @@ Public Class _Default
               scriptString += "}"
               ClientScript.RegisterStartupScript(ClientScript.GetType, "Startup", scriptString, True)
 
-            End If
-
-            If IsPostBack Then
-              Dim parameter As String = Request("__EVENTARGUMENT")
-              If parameter = "doLiteralsPostback" Then
-                btnMob(Nothing, Nothing)
-              End If
             End If
 
             If sMessage.Length = 0 Then
@@ -3947,10 +3938,13 @@ Public Class _Default
 
     gv.SelectedIndex = -1
 
-
   End Sub
 
-  Private Sub BtnMob(ByVal sender As Object, ByVal e As EventArgs)
+  Protected Sub BtnDoFilterClick(sender As Object, e As EventArgs) Handles btnDoFilter.Click
+
+    'TODO PG
+    System.Diagnostics.Debug.WriteLine("BtnMob")
+
     Dim arrLookups() As String = hdnMobileLookupFilter.Value.Split(CChar(vbTab))
 
     For Each value As String In arrLookups
@@ -3995,9 +3989,7 @@ Public Class _Default
       ' insert the previously selected item
       Dim objDataRow As DataRow
       objDataRow = dataTable.NewRow()
-      'objDataRow.ItemArray = dataTable.Rows(dropdown.SelectedIndex).ItemArray
       objDataRow(0) = strCurrentSelection
-
       dataTable.Rows.InsertAt(objDataRow, 0)
 
       ' Rebind the new datatable
@@ -4013,7 +4005,7 @@ Public Class _Default
     Else
       ' This is a normal grid lookup (not Mobile)
 
-      filterDataTable(dataTable, filterSql)
+      FilterDataTable(dataTable, filterSql)
 
       Dim gridView As RecordSelector
       gridView = TryCast(pnlInputDiv.FindControl(lookupID.Replace("refresh", "Grid")), RecordSelector)
@@ -4026,7 +4018,6 @@ Public Class _Default
 
     ' reset filter.
     hiddenField.Value = ""
-
 
   End Sub
 

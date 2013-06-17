@@ -19,7 +19,7 @@
     <%--    <script src="Scripts/default.js" type="text/javascript"></script>
     <script src="Scripts/resizable-table.js" type="text/javascript"></script>
     <script src="scripts/WebNumericEditValidation.js" type="text/javascript"></script>--%>
-
+     
     <ajx:ToolkitScriptManager ID="tsm" runat="server" 
         EnablePartialRendering="true" EnablePageMethods="true" CombineScripts="True" 
         LoadScriptsBeforeUI="True">
@@ -99,6 +99,7 @@
                 </div>    
                 <asp:Button id="btnSubmit" runat="server" style="visibility: hidden; top: 0px; position: absolute; left: 0px; width: 0px; height: 0px;" text=""/>
                 <asp:Button id="btnReEnableControls" runat="server" style="visibility: hidden; top: 0px; position: absolute; left: 0px; width: 0px; height: 0px;" text=""/>
+                <asp:Button id="btnDoFilter" runat="server" style="visibility: hidden; top: 0px; position: absolute; left: 0px; width: 0px; height: 0px;" text=""/>
                 <asp:HiddenField ID="hdnMobileLookupFilter" runat="server" Value="" />
 			    <asp:HiddenField ID="hdnCount_Errors" runat="server" Value="" />
 			    <asp:HiddenField ID="hdnCount_Warnings" runat="server" Value="" />
