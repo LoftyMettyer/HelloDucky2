@@ -6,106 +6,96 @@
 <head runat="server">
 	<title>Open HR Workflow</title>
 
-	<SCRIPT FOR="window" EVENT="onload" LANGUAGE="JavaScript">
-	<!--
-		var iMINWIDTH = 400;
-    
-		// Resize the browser.
-		try 
-		{
-			window.parent.resizeTo(10, 10);
-		}
-		catch(e) {}
+	<script type="text/javascript">
 
-		iResizeByHeight = frmMessage.offsetParent.scrollHeight - frmMessage.offsetParent.clientHeight;
-		if (frmMessage.offsetParent.offsetHeight + iResizeByHeight > screen.availHeight) 
-		{
-			try
-			{
-				window.parent.moveTo((screen.width - frmMessage.offsetParent.offsetWidth) / 2, 0);
-				window.parent.resizeTo(frmMessage.offsetParent.offsetWidth, screen.availHeight);
-			}
-			catch(e) {}
-		}
-		else 
-		{
-			try
-			{
-				window.parent.moveTo((screen.width - frmMessage.offsetParent.offsetWidth) / 2, (screen.availHeight - (frmMessage.offsetParent.offsetHeight + iResizeByHeight)) / 3);
-				window.parent.resizeBy(0, iResizeByHeight);
-			}
-			catch(e) {}
-		}
+	  function window_onload() {
 
-		if(frmMessage.offsetParent.scrollWidth < iMINWIDTH)
-		{
-			iResizeByWidth = iMINWIDTH - frmMessage.offsetParent.clientWidth;
-		}
-		else
-		{
-				iResizeByWidth = frmMessage.offsetParent.scrollWidth - frmMessage.offsetParent.clientWidth;
-		}
-		if (frmMessage.offsetParent.offsetWidth + iResizeByWidth > screen.width) 
-		{
-			try
-			{
-				window.parent.moveTo(0, (screen.availHeight - frmMessage.offsetParent.offsetHeight) / 3);
-				window.parent.resizeTo(screen.width, frmMessage.offsetParent.offsetHeight);
-			}
-			catch(e) {}
-		}
-		else 
-		{
-			try
-			{
-				window.parent.moveTo((screen.width - (frmMessage.offsetParent.offsetWidth + iResizeByWidth)) / 2, (screen.availHeight - frmMessage.offsetParent.offsetHeight) / 3);
-				window.parent.resizeBy(iResizeByWidth, 0);
-			}
-			catch(e) {}
-		}
-		
-		// Redo the height calc (it does need to be done again).		
-		iResizeByHeight = frmMessage.offsetParent.scrollHeight - frmMessage.offsetParent.clientHeight;
-		if (frmMessage.offsetParent.offsetHeight + iResizeByHeight > screen.availHeight) 
-		{
-			try
-			{
-				window.parent.moveTo((screen.width - frmMessage.offsetParent.offsetWidth) / 2, 0);
-				window.parent.resizeTo(frmMessage.offsetParent.offsetWidth, screen.availHeight);
-			}
-			catch(e) {}
-		}
-		else 
-		{
-				try
-			{
-				window.parent.moveTo((screen.width - frmMessage.offsetParent.offsetWidth) / 2, (screen.availHeight - (frmMessage.offsetParent.offsetHeight + iResizeByHeight)) / 3);
-				window.parent.resizeBy(0, iResizeByHeight);
-			}
-			catch(e) {}
-		}
+	    var iMINWIDTH = 400;
 
-    function closeMe() {
-        try{
-          window.close();
+	    // Resize the browser.
+	    try {
+	      window.parent.resizeTo(iMINWIDTH, iMINWIDTH);
+	    }
+	    catch (e) { }
 
-          document.getElementById('Label1').innerHTML = "For your security please close your browser.";
-          document.getElementById('Label2').innerHTML = "";
-          document.getElementById('lblBack').innerHTML = "";
-          document.getElementById('Label3').innerHTML = "";
-          document.getElementById('lblClose').innerHTML = "";
-          document.getElementById('Label4').innerHTML = "";
-        }
-        
-        catch(e){alert("For your security please close your browser");}
-    }
+	    iResizeByHeight = frmMessage.offsetParent.scrollHeight - frmMessage.offsetParent.clientHeight;
+	    if (frmMessage.offsetParent.offsetHeight + iResizeByHeight > screen.availHeight) {
+	      try {
+	        window.parent.moveTo((screen.width - frmMessage.offsetParent.offsetWidth) / 2, 0);
+	        window.parent.resizeTo(frmMessage.offsetParent.offsetWidth, screen.availHeight);
+	      }
+	      catch (e) { }
+	    }
+	    else {
+	      try {
+	        window.parent.moveTo((screen.width - frmMessage.offsetParent.offsetWidth) / 2, (screen.availHeight - (frmMessage.offsetParent.offsetHeight + iResizeByHeight)) / 3);
+	        window.parent.resizeBy(0, iResizeByHeight);
+	      }
+	      catch (e) { }
+	    }
 
-	-->
-	</SCRIPT>
+	    if (frmMessage.offsetParent.scrollWidth < iMINWIDTH) {
+	      iResizeByWidth = iMINWIDTH - frmMessage.offsetParent.clientWidth;
+	    }
+	    else {
+	      iResizeByWidth = frmMessage.offsetParent.scrollWidth - frmMessage.offsetParent.clientWidth;
+	    }
+	    if (frmMessage.offsetParent.offsetWidth + iResizeByWidth > screen.width) {
+	      try {
+	        window.parent.moveTo(0, (screen.availHeight - frmMessage.offsetParent.offsetHeight) / 3);
+	        window.parent.resizeTo(screen.width, frmMessage.offsetParent.offsetHeight);
+	      }
+	      catch (e) { }
+	    }
+	    else {
+	      try {
+	        window.parent.moveTo((screen.width - (frmMessage.offsetParent.offsetWidth + iResizeByWidth)) / 2, (screen.availHeight - frmMessage.offsetParent.offsetHeight) / 3);
+	        window.parent.resizeBy(iResizeByWidth, 0);
+	      }
+	      catch (e) { }
+	    }
+
+	    // Redo the height calc (it does need to be done again).		
+	    iResizeByHeight = frmMessage.offsetParent.scrollHeight - frmMessage.offsetParent.clientHeight;
+	    if (frmMessage.offsetParent.offsetHeight + iResizeByHeight > screen.availHeight) {
+	      try {
+	        window.parent.moveTo((screen.width - frmMessage.offsetParent.offsetWidth) / 2, 0);
+	        window.parent.resizeTo(frmMessage.offsetParent.offsetWidth, screen.availHeight);
+	      }
+	      catch (e) { }
+	    }
+	    else {
+	      try {
+	        window.parent.moveTo((screen.width - frmMessage.offsetParent.offsetWidth) / 2, (screen.availHeight - (frmMessage.offsetParent.offsetHeight + iResizeByHeight)) / 3);
+	        window.parent.resizeBy(0, iResizeByHeight);
+	      }
+	      catch (e) { }
+	    }
+	  }
+
+
+	  function closeMe() {
+	    try {
+	      window.close();
+
+	      document.getElementById('Label1').innerHTML = "For your security please close your browser.";
+	      document.getElementById('Label2').innerHTML = "";
+	      document.getElementById('lblBack').innerHTML = "";
+	      document.getElementById('Label3').innerHTML = "";
+	      document.getElementById('lblClose').innerHTML = "";
+	      document.getElementById('Label4').innerHTML = "";
+	    }
+
+	    catch (e) { alert("For your security please close your browser"); }
+	  }
+
+	</script>
+
 </head>
+
   
 <body 
-	bgcolor="<%=ColourThemeHex()%>" 
+	bgcolor="<%=ColourThemeHex()%>" onload="return window_onload()"
 	bottommargin="0" rightmargin="0" leftmargin="0" topmargin="0" 
 	scroll=auto 
 	style="overflow:auto;">
