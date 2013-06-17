@@ -1,11 +1,8 @@
 Option Strict On
 
-Imports Microsoft.VisualBasic
 Imports System.Xml
 Imports Utilities
 Imports System
-Imports System.Globalization
-Imports System.Threading
 
 Public Class Config
   Private msThemeName As String
@@ -18,14 +15,6 @@ Public Class Config
   Private msOLEFolder_Local As String
   Private msPhotographFolder As String
   Private miLookupRowsRange As Int32
-  ' Mobile Stuff
-  Private msServerName As String
-  Private msDatabaseName As String
-  Private msLogin As String
-  Private msPassword As String
-  Private msWorkflowURL As String
-  Private msMobileKey As String
-
 
   Public Sub Initialise(ByVal psConfigFile As String)
     Dim sHexFileName As String
@@ -76,115 +65,6 @@ Public Class Config
     End Try
 
   End Sub
-
-  Public Sub Mob_Initialise()
-
-    Dim miElementID As Integer
-    Dim miInstanceID As Integer
-    Dim sTemp As String = ""
-    Dim objCrypt As New Crypt
-
-    Try
-      'msServerName = ConfigurationManager.AppSettings("Server").Trim
-      'msDatabaseName = ConfigurationManager.AppSettings("Database").Trim
-      'msLogin = ConfigurationManager.AppSettings("Login").Trim
-      'msPassword = ConfigurationManager.AppSettings("Password").Trim
-      msWorkflowURL = ConfigurationManager.AppSettings("WorkflowURL").Trim
-      msMobileKey = ConfigurationManager.AppSettings("MobileKey").Trim
-
-      ' Try the newer encryption first
-      ' Set the culture to English(GB) to ensure the decryption works OK. Fault HRPRO-1404
-      Dim sCultureName As String
-      sCultureName = Thread.CurrentThread.CurrentCulture.Name
-
-      Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-gb")
-      Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture("en-gb")
-
-      sTemp = objCrypt.DecompactString(msMobileKey)
-      sTemp = objCrypt.DecryptString(sTemp, "", True)
-
-      ' Reset the culture to be the one used by the client. Fault HRPRO-1404
-      Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(sCultureName)
-      Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture(sCultureName)
-
-      ' Extract the required parameters from the decrypted queryString.
-      miInstanceID = CInt(Left(sTemp, InStr(sTemp, vbTab) - 1))
-      sTemp = Mid(sTemp, InStr(sTemp, vbTab) + 1)
-
-      miElementID = CInt(Left(sTemp, InStr(sTemp, vbTab) - 1))
-      sTemp = Mid(sTemp, InStr(sTemp, vbTab) + 1)
-
-      msLogin = Left(sTemp, InStr(sTemp, vbTab) - 1)
-      sTemp = Mid(sTemp, InStr(sTemp, vbTab) + 1)
-
-      msPassword = Left(sTemp, InStr(sTemp, vbTab) - 1)
-      sTemp = Mid(sTemp, InStr(sTemp, vbTab) + 1)
-
-      msServerName = Left(sTemp, InStr(sTemp, vbTab) - 1)
-      sTemp = Mid(sTemp, InStr(sTemp, vbTab) + 1)
-
-      msDatabaseName = Mid(sTemp, InStr(sTemp, vbTab) + 1)
-
-    Catch ex As Exception
-
-    End Try
-
-  End Sub
-  Public Function Server() As String
-    Server = ""
-
-    Try
-      If msServerName.Length > 0 Then
-        Server = msServerName
-      End If
-    Catch ex As Exception
-    End Try
-
-  End Function
-  Public Function Database() As String
-    Database = ""
-
-    Try
-      If msDatabaseName.Length > 0 Then
-        Database = msDatabaseName
-      End If
-    Catch ex As Exception
-    End Try
-
-  End Function
-  Public Function Login() As String
-    Login = ""
-
-    Try
-      If msLogin.Length > 0 Then
-        Login = msLogin
-      End If
-    Catch ex As Exception
-    End Try
-
-  End Function
-  Public Function Password() As String
-    Password = ""
-
-    Try
-      If msPassword.Length > 0 Then
-        Password = msPassword
-      End If
-    Catch ex As Exception
-    End Try
-
-  End Function
-  Public Function WorkflowURL() As String
-    WorkflowURL = ""
-
-    Try
-      If msWorkflowURL.Length > 0 Then
-        WorkflowURL = msWorkflowURL
-      End If
-    Catch ex As Exception
-    End Try
-
-  End Function
 
   Public Function ColourThemeFolder() As String
     ColourThemeFolder = "Blanco"

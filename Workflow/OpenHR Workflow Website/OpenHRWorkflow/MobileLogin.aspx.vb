@@ -398,7 +398,7 @@ Partial Class MobileLogin
     ' Path to youR LDAP directory server.
     ' Contact your network administrator to obtain a valid path.
 
-    Dim adPath As String = "LDAP://" & ConfigurationManager.AppSettings("DefaultActiveDirectoryServer")
+    Dim adPath As String = "LDAP://" & Configuration.DefaultActiveDirectoryServer
 
     Dim adAuth As New ActiveDirectoryValidator(adPath)
 
