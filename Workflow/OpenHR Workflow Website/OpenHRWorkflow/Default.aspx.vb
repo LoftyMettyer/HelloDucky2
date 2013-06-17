@@ -3727,7 +3727,8 @@ Public Class _Default
 
                       ctlForm_TabPanel = New Panel
                       With ctlForm_TabPanel
-                        .ID = sID & "Panel_" & iTabNo.ToString
+                        '.ID = sID & "Panel_" & iTabNo.ToString
+                        .ID = "forminput_" & iTabNo.ToString & "_21_Panel"
                         .Style.Add("float", "left") ' for wrapping.
 
                         ' Tab Appearance
