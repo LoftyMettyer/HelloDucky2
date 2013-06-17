@@ -710,7 +710,7 @@ Public Class _Default
                     .Style("position") = "absolute"
                     .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
                     .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
-                    '.StylePreset = Infragistics.WebUI.WebDataInput.ButtonStylePreset.WindowsXPBlue
+                    .StylePreset = Infragistics.WebUI.WebDataInput.ButtonStylePreset.WindowsXPBlue
 
                     .Appearance.Style.BackColor = objGeneral.GetColour(NullSafeInteger(dr("BackColor")))
                     .Appearance.Style.BorderStyle = BorderStyle.Solid
@@ -1986,7 +1986,7 @@ Public Class _Default
                     .AllowPaging = True
                     .AllowSorting = True
                     '.EnableSortingAndPagingCallbacks = True
-                    .PageSize = mobjConfig.LookupRowsRange
+                    .PageSize = 5 'mobjConfig.LookupRowsRange
                     .IsLookup = False
                     ' EnableViewState must be on. Mucks up the grid data otherwise. Should be reviewed
                     ' if performance is silly, but while paging is enabled it shouldn't be too bad.

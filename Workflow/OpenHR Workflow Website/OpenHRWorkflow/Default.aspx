@@ -12,6 +12,10 @@
 <!--<meta name="viewport" content="width=700; user-scalable=1;"/>-->
 
 <head runat="server">
+<link rel="icon" 
+      type="image/png" 
+      href="/pictures/logo.ico"/>
+
   <style type="text/css">
 		.highlighted { background: yellow; }
     textarea {resize: none; }
