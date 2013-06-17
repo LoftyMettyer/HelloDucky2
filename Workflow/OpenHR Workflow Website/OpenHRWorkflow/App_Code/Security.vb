@@ -1,9 +1,8 @@
 ﻿Imports System.Data.SqlClient
 
-'TODO rename class to security & move code from clsActiveDirectoryValidator into here & ValidateUserActiveDirectory => ValidateActiveDirectoryUser
-Public Class Users
+Public Class Security
 
-  Public Shared Function ValidateUserActiveDirectory(domainName As String, userName As String, password As String) As Boolean
+  Public Shared Function ValidateActiveDirectoryUser(domainName As String, userName As String, password As String) As Boolean
 
     ' Path to youR LDAP directory server.
     ' Contact your network administrator to obtain a valid path.
@@ -16,7 +15,7 @@ Public Class Users
 
   End Function
 
-  Public Shared Function ValidateUserSqlServer(userName As String, password As String) As Boolean
+  Public Shared Function ValidateSqlServerUser(userName As String, password As String) As Boolean
 
     Try
       Using conn As New SqlConnection(Configuration.ConnectionStringFor(userName, password))

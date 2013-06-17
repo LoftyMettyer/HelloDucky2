@@ -1,35 +1,7 @@
-﻿Imports Microsoft.VisualBasic
-Imports Utilities
-Imports System.Data
+﻿Imports Utilities
 Imports System.Data.SqlClient
 
 Public Class Forms
-
-  'TODO remove: only used by old forms
-  Public Shared Sub SetupViewport(page As Page)
-
-    If IsMobileBrowser() And Not IsTablet() Then
-      Return
-    End If
-
-    page.Form.Attributes.Add("class", "largeViewport")
-
-    If System.IO.File.Exists(page.Server.MapPath("~/Images/tabletBackImage.png")) Then
-
-      Dim image As New Image
-      With image
-        .ImageUrl = "~/Images/tabletBackImage.png"
-        .Style.Add("width", "100%")
-        .Style.Add("height", "100%")
-      End With
-
-      page.FindControl("pnlBackground").Controls.Add(image)
-    Else
-      Dim control = page.FindControl("pnlBackground")
-      CType(control, HtmlGenericControl).Style.Add("background-color", Configuration.TabletBackColour)
-    End If
-
-  End Sub
 
   Public Shared Sub LoadControlData(page As Page, formId As Integer)
 
@@ -51,7 +23,7 @@ Public Class Forms
           Case 0 ' Button
 
             With CType(control, ImageButton)
-              .ImageUrl = Picture.LoadPicture(NullSafeInteger(dr("PictureID")))
+              .ImageUrl = "~/" & Picture.LoadPicture(NullSafeInteger(dr("PictureID")))
               .Font.Name = NullSafeString(dr("FontName"))
               .Font.Size = FontUnit.Parse(NullSafeString(dr("FontSize")))
               .Font.Bold = NullSafeBoolean(NullSafeBoolean(dr("FontBold")))
@@ -63,6 +35,7 @@ Public Class Forms
 
               With CType(control.Parent.FindControl(CStr(dr("Name")) & "_label"), HtmlGenericControl)
                 .InnerText = NullSafeString(dr("caption"))
+                'TODO this can all be css
                 .Style("word-wrap") = "break-word"
                 .Style("overflow") = "auto"
                 .Style.Add("background-color", "Transparent")

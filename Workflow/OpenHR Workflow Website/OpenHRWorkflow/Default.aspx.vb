@@ -3292,7 +3292,6 @@ Public Class _Default
     Dim ctlFormInput As Control
     Dim ctlFormCheckBox As CheckBox
     Dim ctlFormTextInput As TextBox
-    Dim ctlFormHTMLInputText As HtmlInputText
     Dim ctlFormDateInput As Infragistics.WebUI.WebSchedule.WebDateChooser
     Dim ctlFormNumericInput As Infragistics.WebUI.WebDataInput.WebNumericEdit
     Dim ctlForm_PagingGridView As RecordSelector
