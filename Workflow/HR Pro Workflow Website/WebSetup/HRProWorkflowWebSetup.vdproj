@@ -51,6 +51,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_B957D7441B3C877AA6B8275151D0C1DF"
+        "OwnerKey" = "8:_7D5126426707D3FCF0F4A8996E13F6EF"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_BB46B0D9106E46D2B2E498CEA684ED2E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -59,12 +65,6 @@
         {
         "MsmKey" = "8:_C4B9B7499FAC4AF2AD4F00E54AD0FEF4"
         "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_C7FA47189E1A78ABE33112A899AC22D5"
-        "OwnerKey" = "8:_7D5126426707D3FCF0F4A8996E13F6EF"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -269,7 +269,7 @@
                 {
                 "Name" = "8:.NET Framework"
                 "Message" = "8:[VSDNETMSG]"
-                "Version" = "8:2.0.50727"
+                "FrameworkVersion" = "8:.NETFramework,Version=v2.0"
                 "AllowLaterVersions" = "11:FALSE"
                 "InstallUrl" = "8:http://go.microsoft.com/fwlink/?LinkId=9832"
                 }
@@ -452,6 +452,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B957D7441B3C877AA6B8275151D0C1DF"
+            {
+            "SourcePath" = "8:dte80a.olb"
+            "TargetName" = "8:dte80a.olb"
+            "Tag" = "8:"
+            "Folder" = "8:_ACDB8F00505241659EC63AF1774D10C6"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_BB46B0D9106E46D2B2E498CEA684ED2E"
             {
             "AssemblyRegister" = "3:1"
@@ -512,26 +532,6 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C7FA47189E1A78ABE33112A899AC22D5"
-            {
-            "SourcePath" = "8:dte80a.olb"
-            "TargetName" = "8:dte80a.olb"
-            "Tag" = "8:"
-            "Folder" = "8:_ACDB8F00505241659EC63AF1774D10C6"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_DFB39D06B7A3AA18358979D98CF44FD5"
@@ -667,8 +667,9 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:HR Pro Workflow Web Site v5.0"
         "ProductCode" = "8:{22132A26-E821-4D4C-ADE4-8FC46C7A0199}"
-        "PackageCode" = "8:{E62A506C-1D0D-40C6-BB44-51E39C05E2A6}"
+        "PackageCode" = "8:{65CBB810-36DB-4877-A5BF-2E792A4EB5CB}"
         "UpgradeCode" = "8:{8D103CEA-CA57-49D4-A6E6-80D5076BB642}"
+        "AspNetVersion" = "8:0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:TRUE"
