@@ -59,6 +59,7 @@
 			<img id="imgErrorMessages_Min" src="Images/downarrows_white.gif" alt="Hide messages" style="right: 1px; position: absolute; top: 0px; width:20px; height:20px;cursor:pointer;" onclick="showErrorMessages(false);" />
                             
 			<igmisc:WebAsyncRefreshPanel id="pnlErrorMessages" runat="server"  style="position: relative;" width="90%" height="100%">
+			    
 				<asp:Label ID="lblErrors" runat="server" Text=""></asp:Label>				
 				<asp:BulletedList ID="bulletErrors" runat="server" Style="margin-top: 0px; margin-bottom: 0px; padding-top: 5px; padding-bottom: 5px;" BulletStyle="Disc" Font-Names="Verdana" Font-Size="11pt" BorderStyle="None">
 				</asp:BulletedList>
