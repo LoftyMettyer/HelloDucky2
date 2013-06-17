@@ -54,107 +54,137 @@
     }
 
 
-     function dateboxclick(elementID) {
-        if (document.getElementById(elementID).style.visibility == "visible") {
-          document.getElementById(elementID).style.visibility = "hidden";
-        }
-        else {
-          var oEl = document.getElementById(elementID);
+//     function dateboxclick(elementID) {
+//        if (document.getElementById(elementID).style.visibility == "visible") {
+//          document.getElementById(elementID).style.visibility = "hidden";
+//        }
+//        else {
+//          var oEl = document.getElementById(elementID);
 
-          //also set left position to 0 if required          
-          if (oEl.offsetLeft<0)
-          {
-            oEl.style.left = "125px"; //hardcoded!
-          }    
+//          //also set left position to 0 if required          
+//          if (oEl.offsetLeft<0)
+//          {
+//            oEl.style.left = "125px"; //hardcoded!
+//          }    
 
-          document.getElementById(elementID).style.visibility = "visible";
-        }
-
-
-        //Set default Date  
-        var Dt = new Date();
-
-        var cellHeight = document.getElementById(elementID + 'daysRow_1').offsetHeight;
-        
-        var Datebox = document.getElementById(elementID + 'Days');
-        Datebox.scrollTop = ((cellHeight + 2) * Dt.getDate());
-
-        Datebox = document.getElementById(elementID + 'Months');
-        Datebox.scrollTop = ((cellHeight + 2) * (Dt.getMonth() + 1));
-
-        Datebox = document.getElementById(elementID + 'Years');
-        Datebox.scrollTop = ((cellHeight + 2) * (Dt.getFullYear() - 1899));
-
-     }
+//          document.getElementById(elementID).style.visibility = "visible";
+//        }
 
 
-     function dateboxlostfocus(elementID) {
-        document.getElementById(elementID).style.visibility = "hidden";
-     }
-
-
-
-
-    function chooseDate(elementID) {      
-      var cellHeight = document.getElementById(elementID + 'daysRow_1').offsetHeight;
-
-      var DateBox = document.getElementById(elementID + 'Days');
-      var tmpDate = '' + Math.round(DateBox.scrollTop / (cellHeight + 2));
-      if(tmpDate.length<2) {var strDate='0' + tmpDate;}else{var strDate=tmpDate;}
-      if(strDate=='00') strDate='01';
-
-      var DateBox = document.getElementById(elementID + 'Months');
-      var tmpDate = '' + Math.round(DateBox.scrollTop / (cellHeight + 2));
-      if(tmpDate == '0') tmpDate='01';
-      if(tmpDate.length<2) {strDate+='/0' + tmpDate;}else{strDate+='/' +tmpDate;}
-
-      var DateBox = document.getElementById(elementID + 'Years');
-      var tmpDate = '' + (Math.round(DateBox.scrollTop / (cellHeight + 2))+ 1900);
-      strDate+='/' + tmpDate;
-
-      var dateTextBox = document.getElementById(elementID + 'TextBox');
-      dateTextBox.value = strDate;
-
-      var DateBox = document.getElementById(elementID);
-      DateBox.style.visibility = "hidden";
-
-    }
-
-
-    function dateBoxTodayClick(elementID) {
-       //Set today's Date          
-        
-        var DateBox = document.getElementById(elementID);
-        DateBox.style.visibility = "hidden";
-        
-        var Dt = new Date();
-
-        var dateTextBox = document.getElementById(elementID + 'TextBox');
-        dateTextBox.value = (Dt.getDate()<10?"0"+Dt.getDate():Dt.getDate()) + '/' +
-          (Dt.getMonth()<9?"0"+(Dt.getMonth() + 1):(Dt.getMonth() + 1)) + '/' +
-          (Dt.getFullYear());
+//        //Set default Date  
+//        var Dt = new Date();
 
 //        var cellHeight = document.getElementById(elementID + 'daysRow_1').offsetHeight;
 //        
-//        var Datebox = document.getElementById(elementID + 'Days');     
+//        var Datebox = document.getElementById(elementID + 'Days');
 //        Datebox.scrollTop = ((cellHeight + 2) * Dt.getDate());
 
 //        Datebox = document.getElementById(elementID + 'Months');
 //        Datebox.scrollTop = ((cellHeight + 2) * (Dt.getMonth() + 1));
 
 //        Datebox = document.getElementById(elementID + 'Years');
-//        Datebox.scrollTop = ((cellHeight + 2) * (Dt.getFullYear() - 1949));      
+//        Datebox.scrollTop = ((cellHeight + 2) * (Dt.getFullYear() - 1899));
+
+//     }
+
+
+//     function dateboxlostfocus(elementID) {
+//        document.getElementById(elementID).style.visibility = "hidden";
+//     }
+
+
+
+
+//    function chooseDate(elementID) {      
+//      var cellHeight = document.getElementById(elementID + 'daysRow_1').offsetHeight;
+
+//      var DateBox = document.getElementById(elementID + 'Days');
+//      var tmpDate = '' + Math.round(DateBox.scrollTop / (cellHeight + 2));
+//      if(tmpDate.length<2) {var strDate='0' + tmpDate;}else{var strDate=tmpDate;}
+//      if(strDate=='00') strDate='01';
+
+//      var DateBox = document.getElementById(elementID + 'Months');
+//      var tmpDate = '' + Math.round(DateBox.scrollTop / (cellHeight + 2));
+//      if(tmpDate == '0') tmpDate='01';
+//      if(tmpDate.length<2) {strDate+='/0' + tmpDate;}else{strDate+='/' +tmpDate;}
+
+//      var DateBox = document.getElementById(elementID + 'Years');
+//      var tmpDate = '' + (Math.round(DateBox.scrollTop / (cellHeight + 2))+ 1900);
+//      strDate+='/' + tmpDate;
+
+//      var dateTextBox = document.getElementById(elementID + 'TextBox');
+//      dateTextBox.value = strDate;
+
+//      var DateBox = document.getElementById(elementID);
+//      DateBox.style.visibility = "hidden";
+
+//    }
+
+
+//    function dateBoxTodayClick(elementID) {
+//       //Set today's Date          
+//        
+//        var DateBox = document.getElementById(elementID);
+//        DateBox.style.visibility = "hidden";
+//        
+//        var Dt = new Date();
+
+//        var dateTextBox = document.getElementById(elementID + 'TextBox');
+//        dateTextBox.value = (Dt.getDate()<10?"0"+Dt.getDate():Dt.getDate()) + '/' +
+//          (Dt.getMonth()<9?"0"+(Dt.getMonth() + 1):(Dt.getMonth() + 1)) + '/' +
+//          (Dt.getFullYear());
+
+////        var cellHeight = document.getElementById(elementID + 'daysRow_1').offsetHeight;
+////        
+////        var Datebox = document.getElementById(elementID + 'Days');     
+////        Datebox.scrollTop = ((cellHeight + 2) * Dt.getDate());
+
+////        Datebox = document.getElementById(elementID + 'Months');
+////        Datebox.scrollTop = ((cellHeight + 2) * (Dt.getMonth() + 1));
+
+////        Datebox = document.getElementById(elementID + 'Years');
+////        Datebox.scrollTop = ((cellHeight + 2) * (Dt.getFullYear() - 1949));      
+//    }
+
+//    function dateBoxClearClick(elementID) {
+//      //close the calendar and clear the textbox
+//      var DateBox = document.getElementById(elementID);
+//      DateBox.style.visibility = "hidden";
+
+//      var dateTextBox = document.getElementById(elementID + 'TextBox');
+//      dateTextBox.value = '  /  /';
+
+//    }
+
+  function getWindowWidth() {
+    var myWidth = 0;
+    if( typeof( window.innerWidth ) == 'number' ) {
+      //Non-IE
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && ( document.documentElement.clientWidth) ) {
+      //IE 6+ in 'standards compliant mode'
+      myWidth = document.documentElement.clientWidth;
+    } else if( document.body && ( document.body.clientWidth) ) {
+      //IE 4 compatible
+      myWidth = document.body.clientWidth;
     }
+    return myWidth;
+  }
 
-    function dateBoxClearClick(elementID) {
-      //close the calendar and clear the textbox
-      var DateBox = document.getElementById(elementID);
-      DateBox.style.visibility = "hidden";
-
-      var dateTextBox = document.getElementById(elementID + 'TextBox');
-      dateTextBox.value = '  /  /';
-
+  function getWindowHeight() {
+    var myHeight = 0;
+    if( typeof( window.innerHeight) == 'number' ) {
+      //Non-IE
+      myHeight = window.innerHeight;
+    } else if( document.documentElement && ( document.documentElement.clientHeight ) ) {
+      //IE 6+ in 'standards compliant mode'
+      myHeight = document.documentElement.clientHeight;
+    } else if( document.body && ( document.body.clientHeight ) ) {
+      //IE 4 compatible
+      myHeight = document.body.clientHeight;
     }
+    return myHeight;
+  }
 
 	function window_onload() {
 	    
@@ -162,12 +192,12 @@
 		var iDefWidth;
 		var iResizeByHeight;
 		var iResizeByWidth;
-        var sControlType;
-        var oldgridSelectedColor;
-		var ScrollTopPos;
+    var sControlType;
+    var oldgridSelectedColor;
+		//var ScrollTopPos;
 
       //Set the current page tab
-	    iCurrentTab = 1;
+	    window.iCurrentTab = 1;
       SetCurrentTab(iCurrentTab);
 
 			try {
@@ -179,9 +209,11 @@
 				window.focus();
 				if ((iDefHeight > 0) && (iDefWidth > 0)) {
 					//iResizeByHeight = iDefHeight - document.documentElement.clientHeight;
-				  iResizeByHeight = iDefHeight - window.innerHeight;
+				  //iResizeByHeight = iDefHeight - window.innerHeight;				  
+				  iResizeByHeight = iDefHeight - getWindowHeight();
 					//iResizeByWidth = iDefWidth - document.documentElement.clientWidth;
-				  iResizeByWidth = iDefWidth - window.innerWidth;
+				  //iResizeByWidth = iDefWidth - window.innerWidth;
+				  iResizeByWidth = iDefWidth - getWindowWidth();
 					window.parent.moveTo((screen.availWidth - iDefWidth) / 2, (screen.availHeight - iDefHeight) / 3);
 					window.parent.resizeBy(iResizeByWidth, iResizeByHeight);				  
 
@@ -249,30 +281,30 @@
 			catch (e) {}
 		}
 
-		function resizeToFit(piWidth, piHeight) {
-			var iDefHeight;
-			var iDefWidth;
-			var iResizeByHeight;
-			var iResizeByWidth;
+//		function resizeToFit(piWidth, piHeight) {
+//			var iDefHeight;
+//			var iDefWidth;
+//			var iResizeByHeight;
+//			var iResizeByWidth;
 
-			try {
-				iDefHeight = $get("frmMain").hdnFormHeight.value;
-				iDefWidth = $get("frmMain").hdnFormWidth.value;
+//			try {
+//				iDefHeight = $get("frmMain").hdnFormHeight.value;
+//				iDefWidth = $get("frmMain").hdnFormWidth.value;
 
-				iResizeByHeight = piHeight - htmMain.clientHeight;
-				iResizeByWidth = piWidth - htmMain.clientWidth;
+//				iResizeByHeight = piHeight - htmMain.clientHeight;
+//				iResizeByWidth = piWidth - htmMain.clientWidth;
 
-				if (iResizeByHeight < 0) {
-					iResizeByHeight = 0;
-				}
-				if (iResizeByWidth < 0) {
-					iResizeByWidth = 0;
-				}
+//				if (iResizeByHeight < 0) {
+//					iResizeByHeight = 0;
+//				}
+//				if (iResizeByWidth < 0) {
+//					iResizeByWidth = 0;
+//				}
 
-				window.parent.resizeBy(iResizeByWidth, iResizeByHeight);
-			}
-			catch (e) { }
-		}
+//				window.parent.resizeBy(iResizeByWidth, iResizeByHeight);
+//			}
+//			catch (e) { }
+//		}
 
 		function launchForms(psForms, pfFirstFormRelocate) {
 			var asForms;
