@@ -55,9 +55,7 @@
     </head>
     <body onload="return window_onload()">
         <form runat="server" defaultbutton="btnLogin">
-        
-            <div id="pnlContainer" runat="server">
-
+                        
             <div id="pnlPage" runat="server" style="overflow: hidden;">
 
                 <div id="pnlHeader" runat="server"/>
@@ -101,9 +99,10 @@
                 </div>        
  
             </div>
-            </div>
+
         </form>
         
+        <div id="pnlBackground" runat="server"/>
         <div id="pnlGreyOut" runat="server" />
             
         <div id="pnlMsgBox" runat="server" style="visibility: hidden; z-index: 2; position: absolute; width: 100%; top: 30%">

@@ -40,6 +40,9 @@
             </div>
 
         </form>
+        
+        <div id="pnlBackground" runat="server"/>
+
     </body>
 
 </html>

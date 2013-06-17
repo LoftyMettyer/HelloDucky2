@@ -39,7 +39,8 @@ table {
 }
 #pnlGreyOut {
     position: absolute; 
-    visibility: hidden; 
+    visibility: hidden;
+    top: 0px;
     width: 100%; 
     height: 100%; 
     background-color: #222; 
@@ -122,7 +123,9 @@ table {
 }
 .overlay {
     position: absolute; 
-    visibility: hidden; 
+    visibility: hidden;
+    top: 0px;
+    left: 0px;
     width: 100%; 
     height: 100%; 
     background-color: #222; 
@@ -130,4 +133,11 @@ table {
     -moz-opacity: 0.5; 
     opacity: 0.5;
     z-index: 1;
+}
+#pnlBackground {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
 }

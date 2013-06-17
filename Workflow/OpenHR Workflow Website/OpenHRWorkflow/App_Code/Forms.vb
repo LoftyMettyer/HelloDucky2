@@ -11,20 +11,20 @@ Public Class Forms
 
     page.Form.Attributes.Add("class", "largeViewport")
 
-    'If System.IO.File.Exists(page.Server.MapPath("Images/tabletBackImage.png")) Then
+    If System.IO.File.Exists(page.Server.MapPath("~/Images/tabletBackImage.png")) Then
 
-    '  Dim image As New Image
-    '  With image
-    '    .ImageUrl = "Images/tabletBackImage.png"
-    '    .Style.Add("width", "100%")
-    '    .Style.Add("height", "100%")
-    '  End With
+      Dim image As New Image
+      With image
+        .ImageUrl = "~/Images/tabletBackImage.png"
+        .Style.Add("width", "100%")
+        .Style.Add("height", "100%")
+      End With
 
-    '  page.FindControl("pnlContainer").Controls.Add(image)
-    'Else
-    'Dim control = page.FindControl("pnlContainer")
-    'page.Form.Style.Add("background-color", Configuration.TabletBackColour)
-    'End If
+      page.FindControl("pnlBackground").Controls.Add(image)
+    Else
+      Dim control = page.FindControl("pnlBackground")
+      CType(control, HtmlGenericControl).Style.Add("background-color", Configuration.TabletBackColour)
+    End If
 
   End Sub
 
