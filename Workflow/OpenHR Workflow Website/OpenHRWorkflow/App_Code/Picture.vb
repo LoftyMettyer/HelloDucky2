@@ -53,7 +53,11 @@ Public Class Picture
 
         Dim ext As String = Path.GetExtension(CStr(dr("Name")))
         Dim fileName As String = String.Format("Pic-{0}{1}", Guid.NewGuid, ext)
-        Dim filePath = HttpContext.Current.Server.MapPath("pictures")
+        Dim filePath = HttpContext.Current.Server.MapPath("~/Pictures")
+
+        If Not Directory.Exists(filePath) Then
+          Directory.CreateDirectory(filePath)
+        End If
 
         ' Create a file to hold the output.
         fs = New System.IO.FileStream(filePath & "\" & fileName, IO.FileMode.OpenOrCreate, IO.FileAccess.Write)
@@ -83,7 +87,7 @@ Public Class Picture
         bw.Close()
         fs.Close()
 
-        Return "pictures/" & fileName
+        Return "Pictures/" & fileName
       Else
         Return ""
       End If

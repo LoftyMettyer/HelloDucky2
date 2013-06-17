@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
 	<title><%=Session("titleVersion")%></title>
-    <link rel="shortcut icon" href="pictures/logo.ico"/>
+    <link rel="shortcut icon" href="images/logo.ico"/>
 
 	<script for="window" event="onload" type="text/javascript">
 	<!--

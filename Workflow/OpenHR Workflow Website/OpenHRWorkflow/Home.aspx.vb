@@ -100,7 +100,7 @@ Partial Class Home
           If NullSafeInteger(dr("pictureID")) = 0 Then
             sImageFileName = "~/Images/Connected48.png"
           Else
-            sImageFileName = Picture.LoadPicture(CInt(dr("pictureID")))
+            sImageFileName = "~/" & Picture.LoadPicture(CInt(dr("pictureID")))
           End If
           image.ImageUrl = sImageFileName
           image.Height() = Unit.Pixel(57)
@@ -155,7 +155,7 @@ Partial Class Home
       End If
     End If
 
-    ' Disable the Change Password button for windows authenticated users
+    ' Disable the Change Password button for windows authenticated Security
     If User.Identity.Name.Contains("\") Then
       btnChangePwd.Visible = False
       btnChangePwd_label.Visible = False
@@ -196,7 +196,7 @@ Partial Class Home
   End Sub
 
   Protected Sub BtnChangePwdClick(sender As Object, e As ImageClickEventArgs) Handles btnChangePwd.Click
-    Response.Redirect("~/ChangePassword.aspx")
+    Response.Redirect("~/Account/ChangePassword.aspx")
   End Sub
 
   Protected Sub BtnLogoutClick(sender As Object, e As ImageClickEventArgs) Handles btnLogout.Click

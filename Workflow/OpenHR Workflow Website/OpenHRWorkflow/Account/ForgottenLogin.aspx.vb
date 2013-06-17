@@ -81,7 +81,7 @@ Partial Class ForgottenLogin
   End Sub
 
   Protected Sub BtnCancelClick(sender As Object, e As ImageClickEventArgs) Handles btnCancel.Click
-    Response.Redirect("~/Login.aspx")
+    Response.Redirect("~/Account/Login.aspx")
   End Sub
 
 End Class

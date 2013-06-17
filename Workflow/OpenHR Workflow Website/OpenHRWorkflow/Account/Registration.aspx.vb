@@ -110,7 +110,7 @@ Partial Class Registration
   End Sub
 
   Protected Sub BtnHomeClick(sender As Object, e As ImageClickEventArgs) Handles btnHome.Click
-    Response.Redirect("~/Login.aspx")
+    Response.Redirect("~/Account/Login.aspx")
   End Sub
 
 End Class

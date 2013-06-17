@@ -23,7 +23,7 @@ Partial Class ChangePassword
         conn = New SqlConnection(Configuration.ConnectionString)
         conn.Open()
 
-        ' Force password change only if there are no other users logged in with the same name.
+        ' Force password change only if there are no other Security logged in with the same name.
         cmdCheckUserSessions = New SqlCommand
         cmdCheckUserSessions.CommandText = "spASRGetCurrentUsersCountOnServer"
         cmdCheckUserSessions.Connection = conn
@@ -75,7 +75,7 @@ Partial Class ChangePassword
         Else
           sMessage = "You could not change your password. The account is currently being used by "
           If iUserSessionCount > 2 Then
-            sMessage &= iUserSessionCount.ToString & " users"
+            sMessage &= iUserSessionCount.ToString & " Security"
           Else
             sMessage &= " another user"
           End If
@@ -111,7 +111,7 @@ Partial Class ChangePassword
 
     If sMessage.Length = 0 Then
       sMessage = "Password changed successfully."
-      sRedirectTo = "Home.aspx"
+      sRedirectTo = "../Home.aspx"
     End If
 
     CType(Master, Site).ShowMessage(sHeader, sMessage, sRedirectTo)

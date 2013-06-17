@@ -7,7 +7,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" id="htmMain">
 <head id="Head1" runat="server">
     <meta name="format-detection" content="telephone=no"/>
-    <link rel="shortcut icon" href="pictures/logo.ico"/>
+    <link rel="shortcut icon" href="images/logo.ico"/>
 
     <style type="text/css">
         fieldset, legend { padding: 0px; margin: 0px; }

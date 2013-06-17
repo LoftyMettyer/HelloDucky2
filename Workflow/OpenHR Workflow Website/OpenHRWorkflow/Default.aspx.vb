@@ -301,7 +301,7 @@ Public Class _Default
             sQueryString = sTemp.Substring(iTemp + 1)
           Else
             ' NPG20120326 Fault HRPRO-2128
-            Response.Redirect("MobileLogin.aspx")
+            Response.Redirect("Account/Login.aspx")
           End If
 
           ' Try the newer encryption first
@@ -398,7 +398,7 @@ Public Class _Default
     End If
 
     ' - Mobile START - 
-    ' This bit is simply for activating Mobile users.
+    ' This bit is simply for activating Mobile Security.
     ' NPG20111215 - I've hijacked the miInstanceID and populated it with the 
     ' User ID that is to be activated.
     If (sMessage.Length = 0) _

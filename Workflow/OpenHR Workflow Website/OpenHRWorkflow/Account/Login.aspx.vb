@@ -30,10 +30,10 @@ Partial Class Login
 
         If userName.IndexOf("\") > 0 Then
           'Active dirctory authentication
-          valid = Users.ValidateUserActiveDirectory(userName.Split("\"c)(0), userName.Split("\"c)(1), txtPassword.Value)
+          valid = Security.ValidateActiveDirectoryUser(userName.Split("\"c)(0), userName.Split("\"c)(1), txtPassword.Value)
         Else
           'Sql server authentication
-          valid = Users.ValidateUserSqlServer(userName, txtPassword.Value)
+          valid = Security.ValidateSqlServerUser(userName, txtPassword.Value)
         End If
 
         If Not valid Then sMessage = "The user name or password provided is incorrect."
@@ -63,11 +63,11 @@ Partial Class Login
   End Sub
 
   Protected Sub BtnRegisterClick(sender As Object, e As ImageClickEventArgs) Handles btnRegister.Click
-    Response.Redirect("~/Registration.aspx")
+    Response.Redirect("~/Account/Registration.aspx")
   End Sub
 
   Protected Sub BtnForgotPwdClick(sender As Object, e As ImageClickEventArgs) Handles btnForgotPwd.Click
-    Response.Redirect("~/ForgottenLogin.aspx")
+    Response.Redirect("~/Account/ForgottenLogin.aspx")
   End Sub
 
 End Class

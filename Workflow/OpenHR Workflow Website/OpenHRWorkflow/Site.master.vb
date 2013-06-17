@@ -64,7 +64,7 @@ Partial Class Site
             End If
 
             .BackColor = Drawing.Color.Transparent
-            .ImageUrl = Picture.LoadPicture(NullSafeInteger(dr("HeaderLogoID")))
+            .ImageUrl = "~/" & Picture.LoadPicture(NullSafeInteger(dr("HeaderLogoID")))
             .Height() = Unit.Pixel(NullSafeInteger(dr("HeaderLogoHeight")))
             .Width() = Unit.Pixel(NullSafeInteger(dr("HeaderLogoWidth")))
             .Style.Add("z-index", "1")
@@ -91,8 +91,6 @@ Partial Class Site
   End Sub
 
   Private Sub SetupViewport()
-
-    Return
 
     If IsMobileBrowser() And Not IsTablet() Then
       Return
