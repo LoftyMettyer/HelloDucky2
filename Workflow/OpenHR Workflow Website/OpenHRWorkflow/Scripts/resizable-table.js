@@ -286,7 +286,10 @@ try {
 * http://leparlement.org/filterTable
 * See also http://www.vonloesch.de/node/23
 */
-function filterTable(term, table) {
+function filterTable(term, tableID) {
+
+  var table = document.getElementById(tableID);
+
   dehighlight(table);
   var terms = term.value.toLowerCase().split(" ");
 
@@ -312,15 +315,16 @@ function filterTable(term, table) {
 * preText term postText
 */
 function dehighlight(container) {
-  for (var i = 0; i < container.childNodes.length; i++) {
+
+  for (var i = 0; i < container.childNodes.length; i++) {   
     var node = container.childNodes[i];
 
     if (node.attributes && node.attributes['class']
 			&& node.attributes['class'].value == 'highlighted') {
       node.parentNode.parentNode.replaceChild(
-					document.createTextNode(
-						node.parentNode.innerText.replace(/<[^>]+>/g, "")),
-					node.parentNode);
+        document.createTextNode(
+          node.parentNode.innerHTML.replace(/<[^>]+>/g, "").replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ')),
+          node.parentNode);
       // Stop here and process next parent
       return;
     } else if (node.nodeType != 3) {
@@ -365,7 +369,7 @@ function highlight(term, container) {
       // Keep going onto other elements
       highlight(term, node);
     }
-  }
+  }  
 }
 
 function create_node(child) {

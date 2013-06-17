@@ -1063,7 +1063,7 @@ Public Class RecordSelector
       .Attributes.Add("onblur", "if(this.value==""""){this.style.fontStyle=""italic"";this.style.color=""gray"";this.value=""search...""}")
       .Attributes.Add("onfocus", "if(this.value!=""""){this.style.color=""black"";this.style.fontStyle=""normal"";this.value=""""}")
       .Attributes.Add("onclick", "event.cancelBubble=true;")
-      .Attributes.Add("onkeyup", "filterTable(this, " & Me.ClientID.ToString & ")")
+      .Attributes.Add("onkeyup", "filterTable(this, '" & Me.ClientID.ToString & "')")
     End With
 
     tcSearchCell.Controls.Add(txtSearchBox)
