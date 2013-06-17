@@ -10,13 +10,14 @@ Public Class RecordSelector
     Inherits GridView
     Private m_iPagerHeight As Integer = 30
     Private Const MAXDROPDOWNROWS As Int16 = 6
-    Private iVisibleColumnCount As Integer
+    Private m_iVisibleColumnCount As Integer
     Dim iColWidth As Integer = 100  ' default, minimum column width for all grid columns
 
     Protected Overrides Sub Render(ByVal writer As System.Web.UI.HtmlTextWriter)
         Dim iIDColumnIndex As Int16
         Dim sDivStyle As String = ""
         Dim hdnScrollTop As String = "0"
+        Dim objGeneral As New General
 
         'MyBase.Render(writer)
 
@@ -25,7 +26,7 @@ Public Class RecordSelector
         ' Custom Header row first.
         Dim customHeader As GridViewRow = Me.HeaderRow
         If MyBase.HeaderRow IsNot Nothing Then
-            iVisibleColumnCount = MyBase.HeaderRow.Cells.Count
+            m_iVisibleColumnCount = MyBase.HeaderRow.Cells.Count
             customHeader.ApplyStyle(Me.HeaderStyle)
 
             Dim sColumnCaption As String = ""
@@ -41,7 +42,7 @@ Public Class RecordSelector
 
                 If (Not IsLookup And (sColumnCaption = "ID" Or (Left(sColumnCaption, 3) = "ID_" And Val(Mid(sColumnCaption, 4)) > 0))) Or _
                     (IsLookup And sColumnCaption.StartsWith("ASRSYS")) Then
-                    iVisibleColumnCount = iVisibleColumnCount - 1
+                    m_iVisibleColumnCount = m_iVisibleColumnCount - 1
                     customHeader.Cells(iColCount).Style.Add("display", "none")
                 Else
                     customHeader.Cells(iColCount).Text = Replace(customHeader.Cells(iColCount).Text, "_", " ")
@@ -69,12 +70,15 @@ Public Class RecordSelector
                 IIf(IsLookup, "", "top:" & Me.Style.Item("TOP").ToString & ";") & _
                 IIf(IsLookup, "", "left:" & Me.Style.Item("LEFT").ToString & ";") & _
                 sDivStyle & _
-                ";overflow:hidden;border-color:black;border-style:solid;border-width:1px'" & _
-                ">")
+                ";overflow:hidden;border-color:black;border-style:solid;border-width:1px;background-color:'" & _
+                objGeneral.GetHTMLColour(System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.FromArgb(customHeader.BackColor.A, customHeader.BackColor.R, customHeader.BackColor.G, customHeader.BackColor.B)).ToString) & _
+                "'>")
+
+
 
             'render header row 
             writer.Write("<table ID='" & Me.ID.ToString.Replace("Grid", "") & "Header'" & _
-                        " style='position:absolute;top:0px;left:0px;width:" & CalculateWidth() & ";height:" & CalculateHeaderHeight() & _
+                        " style='position:absolute;top:0px;left:0px;width:" & CalculateGridWidth() & ";height:" & CalculateHeaderHeight() & _
                         ";table-layout:fixed;border:0'" & _
                         " cellspacing='" & Me.CellSpacing.ToString() & "'" & _
                         " class='resizable'" & _
@@ -101,12 +105,15 @@ Public Class RecordSelector
             Me.BottomPagerRow.Visible = False
         End If
 
-
         ' now render data rows        
         MyBase.Attributes.CssStyle("overflow") = "auto"
         MyBase.Style("overflow") = "auto"
         MyBase.Style.Add("table-layout", "fixed")
         MyBase.Style.Remove("position")
+
+
+        MyBase.Attributes.CssStyle("WIDTH") = CalculateGridWidth()
+
         If IsLookup Then
             MyBase.Style.Remove("top")
             MyBase.Attributes.CssStyle.Remove("LEFT")
@@ -145,7 +152,7 @@ Public Class RecordSelector
                 strWidth = [String].Format("{0}{1}", Me.Width.Value, (If((Me.Width.Type = UnitType.Percentage), "%", "px")))
             End If
         Else
-            Dim iGridWidth As Integer = iVisibleColumnCount * iColWidth
+            Dim iGridWidth As Integer = m_iVisibleColumnCount * iColWidth
             iGridWidth = CInt(IIf(iGridWidth < 0, 1, iGridWidth))
             iGridWidth = CInt(IIf(iGridWidth < Me.Width.Value, Me.Width.Value, iGridWidth))
 
@@ -157,17 +164,20 @@ Public Class RecordSelector
     End Function
     Private Function CalculateHeight() As [String]
         Dim strHeight As String = "auto"
+        Dim iHeight As Integer = ControlHeight
+
         If Not IsLookup Then
-            If Not Me.Height.IsEmpty Then
-                strHeight = [String].Format("{0}{1}", Me.Height.Value, (If((Me.Height.Type = UnitType.Percentage), "%", "px")))
+            If iHeight > 0 Then
+                strHeight = [String].Format("{0}{1}", iHeight, "px")
             End If
         Else
             ' Set the size of the grid as per old DropDown setting...
-            Dim iRowHeight As Integer = CInt(Me.Height.Value) - 6
+            ' remember that the height for lookups will only be c.21pixels...
+            Dim iRowHeight As Integer = iHeight - 6
             iRowHeight = CInt(IIf(iRowHeight < 22, 22, iRowHeight))
             Dim iDropHeight As Integer = (iRowHeight * CInt(IIf(MyBase.Rows.Count > MAXDROPDOWNROWS, MAXDROPDOWNROWS, MyBase.Rows.Count))) + 1
 
-            strHeight = [String].Format("{0}{1}", iDropHeight, (If((Me.Height.Type = UnitType.Percentage), "%", "px")))
+            strHeight = [String].Format("{0}{1}", iDropHeight, "px")
         End If
 
         Return strHeight
@@ -193,19 +203,26 @@ Public Class RecordSelector
     End Sub
 
     Private Function CalculateGridWidth() As [String]
+        ' grid width is me.width - vertical scroll bar.
         Dim strWidth As String = "auto"
+        Dim itmpWidth As Integer = Me.Width.Value
 
-        If Not IsLookup Then
-            If Not Me.Width.IsEmpty Then
-                strWidth = [String].Format("{0}{1}", Me.Width.Value, (If((Me.Width.Type = UnitType.Percentage), "%", "px")))
-            End If
-        Else
-            Dim iGridWidth As Integer = iVisibleColumnCount * iColWidth
-            iGridWidth = CInt(IIf(iGridWidth < 0, 1, iGridWidth))
-            iGridWidth = CInt(IIf(iGridWidth < Me.Width.Value, Me.Width.Value, iGridWidth))
-
-            strWidth = [String].Format("{0}{1}", iGridWidth, (If((Me.Width.Type = UnitType.Percentage), "%", "px")))
+        If (iColWidth * m_iVisibleColumnCount) < Me.Width.Value Then
+            itmpWidth = itmpWidth - 17
         End If
+
+
+        'If Not IsLookup Then
+        If Not Me.Width.IsEmpty Then
+            strWidth = [String].Format("{0}{1}", itmpWidth, "px")
+        End If
+        'Else
+        'Dim iGridWidth As Integer = iVisibleColumnCount * iColWidth
+        'iGridWidth = CInt(IIf(iGridWidth < 0, 1, iGridWidth))
+        'iGridWidth = CInt(IIf(iGridWidth < Me.Width.Value, Me.Width.Value, iGridWidth))
+
+        'strWidth = [String].Format("{0}{1}", iGridWidth, (If((Me.Width.Type = UnitType.Percentage), "%", "px")))
+        'End If
 
         Return strWidth
 
@@ -215,6 +232,7 @@ Public Class RecordSelector
     Private Function CalculateHeaderHeight() As [String]
         Dim strHeaderHeight As String = "auto"
         Dim iHeaderHeight As Integer = 0
+        Dim iGridHeight As Integer = ControlHeight
 
         If NullSafeBoolean(Me.ColumnHeaders) And (NullSafeInteger(Me.HeadLines) > 0) Then
             Dim iGridTopPadding As Integer = CInt(NullSafeSingle(Me.HeadFontSize) / 8)
@@ -223,12 +241,12 @@ Public Class RecordSelector
              - 2 _
              - (NullSafeSingle(Me.HeadFontSize) * (NullSafeInteger(Me.HeadLines) + 1) * (iGridTopPadding - 1) / 4))
 
-            If iHeaderHeight > NullSafeInteger(Me.Height.Value) Then
-                iHeaderHeight = NullSafeInteger(Me.Height.Value)
+            If iHeaderHeight > NullSafeInteger(iGridHeight) Then
+                iHeaderHeight = NullSafeInteger(iGridHeight)
             End If
         End If
 
-        strHeaderHeight = [String].Format("{0}{1}", iHeaderHeight, (If((Me.Height.Type = UnitType.Percentage), "%", "px")))
+        strHeaderHeight = [String].Format("{0}{1}", iHeaderHeight, "px")
 
         Return strHeaderHeight
 
@@ -237,23 +255,37 @@ Public Class RecordSelector
     Private Function CalculatePagerHeight() As [String]
         Dim strPagerHeight As String = "auto"
         Dim iPagerHeight As Integer = 0
+        Dim iGridHeight As Integer = ControlHeight
 
         If Me.PageCount > 1 Then
             Dim iGridTopPadding As Integer = CInt(NullSafeSingle(Me.HeadFontSize) / 8)
 
             iPagerHeight = CInt((((NullSafeSingle(Me.HeadFontSize) + iGridTopPadding) * 2) - 2) * 1.5)
 
-            If iPagerHeight > NullSafeInteger(Me.Height.Value) Then
-                iPagerHeight = NullSafeInteger(Me.Height.Value)
+            If iPagerHeight > NullSafeInteger(iGridHeight) Then
+                iPagerHeight = NullSafeInteger(iGridHeight)
             End If
 
         End If
 
-        strPagerHeight = [String].Format("{0}{1}", iPagerHeight, (If((Me.Height.Type = UnitType.Percentage), "%", "px")))
+        strPagerHeight = [String].Format("{0}{1}", iPagerHeight, "px")
 
         Return strPagerHeight
 
     End Function
+
+    Public Property ControlHeight() As Integer
+        Get
+            If Not ViewState("ControlHeight") Is Nothing Then
+                Return DirectCast(ViewState("ControlHeight"), Integer)
+            Else
+                Return 1
+            End If
+        End Get
+        Set(ByVal value As Integer)
+            ViewState("ControlHeight") = value
+        End Set
+    End Property
 
 
     Public Property HeadLines() As Integer
@@ -268,6 +300,8 @@ Public Class RecordSelector
             ViewState("HeadLines") = value
         End Set
     End Property
+
+
 
     Public Property HeadFontSize() As Single
         Get
@@ -307,6 +341,43 @@ Public Class RecordSelector
             ViewState("IsLookup") = value
         End Set
     End Property
+
+    Private Sub RecordSelector_DataBound(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.DataBound
+        Dim grdGrid As GridView
+        'Dim iColCount As Integer
+
+        grdGrid = CType(sender, System.Web.UI.WebControls.GridView)
+
+        Dim iEffectiveRowHeight As Integer = grdGrid.RowStyle.Height.Value  ' 21.0
+        Dim iRowCount As Integer = grdGrid.Rows.Count  '56
+
+        grdGrid.Height = Unit.Pixel(iEffectiveRowHeight * iRowCount)
+
+        'Dim difference As Integer = grdGrid.PageSize - grdGrid.Rows.Count
+
+        'If difference > 0 AndAlso grdGrid.Rows.Count > 0 Then
+
+        '    ' If grdGrid.PageSize <> grdGrid.Rows.Count Then grdGrid.PageSize = grdGrid.Rows.Count
+
+        '    grdGrid.FooterRow.Visible = True
+        '    For iColCount = 0 To grdGrid.FooterRow.Cells.Count - 1
+        '        grdGrid.FooterRow.Cells(iColCount).BorderColor = Drawing.Color.White
+        '    Next
+        '    grdGrid.FooterRow.BorderColor = Drawing.Color.White
+        '    grdGrid.FooterRow.Height = New Unit(difference * grdGrid.RowStyle.Height.Value)
+
+        '    For iColCount = 0 To Me.HeaderRow.Cells.Count - 1
+        '        Dim sColumnCaption As String = UCase(Me.HeaderRow.Cells(iColCount).Text)
+
+        '        If (Not IsLookup And (sColumnCaption = "ID" Or (Left(sColumnCaption, 3) = "ID_" And Val(Mid(sColumnCaption, 4)) > 0))) Or _
+        '            (IsLookup And sColumnCaption.StartsWith("ASRSYS")) Then
+
+        '            grdGrid.FooterRow.Cells(iColCount).Style.Add("display", "none")
+
+        '        End If
+        '    Next
+        'End If
+    End Sub
 
 
     Private Sub RecordSelector_PageIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.PageIndexChanged
@@ -612,10 +683,6 @@ Public Class RecordSelector
         Return (If((sortDir = SortDirection.Ascending), SortDirection.Descending, SortDirection.Ascending))
     End Function
 
-
-    Private Sub RecordSelector_Unload(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Unload
-       
-    End Sub
 End Class
 
 

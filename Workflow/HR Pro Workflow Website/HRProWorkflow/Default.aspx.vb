@@ -1468,10 +1468,12 @@ Public Class _Default
                                         .Attributes.CssStyle("TOP") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
                                         .Attributes.CssStyle("WIDTH") = Unit.Pixel(NullSafeInteger(dr("Width"))).ToString
 
-                                        .Height = NullSafeInteger(dr("Height"))
+                                        ' Don't use .height - it causes large row heights if the grid isn't filled.
+                                        '.Height = NullSafeInteger(dr("Height"))
+                                        ' .Attributes.Add("Height", NullSafeInteger(dr("Height")).ToString)
+                                        .ControlHeight = NullSafeInteger(dr("Height"))
                                         .Width = NullSafeInteger(dr("Width"))
-                                        .Style.Add("height", Unit.Pixel(NullSafeInteger(dr("Height"))).ToString)
-
+                                        '.Style.Add("height", Unit.Pixel(NullSafeInteger(dr("Height"))).ToString)
                                         .BorderColor = Color.Black
                                         .BorderStyle = BorderStyle.Solid
                                         .BorderWidth = 1
@@ -1562,10 +1564,11 @@ Public Class _Default
 
                                         ''With ctlForm_RecordSelectionGrid
 
-
-
-
                                         .EmptyDataText = "no data"
+
+                                        ' set top row as default item
+                                        .SelectedIndex = 0
+
                                         ''    .ShowHeader = False
                                         ''    .ID = sID & "Grid"
                                         .TabIndex = CShort(NullSafeInteger(dr("tabIndex")) + 1)
@@ -1718,9 +1721,12 @@ Public Class _Default
                                         '.RowStyle.Padding.Bottom = Unit.Pixel(1)
                                         .RowStyle.VerticalAlign = VerticalAlign.Middle
 
-                                        iRowHeight = 1 ' Grid will set to fit font.
+                                        iRowHeight = 21 ' Grid will set to fit font.
                                         '.DisplayLayout.RowHeightDefault = Unit.Pixel(iRowHeight)
                                         .RowStyle.Height = Unit.Pixel(iRowHeight)
+
+
+
                                         If IsDBNull(dr("ForeColorHighlight")) Then
                                             '.DisplayLayout.SelectedRowStyleDefault.ForeColor = System.Drawing.SystemColors.HighlightText
                                             .SelectedRowStyle.ForeColor = System.Drawing.SystemColors.HighlightText
@@ -2007,15 +2013,15 @@ Public Class _Default
                                             ' ''End If
 
                                         Catch ex As Exception
-                                            sMessage = "Error loading web form grid values:<BR><BR>" & _
-                                             ex.Message.Replace(vbCrLf, "<BR>") & "<BR><BR>" & _
-                                             "Contact your system administrator."
-                                            Exit While
+                    sMessage = "Error loading web form grid values:<BR><BR>" & _
+                     ex.Message.Replace(vbCrLf, "<BR>") & "<BR><BR>" & _
+                     "Contact your system administrator."
+                    Exit While
 
-                                        Finally
-                                            connGrid.Close()
-                                            connGrid.Dispose()
-                                        End Try
+                Finally
+                    connGrid.Close()
+                    connGrid.Dispose()
+                End Try
                                     End If
 
 
@@ -2107,7 +2113,7 @@ Public Class _Default
 
                                     '    ' This specifies the colour to the right of the column header table
                                     '    ' if there's a scroll bar. Ensure it matches the rowHeaderRow.backcolor
-                                    '    .BackColor = objGeneral.GetColour(16248553)
+                                    ' .BackColor = objGeneral.GetColour(16248553)
                                     'End With
 
 
@@ -2149,9 +2155,11 @@ Public Class _Default
                                         .Attributes.CssStyle("TOP") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
                                         .Attributes.CssStyle("WIDTH") = Unit.Pixel(NullSafeInteger(dr("Width"))).ToString
 
-                                        .Height = Unit.Pixel(NullSafeInteger(dr("Height")))
+                                        ' .Height = Unit.Pixel(NullSafeInteger(dr("Height")))
+                                        ' .Attributes.Add("Height", Unit.Pixel(NullSafeInteger(dr("Height"))).ToString)
+                                        .ControlHeight = NullSafeInteger(dr("Height"))
                                         .Width = Unit.Pixel(NullSafeInteger(dr("Width")))
-                                        .Style.Add("height", Unit.Pixel(NullSafeInteger(dr("Height"))).ToString)
+                                        ' .Style.Add("height", Unit.Pixel(NullSafeInteger(dr("Height"))).ToString)
                                         .Style("top") = Unit.Pixel(NullSafeInteger(dr("TopCoord"))).ToString
                                         .Style("left") = Unit.Pixel(NullSafeInteger(dr("LeftCoord"))).ToString
 
@@ -3717,7 +3725,7 @@ Public Class _Default
                                 ctlForm_PagingGridView = DirectCast(ctlFormInput, RecordSelector)
                                 sRecordID = "0"
 
-                                If ctlForm_PagingGridView.SelectedIndex > 0 Then
+                                If ctlForm_PagingGridView.SelectedIndex >= 0 Then
                                     For iColCount As Integer = 0 To ctlForm_PagingGridView.HeaderRow.Cells.Count - 1
                                         sColumnCaption = UCase(ctlForm_PagingGridView.HeaderRow.Cells(iColCount).Text)
 
