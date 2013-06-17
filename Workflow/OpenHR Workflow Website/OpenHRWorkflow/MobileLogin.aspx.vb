@@ -532,7 +532,7 @@ Partial Class MobileLogin
           Response.Redirect("~/mobile/MobileHome.aspx")
         Else
           'Go to the page originally specified by the client.
-          FormsAuthentication.SignOut()
+          'FormsAuthentication.SignOut()
           HttpContext.Current.Response.Redirect(FormsAuthentication.GetRedirectUrl(sAuthUser, False))
         End If
       End If
